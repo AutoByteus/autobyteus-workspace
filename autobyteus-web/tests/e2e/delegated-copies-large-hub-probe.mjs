@@ -29,6 +29,8 @@
 //        finds text in it, and the conversation ends scrolled to its latest message.
 //        L-001 and L-002 also check that a Team-tab participant list is fetched once per running-hub selection, at most once
 //        after a delegation, and not at all for the hub when the delegation added no hub message (large-runs-load-less SR-004).
+//        L-012: a delegation whose new copy reports to the hub at once: at most one more hub list fetch, the report shown
+//        once, the list equal to the stored log (large-runs-load-less SR-007).
 // Regression check: a current build shows the copy rows with one view request per hub and no member request (S-00n
 // opsUntilRows), and a copy open issues exactly one projection and one artifact request; the base build of this ticket
 // (5ceb43039a) issued two requests per child agent before drawing any row.
@@ -335,7 +337,7 @@ const seed = async () => {
 
 // ---------------------------------------------------------------- browser journeys
 let setup, browser, context, page, ownedBrowser = false;
-const errors = [], requests = [], frames = [], warnings = [];
+const errors = [], errorDetails = [], requests = [], frames = [], warnings = [];
 const opsSince = (start, filter = () => true) => requests.slice(start).filter(filter).reduce((m, r) => ({ ...m, [r.operationName]: (m[r.operationName] || 0) + 1 }), {});
 const rowBase = '[data-test="workspace-team-transient-execution-row"]:not([aria-hidden="true"])';
 const treeOf = (id = setup.hostId) => page.locator(`[data-test="workspace-agent-run-task-tree"][data-run-id="${id}"]`);
@@ -365,8 +367,8 @@ const observe = async () => {
   page.__inflight = new Set();
   page.on('request', (r) => { if (r.url().endsWith('/graphql')) { page.__inflight.add(r); try { const body = r.postDataJSON(); requests.push({ at: Date.now(), operationName: body.operationName, variables: body.variables }); } catch { /* not JSON */ } } });
   for (const event of ['requestfinished', 'requestfailed']) page.on(event, (r) => page.__inflight.delete(r));
-  page.on('pageerror', (e) => errors.push(e.message));
-  page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); if (m.type() === 'warning' && m.text().includes('agentRunCollaboration')) warnings.push({ at: Date.now(), text: m.text() }); });
+  page.on('pageerror', (e) => { errors.push(e.message); errorDetails.push({ at: Date.now(), message: e.message, stack: e.stack ?? null }); });
+  page.on('console', (m) => { if (m.type() === 'error') { errors.push(m.text()); errorDetails.push({ at: Date.now(), message: m.text(), location: m.location() }); } if (m.type() === 'warning' && m.text().includes('agentRunCollaboration')) warnings.push({ at: Date.now(), text: m.text() }); });
   page.on('websocket', (ws) => ws.on('framereceived', (f) => { try { const v = JSON.parse(String(f.payload)); frames.push({ at: Date.now(), url: ws.url(), type: v.type, kind: v.payload?.event?.kind }); } catch { /* protocol */ } }));
   const recordSockets = () => { if (window.__probeSockets) return; const Original = window.WebSocket; window.__probeSockets = [];
     window.WebSocket = class extends Original { constructor(...args) { super(...args); window.__probeSockets.push(this); } }; };
@@ -779,6 +781,33 @@ const liveJourneys = async () => {
     await shot('live-task-locate');
     return { clickToWorkerSelectedMs: ms, state: await storeState() };
   });
+  await runCase('L-012', 'A delegation whose new copy reports to the hub at once: the hub\'s Team-tab list is fetched at most once more and shows the report once (large-runs-load-less SR-007)', async () => {
+    await ensureHubRunning();
+    await coldOpenWorkspace();
+    await timedClick(runRow(), HOST_READY, setup.hostId);
+    await until('live collaboration snapshot', async () => (await storeState()).phase === 'live', 120000);
+    await quiet(2000);
+    const teamTab = page.getByRole('tab', { name: 'Team', exact: true }).first();
+    if (await teamTab.getAttribute('aria-selected') !== 'true') { await teamTab.click(); await quiet(1500); }
+    const rows = () => page.locator('[data-test="collaboration-messages-section"] [data-test="team-communication-message-row"]');
+    await until('hub list shown', async () => (await rows().count()) === (await hubMessageCount()), 30000);
+    const before = await hubMessageCount();
+    const marker = `Early report ${randomUUID().slice(0, 8)}`;
+    const start = requests.length;
+    const taskId = (await gql('mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}', { input: { projectId: setup.projectId, title: 'Report at once',
+      description: `Report to the manager first. ${callTool('send_message_to', { target_agent_run_id: setup.hostId, content: marker })}` } })).createProjectTask.taskId;
+    send(callTool('delegate_task', { recipient_address: `/${segment(TEAM)}`, task_id: taskId }));
+    await until('the new copy\'s report is stored', async () => (await hubMessageCount()) > before, 180000);
+    await quiet(3000);
+    const after = await hubMessageCount();
+    const participants = participantOps(start);
+    const texts = (await rows().allInnerTexts()).map((t) => t.replace(/\s+/g, ' '));
+    const shown = texts.filter((t) => t.includes(marker)).length;
+    assert((participants[setup.hostId] ?? 0) <= 1, 'The hub\'s list was fetched more than once for one delegation', { participants });
+    assert(shown === 1 && texts.length === after, 'The report is not shown exactly once, or the list differs from the stored log', { shown, rows: texts.length, before, after, participants });
+    await shot('live-delegation-with-report');
+    return { before, after, participants, hubListReloaded: (participants[setup.hostId] ?? 0) === 1, rowsShown: texts.length, markerShown: shown };
+  });
   await runCase('L-007', 'Composer send to an opened copy of a stopped hub wakes the copy, which answers; stored (AC-006, REQ-006)', async () => {
     for (const socket of sockets.splice(0)) socket.close();
     await terminateAgent(setup.hostId);
@@ -864,7 +893,7 @@ try {
   evidence.result = 'Fail'; evidence.failures.push({ message: e.message, details: e.details, stack: e.stack }); process.exitCode = 1;
   if (page) { evidence.failureState = await storeState().catch((x) => ({ error: x.message })); await shot('failure'); }
 } finally {
-  evidence.errors = errors; evidence.warnings = warnings; evidence.requests = requests.map((r) => ({ at: r.at, op: r.operationName, v: r.variables }));
+  evidence.errors = errors; evidence.errorDetails = errorDetails; evidence.warnings = warnings; evidence.requests = requests.map((r) => ({ at: r.at, op: r.operationName, v: r.variables }));
   evidence.loadAtEnd = loadAverage();
   for (const socket of sockets) socket.close();
   if (ownedBrowser) { await browser?.close(); evidence.cleanup.browserClosed = true; } else if (browser) { await browser.close().catch(() => {}); evidence.cleanup.cdpDetached = true; }
