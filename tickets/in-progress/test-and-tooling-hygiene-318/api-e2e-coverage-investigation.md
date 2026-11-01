@@ -9,8 +9,8 @@
 - Implementation Handoff: `implementation-handoff.md` (IR-001); Implementation Revision Record: `implementation-revision-record.md`
 - Code Review Report / Record: `code-review-report.md`, `code-review-revision-record.md` (CRR-001, Pass)
 - API/E2E Revision Record: `api-e2e-revision-record.md`; Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: 1; Trigger: CRR-001 pass from `/software_engineering_team/code_reviewer`, 2026-11-01
-- Latest Authoritative Investigation: this file, round 1
+- Current Investigation Round: 2; Trigger: round 1, CRR-001 pass; round 2, CRR-003 pass of IR-002 (FU-004 Local Fix from delivery DR-001), 2026-11-01
+- Latest Authoritative Investigation: this file, round 2 (§ Round 2)
 
 Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318`, branch `codex/test-and-tooling-hygiene-318`, HEAD `7c04283722` (last code commit `ab0027a398`), `origin/personal` merged at `32b8f5a763`.
 
@@ -73,3 +73,12 @@ None.
 ## Investigation Decision
 
 - Proceed: `Yes`; durable coverage changes: `No`; reroute: `No`.
+
+## Round 2 — IR-002 (FU-004 Local Fix)
+
+- Delta since round 1 (`3b0d17749c..1e9bab6d4b`, outside the ticket folder): `tests/integration/agent-execution/agent-run-service.integration.test.ts` (`de3d284b14`), `tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts` (`f3950965c3`); test files only, no source, no merge.
+- Rerun by impact: the full server `test:integration` (AC-016 without the FU-004 exception) and the server type gate (test files changed); everything else from round 1 stays valid (no code it exercises changed).
+
+| Case ID | Criteria | Boundary / Surface | Kind | Planned Command Or Steps | Why |
+| --- | --- | --- | --- | --- | --- |
+| API-08 | AC-016, AC-010 | fresh clone, documented order | Existing Test | clone HEAD; `pnpm install --frozen-lockfile`; server `prebuild`, `build`, `test:integration:prepare`; `pnpm -C autobyteus-server-ts typecheck`; `pnpm -C autobyteus-server-ts test:integration` | FU-004's cases now repaired |

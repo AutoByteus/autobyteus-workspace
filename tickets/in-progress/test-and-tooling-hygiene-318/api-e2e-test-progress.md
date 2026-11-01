@@ -18,3 +18,5 @@
 | 2026-11-01 15:36 | API-07 | Started | | RUN_LMSTUDIO_E2E=1 three files; LM Studio: nothing loaded before |
 | 2026-11-01 15:41 | API-07 | Completed | Pass | team runtime 5/5, backend factory 4/4, token-usage LM Studio case 1 passed (own gate added); model unloaded |
 | 2026-11-01 15:42 | — | Completed | Pass | round 1 recorded (95.8%); committing |
+| 2026-11-01 15:54 | API-08 | Started | | round 2: fresh clone, server build steps, server gate, full test:integration |
+| 2026-11-01 16:01 | API-08 | Completed | Pass | fresh clone: server gate PASS 1200/370; test:integration 87 passed, 20 skipped, 0 failed |

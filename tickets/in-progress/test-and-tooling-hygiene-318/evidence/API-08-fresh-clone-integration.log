@@ -1,0 +1,27 @@
+# API-08 round 2: fresh clone in the documented order, then the server gate and the full server test:integration
+# clone of codex/test-and-tooling-hygiene-318 at 1e9bab6d4b into /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab318r2-clone.grMoXhN4Gk/repo; 2026-11-01T14:54:13Z; macOS arm64, node v22.23.1, pnpm 10.28.2; load { 3.54 5.73 8.62 }
+1e9bab6d4b1b11ae52800a31b638c4885ee2b45c docs(tickets): autobyteus-318 IR-002 Local Fix: FU-004 resolved, server test:integration green
+$ pnpm install --frozen-lockfile
+exit: 0 (9s)
+$ pnpm -C autobyteus-server-ts prebuild
+exit: 0 (6s)
+$ pnpm -C autobyteus-server-ts build
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+exit: 0 (17s)
+$ pnpm -C autobyteus-server-ts test:integration:prepare
+Integration test prerequisites are present.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+exit: 0 (21s)
+$ pnpm -C autobyteus-server-ts typecheck
+[typecheck] PASS
+[typecheck] production errors: 0; test-file errors: 1200 in 370 files (baseline 1200 in 370 files)
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 8.0s
+[typecheck] server tests (tsconfig.tests.json): 1200 errors, exit 2, 23.1s
+exit: 0 (36s)
+$ pnpm -C autobyteus-server-ts test:integration
+      Tests  499 passed | 69 skipped (568)
+ Test Files  87 passed | 20 skipped (107)
+Integration test prerequisites are present.
+exit: 0 (244s)
+# load at end { 48.60 33.49 19.86 }
+clone removed

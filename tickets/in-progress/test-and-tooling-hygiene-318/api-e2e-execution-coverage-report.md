@@ -2,8 +2,8 @@
 
 ## Round
 
-- Coverage investigation: `api-e2e-coverage-investigation.md`; revision record `api-e2e-revision-record.md`, `API-REV-001`; progress log `api-e2e-test-progress.md`
-- Round and trigger: round 1, CRR-001 pass
+- Coverage investigation: `api-e2e-coverage-investigation.md`; revision record `api-e2e-revision-record.md`, `API-REV-002`; progress log `api-e2e-test-progress.md`
+- Round and trigger: round 1, CRR-001 pass; **round 2 (current), CRR-003 pass of IR-002 (FU-004 Local Fix)** (§ Round 2)
 - Deviations from the plan:
   - API-05's script ran `prompt-builder.test.ts` under the server path; it belongs to `autobyteus-ts` and was rerun there (recorded in the same log).
   - API-06's first `project-manager-ux` run passed but my clean-up removed its `evidence.json` before copying; run 2 kept it.
@@ -96,8 +96,26 @@ None by API/E2E.
 - IMP-12's header elides `RUN_RUNTIME_TOKEN_USAGE_E2E=1`, which the token-usage file needs.
 - The handoff counts seven probes on the output-dir helper; after the merge there are six (the seventh was removed and replaced by the integrations-page probe, which uses it).
 
-## Latest Authoritative Result
+## Round 1 Result (superseded by § Round 2)
 
 - Result: `Pass`
 - Criteria not proven, or parts only the user can check: `None` (AC-016 apart from FU-004's pre-existing cases, out of scope; paid suites not run by DEC-011)
 - Next recipient from `get_handoff_rules`: `/software_engineering_team/code_reviewer` (Pass, Large: proportional test-code review)
+
+## Round 2 — IR-002 (FU-004 Local Fix)
+
+- Delta since round 1: two server integration test files (`de3d284b14`, `f3950965c3`), test only. Round 1's other cases stand (no code they exercise changed).
+
+| Case ID | Criteria | Boundary / Surface | Command Or Steps | Env | Result | Evidence Files | Look For | Notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| API-08 | AC-016, AC-010 | fresh clone, documented order | clone `1e9bab6d4b`; `pnpm install --frozen-lockfile`; server `prebuild`, `build`, `test:integration:prepare`; `pnpm -C autobyteus-server-ts typecheck`; `pnpm -C autobyteus-server-ts test:integration` | fresh clone (removed after), macOS arm64, Node 22.23.1; load 3.5 at start | Pass | `API-08-fresh-clone-integration.log` | every step `exit: 0`; `production errors: 0; test-file errors: 1200 in 370 files (baseline 1200 in 370 files)`, `[typecheck] PASS`; `Test Files  87 passed \| 20 skipped (107)`, `Tests  499 passed \| 69 skipped (568)` | FU-004's four cases now pass; the 20 skipped files are gated |
+
+- AC-016: Proven without exception (round 1 API-02/API-05/API-07 plus API-08).
+- Final confidence: 96.5% (requirement proof 98, directness 97, integration realism 95, environment 96, failure/edge 96, durable coverage 97; user surface N/A).
+
+## Latest Authoritative Result
+
+- Result: `Pass` (round 2)
+- Criteria not proven, or parts only the user can check: `None` (paid suites not run by DEC-011)
+- Next recipient from `get_handoff_rules`: `/software_engineering_team/code_reviewer` (Pass, Large: proportional test-code review of the two baseline-fix test files)
+- Observations from round 1 (non-blocking) unchanged.
