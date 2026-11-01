@@ -16,7 +16,7 @@ const mounted: Array<ReturnType<typeof mount>> = []
 beforeEach(() => {
   vi.useFakeTimers()
   setActivePinia(createPinia())
-  snapshot = { status: ServerStatus.STARTING, baseUrl: 'http://127.0.0.1:29695', urls, message }
+  snapshot = { status: ServerStatus.STARTING, baseUrl: 'http://127.0.0.1:29695', urls, message, healthCheckStatus: '' }
   Object.defineProperty(window, 'electronAPI', { configurable: true, value: {
     getServerStatus: vi.fn(async () => snapshot),
     onServerStatus: vi.fn(cb => { notify = cb }),

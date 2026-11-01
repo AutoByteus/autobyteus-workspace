@@ -142,9 +142,8 @@ describe('staged AgentOrg context hydration and publication', () => {
 
     it.each([true, false])('commits every member artifact list on publication, including nested Team members (active=%s; AC-003, AC-004)', async (active) => {
       serve()
-      const view = structuredClone(taskBearingView())
-      view.is_active = active
-      if (!active) view.agent_statuses = []
+      const base = structuredClone(taskBearingView())
+      const view = { ...base, is_active: active, agent_statuses: active ? base.agent_statuses : [] }
       const staged = await stageAgentOrgExecutionContext({ source: 'inspection', orgRunId: 'org-run', view })
       expect(paths('agent-director')).toEqual([])
 

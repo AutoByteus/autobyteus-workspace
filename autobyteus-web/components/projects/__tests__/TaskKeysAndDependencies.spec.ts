@@ -16,7 +16,7 @@ vi.mock('@iconify/vue', () => ({ Icon: { props: ['icon'], template: '<span :data
 
 const task = (n: number, status: ProjectTaskStatus = 'TODO', dependsOnTaskIds: string[] = [], description = `Task ${n} summary`): ProjectTask => ({
   taskId: `t${n}`, projectId: 'p1', taskKey: `autobyteus-${n}`, title: description.split('\n')[0]!, description, status, dependsOnTaskIds,
-  contextFiles: [], createdAt: '', updatedAt: '', root: null,
+  partOfTaskId: null, comments: [], contextFiles: [], createdAt: '', updatedAt: '', root: null,
 })
 /** The badge's visible parts (label, key, +N), which the layout spaces with its gap. */
 const parts = (badge: { element: Element }) => [...badge.element.children].filter((part) => part.tagName === 'SPAN' && !part.hasAttribute('data-icon'))

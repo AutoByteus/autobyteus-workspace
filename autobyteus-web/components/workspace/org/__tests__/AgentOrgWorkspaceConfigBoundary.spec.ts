@@ -141,7 +141,7 @@ describe('AgentOrg workspace configuration boundary', () => {
     await wrapper.setProps({ target: { kind: 'agent_org', orgRunId: 'org-run-next' } })
     await vi.waitFor(() => expect(readOrg).toHaveBeenCalledTimes(2))
     expect(readOrg.mock.calls.map(([id]) => id)).toEqual(['org-run', 'org-run-next'])
-    expect(wrapper.get('[data-test="rendered-whole-org-form"]').exists()).toBe(true)
+    expect(wrapper.find('[data-test="rendered-whole-org-form"]').exists()).toBe(true)
     wrapper.unmount()
   })
 })

@@ -461,7 +461,7 @@ describe('AgentOrgExecutionContext', () => {
         address: '/team/member', teamRunId: 'fresh-team', members: [], taskExecutions: [],
         delegatorAgentRunId: 'agent-coordinator', startedAt: '2026-09-01T00:00:01.000Z', source: memberCopySource,
       },
-    } as AgentOrgExecutionEventDto],
+    } as unknown as AgentOrgExecutionEventDto], // deliberately outside the DTO type
     ['reused configured execution', started({ agentRunId: 'agent-member' })],
     ['task host', { ...started(), host_run_id: 'other-org' } as AgentOrgExecutionEventDto],
   ] satisfies readonly (readonly [string, AgentOrgExecutionEventDto])[])(

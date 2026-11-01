@@ -1,6 +1,10 @@
 import { createPinia, setActivePinia } from 'pinia';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { inspectTeamMemberForStore, teamMemberInspectionIdentity } from '../runHistoryTeamMemberInspectionActions';
+import {
+  inspectTeamMemberForStore,
+  teamMemberInspectionIdentity,
+  type TeamMemberInspectionAttemptStoreState,
+} from '../runHistoryTeamMemberInspectionActions';
 
 const mocks = vi.hoisted(() => ({ inspect: vi.fn() }));
 vi.mock('~/services/runOpen/teamMemberInspectionCoordinator', () => ({
@@ -12,7 +16,7 @@ const store = () => ({
   selectedRunId: 'previous-agent' as string | null,
   selectedTeamRunId: 'previous-team' as string | null,
   selectedTeamMemberAddress: '/previous' as string | null,
-  teamMemberInspectionByIdentity: {},
+  teamMemberInspectionByIdentity: {} as TeamMemberInspectionAttemptStoreState['teamMemberInspectionByIdentity'],
 });
 
 describe('runHistoryTeamMemberInspectionActions', () => {

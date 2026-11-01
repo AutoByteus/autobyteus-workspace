@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 import { defineComponent, h } from 'vue'
 import WorkspaceAgentOrgHistoryCollection from '~/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue'
-import type { WorkspaceHistorySectionState } from '~/components/workspace/history/workspaceHistorySectionContracts'
+import type { WorkspaceHistorySectionActions, WorkspaceHistorySectionState } from '~/components/workspace/history/workspaceHistorySectionContracts'
 import { flushPromises, mount } from '@vue/test-utils'
 import { ControlledOrgApollo, historyData } from '~/test-support/agentOrgApolloFixture'
 import { useAgentOrgContextsStore } from '../agentOrgContextsStore'
@@ -39,7 +39,9 @@ beforeEach(() => {
   wrapper = mount(defineComponent({ setup: () => () => h(WorkspaceAgentOrgHistoryCollection, {
     avatars: { getOrgAvatarUrl: () => '', showOrgAvatar: () => false, onOrgAvatarError: () => {} },
     workspaceId: 'history', groups: store.getTreeNodes().flatMap(w => w.agentOrgDefinitions),
-    state: { isAgentOrgDefinitionExpanded: () => true } as WorkspaceHistorySectionState, actions: {},
+    // Partial stubs: the Org rows read only these members.
+    state: { isAgentOrgDefinitionExpanded: () => true } as unknown as WorkspaceHistorySectionState,
+    actions: {} as unknown as WorkspaceHistorySectionActions,
   }) }), { global: { stubs: { Icon: true } } })
   expect(wrapper.find('button[title="Stop Agent Org"]').exists()).toBe(true)
 })

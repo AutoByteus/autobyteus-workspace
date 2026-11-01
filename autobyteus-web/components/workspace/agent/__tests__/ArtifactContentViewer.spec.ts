@@ -273,9 +273,11 @@ describe('ArtifactContentViewer', () => {
       text: async () => 'workspace-backed content',
     } as Response);
 
-    state.artifact.path = '/Users/normy/Downloads/apply_patch_test.txt';
-    state.artifact.status = 'available';
-    state.artifact.updatedAt = new Date(Date.now() + 1_000).toISOString();
+    const artifact = state.artifact;
+    if (!artifact) throw new Error('the host shows an artifact');
+    artifact.path = '/Users/normy/Downloads/apply_patch_test.txt';
+    artifact.status = 'available';
+    artifact.updatedAt = new Date(Date.now() + 1_000).toISOString();
 
     await flushPromises();
 

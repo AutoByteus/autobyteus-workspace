@@ -373,8 +373,8 @@ const projectionResult = (variables: any) => ({ data: { getAgentOrgMemberRunProj
   conversation: [], activities: [], hasEarlierActiveTraceEvents: false,
 } } })
 const inspectionResult = (active = false) => {
-  const view = taskBearingView(); view.is_active = active
-  if (!active) view.agent_statuses = []
+  const base = taskBearingView()
+  const view = { ...base, is_active: active, agent_statuses: active ? base.agent_statuses : [] }
   return { data: { getAgentOrgRunInspection: {
     root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: view } } }
 }

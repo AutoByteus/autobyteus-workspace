@@ -9,7 +9,7 @@ describe('ErrorSegment runtime message', () => {
     'Rate limit reached.\nTry again later. token=<redacted>',
     'Antigravity could not complete this turn.',
   ])('renders the supplied cause under the existing heading: %s', (message) => {
-    const wrapper = mount(ErrorSegment, { props: { segment: { type: 'error', message } } });
+    const wrapper = mount(ErrorSegment, { props: { segment: { type: 'error', code: 'RUNTIME_ERROR', message } } });
     expect(wrapper.get('p.mt-1').text()).toBe(message);
     expect(wrapper.find('details').exists()).toBe(false);
   });
@@ -17,7 +17,7 @@ describe('ErrorSegment runtime message', () => {
   it('renders markup and details as inert text, with the existing detail disclosure', async () => {
     const message = '<script>alert("runtime")</script> Workspace unavailable.';
     const details = '<img src=x onerror=alert("details")> Provider note.';
-    const wrapper = mount(ErrorSegment, { props: { segment: { type: 'error', message, details } } });
+    const wrapper = mount(ErrorSegment, { props: { segment: { type: 'error', code: 'RUNTIME_ERROR', message, details } } });
     expect(wrapper.get('p.mt-1').text()).toBe(message);
     expect(wrapper.get('code').text()).toBe(details);
     expect(wrapper.find('script').exists()).toBe(false);

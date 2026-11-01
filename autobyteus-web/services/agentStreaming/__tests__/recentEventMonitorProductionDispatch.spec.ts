@@ -107,7 +107,7 @@ const assertBoundedUniqueState = (context: AgentContext) => {
 
 const mutableText = (index: number): AIResponseTextSegment => {
   const segment: AIResponseTextSegment = { type: 'text', content: `mutable-${index}` };
-  setStreamSegmentIdentity(segment, `mutable-${index}`, 'text');
+  setStreamSegmentIdentity(segment, 'turn-1', `mutable-${index}`, 'text');
   return segment;
 };
 
@@ -128,7 +128,7 @@ const standaloneDispatcher = () => {
 
 const teamMemberDispatcher = (message: ServerMessage, context: AgentContext) =>
   dispatchAgentStreamMessage(message, {
-    kind: 'team_member', context, teamRunId: 'team-1', memberRouteKey: 'worker', memberRunId: context.state.runId,
+    kind: 'team_member', context, teamRunId: 'team-1', agentRunId: context.state.runId, memberAddress: '/worker',
   });
 
 describe('recent Event Monitor production dispatch coverage', () => {
