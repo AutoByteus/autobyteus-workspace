@@ -156,7 +156,7 @@ for (const previouslyMounted of [false, true]) {
       expect(write).not.toHaveBeenCalled()
       await wrapper.getComponent(FileExplorer).find('input').setValue('pending search')
     } else expect(wrapper.findComponent(FileExplorer).exists()).toBe(false)
-    const saved = await orgStore.saveRunConfig('org-run', { modelPatches: [],
+    const saved = await orgStore.saveRunConfig('org-run', { selectionPatches: [],
       teamWorkspacePatches: [{ teamAddress: '/team', workspaceRootPath: '/workspace/B' }] })
     await flush()
     expect(saved.success).toBe(true)

@@ -41,7 +41,7 @@ import {
 } from '~/services/runConfigEditing/existingAgentOrgModelConfigDraft'
 import {
   updateStoppedAgentSelection,
-  updateStoppedTeamModelConfigs,
+  updateStoppedTeamSelections,
 } from '~/services/runConfigEditing/existingRunModelConfigMutationClient'
 import type { AgentOrgRunConfigRead } from '~/services/runConfigEditing/agentOrgRunConfigClient'
 import { existingRunConfigResultActions } from '~/stores/existingRunConfigResultActions'
@@ -111,11 +111,9 @@ export const useExistingRunConfigStore = defineStore('existingRunConfig', {
           || state.reconciliationRequired || draft.isActive || !draft.editability.editable) return false
       if (draft.kind === 'agent') {
         const original = metadataSelection(draft.metadata)
-        // Another agent runtime is a fresh selection of it: the server validates it; the replacement list is the old runtime's.
-        const runtimeChanged = draft.draftSelection.runtimeKind !== original.runtimeKind
         return !existingAgentRunSelectionsEqual(original, draft.draftSelection)
           && state.schemaStateByAddress['/']?.status === 'ready'
-          && (runtimeChanged || selectionAllowed(original, draft.draftSelection, state.modelOptionsByAddress['/']))
+          && selectionAllowed(original, draft.draftSelection, state.modelOptionsByAddress['/'])
       }
       const patches = draft.kind === 'team'
         ? planExistingTeamModelConfigPatches(draft.planner)
@@ -368,7 +366,7 @@ export const useExistingRunConfigStore = defineStore('existingRunConfig', {
       this.fieldErrors = []
       this.deriveSchemaStates()
     },
-    updateTeamScopeModelConfig(address: string, selection: ExistingRunModelSelection, directlyEdited = true): void {
+    updateTeamScopeModelConfig(address: string, selection: ExistingAgentRunSelection, directlyEdited = true): void {
       if (this.draft?.kind !== 'team' || !this.draft.editability.editable || this.draft.isActive
           || this.saving || this.reconciling || this.reconciliationRequired) return
       this.draft = {
@@ -379,7 +377,7 @@ export const useExistingRunConfigStore = defineStore('existingRunConfig', {
       this.fieldErrors = []
       this.deriveSchemaStates()
     },
-    updateAgentOrgScopeModelConfig(address: string, selection: ExistingRunModelSelection, directlyEdited = true): void {
+    updateAgentOrgScopeModelConfig(address: string, selection: ExistingAgentRunSelection, directlyEdited = true): void {
       if (this.draft?.kind !== 'agent_org' || !this.draft.editability.editable || this.draft.isActive
           || this.saving || this.reconciling || this.reconciliationRequired) return
       this.draft = { ...this.draft,
@@ -456,9 +454,9 @@ export const useExistingRunConfigStore = defineStore('existingRunConfig', {
     },
     async saveTeam(draft: Extract<ExistingRunConfigDraft, { kind: 'team' }>): Promise<boolean> {
       const request = this.canonicalLoadRequestId, binding = useWindowNodeContextStore().bindingRevision
-      const result = await updateStoppedTeamModelConfigs({
+      const result = await updateStoppedTeamSelections({
         teamRunId: draft.teamRunId,
-        patches: planExistingTeamModelConfigPatches(draft.planner),
+        selectionPatches: planExistingTeamModelConfigPatches(draft.planner),
       })
       if (request !== this.canonicalLoadRequestId || binding !== useWindowNodeContextStore().bindingRevision) return false
       if (this.draft?.kind !== 'team' || this.draft.teamRunId !== draft.teamRunId) return false
@@ -485,7 +483,7 @@ export const useExistingRunConfigStore = defineStore('existingRunConfig', {
     async saveAgentOrg(draft: Extract<ExistingRunConfigDraft, { kind: 'agent_org' }>): Promise<boolean> {
       const requestId = this.canonicalLoadRequestId, binding = useWindowNodeContextStore().bindingRevision
       const result = await useAgentOrgContextsStore().saveRunConfig(draft.orgRunId, {
-        modelPatches: planExistingAgentOrgModelConfigPatches(draft.planner),
+        selectionPatches: planExistingAgentOrgModelConfigPatches(draft.planner),
         teamWorkspacePatches: planExistingAgentOrgWorkspacePatches(draft.executionTree, draft.workspaceDraft),
       })
       if (requestId !== this.canonicalLoadRequestId || binding !== useWindowNodeContextStore().bindingRevision) return false

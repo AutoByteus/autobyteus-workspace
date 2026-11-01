@@ -44,7 +44,7 @@ describe('guarded Org configuration publication', () => {
     const state = member.state, taskConfig = task.config, selection = org.selection
     io.metadata.mockRejectedValueOnce(new Error('metadata unavailable'))
     io.save.mockResolvedValue(result(tree)); io.metadata.mockClear()
-    await store.saveRunConfig('org-run', { modelPatches: [], teamWorkspacePatches: [{ teamAddress: '/team', workspaceRootPath: '/B' }] })
+    await store.saveRunConfig('org-run', { selectionPatches: [], teamWorkspacePatches: [{ teamAddress: '/team', workspaceRootPath: '/B' }] })
     expect(io.metadata).toHaveBeenCalledExactlyOnceWith('/B')
     expect(member.config.workspaceId).toBeNull(); expect(member.state).toBe(state)
     expect(task.config).toBe(taskConfig); expect(org.selection).toBe(selection)
@@ -59,7 +59,7 @@ describe('guarded Org configuration publication', () => {
     let resolve!: (value: any) => void
     io.metadata.mockReturnValueOnce(new Promise(complete => { resolve = complete }))
     io.save.mockResolvedValue(result(tree))
-    const pending = store.saveRunConfig('org-run', { modelPatches: [], teamWorkspacePatches: [{ teamAddress: '/team', workspaceRootPath: '/B' }] })
+    const pending = store.saveRunConfig('org-run', { selectionPatches: [], teamWorkspacePatches: [{ teamAddress: '/team', workspaceRootPath: '/B' }] })
     await Promise.resolve(); await Promise.resolve()
     if (invalidation === 'view') org.view = { ...org.view }
     if (invalidation === 'window') useWindowNodeContextStore().bindingRevision += 1

@@ -51,7 +51,7 @@
             @change="emit('change-root', $event)"
           />
         </div>
-        <!-- A stopped Agent run can switch its agent runtime; the switch is made by its next message. -->
+        <!-- A stopped run's Agent, member or delegated copy can switch its agent runtime; the switch is made by its next message. -->
         <p
           v-if="runtimeChangePending"
           class="mt-2 flex items-center gap-1.5 text-xs text-gray-500"
@@ -67,7 +67,6 @@
           :title="$t('runSettings.members.title')"
           :nodes="members"
           :locked="memberLocked"
-          runtime-locked
           :locked-models-for="lockedModelsFor"
           read-only
           @change="(key, change) => emit('change-member', key, change)"
@@ -82,7 +81,6 @@
           :description="$t('runSettings.delegated.description')"
           :nodes="delegated"
           :locked="DELEGATED_LOCKED"
-          runtime-locked
           :locked-models-for="delegatedLockedModelsFor"
           read-only
           @change="(key, change) => emit('change-delegated', key, change)"
@@ -132,9 +130,9 @@ import RunSettingsCard from './RunSettingsCard.vue'
 import RunSubjectHeader from './RunSubjectHeader.vue'
 
 /**
- * UIS-003: a saved run's settings. Runtime, workspace and tool approval are fixed (a lock); model,
- * thinking and other model settings change only while the run is stopped; a placed team's
- * workspace changes when stopped. The container maps `existingRunConfigStore` into these props.
+ * UIS-003: a saved run's settings. Workspace and tool approval are fixed (a lock); the agent runtime,
+ * model, thinking and other model settings change only while the run is stopped (a Team or Org root's own
+ * runtime stays fixed); a placed team's workspace changes when stopped. The container maps `existingRunConfigStore` into these props.
  */
 const props = withDefaults(defineProps<{
   kind: 'agent' | 'team' | 'org'
@@ -160,7 +158,7 @@ const props = withDefaults(defineProps<{
   saved: boolean
   /** A failed save, surfaced as is. */
   saveError?: string | null
-  /** The draft chooses another agent runtime than the saved one (a stopped Agent run). */
+  /** The draft chooses another agent runtime than the saved one for the Agent, a member or a delegated copy. */
   runtimeChangePending?: boolean
 }>(), { runtimeChangePending: false, rootLockedModels: null, rootModelUnavailable: false, members: () => [], lockedModelsFor: null, delegated: () => [],
   delegatedLockedModelsFor: null, delegatedNotice: null, saveError: null })

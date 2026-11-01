@@ -31,3 +31,22 @@ describe('ExistingRunSettings: the agent runtime of the root card', () => {
     expect(hint.text()).toBe('runSettings.existing.runtimeChangeHint')
   })
 })
+
+describe('ExistingRunSettings: members and copies (autobyteus-348)', () => {
+  const sections = (kind: 'team' | 'org') => mount(ExistingRunSettings, {
+    props: {
+      kind, name: 'Crew', isActive: false, canEdit: true, state: 'editable', stop: { label: 'Stop', pending: false, error: null },
+      root: { workspace: null, runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-5', llmConfig: null, autoExecuteTools: false },
+      members: [{ key: '/lead' }] as never, delegated: [{ key: '/writer@copy' }] as never,
+      dirty: false, canSave: false, saving: false, saved: false,
+    },
+    global: { stubs: { ...stubs, RunMembersSection: { props: { runtimeLocked: Boolean, testId: String }, template: '<div :data-test="testId ?? `members`" :data-runtime-locked="String(runtimeLocked)" />' } }, mocks: { $t: (key: string) => key } },
+  })
+
+  it.each(['team', 'org'] as const)('leaves the agent runtime of a %s run\'s members and copies to each row\'s locks', (kind) => {
+    const wrapper = sections(kind)
+    expect(wrapper.get('[data-test="members"]').attributes('data-runtime-locked')).toBe('false')
+    expect(wrapper.get('[data-test="run-delegated-launches"]').attributes('data-runtime-locked')).toBe('false')
+    expect(wrapper.get('[data-test="card-stub"]').attributes('data-runtime-locked')).toBe('true')
+  })
+})

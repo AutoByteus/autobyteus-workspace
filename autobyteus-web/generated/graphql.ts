@@ -284,13 +284,6 @@ export type AgentOrgRunMemorySummary = {
   workspaceRootPath?: Maybe<Scalars['String']['output']>;
 };
 
-export type AgentOrgRunModelConfigPatchInput = {
-  llmConfig?: InputMaybe<Scalars['JSON']['input']>;
-  llmModelIdentifier: Scalars['String']['input'];
-  scopeAddress: Scalars['String']['input'];
-  scopeKind: Scalars['String']['input'];
-};
-
 export type AgentOrgRunModelOptionObject = {
   __typename?: 'AgentOrgRunModelOptionObject';
   currentModel?: Maybe<RunModelOptionObject>;
@@ -306,6 +299,14 @@ export type AgentOrgRunMutationResult = {
   agentOrgRunId?: Maybe<Scalars['String']['output']>;
   message: Scalars['String']['output'];
   success: Scalars['Boolean']['output'];
+};
+
+export type AgentOrgRunSelectionPatchInput = {
+  llmConfig?: InputMaybe<Scalars['JSON']['input']>;
+  llmModelIdentifier: Scalars['String']['input'];
+  runtimeKind: Scalars['String']['input'];
+  scopeAddress: Scalars['String']['input'];
+  scopeKind: Scalars['String']['input'];
 };
 
 export type AgentOrgStoredRunMutationResult = {
@@ -1135,6 +1136,7 @@ export type DelegatedLaunchModelOptionsObject = {
 export type DelegatedLaunchSelectionValueInput = {
   llmConfig?: InputMaybe<Scalars['JSON']['input']>;
   llmModelIdentifier: Scalars['String']['input'];
+  runtimeKind: Scalars['String']['input'];
 };
 
 export type DeleteAgentDefinitionResult = {
@@ -2025,7 +2027,7 @@ export type Mutation = {
   updateSkill: Skill;
   updateStoppedAgentOrgRunConfig: AgentOrgRunConfigUpdateResult;
   updateStoppedAgentRunSelection: UpdateStoppedAgentRunSelectionResult;
-  updateStoppedTeamRunModelConfigs: UpdateStoppedTeamRunModelConfigsResult;
+  updateStoppedTeamRunSelections: UpdateStoppedTeamRunSelectionsResult;
   uploadSkillFile: Scalars['Boolean']['output'];
   useEmbeddingModel: Scalars['Boolean']['output'];
   useGeminiMode: GeminiConfigurationCommandResult;
@@ -2662,8 +2664,8 @@ export type MutationUpdateStoppedAgentRunSelectionArgs = {
 };
 
 
-export type MutationUpdateStoppedTeamRunModelConfigsArgs = {
-  input: UpdateStoppedTeamRunModelConfigsInput;
+export type MutationUpdateStoppedTeamRunSelectionsArgs = {
+  input: UpdateStoppedTeamRunSelectionsInput;
 };
 
 
@@ -3928,13 +3930,6 @@ export type TeamRunExecutionCheckpointPayload = {
   rootTeamRunId: Scalars['String']['output'];
 };
 
-export type TeamRunModelConfigPatchInput = {
-  llmConfig?: InputMaybe<Scalars['JSON']['input']>;
-  llmModelIdentifier: Scalars['String']['input'];
-  scopeAddress: Scalars['String']['input'];
-  scopeKind: Scalars['String']['input'];
-};
-
 export type TeamRunResumeConfigPayload = {
   __typename?: 'TeamRunResumeConfigPayload';
   baseChangeSequence: Scalars['Int']['output'];
@@ -3946,6 +3941,14 @@ export type TeamRunResumeConfigPayload = {
   modelConfigEditability: RunModelConfigEditabilityObject;
   remoteTaskExecutions: Scalars['JSON']['output'];
   teamRunId: Scalars['String']['output'];
+};
+
+export type TeamRunSelectionPatchInput = {
+  llmConfig?: InputMaybe<Scalars['JSON']['input']>;
+  llmModelIdentifier: Scalars['String']['input'];
+  runtimeKind: Scalars['String']['input'];
+  scopeAddress: Scalars['String']['input'];
+  scopeKind: Scalars['String']['input'];
 };
 
 export type TeamScopeLaunchConfigInput = {
@@ -4443,8 +4446,8 @@ export type UpdateSkillInput = {
 };
 
 export type UpdateStoppedAgentOrgRunConfigInput = {
-  modelPatches: Array<AgentOrgRunModelConfigPatchInput>;
   orgRunId: Scalars['String']['input'];
+  selectionPatches: Array<AgentOrgRunSelectionPatchInput>;
   teamWorkspacePatches: Array<AgentOrgTeamWorkspacePatchInput>;
 };
 
@@ -4466,13 +4469,13 @@ export type UpdateStoppedAgentRunSelectionResult = {
   success: Scalars['Boolean']['output'];
 };
 
-export type UpdateStoppedTeamRunModelConfigsInput = {
-  patches: Array<TeamRunModelConfigPatchInput>;
+export type UpdateStoppedTeamRunSelectionsInput = {
+  selectionPatches: Array<TeamRunSelectionPatchInput>;
   teamRunId: Scalars['String']['input'];
 };
 
-export type UpdateStoppedTeamRunModelConfigsResult = {
-  __typename?: 'UpdateStoppedTeamRunModelConfigsResult';
+export type UpdateStoppedTeamRunSelectionsResult = {
+  __typename?: 'UpdateStoppedTeamRunSelectionsResult';
   canonicalExecutionTree?: Maybe<Scalars['JSON']['output']>;
   editability: RunModelConfigEditabilityObject;
   fieldErrors: Array<RunModelConfigFieldErrorObject>;
@@ -4870,12 +4873,12 @@ export type RestoreAgentTeamRunMutationVariables = Exact<{
 
 export type RestoreAgentTeamRunMutation = { __typename?: 'Mutation', restoreAgentTeamRun: { __typename: 'RestoreAgentTeamRunResult', success: boolean, message: string, teamRunId?: string | null } };
 
-export type UpdateStoppedTeamRunModelConfigsMutationVariables = Exact<{
-  input: UpdateStoppedTeamRunModelConfigsInput;
+export type UpdateStoppedTeamRunSelectionsMutationVariables = Exact<{
+  input: UpdateStoppedTeamRunSelectionsInput;
 }>;
 
 
-export type UpdateStoppedTeamRunModelConfigsMutation = { __typename?: 'Mutation', updateStoppedTeamRunModelConfigs: { __typename?: 'UpdateStoppedTeamRunModelConfigsResult', success: boolean, outcome: string, message: string, isActive: boolean, canonicalExecutionTree?: any | null, editability: { __typename?: 'RunModelConfigEditabilityObject', editable: boolean, reason?: string | null }, fieldErrors: Array<{ __typename?: 'RunModelConfigFieldErrorObject', path: string, message: string }> } };
+export type UpdateStoppedTeamRunSelectionsMutation = { __typename?: 'Mutation', updateStoppedTeamRunSelections: { __typename?: 'UpdateStoppedTeamRunSelectionsResult', success: boolean, outcome: string, message: string, isActive: boolean, canonicalExecutionTree?: any | null, editability: { __typename?: 'RunModelConfigEditabilityObject', editable: boolean, reason?: string | null }, fieldErrors: Array<{ __typename?: 'RunModelConfigFieldErrorObject', path: string, message: string }> } };
 
 export type RunAppDataMigrationMutationVariables = Exact<{
   migrationId: Scalars['String']['input'];
@@ -8381,9 +8384,9 @@ export function useRestoreAgentTeamRunMutation(options: VueApolloComposable.UseM
   return VueApolloComposable.useMutation<RestoreAgentTeamRunMutation, RestoreAgentTeamRunMutationVariables>(RestoreAgentTeamRunDocument, options);
 }
 export type RestoreAgentTeamRunMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RestoreAgentTeamRunMutation, RestoreAgentTeamRunMutationVariables>;
-export const UpdateStoppedTeamRunModelConfigsDocument = gql`
-    mutation UpdateStoppedTeamRunModelConfigs($input: UpdateStoppedTeamRunModelConfigsInput!) {
-  updateStoppedTeamRunModelConfigs(input: $input) {
+export const UpdateStoppedTeamRunSelectionsDocument = gql`
+    mutation UpdateStoppedTeamRunSelections($input: UpdateStoppedTeamRunSelectionsInput!) {
+  updateStoppedTeamRunSelections(input: $input) {
     success
     outcome
     message
@@ -8402,26 +8405,26 @@ export const UpdateStoppedTeamRunModelConfigsDocument = gql`
     `;
 
 /**
- * __useUpdateStoppedTeamRunModelConfigsMutation__
+ * __useUpdateStoppedTeamRunSelectionsMutation__
  *
- * To run a mutation, you first call `useUpdateStoppedTeamRunModelConfigsMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useUpdateStoppedTeamRunModelConfigsMutation` returns an object that includes:
+ * To run a mutation, you first call `useUpdateStoppedTeamRunSelectionsMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateStoppedTeamRunSelectionsMutation` returns an object that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
  *
  * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
  *
  * @example
- * const { mutate, loading, error, onDone } = useUpdateStoppedTeamRunModelConfigsMutation({
+ * const { mutate, loading, error, onDone } = useUpdateStoppedTeamRunSelectionsMutation({
  *   variables: {
  *     input: // value for 'input'
  *   },
  * });
  */
-export function useUpdateStoppedTeamRunModelConfigsMutation(options: VueApolloComposable.UseMutationOptions<UpdateStoppedTeamRunModelConfigsMutation, UpdateStoppedTeamRunModelConfigsMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<UpdateStoppedTeamRunModelConfigsMutation, UpdateStoppedTeamRunModelConfigsMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<UpdateStoppedTeamRunModelConfigsMutation, UpdateStoppedTeamRunModelConfigsMutationVariables>(UpdateStoppedTeamRunModelConfigsDocument, options);
+export function useUpdateStoppedTeamRunSelectionsMutation(options: VueApolloComposable.UseMutationOptions<UpdateStoppedTeamRunSelectionsMutation, UpdateStoppedTeamRunSelectionsMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<UpdateStoppedTeamRunSelectionsMutation, UpdateStoppedTeamRunSelectionsMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<UpdateStoppedTeamRunSelectionsMutation, UpdateStoppedTeamRunSelectionsMutationVariables>(UpdateStoppedTeamRunSelectionsDocument, options);
 }
-export type UpdateStoppedTeamRunModelConfigsMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<UpdateStoppedTeamRunModelConfigsMutation, UpdateStoppedTeamRunModelConfigsMutationVariables>;
+export type UpdateStoppedTeamRunSelectionsMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<UpdateStoppedTeamRunSelectionsMutation, UpdateStoppedTeamRunSelectionsMutationVariables>;
 export const RunAppDataMigrationDocument = gql`
     mutation RunAppDataMigration($migrationId: String!) {
   runAppDataMigration(migrationId: $migrationId) {

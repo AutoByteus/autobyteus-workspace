@@ -41,7 +41,7 @@ import {
  * (a copy of a configured placement records it too, with the `configured` origin: "As configured in this
  * run"). A row with a choice shows no origin; others say where their launch came from, with recorded
  * fallbacks as notes (a Team-level one once, on the Team row).
- * Model and its settings are editable only while the copy is stopped; runtime, approval and
+ * Model, its settings and its agent runtime are editable only while the copy is stopped; approval and
  * workspace never are. The copy itself carries the stop target. Closed copies (Task
  * DONE or CANCELLED) are left out, with everything under one. Keys are `<address>@<run ID>`.
  */
@@ -59,7 +59,8 @@ type RecordedSource = Readonly<{
 }>
 /** Where a copy agent's decision is recorded on this node: the delegating run, the copy and the agent (D9). */
 type DecisionLocator = NonNullable<RunMemberRouting['decision']>
-type Selection = Readonly<{ llmModelIdentifier: string; llmConfig: Record<string, unknown> | null }>
+/** A copy's choice: its model and settings and, when it names one, its agent runtime (a recorded choice leaves out the started one). */
+type Selection = Readonly<{ runtimeKind?: string; llmModelIdentifier: string; llmConfig: Record<string, unknown> | null }>
 type StopReference = NonNullable<RunMemberDelegatedFacts['stop']>
 type TargetKey = RunMemberDelegatedFacts['target']
 
@@ -87,7 +88,8 @@ const valuesOf = (launch: Launch): RunSettingsValues => ({
   llmConfig: launch?.llmConfig ? { ...launch.llmConfig } : null,
   autoExecuteTools: launch?.autoExecuteTools ?? false,
 })
-const selectionOf = (launch: Launch): Selection => ({
+const selectionOf = (launch: Launch): Selection & Readonly<{ runtimeKind: string }> => ({
+  runtimeKind: launch?.runtimeKind ?? '',
   llmModelIdentifier: launch?.llmModelIdentifier ?? '',
   llmConfig: launch?.llmConfig ? { ...launch.llmConfig } : null,
 })
@@ -97,7 +99,8 @@ type LaunchRule = (input: Readonly<{ started: Launch; followsTeam: boolean; team
 const snakeRule: LaunchRule = ({ started, followsTeam, team, agent }) => {
   if (!started) return { launch: null, chosen: false }
   const selection = (choice: Selection | null) => choice
-    ? { llm_model_identifier: choice.llmModelIdentifier, llm_config: choice.llmConfig as UserLaunchSelectionDto['llm_config'], selected_at: '' }
+    ? { ...(choice.runtimeKind ? { runtime_kind: choice.runtimeKind as AgentLaunchConfigurationDto['runtime_kind'] } : {}),
+      llm_model_identifier: choice.llmModelIdentifier, llm_config: choice.llmConfig as UserLaunchSelectionDto['llm_config'], selected_at: '' }
     : null
   const { launch, selected } = teamCopyAgentLaunch({
     started: { runtime_kind: started.runtimeKind as AgentLaunchConfigurationDto['runtime_kind'], llm_model_identifier: started.llmModelIdentifier,
@@ -109,7 +112,8 @@ const snakeRule: LaunchRule = ({ started, followsTeam, team, agent }) => {
 const camelRule: LaunchRule = ({ started, followsTeam, team, agent }) => {
   if (!started) return { launch: null, chosen: false }
   const selection = (choice: Selection | null) => choice
-    ? { llmModelIdentifier: choice.llmModelIdentifier, llmConfig: choice.llmConfig as CamelSelectionDto['llmConfig'], selectedAt: '' }
+    ? { ...(choice.runtimeKind ? { runtimeKind: choice.runtimeKind as CamelLaunch['runtimeKind'] } : {}),
+      llmModelIdentifier: choice.llmModelIdentifier, llmConfig: choice.llmConfig as CamelSelectionDto['llmConfig'], selectedAt: '' }
     : null
   const { launch, selected } = collaborationCopyAgentLaunch({
     started: { runtimeKind: started.runtimeKind as CamelLaunch['runtimeKind'], llmModelIdentifier: started.llmModelIdentifier,
@@ -211,7 +215,8 @@ const snakeSource = (source: LaunchConfigurationSourceDto | null | undefined): R
   ...(source.origin === 'model_router' ? { routing: { taskKind: source.task_kind, reason: source.choice_reason } } : {}),
 } : null
 const snakeChoice = (selection: UserLaunchSelectionDto | undefined): Selection | null => selection
-  ? { llmModelIdentifier: selection.llm_model_identifier, llmConfig: selection.llm_config ? { ...selection.llm_config } : null }
+  ? { ...(selection.runtime_kind ? { runtimeKind: selection.runtime_kind } : {}),
+    llmModelIdentifier: selection.llm_model_identifier, llmConfig: selection.llm_config ? { ...selection.llm_config } : null }
   : null
 
 export const teamDelegatedLaunchNodes = (
@@ -275,7 +280,8 @@ const camelSource = (source: CollaborationLaunchConfigurationSourceDto | null | 
   ...(source.origin === 'model_router' ? { routing: { taskKind: source.taskKind, reason: source.choiceReason } } : {}),
 } : null
 const camelChoice = (selection: CamelSelectionDto | undefined): Selection | null => selection
-  ? { llmModelIdentifier: selection.llmModelIdentifier, llmConfig: selection.llmConfig ? { ...selection.llmConfig } : null }
+  ? { ...(selection.runtimeKind ? { runtimeKind: selection.runtimeKind } : {}),
+    llmModelIdentifier: selection.llmModelIdentifier, llmConfig: selection.llmConfig ? { ...selection.llmConfig } : null }
   : null
 
 export const collaborationDelegatedLaunchNodes = (input: Readonly<{

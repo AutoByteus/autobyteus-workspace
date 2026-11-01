@@ -47,7 +47,7 @@ vi.mock('~/services/runConfigEditing/existingRunModelOptionsClient', () => ({ lo
 
 vi.mock('~/services/runConfigEditing/existingRunModelConfigMutationClient', () => ({
   updateStoppedAgentSelection: mocks.updateAgent,
-  updateStoppedTeamModelConfigs: mocks.updateTeam,
+  updateStoppedTeamSelections: mocks.updateTeam,
 }))
 vi.mock('~/stores/runHistoryStore', () => ({
   useRunHistoryStore: () => ({
@@ -194,6 +194,7 @@ describe('existingRunConfigStore', () => {
       setSchemaState(store, address, { status: 'ready', message: null })
     }
     store.updateAgentOrgScopeModelConfig('/', {
+      runtimeKind: agentOrgDraft(store).planner.scopesByAddress['/']!.originalSelection.runtimeKind,
       llmModelIdentifier: agentOrgDraft(store).planner.scopesByAddress['/']!.originalSelection.llmModelIdentifier,
       llmConfig: { budget: 0, enabled: false, optional: null },
     })
@@ -212,7 +213,7 @@ describe('existingRunConfigStore', () => {
     await expect(store.save()).resolves.toBe(true)
     expect(mocks.saveOrg).toHaveBeenCalledTimes(1)
     expect(mocks.saveOrg.mock.calls[0]![0]).toBe('org-run')
-    expect(mocks.saveOrg.mock.calls[0]![1].modelPatches).toEqual(expect.arrayContaining([
+    expect(mocks.saveOrg.mock.calls[0]![1].selectionPatches).toEqual(expect.arrayContaining([
       expect.objectContaining({ scopeKind: 'CONFIGURED_ORG', scopeAddress: '/', llmConfig: { budget: 0, enabled: false, optional: null } }),
     ]))
     expect(store.dirty).toBe(false)
@@ -228,8 +229,8 @@ describe('existingRunConfigStore', () => {
       setSchemaState(store, address, { status: 'ready', message: null })
     }
     const model = store.draft.planner.scopesByAddress['/']!.originalSelection.llmModelIdentifier
-    const invalidRoot = { llmModelIdentifier: model, llmConfig: { effort: 'invalid-root' } }
-    const invalidMember = { llmModelIdentifier: model, llmConfig: { effort: 'invalid-member' } }
+    const invalidRoot = { runtimeKind: store.draft.planner.scopesByAddress['/']!.originalSelection.runtimeKind, llmModelIdentifier: model, llmConfig: { effort: 'invalid-root' } }
+    const invalidMember = { runtimeKind: store.draft.planner.scopesByAddress['/']!.originalSelection.runtimeKind, llmModelIdentifier: model, llmConfig: { effort: 'invalid-member' } }
     store.updateAgentOrgScopeModelConfig('/', invalidRoot)
     store.updateAgentOrgScopeModelConfig('/team/worker', invalidMember)
     const submittedPatches = structuredClone(store.patches)
@@ -256,8 +257,8 @@ describe('existingRunConfigStore', () => {
       { path: 'patches[/team/worker].llmConfig.effort', message: 'Invalid member effort.' },
     ])
 
-    const correctedRoot = { llmModelIdentifier: model, llmConfig: { effort: 'high' } }
-    const correctedMember = { llmModelIdentifier: model, llmConfig: { effort: 'medium' } }
+    const correctedRoot = { runtimeKind: store.draft.planner.scopesByAddress['/']!.originalSelection.runtimeKind, llmModelIdentifier: model, llmConfig: { effort: 'high' } }
+    const correctedMember = { runtimeKind: store.draft.planner.scopesByAddress['/']!.originalSelection.runtimeKind, llmModelIdentifier: model, llmConfig: { effort: 'medium' } }
     store.updateAgentOrgScopeModelConfig('/', correctedRoot)
     store.updateAgentOrgScopeModelConfig('/team/worker', correctedMember)
     expect(store.fieldErrors).toEqual([])
@@ -279,7 +280,7 @@ describe('existingRunConfigStore', () => {
 
     await expect(store.save()).resolves.toBe(true)
     expect(mocks.saveOrg).toHaveBeenCalledTimes(2)
-    expect(mocks.saveOrg.mock.calls[1]![1].modelPatches).toEqual(expect.arrayContaining([
+    expect(mocks.saveOrg.mock.calls[1]![1].selectionPatches).toEqual(expect.arrayContaining([
       expect.objectContaining({ scopeAddress: '/', llmConfig: correctedRoot.llmConfig }),
       expect.objectContaining({ scopeAddress: '/team/worker', llmConfig: correctedMember.llmConfig }),
     ]))
@@ -299,8 +300,8 @@ describe('existingRunConfigStore', () => {
         setSchemaState(store, address, { status: 'ready', message: null })
       }
       const model = store.draft.planner.scopesByAddress['/']!.originalSelection.llmModelIdentifier
-      const attemptedRoot = { llmModelIdentifier: model, llmConfig: { effort: `${outcome}-root` } }
-      const attemptedMember = { llmModelIdentifier: model, llmConfig: { effort: `${outcome}-member` } }
+      const attemptedRoot = { runtimeKind: store.draft.planner.scopesByAddress['/']!.originalSelection.runtimeKind, llmModelIdentifier: model, llmConfig: { effort: `${outcome}-root` } }
+      const attemptedMember = { runtimeKind: store.draft.planner.scopesByAddress['/']!.originalSelection.runtimeKind, llmModelIdentifier: model, llmConfig: { effort: `${outcome}-member` } }
       store.updateAgentOrgScopeModelConfig('/', attemptedRoot)
       store.updateAgentOrgScopeModelConfig('/team/worker', attemptedMember)
       mocks.saveOrg.mockResolvedValueOnce({ success: false, outcome, message: 'Determinate failure.',
@@ -325,7 +326,7 @@ describe('existingRunConfigStore', () => {
       setSchemaState(store, address, { status: 'ready', message: null })
     }
     const model = store.draft.planner.scopesByAddress['/']!.originalSelection.llmModelIdentifier
-    store.updateAgentOrgScopeModelConfig('/', { llmModelIdentifier: model, llmConfig: { effort: 'attempted' } })
+    store.updateAgentOrgScopeModelConfig('/', { runtimeKind: 'codex_app_server', llmModelIdentifier: model, llmConfig: { effort: 'attempted' } })
     mocks.saveOrg.mockResolvedValueOnce({
       success: false,
       outcome: 'PERSISTENCE_INDETERMINATE',
@@ -425,7 +426,7 @@ describe('existingRunConfigStore', () => {
     } }
     setSchemaState(store, '/', { status: 'ready', message: null })
     setSchemaState(store, '/member', { status: 'ready', message: null })
-    store.updateTeamScopeModelConfig('/', { llmModelIdentifier: 'larger', llmConfig: { effort: 'high' } })
+    store.updateTeamScopeModelConfig('/', { runtimeKind: 'codex_app_server', llmModelIdentifier: 'larger', llmConfig: { effort: 'high' } })
     expect(store.canSave).toBe(true)
     mocks.updateTeam.mockResolvedValue({ success: false, outcome: 'PERSISTENCE_INDETERMINATE',
       message: 'Update outcome is being verified.', isActive: false, editability: editability(),
@@ -500,7 +501,7 @@ describe('existingRunConfigStore', () => {
       currentModelIdentifier: memberModel, currentModel: null, replacements: [choice('larger')], unavailableReason: 'Retired',
     } } }
     store.deriveSchemaStates()
-    store.updateTeamScopeModelConfig('/', { llmModelIdentifier: 'root-model', llmConfig: { effort: 'high' } })
+    store.updateTeamScopeModelConfig('/', { runtimeKind: 'codex_app_server', llmModelIdentifier: 'root-model', llmConfig: { effort: 'high' } })
 
     expect(store.patches.map((patch) => patch.scopeAddress)).toEqual(['/'])
     expect(store.schemaStateByAddress['/member']).toEqual({ status: 'invalid', message: 'Retired' })
@@ -511,6 +512,29 @@ describe('existingRunConfigStore', () => {
     } } }
     store.deriveSchemaStates()
     expect(store.canSave).toBe(true)
+  })
+
+  it('saves a Team member under another agent runtime without waiting for the old runtime\'s replacement list (autobyteus-348)', async () => {
+    const store = useExistingRunConfigStore()
+    store.syncTeamCanonical(teamPayload() as never)
+    setSchemaState(store, '/', { status: 'ready', message: null })
+    setSchemaState(store, '/member', { status: 'ready', message: null })
+    // The old runtime offers no model for '/member' (empty replacements): another runtime's model is still allowed.
+    store.modelOptionsByAddress = { ...store.modelOptionsByAddress, '/member': { status: 'ready', options: {
+      currentModelIdentifier: 'different-model', currentModel: choice('different-model'), replacements: [], unavailableReason: null,
+    } } }
+    store.updateTeamScopeModelConfig('/member', { runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'claude-sonnet', llmConfig: null })
+
+    expect(store.patches).toEqual([{ scopeKind: 'CONFIGURED_AGENT', scopeAddress: '/member', runtimeKind: 'claude_agent_sdk',
+      llmModelIdentifier: 'claude-sonnet', llmConfig: null }])
+    expect(store.schemaStateByAddress['/member']).toEqual({ status: 'ready', message: null })
+    expect(store.dirty).toBe(true)
+    expect(store.canSave).toBe(true)
+
+    // Back on the saved runtime and model, nothing is left to save.
+    store.updateTeamScopeModelConfig('/member', (store.draft as any).planner.scopesByAddress['/member'].originalSelection)
+    expect(store.patches).toEqual([])
+    expect(store.dirty).toBe(false)
   })
 
   it('keeps an Agent RUN_ACTIVE draft locked without refresh, rebase, or revision input', async () => {
@@ -565,7 +589,7 @@ describe('existingRunConfigStore', () => {
     store.syncTeamCanonical(canonical as never)
     setSchemaState(store, '/', { status: 'ready', message: null })
     setSchemaState(store, '/member', { status: 'ready', message: null })
-    store.updateTeamScopeModelConfig('/', { llmModelIdentifier: 'root-model', llmConfig: { effort: 'high' } })
+    store.updateTeamScopeModelConfig('/', { runtimeKind: 'codex_app_server', llmModelIdentifier: 'root-model', llmConfig: { effort: 'high' } })
     mocks.updateTeam.mockResolvedValue({
       success: false,
       outcome: 'RUN_ACTIVE',
@@ -579,9 +603,10 @@ describe('existingRunConfigStore', () => {
     await expect(store.save()).resolves.toBe(false)
     expect(mocks.updateTeam).toHaveBeenCalledWith({
       teamRunId: 'team-1',
-      patches: [{
+      selectionPatches: [{
         scopeKind: 'CONFIGURED_TEAM',
         scopeAddress: '/',
+        runtimeKind: 'codex_app_server',
         llmModelIdentifier: 'root-model',
         llmConfig: { effort: 'high' },
       }],
@@ -590,7 +615,8 @@ describe('existingRunConfigStore', () => {
     expect(store.patches).toEqual([{
       scopeKind: 'CONFIGURED_TEAM',
       scopeAddress: '/',
-        llmModelIdentifier: 'root-model',
+      runtimeKind: 'codex_app_server',
+      llmModelIdentifier: 'root-model',
       llmConfig: { effort: 'high' },
     }])
     expect(store.draft).toMatchObject({ isActive: true, editability: { editable: false } })
@@ -637,7 +663,7 @@ describe('Cancel and reload after a lifecycle change (REQ-014/015)', () => {
     const store = useExistingRunConfigStore()
     store.syncTeamCanonical(teamPayload() as never)
     const planner = (store.draft as any).planner
-    store.updateTeamScopeModelConfig('/', { llmModelIdentifier: 'root-model', llmConfig: { effort: 'high' } })
+    store.updateTeamScopeModelConfig('/', { runtimeKind: 'codex_app_server', llmModelIdentifier: 'root-model', llmConfig: { effort: 'high' } })
     expect(store.dirty).toBe(true)
 
     store.discardChanges()
@@ -685,13 +711,13 @@ it('saves workspace-only and mixed Org intentions independently; invalid destina
   mocks.saveOrg.mockResolvedValue({ success: true, outcome: 'UPDATED', message: 'Saved', isActive: false,
     editability: editability(), canonicalExecutionTree: canonical, fieldErrors: [] })
   await expect(store.save()).resolves.toBe(true)
-  expect(mocks.saveOrg).toHaveBeenLastCalledWith('org-run', { modelPatches: [], teamWorkspacePatches: [{ teamAddress: '/team', workspaceRootPath: '/B' }] })
+  expect(mocks.saveOrg).toHaveBeenLastCalledWith('org-run', { selectionPatches: [], teamWorkspacePatches: [{ teamAddress: '/team', workspaceRootPath: '/B' }] })
   expect(store.dirty).toBe(false)
   store.updateAgentOrgWorkspaceSelection('/team', { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '/C' })
   if (store.draft?.kind !== 'agent_org') throw new Error('fixture')
   store.updateAgentOrgScopeModelConfig('/team/lead', { ...store.draft.planner.scopesByAddress['/team/lead']!.draftSelection, llmConfig: { effort: 'high' } })
   ready(); await store.save()
-  expect(mocks.saveOrg.mock.lastCall?.[1]).toMatchObject({ modelPatches: [expect.objectContaining({ scopeAddress: '/team/lead' })],
+  expect(mocks.saveOrg.mock.lastCall?.[1]).toMatchObject({ selectionPatches: [expect.objectContaining({ scopeAddress: '/team/lead' })],
     teamWorkspacePatches: [{ teamAddress: '/team', workspaceRootPath: '/C' }] })
   store.clear()
 })

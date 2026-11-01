@@ -6,9 +6,8 @@ import type {
   ExistingRunModelConfigSchemaState,
   ExistingRunModelOptionsState,
   ExistingAgentRunSelection,
-  ExistingRunModelSelection,
 } from '~/types/agent/ExistingRunModelConfigDraft'
-import { selectionAllowed, cloneExistingRunModelConfig } from '~/services/runConfigEditing/existingAgentModelConfigDraft'
+import { runtimeChanged, selectionAllowed, cloneExistingRunModelConfig } from '~/services/runConfigEditing/existingAgentModelConfigDraft'
 import { createExistingTeamModelConfigDraft } from '~/services/runConfigEditing/existingTeamModelConfigDraft'
 import { createExistingAgentOrgModelConfigDraft } from '~/services/runConfigEditing/existingAgentOrgModelConfigDraft'
 import { createExistingAgentOrgWorkspaceDraft, existingAgentOrgWorkspacesDirty } from '~/services/runConfigEditing/existingAgentOrgWorkspaceDraft'
@@ -31,10 +30,12 @@ const metadataSelection = (metadata: ExistingAgentDraft['metadata']): ExistingAg
  * longer offered; another model must be one of the replacements the server allows.
  */
 const schemaStateFor = (
-  original: ExistingRunModelSelection,
-  selection: ExistingRunModelSelection,
+  original: ExistingAgentRunSelection,
+  selection: ExistingAgentRunSelection,
   options: ExistingRunModelOptionsState | undefined,
 ): ExistingRunModelConfigSchemaState => {
+  // Another agent runtime is a fresh selection: the server validates the pair when it is saved.
+  if (runtimeChanged(original, selection)) return { status: 'ready', message: null }
   const offeredOptions = options?.status === 'ready' ? options.options : null
   if (selection.llmModelIdentifier === original.llmModelIdentifier) {
     return offeredOptions && offeredOptions.currentModelIdentifier === original.llmModelIdentifier && !offeredOptions.currentModel
@@ -55,12 +56,7 @@ export const existingRunConfigEditActions = {
   deriveSchemaStates(this: any): void {
     const draft = this.draft
     if (!draft) return
-    type ScopeSelections = { originalSelection: ExistingRunModelSelection; draftSelection: ExistingRunModelSelection }
-    if (draft.kind === 'agent' && draft.draftSelection.runtimeKind !== metadataSelection(draft.metadata).runtimeKind) {
-      // Another agent runtime is a fresh selection: the server validates the pair when it is saved.
-      this.schemaStateByAddress = { '/': { status: 'ready', message: null } }
-      return
-    }
+    type ScopeSelections = { originalSelection: ExistingAgentRunSelection; draftSelection: ExistingAgentRunSelection }
     const scopes: Record<string, ScopeSelections> = draft.kind === 'agent'
       ? { '/': { originalSelection: metadataSelection(draft.metadata), draftSelection: draft.draftSelection } }
       : draft.planner.scopesByAddress
