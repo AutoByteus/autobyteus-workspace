@@ -192,8 +192,7 @@ async function deployServerPackageToStage() {
     await runCommand('pnpm', ['-C', serverSourceRoot, 'deploy', stageDir, '--legacy', '--prod'])
   }
 
-  // pnpm deploy links the bins of the deployed package a second time at a path mirrored under the project folder
-  // (autobyteus-server-ts/autobyteus-web/.server-packaging-stage/node_modules/.bin); nothing reads it.
+  // pnpm deploy mirrors the bins of the deployed package under the project folder (autobyteus-server-ts/autobyteus-web/…); nothing reads it.
   await rm(path.join(serverSourceRoot, 'autobyteus-web'), { recursive: true, force: true })
 
   // Deploy output contains pnpm link graphs; runtime dependencies are rebuilt in staging.
@@ -254,8 +253,7 @@ async function rewriteStagePackageManifest(localDependencySpecs) {
 
 async function installPortableRuntimeDependencies() {
   warn('\nInstalling portable runtime dependencies...')
-  // npm cannot install from the pnpm lockfile (it would need a flat tree that pnpm does not produce from it), so the
-  // install is bounded instead: nothing published after the commit being built enters the package.
+  // npm cannot install from the pnpm lockfile (it needs a flat tree), so the install is bounded: nothing published after the commit enters.
   info(`npm install is bounded to packages published before ${npmBefore}`)
   await runCommand('npm', ['install', '--no-audit', '--no-fund', `--before=${npmBefore}`], { cwd: stageDir, env: npmNetworkRetryEnv })
 

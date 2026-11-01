@@ -82,7 +82,7 @@ Server: `package.json`, `docker/Dockerfile.monorepo`, `docker/README.md`, `scrip
 - Dead code found elsewhere, added to `follow-ups.md`: none; two observations recorded as FU-003 (`.server-packaging-stage/` left behind) and FU-004 (startup verifier through a symlinked path)
 - Shared structures remain tight: `Yes` (no shared structure added)
 - Canonical shared design guidance reapplied: `Yes`
-- Changed source implementation files within size guardrails: `Yes` (`prepare-server.mjs` was about 560 lines and shrank; new files are small)
+- Changed source implementation files within size guardrails: `Yes` (`prepare-server.mjs` was already over 500 lines (585) and is not grown (584 now); recorded as FU-005; new files are small)
 
 ## Persisted Data Transition Check (When Applicable)
 
