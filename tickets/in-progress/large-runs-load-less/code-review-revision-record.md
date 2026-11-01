@@ -12,6 +12,7 @@
 | CRR-006 | `code-review-report.md` | API/E2E Failure-Origin Review / API-REV-002 Fail (API-08 L-002) | Pass (CRR-005) | Fail: Design Impact → Solution Designer | CR-004 new |
 | CRR-007 | `code-review-report.md` | Implementation Review / IR-006 (Full Re-Audit of changed areas) | Fail (CRR-006) | Pass (9.5/10) | CR-004 resolved |
 | CRR-008 | `api-e2e-test-review-report.md` | API/E2E Test-Code Review / API-REV-003 Pass | Pass (CRR-007, source) | Fail: Local Fix → API/E2E | CR-T-001 new |
+| CRR-009 | `api-e2e-test-review-report.md` | API/E2E Test-Code Review / API-REV-004 Pass (round 2) | Fail (CRR-008) | Pass | CR-T-001 resolved |
 
 ## Revision Entries
 
@@ -232,3 +233,33 @@ None
   - Non-blocking notes in the report: fixed waits in LRL-004 and LRL-002, the Org stop not confirmed, LRL-005 `>= 1` vs `=== 1`, and `copyLoadedInPage` being dev-server-only.
   - FU-006 can fail full hub-probe runs.
   - The reload branch for a message inside the window is covered by unit and mutation tests only.
+
+### CRR-009 — Test review round 2: LRL-004 asserts the reason on every surface; Pass
+
+- Canonical review report updated: `api-e2e-test-review-report.md` (Round 2 Recheck; Findings; Latest Authoritative Result)
+- Review entry point and round: Successful API/E2E Test-Code Review, round 2
+- Review scope: the CR-T-001 fix and the notes acted on (`d8d99351b3`; evidence `4d83c0b7b6`)
+- Triggering role, report path, and finding or scenario IDs: API/E2E Engineer, `api-e2e-execution-coverage-report.md` (API-REV-004 `Pass`, 94%); CR-T-001
+- Relevant solution revision IDs: SR-004…SR-008
+- Relevant architecture-review revision IDs: N/A
+- Relevant implementation revision IDs: IR-006
+- Relevant API/E2E revision IDs: API-REV-004
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: CRR-008 `Fail`
+- Current authoritative result: `Pass`
+- What changed in the review result and why: LRL-004 now asserts the damaged file and line (built from the damage the test wrote) on the server error, the desktop Team tab, the phone and the refused restore. Its restore wait, the Org stop in LRL-002 and LRL-005's reload count (exactly one) are now asserted or awaited. The round-4 rerun passes with no browser errors.
+- Supported product scenario / material-premise basis changes: None
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-T-001 | Open (Local Fix, API/E2E) | Resolved | API-REV-004, `d8d99351b3` | Diff; `evidence/api-e2e/API-04-06-09-r4-lrl-browser-probe.json` (LRL-002/004/005 Pass, `browserErrors` `[]`); `API-06-r4-LRL-004-*.png` |
+
+- New or remaining finding IDs: None
+- Material score or classification changes: Fail → Pass
+- Recommended recipient: Delivery Engineer
+- Remaining risks or uncertainty:
+  - The reload branch for a message inside the window is covered by unit and mutation tests only.
+  - FU-006 can fail full hub-probe runs.
+  - FU-001, FU-004 and FU-005 are recorded.
