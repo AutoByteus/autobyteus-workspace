@@ -25,7 +25,7 @@
 
 | ID | Unknown | Settled by |
 | --- | --- | --- |
-| U-1 | F-09 (b) | Architecture review round; first implementation step (a failing test per point) |
+| U-1 | F-09 (b) | Settled by architecture review round 2: the web needs only the effective runtime; the pending switch is not on the wire (design D-5, SR-001 note 2) |
 | U-2 | Does a delegated Team copy with followers behave as designed when the Team-level choice changes the runtime? | Built-server case in validation |
 
 ## Supplement inventory
