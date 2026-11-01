@@ -2,8 +2,8 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: SR-001
-- Approved requirements: `requirements-doc.md` SR-001 (Solution Designer within the direction; user informed).
+- Current solution revision ID: SR-002 (ARCH-REV-001 AR-001…AR-003 and the user's direction on test-held code)
+- Approved requirements: `requirements-doc.md` SR-002 (Solution Designer within the direction; 54.2's removal with test refactor and DESIGN.md rule 11 by the user's direction of 2026-11-01).
 - Behavior-defining supplements: none.
 - User approval of the design: `Not required` (no behavior change; the Task does not ask for it).
 - Design status: `Ready`
@@ -32,7 +32,7 @@ Remove or rename each confirmed leftover; split the Task context-draft operation
 ## Change Scope (Mandatory)
 
 - In scope: UC-054, UC-125, UC-157, UC-159, UC-178, UC-147 (requirements doc).
-- Derived consumers: GraphQL `ModelSourceStatus` → web query `llm_provider_queries.ts` 17, `llmProviderConfigSupport.ts` 62, `llmProviderConfig.ts` 58–354, `useProviderApiKeySectionRuntime.ts`, generated GraphQL types, their tests; write-result outcome type → every coordinator and manager that switches on it (15 current files, list in notes); `BaseLLM` → `LlmPhaseSummaryPort` and the three autobyteus-ts tests.
+- Derived consumers: GraphQL `ModelSourceStatus` → web query `llm_provider_queries.ts` 17, `llmProviderConfigSupport.ts` 62, `llmProviderConfig.ts` 58–354, `useProviderApiKeySectionRuntime.ts`, `useRuntimeScopedModelSelection.ts`, the e2e probe mocks `tests/e2e/fresh-run-auto-approval-probe.mjs` and `existing-run-model-config-probe.mjs`, generated GraphQL types, their tests, and server doc `llm_management.md` 91 (AR-003a); `logicalConversationId` → the test readers listed in investigation notes 54.2; write-result outcome type → every coordinator and manager that switches on it (15 current files, list in notes); `BaseLLM` → `LlmPhaseSummaryPort` and the three autobyteus-ts tests.
 - Deliberately left alone: frozen copies and sealed migrations keep `not_renamed` / `renamed_finalization_indeterminate` (released names, Data Migration Guideline); `ModelKind` (used for model availability); the collaborator names (107); team scope structures (124); `TaskTeamExecution.taskExecutions` (135 → FU-001).
 - Follow-ups: FU-001.
 
@@ -102,7 +102,7 @@ DS-001: route, `ProjectTaskContextDrafts`, `ProjectTaskContextStore`. DS-002: pr
 
 ## Ownership Map
 
-- `ProjectTaskContextDrafts` (new, `src/projects/services/project-task-context-drafts.ts`): the six draft/saved-context file operations and the draft ownership check.
+- `ProjectTaskContextDrafts` (new, `src/projects/services/project-task-context-drafts.ts`): the six draft/saved-context file operations and the draft ownership check. Constructed like `ProjectTaskService`: optional `store` and `contextStore` dependencies defaulting to `getProjectStore()` / `getProjectTaskContextStore()`; the REST route gets the process instance through `getProjectTaskContextDrafts()` (a singleton accessor beside `getProjectTaskService()`, with `resetProjectTaskContextDraftsForTests()`), as it gets the service today (AR-003b). `TaskContextOwnership` takes the same `store` / `contextStore` getters from its owner.
 - `TaskContextOwnership` (new, `src/projects/services/task-context-ownership.ts`): `assertOwner(projectId, taskId?)` and `reclaimUnpublished(projectId, taskId)` (today's private `assertOwner` and `reclaim`), shared by `ProjectTaskService` (create/update) and `ProjectTaskContextDrafts`. One owner of these two checks.
 - `ProjectTaskService`: Task reads, commands, DONE closure, runtime port (unchanged otherwise).
 
@@ -117,7 +117,8 @@ DS-001: route, `ProjectTaskContextDrafts`, `ProjectTaskContextStore`. DS-002: pr
 | Item | Why unnecessary | Replaced by |
 | --- | --- | --- |
 | `BaseLLM.releaseConversation` (`autobyteus-ts/src/llm/base.ts` 219–221) and the bounded release step + its timeout in `llm-phase-summary-port.ts` ~180–195; test stand-ins | Dead: no override (54.1) | — |
-| `logicalConversationId` in `conversation-request.ts` 11, `llm-phase-summary-port.ts` 128, deny-list `provider-request-kwargs.ts` 2 | Dead: only filtered out (54.2) | — |
+| `logicalConversationId` in `conversation-request.ts` 11, `llm-phase-summary-port.ts` 128, deny-list `provider-request-kwargs.ts` 2, and the `base.ts` doc mention | No production reader; only test doubles read it (54.2, DESIGN.md rule 11) | Test doubles recognise compaction requests by content (below) |
+| `TaskExecutionResourceRelease.drain` and `inFlight` (`task-execution-resource-release.ts` 9, 13–20) | Only `drainRuntimeReleases` used them (AR-002) | — |
 | `modelKind` on `DynamicSourceSpec`, `ModelSourceStatus` (server domain, lifecycle `status(key, modelKind, …)`, catalog-service 218/239/266, GraphQL type 66) | Always `LLM` (54.3) | — |
 | Web `DISCOVERY_SETTING_MODEL_KINDS`, `affectedKinds` filtering, `modelKind` on the source status type and query | Same (54.4) | Refresh every source |
 | `buildPreparedAgentLaunch`, `buildPreparedTeamLaunch` (`autobyteus-web/utils/application/applicationLaunch.ts` 77–~95) | Dead (125.1) | — |
@@ -125,7 +126,7 @@ DS-001: route, `ProjectTaskContextDrafts`, `ProjectTaskContextStore`. DS-002: pr
 | `buildTeamCommunicationMessageId` in the import of the sealed migration (125.3) | Unused name | — |
 | `CODEX_SEGMENT_TURN_OMISSION_UNLISTED` branch + reason + test case (125.5) | Unreachable | — |
 | `LocatedStandaloneRootAgentExecution.launchConfiguration` + computation + test assertion (125.6) | Unread | `locatedExecutionSource` (existing owner) |
-| `ProjectTaskService.drainRuntimeReleases` (178) | Test-only | Test helper `tests/support/project-task-release-tracker.ts` (a `requestRelease` fake that records each call's promise and offers `settled()`), used by the 18 test files |
+| `ProjectTaskService.drainRuntimeReleases` (178) | Test-only | Test helper `tests/support/project-task-release-tracker.ts` (a `requestRelease` fake that records each call's promise; `settled()` awaits them and then one more macrotask, so the release's stop-result logging after the request promise has run; AR-002), used by the 18 test files |
 | Context-draft methods and `assertDraftOwner` in `ProjectTaskService` (147) | Moved | `ProjectTaskContextDrafts` |
 | Inline `import()` type for `searchCleanup` (147) | Formatting | Normal import and field |
 
@@ -204,7 +205,8 @@ See Final.
 
 | File | Change |
 | --- | --- |
-| `autobyteus-ts/src/llm/base.ts`, `src/agent/loop/llm-phase-summary-port.ts`, `conversation-request.ts`, `src/llm/api/provider-request-kwargs.ts`; 3 tests | 54.1–54.2 |
+| `autobyteus-ts/src/llm/base.ts`, `src/agent/loop/llm-phase-summary-port.ts`, `conversation-request.ts`, `src/llm/api/provider-request-kwargs.ts`; the test readers and docs listed in investigation notes 54.2 (~20 test/support files, 4 autobyteus-ts docs); new compaction-request helpers in autobyteus-ts test support and server test support (and the live-e2e harness) | 54.1–54.2 |
+| `DESIGN.md` rule 11 | Done in this revision by the Solution Designer (user direction) |
 | `autobyteus-server-ts/src/llm-management/llm-providers/domain/models.ts`, `services/dynamic-model-source-lifecycle.ts`, `services/model-catalog-service.ts`, `api/graphql/types/llm-provider-model-catalog.ts`; tests | 54.3 |
 | `autobyteus-web/stores/llmProviderConfig.ts`, `llmProviderConfigSupport.ts`, `graphql/queries/llm_provider_queries.ts`, `components/settings/providerApiKey/useProviderApiKeySectionRuntime.ts`, generated types; tests | 54.4 |
 | `autobyteus-web/utils/application/applicationLaunch.ts` | 125.1 |
@@ -212,6 +214,7 @@ See Final.
 | `.../migrations/team-communication-projection-address/team-communication-projection-address-migration.ts` | 125.3 |
 | `.../codex/thread/codex-segment-turn-admission.ts` + test | 125.5 |
 | `.../standalone-agent-run-root/services/standalone-root-location-service.ts` + test 300 | 125.6 |
+| 157 tests: a test value follows the code it feeds (AR-003c): rename where the test drives current code (unit tests under `tests/unit/**` listed in the notes, and migration tests that drive current code such as `tests/app-data-migrations/team-context-file-execution-locators-v1/team-context-file-execution-locators-v1.test.ts`, which uses current `MessageLog`); keep released names where a stub feeds a frozen writer or a sealed migration (check each of `agent-org-context-file-locator-transition`, `collaborators-to-delegated-runs-v1`, `delegated-copy-own-file-complete-v1`, `task-agent-own-run-v1` tests by its import) | Modify | 157 |
 | `run-history/store/{atomic-run-package-file-commit-writer,message-log,task-agent-message-logs,task-execution-tree-split}.ts`, `run-history/services/agent-org-run-history-catalog-service.ts`, `agent-org-execution/services/{agent-org-run-persistence-coordinator,agent-org-run-manager}.ts`, `agent-team-execution/services/{team-run-persistence-coordinator,agent-team-run-manager}.ts`, `standalone-agent-run-root/services/{standalone-root-persistence-coordinator,standalone-agent-run-root-manager}.ts`; tests | 157 (current code only) |
 | `docs/design/agent_websocket_streaming_protocol.md`, `docs/modules/agent_streaming.md` (Team identity / stream contract / commands); other docs with `agent_execution` / `execution_address` (`streaming_parsing_architecture.md`, `ARCHITECTURE.md`, `features/artifact_file_serving_design.md`, `features/task_agent_identity_future_improvements.md`, `modules/{agent_orgs,agent_team_execution,run_history,remote_collaboration,codex_integration}.md`): fix where they describe the removed shapes; leave links to `agent_execution.md` and other true uses | 159 |
 | `projects/services/project-task-service.ts` (drafts out, drain out, `searchCleanup` formatted), `projects/services/project-task-context-drafts.ts` (new), `projects/services/task-context-ownership.ts` (new), `api/rest/project-task-context-files.ts`; tests (3 context tests, 18 drain users, `tests/support/project-task-release-tracker.ts` new) | 147, 178 |
@@ -232,6 +235,7 @@ No new folders.
 
 | Topic | Good | Avoided |
 | --- | --- | --- |
+| 54.2 test doubles | One helper per package's test support, `isCompactionSummaryRequest(messages)`: true when a message's content is `COMPACTION_SUMMARY_PROMPT` (transcript mode, system message) or the last message's content is `COMPACTION_SUMMARY_INSTRUCTION` (cached mode); both imported from `autobyteus-ts/memory/compaction/compaction-summary-prompt.js`. Retries: a double keeps `lastWasCompaction`; a compaction request right after a compaction request is the next attempt of the same operation, so the recovery fixture still calls `compress` once per operation: `if (isCompactionSummaryRequest(messages)) { if (!this.lastWasCompaction) this.operationOutcome = this.compress(); this.lastWasCompaction = true; yield …await this.operationOutcome… } else { this.lastWasCompaction = false; … }`. The live-e2e harness splits invocations and responses with the same helper and matches summary attempts by order (line 928). Provider tests drop the label from their inputs and their "stripped" assertions. | Reading `kwargs.logicalConversationId` | Rule 11: tests observe what the model receives |
 | 178 tests | `const releases = trackReleases(); new ProjectTaskService({…, requestRelease: releases.request}); …; await releases.settled();` | A production method only tests call |
 | 157 | `return { outcome: "not_committed" }` in current writers; frozen copies keep `"not_renamed"` | Renaming inside `app-data-migrations/frozen/**` or sealed migrations |
 
@@ -251,7 +255,7 @@ N/A.
 
 1. 147 split (no behavior change) with 178 and the test helper; tests green.
 2. 157 rename; tests green.
-3. 54.1–54.2 (autobyteus-ts), then 54.3–54.4 (server + web, regenerate GraphQL types); tests and a Settings browser check.
+3. 54.1–54.2 (autobyteus-ts, with the test-double refactor first, so the doubles pass before the label is removed), then 54.3–54.4 (server + web, regenerate GraphQL types); tests and a Settings browser check.
 4. 125.x removals.
 5. 159 docs.
 6. Record effective line counts and the AC-001 searches in the implementation handoff.

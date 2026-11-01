@@ -103,6 +103,17 @@ how to apply them; they do not replace user-approved product requirements.
    They grow only by optional fields and new codes; nothing is renamed or
    removed. A client shows the `message` of a code it does not know. Every other
    contract stays a clean cut.
+11. **Tests follow the code; they never hold it back.** Production code keeps no
+   method, field, parameter, branch or value that only tests read, such as a request
+   label that only a fake LLM inspects. When cleaning up production code breaks old
+   tests, change the tests: make them observe what the product really does (the
+   requests a provider really receives, the results a caller really gets), or
+   delete tests of behavior that no longer exists. "A test depends on it" is never
+   a reason to keep code. Example (autobyteus-357): `logicalConversationId` was
+   attached to every LLM request and stripped before any provider saw it; only
+   test doubles read it to tell compaction requests from agent turns. It was
+   removed, and the test doubles now recognise a compaction request by the
+   compaction prompt the model actually receives.
 
 ## Work in two phases: clean functionality, then evidence-led refinement
 
