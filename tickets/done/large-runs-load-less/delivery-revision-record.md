@@ -5,7 +5,7 @@
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
 | DR-001 | Code reviewer's pass after CRR-009 (reviewed route) | N/A | Blocked: the delivery integration refresh conflicts with the latest `origin/personal` in 7 files; Local Fix routed to implementation | delivery-revision-record.md |
-| DR-002 | API-REV-005 on the integrated head after IR-007 / CRR-010 | DR-001 Blocked | See the release report's Finalization Record | docs-sync-report.md, handoff-summary.md, release-deployment-report.md, evidence/DEL-* |
+| DR-002 | API-REV-005 on the integrated head after IR-007 / CRR-010 | DR-001 Blocked | Delivery Completed: clean-clone proof, finalized on `personal` (`cac1749ed3`), no release, cleanup | docs-sync-report.md, handoff-summary.md, release-deployment-report.md, evidence/DEL-* |
 
 ## Revision Entries
 
@@ -33,4 +33,4 @@
 - Clean clone of `245d43b8b4`: all of DEL-00…09 pass, each with its own exit code. Server integration has 0 failures.
 - Docs: a stale `TeamCommunicationStore` was replaced in two web docs.
 - Verification: the evidence is sufficient for AC-001…AC-008; no user check is needed. No release.
-- Outcome and cleanup: in the release report's Finalization Record.
+- Outcome: Delivery Completed. Merge `cac1749ed3` pushed to `personal`; no release; cleanup done.
