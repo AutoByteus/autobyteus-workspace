@@ -26,6 +26,7 @@ import process from 'node:process';
 import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { prepareOutputDir, probeOutputDir } from './fixtures/probe-output-dir.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -38,7 +39,8 @@ const arg = (name, fallback) => {
   const value = process.argv.find(item => item.startsWith(`--${name}=`));
   return value ? value.slice(name.length + 3) : fallback;
 };
-const outputDir = path.resolve(webDir, arg('output-dir', 'test-results/model-routing-settings'));
+// A fresh per-run folder unless --output-dir names one; a non-empty folder is refused, never cleared.
+const outputDir = prepareOutputDir(probeOutputDir(webDir, 'model-routing-settings', arg('output-dir')));
 const skipServerBuild = process.argv.includes('--skip-server-build');
 const executablePath = arg('browser-executable', process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH)
   || ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser'].find(existsSync);
@@ -295,8 +297,6 @@ const assertPageMatches = (rows, report) => {
 
 let ownedRoot, fakes, node, remoteFakes, remoteNode, frontend, browser;
 try {
-  await fs.rm(outputDir, { recursive: true, force: true });
-  await fs.mkdir(outputDir, { recursive: true });
   if (!skipServerBuild) await run('corepack', ['pnpm', '-C', serverDir, 'build'], root, process.env, path.join(outputDir, 'server-build.log'));
   ownedRoot = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), 'autobyteus-model-routing-e2e-')));
   fakes = await createFakes(ownedRoot, true);
