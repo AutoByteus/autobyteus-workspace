@@ -10,6 +10,7 @@ The latest coverage investigation and execution coverage report remain authorita
 | API-REV-002 | Code reviewer, `code-review-report.md` CRR-005 Pass, round 2 | SR-004, SR-005, SR-006, IR-004, IR-005, CRR-003…CRR-005 | Fail / 88% | Fail / 90% |
 | API-REV-003 | Code reviewer, `code-review-report.md` CRR-007 Pass, round 3 | SR-007, SR-008, IR-006, CRR-006, CRR-007 | Fail / 90% | Pass / 94% |
 | API-REV-004 | Code reviewer, `api-e2e-test-review-report.md` CRR-008 Fail (CR-T-001 Local Fix), round 4 | CRR-008 | Pass / 94% | Pass / 94% |
+| API-REV-005 | Code reviewer, `code-review-report.md` CRR-010 Pass (IR-007, the delivery DR-001 merge), round 5 | DR-001, IR-007, CRR-010 | Pass / 94% | Pass / 94% |
 
 ## Revision Entries
 
@@ -113,3 +114,26 @@ None.
 - New or remaining failure IDs: none
 - Recommended owner: code reviewer (recheck CR-T-001 and the notes acted on)
 - Remaining risks, blocked evidence, or untested scope: unchanged (FU-004, FU-006; investigation residuals)
+
+### API-REV-005 — Recheck on the integrated head (IR-007 merge of origin/personal)
+
+- Triggering role, report path, and round: code reviewer, `code-review-report.md` (CRR-010 Pass), round 5
+- Triggering finding or case IDs: DR-001 (delivery); IR-007 merge `bd79cb1601` of `origin/personal` @ `92fffca77a`
+- Related revision IDs: DR-001, IR-007, CRR-010
+- Why this revision was recorded: the base brought autobyteus-318 changes around the ticket's Team/Org paths and probes
+- Coverage decisions or durable test paths changed: none (the only probe diff is the base's own: `delegated-copies-large-hub-probe.mjs` drops the transcription endpoint)
+- Cases added, changed, removed, or rechecked:
+  - API-03…API-06 and API-09 (LRL-001…005): Pass.
+  - API-08 (S-001, L-001, L-002, L-012 on a new seed): Pass. Counts: S-001 1; L-001 1; L-002 0 with the hub at 62 → 62; L-012 report shown once (63 = 63), 0 refetches. No browser errors.
+- Commands, environment, fixture, or broader-validation delta: server `dist` rebuilt at the merged head; a new seed (`--teams 12 --unrelated 50`), removed afterwards
+
+#### Prior Failure Resolution
+
+None.
+
+- Canonical artifacts and sections updated: report (Round, Result), progress log, `evidence/api-e2e/API-r5-integrated-head-recheck.json`
+- Prior result and confidence: Pass, 94%
+- Current result and confidence: Pass, 94%
+- New or remaining failure IDs: none
+- Recommended owner: delivery (no test changes, so no test review is needed)
+- Remaining risks, blocked evidence, or untested scope: FU-004, FU-005, FU-006; investigation residuals

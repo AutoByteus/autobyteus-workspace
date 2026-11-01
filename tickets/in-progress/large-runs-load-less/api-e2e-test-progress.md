@@ -28,3 +28,5 @@ Read it first whenever you pick the run back up. Only add rows.
 | 2026-11-01T15:38:05Z | round 3 | Completed | Pass | 94%; seed removed |
 | 2026-11-01T15:44:54Z | API-04, API-06, API-09 | Started | | CR-T-001 Local Fix: LRL-002/004/005 rerun (--cases LRL-002,LRL-004,LRL-005) |
 | 2026-11-01T15:47:44Z | API-04, API-06, API-09 | Completed | Pass | r4: LRL-004 asserts the reason on server, Team tab and phone; resume waits for the restore response; LRL-002 waits for inactive; LRL-005 exactly 1 reload |
+| 2026-11-01T16:17:16Z | round 5 (integrated head) | Started | | head add88e6e59 (merge bd79cb1601 of origin/personal 92fffca77a); rebuild server dist; LRL-001..005; hub L-001/L-002/L-012 on a new seed |
+| 2026-11-01T16:23:21Z | round 5 | Completed | Pass | LRL-001..005 Pass; hub S-001 1, L-001 1, L-002 0 (62->62), L-012 once/0; no browser errors; seed removed |

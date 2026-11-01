@@ -7,7 +7,11 @@ Paths are relative to `/Users/normy/autobyteus_org/autobyteus-worktrees/large-ru
 ## Round
 
 - Coverage investigation: `api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md` / `API-REV-004` (the CR-T-001 Local Fix on round 3's result)
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md` / `API-REV-005`:
+  - a proportionate recheck on the integrated head `add88e6e59` (IR-007's merge `bd79cb1601` of `origin/personal` @ `92fffca77a`; CRR-010 Pass);
+  - LRL-001…005 and the hub probe's S-001, L-001, L-002, L-012 rerun: all Pass, no browser errors (`evidence/api-e2e/API-r5-integrated-head-recheck.json`);
+  - no durable test changed;
+  - earlier: API-REV-004, the CR-T-001 Local Fix on round 3's result.
 - Test progress log: `api-e2e-test-progress.md`
 - Round and trigger: round 3, code review CRR-007 Pass after the L-002 rework: IR-006 (`65a5b34c9b`; SR-007, SR-008). A rebuild keeps the Team tab's lists when the live sequence is the same and the last **message** sequence M ≤ C.
 - Prior round reviewed: round 2 (API-REV-002: Fail on API-08 L-002)
@@ -153,7 +157,7 @@ N/A: this round passes.
 - Result: `Pass`
 - Criteria not proven, or parts only the user can check: `None`
 - Preliminary classification and recommended owner: N/A
-- Next recipient from `get_handoff_rules`: `/software_engineering_team/code_reviewer` (proportional test-code review)
+- Next recipient: after API-REV-004 the code reviewer's recheck (CRR-009). After API-REV-005 (integrated-head recheck, no test changes) delivery continues, as CRR-010 directs.
 - Notes:
   - Follow-ups: FU-004 (the app does not show a refused resume's reason) and FU-006 (intermittent Terminal-panel browser errors).
   - FU-006 makes a full large-hub probe run end `Fail` in about 2 of 5 runs even when every case passes. Whoever runs that probe should read its `errors` before reading the result.
