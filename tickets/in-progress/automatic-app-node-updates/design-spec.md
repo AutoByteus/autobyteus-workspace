@@ -1,7 +1,7 @@
 # Design Spec — automatic-app-node-updates (autobyteus-356)
 
 ## Solution And Approval Basis
-- Current solution revision ID: `SR-002`.
+- Current solution revision ID: `SR-003` (ARCH-REV-001 AR-001, AR-002 and notes N-1..N-5 resolved; requirements unchanged).
 - Approved requirements: `requirements-doc.md` (SR-002). DEC-001 = A was approved by the user on 2026-11-01 ("once its
   downloaded then its intall immediately not 30 minutes please"); DEC-002 and DEC-003 were decided by the Solution
   Designer within the direction.
@@ -142,19 +142,53 @@ and calls `downloadUpdate()`.
 
 ### DS-002 — App: immediate install, and the outcome after the restart
 `update-downloaded(V)` → `if (automaticUpdate && !blocksAutomatic(V)) installAutomatically(V)`.
-`installAutomatically(V)`:
-1. `record.recordAutomaticInstall(V)`, which writes `automatic = { V, now }` **before** anything stops;
-2. calls the existing `installUpdateAndRestart()`, the 339 path, so busy runs are recorded and later resumed by 285.
+
+`installAutomatically(V)` (SR-003, AR-002):
+1. calls the existing `installUpdateAndRestart()`, the 339 path, so busy runs are recorded and later resumed by 285;
+2. **only if** it returns `accepted: true`: sets `installRequestedVersion = V` in this process, and
+   `record.recordAutomaticInstall(V)` writes `automatic = { V, now }`.
+
+The call returns at once; the stop starts after its 100 ms timer (`appUpdater.ts:273`). So the record is written
+before anything stops. If it returns `accepted: false` (the status is not `downloaded`), nothing is recorded and
+nothing is blocked.
 
 DEC-001 = A: there is no delay, no idle check and no window check. The value of the switch is read at the event, so
 turning it off during a download stops the install. The download itself still finishes, and the update installs on
 quit, as today.
 
-**Install that throws in this process** (the `installUpdateAndRestart` catch): `recordAutomaticFailure(V, 'install',
-reason)` and `automatic = null`. Everything after this follows today's error path.
+**The gate within one process** (SR-003, AR-001): `blocksAutomatic(V)` is true when the record has
+`automaticFailure = { V, 'install' }` **or** `installRequestedVersion === V`. So once an automatic install of V has
+been requested, this process never starts another automatic run for V.
+
+**An install that fails in this process** (SR-003, AR-001). After an accepted automatic install of V, the install
+has failed when any of these happens before the app quits:
+- (a) the `installUpdateAndRestart` catch, when `prepareForInstall` or `quitAndInstall` throws;
+- (b) the updater `error` event while `activeOperation === 'install'` (`:401-403`), which is how a native refusal
+  arrives (for example Squirrel.Mac and an app run from a read-only or translocated location, or a signature check);
+- (c) no `before-quit` within `INSTALL_QUIT_BOUND_MS` (60 s) after `quitAndInstall`. `AppUpdater` arms this timer;
+  `app.on('before-quit')` clears it.
+
+An `error` event at that point is never counted as a *download* failure: the download hook acts only while
+`activeOperation === 'download'`. On (a), (b) or (c), `AppUpdater`:
+1. records `recordAutomaticFailure(V, 'install', reason)`, which also clears `automatic`;
+2. keeps today's error state for the row;
+3. calls the injected `recoverAfterFailedInstall()`.
+
+**Recovery** is owned by `ElectronApplication`, which owns the process and the server
+(`recoverAfterFailedInstall`, an `AppUpdaterOptions` hook beside `prepareForInstall`):
+- If the shutdown stopped the server, or the server process is gone (`isServerProcessGone()`, 339), it calls
+  `app.relaunch()` and then `app.exit(0)`. The old version starts again with its server. The start-time reconcile
+  finds the failure already recorded and leaves the row on "Automatic update failed. Nothing was changed.", with the
+  reason.
+- Otherwise the server's exit was not confirmed (339 DEC-005). It does **not** relaunch, because a second server
+  could start on the same data (284). The app stays open, the failure row says so, and the user restarts the app.
+  This is the same as today after a click (N-2).
+- During `app.exit` the updater's install-on-quit may still install V. If it does, the next start runs V, and the
+  reconcile rule below records `AUTO_UPDATED`.
 
 **Start after the restart** (`reconcileWithRunningVersion`, extended):
-- `automatic.version === running` → handled, `outcome = AUTO_UPDATED`, `read = false`;
+- `automatic.version === running`, or `automaticFailure.version === running` (an install-on-quit during recovery
+  succeeded after all) → handled, `outcome = AUTO_UPDATED`, `read = false`, failure cleared;
 - `automatic` set but `running === fromVersion` (the operating system did not install) → stays waiting,
   `automaticFailure = { V, 'install', 'The update did not install. The app is still on <from>.' }`, `automatic = null`;
 - otherwise today's rule (a manual update becomes handled with no outcome).
@@ -164,8 +198,12 @@ newer release is tried again (REQ-004). `markRead` also marks an `AUTO_UPDATED` 
 
 **Turning the switch on** (`setAutomaticUpdate(true)`, persisted to `app-update-automatic.json`):
 - status `available` with `availableVersion` V → `startAutomatic(V)`;
-- status `downloaded` or `updateStaged` with V → `installAutomatically(V)` (REQ-002: it continues the update that
-  was found);
+- status `downloaded` with V → `installAutomatically(V)` (REQ-002: it continues the update that was found);
+- `updateStaged` while a later check moved the status to `available` or `no-update` → `startAutomatic(V)`.
+  `downloadUpdate()` finds the cached download and emits `update-downloaded` again, which installs it (AR-002). The
+  implementer proves this re-emit with a test against electron-updater 6.8.9. If it does not hold, the escalation
+  trigger applies;
+- `checking` or `downloading` → nothing; the event that comes next acts on the switch;
 - otherwise nothing. The next check does the rest.
 
 The gate applies in every case. If the file cannot be saved, the switch still applies for this session and the result
@@ -176,7 +214,9 @@ says `persisted: false`, like the channel.
 - **Triggers:** a pass 2 minutes after launch, then every 60 minutes; and at once for an entry whose `autoUpdate`
   turned on (`commitNodeRegistrySnapshot` notifies it).
 - **Scope:** packaged builds only, and remote entries only.
-- **Order:** passes do not overlap. Nodes are handled one after another, each with a 10 s request timeout.
+- **Order:** passes do not overlap. Within a pass, nodes are checked one after another, each with a 10 s request
+  timeout. Following an accepted update is a separate timer per node, so a 15-minute follow never delays other nodes
+  (N-4). A node that is being followed is skipped by passes until its follow ends.
 
 For each node with `autoUpdate === true`, with `V = app.getVersion()`:
 1. `GET {baseUrl}/rest/node-update?target=V` (C1).
@@ -237,14 +277,14 @@ refresh it sees `update.state === 'running'` and follows the update, as today.
 | File | Change | Responsibility |
 | --- | --- | --- |
 | `autobyteus-web/electron/updater/appUpdateAutomaticStore.ts` | new | load/save `app-update-automatic.json` (default off) |
-| `autobyteus-web/electron/updater/appUpdater.ts` | change | `automaticUpdate` state, `setAutomaticUpdate`, DS-001/DS-002 hooks in `update-available`, `update-downloaded`, `error`, install catch |
+| `autobyteus-web/electron/updater/appUpdater.ts` | change | `automaticUpdate` state, `setAutomaticUpdate`, DS-001/DS-002 hooks in `update-available`, `update-downloaded`, `error`, install catch; `installRequestedVersion`; the quit bound timer; option `recoverAfterFailedInstall` |
 | `autobyteus-web/electron/updater/appUpdateNotificationRecord.ts` | change | `automatic`, `automaticFailure`, `recordAutomaticInstall`, `recordAutomaticFailure`, `blocksAutomatic`, reconcile, outcome in `toNotification`, `markRead` for AUTO_UPDATED |
 | `autobyteus-web/electron/updater/appUpdateIpc.ts`, `disabledAppUpdater.ts`, `appUpdateController.ts`, `electron/preload.ts`, `shared/appUpdateTypes.ts` | change | new IPC and types; the disabled updater refuses (`accepted: false`) and reports `automaticUpdate: false` |
 | `autobyteus-web/electron/nodeAutoUpdate/nodeAutoUpdater.ts` | new | DS-003 passes, triggers, follow |
 | `autobyteus-web/electron/nodeAutoUpdate/decideNodeAutoUpdate.ts` | new | the pure decision (step 3) and reconcile (step 2) |
 | `autobyteus-web/electron/nodeAutoUpdate/nodeAutoUpdateRecord.ts` | new | `node-auto-updates.json`, tolerant and atomic; drops entries of removed nodes |
 | `autobyteus-web/electron/nodeAutoUpdate/nodeUpdateClient.ts` | new | C1 GET/POST with timeout (main-process `fetch`) |
-| `autobyteus-web/electron/application/electronApplication.ts` | change | build and start `NodeAutoUpdater`, notify it on commit, stop its timers at shutdown; `set-auto-update` in `applyNodeRegistryChange`; outcomes IPC |
+| `autobyteus-web/electron/application/electronApplication.ts` | change | `recoverAfterFailedInstall` (relaunch only when the server is stopped or gone); build and start `NodeAutoUpdater`, notify it on commit, stop its timers at shutdown; `set-auto-update` in `applyNodeRegistryChange`; outcomes IPC |
 | `autobyteus-web/electron/nodeRegistryStore.ts`, `types/node.ts` | change | keep `autoUpdate: true` on load (remote only); new change type |
 | `autobyteus-web/stores/appUpdateStore.ts` | change | `automaticUpdate`, `setAutomaticUpdate` |
 | `autobyteus-web/stores/updateNotificationsStore.ts` | change | app row `outcome`, `outcomeReason`; unread for waiting or AUTO_UPDATED |
@@ -268,7 +308,20 @@ refresh it sees `update.state === 'running'` and follows the update, as today.
 ## Tradeoffs And Risks
 - **Immediate restart while the user works** (DEC-001 = A, the user's choice). The busy-agent effect is covered by 285.
   Text typed but not sent in a window is lost; the switch's explanation says the app restarts by itself.
-- **Install loop.** Bounded by `blocksAutomatic` (once per version).
+- **Install loop.** Bounded by `blocksAutomatic`: once per version, across restarts (the record) and within one
+  process (`installRequestedVersion`).
+- **A failed install in this process** (AR-001): detected by the catch, the `error` event or the 60 s quit bound.
+  Recovery relaunches the old version with its server. Runs that were busy are stopped by that relaunch and are
+  **not** resumed: 285 resumes only after an update into a new version, and this relaunch starts the same version.
+  The failure row is the user's signal. This happens rarely, and it is accepted here (FU-003).
+- **Unconfirmed server exit** (N-2): no relaunch (the 284 rule). The app stays open without its server until the
+  user restarts it, as after a click today.
+- **Windows/Linux installer failing after the app quit** (N-3): the app stays closed until it is started. On the next
+  start the reconcile records the failure, and V is not tried again.
+- **Cost to busy runs** (N-5): each automatic update interrupts busy runs, and 285 resumes each with one notice
+  (one extra turn per run). This is the cost of DEC-001 = A, which the user chose.
+- **Other tools on the machine** (N-1): any program with file access, including an agent's general shell tool, could
+  edit the desktop files. REQ-006 is about the app's own surfaces, and AC-006 checks those.
 - **Node loop.** Bounded by one attempt per version per node.
 - **Version source.** The node target is `app.getVersion()`, the same version the renderer offers today (F-03). A
   desktop on an older version than a node never requests (`relation` check).
@@ -280,6 +333,13 @@ Per `TESTING.md`, on separate test data only:
 - packaged-app E2E with the existing test feed (`profile.testUpdateFeedUrl`, REQ-019 of the update ticket): switch
   off → nothing (AC-001); switch on → downloaded, installed, relaunched on V2 with the row "Updated automatically to
   V2" (AC-002); a broken package → failure row and no repeat (AC-005);
+- unit tests for AR-001: an `error` during install; no quit within the bound; `prepareForInstall` throwing. Each
+  records an install failure (never a download failure), blocks V in this process, and calls the recovery hook. The
+  recovery relaunches only when the server is stopped or gone. Also, a later check finding V starts nothing.
+  For AR-002: `accepted: false` writes nothing; switching on with `updateStaged` and status `available` installs
+  through the re-emitted `update-downloaded`;
+- if the platform allows it, a packaged run where the native install is refused (for example the app started from a
+  read-only location on macOS): the old version comes back with its server, and the row shows the failure;
 - a real test Docker starter node, older than the packaged app, with a signed package from a local release source as
   in 305 DEL-14: switch on → updated and the row's outcome (AC-004); a trial that rolls back → the failure and no
   repeat; a stopped node → tried again later (AC-005);
