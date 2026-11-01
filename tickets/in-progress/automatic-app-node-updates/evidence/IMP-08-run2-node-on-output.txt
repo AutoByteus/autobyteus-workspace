@@ -1,0 +1,13 @@
+# IMP-08 (h) observed output of `node drive.mjs 58949 node-on2.js` (script: IMP-08-run2-node-on.js.txt)
+# Instance: isolated worktree build of 31d38080fc (iso-58949-4fbf); fake C1 node 127.0.0.1:47357  Date: 2026-11-01
+# Each "seen" entry: the desktop's automatic entry outcome :: the node's server line text, every 3 s after the click.
+{
+  "seen": [
+    "PENDING :: Server 1.0.0 | Downloading 1.5.11-beta.10… | Update automatically | Keep this node on this app's version.",
+    "PENDING :: Server 1.5.11-beta.10 |  | Updated to 1.5.11-beta.10. |  | Update automatically | Keep this node on this app's version.",
+    "PENDING :: Server 1.5.11-beta.10 |  | Updated to 1.5.11-beta.10. |  | Update automatically | Keep this node on this app's version.",
+    "AUTO_UPDATED :: Server 1.5.11-beta.10 | Update automatically | Keep this node on this app's version. |  | New: | Updated automatically to 1.5.11-beta.10"
+  ],
+  "finalLine": "Server 1.5.11-beta.10 | Update automatically | Keep this node on this app's version. |  | New: | Updated automatically to 1.5.11-beta.10",
+  "notice": null
+}

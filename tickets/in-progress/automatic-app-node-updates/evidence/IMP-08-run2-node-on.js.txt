@@ -1,0 +1,13 @@
+const t = document.querySelector('[data-testid^="node-auto-update-toggle-"]');
+t.click();
+const line = () => document.querySelector('[data-testid^="node-server-srv_"]')?.innerText.replace(/\n/g, ' | ');
+const seen = [];
+for (let i = 0; i < 14; i++) {
+  await new Promise((r) => setTimeout(r, 3000));
+  const e = Object.values(await window.electronAPI.getNodeAutoUpdateState())[0];
+  seen.push(`${e ? e.outcome : 'none'} :: ${line()}`);
+  if (e && e.outcome !== 'PENDING') break;
+}
+await new Promise((r) => setTimeout(r, 1500));
+document.querySelector('[data-testid^="node-auto-update-remote"]').scrollIntoView({ block: 'center' });
+return { seen, finalLine: line(), notice: document.querySelector('[data-testid^="node-server-notice-"]')?.innerText ?? null };

@@ -1,0 +1,18 @@
+# IMP-08 run 2 fake feed + fake C1 node request log
+# Instance: isolated worktree build of 31d38080fc (iso-58949-4fbf), --test-update-feed http://127.0.0.1:47356  Date: 2026-11-01
+# ua=node lines are the desktop main process (NodeAutoUpdater); Mozilla lines are the window
+2026-11-01T19:52:53.200Z listening feed=47356 node=47357
+2026-11-01T19:59:22.114Z feed GET /latest-mac.yml?noCache=1k6cb3tft
+2026-11-01T19:59:35.054Z node GET /rest/remote-access/status ua=Mozilla/5.0 (Macintosh; Intel Mac OS X 1
+2026-11-01T19:59:35.059Z node GET /rest/remote-access/status ua=Mozilla/5.0 (Macintosh; Intel Mac OS X 1
+2026-11-01T19:59:35.063Z node GET /rest/node-update?target=1.5.11-beta.10 ua=Mozilla/5.0 (Macintosh; Intel Mac OS X 1
+2026-11-01T19:59:35.064Z node POST /graphql ua=Mozilla/5.0 (Macintosh; Intel Mac OS X 1
+2026-11-01T19:59:35.065Z node POST /graphql ua=Mozilla/5.0 (Macintosh; Intel Mac OS X 1
+2026-11-01T19:59:44.347Z node GET /rest/node-update?target=1.5.11-beta.10 ua=node
+2026-11-01T19:59:44.354Z node POST /rest/node-update ua=node
+2026-11-01T19:59:44.355Z node POST body={"version":"1.5.11-beta.10"}
+2026-11-01T19:59:44.357Z node GET /rest/node-update?target=1.5.11-beta.10 ua=Mozilla/5.0 (Macintosh; Intel Mac OS X 1
+2026-11-01T19:59:46.360Z node GET /rest/node-update?target=1.5.11-beta.10 ua=Mozilla/5.0 (Macintosh; Intel Mac OS X 1
+2026-11-01T19:59:48.364Z node GET /rest/node-update?target=1.5.11-beta.10 ua=Mozilla/5.0 (Macintosh; Intel Mac OS X 1
+2026-11-01T19:59:54.358Z node GET /rest/node-update?target=1.5.11-beta.10 ua=node
+2026-11-01T19:59:54.362Z node GET /rest/node-update?target=1.5.11-beta.10 ua=Mozilla/5.0 (Macintosh; Intel Mac OS X 1

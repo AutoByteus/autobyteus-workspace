@@ -1,0 +1,71 @@
+# IMP-05 mutation proof (autobyteus-356): each mutation must turn at least one test red; a baseline run is green.
+# Commit: 63f5bb8bfc (code at that commit; mutated and restored)
+# Env: macOS 26.5.2, Node v22.23.1, vitest 3.2.7  Date: 2026-11-01
+# Command: vitest --config ./electron/vitest.config.ts run nodeAutoUpdate, once per mutation of decideNodeAutoUpdate.ts / nodeAutoUpdater.ts
+
+== N1 decision ignores the relation (downgrade/same)
+   × decideNodeAutoUpdate (DS-003 step 3) > skips: the same version 4ms
+   × decideNodeAutoUpdate (DS-003 step 3) > skips: a newer node (no downgrade) 1ms
+   × NodeAutoUpdater (autobyteus-356, DS-003) > a node at the same version gets no request (AC-004) 6ms
+   × NodeAutoUpdater (autobyteus-356, DS-003) > a node at a newer version gets no request (AC-004) 1ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  4 failed | 51 passed (55)
+== N2 a failed version is tried again
+   × decideNodeAutoUpdate (DS-003 step 3) > one attempt per version: an entry AUTO_FAILED for the version → skip 4ms
+   × NodeAutoUpdater (autobyteus-356, DS-003) > a trial that rolls back records AUTO_FAILED with the node reason and is not tried again for that version (AC-005) 5ms
+   × NodeAutoUpdater (autobyteus-356, DS-003) > a follow ends after 15 minutes with the entry pending; a later pass finds it unfinished and does not repeat 10ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  3 failed | 52 passed (55)
+== N3 blocker ignored
+   × decideNodeAutoUpdate (DS-003 step 3) > skips: an update blocker 4ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 54 passed (55)
+== N4 trial counted as updated
+   × reconcileNodeAutoUpdate (DS-003 step 2) > a node in its trial (on the version, update still running) is not updated yet 4ms
+   × NodeAutoUpdater (autobyteus-356, DS-003) > follows an accepted update every 10 s through the restart and records AUTO_UPDATED (AC-004) 6ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  2 failed | 53 passed (55)
+== N5 a running update is timed out
+   × reconcileNodeAutoUpdate (DS-003 step 2) > a running update is never timed out 4ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 54 passed (55)
+== N6 a refused request is recorded as an attempt
+   × NodeAutoUpdater (autobyteus-356, DS-003) > a request refused before the start (409) changes nothing and is tried again at the next pass 6ms
+   × NodeAutoUpdater (autobyteus-356, DS-003) > a request not delivered (network error or timeout) changes nothing and is tried again at the next pass 2ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  2 failed | 53 passed (55)
+== N7 passes overlap
+   × NodeAutoUpdater (autobyteus-356, DS-003) > passes never overlap, and nodes are checked one after another 4ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 54 passed (55)
+== N8 a followed node is checked by passes
+   × NodeAutoUpdater (autobyteus-356, DS-003) > a node being followed is skipped by a pass 5ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 54 passed (55)
+== N9 switch not read again before the request
+   × NodeAutoUpdater (autobyteus-356, DS-003) > a switch turned off while the node is asked sends no request 4ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 54 passed (55)
+== N10 switch turned on not checked at once
+   × NodeAutoUpdater (autobyteus-356, DS-003) > a node whose switch turns on is checked at once 4ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 54 passed (55)
+== N11 unpackaged builds act
+   × NodeAutoUpdater (autobyteus-356, DS-003) > does nothing in an unpackaged build 12ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 54 passed (55)
+== N12 the embedded entry is updated
+   × NodeAutoUpdater (autobyteus-356, DS-003) > first pass after 2 minutes: an older node with the switch on is asked to update to the desktop version (AC-004) 9ms
+   × NodeAutoUpdater (autobyteus-356, DS-003) > a node at the same version gets no request (AC-004) 1ms
+   × NodeAutoUpdater (autobyteus-356, DS-003) > a node at a newer version gets no request (AC-004) 1ms
+   × NodeAutoUpdater (autobyteus-356, DS-003) > a node at in-place update unavailable gets no request (AC-004) 1ms
+   × NodeAutoUpdater (autobyteus-356, DS-003) > a switch turned off while the node is asked sends no request 1ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+== N13 follow never ends
+   × NodeAutoUpdater (autobyteus-356, DS-003) > a follow ends after 15 minutes with the entry pending; a later pass finds it unfinished and does not repeat 8ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 54 passed (55)
+== N14 removed node entries kept
+   × NodeAutoUpdater (autobyteus-356, DS-003) > a removed node loses its entry and its follow 6ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 54 passed (55)
