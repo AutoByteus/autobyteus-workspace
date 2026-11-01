@@ -33,3 +33,4 @@
 - Design case: `docs/design-cases.md` Case 5 (AR-001).
 - N-1 (why a dist stamp) and N-2 (check that `pnpm deploy` carries the stamp) folded in.
 - Requirements unchanged (SR-002). Classification Large / High. Routing: ARCH-REV-002.
+- 2026-11-01, review result recorded: **ARCH-REV-002 Pass** on SR-004. Cosmetic N-6 folded in (Risks, the update-test example, Task Size, Change Scope follow-ups) and N-7 noted in D3. The reviewer routed to `/software_engineering_team/implementation_engineer`.

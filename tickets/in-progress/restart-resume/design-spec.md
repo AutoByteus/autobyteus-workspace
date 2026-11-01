@@ -60,7 +60,7 @@
 - **Task size: `Large`.**
   - A new capability area: `src/restart-resume/` (the record, the version identity, the recorder, the resumer).
   - Wiring in shutdown and startup.
-  - A small list accessor on the root directory.
+  - `placeOf` on the root directory, with the `isDelegatedRun` boundary query in the three root kinds; the shared root resolver (D5).
   - A build stamp.
   - Tests, plus a real-app proof across two builds.
 - **Architectural risk: `High`.**
@@ -109,7 +109,7 @@
      that fail it are dropped with one log line, "restart was not an update" (DEC-001 = A);
   4. group the remaining entries by root, and order each root's entries in **two waves (AR-003)**: first its
      `delegated` and `member` entries, then its `host` entry;
-  5. run roots at most **3 resumes at a time** (DEC-002). For each entry, **immediately before posting (AR-002)**,
+  5. run at most **3 posts at a time** (DEC-002; the limiter counts posts, and a host waiting for its wave holds no slot, N-7). For each entry, **immediately before posting (AR-002)**,
      check eligibility:
      - skip when the run is live (`AgentRunManager.getActiveRun(id)` is not null): something, the user or a
        coordinating run, already started it. This is what REQ-003's "already received new input" means: any input
@@ -192,7 +192,8 @@
   - the delegating node's observation reconnect (283 FU-003);
   - any setting (286) or update-click choice (287).
 - Follow-ups: FU-001 (a hard kill or power loss leaves no record: a later step); FU-002 (a resume while the runtime's
-  CLI is missing or signed out is only logged, with nothing shown to the user).
+  CLI is missing or signed out is only logged, with nothing shown to the user); FU-003 (a Docker trial rollback with a
+  data copy, AR-006).
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
 | BEH | Kind | REQ / AC | Trigger | Change | Spine |
@@ -259,7 +260,7 @@
 | Topic | Good | Avoided |
 | --- | --- | --- |
 | Once | read → delete file → resume from memory | resume, then delete (a crash repeats every resume) |
-| Update test | `record.version && current && record.version !== current` | a timestamp or "file exists" test (resumes after every quit) |
+| Update test | per entry: `entry.version && current && entry.version !== current` | a timestamp or "file exists" test (resumes after every quit) |
 | Wake | host → `standaloneRootManager.postUserMessage`; member or delegated → `root.executeAgentCommand(id, post_message)` | `executeAgentCommand` for a host (rejected, AR-001); posting to an `AgentRun` directly (bypasses the root's fences) |
 | Eligibility | re-checked immediately before each post (live, `terminatedAt`, archived, gone) | checking once before the queue (AR-002) |
 | Order | per root: delegated and members first, then the host with the accepted list | one flat queue (a host can re-dispatch before its copies are back, AR-003) |
@@ -304,7 +305,7 @@
 ## Risks
 - A record write slower than expected eats into 284's 10 s bound: it is one in-memory scan and one small file.
 - Many busy Claude runs resume at once: capped at 3 (memory ~260–480 MB each, 283).
-- Duplicate work: the live check and the dedupe key; 284 guarantees one server.
+- Duplicate work: the live check immediately before each post (AR-002); 284 guarantees one server.
 
 ## Guidance For Implementation
 - Never resume without the update test; never resume from a file that was not deleted first.
