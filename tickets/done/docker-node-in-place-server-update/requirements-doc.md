@@ -2,7 +2,7 @@
 
 ## Document Status
 
-- Status: `Approved`
+- Status: `Approved`; ticket **closed 2026-11-01** with steps 1–4 delivered. Step 5 (REQ-010's resume part, AC-007) **moved to autobyteus-285**'s done-when (`/project_task_manager`'s decision of 2026-11-01, on the user's question why 305 was still open)
 - Current solution revision ID: `SR-005` (design revised after ARCH-REV-001; requirements approved at `SR-003`; editorial fixes at SR-005 per AR-012; DEC-016 revised within the direction at SR-004)
 - Package identifier: `docker-node-in-place-server-update`
 - Request / ticket: Project Task `autobyteus-305` in Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`, "Docker nodes: let the server update itself inside its container …" (DESIGN FIRST)
@@ -85,7 +85,7 @@
 | Prerequisite ID | Finding And Evidence | Blocks (REQ / AC IDs) | Sent To (agent) / Task Key | Status |
 | --- | --- | --- | --- | --- |
 | PRQ-001 | Bounded, awaited shutdown: today stopping a busy run waits without limit (autobyteus-284 RC-1), so the switch could hang | REQ-010, AC-007 | `/project_task_manager` / autobyteus-284 | delivered: in `origin/personal` @ `e4bebdc858`, integrated into this ticket's branch 2026-10-30 |
-| PRQ-002 | Restart-and-resume step 1 (record mid-turn runs, resume them) and step 3 (an update click carries the resume choice) of the autobyteus-283 plan | REQ-010, AC-007 | `/project_task_manager` / autobyteus-285 (step 1) and autobyteus-287 (step 3); both created, not dispatched, depend on 284 | sent; dependency recorded by the PTM 2026-10-26 |
+| PRQ-002 | Restart-and-resume step 1 (record mid-turn runs, resume them) and step 3 (an update click carries the resume choice) of the autobyteus-283 plan | REQ-010, AC-007 | `/project_task_manager` / autobyteus-285, autobyteus-287 | No longer a prerequisite of 305: AC-007 moved to autobyteus-285's done-when (2026-11-01) |
 
 Build steps 1–4 do not need them; only step 5 (and the "mid-turn runs come back" part of the final demo) waits.
 
@@ -126,7 +126,7 @@ Build steps 1–4 do not need them; only step 5 (and the "mid-turn runs come bac
 | AC-004 | REQ-006 | SCN-004 | A verified build that fails to start or to become healthy | The old version runs again on its pre-update data; result "failed after switch, old version restored"; the failed build is not retried by itself | — | A test build that exits at start, and one that fails after migrations |
 | AC-005 | REQ-008 | SCN-005 | A build that needs a newer system layer than the image has | Refused before anything changes; "this update needs a new Docker image" with the launcher command | — | Build marked for a newer system layer |
 | AC-006 | REQ-012, BEH-001 | SCN-006 | Node at installed version C; `upgrade --all` to an image whose built-in version is older than C, or newer | Older built-in: the node keeps C. Newer: the node runs the image's version | C incompatible with the new image and built-in older → node refuses to start an older version and says which image is needed | Real Docker node |
-| AC-007 | REQ-010 | SCN-007 | Runs mid-turn when the update is clicked | The old version stops within the bounded time; after the update the runs continue by themselves (no prompt, no click), as restart-and-resume defines | — | Real Docker node, after PRQ-001/002 |
+| AC-007 | REQ-010 | SCN-007 | Runs mid-turn when the update is clicked | The old version stops within the bounded time; after the update the runs continue by themselves (no prompt, no click), as restart-and-resume defines | — | Real Docker node, after PRQ-001/002 — **moved to autobyteus-285 (2026-11-01)** |
 | AC-008 | REQ-002 | SCN-001 | Target version equal to or older than the running one | Refused; nothing changes | — | Unit + real node |
 | AC-009 | REQ-003 | SCN-001, SCN-002 | A phone credential; an agent's tools; any network request | Phone: refused. Agents: no update tool exists. A network request from a desktop is accepted and logged with its client address | — | Route tests, tool list check, log check on a real node |
 | AC-010 | REQ-007 | — | Desktop updated; nodes older | Nothing changes on any node until the user acts | — | Real node observation |
@@ -209,9 +209,10 @@ Build steps 1–4 do not need them; only step 5 (and the "mid-turn runs come bac
 | DEC-013 | How many builds kept | Disk | — | The running one and the previous one. | Solution Designer | Decided |
 | DEC-014 | First move to the starter | No in-place path exists yet | — | One last `upgrade --all` installs the image with the starter and adds the volume. | Solution Designer | Decided |
 | DEC-015 | Mid-turn runs | Done-when | — | Use restart-and-resume (283 chain); after the in-place restart the busy runs continue automatically, no human involved, following the user's decision for app-update restarts (Task comment 2026-10-30, see autobyteus-285). No second resume mechanism. | User (via the restart chain), applied by the Solution Designer | Decided |
-| DEC-016 | Nodes on one machine | 3 nodes download the same package 3 times | Shared builds volume; per-node volume | Revised at SR-004 (design): a shared volume would also hold each node's data copy during a migration update, and that copy contains the node's vault, visible to every other node's agents. Per-node: 313 MB per node per release (0.94 GB for 3 nodes, versus 1.4 GB today), no cross-node cleanup coordination. Decision: **one `<node>-server-packages` volume per node** | Solution Designer (user informed) | Decided |
+| DEC-016 | Nodes on one machine | 3 nodes download the same package 3 times | Shared builds volume; per-node volume | Revised at SR-004 (design): a shared volume would also hold each node's data copy during a migration update, and that copy contains the node's vault, visible to every other node's agents. Per-node: 313 MB per node per release (0.94 GB for 3 nodes, versus 1.4 GB today), no cross-node cleanup coordination. Decision: **one `<node>-server-packages` volume per node** | Solution Designer; confirmed by the user, 2026-10-31 ("I trust like you can really make really good like recommendations") | Decided (user confirmed the recommendation: one volume per node) |
 | DEC-017 | Status visibility | — | — | The node keeps its last update result (version, step, outcome, time) and the desktop shows it. | Solution Designer | Decided |
 | DEC-018 | Wording of the update action on a node row | Visible behavior | "Update to this app's version" or "Update to <version>" | The concrete version says exactly what will happen, matches the app's short concrete update buttons ("Download Update", "Install and restart") and is easy to check afterwards; the reason stays visible in a second line. Button **"Update to <version>"** (e.g. "Update to 1.5.11-beta.5") with the line **"Same version as this app"**. | User (asked 2026-10-30), recommendation by the Solution Designer | Approved by the user, 2026-10-30 (recommendation accepted) |
+| DEC-019 | A confirmation before "Update to <version>" until step 5? | Until step 5, an update stops mid-turn runs (CR4-N1) | A confirm dialog; none (SCN-001 as approved) | The user, 2026-10-31: "You decide … just make the UI clean … the human are not stupid". The button already names the exact version, the row shows progress and the result, and step 5 will make runs continue by themselves. A dialog would add a click to every update for a temporary gap. Decision: **no confirmation**; the row stays as built in step 4 | Solution Designer, on the user's direction | Decided |
 
 ## Traceability
 
