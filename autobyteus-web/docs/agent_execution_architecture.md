@@ -266,7 +266,8 @@ are not part of this frontend lifecycle contract.
 configured direct or mounted-Team Agent normalizes immediately to the enclosing
 `{ kind: 'agent_org', orgRunId }` existing-run subject. `ExistingRunConfigEditor`
 loads the stopped canonical tree and renders the shared AgentOrg configuration
-form. Runtime and tool policy remain locked. Workspace remains locked for the
+form. Tool policy remains locked, and so does the Org root's own agent runtime; a direct or mounted-Team Agent can switch its agent runtime
+with its model while the Org is stopped. Workspace remains locked for the
 Org root, direct Org Agents, and individual Team Agents; an eligible stopped
 Org exposes the mounted Team's existing Workspace Directory selector. One Save
 submits compatible model/settings patches plus mounted-Team workspace patches

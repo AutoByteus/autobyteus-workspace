@@ -204,10 +204,14 @@ delegated run, …) are defined in the
   | `antigravity_cli` | Antigravity CLI |
   | `grok_build` | Grok Build |
 - **Agent runtime switch:** replacing the agent runtime, model and model settings
-  of a stopped standalone Agent run, keeping the run (same run ID, chat, history
-  row, workspace). It is made real at the run's next input.
+  of a stopped Agent, keeping its run (same run ID, chat, history row, workspace).
+  It applies to a standalone Agent run, a Team member, an Org member (a direct Agent
+  or an Agent of a mounted Team) and a delegated copy (a task Agent, or a member of a
+  task Team); a Team's or an Org's own default launch is not switched. It is made real
+  at the Agent's next input.
 - **Pending agent runtime switch:** the user's saved choice of another agent
-  runtime, held in the run's metadata (`pendingRuntimeSwitch`) until that input.
+  runtime, held in the Agent's record (`pendingRuntimeSwitch`: a standalone run's metadata,
+  a member's node in the run's execution tree, a copy's own record) until that input.
 - **Hand-over notice:** the system notice the new agent receives with that input:
   where the Work Journals are and how they are laid out. It names no agent runtime.
 - **Switch marker:** the notice record that starts the new raw-trace file; the chat
