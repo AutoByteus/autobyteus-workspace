@@ -14,14 +14,14 @@
 - Relevant Architecture Review Revision IDs: ARCH-REV-002, ARCH-REV-004
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md` (IR-001)
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001
+- Relevant Implementation Revision IDs: IR-001, IR-002
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: 1
+- Current Code Review Revision ID: `CRR-003`
+- Current Review Round: 2
 - Review Scope: `Full Review`
 - Trigger: implementation handoff IR-001 (Large / Low)
 - Prior Review Round Reviewed: N/A
-- Latest Authoritative Round: 1
+- Latest Authoritative Round: 2
 - Code reviewed: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318`, branch `codex/test-and-tooling-hygiene-318`, `git diff origin/personal HEAD` at HEAD `7c04283722`: 190 files, plus the ticket folder
 
 ## Routing Classification Review
@@ -200,13 +200,33 @@ None.
 - **C-03:** probe runs without `--output-dir` leave dated folders under the non-ignored `autobyteus-web/test-results/`.
 - **Paid live suites** were ported but not run (DEC-011).
 
+## Round 2 — Delivery Local Fix for FU-004 (IR-002), Targeted Delta Review
+
+- Scope evidence: `git diff bdb50ec350 HEAD` (HEAD `1e9bab6d4b`) changes two integration test files (17+/2-), as the labelled baseline-fix commits `de3d284b14` and `f3950965c3`; `1e9bab6d4b` is documents. No source changes.
+- Trigger: delivery (DR-001) asked for AC-016's "green server suites" by resolving FU-004.
+- `agent-run-service.integration.test.ts`:
+  - The cause is in the test: its `recordRunStarted` override stored the whole input, including the write flag `clearPendingRuntimeSwitch`, which activation now passes (`standalone-agent-run-lifecycle-service.ts` L352). That broke the lifecycle's exact metadata comparison.
+  - The override now drops the flag before storing, which matches the real catalog: the flag is a write instruction there, not stored metadata (`agent-run-history-catalog-service.ts` L194-212).
+  - Not mirrored: the real catalog also removes `pendingRuntimeSwitch` when the flag is true. The double doesn't. That doesn't matter here, because this case has no pending switch, so the flag is false.
+  - The new `cancelPreparedRun` double returns the catalog's result shape and messages (L310-340): removed when unstarted, refused when started. Its "started" test (`startedAt`) approximates the catalog's `isPreparedIdentity`, which is adequate for a double.
+  - No assertion changed.
+- `agent-team-run-manager.integration.test.ts`:
+  - The expected callback keys add `projectRunRoot`, which the Team root supplies since autobyteus-347 (`team-root-materializer.ts` L84, `team-flat-execution-callbacks.ts` L30).
+  - A new assertion checks it names exactly this Team root: `{ kind: "agent_team", runId }`.
+  - Stronger, not weaker.
+- Evidence (IMP-26):
+  - each file alone: 10/10 and 14/14;
+  - server gate unchanged at 1,200 in 370, PASS;
+  - full `test:integration` green: 87 files pass, 20 skipped; 499 tests pass, 69 skipped.
+- Findings: none. FU-004 is resolved in this branch.
+
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Review Entry Point: `Implementation Review`
+- Review Entry Point: `Implementation Review` (round 2, Targeted Delta Review of IR-002)
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
-- Score Summary: 9.4 average; every category ≥ 9.3.
+- Score Summary: 9.4 average; every category ≥ 9.3 (unchanged from round 1)
 - Failure Origin: N/A
-- Recommended Recipient: API/E2E Engineer
-- Notes: none blocking.
+- Recommended Recipient: API/E2E Engineer (rerun the affected validation: full server `test:integration`), then Delivery
+- Notes: FU-004 is resolved, so server `test:integration` is green and AC-016 no longer has an out-of-scope exception.

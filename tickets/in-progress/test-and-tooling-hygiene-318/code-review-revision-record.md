@@ -8,6 +8,8 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) is autho
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 (IR-001) | N/A | Pass | None |
 | CRR-002 | `api-e2e-test-review-report.md` | Proportional test-code review after API/E2E Pass (API-REV-001) | N/A (first test review) | Not Applicable | None |
+| CRR-003 | `code-review-report.md` | Implementation Review, round 2 (IR-002, delivery Local Fix for FU-004) | Pass (CRR-001) | Pass | None |
+| CRR-004 | `api-e2e-test-review-report.md` | Proportional test-code review after API/E2E Pass (API-REV-002) | Not Applicable (CRR-002) | Not Applicable | None |
 
 ## Revision Entries
 
@@ -60,3 +62,57 @@ None.
 - Material score or classification changes: none
 - Recommended recipient: Delivery Engineer
 - Remaining risks or uncertainty: FU-004 (4 pre-existing integration failures); paid suites not run (DEC-011); untracked per-run probe folders under `autobyteus-web/test-results/` (CRR-001 C-03).
+
+### CRR-003 — FU-004 fixes: two integration tests brought to the current product
+
+- Canonical review report updated: `code-review-report.md` (§ Round 2, Latest Authoritative Result)
+- Review entry point and round: Implementation Review, round 2
+- Review scope: `Targeted Delta Review` (`bdb50ec350..1e9bab6d4b`: 2 test files, 17+/2-; no source)
+- Triggering role, report path, and finding or scenario IDs: Delivery Engineer, `release-deployment-report.md` (DR-001: AC-016, FU-004); Implementation Engineer, `implementation-handoff.md` (IR-002)
+- Relevant solution revision IDs: SR-001..SR-004
+- Relevant architecture-review revision IDs: ARCH-REV-002, ARCH-REV-004
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: `Pass` (CRR-001)
+- Current authoritative result: `Pass`
+- What changed in the review result and why: both baseline fixes match the real code.
+  - The `recordRunStarted` double drops the write flag, as the catalog does.
+  - The `cancelPreparedRun` double uses the catalog's result shape and messages.
+  - The Team callbacks now include `projectRunRoot`, with a new assertion that it names this Team root.
+  - No assertion was weakened, and full `test:integration` is green (IMP-26).
+- Supported product scenario / material-premise basis changes: none.
+
+#### Prior Finding Resolution
+
+None open.
+
+- New or remaining finding IDs: none
+- Material score or classification changes: none
+- Recommended recipient: API/E2E Engineer; Implementation Engineer, informational
+- Remaining risks or uncertainty: the paid suites are still not run (DEC-011); the untracked per-run probe folders (C-03).
+
+### CRR-004 — Test-code review after API-REV-002: no durable test changed
+
+- Canonical review report updated: `api-e2e-test-review-report.md` (§ Round 2)
+- Review entry point and round: Successful API/E2E test-code review, round 2
+- Review scope: `N/A` (test review). `1e9bab6d4b..5198a18a9a` holds documents and evidence only.
+- Triggering role, report path, and finding or scenario IDs: API/E2E Engineer, `api-e2e-execution-coverage-report.md` § Round 2 (API-REV-002)
+- Relevant solution revision IDs: SR-001..SR-004
+- Relevant architecture-review revision IDs: ARCH-REV-002, ARCH-REV-004
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: API-REV-002
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: `Not Applicable` (CRR-002)
+- Current authoritative result: `Not Applicable`
+- What changed in the review result and why: API/E2E changed no durable test. The two baseline-fix files were reviewed as implementation changes in CRR-003. API-08 proves the full integration suite green on a fresh clone.
+- Supported product scenario / material-premise basis changes: none.
+
+#### Prior Finding Resolution
+
+None open.
+
+- New or remaining finding IDs: none
+- Material score or classification changes: none
+- Recommended recipient: Delivery Engineer
+- Remaining risks or uncertainty: the paid suites are not run (DEC-011); the untracked per-run probe folders (C-03).
