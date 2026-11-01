@@ -10,6 +10,9 @@ import { ContextFileProcessFixture, PNG, type Attachment } from "../helpers/cont
 // strict package admission, Prisma migration ledger and server restart are real.
 const run = process.env.RUN_CONTEXT_FILE_PROCESS_E2E === "1" ? describe : describe.skip;
 const migrationId = "20260926_team_context_file_execution_locators_v1";
+// The later migrations a retained task agent goes through on that upgrade: moved from its coordinating Team's folder
+// into its own-run folder (memory/agents/<agentRunId>), then its own file completed with the launch it ran with.
+const taskAgentMigrationIds = ["20261017_task_agent_own_run_v1", "20261019_delegated_copy_own_file_complete_v1"];
 const hash = (bytes: Buffer | string) => createHash("sha256").update(bytes).digest("hex");
 const readJson = async (file: string) => JSON.parse(await fs.readFile(file, "utf8"));
 const writeJson = (file: string, value: unknown) => fs.writeFile(file, JSON.stringify(value));
@@ -146,9 +149,13 @@ run("Context-file built-process runtime and upgrade", () => {
     user.file_attachments[0].uri = `/rest/team-runs/${owner.teamRunId}/members/%2Fworker/context-files/${files[1]!.storedFilename}`;
     const original = rows.map(row => JSON.stringify(row)).join("\n") + "\n";
     await fs.writeFile(tracePath, original);
-    // Simulate an upgrade from the previous installed version in the stopped copy only.
+    // Simulate an upgrade from a version before these migrations in the stopped copy only: the retained task above is
+    // in that version's shape (a full record, its files in the Team's folder), so they run on start.
     const db = new PrismaClient({ datasources: { db: { url: `file:${path.join(copyRoot, "db", "production.db")}` } } });
-    try { await db.$executeRaw`DELETE FROM app_data_migration_records WHERE migration_id = ${migrationId}`; }
+    try {
+      await db.$executeRaw`DELETE FROM app_data_migration_records WHERE migration_id = ${migrationId}`;
+      for (const id of taskAgentMigrationIds) await db.$executeRaw`DELETE FROM app_data_migration_records WHERE migration_id = ${id}`;
+    }
     finally { await db.$disconnect(); }
     const residueDir = path.join(copyRoot, "app-data-migration-backups", migrationId);
     await fs.mkdir(residueDir, {recursive:true});
@@ -156,6 +163,8 @@ run("Context-file built-process runtime and upgrade", () => {
     await fs.writeFile(path.join(residueDir, "released.original"), original);
     await f.start();
     await verifyBytes(files);
+    // The own-run migration moved the retained task's files into its own-run folder.
+    const movedOtherDir = path.join(copyRoot, "memory", "agents", "retained-task", "context_files");
     const converted = (await fs.readFile(tracePath, "utf8")).trim().split("\n").map(line => JSON.parse(line));
     const expected = structuredClone(rows); const expectedUser = expected.find(row => row.trace_type === "user");
     expectedUser.media.images = [files[0]!.locator]; expectedUser.file_attachments[0].uri = files[1]!.locator;
@@ -178,7 +187,7 @@ run("Context-file built-process runtime and upgrade", () => {
     const delivered = await f.send(`/ws/agent-team/${owner.teamRunId}`, owner.runId, "New exact-target message after duplicate-address restore.", fresh);
     expect(delivered.find(event => event.type === "MEMBER_INPUT_MESSAGE")?.payload.recipient_agent_run_id).toBe(owner.runId);
     expect(delivered.some(event => event.payload.agent_run_id === "retained-task")).toBe(false);
-    expect((await fs.readdir(otherDir)).sort()).toEqual(files.map(file => file.storedFilename).sort());
+    expect((await fs.readdir(movedOtherDir)).sort()).toEqual(files.map(file => file.storedFilename).sort());
     await verifyBytes(files); await verifyBytes(fresh);
   }, 120_000);
   it("resumes an eligible interrupted old/current corpus without a journal or overwriting later current writes", async () => {
