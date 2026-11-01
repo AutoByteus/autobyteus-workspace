@@ -11,6 +11,7 @@
 | CRR-005 | `code-review-report.md` | Implementation Review / IR-005 (Targeted Delta Review) | Fail (CRR-004) | Pass (9.5/10) | CR-003 resolved |
 | CRR-006 | `code-review-report.md` | API/E2E Failure-Origin Review / API-REV-002 Fail (API-08 L-002) | Pass (CRR-005) | Fail: Design Impact → Solution Designer | CR-004 new |
 | CRR-007 | `code-review-report.md` | Implementation Review / IR-006 (Full Re-Audit of changed areas) | Fail (CRR-006) | Pass (9.5/10) | CR-004 resolved |
+| CRR-008 | `api-e2e-test-review-report.md` | API/E2E Test-Code Review / API-REV-003 Pass | Pass (CRR-007, source) | Fail: Local Fix → API/E2E | CR-T-001 new |
 
 ## Revision Entries
 
@@ -201,3 +202,33 @@ None
 - Material score or classification changes: Fail → Pass (9.5/10)
 - Recommended recipient: API/E2E Engineer; informational to Implementation Engineer
 - Remaining risks or uncertainty: the API-08 L-002 browser recheck; FU-001, FU-004 … FU-006 recorded
+
+### CRR-008 — Test review: LRL-004 does not assert the reason AC-006 requires
+
+- Canonical review report updated: `api-e2e-test-review-report.md` (new)
+- Review entry point and round: Successful API/E2E Test-Code Review, round 1
+- Review scope: proportional review of the durable test changes in API/E2E rounds 1–3 (`ceb5e2d972`, `161913c003`, `59f4604da5`, `e78f587a28`; head `393d78cf2a`)
+- Triggering role, report path, and finding or scenario IDs: API/E2E Engineer, `api-e2e-execution-coverage-report.md` (API-REV-003 `Pass`, 94%); CR-T-001
+- Relevant solution revision IDs: SR-004…SR-008
+- Relevant architecture-review revision IDs: N/A
+- Relevant implementation revision IDs: IR-006
+- Relevant API/E2E revision IDs: API-REV-001…API-REV-003
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: CRR-007 `Pass` (source); no prior test review
+- Current authoritative result: `Fail` (test code), Local Fix → API/E2E Engineer. The source result is unchanged.
+- What changed in the review result and why: the new cases and hub-probe updates enter through real triggers, assert request counts and that the rows equal the stored log, and replace every read of the removed view field and of `isChildHydrated`. LRL-004, though, records but never asserts that the desktop Team tab and the phone show the reason (AC-006 "with the reason"). Today's evidence shows the reason, so a regression would pass silently.
+- Supported product scenario / material-premise basis changes: None
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| N/A | — | — | — | — |
+
+- New or remaining finding IDs: CR-T-001 (Local Fix, API/E2E)
+- Material score or classification changes: N/A (proportional review; no scorecard)
+- Recommended recipient: API/E2E Engineer
+- Remaining risks or uncertainty:
+  - Non-blocking notes in the report: fixed waits in LRL-004 and LRL-002, the Org stop not confirmed, LRL-005 `>= 1` vs `=== 1`, and `copyLoadedInPage` being dev-server-only.
+  - FU-006 can fail full hub-probe runs.
+  - The reload branch for a message inside the window is covered by unit and mutation tests only.
