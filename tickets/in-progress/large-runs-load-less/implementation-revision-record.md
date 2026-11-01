@@ -11,7 +11,8 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-003 | Code Reviewer / `code-review-report.md` / CRR-001 (Fail 9.3/10) | CR-001 | `Local Fix` | `CRR-001` | Mobile loading / unavailable states; CRR-002 Pass |
 | IR-004 | Architecture Reviewer / `design-review-report.md` / ARCH-REV-005 (Pass), after CRR-003's Design Impact | CR-002 (CRR-003, API-08); AR-005 | `Design Impact Rework` | `SR-004`, `SR-005`, `ARCH-REV-005`, `CRR-003` | Lists reload only when a message could have been missed; `live_sequence_id`; CRR-004 Fail (CR-003) |
 | IR-005 | Architecture Reviewer / `design-review-report.md` / ARCH-REV-006 (Pass), after CRR-004's Design Impact | CR-003 (CRR-004) | `Design Impact Rework` | `SR-006`, `ARCH-REV-006`, `CRR-004` | The Team open read names the running Team's live sequence; CRR-005 Pass; then API-08 round 2 L-002 → CRR-006 (CR-004) |
-| IR-006 | Architecture Reviewer / `design-review-report.md` / ARCH-REV-008 (Pass), after CRR-006's Design Impact | CR-004 (CRR-006, API-08 L-002); AR-006 | `Design Impact Rework` | `SR-007`, `SR-008`, `ARCH-REV-007`, `ARCH-REV-008`, `CRR-006` | Keep rule on the latest message by each root's predicate; ready for targeted code review |
+| IR-006 | Architecture Reviewer / `design-review-report.md` / ARCH-REV-008 (Pass), after CRR-006's Design Impact | CR-004 (CRR-006, API-08 L-002); AR-006 | `Design Impact Rework` | `SR-007`, `SR-008`, `ARCH-REV-007`, `ARCH-REV-008`, `CRR-006` | Keep rule on the latest message by each root's predicate; CRR-007 Pass |
+| IR-007 | Delivery Engineer / `delivery-revision-record.md` / DR-001 (Blocked) | DR-001 | `Local Fix` | `DR-001` | Merged `origin/personal` @ `92fffca77a`; all suites and type gates pass; ready for targeted code review |
 
 ## Revision Entries
 
@@ -188,3 +189,26 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: `evidence/IMP-IR006-checks.log`.
 - Next recipient or routing: `get_handoff_rules` → code review (targeted, Large/High), then API-08 L-002 is rechecked.
 - Remaining limitations or risks: FU-001 to FU-005.
+
+### IR-007 — DR-001: bring the branch current with `origin/personal`
+
+- Triggering role, report path, and round: `/software_engineering_team/delivery_engineer`, `delivery-revision-record.md`, DR-001 (Blocked). The integration refresh conflicted with `origin/personal` @ `92fffca77a` in 7 files.
+- Triggering finding IDs: DR-001.
+- Classification: `Local Fix`.
+- Prior authoritative result: `523c8c95bf` (validated head `ade24a66ce` plus DR-001's record) on base `efd28d5c4a`.
+- Current authoritative result: merge commit `bd79cb1601`, plus the IR-007 records commit.
+- Related revision IDs: `DR-001`; solution, architecture, code review and API/E2E `N/A` (no behaviour change).
+- Approved behaviour or requirement IDs affected: none changed. AC-008 (suites from a clean clone) is delivery's next run.
+- Implementation delta (the 7 conflicts resolved keeping both sides):
+  - `MarkdownRenderer.vue`: both imports; `hasLongUnbrokenRun` and `openExternalLink` are both used.
+  - `agent_websocket_streaming_protocol.md`: the Team snapshot fields of this ticket (no message log; `live_sequence_id`, `last_message_change_sequence`) together with the base's `CONNECTED`, `TEAM_RUN_LIFECYCLE` and `ERROR` detail.
+  - `TeamComposerPublication.spec.ts`, `CollaborationMessagesOrgRoot.integration.spec.ts` and `agentOrgContextHydration.spec.ts`: the base's typed, immutable rework, with this ticket's fields and focus and without `messages`.
+  - `task-agent-monitor-visibility.page.vue`: without the removed `messages` field. `typecheck-baseline.json`: the base's cut.
+  - Beyond the conflicts, the base's server type gate now checks tests. It found one new error, in `agent-org-reference-content-service.test.ts`: the fake records owner was typed as the full records snapshot (tree and messages) while the service needs only the messages. It is now typed with the service's own port (`CollaborationMessageRecords`).
+- Checks (`evidence/IMP-IR007-merge-checks.log`):
+  - type gates: server PASS (tests 1200 = baseline), web PASS (99 = baseline);
+  - suites: web 4,993 passed; server unit 7,743 passed; integration 500 passed, 0 failed; contracts 39 and 21; Electron 291; guards pass;
+  - contract `dist/` rebuilt with no difference.
+- FU-001 is resolved by the base: autobyteus-318 repaired those six tests.
+- Next recipient or routing: `get_handoff_rules` → code review (Local Fix on a Large/High package).
+- Remaining limitations or risks: FU-002 to FU-005. FU-005 (the interrupt-result probe lacks `remote_task_executions`) still holds after the merge.

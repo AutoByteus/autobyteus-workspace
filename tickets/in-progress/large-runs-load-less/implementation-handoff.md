@@ -14,11 +14,11 @@
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Rework` (IR-002 adds DS-007 to IR-001; IR-003 is CR-001's Local Fix; IR-004 implements SR-004/SR-005 for CR-002; IR-005 implements SR-006 for CR-003; IR-006 implements SR-007/SR-008 for CR-004)
+- Implementation cycle: `Rework` (IR-002 adds DS-007 to IR-001; IR-003 is CR-001's Local Fix; IR-004 implements SR-004/SR-005 for CR-002; IR-005 implements SR-006 for CR-003; IR-006 implements SR-007/SR-008 for CR-004; IR-007 merges origin/personal for DR-001)
 - Implementation revision record: `.../implementation-revision-record.md`
-- Current implementation revision ID: `IR-006`
+- Current implementation revision ID: `IR-007`
 - Related solution revision IDs: `SR-002` … `SR-008`; architecture-review: `ARCH-REV-002`, `ARCH-REV-003`, `ARCH-REV-005`, `ARCH-REV-006`, `ARCH-REV-008`; code-review: `CRR-001` … `CRR-006`; API/E2E: rounds 1 and 2 (API-08); delivery: `N/A`
-- Triggering finding IDs: CR-004 (CRR-006; API-08 L-002), AR-006 (ARCH-REV-007); before them CR-003, CR-002, AR-005
+- Triggering finding IDs: DR-001 (delivery: the integration refresh conflicts with `origin/personal`); before it CR-004, AR-006, CR-003, CR-002, AR-005
 
 All steps of the Change / Refactor Sequence are implemented and checked, and every QR is met. Commits on `codex/large-runs-load-less` over `origin/personal` @ `efd28d5c4a`:
 
@@ -43,6 +43,7 @@ All steps of the Change / Refactor Sequence are implemented and checked, and eve
 | `99cd853f79` | SR-006: `getTeamRunResumeConfig` gives `liveSequenceId` and `baseChangeSequence` (one read of the publisher); the Team commit rebuilds with them; `generated/graphql.ts` regenerated |
 | `a69534dae4` | SR-007, SR-008 and ARCH-REV-007/008 docs as received |
 | `65a5b34c9b` | SR-007/SR-008: each root's publisher takes its message predicate and keeps `lastMessageChangeSequence`; `last_message_change_sequence` in views, snapshots and the Team open read; the client keeps its lists when no message is past C; contracts, dist, codegen, docs |
+| `bd79cb1601` | Merge of `origin/personal` @ `92fffca77a` (DR-001): 7 conflicts resolved keeping both sides; one newly type-checked server test typed by the service's port |
 
 ## Routing Classification (Mandatory)
 
@@ -118,7 +119,7 @@ All steps of the Change / Refactor Sequence are implemented and checked, and eve
 ## Environment Or Dependency Notes
 
 - `generated/graphql.ts` was regenerated against this branch's server. It also picks up `projectRunHistory` (autobyteus-347), which the previous generation did not include.
-- FU-001 (`follow-ups.md`): 6 server integration tests fail on base `efd28d5c4a` as well. The cause is in the tests (they predate autobyteus-347 and the model-settings change), not in this ticket.
+- FU-001 (`follow-ups.md`): 6 server integration tests fail on base `efd28d5c4a` as well. The cause is in the tests (they predate autobyteus-347 and the model-settings change), not in this ticket. Resolved by the base since IR-007: autobyteus-318 repaired them, and after the merge the integration suite passes 500/500.
 - The test-owned seed `/tmp/ab358-seed` was removed after the measurements, as the design asks.
 
 ## Checks Run
@@ -167,6 +168,14 @@ Evidence: `evidence/IMP-local-checks.log` (header, commit and counts per check).
 | IMP-38 | targeted: per-root predicates; owner, hub and Team stream keep/reload cases | `65a5b34c9b` | isolated HOME | the message rule | CR-004, AR-006 | Pass | same | see log |
 | IMP-39 | mutation: compare the base instead of the latest message | `65a5b34c9b` | isolated HOME | `reloadRoot` | CR-004 | 3 tests fail as expected | same | `3 failed` |
 | IMP-40 | codegen against this branch's built server (temporary data folder, stopped and removed) | `65a5b34c9b` | 127.0.0.1:18358 | `generated/graphql.ts` | — | One field added | same | `lastMessageChangeSequence` |
+| IMP-41 | server type gate (`pnpm typecheck`, now with tests) | `bd79cb1601` | isolated HOME | server src and tests | DR-001 | Pass (tests 1200 = baseline) | IMP-IR007-merge-checks.log | `PASS` |
+| IMP-42 | web type gate | `bd79cb1601` | isolated HOME | web | DR-001 | Pass (99 = baseline) | same | `PASS` |
+| IMP-43 | web Nuxt suite (full) | `bd79cb1601` | isolated HOME | web | all | Pass | same | `4993 passed` |
+| IMP-44 | server `test:unit` (full) | `bd79cb1601` | isolated HOME | server | all | Pass | same | `7743 passed` |
+| IMP-45 | server `test:integration` (full) | `bd79cb1601` | isolated HOME | server | all | Pass (FU-001 fixed by the base) | same | `500 passed` |
+| IMP-46 | contract packages | `bd79cb1601` | isolated HOME | both contracts | — | Pass | same | `# pass 39` / `# pass 21` |
+| IMP-47 | web Electron suite | `bd79cb1601` | isolated HOME | electron | — | Pass | same | `291 passed` |
+| IMP-48 | web guards, each alone | `bd79cb1601` | — | web | — | Pass | same | exit 0 ×3 |
 
 - Not run, and why: the M-151 browser measurement on a large seeded Team/Org (request counts are covered by specs; left to API/E2E); the gated live suites (no provider proof needed). IR-004: the Electron suite (no Electron file changed); the API-08 browser probe on a seeded live hub (the counts are proven by `agentRunCollaborationParticipantReloads.spec.ts`; the recheck belongs to API/E2E).
 
