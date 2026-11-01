@@ -16,6 +16,10 @@
 | SR-010 | Evidence | ARCH-REV-004 Pass (step 3) | N/A | Step 3 at review | Step 3 at implementation | — | Pass recorded; no forwarding |
 | SR-011 | Evidence | Delivery Completed, step 3 + beta v1.5.11-beta.6 (DR-003) | CR3-N1 | Step 3 in delivery | Step 3 finalized and released (beta) | AC-011 GitHub part closed | Receipt verified; step 4 to review |
 | SR-012 | Evidence | ARCH-REV-005 Pass (step 4) | N/A | Step 4 at review | Step 4 at implementation | — | Pass recorded; no forwarding |
+| SR-013 | Evidence | Delivery Completed, step 4 (DR-004) | CR4-N1 | Step 4 in delivery | Steps 1–4 finalized; waiting for 285, 287 | AC-007 pending | Result `Blocked: Waiting For Prerequisite` to the PTM; follow-ups sent |
+| SR-014 | Evidence | Delivery Completed, beta v1.5.11-beta.7 (DR-005) | N/A | Steps 1–4 finalized; waiting | Steps 1–4 released (beta.7); first real in-place update proven; waiting | AC-001..AC-006 proven on published versions | Receipt verified |
+| SR-015 | Evidence | The user's own nodes on the in-place path (delivery engineer's read-only check) | N/A | Waiting | Waiting | RU-23/N-4 resolved on the real nodes | Recorded; FU-009 added |
+| SR-016 | Requirements (scope) | The PTM's closing decision, 2026-11-01 | N/A | Waiting for 285, 287 | Closed; step 5 moved to 285 | REQ-010 (resume part), AC-007 | Ticket archived; follow-ups sent |
 
 ## Revision Entries
 
@@ -171,3 +175,48 @@
 - The reviewer routed step 4 to `/software_engineering_team/implementation_engineer` itself; the Solution Designer does not forward it again.
 - Intended behavior and design: unchanged.
 - Next action: implementation of build step 4.
+
+### SR-013 — Step 4 receipt verified; waiting for autobyteus-285 and -287
+
+- Trigger: `Delivery Completed` for build step 4 (DR-004)
+- Verification: `delivery-receipt-verification-step4.md`
+- Result: `result-waiting-for-prerequisite.md`, classified `Blocked: Waiting For Prerequisite` (285, 287), returned to `/project_task_manager` with FU-001..FU-008.
+- Product choices put to the user (not blocking): no confirmation before "Update to <version>" (CR4-N1, per SCN-001); nodes on images from before step 2 show "Not reachable." until the launcher is reinstalled and `upgrade --all` runs.
+- Next action: resume step 5 when the PTM reports 285 and 287 delivered.
+- 2026-10-31, SR-013 addendum: the PTM confirmed steps 1–4 and placed the follow-ups (FU-002/004/006 → autobyteus-344; FU-003/005/008 → autobyteus-345; FU-001 → comment on 306; FU-007 none). Prerequisite order: 339, then 285, then 287. Still waiting.
+
+### SR-014 — Beta v1.5.11-beta.7 and the first real in-place update verified
+
+- Trigger: `Delivery Completed`, DR-005: beta v1.5.11-beta.7, at the user's request ("there is no beta release for this? i think we need a beta release"); Grok waived by the user ("yes Waive grok").
+- Verified 2026-10-31 with `git` and `gh`:
+  - the tag `v1.5.11-beta.7` points to `8faae96899`;
+  - the release is a pre-release with 23 assets;
+  - all four runs (`41171202589`, `41171202588`, `41171202636`, `41171202581`) succeeded;
+  - `:beta` = `sha256:8bcf8eabfafe…`;
+  - `origin/personal` @ `a977b2c1bc`.
+- The first real in-place update, from published beta.6 to published beta.7, on a test-owned container (`evidence/DEL-14-first-real-in-place-update-beta6-to-beta7.log`):
+  - the starter resolved the version from GitHub and verified the package with the production key;
+  - it ran the self-check, switched and confirmed, and succeeded in 103 s;
+  - the server now runs from `/home/autobyteus/server-packages/packages/1.5.11-beta.7`, in the same container and image.
+  - That proves "updates to the desktop's version without a new image" on published versions.
+- Still open: step 5 (AC-007, mid-turn runs come back), waiting for 339 → 285 → 287.
+- 2026-10-31, SR-014 addendum: the user confirmed DEC-016 by leaving it to the Solution Designer's recommendation ("I trust like you can really make really good like recommendations"). Each node keeps its own `<node>-server-packages` volume: about 0.94 GB per release on his 3-node machine, versus 1.4 GB today. Agent data was never part of the question; it always stays per node.
+
+### SR-015 — The user's own nodes moved onto the in-place path
+
+- Trigger: the delivery engineer's read-only check, 2026-10-31, at the user's request. The user runs desktop 1.5.11-beta.7, reinstalled the launcher and ran `autobyteus-docker upgrade --all` (track `beta` kept).
+- Evidence: `autobyteus-server-0/1/2` all run the published `:1.5.11-beta.7`/`:beta` image (`sha256:8bcf8eabfafe…`), each with its `<node>-server-packages` volume mounted. C1 `GET /rest/node-update?target=1.5.11-beta.7` answers `available`, `version 1.5.11-beta.7`, `relation same`, with no blocker.
+- Effect: RU-23 and N-4 are resolved on the real nodes; they are ready for an in-place update at the next release. Until step 5, an update stops mid-turn runs; the user was told to update while idle.
+- Follow-up FU-009 added (launcher self-version notice); it will be sent when the ticket leaves the team.
+- Still waiting for 339 → 285 → 287 (step 5).
+- 2026-10-31, SR-015 addendum: DEC-019 decided by the Solution Designer on the user's direction ("just make the UI clean"): no confirmation before "Update to <version>". Step 4 as delivered is unchanged.
+- 2026-10-31: the design spec records the field "User approval of the design: Obtained (SR-003)", per the skill update (autobyteus-agents-79). No other change.
+
+### SR-016 — Ticket closed; step 5 moved to autobyteus-285
+
+- Trigger: `/project_task_manager`, 2026-11-01: the user asked why 305 was still open. The PTM's decision: steps 1–4 are delivered and released (beta.6 and beta.7, then carried in beta.8 and beta.9), so 305 closes. Step 5 / AC-007 (mid-turn runs come back on a Docker node after an in-place update) moves into autobyteus-285's done-when.
+- Scope change: REQ-010's resume part and AC-007 leave this ticket; nothing is dropped, the work continues in 285. The user is informed in the Solution Designer conversation.
+- Delivered: step 1 `eec6522b27`, step 2 `a0f4b491f7`, step 3 `0a223aa397`, step 4 `db0881a96e`. Done-when items met on real releases: an update to the desktop's version without a new image (DEL-14, REL-04), and a failed update leaving the old version running (step 3 API/E2E).
+- Follow-ups: FU-001..FU-008 placed earlier (344, 345, a note on 306; FU-007 none). FU-009 (launcher self-version notice) is sent with this closure.
+- Archived to `tickets/done/docker-node-in-place-server-update/`.
+

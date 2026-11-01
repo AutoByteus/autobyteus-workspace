@@ -36,9 +36,22 @@ def report_for(cases, status="passed", overrides=None, extra=None):
                              "assertionResults": tests} for suite, tests in by_suite.items()]}
 
 
-def evaluate(report, unavailable=None, suite_errors=None):
+def evaluate(report, unavailable=None, suite_errors=None, runtime_errors=None):
     results, _ = MODULE.parse_report(report, SERVER_DIR)
-    return MODULE.evaluate(MODULE.REQUIRED_CASES, results, unavailable or {}, suite_errors or {})
+    return MODULE.evaluate(MODULE.REQUIRED_CASES, results, unavailable or {}, suite_errors or {}, runtime_errors or {})
+
+
+# The console log of a live run whose Grok group failed its setup, as vitest 4 prints it (ANSI colors kept).
+GROK_SETUP_FAILED_LOG = (
+    " \x1b[31m❯\x1b[39m tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts (9 tests | 3 skipped)\n"
+    "\x1b[31m⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯\x1b[39m\n\n"
+    "\x1b[41m FAIL \x1b[49m tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > live suite > grok\n"
+    "\x1b[31mError: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6\x1b[39m\n"
+    " ❯ tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts:224:22\n"
+    "    222|       const choice = chooseLiveModel(name, runtime.pin, available, runtime.override);\n\n"
+    "\x1b[31m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯\x1b[39m\n\n"
+    " Test Files  1 failed (1)\n"
+)
 
 
 def failures(rows):
@@ -114,6 +127,13 @@ class VerdictTest(unittest.TestCase):
         self.assertIn(("autobyteus", "brand-new run, linked workspace", "no report (vitest exited 1)"), failures(rows))
         self.assertIn(("other", Path(MODULE.NATIVE_SUITE).name, "no report (vitest exited 1)"), failures(rows))
 
+    def test_runtime_setup_error_fails_only_that_runtime(self) -> None:
+        grok = [case for case in MODULE.REQUIRED_CASES if case.runtime == "grok"]
+        report = report_for(MODULE.REQUIRED_CASES, overrides={case: "skipped" for case in grok})
+        reason = "Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6"
+        rows = evaluate(report, runtime_errors=MODULE.failed_suite_errors(GROK_SETUP_FAILED_LOG))
+        self.assertEqual(failures(rows), [("grok", case.scenario, f"skipped: {reason}") for case in grok])
+
     def test_file_level_error_is_reported(self) -> None:
         report = {"testResults": [{"name": str(SERVER_DIR / MODULE.LIVE_SUITE), "status": "failed",
                                    "message": "\x1b[31mError: Cannot find module x\x1b[39m\n  at y", "assertionResults": []}]}
@@ -160,16 +180,25 @@ class SummaryTest(unittest.TestCase):
         self.assertFalse(row.passed)
         self.assertEqual(row.reason, "git status changed: ?? b")
 
-    def test_failed_suite_error_from_log(self) -> None:
-        output = ("\x1b[31m⎯⎯⎯ Failed Suites 1 ⎯⎯⎯\x1b[39m\n\n FAIL  tests/e2e/runtime/x.e2e.test.ts > suite\n"
-                  "\x1b[31mError: codex model bogus is not offered; available: gpt-5.6-luna\x1b[39m\n ❯ x.ts:141:45\n")
-        self.assertEqual(MODULE.failed_suite_error(output),
-                         "Error: codex model bogus is not offered; available: gpt-5.6-luna")
-        self.assertIsNone(MODULE.failed_suite_error(" ✓ all passed\n"))
+    def test_failed_suite_errors_by_runtime(self) -> None:
+        self.assertEqual(MODULE.failed_suite_errors(GROK_SETUP_FAILED_LOG),
+                         {"grok": "Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6"})
+        self.assertEqual(MODULE.failed_suite_errors(" ✓ all passed\n"), {})
 
-    def test_models_line(self) -> None:
-        output = 'stdout | x\n\x1b[2mSKILL_LINKS_LIVE_MODELS {"claude":"haiku","codex":"gpt-5.6-luna"}\x1b[22m\n'
-        self.assertEqual(MODULE.read_models(output), {"claude": "haiku", "codex": "gpt-5.6-luna"})
+    def test_failed_suite_errors_whole_file_and_shared_error(self) -> None:
+        output = ("⎯⎯⎯ Failed Suites 3 ⎯⎯⎯\n\n FAIL  x.e2e.test.ts > suite\nError: server did not start\n ❯ x.ts:1:1\n"
+                  "⎯⎯⎯[1/2]⎯\n\n FAIL  x.e2e.test.ts > suite > claude\n FAIL  x.e2e.test.ts > suite > codex\n"
+                  "AssertionError: runtime not enabled\n ❯ x.ts:2:2\n⎯⎯⎯[2/2]⎯\n\n"
+                  "⎯⎯⎯ Failed Tests 1 ⎯⎯⎯\n\n FAIL  x.e2e.test.ts > suite > grok > a case\nError: prompt refused\n")
+        self.assertEqual(MODULE.failed_suite_errors(output), {"": "Error: server did not start",
+                                                             "claude": "AssertionError: runtime not enabled",
+                                                             "codex": "AssertionError: runtime not enabled"})
+
+    def test_models_lines(self) -> None:
+        output = ('stdout | x\n\x1b[2mSKILL_LINKS_LIVE_MODEL {"runtime":"claude","model":"haiku"}\x1b[22m\n'
+                  'stdout | x\nSKILL_LINKS_LIVE_MODEL {"runtime":"grok","model":"grok-4.5","pinned":"grok-4.7"}\n')
+        self.assertEqual(MODULE.read_models(output),
+                         {"claude": "haiku", "grok": "grok-4.5 (pinned grok-4.7 not offered)"})
         self.assertIsNone(MODULE.read_models("nothing"))
 
     def test_summary_result_line(self) -> None:
