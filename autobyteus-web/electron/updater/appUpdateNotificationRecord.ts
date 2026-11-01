@@ -6,6 +6,11 @@ import { logger } from '../logger';
 
 const APP_UPDATE_NOTIFICATION_FILE_NAME = 'app-update-notification.json';
 
+/** An automatic install of `version` was requested at `startedAt`; it is resolved by the next start (autobyteus-356). */
+type AutomaticInstall = { version: string; startedAt: string };
+/** An automatic download or install of `version` failed; an install failure blocks that version (REQ-004). */
+type AutomaticFailure = { version: string; step: 'download' | 'install'; reason: string };
+
 type StoredRecord = {
   version: string;
   fromVersion: string;
@@ -13,12 +18,28 @@ type StoredRecord = {
   read: boolean;
   handledVersion: string | null;
   handledAt: string | null;
+  /** Optional fields (autobyteus-356): absent or invalid reads as none. */
+  automatic: AutomaticInstall | null;
+  automaticFailure: AutomaticFailure | null;
+  outcome: 'AUTO_UPDATED' | null;
 };
 
 const nonEmpty = (value: unknown): value is string => typeof value === 'string' && value.trim().length > 0;
 const nullableNonEmpty = (value: unknown): value is string | null => value === null || nonEmpty(value);
 
-/** Keeps the stored object only when it has the current shape; unknown fields are dropped. */
+const toAutomaticInstall = (value: unknown): AutomaticInstall | null => {
+  const candidate = value as Record<string, unknown> | null;
+  return candidate && typeof candidate === 'object' && nonEmpty(candidate.version) && nonEmpty(candidate.startedAt)
+    ? { version: candidate.version, startedAt: candidate.startedAt } : null;
+};
+const toAutomaticFailure = (value: unknown): AutomaticFailure | null => {
+  const candidate = value as Record<string, unknown> | null;
+  return candidate && typeof candidate === 'object' && nonEmpty(candidate.version) && nonEmpty(candidate.reason)
+    && (candidate.step === 'download' || candidate.step === 'install')
+    ? { version: candidate.version, step: candidate.step, reason: candidate.reason } : null;
+};
+
+/** Keeps the stored object only when it has the current shape; unknown fields are dropped, invalid optional ones read as none. */
 function toStoredRecord(value: unknown): StoredRecord | null {
   if (!value || typeof value !== 'object') return null;
   const record = value as Record<string, unknown>;
@@ -33,6 +54,9 @@ function toStoredRecord(value: unknown): StoredRecord | null {
     read: record.read,
     handledVersion: record.handledVersion,
     handledAt: record.handledAt,
+    automatic: toAutomaticInstall(record.automatic),
+    automaticFailure: toAutomaticFailure(record.automaticFailure),
+    outcome: record.outcome === 'AUTO_UPDATED' ? 'AUTO_UPDATED' : null,
   };
 }
 
@@ -58,10 +82,23 @@ export class AppUpdateNotificationRecord {
     if (version === this.runningVersion) return false;
     const current = this.record;
     if (current && current.handledVersion === null && current.version === version) return false;
-    return this.save({
-      version, fromVersion: this.runningVersion, foundAt: this.now().toISOString(), read: false,
-      handledVersion: null, handledAt: null,
-    });
+    return this.save(this.freshRecord(version));
+  }
+
+  /** An automatic install of `version` was accepted: resolved by the next start; an earlier failure of it is cleared. */
+  recordAutomaticInstall(version: string): boolean {
+    return this.save({ ...this.waitingRecordOf(version), automatic: { version, startedAt: this.now().toISOString() }, automaticFailure: null });
+  }
+
+  /** An automatic download or install of `version` failed (its row shows the failure; an install failure blocks it). */
+  recordAutomaticFailure(version: string, step: AutomaticFailure['step'], reason: string): boolean {
+    return this.save({ ...this.waitingRecordOf(version), automatic: null, automaticFailure: { version, step, reason } });
+  }
+
+  /** `version`'s automatic install failed before: it is not installed automatically again (REQ-004). */
+  blocksAutomatic(version: string): boolean {
+    const failure = this.record?.automaticFailure;
+    return failure?.version === version && failure.step === 'install';
   }
 
   /**
@@ -73,9 +110,10 @@ export class AppUpdateNotificationRecord {
     return this.save(null);
   }
 
+  /** Marks a waiting notification, or one the app updated automatically, as seen. */
   markRead(): boolean {
     const current = this.record;
-    if (!current || current.handledVersion !== null || current.read) return false;
+    if (!current || current.read || (current.handledVersion !== null && current.outcome !== 'AUTO_UPDATED')) return false;
     return this.save({ ...current, read: true });
   }
 
@@ -96,15 +134,49 @@ export class AppUpdateNotificationRecord {
       state: current.handledVersion === null ? 'waiting' : 'handled',
       handledVersion: current.handledVersion,
       releasePageUrl: releasePageUrl(current.version),
+      ...this.outcomeOf(current),
     };
   }
 
-  /** At start: the app now runs another version than when the update was found, so it was updated. */
+  private outcomeOf(current: StoredRecord): Pick<AppUpdateNotification, 'outcome' | 'outcomeReason'> {
+    if (current.handledVersion !== null) return { outcome: current.outcome, outcomeReason: null };
+    const failure = current.automaticFailure;
+    return failure?.version === current.version
+      ? { outcome: 'AUTO_FAILED', outcomeReason: failure.reason } : { outcome: null, outcomeReason: null };
+  }
+
+  /**
+   * At start. An automatic install (or an install-on-quit after a failed automatic install) now runs: updated automatically. An
+   * automatic install that left the app on its old version failed. Otherwise the app runs another version than when
+   * the update was found, so it was updated (by a click).
+   */
   private reconcileWithRunningVersion(): void {
     const current = this.record;
-    if (current && current.handledVersion === null && current.fromVersion !== this.runningVersion) {
-      this.save({ ...current, handledVersion: this.runningVersion, handledAt: this.now().toISOString() });
+    if (!current || current.handledVersion !== null) return;
+    const handled = { handledVersion: this.runningVersion, handledAt: this.now().toISOString() };
+    const failedInstall = current.automaticFailure?.step === 'install' ? current.automaticFailure.version : null;
+    if (current.automatic?.version === this.runningVersion || failedInstall === this.runningVersion) {
+      this.save({ ...current, ...handled, read: false, automatic: null, automaticFailure: null, outcome: 'AUTO_UPDATED' });
+    } else if (current.automatic && current.fromVersion === this.runningVersion) {
+      const version = current.automatic.version;
+      this.save({ ...current, automatic: null,
+        automaticFailure: { version, step: 'install', reason: `The update did not install. The app is still on ${current.fromVersion}.` } });
+    } else if (current.fromVersion !== this.runningVersion) {
+      this.save({ ...current, ...handled, automatic: null });
     }
+  }
+
+  private freshRecord(version: string): StoredRecord {
+    return {
+      version, fromVersion: this.runningVersion, foundAt: this.now().toISOString(), read: false,
+      handledVersion: null, handledAt: null, automatic: null, automaticFailure: null, outcome: null,
+    };
+  }
+
+  /** The waiting record of `version`: the current one, or a new one when it is missing or for another version. */
+  private waitingRecordOf(version: string): StoredRecord {
+    const current = this.record;
+    return current && current.handledVersion === null && current.version === version ? current : this.freshRecord(version);
   }
 
   private get filePath(): string {
