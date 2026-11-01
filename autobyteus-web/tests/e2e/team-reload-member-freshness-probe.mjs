@@ -215,8 +215,10 @@ try {
     await snap('pending-read'); releaseRead();
     await page.getByText('E2E required member read unavailable', { exact: true }).waitFor();
     assert(await page.getByRole('button', { name: 'Reload', exact: true }).isEnabled());
+    // The definitions change also reloads the Team list, even when the Agent read fails: the live definitions feed
+    // sends one change signal for every agent definition change (f7fcf9055a, e4746ade4e; autobyteus-318 DEC-007).
     assert.deepEqual(catalogOps(evidence.requests.slice(start).map(request => request.operationName)),
-      ['ReloadAgentPackageDefinitions', 'GetAgentDefinitions']);
+      ['ReloadAgentPackageDefinitions', 'GetAgentDefinitions', 'GetAgentTeamDefinitions']);
     await snap('read-error'); await page.unroute(instance.graphqlUrl, handler);
     const operations = await reload();
     assert.equal(await page.getByText('E2E required member read unavailable', { exact: true }).count(), 0);

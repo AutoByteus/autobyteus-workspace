@@ -26,7 +26,6 @@
   "tests/e2e/fixtures/interrupt-result-presentation.page.vue": 1,
   "tests/e2e/fixtures/runtime-error-transport.page.vue": 1,
   "tests/e2e/fixtures/standalone-agent-error-stop.page.vue": 2,
-  "tests/e2e/fixtures/task-agent-monitor-visibility.page.vue": 3,
   "tests/e2e/fixtures/task-agent-sibling-sidebar.page.vue": 1,
   "tests/e2e/fixtures/team-activity-presentation.page.vue": 10,
   "tests/e2e/fixtures/token-meter-tps.page.vue": 1,

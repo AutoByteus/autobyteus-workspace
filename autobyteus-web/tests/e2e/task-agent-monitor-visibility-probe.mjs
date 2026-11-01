@@ -217,6 +217,10 @@ try {
   page.on('requestfailed', (request) => evidence.browserEvents.push({
     type: 'requestfailed', text: `${request.method()} ${request.url()} ${request.failure()?.errorText || ''}`,
   }));
+  // The app's window-wide live streams (the definitions feed since autobyteus-324, update notifications since
+  // autobyteus-210) connect to the fake backend like the other probes' routes, so they open instead of failing.
+  await page.routeWebSocket(/\/ws\/agent-package-definitions(\?|$)/, (ws) => ws.send(JSON.stringify({ type: 'connected' })));
+  await page.routeWebSocket(/\/ws\/update-notifications(\?|$)/, () => undefined);
   await page.route('**/rest/health', async (route) => route.fulfill({
     status: 200, contentType: 'application/json', body: '{"status":"ok"}',
   }));
