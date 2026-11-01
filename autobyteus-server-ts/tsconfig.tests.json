@@ -1,0 +1,13 @@
+{
+  // The server tests project of `pnpm typecheck` (scripts/typecheck.mjs): src and tests under the build policy
+  // (tsconfig.build.json). rootDir is the repository root because tests import the shared ../test-support.
+  "extends": "./tsconfig.build.json",
+  "compilerOptions": {
+    "rootDir": "..",
+    "noEmit": true,
+    "declaration": false,
+    "declarationMap": false
+  },
+  "include": ["src", "tests"],
+  "exclude": ["dist", "node_modules"]
+}
