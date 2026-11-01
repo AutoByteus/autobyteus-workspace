@@ -1,5 +1,4 @@
 import { AgentToolsMcpLocalAccessGate } from "../agent-tools/mcp/agent-tools-mcp-local-access.js";
-import { AgentDefinitionService } from "../agent-definition/services/agent-definition-service.js";
 import { getSecretVaultRuntime } from "../secret-management/secret-vault-runtime.js";
 import type { SecretManagementService } from "../secret-management/services/secret-management-service.js";
 import type { AgentDefinition } from "../agent-definition/domain/models.js";
@@ -23,23 +22,27 @@ export interface CredentialProxyHost {
   close(): Promise<void>;
 }
 
-export const createCredentialProxyHost = (input: Readonly<{
+type AgentDefinitionLookup = Readonly<{ getAgentDefinitionById(id: string): Promise<AgentDefinition | null> }>;
+
+/** The access rule is built from the composition's agent definitions, or given whole (tests). */
+type AccessInput =
+  | Readonly<{ agentDefinitions: AgentDefinitionLookup; access?: undefined }>
+  | Readonly<{ access: Pick<IntegrationAccessRule, "grantsForAgent" | "allowsCall">; agentDefinitions?: undefined }>;
+
+export const createCredentialProxyHost = (input: AccessInput & Readonly<{
   integrationsDir?: string;
   definitions?: DeliveryDefinitions;
   management?: () => SecretManagementService;
   fetchImpl?: typeof fetch;
   catalog?: Pick<IntegrationCatalog, "entries" | "isSourceRegistered" | "describe"> & SkillSourceChangeObserver;
-  agentDefinitions?: Readonly<{ getAgentDefinitionById(id: string): Promise<AgentDefinition | null> }>;
-  access?: Pick<IntegrationAccessRule, "grantsForAgent" | "allowsCall">;
   /** Told before a source changes, so a removed source takes its integrations' connections with it (DEC-015). */
   skillSources?: Pick<SkillSourceService, "setSourceChangeObserver"> | null;
-}> = {}): CredentialProxyHost => {
+}>): CredentialProxyHost => {
   const integrationsDir = input.integrationsDir ?? integrationsDirectory();
   const definitions = input.definitions ?? new DeliveryDefinitions();
   const catalog = input.catalog ?? getIntegrationCatalog();
   const access = input.access ?? new IntegrationAccessRule({
-    catalog, definitions, agentDefinitions: input.agentDefinitions ?? AgentDefinitionService.getInstance(),
-    skills: SkillService.getInstance(),
+    catalog, definitions, agentDefinitions: input.agentDefinitions, skills: SkillService.getInstance(),
   });
   const skillSources = input.skillSources === undefined ? SkillSourceService.getInstance() : input.skillSources;
   skillSources?.setSourceChangeObserver(catalog);
