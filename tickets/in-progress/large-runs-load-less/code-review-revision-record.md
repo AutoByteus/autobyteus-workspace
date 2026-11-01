@@ -8,6 +8,7 @@
 | CRR-002 | `code-review-report.md` | Implementation Review / IR-003 (Targeted Delta Review) | Fail (CRR-001) | Pass (9.5/10) | CR-001 resolved |
 | CRR-003 | `code-review-report.md` | API/E2E Failure-Origin Review / API-REV-001 Fail (API-08) | Pass (CRR-002) | Fail: Design Impact → Solution Designer | CR-002 new |
 | CRR-004 | `code-review-report.md` | Implementation Review / IR-004 (Full Re-Audit) | Fail (CRR-003) | Fail (9.3/10): Design Impact → Solution Designer | CR-002 resolved (hub, Org); CR-003 new |
+| CRR-005 | `code-review-report.md` | Implementation Review / IR-005 (Targeted Delta Review) | Fail (CRR-004) | Pass (9.5/10) | CR-003 resolved |
 
 ## Revision Entries
 
@@ -116,3 +117,30 @@ None
 - Material score or classification changes: 9.3/10; Design Impact
 - Recommended recipient: Solution Designer
 - Remaining risks or uncertainty: the API-08 recheck is pending; FU-005 recorded by implementation
+
+### CRR-005 — CR-003 resolved: the running Team's open read names its live sequence
+
+- Canonical review report updated: `code-review-report.md` (the round-5 section; CR-003; Classification; Latest Result)
+- Review entry point and round: Implementation Review, round 5
+- Review scope: `Targeted Delta Review` (the Team open path: publisher position, resume config and its two fields, the web read and the commit)
+- Triggering role, report path, and finding or scenario IDs: Implementation Engineer, `implementation-handoff.md` (IR-005), CR-003
+- Relevant solution revision IDs: SR-006
+- Relevant architecture-review revision IDs: ARCH-REV-006
+- Relevant implementation revision IDs: IR-005
+- Relevant API/E2E revision IDs: N/A (API-08 recheck next)
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: CRR-004 `Fail`
+- Current authoritative result: `Pass`
+- What changed in the review result and why: the Team resume config carries the managed root's live position (read together), and the commit reloads by the same rule as hub and Org. Running open keeps the list (1 fetch); a different publisher or a stopped Team reloads; recovery keeps correctly; `isActive` semantics unchanged
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-003 | Open (Design Impact) | Resolved | SR-006, ARCH-REV-006, IR-005 (`99cd853f79`) | Diff; team hydration spec (running keeps, stopped reloads); server resume-config, resolver and publisher tests; `evidence/IMP-IR005-checks.log` |
+
+- New or remaining finding IDs: None
+- Material score or classification changes: 9.3 → 9.5; Fail → Pass
+- Recommended recipient: API/E2E Engineer; informational to Implementation Engineer
+- Remaining risks or uncertainty: the API-08 counts (hub, and now Team) need the browser recheck; FU-001, FU-004, FU-005 recorded
