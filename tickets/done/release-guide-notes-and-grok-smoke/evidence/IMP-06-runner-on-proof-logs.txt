@@ -1,0 +1,44 @@
+# IMP-06 the runner's parsing applied to the IMP-04 and IMP-05 logs and reports
+# Command: python3 (inline): parse_report, failed_suite_errors, read_models, evaluate (live cases only; Claude/Codex marked 'disabled for this proof'), format_summary
+# Commit: 6cc367a37e
+# Environment: macOS, Python 3.9.6
+# Date: 2026-11-01
+
+run (a) file_errors=[] failed_suite_errors={}
+
+Release smoke check
+runtime     scenario                             result  reason
+claude      new run + restore, linked workspace  FAIL    disabled for this proof
+claude      brand-new team member                FAIL    disabled for this proof
+claude      different same-named skill           FAIL    disabled for this proof
+codex       new run + restore, linked workspace  FAIL    disabled for this proof
+codex       brand-new team member                FAIL    disabled for this proof
+codex       different same-named skill           FAIL    disabled for this proof
+grok        new run + restore, linked workspace  FAIL    failed: AssertionError: turn errors: {"code":"ACP_PROMPT_FAILED","message":"fake Grok refuses prompts (token-free model-choice check)","error_scope":"turn","error_effect":"terminal","turn_id":"a3284b04-c8e1-4fad-9439-ee1f7f67c41a"}: expected [ Array(1) ] to deeply equal []
+grok        brand-new team member                FAIL    failed: AssertionError: turn errors: {"code":"ACP_PROMPT_FAILED","message":"fake Grok refuses prompts (token-free model-choice check)","error_scope":"turn","error_effect":"terminal","turn_id":"587120aa-44e4-49e5-89af-65121f14ef00","change_sequence":13,"agent_run_id":"link_probe_agent_5d32ccd8_0493b451e59f4b
+grok        different same-named skill           FAIL    failed: AssertionError: turn errors: {"code":"ACP_PROMPT_FAILED","message":"fake Grok refuses prompts (token-free model-choice check)","error_scope":"turn","error_effect":"terminal","turn_id":"0a110523-475c-4533-bcbd-606fb309f734"}: expected [ Array(1) ] to deeply equal []
+
+commit    worktree
+models    {"grok": "grok-4.5 (pinned grok-4.7 not offered)"}
+duration  
+result    FAIL
+
+run (b) file_errors=[] failed_suite_errors={'grok': 'Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6'}
+
+Release smoke check
+runtime     scenario                             result  reason
+claude      new run + restore, linked workspace  FAIL    disabled for this proof
+claude      brand-new team member                FAIL    disabled for this proof
+claude      different same-named skill           FAIL    disabled for this proof
+codex       new run + restore, linked workspace  FAIL    disabled for this proof
+codex       brand-new team member                FAIL    disabled for this proof
+codex       different same-named skill           FAIL    disabled for this proof
+grok        new run + restore, linked workspace  FAIL    skipped: Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6
+grok        brand-new team member                FAIL    skipped: Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6
+grok        different same-named skill           FAIL    skipped: Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6
+
+commit    worktree
+models    not reported
+duration  
+result    FAIL
+
