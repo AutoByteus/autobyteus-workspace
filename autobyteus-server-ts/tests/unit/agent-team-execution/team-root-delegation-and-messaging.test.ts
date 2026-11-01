@@ -103,6 +103,9 @@ describe("delegation and messaging in a Team root (CM-1, CM-4)", () => {
     expect(first).toEqual({ delegated: true, copy: { kind: "team", teamRunId: copy!.teamRunId, teamCoordinatorAgentRunId: lead }, taskId: "ad_hoc_task_1" });
     expect(f.root.teamCoordinatorOf(copy!.teamRunId)).toBe(lead);
     expect(f.root.teamCoordinatorOf(lead)).toBeNull();
+    // autobyteus-285: a delegated Team copy's members are delegated runs of this root; its configured members are not.
+    expect(f.root.isDelegatedRun(lead)).toBe(true);
+    expect(f.root.isDelegatedRun("run-coordinator")).toBe(false);
     await f.root.releaseTaskExecutions(resources.close("ad_hoc_task_1"));
     resources.addTask("task-B", "Clean up the page");
     // The coordinator's agent run ID is not the copy's ID.

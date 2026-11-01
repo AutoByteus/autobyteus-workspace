@@ -130,6 +130,8 @@ describe("Agent root of a standalone run", () => {
       .resolves.toMatchObject({ delegated: true, copy: { kind: "team" } });
     await flushMicrotasks();
     const lead = f.handles.get("lead-run-2")!;
+    // autobyteus-285: the copies' runs (a task Agent, a task Team's member) are delegated runs; the host is not.
+    expect([root.isDelegatedRun("code-reviewer-run-1"), root.isDelegatedRun("lead-run-2"), root.isDelegatedRun(HOST)]).toEqual([true, true, false]);
     const stored = (await f.store.readTree(dir, HOST))!;
     expect(stored.taskExecutions).toMatchObject([
       { address: "/code_reviewer", agentRunId: "code-reviewer-run-1", platformAgentRunId: null, delegatorAgentRunId: HOST, source: { kind: "agent" } },

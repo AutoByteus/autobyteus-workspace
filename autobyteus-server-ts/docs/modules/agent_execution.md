@@ -352,6 +352,11 @@ after the grace is cut; its handler may keep running beside the cleanup. A
 long-lived HTTP stream must be closed by its owner before the server closes (as
 `AgentToolsMcpHost` does), or it spends the whole grace.
 
+**Busy runs are recorded first, and resumed after an update.** The shutdown
+cleanup records the busy runs held by a collaboration root before `app.close()`
+interrupts anything; after an update restart the next start resumes them through
+their roots, each with one system notice. See [Restart Resume](./restart_resume.md).
+
 ## Stopped Model Configuration And Restore Serialization
 
 `StandaloneAgentRunLifecycleService` also owns the narrow stopped-run
