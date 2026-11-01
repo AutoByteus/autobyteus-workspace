@@ -40,6 +40,8 @@
         @click="copy(notice.command)"
       >{{ copied ? t(k('update.copied')) : t(k('update.copyCommand')) }}</button>
     </p>
+    <!-- autobyteus-356: the desktop keeps this node on this app's version, through the row's first desktop entry. -->
+    <NodeAutoUpdate v-if="autoUpdateEntryId" :entry-id="autoUpdateEntryId" :can-update="status?.inPlaceUpdate === 'available'" />
   </div>
 </template>
 
@@ -50,6 +52,7 @@ import { useNodeListStore } from '~/stores/nodeListStore'
 import type { NodeRow } from '~/stores/nodeRowStatus'
 import { useNodeServerUpdateStore } from '~/stores/nodeServerUpdateStore'
 import { NODES_PAGE_KEY } from '~/utils/nodeConnectionErrorText'
+import NodeAutoUpdate from '~/components/settings/nodes/NodeAutoUpdate.vue'
 
 /** A remote node's server version and in-place update, under its row (design DS-001, DS-005, "Row states"). */
 const props = defineProps<{ row: NodeRow }>()
@@ -65,6 +68,8 @@ watch(() => updates.target, () => { if (address.value) void updates.refresh(prop
 onBeforeUnmount(() => updates.unwatch(props.row.key))
 
 const entry = computed(() => updates.entries[props.row.key])
+/** The desktop entry automatic updates go through: the one this desktop opens the node by (none for a peer-only row). */
+const autoUpdateEntryId = computed(() => props.row.entryIds[0] ?? null)
 const status = computed(() => entry.value?.status ?? null)
 const versionText = computed(() => status.value?.version ? t(k('update.version'), { version: status.value.version }) : t(k('update.versionUnknown')))
 

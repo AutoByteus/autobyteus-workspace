@@ -250,6 +250,7 @@ const settingsMessages = {
   'settings.updates.store.downloadedRestartToInstall': 'Update downloaded. Restart to install.',
   'settings.updates.store.updateNotReadyToInstall': 'Update is not ready to install yet.',
   'settings.updates.store.channelSaveFailed': 'Couldn’t save the update channel. It applies until AutoByteus restarts.',
+  'settings.updates.store.automaticSaveFailed': 'Couldn’t save “Update automatically”. It applies until AutoByteus restarts.',
   'settings.updates.store.errors.network': 'Couldn’t reach the update server. Try again later.',
   'settings.updates.store.errors.releasePreparing': 'The latest update is still being prepared on GitHub. Try again in a few minutes.',
   'settings.updates.store.errors.metadata': 'Update information is incomplete right now. Try again in a few minutes.',

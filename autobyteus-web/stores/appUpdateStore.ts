@@ -205,6 +205,24 @@ export const useAppUpdateStore = defineStore('appUpdate', {
       return state.autoCheck?.enabled === requested.enabled && state.autoCheck.intervalMinutes === requested.intervalMinutes;
     },
 
+    /**
+     * "Update automatically" for the app (autobyteus-356): the shell keeps the switch. Returns whether it was saved; a
+     * switch that applies for this session only (the save failed) is reported by a toast, like the channel.
+     */
+    async setAutomaticUpdate(enabled: boolean): Promise<boolean> {
+      if (this.status === 'disabled' || !window.electronAPI?.setAppUpdateAutomatic) {
+        return false;
+      }
+      const result = await window.electronAPI.setAppUpdateAutomatic(enabled);
+      if (!result.accepted) return false;
+      this.applyRemoteState(result.state);
+      if (!result.persisted) {
+        const { addToast } = useToasts();
+        addToast(t('settings.updates.store.automaticSaveFailed'), 'error');
+      }
+      return true;
+    },
+
     /** The user saw the app update notification (the shell keeps its read state). */
     async markNotificationRead(): Promise<void> {
       if (!this.notification || this.notification.read || !window.electronAPI?.markAppUpdateNotificationRead) {
@@ -247,6 +265,7 @@ export const useAppUpdateStore = defineStore('appUpdate', {
       this.checkedAt = payload.checkedAt ?? this.checkedAt;
       this.notification = payload.notification !== undefined ? payload.notification : this.notification;
       this.autoCheck = payload.autoCheck !== undefined ? payload.autoCheck : this.autoCheck;
+      this.automaticUpdate = payload.automaticUpdate ?? this.automaticUpdate;
 
       const isQuietError = isQuietBackgroundAppUpdateError(this);
 
@@ -254,8 +273,9 @@ export const useAppUpdateStore = defineStore('appUpdate', {
         this.lastErrorToastSignature = null;
       }
 
-      // Once per download: later broadcasts (for example marking the notification read) repeat the status.
-      if (this.status === 'downloaded' && previousStatus !== 'downloaded') {
+      // Once per download: later broadcasts (for example marking the notification read) repeat the status. With
+      // "Update automatically" on, the download installs at once, so "restart to install" would be wrong.
+      if (this.status === 'downloaded' && previousStatus !== 'downloaded' && !this.automaticUpdate) {
         const { addToast } = useToasts();
         addToast(t('settings.updates.store.downloadedRestartToInstall'), 'success');
       }

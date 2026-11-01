@@ -127,6 +127,9 @@
           </button>
         </div>
 
+        <!-- "Update automatically" (autobyteus-356): download, install and restart without a click; off by default. -->
+        <AutoUpdateSwitch v-if="!updatesDisabled" kind="app" variant="settings" />
+
         <div v-if="!updatesDisabled" class="mt-4 flex flex-wrap gap-2">
           <button
             type="button"
@@ -175,6 +178,7 @@ import { useAppUpdateStore } from '~/stores/appUpdateStore';
 import { getSettingsAppUpdateErrorMessageKey } from '~/utils/appUpdateErrorDisplay';
 import { describeInterval } from '~/utils/updateInterval';
 import UpdateIntervalField from '~/components/settings/UpdateIntervalField.vue';
+import AutoUpdateSwitch from '~/components/notifications/AutoUpdateSwitch.vue';
 
 const appUpdateStore = useAppUpdateStore();
 const { t } = useLocalization();

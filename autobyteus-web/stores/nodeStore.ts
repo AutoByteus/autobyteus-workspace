@@ -316,6 +316,14 @@ export const useNodeStore = defineStore('nodeStore', () => {
     persistCurrentSnapshotToLocalStorage();
   }
 
+  /**
+   * "Update automatically" for a remote entry (autobyteus-356): the desktop's registry keeps it, and the desktop's main
+   * process acts on it. Desktop only; refused for the embedded entry.
+   */
+  async function setNodeAutoUpdate(entryId: string, enabled: boolean): Promise<void> {
+    await upsertRegistry({ type: 'set-auto-update', entryId, enabled });
+  }
+
   function teardownRegistryListener(): void {
     listenerCleanup.value?.();
     listenerCleanup.value = null;
@@ -335,6 +343,7 @@ export const useNodeStore = defineStore('nodeStore', () => {
     removeRemoteNode,
     renameNode,
     identifyNode,
+    setNodeAutoUpdate,
     teardownRegistryListener,
   };
 });

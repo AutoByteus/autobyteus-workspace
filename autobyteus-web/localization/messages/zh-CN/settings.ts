@@ -250,6 +250,7 @@ const settingsMessages = {
   'settings.updates.store.downloadedRestartToInstall': '更新已下载，重启后即可安装。',
   'settings.updates.store.updateNotReadyToInstall': '更新尚未准备好安装。',
   'settings.updates.store.channelSaveFailed': '无法保存更新渠道。该设置将在 AutoByteus 重启前生效。',
+  'settings.updates.store.automaticSaveFailed': '无法保存“自动更新”。该设置将在 AutoByteus 重启前生效。',
   'settings.updates.store.errors.network': '无法连接更新服务器。请稍后重试。',
   'settings.updates.store.errors.releasePreparing': 'GitHub 上的最新更新仍在准备中。请几分钟后再试。',
   'settings.updates.store.errors.metadata': '更新信息暂时不完整。请几分钟后再试。',
