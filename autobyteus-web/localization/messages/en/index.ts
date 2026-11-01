@@ -12,6 +12,7 @@ import applicationMessages from './applications';
 import commonMessages from './common.generated';
 import generatedMemoryMessages from './memory.generated';
 import memoryMessages from './memory';
+import integrationsMessages from './integrations';
 import serverMessages from './server.generated';
 import generatedSettingsMessages from './settings.generated';
 import settingsMessages from './settings';
@@ -54,6 +55,7 @@ const enMessages: TranslationCatalog = {
   ...commonMessages,
   ...generatedMemoryMessages,
   ...memoryMessages,
+  ...integrationsMessages,
   ...serverMessages,
   ...manualServerMessages,
   ...generatedSettingsMessages,

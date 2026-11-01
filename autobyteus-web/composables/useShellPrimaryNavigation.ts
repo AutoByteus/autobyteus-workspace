@@ -17,6 +17,7 @@ export type ShellPrimaryNavKey =
   | 'agentOrgs'
   | 'applications'
   | 'skills'
+  | 'integrations'
   | 'memory'
   | 'nodes'
   | 'projects';
@@ -39,6 +40,7 @@ const allShellPrimaryNavItems: readonly ShellPrimaryNavItem[] = [
   { key: 'skills', labelKey: 'shell.navigation.skills', icon: 'heroicons:sparkles' },
   { key: 'memory', labelKey: 'shell.navigation.memory', icon: 'ph:brain' },
   { key: 'nodes', labelKey: 'shell.navigation.nodes', icon: SHELL_NODES_NETWORK_ICON },
+  { key: 'integrations', labelKey: 'shell.navigation.integrations', icon: 'heroicons:puzzle-piece' },
 ];
 
 export function resolveShellPrimaryRoute(key: ShellPrimaryNavKey): RouteLocationRaw {
@@ -55,6 +57,8 @@ export function resolveShellPrimaryRoute(key: ShellPrimaryNavKey): RouteLocation
       return '/applications';
     case 'skills':
       return '/skills';
+    case 'integrations':
+      return '/integrations';
     case 'memory':
       return '/memory';
     case 'nodes':
@@ -84,6 +88,8 @@ export function isShellPrimaryRouteActive(key: ShellPrimaryNavKey, { path, query
       return path.startsWith('/applications');
     case 'skills':
       return path.startsWith('/skills');
+    case 'integrations':
+      return path.startsWith('/integrations');
     case 'memory':
       return path.startsWith('/memory');
     case 'nodes':
@@ -123,7 +129,8 @@ export function useShellPrimaryNavigation(): {
       if (item.key === 'applications') {
         return applicationsCapabilityStore.isEnabled && isFeatureAvailableInRuntime('applicationIframe');
       }
-      if (item.key === 'nodes') {
+      if (item.key === 'nodes' || item.key === 'integrations') {
+        // Node administration (Integrations holds tokens, as the Settings card did): not in the mobile runtime.
         return isFeatureAvailableInRuntime('desktopSettings');
       }
       if (item.key === 'projects') {
