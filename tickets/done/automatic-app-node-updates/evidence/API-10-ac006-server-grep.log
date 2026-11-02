@@ -1,0 +1,34 @@
+# API-10 (AC-006) 2026-11-01T21:20:42Z: clean checkout e8b51df9ad
+## branch diff outside autobyteus-web and tickets (expect empty)
+## server and contracts: any mention of the new files, fields or IPC names (expect none)
+autobyteus-server-ts/src/update-notifications/domain/update-notification.ts
+autobyteus-server-ts/src/update-notifications/services/update-notification-records.ts
+autobyteus-server-ts/src/update-notifications/services/update-pass.ts
+autobyteus-server-ts/src/update-notifications/services/update-notification-service.ts
+autobyteus-server-ts/src/update-notifications/services/update-automation-settings-service.ts
+autobyteus-server-ts/src/api/graphql/types/update-notifications.ts
+grep exit (1 = no match): 0
+## matched lines (all in the existing agent-package / skill / runtime update automation)
+   2 autobyteus-server-ts/src/api/graphql/types/update-notifications.ts:21:AUTO_FAILED
+   1 autobyteus-server-ts/src/update-notifications/services/update-pass.ts:173:AUTO_FAILED
+   1 autobyteus-server-ts/src/update-notifications/services/update-notification-service.ts:111:AUTO_FAILED
+   1 autobyteus-server-ts/src/update-notifications/services/update-notification-records.ts:80:AUTO_FAILED
+   1 autobyteus-server-ts/src/update-notifications/services/update-notification-records.ts:19:AUTO_FAILED
+   1 autobyteus-server-ts/src/update-notifications/services/update-automation-settings-service.ts:88:automaticUpdate
+   1 autobyteus-server-ts/src/update-notifications/services/update-automation-settings-service.ts:16:automaticUpdate
+   1 autobyteus-server-ts/src/update-notifications/domain/update-notification.ts:34:AUTO_FAILED
+   1 autobyteus-server-ts/src/update-notifications/domain/update-notification.ts:12:AUTO_FAILED
+   1 autobyteus-server-ts/src/api/graphql/types/update-notifications.ts:76:automaticUpdate
+   1 autobyteus-server-ts/src/api/graphql/types/update-notifications.ts:106:automaticUpdate
+   1 autobyteus-server-ts/src/api/graphql/types/update-notifications.ts:105:automaticUpdate
+   1 autobyteus-server-ts/src/api/graphql/types/update-notifications.ts:104:automaticUpdate
+   1 autobyteus-server-ts/src/api/graphql/types/update-notifications.ts:103:automaticUpdate
+## same files and matches on the base 3b9dc912a1 (pre-existing):
+3b9dc912a1:autobyteus-server-ts/src/api/graphql/types/update-notifications.ts:6
+3b9dc912a1:autobyteus-server-ts/src/update-notifications/domain/update-notification.ts:2
+3b9dc912a1:autobyteus-server-ts/src/update-notifications/services/update-automation-settings-service.ts:2
+3b9dc912a1:autobyteus-server-ts/src/update-notifications/services/update-notification-records.ts:2
+3b9dc912a1:autobyteus-server-ts/src/update-notifications/services/update-notification-service.ts:1
+3b9dc912a1:autobyteus-server-ts/src/update-notifications/services/update-pass.ts:1
+## the 356 names only (expect none):
+exit: 1 (1 = none)

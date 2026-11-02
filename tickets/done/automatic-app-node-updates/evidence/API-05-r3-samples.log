@@ -1,0 +1,27 @@
+sample 1: oldAlive=yes health=200 states=[available/preparing=false/staged=false/ h200 ; downloading/preparing=false/staged=false/ h200 ; error/preparing=false/staged=false/install-preparation h200] claims=1 further=1 dlEnded=1 serverExit=0 errorKind=install/The system updater could not prepare this update. record={"version":"1.5.11-beta.11","step":"install","reason":"The system updater could not prepare this update."}
+2026-11-02T07:34:33.760Z] [INFO] [electron] [updater] New version 1.5.11-beta.11 has been downloaded to /User
+2026-11-02T07:34:34.201Z] [INFO] [electron] [updater] / requested
+2026-11-02T07:34:34.202Z] [WARN] [electron] [updater] Error: Cannot update while running on a read-only volum
+2026-11-02T07:34:34.202Z] [ERROR] [electron] [updater] Error: Error: Cannot update while running on a read-on
+2026-11-02T07:34:34.203Z] [ERROR] [electron] [updater] The system updater could not prepare 1.5.11-beta.11. [
+2026-11-02T07:34:34.204Z] [ERROR] [electron] [updater] Error: Error: Cannot update while running on a read-on
+2026-11-02T07:34:34.204Z] [WARN] [electron] [updater] A further error of the same refused update. [Error: Can
+2026-11-02T07:34:34.204Z] [WARN] [electron] [updater] Download ended by the update's refusal. [Error: Cannot 
+sample 2: oldAlive=yes health=200 states=[available/preparing=false/staged=false/ h200 ; downloading/preparing=false/staged=false/ h200 ; error/preparing=false/staged=false/install-preparation h200] claims=1 further=1 dlEnded=1 serverExit=0 errorKind=install/The system updater could not prepare this update. record={"version":"1.5.11-beta.11","step":"install","reason":"The system updater could not prepare this update."}
+2026-11-02T07:35:31.860Z] [INFO] [electron] [updater] New version 1.5.11-beta.11 has been downloaded to /User
+2026-11-02T07:35:32.283Z] [INFO] [electron] [updater] / requested
+2026-11-02T07:35:32.285Z] [WARN] [electron] [updater] Error: Cannot update while running on a read-only volum
+2026-11-02T07:35:32.285Z] [ERROR] [electron] [updater] Error: Error: Cannot update while running on a read-on
+2026-11-02T07:35:32.285Z] [ERROR] [electron] [updater] The system updater could not prepare 1.5.11-beta.11. [
+2026-11-02T07:35:32.286Z] [ERROR] [electron] [updater] Error: Error: Cannot update while running on a read-on
+2026-11-02T07:35:32.286Z] [WARN] [electron] [updater] A further error of the same refused update. [Error: Can
+2026-11-02T07:35:32.287Z] [WARN] [electron] [updater] Download ended by the update's refusal. [Error: Cannot 
+sample 3: oldAlive=yes health=200 states=[available/preparing=false/staged=false/ h200 ; downloading/preparing=false/staged=false/ h200 ; error/preparing=false/staged=false/install-preparation h200] claims=1 further=1 dlEnded=1 serverExit=0 errorKind=install/The system updater could not prepare this update. record={"version":"1.5.11-beta.11","step":"install","reason":"The system updater could not prepare this update."}
+2026-11-02T07:36:31.196Z] [INFO] [electron] [updater] New version 1.5.11-beta.11 has been downloaded to /User
+2026-11-02T07:36:31.609Z] [INFO] [electron] [updater] / requested
+2026-11-02T07:36:31.610Z] [WARN] [electron] [updater] Error: Cannot update while running on a read-only volum
+2026-11-02T07:36:31.611Z] [ERROR] [electron] [updater] Error: Error: Cannot update while running on a read-on
+2026-11-02T07:36:31.611Z] [ERROR] [electron] [updater] The system updater could not prepare 1.5.11-beta.11. [
+2026-11-02T07:36:31.612Z] [ERROR] [electron] [updater] Error: Error: Cannot update while running on a read-on
+2026-11-02T07:36:31.612Z] [WARN] [electron] [updater] A further error of the same refused update. [Error: Can
+2026-11-02T07:36:31.612Z] [WARN] [electron] [updater] Download ended by the update's refusal. [Error: Cannot 

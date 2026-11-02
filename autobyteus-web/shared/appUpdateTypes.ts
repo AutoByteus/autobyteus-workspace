@@ -16,6 +16,8 @@ export type AppUpdateErrorKind =
   | 'metadata'
   | 'download'
   | 'install'
+  /** The system updater could not prepare the update, before anything stopped (autobyteus-356). */
+  | 'install-preparation'
   | 'unavailable'
   | 'unknown';
 
@@ -67,7 +69,18 @@ export interface AppUpdateNotification {
   handledVersion: string | null;
   /** GitHub release page of `version`; null when the release feed is not GitHub (the e2e test feed). */
   releasePageUrl: string | null;
+  /**
+   * What automatic updates did with `version` (autobyteus-356): `AUTO_UPDATED` on a handled notification the app
+   * installed by itself; `AUTO_FAILED` on a waiting one whose automatic download or install failed; null otherwise.
+   */
+  outcome: AppUpdateAutomaticOutcome | null;
+  /** The failure's reason when `outcome` is `AUTO_FAILED`; null otherwise. */
+  outcomeReason: string | null;
+  /** Which automatic step failed when `outcome` is `AUTO_FAILED` (`install`: not tried again for this version); null otherwise. */
+  outcomeStep: 'download' | 'install' | null;
 }
+
+export type AppUpdateAutomaticOutcome = 'AUTO_UPDATED' | 'AUTO_FAILED';
 
 export interface AppUpdateState {
   status: AppUpdateStatus;
@@ -94,6 +107,20 @@ export interface AppUpdateState {
   notification: AppUpdateNotification | null;
   /** The app's automatic checks; null when this launch never checks (disabled updates). */
   autoCheck: AppUpdateAutoCheck | null;
+  /** "Update automatically" for the app (autobyteus-356): download, install and restart without a click. Off by default. */
+  automaticUpdate: boolean;
+  /** An automatic install waits for the system updater's copy (macOS): no check runs, and the status stays `downloaded`. */
+  automaticInstallPreparing: boolean;
+}
+
+/**
+ * Result of the `app-update:set-automatic` command. `accepted: false`: the value was not a boolean (nothing changed).
+ * `accepted: true, persisted: false`: it applies for this session only because saving it failed.
+ */
+export interface AppUpdateAutomaticChangeResult {
+  accepted: boolean;
+  persisted: boolean;
+  state: AppUpdateState;
 }
 
 /**

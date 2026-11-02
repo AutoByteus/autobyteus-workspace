@@ -1,0 +1,61 @@
+# API-01 (AC-001, app part) 2026-11-01T20:47:27Z: V1 copy 1.5.11-beta.10, fresh data root, feed offers 1.5.11-beta.11 (mode good)
+## instance
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "start",
+  "result": {
+    "instanceId": "iso-62683-e368",
+    "pid": 43534,
+    "executablePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api.0zPjtT/copies/app/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:47921",
+    "graphqlUrl": "http://127.0.0.1:47921/graphql",
+    "controlEndpoint": "http://127.0.0.1:62683",
+    "controlPort": 62683,
+    "serverPort": 47921,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api.0zPjtT/data-app",
+    "ownsDataRoot": false,
+    "keepDataRoot": false,
+    "testUpdateFeedUrl": "http://127.0.0.1:47911",
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api.0zPjtT/data-app/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-62683-e368.log"
+  }
+}
+## state after the startup check (+25 s) and again after +60 s
+{
+  "appToggle": {
+    "ariaChecked": "false",
+    "checked": null,
+    "text": "Update automatically"
+  },
+  "explanation": "Install new versions on your channel as soon as they are downloaded. The app restarts by itself.",
+  "status": "Update available",
+  "download": true,
+  "state": {
+    "status": "available",
+    "availableVersion": "1.5.11-beta.11",
+    "automaticUpdate": false,
+    "currentVersion": "1.5.11-beta.10",
+    "updateStaged": false
+  }
+}
+## desktop files in user-data (no app-update-automatic.json, no node-auto-updates.json)
+-rw-r--r--@ 1 normy  staff  242 Nov  1 21:46 app-update-notification.json
+-rw-r--r--@ 1 normy  staff  275 Nov  1 21:45 node-registry.json
+## app-update-notification.json
+{
+  "version": "1.5.11-beta.11",
+  "fromVersion": "1.5.11-beta.10",
+  "foundAt": "2026-11-01T20:46:02.227Z",
+  "read": false,
+  "handledVersion": null,
+  "handledAt": null,
+  "automatic": null,
+  "automaticFailure": null,
+  "outcome": null
+}
+
+## feed requests (no zip GET)
+{"at":"2026-11-01T20:45:33.698Z","event":"listening","port":47911,"zipName":"AutoByteus-1.5.11-beta.11-arm64-mac.zip","size":492196979,"sha512":"GdfSZid5Y44oi0AWHQPyaG/NG8YM/om7GzERabp/ioqjaj/lNDJP0flEAH6fM912qY6e5Xz6AWMMjhsruYRGEg=="}
+{"at":"2026-11-01T20:45:35.187Z","method":"GET","url":"/latest-mac.yml","status":200,"mode":"good","bytes":384}
+{"at":"2026-11-01T20:46:02.222Z","method":"GET","url":"/latest-mac.yml?noCache=1k6cdpbv7","status":200,"mode":"good","bytes":384}

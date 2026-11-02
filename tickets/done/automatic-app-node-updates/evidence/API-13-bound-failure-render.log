@@ -1,0 +1,22 @@
+# API-13 bound's failure rendered 2026-11-02T08:57:05Z: record seeded with the bound's reason (the live bound needs Squirrel silent for 15 min; no real trigger found: every native fetch answered or errored)
+{
+  "aria": "true",
+  "download": true,
+  "status": "available",
+  "availableVersion": "1.5.11-beta.11",
+  "automaticUpdate": true,
+  "currentVersion": "1.5.11-beta.10",
+  "message": "Version 1.5.11-beta.11 is available.",
+  "errorOperation": null,
+  "outcome": "AUTO_FAILED",
+  "outcomeReason": "The update was still not ready to install after 15 minutes."
+}
+{
+  "entryText": "1 update",
+  "entryLabel": "1 update available: 1 software update",
+  "autoFailed": "Automatic update failed. Nothing was changed. | The update was still not ready to install after 15 minutes. | It won’t be tried again automatically. You can still install it yourself.",
+  "centerText": "Notifications | Software update | Update automatically | New versions on your channel install as soon as they are downloaded, and the app restarts by itself. Switch off to update by hand. | New: | AutoByteus | 1.5.11-beta.10 | 1.5.11-beta.11 | · | 1 min. ago | Download | Automatic update failed. Nothing was changed. | The update was still not ready to install after 15 minutes. | It won’t be tried again automatically. You can still install it yourself."
+}
+## feed (startup check finds V2; blocked, so no zip GET expected)
+{"marker":"API-13 start 2026-11-02T08:56:25Z"}
+{"at":"2026-11-02T08:56:43.237Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dnj9ev","status":200,"mode":

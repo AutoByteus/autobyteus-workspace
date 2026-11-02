@@ -1,0 +1,24 @@
+[
+  {
+    "s": 3,
+    "k": "PENDING :: Server 1.5.11-beta.7 | Preparing 1.5.11-beta.11… | Update automatically | Keep this node on this app's version. :: notice=null"
+  },
+  {
+    "s": 15,
+    "k": "PENDING :: Server 1.5.11-beta.11 | Restarting… | Update automatically | Keep this node on this app's version. :: notice=null"
+  },
+  {
+    "s": 75,
+    "k": "PENDING :: Server 1.5.11-beta.11 | Update automatically | Keep this node on this app's version. :: notice=Updated to 1.5.11-beta.11."
+  },
+  {
+    "s": 81,
+    "k": "AUTO_UPDATED :: Server 1.5.11-beta.11 | Update automatically | Keep this node on this app's version. | New: | Updated automatically to 1.5.11-beta.11 :: notice=null"
+  },
+  {
+    "s": 93,
+    "k": "final+12s :: Server 1.5.11-beta.11 | Update automatically | Keep this node on this app's version. | New: | Updated automatically to 1.5.11-beta.11 :: notice=null",
+    "updatedLines": 1,
+    "rowText": "n4-real | 127.0.0.1:47961 | Server 1.5.11-beta.11 | Update automatically | Keep this node on this app's version. | New: | Updated automatically to 1.5.11-beta.11 | Agents here can't work with n4-real yet. | Turn on"
+  }
+]

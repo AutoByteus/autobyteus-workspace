@@ -1,0 +1,60 @@
+# IMP-04 mutation proof (autobyteus-356): each mutation must turn at least one test red; a baseline run is green.
+# Commit: 9369828ca7 (code at that commit; mutated and restored in the working tree)
+# Env: macOS 26.5.2, Node v22.23.1, vitest 3.2.7  Date: 2026-11-01
+# Command: pnpm -C autobyteus-web exec vitest --config ./electron/vitest.config.ts run updater/__tests__/appUpdaterAutomatic.spec.ts, once per mutation of appUpdater.ts / appUpdateAutomaticRun.ts
+
+== M1 startAutomatic ignores the blocker
+   × AppUpdater automatic update (autobyteus-356) > a failed install when the install throws (a): recorded, recovery once, and that version is not tried again (AC-005) 4ms
+   × AppUpdater automatic update (autobyteus-356) > a failed install when preparation fails (a): recorded, recovery once, and that version is not tried again (AC-005) 3ms
+   × AppUpdater automatic update (autobyteus-356) > a failed install when the updater reports an error during the install (b): recorded, recovery once, and that version is not tried again (AC-005) 2ms
+   × AppUpdater automatic update (autobyteus-356) > an install the app does not quit for within 60 s is a failure (c): recorded, recovery once, nothing more for that version (N-6) 3ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  4 failed | 12 passed (16)
+== M2 installAutomatically ignores the switch
+   × AppUpdater automatic update (autobyteus-356) > is off on a fresh profile and then changes nothing: no download, no install (AC-001) 12ms
+   × AppUpdater automatic update (autobyteus-356) > a switch turned off before the download finishes does not install 4ms
+   × AppUpdater automatic update (autobyteus-356) > a manual install is never bounded (switch off) 2ms
+   × AppUpdater automatic update (autobyteus-356) > turning the switch on when an update is downloaded installs it at once (REQ-002) 1ms
+   × AppUpdater automatic update (autobyteus-356) > turning the switch on with an update staged and a later check at `available` installs it from the cache (N-8) 2ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  5 failed | 11 passed (16)
+== M3 install failure handled every time
+   × AppUpdater automatic update (autobyteus-356) > an install the app does not quit for within 60 s is a failure (c): recorded, recovery once, nothing more for that version (N-6) 5ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 15 passed (16)
+== M4 update-available does not start
+   × AppUpdater automatic update (autobyteus-356) > on: a found release downloads, installs and restarts without a click; the next launch says AUTO_UPDATED (AC-002) 5ms
+   × AppUpdater automatic update (autobyteus-356) > a switch turned off before the download finishes does not install 3ms
+   × AppUpdater automatic update (autobyteus-356) > a failed download is recorded once, shows AUTO_FAILED, and is tried again at the next check (AC-005) 2ms
+   × AppUpdater automatic update (autobyteus-356) > a failed install when the install throws (a): recorded, recovery once, and that version is not tried again (AC-005) 2ms
+   × AppUpdater automatic update (autobyteus-356) > a failed install when preparation fails (a): recorded, recovery once, and that version is not tried again (AC-005) 1ms
+   × AppUpdater automatic update (autobyteus-356) > a failed install when the updater reports an error during the install (b): recorded, recovery once, and that version is not tried again (AC-005) 1ms
+   × AppUpdater automatic update (autobyteus-356) > an install the app does not quit for within 60 s is a failure (c): recorded, recovery once, nothing more for that version (N-6) 2ms
+   × AppUpdater automatic update (autobyteus-356) > an updater error during the install and then the quit bound recover only once (N-6) 3ms
+== M5 before-quit does not clear the bound
+   × AppUpdater automatic update (autobyteus-356) > on: a found release downloads, installs and restarts without a click; the next launch says AUTO_UPDATED (AC-002) 10ms
+   × AppUpdater automatic update (autobyteus-356) > the app quitting within the bound lets the install go ahead 2ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  2 failed | 14 passed (16)
+== M6 no in-process block
+      Tests  16 passed (16)
+== M7 error during install not handled
+      Tests  16 passed (16)
+== M8 no quit bound
+   × AppUpdater automatic update (autobyteus-356) > an install the app does not quit for within 60 s is a failure (c): recorded, recovery once, nothing more for that version (N-6) 5ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 15 passed (16)
+== M9 every install bounded
+   × AppUpdater automatic update (autobyteus-356) > a manual install is never bounded (switch off) 3ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 15 passed (16)
+
+--- after tightening (M6, M7 re-run) ---
+== M6 no in-process block
+   × AppUpdater automatic update (autobyteus-356) > a check while the requested install is under way does not start that version again (SR-003 AR-001) 3ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 16 passed (17)
+== M7 error during install not handled
+   × AppUpdater automatic update (autobyteus-356) > a failed install when the updater reports an error during the install (b): recorded, recovery once, and that version is not tried again (AC-005) 3ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 16 passed (17)

@@ -357,6 +357,16 @@ the approved design repository's `tickets/done/manage-nodes-professional/ui-ux-s
     to a newer image (`autobyteus-server-ts/docker/README.md`, "Update a node's server in
     place").
   - The embedded node has no server cell; the desktop updater updates it.
+  - **Update automatically** (`NodeAutoUpdate.vue`, `stores/nodeAutoUpdateStore.ts`,
+    autobyteus-356): a switch at the foot of the server cell, desktop windows only, shown when
+    the node can update in place or while it is on. It is the desktop registry field
+    `NodeEntry.autoUpdate` of the row's first entry (`set-auto-update`, remote entries only),
+    never a node setting. With it on, the desktop's main process updates the node to this app's
+    version when the node is older (`electron_packaging.md`, Automatic Node Updates). The cell
+    then says "Updated automatically to `<version>`" (new until seen) or "Automatic update
+    failed. Nothing was changed." with the node's reason (IPC `node-auto-update:get-state`,
+    `node-auto-update:mark-read`, broadcast `node-auto-update:changed`); the notice under the
+    row does not repeat that result.
 - **Add** (`AddNodePanel.vue`, the band under the Nodes header): Address, Name, the
   collaboration capsule (on by default), Add node. An address already in the list, whatever its node's state, or another address of a
   listed node (by node ID) is not added again: "This is X, already in your list." Adding
@@ -435,7 +445,8 @@ The quiet place where updates of the app, imported GitHub agent packages,
 imported GitHub skill sources and (in the desktop's own window) installed agent
 runtimes are shown. Nothing opens by itself. Nothing is updated without the
 user's Update, except a kind whose **Update automatically** switch the user
-turned on (packages, skill sources, runtimes; never the app).
+turned on (packages, skill sources, runtimes, and the app itself; each Docker
+node has its own switch on the Nodes page).
 
 - **Entry.** `components/layout/SidebarNotificationsEntry.vue`: a word pill
   ("3 updates") on the right of the sidebar's Settings row
@@ -468,13 +479,23 @@ turned on (packages, skill sources, runtimes; never the app).
   first opens a danger confirmation (local changes are replaced without asking
   and cannot be restored); runtimes turn on at once. Once on, the card says how
   many waiting updates will be installed within about a minute; with Update
-  checks off it says it has no effect. Confirmations opened from the panel use
+  checks off it says it has no effect. The Software update card has the app's
+  own switch (`kind: 'app'`, autobyteus-356): kept by the desktop shell
+  (`AppUpdateState.automaticUpdate`, IPC `app-update:set-automatic` through
+  `appUpdateStore.setAutomaticUpdate`), off by default, no confirmation, "The app
+  restarts by itself" in its explanation, and "only a check you start installs
+  new versions" while the app's own checks are off. The same switch is on
+  Settings → Updates. Confirmations opened from the panel use
   `ConfirmationModal`'s `layerClass="z-[100]"` so they sit above it, and the
   panel leaves outside clicks and Esc to them.
 - **Outcomes** are rows of their kind: "Updated automatically to …" (green,
-  unread until seen, with the compare link, or "From <version>" for a runtime,
-  and Clear); an automatic failure keeps the row waiting with a red box "Automatic
-  update failed. Nothing was changed." and the reason, plus Update; a runtime
+  unread until seen, with the compare link, or "From <version>" for a runtime
+  and the app, and Clear); an automatic failure keeps the row waiting with a red
+  box "Automatic update failed. Nothing was changed." and the reason, plus Update
+  (Download for the app). The app's outcome comes from the shell's record
+  (`AppUpdateNotification.outcome`, `outcomeReason`); an unread `AUTO_UPDATED`
+  app row keeps the entry visible and counts in its "N updated" like the other
+  kinds (the store's `automaticOutcomeRows` is the one set). A runtime
   whose agents run shows Update at 50 % (`aria-disabled`) and "Update unavailable
   while N agents are running." (with the switch on: "It will be updated
   automatically once no agent is running.").
@@ -531,7 +552,10 @@ turned on (packages, skill sources, runtimes; never the app).
   are off" before any check while off. A failed periodic check is quiet (no
   toast, `isQuietBackgroundAppUpdateError`) and adds "The last automatic check
   failed. The next one runs at the interval." A found app update is only
-  announced; Download and Install stay the user's actions. Windows without the
+  announced; Download and Install stay the user's actions, unless **Update
+  automatically** (below the channel, `AutoUpdateSwitch` `variant="settings"`)
+  is on: then any check's find downloads and, once downloaded, installs and
+  restarts at once (`electron_packaging.md`, Automatic App Updates). Windows without the
   shell's checks (browser windows, disabled updates) have no such section.
 
 ## Server Settings: Embedding

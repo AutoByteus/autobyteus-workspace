@@ -1,0 +1,9 @@
+# TEMPORARY API/E2E harness (autobyteus-356), kept as evidence. The published 1.5.11-beta.7 server image (the
+# user's nodes' image line; no server change in this ticket) with a throwaway package-signing public key, so the
+# node accepts packages signed by this run's throwaway key from the local release source. BUILT_IN labels the
+# built-in package's version (as 305's API-41 did): 1.5.11-beta.7 (older than the desktop), -beta.10 (same),
+# -beta.12 (newer).
+FROM autobyteus/autobyteus-server:1.5.11-beta.7
+ARG BUILT_IN=1.5.11-beta.7
+COPY test.pub /opt/autobyteus/starter/server-package-signing-key.pem
+RUN node -e "const f='/opt/autobyteus/server-package/server-package.json',fs=require('fs');const j=JSON.parse(fs.readFileSync(f));j.version=process.argv[1];fs.writeFileSync(f,JSON.stringify(j,null,2)+'\n')" "$BUILT_IN"

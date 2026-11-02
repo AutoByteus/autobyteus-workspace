@@ -1,0 +1,24 @@
+# user's installed-app updater caches, metadata only, 2026-11-02T05:09:19Z
+## /Users/normy/Library/Caches/com.autobyteus.app.ShipIt
+total 2032
+drwxr-xr-x    5 normy  staff      160 Nov  1 11:41:50 2026 .
+-rw-r--r--    1 normy  staff      283 Nov  1 11:41:35 2026 ShipItState.plist
+-rw-r--r--    1 normy  staff  1033588 Nov  1 11:41:56 2026 ShipIt_stderr.log
+-rw-r--r--    1 normy  staff        0 Feb 28 19:46:23 2026 ShipIt_stdout.log
+## /Users/normy/Library/Caches/autobyteus-updater
+total 957584
+drwxr-xr-x    5 normy  staff        160 Feb 28 19:46:12 2026 .
+-rw-r--r--@   1 normy  staff     502988 Nov  1 11:41:22 2026 current.blockmap
+drwxr-xr-x    2 normy  staff         64 Nov  1 20:48:54 2026 pending
+-rw-r--r--@   1 normy  staff  489776465 Nov  1 11:41:21 2026 update.zip
+## /Users/normy/Library/Caches/com.autobyteus.app
+total 160
+drwxr-xr-x    6 normy  staff    192 Feb 28 19:46:12 2026 .
+-rw-r--r--@   1 normy  staff  49152 Feb 27 08:59:35 2026 Cache.db
+-rw-r--r--@   1 normy  staff  32768 Nov  1 11:41:21 2026 Cache.db-shm
+-rw-r--r--@   1 normy  staff      0 Feb 27 08:59:35 2026 Cache.db-wal
+drwxr-xr-x@   2 normy  staff     64 Feb 28 19:46:12 2026 fsCachedData
+## an356 state (expect none)
+ls: ~/Library/Caches/*an356*: No such file or directory
+ls: ~/Library/HTTPStorages/*an356*: No such file or directory
+ls: ~/Library/Preferences/*an356*: No such file or directory

@@ -25,6 +25,7 @@ import {
   identifyNodeEntry,
   sanitizeBaseUrl,
   saveNodeRegistrySnapshot,
+  setNodeAutoUpdate,
 } from '../nodeRegistryStore'
 import { ServerManagerFactory } from '../server/serverManagerFactory'
 import type { BaseServerManager } from '../server/baseServerManager'
@@ -42,6 +43,11 @@ import { WorkspaceShellWindowRegistry } from '../shell/workspace-shell-window-re
 import { validateReadableRegularFile } from '../localFileValidation'
 import { installLocalFileProtocol } from '../local-file-protocol/local-file-protocol'
 import { runElectronFileMigrations } from '../../client-data-migrations/electron-file-runner'
+import { NodeAutoUpdater } from '../nodeAutoUpdate/nodeAutoUpdater'
+import { NodeAutoUpdateRecord } from '../nodeAutoUpdate/nodeAutoUpdateRecord'
+import { createNodeUpdateClient } from '../nodeAutoUpdate/nodeUpdateClient'
+import { registerNodeAutoUpdateIpc } from '../nodeAutoUpdate/nodeAutoUpdateIpc'
+import { NODE_AUTO_UPDATE_CHANGED_CHANNEL, type NodeAutoUpdateEntries } from '../../shared/nodeAutoUpdateTypes'
 
 type ElectronApplicationOptions = {
   profile: ElectronLaunchProfile
@@ -59,6 +65,7 @@ export class ElectronApplication {
   private readonly shutdown = new ApplicationShutdown(() => this.stopResources(), () => logger.close(), 30000,
     error => logger.error('Application shutdown incomplete', error))
   private nodeRegistrySnapshot: NodeRegistrySnapshot = { version: 0, nodes: [] }
+  private nodeAutoUpdater: NodeAutoUpdater | null = null
 
   constructor({ profile }: ElectronApplicationOptions) {
     this.profile = profile
@@ -69,10 +76,14 @@ export class ElectronApplication {
       environmentPolicy: profile.name === 'e2e' ? 'isolated-baseline' : 'inherit-caller',
     })
     this.serverStatusManager = new ServerStatusManager(this.serverManager)
+    const installHooks = {
+      prepareForInstall: () => this.prepareForInstall(),
+      recoverAfterFailedInstall: () => this.recoverAfterFailedInstall(),
+    }
     this.appUpdateController = profile.updaterEnabled
-      ? new AppUpdater({ prepareForInstall: () => this.prepareForInstall() })
+      ? new AppUpdater(installHooks)
       : profile.testUpdateFeedUrl
-        ? new AppUpdater({ testFeedUrl: profile.testUpdateFeedUrl, prepareForInstall: () => this.prepareForInstall() })
+        ? new AppUpdater({ ...installHooks, testFeedUrl: profile.testUpdateFeedUrl })
         : new DisabledAppUpdater()
   }
 
@@ -119,6 +130,7 @@ export class ElectronApplication {
     this.nodeRegistrySnapshot = snapshot
     saveNodeRegistrySnapshot(app.getPath('userData'), snapshot)
     this.broadcastNodeRegistrySnapshot()
+    this.nodeAutoUpdater?.nodesChanged()
   }
 
   private getWindowContextByWebContentsId(webContentsId: number): WindowNodeContext {
@@ -231,6 +243,10 @@ export class ElectronApplication {
       const identified = identifyNodeEntry(existingNodes, change, now)
       if (identified === existingNodes) return this.nodeRegistrySnapshot
       existingNodes = identified
+    } else if (change.type === 'set-auto-update') {
+      const changed = setNodeAutoUpdate(existingNodes, change, now)
+      if (changed === existingNodes) return this.nodeRegistrySnapshot
+      existingNodes = changed
     } else {
       const neverChange: never = change
       throw new Error(`Unsupported registry change: ${JSON.stringify(neverChange)}`)
@@ -379,6 +395,7 @@ export class ElectronApplication {
       ),
     })
     this.installIpcHandlers()
+    this.startNodeAutoUpdates()
     this.serverStatusManager.on('status-change', (status) => {
       this.shellWindowRegistry.broadcast('server-status', status)
     })
@@ -414,7 +431,31 @@ export class ElectronApplication {
       this.shutdown.acceptIncompleteStopForInstall()
     }
   }
+  /**
+   * After a failed automatic install (autobyteus-356): the old version starts again with its server, but only when the
+   * server is gone; an unconfirmed exit never relaunches, so no second server starts on the same data (284).
+   */
+  private recoverAfterFailedInstall(): void {
+    if (!this.serverManager.isServerProcessGone()) {
+      logger.error('The automatic update did not install and the server exit is not confirmed; the app stays open.')
+      return
+    }
+    logger.warn('The automatic update did not install; relaunching this version.')
+    app.relaunch()
+    app.exit(0)
+  }
+  /** Automatic node updates run in the main process, with or without a window (autobyteus-356, DS-003). */
+  private startNodeAutoUpdates(): void {
+    const record = new NodeAutoUpdateRecord(app.getPath('userData'))
+    const broadcast = (entries: NodeAutoUpdateEntries) => this.shellWindowRegistry.broadcast(NODE_AUTO_UPDATE_CHANGED_CHANNEL, entries)
+    registerNodeAutoUpdateIpc(ipcMain, record, broadcast)
+    this.nodeAutoUpdater = new NodeAutoUpdater({ getNodes: () => this.nodeRegistrySnapshot.nodes, appVersion: app.getVersion(),
+      isPackaged: app.isPackaged, record, client: createNodeUpdateClient(), onChange: broadcast })
+    this.nodeAutoUpdater.nodesChanged()
+    this.nodeAutoUpdater.start()
+  }
   private async stopResources(): Promise<void> {
+    this.nodeAutoUpdater?.stop()
     const errors: unknown[] = []
     try { await this.serverManager.stopServer() } catch (error) { errors.push(error); logger.error('Backend shutdown incomplete', error) }
     try { await this.browserRuntime?.stop() } catch (error) { errors.push(error); logger.error('Browser shutdown incomplete', error) }

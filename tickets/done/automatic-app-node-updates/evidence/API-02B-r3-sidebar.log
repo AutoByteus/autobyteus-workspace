@@ -1,0 +1,18 @@
+{
+  "before": {
+    "text": "1 updated",
+    "label": "1 update applied automatically: 1 updated automatically"
+  }
+}
+{
+  "whileOpen": {
+    "text": "1 updated",
+    "label": "1 update applied automatically: 1 updated automatically",
+    "expanded": "true"
+  },
+  "panel": "Notifications | Software update | Update automatically | New versions on your channel install as soon as they are downloaded, and the app restarts by itself. Switch off to update by hand. | New: | AutoByteus | Updated automatically to 1.5.11-beta.11 | Clear | From 1.5.11-beta.10",
+  "read": true
+}
+{
+  "afterClose": null
+}

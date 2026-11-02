@@ -23,6 +23,8 @@ export const APP_UPDATE_IPC_MARK_NOTIFICATION_READ = 'app-update:mark-notificati
 export const APP_UPDATE_IPC_CLEAR_NOTIFICATION = 'app-update:clear-notification'
 /** The app's automatic checks: `{ enabled, intervalMinutes }` (15..1440) → `AppUpdateState`. */
 export const APP_UPDATE_IPC_SET_AUTO_CHECK = 'app-update:set-auto-check'
+/** "Update automatically" for the app: `boolean` → `AppUpdateAutomaticChangeResult` (autobyteus-356). */
+export const APP_UPDATE_IPC_SET_AUTOMATIC = 'app-update:set-automatic'
 
 export const APP_UPDATE_IPC_COMMAND_CHANNELS: readonly string[] = Object.freeze([
   APP_UPDATE_IPC_GET_STATE,
@@ -33,4 +35,5 @@ export const APP_UPDATE_IPC_COMMAND_CHANNELS: readonly string[] = Object.freeze(
   APP_UPDATE_IPC_MARK_NOTIFICATION_READ,
   APP_UPDATE_IPC_CLEAR_NOTIFICATION,
   APP_UPDATE_IPC_SET_AUTO_CHECK,
+  APP_UPDATE_IPC_SET_AUTOMATIC,
 ])

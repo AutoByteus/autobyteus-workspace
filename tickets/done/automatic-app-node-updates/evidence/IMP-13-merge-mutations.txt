@@ -1,0 +1,18 @@
+# IMP-13 merge resolution with autobyteus-363 (DR-001): mutations of the merged server cell must turn a NodeAutoUpdate.spec test red.
+# Commit: merge working tree of origin/personal fc5a726444 into b0445f49b9 (mutated and restored)  Env: macOS 26.5.2, v22.23.1, vitest 3.2.7  Date: 2026-11-02
+
+== baseline
+      Tests  12 passed (12)
+== M1 the notice repeats the automatic result
+   × NodeAutoUpdate > the server line asks the node again when the desktop requests and ends an automatic update, without a second notice 9ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 11 passed (12)
+== M2 both parts ask the node again
+   × NodeAutoUpdate > sits in the server cell, and only the cell asks the node again on an automatic change (autobyteus-363 layout) 5ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 11 passed (12)
+== M3 the switch is not rendered
+   × NodeAutoUpdate > a node that can update in place shows the switch, off by default, with what it means (AC-001) 11ms
+   × NodeAutoUpdate > turning it on is a desktop registry change for the row's entry; turning it off removes it (REQ-003, REQ-006) 3ms
+   × NodeAutoUpdate > a failed save says so and leaves the switch 2ms
+   × NodeAutoUpdate > no switch for a node that cannot update in place, unless it is on 3ms

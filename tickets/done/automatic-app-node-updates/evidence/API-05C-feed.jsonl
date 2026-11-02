@@ -1,0 +1,4 @@
+{"marker":"API-05C start 2026-11-02T05:33:28Z"}
+{"at":"2026-11-02T05:33:46.370Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dbvlvr","status":200,"mode":"good","bytes":384}
+{"at":"2026-11-02T05:33:55.439Z","method":"GET","url":"/AutoByteus-1.5.11-beta.11-arm64-mac.zip","status":200,"mode":"good","bytes":492197205}
+{"at":"2026-11-02T05:35:29.395Z","method":"GET","url":"/latest-mac.yml?noCache=1k6dc2qjg","status":200,"mode":"good","bytes":384}

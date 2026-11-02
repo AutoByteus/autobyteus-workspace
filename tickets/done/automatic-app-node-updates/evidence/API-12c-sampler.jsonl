@@ -1,0 +1,10 @@
+{"at":"2026-11-02T08:33:33.720Z","state":"no-update|preparing=false|staged=false||","health":200,"marker":null}
+{"at":"2026-11-02T08:33:37.281Z","state":"downloading|preparing=false|staged=false||","health":200,"marker":null}
+{"at":"2026-11-02T08:33:39.305Z","state":"downloaded|preparing=true|staged=true||","health":200,"marker":null}
+{"at":"2026-11-02T08:34:35.997Z","state":"error|preparing=false|staged=false|install-preparation|AUTO_FAILED","health":200,"marker":null}
+{"at":"2026-11-02T08:34:42.071Z","state":"downloading|preparing=false|staged=false||","health":200,"marker":null}
+{"at":"2026-11-02T08:34:42.579Z","state":"downloaded|preparing=true|staged=true||","health":200,"marker":null}
+{"at":"2026-11-02T08:35:21.925Z","state":"installing|preparing=false|staged=true||","health":0,"marker":null}
+{"at":"2026-11-02T08:35:22.427Z","state":"window-gone","health":0,"marker":null}
+{"at":"2026-11-02T08:35:55.245Z","state":"window-gone","health":200,"marker":null}
+{"end":"2026-11-02T08:43:34.045Z"}

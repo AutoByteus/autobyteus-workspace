@@ -1,0 +1,9 @@
+{"at":"2026-11-02T08:00:30.567Z","state":"no-update|preparing=false|staged=false||","health":200,"marker":null}
+{"at":"2026-11-02T08:00:32.109Z","state":"available|preparing=false|staged=false||","health":200,"marker":null}
+{"at":"2026-11-02T08:00:34.661Z","state":"downloading|preparing=false|staged=false||","health":200,"marker":null}
+{"at":"2026-11-02T08:00:36.686Z","state":"downloaded|preparing=false|staged=true||","health":200,"marker":null}
+{"at":"2026-11-02T08:01:41.688Z","state":"available|preparing=false|staged=true||","health":200,"marker":null}
+{"at":"2026-11-02T08:01:44.229Z","state":"downloading|preparing=false|staged=true||","health":200,"marker":null}
+{"at":"2026-11-02T08:01:45.248Z","state":"downloaded|preparing=true|staged=true||","health":200,"marker":null}
+{"at":"2026-11-02T08:01:49.288Z","state":"error|preparing=false|staged=false|install-preparation|AUTO_FAILED","health":200,"marker":null}
+{"end":"2026-11-02T08:10:30.740Z"}

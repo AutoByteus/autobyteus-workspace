@@ -1,9 +1,11 @@
 import type {
   AppUpdateAutoCheck,
+  AppUpdateAutomaticChangeResult,
   AppUpdateChannel,
   AppUpdateChannelChangeResult,
   AppUpdateState,
 } from '../shared/appUpdateTypes';
+import type { NodeAutoUpdateEntries } from '../shared/nodeAutoUpdateTypes';
 import type {
   NodeRegistryChange,
   NodeRegistrySnapshot,
@@ -55,10 +57,14 @@ interface Window {
     downloadAppUpdate: () => Promise<AppUpdateState>;
     installAppUpdateAndRestart: () => Promise<{ accepted: boolean }>;
     setAppUpdateChannel: (channel: AppUpdateChannel) => Promise<AppUpdateChannelChangeResult>;
+    setAppUpdateAutomatic: (enabled: boolean) => Promise<AppUpdateAutomaticChangeResult>;
     markAppUpdateNotificationRead: () => Promise<AppUpdateState>;
     clearAppUpdateNotification: () => Promise<AppUpdateState>;
     setAppUpdateAutoCheck: (settings: AppUpdateAutoCheck) => Promise<AppUpdateState>;
     onAppUpdateState: (callback: (updateState: AppUpdateState) => void) => Cleanup;
+    getNodeAutoUpdateState: () => Promise<NodeAutoUpdateEntries>;
+    markNodeAutoUpdateRead: (entryId: string) => Promise<NodeAutoUpdateEntries>;
+    onNodeAutoUpdateChanged: (callback: (entries: NodeAutoUpdateEntries) => void) => Cleanup;
 
     getLogFilePath: () => Promise<string>;
     openLogFile: (filePath: string) => Promise<{ success: boolean; error?: string }>;

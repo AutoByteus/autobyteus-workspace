@@ -1,0 +1,11 @@
+# API-02C (throttled) 2026-11-02T05:48:10Z: taskpolicy -b on V1 once 'installing'. An emulation far stronger than a real slower Mac
+record: {"version":"1.5.11-beta.11","fromVersion":"1.5.11-beta.10","foundAt":"2026-11-02T05:45:16.390Z","read":false,"handledVersion":null,"handledAt":null,"automatic":null,"automaticFailure":{"version":"1.5.11-beta.11","step":"install","reason":"Theupdatewasdownloaded,butAutoByteuscouldnotrestarttoinstallit.Tryagain."},"outcome":null}
+bundle: 1.5.11-beta.10
+[2026-11-02T05:45:17.077Z] [INFO] [electron] [updater] New version 1.5.11-beta.11 has been downloaded to /Users/normy/Library/Caches/autobyteus-updater-an356/pending/Auto
+[2026-11-02T05:45:17.967Z] [INFO] [electron] [updater] / requested
+[2026-11-02T05:45:18.108Z] [INFO] [electron.server.base-server-manager] Server process exited with code 0
+[2026-11-02T05:46:33.713Z] [ERROR] [electron] [updater] Failed to install update and restart. (kind=install, operation=install, code=none)
+The app did not quit to install the update within 60 seconds.
+Error: The app did not quit to install the update within 60 seconds.
+    at process.processTimers (node:internal/timers:571:7) Error: The app did not quit to install the update within 60 seconds.
+[2026-11-02T05:46:38.463Z] [WARN] [electron] The automatic update did not install; relaunching this version.

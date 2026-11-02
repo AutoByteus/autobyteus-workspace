@@ -667,9 +667,13 @@ Auto-updates are powered by `electron-updater` in the main process via `electron
     Notification Center's intents; both return `AppUpdateState`)
   - `app-update:set-auto-check` (`{ enabled, intervalMinutes }`; returns
     `AppUpdateState`)
+  - `app-update:set-automatic` (a boolean; returns
+    `AppUpdateAutomaticChangeResult`, see [Automatic App Updates](#automatic-app-updates))
 - The handlers are registered by `electron/updater/appUpdateIpc.ts`.
-- Nothing downloads by itself (`autoDownload = false`). An available update is
-  announced only in the Notification Center (the self-opening card is gone).
+- Nothing downloads by itself (`autoDownload = false`) unless the user turned on
+  **Update automatically** ([Automatic App Updates](#automatic-app-updates)). An
+  available update is announced only in the Notification Center (the
+  self-opening card is gone).
 
 ### Automatic App Checks
 
@@ -698,7 +702,85 @@ only starts it.
   `isQuietBackgroundAppUpdateError`); Settings → Updates shows it.
 - `checkedAt` marks a finished check (its result or its failure), not its start.
 - A periodic check that finds an update only announces it: nothing downloads
-  or installs without the user's press.
+  or installs without the user's press, unless **Update automatically** is on.
+
+### Automatic App Updates
+
+"Update automatically" for the app (autobyteus-356) is kept by the desktop in
+`userData/app-update-automatic.json` (`{ enabled }`, off by default; missing or
+invalid reads as off; atomic writes; `appUpdateAutomaticStore.ts`). No server,
+GraphQL, REST route or agent tool reads or writes it.
+
+- `AppUpdateAutomaticPolicy` (`appUpdateAutomaticPolicy.ts`) owns the sequence and
+  calls the same `downloadUpdate()` and `installUpdateAndRestart()` a click runs. A
+  version any check finds downloads. The switch is read at each event: turned off
+  during a download, nothing installs (the staged update still installs on quit, as
+  today). Turning it on continues an update that is `available` or `downloaded`.
+- **As soon as the download is done.** Not on macOS: `update-downloaded` installs at
+  once. On macOS electron-updater reports the download before Squirrel has fetched,
+  unpacked and verified its copy (about 36 s idle, over 60 s on a busy machine), and a
+  native refusal arrives only then. So `AppUpdateInstallReadiness` waits for Electron's
+  own `update-downloaded` (every electron-updater report, also a cached re-emit, resets
+  it), and nothing stops until then. During this one wait, bounded at 15 minutes, the
+  app and its server keep working, the status stays `downloaded`,
+  `AppUpdateState.automaticInstallPreparing` is true, and no check or download runs (the
+  check button is disabled). The row's Install click still works: it ends the wait and
+  follows the manual path.
+- **The wait's failures** stop nothing and run no recovery; they record an `install`
+  failure, which blocks the version. Any updater `error` during the wait is the
+  system updater's refusal: the state is `install-preparation`, `updateStaged` is false
+  (Squirrel holds nothing, so automatic checks run again and a newer version is tried),
+  and the rest of that refusal (a second `error`, the rejected download) only logs. The
+  bound keeps status `downloaded` and the stage, because Squirrel may still finish.
+- A version already staged and ready, with a later check at `available`, installs with
+  no second native fetch.
+- `AppUpdateAutomaticRun` (`appUpdateAutomaticRun.ts`) keeps the run: a failed
+  automatic download (the `error` event or a rejected download while the
+  download runs) is recorded once and tried again at the next check; it never replaces
+  an install failure of that version. An automatic install is recorded only when it
+  was accepted (`automatic: { version }` in `app-update-notification.json`). It has
+  failed when the install throws, the updater reports an `error` during the install,
+  or the app does not quit within 60 s (`before-quit` clears the bound). It is then
+  recorded once as an install failure, which blocks that version (`blocksAutomatic`;
+  also for the rest of the process once its install was requested).
+  `AppUpdateInstallAttempt` (`appUpdateInstallAttempt.ts`) settles first: a failure
+  before the preparation started cancels the install; a failure during or after it
+  waits for the preparation and skips `quitAndInstall`, and then
+  `recoverAfterFailedInstall` runs: `ElectronApplication` relaunches this version
+  (`app.relaunch()`, `app.exit(0)`) only when the server process is gone; otherwise the
+  app stays open with the failure row. The automatic path records plain reasons, never
+  raw system text.
+- After the restart, the record's reconcile marks the notification handled
+  with `outcome: 'AUTO_UPDATED'` (unread) when the app runs the version, or
+  records an install failure when it still runs the old one. The Notification
+  Center reads `outcome` and `outcomeReason`.
+- `DisabledAppUpdater` refuses the switch (`accepted: false`) and reports
+  `automaticUpdate: false`.
+
+### Automatic Node Updates
+
+`electron/nodeAutoUpdate/` (autobyteus-356) updates each remote Docker node
+whose registry entry has `autoUpdate: true` to this desktop's version, in the
+main process, so it runs with no window open. Packaged builds only.
+
+- `NodeAutoUpdater` runs a pass 2 minutes after the start and then every 60
+  minutes (never overlapping, nodes one after another), and checks at once a
+  node whose switch turns on. Each node is asked `GET /rest/node-update?target=V`
+  through `nodeUpdateClient.ts` (C1, 10 s timeout).
+- `decideNodeAutoUpdate` requests `POST { version: V }` only when the node can
+  update in place, `target.relation` is `newer`, no update runs, nothing blocks
+  it, and it has no pending or failed attempt at V (one attempt per version per
+  node). Only a 202 is an attempt; a 409, a network error or a timeout changes
+  nothing and the next pass tries again.
+- An accepted update is followed every 10 s for up to 15 minutes, on its own
+  timer, and reconciled: `AUTO_UPDATED` when the node runs V with no update
+  running or its update succeeded; `AUTO_FAILED` with the node's reason when
+  it failed or was refused; `AUTO_FAILED` "The node did not finish the update."
+  30 minutes after the request with no update running.
+- Outcomes are kept in `userData/node-auto-updates.json` (tolerant read, atomic
+  writes, entries of removed nodes dropped) and reach windows through
+  `node-auto-update:get-state`, `node-auto-update:mark-read` and the broadcast
+  `node-auto-update:changed`.
 
 ### App Update Notification
 

@@ -1,0 +1,22 @@
+# API-02D after the false failure 2026-11-02T05:53:06Z
+{
+  "aria": "true",
+  "download": true,
+  "status": "available",
+  "availableVersion": "1.5.11-beta.11",
+  "automaticUpdate": true,
+  "currentVersion": "1.5.11-beta.10",
+  "message": "Version 1.5.11-beta.11 is available.",
+  "errorOperation": null,
+  "outcome": "AUTO_FAILED",
+  "outcomeReason": "The update was downloaded, but AutoByteus could not restart to install it. Try again."
+}
+{
+  "entryText": "1 update",
+  "entryLabel": "1 update available: 1 software update",
+  "autoFailed": "Automatic update failed. Nothing was changed. | The update was downloaded, but AutoByteus could not restart to install it. Try again.",
+  "centerText": "Notifications | Software update | Update automatically | New versions on your channel install as soon as they are downloaded, and the app restarts by itself. Switch off to update by hand. | New: | AutoByteus | 1.5.11-beta.10 | 1.5.11-beta.11 | · | 3 min. ago | Download | Automatic update failed. Nothing was changed. | The update was downloaded, but AutoByteus could not restart to install it. Try again."
+}
+health: {"status":"ok","message":"Server is running"}
+bundle: 1.5.11-beta.10
+after quit: bundle 1.5.11-beta.10, procs        0, shipit 0

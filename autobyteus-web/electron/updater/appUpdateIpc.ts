@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron';
-import type { AppUpdateChannelChangeResult, AppUpdateState } from '../../shared/appUpdateTypes';
+import type { AppUpdateAutomaticChangeResult, AppUpdateChannelChangeResult, AppUpdateState } from '../../shared/appUpdateTypes';
 import type { AppUpdateCheckSchedule } from './appUpdateCheckSchedule';
 import {
   APP_UPDATE_IPC_CHECK,
@@ -10,6 +10,7 @@ import {
   APP_UPDATE_IPC_INSTALL,
   APP_UPDATE_IPC_MARK_NOTIFICATION_READ,
   APP_UPDATE_IPC_SET_AUTO_CHECK,
+  APP_UPDATE_IPC_SET_AUTOMATIC,
   APP_UPDATE_IPC_SET_CHANNEL,
 } from './appUpdateController';
 
@@ -20,6 +21,7 @@ export type AppUpdateIpcUpdater = {
   downloadUpdate(): Promise<AppUpdateState>;
   installUpdateAndRestart(): { accepted: boolean };
   setUpdateChannel(channel: unknown): Promise<AppUpdateChannelChangeResult>;
+  setAutomaticUpdate(enabled: unknown): AppUpdateAutomaticChangeResult;
   markNotificationRead(): AppUpdateState;
   clearNotification(): AppUpdateState;
 };
@@ -39,6 +41,7 @@ export function registerAppUpdateIpc(updater: AppUpdateIpcUpdater, schedule: Pic
   ipcMain.handle(APP_UPDATE_IPC_DOWNLOAD, async () => await updater.downloadUpdate());
   ipcMain.handle(APP_UPDATE_IPC_INSTALL, async () => updater.installUpdateAndRestart());
   ipcMain.handle(APP_UPDATE_IPC_SET_CHANNEL, async (_event, channel: unknown) => await updater.setUpdateChannel(channel));
+  ipcMain.handle(APP_UPDATE_IPC_SET_AUTOMATIC, async (_event, enabled: unknown) => updater.setAutomaticUpdate(enabled));
   ipcMain.handle(APP_UPDATE_IPC_MARK_NOTIFICATION_READ, async () => updater.markNotificationRead());
   ipcMain.handle(APP_UPDATE_IPC_CLEAR_NOTIFICATION, async () => updater.clearNotification());
   ipcMain.handle(APP_UPDATE_IPC_SET_AUTO_CHECK, async (_event, settings: unknown) => {
