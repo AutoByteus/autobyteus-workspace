@@ -1,0 +1,38 @@
+# Evidence: IMP-04-remote-nodes-page-probe.log
+# Command: pnpm -C autobyteus-web test:e2e:remote-nodes-page --output-dir=<this folder>/IMP-04-remote-nodes-page-probe
+# Commit: 3b9dc912a1 with the uncommitted 363 working tree (before commits 1827e6f2bd/523bd0454b)
+# Env: Darwin 25.5.0, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-02 (morning, before 09:40)
+# Run by: implementation_engineer (autobyteus-363)
+# Note: Superseded by IMP-07. First run, before the NP-12 baseline fix (1827e6f2bd) and the NodeRow medium-layout fix: NP-01…NP-11 Pass, NP-12 Fail (baseline cause: /rest/node-update since 305).
+
+
+> autobyteus@1.5.11-beta.10 test:e2e:remote-nodes-page /Users/normy/autobyteus_org/autobyteus-worktrees/manage-nodes-professional/autobyteus-web
+> node tests/e2e/remote-nodes-page-probe.mjs --output-dir=/Users/normy/autobyteus_org/autobyteus-worktrees/manage-nodes-professional/tickets/in-progress/manage-nodes-professional/evidence/implementation/IMP-04-remote-nodes-page-probe
+
+[probe] NP-01 started
+[probe] NP-01 Pass
+[probe] NP-02 started
+[probe] NP-02 Pass
+[probe] NP-03 started
+[probe] NP-03 Pass
+[probe] NP-11 started
+[probe] NP-11 Pass
+[probe] NP-04 started
+[probe] NP-04 Pass
+[probe] NP-05 started
+[probe] NP-05 Pass
+[probe] NP-06 started
+[probe] NP-06 Pass
+[probe] NP-07 started
+[probe] NP-07 Pass
+[probe] NP-08 started
+[probe] NP-08 Pass
+[probe] NP-09 started
+[probe] NP-09 Pass
+[probe] NP-10 started
+[probe] NP-10 Pass
+[probe] NP-12 started
+[probe] NP-12 Fail: the other nodes see only their settings API and identity page: /rest/node-update,/rest/remote-access/status,AddPeerNode,GetPeerAddressCandidates,GetPeerNodeAvailability,GetRemoteCollaborationCapability,GetRemoteCollaborationSettings,RemovePeerNode,ResolvePeerAddress,SetRemoteCollaborationEnabled
+remote-nodes-page probe: Fail
+ ELIFECYCLE  Command failed with exit code 1.
