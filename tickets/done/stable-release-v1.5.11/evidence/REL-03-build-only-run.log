@@ -1,0 +1,9 @@
+# REL-03 build-only release run (pnpm release:test --ref personal) on c4788d81b5
+run 41473349105, attempt 1: success
+  Resolve Release Metadata: success
+  Build macOS ARM64: success
+  Build macOS Intel x64: success
+  Build Linux ARM64: success
+  Build Windows x64: success
+  Build Linux x64: success
+  Publish GitHub Release: skipped

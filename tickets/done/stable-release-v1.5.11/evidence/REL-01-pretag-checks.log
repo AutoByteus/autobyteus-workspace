@@ -1,0 +1,5 @@
+# REL-01 free pre-tag checks for stable v1.5.11 on personal c4788d81b5 (branch tip 17036795ec adds only the handoff)
+python3 scripts/check_licensing.py -> Licensing is consistent.
+python3 scripts/check_repository_artifact_hygiene.py -> Repository artifact hygiene check passed.
+scripts/check_secrets.sh v1.5.10..origin/personal -> scanning 753 commit(s); PASS (no secrets found)
+scripts/check_secrets.sh origin/personal..HEAD -> PASS (no secrets found)
