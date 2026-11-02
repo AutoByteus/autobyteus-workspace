@@ -674,8 +674,9 @@ try {
     const offerHosts = [...new Set(evidence.requests.filter(entry => entry.op === 'GetPeerNodeOffer').map(entry => entry.to))];
     const toOthers = evidence.requests.filter(entry => entry.to !== 'alpha' && !entry.to.startsWith('other:'));
     const opsToOthers = [...new Set(toOthers.map(entry => entry.op ?? entry.path))].sort();
-    const allowed = ['/rest/remote-access/status', 'AddPeerNode', 'GetPeerAddressCandidates', 'GetPeerNodeAvailability', 'GetRemoteCollaborationCapability',
-      'GetRemoteCollaborationSettings', 'RemovePeerNode', 'ResolvePeerAddress', 'SetRemoteCollaborationEnabled'];
+    // `/rest/node-update`: since autobyteus-305 the window asks each remote node it reaches for its server version.
+    const allowed = ['/rest/node-update', '/rest/remote-access/status', 'AddPeerNode', 'GetPeerAddressCandidates', 'GetPeerNodeAvailability',
+      'GetRemoteCollaborationCapability', 'GetRemoteCollaborationSettings', 'RemovePeerNode', 'ResolvePeerAddress', 'SetRemoteCollaborationEnabled'];
     expect(JSON.stringify(offerHosts) === JSON.stringify(['alpha']), `offers only from alpha: ${offerHosts}`);
     expect(opsToOthers.every(op => allowed.includes(op)), `the other nodes see only their settings API and identity page: ${opsToOthers}`);
     return { offerHosts, opsToOthers, requestsToOthers: toOthers.length, totalRequests: evidence.requests.length,
