@@ -118,10 +118,17 @@ how to apply them; they do not replace user-approved product requirements.
 12. **A release build starts from `pnpm install` alone.** A release runner has no
    built `*/dist/`, no generated Prisma client and no codegen output. A developer
    machine, and a clone that followed TESTING.md's install order, has them, so
-   a gate that passes there can fail on the runner. When a design adds or
-   widens a build step, type check, codegen or test gate that reads another
-   workspace package's build output (a `dist/` that an `exports` entry points
-   to, the Prisma client, generated types), the design:
+   a gate that passes there can fail on the runner.
+
+   **When it applies: any task that touches what a gate reads, whatever the
+   task is about.** That is: a `package.json` script, a `tsconfig` (`include`,
+   `paths`, `references`), a codegen or workflow file, a test added to a
+   project that a type check or build compiles, or an import from one
+   workspace package into code another package's gate compiles. Autobyteus-318
+   only wanted three tests type-checked, yet it made the web gate compile the
+   server's source. If the touched gate reads another workspace package's
+   build output (a `dist/` that an `exports` entry points to, the Prisma
+   client, generated types), the design:
    - names each package or generated output the gate reads;
    - names the prepare step that builds each one, and that step is the gate's
      own (its prepare script), not an earlier step of one build chain and not a
@@ -464,8 +471,9 @@ standalone document or a new layer of bureaucracy:
 - [ ] Payload, renderer cost, and publication freshness are considered together.
 - [ ] Unnecessary work was considered for removal before caching or abstraction.
 - [ ] Obsolete paths/dependencies and affected tests have an explicit disposition.
-- [ ] Every workspace package output that a build step or gate reads is built by that
-      step's own prepare script on a fresh runner (rule 12).
+- [ ] If the task touches a script, `tsconfig`, codegen or workflow file, or a test or
+      import that a gate compiles, every workspace package output that gate reads is built
+      by the gate's own prepare script on a fresh runner (rule 12).
 - [ ] Verification proves user-visible outcomes and work reduction without
       weakening correctness; uncertainty is stated rather than hidden.
 
