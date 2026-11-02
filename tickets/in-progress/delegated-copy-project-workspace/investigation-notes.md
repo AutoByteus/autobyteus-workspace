@@ -6,7 +6,7 @@
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`)
 - Worktree / branch: `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-project-workspace`, `codex/delegated-copy-project-workspace`
 - Base: `origin/personal` `c952758a81` (fetched 2026-11-02); finalization target `origin/personal`; release only on the user's word
-- Current solution revision: SR-001
+- Current solution revision: SR-002
 - Authorities read (this conversation): solution-designer SKILL.md and its references; root `DESIGN.md`; `docs/design/collaboration_model.md`; server `docs/modules/projects.md`.
 - All findings by reading at `c952758a81`, except E-009 (read-only look at the user's Project links). Nothing was run.
 
@@ -24,6 +24,9 @@
 | E-008 | web `services/agentCollaboration/agentRunCollaborationHydration.ts` 54, `agentRunCollaborationChildContextFactory.ts` 20; `services/teamExecution/teamExecutionContextFactory.ts` 34–52; web `docs/projects.md` | Each child context gets its workspace from its own `source` launch, so Files and Terminal follow the copy's folder once the snapshot has it. In the tree (`AgentRunTaskRows`), a copy is nested under the top-level run that coordinates it (CM-7), in both modes. Remote rows already carry a small node chip. |
 | E-009 | Read-only look at `~/.autobyteus/server-data/projects/*/project.json` | Every Project has one linked folder. (Listing in the conversation.) |
 | E-010 | `assignToExistingCopy` (server `projects.md` § Follow-up Task to an existing copy) | A follow-up Task to an existing copy restores it with its own snapshot: it keeps its folder. |
+
+| E-011 | web `stores/workspace.ts` 413–427 (`activeWorkspaceMetadata` from the selected context's config), `composables/useWorkspaceFileExplorer.ts` 17, `components/workspace/tools/Terminal.vue` 62, `TerminalPanel.vue` 65 | Files and Terminal read the focused agent's folder. No web change needed (the user's expectation holds). |
+| E-012 | `agent-tools/task-delegation/task-delegation-tool-serialization.ts` 12–18 | A `TaskDelegationError` reaches the agent as `{error: {code, message}}`. |
 
 ## Product Design Request Context
 
