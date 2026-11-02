@@ -16,13 +16,13 @@
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md` (IR-001)
 - Relevant Implementation Revision IDs: IR-001 (`cba2e085e7`)
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: 1 (no earlier code review)
+- Current Code Review Revision ID: `CRR-002`
+- Current Review Round: 2 (round 1: CRR-001)
 - Review Scope: `N/A` (failure-origin round)
 - Review Scope Evidence (round >1): `N/A`
 - Trigger: API/E2E round 1 (API-REV-001) `Fail`, 76%: API-03 (AFS-002), two Org findings
 - Prior Review Round Reviewed: none
-- Latest Authoritative Round: 1
+- Latest Authoritative Round: 2
 - Coverage Investigation Reviewed: `api-e2e-coverage-investigation.md`
 - Execution Coverage Report Reviewed: `api-e2e-execution-coverage-report.md` ("Failure Detail (API-03)", Cases, Acceptance-Criteria Proof)
 - API/E2E Revision Record Reviewed: `api-e2e-revision-record.md`
@@ -32,6 +32,38 @@
 - Failing Scenario IDs: API-03 / AFS-002. Finding 1: AC-005, REQ-005 (D-IMP-1). Finding 2: AC-003, REQ-003 (D-IMP-2).
 - Exact Failing Commands / Execution Mode: `env -i PATH HOME USER LOGNAME TMPDIR node autobyteus-web/tests/e2e/delegated-launch-defaults-probe.mjs --cases AFS-002 --output-dir <fresh>`. ENV-1: real Chrome, Nuxt dev, built server, scripted AGY, owned data.
 - Failure Evidence Paths: `evidence/api-e2e/API-03-org-findings.log`, `API-03-AFS-002-org-copy-save-failed.png`. Mine: `evidence/code-review/CRR-001-failure-origin-diagnostics.log`, `CRR-001-run-b-org-copy-save-failed.png`.
+
+## Round 2: API/E2E Failure-Origin Review (API-REV-002, API-05 SSR-003)
+
+- Trigger: API/E2E round 2 (API-REV-002) `Fail`, 89%. Head `c22bb3a915`, probe rework `5f03959a95`, code under test `2dd3c665f5` (IR-002).
+- Round 1: CR-001 and CR-002 are resolved by API/E2E evidence. AFS-002 shows `settingsClosedBy []` and `pendingEditKept true`, and the Org copy's Save shows "Saved." with the card on the saved model. AFS-001 and AFS-003 still pass.
+- Failing case: SSR-003, 2 of 2 runs: `env -i PATH HOME USER LOGNAME TMPDIR node autobyteus-web/tests/e2e/delegated-launch-defaults-probe.mjs --cases SSR-003 --output-dir <fresh>`. Evidence: `evidence/api-e2e/API-05-r2-SSR-003-readback-failure.log`, `API-05-r2-SSR-003-saved-with-stale-card.png`.
+- Scenario basis: `Confirmed`.
+  - A committed Save whose read-back fails must not report success. The user sees "saved, but could not be refreshed", the fields lock, and Refresh reconciles.
+  - This is the existing Save contract (`delegatedLaunchDraftStore.save`: "A committed edit is not unsaved work, even if the read fails; the Settings owner exposes read-only Refresh"; `runSettings.existing.savedRefreshFailed`), and AC-003 relies on it.
+  - A failed read is a supported operational event (network or server outage). The probe's failing query (`GetAgentRunCollaboration`) was not changed by the rework.
+
+### CR-003: a stopped hub copy's Save reports "Saved." when its view re-read fails, and the card stays stale (AC-003)
+
+- How established: `Read`, matching API/E2E's reproduction (2/2 runs) request by request. I did not rerun it.
+- Cause:
+  - D-IMP-3 (`ExistingRunConfigEditor.vue` 404–407): for a stopped hub, the Save's reconcile callback awaits `useAgentRunCollaborationStore().inspect(runId)`, then `draftStore.reloadCanonical(true)`.
+  - `inspect` (`agentRunCollaborationStore.ts` 151–171) catches a read failure. It records `errors[hostRunId]` and resolves normally, so the Save cannot see that the re-read failed.
+  - `reloadCanonical` → `readAgentCanonical` → `viewFor` (177–182). No inspection is pending and the old context is still published, so `viewFor` returns the stale view without a request. The load succeeds, `reconciled` is `true`, and the Save reports "Saved." while the card shows the pre-Save model.
+  - Trace: `UpdateDelegatedLaunchSelections` 200 success, then `GetAgentRunCollaboration` 503, then `GetAgentRunResumeConfig` 200, then the "Saved." screen.
+  - Refresh has the same gap: `retryCanonicalRefresh` → `reconcileAgentFailure` → `readAgentCanonical` → `viewFor` also reuses the published view. A Refresh would not re-read the view either, so the stale card could not be reconciled.
+- Origin: implementation defect in the re-read this change adds (D-IMP-3). Its failure is not propagated, and the canonical loader falls back to the cached view. Before this change, the base did not re-read at all.
+- Required action (`Local Fix`, implementation):
+  - Give the hub's view owner a fresh read that reports failure: for example, a forced re-read or `viewFor(runId, { fresh: true })` that rejects or returns a failure instead of keeping the published view.
+  - Use it on both the committed-Save reload and Refresh for a stopped hub, so a failed read fails the load. The Save then shows `savedRefreshFailed` with the fields locked, and Refresh re-reads the view and shows the saved model.
+  - A normal selection keeps the one-read rule from autobyteus-358 (DS-004); only the post-commit reload and Refresh force a re-read.
+  - Prefer that this sits in the store or view owner rather than the editor; the editor-side `inspect` call can then go.
+  - Add specs: a failed view re-read after a committed Save gives `savedRefreshFailed` and locked fields, not success; Refresh re-reads and shows the new model; a successful Save still shows the saved model (D-IMP-3).
+  - SSR-003 is the end-to-end reproduction.
+- Classification: `Local Fix` / implementation. Ticket scope: this ticket (code it adds). Medium/Low stays.
+- Not part of this finding:
+  - FU-001 (another client's stop is not reflected in open Org Settings for 20 s or more) is recorded by API/E2E as a follow-up; not reviewed here.
+  - R07 and R08 were not run; that is API/E2E's call and not a source failure.
 
 ## Routing Classification Review
 
@@ -115,6 +147,8 @@
 
 ## Latest Authoritative Result
 
+- Review Decision (round 2): `Fail`. CR-001 and CR-002 are resolved. CR-003 (a false "Saved." when the stopped hub's view re-read fails after a committed copy Save; Refresh cannot re-read either) is an implementation `Local Fix`. Recipient: Implementation Engineer, then API/E2E (direct route).
+- Round 1:
 - Review Decision: `Fail`. Origin: implementation (two bounded defects, both reproduced in the real stack).
 - Failure Origin: CR-001 is D-IMP-1 not applied to the Org tree's selection path. CR-002 is the Org config adoption check refusing a copy's stored launch selection; it is pre-existing and blocks AC-003.
 - Notes:
