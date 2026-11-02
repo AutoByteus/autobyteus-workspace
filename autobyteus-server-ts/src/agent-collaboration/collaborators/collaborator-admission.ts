@@ -17,7 +17,7 @@ import type {
   CollaboratorEntryBuilder,
   CollaboratorEntryPlan,
 } from "./collaborator-entry-builder.js";
-import type { CollaboratorRootPort } from "./collaborator-root-port.js";
+import { baseInFolder, type CollaboratorLaunchBase, type CollaboratorRootPort } from "./collaborator-root-port.js";
 import type { MentionViewer, MentionViewerRelation, OwnTeamMentionFacts } from "./mention-viewer.js";
 import { CollaboratorAddError, CollaboratorMentionError } from "./collaborator-errors.js";
 import type { CollaboratorLaunchResolver } from "./collaborator-launch-resolver.js";
@@ -124,9 +124,14 @@ export class CollaboratorAdmission {
     senderRunId: string;
     /** The work the copy is started for (the Model Router is told it). */
     work: DelegationWork;
+    /** The copy's own folder (its Task's Project's); `null` takes the launch base's. */
+    workspaceRootPath: string | null;
   }>): Promise<CatalogTaskSource | null> {
     const ref = await this.catalogDefinitionAt(port, input.address);
-    return ref ? this.catalogTaskSourceOf(port, { ref, address: input.address, work: input.work }) : null;
+    if (!ref) return null;
+    const base = port.launchBase();
+    return this.sourceFromBase(port, { ref, address: input.address, work: input.work },
+      input.workspaceRootPath === null ? base : baseInFolder(base, input.workspaceRootPath));
   }
 
   /**
@@ -140,9 +145,17 @@ export class CollaboratorAdmission {
     address: string;
     work: DelegationWork;
   }>): Promise<CatalogTaskSource> {
+    return this.sourceFromBase(port, input, port.launchBase());
+  }
+
+  private async sourceFromBase(port: CollaboratorRootPort, input: Readonly<{
+    ref: CatalogDefinitionRef;
+    address: string;
+    work: DelegationWork;
+  }>, base: CollaboratorLaunchBase): Promise<CatalogTaskSource> {
     const definition = await this.admissible(port, input.ref);
     const plan = await this.buildPlan(definition, { address: input.address });
-    const { plans: [resolved], modelRoutingOn } = await this.dependencies.launches.resolve([plan], port.launchBase(), input.work);
+    const { plans: [resolved], modelRoutingOn } = await this.dependencies.launches.resolve([plan], base, input.work);
     return Object.freeze({
       name: resolved!.name,
       source: toTaskExecutionSource(resolved!),

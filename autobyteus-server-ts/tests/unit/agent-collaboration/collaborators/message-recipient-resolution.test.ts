@@ -166,23 +166,55 @@ describe("catalog delegation placement (DS-001)", () => {
 
   it("in-run placements win; a catalog address gets a sourced placement; no source means not found", async () => {
     expect(await resolveDelegationPlacement({
-      port: delegationPort, senderAgentRunId: "pm", address: a("/writer"),
+      port: delegationPort, senderAgentRunId: "pm", address: a("/writer"), newCopyFolder: null,
       resolveInRun: () => ({ kind: "agent", address: a("/writer") }), catalogSource: vi.fn(),
     })).toEqual({ kind: "agent", address: "/writer" });
     expect(await resolveDelegationPlacement({
-      port: delegationPort, senderAgentRunId: "pm", address: a("/product_team"), resolveInRun: notFound,
+      port: delegationPort, senderAgentRunId: "pm", address: a("/product_team"), newCopyFolder: null, resolveInRun: notFound,
       catalogSource: async () => ({ name: "Product Team", source: snapshot, launchNotes: [] }),
     })).toEqual({ kind: "agent_team", address: "/product_team", coordinatorAddress: "/product_team/lead", source: snapshot });
     await expect(resolveDelegationPlacement({
-      port: delegationPort, senderAgentRunId: "pm", address: a("/nobody"), resolveInRun: notFound, catalogSource: async () => null,
+      port: delegationPort, senderAgentRunId: "pm", address: a("/nobody"), newCopyFolder: null, resolveInRun: notFound, catalogSource: async () => null,
     })).rejects.toThrow("not in run");
+  });
+
+  it("a new copy's folder reaches both forms; null keeps the snapshot's (autobyteus-97 AC-001, AC-002)", async () => {
+    const folderOf = (launchOf: { workspaceRootPath: string | null }) => launchOf.workspaceRootPath;
+    const agentSource = { kind: "agent" as const, agentDefinitionId: "writer", launchConfiguration: launch };
+    const teamSource = { ...snapshot, members: snapshot.members.map((member) => ({ ...member, launchConfiguration: launch, followsTeam: true })) } as never;
+    const inRun = await resolveDelegationPlacement({
+      port: delegationPort, senderAgentRunId: "pm", address: a("/writer"), newCopyFolder: "/projects/f",
+      resolveInRun: () => ({ kind: "agent", address: a("/writer"), source: agentSource }), catalogSource: vi.fn(),
+    });
+    expect(inRun).toMatchObject({ kind: "agent", address: "/writer" });
+    expect(folderOf((inRun as { source: typeof agentSource }).source.launchConfiguration)).toBe("/projects/f");
+    expect(agentSource.launchConfiguration.workspaceRootPath).not.toBe("/projects/f");
+
+    const inRunTeam = await resolveDelegationPlacement({
+      port: delegationPort, senderAgentRunId: "pm", address: a("/product_team"), newCopyFolder: "/projects/f",
+      resolveInRun: () => ({ kind: "agent_team", address: a("/product_team"), coordinatorAddress: a("/product_team/lead"), source: teamSource }), catalogSource: vi.fn(),
+    }) as never as { source: { defaultLaunchConfiguration: typeof launch; members: Array<{ launchConfiguration: typeof launch }> } };
+    expect([inRunTeam.source.defaultLaunchConfiguration, ...inRunTeam.source.members.map((member) => member.launchConfiguration)].map(folderOf))
+      .toEqual(["/projects/f", "/projects/f", "/projects/f"]);
+
+    const catalogSource = vi.fn(async () => ({ name: "Writer", source: agentSource, launchNotes: [] }));
+    await resolveDelegationPlacement({
+      port: delegationPort, senderAgentRunId: "pm", address: a("/writer"), newCopyFolder: "/projects/f", resolveInRun: notFound, catalogSource,
+    });
+    expect(catalogSource).toHaveBeenCalledWith("/projects/f");
+
+    const kept = await resolveDelegationPlacement({
+      port: delegationPort, senderAgentRunId: "pm", address: a("/writer"), newCopyFolder: null,
+      resolveInRun: () => ({ kind: "agent", address: a("/writer"), source: agentSource }), catalogSource: vi.fn(),
+    });
+    expect((kept as { source: unknown }).source).toBe(agentSource);
   });
 
   it("refuses the sender's own Team before any placement or catalog lookup (CM-1, AC-001..003)", async () => {
     const resolveInRun = vi.fn(notFound);
     const catalogSource = vi.fn(async () => null);
     const attempt = resolveDelegationPlacement({
-      port: delegationPort, senderAgentRunId: "copy-lead", address: a("/product_team/designer"), resolveInRun, catalogSource,
+      port: delegationPort, senderAgentRunId: "copy-lead", address: a("/product_team/designer"), newCopyFolder: null, resolveInRun, catalogSource,
     });
     await expect(attempt).rejects.toMatchObject({
       code: "COLLABORATION_SELF_TARGET_REJECTED",
@@ -194,18 +226,18 @@ describe("catalog delegation placement (DS-001)", () => {
 
   it("a catalog definition that cannot run is a not-found delegation with its reason", async () => {
     await expect(resolveDelegationPlacement({
-      port: delegationPort, senderAgentRunId: "pm", address: a("/product_team"), resolveInRun: notFound,
+      port: delegationPort, senderAgentRunId: "pm", address: a("/product_team"), newCopyFolder: null, resolveInRun: notFound,
       catalogSource: async () => { throw new CollaboratorAddError("Product Team", "no model"); },
     })).rejects.toMatchObject({ code: "COLLABORATION_TARGET_NOT_FOUND", message: "Product Team cannot be delegated to: no model" });
   });
 
   it("a catalog copy's placement carries its admission's launch notes; empty notes add no key (REQ-008, AR-002)", async () => {
     expect(await resolveDelegationPlacement({
-      port: delegationPort, senderAgentRunId: "pm", address: a("/product_team"), resolveInRun: notFound,
+      port: delegationPort, senderAgentRunId: "pm", address: a("/product_team"), newCopyFolder: null, resolveInRun: notFound,
       catalogSource: async () => ({ name: "Product Team", source: snapshot, launchNotes: ["designer: fell back"] }),
     })).toEqual({ kind: "agent_team", address: "/product_team", coordinatorAddress: "/product_team/lead", source: snapshot, launchNotes: ["designer: fell back"] });
     const quiet = await resolveDelegationPlacement({
-      port: delegationPort, senderAgentRunId: "pm", address: a("/product_team"), resolveInRun: notFound,
+      port: delegationPort, senderAgentRunId: "pm", address: a("/product_team"), newCopyFolder: null, resolveInRun: notFound,
       catalogSource: async () => ({ name: "Product Team", source: snapshot, launchNotes: [] }),
     });
     expect("launchNotes" in quiet).toBe(false);

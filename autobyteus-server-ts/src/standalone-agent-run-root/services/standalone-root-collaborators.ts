@@ -60,7 +60,7 @@ export class StandaloneRootCollaborators {
     return this.admission.policy.listEligible(this.portFor(viewerAgentRunId));
   }
 
-  catalogTaskSource(input: Readonly<{ address: string; senderRunId: string; work: DelegationWork }>): Promise<CatalogTaskSource | null> {
+  catalogTaskSource(input: Readonly<{ address: string; senderRunId: string; work: DelegationWork; workspaceRootPath: string | null }>): Promise<CatalogTaskSource | null> {
     return this.admission.catalogTaskSource(this.portFor(input.senderRunId), input);
   }
 

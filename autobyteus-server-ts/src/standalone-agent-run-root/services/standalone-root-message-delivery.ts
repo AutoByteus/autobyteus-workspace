@@ -198,7 +198,7 @@ export class StandaloneRootMessageDelivery {
     // DS-001: the work and its Task first, then the placement for that work, then the copy.
     const work = await this.options.taskExecutions.prepareNewCopyWork(context, input);
     return delegateToResolvedTarget(
-      () => this.options.recipients.resolveDelegationPlacement(context.identity, input.recipient_address, work.delegation),
+      async () => this.options.recipients.resolveDelegationPlacement(context.identity, input.recipient_address, work.delegation, await this.options.taskExecutions.newCopyFolder(work)),
       (placement) => this.options.taskExecutions.dispatchNewCopy(context, work, placement),
     );
   }

@@ -54,6 +54,7 @@ export class TeamTaskExecutionService {
   prepareNewCopyWork(context: TaskDelegationContext, input: SpawnTaskInput): Promise<NewCopyWork> {
     return this.lifecycle.prepareNewCopyWork(context, input);
   }
+  newCopyFolder(work: NewCopyWork): Promise<string | null> { return this.lifecycle.newCopyFolder(work); }
   dispatchNewCopy(context: TaskDelegationContext, work: NewCopyWork, placement: TeamDelegationPlacement): Promise<TaskDelegationOutcome> {
     return this.lifecycle.dispatchNewCopy(context, work, placement);
   }

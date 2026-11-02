@@ -327,7 +327,7 @@ export class RootTeamRun {
       }
       // DS-001: the work and its Task first, then the placement for that work, then the copy.
       const work = await this.taskExecutions.prepareNewCopyWork(context, input);
-      return delegateToResolvedTarget(() => this.delivery.resolveDelegationPlacement(context.identity, input.recipient_address, work.delegation), (placement) =>
+      return delegateToResolvedTarget(async () => this.delivery.resolveDelegationPlacement(context.identity, input.recipient_address, work.delegation, await this.taskExecutions.newCopyFolder(work)), (placement) =>
         this.taskExecutions.dispatchNewCopy(context, work, placement));
     });
   }
