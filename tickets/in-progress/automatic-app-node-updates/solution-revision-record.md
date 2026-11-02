@@ -35,3 +35,17 @@
   "no 30-minute wait, no idle wait", and the macOS step adds neither; it is the time to finish preparing the update.
 - CR-C12: plain automatic reasons, no raw text, no "Try again" for a blocked version. CR-C13 (O-3): held for evidence.
 - FU-005 added: the click keeps today's order (preserved scope).
+
+## SR-005 — 2026-11-02 — Architecture review ARCH-REV-003 (on SR-004)
+- Trigger: ARCH-REV-003 Fail (Design Impact); direction A stands. All premises were checked against
+  `MacUpdater.js:150-200`, `AppUpdater.js:445-476, 596-612`, `appUpdateCheckSchedule.ts:112` and
+  `API-05-r2-s1-instance.log:266-275`.
+- My error: SR-004 and F-13 said the download promise does not resolve on Squirrel's success, repeating CRR-004's line
+  without reading `:184-189`. It resolves once the zip is served. F-13 is corrected.
+- AR-003: the wait's native error clears `updateStaged`; the bound's residual is stated.
+- AR-004: the handler's order; `settlingFailedPreparation` spans error #2 and the rejection; the record refuses a
+  `download` failure over an `install` failure for V.
+- AR-005: new error kind `install-preparation`, set directly. AR-006: an accepted click ends the wait.
+- N-9 adopted (restore `downloaded` for the same V). N-10 accepted and stated. N-11: file map and `preparationFailed`.
+  N-12: FU-004 widened.
+- Requirements: unchanged since SR-004.

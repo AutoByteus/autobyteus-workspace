@@ -1,8 +1,9 @@
 # Design Spec — automatic-app-node-updates (autobyteus-356)
 
 ## Solution And Approval Basis
-- Current solution revision ID: `SR-004` (CRR-004 F-API-003 and CR-C12: on macOS the automatic install starts once the
-  system updater has its copy; REQ-002, REQ-004, AC-002 and AC-005 sharpened within the direction).
+- Current solution revision ID: `SR-005` (ARCH-REV-003 AR-003..AR-006 on SR-004, whose direction stands: on macOS the
+  automatic install starts once the system updater has its copy; REQ-002, REQ-004, AC-002 and AC-005 sharpened within
+  the direction, unchanged since SR-004).
 - Approved requirements: `requirements-doc.md` (SR-002). DEC-001 = A was approved by the user on 2026-11-01 ("once its
   downloaded then its intall immediately not 30 minutes please"); DEC-002 and DEC-003 were decided by the Solution
   Designer within the direction.
@@ -164,26 +165,57 @@ nothing until Squirrel is done. The download is finished, for this design, when 
   stopped during the wait, so the only cost of waiting is time, and a machine under load must not fail a good update.
 
 While the wait runs, the app and its server keep working, busy runs keep running, and status stays `downloaded`, so
-the row's own Install click still works and takes over (the wait's later `installAutomatically` is then refused and
-records nothing). `message`: "Update downloaded. Preparing to install...".
+the row's own Install click still works. `message`: "Update downloaded. Preparing to install...". While any wait is
+pending, `startAutomatic` starts nothing, for any version, so a check cannot start a second native fetch on top of
+Squirrel's.
+
+**A click during the wait** (SR-005, AR-006): an accepted `installUpdateAndRestart()` ends the pending wait, and its
+bound, at acceptance. The automatic path has no wait left at that point, so this is only a click's effect. From there
+the click follows today's manual path entirely: a later error is a manual install's error, not "nothing stopped".
 
 The wait ends in one of these ways:
 - **Native `update-downloaded`:** the switch is read again.
   - Off → nothing.
   - On with status `downloaded` → `installAutomatically(V)`.
-  - On with status `available` (a manual check moved it during the wait) → `startAutomatic(V)`, which goes through the
-    cached path. `startAutomatic(V)` does nothing while a wait for V is pending, so a check cannot start a second
-    native fetch on top of Squirrel's.
-- **Native `error`:** Squirrel refused it, for example a signature or a read-only location. The updater `error` handler
-  checks the wait **before** `activeOperation`, which is still `download` here (the download promise does not resolve
-  on Squirrel's success, `MacUpdater.js:220-226`). `recordAutomaticFailure(V, 'install', reason)`, which blocks V. There
-  is **no recovery**, because nothing stopped. `handleError` shows the error state with operation `install`. The late
-  rejection of `downloadUpdate()` that follows must not overwrite this state or record a download failure (as for
-  F-API-002).
-- **The 15-minute bound:** the same record, with its own reason, and no recovery. Status stays `downloaded`, so the click
-  still works.
+  - On with status `available` and `availableVersion === V` (a manual check moved it during the wait; N-9) → restore
+    status `downloaded` and `installAutomatically(V)`. Squirrel has just reported V ready, so no second native fetch
+    is needed.
+  - On with status `available` and a newer W → `startAutomatic(W)`.
+- **Native `error`:** Squirrel refused it, for example a signature or a read-only location. See below.
+- **The 15-minute bound:** `preparationFailed(V, reason)` with its own reason, and no recovery. Status stays
+  `downloaded` and `updateStaged` stays true, because Squirrel may still finish and the click still works. Residual:
+  automatic checks stay off (`isBusy()`) until the app restarts, so a newer release is not found until then.
 - **Switch turned off:** the wait is dropped. Nothing is recorded. The update installs on quit, as today. Turning it on
   again runs `installWhenReady(V)`.
+
+**A native error during the wait** (SR-005, AR-003, AR-004, AR-005). The native refusal has two timings, both measured
+(F-13):
+- before Squirrel has fetched the zip (read-only refusal): `error`, a second `error` about 2 ms later (the rejection's
+  `dispatchError`, `AppUpdater.js:449-473`), then the rejection of `downloadUpdate()`, with `activeOperation` `download`;
+- after the zip was served (signature refusal): the promise has already resolved (`MacUpdater.js:184-189`), so there is
+  one `error`, no rejection, and `activeOperation` is `null`.
+
+The updater `error` handler decides in this order, and `activeOperation` is not consulted for the first two:
+1. **A wait is pending** → end it as a failure:
+   - `AppUpdateAutomaticRun.preparationFailed(V, reason)` records `recordAutomaticFailure(V, 'install', reason)`, which
+     blocks V. It is its own method, because `installFailed` requires `installRequestedVersion` and runs recovery;
+     nothing stopped, so **no recovery** runs;
+   - the state becomes `status: 'error'`, `errorKind: 'install-preparation'`, `errorOperation: 'install'`, with the
+     message of that kind, set directly and not through `handleError`, whose `install` kind says "could not restart"
+     (AR-005). The diagnostic goes to the log. `lastErrorSignature` is cleared so a later real error still shows;
+   - `updateStaged: false`, because Squirrel holds nothing from this download. Automatic checks therefore run again
+     (`appUpdateCheckSchedule.ts:112`), and a later check finding W starts W (REQ-004);
+   - if `AppUpdater`'s `autoUpdater.downloadUpdate()` is still in flight, `settlingFailedPreparation = true`.
+2. **`settlingFailedPreparation` is set** → the `error` is only logged. The `catch` in `downloadUpdate()` also only logs
+   while it is set, and its `finally` clears it. So error #2 and the rejection change nothing.
+3. **Otherwise** → today's handling by `activeOperation`.
+
+A later check finding V again leaves status `available` with the failure row: V stays blocked, and the Download click
+still works. About shows the new kind's message: "AutoByteus could not prepare this update for installing. It keeps
+running on this version." The click's own "could not restart" text is unchanged.
+
+**A `download` failure never replaces an `install` failure for V.** `AppUpdateNotificationRecord.recordAutomaticFailure`
+enforces this: `step: 'download'` is ignored when the record already holds `{ V, 'install' }`.
 
 `installAutomatically(V)` (SR-003, AR-002):
 1. calls the existing `installUpdateAndRestart()`, the 339 path, so busy runs are recorded and later resumed by 285;
@@ -332,6 +364,9 @@ refresh it sees `update.state === 'running'` and follows the update, as today.
 | --- | --- | --- |
 | `autobyteus-web/electron/updater/appUpdateAutomaticStore.ts` | new | load/save `app-update-automatic.json` (default off) |
 | `autobyteus-web/electron/updater/appUpdateInstallReadiness.ts` | new (SR-004) | whether the latest download is ready to install: macOS native event, other platforms always; the pending wait and its bound |
+| `autobyteus-web/electron/updater/appUpdateAutomaticRun.ts` | change (IR-002 file; SR-005) | `preparationFailed(V, reason)` (records, blocks, no settle, no recovery) |
+| `autobyteus-web/electron/updater/appUpdateInstallAttempt.ts` | unchanged (IR-002 file; listed for the map) | the install in flight; the wait ends before it exists |
+| `autobyteus-web/electron/updater/appUpdateErrorClassifier.ts`, `shared/appUpdateTypes.ts`, `localization/messages/*/settings.ts` and the About message key | change (SR-005) | `AppUpdateErrorKind` gains `install-preparation`, with its safe message and About text |
 | `autobyteus-web/electron/updater/appUpdater.ts` | change | `automaticUpdate` state, `setAutomaticUpdate`, DS-001/DS-002 hooks in `update-available`, `update-downloaded`, `error`, install catch; `installRequestedVersion`; the quit bound timer; option `recoverAfterFailedInstall` |
 | `autobyteus-web/electron/updater/appUpdateNotificationRecord.ts` | change | `automatic`, `automaticFailure`, `recordAutomaticInstall`, `recordAutomaticFailure`, `blocksAutomatic`, reconcile, outcome in `toNotification`, `markRead` for AUTO_UPDATED |
 | `autobyteus-web/electron/updater/appUpdateIpc.ts`, `disabledAppUpdater.ts`, `appUpdateController.ts`, `electron/preload.ts`, `shared/appUpdateTypes.ts` | change | new IPC and types; the disabled updater refuses (`accepted: false`) and reports `automaticUpdate: false` |
@@ -368,8 +403,12 @@ refresh it sees `update.state === 'running'` and follows the update, as today.
 - **macOS waits for Squirrel** (SR-004): the restart comes about 36 s or more after the download. No condition decides
   it, so DEC-001's "no 30 minutes, no idle wait" holds. In exchange the server is no longer down during that time, and
   a refused update disturbs nothing.
-- **Unknown (macOS, cached path):** Electron's docs say a second native check downloads again
-  (`electron.d.ts:2091-2092`), so a re-emit is expected, but it has not been run on Squirrel. If Squirrel answers with an
+- **A click on Download during the wait** (N-10): possible only after a manual check moved the status, and it starts a
+  second download. For the same V it is the same file. A newer W would need a release to appear inside that window.
+  Accepted.
+- **Unknown (macOS, cached path):** electron-updater's half is settled by reading: a cached download runs `done`
+  and re-emits (`AppUpdater.js:604-607`). Electron's docs say a second native check downloads again
+  (`electron.d.ts:2091-2092`), so a native re-emit is expected, but it has not been run on Squirrel. If Squirrel answers with an
   error or stays silent, V is blocked without any stop (clean, but a false failure). API/E2E must run it; if it fails,
   the escalation trigger applies.
 - **The click keeps today's order** (preserved scope): a click still stops the server first, so it has the ~36 s
@@ -403,10 +442,18 @@ Per `TESTING.md`, on separate test data only:
   recovery relaunches only when the server is stopped or gone. Also, a later check finding V starts nothing.
   For AR-002: `accepted: false` writes nothing; switching on with `updateStaged` and status `available` installs
   through the re-emitted `update-downloaded`;
-- SR-004, unit: not macOS → installs at once; macOS → no stop before the native event; a native error during the wait
-  records `install`, blocks V, runs no recovery, and the late download rejection changes nothing; bound expiry; switch off
-  during the wait; a click during the wait; a manual check during the wait; switch on after Squirrel finished → at once;
-  every re-emit resets readiness;
+- SR-004 and SR-005, unit:
+  - not macOS → installs at once; macOS → no stop before the native event;
+  - one test per native-error timing, using the real sequence: (error, error, rejection, with `activeOperation`
+    `download`) and (one error, `activeOperation` `null`). Each records `install`, blocks V, runs no recovery, clears
+    `updateStaged`, shows the `install-preparation` state, and nothing later overwrites it;
+  - after a refusal, a later scheduled check finding W starts W; finding V starts nothing;
+  - a `download` failure does not replace an `install` failure for V;
+  - bound expiry (status stays `downloaded`);
+  - switch off during the wait; switch on after Squirrel finished → at once; every re-emit resets readiness;
+  - a click during the wait ends the wait: a later native error follows the manual path, and the bound never fires;
+  - a manual check during the wait: same V → restores `downloaded` and installs with no second download; newer W →
+    `startAutomatic(W)` after the wait;
 - SR-004, real Squirrel (repeat of F-API-003's cases):
   - API-02D's load: installs, the server stays up until Squirrel is ready, no false failure;
   - API-02B idle: the server's exit comes after the native event;

@@ -40,3 +40,7 @@
   path's unknown (F-15, must be run), a click, a manual check or the switch during the wait, and the late download
   rejection.
 - After implementation, API/E2E re-runs: API-02D's load, API-02B, API-05C, and the staged path.
+
+## Revision SR-005 (for ARCH-REV-004), 2026-11-02
+AR-003..AR-006, N-9..N-12 are resolved in DS-002 ("A native error during the wait", "A click during the wait"), the file
+map, Tradeoffs and Validation Guidance. F-13 is corrected. Requirements are unchanged since SR-004.
