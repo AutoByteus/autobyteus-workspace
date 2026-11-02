@@ -341,7 +341,8 @@ Deviations from the design text, each kept within the approved behavior:
   - Settings → Updates during the wait: "Preparing to install. The app restarts by itself when this is done.", the check
     button disabled, Install offered, server health 200.
   - The row during the wait: the preparing text with "Install and restart".
-  - After the refusal, both timings seen in this run: About's own text, and the row's failure box with the plain reason
+  - After the refusal (both real runs refused after the zip was served; the read-only timing, error, error, rejection, is
+    unit-tested only and is API-05's): About's own text, and the row's failure box with the plain reason
     and "It won't be tried again automatically. You can still install it yourself.", with Download offered. The raw native
     text stays in the log.
   - A later check finding a newer version started it, with the earlier version blocked.
