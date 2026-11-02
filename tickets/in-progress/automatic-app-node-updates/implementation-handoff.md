@@ -17,12 +17,12 @@
 
 - Implementation cycle: `Rework`.
 - Implementation revision record: `implementation-revision-record.md`.
-- Current implementation revision ID: `IR-003`.
+- Current implementation revision ID: `IR-004`.
 - Related solution revision IDs: SR-003 to SR-006.
 - Related architecture-review revision IDs: ARCH-REV-002, ARCH-REV-005.
 - Related code-review revision IDs: CRR-001 to CRR-004.
 - Related API/E2E revision IDs: API-REV-001 and round 2.
-- Related delivery revision IDs: N/A.
+- Related delivery revision IDs: DR-001.
 - Triggering finding IDs: F-API-003, CR-C12 (this round); F-API-001, F-API-002 (IR-002).
 - Branch `codex/automatic-app-node-updates`; base `origin/personal` @ `3b9dc912a1`.
 - Commits:
@@ -34,6 +34,7 @@
   - `aa096836d9`: F-API-001 and F-API-002 (IR-002);
   - `6a94169f4f`: the handled row's icon layout (IR-002);
   - `2e64cbb3d9`: the macOS install wait (IR-003);
+  - `08984df524`: merge of `origin/personal` @ `fc5a726444`, resolving autobyteus-363's Nodes layout (IR-004);
   - the evidence commit is named in the handoff message.
 
 **App.**
@@ -196,6 +197,10 @@ Deviations from the design text, each kept within the approved behavior:
    - **The failure box also shows at row state `downloaded`,** otherwise the bound's failure would be invisible.
    - **N-18 is not designed for,** as the review says.
 
+10. **IR-004 (merge with 363):** the node switch now sits at the foot of 363's server cell, which is 16rem wide in
+    the wide layout; only the cell asks the node again on an automatic change. Conditions, test IDs and behavior are
+    unchanged.
+
 ## Known Risks
 
 - **No real native success through the wait yet (IR-003).** IMP-12 saw the wait and a real refusal, but not Squirrel
@@ -275,8 +280,8 @@ Deviations from the design text, each kept within the approved behavior:
 
 | Check ID | Command Or Steps | Commit Tested | Environment | Code It Exercises | Behavior / Criteria IDs | Result | Evidence Files | Look For |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| IMP-01 | `pnpm -C autobyteus-web test:electron run` | `2e64cbb3d9` | macOS 26.5.2 arm64, Node 22.23.1, vitest 3.2.7 | all Electron main tests incl. updater, nodeAutoUpdate, application, registry | BEH-001..003, AC-001, AC-004, AC-005 | Pass | `evidence/IMP-01-electron-suite.log` | `Tests  407 passed | 1 skipped (408)`; `Test Files  60 passed | 1 skipped (61)` |
-| IMP-02 | `pnpm -C autobyteus-web typecheck`; `pnpm -C autobyteus-web exec tsc -p electron/tsconfig.json --noEmit`; `pnpm -C autobyteus-web test:nuxt` (full web suite) | `2e64cbb3d9` | same | renderer stores and components, types | BEH-003, REQ-001, REQ-005 | Pass | `evidence/IMP-02-typecheck-and-web.log` | `[typecheck] production errors: 0; test-file errors: 297 in 139 files (baseline 297 in 139 files)`, `[typecheck] PASS`; tsc `exit=0`; `Tests  4986 passed (4986)` |
+| IMP-01 | `pnpm -C autobyteus-web test:electron run` | `08984df524` | macOS 26.5.2 arm64, Node 22.23.1, vitest 3.2.7 | all Electron main tests incl. updater, nodeAutoUpdate, application, registry | BEH-001..003, AC-001, AC-004, AC-005 | Pass | `evidence/IMP-01-electron-suite.log` | `Tests  407 passed | 1 skipped (408)`; `Test Files  60 passed | 1 skipped (61)` |
+| IMP-02 | `pnpm -C autobyteus-web typecheck`; `pnpm -C autobyteus-web exec tsc -p electron/tsconfig.json --noEmit`; `pnpm -C autobyteus-web test:nuxt` (full web suite) | `08984df524` | same | renderer stores and components, types | BEH-003, REQ-001, REQ-005 | Pass | `evidence/IMP-02-typecheck-and-web.log` | `[typecheck] production errors: 0; test-file errors: 99 in 43 files (baseline 99 in 43 files)`, `[typecheck] PASS`; tsc `exit=0`; `Tests  5085 passed (5085)` |
 | IMP-03 | N-8 proof: `vitest --config ./electron/vitest.config.ts run updater/__tests__/electronUpdaterCachedDownload.spec.ts` (part of IMP-01) | `2e64cbb3d9` | same, electron-updater 6.8.9 | real `NsisUpdater.downloadUpdate()` with a cached file | BEH-001 (N-8) | Pass | `evidence/IMP-01-electron-suite.log` (the file's line) | `electronUpdaterCachedDownload.spec.ts (1 test)` |
 | IMP-04 | App mutations: 9 mutations of `appUpdater.ts` / `appUpdateAutomaticRun.ts`, each run against `appUpdaterAutomatic.spec.ts` | `9369828ca7` | same | gate, switch, once-only failure, quit bound, error during install, in-process block | AC-001, AC-005, N-6 | Pass (every mutation red) | `evidence/IMP-04-app-mutations.txt` | each `== M*` followed by `failed`; M6/M7 in the "after tightening" block |
 | IMP-05 | Node and wiring mutations (14 + 4) | `63f5bb8bfc` | same | decision, reconcile, updater passes/follow/switch/packaged/remote, recovery, registry | AC-004, AC-005, REQ-003 | Pass (every mutation red) | `evidence/IMP-05-node-mutations.txt`, `evidence/IMP-05-wiring-mutations.txt` | each `== N*` / `== W*` followed by `failed` |
@@ -287,6 +292,8 @@ Deviations from the design text, each kept within the approved behavior:
 | IMP-10 | Rendered check of F-API-001 on isolated worktree builds, with a seeded record in a temp data root and a feed offering only the running version | `aa096836d9`; layout on `6a94169f4f` | macOS 26.5.2, packaged arm64 build 1.5.11-beta.10 | the sidebar entry through unread, panel open and closed; the handled app row | F-API-001, REQ-005 | Pass | `evidence/IMP-10-sidebar-output.txt`, `evidence/IMP-10-a-sidebar-1-updated.png`, `evidence/IMP-10-b-panel-open.png`, `evidence/IMP-10-c-row-layout.png`, `evidence/IMP-10-sidebar.js.txt` | `"pillLabel": "1 update applied automatically: 1 updated automatically"`; `"pillWhileOpen": "1 updated"`; `"pillAfterClose": null` |
 | IMP-11 | IR-003 mutations: 20 across readiness, policy, `appUpdater.ts`, the record, About, the row and the display map | working tree before `2e64cbb3d9` (mutated and restored); only docs changed after | same | install order, resets, version, refusal's record and state, settling, check and download guards, click, switch off, N-13/N-19, bound, reasons, renderer | F-API-003, CR-C12, REQ-002, REQ-004, AC-005 | Pass (every mutation red) | `evidence/IMP-11-ir003-mutations.txt` | each `== S*` followed by `×` or `failed` |
 | IMP-12 | Real Squirrel: an isolated copy (`evidence/API-356-prepare-copy.sh`: own bundle ID, caches and temp data root) of this build, a local feed, driven over CDP. First a junk zip (99.0.0), then the real built zip as a newer version (99.0.1), which Squirrel refuses because no bundle matches the copy's ID | `2e64cbb3d9` | macOS 26.5.2, packaged arm64 1.5.11-beta.10, real Squirrel.Mac | the wait, the check guard, the refusal, the row and About | AC-005 (refusal), REQ-004, SR-006 | Pass | `evidence/IMP-12-real-squirrel-output.txt`, `evidence/IMP-12-a-preparing.png` to `IMP-12-e-row-refused.png` | `"preparing": true`, `"checkDisabled": true`, `"stateAfterManualCheckIpc": "downloaded"`, `"serverHealth": 200` during and after; `"errorKind": "install-preparation"`, `"updateStaged": false`; no `Server process exited` or `relaunch` in the log |
+| IMP-13 | Merge mutations: 3 of the merged `NodeServerUpdate.vue`, each run against `NodeAutoUpdate.spec.ts` | merge working tree before `08984df524` (mutated and restored) | same | the notice not repeating the automatic result, the cell-only refresh, the switch in the cell | REQ-003, REQ-005 | Pass (every mutation red) | `evidence/IMP-13-merge-mutations.txt` | each `== M*` followed by `×` or `failed` |
+| IMP-14 | Rendered check of the merged Nodes row on an isolated build, with the fake C1 node; the wide layout by viewport emulation (1800 × 900) | `08984df524` | macOS 26.5.2, packaged arm64 build 1.5.11-beta.11 | the switch in the server cell (medium and wide layouts), turning it on, the main-process update to AUTO_UPDATED, the cell following | REQ-003, REQ-005, AC-004 (fake node) | Pass | `evidence/IMP-14-merge-render-output.txt`, `evidence/IMP-14-a-row-switch-off.png`, `evidence/IMP-14-b-row-auto-updated.png`, `evidence/IMP-14-c-wide-row.png`, `evidence/IMP-14-fakes.log`, `evidence/IMP-14-scripts.js.txt` | `"inCell": true`; `"cellWidth": 256`; final cell `Server 1.5.11-beta.11 | Update automatically | … | Updated automatically to 1.5.11-beta.11`, `"notice": null` |
 
 - Not run, and why:
   - the real install and relaunch into a new version (AC-002, AC-003), the native install refusal, and a real Docker

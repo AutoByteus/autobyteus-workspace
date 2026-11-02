@@ -9,6 +9,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-001 | Architecture Reviewer, `design-review-report.md`, ARCH-REV-002 Pass | N/A | `Initial Baseline` | SR-003, ARCH-REV-002 | Implemented; ready for code review |
 | IR-002 | Code Reviewer, `code-review-report.md`, CRR-002 (failure-origin review of API-REV-001) | F-API-001, F-API-002 | `Local Fix` | SR-003, ARCH-REV-002, CRR-002, API-REV-001 | Fixed; ready for source review, then API/E2E |
 | IR-003 | Architecture Reviewer, `design-review-report.md`, ARCH-REV-005 Pass (SR-004..SR-006, from CRR-004, F-API-003, CR-C12) | F-API-003, CR-C12 | `Design Impact` (revised design implemented) | SR-006, ARCH-REV-005, CRR-004 | Implemented; ready for source review, then API/E2E |
+| IR-004 | Delivery Engineer, `delivery-revision-record.md` DR-001, `release-deployment-report.md` § Repository Finalization | Integration conflict with autobyteus-363 | `Local Fix` | DR-001, SR-006, CRR-005 | Merged and resolved; ready for source review |
 
 ## Revision Entries
 
@@ -113,3 +114,35 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: IMP-01, IMP-02, IMP-11, IMP-12 Pass (see the handoff).
 - Next recipient or routing: Code Reviewer (Medium / High), then API/E2E.
 - Remaining limitations or risks: see the handoff's Known Risks.
+
+### IR-004 — Merge with `personal` after autobyteus-363's Nodes layout
+
+- Triggering role, report path, and round: Delivery Engineer, `delivery-revision-record.md` DR-001 and
+  `release-deployment-report.md` § Repository Finalization (blocked).
+- Triggering finding IDs: the integration conflict with autobyteus-363 (Manage Nodes look), not a defect in 356's behavior.
+- Classification: `Local Fix`.
+- Prior authoritative result: IR-003 passed review (CRR-005) and API/E2E (API-REV-003), then delivery found the conflict.
+- Current authoritative result: `origin/personal` @ `fc5a726444` merged in `08984df524`; local checks and the rendered
+  check pass.
+- Related solution revision IDs: SR-006 (unchanged behavior).
+- Related architecture-review revision IDs: ARCH-REV-005.
+- Related code-review revision IDs: CRR-005.
+- Related API/E2E revision IDs: API-REV-003.
+- Related delivery revision IDs: DR-001.
+- Why this revision is recorded: 363 split `NodeServerUpdate` into a server `cell` and a row `notice`, which conflicted
+  with 356's node switch, and rewrote the Nodes section of `docs/settings.md`.
+- Approved behavior or requirement IDs affected: none changed; REQ-003, REQ-005 and AC-004 re-checked.
+- Implementation delta:
+  - `NodeServerUpdate.vue`: 363's notice taken as is; `NodeAutoUpdate` placed at the foot of the server cell (it was
+    under the old single line); the automatic-change refresh guarded to `part === 'cell'`, so the node is asked once.
+  - `NodeAutoUpdate.vue`: sized to the cell (a smaller switch; the label and the explanation stacked beside it; outcome
+    lines in the cell's text size). The conditions and test IDs are unchanged.
+  - `NodeAutoUpdate.spec.ts`: mounts both parts as the row does, so the "no second notice" assertion tests something; a
+    new case checks the switch sits in the cell and the node is asked once.
+  - `docs/settings.md`: 363's text kept; 356's bullet reworded for the server cell.
+- Changed files or areas: `autobyteus-web/components/settings/nodes/NodeServerUpdate.vue`, `NodeAutoUpdate.vue`,
+  `__tests__/NodeAutoUpdate.spec.ts`, `autobyteus-web/docs/settings.md`.
+- Local validation and result: IMP-01, IMP-02, IMP-13, IMP-14 Pass (see the handoff).
+- Next recipient or routing: Code Reviewer (Medium / High), then delivery resumes.
+- Remaining limitations or risks: none new. 363's other Nodes components (`NodeRow.vue`, `NodeList.vue` and their
+  specs) merged without conflict and their specs pass with 356's.

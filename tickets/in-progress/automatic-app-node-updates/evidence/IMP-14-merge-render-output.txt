@@ -1,0 +1,53 @@
+# IMP-14 rendered check of the merged Nodes row (363 layout) on an isolated build of 08984df524 (iso-54004-c228), fake C1 node 127.0.0.1:47357  Date: 2026-11-02
+--- added, switch off (default window)
+{
+  "inCell": true,
+  "cellText": "Server 1.0.0\n\nUpdate to 1.5.11-beta.11\nSame version as this app\n\nUpdate automatically\nKeep this node on this app's version.",
+  "switchRect": {
+    "x": 400,
+    "y": 635,
+    "width": 747,
+    "height": 36,
+    "top": 635,
+    "right": 1147,
+    "bottom": 671,
+    "left": 400
+  },
+  "cellRect": {
+    "x": 376,
+    "y": 573,
+    "width": 771,
+    "height": 98,
+    "top": 573,
+    "right": 1147,
+    "bottom": 671,
+    "left": 376
+  },
+  "cardWidth": 811,
+  "window": [
+    1200,
+    768
+  ]
+}
+
+--- switch turned on: the main process updates the node; the cell follows
+{
+  "seen": [
+    "PENDING :: Server 1.0.0 | Downloading 1.5.11-beta.11… | Update automatically | Keep this node on this app's version.",
+    "PENDING :: Server 1.5.11-beta.11 | Update automatically | Keep this node on this app's version.",
+    "PENDING :: Server 1.5.11-beta.11 | Update automatically | Keep this node on this app's version.",
+    "AUTO_UPDATED :: Server 1.5.11-beta.11 | Update automatically | Keep this node on this app's version. | New: | Updated automatically to 1.5.11-beta.11"
+  ],
+  "finalCell": "Server 1.5.11-beta.11 | Update automatically | Keep this node on this app's version. | New: | Updated automatically to 1.5.11-beta.11",
+  "notice": null
+}
+--- wide layout (server column 16rem)
+--- wide layout (viewport emulated at 1800 x 900; server column 16rem)
+{
+  "window": [
+    1800,
+    900
+  ],
+  "cellWidth": 256,
+  "cellText": "Server 1.5.11-beta.11 | Update automatically | Keep this node on this app's version. | New: | Updated automatically to 1.5.11-beta.11"
+}
