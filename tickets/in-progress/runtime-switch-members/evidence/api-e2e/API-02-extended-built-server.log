@@ -1,0 +1,30 @@
+# Case: API-02 (EX-01..EX-04)
+# Command: cd autobyteus-server-ts && env -i PATH HOME=<fresh temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$PWD/tests/fixtures/agy-failure-cli.mjs pnpm exec vitest run tests/e2e/runtime/runtime-switch-members-extended-built-server.e2e.test.ts --no-watch
+# Commit: 3261712e06 (+ uncommitted API/E2E tests listed in the report)
+# Environment: macOS arm64 (Darwin 25.5), Node 22, owned temp data roots; see the report ENV rows
+# Date: 2026-11-02T06:06Z
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-switch-members/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-switch-members/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+
+Database reset successful
+
+
+
+ ✓ tests/e2e/runtime/runtime-switch-members-extended-built-server.e2e.test.ts (4 tests) 32703ms
+     ✓ EX-01: Org members: a native target whose start fails after its instruction was written and is retried, and a Grok target; I-7 on both archived segments  4392ms
+     ✓ EX-02: an agent copy AGY -> native: the server restarts after the save, the first message fails after the candidate wrote its instruction, the retry completes with one marker and one segment  9958ms
+     ✓ EX-03: Team copies with a Team-level choice of another runtime, woken in different orders: each member switches at its own first input with its own segment and marker; a member that never ran starts plainly  9142ms
+     ✓ EX-04: a configured Team's default runtime edit with its linked members, in one save: every member switches at its own first input, activated lead-first in one Team and worker-first in another  5360ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  07:02:39
+   Duration  33.36s (transform 69ms, setup 41ms, import 112ms, tests 32.70s, environment 0ms)
+
+exit 0

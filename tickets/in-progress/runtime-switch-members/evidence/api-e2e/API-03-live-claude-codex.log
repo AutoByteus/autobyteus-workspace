@@ -1,0 +1,28 @@
+# Case: API-03 (LV-01..LV-03)
+# Command: cd autobyteus-server-ts && env -i PATH HOME=$HOME USER LOGNAME TMPDIR RUN_RUNTIME_SWITCH_MEMBERS_E2E=1 RUN_CLAUDE_E2E=1 RUN_CODEX_E2E=1 RUNTIME_SWITCH_MEMBERS_EVIDENCE_DIR=<dir> ANTIGRAVITY_CLI_COMMAND=$PWD/tests/fixtures/agy-failure-cli.mjs pnpm exec vitest run tests/e2e/runtime/runtime-switch-members-live.e2e.test.ts --no-watch
+# Commit: 3261712e06 (+ uncommitted API/E2E tests listed in the report)
+# Environment: macOS arm64 (Darwin 25.5), Node 22, owned temp data roots; see the report ENV rows
+# Date: 2026-11-02T06:06Z
+
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-switch-members/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-switch-members/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+
+Database reset successful
+
+
+
+ ✓ tests/e2e/runtime/runtime-switch-members-live.e2e.test.ts (3 tests) 101724ms
+     ✓ LV-01: a Team member, Claude -> Codex -> Claude  17146ms
+     ✓ LV-02: Org members, a direct Agent and an Agent of a mounted Team, Claude -> Codex -> Claude  34204ms
+     ✓ LV-03: a delegated copy (started by a scripted host), Claude -> Codex -> Claude  42451ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  05:55:52
+   Duration  102.43s (transform 61ms, setup 43ms, import 148ms, tests 101.72s, environment 0ms)
+
+exit 0

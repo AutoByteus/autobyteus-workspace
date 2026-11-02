@@ -1184,7 +1184,8 @@ defineCase('DCP-001', 'delegated-copy-model-change AC-001/002/004/011, DEC-010: 
 
   // Change its model like a stopped run's member (runtime locked), then the existing Save bar.
   await copyRow().locator(sel('chat-model-trigger')).first().click()
-  await page.locator(sel('chat-model-locked-runtime')).waitFor({ state: 'visible', timeout: 60000 })
+  // A stopped copy's runtime menu is open since autobyteus-348 (it may switch agent runtime); the model search is in both menus.
+  await page.locator(`${sel('chat-model-menu')} ${sel('chat-model-search')}`).waitFor({ state: 'visible', timeout: 60000 })
   await page.locator(`${sel('chat-model-menu')} ${sel('chat-model-search')}`).fill(MODEL)
   await page.locator(sel(`chat-model-search-option-${MODEL}`)).click()
   await page.keyboard.press('Escape'); await delay(300)
@@ -1217,7 +1218,8 @@ defineCase('DCP-001', 'delegated-copy-model-change AC-001/002/004/011, DEC-010: 
 /** In a stopped copy's Settings row: pick a model of its (locked) runtime from the model menu. */
 const chooseCopyModel = async (page, row, model) => {
   await row.locator(sel('chat-model-trigger')).first().click()
-  await page.locator(sel('chat-model-locked-runtime')).waitFor({ state: 'visible', timeout: 60000 })
+  // A stopped copy's runtime menu is open since autobyteus-348 (it may switch agent runtime); the model search is in both menus.
+  await page.locator(`${sel('chat-model-menu')} ${sel('chat-model-search')}`).waitFor({ state: 'visible', timeout: 60000 })
   await page.locator(`${sel('chat-model-menu')} ${sel('chat-model-search')}`).fill(model)
   await page.locator(sel(`chat-model-search-option-${model}`)).click()
   await page.keyboard.press('Escape'); await delay(300)
