@@ -729,9 +729,17 @@ GraphQL, REST route or agent tool reads or writes it.
   or the app does not quit within 60 s (`before-quit` clears the bound). It is
   then recorded once as an install failure, which blocks that version
   (`blocksAutomatic`; also for the rest of the process once its install was
-  requested), and `recoverAfterFailedInstall` runs: `ElectronApplication`
+  requested). A refusal can arrive before `quitAndInstall`: on macOS the native
+  step starts when the download is done, so it can arrive while the preparation
+  is still stopping the server. `AppUpdateInstallAttempt`
+  (`appUpdateInstallAttempt.ts`) therefore settles first. A failure before the
+  preparation started cancels the install: nothing stopped and nothing else
+  runs. A failure during or after it waits for the preparation and skips
+  `quitAndInstall`, and then `recoverAfterFailedInstall` runs: `ElectronApplication`
   relaunches this version (`app.relaunch()`, `app.exit(0)`) only when the
-  server process is gone; otherwise the app stays open with the failure row.
+  server process is gone; otherwise the app stays open with the failure row. The
+  download rejection that comes with a macOS refusal does not replace the install
+  failure.
 - After the restart, the record's reconcile marks the notification handled
   with `outcome: 'AUTO_UPDATED'` (unread) when the app runs the version, or
   records an install failure when it still runs the old one. The Notification

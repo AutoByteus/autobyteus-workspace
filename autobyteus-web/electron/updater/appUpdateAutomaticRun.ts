@@ -23,7 +23,9 @@ export class AppUpdateAutomaticRun {
 
   constructor(private readonly dependencies: Readonly<{
     record: () => AppUpdateNotificationRecord | null;
-    /** Called once after a failed automatic install (the application relaunches the old version when it can). */
+    /** Ends the install in flight; resolves true when it had begun, false when it was cancelled before anything stopped. */
+    settleInstall: () => Promise<boolean>;
+    /** Called once after a failed automatic install had begun (the application relaunches the old version when it can). */
     recoverAfterFailedInstall: () => void | Promise<void>;
     quitBoundMs?: number;
     timers?: Timers;
@@ -33,6 +35,9 @@ export class AppUpdateAutomaticRun {
   blocks(version: string): boolean {
     return this.installRequestedVersion === version || this.dependencies.record()?.blocksAutomatic(version) === true;
   }
+
+  /** An automatic install of `version` was requested in this process: its outcome is the install's, not a download's. */
+  installRequestedFor(version: string | null): boolean { return version !== null && this.installRequestedVersion === version; }
 
   beginDownload(version: string): void { this.downloadingVersion = version; }
 
@@ -70,8 +75,10 @@ export class AppUpdateAutomaticRun {
 
   /**
    * The automatic install failed (the install catch, an updater error during the install, or the quit bound). Recorded
-   * as an install failure, which blocks the version, and recovery runs, once per requested install. False when no
-   * automatic install is under way or the failure was already handled.
+   * as an install failure, which blocks the version, once per requested install. The install in flight is then settled,
+   * and recovery runs only if it had begun: the server may still be stopping when the failure arrives, and an install
+   * cancelled before its preparation changed nothing. False when no automatic install is under way or the failure was
+   * already handled.
    */
   installFailed(reason: string): boolean {
     const version = this.installRequestedVersion;
@@ -79,7 +86,9 @@ export class AppUpdateAutomaticRun {
     this.installFailureHandled = true;
     this.clearQuitBound();
     this.dependencies.record()?.recordAutomaticFailure(version, 'install', reason);
-    void Promise.resolve().then(() => this.dependencies.recoverAfterFailedInstall()).catch(() => undefined);
+    void this.dependencies.settleInstall()
+      .then((begun) => begun ? this.dependencies.recoverAfterFailedInstall() : undefined)
+      .catch(() => undefined);
     return true;
   }
 

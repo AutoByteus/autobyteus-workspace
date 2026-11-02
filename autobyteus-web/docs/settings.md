@@ -471,7 +471,8 @@ node has its own switch on the Nodes page).
   box "Automatic update failed. Nothing was changed." and the reason, plus Update
   (Download for the app). The app's outcome comes from the shell's record
   (`AppUpdateNotification.outcome`, `outcomeReason`); an unread `AUTO_UPDATED`
-  app row keeps the entry visible like the other kinds. A runtime
+  app row keeps the entry visible and counts in its "N updated" like the other
+  kinds (the store's `automaticOutcomeRows` is the one set). A runtime
   whose agents run shows Update at 50 % (`aria-disabled`) and "Update unavailable
   while N agents are running." (with the switch on: "It will be updated
   automatically once no agent is running.").

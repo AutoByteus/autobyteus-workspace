@@ -279,6 +279,90 @@ describe('AppUpdater automatic update (autobyteus-356)', () => {
     expect(updater.downloadUpdate).toHaveBeenCalledOnce();
   });
 
+  it('a native refusal during the preparation waits for it, skips quitAndInstall, then recovers once (F-API-002)', async () => {
+    let finishPreparation: () => void = () => undefined;
+    prepare.mockImplementationOnce(() => new Promise<undefined>((resolve) => { finishPreparation = () => resolve(undefined); }));
+    const order: string[] = [];
+    recover.mockImplementation(() => { order.push('recover'); });
+    const app = startUpdater();
+    await setAutomatic(true);
+    await app.checkForUpdates('periodic');
+    await vi.advanceTimersByTimeAsync(100);
+    expect(prepare).toHaveBeenCalledOnce();
+
+    updater.emit('error', new Error('Cannot update while running on a read-only volume.'));
+    await vi.advanceTimersByTimeAsync(5_000);
+    expect(readRecord().automaticFailure).toMatchObject({ version: '1.2.0', step: 'install' });
+    // The server may still be stopping: nothing is decided yet.
+    expect(recover).not.toHaveBeenCalled();
+
+    order.push('prepared');
+    finishPreparation();
+    await vi.advanceTimersByTimeAsync(0);
+    expect(order).toEqual(['prepared', 'recover']);
+    expect(updater.quitAndInstall).not.toHaveBeenCalled();
+    await vi.advanceTimersByTimeAsync(61_000);
+    expect(recover).toHaveBeenCalledOnce();
+  });
+
+  it('a preparation that fails after a refusal still recovers once (F-API-002)', async () => {
+    let failPreparation: () => void = () => undefined;
+    prepare.mockImplementationOnce(() => new Promise<undefined>((_resolve, reject) => { failPreparation = () => reject(new Error('cleanup incomplete')); }));
+    const app = startUpdater();
+    await setAutomatic(true);
+    await app.checkForUpdates('periodic');
+    await vi.advanceTimersByTimeAsync(100);
+    updater.emit('error', new Error('Cannot update while running on a read-only volume.'));
+    failPreparation();
+    await vi.advanceTimersByTimeAsync(0);
+    expect(recover).toHaveBeenCalledOnce();
+    expect(readRecord().automaticFailure).toMatchObject({ version: '1.2.0', step: 'install' });
+    expect(updater.quitAndInstall).not.toHaveBeenCalled();
+  });
+
+  it('a refusal before the preparation started cancels the install: nothing stops, no recovery, the version stays blocked (F-API-002)', async () => {
+    const app = startUpdater();
+    await setAutomatic(true);
+    await app.checkForUpdates('periodic');
+    updater.emit('error', new Error('Cannot update while running on a read-only volume.'));
+    await vi.advanceTimersByTimeAsync(61_100);
+    expect(prepare).not.toHaveBeenCalled();
+    expect(updater.quitAndInstall).not.toHaveBeenCalled();
+    expect(recover).not.toHaveBeenCalled();
+    expect(app.getState()).toMatchObject({ status: 'error', errorKind: 'install', errorOperation: 'install' });
+    expect(readRecord().automaticFailure).toMatchObject({ version: '1.2.0', step: 'install' });
+    await app.checkForUpdates('periodic');
+    expect(updater.downloadUpdate).toHaveBeenCalledOnce();
+  });
+
+  it('a refused install also rejecting the download keeps the install failure as the state (F-API-002)', async () => {
+    let rejectDownload: (error: Error) => void = () => undefined;
+    updater.downloadUpdate.mockImplementation(() => new Promise<void>((_resolve, reject) => {
+      rejectDownload = reject;
+      updater.emit('update-downloaded', { version: '1.2.0' });
+    }));
+    const app = startUpdater();
+    await setAutomatic(true);
+    await app.checkForUpdates('periodic');
+    await vi.advanceTimersByTimeAsync(100);
+    const refusal = new Error('Cannot update while running on a read-only volume.');
+    updater.emit('error', refusal);
+    const message = app.getState().message;
+    rejectDownload(refusal);
+    await vi.advanceTimersByTimeAsync(0);
+    expect(app.getState()).toMatchObject({ status: 'error', errorKind: 'install', errorOperation: 'install', message });
+    expect(readRecord().automaticFailure).toMatchObject({ version: '1.2.0', step: 'install' });
+    expect(recover).toHaveBeenCalledOnce();
+  });
+
+  it('a download rejection with no automatic install requested is still a download error (manual path)', async () => {
+    updater.downloadUpdate.mockRejectedValue(new Error('net::ERR_CONNECTION_RESET'));
+    const app = startUpdater();
+    await app.checkForUpdates('manual');
+    await app.downloadUpdate();
+    expect(app.getState()).toMatchObject({ status: 'error', errorOperation: 'download' });
+  });
+
   it('an updater error during the install and then the quit bound recover only once (N-6)', async () => {
     const app = startUpdater();
     await setAutomatic(true);

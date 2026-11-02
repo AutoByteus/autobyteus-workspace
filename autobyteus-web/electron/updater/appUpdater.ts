@@ -16,6 +16,7 @@ import { isAppUpdateChannel, loadAppUpdateChannel, saveAppUpdateChannel } from '
 import { AppUpdateNotificationRecord } from './appUpdateNotificationRecord';
 import { loadAppUpdateAutomatic, saveAppUpdateAutomatic } from './appUpdateAutomaticStore';
 import { AppUpdateAutomaticRun } from './appUpdateAutomaticRun';
+import { AppUpdateInstallAttempt } from './appUpdateInstallAttempt';
 import { resolveAppReleasePageUrl } from './appReleasePage';
 import { APP_UPDATE_STATE_CHANNEL, type AppUpdateController } from './appUpdateController';
 import { AppUpdateCheckSchedule, type AppUpdateCheckSource } from './appUpdateCheckSchedule';
@@ -62,6 +63,7 @@ export class AppUpdater implements AppUpdateController {
   private notificationRecord: AppUpdateNotificationRecord | null = null;
   private schedule: AppUpdateCheckSchedule | null = null;
   private automaticRun: AppUpdateAutomaticRun | null = null;
+  private installAttempt: AppUpdateInstallAttempt | null = null;
   private readonly autoCheckDelayMs: number | undefined;
   private readonly isOnline: () => boolean;
   private readonly testFeedUrl: string | null;
@@ -117,6 +119,7 @@ export class AppUpdater implements AppUpdateController {
     this.notificationRecord = new AppUpdateNotificationRecord(app.getPath('userData'), this.state.currentVersion);
     this.automaticRun = new AppUpdateAutomaticRun({
       record: () => this.notificationRecord,
+      settleInstall: async () => (await this.installAttempt?.abort()) ?? false,
       recoverAfterFailedInstall: () => this.options.recoverAfterFailedInstall?.(),
       quitBoundMs: this.options.installQuitBoundMs,
     });
@@ -263,7 +266,9 @@ export class AppUpdater implements AppUpdateController {
     try {
       await autoUpdater.downloadUpdate();
     } catch (error) {
-      this.handleError(error, 'Failed to download update.', 'download');
+      // macOS: a refused install also rejects the download; the automatic install's own state stands (F-API-002).
+      if (this.automaticRun?.installRequestedFor(this.state.availableVersion)) logger.warn('[updater] Download ended by the install failure.', error);
+      else this.handleError(error, 'Failed to download update.', 'download');
     } finally {
       if (this.activeOperation === 'download') {
         this.activeOperation = null;
@@ -287,19 +292,16 @@ export class AppUpdater implements AppUpdateController {
       errorOperation: null,
     });
 
-    setTimeout(async () => {
-      try {
-        await this.options.prepareForInstall?.();
-        autoUpdater.quitAndInstall(false, true);
-        this.automaticRun?.awaitQuit(() => {
-          this.handleError(new Error('The app did not quit to install the update within 60 seconds.'), 'Failed to install update and restart.', 'install');
-          this.automaticInstallFailed();
-        });
-      } catch (error) {
-        this.handleError(error, 'Failed to install update and restart.', 'install');
-        this.automaticInstallFailed();
-      }
-    }, 100);
+    const failed = (error: unknown): void => {
+      this.handleError(error, 'Failed to install update and restart.', 'install');
+      this.automaticInstallFailed();
+    };
+    this.installAttempt = new AppUpdateInstallAttempt({
+      prepare: () => this.options.prepareForInstall?.(),
+      quitAndInstall: () => autoUpdater.quitAndInstall(false, true),
+      onQuitRequested: () => this.automaticRun?.awaitQuit(() => failed(new Error('The app did not quit to install the update within 60 seconds.'))),
+      onFailed: failed,
+    });
 
     return { accepted: true };
   }

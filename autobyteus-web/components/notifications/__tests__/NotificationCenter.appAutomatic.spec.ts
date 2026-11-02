@@ -105,6 +105,17 @@ describe('Notification Center: the app automatic update', () => {
     expect(electronApi.markAppUpdateNotificationRead).toHaveBeenCalledOnce()
   })
 
+  it('the entry counts an unread automatic app update, and keeps counting it while the panel is open (F-API-001)', async () => {
+    electronApi.markAppUpdateNotificationRead.mockImplementation(async () => ({ notification: { ...useAppUpdateStore().notification!, read: true } }))
+    await mountWith({ currentVersion: '1.5.7', notification: record({ state: 'handled', handledVersion: '1.5.7', outcome: 'AUTO_UPDATED' }) })
+    expect(pill()!.getAttribute('aria-label')).toContain('1 update applied automatically')
+    expect(pill()!.textContent).toContain('1 updated')
+    await openPanel()
+    await flush(); await nextTick()
+    expect(useAppUpdateStore().notification!.read).toBe(true)
+    expect(pill()!.textContent).toContain('1 updated')
+  })
+
   it('a manual update (no outcome) does not keep the entry visible, even unread', async () => {
     await mountWith({ currentVersion: '1.5.7', notification: record({ state: 'handled', handledVersion: '1.5.7' }) })
     expect(useUpdateNotificationsStore().hasEntry).toBe(false)

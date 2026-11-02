@@ -58,7 +58,7 @@ const center = useNotificationCenterStore()
  * nothing waits, and then says "N updated" instead of "N updates". Rows seen this visit still count while the panel is open,
  * so the entry does not vanish under the click that opened it.
  */
-const outcomes = computed(() => notifications.rows.filter((row) => row.state === 'handled' && row.kind !== 'app' && row.outcome === 'AUTO_UPDATED' && (row.unread || center.isNew(row.id))))
+const outcomes = computed(() => notifications.automaticOutcomeRows.filter((row) => row.unread || center.isNew(row.id)))
 const outcomeOnly = computed(() => notifications.waitingCount === 0)
 const count = computed(() => outcomeOnly.value ? outcomes.value.length : notifications.waitingCount)
 const plural = (key: string, count: number) => t(`${key}.${count === 1 ? 'one' : 'other'}`, { count })

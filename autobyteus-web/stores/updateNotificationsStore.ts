@@ -182,8 +182,10 @@ export const useUpdateNotificationsStore = defineStore('updateNotifications', ()
   const rows = computed<NotificationRow[]>(() => sections.value.flatMap((section) => section.rows))
   const waitingRows = computed(() => rows.value.filter((row) => row.state !== 'handled'))
   const waitingCount = computed(() => waitingRows.value.length)
-  /** Rows an automatic update has already applied and the user has not seen: they keep the entry visible (REQ-008). */
-  const unreadOutcomeRows = computed(() => rows.value.filter((row) => row.state === 'handled' && row.outcome === 'AUTO_UPDATED' && row.unread))
+  /** Rows an automatic update has already applied, of every kind (REQ-008; the app: autobyteus-356). */
+  const automaticOutcomeRows = computed(() => rows.value.filter((row) => row.state === 'handled' && row.outcome === 'AUTO_UPDATED'))
+  /** Those the user has not seen: they keep the entry visible. */
+  const unreadOutcomeRows = computed(() => automaticOutcomeRows.value.filter((row) => row.unread))
   const hasUnread = computed(() => waitingRows.value.some((row) => row.unread) || unreadOutcomeRows.value.length > 0)
   /** The entry shows while updates wait or an automatic outcome is unread, even when nothing waits (DEC-007). */
   const hasEntry = computed(() => waitingCount.value > 0 || unreadOutcomeRows.value.length > 0)
@@ -306,7 +308,7 @@ export const useUpdateNotificationsStore = defineStore('updateNotifications', ()
   }
 
   return {
-    sections, rows, waitingCount, hasUnread, hasEntry, unreadOutcomeRows, waitingByKind, isEmpty,
+    sections, rows, waitingCount, hasUnread, hasEntry, automaticOutcomeRows, unreadOutcomeRows, waitingByKind, isEmpty,
     reload, markAllRead, updateSource, updateRuntime, attachRuntimeStatuses, downloadApp,
     installApp: () => app.installUpdateAndRestart(), clear,
   }
