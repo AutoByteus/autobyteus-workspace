@@ -169,7 +169,7 @@ While the wait runs, the app and its server keep working, busy runs keep running
 the row's own Install click still works. `message`: "Update downloaded. Preparing to install...".
 
 **No check runs during the wait** (SR-006, AR-007). `checkForUpdates` returns the current state while a wait is pending,
-for every source, in the guard it already has for `checking` and `downloading` (`appUpdater.ts:187`). Scheduled checks
+for every source, in the guard it already has for `checking` and `downloading` (`appUpdater.ts:188`). Scheduled checks
 already skip this time (F-16), and the channel recheck is locked out while `updateStaged`, so the manual check was the
 only one left. `AppUpdateState.automaticInstallPreparing` (true during the wait) disables About's check button and shows
 the preparing text, so the click is not silently ignored.
