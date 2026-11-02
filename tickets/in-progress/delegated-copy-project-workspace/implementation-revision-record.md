@@ -6,7 +6,7 @@ The current code and `implementation-handoff.md` are authoritative; this record 
 
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
-| IR-001 | Architecture reviewer, `design-review-report.md`, ARCH-REV-001 (Pass) | N/A | `Initial Baseline` | SR-002, ARCH-REV-001; CRR / API-REV / DR: N/A | Implemented; local checks and real-delegation proof pass; to code review |
+| IR-001 | Architecture reviewer, `design-review-report.md`, ARCH-REV-001 (Pass) | N/A | `Initial Baseline` | SR-002, ARCH-REV-001; CRR / API-REV / DR: N/A | Implemented; local checks and real-delegation proof pass; code review CRR-001 `Pass` (`code-review-report.md`), to API/E2E |
 
 ## Revision Entries
 
@@ -28,4 +28,5 @@ The current code and `implementation-handoff.md` are authoritative; this record 
 - Changed files or areas: server `projects` (rule, port method, error code), `agent-collaboration` (port, lifecycle, placement, admission, base), `run-history/domain` (`sourceInFolder`), the three roots; tests.
 - Local validation and result: handoff § Checks Run, IMP-01…IMP-06.
 - Next recipient or routing: code reviewer (Medium / High).
+- Review result: CRR-001 `Pass`, no findings; the reviewer routed the package to API/E2E.
 - Remaining limitations or risks: handoff § Known Risks and the "Not run" list.
