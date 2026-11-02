@@ -1,0 +1,628 @@
+# IMP-12: the reviewer's reproduction for CR-003 on the fixed working tree (commit in the handoff row).
+# Command: env -i PATH HOME USER LOGNAME TMPDIR node autobyteus-web/tests/e2e/delegated-launch-defaults-probe.mjs --cases SSR-003 --output-dir <fresh>
+# Probe-owned stack (built backend, Nuxt dev, scripted runtimes, owned temp data root and HOME). Date 2026-11-02. macOS.
+# Look for: "result": "Pass" and the title: "committed read failure locks, read-only Refresh reconciles".
+{
+ "title": "AC-003/005/006 write transport failure retains edits; committed read failure locks, read-only Refresh reconciles",
+ "result": "Pass",
+ "ms": 51870
+}
+
+## details
+{
+ "runId": "manager_f2a3_a19c902f633f4992ab5440fafb411677",
+ "copyId": "writer_5162_62ad8b029a0c49b499996b58aa587e6b",
+ "launchesBefore": [
+  [
+   "dlc-alt-model",
+   null
+  ]
+ ],
+ "writeFailure": "Failed to fetch",
+ "committed": {
+  "data": {
+   "updateDelegatedLaunchSelections": {
+    "success": true,
+    "outcome": "UPDATED",
+    "message": "Saved. The new model is used when the copy resumes.",
+    "fieldErrors": [],
+    "__typename": "UpdateDelegatedLaunchSelectionsResult"
+   }
+  }
+ },
+ "readFailure": "Settings were saved, but could not be refreshed. Refresh before making more changes.\nRefresh",
+ "reconciled": {
+  "summary": "Gemini testAntigravity CLI \u00b7 Auto-approve",
+  "editor": "Gemini test\nAntigravity CLI",
+  "expanded": "true",
+  "url": "http://127.0.0.1:49454/chat?id=manager_f2a3_a19c902f633f4992ab5440fafb411677"
+ },
+ "wire": [
+  {
+   "query": "query GetAgentRunResumeConfig($runId: String!) {\n  getAgentRunResumeConfig(runId: $runId) {\n    runId\n    isActive\n    metadataConfig {\n      agentDefinitionId\n      workspaceRootPath\n      llmModelIdentifier\n      llmConfig\n      autoExecuteTools\n      runtimeKind\n      runtimeReference {\n        runtimeKind\n        sessionId\n        threadId\n        metadata\n        __typename\n      }\n      __typename\n    }\n    modelConfigEditability {\n      editable\n      reason\n      __typename\n    }\n    __typename\n  }\n}",
+   "variables": {
+    "runId": "manager_f2a3_a19c902f633f4992ab5440fafb411677"
+   },
+   "at": "2026-11-02T08:21:29.146Z",
+   "status": 200,
+   "response": {
+    "data": {
+     "getAgentRunResumeConfig": {
+      "runId": "manager_f2a3_a19c902f633f4992ab5440fafb411677",
+      "isActive": true,
+      "metadataConfig": {
+       "agentDefinitionId": "manager-f2a3",
+       "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-qaer0N/server-data/temp_workspace",
+       "llmModelIdentifier": "gemini-3.8-flash-low",
+       "llmConfig": null,
+       "autoExecuteTools": true,
+       "runtimeKind": "antigravity_cli",
+       "runtimeReference": {
+        "runtimeKind": "antigravity_cli",
+        "sessionId": null,
+        "threadId": null,
+        "metadata": null,
+        "__typename": "RunRuntimeReferenceObject"
+       },
+       "__typename": "RunMetadataConfigObject"
+      },
+      "modelConfigEditability": {
+       "editable": false,
+       "reason": "RUN_ACTIVE",
+       "__typename": "RunModelConfigEditabilityObject"
+      },
+      "__typename": "RunResumeConfigPayload"
+     }
+    }
+   }
+  },
+  {
+   "query": "query GetAgentRunCollaboration($runId: String!) {\n  agentRunCollaboration(runId: $runId)\n}",
+   "variables": {
+    "runId": "manager_f2a3_a19c902f633f4992ab5440fafb411677"
+   },
+   "at": "2026-11-02T08:21:31.333Z",
+   "status": 200,
+   "response": {
+    "data": {
+     "agentRunCollaboration": {
+      "root_subject_kind": "agent",
+      "root_run_id": "manager_f2a3_a19c902f633f4992ab5440fafb411677",
+      "root_agent": {
+       "base_change_sequence": 0,
+       "live_sequence_id": null,
+       "last_message_change_sequence": null,
+       "is_active": false,
+       "execution_tree": {
+        "subjectKind": "agent",
+        "createdAt": "2026-11-02T08:21:26.361Z",
+        "host": {
+         "address": "/manager_f2a3",
+         "agentRunId": "manager_f2a3_a19c902f633f4992ab5440fafb411677",
+         "agentDefinitionId": "manager-f2a3"
+        },
+        "taskExecutions": [
+         {
+          "address": "/writer_5162",
+          "agentRunId": "writer_5162_62ad8b029a0c49b499996b58aa587e6b",
+          "platformAgentRunId": "832016b0-5b29-4882-89cf-45eca4e214c0",
+          "delegatorAgentRunId": "manager_f2a3_a19c902f633f4992ab5440fafb411677",
+          "startedAt": "2026-11-02T08:21:28.340Z",
+          "source": {
+           "kind": "agent",
+           "agentDefinitionId": "writer-5162",
+           "launchConfiguration": {
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "dlc-alt-model",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-qaer0N/server-data/temp_workspace"
+           },
+           "launchSource": {
+            "origin": "agent_default",
+            "fallbacks": []
+           }
+          }
+         }
+        ]
+       },
+       "closed_task_executions": [],
+       "agent_statuses": [],
+       "agent_input_states": [],
+       "remote_task_executions": []
+      }
+     }
+    }
+   }
+  },
+  {
+   "query": "query GetAgentRunResumeConfig($runId: String!) {\n  getAgentRunResumeConfig(runId: $runId) {\n    runId\n    isActive\n    metadataConfig {\n      agentDefinitionId\n      workspaceRootPath\n      llmModelIdentifier\n      llmConfig\n      autoExecuteTools\n      runtimeKind\n      runtimeReference {\n        runtimeKind\n        sessionId\n        threadId\n        metadata\n        __typename\n      }\n      __typename\n    }\n    modelConfigEditability {\n      editable\n      reason\n      __typename\n    }\n    __typename\n  }\n}",
+   "variables": {
+    "runId": "manager_f2a3_a19c902f633f4992ab5440fafb411677"
+   },
+   "at": "2026-11-02T08:21:31.334Z",
+   "status": 200,
+   "response": {
+    "data": {
+     "getAgentRunResumeConfig": {
+      "runId": "manager_f2a3_a19c902f633f4992ab5440fafb411677",
+      "isActive": false,
+      "metadataConfig": {
+       "agentDefinitionId": "manager-f2a3",
+       "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-qaer0N/server-data/temp_workspace",
+       "llmModelIdentifier": "gemini-3.8-flash-low",
+       "llmConfig": null,
+       "autoExecuteTools": true,
+       "runtimeKind": "antigravity_cli",
+       "runtimeReference": {
+        "runtimeKind": "antigravity_cli",
+        "sessionId": null,
+        "threadId": null,
+        "metadata": null,
+        "__typename": "RunRuntimeReferenceObject"
+       },
+       "__typename": "RunMetadataConfigObject"
+      },
+      "modelConfigEditability": {
+       "editable": true,
+       "reason": null,
+       "__typename": "RunModelConfigEditabilityObject"
+      },
+      "__typename": "RunResumeConfigPayload"
+     }
+    }
+   }
+  },
+  {
+   "query": "query GetAgentRunCollaboration($runId: String!) {\n  agentRunCollaboration(runId: $runId)\n}",
+   "variables": {
+    "runId": "manager_f2a3_a19c902f633f4992ab5440fafb411677"
+   },
+   "at": "2026-11-02T08:21:31.340Z",
+   "status": 200,
+   "response": {
+    "data": {
+     "agentRunCollaboration": {
+      "root_subject_kind": "agent",
+      "root_run_id": "manager_f2a3_a19c902f633f4992ab5440fafb411677",
+      "root_agent": {
+       "base_change_sequence": 0,
+       "live_sequence_id": null,
+       "last_message_change_sequence": null,
+       "is_active": false,
+       "execution_tree": {
+        "subjectKind": "agent",
+        "createdAt": "2026-11-02T08:21:26.361Z",
+        "host": {
+         "address": "/manager_f2a3",
+         "agentRunId": "manager_f2a3_a19c902f633f4992ab5440fafb411677",
+         "agentDefinitionId": "manager-f2a3"
+        },
+        "taskExecutions": [
+         {
+          "address": "/writer_5162",
+          "agentRunId": "writer_5162_62ad8b029a0c49b499996b58aa587e6b",
+          "platformAgentRunId": "832016b0-5b29-4882-89cf-45eca4e214c0",
+          "delegatorAgentRunId": "manager_f2a3_a19c902f633f4992ab5440fafb411677",
+          "startedAt": "2026-11-02T08:21:28.340Z",
+          "source": {
+           "kind": "agent",
+           "agentDefinitionId": "writer-5162",
+           "launchConfiguration": {
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "dlc-alt-model",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-qaer0N/server-data/temp_workspace"
+           },
+           "launchSource": {
+            "origin": "agent_default",
+            "fallbacks": []
+           }
+          }
+         }
+        ]
+       },
+       "closed_task_executions": [],
+       "agent_statuses": [],
+       "agent_input_states": [],
+       "remote_task_executions": []
+      }
+     }
+    }
+   }
+  },
+  {
+   "query": "query GetAgentRunResumeConfig($runId: String!) {\n  getAgentRunResumeConfig(runId: $runId) {\n    runId\n    isActive\n    metadataConfig {\n      agentDefinitionId\n      workspaceRootPath\n      llmModelIdentifier\n      llmConfig\n      autoExecuteTools\n      runtimeKind\n      runtimeReference {\n        runtimeKind\n        sessionId\n        threadId\n        metadata\n        __typename\n      }\n      __typename\n    }\n    modelConfigEditability {\n      editable\n      reason\n      __typename\n    }\n    __typename\n  }\n}",
+   "variables": {
+    "runId": "manager_f2a3_a19c902f633f4992ab5440fafb411677"
+   },
+   "at": "2026-11-02T08:21:32.967Z",
+   "status": 200,
+   "response": {
+    "data": {
+     "getAgentRunResumeConfig": {
+      "runId": "manager_f2a3_a19c902f633f4992ab5440fafb411677",
+      "isActive": false,
+      "metadataConfig": {
+       "agentDefinitionId": "manager-f2a3",
+       "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-qaer0N/server-data/temp_workspace",
+       "llmModelIdentifier": "gemini-3.8-flash-low",
+       "llmConfig": null,
+       "autoExecuteTools": true,
+       "runtimeKind": "antigravity_cli",
+       "runtimeReference": {
+        "runtimeKind": "antigravity_cli",
+        "sessionId": null,
+        "threadId": null,
+        "metadata": null,
+        "__typename": "RunRuntimeReferenceObject"
+       },
+       "__typename": "RunMetadataConfigObject"
+      },
+      "modelConfigEditability": {
+       "editable": true,
+       "reason": null,
+       "__typename": "RunModelConfigEditabilityObject"
+      },
+      "__typename": "RunResumeConfigPayload"
+     }
+    }
+   }
+  },
+  {
+   "query": "query GetAgentRunCollaborationMemberProjection($hostRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  agentRunCollaborationMemberProjection(\n    hostRunId: $hostRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    conversation\n    activities\n    summary\n    lastActivityAt\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}",
+   "variables": {
+    "hostRunId": "manager_f2a3_a19c902f633f4992ab5440fafb411677",
+    "memberAddress": "/writer_5162",
+    "agentRunId": "writer_5162_62ad8b029a0c49b499996b58aa587e6b"
+   },
+   "at": "2026-11-02T08:21:35.016Z",
+   "status": 200,
+   "response": {
+    "data": {
+     "agentRunCollaborationMemberProjection": {
+      "agentRunId": "writer_5162_62ad8b029a0c49b499996b58aa587e6b",
+      "memberAddress": "/writer_5162",
+      "conversation": [
+       {
+        "kind": "message",
+        "role": "user",
+        "content": "You have a new task from the agent with sender address \"/manager_f2a3\" and sender run id \"manager_f2a3_a19c902f633f4992ab5440fafb411677\".\nWhen you finish, or need something you can't get yourself, tell that agent using send_message_to with recipient_address set to that sender address or target_agent_run_id set to that sender run id (one of them, not both).\n\nDescription:\nOwned settings refresh fixture.",
+        "media": null,
+        "ts": 1793607688.537
+       },
+       {
+        "kind": "message",
+        "role": "assistant",
+        "content": "OK",
+        "media": null,
+        "ts": 1793607688.544
+       }
+      ],
+      "activities": [],
+      "summary": "You have a new task from the agent with sender address \"/manager_f2a3\" and sender run id \"manager...",
+      "lastActivityAt": "2026-11-02T08:21:28.544Z",
+      "hasEarlierActiveTraceEvents": false,
+      "__typename": "AgentRunCollaborationMemberProjectionPayload"
+     }
+    }
+   }
+  },
+  {
+   "query": "query GetAgentRunCollaborationMemberFileChanges($hostRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  agentRunCollaborationMemberFileChanges(\n    hostRunId: $hostRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    id\n    runId\n    path\n    type\n    status\n    sourceTool\n    sourceInvocationId\n    content\n    createdAt\n    updatedAt\n    __typename\n  }\n}",
+   "variables": {
+    "hostRunId": "manager_f2a3_a19c902f633f4992ab5440fafb411677",
+    "memberAddress": "/writer_5162",
+    "agentRunId": "writer_5162_62ad8b029a0c49b499996b58aa587e6b"
+   },
+   "at": "2026-11-02T08:21:35.016Z",
+   "status": 200,
+   "response": {
+    "data": {
+     "agentRunCollaborationMemberFileChanges": []
+    }
+   }
+  },
+  {
+   "query": "query GetAgentRunResumeConfig($runId: String!) {\n  getAgentRunResumeConfig(runId: $runId) {\n    runId\n    isActive\n    metadataConfig {\n      agentDefinitionId\n      workspaceRootPath\n      llmModelIdentifier\n      llmConfig\n      autoExecuteTools\n      runtimeKind\n      runtimeReference {\n        runtimeKind\n        sessionId\n        threadId\n        metadata\n        __typename\n      }\n      __typename\n    }\n    modelConfigEditability {\n      editable\n      reason\n      __typename\n    }\n    __typename\n  }\n}",
+   "variables": {
+    "runId": "manager_f2a3_a19c902f633f4992ab5440fafb411677"
+   },
+   "at": "2026-11-02T08:21:35.017Z",
+   "status": 200,
+   "response": {
+    "data": {
+     "getAgentRunResumeConfig": {
+      "runId": "manager_f2a3_a19c902f633f4992ab5440fafb411677",
+      "isActive": false,
+      "metadataConfig": {
+       "agentDefinitionId": "manager-f2a3",
+       "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-qaer0N/server-data/temp_workspace",
+       "llmModelIdentifier": "gemini-3.8-flash-low",
+       "llmConfig": null,
+       "autoExecuteTools": true,
+       "runtimeKind": "antigravity_cli",
+       "runtimeReference": {
+        "runtimeKind": "antigravity_cli",
+        "sessionId": null,
+        "threadId": null,
+        "metadata": null,
+        "__typename": "RunRuntimeReferenceObject"
+       },
+       "__typename": "RunMetadataConfigObject"
+      },
+      "modelConfigEditability": {
+       "editable": true,
+       "reason": null,
+       "__typename": "RunModelConfigEditabilityObject"
+      },
+      "__typename": "RunResumeConfigPayload"
+     }
+    }
+   }
+  },
+  {
+   "query": "mutation UpdateDelegatedLaunchSelections($input: UpdateDelegatedLaunchSelectionsInput!) {\n  updateDelegatedLaunchSelections(input: $input) {\n    success\n    outcome\n    message\n    fieldErrors {\n      path\n      message\n      __typename\n    }\n    __typename\n  }\n}",
+   "variables": {
+    "input": {
+     "rootKind": "AGENT",
+     "rootRunId": "manager_f2a3_a19c902f633f4992ab5440fafb411677",
+     "changes": [
+      {
+       "agentRunId": "writer_5162_62ad8b029a0c49b499996b58aa587e6b",
+       "selection": {
+        "runtimeKind": "antigravity_cli",
+        "llmModelIdentifier": "gemini-3.8-flash-low",
+        "llmConfig": null
+       }
+      }
+     ]
+    }
+   },
+   "at": "2026-11-02T08:21:39.957Z",
+   "response": null
+  },
+  {
+   "query": "mutation UpdateDelegatedLaunchSelections($input: UpdateDelegatedLaunchSelectionsInput!) {\n  updateDelegatedLaunchSelections(input: $input) {\n    success\n    outcome\n    message\n    fieldErrors {\n      path\n      message\n      __typename\n    }\n    __typename\n  }\n}",
+   "variables": {
+    "input": {
+     "rootKind": "AGENT",
+     "rootRunId": "manager_f2a3_a19c902f633f4992ab5440fafb411677",
+     "changes": [
+      {
+       "agentRunId": "writer_5162_62ad8b029a0c49b499996b58aa587e6b",
+       "selection": {
+        "runtimeKind": "antigravity_cli",
+        "llmModelIdentifier": "gemini-3.8-flash-low",
+        "llmConfig": null
+       }
+      }
+     ]
+    }
+   },
+   "at": "2026-11-02T08:21:40.557Z",
+   "status": 200,
+   "response": {
+    "data": {
+     "updateDelegatedLaunchSelections": {
+      "success": true,
+      "outcome": "UPDATED",
+      "message": "Saved. The new model is used when the copy resumes.",
+      "fieldErrors": [],
+      "__typename": "UpdateDelegatedLaunchSelectionsResult"
+     }
+    }
+   }
+  },
+  {
+   "query": "query GetAgentRunResumeConfig($runId: String!) {\n  getAgentRunResumeConfig(runId: $runId) {\n    runId\n    isActive\n    metadataConfig {\n      agentDefinitionId\n      workspaceRootPath\n      llmModelIdentifier\n      llmConfig\n      autoExecuteTools\n      runtimeKind\n      runtimeReference {\n        runtimeKind\n        sessionId\n        threadId\n        metadata\n        __typename\n      }\n      __typename\n    }\n    modelConfigEditability {\n      editable\n      reason\n      __typename\n    }\n    __typename\n  }\n}",
+   "variables": {
+    "runId": "manager_f2a3_a19c902f633f4992ab5440fafb411677"
+   },
+   "at": "2026-11-02T08:21:40.781Z",
+   "status": 200,
+   "response": {
+    "data": {
+     "getAgentRunResumeConfig": {
+      "runId": "manager_f2a3_a19c902f633f4992ab5440fafb411677",
+      "isActive": false,
+      "metadataConfig": {
+       "agentDefinitionId": "manager-f2a3",
+       "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-qaer0N/server-data/temp_workspace",
+       "llmModelIdentifier": "gemini-3.8-flash-low",
+       "llmConfig": null,
+       "autoExecuteTools": true,
+       "runtimeKind": "antigravity_cli",
+       "runtimeReference": {
+        "runtimeKind": "antigravity_cli",
+        "sessionId": null,
+        "threadId": null,
+        "metadata": null,
+        "__typename": "RunRuntimeReferenceObject"
+       },
+       "__typename": "RunMetadataConfigObject"
+      },
+      "modelConfigEditability": {
+       "editable": true,
+       "reason": null,
+       "__typename": "RunModelConfigEditabilityObject"
+      },
+      "__typename": "RunResumeConfigPayload"
+     }
+    }
+   }
+  },
+  {
+   "query": "query GetAgentRunCollaboration($runId: String!) {\n  agentRunCollaboration(runId: $runId)\n}",
+   "variables": {
+    "runId": "manager_f2a3_a19c902f633f4992ab5440fafb411677"
+   },
+   "at": "2026-11-02T08:21:40.787Z",
+   "status": 503,
+   "response": {
+    "errors": [
+     {
+      "message": "owned readback transport outage"
+     }
+    ]
+   }
+  },
+  {
+   "query": "query GetAgentRunResumeConfig($runId: String!) {\n  getAgentRunResumeConfig(runId: $runId) {\n    runId\n    isActive\n    metadataConfig {\n      agentDefinitionId\n      workspaceRootPath\n      llmModelIdentifier\n      llmConfig\n      autoExecuteTools\n      runtimeKind\n      runtimeReference {\n        runtimeKind\n        sessionId\n        threadId\n        metadata\n        __typename\n      }\n      __typename\n    }\n    modelConfigEditability {\n      editable\n      reason\n      __typename\n    }\n    __typename\n  }\n}",
+   "variables": {
+    "runId": "manager_f2a3_a19c902f633f4992ab5440fafb411677"
+   },
+   "at": "2026-11-02T08:22:11.141Z",
+   "status": 200,
+   "response": {
+    "data": {
+     "getAgentRunResumeConfig": {
+      "runId": "manager_f2a3_a19c902f633f4992ab5440fafb411677",
+      "isActive": false,
+      "metadataConfig": {
+       "agentDefinitionId": "manager-f2a3",
+       "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-qaer0N/server-data/temp_workspace",
+       "llmModelIdentifier": "gemini-3.8-flash-low",
+       "llmConfig": null,
+       "autoExecuteTools": true,
+       "runtimeKind": "antigravity_cli",
+       "runtimeReference": {
+        "runtimeKind": "antigravity_cli",
+        "sessionId": null,
+        "threadId": null,
+        "metadata": null,
+        "__typename": "RunRuntimeReferenceObject"
+       },
+       "__typename": "RunMetadataConfigObject"
+      },
+      "modelConfigEditability": {
+       "editable": true,
+       "reason": null,
+       "__typename": "RunModelConfigEditabilityObject"
+      },
+      "__typename": "RunResumeConfigPayload"
+     }
+    }
+   }
+  },
+  {
+   "query": "query GetAgentRunCollaboration($runId: String!) {\n  agentRunCollaboration(runId: $runId)\n}",
+   "variables": {
+    "runId": "manager_f2a3_a19c902f633f4992ab5440fafb411677"
+   },
+   "at": "2026-11-02T08:22:11.155Z",
+   "status": 200,
+   "response": {
+    "data": {
+     "agentRunCollaboration": {
+      "root_subject_kind": "agent",
+      "root_run_id": "manager_f2a3_a19c902f633f4992ab5440fafb411677",
+      "root_agent": {
+       "base_change_sequence": 0,
+       "live_sequence_id": null,
+       "last_message_change_sequence": null,
+       "is_active": false,
+       "execution_tree": {
+        "subjectKind": "agent",
+        "createdAt": "2026-11-02T08:21:26.361Z",
+        "host": {
+         "address": "/manager_f2a3",
+         "agentRunId": "manager_f2a3_a19c902f633f4992ab5440fafb411677",
+         "agentDefinitionId": "manager-f2a3"
+        },
+        "taskExecutions": [
+         {
+          "address": "/writer_5162",
+          "agentRunId": "writer_5162_62ad8b029a0c49b499996b58aa587e6b",
+          "platformAgentRunId": "832016b0-5b29-4882-89cf-45eca4e214c0",
+          "delegatorAgentRunId": "manager_f2a3_a19c902f633f4992ab5440fafb411677",
+          "startedAt": "2026-11-02T08:21:28.340Z",
+          "source": {
+           "kind": "agent",
+           "agentDefinitionId": "writer-5162",
+           "launchConfiguration": {
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "dlc-alt-model",
+            "llmConfig": null,
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-qaer0N/server-data/temp_workspace"
+           },
+           "launchSource": {
+            "origin": "agent_default",
+            "fallbacks": []
+           }
+          },
+          "userLaunchSelection": {
+           "llmModelIdentifier": "gemini-3.8-flash-low",
+           "llmConfig": null,
+           "selectedAt": "2026-11-02T08:21:40.619Z"
+          }
+         }
+        ]
+       },
+       "closed_task_executions": [],
+       "agent_statuses": [],
+       "agent_input_states": [],
+       "remote_task_executions": []
+      }
+     }
+    }
+   }
+  },
+  {
+   "query": "query GetAgentRunCollaborationMemberProjection($hostRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  agentRunCollaborationMemberProjection(\n    hostRunId: $hostRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    agentRunId\n    memberAddress\n    conversation\n    activities\n    summary\n    lastActivityAt\n    hasEarlierActiveTraceEvents\n    __typename\n  }\n}",
+   "variables": {
+    "hostRunId": "manager_f2a3_a19c902f633f4992ab5440fafb411677",
+    "memberAddress": "/writer_5162",
+    "agentRunId": "writer_5162_62ad8b029a0c49b499996b58aa587e6b"
+   },
+   "at": "2026-11-02T08:22:11.163Z",
+   "status": 200,
+   "response": {
+    "data": {
+     "agentRunCollaborationMemberProjection": {
+      "agentRunId": "writer_5162_62ad8b029a0c49b499996b58aa587e6b",
+      "memberAddress": "/writer_5162",
+      "conversation": [
+       {
+        "kind": "message",
+        "role": "user",
+        "content": "You have a new task from the agent with sender address \"/manager_f2a3\" and sender run id \"manager_f2a3_a19c902f633f4992ab5440fafb411677\".\nWhen you finish, or need something you can't get yourself, tell that agent using send_message_to with recipient_address set to that sender address or target_agent_run_id set to that sender run id (one of them, not both).\n\nDescription:\nOwned settings refresh fixture.",
+        "media": null,
+        "ts": 1793607688.537
+       },
+       {
+        "kind": "message",
+        "role": "assistant",
+        "content": "OK",
+        "media": null,
+        "ts": 1793607688.544
+       }
+      ],
+      "activities": [],
+      "summary": "You have a new task from the agent with sender address \"/manager_f2a3\" and sender run id \"manager...",
+      "lastActivityAt": "2026-11-02T08:21:28.544Z",
+      "hasEarlierActiveTraceEvents": false,
+      "__typename": "AgentRunCollaborationMemberProjectionPayload"
+     }
+    }
+   }
+  },
+  {
+   "query": "query GetAgentRunCollaborationMemberFileChanges($hostRunId: String!, $memberAddress: String!, $agentRunId: String!) {\n  agentRunCollaborationMemberFileChanges(\n    hostRunId: $hostRunId\n    memberAddress: $memberAddress\n    agentRunId: $agentRunId\n  ) {\n    id\n    runId\n    path\n    type\n    status\n    sourceTool\n    sourceInvocationId\n    content\n    createdAt\n    updatedAt\n    __typename\n  }\n}",
+   "variables": {
+    "hostRunId": "manager_f2a3_a19c902f633f4992ab5440fafb411677",
+    "memberAddress": "/writer_5162",
+    "agentRunId": "writer_5162_62ad8b029a0c49b499996b58aa587e6b"
+   },
+   "at": "2026-11-02T08:22:11.164Z",
+   "status": 200,
+   "response": {
+    "data": {
+     "agentRunCollaborationMemberFileChanges": []
+    }
+   }
+  }
+ ]
+}

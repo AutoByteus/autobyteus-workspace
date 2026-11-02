@@ -7,7 +7,8 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Solution Designer / `solution-handoff.md` / SR-002 | N/A | `Initial Baseline` | `SR-002` | Implemented; API-REV-001 Fail → CRR-001 |
-| IR-002 | Code Reviewer / `code-review-report.md` / CRR-001 (failure-origin review of API-REV-001) | CR-001, CR-002 | `Local Fix` | `API-REV-001`, `CRR-001` | Fixed; AFS-002 passes; ready for API/E2E |
+| IR-002 | Code Reviewer / `code-review-report.md` / CRR-001 (failure-origin review of API-REV-001) | CR-001, CR-002 | `Local Fix` | `API-REV-001`, `CRR-001` | AFS-002 passes; API-REV-002 → CRR-002 (CR-003) |
+| IR-003 | Code Reviewer / `code-review-report.md` / CRR-002 (failure-origin review of API-REV-002) | CR-003 | `Local Fix` | `API-REV-002`, `CRR-002` | Fixed; SSR-003 passes; ready for API/E2E |
 
 ## Revision Entries
 
@@ -49,3 +50,26 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: `evidence/IMP-10-AFS-002.log` and its screenshots; `evidence/IMP-IR002-checks.log`.
 - Next recipient or routing: `get_handoff_rules` → API/E2E (Medium/Low direct route), for AFS-002 and the planned API-05/06.
 - Remaining limitations or risks: the second-tab "Running" badge observation was not investigated (left to API/E2E's recheck).
+
+### IR-003 — CR-003: a failed re-read after a stopped hub's Save fails the load
+
+- Triggering role, report path, and round: `/software_engineering_team/code_reviewer`, `code-review-report.md`, CRR-002. This was the failure-origin review of API/E2E round 2 (API-REV-002, API-05, SSR-003).
+- Triggering finding IDs: CR-003.
+- Classification: `Local Fix`.
+- Prior authoritative result: IR-002 at `2dd3c665f5`. D-IMP-3's editor-side `inspect` swallowed a read failure, so `viewFor` returned the published (pre-Save) view: "Saved." with a stale card. Refresh never re-read either.
+- Current authoritative result: 38f5a1eb1c, plus the IR-003 records commit.
+- Related revision IDs: `API-REV-002`, `CRR-002`; solution and delivery `N/A`.
+- Approved behaviour or requirement IDs affected: AC-003 (and the established Save contract: a committed edit whose read fails shows `savedRefreshFailed`, locks, and Refresh reconciles).
+- Implementation delta (in the view's owner, as asked; the editor-side `inspect` call is gone):
+  - `stores/agentRunCollaborationStore.ts`: a read in flight now ends with its failure's reason. `viewFor(hostRunId, { fresh })` is a new read, never the published view nor a read started before it, and it rejects when that read fails. Without `fresh` it keeps autobyteus-358's one read per selection (DS-004), and a read that failed rejects too, rather than showing a hub with no copies. `inspect` keeps its contract: a failure stays the hub's error.
+  - `stores/existingRunConfigStore.ts` (`readAgentCanonical`, `loadAgentCanonical`) carries `fresh` to `viewFor`; the file stays at 501 effective lines, not grown (FU-003 of autobyteus-358).
+  - `stores/existingRunConfigEditActions.ts` `reloadCanonical` (after a committed Save or a stop) and `stores/existingRunConfigResultActions.ts` (Refresh, a failed load's retry) read fresh.
+  - `ExistingRunConfigEditor.vue`: Save's reconcile is `reloadCanonical(true)` again.
+- Tests:
+  - `agentRunCollaborationStore.spec.ts`: a normal selection reads once; `fresh` reads and publishes; a failed fresh read rejects with its reason, then recovers; a failed first read rejects.
+  - `ExistingRunConfigEditor.savedSnapshot.spec.ts`: the first load reads `fresh: false`, the committed Save `fresh: true`; a failed re-read gives no success and the `refresh-required` (locked) state; Refresh re-reads fresh and shows the saved model.
+  - `existingRunConfigStore.spec.ts`: the first load's argument.
+  - The reviewer's reproduction SSR-003 passes.
+- Local validation and result: `evidence/IMP-12-SSR-003.log` and its screenshots; `evidence/IMP-IR003-checks.log`.
+- Next recipient or routing: `get_handoff_rules` → API/E2E (Medium/Low direct route).
+- Remaining limitations or risks: none new. FU-001 (stale "active" in open Org Settings) is API/E2E's follow-up.
