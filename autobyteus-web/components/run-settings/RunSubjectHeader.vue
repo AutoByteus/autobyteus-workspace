@@ -9,6 +9,7 @@
       <Icon v-else-if="kind === 'team'" icon="heroicons:user-group" class="h-[1.125rem] w-[1.125rem]" />
       <template v-else>{{ initialsFor(name) }}</template>
     </span>
+    <div class="min-w-0">
     <div class="flex min-w-0 items-center gap-2">
       <h2 class="truncate text-[0.9375rem] font-semibold leading-5 text-gray-900" data-test="run-subject-name">{{ name }}</h2>
       <span
@@ -21,6 +22,11 @@
         {{ status === 'active' ? $t('runSettings.status.active') : $t('runSettings.status.stopped') }}
       </span>
       <slot />
+    </div>
+    <!-- What the name alone does not say: the agent's group, its role, the node that runs it. -->
+    <div v-if="$slots.details" class="mt-0.5 flex min-w-0 flex-wrap items-center gap-1.5 text-xs text-gray-500" data-test="run-subject-details">
+      <slot name="details" />
+    </div>
     </div>
   </div>
 </template>

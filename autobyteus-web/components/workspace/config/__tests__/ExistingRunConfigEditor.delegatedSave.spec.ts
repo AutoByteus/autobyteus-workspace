@@ -12,6 +12,7 @@ import { useDelegatedLaunchDraftStore } from '~/stores/delegatedLaunchDraftStore
 const mocks = vi.hoisted(() => ({
   client: { loadDelegatedLaunchModelOptions: vi.fn(), updateDelegatedLaunchSelections: vi.fn(), stopDelegatedExecution: vi.fn() },
   store: null as null | Record<string, any>,
+  inspect: vi.fn(async () => undefined),
 }))
 vi.mock('~/services/runConfigEditing/delegatedLaunchSelectionClient', async (original) => ({ ...await original<object>(), ...mocks.client }))
 vi.mock('pinia', async (original) => {
@@ -23,7 +24,7 @@ vi.mock('~/stores/agentSelectionStore', () => ({ useAgentSelectionStore: () => (
 vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ resumeConfigByRunId: {}, teamResumeConfigByTeamRunId: {}, agentOrgHistory: [] }) }))
 vi.mock('~/stores/agentDefinitionStore', () => ({ useAgentDefinitionStore: () => ({ getAgentDefinitionById: () => ({ name: 'Writer' }) }) }))
 vi.mock('~/stores/agentContextsStore', () => ({ useAgentContextsStore: () => ({ getConfigForRun: () => null }) }))
-vi.mock('~/stores/agentRunCollaborationStore', () => ({ useAgentRunCollaborationStore: () => ({ contextFor: () => null }) }))
+vi.mock('~/stores/agentRunCollaborationStore', () => ({ useAgentRunCollaborationStore: () => ({ contextFor: () => null, selectedChild: () => null, inspect: mocks.inspect }) }))
 vi.mock('~/stores/llmProviderConfig', () => ({ useLLMProviderConfigStore: () => ({ modelConfigSchemaByIdentifier: () => null }) }))
 vi.mock('~/composables/runSettings/useRunStopAction', async () => {
   const { ref } = await import('vue')
@@ -57,7 +58,7 @@ beforeEach(() => {
     currentModelIdentifier: 'opus', currentModel: null, unavailableReason: null,
     replacements: [{ llmModelIdentifier: 'sonnet', providerName: 'p', displayName: 'sonnet', canonicalName: 'sonnet', description: null, configSchema: null, recommended: false }],
   } } })
-  mocks.store!.save.mockClear(); mocks.store!.discardChanges.mockClear(); mocks.store!.reloadCanonical.mockClear()
+  mocks.store!.save.mockClear(); mocks.store!.discardChanges.mockClear(); mocks.store!.reloadCanonical.mockClear(); mocks.inspect.mockClear()
 })
 
 describe('ExistingRunConfigEditor: copies\' choices in the run\'s Save bar', () => {
@@ -77,6 +78,9 @@ describe('ExistingRunConfigEditor: copies\' choices in the run\'s Save bar', () 
       configuredPatches: [{ scopeKind: 'CONFIGURED_AGENT', scopeAddress: '/', runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-6', llmConfig: null }] })
     expect(mocks.store!.save).not.toHaveBeenCalled()
     expect(mocks.store!.reloadCanonical).toHaveBeenCalled()
+    // The hub's published view is re-read first, or the copy would show its old model after a successful Save (autobyteus-366).
+    expect(mocks.inspect).toHaveBeenCalledWith('run-1')
+    expect(mocks.inspect.mock.invocationCallOrder[0]).toBeLessThan(mocks.store!.reloadCanonical.mock.invocationCallOrder[0]!)
   })
 
   it('saves a copy\'s other agent runtime with its model, though the old runtime offers no such model (autobyteus-348)', async () => {

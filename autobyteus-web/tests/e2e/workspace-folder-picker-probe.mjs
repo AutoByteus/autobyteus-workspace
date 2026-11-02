@@ -183,6 +183,8 @@ try {
     const read = async () => (await gql('query($id:String!){getAgentOrgRunConfig(orgRunId:$id){orgRunId executionTree isActive editability{editable reason}}}', { id: orgRunId })).getAgentOrgRunConfig;
     const active = await read(); assert.equal(active.isActive, true);
     await test('workspace-header-edit-config').click(); await test('existing-run-settings').waitFor();
+    // autobyteus-366: with a member focused, the placed team's workspace is in the Org's group view.
+    if (await test('run-settings-switch-group').isVisible().catch(() => false)) await test('run-settings-switch-group').click();
     assert.equal(await test('existing-run-root-card').locator('[data-test="chat-workspace-trigger"]').count(), 0);
     const member = test('run-member-/product'); await member.locator('[data-test="run-member-toggle"]').click();
     assert.equal(await member.locator('[data-test="chat-workspace-trigger"]').count(), 0);

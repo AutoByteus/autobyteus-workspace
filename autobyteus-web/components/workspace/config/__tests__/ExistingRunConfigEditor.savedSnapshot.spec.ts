@@ -8,7 +8,12 @@ import { useDelegatedLaunchDraftStore } from '~/stores/delegatedLaunchDraftStore
 
 // Render the real editor + Settings/Save bar with real draft stores. Only network, unrelated
 // runtime stores and leaf controls are replaced; the stale live view deliberately never changes.
-const mocks = vi.hoisted(() => ({ read: vi.fn(), mutate: vi.fn(), live: null as any, stored: null as any, active: false, schema: null as any }))
+const mocks = await vi.hoisted(async () => {
+  const { ref } = await import('vue')
+  return { read: vi.fn(), mutate: vi.fn(), live: null as any, stored: null as any, active: false, schema: null as any,
+    /** The copy focused in the left tree (autobyteus-366: Settings show it). */
+    focused: ref<string | null>('copy') }
+})
 const launch = () => ({ runtimeKind: 'codex_app_server', llmModelIdentifier: 'old', llmConfig: null, autoExecuteTools: false, workspaceRootPath: null })
 const snapshot = () => ({ execution_tree: { taskExecutions: [{ address: '/writer', agentRunId: 'copy', platformAgentRunId: null, delegatorAgentRunId: 'host',
   startedAt: '2026-10-13T00:00:00.000Z', source: { kind: 'agent', agentDefinitionId: 'writer', launchConfiguration: launch() } }] }, closed_task_executions: [] })
@@ -26,7 +31,7 @@ vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ resume
 vi.mock('~/stores/agentContextsStore', () => ({ useAgentContextsStore: () => ({ getConfigForRun: () => null }) }))
 vi.mock('~/stores/agentDefinitionStore', () => ({ useAgentDefinitionStore: () => ({ getAgentDefinitionById: () => ({ name: 'Host' }) }) }))
 // autobyteus-358 (DS-004): Settings takes the hub's stored view from the collaboration store (`viewFor`).
-vi.mock('~/stores/agentRunCollaborationStore', () => ({ useAgentRunCollaborationStore: () => ({ viewFor: mocks.read,
+vi.mock('~/stores/agentRunCollaborationStore', () => ({ useAgentRunCollaborationStore: () => ({ viewFor: mocks.read, inspect: async () => undefined, selectedChild: () => mocks.focused.value,
   contextFor: () => ({ view: mocks.live, getAgentContext: () => null }) }) }))
 vi.mock('~/composables/chat/useChatModelCatalog', () => ({ useChatModelCatalog: () => ({ ensureCatalog: vi.fn(), schemaFor: () => mocks.schema, modelLabel: (_runtime: string, id: string) => id }) }))
 vi.mock('~/stores/llmProviderConfig', () => ({ useLLMProviderConfigStore: () => ({ modelConfigSchemaByIdentifier: () => mocks.schema }) }))
@@ -39,12 +44,16 @@ const rows = defineComponent({ props: ['nodes'], emits: ['change'], setup: (prop
   h('span', { 'data-test': node.key }, `${node.values.llmModelIdentifier}:${JSON.stringify(node.values.llmConfig)}`),
   h('button', { 'data-test': `edit-${node.key}`, onClick: () => emit('change', node.key, { field: 'model', choice: choice('new') }) }, 'Change'),
 ]))) })
-const mountEditor = () => mount(ExistingRunConfigEditor, { global: { stubs: { RunMembersSection: rows, RunSettingsCard: true, RunSubjectHeader: true, Icon: true }, mocks: { $t: (key: string) => key } } })
+const subjectCard = defineComponent({ props: ['node'], emits: ['change'], setup: (props, { emit }) => () => h('div', [
+  h('span', { 'data-test': props.node.key }, `${props.node.values.llmModelIdentifier}:${JSON.stringify(props.node.values.llmConfig)}`),
+  h('button', { 'data-test': `edit-${props.node.key}`, onClick: () => emit('change', { field: 'model', choice: choice('new') }) }, 'Change'),
+]) })
+const mountEditor = () => mount(ExistingRunConfigEditor, { global: { stubs: { RunMembersSection: rows, RunSubjectCard: subjectCard, RunSettingsCard: true, RunSubjectHeader: true, Icon: true }, mocks: { $t: (key: string) => key } } })
 
 beforeEach(() => {
   setActivePinia(createPinia())
   mocks.read.mockReset(); mocks.mutate.mockReset()
-  mocks.active = false; mocks.schema = null
+  mocks.active = false; mocks.schema = null; mocks.focused.value = 'copy'
   mocks.live = snapshot(); mocks.stored = snapshot()
   mocks.read.mockImplementation(async () => structuredClone(mocks.stored))
   mocks.mutate.mockImplementation(async ({ changes }) => {
@@ -148,28 +157,23 @@ it('Cancel writes nothing and rejected Save keeps the recoverable edit without S
 })
 
 
-it('renders the refreshed canonical summary in real member rows and preserves their open disclosure', async () => {
+it('renders the refreshed canonical settings on the real card of the focused copy', async () => {
   mocks.schema = { reasoning_effort: { type: 'string', enum: ['low', 'medium', 'high'] }, service_tier: { type: 'string', enum: ['fast'], title: 'Fast mode' } }
   const wrapper = mount(ExistingRunConfigEditor, { global: { stubs: { RunSettingsCard: true, Icon: true } } })
   await flushPromises()
-  const row = () => wrapper.get('[data-test="run-member-/writer@copy"]')
-  expect(row().get('[data-test="run-member-summary"]').text()).toContain('old')
-  await row().get('[data-test="run-member-toggle"]').trigger('click')
+  const values = () => wrapper.get('[data-test="existing-run-subject-card"]').getComponent({ name: 'RunSettingsCard' }).props('values')
+  expect(values().llmModelIdentifier).toBe('old')
   const settings = wrapper.getComponent({ name: 'ExistingRunSettings' })
   settings.vm.$emit('change-delegated', '/writer@copy', { field: 'model', choice: choice('new') })
   await flushPromises()
   await wrapper.get('[data-test="save-existing-model-config"]').trigger('click'); await flushPromises()
-  expect(row().get('[data-test="run-member-summary"]').text()).toContain('new')
-  expect(row().find('[data-test="run-member-detail"]').exists()).toBe(true)
-  expect(row().getComponent({ name: 'RunSettingsCard' }).props('values').llmModelIdentifier).toBe('new')
+  expect(values().llmModelIdentifier).toBe('new')
   settings.vm.$emit('change-delegated', '/writer@copy', { field: 'thinking', llmConfig: { reasoning_effort: 'high', service_tier: 'fast' } })
   await flushPromises()
   await wrapper.get('[data-test="save-existing-model-config"]').trigger('click'); await flushPromises()
-  expect(row().get('[data-test="run-member-summary"]').text()).toContain('Fast')
-  expect(row().getComponent({ name: 'RunSettingsCard' }).props('values').llmConfig).toEqual({ reasoning_effort: 'high', service_tier: 'fast' })
+  expect(values().llmConfig).toEqual({ reasoning_effort: 'high', service_tier: 'fast' })
   wrapper.unmount()
 })
-
 
 it('refreshes a Team selection and its follower, preserves own defaults and neighboring instances', async () => {
   const own = { ...launch(), llmModelIdentifier: 'own-model' }
@@ -182,20 +186,66 @@ it('refreshes a Team selection and its follower, preserves own defaults and neig
       { address: '/team/lead', agentDefinitionId: 'lead', launchConfiguration: launch(), followsTeam: true },
       { address: '/team/own', agentDefinitionId: 'own', launchConfiguration: own, followsTeam: false, launchSource: { origin: 'agent_default', fallbacks: [] } },
     ] } })
+  mocks.focused.value = 'follower'
   const wrapper = mountEditor(); await flushPromises()
+  // The member's own card first; the switch shows its Team copy and that copy's agents.
+  expect(wrapper.find('[data-test="/team@team-copy"]').exists()).toBe(false)
+  await wrapper.get('[data-test="run-settings-switch-group"]').trigger('click')
   await wrapper.get('[data-test="edit-/team@team-copy"]').trigger('click')
   await wrapper.get('[data-test="save-existing-model-config"]').trigger('click'); await flushPromises()
   expect(wrapper.get('[data-test="/team@team-copy"]').text()).toBe('new:null')
   expect(wrapper.get('[data-test="/team/lead@follower"]').text()).toBe('new:null')
   expect(wrapper.get('[data-test="/team/own@own"]').text()).toBe('own-model:null')
-  expect(wrapper.get('[data-test="/writer@copy"]').text()).toBe('old:null')
   // A following member can now choose its own model/config without changing the Team or sibling.
   wrapper.getComponent({ name: 'ExistingRunSettings' }).vm.$emit('change-delegated', '/team/lead@follower', { field: 'thinking', llmConfig: { reasoning_effort: 'high' } })
   await flushPromises()
   await wrapper.get('[data-test="save-existing-model-config"]').trigger('click'); await flushPromises()
   expect(wrapper.get('[data-test="/team/lead@follower"]').text()).toBe('new:{"reasoning_effort":"high"}')
   expect(wrapper.get('[data-test="/team@team-copy"]').text()).toBe('new:null')
+  // A neighboring copy is untouched; another focus starts at that agent's own settings.
+  mocks.focused.value = 'copy'; await flushPromises()
+  expect(wrapper.get('[data-test="/writer@copy"]').text()).toBe('old:null')
+  expect(wrapper.find('[data-test="/team@team-copy"]').exists()).toBe(false)
   wrapper.unmount()
+})
+
+describe('edits across focus changes (autobyteus-366, AC-005)', () => {
+  const twoCopies = () => mocks.stored.execution_tree.taskExecutions.push({ address: '/reviewer', agentRunId: 'follower', platformAgentRunId: null, delegatorAgentRunId: 'host',
+    startedAt: '2026-10-13T00:00:00.000Z', source: { kind: 'agent', agentDefinitionId: 'reviewer', launchConfiguration: launch() } })
+  const saveText = (wrapper: ReturnType<typeof mountEditor>) => wrapper.get('[data-test="existing-run-save-text"]').text()
+
+  it('an edit stays pending after the focus moves, the save bar names it, and Save commits exactly it', async () => {
+    twoCopies()
+    const wrapper = mountEditor(); await flushPromises()
+    await wrapper.get('[data-test="edit-/writer@copy"]').trigger('click'); await flushPromises()
+    expect(saveText(wrapper)).toContain('writer')
+    mocks.focused.value = 'follower'; await flushPromises()
+    expect(wrapper.get('[data-test="/reviewer@follower"]').text()).toBe('old:null')
+    expect(saveText(wrapper)).toContain('writer')
+    expect(saveText(wrapper)).not.toContain('reviewer')
+    await wrapper.get('[data-test="save-existing-model-config"]').trigger('click'); await flushPromises()
+    expect(mocks.mutate).toHaveBeenCalledTimes(1)
+    expect(mocks.mutate.mock.calls[0]![0].changes.map((change: any) => change.key)).toEqual(['agent:copy'])
+    expect(wrapper.get('[data-test="/reviewer@follower"]').text()).toBe('old:null')
+    mocks.focused.value = 'copy'; await flushPromises()
+    expect(wrapper.get('[data-test="/writer@copy"]').text()).toBe('new:null')
+    wrapper.unmount()
+  })
+
+  it('Cancel discards the edit of an agent no longer on screen; edits on two agents are both named', async () => {
+    twoCopies()
+    const wrapper = mountEditor(); await flushPromises()
+    await wrapper.get('[data-test="edit-/writer@copy"]').trigger('click')
+    mocks.focused.value = 'follower'; await flushPromises()
+    await wrapper.get('[data-test="edit-/reviewer@follower"]').trigger('click'); await flushPromises()
+    expect(saveText(wrapper)).toContain('writer, reviewer')
+    await wrapper.get('[data-test="existing-run-cancel"]').trigger('click'); await flushPromises()
+    expect(mocks.mutate).not.toHaveBeenCalled()
+    expect(wrapper.get('[data-test="/reviewer@follower"]').text()).toBe('old:null')
+    mocks.focused.value = 'copy'; await flushPromises()
+    expect(wrapper.get('[data-test="/writer@copy"]').text()).toBe('old:null')
+    wrapper.unmount()
+  })
 })
 
 it('leaves active Agent rows live-view-backed and does not request a stopped snapshot after Save', async () => {
