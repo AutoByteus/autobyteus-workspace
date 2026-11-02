@@ -99,3 +99,23 @@ None.
 - Material score or classification changes: overall 9.2 → 9.4; Large / High unchanged
 - Recommended recipient: API/E2E engineer; implementation engineer informed
 - Remaining risks or uncertainty: the Org undo is not rendered; the replacement of API/E2E's contract test
+
+### CRR-005 — Proportional test-code review after API/E2E Pass (API-REV-002)
+
+- Canonical review report updated: `api-e2e-test-review-report.md`
+- Review entry point and round: successful API/E2E test-code review, round 1; review scope `N/A`
+- Triggering role, report path: API/E2E engineer, `api-e2e-execution-coverage-report.md` (API-REV-002, commit `6339fcbdd7`)
+- Relevant solution / architecture-review / implementation / API/E2E / delivery revision IDs: SR-001 / ARCH-REV-001, 002 / IR-001…003 / API-REV-001, 002 / N/A
+- Prior authoritative result: CRR-004 source review Pass (separate report)
+- Current authoritative result: Pass (test review)
+- What changed in the review result and why: five new or rewritten test files and one script line; assertions prove the requirements (exact record ids, byte-identical files, session and pending state, rendered rows), roots are test-owned, mutation checks catch the relevant breakages, the contract test now pins the approved wire decision; no finding.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: none; optional tidy (RSM-06 row label)
+- Material score or classification changes: none
+- Recommended recipient: delivery engineer
+- Remaining risks or uncertainty: scripted Grok, Antigravity and native; AC-009 by implementation check only; a copy's undo at unit level; journal and memory-search reads beyond the chat
