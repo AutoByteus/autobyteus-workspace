@@ -11,6 +11,7 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) is autho
 | CRR-003 | `code-review-report.md` | Implementation Review, round 3, Targeted Delta (IR-002) | Fail | Pass | F-API-001, F-API-002 (resolved in code) |
 | CRR-004 | `code-review-report.md` | API/E2E Failure-Origin Review, round 4 (API-REV-002 F-API-003) | Pass | Fail: `Design Impact` → Solution Designer | F-API-003, CR-C12; F-API-001 and F-API-002 resolved at runtime |
 | CRR-005 | `code-review-report.md` | Implementation Review, round 5 (IR-003, SR-004 to SR-006; Full Re-Audit of DS-001, DS-002) | Fail | Pass | F-API-003, CR-C12 (resolved by design and code) |
+| CRR-006 | `api-e2e-test-review-report.md` | Proportional API/E2E Test-Code Review (API-REV-003 Pass) | Pass (CRR-005) | Not Applicable (no durable test changed) | None; CR-C19 resolved into FU-006 |
 
 ## Revision Entries
 
@@ -168,3 +169,32 @@ None (CRR-001 had no findings).
 - Material score or classification changes: category 8 goes from 8.7 to 9.3; category 4 goes from 9.4 to 9.5; overall 9.4; Medium / High unchanged
 - Recommended recipient: API/E2E engineer
 - Remaining risks or uncertainty: no real install has run through the wait; the read-only timing on this order, the staged path, N-13 and F-15 are unit-only so far; a Developer ID signature, Windows and Linux are not tested.
+
+### CRR-006 — Proportional test-code review after API-REV-003 Pass
+
+- Canonical review report updated: `api-e2e-test-review-report.md` (new)
+- Review entry point and round: Successful API/E2E Test-Code Review, round 1
+- Review scope: `N/A` (test review)
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, `api-e2e-execution-coverage-report.md` (API-REV-003 `Pass`, 93.9%); F-API-003 proven live (API-02B-r3, API-02D-r3); CR-C12 (API-05C-r3, API-05-r3); CR-C19 (API-11, API-12a to API-12c, API-11b, API-11c)
+- Relevant solution revision IDs: SR-006
+- Relevant architecture-review revision IDs: ARCH-REV-005
+- Relevant implementation revision IDs: IR-001 to IR-003
+- Relevant API/E2E revision IDs: API-REV-001 to API-REV-003
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: `Pass` (CRR-005, source review)
+- Current authoritative result: `Not Applicable`, passing to delivery
+- What changed in the review result and why: no repository test code changed in any API/E2E round; the harness is evidence, and its sampler measures outcomes directly. CR-C19 is resolved by real Squirrel: a second fetch after the first has finished is answered; an overlapping one fails cleanly and blocks V. That is recorded as FU-006.
+- Supported product scenario / material-premise basis changes: None
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| F-API-003 | Resolved by design and code; runtime proof pending (CRR-005) | Resolved; proven at runtime | API-REV-003 | `API-02B-r3-sampler.jsonl` (36.3 s wait, health 200, stop to quit 0.1 s); `API-02D-r3-sampler.jsonl` (81 s under load, no false failure) |
+| CR-C12 | Resolved in code (CRR-005) | Resolved; proven at runtime | API-REV-003 | `API-05C-r3-state.log` (plain reason, no-retry sentence); `API-05-r3-samples.log` (one record, 3 of 3) |
+| CR-C19 (held) | Hold for Evidence | Resolved: no 15-minute hang; the overlap case recorded as FU-006 | API-REV-003 | API-12a to API-12c; API-11b and API-11c (`API-11c-v1-instance.log:283-285`) |
+
+- New or remaining finding IDs: None; FU-006 added (follow-up)
+- Material score or classification changes: None; Medium / High
+- Recommended recipient: delivery engineer
+- Remaining risks or uncertainty: a Developer ID signed install (user-only); the live 15-minute bound; path (a) is unit-only; Windows and Linux; FU-003 to FU-006; the architecture reviewer's uncommitted edits.
