@@ -6,7 +6,7 @@ The latest `release-deployment-report.md` remains authoritative.
 
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
-| DR-001 | Release Requested (Solution Designer, 2026-11-02) | N/A | See the release report's Final Status | `release-deployment-report.md`, `release-notes.md` |
+| DR-001 | Release Requested (Solution Designer, 2026-11-02) | N/A | Delivery Completed (stable `v1.5.11` released) | `release-deployment-report.md`, `release-notes.md` |
 
 ## Revision Entries
 
@@ -19,5 +19,9 @@ The latest `release-deployment-report.md` remains authoritative.
   - build-only run `41473349105` on `c4788d81b5`: Pass;
   - curated notes.
 - The user's decisions: Grok smoke waiver ("Waive grok please release the stable version"); no Codex waiver; the 318 live suites not requested, not run.
-- Current authoritative result, release steps and cleanup: `release-deployment-report.md`.
-- Next recipient/action: `/software_engineering_team/solution_designer` after the release completes.
+- Smoke check on `3d637b266a`: all non-waived runtimes pass.
+- Tag `v1.5.11` on `caa7fb9a4e`.
+- Four workflows succeeded: Android; Docker; iOS on attempt 2; Desktop on attempt 4. The reruns were for a notarization-staple network drop and macOS runner capacity.
+- 23 of 23 assets; GitHub Latest; Docker `:1.5.11`, `:latest` and `:beta` share one digest.
+- Current authoritative result: Delivery Completed. Details in `release-deployment-report.md`.
+- Next recipient/action: `/software_engineering_team/solution_designer`.
