@@ -44,3 +44,8 @@
 ## Revision SR-005 (for ARCH-REV-004), 2026-11-02
 AR-003..AR-006, N-9..N-12 are resolved in DS-002 ("A native error during the wait", "A click during the wait"), the file
 map, Tradeoffs and Validation Guidance. F-13 is corrected. Requirements are unchanged since SR-004.
+
+## Revision SR-006 (for ARCH-REV-005), 2026-11-02
+AR-007: no check runs during the wait (DS-002 "No check runs during the wait"), instead of classifying by the check in
+flight. Please check this claim: every updater `error` during a wait is now the native refusal or the zip serve failure,
+and status stays `downloaded` until an Install click or the wait's end. N-13 and N-16 are in. Requirements unchanged.

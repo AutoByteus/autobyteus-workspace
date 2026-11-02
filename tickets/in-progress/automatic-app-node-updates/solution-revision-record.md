@@ -49,3 +49,14 @@
 - N-9 adopted (restore `downloaded` for the same V). N-10 accepted and stated. N-11: file map and `preparationFailed`.
   N-12: FU-004 widened.
 - Requirements: unchanged since SR-004.
+
+## SR-006 — 2026-11-02 — Architecture review ARCH-REV-004 (on SR-005)
+- Trigger: AR-007. A failed manual check during the wait emits the same updater `error` and would falsely fail and block
+  V. Confirmed (F-17).
+- Decision: no check runs during the wait; `checkForUpdates` returns the state while a wait is pending, and About disables
+  its button. This differs from the reviewer's stated route (classify by the check in flight, then more branches at the
+  native end), which he allowed an equivalent for: it removes the interleaving, so those branches and N-9's restore during
+  the wait, N-10 and N-14 are gone. Cost: "Check for updates" is off for about 36 s, at most 15 minutes, with the switch on.
+- N-13 adopted (reuse Squirrel's copy on switch-on). N-15 fits the stated residual. N-16: own `downloadInFlight` marker,
+  both Record maps, localized strings.
+- Requirements: unchanged since SR-004.
