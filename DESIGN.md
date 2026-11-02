@@ -115,6 +115,40 @@ how to apply them; they do not replace user-approved product requirements.
    removed, and the test doubles now recognise a compaction request by the
    compaction prompt the model actually receives.
 
+12. **A release build starts from `pnpm install` alone.** A release runner has no
+   built `*/dist/`, no generated Prisma client and no codegen output. A developer
+   machine, and a clone that followed TESTING.md's install order, has them, so
+   a gate that passes there can fail on the runner.
+
+   **When it applies: any task that touches what a gate reads, whatever the
+   task is about.** That is: a `package.json` script, a `tsconfig` (`include`,
+   `paths`, `references`), a codegen or workflow file, a test added to a
+   project that a type check or build compiles, or an import from one
+   workspace package into code another package's gate compiles. Autobyteus-318
+   only wanted three tests type-checked, yet it made the web gate compile the
+   server's source. If the touched gate reads another workspace package's
+   build output (a `dist/` that an `exports` entry points to, the Prisma
+   client, generated types), the design:
+   - names each package or generated output the gate reads;
+   - names the prepare step that builds each one, and that step is the gate's
+     own (its prepare script), not an earlier step of one build chain and not a
+     developer machine;
+   - uses the one owner that already builds those packages (for the server's
+     source: `autobyteus-server-ts` `prepare:source`) instead of a second list
+     that drifts when the first one grows;
+   - proves it on a fresh start: a clean clone with `pnpm install
+     --frozen-lockfile` only, running the gate; and, for a change to a build
+     step or gate, the build-only release run on the ticket branch before it
+     is merged (`pnpm release:test --ref <branch>`, RELEASE.md). Local runs
+     and clean clones that built the packages first do not count.
+
+   Examples: `v1.5.9-beta.14` (the type check read
+   `application-sdk-contracts` from an unbuilt `dist/`) and
+   `v1.5.11-beta.11` (autobyteus-318 widened the same gate to compile the
+   server's source, which reads `autobyteus-ts` and the Prisma client; the
+   prepare step was not widened). Both stopped all five desktop builds
+   (RELEASE.md, Case Studies).
+
 ## Work in two phases: clean functionality, then evidence-led refinement
 
 **Phase 1 — clean architecture and working functionality.** Start from the
@@ -362,6 +396,26 @@ installed 1.4.92 backend; packaged post-Run tests used version 1.4.93 and
 test-owned history. These are examples, not latency guarantees or proof of the
 user's exact dataset.
 
+### A gate that reads a package's build output does not build it
+
+**Anti-pattern:** a type check, codegen or test gate is added or widened so it
+reads another workspace package's `dist/` (or the Prisma client), and passes on
+every developer machine because the output is already built there. Its prepare
+step builds only what the first version of the gate needed.
+
+**Why it is wrong:** a release runner starts from `pnpm install` alone. The gate
+fails there, on all five desktop builds, and the failure is seen only at the
+build-only release run or, worse, after the tag.
+
+**Incidents:** `v1.5.9-beta.14` (`application-sdk-contracts`, fixed by adding
+`prepare:shared-types`) and `v1.5.11-beta.11` (autobyteus-318 added the
+cross-package tests project, which compiles the server's source, without
+extending that step to `autobyteus-ts` and the Prisma client).
+
+**Lesson:** a gate that reads a package's output must build it, in its own
+prepare script, from one owner (rule 12). Ask the question when the gate is
+designed, not when the release fails.
+
 ## Project-specific design documents
 
 Some kinds of change have their own design policy or canonical contract. When a
@@ -417,6 +471,9 @@ standalone document or a new layer of bureaucracy:
 - [ ] Payload, renderer cost, and publication freshness are considered together.
 - [ ] Unnecessary work was considered for removal before caching or abstraction.
 - [ ] Obsolete paths/dependencies and affected tests have an explicit disposition.
+- [ ] If the task touches a script, `tsconfig`, codegen or workflow file, or a test or
+      import that a gate compiles, every workspace package output that gate reads is built
+      by the gate's own prepare script on a fresh runner (rule 12).
 - [ ] Verification proves user-visible outcomes and work reduction without
       weakening correctness; uncertainty is stated rather than hidden.
 

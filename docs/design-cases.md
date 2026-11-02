@@ -211,3 +211,13 @@ Principle 5 and the Data Migration Guideline (§3 "Compatible changes", § Rolli
 - **The fix (SR-009):** the record moved to a new Projects-owned file, `projects/<projectId>/project_runs.json`, beside the Tasks' `agent_run_resources.json` (Projects already owns every Project ↔ run link). Older builds never open it, and no file they read strictly gains a key.
 - **Why it mattered:** "a tolerant reader absorbs an optional field" is a claim about every reader of the file, including the released ones a rollback runs. An optional key is compatible only where every reader that meets it ignores it.
 - **Notice it by:** a "no migration, optional field" decision that cites only the current reader; a file whose released reader validates against an allow-list of keys; a requirement or release note that promises rollback.
+
+### Case 15: A Gate Widened Without Its Prepare Step (autobyteus-318, release `v1.5.11-beta.11`)
+
+Rule 12 of `DESIGN.md` (a release build starts from `pnpm install` alone).
+
+- **The design said:** type-check three web tests that import server code in their own project (`tsconfig.cross-package-tests.json`), as part of the web type gate.
+- **What happened:** the project compiles the server's `src`, which reads `autobyteus-ts` (through `exports` into an untracked `dist/`) and the Prisma client. The gate's `prepare:shared-types` built only `application-sdk-contracts`. Every developer machine had the rest built, so the ticket and the three after it passed; the first build-only release run failed all five desktop builds (about 390 `TS2307`). The same class had stopped `v1.5.9-beta.14`; that fix was recorded as a one-off.
+- **The fix (`clean-runner-build-order`):** the web gate's prepare step calls the server's one prepare step for its source (workspace packages and the Prisma client) instead of keeping its own list; rule 12 asks the question at design time.
+- **Why it mattered:** a release failed at its build for a reason no local check can show, and the fix and rerun cost a release cycle.
+- **Notice it by:** a new or widened type check, codegen or test gate that imports another workspace package or generated output; a prepare script that lists packages by hand; "it passes locally" as the only proof.

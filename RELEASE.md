@@ -163,6 +163,9 @@ gh run list --workflow release-desktop.yml --limit 1
 gh run watch <run-id> --exit-status   # about 25 minutes
 ```
 
+- The design rule behind this run is [DESIGN.md](DESIGN.md) rule 12. For a change to
+  a build step or gate, run it on the ticket branch before the merge
+  (`pnpm release:test --ref <branch>`), not only on `personal` before the tag.
 - Local builds and clean clones do not replace this run. They usually have
   the workspace packages' `*/dist/` already built (TESTING.md's install order
   builds them), while a release runner starts from `pnpm install` alone.
@@ -313,6 +316,21 @@ release. Record it as one.
   - read this guide from `origin/personal`.
 - **Recovery:** the tag stays. The fix goes to `personal` and ships as the
   next beta.
+
+### `v1.5.11-beta.11`: the same gate, widened without its prepare step (2026-11-02)
+
+- **What happened:** the first build-only run for the beta failed all five desktop
+  builds in `pnpm typecheck` (about 390 `TS2307` errors). autobyteus-318 had added a
+  project to the web type gate that compiles the server's source, which reads
+  `autobyteus-ts` and the Prisma client; the gate's prepare step still built only
+  `application-sdk-contracts`.
+- **Why every earlier check passed:** the tickets before it ran on machines with those
+  outputs already built (316, 345 and 348 passed locally).
+- **What caught it:** the build-only run, before any tag: nothing was published and no
+  version number was used.
+- **Rule added from it:** [DESIGN.md](DESIGN.md) rule 12 (the second incident of the
+  class, after `v1.5.9-beta.14`).
+- **Recovery:** the ticket `clean-runner-build-order` fixes the prepare step; the beta ships after it.
 
 ## Rollback
 

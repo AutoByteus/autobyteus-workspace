@@ -1,0 +1,16 @@
+# Case: API-03
+# Command: same clone after API-01/02 (a fully built machine): pnpm -C autobyteus-web typecheck; pnpm -C autobyteus-server-ts build
+# Commit: b0e11cd4df (code identical to aa93bdcdfb: only DESIGN.md and ticket documents differ)
+# Environment: macOS arm64 (Darwin 25.5), Node v22.23.1, pnpm 10.28.2, fresh clone in /tmp, no node_modules or build output before the run
+# Date: 2026-11-02
+
+# clone /tmp/api-crb-fix (already built by the first run) at b0e11cd4df; 2026-11-02T09:25:09Z
+## pnpm -C autobyteus-web typecheck (built machine)
+[typecheck] production errors: 0; test-file errors: 99 in 43 files (baseline 99 in 43 files)
+[typecheck] PASS
+## pnpm -C autobyteus-server-ts build
+(node:70610) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+build exit 0

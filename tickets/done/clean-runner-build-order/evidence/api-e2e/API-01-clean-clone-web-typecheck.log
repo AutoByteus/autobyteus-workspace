@@ -1,0 +1,62 @@
+# Case: API-01
+# Command: git clone --branch codex/clean-runner-build-order; pnpm install --frozen-lockfile; pnpm -C autobyteus-web typecheck
+# Commit: b0e11cd4df (code identical to aa93bdcdfb: only DESIGN.md and ticket documents differ)
+# Environment: macOS arm64 (Darwin 25.5), Node v22.23.1, pnpm 10.28.2, fresh clone in /tmp, no node_modules or build output before the run
+# Date: 2026-11-02
+
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 7.5s using pnpm v10.28.2
+install exit 0
+----
+# clone /tmp/api-crb-fix at b0e11cd4df; 2026-11-02T09:21:23Z
+## pnpm -C autobyteus-web typecheck
+
+> autobyteus@1.5.11-beta.10 typecheck /private/tmp/api-crb-fix/autobyteus-web
+> pnpm prepare:shared-types && nuxt prepare && node ./scripts/typecheck.mjs
+
+
+> autobyteus@1.5.11-beta.10 prepare:shared-types /private/tmp/api-crb-fix/autobyteus-web
+> pnpm -C ../autobyteus-server-ts prepare:source
+
+
+> autobyteus-server-ts@0.1.1 prepare:source /private/tmp/api-crb-fix/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /private/tmp/api-crb-fix/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 148ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Easily identify and fix slow SQL queries in your app. Optimize helps you enhance your visibility: https://pris.ly/--optimize
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ WARN  Duplicated imports "getters", the one from "/private/tmp/api-crb-fix/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/private/tmp/api-crb-fix/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "getters", the one from "/private/tmp/api-crb-fix/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/private/tmp/api-crb-fix/autobyteus-web/stores/serverStore.ts" is used
+
+│
+◆  Types generated in .nuxt.
+[typecheck] Nuxt app (tsconfig.json): 72 errors, exit 2, 33.3s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.7s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 21.1s
+[typecheck] production errors: 0; test-file errors: 99 in 43 files (baseline 99 in 43 files)
+[typecheck] PASS
+web typecheck exit 0
