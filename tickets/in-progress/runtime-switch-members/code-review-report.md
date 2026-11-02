@@ -2,19 +2,42 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `Implementation Review`
+- Review Entry Point: `Implementation Review` (round 1, CRR-001) and `API/E2E Failure-Origin Review` (round 2, CRR-002; the latest authoritative result)
 - Requirements Doc / Investigation Notes / Solution Revision Record / Design Spec Reviewed As Context: `requirements-doc.md`, `investigation-notes.md`, `solution-revision-record.md` (SR-001), `design-spec.md` (D-1…D-10)
 - Supplemental Task Artifacts Reviewed As Context: `switch-member-record-contract.md` (behavior-defining for the data); `task-follow-ups-316.md` (input)
 - Design Review Report / Architecture Review Revision Record: `design-review-report.md`, `architecture-review-revision-record.md` (ARCH-REV-001 Fail → ARCH-REV-002 Pass; ARCH-F-001…010)
 - Implementation Handoff / Revision Record: `implementation-handoff.md`, `implementation-revision-record.md` (IR-001)
-- Code Review Revision Record: `code-review-revision-record.md`; Current Code Review Revision ID: `CRR-001`
-- Current Review Round: 1; Review Scope: `Full Review`
-- Trigger: implementation handoff IR-001 (Large / High). Prior round, failure-origin and delivery fields: N/A
+- Code Review Revision Record: `code-review-revision-record.md`; Current Code Review Revision ID: `CRR-002` (round 1 baseline: `CRR-001`)
+- Current Review Round: 2; Review Scope: round 1 `Full Review`; round 2 `N/A` (failure-origin round)
+- Trigger: round 1 implementation handoff IR-001 (Large / High); round 2 API/E2E failure (commit `1269820159`)
+- Prior Review Round Reviewed: round 1 (CRR-001, Pass)
+- Coverage Investigation / Execution Coverage Report / API/E2E Revision Record Reviewed (failure-origin): `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md`
+- Failing Scenario IDs: RSM-02 and RSM-03 (Org direct Agent and Agent of a mounted Team, rendered Settings), RSM-04 (delegated copy row after Save)
+- Failing command / mode: `pnpm -C autobyteus-web test:e2e:runtime-switch-members` (headless Chrome → Nuxt dev → built backend, scripted native and Antigravity models); contract test `autobyteus-collaboration-stream-contracts/tests/org-member-pending-runtime-switch.test.mjs`
+- Failure evidence: `evidence/api-e2e/API-04-browser-probe.log`, `API-04-screens/RSM-02-failure.png`, `RSM-03-failure.png`, `rsm04-copy-saved.png`, `rsm04-copy-settings-reopened.png`, `API-07-contracts-org-pending.log`
 
 ## Routing Classification Review
 
 - Task size `Large`; architectural risk `High`; route `Implementation Review`; independent source review required: `Yes`.
 - Classification evidence: confirmed. 153 files (3,531 insertions): persisted member and copy records, the durable commit of a member's binding in three roots, the shared activation handle with two construction sites, three save paths, two stream-contract packages, the web draft chain, and renames across the Team and Org chains.
+
+## API/E2E Failure-Origin Review (round 2, CRR-002)
+
+Scope: classify the origin of the RSM-02/03/04 failures; no repeat of the round-1 audit. Method: `Read` the cited source and the evidence; the failures were `Measured` by API/E2E in the rendered journey and with the built schema. I did not rerun the probe. Everything else API/E2E ran passes and is taken as reported: live Claude ↔ Codex for a Team member, both Org members and a copy with I-7 by exact record ids (LV-01…03), failed starts for an Org member and a copy with a byte-identical previous file and a clean retry (EX-01, EX-02), restart for a copy, opposite wake orders, a Team default edit with linked members (EX-02…04), and the Team path in the browser (RSM-01).
+
+The failing scenarios represent approved behavior: AC-002 (the Org member's switch is saved and shown in Settings) and AC-004 (a copy's choice is saved and shown). Both are supported normal scenarios (a user edits and saves the settings of a stopped Org or Agent root).
+
+| Candidate | Observation | Independent trigger / path | Evidence | Disposition | Origin |
+| --- | --- | --- | --- | --- | --- |
+| F-1 | Saving a runtime switch for an Org member shows a raw Zod error (`Unrecognized key: "pendingRuntimeSwitch"`) in Settings; the Save bar stays on "Unsaved changes". The server state is right: the first message still switches | User saves, or merely reopens, the Settings of a stopped Org that has a pending member. Path: `getAgentOrgRunConfig.executionTree` and the update result's `canonical` are `GraphQLJSON` of the stored Org tree (`api/graphql/types/agent-org-run.ts:102,119`), which now carries `pendingRuntimeSwitch` on a configured Agent (the node is written by `applySelectionToConfiguredMember`, kept by the schemas and by `agent-org-runtime-config-projector.ts:18`); the web parses it with `agentOrgExecutionTreeDtoSchema.parse` (`agentOrgRunConfigClient.ts:32`, `existingRunConfigStore.ts:303,492`, `existingRunConfigResultActions.ts:72`), and the contract's `configuredAgent` is `.strict()` without that key (`agent-org-execution-dtos.ts:24-28`) | `RSM-02-failure.png`, `RSM-03-failure.png`; API/E2E parsed a real server tree with the built schema; `API-07-contracts-org-pending.log` (tests 1 and 2 fail with `unrecognized_keys`) | Promote | The implementation: it broke the approved wire decision "the pending switch is NOT on the wire" (design-spec Change Scope; contract §6) on the Org raw-tree paths. The Team path is fine because the Team tree reaches the web through the snake_case DTO projection, which leaves the field out (RSM-01 passes), and the live and checkpoint Org paths go through `collaboration-execution-tree-dto-projection.ts` |
+| F-2 | After a successful Save of a stopped copy's runtime change the copy row keeps its old content (`rsw-native… · AutoByteus · Agent default`), still stale after 10 s, until Settings are reopened (reopened row: `Gemini test · Antigravity CLI`). The server record is right | User saves a copy's choice on a stopped Agent root. Path: the Save runs `reconcile = draftStore.reloadCanonical(true)` (`ExistingRunConfigEditor.vue:355`), whose `readAgentCanonical` refreshes the resume config and takes the copy rows from `useAgentRunCollaborationStore().viewFor(runId)` (`existingRunConfigStore.ts:200`); `viewFor` returns the host's cached context view when one exists (`agentRunCollaborationStore.ts:177-181`, "one hub selection reads the view once") | `rsm04-copy-saved.png`, `rsm04-copy-settings-reopened.png`, `API-04-browser-probe.log` (RSM-04) | Promote | The implementation (web reconcile after a copy Save). Cause read, not proven: the snapshot of the copy rows is probably the pre-save cached view. Not established: whether a model-only copy Save refreshes the row at the base (SSR-001 of `settings-saved-model-refresh-cases.mjs` exercises repeated copy Saves there); the implementation must find that out with the red probe before choosing the fix |
+
+### Was it detectable in source review?
+
+- F-1: yes, and I missed it. The design says the pending switch is off the wire; the diff showed (a) `pendingRuntimeSwitch` added to the Org config projector and to the stored Org node, (b) the Org config read and update result emitted as raw `GraphQLJSON`, and (c) a `.strict()` contract schema. I confirmed the DTO projections and the Team path but did not trace the Org Settings read and the Save result to the web's parser. No unit or integration test crosses the server's raw Org tree with the web's strict schema, so the suites passed. The design's list of derived consumers did not name these two emission sites either (the architecture review did not catch it).
+- F-2: probably not from the diff alone; it needed the rendered journey. My round-1 report listed rendered rows as unverified.
+
+Round-1 `Pass` (CRR-001) is superseded.
 
 ## Review Scope
 
@@ -120,7 +143,7 @@ None new or reclassified. The 316 lesson (a candidate can write records while it
 
 ## Review Scorecard
 
-- Overall score: 9.4 / 10 (summary only)
+- Overall score: 8.8 / 10 (summary only; round 2 lowered categories 7 and 8)
 
 | Priority | Category | Score | Why | Weak | Improve |
 | --- | --- | --- | --- | --- | --- |
@@ -130,40 +153,45 @@ None new or reclassified. The 316 lesson (a candidate can write records while it
 | 4 | Separation of Concerns and File Placement | 9.3 | Clean; `existingRunConfigStore.ts` sits at 499 of 500 effective lines | store at the limit | Extract on the next change |
 | 5 | Shared-Structure Tightness | 9.4 | Reuses `PendingRuntimeSwitch`; one-field mixin | — | — |
 | 6 | Naming and Local Readability | 9.4 | The rename is complete | — | — |
-| 7 | API/E2E Readiness | 9.3 | Built-server cases for all three placements; a live Claude/Codex pair, rendered rows and an Org-member/copy failed start on the built server are not run | those three | API/E2E |
-| 8 | Runtime Correctness And Behavioral Fidelity | 9.4 | Holders, conflicts, retry and discard traced against the code and the tests | — | — |
+| 7 | API/E2E Readiness | 7.5 | API/E2E could not pass: the Org Settings Save fails in the rendered surface (F-1) and the copy row is stale after Save (F-2) | F-1, F-2 | Fix, rerun RSM-02…04 |
+| (round 1) | API/E2E Readiness | 9.3 | Built-server cases for all three placements; a live Claude/Codex pair, rendered rows and an Org-member/copy failed start on the built server are not run | those three | API/E2E |
+| 8 | Runtime Correctness And Behavioral Fidelity | 7.5 | Activation, commit, retry and discard hold (live and built-server evidence); the wire output of the Org tree breaks the approved wire decision and the rendered Settings (F-1); the copy row is stale (F-2) | F-1, F-2 | Project the Org tree; refresh the copy rows |
 | 9 | No Backward-Compatibility / No Legacy Retention | 9.5 | Clean cut | — | — |
 | 10 | Cleanup Completeness | 9.3 | Dead code removed; the stale probe scenarios are pre-existing (FU-C2) | probe | FU-C2 |
 
 ## Findings
 
-None.
+| Finding ID | Scenario / Test | Evidence | Required Action | Classification / Owner |
+| --- | --- | --- | --- | --- |
+| F-1 | RSM-02, RSM-03 (rendered Org Settings after Save, and any fresh read of an Org with a pending member) | See the failure-origin table | Keep the approved wire decision: the pending switch does not reach the web. Project the stored Org tree at the server boundary before it leaves as JSON, at EVERY site that returns the raw Org tree (at least `getAgentOrgRunConfig.executionTree` and the update result's `canonical`; enumerate the others with a search for `AgentOrgRunExecutionTreeSnapshot`/`executionTree` leaving a resolver or service), by dropping `pendingRuntimeSwitch` in one function. Add a server-side test that the Org config read and the Save result parse with `agentOrgExecutionTreeDtoSchema` while a member is pending, for a direct Agent and an Agent of a mounted Team. Do NOT take the alternative of adding the field to the contract schemas without the Solution Designer: that reverses the approved wire decision, and the Team contract and the parity of the two contracts would follow. The API/E2E contract test `org-member-pending-runtime-switch.test.mjs` encodes that alternative (it asserts the schema accepts the field), so API/E2E should replace it with the boundary test above and keep the rendered RSM-02/03 as the proof | `Local Fix` — implementation_engineer |
+| F-2 | RSM-04 (copy row after a Save of a runtime change) | See the failure-origin table | Reproduce with the RSM-04 probe, find why the copy rows are not refreshed after the Save (first suspect: `viewFor` serving the cached pre-save view to `readAgentCanonical`), compare with a model-only copy Save at the base, and make the Save's reconcile read the saved rows. A test at the store level (a copy Save whose reconcile returns the new choice) plus the rendered RSM-04 | `Local Fix` — implementation_engineer |
 
 ## Follow-ups
 
-- Follow-ups this review added: FU-C2 (in `follow-ups.md`). FU-C1 (the designer's) stands.
+- Follow-ups this review added: FU-C2 (round 1, in `follow-ups.md`). Round 2: None. FU-C1 (the designer's) stands.
 
 ## Classification
 
-Not applicable (Pass). Task size and architectural risk (`Large` / `High`) unchanged.
+- F-1: `Local Fix` (implementation). F-2: `Local Fix` (implementation).
+- Task size and architectural risk (`Large` / `High`) unchanged.
 
 ## Recommended Recipient
 
-API/E2E engineer (primary pass rule); implementation engineer informed.
+Implementation engineer (both are implementation-owned Local Fixes). After the fix: source review of the delta, then API/E2E reruns RSM-02…04 and the contract/boundary test.
 
 ## Residual Risks
 
-- No live Claude Agent SDK / Codex App Server pair (needs the test vault); I-7 on those two archived segments is not shown for members.
-- The new member and copy rows were not rendered in a browser or isolated instance; layout and the open runtime menu on nested rows are unverified visually.
-- A failed start of an Org member or a copy is covered by unit tests at the three placements but not on the built server.
+- Round 2 closed the round-1 gaps: the live Claude ↔ Codex pair, the failed starts of an Org member and a copy, restart for a copy and the wake orders all pass (API/E2E). Still not covered: AC-003 and AC-009 in the rendered surface, journal and memory-search reads of a switched member beyond the chat, live Grok/Antigravity (scripted), the Electron shell.
+- Other Org raw-tree emission sites may exist beyond the two named; F-1's fix includes the search.
 - A Team default's runtime edit switches every linked member at once; each activates separately, so a partially activated Team is a normal state (documented).
 - Restart between the save and the first message for a member and for a copy: MS-04 covers a Team member; a copy is not run.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Pass`
-- Review Entry Point: `Implementation Review`
-- Supported Product Scenario Gate: `Pass`; Material-Premise Gate: `Pass`
-- Score Summary: 9.4 / 10, every category ≥ 9.3
-- Recommended Recipient: API/E2E engineer
-- Notes: The M-7 holder refresh, the conflict commit, the restore-site `replaceSelection`, and the parity test are confirmed (C-1…C-4). The existing browser probe's failures are pre-existing (FU-C2).
+- Review Decision: `Fail`
+- Review Entry Point: `API/E2E Failure-Origin Review`
+- Supported Product Scenario Gate: `Pass`; Material-Premise Gate: `Fail` (the premise "the pending switch is not on the wire" does not hold for the Org Settings read and Save result)
+- Score Summary: 8.8 / 10; categories 7 and 8 lowered
+- Failure Origin: implementation (F-1 breaks the approved wire decision on two unlisted Org paths; F-2 web reconcile). The design's derived-consumer list and my round-1 source review both missed F-1
+- Recommended Recipient: implementation engineer
+- Notes: The round-1 Pass (CRR-001) is superseded. The server state and the activation are correct in both cases; the failures are in what reaches the Settings page.
