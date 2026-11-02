@@ -1,0 +1,20 @@
+{
+  "DCF-L1": {
+    "runtimeKind": "codex_app_server",
+    "model": "gpt-6.1-terra",
+    "copyId": "dcf_live_worker_d1313f_c0a786700fe2424e934fb12cef9e6ba1",
+    "pwdWrittenByTheCopy": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcf-live-pw60nB/project-folder-dcf-l1",
+    "F": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcf-live-pw60nB/project-folder-dcf-l1",
+    "G": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcf-live-pw60nB/workspace",
+    "inG": false
+  },
+  "DCF-L2": {
+    "runtimeKind": "claude_agent_sdk",
+    "model": "claude-haiku-4-5-20251001",
+    "copyId": "dcf_live_worker_667220_eba07752d5d0404b98598ae36cc12688",
+    "pwdWrittenByTheCopy": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcf-live-pw60nB/project-folder-dcf-l2",
+    "F": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcf-live-pw60nB/project-folder-dcf-l2",
+    "G": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcf-live-pw60nB/workspace",
+    "inG": false
+  }
+}
