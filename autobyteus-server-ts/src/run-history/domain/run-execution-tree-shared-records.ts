@@ -93,6 +93,15 @@ export type TaskTeamExecutionSource = Readonly<{
 
 export type TaskExecutionSource = TaskAgentExecutionSource | TaskTeamExecutionSource;
 
+/** The snapshot with one folder for the whole copy: an Agent's launch; a Team's default and every member's. */
+export const sourceInFolder = <TSource extends TaskExecutionSource>(source: TSource, workspaceRootPath: string): TSource => {
+  const inFolder = (launch: AgentLaunchConfiguration): AgentLaunchConfiguration => Object.freeze({ ...launch, workspaceRootPath });
+  return (source.kind === "agent"
+    ? Object.freeze({ ...source, launchConfiguration: inFolder(source.launchConfiguration) })
+    : Object.freeze({ ...source, defaultLaunchConfiguration: inFolder(source.defaultLaunchConfiguration),
+      members: Object.freeze(source.members.map((member) => Object.freeze({ ...member, launchConfiguration: inFolder(member.launchConfiguration) }))) })) as TSource;
+};
+
 /**
  * A delegated child Agent. Liveness (live / shut down) is runtime-only and never persisted.
  * `delegatorAgentRunId` is written for every new child; children recorded before it existed have none.

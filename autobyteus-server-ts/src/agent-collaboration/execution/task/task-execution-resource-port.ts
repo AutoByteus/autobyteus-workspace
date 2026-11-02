@@ -50,6 +50,11 @@ export interface TaskExecutionResourcePort {
   linkNewTaskExecution(input: NewTaskExecutionLinkInput): Promise<Readonly<{ taskId: string }>>;
   /** A Task's identity by its ID (a task agent's own Task, when it delegates part of its work; autobyteus-32 D1). */
   describeTask(taskId: string): Promise<DelegatedTaskIdentityView>;
+  /**
+   * Where a new local copy of this Project's Task runs: its first linked folder, or `null` when it has none (the copy
+   * inherits). Rejects `TASK_PROJECT_FOLDER_UNAVAILABLE` when that link is not an existing folder on this node.
+   */
+  projectFolderForNewCopy(projectId: string): Promise<string | null>;
   markStarted(execution: TaskExecutionReference): Promise<void>;
   markFailed(execution: TaskExecutionReference, error: Readonly<{ code: string; message: string }>): Promise<void>;
   /**
@@ -120,7 +125,7 @@ export type TaskExecutionRemoteFence = Readonly<{ execution: TaskExecutionRefere
 export type TaskExecutionStopResult = TaskExecutionReleaseResult | TaskExecutionRemoteFence;
 
 /** Coded port rejections; implementations throw errors carrying one of these `code`s. */
-export const TASK_EXECUTION_RESOURCE_REJECTION_CODES = ["TASK_AGENT_RESOURCE_CLOSED", "TASK_AGENT_RESOURCE_CONFLICT", "TASK_AGENT_RESOURCES_UNAVAILABLE", "TASK_AGENT_RESOURCE_OWNED_SENDER"] as const;
+export const TASK_EXECUTION_RESOURCE_REJECTION_CODES = ["TASK_AGENT_RESOURCE_CLOSED", "TASK_AGENT_RESOURCE_CONFLICT", "TASK_AGENT_RESOURCES_UNAVAILABLE", "TASK_AGENT_RESOURCE_OWNED_SENDER", "TASK_PROJECT_FOLDER_UNAVAILABLE"] as const;
 export type TaskExecutionResourceRejectionCode = typeof TASK_EXECUTION_RESOURCE_REJECTION_CODES[number];
 export const taskExecutionResourceRejectionCode = (error: unknown): TaskExecutionResourceRejectionCode | null => {
   const code = (error as { code?: unknown } | null)?.code;

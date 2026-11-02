@@ -42,7 +42,7 @@ export class TeamRunCollaborators {
 
   listAvailable(): Promise<readonly AvailableCollaborator[]> { return this.admission.policy.listEligible(this.port()); }
 
-  catalogTaskSource(input: Readonly<{ address: string; senderRunId: string; work: DelegationWork }>): Promise<CatalogTaskSource | null> {
+  catalogTaskSource(input: Readonly<{ address: string; senderRunId: string; work: DelegationWork; workspaceRootPath: string | null }>): Promise<CatalogTaskSource | null> {
     return this.admission.catalogTaskSource(this.port(), input);
   }
 
