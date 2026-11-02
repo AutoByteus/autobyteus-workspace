@@ -1,0 +1,1194 @@
+{
+  "startedAt": "2026-11-02T09:06:25.981Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "image": "autobyteus/autobyteus-server:beta",
+  "containerName": "one-nodes-api-docker-64a342",
+  "servers": {
+    "desk": {
+      "port": 57133,
+      "baseUrl": "http://127.0.0.1:57133",
+      "nodeId": "srv_Wy04TEZBoCdnXEDjO2t03WzqWbVol3Qp"
+    },
+    "other": {
+      "port": 57134,
+      "baseUrl": "http://127.0.0.1:57134",
+      "nodeId": "srv_5aLNPipLIwdY1-PBAleUmiQiIseG7rYr"
+    },
+    "docker": {
+      "port": 57135,
+      "baseUrl": "http://127.0.0.1:57135",
+      "nodeId": "srv_r4wP1ydy6SiKtjWcTdplyj9NL4OPgxpt",
+      "dockerenv": true
+    }
+  },
+  "imageDistDiff": {
+    "changed": [
+      "agent-collaboration/execution/backends/configured-agent-execution-handle.js",
+      "agent-collaboration/execution/backends/root-agent-execution-registry.js",
+      "agent-collaboration/execution/remote/remote-child-commands.js",
+      "agent-collaboration/execution/services/active-collaboration-root-directory.js",
+      "agent-collaboration/execution/task/root-task-execution-lifecycle.js",
+      "agent-execution/backends/acp/backend/acp-agent-run-backend-factory.js",
+      "agent-execution/backends/acp/session/acp-session-launcher.js",
+      "agent-execution/backends/antigravity/backend/agy-agent-run-backend-factory.js",
+      "agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.js",
+      "agent-execution/backends/autobyteus/autobyteus-integration-shell-environment.js",
+      "agent-execution/backends/claude/backend/claude-session-bootstrapper.js",
+      "agent-execution/backends/claude/session/claude-session-query-options.js",
+      "agent-execution/backends/codex/backend/codex-thread-bootstrapper.js",
+      "agent-execution/backends/codex/thread/codex-segment-turn-admission.js",
+      "agent-execution/backends/codex/thread/codex-thread.js",
+      "agent-execution/domain/agent-run-config.js",
+      "agent-execution/domain/agent-run.js",
+      "agent-execution/domain/system-task-notification-senders.js",
+      "agent-execution/input/agent-run-input-admission-state.js",
+      "agent-execution/prompt/carpenter-prompt-composer.js",
+      "agent-execution/prompt/carpenter-prompt-sections.js",
+      "agent-execution/runtime/general-process-run-supervisor.js",
+      "agent-execution/services/agent-run-provisioning-service.js",
+      "agent-execution/services/agent-run-service.js",
+      "agent-execution/services/standalone-agent-run-eligibility.js",
+      "agent-execution/services/standalone-agent-run-lifecycle-service.js",
+      "agent-memory/services/agent-memory-location-service.js",
+      "agent-memory/services/agent-memory-service.js",
+      "agent-memory/services/raw-trace-file-source-service.js",
+      "agent-memory/services/runtime-memory-event-accumulator.js",
+      "agent-memory/store/external-runtime-memory-writer.js",
+      "agent-memory/store/memory-file-store.js",
+      "agent-org-execution/domain/agent-org-run.js",
+      "agent-org-execution/services/agent-org-run-manager.js",
+      "agent-org-execution/services/agent-org-run-persistence-coordinator.js",
+      "agent-team-execution/domain/root-team-run.js",
+      "agent-team-execution/local/flat-team-agent-execution-handle.js",
+      "agent-team-execution/local/flat-team-execution-manager.js",
+      "agent-team-execution/local/registries/task-agent-execution-registry.js",
+      "agent-team-execution/services/agent-team-run-manager.js",
+      "agent-team-execution/services/team-flat-execution-callbacks.js",
+      "agent-team-execution/services/team-root-materializer.js",
+      "agent-team-execution/services/team-run-persistence-coordinator.js",
+      "agent-team-execution/services/team-run-service.js",
+      "agent-team-execution/task-delegation/team-task-execution-service.js",
+      "agent-tools/mcp/agent-tools-mcp-local-server.js",
+      "agent-work-journal/services/work-journal-service.js",
+      "agent-work-journal/store/work-journal-store.js",
+      "api/graphql/schema.js",
+      "api/graphql/types/agent-run.js",
+      "api/graphql/types/agent-team-run.js",
+      "api/graphql/types/delegated-launch-selection.js",
+      "api/graphql/types/llm-provider-model-catalog.js",
+      "api/graphql/types/run-history.js",
+      "api/graphql/types/run-model-config.js",
+      "api/graphql/types/skills.js",
+      "api/rest/project-task-context-files.js",
+      "app-data-migrations/frozen/server/services/team-communication/team-communication-identity.js",
+      "compositions/build-standalone-application-server.js",
+      "compositions/build-studio-server.js",
+      "compositions/project-task-execution-resource-composition.js",
+      "compositions/remote-collaboration-composition.js",
+      "credential-proxy/credential-proxy-host.js",
+      "credential-proxy/credential-proxy-local-server.js",
+      "credential-proxy/credential-proxy-routes.js",
+      "credential-proxy/integration-connection-service.js",
+      "credential-proxy/integration-connection-store.js",
+      "credential-proxy/integration-run-access.js",
+      "credential-proxy/run-pass-registry.js",
+      "llm-management/services/dynamic-model-source-lifecycle.js",
+      "llm-management/services/model-catalog-service.js",
+      "llm-management/services/run-model-selection-service.js",
+      "memory-search/runs/memory-run-discovery.js",
+      "projects/runtime/task-execution-resource-release.js",
+      "projects/services/project-task-service.js",
+      "projects/stores/projects-layout.js",
+      "run-history/projection/providers/local-memory-run-view-projection-provider.js",
+      "run-history/services/agent-run-history-catalog-service.js",
+      "run-history/services/agent-run-history-service.js",
+      "run-history/services/delegated-launch-selection-service.js",
+      "run-history/services/studio-run-model-config-service.js",
+      "run-history/services/team-run-history-service.js",
+      "run-history/store/agent-run-metadata-store.js",
+      "run-history/store/atomic-run-package-file-commit-writer.js",
+      "run-history/store/message-log.js",
+      "run-history/store/task-agent-message-logs.js",
+      "run-history/store/task-execution-tree-split.js",
+      "server-runtime.js",
+      "skills/services/skill-service.js",
+      "skills/services/skill-source-service.js",
+      "standalone-agent-run-root/domain/standalone-agent-run-root.js",
+      "standalone-agent-run-root/services/standalone-agent-run-root-manager.js",
+      "standalone-agent-run-root/services/standalone-root-location-service.js",
+      "standalone-agent-run-root/services/standalone-root-persistence-coordinator.js"
+    ],
+    "onlyMounted": [
+      "agent-execution/domain/run-project-context.js",
+      "agent-execution/domain/runtime-switch-memory-port.js",
+      "agent-execution/domain/runtime-switch.js",
+      "agent-execution/services/standalone-stopped-run-selection-updater.js",
+      "agent-execution/services/stopped-run-selection-context.js",
+      "agent-memory/services/runtime-handover-reader.js",
+      "agent-memory/services/runtime-switch-recorder.js",
+      "api/graphql/types/integrations.js",
+      "api/graphql/types/project-run-history.js",
+      "compositions/collaboration-root-resolver.js",
+      "compositions/project-run-links-composition.js",
+      "compositions/restart-resume-composition.js",
+      "credential-proxy/delivery-definitions.js",
+      "credential-proxy/integration-access-rule.js",
+      "credential-proxy/integration-catalog.js",
+      "credential-proxy/integration-import-outcomes.js",
+      "credential-proxy/integration-manifest.js",
+      "credential-proxy/tool-presence.js",
+      "projects/domain/project-runs.js",
+      "projects/services/project-run-service.js",
+      "projects/services/project-task-context-drafts.js",
+      "projects/services/task-context-ownership.js",
+      "projects/stores/project-run-store.js",
+      "restart-resume/busy-run-record.js",
+      "restart-resume/busy-run-recorder.js",
+      "restart-resume/release-identity.js",
+      "restart-resume/restart-notice.js",
+      "restart-resume/restart-resumer.js",
+      "run-history/domain/project-run-links.js",
+      "run-history/services/agent-run-history-row-projector.js",
+      "run-history/services/agent-run-runtime-switch-commit.js",
+      "run-history/services/project-run-history-service.js",
+      "run-history/store/agent-run-pending-runtime-switch.js",
+      "runtime-handover-notices/services/runtime-handover-notice-builder.js",
+      "runtime-handover-notices/services/runtime-handover-notice-service.js",
+      "shutdown/client-connection-close.js",
+      "skills/domain/integration-folder-requirement.js"
+    ],
+    "onlyImage": [
+      "agent-execution/services/standalone-stopped-run-model-config-updater.js",
+      "api/graphql/types/github-integration.js",
+      "credential-proxy/integration-definitions.js",
+      "run-history/services/agent-run-model-config-commit.js"
+    ]
+  },
+  "cases": {
+    "ND-01": {
+      "result": "Pass",
+      "ms": 1487,
+      "failedExpectations": [],
+      "dockerSwitchBefore": false,
+      "confirm": {
+        "text": "Let agents work with docker? Agents on this node and on docker will be able to work with each other. These changes happen: On this node (Embedded Node) • Register docker as “docker” On docker • Turn on remote collaboration (it is off) • Register this node as “Embedded Node” docker finds this node's address once it is on. Trusted private network only: nodes are not authenticated. Cancel Turn on",
+        "steps": [
+          {
+            "id": "registerHere",
+            "mark": "•",
+            "text": "Register docker as “docker”"
+          },
+          {
+            "id": "turnOnThere",
+            "mark": "•",
+            "text": "Turn on remote collaboration (it is off)"
+          },
+          {
+            "id": "registerThere",
+            "mark": "•",
+            "text": "Register this node as “Embedded Node” docker finds this node's address once it is on."
+          }
+        ]
+      },
+      "onDesk": {
+        "nodeId": "srv_r4wP1ydy6SiKtjWcTdplyj9NL4OPgxpt",
+        "name": "docker",
+        "baseUrl": "http://127.0.0.1:57135"
+      },
+      "onDocker": [
+        {
+          "nodeId": "srv_Wy04TEZBoCdnXEDjO2t03WzqWbVol3Qp",
+          "name": "Embedded Node",
+          "baseUrl": "http://host.docker.internal:57133"
+        }
+      ],
+      "deskCandidates": [
+        "http://127.0.0.1:57133",
+        "http://host.docker.internal:57133",
+        "http://[fe80::595d:95da:bb5:bf64]:57133",
+        "http://[fe80::4e9:201d:3dda:365e]:57133",
+        "http://192.168.2.158:57133",
+        "http://[2003:ca:5706:4886:18fa:f9ab:140e:6015]:57133",
+        "http://[2003:ca:5706:4886:4f2:2267:975b:c68a]:57133",
+        "http://[fe80::747a:65ff:fee8:f8f4]:57133",
+        "http://[fe80::dbb4:9cc8:26d0:1766]:57133",
+        "http://[fe80::1d06:1894:6970:85b]:57133",
+        "http://[fe80::ce81:b1c:bd2c:69e]:57133",
+        "http://[fe80::60ff:34ba:8df1:2202]:57133",
+        "http://100.127.30.107:57133",
+        "http://[fd7a:115c:a1e0::4336:1e6b]:57133"
+      ],
+      "directions": {
+        "out": "This node → docker Working via http://127.0.0.1:57135Change address",
+        "in": "docker → this node Working via http://host.docker.internal:57133"
+      },
+      "offers": {
+        "deskAsksDocker": {
+          "refusalCode": null,
+          "unreachableReason": null,
+          "entries": [
+            {
+              "name": "Docker Helper"
+            }
+          ]
+        },
+        "dockerAsksDesk": {
+          "refusalCode": null,
+          "unreachableReason": null,
+          "entries": [
+            {
+              "name": "Desk Helper"
+            }
+          ]
+        }
+      }
+    },
+    "ND-04": {
+      "result": "Pass",
+      "ms": 2652,
+      "failedExpectations": [],
+      "state": {
+        "line": "Not reachable. Nothing answers at that address and port.",
+        "tone": "info",
+        "hints": 0,
+        "dialog": 0,
+        "addPanelText": "Add node"
+      }
+    },
+    "ND-05": {
+      "result": "Pass",
+      "ms": 93,
+      "failedExpectations": [],
+      "thisNode": {
+        "url": "http://127.0.0.1:57135",
+        "switch": "On"
+      },
+      "deskRow": {
+        "name": "Embedded Node",
+        "url": "host.docker.internal:57133",
+        "line": null,
+        "dot": "Reachable now"
+      }
+    },
+    "ND-02": {
+      "result": "Pass",
+      "ms": 745,
+      "failedExpectations": [],
+      "hintText": "Embedded Node can't reach http://127.0.0.1:57133. Embedded Node runs in Docker, where 127.0.0.1 is the container itself. Try http://host.docker.internal:57133 Use this Docker Guide",
+      "peerBeforeUse": {
+        "nodeId": "srv_Wy04TEZBoCdnXEDjO2t03WzqWbVol3Qp",
+        "name": "Embedded Node",
+        "baseUrl": "http://host.docker.internal:57133"
+      },
+      "peerAfter": {
+        "nodeId": "srv_Wy04TEZBoCdnXEDjO2t03WzqWbVol3Qp",
+        "name": "Embedded Node",
+        "baseUrl": "http://host.docker.internal:57133"
+      },
+      "saves": [
+        {
+          "nodeId": "srv_Wy04TEZBoCdnXEDjO2t03WzqWbVol3Qp",
+          "baseUrl": "http://host.docker.internal:57133"
+        }
+      ],
+      "directions": {
+        "out": "This node → Embedded Node Working via http://host.docker.internal:57133Change address",
+        "in": "Embedded Node → this node Not reachable"
+      }
+    },
+    "ND-03": {
+      "result": "Pass",
+      "ms": 21331,
+      "failedExpectations": [],
+      "dns": {
+        "address": "http://no-such-node.invalid:8000",
+        "text": "no-such-node.invalid can't be found from here.",
+        "ms": 250
+      },
+      "blackHole": {
+        "address": "http://10.255.255.1:8000",
+        "text": "No answer within 20 seconds.",
+        "ms": 10415
+      },
+      "different": {
+        "address": "http://host.docker.internal:57134",
+        "text": "A different node answers there than the one registered.",
+        "ms": 253
+      },
+      "peerAfter": {
+        "nodeId": "srv_Wy04TEZBoCdnXEDjO2t03WzqWbVol3Qp",
+        "name": "Embedded Node",
+        "baseUrl": "http://host.docker.internal:57133"
+      },
+      "resolveExtensions": {
+        "code": "PEER_UNREACHABLE",
+        "address": "http://127.0.0.1:57133",
+        "reason": "refused",
+        "loopbackInContainer": true,
+        "attempts": [
+          {
+            "address": "http://127.0.0.1:57133",
+            "result": "refused"
+          },
+          {
+            "address": "http://no-such-node.invalid:8000",
+            "result": "not_found"
+          },
+          {
+            "address": "http://10.255.255.1:8000",
+            "result": "timeout"
+          },
+          {
+            "address": "http://host.docker.internal:57134",
+            "result": "different_node"
+          }
+        ]
+      }
+    }
+  },
+  "requests": [
+    {
+      "window": "desk",
+      "at": 1793610461013,
+      "to": "desk",
+      "path": "/graphql",
+      "op": "GetUpdateNotifications",
+      "variables": {}
+    },
+    {
+      "window": "desk",
+      "at": 1793610461013,
+      "to": "desk",
+      "path": "/rest/health",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "desk",
+      "at": 1793610461017,
+      "to": "desk",
+      "path": "/graphql",
+      "op": "GetUpdateAutomationSettings",
+      "variables": {}
+    },
+    {
+      "window": "desk",
+      "at": 1793610461062,
+      "to": "desk",
+      "path": "/rest/health",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "desk",
+      "at": 1793610461062,
+      "to": "desk",
+      "path": "/rest/health",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "desk",
+      "at": 1793610461062,
+      "to": "desk",
+      "path": "/rest/health",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "desk",
+      "at": 1793610461062,
+      "to": "desk",
+      "path": "/rest/health",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "desk",
+      "at": 1793610461062,
+      "to": "desk",
+      "path": "/rest/health",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "desk",
+      "at": 1793610461062,
+      "to": "desk",
+      "path": "/rest/health",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "desk",
+      "at": 1793610461063,
+      "to": "desk",
+      "path": "/rest/health",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "desk",
+      "at": 1793610461065,
+      "to": "desk",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "variables": {}
+    },
+    {
+      "window": "desk",
+      "at": 1793610461065,
+      "to": "desk",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "desk",
+      "at": 1793610461067,
+      "to": "desk",
+      "path": "/graphql",
+      "op": "GetApplicationsCapability",
+      "variables": {}
+    },
+    {
+      "window": "desk",
+      "at": 1793610461067,
+      "to": "desk",
+      "path": "/graphql",
+      "op": "GetAllWorkspaces",
+      "variables": {}
+    },
+    {
+      "window": "desk",
+      "at": 1793610461067,
+      "to": "other:api.iconify.design",
+      "path": "/heroicons.json",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "desk",
+      "at": 1793610461067,
+      "to": "other:api.iconify.design",
+      "path": "/ph.json",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "desk",
+      "at": 1793610461068,
+      "to": "desk",
+      "path": "/graphql",
+      "op": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "window": "desk",
+      "at": 1793610461068,
+      "to": "desk",
+      "path": "/graphql",
+      "op": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "window": "desk",
+      "at": 1793610461068,
+      "to": "desk",
+      "path": "/graphql",
+      "op": "GetAgentDefinitions",
+      "variables": {}
+    },
+    {
+      "window": "desk",
+      "at": 1793610461068,
+      "to": "desk",
+      "path": "/graphql",
+      "op": "GetAgentTeamDefinitions",
+      "variables": {}
+    },
+    {
+      "window": "desk",
+      "at": 1793610461068,
+      "to": "desk",
+      "path": "/graphql",
+      "op": "GetAgentOrgDefinitions",
+      "variables": {}
+    },
+    {
+      "window": "desk",
+      "at": 1793610461071,
+      "to": "desk",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationCapability",
+      "variables": {}
+    },
+    {
+      "window": "desk",
+      "at": 1793610461073,
+      "to": "desk",
+      "path": "/rest/health",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "desk",
+      "at": 1793610461075,
+      "to": "other:api.iconify.design",
+      "path": "/heroicons.json",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "desk",
+      "at": 1793610461799,
+      "to": "docker",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "desk",
+      "at": 1793610461855,
+      "to": "docker",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "desk",
+      "at": 1793610461855,
+      "to": "desk",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "variables": {}
+    },
+    {
+      "window": "desk",
+      "at": 1793610461855,
+      "to": "desk",
+      "path": "/graphql",
+      "op": "GetPeerAddressCandidates",
+      "variables": {}
+    },
+    {
+      "window": "desk",
+      "at": 1793610461855,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationCapability",
+      "variables": {}
+    },
+    {
+      "window": "desk",
+      "at": 1793610461855,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "variables": {}
+    },
+    {
+      "window": "desk",
+      "at": 1793610461855,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "GetPeerAddressCandidates",
+      "variables": {}
+    },
+    {
+      "window": "desk",
+      "at": 1793610461856,
+      "to": "docker",
+      "path": "/rest/node-update",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "desk",
+      "at": 1793610461856,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationCapability",
+      "variables": {}
+    },
+    {
+      "window": "desk",
+      "at": 1793610461856,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "variables": {}
+    },
+    {
+      "window": "desk",
+      "at": 1793610461877,
+      "to": "desk",
+      "path": "/graphql",
+      "op": "ResolvePeerAddress",
+      "variables": {
+        "nodeId": "srv_r4wP1ydy6SiKtjWcTdplyj9NL4OPgxpt",
+        "baseUrls": [
+          "http://127.0.0.1:57135",
+          "http://localhost:57135",
+          "http://host.docker.internal:57135",
+          "http://172.17.0.6:57135"
+        ]
+      }
+    },
+    {
+      "window": "desk",
+      "at": 1793610462041,
+      "to": "desk",
+      "path": "/graphql",
+      "op": "AddPeerNode",
+      "variables": {
+        "input": {
+          "nodeId": "srv_r4wP1ydy6SiKtjWcTdplyj9NL4OPgxpt",
+          "name": "docker",
+          "baseUrl": "http://127.0.0.1:57135"
+        }
+      }
+    },
+    {
+      "window": "desk",
+      "at": 1793610462080,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "SetRemoteCollaborationEnabled",
+      "variables": {
+        "enabled": true
+      }
+    },
+    {
+      "window": "desk",
+      "at": 1793610462100,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "ResolvePeerAddress",
+      "variables": {
+        "nodeId": "srv_Wy04TEZBoCdnXEDjO2t03WzqWbVol3Qp",
+        "baseUrls": [
+          "http://127.0.0.1:57133",
+          "http://host.docker.internal:57133",
+          "http://[fe80::595d:95da:bb5:bf64]:57133",
+          "http://[fe80::4e9:201d:3dda:365e]:57133",
+          "http://192.168.2.158:57133",
+          "http://[2003:ca:5706:4886:18fa:f9ab:140e:6015]:57133",
+          "http://[2003:ca:5706:4886:4f2:2267:975b:c68a]:57133",
+          "http://[fe80::747a:65ff:fee8:f8f4]:57133",
+          "http://[fe80::dbb4:9cc8:26d0:1766]:57133",
+          "http://[fe80::1d06:1894:6970:85b]:57133",
+          "http://[fe80::ce81:b1c:bd2c:69e]:57133",
+          "http://[fe80::60ff:34ba:8df1:2202]:57133",
+          "http://100.127.30.107:57133",
+          "http://[fd7a:115c:a1e0::4336:1e6b]:57133"
+        ]
+      }
+    },
+    {
+      "window": "desk",
+      "at": 1793610462132,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "AddPeerNode",
+      "variables": {
+        "input": {
+          "nodeId": "srv_Wy04TEZBoCdnXEDjO2t03WzqWbVol3Qp",
+          "name": "Embedded Node",
+          "baseUrl": "http://host.docker.internal:57133"
+        }
+      }
+    },
+    {
+      "window": "desk",
+      "at": 1793610462160,
+      "to": "desk",
+      "path": "/graphql",
+      "op": "GetPeerNodeOffer",
+      "variables": {
+        "nodeId": "srv_r4wP1ydy6SiKtjWcTdplyj9NL4OPgxpt"
+      }
+    },
+    {
+      "window": "desk",
+      "at": 1793610462160,
+      "to": "docker",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "desk",
+      "at": 1793610462160,
+      "to": "docker",
+      "path": "/rest/node-update",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "desk",
+      "at": 1793610462160,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationCapability",
+      "variables": {}
+    },
+    {
+      "window": "desk",
+      "at": 1793610462160,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "variables": {}
+    },
+    {
+      "window": "desk",
+      "at": 1793610462172,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "GetPeerNodeAvailability",
+      "variables": {
+        "nodeId": "srv_Wy04TEZBoCdnXEDjO2t03WzqWbVol3Qp"
+      }
+    },
+    {
+      "window": "desk",
+      "at": 1793610463050,
+      "to": "desk",
+      "path": "/rest/health",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "desk",
+      "at": 1793610463250,
+      "to": "other:127.0.0.1:57136",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "desk",
+      "at": 1793610463251,
+      "to": "other:127.0.0.1:57136",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "docker",
+      "at": 1793610483187,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "GetUpdateNotifications",
+      "variables": {}
+    },
+    {
+      "window": "docker",
+      "at": 1793610483187,
+      "to": "docker",
+      "path": "/rest/health",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "docker",
+      "at": 1793610483189,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "GetUpdateAutomationSettings",
+      "variables": {}
+    },
+    {
+      "window": "docker",
+      "at": 1793610483231,
+      "to": "docker",
+      "path": "/rest/health",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "docker",
+      "at": 1793610483231,
+      "to": "docker",
+      "path": "/rest/health",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "docker",
+      "at": 1793610483231,
+      "to": "docker",
+      "path": "/rest/health",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "docker",
+      "at": 1793610483231,
+      "to": "docker",
+      "path": "/rest/health",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "docker",
+      "at": 1793610483231,
+      "to": "docker",
+      "path": "/rest/health",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "docker",
+      "at": 1793610483231,
+      "to": "docker",
+      "path": "/rest/health",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "docker",
+      "at": 1793610483231,
+      "to": "docker",
+      "path": "/rest/health",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "docker",
+      "at": 1793610483231,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "variables": {}
+    },
+    {
+      "window": "docker",
+      "at": 1793610483231,
+      "to": "docker",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "docker",
+      "at": 1793610483232,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "GetApplicationsCapability",
+      "variables": {}
+    },
+    {
+      "window": "docker",
+      "at": 1793610483232,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "GetAllWorkspaces",
+      "variables": {}
+    },
+    {
+      "window": "docker",
+      "at": 1793610483232,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "window": "docker",
+      "at": 1793610483232,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "window": "docker",
+      "at": 1793610483232,
+      "to": "other:api.iconify.design",
+      "path": "/heroicons.json",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "docker",
+      "at": 1793610483232,
+      "to": "other:api.iconify.design",
+      "path": "/ph.json",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "docker",
+      "at": 1793610483234,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "GetAgentDefinitions",
+      "variables": {}
+    },
+    {
+      "window": "docker",
+      "at": 1793610483237,
+      "to": "docker",
+      "path": "/rest/health",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "docker",
+      "at": 1793610483259,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "GetAgentTeamDefinitions",
+      "variables": {}
+    },
+    {
+      "window": "docker",
+      "at": 1793610483259,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "GetAgentOrgDefinitions",
+      "variables": {}
+    },
+    {
+      "window": "docker",
+      "at": 1793610483259,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationCapability",
+      "variables": {}
+    },
+    {
+      "window": "docker",
+      "at": 1793610483262,
+      "to": "other:api.iconify.design",
+      "path": "/heroicons.json",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "docker",
+      "at": 1793610483269,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "GetPeerNodeOffer",
+      "variables": {
+        "nodeId": "srv_Wy04TEZBoCdnXEDjO2t03WzqWbVol3Qp"
+      }
+    },
+    {
+      "window": "docker",
+      "at": 1793610483269,
+      "to": "other:host.docker.internal:57133",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "docker",
+      "at": 1793610484178,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "ChangePeerAddress",
+      "variables": {
+        "nodeId": "srv_Wy04TEZBoCdnXEDjO2t03WzqWbVol3Qp",
+        "baseUrl": "http://127.0.0.1:57133"
+      }
+    },
+    {
+      "window": "docker",
+      "at": 1793610484332,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "ChangePeerAddress",
+      "variables": {
+        "nodeId": "srv_Wy04TEZBoCdnXEDjO2t03WzqWbVol3Qp",
+        "baseUrl": "http://host.docker.internal:57133"
+      }
+    },
+    {
+      "window": "docker",
+      "at": 1793610484356,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "GetPeerNodeOffer",
+      "variables": {
+        "nodeId": "srv_Wy04TEZBoCdnXEDjO2t03WzqWbVol3Qp"
+      }
+    },
+    {
+      "window": "docker",
+      "at": 1793610484356,
+      "to": "other:host.docker.internal:57133",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "docker",
+      "at": 1793610484761,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "ChangePeerAddress",
+      "variables": {
+        "nodeId": "srv_Wy04TEZBoCdnXEDjO2t03WzqWbVol3Qp",
+        "baseUrl": "http://no-such-node.invalid:8000"
+      }
+    },
+    {
+      "window": "docker",
+      "at": 1793610485039,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "ChangePeerAddress",
+      "variables": {
+        "nodeId": "srv_Wy04TEZBoCdnXEDjO2t03WzqWbVol3Qp",
+        "baseUrl": "http://10.255.255.1:8000"
+      }
+    },
+    {
+      "window": "docker",
+      "at": 1793610485215,
+      "to": "docker",
+      "path": "/rest/health",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "docker",
+      "at": 1793610488263,
+      "to": "docker",
+      "path": "/rest/health",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "docker",
+      "at": 1793610488267,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "window": "docker",
+      "at": 1793610488267,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "window": "docker",
+      "at": 1793610493264,
+      "to": "docker",
+      "path": "/rest/health",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "docker",
+      "at": 1793610493279,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "window": "docker",
+      "at": 1793610493279,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "window": "docker",
+      "at": 1793610495464,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "ChangePeerAddress",
+      "variables": {
+        "nodeId": "srv_Wy04TEZBoCdnXEDjO2t03WzqWbVol3Qp",
+        "baseUrl": "http://host.docker.internal:57134"
+      }
+    },
+    {
+      "window": "docker",
+      "at": 1793610498263,
+      "to": "docker",
+      "path": "/rest/health",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "docker",
+      "at": 1793610498268,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "window": "docker",
+      "at": 1793610498268,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "window": "docker",
+      "at": 1793610503264,
+      "to": "docker",
+      "path": "/rest/health",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "docker",
+      "at": 1793610503267,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "window": "docker",
+      "at": 1793610503267,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "ListCollaborationRootHistory",
+      "variables": {}
+    }
+  ],
+  "browserErrors": [
+    "desk console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "desk console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "docker console: Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+    "docker console: Failed to load resource: net::ERR_NAME_NOT_RESOLVED"
+  ],
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true,
+    "containerLeft": null
+  },
+  "error": null,
+  "unexpectedBrowserErrors": [],
+  "finishedAt": "2026-11-02T09:08:37.842Z"
+}

@@ -1,0 +1,36 @@
+# Evidence: IMP-01-web-unit-suite-excerpt.log (excerpt of IMP-01-web-unit-suite.log)
+# Command: (cd /Users/normy/autobyteus_org/autobyteus-worktrees/manage-nodes-professional/autobyteus-web) NUXT_TEST=true pnpm exec vitest run
+# Commit: d5f670021b (test(web): NodeRow spec type fix; typecheck baseline drops the removed Disclosur)
+# Working tree: 0 changed tracked/untracked paths under autobyteus-web, autobyteus-server-ts
+# Env: Darwin 25.5.0, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-02 09:59:02 CET
+# Run by: implementation_engineer (autobyteus-363)
+
+# Excerpt of IMP-01-web-unit-suite.log (full log beside it): the Nodes/settings lines touched by 363, and the summary.
+
+stderr | components/settings/nodes/__tests__/NodeRow.spec.ts
+stdout | components/settings/nodes/__tests__/NodeRow.spec.ts
+ ✓ components/settings/nodes/__tests__/NodeRow.spec.ts (17 tests) 117ms
+stderr | components/settings/nodes/__tests__/AddNodePanel.spec.ts
+stdout | components/settings/nodes/__tests__/AddNodePanel.spec.ts
+ ✓ components/settings/nodes/__tests__/AddNodePanel.spec.ts (3 tests) 36ms
+stderr | components/settings/nodes/__tests__/NodeServerUpdate.spec.ts
+stdout | components/settings/nodes/__tests__/NodeServerUpdate.spec.ts
+ ✓ components/settings/nodes/__tests__/NodeServerUpdate.spec.ts (13 tests) 58ms
+stderr | components/settings/nodes/__tests__/NodeChangeDialog.spec.ts
+stdout | components/settings/nodes/__tests__/NodeChangeDialog.spec.ts
+ ✓ components/settings/nodes/__tests__/NodeChangeDialog.spec.ts (7 tests) 49ms
+stderr | components/settings/nodes/__tests__/nodeServerUpdateStore.spec.ts
+stdout | components/settings/nodes/__tests__/nodeServerUpdateStore.spec.ts
+ ✓ components/settings/nodes/__tests__/nodeServerUpdateStore.spec.ts (9 tests) 40ms
+stderr | tests/integration/app-font-size-fixed-px-audit.integration.test.ts
+stderr | components/settings/__tests__/RemoteCollaborationOfferToggle.spec.ts
+stdout | tests/integration/app-font-size-fixed-px-audit.integration.test.ts
+ ✓ tests/integration/app-font-size-fixed-px-audit.integration.test.ts (2 tests) 42ms
+stdout | components/settings/__tests__/RemoteCollaborationOfferToggle.spec.ts
+ ✓ components/settings/__tests__/RemoteCollaborationOfferToggle.spec.ts (3 tests) 32ms
+
+ Test Files  682 passed (682)
+      Tests  4958 passed | 2 skipped (4960)
+   Duration  281.29s (transform 28.41s, setup 1876.35s, collect 170.49s, tests 77.92s, environment 171.47s, prepare 99.24s)
+# Exit code: 0

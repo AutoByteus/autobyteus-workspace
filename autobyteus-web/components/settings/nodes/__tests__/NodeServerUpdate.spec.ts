@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
+import { defineComponent, h as render } from 'vue'
 import { createPinia, setActivePinia } from 'pinia'
 import type { NodeRow } from '~/stores/nodeRowStatus'
 
@@ -10,7 +11,10 @@ import NodeServerUpdate from '../NodeServerUpdate.vue'
 import { useAppUpdateStore } from '~/stores/appUpdateStore'
 import { useNodeServerUpdateStore } from '~/stores/nodeServerUpdateStore'
 
-/** autobyteus-305 step 4, design "Row states": a remote node's server version and its update, under its row. */
+/**
+ * autobyteus-305 step 4, design "Row states": a remote node's server version and its update. Since 363 the row renders
+ * it in two parts: the cell (version, progress, "Update to …") in the server column, and the notice under the row.
+ */
 
 const B = 'srv_studioBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB'
 const ADDRESS = 'http://192.168.2.31:29695'
@@ -24,9 +28,11 @@ const available = (version: string, extra: object = {}) => ({
 let answers: unknown[]
 const posts: unknown[] = []
 
+/** Both parts, as the row renders them. */
+const Row = defineComponent({ setup: () => () => render('div', [render(NodeServerUpdate, { row, part: 'cell' }), render(NodeServerUpdate, { row, part: 'notice' })]) })
 const mountLine = async (answer: unknown) => {
   answers = [answer]
-  const wrapper = mount(NodeServerUpdate, { props: { row } })
+  const wrapper = mount(Row)
   await flushPromises()
   return wrapper
 }
@@ -74,7 +80,8 @@ describe('NodeServerUpdate', () => {
 
   it('N-4: a starter that does not answer: "Server version unknown" and the message, no button', async () => {
     const wrapper = await mountLine({ inPlaceUpdate: 'error', version: null, message: "The node's starter did not answer: timeout" })
-    expect(text(wrapper)).toBe("Server version unknown The node's starter did not answer: timeout")
+    expect(text(wrapper)).toBe('Server version unknown')
+    expect(find(wrapper, 'node-server-notice').text()).toBe("The node's starter did not answer: timeout")
   })
 
   it('an update blocker replaces the button with its message', async () => {
@@ -114,7 +121,8 @@ describe('NodeServerUpdate', () => {
     answers = [available('1.5.12', { update: { ...idle, state: 'succeeded', targetVersion: '1.5.12', step: 'confirming', message: 'Updated to 1.5.12.' } })]
     await useNodeServerUpdateStore().refresh(B)
     await flushPromises()
-    expect(text(wrapper)).toBe('Server 1.5.12 Updated to 1.5.12.')
+    expect(text(wrapper)).toBe('Server 1.5.12')
+    expect(find(wrapper, 'node-server-notice').text()).toBe('Updated to 1.5.12.')
   })
 
   it('an unknown code from a newer node shows its message, and the button stays for this app version', async () => {
@@ -125,8 +133,16 @@ describe('NodeServerUpdate', () => {
 
   it('a node this window does not reach shows nothing', async () => {
     h.list.reachedAddressOf = vi.fn(() => null)
-    const wrapper = mount(NodeServerUpdate, { props: { row } })
+    const wrapper = mount(Row)
     await flushPromises()
-    expect(wrapper.html()).toBe('<!--v-if-->')
+    expect(wrapper.find('[data-testid^="node-server"]').exists()).toBe(false)
+  })
+
+  it('363 DS-002: only the cell asks the node, so a row with both parts asks it once; unmounting the cell stops it', async () => {
+    const wrapper = await mountLine(available('1.5.11'))
+    const gets = vi.mocked(fetch).mock.calls.filter(([, init]) => init?.method !== 'POST')
+    expect(gets).toHaveLength(1)
+    wrapper.unmount()
+    expect(useNodeServerUpdateStore().entries[B]).toBeUndefined()
   })
 })
