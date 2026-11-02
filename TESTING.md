@@ -105,6 +105,10 @@ test, not its whole suite. A second full run of a suite proves nothing the first
   `autobyteus-server-ts/dist/app.js` need a current build of this worktree:
   `pnpm -C autobyteus-server-ts build`. Never use an installed app or an older build as
   proof of current source.
+- **A local run does not prove a release build.** The packages are already built in your
+  worktree; a release runner starts from `pnpm install` alone. For a change to a build step
+  or gate, prove it as [DESIGN.md](DESIGN.md) rule 12 says (a clean clone with the frozen
+  install only, then the build-only release run).
 - **Serialize builds and dev servers within one worktree.** Parallel builds or Nuxt dev
   servers in the same package overwrite each other's outputs.
 - **One heavy run at a time.** Do not run server `test:unit`, an E2E folder, a build or a

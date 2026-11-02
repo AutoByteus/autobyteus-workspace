@@ -64,6 +64,8 @@
 //           Alone: pnpm -C autobyteus-web test:e2e:skill-improvement-removal
 //   TLU-001 (live-tool-list-updates) tools edited in the app reach the open run: card, refusal, restore; see
 //           tool-list-update-cases.mjs. Alone: pnpm -C autobyteus-web test:e2e:tool-list-updates
+//   AFS-001..AFS-003 (agent-settings-focused AC-001..AC-005): Settings of the focused agent on a hub, an Org and a Team; see
+//           agent-settings-focused-cases.mjs. Alone: pnpm -C autobyteus-web test:e2e:agent-settings-focused
 //   LRL-001..LRL-005 (large-runs-load-less AC-002, AC-003, AC-006): Team and Org runs load only the focused member; the
 //           Team tab's live merge and reconnect; a damaged message log on desktop and phone; see
 //           large-runs-load-less-cases.mjs. Alone: pnpm -C autobyteus-web test:e2e:large-runs-load-less
@@ -90,6 +92,7 @@ import { registerSavedRefreshCases } from './settings-saved-model-refresh-cases.
 import { registerDelegatedCopyOwnFileCases } from './delegated-copy-own-file-cases.mjs'
 import { registerSkillImprovementRemovalCases } from './skill-improvement-removal-cases.mjs'
 import { registerToolListUpdateCases } from './tool-list-update-cases.mjs'
+import { registerAgentSettingsFocusedCases } from './agent-settings-focused-cases.mjs'
 import { registerLargeRunsLoadLessCases } from './large-runs-load-less-cases.mjs'
 import { agentRuntimeName } from '@autobyteus/agent-presentation-contracts'
 import { spawn } from 'node:child_process'
@@ -396,41 +399,137 @@ const openSettings = async (page) => {
   return view
 }
 const backToConversation = async (page) => {
-  const back = page.locator(sel('run-config-back-to-events'))
+  const back = page.locator(`${sel('run-config-back-to-events')}, ${sel('agent-org-config-back-to-events')}`).first()
   if (await back.isVisible().catch(() => false)) { await back.click(); await settle(page, 1200) }
 }
-/**
- * The read-only Settings rows of collaborators and copies (SR-006: member rows, collapsed until opened). By default every row
- * is opened first (Teams, then their agents) and then read; `expand: false` reads the rows as Settings opens them.
- */
-const delegatedRows = async (page, { expand = true } = {}) => {
-  const section = page.locator(sel('run-delegated-launches'))
-  await section.waitFor({ timeout: 60000 })
-  for (let round = 0; expand && round < 6; round += 1) {
-    const closed = section.locator(`${sel('run-member-toggle')}[aria-expanded="false"]`)
-    const count = await closed.count()
-    if (!count) break
-    for (let i = 0; i < count; i += 1) { await closed.first().click(); await delay(150) }
+// autobyteus-366: Settings show the focused agent. A copy (or a Team copy's member) is reached by focusing it in the left tree;
+// a Team copy's own settings and its members are its group view ("Team settings").
+const subjectCard = (page) => page.locator(sel('existing-run-subject-card'))
+const settingsOpen = (page) => page.locator(sel('existing-run-settings')).isVisible().catch(() => false)
+const treeAgentRow = (page, id) => page.locator([`${sel('workspace-team-transient-execution-row')}[data-agent-run-id="${id}"]`,
+  sel(`agent-org-task-agent-row-${id}`), sel(`agent-org-agent-row-${id}`)].join(', ')).first()
+/** Opens every closed copy, Org run and task team in the left tree (never a placed team's row: that changes the focus). */
+const expandTree = async (page) => {
+  for (const toggle of await page.locator(sel('workspace-team-transient-disclosure')).all()) {
+    const holder = toggle.locator('xpath=ancestor::*[@aria-expanded][1]')
+    if (await holder.getAttribute('aria-expanded').catch(() => null) === 'false') await toggle.click().catch(() => {})
   }
-  return section.locator('[data-source]').evaluateAll((els) => els.map((el) => {
-    const own = (selector) => [...el.querySelectorAll(selector)].filter((node) => node.closest('[data-source]') === el)
-    return {
-      test: el.getAttribute('data-test').replace('run-member-', '').replace(/@.*$/, ''),
-      member: Boolean(el.parentElement?.closest('[data-source]')),
-      source: el.getAttribute('data-source'),
-      badge: own('[data-test="run-member-badge"]')[0]?.textContent?.trim() ?? null,
-      launch: own('[data-test="run-member-summary"]')[0]?.textContent?.replace(/\s+/g, ' ').trim() ?? '',
-      fallbacks: own('[data-test="run-member-launch-note"]').map((node) => node.textContent.replace(/\s+/g, ' ').trim()),
-      noteCount: own('[data-test="run-member-note-count"]')[0]?.textContent?.replace(/\s+/g, ' ').trim() ?? null,
-      expanded: own('[data-test="run-member-toggle"]')[0]?.getAttribute('aria-expanded') === 'true',
-      coordinator: own('span').some((node) => node.textContent.trim() === 'Coordinator'),
-      card: own('[data-test^="run-settings-card"]').length > 0,
-      membersHeading: own('[data-test="run-member-detail"] p').some((node) => /^members$/i.test(node.textContent.trim())),
-    }
-  }))
+  for (const toggle of await page.locator('[data-test^="agent-org-run-disclosure-"], [data-test^="agent-org-task-team-disclosure-"]').all()) {
+    if (await toggle.getAttribute('aria-expanded').catch(() => null) === 'false') await toggle.click().catch(() => {})
+  }
+  await expandWorkspaces(page)
 }
-/** SR-006: Settings opens with one collapsed row per collaborator and copy; no agent row of a Team is shown yet. */
-const assertCollapsed = (rows, label) => assert(rows.length > 0 && rows.every((row) => !row.expanded && !row.member && row.badge), `${label}: rows are not all collapsed top-level rows`, rows)
+const focusAgent = async (page, id) => {
+  const row = treeAgentRow(page, id)
+  await waitFor(`tree row ${id}`, async () => {
+    if (await row.isVisible().catch(() => false)) return true
+    await expandTree(page)
+    return row.isVisible().catch(() => false)
+  }, 60000, 1500)
+  await row.click(); await settle(page, 1500)
+}
+/** Focuses an agent with Settings open and returns its card; with `group`, the card of its group (a Team copy) instead. */
+const focusedCard = async (page, id, { group = false } = {}) => {
+  await focusAgent(page, id)
+  if (!(await settingsOpen(page))) await openSettings(page)
+  await waitFor(`Settings of ${id}`, async () => (await subjectCard(page).isVisible().catch(() => false))
+    || (await page.locator(sel('existing-run-root-card')).isVisible().catch(() => false)), 30000, 300)
+  const pressed = await page.locator(sel('run-settings-switch-group')).getAttribute('aria-pressed', { timeout: 1000 }).catch(() => null)
+  if (group && pressed === 'false') { await page.locator(sel('run-settings-switch-group')).click(); await settle(page, 600) }
+  if (!group && pressed === 'true') { await page.locator(sel('run-settings-switch-agent')).click(); await settle(page, 600) }
+  return subjectCard(page)
+}
+/** A row of the group view (a run's member, or a Team copy's), by its key. */
+const groupRow = (page, key) => page.locator(`${sel('existing-run-settings')} ${sel(`run-member-${key}`)}`).first()
+/** A card's one-line summary, as its row in a list read it: `model runtime · approval · source`. */
+const cardSummary = (card) => card.evaluate((el) => {
+  const value = (field) => {
+    const node = el.querySelector(`[data-test="run-setting-${field}"]`)
+    if (!node) return ''
+    const label = node.firstElementChild?.textContent?.replace(/\s+/g, ' ').trim() ?? ''
+    return node.textContent.replace(/\s+/g, ' ').trim().replace(label, '').replace(/\bReset\b/g, '').trim()
+  }
+  return [value('model'), value('approval'), el.querySelector('[data-test="run-subject-source"]')?.textContent?.replace(/\s+/g, ' ').trim() ?? '']
+    .filter(Boolean).join(' · ')
+})
+/** The facts of one card or row (summary, source, notes, locks, controls). */
+const rowFacts = (handle, extra) => handle.evaluate((el, extra) => {
+  const own = (selector) => [...el.querySelectorAll(selector)].filter((node) => node.closest('[data-source], [data-test="existing-run-subject-card"]') === el)
+  return { ...extra,
+    source: el.getAttribute('data-source'),
+    launch: extra.launch ?? own('[data-test="run-member-summary"]')[0]?.textContent?.replace(/\s+/g, ' ').trim() ?? '',
+    fallbacks: own('[data-test="run-member-launch-note"]').map((node) => node.textContent.replace(/\s+/g, ' ').trim()),
+    coordinator: extra.coordinator ?? own('span').some((node) => node.textContent.trim() === 'Coordinator'),
+    card: own('[data-test^="run-settings-card"]').length > 0,
+    locked: own('[data-test="run-setting-model"] [data-test="run-setting-locked"]').length > 0,
+    controls: own('[data-test="run-member-reset"], [data-test="run-setting-reset"], [data-test="chat-model-trigger"], input, select').length,
+    expanded: true }
+}, extra)
+/**
+ * The settings of a root's copies, read the way the user reaches them (autobyteus-366): each copy focused in the left tree
+ * and read from its card; a Team copy from its group view (its card, then its members' rows, opened). `root`: the run whose
+ * copies to read (`{ kind: 'agent' | 'team' | 'org', id }`). Rows keep the shape the list gave: test (address), member, source,
+ * badge, launch, fallbacks, coordinator, card, membersHeading, locked, controls.
+ */
+const delegatedRows = async (page, root) => {
+  // The agent focused before the walk is focused again after it (its Settings, its composer, its run's stop).
+  const before = await page.evaluate(() => {
+    const target = document.querySelector('#__nuxt').__vue_app__.config.globalProperties.$pinia._s.get('activeContext')?.activeWorkspaceTarget
+    return target ? { browse: target.browse ? { ...target.browse } : null, runId: target.context?.state?.runId ?? null } : null
+  })
+  await expandTree(page); await expandTree(page)
+  const addressById = root.kind === 'org'
+    ? Object.fromEntries(objectsIn(await orgTree(root.id)).filter((x) => pick(x, 'agentRunId') && typeof x.address === 'string').map((x) => [pick(x, 'agentRunId'), x.address]))
+    : {}
+  const targets = await page.evaluate(([kind, id]) => {
+    const scope = kind === 'agent' ? document.querySelector(`[data-test="workspace-agent-run-task-tree"][data-run-id="${id}"]`)
+      : kind === 'org' ? document.querySelector(`[data-test="agent-org-run-children-${id}"]`) : document
+    const rows = [...(scope?.querySelectorAll('[data-test="workspace-team-transient-execution-row"][data-agent-run-id], [data-test^="agent-org-task-agent-row-"]') ?? [])]
+      .filter((el) => kind !== 'team' || el.dataset.teamRunId === id)
+    return rows.map((el) => ({ id: el.dataset.agentRunId ?? el.getAttribute('data-test').replace('agent-org-task-agent-row-', ''), address: el.dataset.memberAddress ?? null }))
+  }, [root.kind, root.id])
+  const rows = [], covered = new Set()
+  for (const target of targets) {
+    if (covered.has(target.id)) continue
+    covered.add(target.id)
+    const card = await focusedCard(page, target.id)
+    const switchLabel = (await page.locator(sel('run-settings-switch-group')).textContent({ timeout: 1000 }).catch(() => null))?.trim() ?? null
+    if (switchLabel === 'Team settings') {
+      // A Team copy's member: the copy's own settings and its members are its group view.
+      const team = await focusedCard(page, target.id, { group: true })
+      const section = page.locator(sel('existing-run-settings'))
+      for (let round = 0; round < 6; round += 1) {
+        const closed = section.locator(`[data-source] ${sel('run-member-toggle')}[aria-expanded="false"]`)
+        const count = await closed.count()
+        if (!count) break
+        for (let i = 0; i < count; i += 1) { await closed.first().click(); await delay(150) }
+      }
+      const memberRows = await section.locator(`[data-source][data-test^="run-member-"]`).elementHandles()
+      const members = []
+      for (const handle of memberRows) {
+        const key = (await handle.getAttribute('data-test')).replace('run-member-', '')
+        members.push(await rowFacts(handle, { test: key.replace(/@.*$/, ''), member: true,
+          badge: await handle.$eval('[data-test="run-member-badge"]', (n) => n.textContent.trim()).catch(() => null) }))
+        covered.add(key.replace(/^.*@/, ''))
+      }
+      const teamAddress = members[0]?.test.split('/').slice(0, -1).join('/') || target.address
+      rows.push(await rowFacts(await team.elementHandle(), { test: teamAddress, member: false, badge: 'Delegated copy',
+        launch: await cardSummary(team), coordinator: false, membersHeading: members.length > 0 }))
+      rows.push(...members)
+      continue
+    }
+    rows.push(await rowFacts(await card.elementHandle(), { test: target.address ?? addressById[target.id] ?? null, member: false,
+      badge: (await page.locator(`${sel('run-subject-details')} ${sel('run-member-badge')}`).textContent({ timeout: 1000 }).catch(() => null))?.trim() ?? null,
+      launch: await cardSummary(card), membersHeading: false }))
+  }
+  if (before?.runId) {
+    const back = before.browse?.kind === 'teamMember'
+      ? page.locator(sel(`workspace-team-member-${before.browse.teamRunId}-${before.browse.memberAddress}`)).first()
+      : page.locator(`${sel('workspace-agent-run-row')}[data-run-id="${before.runId}"], ${sel(`agent-org-agent-row-${before.runId}`)}`).first()
+    if (await back.isVisible().catch(() => false)) { await back.click(); await settle(page, 1500) } else await focusAgent(page, before.runId).catch(() => {})
+  }
+  return rows
+}
 const rowsAt = (rows, addr) => rows.filter((row) => row.test === addr)
 /** The Squad copy rows (AC-010, AC-005): the Team, its seven members, their sources and notes. */
 const assertSquadRows = (rows, label) => {
@@ -608,14 +707,11 @@ defineCase('DLP-003', 'AC-001/003/004/005/010: Manager chat from the UI; copies 
   await openAgentRun(page, r.runId)
   const view = await openSettings(page)
   r.rootEditable = await view.locator(sel('existing-run-root-card')).count()
-  r.collapsed = await delegatedRows(page, { expand: false })
-  assertCollapsed(r.collapsed, 'running Agent run')
-  const squadCollapsed = r.collapsed.find((row) => row.test === address('squad') && row.badge === 'Delegated copy')
-  // The collapsed Squad counts its own note and its members' (team default + four reasons).
-  assert(squadCollapsed?.noteCount === 'Notes: 5', 'collapsed Squad row shows its note count', squadCollapsed)
-  assert(r.collapsed.every((row) => row.fallbacks.length === 0 || row.test !== address('squad')), 'a collapsed Team shows no notes inline', r.collapsed)
-  await shot(page, 'DLP-003-agent-run-settings-collapsed-880', 880)
-  r.rows = await delegatedRows(page)
+  // autobyteus-366: the run's Settings show its own card and the hint, no list of copies.
+  r.copiesListShown = await view.locator(sel('run-delegated-launches')).count()
+  r.copiesHint = await view.locator(sel('existing-run-copies-hint')).count()
+  assert(r.copiesListShown === 0 && r.copiesHint === 1, 'the run\'s Settings: no copies list, the hint', r)
+  r.rows = await delegatedRows(page, { kind: 'agent', id: r.runId })
   assert(r.rootEditable === 1, 'the run root card is still shown', r)
   assertSquadRows(r.rows, 'Agent run')
   assertPairCopyRows(r.rows, 'Agent run')
@@ -627,12 +723,9 @@ defineCase('DLP-003', 'AC-001/003/004/005/010: Manager chat from the UI; copies 
   assert(pairTeams.length === 2 && pairTeams.every((row) => row.source === 'team_default' && row.launch.includes(ALT_LABEL)) && pairEngineers.length === 2 && pairEngineers.every((row) => /grok/i.test(row.launch)),
     'two Pair copy rows, each on its recorded values', { pairTeams, pairEngineers })
   assert(rowsAt(r.rows, `${address('squad')}/unoffered`).filter((row) => !row.member).length === 0, 'a refused teammate delegation left no copy row', r.rows)
-  // Rows only open and close: no reset, no model menu, no input; every opened card's model is locked.
-  const inSection = (selector) => `${sel('run-delegated-launches')} ${selector}`
-  r.readOnly = await page.locator([sel('run-member-reset'), sel('run-setting-reset'), sel('chat-model-trigger'), 'input', 'select'].map(inSection).join(', ')).count()
-  r.modelFields = await page.locator(inSection(sel('run-setting-model'))).count()
-  r.lockedModelFields = await page.locator(inSection(`${sel('run-setting-model')}:has(${sel('run-setting-locked')})`)).count()
-  assert(r.readOnly === 0 && r.modelFields > 0 && r.lockedModelFields === r.modelFields, 'delegated rows offer no controls', r)
+  // A running copy's card and its Team copy's rows offer no control: every model is locked.
+  r.editable = r.rows.filter((row) => !row.locked || row.controls > 0).map((row) => row.test)
+  assert(r.editable.length === 0, 'running copies offer no controls', r.editable)
   await shot(page, 'DLP-003-agent-run-settings-880', 880)
   await shot(page, 'DLP-003-agent-run-settings-390', 390)
   return r
@@ -652,7 +745,7 @@ defineCase('DLP-004', 'AC-010: Team run (New chat) and Org run (Org launch page)
   assert(r.teamPairCall.includes('"delegated":true') && r.teamPairCall.includes('launch_notes'), 'team root: Pair delegation note not shown', r.teamPairCall)
   await openTeamRun(page, r.teamRunId, ids.home)
   await openSettings(page)
-  r.teamRows = await delegatedRows(page)
+  r.teamRows = await delegatedRows(page, { kind: 'team', id: r.teamRunId })
   assertSquadRows(r.teamRows, 'Team run')
   assertPairCopyRows(r.teamRows, 'Team run')
   await shot(page, 'DLP-004-team-run-settings-880', 880)
@@ -671,7 +764,7 @@ defineCase('DLP-004', 'AC-010: Team run (New chat) and Org run (Org launch page)
   r.orgPairCall = await callFromComposer(page, 'org: delegate Pair', 'delegate_task', { recipient_address: address('pair'), description: 'Pair work.' })
   assert(r.orgPairCall.includes('"delegated":true') && r.orgPairCall.includes('launch_notes'), 'org root: Pair delegation note not shown', r.orgPairCall)
   await openSettings(page)
-  r.orgRows = await delegatedRows(page)
+  r.orgRows = await delegatedRows(page, { kind: 'org', id: r.orgRunId })
   assertSquadRows(r.orgRows, 'Org run')
   assertPairCopyRows(r.orgRows, 'Org run')
   await shot(page, 'DLP-004-org-run-settings-880', 880)
@@ -697,7 +790,7 @@ defineCase('DLP-005', 'AC-006/REQ-004: the root model is retired mid-run; delega
   assert(r.ownCall.includes('"delegated":true'), 'an own usable default should still delegate', r.ownCall)
   await shot(page, 'DLP-005-conversation-failures-1280', 1280)
   await openSettings(page)
-  r.rows = await delegatedRows(page)
+  r.rows = await delegatedRows(page, { kind: 'agent', id: r.runId })
   assert(r.rows.length === 1 && r.rows[0].test === address('reviewer') && r.rows[0].source === 'agent_default' && r.rows[0].launch.includes(ALT_LABEL), 'Settings lists only the reviewer copy', r.rows)
   await shot(page, 'DLP-005-settings-880', 880)
   return r
@@ -767,7 +860,7 @@ defineCase('DLP-006', 'AC-009/QR-002: runs saved before this change (stripped wh
   backend = await startBackend('backend-restarted')
   await openAgentRun(page, r.runId)
   await openSettings(page)
-  r.agentRows = await delegatedRows(page)
+  r.agentRows = await delegatedRows(page, { kind: 'agent', id: r.runId })
   const notRecorded = (rows, addr, label) => { const row = rowsAt(rows, addr).find((x) => !x.member); assert(row && row.source === 'not_recorded', `${label}: ${addr} source not recorded`, { row, rows }); return row }
   notRecorded(r.agentRows, address('squad'), 'Agent run')
   notRecorded(r.agentRows, address('pair'), 'Agent run')
@@ -788,7 +881,7 @@ defineCase('DLP-006', 'AC-009/QR-002: runs saved before this change (stripped wh
   assert(JSON.stringify(r.engineerLaunches) === JSON.stringify([MODEL]), 'pre-change copy engineer did not start on the Team value', r.engineerLaunches)
   await openTeamRun(page, r.teamRunId, ids.home)
   await openSettings(page)
-  r.teamRows = await delegatedRows(page)
+  r.teamRows = await delegatedRows(page, { kind: 'team', id: r.teamRunId })
   notRecorded(r.teamRows, address('squad'), 'Team run')
   const teamEngineer = rowsAt(r.teamRows, `${address('squad')}/engineer`).find((x) => x.member)
   assert(teamEngineer?.source === 'not_recorded' && teamEngineer.launch.includes(MODEL_LABEL), 'Team run: copy engineer on the Team value', teamEngineer)
@@ -950,29 +1043,27 @@ defineCase('DLP-007', 'AC-008/DEC-008: copy A; the engineer\'s default edited in
   r.copyBCall = await callFromComposer(page, 'delegate copy B', 'delegate_task', { recipient_address: address('squad'), description: 'Copy B work.' })
   assert(r.copyBCall.includes('"delegated":true'), 'copy B not delegated', r.copyBCall)
   let view = await openSettings(page)
-  r.rowsBefore = await delegatedRows(page)
+  r.rowsBefore = await delegatedRows(page, { kind: 'agent', id: r.runId })
   const engineers = (rows) => rowsAt(rows, `${address('squad')}/engineer`).filter((x) => x.member)
   const showsCopies = (rows) => { const e = engineers(rows); return e.length === 2 && e.some((x) => /grok/i.test(x.launch)) && e.some((x) => x.launch.includes(ALT_LABEL) && x.source === 'agent_default') }
   assert(showsCopies(r.rowsBefore), 'Settings: copy A engineer on Grok and copy B engineer on ALT', engineers(r.rowsBefore))
   // Stop the run from Settings, then reopen it by sending a message.
   await view.locator(sel('existing-run-stop')).click()
   await waitFor('run stopped', async () => /Stopped/.test(await view.locator(sel('run-subject-status')).innerText()), 120000, 1000)
-  // SR-006: Settings of the stopped run opens with every collaborator/copy row collapsed.
+  // The stopped run's copies keep their recorded values.
   await backToConversation(page)
   view = await openSettings(page)
-  r.collapsedStopped = await delegatedRows(page, { expand: false })
-  assertCollapsed(r.collapsedStopped, 'stopped run')
+  r.rowsStopped = await delegatedRows(page, { kind: 'agent', id: r.runId })
+  assert(showsCopies(r.rowsStopped), 'stopped run: the copies keep their recorded values', engineers(r.rowsStopped))
   await shot(page, 'DLP-007-settings-stopped-880', 880)
   await backToConversation(page)
   await typeAndSend(page, 'Resume. Marker DLP-007.')
   await waitFor('manager answered after reopen', async () => /DLP-007[\s\S]*OK/.test(await conversationText(page)), 90000)
   view = await openSettings(page)
-  // ...and of the running run, the same collapsed rows.
-  r.collapsedRunning = await delegatedRows(page, { expand: false })
-  assertCollapsed(r.collapsedRunning, 'running run')
-  assert(JSON.stringify(r.collapsedRunning.map((row) => [row.test, row.source, row.badge])) === JSON.stringify(r.collapsedStopped.map((row) => [row.test, row.source, row.badge])),
-    'running and stopped Settings show different rows', { running: r.collapsedRunning, stopped: r.collapsedStopped })
-  r.rowsAfter = await delegatedRows(page)
+  // ...and the running run shows the same copies.
+  r.rowsAfter = await delegatedRows(page, { kind: 'agent', id: r.runId })
+  assert(JSON.stringify(r.rowsAfter.map((row) => [row.test, row.source, row.badge])) === JSON.stringify(r.rowsStopped.map((row) => [row.test, row.source, row.badge])),
+    'running and stopped Settings show different copies', { running: r.rowsAfter, stopped: r.rowsStopped })
   assert(showsCopies(r.rowsAfter), 'Settings after reopen keeps the recorded values', engineers(r.rowsAfter))
   // Copy A's engineer (never started) starts on Grok, its recorded value, not on the edited default.
   await backToConversation(page)
@@ -1156,12 +1247,10 @@ defineCase('DCP-001', 'delegated-copy-model-change AC-001/002/004/011, DEC-010: 
   await page.locator(`${sel('workspace-agent-run-row')}[data-run-id="${r.runId}"]`).click()
   // Settings: the running copy has the run's stop icon and its model is locked with the hint.
   await openSettings(page)
-  const key = `${address('writer')}@${r.copyRunId}`
-  const section = page.locator(sel('run-delegated-launches'))
-  await section.waitFor({ timeout: 60000 })
-  const copyRow = () => section.locator(sel(`run-member-${key}`)).first()
-  await waitFor('Settings copy row has the stop icon', async () => copyRow().locator(sel('run-member-stop')).first().isVisible().catch(() => false), 60000)
-  await openMember(section, key)
+  // autobyteus-366: the copy's own Settings, with its stop icon in the header.
+  const copyCard = await focusedCard(page, r.copyRunId)
+  const copyRow = () => copyCard
+  await waitFor('the copy\'s Settings header has its stop icon', async () => page.locator(sel('run-member-stop')).isVisible().catch(() => false), 60000)
   r.runningLocked = await copyRow().locator(`${sel('run-setting-model')} ${sel('run-setting-locked')}`).count() > 0
   r.runningHint = await copyRow().locator(sel('run-member-stop-hint')).first().innerText().catch(() => null)
   assert(r.runningLocked && /Stop this copy to change its model/.test(r.runningHint ?? ''), 'running copy should be locked with the hint', r)
@@ -1182,27 +1271,23 @@ defineCase('DCP-001', 'delegated-copy-model-change AC-001/002/004/011, DEC-010: 
   assert(r.rootStillRunning === 'active', 'the root should keep running', r.rootStillRunning)
   await shot(page, 'DCP-001-settings-stopped-copy-editable-1280', 1280)
 
-  // Change its model like a stopped run's member (runtime locked), then the existing Save bar.
-  await copyRow().locator(sel('chat-model-trigger')).first().click()
-  // A stopped copy's runtime menu is open since autobyteus-348 (it may switch agent runtime); the model search is in both menus.
-  await page.locator(`${sel('chat-model-menu')} ${sel('chat-model-search')}`).waitFor({ state: 'visible', timeout: 60000 })
-  await page.locator(`${sel('chat-model-menu')} ${sel('chat-model-search')}`).fill(MODEL)
-  await page.locator(sel(`chat-model-search-option-${MODEL}`)).click()
-  await page.keyboard.press('Escape'); await delay(300)
+  // Change its model (its card's model menu), then the existing Save bar.
+  await chooseCopyModel(page, copyRow(), MODEL)
   await page.locator(sel('existing-run-save-bar')).waitFor({ timeout: 30000 })
   await shot(page, 'DCP-001-settings-copy-changed-save-bar-1280', 1280)
   await page.locator(sel('save-existing-model-config')).click()
   // The bar says "Saved. …" once the Save is done ("Unsaved changes …" before).
   await waitFor('saved', async () => /^\s*Saved\./.test(await page.locator(sel('existing-run-save-bar')).innerText().catch(() => '')), 60000, 1000)
-  r.savedSummary = (await copyRow().locator(sel('run-member-summary')).first().innerText()).replace(/\s+/g, ' ')
+  r.savedSummary = (await cardSummary(copyRow()))
   r.savedSource = await copyRow().getAttribute('data-source')
   assert(r.savedSummary.includes(MODEL_LABEL) && r.savedSource === null, 'saved copy row should show the chosen model without an origin', r)
   r.stored = objectsIn(await agentTree(r.runId)).find((record) => pick(record, 'agentRunId') === r.copyRunId && pick(record, 'startedAt'))
   assert(pick(r.stored, 'userLaunchSelection')?.llmModelIdentifier === MODEL, 'choice not recorded', r.stored)
   await shot(page, 'DCP-001-settings-copy-saved-1280', 1280)
 
-  // The next message resumes the copy with its conversation on the chosen model.
+  // The next message resumes the copy with its conversation on the chosen model (sent by the manager).
   await backToConversation(page)
+  await page.locator(`${sel('workspace-agent-run-row')}[data-run-id="${r.runId}"]`).click(); await settle(page, 1500)
   const before = (await agyLaunchesOf(r.copyRunId)).length
   r.resumeCall = await callFromComposer(page, 'message the copy', 'send_message_to', { target_agent_run_id: r.copyRunId, content: 'One more paragraph.' })
   assert(r.resumeCall.includes('"accepted":true'), 'message to the stopped copy not accepted', r.resumeCall)
@@ -1264,11 +1349,10 @@ defineCase('DCP-002', 'delegated-copy-model-change AC-002/003, IR-002 (Team root
   r.paint = await sidebarPaint(page, 'DCP-002', teamSidebarRow, parentStop)
   await openTeamRun(page, r.teamRunId, ids.home)
   await openSettings(page)
-  const section = page.locator(sel('run-delegated-launches'))
-  const key = `${address('pair')}@${r.copyTeamRunId}`
-  const teamRow = () => section.locator(sel(`run-member-${key}`)).first()
-  await waitFor('Settings Team copy row has the stop icon', async () => teamRow().locator(sel('run-member-stop')).first().isVisible().catch(() => false), 60000)
-  await openMember(section, key)
+  // autobyteus-366: the Team copy's own settings are its group view, reached from one of its members.
+  const teamCard = await focusedCard(page, r.copyMembers.lead, { group: true })
+  const teamRow = () => teamCard
+  await waitFor('the Team copy\'s Settings header has its stop icon', async () => page.locator(sel('run-member-stop')).isVisible().catch(() => false), 60000)
   r.runningLocked = await modelLocked(teamRow())
   r.runningHint = await teamRow().locator(sel('run-member-stop-hint')).first().innerText().catch(() => null)
   assert(r.runningLocked && /Stop this copy to change its model/.test(r.runningHint ?? ''), 'running Team copy should be locked with the hint', r)
@@ -1287,7 +1371,7 @@ defineCase('DCP-002', 'delegated-copy-model-change AC-002/003, IR-002 (Team root
   await chooseCopyModel(page, teamRow(), MODEL)
   await saveSettings(page)
   await waitFor('saved', async () => /^\s*Saved\./.test(await saveBarText(page)), 60000, 1000)
-  r.savedTeamSummary = (await teamRow().locator(sel('run-member-summary')).first().innerText()).replace(/\s+/g, ' ')
+  r.savedTeamSummary = (await cardSummary(teamRow()))
   assert(r.savedTeamSummary.includes(MODEL_LABEL), 'Team copy row should show the chosen model', r)
   const stored = objectsIn(await teamTree(r.teamRunId)).find((record) => pick(record, 'teamRunId') === r.copyTeamRunId && pick(record, 'startedAt'))
   assert(pick(stored, 'userTeamLaunchSelection')?.llm_model_identifier === MODEL || pick(stored, 'userTeamLaunchSelection')?.llmModelIdentifier === MODEL, 'Team choice not recorded', stored)
@@ -1343,15 +1427,13 @@ defineCase('DCP-003', 'delegated-copy-model-change AC-001/002 (Org root, UI): a 
   await page.locator('[data-test^="agent-org-agent-row-"]').filter({ hasText: /manager/i }).first().click(); await settle(page, 1500)
   await shot(page, 'DCP-003-org-sidebar-stop-icon-1280', 1280)
   await openSettings(page)
-  const section = page.locator(sel('run-delegated-launches'))
-  const key = `${address('writer')}@${r.copyRunId}`
-  const row = () => section.locator(sel(`run-member-${key}`)).first()
-  await waitFor('Settings copy row has the stop icon', async () => row().locator(sel('run-member-stop')).first().isVisible().catch(() => false), 60000)
+  const copyCard = await focusedCard(page, r.copyRunId)
+  const row = () => copyCard
+  await waitFor('the copy\'s Settings header has its stop icon', async () => page.locator(sel('run-member-stop')).isVisible().catch(() => false), 60000)
   const input = { rootKind: 'AGENT_ORG', rootRunId: r.orgRunId, agentRunId: r.copyRunId }
   r.settingsTaskBefore = await taskOfCopy(input)
   // Preserve the original Settings stop/save/resume coverage.
-  await row().locator(sel('run-member-stop')).first().click()
-  await openMember(section, key)
+  await page.locator(sel('run-member-stop')).click()
   await waitFor('copy stopped (model unlocked)', async () => !(await modelLocked(row())), 60000, 1000)
   assert(!(await orgStop.isVisible().catch(() => false)), 'the Org sidebar stop icon should go away once the copy is stopped')
   r.settingsTaskAfter = await taskOfCopy(input)
@@ -1359,7 +1441,7 @@ defineCase('DCP-003', 'delegated-copy-model-change AC-001/002 (Org root, UI): a 
   await chooseCopyModel(page, row(), MODEL)
   await saveSettings(page)
   await waitFor('saved', async () => /^\s*Saved\./.test(await saveBarText(page)), 60000, 1000)
-  r.savedSummary = (await row().locator(sel('run-member-summary')).first().innerText()).replace(/\s+/g, ' ')
+  r.savedSummary = (await cardSummary(row()))
   assert(r.savedSummary.includes(MODEL_LABEL) && await row().getAttribute('data-source') === null, 'saved copy row should show the chosen model without an origin', r)
   const stored = objectsIn(await orgTree(r.orgRunId)).find((record) => pick(record, 'agentRunId') === r.copyRunId && pick(record, 'startedAt'))
   assert(pick(stored, 'userLaunchSelection')?.llmModelIdentifier === MODEL, 'choice not recorded', stored)
@@ -1395,12 +1477,10 @@ defineCase('DCP-004', 'delegated-copy-model-change AC-011, AC-005 (UI): the dele
   assert(r.copyRunId, 'Writer copy not started', r.copyCall)
   await waitFor('copy started', async () => (await agyLaunchesOf(r.copyRunId)).length > 0, 60000)
   await openSettings(page)
-  const section = page.locator(sel('run-delegated-launches'))
-  const key = `${address('writer')}@${r.copyRunId}`
-  const row = () => section.locator(sel(`run-member-${key}`)).first()
-  await waitFor('Settings copy row has the stop icon', async () => row().locator(sel('run-member-stop')).first().isVisible().catch(() => false), 60000)
-  await row().locator(sel('run-member-stop')).first().click()
-  await openMember(section, key)
+  let copyCard = await focusedCard(page, r.copyRunId)
+  const row = () => copyCard
+  await waitFor('the copy\'s Settings header has its stop icon', async () => page.locator(sel('run-member-stop')).isVisible().catch(() => false), 60000)
+  await page.locator(sel('run-member-stop')).click()
   await waitFor('copy stopped', async () => !(await modelLocked(row())), 60000, 1000)
   await chooseCopyModel(page, row(), MODEL)
   await page.locator(sel('existing-run-save-bar')).waitFor({ timeout: 30000 })
@@ -1419,8 +1499,8 @@ defineCase('DCP-004', 'delegated-copy-model-change AC-011, AC-005 (UI): the dele
   assert(!pick(r.storedAfterRefusal, 'userLaunchSelection'), 'a refused Save recorded a choice', r.storedAfterRefusal)
   await shot(page, 'DCP-004-save-refused-copy-running-1280', 1280)
   // Stop it again and Save.
-  await waitFor('Settings copy row has the stop icon again', async () => row().locator(sel('run-member-stop')).first().isVisible().catch(() => false), 60000)
-  await row().locator(sel('run-member-stop')).first().click()
+  await waitFor('the copy\'s Settings header has its stop icon again', async () => page.locator(sel('run-member-stop')).isVisible().catch(() => false), 60000)
+  await page.locator(sel('run-member-stop')).click()
   await waitFor('copy stopped again', async () => !(await modelLocked(row())), 60000, 1000)
   if (!(await page.locator(sel('existing-run-save-bar')).isVisible().catch(() => false))) await chooseCopyModel(page, row(), MODEL)
   await saveSettings(page)
@@ -1432,11 +1512,12 @@ defineCase('DCP-004', 'delegated-copy-model-change AC-011, AC-005 (UI): the dele
   if (desktop) await page.reload({ waitUntil: 'domcontentloaded' })
   await openAgentRun(page, r.runId)
   await openSettings(page)
-  await openMember(section, key)
-  r.afterRestartSummary = (await row().locator(sel('run-member-summary')).first().innerText()).replace(/\s+/g, ' ')
+  copyCard = await focusedCard(page, r.copyRunId)
+  r.afterRestartSummary = (await cardSummary(row()))
   assert(r.afterRestartSummary.includes(MODEL_LABEL) && !r.afterRestartSummary.includes(ALT_LABEL), 'after the restart Settings should show the chosen model', r)
   await shot(page, 'DCP-004-settings-after-restart-1280', 1280)
   await backToConversation(page)
+  await page.locator(`${sel('workspace-agent-run-row')}[data-run-id="${r.runId}"]`).click(); await settle(page, 1500)
   await typeAndSend(page, 'Resume. Marker DCP-004-RESTART.')
   await waitFor('manager answered after the restart', async () => /DCP-004-RESTART[\s\S]*OK/.test(await conversationText(page)), 90000)
   const resumeFrom = (await agyLaunchesOf(r.copyRunId)).length
@@ -1474,15 +1555,15 @@ defineCase('DCP-005', 'delegated-copy-model-change REQ-001 (any member), AC-010 
   // Settings: stop the copy from its row, open the copy, then only the member, change its model and Save.
   await openTeamRun(page, r.teamRunId, ids.home)
   await openSettings(page)
-  const section = page.locator(sel('run-delegated-launches'))
+  // autobyteus-366: the Team copy's group view (its card and its members' rows), reached from its lead.
   const teamKey = `${address('pair')}@${r.copyTeamRunId}`
-  const rowOf = (key) => section.locator(sel(`run-member-${key}`)).first()
+  const teamCard = await focusedCard(page, r.members.lead, { group: true })
+  const rowOf = (key) => key === teamKey ? teamCard : groupRow(page, key)
   const keyOf = (name) => `${address('pair')}/${name}@${r.members[name]}`
-  await waitFor('Settings Team copy row has the stop icon', async () => rowOf(teamKey).locator(sel('run-member-stop')).first().isVisible().catch(() => false), 60000)
-  await rowOf(teamKey).locator(sel('run-member-stop')).first().click()
-  await openMember(section, teamKey)
-  await waitFor('Team copy stopped (model unlocked)', async () => !(await modelLocked(rowOf(teamKey))), 60000, 1000)
-  const summaryOf = async (key) => (await rowOf(key).locator(sel('run-member-summary')).first().innerText()).replace(/\s+/g, ' ')
+  await waitFor('the Team copy\'s Settings header has its stop icon', async () => page.locator(sel('run-member-stop')).isVisible().catch(() => false), 60000)
+  await page.locator(sel('run-member-stop')).click()
+  await waitFor('Team copy stopped (model unlocked)', async () => !(await modelLocked(teamCard)), 60000, 1000)
+  const summaryOf = async (key) => key === teamKey ? cardSummary(teamCard) : (await rowOf(key).locator(sel('run-member-summary')).first().innerText()).replace(/\s+/g, ' ')
   const engineerRecord = async () => {
     const team = teamCopies(await teamTree(r.teamRunId), 'pair').find(record => pick(record, 'teamRunId') === r.copyTeamRunId)
     const execution = team?.members.find(member => pick(member, 'agentRunId') === r.members.engineer)
@@ -1492,11 +1573,11 @@ defineCase('DCP-005', 'delegated-copy-model-change REQ-001 (any member), AC-010 
   }
   r.engineerBefore = await engineerRecord()
   r.before = { team: await summaryOf(teamKey), lead: await summaryOf(keyOf('lead')), engineer: await summaryOf(keyOf('engineer')), member: await summaryOf(keyOf(member)) }
-  await openMember(section, keyOf(member))
-  await chooseCopyModel(page, rowOf(keyOf(member)), MODEL)
+  // The member's own card: its model; then back to the Team copy's group view.
+  await chooseCopyModel(page, await focusedCard(page, r.members[member]), MODEL)
   await saveSettings(page)
   await waitFor('saved', async () => /^\s*Saved\./.test(await saveBarText(page)), 60000, 1000)
-  await openMember(section, teamKey)
+  await focusedCard(page, r.members[member], { group: true })
   r.after = { team: await summaryOf(teamKey), lead: await summaryOf(keyOf('lead')), engineer: await summaryOf(keyOf('engineer')), member: await summaryOf(keyOf(member)) }
   r.memberSource = await rowOf(keyOf(member)).getAttribute('data-source')
   assert(r.after.member.includes(MODEL_LABEL) && !r.after.member.includes(ALT_LABEL) && r.memberSource === null, 'the member row should show its new model without an origin', r)
@@ -1508,7 +1589,7 @@ defineCase('DCP-005', 'delegated-copy-model-change REQ-001 (any member), AC-010 
     && JSON.stringify(r.engineerAfter) === JSON.stringify(r.engineerBefore), 'the other rows should keep their exact settings', r)
   // The whole Team copy card: the edited member with its unchanged teammates (the Save bar would cover a viewport shot).
   await shot(page, 'DCP-005-settings-team-copy-member-saved-1280', 1280)
-  await rowOf(teamKey).screenshot({ path: path.join(outDir, 'DCP-005-team-copy-card-member-saved.png') })
+  await page.locator(sel('existing-run-settings')).screenshot({ path: path.join(outDir, 'DCP-005-team-copy-card-member-saved.png') })
   const stored = objectsIn(await teamTree(r.teamRunId)).find((record) => pick(record, 'teamRunId') === r.copyTeamRunId && pick(record, 'startedAt') && Array.isArray(record.members))
   r.storedChoices = { team: pick(stored, 'userTeamLaunchSelection') ?? null,
     members: Object.fromEntries(stored.members.map((m) => [String(m.address).split('/').pop(), (pick(m, 'userLaunchSelection') ?? null) && (pick(pick(m, 'userLaunchSelection'), 'llmModelIdentifier'))])) }
@@ -1533,10 +1614,11 @@ defineCase('DCP-005', 'delegated-copy-model-change REQ-001 (any member), AC-010 
 if (onlyCases?.some(id => id.startsWith('SSR-'))) registerSavedRefreshCases({ defineCase, assert, waitFor, delay, sel, startManagerChat, callFromComposer, address,
   agentTree, objectsIn, pick, teamCopies, membersOf, openSettings, backToConversation,
   openMember, chooseCopyModel, saveSettings, saveBarText, shot, agyLaunchDetailsOf, MODEL, ALT, MODEL_LABEL, ALT_LABEL,
-  modelLocked, conversationText, typeAndSend })
+  modelLocked, conversationText, typeAndSend, focusedCard, subjectCard, groupRow, cardSummary })
 registerDelegatedCopyOwnFileCases({ defineCase, assert, waitFor, delay, sel, settle, shot, gql, callTool, objectsIn, pick,
   newChatFor, chooseModel, typeAndSend, callFromComposer, conversationText, openSidebarAgent, openTeamRun, openSettings,
   backToConversation, delegatedRows, rowsAt, openDrawer, closeDrawer, openMember, memberRow, saveSettings, saveBarText,
+  focusedCard, subjectCard, groupRow, cardSummary,
   agyLaunchDetailsOf, teamTree, teamRunIds, AGY, GROK, MODEL, ALT, GROK_MODEL, MODEL_LABEL, ALT_LABEL,
   env: () => ({ frontUrl, dataRoot, outDir }) })
 registerSkillImprovementRemovalCases({ defineCase, assert, waitFor, delay, sel, settle, shot, gql, callTool, objectsIn, pick,
@@ -1554,6 +1636,10 @@ registerLargeRunsLoadLessCases({ defineCase, assert, waitFor, delay, sel, settle
   callFromComposer, openTeamRun, expandWorkspaces, teamTree, teamRunIds, pick, objectsIn, AGY, MODEL,
   restartBackend: async (label, between) => { await stopOwned(backend); if (between) await between(); backend = await startBackend(label) },
   env: () => ({ frontUrl, backendUrl, dataRoot, outDir }) })
+registerAgentSettingsFocusedCases({ defineCase, assert, waitFor, delay, sel, settle, shot, gql, newChatFor, chooseModel, typeAndSend, callFromComposer,
+  conversationText, openSettings, backToConversation, openSidebarAgent, openTeamRun, expandWorkspaces, saveSettings, saveBarText,
+  agentTree, teamTree, teamRunIds, objectsIn, pick, agyLaunchesOf, offerAgyModels, AGY, GROK, GROK_MODEL, MODEL, ALT, RETIRING, MODEL_LABEL, ALT_LABEL, RETIRING_LABEL,
+  env: () => ({ frontUrl }) })
 const desktopSurface = desktopAdapter({ webDir, outDir, chromium, assert, waitFor })
 let exitCode = 0
 try {

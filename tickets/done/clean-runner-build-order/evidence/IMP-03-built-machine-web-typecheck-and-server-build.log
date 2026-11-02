@@ -1,0 +1,12 @@
+Check: IMP-03
+Command: worktree with everything built: pnpm -C autobyteus-web typecheck; pnpm -C autobyteus-server-ts build (AC-003)
+Commit: aa93bdcdfb
+Environment: macOS arm64, Node 22; the ticket worktree (built output present)
+Date: 2026-11-02
+
+[typecheck] production errors: 0; test-file errors: 99 in 43 files (baseline 99 in 43 files)
+[typecheck] PASS
+exit 0
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+exit 0

@@ -1,0 +1,63 @@
+{
+ "header": "API-06: pnpm -C autobyteus-web test:e2e:model-routing-decisions (two probe-owned nodes, scripted CLI, no inference); head 5e77712afc + MRD-04 rework; 2026-11-02.",
+ "cases": {
+  "MRD-01": "Pass",
+  "MRD-02": "Pass",
+  "MRD-03": "Pass",
+  "MRD-04": "Pass",
+  "MRD-05": "Pass",
+  "MRD-08": "Pass",
+  "MRD-06": "Pass",
+  "MRD-07": "Pass"
+ },
+ "settingsCards": {
+  "hub": {
+   "list": 0,
+   "hint": 1
+  },
+  "agents": [
+   {
+    "id": "lead_67bf65ba40144de2a9569606ee046653",
+    "address": "/studio/lead"
+   },
+   {
+    "id": "writer_77172780292247caa1ea11eb1fc442b1",
+    "address": "/studio/writer"
+   },
+   {
+    "id": "blank_slate_f43f9d54ead14620ae436d556e96246c",
+    "address": "/blank_slate"
+   }
+  ],
+  "writer": {
+   "address": "/studio/writer",
+   "source": "model_router",
+   "summary": "Model Router \u00b7 writing",
+   "reason": "Writing goes to the alternate model. View decision",
+   "viewDecision": true,
+   "header": "W writer Running In studio",
+   "controls": 0,
+   "text": "Writing goes to the alternate model. View decision Model Retiring test model Antigravity CLI Thinking Not available for this model Tool approval Auto-approve Model Router \u00b7 writing Stop this copy to change its model; its next message resumes it on the new model."
+  },
+  "lead": {
+   "address": "/studio/lead",
+   "source": "agent_default",
+   "summary": "Agent default",
+   "reason": null,
+   "viewDecision": false,
+   "header": "L lead Running In studio Coordinator",
+   "controls": 0,
+   "text": "Model Gemini test Antigravity CLI Thinking Not available for this model Tool approval Auto-approve Agent default Stop this copy to change its model; its next message resumes it on the new model."
+  },
+  "remote": {
+   "address": "/blank_slate",
+   "source": "model_router",
+   "summary": "Model Router \u00b7 writing",
+   "reason": "Beta keeps writing on the alternate model.",
+   "viewDecision": false,
+   "header": "BS blank slate Running Delegated copy beta-node",
+   "controls": 0,
+   "text": "Beta keeps writing on the alternate model. Model Retiring test model Antigravity CLI Thinking Not available for this model Tool approval Auto-approve Model Router \u00b7 writing"
+  }
+ }
+}

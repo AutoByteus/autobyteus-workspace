@@ -1,11 +1,11 @@
 <template>
   <div :data-testid="`node-directions-${row.key}`">
-    <div class="grid gap-x-6 gap-y-2 text-sm sm:grid-cols-[max-content_max-content_1fr]">
+    <div class="grid gap-x-6 gap-y-2.5 text-sm sm:grid-cols-[max-content_max-content_1fr]">
       <div v-for="dir in directions" :key="dir.id" class="grid gap-x-6 gap-y-0.5 sm:col-span-3 sm:grid-cols-subgrid sm:items-baseline" :data-testid="`node-direction-${dir.id}-${row.key}`">
-        <span class="font-medium text-slate-700">{{ dir.label }}</span>
+        <span class="font-medium text-slate-800">{{ dir.label }}</span>
         <span class="inline-flex items-center gap-1.5" :class="dir.toneClass">
           <span v-if="dir.checking" class="inline-block h-3 w-3 animate-spin rounded-full border-2 border-slate-200 border-t-slate-500" aria-hidden="true" />
-          <span v-else aria-hidden="true">{{ dir.mark }}</span>
+          <NodeNoticeIcon v-else :tone="dir.tone" />
           {{ dir.status }}
         </span>
         <span class="min-w-0 break-all font-mono text-xs text-slate-500">
@@ -57,15 +57,15 @@
     <div v-if="unfinishedSteps.length" class="mt-3 text-sm" :data-testid="`node-steps-${row.key}`">
       <p class="font-medium text-slate-700">{{ t(k('detail.steps')) }}</p>
       <ul class="mt-1 space-y-0.5">
-        <li v-for="step in unfinishedSteps" :key="step.id" class="flex items-baseline gap-2 text-red-700">
-          <span aria-hidden="true">✗</span>
+        <li v-for="step in unfinishedSteps" :key="step.id" class="flex items-start gap-2 text-red-700">
+          <NodeNoticeIcon class="mt-0.5" tone="error" />
           <span>{{ stepText(step) }}<span v-if="step.error"> — {{ failureText(t, step.error, { node: row.name, name: step.name }) }}</span></span>
         </li>
       </ul>
     </div>
 
-    <div class="mt-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-xs text-slate-400">
-      <span v-if="row.nodeId">{{ t(k('detail.nodeId')) }} <span class="font-mono">{{ row.nodeId }}</span></span>
+    <div class="mt-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-t border-slate-100 pt-3 text-xs text-slate-500">
+      <span v-if="row.nodeId">{{ t(k('detail.nodeId')) }} <span class="font-mono text-slate-600">{{ row.nodeId }}</span></span>
       <span class="inline-flex items-center gap-1">
         <span v-if="checkedAt">{{ checkedAt }}</span>
         <button
@@ -89,6 +89,7 @@
 <script setup lang="ts">
 import { computed, nextTick, ref } from 'vue'
 import NodeAddressHint from '~/components/settings/nodes/NodeAddressHint.vue'
+import NodeNoticeIcon from '~/components/settings/nodes/NodeNoticeIcon.vue'
 import { useLocalization } from '~/composables/useLocalization'
 import { useNodeListStore } from '~/stores/nodeListStore'
 import type { NodeRow } from '~/stores/nodeRowStatus'
@@ -130,7 +131,7 @@ const directions = computed(() => {
   const make = (id: 'out' | 'in', label: string, dir: DirState, via: string | null) => {
     const good = dir.state === 'working'
     const info = dir.state === 'offHere' || dir.state === 'offThere' || dir.state === 'notRegisteredHere' || dir.state === 'notRegisteredThere'
-    return { id, label, via, checking: dir.state === 'checking', status: dirStatus(dir, name), mark: good ? '✓' : info ? '⚠' : '✗',
+    return { id, label, via, checking: dir.state === 'checking', status: dirStatus(dir, name), tone: (good ? 'ok' : info ? 'warn' : 'error') as 'ok' | 'warn' | 'error',
       toneClass: dir.state === 'checking' ? 'text-slate-500' : good ? 'text-emerald-700' : info ? 'text-amber-700' : 'text-red-700' }
   }
   return [

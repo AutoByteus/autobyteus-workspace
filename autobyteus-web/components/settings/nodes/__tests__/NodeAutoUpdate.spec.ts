@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
+import { defineComponent, h as render } from 'vue'
 import { createPinia, setActivePinia } from 'pinia'
 import type { NodeRow } from '~/stores/nodeRowStatus'
 import type { NodeEntry, NodeRegistryChange, NodeRegistrySnapshot } from '~/types/node'
@@ -39,6 +40,8 @@ const api = {
   }),
 }
 
+/** Both parts, as the row renders them (autobyteus-363): the switch sits in the server cell. */
+const Row = defineComponent({ setup: () => () => render('div', [render(NodeServerUpdate, { row, part: 'cell' }), render(NodeServerUpdate, { row, part: 'notice' })]) })
 let registryVersion = 0
 let nodeAnswer: unknown = null
 const mountLine = async (answer: unknown, remote: NodeEntry = entry()) => {
@@ -46,7 +49,7 @@ const mountLine = async (answer: unknown, remote: NodeEntry = entry()) => {
   nodeAnswer = answer
   useNodeStore().applyRegistrySnapshot(snapshot(registryVersion, remote))
   vi.stubGlobal('fetch', vi.fn(async () => new Response(JSON.stringify(nodeAnswer), { status: 200 })))
-  const wrapper = mount(NodeServerUpdate, { props: { row } })
+  const wrapper = mount(Row)
   await flushPromises()
   return wrapper
 }
@@ -163,5 +166,17 @@ describe('NodeAutoUpdate', () => {
     outcomes = { 'remote-1': { version: '1.5.12', requestedAt: '2026-11-01T10:00:00.000Z', outcome: 'AUTO_UPDATED', reason: null, read: true } }
     await mountLine(older, entry({ autoUpdate: true }))
     expect(vi.mocked(fetch).mock.calls).toHaveLength(1)
+  })
+
+  it('sits in the server cell, and only the cell asks the node again on an automatic change (autobyteus-363 layout)', async () => {
+    const wrapper = await mountLine(older, entry({ autoUpdate: true }))
+    const cell = wrapper.get(`[data-testid="node-server-${B}"]`)
+    expect(cell.find('[data-testid="node-auto-update-remote-1"]').exists()).toBe(true)
+    expect(wrapper.findAll('[data-testid="node-auto-update-remote-1"]')).toHaveLength(1)
+    const before = vi.mocked(fetch).mock.calls.length
+    outcomes = { 'remote-1': { version: '1.5.12', requestedAt: '2026-11-01T10:00:00.000Z', outcome: 'PENDING', reason: null, read: false } }
+    changed!(outcomes)
+    await flushPromises()
+    expect(vi.mocked(fetch).mock.calls.length - before).toBe(1)
   })
 })

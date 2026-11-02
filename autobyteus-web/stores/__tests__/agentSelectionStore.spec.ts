@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
+import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 
 describe('agentSelectionStore', () => {
@@ -16,6 +17,20 @@ describe('agentSelectionStore', () => {
   });
 
   describe('selectRun', () => {
+    it('keeps Settings open within the same run, and opens another run at its chat (autobyteus-366)', () => {
+      const store = useAgentSelectionStore();
+      const center = useWorkspaceCenterViewStore();
+      store.selectRun('team-1', 'team');
+      center.showConfig();
+      store.selectRun('team-1', 'team');
+      expect(center.isConfigMode).toBe(true);
+      store.selectRun('team-2', 'team');
+      expect(center.isConfigMode).toBe(false);
+      center.showConfig();
+      store.selectRun('team-2', 'agent');
+      expect(center.isConfigMode).toBe(false);
+    });
+
     it('should select an agent instance by default', () => {
       const store = useAgentSelectionStore();
       store.selectRun('agent-123');

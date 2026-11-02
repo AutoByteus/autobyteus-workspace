@@ -217,16 +217,22 @@ const openWindow = async (front, backendName, nodeHosts) => {
   await page.locator('[data-testid="node-manager-panel-manage"]').waitFor({ state: 'visible', timeout: 60_000 });
   const clean = value => value.trim().replace(/\s+/g, ' ');
   const text = async locator => (await locator.count()) ? clean(await locator.first().innerText()) : null;
+  /** A row's line without its button (363: a tone icon, no text mark). */
   const line = async key => {
     const element = page.locator(`[data-testid="node-line-${key}"]`);
     if (!(await element.count())) return null;
     const paragraph = element.locator('p');
-    // The mark (ⓘ ⚠ ✗) is spaced by CSS, not by text: "ⓘ Not reachable. …".
-    const value = (await paragraph.count()) ? await text(paragraph) : await text(element);
-    return value?.replace(/^([ⓘ⚠✗])\s*/u, '$1 ') ?? null;
+    return (await paragraph.count()) ? await text(paragraph) : await text(element);
+  };
+  /** The tone of a row's notice, from its frame: warn amber, error red, info slate. */
+  const tone = async key => {
+    const element = page.locator(`[data-testid="node-line-${key}"]`);
+    if (!(await element.count())) return null;
+    const classes = (await element.getAttribute('class')) ?? '';
+    return classes.includes('border-amber-200') ? 'warn' : classes.includes('border-red-200') ? 'error' : classes.includes('border-slate-200') ? 'info' : null;
   };
   const helpers = {
-    page, context, text, line,
+    page, context, text, line, tone,
     row: key => page.locator(`[data-testid="node-row-${key}"]`),
     dialog: () => page.locator('[role="dialog"][data-testid^="node-change-dialog-"]'),
     settled: async key => (await page.locator(`[data-testid="node-row-${key}"]`).count()) === 1 && !/^Checking /.test((await line(key)) ?? ''),
@@ -298,7 +304,7 @@ try {
     assert(onDesk?.baseUrl === docker.baseUrl && onDesk.name === 'docker', `the Docker node on desk: ${JSON.stringify(onDesk)}`);
     assert(onDocker.length === 1 && onDocker[0].nodeId === desk.nodeId && onDocker[0].baseUrl === `http://host.docker.internal:${desk.port}`,
       `desk on the Docker node, at the address that reaches it from inside the container: ${JSON.stringify(onDocker)}`);
-    expect(directions.out?.startsWith(`This node → docker ✓ Working via ${docker.baseUrl}`) && directions.in?.startsWith(`docker → this node ✓ Working via http://host.docker.internal:${desk.port}`),
+    expect(directions.out?.startsWith(`This node → docker Working via ${docker.baseUrl}`) && directions.in?.startsWith(`docker → this node Working via http://host.docker.internal:${desk.port}`),
       `directions: ${JSON.stringify(directions)}`);
     expect(offers.deskAsksDocker.refusalCode === null && offers.deskAsksDocker.entries.some(entry => entry.name === 'Docker Helper')
       && offers.dockerAsksDesk.refusalCode === null && offers.dockerAsksDesk.entries.some(entry => entry.name === 'Desk Helper'), `each lists the other's Agents: ${JSON.stringify(offers)}`);
@@ -310,9 +316,9 @@ try {
     await waitFor('ghost listed', async () => (await w.page.locator('[data-testid^="node-name-"]').allInnerTexts()).includes('ghost'), 10_000);
     await sleep(2_500);
     const ghostKey = await w.page.locator('[data-testid^="node-row-d:"]').first().getAttribute('data-testid').then(value => value.slice('node-row-'.length));
-    const state = { line: await w.line(ghostKey), hints: await w.page.locator('[data-testid*="-hint"]').count(), dialog: await w.dialog().count(),
+    const state = { line: await w.line(ghostKey), tone: await w.tone(ghostKey), hints: await w.page.locator('[data-testid*="-hint"]').count(), dialog: await w.dialog().count(),
       addPanelText: await w.text(w.page.locator('[data-testid="add-node-panel"]')) };
-    expect(state.line === 'ⓘ Not reachable. Nothing answers at that address and port.' && state.hints === 0 && state.dialog === 0 && !/Docker|host\.docker\.internal/.test(state.addPanelText ?? ''),
+    expect(state.line === 'Not reachable. Nothing answers at that address and port.' && state.tone === 'info' && state.hints === 0 && state.dialog === 0 && !/Docker|host\.docker\.internal/.test(state.addPanelText ?? ''),
       `the add form never shows the hint: ${JSON.stringify(state)}`);
     return { state };
   });
@@ -364,7 +370,7 @@ try {
     expect(peerBeforeUse?.baseUrl !== `http://127.0.0.1:${desk.port}`, `the loopback address was not saved: ${JSON.stringify(peerBeforeUse)}`);
     assert(peerAfter?.baseUrl === `http://host.docker.internal:${desk.port}`, `Use this saved host.docker.internal: ${JSON.stringify(peerAfter)}`);
     expect(saves.length === 1 && saves[0].baseUrl === `http://host.docker.internal:${desk.port}`, `one save with the suggested address: ${JSON.stringify(saves)}`);
-    expect(directions.out?.startsWith(`This node → Embedded Node ✓ Working via http://host.docker.internal:${desk.port}`), `directions: ${JSON.stringify(directions)}`);
+    expect(directions.out?.startsWith(`This node → Embedded Node Working via http://host.docker.internal:${desk.port}`), `directions: ${JSON.stringify(directions)}`);
     return { hintText, peerBeforeUse, peerAfter, saves, directions };
   });
 

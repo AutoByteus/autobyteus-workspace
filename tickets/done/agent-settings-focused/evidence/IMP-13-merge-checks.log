@@ -1,0 +1,25 @@
+# IMP-13: checks after merging origin/personal (84ea944ac5) into the branch. Merge commit 58fdf50f33. Date 2026-11-02. macOS, node v22.23.1.
+# Suites under env -i PATH HOME=<fresh temp> TMPDIR; pnpm install --frozen-lockfile and prepare:shared first; server prebuild and build before the probe.
+# Look for: [typecheck] PASS; Tests 5053 passed and the one failure explained; Summary: 3 Pass, 0 Fail.
+
+## web typecheck
+[typecheck] production errors: 0; test-file errors: 99 in 43 files (baseline 99 in 43 files)
+[typecheck] PASS
+
+## guards: web-boundary, localization-boundary, audit:localization-literals exit 0
+
+## web suite (full), merged tree before the last resolution change
+      Tests  1 failed | 5053 passed (5054)
+ FAIL  stores/__tests__/existingRunConfigStore.spec.ts > stopped Agent canonical collaboration snapshot > reads the stored copy rows fresh after a committed Save and after a failure reconcile, not on the first open (autobyteus-348)
+ Test Files  1 failed | 687 passed (688)
+exit=1
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+# The failure: 348's existingRunConfigStore.spec 'reads the stored copy rows fresh after a committed Save ... not on the first open' expects reloadCanonical() after a stop to read fresh:false; my first resolution read fresh after a stop too. Resolved to 348's 'committed' (a stopped hub is re-read by syncHost).
+## affected specs after that change: existingRunConfigStore, agentRunCollaborationStore, components/workspace/config, services/agentOrgExecution: Tests 182 passed
+
+## browser: delegated-launch-defaults-probe.mjs --cases SSR-003,AFS-001,AFS-002 (probe-owned stack)
+SSR-003 Pass AC-003/005/006 write transport failure retains edits; committed read failure locks, read-only Refresh reconciles
+AFS-001 Pass AC-001, AC-003, AC-005, D-IMP-1, D-IMP-3: a hub and its copies each show one card; a running copy is locked and stops alone; edits across focus name their agent; Save and Cancel; the next message uses the saved model and runtime
+AFS-002 Pass AC-002, AC-003, REQ-004, D-IMP-2: an Org's direct agent, placed Team member and copy each show one card; "Organization settings"; a stopped Org's member and copy edit and save; the next message uses the saved model
+Summary: 3 Pass, 0 Fail
+exit=0

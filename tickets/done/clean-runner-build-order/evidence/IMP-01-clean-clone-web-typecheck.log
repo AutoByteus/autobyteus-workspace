@@ -1,0 +1,13 @@
+Check: IMP-01
+Command: git clone --branch codex/clean-runner-build-order; pnpm install --frozen-lockfile; pnpm -C autobyteus-web typecheck (AC-001)
+Commit: aa93bdcdfb
+Environment: macOS arm64, Node 22, pnpm 10.28.2; clean clone at /tmp/clean-crb with only the three tracked stream-contracts dist/ folders, no autobyteus-ts / SDK build and no Prisma client before the run
+Date: 2026-11-02
+
+[typecheck] Nuxt app (tsconfig.json): 72 errors, exit 2, 38.3s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.9s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.7s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 25.2s
+[typecheck] production errors: 0; test-file errors: 99 in 43 files (baseline 99 in 43 files)
+[typecheck] PASS
+exit 0

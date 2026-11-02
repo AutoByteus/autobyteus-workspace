@@ -1,0 +1,28 @@
+# API-03 presentation-only diff check
+# Command: git diff --stat 3b9dc912a1 d5f670021b -- autobyteus-web/stores autobyteus-web/utils autobyteus-web/localization autobyteus-server-ts autobyteus-web/electron; then the whole change set
+# Date: 2026-11-02T09:17:51Z
+--- stores/utils/localization/server/electron (expected empty):
+--- end
+--- whole change set:
+ autobyteus-web/components/settings/NodeManager.vue |   2 +-
+ .../RemoteCollaborationOfferDisclosure.vue         |  60 --------
+ .../settings/RemoteCollaborationOfferToggle.vue    |  40 +++++
+ .../RemoteCollaborationOfferDisclosure.spec.ts     | 100 -------------
+ .../RemoteCollaborationOfferToggle.spec.ts         |  43 ++++++
+ .../components/settings/nodes/AddNodePanel.vue     |  43 +++---
+ .../components/settings/nodes/NodeAddressHint.vue  |   7 +-
+ .../settings/nodes/NodeCollaborationSwitch.vue     |  46 ++++++
+ .../settings/nodes/NodeConnectionDetails.vue       |  17 ++-
+ .../components/settings/nodes/NodeList.vue         |  15 +-
+ .../components/settings/nodes/NodeNoticeIcon.vue   |  16 ++
+ .../components/settings/nodes/NodeRow.vue          | 161 ++++++++++++++-------
+ .../components/settings/nodes/NodeServerUpdate.vue | 101 +++++++------
+ .../components/settings/nodes/ThisNodeCard.vue     |  94 ++++++------
+ .../settings/nodes/__tests__/AddNodePanel.spec.ts  |   3 +-
+ .../settings/nodes/__tests__/NodeRow.spec.ts       |  63 +++++++-
+ .../nodes/__tests__/NodeServerUpdate.spec.ts       |  28 +++-
+ autobyteus-web/docs/settings.md                    |  62 +++++---
+ .../tests/e2e/nodes-docker-address-probe.mjs       |  22 ++-
+ .../tests/e2e/remote-nodes-page-probe.mjs          |  61 ++++----
+ autobyteus-web/typecheck-baseline.json             |   1 -
+ 21 files changed, 566 insertions(+), 419 deletions(-)

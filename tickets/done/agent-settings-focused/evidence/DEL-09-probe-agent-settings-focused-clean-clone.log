@@ -1,0 +1,7 @@
+# Clean-clone run of codex/agent-settings-focused @ f1f2d137db (/tmp/ab366-clone); full log 2217 bytes, trimmed to summaries, skips and failures.
+AFS-001 Fail AC-001, AC-003, AC-005, D-IMP-1, D-IMP-3: a hub and its copies each show one card; a running copy is locked and stops alone; edits across focus name their agent; Save and Cancel; the next message uses the saved model and runtime — Timed out waiting for antigravity_cli model list (locator.click: Timeout 30000ms exceeded.
+    - locator resolved to <button data-row="" type="button" role="menuitem" aria-haspopup="menu" aria-disabled="true" aria-expanded="false" data-runtime="antigravity_cli" data-test="chat-runtime-antigravity_cli" title="Antigravity model discovery timed out; check the CLI and retry." class="flex w-full gap-2 rounded-md px-2 py-1.5 text-left text-[0.8125rem] focus:outline-none cursor-default items-s
+AFS-002 Pass AC-002, AC-003, REQ-004, D-IMP-2: an Org's direct agent, placed Team member and copy each show one card; "Organization settings"; a stopped Org's member and copy edit and save; the next message uses the saved model
+AFS-003 Pass AC-004, AC-005 (Team): one member's edit leaves the others; a Team-wide model change reaches followers, and the customized member keeps its own; next messages run on those models
+Summary: 2 Pass, 1 Fail
+exit=1

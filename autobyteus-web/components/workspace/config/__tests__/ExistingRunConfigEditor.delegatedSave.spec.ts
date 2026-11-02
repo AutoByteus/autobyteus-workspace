@@ -23,7 +23,7 @@ vi.mock('~/stores/agentSelectionStore', () => ({ useAgentSelectionStore: () => (
 vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ resumeConfigByRunId: {}, teamResumeConfigByTeamRunId: {}, agentOrgHistory: [] }) }))
 vi.mock('~/stores/agentDefinitionStore', () => ({ useAgentDefinitionStore: () => ({ getAgentDefinitionById: () => ({ name: 'Writer' }) }) }))
 vi.mock('~/stores/agentContextsStore', () => ({ useAgentContextsStore: () => ({ getConfigForRun: () => null }) }))
-vi.mock('~/stores/agentRunCollaborationStore', () => ({ useAgentRunCollaborationStore: () => ({ contextFor: () => null }) }))
+vi.mock('~/stores/agentRunCollaborationStore', () => ({ useAgentRunCollaborationStore: () => ({ contextFor: () => null, selectedChild: () => null }) }))
 vi.mock('~/stores/llmProviderConfig', () => ({ useLLMProviderConfigStore: () => ({ modelConfigSchemaByIdentifier: () => null }) }))
 vi.mock('~/composables/runSettings/useRunStopAction', async () => {
   const { ref } = await import('vue')
@@ -76,7 +76,8 @@ describe('ExistingRunConfigEditor: copies\' choices in the run\'s Save bar', () 
       changes: [{ key: 'agent:copy', selection: { runtimeKind: 'codex_app_server', llmModelIdentifier: 'sonnet', llmConfig: null } }],
       configuredPatches: [{ scopeKind: 'CONFIGURED_AGENT', scopeAddress: '/', runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-6', llmConfig: null }] })
     expect(mocks.store!.save).not.toHaveBeenCalled()
-    expect(mocks.store!.reloadCanonical).toHaveBeenCalled()
+    // A committed Save re-reads the run, its hub view included (autobyteus-366, CR-003).
+    expect(mocks.store!.reloadCanonical).toHaveBeenCalledWith(true)
   })
 
   it('saves a copy\'s other agent runtime with its model, though the old runtime offers no such model (autobyteus-348)', async () => {

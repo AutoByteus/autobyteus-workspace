@@ -8,7 +8,7 @@
       <div
         v-if="activeTab === 'manage'"
         id="node-manager-panel-manage"
-        class="mx-auto w-full max-w-7xl space-y-5"
+        class="mx-auto w-full max-w-7xl space-y-6"
         role="tabpanel"
         aria-labelledby="node-manager-tab-manage"
         data-testid="node-manager-panel-manage"

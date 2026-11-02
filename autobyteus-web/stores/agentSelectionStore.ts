@@ -77,7 +77,12 @@ export const useAgentSelectionStore = defineStore('agentSelection', {
     selectRunWithoutShellNavigation(runId: string, type: Exclude<SelectionType, 'team_draft'> = 'agent') { this.setRunSelection(runId, type); },
     selectTeamDraftWithoutShellNavigation(draftId: TeamLaunchDraftId) { this.setTeamDraftSelection(draftId); },
     clearSelectionWithoutShellNavigation() { this.clearRunSelection(); },
-    selectRun(runId: string, type: Exclude<SelectionType, 'team_draft'> = 'agent') { this.setRunSelection(runId, type); useWorkspaceCenterViewStore().showChat(); },
+    /** Another run opens at its chat; another agent of this run keeps Settings open, with their unsaved edits (autobyteus-366). */
+    selectRun(runId: string, type: Exclude<SelectionType, 'team_draft'> = 'agent') {
+      const sameRun = this.selectedType === type && this.selectedRunId === runId.trim();
+      this.setRunSelection(runId, type);
+      if (!sameRun) useWorkspaceCenterViewStore().showChat();
+    },
     selectTeamDraft(draftId: TeamLaunchDraftId) { this.setTeamDraftSelection(draftId); useWorkspaceCenterViewStore().showChat(); },
     clearSelection() { this.clearRunSelection(); useWorkspaceCenterViewStore().showChat(); },
   },

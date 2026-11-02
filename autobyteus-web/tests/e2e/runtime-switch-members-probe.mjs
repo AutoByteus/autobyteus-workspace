@@ -13,7 +13,8 @@
 // RSM-02  Org, a direct Agent: the same through the stopped Org's Settings (a member row of the Org).
 // RSM-03  Org, an Agent of a mounted Team: the same through the nested row (Org -> Team -> Agent).
 // RSM-04  Delegated copy: a Writer copy started by a scripted Antigravity host (the copy runs native) is stopped; the host's Settings show the
-//         copy row; its runtime is switched and saved; the host wakes the copy; the copy's chat (opened from the sidebar) shows the marker.
+//         copy (focused in the sidebar: its own Settings card, autobyteus-366); its runtime is switched and saved; the host wakes the copy;
+//         the copy's chat (opened from the sidebar) shows the marker.
 // RSM-05  Team default: the root card of a stopped Team opens its model menu with the runtime locked (a Team's or Org's own runtime is fixed in
 //         the UI); the Team-default runtime cascade is therefore reachable only through the server API (covered in the built-server suite).
 // RSM-06  Delegated copy, comparison: a model-only Save of a stopped copy (same runtime) shows the new model at once and records no switch.
@@ -225,9 +226,33 @@ const openTeamRun = async (page, teamRunId) => {
 const openSettings = async (page) => {
   await page.locator(sel('workspace-header-edit-config')).click()
   const view = page.locator(sel('existing-run-settings')); await view.waitFor({ timeout: 60000 }); await settle(page, 1500)
+  // autobyteus-366: a member's Settings show its own card; the run's card and member rows are its group view.
+  const groupSwitch = page.locator(sel('run-settings-switch-group'))
+  if (await groupSwitch.isVisible().catch(() => false) && await groupSwitch.getAttribute('aria-pressed') !== 'true') { await groupSwitch.click(); await settle(page, 600) }
   return view
 }
+/** autobyteus-366: a copy's Settings show when it is focused in the left tree: its card (always open). */
+const openCopyCard = async (page, copyId) => {
+  const row = page.locator(`${sel('workspace-team-transient-execution-row')}[data-agent-run-id="${copyId}"]`).first()
+  await waitFor('the copy\'s tree row', async () => {
+    if (await row.isVisible().catch(() => false)) return true
+    for (const toggle of await page.locator(sel('workspace-team-transient-disclosure')).all()) {
+      const holder = toggle.locator('xpath=ancestor::*[@aria-expanded][1]')
+      if (await holder.getAttribute('aria-expanded').catch(() => null) === 'false') await toggle.click().catch(() => {})
+    }
+    await expandWorkspaces(page)
+    return row.isVisible().catch(() => false)
+  }, 60000, 1500)
+  await row.click(); await settle(page, 1500)
+  const card = page.locator(sel('existing-run-subject-card'))
+  await card.waitFor({ timeout: 60000 })
+  return card
+}
 const memberRow = (root, address) => root.locator(sel(`run-member-${address}`)).first()
+/** A row's one-line summary; a focused agent's card (autobyteus-366) has none, so its text is read. */
+const summaryOf = async (row) => (await row.locator(sel('run-member-summary')).count()
+  ? await row.locator(sel('run-member-summary')).first().innerText().catch(() => '')
+  : await row.innerText().catch(() => '')).replace(/\s+/g, ' ')
 const openMember = async (root, address) => {
   const row = memberRow(root, address)
   await row.waitFor({ timeout: 30000 })
@@ -494,31 +519,25 @@ defineCase('RSM-04', 'Delegated copy: switch a stopped copy in its host\'s Setti
   await revealRow(page, hostRow, definitions.host.name)
   await hostRow.click(); await page.locator(sel('workspace-header-edit-config')).waitFor({ timeout: 120000 }); await settle(page, 1500)
   const view = await openSettings(page)
-  const section = page.locator(sel('run-delegated-launches')); await section.waitFor({ timeout: 60000 })
-  const copyRow = section.locator(`[data-test^="run-member-"][data-test$="@${copyId}"]`).first()
-  await copyRow.waitFor({ timeout: 60000 })
+  const copyRow = await openCopyCard(page, copyId)
   await shot(page, 'rsm04-copy-settings')
-  const toggle = copyRow.locator(sel('run-member-toggle')).first()
-  if (await toggle.getAttribute('aria-expanded') !== 'true') await toggle.click()
-  await copyRow.locator(sel('run-member-detail')).first().waitFor(); await delay(300)
-  r.beforeSummary = (await copyRow.locator(sel('run-member-summary')).first().innerText()).replace(/\s+/g, ' ')
+  r.beforeSummary = await summaryOf(copyRow)
   await chooseAgy(page, copyRow, r)
   r.hint = await view.locator(sel('existing-run-runtime-change-hint')).allInnerTexts()
   await shot(page, 'rsm04-copy-unsaved')
   r.saveNote = await saveAndWait(page, view)
   check(!r.saveNote, `saving the copy's switch shows an error in the Settings: ${String(r.saveNote).replace(/\s+/g, ' ').slice(0, 200)}`)
   await shot(page, 'rsm04-copy-saved')
-  r.savedSummary = await waitFor('the saved copy row shows the choice', async () => { const t = (await copyRow.locator(sel('run-member-summary')).first().innerText().catch(() => '')).replace(/\s+/g, ' '); return /Antigravity CLI/i.test(t) ? t : null }, 10000, 500).catch(async () => (await copyRow.locator(sel('run-member-summary')).first().innerText().catch(() => '')).replace(/\s+/g, ' '))
+  r.savedSummary = await waitFor('the saved copy row shows the choice', async () => { const t = await summaryOf(copyRow); return /Antigravity CLI/i.test(t) ? t : null }, 10000, 500).catch(async () => (await copyRow.locator(sel('run-member-summary')).first().innerText().catch(() => '')).replace(/\s+/g, ' '))
   check(/Antigravity CLI/i.test(r.savedSummary), `the saved copy row does not show Antigravity: ${r.savedSummary}`)
 
   // The saved choice is still shown after a fresh open of the host's Settings (the switch has not happened yet).
   await page.goto(`${frontUrl}/workspace`, { waitUntil: 'domcontentloaded' }); await delay(2500)
   await revealRow(page, hostRow, definitions.host.name)
   await hostRow.click(); await page.locator(sel('workspace-header-edit-config')).waitFor({ timeout: 120000 }); await settle(page, 1500)
-  const reopened = await openSettings(page)
-  const reopenedRow = reopened.locator(`[data-test^="run-member-"][data-test$="@${copyId}"]`).first()
-  await reopenedRow.waitFor({ timeout: 60000 })
-  r.reopenedSummary = (await reopenedRow.locator(sel('run-member-summary')).first().innerText()).replace(/\s+/g, ' ')
+  await openSettings(page)
+  const reopenedRow = await openCopyCard(page, copyId)
+  r.reopenedSummary = await summaryOf(reopenedRow)
   check(/Antigravity CLI/i.test(r.reopenedSummary), `after a fresh open of the Settings the copy row does not show the saved Antigravity choice: ${r.reopenedSummary}`)
   await shot(page, 'rsm04-copy-settings-reopened')
 
@@ -583,19 +602,10 @@ const openHostSettings = async (page, hostId) => {
   const hostRow = page.locator(`${sel('workspace-agent-run-row')}[data-run-id="${hostId}"]`)
   await revealRow(page, hostRow, definitions.host.name)
   await hostRow.click(); await page.locator(sel('workspace-header-edit-config')).waitFor({ timeout: 120000 }); await settle(page, 1500)
-  const view = await openSettings(page)
-  await page.locator(sel('run-delegated-launches')).waitFor({ timeout: 60000 })
-  return view
+  return openSettings(page)
 }
-const openCopyRow = async (view, copyId) => {
-  const row = view.locator(`[data-test^="run-member-"][data-test$="@${copyId}"]`).first()
-  await row.waitFor({ timeout: 60000 })
-  const toggle = row.locator(sel('run-member-toggle')).first()
-  if (await toggle.getAttribute('aria-expanded') !== 'true') await toggle.click()
-  await row.locator(sel('run-member-detail')).first().waitFor(); await delay(300)
-  return row
-}
-const summaryOf = async (row) => (await row.locator(sel('run-member-summary')).first().innerText().catch(() => '')).replace(/\s+/g, ' ')
+const openCopyRow = (view, copyId) => openCopyCard(view.page(), copyId)
+
 
 defineCase('RSM-06', 'Delegated copy, comparison: a model-only Save of a stopped copy (same runtime) shows at once and records no pending switch', async (page, ctx) => {
   const r = { shotPrefix: 'rsm06-copy-model' }
