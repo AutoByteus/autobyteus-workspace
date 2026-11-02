@@ -30,6 +30,8 @@ export interface RunMemberNode {
   key: AgentTeamAddress
   kind: 'agent' | 'team'
   name: string
+  /** A saved run's agent: its run ID, by which Settings find the focused agent's row (autobyteus-366). */
+  agentRunId?: string
   isCoordinator: boolean
   /** What this member runs with. */
   values: RunSettingsValues
@@ -175,6 +177,7 @@ export const memberNode = (input: Readonly<{
   key: AgentTeamAddress
   kind: 'agent' | 'team'
   name: string
+  agentRunId?: string
   isCoordinator?: boolean
   values: RunSettingsValues
   parentValues: RunSettingsValues
@@ -188,6 +191,7 @@ export const memberNode = (input: Readonly<{
   key: input.key,
   kind: input.kind,
   name: input.name,
+  ...(input.agentRunId ? { agentRunId: input.agentRunId } : {}),
   isCoordinator: Boolean(input.isCoordinator),
   values: input.values,
   parentValues: input.parentValues,
@@ -378,7 +382,7 @@ export const buildSavedRunMemberTree = (
       name: input.tree.root_team.team_definition_name,
       root,
       nodes: Object.freeze(input.tree.root_team.members.map((member) => memberNode({
-        key: member.address, kind: 'agent', name: nameAt(member.address), isCoordinator: member.address === coordinator,
+        key: member.address, kind: 'agent', name: nameAt(member.address), agentRunId: member.agent_run_id, isCoordinator: member.address === coordinator,
         values: { ...values(member.address, teamLaunch(member.launch_configuration)), workspace: root.workspace },
         parentValues: root, fields: MEMBER_RUN_SETTING_FIELDS,
       }, deps))),
@@ -389,7 +393,7 @@ export const buildSavedRunMemberTree = (
   const nodes = org.members.map((member): RunMemberNode => {
     if ('agentRunId' in member) {
       return memberNode({
-        key: member.address, kind: 'agent', name: member.role || nameAt(member.address),
+        key: member.address, kind: 'agent', name: member.role || nameAt(member.address), agentRunId: member.agentRunId,
         values: { ...values(member.address, member.launchConfiguration), workspace: root.workspace },
         parentValues: root, fields: MEMBER_RUN_SETTING_FIELDS,
       }, deps)
@@ -401,7 +405,7 @@ export const buildSavedRunMemberTree = (
       key: member.address, kind: 'team', name: member.role || nameAt(member.address), values: teamValues, parentValues: root,
       fields: PLACED_TEAM_RUN_SETTING_FIELDS,
       children: member.members.map((agent) => memberNode({
-        key: agent.address, kind: 'agent', name: agent.role || nameAt(agent.address),
+        key: agent.address, kind: 'agent', name: agent.role || nameAt(agent.address), agentRunId: agent.agentRunId,
         isCoordinator: agent.address === member.coordinatorAddress,
         values: { ...values(agent.address, agent.launchConfiguration), workspace: teamValues.workspace },
         parentValues: teamValues, fields: MEMBER_RUN_SETTING_FIELDS,

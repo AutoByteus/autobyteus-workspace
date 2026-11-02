@@ -140,6 +140,8 @@ const locatorOf = (delegator: string | null | undefined, copy: string, agent: st
 type RowInput = Readonly<{
   key: string
   address: string
+  /** An agent row's run ID (a Team row has none: a Team is never the focused agent). */
+  agentRunId?: string
   /** The launch before any user choice. */
   started: Launch
   /** The user's choices recorded on the run (what it runs with now). */
@@ -187,7 +189,7 @@ const builders = (deps: RunMemberTreeDeps, control: DelegatedRowControl, rule: L
   return {
     agent: (input: RowInput, isCoordinator = false): RunMemberNode => {
       const { values, ...rest } = rowFacts(input, false)
-      return memberNode({ key: input.key, kind: 'agent', name: nameOf(input.address), isCoordinator, values, parentValues: values,
+      return memberNode({ key: input.key, kind: 'agent', name: nameOf(input.address), agentRunId: input.agentRunId, isCoordinator, values, parentValues: values,
         fields: MEMBER_RUN_SETTING_FIELDS, ...rest }, deps)
     },
     team: (input: RowInput, children: readonly RunMemberNode[]): RunMemberNode => {
@@ -233,7 +235,7 @@ export const teamDelegatedLaunchNodes = (
     for (const task of tasks) {
       if (task.kind === 'task_agent') {
         if (closedKeys.has(`agent:${task.agent_run_id}`)) continue
-        result.push(build.agent({ key: `${task.address}@${task.agent_run_id}`, address: task.address,
+        result.push(build.agent({ key: `${task.address}@${task.agent_run_id}`, address: task.address, agentRunId: task.agent_run_id,
           started: snakeLaunch(task.source.launch_configuration),
           recorded: { agent: snakeChoice(task.user_launch_selection) },
           target: `agent:${task.agent_run_id}`, stop: { agentRunId: task.agent_run_id }, running: live([task.agent_run_id]),
@@ -248,7 +250,7 @@ export const teamDelegatedLaunchNodes = (
       const running = live(task.members.map((member) => member.agent_run_id))
       const members = task.members.map((member) => {
         const recorded = source.members.find((candidate) => candidate.address === member.address)
-        return build.agent({ key: `${member.address}@${member.agent_run_id}`, address: member.address,
+        return build.agent({ key: `${member.address}@${member.agent_run_id}`, address: member.address, agentRunId: member.agent_run_id,
           started: snakeLaunch(recorded?.launch_configuration),
           recorded: { agent: snakeChoice(member.user_launch_selection), team: teamChoice },
           followsTeam: recorded?.follows_team ?? false,
@@ -297,7 +299,7 @@ export const collaborationDelegatedLaunchNodes = (input: Readonly<{
     for (const task of tasks) {
       if ('agentRunId' in task) {
         if (closedKeys.has(`agent:${task.agentRunId}`)) continue
-        result.push(build.agent({ key: `${task.address}@${task.agentRunId}`, address: task.address,
+        result.push(build.agent({ key: `${task.address}@${task.agentRunId}`, address: task.address, agentRunId: task.agentRunId,
           started: camelLaunch(task.source.launchConfiguration),
           recorded: { agent: camelChoice(task.userLaunchSelection) },
           target: `agent:${task.agentRunId}`, stop: { agentRunId: task.agentRunId }, running: live([task.agentRunId]),
@@ -312,7 +314,7 @@ export const collaborationDelegatedLaunchNodes = (input: Readonly<{
       const running = live(task.members.map((member) => member.agentRunId))
       const members = task.members.map((member) => {
         const recorded = source.members.find((candidate) => candidate.address === member.address)
-        return build.agent({ key: `${member.address}@${member.agentRunId}`, address: member.address,
+        return build.agent({ key: `${member.address}@${member.agentRunId}`, address: member.address, agentRunId: member.agentRunId,
           started: camelLaunch(recorded?.launchConfiguration),
           recorded: { agent: camelChoice(member.userLaunchSelection), team: teamChoice },
           followsTeam: recorded?.followsTeam ?? false,
@@ -352,7 +354,9 @@ export const remoteDelegatedLaunchNodes = (executions: readonly RemoteTaskExecut
     if (!launches.length) return []
     const rowOf = (launch: RemoteAgentLaunchDto, badge?: RunMemberNode['badge'], isCoordinator = false): RunMemberNode => {
       const values = valuesOf({ runtimeKind: launch.runtime_kind, llmModelIdentifier: launch.llm_model_identifier, llmConfig: null, autoExecuteTools: true })
-      return memberNode({ key: `${launch.address}@${execution.node_id}`, kind: 'agent', name: memberDisplayName(launch.address), isCoordinator,
+      const agentRunId = execution.kind === 'agent' ? execution.agent_run_id
+        : execution.members.find((member) => member.address === launch.address)?.agent_run_id
+      return memberNode({ key: `${launch.address}@${execution.node_id}`, kind: 'agent', name: memberDisplayName(launch.address), agentRunId, isCoordinator,
         values, parentValues: values, fields: MEMBER_RUN_SETTING_FIELDS, locked: LOCKED,
         launch: { ...factsOf(remoteSource(launch.source), true, badge), remoteNode: execution.node_name } }, deps)
     }

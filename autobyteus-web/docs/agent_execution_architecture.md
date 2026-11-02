@@ -1389,7 +1389,11 @@ popover is teleported to `body`, outside any dialog focus scope.
 `RunConfigPanel.vue` is only the panel chrome for a selected saved run: it has
 no launch branch. It mounts `ExistingRunConfigEditor.vue` (container), which maps
 `existingRunConfigStore` state to the `components/run-settings/ExistingRunSettings.vue`
-view. A standalone `temp-*` context (a New chat whose first send failed) has no
+view. The container reads the focused agent from each root's own store (a hub's selected
+copy, a Team's focused member, an Org's selection) and resolves its row with
+`utils/runSettings/settingsSubject.ts`; the view draws that one agent, or its group
+when asked (autobyteus-366). Selecting another agent of the selected run keeps
+Settings open, so its unsaved edits stay (`agentSelectionStore.selectRun`). A standalone `temp-*` context (a New chat whose first send failed) has no
 saved settings, so its ⚙ is hidden. The container and `existingRunConfigStore`
 own a Settings-scoped canonical network load, local draft, schema readiness,
 mutation state, and reconciliation; the view only renders state and emits

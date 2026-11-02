@@ -29,6 +29,7 @@ export function registerDelegatedCopyOwnFileCases(h) {
   const { defineCase, assert, waitFor, delay, sel, settle, shot, gql, callTool, objectsIn, pick,
     newChatFor, chooseModel, typeAndSend, callFromComposer, conversationText, openSidebarAgent, openTeamRun, openSettings,
     backToConversation, delegatedRows, rowsAt, openDrawer, closeDrawer, openMember, memberRow, saveSettings, saveBarText,
+    focusedCard, groupRow, cardSummary,
     agyLaunchDetailsOf, teamTree, teamRunIds, AGY, GROK, MODEL, ALT, GROK_MODEL, MODEL_LABEL, ALT_LABEL, env } = h
 
   // -------------------------------------------------------------------------------------------
@@ -108,7 +109,6 @@ export function registerDelegatedCopyOwnFileCases(h) {
 
   // Settings helpers
   const rowKey = (address, runId) => `${address}@${runId}`
-  const delegatedRow = (page, key) => page.locator(sel('run-delegated-launches')).locator(sel(`run-member-${key}`)).first()
   /** Any model menu (runtime locked or not): search the model and pick it. */
   const chooseAnyModel = async (page, scope, model) => {
     await scope.locator(sel('chat-model-trigger')).first().click()
@@ -202,21 +202,28 @@ export function registerDelegatedCopyOwnFileCases(h) {
     const wSide = r.sidebar.find((x) => x.id === r.writerCopy)
     assert(c1Side?.name === 'worker' && wSide?.name === `scribe ${t}`, 'sidebar names: the copy of /worker reads "worker", the catalog copy a spaced name', r.sidebar)
     await settingsView(page)
-    r.rowsRunning = await delegatedRows(page)
+    r.rowsRunning = await delegatedRows(page, { kind: 'team', id: r.teamRunId })
     assert(configuredRows(r.rowsRunning, '/worker').length === 1 && configuredRows(r.rowsRunning, '/worker')[0].launch.includes(MODEL_LABEL), 'Settings: C1 row reads "As configured in this run" on the started model', r.rowsRunning)
     await shot(page, 'DCR-001-settings-configured-copy-running-1280', 1280)
 
     // SCN-003: stop the Team run and set /worker to ALT in its Settings.
     await stopRootFromSettings(page)
-    const workerRow = await openMember(page.locator(sel('existing-run-settings')), '/worker')
-    await chooseAnyModel(page, workerRow, ALT)
+    // autobyteus-366: the slot /worker's own Settings (its member row focused in the tree).
+    const workerCard = async () => {
+      await page.locator(sel(`workspace-team-member-${r.teamRunId}-/worker`)).first().click(); await settle(page, 1500)
+      if (!(await page.locator(sel('existing-run-settings')).isVisible().catch(() => false))) await openSettings(page)
+      const card = page.locator(sel('existing-run-subject-card'))
+      await card.waitFor({ timeout: 30000 })
+      return card
+    }
+    await chooseAnyModel(page, await workerCard(), ALT)
     await saveSettings(page); await saved(page)
     const editedTree = await teamTree(r.teamRunId)
     r.slotAfterEdit = modelOf(pick(configuredAt(editedTree, '/worker'), 'launchConfiguration'))
     r.c1AfterEdit = modelOf(pick(pick(recordOf(editedTree, r.c1), 'source'), 'launchConfiguration'))
     assert(r.slotAfterEdit === ALT && r.c1AfterEdit === MODEL, 'slot edited; C1 keeps its snapshot', r)
-    r.rowsStopped = await delegatedRows(page)
-    r.workerSlotSummary = await summaryOf(memberRow(page.locator(sel('existing-run-settings')), '/worker'))
+    r.workerSlotSummary = await cardSummary(await workerCard())
+    r.rowsStopped = await delegatedRows(page, { kind: 'team', id: r.teamRunId })
     assert(r.workerSlotSummary.includes(ALT_LABEL) && configuredRows(r.rowsStopped, '/worker')[0]?.launch.includes(MODEL_LABEL), 'Settings after the edit: slot on ALT, C1 still on its started model', { slot: r.workerSlotSummary, rows: r.rowsStopped })
     await shot(page, 'DCR-001-settings-stopped-slot-edited-1280', 1280)
 
@@ -250,11 +257,10 @@ export function registerDelegatedCopyOwnFileCases(h) {
       && [r.contexts.c1, r.contexts.c2, r.contexts.slot].every((c) => c.name === 'worker'), 'Team contexts: each copy on its own model, the slot on its edit; all named "worker"', r.contexts)
     await openTeamRun(page, r.teamRunId, r.teamDefinitionId)
     await settingsView(page)
-    r.rowsFinal = await delegatedRows(page)
+    r.rowsFinal = await delegatedRows(page, { kind: 'team', id: r.teamRunId })
     const finalRows = configuredRows(r.rowsFinal, '/worker')
     assert(finalRows.length === 2 && finalRows.some((x) => x.launch.includes(MODEL_LABEL)) && finalRows.some((x) => x.launch.includes(ALT_LABEL)), 'Settings: one row per copy, each on its own model, both "As configured in this run"', r.rowsFinal)
     await shot(page, 'DCR-001-settings-two-copies-1280', 1280)
-    await page.locator(sel('run-delegated-launches')).screenshot({ path: path.join(env().outDir, 'DCR-001-delegated-rows.png') }).catch(() => {})
     const c1View = JSON.stringify(await memberProjection(r.teamRunId, r.c1))
     const slotView = JSON.stringify(await memberProjection(r.teamRunId, r.slotRunId))
     r.runView = { c1HasOwn: c1View.includes('COPY1-MARKER-DCR1') && c1View.includes('COPY1-RESUME-DCR1'), c1HasSlot: c1View.includes('SLOT-MARKER-DCR1'), slotHasOwn: slotView.includes('SLOT-MARKER-DCR1') }
@@ -328,22 +334,23 @@ export function registerDelegatedCopyOwnFileCases(h) {
 
     // AC-004: Settings rows.
     await settingsView(page)
-    r.rowsRunning = await delegatedRows(page)
+    r.rowsRunning = await delegatedRows(page, { kind: 'org', id: r.orgRunId })
     assert(configuredRows(r.rowsRunning, '/writer').length === 1 && configuredRows(r.rowsRunning, '/pair').length === 1, 'Settings: CW and CP read "As configured in this run"', r.rowsRunning)
     await shot(page, 'DCR-002-org-settings-configured-copies-1280', 1280)
 
     // SCN-003: stop the Org; set /writer and the /pair Team to MODEL.
     await stopRootFromSettings(page)
-    const view = page.locator(sel('existing-run-settings'))
-    await chooseAnyModel(page, await openMember(view, '/writer'), MODEL)
-    await chooseAnyModel(page, await openMember(view, '/pair'), MODEL)
+    // autobyteus-366: /writer from its own Settings; the placed Team /pair from the Org's group view (one Save for both).
+    await chooseAnyModel(page, await focusedCard(page, r.slotWriter), MODEL)
+    await page.locator(sel('run-settings-switch-group')).click(); await settle(page, 600)
+    await chooseAnyModel(page, await openMember(page.locator(sel('existing-run-settings')), '/pair'), MODEL)
     await saveSettings(page); await saved(page)
     const edited = await orgConfigTree(r.orgRunId)
     r.slotsAfterEdit = { writer: modelOf(pick(configuredAt(edited, '/writer'), 'launchConfiguration')), pair: modelOf(pick(configuredAt(edited, '/pair'), 'defaultLaunchConfiguration')),
       pairLead: modelOf(pick(configuredAt(edited, '/pair/lead'), 'launchConfiguration')) }
     r.copiesAfterEdit = { cw: modelOf(pick(pick(recordOf(edited, r.cw), 'source'), 'launchConfiguration')), cp: modelOf(pick(pick(recordOf(edited, r.cp), 'source'), 'defaultLaunchConfiguration')) }
     assert(r.slotsAfterEdit.writer === MODEL && r.slotsAfterEdit.pair === MODEL && r.copiesAfterEdit.cw === ALT && r.copiesAfterEdit.cp === ALT, 'slots edited; copies keep their snapshots', r)
-    r.rowsStopped = await delegatedRows(page)
+    r.rowsStopped = await delegatedRows(page, { kind: 'org', id: r.orgRunId })
     assert(configuredRows(r.rowsStopped, '/writer')[0]?.launch.includes(ALT_LABEL) && configuredRows(r.rowsStopped, '/pair')[0]?.launch.includes(ALT_LABEL), 'Settings after the edit: copies still on ALT', r.rowsStopped)
     await shot(page, 'DCR-002-org-settings-stopped-slots-edited-1280', 1280)
 
@@ -382,7 +389,7 @@ export function registerDelegatedCopyOwnFileCases(h) {
     assert(r.cp2Facts.default === MODEL && r.cp2Facts.lead[0]?.model === r.slotsAfterEdit.pairLead && r.cp2LeadLaunches[0][0] === r.slotsAfterEdit.pairLead, 'CP2 should start from the edited Team slot', r)
 
     await settingsView(page)
-    r.rowsFinal = await delegatedRows(page)
+    r.rowsFinal = await delegatedRows(page, { kind: 'org', id: r.orgRunId })
     const writerRows = configuredRows(r.rowsFinal, '/writer')
     const pairRows = configuredRows(r.rowsFinal, '/pair')
     assert(writerRows.length === 2 && writerRows.some((x) => x.launch.includes(ALT_LABEL)) && writerRows.some((x) => x.launch.includes(MODEL_LABEL))
@@ -468,19 +475,19 @@ export function registerDelegatedCopyOwnFileCases(h) {
     r.leadSession = await leadSession(r.cp, r.cpLead)
 
     // A Team-level model choice on the stopped copy (Settings row: stop, choose, Save).
+    // autobyteus-366: the Team copy's own settings are its group view, reached from its lead.
     await settingsView(page)
-    const key = rowKey('/pair', r.cp)
-    const row = () => delegatedRow(page, key)
-    await waitFor('CP row stop icon', async () => row().locator(sel('run-member-stop')).first().isVisible().catch(() => false), 60000)
-    await row().locator(sel('run-member-stop')).first().click()
-    await openMember(page.locator(sel('run-delegated-launches')), key)
+    const teamCard = await focusedCard(page, r.cpLead, { group: true })
+    const row = () => teamCard
+    await waitFor('CP header stop icon', async () => page.locator(sel('run-member-stop')).isVisible().catch(() => false), 60000)
+    await page.locator(sel('run-member-stop')).click()
     await waitFor('CP stopped (model unlocked)', async () => (await row().locator(`${sel('run-setting-model')} ${sel('run-setting-locked')}`).count()) === 0, 60000, 1000)
     await chooseAnyModel(page, row(), MODEL)
     await saveSettings(page); await saved(page)
-    r.cpRowAfter = await summaryOf(row())
+    r.cpRowAfter = await cardSummary(row())
     // A row on a user choice carries no source attribute; read the lead's own row by its key.
-    r.leadRowAfter = await summaryOf(delegatedRow(page, rowKey('/pair/lead', r.cpLead)))
-    r.engineerRowAfter = await summaryOf(delegatedRow(page, rowKey('/pair/engineer', objectsIn((await ownFile(r.cp, 'team_run_execution_tree.json')).json).find((x) => x.address === '/pair/engineer' && x.agentRunId)?.agentRunId)))
+    r.leadRowAfter = await summaryOf(groupRow(page, rowKey('/pair/lead', r.cpLead)))
+    r.engineerRowAfter = await summaryOf(groupRow(page, rowKey('/pair/engineer', objectsIn((await ownFile(r.cp, 'team_run_execution_tree.json')).json).find((x) => x.address === '/pair/engineer' && x.agentRunId)?.agentRunId)))
     assert(r.cpRowAfter.includes(MODEL_LABEL) && r.leadRowAfter.includes(MODEL_LABEL) && /grok/i.test(r.engineerRowAfter),
       'Settings: the Team choice reaches the following lead; the engineer keeps its own Grok launch', { team: r.cpRowAfter, lead: r.leadRowAfter, engineer: r.engineerRowAfter })
     await shot(page, 'DCR-003-copy-team-model-saved-1280', 1280)

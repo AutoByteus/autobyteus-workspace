@@ -1,4 +1,4 @@
-import { mount } from '@vue/test-utils'
+import { mount, flushPromises } from '@vue/test-utils'
 import { reactive } from 'vue'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { localizationRuntime } from '~/localization/runtime/localizationRuntime'
@@ -102,11 +102,25 @@ describe('AgentOrgWorkspaceView', () => {
     }
     wrapper.unmount()
   })
-  it('keeps historical task actions excluded', async () => {
+  it('a stopped Org\'s copy opens its own Settings (autobyteus-366)', async () => {
     state.context = context('historical'); state.target = { ...directTarget, kind: 'agent_org_task_agent', access: 'read_only' }
     const wrapper = mountSubject()
-    expect(wrapper.get('[data-test="shared-agent-surface"]').attributes('data-actions')).toBe('false')
-    await wrapper.get('[data-test="org-edit"]').trigger('click'); expect(center.showConfig).not.toHaveBeenCalled()
+    expect(wrapper.get('[data-test="shared-agent-surface"]').attributes('data-actions')).toBe('true')
+    await wrapper.get('[data-test="org-edit"]').trigger('click'); expect(center.showConfig).toHaveBeenCalled()
+    wrapper.unmount()
+  })
+
+  it('Settings stay open when the focus moves to another agent (unsaved edits stay), and close with nothing focused (autobyteus-366)', async () => {
+    const wrapper = mountSubject()
+    await wrapper.get('[data-test="org-edit"]').trigger('click')
+    expect(wrapper.find('[data-test="whole-org-run-config"]').exists()).toBe(true)
+    state.target = { ...directTarget, address: '/reviewer', context: { state: { runId: 'reviewer-run' } } }
+    await flushPromises()
+    expect(wrapper.find('[data-test="whole-org-run-config"]').exists()).toBe(true)
+    expect(center.mode).toBe('config')
+    state.target = null
+    await flushPromises()
+    expect(center.mode).toBe('chat')
     wrapper.unmount()
   })
 

@@ -28,10 +28,14 @@
       :root-model-unavailable="modelUnavailable('/')"
       :members="view.members"
       :locked-models-for="lockedModelsFor"
-      :delegated="delegatedRows"
+      :subject="settingsSubject"
+      :show-group="showGroup"
+      :subject-active="subjectActive"
+      :copies-hint="view.kind === 'agent' && settingsSubject.origin !== 'delegated' && delegatedRows.length > 0"
       :delegated-locked-models-for="delegatedLockedModelsFor"
       :delegated-notice="delegatedNotice"
       :dirty="draftStore.dirty || delegatedDraft.dirty"
+      :unsaved-names="unsavedNames"
       :can-save="canSave"
       :saving="draftStore.saving || draftStore.reconciling || delegatedDraft.saving"
       :saved="draftStore.feedback?.kind === 'success' || delegatedDraft.feedback?.kind === 'success'"
@@ -43,6 +47,7 @@
       @change-member="changeScope"
       @change-delegated="changeDelegated"
       @stop-delegated="stopDelegated"
+      @update:show-group="showGroup = $event"
       @cancel="cancel"
       @save="save"
     />
@@ -50,7 +55,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, watch } from 'vue'
+import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import ExistingRunSettings from '~/components/run-settings/ExistingRunSettings.vue'
 import { useAgentContextsStore } from '~/stores/agentContextsStore'
@@ -78,7 +83,7 @@ import { useDelegatedLaunchDraftStore } from '~/stores/delegatedLaunchDraftStore
 import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore'
 import { planExistingTeamModelConfigPatches } from '~/services/runConfigEditing/existingTeamModelConfigDraft'
 import { planExistingAgentOrgModelConfigPatches } from '~/services/runConfigEditing/existingAgentOrgModelConfigDraft'
-import { existingAgentOrgWorkspacesDirty } from '~/services/runConfigEditing/existingAgentOrgWorkspaceDraft'
+import { existingAgentOrgWorkspacesDirty, planExistingAgentOrgWorkspacePatches } from '~/services/runConfigEditing/existingAgentOrgWorkspaceDraft'
 import type { DelegatedConfiguredPatch, DelegatedRoot } from '~/services/runConfigEditing/delegatedLaunchSelectionClient'
 import type { RunMemberDelegatedFacts } from '~/utils/runSettings/runMemberTree'
 import { AgentStatus } from '~/types/agent/AgentStatus'
@@ -93,7 +98,8 @@ import {
 import type { RunMemberSettingChange, RunSettingsValues } from '~/types/runSettings/RunSettings'
 import type { ExistingRunModelChoice } from '~/types/agent/ExistingRunModelConfigDraft'
 import { runtimeChanged } from '~/services/runConfigEditing/existingAgentModelConfigDraft'
-import { buildSavedRunMemberTree, type RunMemberNode } from '~/utils/runSettings/runMemberTree'
+import { buildSavedRunMemberTree, findRunMember, type RunMemberNode } from '~/utils/runSettings/runMemberTree'
+import { resolveSettingsSubject } from '~/utils/runSettings/settingsSubject'
 import {
   existingRunChoiceLabelInput,
   getModelSelectionOptionDescription,
@@ -300,6 +306,49 @@ const localDelegatedRows = computed<readonly RunMemberNode[]>(() => {
   }, deps, delegatedControl.value)
 })
 const delegatedByKey = computed(() => delegatedRowsByKey(delegatedRows.value))
+
+/** The agent focused in the left tree: a hub's selected copy or the hub itself, a Team's focused member, an Org's selection. */
+const focusedAgentRunId = computed<string | null>(() => {
+  const current = draft.value
+  if (!current) return null
+  if (current.kind === 'agent') return useAgentRunCollaborationStore().selectedChild(current.runId) ?? current.runId
+  if (current.kind === 'team') return useAgentTeamContextsStore().getTeamContextById(current.teamRunId)?.view.getFocusedAgentRunId() ?? null
+  const org = useAgentOrgContextsStore().contextFor(current.orgRunId)
+  if (!org?.selection) return null
+  return org.selection.kind === 'agent_execution' ? org.selection.agentRunId : org.index.selectedAgent(org.selection)?.agentRunId ?? null
+})
+const settingsSubject = computed(() => resolveSettingsSubject({
+  rootAgentRunId: draft.value?.kind === 'agent' ? draft.value.runId : null,
+  members: view.value?.members ?? [],
+  delegated: delegatedRows.value,
+  focusedAgentRunId: focusedAgentRunId.value,
+}))
+/** The switch (DEC-002): another focus starts at that agent's own settings. */
+const showGroup = ref(false)
+watch(focusedAgentRunId, () => { showGroup.value = false })
+const subjectActive = computed(() => {
+  const subject = settingsSubject.value
+  if (subject.origin !== 'delegated') return Boolean(draft.value?.isActive)
+  return subject.subject.delegated?.running ?? isAgentLive(subject.subject.agentRunId ?? '')
+})
+/**
+ * REQ-005: whose edits one Save commits, since they may be off screen. A Team-wide edit names the Team, not the
+ * members that follow it.
+ */
+const unsavedNames = computed<readonly string[]>(() => {
+  const current = draft.value, tree = view.value
+  if (!current || !tree) return []
+  const nameAt = (address: string) => (address === '/' ? tree.name : findRunMember(tree.members, address)?.name ?? address)
+  const own: string[] = []
+  if (current.kind === 'agent') { if (draftStore.dirty) own.push(tree.name) } else {
+    const patches = current.kind === 'team' ? planExistingTeamModelConfigPatches(current.planner) : planExistingAgentOrgModelConfigPatches(current.planner)
+    own.push(...patches.filter((patch) => current.planner.scopesByAddress[patch.scopeAddress]?.directlyEdited).map((patch) => nameAt(patch.scopeAddress)))
+    if (current.kind === 'agent_org') own.push(...planExistingAgentOrgWorkspacePatches(current.executionTree, current.workspaceDraft).map((patch) => nameAt(patch.teamAddress)))
+  }
+  const rows = [...delegatedByKey.value.values()]
+  const copies = delegatedDraft.changes.map(({ key }) => rows.find((row) => row.delegated?.target === key)?.name ?? key)
+  return [...new Set([...own, ...copies])]
+})
 const delegatedNotice = computed(() => delegatedDraft.stopFeedback
   ? { tone: delegatedDraft.stopFeedback.kind, text: delegatedDraft.stopFeedback.message } : null)
 
