@@ -193,23 +193,23 @@ export const useExistingRunConfigStore = defineStore('existingRunConfig', {
       if (target.kind === 'team' && current.kind === 'team') return current.teamRunId === target.teamRunId
       return target.kind === 'agent_org' && current.kind === 'agent_org' && current.orgRunId === target.orgRunId
     },
-    async readAgentCanonical(runId: string): Promise<{ payload: RunResumeConfigPayload; delegatedSnapshot: ExistingAgentDelegatedSnapshot | null }> {
+    async readAgentCanonical(runId: string, fresh = false): Promise<{ payload: RunResumeConfigPayload; delegatedSnapshot: ExistingAgentDelegatedSnapshot | null }> {
       const request = this.canonicalLoadRequestId, binding = useWindowNodeContextStore().bindingRevision
       const payload = await useRunHistoryStore().refreshAgentResumeConfig(runId)
       if (request !== this.canonicalLoadRequestId || binding !== useWindowNodeContextStore().bindingRevision) throw new Error('Settings target changed.')
-      const view = payload.isActive ? null : await useAgentRunCollaborationStore().viewFor(runId) // one read per selection (autobyteus-358)
+      const view = payload.isActive ? null : await useAgentRunCollaborationStore().viewFor(runId, { fresh }) // one read per selection (autobyteus-358); fresh after a Save
       const delegatedSnapshot = view ? {
         execution_tree: view.execution_tree, closed_task_executions: view.closed_task_executions,
         remote_task_executions: view.remote_task_executions,
       } : null
       return { payload, delegatedSnapshot }
     },
-    async loadAgentCanonical(runId: string): Promise<boolean> {
+    async loadAgentCanonical(runId: string, fresh = false): Promise<boolean> {
       const target = { kind: 'agent' as const, runId }
       const requestId = this.beginCanonicalLoad(target), binding = useWindowNodeContextStore().bindingRevision
       const current = () => this.isCurrentLoad(requestId, target) && binding === useWindowNodeContextStore().bindingRevision
       try {
-        const { payload, delegatedSnapshot } = await this.readAgentCanonical(runId)
+        const { payload, delegatedSnapshot } = await this.readAgentCanonical(runId, fresh)
         if (!current()) return false
         this.syncAgentCanonical(payload, delegatedSnapshot)
         return true

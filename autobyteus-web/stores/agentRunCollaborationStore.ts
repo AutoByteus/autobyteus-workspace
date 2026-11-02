@@ -174,10 +174,13 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
    * The hub's stored view for Settings (autobyteus-358, DS-004): the inspection in flight, else the published view,
    * else a new inspection, so one hub selection reads the view once.
    */
-  const viewFor = async (hostRunId: string): Promise<AgentRunCollaborationContext['view'] | null> => {
+  const viewFor = async (hostRunId: string, options: { fresh?: boolean } = {}): Promise<AgentRunCollaborationContext['view'] | null> => {
     const pending = inspections.get(hostRunId)
     if (pending) await pending
     else if (!contexts.value[hostRunId]) await inspect(hostRunId)
+    // After a Save, a stopped host has no stream to deliver the saved choices: its stored view is read again (a live host's
+    // stream keeps the view current). autobyteus-348: a copy's switched runtime must show in its row at once.
+    else if (options.fresh && !services.has(hostRunId)) await inspect(hostRunId)
     return contexts.value[hostRunId]?.view ?? null
   }
 

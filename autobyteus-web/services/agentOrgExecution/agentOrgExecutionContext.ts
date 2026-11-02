@@ -205,7 +205,8 @@ export class AgentOrgExecutionContext {
       const metadata = launch.workspaceRootPath ? metadataByRootPath.get(launch.workspaceRootPath) : null
       if (metadata && metadata.workspaceRootPath !== launch.workspaceRootPath) throw new Error('Workspace metadata root mismatch.')
       const resolveWorkspace = workspaceChanged || !context.config.workspaceId || !context.config.workspaceMetadata
-      const modelChanged = context.config.llmModelIdentifier !== launch.llmModelIdentifier
+      const modelChanged = context.config.runtimeKind !== launch.runtimeKind
+        || context.config.llmModelIdentifier !== launch.llmModelIdentifier
         || !existingRunModelConfigsEqual(context.config.llmConfig, launch.llmConfig)
       return [{ context, launch, resolveWorkspace, metadata, modelChanged }]
     })
@@ -214,7 +215,7 @@ export class AgentOrgExecutionContext {
     this.index = index
     for (const { context, launch, resolveWorkspace, metadata, modelChanged } of updates) {
       if (!modelChanged && !resolveWorkspace) continue
-      context.config = { ...context.config, llmModelIdentifier: launch.llmModelIdentifier,
+      context.config = { ...context.config, runtimeKind: launch.runtimeKind, llmModelIdentifier: launch.llmModelIdentifier,
         llmConfig: cloneExistingRunJsonValue(launch.llmConfig),
         ...(resolveWorkspace ? { workspaceId: metadata?.workspaceId ?? null, workspaceMetadata: metadata ?? null } : {}) }
       context.conversation.llmModelIdentifier = launch.llmModelIdentifier
