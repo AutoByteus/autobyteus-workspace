@@ -1,5 +1,12 @@
 # API/E2E Test Review Report — automatic-app-node-updates (autobyteus-356)
 
+> **Latest round: 2 (CRR-008), after API-REV-004 Pass on the merge `08984df524`: `Not Applicable`.** No repository test code changed in round 4.
+> - `git diff --name-only 482e9ce797 a14d4dc0f5` outside `tickets/` is empty.
+> - The new `evidence/API-356-layouts.mjs` emulates window widths over CDP and measures the row's card, cell and switch. It is a temporary harness, kept as evidence.
+> - The re-check ran on a real test node: one POST answered 202; one "Updated automatically"; one window GET per row per refresh; the switch inside the server cell in all three layouts, with the wide cell at 256 px.
+> - O-7 (a 6 s window where the notice shows the window's own "Updated to …" before the automatic line replaces it) is the same as round 1's IMP-08 (h). It is not new, and not a test-code matter.
+> - Recipient: delivery engineer. Round 1's content below stands.
+
 All ticket paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/automatic-app-node-updates/tickets/in-progress/automatic-app-node-updates/`.
 
 ## Review Meta

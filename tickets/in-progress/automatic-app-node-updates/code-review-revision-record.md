@@ -13,6 +13,7 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) is autho
 | CRR-005 | `code-review-report.md` | Implementation Review, round 5 (IR-003, SR-004 to SR-006; Full Re-Audit of DS-001, DS-002) | Fail | Pass | F-API-003, CR-C12 (resolved by design and code) |
 | CRR-006 | `api-e2e-test-review-report.md` | Proportional API/E2E Test-Code Review (API-REV-003 Pass) | Pass (CRR-005) | Not Applicable (no durable test changed) | None; CR-C19 resolved into FU-006 |
 | CRR-007 | `code-review-report.md` | Implementation Review, round 6, Targeted Delta (IR-004, the DR-001 merge with autobyteus-363) | Not Applicable (CRR-006) | Pass | None |
+| CRR-008 | `api-e2e-test-review-report.md` | Proportional API/E2E Test-Code Review, round 2 (API-REV-004 Pass on the merge) | Pass (CRR-007) | Not Applicable (no durable test changed) | None |
 
 ## Revision Entries
 
@@ -228,3 +229,28 @@ None open.
 - Material score or classification changes: None; Medium / High
 - Recommended recipient: API/E2E engineer (pass rule; a proportionate re-check of the node switch in the merged layout)
 - Remaining risks or uncertainty: unchanged from CRR-006, plus the integration of `personal`'s other tickets, which is delivery's re-verification.
+
+### CRR-008 — Proportional test-code review after API-REV-004 Pass (the merge)
+
+- Canonical review report updated: `api-e2e-test-review-report.md` (round 2 note)
+- Review entry point and round: Successful API/E2E Test-Code Review, round 2
+- Review scope: `N/A` (test review)
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, `api-e2e-execution-coverage-report.md` (API-REV-004 `Pass` on `08984df524`); API-14, API-R4, API-10-r4
+- Relevant solution revision IDs: SR-006
+- Relevant architecture-review revision IDs: ARCH-REV-005
+- Relevant implementation revision IDs: IR-004
+- Relevant API/E2E revision IDs: API-REV-004
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: `Pass` (CRR-007, source review of the merge)
+- Current authoritative result: `Not Applicable`, passing to delivery
+- What changed in the review result and why: no repository test code changed; the layout harness is evidence. The merge's node switch was proven on a real test node.
+- Supported product scenario / material-premise basis changes: None
+
+#### Prior Finding Resolution
+
+None open.
+
+- New or remaining finding IDs: None
+- Material score or classification changes: None; Medium / High
+- Recommended recipient: delivery engineer
+- Remaining risks or uncertainty: unchanged from CRR-006 (a Developer ID signed install, the live 15-minute bound, path (a), Windows and Linux, FU-001 to FU-006); O-7 as in round 1; the branch is local and not pushed.
