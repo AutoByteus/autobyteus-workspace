@@ -1,0 +1,98 @@
+# IMP-12 real Squirrel on an isolated copy (own bundle id com.autobyteus.app.an356, own caches, temp data root) of the build of 2e64cbb3d9; local feed offering 99.0.0 with a junk zip (valid sha512, no app inside)  Date: 2026-11-02
+# Note: the wording "signature fails" in the second run is what was expected beforehand; the log shows Squirrel refused with "Could not locate update bundle", which is still a real refusal.
+--- switch turned on (click), until the wait starts
+{
+  "status": "error",
+  "preparing": false,
+  "stateMessage": "AutoByteus could not prepare this update for installing. It keeps running on this version.",
+  "shown": "AutoByteus could not prepare this update for installing. It keeps running on this version.",
+  "checkDisabled": false,
+  "install": false,
+  "at": "2026-11-02T06:30:41.903Z"
+}
+--- until the wait ends
+{
+  "waitedSeconds": 2,
+  "status": "error",
+  "errorKind": "install-preparation",
+  "errorOperation": "install",
+  "updateStaged": false,
+  "preparing": false,
+  "shown": "AutoByteus could not prepare this update for installing. It keeps running on this version.",
+  "notification": {
+    "version": "99.0.0",
+    "fromVersion": "1.5.11-beta.10",
+    "foundAt": "2026-11-02T06:30:39.858Z",
+    "read": false,
+    "state": "waiting",
+    "handledVersion": null,
+    "releasePageUrl": null,
+    "outcome": "AUTO_FAILED",
+    "outcomeReason": "The system updater could not prepare this update.",
+    "outcomeStep": "install"
+  },
+  "serverHealth": 200,
+  "at": "2026-11-02T06:30:44.178Z"
+}
+--- instance log (updater and server lines)
+250:[2026-11-02T06:30:39.848Z] [INFO] [electron] [updater] Checking for update
+251:[2026-11-02T06:30:39.849Z] [INFO] [electron] [updater] Generated new staging user ID: 67965baa-1642-503b-aca3-f261d346900f
+252:[2026-11-02T06:30:39.858Z] [INFO] [electron] [updater] Found version 99.0.0 (url: AutoByteus-99.0.0-arm64-mac.zip)
+253:[2026-11-02T06:30:41.583Z] [INFO] [electron] [updater] Downloading update from AutoByteus-99.0.0-arm64-mac.zip
+254:[2026-11-02T06:30:41.588Z] [INFO] [electron] [updater] Checked for macOS Rosetta environment (isRosetta=false)
+255:[2026-11-02T06:30:41.597Z] [INFO] [electron] [updater] Checked 'uname -a': arm64=true
+256:[2026-11-02T06:30:41.599Z] [INFO] [electron] [updater] Unable to locate previous update.zip for differential download (is this first install?), falling back to full download
+257:[2026-11-02T06:30:41.603Z] [INFO] [electron] [updater] New version 99.0.0 has been downloaded to /Users/normy/Library/Caches/autobyteus-updater-an356/pending/AutoByteus-99.0.0-arm64-mac.zip
+258:[2026-11-02T06:30:41.635Z] [INFO] [electron] [updater] / requested
+261:[2026-11-02T06:30:41.643Z] [INFO] [electron] [updater] /2e40fb1fac346059d32b0ce87c550607076cea63ca236c3ab3d9b6da62f3715b4de975edfdaa758c7042474557ed565a713e312959c22755fcfd190c297b31f1.zip request
+262:[2026-11-02T06:30:41.643Z] [INFO] [electron] [updater] /2e40fb1fac346059d32b0ce87c550607076cea63ca236c3ab3d9b6da62f3715b4de975edfdaa758c7042474557ed565a713e312959c22755fcfd190c297b31f1.zip request
+264:[2026-11-02T06:30:41.657Z] [WARN] [electron] [updater] Error: Could not locate update bundle for com.autobyteus.app.an356 within file:///Users/normy/Library/Caches/com.autobyteus.app.an356.ShipIt/
+265:[2026-11-02T06:30:41.657Z] [ERROR] [electron] [updater] Error: Error: Could not locate update bundle for com.autobyteus.app.an356 within file:///Users/normy/Library/Caches/com.autobyteus.app.an356
+266:[2026-11-02T06:30:41.657Z] [ERROR] [electron] [updater] The system updater could not prepare 99.0.0. [Error: Could not locate update bundle for com.autobyteus.app.an356 within file:///Users/normy/
+--- feed
+{"at":"2026-11-02T06:30:22.116Z","event":"listening","port":47381,"zipName":"AutoByteus-99.0.0-arm64-mac.zip","size":181
+{"at":"2026-11-02T06:30:39.856Z","method":"GET","url":"/latest-mac.yml?noCache=1k6df7rf9","status":200,"mode":"good","by
+{"at":"2026-11-02T06:30:41.601Z","method":"GET","url":"/AutoByteus-99.0.0-arm64-mac.zip","status":200,"mode":"good","byt
+
+--- a later check finds the newer 99.0.1 (the real built zip, whose signature fails the copy's requirement)
+{
+  "seen": [
+    "checking",
+    "downloading",
+    "downloaded"
+  ],
+  "available": "99.0.1",
+  "status": "downloaded",
+  "preparing": true,
+  "shown": "Preparing to install. The app restarts by itself when this is done.",
+  "checkDisabled": true,
+  "installOffered": true,
+  "serverHealth": 200,
+  "stateAfterManualCheckIpc": "downloaded",
+  "at": "2026-11-02T06:31:14.823Z"
+}
+--- the row during the wait
+{
+  "row": "New:\nAutoByteus\n1.5.11-beta.10\n99.0.1\n·\nthis minute\nInstall and restart\n\nPreparing to install. The app restarts by itself when this is done.",
+  "install": true,
+  "preparing": true,
+  "at": "2026-11-02T06:31:17.548Z"
+}
+--- until the wait ends
+{
+  "waitedSeconds": 21,
+  "status": "error",
+  "errorKind": "install-preparation",
+  "updateStaged": false,
+  "reason": "The system updater could not prepare this update.",
+  "outcomeStep": "install",
+  "row": "New:\nAutoByteus\n1.5.11-beta.10\n99.0.1\n·\nthis minute\nDownload\n\nAutomatic update failed. Nothing was changed.\nThe system updater could not prepare this update.\nIt won’t be tried again automatically. You can still install it yourself.",
+  "serverHealth": 200,
+  "at": "2026-11-02T06:31:39.008Z"
+}
+--- instance log since 99.0.1
+[2026-11-02T06:31:13.086Z] [INFO] [electron] [updater] Found version 99.0.1 (url: AutoByteus-99.0.1-arm64-mac.zip)
+[2026-11-02T06:31:13.602Z] [INFO] [electron] [updater] New version 99.0.1 has been downloaded to /Users/normy/Library/Caches/autobyteus-updater-an356/pending/AutoByteus-99.0.1-arm64-mac.zip
+[2026-11-02T06:31:14.498Z] [INFO] [electron] [updater] / requested
+[2026-11-02T06:31:37.901Z] [ERROR] [electron] [updater] Error: Error: Could not locate update bundle for com.autobyteus.app.an356 within file:///Users/normy/Library/Caches/com.autobyteus.app
+[2026-11-02T06:31:37.901Z] [ERROR] [electron] [updater] The system updater could not prepare 99.0.1. [Error: Could not locate update bundle for com.autobyteus.app.an356 within file:///Users/

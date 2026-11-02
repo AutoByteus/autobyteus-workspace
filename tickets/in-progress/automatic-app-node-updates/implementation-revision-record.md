@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer, `design-review-report.md`, ARCH-REV-002 Pass | N/A | `Initial Baseline` | SR-003, ARCH-REV-002 | Implemented; ready for code review |
 | IR-002 | Code Reviewer, `code-review-report.md`, CRR-002 (failure-origin review of API-REV-001) | F-API-001, F-API-002 | `Local Fix` | SR-003, ARCH-REV-002, CRR-002, API-REV-001 | Fixed; ready for source review, then API/E2E |
+| IR-003 | Architecture Reviewer, `design-review-report.md`, ARCH-REV-005 Pass (SR-004..SR-006, from CRR-004, F-API-003, CR-C12) | F-API-003, CR-C12 | `Design Impact` (revised design implemented) | SR-006, ARCH-REV-005, CRR-004 | Implemented; ready for source review, then API/E2E |
 
 ## Revision Entries
 
@@ -81,3 +82,34 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Next recipient or routing: Code Reviewer (Medium / High), then API/E2E (repeat API-02's sidebar check and API-05).
 - Remaining limitations or risks: the fix for the refusal timing is proven by unit tests with a controlled preparation,
   not yet by a real Squirrel refusal. CR-C2 (an error after `before-quit`) is unchanged.
+
+### IR-003 — On macOS the automatic install waits for the system updater's copy
+
+- Triggering role, report path, and round: Architecture Reviewer, `design-review-report.md`, ARCH-REV-005 (Pass), on
+  `design-spec.md` SR-006.
+- Triggering finding IDs: F-API-003, CR-C12 (through SR-004..SR-006).
+- Classification: `Design Impact`, resolved by the Solution Designer; this round implements the revised design.
+- Prior authoritative result: IR-002 passed review (CRR-003) and failed API/E2E round 2 (F-API-003).
+- Current authoritative result: implemented in `2e64cbb3d9`. Local checks pass. A real Squirrel refusal and the preparing
+  state are seen on a real build (IMP-12). A real native success, and so a real install through the wait, is not yet run.
+- Related solution revision IDs: SR-004, SR-005, SR-006.
+- Related architecture-review revision IDs: ARCH-REV-005.
+- Related code-review revision IDs: CRR-004.
+- Related API/E2E revision IDs: API round 2.
+- Related delivery revision IDs: N/A.
+- Why this revision is recorded: it replaces the macOS install order for the automatic path; the click keeps today's order.
+- Approved behavior or requirement IDs affected: BEH-001, BEH-003; REQ-002, REQ-004; AC-002, AC-005.
+- Implementation delta:
+  - `AppUpdateInstallReadiness` (new): readiness, its version, the one pending wait and its 15-minute bound;
+  - `AppUpdateAutomaticPolicy` (new, not in the design's file map): the automatic sequence moved out of `appUpdater.ts`
+    (CR-C7), including `installWhenReady` and the `error` handler's first two steps;
+  - `preparationFailed` on the run; the record ignores `download` over `{ V, 'install' }`;
+  - the wait guard in `checkForUpdates` and `downloadUpdate` (N-17); a click ends the wait; N-13 and N-19;
+  - `install-preparation` in the classifier, both display maps and localization; `automaticInstallPreparing`;
+    `outcomeStep` and the row's not-retried sentence; plain reasons.
+- Changed files or areas: `electron/updater/*`, `shared/appUpdateTypes.ts`, `stores/appUpdateStore.ts`,
+  `stores/updateNotificationsStore.ts`, `utils/appUpdateErrorDisplay.ts`, `NotificationRow.vue`,
+  `AboutSettingsManager.vue`, localization, specs, `docs/electron_packaging.md`.
+- Local validation and result: IMP-01, IMP-02, IMP-11, IMP-12 Pass (see the handoff).
+- Next recipient or routing: Code Reviewer (Medium / High), then API/E2E.
+- Remaining limitations or risks: see the handoff's Known Risks.
