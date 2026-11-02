@@ -22,3 +22,14 @@ Progress log of the autobyteus-348 validation. Note: the run was long and the co
 | 06:05 | API-06 | Completed | Fail (pre-existing) | `existing-run-model-config`: the same 4 checks as at the base (FU-C2) |
 | 06:07 | X-C | Completed | Fail (expected) | live LV-01 under a mutated recorder fails; `dist/` restored with cmp |
 | 06:08 | API-07 | Completed | Fail | contract test red: Org tree DTO rejects a member's `pendingRuntimeSwitch` |
+| 07:0x | API-07 | Completed | Pass | round 2: contract test rewritten to assert the field is not on the wire; `# pass 3`; reviewer's `agent-org-run-config-wire.test.ts` 4 passed |
+| 07:1x | RSM-01..07 | Started | | round 2: probe extended (RSM-06, RSM-07, native model B, extra Antigravity model); server rebuilt from `d7e63493e7` |
+| 07:2x | RSM-06 | Completed | Fail (test issue) | my first RSM-06 used a native model that the server does not list as a replacement, so Save stayed disabled by design; changed to an Antigravity listed replacement |
+| 07:3x | RSM-06 | Completed | Pass | |
+| 07:4x | RSM-01..07 | Completed | Pass | final run on a fresh stack: 7 of 7 pass |
+| 07:5x | RSM-07 | Completed | Fail (expected) | mutation: IR-003 change to `agentOrgRunConfigAdoption.ts` reverted; the undo Save shows "Org configuration changed topology, identity, or locked fields."; restored |
+| 08:0x | EX-01..04, R0 | Completed | Pass | rerun on the rebuilt server |
+| 08:1x | LV-01..03 | Completed | Pass | live pair rerun |
+| 08:2x | DCP-001..005 | Completed | Pass | rerun |
+| 08:3x | API-06 | Completed | Fail (pre-existing) | same 4 checks (FU-C2) |
+| 08:4x | EX-05 | Completed | Pass | added; mutation X-D fails it as expected; EX-01..05 5 passed |

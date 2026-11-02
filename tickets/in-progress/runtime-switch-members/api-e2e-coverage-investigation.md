@@ -18,10 +18,10 @@ The plan for autobyteus-348 (agent runtime switch of Team members, Org members a
 - Delivery Revision Record (delivery re-entry only): N/A
 - Relevant Delivery Revision IDs: N/A
 - API/E2E Revision Record: `api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: 1
-- Trigger: code reviewer's request after Source review Pass (CRR-001), review commit `3261712e06` (code unchanged since `d3463e0a7e`); `Large` + `High`
-- Prior Investigation Reviewed: none for this ticket (the autobyteus-316 validation of the standalone Agent is the precedent; `runtime-switch-live.e2e.test.ts`, `runtime-switch-probe.mjs`)
+- Current API/E2E Revision ID: `API-REV-002`
+- Current Investigation Round: 2
+- Trigger: round 2: code reviewer's request after Source review CRR-004 Pass (review commit `d7e63493e7`), following my round-1 Fail and the rework IR-002/IR-003; `Large` + `High`. Round 1 trigger: CRR-001 Pass, review commit `3261712e06`
+- Prior Investigation Reviewed: round 1 (this file before this update) (the autobyteus-316 validation of the standalone Agent is the precedent; `runtime-switch-live.e2e.test.ts`, `runtime-switch-probe.mjs`)
 - Latest Authoritative Investigation: this file
 
 ## Current Requirement And Design Basis

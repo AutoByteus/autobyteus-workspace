@@ -1,0 +1,14 @@
+# Case: API-07r2 (contracts: a tree carrying pendingRuntimeSwitch is not a wire tree)
+# Command: cd autobyteus-collaboration-stream-contracts && pnpm build && node --test tests/org-member-pending-runtime-switch.test.mjs
+# Commit: d7e63493e7 (+ uncommitted API/E2E test changes committed with this round)
+# Environment: macOS arm64, Node 22, Google Chrome 156 headless / owned temp roots; server rebuilt from this commit (pnpm build exit 0)
+# Date: 2026-11-02T07:38Z
+
+# Subtest: a wire Org tree of members without a pending switch is valid
+ok 1 - a wire Org tree of members without a pending switch is valid
+# Subtest: a direct Agent that carries pendingRuntimeSwitch is not a wire tree
+ok 2 - a direct Agent that carries pendingRuntimeSwitch is not a wire tree
+# Subtest: an Agent of a mounted Team that carries pendingRuntimeSwitch is not a wire tree
+ok 3 - an Agent of a mounted Team that carries pendingRuntimeSwitch is not a wire tree
+# pass 3
+# fail 0

@@ -15,3 +15,9 @@ restored
 AssertionError: team-member: codex follow-up: errors: expected [ { …(7) }, { …(8) } ] to deeply equal []
 exit 1
 (the mutation breaks the switch itself with a server error on the live pair; it does not isolate I-7. The exact-equality I-7 assertions are mutation-proven by X-B on the built-server file.)
+
+== X-D (EX-05, round 2): the undo restores no external session (runtime-selection-rule: platformAgentRunId: pending.from.platformAgentRunId -> null); date 2026-11-02T07:39Z; restored with cmp
+     × EX-05: a Team member's saves before its first input: a second save keeps the first previous binding and session, and selecting the original runtime again undoes the switch (binding and session back, no pending, no marker or segment on the next message)
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: the original session is back: expected null to be '03bbd8cb-2979-4713-8645-d77ebc02e3de' // Object.is equality
+      Tests  1 failed | 4 skipped (5)

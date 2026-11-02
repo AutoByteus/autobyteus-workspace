@@ -16,6 +16,9 @@
 //         copy row; its runtime is switched and saved; the host wakes the copy; the copy's chat (opened from the sidebar) shows the marker.
 // RSM-05  Team default: the root card of a stopped Team opens its model menu with the runtime locked (a Team's or Org's own runtime is fixed in
 //         the UI); the Team-default runtime cascade is therefore reachable only through the server API (covered in the built-server suite).
+// RSM-06  Delegated copy, comparison: a model-only Save of a stopped copy (same runtime) shows the new model at once and records no switch.
+// RSM-07  Org undo: an Org member that ran on Antigravity (original session set) is switched to native and saved, then switched back and
+//         saved: the original binding and session return, no pending field, no marker or segment after the next message.
 //
 // Prerequisites: pnpm -C autobyteus-server-ts build; Google Chrome (--browser-executable or PLAYWRIGHT_CHROME_EXECUTABLE_PATH);
 //   ANTIGRAVITY_CLI_COMMAND = the absolute path of the scripted CLI (default: the repository's fixture).
@@ -90,7 +93,7 @@ const startFakeLmStudio = async () => {
   const server = http.createServer(async (req, res) => {
     if (req.method === 'GET') {
       res.setHeader('content-type', 'application/json')
-      res.end(JSON.stringify({ models: [{ key: 'rsw-native', max_context_length: 32768, loaded_instances: [{ config: { context_length: 32768 } }] }] }))
+      res.end(JSON.stringify({ models: ['rsw-native', 'rsw-native-b'].map((key) => ({ key, max_context_length: 32768, loaded_instances: [{ config: { context_length: 32768 } }] })) }))
       return
     }
     let raw = ''
@@ -153,6 +156,7 @@ const createDefinitions = async (nativeModel) => {
   definitions.agent = await agent('Switch Probe Agent')
   definitions.host = await agent('Switch Probe Host')
   definitions.writer = await agent('Switch Probe Writer', { defaultLaunchConfig: { runtimeKind: NATIVE, llmModelIdentifier: nativeModel } })
+  definitions.writerAgy = await agent('Switch Probe Writer Agy', { defaultLaunchConfig: { runtimeKind: AGY, llmModelIdentifier: AGY_MODEL } })
   definitions.team = (await gql('mutation($input:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$input){id name}}', { input: {
     name: 'Switch Probe Team', description: 'Two members.', instructions: 'Wait for input.', coordinatorMemberName: 'lead',
     nodes: ['lead', 'worker'].map((memberName) => ({ memberName, ref: definitions.agent.id, refScope: 'SHARED' })) } })).createAgentTeamDefinition
@@ -187,9 +191,11 @@ const setup = async () => {
   const nativeModels = (await gql('query($r:String){providerModelCatalogSnapshots(runtimeKind:$r){llmModels{modelIdentifier}}}', { r: NATIVE })).providerModelCatalogSnapshots.flatMap((x) => x.llmModels.map((m) => m.modelIdentifier))
   const nativeModel = nativeModels.find((id) => id.startsWith('rsw-native:'))
   assert(nativeModel, 'the native stand-in model is not offered', nativeModels.slice(0, 5))
+  const nativeModelB = nativeModels.find((id) => id.startsWith('rsw-native-b:'))
+  assert(nativeModelB, 'the second native stand-in model is not offered', nativeModels.slice(0, 5))
   const workspace = path.join(ownedRoot, 'workspace'); await fs.mkdir(workspace, { recursive: true })
   await createDefinitions(nativeModel)
-  return { nativeModel, workspace }
+  return { nativeModel, nativeModelB, workspace }
 }
 
 const cases = []
@@ -241,28 +247,26 @@ const revealRow = (page, row, groupName) => waitFor('sidebar row', async () => {
 }, 60000, 1500)
 
 const runtimeRows = (page) => page.locator('[data-test^="chat-runtime-"]').evaluateAll((els) => els.map((e) => e.getAttribute('data-test').replace('chat-runtime-', '')))
-/** In a row (or card) scope: open the model menu, show the runtime list and choose `AGY` and its model, as the 316 probe does. */
-const chooseAgy = async (page, scope, r) => {
+/** In a row (or card) scope: open the model menu, show the runtime list and choose `runtimeKind` and its model, as the 316 probe does. */
+const chooseRuntime = async (page, scope, runtimeKind, model, r) => {
   await scope.locator(sel('chat-model-trigger')).first().click()
   await page.locator(sel('chat-model-menu')).first().waitFor()
   r.firstRuntimeRows = await runtimeRows(page)
-  await waitFor('the Antigravity runtime row', async () => (await runtimeRows(page)).includes(AGY), 120000, 1000).catch(() => undefined)
+  await waitFor(`the ${runtimeKind} runtime row`, async () => (await runtimeRows(page)).includes(runtimeKind), 120000, 1000).catch(() => undefined)
   r.runtimeRows = await runtimeRows(page)
   r.lockedRuntimeBanner = await page.locator(sel('chat-model-locked-runtime')).count()
-  assert(r.lockedRuntimeBanner === 0 && r.runtimeRows.includes(AGY), 'the runtime menu is locked or does not offer Antigravity', r)
-  await shot(page, `${r.shotPrefix}-runtime-menu`)
-  await page.locator(sel(`chat-runtime-${AGY}`)).hover(); await delay(500)
-  await shot(page, `${r.shotPrefix}-runtime-hover`)
-  r.afterHover = await dataTests(page).then((t) => t.filter((x) => /chat-(model|runtime)/.test(x)))
-  if (!(await page.locator(sel(`chat-model-list-${AGY}`)).isVisible().catch(() => false))) await page.locator(sel(`chat-runtime-${AGY}`)).click()
-  await page.locator(sel(`chat-model-list-${AGY}`)).waitFor({ timeout: 60000 })
-  const option = page.locator(sel(`chat-model-list-${AGY}`)).locator(sel(`chat-model-option-${AGY_MODEL}`)).first()
+  assert(r.lockedRuntimeBanner === 0 && r.runtimeRows.includes(runtimeKind), `the runtime menu is locked or does not offer ${runtimeKind}`, r)
+  await shot(page, `${r.shotPrefix}-runtime-menu-${runtimeKind}`)
+  await page.locator(sel(`chat-runtime-${runtimeKind}`)).hover(); await delay(500)
+  if (!(await page.locator(sel(`chat-model-list-${runtimeKind}`)).isVisible().catch(() => false))) await page.locator(sel(`chat-runtime-${runtimeKind}`)).click()
+  await page.locator(sel(`chat-model-list-${runtimeKind}`)).waitFor({ timeout: 60000 })
+  const option = page.locator(sel(`chat-model-list-${runtimeKind}`)).locator(sel(`chat-model-option-${model}`)).first()
   await option.waitFor({ timeout: 60000 }); await option.scrollIntoViewIfNeeded().catch(() => {})
-  const list = await page.locator(sel(`chat-model-list-${AGY}`)).boundingBox(); const row = await page.locator(sel(`chat-runtime-${AGY}`)).boundingBox({ timeout: 1500 }).catch(() => null)
-  await shot(page, `${r.shotPrefix}-model-list`)
+  const list = await page.locator(sel(`chat-model-list-${runtimeKind}`)).boundingBox(); const row = await page.locator(sel(`chat-runtime-${runtimeKind}`)).boundingBox({ timeout: 1500 }).catch(() => null)
   if (list && row && list.x > row.x) await page.mouse.move(list.x + 12, Math.min(Math.max(row.y + row.height / 2, list.y + 6), list.y + list.height - 6))
   await option.click(); await settle(page, 800)
 }
+const chooseAgy = (page, scope, r) => chooseRuntime(page, scope, AGY, AGY_MODEL, r)
 /** Save, then wait until the bar says Saved or the settings show a note (an error). Returns the note's text or null. */
 const saveAndWait = async (page, view) => {
   await page.locator(sel('save-existing-model-config')).click()
@@ -449,14 +453,15 @@ const orgMemberJourney = async (page, ctx, address, name) => {
 defineCase('RSM-02', 'Org: switch a direct Agent in the stopped Org\'s Settings, message it, reopen the chat', (page, ctx) => orgMemberJourney(page, ctx, '/direct', 'rsm02-direct'))
 defineCase('RSM-03', 'Org: switch an Agent of a mounted Team (a nested row) in the stopped Org\'s Settings, message it, reopen the chat', (page, ctx) => orgMemberJourney(page, ctx, '/crew/worker', 'rsm03-nested'))
 
-defineCase('RSM-04', 'Delegated copy: switch a stopped copy in its host\'s Settings, wake it, reopen the chat', async (page, ctx) => {
-  const r = { shotPrefix: 'rsm04-copy' }
-  const findings = []
-  const check = (ok, text) => { if (!ok) findings.push(text); return ok }
+/**
+ * A Writer copy started by a scripted Antigravity host, answered natively once, then stopped with its host (the state in which the host's
+ * Settings offer the copy row). Returns what the journeys need.
+ */
+const startStoppedCopy = async (ctx, tag, writerAddress = '/switch_probe_writer') => {
   const created = (await gql('mutation($input:CreateAgentRunInput!){createAgentRun(input:$input){success message runId}}', { input: {
     agentDefinitionId: definitions.host.id, workspaceRootPath: ctx.workspace, llmModelIdentifier: AGY_MODEL, llmConfig: null, autoExecuteTools: true, runtimeKind: AGY } })).createAgentRun
   assert(created.success, created.message)
-  const hostId = created.runId; r.hostId = hostId
+  const hostId = created.runId
   const hostRaw = () => rawRecords(path.join(dataRoot, 'memory', 'agents', hostId))
   const callHost = async (name, args) => {
     const before = (await hostRaw()).filter((x) => x.trace_type === 'assistant' && String(x.content).startsWith('CALLED:')).length
@@ -466,16 +471,23 @@ defineCase('RSM-04', 'Delegated copy: switch a stopped copy in its host\'s Setti
     const called = JSON.parse(String(replies.at(-1).content).slice('CALLED:'.length))
     return called.structuredContent ?? JSON.parse(called.content.find((part) => part.type === 'text').text)
   }
-  const delegated = await callHost('delegate_task', { recipient_address: '/switch_probe_writer', description: 'COPY-ONE please answer' })
+  const delegated = await callHost('delegate_task', { recipient_address: writerAddress, description: `${tag} please answer` })
   assert(delegated.delegated && delegated.target_agent_run_id, 'the Writer copy did not start', delegated)
-  const copyId = delegated.target_agent_run_id; r.copyId = copyId
+  const copyId = delegated.target_agent_run_id
   const copyDir = () => findFolder(path.join(dataRoot, 'memory', 'agents'), copyId)
   await waitFor('the native copy answered', async () => { const dir = await copyDir(); return dir && (await rawRecords(dir)).some((x) => x.trace_type === 'assistant') }, 120000, 1000)
   await delay(3000)
   const stopped = (await gql('mutation($input:DelegatedExecutionTargetInput!){stopDelegatedExecution(input:$input){success outcome}}', { input: { rootKind: 'AGENT', rootRunId: hostId, agentRunId: copyId } })).stopDelegatedExecution
   assert(stopped.success, 'the copy did not stop', stopped)
   await gql('mutation($id:String!){terminateAgentRun(agentRunId:$id){success}}', { id: hostId })
+  return { hostId, copyId, callHost, copyDir }
+}
 
+defineCase('RSM-04', 'Delegated copy: switch a stopped copy in its host\'s Settings, wake it, reopen the chat', async (page, ctx) => {
+  const r = { shotPrefix: 'rsm04-copy' }
+  const findings = []
+  const check = (ok, text) => { if (!ok) findings.push(text); return ok }
+  const { hostId, copyId, callHost, copyDir } = await startStoppedCopy(ctx, 'COPY-ONE'); Object.assign(r, { hostId, copyId })
   // Open the host in the UI and its Settings: the copy row.
   await page.goto(`${frontUrl}/workspace`, { waitUntil: 'domcontentloaded' }); await delay(2500)
   const hostRow = page.locator(`${sel('workspace-agent-run-row')}[data-run-id="${hostId}"]`)
@@ -565,6 +577,110 @@ defineCase('RSM-05', 'Team default: the root runtime menu of a stopped Team and 
   return r
 })
 
+/** Open the stopped host's Settings (its delegated-copy rows) from the sidebar. */
+const openHostSettings = async (page, hostId) => {
+  await page.goto(`${frontUrl}/workspace`, { waitUntil: 'domcontentloaded' }); await delay(2500)
+  const hostRow = page.locator(`${sel('workspace-agent-run-row')}[data-run-id="${hostId}"]`)
+  await revealRow(page, hostRow, definitions.host.name)
+  await hostRow.click(); await page.locator(sel('workspace-header-edit-config')).waitFor({ timeout: 120000 }); await settle(page, 1500)
+  const view = await openSettings(page)
+  await page.locator(sel('run-delegated-launches')).waitFor({ timeout: 60000 })
+  return view
+}
+const openCopyRow = async (view, copyId) => {
+  const row = view.locator(`[data-test^="run-member-"][data-test$="@${copyId}"]`).first()
+  await row.waitFor({ timeout: 60000 })
+  const toggle = row.locator(sel('run-member-toggle')).first()
+  if (await toggle.getAttribute('aria-expanded') !== 'true') await toggle.click()
+  await row.locator(sel('run-member-detail')).first().waitFor(); await delay(300)
+  return row
+}
+const summaryOf = async (row) => (await row.locator(sel('run-member-summary')).first().innerText().catch(() => '')).replace(/\s+/g, ' ')
+
+defineCase('RSM-06', 'Delegated copy, comparison: a model-only Save of a stopped copy (same runtime) shows at once and records no pending switch', async (page, ctx) => {
+  const r = { shotPrefix: 'rsm06-copy-model' }
+  const findings = []
+  const check = (ok, text) => { if (!ok) findings.push(text); return ok }
+  const { hostId, copyId, copyDir } = await startStoppedCopy(ctx, 'COPY-MODEL', '/switch_probe_writer_agy')
+  const view = await openHostSettings(page, hostId)
+  const row = await openCopyRow(view, copyId)
+  r.before = await summaryOf(row)
+  await chooseRuntime(page, row, AGY, 'rsw-alt-model', r)
+  r.hint = await view.locator(sel('existing-run-runtime-change-hint')).count()
+  check(r.hint === 0, 'a model-only change shows the runtime-change hint')
+  r.saveNote = await saveAndWait(page, view)
+  check(!r.saveNote, `the model-only Save shows a note: ${String(r.saveNote).slice(0, 160)}`)
+  r.saved = await waitFor('the saved row shows the new model', async () => { const t = await summaryOf(row); return /Retiring test model|rsw-alt-model/i.test(t) ? t : null }, 10000, 500).catch(async () => summaryOf(row))
+  check(/Retiring test model|rsw-alt-model/i.test(r.saved), `the saved copy row does not show the new model at once: ${r.saved}`)
+  await shot(page, 'rsm06-copy-model-saved')
+  const raw = await rawRecords(await copyDir())
+  check(!raw.some((x) => String(x.correlation_id ?? '').startsWith('runtime_switch:')), 'a marker was written by a model-only Save')
+  r.findings = findings
+  if (findings.length) { const error = new Error(findings.join(' | ')); error.details = r; throw error }
+  return r
+})
+
+defineCase('RSM-07', 'Org undo: an Org member that ran on Antigravity (original session set) is switched to native and saved, then switched back and saved: the original binding and session return, no pending, no marker', async (page, ctx) => {
+  const r = { shotPrefix: 'rsm07-undo' }
+  const findings = []
+  const check = (ok, text) => { if (!ok) findings.push(text); return ok }
+  const created = (await gql('mutation($input:CreateAgentOrgRunInput!){createAgentOrgRun(input:$input){success message agentOrgRunId}}', { input: {
+    agentOrgDefinitionId: definitions.org.id, rootConfiguration: { ...nativeLaunch(ctx.nativeModel, ctx.workspace), runtimeKind: AGY, llmModelIdentifier: AGY_MODEL }, agentOverrides: [] } })).createAgentOrgRun
+  assert(created.success, created.message)
+  const orgRunId = created.agentOrgRunId; r.orgRunId = orgRunId
+  const orgDir = path.join(dataRoot, 'memory', 'agent_orgs', orgRunId)
+  const treeFile = path.join(orgDir, 'agent_org_run_execution_tree.json')
+  const nodeNow = async () => walkAgents(await readJson(treeFile)).find((m) => m.address === '/direct' && m.launchConfiguration)
+  const memberId = (await nodeNow()).agentRunId
+  await talkOrg(orgRunId, memberId, 'ECHO_INPUT')
+  const original = await nodeNow()
+  r.originalSession = original.platformAgentRunId
+  assert(original.launchConfiguration.runtimeKind === AGY && typeof r.originalSession === 'string' && r.originalSession.length > 0, 'the original run has no external session', original)
+  await gql('mutation($id:String!){terminateAgentOrgRun(agentOrgRunId:$id){success}}', { id: orgRunId })
+
+  await openOrgRun(page, orgRunId)
+  await page.locator(sel(`agent-org-agent-row-${memberId}`)).click(); await page.locator(sel('workspace-header-edit-config')).waitFor({ timeout: 60000 }); await settle(page, 1500)
+  const view = await openSettings(page)
+  const row = await openMember(view, '/direct')
+  // 1. switch to native and Save: pending, session dropped
+  await chooseRuntime(page, row, NATIVE, ctx.nativeModel, r)
+  r.saveNote1 = await saveAndWait(page, view)
+  check(!r.saveNote1, `the switch Save shows a note: ${String(r.saveNote1).slice(0, 160)}`)
+  const pending = await nodeNow()
+  r.pending = { runtime: pending.launchConfiguration.runtimeKind, session: pending.platformAgentRunId, from: pending.pendingRuntimeSwitch?.from?.runtimeKind ?? null }
+  check(r.pending.runtime === NATIVE && r.pending.session === null && r.pending.from === AGY, `the switch Save did not record the pending switch: ${JSON.stringify(r.pending)}`)
+  await shot(page, 'rsm07-undo-switch-saved')
+  // 2. choose the original runtime again and Save: the undo
+  await chooseRuntime(page, row, AGY, AGY_MODEL, r)
+  r.saveNote2 = await saveAndWait(page, view)
+  check(!r.saveNote2, `the undo Save shows a note (the Org adoption refuses it?): ${String(r.saveNote2).replace(/\s+/g, ' ').slice(0, 200)}`)
+  const undone = await nodeNow()
+  r.undone = { runtime: undone.launchConfiguration.runtimeKind, model: undone.launchConfiguration.llmModelIdentifier, session: undone.platformAgentRunId, hasPending: 'pendingRuntimeSwitch' in undone }
+  check(r.undone.runtime === AGY && r.undone.model === AGY_MODEL && r.undone.session === r.originalSession && !r.undone.hasPending, `the undo did not restore the original binding and session: ${JSON.stringify(r.undone)}`)
+  r.rowAfter = await summaryOf(row)
+  check(/Antigravity CLI/i.test(r.rowAfter), `the row after the undo does not show Antigravity: ${r.rowAfter}`)
+  r.hintAfter = await view.locator(sel('existing-run-runtime-change-hint')).count()
+  check(r.hintAfter === 0, 'the runtime-change hint is still shown after the undo')
+  await shot(page, 'rsm07-undo-saved')
+  // 3. the next message does not switch
+  await page.locator(sel('run-config-back-to-events')).click().catch(() => {}); await settle(page, 800)
+  await openOrgRun(page, orgRunId)
+  await page.locator(sel(`agent-org-agent-row-${memberId}`)).click(); await page.locator(sel('workspace-header-edit-config')).waitFor({ timeout: 60000 }); await settle(page, 1500)
+  await sendFromComposer(page, 'ECHO_INPUT')
+  await waitFor('the answer', async () => ((await readJson(path.join(await findFolder(orgDir, memberId), 'raw_traces_manifest.json')).catch(() => ({ segments: [] })), (await rawRecords(await findFolder(orgDir, memberId))).filter((x) => x.trace_type === 'user' && x.content === 'ECHO_INPUT').length >= 2)), 120000, 1000)
+  await delay(2000)
+  const dir = await findFolder(orgDir, memberId)
+  const records = await rawRecords(dir)
+  check(!records.some((x) => String(x.correlation_id ?? '').startsWith('runtime_switch:')), 'a marker was written after the undo')
+  const manifest = await readJson(path.join(dir, 'raw_traces_manifest.json')).catch(() => ({ segments: [] }))
+  check((manifest.segments ?? []).length === 0, `a segment was archived after the undo: ${JSON.stringify(manifest.segments)}`)
+  const finalNode = await nodeNow()
+  check(finalNode.platformAgentRunId !== null && finalNode.launchConfiguration.runtimeKind === AGY, 'the member is not on its original runtime with a session after the message')
+  r.findings = findings
+  if (findings.length) { const error = new Error(findings.join(' | ')); error.details = r; throw error }
+  return r
+})
+
 let exitCode = 0
 try {
   assert(chrome && existsSync(chrome), 'Google Chrome not found (use --browser-executable)')
@@ -592,7 +708,7 @@ try {
     })
     fake = await startFakeLmStudio()
     const env = { ...baseEnv(), HOME: path.join(ownedRoot, 'home'), APP_ENV: 'development', DB_TYPE: 'sqlite', DATABASE_URL: dbUrl, AUTOBYTEUS_SERVER_HOST: backendUrl, DISABLE_HTTP_REQUEST_LOGS: 'true',
-      AUTOBYTEUS_AGENT_PACKAGE_ROOTS: '', LMSTUDIO_HOSTS: fake.origin, ANTIGRAVITY_CLI_COMMAND: fakeAgy, AGY_FAKE_CASE: 'linked_skills' }
+      AUTOBYTEUS_AGENT_PACKAGE_ROOTS: '', LMSTUDIO_HOSTS: fake.origin, ANTIGRAVITY_CLI_COMMAND: fakeAgy, AGY_FAKE_CASE: 'linked_skills', AGY_FAKE_EXTRA_MODELS: 'rsw-alt-model' }
     backend = spawnOwned('backend', process.execPath, [path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(backendPort), '--data-dir', dataRoot], serverDir, env)
     await waitFor('backend health', async () => { assert(backend.exitCode === null, 'backend exited'); return (await fetch(`${backendUrl}/rest/health`, { signal: AbortSignal.timeout(2000) })).ok }, 120000, 1000)
     frontend = spawnOwned('frontend', 'pnpm', ['dev', '--host', '127.0.0.1', '--port', String(frontendPort)], webDir, { ...baseEnv(), NODE_ENV: 'development', BACKEND_NODE_BASE_URL: backendUrl })

@@ -34,6 +34,8 @@ import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.
 //   EX-04 a configured Team's default runtime edit with its linked members in one save (the `CONFIGURED_TEAM` scope plus a patch per
 //         member, as the web draft planner sends them): each member holds its own pending switch; they switch at their own first
 //         input, lead-first in one Team and worker-first in another; the member not yet woken stays pending and untouched.
+//   EX-05 a Team member's saves before its first input (AC-003): a second save keeps the first previous binding and session and the same
+//         switch; selecting the original runtime again restores binding and session with no pending; the next message switches nothing.
 // Prerequisite: pnpm -C autobyteus-server-ts build (current dist). Run:
 //   env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 \
 //     ANTIGRAVITY_CLI_COMMAND=$PWD/tests/fixtures/agy-failure-cli.mjs \
@@ -512,4 +514,46 @@ describe.runIf(ENABLED)("agent runtime switch of Org members and delegated copie
       }
     }
   }, 900_000);
+
+  it("EX-05: a Team member's saves before its first input: a second save keeps the first previous binding and session, and selecting the original runtime again undoes the switch (binding and session back, no pending, no marker or segment on the next message)", async () => {
+    const workspace = path.join(runtimeRoot, "workspace");
+    await fs.mkdir(workspace, { recursive: true });
+    const agent = await agentDefinition("ex-undo-member");
+    const definition = await teamDefinition(agent.id);
+    const created = (await gql("mutation($input: CreateAgentTeamRunInput!) { createAgentTeamRun(input: $input) { success message teamRunId } }", { input: {
+      teamDefinitionId: definition.id, teamConfigs: [{ teamAddress: "/", ...launchOf(AGY, AGY_MODEL, workspace) }],
+      memberConfigs: ["lead", "worker"].map((name) => ({ memberAddress: `/${name}`, agentDefinitionId: agent.id, ...launchOf(AGY, AGY_MODEL, workspace) })) } })).createAgentTeamRun as Json;
+    expect(created.success, created.message).toBe(true);
+    const teamRunId = created.teamRunId as string;
+    const file = memory("agent_teams", teamRunId, "team_run_execution_tree.json");
+    const workerNode = async () => (await treeOf(file)).rootTeam.members.find((entry: Json) => entry.address === "/worker") as Json;
+    const worker = (await workerNode()).agentRunId as string;
+    await talk(teamStream(teamRunId), worker, "ECHO_INPUT", "worker antigravity turn");
+    const original = await workerNode();
+    expect(original.platformAgentRunId, "the Antigravity member holds an external session").toEqual(expect.any(String));
+    const dir = () => findDir(memory("agent_teams", teamRunId), worker)!;
+    const before = ids(active(dir()));
+    expect((await gql("mutation($id: String!) { terminateAgentTeamRun(teamRunId: $id) { success } }", { id: teamRunId })).terminateAgentTeamRun.success).toBe(true);
+    const save = async (runtimeKind: string, llmModelIdentifier: string) => (await gql(`mutation($input: UpdateStoppedTeamRunSelectionsInput!) { updateStoppedTeamRunSelections(input: $input) { success outcome message fieldErrors { path message } } }`,
+      { input: { teamRunId, selectionPatches: [{ scopeKind: "CONFIGURED_AGENT", scopeAddress: "/worker", runtimeKind, llmModelIdentifier, llmConfig: null }] } })).updateStoppedTeamRunSelections as Json;
+    expect(await save(NATIVE, nativeModel), "first save").toMatchObject({ success: true, outcome: "UPDATED" });
+    const first = await workerNode();
+    expect(first.pendingRuntimeSwitch.from, "pending records the original binding and session").toMatchObject({ runtimeKind: AGY, platformAgentRunId: original.platformAgentRunId });
+    expect(first.platformAgentRunId).toBeNull();
+    expect(await save(GROK, GROK_MODEL), "second save before the first input").toMatchObject({ success: true, outcome: "UPDATED" });
+    const second = await workerNode();
+    expect(second.launchConfiguration).toMatchObject({ runtimeKind: GROK });
+    expect(second.pendingRuntimeSwitch.from, "a second save keeps the first previous binding and session").toMatchObject({ runtimeKind: AGY, platformAgentRunId: original.platformAgentRunId });
+    expect(second.pendingRuntimeSwitch.switchId, "and the same switch").toBe(first.pendingRuntimeSwitch.switchId);
+    expect(await save(AGY, AGY_MODEL), "undo: select the original runtime again").toMatchObject({ success: true, outcome: "UPDATED" });
+    const undone = await workerNode();
+    expect(undone.launchConfiguration).toMatchObject({ runtimeKind: AGY, llmModelIdentifier: AGY_MODEL });
+    expect(undone.platformAgentRunId, "the original session is back").toBe(original.platformAgentRunId);
+    expect(Object.hasOwn(undone, "pendingRuntimeSwitch"), "no pending after the undo").toBe(false);
+    expect(ids(active(dir())), "the saves changed no raw trace").toEqual(before);
+    await talk(teamStream(teamRunId), worker, "ECHO_INPUT", "worker turn after the undo");
+    expect(markers(dir()), "no marker after the undo").toEqual([]);
+    expect(completeSegments(dir()), "no segment after the undo").toEqual([]);
+    expect((await workerNode()).launchConfiguration).toMatchObject({ runtimeKind: AGY });
+  }, 600_000);
 });
