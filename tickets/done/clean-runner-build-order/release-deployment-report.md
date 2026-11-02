@@ -30,10 +30,10 @@ Repository finalization into `origin/personal`. No release, tag or deployment fo
 Moved to `tickets/done/clean-runner-build-order`: `Yes`.
 
 ## Repository Finalization
-TBD
+- Ticket branch `codex/clean-runner-build-order` committed and pushed after Secret Gate PASS; target `origin/personal` @ `43f3ed791e` unchanged since the integration; `finalize/clean-runner-build-order` from it; `--no-ff` merge `5d9eb4391f`; Secret Gate, hygiene and licensing pass on the merged state; pushed `43f3ed791e..5d9eb4391f` (a record-only commit follows). Status `Completed`; blocker none.
 
 ## Post-Finalization Cleanup
-TBD
+- Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/clean-runner-build-order` removed and pruned; local branches and remote branch `origin/codex/clean-runner-build-order` deleted after the merge was confirmed. Status `Completed`.
 
 ## Environment Or Persisted-Data Transition Notes
 None (build scripts and documents). Remote state created: branch `origin/codex/clean-runner-build-order` and the build-only run (nothing published); the branch is deleted in cleanup.
@@ -42,4 +42,4 @@ None (build scripts and documents). Remote state created: branch `origin/codex/c
 Revert the merge on `personal` if the web gate or the server prepare step misbehaves on a developer machine; the previous per-package prepare lists return. Nothing is released.
 
 ## Final Status
-TBD
+- Verification complete `Yes`; repository finalization complete `Yes` (`personal` @ `5d9eb4391f` plus this record commit); release not required; cleanup complete `Yes`; blocker `None`; terminal package sent `Yes`.
