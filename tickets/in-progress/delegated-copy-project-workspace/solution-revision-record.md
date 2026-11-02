@@ -11,3 +11,7 @@
 - Evidence: E-011 confirms Files and Terminal; E-004 places the folder before launch resolution.
 - Classification: Medium / High (blast radius: where every local copy runs).
 - Next action: architecture review.
+
+### Review receipt (informational, no new round)
+
+- ARCH-REV-001 **Pass** on SR-002 (2026-11-02), architecture reviewer run `architecture_reviewer_b0cc3811df7e474eb5031669010fe5f1`; no findings; Medium / High. Routed by the reviewer to `/software_engineering_team/implementation_engineer`; no duplicate forwarding.
