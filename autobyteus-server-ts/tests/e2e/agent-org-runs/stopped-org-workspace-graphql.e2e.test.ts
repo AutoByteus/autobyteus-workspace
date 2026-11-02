@@ -98,7 +98,7 @@ describe("stopped Org workspace real GraphQL lifecycle", () => {
     } });
     expect(created.createAgentOrgRun, JSON.stringify(created)).toMatchObject({ success: true });
     const orgRunId = created.createAgentOrgRun.agentOrgRunId;
-    const input = { orgRunId, modelPatches: [], teamWorkspacePatches: [{ teamAddress: "/team", workspaceRootPath: b }] };
+    const input = { orgRunId, selectionPatches: [], teamWorkspacePatches: [{ teamAddress: "/team", workspaceRootPath: b }] };
     const active = await readConfig(first, orgRunId);
     await expect(updateConfig(first, input)).resolves.toMatchObject({ success: false, outcome: "RUN_ACTIVE" });
     expect((await readConfig(first, orgRunId)).executionTree).toEqual(active.executionTree);
@@ -119,9 +119,9 @@ describe("stopped Org workspace real GraphQL lifecycle", () => {
         .resolves.toMatchObject({ success: false, outcome: "VALIDATION_FAILED" });
       expect(await fs.readFile(treeFile, "utf8")).toBe(bytes);
     }
-    const modelPatch = { scopeKind: "CONFIGURED_AGENT", scopeAddress: "/team/lead",
+    const modelPatch = { scopeKind: "CONFIGURED_AGENT", scopeAddress: "/team/lead", runtimeKind: "autobyteus",
       llmModelIdentifier: model.modelIdentifier, llmConfig: { reasoning_effort: "not-a-level" } };
-    await expect(updateConfig(first, { ...input, modelPatches: [modelPatch] }))
+    await expect(updateConfig(first, { ...input, selectionPatches: [modelPatch] }))
       .resolves.toMatchObject({ success: false, outcome: "VALIDATION_FAILED" });
     expect(await fs.readFile(treeFile, "utf8")).toBe(bytes);
     // Option preview is read-only and uses the same candidate Team intent.
@@ -147,7 +147,7 @@ describe("stopped Org workspace real GraphQL lifecycle", () => {
     // Existing model edits compose with a second workspace edit in one command.
     const mixed = await updateConfig(first, { ...input,
       teamWorkspacePatches: [{ teamAddress: "/team", workspaceRootPath: c }],
-      modelPatches: [{ ...modelPatch, llmConfig: { reasoning_effort: "high" } }],
+      selectionPatches: [{ ...modelPatch, llmConfig: { reasoning_effort: "high" } }],
     });
     expect(mixed).toMatchObject({ success: true, outcome: "UPDATED" });
     affected.defaultLaunchConfiguration.workspaceRootPath = c;

@@ -1,0 +1,9 @@
+Check: IMP-06
+Command: pnpm -C autobyteus-web test:nuxt --run (clean clone)
+Commit: d3463e0a7e
+Environment: macOS (Darwin 25.5.0, arm64), Node v22, pnpm 10.28.2
+Date: 2026-11-01
+
+ Test Files  686 passed (686)
+      Tests  5008 passed | 2 skipped (5010)
+exit 0

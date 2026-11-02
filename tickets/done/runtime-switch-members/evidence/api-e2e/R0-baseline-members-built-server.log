@@ -1,0 +1,9 @@
+# R0 baseline MS-01..MS-04 on a fresh build of 3261712e06 (dist built by pnpm -C autobyteus-server-ts build, exit 0); date 2026-11-02T04:41:00Z
+
+ ✓ tests/e2e/runtime/runtime-switch-members-built-server.e2e.test.ts > agent runtime switch of Team and Org members on the built server > MS-01: a Team member native -> Antigravity: the save marks t
+ ✓ tests/e2e/runtime/runtime-switch-members-built-server.e2e.test.ts > agent runtime switch of Team and Org members on the built server > MS-02: a Team member Antigravity -> native with a failed sta
+ ✓ tests/e2e/runtime/runtime-switch-members-built-server.e2e.test.ts > agent runtime switch of Team and Org members on the built server > MS-03: after a server restart the member keeps its agent run
+ ✓ tests/e2e/runtime/runtime-switch-members-built-server.e2e.test.ts > agent runtime switch of Team and Org members on the built server > MS-04: Org members, a direct Agent and an Agent of a mounted
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Duration  13.46s (transform 64ms, setup 42ms, import 107ms, tests 12.82s, environment 0ms)

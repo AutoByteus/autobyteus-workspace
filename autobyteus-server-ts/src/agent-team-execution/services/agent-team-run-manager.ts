@@ -20,7 +20,7 @@ import {
   runModelConfigEditability,
   type RunModelConfigUpdateResult,
 } from "../../run-history/domain/run-model-config.js";
-import type { TeamRunModelConfigPatch } from "./team-run-model-config-mutator.js";
+import type { TeamRunSelectionPatch } from "./team-run-selection-mutator.js";
 import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
 import { createTeamRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import {
@@ -256,11 +256,11 @@ export class AgentTeamRunManager {
     });
   }
 
-  async updateStoppedModelConfigs(input: {
+  async updateStoppedSelections(input: {
     teamRunId: string;
-    patches: readonly TeamRunModelConfigPatch[];
+    selectionPatches: readonly TeamRunSelectionPatch[];
   }): Promise<RunModelConfigUpdateResult<TeamRunExecutionTreeSnapshot | null>> {
-    return this.updateStoppedRunLaunchChanges({ teamRunId: input.teamRunId, configuredPatches: input.patches, delegatedChanges: [] });
+    return this.updateStoppedRunLaunchChanges({ teamRunId: input.teamRunId, configuredPatches: input.selectionPatches, delegatedChanges: [] });
   }
 
   /**
@@ -270,7 +270,7 @@ export class AgentTeamRunManager {
    */
   async updateStoppedRunLaunchChanges(input: {
     teamRunId: string;
-    configuredPatches: readonly TeamRunModelConfigPatch[];
+    configuredPatches: readonly TeamRunSelectionPatch[];
     delegatedChanges: readonly DelegatedLaunchChange[];
   }): Promise<RunModelConfigUpdateResult<TeamRunExecutionTreeSnapshot | null>> {
     const teamRunId = required(input.teamRunId, "teamRunId");

@@ -1560,7 +1560,8 @@ The saved-run view uses the start surfaces' visual language:
     gray without the enabled-hover accent. Settings stop styling is unchanged.
   - **Editing (SR-007).** While a copy is stopped (stopped by the user, idled out,
     or the run is stopped), its rows edit the model and its settings like a stopped
-    run's member (`RunSettingsCard`; runtime, approval and workspace locked); a
+    run's member (`RunSettingsCard`; approval and workspace locked; the agent runtime opens with the model, see
+    [Existing Run Configuration](#existing-run-configuration)); a
     Team row edits the Team's choice. While it runs, its model is locked with the
     hint "Stop this copy to change its model." There is no separate reset: the
     user picks the model again. Model menus list the copy's options
@@ -1697,15 +1698,19 @@ a residual until then.
 A stopped Agent run's root card also lets the user choose another **agent runtime** (and a model of it): saving
 keeps the same run and chat and records a pending agent runtime switch; the new agent runtime takes over with the next
 message (a hint says so while another one is chosen, and the chat shows a marker "Agent runtime changed from … to …").
-Team and Org roots, their members and delegated copies keep their agent runtime fixed. A switch for a run that cannot
+The same holds for each member row of a stopped Team or Org run (a direct Agent, a mounted Team and its Agents) and for each
+stopped delegated copy row: the row's agent runtime control opens exactly when its model control does
+(`RunMemberRow`: `runtimeLocked || locked.model`), and a choice names the runtime with the model. A Team or Org
+root's own agent runtime stays fixed; editing a Team default's runtime carries it to the members linked to it (the
+planner's draft-start equality), each switching by itself. A switch for a run that cannot
 switch is refused by the server with a message.
 
 Save is enabled only for a stopped, editable, schema-ready, changed draft. The
 revision-free mutations are `updateStoppedAgentRunSelection`,
-`updateStoppedTeamRunModelConfigs`, and `updateStoppedAgentOrgRunConfig`. The
-AgentOrg command carries independent model and mounted-Team workspace patch
+`updateStoppedTeamRunSelections`, and `updateStoppedAgentOrgRunConfig`. The
+AgentOrg command carries independent `selectionPatches` and mounted-Team workspace patch
 lists so one validated tree write publishes their aggregate result. Each model
-command/patch requires both `llmModelIdentifier` and explicitly present nullable
+command/patch requires `runtimeKind`, `llmModelIdentifier` and explicitly present nullable
 `llmConfig`; a whole-pair no-op produces no write. Agent results return
 `canonicalSelection`; Team results retain `canonicalExecutionTree`; AgentOrg
 results return the canonical execution tree. Determinate responses replace the

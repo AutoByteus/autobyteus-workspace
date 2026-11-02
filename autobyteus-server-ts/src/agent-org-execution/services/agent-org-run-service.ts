@@ -1,8 +1,9 @@
 import type { UpdateStoppedAgentOrgRunConfig, TeamWorkspacePatch } from "../domain/agent-org-run-config.js";
 import type { RemoteInboundQuery, StoredRemoteLinkCheck } from "../../agent-collaboration/execution/remote/remote-run-links.js";
-import { listAgentOrgRunModelConfigScopes, applyAgentOrgTeamWorkspacePatches, resolveAgentOrgTeamWorkspacePatches } from "./agent-org-run-config-mutator.js";
+import { listAgentOrgRunSelectionScopes, applyAgentOrgTeamWorkspacePatches, resolveAgentOrgTeamWorkspacePatches } from "./agent-org-run-config-mutator.js";
 import type { RunModelSelectionService } from "../../llm-management/services/run-model-selection-service.js";
 import { projectAgentOrgExecutionSnapshot } from "../../services/agent-streaming/agent-org-execution-view-projector.js";
+import { projectAgentOrgExecutionTree } from "../../services/agent-streaming/collaboration-execution-tree-dto-projection.js";
 import { remoteTaskExecutionDtos } from "../../services/agent-streaming/remote-task-execution-dto-projection.js";
 import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
@@ -60,14 +61,19 @@ export class AgentOrgRunService {
     adHocTasks?: Pick<ProjectTaskService, "deleteAdHocTasksHostedBy">;
   }>) {}
 
-  getRunConfig(orgRunId: string) {
-    return this.dependencies.manager.getRunConfig(orgRunId);
+  /**
+   * The stored Org tree as the wire carries it. A configured Agent's pending runtime switch is server state and is not on the
+   * wire (autobyteus-348, contract §6), so every Org tree this service returns as JSON goes through this one projection.
+   */
+  async getRunConfig(orgRunId: string) {
+    const config = await this.dependencies.manager.getRunConfig(orgRunId);
+    return Object.freeze({ ...config, executionTree: projectAgentOrgExecutionTree(config.executionTree) });
   }
   async runModelOptions(orgRunId: string, teamWorkspacePatches: readonly TeamWorkspacePatch[] = []) {
     const canonical = await this.dependencies.manager.getRunConfig(orgRunId);
     const patches = resolveAgentOrgTeamWorkspacePatches(canonical.executionTree, teamWorkspacePatches)
       .map(patch => ({ ...patch, workspaceRootPath: canonicalizeWorkspaceRootPath(patch.workspaceRootPath) }));
-    const scopes = listAgentOrgRunModelConfigScopes(applyAgentOrgTeamWorkspacePatches(canonical.executionTree, patches));
+    const scopes = listAgentOrgRunSelectionScopes(applyAgentOrgTeamWorkspacePatches(canonical.executionTree, patches));
     const options = await this.dependencies.modelSelectionOptions.listOptionsMany(scopes.map(({ launchConfiguration }) => ({
       runtimeKind: launchConfiguration.runtimeKind,
       currentModelIdentifier: launchConfiguration.llmModelIdentifier,
@@ -76,8 +82,9 @@ export class AgentOrgRunService {
     if (options.length !== scopes.length) throw new Error("Model options returned an incomplete AgentOrg scope result.");
     return scopes.map(({ scopeKind, scopeAddress }, index) => ({ scopeKind, scopeAddress, ...options[index]! }));
   }
-  updateStoppedRunConfig(input: UpdateStoppedAgentOrgRunConfig) {
-    return this.dependencies.manager.updateStoppedRunConfig(input);
+  async updateStoppedRunConfig(input: UpdateStoppedAgentOrgRunConfig) {
+    const result = await this.dependencies.manager.updateStoppedRunConfig(input);
+    return Object.freeze({ ...result, canonical: result.canonical ? projectAgentOrgExecutionTree(result.canonical) : null });
   }
 
   async create(command: CreateAgentOrgRunCommand): Promise<AgentOrgRun> {

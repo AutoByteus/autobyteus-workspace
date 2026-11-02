@@ -54,7 +54,7 @@ const harness = () => {
   const getAgentRunResumeConfig = vi.fn(async () => agentResume);
   const getTeamRunResumeConfig = vi.fn(async () => teamResume);
   const updateStoppedSelection = vi.fn(async () => ({ subject: "agent-general" }));
-  const updateStoppedModelConfigs = vi.fn(async () => ({ subject: "team-general" }));
+  const updateStoppedSelections = vi.fn(async () => ({ subject: "team-general" }));
   const listOptionsMany = vi.fn(async (contexts) => contexts.map(context => ({ currentModelIdentifier: context.currentModelIdentifier, replacements: [], unavailableReason: null })));
   return {
     listOptionsMany,
@@ -62,14 +62,14 @@ const harness = () => {
     getAgentRunResumeConfig,
     getTeamRunResumeConfig,
     updateStoppedSelection,
-    updateStoppedModelConfigs,
+    updateStoppedSelections,
     service: new StudioRunModelConfigService({
       modelSelectionService: { listOptions: vi.fn(), listOptionsMany },
       applicationRunOwnership: { hasLiveRunOwnership },
       agentResumeConfigService: { getAgentRunResumeConfig },
       teamResumeConfigService: { getTeamRunResumeConfig },
       agentRunService: { updateStoppedSelection } as never,
-      teamRunService: { updateStoppedModelConfigs } as never,
+      teamRunService: { updateStoppedSelections } as never,
     }),
   };
 };
@@ -139,15 +139,15 @@ describe("StudioRunModelConfigService", () => {
     team.hasLiveRunOwnership.mockResolvedValue(true);
     const teamInput = {
       teamRunId: "team-run-1",
-      patches: [{ scopeKind: "CONFIGURED_TEAM" as const, scopeAddress: "/", llmModelIdentifier: "model-1", llmConfig: null }],
+      selectionPatches: [{ scopeKind: "CONFIGURED_TEAM" as const, scopeAddress: "/", runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: "model-1", llmConfig: null }],
     };
-    await expect(team.service.updateStoppedTeamRunModelConfigs(teamInput)).resolves.toMatchObject({
+    await expect(team.service.updateStoppedTeamRunSelections(teamInput)).resolves.toMatchObject({
       success: false,
       outcome: "RUN_ACTIVE",
       isActive: true,
       canonical: teamTree,
     });
-    expect(team.updateStoppedModelConfigs).not.toHaveBeenCalled();
+    expect(team.updateStoppedSelections).not.toHaveBeenCalled();
   });
 
   it("delegates exact updates to unchanged General facades only after release", async () => {
@@ -160,11 +160,11 @@ describe("StudioRunModelConfigService", () => {
     const team = harness();
     const teamInput = {
       teamRunId: "team-run-1",
-      patches: [{ scopeKind: "CONFIGURED_AGENT" as const, scopeAddress: "/coordinator", llmModelIdentifier: "model-1", llmConfig: null }],
+      selectionPatches: [{ scopeKind: "CONFIGURED_AGENT" as const, scopeAddress: "/coordinator", runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: "model-1", llmConfig: null }],
     };
-    await expect(team.service.updateStoppedTeamRunModelConfigs(teamInput))
+    await expect(team.service.updateStoppedTeamRunSelections(teamInput))
       .resolves.toEqual({ subject: "team-general" });
-    expect(team.updateStoppedModelConfigs).toHaveBeenCalledWith(teamInput);
+    expect(team.updateStoppedSelections).toHaveBeenCalledWith(teamInput);
   });
 
   it("fails reads closed and returns INTERNAL_ERROR/no write when ownership is unreadable", async () => {
@@ -188,14 +188,14 @@ describe("StudioRunModelConfigService", () => {
 
     const team = harness();
     team.hasLiveRunOwnership.mockRejectedValue(new Error("binding database unavailable"));
-    await expect(team.service.updateStoppedTeamRunModelConfigs({
+    await expect(team.service.updateStoppedTeamRunSelections({
       teamRunId: "team-run-1",
-      patches: [],
+      selectionPatches: [],
     })).resolves.toMatchObject({
       success: false,
       outcome: "INTERNAL_ERROR",
       canonical: teamTree,
     });
-    expect(team.updateStoppedModelConfigs).not.toHaveBeenCalled();
+    expect(team.updateStoppedSelections).not.toHaveBeenCalled();
   });
 });

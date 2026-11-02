@@ -1,0 +1,12 @@
+Check: IMP-16
+Command: pnpm -C autobyteus-web test:e2e:runtime-switch-members --output-dir /tmp/rsm-fix (headless Chrome, real built server, scripted Antigravity and native)
+Commit: 9e28c019b6
+Environment: macOS arm64, Node 22, pnpm 10.28.2 (the worktree, not a clean clone)
+Date: 2026-11-02
+
+RSM-01 Pass
+RSM-02 Pass
+RSM-03 Pass
+RSM-04 Pass
+RSM-05 Pass
+exit 0

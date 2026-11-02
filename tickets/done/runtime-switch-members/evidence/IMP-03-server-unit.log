@@ -1,0 +1,9 @@
+Check: IMP-03
+Command: pnpm -C autobyteus-server-ts test:unit (clean clone)
+Commit: d3463e0a7e
+Environment: macOS (Darwin 25.5.0, arm64), Node v22, pnpm 10.28.2
+Date: 2026-11-01
+
+ Test Files  921 passed | 5 skipped (926)
+      Tests  7861 passed | 9 skipped (7870)
+exit 0

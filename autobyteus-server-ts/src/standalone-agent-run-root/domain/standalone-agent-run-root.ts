@@ -61,7 +61,11 @@ import type { StandaloneRootPersistenceCoordinator } from "../services/standalon
 import { StandaloneRootRecipientResolver } from "../services/standalone-root-recipient-resolver.js";
 import { StandaloneRootTaskExecutionAdapter, type StandaloneRootPlacement } from "../services/standalone-root-task-execution-adapter.js";
 import { StandaloneRootMessageDelivery } from "../services/standalone-root-message-delivery.js";
-import { adoptStandaloneRootPlatformBinding, replaceStandaloneRootPlatformBindingWithoutConversation } from "../services/standalone-root-tree-mutator.js";
+import {
+  adoptStandaloneRootPlatformBinding,
+  commitStandaloneRootRuntimeSwitch,
+  replaceStandaloneRootPlatformBindingWithoutConversation,
+} from "../services/standalone-root-tree-mutator.js";
 import { RemoteRunLinks, type RemoteInboundMessage, type RemoteInboundWorkPacket } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 import { RemoteDelegation } from "../../agent-collaboration/execution/remote/remote-delegation.js";
 import { RemoteMessageSend } from "../../agent-collaboration/execution/remote/remote-message-send.js";
@@ -383,7 +387,9 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
           this.assertAdmitting();
           const tree = change.kind === "adopt_or_retain"
             ? adoptStandaloneRootPlatformBinding({ tree: this.tree, binding: change.binding }).tree
-            : replaceStandaloneRootPlatformBindingWithoutConversation({ tree: this.tree, replacement: change.replacement });
+            : change.kind === "runtime_switch"
+              ? commitStandaloneRootRuntimeSwitch({ tree: this.tree, commit: change })
+              : replaceStandaloneRootPlatformBindingWithoutConversation({ tree: this.tree, replacement: change.replacement });
           return { nextTree: tree, cancelBeforeDurability: () => undefined, commitAfterDurability: () => this.replaceTree(tree) };
         },
       });

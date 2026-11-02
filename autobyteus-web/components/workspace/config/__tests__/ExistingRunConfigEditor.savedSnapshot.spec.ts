@@ -91,7 +91,7 @@ it('retains the mounted Settings view and edit lock through readback, then uses 
   const settings = wrapper.getComponent({ name: 'ExistingRunSettings' })
   settings.vm.$emit('change-delegated', '/writer@copy', { field: 'thinking', llmConfig: { reasoning_effort: 'high', service_tier: 'fast' } })
   await flushPromises()
-  expect(delegated.originals['agent:copy']).toEqual({ llmModelIdentifier: 'new', llmConfig: null })
+  expect(delegated.originals['agent:copy']).toEqual({ runtimeKind: 'codex_app_server', llmModelIdentifier: 'new', llmConfig: null })
   await wrapper.get('[data-test="save-existing-model-config"]').trigger('click'); await flushPromises()
   expect(wrapper.get('[data-test="/writer@copy"]').text()).toBe('new:{"reasoning_effort":"high","service_tier":"fast"}')
   expect(delegated.dirty).toBe(false)

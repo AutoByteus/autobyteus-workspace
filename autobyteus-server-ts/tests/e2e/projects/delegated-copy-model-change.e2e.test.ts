@@ -1,5 +1,6 @@
 import "reflect-metadata";
 import fs from "node:fs/promises";
+import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
@@ -20,6 +21,8 @@ import { fileURLToPath } from "node:url";
 // the real model catalog and run history, in the Agent Team and standalone Agent roots. Only the AGY CLI is scripted
 // (tests/fixtures/agy-failure-cli.mjs, `linked_skills`): `CALL_TOOL:{...}` makes the agent call the actual tool; every
 // launch is logged with its argv, so the model a copy resumes on is proven at the runtime (`--model`).
+// DCM-009 (autobyteus-348) a stopped agent copy switches its agent runtime (AGY -> Grok) in the Team, Org and Agent roots: the next
+//   message archives exactly the AGY agent's records as one segment and starts the new file with one marker.
 // DCM-001 an agent copy: running → the change is refused (COPY_RUNNING); Stop (the copy alone, the root keeps running);
 //   options; Save; its next message resumes it with its conversation on the chosen model.
 // DCM-002 a Team copy: Stop as one unit; a Team-level choice reaches its members that follow the Team.
@@ -164,7 +167,7 @@ suite("A delegated copy's model changed by the user: stop, choose, resume (real 
   const options = async (rootKind: string, rootRunId: string) => (await graphql(
     `query($k:String!,$r:String!){delegatedLaunchModelOptions(rootKind:$k,rootRunId:$r){scope agentRunId teamRunId currentModelIdentifier replacements{llmModelIdentifier}}}`,
     { k: rootKind, r: rootRunId })).delegatedLaunchModelOptions as Rec[];
-  const choice = (model: string) => ({ llmModelIdentifier: model, llmConfig: null });
+  const choice = (model: string, runtimeKind = AGY) => ({ runtimeKind, llmModelIdentifier: model, llmConfig: null });
 
   beforeAll(async () => {
     dataDir = await fs.mkdtemp(path.join(os.tmpdir(), "dcm-e2e-"));
@@ -358,7 +361,7 @@ suite("A delegated copy's model changed by the user: stop, choose, resume (real 
     // DCM-003 (AR-004): on the stopped run, one Save of the copy's choice and the run's own setting; all or nothing.
     await terminate("team", root.rootId);
     const workerTree = async () => flattenE2eConfiguredAgentExecutions(await root.storedTree()).find((member) => member.memberAddress === "/worker")!;
-    const workerPatch = { scopeKind: "CONFIGURED_AGENT", scopeAddress: "/worker", llmModelIdentifier: ALT, llmConfig: null };
+    const workerPatch = { scopeKind: "CONFIGURED_AGENT", scopeAddress: "/worker", runtimeKind: AGY, llmModelIdentifier: ALT, llmConfig: null };
     await expect(update("AGENT_TEAM", root.rootId, [{ agentRunId: copyRunId, selection: choice(NOT_OFFERED) }], [workerPatch]))
       .resolves.toMatchObject({ success: false, outcome: "MODEL_UNAVAILABLE" });
     expect(JSON.stringify(await workerTree())).not.toContain(ALT);
@@ -567,7 +570,7 @@ suite("A delegated copy's model changed by the user: stop, choose, resume (real 
     // AC-006: invalid settings are refused and nothing is recorded. (Settings the model does not declare are left out of the
     // saved config instead of refused since claude-anthropic-effort-control SR-004; settings that are not an object stay invalid.)
     await expect(stop(root.rootKind, root.rootId, { agentRunId: copyRunId })).resolves.toMatchObject({ outcome: "STOPPED" });
-    const invalid = await update(root.rootKind, root.rootId, [{ agentRunId: copyRunId, selection: { llmModelIdentifier: MODEL, llmConfig: ["temperature", 0.2] } }]);
+    const invalid = await update(root.rootKind, root.rootId, [{ agentRunId: copyRunId, selection: { runtimeKind: AGY, llmModelIdentifier: MODEL, llmConfig: ["temperature", 0.2] } }]);
     expect(invalid).toMatchObject({ success: false, outcome: "VALIDATION_FAILED" });
     expect(invalid.fieldErrors.length).toBeGreaterThan(0);
     expect((await copyRecord()).user_launch_selection ?? null).toBeNull();
@@ -596,5 +599,63 @@ suite("A delegated copy's model changed by the user: stop, choose, resume (real 
       process.env["AGY_FAKE_EXTRA_MODELS"] = `${ALT},${ALT2}`;
     }
     await terminate("team", root.rootId);
+  }, 240_000);
+
+  /** The folder named `name` anywhere under `base` (a copy's memory folder is placed by its own run). */
+  const findDir = (base: string, name: string, depth = 0): string | null => {
+    if (depth > 6 || !existsSync(base)) return null;
+    for (const entry of readdirSync(base)) {
+      const full = path.join(base, entry);
+      if (!statSync(full).isDirectory()) continue;
+      if (entry === name) return full;
+      const nested = findDir(full, name, depth + 1);
+      if (nested) return nested;
+    }
+    return null;
+  };
+  const readRaw = (file: string): Rec[] => {
+    try { return readFileSync(file, "utf8").split("\n").filter(Boolean).map((line) => JSON.parse(line) as Rec); } catch { return []; }
+  };
+
+  // autobyteus-348: a delegated agent copy switches its agent runtime (AGY -> Grok) while stopped, in each root that can hold it.
+  it.each(["team", "org", "agent"] as const)("DCM-009: %s root: a stopped agent copy switches its agent runtime; the next message archives exactly the AGY agent's records as one segment and starts Grok under one marker", async (kind) => {
+    const root = await startRoot(kind);
+    const delegated = await root.managerCalls(callTool("delegate_task", { recipient_address: `/${segment(names.writer!)}`, description: "Draft the notes." }));
+    expect(delegated.delegated, JSON.stringify(delegated)).toBe(true);
+    const copyRunId = delegated.target_agent_run_id as string;
+    await until(async () => (await launchesOf(copyRunId)).length > 0, `${kind}: copy started`, 60_000);
+    await expect(stop(root.rootKind, root.rootId, { agentRunId: copyRunId })).resolves.toMatchObject({ success: true, outcome: "STOPPED" });
+
+    const copyDir = findDir(path.join(dataDir, "memory"), copyRunId)!;
+    expect(copyDir, "the copy's memory folder").toBeTruthy();
+    const agyIds = readRaw(path.join(copyDir, "raw_traces_active.jsonl")).map((record) => record.id as string);
+    expect(agyIds.length, "the AGY agent recorded its work").toBeGreaterThan(0);
+
+    // The save: the choice names another agent runtime; it is a pending switch of that copy, and no raw trace moves.
+    await expect(update(root.rootKind, root.rootId, [{ agentRunId: copyRunId, selection: choice(GROK_MODEL, GROK) }]))
+      .resolves.toMatchObject({ success: true, outcome: "UPDATED" });
+    const recorded = objectsIn(await root.storedTree()).find((record) => (record.agentRunId ?? record.agent_run_id) === copyRunId && (record.startedAt ?? record.started_at))!;
+    expect((recorded.userLaunchSelection ?? recorded.user_launch_selection)?.runtimeKind ?? (recorded.userLaunchSelection ?? recorded.user_launch_selection)?.runtime_kind).toBe(GROK);
+    expect(readRaw(path.join(copyDir, "raw_traces_active.jsonl")).map((record) => record.id), "the save changed no raw trace").toEqual(agyIds);
+    expect(existsSync(path.join(copyDir, "raw_traces_manifest.json")), "nothing archived by the save").toBe(false);
+
+    // The next message restores the copy on Grok: the switch is made real first.
+    const agyBefore = (await launchesOf(copyRunId)).length;
+    const grokBefore = (await grokMethods()).length;
+    await expect(messageCopy(root, copyRunId, "One more paragraph, please.")).resolves.toMatchObject({ accepted: true });
+    await until(async () => (await grokMethods()).length > grokBefore, `${kind}: Grok started for the copy`, 60_000);
+    expect((await launchesOf(copyRunId)).length, "no AGY launch for the switched copy").toBe(agyBefore);
+    const manifest = JSON.parse(readFileSync(path.join(copyDir, "raw_traces_manifest.json"), "utf8")) as { segments: Rec[] };
+    const done = manifest.segments.filter((segment) => segment.status === "complete");
+    expect(done, "exactly one segment").toHaveLength(1);
+    expect(done[0], "the segment carries the switch and the previous runtime").toMatchObject({ boundary_type: "runtime_switch", runtime_kind: AGY });
+    expect(readRaw(path.join(copyDir, done[0]!.file_name)).map((record) => record.id), "I-7: exactly the AGY agent's records").toEqual(agyIds);
+    const records = readRaw(path.join(copyDir, "raw_traces_active.jsonl"));
+    expect(records[0], "I-3: the marker starts the new file").toMatchObject({ trace_type: "system_task_notification", sender_id: "system.runtime_handover",
+      correlation_id: done[0]!.boundary_key, content: expect.stringMatching(/^Agent runtime changed from Antigravity CLI \(.+\) to Grok Build \(.+\)\.$/) });
+    expect(records.filter((record) => String(record.correlation_id ?? "").startsWith("runtime_switch:")), "I-5: one marker").toHaveLength(1);
+
+    await expect(stop(root.rootKind, root.rootId, { agentRunId: copyRunId })).resolves.toMatchObject({ success: true });
+    await terminate(kind, root.rootId);
   }, 240_000);
 });

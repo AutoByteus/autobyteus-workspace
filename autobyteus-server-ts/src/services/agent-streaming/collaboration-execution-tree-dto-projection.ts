@@ -51,16 +51,18 @@ const projectMemberLaunch = (member: RecordedMemberLaunch) => ({
 });
 /** A user model choice, emitted only when recorded. */
 const projectSelection = <K extends "userLaunchSelection" | "userTeamLaunchSelection">(key: K, selection: UserLaunchSelection | undefined) =>
-  (selection ? { [key]: userLaunchSelectionDtoSchema.parse({
-    llmModelIdentifier: selection.llmModelIdentifier, llmConfig: selection.llmConfig, selectedAt: selection.selectedAt,
-  }) } : {}) as Partial<Record<K, UserLaunchSelectionDto>>;
+  (selection ? { [key]: projectUserLaunchSelection(selection) } : {}) as Partial<Record<K, UserLaunchSelectionDto>>;
+
+/** A choice on the wire: its agent runtime only when the user chose one (the pending switch is not on the wire). */
+const projectUserLaunchSelection = (selection: UserLaunchSelection): UserLaunchSelectionDto => userLaunchSelectionDtoSchema.parse({
+  ...(selection.runtimeKind === undefined ? {} : { runtimeKind: selection.runtimeKind }),
+  llmModelIdentifier: selection.llmModelIdentifier, llmConfig: selection.llmConfig, selectedAt: selection.selectedAt,
+});
 
 /** A live Save's committed choices (DS-001): each record by its run ID, with its choice as now recorded. */
 export const projectCollaborationSelectionsChanged = (records: readonly DelegatedLaunchSelectionRecord[]) => ({
   kind: "delegated_launch_selections_changed" as const,
-  selections: records.map(({ reference, selection }) => ({ ...reference, selection: userLaunchSelectionDtoSchema.parse({
-    llmModelIdentifier: selection.llmModelIdentifier, llmConfig: selection.llmConfig, selectedAt: selection.selectedAt,
-  }) })),
+  selections: records.map(({ reference, selection }) => ({ ...reference, selection: projectUserLaunchSelection(selection) })),
 });
 
 const projectTaskMember = (member: TaskTeamAgentExecution): TaskTeamDto["members"][number] => ({

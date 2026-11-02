@@ -36,7 +36,11 @@ import type { AgentOrgCommunicationMessagesFile } from "../persistence/agent-org
 import { AgentOrgExecutionIndex } from "../services/agent-org-execution-index.js";
 import { AgentOrgTaskExecutionAdapter, type ResolvedAgentOrgRecipient } from "../services/agent-org-task-execution-adapter.js";
 import { createAgentOrgCommunicationPort } from "../services/agent-org-communication-port.js";
-import { adoptAgentOrgPlatformBinding, replaceAgentOrgPlatformBindingWithoutConversation } from "../services/agent-org-run-execution-tree-mutator.js";
+import {
+  adoptAgentOrgPlatformBinding,
+  commitAgentOrgRuntimeSwitch,
+  replaceAgentOrgPlatformBindingWithoutConversation,
+} from "../services/agent-org-run-execution-tree-mutator.js";
 import { AgentOrgTaskEventRetirement } from "../services/agent-org-task-event-retirement.js";
 import { AgentOrgRecipientResolver } from "../services/agent-org-recipient-resolver.js";
 import { AgentOrgRunCollaborators } from "../services/agent-org-run-collaborators.js";
@@ -297,7 +301,9 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
           this.assertAdmitting();
           const tree = change.kind === "adopt_or_retain"
             ? adoptAgentOrgPlatformBinding({ tree: this.tree, binding: change.binding }).tree
-            : replaceAgentOrgPlatformBindingWithoutConversation({ tree: this.tree, replacement: change.replacement });
+            : change.kind === "runtime_switch"
+              ? commitAgentOrgRuntimeSwitch({ tree: this.tree, commit: change })
+              : replaceAgentOrgPlatformBindingWithoutConversation({ tree: this.tree, replacement: change.replacement });
           return {
             nextTree: tree,
             cancelBeforeDurability: () => undefined,

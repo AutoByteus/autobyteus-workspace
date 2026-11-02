@@ -457,20 +457,21 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
     const patch = [{
       scopeKind: "CONFIGURED_TEAM" as const,
       scopeAddress: "/",
+      runtimeKind: config.rootTeam.defaultLaunchConfiguration.runtimeKind,
       llmModelIdentifier: config.rootTeam.defaultLaunchConfiguration.llmModelIdentifier,
       llmConfig: { reasoning_effort: "high", service_tier: "priority" },
     }];
 
-    await expect(manager.updateStoppedModelConfigs({
+    await expect(manager.updateStoppedSelections({
       teamRunId: root.teamRunId,
-      patches: patch,
+      selectionPatches: patch,
     })).resolves.toMatchObject({ outcome: "RUN_ACTIVE", success: false });
     expect(validate).not.toHaveBeenCalled();
 
     await expect(manager.terminateTeamRun(root.teamRunId)).resolves.toBe(true);
-    const updated = await manager.updateStoppedModelConfigs({
+    const updated = await manager.updateStoppedSelections({
       teamRunId: root.teamRunId,
-      patches: patch,
+      selectionPatches: patch,
     });
     expect(updated).toMatchObject({
       outcome: "UPDATED",
@@ -542,13 +543,14 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
     const patch = [{
       scopeKind: "CONFIGURED_TEAM" as const,
       scopeAddress: "/",
+      runtimeKind: root.getExecutionTreeSnapshot().rootTeam.defaultLaunchConfiguration.runtimeKind,
       llmModelIdentifier: "replacement-model",
       llmConfig: { reasoning_effort: "high", service_tier: "priority" },
     }];
 
-    const save = teamRunService.updateStoppedModelConfigs({
+    const save = teamRunService.updateStoppedSelections({
       teamRunId: root.teamRunId,
-      patches: patch,
+      selectionPatches: patch,
     });
     await vi.waitFor(() => expect(validate).toHaveBeenCalledOnce());
     const restore = teamRunService.restoreTeamRun(root.teamRunId);
@@ -605,11 +607,12 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
 
     await expect(teamRunService.restoreTeamRun(root.teamRunId))
       .resolves.toMatchObject({ teamRunId: root.teamRunId });
-    await expect(teamRunService.updateStoppedModelConfigs({
+    await expect(teamRunService.updateStoppedSelections({
       teamRunId: root.teamRunId,
-      patches: [{
+      selectionPatches: [{
         scopeKind: "CONFIGURED_TEAM",
         scopeAddress: "/",
+        runtimeKind: root.getExecutionTreeSnapshot().rootTeam.defaultLaunchConfiguration.runtimeKind,
         llmModelIdentifier: "replacement-model",
         llmConfig: { reasoning_effort: "high", service_tier: "priority" },
       }],

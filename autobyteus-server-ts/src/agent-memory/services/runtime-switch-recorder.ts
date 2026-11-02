@@ -42,3 +42,8 @@ export class RuntimeSwitchRecorder implements RuntimeSwitchMemory {
     new ExternalRuntimeMemoryWriter({ memoryDir }).removeActiveRawTracesAfter(ticket.watermarkTraceId, ticket.runtimeSwitch.key);
   }
 }
+
+let defaultMemory: RuntimeSwitchMemory | null = null;
+
+/** The process-wide switch memory, for activation paths that are not handed one (members of Teams and Orgs, delegated copies). */
+export const getDefaultRuntimeSwitchMemory = (): RuntimeSwitchMemory => (defaultMemory ??= new RuntimeSwitchRecorder());

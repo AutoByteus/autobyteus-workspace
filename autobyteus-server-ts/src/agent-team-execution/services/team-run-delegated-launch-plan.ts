@@ -7,15 +7,16 @@ import {
 } from "../../agent-collaboration/collaborators/delegated-launch-selection-command.js";
 import { delegatedLaunchSelections, type DelegatedLaunchChange } from "../../agent-collaboration/domain/delegated-launch-selection.js";
 import { taskExecutionReferenceKey, type TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
+import { selectionContextFor } from "../../agent-execution/services/stopped-run-selection-context.js";
 import type { RunModelSelectionService, RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
 import type { RunModelConfigFieldError, RunModelConfigUpdateOutcome } from "../../run-history/domain/run-model-config.js";
 import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
 import { applyTeamDelegatedLaunchSelections, teamDelegatedLaunchForest } from "./team-run-execution-tree-mutator.js";
 import {
-  applyTeamRunModelConfigPatches,
-  resolveTeamRunModelConfigTargets,
-  type TeamRunModelConfigPatch,
-} from "./team-run-model-config-mutator.js";
+  applyTeamRunSelectionPatches,
+  resolveTeamRunSelectionTargets,
+  type TeamRunSelectionPatch,
+} from "./team-run-selection-mutator.js";
 
 /** The delegated copies of one (stored or live) Team tree, their started sources and closed copies. */
 const reader = (tree: TeamRunExecutionTreeSnapshot, closed: readonly TaskExecutionReference[]) => {
@@ -46,7 +47,7 @@ const delegatedRefusal = (refusal: DelegatedLaunchUpdateResult): StoppedTeamLaun
 export const planStoppedTeamLaunchSave = async (input: {
   tree: TeamRunExecutionTreeSnapshot;
   closed: readonly TaskExecutionReference[];
-  configuredPatches: readonly TeamRunModelConfigPatch[];
+  configuredPatches: readonly TeamRunSelectionPatch[];
   delegatedChanges: readonly DelegatedLaunchChange[];
   validator: RunModelSelectionValidator;
 }): Promise<StoppedTeamLaunchSavePlan> => {
@@ -55,20 +56,19 @@ export const planStoppedTeamLaunchSave = async (input: {
   try {
     // A Save of delegated choices alone has no configured patch (AR-004).
     targets = input.configuredPatches.length || !input.delegatedChanges.length
-      ? resolveTeamRunModelConfigTargets(tree, input.configuredPatches)
+      ? resolveTeamRunSelectionTargets(tree, input.configuredPatches)
       : [];
   } catch (error) {
     return { kind: "refused", outcome: "VALIDATION_FAILED", message: "Team model-setting targets are invalid.",
-      fieldErrors: [{ path: "patches", message: error instanceof Error ? error.message : String(error) }] };
+      fieldErrors: [{ path: "selectionPatches", message: error instanceof Error ? error.message : String(error) }] };
   }
   const delegatedPlan = input.delegatedChanges.length
     ? planDelegatedLaunchValidation({ ...reader(tree, input.closed), changes: input.delegatedChanges })
     : null;
   if (delegatedPlan?.kind === "refused") return delegatedRefusal(delegatedPlan.result);
   const allResults = await input.validator.validateMany([...targets.map((target) => ({
-    context: { runtimeKind: target.launchConfiguration.runtimeKind,
-      currentModelIdentifier: target.launchConfiguration.llmModelIdentifier,
-      workspaceRootPath: target.launchConfiguration.workspaceRootPath ?? process.cwd() },
+    // The saved agent runtime of the scope is the current one; another runtime (or a pending switch) is a fresh selection.
+    context: selectionContextFor({ ...target.launchConfiguration, pendingRuntimeSwitch: target.pendingRuntimeSwitch }, target.patch),
     selection: target.patch,
   })), ...(delegatedPlan?.inputs ?? [])]);
   const results = allResults.slice(0, targets.length);
@@ -85,7 +85,7 @@ export const planStoppedTeamLaunchSave = async (input: {
   if (invalid.length) {
     return { kind: "refused", outcome: "VALIDATION_FAILED", message: "One or more Team model settings are invalid.",
       fieldErrors: invalid.flatMap(({ target, result }) => result.kind === "invalid"
-        ? result.errors.map((error) => ({ path: `patches[${target.patch.scopeAddress}].${error.path}`, message: error.message }))
+        ? result.errors.map((error) => ({ path: `selectionPatches[${target.patch.scopeAddress}].${error.path}`, message: error.message }))
         : []) };
   }
   const normalizedTargets = targets.map((target, index) => ({
@@ -93,7 +93,7 @@ export const planStoppedTeamLaunchSave = async (input: {
     patch: { ...target.patch, ...(validations[index]!.result.kind === "valid" ? validations[index]!.result.selection : target.patch) },
   }));
   if (delegated?.kind === "refused") return delegatedRefusal(delegated.result);
-  const configuredTree = applyTeamRunModelConfigPatches(tree, normalizedTargets);
+  const configuredTree = applyTeamRunSelectionPatches(tree, normalizedTargets);
   return { kind: "planned", nextTree: delegated
     ? applyTeamDelegatedLaunchSelections(configuredTree, delegatedLaunchSelections(delegated.targets, new Date().toISOString()))
     : configuredTree };

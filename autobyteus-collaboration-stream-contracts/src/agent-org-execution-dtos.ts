@@ -81,10 +81,11 @@ export const collaborationMemberLaunchSource = (
 ): CollaborationLaunchConfigurationSourceDto | null => member.launchSource ?? team.defaultLaunchSource ?? null;
 
 /**
- * The user's model choice for one delegated copy: it replaces only the
- * model and its settings. Absent when the user made no choice (every older record).
+ * The user's choice for one delegated copy: its model and settings and, when the user also chose another agent runtime,
+ * that runtime (absent: the started runtime). Absent when the user made no choice (every older record).
  */
 export const userLaunchSelectionDtoSchema = z.object({
+  runtimeKind: agentOrgLaunchConfigurationDtoSchema.shape.runtimeKind.optional(),
   llmModelIdentifier: nonEmptyStringSchema,
   llmConfig: z.record(z.string(), jsonValueSchema).nullable(),
   selectedAt: timestamp,
@@ -105,7 +106,12 @@ export const collaborationCopyAgentLaunch = (input: Readonly<{
   const selection = input.agentSelection ?? (input.followsTeam ? input.teamSelection ?? null : null);
   if (!selection) return { launch: input.started, selected: null };
   return {
-    launch: { ...input.started, llmModelIdentifier: selection.llmModelIdentifier, llmConfig: selection.llmConfig },
+    launch: {
+      ...input.started,
+      runtimeKind: selection.runtimeKind ?? input.started.runtimeKind,
+      llmModelIdentifier: selection.llmModelIdentifier,
+      llmConfig: selection.llmConfig,
+    },
     selected: input.agentSelection ? "agent" : "team",
   };
 };

@@ -98,7 +98,7 @@ async function harness(kind: RootSubjectKind, saved: { bindings?: Partial<Record
       const input = { tree, binding: change.binding } as any;
       tree = (kind === 'agent' ? adoptStandaloneRootPlatformBinding(input) : kind === 'agent_org'
         ? adoptAgentOrgPlatformBinding(input) : adoptAgentPlatformBindingInTree(input)).tree;
-    } else {
+    } else if (change.kind === 'replace_without_conversation') {
       const input = { tree, replacement: change.replacement } as any;
       tree = kind === 'agent' ? replaceStandaloneRootPlatformBindingWithoutConversation(input) : kind === 'agent_org'
         ? replaceAgentOrgPlatformBindingWithoutConversation(input) : replaceAgentPlatformBindingWithoutConversationInTree(input);

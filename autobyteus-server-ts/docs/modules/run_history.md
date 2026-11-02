@@ -68,7 +68,7 @@ Team operations:
 
 - `getTeamRunResumeConfig`
 - `teamRunModelOptions(teamRunId)`
-- `updateStoppedTeamRunModelConfigs(input)`
+- `updateStoppedTeamRunSelections(input)`
 - `getTeamMemberRunProjection`
 - `archiveStoredTeamRun`
 - `deleteStoredTeamRun`
@@ -165,8 +165,12 @@ it never produces a false editable state or a General write.
 
 `updateStoppedAgentRunSelection` edits the run's **selection**: agent runtime, model and model settings. Its input
 carries `runtimeKind`. The run's own agent runtime is a model-only edit; another agent runtime is an **agent runtime
-switch** (below); the previous agent runtime again, while a switch is pending, is its undo. The team family
-(`updateStoppedTeamRunModelConfigs`) edits model configuration only and keeps its names.
+switch** (below); the previous agent runtime again, while a switch is pending, is its undo. The Team family
+(`updateStoppedTeamRunSelections`), the Org family (`updateStoppedAgentOrgRunConfig`) and the delegated copies
+(`updateDelegatedLaunchSelections`) edit the same selection with the same rule for their members and copies
+(`applyRuntimeSelection`, `run-history/domain/runtime-selection-rule.ts`); see
+[Agent Team Execution](./agent_team_execution.md#agent-runtime-switch-of-a-member) and
+[User Model Choice And Stop Of Copies](./agent_communication.md#user-model-choice-and-stop-of-copies).
 
 When no Application lease exists, stopped updates delegate to the existing
 General lifecycle owners:
@@ -203,9 +207,9 @@ General lifecycle owners:
   id and the process restarted, the notice is carried once more.
 - The chat of a switched run is read by `AgentMemoryService.getChatRawTraceSnapshot` (both projection methods): the run's
   `runtime_switch` segments in index order, then the active file; compaction segments stay unread.
-- `AgentTeamRunManager.updateStoppedModelConfigs(...)` shares the root
+- `AgentTeamRunManager.updateStoppedSelections(...)` shares the root
   transition lane with Team restore. Each patch names the root Team `/` or one exact direct Agent address, can
-  change only that scope's `llmModelIdentifier`/`llmConfig` pair, and commits the
+  change only that scope's `runtimeKind`/`llmModelIdentifier`/`llmConfig`, and commits the
   resulting current V2 execution tree. Task nodes and fixed launch identity are
   not mutation targets.
 
@@ -619,10 +623,13 @@ Team persisted files:
     the launch or the following.
   - The user's model choice for one copy instance (see
     [User model choice of copies](./agent_communication.md#user-model-choice-and-stop-of-copies))
-    is `userLaunchSelection: {llmModelIdentifier, llmConfig, selectedAt}` on an
+    is `userLaunchSelection: {runtimeKind?, llmModelIdentifier, llmConfig, selectedAt}` on an
     agent-level record (a task Agent, a task Team's member Agent) and
-    `userTeamLaunchSelection` (same shape) on a team-level record (a task Team). It replaces only the
-    model and its settings, beside the started values, which are never changed. The
+    `userTeamLaunchSelection` (same shape) on a team-level record (a task Team). It replaces the model, its
+    settings and, when it carries one, the agent runtime, beside the started values, which are never changed;
+    `runtimeKind` is recorded only when it differs from the started one. The copy's pending agent runtime switch
+    (`pendingRuntimeSwitch`) and `platformAgentRunId` sit on the copy record (a task Agent's own file, a task Team's member
+    node), never on the wire. The
     run-history domain function `effectiveCopyAgentLaunch` (with the member's
     `followsTeam`) is the single rule: the agent's own choice, else the Team's
     when the member follows its Team, else the started launch.

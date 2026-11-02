@@ -1,0 +1,18 @@
+# Case: API-07 (contracts: an Org member with a pending runtime switch)
+# Command: cd autobyteus-collaboration-stream-contracts && pnpm build && node --test tests/org-member-pending-runtime-switch.test.mjs
+# Commit: 3261712e06
+# Environment: macOS arm64, Node 22, Google Chrome headless, owned temp roots
+# Date: 2026-11-02T06:06Z
+
+# Subtest: an Org's direct Agent with a pending runtime switch is a valid Org tree
+not ok 1 - an Org's direct Agent with a pending runtime switch is a valid Org tree
+              "code": "unrecognized_keys",
+              "code": "unrecognized_keys",
+# Subtest: an Agent of a mounted Team with a pending runtime switch is a valid Org tree
+not ok 2 - an Agent of a mounted Team with a pending runtime switch is a valid Org tree
+              "code": "unrecognized_keys",
+              "code": "unrecognized_keys",
+# Subtest: a pending runtime switch must keep its shape
+ok 3 - a pending runtime switch must keep its shape
+# pass 1
+# fail 2

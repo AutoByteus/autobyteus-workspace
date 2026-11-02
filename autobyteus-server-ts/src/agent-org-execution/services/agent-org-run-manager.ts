@@ -1,3 +1,4 @@
+import { selectionContextFor } from "../../agent-execution/services/stopped-run-selection-context.js";
 import { taskExecutionReferenceKey } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import {
   interpretDelegatedLaunchValidation,
@@ -12,11 +13,11 @@ import { agentOrgDelegatedLaunchForest, applyAgentOrgDelegatedLaunchSelections }
 import type { UpdateStoppedAgentOrgRunConfig } from "../domain/agent-org-run-config.js";
 import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
 import { canonicalizeWorkspaceRootPath } from "../../workspaces/workspace-path-utils.js";
-import { applyAgentOrgTeamWorkspacePatches, resolveAgentOrgTeamWorkspacePatches, listAgentOrgRunModelConfigScopes } from "./agent-org-run-config-mutator.js";
+import { applyAgentOrgTeamWorkspacePatches, resolveAgentOrgTeamWorkspacePatches, listAgentOrgRunSelectionScopes } from "./agent-org-run-config-mutator.js";
 import { isDeepStrictEqual } from "node:util";
 import type { RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
 import type { AgentOrgRunConfig, AgentOrgRunConfigResult } from "../domain/agent-org-run-config.js";
-import { AgentOrgWorkspacePatchError, AgentOrgRunConfigNotFound, applyAgentOrgRunModelConfigPatches, resolveAgentOrgRunModelConfigTargets } from "./agent-org-run-config-mutator.js";
+import { AgentOrgWorkspacePatchError, AgentOrgRunConfigNotFound, applyAgentOrgRunSelectionPatches, resolveAgentOrgRunSelectionTargets } from "./agent-org-run-config-mutator.js";
 import { runModelConfigEditability } from "../../run-history/domain/run-model-config.js";
 import { TokenUsageRunStore } from "../../token-usage/providers/token-usage-run-store.js";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
@@ -252,15 +253,15 @@ export class AgentOrgRunManager {
       if (!this.rootAdmissionOpen) return result("VALIDATION_FAILED", "AgentOrg admission is closed.");
       if (!this.modelSelectionValidator) return result("INTERNAL_ERROR", "Model selection capability is unavailable.");
       const delegatedChanges = input.delegatedChanges ?? [];
-      if (!input.modelPatches.length && !input.teamWorkspacePatches.length && !delegatedChanges.length) {
+      if (!input.selectionPatches.length && !input.teamWorkspacePatches.length && !delegatedChanges.length) {
         return result("VALIDATION_FAILED", "At least one configuration patch is required.");
       }
       let modelTargets;
       let workspacePatches;
-      try { modelTargets = resolveAgentOrgRunModelConfigTargets(tree, input.modelPatches); }
+      try { modelTargets = resolveAgentOrgRunSelectionTargets(tree, input.selectionPatches); }
       catch (error) {
         return result("VALIDATION_FAILED", "AgentOrg model-setting targets are invalid.", tree,
-          [{ path: "modelPatches", message: error instanceof Error ? error.message : String(error) }]);
+          [{ path: "selectionPatches", message: error instanceof Error ? error.message : String(error) }]);
       }
       try { workspacePatches = resolveAgentOrgTeamWorkspacePatches(tree, input.teamWorkspacePatches); }
       catch (error) {
@@ -279,14 +280,14 @@ export class AgentOrgRunManager {
               message: error instanceof Error ? error.message : String(error) }]);
         }
       }
-      const proposed = applyAgentOrgRunModelConfigPatches(applyAgentOrgTeamWorkspacePatches(tree, normalizedWorkspaces), modelTargets);
-      const originals = new Map(listAgentOrgRunModelConfigScopes(tree).map(scope => [scope.scopeAddress, scope.launchConfiguration]));
+      const proposed = applyAgentOrgRunSelectionPatches(applyAgentOrgTeamWorkspacePatches(tree, normalizedWorkspaces), modelTargets);
+      const originals = new Map(listAgentOrgRunSelectionScopes(tree).map(scope => [scope.scopeAddress, scope]));
       const modelAddresses = new Set(modelTargets.map(target => target.patch.scopeAddress));
       const workspaceAddresses = new Set<string>(normalizedWorkspaces.flatMap(patch => {
         const team = tree!.rootOrg.members.find(member => member.address === patch.teamAddress)!;
         return 'teamRunId' in team ? [team.address, ...team.members.map(agent => agent.address)] : [];
       }));
-      const targets = listAgentOrgRunModelConfigScopes(proposed).filter(scope =>
+      const targets = listAgentOrgRunSelectionScopes(proposed).filter(scope =>
         modelAddresses.has(scope.scopeAddress) || workspaceAddresses.has(scope.scopeAddress));
       const delegatedPlan = delegatedChanges.length
         ? planDelegatedLaunchValidation({ ...this.delegatedLaunchReader(orgRunId, tree), changes: delegatedChanges })
@@ -296,9 +297,10 @@ export class AgentOrgRunManager {
       let delegatedValidations;
       try {
         const all = await this.modelSelectionValidator.validateMany([...targets.map(({ scopeAddress, launchConfiguration }) => ({
-          context: { runtimeKind: launchConfiguration.runtimeKind,
-            currentModelIdentifier: originals.get(scopeAddress)!.llmModelIdentifier,
-            workspaceRootPath: launchConfiguration.workspaceRootPath ?? process.cwd() },
+          // The saved agent runtime of the scope is the current one; another runtime (or a pending switch) is a fresh selection.
+          context: selectionContextFor({ ...originals.get(scopeAddress)!.launchConfiguration,
+            workspaceRootPath: launchConfiguration.workspaceRootPath, pendingRuntimeSwitch: originals.get(scopeAddress)!.pendingRuntimeSwitch },
+            { runtimeKind: launchConfiguration.runtimeKind }),
           selection: { llmModelIdentifier: launchConfiguration.llmModelIdentifier, llmConfig: launchConfiguration.llmConfig },
         })), ...(delegatedPlan?.inputs ?? [])]);
         validations = all.slice(0, targets.length);
@@ -315,7 +317,7 @@ export class AgentOrgRunManager {
           `Model options for '${targets[unavailable]!.scopeAddress}' are unavailable.`);
       }
       const fieldErrors = validations.flatMap((validation, index) => validation.kind === "invalid"
-        ? validation.errors.map(error => ({ path: `modelPatches[${targets[index]!.scopeAddress}].${error.path}`, message: error.message }))
+        ? validation.errors.map(error => ({ path: `selectionPatches[${targets[index]!.scopeAddress}].${error.path}`, message: error.message }))
         : []);
       if (fieldErrors.length) return result("VALIDATION_FAILED", "One or more AgentOrg settings are invalid.", tree, fieldErrors);
       // Validation of unchanged models must not normalize those models as a side effect of a workspace edit.
@@ -325,7 +327,7 @@ export class AgentOrgRunManager {
       });
       const delegated = delegatedPlan ? interpretDelegatedLaunchValidation(delegatedPlan.targets, delegatedValidations) : null;
       if (delegated?.kind === "refused") return delegatedRefusal(delegated.result);
-      const configured = applyAgentOrgRunModelConfigPatches(applyAgentOrgTeamWorkspacePatches(tree, normalizedWorkspaces), normalized);
+      const configured = applyAgentOrgRunSelectionPatches(applyAgentOrgTeamWorkspacePatches(tree, normalizedWorkspaces), normalized);
       const expected = delegated
         ? applyAgentOrgDelegatedLaunchSelections(configured, delegatedLaunchSelections(delegated.targets, new Date().toISOString()))
         : configured;

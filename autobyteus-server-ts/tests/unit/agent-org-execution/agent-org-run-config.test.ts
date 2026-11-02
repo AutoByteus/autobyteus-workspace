@@ -1,3 +1,4 @@
+import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import fs from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -10,7 +11,7 @@ import { ActiveCollaborationRootDirectory } from '../../../src/agent-collaborati
 import { createAgentOrgRootExecutionIdentity } from '../../../src/agent-collaboration/execution/domain/root-execution-identity.js';
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode, testOrgAgentCopySource, testOrgTeamCopySource } from '../../fixtures/current-agent-org-run-fixtures.js';
 import { AgentOrgCommunicationMessagesStore } from '../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js';
-import { applyAgentOrgRunModelConfigPatches, listAgentOrgRunModelConfigScopes, resolveAgentOrgRunModelConfigTargets } from '../../../src/agent-org-execution/services/agent-org-run-config-mutator.js';
+import { applyAgentOrgRunSelectionPatches, listAgentOrgRunSelectionScopes, resolveAgentOrgRunSelectionTargets } from '../../../src/agent-org-execution/services/agent-org-run-config-mutator.js';
 
 const view = (rows: any[]) => ({ offeredModels: rows,
   findExactCurrent: (id: string) => rows.find((row) => row.model_identifier === id) ?? null });
@@ -18,7 +19,7 @@ const view = (rows: any[]) => ({ offeredModels: rows,
 const roots: string[] = [];
 afterEach(async () => { vi.restoreAllMocks(); await Promise.all(roots.splice(0).map(p => fs.rm(p, { recursive: true, force: true }))); });
 const select = (scopeKind: 'CONFIGURED_ORG'|'CONFIGURED_TEAM'|'CONFIGURED_AGENT', scopeAddress: string, model = 'equal') =>
-  ({ scopeKind, scopeAddress, llmModelIdentifier: model, llmConfig: { temperature: 0, enabled: false } });
+  ({ scopeKind, scopeAddress, runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: model, llmConfig: { temperature: 0, enabled: false } });
 
 async function setup() {
   const memoryDir = await fs.mkdtemp(join(tmpdir(), 'org-whole-config-')); roots.push(memoryDir);
@@ -55,12 +56,12 @@ describe('whole stopped AgentOrg model configuration', () => {
       testOrgTeamNode({ address: '/team', teamRunId: 'team', coordinatorAddress: '/team/lead', members: [testOrgAgentNode('/team/lead','lead')] })] });
     const patches = [select('CONFIGURED_ORG','/'), select('CONFIGURED_AGENT','/worker'),
       select('CONFIGURED_TEAM','/team'), select('CONFIGURED_AGENT','/team/lead')];
-    expect(listAgentOrgRunModelConfigScopes(tree).map(({ scopeKind, scopeAddress }) => [scopeKind, scopeAddress])).toEqual([
+    expect(listAgentOrgRunSelectionScopes(tree).map(({ scopeKind, scopeAddress }) => [scopeKind, scopeAddress])).toEqual([
       ['CONFIGURED_ORG', '/'], ['CONFIGURED_AGENT', '/worker'],
       ['CONFIGURED_TEAM', '/team'], ['CONFIGURED_AGENT', '/team/lead'],
     ]);
-    const targets = resolveAgentOrgRunModelConfigTargets(tree, patches);
-    const next = applyAgentOrgRunModelConfigPatches(tree, targets);
+    const targets = resolveAgentOrgRunSelectionTargets(tree, patches);
+    const next = applyAgentOrgRunSelectionPatches(tree, targets);
     expect(tree.rootOrg.defaultLaunchConfiguration.llmConfig).toBeNull();
     expect(next.rootOrg.defaultLaunchConfiguration.llmConfig).toEqual({ temperature: 0, enabled: false });
     expect(next.rootOrg.members.map(member => 'agentRunId' in member ? member.launchConfiguration.llmConfig
@@ -71,14 +72,14 @@ describe('whole stopped AgentOrg model configuration', () => {
 
   it('rejects duplicates, kind mismatches, Teams-as-Agents, and task addresses before mutation', () => {
     const tree = testAgentOrgExecutionTree({ orgRunId: 'org', members: [testOrgTeamNode({ address: '/team', teamRunId: 'team', coordinatorAddress: '/team/lead', members: [testOrgAgentNode('/team/lead','lead')] })] });
-    expect(() => resolveAgentOrgRunModelConfigTargets(tree, [select('CONFIGURED_AGENT','/team')])).toThrow('does not match kind');
-    expect(() => resolveAgentOrgRunModelConfigTargets(tree, [select('CONFIGURED_TEAM','/team'), select('CONFIGURED_TEAM','/team')])).toThrow('Duplicate');
-    expect(() => resolveAgentOrgRunModelConfigTargets(tree, [select('CONFIGURED_AGENT','/task')])).toThrow('was not found');
+    expect(() => resolveAgentOrgRunSelectionTargets(tree, [select('CONFIGURED_AGENT','/team')])).toThrow('does not match kind');
+    expect(() => resolveAgentOrgRunSelectionTargets(tree, [select('CONFIGURED_TEAM','/team'), select('CONFIGURED_TEAM','/team')])).toThrow('Duplicate');
+    expect(() => resolveAgentOrgRunSelectionTargets(tree, [select('CONFIGURED_AGENT','/task')])).toThrow('was not found');
   });
 
   it('validates every scope then performs one write/readback and preserves explicit null/zero/false', async () => {
     const h = await setup(); const write = vi.spyOn(h.store, 'write');
-    const result = await h.manager.updateStoppedRunConfig({ orgRunId: 'org', teamWorkspacePatches: [], modelPatches: [
+    const result = await h.manager.updateStoppedRunConfig({ orgRunId: 'org', teamWorkspacePatches: [], selectionPatches: [
       select('CONFIGURED_ORG','/'), select('CONFIGURED_AGENT','/worker'), select('CONFIGURED_TEAM','/team'),
       { ...select('CONFIGURED_AGENT','/team/lead'), llmConfig: null },
     ] });
@@ -91,18 +92,18 @@ describe('whole stopped AgentOrg model configuration', () => {
 
   it('applies none when any target fails validation and reports the exact scope path', async () => {
     const h = await setup(); const write = vi.spyOn(h.store, 'write');
-    const result = await h.manager.updateStoppedRunConfig({ orgRunId: 'org', teamWorkspacePatches: [], modelPatches: [
+    const result = await h.manager.updateStoppedRunConfig({ orgRunId: 'org', teamWorkspacePatches: [], selectionPatches: [
       select('CONFIGURED_ORG','/'), { ...select('CONFIGURED_AGENT','/worker'), llmConfig: { temperature: -1 } },
     ] });
     expect(result.outcome).toBe('VALIDATION_FAILED');
-    expect(result.fieldErrors[0]?.path).toContain('modelPatches[/worker]');
+    expect(result.fieldErrors[0]?.path).toContain('selectionPatches[/worker]');
     expect(write).not.toHaveBeenCalled(); expect(await h.store.read(h.dir, 'org')).toEqual(h.tree);
   });
 
   it('skips a no-op write and keeps explicit canonical values', async () => {
     const h = await setup(); const write = vi.spyOn(h.store, 'write');
-    const result = await h.manager.updateStoppedRunConfig({ orgRunId: 'org', teamWorkspacePatches: [], modelPatches: [{
-      scopeKind: 'CONFIGURED_ORG', scopeAddress: '/', llmModelIdentifier: 'test-model',
+    const result = await h.manager.updateStoppedRunConfig({ orgRunId: 'org', teamWorkspacePatches: [], selectionPatches: [{
+      scopeKind: 'CONFIGURED_ORG', scopeAddress: '/', runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: 'test-model',
       llmConfig: { temperature: 1, enabled: true },
     }] });
     expect(result).toMatchObject({ success: true, outcome: 'UNCHANGED' });
@@ -113,13 +114,13 @@ describe('whole stopped AgentOrg model configuration', () => {
   it('keeps not-renamed failure distinct from committed-readback uncertainty and never replays', async () => {
     const notRenamed = await setup();
     const failedWrite = vi.spyOn(notRenamed.store, 'write').mockResolvedValue({ outcome: 'not_committed' });
-    const failed = await notRenamed.manager.updateStoppedRunConfig({ orgRunId: 'org', teamWorkspacePatches: [], modelPatches: [select('CONFIGURED_ORG','/')] });
+    const failed = await notRenamed.manager.updateStoppedRunConfig({ orgRunId: 'org', teamWorkspacePatches: [], selectionPatches: [select('CONFIGURED_ORG','/')] });
     expect(failed).toMatchObject({ success: false, outcome: 'PERSISTENCE_FAILED', canonical: notRenamed.tree });
     expect(failedWrite).toHaveBeenCalledTimes(1);
 
     const uncertain = await setup();
     const uncertainWrite = vi.spyOn(uncertain.store, 'write').mockResolvedValue({ outcome: 'committed' });
-    const unknown = await uncertain.manager.updateStoppedRunConfig({ orgRunId: 'org', teamWorkspacePatches: [], modelPatches: [select('CONFIGURED_ORG','/')] });
+    const unknown = await uncertain.manager.updateStoppedRunConfig({ orgRunId: 'org', teamWorkspacePatches: [], selectionPatches: [select('CONFIGURED_ORG','/')] });
     expect(unknown).toMatchObject({ success: false, outcome: 'PERSISTENCE_INDETERMINATE', canonical: uncertain.tree });
     expect(uncertainWrite).toHaveBeenCalledTimes(1);
   });
@@ -129,20 +130,20 @@ describe('whole stopped AgentOrg model configuration', () => {
     await archived.store.write(archived.dir, { ...archived.tree, archivedAt: '2026-09-17T00:00:00.000Z' });
     const archivedWrite = vi.spyOn(archived.store, 'write');
     expect((await archived.manager.getRunConfig('org')).editability).toEqual({ editable: false, reason: 'RUN_ARCHIVED' });
-    expect((await archived.manager.updateStoppedRunConfig({ orgRunId: 'org', teamWorkspacePatches: [], modelPatches: [select('CONFIGURED_ORG','/')] })).outcome).toBe('RUN_ARCHIVED');
+    expect((await archived.manager.updateStoppedRunConfig({ orgRunId: 'org', teamWorkspacePatches: [], selectionPatches: [select('CONFIGURED_ORG','/')] })).outcome).toBe('RUN_ARCHIVED');
     expect(archivedWrite).not.toHaveBeenCalled();
 
     const owned = await setup();
     await owned.store.write(owned.dir, { ...owned.tree, applicationBinding: { applicationId: 'app', bindingId: 'binding' } });
     const ownedWrite = vi.spyOn(owned.store, 'write');
     expect((await owned.manager.getRunConfig('org')).editability).toEqual({ editable: false, reason: 'OWNERSHIP_UNAVAILABLE' });
-    expect((await owned.manager.updateStoppedRunConfig({ orgRunId: 'org', teamWorkspacePatches: [], modelPatches: [select('CONFIGURED_ORG','/')] })).outcome).toBe('VALIDATION_FAILED');
+    expect((await owned.manager.updateStoppedRunConfig({ orgRunId: 'org', teamWorkspacePatches: [], selectionPatches: [select('CONFIGURED_ORG','/')] })).outcome).toBe('VALIDATION_FAILED');
     expect(ownedWrite).not.toHaveBeenCalled();
 
     const closed = await setup(); closed.manager.closeRootAdmission();
     const closedWrite = vi.spyOn(closed.store, 'write');
     expect((await closed.manager.getRunConfig('org')).editability).toEqual({ editable: false, reason: 'ADMISSION_CLOSED' });
-    expect((await closed.manager.updateStoppedRunConfig({ orgRunId: 'org', teamWorkspacePatches: [], modelPatches: [select('CONFIGURED_ORG','/')] })).outcome).toBe('VALIDATION_FAILED');
+    expect((await closed.manager.updateStoppedRunConfig({ orgRunId: 'org', teamWorkspacePatches: [], selectionPatches: [select('CONFIGURED_ORG','/')] })).outcome).toBe('VALIDATION_FAILED');
     expect(closedWrite).not.toHaveBeenCalled();
   });
 
@@ -151,7 +152,7 @@ describe('whole stopped AgentOrg model configuration', () => {
     expect((await h.manager.getRunConfig('org')).editability.editable).toBe(true);
     await h.manager.restore('org'); h.failStop(); expect(h.manager.getActive('org')).toBeNull();
     expect((await h.manager.getRunConfig('org')).editability.editable).toBe(false);
-    expect((await h.manager.updateStoppedRunConfig({ orgRunId: 'org', teamWorkspacePatches: [], modelPatches: [select('CONFIGURED_ORG','/')] })).outcome).toBe('RUN_ACTIVE');
+    expect((await h.manager.updateStoppedRunConfig({ orgRunId: 'org', teamWorkspacePatches: [], selectionPatches: [select('CONFIGURED_ORG','/')] })).outcome).toBe('RUN_ACTIVE');
     expect(h.build).toHaveBeenCalledTimes(1);
   });
 
@@ -170,7 +171,7 @@ describe('stopped AgentOrg Team workspace composition', () => {
     await h.store.write(h.dir, tree);
     const write = vi.spyOn(h.store, 'write'), validate = vi.spyOn(h.validator, 'validateMany');
     const result = await h.manager.updateStoppedRunConfig({ orgRunId: 'org',
-      modelPatches: [select('CONFIGURED_AGENT', '/team/lead')],
+      selectionPatches: [select('CONFIGURED_AGENT', '/team/lead')],
       teamWorkspacePatches: [{ teamAddress: '/team', workspaceRootPath: ' /new/../destination/ ' }] });
     expect(result.outcome).toBe('UPDATED'); expect(write).toHaveBeenCalledTimes(1);
     expect(h.ensureWorkspaceByRootPath).toHaveBeenCalledExactlyOnceWith('/destination');
@@ -195,7 +196,7 @@ describe('stopped AgentOrg Team workspace composition', () => {
     vi.spyOn(h.validator, 'validateMany').mockImplementation(async inputs => inputs.map(() => ({
       kind: 'valid', selection: { llmModelIdentifier: 'normalized', llmConfig: { injected: true } },
     })));
-    const result = await h.manager.updateStoppedRunConfig({ orgRunId: 'org', modelPatches: [],
+    const result = await h.manager.updateStoppedRunConfig({ orgRunId: 'org', selectionPatches: [],
       teamWorkspacePatches: [{ teamAddress: '/team', workspaceRootPath: '/B' }] });
     expect(result.outcome).toBe('UPDATED');
     const team = result.canonical!.rootOrg.members[1] as any;
@@ -205,7 +206,7 @@ describe('stopped AgentOrg Team workspace composition', () => {
 
   it.each(['/', '/worker', '/team/lead', 'team', '/old-task'])('rejects non-Team target %s before registration or write', async teamAddress => {
     const h = await setup(), write = vi.spyOn(h.store, 'write');
-    expect((await h.manager.updateStoppedRunConfig({ orgRunId: 'org', modelPatches: [],
+    expect((await h.manager.updateStoppedRunConfig({ orgRunId: 'org', selectionPatches: [],
       teamWorkspacePatches: [{ teamAddress, workspaceRootPath: '/B' }] })).outcome).toBe('VALIDATION_FAILED');
     expect(write).not.toHaveBeenCalled(); expect(h.ensureWorkspaceByRootPath).not.toHaveBeenCalled();
   });
@@ -214,13 +215,13 @@ describe('stopped AgentOrg Team workspace composition', () => {
     const h = await setup(), write = vi.spyOn(h.store, 'write');
     for (const patches of [[], [{ teamAddress: '/team', workspaceRootPath: ' ' }],
       [{ teamAddress: '/team', workspaceRootPath: '/B' }, { teamAddress: '/team', workspaceRootPath: '/C' }]]) {
-      expect((await h.manager.updateStoppedRunConfig({ orgRunId: 'org', modelPatches: [], teamWorkspacePatches: patches })).outcome).toBe('VALIDATION_FAILED');
+      expect((await h.manager.updateStoppedRunConfig({ orgRunId: 'org', selectionPatches: [], teamWorkspacePatches: patches })).outcome).toBe('VALIDATION_FAILED');
     }
-    expect((await h.manager.updateStoppedRunConfig({ orgRunId: 'org', modelPatches: [],
+    expect((await h.manager.updateStoppedRunConfig({ orgRunId: 'org', selectionPatches: [],
       teamWorkspacePatches: [{ teamAddress: '/team', workspaceRootPath: ' ' }] })).fieldErrors[0]?.path).toBe('teamWorkspacePatches[/team].workspaceRootPath');
     expect(h.ensureWorkspaceByRootPath).not.toHaveBeenCalled();
     h.ensureWorkspaceByRootPath.mockRejectedValueOnce(new Error('registration failed'));
-    const input = { orgRunId: 'org', modelPatches: [], teamWorkspacePatches: [{ teamAddress: '/team', workspaceRootPath: '/B' }] };
+    const input = { orgRunId: 'org', selectionPatches: [], teamWorkspacePatches: [{ teamAddress: '/team', workspaceRootPath: '/B' }] };
     expect((await h.manager.updateStoppedRunConfig(input)).fieldErrors[0]?.path).toBe('teamWorkspacePatches[/team].workspaceRootPath');
     vi.spyOn(h.validator, 'validateMany').mockResolvedValue([{ kind: 'schema_unavailable' }, { kind: 'schema_unavailable' }] as any);
     expect((await h.manager.updateStoppedRunConfig(input)).outcome).toBe('SCHEMA_UNAVAILABLE');
@@ -229,7 +230,7 @@ describe('stopped AgentOrg Team workspace composition', () => {
 
   it('does not register while active and rechecks closed admission after awaited preparation', async () => {
     const h = await setup();
-    const input = { orgRunId: 'org', modelPatches: [], teamWorkspacePatches: [{ teamAddress: '/team', workspaceRootPath: '/B' }] };
+    const input = { orgRunId: 'org', selectionPatches: [], teamWorkspacePatches: [{ teamAddress: '/team', workspaceRootPath: '/B' }] };
     await h.manager.restore('org'); h.failStop();
     expect((await h.manager.updateStoppedRunConfig(input)).outcome).toBe('RUN_ACTIVE');
     expect(h.ensureWorkspaceByRootPath).not.toHaveBeenCalled();
@@ -245,7 +246,7 @@ describe('stopped AgentOrg Team workspace composition', () => {
     const h = await setup(); let release!: () => void;
     const hold = new Promise<void>(resolve => { release = resolve; });
     h.ensureWorkspaceByRootPath.mockImplementationOnce(async root => { await hold; return { getBasePath: () => root }; });
-    const input = { orgRunId: 'org', modelPatches: [], teamWorkspacePatches: [{ teamAddress: '/team', workspaceRootPath: '/B' }] };
+    const input = { orgRunId: 'org', selectionPatches: [], teamWorkspacePatches: [{ teamAddress: '/team', workspaceRootPath: '/B' }] };
     const save = h.manager.updateStoppedRunConfig(input);
     const restore = h.manager.restore('org');
     await new Promise(resolve => setTimeout(resolve, 10)); expect(h.build).not.toHaveBeenCalled();
@@ -273,8 +274,8 @@ describe('stopped AgentOrg Save with delegated copies (AR-004, AR-003)', () => {
     const h = await setup(); h.failStop(); await withTeamCopy(h);
     const write = vi.spyOn(h.store, 'write');
     const result = await h.manager.updateStoppedRunConfig({ orgRunId: 'org', teamWorkspacePatches: [],
-      modelPatches: [select('CONFIGURED_AGENT', '/worker')],
-      delegatedChanges: [{ teamRunId: 'team-copy', selection: { llmModelIdentifier: 'larger', llmConfig: { temperature: 0, enabled: false } } }] });
+      selectionPatches: [select('CONFIGURED_AGENT', '/worker')],
+      delegatedChanges: [{ teamRunId: 'team-copy', selection: { runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: 'larger', llmConfig: { temperature: 0, enabled: false } } }] });
     expect(result).toMatchObject({ outcome: 'UPDATED', success: true });
     expect(write).toHaveBeenCalledTimes(1);
     const saved = (await h.store.read(h.dir, 'org'))!;
@@ -287,9 +288,53 @@ describe('stopped AgentOrg Save with delegated copies (AR-004, AR-003)', () => {
     const h = await setup(); h.failStop(); await withTeamCopy(h);
     const write = vi.spyOn(h.store, 'write');
     const result = await h.manager.updateStoppedRunConfig({ orgRunId: 'org', teamWorkspacePatches: [],
-      modelPatches: [select('CONFIGURED_AGENT', '/worker')],
-      delegatedChanges: [{ teamRunId: 'team-copy', selection: { llmModelIdentifier: 'not-offered', llmConfig: null } }] });
+      selectionPatches: [select('CONFIGURED_AGENT', '/worker')],
+      delegatedChanges: [{ teamRunId: 'team-copy', selection: { runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: 'not-offered', llmConfig: null } }] });
     expect(result).toMatchObject({ outcome: 'MODEL_UNAVAILABLE', success: false });
     expect(write).not.toHaveBeenCalled();
+  });
+});
+
+describe('stopped AgentOrg selection saves with an agent runtime (autobyteus-348, REQ-001, AC-002, AC-003)', () => {
+  const orgTree = () => testAgentOrgExecutionTree({ orgRunId: 'org', members: [
+    testOrgAgentNode('/worker', 'worker'),
+    testOrgTeamNode({ address: '/team', teamRunId: 'team', coordinatorAddress: '/team/lead', members: [testOrgAgentNode('/team/lead', 'lead')] }),
+  ] });
+  const save = (tree: ReturnType<typeof orgTree>, address: string, runtimeKind: RuntimeKind, model: string, switchId = 'switch-1') =>
+    applyAgentOrgRunSelectionPatches(tree, resolveAgentOrgRunSelectionTargets(tree, [
+      { scopeKind: 'CONFIGURED_AGENT', scopeAddress: address, runtimeKind, llmModelIdentifier: model, llmConfig: null },
+    ]), () => switchId);
+  const direct = (tree: any) => tree.rootOrg.members.find((m: any) => m.address === '/worker');
+  const mounted = (tree: any) => tree.rootOrg.members.find((m: any) => m.address === '/team').members[0];
+
+  it('switches a direct Agent and an Agent of a mounted Team, each with its own pending switch', () => {
+    const original = orgTree();
+    const afterDirect = save(original, '/worker', RuntimeKind.CLAUDE_AGENT_SDK, 'opus');
+    expect(direct(afterDirect)).toMatchObject({ platformAgentRunId: null, launchConfiguration: { runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'opus' },
+      pendingRuntimeSwitch: { switchId: 'switch-1', from: { runtimeKind: direct(original).launchConfiguration.runtimeKind } } });
+    expect(mounted(afterDirect)).toEqual(mounted(original));
+    const afterMounted = save(afterDirect, '/team/lead', RuntimeKind.CODEX_APP_SERVER, 'gpt-5', 'switch-2');
+    expect(mounted(afterMounted).pendingRuntimeSwitch?.switchId).toBe('switch-2');
+    expect(direct(afterMounted).pendingRuntimeSwitch?.switchId).toBe('switch-1');
+  });
+
+  it('keeps the first previous binding on a second save and undoes by choosing the previous runtime again', () => {
+    const original = orgTree();
+    const originalRuntime = direct(original).launchConfiguration.runtimeKind as RuntimeKind;
+    const first = save(original, '/worker', RuntimeKind.CLAUDE_AGENT_SDK, 'opus');
+    const second = save(first, '/worker', RuntimeKind.ANTIGRAVITY_CLI, 'gemini', 'switch-2');
+    expect(direct(second).pendingRuntimeSwitch).toEqual(direct(first).pendingRuntimeSwitch);
+    const undone = save(second, '/worker', originalRuntime, 'other-model', 'switch-3');
+    expect(Object.hasOwn(direct(undone), 'pendingRuntimeSwitch')).toBe(false);
+    expect(direct(undone).platformAgentRunId).toBe(direct(original).platformAgentRunId);
+    expect(direct(undone).launchConfiguration).toMatchObject({ runtimeKind: originalRuntime, llmModelIdentifier: 'other-model' });
+  });
+
+  it('lists the pending switch of a scope so the save validates a pending model as a fresh selection', () => {
+    const switched = save(orgTree(), '/worker', RuntimeKind.CLAUDE_AGENT_SDK, 'opus');
+    expect(listAgentOrgRunSelectionScopes(switched).find((scope) => scope.scopeAddress === '/worker')?.pendingRuntimeSwitch?.switchId).toBe('switch-1');
+    expect(resolveAgentOrgRunSelectionTargets(switched, [
+      { scopeKind: 'CONFIGURED_AGENT', scopeAddress: '/worker', runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: 'sonnet', llmConfig: null },
+    ])[0]!.pendingRuntimeSwitch?.switchId).toBe('switch-1');
   });
 });

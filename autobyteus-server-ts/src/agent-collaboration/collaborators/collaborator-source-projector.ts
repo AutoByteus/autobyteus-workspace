@@ -28,7 +28,7 @@ export const withCopyLaunch = (
 ): TeamRunAgentNode => {
   const { launch, selected } = effectiveCopyAgentLaunch({ started: node, ...selection });
   return selected === null ? node : Object.freeze({
-    ...node, llmModelIdentifier: launch.llmModelIdentifier, llmConfig: launch.llmConfig,
+    ...node, runtimeKind: launch.runtimeKind, llmModelIdentifier: launch.llmModelIdentifier, llmConfig: launch.llmConfig,
   });
 };
 

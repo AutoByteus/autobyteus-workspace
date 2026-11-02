@@ -8,7 +8,7 @@ import {
   type DelegatedLaunchModelOptions,
   type DelegatedLaunchUpdateResult,
 } from "../../agent-collaboration/collaborators/delegated-launch-selection-command.js";
-import { delegatedLaunchSelections, type DelegatedHostSelectionValue, type DelegatedLaunchChange } from "../../agent-collaboration/domain/delegated-launch-selection.js";
+import { delegatedLaunchSelections, type DelegatedLaunchSelectionValue, type DelegatedLaunchChange } from "../../agent-collaboration/domain/delegated-launch-selection.js";
 import type { RunModelSelectionService, RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
 import { applyStandaloneDelegatedLaunchSelections, standaloneDelegatedLaunchForest } from "./standalone-root-tree-mutator.js";
 import {
@@ -322,7 +322,7 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
   async updateStoppedDelegatedLaunchSelections(input: Readonly<{
     hostRunId: string;
     changes: readonly DelegatedLaunchChange[];
-    hostSelection?: DelegatedHostSelectionValue | null;
+    hostSelection?: DelegatedLaunchSelectionValue | null;
     validator: RunModelSelectionValidator;
   }>): Promise<Readonly<{ result: DelegatedLaunchUpdateResult; tree: StandaloneRootTreeSnapshot | null }>> {
     const hostRunId = input.hostRunId.trim();

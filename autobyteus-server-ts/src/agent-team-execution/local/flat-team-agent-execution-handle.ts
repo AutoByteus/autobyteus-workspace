@@ -12,11 +12,12 @@ import type {
   PreparedConfiguredAgentActivation,
 } from "../../agent-collaboration/execution/backends/configured-agent-execution-handle.js";
 import type {
-  AgentModelChoice,
+  ConfiguredAgentSelection,
   RetainedAgentExecutionControl,
 } from "../../agent-collaboration/execution/domain/configured-agent-execution.js";
 import type { AgentRunMemoryPlacement } from "../../agent-memory/domain/agent-run-memory-placement.js";
 import type { AgentRunMemoryLocator } from "../../agent-collaboration/execution/services/agent-run-memory-locator.js";
+import { platformBindingChangeExecution } from "../../agent-collaboration/execution/domain/collaboration-agent-platform-binding.js";
 import {
   createCollaborationMemberExecutionIdentity,
   sameCollaborationMemberExecutionIdentity,
@@ -35,7 +36,7 @@ export class FlatTeamAgentExecutionHandle implements RetainedAgentExecutionContr
   private handle: ConfiguredAgentExecutionHandle | null = null;
   private construction: Promise<ConfiguredAgentExecutionHandle> | null = null;
   private rootShutdownFenced = false;
-  /** The node the next activation uses; only its model choice changes, and only while stopped. */
+  /** The node the next activation uses; it changes only while stopped (a restore refreshes it) and when a switch commits. */
   private config: TeamRunAgentNode;
   /** Activation fence while no inner handle exists yet (the inner handle owns it afterwards). */
   private activationFence: Promise<void> | null = null;
@@ -123,10 +124,19 @@ export class FlatTeamAgentExecutionHandle implements RetainedAgentExecutionContr
     if (this.construction) await this.construction.catch(() => null);
     return this.handle ? this.handle.releaseRuntimeForUserStop() : { accepted: true };
   }
-  replaceModelChoice(choice: AgentModelChoice): void {
-    if (!this.isStopped()) throw new Error(`AgentRun '${this.context.agentRunId}' is running; its model can change only while it is stopped.`);
-    this.handle?.replaceModelChoice(choice);
-    this.config = Object.freeze({ ...this.config, llmModelIdentifier: choice.llmModelIdentifier, llmConfig: choice.llmConfig });
+  replaceSelection(selection: ConfiguredAgentSelection): void {
+    if (!this.isStopped()) throw new Error(`AgentRun '${this.context.agentRunId}' is running; its selection can change only while it is stopped.`);
+    this.handle?.replaceSelection(selection);
+    const { pendingRuntimeSwitch: _pending, ...base } = this.config;
+    this.config = Object.freeze({
+      ...base,
+      runtimeKind: selection.runtimeKind,
+      llmModelIdentifier: selection.llmModelIdentifier,
+      llmConfig: selection.llmConfig,
+      platformAgentRunId: selection.platformAgentRunId,
+      ...(selection.pendingRuntimeSwitch ? { pendingRuntimeSwitch: selection.pendingRuntimeSwitch } : {}),
+    });
+    this.context.refreshSelection({ runtimeKind: selection.runtimeKind, platformAgentRunId: selection.platformAgentRunId });
   }
 
   private getHandle(): Promise<ConfiguredAgentExecutionHandle> {
@@ -170,23 +180,28 @@ export class FlatTeamAgentExecutionHandle implements RetainedAgentExecutionContr
       callbacks: {
         publishAgentEvent: (member, event) => this.options.callbacks.publishAgentEvent(member, event),
         commitPlatformBindingChange: async (change) => {
-          const binding = change.kind === "adopt_or_retain" ? change.binding : change.replacement.binding;
-          if (!sameCollaborationMemberExecutionIdentity(identity, binding.execution)) {
+          if (!sameCollaborationMemberExecutionIdentity(identity, platformBindingChangeExecution(change))) {
             throw new Error("Flat Team binding change does not match the Agent identity.");
           }
           const previous = this.context.getPlatformAgentRunId();
-          if (change.kind === "replace_without_conversation"
-            ? previous !== change.replacement.expectedPreviousPlatformAgentRunId
-            : previous !== null && previous !== binding.platformAgentRunId) {
+          if (change.kind === "runtime_switch" ? previous !== null
+            : change.kind === "replace_without_conversation"
+              ? previous !== change.replacement.expectedPreviousPlatformAgentRunId
+              : previous !== null && previous !== change.binding.platformAgentRunId) {
             throw new Error("Flat Team Agent execution has a conflicting provider binding.");
           }
           await this.options.callbacks.commitPlatformBindingChange(change);
           try {
-            if (change.kind === "replace_without_conversation") {
+            if (change.kind === "runtime_switch") {
+              // M-7: the wrapper's cache takes the committed binding and drops the pending switch.
+              this.context.refreshSelection({ runtimeKind: this.context.runtimeKind, platformAgentRunId: change.platformAgentRunId });
+              const { pendingRuntimeSwitch: _pending, ...rest } = this.config;
+              this.config = Object.freeze({ ...rest, platformAgentRunId: change.platformAgentRunId });
+            } else if (change.kind === "replace_without_conversation") {
               this.context.replaceCommittedPlatformAgentRunId(
-                change.replacement.expectedPreviousPlatformAgentRunId, binding.platformAgentRunId,
+                change.replacement.expectedPreviousPlatformAgentRunId, change.replacement.binding.platformAgentRunId,
               );
-            } else this.context.adoptPlatformAgentRunId(binding.platformAgentRunId);
+            } else this.context.adoptPlatformAgentRunId(change.binding.platformAgentRunId);
           } catch (cause) {
             throw new CollaborationAgentActivationError(
               "COLLABORATION_AGENT_BINDING_CACHE_COMMIT_FAILED",
@@ -221,6 +236,7 @@ export class FlatTeamAgentExecutionHandle implements RetainedAgentExecutionContr
       runtimeKind: this.config.runtimeKind,
       workspaceRootPath: this.config.workspaceRootPath,
       platformAgentRunId: this.context.getPlatformAgentRunId(),
+      ...(this.config.pendingRuntimeSwitch ? { pendingRuntimeSwitch: this.config.pendingRuntimeSwitch } : {}),
     });
   }
 }

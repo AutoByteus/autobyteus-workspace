@@ -75,6 +75,8 @@ export type TaskAgentSection = Readonly<{
   launchSource?: LaunchConfigurationSource;
   /** The user's Settings model edit, beside the started launch and never over it (DEC-005, U-1). */
   userLaunchSelection?: UserLaunchSelection;
+  /** autobyteus-348: the copy's pending agent runtime switch (its binding is the effective launch); absent means none. */
+  pendingRuntimeSwitch?: PendingRuntimeSwitch;
 }>;
 
 /**

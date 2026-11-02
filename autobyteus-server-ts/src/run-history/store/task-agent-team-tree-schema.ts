@@ -15,7 +15,11 @@ import {
   requiredArray,
   requiredString,
 } from "./run-execution-tree-shared-record-schemas.js";
-import { parseOptionalLaunchFields, parseOptionalUserLaunchSelection } from "./launch-configuration-source-schema.js";
+import {
+  parseOptionalLaunchFields,
+  parseOptionalPendingRuntimeSwitch,
+  parseOptionalUserLaunchSelection,
+} from "./launch-configuration-source-schema.js";
 import { parseTaskAgentSection } from "./task-agent-own-file-schema.js";
 
 const parseMember = (value: unknown, label: string): TaskAgentTeamMemberNode => {
@@ -33,6 +37,7 @@ const parseMember = (value: unknown, label: string): TaskAgentTeamMemberNode => 
     followsTeam: member.followsTeam,
     ...parseOptionalLaunchFields(member, { source: "launchSource" }, label),
     ...parseOptionalUserLaunchSelection(member, "userLaunchSelection", label),
+    ...parseOptionalPendingRuntimeSwitch(member, label),
   };
 };
 

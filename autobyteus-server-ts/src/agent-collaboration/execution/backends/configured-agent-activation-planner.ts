@@ -13,9 +13,15 @@ import {
   CollaborationAgentActivationError,
   type ConfiguredAgentActivationMode,
 } from "../domain/configured-agent-execution.js";
+import type { RuntimeSwitchMemory } from "../../../agent-execution/domain/runtime-switch-memory-port.js";
+import { buildRuntimeSwitchBetween } from "../../../agent-execution/domain/runtime-switch.js";
+import { getDefaultRuntimeSwitchMemory } from "../../../agent-memory/services/runtime-switch-recorder.js";
+import type { PendingRuntimeSwitch } from "../../../run-history/store/agent-run-metadata-types.js";
+import { ConfiguredAgentSwitchAttempt } from "./configured-agent-switch-attempt.js";
 import {
   createCollaborationAgentNoConversationBindingReplacement,
   createCollaborationAgentPlatformBinding,
+  createCollaborationAgentRuntimeSwitchCommit,
   type CollaborationAgentPlatformBindingChange,
   type CollaborationAgentPlatformBinding,
 } from "../domain/collaboration-agent-platform-binding.js";
@@ -34,14 +40,20 @@ export class ConfiguredAgentActivationPlanner {
     identity: CollaborationMemberExecutionIdentity;
     manager?: AgentRunManager;
     activityInspector?: AgentConversationActivityInspector;
+    runtimeSwitchMemory?: RuntimeSwitchMemory;
   }) {}
 
-  /** `mode` belongs to this attempt: a handle re-activating after its run died plans as `restore`. */
+  /**
+   * `mode` belongs to this attempt: a handle re-activating after its run died plans as `restore`. A member with a pending
+   * agent runtime switch (decided by the explicit field, never by a missing session ID) plans the switch.
+   */
   begin(
     config: AgentRunConfig,
     currentPlatformAgentRunId: string | null,
     mode: ConfiguredAgentActivationMode,
+    pendingRuntimeSwitch?: PendingRuntimeSwitch,
   ): ConfiguredAgentActivationOperation {
+    if (pendingRuntimeSwitch) return this.beginSwitch(config, pendingRuntimeSwitch);
     const plan = this.resolvePlan(config, currentPlatformAgentRunId, mode);
     const operation = this.beginCandidate(plan, config);
     return Object.freeze({
@@ -62,6 +74,44 @@ export class ConfiguredAgentActivationPlanner {
         : null;
     return Object.freeze({ candidate, bindingChange });
       },
+      switching: null,
+    });
+  }
+
+  /**
+   * The member's next input makes its agent runtime switch real (autobyteus-348, the sequence of autobyteus-316): with a
+   * conversation to carry over, take the ticket before the candidate prepares (it may write records of its own) and let the
+   * handle record the marker and archive once the candidate is valid; without one, a plain start. Either way a fresh session
+   * is started and the commit names the switch. Unreadable history fails closed before anything starts.
+   */
+  private beginSwitch(config: AgentRunConfig, pending: PendingRuntimeSwitch): ConfiguredAgentActivationOperation {
+    const activity = this.inspectConversationActivity(config);
+    if (activity.kind === "indeterminate") throw unreadableConversationState(activity.error);
+    const memory = this.input.runtimeSwitchMemory ?? getDefaultRuntimeSwitchMemory();
+    const memoryDir = config.memoryDir!; // known: the inspection above is indeterminate without it
+    const switching = activity.kind === "present"
+      ? new ConfiguredAgentSwitchAttempt(memory, memoryDir, memory.begin(memoryDir, buildRuntimeSwitchBetween({
+          runId: this.input.identity.agentRunId,
+          to: { runtimeKind: config.runtimeKind, llmModelIdentifier: config.llmModelIdentifier },
+          pending,
+        })))
+      : null;
+    const operation = this.manager.beginActivation({ kind: "new", runId: this.input.identity.agentRunId, config });
+    return Object.freeze({
+      operation,
+      prepare: async () => {
+        const candidate = await operation.prepare();
+        const binding = this.createExternalBinding(candidate);
+        return Object.freeze({
+          candidate,
+          bindingChange: createCollaborationAgentRuntimeSwitchCommit({
+            execution: this.input.identity,
+            switchId: pending.switchId,
+            platformAgentRunId: binding?.platformAgentRunId ?? null,
+          }),
+        });
+      },
+      switching,
     });
   }
 
@@ -175,4 +225,6 @@ export type ConfiguredAgentActivationOperation = Readonly<{
     candidate: AgentRunActivationCandidate;
     bindingChange: CollaborationAgentPlatformBindingChange | null;
   }>>;
+  /** Present when the plan is a switch with a conversation to carry over; the handle records it and discards a failed attempt. */
+  switching: ConfiguredAgentSwitchAttempt | null;
 }>;

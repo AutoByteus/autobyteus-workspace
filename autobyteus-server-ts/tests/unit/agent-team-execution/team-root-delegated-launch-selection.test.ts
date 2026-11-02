@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import type { RunModelSelectionValidator } from "../../../src/llm-management/services/run-model-selection-service.js";
 import type { TaskAgentExecution } from "../../../src/run-history/domain/run-execution-tree-shared-records.js";
 import { TeamRunEventSourceType, type TeamRunEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
@@ -15,10 +16,10 @@ afterEach(async () => { vi.restoreAllMocks(); await cleanupDirectories(); });
 
 const validator = (): RunModelSelectionValidator => ({
   validate: vi.fn(),
-  validateMany: vi.fn(async (inputs) => inputs.map((input) => ({ kind: "valid" as const, selection: input.selection as never }))),
+  validateMany: vi.fn(async (inputs: readonly { selection: any }[]) => inputs.map((input) => ({ kind: "valid" as const, selection: input.selection as never }))),
 }) as unknown as RunModelSelectionValidator;
 
-const choice = { llmModelIdentifier: "bigger-model", llmConfig: { thinking: "high" } };
+const choice = { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "bigger-model", llmConfig: { thinking: "high" } };
 
 describe("Team root delegated copy Stop and model choice", () => {
   it("stops a copy restorably, resumes it on the choice, and starts later copies on the started values (AR-005)", async () => {
@@ -46,7 +47,9 @@ describe("Team root delegated copy Stop and model choice", () => {
     unsubscribe();
     const durable = (await f.dependencies.executionTreeStore.read(f.teamMemoryDir, ROOT))!;
     const recorded = durable.rootTeam.taskExecutions.find((task) => "agentRunId" in task && task.agentRunId === copyRunId) as TaskAgentExecution;
-    expect(recorded.userLaunchSelection).toMatchObject(choice);
+    // The runtime is recorded only when it differs from the started one (here it does not).
+    expect(recorded.userLaunchSelection).toMatchObject({ llmModelIdentifier: choice.llmModelIdentifier, llmConfig: choice.llmConfig });
+    expect(recorded.userLaunchSelection).not.toHaveProperty("runtimeKind");
     // The live view learns the committed choice like any other tree mutation (CR-002).
     expect(events.filter((event) => event.eventSourceType === TeamRunEventSourceType.DELEGATED_LAUNCH_SELECTIONS)).toEqual([
       { eventSourceType: TeamRunEventSourceType.DELEGATED_LAUNCH_SELECTIONS, selections: [{ reference: { agentRunId: copyRunId }, selection: recorded.userLaunchSelection }] },
@@ -58,7 +61,7 @@ describe("Team root delegated copy Stop and model choice", () => {
       sender: { kind: "agent", identity: coordinator.identity, displayName: "coordinator" }, targetAgentRunId: copyRunId, content: "Continue",
     });
     expect(resumed).toMatchObject({ accepted: true });
-    expect(copy.handle.replaceModelChoice).toHaveBeenCalledWith(expect.objectContaining(choice));
+    expect(copy.handle.replaceSelection).toHaveBeenCalledWith(expect.objectContaining(choice));
 
     const second = await f.root.delegateToNewCopy(coordinator, { recipient_address: "/code_reviewer", description: "Review again" });
     if (!second.delegated || second.copy.kind !== "agent") throw new Error("second copy did not start");

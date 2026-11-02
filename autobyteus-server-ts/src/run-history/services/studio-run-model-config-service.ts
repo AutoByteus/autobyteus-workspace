@@ -4,7 +4,7 @@ import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain
 import type { ApplicationRunOwnershipReader } from "../../application-orchestration/services/application-run-ownership-service.js";
 import type { AgentRunService } from "../../agent-execution/services/agent-run-service.js";
 import type { TeamRunExecutionTreeSnapshot } from "../../agent-team-execution/domain/team-run-execution-tree.js";
-import type { TeamRunModelConfigPatch } from "../../agent-team-execution/services/team-run-model-config-mutator.js";
+import type { TeamRunSelectionPatch } from "../../agent-team-execution/services/team-run-selection-mutator.js";
 import type { TeamRunService } from "../../agent-team-execution/services/team-run-service.js";
 import type { RunModelConfigUpdateResult } from "../domain/run-model-config.js";
 import type { StoppedRunSelectionInput } from "../../agent-execution/services/standalone-stopped-run-selection-updater.js";
@@ -33,7 +33,7 @@ export class StudioRunModelConfigService {
     agentResumeConfigService: Pick<AgentRunResumeConfigService, "getAgentRunResumeConfig">;
     teamResumeConfigService: Pick<TeamRunHistoryService, "getTeamRunResumeConfig">;
     agentRunService: Pick<AgentRunService, "updateStoppedSelection">;
-    teamRunService: Pick<TeamRunService, "updateStoppedModelConfigs">;
+    teamRunService: Pick<TeamRunService, "updateStoppedSelections">;
   }>) {}
 
   async getAgentRunResumeConfig(runId: string): Promise<AgentRunResumeConfig> {
@@ -120,9 +120,9 @@ export class StudioRunModelConfigService {
     return this.dependencies.agentRunService.updateStoppedSelection(input);
   }
 
-  async updateStoppedTeamRunModelConfigs(input: {
+  async updateStoppedTeamRunSelections(input: {
     teamRunId: string;
-    patches: readonly TeamRunModelConfigPatch[];
+    selectionPatches: readonly TeamRunSelectionPatch[];
   }): Promise<RunModelConfigUpdateResult<TeamRunExecutionTreeSnapshot | null>> {
     let canonical: TeamRunResumeConfig | null = null;
     try {
@@ -155,6 +155,6 @@ export class StudioRunModelConfigService {
         fieldErrors: Object.freeze([]),
       });
     }
-    return this.dependencies.teamRunService.updateStoppedModelConfigs(input);
+    return this.dependencies.teamRunService.updateStoppedSelections(input);
   }
 }

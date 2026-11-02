@@ -253,14 +253,14 @@ describe("Agent root of a standalone run", () => {
     const validator = { validate: vi.fn(), validateMany: vi.fn(async (inputs: readonly { selection: unknown }[]) => inputs.map((input) => ({ kind: "valid" as const, selection: input.selection }))) };
     const save = (runtimeKind: RuntimeKind) => f.manager.updateStoppedDelegatedLaunchSelections({
       hostRunId: HOST, validator: validator as never,
-      changes: [{ agentRunId: "code-reviewer-run-1", selection: { llmModelIdentifier: "copy-model", llmConfig: null } }],
+      changes: [{ agentRunId: "code-reviewer-run-1", selection: { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "copy-model", llmConfig: null } }],
       hostSelection: { runtimeKind, llmModelIdentifier: "any-model", llmConfig: null },
     });
 
     await save(RuntimeKind.CLAUDE_AGENT_SDK);
     await save(RuntimeKind.CODEX_APP_SERVER);
 
-    const contexts = validator.validateMany.mock.calls.map(([inputs]) => (inputs.at(-1) as { context: unknown }).context);
+    const contexts = validator.validateMany.mock.calls.map(([inputs]) => (inputs.at(-1) as unknown as { context: unknown }).context);
     // The harness host runs on Codex App Server with model gpt-host: its own runtime keeps the stored model as the current one.
     expect(contexts).toEqual([
       { runtimeKind: "claude_agent_sdk", currentModelIdentifier: null, workspaceRootPath: "/work" },

@@ -410,7 +410,7 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     }
   }
   const saveRunConfig = async (orgRunId: string, patches: Readonly<{
-    modelPatches: readonly ExistingAgentOrgModelConfigPatch[]; teamWorkspacePatches: readonly TeamWorkspacePatch[]
+    selectionPatches: readonly ExistingAgentOrgModelConfigPatch[]; teamWorkspacePatches: readonly TeamWorkspacePatch[]
   }>) => {
     const org = requireConfigOwner(orgRunId), id = orgRunId, view = org.view
     if (org.isActive || org.phase !== 'historical'
