@@ -89,15 +89,25 @@
 
 ## Repository Finalization
 
-FINALIZATION_SECTION
+- Repository finalization status: `Blocked` (not merged into `personal`; the ticket branch is not pushed).
+- What happened:
+  - While this delivery waited for another task's release to finish, `origin/personal` moved to `fc5a726444` with `v1.5.11-beta.11` (autobyteus-363, -366, the clean-runner build order). 356 is not in that tag.
+  - Re-integrating `origin/personal` into the ticket branch conflicts in two files:
+    1. `autobyteus-web/components/settings/nodes/NodeServerUpdate.vue`. autobyteus-363 (the Manage Nodes professional look) restructured the notice and copy-command markup; 356 places `<NodeAutoUpdate>` after that notice.
+    2. `autobyteus-web/docs/settings.md` § Nodes. 363 rewrote the server cell and Add band text; 356 adds the "Update automatically" bullet.
+  - Delivery aborted the merge; the branch stays at the verified `4369c7f98d`.
+- Classification: `Local Fix` (an integration conflict in product UI code plus its doc; the placement of the switch in the redesigned row needs a rendered check).
+- Recommended recipient: `/software_engineering_team/implementation_engineer`.
+- The ticket folder was moved back to `tickets/in-progress/` for the fix round.
 
 ## Release / Publication / Deployment
 
-RELEASE_SECTION
+- Applicable: `Yes` (the user's beta decision).
+- Release/publication/deployment result: `Blocked`, waiting for the finalization above. No tag was cut. `v1.5.11-beta.11` was cut by another task and does not contain 356.
 
 ## Post-Finalization Cleanup
 
-CLEANUP_SECTION
+- Not started (finalization is blocked).
 
 ## Release Notes Summary
 
@@ -124,4 +134,7 @@ None beyond the release. Docker users get the image `autobyteus/autobyteus-serve
 
 ## Final Status
 
-FINAL_STATUS_SECTION
+- Verification complete (from the evidence): `Yes`, on `4369c7f98d`. It must be redone on the fixed integration.
+- Repository finalization complete: `No` (`Blocked`, `Local Fix`, routed to implementation).
+- Release complete: `No` (waiting).
+- Successful terminal package eligible for return: `No`.
