@@ -2,7 +2,89 @@
 
 All ticket paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/automatic-app-node-updates/tickets/in-progress/automatic-app-node-updates/`.
 
-> **Latest round: 4, API/E2E Failure-Origin Review (CRR-004), `Fail` → `Design Impact` for the Solution Designer.** Rounds 1 to 3 are kept below. § Round 4 and the Latest Authoritative Result supersede them.
+> **Latest round: 5, Implementation Review of IR-003 (CRR-005), `Pass`.** It covers SR-004 to SR-006 (ARCH-REV-005 `Pass`). Rounds 1 to 4 are kept below. § Round 5 and the Latest Authoritative Result supersede them.
+
+## Round 5 — Implementation Review of IR-003 (CRR-005)
+
+### Meta and scope
+
+- Trigger: implementation engineer, IR-003 (code `2e64cbb3d9`; handoff and evidence `ed3f0d50f5`, `88814a7182`).
+- Basis: design SR-006 (DS-002: on macOS the automatic install starts once Squirrel has its copy), ARCH-REV-005 `Pass`, requirements as sharpened in SR-004.
+- Review Scope: **`Full Re-Audit` of DS-001 and DS-002.**
+  - Evidence: the delta moves the automatic sequence into a new owner (`AppUpdateAutomaticPolicy`), adds `AppUpdateInstallReadiness`, changes the `error` handler's order, adds a guard to `checkForUpdates` and `downloadUpdate`, and adds shared fields (`automaticInstallPreparing`, `outcomeStep`) and an error kind (`install-preparation`).
+  - DS-003 (nodes) is carried forward: the delta doesn't touch it.
+- I reran no checks: the suites, the typecheck, IMP-11 and IMP-12 ran on `2e64cbb3d9`.
+
+### Behavior and path, re-verified
+
+**The order (F-API-003).** `update-downloaded` → `downloaded(V)` resets readiness, then `installWhenReady(V)`: it installs at once if ready, otherwise one pending wait with a 15-minute bound. Nothing stops during the wait, so the 60 s bound now measures only the quit: `MacUpdater.quitAndInstall` finds `squirrelDownloadedUpdate` true and calls the native quit directly. Ordering is safe: MacUpdater dispatches `update-downloaded` and only then calls the native `checkForUpdates()` (`MacUpdater.js:219-224`), so a reset can't overwrite that download's answer. Not macOS: `readyFor` is true for the downloaded version, so the order is unchanged.
+
+**How the wait ends** (`appUpdateAutomaticPolicy.ts`, `appUpdateInstallReadiness.ts`):
+
+| End | Result | Verified |
+| --- | --- | --- |
+| Native `update-downloaded` | Preparing cleared; `installAutomatically` re-reads the switch and the gate | Spec line 98; the real success through the wait is owed |
+| Native `error` | `claimError`: `preparationFailed` records `install`, blocks V, no settle, no recovery; state `install-preparation`; `updateStaged: false` | Spec line 131; IMP-12 (two real refusals, health 200, no stop) |
+| The 15-minute bound | The same record with its own reason, no recovery; status stays `downloaded`, the click still works | Spec line 171; rendered in a component test only |
+| Switch off | Wait dropped, nothing recorded; on again re-enters `installWhenReady` | Spec line 188 |
+| A click on Install | `installAccepted()` ends the wait and bound at acceptance, then the manual path | Spec line 219 |
+
+**The `error` order (N-17).** No check or download can run during a wait (`checkForUpdates` and `downloadUpdate` return the state; About's button is disabled), so an `error` during a wait really is this update's preparation. Then:
+- both refusal timings hold: read-only (`error`, `error`, rejection) and after the zip was served (one `error`, no rejection, because the promise has resolved at `MacUpdater.js:184-189`);
+- `settlingFailedPreparation` is set only while a download is in flight, and `finally` clears it, so a later real error isn't swallowed;
+- `recordAutomaticFailure` refuses a `download` failure over `{ V, 'install' }`.
+
+**CR-C12:** the automatic path now records plain reasons. The raw native text goes only to the log, and "Try again" no longer appears for a version that won't be retried (the row adds the not-retried sentence when `outcomeStep === 'install'`).
+
+### The implementer's five departures
+
+1. **`AppUpdateAutomaticPolicy`, not in the design's file map: accepted.** Without it `appUpdater.ts` would pass 500 lines (CR-C7); it is now 472. The owner is clear: the policy owns the automatic sequence, and `AppUpdater` owns the state and the actions a click also runs. The host port is a narrow set of those actions, not a second sequence. The design's file map and § Ownership should be aligned by their owner (`docs/electron_packaging.md:714` already names it).
+2. **`lastErrorSignature` not cleared explicitly: accepted.** `applyState` clears it whenever a non-error status is applied, so status `downloaded` clears it before any wait begins, and `claimError` doesn't set it. "A later real error still shows" is tested in both timings.
+3. **`outcomeStep` on `AppUpdateNotification`: accepted.** It carries one fact from the record to the row, and it is derived only in `outcomeOf`. The store and row are updated.
+4. **The failure box also shows at state `downloaded`: accepted.** The bound's failure would otherwise be invisible.
+5. **`AppUpdaterOptions.platform`: accepted.** It is the test seam for the install order, and it defaults to `process.platform`.
+
+### Candidate gate (round 5)
+
+| Candidate ID | Observation | Disposition | Reason |
+| --- | --- | --- | --- |
+| CR-C15 | The user quits during a wait, and the native event lands within the short stop: the policy still installs, so `quitAndInstall` relaunches an app the user chose to quit | Reject (contrived) | It needs a quit inside the ~1 s stop window of a ~36 s wait, once per release, and two individually supported actions don't establish a workflow (Principle 6). The result is the new version running with an honest row, with no data harm. |
+| CR-C16 | A native event from an earlier fetch of V arrives after a newer W was reported, marking W ready | Reject (not reachable) | It needs a check during a wait or a staged state, and checks are blocked during a wait and scheduled checks skip a staged update. Only a switch-off followed by a manual check gets near it. |
+| CR-C17 | `found(V)` with a staged, ready V installs without a re-download on every platform, not only macOS | Reject (verified) | `BaseUpdater.install` reads `installerPath` and `downloadedFileInfo`, which a later check doesn't clear (`BaseUpdater.js:38-50`). Read only on Windows and Linux, which aren't tested at all. |
+| CR-C18 | The comment in `appUpdateAutomaticRun.ts:13-14` still says "`AppUpdater` owns the sequence"; it is now the policy | Reject (cosmetic note) | One stale comment. Fix it on the next touch. |
+| CR-C19 | A second native fetch in one process (F-15): if Squirrel doesn't answer it, a good update waits out the 15 minutes and is blocked | Hold for Evidence | The design records it as unknown (`design-spec.md:423`), and ARCH-REV-005 gives it to validation. It needs a switch-off or staged path plus a re-download. Not scored. |
+
+### Evidence limits (carried to validation)
+
+- **A real native success through the wait has not run**, so this install order has not yet produced a real install. IMP-12's two runs were refusals.
+- IMP-12's second refusal was "Could not locate update bundle", not a signature refusal (`88814a7182` corrected this). The API-05C repeat is the real signature case.
+- Both real refusals came after the zip was served. The read-only timing is unit-only on this order.
+- 20 mutations were caught (IMP-11).
+
+### Correction to CRR-004
+
+CRR-004 said `downloadUpdate()`'s promise "has no resolve on Squirrel's success" with `autoInstallOnAppQuit`. **That was wrong:** it resolves once the zip is served (`MacUpdater.js:184-189`). It still isn't a readiness signal, because Squirrel's unpack and verify come after that, but my stated reason was wrong and SR-004 repeated it. ARCH-REV-003 caught it, and SR-005 corrected it.
+
+### Structure and scores
+
+- Sizes: `appUpdater.ts` 472, `appUpdateAutomaticPolicy.ts` 144, `appUpdateInstallReadiness.ts` 56, `appUpdateAutomaticRun.ts` 98, `appUpdateNotificationRecord.ts` 203. All within 500.
+- Ownership: readiness answers one question and reads only the public event, never MacUpdater's private flag. The record owns the gate.
+- Scores:
+  - category 8, Runtime Correctness, goes from round 4's 8.7 to 9.3;
+  - category 4, Separation of Concerns, goes from 9.4 to 9.5 (the near-limit file is resolved);
+  - category 7, API/E2E Readiness, stays at 9.3 (the real success is pending).
+  - Overall 9.4; no category is below 9.2.
+- Docs: `electron_packaging.md` describes the wait, its ends and the bound.
+
+### Findings (round 5)
+
+None. F-API-003 and CR-C12 are resolved by design and code, pending runtime proof.
+
+### Follow-ups
+
+None added. FU-004 and CR-C2 are unchanged. Direction A narrows FU-003: a refusal during the wait now stops no runs.
+
+> Round 4 (CRR-004) and earlier rounds are kept below for history.
 
 ## Round 4 — Failure-Origin Review of F-API-003 (CRR-004)
 
@@ -377,7 +459,19 @@ N/A: the review passes.
 
 ## Latest Authoritative Result
 
-**Round 4 (CRR-004), authoritative:**
+**Round 5 (CRR-005), authoritative:**
+
+- Review Decision: `Pass`
+- Review Entry Point: `Implementation Review` (`Full Re-Audit` of DS-001 and DS-002; DS-003 carried forward)
+- Supported Product Scenario Gate: `Pass`
+- Material-Premise Gate: `Pass`. Round 4's contradicted premise is replaced: the quit bound now starts when Squirrel is ready.
+- Score Summary: 9.4 / 10; every category ≥ 9.2
+- Recommended Recipient: API/E2E engineer
+- Notes:
+  - Validated code: `2e64cbb3d9`.
+  - A real install through the wait has not run yet; validation owes it, with the cases ARCH-REV-005 lists.
+
+**Round 4 (CRR-004), superseded:**
 
 - Review Decision: `Fail` (failure-origin)
 - Review Entry Point: `API/E2E Failure-Origin Review`

@@ -10,6 +10,7 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) is autho
 | CRR-002 | `code-review-report.md` | API/E2E Failure-Origin Review, round 2 (API-REV-001 F-API-001, F-API-002) | Pass | Fail: two `Local Fix`es → implementation | F-API-001, F-API-002 |
 | CRR-003 | `code-review-report.md` | Implementation Review, round 3, Targeted Delta (IR-002) | Fail | Pass | F-API-001, F-API-002 (resolved in code) |
 | CRR-004 | `code-review-report.md` | API/E2E Failure-Origin Review, round 4 (API-REV-002 F-API-003) | Pass | Fail: `Design Impact` → Solution Designer | F-API-003, CR-C12; F-API-001 and F-API-002 resolved at runtime |
+| CRR-005 | `code-review-report.md` | Implementation Review, round 5 (IR-003, SR-004 to SR-006; Full Re-Audit of DS-001, DS-002) | Fail | Pass | F-API-003, CR-C12 (resolved by design and code) |
 
 ## Revision Entries
 
@@ -135,3 +136,35 @@ None (CRR-001 had no findings).
 - Material score or classification changes: category 8 goes from 9.3 to 8.7; Medium / High unchanged
 - Recommended recipient: Solution Designer
 - Remaining risks or uncertainty: one machine and an ad hoc signature; Squirrel's time with a Developer ID signature is unknown; the 40 s relaunch gap has no cause yet; the native readiness signal on the cached path is Read only.
+
+### CRR-005 — Implementation review of IR-003 (on macOS the automatic install waits for Squirrel's copy)
+
+- Canonical review report updated: `code-review-report.md` (§ Round 5; Latest Authoritative Result)
+- Review entry point and round: Implementation Review, round 5
+- Review scope: `Full Re-Audit` of DS-001 and DS-002 (a new owner, the `error` order, new guards, shared fields and an error kind); DS-003 carried forward
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, `implementation-handoff.md` (IR-003; code `2e64cbb3d9`), F-API-003, CR-C12
+- Relevant solution revision IDs: SR-004, SR-005, SR-006
+- Relevant architecture-review revision IDs: ARCH-REV-003, ARCH-REV-004, ARCH-REV-005
+- Relevant implementation revision IDs: IR-003
+- Relevant API/E2E revision IDs: API-REV-002
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: `Fail` (CRR-004, Design Impact)
+- Current authoritative result: `Pass`, 9.4/10, no findings
+- What changed in the review result and why:
+  - On macOS nothing stops until Squirrel's native `update-downloaded`, so the 60 s bound measures only the quit.
+  - Every way the wait ends was traced, along with the `error` order and both refusal timings.
+  - The five departures are accepted.
+  - **Correction:** CRR-004's statement that the download promise doesn't resolve on Squirrel's success was wrong; it resolves once the zip is served.
+- Supported product scenario / material-premise basis changes: DS-002 signal (c)'s premise is replaced. CR-C19 (a second native fetch) is held for evidence.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| F-API-003 | Open (Design Impact) | Resolved by design and code; runtime proof pending (API-02B, API-02D repeats) | SR-004 to SR-006, ARCH-REV-005, IR-003 | `appUpdateInstallReadiness.ts`, `appUpdateAutomaticPolicy.ts`; `appUpdaterAutomaticMac.spec.ts`; IMP-11 (20 mutations) |
+| CR-C12 | Open (low) | Resolved in code; shown on real refusals (IMP-12); the bound's reason is component-only | SR-004, IR-003 | The policy's reason constants; `NotificationRow.vue`; IMP-12 |
+
+- New or remaining finding IDs: None; CR-C19 held for evidence
+- Material score or classification changes: category 8 goes from 8.7 to 9.3; category 4 goes from 9.4 to 9.5; overall 9.4; Medium / High unchanged
+- Recommended recipient: API/E2E engineer
+- Remaining risks or uncertainty: no real install has run through the wait; the read-only timing on this order, the staged path, N-13 and F-15 are unit-only so far; a Developer ID signature, Windows and Linux are not tested.
