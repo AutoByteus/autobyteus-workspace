@@ -42,3 +42,5 @@ Implementation per the design's Change / Refactor Sequence.
 ## Route applied
 
 `get_handoff_rules` (2026-11-02): Medium / Low → `/software_engineering_team/implementation_engineer`.
+
+- 2026-11-02: autobyteus-348 merged to `origin/personal` (`046f089f2b`; personal at `84ea944ac5`), as reported by the PM and verified. The merge-order constraint is cleared: the branch can be refreshed from `origin/personal`, and delivery can merge after its gates.
