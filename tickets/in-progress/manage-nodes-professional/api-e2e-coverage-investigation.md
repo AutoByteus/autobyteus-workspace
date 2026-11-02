@@ -16,8 +16,8 @@ The plan. Results, confidence and the decision are in [api-e2e-execution-coverag
 - Code Review Report / Revision Record: `N/A — not applicable` (direct low-risk route)
 - Delivery Revision Record: `N/A`
 - API/E2E Revision Record: [api-e2e-revision-record.md](api-e2e-revision-record.md)
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: 1
+- Current API/E2E Revision ID: `API-REV-002`
+- Current Investigation Round: 2. Trigger: IR-002, the merge `35e5853a22` of `origin/personal` @ `84ea944ac5` (DR-001 packaging Local Fix). Plan: shared foundations changed (TESTING.md rule 4), so rerun API-01, API-02, API-03 (against the new base) and API-04. The reused implementation cases are taken over as their round 2 reruns, IMP-09…IMP-16. No case was added or removed.
 - Trigger: implementation engineer, direct route (run `implementation_engineer_31698f199dad4612834b9e8df260b317`)
 - Prior Investigation Reviewed: none
 - Latest Authoritative Investigation: this document, round 1

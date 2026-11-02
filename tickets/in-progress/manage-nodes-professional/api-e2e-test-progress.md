@@ -16,3 +16,11 @@ Working log. Read it first when resuming. Rows are only added.
 | 2026-11-02T09:36Z | API-02 | Completed | Pass | run3: EL-01…EL-10 Pass (EL-06 after the 5-min grace) |
 | 2026-11-02T09:36Z | API-04 | Completed | Pass | visual comparison with VIS-016/019/037/036 and medium |
 | 2026-11-02T09:36Z | — | Completed | Pass | round 1 recorded (API-REV-001), 95% |
+| 2026-11-02T09:59Z | — | Checkpoint | — | round 2 (IR-002 merge 35e5853a22): rule 4 shared foundations changed → rerun API-01, API-02, API-03, API-04 |
+| 2026-11-02T09:59Z | API-03 | Completed | Pass | round 2: empty for stores/utils/localization/server/electron over 84ea944ac5; ticket files unchanged by the merge |
+| 2026-11-02T09:59Z | API-01 | Started | — | round 2 Electron build of 35e5853a22 (background) |
+| 2026-11-02T10:06Z | API-01 | Completed | Pass | round 2 build exit=0 |
+| 2026-11-02T10:06Z | API-02 | Started | — | round 2 run4 on the merged build |
+| 2026-11-02T10:13Z | API-02 | Completed | Pass | round 2 run4: EL-01…EL-10 Pass |
+| 2026-11-02T10:13Z | API-04 | Completed | Pass | round 2: run4 screenshots unchanged, match VIS-019/033 |
+| 2026-11-02T10:13Z | — | Completed | Pass | round 2 recorded (API-REV-002), 95% |

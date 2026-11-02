@@ -3,10 +3,15 @@
 ## Round
 
 - Coverage investigation: [api-e2e-coverage-investigation.md](api-e2e-coverage-investigation.md)
-- API/E2E revision record and current revision ID: [api-e2e-revision-record.md](api-e2e-revision-record.md), `API-REV-001`
+- API/E2E revision record and current revision ID: [api-e2e-revision-record.md](api-e2e-revision-record.md), `API-REV-002`
 - Test progress log: [api-e2e-test-progress.md](api-e2e-test-progress.md)
-- Round and trigger: round 1; implementation engineer, direct route (Medium / Low, SR-002).
-- Prior round reviewed: none.
+- Round and trigger: round 2. The implementation engineer's IR-002: delivery's DR-001 packaging Local Fix merged `origin/personal` @ `84ea944ac5` (318, 358, 97, 348) as `35e5853a22`, with records in `23c441a87f`. Direct route, still Medium / Low. Round 1 was the implementation engineer's IR-001.
+- Prior round reviewed: round 1 (API-REV-001, Pass 95%, on `d5f670021b`).
+- Round 2 rerun plan (TESTING.md § Rerun by impact):
+  - `git diff --name-only d5f670021b 35e5853a22` lists 569 non-ticket files. They include shared foundations: `autobyteus-ts`, both `package.json` files, `nuxt.config.ts` and the Electron config. Rule 4 therefore marks every case Rerun.
+  - None of this ticket's files changed in the merge (API-03 round 2).
+  - The reused implementation checks were rerun by the implementation engineer on `35e5853a22`, as IMP-09…IMP-16.
+  - API/E2E reran its own cases on `35e5853a22`: API-01 (build), API-02 (journey run 4), API-03 (diff against the new base) and API-04 (visual).
 - Deviations from the investigation's plan, and why: none in scope. API-02 needed three runs; the first two failed on the journey itself (see API-02 notes). All runs are kept.
 - Evidence folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/manage-nodes-professional/tickets/in-progress/manage-nodes-professional/evidence/api-e2e/` (the handoff message gives the commit).
 
@@ -22,23 +27,23 @@
 
 | Env ID | Commit Tested | Platform / OS | Runtime, Browser, Or App Build | Other Settings That Matter |
 | --- | --- | --- | --- | --- |
-| ENV-1 | `d5f670021b` (HEAD `f83c53d182` adds ticket documents only) | macOS (Darwin 25.5.0), arm64 | Isolated desktop instance of this worktree's packaged build (`build:electron:mac`, app version `1.5.11-beta.10`), `isolated-app start --from-worktree --data-root <own temp dir>`, driven over CDP (playwright-core `connectOverCDP`), viewport emulated at 1440×900, 1100×900 and 390×844 | Eight remote nodes are servers of this worktree's `dist` on `127.0.0.1` free ports, each with its own data root and HOME (env PATH/HOME/TMPDIR). Six of them get a test-owned starter on a Unix socket (`AUTOBYTEUS_STARTER_SOCKET`), scripted per state. "ghost" is an unused port. The desktop list was written into the instance's own userData before start. Locales en and zh-CN |
+| ENV-1 | Round 1: `d5f670021b`. Round 2: `35e5853a22` (HEAD `23c441a87f` adds ticket documents only) | macOS (Darwin 25.5.0), arm64 | Isolated desktop instance of this worktree's packaged build (`build:electron:mac`, app version `1.5.11-beta.10`), `isolated-app start --from-worktree --data-root <own temp dir>`, driven over CDP (playwright-core `connectOverCDP`), viewport emulated at 1440×900, 1100×900 and 390×844 | Eight remote nodes are servers of this worktree's `dist` on `127.0.0.1` free ports, each with its own data root and HOME (env PATH/HOME/TMPDIR). Six of them get a test-owned starter on a Unix socket (`AUTOBYTEUS_STARTER_SOCKET`), scripted per state. "ghost" is an unused port. The desktop list was written into the instance's own userData before start. Locales en and zh-CN |
 
 ## Cases
 
 | Case ID | Criteria | Boundary / Surface | Command Or Steps | Env | Result | Evidence Files | Look For | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| API-R1 | AC-902, AC-903 | web unit / component suite | Reused IMP-01 | — | Pass (reused) | — | — | ran on `d5f670021b`; `git diff --name-only d5f670021b f83c53d182` is `tickets/` only |
-| API-R2 | AC-905 | web guards | Reused IMP-02 | — | Pass (reused) | — | — | same |
-| API-R3 | — | web typecheck | Reused IMP-03 | — | Pass (reused) | — | — | same |
-| API-R4 | AC-902, AC-903 | browser probe, real servers (NP-01…12) | Reused IMP-07 | — | Pass (reused) | — | — | same |
-| API-R5 | AC-904 | Docker probe (ND-01…05) | Reused IMP-08 | — | Pass (reused) | — | — | same |
-| API-01 | setup | Electron build | `pnpm -C autobyteus-web build:electron:mac` | ENV-1 | Pass | `API-01-electron-build.log` | `exit=0` | web guards ran inside the build |
-| API-03 | AC-905 | the change set | `git diff --stat 3b9dc912a1 d5f670021b -- autobyteus-web/stores autobyteus-web/utils autobyteus-web/localization autobyteus-server-ts autobyteus-web/electron` | ENV-1 | Pass | `API-03-presentation-only-diff.log` | the section between `--- stores/utils/localization/server/electron (expected empty):` and `--- end` is empty; the whole set is 21 files under `components/settings`, their specs, the 2 probes, `docs/settings.md`, `typecheck-baseline.json` | — |
-| API-02 | AC-901, AC-903, AC-904, BEH-906/908 | Desktop app + real servers + emulated starter | `node <evidence>/API-02-desktop-journey.mjs --repo=<worktree> --out=<evidence>/API-02-desktop-journey-run3` | ENV-1 | Pass (run 3) | `API-02-desktop-journey-run3/API-02-desktop-journey.json`, `EL-*.png`, `server-*.log`, `instance.log`; the script `API-02-desktop-journey.mjs` | per sub-case below | runs 1–2 kept (`-run1`, `-run2`) |
-| API-04 | AC-901 | Visual comparison with the package | API-02 screenshots side by side with VIS-016, 019, 037, 033/036 and the default views | ENV-1 | Pass | `API-02-desktop-journey-run3/EL-03-update-downloading.png` vs VIS-016; `EL-04-update-refused-copy-command.png` vs VIS-019; `EL-06-update-lost-not-reachable.png` vs VIS-037; `EL-08-narrow-390-zh-CN.png` vs VIS-036; `EL-07-medium-window-1100.png` | see below | by inspection; names, versions, counts and messages are illustrative per the spec |
+| API-R1 | AC-902, AC-903 | web unit / component suite | Reused: round 1 IMP-01; round 2 IMP-12 | — | Pass (reused) | — | — | round 2: IMP-12 on `35e5853a22`, 686 files and 5020 tests |
+| API-R2 | AC-905 | web guards | Reused: IMP-02; round 2 IMP-11 | — | Pass (reused) | — | — | round 2 on `35e5853a22` |
+| API-R3 | — | web typecheck | Reused: IMP-03; round 2 IMP-10 | — | Pass (reused) | — | — | round 2 under the base's stricter baseline: production errors 0, test-file errors 99 (the baseline), none in the Nodes specs |
+| API-R4 | AC-902, AC-903 | browser probe, real servers (NP-01…12) | Reused: IMP-07; round 2 IMP-13 | — | Pass (reused) | — | — | round 2 on `35e5853a22` |
+| API-R5 | AC-904 | Docker probe (ND-01…05) | Reused: IMP-08; round 2 IMP-16 | — | Pass (reused) | — | — | Round 2: with the default `beta` image (IMP-14), setup failed. The released image's contracts predate 358, so the mounted merged `dist` cannot start; that is environment, not this ticket. IMP-15/16 built this worktree's server package into a test-owned image (TESTING.md § Docker server nodes): ND-01…05 Pass, `imageDistDiff` empty |
+| API-01 | setup | Electron build | `pnpm -C autobyteus-web build:electron:mac` | ENV-1 | Pass (both rounds) | `API-01-electron-build.log` (round 1), `API-01-r2-electron-build.log` (round 2, `35e5853a22`) | `exit=0` | web guards ran inside the build |
+| API-03 | AC-905 | the change set | `git diff --stat 3b9dc912a1 d5f670021b -- autobyteus-web/stores autobyteus-web/utils autobyteus-web/localization autobyteus-server-ts autobyteus-web/electron` | ENV-1 | Pass (both rounds) | `API-03-presentation-only-diff.log`; round 2 `API-03-r2-presentation-only-diff.log` (against the new base `84ea944ac5`, plus this ticket's files between `d5f670021b` and `35e5853a22`, both empty) | the section between `--- stores/utils/localization/server/electron (expected empty):` and `--- end` is empty; the whole set is 21 files under `components/settings`, their specs, the 2 probes, `docs/settings.md`, `typecheck-baseline.json` | — |
+| API-02 | AC-901, AC-903, AC-904, BEH-906/908 | Desktop app + real servers + emulated starter | `node <evidence>/API-02-desktop-journey.mjs --repo=<worktree> --out=<evidence>/API-02-desktop-journey-run4` | ENV-1 | Pass (round 2, run 4 on `35e5853a22`; round 1 run 3) | `API-02-desktop-journey-run4/API-02-desktop-journey.json` (round 1: `-run3`), `EL-*.png`, `server-*.log`, `instance.log`; the script `API-02-desktop-journey.mjs` | per sub-case below | runs 1–3 kept |
+| API-04 | AC-901 | Visual comparison with the package | API-02 screenshots side by side with VIS-016, 019, 037, 033/036 and the default views; round 2: run 4 `EL-04-update-refused-copy-command.png` and `EL-08-narrow-390-en.png` against run 3 and VIS-019/033 | ENV-1 | Pass (both rounds) | `API-02-desktop-journey-run3/EL-03-update-downloading.png` vs VIS-016; `EL-04-update-refused-copy-command.png` vs VIS-019; `EL-06-update-lost-not-reachable.png` vs VIS-037; `EL-08-narrow-390-zh-CN.png` vs VIS-036; `EL-07-medium-window-1100.png` | see below | by inspection; names, versions, counts and messages are illustrative per the spec |
 
-### API-02 sub-cases (run 3)
+### API-02 sub-cases (run 3; run 4 in round 2 gave the same values: the same columns 1319/1355/1250, the same steps, `Copied` with the command, the lost text, card 713 px, no overflow at 390)
 
 | Sub-case | Criteria | Result | Look For (in `API-02-desktop-journey.json` `cases.<id>`) |
 | --- | --- | --- | --- |
@@ -130,14 +135,14 @@ Not affected (design: `Not Affected`).
 
 | Item | Owned By This Run | Cleanup Action | Result |
 | --- | --- | --- | --- |
-| Isolated instances `iso-58933-81a6` (run 1), `iso-59147-0691` (run 2), `iso-60042-e50d` (run 3) | Yes | `isolated-app stop`; own data roots removed | `stop.ok: true`, ports released, `mineStillListed: []`, `rootRemoved: true` |
+| Isolated instances `iso-58933-81a6` (run 1), `iso-59147-0691` (run 2), `iso-60042-e50d` (run 3), `iso-65101-730d` (run 4) | Yes | `isolated-app stop`; own data roots removed | `stop.ok: true`, ports released, `mineStillListed: []`, `rootRemoved: true` |
 | Host servers and starter sockets | Yes | the journey's `finally` | stopped; temp root removed |
 | `autobyteus-web/electron-dist/` | Yes | Left as an untracked build output | — |
 | The user's app, data, containers | No | Not touched | — |
 
 ## Latest Authoritative Result
 
-- Result: `Pass`
+- Result: `Pass` (round 2, `35e5853a22`)
 - Criteria not proven, or parts only the user can check: `None`.
 - Next recipient from `get_handoff_rules`: the delivery engineer (direct route).
-- Notes: final confidence 95%. No product defect found. The journey script is kept in the evidence folder as ticket-owned automation.
+- Notes: final confidence 95% in both rounds. No product defect found. Round 2 reran every API/E2E case on the merged branch, by rule 4, and all pass. The journey script is kept in the evidence folder as ticket-owned automation.
