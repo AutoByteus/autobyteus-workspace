@@ -17,12 +17,20 @@
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (IR-002: packaging Local Fix from delivery, the integration refresh)
 - Implementation revision record: [implementation-revision-record.md](implementation-revision-record.md)
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-002`
-- Related architecture-review, code-review, API/E2E, delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Related API/E2E revision IDs: `API-REV-001` (Pass on `d5f670021b`)
+- Related delivery revision IDs: `DR-001` (blocked: two merge conflicts with `origin/personal` @ `84ea944ac5`)
+- Related architecture-review and code-review revision IDs: `N/A`
+- Triggering finding IDs: DR-001's two conflicts (`RemoteCollaborationOfferDisclosure.spec.ts` DU, `typecheck-baseline.json` UU)
+- **IR-002 result:** merge commit `35e5853a22` (`origin/personal` @ `84ea944ac5` into the branch).
+  - The Disclosure spec stays deleted.
+  - `typecheck-baseline.json` is the base's file.
+  - `docs/settings.md` merged cleanly: the Nodes section is byte-identical to this ticket's, and the base's edits are in other sections.
+  - No source change to this ticket's files.
+  - The reruns are in § IR-002 Reruns after the merge, below. The checks table further down is IR-001's, on `d5f670021b`.
 - Branch `codex/manage-nodes-professional`, base `origin/personal` @ `3b9dc912a1`. Commits:
   1. `1827e6f2bd` **baseline fix**, test only: the main probe's NP-12 allow-list gains `/rest/node-update` (see Known Risks / Environment).
   2. `523bd0454b` the implementation: components, specs, both probes, `docs/settings.md`.
@@ -166,6 +174,43 @@ Not run, and why:
 - An isolated Electron desktop instance (Open icon, real desktop window). Left to API/E2E if wanted; the Open slot is spec-covered and ND-05 covers the window on a Docker node.
 - Other web probes: they don't touch these components.
 - A pixel diff against every VIS.
+
+## IR-002 Reruns after the merge (TESTING.md § Rerun by impact)
+
+Plan:
+- Validated commit: `d5f670021b`. The diff to `35e5853a22` is 569 files outside `tickets/`, from autobyteus-318, 358, 97 and 348.
+- Shared foundations changed:
+  - `autobyteus-ts/src`;
+  - `autobyteus-web/package.json`, `autobyteus-server-ts/package.json`;
+  - `autobyteus-web/nuxt.config.ts`;
+  - the Electron `tsconfig` and `vitest` config;
+  - the server's collaboration contracts (358).
+- So by rule 4 every case I recorded reruns, after rebuilding the server `dist/` and the shared packages (rule 5).
+- No file of this ticket changed in the merge: the Nodes components, specs, probes and the Nodes docs section are identical.
+
+| Check ID | Command Or Steps | Commit Tested | Code It Exercises | Result | Evidence Files | Look For |
+| --- | --- | --- | --- | --- | --- | --- |
+| IMP-09 | `cd autobyteus-server-ts && pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma && pnpm build` | `35e5853a22` | Server `dist/` and shared packages for the probes | Pass | `IMP-09-server-build.log` | `Sanitized built-module/bootstrap smoke passed without DATABASE_URL.` |
+| IMP-10 | `cd autobyteus-web && pnpm typecheck` | `35e5853a22` | Nuxt app, Electron main, build scripts, cross-package tests, under the base's stricter baseline | Pass | `IMP-10-web-typecheck.log` | `production errors: 0; test-file errors: 99 in 43 files (baseline 99 in 43 files)`; `[typecheck] PASS`. No error in `settings/nodes/` or the Toggle spec (0 matches). |
+| IMP-11 | `cd autobyteus-web && pnpm guard:web-boundary`; `pnpm guard:localization-boundary`; `pnpm audit:localization-literals` | `35e5853a22` | Web boundary, localization | Pass | `IMP-11-guard-web-boundary.log`, `IMP-11-guard-localization-boundary.log`, `IMP-11-audit-localization-literals.log` | `Passed.` (each); `Passed with zero unresolved findings.` |
+| IMP-12 | `cd autobyteus-web && NUXT_TEST=true pnpm exec vitest run` | `35e5853a22` | Whole web unit suite | Pass | `IMP-12-web-unit-suite.log`, `IMP-12-web-unit-suite-excerpt.log` | `Test Files  686 passed (686)`; `Tests  5020 passed (5020)` |
+| IMP-13 | `pnpm -C autobyteus-web test:e2e:remote-nodes-page -- --output-dir=…/IMP-13-remote-nodes-page-probe` | `35e5853a22` | Manage Nodes page against test servers | Pass | `IMP-13-remote-nodes-page-probe.log`, `IMP-13-remote-nodes-page-probe/` | NP-01…NP-12 Pass; `remote-nodes-page probe: Pass` |
+| IMP-14 | `pnpm -C autobyteus-web test:e2e:nodes-docker-address --output-dir=…/IMP-14-nodes-docker-address-probe` (default image `autobyteus/autobyteus-server:beta`) | `35e5853a22` | — | Fail (setup, environment), superseded by IMP-16 | `IMP-14-nodes-docker-address-probe.log`, `IMP-14-nodes-docker-address-probe/docker-node.log` | `Timed out waiting for the Docker node health`; container log `does not provide an export named 'collaborationParticipantMessagesDtoSchema'` |
+| IMP-15 | `docker buildx build --platform linux/arm64 -f autobyteus-server-ts/docker/Dockerfile.monorepo --target server-package --output type=local,dest=/tmp/mnp-ev/server-package .` | `35e5853a22` | This worktree's whole server package for the image's platform | Pass | `IMP-15-server-package-build.log` | `# Exit code: 0` |
+| IMP-16 | Test image `mnp-363-test:merged-35e5853a22` = `beta` with `/opt/autobyteus/server-package` replaced by IMP-15's package ([test-image.Dockerfile](evidence/implementation/IMP-16-nodes-docker-address-probe/test-image.Dockerfile)); then `pnpm -C autobyteus-web test:e2e:nodes-docker-address --output-dir=…/IMP-16-nodes-docker-address-probe --docker-image=mnp-363-test:merged-35e5853a22` | `35e5853a22` | Docker node, loopback hint, window on Docker | Pass | `IMP-16-nodes-docker-address-probe.log`, `IMP-16-nodes-docker-address-probe/` | ND-01…ND-05 Pass; `nodes-docker-address probe: Pass`; probe JSON `imageDistDiff` `{"changed": [], "onlyMounted": [], "onlyImage": []}` |
+
+- IMP-14's cause:
+  - The released `beta` image (1.5.11-beta.7) carries a `@autobyteus/collaboration-stream-contracts` that predates autobyteus-358.
+  - The probe mounts only `dist/`, and the merged server's `dist/` imports the new `collaborationParticipantMessagesDtoSchema`, so the server cannot start in that image.
+  - It is not a defect of this ticket or of the base. It would fail the same way on `origin/personal` alone.
+  - TESTING.md § Docker server nodes already prescribes the whole package for a change beyond `dist/`, which IMP-15/16 follow.
+  - The test image and `/tmp` package are removed. Containers and volumes were the same before and after IMP-14 and IMP-16.
+  - Anyone rerunning ND on this base needs the same IMP-15/16 recipe until a released image carries 358.
+- Not rerun by me: the desktop journey API-02 and the visual comparison API-04 (API/E2E's cases).
+  - Rule 4 marks them Rerun, because build configuration (`nuxt.config.ts`, `package.json`) and `autobyteus-ts` changed.
+  - The shell's only non-test change is `electron/server/baseServerManager.ts` dropping the unused `transcription` URL (318 T-04), which the Nodes journey does not read.
+  - The decision is API/E2E's.
+- Rendered check IMP-06: not repeated. No file of this ticket or of the Nodes UI changed, and IMP-13 (NP) / IMP-16 (ND) re-captured the page.
 
 ## Frontend Rendered-Result Check
 
