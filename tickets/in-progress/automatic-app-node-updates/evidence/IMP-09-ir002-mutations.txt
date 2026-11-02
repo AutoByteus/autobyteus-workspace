@@ -1,0 +1,42 @@
+# IMP-09 mutation proof for the IR-002 fixes (F-API-001, F-API-002): each mutation must turn a test red.
+# Commit: working tree on top of bc9e427f1c (mutated and restored); the fix commit is named in the handoff
+# Env: macOS 26.5.2, v22.23.1, vitest 3.2.7  Date: 2026-11-02
+# Command: vitest (electron config) appUpdaterAutomatic.spec.ts; vitest NotificationCenter.appAutomatic.spec.ts
+
+== baseline
+      Tests  22 passed (22)
+      Tests  6 passed (6)
+== M10 a cancelled install still recovers
+   × AppUpdater automatic update (autobyteus-356) > a refusal before the preparation started cancels the install: nothing stops, no recovery, the version stays blocked (
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 21 passed (22)
+== M11 recovery does not wait for the install to settle
+   × AppUpdater automatic update (autobyteus-356) > a native refusal during the preparation waits for it, skips quitAndInstall, then recovers once (F-API-002) 4ms
+   × AppUpdater automatic update (autobyteus-356) > a refusal before the preparation started cancels the install: nothing stops, no recovery, the version stays blocked (
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  2 failed | 20 passed (22)
+== M12 quitAndInstall runs after a refusal
+   × AppUpdater automatic update (autobyteus-356) > a native refusal during the preparation waits for it, skips quitAndInstall, then recovers once (F-API-002) 4ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 21 passed (22)
+== M13 the delay is not cancelled
+   × AppUpdater automatic update (autobyteus-356) > a refusal before the preparation started cancels the install: nothing stops, no recovery, the version stays blocked (
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 21 passed (22)
+== M14 (survived: the install-failure message is generic, so the guard had no visible effect; the guard was removed from the code rather than kept)
+== M15 the download rejection replaces the install failure
+   × AppUpdater automatic update (autobyteus-356) > a refused install also rejecting the download keeps the install failure as the state (F-API-002) 6ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 21 passed (22)
+== M16 every download rejection is swallowed
+   × AppUpdater automatic update (autobyteus-356) > a download rejection with no automatic install requested is still a download error (manual path) 5ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 21 passed (22)
+== R12 the entry excludes the app (F-API-001)
+   × Notification Center: the app automatic update > the entry counts an unread automatic app update, and keeps counting it while the panel is open (F-API-001) 6ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 5 passed (6)
+== R13 the count drops under the click that opened the panel
+   × Notification Center: the app automatic update > the entry counts an unread automatic app update, and keeps counting it while the panel is open (F-API-001) 10ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 5 passed (6)

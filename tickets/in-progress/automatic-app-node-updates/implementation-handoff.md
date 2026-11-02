@@ -11,17 +11,19 @@
 - Supplemental task artifacts: none.
 - Design review report: `tickets/in-progress/automatic-app-node-updates/design-review-report.md` (ARCH-REV-002 Pass).
 - Architecture review revision record: `tickets/in-progress/automatic-app-node-updates/architecture-review-revision-record.md`.
-- Triggering rework report: N/A (initial implementation).
+- Triggering rework report: `code-review-report.md` CRR-002 (failure-origin review of API-REV-001, `api-e2e-execution-coverage-report.md`).
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`.
+- Implementation cycle: `Rework`.
 - Implementation revision record: `implementation-revision-record.md`.
-- Current implementation revision ID: `IR-001`.
+- Current implementation revision ID: `IR-002`.
 - Related solution revision IDs: SR-003.
 - Related architecture-review revision IDs: ARCH-REV-002.
-- Related code-review, API/E2E and delivery revision IDs: N/A.
-- Triggering finding IDs: N/A.
+- Related code-review revision IDs: CRR-001, CRR-002.
+- Related API/E2E revision IDs: API-REV-001.
+- Related delivery revision IDs: N/A.
+- Triggering finding IDs: F-API-001, F-API-002.
 - Branch `codex/automatic-app-node-updates`; base `origin/personal` @ `3b9dc912a1`.
 - Commits:
   - `b4bda46484`: step 1;
@@ -29,6 +31,8 @@
   - `63f5bb8bfc`: steps 3–4;
   - `8cf4278319`: step 5;
   - `31d38080fc`: fixes from the rendered check;
+  - `aa096836d9`: F-API-001 and F-API-002 (IR-002);
+  - `6a94169f4f`: the handled row's icon layout (IR-002);
   - the evidence commit is named in the handoff message.
 
 **App.**
@@ -44,7 +48,12 @@
   - (b) `error` while `activeOperation === 'install'`;
   - (c) no `before-quit` within 60 s.
 
-  Each is recorded once as `install`, blocks V, and calls the injected `recoverAfterFailedInstall`.
+  Each is recorded once as `install` and blocks V. The install in flight (`AppUpdateInstallAttempt`, IR-002) is then
+  settled:
+  - before the preparation started, it is cancelled: nothing stopped, and no recovery runs;
+  - during or after it, the preparation is awaited, `quitAndInstall` is skipped if it has not run, and then the injected
+    `recoverAfterFailedInstall` runs.
+
   `ElectronApplication` relaunches (`app.relaunch()`, `app.exit(0)`) only when `isServerProcessGone()`.
 - The start-time reconcile gives `AUTO_UPDATED` or an install failure.
 - Switching on continues an update that is found or downloaded.
@@ -101,7 +110,8 @@
 ## Key Files Or Areas
 
 - `autobyteus-web/electron/updater/`:
-  - `appUpdater.ts` (483 effective lines);
+  - `appUpdater.ts` (485 effective lines);
+  - `appUpdateInstallAttempt.ts` (new, IR-002);
   - `appUpdateAutomaticRun.ts` (new);
   - `appUpdateAutomaticStore.ts` (new);
   - `appUpdateNotificationRecord.ts`;
@@ -148,7 +158,20 @@ Deviations from the design text, each kept within the approved behavior:
    - The app-checks description now reads "A newer version is only announced, unless Update automatically below is
      on." The old text was false with the switch on.
 
+8. **IR-002 (`aa096836d9`):**
+   - **Beyond the finding's text.** Once a failure is known during the preparation, `quitAndInstall` is skipped when
+     the preparation ends. It would otherwise run for an install the updater had already refused.
+   - **The API report's timeline.** It labels 29.685 as `quitAndInstall` and says the stop had resolved before the
+     server exited. The code supports CRR-002 instead: `stopServer` awaits `waitForChildExit`, and
+     `MacUpdater.js:219-223` starts the native step right after dispatching `update-downloaded`, without
+     `quitAndInstall`. So the refusal arrived during the preparation, and awaiting it is enough.
+   - **Failed preparation after a refusal.** It logs and sets its own install error (the same generic message), then
+     recovery runs once. A guard that hid this had no visible effect (mutation M14 survived), so it was removed.
+
 ## Known Risks
+
+- **IR-002's refusal fix is not yet proven on a real refusal.** Unit tests control the preparation's timing; the real
+  Squirrel refusal on a read-only volume is API-05's repeat.
 
 - **The real install and restart were not exercised.** That covers the macOS install trigger without a window, the
   relaunch into V2, AC-002 / AC-003 and the native-refusal path. It needs a signed package on the test feed and is
@@ -187,7 +210,8 @@ Deviations from the design text, each kept within the approved behavior:
   - Node outcomes have their own type.
 - Canonical shared design guidance reapplied: `Yes`.
 - Changed source files within size guardrails: `Yes`.
-  - Largest: `appUpdater.ts` 483 and `electronApplication.ts` 444.
+  - Largest: `appUpdater.ts` 485 and `electronApplication.ts` 444. For CR-C7, the install sequence moved to
+    `appUpdateInstallAttempt.ts`, so IR-002 adds a net 2 lines to `appUpdater.ts`.
   - The largest delta is `nodeAutoUpdater.ts` at 170 lines, a new file.
   - No file is over 500.
 
@@ -219,19 +243,21 @@ Deviations from the design text, each kept within the approved behavior:
 
 | Check ID | Command Or Steps | Commit Tested | Environment | Code It Exercises | Behavior / Criteria IDs | Result | Evidence Files | Look For |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| IMP-01 | `pnpm -C autobyteus-web test:electron run` | `31d38080fc` | macOS 26.5.2 arm64, Node, vitest 3.2.7 | all Electron main tests incl. updater, nodeAutoUpdate, application, registry | BEH-001..003, AC-001, AC-004, AC-005 | Pass | `evidence/IMP-01-electron-suite.log` | `Tests  383 passed | 1 skipped (384)`; `Test Files  59 passed | 1 skipped (60)` |
-| IMP-02 | `pnpm -C autobyteus-web typecheck`; `pnpm -C autobyteus-web exec tsc -p electron/tsconfig.json --noEmit`; `pnpm -C autobyteus-web test:nuxt` (full web suite) | `31d38080fc` | same | renderer stores and components, types | BEH-003, REQ-001, REQ-005 | Pass | `evidence/IMP-02-typecheck-and-web.log` | `[typecheck] production errors: 0; test-file errors: 297 in 139 files (baseline 297 in 139 files)`, `[typecheck] PASS`; tsc `exit=0`; `Tests  4980 passed (4980)` |
-| IMP-03 | N-8 proof: `vitest --config ./electron/vitest.config.ts run updater/__tests__/electronUpdaterCachedDownload.spec.ts` (part of IMP-01) | `31d38080fc` | same, electron-updater 6.8.9 | real `NsisUpdater.downloadUpdate()` with a cached file | BEH-001 (N-8) | Pass | `evidence/IMP-01-electron-suite.log` (the file's line) | `electronUpdaterCachedDownload.spec.ts (1 test)` |
+| IMP-01 | `pnpm -C autobyteus-web test:electron run` | `6a94169f4f` | macOS 26.5.2 arm64, Node 22.23.1, vitest 3.2.7 | all Electron main tests incl. updater, nodeAutoUpdate, application, registry | BEH-001..003, AC-001, AC-004, AC-005 | Pass | `evidence/IMP-01-electron-suite.log` | `Tests  388 passed | 1 skipped (389)`; `Test Files  59 passed | 1 skipped (60)` |
+| IMP-02 | `pnpm -C autobyteus-web typecheck`; `pnpm -C autobyteus-web exec tsc -p electron/tsconfig.json --noEmit`; `pnpm -C autobyteus-web test:nuxt` (full web suite) | `6a94169f4f` | same | renderer stores and components, types | BEH-003, REQ-001, REQ-005 | Pass | `evidence/IMP-02-typecheck-and-web.log` | `[typecheck] production errors: 0; test-file errors: 297 in 139 files (baseline 297 in 139 files)`, `[typecheck] PASS`; tsc `exit=0`; `Tests  4981 passed (4981)` |
+| IMP-03 | N-8 proof: `vitest --config ./electron/vitest.config.ts run updater/__tests__/electronUpdaterCachedDownload.spec.ts` (part of IMP-01) | `6a94169f4f` | same, electron-updater 6.8.9 | real `NsisUpdater.downloadUpdate()` with a cached file | BEH-001 (N-8) | Pass | `evidence/IMP-01-electron-suite.log` (the file's line) | `electronUpdaterCachedDownload.spec.ts (1 test)` |
 | IMP-04 | App mutations: 9 mutations of `appUpdater.ts` / `appUpdateAutomaticRun.ts`, each run against `appUpdaterAutomatic.spec.ts` | `9369828ca7` | same | gate, switch, once-only failure, quit bound, error during install, in-process block | AC-001, AC-005, N-6 | Pass (every mutation red) | `evidence/IMP-04-app-mutations.txt` | each `== M*` followed by `failed`; M6/M7 in the "after tightening" block |
 | IMP-05 | Node and wiring mutations (14 + 4) | `63f5bb8bfc` | same | decision, reconcile, updater passes/follow/switch/packaged/remote, recovery, registry | AC-004, AC-005, REQ-003 | Pass (every mutation red) | `evidence/IMP-05-node-mutations.txt`, `evidence/IMP-05-wiring-mutations.txt` | each `== N*` / `== W*` followed by `failed` |
 | IMP-06 | Renderer mutations (8, plus 3 for the rendered-check fix) | `8cf4278319`; R9–R11 on `31d38080fc` | same | app row outcome/unread/entry, switch confirmation, node outcome seen, server line follow | REQ-001, REQ-005 | Pass (every mutation red) | `evidence/IMP-06-renderer-mutations.txt` | each `== R*` followed by `failed` |
 | IMP-07 | AC-006: branch diff of `autobyteus-server-ts` and contracts, and a word grep of server code | `8cf4278319` | git 2.50.1 | the whole branch | REQ-006, AC-006 | Pass | `evidence/IMP-07-ac006-no-server-surface.txt` | empty sections, `grep exit 1` |
 | IMP-08 | Rendered check on isolated worktree builds (`pnpm --silent isolated-app start --build --test-update-feed http://127.0.0.1:47356`), driven over CDP | run 1 `8cf4278319`; run 2 `31d38080fc` | macOS 26.5.2, packaged arm64 build 1.5.11-beta.10, test-owned fakes | the app switch in the panel and in Settings → Updates; the automatic download failure row; the checks-off note; the node switch and the main-process node update to AUTO_UPDATED; the server line after it | AC-001, REQ-001, REQ-004, REQ-005, AC-004 (fake node) | Pass | `evidence/IMP-08-*.png`, `evidence/IMP-08-run1-fakes.log`, `evidence/IMP-08-run2-fakes.log`, `evidence/IMP-08-fakes.mjs.txt`, `evidence/IMP-08-drive.mjs.txt`, `evidence/IMP-08-run2-node-on.js.txt`, `evidence/IMP-08-run2-node-on-output.txt` | see Frontend Rendered-Result Check |
+| IMP-09 | IR-002 mutations: 8 of `appUpdateInstallAttempt.ts`, `appUpdateAutomaticRun.ts`, `appUpdater.ts` and the sidebar, each run against `appUpdaterAutomatic.spec.ts` or `NotificationCenter.appAutomatic.spec.ts` | working tree before `aa096836d9` (mutated and restored); the removed M14 guard is the only later change to those files | same | settle before recovery, cancel before preparation, skip `quitAndInstall`, download rejection, sidebar count | F-API-001, F-API-002, AC-002, AC-005 | Pass (every mutation red) | `evidence/IMP-09-ir002-mutations.txt` | each `== M*` / `== R*` followed by `failed`; M14 records the removed guard |
+| IMP-10 | Rendered check of F-API-001 on isolated worktree builds, with a seeded record in a temp data root and a feed offering only the running version | `aa096836d9`; layout on `6a94169f4f` | macOS 26.5.2, packaged arm64 build 1.5.11-beta.10 | the sidebar entry through unread, panel open and closed; the handled app row | F-API-001, REQ-005 | Pass | `evidence/IMP-10-sidebar-output.txt`, `evidence/IMP-10-a-sidebar-1-updated.png`, `evidence/IMP-10-b-panel-open.png`, `evidence/IMP-10-c-row-layout.png`, `evidence/IMP-10-sidebar.js.txt` | `"pillLabel": "1 update applied automatically: 1 updated automatically"`; `"pillWhileOpen": "1 updated"`; `"pillAfterClose": null` |
 
 - Not run, and why:
   - the real install and relaunch into a new version (AC-002, AC-003), the native install refusal, and a real Docker
     starter node (AC-004 / AC-005): these need signed packages and a real node; they are API/E2E's per the design's
-    Validation Guidance;
+    Validation Guidance. For IR-002 that means repeating API-02's sidebar check and API-05, as CRR-002 asks;
   - live Codex: not relevant to this change.
 
 ## Frontend Rendered-Result Check (When Applicable)
@@ -272,10 +298,13 @@ Deviations from the design text, each kept within the approved behavior:
        "Server 1.5.11-beta.10", and ends with one "Updated automatically to 1.5.11-beta.10" and no second notice.
        For up to one follow interval (10 s) the window's own "Updated to 1.5.11-beta.10." showed before the main
        process recorded AUTO_UPDATED; the automatic line then replaces it (`evidence/IMP-08-run2-node-on-output.txt`).
+- **IR-002 (IMP-10):** with a seeded automatic record reconciled to AUTO_UPDATED at start, the entry reads "1 updated"
+  (label "1 update applied automatically"), keeps "1 updated" with the panel open, and is gone after closing. The check
+  showed the handled row's icon alone on its own line beside a long version; `6a94169f4f` fixes that. A pre-release
+  version still wraps to two lines at its hyphen in the 368 px panel, which is accepted.
 - **Limitations:**
   - The panel was inspected at the default 1200×768 window only.
-  - The app's AUTO_UPDATED row after a real restart was rendered only in component tests
-    (`NotificationCenter.appAutomatic.spec.ts`); a real restart is API/E2E's.
+  - IMP-10's AUTO_UPDATED row comes from a seeded record, not a real restart; API-02 covers the real restart.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 

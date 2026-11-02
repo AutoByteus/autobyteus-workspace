@@ -1,25 +1,15 @@
 # IMP-02 web typecheck, Electron main tsc, full web unit/component suite (test:nuxt)
-# Commit: 31d38080fc  Env: macOS 26.5.2 arm64, Node v22.23.1  Date: 2026-11-01T20:00:36Z
+# Commit: 6a94169f4f  Env: macOS 26.5.2 arm64, Node v22.23.1  Date: 2026-11-02T04:49:12Z
 ## pnpm -C autobyteus-web typecheck
-isElectronBuild false
-[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
-
- WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/automatic-app-node-updates/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/automatic-app-node-updates/autobyteus-web/stores/serverStore.ts" is used
-
-
- WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/automatic-app-node-updates/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/automatic-app-node-updates/autobyteus-web/stores/serverStore.ts" is used
-
-│
-◆  Types generated in .nuxt.
-[typecheck] Nuxt app (tsconfig.json): 270 errors, exit 2, 36.7s
-[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.9s
+[typecheck] Nuxt app (tsconfig.json): 270 errors, exit 2, 33.5s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.8s
 [typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
 [typecheck] production errors: 0; test-file errors: 297 in 139 files (baseline 297 in 139 files)
 [typecheck] PASS
 exit=0
-## pnpm -C autobyteus-web exec tsc -p electron/tsconfig.json --noEmit
+## tsc -p electron/tsconfig.json --noEmit
 exit=0
-## pnpm -C autobyteus-web test:nuxt (re-run with the full log; the full log is 'too large to commit' and stays at /tmp/autobyteus-356-check/test-nuxt-full.log on the implementation host)
+## pnpm -C autobyteus-web test:nuxt (summary; the full log is not committed)
 exit=0
  Test Files  685 passed (685)
-      Tests  4980 passed (4980)
+      Tests  4981 passed (4981)
