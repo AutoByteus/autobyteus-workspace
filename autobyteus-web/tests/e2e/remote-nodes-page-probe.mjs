@@ -266,14 +266,20 @@ try {
   const clean = value => value.trim().replace(/\s+/g, ' ');
   const text = async locator => (await locator.count()) ? clean(await locator.first().innerText()) : null;
   const row = key => page.locator(`[data-testid="node-row-${key}"]`);
-  /** A row's line without its button: "⚠ Remote collaboration is off on delta." */
+  /** A row's line without its button: "Remote collaboration is off on delta." (363: a tone icon, no text mark). */
   const line = async key => {
     const element = page.locator(`[data-testid="node-line-${key}"]`);
     if (!(await element.count())) return null;
     const paragraph = element.locator('p');
-    // The mark (ⓘ ⚠ ✗) is spaced by CSS, not by text: "ⓘ Not reachable. …".
-    const value = (await paragraph.count()) ? await text(paragraph) : await text(element);
-    return value?.replace(/^([ⓘ⚠✗])\s*/u, '$1 ') ?? null;
+    return (await paragraph.count()) ? await text(paragraph) : await text(element);
+  };
+  /** The tone of a row's notice, from its frame (363): warn amber, error red, info slate; null for the plain checking line. */
+  const tone = async key => {
+    const element = page.locator(`[data-testid="node-line-${key}"]`);
+    if (!(await element.count())) return null;
+    const classes = (await element.getAttribute('class')) ?? '';
+    return classes.includes('border-amber-200') ? 'warn' : classes.includes('border-red-200') ? 'error'
+      : classes.includes('border-slate-200') ? 'info' : classes.includes('border-emerald-200') ? 'ok' : null;
   };
   const fixButton = key => page.locator(`[data-testid="node-fix-${key}"]`);
   const rowKeys = async () => page.locator('[data-testid^="node-row-"]').evaluateAll(items => items.map(item => item.getAttribute('data-testid').slice('node-row-'.length)));
@@ -375,22 +381,24 @@ try {
     await shot('NP-03-theta-checking-others-settled');
     await waitFor('theta settled', async () => settledAt.theta, BOUND_MS + 15_000);
     const lines = Object.fromEntries(await Promise.all(Object.entries({ ...peerKeys, gammaEntry: gammaEntryKey }).map(async ([name, key]) => [name, { line: await line(key),
-      fix: await text(fixButton(key)), dot: await page.locator(`[data-testid="node-dot-${key}"]`).getAttribute('aria-label') }])));
+      tone: await tone(key), fix: await text(fixButton(key)), dot: await page.locator(`[data-testid="node-dot-${key}"]`).getAttribute('aria-label') }])));
     await openDetails(beta.nodeId);
     const betaDirections = await directions(beta.nodeId);
     await shot('NP-03-all-settled');
     const expected = {
-      beta: { line: null, fix: null },
-      gamma: { line: 'ⓘ Not reachable. Nothing answers at that address and port.', fix: 'Check again' },
-      gammaEntry: { line: 'ⓘ Not reachable. Nothing answers at that address and port.', fix: 'Check again' },
-      delta: { line: '⚠ Remote collaboration is off on delta.', fix: 'Turn on there' },
-      epsilon: { line: "⚠ epsilon doesn't know this node yet.", fix: 'Register this node there' },
-      zeta: { line: '✗ A different node answers at this address.', fix: 'Change address' },
-      theta: { line: 'ⓘ Not reachable. No answer within 20 seconds.', fix: 'Check again' },
+      beta: { line: null, tone: null, fix: null },
+      gamma: { line: 'Not reachable. Nothing answers at that address and port.', tone: 'info', fix: 'Check again' },
+      gammaEntry: { line: 'Not reachable. Nothing answers at that address and port.', tone: 'info', fix: 'Check again' },
+      delta: { line: 'Remote collaboration is off on delta.', tone: 'warn', fix: 'Turn on there' },
+      epsilon: { line: "epsilon doesn't know this node yet.", tone: 'warn', fix: 'Register this node there' },
+      zeta: { line: 'A different node answers at this address.', tone: 'error', fix: 'Change address' },
+      theta: { line: 'Not reachable. No answer within 20 seconds.', tone: 'info', fix: 'Check again' },
     };
-    for (const [name, want] of Object.entries(expected)) expect(lines[name].line === want.line && lines[name].fix === want.fix, `${name}: ${JSON.stringify(lines[name])}`);
+    for (const [name, want] of Object.entries(expected)) {
+      expect(lines[name].line === want.line && lines[name].tone === want.tone && lines[name].fix === want.fix, `${name}: ${JSON.stringify(lines[name])}`);
+    }
     expect(betaSummary?.startsWith('3 Agents') && betaEntries === 3, `beta's offer: ${betaSummary} ${betaEntries}`);
-    expect(betaDirections.out?.startsWith(`This node → beta ✓ Working via ${beta.baseUrl}`) && betaDirections.in?.startsWith(`beta → this node ✓ Working via ${alpha.baseUrl}`),
+    expect(betaDirections.out?.startsWith(`This node → beta Working via ${beta.baseUrl}`) && betaDirections.in?.startsWith(`beta → this node Working via ${alpha.baseUrl}`),
       `beta's directions: ${JSON.stringify(betaDirections)}`);
     expect(settledAt.theta.ms >= BOUND_MS - 1_000 && settledAt.theta.ms <= BOUND_MS + 8_000, `theta at the bound: ${settledAt.theta.ms}`);
     for (const name of fast) expect(settledAt[name].ms < 8_000, `${name} at its own pace: ${settledAt[name].ms}`);
@@ -425,7 +433,7 @@ try {
     await page.locator('[data-testid="this-node-switch"]').click();
     await waitFor('theta checked again', async () => (await line(thetaId)) === 'Checking theta… up to 20 seconds.', 10_000);
     await waitFor('the fast peers asked again', async () => (await switchOf(alpha)) && await settled(beta.nodeId) && await settled(delta.nodeId), 20_000);
-    await waitFor('theta settled again', async () => (await line(thetaId)) === 'ⓘ Not reachable. No answer within 20 seconds.', BOUND_MS + 15_000);
+    await waitFor('theta settled again', async () => (await line(thetaId)) === 'Not reachable. No answer within 20 seconds.', BOUND_MS + 15_000);
     await sleep(1_500);
     const onAsks = Object.fromEntries(Object.entries(peerKeys).map(([name, id]) => [name, offerAsks(onAt, id).length]));
     expect(Object.values(onAsks).every(count => count === 1), `switch on asks every peer once: ${JSON.stringify(onAsks)}`);
@@ -445,10 +453,10 @@ try {
     await waitFor('iota listed', async () => (await row(iota.nodeId).count()) === 1);
     await waitSettled(iota.nodeId);
     await sleep(1_000);
-    const iotaState = { dialog: await dialog().count(), duplicate: await page.locator('[data-testid="add-node-duplicate"]').count(), line: await line(iota.nodeId),
+    const iotaState = { dialog: await dialog().count(), duplicate: await page.locator('[data-testid="add-node-duplicate"]').count(), line: await line(iota.nodeId), tone: await tone(iota.nodeId),
       fix: await text(fixButton(iota.nodeId)), switch: await page.locator(`[data-testid="node-agents-switch-${iota.nodeId}"]`).getAttribute('aria-checked') };
     expect(iotaState.dialog === 0 && iotaState.duplicate === 0 && iotaState.switch === 'false', `iota only listed: ${JSON.stringify(iotaState)}`);
-    expect(iotaState.line === "ⓘ Agents here can't work with iota yet." && iotaState.fix === 'Turn on', `iota's line: ${JSON.stringify(iotaState)}`);
+    expect(iotaState.line === "Agents here can't work with iota yet." && iotaState.tone === 'info' && iotaState.fix === 'Turn on', `iota's line: ${JSON.stringify(iotaState)}`);
     // With it on (the default): the one confirmation; kappa's switch is off, so it says so. Cancel changes nothing.
     await addNode(kappa.baseUrl, 'kappa', true);
     await dialog().waitFor({ state: 'visible', timeout: 15_000 });
@@ -475,17 +483,17 @@ try {
     await addNode(`localhost:${gamma.port}`, 'gamma again', true);
     await waitFor('duplicate by address', async () => (await text(page.locator('[data-testid="add-node-duplicate"]'))) !== byNodeId, 10_000).catch(() => undefined);
     const byAddress = await text(page.locator('[data-testid="add-node-duplicate"]'));
-    expect(byNodeId === 'ⓘ This is beta, already in your list.', `duplicate by node ID: ${byNodeId}`);
-    expect(byAddress === 'ⓘ This is gamma box, already in your list.', `duplicate by address: ${byAddress}`);
+    expect(byNodeId === 'This is beta, already in your list.', `duplicate by node ID: ${byNodeId}`);
+    expect(byAddress === 'This is gamma box, already in your list.', `duplicate by address: ${byAddress}`);
     // Not reachable: added with its cause, no confirmation.
     await addNode(`http://127.0.0.1:${deadPort}`, 'ghost', true);
     await waitFor('ghost listed', async () => (await registry()).nodes.some(node => node.name === 'ghost'), 10_000);
     const ghost = (await registry()).nodes.find(node => node.name === 'ghost');
     await waitSettled(`d:${ghost.id}`);
     await sleep(1_000);
-    const ghostState = { line: await line(`d:${ghost.id}`), fix: await text(fixButton(`d:${ghost.id}`)), dialog: await dialog().count(),
+    const ghostState = { line: await line(`d:${ghost.id}`), tone: await tone(`d:${ghost.id}`), fix: await text(fixButton(`d:${ghost.id}`)), dialog: await dialog().count(),
       switchDisabled: await page.locator(`[data-testid="node-agents-switch-d:${ghost.id}"]`).isDisabled() };
-    expect(ghostState.line === 'ⓘ Not reachable. Nothing answers at that address and port.' && ghostState.fix === 'Check again' && ghostState.dialog === 0 && ghostState.switchDisabled,
+    expect(ghostState.line === 'Not reachable. Nothing answers at that address and port.' && ghostState.tone === 'info' && ghostState.fix === 'Check again' && ghostState.dialog === 0 && ghostState.switchDisabled,
       `ghost: ${JSON.stringify(ghostState)}`);
     const stored = await registry();
     const added = stored.nodes.filter(node => ['iota', 'kappa', 'ghost'].includes(node.name)).map(({ name, baseUrl, nodeId }) => ({ name, baseUrl, nodeId: nodeId ?? null }));
@@ -520,7 +528,7 @@ try {
     assert(onAlpha?.name === 'kappa' && onAlpha.baseUrl === kappa.baseUrl, `kappa on alpha: ${JSON.stringify(onAlpha)}`);
     assert(onKappa.length === 1 && onKappa[0].nodeId === alpha.nodeId && onKappa[0].name === 'Embedded Node' && onKappa[0].baseUrl === alpha.baseUrl, `alpha on kappa: ${JSON.stringify(onKappa)}`);
     assert(await switchOf(kappa) === true, "kappa's switch turned on");
-    expect(kappaDirections.out?.startsWith(`This node → kappa ✓ Working via ${kappa.baseUrl}`) && kappaDirections.in?.startsWith(`kappa → this node ✓ Working via ${alpha.baseUrl}`),
+    expect(kappaDirections.out?.startsWith(`This node → kappa Working via ${kappa.baseUrl}`) && kappaDirections.in?.startsWith(`kappa → this node Working via ${alpha.baseUrl}`),
       `directions: ${JSON.stringify(kappaDirections)}`);
     expect(offers.alphaAsksKappa.refusalCode === null && offers.alphaAsksKappa.entries.some(entry => entry.name === 'Kappa Helper')
       && offers.kappaAsksAlpha.refusalCode === null && offers.kappaAsksAlpha.entries.some(entry => entry.name === 'Alpha Helper'), `each lists the other's Agents: ${JSON.stringify(offers)}`);
@@ -559,7 +567,7 @@ try {
     await page.locator('[data-testid="node-change-close"]').click();
     await waitDialogGone();
     await waitSettled(mu.nodeId, 25_000);
-    const rowLine = { line: await line(mu.nodeId), fix: await text(fixButton(mu.nodeId)) };
+    const rowLine = { line: await line(mu.nodeId), tone: await tone(mu.nodeId), fix: await text(fixButton(mu.nodeId)) };
     await openDetails(mu.nodeId);
     const stepsDetail = await text(page.locator(`[data-testid="node-steps-${mu.nodeId}"]`));
     await shot('NP-07-mu-row-try-again');
@@ -573,7 +581,7 @@ try {
     const onMu = (await peersOf(mu)).find(peer => peer.nodeId === alpha.nodeId);
     expect(planned.find(entry => entry.id === 'registerThere')?.text.startsWith('Register this node as “Embedded Node”'), `planned: ${JSON.stringify(planned)}`);
     expect(failed.error === 'mu already has a node named Embedded Node.' && failed.partial === 'Not everything could be done. What was done stays done.', `failed: ${JSON.stringify(failed)}`);
-    expect(rowLine.line === '⚠ Turned on here, but not finished on mu. mu already has a node named Embedded Node.' && rowLine.fix === 'Try again', `row line: ${JSON.stringify(rowLine)}`);
+    expect(rowLine.line === 'Turned on here, but not finished on mu. mu already has a node named Embedded Node.' && rowLine.tone === 'warn' && rowLine.fix === 'Try again', `row line: ${JSON.stringify(rowLine)}`);
     expect(replanned.title === 'Finish connecting mu' && replanned.steps.length === 1 && replanned.steps[0].text.startsWith('Register this node as “Embedded Node 2”'), `replanned: ${JSON.stringify(replanned)}`);
     assert(onMu?.name === 'Embedded Node 2', `alpha on mu: ${JSON.stringify(onMu)}`);
     return { planned, failed, rowLine, stepsDetail, replanned, onMu };

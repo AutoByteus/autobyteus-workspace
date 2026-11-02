@@ -267,9 +267,26 @@ Phone Setup, Docker Guide, NFS Guide) is where the owner sees every node once, a
 once, and lets agents on two nodes work together after one confirmation (one-nodes-tab; the
 approved UI/UX spec is the design repository's `tickets/done/one-nodes-tab/ui-ux-spec.md`).
 There is no Remote Collaboration tab; `?nodeTab=remoteCollaboration` opens Manage Nodes. The
-server side is described in the server's `docs/modules/remote_collaboration.md`.
+server side is described in the server's `docs/modules/remote_collaboration.md`. Its look is
+the approved design repository's `tickets/done/manage-nodes-professional/ui-ux-spec.md`
+(autobyteus-363); behavior, states and copy are those of 268 and 305.
 
-- **This node** (`components/settings/nodes/ThisNodeCard.vue`): the window's node, its
+- **Layout.** Two cards in one frame (white, `border-slate-200`, `rounded-2xl`): "This node"
+  and "Nodes". The Nodes card is a CSS size container (`.nodes-card`, `container-type:
+  inline-size`), and each row lays out its cells by the card's width, not the window's
+  (`NodeRow.vue`, `@container`): from 64 rem one line, who · server · offer · collaboration ·
+  actions; from 38 rem who · collaboration · actions with server and offer beneath; below 38
+  rem stacked (who and the icons, then server, offer and collaboration, indented to the name).
+- **One control, one notice shape.** The remote-collaboration icon and its switch are one
+  capsule (`NodeCollaborationSwitch.vue`), the same in every row and in the add band. Every
+  line under a row (the fixing line, the server notice) is one notice: a tone icon
+  (`NodeNoticeIcon.vue`: info, warn, error, ok), its text and at most one button; the
+  connection details, the Docker hint and the duplicate message use the same icons. Words
+  carry the meaning; there are no text marks outside the confirmation dialog, which keeps
+  its own (• ✓ ✗ ○).
+
+- **This node** (`components/settings/nodes/ThisNodeCard.vue`): the window's node (name, type,
+  address), its
   remote collaboration switch (`ENABLE_REMOTE_COLLABORATION`, off by default, through
   `remoteCollaborationCapabilityStore`, a `createBoundNodeCapabilityStore` capability), its
   explanation and the collapsed "How remote collaboration works" rules (any shared Agent or
@@ -292,15 +309,17 @@ server side is described in the server's `docs/modules/remote_collaboration.md`.
   are rows too; their Open appears once this window reaches them, and the first Open adds a
   desktop entry. Two desktop entries of one node join into one row.
 - **A row**: a dot (reachable now, not reachable, a different node, checking), the name
-  (click to rename; the embedded node's is not editable), the address, the collaboration
-  switch with its icon, Open and Remove icons, and at most one line with one fixing button
+  (click to rename; the embedded node's is not editable), the address, the server version
+  (remote nodes), the offer summary, the collaboration capsule, Open and Remove icons (a slot is
+  kept for Open only when the host can open windows, and for Remove on the embedded node), and
+  at most one notice with one fixing button
   (`stores/nodeRowStatus.ts`, by priority: a step not finished [Try again]; not reachable
   with its cause [Check again]; a different node [Change address]; registered only by the
   other node [Turn on]; not collaborating [Turn on]; off there [Turn on there]; not
   registered there [Register this node there]). With this node's switch off, rows show no
-  warnings. Once collaboration is on, the 267 summary line under the row opens the offer
-  list and the connection details (`NodeConnectionDetails.vue`): both directions with the
-  address each side uses, Change address, the node ID and Check again.
+  warnings. Once collaboration is on, the row's offer summary opens one framed panel under the
+  row with the offer list and the connection details (`NodeConnectionDetails.vue`): both
+  directions with the address each side uses, Change address, the node ID and Check again.
 - **When nodes are asked.** Every row once when the tab opens, whatever this node's switch
   says; a row when it is added and on Check again; every row when the switch changes.
   Nothing polls, except a row's server update line while an update runs (below). "This node → it" is this node's server asking the peer
@@ -310,14 +329,16 @@ server side is described in the server's `docs/modules/remote_collaboration.md`.
   and asks it `peerNodeAvailability(this node)` for "it → this node". Each ask takes a token
   per row; a stale answer is ignored.
 - **A remote node's server and its in-place update** (`components/settings/nodes/NodeServerUpdate.vue`,
-  `stores/nodeServerUpdateStore.ts`). Under each remote row the window reaches, a line shows
-  the node's server version from its `GET /rest/node-update` (DESIGN.md rule 9 exception,
-  C1). It is asked when the tab opens and when this app's version becomes known; idle rows are
+  `stores/nodeServerUpdateStore.ts`). For each remote row the window reaches, the row's server
+  cell shows the node's server version from its `GET /rest/node-update` (DESIGN.md rule 9
+  exception, C1), with the update chip and progress under it; results, refusals and blockers
+  are a notice under the row. The component renders both parts (`part="cell"`, `part="notice"`);
+  only the cell asks the node, so it is asked once per row. It is asked when the tab opens and when this app's version becomes known; idle rows are
   not polled. When the node is older than this app, the line offers **Update to
   `<version>`** ("Same version as this app"). When it is newer, it says "Newer than this app.
   Update this app." The click sends `POST /rest/node-update` at once, as the approved
   scenario has it (no confirmation dialog), and nothing else starts an update.
-  - While an update runs, the line shows its step (checking, downloading, preparing,
+  - While an update runs, the cell shows its step (checking, downloading, preparing,
     restarting), asking every 2 s. While the node does not answer during its restart, it
     shows "Restarting…" for up to 5 minutes, then "Not reachable. Last known: updating to
     `<version>`." and asks every 10 s, so it recovers by itself.
@@ -326,7 +347,7 @@ server side is described in the server's `docs/modules/remote_collaboration.md`.
     `NEEDS_NEW_IMAGE` refusal adds a Copy command button for
     `autobyteus-docker upgrade --all --tag <version>`.
   - A node whose server has no starter shows "Server version unknown" without a button. When
-    its starter does not answer, the line shows that version text plus the server's message.
+    its starter does not answer, the cell shows that version text, and a notice shows the server's message.
   - A node that cannot update in place shows its version, no button, and the node's reason
     (`updateBlocker`). For example, a node made by an older launcher has no server-packages
     volume: "Reinstall the launcher, then run: autobyteus-docker upgrade --all".
@@ -335,9 +356,9 @@ server side is described in the server's `docs/modules/remote_collaboration.md`.
     an image from before in-place updates (before v1.5.11-beta.6), until the owner moves it
     to a newer image (`autobyteus-server-ts/docker/README.md`, "Update a node's server in
     place").
-  - The embedded node has no such line; the desktop updater updates it.
-- **Add** (`AddNodePanel.vue`): Address, Name, the collaboration switch (on by default), Add
-  node. An address already in the list, whatever its node's state, or another address of a
+  - The embedded node has no server cell; the desktop updater updates it.
+- **Add** (`AddNodePanel.vue`, the band under the Nodes header): Address, Name, the
+  collaboration capsule (on by default), Add node. An address already in the list, whatever its node's state, or another address of a
   listed node (by node ID) is not added again: "This is X, already in your list." Adding
   does not open the node's window. With the switch on and the node reachable, the
   confirmation opens; an unreachable node is added and its row shows the cause.
@@ -357,10 +378,11 @@ server side is described in the server's `docs/modules/remote_collaboration.md`.
   node; "fetch failed" is never shown. When a node in a container cannot find an address and
   the first one it tried was loopback, the hint suggests `host.docker.internal:<port>` with
   Use this and a link to the Docker Guide tab. The add form never shows it.
-- **The offer.** `RemoteCollaborationOfferDisclosure.vue` shows one line (counts, then the
-  names cut by the line's width, or a label such as "Connection details") and opens into
-  `RemoteCollaborationOfferList.vue` (Agents and Agent Teams side by side from `md` up; a
-  search box when either kind has more than 6) with the connection details below it.
+- **The offer.** `RemoteCollaborationOfferToggle.vue` is the row's offer summary ("7 Agents ·
+  2 Agent Teams", or a label such as "Connection details" or an empty offer), with the names as
+  its tooltip. It opens the row's panel: `RemoteCollaborationOfferList.vue` (Agents and Agent
+  Teams side by side from `md` up; a search box when either kind has more than 6) with the
+  connection details below it.
 
 ## Server Settings: Feature Capability Toggles
 
