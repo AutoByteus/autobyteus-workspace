@@ -71,7 +71,7 @@ const harness = (options: { invalid?: boolean } = {}) => {
         : { kind: "valid" as const, selection: { llmModelIdentifier: selection.llmModelIdentifier, llmConfig: selection.llmConfig } });
     }),
   } as unknown as RunModelSelectionValidator;
-  return { steps, admission: createCollaboratorAdmission(catalog, validator, { getRuntimeAvailability: async (runtimeKind) => ({ runtimeKind, enabled: true, reason: null }) }) };
+  return { steps, validator, admission: createCollaboratorAdmission(catalog, validator, { getRuntimeAvailability: async (runtimeKind) => ({ runtimeKind, enabled: true, reason: null }) }) };
 };
 
 const other = { relation: () => "other" as const, ownTeam: null };
@@ -201,9 +201,21 @@ describe("catalog policy and mention resolution", () => {
     expect(await admission.policy.listEligible(port({ applicationBound: true }))).toEqual([]);
   });
 
+  it("a catalog copy with its own folder resolves and checks its launches for that folder; the tool schema is untouched (autobyteus-97 AC-008)", async () => {
+    const run = harness();
+    const source = await run.admission.catalogTaskSource(port(), { address: "/product_team", senderRunId: "pm", workspaceRootPath: "/projects/f" } as never);
+    const copy = source!.source as never as { defaultLaunchConfiguration: { workspaceRootPath: string }; members: Array<{ launchConfiguration: { workspaceRootPath: string } }> };
+    expect(copy.defaultLaunchConfiguration.workspaceRootPath).toBe("/projects/f");
+    expect(copy.members.map((member) => member.launchConfiguration.workspaceRootPath)).toEqual(["/projects/f", "/projects/f"]);
+    const checked = vi.mocked(run.validator.validateMany).mock.calls.flatMap(([inputs]) => inputs) as never as Array<Record<string, unknown>>;
+    expect(checked.length).toBeGreaterThan(0);
+    expect(checked.every((input) => (input.context as { workspaceRootPath: string }).workspaceRootPath === "/projects/f")).toBe(true);
+    expect(port().launchBase()).toMatchObject({ kind: "inherited", launch });
+  });
+
   it("a catalog task source snapshots the definition and root settings without identities (Q-1)", async () => {
     const run = harness();
-    const source = await run.admission.catalogTaskSource(port(), { address: "/product_team", senderRunId: "pm" });
+    const source = await run.admission.catalogTaskSource(port(), { address: "/product_team", senderRunId: "pm", workspaceRootPath: null });
     expect(source).toEqual({ name: "Product Team", launchNotes: [], source: {
       kind: "agent_team", teamDefinitionId: "product", coordinatorAddress: "/product_team/lead",
       members: [
@@ -215,8 +227,8 @@ describe("catalog policy and mention resolution", () => {
       defaultLaunchSource: { origin: "inherited", fallbacks: [] },
     } });
     expect(run.steps).toEqual(["validate:1"]);
-    expect(await run.admission.catalogTaskSource(port(), { address: "/nobody", senderRunId: "pm" })).toBeNull();
-    await expect(harness({ invalid: true }).admission.catalogTaskSource(port(), { address: "/code_reviewer", senderRunId: "pm" }))
+    expect(await run.admission.catalogTaskSource(port(), { address: "/nobody", senderRunId: "pm", workspaceRootPath: null })).toBeNull();
+    await expect(harness({ invalid: true }).admission.catalogTaskSource(port(), { address: "/code_reviewer", senderRunId: "pm", workspaceRootPath: null }))
       .rejects.toMatchObject({ code: "COLLABORATOR_ADD_FAILED", collaboratorName: "Code Reviewer" });
   });
 });

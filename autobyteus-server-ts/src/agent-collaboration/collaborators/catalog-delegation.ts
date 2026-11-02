@@ -1,9 +1,10 @@
 import type { AgentTeamAddress } from "../domain/agent-team-address.js";
 import { CollaborationContractError } from "../domain/collaboration-contract-error.js";
-import type {
-  TaskAgentExecutionSource,
-  TaskExecutionSource,
-  TaskTeamExecutionSource,
+import {
+  sourceInFolder,
+  type TaskAgentExecutionSource,
+  type TaskExecutionSource,
+  type TaskTeamExecutionSource,
 } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import type { CatalogTaskSource } from "./collaborator-admission.js";
 import { CollaboratorAddError, ownTeamDelegationRefusedMessage } from "./collaborator-errors.js";
@@ -70,6 +71,11 @@ export const sourcedPlacement = (
     : Object.freeze({ kind: "agent_team", address, coordinatorAddress: source.coordinatorAddress, source, ...extras });
 };
 
+const placementInFolder = (placement: DelegationPlacement, folder: string | null): DelegationPlacement =>
+  folder === null || placement.kind === "remote_agent"
+    ? placement
+    : Object.freeze({ ...placement, source: sourceInFolder(placement.source, folder) }) as DelegationPlacement;
+
 /**
  * `delegate_task(address)` placement (DS-001), called inside the root gate:
  * 1. CM-1: the sender itself, a teammate or its own Team is refused before any placement,
@@ -77,24 +83,26 @@ export const sourcedPlacement = (
  * 2. the root's in-run configured placements, with the placement's snapshot;
  * 3. a listed catalog definition that is not in the run: a fresh copy with its source snapshot.
  * A catalog definition that cannot run returns its reason as a not-found delegation result.
+ * A new copy with its own folder (`newCopyFolder`) runs there in both forms; `null` keeps the placement's or base's.
  */
 export const resolveDelegationPlacement = async (input: Readonly<{
   port: DelegationSourceIndexPort;
   senderAgentRunId: string;
   address: AgentTeamAddress;
+  newCopyFolder: string | null;
   resolveInRun(): DelegationPlacement;
-  catalogSource(): Promise<CatalogTaskSource | null>;
+  catalogSource(workspaceRootPath: string | null): Promise<CatalogTaskSource | null>;
 }>): Promise<DelegationPlacement> => {
   if (input.port.isOwnTeamAddress(input.senderAgentRunId, input.address)) {
     throw new CollaborationContractError("COLLABORATION_SELF_TARGET_REJECTED", ownTeamDelegationRefusedMessage(input.address));
   }
   try {
-    return input.resolveInRun();
+    return placementInFolder(input.resolveInRun(), input.newCopyFolder);
   } catch (error) {
     if (!(error instanceof CollaborationContractError) || error.code !== "COLLABORATION_TARGET_NOT_FOUND") throw error;
     let catalog: CatalogTaskSource | null;
     try {
-      catalog = await input.catalogSource();
+      catalog = await input.catalogSource(input.newCopyFolder);
     } catch (cause) {
       if (cause instanceof CollaboratorAddError) {
         throw new CollaborationContractError(

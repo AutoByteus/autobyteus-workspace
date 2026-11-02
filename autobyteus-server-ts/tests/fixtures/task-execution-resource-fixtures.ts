@@ -28,8 +28,15 @@ export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort
   beforeAssignCommit?: (input: ExistingTaskExecutionAssignInput) => Promise<void> | void;
   /** Test hook awaited inside `linkNewTaskExecution` before the write commits. */
   beforeLinkCommit?: (input: NewTaskExecutionLinkInput) => Promise<void> | void;
+  /** Each Project's new-copy folder when it has a linked one (AC-001): absent means no link. A value of an Error refuses. */
+  readonly projectFolders = new Map<string, string | Error>();
   private adHocCount = 0;
 
+  async projectFolderForNewCopy(projectId: string): Promise<string | null> {
+    const folder = this.projectFolders.get(projectId) ?? null;
+    if (folder instanceof Error) throw folder;
+    return folder;
+  }
   /** A saved Project Task; with `taskKey`, agents may also name it by that key (any letter case). */
   addTask(taskId: string, description = `saved work for ${taskId}`, taskKey?: string): void {
     this.tasks.set(taskId, { description, referenceFiles: [], done: false, ...(taskKey ? { taskKey } : {}) });

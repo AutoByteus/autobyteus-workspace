@@ -1,0 +1,31 @@
+# API-02: autobyteus-server-ts/tests/e2e/projects/delegated-copy-project-folder-live.e2e.test.ts (live: real Codex and Claude workers; scripted AGY manager)
+# Command: env -i PATH HOME=$HOME USER LOGNAME TMPDIR CODEX_HOME=<throwaway with a symlink to ~/.codex/auth.json, removed after> RUN_AGY_FAILURE_E2E=1 RUN_CODEX_E2E=1 RUN_CLAUDE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs fixture> DELEGATED_COPY_FOLDER_E2E_EVIDENCE_DIR=<ev>/API-02 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/delegated-copy-project-folder-live.e2e.test.ts --no-watch
+# Code: 8959bc507a; codex-cli 0.166.0 (gpt-6.1-terra, medium), Claude Code 2.1.316 (claude-haiku-4-5-20251001); signed-in CLIs; the Claude run added its conversation to the user's Claude history; Date: 2026-11-02T07:12:42Z
+# Attempt 1 (live cases inside the scripted file): DCF-L1 passed; DCF-L2 never started (a second harness in one file: 'Cannot set custom app data directory after initialize()'); moved to their own file.
+
+ ✓ tests/e2e/projects/delegated-copy-project-folder-live.e2e.test.ts (2 tests) 10313ms
+     ✓ DCF-L1: a real codex_app_server copy writes pwd: the file is in F and holds F, not the manager's G  4667ms
+     ✓ DCF-L2: a real claude_agent_sdk copy writes pwd: the file is in F and holds F, not the manager's G  5409ms
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+
+{
+  "DCF-L1": {
+    "runtimeKind": "codex_app_server",
+    "model": "gpt-6.1-terra",
+    "copyId": "dcf_live_worker_d1313f_c0a786700fe2424e934fb12cef9e6ba1",
+    "pwdWrittenByTheCopy": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcf-live-pw60nB/project-folder-dcf-l1",
+    "F": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcf-live-pw60nB/project-folder-dcf-l1",
+    "G": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcf-live-pw60nB/workspace",
+    "inG": false
+  },
+  "DCF-L2": {
+    "runtimeKind": "claude_agent_sdk",
+    "model": "claude-haiku-4-5-20251001",
+    "copyId": "dcf_live_worker_667220_eba07752d5d0404b98598ae36cc12688",
+    "pwdWrittenByTheCopy": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcf-live-pw60nB/project-folder-dcf-l2",
+    "F": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcf-live-pw60nB/project-folder-dcf-l2",
+    "G": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dcf-live-pw60nB/workspace",
+    "inG": false
+  }
+}

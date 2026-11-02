@@ -11,7 +11,7 @@ const NO_REMOTE_ENDPOINTS: RemoteEndpointLookup = Object.freeze({ isRemoteEndpoi
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
 import { dispatchTaskCopy } from "./root-task-dispatch.js";
 import { notACopyOfThisRun, resolveExistingCopy } from "./existing-copy-target.js";
-import { RootTaskExecutionResourceScope } from "./root-task-execution-resource-scope.js";
+import { asTaskDelegationError, RootTaskExecutionResourceScope } from "./root-task-execution-resource-scope.js";
 import { ASSIGNER_ONLY_REACTIVATION_MESSAGE, taskReactivationRejectionCode, type TaskExecutionOwner, type TaskExecutionResourcePort, type TaskExecutionStopResult } from "./task-execution-resource-port.js";
 import type { CollaborationMemberExecutionIdentity } from "../domain/root-execution-identity.js";
 import type { AgentExecutionStatus } from "@autobyteus/collaboration-stream-contracts";
@@ -142,6 +142,16 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
     this.assertAdmitting(context.identity);
     this.adapter.assertCurrentSchemaReady();
     return prepareNewCopyWork(this.resourceScope, context.identity.agentRunId, input);
+  }
+
+  /**
+   * Where a new local copy of this work runs (DS-001): its Task's Project's folder, or `null` to inherit (no link, or a
+   * Task with no Project). A remote copy never asks: a missing folder here must not refuse work that does not use it.
+   */
+  async newCopyFolder(work: NewCopyWork): Promise<string | null> {
+    const { projectId } = work.delegation.task;
+    if (projectId === null) return null;
+    return this.resourceScope.port().projectFolderForNewCopy(projectId).catch((error) => { throw asTaskDelegationError(error); });
   }
 
   /** Step 3: a new copy at `placement` for the prepared work. */
