@@ -1,0 +1,4 @@
+system_task_notification system.runtime_handover Agent runtime changed from Claude Agent SDK (claude-haiku-4-5-20251001
+system_instruction  ## Agent Identity  - Name: live-org-member 79abb5 - Description: live 
+user  You are continuing this member's work. Reply with exactly: CONTINUED
+assistant  CONTINUED

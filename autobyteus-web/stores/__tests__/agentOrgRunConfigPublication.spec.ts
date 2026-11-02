@@ -82,3 +82,31 @@ describe('guarded Org configuration publication', () => {
     await expect(store.readRunConfig('org-run')).rejects.toThrow('locked fields')
   })
 })
+
+describe('an agent runtime switch of an Org member and its undo through Save (autobyteus-348)', () => {
+  it.each([['a direct Agent', (tree: any) => tree.rootOrg.members.find((member: any) => 'agentRunId' in member)],
+    ['an Agent of a mounted Team', (tree: any) => tree.rootOrg.members.find((member: any) => 'teamRunId' in member).members[0]]] as const)(
+    'saves the switch of %s, then the undo that restores its original session, without an error', async (_label, pick) => {
+      const { store, org } = await setup()
+      const original = pick(org.executionTree)
+      const originalRuntime = original.launchConfiguration.runtimeKind
+      const address = original.address, runId = original.agentRunId
+      // The agent runtime the view started on has a live session (the one the undo must restore).
+      const withSession = JSON.parse(JSON.stringify(org.executionTree)); pick(withSession).platformAgentRunId = 'original-session'
+      org.view = { ...org.view, execution_tree: withSession }
+      const switched = JSON.parse(JSON.stringify(withSession))
+      const target = pick(switched)
+      target.launchConfiguration.runtimeKind = originalRuntime === 'claude_agent_sdk' ? 'codex_app_server' : 'claude_agent_sdk'
+      target.platformAgentRunId = null
+      io.save.mockResolvedValueOnce(result(switched))
+      await store.saveRunConfig('org-run', { selectionPatches: [{ scopeKind: 'CONFIGURED_AGENT', scopeAddress: address, runtimeKind: target.launchConfiguration.runtimeKind,
+        llmModelIdentifier: target.launchConfiguration.llmModelIdentifier, llmConfig: null }] as never, teamWorkspacePatches: [] })
+      expect(org.getAgentContext(runId)!.config.runtimeKind).toBe(target.launchConfiguration.runtimeKind)
+      // The undo: the server returns the original runtime with the original session (not null).
+      io.save.mockResolvedValueOnce(result(withSession))
+      await expect(store.saveRunConfig('org-run', { selectionPatches: [{ scopeKind: 'CONFIGURED_AGENT', scopeAddress: address, runtimeKind: originalRuntime,
+        llmModelIdentifier: original.launchConfiguration.llmModelIdentifier, llmConfig: null }] as never, teamWorkspacePatches: [] })).resolves.toBeDefined()
+      expect(org.getAgentContext(runId)!.config.runtimeKind).toBe(originalRuntime)
+      expect(pick(org.executionTree).platformAgentRunId).toBe('original-session')
+    })
+})

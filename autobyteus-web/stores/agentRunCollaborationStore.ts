@@ -182,7 +182,8 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
    */
   const viewFor = async (hostRunId: string, options: Readonly<{ fresh?: boolean }> = {}): Promise<AgentRunCollaborationContext['view'] | null> => {
     // A deliberate re-read (after a committed Save, a stop or Refresh) never takes the published view, nor a read
-    // started before it (autobyteus-366).
+    // started before it (autobyteus-366): a stopped host has no stream to deliver the saved choices, so its stored view
+    // is read again, and a copy's switched runtime shows at once (autobyteus-348); a live host's stream keeps it current.
     if (options.fresh) inspections.delete(hostRunId)
     const pending = inspections.get(hostRunId)
     const failure = pending ? await pending : options.fresh || !contexts.value[hostRunId] ? await read(hostRunId) : null

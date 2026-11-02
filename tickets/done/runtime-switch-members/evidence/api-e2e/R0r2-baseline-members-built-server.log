@@ -1,0 +1,30 @@
+# Case: R0r2 (MS-01..04)
+# Command: cd autobyteus-server-ts && same env; tests/e2e/runtime/runtime-switch-members-built-server.e2e.test.ts
+# Commit: d7e63493e7 (+ uncommitted API/E2E test changes committed with this round)
+# Environment: macOS arm64, Node 22, Google Chrome 156 headless / owned temp roots; server rebuilt from this commit (pnpm build exit 0)
+# Date: 2026-11-02T07:38Z
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-switch-members/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-switch-members/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+
+Database reset successful
+
+
+
+ ✓ tests/e2e/runtime/runtime-switch-members-built-server.e2e.test.ts (4 tests) 11703ms
+     ✓ MS-01: a Team member native -> Antigravity: the save marks that member only, the first message archives exactly the native agent's records and starts the new file with one marker, the reopened chat shows both  2577ms
+     ✓ MS-02: a Team member Antigravity -> native with a failed start leaves the previous agent's file as it was, and the retry completes with one marker and one segment  1405ms
+     ✓ MS-03: after a server restart the member keeps its agent runtime with no pending field, restores and answers, and the earlier segments are unchanged  2348ms
+     ✓ MS-04: Org members, a direct Agent and an Agent of a mounted Team, switched in one save: each switches by its own first message with its own segment and marker  3257ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  08:28:43
+   Duration  12.25s (transform 58ms, setup 38ms, import 97ms, tests 11.70s, environment 0ms)
+
+exit 0

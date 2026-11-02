@@ -147,6 +147,24 @@ describe('agentRunCollaborationStore', () => {
     await expect(useAgentRunCollaborationStore().viewFor('host-run')).rejects.toThrow('collaboration view unavailable')
   })
 
+  it('a fresh read for Settings after a Save reads a stopped host again; a live host is kept current by its stream (autobyteus-348)', async () => {
+    const reads = vi.mocked((await import('~/services/agentCollaboration/agentRunCollaborationHydration')).readAgentRunCollaboration)
+    const store = useAgentRunCollaborationStore()
+    await store.inspect('host-run')
+    const first = store.contextFor('host-run')!.view
+    reads.mockClear()
+    expect(await store.viewFor('host-run')).toBe(first)
+    expect(reads).not.toHaveBeenCalled()
+    await store.viewFor('host-run', { fresh: true })
+    expect(reads).toHaveBeenCalledOnce()
+    expect(store.contextFor('host-run')!.view).not.toBe(first)
+    // A host with a stream (it is running) is not read again: the stream is the source.
+    store.attach('host-run')
+    reads.mockClear()
+    await store.viewFor('host-run', { fresh: true })
+    expect(reads).not.toHaveBeenCalled()
+  })
+
   it('selecting a stopped hub whose stored view is already published reads it no more (QR-002); a hub that stops is read again', async () => {
     const reads = vi.mocked((await import('~/services/agentCollaboration/agentRunCollaborationHydration')).readAgentRunCollaboration)
     const store = useAgentRunCollaborationStore()

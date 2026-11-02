@@ -112,4 +112,66 @@ describe('AgentOrg whole model-only canonical adoption', () => {
       expect(org.view).toBe(view); expect(org.index).toBe(index)
     }
   })
+
+  describe('an agent runtime switch of a configured Agent (autobyteus-348)', () => {
+    const switchedTree = async (sessions: Record<string, string | null> = {}) => {
+      const staged = await stageAgentOrgExecutionContext({ focus: null, source: 'inspection', orgRunId: 'org-run', view: inactiveView() })
+      const org = staged.context
+      const next = JSON.parse(JSON.stringify(org.executionTree)) as typeof org.executionTree
+      const agents = configuredAgents(next)
+      return { org, next, agents, switched: agents[0]!, others: agents.slice(1), sessions }
+    }
+
+    it('adopts a switched Agent: its agent runtime changed, its session dropped; the context shows the new runtime and keeps its conversation', async () => {
+      const { org, next, switched } = await switchedTree()
+      const before = org.getAgentContext(switched.agentRunId)!
+      const conversation = before.conversation
+      switched.launchConfiguration.runtimeKind = 'claude_agent_sdk'
+      switched.launchConfiguration.llmModelIdentifier = 'claude-sonnet'
+      switched.platformAgentRunId = null
+      expect(org.applyRunConfig(next, false)).toBe(true)
+      const after = org.getAgentContext(switched.agentRunId)!
+      expect(after.config).toMatchObject({ runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'claude-sonnet' })
+      expect(after.conversation).toBe(conversation)
+    })
+
+    it('adopts an Agent of a mounted Team the same way', async () => {
+      const { org, next } = await switchedTree()
+      const mounted = next.rootOrg.members.find(member => 'teamRunId' in member)
+      if (!mounted || !('teamRunId' in mounted)) throw new Error('the fixture has a mounted Team')
+      const agent = mounted.members[0]!
+      agent.launchConfiguration.runtimeKind = 'claude_agent_sdk'
+      agent.platformAgentRunId = null
+      expect(org.applyRunConfig(next, false)).toBe(true)
+      expect(org.getAgentContext(agent.agentRunId)!.config.runtimeKind).toBe('claude_agent_sdk')
+    })
+
+    it('accepts the undo of a pending switch: the original agent runtime returns with its original (non-null) session, for a direct Agent and a mounted-Team Agent', async () => {
+      const { org, next } = await switchedTree()
+      const mounted = next.rootOrg.members.find(member => 'teamRunId' in member)
+      if (!mounted || !('teamRunId' in mounted)) throw new Error('the fixture has a mounted Team')
+      const direct = next.rootOrg.members.find(member => 'agentRunId' in member)
+      if (!direct || !('agentRunId' in direct)) throw new Error('the fixture has a direct Agent')
+      const originals = [direct, mounted.members[0]!]
+      // The stored view is the pending state: another agent runtime, no session.
+      const pendingTree = JSON.parse(JSON.stringify(next)) as typeof next
+      const pendingAgents = [pendingTree.rootOrg.members.find(member => 'agentRunId' in member), (pendingTree.rootOrg.members.find(member => 'teamRunId' in member) as any).members[0]] as any[]
+      for (const agent of pendingAgents) { agent.launchConfiguration.runtimeKind = 'claude_agent_sdk'; agent.platformAgentRunId = null }
+      expect(org.applyRunConfig(pendingTree, false)).toBe(true)
+      // The undo: the server restored the original runtime and the original session.
+      for (const agent of originals) agent.platformAgentRunId = 'original-session'
+      expect(org.applyRunConfig(next, false)).toBe(true)
+      for (const agent of originals) {
+        expect(org.getAgentContext(agent.agentRunId)!.config.runtimeKind).toBe(agent.launchConfiguration.runtimeKind)
+      }
+    })
+
+    it('refuses a session change of an Agent whose agent runtime did not change', async () => {
+      const { org, next, others } = await switchedTree()
+      const victim = others[0] ?? next.rootOrg.members.find(member => 'agentRunId' in member)
+      if (!victim || !('platformAgentRunId' in victim)) throw new Error('the fixture has a second configured Agent')
+      victim.platformAgentRunId = 'invented'
+      expect(() => org.applyRunConfig(next, false)).toThrow('locked fields')
+    })
+  })
 })

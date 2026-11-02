@@ -36,14 +36,15 @@ export class StandaloneRootRecipientResolver {
   }
 
   /** CM-1 refusal first, then a catalog copy (an Agent root has no other delegation target). */
-  resolveDelegationPlacement(sender: CollaborationMemberExecutionIdentity, addressInput: string, work: DelegationWork): Promise<StandaloneRootPlacement> {
+  resolveDelegationPlacement(sender: CollaborationMemberExecutionIdentity, addressInput: string, work: DelegationWork, newCopyFolder: string | null): Promise<StandaloneRootPlacement> {
     const address = this.requireAddress(addressInput);
     return resolveDelegationPlacement({
       port: this.options.getIndex(),
       senderAgentRunId: sender.agentRunId,
       address,
+      newCopyFolder,
       resolveInRun: () => this.resolveInRunDelegationPlacement(address),
-      catalogSource: () => this.options.collaborators.catalogTaskSource({ address, senderRunId: sender.agentRunId, work }),
+      catalogSource: (workspaceRootPath) => this.options.collaborators.catalogTaskSource({ address, senderRunId: sender.agentRunId, work, workspaceRootPath }),
     });
   }
 

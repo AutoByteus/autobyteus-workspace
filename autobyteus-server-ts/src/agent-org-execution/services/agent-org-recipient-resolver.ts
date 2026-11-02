@@ -34,14 +34,15 @@ export class AgentOrgRecipientResolver {
   }
 
   /** CM-1 refusal first, then a configured placement outside the sender's own Team, then a catalog copy. */
-  resolveDelegationPlacement(sender: CollaborationMemberExecutionIdentity, addressInput: string, work: DelegationWork): Promise<ResolvedAgentOrgRecipient> {
+  resolveDelegationPlacement(sender: CollaborationMemberExecutionIdentity, addressInput: string, work: DelegationWork, newCopyFolder: string | null): Promise<ResolvedAgentOrgRecipient> {
     const address = this.requireAddress(addressInput);
     return resolveDelegationPlacement({
       port: this.options.getIndex(),
       senderAgentRunId: sender.agentRunId,
       address,
+      newCopyFolder,
       resolveInRun: () => this.resolveInRunDelegationPlacement(address),
-      catalogSource: () => this.options.collaborators.catalogTaskSource({ address, senderRunId: sender.agentRunId, work }),
+      catalogSource: (workspaceRootPath) => this.options.collaborators.catalogTaskSource({ address, senderRunId: sender.agentRunId, work, workspaceRootPath }),
     });
   }
 

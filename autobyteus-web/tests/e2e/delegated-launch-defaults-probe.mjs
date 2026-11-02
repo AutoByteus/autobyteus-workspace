@@ -1271,7 +1271,7 @@ defineCase('DCP-001', 'delegated-copy-model-change AC-001/002/004/011, DEC-010: 
   assert(r.rootStillRunning === 'active', 'the root should keep running', r.rootStillRunning)
   await shot(page, 'DCP-001-settings-stopped-copy-editable-1280', 1280)
 
-  // Change its model, then the existing Save bar.
+  // Change its model (its card's model menu), then the existing Save bar.
   await chooseCopyModel(page, copyRow(), MODEL)
   await page.locator(sel('existing-run-save-bar')).waitFor({ timeout: 30000 })
   await shot(page, 'DCP-001-settings-copy-changed-save-bar-1280', 1280)
@@ -1303,16 +1303,11 @@ defineCase('DCP-001', 'delegated-copy-model-change AC-001/002/004/011, DEC-010: 
 /** In a stopped copy's Settings row: pick a model of its (locked) runtime from the model menu. */
 const chooseCopyModel = async (page, row, model) => {
   await row.locator(sel('chat-model-trigger')).first().click()
-  await page.locator(sel('chat-model-menu')).first().waitFor({ timeout: 60000 }); await delay(500)
-  if (await page.locator(sel('chat-model-locked-runtime')).isVisible().catch(() => false)) {
-    await page.locator(`${sel('chat-model-menu')} ${sel('chat-model-search')}`).fill(model)
-    await page.locator(sel(`chat-model-search-option-${model}`)).click()
-    await page.keyboard.press('Escape'); await delay(300)
-    return
-  }
-  // autobyteus-348/366: a stopped copy's card can also switch its runtime; its menu lists runtimes, then their models.
+  // A stopped copy's runtime menu is open since autobyteus-348 (it may switch agent runtime); the model search is in both menus.
+  await page.locator(`${sel('chat-model-menu')} ${sel('chat-model-search')}`).waitFor({ state: 'visible', timeout: 60000 })
+  await page.locator(`${sel('chat-model-menu')} ${sel('chat-model-search')}`).fill(model)
+  await page.locator(sel(`chat-model-search-option-${model}`)).click()
   await page.keyboard.press('Escape'); await delay(300)
-  await chooseModel(page, row, AGY, model)
 }
 const saveBarText = (page) => page.locator(sel('existing-run-save-bar')).innerText().catch(() => '')
 const saveSettings = async (page) => {

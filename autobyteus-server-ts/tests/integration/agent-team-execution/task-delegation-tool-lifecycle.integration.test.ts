@@ -45,6 +45,7 @@ import {
 } from "../../../src/agent-tools/task-delegation/task-delegation-tool-contract.js";
 import { getTaskDelegationToolManifestEntry } from "../../../src/agent-tools/task-delegation/task-delegation-tool-manifest.js";
 import { TaskDelegationToolService } from "../../../src/agent-tools/task-delegation/task-delegation-tool-service.js";
+import { toTaskDelegationToolErrorPayload } from "../../../src/agent-tools/task-delegation/task-delegation-tool-serialization.js";
 import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
 import { getTeamRunExecutionTreePath } from "../../../src/run-history/store/team-run-execution-tree-path.js";
 import { TeamCommunicationStore } from "../../../src/services/team-communication/team-communication-store.js";
@@ -740,5 +741,100 @@ describe("current delegate_task lifecycle integration (pure spawn, idle shutdown
       expect(content).not.toMatch(/Task: |get_project_task/);
       expect(content).toContain("Description:\nJust described.");
     } finally { await h.root.terminate(); }
+  });
+});
+
+/** autobyteus-97 on a Team root through the real tool, the real root and the real Projects service and files. */
+describe("a new copy runs in its Task's Project folder", () => {
+  const linkedProject = async (h: Awaited<ReturnType<typeof createHarness>>, ...folders: string[]) =>
+    (await h.projects.createProject({ name: "Linked Project", workspaces: folders.map((workspaceRootPath) => ({ workspaceRootPath })) })).projectId;
+  const folderDir = async () => {
+    const dir = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), "project-folder-")));
+    tempDirs.push(dir);
+    return dir;
+  };
+  type Launch = { workspaceRootPath: string | null };
+  const copyById = (h: Awaited<ReturnType<typeof createHarness>>, id: string) => {
+    const copy = h.root.getExecutionTreeSnapshot().rootTeam.taskExecutions.find((entry) => ("agentRunId" in entry ? entry.agentRunId : entry.teamRunId) === id);
+    if (!copy) throw new Error(`no copy ${id}`);
+    return copy.source as never as { launchConfiguration: Launch; defaultLaunchConfiguration: Launch; members: Array<{ launchConfiguration: Launch }> };
+  };
+  const rootFolder = (h: Awaited<ReturnType<typeof createHarness>>) => h.root.getExecutionTreeSnapshot().rootTeam.defaultLaunchConfiguration.workspaceRootPath;
+
+  it("a saved Task's catalog and configured copies run in the first link; sub-work follows; the manager keeps its folder (AC-001, AC-003, AC-005)", async () => {
+    const h = await createHarness();
+    const [first, second] = [await folderDir(), await folderDir()];
+    const before = rootFolder(h);
+    const projectId = await linkedProject(h, first, second);
+    const task = await h.tasks.createTask({ projectId, title: "Saved", description: "Saved work" });
+    const manager = context(h.commands, "/coordinator", "run-coordinator");
+    try {
+      const catalogCopy = await delegate(h.service, manager, { recipient_address: "/scope_helper", task_id: task.taskId }) as { target_agent_run_id: string };
+      expect(copyById(h, catalogCopy.target_agent_run_id).launchConfiguration.workspaceRootPath).toBe(first);
+      expect(h.backend.preparedAgents.at(-1)).toBeDefined();
+      // Sub-work from the copy: an in-run placement of this root, so the configured form is covered too.
+      const sub = await delegate(h.service, context(h.commands, "/scope_helper", catalogCopy.target_agent_run_id), { recipient_address: "/reviewer", description: "Review it." }) as { target_agent_run_id: string };
+      expect(copyById(h, sub.target_agent_run_id).launchConfiguration.workspaceRootPath).toBe(first);
+      expect(rootFolder(h)).toBe(before);
+      expect(before).not.toBe(first);
+    } finally { await h.releases.settled(); await h.root.terminate(); }
+  });
+
+  it("a Team copy has one folder: its default and every member (AC-002)", async () => {
+    const h = await createHarness();
+    const folder = await folderDir();
+    const task = await h.tasks.createTask({ projectId: await linkedProject(h, folder), title: "Saved", description: "Saved work" });
+    try {
+      const team = await delegate(h.service, context(h.commands, "/coordinator", "run-coordinator"), { recipient_address: "/scope_helpers", task_id: task.taskId }) as { target_team_run_id: string };
+      const source = copyById(h, team.target_team_run_id);
+      expect([source.defaultLaunchConfiguration, ...source.members.map((member) => member.launchConfiguration)].map((launch) => launch.workspaceRootPath))
+        .toEqual([folder, folder]);
+    } finally { await h.releases.settled(); await h.root.terminate(); }
+  });
+
+  it("a Project with no link and a description-only delegation inherit (AC-004)", async () => {
+    const h = await createHarness();
+    const task = await h.tasks.createTask({ projectId: await linkedProject(h), title: "Saved", description: "Saved work" });
+    const manager = context(h.commands, "/coordinator", "run-coordinator");
+    try {
+      const saved = await delegate(h.service, manager, { recipient_address: "/scope_helper", task_id: task.taskId }) as { target_agent_run_id: string };
+      const temp = await delegate(h.service, manager, { recipient_address: "/scope_helper", description: "Temp work", reference_files: [] }) as { target_agent_run_id: string };
+      for (const { target_agent_run_id: id } of [saved, temp]) expect(copyById(h, id).launchConfiguration.workspaceRootPath).toBe(rootFolder(h));
+    } finally { await h.releases.settled(); await h.root.terminate(); }
+  });
+
+  it.each(["missing", "a-file"])("a first link that is not a folder (%s) refuses with the tool's coded error: nothing starts, no fallback (AC-006)", async (kind) => {
+    const h = await createHarness();
+    const dir = await folderDir();
+    const link = path.join(dir, kind);
+    if (kind === "a-file") await fs.writeFile(link, "not a folder");
+    const projectId = await linkedProject(h, link);
+    const task = await h.tasks.createTask({ projectId, title: "Saved", description: "Saved work" });
+    try {
+      const error = await delegate(h.service, context(h.commands, "/coordinator", "run-coordinator"), { recipient_address: "/scope_helper", task_id: task.taskId }).then(() => null, (cause: unknown) => cause);
+      expect(toTaskDelegationToolErrorPayload(error)).toEqual({ error: { code: "TASK_PROJECT_FOLDER_UNAVAILABLE",
+        message: `Project "Linked Project" has the linked folder "${link}", which is not an existing folder on this node. Fix the Project's link, or link another folder, then delegate again. Nothing was started.` } });
+      expect(h.root.getExecutionTreeSnapshot().rootTeam.taskExecutions).toEqual([]);
+      expect(h.backend.preparedAgents).toEqual([]);
+      await expect(fs.stat(h.projectsLayout.taskExecutionResourcesFile(projectId, task.taskId))).rejects.toMatchObject({ code: "ENOENT" });
+    } finally { await h.root.terminate(); }
+  });
+
+  it("an existing copy given a Task of a linked Project keeps its folder, also in the stored tree (AC-007)", async () => {
+    const h = await createHarness();
+    const folder = await folderDir();
+    const noLink = await h.tasks.createTask({ projectId: await linkedProject(h), title: "First", description: "First work" });
+    const projects = new ProjectService({ store: h.projectStore });
+    const linked = await h.tasks.createTask({ projectId: (await projects.createProject({ name: "Other Project", workspaces: [{ workspaceRootPath: folder }] })).projectId, title: "Second", description: "Second work" });
+    const manager = context(h.commands, "/coordinator", "run-coordinator");
+    try {
+      const copy = await delegate(h.service, manager, { recipient_address: "/scope_helper", task_id: noLink.taskId }) as { target_agent_run_id: string };
+      const original = rootFolder(h);
+      await expect(delegate(h.service, manager, { target_agent_run_id: copy.target_agent_run_id, task_id: linked.taskId })).resolves.toMatchObject({ delegated: true });
+      expect(copyById(h, copy.target_agent_run_id).launchConfiguration.workspaceRootPath).toBe(original);
+      const stored = await h.treeStore.read(h.rootDir, rootTeamRunId);
+      const recorded = stored!.rootTeam.taskExecutions.find((entry) => "agentRunId" in entry && entry.agentRunId === copy.target_agent_run_id)!;
+      expect((recorded.source as never as { launchConfiguration: Launch }).launchConfiguration.workspaceRootPath).toBe(original);
+    } finally { await h.releases.settled(); await h.root.terminate(); }
   });
 });

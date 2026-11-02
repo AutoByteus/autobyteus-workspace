@@ -371,6 +371,12 @@ suite("Projects change feed and Task roots (real HTTP/WS/scoped MCP, scripted AG
     expect(feedProject(monitor.frames, projectId)).toMatchObject({ taskCount: 1, openTaskCount: 1 });
     // AC-004/005: the agent delegates the Task; the root arrives (agent, started, named, hosted by this root) and its
     // worker's status follows. The worker's own helper (AC-006) never becomes the root.
+    // A new copy runs in its Task's Project's first linked folder (autobyteus-97): while the agent's link points at a folder that
+    // does not exist on this node, the delegation is refused and nothing starts; once the folder exists, it proceeds there.
+    const refused = await root.managerCalls(callTool("delegate_task", { recipient_address: workerAddress, task_id: taskKey }));
+    expect(JSON.stringify(refused)).toContain("TASK_PROJECT_FOLDER_UNAVAILABLE");
+    expect(await settledTask(scope, taskId, "refused Task")).toMatchObject({ status: "TODO", root: null });
+    await fs.mkdir(path.join(dataDir, "missing #?雪"));
     from = monitor.frames.length;
     const delegated = await root.managerCalls(callTool("delegate_task", { recipient_address: workerAddress, task_id: taskKey }));
     const worker = delegated.target_agent_run_id as string;
