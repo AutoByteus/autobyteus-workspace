@@ -140,6 +140,36 @@ None planned. The real installer, real nodes and timed passes make these tempora
 - **API-02B (idle automatic install):** the same journey with no busy run; records the time from `update-downloaded` to quit and whether the quit bound or any error fires.
 - **API-05B (refusal during a long stop):** V1 on the read-only image with a busy Claude run, so the preparation lasts many seconds after the refusal. Recovery must wait for it, then relaunch once. The busy run is stopped and not resumed (FU-003, accepted).
 
+## Round 3 (API-REV-003): SR-004..SR-006, IR-003
+
+- **Trigger:** code reviewer, CRR-005 Pass on IR-003. Code `2e64cbb3d9`; handoff `ed3f0d50f5`, `88814a7182`; review `99b53b84e8`, built from a clean checkout.
+- **What changed:** on macOS the automatic install waits for Electron's native `update-downloaded` before stopping anything (15-minute bound). During the wait the server runs, status stays `downloaded`, `automaticInstallPreparing` is true, and no check or download runs. A native `error` in the wait records `install`, blocks V and recovers nothing. The 60 s bound measures only the quit. Not macOS: unchanged. Node path untouched.
+
+### Reuse decisions
+
+| Case | Decision | Why |
+| --- | --- | --- |
+| API-R3 | Reused the IR-003 implementation checks | On the reviewed code |
+| API-01 (app + nodes), API-04, API-06..09 | Reused from rounds 1 and 2 | The switch-off path, the download-failure path up to the wait and the node path are not in this delta's order change. API-04's handler has a new guard (`settlingPreparationFailure`), unit-tested, and is exercised by API-05C/05 for its other arm |
+| API-10 | Rerun | Cheap |
+
+### Planned cases (real Squirrel)
+
+| Case ID | Criteria | Steps |
+| --- | --- | --- |
+| API-02B-r3 | AC-002, idle | Records the wait's length, health through it, stop to quit, the row and sidebar after the restart |
+| API-03-r3 | AC-003 | Busy run: its command stays alive through the wait; recorded at the stop; resumed with one notice |
+| API-02D-r3 | AC-002, F-API-003 | A full `build:electron:mac` running; no false failure |
+| API-05C-r3 | AC-005 | Signature refusal: during the wait, health 200, no relaunch, the plain reason, no repeat |
+| API-05-r3 | AC-005 | Read-only image, several samples: error, error, rejection; one record; state stays `install-preparation` |
+| API-11 | N-13 | Switch off; Download; Check (status `available`, staged); switch on: installs with no second fetch |
+| API-12a | F-15, CR-C19 | Same V: Download, Check, Download again (a second native fetch), switch on: does Squirrel answer? |
+| API-12b | F-15 | V staged with the switch off, W appears, switch on: second native fetch for a newer version |
+| API-12c | F-15, REQ-004 | V refused in this process, W appears: a newer version after a native failure |
+| API-13 | Bound's failure rendered | Seeded record; the live bound needs Squirrel silent for 15 minutes, with no cheap way to force it unless API-12 finds one |
+
+V3 (`1.5.11-beta.12`) is built for API-12b and API-12c.
+
 ## Investigation Decision
 
 - Proceed: `Yes`. Durable coverage changes: `No`. Reroute: `No`.
@@ -153,3 +183,6 @@ None planned. The real installer, real nodes and timed passes make these tempora
   - F-API-001 and F-API-002 resolved.
   - F-API-003 new.
   - API-05B not run; API-02C, API-02D and API-05C added.
+- After round 3 (API-REV-003):
+  - Result `Pass`, 93.9%. F-API-003 resolved. CR-C19 answered.
+  - Residual O-6. API-11 needed a longer wait than planned (Squirrel's verify follows its "Download completed").

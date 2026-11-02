@@ -1,0 +1,10 @@
+{"at":"2026-11-02T08:22:38.733Z","state":"no-update|preparing=false|staged=false||","health":200,"marker":null}
+{"at":"2026-11-02T08:22:40.249Z","state":"available|preparing=false|staged=false||","health":200,"marker":null}
+{"at":"2026-11-02T08:22:42.779Z","state":"downloading|preparing=false|staged=false||","health":200,"marker":null}
+{"at":"2026-11-02T08:22:44.291Z","state":"downloaded|preparing=false|staged=true||","health":200,"marker":null}
+{"at":"2026-11-02T08:23:51.383Z","state":"available|preparing=false|staged=true||","health":200,"marker":null}
+{"at":"2026-11-02T08:23:53.405Z","state":"downloading|preparing=false|staged=true||","health":200,"marker":null}
+{"at":"2026-11-02T08:23:54.921Z","state":"downloaded|preparing=true|staged=true||","health":200,"marker":null}
+{"at":"2026-11-02T08:25:14.980Z","state":"window-gone","health":0,"marker":null}
+{"at":"2026-11-02T08:27:47.668Z","state":"window-gone","health":200,"marker":null}
+{"end":"2026-11-02T08:32:39.011Z"}

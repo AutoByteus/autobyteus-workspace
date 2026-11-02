@@ -58,3 +58,33 @@ Read this first when picking the run back up. Only add rows. **Isolated copies, 
 | 2026-11-02 06:57 | API-10 | Completed | Pass | r2: no 356 names server side; no node-path change since 31d38080fc |
 | 2026-11-02 06:57 | Cleanup | Completed |  | r2: all run state removed; user caches identical; user nodes untouched |
 | 2026-11-02 06:57 | Round 2 | Completed | Fail | 88.7%; F-API-001 and F-API-002 resolved; F-API-003 new; report + API-REV-002 written |
+| 2026-11-02 07:44 | Round 3 | Started |  | CRR-005 Pass on IR-003 (code 2e64cbb3d9; review 99b53b84e8). Run temp root /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api3.Wen0hi |
+| 2026-11-02 07:44 | API-00 | Started |  | r3: clean checkout 99b53b84e8; V1, V2, V3 builds |
+| 2026-11-02 08:13 | API-00 | Completed | Pass | r3: V1/V2/V3 (beta.10/11/12) built (8m41, 6m40, 8m17); copies + zips; DR satisfied. Pre-existing an356 HTTPStorages/Preferences from IMP-12 noted |
+| 2026-11-02 08:13 | API-02B | Started |  | r3 idle real install through the wait |
+| 2026-11-02 08:16 | API-02B | Completed | Pass | r3: wait 36.3 s (07:14:49.4->07:15:25.7) health 200 throughout; stop->quit 0.25 s; V2 healthy 07:15:51; AUTO_UPDATED; sidebar 1 updated / row ok |
+| 2026-11-02 08:16 | API-03 | Started |  | r3 busy run through the wait |
+| 2026-11-02 08:20 | API-03 | Completed | Pass | r3: marker alive + health 200 through the wait (07:18:21.8->07:19:02.5); Recorded 1 at the stop; quit +0.5 s; 1 resumed 0/0; 1 notice |
+| 2026-11-02 08:20 | API-02D | Started |  | r3: idle journey with build:electron:mac running |
+| 2026-11-02 08:27 | API-02D | Completed | Pass | r3 under a build load (load 14 -> 415): wait 81 s, health 200 throughout, stop->quit 0.1 s, no false failure; ShipIt slow under load; V2 started 07:26:45, AUTO_UPDATED. F-API-003 resolved |
+| 2026-11-02 08:27 | API-05C | Started |  | r3 signature refusal |
+| 2026-11-02 08:32 | API-05C | Completed | Pass | r3: refusal during the wait (+40.5 s): health 200 throughout, no stop, no relaunch, one 'could not prepare' claim, install-preparation, row plain reason + 'won't be tried again'; restart: no zip GET |
+| 2026-11-02 08:32 | API-05 | Started |  | r3 read-only image, 3 samples |
+| 2026-11-02 08:37 | API-05 | Completed | Pass | r3 3/3: claim, further error, download ended within 2 ms; one record (install); state install-preparation; health 200; no stop |
+| 2026-11-02 08:37 | API-11 | Started |  | N-13 staged path |
+| 2026-11-02 08:48 | API-11 | Checkpoint |  | first run API-11a: harness clicked Download before a check found V2 -> became a switch-on-with-available install (passed, AUTO_UPDATED path) not N-13; script fixed (check first); rerun |
+| 2026-11-02 08:58 | API-11 | Checkpoint |  | API-11b: Check + switch on 7 s after Squirrel's fetch (before its verify ended) -> found(V) not ready -> second native fetch on top of the first -> Squirrel 'ditto: Could not ls' -> 'could not prepare', V2 blocked; health 200, nothing stopped (N-19 false failure confirmed live). Script waits 60 s now; rerun N-13 |
+| 2026-11-02 08:58 | API-11 | Started |  | r3 staged / second fetch |
+| 2026-11-02 09:10 | API-12a | Started |  | r3 staged / second fetch |
+| 2026-11-02 09:21 | API-12b | Started |  | r3 staged / second fetch |
+| 2026-11-02 09:32 | API-12c | Started |  | r3 staged / second fetch |
+| 2026-11-02 09:44 | API-11 | Checkpoint | Unexpected | after Download + 65 s, Check + switch on started a 2nd native fetch (N-13 not applied); Squirrel ditto error 0.3 s later; V2 blocked. Rerun with 150 s wait + load log |
+| 2026-11-02 09:44 | API-12a | Completed | Pass | same V fetched twice (2nd by a click, then switch on -> wait): Squirrel answered; AUTO_UPDATED |
+| 2026-11-02 09:44 | API-12b | Completed | Pass | V staged (switch off), W found, switch on: W fetched (2nd native fetch), installed, relaunched on beta.12 |
+| 2026-11-02 09:44 | API-12c | Completed | Pass | V refused in the wait, W found in the same process: native fetch after a failed one; AUTO_UPDATED beta.12 |
+| 2026-11-02 09:55 | API-11 | Completed | Pass | 150 s after Squirrel's fetch: Check + switch on -> installed at once (server exit 2.5 s after switch-on), ONE native fetch; relaunched on V2, AUTO_UPDATED. API-11c (65 s) and API-11b (7 s): 2nd fetch over the first's unpack -> false failure (N-19) |
+| 2026-11-02 09:55 | API-13 | Started |  | bound's failure rendered: seeded record |
+| 2026-11-02 10:00 | API-13 | Completed | Pass (render) | seeded bound reason: row with reason + won't-retry sentence; startup check no zip GET |
+| 2026-11-02 10:00 | API-10 | Completed | Pass | r3: no 356 names server side; no node-path change |
+| 2026-11-02 10:00 | Cleanup | Completed |  | r3: all run state removed (incl. IMP-12's identity leftovers); user caches identical; user nodes untouched |
+| 2026-11-02 10:00 | Round 3 | Completed | Pass | 93.9%; F-API-003 resolved; CR-C19 answered; residual O-6 |

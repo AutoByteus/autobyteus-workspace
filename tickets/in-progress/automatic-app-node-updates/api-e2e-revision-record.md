@@ -8,6 +8,7 @@ The latest coverage investigation and execution coverage report remain authorita
 | --- | --- | --- | --- | --- |
 | API-REV-001 | Code reviewer, `code-review-report.md`, CRR-001 Pass, round 1 | SR-003, ARCH-REV-002, IR-001, CRR-001 | N/A | `Fail` / 86.1% (F-API-001 `Local Fix`; F-API-002 `Local Fix` + `Design Impact` part) |
 | API-REV-002 | Code reviewer, `code-review-report.md`, CRR-003 Pass on IR-002, round 2 | SR-003, IR-002, CRR-002, CRR-003 | `Fail` / 86.1% | `Fail` / 88.7% (F-API-003 `Design Impact`) |
+| API-REV-003 | Code reviewer, `code-review-report.md`, CRR-005 Pass on IR-003, round 3 | SR-004..SR-006, IR-003, CRR-004, CRR-005 | `Fail` / 88.7% | `Pass` / 93.9% (residual O-6) |
 
 ## Revision Entries
 
@@ -71,3 +72,32 @@ None.
 - New or remaining failure IDs: F-API-003 (the 60 s quit bound fails a normal install on a busy machine). Observations O-3, O-4, O-5.
 - Recommended owner: failure-origin review by the code reviewer.
 - Remaining risks, blocked evidence, or untested scope: see the report's Not Tested.
+
+### API-REV-003 — The macOS install wait on real Squirrel
+
+- Triggering role, report path, and round: code reviewer; `code-review-report.md` (CRR-005 Pass on IR-003); round 3.
+- Triggering finding or case IDs: F-API-003; CR-C19 (F-15, N-13, N-19).
+- Related revision IDs: SR-004..SR-006; IR-003; CRR-004; CRR-005.
+- Why recorded: third complete result, for code `2e64cbb3d9` (review `99b53b84e8`).
+- Coverage decisions or durable test paths changed: none in the repository. Added `evidence/API-356-journey.sh`, `API-356-staged.sh` and `API-356-sampler.mjs`.
+- Cases:
+  - Run: API-00, API-02B, API-02D, API-03, API-05, API-05C, API-10, API-11 (with API-11a/b/c), API-12a/b/c, API-13.
+  - Reused: API-01, API-04, API-06..09.
+
+#### Prior Failure Resolution
+
+| Prior failure | Recheck | Result |
+| --- | --- | --- |
+| F-API-003: the quit bound fails a normal install on a busy machine | API-02D-r3 under a full build (load up to ~400), API-02B-r3, API-03-r3 | Resolved: the wait absorbed 81 s; the bound now measures 0.1 s from stop to quit; no false failure |
+
+- Canonical artifacts and sections updated: investigation § Round 3, report (round 3 current, rounds 1 and 2 kept), progress log.
+- Prior result and confidence: `Fail`, 88.7%.
+- Current result and confidence: `Pass`, 93.9%.
+- New or remaining failure IDs: none.
+  - Residual O-6 (N-19): a second native fetch over a running one blocks V, cleanly.
+- Recommended owner: code reviewer, for proportional test-code review.
+- Remaining risks, blocked evidence, or untested scope:
+  - the live 15-minute bound;
+  - path (a);
+  - Windows/Linux;
+  - Developer ID (user-only).
