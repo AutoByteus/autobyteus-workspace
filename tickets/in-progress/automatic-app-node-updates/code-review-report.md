@@ -2,7 +2,49 @@
 
 All ticket paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/automatic-app-node-updates/tickets/in-progress/automatic-app-node-updates/`.
 
-> **Latest round: 5, Implementation Review of IR-003 (CRR-005), `Pass`.** It covers SR-004 to SR-006 (ARCH-REV-005 `Pass`). Rounds 1 to 4 are kept below. § Round 5 and the Latest Authoritative Result supersede them.
+> **Latest round: 6, Implementation Review of IR-004, Targeted Delta Review (CRR-007), `Pass`.** It covers the merge with `personal` after autobyteus-363 (delivery DR-001). Rounds 1 to 5 are kept below. § Round 6 and the Latest Authoritative Result supersede them.
+
+## Round 6 — Targeted Delta Review of IR-004 (CRR-007)
+
+### Meta and scope
+
+- Trigger: implementation engineer, IR-004, a `Local Fix` requested by delivery (DR-001: an integration conflict with autobyteus-363).
+  - Merge `08984df524`, parents `b0445f49b9` (356) and `fc5a726444` (`personal` after `v1.5.11-beta.11`).
+  - Handoff and evidence `4a591d3159`. The branch is local only.
+- Delivery Revision Record reviewed: `delivery-revision-record.md` (DR-001).
+- Review Scope: `Targeted Delta Review`.
+  - Evidence: the resolved conflict is limited to `components/settings/nodes/NodeServerUpdate.vue`, `NodeAutoUpdate.vue` (layout only), `NodeAutoUpdate.spec.ts` and `docs/settings.md` § Nodes. Read with `git diff fc5a726444 08984df524 -- autobyteus-web/components/settings/nodes autobyteus-web/docs/settings.md`.
+  - 356's Electron, store and shared code is unchanged by the merge, apart from unrelated files `personal` brought in (for example the `existingRunConfig*` stores from other tickets), which merged without conflict.
+  - No behavior change is claimed (SR-006).
+- I reran no checks: the Electron and web suites, both typechecks, IMP-13 and IMP-14 ran on `08984df524`.
+
+### Resolution checked
+
+- **Placement.** `NodeAutoUpdate` sits inside the `part === 'cell'` block of 363's split component, at the foot of the server cell. That is the server column, the subject it controls. 363's `notice` part and copy button are kept as they were.
+- **One request per row.** The automatic-change watch now refreshes only when `part === 'cell'`, which matches 363's own rule that the cell owns the node's watch and unwatch (`onBeforeUnmount`). Without the guard, both mounted parts would ask the node, so this is correct.
+- **No repeated result.** `autoReported` is still applied in the `notice` computed, so the notice doesn't repeat an automatic outcome. Both parts read the same `autoEntry` from the store, so there is no second derivation.
+- **When the cell shows.** 363's cell renders only once the node has answered (`connection !== 'unknown'`), so the switch now appears after the first answer. That is 363's rule for everything in the cell, and it is acceptable. For an unreachable node the cell still renders, and the switch shows when it is on or an outcome exists.
+- **`NodeAutoUpdate.vue`:** sizing and class changes only. Conditions, test IDs and the switch's `role="switch"`, `aria-checked`, `aria-labelledby` and `aria-describedby` are unchanged.
+- **The spec fix was a real catch.** After 363 made `part` required, the old spec mounted `NodeServerUpdate` without it, so the component rendered nothing and the "no second notice" assertion passed without testing anything. The spec now mounts both parts as the row does, and one new case checks the switch is in the cell and the node is asked once. IMP-13's three mutations of the merged cell are all caught.
+- **Docs:** `docs/settings.md` keeps 363's text, and 356's bullet now names the server cell. It matches the code.
+- **Rendered (IMP-14):** the switch is in the cell in the medium layout and in the 16rem column of the wide layout. Turning it on runs the main process's update, and the cell then shows "Server 1.5.11-beta.11" with one "Updated automatically" and no notice.
+
+### Candidate gate (round 6)
+
+| Candidate ID | Observation | Disposition | Reason |
+| --- | --- | --- | --- |
+| CR-C20 | The switch now waits for the node's first answer (363's cell rule) | Reject | It is 363's layout rule, and a node's in-place availability (`canUpdate`) comes from that answer anyway. |
+| CR-C21 | The merge brings `personal`'s other tickets' code (for example the run-config stores) | Reject (not this ticket's) | It merged cleanly with no conflict and passes the full suites; delivery's re-verification covers integration. |
+
+### Findings (round 6)
+
+None. Round 5's scores stand (9.4 / 10).
+
+### Follow-ups
+
+None added.
+
+> Round 5 (CRR-005) and earlier rounds are kept below for history.
 
 ## Round 5 — Implementation Review of IR-003 (CRR-005)
 
@@ -459,7 +501,17 @@ N/A: the review passes.
 
 ## Latest Authoritative Result
 
-**Round 5 (CRR-005), authoritative:**
+**Round 6 (CRR-007), authoritative:**
+
+- Review Decision: `Pass`
+- Review Entry Point: `Implementation Review` (`Targeted Delta Review` of the merge resolution)
+- Supported Product Scenario Gate: `Pass`
+- Material-Premise Gate: `Pass`
+- Score Summary: 9.4 / 10 (unchanged from CRR-005)
+- Recommended Recipient: API/E2E engineer. The pass rule applies, and its re-check can be proportionate: the node switch in the merged layout. The automatic install path is unchanged by this delta.
+- Notes: merge `08984df524`, local only. Delivery resumes after API/E2E: re-integrate, re-verify, finalize, and cut the beta the user decided on.
+
+**Round 5 (CRR-005), superseded:**
 
 - Review Decision: `Pass`
 - Review Entry Point: `Implementation Review` (`Full Re-Audit` of DS-001 and DS-002; DS-003 carried forward)

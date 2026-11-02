@@ -12,6 +12,7 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) is autho
 | CRR-004 | `code-review-report.md` | API/E2E Failure-Origin Review, round 4 (API-REV-002 F-API-003) | Pass | Fail: `Design Impact` → Solution Designer | F-API-003, CR-C12; F-API-001 and F-API-002 resolved at runtime |
 | CRR-005 | `code-review-report.md` | Implementation Review, round 5 (IR-003, SR-004 to SR-006; Full Re-Audit of DS-001, DS-002) | Fail | Pass | F-API-003, CR-C12 (resolved by design and code) |
 | CRR-006 | `api-e2e-test-review-report.md` | Proportional API/E2E Test-Code Review (API-REV-003 Pass) | Pass (CRR-005) | Not Applicable (no durable test changed) | None; CR-C19 resolved into FU-006 |
+| CRR-007 | `code-review-report.md` | Implementation Review, round 6, Targeted Delta (IR-004, the DR-001 merge with autobyteus-363) | Not Applicable (CRR-006) | Pass | None |
 
 ## Revision Entries
 
@@ -198,3 +199,32 @@ None (CRR-001 had no findings).
 - Material score or classification changes: None; Medium / High
 - Recommended recipient: delivery engineer
 - Remaining risks or uncertainty: a Developer ID signed install (user-only); the live 15-minute bound; path (a) is unit-only; Windows and Linux; FU-003 to FU-006; the architecture reviewer's uncommitted edits.
+
+### CRR-007 — Targeted delta review of IR-004 (the merge with `personal` after autobyteus-363)
+
+- Canonical review report updated: `code-review-report.md` (§ Round 6; Latest Authoritative Result)
+- Review entry point and round: Implementation Review, round 6 (a delivery-stage `Local Fix`)
+- Review scope: `Targeted Delta Review` of the conflict resolution: `NodeServerUpdate.vue`, `NodeAutoUpdate.vue`, `NodeAutoUpdate.spec.ts`, `docs/settings.md` § Nodes
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, `implementation-handoff.md` (IR-004; merge `08984df524`); delivery `delivery-revision-record.md` DR-001
+- Relevant solution revision IDs: SR-006
+- Relevant architecture-review revision IDs: ARCH-REV-005
+- Relevant implementation revision IDs: IR-004
+- Relevant API/E2E revision IDs: API-REV-003
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: `Not Applicable` (CRR-006, test review), on top of `Pass` (CRR-005)
+- Current authoritative result: `Pass`, no findings
+- What changed in the review result and why:
+  - The switch moved into 363's server cell, and the refresh on an automatic change is limited to the cell, so the node is asked once.
+  - `autoReported` still keeps the notice from repeating a result.
+  - The spec, which 363's required `part` had made vacuous, now mounts both parts.
+  - No behavior change.
+- Supported product scenario / material-premise basis changes: None
+
+#### Prior Finding Resolution
+
+None open.
+
+- New or remaining finding IDs: None
+- Material score or classification changes: None; Medium / High
+- Recommended recipient: API/E2E engineer (pass rule; a proportionate re-check of the node switch in the merged layout)
+- Remaining risks or uncertainty: unchanged from CRR-006, plus the integration of `personal`'s other tickets, which is delivery's re-verification.
