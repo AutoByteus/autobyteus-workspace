@@ -26,13 +26,13 @@ The autobyteus-316 standalone switch is extended to a Team member, an Org member
 
 - Implementation cycle: `Initial`
 - Implementation revision record: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-switch-members/tickets/in-progress/runtime-switch-members/implementation-revision-record.md
-- Current implementation revision ID: `IR-002` (IR-001 is the baseline; IR-002 fixes CRR-002 F-1 and F-2)
+- Current implementation revision ID: `IR-003` (IR-001 baseline; IR-002 fixes CRR-002 F-1 and F-2; IR-003 fixes CRR-003 F-3)
 - Related solution revision IDs: SR-001 (notes 1-2)
 - Related architecture-review revision IDs: ARCH-REV-002
-- Related code-review revision IDs: CRR-002
+- Related code-review revision IDs: CRR-002, CRR-003
 - Related API/E2E revision IDs: API/E2E Fail round 1
 - Related delivery revision IDs: N/A
-- Triggering finding IDs: F-1, F-2 (CRR-002)
+- Triggering finding IDs: F-1, F-2 (CRR-002); F-3 (CRR-003)
 - Branch / commits: `codex/runtime-switch-members`; implementation commits `572677be95`, `888063bbef`, `3b4f10435a`, `dba00b2416`, `877ee8ba33`, `0649bb6b44`, `b47e49c509`, `a199e9d543`, `d3463e0a7e`; the documents and evidence are committed after them on the same branch.
 
 ## Routing Classification (Mandatory)
@@ -146,6 +146,8 @@ Evidence files are in /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-s
 | IMP-15 | web typecheck, nuxt, guards, codegen (IR-002) | 9e28c019b6 | worktree | web | F-1, F-2 | Pass | evidence/IMP-15-fix-web.log | `Tests  5013 passed | 2 skipped` |
 | IMP-16 | `test:e2e:runtime-switch-members` (rendered, real built server) | 9e28c019b6 | worktree + Chrome | Team, Org (direct, nested), copy rows | AC-001,002,004,005,008 | Pass | evidence/IMP-16-rsm-probe.log | `RSM-01..RSM-05 Pass` |
 | IMP-17 | gated built-server: members e2e, agent-org-runs, delegated-copy | 9e28c019b6 | worktree | Org config wire | F-1 | Pass | evidence/IMP-17-fix-built-server-e2e.log | `Tests  16 passed (16)` |
+| IMP-18 | web typecheck, nuxt (IR-003) | 4c7a70698d | worktree | web Org config adoption | F-3 | Pass | evidence/IMP-18-f3-web.log | `Tests  5016 passed | 2 skipped` |
+| IMP-19 | `test:e2e:runtime-switch-members` after F-3 | 4c7a70698d | worktree + Chrome | Team, Org, copy rows | AC-001,002,004,005 | Pass | evidence/IMP-19-rsm-probe-after-f3.log | `RSM-01..RSM-05 Pass` |
 
 Runtime pairs actually run, each with the previous agent's records asserted as the only content of its archived segment (I-7): native -> Antigravity (Team member, two Org members), Antigravity -> native with a failed start then a retry (Team member), Antigravity -> Grok (delegated agent copy in the Team, Org and Agent roots); the 316 cases cover native <-> Antigravity and Grok for a standalone run. The new Org and Team cases were first run red on harness mistakes (stream envelopes, a stopped Org must be restored first), not on production behavior.
 

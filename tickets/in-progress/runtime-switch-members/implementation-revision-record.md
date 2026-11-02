@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Solution Designer package (design-spec.md, switch-member-record-contract.md); Architecture Reviewer pass ARCH-REV-002 | N/A (ARCH-F-007..010 are non-blocking and were applied) | `Initial Baseline` | SR-001 (notes 1-2), ARCH-REV-002 | Implemented; ready for Code Review (Large / High) |
 | IR-002 | Code Reviewer failure-origin review CRR-002 after the API/E2E Fail (`code-review-report.md`, `api-e2e-execution-coverage-report.md`) | F-1, F-2 | `Local Fix` | CRR-002, API-REV (round 1), IR-001 | F-1 and F-2 fixed; RSM-01..05 pass |
+| IR-003 | Code Reviewer targeted delta review CRR-003 of IR-002 | F-3 | `Local Fix` | CRR-003, IR-002 | F-3 fixed |
 
 ## Revision Entries
 
@@ -63,3 +64,17 @@
   - Server typecheck, server unit (7864 passed; one load-sensitive file-watcher test failed once and passed alone twice and in the clean-clone run), web typecheck, web nuxt (5013), guards, codegen:check, and the gated built-server runs (IMP-14..IMP-17).
 - Next recipient or routing: Code Reviewer (targeted delta review), then API/E2E reruns RSM-02..04. The red contract test `autobyteus-collaboration-stream-contracts/tests/org-member-pending-runtime-switch.test.mjs` asserts the widening the approved wire decision rejects; I did not change it (API/E2E owns it) and it should be replaced.
 - Remaining limitations or risks: the checks above ran in the worktree, not a fresh clean clone; the full-suite clean-clone proof of `d3463e0a7e` (IMP-01..IMP-08) still covers everything this delta did not touch.
+
+### IR-003 — The Org config adoption accepts the undo of a pending switch (F-3)
+
+- Triggering role, report path, and round: Code Reviewer, `code-review-report.md` CRR-003 (targeted delta review of IR-002).
+- Triggering finding IDs: F-3
+- Classification: `Local Fix`
+- Prior authoritative result: CRR-003 Fail (F-1 server half and F-2 resolved)
+- Current authoritative result: fix committed at `4c7a70698d`; ready for re-review
+- Related code-review revision IDs: CRR-003; related implementation: IR-002 (the delta that introduced F-3)
+- Why: my IR-002 guard required a `null` session on every Agent whose agent runtime changed. That is true of a switch only; an undo returns the original runtime with its original session, so the user got "Org configuration changed topology, identity, or locked fields" after the server had committed the undo.
+- Implementation delta: `assertAgentOrgRunConfigChange` (`autobyteus-web/services/agentOrgExecution/agentOrgRunConfigAdoption.ts`) no longer requires a `null` session: an Agent whose agent runtime changed may carry any session (the server decides it); the session is masked only for such Agents. A session change on an Agent whose runtime did not change, and any identity or topology drift, are still refused.
+- Local validation and result: `agentOrgRunConfigAdoption.spec.ts` adds the undo for a direct Agent and a mounted-Team Agent with a non-null original session and the refusal of an invented session on an unswitched Agent; `agentOrgRunConfigPublication.spec.ts` saves a switch and then its undo through `saveRunConfig` for both placements. The new tests fail against the IR-002 guard (3 failed) and pass now. Web typecheck, web nuxt (5016 passed) and the rendered RSM-01..05 pass (IMP-18, IMP-19).
+- Next recipient or routing: Code Reviewer.
+- Remaining limitations: the rendered probe does not exercise the undo (store-level coverage, as the review allows).
