@@ -1,0 +1,25 @@
+# IMP-06 effective lines, base -> now
+# Command: grep -cv blank lines over git diff --name-only c952758a81 8959bc507a (src)
+# Commit: 8959bc507a
+# Date: 2026-11-02T06:52Z
+
+105 -> 112  autobyteus-server-ts/src/agent-collaboration/collaborators/catalog-delegation.ts
+209 -> 221  autobyteus-server-ts/src/agent-collaboration/collaborators/collaborator-admission.ts
+62 -> 67  autobyteus-server-ts/src/agent-collaboration/collaborators/collaborator-root-port.ts
+466 -> 475  autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-execution-lifecycle.ts
+92 -> 93  autobyteus-server-ts/src/agent-collaboration/execution/task/task-delegation-command.ts
+128 -> 133  autobyteus-server-ts/src/agent-collaboration/execution/task/task-execution-resource-port.ts
+59 -> 60  autobyteus-server-ts/src/agent-org-execution/services/agent-org-recipient-resolver.ts
+60 -> 60  autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-collaborators.ts
+229 -> 229  autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-message-delivery.ts
+500 -> 500  autobyteus-server-ts/src/agent-team-execution/domain/root-team-run.ts
+47 -> 47  autobyteus-server-ts/src/agent-team-execution/services/team-run-collaborators.ts
+175 -> 176  autobyteus-server-ts/src/agent-team-execution/services/team-run-message-delivery.ts
+69 -> 70  autobyteus-server-ts/src/agent-team-execution/task-delegation/team-task-execution-service.ts
+39 -> 40  autobyteus-server-ts/src/projects/domain/project-errors.ts
+0 -> 18  autobyteus-server-ts/src/projects/services/project-new-copy-folder.ts
+445 -> 447  autobyteus-server-ts/src/projects/services/project-task-service.ts
+214 -> 222  autobyteus-server-ts/src/run-history/domain/run-execution-tree-shared-records.ts
+66 -> 66  autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-collaborators.ts
+298 -> 298  autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-message-delivery.ts
+56 -> 57  autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-recipient-resolver.ts
