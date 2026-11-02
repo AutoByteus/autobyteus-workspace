@@ -100,6 +100,8 @@ describe('Notification Center: the app automatic update', () => {
     const row = $('[data-testid="notification-row-app"]')!
     expect(row.querySelector('[data-testid="notification-row-change"]')!.textContent).toContain('Updated automatically to 1.5.7')
     expect(row.querySelector('[data-testid="notification-row-auto-changed"]')!.textContent).toContain('From 1.5.6')
+    // A full version beside Clear must not push the check icon onto its own line.
+    expect(row.querySelector('[data-testid="notification-row-change"]')!.className).toContain('flex-nowrap')
     expect(row.querySelector('[data-testid="notification-row-new"]')).not.toBeNull()
     await flush()
     expect(electronApi.markAppUpdateNotificationRead).toHaveBeenCalledOnce()

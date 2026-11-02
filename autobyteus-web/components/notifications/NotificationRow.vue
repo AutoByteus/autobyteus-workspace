@@ -16,9 +16,9 @@
         <span class="block truncate text-[13px] font-medium leading-5" :class="row.state === 'handled' && !showNewDot ? 'text-gray-500' : 'text-gray-900'" :title="name" data-testid="notification-row-name">
           <span v-if="showNewDot" class="sr-only">{{ $t('settings.notifications.new') }}: </span>{{ name }}
         </span>
-        <span class="flex flex-wrap items-center gap-x-1.5 text-xs leading-5 text-gray-500" data-testid="notification-row-change">
+        <span class="flex items-center gap-x-1.5 text-xs leading-5 text-gray-500" :class="row.state === 'handled' ? 'flex-nowrap' : 'flex-wrap'" data-testid="notification-row-change">
           <template v-if="row.state === 'handled'">
-            <Icon icon="heroicons:check-circle-20-solid" class="h-3.5 w-3.5 text-emerald-600" aria-hidden="true" />
+            <Icon icon="heroicons:check-circle-20-solid" class="h-3.5 w-3.5 flex-shrink-0 text-emerald-600" aria-hidden="true" />
             <span class="text-emerald-700">{{ $t(autoUpdated ? 'settings.notifications.outcome.updated' : 'settings.notifications.handled', { revision: handledTo }) }}</span>
           </template>
           <template v-else>
