@@ -52,3 +52,26 @@ Web-only change: the Settings of a focused agent. Finalization target `origin/pe
 ## Finalization Record
 
 Recorded after the merge below.
+
+- Ticket branch `codex/agent-settings-focused`: archive commit `fea270f7f2`, pushed after the Secret Gate passed.
+- `origin/personal` stayed at `84ea944ac5` throughout, so no re-integration was needed.
+- `git merge --no-ff` → `24b7d72393`. On the merged state: Secret Gate PASS, hygiene exit 0, licensing consistent.
+- Pushed `84ea944ac5..24b7d72393 HEAD -> personal`. Repository finalization: `Completed`.
+- Release: `Not required`; AC-006 makes a release the user's word, and he has not asked.
+
+## Post-Finalization Cleanup
+
+- Ticket worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-settings-focused` removed and pruned (only untracked build output was in it).
+- Local branches `codex/agent-settings-focused` (`fea270f7f2`) and `finalize/agent-settings-focused` (`24b7d72393`) were deleted; both are in `origin/personal`.
+- `origin/codex/agent-settings-focused` is kept.
+- The clean clone and its scripts in `/tmp` were removed. The main checkout was not touched.
+- This record was committed from a temporary detached checkout of `origin/personal` (`/tmp/ab366-record`), removed after the push.
+
+## Final Status
+
+- Verification: `Completed`
+- Repository finalization: `Completed` (`24b7d72393`)
+- Release: `Not required`
+- Cleanup: `Completed`
+- Unresolved blocker: `None`
+- Terminal package sent to the Solution Designer: sent with `send_message_to` to `/software_engineering_team/solution_designer` right after this record is pushed (confirmed in the delivery conversation)
