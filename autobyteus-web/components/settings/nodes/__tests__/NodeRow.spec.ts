@@ -196,6 +196,6 @@ describe('NodeRow', () => {
     const wrapper = mountRow(row(), settled())
     expect(wrapper.find(`[data-testid="node-open-${B}"]`).exists()).toBe(false)
     expect(wrapper.findAll('.nr-actions span.h-8.w-8')).toHaveLength(1)
-    expect(get(wrapper, 'node-remove').exists()).toBe(true)
+    expect(wrapper.find(`[data-testid="node-remove-${B}"]`).exists()).toBe(true)
   })
 })

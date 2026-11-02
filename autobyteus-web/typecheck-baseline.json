@@ -30,7 +30,6 @@
   "components/run-settings/__tests__/RunDelegatedLaunchSection.spec.ts": 2,
   "components/server/__tests__/StartupDelayPresentation.spec.ts": 1,
   "components/settings/__tests__/AgentPackagesManager.spec.ts": 1,
-  "components/settings/__tests__/RemoteCollaborationOfferDisclosure.spec.ts": 6,
   "components/settings/model-routing/__tests__/modelRoutingPresentation.spec.ts": 1,
   "components/settings/providerApiKey/__tests__/ProviderModelBrowser.spec.ts": 3,
   "components/settings/providerApiKey/__tests__/providerSettingsApolloContract.spec.ts": 1,
