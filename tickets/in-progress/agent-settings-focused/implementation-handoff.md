@@ -16,7 +16,7 @@
 
 - Implementation cycle: `Rework` (IR-002: CR-001, CR-002; IR-003: CR-003; all Local Fix)
 - Implementation revision record: `.../implementation-revision-record.md`
-- Current implementation revision ID: `IR-003`
+- Current implementation revision ID: `IR-004` (merge of origin/personal; IR-003 the last fix)
 - Related solution revision IDs: `SR-002`
 - Related revision IDs: code review `CRR-001`, `CRR-002`; API/E2E `API-REV-001`, `API-REV-002`; architecture review and delivery `N/A`
 - Triggering finding IDs: CR-003 (CRR-002, from API-REV-002 SSR-003); before it CR-001, CR-002
@@ -63,7 +63,7 @@ Beyond or different from the design, each needed for an AC. Please check them.
 
 - **D-IMP-1, Settings stay open within a run.** The design's Current-State Read says they do; in the running app they did not. `selectRun` always returned to chat, and the Org view left Settings on every focus change, each of which unmounts the editor and loses pending edits (AC-005). Now another agent of the selected run keeps Settings open, and another run opens at its chat. Side effect: clicking the selected run's row no longer closes Settings; the panel's back arrow does.
 - **D-IMP-2, an Org's copies open their own Settings.** Only configured Org members could (`configurationTarget`, `headerActionsAvailable`). With the list gone, a copy's settings would have been unreachable (REQ-003). So every focused Org agent now has the header actions, a stopped Org's copy included, which also shows its "+". The spec `keeps historical task actions excluded` asserted the old rule and now asserts this one.
-- **D-IMP-3, a Save on a stopped hub re-reads its view.** Classified as this ticket, not a prerequisite: it is in the functionality this ticket changes and AC-003 needs it. The cause came from autobyteus-358 and is on `personal` now: after a Save the old copy list showed the old model too. The fix is in the editor, because `existingRunConfigStore.ts` is over the size limit (FU-003 of autobyteus-358). **Revised in IR-003 (CR-003):** the re-read moved into the view's owner, `agentRunCollaborationStore.viewFor(id, { fresh: true })`, which rejects when the read fails. The editor's `inspect` call swallowed a failure and so reported "Saved." over a stale card.
+- **D-IMP-3, a Save on a stopped hub re-reads its view.** Classified as this ticket, not a prerequisite: it is in the functionality this ticket changes and AC-003 needs it. The cause came from autobyteus-358 and is on `personal` now: after a Save the old copy list showed the old model too. The fix is in the editor, because `existingRunConfigStore.ts` is over the size limit (FU-003 of autobyteus-358). **Revised in IR-003 (CR-003):** the re-read moved into the view's owner, `agentRunCollaborationStore.viewFor(id, { fresh: true })`, which rejects when the read fails. The editor's `inspect` call swallowed a failure and so reported "Saved." over a stale card. **IR-004:** fresh after a committed Save and on Refresh only; a stop's re-read is `syncHost`'s (348).
 - **D-IMP-4, focus comes from each root's own store,** not `activeContextStore`: a hub's `selectedChild`, a Team's `getFocusedAgentRunId`, an Org's selection. They are the same sources the active target reads, without bringing the route and its store graph into the editor.
 - **D-IMP-5, the resolver's shape.** A union with `origin: 'none'` for no row, and `rootAgentRunId` in place of the design's `runKind`.
 - **D-IMP-6, status in the header.** A copy shows its own running state (a Team copy's member: its Team copy's). A member shows the run's status, because its lock and its stop belong to the run; a member idle inside a running Team reads "Active".
@@ -77,7 +77,7 @@ Beyond or different from the design, each needed for an AC. Please check them.
 - (IR-002) Org now rendered by API/E2E's AFS-002, which passes on this fix (IMP-10).
 - A Team-wide Save was not driven: Save needs every scope's model schema, and the seed's runtime is not signed in here. Names, edit routes and the unchanged save are covered by specs.
 - The panel title stays "Team Configuration" over a member's card. Left as is; not in the design.
-- autobyteus-348's branch has no remote ref (`git fetch origin codex/runtime-switch-members` fails); its local branch is still `3261712e06`, so nothing new to merge.
+- (IR-004) autobyteus-348 is on `origin/personal` and merged in; the merge-order constraint is cleared.
 
 ## Task Design Health Assessment Implementation Check
 
@@ -128,6 +128,7 @@ Beyond or different from the design, each needed for an AC. Please check them.
 | IMP-10 | AFS-002 (`delegated-launch-defaults-probe.mjs --cases AFS-002`) | 2dd3c665f5 tree | probe-owned stack | Org focus, copy Save | AC-002, AC-003, AC-005 | Pass | `evidence/IMP-10-AFS-002.log`, `IMP-10-AFS-002-*.png` | `"settingsClosedBy": []`, `"pendingEditKept": true` |
 | IMP-11 | CR-003 specs; web typecheck; guards; full web suite | 38f5a1eb1c | isolated HOME | `viewFor` fresh and failure; Save and Refresh reload | AC-003 | Pass | `evidence/IMP-IR003-checks.log` | see the log |
 | IMP-12 | SSR-003 (`delegated-launch-defaults-probe.mjs --cases SSR-003`) | 38f5a1eb1c tree | probe-owned stack | committed Save with a failed read, then Refresh | AC-003, AC-005, AC-006 | Pass | `evidence/IMP-12-SSR-003.log`, `IMP-12-SSR-003-*.png` | `committed read failure locks, read-only Refresh reconciles` |
+| IMP-13 | after merging origin/personal: typecheck, guards, full web suite, then SSR-003, AFS-001, AFS-002 | `58fdf50f33` | isolated HOME; probe-owned stack | the merged tree | AC-001…AC-005 | Pass (one merge resolution corrected) | `evidence/IMP-13-merge-checks.log` | `Summary: 3 Pass, 0 Fail` |
 
 - Not run, and why: the Electron suite (no Electron file changed); server suites (no server file changed); the probes below (real-stack, left to API/E2E).
 

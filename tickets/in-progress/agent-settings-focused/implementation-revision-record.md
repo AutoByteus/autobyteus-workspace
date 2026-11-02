@@ -9,6 +9,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-001 | Solution Designer / `solution-handoff.md` / SR-002 | N/A | `Initial Baseline` | `SR-002` | Implemented; API-REV-001 Fail → CRR-001 |
 | IR-002 | Code Reviewer / `code-review-report.md` / CRR-001 (failure-origin review of API-REV-001) | CR-001, CR-002 | `Local Fix` | `API-REV-001`, `CRR-001` | AFS-002 passes; API-REV-002 → CRR-002 (CR-003) |
 | IR-003 | Code Reviewer / `code-review-report.md` / CRR-002 (failure-origin review of API-REV-002) | CR-003 | `Local Fix` | `API-REV-002`, `CRR-002` | Fixed; SSR-003 passes; ready for API/E2E |
+| IR-004 | Solution Designer note (autobyteus-348 on personal) / API/E2E (worktree free) | N/A | `Merge refresh` | `SR-002` | origin/personal merged; checks pass; ready for API/E2E |
 
 ## Revision Entries
 
@@ -73,3 +74,23 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: `evidence/IMP-12-SSR-003.log` and its screenshots; `evidence/IMP-IR003-checks.log`.
 - Next recipient or routing: `get_handoff_rules` → API/E2E (Medium/Low direct route).
 - Remaining limitations or risks: none new. FU-001 (stale "active" in open Org Settings) is API/E2E's follow-up.
+
+### IR-004 — merge origin/personal (autobyteus-348 landed)
+
+- Trigger: the Solution Designer's note that autobyteus-348 merged to `origin/personal` (`84ea944ac5`). The merge waited until API/E2E freed the worktree; their round 3 passed on `38f5a1eb1c` before they stopped it.
+- Classification: `Merge refresh` (no finding).
+- Prior authoritative result: IR-003 at `38f5a1eb1c`.
+- Current authoritative result: merge commit `58fdf50f33`, plus the IR-004 records commit.
+- Conflicts (six), resolved keeping both sides:
+  - `agentRunCollaborationStore.viewFor`: 348 had added the same `{ fresh }` re-read independently, but it swallowed a read failure (the CR-003 gap). IR-003's rejecting read is kept, with 348's reason in its comment.
+  - `existingRunConfigEditActions.reloadCanonical`: fresh after a committed Save only, as 348 has it. My first resolution also read fresh after a stop, which 348's spec refused: a stopped hub is re-read by `syncHost`, so that would read it twice. IR-003's text said "after a committed Save or a stop"; it is now a committed Save and Refresh only, which is what CR-003 asked.
+  - `agentOrgRunConfigAdoption`: 348's runtime switch and undo of configured agents, with IR-002's mutable copy choices.
+  - `delegated-launch-defaults-probe.mjs`: this ticket's reworked helpers kept. `chooseCopyModel` uses 348's model search, which works whether the runtime menu is locked or open.
+  - `agentRunCollaborationStore.spec.ts`: both fresh-read cases kept.
+  - `existingRunConfigStore.ts`: one comment line; still 501 lines.
+- The six shared run-settings files were unchanged by 348 after `3261712e06`.
+- Checks (`evidence/IMP-13-merge-checks.log`):
+  - web typecheck PASS (99 = baseline); the three guards pass;
+  - full web suite: 5,053 passed and one failure, fixed as above, then the affected specs 182 passed;
+  - SSR-003, AFS-001 and AFS-002 pass on the merged tree with a rebuilt server.
+- Next recipient: API/E2E, which reruns its full set on the merged head.
