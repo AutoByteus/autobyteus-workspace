@@ -1,0 +1,55 @@
+# Case: API-02
+# Command: same clone; pnpm -C autobyteus-server-ts typecheck
+# Commit: b0e11cd4df (code identical to aa93bdcdfb: only DESIGN.md and ticket documents differ)
+# Environment: macOS arm64 (Darwin 25.5), Node v22.23.1, pnpm 10.28.2, fresh clone in /tmp, no node_modules or build output before the run
+# Date: 2026-11-02
+
+# clone /tmp/api-crb-fix at b0e11cd4df; 2026-11-02T09:22:31Z
+## pnpm -C autobyteus-server-ts typecheck
+
+> autobyteus-server-ts@0.1.1 pretypecheck /private/tmp/api-crb-fix/autobyteus-server-ts
+> pnpm prepare:source
+
+
+> autobyteus-server-ts@0.1.1 prepare:source /private/tmp/api-crb-fix/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /private/tmp/api-crb-fix/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 113ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Want real-time updates to your database without manual polling? Discover how with Pulse: https://pris.ly/tip-0-pulse
+
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 8.0.0-rc.29                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+
+> autobyteus-server-ts@0.1.1 typecheck /private/tmp/api-crb-fix/autobyteus-server-ts
+> node ./scripts/typecheck.mjs
+
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 8.7s
+[typecheck] server tests (tsconfig.tests.json): 1185 errors, exit 2, 23.0s
+[typecheck] production errors: 0; test-file errors: 1185 in 366 files (baseline 1185 in 366 files)
+[typecheck] PASS
+server typecheck exit 0
