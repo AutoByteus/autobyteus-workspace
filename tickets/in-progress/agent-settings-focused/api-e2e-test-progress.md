@@ -22,3 +22,5 @@ Read it first whenever you pick the run back up. Only add rows.
 | 2026-11-02T08:15:52Z | API-05 | Completed | Fail | DLP-003..007, DCP-001..005, DCR-001..003, SSR-001/002/004 Pass after rework; SSR-003 Fail (real): committed Save + failed readback shows 'Saved.' with a stale card |
 | 2026-11-02T08:15:52Z | API-06 | Completed | Pass | MRD-01..08 Pass; MRD-04 remote copy read-only with its node chip |
 | 2026-11-02T08:15:52Z | observation | Completed | Follow-up | Org stopped by another client: Settings stay 'active' >= 20 s (FU-001) |
+| 2026-11-02T08:33:10Z | round 3 | Started | | code 38f5a1eb1c (IR-003), head 5139b715b1; one stack: SSR-003 first, AFS-001..003, reworked cases (DLP-007 last), then MRD |
+| 2026-11-02T08:40:21Z | round 3 | Interim | | stopped at the implementer's request (merge of origin/personal with autobyteus-348 overlaps the code under test). Finished before the stop, on 38f5a1eb1c: SSR-003, AFS-001, AFS-002, AFS-003, SSR-001, SSR-002, SSR-004 Pass. Full set to run on the merged head |
