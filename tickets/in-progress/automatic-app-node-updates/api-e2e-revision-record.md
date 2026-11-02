@@ -9,6 +9,7 @@ The latest coverage investigation and execution coverage report remain authorita
 | API-REV-001 | Code reviewer, `code-review-report.md`, CRR-001 Pass, round 1 | SR-003, ARCH-REV-002, IR-001, CRR-001 | N/A | `Fail` / 86.1% (F-API-001 `Local Fix`; F-API-002 `Local Fix` + `Design Impact` part) |
 | API-REV-002 | Code reviewer, `code-review-report.md`, CRR-003 Pass on IR-002, round 2 | SR-003, IR-002, CRR-002, CRR-003 | `Fail` / 86.1% | `Fail` / 88.7% (F-API-003 `Design Impact`) |
 | API-REV-003 | Code reviewer, `code-review-report.md`, CRR-005 Pass on IR-003, round 3 | SR-004..SR-006, IR-003, CRR-004, CRR-005 | `Fail` / 88.7% | `Pass` / 93.9% (residual O-6) |
+| API-REV-004 | Code reviewer, `code-review-report.md`, CRR-007 Pass on IR-004 (merge after 363; DR-001), round 4 | IR-004, CRR-007, DR-001 | `Pass` / 93.9% | `Pass` / 93.9% |
 
 ## Revision Entries
 
@@ -101,3 +102,27 @@ None.
   - path (a);
   - Windows/Linux;
   - Developer ID (user-only).
+
+### API-REV-004 — The merge with `personal` after autobyteus-363
+
+- Triggering role, report path, and round: code reviewer; `code-review-report.md` (CRR-007 Pass on IR-004); round 4. Delivery's DR-001.
+- Triggering finding or case IDs: none (a merge with no behavior change outside the Nodes UI).
+- Related revision IDs: IR-004; CRR-007; DR-001.
+- Why recorded: the merge `08984df524` (local only), validated from a clean checkout of `482e9ce797`.
+- Coverage decisions or durable test paths changed: none in the repository. Added `evidence/API-356-layouts.mjs`.
+- Cases:
+  - Run: API-R4 (Electron 407 and web 1212 on the merge), API-00, API-14 (real node through the merged UI in three layouts), API-10-r4.
+  - Reused: rounds 1–3 (`electron/` is unchanged by the merge).
+
+#### Prior Failure Resolution
+
+None open.
+
+- Canonical artifacts and sections updated: investigation § Round 4; report (Round, Cases → Round 4, Latest result); progress log.
+- Prior result and confidence: `Pass`, 93.9%.
+- Current result and confidence: `Pass`, 93.9%.
+- New or remaining failure IDs: none.
+  - Observation O-7: a transient of about 6 s, as in IMP-08 (h).
+  - Residual O-6 carried.
+- Recommended owner: code reviewer (test-code review; a harness file only).
+- Remaining risks, blocked evidence, or untested scope: as round 3.

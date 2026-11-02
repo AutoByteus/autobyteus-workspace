@@ -170,6 +170,25 @@ None planned. The real installer, real nodes and timed passes make these tempora
 
 V3 (`1.5.11-beta.12`) is built for API-12b and API-12c.
 
+## Round 4 (API-REV-004): IR-004, the merge with `personal` after autobyteus-363
+
+- **Trigger:** code reviewer, CRR-007 Pass on IR-004 (a `Local Fix` requested by delivery, DR-001).
+  - Merge `08984df524`: `origin/personal` @ `fc5a726444` into `b0445f49b9`. Local only.
+  - Handoff: `4a591d3159`.
+  - Review: `482e9ce797`, built from a clean detached checkout of it.
+- **What changed:**
+  - 363 split `NodeServerUpdate` into a server `cell` and a row `notice`; 356's node switch now sits at the foot of the cell.
+  - The refresh on an automatic change is limited to the cell.
+  - `autoReported` keeps the notice from repeating an automatic result.
+  - The desktop version on the merged base is `1.5.11-beta.11`.
+- **Unchanged:** `git diff b0445f49b9 08984df524 -- autobyteus-web/electron` is empty. The app's automatic install, the main-process node policy and the updater are untouched, so round 3's real-Squirrel cases stand.
+
+| Case | Decision | Why |
+| --- | --- | --- |
+| API-R4 | Reuse IMP-13 and IMP-14, plus a rerun of the Electron suite and the nodes and notifications web specs on the clean checkout | The node UI changed; the full web suite is the implementer's (5085 passed) |
+| API-14 | **New:** a real node | A test-owned container on the published 1.5.11-beta.7 image with a throwaway key, and a signed 1.5.11-beta.11 package from the local release source, behind the logging proxy. Steps: the switch in the server cell at medium and wide widths and on the Nodes row; switched on, one main-process POST; the cell goes from progress to "Server 1.5.11-beta.11"; one "Updated automatically"; no notice repeating it; one window GET per row per refresh |
+| Rounds 1–3 | Reused | Not touched by the merge |
+
 ## Investigation Decision
 
 - Proceed: `Yes`. Durable coverage changes: `No`. Reroute: `No`.
@@ -186,3 +205,6 @@ V3 (`1.5.11-beta.12`) is built for API-12b and API-12c.
 - After round 3 (API-REV-003):
   - Result `Pass`, 93.9%. F-API-003 resolved. CR-C19 answered.
   - Residual O-6. API-11 needed a longer wait than planned (Squirrel's verify follows its "Download completed").
+- After round 4 (API-REV-004):
+  - Result `Pass`. The merged Nodes UI is proven on a real node in narrow, medium and wide layouts.
+  - Rounds 1–3 reused.

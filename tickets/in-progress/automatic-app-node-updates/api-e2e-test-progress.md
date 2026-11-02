@@ -88,3 +88,12 @@ Read this first when picking the run back up. Only add rows. **Isolated copies, 
 | 2026-11-02 10:00 | API-10 | Completed | Pass | r3: no 356 names server side; no node-path change |
 | 2026-11-02 10:00 | Cleanup | Completed |  | r3: all run state removed (incl. IMP-12's identity leftovers); user caches identical; user nodes untouched |
 | 2026-11-02 10:00 | Round 3 | Completed | Pass | 93.9%; F-API-003 resolved; CR-C19 answered; residual O-6 |
+| 2026-11-02 14:11 | Round 4 | Started |  | CRR-007 Pass on IR-004 (merge 08984df524 with personal after 363; review 482e9ce797; local only). Run temp root /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api4.L9OUu3 |
+| 2026-11-02 14:11 | API-00 | Started |  | r4: clean checkout 482e9ce797; install; V1 build; node image + signed 1.5.11-beta.11 package |
+| 2026-11-02 14:20 | API-R4 | Completed | Pass | Electron 407 passed/1 skipped; web nodes+notifications+stores 1212 passed (first attempt before .nuxt existed: setup only) |
+| 2026-11-02 14:20 | API-00 | Completed | Pass | r4: V1 1.5.11-beta.11 built (5m52); an356-node:7 (throwaway key); signed good 1.5.11-beta.11 package |
+| 2026-11-02 14:20 | API-14 | Started |  | real node through the merged Nodes UI |
+| 2026-11-02 14:25 | API-14 | Completed | Pass | real node: switch in the server cell in narrow/medium/wide (cell 256 px at 16rem); 1 window GET per row per refresh; 1 main POST 202; cell progress -> Server 1.5.11-beta.11; one 'Updated automatically'; notice null after; O-7 6 s transient (as IMP-08 h) |
+| 2026-11-02 14:25 | API-10 | Completed | Pass | r4: electron/ unchanged by the merge; no 356 names server side |
+| 2026-11-02 14:25 | Cleanup | Completed |  | r4: instance, container, volumes, image, release source, proxy, checkout, run root removed; user nodes untouched |
+| 2026-11-02 14:25 | Round 4 | Completed | Pass | merge validated; rounds 1-3 stand |

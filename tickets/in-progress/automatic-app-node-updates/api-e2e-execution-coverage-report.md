@@ -6,8 +6,12 @@ Paths are relative to `/Users/normy/autobyteus_org/autobyteus-worktrees/automati
 
 ## Round
 
-- Coverage investigation: `api-e2e-coverage-investigation.md` (§ Round 3 holds this round's plan)
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-003`
+- **Round 4 (current, API-REV-004):** CRR-007 Pass on IR-004, the merge with `personal` after autobyteus-363 (DR-001).
+  - Merge `08984df524`, local only. Review `482e9ce797`, built from a clean detached checkout of it.
+  - No behavior change outside the Nodes UI: `git diff b0445f49b9 08984df524 -- autobyteus-web/electron` is empty (`API-10-r4-ac006.log`), so round 3's real-Squirrel results stand.
+  - The plan is in the investigation's § Round 4. Results are under § Cases → Round 4. Rounds 1–3 follow.
+- Coverage investigation: `api-e2e-coverage-investigation.md` (§ Round 3 and § Round 4)
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-004`
 - Test progress log: `api-e2e-test-progress.md`
 - Round and trigger: round 3; CRR-005 Pass on IR-003 (SR-004..SR-006).
   - Code: `2e64cbb3d9`.
@@ -44,7 +48,17 @@ Paths are relative to `/Users/normy/autobyteus_org/autobyteus-worktrees/automati
 
 ## Cases
 
-### Round 3 (current)
+### Round 4 (current; merge `08984df524`)
+
+| Case ID | Criteria | Boundary | Command / Steps | Env | Result | Evidence Files | Look For | Notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| API-R4 | Regression on the merge | Repository, clean checkout | `pnpm -C autobyteus-web test:electron run`; `vitest run components/settings/nodes components/notifications stores` | macOS, clean checkout of `482e9ce797` | Pass | `API-R4-suites.log` | `Tests  407 passed \| 1 skipped (408)`; `Tests  1212 passed (1212)` | A first attempt ran before `.nuxt` existed (setup only, 0 failed tests) and was rerun after the build generated it. The full web suite (5085 passed) is the implementer's IMP |
+| API-00 | — | Build, node | V1 = `build:electron:mac` of the merge (1.5.11-beta.11, 5 m 52 s); test node image on the published 1.5.11-beta.7 with a throwaway key; signed `good` 1.5.11-beta.11 package (`API-356-make-packages.sh`, version substituted) | — | Pass | `API-99-r4-cleanup.log` | — | — |
+| API-14 | AC-004, the merged Nodes UI (363), CR-C3 | Desktop main process + real node + logging proxy | Fresh desktop; node added through the panel; `evidence/API-356-layouts.mjs` at 760, 1300 and 1900 px (switch off) and at 560, 1300 and 1900 px (after the outcome); two refreshes counted; the switch turned on by a click and followed every 3 s | Isolated V1 build, test container `an356-n4` (fresh volumes, 127.0.0.1:47951, proxy 47961), local release source | Pass | `API-14-layouts-switch-off.json`, `API-14-layouts-after-outcome.json`, `API-14-off-*.png`, `API-14-on-*.png`, `API-14-switch-on-follow.json`, `API-14-after-outcome.png`, `API-14-proxy.jsonl`, `API-14-desktop-instance.log` | **Switch in the server cell in every layout:** narrow (card 462 px), medium (662, 913) and wide (1280, cell **256 px** = 16rem), `toggleInCell=true`. **One window GET per row per refresh** (`refresh-1`, `refresh-2`: `window GET /rest/node-update 200: 1`). **Switch on:** `main POST /rest/node-update 202: 1`; cell "Preparing 1.5.11-beta.11…" → "Restarting…" → "Server 1.5.11-beta.11"; `AUTO_UPDATED` at 81 s; **one** "Updated automatically to 1.5.11-beta.11" (`updatedLines=1`); notice `null` at and 12 s after the outcome; C1 `1.5.11-beta.11 same succeeded` | **O-7:** for ~6 s between the node's success (75 s) and the main process's next follow (81 s), the row notice showed the window's own "Updated to 1.5.11-beta.11."; the automatic line then replaced it and it never repeated. Same window as IMP-08 (h) in round 1, so not new with the merge |
+| API-10 | AC-006, merge scope | Repository | Diff and greps | — | Pass | `API-10-r4-ac006.log` | `electron/` changed by the merge: `count: 0`; 356 names server side: `exit: 1` | — |
+| Rounds 1–3 | All other ACs | — | Reused | — | Pass | See below | — | Not touched by the merge |
+
+### Round 3 (history; on `2e64cbb3d9`)
 
 | Case ID | Criteria | Boundary | Command / Steps | Env | Result | Evidence Files | Look For | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -198,6 +212,15 @@ Paths are relative to `/Users/normy/autobyteus_org/autobyteus-worktrees/automati
 
 ## Latest Authoritative Result
 
+- **Round 4 (current):**
+  - Result `Pass` on the merge `08984df524`.
+  - API-14 and API-R4 re-prove the Nodes UI and AC-004 on a real node; rounds 1–3 stand for everything the merge does not touch.
+  - Confidence stays 93.9%, with the same named gaps.
+  - New observation O-7: a transient of about 6 s, already seen in IMP-08 (h).
+  - Harness addition: `evidence/API-356-layouts.mjs`.
+  - Cleanup: test container, volumes, image, release source, proxy, checkout and run root removed; the user's nodes running untouched (`API-99-r4-cleanup.log`). No app-update identity state this round: no app install ran.
+  - Test-code review: no repository test code changed; only a harness file was added.
+- Round 3 result, kept below:
 - Result: `Pass`.
 - Final confidence: 93.9%. Every critical AC is directly proven and no category is below 90%. The gaps below 95% are named above.
 - Broader validation: `Required`, executed.
