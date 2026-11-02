@@ -23,3 +23,15 @@
   install, 60 s quit bound), recovery by `ElectronApplication` (relaunch only when the server is stopped or gone),
   `automatic` written only on `accepted: true`, and the staged-but-moved-on switch-on path. DS-003: follows run per
   node (N-4). Residual risks N-1..N-3 and N-5 are stated. FU-003 is added.
+
+## SR-004 — 2026-11-02 — Failure-origin review CRR-004 (F-API-003, CR-C12)
+- Trigger: on a busy Mac the 60 s quit bound failed a good automatic install (API-02D), because the bound also measured
+  Squirrel's fetch, unpack and verify. The design assumed the quit follows `quitAndInstall` promptly. Design Impact,
+  verified against `MacUpdater.js` and the log (F-13, F-14).
+- Decision: **direction A.** The automatic path waits for the native `update-downloaded` before stopping anything, with
+  its own 15-minute bound. Not B (keeps the server outage and needs a second bound), not C (only moves the threshold).
+  It also removes O-4, and a native refusal now disturbs nothing, which shrinks FU-003.
+- Requirements: sharpened by the Solution Designer within the direction, with the user informed. DEC-001's meaning was
+  "no 30-minute wait, no idle wait", and the macOS step adds neither; it is the time to finish preparing the update.
+- CR-C12: plain automatic reasons, no raw text, no "Try again" for a blocked version. CR-C13 (O-3): held for evidence.
+- FU-005 added: the click keeps today's order (preserved scope).

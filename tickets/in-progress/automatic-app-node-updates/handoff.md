@@ -30,3 +30,13 @@
   re-emit; if it does not hold, the escalation trigger applies.
 - N-1..N-5 are stated in Tradeoffs And Risks; N-4 is fixed (a timer per node follow). FU-003 is added. Requirements
   are unchanged; the user confirmed REQ-004's meaning in his own words.
+
+## Revision SR-004 (for architecture re-review), 2026-11-02
+- Trigger: CRR-004 F-API-003 and CR-C12 (`code-review-report.md`, round 4).
+- DS-002: `AppUpdateInstallReadiness`, `installWhenReady(V)`, native `update-downloaded` before any stop on macOS, a
+  15-minute bound with no recovery (nothing stopped), a native error during the wait counted as `install` before
+  `activeOperation`, plain reasons. Quit bound stays 60 s and now measures only the quit.
+- Please check especially: the readiness reset on every electron-updater `update-downloaded` (F-13 ordering), the cached
+  path's unknown (F-15, must be run), a click, a manual check or the switch during the wait, and the late download
+  rejection.
+- After implementation, API/E2E re-runs: API-02D's load, API-02B, API-05C, and the staged path.
