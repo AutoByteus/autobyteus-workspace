@@ -32,7 +32,7 @@
         </div>
       </div>
     </template>
-    <div v-else-if="configurationTarget && center.isConfigMode" class="flex h-full min-h-0 flex-col bg-white" data-test="agent-org-run-config-editor">
+    <div v-else-if="center.isConfigMode" class="flex h-full min-h-0 flex-col bg-white" data-test="agent-org-run-config-editor">
       <div class="flex items-center justify-between border-b border-gray-200 px-4 py-2">
         <h3 class="truncate text-sm font-semibold text-gray-800">{{ t('workspace.agentOrg.runConfig.orgLabel') }}</h3>
         <button type="button" data-test="agent-org-config-back-to-events"
@@ -42,7 +42,7 @@
           <Icon icon="heroicons:arrow-left-20-solid" class="h-4 w-4" />
         </button>
       </div>
-      <ExistingRunConfigEditor :target="{ kind: 'agent_org', orgRunId: configurationTarget.root.orgRunId }" />
+      <ExistingRunConfigEditor :target="{ kind: 'agent_org', orgRunId: target.root.orgRunId }" />
     </div>
     <AgentWorkspaceSurface
       v-else-if="target.kind === 'agent_org_direct_agent' || target.kind === 'agent_org_task_agent'"
@@ -103,9 +103,6 @@ const target = computed(() => {
 const targetIdentity = computed(() => target.value
   ? `${target.value.root.orgRunId}\u0000${target.value.address}\u0000${target.value.context.state.runId}`
   : null)
-const configurationTarget = computed(() => target.value
-  && (target.value.kind === 'agent_org_direct_agent' || target.value.kind === 'agent_org_team_member')
-  ? target.value : null)
 const open = () => {
   if (orgRunId.value) void active.inspectAgentOrg(orgRunId.value).catch(() => undefined)
 }
@@ -130,10 +127,10 @@ const openNewOrgRun = () => {
   center.showChat()
   void runStart.copyOrgRun(source.orgRunId, source.orgDefinitionId)
 }
-const headerActionsAvailable = computed(() => Boolean(target.value && (target.value.access === 'live'
-  || target.value.kind === 'agent_org_direct_agent' || target.value.kind === 'agent_org_team_member')))
+const headerActionsAvailable = computed(() => Boolean(target.value))
+/** Every focused agent of the Org has its own settings (autobyteus-366): a member, or a copy of the Org's. */
 const openMemberConfiguration = () => {
-  if (configurationTarget.value) center.showConfig()
+  if (target.value) center.showConfig()
 }
 
 onMounted(() => {
@@ -151,7 +148,8 @@ watch(() => context.value?.phase, (phase) => {
     void router.replace({ path: '/workspace', query: { ...route.query, mode } })
   }
 }, { immediate: true })
+// Settings stay open across focus changes, with their unsaved edits (REQ-005); with nothing focused they close.
 watch(targetIdentity, (nextIdentity, previousIdentity) => {
-  if (previousIdentity && nextIdentity !== previousIdentity) center.showChat()
+  if (previousIdentity && !nextIdentity) center.showChat()
 })
 </script>

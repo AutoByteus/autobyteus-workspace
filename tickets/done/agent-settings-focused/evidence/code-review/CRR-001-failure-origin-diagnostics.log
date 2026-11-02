@@ -1,0 +1,32 @@
+# CRR-001 failure-origin diagnostics (code reviewer), autobyteus-366, 2026-11-02. Code under test cba2e085e7 (head 480db9b530).
+# Command (twice, runs a and b): env -i PATH HOME USER LOGNAME TMPDIR node autobyteus-web/tests/e2e/delegated-launch-defaults-probe.mjs --cases AFS-002 --output-dir <fresh>
+#   ENV-1 as API-03 (real Chrome, Nuxt dev, built server, scripted AGY, owned data); started only when no other heavy run was active.
+# Temporary edits in this worktree, never committed, reverted before handoff (git checkout):
+#   1. composables/useWorkspaceHistorySubjectActions.ts (trial for finding 1): when the route already shows this Org,
+#      clearSelectionWithoutShellNavigation() instead of clearSelection().
+#   2. services/agentOrgExecution/agentOrgRunConfigAdoption.ts: console.error of the masked trees' differing paths before the throw.
+#   3. stores/existingRunConfigStore.ts loadAgentOrgCanonical catch, stores/existingRunConfigResultActions.ts reconcileAgentOrgFailure catch: console.error of the error.
+#   4. tests/e2e/agent-settings-focused-cases.mjs: the cold page's CRR-DIAG console lines appended to a file (run b only).
+# Look for: with trial 1, settingsClosedBy [] and pendingEditKept true; the Org copy Save's reload and the Refresh both fail in
+#   assertAgentOrgRunConfigChange, on the copy's userLaunchSelection (absent in the view, present in the read).
+
+run a: settingsClosedBy=[] pendingEditKept=True copySaveFailed.state=refresh-required copyStored={"llmModelIdentifier": "dlc-alt-model", "llmConfig": null, "selectedAt": "2026-11-02T07:05:52.888Z"} writerResumed=["dlc-alt-model"]
+run b: settingsClosedBy=[] pendingEditKept=True copySaveFailed.state=refresh-required copyStored={"llmModelIdentifier": "dlc-alt-model", "llmConfig": null, "selectedAt": "2026-11-02T07:12:56.071Z"} writerResumed=["dlc-alt-model"]
+
+# Browser console (run b):
+2026-11-02T07:12:56.099Z CRR-DIAG refused ["tree.rootOrg.taskExecutions.0.userLaunchSelection: undefined -> {\"llmModelIdentifier\":\"dlc-alt-model\",\"llmConfig\":null,\"selectedAt\":\"2026-11-02T07:12:56.071Z\"}"]
+2026-11-02T07:12:56.100Z CRR-DIAG load failed Org configuration changed topology, identity, or locked fields. | Error: Org configuration changed topology, identity, or locked fields.
+    at assertAgentOrgRunConfigChange (http://127.0.0.1:53631/_nuxt/services/agentOrgExecution/agentOrgRunConfigAdoption.ts:27:11)
+    at prepareConfigWorkspaces (http://127.0.0.1:53631/_nuxt/stores/agentOrgContextsStore.ts:354:5)
+    at Proxy.readRunConfig (http://127.0.0.1:53631/_nuxt/stores/agentOrgContextsStore.ts:390:32)
+    at async Proxy.loadAgentOrgCanonical (http://127.0.0.1:53631/_nuxt/stores/existingRunConfigStore.ts:216:25)
+    at async Proxy.reloadCanonical (http://127.0.0.1:53631/_nuxt/stores/existingRunConfigEditActions.ts:69:20)
+    at async Proxy.save (http://127.0.0.1:53631/_nuxt/stores/delegatedLaunchDraftStore.ts:118:24)
+    at async save (http://127.0.0.1:53631/_nuxt/components/workspace/config/ExistingRunConfigEditor.vue:297:7)
+2026-11-02T07:13:57.612Z CRR-DIAG refused ["tree.rootOrg.taskExecutions.0.userLaunchSelection: undefined -> {\"llmModelIdentifier\":\"dlc-alt-model\",\"llmConfig\":null,\"selectedAt\":\"2026-11-02T07:12:56.071Z\"}"]
+2026-11-02T07:13:57.613Z CRR-DIAG reconcile failed Org configuration changed topology, identity, or locked fields. | Error: Org configuration changed topology, identity, or locked fields.
+    at assertAgentOrgRunConfigChange (http://127.0.0.1:53631/_nuxt/services/agentOrgExecution/agentOrgRunConfigAdoption.ts:27:11)
+    at prepareConfigWorkspaces (http://127.0.0.1:53631/_nuxt/stores/agentOrgContextsStore.ts:354:5)
+    at Proxy.readRunConfig (http://127.0.0.1:53631/_nuxt/stores/agentOrgContextsStore.ts:390:32)
+    at async Proxy.reconcileAgentOrgFailure (http://127.0.0.1:53631/_nuxt/stores/existingRunConfigResultActions.ts:123:25)
+    at async Proxy.retryCanonicalRefresh (http://127.0.0.1:53631/_nuxt/stores/existingRunConfigResultActions.ts:143:7)

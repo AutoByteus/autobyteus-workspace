@@ -1,0 +1,18 @@
+# API-05 SSR-003 (run b): node autobyteus-web/tests/e2e/delegated-launch-defaults-probe.mjs --cases SSR-003,... ; head 5e77712afc; ENV-1; 2026-11-02.
+# The case blocks the first write (transport failure), then lets the second write commit and answers the next GetAgentRunCollaboration with 503.
+# Look for: UpdateDelegatedLaunchSelections 200 'success': true, then GetAgentRunCollaboration 503, then the editor shows 'Saved.' (screenshot API-05-r2-SSR-003-saved-with-stale-card.png) instead of 'saved, but could not be refreshed'.
+
+08:00:39.920 GetAgentRunCollaboration                      200 {"data": {"agentRunCollaboration": {"root_subject_kind": "agent", "root_run_id": "manager_b65b_deaa738acb09485a8a6414c3863bd8e9", "root_agent": {"base
+08:00:42.788 GetAgentRunResumeConfig                       200 {"data": {"getAgentRunResumeConfig": {"runId": "manager_b65b_251a90afa25b49a3bed7130f2bed3667", "isActive": true, "metadataConfig": {"agentDefinitionI
+08:00:45.063 GetAgentRunCollaboration                      200 {"data": {"agentRunCollaboration": {"root_subject_kind": "agent", "root_run_id": "manager_b65b_251a90afa25b49a3bed7130f2bed3667", "root_agent": {"base
+08:00:45.063 GetAgentRunResumeConfig                       200 {"data": {"getAgentRunResumeConfig": {"runId": "manager_b65b_251a90afa25b49a3bed7130f2bed3667", "isActive": false, "metadataConfig": {"agentDefinition
+08:00:46.650 GetAgentRunResumeConfig                       200 {"data": {"getAgentRunResumeConfig": {"runId": "manager_b65b_251a90afa25b49a3bed7130f2bed3667", "isActive": false, "metadataConfig": {"agentDefinition
+08:00:48.709 GetAgentRunCollaborationMemberProjection      200 {"data": {"agentRunCollaborationMemberProjection": {"agentRunId": "writer_ca0a_f7d50a878efc4ecbacaa3c72df305037", "memberAddress": "/writer_ca0a", "co
+08:00:48.709 GetAgentRunCollaborationMemberFileChanges     200 {"data": {"agentRunCollaborationMemberFileChanges": []}}
+08:00:48.710 GetAgentRunResumeConfig                       200 {"data": {"getAgentRunResumeConfig": {"runId": "manager_b65b_251a90afa25b49a3bed7130f2bed3667", "isActive": false, "metadataConfig": {"agentDefinition
+08:00:53.747 UpdateDelegatedLaunchSelections               None None
+08:00:54.398 UpdateDelegatedLaunchSelections               200 {"data": {"updateDelegatedLaunchSelections": {"success": true, "outcome": "UPDATED", "message": "Saved. The new model is used when the copy resumes.",
+08:00:54.560 GetAgentRunCollaboration                      503 {"errors": [{"message": "owned readback transport outage"}]}
+08:00:54.572 GetAgentRunResumeConfig                       200 {"data": {"getAgentRunResumeConfig": {"runId": "manager_b65b_251a90afa25b49a3bed7130f2bed3667", "isActive": false, "metadataConfig": {"agentDefinition
+
+error: Timed out waiting for saved but refresh failed

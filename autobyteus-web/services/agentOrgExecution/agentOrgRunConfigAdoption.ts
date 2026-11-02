@@ -1,12 +1,22 @@
 import type { AgentOrgExecutionTree } from '~/types/collaboration/agentOrgExecution'
 
+type OrgTaskExecution = AgentOrgExecutionTree['rootOrg']['taskExecutions'][number]
 type OrgAgent = { address: string; platformAgentRunId: string | null; launchConfiguration: { runtimeKind: string } }
 
 /**
- * Only the selection (agent runtime, model, settings) and mounted Team/configured-child workspace fields are mutable. A configured
- * Agent whose agent runtime changed has switched or undone a pending switch (autobyteus-348): the server decides its session (a
- * switch drops it, an undo restores the original), so any session is accepted for it and nothing else of its identity may differ;
- * every other Agent keeps its session.
+ * A delegated copy's model choice (its own, or a Team copy's and its members') is saved on the Org run, so it may
+ * change with a Save (autobyteus-366); every other field of a copy stays locked.
+ */
+const withoutCopyChoices = (task: OrgTaskExecution): OrgTaskExecution => 'agentRunId' in task
+  ? { ...task, userLaunchSelection: undefined }
+  : { ...task, userTeamLaunchSelection: undefined, members: task.members.map(member => ({ ...member, userLaunchSelection: undefined })),
+      taskExecutions: task.taskExecutions.map(withoutCopyChoices) }
+
+/**
+ * Only the selection (agent runtime, model, settings), mounted Team/configured-child workspace fields and copies' model
+ * choices are mutable. A configured Agent whose agent runtime changed has switched or undone a pending switch
+ * (autobyteus-348): the server decides its session (a switch drops it, an undo restores the original), so any session is
+ * accepted for it and nothing else of its identity may differ; every other Agent keeps its session.
  */
 export const assertAgentOrgRunConfigChange = (previous: AgentOrgExecutionTree, next: AgentOrgExecutionTree): void => {
   const agentsOf = (tree: AgentOrgExecutionTree): OrgAgent[] => tree.rootOrg.members.flatMap(member => 'agentRunId' in member ? [member] : member.members)
@@ -26,10 +36,12 @@ export const assertAgentOrgRunConfigChange = (previous: AgentOrgExecutionTree, n
         platformAgentRunId: switched.has(value.address) ? '__SWITCHED__' : value.platformAgentRunId })
     return { ...tree, rootOrg: { ...tree.rootOrg,
       defaultLaunchConfiguration: selection(tree.rootOrg.defaultLaunchConfiguration),
+      taskExecutions: tree.rootOrg.taskExecutions.map(withoutCopyChoices),
       members: tree.rootOrg.members.map(member => 'agentRunId' in member
         ? agent(member, selection)
         : { ...member, defaultLaunchConfiguration: teamLaunch(member.defaultLaunchConfiguration),
-            members: member.members.map(value => agent(value, teamLaunch)) }) } }
+            members: member.members.map(value => agent(value, teamLaunch)),
+            taskExecutions: member.taskExecutions.map(withoutCopyChoices) }) } }
   }
   if (JSON.stringify(masked(previous)) !== JSON.stringify(masked(next))) {
     throw new Error('Org configuration changed topology, identity, or locked fields.')

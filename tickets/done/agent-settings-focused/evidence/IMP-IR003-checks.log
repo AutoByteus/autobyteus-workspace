@@ -1,0 +1,15 @@
+# IMP-IR003-checks: IR-003 checks. Commit 38f5a1eb1c. Date 2026-11-02. macOS, node v22.23.1. Suites under env -i PATH HOME=<fresh temp> TMPDIR.
+# Look for: [typecheck] PASS; Tests passed count; guards exit 0.
+
+## web typecheck
+[typecheck] production errors: 0; test-file errors: 99 in 43 files (baseline 99 in 43 files)
+[typecheck] PASS
+
+## web suite (full)
+ Test Files  688 passed (688)
+      Tests  5046 passed (5046)
+exit=0
+
+## guards: guard:web-boundary exit=0; guard:localization-boundary exit=0; audit:localization-literals exit=0
+
+## targeted: stores/__tests__/agentRunCollaborationStore.spec.ts, components/workspace/config (savedSnapshot, delegatedSave, subject, workspace), stores/__tests__/existingRunConfigStore.spec.ts: 89 passed

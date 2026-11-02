@@ -1,0 +1,23 @@
+# IMP-local-checks: implementation-scoped checks for IR-001 of autobyteus-366.
+# Commit cba2e085e7 (branch codex/agent-settings-focused, on 348's 3261712e06). Date 2026-11-02. macOS, node v22.23.1. Suites ran under env -i PATH HOME=<fresh temp> TMPDIR, one heavy run at a time.
+# Look for: typecheck 'PASS' (99 = baseline); web 'Tests  5036 passed'; guards exit 0.
+
+## IMP-01 pnpm typecheck (autobyteus-web)
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.7s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 22.3s
+[typecheck] production errors: 0; test-file errors: 99 in 43 files (baseline 99 in 43 files)
+[typecheck] PASS
+
+## IMP-02 web Nuxt suite (full)
+ Test Files  688 passed (688)
+      Tests  5036 passed | 2 skipped (5038)
+exit=0
+
+## IMP-03 guards, each alone: guard:web-boundary exit=0; guard:localization-boundary exit=0; audit:localization-literals exit=0
+
+## IMP-04..07 targeted specs, all in IMP-02:
+utils/runSettings/__tests__/settingsSubject.spec.ts: the design's rule table, one case per focused kind
+components/run-settings/__tests__/ExistingRunSettings.copies.spec.ts (was RunDelegatedLaunchSection.spec.ts), ExistingRunSettings.runtime.spec.ts: card, switch, stop owner, hint, names
+components/workspace/config/__tests__/ExistingRunConfigEditor.{subject,savedSnapshot,delegatedSave}.spec.ts: focus per root kind; AC-005 edits across focus; Save re-reads the hub's view first
+stores/__tests__/agentSelectionStore.spec.ts, components/workspace/org/__tests__/AgentOrgWorkspaceView.spec.ts: Settings stay open within a run; an Org's copy opens Settings

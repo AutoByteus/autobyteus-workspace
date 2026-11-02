@@ -1513,33 +1513,47 @@ The saved-run view uses the start surfaces' visual language:
   model menu matches the chat model menu: a search box, the run's runtime as a
   locked label ("The runtime is fixed for this run") and only that runtime's
   models.
-- **Members** list for Teams and Orgs. Changing the team- or org-wide model
-  updates every non-customized member, including members of placed teams.
-- **Delegated copies**, for Agent, Team and Org runs that have
-  any: a second `RunMembersSection` under Members, with the description "Started
-  by agents in this run. Stop one to change its model; its next message resumes it
-  on the new model."
-  - **Rows.** The rows come from `utils/runSettings/delegatedLaunchRows.ts`
+- **One agent at a time (autobyteus-366).** Settings show the agent focused in the
+  left tree, resolved by `utils/runSettings/settingsSubject.ts`
+  (`resolveSettingsSubject`), and stay open while the focus moves within the run.
+  - A standalone run: its own card. With open copies, one line says "Select a copy
+    on the left to change its settings."
+  - A delegated copy: its own card, with its Delegated copy badge, its source and
+    notes. Its header's stop icon stops that copy. A copy another node runs is
+    read-only, with that node's chip.
+  - A member of a Team copy: its own card, a line naming its Team, and a **Team
+    settings** switch: the copy's Team card, then its Members.
+  - A Team member (the coordinator too) or an Org member (a placed team's too): its
+    own card, a line naming its group, and a **Team settings** / **Organization
+    settings** switch: the run's card and Members, as below. The header's stop icon
+    stops the Team or Org. The switch returns to the agent when the focus moves.
+  - No row for the focused agent (nothing selected, or not loaded yet): the run's
+    card and Members.
+- **Save bar.** Edits stay pending across focus changes. The bar names every agent
+  with unsaved edits ("Unsaved changes: code reviewer, writer"), since they may be
+  off screen; a Team- or Org-wide edit is named by its group, not its followers.
+  Save and Cancel act on all of them.
+- **Members** list for Teams and Orgs (the group view). Changing the team- or
+  org-wide model updates every non-customized member, including members of placed
+  teams.
+- **Delegated copies**, for Agent, Team and Org runs that have any: reached by
+  focusing one in the left tree, never as a list on the run.
+  - **Rows.** The nodes come from `utils/runSettings/delegatedLaunchRows.ts`
     (`teamDelegatedLaunchNodes`, `collaborationDelegatedLaunchNodes`), which builds
-    `RunMemberNode`s with `runMemberTree.memberNode`. They are drawn with the same
-    `RunMemberRow` as Members, so a copy looks like the run's own Members list.
-  - **Collapsed by default.** Each open delegated copy is one
-    row. Expansion is local to the section and starts empty. It looks the same
-    for a running and a stopped run.
-  - **Row content.** A row shows a Delegated copy badge. Its
-    summary is `model · runtime · approval`, followed by its source label. A row
-    whose model the user chose (its own choice, or its Team's for a member that
-    follows the Team) shows its model like any edited member, with no source label.
-  - **Notes on a collapsed Team.** A collapsed Team copy whose
-    agents have fallback notes also shows "Notes: N".
-  - **Opening a Team** shows its settings card, then its Members:
+    `RunMemberNode`s with `runMemberTree.memberNode`. A focused copy is drawn with
+    `RunSubjectCard`; a Team copy's Members with the same `RunMemberRow` as the
+    run's own Members.
+  - **Card content.** The Delegated copy badge and its source label. A copy whose
+    model the user chose (its own choice, or its Team's for a member that follows
+    the Team) shows its model like any edited member, with no source label.
+  - **A Team copy's group view** shows its settings card, then its Members:
     - the copy's coordinator carries the Coordinator chip;
     - a team-level fallback note is shown once, on the Team;
     - each member shows only its own notes;
     - each member opens to its settings card.
-  - **Opening an Agent** shows its settings card.
   - These cards are locked while the copy runs and editable while it is stopped
-    (see Editing below).
+    (see Editing below). After a Save on a stopped hub the hub's view is read again,
+    so the card shows what was saved.
   - **Keys and names.** Rows are keyed `<address>@<run ID>`, because one address
     can hold several copies. A row is named as the sidebar names the copy: in a
     Team run a catalog copy and its members by display name (`scribe 5083`), a
@@ -1573,7 +1587,8 @@ The saved-run view uses the start surfaces' visual language:
     copy's own `source`. This edit's choices are applied as they are made. A member's
     source is its own, else its Team's.
   - **Stop.** A running copy (any of its agents not offline) has
-    the run's red stop icon on its own row, never on one member of a Team. It
+    the run's red stop icon in its header; a Team copy's member's header stops its
+    Team copy, never that one member. It
     calls `delegatedLaunchDraftStore.stop` (`stopDelegatedExecution`): the copy and
     the copies it started stop and stay restorable; the run keeps running. The same
     action is on the copy's sidebar row (`DelegatedStopButton`), whose enabled

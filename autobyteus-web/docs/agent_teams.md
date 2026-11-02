@@ -319,7 +319,8 @@ members (catalog copies, their members and copies) use the display-name formatte
 (`readsAsDisplayName`); a configured member and every copy started from it keep the address
 basename. `teamMemberName` in `services/teamExecution/teamExecutionTreeSelectors.ts` is the one
 owner of this rule: the sidebar rows, the member contexts (conversation titles) and the Run
-Settings delegated-copy rows all name a copy through it. New copies are always placed at the run's
+Settings card of a focused delegated copy (built from `delegatedLaunchRows.ts`) all name a copy
+through it. New copies are always placed at the run's
 top level (CM-1: delegation to the sender's own team is refused on the server); copies already
 stored inside a Team instance keep their recorded host.
 See [Chat](./chat.md#-in-a-live-run-delegation).
