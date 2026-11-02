@@ -64,6 +64,8 @@
 //           Alone: pnpm -C autobyteus-web test:e2e:skill-improvement-removal
 //   TLU-001 (live-tool-list-updates) tools edited in the app reach the open run: card, refusal, restore; see
 //           tool-list-update-cases.mjs. Alone: pnpm -C autobyteus-web test:e2e:tool-list-updates
+//   AFS-001..AFS-003 (agent-settings-focused AC-001..AC-005): Settings of the focused agent on a hub, an Org and a Team; see
+//           agent-settings-focused-cases.mjs. Alone: pnpm -C autobyteus-web test:e2e:agent-settings-focused
 //   LRL-001..LRL-005 (large-runs-load-less AC-002, AC-003, AC-006): Team and Org runs load only the focused member; the
 //           Team tab's live merge and reconnect; a damaged message log on desktop and phone; see
 //           large-runs-load-less-cases.mjs. Alone: pnpm -C autobyteus-web test:e2e:large-runs-load-less
@@ -90,6 +92,7 @@ import { registerSavedRefreshCases } from './settings-saved-model-refresh-cases.
 import { registerDelegatedCopyOwnFileCases } from './delegated-copy-own-file-cases.mjs'
 import { registerSkillImprovementRemovalCases } from './skill-improvement-removal-cases.mjs'
 import { registerToolListUpdateCases } from './tool-list-update-cases.mjs'
+import { registerAgentSettingsFocusedCases } from './agent-settings-focused-cases.mjs'
 import { registerLargeRunsLoadLessCases } from './large-runs-load-less-cases.mjs'
 import { agentRuntimeName } from '@autobyteus/agent-presentation-contracts'
 import { spawn } from 'node:child_process'
@@ -1552,6 +1555,10 @@ registerLargeRunsLoadLessCases({ defineCase, assert, waitFor, delay, sel, settle
   callFromComposer, openTeamRun, expandWorkspaces, teamTree, teamRunIds, pick, objectsIn, AGY, MODEL,
   restartBackend: async (label, between) => { await stopOwned(backend); if (between) await between(); backend = await startBackend(label) },
   env: () => ({ frontUrl, backendUrl, dataRoot, outDir }) })
+registerAgentSettingsFocusedCases({ defineCase, assert, waitFor, delay, sel, settle, shot, gql, newChatFor, chooseModel, typeAndSend, callFromComposer,
+  conversationText, openSettings, backToConversation, openSidebarAgent, openTeamRun, expandWorkspaces, saveSettings, saveBarText,
+  agentTree, teamTree, teamRunIds, objectsIn, pick, agyLaunchesOf, offerAgyModels, AGY, GROK, GROK_MODEL, MODEL, ALT, RETIRING, MODEL_LABEL, ALT_LABEL, RETIRING_LABEL,
+  env: () => ({ frontUrl }) })
 const desktopSurface = desktopAdapter({ webDir, outDir, chromium, assert, waitFor })
 let exitCode = 0
 try {
