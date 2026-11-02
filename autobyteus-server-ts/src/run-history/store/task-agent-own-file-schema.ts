@@ -14,7 +14,11 @@ import {
   requireKeys,
   requiredString,
 } from "./run-execution-tree-shared-record-schemas.js";
-import { parseLaunchConfigurationSource, parseOptionalUserLaunchSelection } from "./launch-configuration-source-schema.js";
+import {
+  parseLaunchConfigurationSource,
+  parseOptionalPendingRuntimeSwitch,
+  parseOptionalUserLaunchSelection,
+} from "./launch-configuration-source-schema.js";
 
 /**
  * Own files of task agents (contract §3.1, §3.2) are read tolerantly and written exactly, like every
@@ -50,6 +54,7 @@ export const parseTaskAgentSection = (value: unknown, label = "taskAgent"): Task
       ? {}
       : { launchSource: parseLaunchConfigurationSource(section.launchSource, `${label}.launchSource`) }),
     ...parseOptionalUserLaunchSelection(section, "userLaunchSelection", label),
+    ...parseOptionalPendingRuntimeSwitch(section, label),
   };
 };
 

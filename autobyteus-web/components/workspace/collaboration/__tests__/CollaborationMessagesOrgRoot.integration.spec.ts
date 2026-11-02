@@ -8,25 +8,20 @@ import { AgentContext } from '~/types/agent/AgentContext'
 import { AgentRunState } from '~/types/agent/AgentRunState'
 import { parseAgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import CollaborationMessagesSection from '../CollaborationMessagesSection.vue'
+import { createPinia, setActivePinia } from 'pinia'
+import { flushPromises } from '@vue/test-utils'
+import { clearStoredParticipantMessages, storeParticipantMessages } from '~/test-support/participantMessagesStub'
 
 // Real Org root: real AgentOrgExecutionContext, real perspective projection and the real
 // crypto-js hash, counted. Only presentation leaves (icon, Markdown, file viewer) are stubbed.
 const counters = vi.hoisted(() => ({ hashes: 0, projections: 0 }))
 
 vi.mock('crypto-js/sha256', async (importOriginal) => {
-  const real = (await importOriginal<typeof import('crypto-js/sha256')>()).default
+  const real = (await importOriginal<{ default: typeof import('crypto-js/sha256') }>()).default
   return { default: (...args: Parameters<typeof real>) => { counters.hashes += 1; return real(...args) } }
 })
-vi.mock('~/services/agentOrgExecution/agentOrgCommunicationPerspective', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('~/services/agentOrgExecution/agentOrgCommunicationPerspective')>()
-  return {
-    ...actual,
-    projectAgentOrgCommunicationPerspective: (...args: Parameters<typeof actual.projectAgentOrgCommunicationPerspective>) => {
-      counters.projections += 1
-      return actual.projectAgentOrgCommunicationPerspective(...args)
-    },
-  }
-})
+// autobyteus-358: the Team tab loads its participant's stored messages through the participant query.
+vi.mock('~/services/collaborationMessages/participantMessagesQuery', async () => (await import('~/test-support/participantMessagesStub')).participantMessagesQueryStub)
 
 const PREVIEW = 20
 const REFS_PER_MESSAGE = 3_000
@@ -52,7 +47,7 @@ const message = (index: number, senderAgentRunId: string, receiverAgentRunId: st
 })
 
 const largeOrgView = (): AgentOrgExecutionViewDto => ({
-  base_change_sequence: 4,
+  base_change_sequence: 4, live_sequence_id: 'live-1', last_message_change_sequence: 0,
   is_active: true,
   closed_task_executions: [], execution_tree: {
     subjectKind: 'agent_org', createdAt: timestamp(0), archivedAt: null, applicationBinding: null, handoffs: [],
@@ -61,15 +56,6 @@ const largeOrgView = (): AgentOrgExecutionViewDto => ({
       defaultLaunchConfiguration: launch, taskExecutions: [],
       members: [agent('/designer', 'agent-designer'), agent('/reviewer', 'agent-reviewer'), agent('/tester', 'agent-tester')],
     },
-  },
-  communication_messages: {
-    schemaVersion: 1, subjectKind: 'agent_org', orgRunId: 'org-run',
-    messages: [
-      ...Array.from({ length: HISTORY_MESSAGES }, (_, index) => index % 2
-        ? message(index + 1, 'agent-reviewer', 'agent-designer', referencePaths(index + 1))
-        : message(index + 1, 'agent-designer', 'agent-reviewer', referencePaths(index + 1))),
-      message(HISTORY_MESSAGES + 1, 'agent-tester', 'agent-reviewer', []),
-    ],
   },
   agent_input_states: [], remote_task_executions: [],
   agent_statuses: [idle('/designer', 'agent-designer'), idle('/reviewer', 'agent-reviewer'), idle('/tester', 'agent-tester')],
@@ -87,7 +73,14 @@ const serverReferenceId = (messageId: string, path: string) =>
 
 // Mirrors production: the store keeps the Org context in a deep ref and the right panel reads
 // `selectedTarget().collaborationMessages` reactively (activeContextStore → RightSideTabs).
-const mountOrgMessages = () => {
+const storedMessages = () => [
+  ...Array.from({ length: HISTORY_MESSAGES }, (_, index) => index % 2
+    ? message(index + 1, 'agent-reviewer', 'agent-designer', referencePaths(index + 1))
+    : message(index + 1, 'agent-designer', 'agent-reviewer', referencePaths(index + 1))),
+  message(HISTORY_MESSAGES + 1, 'agent-tester', 'agent-reviewer', []),
+]
+const mountOrgMessages = async () => {
+  storeParticipantMessages('agent_org', 'org-run', storedMessages())
   const store = ref<Record<string, AgentOrgExecutionContext>>({})
   store.value['org-run'] = new AgentOrgExecutionContext({
     orgRunId: 'org-run', view: largeOrgView(),
@@ -97,7 +90,13 @@ const mountOrgMessages = () => {
   })
   const org = () => store.value['org-run']
   org().select('/reviewer')
-  const messages = computed(() => org().selectedTarget()!.collaborationMessages)
+  // Each Team-tab row projection is counted where the Section reads it.
+  const messages = computed(() => {
+    const target = org().selectedTarget()
+    if (!target || !('collaborationMessages' in target)) throw new Error('expected the selected Org agent with Messages')
+    const view = target.collaborationMessages
+    return { ...view, listMessages: () => { counters.projections += 1; return view.listMessages() } }
+  })
   const Host = defineComponent({ setup: () => () => h(CollaborationMessagesSection, { messages: messages.value }) })
   const wrapper = mount(Host, {
     global: {
@@ -109,43 +108,45 @@ const mountOrgMessages = () => {
       mocks: { $t: (key: string) => key.endsWith('messages_count') ? 'Messages' : key },
     },
   })
+  await flushPromises()
   return { wrapper, org }
 }
-const referenceRows = (wrapper: ReturnType<typeof mountOrgMessages>['wrapper']) =>
+const referenceRows = (wrapper: Awaited<ReturnType<typeof mountOrgMessages>>['wrapper']) =>
   wrapper.findAll('[data-test="team-communication-reference-row"]')
-const messageRows = (wrapper: ReturnType<typeof mountOrgMessages>['wrapper']) =>
+const messageRows = (wrapper: Awaited<ReturnType<typeof mountOrgMessages>>['wrapper']) =>
   wrapper.findAll('[data-test="team-communication-message-row"]')
-const header = (wrapper: ReturnType<typeof mountOrgMessages>['wrapper']) =>
+const header = (wrapper: Awaited<ReturnType<typeof mountOrgMessages>>['wrapper']) =>
   wrapper.get('[data-test="collaboration-messages-header"]').text()
 const resetCounters = () => { counters.hashes = 0; counters.projections = 0 }
 
 describe('Collaboration messages on a large Agent Org root', () => {
-  beforeEach(resetCounters)
+  beforeEach(() => { setActivePinia(createPinia()); clearStoredParticipantMessages(); resetCounters() })
 
   it('projects once and hashes only the displayed preview on mount and on a member switch (42,000 references)', async () => {
-    const { wrapper, org } = mountOrgMessages()
+    const { wrapper, org } = await mountOrgMessages()
     await wrapper.vm.$nextTick()
     expect(header(wrapper)).toContain('15 Messages')
     expect(messageRows(wrapper)).toHaveLength(HISTORY_MESSAGES + 1)
     expect(wrapper.findAll('[data-test="team-communication-reference-count"]')).toHaveLength(HISTORY_MESSAGES)
     expect(referenceRows(wrapper)).toHaveLength(0) // newest message (from tester) has no files
-    expect(counters.projections).toBe(1)
+    // One projection while the list loads (empty) and one when it is loaded (autobyteus-358).
+    expect(counters.projections).toBe(2)
     expect(counters.hashes).toBe(0)
 
     resetCounters()
     org().select('/designer')
-    await wrapper.vm.$nextTick()
+    await flushPromises()
     await wrapper.vm.$nextTick()
     expect(header(wrapper)).toContain('14 Messages')
     expect(messageRows(wrapper)[0].classes()).toContain('border-blue-500')
     expect(messageRows(wrapper)[0].get('[data-test="team-communication-reference-count"]').text()).toContain('3,000')
     expect(referenceRows(wrapper)).toHaveLength(PREVIEW)
-    expect(counters.projections).toBe(1)
+    expect(counters.projections).toBe(2)
     expect(counters.hashes).toBe(PREVIEW)
   })
 
   it('reveals and opens the last reference with the server identity; switching member collapses the list', async () => {
-    const { wrapper, org } = mountOrgMessages()
+    const { wrapper, org } = await mountOrgMessages()
     org().select('/designer')
     await wrapper.vm.$nextTick()
     await wrapper.vm.$nextTick()
@@ -167,7 +168,7 @@ describe('Collaboration messages on a large Agent Org root', () => {
   })
 
   it('applies a live communication message with one projection and identity work bounded by the visible rows', async () => {
-    const { wrapper, org } = mountOrgMessages()
+    const { wrapper, org } = await mountOrgMessages()
     org().select('/designer')
     await wrapper.vm.$nextTick()
     await wrapper.vm.$nextTick()

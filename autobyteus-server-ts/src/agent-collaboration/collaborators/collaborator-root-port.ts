@@ -21,6 +21,12 @@ export type CollaboratorLaunchBase =
   | Readonly<{ kind: "inherited"; launch: AgentLaunchConfiguration }>
   | Readonly<{ kind: "defaults_only"; workspaceRootPath: string; autoExecuteTools: boolean }>;
 
+/** The base with another folder, so a copy's launches (and their usability check) resolve for the folder it runs in. */
+export const baseInFolder = (base: CollaboratorLaunchBase, workspaceRootPath: string): CollaboratorLaunchBase =>
+  base.kind === "inherited"
+    ? Object.freeze({ kind: "inherited", launch: Object.freeze({ ...base.launch, workspaceRootPath }) })
+    : Object.freeze({ ...base, workspaceRootPath });
+
 /**
  * Read port every collaboration root implements for candidate policy and admission. It
  * exposes facts only; "in the run" is decided by `CollaboratorCandidatePolicy`.

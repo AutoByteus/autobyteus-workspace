@@ -104,7 +104,7 @@ export const existingRunConfigResultActions = {
     this.reconciling = true
     this.cachedLifecycleLock = null
     try {
-      const { payload, delegatedSnapshot } = await this.readAgentCanonical(runId)
+      const { payload, delegatedSnapshot } = await this.readAgentCanonical(runId, true)
       if (!current()) return
       this.syncAgentCanonical(payload, delegatedSnapshot)
       this.feedback = null
@@ -167,7 +167,7 @@ export const existingRunConfigResultActions = {
     } else if (draft?.kind === 'agent_org') {
       await this.reconcileAgentOrgFailure('PERSISTENCE_INDETERMINATE', draft.orgRunId)
     } else if (this.loadTarget?.kind === 'agent') {
-      await this.loadAgentCanonical(this.loadTarget.runId)
+      await this.loadAgentCanonical(this.loadTarget.runId, true)
     } else if (this.loadTarget?.kind === 'team') {
       await this.loadTeamCanonical(this.loadTarget.teamRunId)
     } else if (this.loadTarget?.kind === 'agent_org') {

@@ -51,7 +51,7 @@ describe('MemoryIndexPanel', () => {
     const { store, wrapper } = mountPanel(indexStatus({ builtWithModel: 'leaf-ir', activeModel: 'granite' }));
     expect(wrapper.find('[data-test="memory-index-model-changed"]').exists()).toBe(true);
     await wrapper.get('[data-test="memory-index-rebuild"]').trigger('click');
-    expect(wrapper.get('[role="alertdialog"]').exists()).toBe(true);
+    expect(wrapper.find('[role="alertdialog"]').exists()).toBe(true);
     await wrapper.findAll('[role="alertdialog"] button')[1]!.trigger('click');
     expect(store.rebuild).not.toHaveBeenCalled();
     await wrapper.get('[data-test="memory-index-rebuild"]').trigger('click');

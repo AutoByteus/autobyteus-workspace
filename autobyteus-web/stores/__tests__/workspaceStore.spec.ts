@@ -457,7 +457,7 @@ describe('workspaceStore', () => {
       const fileExplorerStore = useFileExplorerStore();
       const explorerState = fileExplorerStore._getOrCreateWorkspaceState('ws-1');
       let capturedSignal: AbortSignal | undefined;
-      let resolveQuery: ((value: any) => void) | null = null;
+      let resolveQuery: ((value: any) => void) | undefined;
       mockQuery.mockImplementation(({ context }: any) => {
         capturedSignal = context?.fetchOptions?.signal;
         return new Promise((resolve) => {

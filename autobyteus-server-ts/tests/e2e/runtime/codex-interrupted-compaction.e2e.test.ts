@@ -40,8 +40,7 @@ const dataDump = (label: string) => `Data dump ${label}. Do not analyze. Reply w
     `Record ${i}: the quick brown fox ${i * 7} jumps over lazy dog ${i * 13}; checksum ${(i * 2654435761) % 1000003}.`).join("\n");
 
 const unusedBackendFactory: AgentRunBackendFactory = {
-  createBackend: async () => { throw new Error("Unexpected backend factory use."); },
-  restoreBackend: async () => { throw new Error("Unexpected backend restore use."); },
+  beginPreparation: () => { throw new Error("Unexpected backend factory use."); },
 };
 const noopSidecar = () => ({ attachToRun: () => () => undefined });
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -58,7 +57,8 @@ describeLive("Codex interrupted compaction (live E2E)", () => {
   let runId: string | null = null;
 
   afterEach(async () => {
-    if (threadManager && runId) await threadManager.terminateThread(runId).catch(() => undefined);
+    const thread = threadManager && runId ? threadManager.getThread(runId) : null;
+    if (threadManager && runId && thread) await threadManager.terminateThread(runId, thread).catch(() => undefined);
     if (clientManager) await clientManager.close();
     clientManager = null; threadManager = null; runId = null;
     await Promise.all(tempDirs.splice(0).map((dir) => fsPromises.rm(dir, { recursive: true, force: true })));
@@ -96,23 +96,24 @@ describeLive("Codex interrupted compaction (live E2E)", () => {
         { resolveConfiguredSkillBindingsForAgent: () => [], resolveSkillScope: () => "CONFIGURED",
           hasEffectiveSkills: () => false } as never,
         clientManager,
-      ), new CodexThreadCleanup(undefined, clientManager)),
+      ), new CodexThreadCleanup(), agentTools.runSessions),
       claudeBackendFactory: unusedBackendFactory,
       agyBackendFactory: unusedBackendFactory,
       grokBackendFactory: unusedBackendFactory,
       activationRegistry: new AgentRunActivationRegistry(new AgentRunResourceManager({
         runSessions: deactivator, runFileChangeService: noopSidecar() as never,
         publishedArtifactRelayService: noopSidecar() as never, memoryRecorder: recorder, workJournalUpdater: noopSidecar() as never,
-        mcpServerInstances: { cleanupMcpServerInstancesForAgent: async () => undefined } })),
+        mcpServerInstances: { cleanupMcpServerInstancesForAgent: async () => undefined }, integrationRunAccess: null })),
       memoryRecorder: recorder,
       providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
       agentToolMcpRunSessionDeactivator: deactivator,
+      integrationRunAccess: null,
     });
     runId = `run-codex-compaction-${randomUUID()}`;
-    const run = (await manager.prepareNewAgentRun({ runId, config: new AgentRunConfig({
+    const run = (await manager.beginActivation({ kind: "new", runId, config: new AgentRunConfig({
       runtimeKind: RuntimeKind.CODEX_APP_SERVER, agentDefinitionId: "agent-def-codex-compaction", llmModelIdentifier: model!,
       autoExecuteTools: false, workspaceId: "workspace-codex-compaction", memoryDir, llmConfig: { reasoning_effort: "low" },
-    }) })).commitPublication();
+    }) }).prepare()).commitPublication();
     const events: AgentRunEvent[] = [];
     run.subscribeToEvents((event) => { if (event && typeof event === "object") events.push(event as AgentRunEvent); });
     const turnsCompleted = () => events.filter((event) => event.eventType === AgentRunEventType.TURN_COMPLETED).length;

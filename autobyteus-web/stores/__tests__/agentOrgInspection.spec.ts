@@ -17,8 +17,8 @@ const projection = (variables: any) => ({ data: { getAgentOrgMemberRunProjection
   conversation: [], activities: [], hasEarlierActiveTraceEvents: false,
 } } })
 const inspection = (active = false) => {
-  const view = taskBearingView(); view.is_active = active
-  if (!active) view.agent_statuses = []
+  const base = taskBearingView()
+  const view = { ...base, is_active: active, agent_statuses: active ? base.agent_statuses : [] }
   return { data: { getAgentOrgRunInspection: { root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: view } } }
 }
 beforeEach(() => { setActivePinia(createPinia()); mocks.instances.length = 0; mocks.query.mockReset() })
@@ -42,6 +42,8 @@ describe('same-owner read-only Org inspection', () => {
       await gate; return projection(variables)
     })
     const store = useAgentOrgContextsStore()
+    // The selected member is staged with the view (autobyteus-358: only that one).
+    store.select('org-run', '/director')
     const pending = store.openForInspection('org-run')
     await flushPromises()
     expect(mocks.query.mock.calls.length).toBeGreaterThan(1)
@@ -73,12 +75,14 @@ describe('same-owner read-only Org inspection', () => {
     expect(mocks.instances[0].connect).toHaveBeenCalledOnce()
     expect(store.contextFor('org-run')?.phase).toBe('reopen_required')
     expect(store.activeTargetFor('org-run')).toBeNull()
-    expect(mocks.query.mock.calls.length).toBeGreaterThan(1)
+    // Nothing is selected, so no member was staged (autobyteus-358): only the view was read.
+    expect(mocks.query).toHaveBeenCalledOnce()
   })
   it('keeps unavailable projection distinct from an empty historical conversation', async () => {
     mocks.query.mockImplementation(async ({ variables }) => variables.agentRunId
       ? { data: { getAgentOrgMemberRunProjection: null } } : inspection())
-    const store = useAgentOrgContextsStore(); await expect(store.openForInspection('org-run')).rejects.toThrow('Projection unavailable')
+    const store = useAgentOrgContextsStore(); store.select('org-run', '/director')
+    await expect(store.openForInspection('org-run')).rejects.toThrow('Projection unavailable')
     expect(store.contextFor('org-run')).toBeNull()
     expect(store.errorFor('org-run')).toContain('Projection unavailable')
     expect(mocks.instances).toHaveLength(0)

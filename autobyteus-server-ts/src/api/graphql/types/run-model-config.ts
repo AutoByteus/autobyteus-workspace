@@ -1,5 +1,13 @@
 import { GraphQLJSON } from "graphql-scalars";
 import { Field, ObjectType } from "type-graphql";
+import { runtimeKindFromString, type RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
+
+/** The agent runtime a patch names (autobyteus-348); a missing or unknown one is refused with the scope it was meant for. */
+export const requiredRuntimeKind = (value: string | null | undefined, scopeAddress: string): RuntimeKind => {
+  const runtimeKind = runtimeKindFromString(value);
+  if (!runtimeKind) throw new Error(`The setting for scope '${scopeAddress}' must name its agent runtime (runtimeKind).`);
+  return runtimeKind;
+};
 
 @ObjectType()
 export class RunModelConfigEditabilityObject {

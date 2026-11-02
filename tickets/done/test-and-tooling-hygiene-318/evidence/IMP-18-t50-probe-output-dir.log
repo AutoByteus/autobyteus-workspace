@@ -1,0 +1,55 @@
+# IMP-18 — T-50 (REQ-014): the probe output-dir helper and two real probes refuse a non-empty dir
+# Command: env -i ... node probe-output-dir-check.mjs (helper cases in a temp root); env -i ... node tests/e2e/<embedding-settings|diagram-zoom-viewer>-probe.mjs --output-dir=<non-empty temp dir> --skip-server-build
+# Commit: 1c418abe80
+# Environment: macOS 26.5.2 arm64, Node v22.23.1, pnpm workspace; clean env (env -i PATH HOME=<fresh temp dir> TMPDIR); test-owned data only
+# Date: 2026-11-01
+# Look for: 6 lines PASS; "Refusing to write probe evidence into ...: it is not empty (1 entries)"; "embedding-settings-probe exit 1", "diagram-zoom-viewer-probe exit 1"; the dir still holds {"earlier":true}
+
+===== probe-output-dir-check.log =====
+PASS default is test-results/<name>-<UTC stamp> :: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/h318-probe-dir-Ar7yBz/test-results/demo-2026-11-01T10-23-05-907Z
+PASS default dir created, exit 0 :: prepared /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/h318-probe-dir-Ar7yBz/test-results/demo-2026-11-01T10-23-05-907Z
+PASS explicit missing dir created, exit 0 :: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/h318-probe-dir-Ar7yBz/explicit-missing
+PASS explicit empty dir accepted, exit 0 :: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/h318-probe-dir-Ar7yBz/explicit-empty
+PASS explicit non-empty dir refused, exit 1, message names it :: Refusing to write probe evidence into /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/h318-probe-dir-Ar7yBz/explicit-full: it is not empty (1 entries), and earlier evidence is never overwritten. Pass a fresh --output-dir, or omit it for a new per-run folder.
+PASS refused dir unchanged :: [["result.json","{\"earlier\":true}"]]
+temp root removed: true
+
+===== probe-refusal-real.log =====
+Refusing to write probe evidence into /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.dbcssdh2OR/full: it is not empty (1 entries), and earlier evidence is never overwritten. Pass a fresh --output-dir, or omit it for a new per-run folder.
+embedding-settings-probe exit 1
+Refusing to write probe evidence into /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.dbcssdh2OR/full: it is not empty (1 entries), and earlier evidence is never overwritten. Pass a fresh --output-dir, or omit it for a new per-run folder.
+diagram-zoom-viewer-probe exit 1
+
+===== probe-output-dir-check.mjs =====
+// autobyteus-318 T-50: check the probe output-dir helper in a test-owned temp root.
+import { spawnSync } from 'node:child_process';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+const helper = 'file:///Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web/tests/e2e/fixtures/probe-output-dir.mjs';
+const { probeOutputDir } = await import(helper);
+const root = fs.mkdtempSync(path.join(os.tmpdir(), 'h318-probe-dir-'));
+const run = (dir) => spawnSync(process.execPath, ['--input-type=module', '-e',
+  `import { prepareOutputDir } from '${helper}'; console.log('prepared', prepareOutputDir(${JSON.stringify(dir)}));`], { encoding: 'utf8' });
+const results = [];
+// 1. default: a fresh per-run folder under test-results, distinct per run
+const a = probeOutputDir(root, 'demo', undefined); await new Promise((r) => setTimeout(r, 5)); const b = probeOutputDir(root, 'demo', undefined);
+results.push(['default is test-results/<name>-<UTC stamp>', /test-results\/demo-\d{4}-\d\d-\d\dT\d\d-\d\d-\d\d-\d{3}Z$/.test(a) && a !== b, a]);
+const r1 = run(a); results.push(['default dir created, exit 0', r1.status === 0 && fs.existsSync(a), r1.stdout.trim()]);
+// 2. explicit missing and explicit empty: accepted
+const missing = probeOutputDir(root, 'demo', 'explicit-missing'); const r2 = run(missing);
+results.push(['explicit missing dir created, exit 0', r2.status === 0 && fs.existsSync(missing), missing]);
+const empty = path.join(root, 'explicit-empty'); fs.mkdirSync(empty); const r3 = run(empty);
+results.push(['explicit empty dir accepted, exit 0', r3.status === 0, empty]);
+// 3. explicit non-empty: refused with a message naming it; contents unchanged
+const full = path.join(root, 'explicit-full'); fs.mkdirSync(full); fs.writeFileSync(path.join(full, 'result.json'), '{"earlier":true}');
+const before = JSON.stringify(fs.readdirSync(full).map((f) => [f, fs.readFileSync(path.join(full, f), 'utf8')]));
+const r4 = run(full);
+const after = JSON.stringify(fs.readdirSync(full).map((f) => [f, fs.readFileSync(path.join(full, f), 'utf8')]));
+results.push(['explicit non-empty dir refused, exit 1, message names it', r4.status === 1 && r4.stderr.includes(full) && r4.stderr.includes('Refusing'), r4.stderr.trim()]);
+results.push(['refused dir unchanged', before === after, after]);
+for (const [name, ok, detail] of results) console.log(`${ok ? 'PASS' : 'FAIL'} ${name} :: ${detail}`);
+fs.rmSync(root, { recursive: true, force: true });
+console.log(`temp root removed: ${!fs.existsSync(root)}`);
+process.exitCode = results.every(([, ok]) => ok) ? 0 : 1;
+

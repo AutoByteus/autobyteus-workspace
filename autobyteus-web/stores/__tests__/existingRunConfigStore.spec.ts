@@ -3,6 +3,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { loadExistingRunModelOptions } from '~/services/runConfigEditing/existingRunModelOptionsClient'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import { useExistingRunConfigStore } from '../existingRunConfigStore'
+import type { RunResumeConfigPayload } from '~/stores/runHistoryTypes'
 import { taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBearingOrgFixture'
 
 const choice = (id: string) => ({ llmModelIdentifier: id, providerName: 'Provider', displayName: id, canonicalName: id, description: null, configSchema: null, recommended: false })
@@ -39,13 +40,14 @@ const mocks = vi.hoisted(() => ({
   teamResumeConfigByTeamRunId: {} as Record<string, unknown>,
 }))
 
-vi.mock('~/services/agentCollaboration/agentRunCollaborationHydration', () => ({ readAgentRunCollaboration: mocks.readCollaboration }))
+// autobyteus-358 (DS-004): Settings takes the hub's view from the collaboration store, which reads it once per selection.
+vi.mock('~/stores/agentRunCollaborationStore', () => ({ useAgentRunCollaborationStore: () => ({ viewFor: mocks.readCollaboration }) }))
 
 vi.mock('~/services/runConfigEditing/existingRunModelOptionsClient', () => ({ loadExistingRunModelOptions: vi.fn().mockResolvedValue({}) }))
 
 vi.mock('~/services/runConfigEditing/existingRunModelConfigMutationClient', () => ({
   updateStoppedAgentSelection: mocks.updateAgent,
-  updateStoppedTeamModelConfigs: mocks.updateTeam,
+  updateStoppedTeamSelections: mocks.updateTeam,
 }))
 vi.mock('~/stores/runHistoryStore', () => ({
   useRunHistoryStore: () => ({
@@ -62,8 +64,15 @@ vi.mock('~/stores/agentOrgContextsStore', () => ({
   useAgentOrgContextsStore: () => ({ readRunConfig: mocks.readOrg, saveRunConfig: mocks.saveOrg }),
 }))
 
-const editability = () => ({ editable: true, reason: null })
-const activeEditability = () => ({ editable: false, reason: 'RUN_ACTIVE' })
+type ModelConfigEditability = RunResumeConfigPayload['modelConfigEditability']
+const editability = (): ModelConfigEditability => ({ editable: true, reason: null })
+const activeEditability = (): ModelConfigEditability => ({ editable: false, reason: 'RUN_ACTIVE' })
+/** The loaded AgentOrg draft (the cases assert the kind first). */
+const agentOrgDraft = (store: ReturnType<typeof useExistingRunConfigStore>) => {
+  const draft = store.draft
+  if (draft?.kind !== 'agent_org') throw new Error('expected an AgentOrg draft')
+  return draft
+}
 
 const agentPayload = ({
   runId = 'run-1',
@@ -176,18 +185,17 @@ describe('existingRunConfigStore', () => {
     mocks.readOrg.mockResolvedValue({ orgRunId: 'org-run', executionTree, isActive: false, editability: editability() })
     await store.loadAgentOrgCanonical('org-run')
     expect(store.draft).toMatchObject({ kind: 'agent_org', orgRunId: 'org-run' })
-    const addresses = Object.keys(store.draft!.kind === 'agent_org' ? store.draft.planner.scopesByAddress : {})
+    const addresses = Object.keys(agentOrgDraft(store).planner.scopesByAddress)
     for (const address of addresses) {
       store.modelOptionsByAddress[address] = { status: 'ready', options: {
-        currentModelIdentifier: store.draft!.kind === 'agent_org'
-          ? store.draft.planner.scopesByAddress[address]!.originalSelection.llmModelIdentifier : '',
-        currentModel: choice(store.draft!.kind === 'agent_org' ? store.draft.planner.scopesByAddress[address]!.originalSelection.llmModelIdentifier : ''), replacements: [], unavailableReason: null,
+        currentModelIdentifier: agentOrgDraft(store).planner.scopesByAddress[address]!.originalSelection.llmModelIdentifier,
+        currentModel: choice(agentOrgDraft(store).planner.scopesByAddress[address]!.originalSelection.llmModelIdentifier), replacements: [], unavailableReason: null,
       } }
       setSchemaState(store, address, { status: 'ready', message: null })
     }
     store.updateAgentOrgScopeModelConfig('/', {
-      llmModelIdentifier: store.draft!.kind === 'agent_org'
-        ? store.draft.planner.scopesByAddress['/']!.originalSelection.llmModelIdentifier : '',
+      runtimeKind: agentOrgDraft(store).planner.scopesByAddress['/']!.originalSelection.runtimeKind,
+      llmModelIdentifier: agentOrgDraft(store).planner.scopesByAddress['/']!.originalSelection.llmModelIdentifier,
       llmConfig: { budget: 0, enabled: false, optional: null },
     })
     expect(store.patches.length).toBeGreaterThan(1)
@@ -205,7 +213,7 @@ describe('existingRunConfigStore', () => {
     await expect(store.save()).resolves.toBe(true)
     expect(mocks.saveOrg).toHaveBeenCalledTimes(1)
     expect(mocks.saveOrg.mock.calls[0]![0]).toBe('org-run')
-    expect(mocks.saveOrg.mock.calls[0]![1].modelPatches).toEqual(expect.arrayContaining([
+    expect(mocks.saveOrg.mock.calls[0]![1].selectionPatches).toEqual(expect.arrayContaining([
       expect.objectContaining({ scopeKind: 'CONFIGURED_ORG', scopeAddress: '/', llmConfig: { budget: 0, enabled: false, optional: null } }),
     ]))
     expect(store.dirty).toBe(false)
@@ -221,8 +229,8 @@ describe('existingRunConfigStore', () => {
       setSchemaState(store, address, { status: 'ready', message: null })
     }
     const model = store.draft.planner.scopesByAddress['/']!.originalSelection.llmModelIdentifier
-    const invalidRoot = { llmModelIdentifier: model, llmConfig: { effort: 'invalid-root' } }
-    const invalidMember = { llmModelIdentifier: model, llmConfig: { effort: 'invalid-member' } }
+    const invalidRoot = { runtimeKind: store.draft.planner.scopesByAddress['/']!.originalSelection.runtimeKind, llmModelIdentifier: model, llmConfig: { effort: 'invalid-root' } }
+    const invalidMember = { runtimeKind: store.draft.planner.scopesByAddress['/']!.originalSelection.runtimeKind, llmModelIdentifier: model, llmConfig: { effort: 'invalid-member' } }
     store.updateAgentOrgScopeModelConfig('/', invalidRoot)
     store.updateAgentOrgScopeModelConfig('/team/worker', invalidMember)
     const submittedPatches = structuredClone(store.patches)
@@ -249,8 +257,8 @@ describe('existingRunConfigStore', () => {
       { path: 'patches[/team/worker].llmConfig.effort', message: 'Invalid member effort.' },
     ])
 
-    const correctedRoot = { llmModelIdentifier: model, llmConfig: { effort: 'high' } }
-    const correctedMember = { llmModelIdentifier: model, llmConfig: { effort: 'medium' } }
+    const correctedRoot = { runtimeKind: store.draft.planner.scopesByAddress['/']!.originalSelection.runtimeKind, llmModelIdentifier: model, llmConfig: { effort: 'high' } }
+    const correctedMember = { runtimeKind: store.draft.planner.scopesByAddress['/']!.originalSelection.runtimeKind, llmModelIdentifier: model, llmConfig: { effort: 'medium' } }
     store.updateAgentOrgScopeModelConfig('/', correctedRoot)
     store.updateAgentOrgScopeModelConfig('/team/worker', correctedMember)
     expect(store.fieldErrors).toEqual([])
@@ -272,7 +280,7 @@ describe('existingRunConfigStore', () => {
 
     await expect(store.save()).resolves.toBe(true)
     expect(mocks.saveOrg).toHaveBeenCalledTimes(2)
-    expect(mocks.saveOrg.mock.calls[1]![1].modelPatches).toEqual(expect.arrayContaining([
+    expect(mocks.saveOrg.mock.calls[1]![1].selectionPatches).toEqual(expect.arrayContaining([
       expect.objectContaining({ scopeAddress: '/', llmConfig: correctedRoot.llmConfig }),
       expect.objectContaining({ scopeAddress: '/team/worker', llmConfig: correctedMember.llmConfig }),
     ]))
@@ -292,8 +300,8 @@ describe('existingRunConfigStore', () => {
         setSchemaState(store, address, { status: 'ready', message: null })
       }
       const model = store.draft.planner.scopesByAddress['/']!.originalSelection.llmModelIdentifier
-      const attemptedRoot = { llmModelIdentifier: model, llmConfig: { effort: `${outcome}-root` } }
-      const attemptedMember = { llmModelIdentifier: model, llmConfig: { effort: `${outcome}-member` } }
+      const attemptedRoot = { runtimeKind: store.draft.planner.scopesByAddress['/']!.originalSelection.runtimeKind, llmModelIdentifier: model, llmConfig: { effort: `${outcome}-root` } }
+      const attemptedMember = { runtimeKind: store.draft.planner.scopesByAddress['/']!.originalSelection.runtimeKind, llmModelIdentifier: model, llmConfig: { effort: `${outcome}-member` } }
       store.updateAgentOrgScopeModelConfig('/', attemptedRoot)
       store.updateAgentOrgScopeModelConfig('/team/worker', attemptedMember)
       mocks.saveOrg.mockResolvedValueOnce({ success: false, outcome, message: 'Determinate failure.',
@@ -318,7 +326,7 @@ describe('existingRunConfigStore', () => {
       setSchemaState(store, address, { status: 'ready', message: null })
     }
     const model = store.draft.planner.scopesByAddress['/']!.originalSelection.llmModelIdentifier
-    store.updateAgentOrgScopeModelConfig('/', { llmModelIdentifier: model, llmConfig: { effort: 'attempted' } })
+    store.updateAgentOrgScopeModelConfig('/', { runtimeKind: 'codex_app_server', llmModelIdentifier: model, llmConfig: { effort: 'attempted' } })
     mocks.saveOrg.mockResolvedValueOnce({
       success: false,
       outcome: 'PERSISTENCE_INDETERMINATE',
@@ -418,7 +426,7 @@ describe('existingRunConfigStore', () => {
     } }
     setSchemaState(store, '/', { status: 'ready', message: null })
     setSchemaState(store, '/member', { status: 'ready', message: null })
-    store.updateTeamScopeModelConfig('/', { llmModelIdentifier: 'larger', llmConfig: { effort: 'high' } })
+    store.updateTeamScopeModelConfig('/', { runtimeKind: 'codex_app_server', llmModelIdentifier: 'larger', llmConfig: { effort: 'high' } })
     expect(store.canSave).toBe(true)
     mocks.updateTeam.mockResolvedValue({ success: false, outcome: 'PERSISTENCE_INDETERMINATE',
       message: 'Update outcome is being verified.', isActive: false, editability: editability(),
@@ -493,7 +501,7 @@ describe('existingRunConfigStore', () => {
       currentModelIdentifier: memberModel, currentModel: null, replacements: [choice('larger')], unavailableReason: 'Retired',
     } } }
     store.deriveSchemaStates()
-    store.updateTeamScopeModelConfig('/', { llmModelIdentifier: 'root-model', llmConfig: { effort: 'high' } })
+    store.updateTeamScopeModelConfig('/', { runtimeKind: 'codex_app_server', llmModelIdentifier: 'root-model', llmConfig: { effort: 'high' } })
 
     expect(store.patches.map((patch) => patch.scopeAddress)).toEqual(['/'])
     expect(store.schemaStateByAddress['/member']).toEqual({ status: 'invalid', message: 'Retired' })
@@ -504,6 +512,29 @@ describe('existingRunConfigStore', () => {
     } } }
     store.deriveSchemaStates()
     expect(store.canSave).toBe(true)
+  })
+
+  it('saves a Team member under another agent runtime without waiting for the old runtime\'s replacement list (autobyteus-348)', async () => {
+    const store = useExistingRunConfigStore()
+    store.syncTeamCanonical(teamPayload() as never)
+    setSchemaState(store, '/', { status: 'ready', message: null })
+    setSchemaState(store, '/member', { status: 'ready', message: null })
+    // The old runtime offers no model for '/member' (empty replacements): another runtime's model is still allowed.
+    store.modelOptionsByAddress = { ...store.modelOptionsByAddress, '/member': { status: 'ready', options: {
+      currentModelIdentifier: 'different-model', currentModel: choice('different-model'), replacements: [], unavailableReason: null,
+    } } }
+    store.updateTeamScopeModelConfig('/member', { runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'claude-sonnet', llmConfig: null })
+
+    expect(store.patches).toEqual([{ scopeKind: 'CONFIGURED_AGENT', scopeAddress: '/member', runtimeKind: 'claude_agent_sdk',
+      llmModelIdentifier: 'claude-sonnet', llmConfig: null }])
+    expect(store.schemaStateByAddress['/member']).toEqual({ status: 'ready', message: null })
+    expect(store.dirty).toBe(true)
+    expect(store.canSave).toBe(true)
+
+    // Back on the saved runtime and model, nothing is left to save.
+    store.updateTeamScopeModelConfig('/member', (store.draft as any).planner.scopesByAddress['/member'].originalSelection)
+    expect(store.patches).toEqual([])
+    expect(store.dirty).toBe(false)
   })
 
   it('keeps an Agent RUN_ACTIVE draft locked without refresh, rebase, or revision input', async () => {
@@ -558,7 +589,7 @@ describe('existingRunConfigStore', () => {
     store.syncTeamCanonical(canonical as never)
     setSchemaState(store, '/', { status: 'ready', message: null })
     setSchemaState(store, '/member', { status: 'ready', message: null })
-    store.updateTeamScopeModelConfig('/', { llmModelIdentifier: 'root-model', llmConfig: { effort: 'high' } })
+    store.updateTeamScopeModelConfig('/', { runtimeKind: 'codex_app_server', llmModelIdentifier: 'root-model', llmConfig: { effort: 'high' } })
     mocks.updateTeam.mockResolvedValue({
       success: false,
       outcome: 'RUN_ACTIVE',
@@ -572,9 +603,10 @@ describe('existingRunConfigStore', () => {
     await expect(store.save()).resolves.toBe(false)
     expect(mocks.updateTeam).toHaveBeenCalledWith({
       teamRunId: 'team-1',
-      patches: [{
+      selectionPatches: [{
         scopeKind: 'CONFIGURED_TEAM',
         scopeAddress: '/',
+        runtimeKind: 'codex_app_server',
         llmModelIdentifier: 'root-model',
         llmConfig: { effort: 'high' },
       }],
@@ -583,7 +615,8 @@ describe('existingRunConfigStore', () => {
     expect(store.patches).toEqual([{
       scopeKind: 'CONFIGURED_TEAM',
       scopeAddress: '/',
-        llmModelIdentifier: 'root-model',
+      runtimeKind: 'codex_app_server',
+      llmModelIdentifier: 'root-model',
       llmConfig: { effort: 'high' },
     }])
     expect(store.draft).toMatchObject({ isActive: true, editability: { editable: false } })
@@ -630,7 +663,7 @@ describe('Cancel and reload after a lifecycle change (REQ-014/015)', () => {
     const store = useExistingRunConfigStore()
     store.syncTeamCanonical(teamPayload() as never)
     const planner = (store.draft as any).planner
-    store.updateTeamScopeModelConfig('/', { llmModelIdentifier: 'root-model', llmConfig: { effort: 'high' } })
+    store.updateTeamScopeModelConfig('/', { runtimeKind: 'codex_app_server', llmModelIdentifier: 'root-model', llmConfig: { effort: 'high' } })
     expect(store.dirty).toBe(true)
 
     store.discardChanges()
@@ -666,25 +699,25 @@ it('saves workspace-only and mixed Org intentions independently; invalid destina
         currentModel: choice(scope.originalSelection.llmModelIdentifier), replacements: [], unavailableReason: null } }
     }
   }
-  const modelBaseline = JSON.stringify(store.draft!.kind === 'agent_org' && store.draft.planner)
+  const modelBaseline = JSON.stringify(agentOrgDraft(store).planner)
   store.updateAgentOrgWorkspaceSelection('/team', { mode: 'new', existingWorkspaceId: null, newWorkspacePath: ' ' })
   ready(); expect(store.dirty).toBe(true); expect(store.canSave).toBe(false)
   store.updateAgentOrgWorkspaceSelection('/team', { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '/B' })
   ready(); expect(store.canSave).toBe(true); expect(store.patches).toEqual([])
-  expect(JSON.stringify(store.draft!.kind === 'agent_org' && store.draft.planner)).toBe(modelBaseline)
+  expect(JSON.stringify(agentOrgDraft(store).planner)).toBe(modelBaseline)
   const canonical = JSON.parse(JSON.stringify(tree))
   canonical.rootOrg.members[2].defaultLaunchConfiguration.workspaceRootPath = '/B'
   canonical.rootOrg.members[2].members.forEach((agent: any) => { agent.launchConfiguration.workspaceRootPath = '/B' })
   mocks.saveOrg.mockResolvedValue({ success: true, outcome: 'UPDATED', message: 'Saved', isActive: false,
     editability: editability(), canonicalExecutionTree: canonical, fieldErrors: [] })
   await expect(store.save()).resolves.toBe(true)
-  expect(mocks.saveOrg).toHaveBeenLastCalledWith('org-run', { modelPatches: [], teamWorkspacePatches: [{ teamAddress: '/team', workspaceRootPath: '/B' }] })
+  expect(mocks.saveOrg).toHaveBeenLastCalledWith('org-run', { selectionPatches: [], teamWorkspacePatches: [{ teamAddress: '/team', workspaceRootPath: '/B' }] })
   expect(store.dirty).toBe(false)
   store.updateAgentOrgWorkspaceSelection('/team', { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '/C' })
   if (store.draft?.kind !== 'agent_org') throw new Error('fixture')
   store.updateAgentOrgScopeModelConfig('/team/lead', { ...store.draft.planner.scopesByAddress['/team/lead']!.draftSelection, llmConfig: { effort: 'high' } })
   ready(); await store.save()
-  expect(mocks.saveOrg.mock.lastCall?.[1]).toMatchObject({ modelPatches: [expect.objectContaining({ scopeAddress: '/team/lead' })],
+  expect(mocks.saveOrg.mock.lastCall?.[1]).toMatchObject({ selectionPatches: [expect.objectContaining({ scopeAddress: '/team/lead' })],
     teamWorkspacePatches: [{ teamAddress: '/team', workspaceRootPath: '/C' }] })
   store.clear()
 })
@@ -782,7 +815,7 @@ describe('stopped Agent canonical collaboration snapshot', () => {
     mocks.refreshAgent.mockResolvedValue(agentPayload())
     mocks.readCollaboration.mockReturnValueOnce(pending.promise)
     const loading = store.loadAgentCanonical('run-1')
-    await vi.waitFor(() => expect(mocks.readCollaboration).toHaveBeenCalledWith('run-1'))
+    await vi.waitFor(() => expect(mocks.readCollaboration).toHaveBeenCalledWith('run-1', { fresh: false }))
     expect(store.draft).toBeNull()
     const source = { ...snapshot(), communication_messages: ['not Settings data'] }
     pending.resolve(source)
@@ -806,13 +839,32 @@ describe('stopped Agent canonical collaboration snapshot', () => {
     expect(await store.reloadCanonical()).toBe(true)
     expect((store.draft as any).delegatedSnapshot).toEqual(snapshot())
   })
+  it('reads the stored copy rows fresh after a committed Save and after a failure reconcile, not on the first open (autobyteus-348)', async () => {
+    const store = useExistingRunConfigStore()
+    mocks.refreshAgent.mockResolvedValue(agentPayload())
+    const before = { execution_tree: { taskExecutions: [{ agentRunId: 'copy', userLaunchSelection: undefined }] }, closed_task_executions: [] }
+    const saved = { execution_tree: { taskExecutions: [{ agentRunId: 'copy', userLaunchSelection: { runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'm', llmConfig: null } }] }, closed_task_executions: [] }
+    mocks.readCollaboration.mockResolvedValueOnce(before)
+    expect(await store.loadAgentCanonical('run-1')).toBe(true)
+    expect(mocks.readCollaboration).toHaveBeenLastCalledWith('run-1', { fresh: false })
+    mocks.readCollaboration.mockResolvedValueOnce(saved)
+    expect(await store.reloadCanonical(true)).toBe(true)
+    expect(mocks.readCollaboration).toHaveBeenLastCalledWith('run-1', { fresh: true })
+    expect((store.draft as any).delegatedSnapshot.execution_tree.taskExecutions[0].userLaunchSelection).toMatchObject({ runtimeKind: 'claude_agent_sdk' })
+    mocks.readCollaboration.mockResolvedValueOnce(saved)
+    await store.reconcileAgentFailure('PERSISTENCE_INDETERMINATE', 'run-1')
+    expect(mocks.readCollaboration).toHaveBeenLastCalledWith('run-1', { fresh: true })
+    mocks.readCollaboration.mockResolvedValueOnce(saved)
+    expect(await store.reloadCanonical()).toBe(true)
+    expect(mocks.readCollaboration).toHaveBeenLastCalledWith('run-1', { fresh: false })
+  })
   it.each(['metadata', 'collaboration'])('ignores a response across a node rebind while awaiting %s', async phase => {
     const store = useExistingRunConfigStore()
     const pending = deferred<any>()
     mocks.refreshAgent.mockReturnValueOnce(phase === 'metadata' ? pending.promise : Promise.resolve(agentPayload()))
     if (phase === 'collaboration') mocks.readCollaboration.mockReturnValueOnce(pending.promise)
     const loading = store.loadAgentCanonical('run-1')
-    if (phase === 'collaboration') await vi.waitFor(() => expect(mocks.readCollaboration).toHaveBeenCalledWith('run-1'))
+    if (phase === 'collaboration') await vi.waitFor(() => expect(mocks.readCollaboration).toHaveBeenCalledWith('run-1', { fresh: false }))
     useWindowNodeContextStore().bindingRevision += 1
     pending.resolve(phase === 'metadata' ? agentPayload() : snapshot())
     expect(await loading).toBe(false)

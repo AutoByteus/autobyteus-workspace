@@ -355,12 +355,12 @@ const operationResponse = async (operationName, variables) => {
       fieldErrors: [],
     } } }
   }
-  if (operationName === 'UpdateStoppedTeamRunModelConfigs') {
+  if (operationName === 'UpdateStoppedTeamRunSelections') {
     const previousTree = clone(state.teamTree)
     const nextTree = clone(state.teamTree)
     state.teamMutations.push(clone(variables))
     await delay(250)
-    for (const patch of variables.input.patches) {
+    for (const patch of variables.input.selectionPatches) {
       const target = findConfigured(nextTree, patch.scopeAddress)
       assert(target, `Mutation patch addressed unknown scope ${patch.scopeAddress}`)
       assert(patch.scopeKind === (patch.scopeAddress === '/' ? 'CONFIGURED_TEAM' : 'CONFIGURED_AGENT'), 'Mutation scope kind must match the exact flat configured scope', patch)
@@ -373,13 +373,13 @@ const operationResponse = async (operationName, variables) => {
     state.teamTree = teamRunExecutionTreeDtoSchema.parse(nextTree)
     if (state.teamMutationMode === 'indeterminate') {
       state.failTeamReads = 1
-      return { data: { updateStoppedTeamRunModelConfigs: {
+      return { data: { updateStoppedTeamRunSelections: {
         success: false, outcome: 'PERSISTENCE_INDETERMINATE', message: 'Verify the saved outcome before saving again.',
         isActive: false, editability: { editable: true, reason: null },
         canonicalExecutionTree: previousTree, fieldErrors: [],
       } } }
     }
-    return { data: { updateStoppedTeamRunModelConfigs: {
+    return { data: { updateStoppedTeamRunSelections: {
       success: true,
       outcome: 'UPDATED',
       message: 'Team model settings saved.',
@@ -591,8 +591,8 @@ try {
     assert(state.teamMutations.length === 1, 'Exactly one Team mutation must be sent', state.teamMutations)
     assert(JSON.stringify(state.teamMutations[0]) === JSON.stringify({ input: {
       teamRunId: 'team-run-browser-1',
-      patches: [{ scopeKind: 'CONFIGURED_AGENT', scopeAddress: '/reviewer', llmModelIdentifier: 'gpt-5.6-luna', llmConfig: modelConfig('high') }],
-    } }), 'Team mutation must contain one narrow configured-Agent patch with no revision/runtime input', state.teamMutations[0])
+      selectionPatches: [{ scopeKind: 'CONFIGURED_AGENT', scopeAddress: '/reviewer', runtimeKind: 'autobyteus', llmModelIdentifier: 'gpt-5.6-luna', llmConfig: modelConfig('high') }],
+    } }), 'Team mutation must contain one narrow configured-Agent patch with its own agent runtime and no revision input', state.teamMutations[0])
     const savedPaths = [state.teamTree.root_team.default_launch_configuration.workspace_root_path,
       ...state.teamTree.root_team.members.map(member => member.launch_configuration.workspace_root_path)]
     assert(JSON.stringify(savedPaths) === JSON.stringify([
@@ -700,7 +700,7 @@ try {
     assert(!(await saveButton().count()), 'Verified canonical pair must be clean')
     assert(state.teamMutations.length === beforeMutations + 1, 'Refresh must not repeat the mutation')
     assert(state.teamResumeReads === beforeReads + 2, 'One failed and one successful canonical verification', { before: beforeReads, after: state.teamResumeReads })
-    const patches = state.teamMutations.at(-1).input.patches
+    const patches = state.teamMutations.at(-1).input.selectionPatches
     assert(JSON.stringify(patches.map(p => p.scopeAddress).sort()) === JSON.stringify(['/', '/coordinator', '/lead'].sort()), 'One save includes root, linked coordinator and independently edited lead; saved divergent reviewer is excluded', patches)
     const expectedTree = clone(priorTree)
     for (const address of ['/', '/coordinator']) {
@@ -711,7 +711,7 @@ try {
       Object.assign(launchConfig, { llm_model_identifier: 'browser-larger-model', llm_config: null })
     }
     const leadPatch = patches.find(patch => patch.scopeAddress === '/lead')
-    assert(JSON.stringify(leadPatch) === JSON.stringify({ scopeKind: 'CONFIGURED_AGENT', scopeAddress: '/lead',
+    assert(JSON.stringify(leadPatch) === JSON.stringify({ scopeKind: 'CONFIGURED_AGENT', scopeAddress: '/lead', runtimeKind: leadPatch.runtimeKind,
       llmModelIdentifier: 'gpt-5.6-luna', llmConfig: modelConfig('high') }), 'Directly edited lead retains its own model/settings pair', leadPatch)
     findConfigured(expectedTree, '/lead').launch_configuration.llm_config = modelConfig('high')
     assert(JSON.stringify(state.teamTree) === JSON.stringify(teamRunExecutionTreeDtoSchema.parse(expectedTree)), 'Canonical flat tree preserves divergent member, identities, task records and all fixed configuration', state.teamTree)

@@ -98,7 +98,7 @@ export class TaskAgentExecutionRegistry {
       this.active.set(runId, handle);
     } else if (handle.isStopped()) {
       // A retained handle (idle shutdown or user Stop) resumes on the copy's current effective launch.
-      handle.replaceModelChoice(input.sourceNode);
+      handle.replaceSelection({ ...input.sourceNode, platformAgentRunId: input.platformAgentRunId });
     }
     await handle.getOrCreateAgentRun();
   }

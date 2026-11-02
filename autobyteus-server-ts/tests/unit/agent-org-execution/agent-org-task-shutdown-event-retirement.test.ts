@@ -11,6 +11,7 @@ import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run
 import { AgentOrgRun } from "../../../src/agent-org-execution/domain/agent-org-run.js";
 import type { AgentOrgRunEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode, testOrgAgentCopySource } from "../../fixtures/current-agent-org-run-fixtures.js";
+import { isAgentOrgMessageEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
 
 const flush = () => new Promise<void>((resolve) => setImmediate(resolve));
 
@@ -46,7 +47,7 @@ describe("AgentOrg mounted-Team delegated execution shutdown event retirement", 
         },
       ],
     });
-    const publisher = new RootEventPublisher<AgentOrgRunEvent>();
+    const publisher = new RootEventPublisher<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent });
     const published: AgentOrgRunEvent[] = [];
     publisher.subscribe(({ event }) => published.push(event));
     const persistenceFailStop = vi.fn();

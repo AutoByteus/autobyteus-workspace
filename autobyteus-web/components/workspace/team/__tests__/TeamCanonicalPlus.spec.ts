@@ -22,7 +22,6 @@ const io = vi.hoisted(() => ({ query: vi.fn(), mutate: vi.fn() }))
 const router = vi.hoisted(() => ({ push: vi.fn(async () => undefined), replace: vi.fn(async () => undefined) }))
 vi.mock('vue-router', () => ({ useRouter: () => router, useRoute: () => ({ path: '/workspace', query: {} }) }))
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => io }))
-vi.mock('~/services/runHydration/teamCommunicationHydrationService', () => ({ fetchTeamCommunicationForTeam: vi.fn().mockResolvedValue([]) }))
 vi.mock('~/stores/runtimeAvailabilityStore', () => ({ useRuntimeAvailabilityStore: () => ({
   availabilities: [{ runtimeKind: 'autobyteus', enabled: true }], fetchRuntimeAvailability: vi.fn().mockResolvedValue(null), isRuntimePending: () => false, fetchRuntimeAvailabilities: vi.fn().mockResolvedValue([]), availabilityByKind: () => ({ enabled: true }), isRuntimeEnabled: () => true, runtimeReason: () => null,
 }) }))
@@ -41,7 +40,7 @@ const choice = (id: string) => ({ llmModelIdentifier: id, providerName: 'OpenAI'
   canonicalName: id, description: null, configSchema: { type: 'object',
     properties: { budget: { type: 'integer', minimum: 0 }, enabled: { type: 'boolean' } } }, recommended: false })
 const deferred = () => { let resolve!: (x: any) => void; const promise = new Promise<any>(r => resolve = r); return { promise, resolve } }
-const resume = (tree = canonical) => ({ data: { getTeamRunResumeConfig: { remoteTaskExecutions: [], closedTaskExecutions: [], teamRunId: tree.root_team.team_run_id, isActive: false, modelConfigEditability: { editable: true, reason: null }, executionTree: JSON.parse(JSON.stringify(tree)) } } })
+const resume = (tree = canonical) => ({ data: { getTeamRunResumeConfig: { remoteTaskExecutions: [], closedTaskExecutions: [], teamRunId: tree.root_team.team_run_id, isActive: false, liveSequenceId: null, baseChangeSequence: 0, lastMessageChangeSequence: null, modelConfigEditability: { editable: true, reason: null }, executionTree: JSON.parse(JSON.stringify(tree)) } } })
 beforeEach(async () => {
   vi.clearAllMocks(); setActivePinia(createPinia()); createdTree = null
   canonical = JSON.parse(JSON.stringify(buildTestTeamContext({ teamRunId: 'source', teamDefinitionId: 'definition', teamDefinitionName: 'Source Team',
@@ -65,12 +64,12 @@ beforeEach(async () => {
   })
   io.mutate.mockImplementation(async ({ mutation, variables: { input } }) => {
     const name = mutation.definitions.find((d: any) => d.name)?.name.value
-    if (name === 'UpdateStoppedTeamRunModelConfigs') {
-      for (const patch of input.patches) {
+    if (name === 'UpdateStoppedTeamRunSelections') {
+      for (const patch of input.selectionPatches) {
         const launch = patch.scopeAddress === '/' ? canonical.root_team.default_launch_configuration : canonical.root_team.members.find((m: any) => m.address === patch.scopeAddress).launch_configuration
         launch.llm_config = patch.llmConfig; launch.llm_model_identifier = patch.llmModelIdentifier
       }
-      return { data: { updateStoppedTeamRunModelConfigs: { success: true, outcome: 'UPDATED', message: 'Saved', isActive: false, editability: { editable: true, reason: null }, fieldErrors: [], canonicalExecutionTree: JSON.parse(JSON.stringify(canonical)) } } }
+      return { data: { updateStoppedTeamRunSelections: { success: true, outcome: 'UPDATED', message: 'Saved', isActive: false, editability: { editable: true, reason: null }, fieldErrors: [], canonicalExecutionTree: JSON.parse(JSON.stringify(canonical)) } } }
     }
     // Simulated allocation at the transport only; frontend create/hydration/publication remain real.
     createdTree = JSON.parse(JSON.stringify(canonical))
@@ -90,12 +89,12 @@ async function saveAndBack(differentMemberModel = false) {
   const source = await hydrate(), panel = mounted(RunPanel); await flushPromises()
   // The saved-run settings edit the run's model config through their store (numeric parameters are not
   // presented as controls; REQ-022 presents enum/boolean settings only).
-  useExistingRunConfigStore().updateTeamScopeModelConfig('/', { llmModelIdentifier: 'model', llmConfig: { budget: 0 } })
+  useExistingRunConfigStore().updateTeamScopeModelConfig('/', { runtimeKind: 'codex_app_server', llmModelIdentifier: 'model', llmConfig: { budget: 0 } })
   if (differentMemberModel) {
-    useExistingRunConfigStore().updateTeamScopeModelConfig('/lead', { llmModelIdentifier: 'replacement-model', llmConfig: { budget: 0 } })
+    useExistingRunConfigStore().updateTeamScopeModelConfig('/lead', { runtimeKind: 'codex_app_server', llmModelIdentifier: 'replacement-model', llmConfig: { budget: 0 } })
   }
   await flushPromises()
-  expect(panel.get('[data-test="existing-run-save-bar"]').exists()).toBe(true)
+  expect(panel.find('[data-test="existing-run-save-bar"]').exists()).toBe(true)
   expect(panel.get('[data-test="save-existing-model-config"]').attributes('disabled')).toBeUndefined()
   await panel.get('[data-test="save-existing-model-config"]').trigger('click'); await flushPromises()
   expect(canonical.root_team.default_launch_configuration.llm_config).toMatchObject({ budget: 0 })

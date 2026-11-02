@@ -55,6 +55,9 @@ describe("TeamRunHistoryResolver execution checkpoint", () => {
       isActive: true,
       executionTree: { rootTeam: { address: "/", members: [] } },
       modelConfigEditability: { editable: false, reason: "RUN_ACTIVE" },
+      liveSequenceId: "live-team-1",
+      baseChangeSequence: 12,
+      lastMessageChangeSequence: 9,
     });
 
     await expect(new TeamRunHistoryResolver().getTeamRunResumeConfig("team-run-1"))
@@ -62,6 +65,9 @@ describe("TeamRunHistoryResolver execution checkpoint", () => {
         teamRunId: "team-run-1",
         isActive: true,
         modelConfigEditability: { editable: false, reason: "RUN_ACTIVE" },
+        liveSequenceId: "live-team-1",
+        baseChangeSequence: 12,
+        lastMessageChangeSequence: 9,
       });
     expect(mocks.getTeamRunResumeConfig).toHaveBeenCalledWith("team-run-1");
     expect(mocks.projectExecutionTree).toHaveBeenCalledTimes(1);

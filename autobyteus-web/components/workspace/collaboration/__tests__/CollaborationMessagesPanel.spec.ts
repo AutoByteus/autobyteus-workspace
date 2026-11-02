@@ -9,6 +9,7 @@ import type {
   CollaborationMessagesContextView,
 } from '~/types/workspace/collaborationMessagesContextView';
 import type { TeamReferenceFile } from '~/types/teamReferenceFile';
+import { projectAgentOrgReference } from '~/services/agentOrgExecution/agentOrgReferenceProjection';
 
 const labels: Record<string, string> = {
   'workspace.components.workspace.team.TeamCommunicationPanel.to_counterpart': 'to',
@@ -24,6 +25,7 @@ const testReference = (referenceId: string, path: string) => ({
   created_at: '2026-04-12T10:00:00.000Z', updated_at: '2026-04-12T10:00:00.000Z',
 });
 const reference = testReference('ref-1', '/tmp/handoff.md');
+const referenceIdOf = (messageId: string, path: string) => projectAgentOrgReference(messageId, path, '').referenceId;
 const team = buildTestTeamContext({
   teamRunId: 'team-1', coordinatorAddress: '/focused', focusedAgentRunId: 'focused-run',
   rootChildren: [
@@ -63,7 +65,7 @@ const mountOptions = {
 const mountPanel = (
   messages: CollaborationMessagesContextView,
   rows: readonly CollaborationMessagePerspectiveRow[] = messages.listMessages(),
-) => mount(CollaborationMessagesPanel, { ...mountOptions, props: { messages, rows } });
+) => mount(CollaborationMessagesPanel, { ...mountOptions, props: { messages, rows, status: messages.messagesStatus() } });
 const mountSubject = (focusedAgentRunId = 'focused-run') => mountPanel(
   focusedAgentRunId === 'focused-run'
     ? testCollaborationMessagesContextView(team, focusedAgentRunId)
@@ -102,7 +104,9 @@ describe('CollaborationMessagesPanel current AgentRun perspective', () => {
     expect(wrapper.find('[data-test="team-communication-reference-row"]').exists()).toBe(false);
     await wrapper.findAll('[data-test="team-communication-message-summary"]')[1].trigger('click');
     await wrapper.get('[data-test="team-communication-reference-row"]').trigger('click');
-    expect(wrapper.get('[data-test="reference-viewer"]').text()).toBe('team-runs/team-1/team-communication/messages/message-sent/references/ref-1/content:ref-1');
+    // A reference's ID is derived from its message and path, as the server derives it (autobyteus-358).
+    const id = referenceIdOf('message-sent', '/tmp/handoff.md');
+    expect(wrapper.get('[data-test="reference-viewer"]').text()).toBe(`team-runs/team-1/team-communication/messages/message-sent/references/${id}/content:${id}`);
   });
 });
 
@@ -132,7 +136,7 @@ describe('CollaborationMessagesPanel bounded reference files', () => {
     expect(wrapper.find('[data-test="team-communication-show-all-references"]').exists()).toBe(false);
     await references[BIG_REFERENCE_COUNT - 1].trigger('click');
     expect(wrapper.get('[data-test="reference-viewer"]').text())
-      .toBe('team-runs/team-big/team-communication/messages/message-big/references/big-44/content:big-44');
+      .toBe(`team-runs/team-big/team-communication/messages/message-big/references/${referenceIdOf('message-big', '/repo/big-44.md')}/content:${referenceIdOf('message-big', '/repo/big-44.md')}`);
   });
 
   it('shows no Show all control when the selected message is within the preview limit', async () => {

@@ -245,8 +245,8 @@ export class RootAgentExecutionRegistry {
       this.taskAgentRunIds.add(sourceNode.agentRunId);
       handle = created;
     } else if (handle.isStopped()) {
-      // A retained handle (idle shutdown or user Stop) resumes on the copy's current effective launch.
-      handle.replaceModelChoice(sourceNode);
+      // A retained handle (idle shutdown or user Stop) resumes on the copy's current effective launch, runtime and pending switch.
+      handle.replaceSelection(sourceNode);
     }
     // The chain is live before any input is reserved.
     await handle.getOrCreateAgentRun();
@@ -317,6 +317,7 @@ export class RootAgentExecutionRegistry {
       runtimeKind: sourceNode.runtimeKind,
       workspaceRootPath: sourceNode.workspaceRootPath,
       platformAgentRunId: sourceNode.platformAgentRunId,
+      ...(sourceNode.pendingRuntimeSwitch ? { pendingRuntimeSwitch: sourceNode.pendingRuntimeSwitch } : {}),
     });
     const memberExecutionContext = await callbacks.buildMemberExecutionContext({ identity, physicalScope, execution, sourceNode });
     return (this.options.executionFactory ?? new ConfiguredAgentExecutionFactory()).create({

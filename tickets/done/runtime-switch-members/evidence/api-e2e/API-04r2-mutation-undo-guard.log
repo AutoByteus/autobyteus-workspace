@@ -1,0 +1,13 @@
+# Case: API-04r2-mut (RSM-07 with the IR-003 change to agentOrgRunConfigAdoption.ts reverted)
+# Command: git show 4c7a70698d -- autobyteus-web/services/agentOrgExecution/agentOrgRunConfigAdoption.ts | git apply -R; pnpm test:e2e:runtime-switch-members --cases RSM-07; then git checkout -- <file> (restored)
+# Commit: d7e63493e7 (+ uncommitted API/E2E test changes committed with this round)
+# Environment: macOS arm64, Node 22, Google Chrome 156 headless / owned temp roots; server rebuilt from this commit (pnpm build exit 0)
+# Date: 2026-11-02T07:38Z
+
+
+> autobyteus@1.5.11-beta.10 test:e2e:runtime-switch-members /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-switch-members/autobyteus-web
+> node tests/e2e/runtime-switch-members-probe.mjs --cases RSM-07 --output-dir /tmp/rsm-mut-f3
+
+RSM-07 Fail — the undo Save shows a note (the Org adoption refuses it?): Org configuration changed topology, identity, or locked fields. Refresh | the runtime-change hint is still shown after the undo
+ ELIFECYCLE  Command failed with exit code 1.
+exit 1

@@ -6,14 +6,17 @@ import { AgentStatus } from '~/types/agent/AgentStatus'
 vi.mock('~/services/collaborators/collaboratorCandidatesService', () => ({ collaboratorCandidatesService: { invalidate: vi.fn() } }))
 
 import { created } from './agentRootFixture'
-import { buildClosureContext, closureView } from './agentRootClosureFixture'
+import { buildClosureContext, closureMessages, closureView } from './agentRootClosureFixture'
+import { storeParticipantMessages } from '~/test-support/participantMessagesStub'
+
+vi.mock('~/services/collaborationMessages/participantMessagesQuery', async () => (await import('~/test-support/participantMessagesStub')).participantMessagesQueryStub)
 
 const listed = (context: AgentRunCollaborationContext) => context.listTaskRows(() => true).map((entry) => entry.row.rowKey)
 
 describe('Agent root closed task executions', () => {
   beforeEach(() => { setActivePinia(createPinia()) })
 
-  it('lists every open task execution; a closed one and its whole subtree are left out of the rows only', () => {
+  it('lists every open task execution; a closed one and its whole subtree are left out of the rows only', async () => {
     expect(listed(buildClosureContext())).toEqual([
       'agent:cua-run', 'team:team-run', 'agent:pp-run', 'agent:pb-run',
       'agent:writer-run', 'team:review-team', 'agent:rp-run', 'agent:rb-run', 'agent:helper-run', 'agent:other-task-run',
@@ -27,6 +30,9 @@ describe('Agent root closed task executions', () => {
     }
     expect(context.isListed('other-task-run')).toBe(true)
     expect(context.view.execution_tree.taskExecutions).toHaveLength(5)
+    // A closed run's messages stay in the Team tab, loaded when it is shown (autobyteus-358).
+    storeParticipantMessages('agent', 'host-run', closureMessages)
+    context.messagesView('host-run').loadMessages(); await new Promise((resolve) => setTimeout(resolve, 0))
     expect(context.messagesView('host-run').listMessages().map((message) => message.messageId)).toContain('m-writer')
   })
 

@@ -78,10 +78,11 @@ export const teamMemberLaunchSource = (
 ): LaunchConfigurationSourceDto | null => member.launch_source ?? team.default_launch_source ?? null;
 
 /**
- * The user's model choice for one delegated copy: it replaces only the
- * model and its settings. Absent when the user made no choice (every older record).
+ * The user's choice for one delegated copy: its model and settings and, when the user also chose another agent runtime,
+ * that runtime (absent: the started runtime). Absent when the user made no choice (every older record).
  */
 export type UserLaunchSelectionDto = Readonly<{
+  runtime_kind?: AgentLaunchConfigurationDto["runtime_kind"];
   llm_model_identifier: string;
   llm_config: Readonly<Record<string, import("./schema-helpers.js").JsonValue>> | null;
   selected_at: string;
@@ -101,7 +102,12 @@ export const teamCopyAgentLaunch = (input: Readonly<{
   const selection = input.agentSelection ?? (input.followsTeam ? input.teamSelection ?? null : null);
   if (!selection) return { launch: input.started, selected: null };
   return {
-    launch: { ...input.started, llm_model_identifier: selection.llm_model_identifier, llm_config: selection.llm_config },
+    launch: {
+      ...input.started,
+      runtime_kind: selection.runtime_kind ?? input.started.runtime_kind,
+      llm_model_identifier: selection.llm_model_identifier,
+      llm_config: selection.llm_config,
+    },
     selected: input.agentSelection ? "agent" : "team",
   };
 };
@@ -157,8 +163,9 @@ export type TaskTeamExecutionDto = Readonly<{
 
 export type TaskExecutionDto = TaskAgentExecutionDto | TaskTeamExecutionDto;
 
+const runtimeKindSchema = z.enum(["autobyteus", "claude_agent_sdk", "codex_app_server", "antigravity_cli", "grok_build"]);
 const launchConfigurationSchema: z.ZodType<AgentLaunchConfigurationDto> = z.object({
-  runtime_kind: z.enum(["autobyteus", "claude_agent_sdk", "codex_app_server", "antigravity_cli", "grok_build"]),
+  runtime_kind: runtimeKindSchema,
   llm_model_identifier: nonEmptyStringSchema,
   llm_config: z.record(z.string(), jsonValueSchema).nullable(),
   auto_execute_tools: z.boolean(),
@@ -185,6 +192,7 @@ const memberLaunchSchema = {
   launch_configuration: launchConfigurationSchema, follows_team: z.boolean(), launch_source: launchSourceSchema.optional(),
 };
 export const userLaunchSelectionDtoSchema: z.ZodType<UserLaunchSelectionDto> = z.object({
+  runtime_kind: runtimeKindSchema.optional(),
   llm_model_identifier: nonEmptyStringSchema,
   llm_config: z.record(z.string(), jsonValueSchema).nullable(),
   selected_at: nonEmptyStringSchema,

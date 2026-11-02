@@ -1,11 +1,17 @@
+import { randomUUID } from "node:crypto";
 import { isDeepStrictEqual } from "node:util";
-import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
 import {
   effectiveCopyAgentLaunch,
+  type TaskAgentExecution,
   type TaskExecution,
+  type TaskTeamAgentExecution,
+  type TaskTeamExecution,
   type UserLaunchSelection,
 } from "../../run-history/domain/run-execution-tree-shared-records.js";
+import { applyRuntimeSelection, type RuntimeBindingState } from "../../run-history/domain/runtime-selection-rule.js";
+import type { PendingRuntimeSwitch } from "../../run-history/store/agent-run-metadata-types.js";
 import type { AgentTeamAddress } from "./agent-team-address.js";
 
 /**
@@ -18,13 +24,15 @@ import type { AgentTeamAddress } from "./agent-team-address.js";
 /** A copy's run identity: exactly one of the two. */
 export type DelegatedRunReference = Readonly<{ agentRunId: string }> | Readonly<{ teamRunId: string }>;
 
+/**
+ * A user choice for one copy (or a stopped Agent root's own selection saved with its copies): the agent runtime to run on
+ * (the copy's current one, the previous one for an undo, or another for a switch), the model and its settings.
+ */
 export type DelegatedLaunchSelectionValue = Readonly<{
+  runtimeKind: RuntimeKind;
   llmModelIdentifier: string;
   llmConfig: Readonly<Record<string, unknown>> | null;
 }>;
-
-/** The stopped Agent root's own selection saved together with its copies' choices: it carries the agent runtime too (a host can switch). */
-export type DelegatedHostSelectionValue = DelegatedLaunchSelectionValue & Readonly<{ runtimeKind: RuntimeKind }>;
 
 /** One requested change: an agent's own selection (`agentRunId`) or a Team-level one (`teamRunId`). */
 export type DelegatedLaunchChange = Readonly<{
@@ -51,8 +59,10 @@ export type DelegatedLaunchTarget = Readonly<{
   scope: "agent" | "team";
   runId: string;
   address: AgentTeamAddress;
-  /** The launch the change is validated against: runtime and workspace stay; the current model is the effective one. */
+  /** The launch the change is validated against: the effective agent runtime, model and workspace of the copy right now. */
   current: AgentLaunchConfiguration;
+  /** The copy's pending agent runtime switch before this save, if any (its pending model has never run). */
+  pendingRuntimeSwitch?: PendingRuntimeSwitch;
   selection: DelegatedLaunchSelectionValue;
   stopUnit: DelegatedStopUnit;
 }>;
@@ -124,7 +134,8 @@ const resolveAgentTarget = (
       if (task.agentRunId !== agentRunId) return;
       found = { scope: "agent", runId: agentRunId, address: task.address,
         stopUnit: { kind: "task_execution", reference: { agentRunId } },
-        current: effectiveCopyAgentLaunch({ started: task.source.launchConfiguration, agentSelection: task.userLaunchSelection }).launch };
+        current: effectiveCopyAgentLaunch({ started: task.source.launchConfiguration, agentSelection: task.userLaunchSelection }).launch,
+        ...(task.pendingRuntimeSwitch ? { pendingRuntimeSwitch: task.pendingRuntimeSwitch } : {}) };
       return;
     }
     const member = task.members.find((candidate) => candidate.agentRunId === agentRunId);
@@ -137,7 +148,8 @@ const resolveAgentTarget = (
         followsTeam: recorded.followsTeam,
         teamSelection: task.userTeamLaunchSelection,
         agentSelection: member.userLaunchSelection,
-      }).launch };
+      }).launch,
+      ...(member.pendingRuntimeSwitch ? { pendingRuntimeSwitch: member.pendingRuntimeSwitch } : {}) };
   });
   return found;
 };
@@ -160,57 +172,130 @@ const resolveTeamTarget = (
 export type DelegatedLaunchSelections = Readonly<{
   agents: ReadonlyMap<string, UserLaunchSelection>;
   teams: ReadonlyMap<string, UserLaunchSelection>;
+  /** Names a NEW pending switch a save records (autobyteus-348); a switch already pending keeps its own. */
+  newSwitchId: () => string;
 }>;
 
 export const delegatedLaunchSelections = (
   targets: readonly Pick<DelegatedLaunchTarget, "scope" | "runId" | "selection">[],
   selectedAt: string,
+  newSwitchId: () => string = randomUUID,
 ): DelegatedLaunchSelections => {
   const agents = new Map<string, UserLaunchSelection>();
   const teams = new Map<string, UserLaunchSelection>();
   for (const target of targets) {
     const selection: UserLaunchSelection = Object.freeze({
+      runtimeKind: target.selection.runtimeKind,
       llmModelIdentifier: target.selection.llmModelIdentifier,
       llmConfig: target.selection.llmConfig === null ? null : structuredClone(target.selection.llmConfig),
       selectedAt,
     });
     (target.scope === "agent" ? agents : teams).set(target.runId, selection);
   }
-  return Object.freeze({ agents, teams });
+  return Object.freeze({ agents, teams, newSwitchId });
 };
 
 /**
- * Records the selections on a task-execution list (any depth). Only the selection fields change;
- * the started values (`source`) are never touched. A selection equal to the
- * recorded one (model and settings) keeps the record unchanged.
+ * Records the selections on a task-execution list (any depth). The user's choice is recorded beside the started values
+ * (`source`), which are never touched; a choice whose runtime is the started one carries no runtime. Every member whose
+ * effective agent runtime changes through a choice (its own, or its Team's for a follower) also gets the shared switch rule
+ * applied (autobyteus-348): a pending switch with the previous effective binding, no session ID, the undo when the previous
+ * runtime is chosen again. The save reads no memory: whether there is a conversation to carry over is decided at activation.
+ * A selection equal to the recorded one keeps the record unchanged.
  */
 export const applyDelegatedLaunchSelectionsToTaskExecutions = (
   tasks: readonly TaskExecution[],
   selections: DelegatedLaunchSelections,
 ): TaskExecution[] => tasks.map((task): TaskExecution => {
-  if ("agentRunId" in task) {
-    return withSelection(task, "userLaunchSelection", selections.agents.get(task.agentRunId));
-  }
-  return withSelection({
-    ...task,
-    members: task.members.map((member) => withSelection(member, "userLaunchSelection", selections.agents.get(member.agentRunId))),
-    taskExecutions: applyDelegatedLaunchSelectionsToTaskExecutions(task.taskExecutions, selections),
-  }, "userTeamLaunchSelection", selections.teams.get(task.teamRunId));
+  if ("agentRunId" in task) return applyToAgentCopy(task, selections);
+  return applyToTeamCopy(task, selections);
 });
 
-const sameChoice = (left: UserLaunchSelection | undefined, right: UserLaunchSelection): boolean =>
-  left !== undefined && left.llmModelIdentifier === right.llmModelIdentifier
-  && isDeepStrictEqual(left.llmConfig, right.llmConfig);
+/** The effective binding of a copy member as its record states it (the choice already applied) with its session ID. */
+const bindingStateOf = (
+  launch: AgentLaunchConfiguration,
+  record: Readonly<{ platformAgentRunId: string | null; pendingRuntimeSwitch?: PendingRuntimeSwitch }>,
+): RuntimeBindingState => ({
+  binding: { runtimeKind: launch.runtimeKind, llmModelIdentifier: launch.llmModelIdentifier, llmConfig: launch.llmConfig, platformAgentRunId: record.platformAgentRunId },
+  ...(record.pendingRuntimeSwitch ? { pendingRuntimeSwitch: record.pendingRuntimeSwitch } : {}),
+});
 
-const withSelection = <T extends object, K extends "userLaunchSelection" | "userTeamLaunchSelection">(
+/** A record with its session ID and pending switch replaced by the rule's result (the pending key is absent when none). */
+const withSwitchState = <T extends Readonly<{ platformAgentRunId: string | null; pendingRuntimeSwitch?: PendingRuntimeSwitch }>>(
   record: T,
-  key: K,
-  selection: UserLaunchSelection | undefined,
+  next: RuntimeBindingState,
 ): T => {
-  if (!selection) return record;
-  const current = (record as Record<string, unknown>)[key] as UserLaunchSelection | undefined;
-  return sameChoice(current, selection) ? record : { ...record, [key]: selection };
+  const { pendingRuntimeSwitch: _pending, ...rest } = record;
+  return { ...rest, platformAgentRunId: next.binding.platformAgentRunId, ...(next.pendingRuntimeSwitch ? { pendingRuntimeSwitch: next.pendingRuntimeSwitch } : {}) } as unknown as T;
 };
+
+/** The choice as recorded: the runtime is written only when it is not the started one. */
+const recordedChoice = (selection: UserLaunchSelection, started: AgentLaunchConfiguration): UserLaunchSelection => {
+  const { runtimeKind, ...rest } = selection;
+  return runtimeKind !== undefined && runtimeKind !== started.runtimeKind ? { runtimeKind, ...rest } : rest;
+};
+
+const applyToAgentCopy = (task: TaskAgentExecution, selections: DelegatedLaunchSelections): TaskAgentExecution => {
+  const selection = selections.agents.get(task.agentRunId);
+  if (!selection) return task;
+  const started = task.source.launchConfiguration;
+  const before = effectiveCopyAgentLaunch({ started, agentSelection: task.userLaunchSelection }).launch;
+  const next = applyRuntimeSelection(bindingStateOf(before, task), recordedSelection(selection, started), selections.newSwitchId());
+  const choice = recordedChoice(selection, started);
+  const unchangedChoice = sameChoice(task.userLaunchSelection, choice);
+  const unchangedSwitch = next.binding.platformAgentRunId === task.platformAgentRunId && isDeepStrictEqual(next.pendingRuntimeSwitch, task.pendingRuntimeSwitch);
+  if (unchangedChoice && unchangedSwitch) return task;
+  return withSwitchState({ ...task, userLaunchSelection: unchangedChoice ? task.userLaunchSelection : choice }, next);
+};
+
+const recordedSelection = (selection: UserLaunchSelection, started: AgentLaunchConfiguration) => ({
+  runtimeKind: selection.runtimeKind ?? started.runtimeKind,
+  llmModelIdentifier: selection.llmModelIdentifier,
+  llmConfig: selection.llmConfig,
+});
+
+const applyToTeamCopy = (task: TaskTeamExecution, selections: DelegatedLaunchSelections): TaskTeamExecution => {
+  const teamChoice = selections.teams.get(task.teamRunId);
+  const nextTeamSelection = teamChoice && !sameChoice(task.userTeamLaunchSelection, recordedChoice(teamChoice, task.source.defaultLaunchConfiguration))
+    ? recordedChoice(teamChoice, task.source.defaultLaunchConfiguration)
+    : task.userTeamLaunchSelection;
+  const members = task.members.map((member) => applyToTeamMember(task, member, nextTeamSelection, selections));
+  return {
+    ...task,
+    ...(nextTeamSelection ? { userTeamLaunchSelection: nextTeamSelection } : {}),
+    members,
+    taskExecutions: applyDelegatedLaunchSelectionsToTaskExecutions(task.taskExecutions, selections),
+  };
+};
+
+const applyToTeamMember = (
+  task: TaskTeamExecution,
+  member: TaskTeamAgentExecution,
+  teamSelection: UserLaunchSelection | undefined,
+  selections: DelegatedLaunchSelections,
+): TaskTeamAgentExecution => {
+  const recorded = task.source.members.find((candidate) => candidate.address === member.address);
+  if (!recorded) return member;
+  const started = recorded.launchConfiguration;
+  const own = selections.agents.get(member.agentRunId);
+  const ownChoice = own ? recordedChoice(own, started) : undefined;
+  const nextOwn = ownChoice && !sameChoice(member.userLaunchSelection, ownChoice) ? ownChoice : member.userLaunchSelection;
+  const rule = (agentSelection: UserLaunchSelection | undefined, team: UserLaunchSelection | undefined) =>
+    effectiveCopyAgentLaunch({ started, followsTeam: recorded.followsTeam, teamSelection: team, agentSelection }).launch;
+  const before = rule(member.userLaunchSelection, task.userTeamLaunchSelection);
+  const after = rule(nextOwn, teamSelection);
+  const changedChoice = nextOwn !== member.userLaunchSelection;
+  const reachedByTeam = teamSelection !== task.userTeamLaunchSelection && member.userLaunchSelection === undefined && recorded.followsTeam;
+  if (!changedChoice && !reachedByTeam) return member;
+  const next = applyRuntimeSelection(bindingStateOf(before, member), after, selections.newSwitchId());
+  const unchangedSwitch = next.binding.platformAgentRunId === member.platformAgentRunId && isDeepStrictEqual(next.pendingRuntimeSwitch, member.pendingRuntimeSwitch);
+  if (!changedChoice && unchangedSwitch) return member;
+  return withSwitchState(changedChoice ? { ...member, userLaunchSelection: nextOwn } : member, next);
+};
+
+const sameChoice = (left: UserLaunchSelection | undefined, right: UserLaunchSelection): boolean =>
+  left !== undefined && left.runtimeKind === right.runtimeKind && left.llmModelIdentifier === right.llmModelIdentifier
+  && isDeepStrictEqual(left.llmConfig, right.llmConfig);
 
 /** One saved choice as recorded on its copy record, for the live view (DS-001). */
 export type DelegatedLaunchSelectionRecord = Readonly<{ reference: DelegatedRunReference; selection: UserLaunchSelection }>;
@@ -252,7 +337,7 @@ export const listDelegatedLaunchTargets = (input: Readonly<{
     references.push({ teamRunId: task.teamRunId });
     task.members.forEach((member) => references.push({ agentRunId: member.agentRunId }));
   });
-  const placeholder: DelegatedLaunchSelectionValue = { llmModelIdentifier: "-", llmConfig: null };
+  const placeholder: DelegatedLaunchSelectionValue = { runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: "-", llmConfig: null };
   return Object.freeze(references.flatMap((reference) => {
     try {
       const [target] = resolveDelegatedLaunchTargets({ ...input, changes: [{ ...reference, selection: placeholder }] });

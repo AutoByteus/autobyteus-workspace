@@ -19,7 +19,8 @@ import { afterSearchDebounce, createProjectTaskSearchServer } from '~/test-suppo
 const project = (projectId: string, updatedAt: string): Project => ({ projectId, name: projectId, description: '', createdAt: updatedAt, updatedAt,
   workspaces: [], openTaskCount: 1, taskCount: 1 })
 const projectTask = (taskId: string, projectId: string, description: string, status: ProjectTaskStatus = 'TODO', minute = 0): ProjectTask => ({
-  taskId, projectId, title: description, description, status, contextFiles: [], createdAt: '2026-10-07T00:00:00.000Z',
+  taskId, projectId, taskKey: `${projectId}-${taskId}`, title: description, description, status, dependsOnTaskIds: [], partOfTaskId: null,
+  comments: [], contextFiles: [], createdAt: '2026-10-07T00:00:00.000Z',
   updatedAt: `2026-10-07T00:${String(minute).padStart(2, '0')}:00.000Z`, root: null })
 const tempTask = (taskId: string, description: string, status: ProjectTaskStatus = 'TODO', minute = 0): TaskWithoutProject => ({
   taskId, description, status, referenceFiles: [], createdAt: '2026-10-07T00:00:00.000Z',

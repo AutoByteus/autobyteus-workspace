@@ -1,0 +1,9 @@
+# IMP-02 server typecheck
+# Command: pnpm -C autobyteus-server-ts typecheck
+# Commit: 8959bc507a content
+# Date: 2026-11-02T06:46Z
+
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 10.5s
+[typecheck] server tests (tsconfig.tests.json): 1200 errors, exit 2, 26.5s
+[typecheck] production errors: 0; test-file errors: 1200 in 370 files (baseline 1200 in 370 files)
+[typecheck] PASS

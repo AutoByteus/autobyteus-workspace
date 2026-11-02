@@ -322,7 +322,7 @@ describe('TokenUsageMeterPanel', () => {
         usage_event_id: `report-${revision}`, idempotency_key: `report-${revision}`, run_id: 'run-1',
         turn_id: 'turn', model_identifier: 'exact-reported-model', reports_model_call: true,
         observed_at: '2026-10-13T10:00:00.000Z', output_throughput: outputThroughput,
-        run_summary_after_event: buildSummaryDto(buildSummary({ revision, usageReportCount: revision })),
+        run_summary_after_event: { ...buildSummaryDto(buildSummary({ revision, usageReportCount: revision })), run_id: 'run-1' },
       });
     call(1, { method: 'generation', output_tokens: 1200, duration_ms: 10_000 });
     await nextTick();

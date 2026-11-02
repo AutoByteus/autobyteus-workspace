@@ -5,7 +5,6 @@ import { GetTeamMemberRunProjection } from '~/graphql/queries/runHistoryQueries'
 
 const io = vi.hoisted(() => ({ query: vi.fn(), unreachable: true, reads: [] as string[] }))
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: io.query }) }))
-vi.mock('~/services/runHydration/teamCommunicationHydrationService', () => ({ fetchTeamCommunicationForTeam: vi.fn(async () => []) }))
 vi.mock('~/stores/runHistoryNavigationStoreActions', () => ({ refreshRunNavigationTopologyForStore: vi.fn() }))
 
 import { openTeamRun } from '../teamRunOpenCoordinator'
@@ -44,7 +43,7 @@ describe("a Team root's remote member, its node down", () => {
     io.query.mockImplementation(async ({ query, variables }: { query: unknown; variables: Record<string, unknown> }) => {
       if (!variables.agentRunId) {
         return { data: { getTeamRunResumeConfig: { remoteTaskExecutions: [remoteTeam], closedTaskExecutions: [], teamRunId: TEAM,
-          isActive: false, executionTree: tree, modelConfigEditability: { editable: true, reason: null } } } }
+          isActive: false, liveSequenceId: null, baseChangeSequence: 0, lastMessageChangeSequence: null, executionTree: tree, modelConfigEditability: { editable: true, reason: null } } } }
       }
       if (query === GetTeamMemberRunProjection) io.reads.push(String(variables.agentRunId))
       if (variables.agentRunId === 'lead-run' && io.unreachable) return { data: null, errors: [{ message: 'REMOTE_PEER_UNREACHABLE' }] }

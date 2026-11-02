@@ -1,6 +1,6 @@
 import { getApolloClient } from '~/utils/apolloClient'
 import { UpdateStoppedAgentRunSelection } from '~/graphql/mutations/runHistoryMutations'
-import { UpdateStoppedTeamRunModelConfigs } from '~/graphql/mutations/agentTeamRunMutations'
+import { UpdateStoppedTeamRunSelections } from '~/graphql/mutations/agentTeamRunMutations'
 import type { RunModelConfigEditability } from '~/stores/runHistoryTypes'
 import type { ExistingAgentRunSelection, ExistingRunModelConfigFieldError } from '~/types/agent/ExistingRunModelConfigDraft'
 import type { ExistingTeamModelConfigPatch } from './existingTeamModelConfigDraft'
@@ -44,13 +44,13 @@ export const updateStoppedAgentSelection = async (input: {
   return requiredResult(response, 'updateStoppedAgentRunSelection')
 }
 
-export const updateStoppedTeamModelConfigs = async (input: {
+export const updateStoppedTeamSelections = async (input: {
   teamRunId: string
-  patches: readonly ExistingTeamModelConfigPatch[]
+  selectionPatches: readonly ExistingTeamModelConfigPatch[]
 }): Promise<TeamModelConfigMutationResult> => {
   const response = await getApolloClient().mutate<Record<string, TeamModelConfigMutationResult>>({
-    mutation: UpdateStoppedTeamRunModelConfigs,
+    mutation: UpdateStoppedTeamRunSelections,
     variables: { input },
   })
-  return requiredResult(response, 'updateStoppedTeamRunModelConfigs')
+  return requiredResult(response, 'updateStoppedTeamRunSelections')
 }

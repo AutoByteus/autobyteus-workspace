@@ -81,10 +81,11 @@ export const collaborationMemberLaunchSource = (
 ): CollaborationLaunchConfigurationSourceDto | null => member.launchSource ?? team.defaultLaunchSource ?? null;
 
 /**
- * The user's model choice for one delegated copy: it replaces only the
- * model and its settings. Absent when the user made no choice (every older record).
+ * The user's choice for one delegated copy: its model and settings and, when the user also chose another agent runtime,
+ * that runtime (absent: the started runtime). Absent when the user made no choice (every older record).
  */
 export const userLaunchSelectionDtoSchema = z.object({
+  runtimeKind: agentOrgLaunchConfigurationDtoSchema.shape.runtimeKind.optional(),
   llmModelIdentifier: nonEmptyStringSchema,
   llmConfig: z.record(z.string(), jsonValueSchema).nullable(),
   selectedAt: timestamp,
@@ -105,7 +106,12 @@ export const collaborationCopyAgentLaunch = (input: Readonly<{
   const selection = input.agentSelection ?? (input.followsTeam ? input.teamSelection ?? null : null);
   if (!selection) return { launch: input.started, selected: null };
   return {
-    launch: { ...input.started, llmModelIdentifier: selection.llmModelIdentifier, llmConfig: selection.llmConfig },
+    launch: {
+      ...input.started,
+      runtimeKind: selection.runtimeKind ?? input.started.runtimeKind,
+      llmModelIdentifier: selection.llmModelIdentifier,
+      llmConfig: selection.llmConfig,
+    },
     selected: input.agentSelection ? "agent" : "team",
   };
 };
@@ -262,10 +268,6 @@ export const agentOrgCommunicationMessageDtoSchema = z.object({
   receiverAgentRunId: nonEmptyStringSchema, content: nonEmptyStringSchema,
   messageType: nonEmptyStringSchema, referenceFiles: z.array(nonEmptyStringSchema), createdAt: timestamp,
 }).strict();
-export const agentOrgCommunicationMessagesDtoSchema = z.object({
-  schemaVersion: z.literal(1), subjectKind: z.literal("agent_org"), orgRunId: nonEmptyStringSchema,
-  messages: z.array(agentOrgCommunicationMessageDtoSchema),
-}).strict();
 
 export const agentOrgAgentStatusDtoSchema = z.object({
   member_address: agentAddressSchema, agent_run_id: nonEmptyStringSchema,
@@ -276,9 +278,13 @@ export const agentOrgAgentStatusDtoSchema = z.object({
 
 export const agentOrgExecutionViewDtoSchema = z.object({
   base_change_sequence: z.number().int().nonnegative(), is_active: z.boolean(),
+  /** The live sequence `base_change_sequence` counts in (one per root event publisher); null for a stored view. */
+  live_sequence_id: nonEmptyStringSchema.nullable(),
+  /** The sequence of the root's latest message through `base_change_sequence` (0 when none); null for a stored view. */
+  last_message_change_sequence: z.number().int().nonnegative().nullable(),
   execution_tree: agentOrgExecutionTreeDtoSchema,
   closed_task_executions: closedTaskExecutionsDtoSchema,
-  communication_messages: agentOrgCommunicationMessagesDtoSchema, agent_statuses: z.array(agentOrgAgentStatusDtoSchema),
+  agent_statuses: z.array(agentOrgAgentStatusDtoSchema),
   agent_input_states: z.array(z.object({ agent_run_id: z.string().min(1), state: agentInputStateSchema }).strict()),
   /** The runs this root delegated to other nodes (autobyteus-278); their summaries arrive as events. */
   remote_task_executions: z.array(remoteTaskExecutionDtoSchema),

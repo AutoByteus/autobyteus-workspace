@@ -1,0 +1,13 @@
+Check: IMP-09
+Command: env -i ... RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=tests/fixtures/agy-failure-cli.mjs vitest run tests/e2e/runtime/runtime-switch-members-built-server.e2e.test.ts (built dist from a199e9d543; later commit changed tests only)
+Commit: a199e9d543
+Environment: macOS (Darwin 25.5.0, arm64), Node v22, pnpm 10.28.2
+Date: 2026-11-01
+
+ ✓ tests/e2e/runtime/runtime-switch-members-built-server.e2e.test.ts (4 tests) 11566ms
+     ✓ MS-01: a Team member native -> Antigravity: the save marks that member only, the first message archives exactly the native agent's records and starts the new file with one marker, the reopened chat shows both  2551ms
+     ✓ MS-02: a Team member Antigravity -> native with a failed start leaves the previous agent's file as it was, and the retry completes with one marker and one segment  1396ms
+     ✓ MS-03: after a server restart the member keeps its agent runtime with no pending field, restores and answers, and the earlier segments are unchanged  2190ms
+     ✓ MS-04: Org members, a direct Agent and an Agent of a mounted Team, switched in one save: each switches by its own first message with its own segment and marker  3287ms
+ Test Files  1 passed (1)
+      Tests  4 passed (4)

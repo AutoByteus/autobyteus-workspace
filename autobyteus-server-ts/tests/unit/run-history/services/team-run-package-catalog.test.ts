@@ -73,7 +73,8 @@ describe("TeamRunPackageCatalog V2 current-only readiness", () => {
     const validRoot = "b-valid-root";
     const invalidDir = await writePackage(invalidRoot);
     await writePackage(validRoot);
-    await fs.writeFile(path.join(invalidDir, "team_communication_messages_active.jsonl"), `${JSON.stringify({ legacyFallback: true })}\n`);
+    // Admission checks structure (autobyteus-358): an invalid tree is excluded; a damaged log is reported where it is read.
+    await fs.writeFile(path.join(invalidDir, "team_run_execution_tree.json"), JSON.stringify({ legacyFallback: true }));
 
     const catalog = new TeamRunPackageCatalog(memoryDir);
     await catalog.rebuild();

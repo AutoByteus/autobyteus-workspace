@@ -777,14 +777,14 @@ graph TD
 
     Handler-->|Segment Created/Updated| Context[Agent Context State]
     Handler-->|File changes / outputs| RunFileChangeStore[Run File Change Store]
-    Handler-->|Team communication messages| TeamCommunicationStore[Team Communication Store]
+    Handler-->|Team communication messages| ParticipantMessages[Collaboration Participant Messages]
     Handler-->|Activity Log| ActivityStore[Activity Store]
     Handler-->|Background task snapshot| BackgroundTaskStore[Background Task Store]
     Handler-->|Token usage| UsageMeterStore[Token Usage Meter Store]
 
     Context-->|Reactivity| UI[Vue Component UI]
     RunFileChangeStore-->|Reactivity| UI
-    TeamCommunicationStore-->|Reactivity| UI
+    ParticipantMessages-->|Reactivity| UI
     ActivityStore-->|Reactivity| UI
     UsageMeterStore-->|Reactivity| UI
 ```
@@ -1582,7 +1582,8 @@ The saved-run view uses the start surfaces' visual language:
     gray without the enabled-hover accent. Settings stop styling is unchanged.
   - **Editing (SR-007).** While a copy is stopped (stopped by the user, idled out,
     or the run is stopped), its rows edit the model and its settings like a stopped
-    run's member (`RunSettingsCard`; runtime, approval and workspace locked); a
+    run's member (`RunSettingsCard`; approval and workspace locked; the agent runtime opens with the model, see
+    [Existing Run Configuration](#existing-run-configuration)); a
     Team row edits the Team's choice. While it runs, its model is locked with the
     hint "Stop this copy to change its model." There is no separate reset: the
     user picks the model again. Model menus list the copy's options
@@ -1719,15 +1720,19 @@ a residual until then.
 A stopped Agent run's root card also lets the user choose another **agent runtime** (and a model of it): saving
 keeps the same run and chat and records a pending agent runtime switch; the new agent runtime takes over with the next
 message (a hint says so while another one is chosen, and the chat shows a marker "Agent runtime changed from … to …").
-Team and Org roots, their members and delegated copies keep their agent runtime fixed. A switch for a run that cannot
+The same holds for each member row of a stopped Team or Org run (a direct Agent, a mounted Team and its Agents) and for each
+stopped delegated copy row: the row's agent runtime control opens exactly when its model control does
+(`RunMemberRow`: `runtimeLocked || locked.model`), and a choice names the runtime with the model. A Team or Org
+root's own agent runtime stays fixed; editing a Team default's runtime carries it to the members linked to it (the
+planner's draft-start equality), each switching by itself. A switch for a run that cannot
 switch is refused by the server with a message.
 
 Save is enabled only for a stopped, editable, schema-ready, changed draft. The
 revision-free mutations are `updateStoppedAgentRunSelection`,
-`updateStoppedTeamRunModelConfigs`, and `updateStoppedAgentOrgRunConfig`. The
-AgentOrg command carries independent model and mounted-Team workspace patch
+`updateStoppedTeamRunSelections`, and `updateStoppedAgentOrgRunConfig`. The
+AgentOrg command carries independent `selectionPatches` and mounted-Team workspace patch
 lists so one validated tree write publishes their aggregate result. Each model
-command/patch requires both `llmModelIdentifier` and explicitly present nullable
+command/patch requires `runtimeKind`, `llmModelIdentifier` and explicitly present nullable
 `llmConfig`; a whole-pair no-op produces no write. Agent results return
 `canonicalSelection`; Team results retain `canonicalExecutionTree`; AgentOrg
 results return the canonical execution tree. Determinate responses replace the
@@ -2100,8 +2105,8 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
     - Owns the run-scoped projection for touched files and generated outputs.
     - Tracks latest-visible discoverability so desktop and mobile Artifacts surfaces can select/refresh the newest row after the user opens them, without stealing focus from other tabs.
     - Keeps transient `write_file` buffers only until committed previews are fetched from the server-backed run preview route.
-2.  **Team Communication (`TeamCommunicationStore`)**:
-    - Listens to derived `TEAM_COMMUNICATION_MESSAGE` live payloads plus team reopen hydration from `getTeamCommunicationMessages(teamRunId)`.
+2.  **Team Communication (`CollaborationParticipantMessages`)**:
+    - The owner is `CollaborationParticipantMessages` (`services/collaborationMessages/`, autobyteus-358): one list per root kind, root run and participant, loaded through `collaborationParticipantMessages(rootKind, rootRunId, agentRunId)` when the Team tab or a mobile message screen shows it. Live `communication` / `TEAM_COMMUNICATION_MESSAGE` events are buffered from before the request and merged by message ID; every rebuild of a root's context (reconnect, gap or checkpoint reopen, recovery, stop/inspect) reloads its lists only when a message could have been missed. The lists hold every message through a sequence C, which advances on every applied stream event and on a seen single `checkpoint_required` event. A rebuild in the same live sequence (`live_sequence_id`) whose latest message (`last_message_change_sequence`) is at or before C keeps the lists and their loads in flight, and C becomes its base; a stored view, another live sequence (a stop and resume, or a restart) or a message past C reloads them. So a new delegation, whose copy's output moves the base but writes no message, refetches nothing. The hub and Org inspections and the Team open read (`getTeamRunResumeConfig`) name a running root's live sequence, base and latest message too, so the stream snapshot that follows an open keeps a list loaded in between. No root view carries a message log.
     - Owns the canonical team-level address-first message projection and child `referenceFiles` declared by explicit `send_message_to.reference_files` on `recipient_address` deliveries.
     - Exposes focused-member sent/received message perspectives by comparing the focused `TeamExecutionAddress` with each message's `senderAddress` and `receiverAddress`, grouped by counterpart address label.
     - Keeps reference files under their parent message in the Team tab instead of inserting them into `RunFileChangesStore` or the Artifacts tab.

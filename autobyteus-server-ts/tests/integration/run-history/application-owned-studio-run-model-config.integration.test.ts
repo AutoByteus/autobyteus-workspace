@@ -178,7 +178,7 @@ describe("Application-owned Studio run-model configuration integration", () => {
       }),
       terminateTeamRun,
       resolveActiveTeamRun: vi.fn(),
-      updateStoppedModelConfigs: generalTeamUpdate,
+      updateStoppedSelections: generalTeamUpdate,
     };
 
     const runBindingLaunchService = new ApplicationRunBindingLaunchService({
@@ -333,14 +333,14 @@ describe("Application-owned Studio run-model configuration integration", () => {
         ? { agentRunId: runId, llmModelIdentifier: "model-1", llmConfig: { reasoning_effort: "high" } }
         : {
             teamRunId: runId,
-            patches: [{ scopeKind: "CONFIGURED_AGENT" as const, scopeAddress: "/coordinator", llmModelIdentifier: "model-1", llmConfig: null }],
+            selectionPatches: [{ scopeKind: "CONFIGURED_AGENT" as const, scopeAddress: "/coordinator", runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: "model-1", llmConfig: null }],
           };
       const read = (studio: StudioRunModelConfigService) => subject === "AGENT"
         ? studio.getAgentRunResumeConfig(runId)
         : studio.getTeamRunResumeConfig(runId);
       const update = (studio: StudioRunModelConfigService) => subject === "AGENT"
         ? studio.updateStoppedAgentRunSelection(updateInput as never)
-        : studio.updateStoppedTeamRunModelConfigs(updateInput as never);
+        : studio.updateStoppedTeamRunSelections(updateInput as never);
 
       expect(lookupStore.getLookupByRunId(runId)).toEqual({
         runId,

@@ -109,8 +109,8 @@ the next event writes. Reads never wait for the event queue.
    `agent_teams/<teamRunId>/team_communication_messages_*.jsonl` before the
    recipient may run the message (see
    [Teammate Delivery Path](../modules/agent_communication.md#teammate-delivery-path)).
-5. GraphQL exposes `getTeamCommunicationMessages(teamRunId)` for Team tab
-   hydration.
+5. GraphQL exposes `collaborationParticipantMessages(rootKind, rootRunId, agentRunId)`: one participant's
+   messages, which the Team tab loads when it is shown (autobyteus-358).
 6. Reference bytes are served by message-owned identity:
    `/team-runs/:teamRunId/team-communication/messages/:messageId/references/:referenceId/content`.
 

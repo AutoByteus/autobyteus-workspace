@@ -68,7 +68,7 @@ Team operations:
 
 - `getTeamRunResumeConfig`
 - `teamRunModelOptions(teamRunId)`
-- `updateStoppedTeamRunModelConfigs(input)`
+- `updateStoppedTeamRunSelections(input)`
 - `getTeamMemberRunProjection`
 - `archiveStoredTeamRun`
 - `deleteStoredTeamRun`
@@ -118,9 +118,16 @@ not established it. A first AgentOrg history read must not force a second full
 Team-and-AgentOrg package scan after startup readiness has already completed.
 
 The shared generation is structural: it enforces exact Team/AgentOrg family
-placement, required and retired package manifests, execution trees, task
-sidecars, and communication sidecars. It does not enumerate or read member
+placement, required and retired package manifests, execution trees and task
+sidecars, and that a message log exists. It reads no message log (autobyteus-358):
+a run's log is validated with its tree where it is read — the participant
+messages query, reference content and resume — and a damaged log fails those
+reads with the reason while the run is still listed and its view still opens
+(DESIGN.md rule 7). It does not enumerate or read member
 `raw_traces_active.jsonl`, rotated `raw_traces_*.jsonl`, or context-file bytes.
+A new Team or AgentOrg run is admitted by checking its own package
+(`RootRunPackageReadinessIndex.admitCurrent` → `RootRunPackageCurrentValidator.scanOne`);
+the history is not rescanned.
 Whole-history attachment-locator conversion and validation belongs to the
 one-time migration; exact file availability is checked when that file is
 requested.
@@ -158,8 +165,12 @@ it never produces a false editable state or a General write.
 
 `updateStoppedAgentRunSelection` edits the run's **selection**: agent runtime, model and model settings. Its input
 carries `runtimeKind`. The run's own agent runtime is a model-only edit; another agent runtime is an **agent runtime
-switch** (below); the previous agent runtime again, while a switch is pending, is its undo. The team family
-(`updateStoppedTeamRunModelConfigs`) edits model configuration only and keeps its names.
+switch** (below); the previous agent runtime again, while a switch is pending, is its undo. The Team family
+(`updateStoppedTeamRunSelections`), the Org family (`updateStoppedAgentOrgRunConfig`) and the delegated copies
+(`updateDelegatedLaunchSelections`) edit the same selection with the same rule for their members and copies
+(`applyRuntimeSelection`, `run-history/domain/runtime-selection-rule.ts`); see
+[Agent Team Execution](./agent_team_execution.md#agent-runtime-switch-of-a-member) and
+[User Model Choice And Stop Of Copies](./agent_communication.md#user-model-choice-and-stop-of-copies).
 
 When no Application lease exists, stopped updates delegate to the existing
 General lifecycle owners:
@@ -196,9 +207,9 @@ General lifecycle owners:
   id and the process restarted, the notice is carried once more.
 - The chat of a switched run is read by `AgentMemoryService.getChatRawTraceSnapshot` (both projection methods): the run's
   `runtime_switch` segments in index order, then the active file; compaction segments stay unread.
-- `AgentTeamRunManager.updateStoppedModelConfigs(...)` shares the root
+- `AgentTeamRunManager.updateStoppedSelections(...)` shares the root
   transition lane with Team restore. Each patch names the root Team `/` or one exact direct Agent address, can
-  change only that scope's `llmModelIdentifier`/`llmConfig` pair, and commits the
+  change only that scope's `runtimeKind`/`llmModelIdentifier`/`llmConfig`, and commits the
   resulting current V2 execution tree. Task nodes and fixed launch identity are
   not mutation targets.
 
@@ -612,10 +623,13 @@ Team persisted files:
     the launch or the following.
   - The user's model choice for one copy instance (see
     [User model choice of copies](./agent_communication.md#user-model-choice-and-stop-of-copies))
-    is `userLaunchSelection: {llmModelIdentifier, llmConfig, selectedAt}` on an
+    is `userLaunchSelection: {runtimeKind?, llmModelIdentifier, llmConfig, selectedAt}` on an
     agent-level record (a task Agent, a task Team's member Agent) and
-    `userTeamLaunchSelection` (same shape) on a team-level record (a task Team). It replaces only the
-    model and its settings, beside the started values, which are never changed. The
+    `userTeamLaunchSelection` (same shape) on a team-level record (a task Team). It replaces the model, its
+    settings and, when it carries one, the agent runtime, beside the started values, which are never changed;
+    `runtimeKind` is recorded only when it differs from the started one. The copy's pending agent runtime switch
+    (`pendingRuntimeSwitch`) and `platformAgentRunId` sit on the copy record (a task Agent's own file, a task Team's member
+    node), never on the wire. The
     run-history domain function `effectiveCopyAgentLaunch` (with the member's
     `followsTeam`) is the single rule: the agent's own choice, else the Team's
     when the member follows its Team, else the started launch.
@@ -1007,8 +1021,9 @@ id that is not in that team gives the same not-found error as before.
 Team Communication messages are also outside the member replay bundle. Accepted
 team communication events are processor input; derived
 `TEAM_COMMUNICATION_MESSAGE` events are projected once per team run into
-the team run's message log (`agent_teams/<teamRunId>/team_communication_messages_*.jsonl`). Historical Team tab
-hydration reads that projection through `getTeamCommunicationMessages(teamRunId)`,
+the team run's message log (`agent_teams/<teamRunId>/team_communication_messages_*.jsonl`). The Team tab
+reads one participant's messages when it is shown, through
+`collaborationParticipantMessages(rootKind: "agent_team", rootRunId, agentRunId)` (autobyteus-358),
 and referenced content opens by persisted message-owned identity at
 `/team-runs/:teamRunId/team-communication/messages/:messageId/references/:referenceId/content`.
 The projection stores `teamRunId` once at the projection level and each message
@@ -1082,9 +1097,9 @@ Frontend restore uses that bundle in two sibling hydration paths:
 
 - middle pane: conversation hydration
 - right pane: activity hydration
-- team pane: Team Communication hydration from
-  `getTeamCommunicationMessages(teamRunId)` for message-owned sent/received
-  communication records and child reference files
+- team pane: the focused member's messages from
+  `collaborationParticipantMessages(rootKind, rootRunId, agentRunId)`, loaded when the Team tab is shown,
+  with their reference files
 
 Those sibling paths must stay synchronized. Reopen/hydration code should apply
 the projected `conversation` and `activities` from the same replay bundle, or

@@ -1,0 +1,14 @@
+# API-08 round 2, L-001/L-002 only (--live --cases L-001,L-002), head feb69a02a3 + the L-002 assertion 'no hub message added -> no hub list refetch' (SR-004's expected count); ENV-2; 2026-11-01.
+
+## run c (before the new assertion: records the counts): result Pass
+L-001 Pass 
+  {"participants": {"large_hub_manager_probe_a0d9b319ab7d43b589c0ae2bd4facc60": 1}}
+L-002 Pass 
+  {"participants": {"large_hub_manager_probe_a0d9b319ab7d43b589c0ae2bd4facc60": 1, "implementation_engineer_25bc11d650d546599308889500528a43": 1}, "hubMessagesBefore": 62, "hubMessagesAfter": 62, "snapshotsReceived": 1}
+
+## run d (with the new assertion): result Fail
+L-001 Pass 
+  {"participants": {"large_hub_manager_probe_a0d9b319ab7d43b589c0ae2bd4facc60": 1}}
+L-002 Fail 
+  {"participants": {"large_hub_manager_probe_a0d9b319ab7d43b589c0ae2bd4facc60": 1, "implementation_engineer_25bc11d650d546599308889500528a43": 1}, "hubMessagesBefore": 62, "hubMessagesAfter": 62}
+

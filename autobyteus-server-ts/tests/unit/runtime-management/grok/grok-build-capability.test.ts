@@ -1,9 +1,9 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterAll, afterEach, beforeEach, describe, expect, it } from "vitest";
 import { discoverGrokBuildModels, probeGrokBuildCli } from "../../../../src/runtime-management/grok/grok-build-capability.js";
-import { FAKE_GROK_CLI, fixturePath, readFixture, writeCustomFixture } from "../../agent-execution/backends/acp/acp-fake-agent-harness.js";
+import { FAKE_GROK_CLI, fixturePath, makeTestTempDir, readFixture, removeTestTempDirs, writeCustomFixture } from "../../agent-execution/backends/acp/acp-fake-agent-harness.js";
 
 // The cases spawn the real fake-CLI wrapper (a shell, then node): a loaded host can exceed the 3 s production bound.
 // They pass a long bound; the last case proves a short one still ends in the diagnostic.
@@ -12,7 +12,7 @@ const ENV_KEYS = ["GROK_BUILD_COMMAND", "FAKE_GROK_VERSION", "FAKE_GROK_AGENT_HE
 let saved: Partial<Record<(typeof ENV_KEYS)[number], string | undefined>> = {};
 
 const fakeCommand = (): string => {
-  const file = path.join(fs.mkdtempSync(path.join(os.tmpdir(), "fake-grok-")), "grok");
+  const file = path.join(makeTestTempDir("fake-grok-"), "grok");
   fs.writeFileSync(file, `#!/bin/sh\nexec "${process.execPath}" "${FAKE_GROK_CLI}" "$@"\n`, { mode: 0o755 });
   return file;
 };
@@ -28,9 +28,11 @@ afterEach(() => {
   }
 });
 
+afterAll(removeTestTempDirs);
+
 describe("Grok Build capability", () => {
   it("ends a hanging CLI in the unsupported diagnostic once the bound passes", async () => {
-    const hanging = path.join(fs.mkdtempSync(path.join(os.tmpdir(), "hanging-grok-")), "grok");
+    const hanging = path.join(makeTestTempDir("hanging-grok-"), "grok");
     fs.writeFileSync(hanging, "#!/bin/sh\nexec sleep 30\n", { mode: 0o755 });
     process.env.GROK_BUILD_COMMAND = hanging;
     const startedAt = Date.now();

@@ -32,9 +32,8 @@ const createHarness = (state = 'connected') => {
   callbacks.get('onMessage')?.(JSON.stringify({
     type: 'TEAM_EXECUTION_VIEW_SNAPSHOT', payload: {
       root_team_run_id: 'team-1',
-      base_change_sequence: 0,
+      base_change_sequence: 0, live_sequence_id: 'live-1', last_message_change_sequence: 0,
       closed_task_executions: [], execution_tree: team.view.getExecutionTree(),
-      messages: [],
       agent_input_states: [], remote_task_executions: [],
   agent_statuses: team.view.listAgentContextEntries().map((entry) => ({
         agent_run_id: entry.agentRunId,

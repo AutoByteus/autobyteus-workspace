@@ -104,7 +104,9 @@ export class ContextFileProcessFixture {
     let entry = "dist/app.js";
     if (options.interruptAfterTraceCommit) {
       entry = path.join(this.root, "interrupt-after-rename.mjs");
-      await fs.writeFile(entry, `import {AtomicRunPackageFileCommitWriter as Writer} from ${JSON.stringify(pathToFileURL(path.resolve("dist/run-history/store/atomic-run-package-file-commit-writer.js")).href)};
+      // App-data migrations write through their own frozen copy of the writer (autobyteus-280), so patch that one.
+      const migrationWriter = "dist/app-data-migrations/frozen/server/run-history/store/atomic-run-package-file-commit-writer.js";
+      await fs.writeFile(entry, `import {AtomicRunPackageFileCommitWriter as Writer} from ${JSON.stringify(pathToFileURL(path.resolve(migrationWriter)).href)};
         import {startServer} from ${JSON.stringify(pathToFileURL(path.resolve("dist/app.js")).href)};
         const write = Writer.prototype.writeSerializedText;
         Writer.prototype.writeSerializedText = async function(input) {

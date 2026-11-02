@@ -12,7 +12,7 @@ import { RootTeamRun } from "../domain/root-team-run.js";
 import type { TeamRunEnding } from "../domain/team-run-lifecycle.js";
 import type { TeamRunConfig } from "../domain/team-run-config.js";
 import { TeamRunContext } from "../domain/team-run-context.js";
-import type { TeamRunEvent } from "../domain/team-run-event.js";
+import { isTeamRunMessageEvent, type TeamRunEvent } from "../domain/team-run-event.js";
 import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
 import { TaskDelegationError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import type { TaskExecutionIdentityCapabilities } from "../task-delegation/task-execution-identity-capabilities.js";
@@ -52,7 +52,7 @@ const requireCommitted = async (
 export const materializeTeamRoot = async (
   input: TeamRootMaterializationInput,
 ): Promise<RootTeamRun> => {
-  const publisher = new TeamRunEventPublisher<TeamRunEvent>();
+  const publisher = new TeamRunEventPublisher<TeamRunEvent>({ isMessageEvent: isTeamRunMessageEvent });
   const rootIdentity = createTeamRootExecutionIdentity(input.tree.rootTeam.teamRunId);
   const physicalScope = createRootExecutionPhysicalScope({ root: rootIdentity, ancestorTeamRunIds: [] });
   let root: RootTeamRun | null = null;

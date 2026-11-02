@@ -15,6 +15,7 @@ const mockAgentDef: AgentDefinition = {
   name: 'TestAgent',
   role: 'assistant',
   description: 'Test Description',
+  instructions: '',
   avatarUrl: '/rest/files/images/test-agent.png',
   toolNames: [],
   inputProcessorNames: [],
@@ -23,7 +24,7 @@ const mockAgentDef: AgentDefinition = {
   toolInvocationPreprocessorNames: [],
   lifecycleProcessorNames: [],
   skillNames: [],
-  prompts: [],
+  skillScope: 'CONFIGURED',
 };
 
 describe('agentContextsStore', () => {
@@ -271,7 +272,6 @@ describe('agentContextsStore', () => {
                 status: AgentStatus.Running,
             });
             const existing = store.runs.get(runId)!;
-            existing.isSubscribed = true;
 
             store.upsertProjectionContext({
                 runId,

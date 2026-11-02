@@ -29,7 +29,7 @@ async function ingress(kind:'agent_team'|'agent_org', f:Awaited<ReturnType<typeo
   memoryLocator:{getMemoryDir:()=>'/unused/test-owned'} as any});
  const activation=await handle.prepareConfiguredActivation();activation.commitAfterDurability();
  const send=vi.fn(); const connection={send,close:vi.fn()};
- const publisher=new RootEventPublisher<any>();
+ const publisher=new RootEventPublisher<any>({ isMessageEvent: () => false });
  const executeAgentCommand=async (id:string,command:any)=>{
   expect(id).toBe(f.run.runId);expect(command.kind).toBe('post_message');
   expect(command.message.senderType).toBe('user');return handle.postMessage(command.message);

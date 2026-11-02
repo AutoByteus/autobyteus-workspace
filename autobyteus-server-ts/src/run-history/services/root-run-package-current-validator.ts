@@ -2,13 +2,13 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import { AgentOrgCommunicationMessagesStore } from "../../agent-org-execution/persistence/agent-org-communication-messages-store.js";
-import { validateAgentOrgStatePackage } from "../../agent-org-execution/services/agent-org-state-package-validator.js";
+import { validateAgentOrgExecutionTree } from "../../agent-org-execution/services/agent-org-state-package-validator.js";
 import { TeamCommunicationStore } from "../../services/team-communication/team-communication-store.js";
 import { AgentOrgRunExecutionTreeStore } from "../store/agent-org-run-execution-tree-store.js";
 import { AGENT_ORG_RUN_EXECUTION_TREE_FILE_NAME } from "../store/agent-org-run-execution-tree-path.js";
 import { TeamRunExecutionTreeStore } from "../store/team-run-execution-tree-store.js";
 import { TEAM_RUN_EXECUTION_TREE_FILE_NAME } from "../store/team-run-execution-tree-path.js";
-import { validateTeamRunStatePackage } from "./team-run-state-package-validator.js";
+import { validateTeamRunExecutionTree } from "./team-run-state-package-validator.js";
 
 import { AgentRunMetadataStore } from "../store/agent-run-metadata-store.js";
 
@@ -49,6 +49,7 @@ const retiredOrgFiles = Object.freeze([
 ]);
 
 type RequiredMessageLog = Readonly<{ name: string; exists(): Promise<boolean> }>;
+type FamilyEntry = Readonly<{ name: string; packagePath: string; isDirectory: boolean }>;
 
 
 /**
@@ -90,50 +91,80 @@ export class RootRunPackageCurrentValidator {
     const orgById = new Map(orgEntries.map((entry) => [entry.name, entry]));
     const allIds = [...new Set([...teamById.keys(), ...orgById.keys()])].sort();
 
-    for (const rootRunId of allIds) {
-      const team = teamById.get(rootRunId);
-      const org = orgById.get(rootRunId);
-      if (team && org) {
-        this.record(candidate, "agent_team", rootRunId, team.packagePath, "ROOT_RUN_FAMILY_CONFLICT",
-          `RootRun '${rootRunId}' exists in both agent_teams and agent_orgs; neither family is admitted.`);
-        this.record(candidate, "agent_org", rootRunId, org.packagePath, "ROOT_RUN_FAMILY_CONFLICT",
-          `RootRun '${rootRunId}' exists in both agent_teams and agent_orgs; neither family is admitted.`);
-        continue;
-      }
-      try {
-        if (team) await this.inspectTeam(candidate, rootRunId, team);
-        if (org) await this.inspectOrg(candidate, rootRunId, org);
-      } catch (error) {
-        const entry = team ?? org!;
-        this.record(candidate, team ? "agent_team" : "agent_org", rootRunId, entry.packagePath, "FAILED_ATTEMPT", message(error));
-      }
-    }
-    for (const entry of await this.listFamilyEntries(this.layout.getStandaloneRootDirPath())) {
-      const id = entry.name;
-      if (!entry.isDirectory) {
-        this.record(candidate, "agent", id, entry.packagePath, "ROOT_RUN_PACKAGE_NOT_DIRECTORY", "Package root is not a directory.");
-        continue;
-      }
-      const metadataStore = new AgentRunMetadataStore(this.memoryDir);
-      const state = await metadataStore.readMetadataState(id);
-      if (state.kind === "missing" && (await metadataStore.readTaskAgentMetadataState(id)).kind !== "missing") continue;
-      if (state.kind !== "present") {
-        this.record(candidate, "agent", id, entry.packagePath,
-          state.kind === "unreadable" && isAttemptError(state.error) ? "FAILED_ATTEMPT" : "ROOT_RUN_PACKAGE_CURRENT_VALIDATION_FAILED",
-          state.kind === "missing" ? "Current standalone metadata is missing." : state.error.message);
-        continue;
-      }
-      const key = packageKey("agent", id);
-      candidate.groups.push({ key, family: "agent", id, directory: entry.packagePath });
-    }
+    for (const rootRunId of allIds) await this.inspectCoordinatingRoot(candidate, rootRunId, teamById.get(rootRunId), orgById.get(rootRunId));
+    for (const entry of await this.listFamilyEntries(this.layout.getStandaloneRootDirPath())) await this.inspectStandalone(candidate, entry);
     return candidate;
   }
 
-  private async inspectTeam(
-    target: CurrentPackageSnapshot,
+  /**
+   * One root's package, as `scan` judges it, without listing the others (autobyteus-358: a new run is admitted
+   * on its own; the history is not rescanned).
+   */
+  async scanOne(family: RootRunPackageFamily, rootRunId: string): Promise<CurrentPackageSnapshot> {
+    const candidate: CurrentPackageSnapshot = { groups: [], diagnostics: [] };
+    if (family === "agent") {
+      const entry = await this.familyEntry(this.layout.getStandaloneRootDirPath(), rootRunId);
+      if (entry) await this.inspectStandalone(candidate, entry);
+      return candidate;
+    }
+    const [team, org] = await Promise.all([
+      this.familyEntry(this.layout.getTeamRootDirPath(), rootRunId),
+      this.familyEntry(this.layout.getOrgRootDirPath(), rootRunId),
+    ]);
+    await this.inspectCoordinatingRoot(candidate, rootRunId, team ?? undefined, org ?? undefined);
+    return candidate;
+  }
+
+  private async inspectCoordinatingRoot(
+    candidate: CurrentPackageSnapshot,
     rootRunId: string,
-    entry: Readonly<{ packagePath: string; isDirectory: boolean }>,
+    team: FamilyEntry | undefined,
+    org: FamilyEntry | undefined,
   ): Promise<void> {
+    if (team && org) {
+      this.record(candidate, "agent_team", rootRunId, team.packagePath, "ROOT_RUN_FAMILY_CONFLICT",
+        `RootRun '${rootRunId}' exists in both agent_teams and agent_orgs; neither family is admitted.`);
+      this.record(candidate, "agent_org", rootRunId, org.packagePath, "ROOT_RUN_FAMILY_CONFLICT",
+        `RootRun '${rootRunId}' exists in both agent_teams and agent_orgs; neither family is admitted.`);
+      return;
+    }
+    try {
+      if (team) await this.inspectTeam(candidate, rootRunId, team);
+      if (org) await this.inspectOrg(candidate, rootRunId, org);
+    } catch (error) {
+      const entry = team ?? org!;
+      this.record(candidate, team ? "agent_team" : "agent_org", rootRunId, entry.packagePath, "FAILED_ATTEMPT", message(error));
+    }
+  }
+
+  private async inspectStandalone(candidate: CurrentPackageSnapshot, entry: FamilyEntry): Promise<void> {
+    const id = entry.name;
+    if (!entry.isDirectory) {
+      this.record(candidate, "agent", id, entry.packagePath, "ROOT_RUN_PACKAGE_NOT_DIRECTORY", "Package root is not a directory.");
+      return;
+    }
+    const metadataStore = new AgentRunMetadataStore(this.memoryDir);
+    const state = await metadataStore.readMetadataState(id);
+    if (state.kind === "missing" && (await metadataStore.readTaskAgentMetadataState(id)).kind !== "missing") return;
+    if (state.kind !== "present") {
+      this.record(candidate, "agent", id, entry.packagePath,
+        state.kind === "unreadable" && isAttemptError(state.error) ? "FAILED_ATTEMPT" : "ROOT_RUN_PACKAGE_CURRENT_VALIDATION_FAILED",
+        state.kind === "missing" ? "Current standalone metadata is missing." : state.error.message);
+      return;
+    }
+    candidate.groups.push({ key: packageKey("agent", id), family: "agent", id, directory: entry.packagePath });
+  }
+
+  private async familyEntry(root: string, name: string): Promise<FamilyEntry | null> {
+    const packagePath = path.join(root, name);
+    const stat = await fs.stat(packagePath).catch((error: NodeJS.ErrnoException) => {
+      if (error.code === "ENOENT") return null;
+      throw error;
+    });
+    return stat ? Object.freeze({ name, packagePath, isDirectory: stat.isDirectory() }) : null;
+  }
+
+  private async inspectTeam(target: CurrentPackageSnapshot, rootRunId: string, entry: FamilyEntry): Promise<void> {
     if (!entry.isDirectory) {
       this.record(target, "agent_team", rootRunId, entry.packagePath, "ROOT_RUN_PACKAGE_NOT_DIRECTORY", "Package root is not a directory.");
       return;
@@ -155,23 +186,17 @@ export class RootRunPackageCurrentValidator {
       return;
     }
     try {
+      // Structure only (autobyteus-358): the log is validated where it is read, not here.
       const executionTree = await this.stores.teamTree.read(entry.packagePath, rootRunId);
-      const communicationMessages = executionTree ? await this.stores.teamMessages.read(entry.packagePath, executionTree) : null;
-      if (!executionTree || !communicationMessages) {
-        throw new Error("Team Run V3 tree and strict Team communication messages are required.");
-      }
-      validateTeamRunStatePackage({ executionTree, communicationMessages });
+      if (!executionTree) throw new Error("Team Run V3 tree is required.");
+      validateTeamRunExecutionTree(executionTree, rootRunId);
       target.groups.push({ key: packageKey("agent_team", rootRunId), family: "agent_team", id: rootRunId, directory: entry.packagePath });
     } catch (error) {
       this.record(target, "agent_team", rootRunId, entry.packagePath, isAttemptError(error) ? "FAILED_ATTEMPT" : "ROOT_RUN_PACKAGE_CURRENT_VALIDATION_FAILED", message(error));
     }
   }
 
-  private async inspectOrg(
-    target: CurrentPackageSnapshot,
-    rootRunId: string,
-    entry: Readonly<{ packagePath: string; isDirectory: boolean }>,
-  ): Promise<void> {
+  private async inspectOrg(target: CurrentPackageSnapshot, rootRunId: string, entry: FamilyEntry): Promise<void> {
     if (!entry.isDirectory) {
       this.record(target, "agent_org", rootRunId, entry.packagePath, "ROOT_RUN_PACKAGE_NOT_DIRECTORY", "Package root is not a directory.");
       return;
@@ -187,23 +212,18 @@ export class RootRunPackageCurrentValidator {
       return;
     }
     try {
+      // Structure only (autobyteus-358): the log is validated where it is read, not here.
       const executionTree = await this.stores.orgTree.read(entry.packagePath, rootRunId);
-      const communicationMessages = executionTree ? await this.stores.orgMessages.read(entry.packagePath, executionTree) : null;
-      if (!executionTree || !communicationMessages) {
-        throw new Error("AgentOrg Run V2 tree and strict Org communication messages are required.");
-      }
-      validateAgentOrgStatePackage({ executionTree, communicationMessages });
+      if (!executionTree) throw new Error("AgentOrg Run V2 tree is required.");
+      if (executionTree.rootOrg.orgRunId !== rootRunId) throw new Error(`AgentOrg package '${rootRunId}' has contradictory root IDs.`);
+      validateAgentOrgExecutionTree(executionTree);
       target.groups.push({ key: packageKey("agent_org", rootRunId), family: "agent_org", id: rootRunId, directory: entry.packagePath });
     } catch (error) {
       this.record(target, "agent_org", rootRunId, entry.packagePath, isAttemptError(error) ? "FAILED_ATTEMPT" : "ROOT_RUN_PACKAGE_CURRENT_VALIDATION_FAILED", message(error));
     }
   }
 
-  private async listFamilyEntries(root: string): Promise<readonly Readonly<{
-    name: string;
-    packagePath: string;
-    isDirectory: boolean;
-  }>[]> {
+  private async listFamilyEntries(root: string): Promise<readonly FamilyEntry[]> {
     const entries = await fs.readdir(root, { withFileTypes: true }).catch((error: NodeJS.ErrnoException) => {
       if (error.code === "ENOENT") return [];
       throw error;

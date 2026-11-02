@@ -1,7 +1,6 @@
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterAll, afterEach, describe, expect, it, vi } from "vitest";
 import { AgentDefinition } from "../../../../../src/agent-definition/domain/models.js";
 import type { AgentDefinitionService } from "../../../../../src/agent-definition/services/agent-definition-service.js";
 import type { SkillService } from "../../../../../src/skills/services/skill-service.js";
@@ -23,7 +22,9 @@ import {
   FAKE_ACP_AGENT,
   fixturePath,
   fixtureSessionId,
+  makeTestTempDir,
   readFixture,
+  removeTestTempDirs,
   waitFor,
   writeCustomFixture,
   type FixtureRow,
@@ -39,7 +40,8 @@ const AGENT_TOOLS_MCP_SERVER = { type: "http", name: "autobyteus_agent_tools", u
 const backends: AcpAgentRunBackend[] = [];
 afterEach(async () => { for (const backend of backends.splice(0)) await backend.terminate(); });
 
-const tempDir = (prefix: string) => fs.mkdtempSync(path.join(os.tmpdir(), prefix));
+const tempDir = makeTestTempDir;
+afterAll(removeTestTempDirs);
 
 const launchProfileFor = (fixture: string, recordFile: string, reportMcpReady: boolean): AcpAgentLaunchProfile => ({
   agentLabel: "Fake Agent",
@@ -124,7 +126,7 @@ describe("AcpAgentRunBackendFactory", () => {
 
   it("starts an allowed run's agent process with the launch profile's environment plus its integration variables (DS-002)", async () => {
     const variables = { AUTOBYTEUS_GITHUB_API_URL: "http://127.0.0.1:5555/r/rp_test-dummy/github/api", GIT_TERMINAL_PROMPT: "0" };
-    const environmentForRun = vi.fn((run: { agentDefinitionId: string }) => (run.agentDefinitionId === "def-1" ? variables : {}));
+    const environmentForRun = vi.fn(async (run: { agentDefinitionId: string }): Promise<Record<string, string>> => (run.agentDefinitionId === "def-1" ? variables : {}));
     const spawn = vi.spyOn(AcpAgentProcess, "spawn");
     try {
       const { factory } = createFactory(fixturePath("prompt"), { integrationRunAccess: { environmentForRun, revokeForRun: vi.fn() } });

@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { agentRuntimeName } from "@autobyteus/agent-presentation-contracts";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
-import type { AgentRunMetadata } from "../../run-history/store/agent-run-metadata-types.js";
+import type { AgentRunMetadata, PendingRuntimeSwitch } from "../../run-history/store/agent-run-metadata-types.js";
 
 /** The agent runtime and model on one side of a switch. */
 export type RuntimeSwitchSide = Readonly<{ runtimeKind: RuntimeKind; llmModelIdentifier: string }>;
@@ -27,21 +27,34 @@ export const runtimeSwitchMarkerTraceId = (key: string): string =>
   `rt_runtime_switch_${createHash("sha256").update(key).digest("hex").slice(0, 24)}`;
 
 /**
- * The switch a run's pending switch stands for, or null when none is pending. The key holds the switch's own identity, so a
- * retry of the same activation finds the marker it wrote.
+ * The switch a pending switch stands for, for any record that holds a binding (a standalone run, a Team or Org member, a
+ * delegated copy): `to` is the record's current selection, the pending switch holds the previous one. The key holds the
+ * switch's own identity, so a retry of the same activation finds the marker it wrote.
  */
-export const buildRuntimeSwitch = (metadata: AgentRunMetadata): RuntimeSwitch | null => {
-  const pending = metadata.pendingRuntimeSwitch;
-  if (!pending) return null;
-  const from: RuntimeSwitchSide = { runtimeKind: pending.from.runtimeKind, llmModelIdentifier: pending.from.llmModelIdentifier };
-  const to: RuntimeSwitchSide = { runtimeKind: metadata.runtimeKind, llmModelIdentifier: metadata.llmModelIdentifier };
-  const key = `runtime_switch:${metadata.runId}:${pending.switchId}`;
+export const buildRuntimeSwitchBetween = (input: {
+  runId: string;
+  to: RuntimeSwitchSide;
+  pending: PendingRuntimeSwitch;
+}): RuntimeSwitch => {
+  const from: RuntimeSwitchSide = { runtimeKind: input.pending.from.runtimeKind, llmModelIdentifier: input.pending.from.llmModelIdentifier };
+  const to: RuntimeSwitchSide = { runtimeKind: input.to.runtimeKind, llmModelIdentifier: input.to.llmModelIdentifier };
+  const key = `runtime_switch:${input.runId}:${input.pending.switchId}`;
   return Object.freeze({
     key,
     markerTraceId: runtimeSwitchMarkerTraceId(key),
-    runId: metadata.runId,
+    runId: input.runId,
     from,
     to,
     markerText: `Agent runtime changed from ${label(from)} to ${label(to)}.`,
   });
 };
+
+/** The switch a standalone run's pending switch stands for, or null when none is pending. */
+export const buildRuntimeSwitch = (metadata: AgentRunMetadata): RuntimeSwitch | null =>
+  metadata.pendingRuntimeSwitch
+    ? buildRuntimeSwitchBetween({
+        runId: metadata.runId,
+        to: { runtimeKind: metadata.runtimeKind, llmModelIdentifier: metadata.llmModelIdentifier },
+        pending: metadata.pendingRuntimeSwitch,
+      })
+    : null;

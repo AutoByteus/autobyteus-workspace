@@ -5,6 +5,8 @@ import type { TaskAgentTeamTreeFile } from "../../agent-team-execution/domain/ta
 import type { TaskAgentCoordinatingRun } from "../../run-history/store/agent-run-metadata-types.js";
 import { TaskAgentLinkChecker } from "../../run-history/store/task-agent-link-check.js";
 import { TaskAgentOwnFiles } from "../../run-history/store/task-agent-own-files.js";
+import { effectiveCopyAgentLaunch } from "../../run-history/domain/run-execution-tree-shared-records.js";
+import type { PendingRuntimeSwitch } from "../../run-history/store/agent-run-metadata-types.js";
 import { AgentMemoryLayout } from "../store/agent-memory-layout.js";
 import type {
   CollaborationRootCatalogEntry,
@@ -12,13 +14,15 @@ import type {
   CollaborationRootMemorySource,
 } from "./collaboration-root-memory-catalog.js";
 
-/** One member of a task team, with the launch it started with (runtime and workspace as recorded). */
+/** One member of a task team, with the launch it runs with: the started launch under the member's or the Team's recorded choice (runtime and workspace). */
 export type TaskTeamMember = Readonly<{
   memberAddress: AgentTeamAddress;
   displayName: string;
   agentRunId: string;
   agentDefinitionId: string;
   launchConfiguration: AgentLaunchConfiguration;
+  /** autobyteus-348: the member's pending runtime switch, when one is recorded (its launch is then the new runtime). */
+  pendingRuntimeSwitch?: PendingRuntimeSwitch;
   memoryDir: string;
 }>;
 
@@ -117,7 +121,11 @@ export class TaskTeamRootMemorySource implements CollaborationRootMemorySource {
         displayName: displayNameOf(member.address),
         agentRunId: member.agentRunId,
         agentDefinitionId: member.agentDefinitionId,
-        launchConfiguration: member.launchConfiguration,
+        launchConfiguration: effectiveCopyAgentLaunch({
+          started: member.launchConfiguration, followsTeam: member.followsTeam,
+          teamSelection: tree.taskAgent.userLaunchSelection, agentSelection: member.userLaunchSelection,
+        }).launch,
+        ...(member.pendingRuntimeSwitch ? { pendingRuntimeSwitch: member.pendingRuntimeSwitch } : {}),
         memoryDir: this.layout.getTeamAgentRunDirPath({ rootTeamRunId: teamRunId, ancestorTeamRunIds: [] }, member.agentRunId),
       })),
     };

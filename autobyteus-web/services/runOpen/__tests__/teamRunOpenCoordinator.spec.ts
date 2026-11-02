@@ -105,6 +105,7 @@ const hydration = (team: ReturnType<typeof makeTeam>) => ({
   memberRunStates: [],
   hydratedContext: team,
   remoteTaskExecutions: [],
+  rebuild: { liveSequenceId: team.view.isRootTeamActive() ? 'live-1' : null, baseChangeSequence: 0, lastMessageChangeSequence: team.view.isRootTeamActive() ? 0 : null },
 })
 
 describe('openTeamRun current exact execution identity', () => {

@@ -16,6 +16,7 @@ import { AgentOrgRunService } from "../../../../src/agent-org-execution/services
 import { bindProcessStandaloneAgentRunRootManager, releaseProcessStandaloneAgentRunRootManager } from "../../../../src/standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
 
 import { createCollaborationMemberExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
+import { isStandaloneRootMessageEvent } from "../../../../src/standalone-agent-run-root/domain/standalone-root-event.js";
 
 const packageSnapshot = <T>(tree: T, kind: "agent" | "agent_org") => ({
   tree, messages: kind === "agent"
@@ -36,8 +37,8 @@ const setup = (kind: "agent" | "agent_org", linked = true) => {
     details: { status: "idle" as const, trigger: null, errorMessage: null, recoverableBlock: null }, statusHint: "IDLE" as const,
   })) };
   const projectView = () => kind === "agent"
-    ? projectAgentCollaborationView({ hostRunId: "manager", isActive: true, snapshot: snapshot as never, baseChangeSequence: 7, remoteTaskExecutions: [] })
-    : projectAgentOrgExecutionSnapshot({ orgRunId: "org-root", isActive: true, snapshot: snapshot as never, baseChangeSequence: 7, remoteTaskExecutions: [] });
+    ? projectAgentCollaborationView({ hostRunId: "manager", isActive: true, snapshot: snapshot as never, baseChangeSequence: 7, liveSequenceId: "live-1", lastMessageChangeSequence: 0, remoteTaskExecutions: [] })
+    : projectAgentOrgExecutionSnapshot({ orgRunId: "org-root", isActive: true, snapshot: snapshot as never, baseChangeSequence: 7, liveSequenceId: "live-1", lastMessageChangeSequence: 0, remoteTaskExecutions: [] });
   const projectEvent = (event: StandaloneRootEvent) => kind === "agent"
     ? projectAgentCollaborationEvent("manager", tree as ReturnType<typeof agentProjectionTree>, { event, changeSequence: 8 })
     : projectAgentOrgExecutionEvent(run as never, { event, changeSequence: 8 });
@@ -80,7 +81,7 @@ describe.each(["agent", "agent_org"] as const)("%s camel-case public projection"
       taskExecution: { agentRunId: "absent" } })).toThrow(/not in the current execution tree/);
   });
   it("streams stamped snapshot/start and reconnect through actual subscription boundary without false close1011", async () => {
-    const current = setup(kind), publisher = new RootEventPublisher<StandaloneRootEvent>();
+    const current = setup(kind), publisher = new RootEventPublisher<StandaloneRootEvent>({ isMessageEvent: isStandaloneRootMessageEvent });
     const run = { ...current.run, openPackageSnapshotConnection: () => publisher.openSnapshotConnection(() => current.snapshot) };
     const handler = kind === "agent"
       ? new AgentCollaborationStreamHandler({ resolveRoot: async () => run as never, getActive: () => run as never })
@@ -108,7 +109,7 @@ describe.each(["agent", "agent_org"] as const)("%s camel-case public projection"
 });
 
 it("GraphQL Agent inspection reuses the exact public view without materialization", async () => {
-  const current = setup("agent"), inspection = { hostRunId: "manager", isActive: false, snapshot: current.snapshot, baseChangeSequence: 7 };
+  const current = setup("agent"), inspection = { hostRunId: "manager", isActive: false, snapshot: current.snapshot, baseChangeSequence: 7, liveSequenceId: "live-1", lastMessageChangeSequence: 0 };
   const getInspection = vi.fn(async () => inspection), restore = vi.fn();
   const manager = { getInspection, resolveCommandReadyRoot: restore } as never;
   bindProcessStandaloneAgentRunRootManager(manager);
@@ -125,7 +126,7 @@ it("GraphQL Agent inspection reuses the exact public view without materializatio
 
 it("Org GraphQL inspection service reuses strict public snapshot projection without restoring", async () => {
   const current = setup("agent_org"), inspection = { orgRunId: "org-root", isActive: false,
-    snapshot: { ...current.snapshot, statuses: [] }, baseChangeSequence: 7 };
+    snapshot: { ...current.snapshot, statuses: [] }, baseChangeSequence: 7, liveSequenceId: "live-1", lastMessageChangeSequence: 0 };
   const getInspection = vi.fn(async () => inspection), restore = vi.fn();
   const service = new AgentOrgRunService({ manager: { getInspection, restore } } as never);
   expect(await service.getInspection("org-root")).toEqual(projectAgentOrgExecutionSnapshot({ ...inspection,

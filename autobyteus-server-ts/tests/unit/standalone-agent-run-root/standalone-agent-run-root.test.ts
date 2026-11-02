@@ -81,6 +81,8 @@ describe("Agent root of a standalone run", () => {
     expect(f.restores).not.toHaveBeenCalled();
     const projected = projectAgentCollaborationView({ ...inspection, remoteTaskExecutions: [] });
     if (projected.root_subject_kind !== 'agent') throw new Error('Wrong root');
+    // The live view names the root's live sequence (SR-005).
+    expect(projected.root_agent.live_sequence_id).toEqual(expect.stringMatching(/\S/));
     expect(projected.root_agent.agent_input_states.map(s => s.agent_run_id).sort()).toEqual(["code-reviewer-run-1", "lead-run-2"]);
     expect(projected.root_agent.agent_input_states[0]!.state.entries.map(e => e.state)).toEqual(["held", "queued"]);
     expect(projected.root_agent.agent_input_states.some(s => s.agent_run_id === HOST)).toBe(false);
@@ -153,7 +155,8 @@ describe("Agent root of a standalone run", () => {
     for (const observed of f.handles.values()) Object.assign(observed.handle, { getInputStateSnapshots: () => [] });
     const snapshotConnection = await root.openPackageSnapshotConnection();
     const projected = projectAgentCollaborationView({ hostRunId: HOST, isActive: true,
-      snapshot: snapshotConnection.snapshot, baseChangeSequence: snapshotConnection.baseChangeSequence, remoteTaskExecutions: [] });
+      snapshot: snapshotConnection.snapshot, baseChangeSequence: snapshotConnection.baseChangeSequence,
+      liveSequenceId: snapshotConnection.liveSequenceId, lastMessageChangeSequence: snapshotConnection.lastMessageChangeSequence, remoteTaskExecutions: [] });
     expect(projected.root_subject_kind === 'agent' && projected.root_agent.agent_statuses).toHaveLength(3);
     if (projected.root_subject_kind === 'agent') {
       expect(projected.root_agent.agent_statuses.every(s => s.recoverableBlock === null)).toBe(true);
@@ -211,7 +214,7 @@ describe("Agent root of a standalone run", () => {
 
     f.host.crash();
     const stored = await f.manager.getInspection(HOST);
-    expect(stored).toMatchObject({ isActive: false, snapshot: { tree: { taskExecutions: [{ address: "/code_reviewer", agentRunId: "code-reviewer-run-1" }] }, statuses: [] } });
+    expect(stored).toMatchObject({ isActive: false, liveSequenceId: null, lastMessageChangeSequence: null, snapshot: { tree: { taskExecutions: [{ address: "/code_reviewer", agentRunId: "code-reviewer-run-1" }] }, statuses: [] } });
     expect(f.restores).not.toHaveBeenCalled();
 
     // Stop -> reopen -> send: the command entry restores the host and re-creates the root; the copy
@@ -250,14 +253,14 @@ describe("Agent root of a standalone run", () => {
     const validator = { validate: vi.fn(), validateMany: vi.fn(async (inputs: readonly { selection: unknown }[]) => inputs.map((input) => ({ kind: "valid" as const, selection: input.selection }))) };
     const save = (runtimeKind: RuntimeKind) => f.manager.updateStoppedDelegatedLaunchSelections({
       hostRunId: HOST, validator: validator as never,
-      changes: [{ agentRunId: "code-reviewer-run-1", selection: { llmModelIdentifier: "copy-model", llmConfig: null } }],
+      changes: [{ agentRunId: "code-reviewer-run-1", selection: { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "copy-model", llmConfig: null } }],
       hostSelection: { runtimeKind, llmModelIdentifier: "any-model", llmConfig: null },
     });
 
     await save(RuntimeKind.CLAUDE_AGENT_SDK);
     await save(RuntimeKind.CODEX_APP_SERVER);
 
-    const contexts = validator.validateMany.mock.calls.map(([inputs]) => (inputs.at(-1) as { context: unknown }).context);
+    const contexts = validator.validateMany.mock.calls.map(([inputs]) => (inputs.at(-1) as unknown as { context: unknown }).context);
     // The harness host runs on Codex App Server with model gpt-host: its own runtime keeps the stored model as the current one.
     expect(contexts).toEqual([
       { runtimeKind: "claude_agent_sdk", currentModelIdentifier: null, workspaceRootPath: "/work" },
@@ -620,7 +623,8 @@ describe("StandaloneAgentRunRoot owns its host (REQ-001, REQ-004)", () => {
 
     const live = await root.openPackageSnapshotConnection();
     expect(live.snapshot.closedTaskExecutions).toEqual([closedA]);
-    const view = projectAgentCollaborationView({ hostRunId: HOST, isActive: true, snapshot: live.snapshot, baseChangeSequence: live.baseChangeSequence, remoteTaskExecutions: [] });
+    const view = projectAgentCollaborationView({ hostRunId: HOST, isActive: true, snapshot: live.snapshot, baseChangeSequence: live.baseChangeSequence,
+      liveSequenceId: live.liveSequenceId, lastMessageChangeSequence: live.lastMessageChangeSequence, remoteTaskExecutions: [] });
     live.close();
     expect(view.root_subject_kind === "agent" && view.root_agent.closed_task_executions).toEqual([closedA]);
     // The tree is never filtered: both copies stay recorded.

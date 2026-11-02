@@ -5,7 +5,7 @@ import type {
   ExistingRunModelConfigFieldError,
   ExistingRunModelOptions,
   ExistingRunModelOptionsState,
-  ExistingRunModelSelection,
+  ExistingAgentRunSelection,
 } from '~/types/agent/ExistingRunModelConfigDraft'
 
 /** The root a delegated copy belongs to, as the server names its kind. */
@@ -26,8 +26,8 @@ export const delegatedReferenceOf = (key: DelegatedTargetKey): DelegatedReferenc
 export type DelegatedConfiguredPatch = Readonly<{
   scopeKind: string
   scopeAddress: string
-  /** An Agent run's own agent runtime (its host can switch it in the same Save); Team and Org scopes leave it out. */
-  runtimeKind?: string
+  /** The agent runtime the scope is saved with: its own, or another (a switch). */
+  runtimeKind: string
   llmModelIdentifier: string
   llmConfig: Record<string, unknown> | null
 }>
@@ -62,7 +62,7 @@ export const stopDelegatedExecution = async (root: DelegatedRoot, reference: Del
 }
 
 export const updateDelegatedLaunchSelections = async (input: DelegatedRoot & Readonly<{
-  changes: readonly Readonly<{ key: DelegatedTargetKey; selection: ExistingRunModelSelection }>[]
+  changes: readonly Readonly<{ key: DelegatedTargetKey; selection: ExistingAgentRunSelection }>[]
   configuredPatches?: readonly DelegatedConfiguredPatch[]
 }>): Promise<DelegatedSaveResult> => {
   const response = await getApolloClient().mutate<Record<string, DelegatedSaveResult>>({

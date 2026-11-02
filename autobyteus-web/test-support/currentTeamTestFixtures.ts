@@ -7,6 +7,7 @@ import type {
   TeamStreamServerMessage,
 } from '@autobyteus/team-stream-contracts';
 import { AgentContext } from '~/types/agent/AgentContext';
+import type { CollaborationParticipantMessageDto } from '@autobyteus/collaboration-stream-contracts';
 import { AgentRunState } from '~/types/agent/AgentRunState';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { AgentRunConfig } from '~/types/agent/AgentRunConfig';
@@ -285,14 +286,26 @@ export const buildTestTeamContext = (input: {
   const view = createTeamExecutionViewState({
     rootTeamRunId: teamRunId, rootActive: input.isActive ?? true,
     baseChangeSequence: input.baseChangeSequence ?? 0,
-    executionTree: tree, closedTaskExecutions: input.closedTaskExecutions ?? [], messages: input.messages ?? [], configuration,
+    executionTree: tree, closedTaskExecutions: input.closedTaskExecutions ?? [], configuration,
     initialFocusedAgentRunId: focusedAgentRunId, agentContexts: contexts,
     createAgentContext: (agentRunId, address, currentTree) => createTeamAgentContext({
       tree: currentTree, agentRunId, address, workspaceMetadata,
     }),
   });
-  return Object.freeze({ view });
+  const team = Object.freeze({ view });
+  // autobyteus-358: a Team's view carries no messages; the test stores them for its Team-tab test view.
+  testTeamMessages.set(team, (input.messages ?? []).map((message) => Object.freeze({
+    messageId: message.message_id, senderAgentRunId: message.sender_agent_run_id, receiverAgentRunId: message.receiver_agent_run_id,
+    content: message.content, messageType: message.message_type, createdAt: message.created_at,
+    referenceFiles: message.reference_files.map((reference) => reference.path),
+  })));
+  return team;
 };
+
+const testTeamMessages = new WeakMap<AgentTeamContext, readonly CollaborationParticipantMessageDto[]>();
+/** The stored messages a test Team was built with (the participant query would return them). */
+export const testTeamMessagesOf = (team: AgentTeamContext): readonly CollaborationParticipantMessageDto[] =>
+  testTeamMessages.get(team) ?? [];
 
 export const applyTestTeamMessage = (
   context: AgentTeamContext,

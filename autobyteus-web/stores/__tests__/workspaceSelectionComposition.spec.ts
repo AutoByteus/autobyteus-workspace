@@ -41,13 +41,18 @@ const setup = async () => {
   teams.addTeamContext(buildTestTeamContext({ teamRunId: 'prior-team', coordinatorAddress: '/lead', focusedAgentRunId: 'lead',
     rootChildren: ['lead', 'worker', 'third'].map(id => testAgentNode(`/${id}`, { agentRunId: id })) }));
   const team = teams.getTeamContextById('prior-team')!;
-  const staged = stageAgentOrgExecutionContext({ source: 'inspection', orgRunId: 'org-run', view: rootView(false) });
+  // The member the Org will show is staged (autobyteus-358: only that one).
+  const staged = stageAgentOrgExecutionContext({ source: 'inspection', orgRunId: 'org-run', view: rootView(false), focus: '/team/worker' });
   await vi.waitFor(() => expect(apollo.pending('GetAgentOrgMemberRunProjection').length).toBeGreaterThan(0));
   apollo.pending('GetAgentOrgMemberRunProjection').forEach(r => r.respond(memberData(r.operation.variables, 'retained')));
   const candidate = await staged;
   candidate.commit();
   const orgs = useAgentOrgContextsStore(); orgs.contexts['org-run'] = shallowReactive(candidate.context);
   orgs.select('org-run', '/team/worker');
+  // Selecting the member loads it through the member loader (autobyteus-358); this context was not published by the store.
+  await vi.waitFor(() => expect(apollo.pending('GetAgentOrgMemberRunProjection').length).toBeGreaterThan(0));
+  apollo.pending('GetAgentOrgMemberRunProjection').forEach(r => r.respond(memberData(r.operation.variables, 'retained')));
+  await flushPromises();
   const context = orgs.contextFor('org-run')!;
   const orgAgent = context.selectedTarget()!.context!;
   orgAgent.requirement = 'unsent Org draft';
@@ -77,7 +82,6 @@ const setup = async () => {
 describe('explicit selection through actual history/Pinia/hydration/focus/AppLeftPanel/router', () => {
   it.each(['success', 'error'])('late prior Team %s cannot override a newer Org choice or clear its draft', async (completion) => {
     const s = await setup();
-    const prior = s.team.view.getAgentContext('worker')!.conversation;
     await wrapper!.get('[data-test="worker"]').trigger('click');
     await vi.waitFor(() => expect(apollo.pending('GetTeamMemberRunProjection')).toHaveLength(1));
     const old = apollo.pending('GetTeamMemberRunProjection')[0];
@@ -89,14 +93,19 @@ describe('explicit selection through actual history/Pinia/hydration/focus/AppLef
     expect(s.context.selectedAddress).toBe('/team/worker');
     expect(s.orgAgent.requirement).toBe('unsent Org draft');
     expect(s.team.view.getFocusedAgentRunId()).toBe('lead');
-    expect(s.team.view.getAgentContext('worker')!.conversation).toBe(prior);
+    // The worker's own load may finish into its context (autobyteus-358: a member load is not tied to a selection);
+    // the newer Org choice, the Team's focus and the Org draft are what must not change.
     expect(s.history.selectedTeamRunId).toBeNull();
     expect(s.history.error).toBeNull();
     expect(s.history.getTeamMemberInspectionAttempt('prior-team', 'worker')).toBeNull();
     // Legitimate return succeeds through the same real child event and shell.
     const returning = s.actions.onSelectTeamMember(member('worker'));
-    await vi.waitFor(() => expect(apollo.pending('GetTeamMemberRunProjection')).toHaveLength(1));
-    respondTeam(apollo.pending('GetTeamMemberRunProjection')[0], 'return'); await returning; await flushPromises();
+    // After the earlier load succeeded the worker is loaded already (autobyteus-358: once per generation).
+    if (completion === 'error') {
+      await vi.waitFor(() => expect(apollo.pending('GetTeamMemberRunProjection')).toHaveLength(1));
+      respondTeam(apollo.pending('GetTeamMemberRunProjection')[0], 'return');
+    }
+    await returning; await flushPromises();
     expect(s.selection.selectedRunId).toBe('prior-team'); expect(s.team.view.getFocusedAgentRunId()).toBe('worker');
     expect(s.router.currentRoute.value.query).toEqual({});
     expect(s.orgAgent.requirement).toBe('unsent Org draft');
@@ -124,7 +133,7 @@ describe('explicit selection through actual history/Pinia/hydration/focus/AppLef
     expect(s.router.currentRoute.value.query.orgRunId).toBe('org-run');
     s.router.forward(); await flushPromises(); expect(s.router.currentRoute.value.path).toBe('/agents');
   });
-  it('supersedes a cold Org selecting candidate before publication, preserving a newer Team selection', async () => {
+  it('a newer Team selection wins over a cold Org selection whose member is still loading', async () => {
     const s = await setup(); s.orgs.releaseContext('org-run');
     const old = s.execute({ rootSubjectKind: 'agent_org', rootRunId: 'org-run', action: 'select', memberAddress: '/director' });
     await vi.waitFor(() => expect(apollo.pending('GetAgentOrgRunInspection')).toHaveLength(1));
@@ -134,24 +143,24 @@ describe('explicit selection through actual history/Pinia/hydration/focus/AppLef
     await vi.waitFor(() => expect(apollo.pending('GetTeamMemberRunProjection')).toHaveLength(1));
     respondTeam(apollo.pending('GetTeamMemberRunProjection')[0]); await choosing;
     apollo.pending('GetAgentOrgMemberRunProjection').forEach(r => r.respond(memberData(r.operation.variables, 'obsolete')));
-    expect(await old).toEqual({ disposition: 'superseded' }); await flushPromises();
-    expect(s.orgs.contextFor('org-run')).toBeNull();
+    // autobyteus-358: the Org opens without waiting for member data, so it published before the Team choice; its
+    // member then loads on selection. The newer Team selection is what the user sees.
+    expect(await old).toEqual({ disposition: 'committed' }); await flushPromises();
     expect(s.selection.selectedRunId).toBe('prior-team'); expect(s.router.currentRoute.value.query).toEqual({});
-    expect(useAgentActivityStore().getActivities('agent-director').some(a => a.activityId?.startsWith('obsolete'))).toBe(false);
   });
-  it('same-target supersession retains the newest attempt and current error until deliberate retry', async () => {
+  it('a newer same-target attempt shares the load, keeps the current error until deliberate retry', async () => {
     const s = await setup();
     apollo.client.defaultOptions.query = { context: { queryDeduplication: false } }; // Control two physical completions, not production policy.
     const first = s.history.inspectTeamMember('prior-team', 'worker');
     await vi.waitFor(() => expect(apollo.pending('GetTeamMemberRunProjection')).toHaveLength(1));
+    // The newer attempt shares the member's load in flight (autobyteus-358: the member loader loads it once).
     const second = s.history.inspectTeamMember('prior-team', 'worker');
-    await vi.waitFor(() => expect(apollo.pending('GetTeamMemberRunProjection')).toHaveLength(2));
-    const [old, current] = apollo.pending('GetTeamMemberRunProjection');
-    const owned = s.history.getTeamMemberInspectionAttempt('prior-team', 'worker');
-    respondTeam(old); expect(await first).toEqual({ disposition: 'superseded' });
-    expect(s.history.getTeamMemberInspectionAttempt('prior-team', 'worker')).toBe(owned);
-    expect(owned?.state).toBe('loading');
-    current.fail('current unavailable'); expect(await second).toMatchObject({ disposition: 'rejected' });
+    await flushPromises();
+    expect(apollo.pending('GetTeamMemberRunProjection')).toHaveLength(1);
+    expect(s.history.getTeamMemberInspectionAttempt('prior-team', 'worker')?.state).toBe('loading');
+    apollo.pending('GetTeamMemberRunProjection')[0]!.fail('current unavailable');
+    expect(await first).toEqual({ disposition: 'superseded' });
+    expect(await second).toMatchObject({ disposition: 'rejected' });
     expect(s.history.getTeamMemberInspectionAttempt('prior-team', 'worker')).toEqual({ state: 'error', detail: 'current unavailable' });
     expect(s.team.view.getFocusedAgentRunId()).toBe('lead');
     const retry = s.history.inspectTeamMember('prior-team', 'worker');

@@ -21,6 +21,7 @@ import type { TaskExecutionIdleTimers } from "../../../../src/agent-collaboratio
 import { TokenUsageCapability } from "../../../../src/token-usage/providers/token-usage-capability.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../../fixtures/current-agent-org-run-fixtures.js";
 import { flushMicrotasks, observeConfiguredHandles } from "./task-publication-handles.js";
+import { isAgentOrgMessageEvent } from "../../../../src/agent-org-execution/domain/agent-org-run-event.js";
 
 /**
  * A real AgentOrg root (persistence on a temp dir, root agent registry, root team directory) with
@@ -79,7 +80,7 @@ export const buildOrg = async (kind: "agent" | "team") => {
         physicalScope: { root, ancestorTeamRunIds: [member.teamRunId] }, callbacks, activationMode: "fresh" })).commitAfterDurability();
     }
   }
-  const publisher = new RootEventPublisher<AgentOrgRunEvent>();
+  const publisher = new RootEventPublisher<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent });
   const published: AgentOrgRunEvent[] = [];
   publisher.subscribe(({ event }) => published.push(event));
   const clock = manualTimers();

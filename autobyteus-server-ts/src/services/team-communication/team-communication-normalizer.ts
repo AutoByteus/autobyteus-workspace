@@ -1,6 +1,5 @@
 import {
   type TeamCommunicationMessage,
-  type TeamCommunicationProjection,
   type TeamCommunicationReferenceFile,
   type TeamCommunicationReferenceFileType,
 } from "./team-communication-types.js";
@@ -81,30 +80,3 @@ export const normalizeTeamCommunicationMessage = (
     }),
   };
 };
-
-export const normalizeTeamCommunicationProjection = (
-  projection: { teamRunId?: unknown; messages?: unknown } | null | undefined,
-  options: { teamRunId?: string | null } = {},
-): TeamCommunicationProjection => {
-  const expectedTeamRunId = text(options.teamRunId);
-  const storedTeamRunId = text(projection?.teamRunId);
-  if (expectedTeamRunId && storedTeamRunId && expectedTeamRunId !== storedTeamRunId) {
-    throw new Error(`Team communication projection '${storedTeamRunId}' does not match '${expectedTeamRunId}'.`);
-  }
-  const teamRunId = expectedTeamRunId ?? storedTeamRunId;
-  if (!teamRunId) throw new Error("Team communication projection requires a TeamRun ID.");
-  const byId = new Map<string, TeamCommunicationMessage>();
-  for (const value of Array.isArray(projection?.messages) ? projection.messages : []) {
-    const record = asRecord(value);
-    if (!record) continue;
-    const message = normalizeTeamCommunicationMessage(record, { teamRunId });
-    if (!message) continue;
-    const existing = byId.get(message.messageId);
-    if (!existing || message.createdAt >= existing.createdAt) byId.set(message.messageId, message);
-  }
-  return { teamRunId, messages: [...byId.values()] };
-};
-
-export const cloneTeamCommunicationProjection = (
-  projection: TeamCommunicationProjection,
-): TeamCommunicationProjection => structuredClone(projection);

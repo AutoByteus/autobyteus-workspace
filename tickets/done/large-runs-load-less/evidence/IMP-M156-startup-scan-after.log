@@ -1,0 +1,7 @@
+# IMP-M156 (QR-003, AC-005): readiness scan after autobyteus-358, same probe and seed as M-156-startup-scan-before.json
+# command: node tickets/in-progress/large-runs-load-less/evidence/probes/startup-scan-probe.mjs <worktree>/autobyteus-server-ts/dist /tmp/ab358-seed/server-data/memory <temp work dir> 100 3
+# commit: 5c727d1b20 (server dist built at d13424916b's parent tree; server src unchanged since f48bdfc0ab); env: macOS, v22.23.1, isolated HOME; date: 2026-11-01T10:36:11Z
+# seed: test-owned probe seed (/tmp/ab358-seed), 300 admitted team runs; logs grown to 100.4 MB by the probe
+# look for: after.medianMs <= 1.3 x before.medianMs (QR-003). Before the change: 328 vs 139 ms
+11:36  up 12 days, 21:14, 9 users, load averages: 5.39 12.61 18.97
+{"before":{"admittedTeams":300,"diagnostics":0,"logMb":2.5,"scanMs":[105,89,87],"medianMs":89},"after":{"admittedTeams":300,"diagnostics":0,"logMb":100.4,"scanMs":[85,86,83],"medianMs":85},"loadAverage":[5.39,12.61,18.97],"node":"v22.23.1"}

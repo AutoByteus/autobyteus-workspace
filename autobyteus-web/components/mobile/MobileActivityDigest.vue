@@ -55,7 +55,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, toRef } from 'vue';
+import { computed, ref, toRef, watch } from 'vue';
 import MobileTeamMessages from '~/components/mobile/MobileTeamMessages.vue';
 import MobileRunActivityList from '~/components/mobile/MobileRunActivityList.vue';
 import { useMobileFocusedRunIdentity } from '~/composables/mobile/useMobileFocusedRunIdentity';
@@ -63,7 +63,8 @@ import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import type { MobileWorkContext } from '~/types/mobileWork';
-import { projectTeamCommunicationPerspective } from '~/utils/teamCommunication/teamCommunicationPerspective';
+import { teamCollaborationMessagesView } from '~/services/teamExecution/teamCollaborationMessagesView';
+import { participantMessagesStatusText } from '~/services/collaborationMessages/participantMessagesStatusText';
 
 const props = defineProps<{
   context: MobileWorkContext | null;
@@ -89,15 +90,13 @@ const activeTeamContext = computed(() => {
   return teamContextsStore.getTeamContextById(props.context.teamRunId) ?? null;
 });
 const hasTeamContext = computed(() => Boolean(activeTeamContext.value || props.context?.kind === 'team-run'));
-const teamMessages = computed(() => {
-  const team = activeTeamContext.value;
-  if (!team) return [];
-  return projectTeamCommunicationPerspective({
-    view: team.view,
-    messages: team.view.listCommunicationMessages(),
-    focusedAgentRunId: team.view.getFocusedAgentRunId(),
-  }).messages;
-});
+// The focused member's messages, loaded when this screen shows them (autobyteus-358).
+const teamMessagesView = computed(() => activeTeamContext.value ? teamCollaborationMessagesView(activeTeamContext.value) : null);
+watch(teamMessagesView, (view) => view?.loadMessages(), { immediate: true });
+const teamMessages = computed(() => teamMessagesView.value?.listMessages() ?? []);
+// Loading, loaded or unavailable with the reason: an unread list is never summarized as empty (AC-006).
+const teamMessagesStatus = computed(() => teamMessagesView.value?.messagesStatus() ?? null);
+const statusText = participantMessagesStatusText();
 const runActivities = computed(() => focusedRunId.value ? activityStore.getActivities(focusedRunId.value) : []);
 const filters = computed(() => [
   { id: 'messages' as const, label: 'Messages', count: teamMessages.value.length },
@@ -109,6 +108,13 @@ const showActivity = computed(() => activeFilter.value === 'activity');
 const visibleActivityCount = computed(() => runActivities.value.length);
 const messageSummary = computed(() => {
   if (!hasTeamContext.value) return 'Select a team run to see team messages.';
+  const status = teamMessagesStatus.value;
+  if (status?.state === 'error') {
+    return `${statusText.unavailable()}: ${status.error}`;
+  }
+  if (!teamMessages.value.length && status?.state !== 'loaded') {
+    return statusText.loading();
+  }
   if (!teamMessages.value.length) return 'No team messages yet for the focused member.';
   return `${teamMessages.value.length} message${teamMessages.value.length === 1 ? '' : 's'}; open details for full text.`;
 });

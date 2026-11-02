@@ -139,7 +139,7 @@ export class AgentTeamStreamHandler {
       egress.send(parseTeamStreamServerMessage({
         type: "CONNECTED", payload: { session_id: sessionId, root_team_run_id: root.teamRunId },
       }));
-      egress.send(projectTeamExecutionViewSnapshot(root.teamRunId, connection.snapshot, connection.baseChangeSequence, remoteTaskExecutions));
+      egress.send(projectTeamExecutionViewSnapshot(root.teamRunId, connection, remoteTaskExecutions));
       const unsubscribeEvents = connection.subscribe((event) => {
         try { egress.send(projectSequencedTeamRunEvent(root, event)); }
         catch (error) { console.error(`Error projecting TeamRun event: ${String(error)}`); }

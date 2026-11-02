@@ -1,0 +1,10 @@
+system_task_notification system.runtime_handover Agent runtime changed from Codex App Server (gpt-5.6-luna) to Claude A
+system_instruction  ## Agent Identity  - Name: live-org-member 79abb5 - Description: live 
+user  You are continuing this member's work. Reply with exactly: CONTINUED
+tool_call  
+tool_result  
+tool_call  
+tool_result  
+tool_call  
+tool_result  
+assistant  CONTINUED

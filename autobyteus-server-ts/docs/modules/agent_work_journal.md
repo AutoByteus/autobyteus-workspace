@@ -27,7 +27,8 @@ caller.
   - `evidenceHash`: sha256 over the files' content hashes, in order.
 - `memoryDir` is the run's own memory folder; `runtimeKind` is the agent runtime that wrote the run's **open**
   raw-trace file (the live run's own, or while an agent runtime switch is pending the previous one:
-  `openRawTraceRuntimeKind(metadata)`). It selects the tool translation of the open file. Each **closed** file
+  `openRawTraceRuntimeKind(metadata)`; for a Team, Org, task Team or task Agent run the same function reads the member's or
+  copy's effective launch and its `pendingRuntimeSwitch`). It selects the tool translation of the open file. Each **closed** file
   uses the agent runtime recorded for its own segment (`runtime_kind` of the raw manifest, a `RuntimeKind`
   value), so a run that switched agent runtimes reads each file with the rules of the agent runtime that
   wrote it. A runtime without a translation, or a file whose runtime is not recorded (`null`), uses the

@@ -29,12 +29,18 @@ export const teamCopyAgentLaunch = (input) => {
     if (!selection)
         return { launch: input.started, selected: null };
     return {
-        launch: { ...input.started, llm_model_identifier: selection.llm_model_identifier, llm_config: selection.llm_config },
+        launch: {
+            ...input.started,
+            runtime_kind: selection.runtime_kind ?? input.started.runtime_kind,
+            llm_model_identifier: selection.llm_model_identifier,
+            llm_config: selection.llm_config,
+        },
         selected: input.agentSelection ? "agent" : "team",
     };
 };
+const runtimeKindSchema = z.enum(["autobyteus", "claude_agent_sdk", "codex_app_server", "antigravity_cli", "grok_build"]);
 const launchConfigurationSchema = z.object({
-    runtime_kind: z.enum(["autobyteus", "claude_agent_sdk", "codex_app_server", "antigravity_cli", "grok_build"]),
+    runtime_kind: runtimeKindSchema,
     llm_model_identifier: nonEmptyStringSchema,
     llm_config: z.record(z.string(), jsonValueSchema).nullable(),
     auto_execute_tools: z.boolean(),
@@ -60,6 +66,7 @@ const memberLaunchSchema = {
     launch_configuration: launchConfigurationSchema, follows_team: z.boolean(), launch_source: launchSourceSchema.optional(),
 };
 export const userLaunchSelectionDtoSchema = z.object({
+    runtime_kind: runtimeKindSchema.optional(),
     llm_model_identifier: nonEmptyStringSchema,
     llm_config: z.record(z.string(), jsonValueSchema).nullable(),
     selected_at: nonEmptyStringSchema,

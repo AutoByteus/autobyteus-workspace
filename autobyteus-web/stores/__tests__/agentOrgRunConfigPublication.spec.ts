@@ -22,7 +22,7 @@ const setup = async () => {
   const view = JSON.parse(JSON.stringify(taskBearingView())); view.is_active = false
   const team = view.execution_tree.rootOrg.members[2]
   team.defaultLaunchConfiguration.workspaceRootPath = '/C'; team.members.forEach((agent: any) => { agent.launchConfiguration.workspaceRootPath = '/C' })
-  const staged = await stageAgentOrgExecutionContext({ source: 'inspection', orgRunId: 'org-run', view })
+  const staged = await stageAgentOrgExecutionContext({ focus: null, source: 'inspection', orgRunId: 'org-run', view })
   const store = useAgentOrgContextsStore(); store.contexts['org-run'] = shallowReactive(staged.context)
   const org = store.contextFor('org-run')!
   const tree = JSON.parse(JSON.stringify(org.executionTree))
@@ -44,7 +44,7 @@ describe('guarded Org configuration publication', () => {
     const state = member.state, taskConfig = task.config, selection = org.selection
     io.metadata.mockRejectedValueOnce(new Error('metadata unavailable'))
     io.save.mockResolvedValue(result(tree)); io.metadata.mockClear()
-    await store.saveRunConfig('org-run', { modelPatches: [], teamWorkspacePatches: [{ teamAddress: '/team', workspaceRootPath: '/B' }] })
+    await store.saveRunConfig('org-run', { selectionPatches: [], teamWorkspacePatches: [{ teamAddress: '/team', workspaceRootPath: '/B' }] })
     expect(io.metadata).toHaveBeenCalledExactlyOnceWith('/B')
     expect(member.config.workspaceId).toBeNull(); expect(member.state).toBe(state)
     expect(task.config).toBe(taskConfig); expect(org.selection).toBe(selection)
@@ -59,7 +59,7 @@ describe('guarded Org configuration publication', () => {
     let resolve!: (value: any) => void
     io.metadata.mockReturnValueOnce(new Promise(complete => { resolve = complete }))
     io.save.mockResolvedValue(result(tree))
-    const pending = store.saveRunConfig('org-run', { modelPatches: [], teamWorkspacePatches: [{ teamAddress: '/team', workspaceRootPath: '/B' }] })
+    const pending = store.saveRunConfig('org-run', { selectionPatches: [], teamWorkspacePatches: [{ teamAddress: '/team', workspaceRootPath: '/B' }] })
     await Promise.resolve(); await Promise.resolve()
     if (invalidation === 'view') org.view = { ...org.view }
     if (invalidation === 'window') useWindowNodeContextStore().bindingRevision += 1
@@ -81,4 +81,32 @@ describe('guarded Org configuration publication', () => {
     tree.rootOrg.defaultLaunchConfiguration.workspaceRootPath = '/illegal'
     await expect(store.readRunConfig('org-run')).rejects.toThrow('locked fields')
   })
+})
+
+describe('an agent runtime switch of an Org member and its undo through Save (autobyteus-348)', () => {
+  it.each([['a direct Agent', (tree: any) => tree.rootOrg.members.find((member: any) => 'agentRunId' in member)],
+    ['an Agent of a mounted Team', (tree: any) => tree.rootOrg.members.find((member: any) => 'teamRunId' in member).members[0]]] as const)(
+    'saves the switch of %s, then the undo that restores its original session, without an error', async (_label, pick) => {
+      const { store, org } = await setup()
+      const original = pick(org.executionTree)
+      const originalRuntime = original.launchConfiguration.runtimeKind
+      const address = original.address, runId = original.agentRunId
+      // The agent runtime the view started on has a live session (the one the undo must restore).
+      const withSession = JSON.parse(JSON.stringify(org.executionTree)); pick(withSession).platformAgentRunId = 'original-session'
+      org.view = { ...org.view, execution_tree: withSession }
+      const switched = JSON.parse(JSON.stringify(withSession))
+      const target = pick(switched)
+      target.launchConfiguration.runtimeKind = originalRuntime === 'claude_agent_sdk' ? 'codex_app_server' : 'claude_agent_sdk'
+      target.platformAgentRunId = null
+      io.save.mockResolvedValueOnce(result(switched))
+      await store.saveRunConfig('org-run', { selectionPatches: [{ scopeKind: 'CONFIGURED_AGENT', scopeAddress: address, runtimeKind: target.launchConfiguration.runtimeKind,
+        llmModelIdentifier: target.launchConfiguration.llmModelIdentifier, llmConfig: null }] as never, teamWorkspacePatches: [] })
+      expect(org.getAgentContext(runId)!.config.runtimeKind).toBe(target.launchConfiguration.runtimeKind)
+      // The undo: the server returns the original runtime with the original session (not null).
+      io.save.mockResolvedValueOnce(result(withSession))
+      await expect(store.saveRunConfig('org-run', { selectionPatches: [{ scopeKind: 'CONFIGURED_AGENT', scopeAddress: address, runtimeKind: originalRuntime,
+        llmModelIdentifier: original.launchConfiguration.llmModelIdentifier, llmConfig: null }] as never, teamWorkspacePatches: [] })).resolves.toBeDefined()
+      expect(org.getAgentContext(runId)!.config.runtimeKind).toBe(originalRuntime)
+      expect(pick(org.executionTree).platformAgentRunId).toBe('original-session')
+    })
 })

@@ -27,8 +27,22 @@ export const fixtureSessionId = (name: string): string => {
   throw new Error(`No session id in fixture ${name}`);
 };
 
+const testTempDirs: string[] = [];
+
+/** A folder in the OS temp dir that the test owns; `removeTestTempDirs` (in the file's `afterAll`) removes it. */
+export const makeTestTempDir = (prefix: string): string => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), prefix));
+  testTempDirs.push(dir);
+  return dir;
+};
+
+/** Removes every folder `makeTestTempDir` made in this test file, so a run leaves nothing in the temp dir. */
+export const removeTestTempDirs = (): void => {
+  for (const dir of testTempDirs.splice(0)) fs.rmSync(dir, { recursive: true, force: true });
+};
+
 export const writeCustomFixture = (rows: FixtureRow[]): string => {
-  const file = path.join(fs.mkdtempSync(path.join(os.tmpdir(), "acp-fixture-")), "custom.jsonl");
+  const file = path.join(makeTestTempDir("acp-fixture-"), "custom.jsonl");
   fs.writeFileSync(file, `${rows.map((row) => JSON.stringify(row)).join("\n")}\n`);
   return file;
 };

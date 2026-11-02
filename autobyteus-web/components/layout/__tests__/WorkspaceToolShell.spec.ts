@@ -64,7 +64,7 @@ const setupSelectedB = async () => {
   const view = JSON.parse(JSON.stringify(taskBearingView()));
   const orgRunId = `shell-org-${++sequence}`;
   view.is_active = false; view.agent_statuses = [];
-  view.execution_tree.rootOrg.orgRunId = orgRunId; view.communication_messages.orgRunId = orgRunId;
+  view.execution_tree.rootOrg.orgRunId = orgRunId;
   view.execution_tree.rootOrg.members[2].members.forEach((agent: any) => { agent.launchConfiguration.workspaceRootPath = '/workspace/B'; });
   io.query.mockImplementation(async ({ query, variables }: any) => {
     const op = query.definitions.find((entry: any) => entry.kind === 'OperationDefinition')?.name?.value;

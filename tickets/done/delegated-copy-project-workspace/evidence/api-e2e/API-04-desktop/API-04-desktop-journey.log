@@ -1,0 +1,21 @@
+# Case API-04 (AC-009); code 8959bc507a; packaged worktree build electron-dist/mac-arm64/AutoByteus.app built by isolated-app start --build (Nov  2 08:43:12 2026); instance iso-62104-c635 (control 62104, backend 62105); data root /tmp/97-iso-root (removed); scripted AGY via server-data/.env; window 1200x768 (right side collapsed to its strip; tools opened from the strip); macOS arm64
+# Earlier attempts in the same instance, driver fixes only: (1) Enter in the run composer did not send -> click Send (API-04-desktop-attempt1/); (2,3) the collapsed right side: open tools from the strip 'workspace-right-tool-strip'; (4) manager-focus control added; the terminal is read page-wide (overlay)
+# API-04 desktop journey (isolated instance of the worktree build)
+# node API-04-desktop-journey.mjs 62104 http://127.0.0.1:62105 /private/tmp/97-iso-root <out>
+2026-11-02T07:52:06.905Z seed: {"ids":{"manager":"project-task-manager-edb5","writer":"agent-package-creator-edb5","checker":"fact-checker-edb5","squad":"scouting-team-edb5"},"O":{"projectId":"project_8321d13e-7d83-4691-a426-c773e7e05a6e","name":"AutoByteus edb5"},"P":{"projectId":"project_e65720a8-384d-4d5d-9096-292929d76672","name":"AutoByteus Agents edb5"},"tasks":{"agent":"project_task_32d4f120-354b-44e6-9dad-4e2aa48a58ae","team":"project_task_bc62b2b8-86a3-4868-a3ef-c5c850f86f24"},"G":"/private/tmp/97-iso-root/manager-folder","F":"/private/tmp/97-iso-root/project-folder"}
+2026-11-02T07:52:06.989Z AGY catalog (must be the scripted CLI): [{"llmModels":[{"modelIdentifier":"gemini-3.8-flash-low","name":"Gemini test"}]}]
+2026-11-02T07:52:08.712Z manager: {"A":"project_task_manager_edb5_5c3fcfee4eeb4607a27fee27813e6eb0","managerFolder":"/private/tmp/97-iso-root/manager-folder"}
+2026-11-02T07:52:10.045Z copies: {"agentCopy":"agent_package_creator_edb5_bb751226b6b74250a87b530bb7197205","teamRunId":"scouting_team_edb5_5f03c8f8713c477a89b13dfe6ced2502","coordinator":"agent_package_creator_edb5_eae1da87f1974dc298191403e1c061ae","treeMentionsF":true,"treeMentionsG":false}
+2026-11-02T07:52:10.731Z shot: "01-projects-agent-copy-files"
+2026-11-02T07:52:12.459Z agent copy terminal: "https://support.apple.com/kb/HT208050./private/tmp/97-iso-root/project-folder$pwd/private/tmp/97-iso-root/project-folder/private/tmp/97-iso-root/project-folder$"
+2026-11-02T07:52:13.050Z shot: "02-projects-agent-copy-terminal"
+2026-11-02T07:52:13.725Z shot: "03-projects-team-member-files"
+2026-11-02T07:52:15.275Z team member terminal: "https://support.apple.com/kb/HT208050./private/tmp/97-iso-root/project-folder$pwd/private/tmp/97-iso-root/project-folder/private/tmp/97-iso-root/project-folder$"
+2026-11-02T07:52:15.868Z shot: "04-projects-team-member-terminal"
+2026-11-02T07:52:15.899Z P (the Task's Project): {"runRows":0,"hint":"No runs yet. Use + to run an agent or team for this Project."}
+2026-11-02T07:52:17.366Z shot: "05-workspaces-agent-copy-files"
+2026-11-02T07:52:19.156Z manager terminal: "https://support.apple.com/kb/HT208050./private/tmp/97-iso-root/manager-folder$pwd/private/tmp/97-iso-root/manager-folder/private/tmp/97-iso-root/manager-folder$"
+2026-11-02T07:52:19.752Z shot: "06-workspaces-manager-focused"
+2026-11-02T07:52:19.755Z Workspaces rows: {"workspaceRows":["/private/tmp/97-iso-root/manager-folder","/private/tmp/97-iso-root/project-folder","/private/tmp/97-iso-root/server-data/temp_workspace"],"newRowForProjectFolder":true}
+2026-11-02T07:52:19.755Z page errors: []
+2026-11-02T07:52:19.755Z result: "Pass"

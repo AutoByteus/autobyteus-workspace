@@ -29,9 +29,10 @@ import { toAgentProjectionMessage } from './teamStreamDtoAdapters';
 import type { CollaboratorMentionDto } from '~/utils/collaborators/collaboratorMentionText';
 import { COLLABORATOR_ADD_FAILED, collaboratorAddRejectionOf } from '~/services/collaborators/collaboratorAddFailures';
 import type { TeamExecutionEffect } from '~/services/teamExecution/teamExecutionViewModels';
+import { useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages';
 import {
+  beginTeamMemberGeneration,
   invalidateTeamMemberProjection,
-  invalidateTeamMemberProjections,
 } from '~/services/runHydration/teamMemberProjectionHydrationService';
 
 export type TeamStreamSyncPhase =
@@ -87,6 +88,8 @@ export class TeamStreamingService {
   private teamRunId: string | null = null;
   private phase: TeamStreamSyncPhase = 'disconnected';
   private expectedBaseChangeSequence: number | null = null;
+  /** The live sequence of the snapshot this stream applies events after (autobyteus-358, SR-005). */
+  private liveSequenceId: string | null = null;
   private candidateReadiness: {
     resolve(): void;
     reject(error: Error): void;
@@ -211,6 +214,7 @@ export class TeamStreamingService {
     this.teamContext = teamContext;
     this.teamRunId = normalized;
     this.expectedBaseChangeSequence = expectedBaseChangeSequence;
+    this.liveSequenceId = null;
     this.phase = 'awaiting_connected_root';
     this.bindListeners();
   }
@@ -339,6 +343,7 @@ export class TeamStreamingService {
       }
       const result = context.view.applySnapshot(message);
       if (result.disposition === 'rejected') throw new Error(`${result.code}: ${result.message}`);
+      this.liveSequenceId = message.payload.live_sequence_id;
       this.applyEffects(result.effects, context);
       // autobyteus-278: the runs this Team delegated to other nodes; Retry asks their nodes again on this stream.
       registerTeamRemoteRuns(context.view.getRootTeamRunId(), message.payload.remote_task_executions);
@@ -368,6 +373,10 @@ export class TeamStreamingService {
     if (this.phase !== 'ready') throw new Error(`Team execution message '${message.type}' is invalid during '${this.phase}'.`);
     const result = context.view.applyMessage(message);
     this.applyEffects(result.effects, context);
+    if (result.disposition === 'applied') {
+      // The Team tab's lists are consistent through every applied event (SR-004).
+      useCollaborationParticipantMessagesStore().advance('agent_team', context.view.getRootTeamRunId(), this.liveSequenceId, context.view.getChangeSequence());
+    }
     if (result.disposition === 'applied' && message.type === 'MEMBER_INPUT_MESSAGE') {
       this.resolveTeamSend(message);
     }
@@ -381,7 +390,12 @@ export class TeamStreamingService {
       if (effect.kind === 'team_stream_recovery_required') {
         this.enterReopenRequired(true);
       } else if (effect.kind === 'invalidate_team_member_projections') {
-        invalidateTeamMemberProjections(context);
+        // A fresh snapshot rebuilt the view: a new member-loader generation (autobyteus-358).
+        beginTeamMemberGeneration(context);
+      } else if (effect.kind === 'append_collaboration_message') {
+        useCollaborationParticipantMessagesStore().append('agent_team', context.view.getRootTeamRunId(), effect.message);
+      } else if (effect.kind === 'reload_collaboration_messages') {
+        useCollaborationParticipantMessagesStore().reloadRoot('agent_team', context.view.getRootTeamRunId(), effect.rebuild);
       } else if (effect.kind === 'invalidate_team_member_projection') {
         effect.agentRunIds.forEach((agentRunId) => {
           invalidateTeamMemberProjection(context, agentRunId);

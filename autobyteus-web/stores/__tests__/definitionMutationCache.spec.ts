@@ -47,7 +47,7 @@ const agent = {
 const org = {
   __typename: 'AgentOrgDefinition', id: 'existing-org', name: 'Existing Org', description: 'Healthy definition',
   instructions: '', category: null, avatarUrl: null, revision: 'revision-1', handoffs: [],
-  members: [{ __typename: 'AgentOrgMember', memberName: 'worker', ref: agent.id, refType: 'AGENT', refScope: 'SHARED' }],
+  members: [{ __typename: 'AgentOrgMember' as const, memberName: 'worker', ref: agent.id, refType: 'AGENT' as const, refScope: 'SHARED' as const }],
   defaultLaunchConfig: null, loadIssues: [],
 }
 

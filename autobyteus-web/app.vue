@@ -56,4 +56,12 @@ useUpdateNotificationChangeFeed(computed(() => isAppReady.value && showsNotifica
   #app {
     @apply min-h-screen font-sans;
   }
+  /* autobyteus-358 DS-007: a block with a very long unbroken run (base64, minified text) is shaped without kerning
+     and ligatures, which made each layout of it cost seconds; wrapping, copy and search are unchanged. */
+  .long-unbroken-text {
+    font-kerning: none;
+    font-variant-ligatures: none;
+    font-feature-settings: normal;
+    text-rendering: optimizeSpeed;
+  }
 </style>

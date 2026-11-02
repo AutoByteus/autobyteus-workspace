@@ -20,7 +20,7 @@ import {
   type TeamScopeLaunchInput,
 } from "./flat-team-topology-planner.js";
 import { TokenUsageCapability } from "../../token-usage/providers/token-usage-capability.js";
-import type { TeamRunModelConfigPatch } from "./team-run-model-config-mutator.js";
+import type { TeamRunSelectionPatch } from "./team-run-selection-mutator.js";
 import type { RunModelConfigUpdateResult } from "../../run-history/domain/run-model-config.js";
 import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
 import { DefinitionAdmissionService } from "../../collaboration-definition-admission/services/definition-admission-service.js";
@@ -243,11 +243,11 @@ export class TeamRunService {
     if (success) await this.catalog.recordTeamRunTerminated({ teamRunId });
     return success;
   }
-  updateStoppedModelConfigs(input: {
+  updateStoppedSelections(input: {
     teamRunId: string;
-    patches: readonly TeamRunModelConfigPatch[];
+    selectionPatches: readonly TeamRunSelectionPatch[];
   }): Promise<RunModelConfigUpdateResult<TeamRunExecutionTreeSnapshot | null>> {
-    return this.manager.updateStoppedModelConfigs(input);
+    return this.manager.updateStoppedSelections(input);
   }
   async observeTeamRunLifecycle(teamRunId: string, listener: (event: ObservedRunLifecycleEvent) => void): Promise<(() => void) | null> {
     const root = await this.resolveActiveTeamRun(teamRunId);

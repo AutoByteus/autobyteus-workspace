@@ -23,9 +23,13 @@ const task = (taskId: string, updatedAt: string, status: ProjectTask['status'] =
   root: null,
   taskId,
   projectId: 'p1',
+  taskKey: `p1-${taskId}`,
   title: `Task ${taskId}`,
   description: `Task ${taskId}`,
   status,
+  dependsOnTaskIds: [],
+  partOfTaskId: null,
+  comments: [],
   contextFiles: [],
   createdAt: '2026-09-26T00:00:00.000Z',
   updatedAt,
@@ -143,7 +147,7 @@ describe('projectTaskStore', () => {
     expect(apolloClientMock.mutate).toHaveBeenCalledWith(expect.objectContaining({
       variables: { input: { projectId: 'p1', taskId: 't1', text: 'Looks good' } },
     }))
-    expect(store.getList('p1')?.tasks.map((entry) => [entry.taskId, entry.comments ?? null])).toEqual([['t1', thread], ['t2', null]])
+    expect(store.getList('p1')?.tasks.map((entry) => [entry.taskId, entry.comments])).toEqual([['t1', thread], ['t2', []]])
   })
 
   it('deletes a Task and updates the open count', async () => {

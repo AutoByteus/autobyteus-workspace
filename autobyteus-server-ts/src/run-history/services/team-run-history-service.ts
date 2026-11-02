@@ -24,6 +24,14 @@ export interface TeamRunResumeConfig {
   /** Task executions of `executionTree` whose Task is DONE or CANCELLED. */
   closedTaskExecutions: readonly TaskExecutionReference[];
   modelConfigEditability: RunModelConfigEditability;
+  /**
+   * The live sequence and change sequence of the running Team, as its stream snapshot reports them (read together);
+   * null and 0 when the Team is not running (autobyteus-358, SR-006).
+   */
+  liveSequenceId: string | null;
+  baseChangeSequence: number;
+  /** The sequence of the running Team's latest message through `baseChangeSequence`; null when not running (SR-007). */
+  lastMessageChangeSequence: number | null;
 }
 
 export class TeamRunHistoryService {
@@ -67,11 +75,16 @@ export class TeamRunHistoryService {
   async getTeamRunResumeConfig(teamRunId: string): Promise<TeamRunResumeConfig> {
     const tree = await this.readTree(teamRunId);
     if (!tree) throw new Error(`Team run execution tree not found for '${teamRunId}'.`);
-    const isActive = this.manager.hasManagedTeamRun(teamRunId);
     const row = await this.catalog.getCatalogRow(teamRunId);
+    const managed = this.manager.getManagedTeamRun(teamRunId);
+    const isActive = managed !== null;
+    const live = managed?.getLivePosition() ?? null;
     return {
       teamRunId,
       isActive,
+      liveSequenceId: live?.liveSequenceId ?? null,
+      baseChangeSequence: live?.changeSequence ?? 0,
+      lastMessageChangeSequence: live?.lastMessageChangeSequence ?? null,
       executionTree: tree,
       closedTaskExecutions: this.manager.closedTaskExecutionsFor(teamRunId, tree),
       modelConfigEditability: runModelConfigEditability({

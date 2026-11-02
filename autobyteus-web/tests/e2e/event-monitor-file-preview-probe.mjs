@@ -130,7 +130,7 @@ try {
       if (op === 'GetAgentOrgRunInspection') {
         const view = JSON.parse(JSON.stringify(module.exports.taskBearingView()));
         const root = view.execution_tree.rootOrg, id = variables.orgRunId;
-        root.orgRunId = id; view.communication_messages.orgRunId = id; view.is_active = false; view.agent_statuses = [];
+        root.orgRunId = id; view.is_active = false; view.agent_statuses = [];
         root.members[0].launchConfiguration.workspaceRootPath = rootA;
         const selectedRoot = id === `${scope}-pending` ? rootC : rootB;
         root.members[2].defaultLaunchConfiguration.workspaceRootPath = selectedRoot;

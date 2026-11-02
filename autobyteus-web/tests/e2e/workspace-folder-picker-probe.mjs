@@ -207,7 +207,7 @@ try {
     assert.equal(otherTeam.defaultLaunchConfiguration.workspaceRootPath, path.join(fixture, 'org'));
     const saves = evidence.requests.slice(requestStart).filter(r => r.operationName === 'UpdateStoppedAgentOrgRunConfig');
     assert.equal(saves.length, 1); assert.deepEqual(saves[0].variables.input.teamWorkspacePatches, [{ teamAddress: '/product', workspaceRootPath: path.join(fixture, 'saved-member') }]);
-    assert.deepEqual(saves[0].variables.input.modelPatches, []); await shot('saved-member-committed');
+    assert.deepEqual(saves[0].variables.input.selectionPatches, []); await shot('saved-member-committed');
     return { before, changed, after, saves };
   });
   await run('FP-P08', 'actual Settings locale -> Chat Chinese input at desktop and narrow widths', async () => {

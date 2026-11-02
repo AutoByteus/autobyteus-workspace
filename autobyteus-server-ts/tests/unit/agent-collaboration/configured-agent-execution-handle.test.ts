@@ -486,19 +486,19 @@ describe("re-activation after the member's runtime died", () => {
   });
 });
 
-describe("ConfiguredAgentExecutionHandle user Stop and model choice (DS-001, DS-002, AR-001)", () => {
-  it("interrupts and releases with input open; the next activation restores on the replaced model", async () => {
+describe("ConfiguredAgentExecutionHandle user Stop and selection (DS-001, DS-002, AR-001)", () => {
+  it("interrupts and releases with input open; the next activation restores on the replaced selection", async () => {
     const fixture = build("agent_team", RuntimeKind.AUTOBYTEUS);
     await fixture.handle.getOrCreateAgentRun();
     expect(fixture.handle.isStopped()).toBe(false);
-    expect(() => fixture.handle.replaceModelChoice({ llmModelIdentifier: "bigger", llmConfig: null })).toThrow(/running/);
+    expect(() => fixture.handle.replaceSelection({ runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: "bigger", llmConfig: null, platformAgentRunId: null })).toThrow(/running/);
 
     await expect(fixture.handle.releaseRuntimeForUserStop()).resolves.toMatchObject({ accepted: true });
     expect(fixture.fakeRun.interrupt).toHaveBeenCalledOnce();
     expect(fixture.releaseExactRun).toHaveBeenCalledOnce();
     expect(fixture.handle.isStopped()).toBe(true);
 
-    fixture.handle.replaceModelChoice({ llmModelIdentifier: "bigger", llmConfig: { effort: "high" } });
+    fixture.handle.replaceSelection({ runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: "bigger", llmConfig: { effort: "high" }, platformAgentRunId: null });
     fixture.activity.kind = "present";
     await fixture.handle.getOrCreateAgentRun();
     const restored = JSON.stringify(fixture.prepareRestoreAgentRun.mock.calls.at(-1) ?? fixture.prepareRestoreAgentRunFromPlatformState.mock.calls.at(-1));
@@ -513,7 +513,7 @@ describe("ConfiguredAgentExecutionHandle user Stop and model choice (DS-001, DS-
     const fenced = fixture.handle.withActivationFence(async () => {
       order.push("fence");
       await new Promise<void>((resolve) => { release = resolve; });
-      fixture.handle.replaceModelChoice({ llmModelIdentifier: "bigger", llmConfig: null });
+      fixture.handle.replaceSelection({ runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: "bigger", llmConfig: null, platformAgentRunId: null });
       order.push("swap");
     });
     await Promise.resolve();

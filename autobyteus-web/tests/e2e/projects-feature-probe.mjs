@@ -707,10 +707,14 @@ try {
     assert(await input.getAttribute('role') === 'combobox' && await input.getAttribute('aria-expanded') === 'true', 'Combobox expanded');
     await screenshot('PT-E2E-017-picker-loop');
     const activeKey = () => page.evaluate(() => document.getElementById(document.querySelector('[data-testid="task-dependency-input"]').getAttribute('aria-activedescendant') || '')?.querySelector('[data-testid="task-key"]')?.getAttribute('data-key') ?? null);
-    // Before any arrow key the active option is the first choosable one, never a greyed loop option, so Enter never lands
-    // on a loop (cba9eca3ef, autobyteus-320 item 5). Arrow keys move over the options skipping loop options (spec: Accessibility And Keyboard).
+    // Before any arrow key the active option is the first choosable one, so Enter never lands on the greyed loop option
+    // listed first (autobyteus-320 item 5, cba9eca3ef). Hovering the loop option makes it active; Enter on it adds nothing.
+    // Arrow keys move over the options skipping loop options (spec: Accessibility And Keyboard).
     obs.initialActive = await activeKey();
-    assert(obs.initialActive === 'keys-board-4', 'Initial active option is the first choosable one, not a loop: ' + obs.initialActive);
+    assert(obs.initialActive === 'keys-board-4', 'The first active option skips the loop option: ' + obs.initialActive);
+    await options.first().hover(); await waitFor('hovered loop option active', async () => await activeKey() === 'keys-board-5');
+    await input.press('Enter'); await sleep(200);
+    assert(await page.getByTestId('task-dependency-selected').count() === 0, 'Enter on a loop option adds nothing');
     obs.activeKeys = [];
     for (let i = 0; i < 4; i++) { await input.press('ArrowDown'); obs.activeKeys.push(await activeKey()); }
     for (let i = 0; i < 2; i++) { await input.press('ArrowUp'); obs.activeKeys.push(await activeKey()); }

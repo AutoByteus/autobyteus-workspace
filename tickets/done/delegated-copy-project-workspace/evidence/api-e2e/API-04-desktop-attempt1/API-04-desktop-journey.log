@@ -1,0 +1,8 @@
+# API-04 desktop journey (isolated instance of the worktree build)
+# node API-04-desktop-journey.mjs 62104 http://127.0.0.1:62105 /private/tmp/97-iso-root <out>
+2026-11-02T07:47:34.805Z seed: {"ids":{"manager":"project-task-manager-3cbf","writer":"agent-package-creator-3cbf","checker":"fact-checker-3cbf","squad":"scouting-team-3cbf"},"O":{"projectId":"project_b93acfb9-5ae9-4b5f-904c-c5c7bd9091c6","name":"AutoByteus 3cbf"},"P":{"projectId":"project_c99ece42-ead3-4392-aa5a-54dc69269dc3","name":"AutoByteus Agents 3cbf"},"tasks":{"agent":"project_task_497f2d79-1cfe-4750-986e-c60f5164f73e","team":"project_task_cb2b912b-81c2-4758-bb24-5a343fb8df47"},"G":"/private/tmp/97-iso-root/manager-folder","F":"/private/tmp/97-iso-root/project-folder"}
+2026-11-02T07:47:34.889Z AGY catalog (must be the scripted CLI): [{"llmModels":[{"modelIdentifier":"gemini-3.8-flash-low","name":"Gemini test"}]}]
+2026-11-02T07:47:36.708Z manager: {"A":"project_task_manager_3cbf_2fdf29e77cc14693b247653a07ea46be","managerFolder":"/private/tmp/97-iso-root/manager-folder"}
+2026-11-02T07:48:36.908Z FAILED: "Timed out: delegation result"
+2026-11-02T07:48:37.608Z shot: "99-failure"
+2026-11-02T07:48:37.608Z result: "Fail"

@@ -31,12 +31,17 @@ import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.
 //         session ID returns, the field is cleared), switch again, edit only the model while the switch is pending (the
 //         switch stays), refuse a running run, then the first message makes the switch.
 //   RS-03 a host with a delegated copy: one Save carries the host's own runtime and the copy's model; the copy keeps its
-//         runtime; the delegated copy itself cannot switch runtime (REQ-013).
+//         runtime; the delegated copy cannot switch through the stopped-run mutation (REQ-013); it switches through its own
+//         choice (updateDelegatedLaunchSelections, autobyteus-348; see delegated-copy-model-change DCM-009).
 //   RS-04 a server restart: a pending switch survives it; a switch that was activated (marker first, no user record yet)
 //         still delivers its notice with the first input after the restart, once (I-11, derived from the raw traces).
 //   RS-05 a failed attempt: the archive step fails after the native candidate wrote its instruction; the previous agent's file
 //         is exactly as before, the switch stays pending, and the retry completes with one marker and one segment (I-7).
 //   RS-06 Grok as the switch target, with the same failed attempt and retry.
+//   RS-07 a Grok start that fails after the switch became durable (the Grok process ends before the run is published)
+//         leaves a completed switch; the retry restores the Grok session and still carries the notice.
+//   RS-08 a model edit while a switch to the native runtime is pending is a fresh selection (the never-started candidate
+//         is not a current model), and the first message runs on it.
 // Prerequisite: pnpm -C autobyteus-server-ts build (current dist). Run:
 //   env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 \
 //     ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs \
@@ -453,7 +458,7 @@ describe.runIf(ENABLED)("agent runtime switch, native runtime and stopped-run se
     const hostBefore = await metadata(hostId);
     const combined = (await gql("mutation($input: UpdateDelegatedLaunchSelectionsInput!) { updateDelegatedLaunchSelections(input: $input) { success outcome message fieldErrors { path message } } }", { input: {
       rootKind: "AGENT", rootRunId: hostId,
-      changes: [{ agentRunId: copyId, selection: { llmModelIdentifier: AGY_ALT, llmConfig: null } }],
+      changes: [{ agentRunId: copyId, selection: { runtimeKind: AGY, llmModelIdentifier: AGY_ALT, llmConfig: null } }],
       configuredPatches: [{ scopeKind: "CONFIGURED_AGENT", scopeAddress: "/", runtimeKind: NATIVE, llmModelIdentifier: nativeModel, llmConfig: null }] } })).updateDelegatedLaunchSelections;
     expect(combined, JSON.stringify(combined)).toMatchObject({ success: true, outcome: "UPDATED" });
     const hostAfter = await metadata(hostId);

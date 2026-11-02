@@ -11,6 +11,9 @@ import type {
 } from "../domain/team-run-execution-tree.js";
 import { validateTeamRunExecutionTreePayload } from "../../run-history/store/team-run-execution-tree-schema.js";
 import type { RemoteTaskExecution } from "../../run-history/domain/run-execution-tree-shared-records.js";
+import type { PendingRuntimeSwitch } from "../../run-history/store/agent-run-metadata-types.js";
+import { commitRuntimeSwitchOnRecord } from "../../run-history/domain/runtime-selection-rule.js";
+import type { CollaborationAgentRuntimeSwitchCommit } from "../../agent-collaboration/execution/domain/collaboration-agent-platform-binding.js";
 import type { TeamAgentPlatformBinding } from "../domain/team-agent-platform-binding.js";
 import { TeamAgentPlatformBindingError } from "../domain/team-agent-platform-binding.js";
 
@@ -158,6 +161,57 @@ export const replaceAgentPlatformBindingWithoutConversationInTree = (input: {
     throw new TeamAgentPlatformBindingError(
       "TEAM_AGENT_PLATFORM_BINDING_CONFLICT",
       "The platform binding replacement target was not found in the execution tree.",
+    );
+  }
+  return validateTeamRunExecutionTreePayload(next, input.tree.rootTeam.teamRunId);
+};
+
+/**
+ * autobyteus-348: the activation's commit of a switched member. The member is found (configured members and every task
+ * execution list) and changed by the shared record step; a missing or ambiguous member, or a stale switch ID, is a conflict.
+ */
+export const commitRuntimeSwitchInTree = (input: {
+  tree: TeamRunExecutionTreeSnapshot;
+  commit: CollaborationAgentRuntimeSwitchCommit;
+}): TeamRunExecutionTreeSnapshot => {
+  const { execution, switchId, platformAgentRunId } = input.commit;
+  if (execution.root.rootSubjectKind !== "agent_team" || execution.root.rootRunId !== input.tree.rootTeam.teamRunId) {
+    throw new TeamAgentPlatformBindingError(
+      "TEAM_AGENT_PLATFORM_BINDING_CONFLICT",
+      "The runtime switch commit belongs to a different root TeamRun.",
+    );
+  }
+  let matches = 0;
+  const mapAgent = <T extends AgentExecutionNode & Readonly<{ pendingRuntimeSwitch?: PendingRuntimeSwitch }>>(agent: T): T => {
+    if (agent.address !== execution.memberAddress || agent.agentRunId !== execution.agentRunId) return agent;
+    matches += 1;
+    const result = commitRuntimeSwitchOnRecord(agent, switchId, platformAgentRunId);
+    if (result.kind === "conflict") {
+      throw new TeamAgentPlatformBindingError(
+        "TEAM_AGENT_PLATFORM_BINDING_CONFLICT",
+        `The runtime switch commit does not match the persisted member (${result.reason}).`,
+      );
+    }
+    return result.record;
+  };
+  const mapTask = (task: TaskExecution): TaskExecution =>
+    "agentRunId" in task ? mapAgent(task) : {
+      ...task,
+      members: task.members.map(mapAgent),
+      taskExecutions: task.taskExecutions.map(mapTask),
+    } as TaskTeamExecution;
+  const next = {
+    ...input.tree,
+    rootTeam: {
+      ...input.tree.rootTeam,
+      members: input.tree.rootTeam.members.map(mapAgent),
+      taskExecutions: input.tree.rootTeam.taskExecutions.map(mapTask),
+    },
+  };
+  if (matches !== 1) {
+    throw new TeamAgentPlatformBindingError(
+      "TEAM_AGENT_PLATFORM_BINDING_CONFLICT",
+      "The runtime switch commit target was not found exactly once in the execution tree.",
     );
   }
   return validateTeamRunExecutionTreePayload(next, input.tree.rootTeam.teamRunId);

@@ -1,4 +1,5 @@
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+import type { PendingRuntimeSwitch } from "../../run-history/store/agent-run-metadata-types.js";
 import type { TeamBackendKind } from "./team-backend-kind.js";
 import {
   appendAgentTeamAddress,
@@ -33,6 +34,8 @@ export type TeamRunAgentNode = Readonly<{
   llmConfig: Readonly<Record<string, unknown>> | null;
   autoExecuteTools: boolean;
   workspaceRootPath: string | null;
+  /** autobyteus-348: the member's pending agent runtime switch, until its next input makes it real; absent means none. */
+  pendingRuntimeSwitch?: PendingRuntimeSwitch;
 }>;
 
 /** A team of a run. Teams are flat: its children are agents. */
@@ -112,6 +115,7 @@ const cloneTeamRunAgentNode = (node: TeamRunAgentNode): TeamRunAgentNode => {
     llmConfig: freezeRecord(node.llmConfig as Record<string, unknown> | null),
     autoExecuteTools: Boolean(node.autoExecuteTools),
     workspaceRootPath: optional(node.workspaceRootPath),
+    ...(node.pendingRuntimeSwitch ? { pendingRuntimeSwitch: structuredClone(node.pendingRuntimeSwitch) } : {}),
   });
 };
 

@@ -444,7 +444,10 @@ with custom model/runtime settings or a previously distinct workspace. Sibling
 Teams, direct Agents and historical task snapshots are unchanged. Model and
 workspace edits are saved together; a Team workspace draft never resets models.
 No project files, conversation history or provider sessions are moved or reset.
-Fresh delegation uses the updated configured source. If the saved workspace's
+Fresh delegation uses the updated configured source, except its folder when the
+delegated Task's Project has a linked folder: then the new copy runs in that
+Project's first linked folder (autobyteus-97; server `projects.md` "Folder of a
+new copy"). If the saved workspace's
 metadata cannot be loaded, Files shows unavailable feedback rather than the old
 workspace or an unrelated launch draft; reopening Settings retries canonical
 metadata without repeating Save. Existing launch drafts are preserved.

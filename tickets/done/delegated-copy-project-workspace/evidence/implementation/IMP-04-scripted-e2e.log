@@ -1,0 +1,985 @@
+# IMP-04 scripted-runtime E2E around delegation launches and Task copies
+# Command: RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<repo>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs vitest run tests/e2e/projects/{delegated-launch-config-defaults,project-task-context-files-delegation,task-existing-copy-assignment,delegation-forest-restore}.e2e.test.ts --no-watch
+# Commit: 8959bc507a, dist from it
+# Date: 2026-11-02T06:48Z
+
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-project-workspace/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-project-workspace/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/workspace.
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Reusing registered workspace ID: agent_ws_849ea14f3b0d9415d822d63ec525e3c1e87f26c1d973e010ef6e483e93945b8b
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Agent team websocket attached for team run exc_team_1d8858_50a76925d5394016bab4b72de2254b67
+Created agent session d238b81c-f30c-491a-8ca0-681c67b1e523 for run exc_team_1d8858_50a76925d5394016bab4b72de2254b67
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Agent Team WebSocket connected: session=d238b81c-f30c-491a-8ca0-681c67b1e523, run=exc_team_1d8858_50a76925d5394016bab4b72de2254b67
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/workspace.
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Reusing registered workspace ID: agent_ws_849ea14f3b0d9415d822d63ec525e3c1e87f26c1d973e010ef6e483e93945b8b
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+AGY compaction detection off for run exc_manager_1d8858_e6221031267a4a1192e8ae9464462740: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/workspace.
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Reusing registered workspace ID: agent_ws_849ea14f3b0d9415d822d63ec525e3c1e87f26c1d973e010ef6e483e93945b8b
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+AGY compaction detection off for run exc_worker_1d8858_b16d5038b3f64d4baa815a659b68d4ef: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Agent team websocket attached for team run exc_team_1d8858_50a76925d5394016bab4b72de2254b67
+Created agent session ccb6f80a-71cb-4930-bb42-a1cd8d4b00c6 for run exc_team_1d8858_50a76925d5394016bab4b72de2254b67
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Agent Team WebSocket connected: session=ccb6f80a-71cb-4930-bb42-a1cd8d4b00c6, run=exc_team_1d8858_50a76925d5394016bab4b72de2254b67
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_squad_1d8858_73212c8bedfc49248ce4a245b4b7f3af/exc_worker_1d8858_b16d5038b3f64d4baa815a659b68d4ef/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Closed agent session ccb6f80a-71cb-4930-bb42-a1cd8d4b00c6
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_squad_1d8858_73212c8bedfc49248ce4a245b4b7f3af/exc_worker_1d8858_b16d5038b3f64d4baa815a659b68d4ef/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Agent team websocket attached for team run exc_team_1d8858_50a76925d5394016bab4b72de2254b67
+Created agent session 65715001-514a-4d83-a765-4e228d725c9a for run exc_team_1d8858_50a76925d5394016bab4b72de2254b67
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Agent Team WebSocket connected: session=65715001-514a-4d83-a765-4e228d725c9a, run=exc_team_1d8858_50a76925d5394016bab4b72de2254b67
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Closed agent session 65715001-514a-4d83-a765-4e228d725c9a
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_squad_1d8858_73212c8bedfc49248ce4a245b4b7f3af/exc_worker_1d8858_b16d5038b3f64d4baa815a659b68d4ef/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_squad_1d8858_73212c8bedfc49248ce4a245b4b7f3af/exc_worker_1d8858_b16d5038b3f64d4baa815a659b68d4ef/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Agent team websocket attached for team run exc_team_1d8858_50a76925d5394016bab4b72de2254b67
+Created agent session 192bbe31-5495-4a92-af55-fdd054584f9e for run exc_team_1d8858_50a76925d5394016bab4b72de2254b67
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Agent Team WebSocket connected: session=192bbe31-5495-4a92-af55-fdd054584f9e, run=exc_team_1d8858_50a76925d5394016bab4b72de2254b67
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Closed agent session 192bbe31-5495-4a92-af55-fdd054584f9e
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_squad_1d8858_73212c8bedfc49248ce4a245b4b7f3af/exc_worker_1d8858_b16d5038b3f64d4baa815a659b68d4ef/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_squad_1d8858_73212c8bedfc49248ce4a245b4b7f3af/exc_worker_1d8858_b16d5038b3f64d4baa815a659b68d4ef/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/workspace.
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Reusing registered workspace ID: agent_ws_849ea14f3b0d9415d822d63ec525e3c1e87f26c1d973e010ef6e483e93945b8b
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+AGY compaction detection off for run exc_worker_1d8858_b16d5038b3f64d4baa815a659b68d4ef: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Agent team websocket attached for team run exc_team_1d8858_50a76925d5394016bab4b72de2254b67
+Created agent session 3d66a38f-27a5-4728-b180-20228e32c31b for run exc_team_1d8858_50a76925d5394016bab4b72de2254b67
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Agent Team WebSocket connected: session=3d66a38f-27a5-4728-b180-20228e32c31b, run=exc_team_1d8858_50a76925d5394016bab4b72de2254b67
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_squad_1d8858_73212c8bedfc49248ce4a245b4b7f3af/exc_worker_1d8858_b16d5038b3f64d4baa815a659b68d4ef/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Closed agent session 3d66a38f-27a5-4728-b180-20228e32c31b
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_squad_1d8858_73212c8bedfc49248ce4a245b4b7f3af/exc_worker_1d8858_b16d5038b3f64d4baa815a659b68d4ef/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Agent team websocket attached for team run exc_team_1d8858_50a76925d5394016bab4b72de2254b67
+Created agent session 0b659877-ad96-439b-861c-4bbb7d505f82 for run exc_team_1d8858_50a76925d5394016bab4b72de2254b67
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Agent Team WebSocket connected: session=0b659877-ad96-439b-861c-4bbb7d505f82, run=exc_team_1d8858_50a76925d5394016bab4b72de2254b67
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Closed agent session 0b659877-ad96-439b-861c-4bbb7d505f82
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_squad_1d8858_73212c8bedfc49248ce4a245b4b7f3af/exc_worker_1d8858_b16d5038b3f64d4baa815a659b68d4ef/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_squad_1d8858_73212c8bedfc49248ce4a245b4b7f3af/exc_worker_1d8858_b16d5038b3f64d4baa815a659b68d4ef/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/workspace.
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Reusing registered workspace ID: agent_ws_849ea14f3b0d9415d822d63ec525e3c1e87f26c1d973e010ef6e483e93945b8b
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+AGY compaction detection off for run exc_worker_1d8858_b16d5038b3f64d4baa815a659b68d4ef: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Agent team websocket attached for team run exc_team_1d8858_50a76925d5394016bab4b72de2254b67
+Created agent session a8a2107d-9979-4ffe-917f-6479e1616814 for run exc_team_1d8858_50a76925d5394016bab4b72de2254b67
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Agent Team WebSocket connected: session=a8a2107d-9979-4ffe-917f-6479e1616814, run=exc_team_1d8858_50a76925d5394016bab4b72de2254b67
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Closed agent session a8a2107d-9979-4ffe-917f-6479e1616814
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_squad_1d8858_73212c8bedfc49248ce4a245b4b7f3af/exc_worker_1d8858_b16d5038b3f64d4baa815a659b68d4ef/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_squad_1d8858_73212c8bedfc49248ce4a245b4b7f3af/exc_worker_1d8858_b16d5038b3f64d4baa815a659b68d4ef/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/workspace.
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Reusing registered workspace ID: agent_ws_849ea14f3b0d9415d822d63ec525e3c1e87f26c1d973e010ef6e483e93945b8b
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+AGY compaction detection off for run exc_worker_1d8858_b16d5038b3f64d4baa815a659b68d4ef: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Agent team websocket attached for team run exc_team_1d8858_50a76925d5394016bab4b72de2254b67
+Created agent session 5bd715c1-b0c4-4868-9bb9-088f1c33892a for run exc_team_1d8858_50a76925d5394016bab4b72de2254b67
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Agent Team WebSocket connected: session=5bd715c1-b0c4-4868-9bb9-088f1c33892a, run=exc_team_1d8858_50a76925d5394016bab4b72de2254b67
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_squad_1d8858_73212c8bedfc49248ce4a245b4b7f3af/exc_worker_1d8858_b16d5038b3f64d4baa815a659b68d4ef/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Closed agent session 5bd715c1-b0c4-4868-9bb9-088f1c33892a
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_squad_1d8858_73212c8bedfc49248ce4a245b4b7f3af/exc_worker_1d8858_b16d5038b3f64d4baa815a659b68d4ef/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/workspace.
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Reusing registered workspace ID: agent_ws_849ea14f3b0d9415d822d63ec525e3c1e87f26c1d973e010ef6e483e93945b8b
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+AGY compaction detection off for run exc_worker_1d8858_b16d5038b3f64d4baa815a659b68d4ef: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Agent team websocket attached for team run exc_team_1d8858_50a76925d5394016bab4b72de2254b67
+Created agent session e390d437-0ae4-4992-b294-b00d22d76f1d for run exc_team_1d8858_50a76925d5394016bab4b72de2254b67
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Agent Team WebSocket connected: session=e390d437-0ae4-4992-b294-b00d22d76f1d, run=exc_team_1d8858_50a76925d5394016bab4b72de2254b67
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Closed agent session e390d437-0ae4-4992-b294-b00d22d76f1d
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_squad_1d8858_73212c8bedfc49248ce4a245b4b7f3af/exc_worker_1d8858_b16d5038b3f64d4baa815a659b68d4ef/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_squad_1d8858_73212c8bedfc49248ce4a245b4b7f3af/exc_worker_1d8858_b16d5038b3f64d4baa815a659b68d4ef/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/workspace.
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Reusing registered workspace ID: agent_ws_849ea14f3b0d9415d822d63ec525e3c1e87f26c1d973e010ef6e483e93945b8b
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+AGY compaction detection off for run exc_worker_1d8858_b16d5038b3f64d4baa815a659b68d4ef: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Agent team websocket attached for team run exc_team_1d8858_50a76925d5394016bab4b72de2254b67
+Created agent session 4c167da8-7ae6-4a1b-aac2-242a18811275 for run exc_team_1d8858_50a76925d5394016bab4b72de2254b67
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Agent Team WebSocket connected: session=4c167da8-7ae6-4a1b-aac2-242a18811275, run=exc_team_1d8858_50a76925d5394016bab4b72de2254b67
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Closed agent session 4c167da8-7ae6-4a1b-aac2-242a18811275
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_squad_1d8858_73212c8bedfc49248ce4a245b4b7f3af/exc_worker_1d8858_b16d5038b3f64d4baa815a659b68d4ef/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_squad_1d8858_73212c8bedfc49248ce4a245b4b7f3af/exc_worker_1d8858_b16d5038b3f64d4baa815a659b68d4ef/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/workspace.
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Reusing registered workspace ID: agent_ws_849ea14f3b0d9415d822d63ec525e3c1e87f26c1d973e010ef6e483e93945b8b
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+AGY compaction detection off for run exc_worker_1d8858_b16d5038b3f64d4baa815a659b68d4ef: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Agent team websocket attached for team run exc_team_1d8858_50a76925d5394016bab4b72de2254b67
+Created agent session ea874480-487a-4779-9aa4-dda3ecdda4e3 for run exc_team_1d8858_50a76925d5394016bab4b72de2254b67
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Agent Team WebSocket connected: session=ea874480-487a-4779-9aa4-dda3ecdda4e3, run=exc_team_1d8858_50a76925d5394016bab4b72de2254b67
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Closed agent session ea874480-487a-4779-9aa4-dda3ecdda4e3
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_squad_1d8858_73212c8bedfc49248ce4a245b4b7f3af/exc_worker_1d8858_b16d5038b3f64d4baa815a659b68d4ef/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_squad_1d8858_73212c8bedfc49248ce4a245b4b7f3af/exc_worker_1d8858_b16d5038b3f64d4baa815a659b68d4ef/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Agent team websocket attached for team run exc_team_1d8858_50a76925d5394016bab4b72de2254b67
+Created agent session e52ef9ed-930d-4ce2-88df-8f34b3f0bbb0 for run exc_team_1d8858_50a76925d5394016bab4b72de2254b67
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Agent Team WebSocket connected: session=e52ef9ed-930d-4ce2-88df-8f34b3f0bbb0, run=exc_team_1d8858_50a76925d5394016bab4b72de2254b67
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Closed agent session e52ef9ed-930d-4ce2-88df-8f34b3f0bbb0
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_squad_1d8858_73212c8bedfc49248ce4a245b4b7f3af/exc_worker_1d8858_b16d5038b3f64d4baa815a659b68d4ef/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_squad_1d8858_73212c8bedfc49248ce4a245b4b7f3af/exc_worker_1d8858_b16d5038b3f64d4baa815a659b68d4ef/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Agent team websocket attached for team run exc_team_1d8858_50a76925d5394016bab4b72de2254b67
+Created agent session 791f520e-08ab-47c0-ba8f-9286ba998f89 for run exc_team_1d8858_50a76925d5394016bab4b72de2254b67
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Agent Team WebSocket connected: session=791f520e-08ab-47c0-ba8f-9286ba998f89, run=exc_team_1d8858_50a76925d5394016bab4b72de2254b67
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Closed agent session 791f520e-08ab-47c0-ba8f-9286ba998f89
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_squad_1d8858_73212c8bedfc49248ce4a245b4b7f3af/exc_worker_1d8858_b16d5038b3f64d4baa815a659b68d4ef/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_squad_1d8858_73212c8bedfc49248ce4a245b4b7f3af/exc_worker_1d8858_b16d5038b3f64d4baa815a659b68d4ef/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/workspace.
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Reusing registered workspace ID: agent_ws_849ea14f3b0d9415d822d63ec525e3c1e87f26c1d973e010ef6e483e93945b8b
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+AGY compaction detection off for run exc_worker_1d8858_976d848f78b3431aa5a82bffa43fd941: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Agent team websocket attached for team run exc_team_1d8858_50a76925d5394016bab4b72de2254b67
+Created agent session 8eee17d3-fc46-4170-ada0-761d8cde0e6f for run exc_team_1d8858_50a76925d5394016bab4b72de2254b67
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Agent Team WebSocket connected: session=8eee17d3-fc46-4170-ada0-761d8cde0e6f, run=exc_team_1d8858_50a76925d5394016bab4b72de2254b67
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Closed agent session 8eee17d3-fc46-4170-ada0-761d8cde0e6f
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agents/exc_worker_1d8858_976d848f78b3431aa5a82bffa43fd941/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agents/exc_worker_1d8858_976d848f78b3431aa5a82bffa43fd941/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Agent team websocket attached for team run exc_team_1d8858_50a76925d5394016bab4b72de2254b67
+Created agent session b821f185-6316-4f8d-b183-1016dab17b80 for run exc_team_1d8858_50a76925d5394016bab4b72de2254b67
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Agent Team WebSocket connected: session=b821f185-6316-4f8d-b183-1016dab17b80, run=exc_team_1d8858_50a76925d5394016bab4b72de2254b67
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Closed agent session b821f185-6316-4f8d-b183-1016dab17b80
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agents/exc_worker_1d8858_976d848f78b3431aa5a82bffa43fd941/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agents/exc_worker_1d8858_976d848f78b3431aa5a82bffa43fd941/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory/agent_teams/exc_team_1d8858_50a76925d5394016bab4b72de2254b67/exc_manager_1d8858_e6221031267a4a1192e8ae9464462740/raw_traces_manifest.json
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-project-workspace/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-project-workspace/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/.env
+◇ injected env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/.env // tip: ◈ secrets for agents [www.dotenvx.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-project-workspace/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-project-workspace/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/memory
+============================================================
+Initialized server settings service with 33 predefined settings
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-existing-copy-e2e-szfB3E/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+Registered required tool unit: Project Task Tools
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+Registered required tool unit: Agent Discovery Tools
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+Successfully registered tool definition: 'search_memory'
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+Registered required tool unit: Memory Tools
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+Registered required tool unit: Agent Runtime Tools
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+Agent Definition created successfully with ID: exc-manager-1d8858
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+Agent Definition created successfully with ID: exc-worker-1d8858
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+Agent Definition created successfully with ID: exc-helper-1d8858
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+Agent Definition created successfully with ID: exc-peer-1d8858
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+Agent Team Definition created successfully with ID: exc-squad-1d8858
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+Agent Team Definition created successfully with ID: exc-team-1d8858
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor)
+Closed agent session d238b81c-f30c-491a-8ca0-681c67b1e523
+
+stdout | tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts (9 tests | 1 failed | 2 skipped) 186101ms
+     × EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders 72961ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts > Follow-up Tasks to an existing copy in every root (real HTTP/WS/scoped MCP, scripted AGY actor) > EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders
+Error: assignment refused (offset 7): {"delegated":false,"message":"Task existing-copy-race-cbd546ba-17 was given to the task agent, but the message with its work was not delivered (The task agent exc_worker_1d8858_976d848f78b3431aa5a82bffa43fd941 could not continue with its conversation: AgentRun 'exc_worker_1d8858_976d848f78b3431aa5a82bffa43fd941' is fenced for root shutdown.). Message the task agent's run id exc_worker_1d8858_976d848f78b3431aa5a82bffa43fd941, or set Task existing-copy-race-cbd546ba-17 to CANCELLED, or delegate it to a new task agent."}
+ ❯ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts:770:17
+    768|         } else {
+    769|           // task-agent-several-tasks: the assignment is never refused…
+    770|           throw new Error(`assignment refused (offset ${offset}): ${JS…
+       |                 ^
+    771|         }
+    772|         rounds.push({ copyKind, offset, outcome, assigned });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 3 passed (4)
+      Tests  1 failed | 13 passed | 2 skipped (16)
+   Start at  07:48:18
+   Duration  268.66s (transform 19.29s, setup 162ms, import 34.94s, tests 232.23s, environment 0ms)
+
+exit=0
+
+## EXC-E2E-004 alone, three runs (same commit), after the one failure above
+Tests  1 passed | 8 skipped (9) (three times)
+Failure text at offset 7: "... the message with its work was not delivered (The task agent ... could not continue with its conversation: AgentRun ... is fenced for root shutdown.) ..."
