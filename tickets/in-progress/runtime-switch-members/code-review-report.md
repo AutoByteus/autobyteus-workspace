@@ -2,15 +2,15 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `Implementation Review` (round 1, CRR-001) `API/E2E Failure-Origin Review` (round 2, CRR-002) and `Targeted Delta Review` of the rework IR-002 (round 3, CRR-003; the latest authoritative result)
+- Review Entry Point: `Implementation Review` (round 1, CRR-001) `API/E2E Failure-Origin Review` (round 2, CRR-002) `Targeted Delta Review` of the rework IR-002 (round 3, CRR-003) and `Targeted Delta Review` of IR-003 (round 4, CRR-004; the latest authoritative result)
 - Requirements Doc / Investigation Notes / Solution Revision Record / Design Spec Reviewed As Context: `requirements-doc.md`, `investigation-notes.md`, `solution-revision-record.md` (SR-001), `design-spec.md` (D-1…D-10)
 - Supplemental Task Artifacts Reviewed As Context: `switch-member-record-contract.md` (behavior-defining for the data); `task-follow-ups-316.md` (input)
 - Design Review Report / Architecture Review Revision Record: `design-review-report.md`, `architecture-review-revision-record.md` (ARCH-REV-001 Fail → ARCH-REV-002 Pass; ARCH-F-001…010)
 - Implementation Handoff / Revision Record: `implementation-handoff.md`, `implementation-revision-record.md` (IR-001)
-- Code Review Revision Record: `code-review-revision-record.md`; Current Code Review Revision ID: `CRR-003` (history: `CRR-001`, `CRR-002`)
-- Current Review Round: 3; Review Scope: round 1 `Full Review`; round 2 `N/A` (failure-origin round); round 3 `Targeted Delta Review` (the changes since round 2 stay within the files and behavior of F-1 and F-2: the Org config read and Save result, the web adoption of the Org canonical tree, and the copy rows' fresh read)
+- Code Review Revision Record: `code-review-revision-record.md`; Current Code Review Revision ID: `CRR-004` (history: `CRR-001`…`CRR-003`)
+- Current Review Round: 4; Review Scope: round 1 `Full Review`; round 2 `N/A` (failure-origin round); round 3 `Targeted Delta Review`; round 4 `Targeted Delta Review` (one guard in one file, the prior finding F-3); round 3 detail: (the changes since round 2 stay within the files and behavior of F-1 and F-2: the Org config read and Save result, the web adoption of the Org canonical tree, and the copy rows' fresh read)
 - Trigger: round 1 implementation handoff IR-001 (Large / High); round 2 API/E2E failure (commit `1269820159`)
-- Prior Review Round Reviewed: round 2 (CRR-002, Fail: F-1, F-2)
+- Prior Review Round Reviewed: round 3 (CRR-003, Fail: F-3 open; F-1 server and F-2 resolved)
 - Coverage Investigation / Execution Coverage Report / API/E2E Revision Record Reviewed (failure-origin): `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md`
 - Failing Scenario IDs: RSM-02 and RSM-03 (Org direct Agent and Agent of a mounted Team, rendered Settings), RSM-04 (delegated copy row after Save)
 - Failing command / mode: `pnpm -C autobyteus-web test:e2e:runtime-switch-members` (headless Chrome → Nuxt dev → built backend, scripted native and Antigravity models); contract test `autobyteus-collaboration-stream-contracts/tests/org-member-pending-runtime-switch.test.mjs`
@@ -38,6 +38,16 @@ The failing scenarios represent approved behavior: AC-002 (the Org member's swit
 - F-2: probably not from the diff alone; it needed the rendered journey. My round-1 report listed rendered rows as unverified.
 
 Round-1 `Pass` (CRR-001) is superseded.
+
+## Targeted Delta Review of IR-003 (round 4, CRR-004)
+
+Diff `1be1228a75..75bd512bb2` (code commit `4c7a70698d`: `agentOrgRunConfigAdoption.ts` and two specs) read in full. I re-ran the two affected web specs (14 passed). Recorded checks (IMP-18, IMP-19: web typecheck, nuxt 5016, rendered RSM-01…05) were read, not rerun; the server code is unchanged since `9e28c019b6`.
+
+| Finding | Round-3 status | Round-4 status | How verified |
+| --- | --- | --- | --- |
+| F-3 (the Org undo refused by the web guard) | Open | **Resolved** | The throw on a non-null session of a runtime-changed Agent is removed. The session stays masked only for Agents whose agent runtime changed (a switch drops it, an undo restores the original, the server decides), so a session change on an Agent whose runtime did not change and every identity or topology drift are still refused (the masked comparison is unchanged for them). Tests: the undo with a non-null original session for a direct Agent and an Agent of a mounted Team (adoption spec); the refusal of an invented session on an Agent that did not switch; a store-level case saving a switch and then its undo for both placements with no error, the original session back in the tree (publication spec). The implementer ran the new tests against the IR-002 guard: 3 failed; they pass now |
+
+No new candidate. The rendered probe does not exercise the undo; the store-level case covers it (as I allowed).
 
 ## Targeted Delta Review of the rework IR-002 (round 3, CRR-003)
 
@@ -160,7 +170,7 @@ None new or reclassified. The 316 lesson (a candidate can write records while it
 
 ## Review Scorecard
 
-- Overall score: 9.2 / 10 (summary only; round 3 delta: categories 7 and 8 re-scored)
+- Overall score: 9.4 / 10 (summary only; categories 7 and 8 re-scored in round 4)
 
 | Priority | Category | Score | Why | Weak | Improve |
 | --- | --- | --- | --- | --- | --- |
@@ -170,46 +180,43 @@ None new or reclassified. The 316 lesson (a candidate can write records while it
 | 4 | Separation of Concerns and File Placement | 9.3 | Clean; `existingRunConfigStore.ts` sits at 499 of 500 effective lines | store at the limit | Extract on the next change |
 | 5 | Shared-Structure Tightness | 9.4 | Reuses `PendingRuntimeSwitch`; one-field mixin | — | — |
 | 6 | Naming and Local Readability | 9.4 | The rename is complete | — | — |
-| 7 | API/E2E Readiness | 9.0 | Rendered RSM-01…05 pass; the Org undo path is untested and fails (F-3) | F-3 | Fix, then rerun |
+| 7 | API/E2E Readiness | 9.3 | Rendered RSM-01…05 pass; the Org undo is covered at store level, not rendered | undo not rendered | API/E2E may add it |
 | (round 1) | API/E2E Readiness | 9.3 | Built-server cases for all three placements; a live Claude/Codex pair, rendered rows and an Org-member/copy failed start on the built server are not run | those three | API/E2E |
-| 8 | Runtime Correctness And Behavioral Fidelity | 8.5 | Activation, commit, retry, discard, the wire projection and the copy rows hold; the Org undo is refused by the new web guard (F-3) | F-3 | Accept the restored session on a runtime-changed Agent |
+| 8 | Runtime Correctness And Behavioral Fidelity | 9.4 | Activation, commit, retry, discard, the wire projection, the copy rows and the Org switch and undo hold | — | — |
 | 9 | No Backward-Compatibility / No Legacy Retention | 9.5 | Clean cut | — | — |
 | 10 | Cleanup Completeness | 9.3 | Dead code removed; the stale probe scenarios are pre-existing (FU-C2) | probe | FU-C2 |
 
 ## Findings
 
-| Finding ID | Scenario / Test | Evidence | Required Action | Classification / Owner |
-| --- | --- | --- | --- | --- |
-| F-1 | RSM-02, RSM-03 | server half resolved (above) | web half: see F-3 | Resolved (server) |
-| F-2 | RSM-04 | resolved (above) | none | Resolved |
-| F-3 | The undo of a pending Org member switch in Settings (new, from the web adoption guard of IR-002) | C-11 | In `assertAgentOrgRunConfigChange`, accept any session on an Agent whose agent runtime changed (a switch drops it to `null`, an undo restores the original one; the server decides which) and keep refusing a session change on an Agent whose runtime did not change and every identity or topology drift. Add the undo case to `agentOrgRunConfigAdoption.spec.ts` (direct Agent and an Agent of a mounted Team, the original session non-null), and a store-level or rendered case that saves an Org switch and then its undo without an error | `Local Fix` — implementation_engineer |
+No open finding. F-1 (server and web), F-2 and F-3 are **Resolved** (rounds 3 and 4).
 
 ## Follow-ups
 
-- Follow-ups this review added: FU-C2 (round 1, in `follow-ups.md`). Rounds 2 and 3: None. FU-C1 (the designer's) stands.
+- Follow-ups this review added: FU-C2 (round 1, in `follow-ups.md`). Rounds 2, 3 and 4: None. FU-C1 (the designer's) stands.
 
 ## Classification
 
-- F-3: `Local Fix` (implementation). F-1 (server) and F-2 are resolved.
-- Task size and architectural risk (`Large` / `High`) unchanged.
+Not applicable (Pass). Task size and architectural risk (`Large` / `High`) unchanged.
 
 ## Recommended Recipient
 
-Implementation engineer (F-3, an implementation-owned Local Fix). After the fix: a targeted delta review, then API/E2E reruns RSM-02…05 plus an Org undo, and replaces its contract test `org-member-pending-runtime-switch.test.mjs` (it asserts widening the contract schemas, which the approved wire decision rejects; the server-side boundary test and the rendered RSM-02/03 are the proof).
+API/E2E engineer (primary pass rule); implementation engineer informed.
 
 ## Residual Risks
 
 - Round 2 closed the round-1 gaps: the live Claude ↔ Codex pair, the failed starts of an Org member and a copy, restart for a copy and the wake orders all pass (API/E2E). Still not covered: AC-003 and AC-009 in the rendered surface, journal and memory-search reads of a switched member beyond the chat, live Grok/Antigravity (scripted), the Electron shell.
-- Other Org raw-tree emission sites may exist beyond the two named; F-1's fix includes the search.
+- The implementer searched the other Org raw-tree emission sites (inspection and root history were already projected; the delegated-launch service returns outcomes only); I checked the two service methods' callers.
+- API/E2E's contract test `org-member-pending-runtime-switch.test.mjs` asserts the widening that the approved wire decision rejects and must be replaced by the server-side boundary test (`agent-org-run-config-wire.test.ts`) plus the rendered RSM-02/03.
+- The Org undo is not exercised in the rendered probe.
 - A Team default's runtime edit switches every linked member at once; each activates separately, so a partially activated Team is a normal state (documented).
 - Restart between the save and the first message for a member and for a copy: MS-04 covers a Team member; a copy is not run.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
-- Review Entry Point: `Implementation Review` (round 3, `Targeted Delta Review`, rework IR-002)
-- Supported Product Scenario Gate: `Pass`; Material-Premise Gate: `Pass` (the wire decision now holds on the Org Settings read and Save result)
-- Score Summary: 9.2 / 10; categories 7 and 8 below the 9.2 target because of F-3
-- Failure Origin: implementation (the new web guard)
-- Recommended Recipient: implementation engineer
-- Notes: F-1 (server) and F-2 are resolved. One small, new defect in the same delta (the Org undo) keeps the result at Fail.
+- Review Decision: `Pass`
+- Review Entry Point: `Implementation Review` (round 4, `Targeted Delta Review`, IR-003)
+- Supported Product Scenario Gate: `Pass`; Material-Premise Gate: `Pass`
+- Score Summary: 9.4 / 10, every category ≥ 9.3
+- Failure Origin: N/A
+- Recommended Recipient: API/E2E engineer
+- Notes: F-1, F-2 and F-3 are resolved. The round-1 Pass (CRR-001) is replaced by this result after two failure rounds.

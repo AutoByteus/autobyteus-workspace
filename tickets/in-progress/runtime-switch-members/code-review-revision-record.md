@@ -7,6 +7,7 @@
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1, from IR-001 | N/A | Pass (superseded by CRR-002) | None (FU-C2 follow-up) |
 | CRR-002 | `code-review-report.md` | API/E2E Failure-Origin Review, from the API/E2E failure (RSM-02/03/04) | Pass (CRR-001) | Fail | F-1, F-2 (Local Fix) |
 | CRR-003 | `code-review-report.md` | Implementation Review, round 3, `Targeted Delta Review`, from IR-002 | Fail (CRR-002) | Fail | F-1, F-2 resolved; F-3 new (Local Fix) |
+| CRR-004 | `code-review-report.md` | Implementation Review, round 4, `Targeted Delta Review`, from IR-003 | Fail (CRR-003) | Pass | F-3 resolved |
 
 ## Revision Entries
 
@@ -74,3 +75,27 @@ None.
 - Material score or classification changes: overall 8.8 → 9.2; Large / High unchanged
 - Recommended recipient: implementation engineer
 - Remaining risks or uncertainty: whether a model-only copy Save was stale at the base (not proven, not needed); the replacement of API/E2E's contract test
+
+### CRR-004 — Targeted delta review of IR-003
+
+- Canonical review report updated: `code-review-report.md`
+- Review entry point and round: Implementation Review, round 4; scope `Targeted Delta Review` (one guard in one file, the prior finding F-3)
+- Triggering role, report path, and finding IDs: implementation engineer, `implementation-handoff.md` (IR-003); CRR-003 F-3
+- Relevant solution / architecture-review / implementation / API/E2E / delivery revision IDs: SR-001 / ARCH-REV-001, 002 / IR-003 / the API/E2E Fail round / N/A
+- Prior authoritative result: Fail (CRR-003)
+- Current authoritative result: Pass (9.4 / 10)
+- What changed in the review result and why: the web guard no longer demands a `null` session of an Agent whose runtime changed; the session is masked only for such Agents, so an undo restoring the original session is accepted while a session change of an unswitched Agent and any identity or topology drift are still refused. Adoption and store-level specs cover both placements; I re-ran the two specs (14 passed).
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| F-3 | Open | Resolved | IR-003 | `agentOrgRunConfigAdoption.ts`, the adoption and publication specs (14 passed), IMP-18, IMP-19 |
+| F-1 | Resolved (server) in CRR-003 | Resolved | IR-002 | unchanged |
+| F-2 | Resolved in CRR-003 | Resolved | IR-002 | unchanged |
+
+- New or remaining finding IDs: none
+- Material score or classification changes: overall 9.2 → 9.4; Large / High unchanged
+- Recommended recipient: API/E2E engineer; implementation engineer informed
+- Remaining risks or uncertainty: the Org undo is not rendered; the replacement of API/E2E's contract test
