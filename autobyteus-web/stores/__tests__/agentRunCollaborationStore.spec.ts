@@ -119,6 +119,34 @@ describe('agentRunCollaborationStore', () => {
     expect(reads).toHaveBeenCalledOnce()
   })
 
+  it('a deliberate re-read (fresh) reads the view again and publishes it; a failed one rejects with its reason (autobyteus-366, CR-003)', async () => {
+    const hydration = await import('~/services/agentCollaboration/agentRunCollaborationHydration')
+    const reads = vi.mocked(hydration.readAgentRunCollaboration)
+    const store = useAgentRunCollaborationStore()
+    await store.inspect('host-run')
+    const published = store.contextFor('host-run')!
+    reads.mockClear()
+    // A normal selection keeps the one read (DS-004).
+    expect(await store.viewFor('host-run')).toBe(published.view)
+    expect(reads).not.toHaveBeenCalled()
+    // After a committed Save: a new read, published.
+    const fresh = await store.viewFor('host-run', { fresh: true })
+    expect(reads).toHaveBeenCalledOnce()
+    expect(store.contextFor('host-run')).not.toBe(published)
+    expect(fresh).toBe(store.contextFor('host-run')!.view)
+    // A failed re-read rejects, never handing back the published (older) view.
+    reads.mockRejectedValueOnce(new Error('collaboration view unavailable'))
+    await expect(store.viewFor('host-run', { fresh: true })).rejects.toThrow('collaboration view unavailable')
+    const recovered = await store.viewFor('host-run', { fresh: true })
+    expect(recovered).toBe(store.contextFor('host-run')!.view)
+  })
+
+  it('a first read that fails fails Settings\' load with its reason, not a hub without copies (CR-003)', async () => {
+    const reads = vi.mocked((await import('~/services/agentCollaboration/agentRunCollaborationHydration')).readAgentRunCollaboration)
+    reads.mockRejectedValueOnce(new Error('collaboration view unavailable'))
+    await expect(useAgentRunCollaborationStore().viewFor('host-run')).rejects.toThrow('collaboration view unavailable')
+  })
+
   it('selecting a stopped hub whose stored view is already published reads it no more (QR-002); a hub that stops is read again', async () => {
     const reads = vi.mocked((await import('~/services/agentCollaboration/agentRunCollaborationHydration')).readAgentRunCollaboration)
     const store = useAgentRunCollaborationStore()

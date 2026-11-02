@@ -45,7 +45,8 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
   const expandedTeams = shallowReactive<Record<string, readonly string[]>>({})
   const errors = shallowReactive<Record<string, string | null>>({})
   const services = new Map<string, AgentRunCollaborationStreamingService>()
-  const inspections = new Map<string, Promise<void>>()
+  /** A read of a hub's view in flight; it ends with its failure's reason, or null. */
+  const inspections = new Map<string, Promise<string | null>>()
   const terminations = new Map<string, object>()
   const loaderRoot = (hostRunId: string) => `agent:${hostRunId}`
   const binding = useWindowNodeContextStore()
@@ -147,37 +148,46 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
     service?.disconnect()
   }
 
-  /** Loads the stored (or live) view without restoring anything. */
-  const inspect = (hostRunId: string): Promise<void> => {
-    if (terminations.has(hostRunId) || services.has(hostRunId)) return Promise.resolve()
+  /** Reads and publishes the stored (or live) view without restoring anything; ends with the read's failure, or null. */
+  const read = (hostRunId: string): Promise<string | null> => {
+    if (terminations.has(hostRunId) || services.has(hostRunId)) return Promise.resolve(null)
     const pending = inspections.get(hostRunId)
     if (pending) return pending
     const revision = binding.bindingRevision
     const isCurrent = () => inspections.get(hostRunId) === attempt
       && binding.bindingRevision === revision && !services.has(hostRunId) && !terminations.has(hostRunId)
-    const attempt = (async () => {
+    const attempt = (async (): Promise<string | null> => {
       try {
         const view = await readAgentRunCollaboration(hostRunId)
-        if (!isCurrent()) return
-        if (!view) { setContext(hostRunId, null); return }
+        if (!isCurrent()) return null
+        if (!view) { setContext(hostRunId, null); return null }
         const context = await buildAgentRunCollaborationContext({ hostRunId, view })
         if (isCurrent()) publish(hostRunId, context)
+        return null
       } catch (cause) {
-        if (isCurrent()) errors[hostRunId] = cause instanceof Error ? cause.message : String(cause)
+        const failure = cause instanceof Error ? cause.message : String(cause)
+        if (isCurrent()) errors[hostRunId] = failure
+        return failure
       }
     })().finally(() => { if (inspections.get(hostRunId) === attempt) inspections.delete(hostRunId) })
     inspections.set(hostRunId, attempt)
     return attempt
   }
+  /** Loads the stored (or live) view without restoring anything; a failure is kept as the hub's error. */
+  const inspect = async (hostRunId: string): Promise<void> => { await read(hostRunId) }
 
   /**
    * The hub's stored view for Settings (autobyteus-358, DS-004): the inspection in flight, else the published view,
    * else a new inspection, so one hub selection reads the view once.
    */
-  const viewFor = async (hostRunId: string): Promise<AgentRunCollaborationContext['view'] | null> => {
+  const viewFor = async (hostRunId: string, options: Readonly<{ fresh?: boolean }> = {}): Promise<AgentRunCollaborationContext['view'] | null> => {
+    // A deliberate re-read (after a committed Save, a stop or Refresh) never takes the published view, nor a read
+    // started before it (autobyteus-366).
+    if (options.fresh) inspections.delete(hostRunId)
     const pending = inspections.get(hostRunId)
-    if (pending) await pending
-    else if (!contexts.value[hostRunId]) await inspect(hostRunId)
+    const failure = pending ? await pending : options.fresh || !contexts.value[hostRunId] ? await read(hostRunId) : null
+    // A failed read fails the Settings load (its reason, and Refresh), never a silently older view.
+    if (failure) throw new Error(failure)
     return contexts.value[hostRunId]?.view ?? null
   }
 

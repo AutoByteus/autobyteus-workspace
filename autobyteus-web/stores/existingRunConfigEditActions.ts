@@ -83,15 +83,15 @@ export const existingRunConfigEditActions = {
     this.deriveSchemaStates()
   },
   /**
-   * After a lifecycle change (the stop icon): read the run's canonical settings again, so
-   * editability comes from the server, through the same loader as Refresh.
+   * After a lifecycle change (the stop icon) or a committed Save: read the run's canonical settings again, so
+   * editability comes from the server, through the same loader as Refresh. A hub's view is read again too.
    */
   async reloadCanonical(this: any, committed = false): Promise<boolean> {
     const target = this.loadTarget
     if (!target || this.saving || this.reconciling) return false
     if (committed) this.discardChanges()
     const binding = useWindowNodeContextStore().bindingRevision
-    const loading = target.kind === 'agent' ? this.loadAgentCanonical(target.runId)
+    const loading = target.kind === 'agent' ? this.loadAgentCanonical(target.runId, true)
       : target.kind === 'team' ? this.loadTeamCanonical(target.teamRunId) : this.loadAgentOrgCanonical(target.orgRunId)
     const request = this.canonicalLoadRequestId
     const loaded = await loading

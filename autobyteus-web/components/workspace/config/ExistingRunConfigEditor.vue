@@ -401,11 +401,7 @@ const canSave = computed(() => {
 const save = async (): Promise<void> => {
   if (!delegatedDraft.dirty) { await draftStore.save(); return }
   if (!canSave.value) return
-  await delegatedDraft.save(configuredPatches(), async () => {
-    // A stopped hub's copies are read from its published view, which this Save just outdated: publish the saved one first.
-    if (draft.value?.kind === 'agent' && !draft.value.isActive) await useAgentRunCollaborationStore().inspect(draft.value.runId)
-    return draftStore.reloadCanonical(true)
-  })
+  await delegatedDraft.save(configuredPatches(), () => draftStore.reloadCanonical(true))
 }
 const cancel = (): void => {
   draftStore.discardChanges()

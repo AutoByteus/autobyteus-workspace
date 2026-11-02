@@ -815,7 +815,7 @@ describe('stopped Agent canonical collaboration snapshot', () => {
     mocks.refreshAgent.mockResolvedValue(agentPayload())
     mocks.readCollaboration.mockReturnValueOnce(pending.promise)
     const loading = store.loadAgentCanonical('run-1')
-    await vi.waitFor(() => expect(mocks.readCollaboration).toHaveBeenCalledWith('run-1'))
+    await vi.waitFor(() => expect(mocks.readCollaboration).toHaveBeenCalledWith('run-1', { fresh: false }))
     expect(store.draft).toBeNull()
     const source = { ...snapshot(), communication_messages: ['not Settings data'] }
     pending.resolve(source)
@@ -845,7 +845,7 @@ describe('stopped Agent canonical collaboration snapshot', () => {
     mocks.refreshAgent.mockReturnValueOnce(phase === 'metadata' ? pending.promise : Promise.resolve(agentPayload()))
     if (phase === 'collaboration') mocks.readCollaboration.mockReturnValueOnce(pending.promise)
     const loading = store.loadAgentCanonical('run-1')
-    if (phase === 'collaboration') await vi.waitFor(() => expect(mocks.readCollaboration).toHaveBeenCalledWith('run-1'))
+    if (phase === 'collaboration') await vi.waitFor(() => expect(mocks.readCollaboration).toHaveBeenCalledWith('run-1', { fresh: false }))
     useWindowNodeContextStore().bindingRevision += 1
     pending.resolve(phase === 'metadata' ? agentPayload() : snapshot())
     expect(await loading).toBe(false)

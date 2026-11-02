@@ -31,7 +31,7 @@ vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ resume
 vi.mock('~/stores/agentContextsStore', () => ({ useAgentContextsStore: () => ({ getConfigForRun: () => null }) }))
 vi.mock('~/stores/agentDefinitionStore', () => ({ useAgentDefinitionStore: () => ({ getAgentDefinitionById: () => ({ name: 'Host' }) }) }))
 // autobyteus-358 (DS-004): Settings takes the hub's stored view from the collaboration store (`viewFor`).
-vi.mock('~/stores/agentRunCollaborationStore', () => ({ useAgentRunCollaborationStore: () => ({ viewFor: mocks.read, inspect: async () => undefined, selectedChild: () => mocks.focused.value,
+vi.mock('~/stores/agentRunCollaborationStore', () => ({ useAgentRunCollaborationStore: () => ({ viewFor: mocks.read, selectedChild: () => mocks.focused.value,
   contextFor: () => ({ view: mocks.live, getAgentContext: () => null }) }) }))
 vi.mock('~/composables/chat/useChatModelCatalog', () => ({ useChatModelCatalog: () => ({ ensureCatalog: vi.fn(), schemaFor: () => mocks.schema, modelLabel: (_runtime: string, id: string) => id }) }))
 vi.mock('~/stores/llmProviderConfig', () => ({ useLLMProviderConfigStore: () => ({ modelConfigSchemaByIdentifier: () => mocks.schema }) }))
@@ -76,6 +76,8 @@ describe('stopped Agent same-view canonical saved rows', () => {
     await wrapper.get('[data-test="save-existing-model-config"]').trigger('click'); await flushPromises()
     expect(mocks.stored.execution_tree.taskExecutions[0].userLaunchSelection.llmModelIdentifier).toBe('new')
     expect(mocks.live.execution_tree.taskExecutions[0].source.launchConfiguration.llmModelIdentifier).toBe('old')
+    // The first load reads the hub's view once; the committed Save reads it again, fresh (autobyteus-366, CR-003).
+    expect(mocks.read.mock.calls).toEqual([['host', { fresh: false }], ['host', { fresh: true }]])
     expect(row()).toBe('new:null')
     expect(useDelegatedLaunchDraftStore().dirty).toBe(false)
     expect(useExistingRunConfigStore().reconciliationRequired).toBe(false)
@@ -123,7 +125,12 @@ it('clears committed edits, locks stale rows with an honest error and retries re
   expect(useDelegatedLaunchDraftStore().feedback).toBeNull()
   expect(wrapper.get('[data-test="existing-run-note"]').text()).toContain('Settings were saved, but could not be refreshed')
   expect(wrapper.find('[data-test="existing-run-save-bar"]').exists()).toBe(false)
+  // No success, and the fields are locked until Refresh (CR-003).
+  expect(useDelegatedLaunchDraftStore().feedback?.kind).not.toBe('success')
+  expect(wrapper.get('[data-test="existing-run-settings"]').attributes('data-state')).toBe('refresh-required')
   await wrapper.get('[data-test="existing-run-refresh"]').trigger('click'); await flushPromises()
+  // Refresh reads the hub's view again, and shows the saved model.
+  expect(mocks.read).toHaveBeenLastCalledWith('host', { fresh: true })
   expect(wrapper.get('[data-test="/writer@copy"]').text()).toBe('new:null')
   expect(store.reconciliationRequired).toBe(false)
   expect(mocks.mutate).toHaveBeenCalledTimes(1)
