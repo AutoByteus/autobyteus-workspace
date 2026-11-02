@@ -7,6 +7,7 @@ The latest coverage investigation and execution coverage report remain authorita
 | Revision ID | Triggering Role / Report / Round | Related Upstream Revision IDs | Prior Result / Confidence | Current Result / Confidence |
 | --- | --- | --- | --- | --- |
 | API-REV-001 | Implementation engineer, `implementation-handoff.md` IR-001, round 1 | SR-002, IR-001 | N/A | Fail / 76% |
+| API-REV-002 | Implementation engineer, `implementation-handoff.md` IR-002, round 2 | CRR-001, IR-002 | Fail / 76% | Fail / 89% |
 
 ## Revision Entries
 
@@ -30,3 +31,27 @@ None.
 - New or remaining failure IDs: API-03 finding 1 (Org focus closes Settings, edit lost), finding 2 (a stopped Org copy's Save: refresh-required)
 - Recommended owner: failure-origin review by the code reviewer; preliminary `Local Fix` (implementation)
 - Remaining risks, blocked evidence, or untested scope: API-05, API-06 (four probes to rework), R07, R08
+
+### API-REV-002 — Round 2: the Org findings are resolved; four probes reworked; a Save whose read-back fails shows "Saved."
+
+- Triggering role, report path, and round: implementation engineer, `implementation-handoff.md` (IR-002), round 2
+- Triggering finding or case IDs: API-03 (round 1 Fail)
+- Related revision IDs: CRR-001 (CR-001, CR-002), IR-002
+- Why this revision was recorded: rerun after the Local Fix, and the deferred probe rework
+- Coverage decisions or durable test paths changed: the four probes that read the removed list now focus each copy (see the report's Durable Coverage table)
+- Cases added, changed, removed, or rechecked: API-02…API-04 rerun (Pass); API-05 run (Fail: SSR-003; 19 Pass); API-06 run (Pass); R07, R08 Not Tested
+- Commands, environment, fixture, or broader-validation delta: ENV-3 (two nodes) added
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| API-03 finding 1: an Org's focus change closed Settings and lost the pending edit | Local Fix (CRR-001 CR-001) | Resolved: `settingsClosedBy: []`, `pendingEditKept: true` | API-03 (AFS-002) |
+| API-03 finding 2: a stopped Org copy's Save stuck in refresh-required | Local Fix (CRR-001 CR-002) | Resolved: "Saved.", the card on the saved model | API-03 (AFS-002) |
+
+- Canonical artifacts and sections updated: investigation (round 2 note), report, progress log, `follow-ups.md` (FU-001), `evidence/api-e2e/`
+- Prior result and confidence: Fail, 76%
+- Current result and confidence: Fail, 89%
+- New or remaining failure IDs: API-05 SSR-003 (a committed Save whose read-back fails shows "Saved." with a stale card)
+- Recommended owner: failure-origin review by the code reviewer; preliminary `Local Fix` (implementation)
+- Remaining risks, blocked evidence, or untested scope: R07, R08 (provider runs); FU-001

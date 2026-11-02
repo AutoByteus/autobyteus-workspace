@@ -15,3 +15,10 @@ Read it first whenever you pick the run back up. Only add rows.
 | 2026-11-02T06:44:56Z | API-07 | Started | | folder picker rerun after probe locator fix (strict mode); R07/R08 need signed-in claude+codex: next round |
 | 2026-11-02T06:55:53Z | API-07 | Completed | Pass (folder picker) | FP-P01,02,04-08 Pass; FP-P03 Not Tested (native dialog); R07/R08 next round |
 | 2026-11-02T06:55:53Z | API-05, API-06 | Not run this round | | deferred: probes to rework after the Org fix |
+| 2026-11-02T07:39:59Z | round 2 | Started | | code 2dd3c665f5 (IR-002), head 5e77712afc; probes reworked (DLP/DCP/DCR/SSR/MRD); one stack run AFS + reworked cases, out /tmp/ab366e2e/r2-all |
+| 2026-11-02T08:11:10Z | API-05 | Checkpoint | | reworked cases: all pass except SSR-003 (real: a failed readback after a committed Save shows 'Saved.' with a stale card); test-side fixes: focus restore, hub refocus, SSR-004 apart from DLP-007, DCR-001 member row |
+| 2026-11-02T08:11:10Z | API-06 | Started | | model-routing-decisions probe (MRD-04 reworked) |
+| 2026-11-02T08:15:52Z | API-02..API-04 | Completed | Pass | r2: AFS-001..003 Pass on 2dd3c665f5 (Org: settingsClosedBy [], pendingEditKept true, stopped Org copy Save 'Saved.') |
+| 2026-11-02T08:15:52Z | API-05 | Completed | Fail | DLP-003..007, DCP-001..005, DCR-001..003, SSR-001/002/004 Pass after rework; SSR-003 Fail (real): committed Save + failed readback shows 'Saved.' with a stale card |
+| 2026-11-02T08:15:52Z | API-06 | Completed | Pass | MRD-01..08 Pass; MRD-04 remote copy read-only with its node chip |
+| 2026-11-02T08:15:52Z | observation | Completed | Follow-up | Org stopped by another client: Settings stay 'active' >= 20 s (FU-001) |

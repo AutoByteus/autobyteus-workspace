@@ -8,7 +8,7 @@ Paths are relative to `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-se
 
 - Requirements: `requirements-doc.md` (SR-002; DEC-001…DEC-006). Investigation: `investigation-notes.md`. Solution history: `solution-revision-record.md`. Design: `design-spec.md` (SR-002, `Medium` / `Low`). Supplement: `storage-analysis.md`.
 - Design review, code review: N/A (direct route). Implementation: `implementation-handoff.md`, `implementation-revision-record.md` (IR-001).
-- Revision record: `api-e2e-revision-record.md`; current `API-REV-001`. Round 1; trigger: implementation handoff IR-001 (direct low-risk route). Prior investigation: none.
+- Revision record: `api-e2e-revision-record.md`; current `API-REV-002`. Round 2; trigger: IR-002 (`2dd3c665f5`, CRR-001's Local Fix). Prior investigation: round 1 (this file).
 - Code: `cba2e085e7`, on autobyteus-348's `3261712e06`. Head `243baa36ca`.
 
 ## Current Requirement And Design Basis
@@ -84,3 +84,8 @@ None.
 - Proceed To API/E2E Execution: `Yes`
 - Repository-Resident Durable Coverage Will Be Added: `Yes`
 - Reroute Required Before Validation Execution: `No`
+
+## Round 2 Note
+
+- Recheck AFS-002 first. Then rework the four probes that read the removed list: a shared `delegatedRows(page, root)` walks a root's copies in the left tree and reads each card, or a Team copy's group view; the DCP, DCR, SSR and MRD-04 steps act on the focused card. Run them in one stack with AFS-001…003.
+- R07 and R08 are not run (provider runs; no provider proof is needed for this web-only change).
