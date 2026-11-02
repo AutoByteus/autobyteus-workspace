@@ -1,18 +1,35 @@
 import type { AgentOrgExecutionTree } from '~/types/collaboration/agentOrgExecution'
 
-/** Only model fields and mounted Team/configured-child workspace fields are mutable. */
+type OrgAgent = { address: string; platformAgentRunId: string | null; launchConfiguration: { runtimeKind: string } }
+
+/**
+ * Only the selection (agent runtime, model, settings) and mounted Team/configured-child workspace fields are mutable. A configured
+ * Agent whose agent runtime changed has switched or undone a pending switch (autobyteus-348): the server decides its session (a
+ * switch drops it, an undo restores the original), so any session is accepted for it and nothing else of its identity may differ;
+ * every other Agent keeps its session.
+ */
 export const assertAgentOrgRunConfigChange = (previous: AgentOrgExecutionTree, next: AgentOrgExecutionTree): void => {
+  const agentsOf = (tree: AgentOrgExecutionTree): OrgAgent[] => tree.rootOrg.members.flatMap(member => 'agentRunId' in member ? [member] : member.members)
+  const before = new Map(agentsOf(previous).map(agent => [agent.address, agent]))
+  const switched = new Set(agentsOf(next).filter(agent => {
+    const old = before.get(agent.address)
+    return old !== undefined && old.launchConfiguration.runtimeKind !== agent.launchConfiguration.runtimeKind
+  }).map(agent => agent.address))
   const masked = (tree: AgentOrgExecutionTree) => {
-    const model = <T extends { llmModelIdentifier: string; llmConfig: unknown }>(launch: T): T =>
-      ({ ...launch, llmModelIdentifier: '__MODEL__', llmConfig: null })
-    const teamLaunch = <T extends { llmModelIdentifier: string; llmConfig: unknown; workspaceRootPath: string | null }>(launch: T): T =>
-      ({ ...model(launch), workspaceRootPath: '__WORKSPACE__' })
+    const selection = <T extends { runtimeKind: string; llmModelIdentifier: string; llmConfig: unknown }>(launch: T): T =>
+      ({ ...launch, runtimeKind: '__RUNTIME__', llmModelIdentifier: '__MODEL__', llmConfig: null })
+    const teamLaunch = <T extends { runtimeKind: string; llmModelIdentifier: string; llmConfig: unknown; workspaceRootPath: string | null }>(launch: T): T =>
+      ({ ...selection(launch), workspaceRootPath: '__WORKSPACE__' })
+    const agent = <T extends OrgAgent & { launchConfiguration: { runtimeKind: string; llmModelIdentifier: string; llmConfig: unknown; workspaceRootPath: string | null } }>(
+      value: T, launch: (launchConfiguration: T['launchConfiguration']) => T['launchConfiguration']): T =>
+      ({ ...value, launchConfiguration: launch(value.launchConfiguration),
+        platformAgentRunId: switched.has(value.address) ? '__SWITCHED__' : value.platformAgentRunId })
     return { ...tree, rootOrg: { ...tree.rootOrg,
-      defaultLaunchConfiguration: model(tree.rootOrg.defaultLaunchConfiguration),
+      defaultLaunchConfiguration: selection(tree.rootOrg.defaultLaunchConfiguration),
       members: tree.rootOrg.members.map(member => 'agentRunId' in member
-        ? { ...member, launchConfiguration: model(member.launchConfiguration) }
+        ? agent(member, selection)
         : { ...member, defaultLaunchConfiguration: teamLaunch(member.defaultLaunchConfiguration),
-            members: member.members.map(agent => ({ ...agent, launchConfiguration: teamLaunch(agent.launchConfiguration) })) }) } }
+            members: member.members.map(value => agent(value, teamLaunch)) }) } }
   }
   if (JSON.stringify(masked(previous)) !== JSON.stringify(masked(next))) {
     throw new Error('Org configuration changed topology, identity, or locked fields.')

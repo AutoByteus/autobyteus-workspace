@@ -52,10 +52,10 @@ async function setup() {
     callbacks.get('onMessage')!(wire);
   };
   const snapshot = (ids: string[] = [], base = 0) => {
-    const tree = structuredClone(team.view.getExecutionTree());
-    tree.root_team.task_executions = ids.map(execution);
-    return { root_team_run_id: ROOT, base_change_sequence: base, closed_task_executions: [], execution_tree: tree,
-      messages: [], agent_input_states: [], remote_task_executions: [], agent_statuses: ['lead', 'configured-verifier', ...ids].map(id => ({ ...status(id), member_address: id === 'lead' ? '/lead' : '/verifier' })) };
+    const current = structuredClone(team.view.getExecutionTree());
+    const tree = { ...current, root_team: { ...current.root_team, task_executions: ids.map(execution) } };
+    return { root_team_run_id: ROOT, base_change_sequence: base, live_sequence_id: 'live-1', last_message_change_sequence: 0, closed_task_executions: [], execution_tree: tree,
+      agent_input_states: [], remote_task_executions: [], agent_statuses: ['lead', 'configured-verifier', ...ids].map(id => ({ ...status(id), member_address: id === 'lead' ? '/lead' : '/verifier' })) };
   };
   emit('CONNECTED', { session_id: 'initial', root_team_run_id: ROOT });
   emit('TEAM_EXECUTION_VIEW_SNAPSHOT', snapshot());
@@ -65,7 +65,11 @@ async function setup() {
   const witnesses: Array<{ entries: string[]; tree: string[]; tasks: string[]; sequence: number }> = [];
   wrapper = mount(defineComponent({ setup() {
     active = useActiveContextStore();
-    return () => h(TeamWorkspaceSurface, { target: active.activeWorkspaceTarget!, showHeaderActions: false });
+    return () => {
+      const target = active.activeWorkspaceTarget;
+      if (target?.kind !== 'standalone_team_member') throw new Error('expected the selected standalone team target');
+      return h(TeamWorkspaceSurface, { target, showHeaderActions: false });
+    };
   } }), { global: { plugins: [router], stubs: { Icon: true } } });
   // In addition to the actual synchronous composer dependency, observe the complete
   // association at each publication. Merely reversing two writes is insufficient.

@@ -6,7 +6,7 @@ import { routerProblem } from '../modelRoutingPresentation'
 /** autobyteus-32 supplement § 4: the problem line words each reason code the server gives (CR-002: signed out ≠ missing). */
 const t = (key: string, params?: Record<string, string | number>) => localizationRuntime.translate(key as never, params)
 const status = (reasonCode: ModelRoutingReasonCode, reasonParams: Record<string, string | null> = {}, reasonText: string | null = null): ModelRoutingStatus => ({
-  enabled: true, active: false, routerLaunch: { runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-sol' }, reasonCode, reasonParams, reasonText, agentRunId: null,
+  enabled: true, active: false, routerLaunch: { runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-sol', llmConfig: null }, reasonCode, reasonParams, reasonText, agentRunId: null,
 })
 
 describe('routerProblem (the page\'s problem line)', () => {

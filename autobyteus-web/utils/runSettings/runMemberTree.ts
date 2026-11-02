@@ -61,13 +61,13 @@ export interface RunMemberNode {
 
 /**
  * The user's control of a delegated copy row: where its model choice is recorded
- * (`agent:<run ID>` or `team:<run ID>`), the model it runs with before this edit, what its stop
+ * (`agent:<run ID>` or `team:<run ID>`), the agent runtime and model it runs with before this edit, what its stop
  * icon stops (only the copy itself, never one member of a Team), and whether its
  * copy is running (its model is locked until it is stopped).
  */
 export type RunMemberDelegatedFacts = Readonly<{
   target: `agent:${string}` | `team:${string}`
-  original: Readonly<{ llmModelIdentifier: string; llmConfig: Record<string, unknown> | null }>
+  original: Readonly<{ runtimeKind: string; llmModelIdentifier: string; llmConfig: Record<string, unknown> | null }>
   stop: Readonly<{ agentRunId: string }> | Readonly<{ teamRunId: string }> | null
   running: boolean
   stopping: boolean
@@ -345,8 +345,8 @@ const nameAt = (address: string): string => address.split('/').filter(Boolean).a
 
 /**
  * A saved Team or Org run: what each scope was saved with, with this edit's model and thinking
- * (`planner.draftSelection`; non-customized members follow their parent's edit) and, for a placed
- * team, its edited workspace. Runtime, approval and member workspaces stay as saved.
+ * (`planner.draftSelection`, with its agent runtime; non-customized members follow their parent's edit) and, for a
+ * placed team, its edited workspace. Approval and member workspaces stay as saved.
  */
 export const buildSavedRunMemberTree = (
   input: SavedRunMemberTreeInput,
@@ -357,7 +357,7 @@ export const buildSavedRunMemberTree = (
     if (!scope) throw new Error(`Saved run settings are missing configured scope '${address}'.`)
     return {
       workspace: workspace !== undefined ? workspace : deps.workspaceFromRootPath(launch.workspaceRootPath),
-      runtimeKind: launch.runtimeKind,
+      runtimeKind: scope.draftSelection.runtimeKind,
       llmModelIdentifier: scope.draftSelection.llmModelIdentifier,
       llmConfig: scope.draftSelection.llmConfig,
       autoExecuteTools: launch.autoExecuteTools,

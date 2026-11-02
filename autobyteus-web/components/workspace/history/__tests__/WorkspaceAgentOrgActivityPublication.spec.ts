@@ -71,8 +71,7 @@ beforeEach(() => {
     if (name === 'GetAgentOrgRootHistory') return { data: { getAgentOrgRootHistory: { ...historyResponse().data.listCollaborationRootHistory[0], is_active: !stopped } } }
     if (name === 'GetAgentOrgRunInspection') {
       if (stopped && !stoppedInspectionAvailable) throw new Error('Stopped inspection unavailable')
-      const view = taskBearingView()
-      if (stopped) { view.is_active = false; view.agent_statuses = [] }
+      const view = stopped ? { ...taskBearingView(), is_active: false, agent_statuses: [] } : taskBearingView()
       return { data: { getAgentOrgRunInspection: { root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: view } } }
     }
     if (name === 'GetAgentOrgMemberFileChanges') return { data: { getAgentOrgMemberFileChanges: [] } }
@@ -103,6 +102,8 @@ async function open(address: string) {
   await vi.waitFor(() => expect(orgs.contextFor('org-run')?.phase).toBe('live'))
   await flushPromises()
   orgs.select('org-run', address)
+  // The selected member's stored conversation loads when it is selected (autobyteus-358).
+  await flushPromises()
   const org = orgs.contextFor('org-run')!, context = org.selectedTarget()!.context
   const messages = JSON.stringify(context.conversation.messages)
   const selection = org.selection
@@ -121,7 +122,7 @@ async function open(address: string) {
       isAgentOrgMemberSelected: tree.isAgentOrgMemberSelected,
       isAgentOrgTerminating: (id: string) => Boolean(orgs.operations[id]) || runs.terminatingRunIds.has(id),
       agentOrgTerminationError: (id: string) => runs.terminationErrors[id] ?? orgs.errorFor(id), agentOrgContextFor: orgs.contextFor,
-    } as WorkspaceHistorySectionState
+    } as unknown as WorkspaceHistorySectionState // a partial stub: only the Org rows' members
     const actions = { onTerminateAgentOrg: (run) => {
       stopResult = subject.execute({ rootSubjectKind: 'agent_org', rootRunId: run.rootRunId, action: 'stop' })
         .catch((error) => { stopError = error })

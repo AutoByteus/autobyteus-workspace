@@ -1,3 +1,4 @@
+import { selectionContextFor } from "../../agent-execution/services/stopped-run-selection-context.js";
 import type { RunModelSelectionService, RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
 import type { RunModelOptions } from "../../llm-management/domain/run-model-selection.js";
 import type { RunModelConfigFieldError, RunModelConfigUpdateOutcome } from "../../run-history/domain/run-model-config.js";
@@ -98,11 +99,8 @@ export const planDelegatedLaunchValidation = (input: Readonly<{
     kind: "planned",
     targets,
     inputs: Object.freeze(targets.map((target) => ({
-      context: {
-        runtimeKind: target.current.runtimeKind,
-        currentModelIdentifier: target.current.llmModelIdentifier,
-        workspaceRootPath: target.current.workspaceRootPath ?? process.cwd(),
-      },
+      // The copy's effective agent runtime is the current one; another runtime (or a pending switch) is a fresh selection.
+      context: selectionContextFor({ ...target.current, pendingRuntimeSwitch: target.pendingRuntimeSwitch }, target.selection),
       selection: target.selection,
     }))),
   });
@@ -126,7 +124,7 @@ export const interpretDelegatedLaunchValidation = (
     kind: "valid",
     targets: Object.freeze(targets.map((target, index) => {
       const result = results[index]!;
-      return result.kind === "valid" ? Object.freeze({ ...target, selection: result.selection }) : target;
+      return result.kind === "valid" ? Object.freeze({ ...target, selection: { ...target.selection, ...result.selection } }) : target;
     })),
   });
 };

@@ -84,6 +84,7 @@ function makeAgentRunConfig(agentDefinitionId = 'agent-1'): AgentRunConfig {
     llmModelIdentifier: 'test-model',
     runtimeKind: DEFAULT_AGENT_RUNTIME_KIND,
     workspaceId: 'workspace-1',
+    workspaceMetadata: null,
     autoExecuteTools: false,
     isLocked: false,
   };

@@ -128,7 +128,7 @@ describe('extensionsStore', () => {
     const store = useExtensionsStore()
     await store.initialize()
 
-    let resolveInstall: ((value: any) => void) | null = null
+    let resolveInstall: ((value: any) => void) | undefined
     window.electronAPI.installExtension = vi.fn().mockImplementation(
       () => new Promise((resolve) => {
         resolveInstall = resolve

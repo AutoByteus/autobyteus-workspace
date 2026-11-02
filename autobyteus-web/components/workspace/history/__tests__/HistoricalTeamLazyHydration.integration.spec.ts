@@ -89,7 +89,7 @@ const buildWorkspaceHistoryResponse = () => ({
 const buildTeamResumeConfigResponse = () => ({
   getTeamRunResumeConfig: { remoteTaskExecutions: [], closedTaskExecutions: [],
     teamRunId: 'team-1',
-    isActive: false,
+    isActive: false, liveSequenceId: null, baseChangeSequence: 0, lastMessageChangeSequence: null,
     executionTree: buildCurrentExecutionTree(),
   },
 });
@@ -434,8 +434,9 @@ describe('Historical team lazy hydration integration', () => {
     expect(hydratedTeam?.view.getFocusedAgentRunId()).toBe('member-run-sd');
     expect(hydratedTeam?.view.getFocusedMemberAddress()).toBe('/solution_designer');
     expect(hydratedTeam?.view.getAgentContext('member-run-sd')?.state.conversation.messages.length).toBe(2);
-    expect(hydratedTeam?.view.getAgentContext('member-run-ar')?.state.conversation.messages.length).toBe(2);
-    expect(projectionCalls.sort()).toEqual(['member-run-ar', 'member-run-cr', 'member-run-sd']);
+    // Only the focused member is loaded at open (autobyteus-358, QR-005); another loads when it is opened.
+    expect(hydratedTeam?.view.getAgentContext('member-run-ar')?.state.conversation.messages.length).toBe(0);
+    expect(projectionCalls.sort()).toEqual(['member-run-sd']);
     expect(resumeConfigCalls).toBe(1);
     expect(selectionStore.selectedType).toBe('team');
     expect(selectionStore.selectedRunId).toBe('team-1');
@@ -446,7 +447,7 @@ describe('Historical team lazy hydration integration', () => {
 
     const refocusedTeam = teamContextsStore.getTeamContextById('team-1') as any;
     expect(resumeConfigCalls).toBe(1);
-    expect(projectionCalls.sort()).toEqual(['member-run-ar', 'member-run-cr', 'member-run-sd']);
+    expect(projectionCalls.sort()).toEqual(['member-run-ar', 'member-run-sd']);
     expect(refocusedTeam?.view.getFocusedMemberAddress()).toBe('/architect_reviewer');
     expect(refocusedTeam?.view.getAgentContext('member-run-ar')?.state.conversation.messages.length).toBe(2);
     expect(wrapper.find('h4').text()).toBe('architect_reviewer');

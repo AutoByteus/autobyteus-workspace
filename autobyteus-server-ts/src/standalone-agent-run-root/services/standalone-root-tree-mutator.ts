@@ -4,9 +4,12 @@ import {
   type DelegatedLaunchSelections,
 } from "../../agent-collaboration/domain/delegated-launch-selection.js";
 import { taskExecutionListsOf } from "../../agent-collaboration/collaborators/collaborator-source-projector.js";
+import { commitRuntimeSwitchOnRecord } from "../../run-history/domain/runtime-selection-rule.js";
+import type { PendingRuntimeSwitch } from "../../run-history/store/agent-run-metadata-types.js";
 import type {
   CollaborationAgentNoConversationBindingReplacement,
   CollaborationAgentPlatformBinding,
+  CollaborationAgentRuntimeSwitchCommit,
 } from "../../agent-collaboration/execution/domain/collaboration-agent-platform-binding.js";
 import type { RemoteTaskExecution, TaskExecution } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import { validateStandaloneRootTreePayload } from "../persistence/standalone-root-tree-schema.js";
@@ -95,6 +98,30 @@ export const replaceStandaloneRootPlatformBindingWithoutConversation = (input: {
     return { ...value, platformAgentRunId: input.replacement.binding.platformAgentRunId };
   });
   if (matches !== 1) throw new Error("Platform binding replacement target was not found exactly once in the Agent-root tree.");
+  return revalidate(next);
+};
+
+/**
+ * autobyteus-348: the activation's commit of a switched delegated copy hosted by this Agent root (the root's own host is a
+ * standalone run, committed through its metadata); the shared record step, with a thrown conflict.
+ */
+export const commitStandaloneRootRuntimeSwitch = (input: {
+  tree: StandaloneRootTreeSnapshot;
+  commit: CollaborationAgentRuntimeSwitchCommit;
+}): StandaloneRootTreeSnapshot => {
+  const { execution, switchId, platformAgentRunId } = input.commit;
+  if (execution.root.rootSubjectKind !== "agent" || execution.root.rootRunId !== input.tree.host.agentRunId) {
+    throw new Error("Runtime switch commit belongs to a different Agent root.");
+  }
+  let matches = 0;
+  const next = mapAgents(input.tree, (value) => {
+    if (value.agentRunId !== execution.agentRunId || value.address !== execution.memberAddress) return value;
+    matches += 1;
+    const result = commitRuntimeSwitchOnRecord(value as typeof value & { pendingRuntimeSwitch?: PendingRuntimeSwitch }, switchId, platformAgentRunId);
+    if (result.kind === "conflict") throw new Error(`Agent-root runtime switch commit does not match the persisted member (${result.reason}).`);
+    return result.record;
+  });
+  if (matches !== 1) throw new Error("Runtime switch commit target was not found exactly once in the Agent-root tree.");
   return revalidate(next);
 };
 

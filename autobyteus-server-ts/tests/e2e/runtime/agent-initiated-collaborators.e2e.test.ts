@@ -11,6 +11,7 @@ import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { buildE2eClientCommandIds, sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { closeLiveServerVault, initializeLiveServerVault, requireLiveCapability } from "../../../../test-support/test-vault/live-server-vault.js";
+import { readRootMessages, agentRunIdsOfViewTree } from "../../helpers/collaboration-participant-messages.js";
 
 /**
  * The collaboration model on real runtimes (live, paid/local inference): agent-initiated-collaborators SR-005 as revised by
@@ -136,7 +137,6 @@ type Record_ = Record<string, unknown>;
 type CollaborationView = {
   is_active: boolean;
   execution_tree: { taskExecutions: Record_[] };
-  communication_messages: { messages: Array<{ senderAgentRunId: string; receiverAgentRunId: string; content: string }> };
 };
 type ConversationEntry = { kind: string; role?: string | null; content?: string | null; senderAgentRunId?: string | null };
 type Comm = { sender: string; receiver: string; content: string };
@@ -299,6 +299,11 @@ describeLive("Agent-initiated collaborators on real runtimes (SR-005)", () => {
     return result.createAgentRun.runId!;
   };
 
+  /** The hub's messages between its agents, as its Team tabs load them (autobyteus-358: per participant). */
+  const hubMessages = async (runId: string) => {
+    const view = await collaborationView(runId);
+    return view ? readRootMessages(gql, { rootKind: "agent", rootRunId: runId, agentRunIds: agentRunIdsOfViewTree(view.execution_tree) }) : [];
+  };
   const collaborationView = async (runId: string): Promise<CollaborationView | null> =>
     (await gql<{ agentRunCollaboration: { root_agent: CollaborationView } | null }>(
       "query($runId: String!) { agentRunCollaboration(runId: $runId) }", { runId })).agentRunCollaboration?.root_agent ?? null;
@@ -567,7 +572,7 @@ describeLive("Agent-initiated collaborators on real runtimes (SR-005)", () => {
       expect(field(field(added.execution_tree.taskExecutions[0], "source"), "agentDefinitionId")).toBe(helperId);
       expect(await packageExists(pmRunId), "the first delegation creates the package").toBe(true);
       await poll("the copy's report", async () => {
-        const messages = (await collaborationView(pmRunId))?.communication_messages.messages ?? [];
+        const messages = await hubMessages(pmRunId);
         return messages.some((message) => message.senderAgentRunId === helperRunId && message.receiverAgentRunId === pmRunId && message.content.includes(token));
       });
       // The delegator may react to the report on its own; the next scripted step starts only after it has gone quiet.
@@ -633,7 +638,7 @@ describeLive("Agent-initiated collaborators on real runtimes (SR-005)", () => {
 
       let recorded: unknown = null;
       await poll("each copy: lead → own mate → lead → PM", async () => {
-        const messages = (await collaborationView(pmRunId))?.communication_messages.messages ?? [];
+        const messages = await hubMessages(pmRunId);
         recorded = messages.map((message) => `${message.senderAgentRunId} → ${message.receiverAgentRunId}: ${message.content.slice(0, 60)}`);
         return copies.every((copy) => {
           const lead = memberRunId(copy, "/lead");
@@ -647,7 +652,7 @@ describeLive("Agent-initiated collaborators on real runtimes (SR-005)", () => {
           .filter((item) => item.kind === "tool_call").map((item) => JSON.stringify(item).slice(0, 400))));
         throw new Error(`${error instanceof Error ? error.message : String(error)} Recorded: ${JSON.stringify(recorded)} Lead tool calls: ${JSON.stringify(leads)}`);
       });
-      const all = (await collaborationView(pmRunId))!.communication_messages.messages
+      const all = (await hubMessages(pmRunId))
         .map((message) => ({ sender: message.senderAgentRunId, receiver: message.receiverAgentRunId, content: message.content }));
       expect(crossings(all, copyMembers, [pmRunId]), "no message crosses copies").toEqual([]);
       for (const copy of copies) {
@@ -704,7 +709,7 @@ describeLive("Agent-initiated collaborators on real runtimes (SR-005)", () => {
         context_file_paths: [], image_urls: [], ...buildE2eClientCommandIds(),
       } }));
       await poll("the copy's lead reported", async () => {
-        const messages = (await collaborationView(pmRunId))?.communication_messages.messages ?? [];
+        const messages = await hubMessages(pmRunId);
         return messages.some((message) => message.senderAgentRunId === copyLead && message.receiverAgentRunId === pmRunId) ? messages : null;
       });
       const delegatedBy = (tree: unknown, address: string): boolean => {

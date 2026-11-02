@@ -53,6 +53,7 @@ describe('handleMemberInputMessage', () => {
 
     handleMemberInputMessage(
       {
+        recipient_agent_run_id: 'member-run-1',
         content: 'please inspect this context',
         received_at: '2026-06-11T12:00:01.000Z',
         message_id: 'msg-1',
@@ -75,6 +76,7 @@ describe('handleMemberInputMessage', () => {
 
     handleMemberInputMessage(
       {
+        recipient_agent_run_id: 'member-run-1',
         content: 'please inspect this context',
         message_id: 'msg-1',
         dedupe_key: 'dedupe-msg-1',
@@ -98,6 +100,7 @@ describe('handleMemberInputMessage', () => {
 
     handleMemberInputMessage(
       {
+        recipient_agent_run_id: 'member-run-1',
         content: 'a separate message',
         message_id: 'msg-other',
         dedupe_key: 'dedupe-msg-other',
@@ -116,6 +119,7 @@ describe('handleMemberInputMessage', () => {
 
     handleMemberInputMessage(
       {
+        recipient_agent_run_id: 'member-run-1',
         content: 'historical image without a valid local path',
         message_id: 'msg-2',
         context_file_paths: [{ path: 'local-file://opaque-context-file', type: 'image' }],

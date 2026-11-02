@@ -229,7 +229,8 @@ a Save-time reset or silent new conversation.
 
 Standalone and Team updates share this boundary. Every intended Team patch
 validates against its own original saved selection before any tree write. Only
-normalized pairs reach persistence; runtime kind remains fixed. No legacy
+normalized selections reach persistence; another agent runtime is validated as a fresh selection of it (`selectionContextFor`), the
+same one against its original saved selection. No legacy
 settings-only command adapter is retained. Metadata feasibility alone is not
 proof of actual same-conversation inference for every provider/model/version.
 

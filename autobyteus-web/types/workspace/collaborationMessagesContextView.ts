@@ -24,16 +24,17 @@ export interface CollaborationMessagePerspectiveRow {
   readonly counterpart: CollaborationMessageMemberIdentity
 }
 
-export interface CollaborationMessagesPerspective {
-  readonly messages: readonly CollaborationMessagePerspectiveRow[]
-}
-
 export interface CollaborationMessagesContextView {
   readonly rootKind: 'agent_team' | 'agent_org' | 'agent'
   readonly rootRunId: string
   readonly focusedAgentRunId: string
   readonly focusedMemberAddress: AgentTeamAddress
   memberIdentityByAgentRunId(): Readonly<Record<string, CollaborationMessageMemberIdentity>>
+  /** The focused participant's loaded messages, newest first; empty until they are loaded (autobyteus-358). */
   listMessages(): readonly CollaborationMessagePerspectiveRow[]
+  /** Whether those messages are loading, loaded, or could not be read (with the reason). */
+  messagesStatus(): Readonly<{ state: 'idle' | 'loading' | 'loaded' | 'error'; error: string | null }>
+  /** Asks for those messages when they are shown; after a failure it tries again. */
+  loadMessages(): void
   referenceContentPath(messageId: string, referenceId: string): string
 }

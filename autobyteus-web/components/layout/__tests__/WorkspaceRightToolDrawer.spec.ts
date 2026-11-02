@@ -40,14 +40,14 @@ describe('WorkspaceRightToolDrawer', () => {
     await nextTick()
     await nextTick()
 
-    const drawer = wrapper.get('[data-test="workspace-right-tool-drawer"]')
+    const drawer = wrapper.get<HTMLElement>('[data-test="workspace-right-tool-drawer"]')
     expect(drawer.attributes('role')).toBe('dialog')
     expect(drawer.attributes('aria-modal')).toBe('true')
     expect(drawer.attributes('aria-label')).toBe('Tools')
     expect(drawer.classes()).toEqual(expect.arrayContaining(['fixed', 'inset-y-0', 'right-0']))
     expect(drawer.classes()).not.toContain('inset-0')
     expect(drawer.element.style.zIndex).toBe('50')
-    const backdrop = wrapper.get('[data-test="workspace-right-tool-drawer-backdrop"]')
+    const backdrop = wrapper.get<HTMLElement>('[data-test="workspace-right-tool-drawer-backdrop"]')
     expect(backdrop.classes()).toEqual(expect.arrayContaining(['fixed', 'inset-0', 'z-40', 'bg-black/30']))
     expect(backdrop.classes()).not.toContain('bg-gray-900/50')
     expect(backdrop.element.style.zIndex).toBe('40')
@@ -106,7 +106,7 @@ describe('WorkspaceRightToolDrawer', () => {
       global: { mocks: { $t: (key: string) => key } },
     })
 
-    const origin = wrapper.get('[data-test="right-strip-origin"]')
+    const origin = wrapper.get<HTMLElement>('[data-test="right-strip-origin"]')
     origin.element.focus()
     await origin.trigger('click')
     await nextTick()
@@ -133,8 +133,8 @@ describe('WorkspaceRightToolDrawer', () => {
     })
 
     await nextTick()
-    expect(wrapper.get('[data-test="workspace-right-tool-drawer-backdrop"]').element.style.left).toBe('50px')
-    expect(wrapper.get('[data-test="workspace-right-tool-drawer-backdrop"]').element.style.zIndex).toBe('40')
+    expect(wrapper.get<HTMLElement>('[data-test="workspace-right-tool-drawer-backdrop"]').element.style.left).toBe('50px')
+    expect(wrapper.get<HTMLElement>('[data-test="workspace-right-tool-drawer-backdrop"]').element.style.zIndex).toBe('40')
     wrapper.unmount()
   })
 })

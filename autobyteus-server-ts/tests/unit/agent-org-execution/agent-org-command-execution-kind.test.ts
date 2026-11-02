@@ -4,6 +4,7 @@ import { RootEventPublisher } from "../../../src/agent-collaboration/execution/s
 import { AgentOrgRun } from "../../../src/agent-org-execution/domain/agent-org-run.js";
 import type { AgentOrgRunEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
+import { isAgentOrgMessageEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
 
 describe("AgentOrgRun command execution kind", () => {
   it("returns exact configured/task kind while preserving the generic result-only command surface", async () => {
@@ -29,7 +30,7 @@ describe("AgentOrgRun command execution kind", () => {
       } as never,
       callbacks: {} as never,
       persistence: {} as never,
-      publisher: new RootEventPublisher<AgentOrgRunEvent>(),
+      publisher: new RootEventPublisher<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent }),
       taskExecutionIdentity: {} as never,
     });
     run.activate();

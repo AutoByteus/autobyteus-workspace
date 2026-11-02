@@ -36,8 +36,8 @@ const tree: TeamRunExecutionTreeDto = {
         kind: 'agent_team', team_definition_id: 'se', coordinator_address: '/se/lead', handoffs: [], default_launch_configuration: claude,
         default_launch_source: { origin: 'inherited', fallbacks: [{ layer: 'team_default', runtime_kind: 'grok_build', llm_model_identifier: 'grok-4', reason: 'runtime_unavailable', detail: 'no grok' }] },
         members: [
-          { address: '/se/lead', agent_definition_id: 'lead' },
-          { address: '/se/cr', agent_definition_id: 'cr', launch_source: { origin: 'inherited', fallbacks: [{ layer: 'agent_default', runtime_kind: 'codex_app_server', llm_model_identifier: 'sol-6.1', reason: 'runtime_unavailable', detail: 'no codex' }] } },
+          { address: '/se/lead', agent_definition_id: 'lead', launch_configuration: claude, follows_team: true },
+          { address: '/se/cr', agent_definition_id: 'cr', launch_configuration: claude, follows_team: true, launch_source: { origin: 'inherited', fallbacks: [{ layer: 'agent_default', runtime_kind: 'codex_app_server', llm_model_identifier: 'sol-6.1', reason: 'runtime_unavailable', detail: 'no codex' }] } },
         ],
       },
     }],

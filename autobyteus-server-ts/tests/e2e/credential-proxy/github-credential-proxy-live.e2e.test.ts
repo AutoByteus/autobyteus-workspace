@@ -37,6 +37,7 @@ import {
   startBuiltTestServer,
   testRuntimeRoot,
 } from "../../../../test-support/live-e2e/test-runtime-bootstrap.mjs";
+import { SecretValue as ServerSecretValue } from "autobyteus-ts/secrets/secret-value.js";
 import { readLiveTestSecret } from "../../../../test-support/test-vault/live-test-secret.js";
 import { ApplicationDatabaseLocation } from "../../../src/config/application-database-location.js";
 import { SecretVaultBootstrap } from "../../../src/secret-management/bootstrap/secret-vault-bootstrap.js";
@@ -92,6 +93,7 @@ const run = (command: string, args: string[], cwd: string, home: string, env: Re
     } });
     let stdout = "";
     let stderr = "";
+    if (!child.stdout || !child.stderr) throw new Error(`${command}: stdout and stderr are piped`);
     child.stdout.on("data", (chunk) => { stdout += chunk; });
     child.stderr.on("data", (chunk) => { stderr += chunk; });
     child.on("error", reject);
@@ -162,6 +164,8 @@ describe.skipIf(!GATE)("GitHub through the Integrations page against real GitHub
   it("runs the integration's own scripts through the proxy for an agent with its skill, from a GitHub source and a local folder (AC-008)", async (context) => {
     const token = await readLiveTestSecret(context, "test.github.token");
     const secret = token.revealToTrustedConsumer();
+    // The test-support reader returns the autobyteus-ts source build's SecretValue; the server takes the package's own.
+    const connectToken = ServerSecretValue.fromString(secret);
     fs.chmodSync(localRoot, 0o700);
     const dataDir = path.join(localRoot, "data");
     const skillsDir = path.join(dataDir, "skills");
@@ -209,7 +213,7 @@ describe.skipIf(!GATE)("GitHub through the Integrations page against real GitHub
       await host.listen();
       // From the repository link, as a teammate does on the page.
       expect((await catalog.import(INTEGRATIONS_REPOSITORY)).map((entry) => entry.id)).toEqual(["github"]);
-      expect((await connections.connect("github", token)).connected).toBe(true);
+      expect((await connections.connect("github", connectToken)).connected).toBe(true);
 
       expect(await host.runAccess.environmentForRun({ runId: "run-without", agentDefinitionId: "agent-without" }, {})).toEqual({});
       const env = await host.runAccess.environmentForRun({ runId: "run-live", agentDefinitionId: "agent-live" }, {});
@@ -246,7 +250,7 @@ describe.skipIf(!GATE)("GitHub through the Integrations page against real GitHub
       expect(await catalog.removeSource(githubSource.sourceId)).toEqual(["GitHub"]);
       expect((await connections.status("github")).connected).toBe(false);
       expect((await catalog.import(localCopy)).map((entry) => [entry.id, entry.state, entry.source.kind])).toEqual([["github", "NEEDS_TOKEN", "LOCAL_PATH"]]);
-      await connections.connect("github", token);
+      await connections.connect("github", connectToken);
       const localEnv = await host.runAccess.environmentForRun({ runId: "run-local", agentDefinitionId: "agent-live" }, {});
       const issue = await run("curl", ["-sS", "-H", "Accept: application/vnd.github+json", `${localEnv["AUTOBYTEUS_GITHUB_API_URL"]}/repos/${REPOSITORY}/issues/1`], localRoot, home, localEnv);
       outputs.push(issue.stdout, issue.stderr);

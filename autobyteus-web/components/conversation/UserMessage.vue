@@ -21,7 +21,7 @@
           :skill-names="skillRequest.skillNames"
           :sent-text="message.text"
         />
-        <div v-if="displayText" class="whitespace-pre-wrap break-words text-gray-900 leading-6"><template
+        <div v-if="displayText" class="whitespace-pre-wrap break-words text-gray-900 leading-6" :class="{ 'long-unbroken-text': hasLongUnbrokenRun(displayText) }"><template
           v-for="(part, index) in displayParts"
           :key="index"
         ><span
@@ -74,6 +74,7 @@
 </template>
 
 <script setup lang="ts">
+import { hasLongUnbrokenRun } from '~/utils/text/longUnbrokenRun';
 import { computed, ref, watch } from 'vue';
 import { useFileExplorerStore } from '~/stores/fileExplorer';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';

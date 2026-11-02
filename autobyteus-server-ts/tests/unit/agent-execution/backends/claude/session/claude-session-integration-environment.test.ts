@@ -32,7 +32,7 @@ const resolveFor = (agentDefinitionId: string, integrationRunAccess: Integration
 
 describe("Claude run session integration environment", () => {
   const access: IntegrationRunAccess = {
-    environmentForRun: vi.fn((run: { agentDefinitionId: string }): Record<string, string> => (run.agentDefinitionId === "agent-allowed" ? { AUTOBYTEUS_GITHUB_API_URL: API_URL } : {})),
+    environmentForRun: vi.fn(async (run: { agentDefinitionId: string }): Promise<Record<string, string>> => (run.agentDefinitionId === "agent-allowed" ? { AUTOBYTEUS_GITHUB_API_URL: API_URL } : {})),
     revokeForRun: vi.fn(),
   };
 

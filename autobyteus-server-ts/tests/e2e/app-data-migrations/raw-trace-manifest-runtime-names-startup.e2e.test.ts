@@ -47,7 +47,6 @@ const stop = async (child: ChildProcess) => {
   try { await exited; } finally { clearTimeout(force); }
 };
 const memory = (...parts: string[]) => path.join(root, "memory", ...parts);
-const exists = (target: string) => fs.lstat(target).then(() => true, () => false);
 
 /** Only this test-owned root: private HOME and database; no inherited AUTOBYTEUS_* or provider values. */
 const environment = (): NodeJS.ProcessEnv => {

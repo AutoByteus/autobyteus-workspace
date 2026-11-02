@@ -12,19 +12,12 @@ import { commitTeamRunHydration, markCommittedTeamRunHydrationAuthority } from '
 import { isTeamMemberProjectionAuthoritative } from '../teamMemberProjectionHydrationService';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useRemoteRunsStore } from '~/stores/remoteRunsStore';
+import { useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages';
 
-const {
-  queryMock,
-  fetchTeamCommunicationMock,
-} = vi.hoisted(() => ({
-  queryMock: vi.fn(),
-  fetchTeamCommunicationMock: vi.fn(),
-}));
+const { queryMock } = vi.hoisted(() => ({ queryMock: vi.fn() }));
 
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: queryMock }) }));
-vi.mock('../teamCommunicationHydrationService', () => ({
-  fetchTeamCommunicationForTeam: fetchTeamCommunicationMock,
-}));
+vi.mock('~/services/collaborationMessages/participantMessagesQuery', async () => (await import('~/test-support/participantMessagesStub')).participantMessagesQueryStub);
 const tree = buildTestTeamContext({
   teamRunId: 'team-live-recovery',
   teamDefinitionId: 'team-def-1',
@@ -45,7 +38,6 @@ describe('hydrateLiveTeamRunContext current V2 aggregate', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
-    fetchTeamCommunicationMock.mockResolvedValue([]);
   });
 
   it('stages one exact AgentRun projection without mutating the Activity store', async () => {
@@ -56,7 +48,7 @@ describe('hydrateLiveTeamRunContext current V2 aggregate', () => {
       variables.agentRunId
         ? { data: { getTeamMemberRunProjection: projection }, errors: [] }
         : { data: { getTeamRunResumeConfig: { remoteTaskExecutions: [], closedTaskExecutions: [],
-            teamRunId: 'team-live-recovery', isActive: true, executionTree: tree,
+            teamRunId: 'team-live-recovery', isActive: true, liveSequenceId: 'live-1', baseChangeSequence: 0, lastMessageChangeSequence: 0, executionTree: tree,
           } }, errors: [] }
     ));
 
@@ -95,7 +87,7 @@ describe('hydrateLiveTeamRunContext current V2 aggregate', () => {
       variables.agentRunId
         ? { data: { getTeamMemberRunProjection: { agentRunId: variables.agentRunId, conversation: [], activities: [], hasEarlierActiveTraceEvents: false } }, errors: [] }
         : { data: { getTeamRunResumeConfig: { remoteTaskExecutions: [], closedTaskExecutions: [{ agentRunId: 'closed-copy' }],
-            teamRunId: 'team-live-recovery', isActive: false, executionTree: delegatedTree,
+            teamRunId: 'team-live-recovery', isActive: false, liveSequenceId: null, baseChangeSequence: 0, lastMessageChangeSequence: null, executionTree: delegatedTree,
           } }, errors: [] }
     ));
     const { hydratedContext: { view } } = await hydrateLiveTeamRunContext({
@@ -117,7 +109,7 @@ describe('hydrateLiveTeamRunContext current V2 aggregate', () => {
     ] } };
     queryMock.mockImplementation(async ({ variables }) => variables.agentRunId
       ? { data: { getTeamMemberRunProjection: { agentRunId: variables.agentRunId, conversation: [], activities: [], hasEarlierActiveTraceEvents: false } } }
-      : { data: { getTeamRunResumeConfig: { remoteTaskExecutions: [], closedTaskExecutions: [], teamRunId: 'team-live-recovery', isActive, executionTree: retainedTree } } });
+      : { data: { getTeamRunResumeConfig: { remoteTaskExecutions: [], closedTaskExecutions: [], teamRunId: 'team-live-recovery', isActive, liveSequenceId: isActive ? 'live-1' : null, baseChangeSequence: 0, lastMessageChangeSequence: isActive ? 0 : null, executionTree: retainedTree } } });
     const result = await hydrateLiveTeamRunContext({ teamRunId: 'team-live-recovery', agentRunId: 'retained-task',
       resolveWorkspaceMetadataByRootPath: vi.fn().mockResolvedValue(null), ensureWorkspaceByRootPath: vi.fn().mockResolvedValue(null) });
     const view = result.hydratedContext.view;
@@ -133,7 +125,7 @@ describe('hydrateLiveTeamRunContext current V2 aggregate', () => {
       variables.agentRunId
         ? { data: { getTeamMemberRunProjection: null }, errors: [] }
         : { data: { getTeamRunResumeConfig: { remoteTaskExecutions: [], closedTaskExecutions: [],
-            teamRunId: 'team-live-recovery', isActive: true, executionTree: tree,
+            teamRunId: 'team-live-recovery', isActive: true, liveSequenceId: 'live-1', baseChangeSequence: 0, lastMessageChangeSequence: 0, executionTree: tree,
           } }, errors: [] }
     ));
 
@@ -145,7 +137,7 @@ describe('hydrateLiveTeamRunContext current V2 aggregate', () => {
     })).rejects.toThrow("Team member projection payload missing for 'run-a'.");
   });
 
-  it('keeps the requested projection exact while treating nonfocused members as best effort', async () => {
+  it('stages the requested member exactly and requests no other member (autobyteus-358, QR-005)', async () => {
     const twoMemberTree = buildTestTeamContext({
       teamRunId: 'team-live-recovery',
       teamDefinitionId: 'team-def-1',
@@ -163,7 +155,7 @@ describe('hydrateLiveTeamRunContext current V2 aggregate', () => {
     queryMock.mockImplementation(async ({ variables }: { variables: Record<string, unknown> }) => {
       if (!variables.agentRunId) {
         return { data: { getTeamRunResumeConfig: { remoteTaskExecutions: [], closedTaskExecutions: [],
-          teamRunId: 'team-live-recovery', isActive: true, executionTree: twoMemberTree,
+          teamRunId: 'team-live-recovery', isActive: true, liveSequenceId: 'live-1', baseChangeSequence: 0, lastMessageChangeSequence: 0, executionTree: twoMemberTree,
         } }, errors: [] };
       }
       if (variables.agentRunId === 'run-a') {
@@ -183,13 +175,14 @@ describe('hydrateLiveTeamRunContext current V2 aggregate', () => {
 
     expect(result.focusedAgentRunId).toBe('run-a');
     expect(result.projectionByAgentRunId.get('run-a')).toEqual(expect.objectContaining({ agentRunId: 'run-a' }));
-    expect(result.projectionByAgentRunId.get('run-b')).toBeNull();
+    expect(result.projectionByAgentRunId.has('run-b')).toBe(false);
     expect(result.memberRunStates.map((replacement) => replacement.runId)).toEqual(['run-a']);
+    expect(queryMock.mock.calls.map(([options]) => options.variables.agentRunId).filter(Boolean)).toEqual(['run-a', 'run-a']);
   });
 
   it('rejects a requested root that disagrees with the execution tree', async () => {
     queryMock.mockResolvedValue({ data: { getTeamRunResumeConfig: { remoteTaskExecutions: [], closedTaskExecutions: [],
-      teamRunId: 'foreign-root', isActive: false, executionTree: tree,
+      teamRunId: 'foreign-root', isActive: false, liveSequenceId: null, baseChangeSequence: 0, lastMessageChangeSequence: null, executionTree: tree,
     } }, errors: [] });
     await expect(hydrateLiveTeamRunContext({
       teamRunId: 'team-live-recovery',
@@ -215,7 +208,7 @@ describe('hydrateLiveTeamRunContext current V2 aggregate', () => {
         return { data: { getTeamMemberRunProjection: emptyProjection }, errors: [] };
       }
       return { data: { getTeamRunResumeConfig: { remoteTaskExecutions: [], closedTaskExecutions: [],
-        teamRunId: 'team-live-recovery', isActive: true, executionTree: tree,
+        teamRunId: 'team-live-recovery', isActive: true, liveSequenceId: 'live-1', baseChangeSequence: 0, lastMessageChangeSequence: 0, executionTree: tree,
       } }, errors: [] };
     });
 
@@ -263,7 +256,7 @@ describe('hydrateLiveTeamRunContext current V2 aggregate', () => {
         } }, errors: [] };
       }
       return { data: { getTeamRunResumeConfig: { remoteTaskExecutions: [], closedTaskExecutions: [],
-        teamRunId: 'team-live-recovery', isActive: true, executionTree: tree,
+        teamRunId: 'team-live-recovery', isActive: true, liveSequenceId: 'live-1', baseChangeSequence: 0, lastMessageChangeSequence: 0, executionTree: tree,
       } }, errors: [] };
     });
 
@@ -291,7 +284,7 @@ describe('hydrateLiveTeamRunContext current V2 aggregate', () => {
       }
       if (variables.agentRunId) return { data: { getTeamMemberRunProjection: projection }, errors: [] };
       return { data: { getTeamRunResumeConfig: { remoteTaskExecutions: [], closedTaskExecutions: [],
-        teamRunId: 'team-live-recovery', isActive: true, executionTree: tree,
+        teamRunId: 'team-live-recovery', isActive: true, liveSequenceId: 'live-1', baseChangeSequence: 0, lastMessageChangeSequence: 0, executionTree: tree,
       } }, errors: [] };
     });
 
@@ -304,7 +297,7 @@ describe('hydrateLiveTeamRunContext current V2 aggregate', () => {
   });
 });
 
-describe('Team open loads each member artifact list with its run state', () => {
+describe('Team open loads the focused member artifact list with its run state (autobyteus-358)', () => {
   const twoMemberTree = () => buildTestTeamContext({
     teamRunId: 'team-artifacts',
     teamDefinitionId: 'team-def-1',
@@ -335,7 +328,8 @@ describe('Team open loads each member artifact list with its run state', () => {
           agentRunId: variables.agentRunId, conversation: [], activities: [], hasEarlierActiveTraceEvents: false,
         } }, errors: [] };
       }
-      return { data: { getTeamRunResumeConfig: { remoteTaskExecutions: [], closedTaskExecutions: [], teamRunId: 'team-artifacts', isActive: input.isActive, executionTree: tree } }, errors: [] };
+      return { data: { getTeamRunResumeConfig: { remoteTaskExecutions: [], closedTaskExecutions: [], teamRunId: 'team-artifacts', isActive: input.isActive, executionTree: tree,
+        liveSequenceId: input.isActive ? 'live-team-1' : null, baseChangeSequence: input.isActive ? 3 : 0, lastMessageChangeSequence: input.isActive ? 0 : null } }, errors: [] };
     });
   };
   const open = () => hydrateLiveTeamRunContext({
@@ -349,10 +343,9 @@ describe('Team open loads each member artifact list with its run state', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
-    fetchTeamCommunicationMock.mockResolvedValue([]);
   });
 
-  it.each([true, false])('commits every member artifact list when the Team opens (active=%s; AC-001, AC-002)', async (isActive) => {
+  it.each([true, false])('commits the focused member artifact list when the Team opens; the others load on selection (active=%s; AC-003)', async (isActive) => {
     serve({ isActive });
     const candidate = await open();
     expect(paths('run-a')).toEqual([]);
@@ -361,26 +354,40 @@ describe('Team open loads each member artifact list with its run state', () => {
     markCommittedTeamRunHydrationAuthority(candidate);
 
     expect(paths('run-a')).toEqual(['/outputs/1.png', '/outputs/2.png']);
-    expect(paths('run-b')).toEqual(['/outputs/1.png', '/outputs/2.png']);
-    expect(isTeamMemberProjectionAuthoritative(candidate.hydratedContext, 'run-b')).toBe(true);
+    expect(paths('run-b')).toEqual([]);
+    expect(isTeamMemberProjectionAuthoritative(candidate.hydratedContext, 'run-a')).toBe(true);
+    expect(isTeamMemberProjectionAuthoritative(candidate.hydratedContext, 'run-b')).toBe(false);
     expect(queryMock.mock.calls.filter(([options]) => options.query === GetTeamMemberFileChanges).map(([options]) => options.variables))
-      .toEqual(expect.arrayContaining([
-        { teamRunId: 'team-artifacts', agentRunId: 'run-a' },
-        { teamRunId: 'team-artifacts', agentRunId: 'run-b' },
-      ]));
+      .toEqual([{ teamRunId: 'team-artifacts', agentRunId: 'run-a' }]);
   });
 
-  it('leaves a nonfocused member whose artifacts fail unhydrated, so it is loaded again on selection (AC-007)', async () => {
-    serve({ isActive: true, failingArtifactsFor: 'run-b' });
+  it('a running Team commits at its live sequence, so the stream snapshot that follows keeps a list loaded in between (SR-006)', async () => {
+    serve({ isActive: true });
     const candidate = await open();
-
-    expect(candidate.projectionByAgentRunId.get('run-b')).toBeNull();
-    expect(candidate.memberRunStates.map((state) => state.runId)).toEqual(['run-a']);
+    expect(candidate.rebuild).toEqual({ liveSequenceId: 'live-team-1', baseChangeSequence: 3, lastMessageChangeSequence: 0 });
+    const owner = useCollaborationParticipantMessagesStore();
+    const key = { rootKind: 'agent_team', rootRunId: 'team-artifacts', agentRunId: 'run-a' } as const;
     commitTeamRunHydration(candidate);
     markCommittedTeamRunHydrationAuthority(candidate);
-    expect(paths('run-a')).toEqual(['/outputs/1.png', '/outputs/2.png']);
-    expect(paths('run-b')).toEqual([]);
-    expect(isTeamMemberProjectionAuthoritative(candidate.hydratedContext, 'run-b')).toBe(false);
+    owner.load(key);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    // The stream's snapshot at the same sequence: the list is kept (one fetch per running-Team open).
+    owner.reloadRoot('agent_team', 'team-artifacts', { liveSequenceId: 'live-team-1', baseChangeSequence: 3, lastMessageChangeSequence: 0 });
+    expect(owner.statusOf(key).state).toBe('loaded');
+  });
+
+  it('a stopped Team names no live sequence: its commit reloads the lists (SR-006)', async () => {
+    serve({ isActive: false });
+    const candidate = await open();
+    expect(candidate.rebuild).toEqual({ liveSequenceId: null, baseChangeSequence: 0, lastMessageChangeSequence: null });
+    const owner = useCollaborationParticipantMessagesStore();
+    const key = { rootKind: 'agent_team', rootRunId: 'team-artifacts', agentRunId: 'run-a' } as const;
+    owner.load(key);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    markCommittedTeamRunHydrationAuthority(candidate);
+    expect(owner.statusOf(key).state).toBe('loading');
   });
 
   it('fails the open when the focused member artifacts fail, as for its projection (AC-007)', async () => {
@@ -405,7 +412,6 @@ describe('a stopped Team root with remote runs (autobyteus-278)', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
-    fetchTeamCommunicationMock.mockResolvedValue([]);
   });
 
   const remoteTeam = {
@@ -419,7 +425,7 @@ describe('a stopped Team root with remote runs (autobyteus-278)', () => {
     queryMock.mockImplementation(async ({ query, variables }: { query: unknown; variables: Record<string, unknown> }) => {
       if (!variables.agentRunId) {
         return { data: { getTeamRunResumeConfig: { remoteTaskExecutions: [remoteTeam], closedTaskExecutions: [],
-          teamRunId: 'team-live-recovery', isActive: false, executionTree: tree } }, errors: [] };
+          teamRunId: 'team-live-recovery', isActive: false, liveSequenceId: null, baseChangeSequence: 0, lastMessageChangeSequence: null, executionTree: tree } }, errors: [] };
       }
       if (query === GetTeamMemberRunProjection) reads.push(String(variables.agentRunId));
       return { data: { getTeamMemberRunProjection: { agentRunId: variables.agentRunId, conversation: [], activities: [], hasEarlierActiveTraceEvents: false } }, errors: [] };

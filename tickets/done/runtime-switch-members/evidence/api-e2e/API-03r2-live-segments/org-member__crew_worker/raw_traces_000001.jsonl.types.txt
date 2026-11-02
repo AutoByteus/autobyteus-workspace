@@ -1,0 +1,5 @@
+system_instruction  ## Agent Identity  - Name: live-org-member 79abb5 - Description: live 
+user  Use your shell tool to run the command `ls`, then reply with exactly: 
+tool_call  
+tool_result  
+assistant  DONE

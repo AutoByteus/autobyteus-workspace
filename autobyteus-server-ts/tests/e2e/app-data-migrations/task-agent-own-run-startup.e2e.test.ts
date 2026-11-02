@@ -278,7 +278,7 @@ describe("task agent own run: the built server upgrades a faithful released inst
     expect((await first.gql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: "hub" })).agentRunCollaboration).toBeTruthy();
     // The user keeps working: a stopped, migrated task agent's model is changed in the team run's Settings.
     const changed = (await first.gql(`mutation($input:UpdateDelegatedLaunchSelectionsInput!){updateDelegatedLaunchSelections(input:$input){success outcome message fieldErrors{path message}}}`,
-      { input: { rootKind: "AGENT_TEAM", rootRunId: "team-r", changes: [{ agentRunId: "nd-copy", selection: { llmModelIdentifier: ALT, llmConfig: null } }] } })).updateDelegatedLaunchSelections;
+      { input: { rootKind: "AGENT_TEAM", rootRunId: "team-r", changes: [{ agentRunId: "nd-copy", selection: { runtimeKind: "antigravity_cli", llmModelIdentifier: ALT, llmConfig: null } }] } })).updateDelegatedLaunchSelections;
     expect(changed, JSON.stringify(changed)).toMatchObject({ success: true });
     await first.stop();
     await fs.chmod(blocked, 0o755);

@@ -1,0 +1,19 @@
+# Clean-clone run of codex/large-runs-load-less @ 245d43b8b4 (/tmp/ab358-clone); full log 146521 bytes, trimmed to summaries, skips and failures.
+Successfully registered tool definition: 'DummyToolFailsInit'
+Failed to instantiate LLM response processor 'ProcWithInitError' from class 'ProcWithInitError': Error: Init failed
+Failed to instantiate input processor 'ProcWithInitError' from class 'ProcWithInitError': Error: Init failed
+Failed to instantiate tool execution result processor 'ProcWithInitError': Error: Init failed
+Failed to instantiate tool invocation preprocessor 'ProcWithInitError': Error: Init failed
+Failed to read and encode file at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-test-zy8Axv/missing.png: Error: ENOENT: no such file or directory, open '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-test-zy8Axv/missing.png'
+Failed to download from URL https://example.com/notfound.jpg: Error: Not Found
+Failed to read and encode file at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-test-eifPRt/empty.png: Error: Media file '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-test-eifPRt/empty.png' is empty.
+Failed to download from URL https://127.0.0.1:51739/media/images/b132adbb-80e4-4faf-bd36-44d965d2e095.jpg: Error: Media URL 'https://127.0.0.1:51739/media/images/b132adbb-80e4-4faf-bd36-44d965d2e095.jpg' returned an empty payload.
+Agent 'agent-1': Executing 1 lifecycle processors for 'before_llm_call': Fails
+Agent 'agent-1': Error executing lifecycle processor 'Fails' for 'before_llm_call': Error: boom
+Failed to fetch Ollama model details for 'llama3.3:70b' from http://127.0.0.1:11434: show failed
+Failed to load image from URL/path '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-utils-473ZMu/missing.png': ENOENT: no such file or directory, open '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-utils-473ZMu/missing.png'
+ Test Files  311 passed (311)
+      Tests  2104 passed (2104)
+   Start at  17:40:26
+   Duration  10.45s (transform 7.43s, setup 2.95s, import 25.14s, tests 36.33s, environment 17ms)
+exit=0

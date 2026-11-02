@@ -1,0 +1,376 @@
+# Design Review Report
+
+## Review Round Meta
+
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/large-runs-load-less/tickets/in-progress/large-runs-load-less/requirements-doc.md` (SR-001, approved by the Solution Designer within the direction; user informed)
+- Upstream Investigation Notes: `…/investigation-notes.md`
+- Upstream Solution Revision Record: `…/solution-revision-record.md`
+- Reviewed Design Spec: `…/design-spec.md` (SR-008, Ready; user approval of the design `Not required`)
+- Supplemental Task Artifacts Reviewed: `evidence/M-*` (before measurements, the CPU profile), `evidence/probes/*.mjs`
+- Relevant Solution Revision IDs: `SR-001`…`SR-008`
+- Architecture Review Revision Record: `…/architecture-review-revision-record.md`
+- Current Architecture Review Revision ID: `ARCH-REV-008`
+- Current Review Round: `8` (targeted: SR-008, one message predicate per root, for AR-006)
+- Trigger: Solution Designer re-review request (SR-008), 2026-11-01
+- Prior Review Round Reviewed: `7` (ARCH-REV-007, Fail: AR-006)
+- Latest Authoritative Round: `8`
+- Current-State Evidence Basis: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/large-runs-load-less` @ `efd28d5c4a` (no source changes). Code opened at the lines cited below.
+
+## Round 8 Scope (SR-008, Targeted)
+
+- **AR-006 is resolved.** Each root owns a required `isMessageEvent` predicate, passed as `new RootEventPublisher({ isMessageEvent })`. `publish` sets `lastMessageChangeSequence` when the predicate holds.
+- **Construction sites verified.** These are the only three in production code:
+  - `standalone-root-builder.ts:132`: `kind === "communication"`;
+  - `agent-org-execution-scope-builder.ts:56`: `kind === "communication"`;
+  - `team-root-materializer.ts:55`, through the `TeamRunEventPublisher` alias: `eventSourceType === TeamRunEventSourceType.COMMUNICATION`.
+- Each predicate matches the client's append sites: `agentRunCollaborationContext.ts:181`, `agentOrgExecutionContext.ts:276`, `teamExecutionViewState.ts:436-443`.
+- Making the parameter required means a new root kind cannot omit it.
+- **Tests:** one per root kind (a message advances M; a presentation event does not).
+- **Implementation note:** 17 test files construct publishers directly, and their fixtures must now pass a predicate.
+
+## Round 7 Scope (SR-007, Targeted)
+
+- **The finding and the re-examination are right.** The keep rule measured every root change, but a delegation's reconnect window always contains the new copy's presentation events, so B > C and every delegation reloaded (API-08 L-002). The Team tab only needs to know whether a **message** was published after C. REQ-002 is unchanged.
+- **The rule is sound.** C means "the lists hold every message through C". M is `last_message_change_sequence`, read in the same `RootLivePosition` as the ID and B (`root-event-publisher.ts:8-9,40-43`).
+  - A rebuild with the same non-null ID and M ≤ C cannot have missed a message in (C, B], so keeping the lists and setting C := B is correct.
+  - That holds for in-flight loads too: no message was published after C.
+  - Anything else reloads.
+  - Rejecting (b) (reconnect protocol rework) and (c) (keeping the per-delegation reload) is proportionate.
+- **Gap: "the latest `communication` event" is not one thing in a generic publisher.**
+  - `RootEventPublisher<TEvent>` (`root-event-publisher.ts:25-50`) is shared by three event types whose message events have different shapes:
+    - Agent root: `{ kind: "communication", message }` (`standalone-agent-run-root.ts:228`, `standalone-root-event.ts:22`);
+    - Org: `{ kind: "communication", message }` (`agent-org-run.ts:174`, `agent-org-run-event.ts:17`);
+    - Team: `{ eventSourceType: TeamRunEventSourceType.COMMUNICATION, payload }`, projected to the client's `TEAM_COMMUNICATION_MESSAGE` (`team-execution-view-projector.ts:76-80`).
+  - The design names no owner for "is this a message event" per root. If that predicate misses one root's message shape, M never advances for that root, lists are kept, and messages are silently missed (REQ-002). See AR-006.
+
+## Round 6 Scope (SR-006, Targeted)
+
+- **The finding is confirmed in code.** The Team open and resume commit always reloads as a stored rebuild: `reloadRoot('agent_team', …, { liveSequenceId: null, baseChangeSequence: 0 })` (`autobyteus-web/services/runHydration/teamRunHydrationCommit.ts:40`). Its source, `getTeamRunResumeConfig` (`api/graphql/types/team-run-history.ts:94-106`), reports `isActive` but no live sequence. So the stream snapshot that follows reloads a list loaded in between: 2 fetches per running-Team open (CRR-004 / CR-003).
+- **Option (a) is right.** It is the same rule as hub and Org.
+  - The resume config adds `liveSequenceId` and `baseChangeSequence` from the active Team's `RootEventPublisher` (`null` and `0` when stopped).
+  - The commit passes them to `reloadRoot` as a live rebuild.
+  - Rejecting (b), a Team-only timing rule, and (c), accepting the double fetch, is sound.
+- **Correctness of committing with the resume config's B.** No stream events are applied between that commit and the attach snapshot. The snapshot then compares its base B2 under the same identity:
+  - if a message was produced after B, then B2 > B, and the list reloads;
+  - if nothing was produced, B2 = B, and the list is kept;
+  - a list loaded after the commit queries server state at or after B, so it already includes every message up to B;
+  - a different identity (the run stopped or restarted meanwhile) reloads.
+- **Condition (recorded for implementation):** read `liveSequenceId` and `baseChangeSequence` together from the same publisher in one read, so the pair always describes one live sequence.
+- **Test:** 1 participant fetch per running-Team open with the Team tab loaded in between; 1 for a stopped Team. API/E2E rechecks the Team counts.
+
+## Round 5 Scope (SR-005, Targeted)
+
+- **Option (b) is adopted.** `RootEventPublisher` gets a random `liveSequenceId` per instance. Active views and live snapshots carry it as `live_sequence_id`; stored views carry `null`. It is added to the three view contracts and their projectors.
+- `CollaborationParticipantMessages` keeps C together with the identity it belongs to.
+- `reloadRoot` keeps the lists only when the identity is non-null, unchanged, and B ≤ C. Every other rebuild reloads: a stored view, another publisher (stop/resume or restart), or B past C.
+- **Coverage of all three root kinds is verified.**
+  - The Agent root constructs `RootEventPublisher` (`standalone-root-builder.ts:132`), and so does the Org (`agent-org-execution-scope-builder.ts:56`).
+  - The Team's `TeamRunEventPublisher` is a re-export alias of `RootEventPublisher` (`agent-team-execution/services/team-run-event-publisher.ts:1-6`; used at `root-team-run.ts:23,108`).
+  - So one change gives every root kind its identity. The Team snapshot path (`agent-team-stream-handler.ts:137-142`) carries it with `baseChangeSequence`.
+- **Rejecting option (a) is sound.** A client-side reset depends on the client observing every lifecycle change, and a root stopped and resumed while not selected escapes that.
+- **Tests:**
+  - stop → resume with a message before attach: reloads, and the message is present;
+  - a reconnect to a new publisher with B ≤ the old C: reloads.
+
+  The SR-004 tests stay. API-08's savings are kept: selection and the checkpoint reopen stay within one publisher.
+- **AR-005 is resolved.** MP-004's consequence no longer holds, because both triggers create a new publisher with a new identity.
+
+## Round 4 Scope (SR-004, Targeted)
+
+- **The finding is right.** DS-002's "every rebuild reloads" refetches full participant histories on every context publication of a running root: twice per selection, and once per new child or Save (API-08). That is avoidable full-history transfer, which DESIGN.md rule 3 forbids. CRR-003 classified it correctly.
+- **Option (b) is the right shape.** Reload only when a message could have been missed: compare the new view's base B with the consistent-through sequence C that the lists have seen.
+  - C advances only contiguously. `applyEvent` checks the gap (`advanceSequencedStream`) **before** it returns `checkpoint_required` (`agentRunCollaborationContext.ts:133-137,140-142,171-178`), so a seen single checkpoint event at S means every event through S was applied. Setting C = S there is sound.
+  - A stored rebuild reloads, and a gap reopen reloads.
+- **Gap: B and C are only comparable within one live sequence.**
+  - The live change sequence belongs to one `RootEventPublisher` instance and starts at 0 for each instance (`agent-collaboration/execution/services/root-event-publisher.ts:23,56`).
+  - A stored inspection reports `baseChangeSequence: 0` (`standalone-agent-run-root-manager.ts:287`, `agent-org-run-manager.ts:203`).
+  - SR-004 says when C advances, but never when it **resets**.
+  - After the root stops and runs again, or after a server restart, the new instance's B is small. A stale C from the previous instance (say 500) makes B ≤ C, so the lists are kept. Any message the new instance produced before the client's attach snapshot is then missing (MP-004). See AR-005.
+
+## Round 3 Scope (SR-003, Targeted)
+
+- **Trigger.** DEC-001 (a), one layout read per frame (DS-006), was built but missed QR-004. This is the escalation the design defined.
+- **Cause, measured in the loaded page** (M-163b; `evidence/M-163-layout-experiments.json`, `M-163-css-variants.txt`): text shaping of 60 KB single-word runs in the system UI font, with kerning and ligatures.
+  - Forced relayout: 86,076 / 85,406 ms as built; 48 / 87 ms with kerning and ligatures off; 45 / 83 ms in Arial.
+  - `break-all` gives about 43 s, and `white-space`, `display` and `min-width` change nothing, so those alternatives are rightly rejected.
+  - The two block kinds in the seeded scenario each account for about half: without the user blocks 43.9 s, without the markdown blocks 42.7 s.
+- **DS-007 is sound.**
+  - One pure, linear helper (`utils/text/longUnbrokenRun.ts`, a run of at least 1,000 non-whitespace characters) decides when to add one shared class (`long-unbroken-text`).
+  - It applies at four text renderers: the two measured ones (user message text and the markdown html segment) plus inter-agent and Team-tab rows.
+  - Only those blocks lose kerning and ligatures. Wrapping, copy and search are untouched, and DS-006 stays.
+  - The owner and placement are clear, and there is no duplicated policy.
+- **DEC-004 is within the direction.** Kerning and ligatures have no meaningful glyph effect on base64 or minified runs, so REQ-005's "display unchanged" holds for practical purposes. DEC-001 (b) and the user question are not needed. The escalation stays if QR-004 is still missed (step 7).
+- **Tests:** a helper unit test; a component test (a long-token block gets the class, a prose block does not); L-010 unbroken under 1 s; no regression for L-010 words.
+
+## Round 2 Scope (SR-002)
+
+SR-002 answers each finding in the design's "SR-002 Revision Summary". Verified against the code and the revised sections (DS-001…DS-005, the removal plan, the interface table, the mapping, the sequence step 1, and Risks):
+
+- **AR-001: resolved.**
+  - Inspections read and validate the tree only. The live `openPackageSnapshotConnection().snapshot` and the stored snapshots (`StandaloneRootPackageSnapshot`, which today reads `readMessages` at `standalone-agent-run-root-manager.ts:282`; the org inspection, `agent-org-run-manager.ts:189-197`; the team stream snapshot) drop `messages`.
+  - Tree-plus-log validation moves to one records owner per root:
+    - org: the existing `getCollaborationRecordsSnapshot` (`agent-org-run-manager.ts:148`), which gains the validation;
+    - hub: a new equivalent on the standalone manager;
+    - team: the existing projection service (`team-communication.ts:50-56` → `getTeamCommunicationProjectionService`).
+  - The participant query, reference content (including the hub route that today reads `inspection.snapshot.messages`, `agent-collaboration-references.ts:17-20`) and resume read through them.
+  - A damaged log fails only those reads, and the view opens (AC-006).
+- **AR-002: resolved.**
+  - Buffering starts before the request.
+  - Merge by message ID. `baseChangeSequence` is removed from the result: message IDs are unique and the buffer covers the request window, so ID merge is sufficient.
+  - `reloadRoot` abandons in-flight loads (generation) and reloads loaded lists on every rebuild. The named call sites cover reconnect, gap and checkpoint reopen, recovery and inspect.
+  - Tests for a gap reopen during and after a load.
+- **AR-003: resolved.** `MemberLoader` keeps a per-root generation, bumped by every rebuild (initial open, team stream recovery, org `source: 'stream'`, gap/checkpoint reopen). "Hydrated" is per member context in the current generation. Only the focused member is staged; recovery stays exact for that member between the checkpoints. Others load on open. A test covers a member hydrated before a stream failure.
+- **AR-004: resolved.** No query for a remote focused participant (empty, as today). The server rejects non-participants. No remote fetching.
+
+## Routing Classification Review
+
+- Task size: `Large`; architectural risk: `High`.
+- Classification rationale reviewed: it changes shared view contracts for every root kind, live and stored; message completeness under live append is a correctness invariant; and readiness moves the startup validation boundary (DESIGN.md rule 7). The classification is confirmed.
+- Independent Architecture Review required by the classification: `Yes`
+
+## Upstream Behavior And Production-Path Basis Confirmation
+
+- Overall Basis Status: `Confirmed` for the approved intent. The target paths have gaps (AR-001…AR-004).
+- Approved requirements / intended behavior understood:
+  - REQ-001: members on demand, through one shared loader.
+  - REQ-002: no message log in views or snapshots; the Team tab loads its participant's messages when shown, complete and in order.
+  - REQ-003: one view read per hub click.
+  - REQ-004: structure-only admission; messages validated where read; a damaged log reported then (AC-006).
+  - REQ-005: no repeated forced layout.
+  - Items 161, 200 and 118 are dropped with evidence (DEC-003), which falls within the user's rule.
+- Relevant existing behavior and evidence confirmed:
+  - E-01: the projectors put the message log in every view: `agent-collaboration-view-projector.ts:39-40`, `agent-org-execution-view-projector.ts:55-56`, `team-execution-view-projector.ts:67`.
+  - E-03: the readiness scan reads and validates every team and org log (`root-run-package-current-validator.ts:157-163,189-195`), and `admitCurrent` rebuilds (`root-run-package-readiness-index.ts:48-53`).
+  - E-04: team open fetches every member (`teamRunContextHydrationService.ts:266-318`); org does the same (`agentOrgContextHydration.ts:145-165`).
+  - E-06: Settings reads the view again.
+  - M-163: the CPU profile.
+  - Every message-list consumer goes through `listMessages()` / `listCommunicationMessages()`: `CollaborationMessagesSection.vue:36`, `activeContextStore.ts:87`, `MobileTeamMessages.vue:94`, `MobileActivityDigest.vue:97`, `test-support/teamWorkspaceContextView.ts:59`. This matches the design's consumer list.
+- Scope guardrail confirmed: UC-001…UC-005. Out of scope: storage formats, single-member paging, the dropped items, and other teams' Tasks.
+- Every prospective blocking `Design Impact` finding is traceable: `Yes`
+- Statements about existing code the design relies on:
+  - **"Remote: a remote child's messages come from its node's view today" (Risks) is not what the code does.** Today a remote child's Team tab is empty. Org: `agentOrgExecutionContext.ts:421-423` returns `[]` with the comment "A remote child's messages are in its own run's log on its node". Hub: remote agents are not participants (`agentRunCollaborationIndex.ts:82-84`), so `perspective(remoteId)` is empty. See AR-004.
+  - **The design does not mention that view inspections read and validate the whole log server-side.** Example: the stored org inspection reads the messages and validates them with the tree (`agent-org-run-manager.ts:189-197`). See AR-001.
+  - **Team hydration has a third entry form that the design does not trace:** stream recovery loads every member exactly, under checkpoints (`teamRunContextHydrationService.ts:358-376`, `teamRunOpenCoordinator.ts:115-130`). Org hydrates every member again from a stream view (`agentOrgContextHydration.ts:145-147`, `source === 'stream'`). See AR-003.
+
+| Behavior ID | Kind | Design Alignment With Approved Intent | Approved Trigger / Contract And Current-State Evidence | Target Outcome / Path / Spine Coherence | Status | Required Action |
+| --- | --- | --- | --- | --- | --- | --- |
+| BEH-001 | User | Pass | Pass | Pass (SR-007 keep rule on messages; SR-008 one required predicate per root) | Confirmed | — |
+| BEH-002 | User | Pass | Pass | Pass (SR-002: tree-only inspections; `MemberLoader` generation per rebuild) | Confirmed | — |
+| BEH-003 | User | Pass | Pass | Pass | Confirmed | — |
+| BEH-004 | System | Pass | Pass | Pass (a damaged log fails only the records-owner reads; the view opens) | Confirmed | — |
+| BEH-005 | User | Pass | Pass | Pass (DS-006 plus DS-007 for the measured shaping cause; SR-003) | Confirmed | — |
+
+## Supplemental Artifact Coherence Verdict
+
+| Artifact | Purpose And Scope Are Clear? | Linked To Relevant Core Artifacts? | Internally Complete? | Consistent With Related Core Artifacts? | Status And Approval Applicability Are Clear? | Required Action |
+| --- | --- | --- | --- | --- | --- | --- |
+| `evidence/M-*`, `evidence/probes/*.mjs` | Pass | Pass | Pass (M-151 is to be measured in the build, as stated) | Pass | Pass (evidence only) | — |
+
+## Task Design Health Assessment Verdict
+
+| Assessment Area | Result | Evidence | Required Action |
+| --- | --- | --- | --- |
+| Assessment present | Pass | Performance, plus loading moments | — |
+| Root cause explicit, evidence-backed | Pass | The view owns Team-tab data; duplicated member loading; validation in the wrong lifecycle; per-update forced layout | — |
+| Refactor decision explicit | Pass | One participant owner; one member loader; per-run admission | — |
+| Supported by concrete sections | Pass | Records owners per root; tree-only inspections (SR-002) | — |
+
+## Spine Inventory Verdict
+
+| Spine ID | Scope | Spine Is Readable? | Narrative Is Clear? | Facade Vs Governing Owner Is Clear? | Main Domain Subject Naming Is Clear? | One Owner Per Node, In Call Order? | Off-Spine Concerns Stay Off Main Line? | Verdict |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| DS-001 | Views | Pass | Pass (tree-only inspection) | N/A | Pass | Pass | Pass | Pass |
+| DS-002 | Participant messages | Pass | Pass | Pass | Pass | Pass (web owner; server resolver → records owner) | Pass | Pass |
+| DS-003 | Member loader | Pass | Pass (every entry form) | Pass | Pass | Pass | Pass | Pass |
+| DS-004 | Settings | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-005 | Readiness | Pass | Pass (records owners are the only log readers) | N/A | Pass | Pass | Pass | Pass |
+| DS-006 | Feed | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
+
+## Boundary Encapsulation Verdict
+
+| Boundary / Owner | Authoritative Public Entry Point Is Clear? | Internal Owned Mechanisms Stay Internal? | Caller Bypass Risk Is Controlled? | Verdict | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `collaborationParticipantMessages` query | Pass | Pass | Pass | Pass | — |
+| `CollaborationParticipantMessages` (web) | Pass | Pass | Pass | Pass | — |
+| `MemberLoader` | Pass | Pass | Pass (generation per rebuild) | Pass | — |
+| Root managers' inspections and records owners | Pass | Pass | Pass | Pass | Views read the tree; only the records owners read the log |
+
+## Dependency Direction / Forbidden Shortcut Verdict
+
+| Owner / Boundary | Allowed Dependencies Are Clear? | Forbidden Shortcuts Are Explicit? | Direction Is Coherent With Ownership? | Verdict | Notes |
+| --- | --- | --- | --- | --- | --- |
+| web contexts → owners, never queries directly | Pass | Pass | Pass | Pass | — |
+| server resolver → root managers' readers | Pass | Pass | Pass | Pass | — |
+
+## Interface Boundary Verdict
+
+| Interface | Subject Is Clear? | Responsibility Is Singular? | Identity Shape Is Explicit? | Generic Boundary Risk | Verdict |
+| --- | --- | --- | --- | --- | --- |
+| `collaborationParticipantMessages(rootKind, rootRunId, agentRunId) → { messages }` | Pass | Pass | Pass (compound; non-participants rejected) | Low | Pass |
+| `CollaborationParticipantMessages.list/load/append/reloadRoot` | Pass | Pass | Pass | Low | Pass |
+| `MemberLoader.ensure(context, agentRunId)` | Pass | Pass | Pass | Low | Pass |
+| `admitCurrent(family, id)` (one package) | Pass | Pass | Pass | Low | Pass |
+
+## Existing Capability / Subsystem Reuse Verdict
+
+| Need / Concern | Existing Capability Area Was Checked? | Reuse / Extension Decision Is Sound? | New Support Piece Is Justified? | Verdict | Notes |
+| --- | --- | --- | --- | --- | --- |
+| Member loading | Pass | Pass (extract one from two) | Pass | Pass | — |
+| Perspective order and shape | Pass | Pass | N/A | Pass | — |
+| Log readers and validators | Pass | Pass (records owners) | N/A | Pass | — |
+| Root stream rebuilds (gap, checkpoint, reconnect, recovery) | Pass | Pass (`reloadRoot` call sites) | N/A | Pass | — |
+
+## Subsystem / Capability-Area Allocation Verdict
+
+| Subsystem / Capability Area | Ownership Allocation Is Clear? | Reuse / Extend / Create-New Decision Is Sound? | Supports The Right Spine Owners? | Verdict | Notes |
+| --- | --- | --- | --- | --- | --- |
+| contracts, projectors, query, run-history, managers | Pass | Pass | Pass | Pass | — |
+| web `collaborationMessages/`, `memberLoader.ts`, contexts, Settings, feed | Pass | Pass | Pass | Pass | — |
+
+## Reusable Owned Structures Verdict
+
+| Repeated Structure / Logic | Extraction Need Was Evaluated? | Shared File Choice Is Sound? | Ownership Of Shared Structure Is Clear? | Verdict | Notes |
+| --- | --- | --- | --- | --- | --- |
+| Member loading (two loaders → one) | Pass | Pass | Pass | Pass | — |
+
+## Shared Structure / Data Model Tightness Verdict
+
+| Shared Structure / Type / Schema | One Clear Meaning Per Field? | Redundant Attributes Removed? | Overlapping Representation Risk Is Controlled? | Shared Core Vs Specialized Variant Decision Is Sound? | Verdict | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| View DTOs (field removed) | Pass | Pass | Pass | N/A | Pass | — |
+| Server package snapshots | Pass (`messages` dropped) | Pass | Pass | N/A | Pass | — |
+
+Derived consumers of a changed structure listed with a decision for each: `Pass` (SR-002 adds the server snapshots, inspections and reference-content readers).
+
+Domain vocabulary keeps one meaning per word: `Pass`.
+
+## File Responsibility Mapping Verdict
+
+| File | Responsibility Is Singular And Clear? | Matches Owner? | Re-Tightened? | Verdict | Notes |
+| --- | --- | --- | --- | --- | --- |
+| Every mapped file | Pass | Pass | N/A | Pass | — |
+| Root managers' inspections and records owners (SR-002 mapping) | Pass | Pass | N/A | Pass | — |
+| Team stream recovery and org stream hydration (SR-002 DS-003) | Pass | Pass | N/A | Pass | — |
+
+## Subsystem / Folder / File Placement Verdict
+
+| Path / Item | Target Placement Is Clear? | Folder Matches Owning Boundary? | Mixed-Layer Or Over-Split Risk | Verdict | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `services/collaborationMessages/`, `services/runHydration/memberLoader.ts`, `api/graphql/types/collaboration-participant-messages.ts` | Pass | Pass | Low | Pass | — |
+
+## Removal / Decommission Completeness Verdict
+
+| Item / Area | Named? | Replacement Clear? | Scope Explicit? | Verdict | Notes |
+| --- | --- | --- | --- | --- | --- |
+| View message fields, team snapshot `messages`, `getTeamCommunicationMessages`, held messages in contexts | Pass | Pass | Pass | Pass | — |
+| All-member hydration; the duplicate loaders | Pass | Pass | Pass (recovery exact only for the focused member) | Pass | — |
+| Message reads in the readiness scan; full rebuild in `admitCurrent` | Pass | Pass | Pass | Pass | — |
+| Message reads and message validation in view inspections and package snapshots; the hub reference route's snapshot read | Pass | Pass | Pass | Pass | — |
+| Settings' own read; the per-update forced layout | Pass | Pass | Pass | Pass | — |
+
+## Legacy / Backward-Compatibility Verdict
+
+| Area | Compatibility Wrapper / Dual-Path / Legacy Retention Exists? | Clean-Cut Removal Is Explicit? | Verdict | Notes |
+| --- | --- | --- | --- | --- |
+| View fields, the old team query | No | Pass | Pass | — |
+
+## Persisted-Data Transition Verdict (When Applicable)
+
+| Area / Stored Subject | Approved Decision | Representative Reader / Semantic / Invariant Evidence Is Sufficient? | Direct Use, Rebuild, Or Migration Choice Is Proportionate? | Migration Safety Is Complete If Required? | Verdict | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| Message logs, trees | `Not Affected` | Pass (reads and transport only) | Pass | N/A | Pass | — |
+
+## Change / Refactor Sequence Verdict
+
+| Area | Sequence Is Realistic? | Temporary Seams Are Explicit? | Cleanup / Removal Is Explicit? | Verdict |
+| --- | --- | --- | --- | --- |
+| Steps 1–8 | Pass. Records owners and the query come first; the DEC-001 (b) stop is in step 7 | Pass | Pass | Pass |
+
+## Example Adequacy Verdict
+
+| Topic / Area | Example Was Needed? | Present And Clear? | Bad Shape Explained? | Verdict | Notes |
+| --- | --- | --- | --- | --- | --- |
+| Messages, live merge, admission, scroll | Yes | Pass | Pass | Pass | — |
+
+## Material Premise Validation (Only When Needed)
+
+### `MP-001` — A team or org run whose stored message log is damaged is opened
+
+- Related requirement: REQ-004, AC-006 (the Team tab shows the messages as unavailable with the reason; resume is refused). This is SCN-007, a Supported Explicit Edge Scenario.
+- Initiating basis kind: `User` / `Operational`
+- Trigger: the user opens a stored run whose log is damaged. With the structure-only scan this run is now admitted and listed.
+- Forward path (org, stored): `getInspection` → `communicationStore.read(dir, tree)` → `validateAgentOrgStatePackage({ executionTree, communicationMessages })` (`agent-org-run-manager.ts:189-197`). A damaged log throws "inspection package is unavailable".
+- Consequence: the whole run fails to open, not only its Team tab. Today such a run is excluded at the scan; under the design it is listed but cannot be opened. That contradicts AC-006.
+- Reachability: `Reachable` (the scenario the requirement names)
+- Review consequence: AR-001. **Round 2: resolved** (tree-only inspections; records owners).
+
+### `MP-002` — A root's stream reopens after a sequence gap while a participant list is loaded or loading
+
+- Related requirement: REQ-002 ("the loaded list equals the stored log"), AC-002
+- Initiating basis kind: `System`
+- Trigger: a root stream event arrives with an unexpected change sequence. The context requires a reopen (`agentRunCollaborationContext.ts:146-148`, `teamExecutionViewState.ts:292,371`) or returns `checkpoint_required` (`:158-160`). This is existing, supported handling.
+- Forward path: the view is re-read; events in the gap are never applied on the client. A loaded participant list that is not reloaded misses any `communication` event in the gap. A load in flight at that moment may miss it too, if its snapshot predates the gap.
+- Consequence: the Team tab misses messages until the next reload.
+- Reachability: `Reachable`
+- Review consequence: AR-002. **Round 2: resolved** (`reloadRoot` on every rebuild; in-flight loads abandoned).
+
+### `MP-003` — A team stream fails and is recovered, then the user opens another member
+
+- Related requirement: REQ-001, and BEH-002 preserved ("statuses, Task summaries, live updates, history")
+- Initiating basis kind: `System` then `User`
+- Trigger: a Team stream needs recovery (`runStore.isTeamStreamReopenRequired`). Today recovery reloads **every** member exactly, between two checkpoints (`teamRunContextHydrationService.ts:358-376`). Org re-hydrates every member from a stream view (`agentOrgContextHydration.ts:145-165`).
+- Forward path under the design: hydration stages only the focused member. A member that was hydrated before the failure and missed events while the stream was down is still marked hydrated, so `MemberLoader.ensure` does not reload it.
+- Consequence: a stale or incomplete conversation for that member.
+- Reachability: `Reachable`
+- Review consequence: AR-003. **Round 2: resolved** (`MemberLoader` generation per rebuild).
+
+### `MP-004` — A loaded Team tab across a new live instance of the same root
+
+- Related requirement: REQ-002 ("the loaded list equals the stored log"), AC-002; BEH-004 (stop and resume)
+- Initiating basis kind: `User` / `System`
+- Trigger, two separate cases:
+  - (a) The user stops a running hub, team or org with the Team tab loaded, then resumes it by sending a message. Both are supported actions.
+  - (b) The server restarts while the web stays open. The client reconnects to the restored live root.
+- Forward path:
+  1. The old publisher's sequence reached C (for example 500).
+  2. The new activation creates a new `RootEventPublisher` starting at 0 (`root-event-publisher.ts:23`).
+  3. Messages the root produces before the client's attach snapshot get sequences 1…B, and the attach view's base B is small.
+  4. SR-004's rule keeps the lists, because B ≤ C. C was never reset; the stored rebuild in case (a) reloads, but the design doesn't say it resets C.
+- Consequence: those messages are missing from the loaded list until another reload. A copy's report, or the host's first message after the resume, can be one of them.
+- Reachability: `Reachable` for both (a) and (b), with independent triggers.
+- Review consequence: AR-005. **Round 5: resolved** (a new publisher carries a new `live_sequence_id`, which forces a reload).
+
+## Unresolved Approved-Behavior Or Current-State Gaps
+
+None in the requirements.
+
+## Review Decision
+
+- `Pass`
+
+## Findings
+
+None open. AR-001…AR-006 are resolved (ARCH-REV-002, ARCH-REV-005, ARCH-REV-008). DS-007 (ARCH-REV-003) and SR-006 (ARCH-REV-006) passed.
+
+## Classification
+
+N/A (Pass)
+
+## Recommended Recipient
+
+Implementation Engineer (`/software_engineering_team/implementation_engineer`)
+
+## Residual Risks
+
+- QR-004 now depends on DS-007. If it is still missed, step 7 stops, and DEC-001 (b) goes to the user.
+- DS-007 covers the four message-text renderers, which include the two measured block kinds. Tool-call arguments and results and reasoning segments render through other components and were not measured. A very long unbroken token there (for example a minified file read by a tool) could still be slow. This is outside AC-007's scenario. The helper and class are reusable if that case is measured later. Recommendation only.
+- The whole block gets the class when it contains one long run, so prose in the same message also loses kerning and ligatures. The visual difference is negligible, and this is accepted under DEC-004.
+- Measurements run beside other teams' work. The load is recorded per measurement (R-01).
+- A Team tab shows a short loading state per participant, which DEC-001 and the UI section accept.
+- Wording drift: the Ownership Map line for `CollaborationParticipantMessages` still says "reload on reconnect", while the narrative and DS-002 say every rebuild. Implementation follows DS-002.
+
+## Latest Authoritative Result
+
+- Review Decision: `Pass`
+- Material-Premise Gate: `Pass`
+- Notes: round 8 is targeted. Participant lists are kept across a rebuild only when the live sequence ID is the same and no message (by each root's own required predicate) was published after C. The rule is the same for hub, Team and Org. task_size=Large, architectural_risk=High.

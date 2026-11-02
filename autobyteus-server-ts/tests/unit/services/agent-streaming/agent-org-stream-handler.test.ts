@@ -6,6 +6,7 @@ import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "..
 import type { AgentOrgRunEvent } from "../../../../src/agent-org-execution/domain/agent-org-run-event.js";
 import { createAgentOrgRootExecutionIdentity, createCollaborationMemberExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
+import { isAgentOrgMessageEvent } from "../../../../src/agent-org-execution/domain/agent-org-run-event.js";
 
 const orgRunId = "org-run-1";
 const agent = testOrgAgentNode("/director", "agent-run-1");
@@ -70,7 +71,7 @@ const connection = () => {
 };
 
 const harness = (snapshot = { tree, closedTaskExecutions: [], messages, statuses, inputStates: [] }) => {
-  const publisher = new RootEventPublisher<AgentOrgRunEvent>();
+  const publisher = new RootEventPublisher<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent });
   const executeAgentCommand = vi.fn(async () => ({ accepted: true }));
   const executeAgentCommandWithExecutionKind = vi.fn(async (agentRunId: string) => ({
     result: { accepted: true },

@@ -50,3 +50,34 @@ export const completedLocalTermination = (
     return { accepted: true as const };
   } }),
 });
+
+/**
+ * Wraps a prepared run termination for a handle: `cancel` once before `commit`, `commit` once, and `onFinished` runs when the
+ * run's own finish was accepted (the handle then forgets the run).
+ */
+export const wrapPreparedLocalTermination = (
+  prepared: import("../../../agent-execution/domain/prepared-agent-run-termination.js").PreparedAgentRunTermination,
+  input: Readonly<{ agentRunId: string; onFinished: () => void }>,
+): PreparedLocalExecutionTermination => {
+  let state: "prepared" | "cancelled" | "committed" = "prepared";
+  let committed: ReturnType<PreparedLocalExecutionTermination["commit"]> | null = null;
+  return Object.freeze({
+    cancel: () => {
+      if (state !== "prepared") return;
+      state = "cancelled";
+      prepared.cancel();
+    },
+    commit: () => {
+      if (state === "cancelled") throw new Error(`AgentRun '${input.agentRunId}' termination was cancelled.`);
+      if (committed) return committed;
+      state = "committed";
+      const local = prepared.commit();
+      committed = Object.freeze({ finish: async () => {
+        const result = await local.finish();
+        if (result.accepted) input.onFinished();
+        return result;
+      } });
+      return committed;
+    },
+  });
+};

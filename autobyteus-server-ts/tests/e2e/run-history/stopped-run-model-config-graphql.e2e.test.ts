@@ -149,14 +149,15 @@ const updateAgent = (serverUrl: string, input: {
 
 const updateTeam = (serverUrl: string, input: {
   teamRunId: string;
-  patches: Array<{
+  selectionPatches: Array<{
     scopeKind: "CONFIGURED_TEAM" | "CONFIGURED_AGENT";
     scopeAddress: string;
+    runtimeKind: string;
     llmModelIdentifier: string;
     llmConfig: JsonRecord | null;
   }>;
 }) => executeGraphql<{
-  updateStoppedTeamRunModelConfigs: {
+  updateStoppedTeamRunSelections: {
     success: boolean;
     outcome: string;
     isActive: boolean;
@@ -165,15 +166,15 @@ const updateTeam = (serverUrl: string, input: {
     fieldErrors: Array<{ path: string; message: string }>;
   };
 }>(serverUrl, `
-  mutation UpdateStoppedTeam($input: UpdateStoppedTeamRunModelConfigsInput!) {
-    updateStoppedTeamRunModelConfigs(input: $input) {
+  mutation UpdateStoppedTeam($input: UpdateStoppedTeamRunSelectionsInput!) {
+    updateStoppedTeamRunSelections(input: $input) {
       success outcome isActive
       editability { editable reason }
       canonicalExecutionTree
       fieldErrors { path message }
     }
   }
-`, { input }).then((result) => result.updateStoppedTeamRunModelConfigs);
+`, { input }).then((result) => result.updateStoppedTeamRunSelections);
 
 const agentResume = (serverUrl: string, runId: string) => executeGraphql<{
   getAgentRunResumeConfig: {
@@ -419,7 +420,7 @@ describe("stopped run model-config GraphQL lifecycle", () => {
         agentResult: __type(name: "UpdateStoppedAgentRunSelectionResult") {
           fields { name }
         }
-        teamInput: __type(name: "UpdateStoppedTeamRunModelConfigsInput") {
+        teamInput: __type(name: "UpdateStoppedTeamRunSelectionsInput") {
           inputFields { name }
         }
         optionResult: __type(name: "RunModelOptionsObject") {
@@ -440,7 +441,7 @@ describe("stopped run model-config GraphQL lifecycle", () => {
       "runtimeKind",
     ]);
     expect(schema.teamInput.inputFields.map(({ name }) => name).sort()).toEqual([
-      "patches",
+      "selectionPatches",
       "teamRunId",
     ]);
     expect(schema.agentResult.fields.map(({ name }) => name)).not.toContain("configurationRevision");
@@ -543,16 +544,16 @@ describe("stopped run model-config GraphQL lifecycle", () => {
     );
     const activeFile = fs.readFileSync(treePath, "utf8");
     const patches = [
-      { scopeKind: "CONFIGURED_TEAM" as const, scopeAddress: "/", llmModelIdentifier: model, llmConfig: UPDATED_CONFIG },
-      { scopeKind: "CONFIGURED_AGENT" as const, scopeAddress: "/coordinator", llmModelIdentifier: model, llmConfig: UPDATED_CONFIG },
+      { scopeKind: "CONFIGURED_TEAM" as const, scopeAddress: "/", runtimeKind: "autobyteus", llmModelIdentifier: model, llmConfig: UPDATED_CONFIG },
+      { scopeKind: "CONFIGURED_AGENT" as const, scopeAddress: "/coordinator", runtimeKind: "autobyteus", llmModelIdentifier: model, llmConfig: UPDATED_CONFIG },
       {
         scopeKind: "CONFIGURED_AGENT" as const,
-        scopeAddress: "/reviewer", llmModelIdentifier: model,
+        scopeAddress: "/reviewer", runtimeKind: "autobyteus", llmModelIdentifier: model,
         llmConfig: UPDATED_CONFIG,
       },
     ];
 
-    await expect(updateTeam(first.serverUrl, { teamRunId, patches })).resolves.toMatchObject({
+    await expect(updateTeam(first.serverUrl, { teamRunId, selectionPatches: patches })).resolves.toMatchObject({
       success: false,
       outcome: "RUN_ACTIVE",
       isActive: true,
@@ -577,44 +578,44 @@ describe("stopped run model-config GraphQL lifecycle", () => {
     const stoppedFile = fs.readFileSync(treePath, "utf8");
     // AC-004/007 applies to each configured patch, not only standalone commands.
     for (const patch of [
-      { scopeKind: "CONFIGURED_AGENT", scopeAddress: "/reviewer", llmConfig: null },
-      { scopeKind: "CONFIGURED_AGENT", scopeAddress: "/reviewer", llmModelIdentifier: model },
+      { scopeKind: "CONFIGURED_AGENT", scopeAddress: "/reviewer", runtimeKind: "autobyteus", llmConfig: null },
+      { scopeKind: "CONFIGURED_AGENT", scopeAddress: "/reviewer", runtimeKind: "autobyteus", llmModelIdentifier: model },
     ]) {
       const response = await fetch(`${first.serverUrl}/graphql`, {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          query: `mutation RequiredTeamPair($input: UpdateStoppedTeamRunModelConfigsInput!) {
-            updateStoppedTeamRunModelConfigs(input: $input) { success outcome }
+          query: `mutation RequiredTeamPair($input: UpdateStoppedTeamRunSelectionsInput!) {
+            updateStoppedTeamRunSelections(input: $input) { success outcome }
           }`,
-          variables: { input: { teamRunId, patches: [patch] } },
+          variables: { input: { teamRunId, selectionPatches: [patch] } },
         }),
       });
       const payload = await response.json();
       if (!Object.hasOwn(patch, "llmModelIdentifier")) {
         expect(JSON.stringify(payload.errors)).toContain("llmModelIdentifier");
       } else {
-        expect(payload.data.updateStoppedTeamRunModelConfigs.success).toBe(false);
+        expect(payload.data.updateStoppedTeamRunSelections.success).toBe(false);
       }
       expect(fs.readFileSync(treePath, "utf8")).toBe(stoppedFile);
     }
     await expect(updateTeam(first.serverUrl, {
       teamRunId,
-      patches: [{ scopeKind: "CONFIGURED_TEAM", scopeAddress: "/", llmModelIdentifier: model, llmConfig: INITIAL_CONFIG }],
+      selectionPatches: [{ scopeKind: "CONFIGURED_TEAM", scopeAddress: "/", runtimeKind: "autobyteus", llmModelIdentifier: model, llmConfig: INITIAL_CONFIG }],
     })).resolves.toMatchObject({ success: true, outcome: "UNCHANGED" });
     expect(fs.readFileSync(treePath, "utf8")).toBe(stoppedFile);
 
     await expect(updateTeam(first.serverUrl, {
       teamRunId,
-      patches: [{
+      selectionPatches: [{
         scopeKind: "CONFIGURED_AGENT",
-        scopeAddress: "/reviewer", llmModelIdentifier: model,
+        scopeAddress: "/reviewer", runtimeKind: "autobyteus", llmModelIdentifier: model,
         llmConfig: { reasoning_effort: "not-a-level" },
       }],
     })).resolves.toMatchObject({
       success: false,
       outcome: "VALIDATION_FAILED",
-      fieldErrors: [{ path: "patches[/reviewer].llmConfig.reasoning_effort" }],
+      fieldErrors: [{ path: "selectionPatches[/reviewer].llmConfig.reasoning_effort" }],
     });
     expect(fs.readFileSync(treePath, "utf8")).toBe(stoppedFile);
 
@@ -631,11 +632,11 @@ describe("stopped run model-config GraphQL lifecycle", () => {
     ]) {
       await expect(updateTeam(first.serverUrl, {
         teamRunId,
-        patches: [patches[0]!, { ...invalidScope, llmModelIdentifier: model, llmConfig: UPDATED_CONFIG }],
+        selectionPatches: [patches[0]!, { ...invalidScope, runtimeKind: "autobyteus", llmModelIdentifier: model, llmConfig: UPDATED_CONFIG }],
       })).resolves.toMatchObject({ success: false });
       expect(fs.readFileSync(treePath, "utf8")).toBe(stoppedFile);
     }
-    await expect(updateTeam(first.serverUrl, { teamRunId, patches })).resolves.toMatchObject({
+    await expect(updateTeam(first.serverUrl, { teamRunId, selectionPatches: patches })).resolves.toMatchObject({
       success: true,
       outcome: "UPDATED",
       isActive: false,

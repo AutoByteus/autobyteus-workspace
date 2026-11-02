@@ -194,6 +194,10 @@ const messages = {
     "Unknown teammate",
   "workspace.components.workspace.team.TeamCommunicationPanel.no_focused_member":
     "Select a team member to view communication.",
+  "workspace.components.workspace.team.TeamCommunicationPanel.loading_messages":
+    "Loading messages…",
+  "workspace.components.workspace.team.TeamCommunicationPanel.messages_unavailable":
+    "These messages can't be shown",
   "workspace.components.workspace.team.TeamCommunicationPanel.empty_title":
     "No team messages yet",
   "workspace.components.workspace.team.TeamCommunicationPanel.empty_detail":

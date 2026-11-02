@@ -28,6 +28,7 @@ import { NO_PART_CLOSURE, TaskPartClosure, type PartClosureResult } from "./task
 import { TaskAssignmentEligibility, terminalAssignment } from "./task-assignment-eligibility.js";
 import { TaskReferences } from "./task-references.js";
 import { readDelegatedTaskIdentity } from "./task-identity-reader.js";
+import { projectFolderForNewCopy } from "./project-new-copy-folder.js";
 import { bestEffortContextCleanup, TaskContextOwnership } from "./task-context-ownership.js";
 import type { ProjectTaskSearchCleanup } from "../search/project-task-search-service.js";
 import { sameDependencies } from "../domain/task-dependencies.js";
@@ -265,6 +266,7 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
     return { taskId: task.taskId, taskReference: task.taskKey, projectId, title: task.title, description: task.description, comments: task.comments.map((comment) => comment.text), referenceFiles };
   }
   describeTask(taskId: string) { return readDelegatedTaskIdentity(this.references, this.adHocTasks, taskId); }
+  projectFolderForNewCopy(projectId: string): Promise<string | null> { return projectFolderForNewCopy(this.store, projectId); }
   async linkNewTaskExecution(input: NewTaskExecutionLinkInput): Promise<{ taskId: string }> {
     if (input.role !== "assigned") return { taskId: await this.resources.linkInherited(input) };
     if (input.adHocTask) return { taskId: await this.linkAdHocTask(input, input.adHocTask) };

@@ -6,6 +6,7 @@ import { buildInitialTeamRunExecutionTree } from "../../../src/agent-team-execut
 import { TeamRunEventPublisher } from "../../../src/agent-team-execution/services/team-run-event-publisher.js";
 import { describe, expect, it, vi } from "vitest";
 import { testAgentNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
+import { isTeamRunMessageEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
 
 const applicationId = "app-1";
 const bindingId = "binding-1";
@@ -80,7 +81,7 @@ const buildRootTeamRuntime = () => {
       readConsistent: vi.fn(),
       enterRootFailStop: vi.fn(),
     } as never,
-    publisher: new TeamRunEventPublisher(),
+    publisher: new TeamRunEventPublisher({ isMessageEvent: isTeamRunMessageEvent }),
   });
   return { root, executeDirectAgentCommand };
 };

@@ -24,13 +24,15 @@ import { AgentRunManager } from "../../../src/agent-execution/services/agent-run
 import { PublishedArtifactProjectionStore } from "../../../src/services/published-artifacts/published-artifact-projection-store.js";
 import { PublishedArtifactSnapshotStore } from "../../../src/services/published-artifacts/published-artifact-snapshot-store.js";
 import { getWorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
+import { getModelCatalogService } from "../../../src/llm-management/services/model-catalog-service.js";
+import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 
 const unavailableBackendFactory: AgentRunBackendFactory = Object.freeze({
-  createBackend: () => Promise.reject(new Error("Backend factory is outside this test scenario.")),
-  restoreBackend: () => Promise.reject(new Error("Backend factory is outside this test scenario.")),
+  beginPreparation: () => { throw new Error("Backend factory is outside this test scenario."); },
 });
 
-const DEFAULT_LMSTUDIO_TEXT_MODEL = "qwen/qwen3.5-35b-a3b";
+// The small, fast local model TESTING.md names for this suite; LMSTUDIO_TARGET_TEXT_MODEL or LMSTUDIO_MODEL_ID override it.
+const DEFAULT_LMSTUDIO_TEXT_MODEL = "qwen/qwen3.6-35b-a3b";
 const LMSTUDIO_MODEL_ENV_VAR = "LMSTUDIO_MODEL_ID";
 const FLOW_TEST_TIMEOUT_MS = Number(process.env.LMSTUDIO_FLOW_TEST_TIMEOUT_MS || 180_000);
 const EVENT_WAIT_TIMEOUT_MS = Number(process.env.LMSTUDIO_EVENT_WAIT_TIMEOUT_MS || 120_000);
@@ -112,7 +114,9 @@ const resolveLmstudioModelIdentifier = async (): Promise<string | null> => {
     return manualModelId;
   }
 
-  await LLMFactory.reinitialize();
+  // LM Studio models are discovered by the server's model catalog (LMSTUDIO_HOSTS, default 127.0.0.1:1234), which
+  // registers them with LLMFactory; LLMFactory itself no longer discovers them.
+  await getModelCatalogService().reloadProviderModelCatalog("LMSTUDIO", RuntimeKind.AUTOBYTEUS);
   const models = await LLMFactory.listModelsByRuntime(LLMRuntime.LMSTUDIO);
   if (!models.length) {
     return null;
@@ -140,23 +144,20 @@ const resolveLmstudioModelIdentifier = async (): Promise<string | null> => {
   return cachedLmstudioModelIdentifier;
 };
 
-const createToolRequiredLlmFactory = () =>
-  ({
-    createLLM: async (modelIdentifier: string, config?: unknown) => {
-      const llm = await LLMFactory.createLLM(modelIdentifier, config as any);
-      const originalStream = llm.streamUserMessage.bind(llm);
-      (llm as any).streamUserMessage = async function* (
-        userMessage: unknown,
-        kwargs: Record<string, unknown> = {},
-      ) {
-        yield* originalStream(userMessage as any, {
-          ...kwargs,
-          tool_choice: "required",
-        });
-      };
-      return llm;
-    },
-  }) as any;
+const createToolRequiredLlm = async (modelIdentifier: string, config?: unknown) => {
+  const llm = await LLMFactory.createLLM(modelIdentifier, config as any);
+  const originalStream = llm.streamUserMessage.bind(llm);
+  (llm as any).streamUserMessage = async function* (
+    userMessage: unknown,
+    kwargs: Record<string, unknown> = {},
+  ) {
+    yield* originalStream(userMessage as any, {
+      ...kwargs,
+      tool_choice: "required",
+    });
+  };
+  return llm;
+};
 
 runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration", () => {
   let previousMemoryDir: string | undefined;
@@ -173,6 +174,7 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
     autoExecuteTools: boolean,
   ): AgentRunConfig =>
     new AgentRunConfig({
+      runtimeKind: RuntimeKind.AUTOBYTEUS,
       agentDefinitionId: "def-live-autobyteus-backend",
       llmModelIdentifier: modelIdentifier,
       autoExecuteTools,
@@ -212,7 +214,7 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
             toolNames: ["write_file"],
           }),
       } as any,
-      llmFactory: createToolRequiredLlmFactory(),
+      createLLM: createToolRequiredLlm,
       workspaceManager: {
         getWorkspaceById: () => null,
         getOrCreateTempWorkspace: async () => ({
@@ -223,6 +225,7 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
       } as any,
       skillService: {
         getSkill: () => null,
+        hasEffectiveSkills: () => false,
       } as any,
     });
   });
@@ -252,10 +255,11 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
       expect(modelIdentifier).toBeTruthy();
       const runId = createLiveRunId("live_autobyteus_backend_agent");
 
-      const backend = await backendFactory.createBackend(
-        createPreparedConfig(runId, modelIdentifier as string, false),
-        runId,
-      );
+      const backend = await backendFactory.beginPreparation({
+        kind: "new",
+        runId: runId,
+        config: createPreparedConfig(runId, modelIdentifier as string, false),
+      }).prepare();
 
       const events: AgentRunEvent[] = [];
       const unsubscribe = backend.subscribeToSourceEventBatches((batch) => {
@@ -266,14 +270,15 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
         const targetRelativePath = "approval-flow-test.txt";
         const targetContent = "line one\nline two";
 
-        const sendResult = await backend.postUserMessage(
-          new AgentInputUserMessage(
+        const sendResult = await backend.dispatchUserInput({
+          kind: "start_turn",
+          message: new AgentInputUserMessage(
             `Create ${targetRelativePath} with exactly two lines: ` +
               `"line one" and "line two". Use write_file exactly once with path ${targetRelativePath}, ` +
               `base_dir ${workspaceDir}, and exact content ${targetContent}. Do not answer with plain text.`,
           ),
-        );
-        expect(sendResult.accepted).toBe(true);
+        });
+        expect(sendResult.forwarded).toBe(true);
 
         const approvalRequested = await waitForEvent(
           events,
@@ -339,10 +344,11 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
       expect(modelIdentifier).toBeTruthy();
       const runId = createLiveRunId("live_autobyteus_backend_agent");
 
-      const backend = await backendFactory.createBackend(
-        createPreparedConfig(runId, modelIdentifier as string, false),
-        runId,
-      );
+      const backend = await backendFactory.beginPreparation({
+        kind: "new",
+        runId: runId,
+        config: createPreparedConfig(runId, modelIdentifier as string, false),
+      }).prepare();
 
       const events: AgentRunEvent[] = [];
       const unsubscribe = backend.subscribeToSourceEventBatches((batch) => {
@@ -351,13 +357,14 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
 
       try {
         const targetRelativePath = "denied-flow-test.txt";
-        const sendResult = await backend.postUserMessage(
-          new AgentInputUserMessage(
+        const sendResult = await backend.dispatchUserInput({
+          kind: "start_turn",
+          message: new AgentInputUserMessage(
             `Create ${targetRelativePath} with exactly two lines: ` +
               `"line one" and "line two". Use a relative path and do not answer with plain text.`,
           ),
-        );
-        expect(sendResult.accepted).toBe(true);
+        });
+        expect(sendResult.forwarded).toBe(true);
 
         const approvalRequested = await waitForEvent(
           events,
@@ -399,10 +406,11 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
       expect(modelIdentifier).toBeTruthy();
       const runId = createLiveRunId("live_autobyteus_backend_agent");
 
-      const backend = await backendFactory.createBackend(
-        createPreparedConfig(runId, modelIdentifier as string, true),
-        runId,
-      );
+      const backend = await backendFactory.beginPreparation({
+        kind: "new",
+        runId: runId,
+        config: createPreparedConfig(runId, modelIdentifier as string, true),
+      }).prepare();
 
       const events: AgentRunEvent[] = [];
       const unsubscribe = backend.subscribeToSourceEventBatches((batch) => {
@@ -413,13 +421,14 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
         const targetRelativePath = "auto-exec-flow-test.txt";
         const targetContent = "line one\nline two";
 
-        const sendResult = await backend.postUserMessage(
-          new AgentInputUserMessage(
+        const sendResult = await backend.dispatchUserInput({
+          kind: "start_turn",
+          message: new AgentInputUserMessage(
             `Create ${targetRelativePath} with exactly two lines: ` +
               `"line one" and "line two". Use a relative path and do not answer with plain text.`,
           ),
-        );
-        expect(sendResult.accepted).toBe(true);
+        });
+        expect(sendResult.forwarded).toBe(true);
 
         await waitForEvent(
           events,
@@ -481,10 +490,11 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
               toolNames: ["publish_artifacts"],
             }),
         } as any,
-        llmFactory: createToolRequiredLlmFactory(),
+        createLLM: createToolRequiredLlm,
         workspaceManager: getWorkspaceManager(),
         skillService: {
           getSkill: () => null,
+          hasEffectiveSkills: () => false,
         } as any,
       });
 
@@ -502,21 +512,23 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
         memoryRecorder: infrastructure.memoryRecorder,
         providerInputNormalizer: infrastructure.providerInputNormalizer,
         agentToolMcpRunSessionDeactivator: deactivator,
+        integrationRunAccess: null,
       });
       (AgentRunManager as any).instance = runManager;
       agentRunManagerOverridden = true;
 
-      const run = await runManager.createAgentRun(
-        new AgentRunConfig({
+      const run = (await runManager.beginActivation({
+        kind: "new",
+        runId,
+        config: new AgentRunConfig({
           agentDefinitionId: "def-live-autobyteus-publish-artifacts",
           llmModelIdentifier: modelIdentifier as string,
           autoExecuteTools: true,
-          runtimeKind: "autobyteus",
+          runtimeKind: RuntimeKind.AUTOBYTEUS,
           workspaceId: workspace.workspaceId,
           memoryDir: path.join(memoryDir, "agents", runId),
-        } as any),
-        runId,
-      );
+        }),
+      }).prepare()).commitPublication();
 
       const events: AgentRunEvent[] = [];
       const unsubscribe = run.subscribeToEvents((event) => {

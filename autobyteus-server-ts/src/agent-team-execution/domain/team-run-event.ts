@@ -73,5 +73,9 @@ export type TeamRunEvent =
     }>
   | Readonly<{ eventSourceType: TeamRunEventSourceType.REMOTE; event: RemoteRunRootEvent }>;
 
+/** The Team's message events: the ones the client adds to the Team tab's lists (autobyteus-358, SR-008). */
+export const isTeamRunMessageEvent = (event: TeamRunEvent): boolean =>
+  event.eventSourceType === TeamRunEventSourceType.COMMUNICATION;
+
 export type TeamRunEventListener = (event: TeamRunEvent) => void;
 export type TeamRunEventUnsubscribe = () => void;

@@ -88,10 +88,17 @@ type TeamLaunchDto = Readonly<{
 /** The recorded source of a Team copy member's launch: its own, else its Team's; null when not recorded. */
 export declare const collaborationMemberLaunchSource: (team: Pick<TeamLaunchDto, "defaultLaunchSource">, member: Pick<MemberLaunchDto, "launchSource">) => CollaborationLaunchConfigurationSourceDto | null;
 /**
- * The user's model choice for one delegated copy: it replaces only the
- * model and its settings. Absent when the user made no choice (every older record).
+ * The user's choice for one delegated copy: its model and settings and, when the user also chose another agent runtime,
+ * that runtime (absent: the started runtime). Absent when the user made no choice (every older record).
  */
 export declare const userLaunchSelectionDtoSchema: z.ZodObject<{
+    runtimeKind: z.ZodOptional<z.ZodEnum<{
+        autobyteus: "autobyteus";
+        claude_agent_sdk: "claude_agent_sdk";
+        codex_app_server: "codex_app_server";
+        antigravity_cli: "antigravity_cli";
+        grok_build: "grok_build";
+    }>>;
     llmModelIdentifier: z.ZodString;
     llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
     selectedAt: z.ZodString;
@@ -203,6 +210,13 @@ export declare const delegatedLaunchSelectionsChangedEventDtoSchema: z.ZodObject
     selections: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
         agentRunId: z.ZodString;
         selection: z.ZodObject<{
+            runtimeKind: z.ZodOptional<z.ZodEnum<{
+                autobyteus: "autobyteus";
+                claude_agent_sdk: "claude_agent_sdk";
+                codex_app_server: "codex_app_server";
+                antigravity_cli: "antigravity_cli";
+                grok_build: "grok_build";
+            }>>;
             llmModelIdentifier: z.ZodString;
             llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
             selectedAt: z.ZodString;
@@ -210,6 +224,13 @@ export declare const delegatedLaunchSelectionsChangedEventDtoSchema: z.ZodObject
     }, z.core.$strict>, z.ZodObject<{
         teamRunId: z.ZodString;
         selection: z.ZodObject<{
+            runtimeKind: z.ZodOptional<z.ZodEnum<{
+                autobyteus: "autobyteus";
+                claude_agent_sdk: "claude_agent_sdk";
+                codex_app_server: "codex_app_server";
+                antigravity_cli: "antigravity_cli";
+                grok_build: "grok_build";
+            }>>;
             llmModelIdentifier: z.ZodString;
             llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
             selectedAt: z.ZodString;
@@ -354,20 +375,6 @@ export declare const agentOrgCommunicationMessageDtoSchema: z.ZodObject<{
     referenceFiles: z.ZodArray<z.ZodString>;
     createdAt: z.ZodString;
 }, z.core.$strict>;
-export declare const agentOrgCommunicationMessagesDtoSchema: z.ZodObject<{
-    schemaVersion: z.ZodLiteral<1>;
-    subjectKind: z.ZodLiteral<"agent_org">;
-    orgRunId: z.ZodString;
-    messages: z.ZodArray<z.ZodObject<{
-        messageId: z.ZodString;
-        senderAgentRunId: z.ZodString;
-        receiverAgentRunId: z.ZodString;
-        content: z.ZodString;
-        messageType: z.ZodString;
-        referenceFiles: z.ZodArray<z.ZodString>;
-        createdAt: z.ZodString;
-    }, z.core.$strict>>;
-}, z.core.$strict>;
 export declare const agentOrgAgentStatusDtoSchema: z.ZodObject<{
     member_address: z.ZodString;
     agent_run_id: z.ZodString;
@@ -404,6 +411,8 @@ export declare const agentOrgAgentStatusDtoSchema: z.ZodObject<{
 export declare const agentOrgExecutionViewDtoSchema: z.ZodObject<{
     base_change_sequence: z.ZodNumber;
     is_active: z.ZodBoolean;
+    live_sequence_id: z.ZodNullable<z.ZodString>;
+    last_message_change_sequence: z.ZodNullable<z.ZodNumber>;
     execution_tree: z.ZodObject<{
         subjectKind: z.ZodLiteral<"agent_org">;
         createdAt: z.ZodString;
@@ -506,20 +515,6 @@ export declare const agentOrgExecutionViewDtoSchema: z.ZodObject<{
     }, z.core.$strict>, z.ZodObject<{
         teamRunId: z.ZodString;
     }, z.core.$strict>]>>;
-    communication_messages: z.ZodObject<{
-        schemaVersion: z.ZodLiteral<1>;
-        subjectKind: z.ZodLiteral<"agent_org">;
-        orgRunId: z.ZodString;
-        messages: z.ZodArray<z.ZodObject<{
-            messageId: z.ZodString;
-            senderAgentRunId: z.ZodString;
-            receiverAgentRunId: z.ZodString;
-            content: z.ZodString;
-            messageType: z.ZodString;
-            referenceFiles: z.ZodArray<z.ZodString>;
-            createdAt: z.ZodString;
-        }, z.core.$strict>>;
-    }, z.core.$strict>;
     agent_statuses: z.ZodArray<z.ZodObject<{
         member_address: z.ZodString;
         agent_run_id: z.ZodString;
@@ -803,6 +798,13 @@ export declare const agentOrgExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z
     selections: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
         agentRunId: z.ZodString;
         selection: z.ZodObject<{
+            runtimeKind: z.ZodOptional<z.ZodEnum<{
+                autobyteus: "autobyteus";
+                claude_agent_sdk: "claude_agent_sdk";
+                codex_app_server: "codex_app_server";
+                antigravity_cli: "antigravity_cli";
+                grok_build: "grok_build";
+            }>>;
             llmModelIdentifier: z.ZodString;
             llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
             selectedAt: z.ZodString;
@@ -810,6 +812,13 @@ export declare const agentOrgExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z
     }, z.core.$strict>, z.ZodObject<{
         teamRunId: z.ZodString;
         selection: z.ZodObject<{
+            runtimeKind: z.ZodOptional<z.ZodEnum<{
+                autobyteus: "autobyteus";
+                claude_agent_sdk: "claude_agent_sdk";
+                codex_app_server: "codex_app_server";
+                antigravity_cli: "antigravity_cli";
+                grok_build: "grok_build";
+            }>>;
             llmModelIdentifier: z.ZodString;
             llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
             selectedAt: z.ZodString;

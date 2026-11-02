@@ -11,7 +11,12 @@ import { AgentRunCollaborationIndex } from '../agentRunCollaborationIndex'
 const invalidate = vi.hoisted(() => vi.fn())
 vi.mock('~/services/collaborators/collaboratorCandidatesService', () => ({ collaboratorCandidatesService: { invalidate } }))
 
-import { agentRootView, created, launch } from './agentRootFixture'
+import { agentRootMessages, agentRootView, created, launch } from './agentRootFixture'
+import { storeParticipantMessages } from '~/test-support/participantMessagesStub'
+import { useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages'
+
+vi.mock('~/services/collaborationMessages/participantMessagesQuery', async () => (await import('~/test-support/participantMessagesStub')).participantMessagesQueryStub)
+const settle = () => new Promise((resolve) => setTimeout(resolve, 0))
 
 const childContext = (agentRunId: string, address: string) => {
   const state = new AgentRunState(agentRunId, { id: agentRunId, messages: [], createdAt: created, updatedAt: created, agentDefinitionId: 'x', agentName: address })
@@ -52,24 +57,36 @@ describe('AgentRunCollaborationContext', () => {
     expect(open[3]!).toMatchObject({ hasFollowingSibling: false })
   })
 
-  it('gives the host and each child a Team-tab perspective with named counterparts', () => {
+  it('gives the host and each child a Team-tab perspective with named counterparts, loaded when shown', async () => {
+    storeParticipantMessages('agent', 'host-run', agentRootMessages)
     const context = build()
     const host = context.messagesView('host-run')
     expect(host).toMatchObject({ rootKind: 'agent', rootRunId: 'host-run', focusedMemberAddress: '/research_assistant' })
+    expect(host.listMessages()).toEqual([])
+    expect(host.messagesStatus().state).toBe('idle')
+    host.loadMessages()
+    context.messagesView('cua-run').loadMessages()
+    await settle()
+    expect(host.messagesStatus().state).toBe('loaded')
     expect(host.listMessages()).toMatchObject([{ direction: 'received', counterpart: { label: 'computer use agent', kind: 'delegated' } }])
     // REQ-008: the run's own agent reads as its name (VIS-013); the collaborator keeps the lowercase row label above.
     expect(context.messagesView('cua-run').listMessages()).toMatchObject([{ direction: 'sent', counterpart: { label: 'Research Assistant', kind: 'configured' } }])
     expect(host.referenceContentPath('m1', 'r1')).toBe('agent-collaborations/host-run/communication/messages/m1/references/r1/content')
   })
 
-  it('applies sequenced events: messages in place, a started delegated run through a checkpoint, and a gap', () => {
+  it('applies sequenced events: messages to the Team tab lists, a started delegated run through a checkpoint, and a gap', async () => {
+    storeParticipantMessages('agent', 'host-run', agentRootMessages)
     const context = build()
+    context.messagesView('host-run').loadMessages()
+    await settle()
     expect(context.applyEvent(5, { kind: 'communication', message: {
       messageId: 'm2', senderAgentRunId: 'host-run', receiverAgentRunId: 'pp-run', content: 'thanks', messageType: 'direct_message', referenceFiles: [], createdAt: created,
     } })).toBe('applied')
-    expect(context.view.communication_messages.messages).toHaveLength(2)
+    expect(context.messagesView('host-run').listMessages().map((row) => row.messageId)).toEqual(['m1', 'm2'])
+    expect(context.view).not.toHaveProperty('communication_messages')
     expect(context.applyEvent(6, { kind: 'task_execution_started', host_kind: 'root', host_run_id: 'host-run', execution: {
       address: '/code_reviewer', agentRunId: 'cr-copy-run', platformAgentRunId: null, delegatorAgentRunId: 'host-run', startedAt: created,
+      source: { kind: 'agent', agentDefinitionId: 'code-reviewer', launchConfiguration: launch },
     } })).toBe('checkpoint_required')
     expect(() => context.applyEvent(8, { kind: 'communication', message: {
       messageId: 'm3', senderAgentRunId: 'host-run', receiverAgentRunId: 'pp-run', content: 'gap', messageType: 'direct_message', referenceFiles: [], createdAt: created,
@@ -77,11 +94,11 @@ describe('AgentRunCollaborationContext', () => {
     expect(context.phase).toBe('reopen_required')
   })
 
-  it('rejects a message from an AgentRun outside the run and goes historical on stop', () => {
-    const view = agentRootView()
-    view.communication_messages.messages[0] = { ...view.communication_messages.messages[0]!, senderAgentRunId: 'stranger' }
-    expect(() => build(view)).toThrow('identity mismatch')
+  it('rejects a live message from an AgentRun outside the run and goes historical on stop', () => {
     const context = build()
+    expect(() => context.applyEvent(5, { kind: 'communication', message: { ...agentRootMessages[0]!, messageId: 'm-stranger', senderAgentRunId: 'stranger' } }))
+      .toThrow('identity mismatch')
+    expect(useCollaborationParticipantMessagesStore().messagesOf({ rootKind: 'agent', rootRunId: 'host-run', agentRunId: 'host-run' })).toEqual([])
     context.setActive(false)
     expect(context.phase).toBe('historical')
     expect(context.getAgentContext('pp-run')?.state.currentStatus).toBe(AgentStatus.Offline)
@@ -140,24 +157,21 @@ describe('AgentRunCollaborationContext adoption of loaded children', () => {
   beforeEach(() => { setActivePinia(createPinia()) })
   const stored = (text: string) => ({ type: 'ai', text, timestamp: new Date(created), isComplete: true, segments: [] }) as never
 
-  it('carries a loaded child\'s conversation into the new context without its loaded mark; unloaded children start empty', () => {
+  it('carries a loaded child\'s conversation into the new context; unloaded children start empty', () => {
     const previous = build()
     const loaded = previous.getAgentContext('cua-run')!
     loaded.state.conversation.messages.push(stored('stored answer'))
     loaded.state.hasEarlierActiveTraceEvents = true
-    previous.markChildHydrated('cua-run')
     previous.getAgentContext('pp-run')!.state.conversation.messages.push(stored('live partial'))
     const next = build()
 
-    next.prepareLocalContextAdoption(previous)()
+    // The member loader answers which children were loaded in the previous generation (autobyteus-358).
+    next.prepareLocalContextAdoption(previous, (agentRunId) => agentRunId === 'cua-run')()
 
     expect(next.getAgentContext('cua-run')).toBe(loaded)
     expect(loaded.state.conversation.messages).toMatchObject([{ text: 'stored answer' }])
     expect(loaded.state.hasEarlierActiveTraceEvents).toBe(true)
-    expect(next.isChildHydrated('cua-run')).toBe(false)
-    expect(previous.isChildHydrated('cua-run')).toBe(true)
     expect(next.getAgentContext('pp-run')!.state.conversation.messages).toEqual([])
-    expect(() => next.markChildHydrated('host-run')).toThrow('is not a child of this run')
   })
 
   it('a carried conversation shows the new view\'s pending input, not the old one', () => {
@@ -165,13 +179,12 @@ describe('AgentRunCollaborationContext adoption of loaded children', () => {
     before.agent_input_states = [{ agent_run_id: 'cua-run', state: inputState() }]
     const previous = build(before)
     previous.getAgentContext('cua-run')!.state.conversation.messages.unshift(stored('stored answer'))
-    previous.markChildHydrated('cua-run')
     const after = agentRootView()
     const fresh = inputState(4); fresh.entries = [fresh.entries[1]!]
     after.agent_input_states = [{ agent_run_id: 'cua-run', state: fresh }]
     const next = build(after)
 
-    next.prepareLocalContextAdoption(previous)()
+    next.prepareLocalContextAdoption(previous, (agentRunId) => agentRunId === 'cua-run')()
 
     expect(next.getAgentContext('cua-run')!.state.conversation.messages.map((message: any) => [message.type, message.messageId ?? null, message.pendingInput?.state ?? null]))
       .toEqual([['ai', null, null], ['user', 'A', null], ['user', 'B', 'queued']])

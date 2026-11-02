@@ -418,8 +418,10 @@ Focused unit/component coverage is colocated under
 probe starts its own temporary Nuxt route and Chrome session, then removes both:
 
 ```bash
-pnpm test:e2e:diagram-zoom-viewer -- --output-dir test-results/diagram-zoom-viewer
+pnpm test:e2e:diagram-zoom-viewer -- --output-dir test-results/diagram-zoom-viewer-$(date +%Y%m%dT%H%M%S)
 ```
+
+The output directory must be new or empty: the probe refuses a non-empty one and exits without writing.
 
 ## Related Documentation
 

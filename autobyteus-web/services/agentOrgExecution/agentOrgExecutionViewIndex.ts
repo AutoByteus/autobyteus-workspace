@@ -71,9 +71,6 @@ export class AgentOrgExecutionViewIndex {
 
   constructor(readonly view: AgentOrgExecutionViewDto) {
     const root = view.execution_tree.rootOrg
-    if (root.orgRunId !== view.communication_messages.orgRunId) {
-      throw new Error('AgentOrg execution view root mismatch.')
-    }
     const configured = (member: OrgConfiguredMember) => {
       if (this.configured.has(member.address)) throw new Error(`Duplicate configured address '${member.address}'.`)
       this.configuredById.set(member.address, member)

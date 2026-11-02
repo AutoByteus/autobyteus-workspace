@@ -15,7 +15,6 @@ vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: async 
   }
   const view = structuredClone(taskBearingView()) as any
   view.execution_tree.rootOrg.orgRunId = variables.orgRunId
-  view.communication_messages.orgRunId = variables.orgRunId
   view.remote_task_executions = [remoteAgent]
   return { data: { getAgentOrgRunInspection: { root_subject_kind: 'agent_org', root_run_id: variables.orgRunId, root_org: view } } }
 } }) }))

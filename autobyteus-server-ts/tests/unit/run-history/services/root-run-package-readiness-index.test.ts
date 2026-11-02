@@ -88,7 +88,7 @@ describe('RootRunPackageReadinessIndex', () => {
     expect(first.listDiagnostics()).toEqual([]);
   });
 
-  it('repeats a coalesced structural generation when new-run publication races a rebuild', async () => {
+  it('admits a run published during a rebuild after that rebuild, by its own package only (autobyteus-358)', async () => {
     const memoryDir = await temporaryMemory(); await writeTeam(memoryDir, 'old');
     const scan = RootRunPackageCurrentValidator.prototype.scan;
     let release!: () => void;
@@ -105,8 +105,10 @@ describe('RootRunPackageReadinessIndex', () => {
     const rebuilding = index.rebuild(); await captured;
     await writeTeam(memoryDir, 'fresh');
     const publication = index.admitCurrent('agent_team', 'fresh');
+    const single = vi.spyOn(RootRunPackageCurrentValidator.prototype, 'scanOne');
     release(); await Promise.all([rebuilding, publication]);
-    expect(scanner).toHaveBeenCalledTimes(2);
+    expect(scanner).toHaveBeenCalledTimes(1);
+    expect(single).toHaveBeenCalledWith('agent_team', 'fresh');
     expect(index.listAdmitted('agent_team')).toEqual(['fresh', 'old']);
   });
 
@@ -152,7 +154,7 @@ describe('RootRunPackageReadinessIndex', () => {
     expect(index.listDiagnostics('agent_team')[0]).toMatchObject({ code: 'ROOT_RUN_PACKAGE_MANIFEST_INVALID' });
   });
 
-  it('rejects a log with an invalid message line without trying another family', async () => {
+  it('admits by structure: a log with an invalid message line is reported where it is read, not here (autobyteus-358)', async () => {
     const memoryDir = await temporaryMemory();
     const packagePath = await writeOrg(memoryDir, 'org-mismatch');
     await fs.writeFile(path.join(packagePath, 'agent_org_communication_messages_active.jsonl'), `${JSON.stringify({
@@ -161,8 +163,39 @@ describe('RootRunPackageReadinessIndex', () => {
     })}\n`);
     const index = new RootRunPackageReadinessIndex(memoryDir);
     await index.rebuild();
-    expect(index.isAdmitted('agent_org', 'org-mismatch')).toBe(false);
-    expect(index.listDiagnostics('agent_org')[0]).toMatchObject({ code: 'ROOT_RUN_PACKAGE_CURRENT_VALIDATION_FAILED' });
+    expect(index.isAdmitted('agent_org', 'org-mismatch')).toBe(true);
+    expect(index.listDiagnostics('agent_org')).toEqual([]);
+  });
+
+  it('reads no message log at the first access or when a new run is admitted, and does not rescan (AC-005)', async () => {
+    const memoryDir = await temporaryMemory();
+    await writeTeam(memoryDir, 'team-old');
+    await writeOrg(memoryDir, 'org-old');
+    const logReads = [
+      vi.spyOn(TeamCommunicationStore.prototype, 'read'), vi.spyOn(TeamCommunicationStore.prototype, 'readLog'),
+      vi.spyOn(AgentOrgCommunicationMessagesStore.prototype, 'read'), vi.spyOn(AgentOrgCommunicationMessagesStore.prototype, 'readLog'),
+    ];
+    const scan = vi.spyOn(RootRunPackageCurrentValidator.prototype, 'scan');
+    const index = new RootRunPackageReadinessIndex(memoryDir);
+    await index.awaitReady();
+    await writeTeam(memoryDir, 'team-new');
+    await index.admitCurrent('agent_team', 'team-new');
+    await writeOrg(memoryDir, 'org-new');
+    await index.admitCurrent('agent_org', 'org-new');
+    expect(index.listAdmitted('agent_team')).toEqual(['team-new', 'team-old']);
+    expect(index.listAdmitted('agent_org')).toEqual(['org-new', 'org-old']);
+    expect(scan).toHaveBeenCalledTimes(1);
+    logReads.forEach((read) => expect(read).not.toHaveBeenCalled());
+  });
+
+  it('refuses to admit a new package whose structure is invalid, and reports it', async () => {
+    const memoryDir = await temporaryMemory();
+    const index = new RootRunPackageReadinessIndex(memoryDir);
+    await index.awaitReady();
+    const packagePath = await writeTeam(memoryDir, 'team-no-log');
+    await fs.rm(path.join(packagePath, 'team_communication_messages_active.jsonl'));
+    await expect(index.admitCurrent('agent_team', 'team-no-log')).rejects.toThrow('could not be admitted');
+    expect(index.listDiagnostics('agent_team')).toEqual([expect.objectContaining({ rootRunId: 'team-no-log', code: 'ROOT_RUN_PACKAGE_MANIFEST_INVALID' })]);
   });
 
   it('admits a log in the append-only layout whether it has an active file or only sealed files', async () => {

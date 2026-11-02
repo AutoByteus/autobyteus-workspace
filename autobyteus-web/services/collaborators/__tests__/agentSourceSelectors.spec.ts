@@ -48,10 +48,15 @@ const productTeamCopy = {
   },
 }
 
+/** A copy of the tree with its root team's fields replaced (the DTO is read-only). */
+const withRootTeam = (
+  tree: TeamRunExecutionTreeDto,
+  rootTeam: Partial<TeamRunExecutionTreeDto['root_team']>,
+): TeamRunExecutionTreeDto => ({ ...tree, root_team: { ...tree.root_team, ...rootTeam } })
+
 describe('copy sources', () => {
   it('resolves an execution by run ID: a configured member, a copied Agent, a Team copy member; nothing else', () => {
-    const tree = teamTree()
-    tree.root_team.task_executions = [reviewerCopy, productTeamCopy]
+    const tree = withRootTeam(teamTree(), { task_executions: [reviewerCopy, productTeamCopy] })
     expect(teamAgentSourceOf(tree, 'researcher-run')?.agent_definition_id).toBe('researcher')
     expect(teamAgentSourceOf(tree, 'reviewer-run')).toMatchObject({ address: '/code_reviewer', agent_definition_id: 'code-reviewer', launch_configuration: launch })
     expect(teamAgentSourceOf(tree, 'bootstrapper-run')).toMatchObject({ address: '/product_team/bootstrapper', agent_definition_id: 'bootstrapper' })
@@ -60,21 +65,19 @@ describe('copy sources', () => {
   })
 
   it('a copy of a configured member shows its own recorded source, not the member\'s current settings (AC-004)', () => {
-    const tree = teamTree()
+    const base = teamTree()
     const edited = { ...launch, llm_model_identifier: 'edited-model' }
-    tree.root_team.members = [{ ...tree.root_team.members[0]!, launch_configuration: edited }]
-    tree.root_team.task_executions = [{
+    const tree = withRootTeam(base, { members: [{ ...base.root_team.members[0]!, launch_configuration: edited }], task_executions: [{
       kind: 'task_agent', address: '/researcher', agent_run_id: 'researcher-copy', platform_agent_run_id: null,
       delegator_agent_run_id: 'researcher-run', started_at: created,
       source: { kind: 'agent', agent_definition_id: 'researcher', launch_configuration: launch, launch_source: { origin: 'configured', fallbacks: [] } },
-    }]
+    }] })
     expect(teamAgentSourceOf(tree, 'researcher-run')?.launch_configuration).toEqual(edited)
     expect(teamAgentSourceOf(tree, 'researcher-copy')?.launch_configuration).toEqual(launch)
   })
 
   it('display names (D-7): a configured member, its copies and the root keep basenames; a catalog copy reads as a spaced name', () => {
-    const tree = teamTree()
-    tree.root_team.task_executions = [reviewerCopy, productTeamCopy]
+    const tree = withRootTeam(teamTree(), { task_executions: [reviewerCopy, productTeamCopy] })
     expect(readsAsDisplayName(tree, '/researcher')).toBe(false)
     expect(readsAsDisplayName(tree, '/researcher/nested')).toBe(false)
     expect(readsAsDisplayName(tree, '/')).toBe(false)
@@ -94,7 +97,7 @@ describe('copy sources', () => {
     }
     const researcher = createTeamAgentContext({ tree, agentRunId: 'researcher-run', address: parseAgentTeamAddress('/researcher'), workspaceMetadata: null })!
     const state = createTeamExecutionViewState({
-      rootTeamRunId: 'team-run', rootActive: true, executionTree: tree, closedTaskExecutions: [], messages: [],
+      rootTeamRunId: 'team-run', rootActive: true, executionTree: tree, closedTaskExecutions: [], 
       configuration: createTeamConfigurationView({ tree, workspaceMetadataByAddress: new Map() }),
       initialFocusedAgentRunId: 'researcher-run',
       agentContexts: [{ agentRunId: 'researcher-run', memberAddress: parseAgentTeamAddress('/researcher'), agentContext: researcher }],
@@ -133,8 +136,8 @@ describe('copy sources', () => {
           handoffs: [], defaultLaunchConfiguration: orgLaunch } },
     )
     view.agent_statuses.push(
-      { agent_run_id: 'writer-copy', member_address: '/writer', status: 'offline' },
-      { agent_run_id: 'copy-prototyper', member_address: '/product_team/prototyper', status: 'offline' },
+      { agent_run_id: 'writer-copy', member_address: '/writer', status: 'offline', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
+      { agent_run_id: 'copy-prototyper', member_address: '/product_team/prototyper', status: 'offline', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
     )
     const index = new AgentOrgExecutionViewIndex(view)
     expect(index.requireAgent('writer-copy')).toMatchObject({ kind: 'task', source: { agentDefinitionId: 'writer' } })
@@ -161,8 +164,7 @@ describe('per-member launch of Team copies (D-5, AC-011)', () => {
   }
 
   it('Team root: copy members show the launch they actually ran on', () => {
-    const tree = teamTree()
-    tree.root_team.task_executions = [mixedTeam, {
+    const tree = withRootTeam(teamTree(), { task_executions: [mixedTeam, {
       kind: 'task_team', address: '/se_team', team_run_id: 'copy-run', task_executions: [],
       delegator_agent_run_id: 'researcher-run', started_at: created,
       members: [
@@ -177,7 +179,7 @@ describe('per-member launch of Team copies (D-5, AC-011)', () => {
         ],
         default_launch_configuration: launch,
       },
-    }]
+    }] })
     expect(teamAgentSourceOf(tree, 'bootstrapper-run')?.launch_configuration).toEqual(sol)
     expect(teamAgentSourceOf(tree, 'prototyper-run')?.launch_configuration).toEqual(launch)
     expect(teamAgentSourceOf(tree, 'se-ie')?.launch_configuration).toEqual(sol)
@@ -267,7 +269,7 @@ describe('what each copy agent runs with: its choice, else its Team\'s when it f
     rootOf(tree).task_executions = [reviewerCopy, productTeamCopy]
     const researcher = createTeamAgentContext({ tree, agentRunId: 'researcher-run', address: parseAgentTeamAddress('/researcher'), workspaceMetadata: null })!
     const state = createTeamExecutionViewState({
-      rootTeamRunId: 'team-run', rootActive: true, executionTree: tree, closedTaskExecutions: [], messages: [],
+      rootTeamRunId: 'team-run', rootActive: true, executionTree: tree, closedTaskExecutions: [], 
       configuration: createTeamConfigurationView({ tree, workspaceMetadataByAddress: new Map() }),
       initialFocusedAgentRunId: 'researcher-run',
       agentContexts: [{ agentRunId: 'researcher-run', memberAddress: parseAgentTeamAddress('/researcher'), agentContext: researcher }],

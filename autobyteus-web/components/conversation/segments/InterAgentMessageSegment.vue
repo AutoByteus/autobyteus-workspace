@@ -32,7 +32,7 @@
         <p class="whitespace-pre-wrap break-words">
           <span class="font-medium text-slate-600 dark:text-slate-300">From {{ displaySender }}:</span>
         </p>
-        <div class="inter-agent-content min-w-0">
+        <div class="inter-agent-content min-w-0" :class="{ 'long-unbroken-text': hasLongUnbrokenRun(segment.content) }">
           <MarkdownRenderer
             :content="segment.content"
             :enable-event-monitor-file-actions="enableEventMonitorFileActions"
@@ -74,6 +74,7 @@
 </template>
 
 <script setup lang="ts">
+import { hasLongUnbrokenRun } from '~/utils/text/longUnbrokenRun';
 import { computed, ref } from 'vue';
 import type { InterAgentMessageSegment } from '~/types/segments';
 import MarkdownRenderer from '~/components/conversation/segments/renderer/MarkdownRenderer.vue';

@@ -19,4 +19,3 @@ export interface TeamCommunicationMessage {
   referenceFiles: TeamCommunicationReferenceFile[];
 }
 
-export interface TeamCommunicationProjection { teamRunId: string; messages: TeamCommunicationMessage[] }

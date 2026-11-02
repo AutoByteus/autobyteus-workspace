@@ -46,12 +46,14 @@ const section = (input: Readonly<{
   record: TaskExecution;
   launchSource?: TaskAgentSection["launchSource"];
   userLaunchSelection?: TaskAgentSection["userLaunchSelection"];
+  pendingRuntimeSwitch?: TaskAgentSection["pendingRuntimeSwitch"];
 }>): TaskAgentSection => ({
   coordinatingRun: input.coordinatingRun,
   ...(input.record.delegatorAgentRunId === undefined ? {} : { delegatorAgentRunId: input.record.delegatorAgentRunId }),
   address: input.record.address,
   ...(input.launchSource === undefined ? {} : { launchSource: input.launchSource }),
   ...(input.userLaunchSelection === undefined ? {} : { userLaunchSelection: input.userLaunchSelection }),
+  ...(input.pendingRuntimeSwitch === undefined ? {} : { pendingRuntimeSwitch: input.pendingRuntimeSwitch }),
 });
 
 /** A task agent's own `run_metadata.json` from its record (contract §3.1): its definition and started launch from `source`. */
@@ -73,7 +75,12 @@ export const taskAgentOwnMetadata = (input: Readonly<{
     runtimeKind: launch.runtimeKind,
     platformAgentRunId: record.platformAgentRunId,
     startedAt: record.startedAt,
-    taskAgent: section({ ...input, launchSource: record.source.launchSource, userLaunchSelection: record.userLaunchSelection }),
+    taskAgent: section({
+      ...input,
+      launchSource: record.source.launchSource,
+      userLaunchSelection: record.userLaunchSelection,
+      pendingRuntimeSwitch: record.pendingRuntimeSwitch,
+    }),
   };
 };
 
@@ -91,6 +98,7 @@ export const composeTaskAgentRecord = (link: TaskAgentLink, own: TaskAgentRunMet
     ...(own.taskAgent.launchSource === undefined ? {} : { launchSource: own.taskAgent.launchSource }),
   },
   ...(own.taskAgent.userLaunchSelection === undefined ? {} : { userLaunchSelection: own.taskAgent.userLaunchSelection }),
+  ...(own.taskAgent.pendingRuntimeSwitch === undefined ? {} : { pendingRuntimeSwitch: own.taskAgent.pendingRuntimeSwitch }),
 });
 
 /**
@@ -136,6 +144,7 @@ export const taskAgentTeamOwnTree = (input: Readonly<{
           followsTeam: definition.followsTeam,
           ...(definition.launchSource === undefined ? {} : { launchSource: definition.launchSource }),
           ...(member.userLaunchSelection === undefined ? {} : { userLaunchSelection: member.userLaunchSelection }),
+          ...(member.pendingRuntimeSwitch === undefined ? {} : { pendingRuntimeSwitch: member.pendingRuntimeSwitch }),
         };
       }),
       taskExecutions: [],
@@ -155,6 +164,7 @@ export const composeTaskTeamRecord = (link: TaskTeamLink, own: TaskAgentTeamTree
       agentRunId: member.agentRunId,
       platformAgentRunId: member.platformAgentRunId,
       ...(member.userLaunchSelection === undefined ? {} : { userLaunchSelection: member.userLaunchSelection }),
+      ...(member.pendingRuntimeSwitch === undefined ? {} : { pendingRuntimeSwitch: member.pendingRuntimeSwitch }),
     })),
     taskExecutions: [],
     ...(link.delegatorAgentRunId === undefined ? {} : { delegatorAgentRunId: link.delegatorAgentRunId }),

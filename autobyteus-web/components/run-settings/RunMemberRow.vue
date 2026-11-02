@@ -133,7 +133,7 @@
         :fields="node.fields"
         :member="node"
         :locked="node.locked ?? locked"
-        :runtime-locked="runtimeLocked"
+        :runtime-locked="runtimeLocked || Boolean((node.locked ?? locked).model)"
         :locked-models="lockedModelsFor?.(node.key) ?? null"
         :resettable="!readOnly"
         :test-suffix="node.key"

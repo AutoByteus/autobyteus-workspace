@@ -134,6 +134,8 @@ for (const previouslyMounted of [false, true]) {
     history.agentOrgHistory = [{ rootRunId: 'org-run', executionTree: view.execution_tree, closedTaskExecutions: [] }] as any
     await useWorkspaceHistorySubjectActions().execute({ rootSubjectKind: 'agent_org', rootRunId: 'org-run',
       action: 'select', memberAddress: '/team/lead' })
+    // The selected member's stored conversation loads when it is selected (autobyteus-358).
+    await flush()
     const orgStore = useAgentOrgContextsStore(), org = orgStore.contextFor('org-run')!
     const member = org.getAgentContext('agent-lead-configured')!
     member.requirement = 'retained composer'; member.contextFilePaths = [{ id: 'attachment', path: '/old/reference' }] as any
@@ -154,7 +156,7 @@ for (const previouslyMounted of [false, true]) {
       expect(write).not.toHaveBeenCalled()
       await wrapper.getComponent(FileExplorer).find('input').setValue('pending search')
     } else expect(wrapper.findComponent(FileExplorer).exists()).toBe(false)
-    const saved = await orgStore.saveRunConfig('org-run', { modelPatches: [],
+    const saved = await orgStore.saveRunConfig('org-run', { selectionPatches: [],
       teamWorkspacePatches: [{ teamAddress: '/team', workspaceRootPath: '/workspace/B' }] })
     await flush()
     expect(saved.success).toBe(true)
@@ -165,7 +167,7 @@ for (const previouslyMounted of [false, true]) {
     expect(draftStore.config).toBe(retainedDraft); expect(draftStore.config?.workspaceId).toBe('A')
     if (previouslyMounted) {
       expect(released).toHaveBeenCalled()
-      expect(removeWindow.mock.calls.some(call => call[0] === 'keydown')).toBe(true)
+      expect(removeWindow.mock.calls.some(call => String(call[0]) === 'keydown')).toBe(true)
       expect(removeDocument.mock.calls.some(call => call[0] === 'dragover')).toBe(true)
     }
     acquire.mockClear(); readFile.mockClear(); search.mockClear(); write.mockClear()

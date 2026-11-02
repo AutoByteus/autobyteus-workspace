@@ -268,6 +268,9 @@ export const GetTeamRunResumeConfig = gql`
         editable
         reason
       }
+      liveSequenceId
+      baseChangeSequence
+      lastMessageChangeSequence
     }
   }
 `;
@@ -324,25 +327,6 @@ export const GetAgentOrgExecutionCheckpoint = gql`
 `;
 
 
-export const GetTeamCommunicationMessages = gql`
-  query GetTeamCommunicationMessages($teamRunId: String!) {
-    getTeamCommunicationMessages(teamRunId: $teamRunId) {
-      messageId
-      senderAgentRunId
-      receiverAgentRunId
-      content
-      messageType
-      createdAt
-      referenceFiles {
-        referenceId
-        path
-        type
-        createdAt
-        updatedAt
-      }
-    }
-  }
-`;
 
 
 

@@ -104,7 +104,7 @@ const startStack = async () => {
     { ...Object.fromEntries(Object.entries(process.env).filter(([k]) => !k.startsWith('ENABLE_'))), NODE_ENV: 'development', NUXT_TELEMETRY_DISABLED: '1',
       BACKEND_NODE_BASE_URL: stack.backendUrl,
       BACKEND_AGENT_WS_ENDPOINT: `${ws}/ws/agent`, BACKEND_TEAM_WS_ENDPOINT: `${ws}/ws/agent-team`, BACKEND_GRAPHQL_WS_ENDPOINT: `${ws}/graphql`,
-      BACKEND_TRANSCRIPTION_WS_ENDPOINT: `${ws}/ws/transcribe`, BACKEND_TERMINAL_WS_ENDPOINT: `${ws}/ws/terminal`,
+      BACKEND_TERMINAL_WS_ENDPOINT: `${ws}/ws/terminal`,
       BACKEND_FILE_EXPLORER_WS_ENDPOINT: `${ws}/ws/file-explorer` }, 'frontend');
   await until('frontend', async () => { if (exited(stack.frontend)) throw new Error('Nuxt exited'); return (await fetch(stack.frontendUrl)).ok; }, 240000);
   evidence.stack = { backendUrl: stack.backendUrl, frontendUrl: stack.frontendUrl, dataRoot: stack.dataRoot };
@@ -235,7 +235,15 @@ const newPage = async ({ width = 1440, height = 1000, locale = 'en-US' } = {}) =
   page.consoleLog = [];
   page.on('console', (m) => { page.consoleLog.push(`${m.type()}: ${m.text()}`.slice(0, 400)); if (page.consoleLog.length > 200) page.consoleLog.shift(); });
   page.on('pageerror', (e) => errors.push(`pageerror: ${e.message}`));
-  page.on('console', (m) => { if (m.type() === 'error' && !/Outdated Optimize Dep|dynamically imported module|error caught during app initialization/.test(m.text())) errors.push(m.text()); });
+  // DEC-012 (autobyteus-318): the probe's own reload aborts the app's sockets, and the app rightly logs a socket error
+  // for that. Console errors from the probe's own reload are not counted until the reloaded page has loaded.
+  let ownReload = false;
+  page.on('load', () => { ownReload = false; });
+  page.reloadOwn = async (options) => {
+    ownReload = true;
+    try { return await page.reload(options); } catch (error) { ownReload = false; throw error; }
+  };
+  page.on('console', (m) => { if (m.type() === 'error' && !ownReload && !/Outdated Optimize Dep|dynamically imported module|error caught during app initialization/.test(m.text())) errors.push(m.text()); });
   return { context, page, errors };
 };
 const shot = (page, name) => page.screenshot({ path: path.join(outputDir, `${name}.png`) });
@@ -1035,7 +1043,7 @@ const projectsTab = async () => {
   // The choice survives a reload.
   await panel.getByTestId('projects-panel-picker-select').selectOption('temp');
   await panel.getByTestId('temp-task-board').waitFor();
-  await page.reload({ waitUntil: 'networkidle' });
+  await page.reloadOwn({ waitUntil: 'networkidle' });
   await tabButton().waitFor({ timeout: 60000 });
   if (await tabButton().getAttribute('aria-selected') !== 'true') await tabButton().click();
   await until('Temp tasks remembered after reload', async () => (await panel.getByTestId('projects-panel-picker-select').inputValue().catch(() => '')) === 'temp', 30000);

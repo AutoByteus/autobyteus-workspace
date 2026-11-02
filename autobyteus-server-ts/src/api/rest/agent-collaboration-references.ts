@@ -3,7 +3,10 @@ import {
   AgentOrgReferenceContentError,
   AgentOrgReferenceContentService,
 } from "../../agent-org-execution/services/agent-org-reference-content-service.js";
-import { getStandaloneAgentRunRootManager } from "../../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
+import {
+  StandaloneRootUnavailableError,
+  getStandaloneAgentRunRootManager,
+} from "../../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
 
 /**
  * Reference files of messages between the children of a standalone Agent run's collaboration
@@ -14,10 +17,16 @@ export async function registerAgentCollaborationReferenceRoutes(
   options: { contentService?: AgentOrgReferenceContentService } = {},
 ): Promise<void> {
   const content = options.contentService ?? new AgentOrgReferenceContentService({
+    // The hub's records owner (autobyteus-358): its live messages, or its stored log; never its view.
     getCollaborationRecordsSnapshot: async (hostRunId) => {
-      const inspection = await getStandaloneAgentRunRootManager().getInspection(hostRunId);
-      if (!inspection) throw new AgentOrgReferenceContentError("REFERENCE_NOT_FOUND", "Agent collaboration reference was not found.");
-      return { messages: inspection.snapshot.messages };
+      try {
+        return await getStandaloneAgentRunRootManager().getCollaborationRecordsSnapshot(hostRunId);
+      } catch (error) {
+        if (error instanceof StandaloneRootUnavailableError) {
+          throw new AgentOrgReferenceContentError("REFERENCE_NOT_FOUND", "Agent collaboration reference was not found.");
+        }
+        throw error;
+      }
     },
   });
   app.get<{ Params: { hostRunId: string; messageId: string; referenceId: string } }>(

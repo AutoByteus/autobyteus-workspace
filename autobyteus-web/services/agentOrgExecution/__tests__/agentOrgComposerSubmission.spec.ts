@@ -373,8 +373,8 @@ const projectionResult = (variables: any) => ({ data: { getAgentOrgMemberRunProj
   conversation: [], activities: [], hasEarlierActiveTraceEvents: false,
 } } })
 const inspectionResult = (active = false) => {
-  const view = taskBearingView(); view.is_active = active
-  if (!active) view.agent_statuses = []
+  const base = taskBearingView()
+  const view = { ...base, is_active: active, agent_statuses: active ? base.agent_statuses : [] }
   return { data: { getAgentOrgRunInspection: {
     root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: view } } }
 }
@@ -523,8 +523,9 @@ describe('observational Org history, exact deliberate continuation and retained 
 })
 
 describe('Org strict candidate and terminal boundaries', () => {
-  it('does not partially mutate retained AgentContexts when any inspected projection is invalid', async () => {
-    const { org, context } = await open()
+  it('does not partially mutate retained AgentContexts when the staged projection is invalid', async () => {
+    // Only the selected member is staged (autobyteus-358): select the one whose projection is invalid.
+    const { org, context } = await open('agent-task-worker')
     context.requirement = 'do not lose'; context.contextFilePaths = [attachment('unsent')]
     const state = context.state; const config = context.config
     socket.close()

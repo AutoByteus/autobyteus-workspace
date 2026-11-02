@@ -31,7 +31,11 @@ const harness = (input: { storedTree?: typeof tree | null; active?: boolean } = 
     deleteTeamRun: vi.fn(async () => ({ success: true, message: "deleted" })),
   };
   const treeStore = { read: vi.fn(async () => input.storedTree === undefined ? tree : input.storedTree) };
-  const manager = { hasManagedTeamRun: vi.fn(() => Boolean(input.active)), closedTaskExecutionsFor: vi.fn(() => []) };
+  const livePosition = vi.fn(() => ({ liveSequenceId: "live-team-1", changeSequence: 12, lastMessageChangeSequence: 9 }));
+  const manager = {
+    hasManagedTeamRun: vi.fn(() => Boolean(input.active)), closedTaskExecutionsFor: vi.fn(() => []),
+    getManagedTeamRun: vi.fn(() => input.active ? { getLivePosition: livePosition } : null),
+  };
   const live = { getCatalogListLiveProjection: vi.fn(() => ({
     isActive: input.active ?? false,
     memberStatusSnapshots: input.active ? [{ agentRunId: "worker-run", status: "running" }] : [],
@@ -93,8 +97,14 @@ describe("TeamRunHistoryService current execution tree", () => {
       executionTree: tree,
       closedTaskExecutions: [{ agentRunId: "worker-run" }],
       modelConfigEditability: { editable: false, reason: "RUN_ACTIVE" },
+      // The running Team's live sequence and change sequence, as its stream snapshot names them (autobyteus-358).
+      liveSequenceId: "live-team-1",
+      baseChangeSequence: 12,
+      lastMessageChangeSequence: 9,
     });
     expect(active.manager.closedTaskExecutionsFor).toHaveBeenCalledWith("team-1", tree);
+    await expect(harness({ active: false }).service.getTeamRunResumeConfig("team-1"))
+      .resolves.toMatchObject({ isActive: false, liveSequenceId: null, baseChangeSequence: 0, lastMessageChangeSequence: null });
     await expect(harness({ storedTree: null }).service.getTeamRunResumeConfig("missing"))
       .rejects.toThrow("execution tree not found");
   });

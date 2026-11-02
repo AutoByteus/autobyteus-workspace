@@ -45,7 +45,9 @@ const unrelated: TaskExecution = { address: "/writer" as never, agentRunId: "unr
 const reviewerCopy: TaskExecution = { address: "/writer" as never, agentRunId: "reviewer-helper", platformAgentRunId: null, delegatorAgentRunId: "reviewer-run", startedAt: at, source: agentSource };
 const rootTasks = [seCopy, helper, nestedHelper, older, unrelated, reviewerCopy];
 const forest: DelegatedLaunchForest = { taskExecutionLists: [rootTasks] };
-const choice = { llmModelIdentifier: "sonnet", llmConfig: { thinking: "low" } };
+const choice = { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "sonnet", llmConfig: { thinking: "low" } };
+// The Team started on Claude: a model-only choice for it keeps that runtime (no switch, so no member record changes).
+const teamChoice = { ...choice, runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK };
 
 describe("resolveDelegatedLaunchTargets", () => {
   it("resolves an agent copy, a Team copy, and a Team copy member with their stop units and current launches", () => {
@@ -81,12 +83,12 @@ describe("resolveDelegatedLaunchTargets", () => {
 describe("applyDelegatedLaunchSelections", () => {
   it("records only the selection fields and leaves started values and unrelated records untouched", () => {
     const targets = resolveDelegatedLaunchTargets({ forest, changes: [
-      { teamRunId: "se-copy", selection: choice }, { agentRunId: "hosted", selection: { llmModelIdentifier: "x", llmConfig: null } },
+      { teamRunId: "se-copy", selection: teamChoice }, { agentRunId: "hosted", selection: { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "x", llmConfig: null } },
     ] });
     const selections = delegatedLaunchSelections(targets, at);
     const tasks = applyDelegatedLaunchSelectionsToTaskExecutions(rootTasks, selections);
     const team = tasks[0] as TaskTeamExecution;
-    expect(team.userTeamLaunchSelection).toEqual({ ...choice, selectedAt: at });
+    expect(team.userTeamLaunchSelection).toEqual({ llmModelIdentifier: teamChoice.llmModelIdentifier, llmConfig: teamChoice.llmConfig, selectedAt: at });
     expect(team.members).toEqual(seCopy.members);
     expect(team.taskExecutions[0]).toEqual({ ...hosted, userLaunchSelection: { llmModelIdentifier: "x", llmConfig: null, selectedAt: at } });
     expect(tasks.slice(1)).toEqual(rootTasks.slice(1));
@@ -94,7 +96,7 @@ describe("applyDelegatedLaunchSelections", () => {
   });
 
   it("keeps a record unchanged when the same model and settings are chosen again", () => {
-    const same = delegatedLaunchSelections([{ scope: "agent", runId: "copy-ie", selection: { llmModelIdentifier: "sol-6.1-mini", llmConfig: null } }], "2026-10-14T00:00:00.000Z");
+    const same = delegatedLaunchSelections([{ scope: "agent", runId: "copy-ie", selection: { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "sol-6.1-mini", llmConfig: null } }], "2026-10-14T00:00:00.000Z");
     expect(applyDelegatedLaunchSelectionsToTaskExecutions(rootTasks, same)).toStrictEqual(rootTasks);
   });
 
@@ -102,7 +104,7 @@ describe("applyDelegatedLaunchSelections", () => {
     const later = "2026-10-14T00:00:00.000Z";
     const selections = delegatedLaunchSelections([
       { scope: "team", runId: "se-copy", selection: choice },
-      { scope: "agent", runId: "copy-ie", selection: { llmModelIdentifier: "sol-6.1-mini", llmConfig: null } },
+      { scope: "agent", runId: "copy-ie", selection: { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "sol-6.1-mini", llmConfig: null } },
     ], later);
     const committed: DelegatedLaunchForest = {
       taskExecutionLists: [applyDelegatedLaunchSelectionsToTaskExecutions(rootTasks, selections)],
@@ -112,6 +114,91 @@ describe("applyDelegatedLaunchSelections", () => {
       { reference: { agentRunId: "copy-ie" }, selection: { llmModelIdentifier: "sol-6.1-mini", llmConfig: null, selectedAt: at } },
     ]);
     expect(recordedDelegatedLaunchSelections(forest, delegatedLaunchSelections([], later))).toEqual([]);
+  });
+});
+
+describe("a copy's choice that includes the agent runtime (autobyteus-348, REQ-002, AC-004, M-3)", () => {
+  const claudeChoice = { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "opus", llmConfig: null };
+  const apply = (tasks: readonly TaskExecution[], changes: Parameters<typeof resolveDelegatedLaunchTargets>[0]["changes"], switchId = "switch-1") => {
+    const targets = resolveDelegatedLaunchTargets({ forest: { taskExecutionLists: [tasks] }, changes });
+    return applyDelegatedLaunchSelectionsToTaskExecutions(tasks, delegatedLaunchSelections(targets, at, () => switchId));
+  };
+  const started = (platformAgentRunId: string | null): TaskExecution => ({ ...helper, platformAgentRunId });
+
+  it("records the runtime beside the unchanged started launch and a pending switch with the previous effective binding", () => {
+    const [saved] = apply([started("thread-1")], [{ agentRunId: "helper", selection: claudeChoice }]) as [import("../../../../src/run-history/domain/run-execution-tree-shared-records.js").TaskAgentExecution];
+    expect(saved.source).toBe(agentSource); // the started values never change
+    expect(saved.userLaunchSelection).toEqual({ runtimeKind: "claude_agent_sdk", llmModelIdentifier: "opus", llmConfig: null, selectedAt: at });
+    expect(saved.platformAgentRunId).toBeNull();
+    expect(saved.pendingRuntimeSwitch).toEqual({
+      switchId: "switch-1",
+      from: { runtimeKind: "codex_app_server", llmModelIdentifier: "sol-6.1", llmConfig: { effort: "high" }, platformAgentRunId: "thread-1" },
+    });
+  });
+
+  it("a second save keeps the first previous binding; choosing the started runtime again is the undo (the session returns, the choice carries no runtime)", () => {
+    const first = apply([started("thread-1")], [{ agentRunId: "helper", selection: claudeChoice }]);
+    const second = apply(first, [{ agentRunId: "helper", selection: { runtimeKind: RuntimeKind.ANTIGRAVITY_CLI, llmModelIdentifier: "gemini", llmConfig: null } }], "switch-2");
+    expect((second[0] as any).pendingRuntimeSwitch).toEqual((first[0] as any).pendingRuntimeSwitch);
+    expect((second[0] as any).userLaunchSelection.runtimeKind).toBe("antigravity_cli");
+    const undone = apply(second, [{ agentRunId: "helper", selection: { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "sol-6.1-mini", llmConfig: null } }], "switch-3")[0] as any;
+    expect(Object.hasOwn(undone, "pendingRuntimeSwitch")).toBe(false);
+    expect(undone.platformAgentRunId).toBe("thread-1");
+    expect(undone.userLaunchSelection).toEqual({ llmModelIdentifier: "sol-6.1-mini", llmConfig: null, selectedAt: at });
+  });
+
+  it("a model-only choice on the started runtime changes no session and no pending switch; the same choice again keeps the record", () => {
+    const [saved] = apply([started("thread-1")], [{ agentRunId: "helper", selection: { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "x", llmConfig: null } }]) as any[];
+    expect(saved.platformAgentRunId).toBe("thread-1");
+    expect(Object.hasOwn(saved, "pendingRuntimeSwitch")).toBe(false);
+    expect(Object.hasOwn(saved.userLaunchSelection, "runtimeKind")).toBe(false);
+    const again = apply([saved], [{ agentRunId: "helper", selection: { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "x", llmConfig: null } }]);
+    expect(again).toStrictEqual([saved]);
+    const switched = apply([started("thread-1")], [{ agentRunId: "helper", selection: claudeChoice }]);
+    expect(apply(switched, [{ agentRunId: "helper", selection: claudeChoice }])).toStrictEqual(switched);
+  });
+
+  it("a Team-level choice reaches exactly the followers: each gets a pending switch, the one with its own choice and the source stay", () => {
+    const team: TaskTeamExecution = { ...seCopy, taskExecutions: [], members: [
+      { address: "/se/lead" as never, agentRunId: "copy-lead", platformAgentRunId: "lead-thread" },
+      { address: "/se/ie" as never, agentRunId: "copy-ie", platformAgentRunId: "ie-thread" },
+    ] };
+    const [saved] = apply([team], [{ teamRunId: "se-copy", selection: { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "sol-6.1", llmConfig: null } }]) as [TaskTeamExecution];
+    expect(saved.source).toBe(seSource);
+    expect(saved.userTeamLaunchSelection).toMatchObject({ runtimeKind: "codex_app_server", llmModelIdentifier: "sol-6.1" });
+    const [lead, ie] = saved.members as any[];
+    expect(lead.platformAgentRunId).toBeNull();
+    expect(lead.pendingRuntimeSwitch).toEqual({
+      switchId: "switch-1", from: { runtimeKind: "claude_agent_sdk", llmModelIdentifier: "opus", llmConfig: null, platformAgentRunId: "lead-thread" },
+    });
+    expect(ie).toEqual(team.members[1]); // does not follow its Team
+  });
+
+  it("a member's own choice with another runtime switches that member only", () => {
+    const team: TaskTeamExecution = { ...seCopy, taskExecutions: [], members: [
+      { address: "/se/lead" as never, agentRunId: "copy-lead", platformAgentRunId: "lead-thread" },
+      { address: "/se/ie" as never, agentRunId: "copy-ie", platformAgentRunId: "ie-thread" },
+    ] };
+    const [saved] = apply([team], [{ agentRunId: "copy-ie", selection: claudeChoice }]) as [TaskTeamExecution];
+    const [lead, ie] = saved.members as any[];
+    expect(lead).toEqual(team.members[0]);
+    expect(ie).toMatchObject({ platformAgentRunId: null, userLaunchSelection: { runtimeKind: "claude_agent_sdk" },
+      pendingRuntimeSwitch: { from: { runtimeKind: "codex_app_server", platformAgentRunId: "ie-thread" } } });
+  });
+
+  it("a resolved target reports the effective runtime and the pending switch, so the save is validated as a fresh selection", () => {
+    const [saved] = apply([started("thread-1")], [{ agentRunId: "helper", selection: claudeChoice }]);
+    const [target] = resolveDelegatedLaunchTargets({ forest: { taskExecutionLists: [[saved!]] }, changes: [{ agentRunId: "helper", selection: claudeChoice }] });
+    expect(target!.current.runtimeKind).toBe("claude_agent_sdk");
+    expect(target!.pendingRuntimeSwitch?.switchId).toBe("switch-1");
+  });
+
+  it("the live view reads the committed choice back with its runtime", () => {
+    const tasks = apply([started("thread-1")], [{ agentRunId: "helper", selection: claudeChoice }]);
+    const selections = delegatedLaunchSelections([{ scope: "agent", runId: "helper", selection: claudeChoice }], at);
+    expect(recordedDelegatedLaunchSelections({ taskExecutionLists: [tasks] }, selections)).toEqual([
+      { reference: { agentRunId: "helper" }, selection: { runtimeKind: "claude_agent_sdk", llmModelIdentifier: "opus", llmConfig: null, selectedAt: at } },
+    ]);
   });
 });
 

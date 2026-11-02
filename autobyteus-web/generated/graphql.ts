@@ -284,13 +284,6 @@ export type AgentOrgRunMemorySummary = {
   workspaceRootPath?: Maybe<Scalars['String']['output']>;
 };
 
-export type AgentOrgRunModelConfigPatchInput = {
-  llmConfig?: InputMaybe<Scalars['JSON']['input']>;
-  llmModelIdentifier: Scalars['String']['input'];
-  scopeAddress: Scalars['String']['input'];
-  scopeKind: Scalars['String']['input'];
-};
-
 export type AgentOrgRunModelOptionObject = {
   __typename?: 'AgentOrgRunModelOptionObject';
   currentModel?: Maybe<RunModelOptionObject>;
@@ -306,6 +299,14 @@ export type AgentOrgRunMutationResult = {
   agentOrgRunId?: Maybe<Scalars['String']['output']>;
   message: Scalars['String']['output'];
   success: Scalars['Boolean']['output'];
+};
+
+export type AgentOrgRunSelectionPatchInput = {
+  llmConfig?: InputMaybe<Scalars['JSON']['input']>;
+  llmModelIdentifier: Scalars['String']['input'];
+  runtimeKind: Scalars['String']['input'];
+  scopeAddress: Scalars['String']['input'];
+  scopeKind: Scalars['String']['input'];
 };
 
 export type AgentOrgStoredRunMutationResult = {
@@ -1135,6 +1136,7 @@ export type DelegatedLaunchModelOptionsObject = {
 export type DelegatedLaunchSelectionValueInput = {
   llmConfig?: InputMaybe<Scalars['JSON']['input']>;
   llmModelIdentifier: Scalars['String']['input'];
+  runtimeKind: Scalars['String']['input'];
 };
 
 export type DeleteAgentDefinitionResult = {
@@ -2025,7 +2027,7 @@ export type Mutation = {
   updateSkill: Skill;
   updateStoppedAgentOrgRunConfig: AgentOrgRunConfigUpdateResult;
   updateStoppedAgentRunSelection: UpdateStoppedAgentRunSelectionResult;
-  updateStoppedTeamRunModelConfigs: UpdateStoppedTeamRunModelConfigsResult;
+  updateStoppedTeamRunSelections: UpdateStoppedTeamRunSelectionsResult;
   uploadSkillFile: Scalars['Boolean']['output'];
   useEmbeddingModel: Scalars['Boolean']['output'];
   useGeminiMode: GeminiConfigurationCommandResult;
@@ -2662,8 +2664,8 @@ export type MutationUpdateStoppedAgentRunSelectionArgs = {
 };
 
 
-export type MutationUpdateStoppedTeamRunModelConfigsArgs = {
-  input: UpdateStoppedTeamRunModelConfigsInput;
+export type MutationUpdateStoppedTeamRunSelectionsArgs = {
+  input: UpdateStoppedTeamRunSelectionsInput;
 };
 
 
@@ -2903,6 +2905,7 @@ export type Query = {
   availableOptionalToolExecutionResultProcessorNames: Array<Scalars['String']['output']>;
   availableOptionalToolInvocationPreprocessorNames: Array<Scalars['String']['output']>;
   availableToolNames: Array<Scalars['String']['output']>;
+  collaborationParticipantMessages: Scalars['JSON']['output'];
   collaboratorMentionCandidates: CollaboratorMentionCandidatesPayload;
   definitionProblems: Array<DefinitionProblem>;
   delegatedLaunchModelOptions: Array<DelegatedLaunchModelOptionsObject>;
@@ -2933,7 +2936,6 @@ export type Query = {
   getSecretVaultStatus: SecretVaultStatus;
   getServerSettings: Array<ServerSetting>;
   getStandaloneRunTokenUsageSummary: TokenUsageRunSummaryGraphql;
-  getTeamCommunicationMessages: Array<TeamCommunicationMessageObject>;
   getTeamMemberEventMonitorActiveTracePage: EventMonitorActiveTracePage;
   getTeamMemberFileChanges: Array<RunFileChangeEntryObject>;
   getTeamMemberRunMemoryView: AgentMemoryView;
@@ -3089,6 +3091,13 @@ export type QueryApplicationPackageDetailsArgs = {
 };
 
 
+export type QueryCollaborationParticipantMessagesArgs = {
+  agentRunId: Scalars['String']['input'];
+  rootKind: Scalars['String']['input'];
+  rootRunId: Scalars['String']['input'];
+};
+
+
 export type QueryCollaboratorMentionCandidatesArgs = {
   focusedAgentRunId?: InputMaybe<Scalars['String']['input']>;
   rootRunId: Scalars['String']['input'];
@@ -3221,11 +3230,6 @@ export type QueryGetRunProjectionArgs = {
 
 export type QueryGetStandaloneRunTokenUsageSummaryArgs = {
   runId: Scalars['String']['input'];
-};
-
-
-export type QueryGetTeamCommunicationMessagesArgs = {
-  teamRunId: Scalars['String']['input'];
 };
 
 
@@ -3886,26 +3890,6 @@ export type TaskWorkerTaskView = {
   title?: Maybe<Scalars['String']['output']>;
 };
 
-export type TeamCommunicationMessageObject = {
-  __typename?: 'TeamCommunicationMessageObject';
-  content: Scalars['String']['output'];
-  createdAt: Scalars['String']['output'];
-  messageId: Scalars['String']['output'];
-  messageType: Scalars['String']['output'];
-  receiverAgentRunId: Scalars['String']['output'];
-  referenceFiles: Array<TeamCommunicationReferenceFileObject>;
-  senderAgentRunId: Scalars['String']['output'];
-};
-
-export type TeamCommunicationReferenceFileObject = {
-  __typename?: 'TeamCommunicationReferenceFileObject';
-  createdAt: Scalars['String']['output'];
-  path: Scalars['String']['output'];
-  referenceId: Scalars['String']['output'];
-  type: Scalars['String']['output'];
-  updatedAt: Scalars['String']['output'];
-};
-
 export type TeamMember = {
   __typename?: 'TeamMember';
   memberName: Scalars['String']['output'];
@@ -3946,21 +3930,25 @@ export type TeamRunExecutionCheckpointPayload = {
   rootTeamRunId: Scalars['String']['output'];
 };
 
-export type TeamRunModelConfigPatchInput = {
-  llmConfig?: InputMaybe<Scalars['JSON']['input']>;
-  llmModelIdentifier: Scalars['String']['input'];
-  scopeAddress: Scalars['String']['input'];
-  scopeKind: Scalars['String']['input'];
-};
-
 export type TeamRunResumeConfigPayload = {
   __typename?: 'TeamRunResumeConfigPayload';
+  baseChangeSequence: Scalars['Int']['output'];
   closedTaskExecutions: Scalars['JSON']['output'];
   executionTree: Scalars['JSON']['output'];
   isActive: Scalars['Boolean']['output'];
+  lastMessageChangeSequence?: Maybe<Scalars['Int']['output']>;
+  liveSequenceId?: Maybe<Scalars['String']['output']>;
   modelConfigEditability: RunModelConfigEditabilityObject;
   remoteTaskExecutions: Scalars['JSON']['output'];
   teamRunId: Scalars['String']['output'];
+};
+
+export type TeamRunSelectionPatchInput = {
+  llmConfig?: InputMaybe<Scalars['JSON']['input']>;
+  llmModelIdentifier: Scalars['String']['input'];
+  runtimeKind: Scalars['String']['input'];
+  scopeAddress: Scalars['String']['input'];
+  scopeKind: Scalars['String']['input'];
 };
 
 export type TeamScopeLaunchConfigInput = {
@@ -4458,8 +4446,8 @@ export type UpdateSkillInput = {
 };
 
 export type UpdateStoppedAgentOrgRunConfigInput = {
-  modelPatches: Array<AgentOrgRunModelConfigPatchInput>;
   orgRunId: Scalars['String']['input'];
+  selectionPatches: Array<AgentOrgRunSelectionPatchInput>;
   teamWorkspacePatches: Array<AgentOrgTeamWorkspacePatchInput>;
 };
 
@@ -4481,13 +4469,13 @@ export type UpdateStoppedAgentRunSelectionResult = {
   success: Scalars['Boolean']['output'];
 };
 
-export type UpdateStoppedTeamRunModelConfigsInput = {
-  patches: Array<TeamRunModelConfigPatchInput>;
+export type UpdateStoppedTeamRunSelectionsInput = {
+  selectionPatches: Array<TeamRunSelectionPatchInput>;
   teamRunId: Scalars['String']['input'];
 };
 
-export type UpdateStoppedTeamRunModelConfigsResult = {
-  __typename?: 'UpdateStoppedTeamRunModelConfigsResult';
+export type UpdateStoppedTeamRunSelectionsResult = {
+  __typename?: 'UpdateStoppedTeamRunSelectionsResult';
   canonicalExecutionTree?: Maybe<Scalars['JSON']['output']>;
   editability: RunModelConfigEditabilityObject;
   fieldErrors: Array<RunModelConfigFieldErrorObject>;
@@ -4885,12 +4873,12 @@ export type RestoreAgentTeamRunMutationVariables = Exact<{
 
 export type RestoreAgentTeamRunMutation = { __typename?: 'Mutation', restoreAgentTeamRun: { __typename: 'RestoreAgentTeamRunResult', success: boolean, message: string, teamRunId?: string | null } };
 
-export type UpdateStoppedTeamRunModelConfigsMutationVariables = Exact<{
-  input: UpdateStoppedTeamRunModelConfigsInput;
+export type UpdateStoppedTeamRunSelectionsMutationVariables = Exact<{
+  input: UpdateStoppedTeamRunSelectionsInput;
 }>;
 
 
-export type UpdateStoppedTeamRunModelConfigsMutation = { __typename?: 'Mutation', updateStoppedTeamRunModelConfigs: { __typename?: 'UpdateStoppedTeamRunModelConfigsResult', success: boolean, outcome: string, message: string, isActive: boolean, canonicalExecutionTree?: any | null, editability: { __typename?: 'RunModelConfigEditabilityObject', editable: boolean, reason?: string | null }, fieldErrors: Array<{ __typename?: 'RunModelConfigFieldErrorObject', path: string, message: string }> } };
+export type UpdateStoppedTeamRunSelectionsMutation = { __typename?: 'Mutation', updateStoppedTeamRunSelections: { __typename?: 'UpdateStoppedTeamRunSelectionsResult', success: boolean, outcome: string, message: string, isActive: boolean, canonicalExecutionTree?: any | null, editability: { __typename?: 'RunModelConfigEditabilityObject', editable: boolean, reason?: string | null }, fieldErrors: Array<{ __typename?: 'RunModelConfigFieldErrorObject', path: string, message: string }> } };
 
 export type RunAppDataMigrationMutationVariables = Exact<{
   migrationId: Scalars['String']['input'];
@@ -6024,7 +6012,7 @@ export type GetTeamRunResumeConfigQueryVariables = Exact<{
 }>;
 
 
-export type GetTeamRunResumeConfigQuery = { __typename?: 'Query', getTeamRunResumeConfig: { __typename?: 'TeamRunResumeConfigPayload', teamRunId: string, isActive: boolean, executionTree: any, closedTaskExecutions: any, remoteTaskExecutions: any, modelConfigEditability: { __typename?: 'RunModelConfigEditabilityObject', editable: boolean, reason?: string | null } } };
+export type GetTeamRunResumeConfigQuery = { __typename?: 'Query', getTeamRunResumeConfig: { __typename?: 'TeamRunResumeConfigPayload', teamRunId: string, isActive: boolean, executionTree: any, closedTaskExecutions: any, remoteTaskExecutions: any, liveSequenceId?: string | null, baseChangeSequence: number, lastMessageChangeSequence?: number | null, modelConfigEditability: { __typename?: 'RunModelConfigEditabilityObject', editable: boolean, reason?: string | null } } };
 
 export type GetTeamRunExecutionCheckpointQueryVariables = Exact<{
   teamRunId: Scalars['String']['input'];
@@ -6056,13 +6044,6 @@ export type GetAgentOrgExecutionCheckpointQueryVariables = Exact<{
 
 
 export type GetAgentOrgExecutionCheckpointQuery = { __typename?: 'Query', getAgentOrgExecutionCheckpoint: { __typename?: 'AgentOrgExecutionCheckpointPayload', orgRunId: string, changeSequence: number, hasOpenExecutionWork: boolean } };
-
-export type GetTeamCommunicationMessagesQueryVariables = Exact<{
-  teamRunId: Scalars['String']['input'];
-}>;
-
-
-export type GetTeamCommunicationMessagesQuery = { __typename?: 'Query', getTeamCommunicationMessages: Array<{ __typename?: 'TeamCommunicationMessageObject', messageId: string, senderAgentRunId: string, receiverAgentRunId: string, content: string, messageType: string, createdAt: string, referenceFiles: Array<{ __typename?: 'TeamCommunicationReferenceFileObject', referenceId: string, path: string, type: string, createdAt: string, updatedAt: string }> }> };
 
 export type GetAgentRunResumeConfigQueryVariables = Exact<{
   runId: Scalars['String']['input'];
@@ -8403,9 +8384,9 @@ export function useRestoreAgentTeamRunMutation(options: VueApolloComposable.UseM
   return VueApolloComposable.useMutation<RestoreAgentTeamRunMutation, RestoreAgentTeamRunMutationVariables>(RestoreAgentTeamRunDocument, options);
 }
 export type RestoreAgentTeamRunMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RestoreAgentTeamRunMutation, RestoreAgentTeamRunMutationVariables>;
-export const UpdateStoppedTeamRunModelConfigsDocument = gql`
-    mutation UpdateStoppedTeamRunModelConfigs($input: UpdateStoppedTeamRunModelConfigsInput!) {
-  updateStoppedTeamRunModelConfigs(input: $input) {
+export const UpdateStoppedTeamRunSelectionsDocument = gql`
+    mutation UpdateStoppedTeamRunSelections($input: UpdateStoppedTeamRunSelectionsInput!) {
+  updateStoppedTeamRunSelections(input: $input) {
     success
     outcome
     message
@@ -8424,26 +8405,26 @@ export const UpdateStoppedTeamRunModelConfigsDocument = gql`
     `;
 
 /**
- * __useUpdateStoppedTeamRunModelConfigsMutation__
+ * __useUpdateStoppedTeamRunSelectionsMutation__
  *
- * To run a mutation, you first call `useUpdateStoppedTeamRunModelConfigsMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useUpdateStoppedTeamRunModelConfigsMutation` returns an object that includes:
+ * To run a mutation, you first call `useUpdateStoppedTeamRunSelectionsMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateStoppedTeamRunSelectionsMutation` returns an object that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
  *
  * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
  *
  * @example
- * const { mutate, loading, error, onDone } = useUpdateStoppedTeamRunModelConfigsMutation({
+ * const { mutate, loading, error, onDone } = useUpdateStoppedTeamRunSelectionsMutation({
  *   variables: {
  *     input: // value for 'input'
  *   },
  * });
  */
-export function useUpdateStoppedTeamRunModelConfigsMutation(options: VueApolloComposable.UseMutationOptions<UpdateStoppedTeamRunModelConfigsMutation, UpdateStoppedTeamRunModelConfigsMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<UpdateStoppedTeamRunModelConfigsMutation, UpdateStoppedTeamRunModelConfigsMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<UpdateStoppedTeamRunModelConfigsMutation, UpdateStoppedTeamRunModelConfigsMutationVariables>(UpdateStoppedTeamRunModelConfigsDocument, options);
+export function useUpdateStoppedTeamRunSelectionsMutation(options: VueApolloComposable.UseMutationOptions<UpdateStoppedTeamRunSelectionsMutation, UpdateStoppedTeamRunSelectionsMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<UpdateStoppedTeamRunSelectionsMutation, UpdateStoppedTeamRunSelectionsMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<UpdateStoppedTeamRunSelectionsMutation, UpdateStoppedTeamRunSelectionsMutationVariables>(UpdateStoppedTeamRunSelectionsDocument, options);
 }
-export type UpdateStoppedTeamRunModelConfigsMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<UpdateStoppedTeamRunModelConfigsMutation, UpdateStoppedTeamRunModelConfigsMutationVariables>;
+export type UpdateStoppedTeamRunSelectionsMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<UpdateStoppedTeamRunSelectionsMutation, UpdateStoppedTeamRunSelectionsMutationVariables>;
 export const RunAppDataMigrationDocument = gql`
     mutation RunAppDataMigration($migrationId: String!) {
   runAppDataMigration(migrationId: $migrationId) {
@@ -14057,6 +14038,9 @@ export const GetTeamRunResumeConfigDocument = gql`
       editable
       reason
     }
+    liveSequenceId
+    baseChangeSequence
+    lastMessageChangeSequence
   }
 }
     `;
@@ -14225,48 +14209,6 @@ export function useGetAgentOrgExecutionCheckpointLazyQuery(variables?: GetAgentO
   return VueApolloComposable.useLazyQuery<GetAgentOrgExecutionCheckpointQuery, GetAgentOrgExecutionCheckpointQueryVariables>(GetAgentOrgExecutionCheckpointDocument, variables, options);
 }
 export type GetAgentOrgExecutionCheckpointQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAgentOrgExecutionCheckpointQuery, GetAgentOrgExecutionCheckpointQueryVariables>;
-export const GetTeamCommunicationMessagesDocument = gql`
-    query GetTeamCommunicationMessages($teamRunId: String!) {
-  getTeamCommunicationMessages(teamRunId: $teamRunId) {
-    messageId
-    senderAgentRunId
-    receiverAgentRunId
-    content
-    messageType
-    createdAt
-    referenceFiles {
-      referenceId
-      path
-      type
-      createdAt
-      updatedAt
-    }
-  }
-}
-    `;
-
-/**
- * __useGetTeamCommunicationMessagesQuery__
- *
- * To run a query within a Vue component, call `useGetTeamCommunicationMessagesQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetTeamCommunicationMessagesQuery` returns an object from Apollo Client that contains result, loading and error properties
- * you can use to render your UI.
- *
- * @param variables that will be passed into the query
- * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
- *
- * @example
- * const { result, loading, error } = useGetTeamCommunicationMessagesQuery({
- *   teamRunId: // value for 'teamRunId'
- * });
- */
-export function useGetTeamCommunicationMessagesQuery(variables: GetTeamCommunicationMessagesQueryVariables | VueCompositionApi.Ref<GetTeamCommunicationMessagesQueryVariables> | ReactiveFunction<GetTeamCommunicationMessagesQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetTeamCommunicationMessagesQuery, GetTeamCommunicationMessagesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetTeamCommunicationMessagesQuery, GetTeamCommunicationMessagesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetTeamCommunicationMessagesQuery, GetTeamCommunicationMessagesQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<GetTeamCommunicationMessagesQuery, GetTeamCommunicationMessagesQueryVariables>(GetTeamCommunicationMessagesDocument, variables, options);
-}
-export function useGetTeamCommunicationMessagesLazyQuery(variables?: GetTeamCommunicationMessagesQueryVariables | VueCompositionApi.Ref<GetTeamCommunicationMessagesQueryVariables> | ReactiveFunction<GetTeamCommunicationMessagesQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetTeamCommunicationMessagesQuery, GetTeamCommunicationMessagesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetTeamCommunicationMessagesQuery, GetTeamCommunicationMessagesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetTeamCommunicationMessagesQuery, GetTeamCommunicationMessagesQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<GetTeamCommunicationMessagesQuery, GetTeamCommunicationMessagesQueryVariables>(GetTeamCommunicationMessagesDocument, variables, options);
-}
-export type GetTeamCommunicationMessagesQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetTeamCommunicationMessagesQuery, GetTeamCommunicationMessagesQueryVariables>;
 export const GetAgentRunResumeConfigDocument = gql`
     query GetAgentRunResumeConfig($runId: String!) {
   getAgentRunResumeConfig(runId: $runId) {

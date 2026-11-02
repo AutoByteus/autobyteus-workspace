@@ -11,6 +11,7 @@ import type { TaskTeamExecution } from "../../../src/run-history/domain/run-exec
 import { validateAgentOrgRunExecutionTreePayload } from "../../../src/run-history/store/agent-org-run-execution-tree-schema.js";
 import { AgentOrgStreamHandler } from "../../../src/services/agent-streaming/agent-org-stream-handler.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode, testOrgAgentCopySource, testOrgTeamCopySource } from "../../fixtures/current-agent-org-run-fixtures.js";
+import { isAgentOrgMessageEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
 
 const orgRunId = "org-status-traversal";
 const startedAt = "2026-09-06T00:00:01.000Z";
@@ -136,7 +137,7 @@ const buildRun = () => {
     teams: teams as never,
     callbacks: {} as never,
     persistence: persistence as never,
-    publisher: new RootEventPublisher<AgentOrgRunEvent>(),
+    publisher: new RootEventPublisher<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent }),
     taskExecutionIdentity: {} as never,
   });
   run.activate();

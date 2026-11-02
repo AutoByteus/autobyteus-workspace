@@ -598,8 +598,14 @@ GraphQL `stopDelegatedExecution`, `updateDelegatedLaunchSelections`,
   delegators were stored cannot be attributed and keep running
   (`notStoppedUnattributed`).
 - **Choice.** `updateDelegatedLaunchSelections` records a choice per agent
-  (`agentRunId`) or per Team (`teamRunId`): only the model and its settings; the
-  runtime, tool approval and workspace stay. It is validated like stopped-run model
+  (`agentRunId`) or per Team (`teamRunId`): its agent runtime, model and model settings; tool approval and workspace
+  stay. Each choice names its `runtimeKind`; another agent runtime than the copy's effective one is an **agent runtime
+  switch** of the copy, which keeps its run and chat (the pending switch sits on the copy record and the copy switches when
+  it is next activated, like a configured member: see
+  [Agent runtime switch of a member](./agent_team_execution.md#agent-runtime-switch-of-a-member)). A Team copy's choice
+  reaches the members that follow it, each as its own switch. The launch rule exists three times because the contract
+  packages cannot import the server (`effectiveCopyAgentLaunch`, `collaborationCopyAgentLaunch`, `teamCopyAgentLaunch`); a
+  server test keeps them equal. It is validated like stopped-run model
   switching (`RunModelSelectionValidator.validateMany`, the copy's current model for
   the capacity rule), all or nothing. On a running run, it is saved only while every
   named copy is stopped: the root re-checks this at one serialization point (the task

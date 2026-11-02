@@ -10,14 +10,9 @@ import type { AgentOrgRunEvent } from "../../agent-org-execution/domain/agent-or
 import type { SequencedRootEvent } from "../../agent-collaboration/execution/services/root-event-publisher.js";
 import { AgentOrgExecutionIndex } from "../../agent-org-execution/services/agent-org-execution-index.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "../../agent-org-execution/domain/agent-org-run-execution-tree.js";
-import { isPublicMessage } from "./public-message-scope.js";
 import { projectRemoteTaskExecution, projectRemoteTaskExecutionSummary } from "./remote-task-execution-dto-projection.js";
 import type { RemoteTaskExecutionDto } from "@autobyteus/agent-presentation-contracts";
 
-const agentsOf = (tree: AgentOrgRunExecutionTreeSnapshot) => {
-  const index = new AgentOrgExecutionIndex(tree);
-  return (agentRunId: string) => index.getAgent(agentRunId) !== null;
-};
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 
 const requireStartedExecution = (run: AgentOrgRun, reference: TaskExecutionReference) => {
@@ -28,11 +23,13 @@ const requireStartedExecution = (run: AgentOrgRun, reference: TaskExecutionRefer
 
 export const projectAgentOrgExecutionView = (
   run: AgentOrgRun,
-  snapshot: AgentOrgRunPackageSnapshot,
-  baseChangeSequence: number,
+  connection: Readonly<{ snapshot: AgentOrgRunPackageSnapshot; baseChangeSequence: number; liveSequenceId: string;
+    lastMessageChangeSequence: number }>,
   remoteTaskExecutions: readonly RemoteTaskExecutionDto[],
 ): RootExecutionViewDto => projectAgentOrgExecutionSnapshot({
-  orgRunId: run.orgRunId, isActive: run.isActive(), snapshot, baseChangeSequence, remoteTaskExecutions,
+  orgRunId: run.orgRunId, isActive: run.isActive(), snapshot: connection.snapshot,
+  baseChangeSequence: connection.baseChangeSequence, liveSequenceId: connection.liveSequenceId,
+  lastMessageChangeSequence: connection.lastMessageChangeSequence, remoteTaskExecutions,
 });
 
 export const projectAgentOrgExecutionSnapshot = (input: Readonly<{
@@ -40,20 +37,22 @@ export const projectAgentOrgExecutionSnapshot = (input: Readonly<{
   isActive: boolean;
   snapshot: AgentOrgRunPackageSnapshot;
   baseChangeSequence: number;
+  liveSequenceId: string | null;
+  lastMessageChangeSequence: number | null;
   /** autobyteus-278: the runs this Org delegated to other nodes, with their nodes' names. */
   remoteTaskExecutions: readonly RemoteTaskExecutionDto[];
 }>): RootExecutionViewDto => {
-  const { orgRunId, isActive, snapshot, baseChangeSequence } = input;
+  const { orgRunId, isActive, snapshot, baseChangeSequence, liveSequenceId, lastMessageChangeSequence } = input;
   return RootExecutionViewDtoSchema.parse({
   root_subject_kind: "agent_org",
   root_run_id: orgRunId,
   root_org: {
     base_change_sequence: baseChangeSequence,
+    live_sequence_id: liveSequenceId,
+    last_message_change_sequence: lastMessageChangeSequence,
     is_active: isActive,
     execution_tree: projectAgentOrgExecutionTree(snapshot.tree),
     closed_task_executions: snapshot.closedTaskExecutions,
-    communication_messages: { ...snapshot.messages,
-      messages: snapshot.messages.messages.filter((message) => isPublicMessage(message, agentsOf(snapshot.tree))) },
     agent_input_states: snapshot.inputStates,
     agent_statuses: snapshot.statuses.map((status) => ({
       member_address: status.execution.memberAddress,

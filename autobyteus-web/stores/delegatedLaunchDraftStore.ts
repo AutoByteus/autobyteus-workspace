@@ -10,11 +10,11 @@ import {
   type DelegatedRoot,
   type DelegatedTargetKey,
 } from '~/services/runConfigEditing/delegatedLaunchSelectionClient'
-import { cloneExistingRunSelection, existingRunSelectionsEqual, selectionAllowed } from '~/services/runConfigEditing/existingAgentModelConfigDraft'
+import { cloneExistingAgentRunSelection, existingAgentRunSelectionsEqual, selectionAllowed } from '~/services/runConfigEditing/existingAgentModelConfigDraft'
 import type {
   ExistingRunModelConfigFieldError,
   ExistingRunModelOptionsState,
-  ExistingRunModelSelection,
+  ExistingAgentRunSelection,
 } from '~/types/agent/ExistingRunModelConfigDraft'
 
 const sameRoot = (left: DelegatedRoot | null, right: DelegatedRoot | null): boolean =>
@@ -34,8 +34,8 @@ export const useDelegatedLaunchDraftStore = defineStore('delegatedLaunchDraft', 
     bindingRevision: -1,
     saveRequestId: 0,
     /** This edit's choices and the model each target had when it was first edited. */
-    edits: {} as Record<DelegatedTargetKey, ExistingRunModelSelection>,
-    originals: {} as Record<DelegatedTargetKey, ExistingRunModelSelection>,
+    edits: {} as Record<DelegatedTargetKey, ExistingAgentRunSelection>,
+    originals: {} as Record<DelegatedTargetKey, ExistingAgentRunSelection>,
     optionsByKey: {} as Record<DelegatedTargetKey, ExistingRunModelOptionsState>,
     optionsStatus: 'idle' as 'idle' | 'loading' | 'ready' | 'unavailable',
     optionsRequestId: 0,
@@ -47,13 +47,16 @@ export const useDelegatedLaunchDraftStore = defineStore('delegatedLaunchDraft', 
     stopFeedback: null as { kind: 'info' | 'error'; message: string } | null,
   }),
   getters: {
-    changes(state): readonly Readonly<{ key: DelegatedTargetKey; selection: ExistingRunModelSelection }>[] {
-      return (Object.entries(state.edits) as [DelegatedTargetKey, ExistingRunModelSelection][])
-        .filter(([key, selection]) => !state.originals[key] || !existingRunSelectionsEqual(state.originals[key]!, selection))
-        .map(([key, selection]) => ({ key, selection: cloneExistingRunSelection(selection) }))
+    changes(state): readonly Readonly<{ key: DelegatedTargetKey; selection: ExistingAgentRunSelection }>[] {
+      return (Object.entries(state.edits) as [DelegatedTargetKey, ExistingAgentRunSelection][])
+        .filter(([key, selection]) => !state.originals[key] || !existingAgentRunSelectionsEqual(state.originals[key]!, selection))
+        .map(([key, selection]) => ({ key, selection: cloneExistingAgentRunSelection(selection) }))
     },
     dirty(): boolean { return this.changes.length > 0 },
-    /** Every changed model is one the server offers for that copy (its current one, or a listed replacement). */
+    /**
+     * Every changed model is one the server offers for that copy (its current one, or a listed replacement); another
+     * agent runtime is a fresh selection of it, which the server validates when it is saved.
+     */
     changesAllowed(state): boolean {
       return this.changes.every(({ key, selection }) => selectionAllowed(state.originals[key]!, selection, state.optionsByKey[key]))
     },
@@ -93,11 +96,11 @@ export const useDelegatedLaunchDraftStore = defineStore('delegatedLaunchDraft', 
         this.optionsStatus = 'unavailable'
       }
     },
-    /** A model or its settings changed on a copy row; `original` is what the target ran with before this edit. */
-    edit(key: DelegatedTargetKey, original: ExistingRunModelSelection, selection: ExistingRunModelSelection): void {
+    /** A model, its settings or its agent runtime changed on a copy row; `original` is what the target ran with before this edit. */
+    edit(key: DelegatedTargetKey, original: ExistingAgentRunSelection, selection: ExistingAgentRunSelection): void {
       if (this.saving) return
-      if (!this.originals[key]) this.originals = { ...this.originals, [key]: cloneExistingRunSelection(original) }
-      this.edits = { ...this.edits, [key]: cloneExistingRunSelection(selection) }
+      if (!this.originals[key]) this.originals = { ...this.originals, [key]: cloneExistingAgentRunSelection(original) }
+      this.edits = { ...this.edits, [key]: cloneExistingAgentRunSelection(selection) }
       this.feedback = null
       this.fieldErrors = []
     },

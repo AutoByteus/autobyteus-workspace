@@ -1,0 +1,17 @@
+Check: IMP-10
+Command: same gate; vitest run tests/e2e/runtime/runtime-switch-native-built-server.e2e.test.ts (autobyteus-316 regression)
+Commit: a199e9d543
+Environment: macOS (Darwin 25.5.0, arm64), Node v22, pnpm 10.28.2
+Date: 2026-11-01
+
+ ✓ tests/e2e/runtime/runtime-switch-native-built-server.e2e.test.ts (8 tests) 28235ms
+     ✓ RS-01: native -> Antigravity -> native on one run: each archived segment holds the previous agent's records only, the native candidate's own instruction opens the new file after the marker, the reopened chat shows everything  2646ms
+     ✓ RS-02: settings of a stopped run: running refused, save a switch, undo it, switch again, model-only edit keeps the switch, first message makes it  2022ms
+     ✓ RS-03: a host with a delegated copy saves its own runtime and the copy's model in one Save; the copy keeps its runtime and cannot switch  1952ms
+     ✓ RS-04: a pending switch survives a server restart; an activated switch whose notice was not yet delivered still delivers it, once, after a restart  7994ms
+     ✓ RS-05: a failed switch attempt (the archive step fails after the native candidate wrote its instruction) leaves the previous agent's file as it was; the retry completes  2097ms
+     ✓ RS-06: Grok as the switch target: its captured instructions belong to the new file; a failed attempt leaves nothing behind and the retry completes  2068ms
+     ✓ RS-07: a Grok start that fails after the switch became durable (the Grok process ends before the run is published) leaves a completed switch; the retry restores the Grok session and still carries the notice  5603ms
+     ✓ RS-08: a model edit while a switch to the native runtime is pending is a fresh selection (the never-started candidate is not a current model), and the first message runs on it  1450ms
+ Test Files  1 passed (1)
+      Tests  8 passed (8)

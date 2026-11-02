@@ -7,6 +7,7 @@ import { createTaskExecutionIdentityCapabilities } from "../../../src/agent-team
 import { buildInitialTeamRunExecutionTree } from "../../../src/agent-team-execution/services/team-run-execution-tree-builder.js";
 import { TeamRunEventPublisher } from "../../../src/agent-team-execution/services/team-run-event-publisher.js";
 import { testAgentNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
+import { isTeamRunMessageEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
 
 const deferred = <T>() => {
   let resolve!: (value: T | PromiseLike<T>) => void;
@@ -57,7 +58,7 @@ const buildRoot = (input: {
     tree,
     messages: Object.freeze({ schemaVersion: 1, rootTeamRunId: config.rootTeam.teamRunId, messages: Object.freeze([]) }),
     persistence: persistence as never,
-    publisher: new TeamRunEventPublisher(),
+    publisher: new TeamRunEventPublisher({ isMessageEvent: isTeamRunMessageEvent }),
     taskExecutionIdentity: createTaskExecutionIdentityCapabilities({
       allocateForAgentDefinition: async () => "task-agent-run",
     }),

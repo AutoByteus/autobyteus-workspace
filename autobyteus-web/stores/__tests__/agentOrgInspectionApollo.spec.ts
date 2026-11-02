@@ -32,7 +32,7 @@ function releaseMembers(batch: ReturnType<ControlledOrgApollo['named']>, label: 
 async function seed() {
   const open = orgs.openForInspection('org-run')
   ;(await requests(ROOT, 1))[0]!.respond(inspectionData(true))
-  releaseMembers(await requests(MEMBER, 7), 'committed')
+  // autobyteus-358: nothing is selected, so no member is staged; a member loads when it is selected.
   await open
   transport.pending(HISTORY).forEach(r => r.respond(historyData(true)))
   await flushPromises()
@@ -67,12 +67,13 @@ describe.each(['/director', '/team/lead'])('installed Apollo final inspection %s
       const duplicate = orgs.openForInspection('org-run')
       const roots = await requests(ROOT, prior ? 2 : 1)
       roots.at(-1)!.respond(inspectionData(true))
-      const oldBatch = (await requests(MEMBER, prior ? 14 : 7)).slice(-7)
+      // Only the selected member is staged (autobyteus-358); with a prior context, selecting it loaded it first.
+      const oldBatch = (await requests(MEMBER, prior ? 2 : 1)).slice(-1)
       expect(roots.at(-1)!.delivered).toBe(true)
       expect(oldBatch.every(r => !r.delivered)).toBe(true)
       const { stop } = await beginStop()
       ;(await requests(ROOT, prior ? 3 : 2)).at(-1)!.respond(inspectionData(false))
-      const freshBatch = (await requests(MEMBER, prior ? 21 : 14)).slice(-7)
+      const freshBatch = (await requests(MEMBER, prior ? 3 : 2)).slice(-1)
       freshBatch.forEach((r, i) => {
         expect(r.operation.query).toEqual(oldBatch[i]!.operation.query)
         expect(r.operation.variables).toEqual(oldBatch[i]!.operation.variables)
@@ -108,7 +109,7 @@ describe.each(['/director', '/team/lead'])('installed Apollo final inspection %s
     expect(first.operation.variables).toEqual(second.operation.variables)
     if (oldFirst) { first.respond(inspectionData(true)); await old }
     second.respond(inspectionData(false))
-    releaseMembers(await requests(MEMBER, 7), 'final')
+    releaseMembers(await requests(MEMBER, 1), 'final')
     expect(await stop).toBeNull()
     if (!oldFirst) { first.respond(inspectionData(true)); await old }
     expect(orgs.contextFor('org-run')?.phase).toBe('historical')
@@ -130,28 +131,24 @@ it('keeps global Apollo deduplication enabled for unchanged ordinary options', a
 
 it.each(['network', 'graphql', 'null', 'identity', 'partial', 'activity-conflict'])('final member %s retains committed content atomically', async failure => {
   await seed(); orgs.select('org-run', '/director')
+  // Selecting the member loads it (autobyteus-358).
+  releaseMembers(await requests(MEMBER, 1), 'committed'); await flushPromises()
   const retained = orgs.contextFor('org-run')!, context = retained.selectedTarget()!.context
   context.requirement = 'keep draft'
   const messages = JSON.stringify(context.conversation.messages)
   const beforeActivities = useAgentActivityStore().getActivities('agent-director').map(a => a.activityId)
   const old = orgs.openForInspection('org-run')
   ;(await requests(ROOT, 2))[1]!.respond(inspectionData(true))
-  const oldBatch = (await requests(MEMBER, 14)).slice(-7)
+  const oldBatch = (await requests(MEMBER, 2)).slice(-1)
   const { stop } = await beginStop()
   ;(await requests(ROOT, 3))[2]!.respond(inspectionData(false))
-  const fresh = (await requests(MEMBER, 21)).slice(-7)
-  // Stage one exact child, without publishing it, while another dependency is held.
-  fresh[0]!.respond(memberData(fresh[0]!.operation.variables, 'final'))
-  await flushPromises()
-  expect(context.conversation.messages).toHaveLength(1)
-  expect(JSON.stringify(context.conversation.messages)).toBe(messages)
-  expect(useAgentActivityStore().getActivities('agent-director').map(a => a.activityId)).toEqual(beforeActivities)
+  // Only the selected member is staged (autobyteus-358): its failure keeps the committed content.
+  const fresh = (await requests(MEMBER, 3)).slice(-1)
   if (failure === 'activity-conflict') {
     useAgentActivityStore().addActivity('agent-director', { kind: 'system_instruction', activityId: 'interleaved', content: 'newer local activity', timestamp: new Date() })
-    releaseMembers(fresh.slice(1), 'final')
+    releaseMembers(fresh, 'final')
   } else {
-    releaseMembers(fresh.slice(1, -1), 'final')
-    const last = fresh.at(-1)!
+    const last = fresh[0]!
     if (failure === 'network' || failure === 'partial') last.fail('member failed')
     else if (failure === 'graphql') last.graphqlError('member GraphQL error')
     else if (failure === 'null') last.respond({ getAgentOrgMemberRunProjection: null })
@@ -166,7 +163,6 @@ it.each(['network', 'graphql', 'null', 'identity', 'partial', 'activity-conflict
   expect(orgs.errorFor('org-run')).toBeTruthy()
   expect(useAgentActivityStore().getActivities('agent-director').map(a => a.activityId))
     .toEqual(failure === 'activity-conflict' ? [...beforeActivities, 'interleaved'] : beforeActivities)
-  expect(useAgentActivityStore().getActivities('agent-task-worker').map(a => a.activityId)).toEqual(['committed:agent-task-worker'])
 })
 
 it.each(['network', 'null', 'identity'])('invalid new root %s retains the stopped prior context', async failure => {
@@ -184,32 +180,33 @@ it.each(['network', 'null', 'identity'])('invalid new root %s retains the stoppe
   expect(orgs.contextFor('org-run')).toBe(retained)
   expect(JSON.stringify(context.conversation)).toBe(before)
   expect(context.requirement).toBe('same draft'); expect(observedRow().isActive).toBe(false)
-  expect(transport.named(MEMBER)).toHaveLength(7)
+  // Only the selection's load (autobyteus-358); the superseded inspection staged nothing.
+  expect(transport.named(MEMBER)).toHaveLength(1)
 })
 
-it('invalidating an ordinary stage through explicit release cannot publish a partial candidate', async () => {
+it('invalidating an ordinary stage through explicit release cannot publish a staged candidate', async () => {
+  orgs.select('org-run', '/director')
   const old = orgs.openForInspection('org-run')
   ;(await requests(ROOT, 1))[0]!.respond(inspectionData(true))
-  const batch = await requests(MEMBER, 7)
-  batch[0]!.respond(memberData(batch[0]!.operation.variables, 'partial')); await flushPromises()
-  orgs.releaseContext('org-run'); releaseMembers(batch.slice(1), 'obsolete'); await old
+  const batch = await requests(MEMBER, 1)
+  orgs.releaseContext('org-run'); releaseMembers(batch, 'obsolete'); await old
   expect(orgs.contextFor('org-run')).toBeNull()
   expect(useAgentActivityStore().getActivities('agent-director')).toEqual([])
   expect(OrgTestSocket.instances).toHaveLength(0)
 })
 
-it('stream staging and inspection staging independently acquire the same exact members', async () => {
-  const stream = stageAgentOrgExecutionContext({ source: 'stream', orgRunId: 'org-run', view: rootView(true) })
-  const first = await requests(MEMBER, 7)
-  const inspection = stageAgentOrgExecutionContext({ source: 'inspection', orgRunId: 'org-run', view: rootView(false) })
-  const second = (await requests(MEMBER, 14)).slice(-7)
+it('stream staging and inspection staging independently acquire the same exact focused member', async () => {
+  const stream = stageAgentOrgExecutionContext({ source: 'stream', orgRunId: 'org-run', view: rootView(true), focus: '/director' })
+  const first = await requests(MEMBER, 1)
+  const inspection = stageAgentOrgExecutionContext({ source: 'inspection', orgRunId: 'org-run', view: rootView(false), focus: '/director' })
+  const second = (await requests(MEMBER, 2)).slice(-1)
   releaseMembers(second, 'final'); const staged = await inspection; staged.commit()
   releaseMembers(first, 'old'); await stream
   expect(useAgentActivityStore().getActivities('agent-director').map(a => a.activityId)).toEqual(['final:agent-director'])
   expect(JSON.stringify(staged.context.getAgentContext('agent-director')!.conversation)).toContain('final:agent-director')
 })
 
-it('opening a historical Org loads each member artifact list, including nested Team members (AC-004)', async () => {
+it('opening a historical Org loads the selected member artifact list, a nested Team member included (AC-003, AC-004)', async () => {
   const artifact = (runId: string, name: string) => ({
     __typename: 'RunFileChangeEntry', id: `${runId}:/outputs/${name}`, runId, path: `/outputs/${name}`, type: 'image',
     status: 'available', sourceTool: 'generated_output', sourceInvocationId: null, content: null,
@@ -218,13 +215,14 @@ it('opening a historical Org loads each member artifact list, including nested T
   for (const runId of ['agent-director', 'agent-task-lead']) {
     transport.fileChangesByRunId.set(runId, [artifact(runId, '1.png'), artifact(runId, '2.png')])
   }
+  orgs.select('org-run', { kind: 'agent_execution', agentRunId: 'agent-task-lead' })
   const open = orgs.openForInspection('org-run')
   ;(await requests(ROOT, 1))[0]!.respond(inspectionData(false))
-  releaseMembers(await requests(MEMBER, 7), 'historical')
+  releaseMembers(await requests(MEMBER, 1), 'historical')
   await open
 
   const files = useRunFileChangesStore()
   expect(orgs.contexts['org-run']?.isActive).toBe(false)
-  expect(files.getArtifactsForRun('agent-director').map((entry) => entry.path)).toEqual(['/outputs/1.png', '/outputs/2.png'])
   expect(files.getArtifactsForRun('agent-task-lead').map((entry) => entry.path)).toEqual(['/outputs/1.png', '/outputs/2.png'])
+  expect(files.getArtifactsForRun('agent-director')).toEqual([])
 })

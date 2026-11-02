@@ -1,4 +1,4 @@
-import { RunModelConfigEditabilityObject, RunModelConfigFieldErrorObject, RunModelOptionsObject } from "./run-model-config.js";
+import { requiredRuntimeKind, RunModelConfigEditabilityObject, RunModelConfigFieldErrorObject, RunModelOptionsObject } from "./run-model-config.js";
 import { GraphQLJSON } from "graphql-scalars";
 import { Arg, Field, InputType, Int, Mutation, ObjectType, Query, Resolver } from "type-graphql";
 import { getStudioAgentOrgRunService } from "../studio-application-api-services.js";
@@ -77,9 +77,11 @@ export class AgentOrgExecutionCheckpointPayload {
 }
 
 @InputType()
-export class AgentOrgRunModelConfigPatchInput {
+export class AgentOrgRunSelectionPatchInput {
   @Field(() => String) scopeKind!: "CONFIGURED_ORG" | "CONFIGURED_TEAM" | "CONFIGURED_AGENT";
   @Field(() => String) scopeAddress!: string;
+  /** The agent runtime to save the scope with: its own (a model edit), the previous one (undo) or another (a switch). */
+  @Field(() => String) runtimeKind!: string;
   @Field(() => String) llmModelIdentifier!: string;
   @Field(() => GraphQLJSON, { nullable: true }) llmConfig!: Record<string, unknown> | null;
 }
@@ -91,7 +93,7 @@ export class AgentOrgTeamWorkspacePatchInput {
 @InputType()
 export class UpdateStoppedAgentOrgRunConfigInput {
   @Field(() => String) orgRunId!: string;
-  @Field(() => [AgentOrgRunModelConfigPatchInput]) modelPatches!: AgentOrgRunModelConfigPatchInput[];
+  @Field(() => [AgentOrgRunSelectionPatchInput]) selectionPatches!: AgentOrgRunSelectionPatchInput[];
   @Field(() => [AgentOrgTeamWorkspacePatchInput]) teamWorkspacePatches!: AgentOrgTeamWorkspacePatchInput[];
 }
 @ObjectType()
@@ -138,7 +140,7 @@ export class AgentOrgRunResolver {
     @Arg("input", () => UpdateStoppedAgentOrgRunConfigInput) input: UpdateStoppedAgentOrgRunConfigInput,
   ) {
     return this.service.updateStoppedRunConfig({ orgRunId: input.orgRunId,
-      modelPatches: input.modelPatches.map((patch) => ({ ...patch, llmConfig: patch.llmConfig })),
+      selectionPatches: input.selectionPatches.map((patch) => ({ ...patch, runtimeKind: requiredRuntimeKind(patch.runtimeKind, patch.scopeAddress) })),
       teamWorkspacePatches: input.teamWorkspacePatches });
   }
 

@@ -641,12 +641,15 @@ Reference-content REST routes are rooted below
 
 `AgentOrgRunService.getRunConfig`, `runModelOptions`, and
 `updateStoppedRunConfig` use one exact `orgRunId` subject. The GraphQL mutation
-`updateStoppedAgentOrgRunConfig` carries independent `modelPatches` and
+`updateStoppedAgentOrgRunConfig` carries independent `selectionPatches` (each with its `runtimeKind`) and
 `teamWorkspacePatches` in one command. The manager owns the same root transition
 lane as restore and resolves explicit Org, mounted-Team, and configured-Agent
 scope addresses before validating any selection. Managed roots (including
 fail-stopped), archived/unadmitted roots and application bindings cannot be
-edited. Runtime, topology, handoffs, delegated children, application/archive metadata and
+edited. A direct Agent's, a mounted Team's or a mounted-Team Agent's agent runtime follows the same rule as a Team member's
+(model-only edit, **agent runtime switch** with a pending switch on every affected member, undo; see
+[Agent Team Execution](./agent_team_execution.md#agent-runtime-switch-of-a-member)); the Org's own default launch has no run and
+holds no pending switch. Topology, handoffs, delegated children, application/archive metadata and
 identities are not patched.
 
 A workspace patch may target only an exact configured mounted-Team address. Its

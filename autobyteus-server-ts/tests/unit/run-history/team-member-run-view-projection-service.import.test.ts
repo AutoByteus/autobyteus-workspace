@@ -6,7 +6,9 @@ describe("team-member-run-view-projection-service import timing", () => {
     vi.doUnmock("../../../src/config/app-config-provider.js");
   });
 
-  it("does not resolve the memory dir during module import", async () => {
+  // The case proves that importing the module does not resolve the memory dir, not how fast it imports: a cold import
+  // of the module graph can take longer than the default 5 s on a busy host.
+  it("does not resolve the memory dir during module import", { timeout: 30_000 }, async () => {
     const getMemoryDir = vi.fn(() => {
       throw new Error("getMemoryDir should not run during module import");
     });

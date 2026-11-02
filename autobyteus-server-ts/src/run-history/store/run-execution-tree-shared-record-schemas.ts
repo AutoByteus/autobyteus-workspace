@@ -19,7 +19,11 @@ import {
   type TeamRunApplicationBinding,
 } from "../domain/run-execution-tree-shared-records.js";
 import { parseTaskAgentExecutionSource, parseTaskTeamExecutionSource } from "./task-execution-source-schema.js";
-import { parseLaunchConfigurationSource, parseOptionalUserLaunchSelection } from "./launch-configuration-source-schema.js";
+import {
+  parseLaunchConfigurationSource,
+  parseOptionalPendingRuntimeSwitch,
+  parseOptionalUserLaunchSelection,
+} from "./launch-configuration-source-schema.js";
 
 /**
  * Execution-tree files are read tolerantly and written exactly (REQ-018): each parser
@@ -123,6 +127,7 @@ export const parseConfiguredAgent = (value: unknown, label: string): ConfiguredA
     agentRunId: requiredString(member.agentRunId, `${label}.agentRunId`),
     platformAgentRunId: nullableString(member.platformAgentRunId, `${label}.platformAgentRunId`),
     launchConfiguration: parseLaunchConfiguration(member.launchConfiguration, `${label}.launchConfiguration`),
+    ...parseOptionalPendingRuntimeSwitch(member, label),
   };
 };
 
@@ -173,6 +178,7 @@ const parseTaskTeamMember = (value: unknown, label: string): TaskTeamAgentExecut
     agentRunId: requiredString(member.agentRunId, `${label}.agentRunId`),
     platformAgentRunId: nullableString(member.platformAgentRunId, `${label}.platformAgentRunId`),
     ...parseOptionalUserLaunchSelection(member, "userLaunchSelection", label),
+    ...parseOptionalPendingRuntimeSwitch(member, label),
   };
 };
 
@@ -194,6 +200,7 @@ export const parseTaskExecution = (value: unknown, label: string): TaskExecution
       startedAt: isoTimestamp(execution.startedAt, `${label}.startedAt`),
       ...parseTaskAgentExecutionSource(execution, label),
       ...parseOptionalUserLaunchSelection(execution, "userLaunchSelection", label),
+      ...parseOptionalPendingRuntimeSwitch(execution, label),
     };
   }
   requireKeys(execution, ["address", "teamRunId", "members", "taskExecutions", "startedAt", "source"], label);

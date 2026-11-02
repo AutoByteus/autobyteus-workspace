@@ -294,9 +294,11 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     expect(aLog.map((line) => line.content)).toEqual(["Published to the channel.", "Thanks, now add captions."]);
     expect(bLog).toEqual(aLog);
     expect(new Set(aLog.map((line) => line.messageId)).size).toBe(2);
-    // The stored view of each root keeps them (the remote endpoint is a loaded endpoint), but the public view does not show them.
+    // The stored records of each root keep them (the remote endpoint is a loaded endpoint), but the view carries no
+    // messages, and a participant's Team tab does not show them (autobyteus-358: both endpoints must be agents of the root).
+    const bRecords = await b.manager.getCollaborationRecordsSnapshot("publisher_r1");
+    expect(bRecords.messages.messages.map((message) => message.content)).toEqual(["Published to the channel.", "Thanks, now add captions."]);
     const bInspection = (await b.manager.getInspection("publisher_r1"))!;
-    expect(bInspection.snapshot.messages.messages.map((message) => message.content)).toEqual(["Published to the channel.", "Thanks, now add captions."]);
     expect(JSON.stringify(projectAgentCollaborationView({ ...bInspection, remoteTaskExecutions: [] }))).not.toContain("Published to the channel.");
   });
 

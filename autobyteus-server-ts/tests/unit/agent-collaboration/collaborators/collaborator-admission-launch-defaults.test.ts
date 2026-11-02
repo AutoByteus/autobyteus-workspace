@@ -67,7 +67,7 @@ const codexLaunch = { ...sol, autoExecuteTools: false, workspaceRootPath: "/work
 describe("admission honors definition launch defaults", () => {
   it("AC-001 / AC-015: a catalog Team copy runs its configured members on their defaults and the rest on the root's", async () => {
     const run = setup();
-    const copy = await run.admission.catalogTaskSource(port(), { address: "/software_engineering_team", senderRunId: "pm" });
+    const copy = await run.admission.catalogTaskSource(port(), { address: "/software_engineering_team", senderRunId: "pm", workspaceRootPath: null });
     expect(copy?.launchNotes).toEqual([]);
     expect(copy?.source).toMatchObject({
       kind: "agent_team", defaultLaunchConfiguration: root, defaultLaunchSource: { origin: "inherited", fallbacks: [] },
@@ -83,7 +83,7 @@ describe("admission honors definition launch defaults", () => {
 
   it("AC-005: when the configured runtime is unavailable, the copy starts on the root's launch and returns one note per skipped agent", async () => {
     const run = setup(false);
-    const copy = await run.admission.catalogTaskSource(port(), { address: "/software_engineering_team", senderRunId: "pm" });
+    const copy = await run.admission.catalogTaskSource(port(), { address: "/software_engineering_team", senderRunId: "pm", workspaceRootPath: null });
     expect(copy?.launchNotes).toEqual(["implementation_engineer", "code_reviewer"].map((name) =>
       `${name}: its agent default Codex App Server / sol-6.1 could not be used (Codex App Server command 'codex' is not available); it runs on Claude Agent SDK / opus (inherited from the run).`));
     expect(copy?.source.kind === "agent_team" && copy.source.members[1]).toEqual({
@@ -96,13 +96,13 @@ describe("admission honors definition launch defaults", () => {
 
   it("AC-008: a recorded copy keeps its values after the definition changes; a new copy uses the new default", async () => {
     const run = setup();
-    const recorded = await run.admission.catalogTaskSource(port(), { address: "/software_engineering_team", senderRunId: "pm" });
+    const recorded = await run.admission.catalogTaskSource(port(), { address: "/software_engineering_team", senderRunId: "pm", workspaceRootPath: null });
     run.state.agents.find((item) => item.id === "implementation_engineer")!.defaultLaunchConfig =
       { runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: "local-model", llmConfig: null };
     const restored = projectTaskExecutionSource("/software_engineering_team" as never, recorded!.source);
     expect(restored.kind === "agent_team" && restored.node.children.find((child) => child.address === "/software_engineering_team/implementation_engineer"))
       .toMatchObject({ runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "sol-6.1" });
-    const fresh = await run.admission.catalogTaskSource(port(), { address: "/implementation_engineer", senderRunId: "pm" });
+    const fresh = await run.admission.catalogTaskSource(port(), { address: "/implementation_engineer", senderRunId: "pm", workspaceRootPath: null });
     expect(fresh?.source).toMatchObject({ kind: "agent", launchConfiguration: { runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: "local-model" } });
   });
 });

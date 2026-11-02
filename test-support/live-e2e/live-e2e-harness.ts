@@ -318,7 +318,9 @@ class InvocationCaptureExtension extends LLMExtension {
   summaryResponses(): CompleteResponse[] { return this.responses.filter((_, index) => this.responseIsSummary[index]); }
   /** The attempts of the last compaction operation: the summary requests directly before and including the last one. */
   lastSummaryAttemptCount(): number {
-    const last = this.invocations.findLastIndex(({ summary }) => summary);
+    // A backwards loop rather than findLastIndex: the server's build type policy targets ES2022.
+    let last = this.invocations.length - 1;
+    while (last >= 0 && !this.invocations[last]!.summary) last -= 1;
     let first = last;
     while (first > 0 && this.invocations[first - 1]!.summary) first -= 1;
     return last < 0 ? 0 : last - first + 1;

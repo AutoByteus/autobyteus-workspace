@@ -60,10 +60,11 @@ type TeamLaunchDto = Readonly<{
 /** The recorded source of a Team copy member's launch: its own, else its Team's; null when not recorded. */
 export declare const teamMemberLaunchSource: (team: Pick<TeamLaunchDto, "default_launch_source">, member: Pick<MemberLaunchDto, "launch_source">) => LaunchConfigurationSourceDto | null;
 /**
- * The user's model choice for one delegated copy: it replaces only the
- * model and its settings. Absent when the user made no choice (every older record).
+ * The user's choice for one delegated copy: its model and settings and, when the user also chose another agent runtime,
+ * that runtime (absent: the started runtime). Absent when the user made no choice (every older record).
  */
 export type UserLaunchSelectionDto = Readonly<{
+    runtime_kind?: AgentLaunchConfigurationDto["runtime_kind"];
     llm_model_identifier: string;
     llm_config: Readonly<Record<string, import("./schema-helpers.js").JsonValue>> | null;
     selected_at: string;

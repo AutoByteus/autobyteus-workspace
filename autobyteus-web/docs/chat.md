@@ -373,9 +373,9 @@ handle, the strip and the drawer, and a 57px header line. The center pane is
   a chip row (`SkillTagChips`) edits `requestedSkillNames`. Team and Org boxes
   receive no capability and are unchanged.
 - **⚙ run settings** (`RunConfigPanel` → `ExistingRunConfigEditor` →
-  `ExistingRunSettings`): runtime, workspace and approval are fixed; model,
+  `ExistingRunSettings`): workspace and approval are fixed; the agent runtime, model,
   thinking and other model settings are locked while the run is live and
-  editable when it is Offline; Save applies at the next resume. See
+  editable when it is Offline (a Team's or Org's own agent runtime stays fixed); Save applies at the next resume. See
   [Settings](./settings.md#existing-run-configuration).
   - A `temp-*` context (a New chat whose first send failed) has no saved
     settings: ⚙ is hidden. It keeps its error and the composer retry.

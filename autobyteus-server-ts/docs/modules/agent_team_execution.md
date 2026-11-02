@@ -150,22 +150,38 @@ boundary used elsewhere.
 
 ## Stopped Team Model Configuration
 
-`AgentTeamRunManager.updateStoppedModelConfigs(...)` owns General Process
-updates to persisted Team model/settings pairs. It runs inside the same root transition
+`AgentTeamRunManager.updateStoppedSelections(...)` owns General Process
+updates to persisted Team **selections**: agent runtime, model and model settings. It runs inside the same root transition
 lane as restore, rechecks that no root remains manager-owned, rejects archived
 or non-cataloged packages, and writes the current execution tree through the
 existing atomic tree store. Save-first therefore makes the new values visible
 to the next restore; restore-first returns `RUN_ACTIVE` without writing.
 
 Each patch targets the root Team address `/` or one exact direct configured
-Agent address. `TeamRunModelConfigMutator` resolves that address in the
-immutable stored topology and replaces only
-`llmModelIdentifier` and `llmConfig` in `defaultLaunchConfiguration` or
-`launchConfiguration`. Both fields are required; `llmConfig` may explicitly be
-null. It cannot change runtime kind,
-workspace, automatic-tool policy, concrete run IDs, provider bindings, task
-nodes, hierarchy, or addresses. Every intended scope validates against its own
-original saved selection and fixed runtime before the single tree write. A
+Agent address. `team-run-selection-mutator.ts` resolves that address in the
+immutable stored topology and replaces only the scope's agent runtime
+(`runtimeKind`), `llmModelIdentifier` and `llmConfig` in `defaultLaunchConfiguration` or
+`launchConfiguration`. The three fields are required; `llmConfig` may explicitly be
+null. It cannot change workspace, automatic-tool policy, concrete run IDs, task
+nodes, hierarchy, or addresses.
+
+The runtime follows the one rule `applyRuntimeSelection`
+(`run-history/domain/runtime-selection-rule.ts`, shared with a standalone Agent run and
+with delegated copies): the member's own agent runtime is a model-only edit; another agent
+runtime is an **agent runtime switch** (the member keeps its run, chat and history; its
+`platformAgentRunId` becomes `null` and a `pendingRuntimeSwitch { switchId, from }` is recorded
+on the member); the previous agent runtime again, while a switch is pending, is its undo.
+Every member whose effective agent runtime changes gets its own pending switch, including
+the members linked to a Team default that switched. The Team root's own default launch has no
+run and never holds one. The save touches no running state.
+
+The switch is made real when the member is next activated
+(see [Agent runtime switch of a member](#agent-runtime-switch-of-a-member)).
+
+Every intended scope validates before the single tree write: the same agent runtime against
+its original saved selection, another agent runtime as a fresh selection of it
+(`selectionContextFor`: the stored model counts as the current one only on the member's own
+agent runtime and while no switch is pending). A
 replacement needs fresh runtime-catalog membership and valid target-schema
 settings. AutoByteus additionally needs verified positive non-decreasing
 context capacity; external runtimes do not. Same-model settings skip the
@@ -174,7 +190,8 @@ the whole Save; it is not silently omitted. See
 [LLM Management](./llm_management.md#persisted-run-model-selection-validation).
 
 The browser may plan bounded propagation from a parent edit, but the server
-receives the resulting exact-scope patches rather than inheritance intent. The
+receives the resulting exact-scope patches (`selectionPatches`, each with its
+`runtimeKind`) rather than inheritance intent. The
 planner links direct Agents using draft-start runtime/model/settings equality.
 It preserves Agents that started divergent or were edited directly, even when a
 later direct edit equals its parent. Mixed-runtime Agents do not link,
@@ -194,6 +211,31 @@ General root lane. A nonterminal Application binding keeps both Agent and Team
 resume reads locked and direct stopped updates at `RUN_ACTIVE`; terminal release
 restores ordinary General eligibility. See [Run History](./run_history.md) and
 [Application Orchestration](./application_orchestration.md).
+
+### Agent runtime switch of a member
+
+A Team member (a standalone Team's, or an Org's direct Agent or mounted-Team Agent) with a pending switch is
+switched at its next activation, in `ConfiguredAgentExecutionHandle.initializeReady`
+(`agent-collaboration/execution/backends/`), the one activation class of every configured member and of a
+task Agent hosted in a root. Its order is `begin` → prepare → `record` → commit → publish:
+
+1. `ConfiguredAgentActivationPlanner.beginSwitch` decides from the member's raw traces. With a conversation, the one
+   `RuntimeSwitchMemory` port (`begin`) takes a ticket first (the switch and the watermark; nothing is written). With no
+   conversation, the member starts plainly: no marker, no archive, no notice. A history that cannot be read fails closed.
+2. A fresh session of the new agent runtime is prepared and validated (its candidate may write records of its own).
+3. `record` archives the previous agent's records through the watermark as one `runtime_switch` segment and starts the
+   active file with the hand-over marker (same records, key and idempotence as for a standalone Agent run; see
+   [Run History](./run_history.md)).
+4. The `runtime_switch` platform-binding commit `{execution, switchId, platformAgentRunId | null}` goes to the root that
+   owns the tree (`RootTeamRun` through `TeamAgentPlatformBindingCommitter`, `AgentOrgRun`, `StandaloneAgentRunRoot`), which
+   sets the session and removes the pending switch in one tree write. A stale `switchId` or a missing member is a conflict,
+   never a silent no-op; a conflict fails the activation.
+5. The candidate is published.
+
+`discard` runs only after the failed candidate's release is confirmed, so a failed attempt leaves the previous agent's file as it
+was; a failure after the marker leaves the member pending, and the next message completes with one marker and one segment. After a
+commit every holder of the member's launch drops the pending switch and takes the new binding: the handle's spec and session ID,
+the Team wrapper's configuration and `FlatAgentExecutionContext`, and the root's tree.
 
 ## Exact Member Identity And Commands
 

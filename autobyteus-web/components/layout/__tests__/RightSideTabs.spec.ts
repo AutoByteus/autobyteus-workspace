@@ -8,7 +8,7 @@ const setActiveTab = vi.fn();
 const selectTabExplicitly = vi.fn();
 const useContextualDefaultTab = vi.fn();
 const activeTab = ref('progress');
-const visibleTabs = ref([
+const visibleTabs = ref<Array<{ name: string; label: string; ariaLabel?: string }>>([
   { name: 'files', label: 'Files' },
   { name: 'progress', label: 'Activity' },
   { name: 'artifacts', label: 'Artifacts' },
@@ -125,7 +125,8 @@ describe('RightSideTabs', () => {
   // autobyteus-278 UIS-004: for a run another node runs, Files, Terminal, Artifacts and the screen say where it is.
   it.each(['files', 'terminal', 'artifacts', 'vnc'] as const)('replaces the %s panel with a note naming the node of a remote run', async (tab) => {
     useRemoteRunsStore().register({ kind: 'agent', address: '/market_researcher', agent_run_id: 'researcher-run', node_id: 'srv_docker',
-      node_name: 'docker', delegator_agent_run_id: 'manager-run', started_at: '2026-10-23T08:00:00.000Z' }, () => undefined);
+      node_name: 'docker', delegator_agent_run_id: 'manager-run', started_at: '2026-10-23T08:00:00.000Z' },
+      { refreshOnStream: () => false, selectedAgent: () => null, isLoaded: () => false, rereadAgent: () => false });
     activeTab.value = tab;
     activeWorkspaceTarget.value = { kind: 'agent_run_task_agent', context: { config: { workspaceId: null }, state: { runId: 'researcher-run' } } };
     const wrapper = mountSubject();
@@ -162,7 +163,7 @@ describe('RightSideTabs', () => {
     setActiveTab.mockReset();
 
     useAgentBackgroundTaskStore().upsertTask('run-1', {
-      taskId: 'bg-1', kind: 'shell', description: 'sleep 20', status: 'running',
+      taskId: 'bg-1', kind: 'shell', description: 'sleep 20', command: null, status: 'running',
       summary: null, startedAt: '2026-09-29T16:48:20.000Z',
     });
     await nextTick();

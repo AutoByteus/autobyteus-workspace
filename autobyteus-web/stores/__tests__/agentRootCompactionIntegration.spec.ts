@@ -4,7 +4,7 @@ import { nextTick } from 'vue'
 import { AgentStatus } from '~/types/agent/AgentStatus'
 import { AgentContext } from '~/types/agent/AgentContext'
 import { AgentRunState } from '~/types/agent/AgentRunState'
-import { agentRootView } from '~/services/agentCollaboration/__tests__/agentRootFixture'
+import { agentRootView, launch } from '~/services/agentCollaboration/__tests__/agentRootFixture'
 import { AgentRunCollaborationContext } from '~/services/agentCollaboration/agentRunCollaborationContext'
 import { buildAgentRunCollaborationContext } from '~/services/agentCollaboration/agentRunCollaborationHydration'
 import { GetAgentRunCollaborationMemberFileChanges, GetAgentRunCollaborationMemberProjection } from '~/graphql/queries/collaboratorQueries'
@@ -14,6 +14,7 @@ import { useAgentContextsStore } from '../agentContextsStore'
 import { useAgentActivityStore } from '../agentActivityStore'
 import { useWindowNodeContextStore } from '../windowNodeContextStore'
 import { handleCompactionStatus } from '~/services/agentStreaming/handlers/agentStatusHandler'
+import { memberLoader } from '~/services/runHydration/memberLoader'
 
 const io = vi.hoisted(() => ({ query: vi.fn(), mutate: vi.fn(), inactive: vi.fn(), streams: [] as any[] }))
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: io.query, mutate: io.mutate }) }))
@@ -30,15 +31,15 @@ const deferred = <T = any>() => {
   const promise = new Promise<T>((yes, no) => { resolve = yes; reject = no })
   return { promise, resolve, reject }
 }
+// The fixture's delegated runs, all launched with the native runtime and no workspace.
+const nativeLaunch = { ...launch, runtimeKind: 'autobyteus' as const, workspaceRootPath: null }
 const nativeView = () => {
   const view = agentRootView()
-  for (const entry of view.execution_tree.taskExecutions) {
-    const launch = entry.source?.kind === 'agent' ? entry.source.launchConfiguration : entry.source?.defaultLaunchConfiguration
-    if (!launch) continue
-    launch.runtimeKind = 'autobyteus'
-    launch.workspaceRootPath = null
-  }
-  return view
+  const taskExecutions = view.execution_tree.taskExecutions.map((entry) => ('agentRunId' in entry
+    ? { ...entry, source: { ...entry.source, launchConfiguration: nativeLaunch } }
+    : { ...entry, source: { ...entry.source, defaultLaunchConfiguration: nativeLaunch,
+      members: entry.source.members.map((member) => ({ ...member, launchConfiguration: nativeLaunch })) } }))
+  return { ...view, execution_tree: { ...view.execution_tree, taskExecutions } }
 }
 const envelope = (view: ReturnType<typeof nativeView> | null) => ({ data: { agentRunCollaboration: view && {
   root_subject_kind: 'agent', root_run_id: 'host-run', root_agent: view,
@@ -165,7 +166,7 @@ it.each(['view', 'member'])('a live activity change during the %s fetch never fa
   const { store, root, activities } = await setup()
   store.selectChild('host-run', 'pp-run'); store.toggleTaskTeam('host-run', 'team-run')
   await flush()
-  expect(root.isChildHydrated('pp-run')).toBe(true)
+  expect(memberLoader().isHydrated('agent:host-run', 'pp-run')).toBe(true)
   const projectionsBefore = memberRequests(GetAgentRunCollaborationMemberProjection, 'pp-run')
   const delay = deferred(); io.query.mockImplementation(async input => {
     if ((point === 'view' && input.variables.runId)
@@ -181,7 +182,7 @@ it.each(['view', 'member'])('a live activity change during the %s fetch never fa
   expect(next).not.toBe(root)
   // The retained AgentContext object moved to the new context, which loaded the child itself.
   expect(next.getAgentContext('pp-run')).toBe(root.getAgentContext('pp-run'))
-  expect(next.isChildHydrated('pp-run')).toBe(true)
+  expect(memberLoader().isHydrated('agent:host-run', 'pp-run')).toBe(true)
   expect(activities.getActivityContentRevision('pp-run')).toBeGreaterThan(revision)
   // A change during the member fetch costs one retry; during the view fetch, nothing.
   expect(memberRequests(GetAgentRunCollaborationMemberProjection, 'pp-run') - projectionsBefore).toBe(point === 'member' ? 2 : 1)

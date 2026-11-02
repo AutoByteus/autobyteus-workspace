@@ -27,7 +27,8 @@ describe('runProjectionActivityHydration', () => {
         contextText: 'pwd',
       }),
     );
-    expect(activities[0]?.logs).toEqual(['done']);
+    const activity = activities[0];
+    expect(activity?.kind === 'tool' ? activity.logs : null).toEqual(['done']);
   });
 
   it('drops malformed projected rows without invocation ids', () => {

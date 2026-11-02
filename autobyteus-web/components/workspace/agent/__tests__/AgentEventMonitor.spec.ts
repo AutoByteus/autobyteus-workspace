@@ -102,7 +102,7 @@ describe('AgentEventMonitor.vue', () => {
           id: 'team-run-1::Professor',
         },
         runId: 'member-run-1',
-        browseSubject: { kind: 'teamMember', teamRunId: 'team-run-1', memberRouteKey: 'Professor', agentRunId: 'member-run-1' },
+        browseSubject: { kind: 'teamMember', teamRunId: 'team-run-1', memberAddress: '/Professor', agentRunId: 'member-run-1' },
       },
       global: {
         stubs: {

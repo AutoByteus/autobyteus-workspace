@@ -15,7 +15,9 @@ import type { ContextFilePath } from '~/types/conversation'
 import type { ActiveAgentWorkspaceTarget, WorkspaceAccess } from '~/types/workspace/activeAgentWorkspaceTarget'
 import type { OrgWorkspaceSelection } from '~/services/agentOrgExecution/agentOrgExecutionViewIndex'
 import type { AgentOrgExecutionContext } from '~/services/agentOrgExecution/agentOrgExecutionContext'
-import { hydrateRemoteOrgMember, stageAgentOrgExecutionContext } from '~/services/agentOrgExecution/agentOrgContextHydration'
+import { orgMemberLoadTarget, stageAgentOrgExecutionContext } from '~/services/agentOrgExecution/agentOrgContextHydration'
+import { memberLoader } from '~/services/runHydration/memberLoader'
+import { rebuildOfView, useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages'
 import { useRemoteRunsStore, type RemoteRunRetryAdapter } from '~/stores/remoteRunsStore'
 import { AgentOrgStreamingService } from '~/services/agentOrgExecution/agentOrgStreamingService'
 import { acceptLocalSubmission, beginLocalUserSubmission, failLocalSubmission, finalizeLocalSubmissionAttachments, type LocalUserSubmissionHandle } from '~/services/runSubmission/localUserSubmission'
@@ -52,7 +54,8 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     })
   }
 
-  const publish = (id: string, candidate: AgentOrgExecutionContext, commit: () => void) => {
+  const loaderRoot = (id: string) => `agent_org:${id}`
+  const publish = (id: string, candidate: AgentOrgExecutionContext, commit: () => string | null) => {
     const previous = contexts.value[id]
     // Validate retained identity before committing any projection or activity.
     for (const entry of candidate.listAgentContextEntries()) {
@@ -64,13 +67,19 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
         upsertUserMessageByIdentity({ context: entry.context, userMessage: submission.message })
       }
     }
-    commit()
+    // Every publication is a rebuilt view: a new member-loader generation in which only the staged member is
+    // loaded, and the Team tab's lists load again when a message could have been missed (autobyteus-358).
+    memberLoader().beginRoot(loaderRoot(id))
+    const staged = commit()
+    if (staged) memberLoader().markHydrated(loaderRoot(id), staged)
     if (previous) candidate.adoptLocalContexts(previous)
     retainSubmissionExclusion(id, candidate)
     const requested = pendingFocus.value[id]
     if (requested !== undefined) candidate.select(requested)
     contexts.value = { ...contexts.value, [id]: candidate }
     errors.value = { ...errors.value, [id]: null }
+    useCollaborationParticipantMessagesStore().reloadRoot('agent_org', id, rebuildOfView(candidate.view))
+    ensureMemberLoaded(id, selectedAgentRunIdOf(candidate))
     // autobyteus-278: the runs this Org delegated to other nodes; Retry (the store's rule) acts through this Org.
     candidate.remoteExecutions.forEach((execution) => remoteRuns.register(execution, remoteRetryAdapter(id)))
     useRunHistoryStore().applyAgentOrgActivity(id, candidate.isActive)
@@ -118,6 +127,8 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     inspections.delete(id)
     retireStream(id)
     const next = { ...contexts.value }; delete next[id]; contexts.value = next
+    memberLoader().releaseRoot(loaderRoot(id))
+    useCollaborationParticipantMessagesStore().releaseRoot('agent_org', id)
     const nextErrors = { ...errors.value }; delete nextErrors[id]; errors.value = nextErrors
     const nextFocus = { ...pendingFocus.value }; delete nextFocus[id]; pendingFocus.value = nextFocus
     deferredReleases.delete(id)
@@ -128,28 +139,36 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
   }
   const select = (id: string, selection: OrgWorkspaceSelection | string | null): void => {
     pendingFocus.value = { ...pendingFocus.value, [id]: selection }
-    contexts.value[id]?.select(selection)
-    ensureRemoteHydrated(id, selection)
+    const org = contexts.value[id]
+    org?.select(selection)
+    if (org) ensureMemberLoaded(id, selectedAgentRunIdOf(org))
   }
   const selectedAgentRunId = (selection: OrgWorkspaceSelection | string | null | undefined): string | null =>
     selection && typeof selection === 'object' && selection.kind === 'agent_execution' ? selection.agentRunId : null
-  const ensureRemoteHydrated = (id: string, selection: OrgWorkspaceSelection | string | null): void => {
-    readRemoteMember(id, selectedAgentRunId(selection))
+  /** The agent the Org shows for its selection: a selected agent, or a selected configured Team's coordinator. */
+  const selectedAgentRunIdOf = (org: AgentOrgExecutionContext): string | null => {
+    const selection = org.selection
+    if (selection?.kind === 'agent_execution' && org.index.remoteAgents.has(selection.agentRunId)) return selection.agentRunId
+    return org.index.selectedAgent(selection)?.agentRunId ?? null
   }
-  /** autobyteus-278: a remote child's conversation is read from its node (when it is selected, or on Retry). */
-  const readRemoteMember = (id: string, agentRunId: string | null): boolean => {
+  /**
+   * Loads the shown member's stored conversation, activities and files through the member loader unless it is loaded
+   * in the published context (autobyteus-358). A remote member's conversation is read from its node (autobyteus-278).
+   */
+  const ensureMemberLoaded = (id: string, agentRunId: string | null): boolean => {
     const org = contexts.value[id]
-    if (!org || !agentRunId || !org.index.remoteAgents.has(agentRunId)) return false
-    void hydrateRemoteOrgMember({ orgRunId: id, context: org, agentRunId, isCurrent: () => contexts.value[id] === org })
-      .catch((cause) => console.warn(`[agentOrg] Could not load '${agentRunId}' of '${id}'.`, cause))
+    if (!org || !agentRunId || !org.getAgentContext(agentRunId) || memberLoader().isHydrated(loaderRoot(id), agentRunId)) return false
+    void memberLoader().ensure(loaderRoot(id), agentRunId, () => contexts.value[id] === org ? orgMemberLoadTarget({
+      orgRunId: id, context: org, agentRunId, liveToolAuthority: () => org.isActive && services.get(id)?.isReady() === true,
+    }) : null).catch((cause) => console.warn(`[agentOrg] Could not load '${agentRunId}' of '${id}'.`, cause))
     return true
   }
   /** autobyteus-278 (SR-008): this Org's mechanisms for the store's Retry rule. */
   const remoteRetryAdapter = (id: string): RemoteRunRetryAdapter => Object.freeze({
     refreshOnStream: () => services.get(id)?.refreshRemote() ?? false,
     selectedAgent: () => selectedAgentRunId(contexts.value[id]?.selection),
-    isLoaded: (agentRunId: string) => contexts.value[id]?.isRemoteAgentLoaded(agentRunId) ?? false,
-    rereadAgent: (agentRunId: string) => !(contexts.value[id]?.isRemoteAgentLoaded(agentRunId) ?? false) && readRemoteMember(id, agentRunId),
+    isLoaded: (agentRunId: string) => memberLoader().isHydrated(loaderRoot(id), agentRunId),
+    rereadAgent: (agentRunId: string) => ensureMemberLoaded(id, agentRunId),
   })
 
   const readInspection = async (id: string, intent?: WorkspaceSelectionIntent): Promise<void> => {
@@ -160,7 +179,8 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     try {
       const view = await readAgentOrgRunInspection(id)
       if (!current()) return
-      const staged = await stageAgentOrgExecutionContext({ source: 'inspection', orgRunId: id, view, isCurrent: current })
+      const staged = await stageAgentOrgExecutionContext({ source: 'inspection', orgRunId: id, view, isCurrent: current,
+        focus: pendingFocus.value[id] ?? contexts.value[id]?.selection ?? null })
       if (!current()) return
       const candidate = shallowReactive(staged.context)
       publish(id, candidate, staged.commit)
@@ -390,7 +410,7 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     }
   }
   const saveRunConfig = async (orgRunId: string, patches: Readonly<{
-    modelPatches: readonly ExistingAgentOrgModelConfigPatch[]; teamWorkspacePatches: readonly TeamWorkspacePatch[]
+    selectionPatches: readonly ExistingAgentOrgModelConfigPatch[]; teamWorkspacePatches: readonly TeamWorkspacePatch[]
   }>) => {
     const org = requireConfigOwner(orgRunId), id = orgRunId, view = org.view
     if (org.isActive || org.phase !== 'historical'

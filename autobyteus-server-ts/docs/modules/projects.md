@@ -815,6 +815,34 @@ run ID (`target_agent_run_id`, or a Team copy's
 `target_team_coordinator_agent_run_id`), never the definition address; a later
 Task goes to the copy by `target_team_run_id` / `target_agent_run_id`.
 
+### Folder of a new copy
+
+A new **local** copy runs in a folder chosen by its Task's Project
+(`projects/services/project-new-copy-folder.ts`, `projectFolderForNewCopy`;
+autobyteus-97):
+
+- **The Task belongs to a Project with a linked folder:** the copy runs in the
+  Project's **first** linked folder. This holds for saved-Task delegation and for
+  sub-work (a worker's `delegate_task` without `task_id`, which joins its Task),
+  from Agent, Team and Org roots, for catalog copies and an Org's configured
+  placements. A Team copy has one folder: its default and every member. The
+  delegating run keeps its own folder.
+- **The Project has no linked folder, or the Task has no Project** (a Temp task):
+  the copy takes the top-level run's folder, as before.
+- **The first link is not an existing folder on this node** (moved, deleted, or a
+  file): the delegation is refused with `TASK_PROJECT_FOLDER_UNAVAILABLE`, "Project
+  "<name>" has the linked folder "<path>", which is not an existing folder on this
+  node. Fix the Project's link, or link another folder, then delegate again.
+  Nothing was started." No Task entry, no copy and no fallback to another folder.
+- `delegate_task` has no folder parameter. Model, runtime and auto-approve choices
+  are resolved as before, checked against the copy's folder.
+- **Existing copies keep their folder**: a follow-up Task to an existing copy (even
+  a Task of another Project) and a restart restore it where it was. A different
+  folder means a new copy.
+- Remote copies are unaffected: they run in the peer's temp workspace (CM-12).
+- The tree does not change: the copy stays nested under the run that delegated
+  it. Focusing it shows its own folder in Files and Terminal.
+
 ### Assignment and linking
 
 - **Link before resources.** The `assigned` entry is written as `starting`
@@ -1136,7 +1164,11 @@ running), the one the left panel shows:
 ## Workspace Registration Boundary
 
 Projects use WorkspaceManager's pure registered-root snapshot only for read-time
-availability, never for mutation admission. Views derive AVAILABLE/UNREGISTERED
+availability, never for mutation admission. Saving links never checks them;
+delegation does check the first link before it starts a copy there (see
+[Folder of a new copy](#folder-of-a-new-copy)). A copy started in a Project folder
+registers that folder like any run start, so a folder not yet registered appears
+as a new row in the Workspaces list after the first delegation into it. Views derive AVAILABLE/UNREGISTERED
 from path membership and display names from recorded paths. Availability means
 registration, not proof of filesystem existence/access. The snapshot does not
 activate workspaces or clean up the registry; list/detail requests take at most

@@ -4,15 +4,15 @@ import type {
   DelegatedStopOutcome,
 } from "../../agent-collaboration/collaborators/delegated-launch-selection-command.js";
 import type {
-  DelegatedHostSelectionValue,
+  DelegatedLaunchSelectionValue,
   DelegatedLaunchChange,
   DelegatedRunReference,
 } from "../../agent-collaboration/domain/delegated-launch-selection.js";
 import type { AgentRunService } from "../../agent-execution/services/agent-run-service.js";
 import type { AgentOrgRunManager } from "../../agent-org-execution/services/agent-org-run-manager.js";
 import type { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
-import type { TeamRunModelConfigPatch } from "../../agent-team-execution/services/team-run-model-config-mutator.js";
-import type { AgentOrgRunModelConfigPatch } from "../../agent-org-execution/domain/agent-org-run-config.js";
+import type { TeamRunSelectionPatch } from "../../agent-team-execution/services/team-run-selection-mutator.js";
+import type { AgentOrgRunSelectionPatch } from "../../agent-org-execution/domain/agent-org-run-config.js";
 import type { RunModelSelectionService, RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
 import type { StandaloneAgentRunRootManager } from "../../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
 import type { RunModelConfigFieldError } from "../domain/run-model-config.js";
@@ -38,9 +38,9 @@ export type DelegatedLaunchServiceResult = Readonly<{
  * scopes of a Team or Org, or the Agent root's host model.
  */
 export type StoppedRootConfiguredPatches =
-  | Readonly<{ kind: "team"; patches: readonly TeamRunModelConfigPatch[] }>
-  | Readonly<{ kind: "org"; patches: readonly AgentOrgRunModelConfigPatch[] }>
-  | Readonly<{ kind: "agent"; selection: DelegatedHostSelectionValue }>;
+  | Readonly<{ kind: "team"; patches: readonly TeamRunSelectionPatch[] }>
+  | Readonly<{ kind: "org"; patches: readonly AgentOrgRunSelectionPatch[] }>
+  | Readonly<{ kind: "agent"; selection: DelegatedLaunchSelectionValue }>;
 
 const stopResult = (outcome: DelegatedStopServiceResult["outcome"], message: string, notStoppedUnattributed = 0): DelegatedStopServiceResult =>
   Object.freeze({ success: outcome === "STOPPED" || outcome === "ALREADY_STOPPED", outcome, message, notStoppedUnattributed });
@@ -132,7 +132,7 @@ export class DelegatedLaunchSelectionService {
       case "AGENT_ORG": {
         const result = await this.dependencies.orgs.updateStoppedRunConfig({
           orgRunId: input.rootRunId,
-          modelPatches: configured?.kind === "org" ? configured.patches : [],
+          selectionPatches: configured?.kind === "org" ? configured.patches : [],
           teamWorkspacePatches: [],
           delegatedChanges: input.changes,
         });

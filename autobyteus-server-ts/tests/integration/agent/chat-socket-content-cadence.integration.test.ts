@@ -39,6 +39,8 @@ import type { AgentOrgRunEvent } from "../../../src/agent-org-execution/domain/a
 import type { StandaloneRootEvent } from "../../../src/standalone-agent-run-root/domain/standalone-root-event.js";
 import { emptyStandaloneRootMessages, emptyStandaloneRootTree } from "../../../src/standalone-agent-run-root/domain/standalone-root-tree.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode } from "../../fixtures/current-agent-org-run-fixtures.js";
+import { isTeamRunMessageEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
+import { isAgentOrgMessageEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
 
 type AgentKey = "A" | "B";
 type Frame = Readonly<{ at: number; label: string; first: number | null; through: number | null; texts: readonly string[] }>;
@@ -111,7 +113,7 @@ const teamScenario: Scenario = {
       rootTeamRunId: "team-run-root",
       messages: validateCollaborationCommunicationMessageArray((json("app-data-migrations/team-run-execution-tree-v1/case-003-nested-task-team", "team_communication_messages.json") as { messages: unknown }).messages),
     });
-    const publisher = new RootEventPublisher<TeamRunEvent>();
+    const publisher = new RootEventPublisher<TeamRunEvent>({ isMessageEvent: isTeamRunMessageEvent });
     const root = {
       teamRunId: "team-run-root",
       openPackageSnapshotConnection: () => publisher.openSnapshotConnection(() => ({ tree, closedTaskExecutions: [], messages, inputStates: [], statuses: [] })),
@@ -168,7 +170,7 @@ const rootScenario = (kind: "agent_org" | "agent"): Scenario => ({
     const execution = (agent: AgentKey) => createCollaborationMemberExecutionIdentity({
       root: createAgentOrgRootExecutionIdentity(rootRunId), memberAddress: `/member-${agent}` as never, agentRunId: runIds[agent],
     });
-    const publisher = new RootEventPublisher<AgentOrgRunEvent & StandaloneRootEvent>();
+    const publisher = new RootEventPublisher<AgentOrgRunEvent & StandaloneRootEvent>({ isMessageEvent: isAgentOrgMessageEvent });
     const present = (agent: AgentKey, event: TeamAgentEvent) => {
       const team = projectTeamAgentEventMessage(createTeamAgentExecutionBinding({
         root: createTeamRootExecutionIdentity("presentation"), memberAddress: `/member-${agent}`, agentRunId: runIds[agent],

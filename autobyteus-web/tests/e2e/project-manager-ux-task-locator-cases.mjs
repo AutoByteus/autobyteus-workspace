@@ -362,7 +362,7 @@ export const createTaskLocatorCases = (h) => {
     await summaryIn(agentRow(page, s.workers.agent)).click();
     await located(page, s.tasks.agent, 'before reload');
     await sleep(500);
-    await page.reload({ waitUntil: 'networkidle' });
+    await page.reloadOwn({ waitUntil: 'networkidle' });
     await showProjectsTab(page);
     details.pickerAfterReload = await until('picker restored', async () => { const v = await pickerSelect(page).inputValue(); return v || null; }, 15000);
     assert(details.pickerAfterReload === `project:${s.projectA}`, 'locate choice remembered after reload', details);

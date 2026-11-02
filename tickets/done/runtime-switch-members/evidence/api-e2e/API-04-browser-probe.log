@@ -1,0 +1,25 @@
+# Case: API-04 (RSM-01..RSM-05)
+# Command: cd autobyteus-web && pnpm test:e2e:runtime-switch-members --output-dir <dir>
+# Commit: 3261712e06 (+ uncommitted API/E2E tests listed in the report)
+# Environment: macOS arm64 (Darwin 25.5), Node 22, owned temp data roots; see the report ENV rows
+# Date: 2026-11-02T06:06Z
+
+
+> autobyteus@1.5.11-beta.10 test:e2e:runtime-switch-members /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-switch-members/autobyteus-web
+> node tests/e2e/runtime-switch-members-probe.mjs --output-dir /tmp/rsm-final
+
+  · Team: saved, the server holds the pending switch on the worker only
+  · Team: the first message switched the worker (one segment, committed); the lead never started
+  · Team: after the reload the chat shows the earlier turns and one marker; the settings show the worker on Antigravity
+RSM-01 Pass
+  · Org /direct: the server holds the pending switch on that member only
+  · Org /direct: the first message switched it (one segment, committed)
+RSM-02 Fail — saving the switch shows an error in the Settings: [ { "code": "invalid_union", "errors": [ [ { "code": "unrecognized_keys", "keys": [ "pendingRuntimeSwitch" ], "path": [], "message": "Unrecognized key: \"pendingRuntimeSwitch\"" } ], [ { "expected": "
+  · Org /crew/worker: the server holds the pending switch on that member only
+  · Org /crew/worker: the first message switched it (one segment, committed)
+RSM-03 Fail — saving the switch shows an error in the Settings: [ { "code": "invalid_union", "errors": [ [ { "expected": "string", "code": "invalid_type", "path": [ "agentDefinitionId" ], "message": "Invalid input: expected string, received undefined" }, { "expect
+  · Delegated copy: saved in the host's Settings; the first message switched it (one segment)
+RSM-04 Fail — the saved copy row does not show Antigravity: rsw-native:lmstudio@127.0.0.1:63507 · AutoByteus · Auto-approve · Agent default
+RSM-05 Pass
+ ELIFECYCLE  Command failed with exit code 1.
+exit 1

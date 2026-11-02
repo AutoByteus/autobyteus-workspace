@@ -2,7 +2,7 @@ import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-te
 import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
 import type { LaunchConfigurationSource } from "../../agent-collaboration/domain/launch-configuration-source.js";
 import type { AgentLaunchConfiguration } from "./team-run-config.js";
-import type { IsoTimestamp, UserLaunchSelection } from "../../run-history/domain/run-execution-tree-shared-records.js";
+import type { IsoTimestamp, RecordedPendingRuntimeSwitch, UserLaunchSelection } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import type { TaskAgentSection } from "../../run-history/store/agent-run-metadata-types.js";
 
 /**
@@ -21,7 +21,7 @@ export type TaskAgentTeamMemberNode = Readonly<{
   followsTeam: boolean;
   launchSource?: LaunchConfigurationSource;
   userLaunchSelection?: UserLaunchSelection;
-}>;
+}> & RecordedPendingRuntimeSwitch;
 
 /**
  * The root of a task agent team's own tree: today's team tree root without `teamDefinitionName` (not
