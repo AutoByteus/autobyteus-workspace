@@ -9,6 +9,7 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) is autho
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 (IR-001) | N/A | Pass | None |
 | CRR-002 | `code-review-report.md` | API/E2E Failure-Origin Review, round 2 (API-REV-001 F-API-001, F-API-002) | Pass | Fail: two `Local Fix`es → implementation | F-API-001, F-API-002 |
 | CRR-003 | `code-review-report.md` | Implementation Review, round 3, Targeted Delta (IR-002) | Fail | Pass | F-API-001, F-API-002 (resolved in code) |
+| CRR-004 | `code-review-report.md` | API/E2E Failure-Origin Review, round 4 (API-REV-002 F-API-003) | Pass | Fail: `Design Impact` → Solution Designer | F-API-003, CR-C12; F-API-001 and F-API-002 resolved at runtime |
 
 ## Revision Entries
 
@@ -103,3 +104,34 @@ None (CRR-001 had no findings).
 - Material score or classification changes: category 5 goes from 9.0 to 9.5; category 8 goes from 8.6 to 9.3; overall 9.4; Medium / High unchanged
 - Recommended recipient: API/E2E engineer
 - Remaining risks or uncertainty: the fix has not met a real Squirrel refusal; `updateStaged` stops scheduled checks in a process that stays open after a failed install (CR-C9); CR-C2; Windows, Linux and a Developer ID signed install are not tested.
+
+### CRR-004 — Failure-origin review of F-API-003 (the 60 s quit bound fails a working install on a busy machine)
+
+- Canonical review report updated: `code-review-report.md` (§ Round 4; Latest Authoritative Result)
+- Review entry point and round: API/E2E Failure-Origin Review, round 4
+- Review scope: `N/A` (failure-origin)
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, `api-e2e-execution-coverage-report.md` (API-REV-002), F-API-003 (AC-002 / REQ-002 / REQ-004 / DS-002 signal c); evidence API-02B, API-02C, API-02D, API-05-r2, API-05C
+- Relevant solution revision IDs: SR-003
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: API-REV-001, API-REV-002
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: `Pass` (CRR-003)
+- Current authoritative result: `Fail`, `Design Impact`, owned by the Solution Designer
+- What changed in the review result and why:
+  - On macOS, `update-downloaded` fires before Squirrel has its copy, and `quitAndInstall` only waits for it. So the 60 s bound includes about 36 s of Squirrel's work on an idle machine, and on a busy machine it fails a working install. The design's premise that the quit follows promptly is false.
+  - The reason shown for every install failure is generic (CR-C12, REQ-004).
+  - **Correction:** rounds 2 and 3 said the round 1 refusal arrived during the preparation. The timings and API-05-r2 show it arrived before. The fix covers both timings.
+- Supported product scenario / material-premise basis changes: DS-002 signal (c)'s premise is contradicted. A busy machine is a supported normal scenario.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| F-API-001 | Resolved in code (CRR-003) | Resolved at runtime | API-REV-002 | API-02-r2 (`API-02-r2-sidebar.log`) |
+| F-API-002 | Resolved in code (CRR-003) | Resolved at runtime | API-REV-002 | API-05-r2 (9 samples, cancelled, health 200); API-05C (relaunch once) |
+
+- New or remaining finding IDs: F-API-003 (Design Impact); CR-C12 (low, goes with it); CR-C13 held for evidence
+- Material score or classification changes: category 8 goes from 9.3 to 8.7; Medium / High unchanged
+- Recommended recipient: Solution Designer
+- Remaining risks or uncertainty: one machine and an ad hoc signature; Squirrel's time with a Developer ID signature is unknown; the 40 s relaunch gap has no cause yet; the native readiness signal on the cached path is Read only.

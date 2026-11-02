@@ -2,7 +2,80 @@
 
 All ticket paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/automatic-app-node-updates/tickets/in-progress/automatic-app-node-updates/`.
 
-> **Latest round: 3, Implementation Review of IR-002, Targeted Delta Review (CRR-003), `Pass`.** Rounds 1 and 2 are kept below. § Round 3 and the Latest Authoritative Result supersede them.
+> **Latest round: 4, API/E2E Failure-Origin Review (CRR-004), `Fail` → `Design Impact` for the Solution Designer.** Rounds 1 to 3 are kept below. § Round 4 and the Latest Authoritative Result supersede them.
+
+## Round 4 — Failure-Origin Review of F-API-003 (CRR-004)
+
+### Meta
+
+- Trigger: API/E2E engineer, API-REV-002 `Fail` (88.7%).
+  - Code `6a94169f4f`, from a clean checkout of `f1c4641b08`.
+  - Evidence `940251dcdb`.
+- Coverage investigation / execution report / API/E2E revision record: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md` (API-REV-002).
+- Project testing guideline: `TESTING.md`. Isolated copies only; the user's app, data, updater caches and nodes were untouched. No conflicts.
+- Failing scenario: AC-002 / REQ-002 / REQ-004 / DS-002 signal (c), on a busy machine.
+- Evidence (`evidence/`): `API-02D-v1-instance.log:263-282`, `API-02D-state-after.log`, `API-02D-failure-row.png`, `API-02B-v1-instance.log`, `API-02C-throttled-summary.log`, `API-05C-instance.log`, `API-05-r2-samples.log`.
+
+### What the evidence shows (Measured by API/E2E; I checked the logs and the code)
+
+- `update-downloaded` fires **before** Squirrel has its copy. `MacUpdater.js:219-224` dispatches it and then calls `nativeUpdater.checkForUpdates()`.
+- `MacUpdater.quitAndInstall` (`:240-254`): when `squirrelDownloadedUpdate` is still false, it only registers a listener and returns. The quit comes after Squirrel's fetch, unpack and verify.
+- `AppUpdateInstallAttempt.run` calls `onQuitRequested` right after `quitAndInstall` returns, so the 60 s bound starts while Squirrel still has its work ahead. The bound measures Squirrel's work as well as the quit.
+- **Margin on this machine:** about 36 s of the 60 s on an idle app (API-02B).
+- **On a busy machine (API-02D):** a full `build:electron:mac` at normal priority, load average 43 to 153.
+  - 05:50:06.474: the server exited.
+  - 05:51:06.477: "did not quit … within 60 seconds", 60.003 s later.
+  - 05:51:06.479: "relaunching this version".
+  - The bundle is still beta.10, and the row reads "Automatic update failed".
+
+### Origin
+
+- **Design Impact.** DS-002 signal (c) and § Risks assume that the quit follows `quitAndInstall` promptly. On macOS that is false: the order the design prescribes (install at once at `update-downloaded`) leaves Squirrel's work inside the bound. The code implements the design exactly. The design's own escalation trigger covers this case: "if the real install on the platform needs anything beyond `installUpdateAndRestart()`".
+- **Not an implementation defect, and not a test problem.** A heavy build at normal priority is ordinary use on this user's machine, with no artificial throttle (API-02C's stronger throttle is supporting evidence only). Validity: `Supported Normal Scenario`, since AC-002 has no idle precondition, and DEC-001 chose no idle check. The update arrives unattended, whatever the machine is doing.
+- **Consequences:**
+  - a working update is abandoned, and the app restarts for nothing;
+  - V is blocked from automatic install although nothing was wrong with it, against REQ-002's intent (a newer version or a click still installs);
+  - the row says the automatic update failed;
+  - runs busy at that moment are stopped and not resumed (FU-003, read and not run). FU-003 assumed this path is rare, and a false failure on a busy machine makes it more likely.
+  - No corruption: the old version returns with its server.
+- **Limits of the evidence:** one machine, and an ad hoc signature (a Developer ID signature may change Squirrel's time, in an unknown direction).
+- **Review gap (mine):** in round 3 I printed `MacUpdater.quitAndInstall` and used it to settle the timeline, but I did not connect it to the bound. Round 1 also accepted signal (c) without reading it.
+
+### Correction to rounds 2 and 3
+
+- CRR-002 and CRR-003 said the round 1 refusal arrived **during** the preparation. **That was wrong.** Read: in API-02B the server exit comes 138 ms after "/ requested" (the 100 ms delay plus about 40 ms to stop); in round 1 it came 183 ms after. API-05-r2 shows 9 of 9 read-only refusals landing **before** the preparation. So what round 1 hit was the case I called the "second timing": the old timer wasn't cancelled and stopped the server after the refusal. This is an inference from timings, since no log line marks the start of the preparation.
+- What still holds from round 3: the stop had not resolved, and "/ requested" is Squirrel's fetch, not `quitAndInstall`. API/E2E applied that correctly.
+- The IR-002 fix covers both timings, and F-API-002 is resolved. The implementer's "during" reading came from my text. A refusal within the short stop has no known real trigger and stays unit-only. A signature refusal arrives after the stop (API-05C, +38 s), which the relaunch branch handled correctly.
+
+### Resolved this round
+
+- **F-API-001:** Resolved at runtime on a real automatic restart (API-02-r2).
+- **F-API-002:** Resolved at runtime: cancelled with the server healthy (API-05-r2, 9 samples), and relaunched once with a healthy server (API-05C).
+
+### Directions (the Solution Designer decides)
+
+| Direction | Effect | Cost |
+| --- | --- | --- |
+| **A. Start the install once Squirrel has its copy** (macOS). Wait for Electron's native `autoUpdater` `update-downloaded`, the same object MacUpdater listens to, before the stop. Windows and Linux have no such step. Bound that wait separately: when it expires nothing has stopped, so it is a clean failure | Removes the false failure. Also removes O-4 (the server is down for ~36 s with nothing happening) and moves a signature refusal (API-05C) to before the stop, so no relaunch and no stopped runs for it, which shrinks FU-003 | Changes DS-002's order. Busy runs keep working during Squirrel's time. "As soon as the download is done" (DEC-001) then means "once it is ready to install", about 36 s later; the Solution Designer should judge whether that needs the user |
+| **B. Arm the 60 s bound at Squirrel's readiness, keeping the order** | Removes the false failure | Keeps O-4. A Squirrel that never answers leaves the app without its server unless a second bound is added |
+| **C. A longer bound** | Moves the threshold | The margin is unknown on slower machines or with a Developer ID signature, and it delays the detection of a real hang |
+
+My view: **A**. It fixes the cause instead of the timer, and it also removes the server outage. Read only: the signal and its behavior with a cached update (N-8's path, where `update-downloaded` re-emits) need checking on the real updater; `squirrelDownloadedUpdate` may already be true there, so a wait must not hang. The `downloadUpdate()` promise is not a usable signal, because with `autoInstallOnAppQuit` it has no resolve on Squirrel's success (`MacUpdater.js:220-226`).
+
+### Other observations for the same revision
+
+| Candidate ID | Observation | Disposition | Reason |
+| --- | --- | --- | --- |
+| CR-C12 (O-5) | Every install failure shows the classifier's generic "could not restart to install it. Try again." (`appUpdateErrorClassifier.ts:21`), including a signature refusal, a read-only refusal and the false bound failure; the real reason is only in the log | Promote (this ticket, low) | REQ-004: "shows 'Automatic update failed. Nothing was changed.' with the reason". "Try again" also misleads, since the version is blocked for automatic install. The raw native text is unsuitable (file paths, the OS locale), so the wording is a design choice. |
+| CR-C13 (O-3) | About 40 s between "relaunching" and the new process (API-05C), cause not identified | Hold for Evidence | Seen once, and API/E2E has no cause. Not scored. Direction A would make this path rarer. If it persists, measure it. |
+| CR-C14 (O-4) | The server stops at once while Squirrel needs ~36 s | Linked to F-API-003 | The same cause. It follows the design's order, and direction A removes it. |
+
+### Classification and routing
+
+- F-API-003: `Design Impact`, owned by the Solution Designer. CR-C12 goes with it.
+- After the revision: architecture review as the rules decide, then implementation, source review and API/E2E (API-02D's load repeat, a repeat of API-05C, and the cached or staged path).
+
+> Round 3 (CRR-003) and earlier rounds are kept below for history.
 
 ## Round 3 — Targeted Delta Review of IR-002 (CRR-003)
 
@@ -304,7 +377,18 @@ N/A: the review passes.
 
 ## Latest Authoritative Result
 
-**Round 3 (CRR-003), authoritative:**
+**Round 4 (CRR-004), authoritative:**
+
+- Review Decision: `Fail` (failure-origin)
+- Review Entry Point: `API/E2E Failure-Origin Review`
+- Supported Product Scenario Gate: `Pass`. A busy machine at an unattended automatic update is a supported normal scenario.
+- Material-Premise Gate: `Fail`. The premise "the quit follows `quitAndInstall` promptly" (DS-002 signal c) is contradicted on macOS.
+- Score note: category 8, Runtime Correctness, goes from 9.3 to 8.7. Other categories stand. The code follows the design.
+- Failure Origin: `Design Impact`, F-API-003 (with CR-C12). Round 1 and 3 review gap. F-API-001 and F-API-002 are resolved at runtime.
+- Recommended Recipient: Solution Designer
+- Notes: AC-001, AC-003, AC-005 and AC-006 are proven, and AC-004 is reused from round 1. AC-002 passes on an idle machine and with a busy run, and fails on a busy machine.
+
+**Round 3 (CRR-003), superseded:**
 
 - Review Decision: `Pass`
 - Review Entry Point: `Implementation Review` (`Targeted Delta Review`)
