@@ -1,0 +1,8 @@
+# REL-01 pre-tag checks on merged personal e241868162 (v1.5.11-beta.12)
+python3 scripts/check_licensing.py -> Licensing is consistent.
+python3 scripts/check_repository_artifact_hygiene.py -> Repository artifact hygiene check passed.
+scripts/check_secrets.sh v1.5.11-beta.11..HEAD -> scanning 46 commit(s); PASS (no secrets found)
+scripts/check_secrets.sh on the release commit 260d4e3fc4 before the push -> PASS
+python3 scripts/release_versions.py next-beta -> 1.5.11-beta.12
+git log --merges --first-parent v1.5.11-beta.11..HEAD -> e241868162 (autobyteus-356), fc5a726444 (beta.11 release records)
+User-action sections (## What you need to do): none (356 release-notes.md has none)

@@ -7,7 +7,7 @@ The latest `docs-sync-report.md`, `handoff-summary.md` and `release-deployment-r
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
 | DR-001 | CRR-006 (test-code review Not Applicable) after API-REV-003 Pass; the user's beta decision | N/A | Blocked (Local Fix: integration conflict with autobyteus-363 after `v1.5.11-beta.11`) | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `release-notes.md` |
-| DR-002 | CRR-008 (test review Not Applicable) after IR-004 (merge with 363), CRR-007 Pass, API-REV-004 Pass | Blocked (Local Fix) | See the release report's Final Status | `release-deployment-report.md`, `handoff-summary.md`, `delivery-revision-record.md` |
+| DR-002 | CRR-008 (test review Not Applicable) after IR-004 (merge with 363), CRR-007 Pass, API-REV-004 Pass | Blocked (Local Fix) | Delivery Completed (finalized; beta `v1.5.11-beta.12` released) | `release-deployment-report.md`, `handoff-summary.md`, `delivery-revision-record.md` |
 
 ## Revision Entries
 
@@ -40,5 +40,5 @@ The latest `docs-sync-report.md`, `handoff-summary.md` and `release-deployment-r
 - Integration: `Already current`. `origin/personal` was still `fc5a726444`, and the fix merge already contains it.
 - Post-integration checks: reused from IMP-02 (on `08984df524`: web typecheck, Electron `tsc`, full web suite 5085) and API-R4 (Electron 407; Nodes, notifications and stores 1212). Only ticket documents changed since, so they cover this exact code. The release's pre-tag checks and the build-only release run cover the merged `personal`.
 - Verification: re-verified from API-14 (real node beta.7 → beta.11, `AUTO_UPDATED`, one line, the switch in the server cell in all three layouts). API-REV-003's real-Squirrel results stand, because `autobyteus-web/electron` is unchanged by the merge.
-- Current authoritative result: recorded in `release-deployment-report.md` § Final Status.
-- Next recipient/action: finalize into `personal`, cut the beta, then `/software_engineering_team/solution_designer`.
+- Current authoritative result: Delivery Completed. Finalized as `e241868162` on `personal`. Beta `v1.5.11-beta.12` (release commit `260d4e3fc4`): all four workflows succeeded (iOS after a rerun of a transient simulator UI-test timeout) and 23 of 23 assets. The release smoke check passed except Grok, which the user waived (quota exhausted). The build-only run passed after a rerun of a runner-capacity cancellation.
+- Next recipient/action: `/software_engineering_team/solution_designer` (terminal receipt; send FU-001 to FU-007).

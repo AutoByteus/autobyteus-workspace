@@ -111,16 +111,52 @@
 
 ## Repository Finalization
 
-FINALIZATION_SECTION
+- Bootstrap context source: `requirements-doc.md` § Document Status (branch `codex/automatic-app-node-updates`, target `personal`) and `RELEASE.md` § Finalization Target (read from `origin/personal`).
+- Ticket branch: `codex/automatic-app-node-updates` @ `2c54eb55ef` (DR-002 archive). Secret Gate passed before its first push.
+- Ticket branch push result: `Completed` (deleted after the merge, see cleanup).
+- Finalization target remote / branch: `origin` / `personal`.
+- Target advanced after verification: `No` (`fc5a726444` from the fix merge to the push).
+- Merge into target result: `Completed` (`git merge --no-ff` on `finalize/automatic-app-node-updates` → `e241868162`; its tree equals the verified `2c54eb55ef`; Secret Gate on the merged state passed).
+- Push target branch result: `Completed` (`fc5a726444..e241868162 HEAD -> personal`, after a fetch confirmed `personal` had not moved).
+- Repository finalization status: `Completed`.
 
 ## Release / Publication / Deployment
 
 - Applicable: `Yes` (the user's beta decision).
-RELEASE_SECTION
+- Method: `Project Release Guide` (`RELEASE.md` from `origin/personal`): `bash scripts/desktop-release.sh beta --branch finalize/automatic-app-node-updates --no-push`, then pushes.
+- Version: `v1.5.11-beta.12` (`python3 scripts/release_versions.py next-beta`). Release commit `260d4e3fc4` (`chore(release): bump workspace release version to 1.5.11-beta.12`), annotated tag `v1.5.11-beta.12`.
+- Content since `v1.5.11-beta.11`: autobyteus-356 only (plus beta.11's release records).
+- Checks before tagging, on the merged `personal` `e241868162`:
+  - licensing: Pass. Hygiene: Pass. Secret Gate `v1.5.11-beta.11..HEAD`: Pass (46 commits). See `evidence/REL-01-pretag-checks.log`.
+  - Release smoke check (`python3 scripts/release_smoke.py`), `evidence/REL-02-release-smoke.log`:
+    - Claude 3/3, Codex 3/3, Antigravity 2/2 and AutoByteus 2/2 PASS;
+    - Grok 0/3, every case refused for quota (`429 … free-usage-exhausted`, rolling 24 h; beta.11's smoke check had used the free tier the same day).
+    - **Waiver:** the user waived Grok for `v1.5.11-beta.12` (2026-11-02: "Waive Grok"). Reason: a quota refusal, not a product failure. 356 changes no agent runtime.
+  - Build-only release run (`pnpm release:test --ref personal`, run `41453287610`), `evidence/REL-03-build-only-run.log`:
+    - attempt 1: four targets succeeded; macOS ARM64 was cancelled because no hosted runner picked it up (a capacity annotation);
+    - rerun of the failed job (transient, RELEASE.md Recovery): success. All five desktop targets built; Publish skipped.
+- Push: `personal` `e241868162..260d4e3fc4` after a fetch confirmed it unmoved (Secret Gate on the release commit: Pass); tag `v1.5.11-beta.12` pushed at 14:28:52Z.
+- Pipelines (`evidence/REL-04-rollout.log`), watched together:
+  - Desktop Release: success;
+  - Android APK Release: success;
+  - Server Docker Release: success;
+  - iOS App Store Connect Release: success on attempt 2. Attempt 1 failed only the simulator UI test `testFakeNodeOpensAndRestoresWithFakeMobileMarker` ("Timed out while evaluating UI query"); the build and 27 unit tests passed. That test runs against a fake node, the workflow does not build the web app, and no iOS file changed since beta.11, whose iOS run passed. So it was transient; `gh run rerun --failed` led to success, including Archive And Upload To App Store Connect.
+- Published artifacts: the GitHub pre-release `v1.5.11-beta.12`, `isPrerelease` true, **23 of 23 assets**:
+  - macOS ARM64 and x64 `.dmg` and `.zip` with blockmaps;
+  - the Linux x64 and ARM64 AppImages, the Windows `.exe`;
+  - `latest*.yml` ×4;
+  - the Android APK and its `.sha256`;
+  - the signed server packages for x64 and arm64 (`.tar.gz`, `.json`, `.json.sig`).
+  Docker image `autobyteus/autobyteus-server:1.5.11-beta.12` (the workflow succeeded; `:beta` moves to the newest tag).
+- Beta notes: GitHub generated notes. No ticket in the release has a `## What you need to do` section, so the notes were not edited. Observation: the generated body repeats its "Full Changelog" line, as `v1.5.11-beta.11` does. This is existing workflow behaviour, recorded as FU-007.
+- Release/publication/deployment result: `Completed`.
+- Release notes handoff result: `Not required` for a beta (generated notes). `release-notes.md` is kept for the next stable release.
 
 ## Post-Finalization Cleanup
 
-CLEANUP_SECTION
+- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/automatic-app-node-updates` (created for this ticket).
+- Remote branch cleanup: `origin/codex/automatic-app-node-updates` is deleted after this record is pushed (its head `2c54eb55ef` is an ancestor of `personal`).
+- Worktree cleanup, worktree prune, local branches (`codex/…`, `finalize/…`): run from the main checkout right after this record commit is pushed. The results are confirmed in the terminal message to the Solution Designer.
 
 ## Release Notes Summary
 
@@ -147,4 +183,10 @@ None beyond the release. Docker users get the image `autobyteus/autobyteus-serve
 
 ## Final Status
 
-FINAL_STATUS_SECTION
+- Verification complete (from the evidence): `Yes` (DR-002 re-verified on the 363 merge).
+- Repository finalization complete: `Yes` (`personal` @ `e241868162`; release commit `260d4e3fc4`; plus this record commit).
+- Applicable release complete: `Yes`. Beta `v1.5.11-beta.12`: all four workflows succeeded (iOS on its rerun) and 23 of 23 assets; Grok waived by the user in the release smoke check.
+- Applicable safe cleanup: after this commit (confirmed in the terminal message).
+- Unresolved blocker: `None`.
+- Successful terminal package eligible for return: `Yes`.
+- Terminal package sent to the Solution Designer: `Yes`, after this commit and the cleanup.

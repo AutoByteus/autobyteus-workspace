@@ -55,8 +55,12 @@
 
 ## Release
 
-- **Beta**, at the user's request (2026-11-02: "there will be a new release request, it will be a beta if everything is fine"). It is released together with the tickets merged since `v1.5.11-beta.10`; details in `release-deployment-report.md`.
-- `release-notes.md` is user-facing. No user action is needed (both switches start off), so it has no "What you need to do" section.
+- **Beta `v1.5.11-beta.12`, released** at the user's request, the first beta containing 356. `v1.5.11-beta.11`, cut by another task, did not contain it.
+  - All four workflows succeeded (iOS after a rerun of a transient simulator UI-test timeout).
+  - The GitHub pre-release has 23 of 23 assets.
+  - The release smoke check passed on Claude, Codex, Antigravity and AutoByteus. The user waived Grok, whose free quota was exhausted.
+  - Details: `release-deployment-report.md`.
+- `release-notes.md` is user-facing and kept for the next stable release. A beta uses generated notes; no ticket in the release needs a user action.
 
 ## For The Solution Designer
 
