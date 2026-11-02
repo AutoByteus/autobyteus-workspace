@@ -8,6 +8,7 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) is autho
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 (IR-001) | N/A | Pass | None |
 | CRR-002 | `code-review-report.md` | API/E2E Failure-Origin Review, round 2 (API-REV-001 F-API-001, F-API-002) | Pass | Fail: two `Local Fix`es → implementation | F-API-001, F-API-002 |
+| CRR-003 | `code-review-report.md` | Implementation Review, round 3, Targeted Delta (IR-002) | Fail | Pass | F-API-001, F-API-002 (resolved in code) |
 
 ## Revision Entries
 
@@ -70,3 +71,35 @@ None (CRR-001 had no findings).
 - Material score or classification changes: category 8 goes from 9.3 to 8.6; category 5 goes from 9.5 to 9.0; Medium / High unchanged
 - Recommended recipient: implementation engineer
 - Remaining risks or uncertainty: Windows, Linux and a Developer ID signed install are not tested; the quit-bound and catch paths are unit-only.
+
+### CRR-003 — Targeted delta review of IR-002 (one outcome set; settle the install attempt before recovery)
+
+- Canonical review report updated: `code-review-report.md` (§ Round 3; Latest Authoritative Result)
+- Review entry point and round: Implementation Review, round 3
+- Review scope: `Targeted Delta Review`. The delta stays within the install sequence and failure handling, the sidebar count and store, one row layout fix, docs and specs.
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, `implementation-handoff.md` (IR-002; code `aa096836d9`, `6a94169f4f`), F-API-001, F-API-002
+- Relevant solution revision IDs: SR-003
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: `Fail` (CRR-002)
+- Current authoritative result: `Pass`, 9.4/10, no findings
+- What changed in the review result and why:
+  - The sidebar reads the store's one set of automatic outcomes.
+  - A failed automatic install now settles its attempt first: cancelled before the preparation, otherwise awaited with `quitAndInstall` skipped. Recovery reads the server's state only after that.
+  - A later download rejection no longer replaces the install failure.
+  - I traced each failure timing and confirmed the code's timeline against the API report's label.
+- Supported product scenario / material-premise basis changes: None.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| F-API-001 | Open (`Local Fix`) | Resolved in code; real-restart check owed (API-02 repeat) | IR-002, `aa096836d9` | Store and sidebar diff; consumer search; `NotificationCenter.appAutomatic.spec.ts`; IMP-10 (seeded record) |
+| F-API-002 | Open (`Local Fix`) | Resolved in code; real refusal owed (API-05 repeat) | IR-002, `aa096836d9` | `appUpdateInstallAttempt.ts`; `appUpdateAutomaticRun.ts`; `appUpdaterAutomatic.spec.ts` (five new cases); IMP-09 |
+
+- New or remaining finding IDs: None; FU-004 added (follow-up)
+- Material score or classification changes: category 5 goes from 9.0 to 9.5; category 8 goes from 8.6 to 9.3; overall 9.4; Medium / High unchanged
+- Recommended recipient: API/E2E engineer
+- Remaining risks or uncertainty: the fix has not met a real Squirrel refusal; `updateStaged` stops scheduled checks in a process that stays open after a failed install (CR-C9); CR-C2; Windows, Linux and a Developer ID signed install are not tested.

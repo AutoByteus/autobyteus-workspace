@@ -2,7 +2,78 @@
 
 All ticket paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/automatic-app-node-updates/tickets/in-progress/automatic-app-node-updates/`.
 
-> **Latest round: 2, API/E2E Failure-Origin Review (CRR-002), `Fail` → two `Local Fix`es owned by implementation.** Round 1 (CRR-001, `Pass`) is kept below; § Round 2 and the Latest Authoritative Result supersede it.
+> **Latest round: 3, Implementation Review of IR-002, Targeted Delta Review (CRR-003), `Pass`.** Rounds 1 and 2 are kept below. § Round 3 and the Latest Authoritative Result supersede them.
+
+## Round 3 — Targeted Delta Review of IR-002 (CRR-003)
+
+### Meta and scope
+
+- Trigger: implementation engineer, IR-002 (code `aa096836d9`, `6a94169f4f`; handoff and evidence `11b6d02c46`).
+- Review Scope: `Targeted Delta Review`.
+  - Evidence: `git diff bc9e427f1c 6a94169f4f` touches the install sequence and its failure handling (F-API-002), the sidebar count and store (F-API-001), one row layout fix, the two docs and the two spec files.
+  - There is no change to the node path, the record's shape, persisted data, IPC or the shared contracts.
+  - The new `appUpdateInstallAttempt.ts` holds code moved out of `appUpdater.ts`, inside F-API-002's behavior.
+- I reran no checks: the Electron and web suites and the typecheck ran on `6a94169f4f`. IMP-09's mutations ran on the working tree before `aa096836d9`, and the one later source change is the removal of a guard that had no observable effect (M14). IMP-10 is a rendered check from a seeded record.
+
+### F-API-001: Resolved
+
+- `automaticOutcomeRows` in the store is now the one set, and `unreadOutcomeRows` derives from it. `SidebarNotificationsEntry.vue` uses that set plus its own `center.isNew` rule, and its app-excluding filter is gone.
+- I repeated the consumer search I missed in round 1 (`AUTO_UPDATED` and `kind !== 'app'` across components, stores, composables, pages, layouts and utils). No other reader computes the outcome count. The remaining `kind` checks are row text and layout. `updateNotificationsStore.ts:98` and `:144` derive a source row's `unread`, which is a different fact.
+- The new test covers "1 update applied automatically" and "1 updated" with the panel open, after the row is marked read.
+
+### F-API-002: Resolved in code; the real refusal is still owed
+
+Trace of `AppUpdateInstallAttempt` and `installFailed`:
+
+| Failure arrives | What happens | Result |
+| --- | --- | --- |
+| Before the 100 ms delay ends | `abort()` clears the timer and returns `false` | Nothing stops, no recovery; the server keeps running; V is blocked |
+| During the preparation (the API-05 timing) | `aborted` is set; `abort()` awaits `running`, then returns `true`; `run()` skips `quitAndInstall` | Recovery reads `isServerProcessGone()` only after the shutdown has settled, so it relaunches |
+| The preparation rejects (catch) | `onFailed` → `installFailed` → `abort()` awaits `running`, which ends right after the synchronous `onFailed` returns | No deadlock; recovery once |
+| A refusal, then the preparation rejects | Recorded once; the second `installFailed` returns false; `abort()` resolves when `running` ends | Recovery once; the recorded reason is the first |
+| `quitAndInstall` throws, or the quit bound expires | `failed` → `installFailed` → `abort()` | Recovery once |
+
+- The wait is bounded: the preparation is `ApplicationShutdown.stop()`, with its 30 s deadline.
+- A manual install stays unchanged: `installFailed` returns false when no automatic install was requested, so `abort` isn't called and `quitAndInstall` still runs.
+- **Secondary:** `installRequestedFor(V)` keeps a later download rejection from replacing the install-failure state. A manual download with no automatic install still reports a download error (test).
+
+### The implementer's three points
+
+1. **`quitAndInstall` is skipped after a known failure: accepted.** On macOS, MacUpdater would wait for a native `update-downloaded` that a refusal never sends, so calling it does nothing useful, and recovery decides next. It is consistent with DS-002 and REQ-004. A false refusal can't come from a scheduled check, because `installing` is busy (`appUpdater.ts:34`, `appUpdateCheckSchedule.ts:112`).
+2. **The timeline: the implementer and CRR-002 are right; the API report's label is wrong.**
+   - `stopServer` awaits `waitForChildExit` on the `exit` event, and "Server process exited" is logged by an `exit` listener (`baseServerManager.ts:390-393`) at 29.868. So the stop had not resolved at 29.685.
+   - `MacUpdater.js:219-223` calls `nativeUpdater.checkForUpdates()` right after `dispatchUpdateDownloaded`, without `quitAndInstall`. So "/ requested" is that native step.
+   - Awaiting the preparation is therefore enough. API/E2E should correct that label in its report at the next round.
+3. **`appUpdater.ts` at 485 lines: accepted.** The install sequence moved to its own file, and the file is within 500, with a net +2.
+
+### Candidate gate (round 3)
+
+| Candidate ID | Observation | Disposition | Reason |
+| --- | --- | --- | --- |
+| CR-C8 | `installRequestedFor(V)` also holds for a later **manual** re-download of V in the same process (the app stayed open after a failed automatic install), so its rejection takes the suppressed branch and could leave the status on `downloading` | Reject (verified not stuck) | electron-updater dispatches `error` before it rejects (`AppUpdater.js:451-453`), except for a `CancellationError`, and the app never cancels a download. The `error` handler sets the error state with `operation = 'download'`, so only the catch's log line is misleading. |
+| CR-C9 | `updateStaged` stays true after a failed install, so `isBusy()` stops scheduled checks for the rest of that process when it stays open (the cancelled path, or an unconfirmed server exit) | Reject (not material) | The next start checks as usual, and a click still works. Both paths are rare: the observed refusal took about 0.9 s, past the 100 ms delay. It is recorded as a residual. |
+| CR-C10 | M14's guard was removed after the mutation run, so the mutations were not re-run on the final code | Reject | The removed guard had no observable effect, and the full Electron suite ran on `6a94169f4f`. |
+| CR-C11 | A manual click that installs V after V's automatic install failed: at the next start, reconcile's rule `failedInstall === running` gives `AUTO_UPDATED`, so the row says "Updated automatically to V" for a click | Promote as a follow-up (FU-004) | Read at `appUpdateNotificationRecord.ts` `reconcileWithRunningVersion`; not run. The design prescribes the rule to catch an install-on-quit during recovery, and a click can't be told apart there. It is wording only: no AC fails, and the version is right. This is borderline against BEH-003's "the manual wording" preserved, so I name it rather than bury it. |
+
+### Scorecard and structure
+
+- Category 5, Shared-Structure, goes from round 2's 9.0 back to 9.5 (one derived set).
+- Category 8, Runtime Correctness, goes from 8.6 back to 9.3 (the decision comes after the attempt settles).
+- Category 7, API/E2E Readiness, stays at 9.3 (the real refusal is pending).
+- Other categories are unchanged. Overall 9.4.
+- Sizes: `appUpdater.ts` 485, `appUpdateInstallAttempt.ts` 49, `appUpdateAutomaticRun.ts` 90.
+- Ownership: the install attempt owns the delay, the preparation and the quit call; the automatic run owns what is recorded; `ElectronApplication` owns recovery. There is no duplicate sequence.
+- `6a94169f4f` is a small layout fix, within the rendered check's scope.
+
+### Findings (round 3)
+
+None.
+
+### Follow-ups
+
+- Added: FU-004 (CR-C11).
+
+> Round 2 (CRR-002) and round 1 (CRR-001) are kept below for history.
 
 ## Round 2 — Failure-Origin Review of F-API-001 and F-API-002 (CRR-002)
 
@@ -233,7 +304,20 @@ N/A: the review passes.
 
 ## Latest Authoritative Result
 
-**Round 2 (CRR-002), authoritative:**
+**Round 3 (CRR-003), authoritative:**
+
+- Review Decision: `Pass`
+- Review Entry Point: `Implementation Review` (`Targeted Delta Review`)
+- Supported Product Scenario Gate: `Pass`
+- Material-Premise Gate: `Pass`
+- Score Summary: 9.4 / 10; every category ≥ 9.2 (category 5 at 9.5, category 8 at 9.3)
+- Recommended Recipient: API/E2E engineer
+- Notes:
+  - Validated code: `aa096836d9` + `6a94169f4f`.
+  - F-API-002's timing is proven by unit tests with a controlled preparation only. The real Squirrel refusal is owed in the API-05 repeat, with API-02's sidebar check after a real restart.
+  - API/E2E should correct its report's timeline label (point 2 above).
+
+**Round 2 (CRR-002), superseded:**
 
 - Review Decision: `Fail` (failure-origin)
 - Review Entry Point: `API/E2E Failure-Origin Review`
