@@ -14,12 +14,12 @@
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (IR-002: CR-001, CR-002 Local Fix)
 - Implementation revision record: `.../implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-002`
-- Related architecture-review, code-review, API/E2E and delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Related revision IDs: code review `CRR-001`; API/E2E `API-REV-001`; architecture review and delivery `N/A`
+- Triggering finding IDs: CR-001, CR-002 (CRR-001, from API-REV-001 AFS-002)
 
 Web only, on `codex/agent-settings-focused`, on top of autobyteus-348's `3261712e06`.
 
@@ -27,6 +27,7 @@ Web only, on `codex/agent-settings-focused`, on top of autobyteus-348's `3261712
 | --- | --- |
 | `3296ee9a8f` | Ticket docs as received |
 | `cba2e085e7` | The change, its specs, two probes and the docs |
+| 2dd3c665f5 | IR-002: Org row actions keep Settings within the shown Org (CR-001); copies' model choices adopted after an Org Save (CR-002) |
 
 ## Routing Classification (Mandatory)
 
@@ -66,11 +67,13 @@ Beyond or different from the design, each needed for an AC. Please check them.
 - **D-IMP-5, the resolver's shape.** A union with `origin: 'none'` for no row, and `rootAgentRunId` in place of the design's `runKind`.
 - **D-IMP-6, status in the header.** A copy shows its own running state (a Team copy's member: its Team copy's). A member shows the run's status, because its lock and its stop belong to the run; a member idle inside a running Team reads "Active".
 - **D-IMP-7, the stop hint.** The design quotes "Stop one to change its model; its next message resumes it on the new model.", part of the removed description. On one card "Stop this copy…" reads right, so `runSettings.delegated.stopToChange` became "Stop this copy to change its model; its next message resumes it on the new model." (en, zh-CN).
+- **D-IMP-9 (IR-002), the same-run rule covers the Org tree.** `useWorkspaceHistorySubjectActions.execute` keeps the view when the route already shows that Org (CR-001).
+- **D-IMP-10 (IR-002), copies' model choices are mutable in the Org adoption check** (CR-002): an Agent copy's, a Team copy's and its members', at any depth; every other copy field stays locked.
 - **D-IMP-8, source line.** The card also shows the copy's source ("Inherited from the run"), which the row's summary showed, so nothing is lost.
 
 ## Known Risks
 
-- **Org is not rendered.** The seed has no Org. Org focus, the switch's label, the Org view's stay-open rule and a copy's Settings are covered by specs only.
+- (IR-002) Org now rendered by API/E2E's AFS-002, which passes on this fix (IMP-10).
 - A Team-wide Save was not driven: Save needs every scope's model schema, and the seed's runtime is not signed in here. Names, edit routes and the unchanged save are covered by specs.
 - The panel title stays "Team Configuration" over a member's card. Left as is; not in the design.
 - autobyteus-348's branch has no remote ref (`git fetch origin codex/runtime-switch-members` fails); its local branch is still `3261712e06`, so nothing new to merge.
@@ -120,6 +123,8 @@ Beyond or different from the design, each needed for an AC. Please check them.
 | IMP-06 | `ExistingRunConfigEditor.subject`, `.savedSnapshot`, `.delegatedSave` specs | in IMP-02 | isolated HOME | focus per root, AC-005, the re-read | AC-003, AC-005 | Pass | same | `edits across focus changes` |
 | IMP-07 | `agentSelectionStore.spec.ts`, `AgentOrgWorkspaceView.spec.ts` | in IMP-02 | isolated HOME | Settings stay open; Org copy | AC-005, REQ-003 | Pass | same | named cases |
 | IMP-08 | Browser on this worktree's server and Nuxt dev, seeded test data (scripted AGY) | `cba2e085e7` tree | temp HOME and data root; removed | hub, Team copy, Team root | AC-001…AC-003, AC-005 | Pass, with the limits under Known Risks | `evidence/IMP-08-rendered-check.log`, `IMP-08-*.png` | `"list":0`; `Unsaved changes: code reviewer` |
+| IMP-09 | specs for CR-001, CR-002 (`useWorkspaceHistorySubjectActions.spec.ts`, `agentOrgRunConfigAdoption.spec.ts`); web typecheck; guards; full web suite | 2dd3c665f5 | isolated HOME | Org row actions; Org adoption check | AC-003, AC-005 | Pass | `evidence/IMP-IR002-checks.log` | see the log |
+| IMP-10 | AFS-002 (`delegated-launch-defaults-probe.mjs --cases AFS-002`) | 2dd3c665f5 tree | probe-owned stack | Org focus, copy Save | AC-002, AC-003, AC-005 | Pass | `evidence/IMP-10-AFS-002.log`, `IMP-10-AFS-002-*.png` | `"settingsClosedBy": []`, `"pendingEditKept": true` |
 
 - Not run, and why: the Electron suite (no Electron file changed); server suites (no server file changed); the probes below (real-stack, left to API/E2E).
 
