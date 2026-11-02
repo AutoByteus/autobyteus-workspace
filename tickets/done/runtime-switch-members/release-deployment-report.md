@@ -52,7 +52,10 @@ Not applicable: no release.
 
 ## Repository Finalization
 
-TBD
+- Ticket branch `codex/runtime-switch-members`: committed and pushed after Secret Gate PASS
+- Finalization target `origin/personal`: advanced after verification `Yes`, once (autobyteus-97, `f7c71405e9`); re-integrated and re-verified (see above); stable afterwards (`f7c71405e9` at the last fetch before the push)
+- `finalize/runtime-switch-members` from `origin/personal`; `--no-ff` merge `046f089f2b`; Secret Gate, hygiene and licensing pass on the merged state; pushed `f7c71405e9..046f089f2b` (a record-only commit follows)
+- Repository finalization status: `Completed`; blocker: none
 
 ## Release / Publication / Deployment
 
@@ -60,7 +63,7 @@ TBD
 
 ## Post-Finalization Cleanup
 
-TBD
+- Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-switch-members` removed and pruned (after the record commit); local branches `codex/…` and `finalize/…` deleted after the merge into `origin/personal` was confirmed; remote branch `origin/codex/runtime-switch-members` deleted. Status: `Completed`
 
 ## Release Notes Summary
 
@@ -76,4 +79,7 @@ Revert the merge on `personal` if a member's switch corrupts its raw traces or c
 
 ## Final Status
 
-TBD
+- Verification complete (from the evidence): `Yes`
+- Repository finalization complete: `Yes` (`personal` @ `046f089f2b`, plus this record commit)
+- Release/deployment/rollout: not required; safe cleanup complete: `Yes`
+- Unresolved blocker: `None` (one unrelated flaky unit test recorded as FU-C3); terminal package eligible and sent: `Yes`
