@@ -24,3 +24,5 @@ Read it first whenever you pick the run back up. Only add rows.
 | 2026-11-02T08:15:52Z | observation | Completed | Follow-up | Org stopped by another client: Settings stay 'active' >= 20 s (FU-001) |
 | 2026-11-02T08:33:10Z | round 3 | Started | | code 38f5a1eb1c (IR-003), head 5139b715b1; one stack: SSR-003 first, AFS-001..003, reworked cases (DLP-007 last), then MRD |
 | 2026-11-02T08:40:21Z | round 3 | Interim | | stopped at the implementer's request (merge of origin/personal with autobyteus-348 overlaps the code under test). Finished before the stop, on 38f5a1eb1c: SSR-003, AFS-001, AFS-002, AFS-003, SSR-001, SSR-002, SSR-004 Pass. Full set to run on the merged head |
+| 2026-11-02T09:03:57Z | round 3 (merged head) | Started | | head ebf20e056f (merge 58fdf50f33, IR-004); RSM probe (from 348) reworked for focused Settings; runs: DLP stack set, RSM, MRD |
+| 2026-11-02T09:36:18Z | round 3 (merged head) | Completed | Pass | 20/20 launch-defaults set, RSM-01..07, MRD-01..08, FP-P01,02,04-08 Pass; SSR-003 resolved |

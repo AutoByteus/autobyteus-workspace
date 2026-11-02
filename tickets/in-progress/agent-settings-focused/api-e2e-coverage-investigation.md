@@ -8,7 +8,7 @@ Paths are relative to `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-se
 
 - Requirements: `requirements-doc.md` (SR-002; DEC-001…DEC-006). Investigation: `investigation-notes.md`. Solution history: `solution-revision-record.md`. Design: `design-spec.md` (SR-002, `Medium` / `Low`). Supplement: `storage-analysis.md`.
 - Design review, code review: N/A (direct route). Implementation: `implementation-handoff.md`, `implementation-revision-record.md` (IR-001).
-- Revision record: `api-e2e-revision-record.md`; current `API-REV-002`. Round 2; trigger: IR-002 (`2dd3c665f5`, CRR-001's Local Fix). Prior investigation: round 1 (this file).
+- Revision record: `api-e2e-revision-record.md`; current `API-REV-003`. Round 3; trigger: IR-003 (`38f5a1eb1c`) and IR-004 (the merge of `personal` with autobyteus-348). Prior investigation: rounds 1–2 (this file).
 - Code: `cba2e085e7`, on autobyteus-348's `3261712e06`. Head `243baa36ca`.
 
 ## Current Requirement And Design Basis
@@ -89,3 +89,8 @@ None.
 
 - Recheck AFS-002 first. Then rework the four probes that read the removed list: a shared `delegatedRows(page, root)` walks a root's copies in the left tree and reads each card, or a Team copy's group view; the DCP, DCR, SSR and MRD-04 steps act on the focused card. Run them in one stack with AFS-001…003.
 - R07 and R08 are not run (provider runs; no provider proof is needed for this web-only change).
+
+## Round 3 Note
+
+- Validate the merged head as a whole: the 20-case launch-defaults set (SSR-003 first), the model-routing probe, the folder picker (the merge changed the Org adoption check).
+- The merge brought `runtime-switch-members-probe.mjs`, which read the removed list. It is reworked (group view for members, the focused card for copies) and run.
