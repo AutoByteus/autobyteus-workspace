@@ -1,6 +1,17 @@
 import type { AgentOrgExecutionTree } from '~/types/collaboration/agentOrgExecution'
 
-/** Only model fields and mounted Team/configured-child workspace fields are mutable. */
+type OrgTaskExecution = AgentOrgExecutionTree['rootOrg']['taskExecutions'][number]
+
+/**
+ * A delegated copy's model choice (its own, or a Team copy's and its members') is saved on the Org run, so it may
+ * change with a Save (autobyteus-366); every other field of a copy stays locked.
+ */
+const withoutCopyChoices = (task: OrgTaskExecution): OrgTaskExecution => 'agentRunId' in task
+  ? { ...task, userLaunchSelection: undefined }
+  : { ...task, userTeamLaunchSelection: undefined, members: task.members.map(member => ({ ...member, userLaunchSelection: undefined })),
+      taskExecutions: task.taskExecutions.map(withoutCopyChoices) }
+
+/** Only model fields, mounted Team/configured-child workspace fields and copies' model choices are mutable. */
 export const assertAgentOrgRunConfigChange = (previous: AgentOrgExecutionTree, next: AgentOrgExecutionTree): void => {
   const masked = (tree: AgentOrgExecutionTree) => {
     const model = <T extends { llmModelIdentifier: string; llmConfig: unknown }>(launch: T): T =>
@@ -9,10 +20,12 @@ export const assertAgentOrgRunConfigChange = (previous: AgentOrgExecutionTree, n
       ({ ...model(launch), workspaceRootPath: '__WORKSPACE__' })
     return { ...tree, rootOrg: { ...tree.rootOrg,
       defaultLaunchConfiguration: model(tree.rootOrg.defaultLaunchConfiguration),
+      taskExecutions: tree.rootOrg.taskExecutions.map(withoutCopyChoices),
       members: tree.rootOrg.members.map(member => 'agentRunId' in member
         ? { ...member, launchConfiguration: model(member.launchConfiguration) }
         : { ...member, defaultLaunchConfiguration: teamLaunch(member.defaultLaunchConfiguration),
-            members: member.members.map(agent => ({ ...agent, launchConfiguration: teamLaunch(agent.launchConfiguration) })) }) } }
+            members: member.members.map(agent => ({ ...agent, launchConfiguration: teamLaunch(agent.launchConfiguration) })),
+            taskExecutions: member.taskExecutions.map(withoutCopyChoices) }) } }
   }
   if (JSON.stringify(masked(previous)) !== JSON.stringify(masked(next))) {
     throw new Error('Org configuration changed topology, identity, or locked fields.')

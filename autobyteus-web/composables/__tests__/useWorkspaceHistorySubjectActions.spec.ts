@@ -6,13 +6,13 @@ const mocks = vi.hoisted(() => ({
   active: false, phase: 'historical',
   history: { agentOrgHistory: [] as any[] },
   contexts: { select: vi.fn(), openForInspection: vi.fn(), stopAndInspect: vi.fn(), contextFor: vi.fn() },
-  clear: vi.fn(),
+  clear: vi.fn(), clearKeepingView: vi.fn(),
 }))
 vi.mock('vue-router', () => ({ useRoute: () => mocks.route, useRouter: () => ({ push: mocks.push, replace: mocks.replace }) }))
 vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => mocks.history }))
 vi.mock('~/stores/agentOrgContextsStore', () => ({ useAgentOrgContextsStore: () => mocks.contexts }))
 vi.mock('~/stores/agentSelectionStore', () => ({ useAgentSelectionStore: () => ({
-    beginSelectionIntent: () => ({ isCurrent: () => true }), clearSelection: mocks.clear }) }))
+    beginSelectionIntent: () => ({ isCurrent: () => true }), clearSelection: mocks.clear, clearSelectionWithoutShellNavigation: mocks.clearKeepingView }) }))
 
 beforeEach(() => {
   vi.clearAllMocks()
@@ -27,6 +27,24 @@ beforeEach(() => {
   }))
   mocks.history.agentOrgHistory = [{ rootRunId: 'org-run', isActive: true,
     closedTaskExecutions: [], executionTree: { rootOrg: { orgDefinitionId: 'org-def' } } }]
+})
+
+describe('Settings across a focus change in an Org (autobyteus-366, AC-005)', () => {
+  it.each(['select', 'inspect'] as const)('%s of another agent of the Org already shown keeps the view (Settings and their edits stay)', async (action) => {
+    mocks.route.query = { rootSubjectKind: 'agent_org', orgRunId: 'org-run', mode: 'history', memberAddress: '/team' }
+    await useWorkspaceHistorySubjectActions().execute({ rootSubjectKind: 'agent_org', rootRunId: 'org-run', action,
+      memberAddress: '/team/coordinator', agentRunId: 'task-exact' })
+    expect(mocks.clearKeepingView).toHaveBeenCalledOnce()
+    expect(mocks.clear).not.toHaveBeenCalled()
+  })
+
+  it.each([[{}], [{ rootSubjectKind: 'agent_org', orgRunId: 'other-org', mode: 'history' }]] as const)(
+    'opening the Org from elsewhere (%j) opens it at its chat', async (query) => {
+      mocks.route.query = { ...query }
+      await useWorkspaceHistorySubjectActions().execute({ rootSubjectKind: 'agent_org', rootRunId: 'org-run', action: 'select', memberAddress: '/team' })
+      expect(mocks.clear).toHaveBeenCalledOnce()
+      expect(mocks.clearKeepingView).not.toHaveBeenCalled()
+    })
 })
 
 describe('Org browse is inspection and Stop retains the same exact route', () => {
