@@ -4,8 +4,9 @@ type OrgAgent = { address: string; platformAgentRunId: string | null; launchConf
 
 /**
  * Only the selection (agent runtime, model, settings) and mounted Team/configured-child workspace fields are mutable. A configured
- * Agent whose agent runtime changed has switched (autobyteus-348): its session is dropped, so it must be `null` and nothing else of
- * its identity may differ; every other Agent keeps its session.
+ * Agent whose agent runtime changed has switched or undone a pending switch (autobyteus-348): the server decides its session (a
+ * switch drops it, an undo restores the original), so any session is accepted for it and nothing else of its identity may differ;
+ * every other Agent keeps its session.
  */
 export const assertAgentOrgRunConfigChange = (previous: AgentOrgExecutionTree, next: AgentOrgExecutionTree): void => {
   const agentsOf = (tree: AgentOrgExecutionTree): OrgAgent[] => tree.rootOrg.members.flatMap(member => 'agentRunId' in member ? [member] : member.members)
@@ -14,9 +15,6 @@ export const assertAgentOrgRunConfigChange = (previous: AgentOrgExecutionTree, n
     const old = before.get(agent.address)
     return old !== undefined && old.launchConfiguration.runtimeKind !== agent.launchConfiguration.runtimeKind
   }).map(agent => agent.address))
-  if (agentsOf(next).some(agent => switched.has(agent.address) && agent.platformAgentRunId !== null)) {
-    throw new Error('Org configuration changed topology, identity, or locked fields.')
-  }
   const masked = (tree: AgentOrgExecutionTree) => {
     const selection = <T extends { runtimeKind: string; llmModelIdentifier: string; llmConfig: unknown }>(launch: T): T =>
       ({ ...launch, runtimeKind: '__RUNTIME__', llmModelIdentifier: '__MODEL__', llmConfig: null })
