@@ -254,7 +254,9 @@ const statusMessage = computed(() => {
     case 'downloading':
       return t('settings.components.settings.AboutSettingsManager.message.downloading');
     case 'downloaded':
-      return t('settings.components.settings.AboutSettingsManager.message.downloaded');
+      return t(appUpdateStore.automaticInstallPreparing
+        ? 'settings.components.settings.AboutSettingsManager.message.preparing'
+        : 'settings.components.settings.AboutSettingsManager.message.downloaded');
     case 'installing':
       return t('settings.components.settings.AboutSettingsManager.message.installing');
     case 'no-update':
@@ -282,7 +284,8 @@ const lastCheckedLabel = computed(() => {
 });
 
 const isCheckDisabled = computed(
-  () => appUpdateStore.status === 'checking' || appUpdateStore.status === 'downloading' || appUpdateStore.status === 'installing',
+  () => appUpdateStore.status === 'checking' || appUpdateStore.status === 'downloading' || appUpdateStore.status === 'installing'
+    || appUpdateStore.automaticInstallPreparing,
 );
 
 const isChangingChannel = ref(false);

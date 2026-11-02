@@ -74,6 +74,15 @@ export class AppUpdateAutomaticRun {
   quitStarted(): void { this.clearQuitBound(); }
 
   /**
+   * `version` could not be prepared for installing, before anything stopped: recorded as an install failure, which blocks
+   * it, with nothing to settle and no recovery.
+   */
+  preparationFailed(version: string, reason: string): void {
+    this.downloadingVersion = null;
+    this.dependencies.record()?.recordAutomaticFailure(version, 'install', reason);
+  }
+
+  /**
    * The automatic install failed (the install catch, an updater error during the install, or the quit bound). Recorded
    * as an install failure, which blocks the version, once per requested install. The install in flight is then settled,
    * and recovery runs only if it had begun: the server may still be stopping when the failure arrives, and an install

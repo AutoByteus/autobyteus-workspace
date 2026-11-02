@@ -19,9 +19,14 @@ const SAFE_MESSAGES: Record<AppUpdateErrorKind, string> = {
   metadata: 'Update information is incomplete right now. Try again in a few minutes.',
   download: 'The update download was interrupted. Check your connection and try again.',
   install: 'The update was downloaded, but AutoByteus could not restart to install it. Try again.',
+  'install-preparation': 'AutoByteus could not prepare this update for installing. It keeps running on this version.',
   unavailable: 'Updates are only available in packaged desktop builds.',
   unknown: 'AutoByteus could not complete the update check. Try again later.',
 };
+
+export function safeAppUpdateMessage(kind: AppUpdateErrorKind): string {
+  return SAFE_MESSAGES[kind];
+}
 
 function readErrorCode(error: unknown): string | null {
   if (error && typeof error === 'object' && 'code' in error) {

@@ -106,6 +106,18 @@ describe('AppUpdateNotificationRecord', () => {
       expect(new AppUpdateNotificationRecord(dir, '1.5.7').toNotification(noLink)).toMatchObject({ state: 'handled', outcome: 'AUTO_UPDATED' });
     });
 
+    it('a download failure never replaces an install failure of the same version, and says its step', () => {
+      const record = new AppUpdateNotificationRecord(dir, '1.5.6');
+      record.recordFound('1.5.7');
+      record.recordAutomaticFailure('1.5.7', 'install', 'The system updater could not prepare this update.');
+      expect(record.recordAutomaticFailure('1.5.7', 'download', 'net::ERR_CONNECTION_RESET')).toBe(false);
+      expect(record.blocksAutomatic('1.5.7')).toBe(true);
+      expect(record.toNotification(noLink)).toMatchObject({ outcome: 'AUTO_FAILED', outcomeStep: 'install', outcomeReason: 'The system updater could not prepare this update.' });
+      record.recordFound('1.5.8');
+      expect(record.recordAutomaticFailure('1.5.8', 'download', 'net::ERR_CONNECTION_RESET')).toBe(true);
+      expect(record.toNotification(noLink)).toMatchObject({ outcomeStep: 'download' });
+    });
+
     it('a download failure shows on the row but does not block; a click-install after it is a manual update', () => {
       const record = new AppUpdateNotificationRecord(dir, '1.5.6');
       record.recordFound('1.5.7');

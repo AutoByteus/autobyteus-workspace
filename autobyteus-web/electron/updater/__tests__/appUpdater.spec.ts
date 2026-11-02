@@ -95,6 +95,7 @@ const {
 
 vi.mock('electron', () => ({
   app: appMock,
+  autoUpdater: { on: vi.fn() },
   ipcMain: ipcMainMock,
   BrowserWindow: browserWindowMock,
   net: { isOnline: () => true },

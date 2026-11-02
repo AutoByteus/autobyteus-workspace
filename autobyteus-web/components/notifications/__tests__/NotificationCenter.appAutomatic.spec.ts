@@ -25,7 +25,7 @@ vi.mock('~/stores/capabilities/updateChecksCapabilityStore', () => ({
 const FOUND_AT = '2026-11-01T10:00:00.000Z'
 const record = (overrides: Partial<AppUpdateNotification> = {}): AppUpdateNotification => ({
   version: '1.5.7', fromVersion: '1.5.6', foundAt: FOUND_AT, read: false, state: 'waiting', handledVersion: null,
-  releasePageUrl: null, outcome: null, outcomeReason: null, ...overrides,
+  releasePageUrl: null, outcome: null, outcomeReason: null, outcomeStep: null, ...overrides,
 })
 const Host = defineComponent({ setup: () => () => h('div', [h(SidebarNotificationsEntry, { variant: 'inline' }), h(NotificationCenter)]) })
 
@@ -124,8 +124,27 @@ describe('Notification Center: the app automatic update', () => {
     expect(pill()).toBeNull()
   })
 
+  it('a refused update still downloaded: the failure, that it is not retried, and the Install click (SR-004)', async () => {
+    await mountWith({ status: 'downloaded', notification: record({ outcome: 'AUTO_FAILED', outcomeStep: 'install', outcomeReason: 'The update was still not ready to install after 15 minutes.' }) })
+    await openPanel()
+    const row = $('[data-testid="notification-row-app"]')!
+    expect(row.querySelector('[data-testid="notification-row-auto-failed"]')!.textContent).toContain('still not ready')
+    expect(row.querySelector('[data-testid="notification-row-not-retried"]')!.textContent).toContain('You can still install it yourself.')
+    expect(row.querySelector('[data-testid="notification-row-install"]')).not.toBeNull()
+  })
+
+  it('a failed download says nothing about not retrying; during the wait the row says it is preparing, with the Install click', async () => {
+    await mountWith({ notification: record({ outcome: 'AUTO_FAILED', outcomeStep: 'download', outcomeReason: 'The update download was interrupted.' }) })
+    await openPanel()
+    expect($('[data-testid="notification-row-not-retried"]')).toBeNull()
+    useAppUpdateStore().applyRemoteState({ status: 'downloaded', automaticInstallPreparing: true })
+    await nextTick()
+    expect($('[data-testid="notification-row-downloaded"]')!.textContent).toContain('Preparing to install.')
+    expect($('[data-testid="notification-row-install"]')).not.toBeNull()
+  })
+
   it('a failed automatic update says nothing was changed, with the reason, and still offers Download (REQ-004)', async () => {
-    await mountWith({ notification: record({ outcome: 'AUTO_FAILED', outcomeReason: 'The update did not install. The app is still on 1.5.6.' }) })
+    await mountWith({ notification: record({ outcome: 'AUTO_FAILED', outcomeStep: 'install', outcomeReason: 'The update did not install. The app is still on 1.5.6.' }) })
     await openPanel()
     const row = $('[data-testid="notification-row-app"]')!
     const failure = row.querySelector('[data-testid="notification-row-auto-failed"]')!

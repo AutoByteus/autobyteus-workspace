@@ -15,7 +15,7 @@ const setElectronApiMock = (mock: Partial<Window['electronAPI']> | null): void =
 const shellState = (overrides: Partial<AppUpdateState> = {}): AppUpdateState => ({
   status: 'idle', currentVersion: '1.5.6', currentVersionIsPrerelease: false, updateChannel: 'stable', updateStaged: false,
   availableVersion: null, downloadPercent: null, downloadTransferredBytes: null, downloadTotalBytes: null, releaseNotes: null,
-  message: '', errorKind: null, errorOperation: null, checkedAt: null, notification: null, autoCheck: null, automaticUpdate: false,
+  message: '', errorKind: null, errorOperation: null, checkedAt: null, notification: null, autoCheck: null, automaticUpdate: false, automaticInstallPreparing: false,
   ...overrides,
 });
 

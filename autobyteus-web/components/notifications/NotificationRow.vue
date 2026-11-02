@@ -60,9 +60,10 @@
       {{ $t(`settings.notifications.runtime.blocked.${row.runningAgentCount === 1 ? 'one' : 'other'}`, { count: row.runningAgentCount }) }}
       <template v-if="row.outcome === 'AUTO_WAITING' && runtimeAutomatic"> {{ $t('settings.notifications.runtime.blockedAuto') }}</template>
     </p>
-    <p v-if="row.state === 'waiting' && row.outcome === 'AUTO_FAILED'" class="mt-1.5 rounded-md bg-red-50 px-2.5 py-1.5 text-xs leading-5 text-red-800" role="alert" data-testid="notification-row-auto-failed">
+    <p v-if="(row.state === 'waiting' || row.state === 'downloaded') && row.outcome === 'AUTO_FAILED'" class="mt-1.5 rounded-md bg-red-50 px-2.5 py-1.5 text-xs leading-5 text-red-800" role="alert" data-testid="notification-row-auto-failed">
       {{ $t('settings.notifications.outcome.failed') }}
       <span v-if="row.outcomeReason" class="block whitespace-pre-line break-words text-red-700">{{ row.outcomeReason }}</span>
+      <span v-if="row.kind === 'app' && row.outcomeStep === 'install'" class="block text-red-700" data-testid="notification-row-not-retried">{{ $t('settings.notifications.outcome.notRetried') }}</span>
     </p>
 
     <div v-if="expanded" :id="detailsId" class="mt-1.5 space-y-1 text-xs leading-5 text-gray-600" data-testid="notification-row-details">
@@ -89,7 +90,7 @@
         <div class="h-1.5 rounded-full bg-sky-700 transition-all" :style="{ width: `${downloadPercent}%` }" />
       </div>
     </div>
-    <p v-if="row.state === 'downloaded'" class="mt-1 text-xs leading-5 text-emerald-700" data-testid="notification-row-downloaded">{{ $t('settings.notifications.app.downloaded') }}</p>
+    <p v-if="row.state === 'downloaded'" class="mt-1 text-xs leading-5 text-emerald-700" data-testid="notification-row-downloaded">{{ $t(appUpdate.automaticInstallPreparing ? 'settings.notifications.app.preparing' : 'settings.notifications.app.downloaded') }}</p>
     <p v-if="row.state === 'installing'" class="mt-1 inline-flex items-center gap-1.5 text-xs leading-5 text-emerald-700" role="status" data-testid="notification-row-installing">
       <Icon icon="heroicons:arrow-path-20-solid" class="h-3.5 w-3.5 animate-spin motion-reduce:animate-none" aria-hidden="true" />{{ $t('settings.notifications.app.installing') }}
     </p>

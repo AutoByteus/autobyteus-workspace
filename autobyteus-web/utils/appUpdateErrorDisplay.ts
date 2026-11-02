@@ -8,6 +8,7 @@ const SETTINGS_MESSAGE_KEYS: Record<AppUpdateErrorKind, string> = {
   metadata: 'settings.components.settings.AboutSettingsManager.message.error.metadata',
   download: 'settings.components.settings.AboutSettingsManager.message.error.download',
   install: 'settings.components.settings.AboutSettingsManager.message.error.install',
+  'install-preparation': 'settings.components.settings.AboutSettingsManager.message.error.installPreparation',
   unavailable: 'settings.components.settings.AboutSettingsManager.message.error.unavailable',
   unknown: 'settings.components.settings.AboutSettingsManager.message.error.unknown',
 };
@@ -18,6 +19,7 @@ const TOAST_MESSAGE_KEYS: Record<AppUpdateErrorKind, string> = {
   metadata: 'settings.updates.store.errors.metadata',
   download: 'settings.updates.store.errors.download',
   install: 'settings.updates.store.errors.install',
+  'install-preparation': 'settings.updates.store.errors.installPreparation',
   unavailable: 'settings.updates.store.errors.unavailable',
   unknown: 'settings.updates.store.errors.unknown',
 };

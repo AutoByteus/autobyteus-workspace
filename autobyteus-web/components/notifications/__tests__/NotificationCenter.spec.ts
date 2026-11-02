@@ -201,7 +201,7 @@ describe('Notification Center', () => {
     app.isElectron = true
     app.applyRemoteState({ status: 'idle', currentVersion: '1.5.6', notification: {
       version: '1.5.7', fromVersion: '1.5.6', foundAt: FOUND_AT, read: false, state: 'waiting', handledVersion: null, releasePageUrl: null,
-      outcome: null, outcomeReason: null,
+      outcome: null, outcomeReason: null, outcomeStep: null,
     } })
     await mountWith([])
     await openPanel()

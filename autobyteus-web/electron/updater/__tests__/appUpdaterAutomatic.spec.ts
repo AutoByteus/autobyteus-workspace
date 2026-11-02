@@ -51,6 +51,7 @@ vi.mock('electron', () => ({
     removeHandler: (channel: string) => ipcHandlers.delete(channel),
     handle: (channel: string, handler: (...args: any[]) => any) => { ipcHandlers.set(channel, handler); },
   },
+  autoUpdater: { on: vi.fn() },
   BrowserWindow: { getAllWindows: () => [] },
   net: { isOnline: () => true },
 }));
@@ -68,7 +69,7 @@ const automaticFile = (): string => path.join(userData, 'app-update-automatic.js
 const quitApp = (): void => { for (const listener of appListeners.get('before-quit') ?? []) listener(); };
 
 function startUpdater(): AppUpdater {
-  const app = new AppUpdater({ prepareForInstall: prepare, recoverAfterFailedInstall: recover, testFeedUrl: 'http://feed.test' });
+  const app = new AppUpdater({ prepareForInstall: prepare, recoverAfterFailedInstall: recover, testFeedUrl: 'http://feed.test', platform: 'linux' });
   app.initialize();
   return app;
 }
@@ -421,7 +422,7 @@ describe('AppUpdater automatic update (autobyteus-356)', () => {
     expect(updater.quitAndInstall).toHaveBeenCalledWith(false, true);
   });
 
-  it('turning the switch on with an update staged and a later check at `available` installs it from the cache (N-8)', async () => {
+  it('turning the switch on with V staged and a later check at `available` installs V with no second download (N-13)', async () => {
     const app = startUpdater();
     await app.checkForUpdates('manual');
     await app.downloadUpdate();
@@ -430,10 +431,22 @@ describe('AppUpdater automatic update (autobyteus-356)', () => {
     expect(app.getState()).toMatchObject({ status: 'available', updateStaged: true });
 
     await setAutomatic(true);
-    // electron-updater re-emits `update-downloaded` from its cache (electronUpdaterCachedDownload.spec.ts).
+    expect(updater.downloadUpdate).toHaveBeenCalledOnce();
+    await vi.advanceTimersByTimeAsync(100);
+    expect(updater.quitAndInstall).toHaveBeenCalledWith(false, true);
+  });
+
+  it('with a newer W found over a staged V, turning the switch on downloads W (the cache re-emit is proven by electronUpdaterCachedDownload.spec.ts)', async () => {
+    const app = startUpdater();
+    await app.checkForUpdates('manual');
+    await app.downloadUpdate();
+    feedVersion = '1.3.0';
+    await app.checkForUpdates('manual');
+    await setAutomatic(true);
     expect(updater.downloadUpdate).toHaveBeenCalledTimes(2);
     await vi.advanceTimersByTimeAsync(100);
     expect(updater.quitAndInstall).toHaveBeenCalledWith(false, true);
+    expect(readRecord().automatic).toMatchObject({ version: '1.3.0' });
   });
 
   it('no newer release found: nothing is downloaded', async () => {

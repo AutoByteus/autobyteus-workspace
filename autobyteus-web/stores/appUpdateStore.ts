@@ -42,6 +42,7 @@ const DEFAULT_STATE: AppUpdateStatePayload = {
   notification: null,
   autoCheck: null,
   automaticUpdate: false,
+  automaticInstallPreparing: false,
 };
 
 export const useAppUpdateStore = defineStore('appUpdate', {
@@ -266,6 +267,7 @@ export const useAppUpdateStore = defineStore('appUpdate', {
       this.notification = payload.notification !== undefined ? payload.notification : this.notification;
       this.autoCheck = payload.autoCheck !== undefined ? payload.autoCheck : this.autoCheck;
       this.automaticUpdate = payload.automaticUpdate ?? this.automaticUpdate;
+      this.automaticInstallPreparing = payload.automaticInstallPreparing ?? this.automaticInstallPreparing;
 
       const isQuietError = isQuietBackgroundAppUpdateError(this);
 

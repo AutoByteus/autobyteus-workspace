@@ -76,6 +76,7 @@ export class DisabledAppUpdater implements AppUpdateController {
       notification: null,
       autoCheck: null,
       automaticUpdate: false,
+      automaticInstallPreparing: false,
     }
   }
 }

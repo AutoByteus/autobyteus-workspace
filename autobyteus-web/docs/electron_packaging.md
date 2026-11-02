@@ -711,35 +711,45 @@ only starts it.
 invalid reads as off; atomic writes; `appUpdateAutomaticStore.ts`). No server,
 GraphQL, REST route or agent tool reads or writes it.
 
-- With it on, `AppUpdater` downloads a version that any check finds
-  (`update-available` → `downloadUpdate()`), and installs it as soon as it is
-  downloaded (`update-downloaded` → `installUpdateAndRestart()`, the same
-  prepare-and-quit path as the button, so busy runs resume after the restart).
-  The switch is read at each event: turned off during a download, nothing
-  installs (the staged update still installs on quit, as today). Turning it on
-  continues an update that is `available` or `downloaded`; a staged update with
-  a later `available` status is re-downloaded from the cache, which emits
-  `update-downloaded` again.
+- `AppUpdateAutomaticPolicy` (`appUpdateAutomaticPolicy.ts`) owns the sequence and
+  calls the same `downloadUpdate()` and `installUpdateAndRestart()` a click runs. A
+  version any check finds downloads. The switch is read at each event: turned off
+  during a download, nothing installs (the staged update still installs on quit, as
+  today). Turning it on continues an update that is `available` or `downloaded`.
+- **As soon as the download is done.** Not on macOS: `update-downloaded` installs at
+  once. On macOS electron-updater reports the download before Squirrel has fetched,
+  unpacked and verified its copy (about 36 s idle, over 60 s on a busy machine), and a
+  native refusal arrives only then. So `AppUpdateInstallReadiness` waits for Electron's
+  own `update-downloaded` (every electron-updater report, also a cached re-emit, resets
+  it), and nothing stops until then. During this one wait, bounded at 15 minutes, the
+  app and its server keep working, the status stays `downloaded`,
+  `AppUpdateState.automaticInstallPreparing` is true, and no check or download runs (the
+  check button is disabled). The row's Install click still works: it ends the wait and
+  follows the manual path.
+- **The wait's failures** stop nothing and run no recovery; they record an `install`
+  failure, which blocks the version. Any updater `error` during the wait is the
+  system updater's refusal: the state is `install-preparation`, `updateStaged` is false
+  (Squirrel holds nothing, so automatic checks run again and a newer version is tried),
+  and the rest of that refusal (a second `error`, the rejected download) only logs. The
+  bound keeps status `downloaded` and the stage, because Squirrel may still finish.
+- A version already staged and ready, with a later check at `available`, installs with
+  no second native fetch.
 - `AppUpdateAutomaticRun` (`appUpdateAutomaticRun.ts`) keeps the run: a failed
   automatic download (the `error` event or a rejected download while the
-  download runs) is recorded once and tried again at the next check. An
-  automatic install is recorded only when it was accepted
-  (`automatic: { version }` in `app-update-notification.json`). It has failed
-  when the install throws, the updater reports an `error` during the install,
-  or the app does not quit within 60 s (`before-quit` clears the bound). It is
-  then recorded once as an install failure, which blocks that version
-  (`blocksAutomatic`; also for the rest of the process once its install was
-  requested). A refusal can arrive before `quitAndInstall`: on macOS the native
-  step starts when the download is done, so it can arrive while the preparation
-  is still stopping the server. `AppUpdateInstallAttempt`
-  (`appUpdateInstallAttempt.ts`) therefore settles first. A failure before the
-  preparation started cancels the install: nothing stopped and nothing else
-  runs. A failure during or after it waits for the preparation and skips
-  `quitAndInstall`, and then `recoverAfterFailedInstall` runs: `ElectronApplication`
-  relaunches this version (`app.relaunch()`, `app.exit(0)`) only when the
-  server process is gone; otherwise the app stays open with the failure row. The
-  download rejection that comes with a macOS refusal does not replace the install
-  failure.
+  download runs) is recorded once and tried again at the next check; it never replaces
+  an install failure of that version. An automatic install is recorded only when it
+  was accepted (`automatic: { version }` in `app-update-notification.json`). It has
+  failed when the install throws, the updater reports an `error` during the install,
+  or the app does not quit within 60 s (`before-quit` clears the bound). It is then
+  recorded once as an install failure, which blocks that version (`blocksAutomatic`;
+  also for the rest of the process once its install was requested).
+  `AppUpdateInstallAttempt` (`appUpdateInstallAttempt.ts`) settles first: a failure
+  before the preparation started cancels the install; a failure during or after it
+  waits for the preparation and skips `quitAndInstall`, and then
+  `recoverAfterFailedInstall` runs: `ElectronApplication` relaunches this version
+  (`app.relaunch()`, `app.exit(0)`) only when the server process is gone; otherwise the
+  app stays open with the failure row. The automatic path records plain reasons, never
+  raw system text.
 - After the restart, the record's reconcile marks the notification handled
   with `outcome: 'AUTO_UPDATED'` (unread) when the app runs the version, or
   records an install failure when it still runs the old one. The Notification

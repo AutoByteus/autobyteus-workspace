@@ -90,8 +90,12 @@ export class AppUpdateNotificationRecord {
     return this.save({ ...this.waitingRecordOf(version), automatic: { version, startedAt: this.now().toISOString() }, automaticFailure: null });
   }
 
-  /** An automatic download or install of `version` failed (its row shows the failure; an install failure blocks it). */
+  /**
+   * An automatic download or install of `version` failed (its row shows the failure; an install failure blocks it). A
+   * download failure never replaces an install failure of the same version.
+   */
   recordAutomaticFailure(version: string, step: AutomaticFailure['step'], reason: string): boolean {
+    if (step === 'download' && this.blocksAutomatic(version)) return false;
     return this.save({ ...this.waitingRecordOf(version), automatic: null, automaticFailure: { version, step, reason } });
   }
 
@@ -138,11 +142,11 @@ export class AppUpdateNotificationRecord {
     };
   }
 
-  private outcomeOf(current: StoredRecord): Pick<AppUpdateNotification, 'outcome' | 'outcomeReason'> {
-    if (current.handledVersion !== null) return { outcome: current.outcome, outcomeReason: null };
+  private outcomeOf(current: StoredRecord): Pick<AppUpdateNotification, 'outcome' | 'outcomeReason' | 'outcomeStep'> {
+    if (current.handledVersion !== null) return { outcome: current.outcome, outcomeReason: null, outcomeStep: null };
     const failure = current.automaticFailure;
     return failure?.version === current.version
-      ? { outcome: 'AUTO_FAILED', outcomeReason: failure.reason } : { outcome: null, outcomeReason: null };
+      ? { outcome: 'AUTO_FAILED', outcomeReason: failure.reason, outcomeStep: failure.step } : { outcome: null, outcomeReason: null, outcomeStep: null };
   }
 
   /**

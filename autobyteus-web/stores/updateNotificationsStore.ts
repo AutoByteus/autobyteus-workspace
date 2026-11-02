@@ -68,6 +68,8 @@ export interface AppNotificationRow {
   /** What the app's automatic update did (autobyteus-356): AUTO_UPDATED when handled, AUTO_FAILED while waiting. */
   outcome: AppUpdateAutomaticOutcome | null
   outcomeReason: string | null
+  /** `install`: the version is not tried again automatically. */
+  outcomeStep: 'download' | 'install' | null
 }
 
 export type NotificationRow = SourceNotificationRow | AppNotificationRow
@@ -163,7 +165,7 @@ export const useUpdateNotificationsStore = defineStore('updateNotifications', ()
       foundAt: record?.foundAt ?? null, unread: !!record && !record.read && (record.state === 'waiting' || record.outcome === 'AUTO_UPDATED'), state,
       handledVersion: record?.handledVersion ?? null, releasePageUrl: record?.releasePageUrl ?? null,
       error: failed ? rowActions.value.app?.error ?? null : null,
-      outcome: record?.outcome ?? null, outcomeReason: record?.outcomeReason ?? null,
+      outcome: record?.outcome ?? null, outcomeReason: record?.outcomeReason ?? null, outcomeStep: record?.outcomeStep ?? null,
     }
   })
 
