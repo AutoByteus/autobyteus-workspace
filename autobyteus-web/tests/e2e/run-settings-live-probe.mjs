@@ -728,6 +728,8 @@ defineCase('R07', 'S3 AC-009..011/019: saved Team run: running locks incl. Fast 
   await openTeamRun(page, state.teamRunId)
   await page.locator(sel('workspace-header-edit-config')).click()
   const view = page.locator(sel('existing-run-settings')); await view.waitFor({ timeout: 60000 }); await settle(page, 2000)
+  // autobyteus-366: Settings open on the focused member; the Team's card and its members are one switch away.
+  await view.locator(sel('run-settings-switch-group')).click(); await settle(page, 300)
   r.status = await view.locator(sel('run-subject-status')).innerText()
   r.stopLabel = await view.locator(sel('existing-run-stop')).getAttribute('aria-label')
   r.rootLocked = await view.locator(`${sel('existing-run-root-card')} ${sel('run-setting-locked')}`).count()
@@ -809,6 +811,8 @@ defineCase('R08', 'S3 AC-009/010: saved Org run: Stop Agent Org → Stopped → 
   await page.locator('[data-test^="agent-org-agent-row-"]').filter({ hasText: /scout/i }).first().click(); await settle(page, 2500)
   await page.locator(sel('workspace-header-edit-config')).click()
   const view = page.locator(sel('existing-run-settings')); await view.waitFor({ timeout: 60000 }); await settle(page, 2000)
+  // autobyteus-366: Settings open on the focused member; the Org's card and its members are one switch away.
+  await view.locator(sel('run-settings-switch-group')).click(); await settle(page, 300)
   r.header = await view.locator(sel('run-subject-header')).innerText()
   r.stopLabel = await view.locator(sel('existing-run-stop')).getAttribute('aria-label')
   assert(/Docs Org/.test(r.header) && /Stop Agent Org/.test(r.stopLabel ?? ''), 'saved Org header/stop label', r)

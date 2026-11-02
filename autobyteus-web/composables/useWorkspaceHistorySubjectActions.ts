@@ -63,7 +63,11 @@ export const useWorkspaceHistorySubjectActions = () => {
       if (!address || !context.index.configured.has(address)) throw new Error('AgentOrg member selection requires an exact address.')
       orgContexts.select(run.rootRunId, address)
     }
-    selection.clearSelection()
+    // Another agent of the Org already shown keeps Settings open, with their unsaved edits; another run, or this Org
+    // opened from elsewhere, opens at its chat (autobyteus-366, the same rule as `selectRun`).
+    const orgShown = route.query.rootSubjectKind === 'agent_org' && String(route.query.orgRunId || '') === run.rootRunId
+    if (orgShown) selection.clearSelectionWithoutShellNavigation()
+    else selection.clearSelection()
     await router.push({ path: '/workspace', query: {
       rootSubjectKind: 'agent_org', definitionId, orgRunId: run.rootRunId,
       mode: context.isActive ? 'active' : 'history',

@@ -13,8 +13,8 @@
 //   MRD-02 Decisions: the Task blocks; the Team row folds and opens to Lead (agent default) and Writer (Model Router, model,
 //          reason); the remote copy is not on alpha's page (each node shows only its own); the source filter (AC-009);
 //   MRD-03 Overview: the period and the sources and task kinds of these records (AC-009);
-//   MRD-04 the Manager run's Settings: the delegated rows show runtime, model, source and reason for the routed member and
-//          for the remote copy (from the peer's launches) (AC-012);
+//   MRD-04 the Manager run's copies, each focused in the left tree: its own Settings show runtime, model, source and reason
+//          for the routed member (with "View decision") and for the remote copy, read-only with its node chip (AC-012; autobyteus-366);
 //   MRD-05 beta's window: its own Decisions list the copy alpha delegated, with no "Open run" (UXJ-008, VIS-011);
 //   MRD-06 Simplified Chinese: Decisions and Overview are translated (AC-009);
 //   MRD-08 New chat `@`: with internal agents shown, the Model Router is never offered as a mention (DEL-F1);
@@ -250,30 +250,47 @@ try {
     await shot('MRD-03-overview');
   });
 
-  await kase('MRD-04', 'The Manager run\'s Settings: the delegated rows show runtime, model, source and reason (local member and remote copy)', async () => {
+  await kase('MRD-04', 'The Manager run\'s copies, each in its own Settings: runtime, model, source and reason (local member and remote copy; autobyteus-366)', async () => {
     await page.goto(`${frontendUrl}/chat?id=${ids.managerRun}`, { waitUntil: 'domcontentloaded' });
     await page.locator('[data-testid="agent-workspace-surface"]').waitFor({ timeout: 120000 }); await sleep(2500);
     await page.locator(dt('workspace-header-edit-config')).click();
     await page.locator(dt('existing-run-settings')).waitFor({ timeout: 60000 }); await sleep(2000);
-    const section = page.locator(dt('run-delegated-launches'));
-    await section.waitFor({ timeout: 60000 });
-    for (let round = 0; round < 6; round += 1) {
-      const closed = section.locator(`${dt('run-member-toggle')}[aria-expanded="false"]`);
-      const count = await closed.count(); if (!count) break;
-      for (let i = 0; i < count; i += 1) { await closed.first().click(); await sleep(150); }
+    // The run's Settings: its own card and the hint, no list of copies.
+    const hub = { list: await page.locator(dt('run-delegated-launches')).count(), hint: await page.locator(dt('existing-run-copies-hint')).count() };
+    assert(hub.list === 0 && hub.hint === 1, `the Manager's Settings: ${JSON.stringify(hub)}`);
+    const tree = page.locator(`[data-test="workspace-agent-run-task-tree"][data-run-id="${ids.managerRun}"]`);
+    const rowSelector = '[data-test="workspace-team-transient-execution-row"][data-agent-run-id]';
+    for (let round = 0; round < 3; round += 1) {
+      for (const toggle of await page.locator(dt('workspace-team-transient-disclosure')).all()) {
+        const holder = toggle.locator('xpath=ancestor::*[@aria-expanded][1]');
+        if (await holder.getAttribute('aria-expanded').catch(() => null) === 'false') await toggle.click().catch(() => {});
+      }
+      await sleep(600);
     }
-    const rows = await section.locator('[data-source]').evaluateAll((els) => els.map((el) => {
-      const own = (s) => [...el.querySelectorAll(s)].filter((n) => n.closest('[data-source]') === el);
-      return { test: el.getAttribute('data-test'), source: el.getAttribute('data-source'), summary: own('[data-test="run-member-summary"]')[0]?.textContent?.replace(/\s+/g, ' ').trim() ?? '',
-        reason: own('[data-test="run-member-routing-reason"]')[0]?.textContent?.replace(/\s+/g, ' ').trim() ?? null, text: el.innerText.replace(/\s+/g, ' ').trim().slice(0, 300) };
-    }));
-    evidence.observations.settingsRows = rows;
-    const writer = rows.find((r) => /writer/.test(r.test ?? ''));
-    const remote = rows.find((r) => /blank_slate/.test(r.test ?? ''));
-    // Rows name the model by its display name (the scripted CLI calls alt-model "Retiring test model").
-    assert(writer && writer.source === 'model_router' && /Model Router · writing/.test(writer.summary) && (writer.reason ?? '').includes(REASON.alpha), `writer row: ${JSON.stringify(writer)}`);
-    assert(rows.find((r) => /\/studio\/lead@/.test(r.test ?? ''))?.source === 'agent_default', 'lead row: agent default');
-    assert(remote && remote.source === 'model_router' && remote.text.includes(LABEL.beta) && /Model Router · writing/.test(remote.summary) && (remote.reason ?? '').includes(REASON.beta), `remote row: ${JSON.stringify(remote)}`);
+    const agents = await tree.locator(rowSelector).evaluateAll((els) => els.map((el) => ({ id: el.dataset.agentRunId, address: el.dataset.memberAddress ?? null })));
+    /** Focuses a copy in the left tree (Settings stay open) and reads its card. */
+    const read = async (agent) => {
+      await tree.locator(`[data-test="workspace-team-transient-execution-row"][data-agent-run-id="${agent.id}"]`).click(); await sleep(1500);
+      await page.locator(dt('existing-run-subject-card')).waitFor({ timeout: 30000 });
+      return page.evaluate((address) => {
+        const card = document.querySelector('[data-test="existing-run-subject-card"]');
+        const text = (s) => card.querySelector(`[data-test="${s}"]`)?.textContent?.replace(/\s+/g, ' ').trim() ?? null;
+        return { address, source: card.getAttribute('data-source'), summary: text('run-subject-source') ?? '', reason: text('run-member-routing-reason'),
+          viewDecision: Boolean(card.querySelector('[data-test="run-member-view-decision"]')),
+          header: document.querySelector('[data-test="run-subject-header"]')?.innerText.replace(/\s+/g, ' ').trim() ?? '',
+          controls: card.querySelectorAll('[data-test="chat-model-trigger"], input, select').length, text: card.innerText.replace(/\s+/g, ' ').trim().slice(0, 300) };
+      }, agent.address);
+    };
+    const pickAgent = (pattern) => agents.find((a) => pattern.test(a.address ?? ''));
+    const writer = pickAgent(/\/studio\/writer$/) && await read(pickAgent(/\/studio\/writer$/));
+    const lead = pickAgent(/\/studio\/lead$/) && await read(pickAgent(/\/studio\/lead$/));
+    const remote = pickAgent(/blank_slate/) && await read(pickAgent(/blank_slate/));
+    evidence.observations.settingsCards = { hub, agents, writer, lead, remote };
+    // Cards name the model by its display name (the scripted CLI calls alt-model "Retiring test model").
+    assert(writer && writer.source === 'model_router' && /Model Router · writing/.test(writer.summary) && (writer.reason ?? '').includes(REASON.alpha) && writer.viewDecision, `writer card: ${JSON.stringify(writer)}`);
+    assert(lead?.source === 'agent_default', `lead card: ${JSON.stringify(lead)}`);
+    assert(remote && remote.source === 'model_router' && remote.header.includes(LABEL.beta) && /Model Router · writing/.test(remote.summary) && (remote.reason ?? '').includes(REASON.beta)
+      && remote.controls === 0, `remote card (read-only, with its node chip): ${JSON.stringify(remote)}`);
     await shot('MRD-04-run-settings');
   });
 

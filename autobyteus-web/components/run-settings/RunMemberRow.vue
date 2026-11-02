@@ -175,7 +175,6 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useRouter } from 'vue-router'
 import { Icon } from '@iconify/vue'
 import { useLocalization } from '~/composables/useLocalization'
 import { initialsFor } from '~/components/chat/chatComposerMenus'
@@ -186,15 +185,12 @@ import {
   countCustomizedMembers,
   countRunMemberNotes,
   isRunMemberCustomized,
-  type RunMemberLaunchFallback,
-  type RunMemberLaunchSource,
   type RunMemberNode,
-  type RunMemberNote,
   type RunMemberDelegatedFacts,
 } from '~/utils/runSettings/runMemberTree'
-import type { MemberLaunchNote } from '~/utils/runSettings/memberLaunchDefaults'
 import RemoteNodeChip from '~/components/workspace/remote/RemoteNodeChip.vue'
 import RunSettingsCard from './RunSettingsCard.vue'
+import { useRunMemberFacts } from './useRunMemberFacts'
 import { useRunSettingsPresentation } from './useRunSettingsPresentation'
 
 defineOptions({ name: 'RunMemberRow' })
@@ -219,41 +215,10 @@ const emit = defineEmits<{
 
 const presentation = useRunSettingsPresentation()
 const { t } = useLocalization()
-const router = useRouter()
-/** Opens Model Routing → Decisions at this copy's decision, with its team open (D9). */
-const openDecision = (): void => {
-  const decision = props.node.routing?.decision
-  if (!decision) return
-  void router.push({ path: '/settings', query: { section: 'model-routing', tab: 'decisions',
-    decisionRun: decision.runId, decisionCopy: decision.copy, decisionAgent: decision.agent } })
-}
-const UNUSABLE_REASON_KEY: Readonly<Record<MemberLaunchNote['reason'], string>> = {
-  incomplete: 'runSettings.members.defaultUnusable.incomplete',
-  runtime_unavailable: 'runSettings.members.defaultUnusable.runtime_unavailable',
-  model_unavailable: 'runSettings.members.defaultUnusable.model_unavailable',
-}
 const BADGE_KEY: Readonly<Record<NonNullable<RunMemberNode['badge']>, string>> = {
   delegated_copy: 'runSettings.delegated.copy',
 }
-const SOURCE_LABEL_KEY: Readonly<Record<RunMemberLaunchSource, string>> = {
-  agent_default: 'runSettings.delegated.source.agent_default',
-  team_default: 'runSettings.delegated.source.team_default',
-  model_router: 'runSettings.delegated.source.model_router',
-  inherited: 'runSettings.delegated.source.inherited',
-  configured: 'runSettings.delegated.source.configured',
-  not_recorded: 'runSettings.delegated.source.notRecorded',
-}
-const LAYER_LABEL_KEY: Readonly<Record<RunMemberLaunchFallback['layer'], string>> = {
-  agent_default: 'runSettings.delegated.layer.agent_default',
-  team_default: 'runSettings.delegated.layer.team_default',
-}
-const modelOf = (runtimeKind: string | null, llmModelIdentifier: string | null): string =>
-  [runtimeKind ? presentation.runtimeLabel(runtimeKind) : null, llmModelIdentifier].filter(Boolean).join(' · ') || '—'
-/** An own default a fresh start could not use (it follows its parent), or a recorded fallback of a copy. */
-const noteText = (note: RunMemberNote): string => note.kind === 'unusable_default'
-  ? t('runSettings.members.defaultUnusable', { model: modelOf(note.runtimeKind, note.llmModelIdentifier), reason: t(UNUSABLE_REASON_KEY[note.reason]) })
-  : t('runSettings.delegated.fallback', { layer: t(LAYER_LABEL_KEY[note.layer]), model: modelOf(note.runtimeKind, note.llmModelIdentifier), detail: note.detail })
-const noteTexts = computed(() => props.node.launchNotes.map(noteText))
+const { noteTexts, sourceLabel, openDecision } = useRunMemberFacts(() => props.node)
 /** A copy Team: collapsed, it counts the notes below it; expanded, it shows its own notes once. */
 const notesInDetail = computed(() => props.node.kind === 'team' && Boolean(props.node.badge))
 const noteCount = computed(() => countRunMemberNotes(props.node))
@@ -275,7 +240,7 @@ const summary = computed(() => {
   if (values.llmModelIdentifier) parts.push(`${presentation.modelLabel(values)} · ${presentation.runtimeLabel(values.runtimeKind)}`)
   parts.push(...setModelOptionLabels(presentation.modelOptions(values)))
   parts.push(presentation.approvalLabel(values))
-  if (props.node.sourceKey) parts.push(t(SOURCE_LABEL_KEY[props.node.sourceKey]))
+  if (sourceLabel.value) parts.push(sourceLabel.value)
   if (props.node.routing?.taskKind) parts.push(props.node.routing.taskKind)
   return parts.filter(Boolean).join(' · ')
 })

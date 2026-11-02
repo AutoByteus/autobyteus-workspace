@@ -11,10 +11,12 @@ export function registerSavedRefreshCases(h) {
   const { defineCase, assert, waitFor, delay, sel, startManagerChat, callFromComposer, address,
     agentTree, objectsIn, pick, teamCopies, membersOf, openSettings, backToConversation,
     openMember, chooseCopyModel, saveSettings, saveBarText, shot, agyLaunchDetailsOf, MODEL, ALT, MODEL_LABEL, ALT_LABEL,
-    modelLocked, conversationText } = h
-  const sectionOf = p => p.locator(sel('run-delegated-launches'))
-  const rowOf = (p, key) => sectionOf(p).locator(sel(`run-member-${key}`)).first()
-  const summary = row => row.locator(sel('run-member-summary')).first().innerText().then(s => s.replace(/\s+/g, ' ').trim())
+    modelLocked, conversationText, focusedCard, subjectCard, groupRow, cardSummary } = h
+  // autobyteus-366: a copy's settings show when it is focused in the left tree (its card); a Team copy's own settings and its
+  // members' rows are its group view.
+  const summary = async row => await row.locator(sel('run-member-summary')).count()
+    ? row.locator(sel('run-member-summary')).first().innerText().then(s => s.replace(/\s+/g, ' ').trim())
+    : cardSummary(row)
   const storedAgent = async (root, id) => objectsIn(await agentTree(root)).find(r => pick(r, 'agentRunId') === id && (pick(r, 'startedAt') || pick(r, 'addedViaAgentRunId')))
   const saved = p => waitFor('canonical Save settled', async () => /^\s*Saved\./.test(await saveBarText(p)), 60000)
   async function start(p, marker) {
@@ -38,8 +40,9 @@ export function registerSavedRefreshCases(h) {
     assert(await p.locator(sel('existing-run-settings')).getAttribute('data-state') === 'stopped', 'Parent must be stopped before editing')
   }
   async function assertVisible(p, row, label) {
+    // A focused agent's card is always open (no disclosure).
     const state = { summary: await summary(row), editor: await row.locator(sel('chat-model-trigger')).first().innerText(),
-      expanded: await row.locator(sel('run-member-toggle')).first().getAttribute('aria-expanded'), url: p.url() }
+      expanded: await row.locator(sel('run-member-toggle')).count() ? await row.locator(sel('run-member-toggle')).first().getAttribute('aria-expanded') : 'true', url: p.url() }
     assert(state.summary.includes(label) && state.editor.includes(label) && state.expanded === 'true', 'Summary/editor not canonical or disclosure collapsed', state)
     return state
   }
@@ -78,8 +81,7 @@ export function registerSavedRefreshCases(h) {
       const ids = [r.runId, r.copyId, r.neighborId, r.collaboratorId]
       const launches = () => Promise.all(ids.map(agyLaunchDetailsOf))
       r.launchesBefore = await launches()
-      await openMember(sectionOf(p), copyKey)
-      const row = rowOf(p, copyKey)
+      const row = await focusedCard(p, r.copyId)
       r.firstSave = await saveSameView(p, row, MODEL, MODEL_LABEL)
       r.firstCanonical = await storedAgent(r.runId, r.copyId)
       assert(pick(r.firstCanonical, 'userLaunchSelection')?.llmModelIdentifier === MODEL, 'Saved API value differs from mounted editor', r.firstCanonical)
@@ -91,8 +93,7 @@ export function registerSavedRefreshCases(h) {
       await p.locator(sel('existing-run-cancel')).click()
       r.cancelled = await assertVisible(p, row, ALT_LABEL)
       assert(mutationCount(trace.records) === count, 'Cancel caused a write')
-      await openMember(sectionOf(p), collabKey)
-      r.collaboratorSave = await saveSameView(p, rowOf(p, collabKey), ALT, ALT_LABEL)
+      r.collaboratorSave = await saveSameView(p, await focusedCard(p, r.collaboratorId), ALT, ALT_LABEL)
       assert(pick(await storedAgent(r.runId, r.collaboratorId), 'userLaunchSelection')?.llmModelIdentifier === ALT, 'Collaborator Save not canonical')
       await shot(p, 'SSR-001-collaborator-saved')
       const afterTree = await agentTree(r.runId)
@@ -100,8 +101,8 @@ export function registerSavedRefreshCases(h) {
       assert(JSON.stringify(neighbor(afterTree)) === JSON.stringify(neighbor(beforeTree)), 'Neighbor instance mutated')
       r.launchesAfter = await launches()
       assert(JSON.stringify(r.launchesAfter) === JSON.stringify(r.launchesBefore), 'Save/cancel caused runtime start/resume')
-      await backToConversation(p); await openSettings(p); await openMember(sectionOf(p), copyKey)
-      r.reopened = await assertVisible(p, rowOf(p, copyKey), ALT_LABEL)
+      await backToConversation(p)
+      r.reopened = await assertVisible(p, await focusedCard(p, r.copyId), ALT_LABEL)
       assert(JSON.stringify(await launches()) === JSON.stringify(r.launchesBefore), 'Reopen resumed stopped root')
       r.treeAfter = afterTree
       return r
@@ -120,18 +121,18 @@ export function registerSavedRefreshCases(h) {
       await stopParent(p)
       r.neighbor = teamCopies(await agentTree(r.runId), 'pair').find(x => pick(x, 'teamRunId') !== r.copyId)
       const teamKey = `${address('pair')}@${r.copyId}`, memberKey = n => `${address('pair')}/${n}@${r.members[n]}`
-      await openMember(sectionOf(p), teamKey)
-      await openMember(sectionOf(p), memberKey('unoffered'))
-      // An explicit member choice made before changing the Team must not be overwritten by inheritance.
-      r.memberSave = await saveSameView(p, rowOf(p, memberKey('unoffered')), MODEL, MODEL_LABEL)
-      const engineerBefore = await summary(rowOf(p, memberKey('engineer')))
-      r.teamSave = await saveSameView(p, rowOf(p, teamKey), MODEL, MODEL_LABEL)
-      r.following = await summary(rowOf(p, memberKey('lead')))
+      // An explicit member choice made before changing the Team must not be overwritten by inheritance (the member's own card).
+      r.memberSave = await saveSameView(p, await focusedCard(p, r.members.unoffered), MODEL, MODEL_LABEL)
+      // The Team copy's group view: its card and its members' rows.
+      const teamCard = await focusedCard(p, r.members.unoffered, { group: true })
+      const engineerBefore = await summary(groupRow(p, memberKey('engineer')))
+      r.teamSave = await saveSameView(p, teamCard, MODEL, MODEL_LABEL)
+      r.following = await summary(groupRow(p, memberKey('lead')))
       assert(r.following.includes(MODEL_LABEL), 'Team follower did not refresh', r)
-      assert(await summary(rowOf(p, memberKey('engineer'))) === engineerBefore, 'Own-default member changed')
-      r.teamSecond = await saveSameView(p, rowOf(p, teamKey), ALT, ALT_LABEL)
-      assert((await summary(rowOf(p, memberKey('lead')))).includes(ALT_LABEL), 'Follower second save stale')
-      r.ownMember = await assertVisible(p, rowOf(p, memberKey('unoffered')), MODEL_LABEL)
+      assert(await summary(groupRow(p, memberKey('engineer'))) === engineerBefore, 'Own-default member changed')
+      r.teamSecond = await saveSameView(p, teamCard, ALT, ALT_LABEL)
+      assert((await summary(groupRow(p, memberKey('lead')))).includes(ALT_LABEL), 'Follower second save stale')
+      r.ownMember = await assertVisible(p, await focusedCard(p, r.members.unoffered), MODEL_LABEL)
       r.canonical = teamCopies(await agentTree(r.runId), 'pair')
       const current = r.canonical.find(x => pick(x, 'teamRunId') === r.copyId)
       assert(pick(current, 'userTeamLaunchSelection')?.llmModelIdentifier === ALT, 'Team canonical differs')
@@ -148,9 +149,7 @@ export function registerSavedRefreshCases(h) {
     try {
       r.runId = await start(p, 'SSR-003'); r.copyId = await copy(p, 'writer')
       await stopParent(p)
-      const key = `${address('writer')}@${r.copyId}`
-      await openMember(sectionOf(p), key)
-      const row = rowOf(p, key)
+      const row = await focusedCard(p, r.copyId)
       r.launchesBefore = await agyLaunchDetailsOf(r.copyId)
       let failWrite = true, failRead = false
       handler = async route => {
@@ -200,9 +199,7 @@ export function registerSavedRefreshCases(h) {
       const team = await waitFor('Pair team', async () => teamCopies(await agentTree(r.runId), 'pair')[0])
       r.teamId = pick(team, 'teamRunId'); r.members = membersOf(team)
       await stopParent(p)
-      const teamKey = `${address('pair')}@${r.teamId}`, memberKey = `${address('pair')}/engineer@${r.members.engineer}`
-      await openMember(sectionOf(p), teamKey); await openMember(sectionOf(p), memberKey)
-      const row = rowOf(p, memberKey), view = await p.locator(sel('existing-run-settings')).elementHandle(), url = p.url()
+      const row = await focusedCard(p, r.members.engineer), view = await p.locator(sel('existing-run-settings')).elementHandle(), url = p.url()
       r.saves = []
       for (const effort of ['low', 'xhigh']) {
         await row.locator(sel('chat-thinking-trigger')).click()
@@ -221,11 +218,11 @@ export function registerSavedRefreshCases(h) {
         const displayed = await row.locator(sel('chat-thinking-trigger')).innerText()
         assert(effort === 'low' ? /Low/i.test(displayed) : /Extra High|Xhigh/i.test(displayed), 'Thinking control stale after Save', displayed)
         assert((await summary(row)).includes('Grok 4.7'), 'Settings-only Save changed displayed model')
-        assert(await row.locator(sel('run-member-toggle')).first().getAttribute('aria-expanded') === 'true', 'Settings-only Save collapsed member')
+        assert(await row.isVisible(), 'Settings-only Save closed the member\'s card')
         r.saves.push({ effort, displayed, selection, summary: await summary(row) })
       }
       await shot(p, 'SSR-004-same-model-thinking-saved')
-      await backToConversation(p); await openSettings(p); await openMember(sectionOf(p), teamKey); await openMember(sectionOf(p), memberKey)
+      await backToConversation(p); await focusedCard(p, r.members.engineer)
       r.reopened = await row.locator(sel('chat-thinking-trigger')).innerText()
       assert(/Extra High|Xhigh/i.test(r.reopened), 'Reopened thinking differs from accepted configuration')
       return r

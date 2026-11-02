@@ -1,0 +1,21 @@
+# Evidence: IMP-14-nodes-docker-address-probe.log
+# Command: (cd /Users/normy/autobyteus_org/autobyteus-worktrees/manage-nodes-professional) pnpm -C autobyteus-web test:e2e:nodes-docker-address --output-dir=/Users/normy/autobyteus_org/autobyteus-worktrees/manage-nodes-professional/tickets/in-progress/manage-nodes-professional/evidence/implementation/IMP-14-nodes-docker-address-probe
+# Commit: 35e5853a22 (Merge origin/personal (84ea944ac5) into codex/manage-nodes-professional (autobyt)
+# Working tree: 0 changed tracked/untracked paths under autobyteus-web, autobyteus-server-ts
+# Env: Darwin 25.5.0, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-02 10:47:34 CET
+# Run by: implementation_engineer (autobyteus-363)
+# Note: setup failure, not a case failure; superseded by IMP-16. The released image autobyteus/autobyteus-server:beta (1.5.11-beta.7) carries an @autobyteus/collaboration-stream-contracts without collaborationParticipantMessagesDtoSchema (added by autobyteus-358 in the base), so this worktree's dist mounted over its dist cannot start (see IMP-14-nodes-docker-address-probe/docker-node.log). TESTING.md § Docker server nodes: a change beyond dist needs the worktree's whole server package (IMP-15, IMP-16).
+
+
+> autobyteus@1.5.11-beta.10 test:e2e:nodes-docker-address /Users/normy/autobyteus_org/autobyteus-worktrees/manage-nodes-professional/autobyteus-web
+> node tests/e2e/nodes-docker-address-probe.mjs --output-dir=/Users/normy/autobyteus_org/autobyteus-worktrees/manage-nodes-professional/tickets/in-progress/manage-nodes-professional/evidence/implementation/IMP-14-nodes-docker-address-probe
+
+nodes-docker-address probe: Fail
+Error: Timed out waiting for the Docker node health
+    at waitFor (file:///Users/normy/autobyteus_org/autobyteus-worktrees/manage-nodes-professional/autobyteus-web/tests/e2e/nodes-docker-address-probe.mjs:75:9)
+    at async startContainer (file:///Users/normy/autobyteus_org/autobyteus-worktrees/manage-nodes-professional/autobyteus-web/tests/e2e/nodes-docker-address-probe.mjs:162:3)
+    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/manage-nodes-professional/autobyteus-web/tests/e2e/nodes-docker-address-probe.mjs:270:18
+ ELIFECYCLE  Command failed with exit code 1.
+
+# Exit code: 1
