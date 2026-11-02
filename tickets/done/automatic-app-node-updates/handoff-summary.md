@@ -32,6 +32,9 @@
   - Files changed on both sides: the two docs, and `electron/tsconfig.json` in separate hunks.
   - The base's new `electron/tsconfig.typecheck.json` extends `tsconfig.json`, so it picks up the new shared includes.
 - Post-integration checks (details in `release-deployment-report.md`): Electron main suite; web typecheck; Electron `tsc`; full web suite; Secret Gate; artifact hygiene; licensing.
+- **Second integration (DR-002):**
+  - `personal` then moved to `v1.5.11-beta.11` (cut by another task, without 356), and the merge conflicted with autobyteus-363's Nodes redesign.
+  - The implementation engineer resolved it (merge `08984df524`): the switch sits at the foot of 363's server cell. CRR-007 Pass; API-REV-004 Pass on a real node; suites reran on that code (web 5085, Electron 407).
 
 ## Verification
 

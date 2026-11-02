@@ -20,7 +20,7 @@
 - Handoff summary artifact: `tickets/done/automatic-app-node-updates/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `tickets/done/automatic-app-node-updates/delivery-revision-record.md`
-- Current delivery revision ID: `DR-001`
+- Current delivery revision ID: `DR-002`
 
 ## Initial Delivery Integration Refresh
 
@@ -87,27 +87,40 @@
 - Ticket moved to `tickets/done/automatic-app-node-updates`: `Yes`
 - Archived ticket path: `tickets/done/automatic-app-node-updates/` on `personal`
 
+## Second Integration And Re-Verification (DR-002)
+
+- History (DR-001): finalization was blocked. `origin/personal` moved to `fc5a726444` (`v1.5.11-beta.11`, cut by another task; 356 not in it), and the re-integration conflicted with autobyteus-363 in `NodeServerUpdate.vue` and `docs/settings.md`. Delivery aborted the merge, reopened the ticket and routed it to implementation as a `Local Fix`.
+- The fix (IR-004):
+  - merge `08984df524` (`origin/personal` @ `fc5a726444`);
+  - the node switch sits at the foot of 363's server cell, and the node is asked once per row;
+  - CRR-007 Pass;
+  - API-REV-004 Pass on the merge against a real test node;
+  - CRR-008: test review Not Applicable.
+- Integration state at DR-002: `origin/personal` was still `fc5a726444`, already in the branch (`git log HEAD..origin/personal` empty). Integration method: `Already current`.
+- No-rerun rationale for delivery's own suites: after `08984df524` only ticket documents changed (`git diff --stat 08984df524 HEAD -- . ':!tickets'` is empty), and on that exact code:
+  - IMP-02 reran the web typecheck (production errors 0; test-file errors 99, at baseline), the Electron `tsc` and the full web suite (5085 passed);
+  - API-R4 reran the Electron suite (407) and the Nodes, notifications and stores tests (1212) on a clean checkout of `482e9ce797`.
+  The release's pre-tag checks and the build-only release run then cover the merged `personal` state.
+- Re-verification from evidence (the merged Nodes UI, AC-004/REQ-005):
+  - `API-14-layouts-after-outcome.json`: `toggleInCell` true at narrow 462 px, medium 913 px and wide (server column 16rem); the cell reads "Updated automatically to 1.5.11-beta.11", notice null.
+  - `API-14-switch-on-follow.json`: a real node, from `Server 1.5.11-beta.7` through `Preparing 1.5.11-beta.11…` and `Restarting…` to `AUTO_UPDATED`; `updatedLines` 1.
+  - O-7: for about 6 s the row shows the window's own "Updated to 1.5.11-beta.11." before the automatic line. Cosmetic.
+  - The merge does not touch `autobyteus-web/electron`, so API-REV-003's real-Squirrel results stand.
+  - Judgement: `Proven`. No user check is needed to finalize.
+- The architecture reviewer's edits: committed in `51aa6398c2` (DR-001); the worktree is clean.
+
 ## Repository Finalization
 
-- Repository finalization status: `Blocked` (not merged into `personal`; the ticket branch is not pushed).
-- What happened:
-  - While this delivery waited for another task's release to finish, `origin/personal` moved to `fc5a726444` with `v1.5.11-beta.11` (autobyteus-363, -366, the clean-runner build order). 356 is not in that tag.
-  - Re-integrating `origin/personal` into the ticket branch conflicts in two files:
-    1. `autobyteus-web/components/settings/nodes/NodeServerUpdate.vue`. autobyteus-363 (the Manage Nodes professional look) restructured the notice and copy-command markup; 356 places `<NodeAutoUpdate>` after that notice.
-    2. `autobyteus-web/docs/settings.md` § Nodes. 363 rewrote the server cell and Add band text; 356 adds the "Update automatically" bullet.
-  - Delivery aborted the merge; the branch stays at the verified `4369c7f98d`.
-- Classification: `Local Fix` (an integration conflict in product UI code plus its doc; the placement of the switch in the redesigned row needs a rendered check).
-- Recommended recipient: `/software_engineering_team/implementation_engineer`.
-- The ticket folder was moved back to `tickets/in-progress/` for the fix round.
+FINALIZATION_SECTION
 
 ## Release / Publication / Deployment
 
 - Applicable: `Yes` (the user's beta decision).
-- Release/publication/deployment result: `Blocked`, waiting for the finalization above. No tag was cut. `v1.5.11-beta.11` was cut by another task and does not contain 356.
+RELEASE_SECTION
 
 ## Post-Finalization Cleanup
 
-- Not started (finalization is blocked).
+CLEANUP_SECTION
 
 ## Release Notes Summary
 
@@ -134,7 +147,4 @@ None beyond the release. Docker users get the image `autobyteus/autobyteus-serve
 
 ## Final Status
 
-- Verification complete (from the evidence): `Yes`, on `4369c7f98d`. It must be redone on the fixed integration.
-- Repository finalization complete: `No` (`Blocked`, `Local Fix`, routed to implementation).
-- Release complete: `No` (waiting).
-- Successful terminal package eligible for return: `No`.
+FINAL_STATUS_SECTION
