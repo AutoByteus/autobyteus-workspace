@@ -26,13 +26,13 @@ The autobyteus-316 standalone switch is extended to a Team member, an Org member
 
 - Implementation cycle: `Initial`
 - Implementation revision record: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-switch-members/tickets/in-progress/runtime-switch-members/implementation-revision-record.md
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002` (IR-001 is the baseline; IR-002 fixes CRR-002 F-1 and F-2)
 - Related solution revision IDs: SR-001 (notes 1-2)
 - Related architecture-review revision IDs: ARCH-REV-002
-- Related code-review revision IDs: N/A
-- Related API/E2E revision IDs: N/A
+- Related code-review revision IDs: CRR-002
+- Related API/E2E revision IDs: API/E2E Fail round 1
 - Related delivery revision IDs: N/A
-- Triggering finding IDs: N/A
+- Triggering finding IDs: F-1, F-2 (CRR-002)
 - Branch / commits: `codex/runtime-switch-members`; implementation commits `572677be95`, `888063bbef`, `3b4f10435a`, `dba00b2416`, `877ee8ba33`, `0649bb6b44`, `b47e49c509`, `a199e9d543`, `d3463e0a7e`; the documents and evidence are committed after them on the same branch.
 
 ## Routing Classification (Mandatory)
@@ -142,6 +142,10 @@ Evidence files are in /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-s
 | IMP-11 | delegated-copy e2e (gated), DCM-001..009 | d3463e0a7e (dist from a199e9d543) | same | copies in Team, Org, Agent roots | AC-004,005 | Pass | evidence/IMP-11-delegated-copy-e2e.log | last block: `Tests  9 passed (9)` |
 | IMP-12 | affected e2e and integration files | a199e9d543 | same | stopped Org, stopped Agent, task-agent startup, Team manager, application-owned | REQ-007, AC-009 | Pass | evidence/IMP-12-affected-e2e-integration.log | `Tests  22 passed` and the TAU-2 rerun `Tests  3 passed (3)` |
 | IMP-13 | \`pnpm -C autobyteus-web test:e2e:existing-run-model-config\` (headless Chrome, fixture page) | working tree after d3463e0a7e, probe fixed in the following commit | macOS arm64, Chrome | Team/Agent Settings save through the real renderer | REQ-001, REQ-008 | Fail, same as base | evidence/IMP-13-existing-run-probe.log | 4 failures (API-E2E-004-A, -D, -E, BROWSER-PAGE-ERRORS), the same 4 at the base commit \`6672bed39f\`; the Team save assertions (B, F) pass |
+| IMP-14 | server build, typecheck, `test:unit` (IR-002) | 9e28c019b6 | worktree | server | F-1 | Pass (1 load-sensitive file-watcher test passed alone twice) | evidence/IMP-14-fix-server.log | `Tests  1 failed | 7864 passed` then the file alone `20 passed (20)` |
+| IMP-15 | web typecheck, nuxt, guards, codegen (IR-002) | 9e28c019b6 | worktree | web | F-1, F-2 | Pass | evidence/IMP-15-fix-web.log | `Tests  5013 passed | 2 skipped` |
+| IMP-16 | `test:e2e:runtime-switch-members` (rendered, real built server) | 9e28c019b6 | worktree + Chrome | Team, Org (direct, nested), copy rows | AC-001,002,004,005,008 | Pass | evidence/IMP-16-rsm-probe.log | `RSM-01..RSM-05 Pass` |
+| IMP-17 | gated built-server: members e2e, agent-org-runs, delegated-copy | 9e28c019b6 | worktree | Org config wire | F-1 | Pass | evidence/IMP-17-fix-built-server-e2e.log | `Tests  16 passed (16)` |
 
 Runtime pairs actually run, each with the previous agent's records asserted as the only content of its archived segment (I-7): native -> Antigravity (Team member, two Org members), Antigravity -> native with a failed start then a retry (Team member), Antigravity -> Grok (delegated agent copy in the Team, Org and Agent roots); the 316 cases cover native <-> Antigravity and Grok for a standalone run. The new Org and Team cases were first run red on harness mistakes (stream envelopes, a stopped Org must be restored first), not on production behavior.
 
@@ -152,7 +156,7 @@ Runtime pairs actually run, each with the previous agent's records asserted as t
 - Affected surfaces / journeys: Edit config of a stopped Team and Org run (member rows, mounted Team rows) and of a run's delegated copy rows; the runtime change hint.
 - Approved references: requirements doc REQ-001/002; the 316 root-card behavior.
 - Existing components reviewed: `RunSettingsCard`, `ChatModelMenu` (runtime-locked mode), `RunMemberRow`, `ExistingRunSettings`.
-- Rendered surface used: the existing browser probe (headless Chrome, fixture page, IMP-13) exercises the Team Settings save with the new patch shape; it has four failures that also fail at the base commit (the locked-runtime menu locator and a blocked-port websocket console error), so it is not a clean pass. I did not otherwise render the new member and copy rows in a browser or an isolated instance. The behavior is covered by component and store specs (`RunMemberRow.runtime.spec.ts`, `ExistingRunSettings.runtime.spec.ts`, `ExistingRunConfigEditor.delegatedSave.spec.ts`, `existingRunConfigStore.spec.ts`, draft specs) and by the built-server mutations the UI sends.
+- Rendered surface used (IR-002): the RSM probe (`test:e2e:runtime-switch-members`, IMP-16) renders the real Settings on a built server for a Team member, a direct Org Agent, a mounted-Team Agent and a copy row: RSM-01..05 pass. Before that, the existing browser probe (headless Chrome, fixture page, IMP-13) exercises the Team Settings save with the new patch shape; it has four failures that also fail at the base commit (the locked-runtime menu locator and a blocked-port websocket console error), so it is not a clean pass. I did not otherwise render the new member and copy rows in a browser or an isolated instance. The behavior is covered by component and store specs (`RunMemberRow.runtime.spec.ts`, `ExistingRunSettings.runtime.spec.ts`, `ExistingRunConfigEditor.delegatedSave.spec.ts`, `existingRunConfigStore.spec.ts`, draft specs) and by the built-server mutations the UI sends.
 - Visual or interaction issues found and corrected: none observed (not rendered).
 - Limitation: layout, menu behavior with the open runtime control on nested member rows and the hint's placement are unverified visually. A browser probe of Edit config on a stopped Team and a stopped Org is the first thing to run.
 

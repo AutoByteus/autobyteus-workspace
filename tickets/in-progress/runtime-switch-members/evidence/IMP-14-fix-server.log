@@ -1,0 +1,13 @@
+Check: IMP-14
+Command: pnpm -C autobyteus-server-ts build; typecheck; test:unit
+Commit: 9e28c019b6
+Environment: macOS arm64, Node 22, pnpm 10.28.2 (the worktree, not a clean clone)
+Date: 2026-11-02
+
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: migration state store unavailable","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > starts a registered root that is missing as FOLDER_MISSING and arms it when it appears
+ Test Files  1 failed | 921 passed | 5 skipped (927)
+      Tests  1 failed | 7864 passed | 9 skipped (7874)
+exit 1
+typecheck: production errors: 0; test-file errors: 1185 in 366 files (baseline 1185 in 366 files)
+The one failure (agent-package-folder-watcher.test.ts, 'starts a registered root that is missing as FOLDER_MISSING') passed in the clean-clone run (IMP-03) and twice alone afterwards: 20 passed (20).

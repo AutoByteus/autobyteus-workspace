@@ -1,0 +1,9 @@
+Check: IMP-17
+Command: gated vitest: runtime-switch-members-built-server.e2e, tests/e2e/agent-org-runs, delegated-copy-model-change.e2e (rebuilt dist)
+Commit: 9e28c019b6
+Environment: macOS arm64, Node 22, pnpm 10.28.2 (the worktree, not a clean clone)
+Date: 2026-11-02
+
+ Test Files  5 passed (5)
+      Tests  16 passed (16)
+exit 0
