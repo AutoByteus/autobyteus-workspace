@@ -15,3 +15,9 @@ Given while the Solution Designer was starting the later items of Task autobyteu
 
 ## Expected output
 The release result (version, tag, published artifacts, the release guide's checks) in the release report; `Delivery Completed` back to the Solution Designer, who verifies the receipt and reports to the requester.
+
+## Update 2026-11-02 (after the blocker was fixed)
+- The blocker (clean-runner-build-order) is merged: `origin/personal` @ 1df12d475a (merge 5d9eb4391f). The base for the release is now that head, not 84ea944ac5; it also carries autobyteus-363 (Manage Nodes) and autobyteus-366 (agent settings), 35 web commits since. Rebase `codex/release-beta-20261102` (your report commit 1d5afd7a41) onto it before use.
+- Resume at the pre-tag checks on the new head: the Secret Gate over the whole range since `v1.5.11-beta.10`, the release smoke and the build-only run on `personal` (RELEASE.md), then tag `v1.5.11-beta.11`.
+- Beta notes: include one line for API clients on the autobyteus-348 GraphQL clean cut (`updateStoppedAgentRunSelection`, `updateStoppedTeamRunSelections`, `selectionPatches`; the old names are gone). Decided by the Solution Designer: the Task asks for this release note. No "What you need to do" section.
+- Follow-up of delivery, FU-4 (macOS staple -1005 not covered by the workflow's retry), is recorded; if the macOS Intel job fails the same way again in the release run, rerun it as in the build-only run; the follow-up goes to a Task.
