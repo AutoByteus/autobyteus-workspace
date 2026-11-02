@@ -1,0 +1,355 @@
+[2026-11-02T05:17:14.141Z] [INFO] [electron] Application started
+[2026-11-02T05:17:14.222Z] [INFO] [electron] Creating server manager for platform: darwin
+[2026-11-02T05:17:14.222Z] [WARN] [electron.server.app-data] App data directory is missing .env. Reinitializing first-run data.
+[2026-11-02T05:17:14.222Z] [INFO] [electron.server.app-data] Created missing data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/data-dl/server-data/db
+[2026-11-02T05:17:14.223Z] [INFO] [electron.server.app-data] Created missing data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/data-dl/server-data/logs
+[2026-11-02T05:17:14.223Z] [INFO] [electron.server.app-data] Created missing data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/data-dl/server-data/download
+
+DevTools listening on ws://127.0.0.1:57629/devtools/browser/5770232f-792d-40ed-b642-efcb57701ab9
+[2026-11-02T05:17:14.278Z] [INFO] [electron] Browser bridge started on http://127.0.0.1:57657
+[2026-11-02T05:17:14.289Z] [INFO] [electron] ServerStatusManager: Starting internal server
+[2026-11-02T05:17:14.289Z] [INFO] [electron] ServerStatusManager: Emitting status change: starting
+[2026-11-02T05:17:14.289Z] [INFO] [electron.server.base-server-manager] Server installation directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/copies/dl/AutoByteus.app/Contents/Resources/server
+[2026-11-02T05:17:14.289Z] [INFO] [electron.server.base-server-manager] App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/data-dl/server-data
+[2026-11-02T05:17:14.289Z] [INFO] [electron.server.app-data] Performing first-run initialization...
+[2026-11-02T05:17:14.290Z] [INFO] [electron.server.app-data] Generated runtime .env at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/data-dl/server-data/.env
+[2026-11-02T05:17:14.290Z] [INFO] [electron.server.app-data] First-run initialization completed successfully
+[2026-11-02T05:17:14.291Z] [INFO] [electron] Server entrypoint: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/copies/dl/AutoByteus.app/Contents/Resources/server/dist/app.js
+[2026-11-02T05:17:15.293Z] [INFO] [electron] Loaded PATH from bash login shell
+[2026-11-02T05:17:15.293Z] [INFO] [electron] Login shell PATH: /Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/opt/homebrew/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin
+[2026-11-02T05:17:15.293Z] [INFO] [electron] Using PATH from login shell
+[2026-11-02T05:17:15.293Z] [INFO] [electron] Starting server with port: 47922
+[2026-11-02T05:17:15.293Z] [INFO] [electron] Setting AUTOBYTEUS_SERVER_HOST to: http://127.0.0.1:47922
+[2026-11-02T05:17:15.293Z] [INFO] [electron] Working directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/copies/dl/AutoByteus.app/Contents/Resources/server
+[2026-11-02T05:17:15.293Z] [INFO] [electron] App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/data-dl/server-data
+[2026-11-02T05:17:15.293Z] [INFO] [electron] Executing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/copies/dl/AutoByteus.app/Contents/MacOS/AutoByteus /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/copies/dl/AutoByteus.app/Contents/Resources/server/dist/app.js --port 47922 --data-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/data-dl/server-data
+[2026-11-02T05:17:15.294Z] [INFO] [electron] Server process spawned with PID: 78492
+[2026-11-02T05:17:15.365Z] [INFO] [electron.embedded-server.stdout] Platform detection: Windows=false
+[2026-11-02T05:17:15.365Z] [INFO] [electron.embedded-server.stdout] App root directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/copies/dl/AutoByteus.app/Contents/Resources/server
+[2026-11-02T05:17:15.365Z] [INFO] [electron.embedded-server.stdout] App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/data-dl/server-data
+[2026-11-02T05:17:15.365Z] [INFO] [electron.embedded-server.stdout] Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/data-dl/server-data/.env
+[2026-11-02T05:17:15.365Z] [INFO] [electron.embedded-server.stdout] Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/data-dl/server-data/.env
+[2026-11-02T05:17:15.366Z] [INFO] [electron.embedded-server.stdout] ◇ injected env (2) from ../../../../../../data-dl/server-data/.env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+[2026-11-02T05:17:15.366Z] [INFO] [electron.embedded-server.stdout] Environment variables loaded successfully
+[2026-11-02T05:17:15.366Z] [INFO] [electron.embedded-server.stdout] Server public base URL configured to: http://127.0.0.1:47922
+[2026-11-02T05:17:15.366Z] [INFO] [electron.embedded-server.stdout] === Starting logging configuration ===
+[2026-11-02T05:17:15.367Z] [INFO] [electron.embedded-server.stdout] Logging config file is ignored in Node.js: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/copies/dl/AutoByteus.app/Contents/Resources/server/logging_config.ini
+[2026-11-02T05:17:15.367Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-11-02T05:17:15.367Z] [INFO] [electron.embedded-server.stdout] SERVER PUBLIC URL: http://127.0.0.1:47922
+[2026-11-02T05:17:15.367Z] [INFO] [electron.embedded-server.stdout] APP ROOT DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/copies/dl/AutoByteus.app/Contents/Resources/server
+[2026-11-02T05:17:15.367Z] [INFO] [electron.embedded-server.stdout] APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/data-dl/server-data
+[2026-11-02T05:17:15.367Z] [INFO] [electron.embedded-server.stdout] DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/data-dl/server-data/db
+[2026-11-02T05:17:15.367Z] [INFO] [electron.embedded-server.stdout] LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/data-dl/server-data/logs
+[2026-11-02T05:17:15.367Z] [INFO] [electron.embedded-server.stdout] DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/data-dl/server-data/download
+[2026-11-02T05:17:15.367Z] [INFO] [electron.embedded-server.stdout] MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/data-dl/server-data/memory
+[2026-11-02T05:17:15.367Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-11-02T05:17:16.163Z] [INFO] [electron.embedded-server.stdout] AgentFactory (Singleton) initialized.
+[2026-11-02T05:17:16.323Z] [INFO] [electron.embedded-server.stdout] Running Prisma migrations...
+[2026-11-02T05:17:16.324Z] [INFO] [electron.embedded-server.stdout] Using Prisma engine overrides from bundled: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/copies/dl/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+[2026-11-02T05:17:16.531Z] [INFO] [electron.embedded-server.stdout] Prisma schema loaded from prisma/schema.prisma
+[2026-11-02T05:17:16.533Z] [INFO] [electron.embedded-server.stdout] Datasource "db": SQLite database "production.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/data-dl/server-data/db/production.db"
+[2026-11-02T05:17:16.565Z] [INFO] [electron.embedded-server.stdout] SQLite database production.db created at file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/data-dl/server-data/db/production.db
+[2026-11-02T05:17:16.575Z] [INFO] [electron.embedded-server.stdout] 27 migrations found in prisma/migrations
+[2026-11-02T05:17:16.578Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260203074245_init`
+[2026-11-02T05:17:16.584Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260208094000_add_external_channel_tables`
+[2026-11-02T05:17:16.588Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+[2026-11-02T05:17:16.589Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260209213000_remove_agent_conversation_tables`
+[2026-11-02T05:17:16.590Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260210101500_add_agent_avatar`
+[2026-11-02T05:17:16.591Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260210192000_add_agent_team_avatar`
+[2026-11-02T05:17:16.592Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260211214500_add_sync_columns_and_tombstones`
+[2026-11-02T05:17:16.598Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260212070000_remove_workflow_definition`
+[2026-11-02T05:17:16.598Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260309103000_add_channel_binding_launch_preset`
+[2026-11-02T05:17:16.602Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260310153000_add_channel_binding_team_definition_id`
+[2026-11-02T05:17:16.603Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260331102000_remove_channel_bindings_table`
+[2026-11-02T05:17:16.604Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+[2026-11-02T05:17:16.608Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260517090000_add_app_data_migration_records`
+[2026-11-02T05:17:16.609Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260624090000_add_token_usage_ledger_events`
+[2026-11-02T05:17:16.611Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260625193000_token_usage_component_pricing_explainability`
+[2026-11-02T05:17:16.617Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260629120000_add_token_usage_display_fields`
+[2026-11-02T05:17:16.620Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260702093000_token_usage_execution_address`
+[2026-11-02T05:17:16.621Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260726090000_add_secret_vault`
+[2026-11-02T05:17:16.622Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260730090000_add_token_usage_provider_name`
+[2026-11-02T05:17:16.623Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260801090000_token_usage_member_display_name`
+[2026-11-02T05:17:16.625Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260814090000_team_run_execution_tree_v1`
+[2026-11-02T05:17:16.626Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260819090000_add_token_usage_run_records`
+[2026-11-02T05:17:16.628Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260820090000_redesign_app_data_migration_summary`
+[2026-11-02T05:17:16.631Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260822090000_add_token_usage_analytics`
+[2026-11-02T05:17:16.633Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260923130000_add_claude_sdk_usage_state`
+[2026-11-02T05:17:16.634Z] [INFO] [electron.embedded-server.stdout] Applying migration `20260924120000_remove_external_channel_tables`
+[2026-11-02T05:17:16.635Z] [INFO] [electron.embedded-server.stdout] Applying migration `20261009120000_token_meter_context_readings`
+[2026-11-02T05:17:16.636Z] [INFO] [electron.embedded-server.stdout] The following migration(s) have been applied:
+[2026-11-02T05:17:16.636Z] [INFO] [electron.embedded-server.stdout] migrations/
+[2026-11-02T05:17:16.636Z] [INFO] [electron.embedded-server.stdout]   └─ 20260203074245_init/
+[2026-11-02T05:17:16.636Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-02T05:17:16.636Z] [INFO] [electron.embedded-server.stdout]   └─ 20260208094000_add_external_channel_tables/
+[2026-11-02T05:17:16.636Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-02T05:17:16.636Z] [INFO] [electron.embedded-server.stdout]   └─ 20260209174500_add_channel_message_receipt_turn_id/
+[2026-11-02T05:17:16.636Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-02T05:17:16.636Z] [INFO] [electron.embedded-server.stdout]   └─ 20260209213000_remove_agent_conversation_tables/
+[2026-11-02T05:17:16.636Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-02T05:17:16.636Z] [INFO] [electron.embedded-server.stdout]   └─ 20260210101500_add_agent_avatar/
+[2026-11-02T05:17:16.636Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-02T05:17:16.636Z] [INFO] [electron.embedded-server.stdout]   └─ 20260210192000_add_agent_team_avatar/
+[2026-11-02T05:17:16.636Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-02T05:17:16.636Z] [INFO] [electron.embedded-server.stdout]   └─ 20260211214500_add_sync_columns_and_tombstones/
+[2026-11-02T05:17:16.636Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-02T05:17:16.636Z] [INFO] [electron.embedded-server.stdout]   └─ 20260212070000_remove_workflow_definition/
+[2026-11-02T05:17:16.636Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-02T05:17:16.636Z] [INFO] [electron.embedded-server.stdout]   └─ 20260309103000_add_channel_binding_launch_preset/
+[2026-11-02T05:17:16.636Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-02T05:17:16.636Z] [INFO] [electron.embedded-server.stdout]   └─ 20260310153000_add_channel_binding_team_definition_id/
+[2026-11-02T05:17:16.636Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-02T05:17:16.637Z] [INFO] [electron.embedded-server.stdout]   └─ 20260331102000_remove_channel_bindings_table/
+[2026-11-02T05:17:16.637Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-02T05:17:16.637Z] [INFO] [electron.embedded-server.stdout]   └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+[2026-11-02T05:17:16.637Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-02T05:17:16.637Z] [INFO] [electron.embedded-server.stdout]   └─ 20260517090000_add_app_data_migration_records/
+[2026-11-02T05:17:16.637Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-02T05:17:16.637Z] [INFO] [electron.embedded-server.stdout]   └─ 20260624090000_add_token_usage_ledger_events/
+[2026-11-02T05:17:16.637Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-02T05:17:16.637Z] [INFO] [electron.embedded-server.stdout]   └─ 20260625193000_token_usage_component_pricing_explainability/
+[2026-11-02T05:17:16.637Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-02T05:17:16.637Z] [INFO] [electron.embedded-server.stdout]   └─ 20260629120000_add_token_usage_display_fields/
+[2026-11-02T05:17:16.637Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-02T05:17:16.637Z] [INFO] [electron.embedded-server.stdout]   └─ 20260702093000_token_usage_execution_address/
+[2026-11-02T05:17:16.637Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-02T05:17:16.637Z] [INFO] [electron.embedded-server.stdout]   └─ 20260726090000_add_secret_vault/
+[2026-11-02T05:17:16.637Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-02T05:17:16.637Z] [INFO] [electron.embedded-server.stdout]   └─ 20260730090000_add_token_usage_provider_name/
+[2026-11-02T05:17:16.637Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-02T05:17:16.637Z] [INFO] [electron.embedded-server.stdout]   └─ 20260801090000_token_usage_member_display_name/
+[2026-11-02T05:17:16.637Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-02T05:17:16.637Z] [INFO] [electron.embedded-server.stdout]   └─ 20260814090000_team_run_execution_tree_v1/
+[2026-11-02T05:17:16.637Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-02T05:17:16.637Z] [INFO] [electron.embedded-server.stdout]   └─ 20260819090000_add_token_usage_run_records/
+[2026-11-02T05:17:16.637Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-02T05:17:16.637Z] [INFO] [electron.embedded-server.stdout]   └─ 20260820090000_redesign_app_data_migration_summary/
+[2026-11-02T05:17:16.637Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-02T05:17:16.637Z] [INFO] [electron.embedded-server.stdout]   └─ 20260822090000_add_token_usage_analytics/
+[2026-11-02T05:17:16.637Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-02T05:17:16.637Z] [INFO] [electron.embedded-server.stdout]   └─ 20260923130000_add_claude_sdk_usage_state/
+[2026-11-02T05:17:16.637Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-02T05:17:16.637Z] [INFO] [electron.embedded-server.stdout]   └─ 20260924120000_remove_external_channel_tables/
+[2026-11-02T05:17:16.637Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-02T05:17:16.637Z] [INFO] [electron.embedded-server.stdout]   └─ 20261009120000_token_meter_context_readings/
+[2026-11-02T05:17:16.637Z] [INFO] [electron.embedded-server.stdout]     └─ migration.sql
+[2026-11-02T05:17:16.637Z] [INFO] [electron.embedded-server.stdout] All migrations have been successfully applied.
+[2026-11-02T05:17:16.650Z] [INFO] [electron.embedded-server.stdout] Database migrations completed successfully.
+[2026-11-02T05:17:16.658Z] [INFO] [electron.embedded-server.stdout] prisma:info Starting a sqlite pool with 21 connections.
+[2026-11-02T05:17:16.683Z] [INFO] [electron.embedded-server.stdout] [2026-11-02T05:17:16.682Z] [INFO] [secret-management.vault] Secret vault: application database
+[2026-11-02T05:17:16.821Z] [INFO] [electron.embedded-server.stdout] Initialized server settings service with 33 predefined settings
+[2026-11-02T05:17:16.846Z] [INFO] [electron.embedded-server.stdout] AgentRunManager initialized.
+[2026-11-02T05:17:16.848Z] [INFO] [electron.embedded-server.stdout] AgentRunManager initialized.
+[2026-11-02T05:17:16.918Z] [INFO] [electron.embedded-server.stdout] Loading workspace packages to trigger registration...
+[2026-11-02T05:17:16.918Z] [INFO] [electron.embedded-server.stdout] Successfully loaded workspace packages.
+[2026-11-02T05:17:16.919Z] [INFO] [electron.embedded-server.stdout] Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/data-dl/server-data/temp_workspace
+[2026-11-02T05:17:16.919Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/data-dl/server-data/temp_workspace.
+[2026-11-02T05:17:16.919Z] [INFO] [electron.embedded-server.stdout] Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/data-dl/server-data/temp_workspace with fixed ID 'temp_ws_default'
+[2026-11-02T05:17:16.919Z] [INFO] [electron.embedded-server.stdout] Temp workspace created and cached with ID: temp_ws_default
+[2026-11-02T05:17:16.919Z] [INFO] [electron.embedded-server.stdout] Registering agent customization processors...
+[2026-11-02T05:17:16.919Z] [INFO] [electron.embedded-server.stdout] Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+[2026-11-02T05:17:16.919Z] [INFO] [electron.embedded-server.stdout] Registered input processor 'WorkspacePathSanitizationProcessor'.
+[2026-11-02T05:17:16.919Z] [INFO] [electron.embedded-server.stdout] Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+[2026-11-02T05:17:16.919Z] [INFO] [electron.embedded-server.stdout] Registered input processor 'UserInputContextBuildingProcessor'.
+[2026-11-02T05:17:16.919Z] [INFO] [electron.embedded-server.stdout] LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+[2026-11-02T05:17:16.919Z] [INFO] [electron.embedded-server.stdout] Registered LLM response processor 'MediaUrlTransformerProcessor'.
+[2026-11-02T05:17:16.919Z] [INFO] [electron.embedded-server.stdout] Agent customization processor registration complete.
+[2026-11-02T05:17:16.920Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_file'
+[2026-11-02T05:17:16.920Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'write_file'
+[2026-11-02T05:17:16.920Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'edit_file'
+[2026-11-02T05:17:16.920Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'run_bash'
+[2026-11-02T05:17:16.920Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'start_background_process'
+[2026-11-02T05:17:16.920Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_background_processes'
+[2026-11-02T05:17:16.920Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_process_output'
+[2026-11-02T05:17:16.920Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'stop_background_process'
+[2026-11-02T05:17:16.920Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_web'
+[2026-11-02T05:17:16.920Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'download_media'
+[2026-11-02T05:17:16.920Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_url'
+[2026-11-02T05:17:16.920Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Core Tools
+[2026-11-02T05:17:16.928Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_project_task'
+[2026-11-02T05:17:16.929Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_projects'
+[2026-11-02T05:17:16.929Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_project_tasks'
+[2026-11-02T05:17:16.929Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_project_tasks'
+[2026-11-02T05:17:16.929Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'create_project'
+[2026-11-02T05:17:16.929Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'update_project'
+[2026-11-02T05:17:16.929Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'create_task'
+[2026-11-02T05:17:16.929Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'update_task'
+[2026-11-02T05:17:16.929Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'delegate_task'
+[2026-11-02T05:17:16.929Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_image'
+[2026-11-02T05:17:16.929Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'edit_image'
+[2026-11-02T05:17:16.929Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_speech'
+[2026-11-02T05:17:16.929Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_video'
+[2026-11-02T05:17:16.929Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Project Task Tools
+[2026-11-02T05:17:16.929Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Task Delegation Tools
+[2026-11-02T05:17:16.929Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Media Tools
+[2026-11-02T05:17:16.929Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_available_agents'
+[2026-11-02T05:17:16.929Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_peer_nodes'
+[2026-11-02T05:17:16.929Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Agent Discovery Tools
+[2026-11-02T05:17:16.929Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_available_agent_runtimes'
+[2026-11-02T05:17:16.929Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'submit_launch_choices'
+[2026-11-02T05:17:16.929Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Agent Runtime Tools
+[2026-11-02T05:17:16.930Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'open_tab'
+[2026-11-02T05:17:16.930Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'navigate_to'
+[2026-11-02T05:17:16.930Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'close_tab'
+[2026-11-02T05:17:16.930Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_tabs'
+[2026-11-02T05:17:16.930Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_page'
+[2026-11-02T05:17:16.930Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'screenshot'
+[2026-11-02T05:17:16.930Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'dom_snapshot'
+[2026-11-02T05:17:16.930Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'run_script'
+[2026-11-02T05:17:16.930Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'set_device_emulation'
+[2026-11-02T05:17:16.930Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Browser Tools
+[2026-11-02T05:17:16.930Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'publish_artifacts'
+[2026-11-02T05:17:16.930Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Published Artifact Tools
+[2026-11-02T05:17:16.930Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_memory'
+[2026-11-02T05:17:16.930Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Memory Tools
+[2026-11-02T05:17:16.930Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'send_message_to'
+[2026-11-02T05:17:16.931Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_handoff_rules'
+[2026-11-02T05:17:16.931Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Agent Communication Tools
+[2026-11-02T05:17:16.932Z] [ERROR] [electron.embedded-server.stderr] Overwriting existing tool definition for name: 'search_web'
+[2026-11-02T05:17:16.932Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_web'
+[2026-11-02T05:17:16.932Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Search Tools
+[2026-11-02T05:17:16.941Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1793596636940,"pid":78492,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:57677"}
+[2026-11-02T05:17:16.961Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1793596636960,"pid":78492,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:47922"}
+[2026-11-02T05:17:16.961Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1793596636961,"pid":78492,"hostname":"MacBookPro","msg":"Server listening at http://192.168.2.158:47922"}
+[2026-11-02T05:17:16.961Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1793596636961,"pid":78492,"hostname":"MacBookPro","msg":"Server listening at http://100.127.30.107:47922"}
+[2026-11-02T05:17:16.961Z] [INFO] [electron.embedded-server.stdout] [2026-11-02T05:17:16.961Z] [INFO] [server.runtime] Server listening on 0.0.0.0:47922
+[2026-11-02T05:17:16.961Z] [INFO] [electron.embedded-server.stdout] Scheduling Studio-only non-critical startup tasks...
+[2026-11-02T05:17:16.963Z] [INFO] [electron.embedded-server.stdout] Background cache pre-loading process has started.
+[2026-11-02T05:17:16.964Z] [INFO] [electron.embedded-server.stdout] CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+[2026-11-02T05:17:16.964Z] [INFO] [electron.embedded-server.stdout] Populating MCP server config cache for the first time...
+[2026-11-02T05:17:16.964Z] [INFO] [electron.embedded-server.stdout] Running MCP tool registration background task...
+[2026-11-02T05:17:16.964Z] [INFO] [electron.embedded-server.stdout] Loading and registering all MCP server configurations from file...
+[2026-11-02T05:17:16.968Z] [INFO] [electron.embedded-server.stdout] Background task 'Memory Sync Worker' completed successfully.
+[2026-11-02T05:17:16.968Z] [INFO] [electron.embedded-server.stdout] Background task 'Memory Search' completed successfully.
+[2026-11-02T05:17:16.968Z] [INFO] [electron.embedded-server.stdout] MCP server config cache populated with 0 items.
+[2026-11-02T05:17:16.968Z] [INFO] [electron.embedded-server.stdout] Found 0 total MCP server configs.
+[2026-11-02T05:17:16.968Z] [INFO] [electron.embedded-server.stdout] Synchronized cached configurations with the core MCP config service.
+[2026-11-02T05:17:16.968Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 0 MCP server configs into cache.
+[2026-11-02T05:17:16.968Z] [INFO] [electron.embedded-server.stdout] Finished loading and registering all MCP server configurations.
+[2026-11-02T05:17:16.969Z] [INFO] [electron.embedded-server.stdout] Background task 'MCP Tool Registration' completed successfully.
+[2026-11-02T05:17:16.969Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 33 LLM models into cache.
+[2026-11-02T05:17:16.969Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 7 image models into cache.
+[2026-11-02T05:17:16.969Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 3 audio models into cache.
+[2026-11-02T05:17:16.969Z] [INFO] [electron.embedded-server.stdout] Background application cache pre-loading completed.
+[2026-11-02T05:17:16.969Z] [INFO] [electron.embedded-server.stdout] Background task 'Cache Pre-loading' completed successfully.
+[2026-11-02T05:17:17.057Z] [INFO] [electron.server.base-server-manager] Server health check successful, server is ready
+[2026-11-02T05:17:17.057Z] [INFO] [electron] ServerStatusManager: Server is ready
+[2026-11-02T05:17:17.057Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-02T05:17:17.152Z] [INFO] [electron] Creating node-bound window for entryId=embedded-local; url=file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/copies/dl/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html
+(electron) 'console-message' arguments are deprecated and will be removed. Please use Event<WebContentsConsoleMessageEventParams> object instead.
+[2026-11-02T05:17:17.453Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-02T05:17:17.455Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-02T05:17:17.485Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-02T05:17:17.487Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-02T05:17:17.535Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-02T05:17:17.537Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-02T05:17:19.459Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-02T05:17:19.460Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-02T05:17:22.542Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-02T05:17:22.547Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-02T05:17:25.154Z] [INFO] [electron] [updater] Checking for update
+[2026-11-02T05:17:25.155Z] [INFO] [electron] [updater] Generated new staging user ID: 400a098e-f1db-5185-9455-2fa3362e6302
+[2026-11-02T05:17:25.162Z] [INFO] [electron] [updater] Found version 1.5.11-beta.11 (url: AutoByteus-1.5.11-beta.11-arm64-mac.zip)
+[2026-11-02T05:17:27.542Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-02T05:17:27.546Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-02T05:17:32.541Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-02T05:17:32.542Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-02T05:17:34.214Z] [INFO] [electron] [updater] Downloading update from AutoByteus-1.5.11-beta.11-arm64-mac.zip
+[2026-11-02T05:17:34.227Z] [INFO] [electron] [updater] Checked for macOS Rosetta environment (isRosetta=false)
+[2026-11-02T05:17:34.235Z] [INFO] [electron] [updater] Checked 'uname -a': arm64=true
+[2026-11-02T05:17:34.239Z] [INFO] [electron] [updater] Cached update sha512 checksum doesn't match the latest available update. New update must be downloaded. Cached: NrQ3pow9NCoGX1bnCo9P5a8c8ZzrHSMK2OVNWrAHk2fLbu/U4LQtJlqjY6f8Qg5veQgdSRweReUtaDzNvAg+Pw==, expected: 8m5clX6Yj+wu8tvA9nWBk0UC8Nvo22cht+xSryH5w0tvGsRPFCTDyek0lT+z3COuYpH925gQzDWWkAOj8b/AVQ==. Directory for cached update will be cleaned
+[2026-11-02T05:17:34.279Z] [INFO] [electron] [updater] Download block maps (old: "http://127.0.0.1:47911/AutoByteus-1.5.11-beta.10-arm64-mac.zip.blockmap", new: http://127.0.0.1:47911/AutoByteus-1.5.11-beta.11-arm64-mac.zip.blockmap)
+[2026-11-02T05:17:34.281Z] [ERROR] [electron] [updater] Cannot download differentially, fallback to full download: Error: Cannot download "http://127.0.0.1/AutoByteus-1.5.11-beta.11-arm64-mac.zip.blockmap", status 404: Not Found
+    at ClientRequest.<anonymous> (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/copies/dl/AutoByteus.app/Contents/Resources/app.asar/node_modules/builder-util-runtime/out/httpExecutor.js:245:34)
+    at ClientRequest.emit (node:events:509:28)
+    at SimpleURLLoaderWrapper.<anonymous> (node:electron/js2c/browser_init:2:137770)
+    at SimpleURLLoaderWrapper.emit (node:events:509:28)
+[2026-11-02T05:17:34.886Z] [ERROR] [electron] [updater] Error: Error: sha512 checksum mismatch, expected 8m5clX6Yj+wu8tvA9nWBk0UC8Nvo22cht+xSryH5w0tvGsRPFCTDyek0lT+z3COuYpH925gQzDWWkAOj8b/AVQ==, got NrQ3pow9NCoGX1bnCo9P5a8c8ZzrHSMK2OVNWrAHk2fLbu/U4LQtJlqjY6f8Qg5veQgdSRweReUtaDzNvAg+Pw==
+    at newError (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/copies/dl/AutoByteus.app/Contents/Resources/app.asar/node_modules/builder-util-runtime/out/error.js:5:19)
+    at DigestTransform.validate (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/copies/dl/AutoByteus.app/Contents/Resources/app.asar/node_modules/builder-util-runtime/out/httpExecutor.js:431:40)
+    at DigestTransform._flush (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/copies/dl/AutoByteus.app/Contents/Resources/app.asar/node_modules/builder-util-runtime/out/httpExecutor.js:417:22)
+    at DigestTransform.final [as _final] (node:internal/streams/transform:128:10)
+    at prefinish (node:internal/streams/writable:914:14)
+    at finishMaybe (node:internal/streams/writable:928:5)
+    at afterWrite (node:internal/streams/writable:716:5)
+    at onwrite (node:internal/streams/writable:686:7)
+    at WritableState.onwrite (node:internal/streams/writable:350:26)
+    at Transform._read (node:internal/streams/transform:202:5)
+[2026-11-02T05:17:34.889Z] [ERROR] [electron] [updater] Auto-update failed. (kind=metadata, operation=download, code=ERR_CHECKSUM_MISMATCH)
+sha512 checksum mismatch, expected 8m5clX6Yj+wu8tvA9nWBk0UC8Nvo22cht+xSryH5w0tvGsRPFCTDyek0lT+z3COuYpH925gQzDWWkAOj8b/AVQ==, got NrQ3pow9NCoGX1bnCo9P5a8c8ZzrHSMK2OVNWrAHk2fLbu/U4LQtJlqjY6f8Qg5veQgdSRweReUtaDzNvAg+Pw==
+Error: sha512 checksum mismatch, expected 8m5clX6Yj+wu8tvA9nWBk0UC8Nvo22cht+xSryH5w0tvGsRPFCTDyek0lT+z3COuYpH925gQzDWWkAOj8b/AVQ==, got NrQ3pow9NCoGX1bnCo9P5a8c8ZzrHSMK2OVNWrAHk2fLbu/U4LQtJlqjY6f8Qg5veQgdSRweReUtaDzNvAg+Pw==
+    at newError (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/copies/dl/AutoByteus.app/Contents/Resources/app.asar/node_modules/builder-util-runtime/out/error.js:5:19)
+    at DigestTransform.validate (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/copies/dl/AutoByteus.app/Contents/Resources/app.asar/node_modules/builder-util-runtime/out/httpExecutor.js:431:40)
+    at DigestTransform._flush (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/copies/dl/AutoByteus.app/Contents/Resources/app.asar/node_modules/builder-util-runtime/out/httpExecutor.js:417:22)
+    at DigestTransform.final [as _final] (node:internal/streams/transform:128:10)
+    at prefinish (node:internal/streams/writable:914:14)
+    at finishMaybe (node:internal/streams/writable:928:5)
+    at afterWrite (node:internal/streams/writable:716:5)
+    at onwrite (node:internal/streams/writable:686:7)
+    at WritableState.onwrite (node:internal/streams/writable:350:26)
+    at Transform._read (node:internal/streams/transform:202:5) Error: sha512 checksum mismatch, expected 8m5clX6Yj+wu8tvA9nWBk0UC8Nvo22cht+xSryH5w0tvGsRPFCTDyek0lT+z3COuYpH925gQzDWWkAOj8b/AVQ==, got NrQ3pow9NCoGX1bnCo9P5a8c8ZzrHSMK2OVNWrAHk2fLbu/U4LQtJlqjY6f8Qg5veQgdSRweReUtaDzNvAg+Pw==
+    at newError (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/copies/dl/AutoByteus.app/Contents/Resources/app.asar/node_modules/builder-util-runtime/out/error.js:5:19)
+    at DigestTransform.validate (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/copies/dl/AutoByteus.app/Contents/Resources/app.asar/node_modules/builder-util-runtime/out/httpExecutor.js:431:40)
+    at DigestTransform._flush (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/copies/dl/AutoByteus.app/Contents/Resources/app.asar/node_modules/builder-util-runtime/out/httpExecutor.js:417:22)
+    at DigestTransform.final [as _final] (node:internal/streams/transform:128:10)
+    at prefinish (node:internal/streams/writable:914:14)
+    at finishMaybe (node:internal/streams/writable:928:5)
+    at afterWrite (node:internal/streams/writable:716:5)
+    at onwrite (node:internal/streams/writable:686:7)
+    at WritableState.onwrite (node:internal/streams/writable:350:26)
+    at Transform._read (node:internal/streams/transform:202:5) {
+  code: 'ERR_CHECKSUM_MISMATCH'
+}
+[2026-11-02T05:17:39.835Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-02T05:17:39.839Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-02T05:17:42.831Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-02T05:17:42.834Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-02T05:17:44.847Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-02T05:17:44.848Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-02T05:17:46.491Z] [INFO] [electron] [updater] Checking for update
+[2026-11-02T05:17:46.498Z] [INFO] [electron] [updater] Found version 1.5.11-beta.11 (url: AutoByteus-1.5.11-beta.11-arm64-mac.zip)
+[2026-11-02T05:17:46.499Z] [INFO] [electron] [updater] Downloading update from AutoByteus-1.5.11-beta.11-arm64-mac.zip
+[2026-11-02T05:17:46.505Z] [INFO] [electron] [updater] Checked for macOS Rosetta environment (isRosetta=false)
+[2026-11-02T05:17:46.509Z] [INFO] [electron] [updater] Checked 'uname -a': arm64=true
+[2026-11-02T05:17:46.510Z] [INFO] [electron] [updater] Download block maps (old: "http://127.0.0.1:47911/AutoByteus-1.5.11-beta.10-arm64-mac.zip.blockmap", new: http://127.0.0.1:47911/AutoByteus-1.5.11-beta.11-arm64-mac.zip.blockmap)
+[2026-11-02T05:17:46.511Z] [ERROR] [electron] [updater] Cannot download differentially, fallback to full download: Error: Cannot download "http://127.0.0.1/AutoByteus-1.5.11-beta.11-arm64-mac.zip.blockmap", status 404: Not Found
+    at ClientRequest.<anonymous> (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/copies/dl/AutoByteus.app/Contents/Resources/app.asar/node_modules/builder-util-runtime/out/httpExecutor.js:245:34)
+    at ClientRequest.emit (node:events:509:28)
+    at SimpleURLLoaderWrapper.<anonymous> (node:electron/js2c/browser_init:2:137770)
+    at SimpleURLLoaderWrapper.emit (node:events:509:28)
+[2026-11-02T05:17:46.986Z] [ERROR] [electron] [updater] Error: Error: sha512 checksum mismatch, expected 8m5clX6Yj+wu8tvA9nWBk0UC8Nvo22cht+xSryH5w0tvGsRPFCTDyek0lT+z3COuYpH925gQzDWWkAOj8b/AVQ==, got NrQ3pow9NCoGX1bnCo9P5a8c8ZzrHSMK2OVNWrAHk2fLbu/U4LQtJlqjY6f8Qg5veQgdSRweReUtaDzNvAg+Pw==
+    at newError (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/copies/dl/AutoByteus.app/Contents/Resources/app.asar/node_modules/builder-util-runtime/out/error.js:5:19)
+    at DigestTransform.validate (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/copies/dl/AutoByteus.app/Contents/Resources/app.asar/node_modules/builder-util-runtime/out/httpExecutor.js:431:40)
+    at DigestTransform._flush (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/copies/dl/AutoByteus.app/Contents/Resources/app.asar/node_modules/builder-util-runtime/out/httpExecutor.js:417:22)
+    at DigestTransform.final [as _final] (node:internal/streams/transform:128:10)
+    at prefinish (node:internal/streams/writable:914:14)
+    at finishMaybe (node:internal/streams/writable:928:5)
+    at afterWrite (node:internal/streams/writable:716:5)
+    at onwrite (node:internal/streams/writable:686:7)
+    at WritableState.onwrite (node:internal/streams/writable:350:26)
+    at Transform._read (node:internal/streams/transform:202:5)
+[2026-11-02T05:17:46.987Z] [ERROR] [electron] [updater] Auto-update failed. (kind=metadata, operation=download, code=ERR_CHECKSUM_MISMATCH)
+sha512 checksum mismatch, expected 8m5clX6Yj+wu8tvA9nWBk0UC8Nvo22cht+xSryH5w0tvGsRPFCTDyek0lT+z3COuYpH925gQzDWWkAOj8b/AVQ==, got NrQ3pow9NCoGX1bnCo9P5a8c8ZzrHSMK2OVNWrAHk2fLbu/U4LQtJlqjY6f8Qg5veQgdSRweReUtaDzNvAg+Pw==
+Error: sha512 checksum mismatch, expected 8m5clX6Yj+wu8tvA9nWBk0UC8Nvo22cht+xSryH5w0tvGsRPFCTDyek0lT+z3COuYpH925gQzDWWkAOj8b/AVQ==, got NrQ3pow9NCoGX1bnCo9P5a8c8ZzrHSMK2OVNWrAHk2fLbu/U4LQtJlqjY6f8Qg5veQgdSRweReUtaDzNvAg+Pw==
+    at newError (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/copies/dl/AutoByteus.app/Contents/Resources/app.asar/node_modules/builder-util-runtime/out/error.js:5:19)
+    at DigestTransform.validate (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/copies/dl/AutoByteus.app/Contents/Resources/app.asar/node_modules/builder-util-runtime/out/httpExecutor.js:431:40)
+    at DigestTransform._flush (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/copies/dl/AutoByteus.app/Contents/Resources/app.asar/node_modules/builder-util-runtime/out/httpExecutor.js:417:22)
+    at DigestTransform.final [as _final] (node:internal/streams/transform:128:10)
+    at prefinish (node:internal/streams/writable:914:14)
+    at finishMaybe (node:internal/streams/writable:928:5)
+    at afterWrite (node:internal/streams/writable:716:5)
+    at onwrite (node:internal/streams/writable:686:7)
+    at WritableState.onwrite (node:internal/streams/writable:350:26)
+    at Transform._read (node:internal/streams/transform:202:5) Error: sha512 checksum mismatch, expected 8m5clX6Yj+wu8tvA9nWBk0UC8Nvo22cht+xSryH5w0tvGsRPFCTDyek0lT+z3COuYpH925gQzDWWkAOj8b/AVQ==, got NrQ3pow9NCoGX1bnCo9P5a8c8ZzrHSMK2OVNWrAHk2fLbu/U4LQtJlqjY6f8Qg5veQgdSRweReUtaDzNvAg+Pw==
+    at newError (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/copies/dl/AutoByteus.app/Contents/Resources/app.asar/node_modules/builder-util-runtime/out/error.js:5:19)
+    at DigestTransform.validate (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/copies/dl/AutoByteus.app/Contents/Resources/app.asar/node_modules/builder-util-runtime/out/httpExecutor.js:431:40)
+    at DigestTransform._flush (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO/copies/dl/AutoByteus.app/Contents/Resources/app.asar/node_modules/builder-util-runtime/out/httpExecutor.js:417:22)
+    at DigestTransform.final [as _final] (node:internal/streams/transform:128:10)
+    at prefinish (node:internal/streams/writable:914:14)
+    at finishMaybe (node:internal/streams/writable:928:5)
+    at afterWrite (node:internal/streams/writable:716:5)
+    at onwrite (node:internal/streams/writable:686:7)
+    at WritableState.onwrite (node:internal/streams/writable:350:26)
+    at Transform._read (node:internal/streams/transform:202:5) {
+  code: 'ERR_CHECKSUM_MISMATCH'
+}

@@ -35,3 +35,26 @@ Read this first when picking the run back up. Only add rows. **Isolated copies, 
 | 2026-11-01 22:24 | API-10 | Completed | Pass | branch touches nothing outside autobyteus-web/tickets; no 356 names in server/contracts (generic words pre-exist on base) |
 | 2026-11-01 22:24 | Cleanup | Completed |  | instances, relaunched V2, test-identity caches/prefs/launchd job/LS registrations, nodes+volumes+images, feed, release source, proxies, mount, keychain, checkout, run root removed; user caches identical; user nodes untouched |
 | 2026-11-01 22:24 | Round 1 | Completed | Fail | 86.1%; F-API-001 (sidebar '0 updated'), F-API-002 (native refusal: no relaunch, app without server); report + API-REV-001 written |
+| 2026-11-02 05:54 | Round 2 | Started |  | CRR-003 Pass on IR-002 (code aa096836d9, 6a94169f4f; review f1c4641b08). Run temp root /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/an356-api2.CVFjXO |
+| 2026-11-02 05:54 | API-00 | Started |  | r2: clean checkout f1c4641b08; install; V1 and V2 (version bumped) builds |
+| 2026-11-02 06:09 | API-00 | Completed | Pass | r2: V1 1.5.11-beta.10 and V2 1.5.11-beta.11 built from f1c4641b08; copies prepared, DR satisfied; feed up |
+| 2026-11-02 06:09 | API-02 | Started |  | r2: fresh profile: switch off check; feed none, switch on; busy Claude; feed good, Check |
+| 2026-11-02 06:13 | API-01 | Completed | Pass | r2 app part: switch off, V2 available, 0 zip GETs after 70 s, no automatic file. Node part reused |
+| 2026-11-02 06:13 | API-02 | Completed | Pass | r2: real automatic install via the attempt class; V2 relaunched isolated; AUTO_UPDATED; sidebar '1 updated' before and while open, gone after close (F-API-001 resolved); CR-C2 0 lines |
+| 2026-11-02 06:13 | API-03 | Completed | Pass | r2: Recorded 1; 1 resumed 0/0; 1 notice; Claude continued |
+| 2026-11-02 06:13 | API-02B | Started |  | idle automatic install on a fresh profile |
+| 2026-11-02 06:16 | API-02B | Completed | Pass | idle install: downloaded 05:14:53.15, server exit 54.08, Squirrel 'Download completed' 55.03, V1 quit 05:15:30.7, V2 health ~05:15:58; AUTO_UPDATED; isolated. Squirrel needs ~36 s; corrects round 1 O-1. 60 s quit bound margin ~23 s here |
+| 2026-11-02 06:16 | API-04 | Started |  | r2: fresh V1 copy, feed badsha |
+| 2026-11-02 06:18 | API-04 | Completed | Pass | r2: automaticFailure download, state message and row correct; next check -> zip GET again |
+| 2026-11-02 06:18 | API-05 | Started |  | r2: V1 on read-only image, feed good |
+| 2026-11-02 06:23 | API-05 | Checkpoint |  | r2 s1: refusal 0.49 s after the downloaded log, inside the start delay: cancelled, no stop; old process and server fine; message stays install; row ok. Sampling for the 'during' branch |
+| 2026-11-02 06:30 | API-05 | Checkpoint |  | r2 samples 2-9: all 'before' (9/9 with s1): refusal inside the start delay; recovery branch needs another trigger: API-05C broken package |
+| 2026-11-02 06:36 | API-05 | Completed | Pass | r2: read-only refusal 9/9 'before': no stop, no quitAndInstall, no ShipIt, server stays, recorded once as install, message stays install; after a restart row + no zip GET |
+| 2026-11-02 06:36 | API-05C | Completed | Pass | broken package (valid sha, signature fails DR): Squirrel refuses 38 s after the stop; 'relaunching this version' once; new pid + server healthy; failure row; no zip GET after. Relaunch took ~42 s to appear (O-3) |
+| 2026-11-02 06:36 | API-02C | Started |  | V1 throttled with taskpolicy -b to emulate a slower Mac: Squirrel vs the 60 s quit bound |
+| 2026-11-02 06:48 | API-02C | Checkpoint |  | throttled: quit bound fired while Squirrel worked -> install failure recorded, V2 blocked, old version relaunched, bundle unchanged. Measuring under a real load next |
+| 2026-11-02 06:57 | API-02C | Completed | Observed | throttled run: path (c) live |
+| 2026-11-02 06:57 | API-02D | Completed | Fail (F-API-003) | real build load, normal priority: bound fired 60.0 s after the stop; V2 blocked; old version relaunched; bundle unchanged |
+| 2026-11-02 06:57 | API-10 | Completed | Pass | r2: no 356 names server side; no node-path change since 31d38080fc |
+| 2026-11-02 06:57 | Cleanup | Completed |  | r2: all run state removed; user caches identical; user nodes untouched |
+| 2026-11-02 06:57 | Round 2 | Completed | Fail | 88.7%; F-API-001 and F-API-002 resolved; F-API-003 new; report + API-REV-002 written |

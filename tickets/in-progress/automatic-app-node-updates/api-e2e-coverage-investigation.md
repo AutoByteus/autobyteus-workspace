@@ -108,6 +108,38 @@ None planned. The real installer, real nodes and timed passes make these tempora
 - Windows/Linux installers: macOS only on this machine.
 - The hourly node pass by wall clock: the same pass code runs 2 minutes after a launch.
 
+## Round 2 (API-REV-002): IR-002
+
+- **Trigger:** code reviewer, CRR-003 Pass on IR-002.
+  - Code: `aa096836d9`, `6a94169f4f`.
+  - Handoff: `11b6d02c46`.
+  - Review: `f1c4641b08`, built from a clean checkout of it.
+- **What changed** (`git diff bc9e427f1c 6a94169f4f`):
+  - The sidebar counts from the store's `automaticOutcomeRows`.
+  - A new `AppUpdateInstallAttempt` owns the delay, the preparation and `quitAndInstall`. A failed automatic install is recorded once, then settled before recovery reads `isServerProcessGone()`.
+  - A later download rejection no longer replaces the install failure.
+  - Node path, record shape and shared contracts are untouched.
+- **Correction to round 1, checked against the code:** "/ requested" at 20:58:29.685 was Squirrel fetching the update (`MacUpdater.js`: `dispatchUpdateDownloaded`, then `nativeUpdater.checkForUpdates()`), not `quitAndInstall`. `stopServer` awaits the process exit, logged at 20:58:29.868. The refusal therefore landed during the preparation.
+- **Gap found in round 1's coverage:** the automatic install starts at `update-downloaded`, before Squirrel has its own copy. Round 1's only real install had a busy run (a 35 s stop), so Squirrel was long finished before `quitAndInstall`. With an idle app the stop is short, so `quitAndInstall` runs while Squirrel is still working, and the 60 s quit bound is armed during that time. New case API-02B.
+
+### Reuse decisions
+
+| Case | Decision | Why |
+| --- | --- | --- |
+| API-R2 | Reused IMP-09, IMP-10 and the IR-002 reruns in the handoff | Ran on the reviewed code; mutation-checked |
+| API-01 node part, API-06, API-07, API-08, API-09 | Reused from round 1 | `git diff --name-only 31d38080fc 6a94169f4f` touches no node path, record shape or contract |
+| API-01 app part | **Rerun** as the first step of API-02-r2 | Free: the same fresh profile |
+| API-02 | **Rerun** as `API-02-r2` | The install path now runs through the new attempt class; includes the sidebar check after a real automatic restart |
+| API-03 | **Rerun** as `API-03-r2` | Same journey; one paid haiku turn |
+| API-04 | **Rerun** as `API-04-r2` | The download rejection handler changed; a plain download failure must still be recorded and retried |
+| API-05 | **Rerun** as `API-05-r2` | F-API-002 recheck |
+| API-10 | **Rerun** as `API-10-r2` | A cheap diff and grep |
+
+### New cases
+
+- **API-02B (idle automatic install):** the same journey with no busy run; records the time from `update-downloaded` to quit and whether the quit bound or any error fires.
+- **API-05B (refusal during a long stop):** V1 on the read-only image with a busy Claude run, so the preparation lasts many seconds after the refusal. Recovery must wait for it, then relaunch once. The busy run is stopped and not resumed (FU-003, accepted).
+
 ## Investigation Decision
 
 - Proceed: `Yes`. Durable coverage changes: `No`. Reroute: `No`.
@@ -116,3 +148,8 @@ None planned. The real installer, real nodes and timed passes make these tempora
   - F-API-001: sidebar entry "0 updated".
   - F-API-002: recovery after a native refusal leaves the app without its server.
   - The real install ran safely as planned (relaunched V2 isolated, user caches identical).
+- After round 2 (API-REV-002):
+  - Result `Fail`, 88.7%. Failure-origin review requested.
+  - F-API-001 and F-API-002 resolved.
+  - F-API-003 new.
+  - API-05B not run; API-02C, API-02D and API-05C added.

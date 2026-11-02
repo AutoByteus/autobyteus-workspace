@@ -1,0 +1,21 @@
+# API-02-r2 relaunched V2 isolation 2026-11-02T05:12:55Z
+67329     1 <R>/copies/app/AutoByteus.app/Contents/MacOS/AutoByteus
+AUTOBYTEUS_ELECTRON_LAUNCH_PROFILE=e2e
+AUTOBYTEUS_ELECTRON_DATA_ROOT=<R>/data-app
+AUTOBYTEUS_ELECTRON_TEST_UPDATE_FEED_URL=http://127.0.0.1:47911
+AUTOBYTEUS_ELECTRON_SERVER_PORT=47921
+open files under ~/.autobyteus: 0
+open files under the run root: 56
+{"status":"ok","message":"Server is running"}
+## record
+{
+  "version": "1.5.11-beta.11",
+  "fromVersion": "1.5.11-beta.10",
+  "foundAt": "2026-11-02T05:11:10.346Z",
+  "read": false,
+  "handledVersion": "1.5.11-beta.11",
+  "handledAt": "2026-11-02T05:12:14.808Z",
+  "automatic": null,
+  "automaticFailure": null,
+  "outcome": "AUTO_UPDATED"
+}

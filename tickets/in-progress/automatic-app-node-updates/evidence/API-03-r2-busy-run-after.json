@@ -1,0 +1,12 @@
+{
+ "runId": "an356_busy_an356r2_busy_1793596262_78c3c7e2fa1b4dacbf7f65b6ebf945b8",
+ "notices": 1,
+ "noticeText": "The application restarted at 2026-11-02T05:12:17.325Z after an update to 1.5.11-beta.11.\\nYour previous turn was interrupted.\\nTool calls that were running have unknown results; check before repeating any of them.",
+ "isActive": true,
+ "error": null,
+ "last": [
+  "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"I understand. The application restarted during the previous command execution. Let me check if the sleep process is still running:\",\"media\":null,\"ts\":1793596340.47}",
+  "{\"kind\":\"tool_call\",\"invocationId\":\"toolu_01G2hc5EMFh48JPfrgpct7Zj\",\"role\":null,\"content\":\"\",\"toolName\":\"Bash\",\"toolArgs\":{\"command\":\"pgrep -f \\\"time.sleep(900)\\\" | head -5\"},\"toolResult\":\"(Bash completed with no output)\",\"toolError\":null,\"media\":null,\"ts\":1793596342.242}",
+  "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"The sleep process is not currently running. It was interrupted when the application restarted.\\n\\nAwaiting your next instruction on how to proceed.\",\"media\":null,\"ts\":1793596344.726}"
+ ]
+}
