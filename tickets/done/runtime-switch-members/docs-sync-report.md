@@ -3,7 +3,7 @@
 ## Scope
 
 - Ticket: `runtime-switch-members` (Project Task autobyteus-348); `task_size` and `architectural_risk` as carried by the route (reviewed: ARCH-REV-001, CRR-001…004 Pass, API-REV-001 then API-REV-002 Pass 92%, test-code review CRR-005 Pass)
-- Base: `origin/personal` @ `c952758a81`, not advanced since the ticket's base; docs verified on the branch head `8843594310`
+- Base: `origin/personal` @ `f7c71405e9` merged (autobyteus-97 also edits `projects.md` and `collaboration_model.md`, which this ticket does not); docs verified after the merge
 - Post-integration verification: `evidence/DEL-01-post-integration-checks.md`
 
 ## Why Docs Were Updated

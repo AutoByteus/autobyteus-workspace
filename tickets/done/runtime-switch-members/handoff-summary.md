@@ -17,7 +17,7 @@
 
 ## Integration
 
-- `origin/personal` @ `c952758a81` had not advanced beyond the ticket's base: no merge needed. Checks on the head, all Pass (`evidence/DEL-01-post-integration-checks.md`): server typecheck and build; full server unit suite 922 files / 7865 tests; built-server switch cases 17 tests; web typecheck, guards, `codegen:check`, 4152 web specs; old names gone; tracked `dist/` of the two stream-contract packages equals a fresh build.
+- Merged `origin/personal` @ `f7c71405e9` (autobyteus-97) into the branch, no conflicts, and reran: server typecheck and build; built-server cases 34 tests (switch cases plus autobyteus-97's copy-folder E2E); full unit suite 924 files, 7879 tests pass with one flaky unrelated failure (agent-package folder watcher; FU-C3), the first full pass on the same code being green at 7865 tests (`evidence/DEL-01-post-integration-checks.md`); web typecheck, guards, `codegen:check`, 4152 web specs; old names gone; tracked `dist/` of the two stream-contract packages equals a fresh build.
 
 ## Verification
 
@@ -29,5 +29,5 @@
 
 ## For The Solution Designer
 
-- Follow-ups, none sent: FU-C1 (the copy launch rule exists three times, a parity test guards it), FU-C2 (the stale `existing-run-model-config` browser probe fails 4 checks, same as at the base). Also still open from earlier tickets: autobyteus-316's FU-003/FU-004/FU-008 are items of this Task and need their status judged.
+- Follow-ups, none sent: FU-C3 (flaky watcher test), FU-C1 (the copy launch rule exists three times, a parity test guards it), FU-C2 (the stale `existing-run-model-config` browser probe fails 4 checks, same as at the base). Also still open from earlier tickets: autobyteus-316's FU-003/FU-004/FU-008 are items of this Task and need their status judged.
 - Residual risks: native, Grok and Antigravity scripted; a delegated copy's undo is unit-tested only; journal and memory-search reads of a switched member were not shown beyond the chat; the Electron shell was not run. The live runs used the real HOME and the signed-in Claude and Codex CLIs and added sessions to their histories (TESTING.md).

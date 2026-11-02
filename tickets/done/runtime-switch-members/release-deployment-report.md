@@ -14,8 +14,8 @@ Repository finalization into `origin/personal` only. No release, tag, publicatio
 
 ## Initial Delivery Integration Refresh
 
-- Latest tracked remote base `c952758a81`; advanced beyond the ticket's base: `No` (0 commits behind); integration `Already current`; checkpoint commit `Not needed`.
-- Post-integration executable checks rerun on the head: `Yes`, `Passed` (`evidence/DEL-01-post-integration-checks.md`). Delivery edits started on the current state: `Yes`. Blocker: none.
+- Base at the start of delivery: `origin/personal` @ `c952758a81` (not advanced). While delivery ran it advanced to `f7c71405e9` (autobyteus-97, delegated copies in the Task's Project folder, which touches copy admission and one file this ticket also changed). Integrated by `Merge` (`b8ef588aa5`, no conflicts); checkpoint commit `Not needed`.
+- Post-integration executable checks rerun on the merged state: `Yes` (`evidence/DEL-01-post-integration-checks.md`): typecheck, build, 34 built-server E2E tests including autobyteus-97's, web checks all pass. The full server unit suite has one flaky unrelated failure (agent-package folder watcher, 1 of 3 isolated runs; FU-C3); the first full pass on the same code was green (7865 tests). Result: `Passed` with that recorded exception. Blocker: none.
 
 ## Verification
 
@@ -32,7 +32,7 @@ Repository finalization into `origin/personal` only. No release, tag, publicatio
 | AC-009 old names gone | not proven by API/E2E | I ran the grep (no hit outside tickets and `dist/`) and `codegen:check` (current) | Proven by delivery |
 | AC-010 | R0, DCP-001..005, RSM-06 | model-only save of a stopped copy writes no marker | Proven (the stale probe `existing-run-model-config` fails 4 checks as at the base: FU-C2) |
 
-- More evidence requested: `None`; user check needed: `No`. Re-verification after later re-integration: `Not needed` unless `origin/personal` moves before the push.
+- More evidence requested: `None`; user check needed: `No`. Re-verification after re-integration: done (above).
 
 ## Release Decision
 
