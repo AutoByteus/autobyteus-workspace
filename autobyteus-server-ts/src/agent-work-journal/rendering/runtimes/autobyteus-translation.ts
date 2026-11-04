@@ -111,15 +111,6 @@ const readFile: BuiltInConverter = (call, result) => {
     : read);
 };
 
-/**
- * Recorded history: `read_media_file` was removed (autobyteus-328; read_file reads media now), but runs recorded before
- * keep their calls, rendered as the media marker.
- */
-const readMediaFile: BuiltInConverter = (call, result) => convertedCommandLine(
-  `cat ${shellWord(asText(call.args.file_path) ?? "(path not recorded)")}`,
-  mediaReadRecorded(result) ?? normalized(result),
-);
-
 const readUrl: BuiltInConverter = (call, result) =>
   convertedCommandLine(curlCommand(asText(call.args.url)), normalized(result));
 
@@ -204,7 +195,6 @@ export const autobyteusTranslation: RuntimeTranslation = Object.freeze({
     ["write_file", writeFile],
     ["edit_file", editFile],
     ["search_web", searchWeb],
-    ["read_media_file", readMediaFile],
     ["get_process_output", processOutput],
     ["stop_background_process", stopProcess],
     ["replace_in_file", replaceInFile],

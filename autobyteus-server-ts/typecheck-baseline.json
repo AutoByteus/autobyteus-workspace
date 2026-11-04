@@ -157,7 +157,7 @@
   "tests/unit/agent-execution/backends/autobyteus/application-agent-tools/application-agent-tool.test.ts": 1,
   "tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts": 11,
   "tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts": 3,
-  "tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.test.ts": 3,
+  "tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.test.ts": 2,
   "tests/unit/agent-execution/backends/autobyteus/native-workspace-resolution.test.ts": 2,
   "tests/unit/agent-execution/backends/claude/backend/claude-session-bootstrapper.test.ts": 2,
   "tests/unit/agent-execution/backends/claude/claude-workspace-skill-materializer.test.ts": 1,

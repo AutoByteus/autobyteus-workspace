@@ -260,7 +260,7 @@ describe("AutoByteus (contract §4, §6)", () => {
       .toEqual(["Command: sleep 99 → timed out"]);
   });
 
-  it("start_background_process, read_file (numbered and not, and media), read_media_file (recorded history), read_url", () => {
+  it("start_background_process, read_file (numbered and not, and media), read_url", () => {
     expect(lines(autobyteus, "start_background_process", { command: "npm run dev", cwd: "/w" }, { pid: 11240, status: "running" }))
       .toEqual(["Command: npm run dev (in /w) (background) → started pid 11240"]);
     expect(lines(autobyteus, "read_file", { path: "/w/SKILL.md" }, "1: ---\n2: name: x")).toEqual([
@@ -275,9 +275,6 @@ describe("AutoByteus (contract §4, §6)", () => {
     expect(lines(autobyteus, "read_file", { path: "/w/p.png" }, null,
       "The selected model does not support image input. The image file was not loaded.")[0])
       .toBe("Command: cat -n /w/p.png → failed: The selected model does not support image input. The image file was not loaded.");
-    // Recorded history: runs from before autobyteus-328 keep their read_media_file calls.
-    expect(lines(autobyteus, "read_media_file", { file_path: "/w/p.png" }, { uri: "/w/p.png", fileType: "image" })).toEqual([
-      "Command: cat /w/p.png → ok", "           [image, not reproduced]"]);
     expect(lines(autobyteus, "read_url", { url: "https://a.b", output_format: "text" }, "page")[0]).toBe("Command: curl https://a.b → ok");
   });
 

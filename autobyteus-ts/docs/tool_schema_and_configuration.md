@@ -150,10 +150,7 @@ executables) when it contains a NUL byte and is not valid UTF-8. Otherwise those
 bytes are decoded as UTF-8 text exactly as before, including text with stray NUL
 bytes such as build logs. A binary file with no NUL byte at all (rare; 2 of 400
 sampled PDFs) is still decoded as text, and a UTF-16 file that starts with a
-byte-order mark is refused. The separate
-`read_media_file` tool was removed; a stored definition that still names it
-starts as described below and reads media through `read_file`, which every
-native agent has.
+byte-order mark is refused.
 
 Agent definitions persist tool names as strings. Existing configurations are
 not rewritten when a registered tool is removed: the normal AutoByteus resolver

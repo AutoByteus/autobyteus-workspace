@@ -1,0 +1,103 @@
+// TEMPORARY PROBE (autobyteus-381 API-07). Not committed; a copy is kept in the ticket's evidence.
+// A run recorded before v1.5.11 with read_media_file calls: one closed segment and an open file.
+// PHASE=base   (run with fe351591f2's autobyteus-translation.ts): build the run folder and render its journal.
+// PHASE=reuse  (HEAD): ensureCurrent with no raw change; the journal folder must be byte-identical.
+// PHASE=grow   (HEAD): the run continues (a new turn on the open file); the closed file must stay byte-identical.
+// PHASE=rebuild (HEAD): ensureCurrent({ regenerate: true }) (memory search's Rebuild).
+import fs from "node:fs";
+import path from "node:path";
+import { describe, expect, it } from "vitest";
+import { RuntimeKind } from "../../src/runtime-management/runtime-kind-enum.js";
+import { WorkJournalService } from "../../src/agent-work-journal/services/work-journal-service.js";
+import { makeJournalsCurrent, rawTraceFingerprint } from "../../src/memory-search/pipeline/journals-step.js";
+
+const DIR = process.env.API07_DIR!;
+const PHASE = process.env.API07_PHASE!;
+const runDir = path.join(DIR, "agents", "run_media_1");
+const journalDir = path.join(runDir, "work_journal");
+const target = { runId: "run_media_1", memoryDir: runDir, runtimeKind: RuntimeKind.AUTOBYTEUS };
+const snapshot = () => Object.fromEntries(fs.readdirSync(journalDir).sort()
+  .map((name) => [name, fs.readFileSync(path.join(journalDir, name), "utf-8")]));
+const save = (label: string) => fs.writeFileSync(path.join(DIR, `snapshot-${label}.json`), JSON.stringify(snapshot(), null, 1));
+const load = (label: string) => JSON.parse(fs.readFileSync(path.join(DIR, `snapshot-${label}.json`), "utf-8")) as Record<string, string>;
+
+let seq = 0;
+const rec = (turn: string, fields: Record<string, unknown>) => {
+  seq += 1;
+  return { id: `rt_${String(seq).padStart(5, "0")}`, seq, ts: 1790056800 + seq, turn_id: turn, ...fields };
+};
+const mediaTurn = (turn: string, file: string) => [
+  rec(turn, { trace_type: "user", content: `What is in ${file}?` }),
+  rec(turn, { trace_type: "tool_call", tool_name: "read_media_file", tool_call_id: `${turn}_c1`, tool_args: { file_path: file } }),
+  rec(turn, { trace_type: "tool_result", tool_name: "read_media_file", tool_call_id: `${turn}_c1`,
+    tool_result: { uri: `file://${file}`, fileType: "image", fileName: path.basename(file), metadata: { mime: "image/png", size: 2900 } } }),
+  rec(turn, { trace_type: "assistant", content: "A parcel." }),
+];
+const jsonl = (records: unknown[]) => records.map((r) => `${JSON.stringify(r)}\n`).join("");
+
+describe(`API-07 ${PHASE}`, () => {
+  it("runs the phase", async () => {
+    const service = new WorkJournalService();
+    if (PHASE === "base") {
+      fs.mkdirSync(runDir, { recursive: true });
+      const closed = mediaTurn("t1", "/work/shipping/images/parcel.png");
+      fs.writeFileSync(path.join(runDir, "raw_traces_000001.jsonl"), jsonl(closed));
+      fs.writeFileSync(path.join(runDir, "raw_traces_manifest.json"), JSON.stringify({
+        schema_version: 1, next_segment_index: 2,
+        segments: [{ index: 1, file_name: "raw_traces_000001.jsonl", boundary_type: "provider_compaction_boundary",
+          boundary_key: "boundary-1", boundary_trace_id: null, runtime_kind: "autobyteus", source_event: null,
+          archived_at: 1790056800, first_trace_id: null, last_trace_id: null, first_ts: 1790056800, last_ts: 1790056800,
+          record_count: closed.length, status: "complete" }],
+      }));
+      fs.writeFileSync(path.join(runDir, "raw_traces_active.jsonl"), jsonl(mediaTurn("t2", "/work/shipping/images/label.png")));
+      await service.ensureCurrent(target);
+      save("base");
+      // What memory search stored when it indexed this run on the old build.
+      fs.writeFileSync(path.join(DIR, "fingerprint-base.txt"), rawTraceFingerprint(runDir, service.rendererRevision));
+      return;
+    }
+    const base = load("base");
+    if (PHASE === "memsearch") {
+      // Memory search catch-up on the new build over the already-indexed old run (real trigger).
+      const stored = fs.readFileSync(path.join(DIR, "fingerprint-base.txt"), "utf-8");
+      const run = { runKey: "agents/run_media_1", runId: "run_media_1", memoryDir: runDir, agentName: "probe", teamName: null,
+        memberName: null, orgName: null, runtimeKind: RuntimeKind.AUTOBYTEUS } as never;
+      const kept = await makeJournalsCurrent(service, [{ run, storedFingerprint: stored }], () => {}, () => false, false);
+      save("memsearch");
+      fs.writeFileSync(path.join(DIR, "memsearch-kept.txt"), JSON.stringify([...kept]));
+      expect(rawTraceFingerprint(runDir, service.rendererRevision)).toBe(stored);
+      expect(kept.size).toBe(0);
+      expect(snapshot()).toEqual(base);
+      return;
+    }
+    if (PHASE === "reuse") {
+      // Direct ensureCurrent with no raw change (no real caller does this for an idle run).
+      await service.ensureCurrent(target);
+      save("reuse");
+      expect(snapshot()["work_journal_000001.md"]).toBe(base["work_journal_000001.md"]);
+      return;
+    }
+    if (PHASE === "reuse-strict") {
+      await service.ensureCurrent(target);
+      save("reuse");
+      expect(snapshot()).toEqual(base);
+      return;
+    }
+    if (PHASE === "grow") {
+      seq = 100;
+      fs.appendFileSync(path.join(runDir, "raw_traces_active.jsonl"), jsonl([
+        rec("t3", { trace_type: "user", content: "Thanks." }), rec("t3", { trace_type: "assistant", content: "You're welcome." })]));
+      await service.ensureCurrent(target);
+      save("grow");
+      expect(snapshot()["work_journal_000001.md"]).toBe(base["work_journal_000001.md"]);
+      return;
+    }
+    if (PHASE === "rebuild") {
+      await service.ensureCurrent(target, { regenerate: true });
+      save("rebuild");
+      expect(snapshot()["work_journal_000001.md"]).toContain('Tool: read_media_file file_path="/work/shipping/images/parcel.png" → ok');
+      return;
+    }
+    throw new Error(`unknown phase ${PHASE}`);
+  });
+});
