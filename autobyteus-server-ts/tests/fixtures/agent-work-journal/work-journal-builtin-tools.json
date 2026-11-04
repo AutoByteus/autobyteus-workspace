@@ -44,8 +44,7 @@
     "read_url": "Command",
     "write_file": "Write file",
     "edit_file": "Edit file",
-    "search_web": "Search web",
-    "read_media_file": "Command"
+    "search_web": "Search web"
   },
   "_runtime_only": {
     "claude_agent_sdk": {

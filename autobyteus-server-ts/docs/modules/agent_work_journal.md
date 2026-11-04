@@ -200,8 +200,7 @@ Outcomes: `ok` (`ok (note)`), `delivered` (a message the platform accepted), `ex
 
 - The platform table is keyed by string literals, not by the tools' name constants: a journal of an
   earlier run keeps the name the tool had then, so it also lists recorded-history names
-  (`create_or_update_task`, `create_or_update_project`, `manage_task`). AutoByteus's removed
-  `read_media_file` keeps its media marker in its own table.
+  (`create_or_update_task`, `create_or_update_project`, `manage_task`).
 - A message a recipient refused prints `failed: <the platform's message>`; the outcome is read from
   the result (or from the call's error on Antigravity). A message call recorded with no recipient
   prints `Message to (recipient not recorded)`.
@@ -242,6 +241,10 @@ The journal is derived, so a change of wording is a revision, not a migration:
    Measured on a copy of a real node when the vocabulary was introduced: 82% of journal files changed, entry
    counts stayed identical, about 22 minutes of card embedding, +0.5% index size (the file may keep free
    pages; the product does not vacuum).
+
+Removing the converter of a tool that no longer exists needs no revision: it changes only how that tool's
+older calls read when their file is rendered again for another reason (they fall to the generic tool line),
+and every file stays internally consistent.
 
 ## Boundaries To Preserve
 
