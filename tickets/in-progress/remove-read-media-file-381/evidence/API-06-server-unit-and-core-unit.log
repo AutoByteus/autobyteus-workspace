@@ -1,0 +1,36 @@
+# API-06 — commit 67ed4d9e03; clean env (env -i PATH HOME=<fresh temp> TMPDIR), node v22.23.1, macOS 26.5.2 arm64
+# Look for: server 'Test Files  925 passed | 5 skipped (930)', exit=0; the agent-work-journal and resolver files listed ✓; core 'Test Files' line and exit=0
+# Note: a first server attempt at 13:39Z was stopped by my own 10-minute background limit before any result (not a test outcome); the run below is the complete one.
+
+## pnpm -C autobyteus-server-ts test:unit (started 2026-11-04T13:49:02Z approx)
+ ✓ tests/unit/memory-search/memory-search.test.ts (21 tests) 1079ms
+ ✓ tests/agent-work-journal/rendering/work-journal-file-renderer.test.ts (23 tests) 15ms
+ ✓ tests/agent-work-journal/rendering/runtime-translations.test.ts (32 tests) 14ms
+ ✓ tests/agent-work-journal/services/work-journal-run-updater.test.ts (6 tests) 89ms
+ ✓ tests/agent-work-journal/services/work-journal-service.test.ts (15 tests) 85ms
+ ✓ tests/unit/memory-search/memory-run-discovery.test.ts (6 tests) 49ms
+ ✓ tests/unit/memory-search/memory-search-index-units.test.ts (12 tests) 10ms
+ ✓ tests/agent-work-journal/services/work-journal-unswitched-identity.test.ts (6 tests) 51ms
+ ✓ tests/agent-work-journal/services/work-journal-reading.test.ts (5 tests) 46ms
+ ✓ tests/agent-work-journal/rendering/platform-tool-converters.test.ts (14 tests) 10ms
+ ✓ tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.test.ts (8 tests) 11ms
+ ✓ tests/unit/memory-search/memory-search-evaluation.test.ts (3 tests) 10ms
+ ✓ tests/agent-work-journal/rendering/neutral-vocabulary.test.ts (15 tests) 9ms
+ ✓ tests/agent-work-journal/rendering/skill-load.test.ts (37 tests) 5ms
+ ✓ tests/agent-work-journal/rendering/rendering-building-blocks.test.ts (10 tests) 4ms
+ ✓ tests/unit/memory-search/memory-search-store.test.ts (2 tests) 15ms
+ ✓ tests/agent-work-journal/rendering/tool-call-line.test.ts (7 tests) 4ms
+ ✓ tests/agent-work-journal/rendering/unchanged-lines.test.ts (5 tests) 8ms
+ ✓ tests/agent-work-journal/rendering/platform-completeness.test.ts (3 tests) 5ms
+failing files (lines starting ' ❯ ' or ' × ' or ' FAIL '): 0
+ Test Files  925 passed | 5 skipped (930)
+      Tests  7879 passed | 9 skipped (7888)
+   Duration  643.41s (transform 15.81s, setup 8.91s, import 270.27s, tests 284.60s, environment 698ms)
+exit=0 seconds=645 HOME=/tmp/api06home-ZMSG
+
+## pnpm -C autobyteus-ts exec vitest run tests/unit (2026-11-04T14:00:42Z)
+exit=0
+ ✓ tests/unit/tools/file/read-file.test.ts (2 tests) 4ms
+ Test Files  311 passed (311)
+      Tests  2104 passed (2104)
+   Duration  12.01s (transform 8.78s, setup 3.69s, import 30.32s, tests 39.65s, environment 17ms)

@@ -1,0 +1,22 @@
+# API-08 — commit 67ed4d9e03, 2026-11-04T14:01:15Z; env -i PATH HOME=<fresh temp> TMPDIR RUN_LMSTUDIO_E2E=1 WORK_JOURNAL_E2E_EVIDENCE_DIR=<temp> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts --no-watch
+# LM Studio localhost:1234, model default qwen3.6-35b-a3b; before: No models are currently loaded.
+# Look for: '✓ … AutoByteus (native, LMSTUDIO)', 'Tests  1 passed | 3 skipped (4)' (Claude/Codex/Antigravity gates off), exit=0
+ ❯ tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts (4 tests | 1 failed | 3 skipped) 37351ms
+     × AutoByteus (native, LMSTUDIO): raw records on disk at TURN_COMPLETED; journal current 36995ms
+     ↓ Claude: journal current; /compact closes a journal file written once
+     ↓ Codex: journal current after the turn
+     ↓ Antigravity: journal current after the turn
+ FAIL  tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts > Work Journal on each live runtime > AutoByteus (native, LMSTUDIO): raw records on disk at TURN_COMPLETED; journal current
+AssertionError: autobyteus runtime errors: expected [ { …(6) } ] to deeply equal []
++     "details": "Error: Relative file paths require an explicit absolute 'base_dir'. Provide an absolute path or an absolute base_dir; relative paths are not resolved from the configured workspace, process cwd, or prior shell cd state.
++     "message": "Error executing tool 'read_file' (ID: 594310879): Error: Relative file paths require an explicit absolute 'base_dir'. Provide an absolute path or an absolute base_dir; relative paths are not resolved from the configured workspace, process cwd, or prior shell cd state.",
+ ❯ send tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts:182:79
+ ❯ runTask tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts:187:5
+ ❯ tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts:234:17
+ Test Files  1 failed (1)
+      Tests  1 failed | 3 skipped (4)
+   Duration  45.45s (transform 5.69s, setup 39ms, import 7.59s, tests 37.35s, environment 0ms)
+exit=1 seconds=47
+# loaded after the run: qwen/qwen3.6-35b-a3b    qwen/qwen3.6-35b-a3b    IDLE      20.43 GB    262144     4           LM Studio      Local     60m / 1h
+
+## journal evidence copied by the test (WORK_JOURNAL_E2E_EVIDENCE_DIR)
