@@ -19,7 +19,7 @@ const ANALYSIS_BY_KIND: Readonly<Record<MediaFileKind, string>> = Object.freeze(
  * to the next turn for the model to see. A missing or non-regular file, an empty file, and a kind the model marks
  * `unsupported` are refused; `unknown` loads.
  */
-export async function readMediaFileAsContextFile(
+export async function readMediaAsContextFile(
   context: MediaReadContext,
   resolvedPath: string,
   kind: MediaFileKind,

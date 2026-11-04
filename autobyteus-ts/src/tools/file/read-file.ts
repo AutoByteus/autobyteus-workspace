@@ -6,7 +6,7 @@ import { defaultToolRegistry } from '../registry/tool-registry.js';
 import { ParameterSchema, ParameterDefinition, ParameterType } from '../../utils/parameter-schema.js';
 import { addFileToolPathParameters } from './file-tool-schema.js';
 import { resolveFileToolPath } from './workspace-path-utils.js';
-import { readMediaFileAsContextFile, type MediaReadContext } from './read-file-media.js';
+import { readMediaAsContextFile, type MediaReadContext } from './read-file-media.js';
 import type { ContextFile } from '../../agent/message/context-file.js';
 import { getMediaFileKindFromPath } from '../../utils/media-file-kind.js';
 
@@ -74,7 +74,7 @@ export async function readFile(
           'so it was not loaded. Call read_file again without start_line and end_line, and do not claim to have inspected the file before it is loaded.'
       );
     }
-    return readMediaFileAsContextFile(context, finalPath, mediaKind);
+    return readMediaAsContextFile(context, finalPath, mediaKind);
   }
 
   if (startLine !== undefined && startLine !== null && startLine < 1) {
