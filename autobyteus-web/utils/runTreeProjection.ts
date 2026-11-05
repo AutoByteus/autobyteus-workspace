@@ -11,8 +11,6 @@ import type {
   WorkspaceHistoryWorkspaceNode,
 } from '~/stores/runHistoryTypes';
 
-export const NO_WORKSPACE_HISTORY_ROOT = '__workspace_history_no_workspace__';
-
 export type ProjectionRunKnownStatus = 'ACTIVE' | 'IDLE' | 'ERROR';
 export type RunTreeRowSource = 'history' | 'draft' | 'local';
 export type ProjectionWorkspaceKind = 'filesystem' | 'temp';
@@ -46,7 +44,6 @@ export interface ProjectionWorkspaceDescriptor {
   workspaceRootPath: string;
   workspaceName: string;
   workspaceKind: ProjectionWorkspaceKind;
-  canRemoveFromWorkspaces: boolean;
 }
 
 export interface LocalRunSnapshot {
@@ -80,7 +77,6 @@ export interface RunTreeWorkspaceNode {
   workspaceRootPath: string;
   workspaceName: string;
   workspaceKind: ProjectionWorkspaceKind;
-  canRemoveFromWorkspaces: boolean;
   agents: RunTreeAgentNode[];
 }
 
@@ -102,7 +98,6 @@ interface MutableWorkspaceNode {
   workspaceRootPath: string;
   workspaceName: string;
   workspaceKind: ProjectionWorkspaceKind;
-  canRemoveFromWorkspaces: boolean;
   agentsById: Map<string, MutableAgentNode>;
 }
 
@@ -172,17 +167,16 @@ const ensureWorkspaceNode = (
   workspaceRootPath: string,
   workspaceName: string,
   workspaceKind: ProjectionWorkspaceKind,
-  canRemoveFromWorkspaces: boolean,
 ): MutableWorkspaceNode => {
   const existing = workspaceNodes.get(workspaceRootPath);
   if (existing) {
     if (!existing.workspaceName && workspaceName) {
       existing.workspaceName = workspaceName;
     }
-    if (existing.canRemoveFromWorkspaces && !canRemoveFromWorkspaces) {
+    // The Temp workspace's identity wins over a filesystem descriptor of the same root.
+    if (existing.workspaceKind === 'filesystem' && workspaceKind === 'temp') {
       existing.workspaceId = workspaceId;
       existing.workspaceKind = workspaceKind;
-      existing.canRemoveFromWorkspaces = canRemoveFromWorkspaces;
     }
     return existing;
   }
@@ -192,7 +186,6 @@ const ensureWorkspaceNode = (
     workspaceRootPath,
     workspaceName: workspaceName || FALLBACK_WORKSPACE_NAME,
     workspaceKind,
-    canRemoveFromWorkspaces,
     agentsById: new Map<string, MutableAgentNode>(),
   };
   workspaceNodes.set(workspaceRootPath, created);
@@ -240,7 +233,6 @@ export const buildRunTreeProjection = (input: BuildRunTreeProjectionInput): RunT
       normalizedRoot,
       workspace.workspaceName || FALLBACK_WORKSPACE_NAME,
       workspace.workspaceKind,
-      workspace.canRemoveFromWorkspaces,
     );
   }
 
@@ -332,7 +324,6 @@ export const buildRunTreeProjection = (input: BuildRunTreeProjectionInput): RunT
       workspaceRootPath: workspaceNode.workspaceRootPath,
       workspaceName: workspaceNode.workspaceName || FALLBACK_WORKSPACE_NAME,
       workspaceKind: workspaceNode.workspaceKind,
-      canRemoveFromWorkspaces: workspaceNode.canRemoveFromWorkspaces,
       agents,
     };
   });
@@ -347,13 +338,7 @@ export const buildRunTreeProjection = (input: BuildRunTreeProjectionInput): RunT
 };
 
 const historyRoot = (item: AgentOrgRunHistoryItem): string =>
-  normalizeRootPath(item.executionTree.rootOrg.defaultLaunchConfiguration.workspaceRootPath)
-    || NO_WORKSPACE_HISTORY_ROOT;
-
-const historyWorkspaceName = (root: string): string => {
-  if (root === NO_WORKSPACE_HISTORY_ROOT) return 'No Workspace';
-  return root.split('/').filter(Boolean).at(-1) || root;
-};
+  normalizeRootPath(item.executionTree.rootOrg.defaultLaunchConfiguration.workspaceRootPath);
 
 const compareOrgRuns = (left: AgentOrgRunHistoryItem, right: AgentOrgRunHistoryItem): number => {
   const byCreated = asTimestamp(right.createdAt) - asTimestamp(left.createdAt);
@@ -384,49 +369,27 @@ export const buildAgentOrgDefinitionGroups = (items: readonly AgentOrgRunHistory
 
 /**
  * Adds strictly decoded AgentOrg roots to the established Agent/Team workspace
- * nodes without interpreting the collaboration-history Team branch.
+ * nodes without interpreting the collaboration-history Team branch. Like Agent
+ * and Team runs, an Org run joins only the node of a workspace the app knows:
+ * the root of a removed (unregistered) folder makes no node, so the folder
+ * leaves the Workspaces view (workspace-tree-vs-chooser CR-001, REQ-002). Its
+ * runs stay in the Runs view and on disk.
  */
 export const projectWorkspaceHistoryByWorkspace = (
   establishedNodes: readonly RunTreeWorkspaceNode[],
   agentOrgHistory: readonly AgentOrgRunHistoryItem[],
 ): WorkspaceHistoryWorkspaceNode[] => {
-  const nodes = establishedNodes.map<WorkspaceHistoryWorkspaceNode>((node) => ({
-    ...node,
-    stableKey: `workspace:${normalizeRootPath(node.workspaceRootPath)}`,
-    agentOrgDefinitions: [],
-  }));
-  const nodeByRoot = new Map(nodes.map((node) => [normalizeRootPath(node.workspaceRootPath), node]));
   const itemsByRoot = new Map<string, AgentOrgRunHistoryItem[]>();
-
   for (const item of agentOrgHistory) {
     const root = historyRoot(item);
-    let node = nodeByRoot.get(root);
-    if (!node) {
-      node = {
-        stableKey: `workspace:${root}`,
-        workspaceId: `history:${root}`,
-        workspaceRootPath: root,
-        workspaceName: historyWorkspaceName(root),
-        workspaceKind: 'filesystem',
-        canRemoveFromWorkspaces: false,
-        agents: [],
-        agentOrgDefinitions: [],
-      };
-      nodes.push(node);
-      nodeByRoot.set(root, node);
-    }
-
     itemsByRoot.set(root, [...itemsByRoot.get(root) ?? [], item]);
   }
-
-  for (const node of nodes) {
-    node.agentOrgDefinitions = buildAgentOrgDefinitionGroups(itemsByRoot.get(normalizeRootPath(node.workspaceRootPath)) ?? []);
-  }
-
-  const establishedCount = establishedNodes.length;
-  const established = nodes.slice(0, establishedCount);
-  const historyOnly = nodes.slice(establishedCount).sort((left, right) =>
-    left.workspaceName.localeCompare(right.workspaceName)
-      || left.workspaceRootPath.localeCompare(right.workspaceRootPath));
-  return [...established, ...historyOnly];
+  return establishedNodes.map<WorkspaceHistoryWorkspaceNode>((node) => {
+    const root = normalizeRootPath(node.workspaceRootPath);
+    return {
+      ...node,
+      stableKey: `workspace:${root}`,
+      agentOrgDefinitions: buildAgentOrgDefinitionGroups(itemsByRoot.get(root) ?? []),
+    };
+  });
 };

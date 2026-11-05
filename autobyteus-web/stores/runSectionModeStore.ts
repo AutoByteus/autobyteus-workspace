@@ -2,8 +2,11 @@ import { defineStore } from 'pinia'
 import { ref, watch } from 'vue'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 
-/** projects-left-navigation (REQ-001): how the left panel's run section groups runs. */
-export type RunSectionMode = 'workspaces' | 'projects'
+/**
+ * How the left panel's run section shows the runs (workspace-tree-vs-chooser REQ-006): your runs with no grouping, by
+ * folder (the default), or by Project.
+ */
+export type RunSectionMode = 'runs' | 'workspaces' | 'projects'
 
 export const RUN_SECTION_MODE_STORAGE_PREFIX = 'autobyteus.leftPanel.runSectionMode.'
 
@@ -17,7 +20,11 @@ export const useRunSectionModeStore = defineStore('runSectionMode', () => {
   const node = useWindowNodeContextStore()
   const storageKey = () => `${RUN_SECTION_MODE_STORAGE_PREFIX}${node.entryId}`
   const mode = ref<RunSectionMode>('workspaces')
-  const read = () => { mode.value = storage()?.getItem(storageKey()) === 'projects' ? 'projects' : 'workspaces' }
+  // An unknown or missing value reads as the default view.
+  const read = () => {
+    const saved = storage()?.getItem(storageKey())
+    mode.value = saved === 'runs' || saved === 'projects' ? saved : 'workspaces'
+  }
   read()
   watch(() => node.entryId, read)
 

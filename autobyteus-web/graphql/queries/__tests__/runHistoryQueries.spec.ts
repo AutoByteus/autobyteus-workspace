@@ -41,7 +41,8 @@ describe('ListWorkspaceRunHistory query', () => {
     expect(standaloneRunsBlock).toContain('archivedAt');
     expect(standaloneRunsBlock).toContain('terminatedAt');
     expect(standaloneRunsBlock).toContain('status');
-    expect(standaloneRunsBlock).not.toContain('lastActivityAt');
+    // The server's last activity, derived at read time from memory files, never stored (workspace-tree-vs-chooser DS-005).
+    expect(standaloneRunsBlock).toContain('lastActivityAt');
     expect(standaloneRunsBlock).not.toContain('lastKnownStatus');
 
     expect(teamRunsBlock).toContain('createdAt');
@@ -49,7 +50,7 @@ describe('ListWorkspaceRunHistory query', () => {
     expect(teamRunsBlock).toContain('terminatedAt');
     expect(teamRunsBlock).toContain('isActive');
     expect(teamRunsBlock).toContain('rootTeam');
-    expect(teamRunsBlock).not.toContain('lastActivityAt');
+    expect(teamRunsBlock).toContain('lastActivityAt');
     expect(teamRunsBlock).not.toContain('lastKnownStatus');
     expect(teamRunsBlock).not.toContain('deleteLifecycle');
   });

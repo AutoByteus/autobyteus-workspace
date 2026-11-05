@@ -1,0 +1,6 @@
+# Clean-clone run of codex/workspace-tree-vs-chooser @ 6ec6e2d603 (/tmp/ab385-clone); full log 1826161 bytes, trimmed to summaries, skips and failures.
+ Test Files  701 passed (701)
+      Tests  5156 passed | 2 skipped (5158)
+   Start at  23:02:53
+   Duration  206.06s (transform 26.50s, setup 1344.04s, collect 145.38s, tests 70.71s, environment 109.00s, prepare 71.39s)
+exit=0

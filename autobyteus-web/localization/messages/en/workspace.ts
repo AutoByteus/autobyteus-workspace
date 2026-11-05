@@ -86,7 +86,6 @@ const messages = {
   "workspace.agentOrg.history.collapseRun": "Collapse {{name}} descendants",
   "workspace.agentOrg.history.executionHierarchy": "{{name}} execution hierarchy",
   "workspace.agentOrg.history.empty": "No Agent Org run history yet.",
-  "workspace.agentOrg.history.noWorkspace": "No workspace",
   "workspace.agentOrg.history.relativeNow": "now",
   "workspace.agentOrg.history.relativeMinutes": "{{count}}m",
   "workspace.agentOrg.history.relativeHours": "{{count}}h",

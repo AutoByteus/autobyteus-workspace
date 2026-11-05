@@ -1,0 +1,30 @@
+# Check: IMP-01
+# Command: cd autobyteus-server-ts && env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR="$TMPDIR" pnpm test:unit
+# Commit: 0d3c31c4ae
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28 via corepack; env -i PATH HOME=<fresh mktemp dir> TMPDIR (TESTING.md isolation)
+# Date: 2026-11-05 21:01-21:13 CET
+# Full output: IMP-01-server-unit.full.log.gz (gzip of the complete run)
+
+## Excerpt: the changed-area test files and the summary (no failures)
+test-owned exact retry receipt {"first":{"accepted":false,"code":"RUNTIME_COMMAND_FAILED","message":"Failed to terminate run for runtime 'codex_app_server': AggregateError: Codex exact thread cleanup failed."},"retry":{"accepted":true},"sameThread":"owned-thread-1","sameTurn":"owned-thread-1-turn","facts":[{"kind":"admitted"},{"kind":"forwarded","dispatchKind":"start_turn","turnId":"owned-thread-1-turn"},{"kind":"turn_associated","turnId":"owned-thread-1-turn"},{"kind":"interrupted","turnId":"owned-thread-1-turn"}]}
+stderr | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+stderr | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+stderr | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+stderr | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+ ✓ tests/unit/run-history/services/collaboration-root-history-public-projection.test.ts (12 tests) 2645ms
+stdout | tests/unit/api/graphql/run-history-window-schema.test.ts
+ ✓ tests/unit/api/graphql/run-history-window-schema.test.ts (5 tests) 59ms
+stdout | tests/unit/run-history/services/agent-run-history-service.test.ts
+stdout | tests/unit/run-history/services/agent-run-history-service.test.ts > AgentRunHistoryService > does not read metadata or project rows beyond the per-agent limit for catalog listing
+stdout | tests/unit/run-history/services/agent-run-history-service.test.ts > AgentRunHistoryService > does not read metadata or project rows beyond the per-agent limit for catalog listing
+ ✓ tests/unit/run-history/services/agent-run-history-service.test.ts (11 tests) 16ms
+ ✓ tests/unit/run-history/services/run-last-activity-reader.test.ts (10 tests) 21ms
+stderr | tests/unit/run-history/services/team-run-history-service.test.ts > TeamRunHistoryService current execution tree > projects history from the derived catalog plus exact current V2 execution tree
+stderr | tests/unit/run-history/services/team-run-history-service.test.ts > TeamRunHistoryService current execution tree > uses exact AgentRun status identity without address or display-name fallback
+ ✓ tests/unit/run-history/services/team-run-history-service.test.ts (7 tests) 8ms
+stdout | tests/unit/run-history/services/project-run-history-service.test.ts
+ Test Files  928 passed | 5 skipped (933)
+      Tests  7900 passed | 9 skipped (7909)
+   Start at  21:01:51
+   Duration  691.63s (transform 18.00s, setup 10.30s, import 302.14s, tests 293.54s, environment 646ms)
+

@@ -296,8 +296,9 @@ describe('typed navigation presentation equality', () => {
 
  it('retains unchanged authoritative Org rows by reference without serializing execution trees', () => {
   const row = parseAgentOrgHistoryItem(buildAgentOrgHistoryRow({rootRunId:'org-row', workspaceRootPath:'/workspace-a'}));
-  const input = { workspaceGroups: [], agentAvatarByDefinitionId: {}, allWorkspaces: [], workspacesById: {},
-    agentContexts: new Map(), teamContexts: [], agentOrgHistory: [row] };
+  const input = { workspaceGroups: [], agentAvatarByDefinitionId: {},
+    allWorkspaces: [{ workspaceId: 'ws-a', workspaceRootPath: '/workspace-a', name: 'workspace-a', kind: 'filesystem', isTemp: false }],
+    workspacesById: {}, agentContexts: new Map(), teamContexts: [], agentOrgHistory: [row] };
   const first = buildRunHistoryNavigationProjection(input);
   const serialization = vi.spyOn(JSON, 'stringify').mockImplementation(() => { throw new Error('Navigation serialized a domain tree'); });
   try {

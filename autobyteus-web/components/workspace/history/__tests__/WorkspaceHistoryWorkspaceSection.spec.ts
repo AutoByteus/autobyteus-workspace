@@ -74,7 +74,7 @@ const agentOrgDefinitionGroup = (): AgentOrgHistoryDefinitionGroup => {
       stableKey: 'agent_org_run:org-run',
       rootSubjectKind: 'agent_org',
       rootRunId: 'org-run',
-      createdAt: '2026-09-03T00:00:00.000Z',
+      createdAt: '2026-09-03T00:00:00.000Z', lastActivityAt: '2026-09-03T00:00:00.000Z',
       archivedAt: null,
       isActive: true,
       summary: 'Deliver current package',
@@ -148,7 +148,7 @@ const mountSubject = (options: {
   team.executionRows = buildRunHistoryTeamExecutionRows(team, liveContext);
 
   const actions = {
-    onRemoveWorkspace: vi.fn(), onCreateRun: vi.fn(), onSelectRun: vi.fn(),
+    onCreateRun: vi.fn(), onSelectRun: vi.fn(),
     onTerminateRun: vi.fn(), onArchiveRun: vi.fn(), onDeleteRun: vi.fn(),
     onSelectTeam: vi.fn(), onTerminateTeam: vi.fn(), onArchiveTeam: vi.fn(),
     onDeleteTeam: vi.fn(), onSelectTeamMember: vi.fn(), onOpenTeamRun: vi.fn(),
@@ -165,7 +165,7 @@ const mountSubject = (options: {
     isRunTerminating: () => false, isTeamTerminating: () => false,
     isRunDeleting: () => false, isTeamDeleting: () => false,
     isRunArchiving: () => false, isTeamArchiving: () => false,
-    isWorkspaceRemoving: () => false, isWorkspaceHistoryLoading: () => false,
+    isWorkspaceHistoryLoading: () => false,
     workspaceHistoryError: () => null, formatRelativeTime: () => 'now',
     isWorkspaceExpanded: () => true, toggleWorkspace: vi.fn(),
     isAgentExpanded: () => Boolean(options.agents?.length), toggleAgent: vi.fn(),
@@ -194,7 +194,7 @@ const mountSubject = (options: {
     props: {
       workspaceNode: {
         workspaceId: 'workspace:/ws/a', workspaceRootPath: '/ws/a', workspaceName: 'Workspace A',
-        workspaceKind: 'filesystem', canRemoveFromWorkspaces: false, agents: (options.agents ?? []) as any,
+        workspaceKind: 'filesystem', agents: (options.agents ?? []) as any,
         stableKey: 'workspace:/ws/a', agentOrgDefinitions: options.agentOrgDefinitions ?? [],
       },
       workspaceTeams: options.workspaceTeams ?? [team], workspaceTeamHistoryGroups: [], state,

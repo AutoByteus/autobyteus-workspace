@@ -5,6 +5,7 @@ import { nextTick, reactive } from 'vue';
 import WorkspaceAgentRunsTreePanel from '../WorkspaceAgentRunsTreePanel.vue';
 import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
 import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore';
+import { useRunSectionModeStore } from '~/stores/runSectionModeStore';
 import { taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBearingOrgFixture';
 
 const routerHarness = vi.hoisted(() => ({
@@ -73,7 +74,6 @@ const {
   agentTeamDefinitionStoreMock,
   workspaceCenterViewStoreMock,
   windowNodeContextStoreMock,
-  pickFolderPathMock,
   addToastMock,
 } = vi.hoisted(() => {
   const exactAddress = (value: string): string => value.startsWith('/') ? value : `/${value}`;
@@ -151,7 +151,6 @@ const {
     stableKey: workspace.stableKey ?? `workspace:${workspace.workspaceRootPath}`,
     workspaceId: workspace.workspaceId ?? workspaceIdFromRoot(workspace.workspaceRootPath),
     workspaceKind: workspace.workspaceKind ?? 'filesystem',
-    canRemoveFromWorkspaces: workspace.canRemoveFromWorkspaces ?? true,
     agentOrgDefinitions: workspace.agentOrgDefinitions ?? [],
   });
 
@@ -241,8 +240,8 @@ const {
       fetchTree: vi.fn().mockResolvedValue(undefined),
       loadWorkspaceCatalogForNavigation: vi.fn().mockResolvedValue(undefined),
       refreshTreeQuietly: vi.fn().mockResolvedValue(undefined),
+      setHistoryWindow: vi.fn(),
       fetchWorkspaceHistory: vi.fn().mockResolvedValue(undefined),
-      refreshWorkspaceHistoryQuietly: vi.fn().mockResolvedValue(undefined),
       pruneWorkspace: vi.fn(),
       getTreeNodes: vi.fn(() => state.nodes.map(normalizeWorkspaceNode)),
       getTeamNodes: vi.fn((workspaceRootPath?: string) => {
@@ -290,7 +289,6 @@ const {
       }),
       formatRelativeTime: vi.fn((iso: string) => (iso.includes('01:00') ? 'now' : '4h')),
       selectTreeRun: vi.fn().mockResolvedValue({ disposition: 'committed' }),
-      createWorkspace: vi.fn(async (rootPath: string) => rootPath),
       deleteRun: vi.fn().mockResolvedValue(true),
       deleteTeamRun: vi.fn().mockResolvedValue(true),
       archiveRun: vi.fn().mockResolvedValue(true),
@@ -351,7 +349,6 @@ const {
     windowNodeContextStoreMock: {
       isEmbeddedWindow: { __v_isRef: true, value: false },
     },
-    pickFolderPathMock: vi.fn().mockResolvedValue(null),
     addToastMock: vi.fn(),
   };
 });
@@ -393,10 +390,6 @@ vi.mock('~/stores/workspaceCenterViewStore', () => ({
 
 vi.mock('~/stores/windowNodeContextStore', () => ({
   useWindowNodeContextStore: () => windowNodeContextStoreMock,
-}));
-
-vi.mock('~/composables/useNativeFolderDialog', () => ({
-  pickFolderPath: pickFolderPathMock,
 }));
 
 vi.mock('~/composables/useToasts', () => ({
@@ -487,7 +480,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
       },
     ];
     windowNodeContextStoreMock.isEmbeddedWindow.value = false;
-    pickFolderPathMock.mockResolvedValue(null);
+    window.localStorage.clear();
     workspaceCenterViewStoreMock.showChat.mockReset();
     workspaceCenterViewStoreMock.showConfig.mockReset();
     delete (window as any).electronAPI;
@@ -501,6 +494,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     global: {
       stubs: {
         Icon: { template: '<span class="icon-stub" />' },
+        RunListPanel: { template: '<div data-test="run-list-panel-stub" />' },
         ...(!options.realConfirmationModal ? { ConfirmationModal: {
           props: ['show'],
           template: `
@@ -534,14 +528,6 @@ describe('WorkspaceAgentRunsTreePanel', () => {
       await workspaceRow.get('button').trigger('click');
       await flushPromises();
     }
-  };
-
-  const getRemoveWorkspaceButton = (wrapper: any) => {
-    const button = wrapper.findAll('button').find((candidate: any) =>
-      candidate.attributes('title')?.toLowerCase() === 'remove from workspaces',
-    );
-    expect(button).toBeTruthy();
-    return button!;
   };
 
   const expandAgentGroup = async (
@@ -585,7 +571,9 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     await flushPromises();
 
     expect(runHistoryStoreMock.loadWorkspaceCatalogForNavigation).toHaveBeenCalledTimes(1);
-    expect(workspaceStoreMock.fetchAllWorkspaces).toHaveBeenCalledTimes(1);
+    // The Workspaces view (the default) reads 6 runs per agent, set before the first read (DS-002).
+    expect(runHistoryStoreMock.setHistoryWindow).toHaveBeenCalledWith(6);
+    expect(runHistoryStoreMock.setHistoryWindow.mock.invocationCallOrder[0]).toBeLessThan(runHistoryStoreMock.fetchTree.mock.invocationCallOrder[0]);
     expect(runHistoryStoreMock.fetchTree).toHaveBeenCalledTimes(1);
     expect(runHistoryStoreMock.fetchWorkspaceHistory).not.toHaveBeenCalled();
   });
@@ -615,7 +603,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     expect(wrapper.find('[data-test="workspace-row"][data-workspace-root="/ws/a"]').attributes('aria-expanded')).toBe('true');
   });
 
-  it('renders scoped workspace history loading, error, and empty states', async () => {
+  it('renders scoped workspace history loading and error states', async () => {
     runHistoryState.workspaceHistoryLoadingById = { 'workspace:/ws/a': true };
     let wrapper = mountComponent();
     await flushPromises();
@@ -629,109 +617,61 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     await flushPromises();
     await expandWorkspace(wrapper);
     expect(wrapper.text()).toContain('Could not load workspace history.');
+  });
+
+  it('workspace-tree-vs-chooser VIS-014: no folder with a run shows the text-only Workspaces empty state', async () => {
+    runHistoryState.nodes = [];
+    const wrapper = mountComponent();
+    await flushPromises();
+    const empty = wrapper.get('[data-test="workspaces-tree-empty"]');
+    expect(empty.text()).toContain('No runs in any folder yet');
+    expect(empty.text()).toContain('A folder is listed here once it has a run. Start one with Chat and choose its folder.');
+    expect(empty.findAll('a, button')).toHaveLength(0);
+  });
+
+  it('workspace-tree-vs-chooser AC-010, AC-013: no folder row has a remove button; the section has no add form or add button', async () => {
+    const wrapper = mountComponent();
+    await flushPromises();
+    expect(wrapper.find('[data-test="workspace-row"]').exists()).toBe(true);
+    expect(wrapper.findAll('button').filter((button) => /remove/i.test(button.attributes('title') ?? ''))).toHaveLength(0);
+    expect(wrapper.find('[data-test="create-workspace-form"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="run-section-add-workspace"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="run-section-new-project"]').exists()).toBe(false);
+  });
+
+  it('workspace-tree-vs-chooser DS-001, DS-002: the header chooses the view; the read window follows it with one read per change', async () => {
+    const wrapper = mountComponent();
+    await flushPromises();
+    expect(wrapper.get('[data-test="run-section-title"]').text()).toBe('Workspaces');
+    expect(runHistoryStoreMock.fetchTree).toHaveBeenCalledTimes(1);
+
+    await wrapper.get('[data-test="run-section-view-menu"]').trigger('click');
+    await wrapper.get('[data-test="run-section-view-runs"]').trigger('click');
+    await flushPromises();
+    expect(wrapper.get('[data-test="run-section-title"]').text()).toBe('Runs');
+    expect(wrapper.find('[data-test="run-list-panel-stub"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="workspace-history-tree-scroll"]').exists()).toBe(false);
+    expect(runHistoryStoreMock.setHistoryWindow).toHaveBeenLastCalledWith(null);
+    expect(runHistoryStoreMock.fetchTree).toHaveBeenCalledTimes(2);
+
+    await wrapper.get('[data-test="run-section-view-menu"]').trigger('click');
+    await wrapper.get('[data-test="run-section-view-workspaces"]').trigger('click');
+    await flushPromises();
+    expect(runHistoryStoreMock.setHistoryWindow).toHaveBeenLastCalledWith(6);
+    expect(runHistoryStoreMock.fetchTree).toHaveBeenCalledTimes(3);
+    expect(wrapper.find('[data-test="workspace-row"]').exists()).toBe(true);
     wrapper.unmount();
-
-    runHistoryState.workspaceHistoryErrorById = {};
-    runHistoryState.nodes = [
-      {
-        workspaceRootPath: '/ws/a',
-        workspaceName: 'autobyteus_org',
-        agents: [],
-      },
-    ];
-    wrapper = mountComponent();
-    await flushPromises();
-    await expandWorkspace(wrapper);
-    expect(wrapper.text()).toContain('No task history in this workspace');
   });
 
-  it('opens workspace removal confirmation from the row action without expanding the row', async () => {
+  it('starts in the Runs view with every run read when that was the stored choice', async () => {
+    useRunSectionModeStore().setMode('runs');
     const wrapper = mountComponent();
     await flushPromises();
-    const vm = wrapper.vm as any;
-
-    await getRemoveWorkspaceButton(wrapper).trigger('click');
-    await flushPromises();
-
-    expect(vm.showRemoveWorkspaceConfirmation).toBe(true);
-    expect(runHistoryStoreMock.fetchWorkspaceHistory).not.toHaveBeenCalled();
-    expect(wrapper.find('[data-test="workspace-row"][data-workspace-root="/ws/a"]').attributes('aria-expanded')).toBe('false');
-  });
-
-  it('does not render remove action for non-removable temp workspace rows', async () => {
-    runHistoryState.nodes = [
-      {
-        workspaceId: 'temp_ws_default',
-        workspaceRootPath: '/tmp/autobyteus-temp',
-        workspaceName: 'Temp Workspace',
-        workspaceKind: 'temp',
-        canRemoveFromWorkspaces: false,
-        agents: [],
-      },
-    ];
-
-    const wrapper = mountComponent();
-    await flushPromises();
-
-    expect(wrapper.text()).toContain('Temp Workspace');
-    expect(wrapper.find('button[title="Remove from Workspaces"]').exists()).toBe(false);
-  });
-
-  it('cancels workspace removal without mutating workspace or history state', async () => {
-    const wrapper = mountComponent();
-    await flushPromises();
-    const vm = wrapper.vm as any;
-
-    await getRemoveWorkspaceButton(wrapper).trigger('click');
-    await flushPromises();
-    expect(vm.showRemoveWorkspaceConfirmation).toBe(true);
-
-    await wrapper.get('[data-test="delete-confirmation-cancel"]').trigger('click');
-    await flushPromises();
-
-    expect(workspaceStoreMock.removeWorkspace).not.toHaveBeenCalled();
-    expect(runHistoryStoreMock.pruneWorkspace).not.toHaveBeenCalled();
-    expect(vm.showRemoveWorkspaceConfirmation).toBe(false);
-    expect(wrapper.find('[data-test="workspace-row"][data-workspace-root="/ws/a"]').exists()).toBe(true);
-  });
-
-  it('confirms workspace removal and prunes history plus expansion state after success', async () => {
-    const wrapper = mountComponent();
-    await flushPromises();
-    await expandWorkspace(wrapper);
-    expect(wrapper.find('[data-test="workspace-row"][data-workspace-root="/ws/a"]').attributes('aria-expanded')).toBe('true');
-
-    await getRemoveWorkspaceButton(wrapper).trigger('click');
-    await flushPromises();
-    await wrapper.get('[data-test="delete-confirmation-confirm"]').trigger('click');
-    await flushPromises();
-
-    expect(workspaceStoreMock.removeWorkspace).toHaveBeenCalledWith('workspace:/ws/a');
-    expect(runHistoryStoreMock.pruneWorkspace).toHaveBeenCalledWith('workspace:/ws/a', '/ws/a');
-    expect(addToastMock).toHaveBeenCalledWith('removed', 'success');
-    expect((wrapper.vm as any).showRemoveWorkspaceConfirmation).toBe(false);
-    expect(wrapper.find('[data-test="workspace-row"][data-workspace-root="/ws/a"]').attributes('aria-expanded')).toBe('false');
-  });
-
-  it('keeps the workspace visible and reports an error when workspace removal fails', async () => {
-    workspaceStoreMock.removeWorkspace.mockRejectedValueOnce(
-      new Error('Stop active runs before removing this workspace.'),
-    );
-    const wrapper = mountComponent();
-    await flushPromises();
-
-    await getRemoveWorkspaceButton(wrapper).trigger('click');
-    await flushPromises();
-    await wrapper.get('[data-test="delete-confirmation-confirm"]').trigger('click');
-    await flushPromises();
-
-    expect(workspaceStoreMock.removeWorkspace).toHaveBeenCalledWith('workspace:/ws/a');
-    expect(runHistoryStoreMock.pruneWorkspace).not.toHaveBeenCalled();
-    expect(addToastMock).toHaveBeenCalledWith(
-      'Stop active runs before removing this workspace.',
-      'error',
-    );
-    expect(wrapper.find('[data-test="workspace-row"][data-workspace-root="/ws/a"]').exists()).toBe(true);
+    expect(runHistoryStoreMock.setHistoryWindow).toHaveBeenCalledWith(null);
+    expect(runHistoryStoreMock.setHistoryWindow).not.toHaveBeenCalledWith(6);
+    expect(runHistoryStoreMock.fetchTree).toHaveBeenCalledTimes(1);
+    expect(wrapper.find('[data-test="run-list-panel-stub"]').exists()).toBe(true);
+    wrapper.unmount();
   });
 
   it('shows groups after opening a workspace but keeps run histories collapsed', async () => {
@@ -842,11 +782,8 @@ describe('WorkspaceAgentRunsTreePanel', () => {
       await Promise.resolve();
       await vi.advanceTimersByTimeAsync(0);
 
-      expect(runHistoryStoreMock.refreshWorkspaceHistoryQuietly).not.toHaveBeenCalled();
-
       await vi.advanceTimersByTimeAsync(5000);
       expect(runHistoryStoreMock.refreshTreeQuietly).toHaveBeenCalledTimes(1);
-      expect(runHistoryStoreMock.refreshWorkspaceHistoryQuietly).not.toHaveBeenCalled();
       wrapper.unmount();
     } finally {
       vi.useRealTimers();
@@ -1701,77 +1638,6 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     expect(runHistoryStoreMock.archiveTeamRun).toHaveBeenCalledWith('team-1');
     expect(selectionStoreMock.selectRun).not.toHaveBeenCalled();
     expect(addToastMock).toHaveBeenCalledWith('Team history archived.', 'success');
-  });
-
-  it('creates workspace from inline input when user presses Enter', async () => {
-    const wrapper = mountComponent();
-    await flushPromises();
-    const vm = wrapper.vm as any;
-
-    await vm.onCreateWorkspace();
-    await flushPromises();
-    expect(vm.showCreateWorkspaceInline).toBe(true);
-    vm.workspacePathDraft = '/ws/new';
-    await vm.confirmCreateWorkspace();
-    await flushPromises();
-
-    expect(runHistoryStoreMock.createWorkspace).toHaveBeenCalledWith('/ws/new');
-    expect(workspaceStoreMock.fetchAllWorkspaces).toHaveBeenCalledTimes(2);
-    expect(vm.showCreateWorkspaceInline).toBe(false);
-  });
-
-  it('opens native folder picker on embedded electron and creates workspace from selected path', async () => {
-    windowNodeContextStoreMock.isEmbeddedWindow.value = true;
-    (window as any).electronAPI = {
-      showFolderDialog: vi.fn(),
-    };
-    pickFolderPathMock.mockResolvedValue('/ws/from-picker');
-
-    const wrapper = mountComponent();
-    await flushPromises();
-    const vm = wrapper.vm as any;
-
-    await vm.onCreateWorkspace();
-    await flushPromises();
-
-    expect(pickFolderPathMock).toHaveBeenCalledTimes(1);
-    expect(runHistoryStoreMock.createWorkspace).toHaveBeenCalledWith('/ws/from-picker');
-    expect(vm.showCreateWorkspaceInline).toBe(false);
-  });
-
-  it('does not create workspace when embedded electron picker is canceled', async () => {
-    windowNodeContextStoreMock.isEmbeddedWindow.value = true;
-    (window as any).electronAPI = {
-      showFolderDialog: vi.fn(),
-    };
-    pickFolderPathMock.mockResolvedValue(null);
-
-    const wrapper = mountComponent();
-    await flushPromises();
-    const vm = wrapper.vm as any;
-
-    await vm.onCreateWorkspace();
-    await flushPromises();
-
-    expect(pickFolderPathMock).toHaveBeenCalledTimes(1);
-    expect(runHistoryStoreMock.createWorkspace).not.toHaveBeenCalled();
-    expect(vm.showCreateWorkspaceInline).toBe(false);
-  });
-
-  it('closes inline add workspace input without creating workspace on cancel', async () => {
-    const wrapper = mountComponent();
-    await flushPromises();
-    const vm = wrapper.vm as any;
-
-    await vm.onCreateWorkspace();
-    await flushPromises();
-    expect(vm.showCreateWorkspaceInline).toBe(true);
-
-    vm.closeCreateWorkspaceInput();
-    await flushPromises();
-
-    expect(runHistoryStoreMock.createWorkspace).not.toHaveBeenCalled();
-    expect(vm.showCreateWorkspaceInline).toBe(false);
   });
 
   it('renders active status indicator for active runs', async () => {

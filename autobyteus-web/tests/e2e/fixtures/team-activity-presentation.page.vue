@@ -171,7 +171,6 @@ const workspaceNode: RunTreeWorkspaceNode = {
   workspaceRootPath: '/browser-fixture',
   workspaceName: 'Browser Fixture Workspace',
   workspaceKind: 'filesystem',
-  canRemoveFromWorkspaces: false,
   agents: [],
 };
 
@@ -184,7 +183,6 @@ const historyState: WorkspaceHistorySectionState = {
   isTeamDeleting: () => false,
   isRunArchiving: () => false,
   isTeamArchiving: () => false,
-  isWorkspaceRemoving: () => false,
   isWorkspaceHistoryLoading: () => false,
   workspaceHistoryError: () => null,
   formatRelativeTime: () => 'now',
@@ -220,7 +218,6 @@ const avatars: WorkspaceHistoryAvatarBindings = {
 };
 
 const actions: WorkspaceHistorySectionActions = {
-  onRemoveWorkspace: () => {},
   onCreateRun: () => {},
   onSelectRun: () => {},
   onTerminateRun: () => {},

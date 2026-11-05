@@ -170,13 +170,6 @@ export const useWorkspaceHistoryTreeState = (params: {
     setWorkspaceExpanded(workspaceId, !isWorkspaceExpanded(workspaceId));
   };
 
-  const setWorkspaceExpandedByRootPath = (workspaceRootPath: string, expanded: boolean): void => {
-    const target = normalizeRootPath(workspaceRootPath);
-    const node = workspaceNodes.value.find((candidate) =>
-      normalizeRootPath(candidate.workspaceRootPath) === target);
-    if (node) setWorkspaceExpanded(node.stableKey, expanded);
-  };
-
   const isAgentExpanded = (workspaceId: string, agentDefinitionId: string): boolean => {
     const key = agentKey(workspaceId, agentDefinitionId);
     return key ? expandedAgents.value[key] ?? false : false;
@@ -468,6 +461,15 @@ export const useWorkspaceHistoryTreeState = (params: {
     expandedTeamMembers.value = omitPrefix(expandedTeamMembers.value);
     expandedAgentOrgDefinitions.value = omitPrefix(expandedAgentOrgDefinitions.value);
   };
+  // A folder that leaves the list (removed in the chooser, or its last run archived: workspace-tree-vs-chooser DS-004)
+  // forgets its expansion, so it comes back collapsed.
+  watch(
+    () => workspaceNodes.value.map((node) => node.stableKey),
+    (keys, previousKeys) => {
+      const current = new Set(keys);
+      for (const key of previousKeys ?? []) if (!current.has(key)) pruneWorkspace(key);
+    },
+  );
 
   return {
     workspaceNodes,
@@ -476,7 +478,6 @@ export const useWorkspaceHistoryTreeState = (params: {
     workspaceTeamHistoryGroups,
     isWorkspaceExpanded,
     setWorkspaceExpanded,
-    setWorkspaceExpandedByRootPath,
     toggleWorkspace,
     isAgentExpanded,
     setAgentExpanded,
@@ -502,6 +503,5 @@ export const useWorkspaceHistoryTreeState = (params: {
     isAgentOrgRunSelected,
     isAgentOrgMemberSelected,
     expandedWorkspaceIds,
-    pruneWorkspace,
   };
 };

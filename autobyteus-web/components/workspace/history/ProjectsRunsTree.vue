@@ -36,15 +36,17 @@
         >{{ t('projectsTree.retry') }}</button>
       </div>
 
-      <div v-if="entries.length === 0" class="px-3 py-5 text-center" data-test="projects-tree-empty">
+      <!-- The empty states are text only (REQ-010, REQ-011): no Projects on the node (VIS-015), or none with a run (VIS-016). -->
+      <div v-if="projection.projectCount === 0" class="px-3 py-5 text-center" data-test="projects-tree-empty">
         <Icon icon="heroicons:briefcase" class="mx-auto h-6 w-6 text-gray-300" aria-hidden="true" />
         <p class="mt-2 text-sm font-medium text-gray-700">{{ t('projectsTree.emptyTitle') }}</p>
         <p class="mt-1 text-xs leading-5 text-gray-500">{{ t('projectsTree.emptyHelp') }}</p>
-        <NuxtLink
-          to="/projects/new"
-          class="mt-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
-          data-test="projects-tree-empty-new"
-        >{{ t('projectsTree.newProject') }}</NuxtLink>
+      </div>
+
+      <div v-else-if="entries.length === 0" class="px-3 py-5 text-center" data-test="projects-tree-no-runs">
+        <Icon icon="heroicons:briefcase" class="mx-auto h-6 w-6 text-gray-300" aria-hidden="true" />
+        <p class="mt-2 text-sm font-medium text-gray-700">{{ t('workspaceFolders.projectsNoRunsTitle') }}</p>
+        <p class="mt-1 text-xs leading-5 text-gray-500">{{ t('workspaceFolders.projectsNoRunsHelp') }}</p>
       </div>
 
       <div v-else class="space-y-1">

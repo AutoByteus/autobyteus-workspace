@@ -146,6 +146,8 @@ describe("AgentRunHistoryService", () => {
                 shouldConnectStream: false,
                 statusSource: "HISTORICAL_METADATA",
                 createdAt: "2026-03-26T08:00:00.000Z",
+                // No memory file yet: the run's last activity is its creation (DS-005).
+                lastActivityAt: "2026-03-26T08:00:00.000Z",
                 archivedAt: null,
                 terminatedAt: null,
                 hasCollaboration: false,
@@ -170,6 +172,8 @@ describe("AgentRunHistoryService", () => {
                 shouldConnectStream: false,
                 statusSource: "TERMINATED_METADATA",
                 createdAt: "2026-03-24T08:00:00.000Z",
+                // No memory file yet: the run's last activity is its creation (DS-005).
+                lastActivityAt: "2026-03-24T08:00:00.000Z",
                 archivedAt: null,
                 terminatedAt: "2026-03-24T09:00:00.000Z",
                 hasCollaboration: false,
@@ -237,6 +241,24 @@ describe("AgentRunHistoryService", () => {
     expect(projectionSpy).toHaveBeenCalledTimes(1);
     expect(projectionSpy).toHaveBeenCalledWith("run-newest");
     expect(readMetadata).not.toHaveBeenCalled();
+  });
+
+  it("keeps every run of each agent when the limit is null (workspace-tree-vs-chooser DS-002: the Runs view)", async () => {
+    const rows = ["2026-03-25", "2026-03-27", "2026-03-26", "2026-03-24", "2026-03-23", "2026-03-22", "2026-03-21", "2026-03-20"]
+      .map((day, index) => buildRow({ runId: `run-${index}`, createdAt: `${day}T08:00:00.000Z` }));
+    const service = new AgentRunHistoryService("/tmp/memory", {
+      catalogService: { listCatalogRows: vi.fn().mockResolvedValue(rows), archiveRun: vi.fn(), deleteRun: vi.fn() } as never,
+      statusProjectionService: new AgentRunStatusProjectionService({
+        agentRunManager: { getActiveRun: vi.fn().mockReturnValue(null) } as never,
+        metadataService: { readMetadata: vi.fn().mockResolvedValue(null) } as never,
+      }),
+      agentRunManager: {} as never,
+      metadataStore: {} as never,
+    });
+
+    const all = await service.listRunHistory(null);
+    expect(all[0]?.agents[0]?.runs.map((run) => run.runId)).toEqual(["run-1", "run-2", "run-0", "run-3", "run-4", "run-5", "run-6", "run-7"]);
+    expect((await service.listRunHistory())[0]?.agents[0]?.runs).toHaveLength(6);
   });
 
   it("uses catalog-list live overlays without metadata reads", async () => {

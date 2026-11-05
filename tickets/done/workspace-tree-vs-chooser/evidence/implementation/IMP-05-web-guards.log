@@ -1,0 +1,13 @@
+# Check: IMP-05
+# Command: cd autobyteus-web && env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR="$TMPDIR" pnpm -s guard:web-boundary; pnpm -s guard:localization-boundary; pnpm -s audit:localization-literals
+# Commit: worktree committed as 0d3c31c4ae (no web source changed after the run; see the handoff)
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28 via corepack; env -i PATH HOME=<fresh mktemp dir> TMPDIR (TESTING.md isolation)
+# Date: 2026-11-05 20:52 CET
+# Full output: this file
+
+## guard:web-boundary
+[guard:web-boundary] Passed.
+## guard:localization-boundary
+[guard:localization-boundary] Passed.
+## audit:localization-literals
+[audit:localization-literals] Passed with zero unresolved findings.

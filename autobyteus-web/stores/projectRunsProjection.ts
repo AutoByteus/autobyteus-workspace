@@ -33,7 +33,10 @@ export interface ProjectRunsEntry {
 export interface ProjectRunAncestry { projectId: string; groupKey: string }
 
 export interface ProjectRunsProjection {
+  /** The Projects the view lists: only those with a listed run (`projectHasListedRun`). */
   entries: ProjectRunsEntry[]
+  /** The node's Projects, listed or not: the view tells "no Projects" from "none with runs" by it. */
+  projectCount: number
   runAncestryById: Record<string, ProjectRunAncestry>
   teamAncestryById: Record<string, ProjectRunAncestry>
 }
@@ -61,11 +64,12 @@ export const projectSectionKey = (projectId: string): string => `project:${proje
  * the Project; the ancestry indexes say where each run is listed (its one Project), for the open-run reveal. Pure.
  */
 export const buildProjectRunsProjection = (input: ProjectRunsProjectionInput): ProjectRunsProjection => {
-  const projection: ProjectRunsProjection = { entries: [], runAncestryById: {}, teamAncestryById: {} }
+  const projection: ProjectRunsProjection = { entries: [], projectCount: input.projects.length, runAncestryById: {}, teamAncestryById: {} }
   for (const project of input.projects) {
     const snapshot = input.snapshots[project.projectId]
     if (!snapshot) continue
     const entry = buildProjectEntry(project, snapshot, input)
+    if (!projectHasListedRun(entry)) continue
     projection.entries.push(entry)
     const projectId = project.projectId
     entry.node.agents.forEach((agent) => agent.runs.forEach((run) =>
@@ -77,6 +81,13 @@ export const buildProjectRunsProjection = (input: ProjectRunsProjectionInput): P
   }
   return projection
 }
+
+/**
+ * The Projects view's rule (workspace-tree-vs-chooser REQ-009, DS-004): a Project is listed while it has a run the view
+ * lists: an Agent run that is not an unsent New chat draft, or a Team run. Its delegated work is shown under those runs.
+ */
+export const projectHasListedRun = (entry: Pick<ProjectRunsEntry, 'node' | 'teams'>): boolean =>
+  entry.node.agents.some((agent) => agent.runs.some((run) => run.source !== 'draft')) || entry.teams.length > 0
 
 const buildProjectEntry = (project: Project, snapshot: ProjectRunsSnapshot, input: ProjectRunsProjectionInput): ProjectRunsEntry => {
   const root = projectSectionKey(project.projectId)
@@ -118,7 +129,6 @@ const buildProjectEntry = (project: Project, snapshot: ProjectRunsSnapshot, inpu
     workspaceId: root,
     workspaceRootPath: root,
     workspaceName: project.name,
-    canRemoveFromWorkspaces: false,
     // No Org is started under a Project (autobyteus-353 DEC-004).
     agentOrgDefinitions: [],
   }

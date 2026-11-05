@@ -50,8 +50,8 @@ and AgentOrg roots.
 
 Workspace + agent operations:
 
-- `listWorkspaceRunHistory(limitPerAgent)` for global/default history grouping, such as recent-history style surfaces. It is not the authority for desktop top-level workspace rows.
-- `workspaceRunHistory(workspaceId, limitPerAgent)` for history under one visible workspace. The resolver resolves registered filesystem workspace ids through the workspace registry, resolves the fixed default temp workspace id through the temp workspace lifecycle, and rejects missing, unregistered, removed filesystem, or unrelated transient workspace ids.
+- `listWorkspaceRunHistory(limitPerAgent)` for global/default history grouping, such as recent-history style surfaces. It is not the authority for desktop top-level workspace rows. `limitPerAgent` keeps the newest runs of each agent in each folder (default 6); an explicit `null` keeps every run (the desktop's Runs view).
+- `workspaceRunHistory(workspaceId, limitPerAgent)` for history under one visible workspace (`null` as above). The resolver resolves registered filesystem workspace ids through the workspace registry, resolves the fixed default temp workspace id through the temp workspace lifecycle, and rejects missing, unregistered, removed filesystem, or unrelated transient workspace ids.
 - `getRunProjection`
 - `getAgentRunResumeConfig`
 - `agentRunModelOptions(agentRunId)`
@@ -106,6 +106,24 @@ the mixed collaboration-root reader):
 
 - `archiveStoredAgentOrgRun(orgRunId)`
 - `deleteStoredAgentOrgRun(orgRunId)`
+
+## Last Activity Of A Run
+
+Every Agent history item (`RunHistoryItem`), the workspace Team run item and the Team and Org collaboration root items
+(`last_activity_at`) carry `lastActivityAt: String!`: when the run was last active, its delegated work included. The
+desktop's Runs view orders by it. `RunLastActivityReader` (`src/run-history/services/run-last-activity-reader.ts`)
+derives it at read time and stores nothing:
+
+- an Agent run: the newest memory file of its own folder (`MemoryRunSummaryBuilder`), and, when it has a collaboration
+  package, of every delegated copy its root locates (`StandaloneRootLocationService.listAgents`);
+- a Team or Org run: the newest over every agent its execution tree locates (`TeamRunExecutionTreeLocationService`,
+  `AgentOrgExecutionTreeLocationService`), merged with `mergeMemoryAvailability`;
+- no memory file anywhere: its `createdAt`.
+
+A tree that cannot be read is logged (`RUN_LAST_ACTIVITY_TREE_UNREADABLE`) and keeps the run's own time; a folder whose
+memory cannot be read is logged (`RUN_LAST_ACTIVITY_MEMORY_UNREADABLE`) and skipped. Neither fails the history read. The
+default location services are built at first use, because they read the process run managers. The reader depends only
+on `memory-run-summary-builder.ts`, `memory-file-store.ts` and the three location services.
 
 ## Collaboration Root Package Readiness
 

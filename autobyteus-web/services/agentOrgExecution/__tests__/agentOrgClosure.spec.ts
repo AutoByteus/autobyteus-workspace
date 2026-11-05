@@ -15,7 +15,7 @@ type Closed = AgentOrgExecutionViewDto['closed_task_executions']
 
 const runFor = (closed: Closed): AgentOrgRunHistoryItem => {
   const tree = structuredClone(taskBearingView().execution_tree)
-  return { stableKey: 'agent_org_run:org-run', rootSubjectKind: 'agent_org', rootRunId: 'org-run', createdAt: tree.createdAt,
+  return { stableKey: 'agent_org_run:org-run', rootSubjectKind: 'agent_org', rootRunId: 'org-run', createdAt: tree.createdAt, lastActivityAt: tree.createdAt,
     archivedAt: null, isActive: false, summary: 'Delegating Org', executionTree: tree, closedTaskExecutions: closed }
 }
 const buildContext = (closed: Closed = []) => {
@@ -90,7 +90,7 @@ describe('Agent Org closed task executions', () => {
   })
 
   it('parses the history item closure and requires it', () => {
-    const raw = { root_subject_kind: 'agent_org', root_run_id: 'org-run', created_at: 'now', archived_at: null, is_active: false,
+    const raw = { root_subject_kind: 'agent_org', root_run_id: 'org-run', created_at: 'now', last_activity_at: 'now', archived_at: null, is_active: false,
       summary: 'Delegating Org', org: taskBearingView().execution_tree }
     expect(parseAgentOrgHistoryItem({ ...raw, closed_task_executions: [{ teamRunId: 'team-task' }] }).closedTaskExecutions)
       .toEqual([{ teamRunId: 'team-task' }])

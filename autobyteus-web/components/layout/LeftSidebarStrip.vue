@@ -107,9 +107,11 @@ import { isFeatureAvailableInRuntime } from '~/utils/mobileFeatureGates';
 import type { StripBehavior, StripActivation } from '~/utils/layout/responsiveLayoutPolicy';
 
 const { t } = useLocalization();
-// The run-tree entry keeps its tree icon in both modes (the Projects page entry has the briefcase); its name says the mode.
+// The run-section entry keeps its tree icon in every view (the Projects page entry has the briefcase); its name says the
+// view (workspace-tree-vs-chooser UXJ-001 step 3).
 const runSectionMode = useRunSectionModeStore();
-const runSectionLabel = computed(() => t(runSectionMode.mode === 'projects' ? 'shell.navigation.projects' : 'shell.navigation.workspaces'));
+const RUN_SECTION_LABELS = { runs: 'runList.title', workspaces: 'shell.navigation.workspaces', projects: 'shell.navigation.projects' } as const;
+const runSectionLabel = computed(() => t(RUN_SECTION_LABELS[runSectionMode.mode]));
 const {
   primaryNavItems,
   resolvePrimaryRoute,

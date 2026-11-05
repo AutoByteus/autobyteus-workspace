@@ -1,67 +1,11 @@
 <template>
+  <!-- The left panel's run section (workspace-tree-vs-chooser): one header choosing the view, then that view: your runs
+       (RunListPanel), by folder (the Workspaces tree) or by Project. A view only shows: no add actions, no folder X. -->
   <div class="workspace-history-panel flex h-full flex-col bg-white">
-    <div class="flex items-center justify-between border-t border-gray-200 px-3 py-2">
-      <RunSectionSwitch />
-      <!-- "+" adds what the shown mode lists: a workspace, or a Project (on the Projects page). -->
-      <button
-        type="button"
-        class="inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-md text-gray-500 transition-colors hover:bg-indigo-50 hover:text-indigo-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
-        :data-test="projectsMode ? 'run-section-new-project' : 'run-section-add-workspace'"
-        :title="headerAddLabel"
-        :aria-label="headerAddLabel"
-        @click="projectsMode ? router.push('/projects/new') : onCreateWorkspace()"
-      >
-        <Icon icon="heroicons:plus-20-solid" class="h-4 w-4" />
-      </button>
-    </div>
-
-    <form
-      v-if="showCreateWorkspaceInline && !projectsMode"
-      class="border-t border-gray-100 px-3 py-2"
-      data-test="create-workspace-form"
-      @submit.prevent="confirmCreateWorkspace"
-    >
-      <div class="space-y-2">
-        <input
-          id="workspace-path-input"
-          ref="workspacePathInputRef"
-          v-model="workspacePathDraft"
-          data-test="workspace-path-input"
-          type="text"
-          class="w-full rounded-md border border-gray-200 px-3 py-2 text-sm text-gray-900 focus:border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-200 disabled:cursor-not-allowed disabled:bg-gray-100"
-          :class="workspacePathError ? 'border-red-300 focus:border-red-300 focus:ring-red-200' : ''"
-          :placeholder="$t('workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.users_you_project')"
-          :disabled="creatingWorkspace"
-          @keydown.enter.prevent="confirmCreateWorkspace"
-          @keydown.esc.prevent="closeCreateWorkspaceInput"
-        >
-        <p v-if="workspacePathError" class="text-xs text-red-600">
-          {{ workspacePathError }}
-        </p>
-        <div class="flex items-center justify-end gap-2">
-          <button
-            data-test="cancel-create-workspace"
-            type="button"
-            class="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60"
-            :disabled="creatingWorkspace"
-            @click="closeCreateWorkspaceInput"
-          >
-            Cancel
-          </button>
-          <button
-            data-test="confirm-create-workspace"
-            type="submit"
-            class="rounded-md border border-indigo-200 bg-white px-3 py-1.5 text-xs font-medium text-indigo-700 transition-colors hover:bg-indigo-50 disabled:cursor-not-allowed disabled:opacity-60"
-            :disabled="creatingWorkspace"
-          >
-            {{ creatingWorkspace ? 'Adding...' : 'Add' }}
-          </button>
-        </div>
-      </div>
-    </form>
-
-    <div id="run-section-panel" ref="treeScrollRef" role="tabpanel" :aria-labelledby="`run-section-tab-${projectsMode ? 'projects' : 'workspaces'}`" class="min-h-0 flex-1 overflow-y-auto px-1 pb-2" data-test="workspace-history-tree-scroll">
-      <ProjectsRunsTree v-if="projectsMode" :state="sectionState" :avatars="sectionAvatarBindings" :actions="sectionActions" :run-shown="runShown" />
+    <RunSectionHeader />
+    <RunListPanel v-if="modeStore.mode === 'runs'" class="min-h-0 flex-1" :run-shown="runShown" @run-selected="forwardRunSelected" />
+    <div v-else id="run-section-panel" ref="treeScrollRef" role="region" aria-labelledby="run-section-title" class="min-h-0 flex-1 overflow-y-auto px-1 pb-2" data-test="workspace-history-tree-scroll">
+      <ProjectsRunsTree v-if="modeStore.mode === 'projects'" :state="sectionState" :avatars="sectionAvatarBindings" :actions="sectionActions" :run-shown="runShown" />
       <template v-else>
       <div v-if="runHistoryStore.loading" class="px-3 py-4 text-xs text-gray-500">{{ $t('workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.loading_task_history') }}</div>
 
@@ -72,10 +16,12 @@
         {{ runHistoryStore.agentOrgHistoryError }}
       </div>
 
-      <div
-        v-if="!runHistoryStore.loading && workspaceNodes.length === 0"
-        class="px-3 py-4 text-xs text-gray-500"
-      >{{ $t('workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.no_run_history_yet') }}</div>
+      <!-- A folder is listed only while it has a run (REQ-009); the chat chooser lists every folder (VIS-014). -->
+      <div v-if="!runHistoryStore.loading && workspaceNodes.length === 0" class="px-3 py-5 text-center" data-test="workspaces-tree-empty">
+        <Icon icon="heroicons:folder" class="mx-auto h-6 w-6 text-gray-300" aria-hidden="true" />
+        <p class="mt-2 text-sm font-medium text-gray-700">{{ t('workspaceFolders.emptyTitle') }}</p>
+        <p class="mt-1 text-xs leading-5 text-gray-500">{{ t('workspaceFolders.emptyHelp') }}</p>
+      </div>
 
       <div v-if="workspaceNodes.length > 0" class="space-y-1">
         <WorkspaceHistoryWorkspaceSection
@@ -113,37 +59,26 @@
       @confirm="confirmGroupArchive"
       @cancel="closeGroupArchiveConfirmation"
     />
-
-    <ConfirmationModal
-      :show="showRemoveWorkspaceConfirmation"
-      :title="$t('workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.remove_workspace_title')"
-      :message="removeConfirmationMessage"
-      :confirm-button-text="$t('workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.remove_workspace_confirm')"
-      variant="danger"
-      typography-size="large"
-      @confirm="confirmRemoveWorkspace"
-      @cancel="closeRemoveWorkspaceConfirmation"
-    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useRoute, useRouter } from 'vue-router';
 import { Icon } from '@iconify/vue';
 import ConfirmationModal from '~/components/common/ConfirmationModal.vue';
 import WorkspaceHistoryWorkspaceSection from '~/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue';
-import RunSectionSwitch from '~/components/workspace/history/RunSectionSwitch.vue';
+import RunSectionHeader from '~/components/workspace/history/RunSectionHeader.vue';
+import RunListPanel from '~/components/runList/RunListPanel.vue';
 import ProjectsRunsTree from '~/components/workspace/history/ProjectsRunsTree.vue';
-import { useRunSectionModeStore } from '~/stores/runSectionModeStore';
+import { useRunSectionModeStore, type RunSectionMode } from '~/stores/runSectionModeStore';
 import type {
   WorkspaceHistoryAvatarBindings,
   WorkspaceHistorySectionActions,
   WorkspaceHistorySectionState,
 } from '~/components/workspace/history/workspaceHistorySectionContracts';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
-import { useWorkspaceStore } from '~/stores/workspace';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentRunStore } from '~/stores/agentRunStore';
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
@@ -152,16 +87,12 @@ import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore';
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useAgentOrgDefinitionStore } from '~/stores/agentOrgDefinitionStore';
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
-import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { useToasts } from '~/composables/useToasts';
-import { pickFolderPath } from '~/composables/useNativeFolderDialog';
 import { useRunHistoryAvatarState } from '~/composables/useRunHistoryAvatarState';
 import { useWorkspaceHistorySelectionActions } from '~/composables/useWorkspaceHistorySelectionActions';
 import { useWorkspaceHistoryTreeState } from '~/composables/useWorkspaceHistoryTreeState';
 import { useRevealSelectedTreeRow } from '~/components/workspace/history/useRevealSelectedTreeRow';
 import { chatRouteRunId } from '~/services/workspace/workspaceNavigationService';
-import { useWorkspaceHistoryWorkspaceCreation } from '~/composables/useWorkspaceHistoryWorkspaceCreation';
-import { useWorkspaceHistoryWorkspaceRemoval } from '~/composables/useWorkspaceHistoryWorkspaceRemoval';
 import { useWorkspaceHistoryMutations } from '~/composables/useWorkspaceHistoryMutations';
 import { useWorkspaceHistoryGroupArchive } from '~/composables/useWorkspaceHistoryGroupArchive';
 import { useWorkspaceHistorySubjectActions } from '~/composables/useWorkspaceHistorySubjectActions';
@@ -179,7 +110,14 @@ const emit = defineEmits<{
   (e: 'run-selected', payload: { type: 'team'; runId: string }): void;
 }>();
 
+const forwardRunSelected = (payload: { type: 'agent' | 'team'; runId: string }): void => {
+  if (payload.type === 'agent') emit('run-selected', { type: 'agent', runId: payload.runId });
+  else emit('run-selected', { type: 'team', runId: payload.runId });
+};
+
 const HISTORY_REFRESH_INTERVAL_MS = 5000;
+/** The history read window per view (DS-002): every run for the Runs view (its fold and "Archive all older"), 6 otherwise. */
+const historyWindowOf = (mode: RunSectionMode): number | null => (mode === 'runs' ? null : 6);
 
 const runHistoryStore = useRunHistoryStore();
 const agentOrgRunStore = useAgentOrgRunStore();
@@ -187,7 +125,6 @@ const agentOrgContextsStore = useAgentOrgContextsStore();
 const route = useRoute() as ReturnType<typeof useRoute> | undefined;
 const router = useRouter();
 const runStart = useRunStart();
-const workspaceStore = useWorkspaceStore();
 const selectionStore = useAgentSelectionStore();
 const agentRunStore = useAgentRunStore();
 const teamRunStore = useAgentTeamRunStore();
@@ -195,13 +132,9 @@ const { stopPendingTeamIds } = storeToRefs(teamRunStore);
 const agentDefinitionStore = useAgentDefinitionStore();
 const agentTeamDefinitionStore = useAgentTeamDefinitionStore();
 const agentOrgDefinitionStore = useAgentOrgDefinitionStore();
-const windowNodeContextStore = useWindowNodeContextStore();
-const { isEmbeddedWindow } = storeToRefs(windowNodeContextStore);
 const { addToast } = useToasts();
 const { t } = useLocalization();
-const projectsMode = computed(() => useRunSectionModeStore().mode === 'projects');
-const headerAddLabel = computed(() => t(projectsMode.value ? 'projectsTree.newProject'
-  : 'workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.add_workspace'));
+const modeStore = useRunSectionModeStore();
 const addWorkspaceToast = (message: string, type: 'success' | 'error' | 'warning' | 'info'): void => {
   addToast(message, type === 'warning' ? 'info' : type);
 };
@@ -247,25 +180,6 @@ const {
   agentDefinitions: computed(() => agentDefinitionStore.agentDefinitions),
   teamDefinitions: computed(() => agentTeamDefinitionStore.agentTeamDefinitions),
   orgDefinitions: computed(() => agentOrgDefinitionStore.definitions),
-});
-
-const {
-  showCreateWorkspaceInline,
-  workspacePathDraft,
-  workspacePathError,
-  creatingWorkspace,
-  workspacePathInputRef,
-  onCreateWorkspace,
-  closeCreateWorkspaceInput,
-  confirmCreateWorkspace,
-} = useWorkspaceHistoryWorkspaceCreation({
-  isEmbeddedWindow,
-  createWorkspace: (rootPath: string) => runHistoryStore.createWorkspace(rootPath),
-  fetchAllWorkspaces: () => workspaceStore.fetchAllWorkspaces(),
-  pickFolderPath,
-  onWorkspaceCreated: (workspaceRootPath: string) => {
-    treeState.setWorkspaceExpandedByRootPath(workspaceRootPath, true);
-  },
 });
 
 /** Leaves the Agent Org route when the open Org run was archived or deleted. */
@@ -335,23 +249,6 @@ const {
 });
 
 const {
-  removeConfirmationMessage,
-  removingWorkspaceIds,
-  showRemoveConfirmation: showRemoveWorkspaceConfirmation,
-  onRemoveWorkspace,
-  closeRemoveConfirmation: closeRemoveWorkspaceConfirmation,
-  confirmRemoveWorkspace,
-} = useWorkspaceHistoryWorkspaceRemoval({
-  removeWorkspace: (workspaceId: string) => workspaceStore.removeWorkspace(workspaceId),
-  pruneWorkspaceHistory: (workspaceId, rootPath) => runHistoryStore.pruneWorkspace(workspaceId, rootPath),
-  pruneWorkspaceExpansion: (workspaceId) => {
-    const node = treeState.workspaceNodes.value.find((candidate) => candidate.workspaceId === workspaceId);
-    treeState.pruneWorkspace(node?.stableKey ?? workspaceId);
-  },
-  addToast: addWorkspaceToast,
-});
-
-const {
   onSelectRun,
   onSelectTeam,
   onOpenTeamRun,
@@ -363,13 +260,7 @@ const {
   setTeamExpanded: treeState.setTeamExpanded,
   toggleTeam: treeState.toggleTeam,
   expandTeamMemberAncestors: treeState.expandTeamMemberAncestors,
-  emitRunSelected: (payload) => {
-    if (payload.type === 'agent') {
-      emit('run-selected', { type: 'agent', runId: payload.runId });
-      return;
-    }
-    emit('run-selected', { type: 'team', runId: payload.runId });
-  },
+  emitRunSelected: (payload) => forwardRunSelected(payload),
   startPresetChat: async (preset) => {
     await runStart.newChatInWorkspace(preset);
   },
@@ -408,7 +299,6 @@ const sectionState: WorkspaceHistorySectionState = {
   isTeamDeleting: (teamRunId: string) => Boolean(deletingTeamIds.value[teamRunId]),
   isRunArchiving: (runId: string) => Boolean(archivingRunIds.value[runId]),
   isTeamArchiving: (teamRunId: string) => Boolean(archivingTeamIds.value[teamRunId]),
-  isWorkspaceRemoving: (workspaceId: string) => Boolean(removingWorkspaceIds.value[workspaceId]),
   isWorkspaceHistoryLoading: (workspaceId: string) => Boolean(runHistoryStore.workspaceHistoryLoadingById[workspaceId]),
   workspaceHistoryError: (workspaceId: string) => runHistoryStore.workspaceHistoryErrorById[workspaceId] || null,
   formatRelativeTime: (isoTime: string) => runHistoryStore.formatRelativeTime(isoTime),
@@ -458,7 +348,6 @@ const sectionAvatarBindings: WorkspaceHistoryAvatarBindings = {
 };
 
 const sectionActions: WorkspaceHistorySectionActions = {
-  onRemoveWorkspace,
   onCreateRun,
   onSelectRun,
   onTerminateRun,
@@ -492,7 +381,14 @@ const sectionActions: WorkspaceHistorySectionActions = {
 
 let refreshTimerId: ReturnType<typeof setInterval> | null = null;
 
+// The read window follows the view: one read when the view changes (DS-002).
+watch(() => modeStore.mode, (mode) => {
+  runHistoryStore.setHistoryWindow(historyWindowOf(mode));
+  void runHistoryStore.fetchTree().catch(() => undefined);
+});
+
 onMounted(async () => {
+  runHistoryStore.setHistoryWindow(historyWindowOf(modeStore.mode));
   await Promise.all([
     runHistoryStore.loadWorkspaceCatalogForNavigation().catch(() => undefined),
     runHistoryStore.fetchTree().catch(() => undefined),

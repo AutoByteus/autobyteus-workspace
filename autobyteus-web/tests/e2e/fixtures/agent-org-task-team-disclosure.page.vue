@@ -35,6 +35,11 @@ const mountedTeam = (address: string, teamRunId: string, coordinator: string, me
   coordinatorAddress: coordinator, defaultLaunchConfiguration: launch, members, taskExecutions: [],
 });
 const taskMember = (address: string, agentRunId: string) => ({ address, agentRunId, platformAgentRunId: null });
+// Baseline fix (autobyteus-385 API/E2E): a Team copy records the source it started from (7d689455ad); its coordinator is
+// named there.
+const teamSource = (teamDefinitionId: string, coordinatorAddress: string) => ({
+  kind: 'agent_team', teamDefinitionId, coordinatorAddress, members: [], handoffs: [], defaultLaunchConfiguration: launch,
+});
 const executionTree = {
   subjectKind: 'agent_org', createdAt: '2026-09-29T08:00:00.000Z', archivedAt: null, applicationBinding: null, handoffs: [],
   rootOrg: {
@@ -51,14 +56,17 @@ const executionTree = {
     taskExecutions: [
       {
         address: '/StudentStudyGroup', teamRunId: 'ssg-task-1', delegatorAgentRunId: 'teacher-run', startedAt: '2026-09-29T08:01:00.000Z',
+        source: teamSource('definition-ssg-configured', '/StudentStudyGroup/student_one'),
         members: [taskMember('/StudentStudyGroup/student_one', 'ssg1-s1'), taskMember('/StudentStudyGroup/student_two', 'ssg1-s2')],
         taskExecutions: [{
           address: '/Reviewers', teamRunId: 'reviewers-task-nested', delegatorAgentRunId: 'ssg1-s1', startedAt: '2026-09-29T08:02:00.000Z',
+          source: teamSource('definition-reviewers-configured', '/Reviewers/chair'),
           members: [taskMember('/Reviewers/chair', 'reviewers-nested-chair')], taskExecutions: [],
         }],
       },
       {
         address: '/StudentStudyGroup', teamRunId: 'ssg-task-2', delegatorAgentRunId: 'teacher-run', startedAt: '2026-09-29T08:03:00.000Z',
+        source: teamSource('definition-ssg-configured', '/StudentStudyGroup/student_one'),
         members: [taskMember('/StudentStudyGroup/student_one', 'ssg2-s1'), taskMember('/StudentStudyGroup/student_two', 'ssg2-s2')],
         taskExecutions: [],
       },
@@ -69,7 +77,7 @@ const executionTree = {
 
 const groups = reactive<AgentOrgHistoryDefinitionGroup[]>([{
   stableKey: 'agent_org_definition:ttrc-org-definition', definitionId: 'ttrc-org-definition', name: 'Nested Classroom Test Org',
-  runs: [{ stableKey: `agent_org_run:${ROOT}`, rootSubjectKind: 'agent_org', rootRunId: ROOT, createdAt: '2026-09-29T08:00:00.000Z',
+  runs: [{ stableKey: `agent_org_run:${ROOT}`, rootSubjectKind: 'agent_org', rootRunId: ROOT, createdAt: '2026-09-29T08:00:00.000Z', lastActivityAt: '2026-09-29T08:00:00.000Z',
     archivedAt: null, isActive: false, summary: 'Classroom run', executionTree, closedTaskExecutions: [] }],
 }]);
 

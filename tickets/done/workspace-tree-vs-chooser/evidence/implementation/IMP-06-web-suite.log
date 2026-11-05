@@ -1,0 +1,16 @@
+# Check: IMP-06
+# Command: cd autobyteus-web && env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR="$TMPDIR" NUXT_TEST=true pnpm exec vitest run
+# Commit: worktree committed as 0d3c31c4ae, before the two spec fixes in that commit (rerun as IMP-07)
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28 via corepack; env -i PATH HOME=<fresh mktemp dir> TMPDIR (TESTING.md isolation)
+# Date: 2026-11-05 20:56-21:00 CET
+# Full output: IMP-06-web-suite.full.log.gz
+
+## Excerpt: the two failures (fixtures not yet updated for lastActivityAt; fixed and rerun as IMP-07) and the summary
+ FAIL  graphql/queries/__tests__/runHistoryQueries.spec.ts > ListWorkspaceRunHistory query > uses V2 standalone and team history catalog shapes without persisted live fields
+AssertionError: expected 'agentDefinitions {\n        agentDefi…' not to contain 'lastActivityAt'
+ FAIL  services/agentOrgExecution/__tests__/agentOrgClosure.spec.ts > Agent Org closed task executions > parses the history item closure and requires it
+Error: AgentOrg last_activity_at must be a string.
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  2 failed | 699 passed (701)
+      Tests  2 failed | 5148 passed | 2 skipped (5152)
+   Duration  259.15s (transform 27.65s, setup 1721.46s, collect 164.82s, tests 74.22s, environment 148.01s, prepare 89.16s)

@@ -7,10 +7,11 @@ import type { TeamRunHistoryItem } from "../domain/team-run-history-index-types.
 import { AgentOrgRunExecutionTreeStore } from "../store/agent-org-run-execution-tree-store.js";
 import type { AgentOrgRunHistoryCatalogService } from "./agent-org-run-history-catalog-service.js";
 import type { TeamRunHistoryService } from "./team-run-history-service.js";
+import { RunLastActivityReader } from "./run-last-activity-reader.js";
 
 export type CollaborationRootHistoryItem =
-  | Readonly<{ root_subject_kind: "agent_team"; root_run_id: string; created_at: string; archived_at: string | null; is_active: boolean; summary: string; team: TeamRunHistoryItem }>
-  | Readonly<{ root_subject_kind: "agent_org"; root_run_id: string; created_at: string; archived_at: string | null; is_active: boolean; summary: string; org: AgentOrgExecutionTreeDto;
+  | Readonly<{ root_subject_kind: "agent_team"; root_run_id: string; created_at: string; last_activity_at: string; archived_at: string | null; is_active: boolean; summary: string; team: TeamRunHistoryItem }>
+  | Readonly<{ root_subject_kind: "agent_org"; root_run_id: string; created_at: string; last_activity_at: string; archived_at: string | null; is_active: boolean; summary: string; org: AgentOrgExecutionTreeDto;
     /** Task executions of `org` whose Task is DONE or CANCELLED; the Workspaces rows leave them out before the Org context hydrates. */
     closed_task_executions: readonly TaskExecutionReferenceDto[] }>;
 
@@ -18,13 +19,17 @@ export type CollaborationRootHistoryItem =
 export class CollaborationRootHistoryService {
   private readonly layout: AgentMemoryLayout;
   private readonly orgTrees: AgentOrgRunExecutionTreeStore;
+  private readonly lastActivity: Pick<RunLastActivityReader, "forOrgRun">;
   constructor(private readonly dependencies: Readonly<{
     memoryDir: string;
     teams: Pick<TeamRunHistoryService, "listTeamRunHistory">;
     orgs: Pick<AgentOrgRunHistoryCatalogService, "listCatalogRows" | "getCatalogRow">;
     orgRuns: Pick<AgentOrgRunManager, "getActive" | "closedTaskExecutionsFor">;
     orgTrees?: AgentOrgRunExecutionTreeStore;
+    /** An Org run's last activity over its agents. */
+    lastActivity?: Pick<RunLastActivityReader, "forOrgRun">;
   }>) {
+    this.lastActivity = dependencies.lastActivity ?? new RunLastActivityReader({ memoryDir: dependencies.memoryDir });
     this.layout = new AgentMemoryLayout(dependencies.memoryDir);
     this.orgTrees = dependencies.orgTrees ?? new AgentOrgRunExecutionTreeStore();
   }
@@ -37,6 +42,7 @@ export class CollaborationRootHistoryService {
       root_subject_kind: "agent_team" as const,
       root_run_id: team.teamRunId,
       created_at: team.createdAt,
+      last_activity_at: team.lastActivityAt,
       archived_at: team.archivedAt,
       is_active: team.isActive,
       summary: team.summary,
@@ -66,6 +72,7 @@ export class CollaborationRootHistoryService {
       root_subject_kind: "agent_org",
       root_run_id: row.orgRunId,
       created_at: row.createdAt,
+      last_activity_at: await this.lastActivity.forOrgRun({ orgRunId: row.orgRunId, createdAt: row.createdAt }),
       archived_at: row.archivedAt,
       is_active: Boolean(active),
       summary: row.summary,

@@ -244,7 +244,8 @@ const newPage = async () => {
 const shot = (page, name) => page.screenshot({ path: path.join(outputDir, `${name}.png`) });
 const openWorkspace = async (page) => {
   await page.goto(`${stack.frontendUrl}/workspace`, { waitUntil: 'networkidle', timeout: 120000 });
-  await until('workspace rows', async () => (await page.locator('[data-test="workspace-row"]').count()) >= 2, 60000);
+  // A folder is listed only while it has a run (workspace-tree-vs-chooser REQ-009), so Temp may be absent: wait for the folder used here.
+  await until('workspace row', async () => (await page.locator('[data-test="workspace-row"]', { hasText: /^\s*workspace\s*$/ }).count()) >= 1, 60000);
   await page.locator('[data-test="workspace-row"]', { hasText: /^\s*workspace\s*$/ }).first().click();
 };
 const openRoot = async (page, root, names) => {

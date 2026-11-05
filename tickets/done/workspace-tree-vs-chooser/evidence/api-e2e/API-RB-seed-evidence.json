@@ -1,0 +1,48 @@
+{
+  "mode": "seed",
+  "label": "current",
+  "startedAt": "2026-11-05T21:02:30.091Z",
+  "stackRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-tree-vs-chooser",
+  "stackHead": "c764619bd2",
+  "probeHead": "c764619bd2",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "cpus": 10,
+  "loadAtStart": [
+    80.1,
+    93.6,
+    112.4
+  ],
+  "budgetMs": 250,
+  "checks": {},
+  "cleanup": {
+    "backend": {
+      "pid": 37113,
+      "status": "terminated",
+      "exit": 0
+    },
+    "home": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/read-budget-home-GU1EU2",
+    "seedKept": "/tmp/wtvc-385/seed (test-owned seed; remove after the measurements)"
+  },
+  "failures": [],
+  "seed": {
+    "ms": 35244,
+    "shape": {
+      "agentRuns": 40,
+      "teamRuns": 200,
+      "orgRuns": 10,
+      "teamMembers": 5,
+      "perAgent": {
+        "main": 20,
+        "side": 12,
+        "third": 8
+      }
+    }
+  },
+  "completedAt": "2026-11-05T21:03:07.484Z",
+  "loadAtEnd": [
+    76.5,
+    91.1,
+    110.7
+  ]
+}
