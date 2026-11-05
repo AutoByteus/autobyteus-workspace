@@ -2,232 +2,247 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-tree-vs-chooser/tickets/in-progress/workspace-tree-vs-chooser/requirements-doc.md` (SR-003, approved by the Solution Designer within the direction; user informed; DEC-006 and AC-008 added)
-- Upstream Investigation Notes: `…/investigation-notes.md`
-- Upstream Solution Revision Record: `…/solution-revision-record.md`
-- Reviewed Design Spec: `…/design-spec.md` (SR-003, Ready; user approval of the design `Not required`)
-- Supplemental Task Artifacts Reviewed: none; `follow-ups.md` (FU-001)
-- Relevant Solution Revision IDs: `SR-001`, `SR-002`, `SR-003`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-tree-vs-chooser/tickets/in-progress/workspace-tree-vs-chooser/requirements-doc.md` (SR-004, approved by the user through the Product Team's corrected design, 2026-11-05)
+- Upstream Investigation Notes: `…/investigation-notes.md` (E-01…E-16)
+- Upstream Solution Revision Record: `…/solution-revision-record.md` (SR-001…SR-004)
+- Reviewed Design Spec: `…/design-spec.md` (SR-004, Ready; user approval of the technical design `Not required`)
+- Supplemental Task Artifacts Reviewed:
+  - the normative Product spec `/Users/normy/autobyteus_org/autobyteus-web-design-worktrees/workspace-tree-vs-chooser/tickets/in-progress/workspace-tree-vs-chooser/ui-ux-spec.md` (VIS-001…VIS-017, `7712ec14`);
+  - `product-design-request.md`;
+  - `follow-ups.md` (FU-001…FU-003).
+- Relevant Solution Revision IDs: `SR-004` (replaces SR-001…SR-003)
 - Architecture Review Revision Record: `…/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-002`
-- Current Review Round: `2`
-- Trigger: Solution Designer re-review request (SR-003, for ARCH-REV-001), 2026-11-05
-- Prior Review Round Reviewed: `1` (ARCH-REV-001, Fail: AR-001, AR-002)
-- Latest Authoritative Round: `2`
-- Current-State Evidence Basis: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-tree-vs-chooser` @ `3ef5e33eec` (no source changes). Code opened at the lines cited below. The project documents exist (`DESIGN.md`, `TESTING.md`, `RELEASE.md`), so no missing project document is in scope.
+- Current Architecture Review Revision ID: `ARCH-REV-004`
+- Current Review Round: `4` (re-review of the revised SR-004 package after ARCH-REV-003)
+- Trigger: Solution Designer re-review request (SR-004 revised: "ARCH-REV-003 Resolution"), 2026-11-05
+- Prior Review Round Reviewed: `3` (ARCH-REV-003, Fail: AR-003, AR-004)
+- Latest Authoritative Round: `4`
+- Current-State Evidence Basis:
+  - Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-tree-vs-chooser` at `8fe7b2e57e` (SR-003 server work, to be reverted), with uncommitted SR-003 web work. The base code was read at `3ef5e33eec`.
+  - The 378 design and branch are referenced but not re-reviewed. The port's architecture passed there (ARCH-REV-003 of 378); its code is treated as new here.
 
-## Round 2 Scope (SR-003)
+## Round 4 Scope (SR-004 Revised)
 
-- **AR-001 is resolved.**
-  - The agent-run point that brings a folder back for good is now the GraphQL `prepareAgentRun` resolver (`agent-run.ts:233`). That is the path the user's chat and mobile actually take (`agentRunStore.ts:190-211`).
-  - A peer's delegation calls the service directly, not the resolver (E-09, `remote-delegation-receiver.ts:98`), so it does not re-show.
-  - A cancelled or never-started prepared run leaves the folder shown. That is accepted: the user chose the folder.
-  - `createAgentRun` gets no re-show and goes to FU-001, with the reason (a public-API caller check is needed before removal). That is consistent with Principle 7.
-  - The point list, the escalation trigger and AC-004 now name the real path.
-- **AR-002 is resolved by DEC-006 and AC-008**, decided within the direction and consistent with DEC-001's reasoning.
-  - A hidden folder is shown in the tree and the phone list while one of its runs is active, and it hides again when none is. Only creation and "Add workspace" bring it back for good.
-  - It is a view rule over run status the read model already has (`runHistoryReadModel.ts:97-106`, `toRunStatus`; local contexts `:246-283`). So every restore and resume path is covered without wiring each activation point. That is simpler than adding re-show calls at three restore mutations plus first-message resumes.
-  - "Active run of a folder" is defined: the folder's history groups (standalone, team, org) or the user's own open local or draft runs there, with an active status.
-  - Delegated copies are excluded: they are not in a folder's groups (E-10), and an opened delegated-copy context must not count, with a test. AC-003 holds.
-- **Recommendation adopted:** writes to the hidden list are serialized.
-- Recommendation (non-blocking): the tree's read model and the phone's work list apply the same "shown, or hidden with an active run" rule. Give it one owner, for example one predicate in the workspace or run-history read model that both call, so the two lists cannot drift (Principle 11).
+- **AR-003 is resolved.** `requirements-doc.md` now states SR-004 only:
+  - the user's approval;
+  - Data Continuity `No` ("Nothing new is stored");
+  - new BEH-001…BEH-005, UC-001…UC-003 and the Preserved boundary;
+  - DEC-001…DEC-007 withdrawn.
+
+  AC-012 names the team-only, Org-only and draft-only folder cases. There is no new behavior: it matches the Product spec and DEC-010.
+- **AR-004 is resolved.**
+  - `hasListedRun` is applied in `buildRunHistoryNavigationProjection` (`runHistoryNavigationProjection.ts:159`). It runs after Org groups are attached and team rows are grouped per folder root, and before the indexes and ancestries are built.
+  - That projection is the store's navigation state (`runHistoryNavigationStoreActions.ts:20-58`). Its folder nodes are read only by the Workspaces tree state, through `getTreeNodes()` (`useWorkspaceHistoryTreeState.ts:59`), and one e2e fixture page (`tests/e2e/fixtures/task-agent-sibling-sidebar.page.vue:78`).
+  - So the phone is unchanged, and the Runs view uses `teamNodes`, which no rule touches.
+  - The shared `buildRunHistoryTreeNodes` stays unchanged for Projects.
+  - A navigation patch into a dropped folder falls back to a full rebuild.
+  - Tests: team-only, Org-only and draft-only folders, and an unchanged Projects view.
+- **The window by view is adopted** (DESIGN.md rule 3).
+  - The host sets `null` for Runs and 6 for Workspaces and Projects, with one fetch on a view change. The poll is uncapped only while Runs is shown, and the display cap is dropped.
+  - Shrinking the window has its own test. It matters because the retired-run reconcile uses the window (`runHistoryLoadActions.ts:130`): runs past the new cap must not be treated as retired.
+- **The expansion prune is adopted.** The Workspaces tree state prunes the expansion of folders that leave its node list, which covers both a removal and the folder rule. The removal composable keeps `pruneWorkspaceHistory` only.
+- **Implementation note:** the e2e fixture page that looks up `/sibling-fixture` through `getTreeNodes()` must have a listed run there, or be updated with the probes.
 
 ## Routing Classification Review
 
-- Task size: `Medium` (about 15–20 files in existing areas); architectural risk: `High` (new persisted state, a contract field and mutation for every client, and the completeness of the re-show rule across launch surfaces). Confirmed.
+- Task size: `Large`; architectural risk: `High`. Confirmed: a ported view, a GraphQL argument whose meaning changes, a server value read from memory files on every history read, a shared read window, a broad UI blast radius, and a revert.
 - Independent Architecture Review required by the classification: `Yes`
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Overall Basis Status: `Confirmed` for REQ-001, REQ-002, REQ-004 and REQ-005. REQ-003 has a path error (AR-001) and an unaddressed supported case (AR-002).
-- Approved requirements / intended behavior understood:
-  - "Shown in the tree" is separate from "registered and choosable".
-  - Tree "Hide" hides the folder; chooser "Remove" unregisters it.
-  - A hidden folder returns only when the user starts a run there or adds it again.
-  - Internal uses never un-hide.
-  - No data loss; the active-run guard stays; the server keeps the state; `workspaces.json` is unchanged.
+- Overall Basis Status: `Confirmed` for the SR-004 section and the Product spec. The requirements doc outside that section contradicts it (AR-003).
+- Approved requirements understood:
+  - REQ-006: the view menu with Runs, Workspaces and Projects.
+  - REQ-008: the Runs view.
+  - REQ-009 / DEC-010: Workspaces and Projects list only folders and Projects with a listed run.
+  - REQ-010 and REQ-007: no add actions, no folder X.
+  - REQ-011: empty states.
+  - REQ-002 and REQ-004: the chooser Remove, refused while a run is running.
+  - Nothing is hidden; nothing new is stored on the server; the phone is unchanged.
 - Relevant existing behavior and evidence confirmed:
-  - Removal: `workspace-manager.ts:207-258` (E-01).
-  - The registry is a strict flat map (E-02).
-  - Any use re-registers (E-03).
-  - One `workspaces` list serves every client (E-04).
-  - The tree skips the runs of unlisted folders (E-05).
-  - The chooser reads `allWorkspaces` (E-06, E-07).
-- Scope guardrail confirmed: UC-001…UC-003. Out of scope: Project folder links and deleting files or history.
-- Every prospective blocking finding is traceable: `Yes` (AR-001 → REQ-003 / AC-004; AR-002 → REQ-003 / DEC-001)
+  - E-11: the host is 520 lines at base and 517 in the worktree.
+  - E-12: the history read is capped at 6 per agent, with no "show more" in the tree. The per-folder read on expand is also 6 (`WorkspaceAgentRunsTreePanel.vue:392`), so a display cap of 6 keeps today's tree.
+  - E-13: folder nodes are made from registered folders.
+  - E-14: Projects lists every Project.
+  - The phone is its own page (`pages/mobile.vue` → `MobileRemoteAccessShell`), and the run section mounts in `AppLeftPanel`. They never share a page, so a window set by the surface that mounts is sound, given the design's switch test.
+- Scope guardrail confirmed: the phone, the Projects page, Memory, `workspaces.json` and the 378 removals are untouched; 378's CR-002 is not applicable.
+- Every prospective blocking finding is traceable: `Yes`
 - Statements about existing code the design relies on:
-  - **"`createAgentRun` (`agent-run.ts:201`) is the user's command" for agent runs: the web never calls it.** The GraphQL `createAgentRun` mutation appears in the web only in `graphql/mutations/agentMutations.ts:13-15` and the generated types.
-    - Desktop chat and mobile start agent runs through `PrepareAgentRun` (`stores/agentRunStore.ts:7,190-211`; mobile `useMobileRunLaunchCoordinator.ts:163-185` builds a draft that the same store prepares).
-    - The prepared run is activated by the first message (`agent-run-service.ts:262-270` `prepareAgentRun` / `activatePreparedRun`; the command path).
-    - See AR-001.
-  - Team and org launches do use `CreateAgentTeamRun` / `CreateAgentOrgRun` (`stores/agentTeamRunStore.ts`, `stores/agentOrgRunStore.ts`). Confirmed.
-  - The web's internal `createWorkspace` callers are safe:
-    - The history fallback calls `createWorkspace` only when no registered workspace matches the root path (`runHistoryLoadActions.ts:486-493`). A hidden folder stays registered, so it is found and the mutation is not called.
-    - The team launch's per-member `createWorkspace` (`agentTeamRunStore.ts:419`) is part of the user's own team launch.
-    - Mobile launch (`useMobileLaunchWorkspaces.ts:96`) is the user's own launch.
+  - **"`hasListedRun(folderNode)` … a team run or an Org run. The tree projection drops folder nodes without one … after filling runs" (DS-004), placed in "`runTreeProjection` / `runHistoryReadModel`" (Ownership Map). The code does not have that shape.**
+    - The folder node from `buildRunTreeProjection` holds agent runs only. Org groups are attached later in that file (`runTreeProjection.ts:396-423`). Team rows are attached per folder root in the navigation projection (`runHistoryNavigationProjection.ts:214-230`).
+    - `buildRunHistoryTreeNodes` (`runHistoryReadModel.ts:180`) is shared by the Workspaces navigation (`runHistoryNavigationProjection.ts:163`) and the Projects view (`projectRunsProjection.ts:57-71,107`).
+    - See AR-004.
 
-| Behavior ID | Kind | Design Alignment With Approved Intent | Approved Trigger / Contract And Current-State Evidence | Target Outcome / Path / Spine Coherence | Status | Required Action |
-| --- | --- | --- | --- | --- | --- | --- |
-| BEH-001 | User | Pass | Pass | Pass | Confirmed | — |
-| BEH-002 | User | Pass | Pass | Pass | Confirmed | — |
-| BEH-003 | User / System | Pass | Pass (SR-003: `prepareAgentRun`; DEC-006) | Pass | Confirmed | — |
-| BEH-004 | User | Pass | Pass | Pass | Confirmed | — |
+| Behavior / Requirement | Design Alignment With Approved Intent | Approved Trigger / Contract And Current-State Evidence | Target Outcome / Path / Spine Coherence | Status | Required Action |
+| --- | --- | --- | --- | --- | --- |
+| REQ-006 / AC-009 (view menu) | Pass | Pass | Pass (DS-001) | Confirmed | — |
+| REQ-008 / AC-011 (Runs view) | Pass | Pass | Pass (DS-002, DS-003, DS-005, DS-007) | Confirmed | — |
+| REQ-009 / AC-012 (listed-run rule) | Pass | Pass (requirements rewritten) | Pass (Workspaces-only owner, after teams and Orgs) | Confirmed | — |
+| REQ-010, REQ-007 / AC-013, AC-010 (removals) | Pass | Pass | Pass (Removal Plan) | Confirmed | — |
+| REQ-011 / AC-014 (empty states) | Pass | Pass | Pass | Confirmed | — |
+| REQ-002, REQ-004 / AC-002, AC-005 (chooser Remove) | Pass | Pass | Pass (DS-006) | Confirmed | — |
 
 ## Supplemental Artifact Coherence Verdict
 
-None.
+| Artifact | Purpose And Scope Are Clear? | Linked To Relevant Core Artifacts? | Internally Complete? | Consistent With Related Core Artifacts? | Status And Approval Applicability Are Clear? | Required Action |
+| --- | --- | --- | --- | --- | --- | --- |
+| Product `ui-ux-spec.md` (VIS-001…VIS-017) | Pass | Pass | Pass | Pass | Pass (approved twice, normative) | — |
+| `product-design-request.md` | Pass | Pass | Pass | Pass | Pass | — |
+| `follow-ups.md` | Pass | Pass | Pass | Pass | Pass | — |
 
 ## Task Design Health Assessment Verdict
 
 | Assessment Area | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Assessment present | Pass | Feature; one list with two meanings | — |
-| Root cause explicit and evidence-backed | Pass | `Boundary Or Ownership Issue`; vocabulary drift ("remove" meaning unregister) | — |
-| Refactor decision explicit | Pass | One owner for the hidden state behind `WorkspaceManager`; one server-computed field | — |
-| Supported by concrete sections | Pass | DS-001…DS-004 | — |
+| Assessment present | Pass | Behavior change with removal and reuse | — |
+| Root cause / issue explicit | Pass | The host is oversized with three concerns; reuse of the reviewed 378 code | — |
+| Refactor decision explicit | Pass | A new header component; the Runs view as its own tree; the host shrinks to at most 500 lines; the rename is FU-003 | — |
+| Supported by concrete sections | Pass | — | — |
 
 ## Spine Inventory Verdict
 
 | Spine ID | Scope | Spine Is Readable? | Narrative Is Clear? | Facade Vs Governing Owner Is Clear? | Main Domain Subject Naming Is Clear? | One Owner Per Node, In Call Order? | Off-Spine Concerns Stay Off Main Line? | Verdict |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| DS-001 | Hide | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-002 | Remove | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-003 | Re-show | Pass | Pass (`prepareAgentRun`, team, org, `createWorkspace`) | Pass | Pass | Pass | Pass | Pass |
-| DS-004 | List field plus the active-run view rule | Pass | Pass (DEC-006; delegated copies excluded) | Pass | Pass | Pass | Pass | Pass |
+| DS-001 | Menu | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
+| DS-002 | Read window | Pass | Pass | N/A | Pass | Pass (`runHistoryStore` owns the cap) | Pass | Pass |
+| DS-003 | Runs view | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
+| DS-004 | Listed-run rule | Pass | Pass | N/A | Pass | Pass (navigation projection, after teams and Orgs) | Pass | Pass |
+| DS-005 | Server last activity | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
+| DS-006 | Chooser Remove | Pass | Pass | N/A | Pass | Pass | Pass | Pass (implementation note in Residual Risks) |
+| DS-007 | Archive older | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
 
 ## Boundary Encapsulation Verdict
 
 | Boundary / Owner | Authoritative Public Entry Point Is Clear? | Internal Owned Mechanisms Stay Internal? | Caller Bypass Risk Is Controlled? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `WorkspaceManager` (registry, `WorkspaceTreeVisibility`, `WorkspaceRemovalGuard`) | Pass | Pass | Pass | Pass | The only caller of the visibility store |
-| Web `workspaceStore` | Pass | Pass | Pass | Pass | — |
+| `runHistoryStore` (window, `archiveRuns`) | Pass | Pass | Pass | Pass | — |
+| `runListStore` → components (no Apollo) | Pass | Pass | Pass | Pass | — |
+| `RunLastActivityReader` (allowed and forbidden dependencies) | Pass | Pass | Pass | Pass | — |
+| The shared tree builder `buildRunHistoryTreeNodes` | Pass | Pass (unchanged) | Pass | Pass | — |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
 
 | Owner / Boundary | Allowed Dependencies Are Clear? | Forbidden Shortcuts Are Explicit? | Direction Is Coherent With Ownership? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| GraphQL → `WorkspaceManager` → stores | Pass | Pass | Pass | Pass | Internal run paths keep `ensureWorkspaceByRootPath` only |
+| `components/runList` → stores; server reader → memory and location services | Pass | Pass | Pass | Pass | — |
 
 ## Interface Boundary Verdict
 
 | Interface | Subject Is Clear? | Responsibility Is Singular? | Identity Shape Is Explicit? | Generic Boundary Risk | Verdict |
 | --- | --- | --- | --- | --- | --- |
-| `hideFromWorkspacesTree(workspaceId)`, `showInWorkspacesTree(workspaceId)` | Pass | Pass | Pass (`agent_ws_*`) | Low | Pass |
-| GraphQL `hideWorkspaceFromTree`, `WorkspaceMetadataInfo.shownInWorkspacesTree` | Pass | Pass | Pass | Low | Pass |
+| `listWorkspaceRunHistory` / `workspaceRunHistory(limitPerAgent: Int = 6)`; explicit `null` means every run | Pass | Pass | Pass | Low (tests for null as argument and variable, and the omitted default) | Pass |
+| History items `lastActivityAt: String!` | Pass | Pass | Pass | Low | Pass |
+| `runHistoryStore.setHistoryWindow`, `archiveRuns` | Pass | Pass | Pass | Low | Pass |
+| `RunSectionMode` adds `'runs'` | Pass | Pass | Pass | Low | Pass |
 
 ## Existing Capability / Subsystem Reuse Verdict
 
 | Need / Concern | Existing Capability Area Was Checked? | Reuse / Extension Decision Is Sound? | New Support Piece Is Justified? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Active-run guard | Pass | Pass (`WorkspaceRemovalGuard`) | N/A | Pass | — |
-| Atomic JSON write | Pass | Pass (follow the registry's pattern) | Pass (its own small file) | Pass | See the recommendation in Residual Risks |
-| Refetch | Pass | Pass | N/A | Pass | — |
+| Runs list | Pass (378) | Pass (port files, not commits; rules listed) | Pass | Pass | — |
+| Removal confirmation and guard | Pass | Pass (`useWorkspaceHistoryWorkspaceRemoval`, `WorkspaceRemovalGuard`) | N/A | Pass | — |
+| Tree builder | Pass | Pass (shared builder unchanged) | N/A | Pass | — |
 
 ## Subsystem / Capability-Area Allocation Verdict
 
 | Subsystem / Capability Area | Ownership Allocation Is Clear? | Reuse / Extend / Create-New Decision Is Sound? | Supports The Right Spine Owners? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| server `workspaces/`, the GraphQL workspace type, the run mutations | Pass | Pass | Pass | Pass | — |
-| web store, tree, phone list, chooser | Pass | Pass | Pass | Pass | — |
+| web run section, `runList/`, stores, chooser | Pass | Pass | Pass | Pass | — |
+| server run history | Pass | Pass | Pass | Pass | — |
 
-Kinds and forms (Principle 1), all traced:
-- agent runs (prepare, then activate);
-- team and org runs;
-- "Add workspace";
-- restore and resume (the view rule);
-- internal re-registration;
-- delegated copies.
+Kinds and forms (Principle 1):
+- agent, team and Org runs per folder: traced, with the rule applied after both are attached;
+- local, draft and prepared runs: traced (VIS-017);
+- the Runs view's three row kinds: traced.
 
 ## Reusable Owned Structures Verdict
 
-N/A: one new store; no repeated structure.
+| Repeated Structure / Logic | Extraction Need Was Evaluated? | Shared File Choice Is Sound? | Ownership Of Shared Structure Is Clear? | Verdict | Notes |
+| --- | --- | --- | --- | --- | --- |
+| Listed-run predicate, one per view (ARCH-REV-002's recommendation) | Pass | Pass | Pass | Pass | — |
 
 ## Shared Structure / Data Model Tightness Verdict
 
 | Shared Structure / Type / Schema | One Clear Meaning Per Field? | Redundant Attributes Removed? | Overlapping Representation Risk Is Controlled? | Shared Core Vs Specialized Variant Decision Is Sound? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| `workspaces_hidden_from_tree.json` `{ workspaceIds }` | Pass | Pass | Pass (registry and hidden set are separate; unregistered IDs are dropped) | N/A | Pass | — |
-| `WorkspaceMetadataInfo.shownInWorkspacesTree` | Pass | Pass | Pass | N/A | Pass | — |
+| `lastActivityAt` (server-derived, one clock) | Pass | Pass | Pass (replaces client-side clocks for the Runs order) | N/A | Pass | — |
 
-Derived consumers of a changed structure listed with a decision for each: `Pass`. The choosers read all; the tree and the phone list filter; path resolvers are unchanged. The Projects tree (`stores/projectRunsStore.ts`) lists runs by Project without consulting the workspace list. That is correct for it, but it is how a hidden folder's runs stay reachable (AR-002).
+Derived consumers of a changed structure listed with a decision for each: `Pass`. The navigation projection's folder nodes are read by the Workspaces tree state only, plus one e2e fixture; the Projects builder is unchanged.
 
-Domain vocabulary keeps one meaning per word: `Pass`. "Remove" keeps "unregister", and "hidden from the Workspaces tree" goes to `GLOSSARY.md`.
+Domain vocabulary keeps one meaning per word: `Pass` ("view", "listed run", "run section").
 
 ## File Responsibility Mapping Verdict
 
 | File | Responsibility Is Singular And Clear? | Matches Owner? | Re-Tightened? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Every mapped file | Pass | Pass | N/A | Pass | — |
-| `api/graphql/types/agent-run.ts` re-show in `prepareAgentRun` | Pass | Pass | N/A | Pass | — |
+| `RunSectionHeader.vue` (new), the host (≤ 500 lines), `runList/*`, `runListStore`, `runListProjection`, the composables, `run-last-activity-reader.ts` | Pass | Pass | Pass | Pass | — |
+| `runHistoryNavigationProjection.ts` holding the Workspaces folder rule (display cap dropped) | Pass | Pass | N/A | Pass | — |
 
 ## Subsystem / Folder / File Placement Verdict
 
 | Path / Item | Target Placement Is Clear? | Folder Matches Owning Boundary? | Mixed-Layer Or Over-Split Risk | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `workspaces/workspace-tree-visibility.ts` | Pass | Pass | Low | Pass | — |
+| `components/runList/`, `stores/runListStore.ts`, `utils/runListProjection.ts`, `run-history/services/run-last-activity-reader.ts` | Pass | Pass | Low | Pass | — |
 
 ## Removal / Decommission Completeness Verdict
 
 | Item / Area | Named? | Replacement Clear? | Scope Explicit? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| The tree action's call to `removeWorkspace` and its texts | Pass | Pass | Pass | Pass | — |
-| The GraphQL `createAgentRun` mutation with no repository caller | Pass (FU-001, with evidence and the reason: public-API callers outside the repository unchecked) | N/A | Pass | Pass | — |
+| SR-003 server commit `8fe7b2e57e` (`git revert`) | Pass | Pass | Pass | Pass | — |
+| Uncommitted SR-003 web work (keep only the chooser Remove) | Pass | Pass | Pass | Pass | — |
+| `RunSectionSwitch`, folder X, add form, "New Project" link, unused keys and specs | Pass | Pass | Pass | Pass | — |
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Area | Compatibility Wrapper / Dual-Path / Legacy Retention Exists? | Clean-Cut Removal Is Explicit? | Verdict | Notes |
 | --- | --- | --- | --- | --- |
-| `workspaces.json` shape | No | Pass | Pass | An older build ignores the new file and shows everything; no data is lost |
+| `limitPerAgent` default kept at 6; explicit `null` new | No (one argument, two meanings by value: a documented contract, not a fallback) | Pass | Pass | — |
 
 ## Persisted-Data Transition Verdict (When Applicable)
 
 | Area / Stored Subject | Approved Decision | Representative Reader / Semantic / Invariant Evidence Is Sufficient? | Direct Use, Rebuild, Or Migration Choice Is Proportionate? | Migration Safety Is Complete If Required? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| `workspaces.json` | `Not Affected` | Pass (E-02: a strict flat map stays untouched) | Pass | N/A | Pass | — |
-| `workspaces_hidden_from_tree.json` (new) | `Directly Usable — No Migration` | Pass: one owner; a missing file means none hidden; an unreadable file means none hidden with a warning (rule 7); atomic temp-then-rename writes; unregistered IDs ignored on read and dropped on write | Pass | N/A | Pass | This answers the designer's second question. See the write-serialization note in Residual Risks |
+| `lastActivityAt` (derived at read time), the local-storage view key (adds `runs`), the SR-003 hidden file (never shipped) | `Not Affected` | Pass | Pass | N/A | Pass | The requirements doc now agrees (`No`) |
 
 ## Change / Refactor Sequence Verdict
 
 | Area | Sequence Is Realistic? | Temporary Seams Are Explicit? | Cleanup / Removal Is Explicit? | Verdict |
 | --- | --- | --- | --- | --- |
-| Steps 1–4 | Pass | Pass | Pass | Pass |
+| Revert, port, the window, views, removals, chooser, tests; merge check with `origin/personal` at start | Pass | Pass | Pass | Pass |
 
 ## Example Adequacy Verdict
 
 | Topic / Area | Example Was Needed? | Present And Clear? | Bad Shape Explained? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Storage, re-show, the user's scenario | Yes | Pass | Pass | Pass | — |
+| Spines DS-001…DS-007; porting rules | Yes | Pass | Pass | Pass | — |
 
 ## Material Premise Validation (Only When Needed)
 
-### `MP-001` — The user starts an agent run from chat in a hidden folder
+### `MP-003` — A folder whose only run is a team run (or an Org run)
 
-- Related requirement: REQ-003, AC-004 ("start an agent run there from the chat: the folder and the new run are in the tree")
+- Related requirement: REQ-009 / AC-012; DEC-010 ("a folder … appears … when the view lists at least one run under it … agent, team and Org runs")
 - Initiating basis kind: `User`
-- Trigger: the user picks the hidden folder in the chat chooser (still offered, REQ-001) and sends the first message.
-- Forward path: `ChatNewSurface` / chat draft → `agentRunStore` → GraphQL `prepareAgentRun` (`agentRunStore.ts:190-211`) → the first message activates the prepared run (`agent-run-service.ts:268-270`). No `createAgentRun` mutation is called, so the design's `showInWorkspacesTree` never runs.
-- Consequence: the new run is active in a hidden folder and appears nowhere in the tree, against AC-004 and the scenario the user gave.
-- Reachability: `Reachable` (the main path)
-- Review consequence: AR-001. **Round 2: resolved** (re-show in `prepareAgentRun`).
-
-### `MP-002` — The user restores a stopped run whose folder is hidden
-
-- Related requirement: REQ-003 and DEC-001's rationale ("the tree shows where runs are; if you start a new run in a hidden folder and it stays hidden, that run is nowhere in the tree"); the hide guard's own reason (DS-001: "a hidden folder would hide its running run")
-- Initiating basis kind: `User`
-- Trigger:
-  - DEC-005 allows hiding a folder with finished, non-archived runs.
-  - Those runs stay reachable outside the Workspaces tree, for example in the Projects tree, which lists runs by Project without the workspace list (`projectRunsStore.ts`).
-  - The user opens such a run and sends a message, or uses restore: `restoreAgentRun` / `restoreAgentTeamRun` / `restoreAgentOrgRun` (`agent-run.ts:284`, `agent-team-run.ts:220`, `agent-org-run.ts:221`).
-- Forward path: the run becomes active in the hidden folder. No re-show point applies.
-- Consequence: an active run that the Workspaces tree does not show, while that tree's hide action refuses folders with active runs for exactly this reason.
+- Trigger: the user starts a team run in a folder with no agent runs (supported: Team launch with a folder).
+- Forward path: `buildRunHistoryTreeNodes` → `buildRunTreeProjection` builds the folder node with agents only. Team rows join per root later (`runHistoryNavigationProjection.ts:214-230`). If the folder rule runs in `runTreeProjection` / `runHistoryReadModel`, where the Ownership Map places it, the folder is dropped before its team run is known.
+- Consequence: the folder and its team run are absent from the Workspaces view, against AC-012. The same applies to an Org-only folder if the rule runs before `runTreeProjection.ts:423`.
 - Reachability: `Reachable`
-- Review consequence: AR-002. **Round 2: resolved** by DEC-006 (an active run shows its folder while active) and AC-008.
+- Review consequence: AR-004. **Round 4: resolved** (the rule runs in the navigation projection after teams and Orgs).
+
+### `MP-004` — The Projects view built through the shared builder
+
+- Related requirement: REQ-009 (the Projects view's own rule), REQ-008 (the Projects view stays as today apart from the listed rule)
+- Initiating basis kind: `User`
+- Trigger: the user opens the Projects view.
+- Forward path: `buildProjectRunsProjection` → `buildRunHistoryTreeNodes` (`projectRunsProjection.ts:107`), one node per Project.
+- Consequence: a Workspaces-only folder rule or display cap of 6 in the shared builder would also drop or cap Project sections, changing the Projects view beyond its approved rule.
+- Reachability: `Reachable`
+- Review consequence: AR-004. **Round 4: resolved** (the shared builder is unchanged).
 
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
 | Item | Why It Matters | Required Action | Status |
 | --- | --- | --- | --- |
-| Whether restoring or resuming a run in a hidden folder re-shows it (MP-002) | — | Decided: DEC-006, REQ-003, AC-008 | Resolved (SR-003) |
+| The requirements doc outside the SR-004 section still states the withdrawn hide design | — | Rewritten to SR-004 only | Resolved (round 4) |
 
 ## Review Decision
 
@@ -235,7 +250,7 @@ Domain vocabulary keeps one meaning per word: `Pass`. "Remove" keeps "unregister
 
 ## Findings
 
-None open. AR-001 and AR-002 are resolved (see ARCH-REV-002).
+None open. AR-003 and AR-004 are resolved (ARCH-REV-004). AR-001 and AR-002 are obsolete (SR-003 withdrawn).
 
 ## Classification
 
@@ -247,19 +262,19 @@ Implementation Engineer (`/software_engineering_team/implementation_engineer`)
 
 ## Residual Risks
 
-- **Writes to the hidden file** are now serialized (SR-003, adopted).
-- **An unreadable hidden file.** It is read as "none hidden", and the next write replaces it. That is acceptable under tolerant reads. Keeping the bad file aside would also preserve it for diagnosis. Recommendation.
-- **Clients see changes on their next fetch.** There is no live feed; this is accepted in the design.
-- **One owner for the "shown, or hidden with an active run" rule.** The tree's read model and the phone list should call one predicate rather than repeat the rule (Principle 11). Recommendation.
-- **A draft counts as active.** A draft or open local run in a hidden folder shows it while active, by definition. That is the user's own choice of folder.
+- **The uncapped poll** happens only while the Runs view is shown (adopted). The 250 ms budget and its escalation trigger still apply to that view.
+- **The expansion prune** is owned by the tree state, keyed on its own node list (adopted).
+- **The window shared by phone and desktop** is safe: they are separate pages, and the design adds a switch test.
+- **The ported code is reviewed as new code** at code review (378 CR-001 is fixed by DS-005).
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Material-Premise Gate: `Pass` (MP-001 and MP-002 resolved by SR-003)
+- Material-Premise Gate: `Pass` (MP-003 and MP-004 resolved)
 - Notes:
-  - Hidden state has one owner behind `WorkspaceManager`, in a separate additive file with serialized atomic writes.
-  - A server-computed field marks hidden folders.
-  - The user's creation commands bring a folder back for good: `prepareAgentRun`, team and org creation, and `createWorkspace`.
-  - An active run shows its folder while it runs, and delegated copies never count.
-  - task_size=Medium, architectural_risk=High.
+  - Three views sit behind one menu, with the Runs view ported file by file.
+  - The read window follows the view (`null` only for Runs) and is owned by `runHistoryStore`.
+  - One server clock (`RunLastActivityReader`).
+  - The Workspaces listed-run rule sits in the navigation projection, after teams and Orgs; the Projects builder is unchanged.
+  - The chooser Remove uses the existing guard; SR-003 is cleanly reverted.
+  - task_size=Large, architectural_risk=High.

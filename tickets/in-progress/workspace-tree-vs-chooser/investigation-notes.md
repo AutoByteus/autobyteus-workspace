@@ -8,7 +8,7 @@
 - Repository mode: `Git`; branch `codex/workspace-tree-vs-chooser`
 - Resolved base: `origin/personal` @ `3ef5e33eecf7b50588b2b6dcec6908ab18152f1e` (fetched 2026-11-05); finalization target `origin/personal`
 - Bootstrap: worktree created; no install yet. Project documents present: `DESIGN.md`, `TESTING.md`, `RELEASE.md`
-- Current solution revision ID: `SR-003`
+- Current solution revision ID: `SR-004`
 - Authorities read: `SKILL.md` (updated 2026-11-05), `references/project-documents.md` and `references/ticket-scope.md` (updated), `references/requirements-engineering.md` (this conversation)
 - Investigation status: complete for the requirements
 
@@ -31,6 +31,13 @@
 | Code | `ChatWorkspaceMenu.vue` | The chooser has no remove action today | E-08 |
 | Code | `api/graphql/types/agent-run.ts:233`, `remote-collaboration/inbound/remote-delegation-receiver.ts:98`, web `stores/agentRunStore.ts:190-211` | (SR-003) The user's agent path is the GraphQL `prepareAgentRun` resolver; a peer's delegation calls the service directly, not the resolver. GraphQL `createAgentRun` has no caller in the repository (FU-001) | E-09 |
 | Code | `run-history/services/agent-run-history-service.ts:77-102`, `agent-run-history-catalog-service.ts:150,189` (callers only `agent-execution/services/agent-run-provisioning-service.ts:131`, `standalone-agent-run-lifecycle-service.ts:349`), `run-history/store/task-agent-own-records.ts:15-19` | (SR-003) A folder's history groups list standalone agent runs and team/org runs only. Delegated copies are kept in their coordinating run's tree, not in the folder's groups, so an active delegated copy does not count as an active run of the folder (AC-003 holds under DS-004). The web also adds open local contexts (`runHistoryReadModel.ts:246-283`) | E-10 |
+
+| Code | `components/workspace/history/WorkspaceAgentRunsTreePanel.vue` (520 lines at `origin/personal`) :4, :64, :490-505; `stores/runSectionModeStore.ts`; `components/layout/LeftSidebarStrip.vue:112` | (SR-004) The panel hosts both views (switch, Projects tree), the add form and the X. Its mount loads the history and polls every 5 s. The mode is `workspaces \| projects` per node; the strip label follows it | E-11 |
+| Code | `stores/runHistoryStore.ts:119,427,435`; `runHistoryLoadActions.ts:97-130`; `runHistoryRetiredRuns.ts:7-61`; `composables/mobile/useMobileWorkCatalog.ts:322` | (SR-004) Every history read takes `limitPerAgent` (default 6; the phone 5); the reconcile assumes the cap; team history is not capped | E-12 |
+| Code | `utils/runTreeProjection.ts:229-300` | (SR-004) Folder nodes are made from every registered folder first, then filled with history and local (including draft) runs | E-13 |
+| Code | `stores/projectRunsProjection.ts:65`; `components/workspace/history/ProjectsRunsTree.vue:47`; `stores/projectRunsStore.ts` (`projectRunHistory`) | (SR-004) The Projects view lists every Project; its empty state links "New Project" | E-14 |
+| Code / docs | Branch `codex/left-panel-super-agents` (base `3ef5e33eec`, same as this ticket): commits `79d6c0e584`, `04b1cc57b0`; uncommitted `run-last-activity-reader.ts` (85 lines) and its test; its `design-spec.md` SR-006 (ARCH-REV-003: AR-005, AR-006 resolved); `code-review-report.md` CRR-001 Fail (CR-001 order by last activity; CR-002 dead standalone target) | (SR-004) The Runs list (`components/runList/*`, `runListStore`, `runListProjection`, `useRunListDisclosure`, `useRunListArchiveOlder`, the read window, `archiveRuns`) exists against the same base. That ticket also removed the trees and moved the load to `app.vue` | E-15 |
+| Repo | This branch: `1da49572ab` (docs), `8fe7b2e57e` (server SR-003); uncommitted web SR-003 work (the implementation engineer's pause report, 2026-11-05) | (SR-004) What must be reverted or adapted | E-16 |
 
 ## Persisted Data And State Facts
 

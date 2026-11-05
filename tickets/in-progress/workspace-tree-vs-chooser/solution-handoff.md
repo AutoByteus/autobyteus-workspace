@@ -1,65 +1,87 @@
 # Solution Handoff — `workspace-tree-vs-chooser`
 
-- Result: **Architecture Design Complete** (SR-003, revised after ARCH-REV-001), `task_size=Medium`, `architectural_risk=High`.
-- Origin: Project Task `autobyteus-385` (Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`) from `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), 2026-11-05.
+- Result: **Architecture Design Complete** (SR-004, revised after ARCH-REV-003), `task_size=Large`, `architectural_risk=High`.
+- Origin: Project Task `autobyteus-385` (Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`), from `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), 2026-11-05.
+- Earlier rounds: SR-001…SR-003, a hide-from-tree design that passed ARCH-REV-002. It is preserved in commit `1da49572ab` and replaced by SR-004.
 
-## Request summary
+## Request Summary
 
-Remove a workspace from the left Workspaces tree while it stays choosable in the chat's workspace chooser. Removing it from the chooser stays possible on purpose. No files, runs or history are lost. A test is required. Release only on the user's word.
+The Task: remove a workspace from the left tree while it stays selectable in the chat's workspace chooser. Removing it from the chooser stays possible on purpose. No files, runs or history are lost. A test is required, the work is finalized on the base branch, and it is released only on the user's word.
 
-The user's typical scenario (his words, 2026-11-05): he hides a folder after archiving or deleting its runs; starting a run there again brings it back to the left side.
+The user then reshaped it with the Product Team; the design is approved and re-approved:
+- One `⋯` "View" menu in the run section chooses Runs, Workspaces (the default) or Projects.
+- The Workspaces and Projects views list a folder or Project only while it has a run, and show text-only empty states.
+- The run section has no add actions and no folder X.
+- The chat chooser has a deliberate "Remove", with a confirmation, refused while a run is running.
+- The Runs view is the approved `left-panel-super-agents` list, built here (DEC-008). The user will cancel autobyteus-378 afterwards (FU-002).
 
 ## Approval
 
-The Solution Designer approved within the direction. The user left the design to this role ("you'll do your own work … your design and the implement based on the current ticket itself") and told it to ignore the left-panel ticket. He was informed and gave his scenario; DEC-001 and DEC-005 follow it.
+- The user approved the Product design on 2026-11-05: "I'll approve this. I think this is the ones we want". After the correction: "now everything is good now. approved".
+- DEC-008 (a), the Runs view built in this ticket, and DEC-010 are his decisions in this conversation.
+- DEC-009 was decided by the Solution Designer within the direction.
 
-## Classification evidence
+## Classification Evidence
 
-Medium: about 15–20 files across server `workspaces/`, the workspace GraphQL type, three run mutations, the web store, tree, phone list and chooser.
-
-High risk because of:
-- new persisted state (an additive file);
-- a contract field and mutation used by every client;
-- the rule about which commands count as the user's own, which must cover every launch surface.
+Large / High (design spec, "Task Size And Architectural Risk"):
+- A new view ported from 378.
+- A GraphQL argument changes meaning (`null` means every run).
+- A server `lastActivityAt` is read from memory files on every history read.
+- The shared history store gets one read window.
+- The UI blast radius is broad.
+- The SR-003 code must be reverted.
 
 ## Artifacts (absolute paths)
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-tree-vs-chooser/tickets/in-progress/workspace-tree-vs-chooser/requirements-doc.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-tree-vs-chooser/tickets/in-progress/workspace-tree-vs-chooser/investigation-notes.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-tree-vs-chooser/tickets/in-progress/workspace-tree-vs-chooser/design-spec.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-tree-vs-chooser/tickets/in-progress/workspace-tree-vs-chooser/solution-revision-record.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-tree-vs-chooser/tickets/in-progress/workspace-tree-vs-chooser/follow-ups.md`
-- Review: `design-review-report.md`, `architecture-review-revision-record.md` (same folder)
-- Supplements: none. Product Design: N/A (DEC-004).
+Ticket documents, all in `/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-tree-vs-chooser/tickets/in-progress/workspace-tree-vs-chooser/`:
+- `requirements-doc.md` (SR-004)
+- `investigation-notes.md` (E-01…E-16)
+- `design-spec.md` (SR-004)
+- `solution-revision-record.md`
+- `follow-ups.md` (FU-001…FU-003)
+- `product-design-request.md` (the requests to the Product Team and their returns)
+- `design-review-report.md` and `architecture-review-revision-record.md` (ARCH-REV-001 and ARCH-REV-002, on SR-002 and SR-003)
+
+Normative supplements:
+- `/Users/normy/autobyteus_org/autobyteus-web-design-worktrees/workspace-tree-vs-chooser/tickets/in-progress/workspace-tree-vs-chooser/ui-ux-spec.md`, with VIS-001…VIS-017 (branch `design/workspace-tree-vs-chooser` at `7712ec14`). The runnable reference is in the same worktree, port 3385 (see its runbook).
+- The Runs list rows: `tickets/in-progress/left-panel-super-agents/ui-ux-spec.md` on branch `design/left-panel-super-agents` (`c42d1b64`) of `/Users/normy/autobyteus_org/autobyteus-web-design`.
+
+Code to port:
+- Branch `codex/left-panel-super-agents`, worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/left-panel-super-agents`.
+- Commits `79d6c0e584` and `04b1cc57b0`, plus the uncommitted `autobyteus-server-ts/src/run-history/services/run-last-activity-reader.ts` and its test.
+- Its design: `tickets/in-progress/left-panel-super-agents/design-spec.md` (SR-006).
+- See the design spec's "Porting Rules".
 
 ## Workspace
 
 - Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-tree-vs-chooser`, branch `codex/workspace-tree-vs-chooser`.
-- Base `origin/personal` @ `3ef5e33eecf7b50588b2b6dcec6908ab18152f1e`; target `origin/personal`.
-- No source changes; the ticket docs are uncommitted. Dependencies are not installed yet.
+- Base and target: `origin/personal`, base at `3ef5e33eec`.
+- Branch state:
+  - `1da49572ab`: docs;
+  - `8fe7b2e57e`: the SR-003 server work, to be reverted;
+  - uncommitted SR-003 web work, to be discarded except the chooser Remove.
+- The SR-004 ticket docs are uncommitted.
 
-## Open risks
+## Open Risks
 
-- A user creation surface outside `prepareAgentRun`, `createAgentTeamRun`, `createAgentOrgRun` and `createWorkspace` would not bring a folder back for good; its runs still show while active (DEC-006).
-- Clients see the change on their next fetch; there is no live feed for workspaces.
+- The uncapped read with `lastActivityAt` must stay within a 250 ms poll-read budget on a data set shaped like the user's. Exceeding it is an escalation trigger.
+- The ported code failed 378's code review (CR-001). Here it is fixed by DS-005 and reviewed as new code.
 
-## Next expected action
+## ARCH-REV-003 Revision (2026-11-05)
+
+- **AR-003:** `requirements-doc.md` is rewritten to SR-004 only. The approval is the user's, persisted data is `No`, and the hide design is withdrawn.
+- **AR-004:** the Workspaces folder rule moves to `buildRunHistoryNavigationProjection`, which runs after the team and Org runs are attached. The Projects view is unchanged. Added tests: team-only, Org-only and draft-only folders.
+- **Recommendations adopted:** the read window follows the view (`null` only for Runs), which drops the display cap. The tree state prunes its own expansion.
+- See "ARCH-REV-003 Resolution" in `design-spec.md`.
+
+## Next Expected Action
 
 Independent architecture review, then implementation.
 
-## Route applied
+## Route Applied
 
 `get_handoff_rules` (2026-11-05): Large or High → `/software_engineering_team/architecture_reviewer`.
 
-## SR-003 Revision (after ARCH-REV-001, 2026-11-05)
-
-- **AR-001:** the agent-run re-show point is the GraphQL `prepareAgentRun` resolver (`agent-run.ts:233`), the user's chat and mobile path. A peer's delegation calls the service, not the resolver. A cancelled or never-started prepared run leaves the folder shown, since the user chose it. `createAgentRun` gets no re-show; it has no caller (FU-001).
-- **AR-002 (DEC-006):** the tree and the phone's list show a hidden folder while one of its runs is active, with that run, and hide it again when none is. Only creation and "Add workspace" bring a folder back for good. This covers every restore and resume path without wiring them. New AC-008.
-- **AC-003 kept:** delegated copies are not in a folder's history groups (E-10), so they never show a hidden folder; an opened delegated-copy context must not count either.
-- **Follow-ups:** `follow-ups.md` FU-001.
-- **Recommendation adopted:** writes to the hidden list are serialized like the registry's.
-- **Route:** the architecture-review rule → `/software_engineering_team/architecture_reviewer`.
-
 ## Review Outcome (recorded, 2026-11-05)
 
-- ARCH-REV-002: **Pass** on SR-003 (AR-001, AR-002 resolved). The reviewer sent the package to `/software_engineering_team/implementation_engineer`. Its non-blocking recommendation: one predicate for the shown-or-active rule, shared by the tree and the phone list. Nothing forwarded by the Solution Designer.
+- ARCH-REV-004: **Pass** on SR-004 as revised; AR-003 and AR-004 are resolved. The reviewer sent the package to `/software_engineering_team/implementation_engineer`, with one note: the e2e fixture `task-agent-sibling-sidebar.page.vue` reads folders through `getTreeNodes()`, so it needs a listed run or an update. The Solution Designer forwarded nothing.
