@@ -65,7 +65,8 @@ export class WorkspaceRunHistoryService {
       options.teamRunHistoryService ?? getTeamRunHistoryService();
   }
 
-  async listWorkspaceRunHistory(limitPerAgent = 6): Promise<WorkspaceRunHistoryGroup[]> {
+  /** Every folder's runs; `limitPerAgent: null` keeps every agent run (see `AgentRunHistoryService.listRunHistory`). */
+  async listWorkspaceRunHistory(limitPerAgent: number | null = 6): Promise<WorkspaceRunHistoryGroup[]> {
     const [agentWorkspaceGroups, teamRuns] = await Promise.all([
       this.agentRunHistoryService.listRunHistory(limitPerAgent),
       this.teamRunHistoryService.listTeamRunHistory(),
@@ -77,7 +78,7 @@ export class WorkspaceRunHistoryService {
 
   async getWorkspaceRunHistory(
     workspaceRootPath: string,
-    limitPerAgent = 6,
+    limitPerAgent: number | null = 6,
   ): Promise<WorkspaceRunHistoryGroup> {
     const canonicalRootPath = canonicalizeWorkspaceRootPath(workspaceRootPath);
     const [agentWorkspaceGroups, teamRuns] = await Promise.all([

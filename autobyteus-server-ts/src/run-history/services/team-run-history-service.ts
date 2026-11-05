@@ -14,6 +14,7 @@ import { projectExecutionTree } from "../../services/agent-streaming/team-execut
 import { runModelConfigEditability, type RunModelConfigEditability } from "../domain/run-model-config.js";
 import { createRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { getProjectTaskService, type ProjectTaskService } from "../../projects/services/project-task-service.js";
+import { RunLastActivityReader } from "./run-last-activity-reader.js";
 
 export interface DeleteStoredTeamRunResult { success: boolean; message: string }
 export interface ArchiveStoredTeamRunResult { success: boolean; message: string }
@@ -41,6 +42,7 @@ export class TeamRunHistoryService {
   private readonly live: TeamRunLiveProjectionService;
   private readonly layout: AgentMemoryLayout;
   private readonly adHocTasks?: Pick<ProjectTaskService, "deleteAdHocTasksHostedBy">;
+  private readonly lastActivity: Pick<RunLastActivityReader, "forTeamRun">;
 
   constructor(memoryDir: string, options: {
     executionTreeStore?: TeamRunExecutionTreeStore;
@@ -49,7 +51,10 @@ export class TeamRunHistoryService {
     liveProjectionService?: TeamRunLiveProjectionService;
     /** Removes the ad-hoc Tasks of a permanently deleted run; defaults to the process Task service. */
     adHocTasks?: Pick<ProjectTaskService, "deleteAdHocTasksHostedBy">;
+    /** A run's last activity over its agents. */
+    lastActivity?: Pick<RunLastActivityReader, "forTeamRun">;
   } = {}) {
+    this.lastActivity = options.lastActivity ?? new RunLastActivityReader({ memoryDir });
     this.adHocTasks = options.adHocTasks;
     this.treeStore = options.executionTreeStore ?? new TeamRunExecutionTreeStore();
     this.catalog = options.catalogService ?? getTeamRunHistoryCatalogService();
@@ -67,7 +72,8 @@ export class TeamRunHistoryService {
       if (row.archivedAt && !projection.isActive) continue;
       const tree = await this.readTree(row.teamRunId);
       if (!tree) continue;
-      items.push(this.toHistoryItem(row, tree, projection));
+      const lastActivityAt = await this.lastActivity.forTeamRun({ teamRunId: row.teamRunId, createdAt: row.createdAt });
+      items.push(this.toHistoryItem(row, tree, projection, lastActivityAt));
     }
     return items.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
   }
@@ -118,6 +124,7 @@ export class TeamRunHistoryService {
     row: TeamRunIndexRow,
     tree: TeamRunExecutionTreeSnapshot,
     projection: { isActive: boolean; memberStatusSnapshots: TeamRunMemberStatusProjection[] },
+    lastActivityAt: string,
   ): TeamRunHistoryItem {
     const members = collectConfiguredAgents(tree.rootTeam.members);
     return {
@@ -128,6 +135,7 @@ export class TeamRunHistoryService {
       workspaceRootPath: row.workspaceRootPath ?? members.find((member) => member.launchConfiguration.workspaceRootPath)?.launchConfiguration.workspaceRootPath ?? null,
       summary: row.summary,
       createdAt: row.createdAt,
+      lastActivityAt,
       archivedAt: row.archivedAt ?? null,
       terminatedAt: row.terminatedAt ?? null,
       isActive: projection.isActive,

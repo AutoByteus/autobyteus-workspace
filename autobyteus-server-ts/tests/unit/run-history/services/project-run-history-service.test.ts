@@ -31,7 +31,7 @@ const teamRow = (teamRunId: string): TeamRunIndexRow => ({
 const teamHistory = (rows: TeamRunIndexRow[]) => ({
   listTeamRunHistory: async (include: (row: TeamRunIndexRow) => boolean = () => true) => rows.filter(include).map((r) => ({
     teamRunId: r.teamRunId, teamDefinitionId: r.teamDefinitionId, teamDefinitionName: r.teamDefinitionName, coordinatorAddress: "/lead",
-    workspaceRootPath: "/ws", summary: "", createdAt: r.createdAt, archivedAt: null, terminatedAt: null, isActive: false, members: [],
+    workspaceRootPath: "/ws", summary: "", createdAt: r.createdAt, lastActivityAt: r.createdAt, archivedAt: null, terminatedAt: null, isActive: false, members: [],
     rootTeam: {} as never,
   })),
 });
