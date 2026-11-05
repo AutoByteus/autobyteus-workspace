@@ -1,0 +1,2 @@
+base window 6: poll p50 50.7 ms, p95 57.6 ms, max 60.8 ms (cold 62.2 ms); {"agentRuns":24,"teamRuns":200,"orgRuns":10}; 876372 bytes; load 73.6/90.1/110.1 → 69/88.5/109.3
+PASS /Users/normy/autobyteus_org/autobyteus-worktrees/workspace-tree-vs-chooser/tickets/in-progress/workspace-tree-vs-chooser/evidence/api-e2e/API-RB-base/evidence.json

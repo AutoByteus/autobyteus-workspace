@@ -1,0 +1,197 @@
+{
+  "startedAt": "2026-11-05T21:07:38.530Z",
+  "cases": {
+    "WVC-001": {
+      "title": "AC-012/VIS-017/DEC-010: a folder is listed only while it has a listed run (Team-only and Org-only folders listed; a draft is not; the first message lists it; archiving its last run unlists it); the chooser offers every folder",
+      "result": "Pass",
+      "ms": 29321,
+      "details": {
+        "folders": {
+          "teamOnly": {
+            "root": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-dhjPgi/wvc-folders/team-only-1",
+            "id": "agent_ws_42543710a81843d7c0e3786eca9294c1dd57530c82c396c641276fb2ad160786",
+            "name": "team-only-1"
+          },
+          "orgOnly": {
+            "root": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-dhjPgi/wvc-folders/org-only-2",
+            "id": "agent_ws_d608d209cd55c421662d7804aea85163d883d915abe50700f55added52917795",
+            "name": "org-only-2"
+          },
+          "life": {
+            "root": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-dhjPgi/wvc-folders/lifecycle-3",
+            "id": "agent_ws_ee8274cde9849dac3bec41acc47065c82539a07d54325c6daec81b6dd00543b7",
+            "name": "lifecycle-3"
+          }
+        },
+        "teamRunId": "home_team_a8ee_8c49c16f2db940cfbe416f0c48d79d0e",
+        "orgRunId": "hostorg_org_b4e3_c6b9490bba70449595aab683b9ae1aa6",
+        "rootsBefore": [
+          "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-dhjPgi/wvc-folders/org-only-2",
+          "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-dhjPgi/wvc-folders/team-only-1"
+        ],
+        "chooserBefore": [
+          "temp",
+          "agent_ws_ee8274cde9849dac3bec41acc47065c82539a07d54325c6daec81b6dd00543b7",
+          "agent_ws_d608d209cd55c421662d7804aea85163d883d915abe50700f55added52917795",
+          "agent_ws_42543710a81843d7c0e3786eca9294c1dd57530c82c396c641276fb2ad160786"
+        ],
+        "chip": "lifecycle-3",
+        "rootsWithDraft": [
+          "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-dhjPgi/wvc-folders/org-only-2",
+          "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-dhjPgi/wvc-folders/team-only-1"
+        ],
+        "runId": "plain_df9a_85240187f0214a1990aa476741c9ed42",
+        "rootsAfter": [
+          "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-dhjPgi/wvc-folders/org-only-2",
+          "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-dhjPgi/wvc-folders/team-only-1"
+        ],
+        "chooserAfter": [
+          "temp",
+          "agent_ws_ee8274cde9849dac3bec41acc47065c82539a07d54325c6daec81b6dd00543b7",
+          "agent_ws_d608d209cd55c421662d7804aea85163d883d915abe50700f55added52917795",
+          "agent_ws_42543710a81843d7c0e3786eca9294c1dd57530c82c396c641276fb2ad160786"
+        ]
+      }
+    },
+    "WVC-002": {
+      "title": "AC-002/AC-005/CR-001: Remove in the chooser: the chosen folder with stopped Agent, Team and Org runs leaves the chooser and the Workspaces view; the chip falls back to Temp; its runs and files stay; a folder with a running run is refused and unchanged",
+      "result": "Pass",
+      "ms": 48403,
+      "details": {
+        "folders": {
+          "removed": {
+            "root": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-dhjPgi/wvc-folders/removed-4",
+            "id": "agent_ws_c9e215f60a517de0ee14443700ec63c65516761a5e963dc60f00dcfd89618e31",
+            "name": "removed-4"
+          },
+          "busy": {
+            "root": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-dhjPgi/wvc-folders/busy-5",
+            "id": "agent_ws_32bf863b85d9b889927c075d7d6065f2f3e7eeca0f41a72223523e6353f21220",
+            "name": "busy-5"
+          }
+        },
+        "agentRunId": "plain_df9a_79ac8fc80f1d4c27b97c2e1555648b6e",
+        "teamRunId": "home_team_a8ee_33674643f7074ad8bb694133d14e798f",
+        "orgRunId": "hostorg_org_b4e3_c21473ddc8e745c59d8f770bd3ca5b98",
+        "runningRunId": "plain_df9a_c44cfe356d7746509bac87ad61703160",
+        "chipBefore": "removed-4",
+        "confirmation": "Remove folder\n\nRemove removed-4?\n\nIt will no longer be offered when you choose a folder, and its runs will not be listed in the left panel. Files, memories, artifacts, and run history are not deleted. Add the folder again to use it.\n\n/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-dhjPgi/wvc-folders/removed-4\n\nCancel\nRemove",
+        "chipAfter": "Temp workspace",
+        "rootsAfterPoll": [
+          "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-dhjPgi/wvc-folders/busy-5",
+          "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-dhjPgi/wvc-folders/org-only-2",
+          "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-dhjPgi/wvc-folders/team-only-1"
+        ]
+      }
+    },
+    "WVC-003": {
+      "title": "REQ-008/AC-009/AC-011, DS-002/DS-007: Runs → Workspaces → Runs with 9 runs of one agent: windows null/6/null; Show older (N) counts every run; the tree shows the newest 6; nothing missing after the round trip; the view survives a reload; Archive all older is all-or-nothing",
+      "result": "Fail",
+      "ms": 8984,
+      "error": "the Workspaces tree does not show the agent's newest 6",
+      "details": {
+        "treeRuns": [
+          "plain_df9a_60b7532d6730489282724999eb1f0b0d",
+          "plain_df9a_c4e19a3a3c884840906873091c4786a7",
+          "plain_df9a_7ea9ba10665047a1945cb647e1a0ef92",
+          "plain_df9a_9b152308a9d04cd994182eec92322783",
+          "plain_df9a_d0baa49f8aac4964945db3c1583b03ff",
+          "plain_df9a_a6b00cc9dcac44f8b81026daa295f7b4",
+          "plain_df9a_9ff03beee7044329808faf3e2a921ddb"
+        ],
+        "newestSix": [
+          "plain_df9a_9ff03beee7044329808faf3e2a921ddb",
+          "plain_df9a_a6b00cc9dcac44f8b81026daa295f7b4",
+          "plain_df9a_d0baa49f8aac4964945db3c1583b03ff",
+          "plain_df9a_9b152308a9d04cd994182eec92322783",
+          "plain_df9a_7ea9ba10665047a1945cb647e1a0ef92",
+          "plain_df9a_c4e19a3a3c884840906873091c4786a7"
+        ]
+      }
+    },
+    "WVC-004": {
+      "title": "DS-002/design Risks: the desktop Runs view reads with null while the paired phone reads with 5",
+      "result": "Fail",
+      "ms": 9204,
+      "error": "the desktop Runs view read with another window",
+      "details": [
+        6,
+        null,
+        null
+      ]
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 62783
+    },
+    {
+      "label": "frontend",
+      "pid": 62831
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 62831,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 62783,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-dhjPgi"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-dhjPgi",
+  "backendUrl": "http://127.0.0.1:61146",
+  "frontUrl": "http://127.0.0.1:61147",
+  "definitions": {
+    "ids": {
+      "manager": "manager-c1cc",
+      "lead": "lead-d27e",
+      "worker": "worker-3372",
+      "plain": "plain-df9a",
+      "engineer": "engineer-52be",
+      "reviewer": "reviewer-3455",
+      "writer": "writer-8364",
+      "offline": "offline-7114",
+      "unoffered": "unoffered-450a",
+      "badsettings": "badsettings-221a",
+      "incomplete": "incomplete-78bb",
+      "build": "build-team-34ad",
+      "pair": "pair-team-6495",
+      "squad": "squad-team-b6c8",
+      "home": "home-team-a8ee",
+      "launchOrg": "launchorg-org-4945",
+      "hostOrg": "hostorg-org-b4e3"
+    },
+    "names": {
+      "manager": "Manager c1cc",
+      "lead": "Lead d27e",
+      "worker": "Worker 3372",
+      "plain": "Plain df9a",
+      "engineer": "Engineer 52be",
+      "reviewer": "Reviewer 3455",
+      "writer": "Writer 8364",
+      "offline": "Offline 7114",
+      "unoffered": "Unoffered 450a",
+      "badsettings": "Badsettings 221a",
+      "incomplete": "Incomplete 78bb",
+      "build": "Build Team 34ad",
+      "pair": "Pair Team 6495",
+      "squad": "Squad Team b6c8",
+      "home": "Home Team a8ee",
+      "launchOrg": "LaunchOrg Org 4945",
+      "hostOrg": "HostOrg Org b4e3"
+    }
+  },
+  "browserErrors": [],
+  "summary": {
+    "pass": 2,
+    "fail": 2
+  },
+  "completedAt": "2026-11-05T21:09:48.371Z"
+}
