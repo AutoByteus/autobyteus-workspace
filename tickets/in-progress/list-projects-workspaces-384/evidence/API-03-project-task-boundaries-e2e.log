@@ -1,0 +1,34 @@
+# API-03 — commit af13798404 + the E-006 list_projects assertions (committed next), 2026-11-05T06:22:28Z
+# env -i PATH HOME=<fresh temp> TMPDIR pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/project-task-boundaries.e2e.test.ts --no-watch
+# Look for: '✓ … E-006: path links retain descriptions …', '✓ … API-MCP: selected default host …', '✓ … E-005 …', 'Tests  N passed', exit=0
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP: selected default host executes equivalent compact mutations and detailed native reads 201ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-FILES: multipart bytes, saved ownership, typed deltas and Done survive reader reconstruction 461ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP collision: selected protected list_projects adapter wins over a configured MCP name 6ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP collision: selected protected create_project adapter wins over a configured MCP name 22ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-MCP collision: selected protected update_project adapter wins over a configured MCP name 36ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > API-AGG: public registration is not mkdir; failed aggregate save preserves registry and prior records 124ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > E-005: selected HTTP and native Project create/patch save defaults and reject invalid input atomically 307ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > E-006: path links retain descriptions; lists replace, blanks and [] clear only associations 465ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > E-007: current Projects/Tasks/context/assignments/history/registry/folders survive metadata/list patches and reader reconstruction 209ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > CTX-E2E-001: context_files create/patch over MCP and native are saved, readable through GraphQL/REST/list and outlive their sources (AC-001..004, 006, 009, 011) 295ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > CTX-E2E-002: invalid context_files fail with a path-naming error and change nothing, including no DONE closure (AC-004, 005, 008) 737ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > CLS-API-001: CANCELLED patch/ack, DONE<->CANCELLED, reopen, list filter, tool schemas, errors, GraphQL enum, open count and stored shape (task-closed-status AC-004, 006, 007, 010, 012) 253ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > TKD-API-001: keys as Task IDs, depends_on by key / any case / long ID, rejected dependencies write nothing, blocked Tasks start, a deleted Project's keys stay unknown (AC-020, 022, 024, 025, 027) 1234ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > POF-API-001: part_of by key / any case / long ID, "" clears, omitted keeps; partOf / parts in numeric key order; refusals write nothing; a parent's DONE / CANCELLED closes its open parts and lists them; reopen, repeats and a part's close never cascade (task-part-of AC-003, 004, 006, 014, 015, 018) 1635ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > CMT-API-001: update_task add_comment by key / any case / long ID appends numbered comments, never the description; DONE + comment is one write; blank, wrong-shape and unknown are refused with nothing written; list_project_tasks shows the texts (task-comments AC-001, AC-005, AC-008) 752ms
+TASK_PART_CLOSE_FAILED {
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > CMT-API-002: a parent's close names the part it could not close (damaged run data) in partsNotClosed, next to closedParts; the field is absent when every part closes (task-comments AC-009, autobyteus-187) 277ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > TTL-API-001: a Task title is required, trimmed and kept whole however long; update_task changes it; refusals write nothing (MCP equals native; GraphQL the same) 907ms
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > GET-API-001: get_project_task returns one Task in full by key in any case or long ID; another Project's or an unknown Task is TASK_NOT_FOUND; arguments are checked (MCP equals native) 292ms
+ Test Files  1 passed (1)
+      Tests  18 passed (18)
+   Duration  16.87s (transform 5.89s, setup 42ms, import 7.90s, tests 8.51s, environment 0ms)
+exit=0
+
+## Negative control: E-006 with the base listProjectSummaries (git show 1964ce9874:autobyteus-server-ts/src/projects/services/project-service.ts temporarily in place), 2026-11-05T06:22:56Z
+base file in place: 0 toProjectSummary references
+     × E-006: path links retain descriptions; lists replace, blanks and [] clear only associations 72ms
+AssertionError: expected [ { …(2) }, { …(3) } ] to deep equally contain { …(4) }
+      Tests  1 failed | 17 skipped (18)
+exit=1 (expected 1: the assertions catch a list_projects without workspaces)
+restored: git status of file '', 2 toProjectSummary references
