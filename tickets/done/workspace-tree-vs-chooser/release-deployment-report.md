@@ -54,3 +54,26 @@ The left panel's three views, Remove moved to the chat chooser, and the run-hist
 ## Finalization Record
 
 Recorded after the merge below.
+
+- Ticket branch `codex/workspace-tree-vs-chooser`: archive commit `25f7154381`, pushed after the Secret Gate passed.
+- `origin/personal` stayed at `3ef5e33eec` throughout, so no re-integration was needed.
+- `git merge --no-ff` → `8142ba8116`. On the merged state: Secret Gate PASS, hygiene exit 0, licensing consistent.
+- Pushed `3ef5e33eec..8142ba8116 HEAD -> personal`. Repository finalization: `Completed`.
+- Release: `Not required` (AC-007, the user's word). The user has announced a separate beta release ticket.
+
+## Post-Finalization Cleanup
+
+- Ticket worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/workspace-tree-vs-chooser` removed and pruned (only untracked build output was in it).
+- Local branches `codex/workspace-tree-vs-chooser` (`25f7154381`) and `finalize/workspace-tree-vs-chooser` (`8142ba8116`) were deleted; both are in `origin/personal`.
+- `origin/codex/workspace-tree-vs-chooser` is kept.
+- The clean clone and its scripts in `/tmp` were removed. The main checkout was not touched.
+- This record was committed from a temporary detached checkout of `origin/personal` (`/tmp/ab385-record`), removed after the push.
+
+## Final Status
+
+- Verification: `Completed`
+- Repository finalization: `Completed` (`8142ba8116`)
+- Release: `Not required`
+- Cleanup: `Completed`
+- Unresolved blocker: `None`
+- Terminal package sent to the Solution Designer: sent with `send_message_to` to `/software_engineering_team/solution_designer` right after this record is pushed (confirmed in the delivery conversation)
