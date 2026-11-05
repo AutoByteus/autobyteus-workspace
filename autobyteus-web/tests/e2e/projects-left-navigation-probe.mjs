@@ -28,7 +28,8 @@
 //   PLN-07 353 REQ-001/DEC-003: with 6 newer runs under P, P lists the 6 newest only (the older run hosting open work is not
 //          pinned); after 3 are archived it is listed again and opens with its delegated run.
 //   PLN-08 353 AC-004 (reconnect): real backend restart with Projects mode shown: the tree stays; a Project created after it
-//          appears live; the current state after a reload.
+//          is not listed without a run (workspace-tree-vs-chooser REQ-009) and is listed once a run is started under it
+//          and the view is shown; work dispatched after the restart appears live; the current state after a reload.
 //   PLN-09 353 AC-004: archive and delete a run in Projects mode (gone in both modes), Stop of an Agent and a Team run reads
 //          stopped at once, group "Archive all" only touches the Project's runs, a deleted Project leaves the tree live.
 //   PLN-10 347 AC-013/AC-016/AC-017: keyboard, zh-CN, narrow layout and strip, briefcase icons; reference screenshots.
@@ -774,11 +775,14 @@ const restartLive = async () => {
     out.treeKept = (await runRowIn(pSection, A).count()) === 1 && (await teamCopyRowIn(pSection, s.runs.squadAddress).count()) === 1;
     assert(out.treeKept, 'tree lost across the restart');
     await shot(page, 'PLN-08-tree-kept-after-restart');
-    // After the reconnect: a Project created now appears in Projects mode without a reload.
+    // A Project is listed only while it has a run (workspace-tree-vs-chooser REQ-009): one created after the reconnect stays
+    // unlisted across a poll (it is listed below, once it has a run).
     const late = (await gql('mutation($input:CreateProjectInput!){createProject(input:$input){projectId name}}', { input: { name: `After Restart ${randomUUID().slice(0, 4)}` } })).createProject;
     s.projects.L = late;
-    await until('Project created after the restart listed live', async () => (await page.locator(`${T('project-row')}[data-project-id="${late.projectId}"]`).count()) === 1, 60000);
-    out.lateProjectLive = true;
+    const lateRow = page.locator(`${T('project-row')}[data-project-id="${late.projectId}"]`);
+    await sleep(6000);
+    out.lateProjectUnlistedWithoutRun = (await lateRow.count()) === 0;
+    assert(out.lateProjectUnlistedWithoutRun, 'a Project without a run is listed');
     // A dispatches P5 after the restart (restored, as the app does for a stopped run).
     await restoreAgent(A);
     const p5 = await agentCalls(A, 'delegate_task', { recipient_address: `/${segment(s.names.checker)}`, task_id: s.tasks.P5 });
@@ -789,6 +793,15 @@ const restartLive = async () => {
     assert(out.copyInStoredTree, 'the copy is not in A\'s stored tree', out);
     out.liveInSamePage = await until('copy live in the same page', async () => (await copyRowIn(pSection, copy).count()) === 1, 15000).then(() => true, () => false);
     await shot(page, 'PLN-08-same-page-after-dispatch');
+    // Its first run is started by another client (the API). The Projects view re-reads a Project on `connected`, on a
+    // Project change, after this window's own run actions, and when the view is shown (autobyteus-353 REQ-003), so the
+    // Project appears when the view is shown again, in the same page without a reload.
+    out.lateRun = await createAgentRun({ projectId: late.projectId });
+    await terminateAgent(out.lateRun);
+    await showMode(page, 'workspaces');
+    await showMode(page, 'projects');
+    await until('Project created after the restart listed with its first run', async () => (await lateRow.count()) === 1, 30000);
+    out.lateProjectListed = true;
     await page.reload({ waitUntil: 'networkidle' });
     await showMode(page, 'projects');
     const reloaded = await openProject(page, 'P');
@@ -988,7 +1001,7 @@ const CASES = {
   'PLN-05': ['353 AC-002, 347 AC-006/010: P Team with Task line and members, Q and Temp work all nested under the run in P live; not under Q; board', liveDelegation],
   'PLN-06': ['347 AC-008: DONE removes rows live; reopen + message brings them back', closureAndReopen],
   'PLN-07': ['353 REQ-001/DEC-003: 6 newest only, no pinning; listed again after archives and opens', capNoPinning],
-  'PLN-08': ['353 AC-004 reconnect: real backend restart keeps the tree; Project created after it live; current after reload', restartLive],
+  'PLN-08': ['353 AC-004 reconnect: real backend restart keeps the tree; a Project created after it is listed once it has a run; work dispatched after it live; current after reload', restartLive],
   'PLN-09': ['353 AC-004: archive and delete in Projects mode, Agent and Team Stop read stopped, group Archive all scoped, deleted Project leaves live', archiveAndDelete],
   'PLN-10': ['347 AC-013/016/017: keyboard, zh-CN, narrow, briefcase, reference screenshots', accessibilityAndLooks],
 };
