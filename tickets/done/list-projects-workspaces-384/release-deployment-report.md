@@ -42,8 +42,14 @@
 
 ## Release / Publication / Deployment
 
-- The beta is recorded in `tickets/done/release-beta-384/release-deployment-report.md`: version, checks before tagging, the four workflows, assets and Docker.
+- Applicable: `Yes`. This ticket shipped in **`v1.5.12-beta.1`** (release commit `f10c45aab8`): 4 of 4 workflows, 23 of 23 assets, Docker `:1.5.12-beta.1`/`:beta`.
+- The release smoke check passed 10 of 13; Codex was refused by quota and waived by the user ("waive please for the beta").
+- The full record is in `tickets/done/beta-release-v1.5.12-beta.1/release-deployment-report.md`, which completes autobyteus-383's unfinished attempt at the same version.
 
 ## Post-Finalization Cleanup
 
 - The worktree and its local branches are removed after the release records are pushed; the remote ticket branch is kept.
+
+## Final Status
+
+- Verification `Yes`; finalization `Yes` (`d09985c561`); release `Yes` (`v1.5.12-beta.1`); cleanup `Yes`, after the records push; blocker `None`; terminal package sent to the Solution Designer.
