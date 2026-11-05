@@ -1,0 +1,26 @@
+# Check: IMP-08
+# Command: cd autobyteus-web && env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR="$TMPDIR" NUXT_TEST=true pnpm exec vitest run stores/__tests__/runHistoryListedFolders.spec.ts — first with autobyteus-web/utils/runTreeProjection.ts from c20d13fa02 (red), then as committed (green)
+# Commit: 71ce23ced8 (red run: runTreeProjection.ts as of c20d13fa02, everything else 71ce23ced8)
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28 via corepack; env -i PATH HOME=<fresh mktemp dir> TMPDIR (TESTING.md isolation)
+# Date: 2026-11-05 CET
+# Full output: this file
+
+## Red: the CR-001 projection
+   ✓ the Workspaces view lists only folders with a listed run > lists the folders with an Agent run, only Team runs or only Org runs; not an empty or a draft-only folder, nor an empty Temp 14ms
+   ✓ the Workspaces view lists only folders with a listed run > Temp workspace follows the same rule 1ms
+   ✓ the Workspaces view lists only folders with a listed run > a prepared or just-started run of this session (not yet in the history) lists its folder 1ms
+   ✓ the Workspaces view lists only folders with a listed run > builds the indexes and ancestries for listed folders only 1ms
+   ✓ the Workspaces view lists only folders with a listed run > hasListedRun counts a Team row of the root, an Org run, and any Agent row but an unsent draft 0ms
+   ✓ the Workspaces view lists only folders with a listed run > a removed folder leaves the Workspaces view > a folder with a stopped Agent run 1ms
+   ✓ the Workspaces view lists only folders with a listed run > a removed folder leaves the Workspaces view > a folder with a stopped Team run 1ms
+   × the Workspaces view lists only folders with a listed run > a removed folder leaves the Workspaces view > a folder with a stopped Org run 4ms
+   × the Workspaces view lists only folders with a listed run > a removed folder leaves the Workspaces view > all three removed: no folder is listed, and no index or ancestry points at them 3ms
+   × the Workspaces view lists only folders with a listed run > a removed folder leaves the Workspaces view > stays out after the next read: the same history read again, and a status change of one of its runs, rebuild without it 2ms
+   ✓ the Workspaces view lists only folders with a listed run > a removed folder leaves the Workspaces view > a registered Org-only folder is still listed (AC-012), with its Org run 0ms
+   ✓ the Workspaces view lists only folders with a listed run > a status change of a run outside the listed folders asks for a rebuild (the first sent message, VIS-017); activity does not 0ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  3 failed | 9 passed (12)
+
+## Green: the fix
+ ✓ stores/__tests__/runHistoryListedFolders.spec.ts (12 tests) 24ms
+      Tests  12 passed (12)

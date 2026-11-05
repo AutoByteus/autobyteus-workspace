@@ -10,7 +10,9 @@ Commits of this round:
 | `51a4abc6ce` | The SR-004 package as received (ARCH-REV-004 Pass) |
 | `a5fc23849e` | Server: read window `null`, `lastActivityAt` (`RunLastActivityReader`) |
 | `0d3c31c4ae` | Web: the three views, the header menu, the rules, the chooser Remove, removals, docs, probes |
-| the evidence commit after `0d3c31c4ae` (see `git log`) | This handoff, the revision record and `evidence/implementation/` |
+| `2b012a21e1` | IR-001 handoff, revision record and evidence |
+| `71ce23ced8` | IR-002: CR-001…CR-003 (a removed folder with an Org run leaves the Workspaces view; two comment/mock fixes) |
+| the evidence commit after `71ce23ced8` (see `git log`) | IR-002 handoff update, revision record and evidence IMP-08…IMP-10 |
 
 ## Upstream Artifact Package
 
@@ -22,19 +24,19 @@ Commits of this round:
 - Supplemental task artifacts: `.../workspace-tree-vs-chooser/product-design-request.md` (UXJ-001/002, VIS-001…VIS-017 references)
 - Design review report: `.../workspace-tree-vs-chooser/design-review-report.md`
 - Architecture review revision record: `.../workspace-tree-vs-chooser/architecture-review-revision-record.md` (ARCH-REV-004)
-- Triggering rework report: N/A. This is the first implementation of SR-004. The earlier SR-003 implementation (`8fe7b2e57e`) was reverted, as the work list asked.
+- Triggering rework report: `.../workspace-tree-vs-chooser/code-review-report.md` and `code-review-revision-record.md`, CRR-001 (Fail; CR-001 blocking, CR-002 and CR-003 minor; all `Local Fix`).
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial` (of SR-004)
+- Implementation cycle: `Rework`
 - Implementation revision record: `.../workspace-tree-vs-chooser/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002` (IR-001 is the SR-004 baseline)
 - Related solution revision IDs: `SR-004`
 - Related architecture-review revision IDs: `ARCH-REV-004`
-- Related code-review revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001`
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Triggering finding IDs: `CR-001`, `CR-002`, `CR-003`
 
 Summary:
 
@@ -45,6 +47,7 @@ Summary:
 - The Workspaces view lists a folder only while it has a listed run. The Projects view lists a Project only while it has a run. Each view has text-only empty states.
 - The folder X, the inline add form, "New Project" and `RunSectionSwitch` are gone.
 - The chat chooser has "Remove" on each user folder.
+- IR-002: a folder that is not registered gets no node in the Workspaces view, whatever kind of run it has. Org runs now follow the Agent and Team rule (`projectWorkspaceHistoryByWorkspace`), so a folder removed in the chooser leaves every view even with a stopped Org run (CR-001).
 
 ## Routing Classification (Mandatory)
 
@@ -75,6 +78,7 @@ Summary:
 | DS-004 (REQ-009, REQ-011, AC-012, AC-014, VIS-001/005/014/015/016/017) | Workspaces: `hasListedRun`; filter before indexes; a patch into a dropped folder rebuilds. Projects: `projectHasListedRun`, `projectCount`. Text-only empty states | `stores/runHistoryNavigationProjection.ts` (`hasListedRun`, filter after the Org groups and team rows, before `runIndexById` and the ancestries). `runHistoryNavigationPatches.ts` returns `{rebuild: true}` for a non-ACTIVITY effect on a standalone run that is not indexed. `runHistoryNavigationStoreActions.ts` then calls `refreshRunNavigationTopologyForStore(store, 'run-outside-listed-folders')`. `stores/projectRunsProjection.ts` (`projectHasListedRun`, `projectCount`). `ProjectsRunsTree.vue` (`projects-tree-empty`, `projects-tree-no-runs`). Host: `workspaces-tree-empty`. `composables/useWorkspaceHistoryTreeState.ts` prunes the expansion of folders that leave its list (watcher) | Done. `buildRunHistoryTreeNodes` and `runTreeProjection` are untouched, and the Projects projection builds from `buildRunHistoryTreeNodes` directly, so the Workspaces rule cannot reach the Projects view. Its existing specs pass with only `projectHasListedRun` changes |
 | DS-005 (REQ-008) | Server `lastActivityAt` per Agent, Team and Org item: the newest memory mtime over the root and its located agents, else `createdAt`; an unreadable tree keeps the root's time | New `src/run-history/services/run-last-activity-reader.ts` (`forAgentRun`, `forTeamRun`, Org). Used by `agent-run-history-service.ts` `toHistoryItem`, `team-run-history-service.ts` and `collaboration-root-history-service.ts` (`last_activity_at`). Exposed by the GraphQL types. Web queries and `runHistoryStoreSupport.ts` parse it; `generated/graphql.ts` regenerated | Done. Location services are created lazily, because their constructors call `AgentTeamRunManager.getInstance()`. A per-folder read that throws is skipped with the warning `RUN_LAST_ACTIVITY_MEMORY_UNREADABLE`. Nothing is cached or written |
 | DS-006 (REQ-002, REQ-004, AC-002, AC-005, VIS-007…010) | Chooser Remove on user folders, never on Temp; 28px; hover or focus at `md` and up, always shown below `md`; danger confirmation; refusal toast; the chip falls back to Temp | `components/chat/ChatWorkspaceMenu.vue` (row `group/folder-row`; button `h-7 w-7 self-center mr-2`, `md:opacity-0`; `ConfirmationModal` danger). `composables/useWorkspaceHistoryWorkspaceRemoval.ts` became the chooser's: `RemovableWorkspace`, `pruneWorkspaceHistory` only, `onRemoved`, `workspaceFolders.*` copy with escaping. Server guard message: `src/workspaces/workspace-removal-guard.ts` | Done. The guard text is now REQ-004's "Stop active runs before removing this workspace." (deviation note 1) |
+| CR-001 (REQ-002, AC-002; AC-012 kept) | A removed (unregistered) folder leaves the Workspaces view whatever stopped runs it has; its runs stay in the Runs view and on disk; a registered Org-only folder is still listed | `utils/runTreeProjection.ts` `projectWorkspaceHistoryByWorkspace` attaches Org runs only to the registered folder nodes from `buildRunHistoryTreeNodes`, as Agent and Team runs are. It no longer adds a `history:<root>` node. The unreachable "No Workspace" bucket was removed: `NO_WORKSPACE_HISTORY_ROOT`, its branch in `WorkspaceHistoryWorkspaceSection.vue`, and the key `workspace.agentOrg.history.noWorkspace` (en, zh-CN) | Done. Remove is the only way an Org root becomes unregistered: launch requires a workspace for every placement, including `/` (`AGENT_ORG_WORKSPACE_REQUIRED`), and registers it (`activateWorkspacePath` → `ensureWorkspaceByRootPath`). A stopped-run update changes only the runtime and model (`replaceLaunchConfiguration`). The registry deletes entries only in `removeWorkspace` and the configured-temp-root cleanup. So no Design Impact. This matches the existing docs (`settings.md`, `agent_execution_architecture.md`: roots of unregistered or removed workspaces must not create rows) |
 | DS-007 | `runHistoryStore.archiveRuns({agentRunIds, teamRunIds, orgRunIds})` on record-level cores | `stores/runHistoryMutationActions.ts` (`archiveRunRecord` split, `RunArchiveTargets`, `archiveRunsInHistoryStore`), `runHistoryStore.archiveRuns` | Done. "Archive all older" is all-or-nothing (`useRunListArchiveOlder` spec) |
 | Removal Plan (REQ-007, REQ-010, AC-010, AC-013) | No folder X, no add form, no "New Project", no `RunSectionSwitch`; SR-003 code gone | Deleted `RunSectionSwitch.vue`, `useWorkspaceHistoryWorkspaceCreation.ts`. Removed `canRemoveFromWorkspaces` (read model, `runTreeProjection`), the X and the unreachable no-runs rows (`WorkspaceHistoryWorkspaceSection.vue`, `ProjectHistorySection.vue`), `isWorkspaceRemoving` and `onRemoveWorkspace` (section contracts), dead store actions `createWorkspace` and `refreshWorkspaceHistoryQuietly`, `setWorkspaceExpandedByRootPath`, obsolete strings. SR-003 reverted by `e07896a22b` | Done. Host 491 → 390 effective lines |
 
@@ -86,8 +90,16 @@ Deviations and notes:
 2. **Team rows in the Runs view.** A Team row's time is its history item's `lastActivityAt`. A Team context that is not yet in the history (just launched) uses its node's own time, the counterpart of the agent `local` rule.
 3. **The run list keeps its own contract.** `RunListSectionState` and `RunListSectionActions` stay separate from the tree's `WorkspaceHistorySectionState`, as in 378. The views share no props.
 4. **Probe adjustments.** `projects-left-navigation-probe.mjs` PLN-02 now starts a Project's first run from the chat chip, because the run section no longer has "New Project" or add actions. Its view switching goes through the menu. PLN-01 checks the no-runs state, and PLN-10 the menu keyboard. In `agy-process-restart-focus-continuation-probe.mjs`, the add-form fallback was removed.
+5. **IR-002 test fixtures.** Several Org specs built their Org rows without a registered folder, and the task-bearing fixture has no root workspace at all. They depended on the history-only node. Each now registers the Org's root folder through the new helpers. The shared task-bearing fixture is unchanged, because 36 specs use it. `historyData` takes an optional root workspace, defaulting to today's value. The test "strictly merges only AgentOrg roots…" in `runHistoryStore.spec.ts` encoded the old behavior (`/catalog/missing` and the "No Workspace" node). It now expects only the registered folder and checks that the store still holds all three Org runs. In `WorkspaceHistoryFamilyPublication.spec.ts`, the Org-first case now registers the folder like the Agent-first case. Its point stands: the Org family publishes while the workspace history query and the definition catalogs are pending. In production the panel loads the workspace catalog alongside the history read (`loadWorkspaceCatalogForNavigation`, `WorkspaceAgentRunsTreePanel.vue` mount), and the catalog load refreshes the tree once it lands. Until then, Org rows, like Agent and Team rows, have no folder to show under. This is a first-load moment of the desktop panel, not a lasting state.
+6. **The C-04 recommendation was not taken.** The host still reads once on every view change, including Projects ↔ Workspaces, as DS-002 specifies ("one fetch per view change"). The reviewer recorded it as a recommendation only.
 
 ## Key Files Or Areas
+
+- IR-002: `autobyteus-web/utils/runTreeProjection.ts`, `components/workspace/history/WorkspaceHistoryWorkspaceSection.vue`, `localization/messages/{en,zh-CN}/workspace.ts`, `stores/runListStore.ts` (comment), and these specs and fixtures:
+  - `stores/__tests__/runHistoryListedFolders.spec.ts` (the new CR-001 cases);
+  - Org specs that read rows through the Workspaces tree, which now register the Org's folder: `runHistoryStore`, `runHistoryNavigationProjection`, `agentOrgHistoryApollo`, `agentOrgInspectionApollo`, `WorkspaceAgentOrgActivityPublication`, `WorkspaceHistoryFamilyPublication`;
+  - new `test-support/registeredWorkspaceFixture.ts` and `withOrgRootWorkspace` in `test-support/agentOrgApolloFixture.ts`;
+  - `docs/workspace_layout.md`.
 
 - Server: `autobyteus-server-ts/src/run-history/services/run-last-activity-reader.ts`, `agent-run-history-service.ts`, `team-run-history-service.ts`, `collaboration-root-history-service.ts`, `workspace-run-history-service.ts`, `api/graphql/types/run-history.ts`, `api/graphql/types/collaboration-root-history.ts`, `workspaces/workspace-removal-guard.ts`.
 - Web host and header: `components/workspace/history/WorkspaceAgentRunsTreePanel.vue`, `RunSectionHeader.vue`, `stores/runSectionModeStore.ts`, `components/layout/LeftSidebarStrip.vue`.
@@ -172,7 +184,12 @@ Environment for all: macOS 26.5.2, Node v22.23.1, pnpm 10.28 (corepack), TESTING
 | IMP-05 | `cd autobyteus-web && pnpm -s guard:web-boundary; pnpm -s guard:localization-boundary; pnpm -s audit:localization-literals` | The worktree committed as `0d3c31c4ae`. After the run, only docs, probes and two specs changed | Web import boundaries, localization keys and literals | DS-001, DS-006, REQ-011 copy | Pass | `IMP-05-web-guards.log` | `[guard:web-boundary] Passed.`, `[guard:localization-boundary] Passed.`, `Passed with zero unresolved findings.` |
 | IMP-06 | `cd autobyteus-web && NUXT_TEST=true pnpm exec vitest run` | The worktree committed as `0d3c31c4ae`, before that commit's two spec fixes (IMP-07). After the run, only docs, probes and those two specs changed | Whole web unit suite, incl. `RunSectionHeader`, `runHistoryReadWindow`, `runHistoryListedFolders`, `ChatWorkspaceMenu.remove`, `runListStore`, `runListProjection`, `useRunList*`, `RunListPanel`, `RunListRow.org`, `projectRunsProjection`, `useWorkspaceHistoryTreeState`, both host specs | DS-001…DS-007, Removal Plan | Pass after IMP-07: 2 failed, 5148 passed. Both failures were fixtures not yet updated for `lastActivityAt` | `IMP-06-web-suite.log`, `IMP-06-web-suite.full.log.gz` | `Tests  2 failed \| 5148 passed \| 2 skipped (5152)`. The two `FAIL` lines: `runHistoryQueries.spec.ts` (`not to contain 'lastActivityAt'`) and `agentOrgClosure.spec.ts` (`AgentOrg last_activity_at must be a string.`) |
 | IMP-07 | `cd autobyteus-web && NUXT_TEST=true pnpm exec vitest run graphql/queries/__tests__/runHistoryQueries.spec.ts services/agentOrgExecution/__tests__/agentOrgClosure.spec.ts` | `0d3c31c4ae` | The two specs from IMP-06, with fixtures fixed | DS-005 | Pass | `IMP-07-web-suite-fixed-specs.log` | `Tests  11 passed (11)` |
+| IMP-08 | `cd autobyteus-web && NUXT_TEST=true pnpm exec vitest run stores/__tests__/runHistoryListedFolders.spec.ts`, first with `utils/runTreeProjection.ts` from `c20d13fa02` (red), then as committed (green) | `71ce23ced8` | `projectWorkspaceHistoryByWorkspace`, `buildRunHistoryNavigationProjection`, `hasListedRun`, the patch rebuild | CR-001, REQ-002, AC-002, AC-012 | Pass (red then green, as expected) | `IMP-08-cr001-red-green.log` | Red: `Tests  3 failed \| 9 passed (12)`, with `×` on "a folder with a stopped Org run", "all three removed…" and "stays out after the next read…", while the Agent and Team cases and "a registered Org-only folder is still listed" pass. Green: `Tests  12 passed (12)` |
+| IMP-09 | `cd autobyteus-web && NUXT_TEST=true pnpm exec vitest run` | `71ce23ced8` (only `docs/workspace_layout.md` changed after the run) | Whole web unit suite after IR-002 | all web; CR-001…003 | Pass | `IMP-09-web-suite.log`, `IMP-09-web-suite.full.log.gz` | `Test Files  701 passed (701)` and `Tests  5156 passed \| 2 skipped (5158)` |
+| IMP-10 | `cd autobyteus-web && pnpm typecheck; pnpm -s guard:web-boundary; pnpm -s guard:localization-boundary; pnpm -s audit:localization-literals` | `71ce23ced8` (as IMP-09) | Web types; boundaries; localization keys after removing `workspace.agentOrg.history.noWorkspace` | CR-001…003 | Pass | `IMP-10-web-typecheck-guards.log` | `production errors: 0; test-file errors: 99 in 43 files (baseline 99 in 43 files)`, `[typecheck] PASS`, three `Passed` lines |
 | IMP-20 | `node tickets/in-progress/workspace-tree-vs-chooser/evidence/implementation/IMP-20-render-probe.mjs --output-dir .../evidence/implementation/IMP-20`. Real headless Chrome → Nuxt dev from this worktree → the server `dist` built from `0d3c31c4ae`, in an owned temp data root | `0d3c31c4ae` (probe as committed with the evidence) | The rendered run section, menu, views, empty states and chat chooser Remove | VIS-001…VIS-017, AC-002, AC-005, AC-009…AC-014 | Pass (12/12 cases) | `IMP-20-run.log`, `IMP-20-render-probe.mjs`, `IMP-20/IMP-20-evidence.json`, `IMP-20/IMP-20-VIS-0*.png` (17), `IMP-20/backend.log`, `IMP-20/frontend.log` | Every line in `IMP-20-run.log` reads `Pass`, plus `exit=0`. In `IMP-20-VIS-002-menu-open-workspaces.png`: queue-list, folder and briefcase icons, plus the check on Workspaces. In `IMP-20-evidence.json`: `cleanup` shows both owned processes stopped (`SIGTERM`) and the data root removed |
+
+IR-002 reuse: IMP-01, IMP-02 and IMP-03 (server) still apply, because IR-002 changes no server code. IMP-04…IMP-07 are superseded by IMP-09 and IMP-10 for the web. IMP-20 (rendered) was not rerun. IR-002 changes only which folders the Workspaces tree projects. The rendered states in IMP-20 have no unregistered Org root, so their output is unchanged, and the folder rule is covered by IMP-08.
 
 Not run, and why:
 
