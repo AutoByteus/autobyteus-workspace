@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | `code-review-report.md` | Implementation Review / IR-001 (Full Review) | N/A | Fail (9.3/10): Local Fix → Implementation | CR-001, CR-002, CR-003 |
 | CRR-002 | `code-review-report.md` | Implementation Review / IR-002 (Targeted Delta Review) | Fail (CRR-001) | Pass (9.4/10) | CR-001, CR-002, CR-003 resolved |
+| CRR-003 | `api-e2e-test-review-report.md` | API/E2E Test-Code Review / API-REV-001 Pass | Pass (CRR-002, source) | Pass | None |
 
 ## Revision Entries
 
@@ -66,3 +67,35 @@ None
 - Remaining risks or uncertainty:
   - The 250 ms budget for the uncapped poll is unmeasured (C-05, API/E2E).
   - Org runs without a root folder now show only in the Runs view.
+
+### CRR-003 — Test review of API/E2E round 1: Pass
+
+- Canonical review report updated: `api-e2e-test-review-report.md` (new)
+- Review entry point and round: Successful API/E2E Test-Code Review, round 1
+- Review scope: `N/A` (proportional test review of `25769bc969` and `450fe43929`)
+- Triggering role, report path, and finding or scenario IDs: API/E2E Engineer, `api-e2e-execution-coverage-report.md` (API-REV-001 `Pass`, 93%); API-02…API-08, API-10
+- Relevant solution revision IDs: SR-004
+- Relevant architecture-review revision IDs: ARCH-REV-004
+- Relevant implementation revision IDs: IR-001, IR-002
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: CRR-002 `Pass` (source); no prior test review
+- Current authoritative result: `Pass`
+- What changed in the review result and why:
+  - The new read-budget probe measures the app's own poll queries, per build, against the design's budget, and checks the read's content.
+  - The WVC cases enter through real triggers and assert what the user sees plus server and disk state (the window on the wire, the toasts, the registry, the files, history per run kind).
+  - PLN-08's stale expectation was replaced. The baseline fixes follow current code.
+  - Non-blocking notes: fixed waits for absence, WVC-003's whole-stack counts, and the budget delta applying in every view.
+- Supported product scenario / material-premise basis changes: None
+
+#### Prior Finding Resolution
+
+None
+
+- New or remaining finding IDs: None
+- Material score or classification changes: N/A. Large/High stays.
+- Recommended recipient: Delivery Engineer
+- Remaining risks or uncertainty:
+  - API-09 is Not Tested.
+  - The budget was measured at a load average of about 70.
+  - FU-001…FU-005.
