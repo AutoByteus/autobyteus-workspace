@@ -1,0 +1,3 @@
+# Clean-clone run of codex/workspace-tree-vs-chooser @ 6ec6e2d603 (/tmp/ab385-clone); full log 1853 bytes, trimmed to summaries, skips and failures.
+[typecheck] production errors: 0; test-file errors: 1184 in 366 files (baseline 1184 in 366 files)
+exit=0
