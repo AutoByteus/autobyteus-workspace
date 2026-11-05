@@ -16,13 +16,36 @@
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
 - Relevant Implementation Revision IDs: IR-001 (`e07896a22b`, `a5fc23849e`, `0d3c31c4ae`; evidence `2b012a21e1`)
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: 1
-- Review Scope: `Full Review`
+- Current Code Review Revision ID: `CRR-002`
+- Current Review Round: 2
+- Review Scope: `Targeted Delta Review` (round 2); round 1 was a `Full Review`
+- Review Scope Evidence (round 2): `git diff c20d13fa02 71ce23ced8` (17 files, +133/−83). It changes `projectWorkspaceHistoryByWorkspace` and removes the "No workspace" bucket it fed (`NO_WORKSPACE_HISTORY_ROOT`, the display branch, one key in en and zh-CN). It also fixes the `runListStore` comment and the dead mock, and updates the Org specs and fixtures to register the Org's folder, plus one docs line. It stays within CR-001…CR-003; no spine, interface, data shape or server code changed. `155f7680e4` is ticket records and evidence only
 - Trigger: implementation complete (IR-001), `Large`/`High`, so source review is required
 - Prior Review Round Reviewed: none
-- Latest Authoritative Round: 1
+- Latest Authoritative Round: 2
 - Project rules applied: `DESIGN.md` (rules 1, 3, 5, 7, 9, 11) and `GLOSSARY.md`. The team's design principles were updated 2026-11-05: adding to a file already over 500 lines now belongs to this ticket. No changed file is affected.
+
+## Round 2: CR-001…CR-003 Local Fix (IR-002)
+
+| Finding | Status | Verification |
+| --- | --- | --- |
+| CR-001 | Resolved | `projectWorkspaceHistoryByWorkspace` now maps only the established, registered nodes and attaches each root's Org groups. No `history:<root>` node is created, so a removed folder with a stopped Org run leaves the view, as one with Agent or Team runs does. New cases in `runHistoryListedFolders.spec.ts`: each kind removed; all three removed, with no node, index or ancestry left; the folder stays out after the next read and after a patch-triggered rebuild; a registered Org-only folder is still listed (AC-012). IMP-08 is red/green: 3 of 12 fail on `c20d13fa02`'s projection, and 12/12 pass on the fix. The implementer's check that Remove is the only way an Org root becomes unregistered is confirmed for launch: `agent-org-run-service.ts:142-143` refuses a placement without a workspace (`AGENT_ORG_WORKSPACE_REQUIRED`). I rely on the handoff for the registry and stopped-run update paths. So no `Design Impact` |
+| CR-002 | Resolved | `runListStore.ts:14` now names `runHistoryStore`, loaded by the run section (`WorkspaceAgentRunsTreePanel`) |
+| CR-003 | Resolved | The mock line is gone (`WorkspaceAgentRunsTreePanel.regressions.spec.ts`) |
+
+- The "No workspace" bucket removal. A stored Org run with no root folder no longer gets a "No Workspace" folder in the Workspaces view.
+  - Removing it is consistent with the rule: a run without a folder belongs to no folder.
+  - Such a run is still read and listed in the Runs view (`runListStore` takes every `agentOrgHistory` row), and the store keeps it: the updated `runHistoryStore.spec.ts` asserts `org-missing` and `org-no-workspace` stay in `agentOrgHistory`. Nothing is lost, and DESIGN.md rule 7 holds.
+  - The display branch, the constant, the key and its catalog-spec entry went with it, and `grep` finds no reference left.
+  - Candidate C-09 (Reject): there is no requirement to show runs without a folder in the Workspaces view, and they stay reachable.
+- Test-fixture changes (`registeredWorkspaceFixture.ts`, `withOrgRootWorkspace`, an optional root on `historyData`). They make the six Org specs register the folder that a launched Org always has. They test real behavior and are not a compatibility seam. The shared task-bearing fixture is unchanged.
+- Checks reused, not rerun:
+  - IMP-09 web suite: 701 files, 5156 passed.
+  - IMP-10 web typecheck: PASS at baseline 99; the three guards pass.
+  - IMP-01…03: no server code changed.
+  - IMP-20 was not rerun. Its states have no unregistered Org root, and the change only removes nodes for roots that are not registered.
+- C-04 (recommendation) was not taken. That is acceptable, because DS-002 specifies one read per view change.
+- Scorecard after round 2: Runtime Correctness 8.9 → 9.4 (CR-001 resolved, with tests per run kind); API/E2E Readiness 9.2 → 9.4; Naming 9.2 → 9.4; Cleanup 9.2 → 9.5. The other categories are unchanged. Overall 9.4/10, with every category at 9.4 or above.
 
 ## Routing Classification Review
 
@@ -194,6 +217,8 @@ Recommendation, not a finding (C-04): the view watcher could skip the read when 
 
 ## Latest Authoritative Result
 
+- Review Decision (round 2): `Pass`. CR-001…CR-003 are resolved. Scorecard 9.4/10, every category at 9.4 or above. Recipient: API/E2E Engineer (primary); informational to the Implementation Engineer.
+- Round 1:
 - Review Decision: `Fail`
 - Supported Product Scenario Gate: `Pass` (SCN-A…SCN-E; SCN-D2 promoted)
 - Material-Premise Gate: `Pass` (C-05 held for API/E2E's budget; C-04, C-06…C-08 rejected)
