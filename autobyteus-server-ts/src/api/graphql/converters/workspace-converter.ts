@@ -2,7 +2,7 @@ import type { FileSystemWorkspace } from "../../../workspaces/filesystem-workspa
 import { WorkspaceMetadataInfo } from "../types/workspace.js";
 
 export class WorkspaceConverter {
-  static toGraphql(workspace: FileSystemWorkspace): WorkspaceMetadataInfo {
+  static toGraphql(workspace: FileSystemWorkspace, shownInWorkspacesTree: boolean): WorkspaceMetadataInfo {
     const metadata = workspace.metadata;
     return {
       workspaceId: metadata.workspaceId,
@@ -13,6 +13,7 @@ export class WorkspaceConverter {
       absolutePath: metadata.rootPath,
       kind: metadata.kind,
       isTemp: metadata.isTemp,
+      shownInWorkspacesTree,
     };
   }
 }

@@ -10,6 +10,7 @@ import {
   type WorkspaceRegistryEntry,
 } from "./workspace-registry-store.js";
 import { WorkspaceRemovalGuard } from "./workspace-removal-guard.js";
+import { WorkspaceTreeVisibility } from "./workspace-tree-visibility.js";
 import { canonicalizeWorkspaceRootPath } from "./workspace-path-utils.js";
 import { InternalWorkspaces } from "./internal-workspaces.js";
 import { readShowInternalAgents } from "../config/show-internal-agents-setting.js";
@@ -28,12 +29,25 @@ export interface RemoveWorkspaceResult {
   workspaceRootPath: string | null;
 }
 
+export interface HideWorkspaceFromTreeResult {
+  success: boolean;
+  message: string;
+  workspaceId: string;
+}
+
+/** One entry of the Workspaces list: every client may choose it; the Workspaces tree shows it only when shown. */
+export interface ListedWorkspace {
+  workspace: FileSystemWorkspace;
+  shownInWorkspacesTree: boolean;
+}
+
 export class WorkspaceManager {
   private static instance: WorkspaceManager | null = null;
   private activeWorkspaces: Map<string, FileSystemWorkspace> = new Map();
   private readonly workspaceRegistryStore: WorkspaceRegistryStore;
   private readonly workspaceRemovalGuard: WorkspaceRemovalGuard;
   private readonly internalWorkspaces = new InternalWorkspaces();
+  private readonly treeVisibility = new WorkspaceTreeVisibility();
 
   static getInstance(): WorkspaceManager {
     if (!WorkspaceManager.instance) {
@@ -158,17 +172,89 @@ export class WorkspaceManager {
   /**
    * The Workspaces list: registered and active workspaces, except internal workspaces while internal agents are hidden
    * (autobyteus-32 REQ-008; the autobyteus-308 setting, read on each list). Opening a run by ID still resolves its
-   * workspace (`getOrCreateWorkspace`).
+   * workspace (`getOrCreateWorkspace`). Each entry says whether the Workspaces tree shows it; every chooser lists all.
    */
-  async listVisibleWorkspaces(): Promise<FileSystemWorkspace[]> {
+  async listVisibleWorkspaces(): Promise<ListedWorkspace[]> {
     const registeredWorkspaces = await this.listRegisteredFilesystemWorkspaces();
     const registeredIds = new Set(registeredWorkspaces.map((workspace) => workspace.workspaceId));
     const transientActiveWorkspaces = Array.from(this.activeWorkspaces.values()).filter(
       (workspace) => !registeredIds.has(workspace.workspaceId),
     );
+    const hiddenIds = await this.treeVisibility.hiddenWorkspaceIds();
     const all = [...registeredWorkspaces, ...transientActiveWorkspaces];
-    if (readShowInternalAgents()) return all;
-    return all.filter((workspace) => !this.internalWorkspaces.isInternal(workspace.getBasePath()));
+    const visible = readShowInternalAgents()
+      ? all
+      : all.filter((workspace) => !this.internalWorkspaces.isInternal(workspace.getBasePath()));
+    return visible.map((workspace) => ({
+      workspace,
+      shownInWorkspacesTree: isShown(workspace.workspaceId, registeredIds, hiddenIds),
+    }));
+  }
+
+  async isShownInWorkspacesTree(workspaceId: string): Promise<boolean> {
+    return isShown(workspaceId, await this.registeredWorkspaceIds(), await this.treeVisibility.hiddenWorkspaceIds());
+  }
+
+  /**
+   * Hides a registered workspace from the Workspaces tree (the desktop tree and the phone's work list). It stays
+   * registered and choosable for a new run. Refused while a run is active in it, as removal is: hiding would hide that run.
+   */
+  async hideFromWorkspacesTree(workspaceId: string): Promise<HideWorkspaceFromTreeResult> {
+    const normalizedWorkspaceId = workspaceId.trim();
+    if (!normalizedWorkspaceId.startsWith(FILESYSTEM_WORKSPACE_ID_PREFIX)) {
+      return {
+        success: false,
+        message: "Only registered filesystem workspaces can be hidden from Workspaces.",
+        workspaceId: normalizedWorkspaceId,
+      };
+    }
+    const workspaceRootPath = await this.workspaceRegistryStore.getRootPathByWorkspaceId(
+      normalizedWorkspaceId,
+    );
+    if (!workspaceRootPath) {
+      return { success: false, message: "Workspace is not registered.", workspaceId: normalizedWorkspaceId };
+    }
+    const guardResult = await this.workspaceRemovalGuard.checkWorkspaceCanBeRemoved({
+      workspaceId: normalizedWorkspaceId,
+      workspaceRootPath,
+    });
+    if (guardResult.blocked) {
+      return {
+        success: false,
+        message: guardResult.message ?? "Stop active runs before removing this workspace.",
+        workspaceId: normalizedWorkspaceId,
+      };
+    }
+    await this.treeVisibility.hide(normalizedWorkspaceId, await this.registeredWorkspaceIds());
+    return {
+      success: true,
+      message: "Workspace hidden from Workspaces. It stays available when choosing a workspace for a new run.",
+      workspaceId: normalizedWorkspaceId,
+    };
+  }
+
+  /**
+   * Brings the workspaces at these root paths back to the Workspaces tree for good. Only the user's own creation
+   * commands call this: the GraphQL resolvers `prepareAgentRun`, `createAgentTeamRun`, `createAgentOrgRun` and
+   * `createWorkspace`. Internal use of a folder (`ensureWorkspaceByRootPath` from delegations, team and org members,
+   * task agents, applications) never calls it, so it never undoes the user's hiding. A new user creation surface must
+   * call it too; until it does, its runs still show their folder while they are active (the web's tree rule).
+   * Best effort: the run or workspace already exists, so a failure is logged, not thrown.
+   */
+  async showInWorkspacesTree(workspaceRootPaths: readonly (string | null | undefined)[]): Promise<void> {
+    try {
+      const workspaceIds: string[] = [];
+      for (const rootPath of workspaceRootPaths) {
+        if (!rootPath?.trim()) continue;
+        const entry = await this.workspaceRegistryStore.findEntryByRootPath(rootPath);
+        if (entry) workspaceIds.push(entry.workspaceId);
+      }
+      if (workspaceIds.length) {
+        await this.treeVisibility.show(workspaceIds, await this.registeredWorkspaceIds());
+      }
+    } catch (error) {
+      logger.warn(`Could not show workspaces in the Workspaces tree: ${String(error)}`);
+    }
   }
 
   /** Pure registration snapshot: no workspace activation, filesystem checks or temp cleanup. */
@@ -248,6 +334,7 @@ export class WorkspaceManager {
       this.activeWorkspaces.delete(activeWorkspaceId);
     }
     await this.workspaceRegistryStore.deleteEntry(normalizedWorkspaceId);
+    await this.forgetTreeVisibility(normalizedWorkspaceId);
 
     return {
       success: true,
@@ -293,6 +380,19 @@ export class WorkspaceManager {
 
   getAllWorkspaces(): FileSystemWorkspace[] {
     return Array.from(this.activeWorkspaces.values());
+  }
+
+  private async registeredWorkspaceIds(): Promise<ReadonlySet<string>> {
+    return new Set((await this.workspaceRegistryStore.listEntries()).map((entry) => entry.workspaceId));
+  }
+
+  /** A removed workspace forgets its hidden mark, so adding it again starts shown. */
+  private async forgetTreeVisibility(workspaceId: string): Promise<void> {
+    try {
+      await this.treeVisibility.show([workspaceId], await this.registeredWorkspaceIds());
+    } catch (error) {
+      logger.warn(`Could not forget the Workspaces tree mark of removed workspace ${workspaceId}: ${String(error)}`);
+    }
   }
 
   private workspaceFromRegistryEntry(entry: WorkspaceRegistryEntry): FileSystemWorkspace {
@@ -352,6 +452,13 @@ export class WorkspaceManager {
     }
   }
 }
+
+/** Only a registered workspace can be hidden; a hidden mark for an unregistered ID is ignored. */
+const isShown = (
+  workspaceId: string,
+  registeredIds: ReadonlySet<string>,
+  hiddenIds: ReadonlySet<string>,
+): boolean => !(registeredIds.has(workspaceId) && hiddenIds.has(workspaceId));
 
 let cachedWorkspaceManager: WorkspaceManager | null = null;
 

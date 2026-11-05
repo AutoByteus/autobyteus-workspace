@@ -6,6 +6,7 @@ import { EventMonitorActiveTracePageObject } from "./event-monitor-active-trace-
 import { RunFileChangeEntryObject } from "./run-file-changes.js";
 import { getAgentOrgMemberRunViewProjectionService } from "../../../run-history/services/agent-org-member-run-view-projection-service.js";
 import { AgentOrgRunManager } from "../../../agent-org-execution/services/agent-org-run-manager.js";
+import { getWorkspaceManager } from "../../../workspaces/workspace-manager.js";
 import { TokenUsageRunSummaryGraphql, toTokenUsageRunSummaryGraphql } from "./token-usage-stats.js";
 
 @InputType()
@@ -211,6 +212,12 @@ export class AgentOrgRunResolver {
   ): Promise<AgentOrgRunMutationResult> {
     try {
       const run = await this.service.create(input);
+      // The user's own new run: the folders it was started in come back to the Workspaces tree.
+      await getWorkspaceManager().showInWorkspacesTree([
+        input.rootConfiguration.workspaceRootPath,
+        ...[...(input.teamOverrides ?? []), ...(input.agentOverrides ?? [])]
+          .map((override) => override.configuration.workspaceRootPath),
+      ]);
       return { success: true, message: "Agent organization run created successfully.", agentOrgRunId: run.orgRunId };
     } catch (error) {
       return { success: false, message: message(error), agentOrgRunId: null };

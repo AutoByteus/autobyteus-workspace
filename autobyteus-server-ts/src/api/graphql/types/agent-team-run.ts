@@ -18,6 +18,7 @@ import {
   RunModelConfigFieldErrorObject,
 } from "./run-model-config.js";
 import { projectExecutionTree } from "../../../services/agent-streaming/team-execution-view-projector.js";
+import { getWorkspaceManager } from "../../../workspaces/workspace-manager.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -187,6 +188,11 @@ export class AgentTeamRunResolver {
         memberConfigs: input.memberConfigs,
         projectId: input.projectId ?? null,
       });
+      // The user's own new run: the folders it was started in come back to the Workspaces tree.
+      await getWorkspaceManager().showInWorkspacesTree([
+        ...input.teamConfigs.map((team) => team.workspaceRootPath),
+        ...input.memberConfigs.map((member) => member.workspaceRootPath),
+      ]);
       return {
         success: true,
         message: "Agent team run created successfully.",
