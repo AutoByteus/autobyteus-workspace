@@ -19,7 +19,7 @@
           :class="state.isWorkspaceExpanded(workspacePresentationId) ? 'rotate-0' : '-rotate-90'"
         />
         <Icon icon="heroicons:folder-20-solid" class="mr-1.5 h-4 w-4 text-gray-500" />
-        <span class="truncate">{{ workspaceDisplayName }}</span>
+        <span class="truncate">{{ workspaceNode.workspaceName }}</span>
       </button>
     </div>
 
@@ -59,8 +59,6 @@ import type {
   TeamTreeNode,
   WorkspaceHistoryWorkspaceNode,
 } from '~/stores/runHistoryTypes';
-import { NO_WORKSPACE_HISTORY_ROOT } from '~/utils/runTreeProjection';
-import { useLocalization } from '~/composables/useLocalization';
 
 const props = defineProps<{
   workspaceNode: WorkspaceHistoryWorkspaceNode;
@@ -70,9 +68,5 @@ const props = defineProps<{
   avatars: WorkspaceHistoryAvatarBindings;
   actions: WorkspaceHistorySectionActions;
 }>();
-const { t } = useLocalization();
 const workspacePresentationId = computed(() => props.workspaceNode.stableKey);
-const workspaceDisplayName = computed(() => props.workspaceNode.workspaceRootPath === NO_WORKSPACE_HISTORY_ROOT
-  ? t('workspace.agentOrg.history.noWorkspace')
-  : props.workspaceNode.workspaceName);
 </script>

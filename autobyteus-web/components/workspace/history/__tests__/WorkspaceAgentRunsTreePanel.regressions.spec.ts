@@ -174,7 +174,6 @@ const {
       refreshTreeQuietly: vi.fn().mockResolvedValue(undefined),
       setHistoryWindow: vi.fn(),
       fetchWorkspaceHistory: vi.fn().mockResolvedValue(undefined),
-      refreshWorkspaceHistoryQuietly: vi.fn().mockResolvedValue(undefined),
       pruneWorkspace: vi.fn(),
       getTreeNodes: vi.fn(() => state.nodes.map(normalizeWorkspaceNode)),
       getTeamNodes: vi.fn((workspaceRootPath?: string) => {

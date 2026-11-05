@@ -443,6 +443,15 @@ vi.mock('~/services/runHydration/teamRunContextHydrationService', async () => {
   };
 });
 
+// The Workspaces view lists runs only under a registered folder, Org runs included (workspace-tree-vs-chooser CR-001).
+const ORG_ROOT = '/ws/org';
+const registerWorkspaces = (roots: string[]) => {
+  workspaceStoreMock.allWorkspaces = roots.map((root, index) => ({
+    workspaceId: `ws-${index}`, absolutePath: root, workspaceRootPath: root, name: root.split('/').at(-1),
+  }));
+  workspaceStoreMock.workspaces = Object.fromEntries(workspaceStoreMock.allWorkspaces.map((entry: { workspaceId: string }) => [entry.workspaceId, entry]));
+};
+
 describe('runHistoryStore', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
@@ -651,7 +660,7 @@ describe('runHistoryStore', () => {
     expect(store.agentAvatarByDefinitionId['agent-def-1']).toBe('https://a');
   });
 
-  it('strictly merges only AgentOrg roots beneath Teams using stable normalized workspace keys', async () => {
+  it('strictly merges AgentOrg roots beneath registered folders by normalized key; a root that is not a registered folder makes no node', async () => {
     workspaceStoreMock.allWorkspaces = [{
       workspaceId: 'ws-a', absolutePath: '/ws/a', workspaceRootPath: '/ws/a', name: 'Workspace A',
     }];
@@ -688,18 +697,18 @@ describe('runHistoryStore', () => {
     await store.fetchTree();
 
     const nodes = store.getTreeNodes();
-    expect(nodes.map((node) => [node.workspaceRootPath, node.stableKey])).toEqual([
-      ['/ws/a', 'workspace:/ws/a'],
-      ['/catalog/missing', 'workspace:/catalog/missing'],
-      ['__workspace_history_no_workspace__', 'workspace:__workspace_history_no_workspace__'],
-    ]);
+    // workspace-tree-vs-chooser CR-001: like Agent and Team runs, an Org run of a folder that is not registered (a removed
+    // folder) gives no node in the Workspaces view; the store keeps every Org run for the Runs view.
+    expect(nodes.map((node) => [node.workspaceRootPath, node.stableKey])).toEqual([['/ws/a', 'workspace:/ws/a']]);
     expect(nodes[0]?.agentOrgDefinitions[0]?.runs.map((run) => run.rootRunId)).toEqual(['org-a']);
+    expect(store.agentOrgHistory.map((run) => run.rootRunId).sort()).toEqual(['org-a', 'org-missing', 'org-no-workspace']);
     expect(store.getTeamNodes('/ws/a').map((team) => team.teamRunId)).toEqual(['team-1']);
     expect(store.getTeamNodes('/ws/a')).toHaveLength(1);
     expect(store.historyFamilyErrors).toEqual({ workspace: null, agentOrg: null });
   });
 
   it('loads all retained linked Org trees from the real public facade fixture without losing family or worker identity', async () => {
+    registerWorkspaces(linkedOrgHistory.map((row) => row.org.rootOrg.defaultLaunchConfiguration.workspaceRootPath as string));
     // Public-only fixture provenance records real stored/active-seam producer controls.
     // Never import server/core into the web, or accept private lifetime fields here.
     queryMock.mockImplementation(async ({ query }: { query: string }) => {
@@ -907,8 +916,9 @@ describe('runHistoryStore', () => {
     let resolveRefresh!: (value: unknown) => void;
     queryMock.mockReturnValueOnce(new Promise((resolve) => { resolveRefresh = resolve; }));
     const store = useRunHistoryStore();
-    const rows = [buildAgentOrgHistoryRow({ rootRunId: 'org-restored', summary: 'Restored title' }),
-      buildAgentOrgHistoryRow({ rootRunId: 'org-unrelated', summary: 'Other title' })];
+    registerWorkspaces([ORG_ROOT]);
+    const rows = [buildAgentOrgHistoryRow({ rootRunId: 'org-restored', summary: 'Restored title', workspaceRootPath: ORG_ROOT }),
+      buildAgentOrgHistoryRow({ rootRunId: 'org-unrelated', summary: 'Other title', workspaceRootPath: ORG_ROOT })];
     store.agentOrgHistory = parseAgentOrgHistoryItems(rows);
     const projectedRows = () => store.getTreeNodes().flatMap((node) => node.agentOrgDefinitions).flatMap((group) => group.runs);
     const original = projectedRows().find((run) => run.rootRunId === 'org-restored')!;
@@ -930,7 +940,8 @@ describe('runHistoryStore', () => {
     queryMock.mockReturnValueOnce(new Promise((resolve) => { resolveOlder = resolve; }))
       .mockReturnValueOnce(new Promise((_resolve, reject) => { rejectFresh = reject; }));
     const store = useRunHistoryStore();
-    const activeRow = { ...buildAgentOrgHistoryRow({ rootRunId: 'org-confirmed', summary: 'Do not alter title' }), is_active: true };
+    registerWorkspaces([ORG_ROOT]);
+    const activeRow = { ...buildAgentOrgHistoryRow({ rootRunId: 'org-confirmed', summary: 'Do not alter title', workspaceRootPath: ORG_ROOT }), is_active: true };
     store.agentOrgHistory = parseAgentOrgHistoryItems([activeRow]);
     const projectedRow = () => store.getTreeNodes().flatMap((node) => node.agentOrgDefinitions)
       .flatMap((group) => group.runs).find((run) => run.rootRunId === 'org-confirmed')!;

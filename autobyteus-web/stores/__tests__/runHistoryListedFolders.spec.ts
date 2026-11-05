@@ -97,6 +97,47 @@ describe('the Workspaces view lists only folders with a listed run', () => {
     expect(hasListedRun(node([]), [{ teamRunId: 't' } as never])).toBe(true);
   });
 
+  // CR-001 (REQ-002, AC-002): a folder removed in the chat chooser leaves every view of the left panel, whatever kind of
+  // stopped run it still has; its runs stay in the history (the Runs view) and on disk.
+  describe('a removed folder leaves the Workspaces view', () => {
+    const registeredWithout = (...roots: string[]) => WORKSPACES.filter((entry) => !roots.includes(entry.workspaceRootPath));
+
+    it.each([
+      ['a stopped Agent run', '/work/agent'],
+      ['a stopped Team run', '/work/team'],
+      ['a stopped Org run', '/work/org'],
+    ])('a folder with %s', (_kind, root) => {
+      const projection = build({ allWorkspaces: registeredWithout(root) });
+      expect(roots(projection)).not.toContain(root);
+      expect(projection.workspaceNodes.map((node) => node.workspaceId).filter((id) => id.startsWith('history:'))).toEqual([]);
+    });
+
+    it('all three removed: no folder is listed, and no index or ancestry points at them', () => {
+      const projection = build({ allWorkspaces: registeredWithout('/work/agent', '/work/team', '/work/org') });
+      expect(projection.workspaceNodes).toEqual([]);
+      expect(projection.runIndexById).toEqual({});
+      expect(projection.agentOrgAncestryById).toEqual({});
+    });
+
+    it('stays out after the next read: the same history read again, and a status change of one of its runs, rebuild without it', () => {
+      const allWorkspaces = registeredWithout('/work/agent', '/work/team', '/work/org');
+      const reread = build({ allWorkspaces });
+      expect(roots(reread)).toEqual([]);
+      const patched = applyRunNavigationEffectToProjection(reread,
+        { kind: 'standalone', runId: 'agent-run', currentStatus: AgentStatus.Offline },
+        { kind: 'PRESENTATION', occurredAt: timestamp });
+      expect(patched).toEqual({ state: reread, changed: false, rebuild: true });
+      expect(roots(build({ allWorkspaces }))).toEqual([]);
+    });
+
+    it('a registered Org-only folder is still listed (AC-012), with its Org run', () => {
+      const projection = build({ workspaceGroups: [], teamContexts: [] });
+      expect(roots(projection)).toEqual(['/work/org']);
+      expect(projection.workspaceNodes[0]!.workspaceId).toBe('ws-org');
+      expect(projection.workspaceNodes[0]!.agentOrgDefinitions.flatMap((group) => group.runs.map((run) => run.rootRunId))).toEqual(['org-run']);
+    });
+  });
+
   it('a status change of a run outside the listed folders asks for a rebuild (the first sent message, VIS-017); activity does not', () => {
     const projection = build();
     const status = applyRunNavigationEffectToProjection(projection,
