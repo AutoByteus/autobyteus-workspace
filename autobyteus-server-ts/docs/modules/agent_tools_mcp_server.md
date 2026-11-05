@@ -360,8 +360,9 @@ local admission are still required. One selected name cannot expose the rest.
 All of them use protect_static_adapter collision policy; retired task tools and
 category-wide native task exposure are not restored.
 
-- `list_projects({})` → `{projects: [{projectId, name, description}]}` for all
-  current-node Projects, sorted by name/ID. It does not bind/select a Project.
+- `list_projects({})` → `{projects: [{projectId, name, description, workspaces: [{workspaceRootPath, description}]}]}`
+  for all current-node Projects, sorted by name/ID: `workspaces` are the folders the Project is linked to, with
+  each link's description. Empty fields are left out. It does not bind/select a Project.
 - `list_project_tasks({project_id, status?})` → `{projectId, tasks}`. The explicit
   Project is required; status must be exact TODO, IN_PROGRESS, DONE or CANCELLED (CANCELLED = dropped as not needed).
   Each Task is a short entry `{taskId, title, status, dependsOn, partOf, parts, commentCount,

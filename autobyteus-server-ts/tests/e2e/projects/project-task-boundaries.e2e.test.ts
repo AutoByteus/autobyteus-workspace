@@ -379,6 +379,14 @@ describe("Project Task production HTTP boundaries", () => {
     const missingPath = path.join(root, "unregistered missing #?雪");
     const direct = await projectCall({name: "Direct path", workspaces: [{workspace_path: missingPath}]});
     expect(direct.workspaces).toEqual([{workspaceRootPath: missingPath}]);
+    // autobyteus-384: list_projects shows each Project's linked folders in the shape create_project returned; a field
+    // with no value is left out (AC-001, AC-002); over MCP it equals the native tool (AC-004).
+    const listed = (await call("list_projects", {})).structuredContent;
+    expect(listed).toEqual(JSON.parse(await new ListProjectsTool().execute(null, {})));
+    expect(listed.projects).toContainEqual({projectId: created.projectId, name: "Linked authored", description: "Project goal",
+      workspaces: [{workspaceRootPath: a.workspaceRootPath, description: "Frontend"}, {workspaceRootPath: b.workspaceRootPath}]});
+    expect(listed.projects).toContainEqual(created);
+    expect(listed.projects).toContainEqual({projectId: direct.projectId, name: "Direct path", workspaces: [{workspaceRootPath: missingPath}]});
     // Stored as before: the rule shapes results, not saved data.
     const savedLinks = [{workspaceRootPath: missingPath, description: ""}];
     expect(JSON.parse(await fs.readFile(path.join(root, "projects", direct.projectId, "project.json"), "utf8")).workspaces).toEqual(savedLinks);

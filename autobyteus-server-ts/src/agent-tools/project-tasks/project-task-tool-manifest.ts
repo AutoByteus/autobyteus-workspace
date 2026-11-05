@@ -2,21 +2,17 @@ import { getProjectService } from "../../projects/services/project-service.js";
 import { getProjectTaskService } from "../../projects/services/project-task-service.js";
 import { getProjectTaskSearchService } from "../../projects/search/project-task-search-service.js";
 import type { EmbeddingReadiness } from "../../embeddings/embedding-index.js";
-import type { Project, ProjectTaskStatus, ProjectTaskView, ProjectWorkspaceInput, TaskAcknowledgementView } from "../../projects/domain/models.js";
+import type { ProjectTaskStatus, ProjectTaskView, ProjectWorkspaceInput, TaskAcknowledgementView } from "../../projects/domain/models.js";
 import type { TaskAssignmentViews } from "../../projects/services/task-execution-resource-service.js";
 import type { ProjectTaskContextFileView } from "../../projects/domain/project-task-context.js";
 import { ProjectError } from "../../projects/domain/project-errors.js";
+import { toProjectSummary } from "../../projects/domain/project-summary.js";
 import { compareTaskKeys } from "../../projects/domain/task-keys.js";
 import { AD_HOC_TASK_ID_PREFIX } from "../../projects/domain/ad-hoc-task.js";
 import type { TaskExecutionOwner } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { TaskDelegationError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import { GET_PROJECT_TASK_TOOL_NAME, PROJECT_TASK_TOOL_NAMES, PROJECT_TASK_TOOL_DESCRIPTIONS, buildProjectTaskToolSchema, parseProjectTaskToolInput, type ProjectTaskToolName } from "./project-task-tool-contract.js";
 import { ANY_TASK_READ_SCOPE, type TaskReadScope } from "./project-task-read-scope.js";
-
-const projectAcknowledgement = ({projectId, name, description, workspaces}: Project) => ({
-  projectId, name, description,
-  workspaces: workspaces.map(({workspaceRootPath, description}) => ({workspaceRootPath, description})),
-});
 
 /**
  * Agent-facing Task IDs: a Project Task's `taskId` is its key; `dependsOn`, `partOf` and `parts` name its existing
@@ -131,7 +127,7 @@ export async function executeProjectTaskTool(name: ProjectTaskToolName, raw: unk
       const project = name === "update_project"
         ? await getProjectService().patchProjectRecord({projectId: input.project_id as string, ...fields})
         : await getProjectService().createProjectRecord({...fields, name: input.name as string});
-      return {project: projectAcknowledgement(project)};
+      return {project: toProjectSummary(project)};
     } catch (error) {
       if (error instanceof ProjectError) throw error;
       throw new ProjectMutationUnconfirmed("Project", error);
