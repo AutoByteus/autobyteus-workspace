@@ -20,7 +20,6 @@ export interface WorkspaceHistorySectionState {
   isTeamDeleting: (teamRunId: string) => boolean;
   isRunArchiving: (runId: string) => boolean;
   isTeamArchiving: (teamRunId: string) => boolean;
-  isWorkspaceRemoving: (workspaceId: string) => boolean;
   isWorkspaceHistoryLoading: (workspaceId: string) => boolean;
   workspaceHistoryError: (workspaceId: string) => string | null;
   formatRelativeTime: (isoTime: string) => string;
@@ -87,7 +86,6 @@ export interface WorkspaceHistoryAvatarBindings {
 }
 
 export interface WorkspaceHistorySectionActions {
-  onRemoveWorkspace: (workspace: RunTreeWorkspaceNode) => Promise<void> | void;
   onCreateRun: (workspaceRootPath: string, agentDefinitionId: string) => Promise<void> | void;
   onSelectRun: (run: RunTreeRow) => Promise<void> | void;
   onTerminateRun: (runId: string) => Promise<void> | void;

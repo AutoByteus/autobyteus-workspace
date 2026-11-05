@@ -22,7 +22,7 @@ describe('Org history rows with remote runs', () => {
     const view = taskBearingView()
     const tree = view.execution_tree as AgentOrgRunHistoryItem['executionTree']
     const run: AgentOrgRunHistoryItem = { stableKey: 'agent_org_run:org-run', rootSubjectKind: 'agent_org', rootRunId: tree.rootOrg.orgRunId,
-      createdAt: tree.createdAt, archivedAt: null, isActive: true, summary: 'Org', executionTree: tree, closedTaskExecutions: [] }
+      createdAt: tree.createdAt, lastActivityAt: tree.createdAt, archivedAt: null, isActive: true, summary: 'Org', executionTree: tree, closedTaskExecutions: [] }
     const statuses: Record<string, AgentStatus> = { 'lead-run': AgentStatus.Running, 'writer-run': AgentStatus.Idle }
     const context = {
       orgRunId: run.rootRunId, executionTree: tree, isActive: true, phase: 'live', view: { closed_task_executions: [] },

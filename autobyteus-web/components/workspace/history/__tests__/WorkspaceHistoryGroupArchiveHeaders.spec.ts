@@ -33,7 +33,7 @@ const mountSection = (options: { agents?: any[]; archivingKeys?: string[]; withG
     onArchiveAgentGroup: vi.fn(), onArchiveTeamGroup: vi.fn(), onArchiveAgentOrgGroup: vi.fn(),
   };
   const actions = {
-    onRemoveWorkspace: vi.fn(), onCreateRun: vi.fn(), onSelectRun: vi.fn(), onTerminateRun: vi.fn(),
+    onCreateRun: vi.fn(), onSelectRun: vi.fn(), onTerminateRun: vi.fn(),
     onArchiveRun: vi.fn(), onDeleteRun: vi.fn(), onSelectTeam: vi.fn(), onTerminateTeam: vi.fn(),
     onArchiveTeam: vi.fn(), onDeleteTeam: vi.fn(), onOpenTeamRun: vi.fn(), onSelectTeamMember: vi.fn(),
     ...(options.withGroupActions === false ? {} : groupActions),
@@ -43,7 +43,7 @@ const mountSection = (options: { agents?: any[]; archivingKeys?: string[]; withG
     selectedRunId: null, isTeamRunSelected: () => false,
     isRunTerminating: () => false, isTeamTerminating: () => false, isRunDeleting: () => false,
     isTeamDeleting: () => false, isRunArchiving: () => false, isTeamArchiving: () => false,
-    isWorkspaceRemoving: () => false, isWorkspaceHistoryLoading: () => false, workspaceHistoryError: () => null,
+    isWorkspaceHistoryLoading: () => false, workspaceHistoryError: () => null,
     formatRelativeTime: () => 'now', isWorkspaceExpanded: () => true, toggleWorkspace: vi.fn(),
     isAgentExpanded: () => false, toggleAgent: vi.fn(), isTeamDefinitionExpanded: () => false,
     toggleTeamDefinition: vi.fn(), isTeamExpanded: () => false, isTeamMemberExpanded: () => false,
@@ -52,7 +52,7 @@ const mountSection = (options: { agents?: any[]; archivingKeys?: string[]; withG
   };
   const workspaceNode = {
     workspaceId: 'ws-1', workspaceRootPath: '/ws/a', workspaceName: 'a', workspaceKind: 'filesystem' as const,
-    canRemoveFromWorkspaces: false, stableKey: WORKSPACE_KEY, agentOrgDefinitions: [orgGroup()],
+    stableKey: WORKSPACE_KEY, agentOrgDefinitions: [orgGroup()],
     agents: options.agents ?? [{ agentDefinitionId: 'agent-def-1', agentName: 'Codex', runs: [agentRun('run-1', { isActive: true })] }],
   };
   const wrapper = mount(WorkspaceHistoryWorkspaceSection, {

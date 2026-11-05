@@ -146,6 +146,7 @@ const buildAgentOrgHistoryRow = (input: {
     root_subject_kind: 'agent_org',
     root_run_id: input.rootRunId,
     created_at: '2026-09-03T00:00:00.000Z',
+    last_activity_at: '2026-09-03T00:00:00.000Z',
     archived_at: null,
     is_active: false,
     summary: input.summary ?? 'Agent Org run',
@@ -551,6 +552,12 @@ describe('runHistoryStore', () => {
     }));
 
     const store = useRunHistoryStore();
+    // A folder is listed only while it has a listed run (workspace-tree-vs-chooser REQ-009).
+    store.workspaceGroups = [buildWorkspaceHistoryGroup({
+      workspaceRootPath: '/persisted/workspace', workspaceName: 'Listed',
+      agents: [{ agentDefinitionId: 'agent-def-1', agentName: 'SuperAgent', runs: [{ runId: 'run-stored', summary: 'Stored', lastActivityAt: '2025-12-31T00:00:00.000Z', isActive: false }] }],
+      teamRuns: [],
+    })];
     const fetchTreeSpy = vi.spyOn(store, 'fetchTree');
     expect(store.navigationProjection).toBeNull();
     expect(store.getTreeNodes()).toEqual([]);
@@ -1152,6 +1159,12 @@ describe('runHistoryStore', () => {
     });
 
     const store = useRunHistoryStore();
+    // A folder is listed only while it has a listed run (workspace-tree-vs-chooser REQ-009).
+    store.workspaceGroups = [buildWorkspaceHistoryGroup({
+      workspaceRootPath: '/tmp/autobyteus-temp', workspaceName: 'Listed',
+      agents: [{ agentDefinitionId: 'agent-def-1', agentName: 'SuperAgent', runs: [{ runId: 'run-stored', summary: 'Stored', lastActivityAt: '2025-12-31T00:00:00.000Z', isActive: false }] }],
+      teamRuns: [],
+    })];
     const nodes = store.getTreeNodes();
 
     expect(nodes).toHaveLength(1);
@@ -1159,16 +1172,15 @@ describe('runHistoryStore', () => {
       workspaceId: 'temp_ws_default',
       workspaceName: 'Temp Workspace',
       workspaceKind: 'temp',
-      canRemoveFromWorkspaces: false,
     });
-    expect(nodes[0]?.agents[0]?.runs[0]).toMatchObject({
+    expect(nodes[0]?.agents[0]?.runs.find((run) => run.runId === 'temp-123')).toMatchObject({
       runId: 'temp-123',
       source: 'draft',
       isDraft: true,
     });
   });
 
-  it('prefers fixed temp identity and non-removability when temp and filesystem descriptors share one root', () => {
+  it('prefers the fixed temp identity when temp and filesystem descriptors share one root', () => {
     workspaceStoreMock.allWorkspaces = [
       {
         workspaceId: 'agent_ws_duplicate',
@@ -1189,6 +1201,12 @@ describe('runHistoryStore', () => {
     ];
 
     const store = useRunHistoryStore();
+    // A folder is listed only while it has a listed run (workspace-tree-vs-chooser REQ-009).
+    store.workspaceGroups = [buildWorkspaceHistoryGroup({
+      workspaceRootPath: '/tmp/autobyteus-temp', workspaceName: 'Listed',
+      agents: [{ agentDefinitionId: 'agent-def-1', agentName: 'SuperAgent', runs: [{ runId: 'run-stored', summary: 'Stored', lastActivityAt: '2025-12-31T00:00:00.000Z', isActive: false }] }],
+      teamRuns: [],
+    })];
     const nodes = store.getTreeNodes();
 
     expect(nodes).toHaveLength(1);
@@ -1196,7 +1214,6 @@ describe('runHistoryStore', () => {
       workspaceId: 'temp_ws_default',
       workspaceName: 'Temp Workspace',
       workspaceKind: 'temp',
-      canRemoveFromWorkspaces: false,
     });
   });
 
@@ -1956,7 +1973,8 @@ describe('runHistoryStore', () => {
 
     const nodes = store.getTreeNodes();
 
-    expect(nodes).toHaveLength(2);
+    // Beta has no run, so the Workspaces view does not list it (workspace-tree-vs-chooser REQ-009).
+    expect(nodes).toHaveLength(1);
     expect(nodes[0]?.workspaceRootPath).toBe('/ws/a');
 
     const alphaAgent = nodes[0]?.agents[0];
@@ -1965,16 +1983,7 @@ describe('runHistoryStore', () => {
     expect(alphaAgent?.runs[0]?.source).toBe('draft');
     expect(alphaAgent?.runs[1]?.source).toBe('history');
 
-    expect(nodes[1]).toEqual({
-      stableKey: 'workspace:/ws/b',
-      workspaceId: 'ws-2',
-      workspaceRootPath: '/ws/b',
-      workspaceName: 'Beta',
-      workspaceKind: 'filesystem',
-      canRemoveFromWorkspaces: true,
-      agents: [],
-      agentOrgDefinitions: [],
-    });
+    expect(nodes.some((node) => node.workspaceRootPath === '/ws/b')).toBe(false);
   });
 
   it('pruneWorkspace clears global agent selection when the selected run belongs to the removed workspace', () => {
@@ -2124,8 +2133,41 @@ describe('runHistoryStore', () => {
     expect(runB?.lastActivityAt).toBe('2026-01-03T00:00:00.000Z');
   });
 
+  it('workspace-tree-vs-chooser VIS-017: a draft-only folder appears with the first sent message (a patch outside the listed folders rebuilds)', () => {
+    const store = useRunHistoryStore();
+    workspaceStoreMock.allWorkspaces = [{ workspaceId: 'ws-1', absolutePath: '/ws/a', name: 'Alpha' }];
+    workspaceStoreMock.workspaces = { 'ws-1': { workspaceId: 'ws-1', absolutePath: '/ws/a', name: 'Alpha', workspaceConfig: {} } };
+    const draft = {
+      config: { workspaceId: 'ws-1', agentDefinitionId: 'agent-def-1', agentDefinitionName: 'SuperAgent' },
+      state: {
+        currentStatus: 'offline',
+        conversation: { id: 'temp-1', messages: [], createdAt: '2026-01-01T00:00:00.000Z', updatedAt: '2026-01-01T00:00:00.000Z' },
+      },
+    };
+    agentContextsStoreMock.runs.set('temp-1', draft);
+    expect(store.getTreeNodes()).toEqual([]);
+
+    // Sent: the prepared run takes its permanent ID and starts.
+    agentContextsStoreMock.runs.delete('temp-1');
+    agentContextsStoreMock.runs.set('run-sent', { ...draft, state: { ...draft.state, currentStatus: 'initializing' } });
+    const changed = store.applyRunNavigationEffect(
+      { kind: 'standalone', runId: 'run-sent', currentStatus: 'initializing' as never },
+      { kind: 'PRESENTATION', occurredAt: '2026-01-01T00:00:01.000Z' },
+    );
+
+    expect(changed).toBe(true);
+    expect(store.getTreeNodes().map((node) => node.workspaceRootPath)).toEqual(['/ws/a']);
+    expect(store.getTreeNodes()[0]?.agents[0]?.runs.map((run) => [run.runId, run.source])).toEqual([['run-sent', 'local']]);
+  });
+
   it('projects offline draft contexts as inactive in tree projection', () => {
     const store = useRunHistoryStore();
+    // A folder is listed only while it has a listed run (workspace-tree-vs-chooser REQ-009).
+    store.workspaceGroups = [buildWorkspaceHistoryGroup({
+      workspaceRootPath: '/ws/a', workspaceName: 'Listed',
+      agents: [{ agentDefinitionId: 'agent-def-1', agentName: 'SuperAgent', runs: [{ runId: 'run-stored', summary: 'Stored', lastActivityAt: '2025-12-31T00:00:00.000Z', isActive: false }] }],
+      teamRuns: [],
+    })];
     workspaceStoreMock.allWorkspaces = [
       { workspaceId: 'ws-1', absolutePath: '/ws/a', name: 'Alpha' },
     ];

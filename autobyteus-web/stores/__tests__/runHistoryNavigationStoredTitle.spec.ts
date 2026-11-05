@@ -14,7 +14,7 @@ const projectionWithHistoryRun = (summary: string) => buildRunHistoryNavigationP
       runs: [{
         runId: 'run-a',
         summary,
-        createdAt: '2026-07-01T10:00:00.000Z',
+        createdAt: '2026-07-01T10:00:00.000Z', lastActivityAt: '2026-07-01T10:00:00.000Z',
         status: AgentStatus.Idle,
         isActive: true,
       }],

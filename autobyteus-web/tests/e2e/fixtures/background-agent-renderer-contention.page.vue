@@ -462,7 +462,7 @@ const historyState: WorkspaceHistorySectionState = {
   isRunTerminating: () => false, isTeamTerminating: () => false,
   isRunDeleting: () => false, isTeamDeleting: () => false,
   isRunArchiving: () => false, isTeamArchiving: () => false,
-  isWorkspaceRemoving: () => false, isWorkspaceHistoryLoading: () => false,
+  isWorkspaceHistoryLoading: () => false,
   workspaceHistoryError: () => null, formatRelativeTime: () => 'now',
   isWorkspaceExpanded: () => true, toggleWorkspace: () => {},
   isAgentExpanded: () => false, toggleAgent: () => {},
@@ -482,7 +482,7 @@ const avatars: WorkspaceHistoryAvatarBindings = {
   getTeamMemberDisplayName: (member) => member.displayName || member.memberName, getTeamMemberInitials: () => 'M',
 };
 const actions: WorkspaceHistorySectionActions = {
-  onRemoveWorkspace: () => {}, onCreateRun: () => {}, onSelectRun: () => {},
+  onCreateRun: () => {}, onSelectRun: () => {},
   onTerminateRun: () => {}, onArchiveRun: () => {}, onDeleteRun: () => {},
   onTerminateTeam: () => {}, onArchiveTeam: () => {}, onDeleteTeam: () => {},
   onSelectTeam: (team) => { if (expandedTeams.has(team.teamRunId)) expandedTeams.delete(team.teamRunId); else expandedTeams.add(team.teamRunId); },

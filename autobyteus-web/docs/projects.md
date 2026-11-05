@@ -475,14 +475,16 @@ layouts preserve wrapping/actions rather than certifying phone deployment.
 
 ## Projects Mode In The Left Panel
 
-The left panel's run section has a flat **Workspaces | Projects** switch in its
-header (`RunSectionSwitch`, labelled "Show runs by"; the "+" beside it adds a
-workspace in Workspaces mode and opens New Project in Projects mode). The mode is
-remembered per node (`stores/runSectionModeStore.ts`, `localStorage`
-`autobyteus.leftPanel.runSectionMode.<nodeId>`). Switching only changes which
-tree the section shows: it never opens, starts or stops a run and never changes
-the open conversation. In the collapsed strip the run-tree entry keeps its tree
-icon and is named after the mode. Workspaces mode is unchanged.
+The left panel's run section has one header (`RunSectionHeader`): the view's name
+and a `⋯` "View" menu choosing **Runs**, **Workspaces** (the default) or
+**Projects**, and nothing else; the section has no add actions (folders are added
+in the chat chooser, Projects on the Projects page). The view is remembered per
+node (`stores/runSectionModeStore.ts`, `localStorage`
+`autobyteus.leftPanel.runSectionMode.<nodeId>`: `runs`, `workspaces` or
+`projects`). Choosing a view only changes how the runs are shown: it never opens,
+starts or stops a run and never changes the open conversation. In the collapsed
+strip the run-section entry keeps its tree icon and is named after the view (see
+[Workspace layout](./workspace_layout.md#app-shell-left-navigation)).
 
 **The tree.** `ProjectsRunsTree` → `ProjectHistorySection` (one per Project, in
 the Projects list's order) → the shared `RunDefinitionGroups` that a workspace
@@ -498,9 +500,14 @@ so a run appears in at most one Project, and also under its folder in
 Workspaces. A run that only hands out a Project's Tasks (for example a Project
 Task Manager started in a workspace) is in no Project; it stays in Workspaces.
 Agent groups keep the 6 newest runs, as in Workspaces.
-States: "Loading Projects…", "Couldn't load Projects." with Retry, "No Projects
-yet" with New Project, a Project with "No runs yet", and, when a later read
-fails, the last good tree with "Couldn't refresh Projects." and Retry.
+A Project is listed only while it has a run the view lists (a run started under
+it, or a Team run; an unsent New chat draft does not count:
+`projectHasListedRun`); the Projects page lists every Project. A Project's
+first run therefore starts from the New chat chip's Projects tab.
+States: "Loading Projects…", "Couldn't load Projects." with Retry, two text-only
+empty states ("No Projects yet" when the node has none; "No Project has a run
+yet" when none has a run), and, when a later read fails, the last good tree with
+"Couldn't refresh Projects." and Retry.
 
 **Delegated rows are the Workspaces rows.** Under a listed run all its delegated
 runs are shown, as in Workspaces, whatever Project their Tasks belong to (a

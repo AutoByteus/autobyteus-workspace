@@ -98,7 +98,6 @@ const equalRows = <T>(left: readonly T[], right: readonly T[], equals: (a: T, b:
 const equalWorkspace = (a: WorkspaceHistoryWorkspaceNode, b: WorkspaceHistoryWorkspaceNode): boolean =>
   a.stableKey === b.stableKey && a.workspaceId === b.workspaceId && a.workspaceRootPath === b.workspaceRootPath
   && a.workspaceName === b.workspaceName && a.workspaceKind === b.workspaceKind
-  && a.canRemoveFromWorkspaces === b.canRemoveFromWorkspaces
   && equalRows(a.agents, b.agents, (a, b) => a.agentDefinitionId === b.agentDefinitionId
     && a.agentName === b.agentName && a.agentAvatarUrl === b.agentAvatarUrl
     && equalRows(a.runs, b.runs, (a, b) => a.runId === b.runId && a.summary === b.summary
@@ -156,6 +155,18 @@ const retainEqualWorkspaceTeamBuckets = (
   ) ? previous as Record<string, TeamTreeNode[]> : reconciled;
 };
 
+/**
+ * The Workspaces view's rule (workspace-tree-vs-chooser REQ-009, DS-004): a folder (Temp workspace included) is listed
+ * while it has a listed run: an Agent run that is not an unsent New chat draft (a stored, prepared or just-started run
+ * counts), an Org run, or a Team run of its root. Projects have their own rule (`projectHasListedRun`).
+ */
+export const hasListedRun = (
+  node: WorkspaceHistoryWorkspaceNode,
+  teamRowsOfRoot: readonly TeamTreeNode[],
+): boolean => node.agents.some((agent) => agent.runs.some((run) => run.source !== 'draft'))
+  || (node.agentOrgDefinitions ?? []).some((definition) => definition.runs.length > 0)
+  || teamRowsOfRoot.length > 0;
+
 export const buildRunHistoryNavigationProjection = (
   input: RunHistoryNavigationProjectionBuildInput,
   previous?: RunHistoryNavigationProjectionState | null,
@@ -167,15 +178,20 @@ export const buildRunHistoryNavigationProjection = (
     workspacesById: input.workspacesById,
     agentContexts: input.agentContexts,
   });
-  const builtWorkspaceNodes = projectWorkspaceHistoryByWorkspace(
-    establishedWorkspaceNodes,
-    input.agentOrgHistory,
-  );
   const builtTeamNodes = buildRunHistoryTeamNodes({
     workspaceGroups: input.workspaceGroups,
     teamContexts: input.teamContexts,
     workspacesById: input.workspacesById,
   });
+  // Folders without a listed run leave the view, after the Org groups and per-root Team rows exist and before any index
+  // or ancestry is built, so those refer only to listed folders.
+  const teamRowsByRoot = new Map<string, TeamTreeNode[]>();
+  for (const team of builtTeamNodes) {
+    const root = normalizeRootPath(team.workspaceRootPath);
+    teamRowsByRoot.set(root, [...(teamRowsByRoot.get(root) ?? []), team]);
+  }
+  const builtWorkspaceNodes = projectWorkspaceHistoryByWorkspace(establishedWorkspaceNodes, input.agentOrgHistory)
+    .filter((node) => hasListedRun(node, teamRowsByRoot.get(normalizeRootPath(node.workspaceRootPath)) ?? []));
   const teamContextById = new Map(input.teamContexts.map((context) => [context.view.getRootTeamRunId(), context]));
   const completedTeamNodes = builtTeamNodes.map((team) => {
     const context = teamContextById.get(team.teamRunId) ?? null;

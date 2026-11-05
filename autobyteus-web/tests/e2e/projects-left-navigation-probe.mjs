@@ -13,9 +13,13 @@
 // GraphQL API as an earlier build would have.
 // Cases (later cases use what earlier ones created; run them in order):
 //   PLN-01 353 AC-001 (the user's case), 347 AC-001: a Workspaces run that handed out Tasks of 3 Projects is in no Project
-//          (each shows "No runs yet"); it stays in Workspaces with its delegated work; switching modes keeps the open run;
-//          the mode is remembered on reload; no ORGS group in Projects mode.
-//   PLN-02 347 AC-003/REQ-004/005/006: "+" on a Project → choose the agent → send → listed under it at once, folder, prompt.
+//          (no Project has a run, so the Projects view shows its "No Project has a run yet" state: workspace-tree-vs-chooser
+//          REQ-009); it stays in Workspaces with its delegated work; switching views keeps the open run; the view is
+//          remembered on reload; no ORGS group in the Projects view.
+//   PLN-02 347 AC-003/REQ-004/005/006: New chat, chip → Project P (P is not listed yet: it has no run) → choose the agent →
+//          send → P appears with the run at once, folder, prompt.
+// The view is chosen with the run section's header menu (workspace-tree-vs-chooser REQ-006); the stored choice is read from
+// local storage (`autobyteus.leftPanel.runSectionMode.<node>`).
 //   PLN-03 347 AC-015/AC-004: New chat chip: Project with two folders (first), no folder (temp), folder kept, "No project".
 //   PLN-04 353 AC-003, 347 AC-005: a Team under a Project, listed once; "+" on the Project's agent group.
 //   PLN-05 353 AC-002, 347 AC-006/AC-010: real delegation from the run under P (a P Team with Task line and members, P,
@@ -288,13 +292,18 @@ const teamCopyRowIn = (scope, address) => scope.locator(`${T('workspace-team-tra
 const centerText = (page) => page.locator(T('workspace-center-pane')).innerText().catch(() => '');
 const gotoWorkspace = async (page) => {
   await page.goto(`${stack.frontendUrl}/workspace`, { waitUntil: 'networkidle', timeout: 120000 });
-  await page.locator(T('run-section-switch')).waitFor({ timeout: 120000 });
+  await page.locator(T('run-section-view-menu')).waitFor({ timeout: 120000 });
 };
+/** The run section's stored view (`workspaces` when none is stored). */
+const currentMode = (page) => page.evaluate(() => Object.entries(window.localStorage)
+  .find(([key]) => key.startsWith('autobyteus.leftPanel.runSectionMode.'))?.[1] ?? 'workspaces');
 const showMode = async (page, mode) => {
-  const tab = page.locator(T(`run-section-tab-${mode}`));
-  if ((await tab.getAttribute('aria-selected')) !== 'true') await tab.click();
-  await until(`${mode} mode`, async () => (await tab.getAttribute('aria-selected')) === 'true');
-  if (mode === 'projects') await until('Projects listed', async () => (await page.locator(T('project-row')).count()) >= 1, 60000);
+  if ((await currentMode(page)) !== mode) {
+    await page.locator(T('run-section-view-menu')).click();
+    await page.locator(T(`run-section-view-${mode}`)).click();
+  }
+  await until(`${mode} view`, async () => (await currentMode(page)) === mode);
+  if (mode === 'projects') await until('Projects read', async () => (await page.locator(`${T('project-row')}, ${T('projects-tree-no-runs')}, ${T('projects-tree-empty')}`).count()) >= 1, 60000);
 };
 const openProject = async (page, projectKey) => {
   const section = sectionOf(page, projectKey);
@@ -377,16 +386,13 @@ const existingRuns = async () => {
       return true;
     }, 30000);
     await shot(page, 'PLN-01-workspaces-run-with-delegated-work');
-    // Projects mode: every Project shows the empty hint; the run and its copies appear nowhere.
+    // Projects view: no Project has a run, so none is listed and the view says so (workspace-tree-vs-chooser REQ-009,
+    // VIS-016); the run and its copies appear nowhere.
     await showMode(page, 'projects');
     const projectNames = await page.locator(`${T('project-row')} ${T('project-row-select')}`).allInnerTexts();
-    const hints = {};
-    for (const key of ['P', 'Q', 'R']) {
-      const section = await openProject(page, key);
-      hints[key] = (await section.locator(T('project-no-runs')).innerText().catch(() => '')).trim();
-      assert(hints[key] === 'No runs yet. Use + to run an agent or team for this Project.', `Project ${key} does not show the empty hint`, hints);
-      assert((await section.locator(T('workspace-agent-run-row')).count()) === 0, `Project ${key} lists a run`);
-    }
+    assert(projectNames.length === 0, 'a Project without runs is listed', projectNames);
+    const hints = { noRuns: (await page.locator(T('projects-tree-no-runs')).innerText().catch(() => '')).trim() };
+    assert(hints.noRuns.includes('No Project has a run yet'), 'the Projects view does not show its "none with a run" state', hints);
     const tree = page.locator(T('projects-runs-tree'));
     const inProjects = { runRows: await tree.locator(`${T('workspace-agent-run-row')}[data-run-id="${W}"]`).count(),
       copyRows: await tree.locator(T('workspace-team-transient-execution-row')).count(),
@@ -401,28 +407,31 @@ const existingRuns = async () => {
     assert(marked.includes(W), 'the open run is not marked in Workspaces', marked);
     await showMode(page, 'projects');
     await page.reload({ waitUntil: 'networkidle' });
-    await page.locator(T('run-section-switch')).waitFor({ timeout: 60000 });
-    const remembered = await page.locator(T('run-section-tab-projects')).getAttribute('aria-selected');
-    assert(remembered === 'true', 'Projects mode not remembered after reload', { remembered });
+    await page.locator(T('run-section-view-menu')).waitFor({ timeout: 60000 });
+    const remembered = (await page.locator(T('run-section-title')).innerText()).trim();
+    assert(remembered === 'Projects', 'the Projects view is not remembered after reload', { remembered });
     assert(errors.length === 0, 'browser errors', errors);
     return { W, wCopies, projectNames, hints, inProjects, marked, remembered };
   } finally { await context.close(); }
 };
 
-/** AC-003, REQ-004/005/006: "+" on P → choose the agent → send → listed under P at once; folder; prompt; under its folder. */
+/**
+ * AC-003, REQ-004/005/006: New chat, chip → P → choose the agent → send → P is listed with the run at once; folder; prompt;
+ * under its folder. P has no run before, so the Projects view does not list it (workspace-tree-vs-chooser REQ-009): the
+ * first run of a Project starts from the chat chip.
+ */
 const startFromProjectPlus = async () => {
   const P = s.projects.P;
   const { page, errors, context } = await newPage();
   try {
     await gotoWorkspace(page);
     await showMode(page, 'projects');
-    const section = sectionOf(page, 'P');
-    await section.locator(T('project-row')).hover();
-    await section.locator(T('project-run-add')).click();
-    await page.waitForURL('**/chat**', { timeout: 30000 });
+    assert((await sectionOf(page, 'P').count()) === 0, 'P is listed before it has a run');
+    await page.goto(`${stack.frontendUrl}/chat`, { waitUntil: 'networkidle', timeout: 120000 });
     await page.locator(T('chat-new')).waitFor({ timeout: 60000 });
     await chooseTarget(page, s.ids.manager);
     await pickAgyModel(page);
+    await chooseChipProject(page, 'P');
     const chip = await chipText(page);
     const chipAria = await page.locator(T('chat-workspace-trigger')).getAttribute('aria-label');
     assert(chip.includes(P.name), 'chip does not show the Project', { chip });
@@ -918,10 +927,12 @@ const accessibilityAndLooks = async () => {
     const { page, errors, context } = await newPage();
     try {
       await gotoWorkspace(page);
-      await page.locator(T('run-section-tab-workspaces')).focus();
-      await page.keyboard.press('ArrowRight');
+      // The View menu: ArrowDown opens it on the current view, ArrowDown moves to Projects, Enter chooses it.
+      await page.locator(T('run-section-view-menu')).focus();
+      await page.keyboard.press('ArrowDown');
+      await page.keyboard.press('ArrowDown');
       await page.keyboard.press('Enter');
-      await until('Projects by keyboard', async () => (await page.locator(T('run-section-tab-projects')).getAttribute('aria-selected')) === 'true', 10000);
+      await until('Projects by keyboard', async () => (await currentMode(page)) === 'projects', 10000);
       out.keyboardSwitch = true;
       const pSelect = sectionOf(page, 'P').locator(T('project-row-select'));
       await pSelect.focus();
@@ -950,7 +961,7 @@ const accessibilityAndLooks = async () => {
       const strip = page.locator('[data-nav-key="workspaces"]').first();
       out.stripLabel = await strip.getAttribute('aria-label').catch(() => null);
       if (await strip.isVisible().catch(() => false)) { await strip.click(); await sleep(800); }
-      out.narrowSwitchVisible = await page.locator(T('run-section-switch')).isVisible().catch(() => false);
+      out.narrowMenuVisible = await page.locator(T('run-section-view-menu')).isVisible().catch(() => false);
       await shot(page, 'PLN-10-narrow-drawer');
       assert(errors.length === 0, 'browser errors', errors);
     } finally { await context.close(); }
@@ -959,7 +970,9 @@ const accessibilityAndLooks = async () => {
     const { page, errors, context } = await newPage({ locale: 'zh-CN' });
     try {
       await gotoWorkspace(page);
-      out.zhTabs = (await page.locator(`${T('run-section-switch')} [role="tab"]`).allInnerTexts()).map((t) => t.trim());
+      await page.locator(T('run-section-view-menu')).click();
+      out.zhViews = (await page.locator('[role="menuitemradio"]').allInnerTexts()).map((t) => t.trim());
+      await page.keyboard.press('Escape');
       await shot(page, 'PLN-10-zh-CN');
       assert(errors.length === 0, 'browser errors', errors);
     } finally { await context.close(); }

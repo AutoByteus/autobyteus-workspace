@@ -135,6 +135,22 @@ const shellMessages = {
   'shell.components.layout.WorkspaceAdaptiveLayout.select_or_run_an_agent_team': '选择或运行一个智能体/团队以开始。',
   'shell.components.layout.loading_selected_run_history': '加载中',
   'shell.startTools.show': '显示工具',
+  // The run section's Runs view (workspace-tree-vs-chooser, from autobyteus-378).
+  'runList.title': '你的运行',
+  'runList.showOlder': '显示更早的（{{count}}）',
+  'runList.showFewer': '收起',
+  'runList.archiveOlder': '归档全部更早的',
+  'runList.olderRuns': '更早的运行',
+  'runList.loading': '正在加载…',
+  'runList.error': '无法加载你的运行。',
+  'runList.staleError': '无法刷新。',
+  'runList.retry': '重试',
+  'runList.emptyTitle': '还没有运行',
+  'runList.emptyHelp': '从“聊天”开始。智能体委派的工作会显示在它的运行下面，完成后自动离开。',
+  'runList.expand': '显示 {{name}} 委派的工作',
+  'runList.collapse': '隐藏 {{name}} 委派的工作',
+  'runList.rowTitle': '{{name}} · {{folder}}',
+  'runList.folderTemp': '临时工作区',
 } satisfies TranslationCatalog;
 
 export default shellMessages;

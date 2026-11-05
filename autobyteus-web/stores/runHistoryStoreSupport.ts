@@ -112,6 +112,7 @@ export const parseAgentOrgHistoryItem = (value: unknown, requestedId?: string): 
   if (item.root_subject_kind !== 'agent_org') throw new Error('Expected an AgentOrg history row.');
   const rootRunId = stringField(item.root_run_id, 'AgentOrg root_run_id').trim();
   const createdAt = stringField(item.created_at, 'AgentOrg created_at');
+  const lastActivityAt = stringField(item.last_activity_at, 'AgentOrg last_activity_at');
   const archivedAt = nullableStringField(item.archived_at, 'AgentOrg archived_at');
   const summary = stringField(item.summary, 'AgentOrg summary');
   if (typeof item.is_active !== 'boolean') throw new Error('AgentOrg is_active must be a boolean.');
@@ -121,7 +122,7 @@ export const parseAgentOrgHistoryItem = (value: unknown, requestedId?: string): 
   const closedTaskExecutions = closedTaskExecutionsDtoSchema.parse(item.closed_task_executions);
   return Object.freeze({
     stableKey: `agent_org_run:${rootRunId}`, rootSubjectKind: 'agent_org', rootRunId,
-    createdAt, archivedAt, isActive: item.is_active, summary, executionTree, closedTaskExecutions,
+    createdAt, lastActivityAt, archivedAt, isActive: item.is_active, summary, executionTree, closedTaskExecutions,
   });
 };
 

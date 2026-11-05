@@ -13,6 +13,8 @@ export interface RunHistoryItem {
   runId: string;
   summary: string;
   createdAt: string;
+  /** When the run was last active, its delegated work included; `createdAt` before any (server, DS-005). */
+  lastActivityAt: string;
   archivedAt?: string | null;
   terminatedAt?: string | null;
   status: AgentStatus;
@@ -42,6 +44,8 @@ export interface AgentOrgRunHistoryItem {
   rootSubjectKind: 'agent_org';
   rootRunId: string;
   createdAt: string;
+  /** When any agent of the run was last active; `createdAt` before any (server, DS-005). */
+  lastActivityAt: string;
   archivedAt: string | null;
   isActive: boolean;
   summary: string;
@@ -119,6 +123,8 @@ export interface TeamRunHistoryItem {
   workspaceRootPath?: string | null;
   summary: string;
   createdAt: string;
+  /** When any agent of the run was last active; `createdAt` before any (server, DS-005). */
+  lastActivityAt: string;
   archivedAt?: string | null;
   terminatedAt?: string | null;
   isActive: boolean;

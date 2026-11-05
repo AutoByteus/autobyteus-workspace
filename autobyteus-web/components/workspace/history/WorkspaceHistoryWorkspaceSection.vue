@@ -21,17 +21,6 @@
         <Icon icon="heroicons:folder-20-solid" class="mr-1.5 h-4 w-4 text-gray-500" />
         <span class="truncate">{{ workspaceDisplayName }}</span>
       </button>
-      <button
-        v-if="workspaceNode.canRemoveFromWorkspaces"
-        type="button"
-        class="mr-1 inline-flex h-6 w-6 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 focus:opacity-100 md:opacity-0 md:group-hover/workspace-row:opacity-100 md:group-focus-within/workspace-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50"
-        :title="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.remove_from_workspaces')"
-        :aria-label="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.remove_from_workspaces')"
-        :disabled="state.isWorkspaceRemoving(workspaceNode.workspaceId)"
-        @click.stop="actions.onRemoveWorkspace(workspaceNode)"
-      >
-        <Icon icon="heroicons:x-mark-20-solid" class="h-4 w-4" />
-      </button>
     </div>
 
     <div v-if="state.isWorkspaceExpanded(workspacePresentationId)" class="ml-2 mt-0.5 space-y-1">
@@ -43,14 +32,6 @@
         v-if="state.workspaceHistoryError(workspaceNode.workspaceId)"
         class="px-3 py-1 text-xs text-red-500"
       >{{ state.workspaceHistoryError(workspaceNode.workspaceId) }}</div>
-      <div
-        v-if="!state.isWorkspaceHistoryLoading(workspaceNode.workspaceId)
-          && !state.workspaceHistoryError(workspaceNode.workspaceId)
-          && workspaceNode.agents.length === 0
-          && workspaceTeams.length === 0
-          && !(workspaceNode.agentOrgDefinitions?.length)"
-        class="px-3 py-1 text-xs text-gray-400"
-      >{{ $t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.no_task_history_in_this_workspace') }}</div>
 
       <RunDefinitionGroups
         :node="workspaceNode"

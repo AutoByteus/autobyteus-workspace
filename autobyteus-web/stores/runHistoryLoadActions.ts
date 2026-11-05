@@ -72,6 +72,7 @@ export interface RunHistoryFetchStoreLike {
   agentOrgHistoryItemErrors: Record<string, string>;
 
   workspaceRequestGeneration: number;
+  historyWindow: number | null;
   refreshRunNavigationTopology(reason: string): void;
   findAgentNameByRunId(runId: string): string | null;
   ensureWorkspaceByRootPath(rootPath: string): Promise<string | null>;
@@ -94,10 +95,11 @@ const readAgentOrgHistory = async (
 
 export const fetchRunHistoryTree = async (
   store: RunHistoryFetchStoreLike,
-  limitPerAgent = 6,
   options: { quiet?: boolean } = {},
 ): Promise<void> => {
   const quiet = options.quiet === true;
+  // Every read, first or quiet, uses the store's one read window (`null`: every run).
+  const limitPerAgent = store.historyWindow;
   const requests = store.agentOrgRequestSequenceById;
   const agentOrgGeneration = ++store.agentOrgRequestGeneration;
   // An older workspace snapshot must not be applied (or reconciled) after a newer one.

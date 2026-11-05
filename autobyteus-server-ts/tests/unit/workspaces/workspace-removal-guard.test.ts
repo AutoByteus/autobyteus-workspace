@@ -29,6 +29,8 @@ describe("WorkspaceRemovalGuard", () => {
     });
 
     expect(result.blocked).toBe(true);
+    // The approved refusal copy (workspace-tree-vs-chooser REQ-004), shown as the chooser's error toast.
+    expect(result.message).toBe("Stop active runs before removing this workspace.");
     expect(result.blockers).toEqual([{ kind: "agent_run", runId: "run-1" }]);
   });
 

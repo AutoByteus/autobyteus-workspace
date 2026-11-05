@@ -151,7 +151,7 @@ describe('independent family publication through real initialized Pinia projecti
   });
   it('quiet partial failure retains legacy global error while other accepted family publishes', async () => {
     const store=useRunHistoryStore();store.error='prior';store.refreshRunNavigationTopology('initial');
-    const completion=store.fetchTree(6,{quiet:true});workspace.reject(Error('workspace quiet failure'));org.resolve(orgResponse());await completion;
+    const completion=store.fetchTree({quiet:true});workspace.reject(Error('workspace quiet failure'));org.resolve(orgResponse());await completion;
     expect(store.loading).toBe(false);expect(store.error).toBe('prior');expect(store.historyFamilyErrors.workspace).toBe('workspace quiet failure');expect(orgIds()).toEqual(['org-history']);
   });
 });

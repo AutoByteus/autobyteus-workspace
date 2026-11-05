@@ -23,7 +23,7 @@ const mountOrg = (
     name: 'Restored Org',
     runs: [{
       stableKey: 'agent_org_run:org-run', rootSubjectKind: 'agent_org', rootRunId: 'org-run',
-      createdAt: tree.createdAt, archivedAt: null, isActive, summary: 'Delegating Org', executionTree: tree, closedTaskExecutions: [],
+      createdAt: tree.createdAt, lastActivityAt: tree.createdAt, archivedAt: null, isActive, summary: 'Delegating Org', executionTree: tree, closedTaskExecutions: [],
     }],
   };
   const state = {
@@ -167,7 +167,7 @@ const mountWithTreeState = () => {
   const tree = structuredClone(taskBearingView().execution_tree) as OrgTree;
   const run = {
     stableKey: 'agent_org_run:org-run', rootSubjectKind: 'agent_org' as const, rootRunId: 'org-run',
-    createdAt: tree.createdAt, archivedAt: null, isActive: false, summary: 'Delegating Org', executionTree: tree, closedTaskExecutions: [],
+    createdAt: tree.createdAt, lastActivityAt: tree.createdAt, archivedAt: null, isActive: false, summary: 'Delegating Org', executionTree: tree, closedTaskExecutions: [],
   };
   const group = reactive<AgentOrgHistoryDefinitionGroup>({ stableKey: 'agent_org_definition:org-definition', definitionId: 'org-definition', name: 'Restored Org', runs: [run] });
   const history = { selectedRunId: null, selectedTeamRunId: null, workspaceGroups: [], navigationTopologyRevision: 0,

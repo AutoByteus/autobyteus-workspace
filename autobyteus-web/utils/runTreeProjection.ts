@@ -46,7 +46,6 @@ export interface ProjectionWorkspaceDescriptor {
   workspaceRootPath: string;
   workspaceName: string;
   workspaceKind: ProjectionWorkspaceKind;
-  canRemoveFromWorkspaces: boolean;
 }
 
 export interface LocalRunSnapshot {
@@ -80,7 +79,6 @@ export interface RunTreeWorkspaceNode {
   workspaceRootPath: string;
   workspaceName: string;
   workspaceKind: ProjectionWorkspaceKind;
-  canRemoveFromWorkspaces: boolean;
   agents: RunTreeAgentNode[];
 }
 
@@ -102,7 +100,6 @@ interface MutableWorkspaceNode {
   workspaceRootPath: string;
   workspaceName: string;
   workspaceKind: ProjectionWorkspaceKind;
-  canRemoveFromWorkspaces: boolean;
   agentsById: Map<string, MutableAgentNode>;
 }
 
@@ -172,17 +169,16 @@ const ensureWorkspaceNode = (
   workspaceRootPath: string,
   workspaceName: string,
   workspaceKind: ProjectionWorkspaceKind,
-  canRemoveFromWorkspaces: boolean,
 ): MutableWorkspaceNode => {
   const existing = workspaceNodes.get(workspaceRootPath);
   if (existing) {
     if (!existing.workspaceName && workspaceName) {
       existing.workspaceName = workspaceName;
     }
-    if (existing.canRemoveFromWorkspaces && !canRemoveFromWorkspaces) {
+    // The Temp workspace's identity wins over a filesystem descriptor of the same root.
+    if (existing.workspaceKind === 'filesystem' && workspaceKind === 'temp') {
       existing.workspaceId = workspaceId;
       existing.workspaceKind = workspaceKind;
-      existing.canRemoveFromWorkspaces = canRemoveFromWorkspaces;
     }
     return existing;
   }
@@ -192,7 +188,6 @@ const ensureWorkspaceNode = (
     workspaceRootPath,
     workspaceName: workspaceName || FALLBACK_WORKSPACE_NAME,
     workspaceKind,
-    canRemoveFromWorkspaces,
     agentsById: new Map<string, MutableAgentNode>(),
   };
   workspaceNodes.set(workspaceRootPath, created);
@@ -240,7 +235,6 @@ export const buildRunTreeProjection = (input: BuildRunTreeProjectionInput): RunT
       normalizedRoot,
       workspace.workspaceName || FALLBACK_WORKSPACE_NAME,
       workspace.workspaceKind,
-      workspace.canRemoveFromWorkspaces,
     );
   }
 
@@ -332,7 +326,6 @@ export const buildRunTreeProjection = (input: BuildRunTreeProjectionInput): RunT
       workspaceRootPath: workspaceNode.workspaceRootPath,
       workspaceName: workspaceNode.workspaceName || FALLBACK_WORKSPACE_NAME,
       workspaceKind: workspaceNode.workspaceKind,
-      canRemoveFromWorkspaces: workspaceNode.canRemoveFromWorkspaces,
       agents,
     };
   });
@@ -408,7 +401,6 @@ export const projectWorkspaceHistoryByWorkspace = (
         workspaceRootPath: root,
         workspaceName: historyWorkspaceName(root),
         workspaceKind: 'filesystem',
-        canRemoveFromWorkspaces: false,
         agents: [],
         agentOrgDefinitions: [],
       };

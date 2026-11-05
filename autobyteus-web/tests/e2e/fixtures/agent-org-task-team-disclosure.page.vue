@@ -69,7 +69,7 @@ const executionTree = {
 
 const groups = reactive<AgentOrgHistoryDefinitionGroup[]>([{
   stableKey: 'agent_org_definition:ttrc-org-definition', definitionId: 'ttrc-org-definition', name: 'Nested Classroom Test Org',
-  runs: [{ stableKey: `agent_org_run:${ROOT}`, rootSubjectKind: 'agent_org', rootRunId: ROOT, createdAt: '2026-09-29T08:00:00.000Z',
+  runs: [{ stableKey: `agent_org_run:${ROOT}`, rootSubjectKind: 'agent_org', rootRunId: ROOT, createdAt: '2026-09-29T08:00:00.000Z', lastActivityAt: '2026-09-29T08:00:00.000Z',
     archivedAt: null, isActive: false, summary: 'Classroom run', executionTree, closedTaskExecutions: [] }],
 }]);
 

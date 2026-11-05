@@ -192,7 +192,15 @@ server, which rejects run input with empty text.
   another folder…" stays available. ArrowDown moves from the search box into the
   results, ArrowUp moves back, Enter picks the highlighted or first match (never
   during IME composition), and Escape closes without changing the selection. The
-  query resets each time the menu opens.
+  query resets each time the menu opens. It lists every registered folder, also
+  one the left panel does not list. Each user folder (not Temp workspace) has a
+  "Remove" button (28px, at the right of the row; on hover or focus from `md`,
+  always below it) that asks first ("Remove folder") and then unregisters the
+  folder (`removeWorkspace`, `useWorkspaceHistoryWorkspaceRemoval`): it leaves
+  every chooser and every view of the left panel; files, memories and run history
+  stay. The server refuses while a run is running there ("Stop active runs before
+  removing this workspace."). Removing the chosen folder moves the chip to Temp
+  workspace.
 
 ### Thinking menu
 
