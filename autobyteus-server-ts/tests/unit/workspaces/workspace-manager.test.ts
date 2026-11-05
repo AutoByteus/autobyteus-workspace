@@ -132,7 +132,7 @@ describe("WorkspaceManager", () => {
     await manager.getOrCreateTempWorkspace();
     const visibleWorkspaces = await manager.listVisibleWorkspaces();
 
-    expect(visibleWorkspaces.map(({ workspace }) => workspace.workspaceId).sort()).toEqual(
+    expect(visibleWorkspaces.map((workspace) => workspace.workspaceId).sort()).toEqual(
       [regularWorkspaceId, TempWorkspace.TEMP_WORKSPACE_ID].sort(),
     );
     expect(manager.getWorkspaceById(tempFilesystemWorkspaceId)).toBeUndefined();
@@ -148,10 +148,10 @@ describe("WorkspaceManager", () => {
     const internal = await manager.ensureWorkspaceByRootPath(internalRoot);
     vi.stubEnv("AUTOBYTEUS_SHOW_INTERNAL_AGENTS", "false");
     try {
-      expect((await manager.listVisibleWorkspaces()).map(({ workspace }) => workspace.workspaceId)).toEqual([regular.workspaceId]);
+      expect((await manager.listVisibleWorkspaces()).map((workspace) => workspace.workspaceId)).toEqual([regular.workspaceId]);
       expect(await manager.getOrCreateWorkspace(internal.workspaceId)).toBe(internal);
       vi.stubEnv("AUTOBYTEUS_SHOW_INTERNAL_AGENTS", "true");
-      expect((await manager.listVisibleWorkspaces()).map(({ workspace }) => workspace.workspaceId).sort())
+      expect((await manager.listVisibleWorkspaces()).map((workspace) => workspace.workspaceId).sort())
         .toEqual([regular.workspaceId, internal.workspaceId].sort());
     } finally {
       vi.unstubAllEnvs();

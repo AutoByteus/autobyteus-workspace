@@ -7,7 +7,7 @@ describe("WorkspaceConverter", () => {
   it("maps a regular workspace's metadata with isTemp false", () => {
     const workspace = new FileSystemWorkspace({ rootPath: "/path/to/ws", workspaceId: "regular_id" });
 
-    const info = WorkspaceConverter.toGraphql(workspace, false);
+    const info = WorkspaceConverter.toGraphql(workspace);
 
     expect(info).toEqual({
       workspaceId: "regular_id",
@@ -18,14 +18,13 @@ describe("WorkspaceConverter", () => {
       absolutePath: "/path/to/ws",
       kind: "filesystem",
       isTemp: false,
-      shownInWorkspacesTree: false,
     });
   });
 
   it("maps the temp workspace with its fixed id and isTemp true", () => {
     const workspace = new TempWorkspace("/path/to/temp");
 
-    const info = WorkspaceConverter.toGraphql(workspace, true);
+    const info = WorkspaceConverter.toGraphql(workspace);
 
     expect(info.workspaceId).toBe(TempWorkspace.TEMP_WORKSPACE_ID);
     expect(info.name).toBe("Temp Workspace");

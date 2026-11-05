@@ -38,10 +38,6 @@ export class WorkspaceMetadataInfo {
 
   @Field(() => Boolean)
   isTemp!: boolean;
-
-  /** False when the user hid it from the Workspaces tree (desktop tree, phone work list); choosers list it anyway. */
-  @Field(() => Boolean)
-  shownInWorkspacesTree!: boolean;
 }
 
 @InputType()
@@ -52,24 +48,6 @@ export class CreateWorkspaceInput {
 
 @InputType()
 export class RemoveWorkspaceInput {
-  @Field(() => String)
-  workspaceId!: string;
-}
-
-@InputType()
-export class HideWorkspaceFromTreeInput {
-  @Field(() => String)
-  workspaceId!: string;
-}
-
-@ObjectType()
-export class HideWorkspaceFromTreeResultInfo {
-  @Field(() => Boolean)
-  success!: boolean;
-
-  @Field(() => String)
-  message!: string;
-
   @Field(() => String)
   workspaceId!: string;
 }
@@ -100,8 +78,7 @@ export class WorkspaceResolver {
     try {
       await this.workspaceManager.getOrCreateTempWorkspace();
       const workspaces = await this.workspaceManager.listVisibleWorkspaces();
-      return workspaces.map(({ workspace, shownInWorkspacesTree }) =>
-        WorkspaceConverter.toGraphql(workspace, shownInWorkspacesTree));
+      return workspaces.map((workspace) => WorkspaceConverter.toGraphql(workspace));
     } catch (error) {
       logger.error(`Failed to fetch all workspaces: ${String(error)}`);
       throw new Error("Unable to fetch workspaces at this time.");
@@ -115,9 +92,8 @@ export class WorkspaceResolver {
     try {
       const workspaceRootPath = canonicalizeWorkspaceRootPath(rootPath);
       const displayName = workspaceDisplayNameFromRootPath(workspaceRootPath);
-      const workspaceId = buildFilesystemWorkspaceId(workspaceRootPath);
       return {
-        workspaceId,
+        workspaceId: buildFilesystemWorkspaceId(workspaceRootPath),
         name: displayName,
         displayName,
         config: { rootPath: workspaceRootPath },
@@ -125,7 +101,6 @@ export class WorkspaceResolver {
         absolutePath: workspaceRootPath,
         kind: "filesystem",
         isTemp: false,
-        shownInWorkspacesTree: await this.workspaceManager.isShownInWorkspacesTree(workspaceId),
       };
     } catch (error) {
       logger.error(`Failed to resolve workspace metadata: ${String(error)}`);
@@ -140,28 +115,10 @@ export class WorkspaceResolver {
     logger.info("GraphQL mutation to create workspace metadata");
     try {
       const workspace = await this.workspaceManager.createWorkspace({ rootPath: input.rootPath });
-      // "Add workspace" is the user's own command: it brings a hidden folder back to the Workspaces tree.
-      await this.workspaceManager.showInWorkspacesTree([workspace.getBasePath()]);
-      return WorkspaceConverter.toGraphql(
-        workspace,
-        await this.workspaceManager.isShownInWorkspacesTree(workspace.workspaceId),
-      );
+      return WorkspaceConverter.toGraphql(workspace);
     } catch (error) {
       logger.error(`Unexpected error creating workspace metadata: ${String(error)}`);
       throw new Error(String(error));
-    }
-  }
-
-  @Mutation(() => HideWorkspaceFromTreeResultInfo)
-  async hideWorkspaceFromTree(
-    @Arg("input", () => HideWorkspaceFromTreeInput) input: HideWorkspaceFromTreeInput,
-  ): Promise<HideWorkspaceFromTreeResultInfo> {
-    logger.info("GraphQL mutation to hide a workspace from the Workspaces tree");
-    try {
-      return await this.workspaceManager.hideFromWorkspacesTree(input.workspaceId);
-    } catch (error) {
-      logger.error(`Unexpected error hiding workspace from the Workspaces tree: ${String(error)}`);
-      return { success: false, message: String(error), workspaceId: input.workspaceId };
     }
   }
 

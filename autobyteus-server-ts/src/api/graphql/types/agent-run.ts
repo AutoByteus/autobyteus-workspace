@@ -10,7 +10,6 @@ import {
 } from "type-graphql";
 import { GraphQLJSON } from "graphql-scalars";
 import { runtimeKindFromString } from "../../../runtime-management/runtime-kind-enum.js";
-import { getWorkspaceManager } from "../../../workspaces/workspace-manager.js";
 import {
   getStudioAgentRunService,
   getStudioRunModelConfigService,
@@ -246,8 +245,6 @@ export class AgentRunResolver {
         initialSummary: input.initialSummary ?? null,
         projectId: input.projectId ?? null,
       });
-      // The user's own new run: its folder comes back to the Workspaces tree (a peer's delegation calls the service).
-      await getWorkspaceManager().showInWorkspacesTree([input.workspaceRootPath]);
 
       return {
         success: true,
