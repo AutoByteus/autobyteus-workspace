@@ -163,6 +163,33 @@ describe("Project data tools — actual native preparation/execute and selected 
     expect((await getProjectService().listProjectSummaries()).some(p => p.name === "Abort")).toBe(false);
   });
 
+  it("list_projects returns each Project's linked folders with their descriptions, empty fields left out, identically through native and MCP (autobyteus-384 AC-001, AC-004)", async () => {
+    const repo = path.join(root, "repo"), agents = path.join(root, "agents");
+    const linked = JSON.parse(await new CreateProjectTool().execute(null, {name: "Linked", description: "Two folders",
+      workspaces: [{workspace_path: repo, description: "main repo"}, {workspace_path: agents}]}));
+    const native = JSON.parse(await new ListProjectsTool().execute(null));
+    expect(native).toEqual({projects: [
+      {projectId: linked.project.projectId, name: "Linked", description: "Two folders",
+        workspaces: [{workspaceRootPath: repo, description: "main repo"}, {workspaceRootPath: agents}]},
+      // The fixture Project has no description and no folders: neither field is present.
+      {projectId, name: "Tools fixture"},
+    ]});
+    const served = await mcp("list_projects", {});
+    expect(served.structuredContent).toEqual(native);
+    expect(JSON.parse((served.content[0]!.text as string))).toEqual(native);
+    // The folders are the same objects create_project acknowledged: one shape, one vocabulary.
+    expect(native.projects[0].workspaces).toEqual(linked.project.workspaces);
+  });
+
+  it("documents what list_projects' workspaces are for (autobyteus-384 AC-003)", () => {
+    const description = ListProjectsTool.getDescription();
+    expect(provider.getAdapters().find(a => a.definition.name === "list_projects")!.definition.description).toBe(description);
+    for (const part of ["projectId", "name", "description", "workspaces", "workspaceRootPath", "folders the Project is linked to",
+      "before creating a Project for a folder", "A field with no value is left out", "Does not select or change a Project"]) {
+      expect(description).toContain(part);
+    }
+  });
+
   it("preserves nested omission through public native preparation/coercion and MCP replacement/clear", async () => {
     const store = getProjectStore();
     const lookup = vi.fn(async () => { throw new Error("Registry must not gate tool writes"); });

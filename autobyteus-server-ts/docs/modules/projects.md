@@ -565,7 +565,7 @@ is selected per agent definition; none is added automatically.
 
 | Tool | Exact input / behavior | Result object |
 | --- | --- | --- |
-| `list_projects` | `{}` only; list all node-local Project ID/name/description, no selection or mutation | `{projects: [{projectId, name, description}]}` |
+| `list_projects` | `{}` only; list all node-local Projects with their linked folders, no selection or mutation | `{projects: [{projectId, name, description, workspaces: [{workspaceRootPath, description}]}]}` (empty fields left out) |
 | `list_project_tasks` | Required `project_id`; optional exact `status`: TODO, IN_PROGRESS, DONE or CANCELLED | `{projectId, tasks: [...]}`: short entries |
 | `get_project_task` | Required `project_id` and `task_id` (a key in any letter case, or the long ID, of that Project); a worker reads only the Task it works on (see below) | the Task in full `{projectId, taskId, title, status, description, dependsOn, partOf, parts, comments, contextFiles, assignments, closedAssignments}` |
 | `search_project_tasks` | Required `project_id` and `query` (a sentence or a few words); optional `limit` 1–30 (default 10). Searches by meaning and by exact text (see [Project Task Search](#project-task-search)) | `{projectId, tasks: [{taskId, status, partOf, parts, title, match, commentCount}], meaningSearch?: {state, note}}` |
