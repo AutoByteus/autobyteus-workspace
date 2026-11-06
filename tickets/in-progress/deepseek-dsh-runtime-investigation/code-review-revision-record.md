@@ -7,6 +7,7 @@
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 / IR-001 | N/A | Fail (Local Fix) | CR-001 |
 | CRR-002 | `code-review-report.md` | Implementation Review, round 2 / IR-002 (CR-001 fix) | Fail (Local Fix) | Pass | CR-001 |
 | CRR-003 | `api-e2e-test-review-report.md` | Post-API/E2E test-code review, round 1 / API-REV-001 | N/A (first test review) | Fail (Local Fix, API/E2E) | TR-001 |
+| CRR-004 | `api-e2e-test-review-report.md` | Post-API/E2E test-code review, round 2 / API-REV-002 (TR-001 fix) | Fail (Local Fix, API/E2E) | Pass | TR-001 |
 
 ## Revision Entries
 
@@ -86,3 +87,30 @@ None.
 - Material score or classification changes: N/A
 - Recommended recipient: API/E2E engineer; then rerun API-25 and return for this test review
 - Remaining risks or uncertainty: AC-006 and the AC-009 key-removed trigger are requirement-basis notes for the Solution Designer
+
+### CRR-004 — TR-001 fix verified (API-REV-002)
+
+- Canonical review report updated: `api-e2e-test-review-report.md`
+- Review entry point and round: post-API/E2E test-code review, round 2
+- Review scope: `N/A` (test review; TR-001 recheck)
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, `api-e2e-execution-coverage-report.md` (API-REV-002); TR-001, API-25
+- Relevant solution revision IDs: SR-004
+- Relevant architecture-review revision IDs: N/A
+- Relevant implementation revision IDs: IR-002 (no product source changed since `fddcff0f13`)
+- Relevant API/E2E revision IDs: API-REV-002
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Fail (Local Fix, TR-001)
+- Current authoritative result: Pass
+- What changed in the review result and why: `6e1dc44337` makes the standalone-host case assert the DEC-020 refusal and that no dsh files were written. The API-25 rerun passed with the expected receipt.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| TR-001 | Open (Local Fix, API/E2E) | Resolved | API-REV-002, `6e1dc44337` | Test diff; `API-25-standalone-host-r2.log` (1 passed; `PROVIDER_RELAY_UNAVAILABLE: …`, `dshStarts: []`, `dshDataFiles: []`) |
+
+- New or remaining finding IDs: None
+- Material score or classification changes: N/A
+- Recommended recipient: delivery engineer
+- Remaining risks or uncertainty: requirement-basis notes for the Solution Designer: AC-006 `{{…}}` precondition; AC-009 key-removed trigger has no product surface. FU-001 and FU-002 are in `follow-ups.md`.
