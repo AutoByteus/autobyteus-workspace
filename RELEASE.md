@@ -36,6 +36,17 @@ this file.
 
 - Never commit build output: `*/dist/`, `autobyteus-web/electron-dist/` and
   other packaged app files. CI builds every release from source.
+- **Before the merge, delivery audits; it does not redo.** It opens the
+  ticket's evidence (the API/E2E execution report and the files it names)
+  and checks that each acceptance criterion is proven. It does not rerun the
+  suites, clean clones or builds that implementation and API/E2E already ran.
+  It reruns something only when:
+  - the evidence has a gap (send it back to API/E2E, which closes it);
+  - new base commits came in when the branch was brought current (one
+    relevant check on the merged state);
+  - the ticket or this guide asks delivery for it by name.
+  The checks this guide lists before tagging are the release's own and always
+  run.
 
 ## Secret Gate
 
@@ -169,6 +180,13 @@ gh run watch <run-id> --exit-status   # about 25 minutes
 - Local builds and clean clones do not replace this run. They usually have
   the workspace packages' `*/dist/` already built (TESTING.md's install order
   builds them), while a release runner starts from `pnpm install` alone.
+- Local builds are never signed. A local build (TESTING.md's Fresh-start
+  build, or any test build) is unsigned (`CSC_IDENTITY_AUTO_DISCOVERY=false`);
+  signing and notarization need the release runners' secrets and happen only
+  there. Record them as not tested locally; do not try to sign locally.
+- Why this run stays before every tag: a local Mac can prove the macOS build
+  from a fresh start (TESTING.md's Fresh-start build), but not the Windows and
+  Linux builds, which only the runners make.
 - Do not skip it because a change "does not touch the build". That judgement
   is how `v1.5.9-beta.14` shipped without desktop assets (see
   [Case Studies](#case-studies)).

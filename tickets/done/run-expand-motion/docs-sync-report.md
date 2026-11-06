@@ -17,12 +17,18 @@
 | --- | --- | --- |
 | `TESTING.md` "Fresh-start build" | Updated (by the ticket; verified) | Matches the release workflow; unsigned local build |
 | `DESIGN.md` | No change | Rule 12 ("a release build starts from `pnpm install` alone") already covers it |
-| `RELEASE.md` | No change; **proposal recorded** | See below |
+| `RELEASE.md` | Updated (by delivery, with the user's agreement) | See below |
 | Web docs for the left panel (`workspace_layout.md`) | No change | Expand and collapse content is unchanged; motion details are not documented |
 
-## Proposal For The User (not changed)
+## RELEASE.md Updated With The User's Agreement (2026-11-06)
 
-- `RELEASE.md` requires a build-only release run on GitHub before every tag. With `TESTING.md`'s Fresh-start build, a change to a build input is now proven locally from a fresh clone before merge, which is the earlier stage that can reproduce those failures. Under the team's rule (a release-stage check only for what no local machine can reproduce), the per-tag build-only run could be limited to what a local machine cannot do: Windows and Linux packaging, and the runner's signing. It is the project's rule, so it stays until the user decides.
+- The user questioned delivery's full clean-clone rerun of every suite as over-building, and asked that `RELEASE.md` be updated where it was not clear. He agreed that delivery audits the evidence instead of redoing it, and that local builds are never signed.
+- `RELEASE.md` "Finalization Target": before the merge, delivery audits the ticket's evidence and does not rerun the suites, clean clones or builds already run. It reruns only when the evidence has a gap (sent back to API/E2E), when new base commits came in (one relevant check), or when the ticket or the guide asks for it by name.
+- `RELEASE.md` "Build-only release run":
+  - local builds are never signed; signing and notarization happen only on the release runners;
+  - the per-tag build-only run stays, because a local Mac proves only the macOS build, not Windows and Linux.
+
+  This replaces delivery's earlier proposal to narrow that run.
 
 ## Delivery Continuation
 
