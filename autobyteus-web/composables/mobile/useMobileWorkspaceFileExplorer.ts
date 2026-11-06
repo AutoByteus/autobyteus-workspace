@@ -191,7 +191,7 @@ export function useMobileWorkspaceFileExplorer(workspaceRootPathRef: MaybeRef<st
     try {
       await workspaceStore.fetchFolderChildren(id, path);
       if (!node.childrenLoaded) {
-        const message = 'Folder contents could not be loaded. Try again from the mobile Files tab.';
+        const message = 'Folder contents could not be loaded.';
         setFolderError(path, message);
         return false;
       }

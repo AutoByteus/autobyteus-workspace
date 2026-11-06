@@ -158,6 +158,39 @@ describe('MobileRemoteAccessShell', () => {
     wrapper.unmount();
   });
 
+  // CRR-001 CR-001: Retry is the shell's status check, so the bar and the banner follow the node coming back.
+  it('Retry after a failed first check reads again through the status check: the runs list, the bar says Connected, the banner goes', async () => {
+    load.initialLoad = Promise.resolve({ ok: false, cause: new Error('Network Error') });
+    const { useRunHistoryStore } = await import('~/stores/runHistoryStore');
+    const router = await createMobileTestRouter();
+    const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false, initialState: initialState() });
+    const session = useMobileNodeSessionStore(pinia);
+    vi.mocked(session.initializeFromStorage).mockImplementation(() => undefined);
+    vi.mocked(session.fetchStatus).mockResolvedValueOnce(null).mockImplementation(async () => session.lastStatus);
+    const history = useRunHistoryStore(pinia);
+    history.historyFamilyErrors = { workspace: 'Network Error', agentOrg: null };
+    load.load.mockImplementation(async () => {
+      history.historyFamilyErrors = { workspace: null, agentOrg: null };
+      history.workspaceGroups = [{ workspaceRootPath: '/ws', workspaceName: 'ws', teamDefinitions: [],
+        agentDefinitions: [{ agentDefinitionId: 'a', agentName: 'Daily Assistant', runs: [{ runId: 'r1', summary: 'Draft the reply', status: 'IDLE', createdAt: '2026-11-06T08:00:00.000Z', lastActivityAt: '2026-11-06T08:00:00.000Z', isActive: false }] }] }] as never;
+      return { ok: true };
+    });
+    const wrapper = mount(MobileRemoteAccessShell, { attachTo: document.body, global: { plugins: [router, pinia], stubs: { NuxtLink: { template: '<a><slot /></a>' } } } });
+    await flushPromises();
+    expect(wrapper.get('[data-testid="mobile-node-state"]').text()).toBe('Not reachable');
+    expect(wrapper.find('[data-testid="mobile-node-offline-banner"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="mobile-run-list-error"]').exists()).toBe(true);
+    await wrapper.get('[data-testid="mobile-run-list-retry"]').trigger('click');
+    await flushPromises();
+    expect(load.load).toHaveBeenCalledTimes(1);
+    expect(session.fetchStatus).toHaveBeenCalledTimes(2);
+    expect(wrapper.get('[data-testid="mobile-node-state"]').text()).toBe('Connected');
+    expect(wrapper.find('[data-testid="mobile-node-offline-banner"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="mobile-run-list-error"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="mobile-run-tree"]').exists()).toBe(true);
+    wrapper.unmount();
+  });
+
   it('lets a fresh QR replace an existing session: the pairing screen shows for a pairing link', async () => {
     const pairingParam = toBase64Url({ version: 1, serverBaseUrl: 'https://desktop.tailnet.ts.net', pairingCode: 'PAIR-REPLACE-123', expiresAt: '2026-05-24T00:05:00.000Z', serverName: 'Desktop Node' });
     const { wrapper } = await mountShell({ pairing: pairingParam });

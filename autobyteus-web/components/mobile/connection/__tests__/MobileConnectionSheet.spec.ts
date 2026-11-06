@@ -43,6 +43,11 @@ describe('MobileConnectionSheet', () => {
     expect(wrapper.emitted('check')).toHaveLength(1);
     expect(wrapper.emitted('unpair')).toHaveLength(1);
     expect(sheet().querySelector('[role="dialog"]')!.getAttribute('aria-modal')).toBe('true');
+    // CRR-001 CR-003: the dialog is named by its heading, the node's name.
+    const dialog = sheet().querySelector('[role="dialog"]')!;
+    const labelledBy = dialog.getAttribute('aria-labelledby');
+    expect(labelledBy).toBeTruthy();
+    expect(document.getElementById(labelledBy!)?.textContent).toBe('AutoByteus Desktop');
     wrapper.unmount();
   });
 });

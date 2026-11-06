@@ -23,6 +23,7 @@
       :notice="notice"
       @open-connection="showConnection = true"
       @new-run="navigation.openNewRun()"
+      @retry="checkStatus()"
     />
     <MobileRunScreen v-if="navigation.screen.value === 'run'" :tree="tree" />
     <template v-else-if="viewTarget">

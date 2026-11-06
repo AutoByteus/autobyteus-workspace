@@ -2,9 +2,9 @@
   <!-- The connection sheet (UIS-010, VIS-019), opened from the node name: the paired node's own name and URL, its state,
        Check connection, the peer nodes (read only: reachable or not, what they offer) and Unpair this phone. -->
   <MobileBottomSheet test-id="mobile-connection-sheet" @close="$emit('close')">
-    <template #header>
+    <template #header="{ titleId }">
       <div class="min-w-0 py-1">
-        <h2 class="truncate text-lg font-semibold text-slate-900" data-testid="mobile-connection-name">{{ nodeName }}</h2>
+        <h2 :id="titleId" class="truncate text-lg font-semibold text-slate-900" data-testid="mobile-connection-name">{{ nodeName }}</h2>
         <p class="mt-0.5 break-all font-mono text-xs text-slate-500" data-testid="mobile-connection-url">{{ serverBaseUrl }}</p>
       </div>
     </template>

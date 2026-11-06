@@ -7,7 +7,7 @@
       <div ref="dialogRef" class="relative flex max-h-[85dvh] flex-col rounded-t-2xl bg-white shadow-xl focus:outline-none" role="dialog" aria-modal="true" :aria-labelledby="titleId" tabindex="-1">
         <div class="mx-auto mt-2 h-1 w-10 flex-shrink-0 rounded-full bg-slate-300" aria-hidden="true" />
         <header class="flex min-h-[3.5rem] flex-shrink-0 items-center justify-between gap-3 pl-4 pr-2">
-          <slot name="header">
+          <slot name="header" :title-id="titleId">
             <h2 :id="titleId" class="min-w-0 truncate text-lg font-semibold text-slate-900">{{ title }}</h2>
           </slot>
           <button type="button" class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full text-slate-500 active:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" aria-label="Close" data-testid="mobile-sheet-close" @click="$emit('close')">

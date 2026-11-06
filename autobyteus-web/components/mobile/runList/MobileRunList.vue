@@ -42,7 +42,7 @@
       <div v-else-if="listState === 'error'" class="flex flex-col items-center px-8 pt-24 text-center" role="alert" data-testid="mobile-run-list-error">
         <Icon icon="heroicons:exclamation-triangle-20-solid" class="h-8 w-8 text-slate-400" aria-hidden="true" />
         <p class="mt-3 text-base font-semibold">Couldn’t load your runs.</p>
-        <button type="button" class="mt-4 h-12 rounded-xl border border-slate-300 px-6 text-sm font-semibold text-slate-700 active:bg-slate-100" data-testid="mobile-run-list-retry" @click="retry">Retry</button>
+        <button type="button" class="mt-4 h-12 rounded-xl border border-slate-300 px-6 text-sm font-semibold text-slate-700 active:bg-slate-100" data-testid="mobile-run-list-retry" @click="$emit('retry')">Retry</button>
       </div>
 
       <div v-else-if="listState === 'empty'" class="flex flex-col items-center px-8 pt-24 text-center" data-testid="mobile-run-list-empty">
@@ -101,7 +101,8 @@ const props = defineProps<{
   connected: boolean;
   notice?: string | null;
 }>();
-defineEmits<{ (event: 'open-connection'): void; (event: 'new-run'): void }>();
+/** `retry`: the read failed; the shell checks the node again (status, history and the 401 rule). */
+defineEmits<{ (event: 'open-connection'): void; (event: 'new-run'): void; (event: 'retry'): void }>();
 
 const runHistoryStore = useRunHistoryStore();
 const runList = useRunListStore();
@@ -115,7 +116,6 @@ const listState = computed<'loading' | 'error' | 'empty' | 'populated'>(() => {
   if (loadError.value) return 'error';
   return 'empty';
 });
-const retry = (): void => { void runHistoryStore.fetchTree().catch(() => undefined); };
 
 /** A row with nothing to open (a member's delegated Team without a known coordinator) folds instead. */
 const openRow = (row: MobileRunTreeRow): void => {

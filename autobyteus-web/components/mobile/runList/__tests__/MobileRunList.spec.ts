@@ -63,5 +63,12 @@ describe('MobileRunList', () => {
     if (text) expect(state.text()).toContain(text);
     if (testId === 'mobile-run-list-loading') expect(state.findAll('.rounded-full')).toHaveLength(6);
     expect(wrapper.find('[data-testid="mobile-new-run-button"]').exists()).toBe(true);
+    // CRR-001 CR-001: the list reads nothing itself; Retry asks the shell to check the node again.
+    if (testId === 'mobile-run-list-error') {
+      const fetchTree = vi.spyOn(store, 'fetchTree');
+      await wrapper.get('[data-testid="mobile-run-list-retry"]').trigger('click');
+      expect(wrapper.emitted('retry')).toHaveLength(1);
+      expect(fetchTree).not.toHaveBeenCalled();
+    }
   });
 });
