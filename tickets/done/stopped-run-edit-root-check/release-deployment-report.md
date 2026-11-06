@@ -28,10 +28,10 @@ Repository finalization into `origin/personal`. No release, tag or deployment.
 Moved to `tickets/done/stopped-run-edit-root-check`: `Yes`.
 
 ## Repository Finalization
-TBD
+- Ticket branch committed and pushed after Secret Gate PASS; target `origin/personal` @ `dc4e0880ac` unchanged since the integration; `finalize/stopped-run-edit-root-check` from it; `--no-ff` merge `45643690ce`; Secret Gate, hygiene and licensing pass on the merged state; pushed `dc4e0880ac..45643690ce` (a record-only commit follows). Status `Completed`; blocker none.
 
 ## Post-Finalization Cleanup
-TBD
+- Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/stopped-run-edit-root-check` removed and pruned; local branches and remote branch `origin/codex/stopped-run-edit-root-check` deleted after the merge was confirmed. Status `Completed`.
 
 ## Release Notes Summary
 Not written: no release, no user-visible change.
@@ -43,4 +43,4 @@ None. Remote state created: branch `origin/codex/stopped-run-edit-root-check`, d
 Revert the merge on `personal`; a later edit of a crashed host's settings then no longer reaches its registered root. Nothing is released.
 
 ## Final Status
-TBD
+- Verification complete `Yes`; repository finalization complete `Yes` (`personal` @ `45643690ce` plus this record commit); release not required; cleanup complete `Yes`; blocker `None`; terminal package sent `Yes`.
