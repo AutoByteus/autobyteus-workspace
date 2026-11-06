@@ -100,14 +100,15 @@ describeLive("Codex interrupted compaction (live E2E)", () => {
       claudeBackendFactory: unusedBackendFactory,
       agyBackendFactory: unusedBackendFactory,
       grokBackendFactory: unusedBackendFactory,
+      deepSeekHarnessBackendFactory: unusedBackendFactory,
       activationRegistry: new AgentRunActivationRegistry(new AgentRunResourceManager({
         runSessions: deactivator, runFileChangeService: noopSidecar() as never,
         publishedArtifactRelayService: noopSidecar() as never, memoryRecorder: recorder, workJournalUpdater: noopSidecar() as never,
-        mcpServerInstances: { cleanupMcpServerInstancesForAgent: async () => undefined }, integrationRunAccess: null })),
+        mcpServerInstances: { cleanupMcpServerInstancesForAgent: async () => undefined }, runPasses: null })),
       memoryRecorder: recorder,
       providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
       agentToolMcpRunSessionDeactivator: deactivator,
-      integrationRunAccess: null,
+      runPasses: null,
     });
     runId = `run-codex-compaction-${randomUUID()}`;
     const run = (await manager.beginActivation({ kind: "new", runId, config: new AgentRunConfig({

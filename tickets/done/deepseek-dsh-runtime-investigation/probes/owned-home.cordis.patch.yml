@@ -1,0 +1,22 @@
+# AutoByteus-owned home patch for dsh runs (probe version).
+- id: system-prompt
+  config:
+    personaPrefix: ''
+- insert:
+    - id: autobyteus-agent-instructions
+      name: /tmp/ab387-probe-scripts/dsh-plugin/autobyteus-agent-instructions.mjs
+      config:
+        instructionsFile: !!js process.env.AUTOBYTEUS_DSH_INSTRUCTIONS_FILE
+- id: skill-filesystem
+  config:
+    includeDefaultRoots: false
+    customSkillDirs: !!js "[process.env.AUTOBYTEUS_DSH_SKILLS_DIR]"
+- id: session-log-deepseek
+  config:
+    enabled: false
+- id: tool-subagent
+  disabled: true
+- id: tool-subagent-fork
+  disabled: true
+- id: tool-plugin-manager
+  disabled: true

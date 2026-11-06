@@ -26,4 +26,6 @@ export const createGrokBuildAgentRunBackendFactory = (input: Readonly<{
   mcpSessions: input.mcpSessions,
   skillMaterializer: getGrokWorkspaceSkillMaterializer(),
   integrationRunAccess: input.integrationRunAccess,
+  // Grok calls its provider itself.
+  providerRelayAccess: null,
 });

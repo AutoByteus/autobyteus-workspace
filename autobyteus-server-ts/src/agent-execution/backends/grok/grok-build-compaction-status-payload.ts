@@ -2,7 +2,7 @@ import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
 import type {
   AcpCompactionPhase,
   AcpCompactionStatusInput,
-  AcpExtEffect,
+  AcpSessionEffect,
 } from "../acp/acp-agent-session-profile.js";
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
@@ -38,7 +38,7 @@ const SOURCE_SURFACES: Readonly<Record<AcpCompactionStatusInput["phase"], string
 export const interpretGrokCompactionUpdate = (
   update: Record<string, unknown>,
   params: Record<string, unknown>,
-): AcpExtEffect | null => {
+): AcpSessionEffect | null => {
   const phase = typeof update.sessionUpdate === "string" ? GROK_COMPACTION_PHASES[update.sessionUpdate] : undefined;
   if (!phase) return null;
   const meta = isRecord(params._meta) ? params._meta : null;

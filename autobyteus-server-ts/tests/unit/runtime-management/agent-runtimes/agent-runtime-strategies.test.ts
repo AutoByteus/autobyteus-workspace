@@ -78,8 +78,8 @@ const stubFetch = (body: string, status = 200) => {
   return fetchMock;
 };
 
-describe("the four strategies", () => {
-  it("are Codex, Claude, Antigravity and Grok in page order, with routes and official install links", () => {
+describe("the five strategies", () => {
+  it("are Codex, Claude, Antigravity, Grok and DeepSeek Harness in page order, with routes and official install links", () => {
     const strategies = createAgentRuntimeStrategies({ codexClientManager: { beginAcquire: vi.fn() } as never });
     expect(strategies.map((strategy) => [strategy.runtimeKind, strategy.signInRoute, strategy.installInstructionsUrl, !!strategy.signInArgv]))
       .toEqual([
@@ -87,9 +87,10 @@ describe("the four strategies", () => {
         [RuntimeKind.CLAUDE_AGENT_SDK, "commandLine", "https://code.claude.com/docs/en/setup", false],
         [RuntimeKind.ANTIGRAVITY_CLI, "commandLine", "https://antigravity.google/docs/getting-started?tab=cli", false],
         [RuntimeKind.GROK_BUILD, "browser", "https://docs.x.ai/build/overview", true],
+        [RuntimeKind.DEEPSEEK_HARNESS, "apiKeySetting", "https://github.com/deepseek-ai/deepseek-harness", false],
       ]);
     expect(strategies.map((strategy) => strategy.updateArgv("x"))).toEqual([
-      ["x", "update"], ["x", "update"], ["x", "update"], ["x", "update"],
+      ["x", "update"], ["x", "update"], ["x", "update"], ["x", "update"], ["npm", "install", "-g", "@deepseek-ai/dsh@latest"],
     ]);
     expect(strategies[0]!.signInArgv!("codex")).toEqual(["codex", "login"]);
     expect(strategies[3]!.signInArgv!("grok")).toEqual(["grok", "login", "--oauth"]);

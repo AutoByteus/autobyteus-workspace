@@ -5,8 +5,8 @@ import type { RunPassRegistry } from "./run-pass-registry.js";
 export type IntegrationRunIdentity = Readonly<{ runId: string; agentDefinitionId: string }>;
 
 /**
- * The one entry point run backends use: which integrations a run may use, with which pass, and which variables
- * (DS-004), and the revocation when the run is released. Backends only apply the variables they are given.
+ * The one entry point run backends use for integrations: which integrations a run may use, with which pass, and which
+ * variables (DS-004). Backends only apply the variables they are given. The pass ends through `RunPassRevocation`.
  */
 export interface IntegrationRunAccess {
   /**
@@ -14,8 +14,6 @@ export interface IntegrationRunAccess {
    * git config after any existing `GIT_CONFIG_COUNT` entries. The result never holds a token.
    */
   environmentForRun(run: IntegrationRunIdentity, baseEnv: Readonly<Record<string, string | undefined>>): Promise<Readonly<Record<string, string>>>;
-  /** Ends the run's pass (idempotent): its next call is refused as `RUN_PASS_INVALID`. */
-  revokeForRun(runId: string): void;
 }
 
 export class DefaultIntegrationRunAccess implements IntegrationRunAccess {
@@ -43,9 +41,5 @@ export class DefaultIntegrationRunAccess implements IntegrationRunAccess {
       if (definition) Object.assign(variables, definition.shellVariables(proxyBaseUrl, pass, { ...baseEnv, ...variables }));
     }
     return Object.freeze(variables);
-  }
-
-  revokeForRun(runId: string): void {
-    this.deps.passes.revoke(runId);
   }
 }

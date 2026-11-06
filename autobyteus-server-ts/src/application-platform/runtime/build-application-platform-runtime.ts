@@ -29,6 +29,8 @@ import type { ApplicationPlatformRuntime } from "./application-platform-runtime.
 import { createApplicationOrchestrationServices } from "./create-application-orchestration-services.js";
 import type { AgentToolMcpSessionAuthorityFactory } from "../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import type { AgentProviderFactoryBuilder } from "../../agent-execution/providers/agent-provider-factory-builder.js";
+import type { ProviderRelayAccess } from "../../credential-proxy/provider-relays/provider-relay-access.js";
+import type { RunPassRevocation } from "../../credential-proxy/run-pass-revocation.js";
 import { ApplicationExecutionScope } from "../execution/application-execution-scope.js";
 import type { ApplicationExecutionScopeIdentity } from "../execution/application-execution-scope-contracts.js";
 import type { RuntimeAvailabilityService } from "../../runtime-management/runtime-availability-service.js";
@@ -62,6 +64,10 @@ export type ApplicationPlatformBuildInput = Readonly<{
   codexClientManager: CodexAppServerClientManager;
   requireCurrentModelIdentifier: (modelIdentifier: string) => Promise<void>;
   modelSelectionValidator: RunModelSelectionValidator;
+  /** The host's provider relays for application runs (`null`: the host runs no credential proxy). */
+  providerRelayAccess: ProviderRelayAccess | null;
+  /** Ends application runs' passes; from the same host, non-null whenever `providerRelayAccess` is. */
+  runPasses: RunPassRevocation | null;
   selectedApplicationIds?: ReadonlySet<string> | null;
   staticAdapterToolNames: ReadonlySet<string>;
 }>;
@@ -106,6 +112,8 @@ export const buildApplicationPlatformRuntime = (
     agentTeamDefinitionService: input.agentTeamDefinitionService,
     agentToolMcpSessionAuthorities: input.agentToolMcpSessionAuthorities,
     agentProviderFactoryBuilder: input.agentProviderFactoryBuilder,
+    providerRelayAccess: input.providerRelayAccess,
+    runPasses: input.runPasses,
     workspaceManager: input.workspaceManager,
     bindingReader: bindingStore,
     artifactDeliverySink: artifactDeliveryQueue,

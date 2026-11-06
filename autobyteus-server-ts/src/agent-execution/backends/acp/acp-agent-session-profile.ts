@@ -1,5 +1,6 @@
-import type { McpServer } from "@agentclientprotocol/sdk";
+import type { McpServer, SessionConfigOption } from "@agentclientprotocol/sdk";
 import type { AgentToolMcpDescriptor } from "../../../agent-tools/mcp/agent-tool-mcp-session.js";
+import type { ProviderCallObservation } from "../../../credential-proxy/provider-relays/provider-call-observation.js";
 import type { AgentSegmentType } from "../../domain/agent-segment.js";
 
 export type AcpToolCallStatus = "pending" | "in_progress" | "completed" | "failed";
@@ -34,12 +35,16 @@ export type AcpMcpServerStatus = "ready" | "unavailable" | "pending";
 /** Provider-reported phase of a context compaction. */
 export type AcpCompactionPhase = "started" | "completed" | "failed" | "cancelled";
 
-/** Typed outcome of an agent extension notification; everything else is ignored. */
-export type AcpExtEffect =
+/**
+ * Typed outcome of an agent extension notification or of a provider call observation; everything else is ignored.
+ * `activity` is turn activity the agent sends no ACP frame for (its model is still streaming).
+ */
+export type AcpSessionEffect =
   | Readonly<{ kind: "usage"; payload: Record<string, unknown> }>
   | Readonly<{ kind: "mcp_status"; server: string; status: AcpMcpServerStatus; detail: string | null }>
   /** `details` are the agent's own fields, read back only by the profile's payload builder. */
-  | Readonly<{ kind: "compaction"; phase: AcpCompactionPhase; eventId: string | null; details: Record<string, unknown> }>;
+  | Readonly<{ kind: "compaction"; phase: AcpCompactionPhase; eventId: string | null; details: Record<string, unknown> }>
+  | Readonly<{ kind: "activity" }>;
 
 /**
  * One COMPACTION_STATUS to build. `operationId` identifies the compaction across its events;
@@ -56,7 +61,7 @@ export type AcpCompactionStatusInput = Readonly<{
   reason: string | null;
 }>;
 
-export type AcpExtNotificationContext = Readonly<{
+export type AcpSessionEffectContext = Readonly<{
   sessionId: string;
   turnId: string | null;
   /** One-based ordinal the next usage effect of this turn would take. */
@@ -65,6 +70,12 @@ export type AcpExtNotificationContext = Readonly<{
 }>;
 
 export type AcpMcpReadinessRequirement = Readonly<{ serverName: string; timeoutMs: number }>;
+
+/** The run's model and reasoning effort, as the session applies them through config options. */
+export type AcpConfigSelection = Readonly<{ model: string | null; reasoningEffort: string | null }>;
+
+/** One `session/set_config_option` to send. */
+export type AcpConfigOptionValue = Readonly<{ configId: string; value: string }>;
 
 /**
  * Per-agent session concerns. Hooks are pure: the shared session owns ordinals, replay
@@ -79,8 +90,12 @@ export interface AcpAgentSessionProfile {
   interpretExtNotification(
     method: string,
     params: Record<string, unknown>,
-    context: AcpExtNotificationContext,
-  ): AcpExtEffect[];
+    context: AcpSessionEffectContext,
+  ): AcpSessionEffect[];
+  /** The config options that select the run's model and effort among the session's offered options (in order). */
+  configSelection(selection: AcpConfigSelection, configOptions: readonly SessionConfigOption[]): AcpConfigOptionValue[];
+  /** Effects of one provider call of the run; agents whose calls go through no provider relay have none. */
+  interpretProviderCall?(observation: ProviderCallObservation, context: AcpSessionEffectContext): AcpSessionEffect[];
   /** Runtime identity of compaction statuses; profiles without it produce no compaction events. */
   buildCompactionStatusPayload?(input: AcpCompactionStatusInput): Record<string, unknown>;
 }

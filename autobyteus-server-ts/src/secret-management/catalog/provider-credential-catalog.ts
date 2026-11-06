@@ -57,9 +57,10 @@ export class ProviderCredentialCatalog {
       return secretId(mapped);
     }
     if (consumer.kind === "agentRuntime") {
-      if (consumer.runtimeKind === "claude_agent_sdk" && consumer.credentialSlot === "apiKey") {
-        return secretId("provider.anthropic.api-key");
-      }
+      if (consumer.credentialSlot !== "apiKey") throw notAuthorized();
+      if (consumer.runtimeKind === "claude_agent_sdk") return secretId("provider.anthropic.api-key");
+      // Read only by the credential proxy's DeepSeek provider relay; dsh never receives it.
+      if (consumer.runtimeKind === "deepseek_harness") return secretId("provider.deepseek.api-key");
       throw notAuthorized();
     }
     if (consumer.kind === "search") {

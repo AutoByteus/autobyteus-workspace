@@ -2,8 +2,8 @@ import type { McpServer } from "@agentclientprotocol/sdk";
 import type { AgentToolMcpDescriptor } from "../../../agent-tools/mcp/agent-tool-mcp-session.js";
 import type {
   AcpAgentSessionProfile,
-  AcpExtEffect,
-  AcpExtNotificationContext,
+  AcpSessionEffect,
+  AcpSessionEffectContext,
   AcpMcpReadinessRequirement,
 } from "../acp/acp-agent-session-profile.js";
 import { buildGrokBuildCallUsagePayload } from "./grok-build-call-usage.js";
@@ -49,8 +49,8 @@ export const grokBuildSessionProfile: AcpAgentSessionProfile = Object.freeze({
   interpretExtNotification: (
     method: string,
     params: Record<string, unknown>,
-    context: AcpExtNotificationContext,
-  ): AcpExtEffect[] => {
+    context: AcpSessionEffectContext,
+  ): AcpSessionEffect[] => {
     if (method === GROK_MCP_SERVER_STATUS_METHOD) {
       const effect = interpretGrokMcpServerStatus(params);
       return effect ? [effect] : [];
@@ -66,6 +66,9 @@ export const grokBuildSessionProfile: AcpAgentSessionProfile = Object.freeze({
     // Announcements, settings, queue/session bookkeeping, turn totals: never chat content.
     return [];
   },
+
+  // Model and effort reach Grok as launch arguments.
+  configSelection: () => [],
 
   buildCompactionStatusPayload: buildGrokBuildCompactionStatusPayload,
 });

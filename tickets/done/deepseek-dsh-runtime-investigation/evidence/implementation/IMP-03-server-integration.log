@@ -1,0 +1,9 @@
+# IMP-03 server integration suite
+# Command: pnpm -C autobyteus-server-ts test:integration:prepare && pnpm -C autobyteus-server-ts test:integration
+# Commit: 3514947952
+# Environment: macOS (Darwin 25.5), Node 22.21.1 (server), dsh 0.2.2-rc.1 on Node 25.2.1
+# Date: 2026-11-06
+
+ Test Files  88 passed | 20 skipped (108)
+      Tests  511 passed | 69 skipped (580)
+   Duration  245.60s (transform 11.25s, setup 1.38s, import 95.51s, tests 137.47s, environment 6ms)

@@ -1,4 +1,4 @@
-import type { IntegrationRunAccess } from "../../credential-proxy/integration-run-access.js";
+import type { RunPassRevocation } from "../../credential-proxy/run-pass-revocation.js";
 import type { McpServerInstanceManager } from "autobyteus-ts/tools/mcp/server-instance-manager.js";
 import type { AgentRun } from "../domain/agent-run.js";
 import type {
@@ -60,8 +60,8 @@ export class AgentRunResourceManager {
     workJournalUpdater: Pick<WorkJournalRunUpdater, "attachToRun">;
     /** Closes the MCP server instances opened for a run (keyed by its runId on every runtime). */
     mcpServerInstances: Pick<McpServerInstanceManager, "cleanupMcpServerInstancesForAgent">;
-    /** Ends the run's credential-proxy pass (`null`: this host gives runs no integration access). */
-    integrationRunAccess: Pick<IntegrationRunAccess, "revokeForRun"> | null;
+    /** Ends the run's credential-proxy pass with all its grants (`null`: this host issues no passes). */
+    runPasses: RunPassRevocation | null;
     /** Told after a run's attachments are released, which every removal of a run goes through. */
     lifecycleObserver?: Pick<AgentRunLifecycleObserver, "runReleased"> | null;
   }) {}
@@ -121,7 +121,7 @@ export class AgentRunResourceManager {
       } catch (error) { errors.push(toError(error)); }
     }
     try {
-      this.dependencies.integrationRunAccess?.revokeForRun(runId);
+      this.dependencies.runPasses?.revokeForRun(runId);
     } catch (error) { errors.push(toError(error)); }
     if (!record.mcpServersReleased) {
       record.mcpServersReleased = true;

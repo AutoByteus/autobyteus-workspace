@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { RuntimeKind as FrozenRuntimeKind } from "../../../src/app-data-migrations/frozen/server/runtime-management/runtime-kind-enum.js";
 import { TeamRunHistoryIndexV2AppDataMigration } from "../../../src/app-data-migrations/migrations/team-run-history-index-v2/team-run-history-index-v2-migration.js";
 import type { TeamRunMetadata } from "../../../src/app-data-migrations/frozen/team-run-metadata-types.js";
 import { AgentTeamDefinitionService } from "../../../src/agent-team-definition/services/agent-team-definition-service.js";
@@ -25,7 +25,7 @@ const buildMetadata = (teamRunId: string, overrides: Partial<TeamRunMetadata> = 
       kind: "agent",
       address: "/lead",
       agentRunId: `${teamRunId}-lead`,
-      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      runtimeKind: FrozenRuntimeKind.CODEX_APP_SERVER,
       platformAgentRunId: null,
       agentDefinitionId: "agent-lead",
       llmModelIdentifier: "model-1",

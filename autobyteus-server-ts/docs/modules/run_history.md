@@ -232,8 +232,8 @@ General lifecycle owners:
   not mutation targets.
 
 `RunModelSelectionService` resolves the selected model in the fixed runtime's
-current catalog. Claude Agent SDK, Codex App Server, Antigravity CLI, and
-Grok Build replacements require fresh **offered** catalog membership and valid target settings, without
+current catalog. Claude Agent SDK, Codex App Server, Antigravity CLI,
+Grok Build and DeepSeek Harness replacements require fresh **offered** catalog membership and valid target settings, without
 a platform context-capacity comparison. AutoByteus replacements additionally
 require verified positive saved and target capacities, with the target at least
 as large as the freshly saved baseline for that scope. Smaller or unknown
@@ -1145,7 +1145,7 @@ Runtime-native diagnostic utilities:
 This section describes raw-trace rotation segments and is separate from the
 history-row visibility archive flag documented above.
 
-Native AutoByteus compaction rotates compacted raw traces into complete `native_compaction` entries. Codex, Claude, Antigravity (AGY) and Grok Build provider-boundary handling may rotate settled active raw traces before a normalized, rotation-eligible provider boundary marker into complete `provider_compaction_boundary` entries. New rotated segments are direct run-directory files named `raw_traces_<zero-padded-index>.jsonl` and indexed by `raw_traces_manifest.json`. Normal run-history and Event Monitor projection remain active-file-only. Explicit complete-corpus memory/evidence reads include only complete rotated segments plus active records, dedupe by raw trace id, and ignore pending manifest entries. Memory Inspector file-selector reads list only active plus complete segment files and return records from the selected file instead of an implicit merged corpus.
+Native AutoByteus compaction rotates compacted raw traces into complete `native_compaction` entries. Codex, Claude, Antigravity (AGY), Grok Build and DeepSeek Harness provider-boundary handling may rotate settled active raw traces before a normalized, rotation-eligible provider boundary marker into complete `provider_compaction_boundary` entries. New rotated segments are direct run-directory files named `raw_traces_<zero-padded-index>.jsonl` and indexed by `raw_traces_manifest.json`. Normal run-history and Event Monitor projection remain active-file-only. Explicit complete-corpus memory/evidence reads include only complete rotated segments plus active records, dedupe by raw trace id, and ignore pending manifest entries. Memory Inspector file-selector reads list only active plus complete segment files and return records from the selected file instead of an implicit merged corpus.
 
 Cross-file tool pairs are expected: a call can be rotated before its result is
 written. Explicit complete-corpus logical inspection/evidence can correlate that

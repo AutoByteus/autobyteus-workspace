@@ -316,7 +316,6 @@ describe("CodexThreadBootstrapper", () => {
     const API_URL = "http://127.0.0.1:5555/r/rp_test-dummy/github/api";
     const access: IntegrationRunAccess = {
       environmentForRun: vi.fn(async () => ({ AUTOBYTEUS_GITHUB_API_URL: API_URL, GIT_TERMINAL_PROMPT: "0" })),
-      revokeForRun: vi.fn(),
     };
     const guard = { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined };
 
@@ -348,7 +347,7 @@ describe("CodexThreadBootstrapper", () => {
 
       process.env.CODEX_APP_SERVER_SANDBOX = "workspace-write";
       const without = createBootstrapper({ skills: [], requestImplementation: async () => ({ data: [] }),
-        integrationRunAccess: { environmentForRun: async () => ({}), revokeForRun: vi.fn() } });
+        integrationRunAccess: { environmentForRun: async () => ({}) } });
       const plain = await without.bootstrapper.bootstrapForCreate(createRunContext({ autoExecuteTools: false }), guard);
       expect(Object.keys(plain.runtimeContext.codexThreadConfig.appServerConfig ?? {})).toEqual(["mcp_servers"]);
     });

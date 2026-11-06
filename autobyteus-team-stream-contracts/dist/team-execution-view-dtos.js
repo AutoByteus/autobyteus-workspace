@@ -38,7 +38,7 @@ export const teamCopyAgentLaunch = (input) => {
         selected: input.agentSelection ? "agent" : "team",
     };
 };
-const runtimeKindSchema = z.enum(["autobyteus", "claude_agent_sdk", "codex_app_server", "antigravity_cli", "grok_build"]);
+const runtimeKindSchema = z.enum(["autobyteus", "claude_agent_sdk", "codex_app_server", "antigravity_cli", "grok_build", "deepseek_harness"]);
 const launchConfigurationSchema = z.object({
     runtime_kind: runtimeKindSchema,
     llm_model_identifier: nonEmptyStringSchema,

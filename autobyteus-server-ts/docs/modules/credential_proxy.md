@@ -1,4 +1,4 @@
-# Credential Proxy (Integrations)
+# Credential Proxy (Integrations and Provider Relays)
 
 ## Scope
 
@@ -15,6 +15,10 @@ The token is never in a shell environment, command line, process listing, tool
 output, run trace, server log or run file. What a run holds is its *run pass*,
 a capability that works only while the run is active and only for what its agent
 is allowed.
+
+The proxy also forwards a runtime's own model calls through a **provider relay**
+(DeepSeek Harness → DeepSeek's Messages API), adding the provider key from the
+vault, so the runtime never holds the key. See [Provider Relays](#provider-relays).
 
 ## TS Source
 
@@ -35,11 +39,18 @@ is allowed.
     (per integration: the login and when it was connected);
   - `integration-connection-service.ts`: connect (token checked with the service
     first), test, disconnect, per integration;
-  - `run-pass-registry.ts`: in-memory run passes, each with the run's grants;
+  - `run-pass-registry.ts`: in-memory run passes, each with the run's
+    integration grants and its provider relay grant;
+  - `run-pass-revocation.ts`: `RunPassRevocation`, the one way a pass ends
+    (`CredentialProxyHost.runPasses`, used by the run managers);
   - `integration-run-access.ts`: `IntegrationRunAccess`, what backends call;
+  - `provider-relays/`: the provider relays (definitions, the `/relay/…` route
+    family, the Messages stream reader, `ProviderRelayAccess` with its per-run
+    observers, the process relay slot);
   - `credential-proxy-forwarder.ts`: the caller-path checks and one forwarded call;
   - `credential-proxy-routes.ts`, `credential-proxy-local-server.ts`: the
-    loopback listener and its single route;
+    loopback listener and its integration route (`/r/…`); the listener also
+    registers the provider relays' routes (`/relay/…`);
   - `integration-activity-log.ts`: `<app-data-dir>/integrations/activity.jsonl`;
   - `credential-proxy-host.ts`: the host the Studio composition owns.
 - `src/api/graphql/types/integrations.ts`: the Integrations page's API.
@@ -125,11 +136,14 @@ folder**. A same-named skill from anywhere else grants nothing.
 | Claude | merged into the run session's Claude Code spawn only (`extraEnvironment`); model listing and control queries are unchanged |
 | Codex | the thread `config` sent on `thread/start` and `thread/resume`: `shell_environment_policy.set`, plus `sandbox_workspace_write.network_access = true` for `workspace-write` runs (DEC-011); kept when the run's tool list reopens the thread |
 | Antigravity | the `env` of the AGY process (`process.start`), on create and restore |
-| Grok Build (ACP) | the agent process `env` from the launcher, after the launch profile's own |
+| Grok Build, DeepSeek Harness (ACP) | the agent process `env` from the launcher, after the launch profile's own |
 
-The pass is revoked when the run is released (`AgentRunResourceManager.release`)
-and when an activation fails before the run is attached. A server restart ends
-all passes; restored runs get new ones.
+The pass ends through `RunPassRevocation.revokeForRun` when the run is released
+(`AgentRunResourceManager.release`) and when an activation fails before the run
+is attached (`AgentRunManager`), with every grant it holds. A server restart ends
+all passes; restored runs get new ones. Every composition that gives runs an
+integration access or a provider relay access also gives both run managers the
+same host's `runPasses`.
 
 Measured for Codex (0.166.0, autobyteus-311 R-4): the thread-level tables merge
 with the user's own `~/.codex/config.toml` tables. A user's own
@@ -192,6 +206,64 @@ GitHub's delivery definition:
 | --- | --- | --- | --- |
 | `api` | `https://api.github.com` | `Authorization: Bearer <token>` | `GET`, `POST`, `PATCH`, `PUT`, `DELETE` on any path (REST and `/graphql`) |
 | `git` | `https://github.com` | `Authorization: Basic base64(x-access-token:<token>)` | smart HTTP only: `GET /<owner>/<repo>[.git]/info/refs`, `POST …/git-upload-pack`, `POST …/git-receive-pack` |
+
+## Provider Relays
+
+A provider relay is the proxy's app-owned forwarding of one runtime's
+model-provider calls (not Model Routing, and not an integration). One exists:
+`deepseek`, for DeepSeek Harness (see
+[DeepSeek Harness Runtime](./deepseek_harness_runtime.md)).
+
+| Relay | Upstream | Auth | Allowed | Key |
+| --- | --- | --- | --- | --- |
+| `deepseek` | `https://api.deepseek.com`, base path `/anthropic` | `x-api-key: <key>` | `POST /anthropic/v1/messages` only | `provider.deepseek.api-key` (consumer `agentRuntime/deepseek_harness/apiKey`) |
+
+**A run's access.** The ACP launcher calls
+`ProviderRelayAccess.prepareForRun({runId, agentDefinitionId}, relayId)` when
+the runtime's launch profile names a relay: it refuses with
+`RELAY_KEY_NOT_SET: The DeepSeek API key is not set in AutoByteus. Save it in
+Settings → API Keys.` when the vault holds no key, and otherwise grants the relay
+on the run's pass (the same pass as its integrations; `issue` and `clearGrants`
+keep the relay grant) and returns the relay's base URL
+(`http://127.0.0.1:<port>/relay/deepseek`) and the pass. The runtime sends the
+pass in its API-key header; the base URL holds no pass. A composition without a
+proxy (the standalone application host) gives no relay access: such a runtime is
+refused before it starts (`PROVIDER_RELAY_UNAVAILABLE`).
+
+**The route** `/relay/<relayId>/<path>`, in order:
+
+1. loopback gate, else `NOT_LOOPBACK` (403 `permission_error`);
+2. a known relay, else `PATH_NOT_ALLOWED` (404 `not_found_error`);
+3. a live pass in `x-api-key`, else `RUN_PASS_INVALID` (401
+   `authentication_error`);
+4. the pass holds this relay's grant, else `RELAY_NOT_ALLOWED` (403
+   `permission_error`);
+5. the path and method (the same caller-path checks as integrations), else
+   `PATH_NOT_ALLOWED`;
+6. the key from the vault, else `RELAY_KEY_NOT_SET` (403 `permission_error`);
+7. the forwarded call: the caller's `x-api-key` dropped and the key set; the body
+   streamed and the reply streamed back, both unchanged; an unreachable upstream
+   is `UPSTREAM_UNREACHABLE` (502 `api_error`).
+
+Refusals use the Anthropic Messages error envelope,
+`{"type":"error","error":{"type":<type>,"code":<code>,"message":<text>}}`, the
+only failure shape whose text the runtime shows; `authentication_error` and
+`permission_error` are never retried by it. The relay logs no pass and no header
+value, and writes no activity record.
+
+**Provider call observations.** For each forwarded call the relay reports to the
+run's observers (`ProviderRelayAccess.observe(runId, listener)`, removed by the
+returned function, exactly that registration): `started` (with the purpose:
+`compaction` when the relay's compaction header is `1`, else `turn`),
+`activity` (at most once a second per call while the reply streams) and
+`finished` (the status, and the usage and stop reason read from the Messages
+stream) synchronously when the upstream reply ends. The ACP session turns them
+into effects; the proxy never builds AutoByteus events.
+
+**Process relay slot.** The studio composition sets the process's
+`ProviderRelayAccess` when it creates the proxy host (before it listens) and
+clears it when it closes it. Only the model catalog and runtime availability,
+which are process singletons, read it; the standalone host never sets it.
 
 ## Activity Log
 
@@ -278,6 +350,11 @@ limited to the needed repositories).
   activation failed), a live pass whose agent no longer has the skill (or the skill
   is disabled, or its source was removed), a missing token, a path or host outside
   the definition, a non-loopback caller.
+- **Provider relays.** The DeepSeek relay forwards only `POST
+  /anthropic/v1/messages` to `api.deepseek.com`, only for a live pass with the
+  relay grant, only from loopback. An agent with integrations sees its pass in its
+  integration addresses and could call the relay itself: it then gets model calls
+  on the user's key, never the key.
 
 ## Adding An Integration
 
@@ -299,7 +376,12 @@ definition: where a token may go is decided by the app.
 
 - `tests/unit/credential-proxy/`: delivery definitions and the token check, path
   checks, passes and grants, run access, store (`credential-proxy-core.test.ts`);
-  the manifest rules and tool presence (`integration-manifest.test.ts`).
+  the manifest rules and tool presence (`integration-manifest.test.ts`); relay
+  grants, revocation, observers, relay access, the stream reader and `x-api-key`
+  forwarding (`provider-relays.test.ts`).
+- `tests/integration/credential-proxy/provider-relay.integration.test.ts`: the
+  DeepSeek relay on the real listener against a fake upstream (key swap,
+  unchanged streamed body and reply, observations, every refusal, revocation).
 - `tests/integration/credential-proxy/`: the catalog and the access rule over the
   real skill services (`integration-catalog.integration.test.ts`: states, every
   import outcome, DEC-017 precedence, removal from either page, a refused removal,

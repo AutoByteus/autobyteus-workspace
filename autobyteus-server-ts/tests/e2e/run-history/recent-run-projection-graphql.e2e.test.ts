@@ -275,6 +275,7 @@ describe("recent run projection GraphQL e2e", () => {
       claudeBackendFactory: unusedExecutionBoundary(),
       agyBackendFactory: unusedExecutionBoundary(),
       grokBackendFactory: unusedExecutionBoundary(),
+      deepSeekHarnessBackendFactory: unusedExecutionBoundary(),
       activationRegistry: new AgentRunActivationRegistry(unusedExecutionBoundary()),
       memoryRecorder: unusedExecutionBoundary(),
       providerInputNormalizer: { normalizeForProvider: unavailableExecution },

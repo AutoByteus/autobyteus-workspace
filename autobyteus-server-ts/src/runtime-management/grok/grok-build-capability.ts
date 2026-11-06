@@ -2,7 +2,7 @@ import { spawn } from "node:child_process";
 import type { ModelInfo } from "autobyteus-ts/llm/models.js";
 import { AcpDiscoveryError, runAcpDiscoveryHandshake } from "../acp/acp-discovery-handshake.js";
 import { commandBound, deadlineCause, type CommandBound, type ReadDeadline } from "../read-deadline.js";
-import { grokBuildCommand, grokBuildLaunchProfile } from "./grok-build-launch-profile.js";
+import { grokBuildCommand, grokBuildLaunchProfile, normalizeGrokBuildModels } from "./grok-build-launch-profile.js";
 
 export const GROK_BUILD_MINIMUM_VERSION = "1.0.41";
 const REQUIRED_AGENT_HELP_TOKENS = ["stdio", "--model", "--reasoning-effort", "--no-leader"];
@@ -116,7 +116,7 @@ export const discoverGrokBuildModels = async (options: GrokBuildProbeOptions = {
   await assertGrokBuildCliSupported(options);
   let models: ModelInfo[];
   try {
-    models = grokBuildLaunchProfile.normalizeModels(
+    models = normalizeGrokBuildModels(
       await runAcpDiscoveryHandshake(grokBuildLaunchProfile, { deadline: options.deadline }));
   } catch (error) {
     if (error instanceof AcpDiscoveryError) {

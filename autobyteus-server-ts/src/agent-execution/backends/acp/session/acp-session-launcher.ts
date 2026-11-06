@@ -1,10 +1,19 @@
+import type { SessionConfigOption } from "@agentclientprotocol/sdk";
 import type { IntegrationRunAccess } from "../../../../credential-proxy/integration-run-access.js";
+import {
+  ProviderRelayKeyMissingError,
+  type ProviderRelayAccess,
+} from "../../../../credential-proxy/provider-relays/provider-relay-access.js";
 import type { AgentRunConfig } from "../../../domain/agent-run-config.js";
 import type { AgentRunEvent } from "../../../domain/agent-run-event.js";
 import { AgentCreationError } from "../../../errors.js";
 import type { AgentToolMcpDescriptor } from "../../../../agent-tools/mcp/agent-tool-mcp-session.js";
 import type { MaterializedWorkspaceSkill } from "../../shared/workspace-skill-materializer.js";
-import type { AcpAgentLaunchProfile } from "../../../../runtime-management/acp/acp-agent-launch-profile.js";
+import type {
+  AcpAgentLaunchProfile,
+  AcpLaunch,
+  AcpRelayAccess,
+} from "../../../../runtime-management/acp/acp-agent-launch-profile.js";
 import { AcpAgentProcess } from "../../../../runtime-management/acp/acp-agent-process.js";
 import { AcpClientConnection } from "../../../../runtime-management/acp/acp-client-connection.js";
 import { AcpAgentCapabilities } from "../../../../runtime-management/acp/acp-agent-capabilities.js";
@@ -13,16 +22,24 @@ import type { AcpAgentSessionProfile } from "../acp-agent-session-profile.js";
 import { AcpAgentSession } from "./acp-agent-session.js";
 
 /**
- * The single holder of one run's ACP process, connection and session (and its skill links), for
- * creation, restore and reopen alike. Every handle is recorded as soon as it exists, so a
- * half-opened process is always held; releasing the run closes exactly what it holds now.
+ * The single holder of one run's ACP launch, process, connection, session and provider call subscription (and its
+ * skill links), for creation, restore and reopen alike. Every handle is recorded as soon as it exists, so a
+ * half-opened process is always held; `AcpSessionLauncher.end` ends exactly what it holds now.
  */
 export type AcpPreparationOwner = {
+  /** What the current generation's launch prepared on disk, released after its process stopped. */
+  launch: AcpLaunch | null;
   process: AcpAgentProcess | null;
   connection: AcpClientConnection | null;
   session: AcpAgentSession | null;
+  /** Removes the current generation's provider call listener (exactly that one). */
+  providerCalls: (() => void) | null;
   skills: MaterializedWorkspaceSkill[];
 };
+
+export const createAcpPreparationOwner = (): AcpPreparationOwner => ({
+  launch: null, process: null, connection: null, session: null, providerCalls: null, skills: [],
+});
 
 /** Where a session's output and failure go: the run's backend, once bound; nowhere once detached. */
 export type AcpSessionEventTarget = Readonly<{
@@ -52,9 +69,12 @@ export type AcpSessionOpenRequest = Readonly<{
   descriptor: AgentToolMcpDescriptor;
   sink: AcpSessionEventSink;
   assertAccepting: () => void;
+  /** The run's composed instructions, given to every launch (create, restore and reopen). */
+  instructions: string;
 }> & (
-  | Readonly<{ mode: "new"; newSessionMeta: Record<string, unknown> | undefined }>
-  | Readonly<{ mode: "load"; sessionId: string }>
+  | Readonly<{ mode: "new" }>
+  /** Restore and reopen: the same conversation, by `session/load` or `session/resume` as the agent offers. */
+  | Readonly<{ mode: "restore"; sessionId: string }>
 );
 
 const reasoningEffortOf = (config: AgentRunConfig): string | null => {
@@ -63,17 +83,19 @@ const reasoningEffortOf = (config: AgentRunConfig): string | null => {
 };
 
 /**
- * Spawns an agent process, connection and session into a run's owner and opens it: `new` for a
- * new run, `load` for a restore or a reopen of the same conversation. The Agent Tools MCP server
- * from the descriptor is attached and its readiness awaited. Shared by the factory (create,
- * restore) and the backend (reopen). Agent errors surface as `AgentCreationError` with the
- * agent's text; the caller ends whatever the owner holds on failure.
+ * The launch and end of one run's agent session generation, for the factory (create, restore, release) and the
+ * backend (reopen). `open` gets the run's provider relay access when the launch profile names a relay (refused before
+ * anything starts when this host has none), launches and spawns the agent, opens the session (`new`, or restore by the
+ * agent's restore method), applies the run's model and effort, awaits Agent Tools MCP readiness, and subscribes this
+ * generation to the run's provider calls. Agent errors surface as `AgentCreationError` with the agent's text; the
+ * caller ends whatever the owner holds on failure.
  */
 export class AcpSessionLauncher {
   constructor(private readonly deps: Readonly<{
     launchProfile: AcpAgentLaunchProfile;
     sessionProfile: AcpAgentSessionProfile;
-    integrationRunAccess?: IntegrationRunAccess | null;
+    integrationRunAccess: IntegrationRunAccess | null;
+    providerRelayAccess: ProviderRelayAccess | null;
   }>) {}
 
   get agentLabel(): string { return this.deps.launchProfile.agentLabel; }
@@ -81,15 +103,28 @@ export class AcpSessionLauncher {
   async open(request: AcpSessionOpenRequest): Promise<Readonly<{ sessionId: string }>> {
     const { launchProfile, sessionProfile } = this.deps;
     const { owner, config, assertAccepting } = request;
+    const relayId = launchProfile.providerRelayId;
+    if (relayId && !this.deps.providerRelayAccess) {
+      // Never launch such an agent without the relay: it would look for a key outside the vault (DEC-020).
+      throw new AgentCreationError(
+        `PROVIDER_RELAY_UNAVAILABLE: ${launchProfile.agentLabel} needs the AutoByteus credential proxy, which this host does not run.`);
+    }
     assertAccepting();
+    const run = { runId: request.runId, agentDefinitionId: config.agentDefinitionId };
     // The run's integration variables (a reopen keeps the run's pass).
-    const integrationVariables = (await this.deps.integrationRunAccess?.environmentForRun(
-      { runId: request.runId, agentDefinitionId: config.agentDefinitionId }, globalThis.process.env)) ?? {};
+    const integrationVariables = (await this.deps.integrationRunAccess?.environmentForRun(run, globalThis.process.env)) ?? {};
+    const relayAccess = relayId ? await this.prepareRelayAccess(run, relayId) : null;
+    assertAccepting();
+    const launch = await launchProfile.runLaunch({
+      runId: request.runId, workingDirectory: request.workingDirectory, instructions: request.instructions,
+      model: config.llmModelIdentifier, reasoningEffort: reasoningEffortOf(config), relayAccess,
+    });
+    owner.launch = launch;
     assertAccepting();
     const process = AcpAgentProcess.spawn({
       command: launchProfile.command(),
-      args: launchProfile.args({ model: config.llmModelIdentifier, reasoningEffort: reasoningEffortOf(config) }),
-      env: { ...launchProfile.env(globalThis.process.env), ...integrationVariables },
+      args: launch.args,
+      env: { ...launch.env, ...integrationVariables },
       cwd: request.workingDirectory,
     });
     owner.process = process;
@@ -101,22 +136,33 @@ export class AcpSessionLauncher {
     });
     owner.session = session;
     try {
-      const initialized = await connection.initialize();
-      AcpAgentCapabilities.fromInitialize(initialized).require(launchProfile.agentLabel,
-        AcpAgentCapabilities.requiredFor({ restore: request.mode === "load", mcp: true }));
+      const capabilities = AcpAgentCapabilities.fromInitialize(await connection.initialize());
+      capabilities.require(launchProfile.agentLabel,
+        AcpAgentCapabilities.requiredFor({ restore: request.mode === "restore", mcp: true }));
       assertAccepting();
       const mcpServers = sessionProfile.mcpServers(request.descriptor);
       let sessionId: string;
+      let configOptions: readonly SessionConfigOption[] | null | undefined;
       if (request.mode === "new") {
-        sessionId = (await session.openNew({
-          cwd: request.workingDirectory, mcpServers, _meta: request.newSessionMeta,
-        })).sessionId;
+        const response = await session.openNew({
+          cwd: request.workingDirectory, mcpServers,
+          _meta: sessionProfile.newSessionMeta({ composedPrompt: request.instructions, autoExecuteTools: config.autoExecuteTools }),
+        });
+        sessionId = response.sessionId;
+        configOptions = response.configOptions;
       } else {
-        await session.openLoad({ sessionId: request.sessionId, cwd: request.workingDirectory, mcpServers });
         sessionId = request.sessionId;
+        const reopen = { sessionId, cwd: request.workingDirectory, mcpServers };
+        configOptions = (capabilities.restoreMethod() === "load"
+          ? await session.openLoad(reopen) : await session.openResume(reopen)).configOptions;
       }
+      await session.applyConfigSelection(
+        { model: config.llmModelIdentifier, reasoningEffort: reasoningEffortOf(config) }, configOptions ?? []);
       const readiness = sessionProfile.mcpReadiness(request.descriptor);
       if (readiness) await session.awaitMcpServerReady(readiness);
+      if (relayAccess) {
+        owner.providerCalls = this.deps.providerRelayAccess!.observe(request.runId, (observation) => session.onProviderCall(observation));
+      }
       assertAccepting();
       if (session.state === "failed") {
         throw new Error(`ACP_SESSION_FAILED: ${launchProfile.agentLabel} stopped during activation.`);
@@ -129,20 +175,35 @@ export class AcpSessionLauncher {
   }
 
   /**
-   * Ends what the owner holds (session, then connection or process) and clears its handles. The
-   * caller detaches the session's sink first when the end is deliberate.
+   * Ends one generation of what the owner holds, in this order: its provider call listener, the session, the connection
+   * (or the process), then the launch's files, after the process that reads them stopped. The handles are cleared
+   * first; every step runs even when an earlier one failed. The caller detaches the session's sink first when the end
+   * is deliberate.
    */
   static async end(owner: AcpPreparationOwner): Promise<void> {
-    const { session, connection, process } = owner;
+    const { providerCalls, session, connection, process, launch } = owner;
+    owner.providerCalls = null;
     owner.session = null;
     owner.connection = null;
     owner.process = null;
+    owner.launch = null;
     const errors: unknown[] = [];
+    try { providerCalls?.(); } catch (error) { errors.push(error); }
     try { session?.close(); } catch (error) { errors.push(error); }
     try {
       if (connection) await connection.close();
       else await process?.stop();
     } catch (error) { errors.push(error); }
+    try { await launch?.release(); } catch (error) { errors.push(error); }
     if (errors.length) throw new AggregateError(errors, "ACP session end failed.");
+  }
+
+  private async prepareRelayAccess(run: Readonly<{ runId: string; agentDefinitionId: string }>, relayId: string): Promise<AcpRelayAccess> {
+    try {
+      return await this.deps.providerRelayAccess!.prepareForRun(run, relayId);
+    } catch (error) {
+      if (error instanceof ProviderRelayKeyMissingError) throw new AgentCreationError(error.message);
+      throw error;
+    }
   }
 }

@@ -5,6 +5,7 @@ export type SystemInstructionSourceKey =
   | 'claude'
   | 'codex'
   | 'grok'
+  | 'deepseekHarness'
   | 'unknown';
 
 export const getSystemInstructionSourceKey = (runtimeKind: string | null | undefined): SystemInstructionSourceKey => {
@@ -13,6 +14,7 @@ export const getSystemInstructionSourceKey = (runtimeKind: string | null | undef
     case 'claude_agent_sdk': return 'claude';
     case 'codex_app_server': return 'codex';
     case 'grok_build': return 'grok';
+    case 'deepseek_harness': return 'deepseekHarness';
     default: return 'unknown';
   }
 };

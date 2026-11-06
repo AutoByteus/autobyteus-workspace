@@ -14,7 +14,7 @@ export type SecretConsumerIdentity =
     }
   | {
       kind: "agentRuntime";
-      runtimeKind: "claude_agent_sdk";
+      runtimeKind: "claude_agent_sdk" | "deepseek_harness";
       credentialSlot: "apiKey";
     }
   /** An MCP server value stored as a vault entry (`mcp.<uuid>`); its owner and field live in `mcps.json`. */

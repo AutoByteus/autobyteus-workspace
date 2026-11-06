@@ -6,13 +6,13 @@ import { AgentRunContext } from "../../../../../src/agent-execution/domain/agent
 import { AgentRunEventType, type AgentRunEvent } from "../../../../../src/agent-execution/domain/agent-run-event.js";
 import { RuntimeKind } from "../../../../../src/runtime-management/runtime-kind-enum.js";
 import { AcpAgentProcess } from "../../../../../src/runtime-management/acp/acp-agent-process.js";
-import type { AcpAgentLaunchProfile } from "../../../../../src/runtime-management/acp/acp-agent-launch-profile.js";
+import type { AcpAgentLaunchProfile, AcpRunLaunchRequest } from "../../../../../src/runtime-management/acp/acp-agent-launch-profile.js";
 import { AcpAgentRunBackendFactory } from "../../../../../src/agent-execution/backends/acp/backend/acp-agent-run-backend-factory.js";
 import type { AcpAgentRunBackend } from "../../../../../src/agent-execution/backends/acp/backend/acp-agent-run-backend.js";
 import { AcpAgentRunContext } from "../../../../../src/agent-execution/backends/acp/backend/acp-agent-run-context.js";
 import { grokBuildSessionProfile } from "../../../../../src/agent-execution/backends/grok/grok-build-session-profile.js";
 import { createAgentToolMcpRunSessionsStub } from "../../../../helpers/agent-tool-mcp-run-sessions-stub.js";
-import { FAKE_ACP_AGENT, fixturePath, fixtureSessionId, makeTestTempDir, readFixture, removeTestTempDirs, waitFor, writeCustomFixture, type FixtureRow } from "./acp-fake-agent-harness.js";
+import { fakeAcpLaunchProfile, fixturePath, fixtureSessionId, makeTestTempDir, readFixture, removeTestTempDirs, waitFor, writeCustomFixture, type FixtureRow } from "./acp-fake-agent-harness.js";
 
 // The Grok reopen sequence (design: "Grok reopen sequence", SR-003/SR-004): end first, then load,
 // with the run's AcpPreparationOwner as the single holder of its process. The fake ACP agent
@@ -37,13 +37,10 @@ const failingLoadFixture = (): string => {
 const createRestoredRun = async (reopenFixtures: string[]) => {
   const fixtures = [fixturePath("load"), ...reopenFixtures];
   let spawned = 0;
-  const launchProfile: AcpAgentLaunchProfile = {
-    agentLabel: "Fake Grok",
-    command: () => process.execPath,
-    args: () => [FAKE_ACP_AGENT],
-    env: (base) => ({ ...base, FAKE_ACP_FIXTURE: fixtures[Math.min(spawned++, fixtures.length - 1)]!, FAKE_ACP_REPORT_MCP_READY: "1" }),
-    normalizeModels: () => [],
-  };
+  const launches: AcpRunLaunchRequest[] = [];
+  const launchProfile: AcpAgentLaunchProfile = fakeAcpLaunchProfile("Fake Grok", () => ({
+    FAKE_ACP_FIXTURE: fixtures[Math.min(spawned++, fixtures.length - 1)]!, FAKE_ACP_REPORT_MCP_READY: "1",
+  }), { onRunLaunch: (request) => { launches.push(request); } });
   const processes: AcpAgentProcess[] = [];
   const spawn = AcpAgentProcess.spawn.bind(AcpAgentProcess);
   vi.spyOn(AcpAgentProcess, "spawn").mockImplementation((spec) => {
@@ -70,6 +67,8 @@ const createRestoredRun = async (reopenFixtures: string[]) => {
       },
       cleanupMaterializedWorkspaceSkills: cleanupSkills,
     } as never,
+    integrationRunAccess: null,
+    providerRelayAccess: null,
   });
   const sessionId = fixtureSessionId("load");
   const backend = await factory.beginPreparation({ kind: "restore", context: new AgentRunContext({
@@ -86,7 +85,7 @@ const createRestoredRun = async (reopenFixtures: string[]) => {
   const start = () => backend.dispatchUserInput({ kind: "start_turn", message: new AgentInputUserMessage("again") });
   const definition = (toolNames: string[]) => ({ toolNames }) as never;
   const alive = () => processes.filter((candidate) => candidate.exited === null);
-  return { backend, processes, alive, events, start, definition, cleanupSkills, mcpSessions, sessionId };
+  return { backend, processes, alive, events, start, definition, cleanupSkills, mcpSessions, sessionId, launches };
 };
 
 describe("AcpAgentRunBackend tool list reopen (Grok)", () => {
@@ -106,6 +105,10 @@ describe("AcpAgentRunBackend tool list reopen (Grok)", () => {
     expect(run.alive()).toEqual([run.processes[1]]);
     await waitFor(() => run.events.some((event) => event.eventType === AgentRunEventType.TURN_COMPLETED));
     expect(run.backend.getToolNames()).toEqual(["alpha", "beta"]);
+    // The reopen gives the new launch the instructions the run was restored with (re-sent, not recomposed).
+    expect(run.launches).toHaveLength(2);
+    expect(run.launches[0]!.instructions).toContain("Reviews code");
+    expect(run.launches[1]!.instructions).toBe(run.launches[0]!.instructions);
     // The deliberate end of the first process is not a run failure.
     expect(failure).not.toHaveBeenCalled();
     expect(run.backend.isActive()).toBe(true);

@@ -1,0 +1,54 @@
+# DEL-06 web codegen:check, typecheck, guards on 2f85bdd672 2026-11-06T10:14:17Z
+== pnpm -C autobyteus-web codegen:check
+[SUCCESS] Parse Configuration
+[STARTED] Generate outputs
+[STARTED] Generate to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codegen-local-Xkcl8L/graphql.ts
+[STARTED] Load GraphQL schemas
+[SUCCESS] Load GraphQL schemas
+[STARTED] Load GraphQL documents
+[SUCCESS] Load GraphQL documents
+[STARTED] Generate
+[SUCCESS] Generate
+[SUCCESS] Generate to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codegen-local-Xkcl8L/graphql.ts
+[SUCCESS] Generate outputs
+autobyteus-web/generated/graphql.ts is current.
+exit=0
+== pnpm -C autobyteus-web typecheck
+
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/autobyteus-web/stores/serverStore.ts" is used
+
+│
+◆  Types generated in .nuxt.
+[typecheck] Nuxt app (tsconfig.json): 72 errors, exit 2, 33.8s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.8s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 20.8s
+[typecheck] production errors: 0; test-file errors: 99 in 43 files (baseline 99 in 43 files)
+[typecheck] PASS
+exit=0
+== pnpm -C autobyteus-web guard:web-boundary
+
+> autobyteus@1.5.12-beta.2 guard:web-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
+exit=0
+== pnpm -C autobyteus-web guard:localization-boundary
+
+> autobyteus@1.5.12-beta.2 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.
+exit=0
+== pnpm -C autobyteus-web audit:localization-literals
+
+> autobyteus@1.5.12-beta.2 audit:localization-literals /Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/autobyteus-web
+> node ./scripts/audit-localization-literals.mjs
+
+[audit:localization-literals] Passed with zero unresolved findings.
+(node:43692) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/autobyteus-web/localization/audit/migrationScopes.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/autobyteus-web/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+exit=0

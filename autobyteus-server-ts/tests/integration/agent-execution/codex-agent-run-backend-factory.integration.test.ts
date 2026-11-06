@@ -264,6 +264,7 @@ const createFactory = async (input: {
     agentToolMcpRunSessions,
     applicationAgentTools: null,
     integrationRunAccess: null,
+    providerRelayAccess: null,
   }).codex;
 };
 
@@ -1278,11 +1279,12 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
       claudeBackendFactory: unavailableBackendFactory,
       agyBackendFactory: unavailableBackendFactory,
       grokBackendFactory: unavailableBackendFactory,
+      deepSeekHarnessBackendFactory: unavailableBackendFactory,
       activationRegistry: infrastructure.activationRegistry,
       memoryRecorder: infrastructure.memoryRecorder,
       providerInputNormalizer: infrastructure.providerInputNormalizer,
       agentToolMcpRunSessionDeactivator: deactivator,
-      integrationRunAccess: null,
+      runPasses: null,
     });
     previousAgentRunManagerInstance = (AgentRunManager as any).instance;
     (AgentRunManager as any).instance = runManager;

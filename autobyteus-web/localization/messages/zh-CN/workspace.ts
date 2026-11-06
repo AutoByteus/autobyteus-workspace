@@ -176,6 +176,8 @@ const messages = {
     "由 AutoByteus 提供 · Codex App Server baseInstructions",
   "workspace.components.progress.SystemInstructionActivityItem.source.grok":
     "由 AutoByteus 提供 · Grok Build rules",
+  "workspace.components.progress.SystemInstructionActivityItem.source.deepseekHarness":
+    "由 AutoByteus 提供 · DeepSeek Harness 指令插件",
   "workspace.components.progress.SystemInstructionActivityItem.source.unknown":
     "由 AutoByteus 提供的系统指令",
   "workspace.components.workspace.team.TeamOverviewPanel.messages": "消息",

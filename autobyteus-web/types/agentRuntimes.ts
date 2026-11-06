@@ -3,8 +3,11 @@
 export type AgentRuntimeUpdateState = 'CHECKING' | 'UP_TO_DATE' | 'UPDATE_AVAILABLE' | 'CHECK_FAILED' | 'NOT_CHECKED'
 /** `NOT_APPLICABLE`: not installed, or a Codex provider that needs no OpenAI sign-in. */
 export type AgentRuntimeAccountState = 'CHECKING' | 'SIGNED_IN' | 'SIGNED_OUT' | 'UNKNOWN' | 'NOT_APPLICABLE'
-/** BROWSER: the page starts the runtime's own login; COMMAND_LINE: the user signs in from its command line. */
-export type AgentRuntimeSignInRoute = 'BROWSER' | 'COMMAND_LINE'
+/**
+ * BROWSER: the page starts the runtime's own login; COMMAND_LINE: the user signs in from its command line;
+ * API_KEY_SETTING: the runtime uses a provider key from the AutoByteus vault, saved in Settings → API Keys.
+ */
+export type AgentRuntimeSignInRoute = 'BROWSER' | 'COMMAND_LINE' | 'API_KEY_SETTING'
 export type AgentRuntimeOperationKind = 'UPDATE' | 'SIGN_IN'
 export type AgentRuntimeOperationState = 'RUNNING' | 'SUCCEEDED' | 'FAILED' | 'DID_NOT_FINISH'
 
@@ -20,7 +23,7 @@ export interface AgentRuntimeOperation {
 }
 
 export interface AgentRuntime {
-  /** `codex_app_server`, `claude_agent_sdk`, `antigravity_cli` or `grok_build`. */
+  /** `codex_app_server`, `claude_agent_sdk`, `antigravity_cli`, `grok_build` or `deepseek_harness`. */
   runtimeKind: string
   installed: boolean
   installedVersion: string | null

@@ -42,6 +42,7 @@ import { getClaudeModelCatalog, type ClaudeModelCatalog } from './claude-model-c
 import { getCodexModelCatalog, type CodexModelCatalog } from './codex-model-catalog.js';
 import { AntigravityModelCatalog } from './antigravity-model-catalog.js';
 import { GrokBuildModelCatalog } from './grok-build-model-catalog.js';
+import { DeepSeekHarnessModelCatalog } from './deepseek-harness-model-catalog.js';
 import {
   DynamicModelSourceLifecycle,
   type DynamicSourceSpec,
@@ -75,6 +76,7 @@ export class ModelCatalogService {
     private readonly codexModelCatalog: CodexModelCatalog = getCodexModelCatalog(),
     private readonly antigravityModelCatalog = new AntigravityModelCatalog(),
     private readonly grokBuildModelCatalog = new GrokBuildModelCatalog(),
+    private readonly deepSeekHarnessModelCatalog = new DeepSeekHarnessModelCatalog(),
   ) {}
 
   async listProviderModelCatalogSnapshots(
@@ -174,6 +176,8 @@ export class ModelCatalogService {
         ? await this.antigravityModelCatalog.listModels(options)
         : runtime === RuntimeKind.GROK_BUILD
           ? await this.grokBuildModelCatalog.listModels(options)
+          : runtime === RuntimeKind.DEEPSEEK_HARNESS
+          ? await this.deepSeekHarnessModelCatalog.listModels(options)
           : runtime === RuntimeKind.AUTOBYTEUS
             ? await LLMFactory.listAvailableModels()
             : (() => { throw new Error(`Unsupported runtime: ${runtime}`); })();

@@ -296,10 +296,14 @@ describe("RawTraceManifestRuntimeNamesMigration: a failed write (AC-004)", () =>
 });
 
 describe("RawTraceManifestRuntimeNamesMigration: the frozen table and the registry", () => {
-  it("maps the five old labels onto exactly the RuntimeKind values, so the frozen copy cannot drift", () => {
+  it("maps the five old labels onto RuntimeKind values that are still current, so the frozen copy cannot drift", () => {
     expect(Object.keys(OLD_RUNTIME_LABELS).sort()).toEqual(["ANTIGRAVITY", "AUTOBYTEUS", "CLAUDE", "CODEX", "GROK_BUILD"]);
-    expect([...CURRENT_RUNTIME_VALUES].sort()).toEqual(Object.values(RuntimeKind).sort());
-    expect(Object.values(OLD_RUNTIME_LABELS).sort()).toEqual(Object.values(RuntimeKind).sort());
+    // The frozen table is the runtimes of its time; a runtime added later (deepseek_harness) never had an old label, and
+    // its manifests are written only after this startup migration completed.
+    const current: string[] = Object.values(RuntimeKind);
+    expect([...CURRENT_RUNTIME_VALUES].sort()).toEqual(["antigravity_cli", "autobyteus", "claude_agent_sdk", "codex_app_server", "grok_build"]);
+    for (const value of CURRENT_RUNTIME_VALUES) expect(current).toContain(value);
+    expect(Object.values(OLD_RUNTIME_LABELS).sort()).toEqual([...CURRENT_RUNTIME_VALUES].sort());
   });
 
   it("is registered last, after both raw-trace layout migrations it names, required on startup and startup-only", () => {

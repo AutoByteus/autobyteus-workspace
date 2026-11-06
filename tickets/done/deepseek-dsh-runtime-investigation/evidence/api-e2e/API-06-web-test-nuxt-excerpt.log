@@ -1,0 +1,32 @@
+# API-06 full web unit/component suite
+# Command: pnpm -C autobyteus-web test:nuxt
+# Commit: fddcff0f13 (worktree)
+# Env: macOS 26.5.2, Node v22.23.1
+# Date: 2026-11-06T08:25:01Z
+# Excerpt of the full log (API-06-web-test-nuxt.log, same folder): the failure and the summary
+42502:   ✓ voice input extension integration > serves the manifest checksum bytes unchanged across repeated downloads  1298ms
+42503:   × voice input extension integration > installs, enables, and inserts transcript text into the draft 5093ms
+49158: FAIL  tests/integration/voice-input-extension.integration.test.ts > voice input extension integration > installs, enables, and inserts transcript text into the draft
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/voice-input-extension.integration.test.ts > voice input extension integration > installs, enables, and inserts transcript text into the draft
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/integration/voice-input-extension.integration.test.ts:241:3
+    239|   })
+    240| 
+    241|   it('installs, enables, and inserts transcript text into the draft', …
+       |   ^
+    242|     const extensionsStore = useExtensionsStore()
+    243|     const voiceInputStore = useVoiceInputStore()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 691 passed (692)
+      Tests  1 failed | 5085 passed | 2 skipped (5088)
+   Start at  09:25:04
+   Duration  378.06s (transform 36.88s, setup 2515.33s, collect 245.25s, tests 108.02s, environment 227.75s, prepare 135.97s)
+
+ ELIFECYCLE  Command failed with exit code 1.
+EXIT 1

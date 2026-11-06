@@ -1,0 +1,1155 @@
+# DEL-02 server test:unit on 7c1117e209 2026-11-06T09:17:40Z
+
+> autobyteus-server-ts@0.1.1 test:unit /Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/autobyteus-server-ts
+> vitest run tests/unit tests/app-data-migrations tests/architecture tests/agent-work-journal --exclude "**/*.integration.test.ts"
+
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+(node:6095) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:32706) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:43431) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:58828) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:61651) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/architecture/agent-provider-composition-boundaries.test.ts (14 tests | 1 failed) 7698ms
+     × creates one frozen context path value per host and shares it across both roots 79ms
+(node:76899) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:79674) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:82419) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:88370) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:90178) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:92660) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:96031) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:99246) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:279) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:2450) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:2463) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:3145) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:4922) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:5601) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:7369) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:7373) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:8134) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:9833) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:12319) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:12329) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:12495) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:14428) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:14817) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:16257) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:17247) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:17612) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:19708) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:20571) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:22147) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:22154) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:22162) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:23373) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:24998) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:25007) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:25071) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:26841) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:27465) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:27471) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:27528) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:30217) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:30222) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:31871) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:33306) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:33363) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:34300) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:35791) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:35817) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:35825) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:37364) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:40386) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:41047) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:41683) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:43535) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:43622) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:45370) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:46085) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:46090) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:46389) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:46390) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: migration state store unavailable","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+(node:49380) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:49385) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:50560) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:51768) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:52112) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:52117) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:52126) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:52842) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:53766) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:54554) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:54555) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:55523) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:56975) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:57348) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:57364) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:57677) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:57955) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:59101) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:60107) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:60716) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:60722) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:60750) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:60751) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:62217) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:63174) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:63186) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:63214) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:64142) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:67503) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:68343) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:71395) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:71727) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:72247) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:74383) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:75526) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:77280) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:80376) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:82862) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:82882) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:82901) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:85033) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:85391) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:85422) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:86433) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:87132) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:87945) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:88322) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:91964) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:93828) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:93833) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:96126) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:96625) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:96635) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:96985) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+runtime-bootstrap-console-check
+runtime-bootstrap-fastify-check
+runtime-bootstrap-info-should-appear
+runtime-bootstrap-debug-should-appear
+(node:98797) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:99206) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:1463) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:2093) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:3003) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:4586) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:5027) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:7095) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:8992) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:9611) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:12113) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:12158) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:13802) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:14635) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:16832) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:17755) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:19304) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:19388) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:20984) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:22898) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:24343) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:24855) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:26368) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:26739) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:29222) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:29501) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:31721) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:32286) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:33284) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:34533) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:34559) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:34573) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:35749) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:37354) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:38844) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:39501) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:39518) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:40023) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:43320) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:44500) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:44526) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:45453) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:46860) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:47019) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:47195) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:48833) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:49483) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:49494) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:49513) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:51667) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:51975) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:53630) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:54461) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:56305) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:56934) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:56939) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:56941) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"event":"managed_compaction_all_exit","stage":"backend-construction","completedTurns":0,"error":{"category":"Error","code":null,"status":null,"condition":null},"parentRequests":[],"parentResponses":[],"summaryRequests":[],"summaryResponses":[],"events":[]}
+{"event":"managed_compaction_all_exit","stage":"backend-construction","completedTurns":0,"error":{"category":"Error","code":null,"status":null,"condition":null},"parentRequests":[],"parentResponses":[],"summaryRequests":[],"summaryResponses":[],"events":[]}
+(node:59407) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:59429) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:59439) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:61774) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:61880) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:63416) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:64377) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:64381) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:64383) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:64886) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:66195) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:67390) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:69901) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:69927) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:69931) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:70149) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:71878) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:72404) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:72410) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:72696) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:74866) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:74869) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:74878) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:74883) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:75750) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:77314) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:77328) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:77332) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:77784) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:79806) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:79811) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:79815) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:80257) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:82469) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:82935) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:84365) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:85086) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:85307) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:85660) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:85836) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:88110) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:88117) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:88126) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:89687) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:90556) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:90562) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:90567) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:90575) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:90577) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:91179) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:92283) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:92990) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:93004) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:95372) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:95526) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:95535) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:96314) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:97417) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:97959) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:97960) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:99239) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:305) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:854) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:1083) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:1087) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:1400) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:3471) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:3520) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:3522) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:3538) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:5039) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:5978) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:5983) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:5987) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:7569) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:8466) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:8468) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:8472) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:10939) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11549) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:12030) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:13778) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:15362) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:16176) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:16762) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:16776) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:16778) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:18233) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:19209) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:19212) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:19224) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:19788) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:21658) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:24719) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:24722) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:25036) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:25045) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:27171) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:27769) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:27783) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:34539) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:37487) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:38692) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:38927) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:39160) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/architecture/agent-provider-composition-boundaries.test.ts > agent provider composition boundaries > creates one frozen context path value per host and shares it across both roots
+AssertionError: expected 'import { DelegatedLaunchSelectionServ…' to contain 'contextFilePathEnvironment: ContextFi…'
+
+- Expected
++ Received
+
+- contextFilePathEnvironment: ContextFilePathEnvironment
++ import { DelegatedLaunchSelectionService } from "../../run-history/services/delegated-launch-selection-service.js";
++ import { AgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
++ import { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
++ import type { ScopedAgentToolMcpSessionAuthority } from "../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
++ import { AgentRunIdentityAllocator } from "../services/agent-run-identity-allocator.js";
++ import { AgentRunManager } from "../services/agent-run-manager.js";
++ import { AgentRunMemoryRecorder } from "../../agent-memory/services/agent-run-memory-recorder.js";
++ import { WorkJournalRunUpdater } from "../../agent-work-journal/services/work-journal-run-updater.js";
++ import { getWorkJournalService } from "../../agent-work-journal/services/work-journal-service.js";
++ import { McpServerInstanceManager } from "autobyteus-ts/tools/mcp/server-instance-manager.js";
++ import { AgentRunResourceManager } from "../services/agent-run-resource-manager.js";
++ import { AgentRunActivationRegistry } from "../runtime/agent-run-activation-registry.js";
++ import { AgentRunProviderInputNormalizer } from "../input/agent-run-provider-input-normalizer.js";
++ import { ContextFileLayout } from "../../context-files/store/context-file-layout.js";
++ import { ContextFileOwnerResolver } from "../../context-files/services/context-file-owner-resolver.js";
++ import { ContextFileLocalPathResolver } from "../../context-files/services/context-file-local-path-resolver.js";
++ import { AgentRunStatusProjectionService } from "../services/agent-run-status-projection-service.js";
++ import { AgentRunProvisioningService } from "../services/agent-run-provisioning-service.js";
++ import {
++   AgentRunService,
++   bindProcessAgentRunService,
++   releaseProcessAgentRunService,
++ } from "../services/agent-run-service.js";
++ import { StandaloneAgentRunLifecycleService } from "../services/standalone-agent-run-lifecycle-service.js";
++ import { FlatTeamExecutionFactory } from "../../agent-team-execution/local/flat-team-execution-factory.js";
++ import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
++ import { createTaskExecutionIdentityCapabilities } from "../../agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
++ import { MemberExecutionContextBuilder } from "../../agent-team-execution/services/member-team-context-builder.js";
++ import { AgentRunMemoryLocator } from "../../agent-collaboration/execution/services/agent-run-memory-locator.js";
++ import { AgentOrgExecutionScopeBuilder } from "../../agent-org-execution/services/agent-org-execution-scope-builder.js";
++ import { AgentOrgRunManager } from "../../agent-org-execution/services/agent-org-run-manager.js";
++ import { AgentOrgRunService } from "../../agent-org-execution/services/agent-org-run-service.js";
++ import {
++   TeamRunService,
++   bindProcessTeamRunService,
++   releaseProcessTeamRunService,
++ } from "../../agent-team-execution/services/team-run-service.js";
++ import { TeamRunIdentityAllocator } from "../../agent-team-execution/services/team-run-identity-allocator.js";
++ import { AgentRunHistoryCatalogService } from "../../run-history/services/agent-run-history-catalog-service.js";
++ import { AgentRunMetadataService } from "../../run-history/services/agent-run-metadata-service.js";
++ import { createStoredTeamRunExecutionTreeLocationService } from "../../run-history/services/team-run-execution-tree-location-service.js";
++ import { AgentRunResumeConfigService } from "../../run-history/services/agent-run-resume-config-service.js";
++ import { TeamRunHistoryCatalogService } from "../../run-history/services/team-run-history-catalog-service.js";
++ import { TeamRunHistoryService } from "../../run-history/services/team-run-history-service.js";
++ import {
++   RunFileChangeService,
++   bindProcessRunFileChangeService,
++   releaseProcessRunFileChangeService,
++ } from "../../services/run-file-changes/run-file-change-service.js";
++ import { createGeneralProcessPublishedArtifactRelayService } from "../../application-orchestration/services/application-published-artifact-relay-service.js";
++ import { TokenUsageCapability } from "../../token-usage/providers/token-usage-capability.js";
++ import { AgentOrgRunHistoryCatalogService } from "../../run-history/services/agent-org-run-history-catalog-service.js";
++ import { CollaborationRootHistoryService } from "../../run-history/services/collaboration-root-history-service.js";
++ import { AgentOrgExecutionTreeLocationService } from "../../agent-org-execution/services/agent-org-execution-tree-location-service.js";
++ import { CollaborationExecutionLocationService } from "../../agent-collaboration/execution/services/collaboration-execution-location-service.js";
++ import {
++   StandaloneAgentRunRootManager,
++   bindProcessStandaloneAgentRunRootManager,
++   releaseProcessStandaloneAgentRunRootManager,
++ } from "../../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
++ import {
++   bindProcessStandaloneRunCommandPort,
++   releaseProcessStandaloneRunCommandPort,
++ } from "../services/standalone-run-ports.js";
++ import { StandaloneRootLocationService } from "../../standalone-agent-run-root/services/standalone-root-location-service.js";
++ import { getRuntimeAvailabilityService } from "../../runtime-management/runtime-availability-service.js";
++ import type { CollaboratorAdmission } from "../../agent-collaboration/collaborators/collaborator-admission.js";
++ import {
++   bindProcessCollaboratorAdmission,
++   createCollaboratorAdmission,
++   createCollaboratorDefinitionCatalog,
++   releaseProcessCollaboratorAdmission,
++ } from "../../agent-collaboration/collaborators/collaborator-definition-catalog.js";
++ import {
++   requireGeneralProcessRunSupervisorInput,
++   type GeneralProcessRunSupervisorInput,
++ } from "./general-process-run-supervisor-input.js";
++ import { getInternalAgentVisibility } from "../../agent-definition/services/internal-agent-visibility.js";
++ import { PROCESS_MODEL_ROUTING } from "../../model-routing/services/model-routing-binding.js";
++
++ export class GeneralProcessRunSupervisor {
++   readonly agentRunService: AgentRunService;
++   readonly teamRunService: TeamRunService;
++   readonly agentOrgRunService: AgentOrgRunService;
++   readonly agentRunResumeConfigService: AgentRunResumeConfigService;
++   readonly teamRunHistoryService: TeamRunHistoryService;
++   readonly agentOrgRunHistoryCatalogService: AgentOrgRunHistoryCatalogService;
++   readonly collaborationRootHistoryService: CollaborationRootHistoryService;
++   readonly delegatedLaunchSelectionService: DelegatedLaunchSelectionService;
++   private readonly agentRunManager: AgentRunManager;
++   private readonly agentTeamRunManager: AgentTeamRunManager;
++   private readonly agentOrgRunManager: AgentOrgRunManager;
++   private readonly standaloneRootManager: StandaloneAgentRunRootManager;
++   private readonly agentToolMcpSessionAuthority: ScopedAgentToolMcpSessionAuthority;
++   private readonly collaboratorAdmission: CollaboratorAdmission;
++   private readonly runFileChangeService: RunFileChangeService;
++   private closePromise: Promise<void> | null = null;
++
++   constructor(input: GeneralProcessRunSupervisorInput) {
++     input = requireGeneralProcessRunSupervisorInput(input);
++     const memoryDir = input.memoryDir.trim();
++     const workspaceManager = input.workspaceManager;
++     const storedTeamLocations = createStoredTeamRunExecutionTreeLocationService(memoryDir);
++     const storedOrgLocations = new AgentOrgExecutionTreeLocationService({ memoryDir });
++     const collaborationLocations = new CollaborationExecutionLocationService({
++       teams: storedTeamLocations,
++       orgs: storedOrgLocations,
++       agents: new StandaloneRootLocationService({
++         memoryDir,
++         roots: { getActiveTree: (hostRunId) => standaloneRootManager?.getActiveTree(hostRunId) ?? null },
++       }),
++     });
++     let agentRunManager: AgentRunManager | null = null;
++     let standaloneRootManager: StandaloneAgentRunRootManager | null = null;
++     let standaloneRootManagerBound = false;
++     let agentTeamRunManager: AgentTeamRunManager | null = null;
++     let agentOrgRunManager: AgentOrgRunManager | null = null;
++     let agentRunService: AgentRunService | null = null;
++     let teamRunService: TeamRunService | null = null;
++     let agentRunServiceBound = false;
++     let teamRunServiceBound = false;
++     // One admission coordinator over the injected definition services (no ambient definition getters).
++     const collaboratorAdmission = createCollaboratorAdmission(createCollaboratorDefinitionCatalog({
++       agents: input.agentDefinitionService,
++       teams: input.agentTeamDefinitionService,
++       visibility: getInternalAgentVisibility(),
++     }), input.modelSelectionValidator, getRuntimeAvailabilityService(), PROCESS_MODEL_ROUTING);
++     let collaboratorAdmissionBound = false;
++     // The one process owner of live run file changes: it records FILE_CHANGE events and serves reads.
++     const runFileChangeService = new RunFileChangeService({ workspaceManager });
++     let runFileChangeServiceBound = false;
++
++     try {
++       bindProcessCollaboratorAdmission(collaboratorAdmission);
++       collaboratorAdmissionBound = true;
++       bindProcessRunFileChangeService(runFileChangeService);
++       runFileChangeServiceBound = true;
++       const contextFileLayout = new ContextFileLayout({
++         appDataDir: input.contextFilePathEnvironment.appDataDir,
++         memoryDir,
++       });
++       const contextFileOwnerResolver = new ContextFileOwnerResolver({
++       memoryDir: memoryDir,
++         locations: collaborationLocations,
++       });
++       const providerInputNormalizer = new AgentRunProviderInputNormalizer(
++         new ContextFileLocalPathResolver({
++           layout: contextFileLayout,
++           ownerResolver: contextFileOwnerResolver,
++           baseUrl: input.contextFilePathEnvironment.baseUrl,
++         }),
++       );
++       const memoryRecorder = new AgentRunMemoryRecorder();
++       const resourceManager = new AgentRunResourceManager({
++         runSessions: input.agentToolMcpSessionAuthority.runSessions,
++         runFileChangeService,
++         publishedArtifactRelayService: createGeneralProcessPublishedArtifactRelayService(),
++         memoryRecorder,
++         workJournalUpdater: new WorkJournalRunUpdater({ memoryRecorder, journalService: getWorkJournalService() }),
++         lifecycleObserver: input.platformInputNotices ?? null,
++         mcpServerInstances: McpServerInstanceManager.getInstance(),
++         runPasses: input.runPasses,
++       });
++       const activationRegistry = new AgentRunActivationRegistry(resourceManager);
++       const providerFactories = input.agentProviderFactoryBuilder.createForExecution({
++         agentDefinitionService: input.agentDefinitionService,
++         agentToolMcpRunSessions: input.agentToolMcpSessionAuthority.runSessions,
++         applicationAgentTools: null,
++         integrationRunAccess: input.integrationRunAccess,
++         providerRelayAccess: input.providerRelayAccess,
++       });
++       agentRunManager = AgentRunManager.initializeProcessInstance({
++         autoByteusBackendFactory: providerFactories.autoByteus,
++         codexBackendFactory: providerFactories.codex,
++         claudeBackendFactory: providerFactories.claude,
++         agyBackendFactory: providerFactories.antigravity,
++         grokBackendFactory: providerFactories.grok,
++         deepSeekHarnessBackendFactory: providerFactories.deepSeekHarness,
++         activationRegistry,
++         memoryRecorder,
++         providerInputNormalizer,
++         agentToolMcpRunSessionDeactivator:
++           input.agentToolMcpSessionAuthority.runSessions,
++         runPasses: input.runPasses,
++         inputPreface: input.platformInputNotices ?? null,
++         lifecycleObserver: input.platformInputNotices ?? null,
++       });
++
++       const metadataService = new AgentRunMetadataService(memoryDir);
++       const historyCatalogService = new AgentRunHistoryCatalogService(memoryDir, {
++         agentDefinitionService: input.agentDefinitionService,
++         agentRunManager,
++       });
++       const agentRunIdentityAllocator = new AgentRunIdentityAllocator({
++         agentDefinitionService: input.agentDefinitionService,
++       });
++       const taskExecutionIdentity = createTaskExecutionIdentityCapabilities(
++         agentRunIdentityAllocator,
++       );
++
++       const memberExecutionContextBuilder = new MemberExecutionContextBuilder(
++         input.agentTeamDefinitionService,
++       );
++       const memoryLocationService = new AgentMemoryLocationService({
++         memoryDir,
++         locationService: storedTeamLocations,
++       });
++       const memoryLocator = new AgentRunMemoryLocator({ memoryDir });
++       const activityInspector = new AgentConversationActivityInspector();
++       const generalAgentRunManager = agentRunManager;
++       const flatTeamExecutionFactory = new FlatTeamExecutionFactory({
++         agentRunManager: generalAgentRunManager,
++         memoryLocator,
++         activityInspector,
++         workspaceManager,
++       });
++       agentTeamRunManager = AgentTeamRunManager.initializeProcessInstance({
++         memoryDir,
++         taskExecutionIdentity,
++         taskExecutionResources: input.taskExecutionResources,
++         modelSelectionValidator: input.modelSelectionValidator,
++         flatTeamExecutionFactory,
++         memberExecutionContextBuilder,
++       });
++       agentOrgRunManager = AgentOrgRunManager.initializeProcessInstance({
++         workspaces: workspaceManager,
++         memoryDir,
++         taskExecutionResources: input.taskExecutionResources,
++         modelSelectionValidator: input.modelSelectionValidator,
++         scopeBuilder: new AgentOrgExecutionScopeBuilder({
++           flatTeamExecutionFactory,
++           taskExecutionIdentity,
++           taskExecutionResources: input.taskExecutionResources,
++           orgDefinitions: input.agentOrgDefinitionService,
++           teamDefinitions: input.agentTeamDefinitionService,
++           agentRunManager: generalAgentRunManager,
++           memoryLocator,
++           activityInspector,
++           workspaceManager,
++         }),
++       });
++       const tokenUsageReadiness = new TokenUsageCapability();
++       const provisioningService = new AgentRunProvisioningService(memoryDir, {
++         agentRunManager,
++         metadataService,
++         historyCatalogService,
++         workspaceManager,
++         agentRunIdentityAllocator,
++       });
++       const lifecycleService = new StandaloneAgentRunLifecycleService(memoryDir, {
++         agentRunManager,
++         metadataService,
++         historyCatalogService,
++         workspaceManager,
++         tokenUsageReadiness,
++         modelSelectionValidator: input.modelSelectionValidator,
++         switching: input.runtimeSwitching ?? null,
++       });
++       const activeAgentRuns = agentRunManager;
++       // Each eligible standalone run is owned by its root; the lifecycle is its host's activation backend.
++       standaloneRootManager = new StandaloneAgentRunRootManager({
++         memoryDir,
++         definitions: input.agentDefinitionService,
++         host: {
++           getActiveRun: (hostRunId) => activeAgentRuns.getActiveRun(hostRunId),
++           activateHost: (hostRunId, activation) => lifecycleService.activateHost(hostRunId, activation),
++           terminateHost: (hostRunId) => lifecycleService.terminateHost(hostRunId),
++           readMetadata: (hostRunId) => metadataService.readMetadata(hostRunId),
++           recordCollaborationPackageCreated: (hostRunId) => historyCatalogService.recordCollaborationPackageCreated({ runId: hostRunId }),
++         },
++         taskExecutionResources: input.taskExecutionResources,
++         rootDependencies: {
++           flatTeamExecutionFactory,
++           taskExecutionIdentity,
++           taskExecutionResources: input.taskExecutionResources,
++           teamDefinitions: input.agentTeamDefinitionService,
++           agentRunManager: generalAgentRunManager,
++           memoryLocator,
++           activityInspector,
++           workspaceManager,
++           collaboratorAdmission,
++         },
++       });
++       bindProcessStandaloneAgentRunRootManager(standaloneRootManager);
++       bindProcessStandaloneRunCommandPort(standaloneRootManager);
++       standaloneRootManagerBound = true;
++       agentRunService = new AgentRunService(memoryDir, {
++         agentRunManager,
++         metadataService,
++         historyCatalogService,
++         workspaceManager,
++         agentRunIdentityAllocator,
++         provisioningService,
++         lifecycleService,
++         standaloneRuns: standaloneRootManager,
++       });
++       const teamRunHistoryCatalogService = new TeamRunHistoryCatalogService(memoryDir, {
++         teamRunManager: agentTeamRunManager,
++       });
++       const agentOrgRunHistoryCatalogService = new AgentOrgRunHistoryCatalogService(
++         memoryDir,
++         agentOrgRunManager,
++       );
++       teamRunService = new TeamRunService({
++         agentTeamRunManager,
++         teamDefinitionService: input.agentTeamDefinitionService,
++         teamRunHistoryCatalogService,
++         workspaceManager,
++         memoryDir,
++         memoryLocationService,
++         agentRunIdentityAllocator,
++         teamRunIdentityAllocator: new TeamRunIdentityAllocator(),
++         tokenUsageReadiness,
++         definitionAdmissionService: input.definitionAdmissionService,
++       });
++       const agentOrgRunService = new AgentOrgRunService({
++         manager: agentOrgRunManager,
++         teamDefinitions: input.agentTeamDefinitionService,
++         agentDefinitions: input.agentDefinitionService,
++         agentIdentities: agentRunIdentityAllocator,
++         teamIdentities: new TeamRunIdentityAllocator(),
++         workspaces: workspaceManager,
++         admission: input.definitionAdmissionService,
++         modelSelectionValidator: input.modelSelectionValidator,
++         modelSelectionOptions: input.modelSelectionValidator,
++         history: agentOrgRunHistoryCatalogService,
++       });
++
++       bindProcessAgentRunService(agentRunService);
++       agentRunServiceBound = true;
++       bindProcessTeamRunService(teamRunService);
++       teamRunServiceBound = true;
++
++       this.delegatedLaunchSelectionService = new DelegatedLaunchSelectionService({
++         teams: agentTeamRunManager,
++         orgs: agentOrgRunManager,
++         agents: standaloneRootManager,
++         agentRuns: agentRunService,
++         validator: input.modelSelectionValidator,
++       });
++       this.agentRunManager = agentRunManager;
++       this.agentTeamRunManager = agentTeamRunManager;
++       this.agentOrgRunManager = agentOrgRunManager;
++       this.standaloneRootManager = standaloneRootManager;
++       this.agentRunService = agentRunService;
++       this.teamRunService = teamRunService;
++       this.agentOrgRunService = agentOrgRunService;
++       this.agentOrgRunHistoryCatalogService = agentOrgRunHistoryCatalogService;
++       this.agentToolMcpSessionAuthority = input.agentToolMcpSessionAuthority;
++       this.collaboratorAdmission = collaboratorAdmission;
++       this.runFileChangeService = runFileChangeService;
++       this.agentRunResumeConfigService = new AgentRunResumeConfigService(memoryDir, {
++         statusProjectionService: new AgentRunStatusProjectionService({
++           agentRunManager,
++           metadataService,
++         }),
++         historyCatalog: historyCatalogService,
++       });
++       this.teamRunHistoryService = new TeamRunHistoryService(memoryDir, {
++         catalogService: teamRunHistoryCatalogService,
++         teamRunManager: agentTeamRunManager,
++       });
++       this.collaborationRootHistoryService = new CollaborationRootHistoryService({
++         memoryDir,
++         teams: this.teamRunHistoryService,
++         orgs: agentOrgRunHistoryCatalogService,
++         orgRuns: agentOrgRunManager,
++       });
++     } catch (error) {
++       if (teamRunServiceBound && teamRunService) {
++         releaseProcessTeamRunService(teamRunService);
++       }
++       if (agentRunServiceBound && agentRunService) {
++         releaseProcessAgentRunService(agentRunService);
++       }
++       if (agentOrgRunManager) {
++         AgentOrgRunManager.releaseProcessInstance(agentOrgRunManager);
++       }
++       if (standaloneRootManagerBound && standaloneRootManager) {
++         releaseProcessStandaloneRunCommandPort(standaloneRootManager);
++         releaseProcessStandaloneAgentRunRootManager(standaloneRootManager);
++       }
++       if (agentTeamRunManager) {
++         AgentTeamRunManager.releaseProcessInstance(agentTeamRunManager);
++       }
++       if (agentRunManager) {
++         AgentRunManager.releaseProcessInstance(agentRunManager);
++       }
++       if (runFileChangeServiceBound) {
++         releaseProcessRunFileChangeService(runFileChangeService);
++       }
++       if (collaboratorAdmissionBound) {
++         releaseProcessCollaboratorAdmission(collaboratorAdmission);
++       }
++       throw error;
++     }
++   }
++
++   close(): Promise<void> {
++     this.closePromise ??= this.closeInternal();
++     return this.closePromise;
++   }
++
++   private async closeInternal(): Promise<void> {
++     const errors: unknown[] = [];
++     this.agentOrgRunManager.closeRootAdmission();
++     this.agentTeamRunManager.closeRootAdmission();
++     this.agentRunManager.closeActivationAdmission();
++     try {
++       await this.agentOrgRunManager.stopAllAgentOrgRuns();
++     } catch (error) {
++       errors.push(error);
++     }
++     try {
++       await this.agentTeamRunManager.stopAllTeamRuns();
++     } catch (error) {
++       errors.push(error);
++     }
++     try {
++       // Standalone roots end (and stop their children) before their host runs stop.
++       await this.standaloneRootManager.stopAll();
++     } catch (error) {
++       errors.push(error);
++     }
++     try {
++       await this.agentRunManager.stopAllAgentRuns();
++     } catch (error) {
++       errors.push(error);
++     }
++     try {
++       releaseProcessTeamRunService(this.teamRunService);
++       releaseProcessAgentRunService(this.agentRunService);
++       AgentOrgRunManager.releaseProcessInstance(this.agentOrgRunManager);
++       releaseProcessStandaloneRunCommandPort(this.standaloneRootManager);
++       releaseProcessStandaloneAgentRunRootManager(this.standaloneRootManager);
++       AgentTeamRunManager.releaseProcessInstance(this.agentTeamRunManager);
++       AgentRunManager.releaseProcessInstance(this.agentRunManager);
++       releaseProcessRunFileChangeService(this.runFileChangeService);
++       releaseProcessCollaboratorAdmission(this.collaboratorAdmission);
++     } catch (error) {
++       errors.push(error);
++     }
++     try {
++       this.agentToolMcpSessionAuthority.close();
++     } catch (error) {
++       errors.push(error);
++     }
++     if (errors.length) {
++       throw new AggregateError(errors, "General process run supervisor close failed.");
++     }
++   }
++
++ }
++
++ export const createGeneralProcessRunSupervisor = (
++   input: GeneralProcessRunSupervisorInput,
++ ): GeneralProcessRunSupervisor => new GeneralProcessRunSupervisor(input);
++
+
+ ❯ tests/architecture/agent-provider-composition-boundaries.test.ts:700:21
+    698|     const general = read(join(SRC, "agent-execution/runtime/general-pr…
+    699|     expect(general).not.toMatch(/AppConfig|appConfigProvider|\.getMemo…
+    700|     expect(general).toContain("contextFilePathEnvironment: ContextFile…
+       |                     ^
+    701|   });
+    702|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 931 passed | 5 skipped (937)
+      Tests  1 failed | 7941 passed | 9 skipped (7951)
+   Start at  10:17:41
+   Duration  945.51s (transform 26.77s, setup 14.97s, import 498.66s, tests 328.02s, environment 1.38s)
+
+ ELIFECYCLE  Command failed with exit code 1.
+exit=1

@@ -19,7 +19,7 @@ export type AvailableModel = Readonly<{
   blocked?: ModelBlock;
 }>;
 
-export type ExternalAgentRuntimeKindName = "codex_app_server" | "claude_agent_sdk" | "antigravity_cli" | "grok_build";
+export type ExternalAgentRuntimeKindName = "codex_app_server" | "claude_agent_sdk" | "antigravity_cli" | "grok_build" | "deepseek_harness";
 
 /** `unknown: <reason>`: a step failed or timed out; nothing is guessed (REQ-007). */
 export type UnknownText = `unknown: ${string}`;

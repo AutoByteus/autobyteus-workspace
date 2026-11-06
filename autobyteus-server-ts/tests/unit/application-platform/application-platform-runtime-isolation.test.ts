@@ -61,6 +61,7 @@ describe("application platform runtime isolation", () => {
         claude: {} as never,
         antigravity: {} as never,
         grok: {} as never,
+        deepSeekHarness: {} as never,
       })),
     };
     const buildRuntime = async (applicationId: string) => {
@@ -110,6 +111,8 @@ describe("application platform runtime isolation", () => {
         codexClientManager: {} as never,
         requireCurrentModelIdentifier: vi.fn(async () => undefined),
         modelSelectionValidator: { validate: vi.fn(), validateMany: vi.fn() },
+        providerRelayAccess: null,
+        runPasses: null,
         staticAdapterToolNames: agentToolsMcpHost.staticAdapterToolNames,
         selectedApplicationIds: new Set([applicationId]),
       });
@@ -198,6 +201,7 @@ describe("application platform runtime isolation", () => {
         claude: {} as never,
         antigravity: {} as never,
         grok: {} as never,
+        deepSeekHarness: {} as never,
       })),
     };
     const processOwners = {
@@ -240,6 +244,8 @@ describe("application platform runtime isolation", () => {
         codexClientManager: processOwners.codexClient as never,
         requireCurrentModelIdentifier: vi.fn(async () => undefined),
         modelSelectionValidator: { validate: vi.fn(), validateMany: vi.fn() },
+        providerRelayAccess: null,
+        runPasses: null,
         staticAdapterToolNames: new Set(),
         selectedApplicationIds: new Set(["app-a"]),
       });

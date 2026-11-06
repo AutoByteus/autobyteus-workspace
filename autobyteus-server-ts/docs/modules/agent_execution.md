@@ -38,6 +38,12 @@ per-call approvals, turn-end classification, and per-call usage, see
 [Grok Build Runtime](./grok_build_runtime.md). It also joins the existing
 manager/factory boundary through `AcpAgentRunBackendFactory`.
 
+The `deepseek_harness` provider (DeepSeek Harness, `dsh`, over ACP stdio) runs
+on the same ACP layer with its own session profile; its model calls go through
+the credential proxy's provider relay, which also supplies its usage,
+compaction and liveness. See
+[DeepSeek Harness Runtime](./deepseek_harness_runtime.md).
+
 ## Execution Family Composition
 
 `AgentProviderFactoryBuilder` freezes process-wide provider primitives and

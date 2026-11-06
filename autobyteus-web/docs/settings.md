@@ -604,7 +604,8 @@ states.
 ## Settings: Agent Runtimes
 
 Settings -> **Agent Runtimes** (`?section=agent-runtimes`, right after API Keys)
-lists Codex, Claude, Antigravity and Grok for the node the window is bound to.
+lists Codex, Claude, Antigravity, Grok and DeepSeek Harness for the node the
+window is bound to.
 The user installs runtimes. AutoByteus shows what it finds, checks for newer
 versions, and starts the vendor's own update and login commands.
 
@@ -612,7 +613,11 @@ versions, and starts the vendor's own update and login commands.
   installed**, its update state (Checking for updates…, Up to date, Update
   available (version X), Check failed), and its account (Signed in, Not signed
   in, Sign-in unknown, or "–" when Codex is set up with a model provider that
-  needs no OpenAI sign-in).
+  needs no OpenAI sign-in). DeepSeek Harness has no sign-in of its own: its
+  model calls use the DeepSeek key saved in Settings → API Keys, so its
+  account reads **API key set** or **API key not set**, the latter with "Save
+  its API key in Settings → API Keys." ("… of that node." in a remote node's
+  window), and it has no Sign in button.
 - **Finding runtimes.** The page uses the same lookup AutoByteus uses to run
   agents (PATH and the existing per-runtime command settings), so it shows
   exactly what agent runs will use. A runtime that is not installed shows
@@ -624,7 +629,8 @@ versions, and starts the vendor's own update and login commands.
   newest version on its own, so a slow or failing source only marks its own
   row ("Couldn't reach the update source. <Runtime> still works."). Checking
   changes nothing.
-- **Update** (the desktop's own node only) runs `<runtime> update`. The row
+- **Update** (the desktop's own node only) runs `<runtime> update` (for
+  DeepSeek Harness, `npm install -g @deepseek-ai/dsh@latest`). The row
   shows the command and the vendor's latest output line. Then it shows
   "Updated from X to Y." and checks that runtime again. A failure, or an exit
   without a newer version, shows the vendor's message and **Try again**.
@@ -1687,7 +1693,7 @@ missing workspace ID. It does not change saved paths or the model-only Save
 payload. The stopped AgentOrg placed-Team workspace control is a separate flow.
 
 Replacement choices come from server-owned options for the saved run/scope.
-For Claude Agent SDK, Codex App Server, Antigravity CLI, and Grok Build, every **distinct
+For Claude Agent SDK, Codex App Server, Antigravity CLI, Grok Build and DeepSeek Harness, every **distinct
 model offered by the backend selection catalog** is eligible without a platform
 context-capacity gate, including smaller or unknown-capacity models. The Claude
 backend omits `default` from new offers only when it proves another listed ID

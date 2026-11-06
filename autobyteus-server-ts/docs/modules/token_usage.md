@@ -411,6 +411,16 @@ One observation per `response_completed` call (`grok_acp_call`, a model call).
 Input excludes cache reads; the latest prompt = input + cache read + cache write.
 Grok reports no window or threshold.
 
+### DeepSeek Harness
+
+dsh reports no usage over ACP. The credential proxy's DeepSeek provider relay
+reads DeepSeek's own counts from each forwarded call's stream, and the run's
+session reports one observation per finished call (`deepseek_harness_call`, or
+`deepseek_harness_compaction_call` for one of dsh's compaction calls; both are
+model calls). Input excludes cache reads and writes; the latest prompt = input +
+cache read + cache write. dsh reports no window or threshold. See
+[DeepSeek Harness Runtime](./deepseek_harness_runtime.md#token-usage-compaction-and-liveness).
+
 ### Native AutoByteus
 
 `LlmPhase` reports one observation per provider call (a model call) with the
@@ -435,6 +445,7 @@ replaces them. No local estimate is made.
 | Codex | No | Compacts when the previous context reaches its limit; the post-compaction size is reported |
 | Antigravity | No | Internal |
 | Grok Build | No | — |
+| DeepSeek Harness | No | dsh's own setting; its compaction calls are seen by the provider relay |
 
 A runtime's own reading can be above its window: Codex just before it compacts,
 or the Claude SDK after a failed compaction. The meter shows the true number and

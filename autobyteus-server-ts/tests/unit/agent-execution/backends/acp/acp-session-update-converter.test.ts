@@ -13,6 +13,7 @@ const profile: AcpAgentSessionProfile = {
     ...(snapshot.status === "failed" ? { error: "tool failed" } : {}),
   }),
   interpretExtNotification: () => [],
+  configSelection: () => [],
 };
 
 const chunk = (kind: "agent_message_chunk" | "agent_thought_chunk", text: string) =>

@@ -2,6 +2,8 @@ import type { FastifyInstance } from "fastify";
 import { buildStudioServer } from "../../../src/compositions/build-studio-server.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import type { AgentToolsMcpHost } from "../../../src/agent-tools/mcp/agent-tools-mcp-host.js";
+import type { CredentialProxyHost } from "../../../src/credential-proxy/credential-proxy-host.js";
+import type { ApplicationPlatformRuntime } from "../../../src/application-platform/runtime/application-platform-runtime.js";
 
 const TEST_LOGGING_CONFIG = Object.freeze({
   pinoLogLevel: "silent",
@@ -13,6 +15,10 @@ const TEST_LOGGING_CONFIG = Object.freeze({
 export type StartedStudioE2eRuntimeServer = Readonly<{
   fastify: FastifyInstance;
   agentToolsMcpHost: AgentToolsMcpHost;
+  /** The studio's credential proxy (its provider relays and run passes), for suites that check the proxy itself. */
+  credentialProxyHost: CredentialProxyHost;
+  /** The studio's application platform, for suites that stop it before the rest of the server. */
+  applicationRuntime: ApplicationPlatformRuntime;
   mainUrl: URL;
 }>;
 
@@ -38,6 +44,8 @@ export const startStudioE2eRuntimeServer = async (
     return Object.freeze({
       fastify: studio.fastify,
       agentToolsMcpHost: studio.agentToolsMcpHost,
+      credentialProxyHost: studio.credentialProxyHost,
+      applicationRuntime: studio.applicationRuntime,
       mainUrl: new URL(address),
     });
   } catch (error) {

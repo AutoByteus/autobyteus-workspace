@@ -136,7 +136,7 @@ describe("Team communication API integration", () => {
     ]);
     const ownedAgentRunManager = AgentRunManager.initializeProcessInstance({
       autoByteusBackendFactory: {} as never, codexBackendFactory: {} as never,
-      claudeBackendFactory: {} as never, agyBackendFactory: {} as never, grokBackendFactory: {} as never,
+      claudeBackendFactory: {} as never, agyBackendFactory: {} as never, grokBackendFactory: {} as never, deepSeekHarnessBackendFactory: {} as never,
       activationRegistry: { getActiveRun: () => null } as never,
       memoryRecorder: {} as never,
       providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },

@@ -24,8 +24,8 @@ afterEach(async () => {
 });
 
 describe("grok_build runtime registration", () => {
-  it("is a fifth, external-provider runtime kind", () => {
-    expect(Object.values(RuntimeKind)).toEqual(["autobyteus", "claude_agent_sdk", "codex_app_server", "antigravity_cli", "grok_build"]);
+  it("is an external-provider runtime kind", () => {
+    expect(Object.values(RuntimeKind)).toEqual(["autobyteus", "claude_agent_sdk", "codex_app_server", "antigravity_cli", "grok_build", "deepseek_harness"]);
     expect(runtimeKindFromString("grok_build")).toBe(RuntimeKind.GROK_BUILD);
     expect(isExternalProviderRuntimeKind(RuntimeKind.GROK_BUILD)).toBe(true);
   });
