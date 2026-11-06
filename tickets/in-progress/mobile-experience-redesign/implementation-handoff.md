@@ -10,7 +10,7 @@
 - Supplemental task artifacts: the Product UI/UX spec and VIS-001…029, `/Users/normy/autobyteus_org/autobyteus-web-design-worktrees/mobile-experience-redesign/tickets/in-progress/mobile-experience-redesign/ui-ux-spec.md` at design revision `e6ca7b6098` (normative); [follow-ups.md](follow-ups.md).
 - Design review report: [design-review-report.md](design-review-report.md) — round 2, Pass.
 - Architecture review revision record: [architecture-review-revision-record.md](architecture-review-revision-record.md) — `ARCH-REV-002`.
-- Triggering rework report, revision record, or evidence, when applicable: N/A (initial implementation).
+- Triggering rework report, revision record, or evidence, when applicable: [code-review-report.md](code-review-report.md) and [code-review-revision-record.md](code-review-revision-record.md), `CRR-001` (Fail — Local Fix: CR-001, CR-002, CR-003).
 
 ## Current Implementation Summary
 
@@ -36,20 +36,21 @@ The `/mobile` shell is rebuilt as the approved design on the desktop's owners. T
   - A conversation's file link opens on the Files screen.
   - Removed: `mobileWorkStore`, `MobileWorkContext`, the catalog, Home, the tabs, the Switch sheet, team launch, and their tests.
   - Docs: `autobyteus-web/docs/remote_access.md`.
+- **CRR-001 fixes** — commit `f2816cc7c1` (IR-002): the run list's Retry goes through the paired shell's status check (CR-001); the Files folder error names no tab (CR-002); a bottom sheet passes its title id to a custom header, so the connection sheet's dialog is named (CR-003).
 - **Polish and cleanup** — commits `e0788fe987`, `599002ecbf`, `b2d7a084dd`:
   - touch targets and the sheet's focus outline, from the rendered check;
   - removal of the helpers only the removed screens used;
   - removal of `useTeamRunRuntimeCatalogSync`, whose only caller was the phone's team launch.
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework`
 - Implementation revision record: [implementation-revision-record.md](implementation-revision-record.md)
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002` (IR-001 is the baseline)
 - Related solution revision IDs: `SR-003` (requirements), `SR-004` (design)
 - Related architecture-review revision IDs: `ARCH-REV-002`
-- Related code-review revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001`
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`. The review's non-blocking residual risks 1–5 are handled; see Known Risks.
+- Triggering finding IDs: CR-001, CR-002, CR-003 (`CRR-001`). The architecture review's non-blocking residual risks 1–5 are handled; see Known Risks.
 
 ## Routing Classification (Mandatory)
 
@@ -79,7 +80,7 @@ The `/mobile` shell is rebuilt as the approved design on the desktop's owners. T
 | BEH-005 (REQ-004; DS-002, DS-003) | A run on another node: chip, state, title; opens as in 278; unreachable: notice and Retry | The rows' `remote` from the transient rows and `remoteRunsStore`; `MobileRunTargetView` shows `RemoteRunNotice` when `remoteView.unreachable`; the composer stays text-only through the existing `useComposerTarget` | Implemented. The two-server behavior itself is not exercised here (API/E2E) |
 | BEH-006 (REQ-008; DS-007) | The node name opens the connection sheet; read-only peers; unpair | `MobileRunList` node button → `MobileConnectionSheet` (`remoteCollaborationStore.load()`, `remoteCollaborationOffersStore.askAll`) → `MobileUnpairConfirm` → `deleteLocalSession`; the not-reachable bar and banner from `authorizedApiReachable` after the first check | Implemented |
 | BEH-007 (REQ-009) | No row actions on the phone | `MobileRunRow` has the body and the chevron only | Implemented |
-| Preserved | Pairing, the post-pair check, unpair, the unsupported notice, the 401 rule | `MobileRemoteAccessShell` (pairing, route pairing link), `MobilePairedShell` (`checkStatus`: `Promise.allSettled([fetchStatus, initialLoad / load()])`, `isRemoteAccessAuthFailure`) | Kept. Notice copy for `desktopWorkspace` per spec |
+| Preserved | Pairing, the post-pair check, unpair, the unsupported notice, the 401 rule | `MobileRemoteAccessShell` (pairing, route pairing link), `MobilePairedShell` (`checkStatus`: `Promise.allSettled([fetchStatus, initialLoad / load()])`, `isRemoteAccessAuthFailure`); the list's Retry and the sheet's Check connection both run `checkStatus` (CR-001) | Kept. Notice copy for `desktopWorkspace` per spec |
 
 - Changes stayed within the requirements doc's Scope Guardrail: `Yes`
 
@@ -115,6 +116,8 @@ Where the implementation goes past, or differs from, the letter of the design. E
 8. **Row title lines.** Delegated rows have a title line only when it exists in the product: a remote run's title from its node. The Task summary lines are a Projects feature, and Projects is not on the phone (`mobileFeatureGates`).
 
 ## Known Risks
+
+- **CRR-001 residual risks, for API/E2E (not findings):** C-06, the poll lists runs while the bar keeps its last "Not reachable" until a check (as designed); C-04, a failed open whose screen had an earlier target can show that target for a moment before Back lands on the list.
 
 - **Review residual 1 (commit attribution): closed.** `mobileRunOpeningStore.begin` calls `selectionStore.invalidateSelectionIntent()`, so an earlier open cannot emit after a new tap. Tests: `stores/__tests__/mobileRunOpeningStore.spec.ts` "a new open ends the selection intent in flight", and `useMobileRunOpening.spec.ts` "an earlier open's late outcome does not end the newer open".
 - **Review residual 2 (a failed open leaves the list entry rewritten): covered by a test.** `useMobileRunOpening.spec.ts`: "a failed Org open fails the pending open and leaves the list entry rewritten with its keys".
@@ -182,12 +185,18 @@ The evidence files are in [evidence/](evidence/).
 | Check ID | Command Or Steps | Commit Tested | Environment | Code It Exercises | Behavior / Criteria IDs | Result | Evidence Files | Look For |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | IMP-01 | `pnpm -C autobyteus-web test:nuxt --run` (the full web unit and component suite) | `599002ecbf` | macOS, Node v22.23.1 | All of `autobyteus-web`. It includes the new phone specs and the desktop specs of every touched shared file. | REQ-001…009; AC-001…003, 005…009 (component level); review residuals 1, 2, 5 | Pass | `evidence/IMP-01-web-unit-tests.txt` | `Test Files  700 passed (700)`; `Tests  5190 passed \| 2 skipped (5192)` |
-| IMP-02 | `pnpm -C autobyteus-web typecheck` | `b2d7a084dd` | same | Nuxt app, Electron main, build scripts, cross-package tests | — | Pass | `evidence/IMP-02-web-typecheck.txt` | `[typecheck] production errors: 0; test-file errors: 96 in 41 files (baseline 96 in 41 files)`; `[typecheck] PASS` |
-| IMP-03 | `pnpm -C autobyteus-web guard:web-boundary`, `guard:localization-boundary`, `audit:localization-literals` | `599002ecbf` | same | Web boundary and localization rules | QR-002 (no filler) | Pass (exit 0 each) | `evidence/IMP-03-web-guards.txt` | `[guard:web-boundary] Passed.`; `[guard:localization-boundary] Passed.` |
+| IMP-02 | `pnpm -C autobyteus-web typecheck` | `f2816cc7c1` | same | Nuxt app, Electron main, build scripts, cross-package tests | — | Pass | `evidence/IMP-02-web-typecheck.txt` | `[typecheck] production errors: 0; test-file errors: 96 in 41 files (baseline 96 in 41 files)`; `[typecheck] PASS` |
+| IMP-03 | `pnpm -C autobyteus-web guard:web-boundary`, `guard:localization-boundary`, `audit:localization-literals` | `f2816cc7c1` | same | Web boundary and localization rules | QR-002 (no filler) | Pass (exit 0 each) | `evidence/IMP-03-web-guards.txt` | `[guard:web-boundary] Passed.`; `[guard:localization-boundary] Passed.` |
 | IMP-04 | Rendered self-check. A temporary, uncommitted preview page rendered each phone surface with seeded data on a Nuxt dev server whose backend was `127.0.0.1:9`; `/rest/health` was answered ok and `/graphql` with an error. Headless Chrome at 390×844 and 360×800 measured horizontal scroll and the controls under 44×44 CSS px. | `e0788fe987` | macOS, Chrome, Nuxt dev | `components/mobile/**` presentation: run list (default, expanded with the open row, node not reachable with the notice, empty), Opening…, run screen, ⋮ menu, Artifacts, Activity, Messages, Files, New run, Agent sheet, connection sheet | AC-005, QR-001, QR-004 (`100dvh`, safe area); VIS-001, 002, 005, 006, 010, 012, 015, 016, 019, 022, 024 | Pass, with one limitation: the shared composer's own buttons | `evidence/IMP-04-render/IMP-04-render-facts.txt` and 29 PNGs `IMP-04-<view>-<width>x<height>.png` | Every view: `scrollWidth` = `clientWidth` (no horizontal scroll); `smallTargets: []` except `run`/`menu`: `Upload files 28×28`, `Send message 36×36` (the shared composer) |
+| IMP-06 | `pnpm -C autobyteus-web test:nuxt --run components/mobile composables/mobile` (the phone's specs, with the three CRR-001 tests) | `f2816cc7c1` | same | `components/mobile/**`, `composables/mobile/**` | CR-001 (REQ-008, VIS-024), CR-002, CR-003 (QR-001 roles and names) | Pass | `evidence/IMP-06-phone-tests-crr001.txt` | `Tests  83 passed (83)`; the case "Retry after a failed first check reads again through the status check: the runs list, the bar says Connected, the banner goes" |
 | IMP-05 | `pnpm -C autobyteus-web test:nuxt --run stores/__tests__/agentTeamRunStore.spec.ts` | `b2d7a084dd` | same | The Team run store, after the removal of `useTeamRunRuntimeCatalogSync` | — | Pass | `evidence/IMP-05-team-store-spec.txt` | `Tests  28 passed (28)` |
 
-IMP-01, IMP-03 and IMP-04 stay valid at `b2d7a084dd`, by the impact rule:
+IR-002 rerun plan (`git diff --name-only b2d7a084dd f2816cc7c1`: `MobileRunList.vue`, `MobilePairedShell.vue`, `MobileBottomSheet.vue`, `MobileConnectionSheet.vue`, `useMobileWorkspaceFileExplorer.ts` and three phone specs):
+
+- **Rerun:** IMP-02 and IMP-03 (cheap; on `f2816cc7c1`); IMP-06 is new and covers every spec of the changed files: they are all under `components/mobile` and `composables/mobile`, and no file outside them imports the changed files.
+- **Still valid:** IMP-01 for everything outside the phone folders (nothing it exercises there changed); IMP-04, because the fixes change no rendered layout: Retry's button is the same, the sheet heading gains an `id`, and the Files error string is shorter.
+
+Earlier, IMP-01, IMP-03 and IMP-04 stayed valid at `b2d7a084dd`, by the impact rule:
 
 - `599002ecbf` changed no markup the render shows. The workspace items lost a `group` field that the controller already dropped.
 - `b2d7a084dd` removes a composable nothing imported, its spec and a stale mock; IMP-02 and IMP-05 ran on that tree.

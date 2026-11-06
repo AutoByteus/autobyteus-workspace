@@ -1,0 +1,10 @@
+# IMP-06 phone tests after CRR-001 (implementation engineer, autobyteus-277, IR-002)
+# Command: pnpm -C autobyteus-web test:nuxt --run components/mobile composables/mobile (and, verbose, the shell, connection sheet and run list specs)
+# Commit: f2816cc7c1 (run on its tree before the commit was made); environment: macOS, Node v22.23.1; date 2026-11-06T08:59Z
+# Excerpt:
+ Test Files  11 passed (11)
+      Tests  83 passed (83)
+ ✓ components/mobile/connection/__tests__/MobileConnectionSheet.spec.ts > MobileConnectionSheet > without peers the Peer nodes section is absent; Check connection and Unpair this phone are there 5ms
+ ✓ components/mobile/runList/__tests__/MobileRunList.spec.ts > MobileRunList > with no run listed it shows the read error state (VIS-021…023) 6ms
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts > MobileRemoteAccessShell > Retry after a failed first check reads again through the status check: the runs list, the bar says Connected, the banner goes 34ms
+      Tests  18 passed (18)
