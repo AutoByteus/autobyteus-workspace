@@ -111,6 +111,12 @@ ANDROID_HOME="$HOME/Library/Android/sdk" ./gradlew :app:testDebugUnitTest
 ANDROID_HOME="$HOME/Library/Android/sdk" ./gradlew :app:assembleDebug :app:compileDebugAndroidTestKotlin
 ```
 
+The instrumented tests (`app/src/androidTest`: `SystemBarInsetsTest`, `WebShellWindowInsetsTest`, `AutoByteusMobileShellSmokeTest`, `MainActivityConfigurationChangeTest`) run on a running emulator or a connected device. No CI job runs them:
+
+```bash
+ANDROID_HOME="$HOME/Library/Android/sdk" ./gradlew :app:connectedDebugAndroidTest
+```
+
 ## Real-device validation handoff
 
 API/E2E owns live validation. Use `scripts/android-live-smoke.sh` to install, clear app data, launch, and collect initial evidence on a USB-connected Android phone. Then complete the app-owned QR scan, scan-cancel/permission, pairing, chat attachment upload, restore, stale-mobile-bundle, and unreachable-node checklist in `../docs/android_mobile_access.md`.
