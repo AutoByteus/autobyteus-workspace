@@ -83,6 +83,8 @@ refresh) before running anything:
    (its own files or the code it exercises changed), with the reason. Add cases for new
    behavior. Find what a test exercises by reading what it drives. For server E2E,
    `vitest --changed` does not narrow anything, because every test starts the whole server.
+   Tests under `autobyteus-server-ts/tests/architecture/` read source text by path, so moving,
+   renaming or splitting a source file marks them **Rerun**, even when no behavior changed.
 4. Mark everything **Rerun** when a shared foundation changed: dependencies or the
    lockfile, the database schema or migrations, `autobyteus-ts`, the contract packages,
    the test harness or fixtures, or build configuration. A large diff without such a
