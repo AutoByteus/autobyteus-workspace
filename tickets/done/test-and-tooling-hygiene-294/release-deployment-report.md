@@ -244,3 +244,42 @@
 - Proposed guide fix not yet agreed by the user: one line in Checks Before Tagging, saying that when a change touches the server or the web files the server Docker image builds (`Dockerfile.monorepo`: `build:mobile-web`), build that image locally before tagging, because `release-server-docker.yml` has no build-only mode.
 - Successful terminal package eligible for return: `Yes`.
 - Terminal package sent to the Solution Designer: `Yes`, `Delivery Completed`, after the push of this record.
+
+## Release story moved from RELEASE.md (autobyteus-401, 2026-11-06)
+
+This story was RELEASE.md's case study until the project documents kept rules only; the rules it taught stay in [RELEASE.md](../../../RELEASE.md).
+
+### `v1.5.9-beta.14`: a new build step failed only on the release runners (2026-10-28)
+
+- **What happened:**
+  - A ticket added the web type check (`pnpm typecheck`) to every
+    `build:electron*` chain, before `prepare-server`.
+  - The check reads the types of `@autobyteus/application-sdk-contracts` from
+    its `dist/`, which the chain builds only inside `prepare-server`.
+  - On the release runners, which start from `pnpm install`, the check found
+    no types (`TS2307: Cannot find module …`) and stopped all five desktop
+    builds.
+  - Android, iOS and Docker published, so the GitHub release had 2 of 17
+    assets: a partial release.
+- **Why every check passed before the tag:**
+  - Every local run had the shared packages built already, including two
+    clean clones that followed TESTING.md's install order.
+  - No run used the release job's order (install, then the build chain), and
+    no build-only release run was made.
+- **Why it was seen late:**
+  - The delivery watched the four runs one after another, starting with
+    Docker, so the desktop failure at minute 5 went unseen for about 30
+    minutes.
+  - The release had been reported as released while the runs were still
+    going. The user found the failure on the Actions page.
+- **Also:** the delivery read this guide from the main checkout, which was
+  behind and lacked the [Secret Gate](../../../RELEASE.md#secret-gate). The gate was run late; it
+  passed.
+- **Rules added from it:**
+  - a build-only release run before every tag (removed on 2026-11-06; see
+    [its record](../beta-release-v1.5.12-beta.2/release-deployment-report.md));
+  - watch the four runs together, and report a release only when it is
+    complete ([Watching The Rollout](../../../RELEASE.md#watching-the-rollout));
+  - read this guide from `origin/personal`.
+- **Recovery:** the tag stays. The fix goes to `personal` and ships as the
+  next beta.

@@ -96,3 +96,29 @@ The finalize branch held three local doc commits (`f9adfbd538`, `fb40d10ced`, `4
 - Guide changes: reconciled and on `personal`.
 - Cleanup: `Completed` after the push.
 - Terminal package to the Solution Designer: `Delivery Completed`.
+
+## Release story moved from RELEASE.md (autobyteus-401, 2026-11-06)
+
+This story was RELEASE.md's case study until the project documents kept rules only; the rules it taught stay in [RELEASE.md](../../../RELEASE.md).
+
+### The per-tag build-only run moved to the ticket (2026-11-06)
+
+- **Why:** both incidents, `v1.5.9-beta.14` and `v1.5.11-beta.11`, were one class, a build or gate that reads
+  output a fresh runner has not built, and a Mac can reproduce that class from
+  a fresh start. Running every release's desktop build twice cost about 30
+  minutes per tag and caught the problem at the last stage. Meanwhile the runs
+  it added mostly met platform failures (an Apple stapling network error, a CDN
+  503, unacquired macOS runners), which a rerun fixes in the real release too.
+- **How the rule came about:** the delivery noticed `v1.5.9-beta.14` at release
+  and patched the release guide, the document its role owns, concluding that
+  "local builds cannot replace this run". The cause was a local check that
+  pre-built the packages; the fix belonged to the testing guideline.
+- **What replaced it, decided by the user:**
+  - API/E2E's [Fresh-start build](../../../TESTING.md#fresh-start-build) for every
+    change that touches a build input;
+  - the build-only release run on the ticket branch only for what a Mac cannot
+    reproduce and for build-step or gate changes
+    ([Build-only release run](../../../RELEASE.md#build-only-release-run));
+  - triage of every pipeline failure ([Recovery](../../../RELEASE.md#recovery)).
+- **First releases under it:** releases tagged before this change reached
+  `personal` (up to `v1.5.12-beta.3`) still followed the old rule.
