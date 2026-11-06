@@ -14,17 +14,18 @@
 - Relevant Architecture Review Revision IDs: ARCH-REV-003
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001, IR-002
+- Relevant Implementation Revision IDs: IR-001, IR-002, IR-003
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-002`
-- Current Review Round: 2
-- Review Scope: `Targeted Delta Review` (round 1 was a `Full Review`)
+- Current Code Review Revision ID: `CRR-005`
+- Current Review Round: 3
+- Review Scope: `Targeted Delta Review` (round 3; round 2 was also a targeted delta review, round 1 a `Full Review`)
 - Review Scope Evidence (round >1): delta `9344f4b9b5..fddcff0f13` touches only CR-001's file and one new file holding the code moved out of it (`general-process-run-supervisor-input.ts`), plus ticket documents; no data-flow spine, shared interface or data shape changed; no fix layered on an earlier fix
-- Trigger: IR-002, the Local Fix for CR-001
-- Prior Review Round Reviewed: 1 (CRR-001, Fail, CR-001)
-- Latest Authoritative Round: 2
+- Trigger: round 2, IR-002 (the Local Fix for CR-001); round 3, IR-003 (delivery-stage Local Fix for DR-001 / DEL-02)
+- Prior Review Round Reviewed: 2 (CRR-002, Pass)
+- Latest Authoritative Round: 3
+- Round 3 scope evidence: delta `5a269806e4..a9d85c0e2d` (`ee6739fe7f` test, `14fe5959bf` TESTING.md, `a9d85c0e2d` ticket docs). No product source changed (`git diff --name-only` over `autobyteus-server-ts/src`, `autobyteus-ts/src`, `autobyteus-web` is empty).
 - Coverage Investigation / Execution Coverage Report / API/E2E Revision Record: N/A (implementation review)
-- Delivery Revision Record: N/A
+- Delivery Revision Record: `delivery-revision-record.md` (DR-001: DEL-02 failed at `agent-provider-composition-boundaries.test.ts:700`, introduced by `cb132711f6`)
 - Failing Scenario IDs / Commands / Evidence: N/A
 
 Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation`, branch
@@ -45,6 +46,8 @@ Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-
 - Files / areas reviewed: the 145 non-generated, non-`dist` files in the range; generated `dist/` and `generated/graphql.ts` checked only by the recorded typecheck/architecture tests (IMP-01/02/07).
 - Explicit exclusions: documentation prose beyond the docs-impact check; contract `dist/` contents.
 - Round 2: the moved block (`GeneralProcessRunSupervisorInput`, `requireGeneralProcessRunSupervisorInput`) was diffed against its IR-001 text: identical apart from two added doc comments and `export` on the validator. No other file imports the type. IMP-09 (supervisor ownership, standalone host lifecycle, tracked imports and run manager integration tests: 39 passed; typecheck PASS; scripted studio E2Es: 15 passed) read, not rerun. All other round-1 evidence is carried forward unchanged: the delta touches no other source file.
+- Round 3: the architecture test now reads the field from `general-process-run-supervisor-input.ts`, keeps the no-app-config rule on both files, and checks that the supervisor uses `input.contextFilePathEnvironment` (present twice). So the rule keeps its point after the move. All four tests that name the supervisor file by path (two architecture tests, the supervisor ownership test, the standalone host lifecycle test) ran in IMP-10's full server unit suite: 932 passed, 5 skipped. Typecheck PASS with the baseline unchanged. Read, not rerun. The TESTING.md addition (moving, renaming or splitting a source file marks `tests/architecture/` Rerun) is the right stage check.
+- Review gap (round 2, CRR-002): I confirmed the CR-001 move by grepping for the type name and accepted IMP-09's narrowed rerun. The architecture test reads the supervisor's source text by path, so a search for the file path in `tests/` would have found it. Detectable in source review, and missed there. The new TESTING.md rule now covers this check.
 - Checks: the handoff's recorded checks (IMP-01…IMP-08) were not rerun; no reviewed code changed after them. Evidence logs spot-checked (`IMP-02`: 930 files passed; `IMP-08`: 5 passed, `KEY_SCAN` line present).
 
 ## Upstream Behavior And Production-Path Basis Confirmation
@@ -218,4 +221,4 @@ No open findings. CR-001 is resolved in round 2 (see `code-review-revision-recor
 - Score Summary: 9.4 average; every category ≥ 9.3
 - Failure Origin: N/A
 - Recommended Recipient: API/E2E engineer
-- Notes: round 2, a targeted delta review, verified the CR-001 fix. The round-1 full review stands for everything else. AC-006 wording remains a residual risk for the Solution Designer.
+- Notes: round 3 verified IR-003 (test-only DEL-02 fix plus a TESTING.md stage rule; no product source change). Round 2 verified the CR-001 fix; the round-1 full review stands for everything else. AC-006 wording remains a residual risk for the Solution Designer.

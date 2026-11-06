@@ -8,6 +8,7 @@
 | CRR-002 | `code-review-report.md` | Implementation Review, round 2 / IR-002 (CR-001 fix) | Fail (Local Fix) | Pass | CR-001 |
 | CRR-003 | `api-e2e-test-review-report.md` | Post-API/E2E test-code review, round 1 / API-REV-001 | N/A (first test review) | Fail (Local Fix, API/E2E) | TR-001 |
 | CRR-004 | `api-e2e-test-review-report.md` | Post-API/E2E test-code review, round 2 / API-REV-002 (TR-001 fix) | Fail (Local Fix, API/E2E) | Pass | TR-001 |
+| CRR-005 | `code-review-report.md` | Implementation Review, round 3 / IR-003 (delivery-stage fix, DR-001 DEL-02) | Pass (CRR-002) | Pass | — |
 
 ## Revision Entries
 
@@ -114,3 +115,29 @@ None.
 - Material score or classification changes: N/A
 - Recommended recipient: delivery engineer
 - Remaining risks or uncertainty: requirement-basis notes for the Solution Designer: AC-006 `{{…}}` precondition; AC-009 key-removed trigger has no product surface. FU-001 and FU-002 are in `follow-ups.md`.
+
+### CRR-005 — Delivery-stage fix of the architecture test (IR-003, DR-001)
+
+- Canonical review report updated: `code-review-report.md`
+- Review entry point and round: Implementation Review, round 3
+- Review scope: `Targeted Delta Review`. The delta `5a269806e4..a9d85c0e2d` is one architecture test, one TESTING.md paragraph and ticket documents, with no product source change.
+- Triggering role, report path, and finding or scenario IDs: delivery engineer, `delivery-revision-record.md` (DR-001, DEL-02); implementation engineer, `implementation-handoff.md` (IR-003)
+- Relevant solution revision IDs: SR-004
+- Relevant architecture-review revision IDs: ARCH-REV-003
+- Relevant implementation revision IDs: IR-003
+- Relevant API/E2E revision IDs: API-REV-002
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: Pass (CRR-002)
+- Current authoritative result: Pass
+- What changed in the review result and why: `agent-provider-composition-boundaries.test.ts` follows the CR-001 move. It reads the input file for the field, keeps the no-app-config rule on both files, and checks that the supervisor uses `input.contextFilePathEnvironment`. IMP-10: full server unit suite 932 passed; typecheck PASS, baseline unchanged.
+- Supported product scenario / material-premise basis changes: none
+- Review gap recorded: the CRR-002 delta review missed this source-text test. I searched for the type name instead of the file path, and accepted IMP-09's narrowed rerun. The failure was detectable in source review. TESTING.md now marks `tests/architecture/` Rerun on any file move, rename or split.
+
+#### Prior Finding Resolution
+
+None open. CR-001 remains resolved; its fix needed the test follow-up recorded above.
+
+- New or remaining finding IDs: None
+- Material score or classification changes: none (scores as in CRR-002)
+- Recommended recipient: API/E2E engineer, per the pass rule (product unchanged since `fddcff0f13`; one architecture test changed). Delivery is waiting to rerun DEL-02 and finalize.
+- Remaining risks or uncertainty: unchanged from CRR-004
