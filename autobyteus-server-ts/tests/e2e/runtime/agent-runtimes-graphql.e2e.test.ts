@@ -1,7 +1,7 @@
 /**
  * Settings → Agent Runtimes through the real GraphQL API (ticket runtime-lifecycle-review).
  *
- * Purpose: the page's server contract on a test-owned studio server reached over HTTP — the four rows, independent
+ * Purpose: the page's server contract on a test-owned studio server reached over HTTP — the five rows, independent
  * per-runtime checks (one vendor source failing, one slow), Update (success with progress and the kept re-check,
  * exit 0 without a newer version, failure with Try again), Sign in (success, Cancel, time-out with a CLI that
  * ignores SIGTERM), refusals with their codes, Codex with no OpenAI sign-in required (DEC-008), a runtime installed
@@ -48,6 +48,9 @@ const fake = await vi.hoisted(async () => {
   const { prepareFakeRuntimes } = await import("../helpers/agent-runtimes-e2e-harness.js");
   // Grok starts "not installed": its command points at a file that does not exist yet.
   const prepared = prepareFakeRuntimes({ label: "agent-runtimes-e2e", grokInstalled: false });
+  // DeepSeek Harness (the fifth row) is not installed here, whatever `dsh` this machine has: its own suites cover it.
+  const previousDsh = process.env.DEEPSEEK_HARNESS_COMMAND;
+  process.env.DEEPSEEK_HARNESS_COMMAND = `${prepared.root}/not-installed/dsh`;
   // The server reads its sign-in browser fact once from its environment: give it a browser, as a Docker node has.
   const previousBrowser = process.env.BROWSER;
   process.env.BROWSER = "/usr/local/bin/open-vnc-browser-url.sh";
@@ -55,6 +58,7 @@ const fake = await vi.hoisted(async () => {
     ...prepared,
     dispose: () => {
       if (previousBrowser === undefined) delete process.env.BROWSER; else process.env.BROWSER = previousBrowser;
+      if (previousDsh === undefined) delete process.env.DEEPSEEK_HARNESS_COMMAND; else process.env.DEEPSEEK_HARNESS_COMMAND = previousDsh;
       prepared.dispose();
     },
   };
@@ -64,6 +68,7 @@ const CODEX = "codex_app_server";
 const CLAUDE = "claude_agent_sdk";
 const AGY = "antigravity_cli";
 const GROK = "grok_build";
+const DSH = "deepseek_harness";
 const LOGGING: LoggingConfig = {
   pinoLogLevel: "trace", httpAccessLogMode: "all", includeNoisyHttpAccessRoutes: true, scopedLogLevelOverrides: [],
 } as LoggingConfig;
@@ -120,9 +125,9 @@ describe("Settings → Agent Runtimes GraphQL e2e (real studio server, scripted 
     fake.dispose();
   }, 60_000);
 
-  it("AR-01 lists the four runtimes and checks each on its own: one source failing, one slow, one not installed (AC-001, AC-002, AC-005, AC-006, AC-009, QR-002)", async () => {
+  it("AR-01 lists the five runtimes and checks each on its own: one source failing, one slow, one not installed (AC-001, AC-002, AC-005, AC-006, AC-009, QR-002)", async () => {
     expect(realTimeout.value, "the production operation time-out is 10 minutes (DEC-007)").toBe(10 * 60_000);
-    expect(await client.order(), "page order").toEqual([CODEX, CLAUDE, AGY, GROK]);
+    expect(await client.order(), "page order").toEqual([CODEX, CLAUDE, AGY, GROK, DSH]);
     const before = await client.rows();
     expect(before[CODEX]!.updates.state, "nothing is checked before the page asks").toBe("NOT_CHECKED");
     expect(before[CODEX]!.checkedAt).toBeNull();
@@ -136,6 +141,7 @@ describe("Settings → Agent Runtimes GraphQL e2e (real studio server, scripted 
     expect(settled[CLAUDE]!.installedVersion).toBe("2.1.200");
     expect(settled[AGY]!.installedVersion).toBe("1.4.3");
     expect(settled[GROK]).toMatchObject({ installed: false, installedVersion: null });
+    expect(settled[DSH]).toMatchObject({ installed: false, installedVersion: null, updates: { state: "NOT_CHECKED", latestVersion: null } });
 
     // Codex and Claude finish while the Antigravity source is still held back.
     const codex = await waitRow(CODEX, "checked", (r) => r.updates.state !== "CHECKING" && r.account.state !== "CHECKING");
@@ -353,7 +359,7 @@ describe("Settings → Agent Runtimes GraphQL e2e (real studio server, scripted 
     };
     const first = await read();
     expect(first.agentRuntimeSignInBrowserAvailable).toBe(true);
-    expect(first.agentRuntimes.map((r) => r.runtimeKind)).toEqual([CODEX, CLAUDE, AGY, GROK]);
+    expect(first.agentRuntimes.map((r) => r.runtimeKind)).toEqual([CODEX, CLAUDE, AGY, GROK, DSH]);
     // A node-level field: no row carries it.
     expect(first.agentRuntimes.every((r) => !("agentRuntimeSignInBrowserAvailable" in r))).toBe(true);
     // The fact is fixed for the server's lifetime: a running sign-in and later reads give the same answer.
