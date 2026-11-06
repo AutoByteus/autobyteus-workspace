@@ -1,7 +1,7 @@
 # Evidence — S3: Node desktop on the phone (autobyteus-407), implementation IR-001
 
 Date: 2026-11-06. Branch `codex/node-desktop-on-phone`, base `origin/personal` @ `e427a0c9cf`.
-Commits: `4f11061ecf` (implementation), `d84d2d0fdd` (keyboard bridge caret fix found by IMP-S3-16).
+Commits: `4f11061ecf` (implementation), `d84d2d0fdd` (keyboard bridge caret fix found by IMP-S3-16), `0baf15a981` (CR-001, IR-002).
 
 Environment for device checks (all test-owned; no real node, no user phone, nothing against `autobyteus-server-0/1/2`):
 
@@ -24,4 +24,6 @@ Environment for device checks (all test-owned; no real node, no user phone, noth
 | IMP-S3-19 | AC-019 on the emulator: Home → `stream ended mode=control … reason=viewer-closed`, upstream 0, same pid; return → "Connected · View only", 1 upstream | 4f11061ecf | `node-desktop-log-lines.txt` (lines 2–3) |
 | IMP-S3-20 | AC-012 on the emulator: revoke during a Control stream → closed after 2.3 s `reason=node-closed close=REMOTE_ACCESS_DEVICE_REVOKED`, upstream 0, "This viewer is not allowed on this node"; reopening the view: socket upgraded and closed after 13 ms, still "not allowed", upstream 0 | d84d2d0fdd | `revoke-check.sh`, `ac012-revoke.txt`, `ac012-reconnect.txt`, `IMP-S3-18-revoked-reopen-not-allowed.png` |
 | IMP-S3-21 | AC-018: headless Chrome against the test node as `abx407-node.lan` (host-resolver-rule to 127.0.0.1; a trusted private HTTP host for pairing), 1280×800 | d84d2d0fdd | `browser-probe.mjs`, `AC-018/AC018-results.json`, `AC-018/*.png` |
+| IMP-S3-30 | IR-002: `pnpm -C autobyteus-web exec vitest run components/mobile composables components/workspace/tools utils localization` | 0baf15a981 | `IMP-S3-30-cr001-web-affected-specs.log` (178 files, 1182 tests) |
+| IMP-S3-31 | IR-002: `pnpm -C autobyteus-web typecheck` | 0baf15a981 | `IMP-S3-31-cr001-web-typecheck.txt` |
 | IMP-S3-22 | Node log scan: `access_token=` values, `mra_` credentials | d84d2d0fdd | `log-scan.txt` (0 everywhere), `node-desktop-log-lines.txt` |
