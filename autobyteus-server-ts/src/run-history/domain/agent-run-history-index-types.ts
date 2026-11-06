@@ -18,6 +18,8 @@ export interface RunHistoryItem {
   shouldConnectStream: boolean;
   statusSource: string;
   createdAt: string;
+  /** Newest memory file of the run and its delegated copies; `createdAt` before any (`RunLastActivityReader`). */
+  lastActivityAt: string;
   archivedAt: string | null;
   terminatedAt: string | null;
   /** The run hosts delegated copies (a stored or active Agent root package exists). */

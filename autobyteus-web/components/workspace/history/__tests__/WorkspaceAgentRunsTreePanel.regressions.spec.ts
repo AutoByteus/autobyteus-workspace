@@ -172,8 +172,8 @@ const {
       fetchTree: vi.fn().mockResolvedValue(undefined),
       loadWorkspaceCatalogForNavigation: vi.fn().mockResolvedValue(undefined),
       refreshTreeQuietly: vi.fn().mockResolvedValue(undefined),
+      setHistoryWindow: vi.fn(),
       fetchWorkspaceHistory: vi.fn().mockResolvedValue(undefined),
-      refreshWorkspaceHistoryQuietly: vi.fn().mockResolvedValue(undefined),
       pruneWorkspace: vi.fn(),
       getTreeNodes: vi.fn(() => state.nodes.map(normalizeWorkspaceNode)),
       getTeamNodes: vi.fn((workspaceRootPath?: string) => {
@@ -205,7 +205,6 @@ const {
       getTeamMemberNavigationAncestorRowKeys: vi.fn(() => []),
       formatRelativeTime: vi.fn((iso: string) => (iso.includes('01:00') ? 'now' : '4h')),
       selectTreeRun: vi.fn(),
-      createWorkspace: vi.fn(async (rootPath: string) => rootPath),
       deleteRun: vi.fn().mockResolvedValue(true),
       deleteTeamRun: vi.fn().mockResolvedValue(true),
     },
@@ -217,7 +216,6 @@ const {
         },
       },
       fetchAllWorkspaces: vi.fn().mockResolvedValue(undefined),
-      removeWorkspace: vi.fn().mockResolvedValue({ workspaceRootPath: '/ws/a', message: 'removed' }),
     },
     selectionStoreMock: {
       beginSelectionIntent: vi.fn(),
@@ -293,10 +291,6 @@ vi.mock('~/stores/agentTeamDefinitionStore', () => ({
 
 vi.mock('~/stores/windowNodeContextStore', () => ({
   useWindowNodeContextStore: () => windowNodeContextStoreMock,
-}));
-
-vi.mock('~/composables/useNativeFolderDialog', () => ({
-  pickFolderPath: vi.fn().mockResolvedValue(null),
 }));
 
 vi.mock('~/composables/useToasts', () => ({

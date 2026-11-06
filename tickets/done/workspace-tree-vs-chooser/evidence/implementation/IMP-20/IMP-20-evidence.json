@@ -1,0 +1,183 @@
+{
+  "startedAt": "2026-11-05T20:20:43.866Z",
+  "cases": {
+    "VIS-015": {
+      "title": "Projects view with no Projects on the node: text-only empty state",
+      "result": "Pass",
+      "ms": 4737,
+      "details": {
+        "text": "No Projects yet\n\nCreate a Project on the Projects page to run agents and teams for it and follow their work here."
+      }
+    },
+    "VIS-014": {
+      "title": "Workspaces view with folders but no run: text-only empty state; the chooser lists every folder",
+      "result": "Pass",
+      "ms": 2925,
+      "details": {
+        "text": "No runs in any folder yet\n\nA folder is listed here once it has a run. Start one with Chat and choose its folder."
+      }
+    },
+    "VIS-016": {
+      "title": "Projects exist but none has a run: its own text-only state",
+      "result": "Pass",
+      "ms": 4720,
+      "details": {
+        "text": "No Project has a run yet\n\nA Project is listed here once it has a run. Your Projects are on the Projects page."
+      }
+    },
+    "VIS-001/002": {
+      "title": "Workspaces view (default): only folders with runs, no remove button; the View menu",
+      "result": "Pass",
+      "ms": 3898,
+      "details": {
+        "roots": [
+          "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/folders/client-portal",
+          "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/folders/prototype-workspace"
+        ],
+        "items": [
+          [
+            "Runs",
+            "false"
+          ],
+          [
+            "Workspaces",
+            "true"
+          ],
+          [
+            "Projects",
+            "false"
+          ]
+        ],
+        "menuWidth": 224
+      }
+    },
+    "VIS-003/004": {
+      "title": "Runs view: every run newest first; menu open on Runs",
+      "result": "Pass",
+      "ms": 3902,
+      "details": {
+        "rows": 3
+      }
+    },
+    "VIS-005/006": {
+      "title": "Projects view: only the Project with a run; menu open on Projects",
+      "result": "Pass",
+      "ms": 4751,
+      "details": {
+        "names": [
+          "Website Launch"
+        ]
+      }
+    },
+    "VIS-011": {
+      "title": "Keyboard focus ring on the View button; arrows, Escape returns focus",
+      "result": "Pass",
+      "ms": 2911,
+      "details": {
+        "ring": "rgb(255, 255, 255) 0px 0px 0px 0px, rgb(99, 102, 241) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+        "focused": "run-section-view-workspaces"
+      }
+    },
+    "VIS-012": {
+      "title": "zh-CN: the Runs view and its title",
+      "result": "Pass",
+      "ms": 4762,
+      "details": {
+        "title": "运行",
+        "items": [
+          "运行",
+          "工作区",
+          "项目"
+        ]
+      }
+    },
+    "VIS-013": {
+      "title": "600x800: the run section in the left drawer with the same menu",
+      "result": "Pass",
+      "ms": 4482,
+      "details": {
+        "stripLabel": "Workspaces",
+        "items": 3
+      }
+    },
+    "VIS-007/008/009": {
+      "title": "Chat chooser: every folder; Remove on hover; confirmation; removed from every list",
+      "result": "Pass",
+      "ms": 3570,
+      "details": {
+        "confirmation": "Remove folder\n\nRemove docs-site?\n\nIt will no longer be offered when you choose a folder, and its runs will not be listed in the left panel. Files, memories, artifacts, and run history are not deleted. Add the folder again to use it.\n\n/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/folders/docs-site\n\nCancel\nRemove",
+        "removeButton": {
+          "x": 853.5,
+          "y": 449.5,
+          "width": 28,
+          "height": 28
+        }
+      }
+    },
+    "VIS-010": {
+      "title": "Remove refused while a run is running in the folder; nothing changes",
+      "result": "Pass",
+      "ms": 2980,
+      "details": {
+        "refused": true
+      }
+    },
+    "VIS-017": {
+      "title": "A folder with only a draft is not listed; it appears with the first sent message",
+      "result": "Pass",
+      "ms": 5355,
+      "details": {
+        "beforeRoots": [
+          "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/folders/client-portal",
+          "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/folders/prototype-workspace"
+        ],
+        "afterRoots": [
+          "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/folders/client-portal",
+          "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/folders/design-notes",
+          "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/folders/prototype-workspace"
+        ]
+      }
+    }
+  },
+  "processes": [
+    {
+      "name": "backend",
+      "pid": 77297
+    },
+    {
+      "name": "frontend",
+      "pid": 77321
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 77321,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 77297,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe"
+    }
+  ],
+  "stack": {
+    "backendUrl": "http://127.0.0.1:56127",
+    "frontendUrl": "http://127.0.0.1:56128",
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe"
+  },
+  "folders": {
+    "ids": {
+      "client-portal": "agent_ws_80340b753bb3dd9b2791dc9b28a5f79ece5bedfd8af2c44473bf71aa40355ce2",
+      "docs-site": "agent_ws_76108a52d1ae84478f900368279d609026b8e01164890f1f40734003e1762989",
+      "design-notes": "agent_ws_c9da68e74dd6c1fb6a1b901f58b135db6c245aaeaaf4f0af5a25c94b9d9a69e9",
+      "prototype-workspace": "agent_ws_a0c9a2f0b4d27dac25439324f7e918eb31aeaf9e64058887c614f19e54545fd6"
+    },
+    "client-portal": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/folders/client-portal",
+    "docs-site": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/folders/docs-site",
+    "design-notes": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/folders/design-notes",
+    "prototype-workspace": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imp-20-wtv-YesJRe/folders/prototype-workspace"
+  },
+  "completedAt": "2026-11-05T20:21:54.432Z"
+}

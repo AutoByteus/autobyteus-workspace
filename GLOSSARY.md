@@ -55,6 +55,23 @@ delegated run, …) are defined in the
   (for example a task agent's run lifted beside its parent's other children).
   It is not a peer.
 
+## Run Section
+
+- **Run section:** the left panel's area under the page list that shows your
+  runs. Its header's "View" menu chooses the view.
+- **View** (of the run section, `RunSectionMode`): **Runs** (every top-level
+  run, newest first by last activity), **Workspaces** (by folder) or **Projects**
+  (by Project). A view only shows; it holds no add or remove action.
+- **Listed run:** a run a view shows: a non-archived Agent, Team or Org run of
+  any status, a prepared or just-started run included; not an unsent New chat
+  draft, nor an internal agent's run. The Workspaces and Projects views list a
+  folder or Project only while it has a listed run.
+- **Last activity** (`lastActivityAt`): when a run was last active, its
+  delegated work included: the newest memory file of the run and of every agent
+  its tree locates; its creation time before any.
+- **Remove** (a folder): unregister it in the chat's folder chooser; it leaves
+  every chooser and every view. Files, memories and run history stay.
+
 ## Memory
 
 - **Memory** (of a run): what a run keeps in its own folder: raw traces,

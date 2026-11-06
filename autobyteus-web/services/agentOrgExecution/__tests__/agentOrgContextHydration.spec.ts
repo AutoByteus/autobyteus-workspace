@@ -35,7 +35,7 @@ const liveHistoryRun = (view: AgentOrgExecutionViewDto): AgentOrgRunHistoryItem 
   stableKey: 'agent_org:org-run',
   rootSubjectKind: 'agent_org',
   rootRunId: 'org-run',
-  createdAt: view.execution_tree.createdAt,
+  createdAt: view.execution_tree.createdAt, lastActivityAt: view.execution_tree.createdAt,
   archivedAt: null,
   isActive: true,
   summary: 'Restored Org',

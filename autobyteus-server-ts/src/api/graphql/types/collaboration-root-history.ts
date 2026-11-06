@@ -7,6 +7,8 @@ class AgentTeamRootHistoryObject {
   @Field(() => String) root_subject_kind!: "agent_team";
   @Field(() => String) root_run_id!: string;
   @Field(() => String) created_at!: string;
+  /** Newest memory file of any agent of the run; `created_at` before any (workspace-tree-vs-chooser DS-005). */
+  @Field(() => String) last_activity_at!: string;
   @Field(() => String, { nullable: true }) archived_at!: string | null;
   @Field(() => Boolean) is_active!: boolean;
   @Field(() => String) summary!: string;
@@ -18,6 +20,8 @@ export class AgentOrgRootHistoryObject {
   @Field(() => String) root_subject_kind!: "agent_org";
   @Field(() => String) root_run_id!: string;
   @Field(() => String) created_at!: string;
+  /** Newest memory file of any agent of the run; `created_at` before any (workspace-tree-vs-chooser DS-005). */
+  @Field(() => String) last_activity_at!: string;
   @Field(() => String, { nullable: true }) archived_at!: string | null;
   @Field(() => Boolean) is_active!: boolean;
   @Field(() => String) summary!: string;

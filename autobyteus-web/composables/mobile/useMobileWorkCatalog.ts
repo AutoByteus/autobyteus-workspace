@@ -311,7 +311,9 @@ export function useMobileWorkCatalog() {
           break;
         case 'recent':
         default:
-          await runHistoryStore.fetchTree(5);
+          // The phone reads its own window (DS-002); the desktop run section sets its window per view.
+          runHistoryStore.setHistoryWindow(5);
+          await runHistoryStore.fetchTree();
           break;
       }
     } catch (cause) {

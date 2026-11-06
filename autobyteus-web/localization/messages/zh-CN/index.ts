@@ -38,6 +38,7 @@ import toolsLocalMessages from './tools';
 import generatedWorkspaceMessages from './workspace.generated';
 import workspaceMessages from './workspace';
 import runSettingsMessages from './runSettings';
+import workspaceFolderMessages from './workspaceFolders';
 import agentPackageDefinitionsMessages from './agentPackageDefinitions';
 import type { TranslationCatalog } from '../../runtime/types';
 
@@ -82,6 +83,7 @@ const zhCnMessages: TranslationCatalog = {
   ...generatedWorkspaceMessages,
   ...workspaceMessages,
   ...runSettingsMessages,
+  ...workspaceFolderMessages,
   ...agentPackageDefinitionsMessages,
 };
 

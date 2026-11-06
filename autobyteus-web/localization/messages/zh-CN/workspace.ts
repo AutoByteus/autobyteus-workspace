@@ -86,7 +86,6 @@ const messages = {
   "workspace.agentOrg.history.collapseRun": "折叠 {{name}} 下的成员",
   "workspace.agentOrg.history.executionHierarchy": "{{name}} 执行层级",
   "workspace.agentOrg.history.empty": "暂无智能体组织运行历史记录。",
-  "workspace.agentOrg.history.noWorkspace": "无工作区",
   "workspace.agentOrg.history.relativeNow": "刚刚",
   "workspace.agentOrg.history.relativeMinutes": "{{count}} 分钟",
   "workspace.agentOrg.history.relativeHours": "{{count}} 小时",

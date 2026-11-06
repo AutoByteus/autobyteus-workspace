@@ -1,0 +1,7 @@
+# Clean-clone run of codex/workspace-tree-vs-chooser @ 6ec6e2d603 (/tmp/ab385-clone); full log 1341 bytes, trimmed to summaries, skips and failures.
+WVC-001 Pass AC-012/VIS-017/DEC-010: a folder is listed only while it has a listed run (Team-only and Org-only folders listed; a draft is not; the first message lists it; archiving its last run unlists it); the chooser offers every folder
+WVC-002 Pass AC-002/AC-005/CR-001: Remove in the chooser: the chosen folder with stopped Agent, Team and Org runs leaves the chooser and the Workspaces view; the chip falls back to Temp; its runs and files stay; a folder with a running run is refused and unchanged
+WVC-003 Pass REQ-008/AC-009/AC-011, DS-002/DS-007: Runs → Workspaces → Runs with 9 runs of one agent: windows null/6/null; Show older (N) counts every run; the tree shows the newest 6; nothing missing after the round trip; the view survives a reload; Archive all older is all-or-nothing
+WVC-004 Pass DS-002/design Risks: the desktop Runs view reads with null while the paired phone reads with 5
+Summary: 4 Pass, 0 Fail
+exit=0

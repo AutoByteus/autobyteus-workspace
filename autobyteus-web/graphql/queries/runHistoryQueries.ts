@@ -12,6 +12,7 @@ export const ListWorkspaceRunHistory = gql`
           runId
           summary
           createdAt
+          lastActivityAt
           archivedAt
           terminatedAt
           status
@@ -32,6 +33,7 @@ export const ListWorkspaceRunHistory = gql`
           workspaceRootPath
           summary
           createdAt
+          lastActivityAt
           archivedAt
           terminatedAt
           isActive
@@ -63,6 +65,7 @@ export const GetWorkspaceRunHistory = gql`
           runId
           summary
           createdAt
+          lastActivityAt
           archivedAt
           terminatedAt
           status
@@ -83,6 +86,7 @@ export const GetWorkspaceRunHistory = gql`
           workspaceRootPath
           summary
           createdAt
+          lastActivityAt
           archivedAt
           terminatedAt
           isActive

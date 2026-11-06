@@ -283,7 +283,8 @@ const shot = (page, name) => page.screenshot({ path: path.join(outputDir, `${nam
 /** Opens a root's run in the Workspaces tree. `requireTaskTree: false` when an Agent run may have no task rows (no tree). */
 const openRoot = async (page, root, names, { requireTaskTree = true } = {}) => {
   await page.goto(`${stack.frontendUrl}/workspace`, { waitUntil: 'networkidle', timeout: 120000 });
-  await until('workspace rows', async () => (await page.locator('[data-test="workspace-row"]').count()) >= 2, 60000);
+  // A folder is listed only while it has a run (workspace-tree-vs-chooser REQ-009), so Temp may be absent: wait for the folder used here.
+  await until('workspace row', async () => (await page.locator('[data-test="workspace-row"]', { hasText: /^\s*workspace\s*$/ }).count()) >= 1, 60000);
   await page.locator('[data-test="workspace-row"]', { hasText: /^\s*workspace\s*$/ }).first().click();
   if (root.kind === 'agent') {
     await page.locator('[data-test="workspace-agent-row"]', { hasText: names.manager }).click();

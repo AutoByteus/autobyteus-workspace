@@ -229,6 +229,7 @@ export type AgentOrgRootHistoryObject = {
   closed_task_executions: Scalars['JSON']['output'];
   created_at: Scalars['String']['output'];
   is_active: Scalars['Boolean']['output'];
+  last_activity_at: Scalars['String']['output'];
   org: Scalars['JSON']['output'];
   root_run_id: Scalars['String']['output'];
   root_subject_kind: Scalars['String']['output'];
@@ -577,6 +578,7 @@ export type AgentTeamRootHistoryObject = {
   archived_at?: Maybe<Scalars['String']['output']>;
   created_at: Scalars['String']['output'];
   is_active: Scalars['Boolean']['output'];
+  last_activity_at: Scalars['String']['output'];
   root_run_id: Scalars['String']['output'];
   root_subject_kind: Scalars['String']['output'];
   summary: Scalars['String']['output'];
@@ -3345,7 +3347,7 @@ export type QueryListMemoryHubUrlCandidatesArgs = {
 
 
 export type QueryListWorkspaceRunHistoryArgs = {
-  limitPerAgent?: Scalars['Int']['input'];
+  limitPerAgent?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -3510,7 +3512,7 @@ export type QueryWorkspaceMetadataArgs = {
 
 
 export type QueryWorkspaceRunHistoryArgs = {
-  limitPerAgent?: Scalars['Int']['input'];
+  limitPerAgent?: InputMaybe<Scalars['Int']['input']>;
   workspaceId: Scalars['String']['input'];
 };
 
@@ -3618,6 +3620,7 @@ export type RunHistoryItemObject = {
   createdAt: Scalars['String']['output'];
   hasCollaboration: Scalars['Boolean']['output'];
   isActive: Scalars['Boolean']['output'];
+  lastActivityAt: Scalars['String']['output'];
   runId: Scalars['String']['output'];
   shouldConnectStream: Scalars['Boolean']['output'];
   status: Scalars['String']['output'];
@@ -4557,6 +4560,7 @@ export type WorkspaceHistoryTeamRunItemObject = {
   coordinatorAddress: Scalars['String']['output'];
   createdAt: Scalars['String']['output'];
   isActive: Scalars['Boolean']['output'];
+  lastActivityAt: Scalars['String']['output'];
   members: Array<WorkspaceHistoryTeamRunMemberObject>;
   rootTeam: Scalars['JSON']['output'];
   summary: Scalars['String']['output'];
@@ -5539,14 +5543,14 @@ export type AvailableAgentRuntimesQuery = { __typename?: 'Query', availableAgent
 export type ListCollaborationRootHistoryQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ListCollaborationRootHistoryQuery = { __typename?: 'Query', listCollaborationRootHistory: Array<{ __typename: 'AgentOrgRootHistoryObject', root_subject_kind: string, root_run_id: string, created_at: string, archived_at?: string | null, is_active: boolean, summary: string, org: any, closed_task_executions: any } | { __typename: 'AgentTeamRootHistoryObject', root_subject_kind: string, root_run_id: string }> };
+export type ListCollaborationRootHistoryQuery = { __typename?: 'Query', listCollaborationRootHistory: Array<{ __typename: 'AgentOrgRootHistoryObject', root_subject_kind: string, root_run_id: string, created_at: string, last_activity_at: string, archived_at?: string | null, is_active: boolean, summary: string, org: any, closed_task_executions: any } | { __typename: 'AgentTeamRootHistoryObject', root_subject_kind: string, root_run_id: string }> };
 
 export type GetAgentOrgRootHistoryQueryVariables = Exact<{
   orgRunId: Scalars['String']['input'];
 }>;
 
 
-export type GetAgentOrgRootHistoryQuery = { __typename?: 'Query', getAgentOrgRootHistory?: { __typename?: 'AgentOrgRootHistoryObject', root_subject_kind: string, root_run_id: string, created_at: string, archived_at?: string | null, is_active: boolean, summary: string, org: any, closed_task_executions: any } | null };
+export type GetAgentOrgRootHistoryQuery = { __typename?: 'Query', getAgentOrgRootHistory?: { __typename?: 'AgentOrgRootHistoryObject', root_subject_kind: string, root_run_id: string, created_at: string, last_activity_at: string, archived_at?: string | null, is_active: boolean, summary: string, org: any, closed_task_executions: any } | null };
 
 export type GetCollaboratorMentionCandidatesQueryVariables = Exact<{
   rootSubjectKind: Scalars['String']['input'];
@@ -5928,7 +5932,7 @@ export type ListWorkspaceRunHistoryQueryVariables = Exact<{
 }>;
 
 
-export type ListWorkspaceRunHistoryQuery = { __typename?: 'Query', listWorkspaceRunHistory: Array<{ __typename?: 'WorkspaceRunHistoryGroupObject', workspaceRootPath: string, workspaceName: string, agentDefinitions: Array<{ __typename?: 'RunHistoryAgentGroupObject', agentDefinitionId: string, agentName: string, runs: Array<{ __typename?: 'RunHistoryItemObject', runId: string, summary: string, createdAt: string, archivedAt?: string | null, terminatedAt?: string | null, status: string, isActive: boolean, shouldConnectStream: boolean, statusSource: string, hasCollaboration: boolean }> }>, teamDefinitions: Array<{ __typename?: 'WorkspaceHistoryTeamDefinitionObject', teamDefinitionId: string, teamDefinitionName: string, runs: Array<{ __typename?: 'WorkspaceHistoryTeamRunItemObject', teamRunId: string, teamDefinitionId: string, teamDefinitionName: string, coordinatorAddress: string, workspaceRootPath?: string | null, summary: string, createdAt: string, archivedAt?: string | null, terminatedAt?: string | null, isActive: boolean, rootTeam: any, members: Array<{ __typename?: 'WorkspaceHistoryTeamRunMemberObject', memberAddress: string, displayName: string, agentRunId: string, status: string, runtimeKind: string, workspaceRootPath?: string | null }> }> }> }> };
+export type ListWorkspaceRunHistoryQuery = { __typename?: 'Query', listWorkspaceRunHistory: Array<{ __typename?: 'WorkspaceRunHistoryGroupObject', workspaceRootPath: string, workspaceName: string, agentDefinitions: Array<{ __typename?: 'RunHistoryAgentGroupObject', agentDefinitionId: string, agentName: string, runs: Array<{ __typename?: 'RunHistoryItemObject', runId: string, summary: string, createdAt: string, lastActivityAt: string, archivedAt?: string | null, terminatedAt?: string | null, status: string, isActive: boolean, shouldConnectStream: boolean, statusSource: string, hasCollaboration: boolean }> }>, teamDefinitions: Array<{ __typename?: 'WorkspaceHistoryTeamDefinitionObject', teamDefinitionId: string, teamDefinitionName: string, runs: Array<{ __typename?: 'WorkspaceHistoryTeamRunItemObject', teamRunId: string, teamDefinitionId: string, teamDefinitionName: string, coordinatorAddress: string, workspaceRootPath?: string | null, summary: string, createdAt: string, lastActivityAt: string, archivedAt?: string | null, terminatedAt?: string | null, isActive: boolean, rootTeam: any, members: Array<{ __typename?: 'WorkspaceHistoryTeamRunMemberObject', memberAddress: string, displayName: string, agentRunId: string, status: string, runtimeKind: string, workspaceRootPath?: string | null }> }> }> }> };
 
 export type GetWorkspaceRunHistoryQueryVariables = Exact<{
   workspaceId: Scalars['String']['input'];
@@ -5936,7 +5940,7 @@ export type GetWorkspaceRunHistoryQueryVariables = Exact<{
 }>;
 
 
-export type GetWorkspaceRunHistoryQuery = { __typename?: 'Query', workspaceRunHistory: { __typename?: 'WorkspaceRunHistoryGroupObject', workspaceRootPath: string, workspaceName: string, agentDefinitions: Array<{ __typename?: 'RunHistoryAgentGroupObject', agentDefinitionId: string, agentName: string, runs: Array<{ __typename?: 'RunHistoryItemObject', runId: string, summary: string, createdAt: string, archivedAt?: string | null, terminatedAt?: string | null, status: string, isActive: boolean, shouldConnectStream: boolean, statusSource: string, hasCollaboration: boolean }> }>, teamDefinitions: Array<{ __typename?: 'WorkspaceHistoryTeamDefinitionObject', teamDefinitionId: string, teamDefinitionName: string, runs: Array<{ __typename?: 'WorkspaceHistoryTeamRunItemObject', teamRunId: string, teamDefinitionId: string, teamDefinitionName: string, coordinatorAddress: string, workspaceRootPath?: string | null, summary: string, createdAt: string, archivedAt?: string | null, terminatedAt?: string | null, isActive: boolean, rootTeam: any, members: Array<{ __typename?: 'WorkspaceHistoryTeamRunMemberObject', memberAddress: string, displayName: string, agentRunId: string, status: string, runtimeKind: string, workspaceRootPath?: string | null }> }> }> } };
+export type GetWorkspaceRunHistoryQuery = { __typename?: 'Query', workspaceRunHistory: { __typename?: 'WorkspaceRunHistoryGroupObject', workspaceRootPath: string, workspaceName: string, agentDefinitions: Array<{ __typename?: 'RunHistoryAgentGroupObject', agentDefinitionId: string, agentName: string, runs: Array<{ __typename?: 'RunHistoryItemObject', runId: string, summary: string, createdAt: string, lastActivityAt: string, archivedAt?: string | null, terminatedAt?: string | null, status: string, isActive: boolean, shouldConnectStream: boolean, statusSource: string, hasCollaboration: boolean }> }>, teamDefinitions: Array<{ __typename?: 'WorkspaceHistoryTeamDefinitionObject', teamDefinitionId: string, teamDefinitionName: string, runs: Array<{ __typename?: 'WorkspaceHistoryTeamRunItemObject', teamRunId: string, teamDefinitionId: string, teamDefinitionName: string, coordinatorAddress: string, workspaceRootPath?: string | null, summary: string, createdAt: string, lastActivityAt: string, archivedAt?: string | null, terminatedAt?: string | null, isActive: boolean, rootTeam: any, members: Array<{ __typename?: 'WorkspaceHistoryTeamRunMemberObject', memberAddress: string, displayName: string, agentRunId: string, status: string, runtimeKind: string, workspaceRootPath?: string | null }> }> }> } };
 
 export type GetRunProjectionQueryVariables = Exact<{
   runId: Scalars['String']['input'];
@@ -11509,6 +11513,7 @@ export const ListCollaborationRootHistoryDocument = gql`
       root_subject_kind
       root_run_id
       created_at
+      last_activity_at
       archived_at
       is_active
       summary
@@ -11548,6 +11553,7 @@ export const GetAgentOrgRootHistoryDocument = gql`
     root_subject_kind
     root_run_id
     created_at
+    last_activity_at
     archived_at
     is_active
     summary
@@ -13592,6 +13598,7 @@ export const ListWorkspaceRunHistoryDocument = gql`
         runId
         summary
         createdAt
+        lastActivityAt
         archivedAt
         terminatedAt
         status
@@ -13612,6 +13619,7 @@ export const ListWorkspaceRunHistoryDocument = gql`
         workspaceRootPath
         summary
         createdAt
+        lastActivityAt
         archivedAt
         terminatedAt
         isActive
@@ -13664,6 +13672,7 @@ export const GetWorkspaceRunHistoryDocument = gql`
         runId
         summary
         createdAt
+        lastActivityAt
         archivedAt
         terminatedAt
         status
@@ -13684,6 +13693,7 @@ export const GetWorkspaceRunHistoryDocument = gql`
         workspaceRootPath
         summary
         createdAt
+        lastActivityAt
         archivedAt
         terminatedAt
         isActive

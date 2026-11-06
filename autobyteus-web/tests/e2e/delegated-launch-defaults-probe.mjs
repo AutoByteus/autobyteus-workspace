@@ -66,6 +66,12 @@
 //           tool-list-update-cases.mjs. Alone: pnpm -C autobyteus-web test:e2e:tool-list-updates
 //   AFS-001..AFS-003 (agent-settings-focused AC-001..AC-005): Settings of the focused agent on a hub, an Org and a Team; see
 //           agent-settings-focused-cases.mjs. Alone: pnpm -C autobyteus-web test:e2e:agent-settings-focused
+//   RXM-001..RXM-003 (run-expand-motion AC-001..AC-003): a live run's delegated rows in the Runs view: expand and collapse
+//           frames, the DONE-row leave while expanded, the stored rows after fold, view switch and unfold; opt-in, see
+//           run-expand-motion-live-cases.mjs. Alone: pnpm -C autobyteus-web test:e2e:run-expand-motion-live
+//   WVC-001..WVC-004 (workspace-tree-vs-chooser AC-002, AC-005, AC-009, AC-011, AC-012): the run section's views and the chat
+//           chooser's Remove; opt-in (they archive runs and remove folders), see workspace-views-chooser-cases.mjs.
+//           Alone: pnpm -C autobyteus-web test:e2e:workspace-views-chooser
 //   LRL-001..LRL-005 (large-runs-load-less AC-002, AC-003, AC-006): Team and Org runs load only the focused member; the
 //           Team tab's live merge and reconnect; a damaged message log on desktop and phone; see
 //           large-runs-load-less-cases.mjs. Alone: pnpm -C autobyteus-web test:e2e:large-runs-load-less
@@ -94,6 +100,8 @@ import { registerSkillImprovementRemovalCases } from './skill-improvement-remova
 import { registerToolListUpdateCases } from './tool-list-update-cases.mjs'
 import { registerAgentSettingsFocusedCases } from './agent-settings-focused-cases.mjs'
 import { registerLargeRunsLoadLessCases } from './large-runs-load-less-cases.mjs'
+import { registerWorkspaceViewsChooserCases } from './workspace-views-chooser-cases.mjs'
+import { registerRunExpandMotionLiveCases } from './run-expand-motion-live-cases.mjs'
 import { agentRuntimeName } from '@autobyteus/agent-presentation-contracts'
 import { spawn } from 'node:child_process'
 import { createWriteStream, existsSync } from 'node:fs'
@@ -1640,6 +1648,12 @@ registerAgentSettingsFocusedCases({ defineCase, assert, waitFor, delay, sel, set
   conversationText, openSettings, backToConversation, openSidebarAgent, openTeamRun, expandWorkspaces, saveSettings, saveBarText,
   agentTree, teamTree, teamRunIds, objectsIn, pick, agyLaunchesOf, offerAgyModels, AGY, GROK, GROK_MODEL, MODEL, ALT, RETIRING, MODEL_LABEL, ALT_LABEL, RETIRING_LABEL,
   env: () => ({ frontUrl }) })
+// Opt-in: RXM cases stop their run and switch the run section's view.
+if (onlyCases?.some(id => id.startsWith('RXM-'))) registerRunExpandMotionLiveCases({ defineCase, assert, waitFor, delay, sel, settle, shot, gql,
+  newChatFor, chooseModel, typeAndSend, callFromComposer, callTool, AGY, MODEL, ids, names, address, env: () => ({ frontUrl }) })
+// Opt-in: WVC cases archive runs and remove folders, so they run only when selected.
+if (onlyCases?.some(id => id.startsWith('WVC-'))) registerWorkspaceViewsChooserCases({ defineCase, assert, waitFor, delay, sel, settle, shot, gql,
+  newChatFor, chooseModel, typeAndSend, AGY, MODEL, ids, names, env: () => ({ frontUrl, backendUrl, dataRoot, outDir }) })
 const desktopSurface = desktopAdapter({ webDir, outDir, chromium, assert, waitFor })
 let exitCode = 0
 try {

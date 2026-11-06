@@ -32,6 +32,8 @@ export interface TeamRunHistoryItem {
   workspaceRootPath: string | null;
   summary: string;
   createdAt: string;
+  /** Newest memory file of any agent of the run; `createdAt` before any (`RunLastActivityReader`). */
+  lastActivityAt: string;
   archivedAt: string | null;
   terminatedAt: string | null;
   isActive: boolean;

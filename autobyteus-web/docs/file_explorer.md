@@ -413,7 +413,7 @@ interface WorkspaceInfo {
 | --- | --- |
 | `createWorkspace()` | Creates/resolves metadata only. It does **not** acquire a file-explorer tree or start a persistent file watcher. |
 | `fetchAllWorkspaces()` | Loads visible workspace metadata from the backend workspace registry on startup or backend-context reset. It does **not** acquire file-explorer trees or start live streams. |
-| `removeWorkspace(workspaceId)` | Removes a registered filesystem workspace from the visible Workspaces registry after backend confirmation, then clears metadata, file-explorer tree/content/cache state, and live-session state for that workspace. It does not delete workspace files. |
+| `removeWorkspace(workspaceId)` | Unregisters a filesystem workspace after backend confirmation (the chat chooser's "Remove"; it leaves every chooser and every view of the left panel), then clears metadata, file-explorer tree/content/cache state, and live-session state for that workspace. It does not delete workspace files. |
 | `fetchFolderChildren()` | **[Lazy Load]** Fetches children for a folder when expanded or when a visible explorer refreshes open folders. |
 | `acquireFileExplorerLiveSession(workspaceId, consumerId)` | Registers one visible file explorer consumer. The first consumer opens one WebSocket/live watcher stream for the workspace and returns an idempotent release function. |
 | `releaseFileExplorerLiveSession(workspaceId, consumerId)` | Releases a visible consumer. The last release disconnects the WebSocket and lets the backend stop the watcher lease. |

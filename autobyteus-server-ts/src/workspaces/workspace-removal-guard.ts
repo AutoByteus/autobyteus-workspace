@@ -62,7 +62,8 @@ export class WorkspaceRemovalGuard {
 
     return {
       blocked: true,
-      message: "Stop active agent or team runs in this workspace before removing it from Workspaces.",
+      // The approved refusal copy (workspace-tree-vs-chooser REQ-004, VIS-010), shown as the chooser's error toast.
+      message: "Stop active runs before removing this workspace.",
       blockers,
     };
   }

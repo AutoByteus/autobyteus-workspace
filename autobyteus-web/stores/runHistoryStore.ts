@@ -31,7 +31,7 @@ import {
 } from '~/stores/runHistoryLoadActions';
 import {
   archiveAgentOrgRunInHistoryStore, archiveAgentOrgRunsInHistoryStore, archiveAgentRunGroupInHistoryStore,
-  archiveRunInHistoryStore, archiveTeamRunInHistoryStore, archiveTeamRunsInHistoryStore,
+  archiveRunInHistoryStore, archiveRunsInHistoryStore, archiveTeamRunInHistoryStore, archiveTeamRunsInHistoryStore, type RunArchiveTargets,
   deleteAgentOrgRunFromHistoryStore, deleteRunFromHistoryStore, deleteTeamRunFromHistoryStore,
 } from '~/stores/runHistoryMutationActions';
 import { fetchWorkspaceHistoryForStore, pruneWorkspaceHistoryForStore } from '~/stores/runHistoryWorkspaceHistoryActions';
@@ -67,6 +67,7 @@ export const useRunHistoryStore = defineStore('runHistory', {
     agentOrgRequestSequenceById: {} as Record<string, number>,
     agentOrgHistoryItemErrors: {} as Record<string, string>,
     workspaceRequestGeneration: 0,
+    historyWindow: 6 as number | null, // agent runs read per agent and folder; null: every run. The one owner of the cap (DS-002).
     workspaceHistoryLoadingById: {} as Record<string, boolean>,
     workspaceHistoryErrorById: {} as Record<string, string | null>,
     agentAvatarByDefinitionId: {} as Record<string, string>,
@@ -116,8 +117,14 @@ export const useRunHistoryStore = defineStore('runHistory', {
       this.refreshRunNavigationTopology('workspace-catalog-load');
     },
 
-    async fetchTree(limitPerAgent = 6, options: { quiet?: boolean } = {}): Promise<void> {
-      await fetchRunHistoryTree(this, limitPerAgent, options);
+    /**
+     * The one read window (workspace-tree-vs-chooser DS-002): agent runs read per agent and folder, `null` for every run.
+     * The run section sets it from its view (Runs: `null`; Workspaces, Projects: 6); the phone sets 5. Every read uses it.
+     */
+    setHistoryWindow(limitPerAgent: number | null): void { this.historyWindow = limitPerAgent; },
+
+    async fetchTree(options: { quiet?: boolean } = {}): Promise<void> {
+      await fetchRunHistoryTree(this, options);
     },
 
     async refreshAgentOrgHistory(): Promise<void> {
@@ -132,14 +139,6 @@ export const useRunHistoryStore = defineStore('runHistory', {
       const result = await openHistoricalRun(this, runId, options);
       if (result.disposition === 'committed') this.refreshRunNavigationTopology('standalone-open');
       return result;
-    },
-
-    async createWorkspace(rootPath: string): Promise<string> {
-      const workspaceStore = useWorkspaceStore();
-      const workspaceId = await workspaceStore.createWorkspace({ root_path: rootPath });
-      const workspace = workspaceStore.workspaces[workspaceId];
-      this.refreshRunNavigationTopology('workspace-create');
-      return workspace?.absolutePath || rootPath;
     },
 
     markRunAsActive(runId: string): void {
@@ -423,26 +422,19 @@ export const useRunHistoryStore = defineStore('runHistory', {
     },
     archiveTeamRuns(teamRunIds: string[]) { return archiveTeamRunsInHistoryStore(this, teamRunIds); },
     archiveAgentOrgRuns(orgRunIds: string[]) { return archiveAgentOrgRunsInHistoryStore(this, orgRunIds); },
+    archiveRuns(targets: RunArchiveTargets) { return archiveRunsInHistoryStore(this, targets); },
 
-    async refreshTreeQuietly(limitPerAgent = 6): Promise<void> {
+    async refreshTreeQuietly(): Promise<void> {
       try {
-        await this.fetchTree(limitPerAgent, { quiet: true });
+        await this.fetchTree({ quiet: true });
       } catch {
         // No-op for best-effort refreshes.
       }
     },
 
-    async fetchWorkspaceHistory(workspaceId: string, limitPerAgent = 6, options: { quiet?: boolean } = {}): Promise<void> {
-      await fetchWorkspaceHistoryForStore(this, workspaceId, limitPerAgent, options);
+    async fetchWorkspaceHistory(workspaceId: string, options: { quiet?: boolean } = {}): Promise<void> {
+      await fetchWorkspaceHistoryForStore(this, workspaceId, options);
       this.refreshRunNavigationTopology('workspace-history-fetch');
-    },
-
-    async refreshWorkspaceHistoryQuietly(workspaceId: string, limitPerAgent = 6): Promise<void> {
-      try {
-        await this.fetchWorkspaceHistory(workspaceId, limitPerAgent, { quiet: true });
-      } catch {
-        // No-op for best-effort refreshes.
-      }
     },
 
     pruneWorkspace(workspaceId: string, workspaceRootPath: string | null | undefined): void {

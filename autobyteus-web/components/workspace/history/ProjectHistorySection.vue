@@ -48,11 +48,6 @@
     </div>
 
     <div v-if="expanded" class="ml-2 mt-0.5 space-y-1">
-      <div
-        v-if="entry.node.agents.length === 0 && entry.teams.length === 0"
-        class="px-3 py-1 text-xs text-gray-400"
-        data-test="project-no-runs"
-      >{{ t('projectsTree.noRuns') }}</div>
       <RunDefinitionGroups
         :node="entry.node"
         :teams="entry.teams"

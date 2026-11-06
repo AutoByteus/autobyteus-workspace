@@ -72,6 +72,21 @@ describe("TeamRunHistoryService current execution tree", () => {
     })]);
   });
 
+  it("carries each Team run's last activity from the reader (workspace-tree-vs-chooser DS-005)", async () => {
+    const forTeamRun = vi.fn(async () => "2026-11-05T09:30:00.000Z");
+    const { catalog, treeStore, manager, live } = harness();
+    const service = new TeamRunHistoryService("/tmp/memory", {
+      catalogService: catalog as never,
+      executionTreeStore: treeStore as never,
+      teamRunManager: manager as never,
+      liveProjectionService: live as never,
+      lastActivity: { forTeamRun },
+    });
+    const [item] = await service.listTeamRunHistory();
+    expect(item?.lastActivityAt).toBe("2026-11-05T09:30:00.000Z");
+    expect(forTeamRun).toHaveBeenCalledWith({ teamRunId: "team-1", createdAt: item?.createdAt });
+  });
+
   it("uses exact AgentRun status identity without address or display-name fallback", async () => {
     const { service } = harness({ active: true });
     const [result] = await service.listTeamRunHistory();

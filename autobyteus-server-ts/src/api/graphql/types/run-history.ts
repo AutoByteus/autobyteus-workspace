@@ -28,6 +28,10 @@ class RunHistoryItemObject {
   @Field(() => String)
   createdAt!: string;
 
+  /** When the run was last active, its delegated work included; `createdAt` before any (workspace-tree-vs-chooser DS-005). */
+  @Field(() => String)
+  lastActivityAt!: string;
+
   @Field(() => String, { nullable: true })
   archivedAt?: string | null;
 
@@ -105,6 +109,10 @@ class WorkspaceHistoryTeamRunItemObject {
 
   @Field(() => String)
   createdAt!: string;
+
+  /** When the run was last active, its delegated work included; `createdAt` before any (workspace-tree-vs-chooser DS-005). */
+  @Field(() => String)
+  lastActivityAt!: string;
 
   @Field(() => String, { nullable: true })
   archivedAt?: string | null;
@@ -262,9 +270,10 @@ export class RunHistoryResolver {
   private agentRunProjectionService = getAgentRunViewProjectionService();
   private runModelConfigService = getStudioRunModelConfigService();
 
+  /** Omitted: the newest 6 runs per agent and folder; an explicit `null`: every run (the Runs view's window). */
   @Query(() => [WorkspaceRunHistoryGroupObject])
   async listWorkspaceRunHistory(
-    @Arg("limitPerAgent", () => Int, { defaultValue: 6 }) limitPerAgent = 6,
+    @Arg("limitPerAgent", () => Int, { nullable: true, defaultValue: 6 }) limitPerAgent: number | null,
   ): Promise<WorkspaceRunHistoryGroupObject[]> {
     return this.workspaceRunHistoryService.listWorkspaceRunHistory(limitPerAgent);
   }
@@ -272,7 +281,8 @@ export class RunHistoryResolver {
   @Query(() => WorkspaceRunHistoryGroupObject)
   async workspaceRunHistory(
     @Arg("workspaceId", () => String) workspaceId: string,
-    @Arg("limitPerAgent", () => Int, { defaultValue: 6 }) limitPerAgent = 6,
+    /** As `listWorkspaceRunHistory`: an explicit `null` keeps every run. */
+    @Arg("limitPerAgent", () => Int, { nullable: true, defaultValue: 6 }) limitPerAgent: number | null,
   ): Promise<WorkspaceRunHistoryGroupObject> {
     const workspaceRootPath = await this.workspaceManager.getWorkspaceRootPathForHistory(workspaceId);
     if (!workspaceRootPath) {

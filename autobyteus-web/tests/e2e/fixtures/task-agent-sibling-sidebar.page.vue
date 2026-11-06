@@ -80,11 +80,11 @@ const sectionState = {
   ...tree, toggleWorkspace: (node: { stableKey: string }) => tree.toggleWorkspace(node.stableKey), selectedRunId: null, isTeamRunSelected: (id: string) => selectionStore.selectedRunId === id,
   isRunTerminating: () => false, isTeamTerminating: () => false, isRunDeleting: () => false,
   isTeamDeleting: () => false, isRunArchiving: () => false, isTeamArchiving: () => false,
-  isWorkspaceRemoving: () => false, isWorkspaceHistoryLoading: () => false,
+  isWorkspaceHistoryLoading: () => false,
   workspaceHistoryError: () => null, formatRelativeTime: () => 'now',
 };
 const actions = {
-  onRemoveWorkspace: noop, onTerminateRun: noop, onArchiveRun: noop, onDeleteRun: noop,
+  onTerminateRun: noop, onArchiveRun: noop, onDeleteRun: noop,
   onTerminateTeam: noop, onArchiveTeam: noop, onDeleteTeam: noop,
   ...useWorkspaceHistorySelectionActions({ runHistoryStore, selectionStore,
     setTeamExpanded: tree.setTeamExpanded, toggleTeam: tree.toggleTeam,

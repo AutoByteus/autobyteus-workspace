@@ -1,0 +1,10 @@
+# Check: IMP-09
+# Command: cd autobyteus-web && env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR="$TMPDIR" NUXT_TEST=true pnpm exec vitest run
+# Commit: 71ce23ced8 (worktree before commit; only docs/workspace_layout.md changed after the run)
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28 via corepack; env -i PATH HOME=<fresh mktemp dir> TMPDIR (TESTING.md isolation)
+# Date: 2026-11-05 CET
+# Full output: IMP-09-web-suite.full.log.gz
+
+ Test Files  701 passed (701)
+      Tests  5156 passed | 2 skipped (5158)
+   Duration  236.71s (transform 27.98s, setup 1543.56s, collect 163.99s, tests 74.86s, environment 138.09s, prepare 84.03s)

@@ -54,6 +54,10 @@ export const applyRunNavigationEffectForStore = (
   effect: RunNavigationEffect,
 ): boolean => {
   const result = applyRunNavigationEffectToProjection(ensureProjection(store), target, effect);
+  if (result.rebuild) {
+    refreshRunNavigationTopologyForStore(store, 'run-outside-listed-folders');
+    return true;
+  }
   if (!result.changed) return false;
   store.navigationProjection = result.state;
   store.navigationPatchRevision += 1;

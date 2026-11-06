@@ -43,7 +43,7 @@ type RunHistoryMutationStoreLike = {
   selectedRunId: string | null;
   selectedTeamRunId: string | null;
   selectedTeamMemberAddress: string | null;
-  refreshTreeQuietly(limitPerAgent?: number): Promise<void>;
+  refreshTreeQuietly(): Promise<void>;
   refreshRunNavigationTopology(reason: string): void;
 };
 
@@ -145,7 +145,7 @@ export const deleteRunFromHistoryStore = async (
   }
 };
 
-export const archiveRunInHistoryStore = async (
+const archiveRunRecord = async (
   store: RunHistoryMutationStoreLike,
   runId: string,
 ): Promise<boolean> => {
@@ -171,12 +171,20 @@ export const archiveRunInHistoryStore = async (
     }
 
     cleanupStoredRunLocalState(store, normalizedRunId);
-    await store.refreshTreeQuietly();
     return true;
   } catch (error: any) {
     console.error(`Failed to archive run '${normalizedRunId}':`, error);
     return false;
   }
+};
+
+export const archiveRunInHistoryStore = async (
+  store: RunHistoryMutationStoreLike,
+  runId: string,
+): Promise<boolean> => {
+  const archived = await archiveRunRecord(store, runId);
+  if (archived) await store.refreshTreeQuietly();
+  return archived;
 };
 
 export const deleteTeamRunFromHistoryStore = async (
@@ -370,3 +378,30 @@ export const archiveAgentOrgRunsInHistoryStore = (
   store: RunHistoryMutationStoreLike,
   orgRunIds: string[],
 ): Promise<RunGroupArchiveOutcome> => archiveRunsOfGroup(store, orgRunIds, archiveAgentOrgRunRecord);
+
+/** The runs "Archive all older" archives, by kind (workspace-tree-vs-chooser DS-007, from autobyteus-378). */
+export type RunArchiveTargets = Readonly<{ agentRunIds: readonly string[]; teamRunIds: readonly string[]; orgRunIds: readonly string[] }>;
+
+/**
+ * Archives each run with its record-level core (and its local cleanup), one at a time, then refreshes history and
+ * run-navigation topology once for all of them.
+ */
+export const archiveRunsInHistoryStore = async (
+  store: RunHistoryMutationStoreLike,
+  targets: RunArchiveTargets,
+): Promise<RunGroupArchiveOutcome> => {
+  const outcome: RunGroupArchiveOutcome = { archivedRunIds: [], failedRunIds: [] };
+  const batches = [
+    [targets.agentRunIds, archiveRunRecord],
+    [targets.teamRunIds, archiveTeamRunRecord],
+    [targets.orgRunIds, archiveAgentOrgRunRecord],
+  ] as const;
+  for (const [runIds, archiveRecord] of batches) {
+    for (const runId of runIds) {
+      const archived = await archiveRecord(store, runId);
+      (archived ? outcome.archivedRunIds : outcome.failedRunIds).push(runId);
+    }
+  }
+  if (outcome.archivedRunIds.length > 0) await refreshAfterGroupArchive(store);
+  return outcome;
+};

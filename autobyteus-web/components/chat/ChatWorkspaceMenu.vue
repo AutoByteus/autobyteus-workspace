@@ -81,28 +81,45 @@
 
         <template v-if="filteredUserWorkspaces.length">
           <h4 class="px-3 pb-1 pt-2 text-[0.6875rem] font-semibold uppercase tracking-wide text-gray-400">{{ $t('chat.workspace.yourWorkspaces') }}</h4>
-          <button
+          <!-- workspace-tree-vs-chooser (REQ-002): every folder is offered; "Remove" (hover or focus; always below md)
+               takes a folder out of every list, after a confirmation. Temp workspace has none. -->
+          <div
             v-for="item in filteredUserWorkspaces"
             :key="item.workspaceId"
-            type="button"
-            role="option"
-            data-option
-            :aria-selected="isSelected(item.workspaceId) ? 'true' : 'false'"
-            :data-test="`chat-workspace-option-${item.workspaceId}`"
-            class="flex w-full items-start gap-2.5 px-3 py-1.5 text-left hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
-            @click="chooseExisting(item.workspaceId)"
+            role="none"
+            class="group/folder-row flex items-start hover:bg-gray-100 focus-within:bg-gray-100"
           >
-            <Icon icon="heroicons:folder" class="mt-0.5 h-4 w-4 flex-shrink-0 text-gray-500" aria-hidden="true" />
-            <span class="min-w-0 flex-1">
-              <span class="flex items-center gap-1.5 text-sm font-medium" :class="isSelected(item.workspaceId) ? 'text-blue-700' : 'text-gray-900'">
-                <span class="truncate">{{ item.name }}</span>
-                <!-- The folder a run under the chosen Project starts in (REQ-005). -->
-                <span v-if="isProjectFolder(item.absolutePath)" class="rounded bg-gray-100 px-1.5 py-px text-[0.625rem] font-medium uppercase tracking-wide text-gray-500" data-test="chat-workspace-project-badge">{{ t('projectsTree.folderProject') }}</span>
+            <button
+              type="button"
+              role="option"
+              data-option
+              :aria-selected="isSelected(item.workspaceId) ? 'true' : 'false'"
+              :data-test="`chat-workspace-option-${item.workspaceId}`"
+              class="flex min-w-0 flex-1 items-start gap-2.5 py-1.5 pl-3 pr-2 text-left focus:outline-none"
+              @click="chooseExisting(item.workspaceId)"
+            >
+              <Icon icon="heroicons:folder" class="mt-0.5 h-4 w-4 flex-shrink-0 text-gray-500" aria-hidden="true" />
+              <span class="min-w-0 flex-1">
+                <span class="flex items-center gap-1.5 text-sm font-medium" :class="isSelected(item.workspaceId) ? 'text-blue-700' : 'text-gray-900'">
+                  <span class="truncate">{{ item.name }}</span>
+                  <!-- The folder a run under the chosen Project starts in (REQ-005). -->
+                  <span v-if="isProjectFolder(item.absolutePath)" class="rounded bg-gray-100 px-1.5 py-px text-[0.625rem] font-medium uppercase tracking-wide text-gray-500" data-test="chat-workspace-project-badge">{{ t('projectsTree.folderProject') }}</span>
+                </span>
+                <span class="block truncate text-xs text-gray-500">{{ item.absolutePath }}</span>
               </span>
-              <span class="block truncate text-xs text-gray-500">{{ item.absolutePath }}</span>
-            </span>
-            <Icon v-if="isSelected(item.workspaceId)" icon="heroicons:check" class="mt-0.5 h-4 w-4 flex-shrink-0 text-blue-600" aria-hidden="true" />
-          </button>
+              <Icon v-if="isSelected(item.workspaceId)" icon="heroicons:check" class="mt-0.5 h-4 w-4 flex-shrink-0 text-blue-600" aria-hidden="true" />
+            </button>
+            <button
+              type="button"
+              class="mr-2 inline-flex h-7 w-7 flex-shrink-0 items-center justify-center self-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 focus:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40 md:opacity-0 md:group-hover/folder-row:opacity-100 md:group-focus-within/folder-row:opacity-100"
+              :data-test="`chat-workspace-remove-${item.workspaceId}`"
+              :title="t('workspaceFolders.chooserRemove', { name: item.name })"
+              :aria-label="t('workspaceFolders.chooserRemove', { name: item.name })"
+              @click.stop="askToRemove(item)"
+            >
+              <Icon icon="heroicons:x-mark-20-solid" class="h-5 w-5" aria-hidden="true" />
+            </button>
+          </div>
         </template>
 
         <button
@@ -167,6 +184,17 @@
         </button>
       </footer>
     </div>
+    <ConfirmationModal
+      :show="showRemoveConfirmation"
+      :title="t('workspaceFolders.removeTitle')"
+      :message="removeConfirmationMessage"
+      :pending="removing"
+      :confirm-button-text="t('workspaceFolders.removeConfirm')"
+      variant="danger"
+      typography-size="large"
+      @confirm="confirmRemoveWorkspace"
+      @cancel="closeRemoveConfirmation"
+    />
   </div>
 </template>
 
@@ -183,6 +211,11 @@ import { isAbsoluteFolderPath } from '~/utils/chat/chatDefaults'
 import { useLocalization } from '~/composables/useLocalization'
 import { filterWorkspaceOptions } from '~/components/chat/chatComposerMenus'
 import ChatProjectOptions from '~/components/chat/ChatProjectOptions.vue'
+import ConfirmationModal from '~/components/common/ConfirmationModal.vue'
+import { useToasts } from '~/composables/useToasts'
+import { useWorkspaceHistoryWorkspaceRemoval } from '~/composables/useWorkspaceHistoryWorkspaceRemoval'
+import { useRunHistoryStore } from '~/stores/runHistoryStore'
+import type { WorkspaceInfo } from '~/stores/workspace'
 import { projectFolderOf } from '~/stores/chatDraftProjectChoice'
 import type { Project } from '~/types/project'
 
@@ -299,6 +332,24 @@ const chooseFirstMatch = (event: KeyboardEvent) => {
   if (event.isComposing) return // Enter confirms an IME composition, not a pick.
   event.preventDefault()
   options()[0]?.click()
+}
+
+// workspace-tree-vs-chooser (DS-006): the deliberate removal. A removed chosen folder leaves the chip on Temp workspace.
+const { addToast } = useToasts()
+const runHistoryStore = useRunHistoryStore()
+const {
+  removeConfirmationMessage, removing, showRemoveConfirmation, onRemoveWorkspace, closeRemoveConfirmation, confirmRemoveWorkspace,
+} = useWorkspaceHistoryWorkspaceRemoval({
+  removeWorkspace: (workspaceId) => workspaceStore.removeWorkspace(workspaceId),
+  pruneWorkspaceHistory: (workspaceId, rootPath) => runHistoryStore.pruneWorkspace(workspaceId, rootPath),
+  onRemoved: (workspaceId) => {
+    if (isSelected(workspaceId) && tempWorkspace.value) emit('select', { kind: 'existing', workspaceId: tempWorkspace.value.workspaceId })
+  },
+  addToast: (message, type) => addToast(message, type === 'warning' ? 'info' : type),
+})
+const askToRemove = (workspace: WorkspaceInfo) => {
+  popover.close(true)
+  onRemoveWorkspace({ workspaceId: workspace.workspaceId, name: workspace.name, rootPath: workspace.absolutePath ?? '' })
 }
 
 const chooseExisting = (workspaceId: string) => {

@@ -1,0 +1,16 @@
+=== agent-org-task-team-disclosure 2026-11-05T21:23:24Z
+exit=1 agent-org-task-team-disclosure
+Agent Org delegated Team disclosure browser probe failed. See /tmp/wtvc-385/fixture-agent-org-task-team-disclosure/evidence.json
+=== background-agent-renderer-contention 2026-11-05T21:25:03Z
+exit=1 background-agent-renderer-contention
+Background contention browser probe failed. See /tmp/wtvc-385/fixture-background-agent-renderer-contention/evidence.json
+=== standalone-agent-error-stop 2026-11-05T21:25:58Z
+exit=1 standalone-agent-error-stop
+Standalone Error Stop browser probe failed. See /tmp/wtvc-385/fixture-standalone-agent-error-stop/evidence.json
+=== task-agent-sibling-sidebar 2026-11-05T21:26:08Z
+exit=0 task-agent-sibling-sidebar
+Task Agent sibling sidebar browser probe passed. Evidence: /tmp/wtvc-385/fixture-task-agent-sibling-sidebar/evidence.json
+=== team-activity-presentation 2026-11-05T21:26:28Z
+exit=0 team-activity-presentation
+Team activity presentation browser probe passed. Evidence: /tmp/wtvc-385/fixture-team-activity-presentation/evidence.json
+all-done

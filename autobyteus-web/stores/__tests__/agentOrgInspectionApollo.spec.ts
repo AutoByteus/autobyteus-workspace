@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 import { flushPromises } from '@vue/test-utils'
 import { ControlledOrgApollo, OrgTestSocket, historyData, inspectionData, memberData, rootView } from '~/test-support/agentOrgApolloFixture'
+import { registerTestWorkspace } from '~/test-support/registeredWorkspaceFixture'
 import { useAgentOrgContextsStore } from '../agentOrgContextsStore'
 import { useRunHistoryStore } from '../runHistoryStore'
 import { useAgentActivityStore } from '../agentActivityStore'
@@ -29,12 +30,14 @@ async function requests(name: string, count: number) {
 function releaseMembers(batch: ReturnType<ControlledOrgApollo['named']>, label: string) {
   for (const r of batch) r.respond(memberData(r.operation.variables, label))
 }
+// The Workspaces view lists an Org only under its registered root folder (workspace-tree-vs-chooser CR-001).
+const ORG_ROOT = '/org-workspace'
 async function seed() {
   const open = orgs.openForInspection('org-run')
   ;(await requests(ROOT, 1))[0]!.respond(inspectionData(true))
   // autobyteus-358: nothing is selected, so no member is staged; a member loads when it is selected.
   await open
-  transport.pending(HISTORY).forEach(r => r.respond(historyData(true)))
+  transport.pending(HISTORY).forEach(r => r.respond(historyData(true, ORG_ROOT)))
   await flushPromises()
 }
 async function beginStop() {
@@ -50,7 +53,8 @@ beforeEach(() => {
   setActivePinia(createPinia()); transport = new ControlledOrgApollo(); io.client = transport.client
   OrgTestSocket.instances = []; vi.stubGlobal('WebSocket', OrgTestSocket)
   orgs = useAgentOrgContextsStore(); history = useRunHistoryStore()
-  history.agentOrgHistory = parseAgentOrgHistoryItems(historyData(true).listCollaborationRootHistory)
+  registerTestWorkspace(ORG_ROOT)
+  history.agentOrgHistory = parseAgentOrgHistoryItems(historyData(true, ORG_ROOT).listCollaborationRootHistory)
   expect(observedRow().isActive).toBe(true)
 })
 afterEach(() => { orgs.releaseContext('org-run'); transport.client.stop(); vi.unstubAllGlobals() })

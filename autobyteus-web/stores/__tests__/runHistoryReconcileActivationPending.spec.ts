@@ -109,11 +109,11 @@ describe('reconcileDiscoveredActiveRuns and the activation-pending marker (D-14)
     })
     const store = {
       workspaceGroups: [], agentOrgHistory: [], historyFamilyErrors: { workspace: null, agentOrg: null },
-      agentOrgRequestGeneration: 0, workspaceRequestGeneration: 0, agentAvatarByDefinitionId: {},
+      agentOrgRequestGeneration: 0, workspaceRequestGeneration: 0, historyWindow: 6, agentAvatarByDefinitionId: {},
       refreshRunNavigationTopology: vi.fn(), loading: false, error: null,
     } as unknown as RunHistoryFetchStoreLike
-    const older = fetchRunHistoryTree(store, 6, { quiet: true })
-    const newer = fetchRunHistoryTree(store, 6, { quiet: true })
+    const older = fetchRunHistoryTree(store, { quiet: true })
+    const newer = fetchRunHistoryTree(store, { quiet: true })
     await vi.waitFor(() => expect(pending).toHaveLength(2))
 
     // The newer snapshot (run active) lands first; the older one (taken before activation) lands last.

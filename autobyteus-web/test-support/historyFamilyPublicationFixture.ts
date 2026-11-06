@@ -3,7 +3,7 @@ import type { RunHistoryWorkspaceGroup } from '~/stores/runHistoryTypes';
 export const historyWorkspaceFixture = (active = false): RunHistoryWorkspaceGroup => ({
   workspaceRootPath: '/fixture', workspaceName: 'Fixture Workspace',
   agentDefinitions: [{ agentDefinitionId: 'agent-definition', agentName: 'History Agent', runs: [{
-    runId: 'agent-history', summary: 'Agent conversation', createdAt: '2026-09-03T00:00:00.000Z',
+    runId: 'agent-history', summary: 'Agent conversation', createdAt: '2026-09-03T00:00:00.000Z', lastActivityAt: '2026-09-03T00:00:00.000Z',
     status: active ? AgentStatus.Running : AgentStatus.Offline, isActive: active,
   }] }], teamDefinitions: [],
 });
@@ -26,6 +26,7 @@ export const buildAgentOrgHistoryRow = (input: {
     root_subject_kind: 'agent_org',
     root_run_id: input.rootRunId,
     created_at: '2026-09-03T00:00:00.000Z',
+    last_activity_at: '2026-09-03T00:00:00.000Z',
     archived_at: null,
     is_active: false,
     summary: input.summary ?? 'Agent Org run',

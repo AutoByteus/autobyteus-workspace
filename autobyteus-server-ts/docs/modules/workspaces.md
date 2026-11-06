@@ -80,7 +80,7 @@ root through the fixed temp workspace identity only.
 
 ## Remove From Workspaces
 
-`removeWorkspace(input: { workspaceId })` removes a registered filesystem workspace from the visible workspace registry. It is intentionally non-destructive:
+`removeWorkspace(input: { workspaceId })` unregisters a filesystem workspace, so it leaves every chooser and every view of the desktop's run section. The web offers it in the chat's folder chooser ("Remove"); the left panel lists only folders with runs and has no remove or add action. It is intentionally non-destructive:
 
 - it does **not** delete the filesystem directory;
 - it does **not** delete run history, team history, memories, raw traces, artifacts, or generated files; and
@@ -88,7 +88,7 @@ root through the fixed temp workspace identity only.
 
 Removal is limited to registered filesystem workspace ids. Temp and skill workspace lifecycles remain owned by their existing transient workspace flows.
 
-Before deleting the registry entry, `WorkspaceRemovalGuard` blocks removal when active standalone agent runs or active team/member runs still use the workspace root. The user must stop active work first. When removal is allowed, `WorkspaceManager.removeRegisteredWorkspace(...)` closes any active in-memory workspace instance for that root, which also releases file-explorer resources, then deletes the registry entry.
+Before deleting the registry entry, `WorkspaceRemovalGuard` blocks removal when active standalone agent runs or active team/member runs still use the workspace root, with the message "Stop active runs before removing this workspace." (the approved copy of the chooser's refusal toast). The user must stop active work first. When removal is allowed, `WorkspaceManager.removeRegisteredWorkspace(...)` closes any active in-memory workspace instance for that root, which also releases file-explorer resources, then deletes the registry entry.
 
 Re-adding/loading the same root later creates the same deterministic workspace id and makes the workspace visible again. Preserved history for that root can be shown again through workspace-scoped history after the workspace is registered.
 

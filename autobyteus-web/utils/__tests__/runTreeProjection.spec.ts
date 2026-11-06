@@ -13,7 +13,6 @@ describe('buildRunTreeProjection', () => {
           workspaceRootPath: '/ws/a',
           workspaceName: 'Alpha',
           workspaceKind: 'filesystem',
-          canRemoveFromWorkspaces: true,
         },
       ],
       persistedWorkspaces: [
@@ -99,7 +98,6 @@ describe('buildRunTreeProjection', () => {
           workspaceRootPath: '/ws/a',
           workspaceName: 'Alpha',
           workspaceKind: 'filesystem',
-          canRemoveFromWorkspaces: true,
         },
       ],
       persistedWorkspaces: [
@@ -174,7 +172,6 @@ describe('buildRunTreeProjection', () => {
         workspaceRootPath: '/ws/a',
         workspaceName: 'Alpha',
         workspaceKind: 'filesystem',
-        canRemoveFromWorkspaces: true,
       }],
       persistedWorkspaces: [{
         workspaceRootPath: '/ws/a',

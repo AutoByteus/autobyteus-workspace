@@ -39,7 +39,7 @@ const setup = async (active: boolean, linked: boolean) => {
     orgRuns: { getActive: vi.fn(() => active ? { getExecutionTreeSnapshot } : null), closedTaskExecutionsFor: () => [] } as never,
     orgTrees: store,
   });
-  return { tree, expected, store, packagePath, file, bytes, read, write, getExecutionTreeSnapshot, catalog, service };
+  return { memoryDir, tree, expected, store, packagePath, file, bytes, read, write, getExecutionTreeSnapshot, catalog, service };
 };
 
 describe("mixed public history Org projection", () => {
@@ -113,5 +113,24 @@ describe("mixed public history Org projection", () => {
     expect(current.read).not.toHaveBeenCalled();
     expect(current.write).not.toHaveBeenCalled();
     expect(await fs.readFile(current.file)).toEqual(current.bytes);
+  });
+
+  it("carries each Org and Team root's last activity (workspace-tree-vs-chooser DS-005)", async () => {
+    const current = await setup(false, false);
+    const forOrgRun = vi.fn(async () => "2026-11-05T09:30:00.000Z");
+    const team = { teamRunId: "team-root", createdAt: "2026-11-01T00:00:00.000Z", lastActivityAt: "2026-11-04T00:00:00.000Z",
+      archivedAt: null, isActive: false, summary: "" };
+    const service = new CollaborationRootHistoryService({
+      memoryDir: current.memoryDir,
+      teams: { listTeamRunHistory: async () => [team as never] },
+      orgs: { listCatalogRows: async () => current.catalog, getCatalogRow: async () => current.catalog[0]! },
+      orgRuns: { getActive: () => null, closedTaskExecutionsFor: () => [] } as never,
+      orgTrees: current.store,
+      lastActivity: { forOrgRun },
+    });
+    const rows = await service.list();
+    expect(rows.find((row) => row.root_subject_kind === "agent_org")?.last_activity_at).toBe("2026-11-05T09:30:00.000Z");
+    expect(rows.find((row) => row.root_subject_kind === "agent_team")?.last_activity_at).toBe("2026-11-04T00:00:00.000Z");
+    expect(forOrgRun).toHaveBeenCalledWith({ orgRunId: "org-root", createdAt: current.catalog[0]!.createdAt });
   });
 });

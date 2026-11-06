@@ -209,6 +209,8 @@ try {
 
   // The definitions change feed the Workspaces shell opens; the fixture has no backend (baseline fix).
   await page.routeWebSocket(/\/ws\/agent-package-definitions(\?|$)/, (ws) => ws.send(JSON.stringify({ type: 'connected' })));
+  // Baseline fix (autobyteus-385 API/E2E): the window also opens the update-notifications stream (autobyteus-210); the fixture has no backend.
+  await page.routeWebSocket(/\/ws\/update-notifications(\?|$)/, () => undefined);
   await page.goto(`${baseUrl}${routePath}`, { waitUntil: 'domcontentloaded', timeout: timeoutMs });
   await page.locator('[data-test="ttrc-disclosure-probe-root"]').waitFor({ state: 'visible' });
   await page.waitForFunction(() => Boolean(window.__taskTeamDisclosureProbe));

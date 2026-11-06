@@ -19,6 +19,7 @@ describe('useMobileWorkCatalog', () => {
       coordinatorAddress: '/lead',
       summary: 'Implement mobile QR scanning',
       createdAt: '2026-05-21T17:00:00.000Z',
+      lastActivityAt: '2026-05-21T17:00:00.000Z',
       isActive: false,
       members: [
         {
@@ -71,7 +72,6 @@ describe('useMobileWorkCatalog', () => {
       expect(item.context.statusLabel).toBe('Inactive');
       expect(item.context.focusedAgentRunId).toBe('reviewer-run');
     }
-    expect('lastActivityAt' in teamRun).toBe(false);
     expect('lastKnownStatus' in teamRun).toBe(false);
   });
 
@@ -88,7 +88,7 @@ describe('useMobileWorkCatalog', () => {
               {
                 runId: 'run-1',
                 summary: 'Malformed historical run',
-                createdAt: undefined as unknown as string,
+                createdAt: undefined as unknown as string, lastActivityAt: undefined as unknown as string,
                 status: AgentStatus.Idle,
                 isActive: false,
               },

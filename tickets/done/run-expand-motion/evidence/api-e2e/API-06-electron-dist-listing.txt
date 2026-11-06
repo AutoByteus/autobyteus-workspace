@@ -1,0 +1,7 @@
+AutoByteus_personal_macos-arm64-1.5.12-beta.2.dmg
+AutoByteus_personal_macos-arm64-1.5.12-beta.2.dmg.blockmap
+AutoByteus_personal_macos-arm64-1.5.12-beta.2.zip
+AutoByteus_personal_macos-arm64-1.5.12-beta.2.zip.blockmap
+builder-debug.yml
+latest-mac.yml
+mac-arm64

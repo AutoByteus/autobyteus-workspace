@@ -151,6 +151,22 @@ const shellMessages = {
   'shell.components.layout.WorkspaceAdaptiveLayout.select_or_run_an_agent_team': 'Select or run an agent/team to begin.',
   'shell.components.layout.loading_selected_run_history': 'Loading',
   'shell.startTools.show': 'Show tools',
+  // The run section's Runs view (workspace-tree-vs-chooser, from autobyteus-378).
+  'runList.title': 'Your runs',
+  'runList.showOlder': 'Show older ({{count}})',
+  'runList.showFewer': 'Show fewer',
+  'runList.archiveOlder': 'Archive all older',
+  'runList.olderRuns': 'Older runs',
+  'runList.loading': 'Loading…',
+  'runList.error': 'Couldn’t load your runs.',
+  'runList.staleError': 'Couldn’t refresh.',
+  'runList.retry': 'Retry',
+  'runList.emptyTitle': 'No runs yet',
+  'runList.emptyHelp': 'Start with Chat. Work an agent delegates appears under its run and leaves when it is done.',
+  'runList.expand': 'Show delegated work of {{name}}',
+  'runList.collapse': 'Hide delegated work of {{name}}',
+  'runList.rowTitle': '{{name}} · {{folder}}',
+  'runList.folderTemp': 'Temp workspace',
 } satisfies TranslationCatalog;
 
 export default shellMessages;

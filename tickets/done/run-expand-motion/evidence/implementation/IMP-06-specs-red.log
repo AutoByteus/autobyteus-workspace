@@ -1,0 +1,25 @@
+# Check: IMP-06
+# Command: cd autobyteus-web && env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR="$TMPDIR" NUXT_TEST=true pnpm exec vitest run <spec> — RunListRow.agent.spec with RunListRow.vue from SR-001 c5cc87d89d (red); RunListPanel.spec with RunListPanel.vue from base 4500e7278d (red); both as committed (green, in IMP-07)
+# Commit: 3e6b5a3dd4 with the named file swapped for the red runs
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28 via corepack, Google Chrome headless (playwright-core); env -i PATH HOME=<fresh mktemp dir> TMPDIR (TESTING.md isolation)
+# Date: 2026-11-06 CET
+# Full output: this file; green in IMP-07
+
+## Red: RunListRow.agent.spec on SR-001's row (v-if)
+   ✓ RunListRow: an Agent run's delegated rows (autobyteus-390) > expanded at first: the stored delegated rows load once and show; the disclosure says expanded 39ms
+   × RunListRow: an Agent run's delegated rows (autobyteus-390) > fold hides the rows and keeps them, with their Task lines; unfold shows the same rows with no new read (R-01) 19ms
+   × RunListRow: an Agent run's delegated rows (autobyteus-390) > the disclosure button folds and unfolds it 16ms
+   × RunListRow: an Agent run's delegated rows (autobyteus-390) > a folded Agent row renders no Team or Org tree in its place 16ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  3 failed | 1 passed (4)
+
+## Red: RunListPanel.spec on the base panel (no scoped rule)
+   ✓ RunListPanel: "Your runs" (UIS-001…005) > is a labelled region with a list of the newest five, then "Show older (N)" / "Show fewer" 55ms
+   ✓ RunListPanel: "Your runs" (UIS-001…005) > has no fold with five runs or fewer 16ms
+   ✓ RunListPanel: "Your runs" (UIS-001…005) > refuses "Archive all older" while an older run is running, and otherwise archives them after the confirmation 39ms
+   ✓ RunListPanel: "Your runs" (UIS-001…005) > shows loading, a read error with Retry, a refresh error above the list, and the empty invitation 11ms
+   ✓ RunListPanel: "Your runs" (UIS-001…005) > opens a Team run through its focused member's stored history, not a blind Team selection 19ms
+   ✓ RunListPanel: "Your runs" (UIS-001…005) > keeps the open Team run expanded when another Team run is opened 23ms
+   × RunListPanel: rows never slide in the Runs view (autobyteus-390) > scopes a no-transition move rule to the run list's scroll container 8ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  1 failed | 6 passed (7)
