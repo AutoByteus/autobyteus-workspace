@@ -31,4 +31,4 @@ None.
 - Current result and confidence: Fail, 87%
 - New or remaining failure IDs: API-03 (AC-001)
 - Recommended owner: failure-origin review by the code reviewer. Preliminary `Local Fix` (implementation), or `Design Impact` if the fix moves Task-summary ownership
-- Remaining risks, blocked evidence, or untested scope: signing and notarization (runner only); OBS-2 (the Workspaces tree likely behaves the same; not verified)
+- Remaining risks, blocked evidence, or untested scope: signing and notarization (runner only). OBS-2 withdrawn: the user reports the Workspaces and Projects views are fine

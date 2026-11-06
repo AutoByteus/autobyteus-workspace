@@ -41,7 +41,7 @@ Paths are relative to `/Users/normy/autobyteus_org/autobyteus-worktrees/run-expa
 ### Observations
 
 - **OBS-1 (not this ticket).** The Runs view's fold resets when the view is shown again: `foldedRuns` lives in each `useRunListDisclosure` instance (385). This ticket does not change it, and AC-003 asks for it to stay as it is.
-- **OBS-2 (likely shared, not verified).** The Workspaces tree mounts the same `AgentRunTaskRows`, under folder and agent-group rows that mount their children only while expanded. Its rows would also lose their Task answers when collapsed and regain them after expand. API-03's effect may therefore also exist there. I did not run this.
+- **OBS-2 (withdrawn).** I had guessed from reading that the Workspaces tree, which mounts the same `AgentRunTaskRows`, might show the same effect. I never ran it. The user reports (2026-11-06) that expand and collapse are fine in the Workspaces and Projects views; only the Runs view has the problem. No follow-up.
 
 ## Acceptance-Criteria Proof
 
@@ -126,4 +126,4 @@ Paths are relative to `/Users/normy/autobyteus_org/autobyteus-worktrees/run-expa
 - Criteria not proven, or parts only the user can check: AC-001 (Not Proven: fails live). Nothing only the user can check.
 - Test-code review: `Not Required — direct low-risk route`
 - Next recipient: `/software_engineering_team/code_reviewer` (failure-origin review)
-- Notes: OBS-1, OBS-2. The fresh-start build passes. TESTING.md gained the Fresh-start build section; delivery's docs sync should check it.
+- Notes: OBS-1 (OBS-2 withdrawn on the user's report). The fresh-start build passes. TESTING.md gained the Fresh-start build section; delivery's docs sync should check it.
