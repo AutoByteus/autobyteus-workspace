@@ -1,7 +1,7 @@
 ## What you need to do
 
 - **The phone's new screens come from the node you pair with.** Update that desktop app or Docker node to this version; the phone shows them the next time it connects. There is nothing to re-pair.
-- **On Android, install this release's APK** (`AutoByteus_personal_android-…-release.apk`) to get the screen-edge and keyboard fixes: nothing sits under the status bar or the navigation bar, and the message box stays right above the keyboard.
+- **On Android 15 and later, install this release's APK** (`AutoByteus_personal_android-…-release.apk`) so the app's screens are no longer drawn under the status bar or the navigation bar. It installs over your current app and keeps your pairing. (The message box staying right above the keyboard comes from the node, with no new APK.)
 
 ## Changed
 
