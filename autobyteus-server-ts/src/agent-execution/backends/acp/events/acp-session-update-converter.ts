@@ -3,7 +3,7 @@ import { AgentRunEventType, type AgentRunEvent, type AgentRunStatusHint } from "
 import type {
   AcpAgentSessionProfile,
   AcpCompactionStatusInput,
-  AcpExtEffect,
+  AcpSessionEffect,
   AcpToolCallProjection,
   AcpToolCallSnapshot,
   AcpToolCallStatus,
@@ -20,7 +20,7 @@ type TrackedToolCall = {
 
 type OpenSegment = { id: string; kind: "text" | "reasoning" };
 
-type AcpCompactionEffect = Extract<AcpExtEffect, { kind: "compaction" }>;
+type AcpCompactionEffect = Extract<AcpSessionEffect, { kind: "compaction" }>;
 
 /** A compaction the agent reported started and has not completed. */
 type OpenCompaction = { operationId: string; sessionId: string };

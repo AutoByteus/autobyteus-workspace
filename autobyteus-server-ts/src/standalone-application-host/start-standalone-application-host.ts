@@ -260,8 +260,11 @@ export const startStandaloneApplicationHost = async (
         definitionAdmissionService: hostDefinitionServices.definitionAdmissionService,
         workspaceManager,
         agentProviderFactoryBuilder,
-        // The standalone application host gives its runs no integration access in this step.
+        // The standalone application host runs no credential proxy: no integration access, no provider relays
+        // (their runtimes are refused before they start), no passes.
         integrationRunAccess: null,
+        providerRelayAccess: null,
+        runPasses: null,
         agentToolMcpSessionAuthority: generalProcessAuthority,
         modelSelectionValidator,
         taskExecutionResources,
@@ -281,6 +284,8 @@ export const startStandaloneApplicationHost = async (
       runtimeAvailabilityService: getRuntimeAvailabilityService(),
       modelCatalogService,
       modelSelectionValidator,
+      providerRelayAccess: null,
+      runPasses: null,
       modelAvailabilityService: getModelAvailabilityService(),
       llmProviderService: getLlmProviderService(),
       codexClientManager: getCodexAppServerClientManager(),

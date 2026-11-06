@@ -488,6 +488,7 @@ export enum AgentRuntimeOperationState {
 }
 
 export enum AgentRuntimeSignInRoute {
+  ApiKeySetting = 'API_KEY_SETTING',
   Browser = 'BROWSER',
   CommandLine = 'COMMAND_LINE'
 }
@@ -4702,13 +4703,6 @@ export type TerminateAgentRunMutationVariables = Exact<{
 
 export type TerminateAgentRunMutation = { __typename?: 'Mutation', terminateAgentRun: { __typename: 'TerminateAgentRunResult', success: boolean, message: string } };
 
-export type CreateAgentRunMutationVariables = Exact<{
-  input: CreateAgentRunInput;
-}>;
-
-
-export type CreateAgentRunMutation = { __typename?: 'Mutation', createAgentRun: { __typename?: 'CreateAgentRunResult', success: boolean, message: string, runId?: string | null } };
-
 export type PrepareAgentRunMutationVariables = Exact<{
   input: CreateAgentRunInput;
 }>;
@@ -7639,37 +7633,6 @@ export function useTerminateAgentRunMutation(options: VueApolloComposable.UseMut
   return VueApolloComposable.useMutation<TerminateAgentRunMutation, TerminateAgentRunMutationVariables>(TerminateAgentRunDocument, options);
 }
 export type TerminateAgentRunMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<TerminateAgentRunMutation, TerminateAgentRunMutationVariables>;
-export const CreateAgentRunDocument = gql`
-    mutation CreateAgentRun($input: CreateAgentRunInput!) {
-  createAgentRun(input: $input) {
-    success
-    message
-    runId
-  }
-}
-    `;
-
-/**
- * __useCreateAgentRunMutation__
- *
- * To run a mutation, you first call `useCreateAgentRunMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useCreateAgentRunMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useCreateAgentRunMutation({
- *   variables: {
- *     input: // value for 'input'
- *   },
- * });
- */
-export function useCreateAgentRunMutation(options: VueApolloComposable.UseMutationOptions<CreateAgentRunMutation, CreateAgentRunMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<CreateAgentRunMutation, CreateAgentRunMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<CreateAgentRunMutation, CreateAgentRunMutationVariables>(CreateAgentRunDocument, options);
-}
-export type CreateAgentRunMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<CreateAgentRunMutation, CreateAgentRunMutationVariables>;
 export const PrepareAgentRunDocument = gql`
     mutation PrepareAgentRun($input: CreateAgentRunInput!) {
   prepareAgentRun(input: $input) {

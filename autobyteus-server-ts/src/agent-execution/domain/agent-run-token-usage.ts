@@ -10,13 +10,15 @@ import { acceptModelCallThroughput, type ModelCallThroughput } from "./model-cal
 import { isClaudeSdkResultIdentity, isClaudeSdkModelUsageArray, type ClaudeSdkModelUsage, type ClaudeSdkSelectedMatchState, type ClaudeSdkQueryKind } from "./claude-sdk-usage.js";
 
 export type TokenUsageScope = "per_call" | "per_turn" | "cumulative_snapshot";
-export type TokenUsageRuntimeKind = "autobyteus" | "codex_app_server" | "claude_agent_sdk" | "grok_build" | string;
+export type TokenUsageRuntimeKind = "autobyteus" | "codex_app_server" | "claude_agent_sdk" | "grok_build" | "deepseek_harness" | string;
 export type TokenUsageIngestionKind =
   | "autobyteus_llm_phase"
   | "codex_thread_token_usage"
   | "claude_sdk_result"
   | "claude_sdk_call"
   | "grok_acp_call"
+  | "deepseek_harness_call"
+  | "deepseek_harness_compaction_call"
   | string;
 export type TokenUsagePricingStatus = "trusted" | "missing" | "placeholder" | "local_no_api_bill";
 export type TokenUsageApiCostStatus =

@@ -7,7 +7,7 @@ type ModelLabelOf = (runtimeKind: string, llmModelIdentifier: string) => string
 
 /** One fixed colour per runtime (UI/UX specification § Visual Language), in Decisions and Overview alike. */
 export const RUNTIME_COLORS: Readonly<Record<string, string>> = {
-  codex_app_server: '#2a78d6', claude_agent_sdk: '#eb6834', antigravity_cli: '#1baf7a', grok_build: '#e87ba4', autobyteus: '#eda100',
+  codex_app_server: '#2a78d6', claude_agent_sdk: '#eb6834', antigravity_cli: '#1baf7a', grok_build: '#e87ba4', deepseek_harness: '#4d6bfe', autobyteus: '#eda100',
 }
 export const runtimeColor = (runtimeKind: string): string => RUNTIME_COLORS[runtimeKind] ?? '#64748b'
 

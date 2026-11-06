@@ -13,11 +13,23 @@ import { IntegrationActivityLog } from "./integration-activity-log.js";
 import { getIntegrationCatalog, type IntegrationCatalog } from "./integration-catalog.js";
 import { integrationsDirectory } from "./integration-connection-service.js";
 import { DefaultIntegrationRunAccess, type IntegrationRunAccess } from "./integration-run-access.js";
+import {
+  DefaultProviderRelayAccess,
+  ProviderCallObservers,
+  type ProviderRelayAccess,
+} from "./provider-relays/provider-relay-access.js";
+import { ProviderRelays } from "./provider-relays/provider-relays.js";
 import { RunPassRegistry } from "./run-pass-registry.js";
+import { RegistryRunPassRevocation, type RunPassRevocation } from "./run-pass-revocation.js";
 
-/** The credential proxy as the studio server composes it: the run access for backends, and the listener lifecycle. */
+/**
+ * The credential proxy as the studio server composes it: the integration access and the provider relay access for
+ * backends, the end of a run's pass for the run managers, and the listener lifecycle.
+ */
 export interface CredentialProxyHost {
   readonly runAccess: IntegrationRunAccess;
+  readonly providerRelayAccess: ProviderRelayAccess;
+  readonly runPasses: RunPassRevocation;
   listen(): Promise<void>;
   close(): Promise<void>;
 }
@@ -35,6 +47,7 @@ export const createCredentialProxyHost = (input: AccessInput & Readonly<{
   management?: () => SecretManagementService;
   fetchImpl?: typeof fetch;
   catalog?: Pick<IntegrationCatalog, "entries" | "isSourceRegistered" | "describe"> & SkillSourceChangeObserver;
+  relays?: ProviderRelays;
   /** Told before a source changes, so a removed source takes its integrations' connections with it (DEC-015). */
   skillSources?: Pick<SkillSourceService, "setSourceChangeObserver"> | null;
 }>): CredentialProxyHost => {
@@ -47,23 +60,28 @@ export const createCredentialProxyHost = (input: AccessInput & Readonly<{
   const skillSources = input.skillSources === undefined ? SkillSourceService.getInstance() : input.skillSources;
   skillSources?.setSourceChangeObserver(catalog);
   const passes = new RunPassRegistry();
+  const relays = input.relays ?? new ProviderRelays();
+  const observers = new ProviderCallObservers();
   const management = input.management ?? (() => getSecretVaultRuntime().requireService());
-  const server = new CredentialProxyLocalServer((self) => Object.freeze({
-    gate: new AgentToolsMcpLocalAccessGate(),
-    passes,
-    definitions,
-    access,
-    catalog,
-    management,
-    forwarder: new CredentialProxyForwarder(input.fetchImpl),
-    activity: new IntegrationActivityLog(integrationsDir),
-    proxyBaseUrl: () => self.requireBaseUrl(),
-  }));
-  const runAccess = new DefaultIntegrationRunAccess({
-    access, definitions, passes, proxyBaseUrl: () => server.requireBaseUrl(),
+  const server = new CredentialProxyLocalServer((self) => {
+    const gate = new AgentToolsMcpLocalAccessGate();
+    const forwarder = new CredentialProxyForwarder(input.fetchImpl);
+    const proxyBaseUrl = () => self.requireBaseUrl();
+    return Object.freeze({
+      integrations: Object.freeze({
+        gate, passes, definitions, access, catalog, management, forwarder, proxyBaseUrl,
+        activity: new IntegrationActivityLog(integrationsDir),
+      }),
+      relays: Object.freeze({ gate, passes, relays, observers, management, forwarder, proxyBaseUrl }),
+    });
   });
+  const proxyBaseUrl = () => server.requireBaseUrl();
+  const runAccess = new DefaultIntegrationRunAccess({ access, definitions, passes, proxyBaseUrl });
+  const providerRelayAccess = new DefaultProviderRelayAccess({ relays, passes, observers, management, proxyBaseUrl });
   return Object.freeze({
     runAccess,
+    providerRelayAccess,
+    runPasses: new RegistryRunPassRevocation(passes),
     listen: () => server.listen(),
     close: async () => {
       skillSources?.setSourceChangeObserver(null);

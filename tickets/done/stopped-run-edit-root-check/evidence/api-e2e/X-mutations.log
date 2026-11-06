@@ -1,0 +1,16 @@
+# mutations of the COMPILED output (untracked dist/), restored with cmp after each; test: stopped-run-edit-root-built-server.e2e.test.ts; commit 747f2ae65d; 2026-11-06T12:51:26Z
+== X-A: the manager's refresh does nothing after the saved edit (refreshInheritedLaunch returns at once)
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: copy two carries the SAVED model: expected { Object (runtimeKind, llmModelIdentifier, ...) } to match object { Object (runtimeKind, llmModelIdentifier) }
+      Tests  1 failed (1)
+restored
+== X-B: the root ignores setInheritedLaunch (the old captured launch stays)
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: copy two carries the SAVED model: expected { Object (runtimeKind, llmModelIdentifier, ...) } to match object { Object (runtimeKind, llmModelIdentifier) }
+      Tests  1 failed (1)
+restored
+== X-C: the service never calls the refresh (agent-run-service: result.outcome === "UPDATED" -> false)
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: copy two carries the SAVED model: expected { Object (runtimeKind, llmModelIdentifier, ...) } to match object { Object (runtimeKind, llmModelIdentifier) }
+      Tests  1 failed (1)
+restored

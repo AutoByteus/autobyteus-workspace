@@ -1,0 +1,26 @@
+running live (claude, codex, grok): tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts
+running antigravity (antigravity): tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts
+running autobyteus (autobyteus): tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts
+
+Release smoke check
+runtime     scenario                                 result  reason
+claude      new run + restore, linked workspace      PASS
+claude      brand-new team member                    PASS
+claude      different same-named skill               PASS
+codex       new run + restore, linked workspace      FAIL    failed: AssertionError: turn errors: {"code":"RUNTIME_ERROR","message":"You’ve hit your usage limit. Visit https://chatgpt.com/settings/usage to purchase more credits or try again at Nov 10th, 2026 10:31 AM.","error_scope":"turn","error_effect":"terminal","turn_id":"01a1b0b3-02a1-7671-a296-c38d413eac86"} |
+codex       brand-new team member                    FAIL    failed: AssertionError: turn errors: {"code":"RUNTIME_ERROR","message":"You’ve hit your usage limit. Visit https://chatgpt.com/settings/usage to purchase more credits or try again at Nov 10th, 2026 10:31 AM.","error_scope":"turn","error_effect":"terminal","turn_id":"01a1b0b3-1062-7f51-b138-ed0f31216f4a","ch
+codex       different same-named skill               FAIL    failed: AssertionError: turn errors: {"code":"RUNTIME_ERROR","message":"You’ve hit your usage limit. Visit https://chatgpt.com/settings/usage to purchase more credits or try again at Nov 10th, 2026 10:31 AM.","error_scope":"turn","error_effect":"terminal","turn_id":"01a1b0b3-1c3e-75b0-97f2-e87d1f8061dc"} |
+grok        new run + restore, linked workspace      PASS
+grok        brand-new team member                    PASS
+grok        different same-named skill               PASS
+antigravity brand-new run, linked workspace          PASS
+antigravity brand-new team member, linked workspace  PASS
+autobyteus  brand-new run, linked workspace          PASS
+autobyteus  brand-new team member, linked workspace  PASS
+
+commit    2f2a361aac36b268ee50ad63d862b8db1a2217fa
+models    {"claude": "haiku", "codex": "gpt-5.6-luna", "grok": "grok-4.5 (pinned grok-4.7 not offered)"}
+duration  live 215s, antigravity 20s, autobyteus 8s
+result    FAIL
+logs      /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/release-smoke-tyt5eknm
+exit 1

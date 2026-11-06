@@ -24,6 +24,8 @@ import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
 import type { ContextFilePathEnvironment } from "../../context-files/domain/context-file-path-environment.js";
 import type { RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
 import type { ApplicationAgentToolCapability } from "../../application-agent-tools/services/application-agent-tool-capability.js";
+import type { ProviderRelayAccess } from "../../credential-proxy/provider-relays/provider-relay-access.js";
+import type { RunPassRevocation } from "../../credential-proxy/run-pass-revocation.js";
 
 export type ApplicationExecutionScopeIdentity = `application:${string}`;
 
@@ -40,6 +42,10 @@ export type ApplicationExecutionScopeBuildInput = Readonly<{
   artifactDeliverySink: ApplicationPublishedArtifactDeliverySink;
   modelSelectionValidator: RunModelSelectionValidator;
   applicationAgentTools: ApplicationAgentToolCapability;
+  /** The host's provider relays for the scope's runs (`null`: the host runs no credential proxy). */
+  providerRelayAccess: ProviderRelayAccess | null;
+  /** Ends the scope's run passes; from the same host, non-null whenever `providerRelayAccess` is. */
+  runPasses: RunPassRevocation | null;
 }>;
 
 export type ApplicationAgentLaunchResult = Readonly<{

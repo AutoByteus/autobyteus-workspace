@@ -1,0 +1,19 @@
+# IMP-04 scripted Grok and integrations E2E (env -i, temp HOME)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts tests/e2e/runtime/grok-build-compaction-replay.e2e.test.ts tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts tests/e2e/credential-proxy/integrations-graphql.e2e.test.ts --no-watch
+# Commit: 9dd599dfe3
+# Environment: macOS (Darwin 25.5), Node 22.21.1
+# Date: 2026-11-06
+
+ ✓ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts (6 tests) 2881ms
+     ✓ lists the Grok Build catalog from the agent handshake with the reasoning-effort schema (AC-002)  718ms
+     ✓ streams a recorded list_dir turn, records one usage row per Grok model call and exposes them via GraphQL (AC-003, AC-009)  1087ms
+ ✓ tests/e2e/runtime/grok-build-compaction-replay.e2e.test.ts (3 tests) 3330ms
+     ✓ pairs three automatic compactions and archives one segment per completion (REQ-G1, REQ-G2)  1082ms
+     ✓ closes an automatic compaction stopped by the user as failed, then pairs the next one (REQ-G3)  1019ms
+     ✓ records a manual /compact as one completed compaction with no start (REQ-G1, REQ-G2, REQ-G4)  741ms
+ ✓ tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts (1 test) 8006ms
+     ✓ fails the message with the plain message, touches no other run, and retries at the next message  7435ms
+ ✓ tests/e2e/credential-proxy/integrations-graphql.e2e.test.ts (5 tests) 4650ms
+ Test Files  4 passed (4)
+      Tests  15 passed (15)
+   Duration  38.92s (transform 8.26s, setup 120ms, import 19.03s, tests 18.87s, environment 0ms)

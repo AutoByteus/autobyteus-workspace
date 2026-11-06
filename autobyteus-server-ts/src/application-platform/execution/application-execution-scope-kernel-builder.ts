@@ -106,8 +106,7 @@ export const buildApplicationExecutionScopeKernel = (
       memoryRecorder,
       workJournalUpdater: new WorkJournalRunUpdater({ memoryRecorder, journalService: getWorkJournalService() }),
       mcpServerInstances: McpServerInstanceManager.getInstance(),
-      // The standalone application host gives its runs no integration access in this step.
-      integrationRunAccess: null,
+      runPasses: input.runPasses,
     });
     const activationRegistry = new AgentRunActivationRegistry(resourceManager);
     const projectionStore = new PublishedArtifactProjectionStore();
@@ -131,7 +130,9 @@ export const buildApplicationExecutionScopeKernel = (
         agentDefinitionService: input.agentDefinitionService,
         agentToolMcpRunSessions: authority.runSessions,
         applicationAgentTools: input.applicationAgentTools,
+        // Application runs get no integration access in this step.
         integrationRunAccess: null,
+        providerRelayAccess: input.providerRelayAccess,
       });
     const agentRunManager = new AgentRunManager({
       autoByteusBackendFactory: providerFactories.autoByteus,
@@ -139,11 +140,12 @@ export const buildApplicationExecutionScopeKernel = (
       claudeBackendFactory: providerFactories.claude,
       agyBackendFactory: providerFactories.antigravity,
       grokBackendFactory: providerFactories.grok,
+      deepSeekHarnessBackendFactory: providerFactories.deepSeekHarness,
       activationRegistry,
       memoryRecorder,
       providerInputNormalizer,
       agentToolMcpRunSessionDeactivator: authority.runSessions,
-      integrationRunAccess: null,
+      runPasses: input.runPasses,
     });
     const metadataService = new AgentRunMetadataService(input.memoryDir);
     const historyCatalogService = new AgentRunHistoryCatalogService(
@@ -334,5 +336,9 @@ const assertBuildInput = (input: ApplicationExecutionScopeBuildInput): void => {
     if (input[field] == null) {
       throw new Error(`Application execution scope ${field} is required.`);
     }
+  }
+  if (input.providerRelayAccess === undefined || input.runPasses === undefined
+    || (input.providerRelayAccess && !input.runPasses)) {
+    throw new Error("Application execution scope providerRelayAccess and runPasses dispositions are required.");
   }
 };

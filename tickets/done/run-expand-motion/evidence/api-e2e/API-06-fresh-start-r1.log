@@ -1,0 +1,22 @@
+== header: fresh-start build proof; commit 85bf73750b; 2026-11-06T06:05:32Z; 26.5.2; node v22.23.1; pnpm 10.28.2
+== clone: 85bf73750; dist folders before install:        3
+== step 1: pnpm install --frozen-lockfile 06:06:47
+install exit=0
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 9s using pnpm v10.28.2
+== step 2: (autobyteus-web) pnpm build:electron:mac -- --arm64, NO_TIMESTAMP=1 AUTOBYTEUS_BUILD_FLAVOR=personal PRISMA_CLI_BINARY_TARGETS=darwin-arm64,debian-openssl-1.1.x,debian-openssl-3.0.x, no APPLE_* secrets 06:06:56
+build exit=1 06:09:43
+9:[guard:web-boundary] Passed.
+14:[guard:localization-boundary] Passed.
+19:[audit:localization-literals] Passed with zero unresolved findings.
+66:[typecheck] Nuxt app (tsconfig.json): 72 errors, exit 2, 34.4s
+67:[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.0s
+68:[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+69:[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 23.0s
+70:[typecheck] production errors: 0; test-file errors: 99 in 43 files (baseline 99 in 43 files)
+71:[typecheck] PASS
+676:ℹ .nuxt/dist/client/_nuxt/projectErrorMessageKey.Qu4jEtks.js                      0.63 kB │ gzip:     0.32 kB
+856:        throw new Error('Unable to resolve GitHub updater repository. Set AUTOBYTEUS_UPDATER_REPOSITORY=owner/repo.');
+858:Error: Unable to resolve GitHub updater repository. Set AUTOBYTEUS_UPDATER_REPOSITORY=owner/repo.
+all-done

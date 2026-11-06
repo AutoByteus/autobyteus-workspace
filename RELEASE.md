@@ -36,6 +36,17 @@ this file.
 
 - Never commit build output: `*/dist/`, `autobyteus-web/electron-dist/` and
   other packaged app files. CI builds every release from source.
+- **Before the merge, delivery audits; it does not redo.** It opens the
+  ticket's evidence (the API/E2E execution report and the files it names)
+  and checks that each acceptance criterion is proven. It does not rerun the
+  suites, clean clones or builds that implementation and API/E2E already ran.
+  It reruns something only when:
+  - the evidence has a gap (send it back to API/E2E, which closes it);
+  - new base commits came in when the branch was brought current (one
+    relevant check on the merged state);
+  - the ticket or this guide asks delivery for it by name.
+  The checks this guide lists before tagging are the release's own and always
+  run.
 
 ## Secret Gate
 
@@ -111,9 +122,9 @@ The hygiene check rejects these tracked paths:
   passes in your worktree and fails in a clean checkout
   (`--only tracked-imports` runs this check alone).
 
-Ticket evidence is the usual source. For example, a log named after a script
-such as `web-audit:localization-literals.log` broke the `v1.5.2-beta.1`
-Windows build at checkout. Name evidence files with `-` instead of `:`.
+A `:` in a file name breaks a Windows checkout, and ticket evidence is the usual
+source (logs named after a script, such as `web-audit:localization-literals.log`).
+Name evidence files with `-` instead of `:`.
 
 ### Release smoke check
 
@@ -121,9 +132,9 @@ Windows build at checkout. Name evidence files with `-` instead of `:`.
 way users do, on all five runtimes: Claude, Codex, Grok, Antigravity and
 AutoByteus. It covers a brand-new run, a brand-new team member with no memory
 folder yet, a run in a workspace whose `.claude/.codex/.grok/skills` link to
-the same skill, a restored run, and a different same-named skill. v1.5.6-beta.2
-shipped in two betas with runs in such a workspace, and every brand-new run,
-failing to start; no check before tagging started a run.
+the same skill, a restored run, and a different same-named skill. No other check
+before tagging starts a run, so a change that stops new runs from starting would
+otherwise ship unnoticed.
 
 - **When:** before every beta and stable tag, on the merged state you will
   tag, after `pnpm install` and `pnpm -C autobyteus-server-ts prebuild`.
@@ -154,26 +165,40 @@ failing to start; no check before tagging started a run.
 
 ### Build-only release run
 
-Before every tag, beta or stable, run the desktop release workflow build-only
-on the merge you pushed to `personal`, and tag only after it passes:
+A release has no build-only run before its tag (the user's decision). The
+failure class it used to catch, a build or gate that passes on a prepared machine
+and fails on a fresh runner, is proven before the merge instead, by API/E2E's
+[Fresh-start build](TESTING.md#fresh-start-build) for every change that touches a
+build input. The change and its reasons: [`tickets/done/beta-release-v1.5.12-beta.2/release-deployment-report.md`](tickets/done/beta-release-v1.5.12-beta.2/release-deployment-report.md).
+
+Run the build-only release run on the ticket branch, before the merge, for a
+change a Mac cannot reproduce and for the build-step and gate changes
+[DESIGN.md](DESIGN.md) rule 12 names:
+
+- a release workflow (`.github/workflows/release-*.yml`);
+- Windows or Linux packaging;
+- a runner image or OS (for example `macos-14` → `macos-15`);
+- a build step or gate.
 
 ```bash
-pnpm release:test --ref personal   # builds all five desktop targets; publishes nothing
+pnpm release:test --ref <ticket-branch>   # builds all five desktop targets; publishes nothing
 gh run list --workflow release-desktop.yml --limit 1
-gh run watch <run-id> --exit-status   # about 25 minutes
+gh run watch <run-id> --exit-status       # about 25 minutes
 ```
 
-- The design rule behind this run is [DESIGN.md](DESIGN.md) rule 12. For a change to
-  a build step or gate, run it on the ticket branch before the merge
-  (`pnpm release:test --ref <branch>`), not only on `personal` before the tag.
-- Local builds and clean clones do not replace this run. They usually have
-  the workspace packages' `*/dist/` already built (TESTING.md's install order
-  builds them), while a release runner starts from `pnpm install` alone.
-- Do not skip it because a change "does not touch the build". That judgement
-  is how `v1.5.9-beta.14` shipped without desktop assets (see
-  [Case Studies](#case-studies)).
-- If it fails, nothing is published and no version number is used up. Fix the
-  problem on `personal` and run it again.
+- Local builds are never signed. A local build (TESTING.md's Fresh-start
+  build, or any test build) is unsigned (`CSC_IDENTITY_AUTO_DISCOVERY=false`);
+  signing and notarization need the release runners' secrets and happen only
+  there. Record them as not tested locally; do not try to sign locally.
+- The accepted trade-off: a local Mac proves the macOS build from a fresh
+  start, but not the Windows and Linux builds, which only the runners make.
+  A change that breaks only those, without touching packaging, shows up in the
+  real release as a partial release, fixed forward with the next version. The
+  user accepted that risk for the time every release saves.
+- If it fails, nothing is published. Fix the problem on the branch and run it
+  again.
+- A failure in the real release is triaged first ([Recovery](#recovery)): a
+  platform failure is rerun, with no version used up; ours goes back to API/E2E.
 
 ## Cutting The Release
 
@@ -249,7 +274,8 @@ Pushing a `v*` tag starts four independent workflows:
 
 A release is done only when all four have succeeded. Watch the four runs
 together, not one after another, and act on the first failure. Desktop builds
-can fail within minutes while Docker is still running:
+can fail within minutes while Docker is still running (watching them one after
+another once let a partial release go unseen: [`tickets/done/test-and-tooling-hygiene-294/release-deployment-report.md`](tickets/done/test-and-tooling-hygiene-294/release-deployment-report.md)):
 
 ```bash
 gh run list --limit 4   # the four run IDs of the tag
@@ -271,6 +297,39 @@ release. Record it as one.
 
 - **Never move or delete a published tag.** Other workflows have already
   published artifacts from it.
+
+### Triage every pipeline failure first
+
+Before acting on a failed job, or on a failed check before tagging, read its
+log and decide whose failure it is. Record each failed job's classification,
+the log line that shows it, the action and the result in the delivery report.
+
+- **The platform's** (GitHub runners, Apple notarization or stapling, an app
+  store, a package CDN, the network): the same commit would pass on a rerun.
+  Examples: "The job was not acquired by Runner", `NSURLErrorDomain … The
+  network connection was lost` followed by "staple … failed", and
+  `ERR_PNPM_FETCH_503`. Rerun only the failed jobs (below).
+- **Ours** (our code, configuration, scripts, dependencies or workflow files):
+  the same commit would fail again, so do not keep rerunning it.
+  1. Hand it to API/E2E with the run, the job and the failing log lines.
+     API/E2E reproduces it locally ([Fresh-start build](TESTING.md#fresh-start-build)),
+     or shows by a real attempt why no local machine can.
+  2. The failure's class becomes a local check, a TESTING.md rule or a durable
+     test, so a future change of the same kind fails before it is merged.
+     A pipeline step is added only for what API/E2E showed no local machine
+     can reproduce.
+  3. The defect is fixed through the normal route (on a release request, as a
+     new change through the Solution Designer).
+- **Unclear:** one rerun of the failed job decides; a second identical failure
+  is ours.
+
+An escape is fixed at the earliest stage that can reproduce it, in that stage's
+document, whoever owns it, not at the stage that noticed it: a check added where
+a problem was noticed catches it late and slowly. Example: the per-tag build-only
+run, removed on the user's decision ([`tickets/done/beta-release-v1.5.12-beta.2/release-deployment-report.md`](tickets/done/beta-release-v1.5.12-beta.2/release-deployment-report.md)).
+
+### Acting on it
+
 - **The tag's content is at fault** (a checkout-hostile path, a build break): a
   manual re-dispatch checks out the same tag and fails again. Fix the problem
   on `personal` and cut the next version (the next beta, or the next patch for
@@ -280,57 +339,6 @@ release. Record it as one.
   with `gh run rerun <run-id> --failed`, or republish an existing tag with
   `pnpm release:manual-dispatch vX.Y.Z --ref personal`. Do not dispatch manually
   right after a fresh tag push. The push has already started the workflows.
-
-## Case Studies
-
-### `v1.5.9-beta.14`: a new build step failed only on the release runners (2026-10-28)
-
-- **What happened:**
-  - A ticket added the web type check (`pnpm typecheck`) to every
-    `build:electron*` chain, before `prepare-server`.
-  - The check reads the types of `@autobyteus/application-sdk-contracts` from
-    its `dist/`, which the chain builds only inside `prepare-server`.
-  - On the release runners, which start from `pnpm install`, the check found
-    no types (`TS2307: Cannot find module …`) and stopped all five desktop
-    builds.
-  - Android, iOS and Docker published, so the GitHub release had 2 of 17
-    assets: a partial release.
-- **Why every check passed before the tag:**
-  - Every local run had the shared packages built already, including two
-    clean clones that followed TESTING.md's install order.
-  - No run used the release job's order (install, then the build chain), and
-    no build-only release run was made.
-- **Why it was seen late:**
-  - The delivery watched the four runs one after another, starting with
-    Docker, so the desktop failure at minute 5 went unseen for about 30
-    minutes.
-  - The release had been reported as released while the runs were still
-    going. The user found the failure on the Actions page.
-- **Also:** the delivery read this guide from the main checkout, which was
-  behind and lacked the [Secret Gate](#secret-gate). The gate was run late; it
-  passed.
-- **Rules added from it:**
-  - [Build-only release run](#build-only-release-run) before every tag;
-  - watch the four runs together, and report a release only when it is
-    complete ([Watching The Rollout](#watching-the-rollout));
-  - read this guide from `origin/personal`.
-- **Recovery:** the tag stays. The fix goes to `personal` and ships as the
-  next beta.
-
-### `v1.5.11-beta.11`: the same gate, widened without its prepare step (2026-11-02)
-
-- **What happened:** the first build-only run for the beta failed all five desktop
-  builds in `pnpm typecheck` (about 390 `TS2307` errors). autobyteus-318 had added a
-  project to the web type gate that compiles the server's source, which reads
-  `autobyteus-ts` and the Prisma client; the gate's prepare step still built only
-  `application-sdk-contracts`.
-- **Why every earlier check passed:** the tickets before it ran on machines with those
-  outputs already built (316, 345 and 348 passed locally).
-- **What caught it:** the build-only run, before any tag: nothing was published and no
-  version number was used.
-- **Rule added from it:** [DESIGN.md](DESIGN.md) rule 12 (the second incident of the
-  class, after `v1.5.9-beta.14`).
-- **Recovery:** the ticket `clean-runner-build-order` fixes the prepare step; the beta ships after it.
 
 ## Rollback
 

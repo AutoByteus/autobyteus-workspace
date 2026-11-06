@@ -334,6 +334,7 @@ rewording:
 | Codex App Server | `composeSharedCarpenterPrompt` -> thread `baseInstructions` | Provider discovery plus configured workspace materialization when needed | Session-scoped `autobyteus_agent_tools` MCP |
 | Claude Agent SDK | `composeSharedCarpenterPrompt` -> SDK query `options.systemPrompt` custom string | Configured `.claude/skills` materialization | Session-scoped `autobyteus_agent_tools` MCP |
 | Grok Build | `composeSharedCarpenterPrompt` -> ACP `session/new` `_meta.rules` (Grok `<human_rules>` block; harness guidance kept; not re-injected on `session/load`) | Configured `.grok/skills` materialization | Session-scoped `autobyteus_agent_tools` MCP over HTTP, reached through Grok `search_tool`/`use_tool`; see [Grok Build Runtime](./grok_build_runtime.md) |
+| DeepSeek Harness | `composeSharedCarpenterPrompt` -> the run's instructions file, which the AutoByteus plugin in the dsh home adds as one system-prompt section with `interpolate: false` (dsh's persona emptied); written again at every launch (create, restore, reopen), since dsh keeps no instructions with the session | Configured `.dsh/skills` materialization; dsh's default skill roots off | Session-scoped `autobyteus_agent_tools` MCP over HTTP; see [DeepSeek Harness Runtime](./deepseek_harness_runtime.md) |
 
 Claude user turns remain user/context-file content; stable Carpenter instructions
 are not rebuilt as XML inside every user message.
@@ -350,6 +351,8 @@ handoff boundary, not a reconstruction from current definitions:
   thread start or resume after the thread ID is valid.
 - Grok Build records the exact `_meta.rules` string after `session/new`
   succeeds and the Grok `sessionId` is bound.
+- DeepSeek Harness records the exact instructions-file content after
+  `session/new` succeeds.
 - Claude records the exact SDK `options.systemPrompt` after the query has
   started successfully and before output iteration.
 

@@ -83,6 +83,8 @@ refresh) before running anything:
    (its own files or the code it exercises changed), with the reason. Add cases for new
    behavior. Find what a test exercises by reading what it drives. For server E2E,
    `vitest --changed` does not narrow anything, because every test starts the whole server.
+   Tests under `autobyteus-server-ts/tests/architecture/` read source text by path, so moving,
+   renaming or splitting a source file marks them **Rerun**, even when no behavior changed.
 4. Mark everything **Rerun** when a shared foundation changed: dependencies or the
    lockfile, the database schema or migrations, `autobyteus-ts`, the contract packages,
    the test harness or fixtures, or build configuration. A large diff without such a
@@ -98,6 +100,36 @@ delivery, its delivery report).
 **One run per case per round.** When a case fails, find its cause (Rule 9) and rerun that
 test, not its whole suite. A second full run of a suite proves nothing the first did not.
 
+## Fresh-start build
+
+A release runner clones the commit, runs `pnpm install --frozen-lockfile` and then its build job
+(`.github/workflows/release-desktop.yml`, `release-server-docker.yml`). A worktree build can pass
+only because an earlier setup step built a package's `dist/`, the Prisma client or generated
+types that the runner does not have.
+
+- **When.** Any path of `git diff --name-only <base>...HEAD` matches a build input:
+  - `pnpm-lock.yaml`, `pnpm-workspace.yaml`, `.npmrc`, `.gitmodules`, `package.json`, `*/package.json`;
+  - `**/tsconfig*.json`, `**/typecheck-baseline.json`, `scripts/**`, `*/scripts/**`;
+  - `autobyteus-web/nuxt.config.ts`, `autobyteus-web/build/**`, `autobyteus-web/electron/tsconfig*.json`,
+    `autobyteus-web/generated/**`, `autobyteus-server-ts/prisma/**`, `autobyteus-server-ts/docker/**`;
+  - the contract packages `autobyteus-*-contracts/**` (their tracked `src/` and `dist/`, which other
+    packages' builds and type checks import);
+  - `.github/workflows/**`;
+  - and, whatever the path, a new import of another workspace package in any file the build
+    type-checks (the web build's `pnpm typecheck` reads the app, Electron main, build scripts and
+    the test files, so a test file can break the release build).
+- **How.** A fresh clone of the commit under test (`git clone --no-local <worktree> <new dir>`,
+  checkout the commit), `pnpm install --frozen-lockfile` alone, then the job's build command in
+  the job's order. For desktop on macOS ARM64: `cd autobyteus-web` and
+  `NO_TIMESTAMP=1 AUTOBYTEUS_BUILD_FLAVOR=personal PRISMA_CLI_BINARY_TARGETS=darwin-arm64,debian-openssl-1.1.x,debian-openssl-3.0.x CSC_IDENTITY_AUTO_DISCOVERY=false GITHUB_REPOSITORY=AutoByteus/autobyteus-workspace pnpm build:electron:mac -- --arm64`
+  (it runs the guards, `typecheck`, `prepare-server`, `generate:electron` and packaging; the runner
+  sets `GITHUB_REPOSITORY`, which the updater configuration reads, and a local clone's origin is a
+  path). Then the job's "Verify bundled Prisma" and "Verify packaged terminal runtime" steps, from
+  the clone's root. Signing, notarization and the other operating systems need the runner: record
+  them as not tested.
+- **A change to a build step or gate** also needs the build-only release run on the ticket
+  branch before the merge, as [DESIGN.md](DESIGN.md) rule 12 and RELEASE.md say.
+
 ## Environments, credentials and data
 
 - **Install and build first.** `pnpm install`, then `pnpm -C autobyteus-server-ts prebuild`
@@ -106,9 +138,8 @@ test, not its whole suite. A second full run of a suite proves nothing the first
   `pnpm -C autobyteus-server-ts build`. Never use an installed app or an older build as
   proof of current source.
 - **A local run does not prove a release build.** The packages are already built in your
-  worktree; a release runner starts from `pnpm install` alone. For a change to a build step
-  or gate, prove it as [DESIGN.md](DESIGN.md) rule 12 says (a clean clone with the frozen
-  install only, then the build-only release run).
+  worktree; a release runner starts from `pnpm install` alone. When a change touches a
+  build input, prove it as [Fresh-start build](#fresh-start-build) says.
 - **Serialize builds and dev servers within one worktree.** Parallel builds or Nuxt dev
   servers in the same package overwrite each other's outputs.
 - **One heavy run at a time.** Do not run server `test:unit`, an E2E folder, a build or a

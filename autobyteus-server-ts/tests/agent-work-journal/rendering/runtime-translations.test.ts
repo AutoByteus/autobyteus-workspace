@@ -249,6 +249,28 @@ describe("Grok Build (contract §4)", () => {
   });
 });
 
+describe("DeepSeek Harness (REQ-014)", () => {
+  const dsh = RuntimeKind.DEEPSEEK_HARNESS;
+
+  it("run_bash with an `Exit code: <n>` error, and dsh's read result as cat -n", () => {
+    expect(lines(dsh, "run_bash", { command: "npm test" }, null, "2 failing\nExit code: 1")).toEqual([
+      "Command: npm test → exit 1", "           2 failing"]);
+    expect(lines(dsh, "read", { file_path: "/w/hello.txt" },
+      "<path>/w/hello.txt</path>\n<type>file</type>\n<content>\n1: hi from dsh\n\n(End of file - total 1 lines)\n</content>")).toEqual([
+      "Command: cat -n /w/hello.txt → ok", "                1\thi from dsh"]);
+  });
+
+  it("grep, glob, web_fetch, web_search, write, edit and skill", () => {
+    expect(lines(dsh, "grep", { pattern: "dsh", path: "/w" }, "a.ts:1:dsh")[0]).toBe("Command: grep -rnE \"dsh\" /w → ok");
+    expect(lines(dsh, "glob", { pattern: "**/*.ts", path: "/w" }, "/w/a.ts")[0]).toBe('Command: find /w -path "**/*.ts" → ok');
+    expect(lines(dsh, "web_fetch", { url: "https://deepseek.com" }, "page")[0]).toBe("Command: curl https://deepseek.com → ok");
+    expect(lines(dsh, "web_search", { query: "dsh acp" }, "results")[0]).toBe("Search web: \"dsh acp\" → ok");
+    expect(lines(dsh, "write_file", { file_path: "/w/a", content: "x" }, "written")).toEqual(["Write file: /w/a (1 lines) → ok", "           x"]);
+    expect(lines(dsh, "edit_file", { file_path: "/w/a", old_string: "x", new_string: "y" }, "edited")[0]).toBe("Edit file: /w/a (+1 −1) → ok");
+    expect(lines(dsh, "skill", { name: "code-review" }, "<skill_content>")[0]).toMatch(/code-review/);
+  });
+});
+
 describe("AutoByteus (contract §4, §6)", () => {
   const autobyteus = RuntimeKind.AUTOBYTEUS;
 

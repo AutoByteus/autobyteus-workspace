@@ -33,7 +33,7 @@ const workspaceReads = () => io.query.mock.calls
   .filter((request) => request.query === ListWorkspaceRunHistory)
 
 // workspace-tree-vs-chooser DS-002 (from autobyteus-378): one read window owned by runHistoryStore; the run section sets
-// it per view (Runs: null, Workspaces and Projects: 6); the phone reads every run (autobyteus-277).
+// it per view (Runs and Projects: null, Workspaces: 6, autobyteus-388); the phone reads every run (autobyteus-277).
 describe('the run history read window (one value per store; null reads every run)', () => {
   beforeEach(() => {
     setActivePinia(createPinia())

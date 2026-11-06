@@ -513,7 +513,7 @@ Current archive/rotation behavior:
   record, they rotate with that completed segment so active-file Activity and
   raw inspection remain truthful. Normal Activity does not read the rotated
   copy; the Memory Inspector can still select its completed segment explicitly.
-- Codex/Claude/Antigravity/Grok Build provider-boundary rotation moves settled active raw traces before an eligible boundary marker into `provider_compaction_boundary` segments.
+- Codex/Claude/Antigravity/Grok Build/DeepSeek Harness provider-boundary rotation moves settled active raw traces before an eligible boundary marker into `provider_compaction_boundary` segments.
 - New rotated segment files live directly beside `raw_traces_active.jsonl` as `raw_traces_<zero-padded-index>.jsonl`, for example `raw_traces_000001.jsonl`; boundary identity remains in the manifest `boundary_key`, not in the filename.
 - New writes use `raw_traces_manifest.json` and never create `raw_traces_archive_manifest.json` or `raw_traces_archive/`.
 - Readers prefer `raw_traces_manifest.json`; old `raw_traces_archive_manifest.json` plus `raw_traces_archive/` are data-read/migration fallback only when no new manifest exists.
@@ -534,7 +534,7 @@ Current non-goals:
 
 ## Provider Compaction Boundaries
 
-Codex, Claude, Antigravity (AGY) and Grok Build provider/session compaction metadata is real provider-owned context management, but it is not AutoByteus semantic memory compaction.
+Codex, Claude, Antigravity (AGY), Grok Build and DeepSeek Harness provider/session compaction metadata is real provider-owned context management, but it is not AutoByteus semantic memory compaction.
 
 Normalized provider-boundary handling is storage-only:
 
@@ -548,6 +548,7 @@ Normalized provider-boundary handling is storage-only:
 - All events of one Claude compaction operation share one operation id, emitted as `provider_event_id`, so live clients render a single compaction activity. The recorder persists the optional `post_tokens`, `duration_ms`, and `error_message` fields only when they are reported; Codex markers are unchanged.
 - AGY (CLI ≥ 1.2.16) reports each automatic compaction as one `step_update` with `step_type: "checkpoint"` and `state: "DONE"`; `AgyStreamEventConverter` normalizes it to a single rotation-eligible `antigravity.checkpoint` marker (status `compacted`, trigger `auto`, `duration_ms`) keyed `agy:<conversation_id>:checkpoint:<step_index>`. There is no started phase. Older or unreadable CLI versions keep checkpoint steps ignored. See [Antigravity CLI Runtime](antigravity_cli_runtime.md#automatic-compaction).
 - Grok Build reports compaction through `_x.ai/session_notification` (`auto_compact_started` for automatic compaction only, `auto_compact_completed` for both automatic and manual `/compact`). The ACP session converter pairs them in order into one operation (`provider_event_id` = the start's event id), rotates on the completion (`grok.auto_compact_completed`, with `pre_tokens`, `post_tokens`, `duration_ms`), and closes a start whose turn ends first as a non-rotating failed `grok.compaction_abandoned` marker before the turn event. See [Grok Build Runtime](grok_build_runtime.md#context-compaction).
+- DeepSeek Harness reports no compaction over ACP. The credential proxy's DeepSeek provider relay sees dsh's compaction calls (header `x-deepseek-harness-compact: 1`) and reports them to the run's session: a non-rotating `deepseek_harness.relay_compaction_started` status (status `compacting`) when the call starts, then a rotation-eligible `deepseek_harness.relay_compaction_completed` marker (status `compacted`) when DeepSeek answered it to its end, or otherwise a non-rotating marker with status `failed` and an `error_message` (`deepseek_harness.relay_compaction_failed`, `…_cancelled`, or `…_abandoned` when the turn ends before the call does). One operation id per call is the `provider_event_id`; token counts and duration are not reported. See [DeepSeek Harness Runtime](deepseek_harness_runtime.md#token-usage-compaction-and-liveness).
 - `ProviderCompactionBoundaryRecorder` writes provider-boundary status/marker payloads as raw traces with `semantic_compaction:false` metadata.
 - If the marker is rotation-eligible, settled active raw traces before the marker rotate into a complete direct raw-trace segment. The marker remains active, and active plus complete rotated segments remain the complete raw-trace corpus.
 

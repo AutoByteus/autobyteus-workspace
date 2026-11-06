@@ -152,7 +152,7 @@ describe("Run file changes API integration", () => {
 
     ownedAgentRunManager = AgentRunManager.initializeProcessInstance({
       autoByteusBackendFactory: {} as never, codexBackendFactory: {} as never,
-      claudeBackendFactory: {} as never, agyBackendFactory: {} as never, grokBackendFactory: {} as never,
+      claudeBackendFactory: {} as never, agyBackendFactory: {} as never, grokBackendFactory: {} as never, deepSeekHarnessBackendFactory: {} as never,
       activationRegistry: { getActiveRun: (runId: string) => activeRuns.get(runId) ?? null } as never,
       memoryRecorder: {} as never,
       providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },

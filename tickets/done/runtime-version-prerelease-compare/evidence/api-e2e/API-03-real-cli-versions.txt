@@ -1,0 +1,4 @@
+codex: codex-cli 0.167.0
+claude: 2.1.318 (Claude Code)
+agy: 1.5.2
+grok: grok 1.0.77 (50ca579fa996) [stable]

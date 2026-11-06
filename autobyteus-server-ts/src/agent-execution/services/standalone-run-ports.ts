@@ -30,6 +30,8 @@ export type StandaloneRunLifecyclePort = Readonly<{
   resolveRootAndEnsureHost(runId: string): Promise<StandaloneAgentRunActivationResult | null>;
   /** Explicit Stop: children, then the host. */
   stopRoot(runId: string): Promise<StandaloneRootStopResult | null>;
+  /** After the run's saved selection changed: a registered (or loading) root follows it; none registered: nothing. */
+  refreshInheritedLaunch(runId: string): Promise<void>;
 }>;
 
 export type StandaloneRunPostInput = Readonly<{

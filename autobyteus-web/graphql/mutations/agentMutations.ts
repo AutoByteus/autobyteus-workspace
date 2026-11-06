@@ -10,16 +10,6 @@ export const TerminateAgentRun = gql`
   }
 `;
 
-export const CreateAgentRun = gql`
-  mutation CreateAgentRun($input: CreateAgentRunInput!) {
-    createAgentRun(input: $input) {
-      success
-      message
-      runId
-    }
-  }
-`;
-
 export const PrepareAgentRun = gql`
   mutation PrepareAgentRun($input: CreateAgentRunInput!) {
     prepareAgentRun(input: $input) {

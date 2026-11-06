@@ -102,6 +102,7 @@ const createManager = (input: {
     claudeBackendFactory: input.claudeBackendFactory,
     agyBackendFactory: input.claudeBackendFactory,
     grokBackendFactory: input.claudeBackendFactory,
+    deepSeekHarnessBackendFactory: input.claudeBackendFactory,
     activationRegistry: infrastructure.activationRegistry,
     memoryRecorder: infrastructure.memoryRecorder,
     providerInputNormalizer: infrastructure.providerInputNormalizer,

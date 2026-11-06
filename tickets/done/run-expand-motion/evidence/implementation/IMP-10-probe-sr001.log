@@ -1,0 +1,16 @@
+# Check: IMP-10
+# Command: cd autobyteus-web && env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR="$TMPDIR" pnpm -s test:e2e:run-expand-motion --output-dir <ticket>/evidence/implementation/IMP-10-probe-sr001
+# Commit: 3e6b5a3dd4 with RunListRow.vue from SR-001 c5cc87d89d and RunListPanel.vue from base (no scoped rule, as in c5cc87d89d)
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28 via corepack, Google Chrome headless (playwright-core); env -i PATH HOME=<fresh mktemp dir> TMPDIR (TESTING.md isolation)
+# Date: 2026-11-06 CET
+# Full output: IMP-10-probe-sr001/evidence.json, IMP-10-probe-sr001/nuxt.log, IMP-10-probe-sr001/*.png
+
+REM-01 Pass Expanded at first: twelve delegated rows at rest, before their Task answers arrive
+REM-02 Fail Task answers arrive after the rows are shown: the rows below move to their new place at once, with no transform (AC-005) — 143 row samples slid while the Task lines arrived
+REM-03 Pass Collapse: the delegated rows are hidden at once (AC-002)
+REM-04 Fail Expand: from the first frame, every row is complete (its Task line) at its final place with no transform (AC-001; 4 frames) — 44 row samples moved from elsewhere on screen, or lacked their Task line
+REM-05 Fail Expanding a delegated Team: its members appear and the rows below move at once, with no transform (AC-005) — 117 row samples slid when the Team expanded
+REM-06 Pass A finished Task's row fades and closes; the row below glides up by layout, with no transform (AC-005, E-11)
+REM-07 Fail AC-006: the move is off inside the Runs view only; the same tree row outside it keeps the shared move rule — The Runs view still moves rows
+REM-08 Pass No browser errors during the cases
+{"result":"Fail","evidencePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/run-expand-motion/tickets/in-progress/run-expand-motion/evidence/implementation/IMP-10-probe-sr001/evidence.json","cleanup":{"browserClosed":true,"nuxt":"SIGTERM","installedPageRemoved":true}}

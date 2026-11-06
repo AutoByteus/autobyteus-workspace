@@ -94,7 +94,8 @@
 
     <!-- A Stop that failed says why under the Org row (existing feedback). -->
     <p v-if="orgTerminationError" class="px-7 py-1 text-xs text-red-600" role="alert" data-test="run-list-org-stop-error">{{ orgTerminationError }}</p>
-    <!-- Task Agents and task Teams this run delegated to; they leave when their Task closes. -->
+    <!-- Task Agents and task Teams this run delegated to; they leave when their Task closes. Kept mounted while folded,
+         so the rows keep their Task answers and show complete on unfold (autobyteus-390). -->
     <AgentRunTaskRows
       v-if="entry.kind === 'agent'"
       v-show="state.isRunExpanded(entry.runId)"

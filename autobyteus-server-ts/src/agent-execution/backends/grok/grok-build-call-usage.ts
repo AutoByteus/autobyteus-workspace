@@ -1,4 +1,4 @@
-import type { AcpExtNotificationContext } from "../acp/acp-agent-session-profile.js";
+import type { AcpSessionEffectContext } from "../acp/acp-agent-session-profile.js";
 
 export const GROK_BUILD_USAGE_RUNTIME_KIND = "grok_build";
 export const GROK_BUILD_USAGE_INGESTION_KIND = "grok_acp_call";
@@ -16,7 +16,7 @@ const count = (value: unknown): number | null =>
  */
 export const buildGrokBuildCallUsagePayload = (
   usage: unknown,
-  context: AcpExtNotificationContext,
+  context: AcpSessionEffectContext,
 ): Record<string, unknown> | null => {
   if (!isRecord(usage) || !context.turnId) return null;
   const input = count(usage.input_tokens);

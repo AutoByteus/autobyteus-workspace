@@ -1,0 +1,11 @@
+Check: IMP-03
+Command: pnpm -C autobyteus-server-ts test:unit; node scripts/typecheck.mjs; vitest run tests/integration/agent-execution tests/integration/standalone-agent-run-root
+Commit: 79b268d2f9
+Environment: macOS arm64, Node 22, pnpm 10.28.2; the ticket worktree after pnpm install --frozen-lockfile, prepare:shared and prisma generate (no earlier build output)
+Date: 2026-11-06
+
+ Test Files  933 passed | 5 skipped (938)
+      Tests  7955 passed | 9 skipped (7964)
+exit 0
+typecheck: production errors: 0; test-file errors: 1182 in 365 files (baseline 1182 in 365 files)  PASS
+integration: Test Files 12 passed | 4 skipped (16); Tests 58 passed | 35 skipped (93)

@@ -131,6 +131,13 @@ governance and keeps its Codex-owned authentication behavior.
   resolves it, per forwarded call. The ID is not in `isKnownSecretId`: it is not
   a provider credential for batch import or test-vault status. See
   [Credential Proxy](credential_proxy.md).
+- **The DeepSeek Harness key** uses the consumer
+  `{ kind: "agentRuntime", runtimeKind: "deepseek_harness", credentialSlot: "apiKey" }`,
+  bound to `provider.deepseek.api-key` (the same entry the native DeepSeek
+  provider uses, set in Settings → API Keys). Only the credential proxy's DeepSeek
+  provider relay resolves it, per forwarded call; dsh never receives it. Its
+  value-free status is the runtime's "signed in" on the Agent Runtimes page. See
+  [DeepSeek Harness Runtime](deepseek_harness_runtime.md).
 - Provider clients take a `ProviderApiKeyResolver` and call it lazily when
   constructing the SDK/client for an authorized operation. The server always
   passes its own resolver. autobyteus-ts owns the vault format's read side

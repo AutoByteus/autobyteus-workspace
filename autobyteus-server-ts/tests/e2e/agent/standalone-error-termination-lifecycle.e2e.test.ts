@@ -116,6 +116,7 @@ const createManager = (backend: AgentRunBackend): AgentRunManager => {
     claudeBackendFactory: createFactory(unusedClaude),
     agyBackendFactory: createFactory(unusedClaude),
     grokBackendFactory: createFactory(unusedClaude),
+    deepSeekHarnessBackendFactory: createFactory(unusedClaude),
     activationRegistry: infrastructure.activationRegistry,
     memoryRecorder: infrastructure.memoryRecorder,
     providerInputNormalizer: infrastructure.providerInputNormalizer,

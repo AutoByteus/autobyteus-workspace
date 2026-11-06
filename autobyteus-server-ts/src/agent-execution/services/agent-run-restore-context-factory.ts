@@ -16,7 +16,9 @@ export const buildAgentRunRestoreRuntimeContext = (
   platformAgentRunId: string,
 ): RuntimeAgentRunContext => {
   if (config.runtimeKind === RuntimeKind.ANTIGRAVITY_CLI) return new AgyAgentRunContext(platformAgentRunId);
-  if (config.runtimeKind === RuntimeKind.GROK_BUILD) return new AcpAgentRunContext(platformAgentRunId);
+  if (config.runtimeKind === RuntimeKind.GROK_BUILD || config.runtimeKind === RuntimeKind.DEEPSEEK_HARNESS) {
+    return new AcpAgentRunContext(platformAgentRunId);
+  }
   if (config.runtimeKind === RuntimeKind.CODEX_APP_SERVER) {
     return new CodexAgentRunContext({
       codexThreadConfig: buildCodexThreadConfig({

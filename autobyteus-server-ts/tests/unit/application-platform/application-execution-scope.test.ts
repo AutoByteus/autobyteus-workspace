@@ -50,6 +50,7 @@ const createScope = async () => {
     claude: { createBackend: vi.fn(), restoreBackend: vi.fn() },
     antigravity: { createBackend: vi.fn(), restoreBackend: vi.fn() },
     grok: { createBackend: vi.fn(), restoreBackend: vi.fn() },
+    deepSeekHarness: { createBackend: vi.fn(), restoreBackend: vi.fn() },
   };
   const createForExecution = vi.fn(() => Object.freeze(factories));
   const providerBuilder: AgentProviderFactoryBuilder = { createForExecution };
@@ -80,6 +81,8 @@ const createScope = async () => {
     artifactDeliverySink: { accept: vi.fn(async () => undefined) },
     modelSelectionValidator: { validate: vi.fn(), validateMany: vi.fn() },
     applicationAgentTools,
+    providerRelayAccess: null,
+    runPasses: null,
   });
   const kernel = (scope as unknown as { kernel: ApplicationExecutionScopeKernel }).kernel;
   return {

@@ -217,6 +217,8 @@ describe("AGY compaction detection version gate", () => {
   it.each([
     ["1.2.16", true], ["1.2.17", true], ["1.3.0", true], ["1.10.0", true], ["2.0.0", true], ["agy version 1.2.16\n", true],
     ["1.2.15", false], ["1.1.99", false], ["0.9.30", false], ["", false], ["garbage", false], [null, false],
+    // SemVer precedence: a prerelease of the minimum is below it.
+    ["1.2.16-rc.1", false], ["1.2.17-rc.1", true],
   ] as const)("treats CLI version %j as supported=%s", async (version, expected) => {
     const { isAgyCompactionDetectionSupported } = await capability("ok");
     expect(isAgyCompactionDetectionSupported(version)).toBe(expected);

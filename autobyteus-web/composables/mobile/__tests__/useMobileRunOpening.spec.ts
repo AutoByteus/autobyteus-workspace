@@ -138,7 +138,7 @@ describe('useMobileRunOpening', () => {
     const { opening, store } = await setup();
     shared.actions.onOpenTeamRun.mockImplementation(async () => shared.selectionParams!.presentTeamStreamRecoveryFeedback('wait'));
     await opening.open(row({ kind: 'team', team: {} as never }, 'team:t'));
-    expect(shared.addToast).toHaveBeenCalledWith('workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.stream_recovery_wait', 'info');
+    expect(shared.addToast).toHaveBeenCalledWith('workspace.components.workspace.history.RunSectionPanel.stream_recovery_wait', 'info');
     expect(store.failure).toEqual({ key: 'team:t' });
   });
 

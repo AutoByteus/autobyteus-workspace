@@ -10,6 +10,7 @@ import { AgentRunResourceManager } from "../../../src/agent-execution/services/a
 import { AgentRunActivationRegistry } from "../../../src/agent-execution/runtime/agent-run-activation-registry.js";
 import { RunPassRegistry } from "../../../src/credential-proxy/run-pass-registry.js";
 import type { IntegrationRunAccess } from "../../../src/credential-proxy/integration-run-access.js";
+import { RegistryRunPassRevocation, type RunPassRevocation } from "../../../src/credential-proxy/run-pass-revocation.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { AgentRunHistoryCatalogService } from "../../../src/run-history/services/agent-run-history-catalog-service.js";
 import {
@@ -85,7 +86,7 @@ const createManagerFixture = (input: {
   memoryRecorder?: unknown;
   agentToolMcpRunSessionDeactivator?: AgentToolMcpRunSessionDeactivator;
   lifecycleObserver?: { runPublished: ReturnType<typeof vi.fn> };
-  integrationRunAccess?: IntegrationRunAccess | null;
+  runPasses?: RunPassRevocation | null;
 }) => {
   const runSessions = input.agentToolMcpRunSessionDeactivator
     ?? createRecordingAgentToolMcpRunSessionDeactivator().deactivator;
@@ -106,7 +107,7 @@ const createManagerFixture = (input: {
       publishedArtifactRelayService,
       memoryRecorder, workJournalUpdater: { attachToRun: vi.fn(() => vi.fn()) },
       mcpServerInstances: { cleanupMcpServerInstancesForAgent: async () => undefined },
-      integrationRunAccess: input.integrationRunAccess ?? null,
+      runPasses: input.runPasses ?? null,
     }),
   );
   const autoByteusDefinition = input.autoByteusBackendFactory ?? unavailableBackendFactory;
@@ -123,11 +124,12 @@ const createManagerFixture = (input: {
       claudeBackendFactory,
       agyBackendFactory: unavailableBackendFactory,
       grokBackendFactory: unavailableBackendFactory,
+      deepSeekHarnessBackendFactory: unavailableBackendFactory,
       activationRegistry,
       memoryRecorder,
       providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
       agentToolMcpRunSessionDeactivator: runSessions,
-      integrationRunAccess: input.integrationRunAccess ?? null,
+      runPasses: input.runPasses ?? null,
       lifecycleObserver: input.lifecycleObserver ?? null,
     }),
   };
@@ -288,7 +290,6 @@ describe("AgentRunManager candidate lifecycle", () => {
     const passes = new RunPassRegistry();
     const integrationRunAccess: IntegrationRunAccess = {
       environmentForRun: async (run) => ({ AUTOBYTEUS_GITHUB_API_URL: `http://127.0.0.1:1/r/${passes.issue(run, [])}/github/api` }),
-      revokeForRun: (runId) => passes.revoke(runId),
     };
     let pass = "";
     const manager = createManager({
@@ -301,7 +302,7 @@ describe("AgentRunManager candidate lifecycle", () => {
         }),
         restoreBackend: vi.fn(),
       },
-      integrationRunAccess,
+      runPasses: new RegistryRunPassRevocation(passes),
     });
 
     await expect(manager.beginActivation({ kind: "new", runId: "run-failed-activation", config: createConfig() }).prepare())
@@ -311,12 +312,12 @@ describe("AgentRunManager candidate lifecycle", () => {
     expect(passes.lookup(pass)).toBeNull();
   });
 
-  it("ends an attached run's credential-proxy pass when the run is released", async () => {
+  it("ends an attached run's credential-proxy pass when the run is released, a pass holding only a provider relay too (AR-008)", async () => {
     const passes = new RunPassRegistry();
-    const pass = passes.issue({ runId: "run-released", agentDefinitionId: "agent-a" }, []);
+    const pass = passes.grantProviderRelay({ runId: "run-released", agentDefinitionId: "agent-a" }, "deepseek");
     const manager = createManager({
       codexBackendFactory: { createBackend: vi.fn(async () => createBackend({ runId: "run-released" })), restoreBackend: vi.fn() },
-      integrationRunAccess: { environmentForRun: async () => ({}), revokeForRun: (runId) => passes.revoke(runId) },
+      runPasses: new RegistryRunPassRevocation(passes),
     });
     const candidate = await manager.beginActivation({ kind: "new", runId: "run-released", config: createConfig() }).prepare();
     candidate.commitPublication();

@@ -37,9 +37,9 @@ const messages = {
   "workspace.runModelConfig.thinkingAdvancedOnly": "请使用下方的模型设置来控制思考。",
   "workspace.components.workspace.team.TeamWorkspaceView.stream_recovery_required":
     "团队实时更新已不同步。请等待团队完成当前工作，然后再次选择此团队成员以重新加载完整对话。",
-  "workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.stream_recovery_wait":
+  "workspace.components.workspace.history.RunSectionPanel.stream_recovery_wait":
     "该团队仍在工作。请等待其完成，然后再次选择此团队成员。",
-  "workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.stream_recovery_retry":
+  "workspace.components.workspace.history.RunSectionPanel.stream_recovery_retry":
     "重新加载对话时团队活动发生了变化。请再次选择此团队成员以重试。",
   "workspace.agentOrg.recovery.exhausted":
     "实时更新无法自动恢复。请重新选择此智能体组织，以重新加载经过验证的完整对话。",
@@ -176,6 +176,8 @@ const messages = {
     "由 AutoByteus 提供 · Codex App Server baseInstructions",
   "workspace.components.progress.SystemInstructionActivityItem.source.grok":
     "由 AutoByteus 提供 · Grok Build rules",
+  "workspace.components.progress.SystemInstructionActivityItem.source.deepseekHarness":
+    "由 AutoByteus 提供 · DeepSeek Harness 指令插件",
   "workspace.components.progress.SystemInstructionActivityItem.source.unknown":
     "由 AutoByteus 提供的系统指令",
   "workspace.components.workspace.team.TeamOverviewPanel.messages": "消息",

@@ -35,6 +35,8 @@ export type AcpAgentRunBackendInput = Readonly<{
   context: AcpRunContext;
   /** The directory the run's session was opened in; a reopen opens the session there again. */
   workingDirectory: string;
+  /** The run's composed instructions; a reopen gives them to the new launch again (re-sent, not recomposed). */
+  instructions: string;
   /** The single holder of the run's process, connection and session; the backend keeps no copies. */
   owner: AcpPreparationOwner;
   /** The sink of the session the owner holds now. */
@@ -58,7 +60,7 @@ export type AcpAgentRunBackendInput = Readonly<{
  *
  * The agent reads its tool list only when a session is opened: after a definition change the
  * next turn start reopens the session (`reopenPending`). The open process is ended first, then a
- * new one loads the same session with the new list. If that fails the run has no runtime session
+ * new one restores the same session with the new list and the run's instructions. If that fails the run has no runtime session
  * (it stays active and idle) until the next turn start tries again.
  */
 export class AcpAgentRunBackend implements AgentRunBackend {
@@ -209,10 +211,11 @@ export class AcpAgentRunBackend implements AgentRunBackend {
   }
 
   /**
-   * End first, then load (two live processes never hold one session):
+   * End first, then restore (two live processes never hold one session):
    * 1. the open session is ended as a reopen: its sink is detached first, so its exit is not a
    *    run failure, and the run's skills stay (they belong to `cleanup`);
-   * 2. a new process loads the same session into the owner with the current descriptor.
+   * 2. a new process restores the same session into the owner with the current descriptor and the
+   *    run's instructions.
    * On failure the half-opened process is ended, the run is left with no runtime session,
    * `reopenPending` stays set, and the dispatch fails with a plain message (the input is not sent).
    */
@@ -228,7 +231,8 @@ export class AcpAgentRunBackend implements AgentRunBackend {
         owner, runId: this.runId, config: context.config,
         workingDirectory: this.input.workingDirectory,
         descriptor, sink, assertAccepting: () => this.assertActive(),
-        mode: "load", sessionId: this.getPlatformAgentRunId(),
+        instructions: this.input.instructions,
+        mode: "restore", sessionId: this.getPlatformAgentRunId(),
       });
       sink.bind(this);
       openedWith = descriptor.enabledTools;

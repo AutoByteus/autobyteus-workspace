@@ -18,6 +18,8 @@ export type ApplicationCredentialAuthority =
   | Readonly<{ kind: "provider"; providerId: string }>
   | Readonly<{ kind: "codex_workspace"; workspaceRootPath: string }>
   | Readonly<{ kind: "claude_process" }>
+  /** The DeepSeek key in the AutoByteus vault, which the credential proxy adds to dsh's model calls. */
+  | Readonly<{ kind: "deepseek_harness_key" }>
   | Readonly<{
       kind: "no_credential";
       runtime: LLMRuntime.OLLAMA | LLMRuntime.LMSTUDIO;
@@ -72,6 +74,8 @@ implements ApplicationProviderCredentialReadinessPort {
         });
       case RuntimeKind.CLAUDE_AGENT_SDK:
         return Object.freeze({ kind: "claude_process" });
+      case RuntimeKind.DEEPSEEK_HARNESS:
+        return Object.freeze({ kind: "deepseek_harness_key" });
       case RuntimeKind.ANTIGRAVITY_CLI:
       case RuntimeKind.GROK_BUILD:
         return Object.freeze({ kind: "unsupported", runtime: input.runtimeKind });
@@ -87,6 +91,7 @@ implements ApplicationProviderCredentialReadinessPort {
       case "codex_workspace":
         return JSON.stringify([authority.kind, authority.workspaceRootPath]);
       case "claude_process":
+      case "deepseek_harness_key":
         return JSON.stringify([authority.kind]);
       case "no_credential":
         return JSON.stringify([authority.kind, authority.runtime]);
@@ -109,6 +114,11 @@ implements ApplicationProviderCredentialReadinessPort {
       case "claude_process":
         return toReadiness(agentRuntimeName(RuntimeKind.CLAUDE_AGENT_SDK), await this.dependencies.signInReader.read(
           RuntimeKind.CLAUDE_AGENT_SDK,
+          { cwd: process.cwd() },
+        ));
+      case "deepseek_harness_key":
+        return toReadiness(agentRuntimeName(RuntimeKind.DEEPSEEK_HARNESS), await this.dependencies.signInReader.read(
+          RuntimeKind.DEEPSEEK_HARNESS,
           { cwd: process.cwd() },
         ));
       case "no_credential":

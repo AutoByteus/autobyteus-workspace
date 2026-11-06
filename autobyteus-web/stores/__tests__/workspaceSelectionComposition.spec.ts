@@ -73,7 +73,7 @@ const setup = async () => {
   ] });
   await router.push({ path: '/workspace', query: { rootSubjectKind: 'agent_org', orgRunId: 'org-run', memberAddress: '/team/worker', mode: 'history' } });
   wrapper = mount(defineComponent({ setup: () => () => h('div', [h(AppLeftPanel), h(RouterView)]) }), {
-    global: { plugins: [router], stubs: { WorkspaceAgentRunsTreePanel: History, Icon: true } },
+    global: { plugins: [router], stubs: { RunSectionPanel: History, Icon: true } },
   });
   await flushPromises();
   return { history, team, context, orgs, orgAgent, router, actions, execute, selection: useAgentSelectionStore() };

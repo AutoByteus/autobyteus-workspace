@@ -1,0 +1,59 @@
+$ pnpm install --frozen-lockfile
+Scope: all 13 workspace projects
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +1662
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 1662, reused 1658, downloaded 0, added 19
+Progress: resolved 1662, reused 1658, downloaded 0, added 373
+Progress: resolved 1662, reused 1658, downloaded 0, added 616
+Progress: resolved 1662, reused 1658, downloaded 0, added 846
+Progress: resolved 1662, reused 1658, downloaded 0, added 1272
+Progress: resolved 1662, reused 1658, downloaded 0, added 1662, done
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/release-v1.5.12-beta.3/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/release-v1.5.12-beta.3/autobyteus-application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/release-v1.5.12-beta.3/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/release-v1.5.12-beta.3/autobyteus-application-devkit/dist/cli.js'
+
+autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+autobyteus-ts postinstall: [node-pty-fix] repaired: /Users/normy/autobyteus_org/autobyteus-worktrees/release-v1.5.12-beta.3/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+autobyteus-ts postinstall: Done
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/release-v1.5.12-beta.3/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/release-v1.5.12-beta.3/applications/socratic-math-teacher/node_modules/@autobyteus/application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /Users/normy/autobyteus_org/autobyteus-worktrees/release-v1.5.12-beta.3/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/release-v1.5.12-beta.3/applications/brief-studio/node_modules/@autobyteus/application-devkit/dist/cli.js'
+╭ Warning ─────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│   Ignored build scripts: @google/genai@2.24.0.                               │
+│   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+│   to run scripts.                                                            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 7.4s using pnpm v10.28.2
+exit 0
+$ pnpm -C autobyteus-server-ts prebuild
+
+> autobyteus-server-ts@0.1.1 prebuild /Users/normy/autobyteus_org/autobyteus-worktrees/release-v1.5.12-beta.3/autobyteus-server-ts
+> pnpm prepare:source
+
+
+> autobyteus-server-ts@0.1.1 prepare:source /Users/normy/autobyteus_org/autobyteus-worktrees/release-v1.5.12-beta.3/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/release-v1.5.12-beta.3/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 126ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Want real-time updates to your database without manual polling? Discover how with Pulse: https://pris.ly/tip-0-pulse
+
+exit 0

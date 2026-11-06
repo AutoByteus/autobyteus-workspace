@@ -1,0 +1,13 @@
+# IMP-10 DEL-02 local fix: full server unit suite and typecheck gate
+# Command: pnpm -C autobyteus-server-ts test:unit; pnpm -C autobyteus-server-ts typecheck
+# Commit: ee6739fe7f (on top of 5a269806e4, which includes the delivery merge 7c1117e209 of origin/personal d6bcff577b)
+# Environment: macOS (Darwin 25.5), Node 22.21.1
+# Date: 2026-11-06
+
+ Test Files  932 passed | 5 skipped (937)
+      Tests  7942 passed | 9 skipped (7951)
+   Duration  698.45s (transform 17.70s, setup 10.49s, import 305.22s, tests 297.26s, environment 669ms)
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 9.9s
+[typecheck] server tests (tsconfig.tests.json): 1182 errors, exit 2, 26.6s
+[typecheck] production errors: 0; test-file errors: 1182 in 365 files (baseline 1182 in 365 files)
+[typecheck] PASS

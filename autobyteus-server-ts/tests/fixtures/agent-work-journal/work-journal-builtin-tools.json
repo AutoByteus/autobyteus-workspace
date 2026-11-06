@@ -37,6 +37,16 @@
     "edit_file": "Edit file",
     "web_search": "Search web"
   },
+  "deepseek_harness": {
+    "run_bash": "Command",
+    "read": "Command",
+    "grep": "Command",
+    "glob": "Command",
+    "web_fetch": "Command",
+    "write_file": "Write file",
+    "edit_file": "Edit file",
+    "web_search": "Search web"
+  },
   "autobyteus": {
     "run_bash": "Command",
     "start_background_process": "Command",
@@ -68,6 +78,9 @@
       "Bash": "Command"
     },
     "grok_build": {},
+    "deepseek_harness": {
+      "skill": "Load skill"
+    },
     "autobyteus": {
       "get_process_output": "Read output of background task",
       "stop_background_process": "Stop background task",

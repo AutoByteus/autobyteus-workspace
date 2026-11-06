@@ -1,16 +1,27 @@
 import {
   type ContentBlock,
   type LoadSessionRequest,
+  type LoadSessionResponse,
   type NewSessionRequest,
   type NewSessionResponse,
   type RequestPermissionRequest,
   type RequestPermissionResponse,
+  type ResumeSessionRequest,
+  type ResumeSessionResponse,
+  type SessionConfigOption,
   type SessionNotification,
 } from "@agentclientprotocol/sdk";
 import { AgentRunEventType, type AgentRunEvent } from "../../../domain/agent-run-event.js";
 import type { AcpClientConnection, AcpSessionFrameHandler } from "../../../../runtime-management/acp/acp-client-connection.js";
 import { describeAcpError } from "../../../../runtime-management/acp/acp-error-message.js";
-import type { AcpAgentSessionProfile, AcpMcpReadinessRequirement, AcpMcpServerStatus } from "../acp-agent-session-profile.js";
+import type { ProviderCallObservation } from "../../../../credential-proxy/provider-relays/provider-call-observation.js";
+import type {
+  AcpAgentSessionProfile,
+  AcpConfigSelection,
+  AcpMcpReadinessRequirement,
+  AcpMcpServerStatus,
+  AcpSessionEffect,
+} from "../acp-agent-session-profile.js";
 import { AcpSessionUpdateConverter } from "../events/acp-session-update-converter.js";
 import { AcpPermissionBridge } from "./acp-permission-bridge.js";
 import { ModelCallRequestBoundary } from "../../shared/model-call-request-boundary.js";
@@ -20,7 +31,7 @@ export const ACP_TURN_IDLE_TIMEOUT_MS = 300_000;
 const CANCELLED: RequestPermissionResponse = { outcome: { outcome: "cancelled" } };
 
 export type AcpSessionState =
-  | "created" | "opening_new" | "opening_load" | "ready" | "prompting" | "cancelling" | "failed" | "closed";
+  | "created" | "opening_new" | "opening_load" | "opening_resume" | "ready" | "prompting" | "cancelling" | "failed" | "closed";
 
 export type AcpSessionFailure = Readonly<{ code: string; message: string }>;
 
@@ -45,10 +56,10 @@ export type AcpAgentSessionOptions = Readonly<{
 type McpWaiter = Readonly<{ serverName: string; resolve: () => void; reject: (error: Error) => void }>;
 
 /**
- * One ACP session: `created -> opening(new|load) -> ready -> prompting -> ready`, with
+ * One ACP session: `created -> opening(new|load|resume) -> ready -> prompting -> ready`, with
  * `prompting -> cancelling -> ready`, and any state to `failed` or `closed`. Suppresses the
- * history `session/load` replays, runs the turn idle timer, and answers every permission
- * request.
+ * history `session/load` replays, runs the turn idle timer, applies the effects of agent
+ * extension notifications and provider calls, and answers every permission request.
  */
 export class AcpAgentSession implements AcpSessionFrameHandler {
   private currentState: AcpSessionState = "created";
@@ -93,12 +104,31 @@ export class AcpAgentSession implements AcpSessionFrameHandler {
   }
 
   /** Loads an existing session; the history it replays before responding is discarded. */
-  async openLoad(request: LoadSessionRequest): Promise<void> {
+  async openLoad(request: LoadSessionRequest): Promise<LoadSessionResponse> {
     this.transition("created", "opening_load");
     this.id = request.sessionId;
     this.options.connection.registerSession(request.sessionId, this);
-    await this.options.connection.loadSession(request);
+    const response = await this.options.connection.loadSession(request);
     this.finishOpening("opening_load");
+    return response;
+  }
+
+  /** Resumes an existing session; the agent replays no history. */
+  async openResume(request: ResumeSessionRequest): Promise<ResumeSessionResponse> {
+    this.transition("created", "opening_resume");
+    this.id = request.sessionId;
+    this.options.connection.registerSession(request.sessionId, this);
+    const response = await this.options.connection.resumeSession(request);
+    this.finishOpening("opening_resume");
+    return response;
+  }
+
+  /** Selects the run's model and effort among the options the open session offers, in the profile's order. */
+  async applyConfigSelection(selection: AcpConfigSelection, configOptions: readonly SessionConfigOption[]): Promise<void> {
+    const sessionId = this.requireReady();
+    for (const { configId, value } of this.options.profile.configSelection(selection, configOptions)) {
+      await this.options.connection.setSessionConfigOption({ sessionId, configId, value });
+    }
   }
 
   awaitMcpServerReady(requirement: AcpMcpReadinessRequirement): Promise<void> {
@@ -180,29 +210,28 @@ export class AcpAgentSession implements AcpSessionFrameHandler {
   onExtNotification(method: string, params: Record<string, unknown>): void {
     const sessionId = this.id;
     if (!sessionId || this.currentState === "failed" || this.currentState === "closed") return;
-    let effects;
+    let effects: AcpSessionEffect[];
     try {
-      effects = this.options.profile.interpretExtNotification(method, params, {
-        sessionId, turnId: this.converter.activeTurnId, callOrdinal: this.callOrdinal, model: this.options.model,
-      });
+      effects = this.options.profile.interpretExtNotification(method, params, this.effectContext(sessionId));
     } catch {
       return; // Unknown or malformed extension traffic never fails a run.
     }
-    for (const effect of effects) {
-      if (effect.kind === "mcp_status") {
-        this.mcpStatuses.set(effect.server, { status: effect.status });
-        for (const waiter of [...this.mcpWaiters]) this.settleMcpWaiter(waiter);
-      } else if (!this.isInTurn()) {
-        // Usage and compaction apply only within a turn; `session/load` replays are dropped.
-        continue;
-      } else if (effect.kind === "compaction") {
-        this.options.emit(this.converter.compaction(sessionId, effect));
-      } else {
-        this.options.emit(this.converter.usage(this.withCallThroughput(effect.payload)));
-        this.callOrdinal += 1;
-      }
-    }
+    this.applyEffects(sessionId, effects);
     if (this.isInTurn()) this.refreshIdleTimer();
+  }
+
+  /** One provider call of this session's run, reported by its provider relay. */
+  onProviderCall(observation: ProviderCallObservation): void {
+    const sessionId = this.id;
+    const interpret = this.options.profile.interpretProviderCall;
+    if (!sessionId || !interpret || this.currentState === "failed" || this.currentState === "closed") return;
+    let effects: AcpSessionEffect[];
+    try {
+      effects = interpret(observation, this.effectContext(sessionId));
+    } catch {
+      return; // A malformed report never fails a run.
+    }
+    this.applyEffects(sessionId, effects);
   }
 
   async onPermissionRequest(request: RequestPermissionRequest): Promise<RequestPermissionResponse> {
@@ -221,6 +250,31 @@ export class AcpAgentSession implements AcpSessionFrameHandler {
     this.options.emit(this.converter.approvalRequested(toolCallId));
     this.refreshIdleTimer();
     return decision;
+  }
+
+  private effectContext(sessionId: string) {
+    return { sessionId, turnId: this.converter.activeTurnId, callOrdinal: this.callOrdinal, model: this.options.model };
+  }
+
+  /** MCP readiness applies at any time; usage, compaction and activity only within a turn (`session/load` replays are dropped). */
+  private applyEffects(sessionId: string, effects: readonly AcpSessionEffect[]): void {
+    let active = false;
+    for (const effect of effects) {
+      if (effect.kind === "mcp_status") {
+        this.mcpStatuses.set(effect.server, { status: effect.status });
+        for (const waiter of [...this.mcpWaiters]) this.settleMcpWaiter(waiter);
+      } else if (!this.isInTurn()) {
+        continue;
+      } else if (effect.kind === "activity") {
+        active = true;
+      } else if (effect.kind === "compaction") {
+        this.options.emit(this.converter.compaction(sessionId, effect));
+      } else {
+        this.options.emit(this.converter.usage(this.withCallThroughput(effect.payload)));
+        this.callOrdinal += 1;
+      }
+    }
+    if (active) this.refreshIdleTimer();
   }
 
   /**
@@ -297,7 +351,7 @@ export class AcpAgentSession implements AcpSessionFrameHandler {
       `ACP_MCP_SERVER_UNAVAILABLE: ${this.options.connection.agentLabel} reported MCP server '${waiter.serverName}' unavailable.`));
   }
 
-  private finishOpening(from: "opening_new" | "opening_load"): void {
+  private finishOpening(from: "opening_new" | "opening_load" | "opening_resume"): void {
     if (this.currentState !== from) throw new Error(`ACP_SESSION_OPEN_ABORTED: session is ${this.currentState}.`);
     this.currentState = "ready";
   }

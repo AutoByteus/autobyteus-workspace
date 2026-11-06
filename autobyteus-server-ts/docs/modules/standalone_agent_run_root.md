@@ -60,6 +60,14 @@ standalone path (`AgentRunService.resolveCommandReadyAgentRun` and the lifecycle
   options unchanged) and `StandaloneRunLifecyclePort` (`AgentRunService`: create, activate,
   restore and resolve go through `resolveRootAndEnsureHost`; `terminateAgentRun` goes through
   `stopRoot`). Interrupt and tool approval act on a live host only and never start it.
+  The lifecycle port also carries `refreshInheritedLaunch(runId)`: a saved edit of the stopped
+  host (`AgentRunService.updateStoppedSelection`, result `UPDATED`) reaches the registered or
+  still-loading root, which then hands the host's **saved** launch (`launchConfigurationOf(metadata)`,
+  `root.setInheritedLaunch`) to the catalog copies it starts from then on. Copies already started
+  keep the launch they started with; a run with no registered root changes nothing and its root, when
+  loaded later, reads the saved launch. A failed follow is logged and never fails the saved edit. A
+  registered root does not block the edit of a stopped host (only a live host does: `RUN_ACTIVE`),
+  so a host that crashed while its root survives stays editable.
 
 ## Root lifetime
 

@@ -1,0 +1,17 @@
+# Check: IMP-06
+# Command: env -i PATH HOME=<tmp> TMPDIR pnpm -s -C autobyteus-web test:e2e:projects-left-navigation --output-dir <ticket>/evidence/implementation/IMP-06-pln-fix --cases PLN-01,PLN-02,PLN-03,PLN-04,PLN-05,PLN-06,PLN-07,PLN-08 (after pnpm -C autobyteus-server-ts build)
+# Commit: 00339421ed
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28 via corepack, Google Chrome headless (playwright-core); env -i PATH HOME=<fresh mktemp dir> TMPDIR (TESTING.md isolation); owned data root, free ports, AGY scripted CLI
+# Date: 2026-11-06 CET
+# Full output: IMP-06-pln-fix/evidence.json, backend-*.log, frontend.log, screenshots
+
+PLN-01: Pass
+PLN-02: Pass
+PLN-03: Pass
+PLN-04: Pass
+PLN-05: Pass
+PLN-06: Pass
+PLN-07: Pass
+PLN-08: Pass
+Projects left navigation probe: Pass. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/left-panel-follow-ups/tickets/in-progress/left-panel-follow-ups/evidence/implementation/IMP-06-pln-fix/evidence.json
+exit=0

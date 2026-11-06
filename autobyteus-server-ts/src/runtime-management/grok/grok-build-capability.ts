@@ -2,7 +2,8 @@ import { spawn } from "node:child_process";
 import type { ModelInfo } from "autobyteus-ts/llm/models.js";
 import { AcpDiscoveryError, runAcpDiscoveryHandshake } from "../acp/acp-discovery-handshake.js";
 import { commandBound, deadlineCause, type CommandBound, type ReadDeadline } from "../read-deadline.js";
-import { grokBuildCommand, grokBuildLaunchProfile } from "./grok-build-launch-profile.js";
+import { compareRuntimeVersions, extractRuntimeVersion } from "../agent-runtimes/runtime-version.js";
+import { grokBuildCommand, grokBuildLaunchProfile, normalizeGrokBuildModels } from "./grok-build-launch-profile.js";
 
 export const GROK_BUILD_MINIMUM_VERSION = "1.0.41";
 const REQUIRED_AGENT_HELP_TOKENS = ["stdio", "--model", "--reasoning-effort", "--no-leader"];
@@ -47,15 +48,6 @@ export class GrokBuildDiscoveryError extends Error {
 export const toGrokBuildDiagnostic = (error: unknown): GrokBuildDiagnostic =>
   error instanceof GrokBuildDiscoveryError ? error.diagnostic : DIAGNOSTICS.GROK_MODEL_DISCOVERY_FAILED;
 
-const compareVersions = (left: string, right: string): number => {
-  const a = left.split(".").map(Number);
-  const b = right.split(".").map(Number);
-  for (let index = 0; index < 3; index += 1) {
-    if ((a[index] ?? 0) !== (b[index] ?? 0)) return (a[index] ?? 0) - (b[index] ?? 0);
-  }
-  return 0;
-};
-
 /** Bounded, non-blocking command probe; provider output never leaves this function. */
 const runProbe = (args: readonly string[], bound: CommandBound): Promise<string> => new Promise((resolve, reject) => {
   // A probe ended by its own bound reads as an unsupported CLI (as before); one ended by the step's deadline, as a time-out.
@@ -90,11 +82,11 @@ const runProbe = (args: readonly string[], bound: CommandBound): Promise<string>
 /** Version gate plus ACP agent-mode flags; starts no ACP session and no inference. */
 export const assertGrokBuildCliSupported = async (options: GrokBuildProbeOptions = {}): Promise<string> => {
   const bound = () => commandBound(options.deadline, options.timeoutMs ?? PROBE_TIMEOUT_MS);
-  const match = /\b(\d+\.\d+\.\d+)\b/.exec(await runProbe(["--version"], bound()));
-  if (!match || compareVersions(match[1]!, GROK_BUILD_MINIMUM_VERSION) < 0) throw new GrokBuildDiscoveryError("GROK_CLI_UNSUPPORTED");
+  const version = extractRuntimeVersion(await runProbe(["--version"], bound()));
+  if (!version || compareRuntimeVersions(version, GROK_BUILD_MINIMUM_VERSION) < 0) throw new GrokBuildDiscoveryError("GROK_CLI_UNSUPPORTED");
   const help = await runProbe(["agent", "--help"], bound());
   if (REQUIRED_AGENT_HELP_TOKENS.some((token) => !help.includes(token))) throw new GrokBuildDiscoveryError("GROK_CLI_UNSUPPORTED");
-  return match[1]!;
+  return version;
 };
 
 export const probeGrokBuildCli = async (
@@ -116,7 +108,7 @@ export const discoverGrokBuildModels = async (options: GrokBuildProbeOptions = {
   await assertGrokBuildCliSupported(options);
   let models: ModelInfo[];
   try {
-    models = grokBuildLaunchProfile.normalizeModels(
+    models = normalizeGrokBuildModels(
       await runAcpDiscoveryHandshake(grokBuildLaunchProfile, { deadline: options.deadline }));
   } catch (error) {
     if (error instanceof AcpDiscoveryError) {

@@ -7,7 +7,7 @@
       ref="scrollRef"
       role="region"
       :aria-label="t('runList.title')"
-      class="min-h-0 flex-1 overflow-y-auto px-1 pb-2"
+      class="run-list-scroll min-h-0 flex-1 overflow-y-auto px-1 pb-2"
       data-test="run-list-scroll"
     >
       <div v-if="runHistoryStore.loading && runList.entries.length === 0" class="px-3 py-4 text-xs text-gray-500" role="status" data-test="run-list-loading">
@@ -202,8 +202,8 @@ const selection = useWorkspaceHistorySelectionActions({
   expandTeamMemberAncestors: (_workspaceId, teamRunId, agentRunId) => disclosure.expandTeamMemberAncestors(teamRunId, agentRunId),
   emitRunSelected: (payload) => emit('run-selected', payload),
   presentTeamStreamRecoveryFeedback: (feedback) => addToast(t(feedback === 'wait'
-    ? 'workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.stream_recovery_wait'
-    : 'workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.stream_recovery_retry'), 'info'),
+    ? 'workspace.components.workspace.history.RunSectionPanel.stream_recovery_wait'
+    : 'workspace.components.workspace.history.RunSectionPanel.stream_recovery_retry'), 'info'),
 })
 const { execute: executeSubjectAction } = useWorkspaceHistorySubjectActions()
 
@@ -287,5 +287,13 @@ onBeforeUnmount(() => { if (relativeTimeTimer !== null) clearInterval(relativeTi
 /* The nested delegated rows' container queries (`WorkspaceStableExecutionRow`) name this container. */
 .run-list-panel {
   container: workspace-history-panel / inline-size;
+}
+/* The Runs view's trees never slide rows (autobyteus-390): a row pushed by rows added, grown (a late Task line) or
+   expanded above it is shown at its new place at once, and an Agent run's rows never drop from the top of the window on
+   expand. Vue moves a `tree-row` group only when its move class has a transform transition, which it checks on a clone
+   inside the group, so this turns the move off for every tree here. A finished Task's row still fades and closes by its
+   own leave rules (treeRowLeave.css), which the Workspaces and Projects views keep with their move. */
+.run-list-scroll :deep(.tree-row-move) {
+  transition: none;
 }
 </style>

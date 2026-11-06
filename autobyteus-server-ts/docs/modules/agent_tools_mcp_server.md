@@ -15,6 +15,9 @@ MCP configuration; see [Antigravity CLI Runtime](./antigravity_cli_runtime.md).
 Grok Build runs receive it as an HTTP `mcpServers` entry on ACP
 `session/new`/`session/load`, gated on Grok reporting the server ready; see
 [Grok Build Runtime](./grok_build_runtime.md).
+DeepSeek Harness runs receive the same entry on `session/new`/`session/resume`;
+dsh connects it while opening the session, so there is no readiness wait; see
+[DeepSeek Harness Runtime](./deepseek_harness_runtime.md).
 
 This module is distinct from both [MCP Server Management](./mcp_server_management.md)
 and the [General MCP Gateway](./mcp_gateway.md): MCP Server Management consumes

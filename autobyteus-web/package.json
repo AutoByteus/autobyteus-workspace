@@ -1,6 +1,6 @@
 {
   "name": "autobyteus",
-  "version": "1.5.12-beta.1",
+  "version": "1.5.12-beta.3",
   "packageManager": "pnpm@10.28.1",
   "description": "AutoByteus Desktop Application",
   "license": "AGPL-3.0-only",
@@ -118,6 +118,8 @@
     "test:e2e:workspace-folder-picker": "node tests/e2e/workspace-folder-picker-probe.mjs",
     "test:e2e:composer-context-file-removal": "node tests/e2e/composer-context-file-removal-probe.mjs",
     "test:e2e:delegated-team-default-collapse": "node tests/e2e/delegated-team-default-collapse-probe.mjs",
+    "test:e2e:run-expand-motion": "node tests/e2e/run-expand-motion-probe.mjs",
+    "test:e2e:run-expand-motion-live": "node tests/e2e/delegated-launch-defaults-probe.mjs --cases RXM-001,RXM-002,RXM-003",
     "test:e2e:workspaces-sidebar-dock": "node tests/e2e/workspaces-sidebar-dock-probe.mjs",
     "test:e2e:token-meter-tps": "node tests/e2e/token-meter-tps-probe.mjs",
     "test:e2e:file-explorer-pending-save-draft": "node tests/e2e/file-explorer-pending-save-draft-probe.mjs",

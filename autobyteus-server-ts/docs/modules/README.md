@@ -31,7 +31,8 @@ This directory mirrors the module documentation layout used in `autobyteus-serve
 | Application Storage | [application_storage.md](./application_storage.md) |
 | Applications | [applications.md](./applications.md) |
 | Codex Integration | [codex_integration.md](./codex_integration.md) |
-| Credential Proxy (Integrations) | [credential_proxy.md](./credential_proxy.md) |
+| Credential Proxy (Integrations and Provider Relays) | [credential_proxy.md](./credential_proxy.md) |
+| DeepSeek Harness Runtime | [deepseek_harness_runtime.md](./deepseek_harness_runtime.md) |
 | Agent Package Definitions (live agent/team/org definitions from agent packages, package folder watching) | [agent_package_definitions.md](./agent_package_definitions.md) |
 | Embeddings (local meaning search: models, collections, vector store) | [embeddings.md](./embeddings.md) |
 | File Explorer | [file_explorer.md](./file_explorer.md) |

@@ -1,0 +1,4 @@
+$ pnpm release:test --ref personal  ->  run 42213150758 (workflow_dispatch, build-only)
+$ gh run watch 42213150758 --exit-status  (live refresh output trimmed to the result)
+exit 0
+{"conclusion":"success","headSha":"2f2a361aac36b268ee50ad63d862b8db1a2217fa","jobs":[{"conclusion":"success","name":"Resolve Release Metadata"},{"conclusion":"success","name":"Build macOS ARM64"},{"conclusion":"success","name":"Build Windows x64"},{"conclusion":"success","name":"Build Linux x64"},{"conclusion":"success","name":"Build macOS Intel x64"},{"conclusion":"success","name":"Build Linux ARM64"},{"conclusion":"skipped","name":"Publish GitHub Release"}]}

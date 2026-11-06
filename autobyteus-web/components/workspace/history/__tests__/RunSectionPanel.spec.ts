@@ -1,0 +1,2217 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mount } from '@vue/test-utils';
+import { createPinia, setActivePinia } from 'pinia';
+import { nextTick, reactive } from 'vue';
+import RunSectionPanel from '../RunSectionPanel.vue';
+import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
+import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore';
+import { useRunSectionModeStore } from '~/stores/runSectionModeStore';
+import { taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBearingOrgFixture';
+
+const routerHarness = vi.hoisted(() => ({
+  route: { query: {} as Record<string, string> },
+  push: vi.fn().mockResolvedValue(undefined),
+  replace: vi.fn().mockResolvedValue(undefined),
+}));
+
+const chatDraftStoreMock = vi.hoisted(() => ({ startNewChat: vi.fn() }));
+vi.mock('~/stores/chatDraftStore', () => ({
+  useChatDraftStore: () => chatDraftStoreMock,
+}));
+
+vi.mock('vue-router', () => ({
+  useRoute: () => routerHarness.route,
+  useRouter: () => ({
+    push: routerHarness.push,
+    replace: routerHarness.replace,
+  }),
+}));
+
+const flushPromises = async () => {
+  await Promise.resolve();
+  await new Promise<void>((resolve) => setTimeout(resolve, 0));
+};
+
+const buildWorkspaceHistoryGroup = (workspace: Record<string, any>) => {
+  const {
+    agents,
+    agentDefinitions,
+    teamRuns,
+    teamDefinitions,
+    ...rest
+  } = workspace;
+
+  const groupedTeamDefinitions = teamDefinitions ?? (teamRuns ?? []).reduce((groups: Array<any>, teamRun: any) => {
+    const key = teamRun.teamDefinitionId || teamRun.teamDefinitionName || teamRun.teamRunId;
+    const existing = groups.find((group) => group.teamDefinitionId === key);
+    if (existing) {
+      existing.runs.push(teamRun);
+      return groups;
+    }
+    groups.push({
+      teamDefinitionId: teamRun.teamDefinitionId,
+      teamDefinitionName: teamRun.teamDefinitionName,
+      runs: [teamRun],
+    });
+    return groups;
+  }, []);
+
+  return {
+    ...rest,
+    agentDefinitions: agentDefinitions ?? agents ?? [],
+    teamDefinitions: groupedTeamDefinitions,
+  };
+};
+
+const {
+  runHistoryState,
+  runHistoryStoreMock,
+  workspaceStoreMock,
+  selectionStoreMock,
+  agentRunStoreMock,
+  teamRunStoreMock,
+  agentDefinitionStoreMock,
+  agentTeamDefinitionStoreMock,
+  workspaceCenterViewStoreMock,
+  windowNodeContextStoreMock,
+  addToastMock,
+} = vi.hoisted(() => {
+  const exactAddress = (value: string): string => value.startsWith('/') ? value : `/${value}`;
+  const buildCurrentMember = (member: any): any => {
+    const memberAddress = exactAddress(member.memberAddress);
+    const kind = member.kind ?? 'agent';
+    return {
+      ...member,
+      kind,
+      memberAddress,
+      displayName: member.displayName ?? memberAddress.split('/').filter(Boolean).at(-1) ?? 'member',
+      agentRunId: kind === 'agent' ? (member.agentRunId ?? `${memberAddress}-run`) : null,
+      teamRunIdForNode: kind === 'agent_team' ? (member.teamRunIdForNode ?? `${memberAddress}-team-run`) : null,
+      coordinatorAddress: kind === 'agent_team'
+        ? exactAddress(member.coordinatorAddress ?? member.children?.[0]?.memberAddress ?? memberAddress)
+        : null,
+      currentStatus: member.currentStatus ?? 'offline',
+      children: (member.children ?? []).map(buildCurrentMember),
+    };
+  };
+
+  const buildCurrentTeamNode = (team: any): any => {
+    const members = (team.members ?? []).map(buildCurrentMember);
+    const flattenRows = (rows: any[], depth = 0): any[] => rows.flatMap((row) => [{
+      kind: 'stable_member',
+      rowKey: row.kind === 'agent' ? `agent:${row.agentRunId}` : `team:${row.teamRunIdForNode}`,
+      teamRunId: team.teamRunId,
+      memberKind: row.kind,
+      memberAddress: row.memberAddress,
+      agentRunId: row.agentRunId ?? null,
+      teamRunIdForNode: row.teamRunIdForNode ?? null,
+      displayName: row.displayName,
+      depth,
+      hasChildren: row.children.length > 0,
+      row,
+    }, ...flattenRows(row.children, depth + 1)]);
+    return {
+      ...team,
+      focusedAgentRunId: team.focusedAgentRunId
+        ?? members.flatMap((member: any): any[] => [member, ...(member.children ?? [])])
+          .find((member: any) => member.memberAddress === exactAddress(
+            team.focusedAddress ?? team.coordinatorAddress ?? members[0]?.memberAddress ?? '/',
+          ))?.agentRunId
+        ?? members.flatMap((member: any): any[] => [member, ...(member.children ?? [])])
+          .find((member: any) => member.agentRunId)?.agentRunId
+        ?? '',
+      rootTeam: team.rootTeam ?? {
+        teamRunId: team.teamRunId,
+        kind: 'agent_team',
+        memberAddress: '/',
+        displayName: team.teamDefinitionName,
+        teamDefinitionId: team.teamDefinitionId,
+        teamRunIdForNode: team.teamRunId,
+        coordinatorAddress: exactAddress(team.coordinatorAddress ?? members[0]?.memberAddress ?? '/'),
+        workspaceRootPath: team.workspaceRootPath ?? null,
+        summary: team.summary,
+        lastActivityAt: team.lastActivityAt,
+        currentStatus: null,
+        isActive: team.isActive,
+        deleteLifecycle: team.deleteLifecycle,
+        children: members,
+      },
+      members,
+      executionRows: flattenRows(members),
+    };
+  };
+
+  const buildCurrentTeamNodes = (teams: any[]): any[] => teams.map(buildCurrentTeamNode);
+
+  const workspaceIdFromRoot = (workspaceRootPath: string | null | undefined): string =>
+    `workspace:${workspaceRootPath || 'unknown'}`;
+
+  const normalizeWorkspaceNode = (workspace: any): any => ({
+    ...workspace,
+    stableKey: workspace.stableKey ?? `workspace:${workspace.workspaceRootPath}`,
+    workspaceId: workspace.workspaceId ?? workspaceIdFromRoot(workspace.workspaceRootPath),
+    workspaceKind: workspace.workspaceKind ?? 'filesystem',
+    agentOrgDefinitions: workspace.agentOrgDefinitions ?? [],
+  });
+
+  const state = {
+    loading: false,
+    error: null as string | null,
+    selectedRunId: null as string | null,
+    selectedTeamRunId: null as string | null,
+    workspaceGroups: [] as any[],
+    workspaceHistoryLoadingById: {} as Record<string, boolean>,
+    workspaceHistoryErrorById: {} as Record<string, string | null>,
+    teamNodesByWorkspace: {} as Record<string, any[]>,
+    nodes: [
+      {
+        workspaceRootPath: '/ws/a',
+        workspaceName: 'autobyteus_org',
+        agents: [
+          {
+            agentDefinitionId: 'agent-def-1',
+            agentName: 'SuperAgent',
+            agentAvatarUrl: 'https://example.com/superagent.png',
+            runs: [
+              {
+                runId: 'temp-1',
+                summary: 'New - SuperAgent',
+                lastActivityAt: '2026-01-01T01:00:00.000Z',
+                lastKnownStatus: 'IDLE',
+                currentStatus: 'offline',
+                isActive: false,
+                source: 'draft',
+                isDraft: true,
+              },
+              {
+                runId: 'run-1',
+                summary: 'Describe messaging bindings',
+                lastActivityAt: '2026-01-01T00:00:00.000Z',
+                lastKnownStatus: 'ACTIVE',
+                currentStatus: 'running',
+                isActive: true,
+                source: 'history',
+                isDraft: false,
+              },
+              {
+                runId: 'run-2',
+                summary: 'Historical draft cleanup',
+                lastActivityAt: '2026-01-01T00:10:00.000Z',
+                lastKnownStatus: 'IDLE',
+                currentStatus: 'offline',
+                isActive: false,
+                source: 'history',
+                isDraft: false,
+              },
+            ],
+          },
+        ],
+      },
+    ] as any[],
+  };
+  return {
+    runHistoryState: state,
+    runHistoryStoreMock: {
+      get loading() {
+        return state.loading;
+      },
+      get error() {
+        return state.error;
+      },
+      get selectedRunId() {
+        return state.selectedRunId;
+      },
+      get selectedTeamRunId() {
+        return state.selectedTeamRunId;
+      },
+      get workspaceGroups() {
+        return state.workspaceGroups;
+      },
+      get workspaceHistoryLoadingById() {
+        return state.workspaceHistoryLoadingById;
+      },
+      get workspaceHistoryErrorById() {
+        return state.workspaceHistoryErrorById;
+      },
+      get navigationTopologyRevision() {
+        return 0;
+      },
+      getTeamMemberInspectionAttempt: vi.fn(() => null),
+      fetchTree: vi.fn().mockResolvedValue(undefined),
+      loadWorkspaceCatalogForNavigation: vi.fn().mockResolvedValue(undefined),
+      refreshTreeQuietly: vi.fn().mockResolvedValue(undefined),
+      setHistoryWindow: vi.fn(),
+      fetchWorkspaceHistory: vi.fn().mockResolvedValue(undefined),
+      pruneWorkspace: vi.fn(),
+      getTreeNodes: vi.fn(() => state.nodes.map(normalizeWorkspaceNode)),
+      getTeamNodes: vi.fn((workspaceRootPath?: string) => {
+        if (!workspaceRootPath) {
+          return buildCurrentTeamNodes(Object.values(state.teamNodesByWorkspace).flat());
+        }
+        return buildCurrentTeamNodes(state.teamNodesByWorkspace[workspaceRootPath] || []);
+      }),
+      getAgentNavigationAncestry: vi.fn((runId: string) => {
+        for (const workspace of state.nodes.map(normalizeWorkspaceNode)) {
+          const agent = workspace.agents.find((candidate: any) =>
+            candidate.runs.some((run: any) => run.runId === runId));
+          if (agent) return { workspaceId: workspace.workspaceId, agentDefinitionId: agent.agentDefinitionId };
+        }
+        return null;
+      }),
+      getTeamNavigationAncestry: vi.fn((teamRunId: string) => {
+        for (const [workspaceRootPath, teams] of Object.entries(state.teamNodesByWorkspace)) {
+          const team = teams.find((candidate: any) => candidate.teamRunId === teamRunId);
+          if (team) {
+            return {
+              workspaceId: workspaceIdFromRoot(workspaceRootPath),
+              teamDefinitionGroupKey: team.teamDefinitionId,
+            };
+          }
+        }
+        return null;
+      }),
+      getTeamMemberNavigationAncestorRowKeys: vi.fn((teamRunId: string, agentRunId: string) => {
+        const team = buildCurrentTeamNodes(Object.values(state.teamNodesByWorkspace).flat())
+          .find((candidate) => candidate.teamRunId === teamRunId);
+        const targetIndex = team?.executionRows.findIndex(
+          (row: any) => row.agentRunId === agentRunId,
+        ) ?? -1;
+        if (!team || targetIndex < 0) return [];
+        const ancestors: string[] = [];
+        let expectedDepth = team.executionRows[targetIndex].depth - 1;
+        for (let index = targetIndex - 1; index >= 0 && expectedDepth >= 0; index -= 1) {
+          const row = team.executionRows[index];
+          if (row.depth !== expectedDepth || !row.hasChildren) continue;
+          ancestors.unshift(row.rowKey);
+          expectedDepth -= 1;
+        }
+        return ancestors;
+      }),
+      formatRelativeTime: vi.fn((iso: string) => (iso.includes('01:00') ? 'now' : '4h')),
+      selectTreeRun: vi.fn().mockResolvedValue({ disposition: 'committed' }),
+      deleteRun: vi.fn().mockResolvedValue(true),
+      deleteTeamRun: vi.fn().mockResolvedValue(true),
+      archiveRun: vi.fn().mockResolvedValue(true),
+      archiveTeamRun: vi.fn().mockResolvedValue(true),
+      deleteAgentOrgRun: vi.fn().mockResolvedValue(true),
+      archiveAgentOrgRun: vi.fn().mockResolvedValue(true),
+      archiveAgentRunGroup: vi.fn().mockResolvedValue({ archivedRunIds: ['run-1', 'run-2'], activeRunIds: [], failedRunIds: [] }),
+      archiveTeamRuns: vi.fn(async (ids: string[]) => ({ archivedRunIds: ids, failedRunIds: [] })),
+      archiveAgentOrgRuns: vi.fn(async (ids: string[]) => ({ archivedRunIds: ids, failedRunIds: [] })),
+    },
+    workspaceStoreMock: {
+      workspaces: {
+        'ws-1': {
+          absolutePath: '/ws/a',
+          workspaceConfig: { root_path: '/ws/a' },
+        },
+      },
+      fetchAllWorkspaces: vi.fn().mockResolvedValue(undefined),
+      removeWorkspace: vi.fn().mockResolvedValue({ workspaceRootPath: '/ws/a', message: 'removed' }),
+    },
+    selectionStoreMock: {
+      beginSelectionIntent: vi.fn(() => ({ isCurrent: () => true })),
+      selectedType: null as string | null,
+      selectedRunId: null as string | null,
+      selectRun: vi.fn(),
+    },
+    agentRunStoreMock: {
+      terminateRun: vi.fn().mockResolvedValue(true),
+    },
+    teamRunStoreMock: {
+      stopPendingTeamIds: { __v_isRef: true, value: {} },
+      terminateTeamRun: vi.fn().mockResolvedValue(true),
+    },
+    agentDefinitionStoreMock: {
+      agentDefinitions: [
+        {
+          id: 'agent-def-1',
+          name: 'Super Agent',
+          avatarUrl: 'https://example.com/team-member.png',
+        },
+      ],
+      fetchAllAgentDefinitions: vi.fn().mockResolvedValue(undefined),
+    },
+    agentTeamDefinitionStoreMock: {
+      agentTeamDefinitions: [
+        {
+          id: 'team-def-1',
+          name: 'Team Alpha',
+          avatarUrl: 'https://example.com/team-alpha.png',
+        },
+      ],
+      fetchAllAgentTeamDefinitions: vi.fn().mockResolvedValue(undefined),
+    },
+    workspaceCenterViewStoreMock: {
+      showChat: vi.fn(),
+      showConfig: vi.fn(),
+    },
+    windowNodeContextStoreMock: {
+      isEmbeddedWindow: { __v_isRef: true, value: false },
+    },
+    addToastMock: vi.fn(),
+  };
+});
+
+vi.mock('~/stores/runHistoryStore', () => ({
+  useRunHistoryStore: () => runHistoryStoreMock,
+}));
+
+vi.mock('~/stores/workspace', () => ({
+  useWorkspaceStore: () => workspaceStoreMock,
+}));
+
+vi.mock('~/stores/agentSelectionStore', () => ({
+  useAgentSelectionStore: () => selectionStoreMock,
+}));
+
+vi.mock('~/stores/agentRunStore', () => ({
+  useAgentRunStore: () => agentRunStoreMock,
+}));
+
+vi.mock('~/stores/agentTeamRunStore', () => ({
+  useAgentTeamRunStore: () => teamRunStoreMock,
+}));
+
+vi.mock('~/stores/agentDefinitionStore', () => ({
+  useAgentDefinitionStore: () => agentDefinitionStoreMock,
+}));
+
+const orgCatalog = vi.hoisted(() => ({ definitions: [] as any[], fetchAll: vi.fn().mockResolvedValue(undefined) }));
+vi.mock('~/stores/agentOrgDefinitionStore', () => ({ useAgentOrgDefinitionStore: () => orgCatalog }));
+
+vi.mock('~/stores/agentTeamDefinitionStore', () => ({
+  useAgentTeamDefinitionStore: () => agentTeamDefinitionStoreMock,
+}));
+
+vi.mock('~/stores/workspaceCenterViewStore', () => ({
+  useWorkspaceCenterViewStore: () => workspaceCenterViewStoreMock,
+}));
+
+vi.mock('~/stores/windowNodeContextStore', () => ({
+  useWindowNodeContextStore: () => windowNodeContextStoreMock,
+}));
+
+vi.mock('~/composables/useToasts', () => ({
+  useToasts: () => ({
+    addToast: addToastMock,
+  }),
+}));
+
+describe('RunSectionPanel', () => {
+  beforeEach(async () => {
+    await localizationRuntime.setPreference('en');
+    setActivePinia(createPinia());
+    vi.clearAllMocks();
+    orgCatalog.definitions = [];
+    orgCatalog.fetchAll.mockResolvedValue(undefined);
+    routerHarness.route.query = {};
+    runHistoryState.loading = false;
+    runHistoryState.error = null;
+    runHistoryState.selectedRunId = null;
+    runHistoryState.selectedTeamRunId = null;
+    runHistoryState.workspaceHistoryLoadingById = {};
+    runHistoryState.workspaceHistoryErrorById = {};
+    teamRunStoreMock.stopPendingTeamIds.value = {};
+    runHistoryStoreMock.loadWorkspaceCatalogForNavigation.mockImplementation(
+      () => workspaceStoreMock.fetchAllWorkspaces(),
+    );
+    runHistoryState.nodes = [
+      {
+        workspaceRootPath: '/ws/a',
+        workspaceName: 'autobyteus_org',
+        agents: [
+          {
+            agentDefinitionId: 'agent-def-1',
+            agentName: 'SuperAgent',
+            agentAvatarUrl: 'https://example.com/superagent.png',
+            runs: [
+              {
+                runId: 'temp-1',
+                summary: 'New - SuperAgent',
+                lastActivityAt: '2026-01-01T01:00:00.000Z',
+                lastKnownStatus: 'IDLE',
+                currentStatus: 'offline',
+                isActive: false,
+                source: 'draft',
+                isDraft: true,
+              },
+              {
+                runId: 'run-1',
+                summary: 'Describe messaging bindings',
+                lastActivityAt: '2026-01-01T00:00:00.000Z',
+                lastKnownStatus: 'ACTIVE',
+                currentStatus: 'running',
+                isActive: true,
+                source: 'history',
+                isDraft: false,
+              },
+              {
+                runId: 'run-2',
+                summary: 'Historical draft cleanup',
+                lastActivityAt: '2026-01-01T00:10:00.000Z',
+                lastKnownStatus: 'IDLE',
+                currentStatus: 'offline',
+                isActive: false,
+                source: 'history',
+                isDraft: false,
+              },
+            ],
+          },
+        ],
+      },
+    ];
+    runHistoryState.workspaceGroups = [];
+    runHistoryState.teamNodesByWorkspace = {};
+    selectionStoreMock.selectedType = null;
+    selectionStoreMock.selectedRunId = null;
+    agentDefinitionStoreMock.agentDefinitions = [
+      {
+        id: 'agent-def-1',
+        name: 'Super Agent',
+        avatarUrl: 'https://example.com/team-member.png',
+      },
+    ];
+    agentTeamDefinitionStoreMock.agentTeamDefinitions = [
+      {
+        id: 'team-def-1',
+        name: 'Team Alpha',
+        avatarUrl: 'https://example.com/team-alpha.png',
+      },
+    ];
+    windowNodeContextStoreMock.isEmbeddedWindow.value = false;
+    window.localStorage.clear();
+    workspaceCenterViewStoreMock.showChat.mockReset();
+    workspaceCenterViewStoreMock.showConfig.mockReset();
+    delete (window as any).electronAPI;
+  });
+
+  const mountComponent = (options: {
+    realConfirmationModal?: boolean;
+    attachTo?: Element;
+  } = {}) => mount(RunSectionPanel, {
+    ...(options.attachTo ? { attachTo: options.attachTo } : {}),
+    global: {
+      stubs: {
+        Icon: { template: '<span class="icon-stub" />' },
+        RunListPanel: { template: '<div data-test="run-list-panel-stub" />' },
+        // The Projects view's own tree and store have their own specs; here only the host's read window matters.
+        ProjectsRunsTree: { template: '<div data-test="projects-runs-tree-stub" />' },
+        ...(!options.realConfirmationModal ? { ConfirmationModal: {
+          props: ['show'],
+          template: `
+            <div v-if="show" data-test="delete-confirmation-modal">
+              <button
+                type="button"
+                data-test="delete-confirmation-confirm"
+                @click="$emit('confirm')"
+              >
+                confirm
+              </button>
+              <button
+                type="button"
+                data-test="delete-confirmation-cancel"
+                @click="$emit('cancel')"
+              >
+                cancel
+              </button>
+            </div>
+          `,
+        } } : {}),
+      },
+    },
+  });
+
+  const expandWorkspace = async (wrapper: any, workspaceRootPath = '/ws/a') => {
+    const workspaceRow = wrapper.get(
+      `[data-test="workspace-row"][data-workspace-root="${workspaceRootPath}"]`,
+    );
+    if (workspaceRow.attributes('aria-expanded') !== 'true') {
+      await workspaceRow.get('button').trigger('click');
+      await flushPromises();
+    }
+  };
+
+  const expandAgentGroup = async (
+    wrapper: any,
+    workspaceRootPath = '/ws/a',
+    agentDefinitionId = 'agent-def-1',
+  ) => {
+    await expandWorkspace(wrapper, workspaceRootPath);
+    const agentRow = wrapper.get(
+      `[data-test="workspace-agent-row"][data-workspace-root="${workspaceRootPath}"][data-agent-definition-id="${agentDefinitionId}"]`,
+    );
+    if (agentRow.attributes('aria-expanded') !== 'true') {
+      await agentRow.trigger('click');
+      await flushPromises();
+    }
+  };
+
+  const getRunRow = (wrapper: any, runId: string) => wrapper.get(
+    `[data-test="workspace-agent-run-row"][data-run-id="${runId}"]`,
+  );
+
+  const findTerminateRunButton = (wrapper: any, runId: string) => getRunRow(wrapper, runId).find(
+    `button[data-test="terminate-agent-run"][data-run-id="${runId}"]`,
+  );
+
+  const expandTeamDefinitionGroup = async (
+    wrapper: any,
+    workspaceRootPath = '/ws/a',
+    groupKey = 'team-def-1',
+  ) => {
+    await expandWorkspace(wrapper, workspaceRootPath);
+    const teamDefinitionRow = wrapper.get(`[data-test="workspace-team-definition-row-${groupKey}"]`);
+    if (teamDefinitionRow.attributes('aria-expanded') !== 'true') {
+      await teamDefinitionRow.trigger('click');
+      await flushPromises();
+    }
+  };
+
+  it('loads the unified mixed history tree on mount', async () => {
+    mountComponent();
+    await flushPromises();
+
+    expect(runHistoryStoreMock.loadWorkspaceCatalogForNavigation).toHaveBeenCalledTimes(1);
+    // The Workspaces view (the default) reads 6 runs per agent, set before the first read (DS-002).
+    expect(runHistoryStoreMock.setHistoryWindow).toHaveBeenCalledWith(6);
+    expect(runHistoryStoreMock.setHistoryWindow.mock.invocationCallOrder[0]).toBeLessThan(runHistoryStoreMock.fetchTree.mock.invocationCallOrder[0]);
+    expect(runHistoryStoreMock.fetchTree).toHaveBeenCalledTimes(1);
+    expect(runHistoryStoreMock.fetchWorkspaceHistory).not.toHaveBeenCalled();
+  });
+
+  it('renders workspace rows collapsed by default', async () => {
+    const wrapper = mountComponent();
+    await flushPromises();
+
+    expect(wrapper.text()).toContain('autobyteus_org');
+    expect(wrapper.text()).not.toContain('SuperAgent');
+    expect(wrapper.text()).not.toContain('Describe messaging bindings');
+    expect(wrapper.find('[data-test="workspace-row"][data-workspace-root="/ws/a"]').attributes('aria-expanded')).toBe('false');
+  });
+
+  it('fetches scoped workspace history when a workspace row is expanded', async () => {
+    const wrapper = mountComponent();
+    await flushPromises();
+
+    await wrapper
+      .get('[data-test="workspace-row"][data-workspace-root="/ws/a"]')
+      .get('button')
+      .trigger('click');
+    await flushPromises();
+
+    expect(runHistoryStoreMock.fetchWorkspaceHistory).toHaveBeenCalledWith('workspace:/ws/a');
+    expect(runHistoryStoreMock.fetchTree).toHaveBeenCalledTimes(1);
+    expect(wrapper.find('[data-test="workspace-row"][data-workspace-root="/ws/a"]').attributes('aria-expanded')).toBe('true');
+  });
+
+  it('renders scoped workspace history loading and error states', async () => {
+    runHistoryState.workspaceHistoryLoadingById = { 'workspace:/ws/a': true };
+    let wrapper = mountComponent();
+    await flushPromises();
+    await expandWorkspace(wrapper);
+    expect(wrapper.text()).toContain('Loading workspace history');
+    wrapper.unmount();
+
+    runHistoryState.workspaceHistoryLoadingById = {};
+    runHistoryState.workspaceHistoryErrorById = { 'workspace:/ws/a': 'Could not load workspace history.' };
+    wrapper = mountComponent();
+    await flushPromises();
+    await expandWorkspace(wrapper);
+    expect(wrapper.text()).toContain('Could not load workspace history.');
+  });
+
+  it('workspace-tree-vs-chooser VIS-014: no folder with a run shows the text-only Workspaces empty state', async () => {
+    runHistoryState.nodes = [];
+    const wrapper = mountComponent();
+    await flushPromises();
+    const empty = wrapper.get('[data-test="workspaces-tree-empty"]');
+    expect(empty.text()).toContain('No runs in any folder yet');
+    expect(empty.text()).toContain('A folder is listed here once it has a run. Start one with Chat and choose its folder.');
+    expect(empty.findAll('a, button')).toHaveLength(0);
+  });
+
+  it('workspace-tree-vs-chooser AC-010, AC-013: no folder row has a remove button; the section has no add form or add button', async () => {
+    const wrapper = mountComponent();
+    await flushPromises();
+    expect(wrapper.find('[data-test="workspace-row"]').exists()).toBe(true);
+    expect(wrapper.findAll('button').filter((button) => /remove/i.test(button.attributes('title') ?? ''))).toHaveLength(0);
+    expect(wrapper.find('[data-test="create-workspace-form"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="run-section-add-workspace"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="run-section-new-project"]').exists()).toBe(false);
+  });
+
+  it('workspace-tree-vs-chooser DS-001, DS-002: the header chooses the view; the read window follows it with one read per change', async () => {
+    const wrapper = mountComponent();
+    await flushPromises();
+    expect(wrapper.get('[data-test="run-section-title"]').text()).toBe('Workspaces');
+    expect(runHistoryStoreMock.fetchTree).toHaveBeenCalledTimes(1);
+
+    await wrapper.get('[data-test="run-section-view-menu"]').trigger('click');
+    await wrapper.get('[data-test="run-section-view-runs"]').trigger('click');
+    await flushPromises();
+    expect(wrapper.get('[data-test="run-section-title"]').text()).toBe('Runs');
+    expect(wrapper.find('[data-test="run-list-panel-stub"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="workspace-history-tree-scroll"]').exists()).toBe(false);
+    expect(runHistoryStoreMock.setHistoryWindow).toHaveBeenLastCalledWith(null);
+    expect(runHistoryStoreMock.fetchTree).toHaveBeenCalledTimes(2);
+
+    await wrapper.get('[data-test="run-section-view-menu"]').trigger('click');
+    await wrapper.get('[data-test="run-section-view-workspaces"]').trigger('click');
+    await flushPromises();
+    expect(runHistoryStoreMock.setHistoryWindow).toHaveBeenLastCalledWith(6);
+    expect(runHistoryStoreMock.fetchTree).toHaveBeenCalledTimes(3);
+    expect(wrapper.find('[data-test="workspace-row"]').exists()).toBe(true);
+    wrapper.unmount();
+  });
+
+  it('autobyteus-388 SR-002: the Projects view reads every run, so a removal of any run elsewhere is noticed; Workspaces reads 6', async () => {
+    const wrapper = mountComponent();
+    await flushPromises();
+    await wrapper.get('[data-test="run-section-view-menu"]').trigger('click');
+    await wrapper.get('[data-test="run-section-view-projects"]').trigger('click');
+    await flushPromises();
+    expect(wrapper.get('[data-test="run-section-title"]').text()).toBe('Projects');
+    expect(runHistoryStoreMock.setHistoryWindow).toHaveBeenLastCalledWith(null);
+    expect(runHistoryStoreMock.fetchTree).toHaveBeenCalledTimes(2);
+
+    await wrapper.get('[data-test="run-section-view-menu"]').trigger('click');
+    await wrapper.get('[data-test="run-section-view-workspaces"]').trigger('click');
+    await flushPromises();
+    expect(runHistoryStoreMock.setHistoryWindow).toHaveBeenLastCalledWith(6);
+    expect(runHistoryStoreMock.fetchTree).toHaveBeenCalledTimes(3);
+    wrapper.unmount();
+  });
+
+  it('starts in the Projects view with every run read when that was the stored choice (autobyteus-388 SR-002)', async () => {
+    useRunSectionModeStore().setMode('projects');
+    const wrapper = mountComponent();
+    await flushPromises();
+    expect(runHistoryStoreMock.setHistoryWindow).toHaveBeenCalledWith(null);
+    expect(runHistoryStoreMock.setHistoryWindow).not.toHaveBeenCalledWith(6);
+    expect(runHistoryStoreMock.fetchTree).toHaveBeenCalledTimes(1);
+    wrapper.unmount();
+  });
+
+  it('starts in the Runs view with every run read when that was the stored choice', async () => {
+    useRunSectionModeStore().setMode('runs');
+    const wrapper = mountComponent();
+    await flushPromises();
+    expect(runHistoryStoreMock.setHistoryWindow).toHaveBeenCalledWith(null);
+    expect(runHistoryStoreMock.setHistoryWindow).not.toHaveBeenCalledWith(6);
+    expect(runHistoryStoreMock.fetchTree).toHaveBeenCalledTimes(1);
+    expect(wrapper.find('[data-test="run-list-panel-stub"]').exists()).toBe(true);
+    wrapper.unmount();
+  });
+
+  it('shows groups after opening a workspace but keeps run histories collapsed', async () => {
+    runHistoryState.teamNodesByWorkspace['/ws/a'] = [
+      {
+        teamRunId: 'team-1',
+        teamDefinitionId: 'team-def-1',
+        teamDefinitionName: 'Team Alpha',
+        workspaceRootPath: '/ws/a',
+        summary: 'Team summary',
+        lastActivityAt: '2026-01-01T02:00:00.000Z',
+        lastKnownStatus: 'IDLE',
+        isActive: false,
+        currentStatus: 'offline',
+        deleteLifecycle: 'READY',
+        focusedAddress: '/super_agent',
+        members: [],
+      },
+    ];
+
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandWorkspace(wrapper);
+
+    expect(wrapper.text()).toContain('SuperAgent');
+    expect(wrapper.text()).toContain('Teams');
+    expect(wrapper.text()).toContain('Team Alpha');
+    expect(wrapper.text()).not.toContain('Describe messaging bindings');
+    expect(wrapper.text()).not.toContain('Team summary');
+    expect(wrapper.find('[data-test="workspace-agent-row"][data-agent-definition-id="agent-def-1"]').attributes('aria-expanded')).toBe('false');
+    expect(wrapper.find('[data-test="workspace-team-definition-row-team-def-1"]').attributes('aria-expanded')).toBe('false');
+  });
+
+  it('keeps the individual team run disclosure chevron visually consistent with the parent team chevron', async () => {
+    runHistoryState.teamNodesByWorkspace['/ws/a'] = [
+      {
+        teamRunId: 'team-1',
+        teamDefinitionId: 'team-def-1',
+        teamDefinitionName: 'Team Alpha',
+        workspaceRootPath: '/ws/a',
+        summary: 'Team summary',
+        lastActivityAt: '2026-01-01T02:00:00.000Z',
+        lastKnownStatus: 'IDLE',
+        isActive: false,
+        currentStatus: 'offline',
+        deleteLifecycle: 'READY',
+        focusedAddress: '/super_agent',
+        members: [
+          {
+            teamRunId: 'team-1',
+            memberAddress: '/super_agent',
+            displayName: 'Super Agent',
+            agentRunId: 'member-1',
+            workspaceRootPath: '/ws/a',
+            summary: 'Member summary',
+            lastActivityAt: '2026-01-01T02:00:00.000Z',
+            lastKnownStatus: 'IDLE',
+            isActive: false,
+            deleteLifecycle: 'READY',
+          },
+        ],
+      },
+    ];
+
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandTeamDefinitionGroup(wrapper);
+
+    expect(wrapper.find('[data-test="workspace-team-definition-disclosure"]').exists()).toBe(false);
+
+    const teamRow = wrapper.get('[data-test="workspace-team-row-team-1"]');
+    expect(teamRow.attributes('aria-expanded')).toBe('false');
+
+    const teamRunDisclosure = wrapper.get('[data-test="workspace-team-run-disclosure"]');
+    expect(teamRunDisclosure.classes()).toEqual(expect.arrayContaining([
+      'h-3.5',
+      'w-3.5',
+      'text-gray-400',
+      '-rotate-90',
+    ]));
+    expect(teamRunDisclosure.classes()).not.toContain('h-5');
+    expect(teamRunDisclosure.classes()).not.toContain('w-5');
+    expect(teamRunDisclosure.classes()).not.toContain('text-indigo-500');
+    expect(teamRunDisclosure.classes()).not.toContain('text-indigo-600');
+    expect(teamRunDisclosure.classes()).not.toContain('rounded-md');
+    expect(teamRunDisclosure.classes()).not.toContain('border');
+    expect(teamRunDisclosure.classes()).not.toContain('shadow-sm');
+
+    await teamRow.trigger('click');
+    await flushPromises();
+
+    expect(teamRow.attributes('aria-expanded')).toBe('true');
+    expect(wrapper.get('[data-test="workspace-team-run-disclosure"]').classes()).toEqual(expect.arrayContaining([
+      'rotate-0',
+      'text-gray-400',
+    ]));
+    expect(wrapper.find('[data-test="workspace-team-member-team-1-/super_agent"]').exists()).toBe(true);
+  });
+
+  it('refreshes the unified mixed history quietly on the background interval while mounted', async () => {
+    vi.useFakeTimers();
+    try {
+      const wrapper = mountComponent();
+      await Promise.resolve();
+      await vi.advanceTimersByTimeAsync(0);
+      const workspaceRow = wrapper.get('[data-test="workspace-row"][data-workspace-root="/ws/a"]');
+      await workspaceRow.get('button').trigger('click');
+      await Promise.resolve();
+      await vi.advanceTimersByTimeAsync(0);
+
+      await vi.advanceTimersByTimeAsync(5000);
+      expect(runHistoryStoreMock.refreshTreeQuietly).toHaveBeenCalledTimes(1);
+      wrapper.unmount();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('renders agent avatar image when the tree node provides avatar URL', async () => {
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandWorkspace(wrapper);
+
+    const avatar = wrapper.find('img[alt="SuperAgent avatar"]');
+    expect(avatar.exists()).toBe(true);
+    expect(avatar.attributes('src')).toBe('https://example.com/superagent.png');
+  });
+
+  it('tracks broken avatar per URL key so a changed avatar URL can recover', async () => {
+    const wrapper = mountComponent();
+    await flushPromises();
+
+    const vm = wrapper.vm as any;
+    const workspaceRootPath = '/ws/a';
+    const agentDefinitionId = 'agent-def-1';
+    const firstAvatarUrl = 'https://example.com/superagent.png';
+    const replacementAvatarUrl = 'https://example.com/superagent-v2.png';
+
+    expect(vm.showAgentAvatar(workspaceRootPath, agentDefinitionId, firstAvatarUrl)).toBe(true);
+    vm.onAgentAvatarError(workspaceRootPath, agentDefinitionId, firstAvatarUrl);
+    await nextTick();
+    expect(vm.showAgentAvatar(workspaceRootPath, agentDefinitionId, firstAvatarUrl)).toBe(false);
+    expect(vm.showAgentAvatar(workspaceRootPath, agentDefinitionId, replacementAvatarUrl)).toBe(true);
+  });
+
+  it('selects run via runHistoryStore.selectTreeRun and emits run-selected', async () => {
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandAgentGroup(wrapper);
+
+    const runButton = wrapper.findAll('button').find((button) =>
+      button.text().includes('Describe messaging bindings'),
+    );
+    expect(runButton).toBeTruthy();
+
+    await runButton!.trigger('click');
+    await flushPromises();
+
+    expect(runHistoryStoreMock.selectTreeRun).toHaveBeenCalledWith(
+      expect.objectContaining({ runId: 'run-1', source: 'history' }),
+      expect.objectContaining({ selectionIntent: expect.any(Object) }),
+    );
+    expect(wrapper.emitted('run-selected')).toEqual([
+      [{ type: 'agent', runId: 'run-1' }],
+    ]);
+  });
+
+  it('starts a New chat preset to the agent and workspace from the agent row plus button', async () => {
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandWorkspace(wrapper);
+
+    const createButtons = wrapper.findAll('button[title="New run with this agent"]');
+    expect(createButtons.length).toBe(1);
+
+    await createButtons[0]!.trigger('click');
+    await flushPromises();
+
+    expect(chatDraftStoreMock.startNewChat).toHaveBeenCalledWith({
+      workspaceRootPath: '/ws/a',
+      agentDefinitionId: 'agent-def-1',
+    });
+    expect(routerHarness.push).toHaveBeenCalledWith('/chat');
+    expect(wrapper.emitted('run-selected')).toBeUndefined();
+  });
+
+  it('does not render run-row configuration button', async () => {
+    const wrapper = mountComponent();
+    await flushPromises();
+
+    const configButton = wrapper.find('[data-test="workspace-run-config-run-1"]');
+    expect(configButton.exists()).toBe(false);
+  });
+
+  it('renders grouped team rows under workspace and selects the team run when clicked', async () => {
+    runHistoryState.workspaceGroups = [
+      buildWorkspaceHistoryGroup({
+        workspaceRootPath: '/ws/a',
+        workspaceName: 'autobyteus_org',
+        agents: [],
+        teamRuns: [],
+        teamDefinitions: [
+          {
+            teamDefinitionId: 'team-def-1',
+            teamDefinitionName: 'Team Alpha',
+            runs: [
+              {
+                teamRunId: 'team-1',
+                teamDefinitionId: 'team-def-1',
+                teamDefinitionName: 'Team Alpha',
+                workspaceRootPath: '/ws/a',
+                summary: 'Team summary',
+                lastActivityAt: '2026-01-01T02:00:00.000Z',
+                lastKnownStatus: 'IDLE',
+                deleteLifecycle: 'READY',
+                isActive: false,
+                members: [],
+              },
+            ],
+          },
+        ],
+      }),
+    ];
+    runHistoryState.teamNodesByWorkspace['/ws/a'] = [
+      {
+        teamRunId: 'team-1',
+        teamDefinitionId: 'team-def-1',
+        teamDefinitionName: 'Team Alpha',
+        workspaceRootPath: '/ws/a',
+        summary: 'Team summary',
+        lastActivityAt: '2026-01-01T02:00:00.000Z',
+        lastKnownStatus: 'IDLE',
+        isActive: false,
+        currentStatus: 'offline',
+        deleteLifecycle: 'READY',
+        focusedAddress: '/super_agent',
+        members: [
+          {
+            teamRunId: 'team-1',
+            memberAddress: '/super_agent',
+            displayName: 'Super Agent',
+            agentRunId: 'member-run-1',
+            workspaceRootPath: '/ws/a',
+            summary: 'Team summary',
+            lastActivityAt: '2026-01-01T02:00:00.000Z',
+            lastKnownStatus: 'IDLE',
+            isActive: false,
+            deleteLifecycle: 'READY',
+          },
+        ],
+      },
+    ];
+
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandTeamDefinitionGroup(wrapper);
+
+    expect(wrapper.text()).toContain('Teams');
+    const groupRow = wrapper.find('[data-test="workspace-team-definition-row-team-def-1"]');
+    expect(groupRow.exists()).toBe(true);
+    expect(groupRow.text()).toContain('Team Alpha');
+    const row = wrapper.find('[data-test="workspace-team-row-team-1"]');
+    expect(row.exists()).toBe(true);
+    expect(row.text()).toContain('Team summary');
+    expect(row.text()).not.toContain('team-1');
+
+    await row.trigger('click');
+    await flushPromises();
+
+    expect(selectionStoreMock.selectRun).toHaveBeenCalledWith('team-1', 'team');
+    expect(wrapper.emitted('run-selected')).toContainEqual([
+      { type: 'team', runId: 'team-1' },
+    ]);
+  });
+
+  it('opens a historical team row through the coordinator-focused member instead of the first alphabetical member', async () => {
+    runHistoryState.workspaceGroups = [
+      buildWorkspaceHistoryGroup({
+        workspaceRootPath: '/ws/a',
+        workspaceName: 'autobyteus_org',
+        agents: [],
+        teamDefinitions: [
+          {
+            teamDefinitionId: 'team-def-1',
+            teamDefinitionName: 'Team Alpha',
+            runs: [
+              {
+                teamRunId: 'team-1',
+                teamDefinitionId: 'team-def-1',
+                teamDefinitionName: 'Team Alpha',
+                coordinatorAddress: '/solution_designer',
+                workspaceRootPath: '/ws/a',
+                summary: 'Team summary',
+                lastActivityAt: '2026-01-01T02:00:00.000Z',
+                lastKnownStatus: 'IDLE',
+                deleteLifecycle: 'READY',
+                isActive: false,
+                members: [
+                  {
+                    memberAddress: '/architect_reviewer',
+                    displayName: 'Architect Reviewer',
+                    agentRunId: 'member-run-2',
+                    runtimeKind: 'autobyteus',
+                    workspaceRootPath: '/ws/a',
+                  },
+                  {
+                    memberAddress: '/solution_designer',
+                    displayName: 'Solution Designer',
+                    agentRunId: 'member-run-1',
+                    runtimeKind: 'autobyteus',
+                    workspaceRootPath: '/ws/a',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      }),
+    ];
+    runHistoryState.teamNodesByWorkspace['/ws/a'] = [
+      {
+        teamRunId: 'team-1',
+        teamDefinitionId: 'team-def-1',
+        teamDefinitionName: 'Team Alpha',
+        workspaceRootPath: '/ws/a',
+        summary: 'Team summary',
+        lastActivityAt: '2026-01-01T02:00:00.000Z',
+        lastKnownStatus: 'IDLE',
+        isActive: false,
+        currentStatus: 'offline',
+        deleteLifecycle: 'READY',
+        focusedAddress: '/solution_designer',
+        members: [
+          {
+            teamRunId: 'team-1',
+            memberAddress: '/architect_reviewer',
+            displayName: 'Architect Reviewer',
+            agentRunId: 'member-run-2',
+            workspaceRootPath: '/ws/a',
+            summary: 'Team summary',
+            lastActivityAt: '2026-01-01T02:00:00.000Z',
+            lastKnownStatus: 'IDLE',
+            isActive: false,
+            deleteLifecycle: 'READY',
+          },
+          {
+            teamRunId: 'team-1',
+            memberAddress: '/solution_designer',
+            displayName: 'Solution Designer',
+            agentRunId: 'member-run-1',
+            workspaceRootPath: '/ws/a',
+            summary: 'Team summary',
+            lastActivityAt: '2026-01-01T02:00:00.000Z',
+            lastKnownStatus: 'IDLE',
+            isActive: false,
+            deleteLifecycle: 'READY',
+          },
+        ],
+      },
+    ];
+
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandTeamDefinitionGroup(wrapper);
+
+    const row = wrapper.find('[data-test="workspace-team-row-team-1"]');
+    expect(row.exists()).toBe(true);
+
+    await row.trigger('click');
+    await flushPromises();
+
+    expect(runHistoryStoreMock.selectTreeRun).toHaveBeenCalledWith(
+      expect.objectContaining({
+        teamRunId: 'team-1',
+        memberAddress: '/solution_designer',
+        agentRunId: 'member-run-1',
+      }),
+      expect.objectContaining({ selectionIntent: expect.any(Object) }),
+    );
+  });
+
+  it('strips the user requirement prefix from agent and team summary labels', async () => {
+    runHistoryState.workspaceGroups = [
+      buildWorkspaceHistoryGroup({
+        workspaceRootPath: '/ws/a',
+        workspaceName: 'Workspace A',
+        agents: [],
+        teamRuns: [],
+        teamDefinitions: [
+          {
+            teamDefinitionId: 'team-def-1',
+            teamDefinitionName: 'Team Alpha',
+            runs: [
+              {
+                teamRunId: 'team-1',
+                teamDefinitionId: 'team-def-1',
+                teamDefinitionName: 'Team Alpha',
+                workspaceRootPath: '/ws/a',
+                summary: '**[User Requirement]** Build the demo fruit shop',
+                lastActivityAt: '2026-01-01T02:00:00.000Z',
+                lastKnownStatus: 'IDLE',
+                deleteLifecycle: 'READY',
+                isActive: false,
+                members: [],
+              },
+            ],
+          },
+        ],
+      }),
+    ];
+    runHistoryState.nodes = [
+      {
+        workspaceRootPath: '/ws/a',
+        workspaceName: 'Workspace A',
+        agents: [
+          {
+            agentDefinitionId: 'agent-def-1',
+            agentName: 'SuperAgent',
+            agentAvatarUrl: 'https://a',
+            runs: [
+              {
+                runId: 'run-1',
+                summary: '**[User Requirement]** Build a stable sidebar label',
+                lastActivityAt: '2026-01-01T01:00:00.000Z',
+                lastKnownStatus: 'IDLE',
+                isActive: false,
+                source: 'history',
+              },
+            ],
+          },
+        ],
+      },
+    ];
+    runHistoryState.teamNodesByWorkspace['/ws/a'] = [
+      {
+        teamRunId: 'team-1',
+        teamDefinitionId: 'team-def-1',
+        teamDefinitionName: 'Team Alpha',
+        workspaceRootPath: '/ws/a',
+        summary: '**[User Requirement]** Build the demo fruit shop',
+        lastActivityAt: '2026-01-01T02:00:00.000Z',
+        lastKnownStatus: 'IDLE',
+        isActive: false,
+        currentStatus: 'offline',
+        deleteLifecycle: 'READY',
+        focusedAddress: '/super_agent',
+        members: [],
+      },
+    ];
+
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandAgentGroup(wrapper);
+    await expandTeamDefinitionGroup(wrapper);
+
+    expect(wrapper.text()).toContain('Build a stable sidebar label');
+    expect(wrapper.text()).toContain('Build the demo fruit shop');
+    expect(wrapper.text()).not.toContain('**[User Requirement]**');
+  });
+
+  it('renders team avatar image when team definition avatar is available', async () => {
+    runHistoryState.teamNodesByWorkspace['/ws/a'] = [
+      {
+        teamRunId: 'team-1',
+        teamDefinitionId: 'team-def-1',
+        teamDefinitionName: 'Team Alpha',
+        workspaceRootPath: '/ws/a',
+        summary: 'Team summary',
+        lastActivityAt: '2026-01-01T02:00:00.000Z',
+        lastKnownStatus: 'IDLE',
+        isActive: false,
+        currentStatus: 'offline',
+        deleteLifecycle: 'READY',
+        focusedAddress: '/super_agent',
+        members: [],
+      },
+    ];
+
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandWorkspace(wrapper);
+
+    const teamAvatar = wrapper.find('img[alt="Team Alpha avatar"]');
+    expect(teamAvatar.exists()).toBe(true);
+    expect(teamAvatar.attributes('src')).toBe('https://example.com/team-alpha.png');
+  });
+
+  it('renders team member avatar image when matching agent definition avatar is available', async () => {
+    runHistoryState.teamNodesByWorkspace['/ws/a'] = [
+      {
+        teamRunId: 'team-1',
+        teamDefinitionId: 'team-def-1',
+        teamDefinitionName: 'Team Alpha',
+        workspaceRootPath: '/ws/a',
+        summary: 'Team summary',
+        lastActivityAt: '2026-01-01T02:00:00.000Z',
+        lastKnownStatus: 'IDLE',
+        isActive: false,
+        currentStatus: 'offline',
+        deleteLifecycle: 'READY',
+        focusedAddress: '/super_agent',
+        members: [
+          {
+            teamRunId: 'team-1',
+            memberAddress: '/super_agent',
+            displayName: 'Super Agent',
+            agentRunId: 'member-run-1',
+            workspaceRootPath: '/ws/a',
+            summary: 'Team summary',
+            lastActivityAt: '2026-01-01T02:00:00.000Z',
+            lastKnownStatus: 'IDLE',
+            isActive: false,
+            deleteLifecycle: 'READY',
+          },
+        ],
+      },
+    ];
+
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandTeamDefinitionGroup(wrapper);
+
+    const teamRow = wrapper.find('[data-test="workspace-team-row-team-1"]');
+    expect(teamRow.exists()).toBe(true);
+    await teamRow.trigger('click');
+    await flushPromises();
+
+    const memberAvatar = wrapper.find('img[alt="Super Agent avatar"]');
+    expect(memberAvatar.exists()).toBe(true);
+    expect(memberAvatar.attributes('src')).toBe('https://example.com/team-member.png');
+  });
+
+  it('selects team member through runHistoryStore so persisted member history can hydrate', async () => {
+    runHistoryState.teamNodesByWorkspace['/ws/a'] = [
+      {
+        teamRunId: 'team-1',
+        teamDefinitionId: 'team-def-1',
+        teamDefinitionName: 'Team Alpha',
+        workspaceRootPath: '/ws/a',
+        summary: 'Team summary',
+        lastActivityAt: '2026-01-01T02:00:00.000Z',
+        lastKnownStatus: 'IDLE',
+        isActive: false,
+        currentStatus: 'offline',
+        deleteLifecycle: 'READY',
+        focusedAddress: '/super_agent',
+        members: [
+          {
+            teamRunId: 'team-1',
+            memberAddress: '/super_agent',
+            displayName: 'Super Agent',
+            agentRunId: 'member-run-1',
+            workspaceRootPath: '/ws/a',
+            summary: 'Team summary',
+            lastActivityAt: '2026-01-01T02:00:00.000Z',
+            lastKnownStatus: 'IDLE',
+            isActive: false,
+            deleteLifecycle: 'READY',
+          },
+        ],
+      },
+    ];
+
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandTeamDefinitionGroup(wrapper);
+
+    const teamRow = wrapper.find('[data-test="workspace-team-row-team-1"]');
+    expect(teamRow.exists()).toBe(true);
+    await teamRow.trigger('click');
+    await flushPromises();
+
+    const memberButton = wrapper.find('[data-test="workspace-team-member-team-1-/super_agent"]');
+    expect(memberButton.exists()).toBe(true);
+    await memberButton.trigger('click');
+    await flushPromises();
+
+    expect(runHistoryStoreMock.selectTreeRun).toHaveBeenCalledWith(
+      expect.objectContaining({
+        teamRunId: 'team-1',
+        memberAddress: '/super_agent',
+      }),
+      expect.objectContaining({ selectionIntent: expect.any(Object) }),
+    );
+    expect(wrapper.emitted('run-selected')).toContainEqual([
+      { type: 'team', runId: 'team-1' },
+    ]);
+  });
+
+  it('keeps a Team member rendered and selectable after a retryable recovery refusal', async () => {
+    runHistoryState.teamNodesByWorkspace['/ws/a'] = [
+      {
+        teamRunId: 'team-1',
+        teamDefinitionId: 'team-def-1',
+        teamDefinitionName: 'Team Alpha',
+        workspaceRootPath: '/ws/a',
+        summary: 'Team summary',
+        lastActivityAt: '2026-01-01T02:00:00.000Z',
+        isActive: true,
+        currentStatus: 'running',
+        deleteLifecycle: 'CLEANUP_PENDING',
+        focusedAddress: '/super_agent',
+        members: [
+          {
+            teamRunId: 'team-1',
+            memberAddress: '/super_agent',
+            displayName: 'Super Agent',
+            agentRunId: 'member-run-1',
+            workspaceRootPath: '/ws/a',
+            summary: 'Team summary',
+            lastActivityAt: '2026-01-01T02:00:00.000Z',
+            isActive: true,
+            deleteLifecycle: 'CLEANUP_PENDING',
+          },
+        ],
+      },
+    ];
+
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandTeamDefinitionGroup(wrapper);
+    await wrapper.get('[data-test="workspace-team-row-team-1"]').trigger('click');
+    await flushPromises();
+
+    runHistoryStoreMock.selectTreeRun.mockClear();
+    runHistoryStoreMock.selectTreeRun
+      .mockRejectedValueOnce(new Error('TEAM_STREAM_RECOVERY_WAIT: still working'))
+      .mockResolvedValueOnce({ disposition: 'committed' });
+
+    const selector = '[data-test="workspace-team-member-team-1-/super_agent"]';
+    await wrapper.get(selector).trigger('click');
+    await flushPromises();
+
+    expect(runHistoryState.error).toBeNull();
+    expect(wrapper.find(selector).exists()).toBe(true);
+    expect(addToastMock).toHaveBeenCalledWith(
+      'This Team is still working. Wait for it to finish, then select this Team member again.',
+      'info',
+    );
+
+    await wrapper.get(selector).trigger('click');
+    await flushPromises();
+
+    expect(runHistoryStoreMock.selectTreeRun).toHaveBeenCalledTimes(2);
+    expect(runHistoryStoreMock.selectTreeRun).toHaveBeenLastCalledWith(expect.objectContaining({
+      teamRunId: 'team-1',
+      memberAddress: '/super_agent',
+      agentRunId: 'member-run-1',
+    }), expect.objectContaining({ selectionIntent: expect.any(Object) }));
+  });
+
+  it('keeps the global Workspaces tree free of delegated-task detail and full-context UI under an expanded live team', async () => {
+    runHistoryState.teamNodesByWorkspace['/ws/a'] = [
+      {
+        teamRunId: 'team-1',
+        teamDefinitionId: 'team-def-1',
+        teamDefinitionName: 'Team Alpha',
+        workspaceRootPath: '/ws/a',
+        summary: 'Team summary',
+        lastActivityAt: '2026-01-01T02:00:00.000Z',
+        lastKnownStatus: 'ACTIVE',
+        isActive: true,
+        currentStatus: 'running',
+        deleteLifecycle: 'CLEANUP_PENDING',
+        focusedAddress: '/implementation_engineer',
+        members: [
+          {
+            teamRunId: 'team-1',
+            kind: 'agent',
+            memberAddress: '/implementation_engineer',
+            displayName: 'implementation_engineer',
+            currentStatus: 'running',
+            workspaceRootPath: '/ws/a',
+            lastActivityAt: '2026-01-01T02:00:00.000Z',
+          },
+        ],
+      },
+    ];
+
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandTeamDefinitionGroup(wrapper);
+    await wrapper.get('[data-test="workspace-team-row-team-1"]').trigger('click');
+    await flushPromises();
+
+    expect(wrapper.find('[data-test="workspace-team-member-team-1-/implementation_engineer"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="team-delegated-task-context-tree"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="team-delegated-task-navigator"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="left-delegated-task-summary-row"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="left-delegated-task-reference-row"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="left-delegated-task-technical-details"]').exists()).toBe(false);
+  });
+
+
+  it('renders delete action for inactive team history rows', async () => {
+    runHistoryState.teamNodesByWorkspace['/ws/a'] = [
+      {
+        teamRunId: 'team-1',
+        teamDefinitionId: 'team-def-1',
+        teamDefinitionName: 'Team Alpha',
+        workspaceRootPath: '/ws/a',
+        summary: 'Team summary',
+        lastActivityAt: '2026-01-01T02:00:00.000Z',
+        lastKnownStatus: 'IDLE',
+        isActive: false,
+        currentStatus: 'offline',
+        deleteLifecycle: 'READY',
+        focusedAddress: '/super_agent',
+        members: [],
+      },
+    ];
+
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandTeamDefinitionGroup(wrapper);
+
+    const deleteButtons = wrapper.findAll('button[title="Delete team history permanently"]');
+    expect(deleteButtons).toHaveLength(1);
+  });
+
+  it('renders only Stop for an active READY Team and never opens or invokes Delete', async () => {
+    runHistoryState.teamNodesByWorkspace['/ws/a'] = [{
+      teamRunId: 'team-active', teamDefinitionId: 'team-def-1', teamDefinitionName: 'Team Alpha',
+      workspaceRootPath: '/ws/a', summary: 'Same summary', lastActivityAt: '2026-01-01T02:00:00.000Z',
+      isActive: true, currentStatus: 'running', deleteLifecycle: 'READY', members: [],
+    }];
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandTeamDefinitionGroup(wrapper);
+    const vm = wrapper.vm as any;
+
+    const stopButton = wrapper.get('button[title="Terminate team"]');
+    expect(wrapper.find('button[aria-label="Delete team history permanently"]').exists()).toBe(false);
+    expect(wrapper.find('button[title="Archive team history"]').exists()).toBe(false);
+    vm.onDeleteTeam(runHistoryStoreMock.getTeamNodes('/ws/a')[0]);
+    await nextTick();
+    expect(vm.showDeleteConfirmation).toBe(false);
+    await stopButton.trigger('click');
+    await flushPromises();
+
+    expect(teamRunStoreMock.terminateTeamRun).toHaveBeenCalledWith('team-active');
+    expect(runHistoryStoreMock.deleteTeamRun).not.toHaveBeenCalled();
+    expect(vm.showDeleteConfirmation).toBe(false);
+    expect(runHistoryState.teamNodesByWorkspace['/ws/a']).toHaveLength(1);
+  });
+
+  it('keeps active Team history and Delete hidden when exact Stop fails', async () => {
+    teamRunStoreMock.terminateTeamRun.mockResolvedValueOnce(false);
+    runHistoryState.teamNodesByWorkspace['/ws/a'] = [{
+      teamRunId: 'team-active', teamDefinitionId: 'team-def-1', teamDefinitionName: 'Team Alpha',
+      workspaceRootPath: '/ws/a', summary: 'Team summary', lastActivityAt: '2026-01-01T02:00:00.000Z',
+      isActive: true, currentStatus: 'running', deleteLifecycle: 'READY', members: [],
+    }];
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandTeamDefinitionGroup(wrapper);
+    await wrapper.get('button[title="Terminate team"]').trigger('click');
+    await flushPromises();
+
+    expect(teamRunStoreMock.terminateTeamRun).toHaveBeenCalledWith('team-active');
+    expect(runHistoryStoreMock.deleteTeamRun).not.toHaveBeenCalled();
+    expect(wrapper.find('button[aria-label="Delete team history permanently"]').exists()).toBe(false);
+    expect(runHistoryState.teamNodesByWorkspace['/ws/a']).toHaveLength(1);
+    expect(addToastMock).toHaveBeenCalledWith('Failed to terminate team. Please try again.', 'error');
+  });
+
+  it('keeps Delete absent and disables the exact Stop while authoritative Stop is pending', async () => {
+    teamRunStoreMock.stopPendingTeamIds.value = { 'team-active': true };
+    runHistoryState.teamNodesByWorkspace['/ws/a'] = [{
+      teamRunId: 'team-active', teamDefinitionId: 'team-def-1', teamDefinitionName: 'Team Alpha',
+      workspaceRootPath: '/ws/a', summary: 'Team summary', lastActivityAt: '2026-01-01T02:00:00.000Z',
+      isActive: true, currentStatus: 'running', deleteLifecycle: 'READY', members: [],
+    }];
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandTeamDefinitionGroup(wrapper);
+
+    expect(wrapper.get('button[title="Terminate team"]').attributes('disabled')).toBeDefined();
+    expect(wrapper.find('button[aria-label="Delete team history permanently"]').exists()).toBe(false);
+    expect(wrapper.find('button[title="Archive team history"]').exists()).toBe(false);
+    expect(teamRunStoreMock.terminateTeamRun).not.toHaveBeenCalled();
+    expect(runHistoryStoreMock.deleteTeamRun).not.toHaveBeenCalled();
+  });
+
+  it('renders archive action for inactive team history rows', async () => {
+    runHistoryState.teamNodesByWorkspace['/ws/a'] = [
+      {
+        teamRunId: 'team-1',
+        teamDefinitionId: 'team-def-1',
+        teamDefinitionName: 'Team Alpha',
+        workspaceRootPath: '/ws/a',
+        summary: 'Team summary',
+        lastActivityAt: '2026-01-01T02:00:00.000Z',
+        lastKnownStatus: 'IDLE',
+        isActive: false,
+        currentStatus: 'offline',
+        deleteLifecycle: 'READY',
+        focusedAddress: '/super_agent',
+        members: [],
+      },
+    ];
+
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandTeamDefinitionGroup(wrapper);
+
+    const archiveButtons = wrapper.findAll('button[title="Archive team history"]');
+    expect(archiveButtons).toHaveLength(1);
+  });
+
+  it('does not render team-row configuration button', async () => {
+    runHistoryState.teamNodesByWorkspace['/ws/a'] = [
+      {
+        teamRunId: 'team-1',
+        teamDefinitionId: 'team-def-1',
+        teamDefinitionName: 'Team Alpha',
+        workspaceRootPath: '/ws/a',
+        summary: 'Team summary',
+        lastActivityAt: '2026-01-01T02:00:00.000Z',
+        lastKnownStatus: 'IDLE',
+        isActive: false,
+        currentStatus: 'offline',
+        deleteLifecycle: 'READY',
+        focusedAddress: '/super_agent',
+        members: [
+          {
+            teamRunId: 'team-1',
+            memberAddress: '/super_agent',
+            displayName: 'Super Agent',
+            agentRunId: 'member-run-1',
+            workspaceRootPath: '/ws/a',
+            summary: 'Team summary',
+            lastActivityAt: '2026-01-01T02:00:00.000Z',
+            lastKnownStatus: 'IDLE',
+            isActive: false,
+            deleteLifecycle: 'READY',
+          },
+        ],
+      },
+    ];
+
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandTeamDefinitionGroup(wrapper);
+
+    const configButton = wrapper.find('[data-test="workspace-team-config-team-1"]');
+    expect(configButton.exists()).toBe(false);
+  });
+
+  it('deletes inactive team history from team row action without selecting the row', async () => {
+    runHistoryState.teamNodesByWorkspace['/ws/a'] = [
+      {
+        teamRunId: 'team-1',
+        teamDefinitionId: 'team-def-1',
+        teamDefinitionName: 'Team Alpha',
+        workspaceRootPath: '/ws/a',
+        summary: 'Team summary',
+        lastActivityAt: '2026-01-01T02:00:00.000Z',
+        lastKnownStatus: 'IDLE',
+        isActive: false,
+        currentStatus: 'offline',
+        deleteLifecycle: 'READY',
+        focusedAddress: '/super_agent',
+        members: [],
+      },
+    ];
+
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandTeamDefinitionGroup(wrapper);
+    const vm = wrapper.vm as any;
+
+    const deleteButton = wrapper.find('button[title="Delete team history permanently"]');
+    expect(deleteButton.exists()).toBe(true);
+
+    await deleteButton.trigger('click');
+    await nextTick();
+    expect(vm.showDeleteConfirmation).toBe(true);
+    expect(vm.deleteConfirmationMessage).toBe(
+      "Delete this Team history permanently? Its task agents' memory is kept. This cannot be undone.",
+    );
+    expect(teamRunStoreMock.terminateTeamRun).not.toHaveBeenCalled();
+    expect(runHistoryStoreMock.deleteTeamRun).not.toHaveBeenCalled();
+
+    await vm.confirmDeleteRun();
+    await flushPromises();
+
+    expect(runHistoryStoreMock.deleteTeamRun).toHaveBeenCalledWith('team-1');
+    expect(teamRunStoreMock.terminateTeamRun).not.toHaveBeenCalled();
+    expect(selectionStoreMock.selectRun).not.toHaveBeenCalled();
+  });
+
+  it('cancels separately confirmed inactive Team deletion without Stop or storage mutation', async () => {
+    runHistoryState.teamNodesByWorkspace['/ws/a'] = [{
+      teamRunId: 'team-1', teamDefinitionId: 'team-def-1', teamDefinitionName: 'Team Alpha',
+      workspaceRootPath: '/ws/a', summary: 'Team summary', lastActivityAt: '2026-01-01T02:00:00.000Z',
+      isActive: false, currentStatus: 'offline', deleteLifecycle: 'READY', members: [],
+    }];
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandTeamDefinitionGroup(wrapper);
+    const vm = wrapper.vm as any;
+    await wrapper.get('button[aria-label="Delete team history permanently"]').trigger('click');
+    await nextTick();
+    expect(vm.deleteConfirmationMessage).toBe(
+      "Delete this Team history permanently? Its task agents' memory is kept. This cannot be undone.",
+    );
+    vm.closeDeleteConfirmation();
+    await flushPromises();
+
+    expect(vm.showDeleteConfirmation).toBe(false);
+    expect(teamRunStoreMock.terminateTeamRun).not.toHaveBeenCalled();
+    expect(runHistoryStoreMock.deleteTeamRun).not.toHaveBeenCalled();
+  });
+
+  it('retains inactive Team history and reports the singular Delete failure', async () => {
+    runHistoryStoreMock.deleteTeamRun.mockResolvedValueOnce(false);
+    runHistoryState.teamNodesByWorkspace['/ws/a'] = [{
+      teamRunId: 'team-1', teamDefinitionId: 'team-def-1', teamDefinitionName: 'Team Alpha',
+      workspaceRootPath: '/ws/a', summary: 'Team summary', lastActivityAt: '2026-01-01T02:00:00.000Z',
+      isActive: false, currentStatus: 'offline', deleteLifecycle: 'READY', members: [],
+    }];
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandTeamDefinitionGroup(wrapper);
+    await wrapper.get('button[aria-label="Delete team history permanently"]').trigger('click');
+    await (wrapper.vm as any).confirmDeleteRun();
+    await flushPromises();
+
+    expect(teamRunStoreMock.terminateTeamRun).not.toHaveBeenCalled();
+    expect(runHistoryStoreMock.deleteTeamRun).toHaveBeenCalledWith('team-1');
+    expect(runHistoryState.teamNodesByWorkspace['/ws/a']).toHaveLength(1);
+    expect(addToastMock).toHaveBeenCalledWith('Failed to delete team history. Please try again.', 'error');
+  });
+
+  it('archives inactive team history from team row action without selecting the row', async () => {
+    runHistoryState.teamNodesByWorkspace['/ws/a'] = [
+      {
+        teamRunId: 'team-1',
+        teamDefinitionId: 'team-def-1',
+        teamDefinitionName: 'Team Alpha',
+        workspaceRootPath: '/ws/a',
+        summary: 'Team summary',
+        lastActivityAt: '2026-01-01T02:00:00.000Z',
+        lastKnownStatus: 'IDLE',
+        isActive: false,
+        currentStatus: 'offline',
+        deleteLifecycle: 'READY',
+        focusedAddress: '/super_agent',
+        members: [],
+      },
+    ];
+
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandTeamDefinitionGroup(wrapper);
+
+    const archiveButton = wrapper.find('button[title="Archive team history"]');
+    expect(archiveButton.exists()).toBe(true);
+
+    await archiveButton.trigger('click');
+    await flushPromises();
+
+    expect(runHistoryStoreMock.archiveTeamRun).toHaveBeenCalledWith('team-1');
+    expect(selectionStoreMock.selectRun).not.toHaveBeenCalled();
+    expect(addToastMock).toHaveBeenCalledWith('Team history archived.', 'success');
+  });
+
+  it('renders active status indicator for active runs', async () => {
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandAgentGroup(wrapper);
+    const activeDot = wrapper.find('.bg-blue-500.animate-pulse');
+    expect(activeDot.exists()).toBe(true);
+  });
+
+  it('does not render status indicator for inactive runs', async () => {
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandAgentGroup(wrapper);
+    const statusDots = wrapper.findAll('span.bg-blue-500.animate-pulse');
+    expect(statusDots).toHaveLength(1);
+  });
+
+  it('renders delete action only for inactive history runs', async () => {
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandAgentGroup(wrapper);
+
+    const deleteButtons = wrapper.findAll('button[title="Delete run permanently"]');
+    expect(deleteButtons).toHaveLength(1);
+  });
+
+  it('renders archive action only for inactive persisted history runs', async () => {
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandAgentGroup(wrapper);
+
+    const archiveButtons = wrapper.findAll('button[title="Archive run"]');
+    expect(archiveButtons).toHaveLength(1);
+  });
+
+  it('renders the standalone Stop state matrix without changing error or inactive presentation', async () => {
+    const runs = [
+      ['run-initializing', 'initializing', true, 'ACTIVE'],
+      ['run-running', 'running', true, 'ACTIVE'],
+      ['run-idle', 'idle', true, 'ACTIVE'],
+      ['run-current-error', 'error', true, 'ERROR'],
+      ['run-offline', 'offline', false, 'IDLE'],
+      ['run-past-error', 'error', false, 'ERROR'],
+    ].map(([runId, currentStatus, isActive, lastKnownStatus], index) => ({
+      runId,
+      summary: runId,
+      lastActivityAt: `2026-01-01T00:0${index}:00.000Z`,
+      lastKnownStatus,
+      currentStatus,
+      isActive,
+      source: 'history',
+      isDraft: false,
+    }));
+    runHistoryState.nodes[0]!.agents[0]!.runs = runs;
+
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandAgentGroup(wrapper);
+
+    for (const runId of ['run-initializing', 'run-running', 'run-idle', 'run-current-error']) {
+      expect(findTerminateRunButton(wrapper, runId).exists()).toBe(true);
+      expect(getRunRow(wrapper, runId).find('button[title="Archive run"]').exists()).toBe(false);
+      expect(getRunRow(wrapper, runId).find('button[title="Delete run permanently"]').exists()).toBe(false);
+    }
+
+    const currentErrorRow = getRunRow(wrapper, 'run-current-error');
+    const errorStop = findTerminateRunButton(wrapper, 'run-current-error');
+    expect(currentErrorRow.find('.bg-red-500').exists()).toBe(true);
+    expect(errorStop.attributes('title')).toBe('Terminate run');
+    expect(errorStop.attributes('aria-label')).toBe('Terminate run');
+
+    for (const runId of ['run-offline', 'run-past-error']) {
+      expect(findTerminateRunButton(wrapper, runId).exists()).toBe(false);
+      expect(getRunRow(wrapper, runId).find('button[title="Archive run"]').exists()).toBe(true);
+      expect(getRunRow(wrapper, runId).find('button[title="Delete run permanently"]').exists()).toBe(true);
+    }
+    expect(getRunRow(wrapper, 'run-past-error').find('.bg-red-500').exists()).toBe(true);
+  });
+
+  it('dispatches the exact error-state run from its native Stop button without selecting the row', async () => {
+    Object.assign(runHistoryState.nodes[0]!.agents[0]!.runs[1]!, {
+      currentStatus: 'error',
+      lastKnownStatus: 'ERROR',
+      isActive: true,
+    });
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandAgentGroup(wrapper);
+
+    const terminateButton = findTerminateRunButton(wrapper, 'run-1');
+    expect(terminateButton.element.tagName).toBe('BUTTON');
+    expect(terminateButton.attributes('type')).toBe('button');
+    expect(terminateButton.attributes('aria-label')).toBe('Terminate run');
+    expect(terminateButton.attributes('disabled')).toBeUndefined();
+
+    terminateButton.element.focus();
+    terminateButton.element.click();
+    await flushPromises();
+
+    expect(agentRunStoreMock.terminateRun).toHaveBeenCalledTimes(1);
+    expect(agentRunStoreMock.terminateRun).toHaveBeenCalledWith('run-1');
+    expect(runHistoryStoreMock.selectTreeRun).not.toHaveBeenCalled();
+  });
+
+  it('disables only the exact error-state Stop and blocks duplicate dispatch while pending', async () => {
+    let settleTermination: ((result: boolean) => void) | undefined;
+    const pendingTermination = new Promise<boolean>((resolve) => {
+      settleTermination = resolve;
+    });
+    agentRunStoreMock.terminateRun.mockImplementationOnce(() => pendingTermination);
+    Object.assign(runHistoryState.nodes[0]!.agents[0]!.runs[1]!, {
+      currentStatus: 'error',
+      lastKnownStatus: 'ERROR',
+      isActive: true,
+    });
+    Object.assign(runHistoryState.nodes[0]!.agents[0]!.runs[2]!, {
+      currentStatus: 'running',
+      lastKnownStatus: 'ACTIVE',
+      isActive: true,
+    });
+
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandAgentGroup(wrapper);
+
+    const errorStop = findTerminateRunButton(wrapper, 'run-1');
+    const otherStop = findTerminateRunButton(wrapper, 'run-2');
+    await errorStop.trigger('click');
+    await nextTick();
+
+    expect(errorStop.attributes('disabled')).toBeDefined();
+    expect(otherStop.attributes('disabled')).toBeUndefined();
+    await errorStop.trigger('click');
+    expect(agentRunStoreMock.terminateRun).toHaveBeenCalledTimes(1);
+
+    settleTermination?.(true);
+    await flushPromises();
+    expect(findTerminateRunButton(wrapper, 'run-1').attributes('disabled')).toBeUndefined();
+  });
+
+  it('keeps error-state history and retry actions truthful when termination fails', async () => {
+    agentRunStoreMock.terminateRun.mockResolvedValueOnce(false);
+    Object.assign(runHistoryState.nodes[0]!.agents[0]!.runs[1]!, {
+      currentStatus: 'error',
+      lastKnownStatus: 'ERROR',
+      isActive: true,
+    });
+
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandAgentGroup(wrapper);
+    await findTerminateRunButton(wrapper, 'run-1').trigger('click');
+    await flushPromises();
+
+    const errorRow = getRunRow(wrapper, 'run-1');
+    expect(errorRow.exists()).toBe(true);
+    expect(errorRow.find('.bg-red-500').exists()).toBe(true);
+    expect(findTerminateRunButton(wrapper, 'run-1').attributes('disabled')).toBeUndefined();
+    expect(errorRow.find('button[title="Archive run"]').exists()).toBe(false);
+    expect(errorRow.find('button[title="Delete run permanently"]').exists()).toBe(false);
+    expect(addToastMock).toHaveBeenCalledWith('Failed to terminate run. Please try again.', 'error');
+  });
+
+  it('preserves the error row and restores Stop when termination throws', async () => {
+    agentRunStoreMock.terminateRun.mockRejectedValueOnce(new Error('network unavailable'));
+    Object.assign(runHistoryState.nodes[0]!.agents[0]!.runs[1]!, {
+      currentStatus: 'error',
+      lastKnownStatus: 'ERROR',
+      isActive: true,
+    });
+
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandAgentGroup(wrapper);
+    await findTerminateRunButton(wrapper, 'run-1').trigger('click');
+    await flushPromises();
+
+    expect(getRunRow(wrapper, 'run-1').find('.bg-red-500').exists()).toBe(true);
+    expect(findTerminateRunButton(wrapper, 'run-1').attributes('disabled')).toBeUndefined();
+    expect(addToastMock).toHaveBeenCalledWith('Failed to terminate run. Please try again.', 'error');
+  });
+
+  it('keeps the error history row and exposes only inactive actions after confirmed termination', async () => {
+    const errorRun = runHistoryState.nodes[0]!.agents[0]!.runs[1]!;
+    Object.assign(errorRun, {
+      currentStatus: 'error',
+      lastKnownStatus: 'ERROR',
+      isActive: true,
+    });
+    agentRunStoreMock.terminateRun.mockImplementationOnce(async () => {
+      Object.assign(errorRun, {
+        currentStatus: 'offline',
+        lastKnownStatus: 'IDLE',
+        isActive: false,
+      });
+      return true;
+    });
+
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandAgentGroup(wrapper);
+    await findTerminateRunButton(wrapper, 'run-1').trigger('click');
+    await flushPromises();
+
+    const settledRow = getRunRow(wrapper, 'run-1');
+    expect(settledRow.exists()).toBe(true);
+    expect(settledRow.find('.bg-red-500').exists()).toBe(false);
+    expect(findTerminateRunButton(wrapper, 'run-1').exists()).toBe(false);
+    expect(settledRow.find('button[title="Archive run"]').exists()).toBe(true);
+    expect(settledRow.find('button[title="Delete run permanently"]').exists()).toBe(true);
+  });
+
+  it('terminates active run from row action without selecting the row', async () => {
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandAgentGroup(wrapper);
+
+    const terminateButton = wrapper.find('button[title="Terminate run"]');
+    expect(terminateButton.exists()).toBe(true);
+
+    await terminateButton.trigger('click');
+    await flushPromises();
+
+    expect(agentRunStoreMock.terminateRun).toHaveBeenCalledWith('run-1');
+    expect(runHistoryStoreMock.selectTreeRun).not.toHaveBeenCalled();
+  });
+
+  it('shows an error toast when terminate fails', async () => {
+    agentRunStoreMock.terminateRun.mockResolvedValueOnce(false);
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandAgentGroup(wrapper);
+
+    const terminateButton = wrapper.find('button[title="Terminate run"]');
+    await terminateButton.trigger('click');
+    await flushPromises();
+
+    expect(addToastMock).toHaveBeenCalledWith('Failed to terminate run. Please try again.', 'error');
+  });
+
+  it('deletes inactive history run from row action without selecting the row', async () => {
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandAgentGroup(wrapper);
+    const vm = wrapper.vm as any;
+
+    const deleteButton = wrapper.find('button[title="Delete run permanently"]');
+    await deleteButton.trigger('click');
+    await nextTick();
+    expect(vm.showDeleteConfirmation).toBe(true);
+    expect(runHistoryStoreMock.deleteRun).not.toHaveBeenCalled();
+    await vm.confirmDeleteRun();
+    await flushPromises();
+
+    expect(runHistoryStoreMock.deleteRun).toHaveBeenCalledWith('run-2');
+    expect(runHistoryStoreMock.selectTreeRun).not.toHaveBeenCalled();
+  });
+
+  it('archives inactive history run from row action without selecting the row', async () => {
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandAgentGroup(wrapper);
+
+    const archiveButton = wrapper.find('button[title="Archive run"]');
+    expect(archiveButton.exists()).toBe(true);
+
+    await archiveButton.trigger('click');
+    await flushPromises();
+
+    expect(runHistoryStoreMock.archiveRun).toHaveBeenCalledWith('run-2');
+    expect(runHistoryStoreMock.selectTreeRun).not.toHaveBeenCalled();
+    expect(addToastMock).toHaveBeenCalledWith('Run archived.', 'success');
+  });
+
+  it('shows an error toast when archive fails', async () => {
+    runHistoryStoreMock.archiveRun.mockResolvedValueOnce(false);
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandAgentGroup(wrapper);
+
+    const archiveButton = wrapper.find('button[title="Archive run"]');
+    await archiveButton.trigger('click');
+    await flushPromises();
+
+    expect(addToastMock).toHaveBeenCalledWith('Failed to archive run. Please try again.', 'error');
+  });
+
+  it('does not call delete when confirmation is cancelled', async () => {
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandAgentGroup(wrapper);
+    const vm = wrapper.vm as any;
+
+    const deleteButton = wrapper.find('button[title="Delete run permanently"]');
+    await deleteButton.trigger('click');
+    await nextTick();
+    expect(vm.showDeleteConfirmation).toBe(true);
+    vm.closeDeleteConfirmation();
+    await flushPromises();
+
+    expect(runHistoryStoreMock.deleteRun).not.toHaveBeenCalled();
+    expect(vm.showDeleteConfirmation).toBe(false);
+  });
+
+  it('shows an error toast when delete fails', async () => {
+    runHistoryStoreMock.deleteRun.mockResolvedValueOnce(false);
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandAgentGroup(wrapper);
+    const vm = wrapper.vm as any;
+
+    const deleteButton = wrapper.find('button[title="Delete run permanently"]');
+    await deleteButton.trigger('click');
+    await nextTick();
+    expect(vm.showDeleteConfirmation).toBe(true);
+    await vm.confirmDeleteRun();
+    await flushPromises();
+
+    expect(addToastMock).toHaveBeenCalledWith('Failed to delete run. Please try again.', 'error');
+  });
+  it("archives and confirms deletion of stopped AgentOrg roots with exact selected-route cleanup", async () => {
+    const launch = { runtimeKind: "codex_app_server", llmModelIdentifier: "model", llmConfig: null,
+      autoExecuteTools: false, workspaceRootPath: "/ws/a" };
+    const orgRun = {
+      stableKey: "org-run:org-stopped", rootSubjectKind: "agent_org", rootRunId: "org-stopped",
+      createdAt: "2026-09-21T00:00:00.000Z", archivedAt: null, isActive: false, summary: "Stopped Org",
+      closedTaskExecutions: [], executionTree: { subjectKind: "agent_org", createdAt: "2026-09-21T00:00:00.000Z",
+        archivedAt: null, applicationBinding: null, handoffs: [], rootOrg: { address: "/", orgDefinitionId: "org-def",
+          orgDefinitionName: "Org", orgRunId: "org-stopped", defaultLaunchConfiguration: launch, members: [], taskExecutions: [] } },
+    };
+    runHistoryState.nodes[0].agentOrgDefinitions = [{ stableKey: "org-def", definitionId: "org-def", name: "Org", runs: [orgRun] }];
+    routerHarness.route.query = { rootSubjectKind: "agent_org", orgRunId: "org-stopped", mode: "history" };
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandWorkspace(wrapper);
+    const definition = wrapper.get('[data-test="agent-org-definition-org-def"]');
+    if (definition.attributes('aria-expanded') !== 'true') await definition.trigger('click');
+    await nextTick();
+
+    await wrapper.get('[data-test="agent-org-run-archive-org-stopped"]').trigger('click');
+    await flushPromises();
+    expect(runHistoryStoreMock.archiveAgentOrgRun).toHaveBeenCalledExactlyOnceWith("org-stopped");
+    expect(routerHarness.replace).toHaveBeenCalledWith({ path: "/workspace" });
+    expect(addToastMock).toHaveBeenCalledWith("Agent Org history archived.", "success");
+
+    routerHarness.replace.mockClear();
+    routerHarness.route.query = { rootSubjectKind: "agent_org", orgRunId: "org-sibling", mode: "history" };
+    await wrapper.get('[data-test="agent-org-run-delete-org-stopped"]').trigger('click');
+    await nextTick();
+    expect((wrapper.vm as any).deleteConfirmationTitle).toBe('Delete Agent Org history permanently');
+    expect((wrapper.vm as any).deleteConfirmationConfirmText).toBe('Delete Agent Org history permanently');
+    expect((wrapper.vm as any).deleteConfirmationMessage).toContain("only this run");
+    await wrapper.get('[data-test="delete-confirmation-confirm"]').trigger('click');
+    await flushPromises();
+    expect(runHistoryStoreMock.deleteAgentOrgRun).toHaveBeenCalledExactlyOnceWith("org-stopped");
+    expect(routerHarness.replace).not.toHaveBeenCalled();
+    expect(addToastMock).toHaveBeenCalledWith("Agent Org history deleted permanently.", "success");
+    wrapper.unmount();
+  });
+
+  it('blocks group Archive all while a run of the agent group is running, without a dialog', async () => {
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandWorkspace(wrapper);
+
+    await wrapper.get('[data-test="workspace-agent-group-archive-agent-def-1"]').trigger('click');
+    await flushPromises();
+
+    expect((wrapper.vm as any).showGroupArchiveConfirmation).toBe(false);
+    expect(addToastMock).toHaveBeenCalledExactlyOnceWith('Stop running runs first.', 'info');
+    expect(runHistoryStoreMock.archiveAgentRunGroup).not.toHaveBeenCalled();
+  });
+
+  it('archives a stopped agent group through the header, confirmation and one store call', async () => {
+    runHistoryState.nodes[0].agents[0].runs.forEach((run: any) => { run.isActive = false; });
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandWorkspace(wrapper);
+
+    await wrapper.get('[data-test="workspace-agent-group-archive-agent-def-1"]').trigger('click');
+    await nextTick();
+    expect((wrapper.vm as any).showGroupArchiveConfirmation).toBe(true);
+    expect((wrapper.vm as any).groupArchiveConfirmationMessage).toBe('SuperAgent — all runs will be hidden from history.');
+    await wrapper.get('[data-test="delete-confirmation-confirm"]').trigger('click');
+    await flushPromises();
+
+    expect(runHistoryStoreMock.archiveAgentRunGroup).toHaveBeenCalledExactlyOnceWith('/ws/a', 'agent-def-1');
+    expect(runHistoryStoreMock.archiveRun).not.toHaveBeenCalled();
+    expect(addToastMock).toHaveBeenCalledWith('Archived 2 runs.', 'success');
+  });
+
+  it('archives a stopped Org group and leaves the open archived Org route', async () => {
+    const launch = { runtimeKind: "codex_app_server", llmModelIdentifier: "model", llmConfig: null,
+      autoExecuteTools: false, workspaceRootPath: "/ws/a" };
+    const orgRun = (rootRunId: string) => ({
+      stableKey: `org-run:${rootRunId}`, rootSubjectKind: "agent_org", rootRunId,
+      createdAt: "2026-09-21T00:00:00.000Z", archivedAt: null, isActive: false, summary: rootRunId,
+      closedTaskExecutions: [], executionTree: { subjectKind: "agent_org", createdAt: "2026-09-21T00:00:00.000Z",
+        archivedAt: null, applicationBinding: null, handoffs: [], rootOrg: { address: "/", orgDefinitionId: "org-def",
+          orgDefinitionName: "Org", orgRunId: rootRunId, defaultLaunchConfiguration: launch, members: [], taskExecutions: [] } },
+    });
+    runHistoryState.nodes[0].agentOrgDefinitions = [{
+      stableKey: "org-def", definitionId: "org-def", name: "Org", runs: [orgRun("org-a"), orgRun("org-b")],
+    }];
+    routerHarness.route.query = { rootSubjectKind: "agent_org", orgRunId: "org-b", mode: "history" };
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandWorkspace(wrapper);
+
+    await wrapper.get('[data-test="agent-org-group-archive-org-def"]').trigger('click');
+    await nextTick();
+    expect((wrapper.vm as any).groupArchiveConfirmationMessage).toBe('Org · 2 runs will be hidden from history.');
+    await wrapper.get('[data-test="delete-confirmation-confirm"]').trigger('click');
+    await flushPromises();
+
+    expect(runHistoryStoreMock.archiveAgentOrgRuns).toHaveBeenCalledExactlyOnceWith(["org-a", "org-b"]);
+    expect(runHistoryStoreMock.archiveAgentOrgRun).not.toHaveBeenCalled();
+    expect(routerHarness.replace).toHaveBeenCalledExactlyOnceWith({ path: "/workspace" });
+    expect(addToastMock).toHaveBeenCalledWith('Archived 2 runs.', 'success');
+    wrapper.unmount();
+  });
+
+  it('renders the real AgentOrg Delete confirmation action and dialog name in zh-CN', async () => {
+    await localizationRuntime.setPreference('zh-CN');
+    const launch = { runtimeKind: 'codex_app_server', llmModelIdentifier: 'model', llmConfig: null,
+      autoExecuteTools: false, workspaceRootPath: '/ws/a' };
+    const orgRun = {
+      stableKey: 'org-run:org-stopped', rootSubjectKind: 'agent_org', rootRunId: 'org-stopped',
+      createdAt: '2026-09-21T00:00:00.000Z', archivedAt: null, isActive: false, summary: 'Stopped Org',
+      closedTaskExecutions: [], executionTree: { subjectKind: 'agent_org', createdAt: '2026-09-21T00:00:00.000Z',
+        archivedAt: null, applicationBinding: null, handoffs: [], rootOrg: { address: '/', orgDefinitionId: 'org-def',
+          orgDefinitionName: 'Org', orgRunId: 'org-stopped', defaultLaunchConfiguration: launch, members: [], taskExecutions: [] } },
+    };
+    runHistoryState.nodes[0].agentOrgDefinitions = [{
+      stableKey: 'org-def', definitionId: 'org-def', name: 'Org', runs: [orgRun],
+    }];
+    const host = document.createElement('div');
+    document.body.appendChild(host);
+    const wrapper = mountComponent({ realConfirmationModal: true, attachTo: host });
+
+    try {
+      await flushPromises();
+      await expandWorkspace(wrapper);
+      const definition = wrapper.get('[data-test="agent-org-definition-org-def"]');
+      if (definition.attributes('aria-expanded') !== 'true') await definition.trigger('click');
+      await nextTick();
+      await wrapper.get('[data-test="agent-org-run-delete-org-stopped"]').trigger('click');
+      await flushPromises();
+
+      const dialog = document.body.querySelector<HTMLElement>('[role="dialog"]');
+      expect(dialog).not.toBeNull();
+      expect(dialog?.getAttribute('aria-label')).toBe('永久删除智能体组织历史记录');
+      expect(dialog?.textContent).toContain('要永久删除此智能体组织历史记录吗？');
+      const visibleActions = Array.from(dialog?.querySelectorAll('button') ?? [])
+        .map((button) => button.textContent?.trim());
+      expect(visibleActions).toContain('永久删除智能体组织历史记录');
+    } finally {
+      wrapper.unmount();
+      host.remove();
+      await localizationRuntime.setPreference('en');
+    }
+  });
+
+  /** API-TTRC-003 (REQ-006 / AC-004, design §2): the real panel binds delegated-Team disclosure and inspects the coordinator. */
+  it('toggles a delegated Team row through the panel tree state and inspects its exact coordinator', async () => {
+    const tree = structuredClone(taskBearingView().execution_tree) as any;
+    const orgRun = {
+      stableKey: 'agent_org_run:org-run', rootSubjectKind: 'agent_org', rootRunId: 'org-run',
+      createdAt: tree.createdAt, archivedAt: null, isActive: false, summary: 'Delegating Org', executionTree: tree, closedTaskExecutions: [],
+    };
+    runHistoryState.nodes[0].agentOrgDefinitions = [{ stableKey: 'org-definition', definitionId: 'org-definition', name: 'Restored Org', runs: [orgRun] }];
+    (runHistoryStoreMock as any).agentOrgHistory = [orgRun];
+    (runHistoryStoreMock as any).historyFamilyErrors = {};
+    (selectionStoreMock as any).clearSelection = vi.fn();
+    const orgContexts = useAgentOrgContextsStore();
+    let opened = false;
+    const inspected = {
+      orgRunId: 'org-run', isActive: false, phase: 'historical', executionTree: tree, view: { closed_task_executions: [] }, selectedAddress: null, selection: null,
+      index: { agents: new Map([['agent-task-lead', { agentRunId: 'agent-task-lead', address: '/team/lead' }]]), configured: new Set<string>(),
+        addressOf: (agentRunId: string) => agentRunId === 'agent-task-lead' ? '/team/lead' : null },
+    };
+    const openForInspection = vi.spyOn(orgContexts, 'openForInspection').mockImplementation(async () => { opened = true; });
+    vi.spyOn(orgContexts, 'contextFor').mockImplementation(((id: string) => opened && id === 'org-run' ? inspected : null) as never);
+    const select = vi.spyOn(orgContexts, 'select').mockImplementation(() => undefined);
+    const wrapper = mountComponent();
+    try {
+      await flushPromises();
+      await expandWorkspace(wrapper);
+      const definition = wrapper.get('[data-test="agent-org-definition-org-definition"]');
+      if (definition.attributes('aria-expanded') !== 'true') await definition.trigger('click');
+      await nextTick();
+      const run = wrapper.get('[data-test="agent-org-run-open-org-run"]');
+      if (run.attributes('aria-expanded') !== 'true') await run.trigger('click');
+      await flushPromises();
+      openForInspection.mockClear(); select.mockClear(); routerHarness.push.mockClear();
+      opened = false;
+
+      const row = () => wrapper.get('[data-test="agent-org-task-team-row-team-task"]');
+      const member = () => wrapper.find('[data-test="agent-org-task-agent-row-agent-task-worker"]');
+      expect(row().attributes('aria-expanded')).toBe('true');
+      expect(row().find('[data-test="agent-org-task-team-disclosure-team-task"]').exists()).toBe(true);
+      expect(member().exists()).toBe(true);
+
+      await row().trigger('click');
+      await flushPromises();
+      expect(row().attributes('aria-expanded')).toBe('false');
+      expect(member().exists()).toBe(false);
+      expect(openForInspection).toHaveBeenCalledWith('org-run', expect.anything());
+      expect(select).toHaveBeenCalledWith('org-run', { kind: 'agent_execution', agentRunId: 'agent-task-lead' });
+      expect(routerHarness.push).toHaveBeenCalledWith({ path: '/workspace', query: expect.objectContaining({
+        rootSubjectKind: 'agent_org', orgRunId: 'org-run', memberAddress: '/team/lead', agentRunId: 'agent-task-lead',
+      }) });
+
+      await row().trigger('click');
+      await flushPromises();
+      expect(row().attributes('aria-expanded')).toBe('true');
+      expect(member().exists()).toBe(true);
+      expect(select).toHaveBeenCalledTimes(2);
+    } finally {
+      wrapper.unmount();
+      delete (runHistoryStoreMock as any).agentOrgHistory;
+      delete (runHistoryStoreMock as any).historyFamilyErrors;
+      delete (selectionStoreMock as any).clearSelection;
+    }
+  });
+
+  it('fetches Org metadata nonfatally and keeps history available on catalog failure', async () => {
+    orgCatalog.fetchAll.mockRejectedValueOnce(new Error('catalog unavailable'));
+    orgCatalog.definitions = reactive([]);
+    runHistoryState.nodes[0].agentOrgDefinitions = [{stableKey: 'org-def', definitionId: 'org-def', name: 'Retained Org', runs: []}];
+    const wrapper = mountComponent();
+    await flushPromises();
+    await expandWorkspace(wrapper);
+    const header = () => wrapper.get('[data-test="agent-org-definition-org-def"]');
+    expect(header().text()).toContain('Retained Org');
+    expect(header().find('img').exists()).toBe(false);
+    orgCatalog.definitions.push({id: 'org-def', avatarUrl: '/arrived.png'});
+    await nextTick();
+    expect(header().get('img').attributes('src')).toBe('/arrived.png');
+    expect(orgCatalog.fetchAll).toHaveBeenCalledTimes(1);
+    expect(runHistoryStoreMock.fetchTree).toHaveBeenCalled();
+    expect(wrapper.find('[data-test="workspace-row"]').exists()).toBe(true);
+    wrapper.unmount();
+  });
+
+});

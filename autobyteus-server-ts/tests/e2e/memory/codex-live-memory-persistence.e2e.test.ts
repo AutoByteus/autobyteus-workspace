@@ -287,7 +287,7 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
         publishedArtifactRelayService: createNoopSidecar() as never,
         memoryRecorder: recorder, workJournalUpdater: createNoopSidecar() as never,
         mcpServerInstances: { cleanupMcpServerInstancesForAgent: async () => undefined },
-        integrationRunAccess: null,
+        runPasses: null,
       }),
     );
     const manager = new AgentRunManager({
@@ -301,11 +301,12 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
       claudeBackendFactory: unusedBackendFactory,
       agyBackendFactory: unusedBackendFactory,
       grokBackendFactory: unusedBackendFactory,
+      deepSeekHarnessBackendFactory: unusedBackendFactory,
       activationRegistry,
       memoryRecorder: recorder,
       providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
       agentToolMcpRunSessionDeactivator: deactivator,
-      integrationRunAccess: null,
+      runPasses: null,
     });
 
     const config = new AgentRunConfig({
@@ -499,7 +500,7 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
         publishedArtifactRelayService: createNoopSidecar() as never,
         memoryRecorder: recorder, workJournalUpdater: createNoopSidecar() as never,
         mcpServerInstances: { cleanupMcpServerInstancesForAgent: async () => undefined },
-        integrationRunAccess: null,
+        runPasses: null,
       }),
     );
     const manager = new AgentRunManager({
@@ -513,11 +514,12 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
       claudeBackendFactory: unusedBackendFactory,
       agyBackendFactory: unusedBackendFactory,
       grokBackendFactory: unusedBackendFactory,
+      deepSeekHarnessBackendFactory: unusedBackendFactory,
       activationRegistry,
       memoryRecorder: recorder,
       providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
       agentToolMcpRunSessionDeactivator: deactivator,
-      integrationRunAccess: null,
+      runPasses: null,
     });
 
     const config = new AgentRunConfig({
@@ -654,7 +656,7 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
         publishedArtifactRelayService: createNoopSidecar() as never,
         memoryRecorder: recorder, workJournalUpdater: createNoopSidecar() as never,
         mcpServerInstances: { cleanupMcpServerInstancesForAgent: async () => undefined },
-        integrationRunAccess: null,
+        runPasses: null,
       }),
     );
     const manager = new AgentRunManager({
@@ -668,11 +670,12 @@ describeLiveCodexMemory("Codex live memory persistence e2e", () => {
       claudeBackendFactory: unusedBackendFactory,
       agyBackendFactory: unusedBackendFactory,
       grokBackendFactory: unusedBackendFactory,
+      deepSeekHarnessBackendFactory: unusedBackendFactory,
       activationRegistry,
       memoryRecorder: recorder,
       providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
       agentToolMcpRunSessionDeactivator: deactivator,
-      integrationRunAccess: null,
+      runPasses: null,
     });
     const config = new AgentRunConfig({
         runtimeKind: RuntimeKind.CODEX_APP_SERVER,

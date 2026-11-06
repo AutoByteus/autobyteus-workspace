@@ -695,9 +695,14 @@ describe("agent provider composition boundaries", () => {
       expect(occurrences(source, "contextFilePathEnvironment,"), relativePath)
         .toBeGreaterThanOrEqual(2);
     }
-    const general = read(join(SRC, "agent-execution/runtime/general-process-run-supervisor.ts"));
-    expect(general).not.toMatch(/AppConfig|appConfigProvider|\.getMemoryDir\(|\.getAppDataDir\(|\.getBaseUrl\(/);
-    expect(general).toContain("contextFilePathEnvironment: ContextFilePathEnvironment");
+    // The general process supervisor and its input file (which owns the input type) read no app config themselves.
+    const supervisor = read(join(SRC, "agent-execution/runtime/general-process-run-supervisor.ts"));
+    const supervisorInput = read(join(SRC, "agent-execution/runtime/general-process-run-supervisor-input.ts"));
+    for (const source of [supervisor, supervisorInput]) {
+      expect(source).not.toMatch(/AppConfig|appConfigProvider|\.getMemoryDir\(|\.getAppDataDir\(|\.getBaseUrl\(/);
+    }
+    expect(supervisorInput).toContain("contextFilePathEnvironment: ContextFilePathEnvironment");
+    expect(supervisor).toContain("input.contextFilePathEnvironment");
   });
 
   it("rejects retired root-bound execution construction symbols", () => {

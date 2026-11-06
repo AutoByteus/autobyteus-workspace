@@ -29,6 +29,11 @@ arrive as ordinary tool-approval requests answered allow-once/reject-once. A
 denied tool renders as denied and the turn as completed. The server-owned
 contract is in
 [Grok Build Runtime](../../autobyteus-server-ts/docs/modules/grok_build_runtime.md).
+`deepseek_harness` (DeepSeek Harness, `dsh`, over ACP stdio) goes through the
+same conversion. dsh asks for approval only to escalate out of its sandbox;
+with auto-execute off, those requests arrive as ordinary tool-approval
+requests. See
+[DeepSeek Harness Runtime](../../autobyteus-server-ts/docs/modules/deepseek_harness_runtime.md).
 The opt-in web-equivalent restart journey has also verified that a fresh
 browser can focus the original Team/direct Org/nested Org member after a clean
 backend process restart, display its old answer, send a new message, and keep
@@ -1047,7 +1052,7 @@ task-scoped messages and non-user command traffic never become title sources.
 ### Workspace History Progressive Disclosure
 
 The Workspaces sidebar history tree uses progressive disclosure for its
-ordinary desktop render. `WorkspaceAgentRunsTreePanel.vue` wires the tree state
+ordinary desktop render. `RunSectionPanel.vue` wires the tree state
 from `useWorkspaceHistoryTreeState(...)`, and
 `WorkspaceHistoryWorkspaceSection.vue` renders only the visible level for the
 current expansion state.
@@ -1166,7 +1171,7 @@ original incident. Its cause remains unassigned.
 
 ### Workspace History Archive And Delete Actions
 
-`components/workspace/history/WorkspaceAgentRunsTreePanel.vue` owns the
+`components/workspace/history/RunSectionPanel.vue` owns the
 workspace history tree wiring and delegates row rendering to
 `WorkspaceHistoryWorkspaceSection.vue`. The row actions intentionally keep
 archive, termination, draft removal, and permanent delete separate:
@@ -1442,7 +1447,7 @@ not mutate saved Team workspace paths.
 options for the saved subject. It receives self-contained current and
 replacement descriptors; it does not intersect server choices with a second
 frontend catalog. Replacements stay within the fixed runtime. Claude Agent
-SDK, Codex App Server, Antigravity CLI and Grok Build use the backend's distinct offered
+SDK, Codex App Server, Antigravity CLI, Grok Build and DeepSeek Harness use the backend's distinct offered
 IDs without a platform capacity comparison. AutoByteus alone requires verified
 positive non-decreasing context capacity for replacements. An exact saved
 Claude `default` can remain current-only with its schema, but a filtered alias

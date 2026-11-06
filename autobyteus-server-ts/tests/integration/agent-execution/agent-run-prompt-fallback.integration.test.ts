@@ -150,6 +150,7 @@ describe("AgentRunService fresh definition runtime integration", () => {
       claudeBackendFactory: unavailableBackendFactory,
       agyBackendFactory: unavailableBackendFactory,
       grokBackendFactory: unavailableBackendFactory,
+      deepSeekHarnessBackendFactory: unavailableBackendFactory,
       activationRegistry: infrastructure.activationRegistry,
       memoryRecorder: infrastructure.memoryRecorder,
       providerInputNormalizer: infrastructure.providerInputNormalizer,

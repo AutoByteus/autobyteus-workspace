@@ -1,0 +1,15 @@
+HEAD 2f2a361aac36b268ee50ad63d862b8db1a2217fa
+$ python3 scripts/check_licensing.py
+Licensing is consistent.
+Tracked files scanned: 7854
+exit 0
+$ python3 scripts/check_repository_artifact_hygiene.py
+Repository artifact hygiene check passed.
+Tracked files scanned: 84769
+Path-length threshold: 200
+Longest tracked path: 200 chars: tickets/done/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.js
+exit 0
+$ scripts/check_secrets.sh v1.5.12-beta.2..HEAD
+secret gate: scanning 67 commit(s) in v1.5.12-beta.2..HEAD
+secret gate: PASS (no secrets found)
+exit 0

@@ -1,0 +1,9 @@
+{"started":true,"keyLoaded":true}
+{"url":"/anthropic/v1/messages","passOk":true,"stripped":["dsh_plugin_packages"],"upstreamStatus":200,"contentType":"text/event-stream; charset=utf-8"}
+{"url":"/anthropic/v1/messages","upstreamDoneMs":889}
+{"url":"/anthropic/v1/messages","passOk":true,"stripped":["dsh_plugin_packages"],"upstreamStatus":200,"contentType":"text/event-stream; charset=utf-8"}
+{"url":"/anthropic/v1/messages","upstreamDoneMs":1594}
+{"url":"/anthropic/v1/messages","passOk":true,"stripped":["dsh_plugin_packages"],"upstreamStatus":200,"contentType":"text/event-stream; charset=utf-8"}
+{"url":"/anthropic/v1/messages","upstreamDoneMs":1139}
+{"url":"/anthropic/v1/messages","passOk":true,"stripped":["dsh_plugin_packages"],"upstreamStatus":200,"contentType":"text/event-stream; charset=utf-8"}
+{"url":"/anthropic/v1/messages","upstreamDoneMs":947}

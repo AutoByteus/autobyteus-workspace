@@ -13,6 +13,7 @@ import { createGitHubDeliveryDefinition, DeliveryDefinitions } from "../../../sr
 import { IntegrationConnectionStore } from "../../../src/credential-proxy/integration-connection-store.js";
 import { DefaultIntegrationRunAccess } from "../../../src/credential-proxy/integration-run-access.js";
 import { RunPassRegistry } from "../../../src/credential-proxy/run-pass-registry.js";
+import { RegistryRunPassRevocation } from "../../../src/credential-proxy/run-pass-revocation.js";
 
 const github = createGitHubDeliveryDefinition();
 const api = github.routes.api!;
@@ -128,7 +129,7 @@ describe("run passes and run access", () => {
     grantsForAgent.mockResolvedValueOnce([]);
     expect(await access.environmentForRun({ runId: "run-a", agentDefinitionId: "agent-a" }, {})).toEqual({});
     expect(passes.lookup(pass!)?.grants.size).toBe(0);
-    access.revokeForRun("run-a");
+    new RegistryRunPassRevocation(passes).revokeForRun("run-a");
     expect(passes.lookup(pass!)).toBeNull();
   });
 

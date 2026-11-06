@@ -28,11 +28,15 @@
 //   PLN-07 353 REQ-001/DEC-003: with 6 newer runs under P, P lists the 6 newest only (the older run hosting open work is not
 //          pinned); after 3 are archived it is listed again and opens with its delegated run.
 //   PLN-08 353 AC-004 (reconnect): real backend restart with Projects mode shown: the tree stays; a Project created after it
-//          is not listed without a run (workspace-tree-vs-chooser REQ-009) and is listed once a run is started under it
-//          and the view is shown; work dispatched after the restart appears live; the current state after a reload.
+//          is not listed without a run (workspace-tree-vs-chooser REQ-009) and is listed within one history poll once
+//          another client starts a run under it, while the view stays open (autobyteus-388 AC-003); work dispatched after
+//          the restart appears live; the current state after a reload.
 //   PLN-09 353 AC-004: archive and delete a run in Projects mode (gone in both modes), Stop of an Agent and a Team run reads
 //          stopped at once, group "Archive all" only touches the Project's runs, a deleted Project leaves the tree live.
 //   PLN-10 347 AC-013/AC-016/AC-017: keyboard, zh-CN, narrow layout and strip, briefcase icons; reference screenshots.
+//   PLN-11 388 AC-003: with the Projects view kept open, runs started and archived by another client (the API) list and
+//          unlist their Project within one history poll: a new Project's only run; and a Project's run that is older than
+//          the 6 newest runs of its agent in its folder. With the view hidden, no Project is read.
 // The probe owns a private data root, free ports, the backend and Nuxt process groups and Chrome, and removes them in
 // finally. It never uses the installed app or user data.
 import fs from 'node:fs';
@@ -60,7 +64,7 @@ const outputDir = path.resolve(webDir, getArg('output-dir', 'test-results/projec
 const executablePath = getArg('browser-executable', process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH)
   || ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser']
     .find((candidate) => fs.existsSync(candidate));
-const ALL_CASES = ['PLN-01', 'PLN-02', 'PLN-03', 'PLN-04', 'PLN-05', 'PLN-06', 'PLN-07', 'PLN-08', 'PLN-09', 'PLN-10'];
+const ALL_CASES = ['PLN-01', 'PLN-02', 'PLN-03', 'PLN-04', 'PLN-05', 'PLN-06', 'PLN-07', 'PLN-08', 'PLN-09', 'PLN-10', 'PLN-11'];
 const selectedCases = (getArg('cases') ?? ALL_CASES.join(',')).split(',').map((c) => c.trim()).filter(Boolean);
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -793,14 +797,14 @@ const restartLive = async () => {
     assert(out.copyInStoredTree, 'the copy is not in A\'s stored tree', out);
     out.liveInSamePage = await until('copy live in the same page', async () => (await copyRowIn(pSection, copy).count()) === 1, 15000).then(() => true, () => false);
     await shot(page, 'PLN-08-same-page-after-dispatch');
-    // Its first run is started by another client (the API). The Projects view re-reads a Project on `connected`, on a
-    // Project change, after this window's own run actions, and when the view is shown (autobyteus-353 REQ-003), so the
-    // Project appears when the view is shown again, in the same page without a reload.
+    // Its first run is started by another client (the API). The run section's 5 s history poll shows the new root run, and
+    // the open Projects view reads its Projects again (autobyteus-388 AC-003): listed within one poll, with the view kept
+    // open (no view switch, no reload).
     out.lateRun = await createAgentRun({ projectId: late.projectId });
     await terminateAgent(out.lateRun);
-    await showMode(page, 'workspaces');
-    await showMode(page, 'projects');
-    await until('Project created after the restart listed with its first run', async () => (await lateRow.count()) === 1, 30000);
+    const startedAt = Date.now();
+    await until('Project with a run started elsewhere listed within one poll while the view stays open', async () => (await lateRow.count()) === 1, 12000);
+    out.lateProjectListedMs = Date.now() - startedAt;
     out.lateProjectListed = true;
     await page.reload({ waitUntil: 'networkidle' });
     await showMode(page, 'projects');
@@ -993,6 +997,69 @@ const accessibilityAndLooks = async () => {
   return out;
 };
 
+/**
+ * 388 AC-003: runs started and removed by another client while the Projects view stays open. The open view re-reads its
+ * Projects when the run history's 5 s poll shows a run added or removed; hidden, it reads none.
+ */
+const othersStartAndRemove = async () => {
+  const out = {};
+  const reads = [];
+  const project = async (name, folders) => (await gql('mutation($input:CreateProjectInput!){createProject(input:$input){projectId name}}',
+    { input: { name, workspaces: folders.map((workspaceRootPath) => ({ workspaceRootPath, description: path.basename(workspaceRootPath) })) } })).createProject;
+  const archive = async (id) => assert((await gql('mutation($id:String!){archiveStoredRun(runId:$id){success message}}', { id })).archiveStoredRun.success, `archive of ${id} failed`);
+  const { page, errors, context } = await newPage();
+  page.on('request', (req) => {
+    if (!req.url().includes('/graphql') || req.method() !== 'POST') return;
+    try { const body = JSON.parse(req.postData() ?? '{}'); if (body.operationName === 'GetProjectRunHistory') reads.push({ at: Date.now(), projectId: body.variables?.projectId }); } catch { /* not JSON */ }
+  });
+  const within = async (label, predicate) => { const t0 = Date.now(); await until(label, predicate, 12000); return Date.now() - t0; };
+  try {
+    await gotoWorkspace(page);
+    await showMode(page, 'projects');
+    // A new Project whose only run another client starts, then archives.
+    const N = await project(`Elsewhere ${randomUUID().slice(0, 4)}`, [folder('p-folder')]);
+    const nRow = page.locator(`${T('project-row')}[data-project-id="${N.projectId}"]`);
+    out.nRun = await createAgentRun({ projectId: N.projectId });
+    await terminateAgent(out.nRun);
+    out.nListedMs = await within('a run started elsewhere lists its Project within one poll', async () => (await nRow.count()) === 1);
+    await archive(out.nRun);
+    out.nUnlistedMs = await within('a run archived elsewhere unlists its Project within one poll', async () => (await nRow.count()) === 0);
+    await shot(page, 'PLN-11-unlisted-after-archive-elsewhere');
+    // Hidden: the Workspaces view is shown; a run started elsewhere reads no Project.
+    await showMode(page, 'workspaces');
+    await sleep(1500);
+    const hiddenFrom = reads.length;
+    out.hiddenRun = await createAgentRun({ projectId: N.projectId });
+    await terminateAgent(out.hiddenRun);
+    await sleep(11000); // two polls
+    out.readsWhileHidden = reads.length - hiddenFrom;
+    assert(out.readsWhileHidden === 0, 'Projects were read while the Projects view was hidden', reads.slice(hiddenFrom));
+    await showMode(page, 'projects');
+    await until('listed when the view is shown again', async () => (await nRow.count()) === 1, 15000);
+    await archive(out.hiddenRun);
+    // A Project run older than the 6 newest runs of its agent in its folder (the run section's Workspaces window).
+    const mFolder = folder('m-folder');
+    await fsp.mkdir(mFolder, { recursive: true });
+    const M = await project(`Older Run ${randomUUID().slice(0, 4)}`, [mFolder]);
+    const mRow = page.locator(`${T('project-row')}[data-project-id="${M.projectId}"]`);
+    out.mRun = await createAgentRun({ projectId: M.projectId }, mFolder);
+    await terminateAgent(out.mRun);
+    out.mNewer = [];
+    for (let i = 0; i < 6; i += 1) { await sleep(30); const id = await createAgentRun({}, mFolder); out.mNewer.push(id); await terminateAgent(id); }
+    out.mListedMs = await within('the Project with the older run is listed', async () => (await mRow.count()) === 1);
+    await sleep(6000); // settle on one poll after the newer runs
+    const before = reads.length;
+    await archive(out.mRun);
+    out.mUnlistedMs = await until('an older run archived elsewhere unlists its Project within one poll', async () => (await mRow.count()) === 0, 12000)
+      .then(() => true, () => false);
+    out.readsAfterOlderArchive = reads.length - before;
+    await shot(page, 'PLN-11-older-run-archived-elsewhere');
+    assert(out.mUnlistedMs === true, 'a Project whose run is older than its folder\'s 6 newest stays listed after another client archives that run', out);
+    assert(errors.length === 0, 'browser errors', errors);
+    return out;
+  } finally { await context.close(); }
+};
+
 const CASES = {
   'PLN-01': ['353 AC-001 (user\'s case): a Workspaces run hosting Tasks of 3 Projects is in no Project; it stays in Workspaces with its work; modes keep the run; mode remembered', existingRuns],
   'PLN-02': ['347 AC-003: "+" on P → agent → send → listed under P at once; P folder; ## Project prompt; in Workspaces under its folder', startFromProjectPlus],
@@ -1001,9 +1068,10 @@ const CASES = {
   'PLN-05': ['353 AC-002, 347 AC-006/010: P Team with Task line and members, Q and Temp work all nested under the run in P live; not under Q; board', liveDelegation],
   'PLN-06': ['347 AC-008: DONE removes rows live; reopen + message brings them back', closureAndReopen],
   'PLN-07': ['353 REQ-001/DEC-003: 6 newest only, no pinning; listed again after archives and opens', capNoPinning],
-  'PLN-08': ['353 AC-004 reconnect: real backend restart keeps the tree; a Project created after it is listed once it has a run; work dispatched after it live; current after reload', restartLive],
+  'PLN-08': ['353 AC-004 reconnect: real backend restart keeps the tree; a Project created after it is listed within one poll of a run started elsewhere, view kept open (388 AC-003); work dispatched after it live; current after reload', restartLive],
   'PLN-09': ['353 AC-004: archive and delete in Projects mode, Agent and Team Stop read stopped, group Archive all scoped, deleted Project leaves live', archiveAndDelete],
   'PLN-10': ['347 AC-013/016/017: keyboard, zh-CN, narrow, briefcase, reference screenshots', accessibilityAndLooks],
+  'PLN-11': ['388 AC-003: runs started and archived elsewhere list and unlist their Project within one poll, view kept open (incl. a run older than its folder\'s 6 newest); hidden, no Project read', othersStartAndRemove],
 };
 
 let result = 'Pass';

@@ -1,0 +1,15 @@
+Check: IMP-01
+Command: vitest run tests/unit/standalone-agent-run-root/standalone-root-inherited-launch.test.ts against the BASE source (src checked out from d3cedd1357, the new test file kept)
+Commit: d3cedd1357
+Environment: macOS arm64, Node 22, pnpm 10.28.2; the ticket worktree after pnpm install --frozen-lockfile, prepare:shared and prisma generate (no earlier build output)
+Date: 2026-11-06
+
+     × AC-001: after the refresh a copy carries the saved model and settings; a model-only edit and an undo give the same result 3ms
+     × AC-002: a runtime change (a pending switch) reaches the copy; the host's marker is not written by the refresh 1ms
+     × AC-003: an edit while the root is still loading is read once the root has loaded 1ms
+     × AC-005: with no registered root nothing is read or created, and a root loaded later carries the saved launch 1ms
+     × a run that is not eligible, or has no metadata, is left alone 1ms
+     × the next use of the root heals a missed refresh: resolving it for the host reads the current launch 46ms
+      Tests  6 failed | 1 passed (7)
+
+Reading: the REPRODUCTION case passes on the base, i.e. a copy started after the saved edit carries the OLD model (gpt-host / effort high): U-1 is real. The other six fail on the base (refreshInheritedLaunch missing; the wake-path heal absent).

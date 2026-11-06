@@ -78,6 +78,7 @@ export const createMigrationContinuationRuntime = (memoryDir: string, store: Tok
     autoByteusBackendFactory: factory, codexBackendFactory: factory, claudeBackendFactory: factory,
     agyBackendFactory: factory,
     grokBackendFactory: factory,
+    deepSeekHarnessBackendFactory: factory,
     memoryRecorder: recorder, agentToolMcpRunSessionDeactivator: sessions,
     providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
     activationRegistry: new AgentRunActivationRegistry(new AgentRunResourceManager({ runSessions: sessions,

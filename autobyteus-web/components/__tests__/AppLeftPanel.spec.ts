@@ -42,7 +42,7 @@ describe('AppLeftPanel', () => {
   it('keeps exactly one unified Workspace history panel mounted for every route', () => {
     const filePath = resolve(process.cwd(), 'components/AppLeftPanel.vue');
     const content = readFileSync(filePath, 'utf-8');
-    expect(content.match(/<WorkspaceAgentRunsTreePanel\b/g)).toHaveLength(1);
+    expect(content.match(/<RunSectionPanel\b/g)).toHaveLength(1);
     expect(content).not.toContain('AgentOrgRunHistoryPanel');
     expect(content).not.toContain('showAgentOrgRunHistory');
     expect(content).not.toContain('v-if="showAgentOrg');

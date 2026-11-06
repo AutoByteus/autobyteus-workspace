@@ -1,0 +1,437 @@
+# API-20…API-22 DeepSeek Harness in Teams, Orgs and a runtime switch, live (real dsh 0.2.2-rc.1, real DeepSeek API through the product relay, flash, effort low, test vault)
+# Command: env -i PATH=$PATH HOME=<temp> TMPDIR=$TMPDIR AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_DEEPSEEK_HARNESS_E2E=1 DEEPSEEK_HARNESS_COMMAND=/tmp/ab387-dsh-bin/dsh pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts --no-watch
+# Commit: fddcff0f13 + new test files (working tree)
+# Env: macOS, server Node v22.23.1, dsh on Node 25.2.1; scripted Antigravity CLI tests/fixtures/agy-failure-cli.mjs (AGY_FAKE_CASE=auto_compaction)
+# Date: 2026-11-06T08:42:01Z
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.12 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+(node:77966) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-collab-live-e2e-L2F4uo
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-collab-live-e2e-L2F4uo/.env
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)
+[22m[39m[2026-11-06T08:42:16.772Z] [INFO] [secret-management.vault] Secret vault: test vault /Users/normy/.autobyteus-test/vault (read-only)
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)
+[22m[39mLoading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-collab-live-e2e-L2F4uo/.env
+◇ injected env (2) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-collab-live-e2e-L2F4uo/.env // tip: ◈ secrets for agents [www.dotenvx.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-collab-live-e2e-L2F4uo
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-collab-live-e2e-L2F4uo/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-collab-live-e2e-L2F4uo/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-collab-live-e2e-L2F4uo/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-collab-live-e2e-L2F4uo/memory
+============================================================
+Initialized server settings service with 33 predefined settings
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)
+[22m[39mAgentRunManager initialized.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)
+[22m[39mCreating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-collab-live-e2e-L2F4uo/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-collab-live-e2e-L2F4uo/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-collab-live-e2e-L2F4uo/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)
+[22m[39mSuccessfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)
+[22m[39mSuccessfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)
+[22m[39mRegistered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)
+[22m[39mSuccessfully registered tool definition: 'search_memory'
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)
+[22m[39mRegistered required tool unit: Memory Tools
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)
+[22m[39mSuccessfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)
+[22m[39mRegistered required tool unit: Agent Discovery Tools
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)
+[22m[39mSuccessfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)
+[22m[39mRegistered required tool unit: Agent Runtime Tools
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)[2m > [22m[2mruns a Team of two dsh members that message each other, then stops and restores it with the conversation kept (REQ-001, AC-004, AC-008)
+[22m[39mAgent Definition created successfully with ID: dsh-ping-5aadef17-aa49-473f-bad9-30b6dc61bbd9
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)[2m > [22m[2mruns a Team of two dsh members that message each other, then stops and restores it with the conversation kept (REQ-001, AC-004, AC-008)
+[22m[39mAgent Definition created successfully with ID: dsh-pong-64e25803-ea92-400b-bfcf-aae9d2f33f9b
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)[2m > [22m[2mruns a Team of two dsh members that message each other, then stops and restores it with the conversation kept (REQ-001, AC-004, AC-008)
+[22m[39mAgent Team Definition created successfully with ID: dsh-team-150214c1
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)[2m > [22m[2mruns a Team of two dsh members that message each other, then stops and restores it with the conversation kept (REQ-001, AC-004, AC-008)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-collab-live-e2e-L2F4uo/team-150214c1
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-collab-live-e2e-L2F4uo/team-150214c1.
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)[2m > [22m[2mruns a Team of two dsh members that message each other, then stops and restores it with the conversation kept (REQ-001, AC-004, AC-008)
+[22m[39mCreated and registered workspace ID: agent_ws_74bf785da42f42c2472b48fb6a6efcb86293ff8ceba2557306a27d98284caed2
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)[2m > [22m[2mruns a Team of two dsh members that message each other, then stops and restores it with the conversation kept (REQ-001, AC-004, AC-008)
+[22m[39mAgent team websocket attached for team run dsh_team_150214c1_d25d18bfe80c4b21b26097557da7d022
+Created agent session d68da693-01a1-45d5-88b3-7a57ece5c91f for run dsh_team_150214c1_d25d18bfe80c4b21b26097557da7d022
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)[2m > [22m[2mruns a Team of two dsh members that message each other, then stops and restores it with the conversation kept (REQ-001, AC-004, AC-008)
+[22m[39mAgent Team WebSocket connected: session=d68da693-01a1-45d5-88b3-7a57ece5c91f, run=dsh_team_150214c1_d25d18bfe80c4b21b26097557da7d022
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)[2m > [22m[2mruns a Team of two dsh members that message each other, then stops and restores it with the conversation kept (REQ-001, AC-004, AC-008)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-collab-live-e2e-L2F4uo/team-150214c1
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-collab-live-e2e-L2F4uo/team-150214c1.
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)[2m > [22m[2mruns a Team of two dsh members that message each other, then stops and restores it with the conversation kept (REQ-001, AC-004, AC-008)
+[22m[39mReusing registered workspace ID: agent_ws_74bf785da42f42c2472b48fb6a6efcb86293ff8ceba2557306a27d98284caed2
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)[2m > [22m[2mruns a Team of two dsh members that message each other, then stops and restores it with the conversation kept (REQ-001, AC-004, AC-008)
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)[2m > [22m[2mruns a Team of two dsh members that message each other, then stops and restores it with the conversation kept (REQ-001, AC-004, AC-008)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-collab-live-e2e-L2F4uo/team-150214c1
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-collab-live-e2e-L2F4uo/team-150214c1.
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)[2m > [22m[2mruns a Team of two dsh members that message each other, then stops and restores it with the conversation kept (REQ-001, AC-004, AC-008)
+[22m[39mReusing registered workspace ID: agent_ws_74bf785da42f42c2472b48fb6a6efcb86293ff8ceba2557306a27d98284caed2
+
+DSH_COLLAB TEAM_RELAY {"teamRunId":"dsh_team_150214c1_d25d18bfe80c4b21b26097557da7d022","tool":"send_message_to"}
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)[2m > [22m[2mruns a Team of two dsh members that message each other, then stops and restores it with the conversation kept (REQ-001, AC-004, AC-008)
+[22m[39mClosed agent session d68da693-01a1-45d5-88b3-7a57ece5c91f
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)[2m > [22m[2mruns a Team of two dsh members that message each other, then stops and restores it with the conversation kept (REQ-001, AC-004, AC-008)
+[22m[39mAgent team websocket attached for team run dsh_team_150214c1_d25d18bfe80c4b21b26097557da7d022
+Created agent session 23788cac-8b74-45eb-a786-7010d5e1d877 for run dsh_team_150214c1_d25d18bfe80c4b21b26097557da7d022
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)[2m > [22m[2mruns a Team of two dsh members that message each other, then stops and restores it with the conversation kept (REQ-001, AC-004, AC-008)
+[22m[39mAgent Team WebSocket connected: session=23788cac-8b74-45eb-a786-7010d5e1d877, run=dsh_team_150214c1_d25d18bfe80c4b21b26097557da7d022
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)[2m > [22m[2mruns a Team of two dsh members that message each other, then stops and restores it with the conversation kept (REQ-001, AC-004, AC-008)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-collab-live-e2e-L2F4uo/team-150214c1
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-collab-live-e2e-L2F4uo/team-150214c1.
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)[2m > [22m[2mruns a Team of two dsh members that message each other, then stops and restores it with the conversation kept (REQ-001, AC-004, AC-008)
+[22m[39mReusing registered workspace ID: agent_ws_74bf785da42f42c2472b48fb6a6efcb86293ff8ceba2557306a27d98284caed2
+
+DSH_COLLAB TEAM_RESTORE {"sessionsBefore":[["ping","b70cfdf8-1e01-4c80-be9a-3d13e084cf59"],["pong","5b3fa098-7424-4c8f-bf02-3577a4e6adc5"]],"sessionsAfter":[["ping","b70cfdf8-1e01-4c80-be9a-3d13e084cf59"],["pong","5b3fa098-7424-4c8f-bf02-3577a4e6adc5"]],"reply":""}
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)[2m > [22m[2mruns an Org with a direct dsh member and a nested Team's dsh member, the direct member relaying to the nested one (REQ-001)
+[22m[39mAgent Definition created successfully with ID: dsh-org-director-968db398-7fbb-4fa0-ba4a-0309379b940f
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)[2m > [22m[2mruns an Org with a direct dsh member and a nested Team's dsh member, the direct member relaying to the nested one (REQ-001)
+[22m[39mAgent Definition created successfully with ID: dsh-org-worker-05125207-b374-4c80-b9f0-9dd30c83644e
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)[2m > [22m[2mruns an Org with a direct dsh member and a nested Team's dsh member, the direct member relaying to the nested one (REQ-001)
+[22m[39mAgent Team Definition created successfully with ID: dsh-org-team-d9a73473
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)[2m > [22m[2mruns an Org with a direct dsh member and a nested Team's dsh member, the direct member relaying to the nested one (REQ-001)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-collab-live-e2e-L2F4uo/org-d9a73473
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-collab-live-e2e-L2F4uo/org-d9a73473.
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)[2m > [22m[2mruns an Org with a direct dsh member and a nested Team's dsh member, the direct member relaying to the nested one (REQ-001)
+[22m[39mCreated and registered workspace ID: agent_ws_14136c73f0a8aa39b7eb6e86324a626a575f09e4519b7e179121114f6d3efa91
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)[2m > [22m[2mruns an Org with a direct dsh member and a nested Team's dsh member, the direct member relaying to the nested one (REQ-001)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-collab-live-e2e-L2F4uo/org-d9a73473
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-collab-live-e2e-L2F4uo/org-d9a73473.
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)[2m > [22m[2mruns an Org with a direct dsh member and a nested Team's dsh member, the direct member relaying to the nested one (REQ-001)
+[22m[39mReusing registered workspace ID: agent_ws_14136c73f0a8aa39b7eb6e86324a626a575f09e4519b7e179121114f6d3efa91
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)[2m > [22m[2mruns an Org with a direct dsh member and a nested Team's dsh member, the direct member relaying to the nested one (REQ-001)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-collab-live-e2e-L2F4uo/org-d9a73473
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-collab-live-e2e-L2F4uo/org-d9a73473.
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)[2m > [22m[2mruns an Org with a direct dsh member and a nested Team's dsh member, the direct member relaying to the nested one (REQ-001)
+[22m[39mReusing registered workspace ID: agent_ws_14136c73f0a8aa39b7eb6e86324a626a575f09e4519b7e179121114f6d3efa91
+
+[90mstderr[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)[2m > [22m[2mruns an Org with a direct dsh member and a nested Team's dsh member, the direct member relaying to the nested one (REQ-001)
+[22m[39mMemory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-collab-live-e2e-L2F4uo/memory/agent_orgs/dsh_org_d9a73473_ee53cbdf7aea427c95634bb8f1c76c95/dsh_org_team_d9a73473_574443c280224b6f8ef58fafabafa603/dsh_org_worker_05125207_b374_4c80_b9f0_9dd30c836_09e3f94a631443c7963d07937d96c1cc/raw_traces_manifest.json
+
+DSH_COLLAB ORG {"orgRunId":"dsh_org_d9a73473_ee53cbdf7aea427c95634bb8f1c76c95","workerHasRelay":true}
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)[2m > [22m[2mswitches one run from dsh to the scripted Antigravity CLI and back to dsh, which continues from the Work Journal (AC-014, REQ-014)
+[22m[39mAgent Definition created successfully with ID: dsh-switch-4ccb5925-40d0-4893-9cac-c28501c6cd48
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)[2m > [22m[2mswitches one run from dsh to the scripted Antigravity CLI and back to dsh, which continues from the Work Journal (AC-014, REQ-014)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-collab-live-e2e-L2F4uo/switch-8c7cd279
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-collab-live-e2e-L2F4uo/switch-8c7cd279.
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)[2m > [22m[2mswitches one run from dsh to the scripted Antigravity CLI and back to dsh, which continues from the Work Journal (AC-014, REQ-014)
+[22m[39mCreated and registered workspace ID: agent_ws_87d15c7b9ec7bef60db769c6a99671eaa8be0a8aee629118875b16993c87c107
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)[2m > [22m[2mswitches one run from dsh to the scripted Antigravity CLI and back to dsh, which continues from the Work Journal (AC-014, REQ-014)
+[22m[39mCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-collab-live-e2e-L2F4uo/switch-8c7cd279
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dsh-collab-live-e2e-L2F4uo/switch-8c7cd279.
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)[2m > [22m[2mswitches one run from dsh to the scripted Antigravity CLI and back to dsh, which continues from the Work Journal (AC-014, REQ-014)
+[22m[39mReusing registered workspace ID: agent_ws_87d15c7b9ec7bef60db769c6a99671eaa8be0a8aee629118875b16993c87c107
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)[2m > [22m[2mswitches one run from dsh to the scripted Antigravity CLI and back to dsh, which continues from the Work Journal (AC-014, REQ-014)
+[22m[39mAgent websocket attached for run dsh_switch_4ccb5925_40d0_4893_9cac_c28501c6cd48_2f31c2b8a15041ea81f7342b0e9fe9c6
+Created agent session 3899c6fb-7aac-4cc6-adc2-07ace532fae5 for run dsh_switch_4ccb5925_40d0_4893_9cac_c28501c6cd48_2f31c2b8a15041ea81f7342b0e9fe9c6
+Agent WebSocket connected: session=3899c6fb-7aac-4cc6-adc2-07ace532fae5, run=dsh_switch_4ccb5925_40d0_4893_9cac_c28501c6cd48_2f31c2b8a15041ea81f7342b0e9fe9c6
+
+DSH_COLLAB SWITCH_TURN {"label":"dsh task","end":"TURN_COMPLETED","text":"DONE"}
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)[2m > [22m[2mswitches one run from dsh to the scripted Antigravity CLI and back to dsh, which continues from the Work Journal (AC-014, REQ-014)
+[22m[39mClosed agent session 3899c6fb-7aac-4cc6-adc2-07ace532fae5
+Agent WebSocket disconnected: 3899c6fb-7aac-4cc6-adc2-07ace532fae5
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)
+[22m[39mClosed agent session 23788cac-8b74-45eb-a786-7010d5e1d877
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)
+[22m[39mAgent Definition with ID dsh-switch-4ccb5925-40d0-4893-9cac-c28501c6cd48 deleted successfully.
+
+[90mstderr[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)
+[22m[39mTOOL_LIST_UPDATE_APPLY_FAILED:dsh_org_worker_05125207_b374_4c80_b9f0_9dd30c836_09e3f94a631443c7963d07937d96c1cc: Error: Agent run 'dsh_org_worker_05125207_b374_4c80_b9f0_9dd30c836_09e3f94a631443c7963d07937d96c1cc' is not active.
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)
+[22m[39mAgent Team Definition with ID dsh-org-team-d9a73473 deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)
+[22m[39mAgent Definition with ID dsh-org-worker-05125207-b374-4c80-b9f0-9dd30c83644e deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)
+[22m[39mAgent Definition with ID dsh-org-director-968db398-7fbb-4fa0-ba4a-0309379b940f deleted successfully.
+
+[90mstderr[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)
+[22m[39mTOOL_LIST_UPDATE_APPLY_FAILED:dsh_pong_64e25803_ea92_400b_bfcf_aae9d2f33f9b_b5de871fb9134db39950df6e340d3cee: Error: Agent run 'dsh_pong_64e25803_ea92_400b_bfcf_aae9d2f33f9b_b5de871fb9134db39950df6e340d3cee' is not active.
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)
+[22m[39mAgent Team Definition with ID dsh-team-150214c1 deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)
+[22m[39mAgent Definition with ID dsh-pong-64e25803-ea92-400b-bfcf-aae9d2f33f9b deleted successfully.
+
+[90mstdout[2m | tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22m[2mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)
+[22m[39mAgent Definition with ID dsh-ping-5aadef17-aa49-473f-bad9-30b6dc61bbd9 deleted successfully.
+
+ [31m❯[39m tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts [2m([22m[2m3 tests[22m[2m | [22m[31m2 failed[39m[2m)[22m[33m 39448[2mms[22m[39m
+[31m     [31m×[31m runs a Team of two dsh members that message each other, then stops and restores it with the conversation kept (REQ-001, AC-004, AC-008)[39m[33m 18504[2mms[22m[39m
+     [33m[2m✓[22m[39m runs an Org with a direct dsh member and a nested Team's dsh member, the direct member relaying to the nested one (REQ-001) [33m 14539[2mms[22m[39m
+[31m     [31m×[31m switches one run from dsh to the scripted Antigravity CLI and back to dsh, which continues from the Work Journal (AC-014, REQ-014)[39m[33m 5693[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 2 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)[2m > [22mruns a Team of two dsh members that message each other, then stops and restores it with the conversation kept (REQ-001, AC-004, AC-008)
+[31m[1mAssertionError[22m: expected '' to contain 'PING-TO-PONG-150214c1'[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- PING-TO-PONG-150214c1[39m
+
+[36m [2m❯[22m tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts:[2m201:19[22m[39m
+    [90m199|[39m       [33m.[39m[34mmap[39m((frame) [33m=>[39m [33mString[39m(frame[33m.[39mpayload[33m.[39mdelta [33m??[39m [32m""[39m))[33m.[39m[34mjoin[39m([32m""[39m)[33m;[39m
+    [90m200|[39m     log("TEAM_RESTORE", { sessionsBefore, sessionsAfter: (await resume…
+    [90m201|[39m     [34mexpect[39m(reply)[33m.[39m[34mtoContain[39m(token)[33m;[39m
+    [90m   |[39m                   [31m^[39m
+    [90m202|[39m     expect((await resume()).every((entry) => entry.runtimeKind === "de…
+    [90m203|[39m     socket[33m.[39m[34mclose[39m()[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts[2m > [22mDeepSeek Harness in Teams, Orgs and a runtime switch (real dsh, real DeepSeek API, product relay)[2m > [22mswitches one run from dsh to the scripted Antigravity CLI and back to dsh, which continues from the Work Journal (AC-014, REQ-014)
+[31m[1mError[22m: [{"message":"Not signed in on this node. Run `agy` to sign in.","locations":[{"line":1,"column":21}],"path":["providerModelCatalogSnapshots"]}][39m
+[36m [2m❯[22m graphql tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts:[2m69:66[22m[39m
+    [90m 67|[39m     })[33m;[39m
+    [90m 68|[39m     const body = await response.json() as { data?: T; errors?: Array<{…
+    [90m 69|[39m     if (!response.ok || !body.data || body.errors?.length) throw new E…
+    [90m   |[39m                                                                  [31m^[39m
+    [90m 70|[39m     [35mreturn[39m body[33m.[39mdata[33m;[39m
+    [90m 71|[39m   }[33m;[39m
+[90m [2m❯[22m tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts:[2m330:23[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m2 failed[39m[22m[2m | [22m[1m[32m1 passed[39m[22m[90m (3)[39m
+[2m   Start at [22m 09:42:02
+[2m   Duration [22m 54.04s[2m (transform 10.39s, setup 41ms, import 14.13s, tests 39.45s, environment 0ms)[22m
+
+EXIT 1

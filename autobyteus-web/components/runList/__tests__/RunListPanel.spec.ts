@@ -156,3 +156,19 @@ describe('RunListPanel: "Your runs" (UIS-001…005)', () => {
     expect(wrapper!.get('[data-test="workspace-team-row-team-history"]').attributes('aria-expanded')).toBe('true');
   });
 });
+
+// autobyteus-390 (REQ-004, AC-005, AC-006): the Runs view turns the shared tree-row move off for every tree inside its
+// scroll container; the Workspaces and Projects views keep it. The browser probe (test:e2e:run-expand-motion) proves the
+// effect; this pins the scoped rule and its container.
+describe('RunListPanel: rows never slide in the Runs view (autobyteus-390)', () => {
+  it('scopes a no-transition move rule to the run list\'s scroll container', async () => {
+    const { readFileSync } = await import('node:fs');
+    const { resolve } = await import('node:path');
+    const source = readFileSync(resolve(__dirname, '../RunListPanel.vue'), 'utf8');
+    const style = source.slice(source.indexOf('<style scoped>')).replace(/\s+/g, ' ');
+    expect(style).toContain('.run-list-scroll :deep(.tree-row-move) { transition: none; }');
+    expect(source).toMatch(/class="run-list-scroll [^"]*"\s+data-test="run-list-scroll"/);
+    const shared = readFileSync(resolve(__dirname, '../../workspace/history/treeRowLeave.css'), 'utf8').replace(/\s+/g, ' ');
+    expect(shared).toContain('.tree-row-move { transition: transform 200ms ease-out; }');
+  });
+});

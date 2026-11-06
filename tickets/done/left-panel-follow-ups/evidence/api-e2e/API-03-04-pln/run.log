@@ -1,0 +1,17 @@
+
+> autobyteus@1.5.12-beta.2 test:e2e:projects-left-navigation /Users/normy/autobyteus_org/autobyteus-worktrees/left-panel-follow-ups/autobyteus-web
+> node tests/e2e/projects-left-navigation-probe.mjs --output-dir /tmp/lpf-388/pln
+
+PLN-01: Pass
+PLN-02: Pass
+PLN-03: Pass
+PLN-04: Pass
+PLN-05: Pass
+PLN-06: Pass
+PLN-07: Pass
+PLN-08: Pass
+PLN-09: Pass
+PLN-10: Pass
+PLN-11: Fail — a Project whose run is older than its folder's 6 newest stays listed after another client archives that run
+Projects left navigation probe: Fail. Evidence: /tmp/lpf-388/pln/evidence.json
+ ELIFECYCLE  Command failed with exit code 1.

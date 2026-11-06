@@ -55,8 +55,8 @@ export function useMobileRunOpening(disclosure: {
     emitRunSelected: commitPending,
     // The desktop's toast and copy (E-31); the open then fails, as it did not commit.
     presentTeamStreamRecoveryFeedback: (feedback) => addToast(t(feedback === 'wait'
-      ? 'workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.stream_recovery_wait'
-      : 'workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.stream_recovery_retry'), 'info'),
+      ? 'workspace.components.workspace.history.RunSectionPanel.stream_recovery_wait'
+      : 'workspace.components.workspace.history.RunSectionPanel.stream_recovery_retry'), 'info'),
     shell: 'mobile',
   });
   const subject = useWorkspaceHistorySubjectActions({ shell: 'mobile' });

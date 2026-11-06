@@ -1,11 +1,11 @@
 import type { SecretValue } from "autobyteus-ts/secrets/secret-value.js";
 import type { IntegrationId } from "../secret-management/domain/secret-id.js";
 
-/** How a route adds the integration's credential to an upstream request. */
-export type DeliveryAuthFormat = "bearer" | "basic-x-access-token";
+/** How a route adds the credential to an upstream request (`x-api-key`: the key alone in that header). */
+export type DeliveryAuthFormat = "bearer" | "basic-x-access-token" | "x-api-key";
 
 /**
- * One forwarding target of an integration (a route), with its own auth format and allowed paths. The upstream
+ * One forwarding target of an integration or a provider relay (a route), with its own auth format and allowed paths. The upstream
  * origin is a field, so where the proxy forwards to can become configurable later.
  */
 export type DeliveryRoute = Readonly<{
