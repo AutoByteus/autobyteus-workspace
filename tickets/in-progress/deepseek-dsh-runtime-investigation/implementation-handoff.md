@@ -8,7 +8,9 @@ Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-
 - `d5566977b4` feat: DeepSeek Harness as an ACP runtime through the credential proxy's provider relay (steps 1–4)
 - `3514947952` docs: DeepSeek Harness runtime, provider relays and glossary (step 5)
 - `9dd599dfe3` fix: dsh model discovery lists its catalog; live suite steps made explicit (step 6 findings)
-- the commit that adds this handoff, the revision record and `evidence/implementation/`
+- `9344f4b9b5` docs: implementation handoff IR-001 with local and live evidence
+- `cb132711f6` refactor: supervisor input in its own file (CR-001, IR-002)
+- the commit that updates this handoff for IR-002
 
 ## Upstream Artifact Package
 
@@ -35,15 +37,15 @@ liveness. The shared ACP layer gained per-run launch facts (instructions on ever
 one end owner. Grok migrated to the new contract with no behavior change. A run pass now ends only through
 `RunPassRevocation`, wired into every `AgentRunManager` / `AgentRunResourceManager` construction.
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (IR-002: Local Fix CR-001 from CRR-001)
 - Implementation revision record: `tickets/in-progress/deepseek-dsh-runtime-investigation/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-004`
 - Related architecture-review revision IDs: `ARCH-REV-003`
-- Related code-review revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001`
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Triggering finding IDs: `CR-001`
 
 ## Routing Classification (Mandatory)
 
@@ -143,7 +145,11 @@ one end owner. Grok migrated to the new contract with no behavior change. A run 
 - Dead code found elsewhere, added to `follow-ups.md`: None
 - Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`
-- Changed source implementation files stayed within proactive size-pressure guardrails: `Yes` — largest touched source `compositions/build-studio-server.ts` 493 non-empty lines (+9); no source file over a 220-line delta.
+- Changed source implementation files stayed within proactive size-pressure guardrails: `Yes` (after CR-001). IR-001
+  missed that `agent-execution/runtime/general-process-run-supervisor.ts` was already over the limit on the base (511
+  non-empty lines) and grew it to 522. IR-002 moves its input type and whole-input validation to
+  `agent-execution/runtime/general-process-run-supervisor-input.ts` (83 lines): the supervisor is now 446. The other
+  touched sources stay under 500 (`compositions/build-studio-server.ts` 493, +9); no source file has a delta over 220 lines.
 - Notes: Grok's `normalizeGrokBuildModels` stays in its launch-profile file (called directly by its capability).
 
 ## Persisted Data Transition Check (When Applicable)
@@ -174,8 +180,13 @@ one end owner. Grok migrated to the new contract with no behavior change. A run 
 | IMP-05 | `NUXT_TEST=true pnpm -C autobyteus-web exec vitest run components/settings/agent-runtimes utils/__tests__/deepseekHarnessRuntimePresentation.spec.ts utils/__tests__/grokBuildRuntimePresentation.spec.ts components/settings/model-routing services/activity` | `d5566977b4` | macOS, Node 22.21.1 | web Agent Runtimes row, presentation maps | AC-013 | Pass | `evidence/implementation/IMP-05-web-specs.log` | `Tests  41 passed (41)` |
 | IMP-06 | `pnpm -C autobyteus-web typecheck`; `guard:web-boundary`; `guard:localization-boundary`; `audit:localization-literals` | `d5566977b4` | macOS, Node 22.21.1 | web types, localization | AC-013 | Pass | `evidence/implementation/IMP-06-web-typecheck-guards.log` | `[typecheck] PASS`, `Passed.` |
 | IMP-07 | `pnpm -C autobyteus-web codegen:local`; `vitest run tests/architecture/tracked-imports.test.ts tests/architecture/web-generated-graphql-current.test.ts` | `3514947952` | macOS | generated GraphQL, tracked imports | AC-013 | Pass | (part of IMP-02 at `9dd599dfe3`) | both architecture tests pass in IMP-02 |
+| IMP-09 | CR-001 recheck: `vitest run tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts tests/unit/standalone-application-host tests/architecture/tracked-imports.test.ts tests/integration/agent-execution/agent-run-manager.integration.test.ts`; `pnpm -C autobyteus-server-ts typecheck`; the IMP-04 E2Es | `cb132711f6` | macOS, Node 22.21.1 | supervisor construction and its input validation, through unit tests and the real studio composition | AC-016/017; dispositions (AR-008) | Pass | `evidence/implementation/IMP-09-cr-001-recheck.log` | `Tests  39 passed (39)`; `[typecheck] PASS`; `Tests  15 passed (15)` |
 | IMP-08 | Gated live suite (real dsh, real DeepSeek API through the product relay, flash, effort low, test vault, isolated HOME): see the evidence header | `9dd599dfe3` (working tree at run time, committed right after) | macOS, Node 22.21.1 server, dsh 0.2.2-rc.1 on Node 25.2.1 | the whole dsh path: availability, catalog, Agent Runtimes row, standalone run (tools, skills, Agent Tool, approvals, stop, reopen, restore, pass refusal), owned-home config, Brief Studio launch in the application scope with pass refusal after the platform stopped, key-absence scan | AC-001…AC-009, AC-011, AC-013…AC-015, QR-001, QR-004 (via home config), DEC-020, AR-008 | Pass | `evidence/implementation/IMP-08-live-dsh-e2e.log` | `Tests  5 passed (5)`; `DSH_LIVE MODELS ["deepseek-v4-flash","deepseek-v4-pro","deepseek-flash"]`; `"stopLatencyMs":119`; `DSH_LIVE KEY_SCAN {"files":72,"environments":4,…}` |
 
+- IR-002 rerun plan: `git diff --name-only 9dd599dfe3 cb132711f6 -- autobyteus-server-ts/src` = the supervisor and its new
+  input file only (a move, no behavior change). Rerun: IMP-09 (supervisor tests, typecheck, scripted studio E2Es).
+  Still valid: IMP-02/03 for everything else, IMP-05/06/07 (web unchanged), IMP-08 (live; the moved code is
+  construction-time validation exercised again by IMP-09).
 - Real `~/.dsh`: mtimes of `~/.dsh`, `profiles`, `sessions`, `settings.yaml`, `storages` identical before and after IMP-08.
 - Not run, and why: the full web `test:nuxt` and `test:electron` suites (only the affected web specs ran); other gated
   live suites (Grok, GitHub proxy live, other runtimes) — paid or need sign-ins, and the shared changes are covered by
