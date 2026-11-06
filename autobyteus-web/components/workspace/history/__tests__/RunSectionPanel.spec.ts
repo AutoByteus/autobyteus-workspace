@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import { nextTick, reactive } from 'vue';
-import WorkspaceAgentRunsTreePanel from '../WorkspaceAgentRunsTreePanel.vue';
+import RunSectionPanel from '../RunSectionPanel.vue';
 import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
 import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore';
 import { useRunSectionModeStore } from '~/stores/runSectionModeStore';
@@ -398,7 +398,7 @@ vi.mock('~/composables/useToasts', () => ({
   }),
 }));
 
-describe('WorkspaceAgentRunsTreePanel', () => {
+describe('RunSectionPanel', () => {
   beforeEach(async () => {
     await localizationRuntime.setPreference('en');
     setActivePinia(createPinia());
@@ -489,12 +489,14 @@ describe('WorkspaceAgentRunsTreePanel', () => {
   const mountComponent = (options: {
     realConfirmationModal?: boolean;
     attachTo?: Element;
-  } = {}) => mount(WorkspaceAgentRunsTreePanel, {
+  } = {}) => mount(RunSectionPanel, {
     ...(options.attachTo ? { attachTo: options.attachTo } : {}),
     global: {
       stubs: {
         Icon: { template: '<span class="icon-stub" />' },
         RunListPanel: { template: '<div data-test="run-list-panel-stub" />' },
+        // The Projects view's own tree and store have their own specs; here only the host's read window matters.
+        ProjectsRunsTree: { template: '<div data-test="projects-runs-tree-stub" />' },
         ...(!options.realConfirmationModal ? { ConfirmationModal: {
           props: ['show'],
           template: `
@@ -660,6 +662,34 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     expect(runHistoryStoreMock.setHistoryWindow).toHaveBeenLastCalledWith(6);
     expect(runHistoryStoreMock.fetchTree).toHaveBeenCalledTimes(3);
     expect(wrapper.find('[data-test="workspace-row"]').exists()).toBe(true);
+    wrapper.unmount();
+  });
+
+  it('autobyteus-388 SR-002: the Projects view reads every run, so a removal of any run elsewhere is noticed; Workspaces reads 6', async () => {
+    const wrapper = mountComponent();
+    await flushPromises();
+    await wrapper.get('[data-test="run-section-view-menu"]').trigger('click');
+    await wrapper.get('[data-test="run-section-view-projects"]').trigger('click');
+    await flushPromises();
+    expect(wrapper.get('[data-test="run-section-title"]').text()).toBe('Projects');
+    expect(runHistoryStoreMock.setHistoryWindow).toHaveBeenLastCalledWith(null);
+    expect(runHistoryStoreMock.fetchTree).toHaveBeenCalledTimes(2);
+
+    await wrapper.get('[data-test="run-section-view-menu"]').trigger('click');
+    await wrapper.get('[data-test="run-section-view-workspaces"]').trigger('click');
+    await flushPromises();
+    expect(runHistoryStoreMock.setHistoryWindow).toHaveBeenLastCalledWith(6);
+    expect(runHistoryStoreMock.fetchTree).toHaveBeenCalledTimes(3);
+    wrapper.unmount();
+  });
+
+  it('starts in the Projects view with every run read when that was the stored choice (autobyteus-388 SR-002)', async () => {
+    useRunSectionModeStore().setMode('projects');
+    const wrapper = mountComponent();
+    await flushPromises();
+    expect(runHistoryStoreMock.setHistoryWindow).toHaveBeenCalledWith(null);
+    expect(runHistoryStoreMock.setHistoryWindow).not.toHaveBeenCalledWith(6);
+    expect(runHistoryStoreMock.fetchTree).toHaveBeenCalledTimes(1);
     wrapper.unmount();
   });
 

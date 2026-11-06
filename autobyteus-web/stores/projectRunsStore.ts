@@ -52,9 +52,10 @@ const readProjectRunHistory = async (projectId: string): Promise<ProjectRunsSnap
 /**
  * Projects mode's read state: every Project's snapshot (the runs started under it), read when the mode is shown and
  * re-read only when the listing can change (autobyteus-353 REQ-003): on `connected`, when a Project is added, renamed or
- * removed, and after this window starts, archives, deletes or stops a run. One read per Project in flight and one
- * queued, so an older answer never replaces a newer one; a failed read keeps the last good snapshot. The tree itself
- * is `projection`, built by `projectRunsProjection`.
+ * removed, after this window starts, archives, deletes or stops a run, and when the run history poll shows a run added
+ * or removed by anyone (autobyteus-388 REQ-003). One read per Project in flight and one queued, so an older answer never
+ * replaces a newer one; a failed read keeps the last good snapshot. The tree itself is `projection`, built by
+ * `projectRunsProjection`.
  */
 export const useProjectRunsStore = defineStore('projectRuns', () => {
   const projectStore = useProjectStore()
@@ -156,6 +157,26 @@ export const useProjectRunsStore = defineStore('projectRuns', () => {
   rereadAfter(useRunHistoryStore(), RUN_HISTORY_REMOVALS)
   rereadAfter(useAgentRunStore(), AGENT_RUN_STOPS)
   rereadAfter(useAgentTeamRunStore(), TEAM_RUN_STOPS)
+
+  // A run added or removed by anyone (another window, client, Task Agent or the API) shows in the run section's history
+  // poll as a change in its set of root runs; a status change does not change the set. While Projects mode is shown,
+  // every loaded Project is read again. The first value after showing is only the baseline (the show reads them all).
+  const runHistory = useRunHistoryStore()
+  const listedRootRunIds = computed(() => [
+    ...runHistory.workspaceGroups.flatMap((group) => [
+      ...group.agentDefinitions.flatMap((agent) => agent.runs.map((run) => run.runId)),
+      ...group.teamDefinitions.flatMap((team) => team.runs.map((run) => run.teamRunId)),
+    ]),
+    ...runHistory.agentOrgHistory.map((run) => run.rootRunId),
+  ].sort().join('\n'))
+  let baseline: string | null = null
+  watch(() => [shown.value > 0, listedRootRunIds.value] as const, ([visible, ids]) => {
+    if (!visible) { baseline = null; return }
+    const previous = baseline
+    baseline = ids
+    if (previous === null || previous === ids) return
+    Object.keys(snapshots.value).forEach((projectId) => void read(projectId))
+  }, { immediate: true })
 
   // Another node: nothing read for the previous one is kept.
   watch(() => node.bindingRevision, () => {

@@ -1,0 +1,20 @@
+# Check: IMP-11
+# Command: env -i PATH HOME=<tmp> TMPDIR pnpm -s -C autobyteus-web test:e2e:projects-left-navigation --output-dir <ticket>/evidence/implementation/IMP-11-pln-sr002 (all cases PLN-01..PLN-11)
+# Commit: 1112f13de1
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28 via corepack; env -i PATH HOME=<fresh mktemp dir> TMPDIR (TESTING.md isolation); headless Chrome; owned data root, free ports, AGY scripted CLI; server dist from pnpm -C autobyteus-server-ts build (IMP-05; SR-002 changes no server code)
+# Date: 2026-11-06 CET
+# Full output: IMP-11-pln-sr002/evidence.json, backend-*.log, frontend.log, screenshots
+
+PLN-01: Pass
+PLN-02: Pass
+PLN-03: Pass
+PLN-04: Pass
+PLN-05: Pass
+PLN-06: Pass
+PLN-07: Pass
+PLN-08: Pass
+PLN-09: Pass
+PLN-10: Pass
+PLN-11: Pass
+Projects left navigation probe: Pass. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/left-panel-follow-ups/tickets/in-progress/left-panel-follow-ups/evidence/implementation/IMP-11-pln-sr002/evidence.json
+exit=0

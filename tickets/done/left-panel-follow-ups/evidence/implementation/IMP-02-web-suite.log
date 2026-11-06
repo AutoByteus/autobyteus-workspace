@@ -1,0 +1,23 @@
+# Check: IMP-02
+# Command: cd autobyteus-web && env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR="$TMPDIR" NUXT_TEST=true pnpm exec vitest run
+# Commit: 00339421ed
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28 via corepack; env -i PATH HOME=<fresh mktemp dir> TMPDIR (TESTING.md isolation)
+# Date: 2026-11-06 CET
+# Full output: IMP-02-web-suite.full.log.gz
+
+## Excerpt: the renamed and changed specs, and the summary
+ ✓ components/workspace/history/__tests__/RunSectionPanel.spec.ts (58 tests) 1727ms
+ ✓ components/workspace/history/__tests__/RunSectionPanel.regressions.spec.ts (3 tests) 154ms
+ ✓ stores/__tests__/workspaceSelectionComposition.spec.ts (7 tests) 947ms
+ ✓ components/workspace/history/__tests__/HistoricalTeamLazyHydration.integration.spec.ts (1 test) 182ms
+ ✓ components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts (9 tests) 209ms
+ ✓ components/__tests__/AppLeftPanel.navigation.spec.ts (12 tests) 389ms
+ ✓ stores/__tests__/projectRunsStore.spec.ts (10 tests) 119ms
+ ✓ layouts/__tests__/default-drawer.spec.ts (5 tests) 185ms
+ ✓ layouts/__tests__/default-docking.spec.ts (4 tests) 558ms
+ ✓ layouts/__tests__/default.spec.ts (8 tests) 5ms
+ ✓ composables/__tests__/useAppLeftPanelSectionResize.spec.ts (2 tests) 20ms
+ ✓ components/__tests__/AppLeftPanel.spec.ts (4 tests) 17ms
+ Test Files  702 passed (702)
+      Tests  5165 passed | 2 skipped (5167)
+   Duration  354.95s (transform 37.12s, setup 2355.63s, collect 243.80s, tests 96.67s, environment 214.59s, prepare 119.10s)

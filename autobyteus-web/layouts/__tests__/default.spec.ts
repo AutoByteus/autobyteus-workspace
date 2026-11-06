@@ -94,7 +94,7 @@ describe('default layout source', () => {
     const layoutContent = readFileSync(resolve(process.cwd(), 'layouts/default.vue'), 'utf-8')
     const panelContent = readFileSync(resolve(process.cwd(), 'components/AppLeftPanel.vue'), 'utf-8')
     const historyContent = readFileSync(
-      resolve(process.cwd(), 'components/workspace/history/WorkspaceAgentRunsTreePanel.vue'),
+      resolve(process.cwd(), 'components/workspace/history/RunSectionPanel.vue'),
       'utf-8',
     )
 

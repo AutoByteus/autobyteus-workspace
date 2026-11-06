@@ -444,7 +444,9 @@ still return `activationState: "PREPARED"` as a launch API response field.
 application, Model Routing) prepares and then activates. When activation fails,
 it cancels the prepared run (`cancelPreparedAgentRun`) and rethrows the
 activation error. A run whose start was already recorded is refused by the
-cancel and kept; the refusal is logged with the run ID and reason.
+cancel and kept; the refusal is logged with the run ID and reason. GraphQL
+`createAgentRun` is the supported one-call API for tests, scripts and
+integrations; the chat uses `prepareAgentRun` and its first message.
 
 **Empty never-started runs are removed at startup.** Before the server accepts
 requests (after `buildStudioServer`, before `prepareBeforeListen`), it removes

@@ -12,7 +12,7 @@ export const RUN_LIST_SHOWN = 5;
 /**
  * "Your runs" (autobyteus-378 DS-002): which top-level runs are rows, in which order, with which live status, and the
  * fold over the runs beyond the newest five. It reads the history `runHistoryStore` holds, which the run section loads
- * (`WorkspaceAgentRunsTreePanel`); it never reads the server.
+ * (`RunSectionPanel`); it never reads the server.
  */
 export const useRunListStore = defineStore('runList', () => {
   const runHistory = useRunHistoryStore();

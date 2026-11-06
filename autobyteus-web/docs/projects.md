@@ -539,7 +539,14 @@ is read again only when its listing can change:
 3. a run is started under it from this window (`noteRunStarted`);
 4. the web archives, deletes or **stops** an Agent or Team run it lists. The
    store observes the run history store's archive and delete actions and
-   `agentRunStore.terminateRun`, `agentTeamRunStore.terminateTeamRun`.
+   `agentRunStore.terminateRun`, `agentTeamRunStore.terminateTeamRun`;
+5. the run history poll shows a run added or removed by anyone (another window
+   or client, a Task Agent, the API): every loaded Project is read again when
+   the set of root runs in `runHistoryStore` changes while the mode is shown.
+   A status change leaves the set as it is, and the first value after showing
+   is only the baseline. The run section polls the history every 5 s, and in
+   the Projects view it reads every run (no per-agent window), so a run added
+   or removed is noticed within one poll, however old (autobyteus-388).
 
 Task events read nothing: delegated rows come from the run streams, as in
 Workspaces.

@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
-import WorkspaceAgentRunsTreePanel from '../WorkspaceAgentRunsTreePanel.vue';
+import RunSectionPanel from '../RunSectionPanel.vue';
 
 const flushPromises = async () => {
   await Promise.resolve();
@@ -299,7 +299,7 @@ vi.mock('~/composables/useToasts', () => ({
   }),
 }));
 
-describe('WorkspaceAgentRunsTreePanel regressions', () => {
+describe('RunSectionPanel regressions', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
@@ -339,7 +339,7 @@ describe('WorkspaceAgentRunsTreePanel regressions', () => {
     });
   });
 
-  const mountComponent = () => mount(WorkspaceAgentRunsTreePanel, {
+  const mountComponent = () => mount(RunSectionPanel, {
     global: {
       stubs: {
         Icon: { template: '<span class="icon-stub" />' },

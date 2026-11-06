@@ -14,7 +14,7 @@ The non-immersive default-layout routes share one desktop-capability shell that 
 
 The first left-panel item is **Chat** (`/chat`), with a pencil action that starts a New chat. `/` redirects to `/chat`. Kept New chats with typed text are listed as Draft rows directly under the Chat row; while a Draft row is selected the Chat row is not active (see [Chat — Draft rows](./chat.md#draft-rows)).
 
-Below the page entries is the **run section** (`WorkspaceAgentRunsTreePanel`). Its header (`RunSectionHeader`) shows the view's name and a `⋯` "View" menu (`role=menu`, `menuitemradio` items; arrow keys, Enter, Escape returns focus to the button) choosing one of three views of the same runs, remembered per node:
+Below the page entries is the **run section** (`RunSectionPanel`). Its header (`RunSectionHeader`) shows the view's name and a `⋯` "View" menu (`role=menu`, `menuitemradio` items; arrow keys, Enter, Escape returns focus to the button) choosing one of three views of the same runs, remembered per node:
 
 - **Runs** (`components/runList/RunListPanel`): every top-level Agent, Team and Org run, newest first by the server's last activity (`lastActivityAt`), each with its delegated work nested; the newest 5, then "Show older (N)" and "Archive all older" (`stores/runListStore.ts`, `utils/runListProjection.ts`, `useRunListDisclosure`, `useRunListArchiveOlder`).
 - **Workspaces** (the default): runs by folder. Only registered folders are shown, so a folder removed in the chat chooser leaves this view whatever runs it still has; its runs stay in the Runs view and on disk (`projectWorkspaceHistoryByWorkspace` attaches Org runs only to registered folders, as Agent and Team runs are). A folder, Temp workspace included, is listed only while it has a listed run: an Agent run that is not an unsent New chat draft, a Team run or an Org run (`hasListedRun` in `runHistoryNavigationProjection.ts`); a draft-only folder appears with its first sent message. With none: "No runs in any folder yet".
@@ -22,7 +22,7 @@ Below the page entries is the **run section** (`WorkspaceAgentRunsTreePanel`). I
 
 A view only shows: there is no add form, no "New Project" and no folder remove button. Folders are removed (unregistered) in the chat chooser ([Chat](./chat.md)). The views share the open-run mark, the reveal below and the run actions; choosing a view never changes the open conversation.
 
-**History read window.** The section loads the run history on mount and every 5 seconds. `runHistoryStore` owns the one read window (`setHistoryWindow`): the section sets it from the view before each read (`null`, every run, for Runs, whose fold and "Archive all older" need every run; 6 per agent and folder for Workspaces and Projects) and reads once when the view changes. Every read (list, per-folder, the retired-run reconcile) uses it. The phone sets 5.
+**History read window.** The section loads the run history on mount and every 5 seconds. `runHistoryStore` owns the one read window (`setHistoryWindow`): the section sets it from the view before each read (`null`, every run, for Runs, whose fold and "Archive all older" need every run, and for Projects, so that another client's removal of any run is noticed (autobyteus-388); 6 per agent and folder for Workspaces) and reads once when the view changes. Every read (list, per-folder, the retired-run reconcile) uses it. The phone sets 5.
 
 ### Collapsed strip: pages and Workspaces
 
