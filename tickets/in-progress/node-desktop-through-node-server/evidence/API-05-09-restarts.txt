@@ -1,0 +1,16 @@
+# Case: API-05 step 09 — Xvnc restart and node server restart, as the app viewer shows them (AC-011)
+# Steps: tile connected View only; docker exec supervisorctl restart tigervnc; tile state; click Reconnect; tile; then supervisorctl restart autobyteus_server; tile state; wait for /rest/health; click Reconnect; tile; upstream counts; screenshots
+# Commit: 952bc1fcd0; node abx405-api-node; app iso-62503-d542
+# Date: 2026-11-06T17:57:40Z
+
+before: "{\"status\":\"Connected · View only\",\"buttons\":[\"Disconnect\",\"Maximize view\",\"View only\"],\"visibility\":\"visible\"}" upstream=1
+restart Xvnc: tigervnc: stopped tigervnc: started 
+after Xvnc restart: "{\"status\":\"The node's desktop disconnected\",\"buttons\":[\"Reconnect\",\"Maximize view\"],\"visibility\":\"visible\"}" upstream=0
+node log: [node-desktop] stream ended mode=view viewer=trusted_network durationMs=23088 toViewer=1288118 fromViewer=1126 reason=desktop-closed
+"Connected · View only"
+after Reconnect: "{\"status\":\"Connected · View only\",\"buttons\":[\"Disconnect\",\"Maximize view\",\"View only\"],\"visibility\":\"visible\"}" upstream=1 desktop= dimensions: 1920x1080 pixels (508x286 millimeters)
+restart server: autobyteus_server: stopped autobyteus_server: started 
+after server restart: "{\"status\":\"The node's desktop disconnected\",\"buttons\":[\"Reconnect\",\"Maximize view\"],\"visibility\":\"visible\"}" upstream=0
+health back after ~1s
+"Connected · View only"
+after Reconnect: "{\"status\":\"Connected · View only\",\"buttons\":[\"Disconnect\",\"Maximize view\",\"View only\"],\"visibility\":\"visible\"}" upstream=1

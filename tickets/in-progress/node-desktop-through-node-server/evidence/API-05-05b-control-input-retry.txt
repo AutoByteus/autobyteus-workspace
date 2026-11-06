@@ -1,0 +1,12 @@
+# Case: API-05 step 05b — Control input retry with the canvas geometry after the reconnect
+# Steps: canvas CSS x1065 y112.5 446x250.875 (scale 0.2323); capture terminal at node 610,358 898x483; CDP click CSS 1311,252 (node ≈1059,600, in the terminal), type 'abxcontrol42' + Enter, move CSS 1135,182 (node ≈300,300); read node pointer and capture file
+# Commit: 952bc1fcd0; node abx405-api-node; app iso-62503-d542; clipboard guard as step 05
+# Date: 2026-11-06T17:53:21Z
+
+tile: "Connected · Control"
+click 1311 252
+active after click: abx405-capture
+typed "abxcontrol42\n"
+move 1135 182
+after: x:301 y:299 screen:0 window:4194307 typed-bytes=13 typed=[abxcontrol42]
+desktop:   dimensions:    1920x1080 pixels (508x286 millimeters)

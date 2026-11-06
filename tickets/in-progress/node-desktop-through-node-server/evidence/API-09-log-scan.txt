@@ -1,0 +1,44 @@
+# Case: API-09 — log scan of the test node after API-04, API-05, API-08 (AC-014, REQ-011)
+# Command: docker logs abx405-api-node + every *.log under /home/autobyteus/data in the node; grep -c for each marker this round sent through the node (typed keys, clipboard texts, query keys) and for credential words; list the [node-desktop] lines
+# Commit: 952bc1fcd0; node abx405-api-node
+# Date: 2026-11-06T17:59:43Z
+
+sources: docker logs     2488 lines; data-dir logs      392 lines
+hits 'abxviewonly': docker=0 data-logs=0
+hits 'abxcontrol42': docker=0 data-logs=0
+hits 'abx405-api-agent': docker=0 data-logs=0
+hits 'abx405-api-viewer': docker=0 data-logs=0
+hits 'abx405-api-reset': docker=0 data-logs=0
+hits 'access_token': docker=0 data-logs=0
+hits 'password': docker=4 data-logs=0
+hits 'Password': docker=0 data-logs=0
+hits 'mysecretpassword': docker=0 data-logs=0
+hits 'AUTOBYTEUS_VNC': docker=0 data-logs=0
+
+[node-desktop] lines (docker logs):
+[node-desktop] stream ended mode=view viewer=trusted_network durationMs=9703 toViewer=102 fromViewer=58 reason=viewer-closed
+[node-desktop] stream ended mode=control viewer=trusted_network durationMs=9701 toViewer=165 fromViewer=196 reason=viewer-closed
+[node-desktop] stream ended mode=view viewer=trusted_network durationMs=10876 toViewer=102 fromViewer=58 reason=viewer-closed
+[node-desktop] stream ended mode=control viewer=trusted_network durationMs=10908 toViewer=201 fromViewer=208 reason=viewer-closed
+[node-desktop] stream ended mode=view viewer=trusted_network durationMs=10830 toViewer=102 fromViewer=58 reason=viewer-closed
+[node-desktop] stream ended mode=control viewer=trusted_network durationMs=10827 toViewer=201 fromViewer=208 reason=viewer-closed
+[node-desktop] stream ended mode=view viewer=trusted_network durationMs=25705 toViewer=2323248 fromViewer=2966 reason=viewer-closed
+[node-desktop] stream ended mode=view viewer=trusted_network durationMs=30683 toViewer=1320292 fromViewer=2166 reason=viewer-closed
+[node-desktop] stream ended mode=control viewer=trusted_network durationMs=68983 toViewer=1584154 fromViewer=3204 reason=viewer-closed
+[node-desktop] stream ended mode=view viewer=trusted_network durationMs=2013 toViewer=62 fromViewer=14 reason=viewer-closed
+[node-desktop] stream ended mode=control viewer=trusted_network durationMs=2009 toViewer=62 fromViewer=14 reason=viewer-closed
+[node-desktop] stream ended mode=view viewer=trusted_network durationMs=73982 toViewer=1352436 fromViewer=1166 reason=viewer-closed
+[node-desktop] stream ended mode=control viewer=trusted_network durationMs=37969 toViewer=1723183 fromViewer=3910 reason=viewer-closed
+[node-desktop] stream ended mode=view viewer=trusted_network durationMs=18898 toViewer=1288266 fromViewer=1126 reason=viewer-closed
+[node-desktop] stream ended mode=view viewer=trusted_network durationMs=3272 toViewer=1296472 fromViewer=1126 reason=viewer-closed
+[node-desktop] stream ended mode=view viewer=trusted_network durationMs=38936 toViewer=1290836 fromViewer=1146 reason=viewer-closed
+[node-desktop] stream ended mode=view viewer=trusted_network durationMs=23088 toViewer=1288118 fromViewer=1126 reason=desktop-closed
+[node-desktop] stream ended mode=view viewer=trusted_network durationMs=564 toViewer=1711857 fromViewer=1366 reason=viewer-closed
+[node-desktop] stream ended mode=view viewer=trusted_network durationMs=49822 toViewer=1709974 fromViewer=3006 reason=viewer-closed
+[node-desktop] stream ended mode=view viewer=trusted_network durationMs=1717 toViewer=62 fromViewer=14 reason=viewer-closed
+[node-desktop] stream ended mode=control viewer=trusted_network durationMs=1773 toViewer=62 fromViewer=20 reason=viewer-closed
+
+distinct [node-desktop] line shapes: 3
+[node-desktop] stream ended mode=control viewer=trusted_network durationMs=N toViewer=N fromViewer=N reason=viewer-closed
+[node-desktop] stream ended mode=view viewer=trusted_network durationMs=N toViewer=N fromViewer=N reason=desktop-closed
+[node-desktop] stream ended mode=view viewer=trusted_network durationMs=N toViewer=N fromViewer=N reason=viewer-closed

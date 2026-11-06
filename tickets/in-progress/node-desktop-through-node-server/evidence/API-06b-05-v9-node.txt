@@ -1,0 +1,22 @@
+# Case: API-06 (b) step 05
+# Command: after first S1 run: ports, label, env, state, data-volume marker
+# Setup: test node abx405-ps-node; real Docker Desktop 29.0.1 engine via /var/run/docker.sock; native arm64 PowerShell 7.4.6 in mcr.microsoft.com/dotnet/runtime-deps:8.0 (runner API-06-ps-run.sh); AUTOBYTEUS_DOCKER_STATE_DIR=/private/tmp/abx405-api/ps/state, AUTOBYTEUS_DOCKER_SHARED_WORKSPACE_DIR=/private/tmp/abx405-api/ps/shared; v8 PS launcher = git archive 9e0681bf39 (S0, delivered); v9 PS launcher = worktree; image autobyteus/autobyteus-server:beta (9c5aa01bb2fc)
+# Commit: 952bc1fcd0 (launcher source identical to ce13fa9727)
+# Date: 2026-11-06T17:42:09Z
+
+abx405-ps-node	Up Less than a second	0.0.0.0:61122->8000/tcp, [::]:61122->8000/tcp
+{"8000/tcp":[{"HostIp":"","HostPort":"61122"}]}
+id=f36947240a38700c0afd53799fd83b38d3d77460937d9f90e8a953334cc6ab79 configHash=36f2a9d6765c3d9d51844f394cc00e2316a23f8477c58493589c42ddab4e55f4
+container env AUTOBYTEUS_VNC*: []
+
+{
+  "nodeName": "abx405-ps-node",
+  "containerName": "abx405-ps-node",
+  "backendPort": 61122,
+  "imageRef": "autobyteus/autobyteus-server:beta",
+  "configHash": "36f2a9d6765c3d9d51844f394cc00e2316a23f8477c58493589c42ddab4e55f4",
+  "createdAt": "2026-11-06T00:00:00Z",
+  "updatedAt": "2026-11-06T17:42:08Z"
+}
+
+marker: abx405-ps-volume-marker

@@ -1,0 +1,24 @@
+# Case: API-06 (c) step 03
+# Command: ps-run.sh <v9 launcher> workspace apply --name abx405-ps-node (second S1 run); container id
+# Setup: as API-06b but the node's image is pinned by digest (autobyteus/autobyteus-server@sha256:69e9c09535fa…), so pulls cannot change it and only the launcher config differs between v8 and v9; native arm64 PowerShell 7.4.6; real Docker Desktop engine; temp state/shared under /private/tmp/abx405-api/ps
+# Commit: 952bc1fcd0 (launcher source identical to ce13fa9727)
+# Date: 2026-11-06T17:45:30Z
+
+[AutoByteus Docker] Applying shared workspace bind mounts to abx405-ps-node. Named volumes will be kept.
+[AutoByteus Docker] Checking image autobyteus/autobyteus-server@sha256:69e9c09535faf60353aa57b5bddce497b9ba5d672ddb124b20af9830785cc356
+docker.io/autobyteus/autobyteus-server@sha256:69e9c09535faf60353aa57b5bddce497b9ba5d672ddb124b20af9830785cc356: Pulling from autobyteus/autobyteus-server
+Digest: sha256:69e9c09535faf60353aa57b5bddce497b9ba5d672ddb124b20af9830785cc356
+Status: Image is up to date for autobyteus/autobyteus-server@sha256:69e9c09535faf60353aa57b5bddce497b9ba5d672ddb124b20af9830785cc356
+docker.io/autobyteus/autobyteus-server@sha256:69e9c09535faf60353aa57b5bddce497b9ba5d672ddb124b20af9830785cc356
+[AutoByteus Docker] abx405-ps-node is already running with the current image and launcher config.
+AutoByteus Docker node: abx405-ps-node
+Container: abx405-ps-node
+Image: autobyteus/autobyteus-server@sha256:69e9c09535faf60353aa57b5bddce497b9ba5d672ddb124b20af9830785cc356
+Backend: http://localhost:61616
+GraphQL: http://localhost:61616/graphql
+Workspace: /home/autobyteus/workspace -> /private/tmp/abx405-api/ps/shared/nodes/abx405-ps-node
+Shared folder: /home/autobyteus/shared -> /private/tmp/abx405-api/ps/shared/shared
+Private app data: /home/autobyteus/data -> abx405-ps-node-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+exit=0
+id=70583a15aef0d21ef195dcd7ab1f95644653e2de066dfba1aa57b260d5187658

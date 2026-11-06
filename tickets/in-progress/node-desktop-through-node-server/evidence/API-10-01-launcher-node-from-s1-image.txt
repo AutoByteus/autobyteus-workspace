@@ -1,0 +1,35 @@
+# Case: API-10 step 01 — the S1 bash launcher creates a node from the S1 server image built from the fresh clone
+# Command: image abx405-api/autobyteus-server:s1 (API-10-image-build.log) pushed to a test-owned registry:2 on 127.0.0.1:64429 as localhost:64429/abx405/autobyteus-server:s1; seed state (no ports, IMAGE_REF=localhost:64429/abx405/autobyteus-server:s1); AUTOBYTEUS_DOCKER_STATE_DIR=/private/tmp/abx405-api/l/state AUTOBYTEUS_DOCKER_SHARED_WORKSPACE_DIR=/private/tmp/abx405-api/l/shared autobyteus-docker.sh workspace apply --name abx405-launcher-node; inspect
+# Commit: 952bc1fcd0
+# Environment: macOS arm64, /bin/bash 3.2, Docker Desktop 29.0.1
+# Date: 2026-11-06T18:03:32Z
+
+[AutoByteus Docker] Applying shared workspace bind mounts to abx405-launcher-node. Named volumes will be kept.
+[AutoByteus Docker] Checking image localhost:64429/abx405/autobyteus-server:s1
+s1: Pulling from abx405/autobyteus-server
+Digest: sha256:dd05ec966af3473ecee1ff8e8fcae26fccbaceec24f5a3b4d8092aa6f9bc23f1
+Status: Image is up to date for localhost:64429/abx405/autobyteus-server:s1
+localhost:64429/abx405/autobyteus-server:s1
+[AutoByteus Docker] Started abx405-launcher-node.
+AutoByteus Docker node: abx405-launcher-node
+Container: abx405-launcher-node
+Image: localhost:64429/abx405/autobyteus-server:s1
+Backend: http://localhost:64491
+GraphQL: http://localhost:64491/graphql
+Workspace: /home/autobyteus/workspace -> /private/tmp/abx405-api/l/shared/nodes/abx405-launcher-node
+Shared folder: /home/autobyteus/shared -> /private/tmp/abx405-api/l/shared/shared
+Private app data: /home/autobyteus/data -> abx405-launcher-node-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+exit=0
+
+abx405-launcher-node	Up Less than a second	0.0.0.0:64491->8000/tcp, [::]:64491->8000/tcp
+{"8000/tcp":[{"HostIp":"","HostPort":"64491"}]}
+container env AUTOBYTEUS_VNC*: []
+
+NODE_NAME=abx405-launcher-node
+CONTAINER_NAME=abx405-launcher-node
+BACKEND_PORT=64491
+IMAGE_REF=localhost:64429/abx405/autobyteus-server:s1
+CREATED_AT=2026-11-06T00:00:00Z
+CONFIG_HASH=f23bbb3859f09508fda157349bb70285d2b572826f9cc9af31c620dbf5c53d70
+UPDATED_AT=2026-11-06T18:03:35Z

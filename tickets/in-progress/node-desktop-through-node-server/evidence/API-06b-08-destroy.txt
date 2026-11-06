@@ -1,0 +1,14 @@
+# Case: API-06 (b) step 08 — destroy run-1 node
+# Command: ps-run.sh <v9> destroy --name abx405-ps-node; docker volume rm abx405-ps-node-*
+# Date: 2026-11-06T17:42:59Z
+
+[AutoByteus Docker] Removed managed container abx405-ps-node for abx405-ps-node. Named volumes and host workspaces were kept.
+[AutoByteus Docker] Removed launcher state for abx405-ps-node.
+[AutoByteus Docker] Removed unused AutoByteus server image sha256:69e9c09535faf60353aa57b5bddce497b9ba5d672ddb124b20af9830785cc356.
+exit=0
+abx405-ps-node-workspace
+abx405-ps-node-data
+abx405-ps-node-root-home
+abx405-ps-node-chromium-profile
+abx405-ps-node-server-packages
+volumes: []

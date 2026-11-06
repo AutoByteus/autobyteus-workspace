@@ -1,0 +1,44 @@
+# Case: API-08 — the node-desktop route through a TLS-terminating reverse proxy (https:// and wss:// only), the transport part of SCN-003
+# Command: node API-08-wss-through-tls-proxy.mjs <ws pkg> 192.168.2.158 62053 <self-signed cert> <key> abx405-api-node (proxy on 127.0.0.1:<random>, client rejectUnauthorized:false for the self-signed certificate)
+# Setup: node abx405-api-node (API-04-node-run.sh), backend published on the LAN address only; proxy = Node https server forwarding requests and Upgrade bytes
+# Commit: 952bc1fcd0
+# Environment: macOS arm64, Node v22.23.1, OpenSSL self-signed cert CN=127.0.0.1
+# Date: 2026-11-06T17:59:25Z
+
+{
+  "proxy": "https://127.0.0.1:63940",
+  "upstream": "http://192.168.2.158:62053",
+  "rest": {
+    "status": 200,
+    "body": "{\"available\":true}"
+  },
+  "view": {
+    "mode": "view",
+    "url": "wss://127.0.0.1:63940/ws/node-desktop?mode=view",
+    "serverVersion": "RFB 003.008",
+    "size": "1920x1080",
+    "mouseBefore": "x:960 y:540 screen:0 window:25165843",
+    "sentPointerTo": "200,200",
+    "mouseAfter": "x:960 y:540 screen:0 window:25165843",
+    "desktopAfterSetDesktopSize": "1920x1080",
+    "openAtEnd": true,
+    "closedCode": 1000
+  },
+  "control": {
+    "mode": "control",
+    "url": "wss://127.0.0.1:63940/ws/node-desktop?mode=control",
+    "serverVersion": "RFB 003.008",
+    "size": "1920x1080",
+    "mouseBefore": "x:960 y:540 screen:0 window:25165843",
+    "sentPointerTo": "777,444",
+    "mouseAfter": "x:777 y:444 screen:0 window:2097155",
+    "desktopAfterSetDesktopSize": "1920x1080",
+    "openAtEnd": true,
+    "closedCode": 1000
+  },
+  "proxiedConnections": {
+    "http": 1,
+    "upgrade": 2
+  }
+}
+exit=0

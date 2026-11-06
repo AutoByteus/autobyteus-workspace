@@ -1,0 +1,23 @@
+# Case: API-05 step 07b — minimizing the node window (macOS) ends the stream; restoring reconnects in View only (AC-010, REQ-008, D-10)
+# Steps: tile in Control (from step 07a); node window raised with electronAPI.focusNodeWindow-free approach: osascript System Events, process unix id 25627 (the isolated instance), set AXMinimized of its front window (checked to be the node window by visibilityState of both targets); sample upstream sockets to Xvnc inside the node every ~250 ms; node log; then AXMinimized false; tile status and mode
+# Commit: 952bc1fcd0; node abx405-api-node; app iso-62503-d542
+# Date: 2026-11-06T17:55:53Z
+
+tile before: "Connected · Control" upstream=1
+minimized front window at epochMs=1793987754059
+  +264ms upstream=1
+  +586ms upstream=1
+  +894ms upstream=0
+  +1207ms upstream=0
+  +1535ms upstream=0
+  +1862ms upstream=0
+  +2186ms upstream=0
+  +2510ms upstream=0
+  +2837ms upstream=0
+  +3159ms upstream=0
+visibilityState node window="hidden" main window="visible"
+tile while minimized: "Disconnected"
+node log: 2026-11-06T17:55:54.902295169Z [node-desktop] stream ended mode=control viewer=trusted_network durationMs=37969 toViewer=1723183 fromViewer=3910 reason=viewer-closed
+upstream 4 s later (still minimized): 0
+restored
+after restore: visibility="visible" tile="Connected · View only" mode="View only" upstream=1
