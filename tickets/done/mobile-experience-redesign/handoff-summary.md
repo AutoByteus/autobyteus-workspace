@@ -31,7 +31,7 @@
   - QR-003: the list within 2 s on his phone over Tailscale with his history (0.47 s on the probe stack);
   - AC-005: his confirmation on his phone;
   - AC-010, AC-011: on his own Android device.
-  - Status: asked of the user; his answer decides whether he checks before the merge or on the beta.
+  - Status: asked of the user, with the choice of checking before the merge or on the beta. He answered "remove a new beta please waive for codex" (2026-11-06). This was read as "release a new beta", so he checks on the beta, and a problem he finds ships fixed in the next beta. These checks are open at finalization and are recorded as the user's, not as proven.
 
 ## Docs Sync
 
@@ -40,7 +40,8 @@
 ## Release
 
 - Decision: a new **beta** carrying this ticket (DEC-015, the user's words). Release notes: `release-notes.md` (with "What you need to do": update the node; install the APK on Android).
-- Smoke waivers: only in the user's own words at release time (Codex's quota holds until Nov 10, 10:31).
+- Smoke waiver, in the user's own words: "remove a new beta please waive for codex" (2026-11-06). It covers Codex for this beta only; Codex's quota holds until Nov 10, 10:31.
+- Build-only run on the ticket branch: not required. The ticket changes no release workflow, packaging, runner or build step; its only build-input change is one test script in `autobyteus-web/package.json`, and API/E2E's fresh-start build passed.
 
 ## Follow-Ups
 
