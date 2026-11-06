@@ -1,0 +1,18 @@
+# IMP-02 — AC-001 and AC-004: versions/dates in RELEASE.md; no "Case Studies" reference left
+# Command: grep -nE 'v[0-9]+\.[0-9]+\.[0-9]+(-…)?|20[0-9]{2}-[0-9]{2}-[0-9]{2}' RELEASE.md; git grep -n "Case Studies" -- RELEASE.md TESTING.md DESIGN.md AGENTS.md docs/
+# Commit: working tree committed as 277660ed19 / 5b6ae4805b
+# Environment: macOS 26.5.2 arm64; git and python3 only (docs ticket: no test suites, builds or gates, per the user)
+# Date: 2026-11-06
+# Look for: version hits only in the two pointer paths (record folder names), the Workflow Reference's format examples (v1.1.8, v1.2.7-rc1, v1.2.7-beta.1) and a descriptor's own version (v0.1.0); no date; "Case Studies" grep "(exit 1 — 1 means no hit)"
+
+===== ac001-ac004-grep.txt =====
+== AC-001: versions and dates in RELEASE.md
+172:build input. The change and its reasons: [`tickets/done/beta-release-v1.5.12-beta.2/release-deployment-report.md`](tickets/done/beta-release-v1.5.12-beta.2/release-deployment-report.md).
+329:run, removed on the user's decision ([`tickets/done/beta-release-v1.5.12-beta.2/release-deployment-report.md`](tickets/done/beta-release-v1.5.12-beta.2/release-deployment-report.md)).
+383:  - push tag `v*` (for example: `v1.1.8`)
+432:  - prerelease tags split metadata for App Store compatibility: `v1.2.7-rc1` builds with `MARKETING_VERSION=1.2.7`, uses numeric GitHub run number for `CURRENT_PROJECT_VERSION`, and keeps `1.2.7-rc1` only in artifact names/summaries
+437:  - prerelease tags such as `v1.2.7-beta.1` publish `autobyteus/autobyteus-server:1.2.7-beta.1` and never move `:latest`
+486:management. Its static v0.1.0 descriptor supplies published Mac/Linux installer
+== AC-004: git grep -n 'Case Studies' in RELEASE.md TESTING.md DESIGN.md AGENTS.md docs/
+(exit 1 — 1 means no hit)
+
