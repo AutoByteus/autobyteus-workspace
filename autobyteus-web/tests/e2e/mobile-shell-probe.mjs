@@ -67,6 +67,9 @@
 //   MSP-13 E-27    A credential the node does not know (401): the phone's next start reads once and lands on pairing.
 //                  A device revoked on the node (403) is recorded (outside the 401 rule, FU-003).
 //   MSP-14 AC-002  Task A DONE: the task agent's row leaves the list live.
+//   MSP-15 DS-001  The desktop window of the same node, which shares the history load with the phone: the Projects view
+//                  reads every run (window `null`, as the Runs view and the phone); switching Runs ↔ Projects reads
+//                  nothing beyond the 5 s poll; switching to Workspaces reads once with its window (6).
 //
 // Prerequisites: `pnpm -C autobyteus-server-ts build` and `pnpm -C autobyteus-web build:mobile-web` (alpha serves
 // `autobyteus-web/dist/public` at /mobile); Chrome. Run: `pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<fresh>`
@@ -608,6 +611,49 @@ const runCases = async () => {
     const ages = all.filter(row => row.depth === 0).map(row => row.age);
     assert(ages.every(age => /^(now|\d+[mhdw])$/.test(age ?? '')), 'every top-level row has its age', ages);
     return { desktopIds, phoneIds, foldBefore, foldOpen, ages, desktopFold };
+  });
+
+  await runCase('MSP-15', async () => {
+    const desktopContext = await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: 'en-US', timezoneId: 'UTC' });
+    await desktopContext.addInitScript(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
+    const desktop = await desktopContext.newPage();
+    const reads = [];
+    desktop.on('request', (request) => {
+      if (!request.url().includes('/graphql') || request.method() !== 'POST') return;
+      try { const body = JSON.parse(request.postData() ?? '{}'); if (body.operationName === 'ListWorkspaceRunHistory') reads.push({ at: Date.now(), window: body.variables && 'limitPerAgent' in body.variables ? body.variables.limitPerAgent : 'omitted' }); } catch { /* not JSON */ }
+    });
+    await desktop.goto(frontendUrl, { waitUntil: 'domcontentloaded', timeout: 240_000 });
+    await desktop.locator('[data-test="run-section-view-menu"]').waitFor({ timeout: 120_000 });
+    const choose = async (mode) => {
+      await desktop.locator('[data-test="run-section-view-menu"]').click();
+      await desktop.locator(`[data-test="run-section-view-${mode}"]`).click();
+      await waitFor(`the ${mode} view`, async () => (await desktop.locator('[data-test="run-section-title"]').innerText()).trim().toLowerCase() === mode, 20_000);
+    };
+    await choose('projects');
+    await desktop.locator('[data-test="projects-runs-tree"]').waitFor({ timeout: 60_000 });
+    await sleep(1_500);
+    const projectsFrom = Date.now();
+    await sleep(11_000);
+    const inProjects = reads.filter(read => read.at >= projectsFrom).map(read => read.window);
+    // Runs ↔ Projects three times within about 12 s: only the poll reads.
+    const switchFrom = Date.now();
+    for (const mode of ['runs', 'projects', 'runs', 'projects']) { await choose(mode); await sleep(3_000); }
+    const switchSeconds = (Date.now() - switchFrom) / 1000;
+    const whileSwitching = reads.filter(read => read.at >= switchFrom).map(read => read.window);
+    // Control: Workspaces changes the window, so it reads at once with 6.
+    const workspacesFrom = Date.now();
+    await choose('workspaces');
+    await sleep(2_000);
+    const workspacesReads = reads.filter(read => read.at >= workspacesFrom).map(read => ({ dt: read.at - workspacesFrom, window: read.window }));
+    await desktop.screenshot({ path: path.join(outputDir, 'MSP-15-desktop-workspaces.png') });
+    await choose('projects');
+    await desktop.screenshot({ path: path.join(outputDir, 'MSP-15-desktop-projects.png') });
+    await desktopContext.close();
+    const maxPolls = Math.ceil(switchSeconds / 5) + 1;
+    assert(inProjects.length >= 2 && inProjects.every(window => window === null), 'the Projects view reads every run (null)', inProjects);
+    assert(whileSwitching.every(window => window === null) && whileSwitching.length <= maxPolls, 'Runs ↔ Projects reads nothing beyond the poll', { whileSwitching, switchSeconds, maxPolls });
+    assert(workspacesReads.some(read => read.window === 6 && read.dt <= 1_500), 'Workspaces reads once with its window', workspacesReads);
+    return { inProjects, whileSwitching, switchSeconds, maxPolls, workspacesReads };
   });
 
   await runCase('MSP-02', async () => {
