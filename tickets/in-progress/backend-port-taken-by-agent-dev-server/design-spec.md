@@ -51,7 +51,7 @@ Stop the desktop launcher from injecting the backend's port as `PORT`/`SERVER_PO
 - In scope: UC-001, UC-002, UC-003. Areas: Electron embedded-server env composition; Electron server status health answer; renderer server store polling/health text; packaged-server startup verification script; Electron packaging doc paragraph; tests in `autobyteus-web/electron/server/__tests__/` and `autobyteus-web/stores/__tests__/`.
 - Derived consumers: `BuildServerProcessEnvInput` loses `port` → its one caller (`baseServerManager.ts:318`) and test helper `input()` in `serverRuntimeEnv.spec.ts` updated; `ServerHealthResult` type unchanged (existing `'error'` status reused).
 - Deliberately left alone: agent runtime / terminal-tool env builders (they are correct once the source is clean); the server (`app.ts` argument parsing, bind address); preflight/conflict diagnostic and no-kill policy; fixed port; `ServerLoading.vue` own poller (already stops outside `starting`); caller-inherited env under `inherit-caller` (DEC-002).
-- Follow-ups: FU-001 (dual-stack bind exclusivity), FU-002 (actionable conflict screen for AutoByteus-started holders).
+- Follow-ups: FU-001 (dual-stack bind exclusivity), FU-002 (actionable conflict screen for AutoByteus-started holders), FU-004 (packaged startup check duplicates the env composer), FU-005 (two renderer health pollers).
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
 
