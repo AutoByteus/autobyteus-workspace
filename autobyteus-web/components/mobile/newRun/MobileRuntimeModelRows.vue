@@ -22,7 +22,7 @@
       @update:model-value="updateModel"
     />
     <p v-if="modelLoadError" class="py-2 text-sm text-red-700" role="alert">Couldn’t load the models.
-      <button type="button" class="ml-1 h-11 font-semibold underline" @click="retry">Retry</button>
+      <button type="button" class="ml-1 h-11 min-w-[2.75rem] px-1 font-semibold underline" @click="retry">Retry</button>
     </p>
     <ModelConfigSection
       v-if="modelConfigSchema"

@@ -28,7 +28,7 @@
       <p v-if="remote" class="px-4 py-10 text-center text-sm text-slate-500" data-testid="mobile-files-remote">{{ t('remote.panel.files', { node: remote.nodeName }) }}</p>
       <p v-else-if="!workspace" class="px-4 py-10 text-center text-sm text-slate-500" data-testid="mobile-files-no-workspace">
         {{ unavailableText }}
-        <button v-if="explorer.resolutionStatus.value === 'unresolved'" type="button" class="ml-1 h-11 font-semibold text-blue-700 underline" data-testid="mobile-files-retry-workspace" @click="explorer.resolveWorkspaceForContext">Retry</button>
+        <button v-if="explorer.resolutionStatus.value === 'unresolved'" type="button" class="ml-1 h-11 min-w-[2.75rem] px-1 font-semibold text-blue-700 underline" data-testid="mobile-files-retry-workspace" @click="explorer.resolveWorkspaceForContext">Retry</button>
       </p>
       <template v-else>
         <nav v-if="!searching" class="sticky top-0 z-10 flex h-11 items-center gap-1 overflow-x-auto whitespace-nowrap border-b border-slate-100 bg-white px-4 text-sm" aria-label="Folder" data-testid="mobile-files-path">

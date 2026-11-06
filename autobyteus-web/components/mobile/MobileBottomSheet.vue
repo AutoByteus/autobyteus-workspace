@@ -4,7 +4,7 @@
   <Teleport to="body">
     <div class="fixed inset-0 z-50 flex flex-col justify-end" :data-testid="testId" @keydown.esc="$emit('close')">
       <button type="button" class="absolute inset-0 bg-slate-900/40" tabindex="-1" aria-label="Close" @click="$emit('close')" />
-      <div ref="dialogRef" class="relative flex max-h-[85dvh] flex-col rounded-t-2xl bg-white shadow-xl" role="dialog" aria-modal="true" :aria-labelledby="titleId" tabindex="-1">
+      <div ref="dialogRef" class="relative flex max-h-[85dvh] flex-col rounded-t-2xl bg-white shadow-xl focus:outline-none" role="dialog" aria-modal="true" :aria-labelledby="titleId" tabindex="-1">
         <div class="mx-auto mt-2 h-1 w-10 flex-shrink-0 rounded-full bg-slate-300" aria-hidden="true" />
         <header class="flex min-h-[3.5rem] flex-shrink-0 items-center justify-between gap-3 pl-4 pr-2">
           <slot name="header">

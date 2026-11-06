@@ -36,10 +36,10 @@
         />
         <div class="flex h-14 items-center gap-3 border-b border-slate-100" data-testid="mobile-launch-run-options-card">
           <span id="mobile-run-auto-approve-label" class="flex-1 text-[0.9375rem] text-slate-500">Auto approve tools</span>
+          <!-- The 56×32 track inside a 44px-tall hit area (QR-001). -->
           <button
             type="button"
-            class="relative inline-flex h-8 w-14 shrink-0 items-center rounded-full transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-300 focus-visible:ring-offset-2 disabled:opacity-60"
-            :class="autoApprove ? 'bg-blue-600' : 'bg-slate-300'"
+            class="group flex h-11 w-14 shrink-0 items-center focus:outline-none disabled:opacity-60"
             role="switch"
             :aria-checked="autoApprove ? 'true' : 'false'"
             aria-labelledby="mobile-run-auto-approve-label"
@@ -47,7 +47,9 @@
             :disabled="autoApproveLocked"
             @click="setAutoExecuteTools(!agentConfig.autoExecuteTools)"
           >
-            <span class="inline-block h-6 w-6 rounded-full bg-white shadow transition" :class="autoApprove ? 'translate-x-7' : 'translate-x-1'" aria-hidden="true" />
+            <span class="relative inline-flex h-8 w-14 items-center rounded-full transition group-focus-visible:ring-2 group-focus-visible:ring-blue-300 group-focus-visible:ring-offset-2" :class="autoApprove ? 'bg-blue-600' : 'bg-slate-300'" aria-hidden="true">
+              <span class="inline-block h-6 w-6 rounded-full bg-white shadow transition" :class="autoApprove ? 'translate-x-7' : 'translate-x-1'" />
+            </span>
           </button>
         </div>
       </template>
