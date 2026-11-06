@@ -183,15 +183,24 @@ const openKeyboard = () => {
   keyboardInput.value?.focus();
 };
 
-/** Sends what changed since the last value: deletions as Backspace, the rest as text (`\n` Enter, `\t` Tab). */
+/**
+ * Sends what changed since the last value: deletions as Backspace, the rest as text (`\n` Enter, `\t` Tab).
+ * The node's caret is where the local caret is: text after the local caret that the last value also ended
+ * with was not edited. (Gboard puts the caret back inside the sentinel after a Backspace and our reset, so
+ * the next letter is inserted before the sentinel's last character.)
+ */
 const onKeyboardInput = () => {
   const input = keyboardInput.value;
   if (!input) return;
   const value = input.value;
+  const caret = input.selectionEnd ?? value.length;
+  const untouched = lastValue.endsWith(value.slice(caret)) ? value.length - caret : 0;
+  const before = lastValue.slice(0, lastValue.length - untouched);
+  const now = value.slice(0, value.length - untouched);
   let common = 0;
-  while (common < lastValue.length && common < value.length && lastValue[common] === value[common]) common += 1;
-  for (let removed = lastValue.length - common; removed > 0; removed -= 1) pressKey('Backspace');
-  const added = value.slice(common);
+  while (common < before.length && common < now.length && before[common] === now[common]) common += 1;
+  for (let removed = before.length - common; removed > 0; removed -= 1) pressKey('Backspace');
+  const added = now.slice(common);
   if (added) typeText(added);
   lastValue = value;
   if (!composing.value) resetKeyboardInput();

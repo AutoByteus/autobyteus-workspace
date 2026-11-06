@@ -101,8 +101,9 @@ describe('MobileNodeDesktop', () => {
   describe('keyboard bridge (REQ-S3-2, AR-S3-009)', () => {
     const input = (wrapper: Awaited<ReturnType<typeof inControl>>['wrapper']) =>
       wrapper.get('[data-testid="mobile-node-desktop-keyboard-input"]').element as HTMLTextAreaElement;
-    const type = async (element: HTMLTextAreaElement, value: string) => {
+    const type = async (element: HTMLTextAreaElement, value: string, caret = value.length) => {
       element.value = value;
+      element.setSelectionRange(caret, caret);
       element.dispatchEvent(new Event('input'));
       await flushPromises();
     };
@@ -132,6 +133,23 @@ describe('MobileNodeDesktop', () => {
       await type(element, SENTINEL.slice(0, -1));
       await type(element, SENTINEL.slice(0, -1));
       expect(session.current.pressKey.mock.calls).toEqual([['Backspace'], ['Backspace'], ['Backspace']]);
+      expect(element.value).toBe(SENTINEL);
+    });
+
+    it('follows the caret when the keyboard leaves it inside the sentinel after a reset (Gboard)', async () => {
+      const { wrapper } = await inControl();
+      await wrapper.get('[data-testid="mobile-node-desktop-keyboard"]').trigger('click');
+      const element = input(wrapper);
+      // Backspace; the keyboard then puts the caret at 31 of the reset sentinel.
+      await type(element, SENTINEL.slice(0, -1));
+      element.setSelectionRange(SENTINEL.length - 1, SENTINEL.length - 1);
+      // A letter typed there lands before the sentinel's last character: only the letter is sent.
+      await type(element, `${SENTINEL.slice(0, -1)}d_`, SENTINEL.length);
+      element.setSelectionRange(SENTINEL.length - 1, SENTINEL.length - 1);
+      // And Backspace there is still one Backspace.
+      await type(element, SENTINEL.slice(0, -1), SENTINEL.length - 2);
+      expect(session.current.pressKey.mock.calls).toEqual([['Backspace'], ['Backspace']]);
+      expect(session.current.typeText.mock.calls).toEqual([['d']]);
       expect(element.value).toBe(SENTINEL);
     });
 
