@@ -113,12 +113,86 @@ autobyteus-405, slice S1 of autobyteus-394: a Docker node's desktop shown throug
 
 ## Finalization Record
 
-(Filled in after the merge.)
+- Pre-commit checks: `check_repository_artifact_hygiene.py` exit 0; Secret Gate `origin/personal..HEAD` PASS.
+- Ticket branch: `codex/node-desktop-through-node-server` at `6b063ea050` (archive commit), pushed. It was first pushed at `ee1c715547` for the build-only run, after the Secret Gate passed.
+- Finalization target: `origin/personal` `b50ac40005`, the state verified after refresh 2.
+- Merge: `finalize/node-desktop-through-node-server` from `origin/personal`; `--no-ff` → `5aac646cc8`.
+  - Its tree is identical to the verified head `6b063ea050`.
+  - Secret Gate on the merged state: PASS.
+- Push: `origin/personal` fetched again and still `b50ac40005`; pushed `b50ac40005..5aac646cc8`.
+- Repository finalization status: `Completed`.
 
 ## Release / Publication / Deployment
 
-(Filled in after the tag.)
+- Applicable: `Yes` (Beta, the user's decision)
+- Method: `Project Release Guide`. `bash scripts/desktop-release.sh beta --branch finalize/node-desktop-through-node-server --no-push`, then `git push origin HEAD:personal` and `git push origin v1.5.12-beta.5`.
+- Checks before tagging, on the merged state `5aac646cc8`:
+  - `python3 scripts/check_licensing.py`: "Licensing is consistent.", exit 0.
+  - `python3 scripts/check_repository_artifact_hygiene.py`: exit 0.
+  - `scripts/check_secrets.sh v1.5.12-beta.4..HEAD`: 23 commits, PASS.
+  - `pnpm install --frozen-lockfile` and `pnpm -C autobyteus-server-ts prebuild`: exit 0.
+  - `python3 scripts/release_smoke.py` (exit 1, waived as below). Summary:
+
+    ```
+    claude      new run + restore, linked workspace      PASS
+    claude      brand-new team member                    PASS
+    claude      different same-named skill               PASS
+    codex       (all three scenarios)                    FAIL    RUNTIME_ERROR "You've hit your usage limit … try again at Nov 10th, 2026 10:31 AM."
+    grok        (all three scenarios)                    FAIL    ACP_PROMPT_FAILED "Rate limited: … 429 Too Many Requests: subscription:free-usage-exhausted …"
+    antigravity brand-new run, linked workspace          PASS
+    antigravity brand-new team member, linked workspace  PASS
+    autobyteus  brand-new run, linked workspace          PASS
+    autobyteus  brand-new team member, linked workspace  PASS
+    commit    5aac646cc8d02a04c0119629b383f98f061954b3
+    models    {"claude": "haiku", "codex": "gpt-5.6-luna", "grok": "grok-4.5 (pinned grok-4.7 not offered)"}
+    result    FAIL
+    ```
+
+  - **Waiver:** Codex and Grok, for quota refusals only. The user said before this delivery: "i wave for codex and grok if they do not have limit". Every Codex and Grok failure is a quota refusal (a usage limit, a 429), and no other failure occurred. Claude, Antigravity and AutoByteus passed every scenario.
+- Release commit: `d4a32c109d` `chore(release): bump workspace release version to 1.5.12-beta.5` (`autobyteus-web/package.json`). `origin/personal` was fetched again before the push and was still `5aac646cc8`; pushed `5aac646cc8..d4a32c109d`.
+- Tag: `v1.5.12-beta.5` (annotated), pushed.
+- Pipelines triggered and their results, watched together:
+  - Android APK Release `42274340564`: success.
+  - iOS App Store Connect Release `42274340565`: success.
+  - Desktop Release `42274340622`: success.
+  - Server Docker Release `42274340567`: success. Its jobs: metadata, Build And Push Server Image, and Publish Server Package for linux/amd64 and linux/arm64.
+
+| Failed Run And Job | Classification | Log Lines That Show The Cause | Action | Result |
+| --- | --- | --- | --- | --- |
+| None | — | — | — | — |
+
+- Published artifacts checked against what the release should produce:
+  - GitHub release `v1.5.12-beta.5`: `isPrerelease: true`, 23 of 23 files, as RELEASE.md's table lists:
+    - macOS ARM64 and x64: `.dmg`, `.zip`, blockmaps;
+    - Linux x64 and ARM64 AppImages;
+    - the Windows `.exe`;
+    - `latest.yml`, `latest-mac.yml`, `latest-linux.yml`, `latest-linux-arm64.yml`;
+    - the Android APK and its `.sha256`;
+    - the server packages for `linux-x64` and `linux-arm64` (`.tar.gz`, `.json`, `.json.sig`).
+  - Docker Hub: `autobyteus/autobyteus-server:1.5.12-beta.5` and `:beta` both point to `sha256:f373b1a3b8088863f93a14d081911791ba5e10bf876020d4b3498d15b4bc4a65`. `:latest` was not moved (beta).
+  - The user reports this version installed and running.
+- Beta notes with a user action:
+  - The release's tickets (`git log --merges --first-parent v1.5.12-beta.4..HEAD`): autobyteus-405 and autobyteus-restart-reliability-3. The third merge listed, `26fa57697e`, is the v1.5.12-beta.4 records merge.
+  - Used: autobyteus-405's `## What you need to do` (update Docker nodes). restart-reliability-3 has no release notes. autobyteus-402 and autobyteus-277 already shipped in v1.5.12-beta.4 with their sections.
+  - The section was put above the generated notes with `gh release edit … --notes-file` after all four runs succeeded. The tag and the files were unchanged.
+- Release/publication/deployment result: `Completed`
+- Release notes handoff result: `Used` (the beta's user-action section; stable notes come later from `tickets/done/node-desktop-through-node-server/release-notes.md`)
+
+## Post-Finalization Cleanup
+
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-desktop-through-node-server`.
+- Right after this record is pushed:
+  - Remove and prune the worktree. Its untracked files are build output only.
+  - Delete the local `codex/` and `finalize/` branches; both are in `origin/personal`.
+  - Keep `origin/codex/node-desktop-through-node-server`.
+  - The terminal message confirms the results.
+- Test resources: API/E2E removed its nodes, registry, images and isolated instances (execution report, Temporary Methods And Cleanup). The user's nodes were never addressed.
 
 ## Final Status
 
-(Filled in at the end.)
+- Verification complete: `Yes` from the evidence, except AC-002's Tailscale variant, a user check on the beta. The user has the beta installed.
+- Repository finalization complete: `Yes`
+- Applicable release/deployment/rollout complete: `Yes`. v1.5.12-beta.5: 4 of 4 workflows succeeded, 23 of 23 files, Docker `:beta` moved.
+- Applicable safe cleanup complete or not required: right after this record is pushed (above)
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`. The Tailscale check is the user's, after the beta, as the user's beta decision put it.
