@@ -111,3 +111,12 @@ None before execution. If PLN-11's older-run case fails, it is an execution fail
 - Proceed To API/E2E Execution: `Yes`
 - Repository-Resident Durable Coverage Will Be Added: `Yes` (PLN-11)
 - Reroute Required Before Validation Execution: `No`
+
+## Round 2 (IR-002, SR-002)
+
+- Trigger: CRR-001 CR-001 (`Design Impact`) → SR-002 → IR-002 (`1112f13de1`). `historyWindowOf` is now `mode === 'workspaces' ? 6 : null`, so the Projects view's poll reads every run and the watched set includes every Agent run.
+- Rerun plan (`git diff --name-only 2f8ef36bbc 5731da6f95` outside tickets: `RunSectionPanel.vue`, three specs, `runHistoryStore.ts` comment, two docs):
+  - API-01 → reuse IMP-08…IMP-10.
+  - API-03 and API-04 → reuse IMP-11. It ran `projects-left-navigation-probe.mjs`, unchanged since my `43a714f993`, on `1112f13de1`: PLN-01…11 Pass, and PLN-11 `mUnlistedMs: true`, `readsAfterOlderArchive: 5`. IMP-12 shows PLN-11 fails on SR-001's host.
+  - API-02 still valid (no server change). API-05 still valid (no build input changed).
+  - New API-06: the Projects view now polls the uncapped history every 5 s, which only the Runs view did before (385 kept it to the Runs view under DESIGN.md rule 3). Measure the poll read against the 250 ms budget with `run-history-read-budget-probe.mjs` on this build.
