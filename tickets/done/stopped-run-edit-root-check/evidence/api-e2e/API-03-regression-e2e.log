@@ -1,0 +1,10 @@
+# Case: API-03
+# Command: vitest run tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts (the second file is gated off by its own gate: 36 skipped)
+# Commit: 747f2ae65d (code = 79b268d2f9; the test file is committed with this round)
+# Environment: macOS arm64, Node v22.23.1, built server (pnpm build exit 0), owned temp data root, private HOME
+# Date: 2026-11-06
+
+ ↓ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts (36 tests | 36 skipped)
+ Test Files  1 passed | 1 skipped (2)
+      Tests  1 passed | 36 skipped (37)
+exit 0

@@ -203,7 +203,17 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     const run = await root.ensureHostReady();
     const metadata = await this.options.host.readMetadata(root.hostRunId);
     if (!metadata) throw new StandaloneRootUnavailableError(`Agent run '${root.hostRunId}' metadata is unavailable.`);
+    root.setInheritedLaunch(launchConfigurationOf(metadata));
     return Object.freeze({ run, metadata });
+  }
+
+  /** `StandaloneRunLifecyclePort`: a saved edit of the stopped host reaches the registered root's inherited launch. */
+  async refreshInheritedLaunch(hostRunIdInput: string): Promise<void> {
+    const hostRunId = hostRunIdInput.trim();
+    const root = await this.pending.get(hostRunId)?.catch(() => undefined) ?? this.active.get(hostRunId);
+    if (!root) return;
+    const metadata = await this.options.host.readMetadata(hostRunId);
+    if (metadata && isCollaborationEligibleStandaloneRun(metadata)) root.setInheritedLaunch(launchConfigurationOf(metadata));
   }
 
   /**

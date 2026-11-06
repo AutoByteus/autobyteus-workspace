@@ -322,8 +322,15 @@ export class AgentRunService {
     return owned ?? this.lifecycleService.activateHost(runId, { memberExecutionContext: null });
   }
 
-  updateStoppedSelection(input: StoppedRunSelectionInput): Promise<RunModelConfigUpdateResult<AgentRunMetadata | null>> {
-    return this.lifecycleService.updateStoppedSelection(input);
+  /** Saves a stopped run's selection; a registered root of the run then follows it (FU-008), and a failed follow never fails the saved edit. */
+  async updateStoppedSelection(input: StoppedRunSelectionInput): Promise<RunModelConfigUpdateResult<AgentRunMetadata | null>> {
+    const result = await this.lifecycleService.updateStoppedSelection(input);
+    if (result.outcome === "UPDATED") {
+      await this.standaloneRuns?.refreshInheritedLaunch(normalizeRequiredRunId(input.agentRunId)).catch((error) => {
+        logger.warn(`Run '${input.agentRunId}' saved its selection but its root could not follow it: ${error instanceof Error ? error.message : String(error)}`);
+      });
+    }
+    return result;
   }
 
   private notFound(runtimeKind: RuntimeKind | null): AgentRunTerminationResult {

@@ -148,6 +148,7 @@ const standaloneRootPort = (lifecycleService: StandaloneAgentRunLifecycleService
   resolveRootAndEnsureHost: vi.fn((runId: string) =>
     lifecycleService.activateHost(runId, { memberExecutionContext: hostMemberContext(runId) })),
   stopRoot: vi.fn(async () => null),
+  refreshInheritedLaunch: vi.fn(async () => undefined),
 });
 
 const unusedProvisioningService = (): AgentRunProvisioningService =>

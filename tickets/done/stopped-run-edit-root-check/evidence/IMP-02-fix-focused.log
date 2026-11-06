@@ -1,0 +1,8 @@
+Check: IMP-02
+Command: same file and the neighbouring suites with the change
+Commit: 79b268d2f9
+Environment: macOS arm64, Node 22, pnpm 10.28.2; the ticket worktree after pnpm install --frozen-lockfile, prepare:shared and prisma generate (no earlier build output)
+Date: 2026-11-06
+
+ Test Files  10 passed (10)
+      Tests  66 passed (66)

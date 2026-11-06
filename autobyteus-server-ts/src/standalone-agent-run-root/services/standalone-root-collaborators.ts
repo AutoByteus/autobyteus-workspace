@@ -45,8 +45,8 @@ export const standaloneRootCollaboratorPortFor = (
 export class StandaloneRootCollaborators {
   constructor(private readonly options: Readonly<{
     admission?: CollaboratorAdmission;
-    /** The host run's own settings; catalog copies snapshot them (REQ-004). */
-    rootLaunchConfiguration: AgentLaunchConfiguration;
+    /** The host run's own settings, as saved now; catalog copies snapshot them (REQ-004). */
+    inheritedLaunch(): AgentLaunchConfiguration;
     getTree(): StandaloneRootTreeSnapshot;
   }>) {}
 
@@ -68,6 +68,6 @@ export class StandaloneRootCollaborators {
 
   /** The root's catalog facts as seen by one agent of the run. */
   portFor(viewerAgentRunId: string): CollaboratorRootPort {
-    return standaloneRootCollaboratorPortFor(this.options.getTree(), this.options.rootLaunchConfiguration, viewerAgentRunId);
+    return standaloneRootCollaboratorPortFor(this.options.getTree(), this.options.inheritedLaunch(), viewerAgentRunId);
   }
 }
