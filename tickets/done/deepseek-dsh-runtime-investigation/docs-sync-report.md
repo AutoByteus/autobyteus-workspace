@@ -5,8 +5,8 @@
 - Ticket: `deepseek-dsh-runtime-investigation` (autobyteus-387), DeepSeek Harness (dsh) as an ACP runtime through the credential proxy's provider relay. `task_size` `Large`, `architectural_risk` `High`, route `Reviewed` (ARCH-REV-003, CRR-002, API-REV-002, CRR-004).
 - Trigger: delivery handoff from the code reviewer after the post-API/E2E test-code review CRR-004 (Pass).
 - Bootstrap base reference: `origin/personal` `3ef5e33eec`.
-- Integrated base reference used for docs sync: `origin/personal` `d6bcff577b`, merged into the ticket branch as `7c1117e209` (after the delivery checkpoint `ad14d15d1f`).
-- Post-integration verification reference: `evidence/delivery/DEL-00…DEL-04`. Server unit suite: one failure that comes from this ticket, not from the merge (see `release-deployment-report.md`, Escalation). Docs below describe the final behavior, which the pending fix does not change (it is a test assertion or type location; no behavior).
+- Integrated base reference used for docs sync: `origin/personal` `d6bcff577b` (merge `7c1117e209`, DR-001), then `b7bb94beba` (merge `2f85bdd672`, DR-002). The second merge kept these docs edits; autobyteus-388's edits to `agent_execution.md`, `settings.md` and `agent_execution_architecture.md` touch other paragraphs.
+- Post-integration verification reference: DR-001 `evidence/delivery/DEL-00…DEL-04` (one ticket-originated unit failure, fixed in IR-003); DR-002 `evidence/delivery/DEL-05…DEL-08`, all pass.
 
 ## Why Docs Were Updated
 
@@ -62,10 +62,10 @@
 | Old Component / Path / Concept | What Replaced It | Where The New Truth Is Documented |
 | --- | --- | --- |
 | Duplicate `TESTING.md` Fresh-start build section (`1063e5d89d`) | The base's section (autobyteus-390) with the contract-package input added | `TESTING.md` |
-| Supervisor input type inside `general-process-run-supervisor.ts` | `general-process-run-supervisor-input.ts` (CR-001, `cb132711f6`) | Code; the architecture test still reads the old location (blocker, see report) |
+| Supervisor input type inside `general-process-run-supervisor.ts` | `general-process-run-supervisor-input.ts` (CR-001, `cb132711f6`) | Code; the architecture test follows it since IR-003 (`ee6739fe7f`); TESTING.md "Rerun by impact" step 3 (`14fe5959bf`) |
 
 ## Delivery Continuation
 
-- Result: `Blocked` (not by docs: docs sync is complete for the integrated state).
-- Next delivery action: after the implementation Local Fix, rerun the failed architecture test and the server unit suite and the remaining planned checks, then verify, finalize.
-- Notes: docs edits are committed on the ticket branch with the delivery checkpoint so the fix starts from a clean tree.
+- Result: `Pass` (DR-002). DR-001 was `Blocked` by the unit-suite failure, not by docs.
+- Next delivery action: finalization on `personal` (no release).
+- Notes: IR-003 also added the TESTING.md rule in `14fe5959bf` (moving, renaming or splitting a source file marks `tests/architecture/` Rerun). It is the check for the stage that let DEL-02 through, as proposed in DR-001. It is consistent with the rest of TESTING.md.
