@@ -23,5 +23,5 @@ The handoff summary, the docs sync report and the release/deployment report are 
 - Integration: `origin/personal` `9e0681bf39` (7 commits) merged cleanly as `944c902b02`. Post-integration checks pass (`evidence/delivery/DEL-01-post-integration-checks.log`).
 - Verification: from the evidence. The round-4 files were opened, and every critical AC is proven. User-only checks (QR-003; AC-005; AC-010/AC-011 on his device): the user chose to release now and check on the beta ("remove a new beta please waive for codex", read as "release a new beta"). The checks are open and recorded as his.
 - Docs sync: seven long-lived docs updated and the probe header fixed. FU-008 added.
-- Release: a beta (DEC-015). Codex smoke waived in the user's words. The beta notes collect this ticket's and autobyteus-402's user actions (`evidence/delivery/DEL-02-beta-notes-actions.md`).
+- Release: a beta (DEC-015). Codex smoke waived in the user's words. The beta notes collect this ticket's and autobyteus-402's user actions (`evidence/delivery/release/REL-06-beta-notes-actions.md`; the APK line corrected before publishing: the keyboard fix comes from the node).
 - Release, finalization and cleanup results: `release-deployment-report.md`.

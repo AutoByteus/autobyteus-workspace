@@ -1,0 +1,7 @@
+562c7a2333 Merge mobile-experience-redesign (phone shell rebuilt on the desktop's run list, run screen and views; Android system-bar insets) (autobyteus-277)
+dc8bee36b6 Merge docker-node-publish-needed-ports (Docker nodes publish only the Backend and a loopback VNC Viewer port; 5900/9223 no longer published) (autobyteus-402)
+9d8077fd2a Merge project-docs-rules-only-401 (RELEASE.md and DESIGN.md hold rules only; the release stories moved to their records) (autobyteus-401)
+0a18802f51 Merge runtime-version-prerelease-compare (Agent Runtimes: full runtime versions with SemVer precedence; prereleases shown and older than their release) (autobyteus-393)
+b78fd86fe4 Merge release-v1.5.12-beta.3 records (autobyteus-397)
+45643690ce Merge branch 'codex/stopped-run-edit-root-check' into personal (FU-008 of autobyteus-348: a registered root follows the saved edit of its stopped host)
+dc4e0880ac Merge beta-release-v1.5.12-beta.2 records (autobyteus-389: v1.5.12-beta.2 delivery record; RELEASE.md: no per-tag build-only run, pipeline-failure triage)
