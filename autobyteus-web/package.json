@@ -118,6 +118,7 @@
     "test:e2e:composer-context-file-removal": "node tests/e2e/composer-context-file-removal-probe.mjs",
     "test:e2e:delegated-team-default-collapse": "node tests/e2e/delegated-team-default-collapse-probe.mjs",
     "test:e2e:run-expand-motion": "node tests/e2e/run-expand-motion-probe.mjs",
+    "test:e2e:run-expand-motion-live": "node tests/e2e/delegated-launch-defaults-probe.mjs --cases RXM-001,RXM-002,RXM-003",
     "test:e2e:workspaces-sidebar-dock": "node tests/e2e/workspaces-sidebar-dock-probe.mjs",
     "test:e2e:token-meter-tps": "node tests/e2e/token-meter-tps-probe.mjs",
     "test:e2e:file-explorer-pending-save-draft": "node tests/e2e/file-explorer-pending-save-draft-probe.mjs",
