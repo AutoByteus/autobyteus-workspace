@@ -10,7 +10,7 @@ import { buildAuthenticatedWebSocketUrl } from '~/utils/remoteAccess/websocketAu
  */
 export type NodeDesktopMode = 'view' | 'control';
 
-export type NodeDesktopViewerState = 'not-allowed' | 'unavailable' | 'disconnected' | 'unreachable' | 'closed';
+export type NodeDesktopViewerState = 'not-allowed' | 'unavailable' | 'too-many' | 'disconnected' | 'unreachable' | 'closed';
 
 /** How a stream ended: the viewer state and the localization key of the text the viewer shows. */
 export type NodeDesktopStreamEnd = Readonly<{ state: NodeDesktopViewerState; messageKey: string }>;
@@ -56,6 +56,9 @@ export function viewerStateForClose(close: Readonly<{ code: number; reason: stri
       return close.reason === 'NODE_DESKTOP_UNAVAILABLE'
         ? ended('unavailable', 'no_shared_desktop')
         : ended('not-allowed', 'not_allowed');
+    case 4429:
+      // NODE_DESKTOP_TOO_MANY_VIEWERS: the node already serves its maximum of viewers.
+      return ended('too-many', 'too_many_viewers');
     case 4400:
       return ended('disconnected', 'connection_refused');
     case 1006:

@@ -38,7 +38,7 @@ The phone keeps no model of its own. It reads the desktop's owners: `runListStor
 
 Mobile **Auto approve tools** writes the existing `autoExecuteTools` launch-config field; it must not create a mobile-only approval flag or change backend approval semantics. For `antigravity_cli` the switch is on and locked, because Antigravity always runs with auto-approve.
 
-Interactive Terminal and VNC are not mobile Phone Access surfaces. Historical terminal-command tool output can still appear as read-only Activity content, but mobile users must not see a terminal tab, Tools tab, VNC panel, or command-entry path.
+The interactive Terminal is not a mobile Phone Access surface. Historical terminal-command tool output can still appear as read-only Activity content, but mobile users must not see a terminal tab, Tools tab, or command-entry path. The paired node's desktop is offered as the **VNC Viewer** view (see [Node desktop on the phone](#node-desktop-on-the-phone)).
 
 ## Mobile UX Contract
 
@@ -46,7 +46,7 @@ This contract is limited to the `/mobile` phone shell. Compact-copy policy belon
 
 The approved UI/UX specification of autobyteus-277 is normative for the phone's layout, copy and states. Only what its "What Is Not On The Phone" list puts on the phone appears; the rest is simply absent, with no explanatory text: no Home, no "Switch work" sheet, no tabs, no Workspaces or Projects views, no Team or Org start, no Stop/Archive/Delete on rows, no Files filters and no Attach on an opened file. Every screen is a full-viewport column (`100dvh`) that respects the safe areas; touch targets are at least 44×44 CSS px and nothing scrolls horizontally at 360 px.
 
-Do not reintroduce mobile Tools/Terminal/VNC copy or controls. Any future mobile tool surface must go through a separate security and UX design.
+Do not reintroduce mobile Tools/Terminal copy or controls. Any future mobile tool surface must go through a separate security and UX design (the VNC Viewer went through one: autobyteus-394/407).
 
 ## Browser/PWA App Shell Metadata
 
@@ -177,11 +177,22 @@ The local **Unpair this phone** action deletes only the phone's local session an
 - **Active vs revoked lists:** `GET /remote-access/devices` returns active paired-device summaries only. Revoked records are retained and exposed to local desktop management through `GET /remote-access/devices/revoked`; they appear only in the non-actionable Revoked/History view.
 - Local desktop loopback access remains available for desktop management endpoints.
 
+## Node desktop on the phone
+
+A run's ⋮ menu offers **VNC Viewer** next to Artifacts, Files, Messages and Activity when the paired node has a node desktop (a Docker node: `GET /rest/node-desktop` answers `{ available: true }`) and the open run is on that node; it is hidden on a node without one (the desktop's embedded node) and for a run on another node. The view (`MobileNodeDesktop.vue`, route `?screen=desktop`) streams the node desktop through the node's own server (`/ws/node-desktop` with the phone's credential), as the desktop app's VNC Viewer does:
+
+- It opens **View only** and fitted to the screen, in portrait or landscape. In View only nothing reaches the desktop: pinch zooms (up to 4×), a drag pans, a double tap or **Fit** returns to fit; in a desktop browser a trackpad pinch (Ctrl+wheel) zooms.
+- **Control** is a deliberate switch in the bar; the stream reconnects in Control with the picture fitted, and touches act on the desktop (tap = click, drag = drag, two-finger drag = scroll). **Keyboard** opens the phone's keyboard; typed text (including words a keyboard composes), Enter, Backspace and Tab reach the desktop. CJK input methods are not guaranteed.
+- **Full screen** hides the bars (in-page; the Android WebView has no HTML full screen). In View only one tap shows them again; in Control a small handle at the top edge does (a tap elsewhere is a desktop click). The system Back key leaves full screen first (`full=1` is its own history entry).
+- The stream ends when the app goes to the background or the page is hidden, and reconnects in View only, with a fresh access check, when it is visible again.
+- The node serves at most 4 desktop streams at once, and at most 2 per paired phone; another viewer sees "Too many viewers on this node right now" with Retry (close code 4429).
+- Revoking the phone, or turning Phone Access off, ends its open desktop stream within 30 seconds (the node re-checks open phone streams every 20 s; the viewer then shows "not allowed").
+
 ## Mobile Capability Gating
 
 The mobile shell gates truly desktop-only or Electron-only features instead of exposing broken controls. Unsupported feature redirects use `/mobile/?unsupported=<feature>` and render a visible notice in both unpaired and paired states. Run Artifacts are mobile-supported when their normal run context is available. Browser remains unsupported in the current mobile shell because the existing Browser surface is Electron-owned through preload IPC and native WebContentsView projection.
 
-Phase One explicitly removes mobile Terminal and VNC from supported mobile features. Backend operation-level hard denial and broader mobile authorization/token/session hardening are tracked for Phase Two; Docker-node pairing is not a substitute for that future work.
+The mobile Terminal is not a supported mobile feature; the node desktop is (above). Backend operation-level hard denial and broader mobile authorization/token/session hardening are tracked for Phase Two; Docker-node pairing is not a substitute for that future work.
 
 Examples of mobile-unsupported surfaces include:
 

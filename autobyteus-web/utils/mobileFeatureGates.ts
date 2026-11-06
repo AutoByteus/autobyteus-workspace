@@ -9,7 +9,6 @@ export type MobileFeatureId =
   | 'workspaceFiles'
   | 'runArtifacts'
   | 'terminal'
-  | 'vnc'
   | 'desktopWorkspace'
   | 'desktopSettings'
   | 'desktopUpdates'

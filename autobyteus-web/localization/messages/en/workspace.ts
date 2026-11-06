@@ -325,6 +325,8 @@ const messages = {
   "workspace.components.workspace.tools.VncViewer.no_shared_desktop": "This node has no shared desktop.",
   "workspace.components.workspace.tools.VncViewer.cannot_reach_node": "Cannot reach the node.",
   "workspace.components.workspace.tools.VncViewer.retry": "Retry",
+  "workspace.components.workspace.tools.NodeDesktopTile.too_many_viewers": "Too many viewers on this node right now",
+  "workspace.components.workspace.tools.NodeDesktopTile.retry": "Retry",
 } satisfies TranslationCatalog;
 
 export default messages;

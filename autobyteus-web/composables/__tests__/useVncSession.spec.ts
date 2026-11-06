@@ -1,12 +1,14 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import RFB from '@novnc/novnc';
-import { useVncSession } from '../useVncSession';
+import { keysymForCodepoint, useVncSession } from '../useVncSession';
 
 const calls: string[] = [];
 const credential = { value: null as string | null };
 
 class FakeWebSocket {
   static instances: FakeWebSocket[] = [];
+  static CLOSED = 3;
+  readyState = 1;
   private closeListeners: Array<(event: { code: number; reason: string }) => void> = [];
   constructor(readonly url: string) {
     calls.push(`WebSocket ${url}`);
@@ -16,8 +18,12 @@ class FakeWebSocket {
     calls.push(`socket.addEventListener ${event}`);
     if (event === 'close') this.closeListeners.push(listener);
   }
+  removeEventListener(event: string, listener: (event: { code: number; reason: string }) => void) {
+    if (event === 'close') this.closeListeners = this.closeListeners.filter((existing) => existing !== listener);
+  }
   fireClose(code: number, reason = '') {
-    this.closeListeners.forEach((listener) => listener({ code, reason }));
+    this.readyState = FakeWebSocket.CLOSED;
+    [...this.closeListeners].forEach((listener) => listener({ code, reason }));
   }
 }
 
@@ -29,6 +35,7 @@ interface MockRfb {
   clipViewport: boolean;
   resizeSessionWrites: boolean[];
   disconnect: ReturnType<typeof vi.fn>;
+  sendKey: ReturnType<typeof vi.fn>;
   emit: (event: string) => void;
 }
 
@@ -40,6 +47,7 @@ vi.mock('@novnc/novnc', () => {
     resizeSessionWrites: boolean[] = [];
     private resize = false;
     disconnect = vi.fn();
+    sendKey = vi.fn();
     private listeners = new Map<string, Array<() => void>>();
     constructor(_target: HTMLElement, readonly socket: unknown, readonly options: unknown) {}
     get resizeSession() { return this.resize; }
@@ -149,6 +157,10 @@ describe('useVncSession', () => {
     const { session, rfb: viewRfb } = connectedSession();
 
     session.switchMode('control');
+    // The new stream waits for the old socket to close (a switch at the viewer limit is not refused).
+    expect(FakeWebSocket.instances).toHaveLength(1);
+    expect(session.connectionStatus.value).toBe('connecting');
+    viewRfb.socket.fireClose(1005);
     const controlRfb = rfbs().at(-1)!;
     expect(viewRfb.disconnect).toHaveBeenCalledTimes(1);
     expect(controlRfb).not.toBe(viewRfb);
@@ -162,6 +174,7 @@ describe('useVncSession', () => {
     expect(controlRfb.resizeSessionWrites.every((value) => value === false)).toBe(true);
 
     session.switchMode('view');
+    controlRfb.socket.fireClose(1005);
     expect(rfbs().at(-1)!.viewOnly).toBe(true);
     // The ended streams' late disconnect events change nothing.
     viewRfb.emit('disconnect');
@@ -190,6 +203,8 @@ describe('useVncSession', () => {
       [4404, 'REMOTE_ACCESS_ROUTE_UNSUPPORTED', 'not-allowed', `${tile}.not_allowed`],
       [4502, 'NODE_DESKTOP_DISCONNECTED', 'disconnected', `${tile}.desktop_disconnected`],
       [4400, 'NODE_DESKTOP_VIEWER_PROTOCOL', 'disconnected', `${tile}.connection_refused`],
+      // The node already serves its maximum of viewers (REQ-019).
+      [4429, 'NODE_DESKTOP_TOO_MANY_VIEWERS', 'too-many', `${tile}.too_many_viewers`],
       [1006, '', 'unreachable', `${tile}.cannot_reach_node`],
       [1000, '', 'closed', `${tile}.disconnected`],
       [1001, '', 'closed', `${tile}.disconnected`],
@@ -214,6 +229,68 @@ describe('useVncSession', () => {
       rfb.socket.fireClose(4404, 'NODE_DESKTOP_UNAVAILABLE');
       rfb.emit('disconnect');
       expect(session.streamEnd.value?.state).toBe('unavailable');
+    });
+  });
+
+  it('opens the new mode after 3.5 s even if the old socket never reports its close', () => {
+    vi.useFakeTimers();
+    try {
+      const { session } = connectedSession();
+      session.switchMode('control');
+      expect(FakeWebSocket.instances).toHaveLength(1);
+      vi.advanceTimersByTime(3500);
+      expect(FakeWebSocket.instances.at(-1)!.url).toBe('ws://node-a.example:8001/ws/node-desktop?mode=control');
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('a Disconnect during a waiting mode switch cancels it', () => {
+    const { session, rfb } = connectedSession();
+    session.switchMode('control');
+    session.disconnect();
+    rfb.socket.fireClose(1005);
+    expect(FakeWebSocket.instances).toHaveLength(1);
+    expect(session.connectionStatus.value).toBe('disconnected');
+  });
+
+  describe('keyboard (REQ-S3-2)', () => {
+    it('maps Latin-1 characters to themselves and every other character to its Unicode keysym', () => {
+      expect(keysymForCodepoint('a'.codePointAt(0)!)).toBe(0x61);
+      expect(keysymForCodepoint('~'.codePointAt(0)!)).toBe(0x7e);
+      expect(keysymForCodepoint(' '.codePointAt(0)!)).toBe(0x20);
+      expect(keysymForCodepoint('é'.codePointAt(0)!)).toBe(0xe9);
+      expect(keysymForCodepoint('€'.codePointAt(0)!)).toBe(0x010020ac);
+      expect(keysymForCodepoint('中'.codePointAt(0)!)).toBe(0x01004e2d);
+      expect(keysymForCodepoint('😀'.codePointAt(0)!)).toBe(0x0101f600);
+      for (const control of [0x00, 0x0a, 0x1f, 0x7f, 0x9f]) expect(keysymForCodepoint(control)).toBeNull();
+    });
+
+    it('sends each character as a press and a release, with Enter, Backspace and Tab, in Control', () => {
+      const { session, rfb } = connectedSession('control');
+      session.typeText('aé\n');
+      session.pressKey('Backspace');
+      session.pressKey('Tab');
+      expect(rfb.sendKey.mock.calls).toEqual([
+        [0x61, null, true], [0x61, null, false],
+        [0xe9, null, true], [0xe9, null, false],
+        [0xff0d, null, true], [0xff0d, null, false],
+        [0xff08, null, true], [0xff08, null, false],
+        [0xff09, null, true], [0xff09, null, false],
+      ]);
+    });
+
+    it('sends nothing in View only or before the stream is connected', () => {
+      const { session, rfb } = connectedSession('view');
+      session.typeText('abc');
+      session.pressKey('Enter');
+      expect(rfb.sendKey).not.toHaveBeenCalled();
+
+      const pending = useVncSession();
+      pending.setContainer(createContainer());
+      pending.connect('control');
+      pending.typeText('x');
+      expect(rfbs().at(-1)!.sendKey).not.toHaveBeenCalled();
     });
   });
 

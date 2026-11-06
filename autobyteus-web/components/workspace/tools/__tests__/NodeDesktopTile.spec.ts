@@ -148,6 +148,23 @@ describe('NodeDesktopTile', () => {
     expect(session.current.connect).toHaveBeenCalledWith('view');
   });
 
+  it('shows too many viewers with Retry, which opens View only (AC-021)', async () => {
+    const wrapper = await mountTile();
+    session.current.connectionStatus.value = 'disconnected';
+    session.current.streamEnd.value = {
+      state: 'too-many',
+      messageKey: 'workspace.components.workspace.tools.NodeDesktopTile.too_many_viewers',
+    };
+    session.current.connect.mockClear();
+    await flushPromises();
+    expect(wrapper.get('[data-testid="node-desktop-status"]').text())
+      .toBe('workspace.components.workspace.tools.NodeDesktopTile.too_many_viewers');
+    const retry = wrapper.get('[data-testid="node-desktop-connect"]');
+    expect(retry.text()).toBe('workspace.components.workspace.tools.NodeDesktopTile.retry');
+    await retry.trigger('click');
+    expect(session.current.connect).toHaveBeenCalledWith('view');
+  });
+
   it('offers no Connect when the viewer is not allowed or the node has no shared desktop', async () => {
     const wrapper = await mountTile();
     session.current.connectionStatus.value = 'disconnected';

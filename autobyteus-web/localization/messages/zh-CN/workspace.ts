@@ -324,6 +324,8 @@ const messages = {
   "workspace.components.workspace.tools.VncViewer.no_shared_desktop": "该节点没有共享桌面。",
   "workspace.components.workspace.tools.VncViewer.cannot_reach_node": "无法连接到该节点。",
   "workspace.components.workspace.tools.VncViewer.retry": "重试",
+  "workspace.components.workspace.tools.NodeDesktopTile.too_many_viewers": "该节点当前的查看者过多",
+  "workspace.components.workspace.tools.NodeDesktopTile.retry": "重试",
 } satisfies TranslationCatalog;
 
 export default messages;

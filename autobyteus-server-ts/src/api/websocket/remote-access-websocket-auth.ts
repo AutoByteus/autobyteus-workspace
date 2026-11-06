@@ -12,26 +12,11 @@ import {
 import { isLoopbackClientAddress } from "../security/remote-access-local-trust.js";
 import { setRemoteAccessAuthContext } from "../security/remote-access-route-policy.js";
 import { redactSensitiveUrl } from "../security/redact-sensitive-url.js";
+import { remoteAccessCloseForFailure } from "../../remote-access/domain/remote-access-close-codes.js";
 
 export type RemoteAccessWebSocketRejection = {
   code: number;
   reason: RemoteAccessAuthFailureCode;
-};
-
-const closeCodeByFailure: Record<RemoteAccessAuthFailureCode, number> = {
-  REMOTE_ACCESS_AUTH_REQUIRED: 4401,
-  REMOTE_ACCESS_AUTH_INVALID: 4401,
-  REMOTE_ACCESS_DEVICE_REVOKED: 4403,
-  PHONE_ACCESS_DISABLED: 4403,
-  REMOTE_ACCESS_ROUTE_UNSUPPORTED: 4404,
-  REMOTE_ACCESS_LOCAL_ONLY: 4403,
-  REMOTE_ACCESS_PAIRING_EXPIRED: 4401,
-  REMOTE_ACCESS_PAIRING_INVALID: 4401,
-  REMOTE_ACCESS_PAIRING_CONSUMED: 4401,
-  REMOTE_ACCESS_PAIRING_URL_INVALID: 4403,
-  REMOTE_ACCESS_PAIRING_URL_LOCAL_ONLY: 4403,
-  REMOTE_ACCESS_PAIRING_HTTP_PRIVATE_REQUIRED: 4403,
-  REMOTE_ACCESS_PAIRING_HTTP_ACK_REQUIRED: 4403,
 };
 
 const parseRequestUrl = (request: FastifyRequest): URL =>
@@ -66,10 +51,7 @@ export async function authorizeRemoteAccessWebSocket(
   if (isMobileRemoteAccessCredential(credential)) {
     const result = await getRemoteAccessAuthService().authorizeMobileCredential(credential);
     if (!result.ok) {
-      throw {
-        code: closeCodeByFailure[result.code] ?? 4401,
-        reason: result.code,
-      } satisfies RemoteAccessWebSocketRejection;
+      throw remoteAccessCloseForFailure(result.code) satisfies RemoteAccessWebSocketRejection;
     }
     setRemoteAccessAuthContext(request, result.context);
     return result.context;
