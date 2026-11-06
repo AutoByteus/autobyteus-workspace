@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer, `design-review-report.md`, round 3 (Pass) | N/A | `Initial Baseline` | SR-004, ARCH-REV-003, CRR N/A, API-REV N/A, DR N/A | Implemented; local checks green; live E2E per handoff |
 | IR-002 | Code Reviewer, `code-review-report.md`, CRR-001 (Fail) | CR-001 | `Local Fix` | SR-004, ARCH-REV-003, CRR-001, API-REV N/A, DR N/A | Supervisor input moved to its own file; rechecks green |
+| IR-003 | Delivery Engineer, `release-deployment-report.md`, DR-001 (DEL-02 failure) | DEL-02 | `Local Fix` | SR-004, ARCH-REV-003, CRR-002, API-REV per the API/E2E record, DR-001 | Architecture test follows the moved type; full unit + typecheck green |
 
 ## Revision Entries
 
@@ -49,4 +50,24 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Changed files or areas: `autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts`, `…/general-process-run-supervisor-input.ts` (new); `implementation-handoff.md`.
 - Local validation and result: IMP-09 Pass (supervisor ownership, standalone host lifecycle, tracked imports, run manager integration: 39 tests; typecheck gate PASS; scripted studio E2Es 15 tests).
 - Next recipient or routing: Code Reviewer (targeted delta review).
+- Remaining limitations or risks: unchanged from IR-001.
+
+### IR-003 — Composition boundary test follows the supervisor input file (DEL-02)
+
+- Triggering role, report path, and round: Delivery Engineer (`/software_engineering_team/delivery_engineer`), `tickets/in-progress/deepseek-dsh-runtime-investigation/release-deployment-report.md`, DR-001, section "The DEL-02 failure"; log `evidence/delivery/DEL-02-server-unit.log`.
+- Triggering finding IDs: DEL-02 (`tests/architecture/agent-provider-composition-boundaries.test.ts` › "creates one frozen context path value per host and shares it across both roots", line 700).
+- Classification: `Local Fix`
+- Prior authoritative result: IR-002 at `fddcff0f13`; the architecture test still looked for `contextFilePathEnvironment: ContextFilePathEnvironment` in `general-process-run-supervisor.ts`, which IR-002 moved to `general-process-run-supervisor-input.ts`. The test failed on the ticket head with and without the base merge.
+- Current authoritative result: `ee6739fe7f`; the full unit suite and typecheck gate pass on it.
+- Related solution revision IDs: SR-004
+- Related architecture-review revision IDs: ARCH-REV-003
+- Related code-review revision IDs: CRR-001, CRR-002
+- Related API/E2E revision IDs: as in the API/E2E revision record (no change to what it validated: test-only fix)
+- Related delivery revision IDs: DR-001
+- Why this baseline or implementation revision is recorded: a test that reads source text by path broke with IR-002's file move; IR-002's recheck did not include it.
+- Approved behavior or requirement IDs affected: none (test-only; no source change).
+- Implementation delta: the test reads the field in `general-process-run-supervisor-input.ts`, keeps the no-app-config guard (`AppConfig|appConfigProvider|.getMemoryDir(|.getAppDataDir(|.getBaseUrl(`) on both supervisor files, and checks the supervisor uses `input.contextFilePathEnvironment`. TESTING.md "Rerun by impact" step 3: moving, renaming or splitting a source file marks the `tests/architecture/` tests Rerun (`14fe5959bf`, its own `docs(testing)` commit).
+- Changed files or areas: `autobyteus-server-ts/tests/architecture/agent-provider-composition-boundaries.test.ts`, `TESTING.md`, `implementation-handoff.md`.
+- Local validation and result: IMP-10 Pass at `ee6739fe7f`: full `test:unit` (932 files passed, 5 skipped) and typecheck gate PASS (baseline unchanged). The other architecture test that names the supervisor (`application-framework-boundaries.test.ts`) is part of that run.
+- Next recipient or routing: Delivery Engineer is the next stage; routed per the handoff rules (the package stays Large / High, so source review receives it first).
 - Remaining limitations or risks: unchanged from IR-001.
