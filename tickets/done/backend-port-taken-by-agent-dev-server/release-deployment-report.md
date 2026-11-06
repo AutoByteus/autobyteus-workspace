@@ -84,20 +84,20 @@ Not applicable (no release). No version bump, no tag.
 
 - Bootstrap context source: `handoff.md` ("Base: `origin/personal` at `666b881b5`; finalization target `origin/personal`") and `RELEASE.md` Finalization Target
 - Ticket branch: `task/backend-port-taken-by-agent-dev-server`
-- Ticket branch commit result: Pending when this commit was made; recorded in the records commit after the merge
-- Ticket branch push result: Pending when this commit was made; recorded in the records commit after the merge
+- Ticket branch commit result: `Completed`: `55f909bbb` (docs sync, handoff summary, FU-003) and `397fe2716` (release/deployment report, delivery revision record, archive to `tickets/done`); ticket branch tip `397fe2716`
+- Ticket branch push result: `Completed`: `task/backend-port-taken-by-agent-dev-server` pushed after the Secret Gate passed (8 commits); deleted from the remote after the merge (see cleanup)
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
 - Target advanced after verification / acceptance: `No` (as of the pre-archive fetch; checked again before each push)
 - Delivery-owned edits protected before re-integration: `Not needed`
 - Re-integration before final merge result: `Not needed` unless the pre-push fetch shows a move
-- Target branch update result: Pending when this commit was made; recorded in the records commit after the merge
-- Merge into target result: Pending when this commit was made; recorded in the records commit after the merge
-- Push target branch result: Pending when this commit was made; recorded in the records commit after the merge
-- Repository finalization status: Pending when this commit was made; recorded in the records commit after the merge
+- Target branch update result: `Completed`: `git fetch origin personal` (`26fa57697`), then `finalize/backend-port-taken-by-agent-dev-server` created from `origin/personal`
+- Merge into target result: `Completed`: `git merge --no-ff task/backend-port-taken-by-agent-dev-server` -> `e7a46ba41`; the merged tree equals the ticket tree (`git diff --stat` empty)
+- Push target branch result: `Completed`: after a fresh fetch showed `origin/personal` still `26fa57697` (an ancestor of the merge), `git push origin HEAD:personal` moved `26fa57697..e7a46ba41`; this records commit is pushed on top of it
+- Repository finalization status: `Completed`
 - Blocker (if applicable): none
 
-Secret Gate (`scripts/check_secrets.sh`): Passed on `origin/personal..HEAD` (6 commits) before the first push; the merged-state run is recorded after the merge. Artifact hygiene (`scripts/check_repository_artifact_hygiene.py`, path length and Windows-unsafe names, which covers the ticket's evidence): passed on the tracked tree before the archive commit; run again on the archive commit. No `dist/` or build output is committed (the two untracked `*/dist/` folders in the worktree stay untracked).
+Secret Gate (`scripts/check_secrets.sh`): Passed on `origin/personal..HEAD` (8 commits) before the first push, and on the merged state before pushing `personal` (9 commits). Artifact hygiene (`scripts/check_repository_artifact_hygiene.py`, path length and Windows-unsafe names, which covers the ticket's evidence): passed on the tracked tree after the archive commit (85660 files). No `dist/` or build output is committed (the two untracked `*/dist/` folders in the worktree stay untracked).
 
 ## Release / Publication / Deployment
 
@@ -118,10 +118,10 @@ Secret Gate (`scripts/check_secrets.sh`): Passed on `origin/personal..HEAD` (6 c
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-taken-by-agent-dev-server`
-- Worktree cleanup result: Pending when this commit was made; recorded in the records commit after the merge
-- Worktree prune result: Pending when this commit was made; recorded in the records commit after the merge
-- Local ticket branch cleanup result: Pending when this commit was made; recorded in the records commit after the merge
-- Remote branch cleanup result: Pending when this commit was made; recorded in the records commit after the merge
+- Worktree cleanup result: performed immediately after this records commit is pushed (the worktree holds this commit); its result is verified and stated in the terminal message
+- Worktree prune result: same, with `git worktree prune`
+- Local ticket branch cleanup result: same: local `task/backend-port-taken-by-agent-dev-server` and `finalize/backend-port-taken-by-agent-dev-server` deleted
+- Remote branch cleanup result: `Completed`: `origin/task/backend-port-taken-by-agent-dev-server` deleted after confirming it was merged into `origin/personal`
 - Blocker (if applicable): none
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
@@ -156,10 +156,10 @@ If the merged change is found to break the backend start or a reader of `PORT`/`
 ## Final Status
 
 - Verification complete (from the evidence, or the user's check where needed): `Yes`
-- Repository finalization complete: Pending (see Repository Finalization)
+- Repository finalization complete: `Yes`
 - Applicable release/deployment/rollout complete or not required: `Yes` (not required)
-- Applicable safe cleanup complete or not required: Pending (see Post-Finalization Cleanup)
+- Applicable safe cleanup complete or not required: performed immediately after this records push; verified in the terminal message
 - Unresolved blocker: `None`
-- Successful terminal package eligible for return: Pending the steps above
+- Successful terminal package eligible for return: `Yes` once the cleanup above is verified
 - Terminal package sent to the Solution Designer: No (sent after this record is on `personal`)
 - Terminal message/reference: Pending: the terminal message to the Solution Designer is the authoritative terminal package
