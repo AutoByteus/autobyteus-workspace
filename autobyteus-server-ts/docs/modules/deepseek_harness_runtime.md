@@ -95,7 +95,10 @@ folder is removed when the launch is released, after its process stopped.
 
 The catalog runs a short dsh process in `<appData>/runtimes/deepseek-harness/discovery` with the relay's address and
 no pass: it lists that folder's one session and resumes it (or creates it), reads its config options and closes it.
-No prompt, no model call. The models are dsh's `model` options on its DeepSeek route, with the session's reasoning
+No prompt, no model call. dsh offers its models only while a key is configured, and on a non-official endpoint (the
+relay) it lists its built-in catalog without a listing call, so discovery's `DEEPSEEK_API_KEY` is the placeholder
+`autobyteus-model-discovery`: neither a key nor a pass (a call made with it would reach only the relay, which refuses
+it). The models are dsh's `model` options on its DeepSeek route, with the session's reasoning
 efforts as their `reasoning_effort` choices.
 
 Diagnostics: `DEEPSEEK_HARNESS_RELAY_UNAVAILABLE` (no credential proxy in this process),

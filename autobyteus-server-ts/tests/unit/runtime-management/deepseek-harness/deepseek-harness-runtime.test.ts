@@ -108,12 +108,12 @@ describe("the dsh launch profile", () => {
       .rejects.toThrow("ACP_LAUNCH_INVALID");
   });
 
-  it("gives discovery the relay's address but no pass, no key and no run files", async () => {
+  it("gives discovery the relay's address and a placeholder (dsh lists its models only with a key) — no pass, no key, no run files", async () => {
     vi.stubEnv("DEEPSEEK_API_KEY", "sk-inherited-from-dotenv");
     const home = new DeepSeekHarnessHome(tempRoot());
     const launch = await createDeepSeekHarnessLaunchProfile(() => home).discoveryLaunch({ relayBaseUrl: RELAY_ACCESS.baseUrl });
     expect(launch.env).toMatchObject({ DSH_HOME: home.homeDir, DEEPSEEK_BASE_URL: RELAY_ACCESS.baseUrl });
-    expect(launch.env.DEEPSEEK_API_KEY).toBeUndefined();
+    expect(launch.env.DEEPSEEK_API_KEY).toBe("autobyteus-model-discovery");
     expect(launch.env.AUTOBYTEUS_DSH_INSTRUCTIONS_FILE).toBeUndefined();
     expect(launch.env.AUTOBYTEUS_DSH_SKILLS_DIR).toBeUndefined();
   });

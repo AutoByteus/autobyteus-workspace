@@ -17,6 +17,7 @@ import { getSecretVaultRuntime } from "../../../src/secret-management/secret-vau
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { assertBriefStudioPackageBuilt, BRIEF_STUDIO_PACKAGE } from "../helpers/brief-studio-package.js";
+import { fakeRuntimeState, prepareFakeRuntimes } from "../helpers/agent-runtimes-e2e-harness.js";
 import { closeLiveServerVault, initializeLiveServerVault, requireLiveCapability } from "../../../../test-support/test-vault/live-server-vault.js";
 
 /**
@@ -69,6 +70,8 @@ describeLive("DeepSeek Harness live (real dsh, real DeepSeek API, product relay)
   const sockets: WebSocket[] = [];
   const userDshHome = path.join(os.homedir(), ".dsh");
   let userDshBefore: string | null = null;
+  /** The scripted CLIs for the other runtimes: Brief Studio's default Codex slot must not quarantine it before the dsh override. */
+  let fakeRuntimes: ReturnType<typeof prepareFakeRuntimes> | null = null;
 
   const graphql = async <T>(query: string, variables?: Record<string, unknown>): Promise<T> => {
     const response = await fetch(new URL("/graphql", url), {
@@ -102,6 +105,8 @@ describeLive("DeepSeek Harness live (real dsh, real DeepSeek API, product relay)
   };
 
   beforeAll(async () => {
+    fakeRuntimes = prepareFakeRuntimes({ label: "dsh-live-other-runtimes", grokInstalled: false });
+    fakeRuntimeState(fakeRuntimes.stateDir).set("codex-account", "signedIn");
     dataDir = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), "dsh-live-e2e-")));
     await fs.writeFile(path.join(dataDir, ".env"), "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\n");
     appConfigProvider.config.setCustomAppDataDir(dataDir);
@@ -138,6 +143,7 @@ describeLive("DeepSeek Harness live (real dsh, real DeepSeek API, product relay)
     vi.restoreAllMocks();
     await closeLiveServerVault();
     if (dataDir) await fs.rm(dataDir, { recursive: true, force: true });
+    fakeRuntimes?.dispose();
   }, 120_000);
 
   const openSocket = async (runId: string) => {
@@ -189,7 +195,10 @@ describeLive("DeepSeek Harness live (real dsh, real DeepSeek API, product relay)
       await wait(100);
     }
     const events = messages.slice(from);
-    return { events, text: textSince(messages, from), terminal: events.find(turnEnded)! };
+    const result = { events, text: textSince(messages, from), terminal: events.find(turnEnded)! };
+    log("TURN", { prompt: content.slice(0, 60), terminal: result.terminal.type, text: result.text.slice(-300),
+      tools: events.filter((m) => m.type === "TOOL_EXECUTION_STARTED").map((m) => m.payload.tool_name) });
+    return result;
   };
   const toolStarts = (events: WsMessage[], name: string) =>
     events.filter((m) => m.type === "TOOL_EXECUTION_STARTED" && m.payload.tool_name === name);
@@ -218,6 +227,7 @@ describeLive("DeepSeek Harness live (real dsh, real DeepSeek API, product relay)
       { r: "deepseek_harness" });
     const models = catalog.providerModelCatalogSnapshots.flatMap((snapshot) => snapshot.llmModels);
     log("MODELS", models.map((model) => model.modelIdentifier));
+    expect(models.length, "dsh's official-route catalog").toBeGreaterThanOrEqual(2);
     const flash = models.find((model) => model.modelIdentifier === MODEL);
     expect(flash, JSON.stringify(models)).toBeDefined();
     expect(JSON.stringify(flash!.configSchema)).toContain("reasoning_effort");
@@ -278,8 +288,8 @@ describeLive("DeepSeek Harness live (real dsh, real DeepSeek API, product relay)
 
     // AC-001, AC-006, AC-011: shell and read cards, the agent's own rule, usage per model call.
     const first = await turn(socket, messages, runId,
-      `Remember this marker: ${marker}. Step 1: run the shell command \`printf 'hi from dsh' > hello.txt\`. `
-      + "Step 2: read hello.txt with your read tool. Step 3: reply with the file's content.");
+      `Remember this marker: ${marker}. Step 1: use your bash tool to run exactly \`printf 'hi from dsh' > hello.txt\` in `
+      + "the current directory. Step 2: read hello.txt with your read tool. Step 3: reply with the file's content.");
     snapshotDshEnvironments();
     expect(first.terminal.type, JSON.stringify(first.terminal.payload)).toBe("TURN_COMPLETED");
     expect(await fs.readFile(path.join(workspace, "hello.txt"), "utf8")).toBe("hi from dsh");
@@ -327,8 +337,10 @@ describeLive("DeepSeek Harness live (real dsh, real DeepSeek API, product relay)
     expect(await fs.readFile(allowedFile, "utf8")).toBe("escaped\n");
     const rejectedFile = path.join(outside, `rejected-${unique}.txt`);
     const reject = await turn(socket, messages, runId,
-      `Run exactly this shell command: \`echo escaped > ${rejectedFile}\`, with sandbox escalation (danger-full-access) if `
-      + "needed. If it is denied, do not retry; reply DENIED.", () => "DENY_TOOL");
+      `Run exactly this shell command with sandbox escalation (danger-full-access) on the first attempt: `
+      + `\`echo escaped > ${rejectedFile}\`. If the user rejects the escalation, do not retry; reply DENIED.`, () => "DENY_TOOL");
+    expect(reject.events.filter((m) => m.type === "TOOL_APPROVAL_REQUESTED").length,
+      JSON.stringify(reject.events.map((m) => m.type))).toBeGreaterThanOrEqual(1);
     expect(reject.events.some((m) => m.type === "TOOL_DENIED")).toBe(true);
     await expect(fs.stat(rejectedFile)).rejects.toThrow();
     expect(reject.terminal.type).toBe("TURN_COMPLETED");
@@ -351,7 +363,7 @@ describeLive("DeepSeek Harness live (real dsh, real DeepSeek API, product relay)
     // A reopen after an Agent Tools change re-sends the instructions to the new dsh process.
     const preparedBefore = vi.mocked(DefaultProviderRelayAccess.prototype.prepareForRun).mock.calls.filter(([run]) => run.runId === runId).length;
     await graphql("mutation($input: UpdateAgentDefinitionInput!) { updateAgentDefinition(input: $input) { id } }",
-      { input: { id: definitionId, toolNames: ["list_available_agent_runtimes", "send_message_to"] } });
+      { input: { id: definitionId, toolNames: ["list_available_agent_runtimes", "list_projects"] } });
     await wait(2_000);
     const reopened = await turn(socket, messages, runId, "We continue. Reply with only the marker from my first message.");
     expect(vi.mocked(DefaultProviderRelayAccess.prototype.prepareForRun).mock.calls.filter(([run]) => run.runId === runId).length)
@@ -411,14 +423,20 @@ describeLive("DeepSeek Harness live (real dsh, real DeepSeek API, product relay)
   it("launches a Brief Studio team on dsh in the studio's application scope and refuses its pass once the application platform stopped (DEC-020, AR-008)", async (ctx) => {
     await requireLiveCapability(ctx, KEY_SECRET_ID);
     assertBriefStudioPackageBuilt();
-    await graphql("mutation($input: ImportApplicationPackageInput!) { importApplicationPackage(input: $input) { packageId } }",
+    const imported = await graphql<{ importApplicationPackage: Array<{ applicationCount: number }> }>(
+      "mutation($input: ImportApplicationPackageInput!) { importApplicationPackage(input: $input) { packageId applicationCount } }",
       { input: { sourceKind: "LOCAL_PATH", source: BRIEF_STUDIO_PACKAGE } });
+    expect(imported.importApplicationPackage.some((entry) => entry.applicationCount > 0), JSON.stringify(imported)).toBe(true);
     const applicationId = (await graphql<{ listApplications: Array<{ id: string; localApplicationId: string }> }>(
       "{ listApplications { id localApplicationId } }")).listApplications.find((entry) => entry.localApplicationId === "brief-studio")!.id;
     const encoded = encodeURIComponent(applicationId);
-    const view = async () => (await rest("GET", `/applications/${encoded}/execution-resource-configurations`)).body as {
+    const view = async () => {
+      const response = await rest("GET", `/applications/${encoded}/execution-resource-configurations`);
+      expect(response.status, JSON.stringify(response.body).slice(0, 2000)).toBe(200);
+      return response.body as {
       readiness: { status: string; issues: unknown[] }; slots: Array<{ slot: { defaultExecutionResourceRef: unknown };
         effectiveConfiguration: { leaves: Array<{ memberAddress: string; displayName: string; agentDefinitionId: string }> } }> };
+    };
     const current = await view();
     const leaves = current.slots[0]!.effectiveConfiguration.leaves;
     const put = await rest("PUT", `/applications/${encoded}/execution-resource-configurations/draftingTeam`, {

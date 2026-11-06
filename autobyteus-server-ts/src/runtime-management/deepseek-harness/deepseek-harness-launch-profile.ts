@@ -20,6 +20,13 @@ export const DSH_WORKSPACE_SKILLS_SEGMENTS = Object.freeze([".dsh", "skills"]);
 const DSH_ARGS = Object.freeze(["--profile", "acp"]);
 
 /**
+ * dsh offers its DeepSeek models only while a key is configured, and on a non-official endpoint (the relay) it lists its
+ * built-in catalog without a listing call. Discovery therefore gets this placeholder, neither a key nor a pass: a model
+ * call made with it would reach only the relay, which refuses it.
+ */
+const DISCOVERY_API_KEY_PLACEHOLDER = "autobyteus-model-discovery";
+
+/**
  * The server environment for a dsh process: `DSH_HOME` is the AutoByteus-owned home, `DEEPSEEK_BASE_URL` the provider
  * relay, and `DEEPSEEK_API_KEY` the run's pass (never a key; a discovery launch has none). dsh's permission mode comes
  * from its profile, not from the server's environment.
@@ -62,7 +69,9 @@ export const createDeepSeekHarnessLaunchProfile = (
     await home.ensure();
     return Object.freeze({
       args: DSH_ARGS,
-      env: dshEnvironment(home, request.relayBaseUrl ? { DEEPSEEK_BASE_URL: request.relayBaseUrl } : {}),
+      env: dshEnvironment(home, request.relayBaseUrl
+        ? { DEEPSEEK_BASE_URL: request.relayBaseUrl, DEEPSEEK_API_KEY: DISCOVERY_API_KEY_PLACEHOLDER }
+        : {}),
       release: releaseNothing,
     });
   },
