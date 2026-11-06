@@ -210,6 +210,12 @@ The architecture investigation of 2026-11-06 ran after the requirements were app
 | E-31 | `app.vue:12`; `localization/messages/en/workspace.ts:40-42` | The toast container renders on every page, `/mobile` included; the Team stream-recovery copy exists | The phone reuses the desktop's toast; no new copy (SR-004) |
 | E-32 | `useWorkspaceHistorySelectionActions.ts:131-150`; callers via `grep` | `onCreateRun` is used only by `WorkspaceAgentRunsTreePanel.vue:256` and fixtures; it needs `startPresetChat` | It moves to its only caller, so the phone passes no unused parameter (SR-004) |
 
+| E-33 | `stores/agentRunCollaborationStore.ts:150-178` | `read(hostRunId)` reads and publishes a stored view without restoring anything. It skips a host with a live stream and shares an in-flight read. History `lastActivityAt` of a root includes its delegated copies' memory files (385 DS-005) | DEC-013: re-read a listed root after a poll when its last activity changed or a child is not stopped |
+| E-34 | `services/agentOrgExecution/agentOrgExecutionContext.ts:123-162`; `agentOrgExecutionViewIndex.ts:120-135` | `select(address)` of a configured member: a direct agent selects that agent; a configured Team selects its coordinator. `open` selects nothing; `selectedTarget()` is null without a selection | DEC-012: map an Org run row to `select` with `rootOrg.members[0].address` |
+| E-35 | CRR-003 F-02; `agentRunStore.ts:53-58` | `crypto.randomUUID` is undefined on the trusted private HTTP pairing (Android WebView `secure: false`); bare calls in the collaboration and Org stores and streaming services | DEC-014: one guarded id helper |
+| E-36 | `composables/projects/useTaskWorkerTasks.ts:21-48`; `server .../remote-access-route-policy.ts:88-96` | The Task summary line is turned off where the Projects tab is absent, by a client gate. A paired phone may call GraphQL and `/ws/*` | DEC-010: summaries can be shown on the phone; locating a Task stays where Projects is |
+| E-37 | `autobyteus-android/app/build.gradle.kts:41-46`; ADR-05 (`ADR-05-1-run-screen-under-status-bar.png`) | targetSdk 35, no inset handling: on Android 15 the clock and icons draw over the bars; ⋮ opens only with a lower tap | DEC-011 |
+
 - Temporary diagnostics: none in the product. The probe script `/tmp/sd277-probe/probe.py` is outside the repository; it only reads and is not part of the package.
 
 ## Requirement Implications

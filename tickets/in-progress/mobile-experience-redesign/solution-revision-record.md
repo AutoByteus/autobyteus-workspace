@@ -8,6 +8,7 @@
 | SR-002 | Requirements | Product Design Completed, user-approved (design rev `16678d53`) | Product findings 1–7 | Draft | Approved | All REQ/AC; REQ-010 added; DEC-003 A, DEC-004, DEC-007, DEC-008 | Requirements approved |
 | SR-003 | Mixed | The user dropped the optional marker (design rev `976457a4`); architecture design | — | Approved (SR-002) | Approved; design Ready | REQ-010, AC-010 removed; AC-006 wording; DS-001…DS-009 | Architecture Design Complete (Large, High) |
 | SR-004 | Design | ARCH-REV-001 round 1 (Fail, Design Impact) | AR-001…AR-008, MP-001…MP-003 | Design Ready (SR-003) | Design Ready (revised) | REQ-003, REQ-005, REQ-006 paths (DS-003, DS-004); no requirement change | Architecture Design Complete (Large, High), re-review |
+| SR-005 | Mixed (in progress) | API-REV-001 Fail; CRR-003 failure-origin review | F-01…F-09 | Requirements Approved (SR-003); design Ready (SR-004) | Requirements Ready for Approval; design Needs Revision | REQ-002a, REQ-003a, REQ-011; AC-002a, AC-003a, AC-011; DEC-009…DEC-014 | Waiting for the user's DEC-009…DEC-011 |
 
 ## Revision Entries
 
@@ -123,3 +124,21 @@
 - **Architecture review result (2026-11-06):** `ARCH-REV-002`, `Pass`, on SR-003 (requirements) and SR-004 (design), package commit `407f0ee8e9`, Product spec `e6ca7b6098`. AR-001…AR-008 are resolved. The reviewer handed the package to `/software_engineering_team/implementation_engineer`; this pass is informational and is not forwarded again.
   - Non-blocking points passed to implementation: the commit-attribution window of a pending open; the list entry left rewritten after a failed open; the source of the Org `mode` key on the phone.
   - Editorial fixes in `design-spec.md` after the pass: the evidence range, E-19's decision, the Split sequence line and the DS-009 mount point now read SR-004's design. Text only; no design change.
+
+### SR-005 — In progress: CRR-003 findings (waits for the user)
+
+- **Phase and classification:**
+  - Mixed: `Requirement Gap` (F-06 member lines, F-07, F-09) and `Design Impact` (F-01, F-06 source, F-08).
+  - F-02 is a Local Fix with a Change Scope extension.
+- **Trigger:** API/E2E round 1, `API-REV-001` Fail (`api-e2e-execution-coverage-report.md`), and the code reviewer's failure-origin review `CRR-003` (`code-review-report.md`).
+- **Prior status:** requirements `Approved` (SR-003); design `Ready` (SR-004, ARCH-REV-002 Pass).
+- **Current status:**
+  - requirements `Ready for Approval` for the proposed REQ-002a, REQ-011, AC-002a and AC-011;
+  - REQ-003a and AC-003a are a clarification within the direction;
+  - design `Needs Revision`, with a draft section in design-spec.
+- **Decisions:**
+  - DEC-009, DEC-010 and DEC-011 are `Needs user`, asked in the Solution Designer's result of 2026-11-06.
+  - DEC-012, DEC-013 and DEC-014 are decided by the Solution Designer within the direction.
+- **Evidence:** E-33…E-37.
+- **Follow-ups:** FU-007 (desktop staleness).
+- **Next action:** the user's answers. Then finish SR-005 and route it to architecture review (Large / High), then implementation, with the local fixes F-03…F-05 and the `TESTING.md` rule for API/E2E.

@@ -11,7 +11,7 @@
   - Design branch `design/mobile-experience-redesign` @ `e6ca7b6098b8bee1d194ad9cc0292c8e88ef59a6` (spec text fixes of the review's two cosmetic slips over `976457a4`, no visual or behavioral change).
   - It is normative for layout, copy, states and behavior. Its "Implementation Fidelity Boundary" applies: the reference's stores, fixtures and component split are not a prescription.
 - User approval of the design: `Not required`. The Task asks the user to approve the UI, which he did; the technical design needs no separate approval.
-- Design status: `Ready` (revised for ARCH-REV-001 round 1, AR-001…AR-008; see Revision For ARCH-REV-001 below).
+- Design status: `Needs Revision` (SR-005 draft below, for CRR-003). It waits for the user's DEC-009, DEC-010 and DEC-011; the SR-004 design stays as reviewed (ARCH-REV-002 Pass) everywhere else.
 - Canonical investigation notes: [investigation-notes.md](investigation-notes.md). Architecture evidence is E-10…E-32 (E-28…E-32 from ARCH-REV-001).
 - Authorities read (2026-11-06):
   - `references/architecture-design.md` and `references/design-principles.md`;
@@ -23,6 +23,22 @@
   - the autobyteus-385 and autobyteus-278 design specs (read-only).
   - `references/design-examples.md` was not used.
 - Project design-principle conflicts or discrepancies: none.
+
+## Revision For CRR-003 (SR-005, draft — waits for the user's DEC-009…DEC-011)
+
+Trigger: API/E2E round 1 (API-REV-001, Fail) and the code reviewer's failure-origin review CRR-003 (`code-review-report.md`, section "API/E2E Failure-Origin Review (Round 3)"). Local fixes F-03, F-04 and F-05 belong to implementation as CRR-003 states. They ride in the same revised package.
+
+| Finding | Design response | Decision |
+| --- | --- | --- |
+| F-01, an Org run row never opens | `MobileRowOpen { kind: 'orgRun' }` maps to the subject action's **`select`** with `memberAddress = agentOrgFirstMemberAddress(orgRun)`. The pure helper is new, exported from `utils/agentOrgHistoryRows.ts` (the Org row owner), and reads `executionTree.rootOrg.members[0].address`. The Org context's own rule then opens a direct agent, or a configured Team's coordinator (E-34). `agentOrgRouteQuery` receives the same address. The desktop is unchanged: it still opens an Org run unfocused | DEC-012 |
+| F-02, `crypto.randomUUID` on a trusted HTTP pairing | One guarded id helper, `utils/randomId.ts` `createRandomId()`, from `agentRunStore.ts:53-58`.<br>**Change Scope extension:** the bare calls in `stores/agentRunCollaborationStore.ts:317`, `stores/agentOrgContextsStore.ts:246`, `services/agentCollaboration/agentRunCollaborationStreamingService.ts:135`, `services/agentOrgExecution/agentOrgStreamingService.ts:237` and the fallback in `services/agentStreaming/TeamStreamingService.ts:157`.<br>The four existing guarded copies (`agentRunStore.ts:53-58`, `nodeStore.ts:38`, `teamRunCommandPresentation.ts:9`, `useContextAttachmentComposer.ts:48`) adopt it, so the rule has one owner | DEC-014 |
+| F-06, no second line on delegated rows | **Source.** `useTaskWorkerTasks` splits its gate: Task summaries (`retain`, `taskOf`) are available everywhere, and `locate` (opening the Task in Projects) stays where `projects` is available. The desktop is unchanged (Projects is there).<br>The phone's `buildMobileRunTreeRows` takes `taskOf(row)` and the remote runs store's title.<br>What each row shows follows DEC-010 | DEC-010 (Needs user) |
+| F-07, a member's task agent beside or under it | (a) No change: the phone keeps the shared rows (lifted, as the desktop). (b) The shared builder gains a construction option that keeps `task_agent` rows under their member (`runHistoryTeamExecutionRows.ts:58-66`); only the phone passes it | DEC-009 (Needs user) |
+| F-08, stale states under a root that is not open | `agentRunCollaborationStore.refreshListedRoots(roots: { runId, lastActivityAt }[])` (new). The store re-reads (`read`, E-33) a root whose `lastActivityAt` changed since its last read, or whose stored view has a child that is not stopped. It skips roots with a live stream.<br>`useRunHistorySectionLoad` exposes `readRevision`, which increments after each successful read. `useMobileRunTree` watches it and passes the shown Agent entries that have collaboration. The desktop does not call it (FU-007) | DEC-013 |
+| F-09, Android 15 status bar (if DEC-011 (a)) | The Android shell applies the system-bar, display-cutout and keyboard (IME) insets as padding on the WebView's container: `ViewCompat.setOnApplyWindowInsetsListener` in `ui/WebShellScreen.kt` / `MainActivity.kt`. There is no new permission, and targetSdk stays 35. The connection screen gets the same treatment. Verified on the API 35 emulator (ADR-05 turns green) | DEC-011 (Needs user) |
+| `TESTING.md` phone rule | Phone changes are validated with `test:e2e:mobile-shell` on a non-secure private HTTP origin, and phone overlays with real taps (hit-testing). Owner: the API/E2E engineer, in this ticket (`project-documents.md`, "When a later stage catches a problem") | — |
+
+The classification is unchanged: `Large`, `High`. After the user's answers, this section becomes SR-005, and the package goes to the architecture reviewer (the changed shared owners: `useTaskWorkerTasks`, the collaboration store, the id helper and the Android shell), then to implementation.
 
 ## Revision For ARCH-REV-001 (SR-004)
 
