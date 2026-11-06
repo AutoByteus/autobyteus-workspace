@@ -1,0 +1,8 @@
+# Case: API-02
+# Command: vitest run tests/unit/standalone-agent-run-root tests/unit/agent-execution/agent-run-restore-service.test.ts
+# Commit: 747f2ae65d (code = 79b268d2f9; the test file is committed with this round)
+# Environment: macOS arm64, Node v22.23.1, built server (pnpm build exit 0), owned temp data root, private HOME
+# Date: 2026-11-06
+
+Test Files  10 passed (10)
+Tests  66 passed (66)
