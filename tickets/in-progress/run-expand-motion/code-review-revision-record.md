@@ -35,4 +35,4 @@ None
 - New or remaining finding IDs: CR-001
 - Material score or classification changes: N/A (failure-origin). The designer may need to revisit Small/Low with the revised fix.
 - Recommended recipient: Solution Designer
-- Remaining risks or uncertainty: OBS-2 (the Workspaces tree likely shows the same effect) is not verified.
+- Remaining risks or uncertainty: none beyond CR-001. (Correction, 2026-11-06: OBS-2 was withdrawn by API/E2E. The user reports the Workspaces and Projects views are fine, and they stay out of scope.)

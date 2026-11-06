@@ -70,22 +70,21 @@ Every fix changes something the design fixed:
 
 Choosing among them, and deciding whether it is still Small/Low, is the Solution Designer's call.
 
-### Related, for the designer (not verified here)
+### Scope note: the Workspaces and Projects views
 
-- OBS-2 (API/E2E): the Workspaces tree mounts `AgentRunTaskRows` under each run row (`RunDefinitionGroups.vue:139-146`). Its parents mount on expand, so expanding a folder or agent group likely shows the same late-Task-line slide.
-- The requirements put the Workspaces and Projects views out of scope as views that "do not have the problem". If they do, the designer decides whether this ticket's fix covers them, since the mechanism would be shared, or whether they become a follow-up.
+The API/E2E engineer withdrew OBS-2 on 2026-11-06. It was a guess from the code, never run, and the user reports that expand and collapse are fine in the Workspaces and Projects views. Only the Runs view has the problem. The requirements' Out Of Scope stands, and the revised design must not widen it.
 
 ## Findings
 
 | ID | Severity | Path | Evidence | Required Action | Classification / Owner |
 | --- | --- | --- | --- | --- | --- |
-| CR-001 | Blocking (AC-001, REQ-001) | `RunListRow.vue:100-101` with `AgentRunTaskRows.vue:3-6,70` and `taskWorkerTaskStore.ts:103-114` | Above; frames in `API-RXM-r2/…evidence.json` `cases.RXM-001` | Revise the design so the rows mount with their Task lines, or so a Task line arriving after mount does not move the rows. Decide which owner changes (row-level interest, store retention or move suppression) and whether the Workspaces tree is covered (OBS-2). Per the team rule on a problem a later stage caught, the revision includes the local check: the fixture probe (IMP-03) and a component spec with a non-empty Task answer, so the slide is caught before API/E2E | `Design Impact` / Solution Designer |
+| CR-001 | Blocking (AC-001, REQ-001) | `RunListRow.vue:100-101` with `AgentRunTaskRows.vue:3-6,70` and `taskWorkerTaskStore.ts:103-114` | Above; frames in `API-RXM-r2/…evidence.json` `cases.RXM-001` | Revise the design so the rows mount with their Task lines, or so a Task line arriving after mount does not move the rows. Decide which owner changes (row-level interest, store retention or move suppression). Keep the Workspaces and Projects views out of scope (OBS-2 withdrawn). Per the team rule on a problem a later stage caught, the revision includes the local check: the fixture probe (IMP-03) and a component spec with a non-empty Task answer, so the slide is caught before API/E2E | `Design Impact` / Solution Designer |
 
 ## Follow-ups
 
 - Follow-ups this review added: None.
   - OBS-1 (the Runs view's fold resets on a view switch) is API/E2E's observation, outside this failure.
-  - OBS-2 is left for the designer's decision above.
+  - OBS-2 was withdrawn by API/E2E (`98dc9d47a4`); the user reports those views are fine.
 
 ## Classification
 
