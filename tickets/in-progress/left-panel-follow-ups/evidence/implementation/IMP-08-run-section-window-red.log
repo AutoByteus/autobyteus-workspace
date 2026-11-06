@@ -1,0 +1,11 @@
+# Check: IMP-08
+# Command: cd autobyteus-web && env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR="$TMPDIR" NUXT_TEST=true pnpm exec vitest run components/workspace/history/__tests__/RunSectionPanel.spec.ts with RunSectionPanel.vue from SR-001 00339421ed (red); the green run is in IMP-09
+# Commit: 1112f13de1 with RunSectionPanel.vue from 00339421ed
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28 via corepack; env -i PATH HOME=<fresh mktemp dir> TMPDIR (TESTING.md isolation)
+# Date: 2026-11-06 CET
+# Full output: this file
+
+   × RunSectionPanel > autobyteus-388 SR-002: the Projects view reads every run, so a removal of any run elsewhere is noticed; Workspaces reads 6 19ms
+   × RunSectionPanel > starts in the Projects view with every run read when that was the stored choice (autobyteus-388 SR-002) 9ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  2 failed | 58 passed (60)

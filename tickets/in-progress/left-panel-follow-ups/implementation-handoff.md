@@ -8,7 +8,9 @@ Branch `codex/left-panel-follow-ups`, worktree `/Users/normy/autobyteus_org/auto
 | `ee1178617c` | DEC-001: the web's unused `CreateAgentRun` document and its generated types removed; one docs sentence |
 | `2903fba48a` | DEC-002: `WorkspaceAgentRunsTreePanel` renamed to `RunSectionPanel` (component, specs, importers, docs, localization) |
 | `00339421ed` | DEC-003: the open Projects view re-reads when the run history's set of root runs changes; tests; docs; PLN-08 |
-| the evidence commit after `00339421ed` (see `git log`) | This handoff, IR-001 and `evidence/implementation/` |
+| `dda6ba59cf` | IR-001 handoff and evidence (IMP-01…07) |
+| `1112f13de1` | **IR-002 (SR-002, CR-001):** the Projects view reads every run (`historyWindowOf`: `mode === 'workspaces' ? 6 : null`); tests; docs |
+| the evidence commit after `1112f13de1` (see `git log`) | IR-002 handoff update and evidence IMP-08…12 |
 
 ## Upstream Artifact Package
 
@@ -18,15 +20,23 @@ Branch `codex/left-panel-follow-ups`, worktree `/Users/normy/autobyteus_org/auto
 - Solution revision record: `.../left-panel-follow-ups/solution-revision-record.md` (SR-001)
 - Design spec: `.../left-panel-follow-ups/design-spec.md`
 - Design review report and architecture review revision record: `N/A — not applicable`
-- Triggering rework report: N/A
+- Triggering rework reports: `.../left-panel-follow-ups/code-review-report.md` (CRR-001, CR-001 Design Impact) and `api-e2e-execution-coverage-report.md` (API-REV-001); SR-002 in `solution-handoff.md` and design-spec change 3, item 4.
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework`
 - Implementation revision record: `.../left-panel-follow-ups/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
-- Related solution revision IDs: `SR-001`. Other revision IDs: `N/A`.
-- Triggering finding IDs: N/A (autobyteus-385 FU-001/FU-005, FU-003, FU-004)
+- Current implementation revision ID: `IR-002` (IR-001 is the baseline)
+- Related solution revision IDs: `SR-002`
+- Related code-review revision IDs: `CRR-001`
+- Related API/E2E revision IDs: `API-REV-001`
+- Triggering finding IDs: `CR-001`
+
+IR-002 changes one line of product code plus its comment. `RunSectionPanel`'s `historyWindowOf` is now `mode === 'workspaces' ? 6 : null`, so the Projects view reads every non-archived run, as the Runs view does.
+- Before, with the 6-per-agent window, another client archiving an older Agent run of a Project left the root-run set unchanged, and nothing was read again (E-08).
+- Now every run is in the set.
+- The Projects tree itself is unaffected: it is built from `projectRunHistory`.
+- autobyteus-385 measured the cost: p95 151 ms against 149 ms (E-09).
 
 ## Routing Classification (Mandatory)
 
@@ -50,6 +60,7 @@ Branch `codex/left-panel-follow-ups`, worktree `/Users/normy/autobyteus_org/auto
 | REQ-001, DEC-001 | Keep GraphQL `createAgentRun`; remove the web's dead document; one docs sentence | `autobyteus-web/graphql/mutations/agentMutations.ts` (the `CreateAgentRun` document removed); `generated/graphql.ts` regenerated with `pnpm codegen:local`; `autobyteus-server-ts/docs/modules/agent_execution.md` "One-call creation" | Done. Codegen removed exactly the `CreateAgentRunMutation*` types, `CreateAgentRunDocument` and `useCreateAgentRunMutation` (−38 lines). `codegen:check` reports the file current, and `git grep CreateAgentRun\b` finds nothing in the web (IMP-04). The server code, tests and probes are untouched |
 | REQ-002, DEC-002 | Rename the run section host; no behavior change | Renamed (git history follows): `components/workspace/history/RunSectionPanel.vue`, `__tests__/RunSectionPanel.spec.ts`, `__tests__/RunSectionPanel.regressions.spec.ts`. Updated: `AppLeftPanel.vue` and its two specs, the `layouts/__tests__` default and drawer specs, `HistoricalTeamLazyHydration.integration.spec.ts`, `WorkspaceHistoryFamilyPublication.spec.ts`, `workspaceSelectionComposition.spec.ts`, `runListStore.ts` (comment), `RunListPanel.vue` (two keys), and four docs (`workspace_layout`, `settings`, `agent_execution_architecture`, `agent_orgs`). The localization namespace `…history.RunSectionPanel.*` in en and zh-CN (`workspace.ts`, `workspace.generated.ts`); `this_workspace` removed from both generated catalogs | Done. No test or DOM id carried the old name. The only remaining mentions are in ticket history and recorded evidence logs (`frontend-execution-evidence/`, `test-results/`), which stay as recorded. The renamed specs pass (58 + 3 tests). The localization guards pass |
 | REQ-003, DEC-003, AC-003 | The open Projects view follows runs added or removed elsewhere, within one history poll | `stores/projectRunsStore.ts`: a computed `listedRootRunIds` (sorted agent, team and Org root run ids from `runHistoryStore.workspaceGroups` and `agentOrgHistory`) and a watch on `[shown > 0, ids]`. The first value after showing sets the baseline; a change while shown calls `read` for every loaded Project (`snapshots` keys); hiding clears the baseline. `read`'s in-flight and queued handling collapses repeats | Done. IMP-01: an added agent run, a removed one, an added Team or Org run each re-read P and Q once. A status change and a reorder, the view hidden, and the first value after showing read nothing. IMP-06: PLN-08 lists the Project 4.7 s after the API starts its run, with the view open. IMP-07: fails on the base |
+| SR-002, CR-001 (REQ-003, AC-003) | The Projects view notices the removal of any run elsewhere, including one older than its agent's 6 newest in the folder | `components/workspace/history/RunSectionPanel.vue` `historyWindowOf`: `mode === 'workspaces' ? 6 : null`, with a comment giving the reason per view. The rule is updated in `runHistoryStore.ts`'s comment, `runHistoryReadWindow.spec.ts`'s comment, `docs/workspace_layout.md` and `docs/projects.md` | Done. IMP-08: the host spec's Projects-window cases fail on SR-001's host and pass now (IMP-09). IMP-11: PLN-01…11 pass, and PLN-11 lists and unlists a new Project's run within one poll (3990 and 4981 ms), with 0 reads while hidden. IMP-12: PLN-11 fails on SR-001's host: "a Project whose run is older than its folder's 6 newest stays listed after another client archives that run" |
 | AC-004 | Tests; suites pass | as above | Done here up to finalization |
 
 - Changes stayed within the requirements doc's Scope Guardrail: `Yes`
@@ -71,7 +82,12 @@ Branch `codex/left-panel-follow-ups`, worktree `/Users/normy/autobyteus_org/auto
 
 ## Known Risks
 
-- **One redundant read when switching from Runs to Projects.** The baseline is taken when the view is shown, while the history still holds the Runs view's complete read. The next poll, with a window of 6, changes the set, so every Project is read once more on top of the show's own read. It is collapsed if still in flight. This is bounded and rare.
+- **One redundant read when switching from Workspaces to Projects (IR-002).**
+  - The baseline is taken when the view is shown, while the history still holds the Workspaces view's 6-per-agent read.
+  - The first read with the Projects view's full window can grow the set, so every Project is read once more on top of the show's own read. It is collapsed if still in flight.
+  - Runs → Projects no longer does this, because both read every run.
+  - It happens at most once per switch.
+- **The full read in the Projects view.** It covers every non-archived run on each 5 s poll while the view is shown, at the cost measured in autobyteus-385 (p95 151 ms against 149 ms, E-09).
 - **Re-read cost.** One `projectRunHistory` read per loaded Project, per change in the set, only while the Projects view is shown (design Risks).
 
 ## Task Design Health Assessment Implementation Check
@@ -112,8 +128,18 @@ The evidence folder is `/Users/normy/autobyteus_org/autobyteus-worktrees/left-pa
 | IMP-06 | `pnpm -C autobyteus-web test:e2e:projects-left-navigation --output-dir <evidence>/IMP-06-pln-fix --cases PLN-01,…,PLN-08` | `00339421ed` | Real Nuxt dev + built backend (AGY scripted CLI) + headless Chrome; the Projects view and the run section | AC-003 (PLN-08); REQ-002 (the renamed host in every case) | Pass (PLN-01…08) | `IMP-06-pln-fix.log`, `IMP-06-pln-fix/evidence.json`, screenshots, logs | `PLN-08: Pass`; `evidence.json` PLN-08 `"lateProjectListedMs":4698,"lateProjectListed":true`; `cleanup` `"dataRootRemoved":true` |
 | IMP-07 | The same with `projectRunsStore.ts` from the base | `00339421ed` with `projectRunsStore.ts` from `d6bcff577b` | As IMP-06 | AC-003 ("fails on the base") | Fail on PLN-08, as expected (PLN-01…07 pass) | `IMP-07-pln-base.log`, `IMP-07-pln-base/evidence.json` | `PLN-08: Fail — Timed out: Project with a run started elsewhere listed within one poll while the view stays open` |
 
+IR-002 adds the following checks. IMP-01…07 above tested IR-001 (`00339421ed`); their results still hold for the unchanged parts.
+
+| Check ID | Command Or Steps | Commit Tested | Code It Exercises | Behavior / Criteria IDs | Result | Evidence Files | Look For |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| IMP-08 | `cd autobyteus-web && NUXT_TEST=true pnpm exec vitest run components/workspace/history/__tests__/RunSectionPanel.spec.ts` with SR-001's `RunSectionPanel.vue` | `1112f13de1` with the host from `00339421ed` | The host's window per view | CR-001 | Red, as expected | `IMP-08-run-section-window-red.log` | `× … the Projects view reads every run …`, `× … starts in the Projects view with every run read …`, `Tests  2 failed \| 58 passed (60)` |
+| IMP-09 | `cd autobyteus-web && NUXT_TEST=true pnpm exec vitest run` | `1112f13de1` | Whole web suite: the host spec (60), `projectRunsStore` (11, with the older-run removal case) and `runHistoryReadWindow` | CR-001, AC-004 | Pass | `IMP-09-web-suite.log`, `IMP-09-web-suite.full.log.gz` | `Test Files  702 passed (702)`, `Tests  5168 passed \| 2 skipped (5170)` |
+| IMP-10 | `cd autobyteus-web && pnpm typecheck; pnpm -s guard:web-boundary; pnpm -s guard:localization-boundary; pnpm -s audit:localization-literals` | `1112f13de1` | Web types, boundaries, localization | all | Pass | `IMP-10-web-typecheck-guards.log` | `production errors: 0; test-file errors: 99 in 43 files (baseline 99 in 43 files)`, `[typecheck] PASS`, three `Passed` |
+| IMP-11 | `pnpm -C autobyteus-web test:e2e:projects-left-navigation --output-dir <evidence>/IMP-11-pln-sr002` (all of PLN-01…11) | `1112f13de1` | Real Nuxt dev + built backend + headless Chrome | AC-003 (PLN-08, PLN-11); every Projects case with the new window | Pass (PLN-01…11) | `IMP-11-pln-sr002.log`, `IMP-11-pln-sr002/evidence.json`, screenshots | `PLN-11: Pass`, `"nListedMs":3990`, `"nUnlistedMs":4981`, `"readsWhileHidden":0`; `PLN-08` `"lateProjectListedMs":4321`; `cleanup` `"dataRootRemoved":true` |
+| IMP-12 | The same with `--cases PLN-11` and SR-001's `RunSectionPanel.vue` | `1112f13de1` with the host from `00339421ed` | As IMP-11 | CR-001 ("fails on SR-001's code") | Fail, as expected | `IMP-12-pln11-sr001.log`, `IMP-12-pln11-sr001/evidence.json` | `PLN-11: Fail — a Project whose run is older than its folder's 6 newest stays listed after another client archives that run` |
+
 - Not run, and why:
-  - **PLN-09 and PLN-10:** unrelated to these changes beyond the rename, which the full suite and PLN-01…08 cover.
+  - **PLN-09 and PLN-10 in IR-001:** they ran in IR-002 (IMP-11) and pass.
   - **The server suites:** no server code changed, only a docs sentence. The suites that use `createAgentRun` are untouched.
 
 ## Frontend Rendered-Result Check (When Applicable)
