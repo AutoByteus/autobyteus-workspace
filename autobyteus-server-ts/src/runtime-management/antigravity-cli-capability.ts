@@ -1,5 +1,6 @@
 import { spawn } from "node:child_process";
 import { commandBound, deadlineCause, type CommandBound, type ReadDeadline } from "./read-deadline.js";
+import { compareRuntimeVersions, extractRuntimeVersion } from "./agent-runtimes/runtime-version.js";
 
 const COMMAND = process.env.ANTIGRAVITY_CLI_COMMAND?.trim() || "agy";
 const REQUIRED_FLAGS = ["--agent", "--new-project", "--add-dir", "--conversation", "--input-format", "--output-format", "--dangerously-skip-permissions"];
@@ -119,19 +120,10 @@ export const listAntigravityModels = async (
 /** First AGY CLI version proven to stream one `checkpoint` DONE step per automatic compaction. */
 export const AGY_COMPACTION_DETECTION_MIN_VERSION = "1.2.16";
 
-const parseVersion = (version: string | null): number[] | null => {
-  const match = version ? /(\d+)\.(\d+)\.(\d+)/.exec(version) : null;
-  return match ? match.slice(1, 4).map(Number) : null;
-};
-
+/** Whether the CLI's version text names a version at or above the minimum (SemVer precedence); no version: no. */
 export const isAgyCompactionDetectionSupported = (version: string | null): boolean => {
-  const actual = parseVersion(version);
-  const minimum = parseVersion(AGY_COMPACTION_DETECTION_MIN_VERSION)!;
-  if (!actual) return false;
-  for (let index = 0; index < minimum.length; index += 1) {
-    if (actual[index]! !== minimum[index]!) return actual[index]! > minimum[index]!;
-  }
-  return true;
+  const actual = extractRuntimeVersion(version);
+  return actual !== null && compareRuntimeVersions(actual, AGY_COMPACTION_DETECTION_MIN_VERSION) >= 0;
 };
 
 let cachedVersion: string | null = null;

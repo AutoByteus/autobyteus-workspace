@@ -51,6 +51,19 @@ describe("AgentRuntimeStatusService checks", () => {
     expect(read).not.toHaveBeenCalledWith(AGY, expect.anything());
   });
 
+  it("shows full versions and offers the release of an installed prerelease, by SemVer precedence (AC-002)", async () => {
+    const { service, row } = build({
+      strategies: {
+        [CLAUDE]: { readVersion: vi.fn(async () => "0.2.2-rc.1"), readLatestVersion: vi.fn(async () => "0.2.2") },
+        [GROK]: { readVersion: vi.fn(async () => "0.2.2-rc.1"), readLatestVersion: vi.fn(async () => "0.2.2-rc.1") },
+      },
+    });
+    await service.checkAll();
+    await settle();
+    expect(row(CLAUDE)).toMatchObject({ installedVersion: "0.2.2-rc.1", latestVersion: "0.2.2", updateState: "updateAvailable" });
+    expect(row(GROK)).toMatchObject({ installedVersion: "0.2.2-rc.1", latestVersion: "0.2.2-rc.1", updateState: "upToDate" });
+  });
+
   it("maps a Codex provider without OpenAI sign-in to not applicable (DEC-008)", async () => {
     const { service, row } = build({ readings: { [CODEX]: { state: "notRequired" } } });
     await service.checkAll();
@@ -139,6 +152,20 @@ describe("AgentRuntimeStatusService update", () => {
     // A user-started check clears the finished result.
     await service.checkAll();
     expect(row(CLAUDE).operation).toBeNull();
+  });
+
+  it("reports an update from a prerelease to its release as updated (AC-005)", async () => {
+    const { service, row, processes } = await readyToUpdate(["0.2.2-rc.1", "0.2.2"]);
+    expect(row(CLAUDE).updateState).toBe("updateAvailable");
+    service.startUpdate(CLAUDE);
+    processes[0]!.exit(0, "updated");
+    await settle();
+    await settle();
+    expect(row(CLAUDE)).toMatchObject({
+      installedVersion: "0.2.2",
+      updateState: "upToDate",
+      operation: { kind: "update", state: "succeeded", fromVersion: "0.2.2-rc.1", toVersion: "0.2.2" },
+    });
   });
 
   it("fails with the vendor's output when the update exits 0 without a newer version (e.g. Homebrew)", async () => {

@@ -44,7 +44,8 @@ modules.
 - **Command.** The runtime runs `grok` by default. Set `GROK_BUILD_COMMAND`
   to use a different command.
 - **Availability probe.** The probe runs `--version`, which must report
-  **1.0.41** or later, then checks `agent --help` for the required
+  **1.0.41** or later by SemVer precedence (a prerelease such as
+  `1.0.41-rc.1` is below it), then checks `agent --help` for the required
   agent-mode flags. It is bounded to 3 s, is asynchronous, and opens no ACP
   session.
 - **Safe diagnostics.** Failures become classified diagnostics:

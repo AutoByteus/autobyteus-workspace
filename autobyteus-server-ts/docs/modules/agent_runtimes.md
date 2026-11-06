@@ -55,7 +55,7 @@ Out of scope:
   Cancel sends SIGTERM, then SIGKILL after 3 s. It times out after 10 minutes.
 - `runtime-command-runner.ts` (short commands, 10 s time-out),
   `runtime-source-fetch.ts` (HTTP, 10 s time-out), `runtime-version.ts`
-  (`x.y.z` extract and compare), `agent-runtime-types.ts`.
+  (the full version, `x.y.z` and any prerelease such as `0.2.2-rc.1`, read from version text without build metadata, and SemVer 2.0.0 precedence: a prerelease is older than its release; the Grok and Antigravity minimum-version gates use the same rule), `agent-runtime-types.ts`.
 - `src/api/graphql/types/agent-runtimes.ts` — thin GraphQL resolver (studio
   server only).
 - `src/compositions/agent-runtime-status-composition.ts` — builds the service
