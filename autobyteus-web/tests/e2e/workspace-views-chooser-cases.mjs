@@ -19,7 +19,8 @@
 //           reload. "Archive all older" is refused while an older run runs (nothing archived), and after it is stopped
 //           archives exactly the older runs.
 //   WVC-004 (DS-002; design Risks: the phone and the desktop share runHistoryStore) The desktop in the Runs view reads with
-//           null while the paired phone (/mobile, Phone Access) reads with 5.
+//           null; the paired phone (/mobile, Phone Access) reads the complete history too (null, autobyteus-277 DS-001),
+//           and the desktop's window stays null after the phone's reads.
 import fs from 'node:fs/promises'
 import { existsSync } from 'node:fs'
 import path from 'node:path'
@@ -325,7 +326,7 @@ export const registerWorkspaceViewsChooserCases = (h) => {
     return { folder, ...r }
   })
 
-  defineCase('WVC-004', 'DS-002/design Risks: the desktop Runs view reads with null while the paired phone reads with 5', async (page, context) => {
+  defineCase('WVC-004', 'DS-002/design Risks: the desktop Runs view reads with null, and the paired phone reads the complete history (null, autobyteus-277 DS-001) without changing the desktop window', async (page, context) => {
     const r = {}
     const desktopReads = recordWindows(page)
     await openWorkspacePage(page); await chooseView(page, 'runs')
@@ -346,7 +347,7 @@ export const registerWorkspaceViewsChooserCases = (h) => {
       await phone.route(`${remote}/**`, async (route) => {
         const req = route.request()
         if (req.url().includes('/graphql') && req.method() === 'POST') {
-          try { const body = JSON.parse(req.postData() ?? '{}'); if (body.operationName === 'ListWorkspaceRunHistory') phoneReads.push(body.variables?.limitPerAgent ?? 'omitted') } catch { /* not JSON */ }
+          try { const body = JSON.parse(req.postData() ?? '{}'); if (body.operationName === 'ListWorkspaceRunHistory') phoneReads.push(body.variables && 'limitPerAgent' in body.variables ? body.variables.limitPerAgent : 'omitted') } catch { /* not JSON */ }
         }
         await route.fulfill({ response: await route.fetch({ url: req.url().replace(remote, backendUrl) }) })
       })
@@ -364,12 +365,12 @@ export const registerWorkspaceViewsChooserCases = (h) => {
       const mobile = await phone.newPage()
       await mobile.goto(`${frontUrl}/mobile?pairing=${encodeURIComponent(new URL(session.mobileUrl).searchParams.get('pairing'))}`, { waitUntil: 'domcontentloaded', timeout: 180000 })
       await mobile.locator('[data-testid="mobile-pair-button"]').click({ timeout: 120000 })
-      await mobile.locator('[data-testid="mobile-home"]').waitFor({ timeout: 120000 })
-      await mobile.getByText('Choose work', { exact: true }).click()
+      // The phone's run list (autobyteus-277) reads the complete history, as the desktop Runs view does.
+      await mobile.locator('[data-testid="mobile-run-list"]').waitFor({ timeout: 120000 })
       await waitFor('the phone reads the history', () => phoneReads.length > 0, 60000)
-      await mobile.screenshot({ path: path.join(env().outDir, 'WVC-004-phone-choose-work.png') })
+      await mobile.screenshot({ path: path.join(env().outDir, 'WVC-004-phone-run-list.png') })
       r.phoneReads = [...phoneReads]
-      assert(phoneReads.every((w) => w === 5), 'the phone read with another window', phoneReads)
+      assert(phoneReads.every((w) => w === null), 'the phone read with another window', phoneReads)
     } finally { await phone.close() }
     desktopReads.length = 0
     await delay(6000)
