@@ -28,8 +28,9 @@
 //   PLN-07 353 REQ-001/DEC-003: with 6 newer runs under P, P lists the 6 newest only (the older run hosting open work is not
 //          pinned); after 3 are archived it is listed again and opens with its delegated run.
 //   PLN-08 353 AC-004 (reconnect): real backend restart with Projects mode shown: the tree stays; a Project created after it
-//          is not listed without a run (workspace-tree-vs-chooser REQ-009) and is listed once a run is started under it
-//          and the view is shown; work dispatched after the restart appears live; the current state after a reload.
+//          is not listed without a run (workspace-tree-vs-chooser REQ-009) and is listed within one history poll once
+//          another client starts a run under it, while the view stays open (autobyteus-388 AC-003); work dispatched after
+//          the restart appears live; the current state after a reload.
 //   PLN-09 353 AC-004: archive and delete a run in Projects mode (gone in both modes), Stop of an Agent and a Team run reads
 //          stopped at once, group "Archive all" only touches the Project's runs, a deleted Project leaves the tree live.
 //   PLN-10 347 AC-013/AC-016/AC-017: keyboard, zh-CN, narrow layout and strip, briefcase icons; reference screenshots.
@@ -793,14 +794,14 @@ const restartLive = async () => {
     assert(out.copyInStoredTree, 'the copy is not in A\'s stored tree', out);
     out.liveInSamePage = await until('copy live in the same page', async () => (await copyRowIn(pSection, copy).count()) === 1, 15000).then(() => true, () => false);
     await shot(page, 'PLN-08-same-page-after-dispatch');
-    // Its first run is started by another client (the API). The Projects view re-reads a Project on `connected`, on a
-    // Project change, after this window's own run actions, and when the view is shown (autobyteus-353 REQ-003), so the
-    // Project appears when the view is shown again, in the same page without a reload.
+    // Its first run is started by another client (the API). The run section's 5 s history poll shows the new root run, and
+    // the open Projects view reads its Projects again (autobyteus-388 AC-003): listed within one poll, with the view kept
+    // open (no view switch, no reload).
     out.lateRun = await createAgentRun({ projectId: late.projectId });
     await terminateAgent(out.lateRun);
-    await showMode(page, 'workspaces');
-    await showMode(page, 'projects');
-    await until('Project created after the restart listed with its first run', async () => (await lateRow.count()) === 1, 30000);
+    const startedAt = Date.now();
+    await until('Project with a run started elsewhere listed within one poll while the view stays open', async () => (await lateRow.count()) === 1, 12000);
+    out.lateProjectListedMs = Date.now() - startedAt;
     out.lateProjectListed = true;
     await page.reload({ waitUntil: 'networkidle' });
     await showMode(page, 'projects');
@@ -1001,7 +1002,7 @@ const CASES = {
   'PLN-05': ['353 AC-002, 347 AC-006/010: P Team with Task line and members, Q and Temp work all nested under the run in P live; not under Q; board', liveDelegation],
   'PLN-06': ['347 AC-008: DONE removes rows live; reopen + message brings them back', closureAndReopen],
   'PLN-07': ['353 REQ-001/DEC-003: 6 newest only, no pinning; listed again after archives and opens', capNoPinning],
-  'PLN-08': ['353 AC-004 reconnect: real backend restart keeps the tree; a Project created after it is listed once it has a run; work dispatched after it live; current after reload', restartLive],
+  'PLN-08': ['353 AC-004 reconnect: real backend restart keeps the tree; a Project created after it is listed within one poll of a run started elsewhere, view kept open (388 AC-003); work dispatched after it live; current after reload', restartLive],
   'PLN-09': ['353 AC-004: archive and delete in Projects mode, Agent and Team Stop read stopped, group Archive all scoped, deleted Project leaves live', archiveAndDelete],
   'PLN-10': ['347 AC-013/016/017: keyboard, zh-CN, narrow, briefcase, reference screenshots', accessibilityAndLooks],
 };

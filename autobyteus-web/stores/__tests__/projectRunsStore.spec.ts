@@ -15,6 +15,7 @@ import { useProjectRunsStore } from '../projectRunsStore'
 import { useProjectStore } from '../projectStore'
 import { useAgentRunStore } from '../agentRunStore'
 import { useAgentTeamRunStore } from '../agentTeamRunStore'
+import { useRunHistoryStore } from '../runHistoryStore'
 import type { Project, ProjectChangeMessage } from '~/types/project'
 
 const project = (projectId: string): Project => ({ projectId, name: projectId, description: '', createdAt: '', updatedAt: '',
@@ -160,5 +161,92 @@ describe('projectRunsStore', () => {
     await store.retry()
     expect(store.firstRead).toBe('ready')
     expect(store.refreshFailed).toBe(false)
+  })
+})
+
+// autobyteus-388 (REQ-003, DEC-003, FU-004): the shown Projects mode follows runs added or removed by anyone (another
+// window, client, Task Agent or the API) through the run section's history poll: a change in the set of root runs
+// re-reads every loaded Project once. A status change, hidden mode or the first value after showing reads nothing.
+describe('projectRunsStore: runs added or removed elsewhere', () => {
+  let store: ReturnType<typeof useProjectRunsStore>
+  let history: ReturnType<typeof useRunHistoryStore>
+  const agentRun = (runId: string, status = 'offline') => ({ runId, summary: runId, createdAt: '2026-11-06T00:00:00.000Z',
+    lastActivityAt: '2026-11-06T00:00:00.000Z', status, isActive: status !== 'offline' })
+  const setHistory = (runIds: string[], options: { status?: string; teamRunIds?: string[]; orgRunIds?: string[] } = {}) => {
+    history.workspaceGroups = [{ workspaceRootPath: '/ws', workspaceName: 'ws',
+      agentDefinitions: [{ agentDefinitionId: 'pm', agentName: 'PM', runs: runIds.map((runId) => agentRun(runId, options.status)) }],
+      teamDefinitions: options.teamRunIds?.length
+        ? [{ teamDefinitionId: 'set', teamDefinitionName: 'set', runs: options.teamRunIds.map((teamRunId) => ({ teamRunId })) }] : [],
+    }] as never
+    history.agentOrgHistory = (options.orgRunIds ?? []).map((rootRunId) => ({ rootRunId })) as never
+  }
+
+  beforeEach(() => {
+    setActivePinia(createPinia())
+    query.mockReset()
+    mutate.mockReset()
+    const projects = useProjectStore()
+    vi.spyOn(projects, 'fetchProjects').mockImplementation(async () => {
+      projects.projects = [project('P'), project('Q')]
+      projects.hasFetched = true
+      return projects.projects
+    })
+    query.mockImplementation(async ({ variables }) => read(variables.projectId))
+    history = useRunHistoryStore()
+    store = useProjectRunsStore()
+  })
+
+  it('a run added to the history while shown re-reads every loaded Project once', async () => {
+    setHistory(['a'])
+    store.show()
+    await flush()
+    query.mockClear()
+    setHistory(['a', 'b'])
+    await flush()
+    expect(projectReads()).toEqual(['P', 'Q'])
+  })
+
+  it('a run removed, or a Team or Org run added, also re-reads', async () => {
+    setHistory(['a', 'b'])
+    store.show()
+    await flush()
+    query.mockClear()
+    setHistory(['a'])
+    await flush()
+    expect(projectReads()).toEqual(['P', 'Q'])
+    query.mockClear()
+    setHistory(['a'], { teamRunIds: ['team-1'] })
+    await flush()
+    expect(projectReads()).toEqual(['P', 'Q'])
+    query.mockClear()
+    setHistory(['a'], { teamRunIds: ['team-1'], orgRunIds: ['org-1'] })
+    await flush()
+    expect(projectReads()).toEqual(['P', 'Q'])
+  })
+
+  it('the same set (a status change, a poll with nothing new, a reorder) reads nothing', async () => {
+    setHistory(['a', 'b'])
+    store.show()
+    await flush()
+    query.mockClear()
+    setHistory(['a', 'b'], { status: 'running' })
+    setHistory(['b', 'a'])
+    await flush()
+    expect(projectReads()).toEqual([])
+  })
+
+  it('reads nothing while hidden, and the first value after showing again is only the baseline', async () => {
+    setHistory(['a'])
+    const hide = store.show()
+    await flush()
+    hide()
+    query.mockClear()
+    setHistory(['a', 'b'])
+    await flush()
+    expect(projectReads()).toEqual([])
+    // Shown again: the show reads every Project once; the changed set seen at that moment adds no read.
+    store.show()
+    await flush()
+    expect(projectReads()).toEqual(['P', 'Q'])
   })
 })
