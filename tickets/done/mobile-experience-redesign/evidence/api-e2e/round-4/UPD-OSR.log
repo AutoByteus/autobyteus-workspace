@@ -1,0 +1,10 @@
+
+> autobyteus@1.5.12-beta.3 test:e2e:owner-scoped-file-reads /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-experience-redesign/autobyteus-web
+> node tests/e2e/owner-scoped-file-reads-probe.mjs --from-seed /tmp/autobyteus277-osr-seed-r4 --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/mobile-experience-redesign/tickets/in-progress/mobile-experience-redesign/evidence/api-e2e/round-4/UPD-OSR --cases B-006,B-007
+
+[2026-11-06T16:19:14.389Z] B-006 start: Mobile (Phone Access): an agent run's file opens in the mobile Artifacts view through the run route (AC-012, REQ-007)
+[2026-11-06T16:19:18.145Z] B-006 Pass
+[2026-11-06T16:19:18.145Z] B-007 start: Mobile (Phone Access): a Team run member's file opens in the mobile Artifacts view through the team route (AC-012, REQ-007)
+[2026-11-06T16:19:21.195Z] B-007 Pass
+{"result":"Pass","cases":{"T-API":"Not Run (filtered)","B-001":"Not Run (filtered)","B-002":"Not Run (filtered)","B-003":"Not Run (filtered)","B-004":"Not Run (filtered)","B-005":"Not Run (filtered)","B-006":"Pass","B-007":"Pass"},"failures":[],"cleanup":{"frontend":{"pid":71572,"status":"terminated","exit":"SIGTERM"},"backend":{"pid":71228,"status":"terminated","exit":0},"dataCopyRemoved":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-9ytIbo"},"evidencePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-experience-redesign/tickets/in-progress/mobile-experience-redesign/evidence/api-e2e/round-4/UPD-OSR/evidence.json"}
+exit 0

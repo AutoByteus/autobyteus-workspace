@@ -1,0 +1,404 @@
+{
+  "startedAt": "2026-11-06T10:56:08.137Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "beta": {
+      "port": 53567,
+      "nodeId": "srv_MOkI8HUR2eV29BG1kH7TUTcWoRy8merR"
+    },
+    "alpha": {
+      "port": 53566,
+      "nodeId": "srv_vCVn8sgfF3FETs-ohXh1emzSPt6olkUX"
+    }
+  },
+  "runs": {
+    "standalone": "delegator_0a0a30cd01b94bbe8f1a6f8b794ac889",
+    "remoteTeamRun": "studio_team_523602eacebe479583028f3fe114499b",
+    "studioMembers": [
+      "publisher_9e51ffb535214eb8b7371770896c56b9",
+      "checker_55aca0eb66624494bed93391be0b74fb"
+    ],
+    "team": "remote_squad_39c57932ef0b437aaf87a854fd8f2360",
+    "leadRun": "delegator_8f17166f13b040229b28660d66369966",
+    "localA": "helper_dc1ace0a8529461b94825d2d85d5af6a",
+    "remoteAgentRun": "publisher_7fe5a7ab184340d89ed73064d583c8a7",
+    "localB": "helper_d98e07b022e0405e8e6e931c47661eee",
+    "org": "remote_org_a115ea84fc954cf0b3b4838965bdd0be",
+    "orgLead": "delegator_1aca550203c7464392de522363664a92",
+    "orgRemoteRun": "publisher_082aa22a48754afd922f32d703b5cae6",
+    "orgRemoteTeamRun": "studio_team_deca9c09087742258ff6d7d0a69fd9b6",
+    "orgTeamMembers": [
+      "publisher_7f8fd651edaf4ad3a076b46e3ec7b688",
+      "checker_5649499184c04afe8615ca3fd4916a20"
+    ]
+  },
+  "cases": {
+    "RTP-01": {
+      "result": "Pass",
+      "remoteTeamRow": "beta-node\nstudio team\nCut the launch trailer. Marker REMOTE-TEAM.",
+      "memberRows": [
+        {
+          "member": "publisher_9e51ffb535214eb8b7371770896c56b9",
+          "present": true,
+          "chip": false
+        },
+        {
+          "member": "checker_55aca0eb66624494bed93391be0b74fb",
+          "present": true,
+          "chip": false
+        }
+      ]
+    },
+    "RTP-02": {
+      "result": "Pass",
+      "indexes": [
+        3,
+        4,
+        5
+      ],
+      "remoteAgent": {
+        "chip": "beta-node",
+        "title": null,
+        "error": null,
+        "checking": null,
+        "statusDot": true,
+        "name": "beta-node",
+        "ariaLabel": "Temporary task agent, publisher, level 1, idle, Started by lead, /publisher, on beta-node, Task: Publish the draft. Marker REMOTE-AGENT."
+      },
+      "localA": {
+        "chip": null,
+        "title": null,
+        "error": null,
+        "checking": null,
+        "statusDot": true,
+        "name": "H",
+        "ariaLabel": "Temporary task agent, helper, level 1, idle, Started by lead, /helper, Task: Local first. Marker LOCAL-A."
+      }
+    },
+    "RTP-03": {
+      "result": "Pass",
+      "orgRemote": {
+        "chip": "beta-node",
+        "title": "Org work. Marker REMOTE-ORG.",
+        "error": null,
+        "checking": null,
+        "statusDot": true,
+        "name": "beta-node",
+        "ariaLabel": "Temporary task agent, publisher, level 1, idle, Started by lead, /publisher, on beta-node"
+      }
+    },
+    "RTP-04": {
+      "result": "Pass",
+      "affordances": {
+        "standaloneTeamMember": true,
+        "orgAgent": true,
+        "orgTeamMember": true,
+        "teamAgent": true
+      },
+      "views": {
+        "standaloneTeamMember": {
+          "headerTitle": "lead",
+          "headerChip": "beta-node",
+          "editConfig": 0,
+          "newRun": 0,
+          "placeholders": [
+            "Message lead on beta-node…"
+          ],
+          "contextFiles": 0,
+          "uploadButtons": 0,
+          "mentionMenu": 0,
+          "filesNote": "On beta-node\n\nThe files of this run are on beta-node. Open it in that node's window to see them."
+        },
+        "orgAgent": {
+          "headerTitle": "publisher - CAE6",
+          "headerChip": "beta-node",
+          "editConfig": 0,
+          "newRun": 0,
+          "placeholders": [
+            "Message publisher on beta-node…"
+          ],
+          "contextFiles": 0,
+          "uploadButtons": 0,
+          "mentionMenu": 0,
+          "filesNote": "On beta-node\n\nThe files of this run are on beta-node. Open it in that node's window to see them."
+        },
+        "orgTeamMember": {
+          "headerTitle": "lead - B688",
+          "headerChip": "beta-node",
+          "editConfig": 0,
+          "newRun": 0,
+          "placeholders": [
+            "Message lead on beta-node…"
+          ],
+          "contextFiles": 0,
+          "uploadButtons": 0,
+          "mentionMenu": 0,
+          "filesNote": "On beta-node\n\nThe files of this run are on beta-node. Open it in that node's window to see them."
+        },
+        "teamAgent": {
+          "headerTitle": null,
+          "headerChip": "beta-node",
+          "editConfig": 0,
+          "newRun": 0,
+          "placeholders": [
+            "Message publisher on beta-node…"
+          ],
+          "contextFiles": 0,
+          "uploadButtons": 0,
+          "mentionMenu": 0,
+          "filesNote": "On beta-node\n\nThe files of this run are on beta-node. Open it in that node's window to see them."
+        }
+      },
+      "liveAnswer": true,
+      "ownerMessageCount": 1,
+      "ownerHeadingShown": true,
+      "mentionMenuLocalControl": 1,
+      "mentionProbe": [
+        {
+          "role": null,
+          "expanded": null,
+          "value": "@",
+          "placeholder": "Message lead on beta-node…",
+          "header": "L | lead | beta-node"
+        },
+        {
+          "role": null,
+          "expanded": null,
+          "value": "@",
+          "placeholder": "Message publisher on beta-node…",
+          "header": "P | publisher - CAE6 | beta-node"
+        },
+        {
+          "role": null,
+          "expanded": null,
+          "value": "@",
+          "placeholder": "Message lead on beta-node…",
+          "header": "L | lead - B688 | beta-node"
+        },
+        {
+          "role": null,
+          "expanded": null,
+          "value": "@",
+          "placeholder": "Message publisher on beta-node…",
+          "header": "P | publisher | beta-node"
+        },
+        {
+          "role": "combobox",
+          "expanded": "true",
+          "value": "@",
+          "placeholder": "Ask anything · @ for an agent or team",
+          "header": "D | CALL_TOOL:{\"name\":\"delegate_task\",\"argume… | Idle"
+        }
+      ],
+      "liveNote": null
+    },
+    "RTP-05": {
+      "result": "Pass",
+      "stopVisible": true,
+      "stoppedOnBeta": true,
+      "rowAfter": {
+        "chip": "beta-node",
+        "title": null,
+        "error": null,
+        "checking": null,
+        "statusDot": true,
+        "name": "beta-node",
+        "ariaLabel": "Temporary task agent, publisher, level 1, offline, Started by lead, /publisher, on beta-node, Task: Publish the draft. Marker REMOTE-AGENT."
+      }
+    },
+    "RTP-06": {
+      "result": "Pass",
+      "rowRetry": {
+        "standalone (remote Team)": {
+          "beforeRootOpened": {
+            "present": true,
+            "error": null,
+            "retry": 0,
+            "titleElement": 0,
+            "text": "beta-node\nstudio team\nCut the launch trailer. Marker REMOTE-TEAM.",
+            "showsTitle": true
+          },
+          "down": {
+            "present": true,
+            "error": "Couldn't reach beta-node.\nRetry",
+            "retry": 1,
+            "titleElement": 0,
+            "text": "beta-node\nstudio team\nCut the launch trailer. Marker REMOTE-TEAM.\nCouldn't reach beta-node.\nRetry",
+            "showsTitle": true
+          },
+          "secondsToError": 0.2,
+          "afterRetry": {
+            "present": true,
+            "error": null,
+            "retry": 0,
+            "titleElement": 0,
+            "text": "beta-node\nstudio team\nCut the launch trailer. Marker REMOTE-TEAM.\nChecking beta-node…",
+            "showsTitle": true
+          }
+        },
+        "team (remote Agent)": {
+          "beforeRootOpened": {
+            "present": true,
+            "error": "Couldn't reach beta-node.\nRetry",
+            "retry": 1,
+            "titleElement": 0,
+            "text": "beta-node\nP\npublisher\nPublish the draft. Marker REMOTE-AGENT.\nCouldn't reach beta-node.\nRetry",
+            "showsTitle": true
+          },
+          "down": {
+            "present": true,
+            "error": "Couldn't reach beta-node.\nRetry",
+            "retry": 1,
+            "titleElement": 0,
+            "text": "beta-node\nP\npublisher\nPublish the draft. Marker REMOTE-AGENT.\nCouldn't reach beta-node.\nRetry",
+            "showsTitle": true
+          },
+          "secondsToError": 0,
+          "afterRetry": {
+            "present": true,
+            "error": null,
+            "retry": 0,
+            "titleElement": 0,
+            "text": "beta-node\nP\npublisher\nPublish the draft. Marker REMOTE-AGENT.\nChecking beta-node…",
+            "showsTitle": true
+          }
+        },
+        "org (remote Agent)": {
+          "beforeRootOpened": {
+            "present": true,
+            "error": "Couldn't reach beta-node.\nRetry",
+            "retry": 1,
+            "titleElement": 0,
+            "text": "beta-node\nP\npublisher\nCouldn't reach beta-node.\nRetry",
+            "showsTitle": false
+          },
+          "down": {
+            "present": true,
+            "error": "Couldn't reach beta-node.\nRetry",
+            "retry": 1,
+            "titleElement": 0,
+            "text": "beta-node\nP\npublisher\nCouldn't reach beta-node.\nRetry",
+            "showsTitle": false
+          },
+          "secondsToError": 0,
+          "afterRetry": {
+            "present": true,
+            "error": null,
+            "retry": 0,
+            "titleElement": 1,
+            "text": "beta-node\nP\npublisher\nOrg work. Marker REMOTE-ORG.",
+            "showsTitle": true
+          }
+        },
+        "org (remote Team)": {
+          "beforeRootOpened": {
+            "present": true,
+            "error": "Couldn't reach beta-node.\nRetry",
+            "retry": 1,
+            "titleElement": 0,
+            "text": "beta-node\nstudio team\nCouldn't reach beta-node.\nRetry",
+            "showsTitle": false
+          },
+          "down": {
+            "present": true,
+            "error": "Couldn't reach beta-node.\nRetry",
+            "retry": 1,
+            "titleElement": 0,
+            "text": "beta-node\nstudio team\nCouldn't reach beta-node.\nRetry",
+            "showsTitle": false
+          },
+          "secondsToError": 0,
+          "afterRetry": {
+            "present": true,
+            "error": null,
+            "retry": 0,
+            "titleElement": 1,
+            "text": "beta-node\nstudio team\nOrg team work. Marker REMOTE-ORG-TEAM.",
+            "showsTitle": true
+          }
+        }
+      },
+      "localStillWorks": true
+    },
+    "RTP-07": {
+      "result": "Pass",
+      "noticeRetry": {
+        "standalone (remote Team)": {
+          "opened": "publisher_9e51ffb535214eb8b7371770896c56b9",
+          "notice": "beta-node isn't reachable\n\nThis run's conversation can't be loaded right now. Your other runs work. Retry when the node is back.\n\nRetry",
+          "retryShown": true,
+          "recovered": true,
+          "rowAtOpen": {
+            "present": true,
+            "error": "Couldn't reach beta-node.\nRetry",
+            "retry": 1,
+            "titleElement": 0,
+            "text": "beta-node\nstudio team\nCut the launch trailer. Marker REMOTE-TEAM.\nCouldn't reach beta-node.\nRetry",
+            "showsTitle": true
+          },
+          "viewAtOpen": "L\nlead\nbeta-node\nOffline\n\nbeta-node isn't reachable\n\nThis run's conversation can't be loaded right now. Your other runs work. Retry when the node is back.\n\nRetry"
+        },
+        "team (remote Agent)": {
+          "opened": "publisher_7fe5a7ab184340d89ed73064d583c8a7",
+          "notice": "beta-node isn't reachable\n\nThis run's conversation can't be loaded right now. Your other runs work. Retry when the node is back.\n\nRetry",
+          "retryShown": true,
+          "recovered": true,
+          "rowAtOpen": {
+            "present": true,
+            "error": "Couldn't reach beta-node.\nRetry",
+            "retry": 1,
+            "titleElement": 0,
+            "text": "beta-node\nP\npublisher\nPublish the draft. Marker REMOTE-AGENT.\nCouldn't reach beta-node.\nRetry",
+            "showsTitle": true
+          },
+          "viewAtOpen": "P\npublisher\nbeta-node\nOffline\n\nbeta-node isn't reachable\n\nThis run's conversation can't be loaded right now. Your other runs work. Retry when the node is back.\n\nRetry"
+        },
+        "org (remote Agent)": {
+          "opened": "publisher_082aa22a48754afd922f32d703b5cae6",
+          "notice": "beta-node isn't reachable\n\nThis run's conversation can't be loaded right now. Your other runs work. Retry when the node is back.\n\nRetry",
+          "retryShown": true,
+          "recovered": true,
+          "rowAtOpen": {
+            "present": true,
+            "error": "Couldn't reach beta-node.\nRetry",
+            "retry": 1,
+            "titleElement": 0,
+            "text": "beta-node\nP\npublisher\nCouldn't reach beta-node.\nRetry",
+            "showsTitle": false
+          },
+          "viewAtOpen": "P\npublisher - CAE6\nbeta-node\nOffline\n\nbeta-node isn't reachable\n\nThis run's conversation can't be loaded right now. Your other runs work. Retry when the node is back.\n\nRetry"
+        },
+        "org (remote Team)": {
+          "opened": "publisher_7f8fd651edaf4ad3a076b46e3ec7b688",
+          "notice": "beta-node isn't reachable\n\nThis run's conversation can't be loaded right now. Your other runs work. Retry when the node is back.\n\nRetry",
+          "retryShown": true,
+          "recovered": true,
+          "rowAtOpen": {
+            "present": true,
+            "error": "Couldn't reach beta-node.\nRetry",
+            "retry": 1,
+            "titleElement": 0,
+            "text": "beta-node\nstudio team\nCouldn't reach beta-node.\nRetry",
+            "showsTitle": false
+          },
+          "viewAtOpen": "L\nlead - B688\nbeta-node\nOffline\n\nbeta-node isn't reachable\n\nThis run's conversation can't be loaded right now. Your other runs work. Retry when the node is back.\n\nRetry"
+        }
+      }
+    }
+  },
+  "browserErrors": [
+    "console: Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)",
+    "console: TypeError: Failed to fetch dynamically imported module: http://127.0.0.1:53690/_nuxt/pages/index.vue",
+    "console: [nuxt] error caught during app initialization H3Error: Failed to fetch dynamically imported module: http://127.0.0.1:53690/_nuxt/pages/index.vue",
+    "console: Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)",
+    "console: [nuxt] error caught during app initialization H3Error: Failed to fetch dynamically imported module: http://127.0.0.1:53690/_nuxt/pages/index.vue"
+  ],
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "finishedAt": "2026-11-06T10:58:02.148Z"
+}

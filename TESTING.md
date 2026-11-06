@@ -39,7 +39,7 @@ Run commands from the repository root. `pnpm -C <dir>` runs a package's script.
 | Server unit / integration | Backend logic and in-process integration | `pnpm -C autobyteus-server-ts test:unit`; `test:integration:prepare` once, then `test:integration`; one file: `pnpm -C autobyteus-server-ts exec vitest run <path> --no-watch` |
 | Server typecheck | `src` and the test files (`tests/`, `../test-support/`) under the build type policy, so a test that calls a removed or renamed API fails it. Production files must have no errors; test files may not exceed `typecheck-baseline.json`. A lower count also fails until `pnpm -C autobyteus-server-ts typecheck:update-baseline` shrinks the baseline; the update refuses growth. It builds the shared packages first | `pnpm -C autobyteus-server-ts typecheck` |
 | Docker starter | The starter in the server image (`autobyteus-server-ts/docker/starter/`): package selection, supervision, its socket and command, with fake server packages | `pnpm -C autobyteus-server-ts test:starter` |
-| Server E2E | Real HTTP/GraphQL/WebSocket boundaries on a test-owned server and database (`tests/e2e/`). Suites that import the Brief Studio sample application need `pnpm -C autobyteus-server-ts test:integration:prepare` once and fail naming it otherwise | `pnpm test:e2e`, or one file with `vitest run` as above |
+| Server E2E | Real HTTP/GraphQL/WebSocket boundaries on a test-owned server and database (`tests/e2e/`). A suite that needs a prepared build output names it when it is missing | `pnpm test:e2e`, or one file with `vitest run` as above |
 | Gated runtime suites | Real or scripted runtimes and providers (`RUN_*` gates in `autobyteus-server-ts/tests/e2e/`) | The gate and command are in the test file |
 | Release smoke | New runs with configured skills start on every runtime, in the user's skill setup | `python3 scripts/release_smoke.py`; see [RELEASE.md](RELEASE.md#release-smoke-check) |
 | Core library tests | `autobyteus-ts` runtime, tools, LLM layer (credential-free; live provider tests stay skipped without their gate) | `pnpm -C autobyteus-ts test`; one folder: `pnpm -C autobyteus-ts exec vitest run tests/unit` |
@@ -177,8 +177,7 @@ types that the runner does not have.
   [Test vault](#test-vault)).
 - **Local model servers share limited compute.** LM Studio and Ollama run on this machine. Run at
   most one agent run or suite that uses a local model at a time, never in parallel, and prefer a
-  small, fast model (for example `qwen/qwen3.6-35b-a3b`, the gated LM Studio suite's default via
-  `LMSTUDIO_TARGET_TEXT_MODEL`). Unload any model your run loaded just-in-time when you finish.
+  small, fast model. Unload any model your run loaded just-in-time when you finish.
 - **Live Codex model.** Live Codex tests use `gpt-6.1-terra`, with reasoning effort `medium`
   unless the test needs more (the cheapest current model; override a test's model variable only
   when the test needs another).
@@ -200,11 +199,9 @@ types that the runner does not have.
     `HOME` gives a signed-out `agy`. For a signed-in one, copy only
     `antigravity-oauth-token` into the throwaway home; never symlink it or point at the
     user's real folder, because `agy` writes into that folder. Never print or commit it.
-    Known gap: `agy` 1.3.5 has no `antigravity-oauth-token` file, and a throwaway `HOME`
-    gives a signed-out `agy` (checked 2026-10-14). No isolated signed-in recipe is known for
-    that version yet. Until one is, live AGY suites run on the host login with the real
-    `HOME`; each run adds its own conversations to the user's `agy` history. Say so in your
-    report.
+    When the installed `agy` keeps no `antigravity-oauth-token` file, a throwaway `HOME` gives a
+    signed-out `agy`; live AGY suites then run on the host login with the real `HOME`, and each
+    run adds its own conversations to the user's `agy` history. Say so in your report.
   - **Isolated desktop instances.** The embedded server receives only a system-baseline
     environment. Of the CLI homes, only `CODEX_HOME` passes through, so start (and
     `restart`) the instance with it set. Other runtime variables reach only in-process
@@ -269,12 +266,10 @@ environment variables: test setups delete inherited `*_API_KEY` variables.
   replaces them. `pnpm test-vault status` shows the location and the configured and missing
   secret IDs (never values); `pnpm test-vault remove` deletes the vault files.
 - **Test-only secrets.** A live check may need a secret that is not a provider key. Its alias in
-  the source file maps to a test-only secret ID: `AUTOBYTEUS_TEST_GITHUB_TOKEN=…` is stored as
-  `test.github.token`, which the GitHub MCP live check (`RUN_GITHUB_MCP_E2E=1`) and the GitHub
-  credential proxy live check (`RUN_GITHUB_PROXY_E2E=1`, which also posts one comment on the test
-  repository's issue #1 per run) read and send once to a server with its
-  own vault. Only `test-vault setup` accepts these aliases;
-  `secrets:import` into an application vault refuses them.
+  the source file maps to a test-only secret ID; the suite's header names it, and
+  [Secret Management](autobyteus-server-ts/docs/modules/secret_management.md#test-vault) lists
+  them. Only `test-vault setup` accepts these aliases; `secrets:import` into an application vault
+  refuses them.
 - **Read-only, like a test database.** A server started with the variable reads the test vault
   instead of its own: `pnpm test:e2e:real` (its preflight prints `Vault: test vault …`), an
   isolated instance, a server you start yourself. Settings saves fail with
@@ -295,12 +290,9 @@ environment variables: test setups delete inherited `*_API_KEY` variables.
   started from that shell (web probes, manual servers) would read the test vault too.
 
 ```bash
-AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_LIVE_PROVIDER_TESTS=1 pnpm -C autobyteus-ts exec vitest run tests/integration/llm/api/deepseek-llm.test.ts
+AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_LIVE_PROVIDER_TESTS=1 pnpm -C autobyteus-ts exec vitest run <live test file>
 AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault pnpm test:e2e:real:preflight
-AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault pnpm test:e2e:real -- --scenarios=deepseek.llm
-AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_DEEPSEEK_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts --no-watch
-AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_GITHUB_MCP_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/mcp/mcp-github-remote-live.e2e.test.ts --no-watch
-AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_GITHUB_PROXY_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/credential-proxy/github-credential-proxy-live.e2e.test.ts --no-watch
+AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_<GATE>=1 pnpm -C autobyteus-server-ts exec vitest run <gated e2e file> --no-watch
 AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault pnpm --silent isolated-app start --build
 ```
 

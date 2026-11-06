@@ -17,7 +17,7 @@
 // - NVP-02 (REQ-913): beta's row says "This node's identity is waiting for its data migration." while the page works.
 // - NVP-03 (REQ-910): the Memory Sync card's label is "Memory Sync source ID" (en) and "记忆同步源 ID" (zh-CN); the Memory
 //   page lists this node's memory and beta's imported memory.
-// - NVP-04 (SM-8): the phone shell opens paired (its home, not the pairing screen) from the released session; the session
+// - NVP-04 (SM-8): the phone shell opens paired (its run list, not the pairing screen) from the released session; the session
 //   is stored as `autobyteus.remote_access.mobile_session` with `entryId` and without `version`; the released key is gone.
 // - NVP-05 (REQ-913): alpha restarted with its hub credentials released and cut short (no record of SM-2 … SM-5): the card
 //   shows "Memory Sync is waiting for its data migration."; the Memory page lists only this node's memory.
@@ -299,7 +299,8 @@ try {
     await mobile.goto(`${frontendUrl}/mobile`, { waitUntil: 'domcontentloaded', timeout: 120_000 });
     let shown = null;
     await waitFor('the phone shell', async () => {
-      if (await mobile.locator('[data-testid="mobile-home"]').count()) shown = 'home';
+      // The paired phone's first screen is its run list (autobyteus-277; it was Home before).
+      if (await mobile.locator('[data-testid="mobile-run-list"]').count()) shown = 'runs';
       else if (await mobile.locator('[data-testid="mobile-pairing-bootstrap"]').count()) shown = 'pairing';
       return shown !== null;
     }, 60_000).catch(() => undefined);
@@ -308,7 +309,7 @@ try {
     const releasedLeft = await mobile.evaluate(key => localStorage.getItem(key), RELEASED_SESSION_KEY);
     await mobile.screenshot({ path: path.join(outputDir, 'NVP-04-phone.png'), fullPage: true });
     const { version: _version, nodeId, ...rest } = releasedSession;
-    expect(shown === 'home' && !(await mobile.locator('[data-testid="mobile-pairing-bootstrap"]').count()), `the phone stays paired: ${shown}`);
+    expect(shown === 'runs' && !(await mobile.locator('[data-testid="mobile-pairing-bootstrap"]').count()), `the phone stays paired: ${shown}`);
     expect(JSON.stringify(stored) === JSON.stringify({ entryId: nodeId, ...rest }), `the session's current shape: ${JSON.stringify({ ...stored, credential: stored?.credential ? 'mra_…' : null })}`);
     expect(releasedLeft === null, 'the released key is gone');
     await phone.close();

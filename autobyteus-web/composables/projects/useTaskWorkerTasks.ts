@@ -20,15 +20,14 @@ export const taskWorkerRefOf = (row: RunHistoryTeamExecutionRow): TaskWorkerRef 
 /**
  * A host tree's Task-worker summaries (Agent-run and Team-run hosts): keeps interest in the listed
  * rows' workers while the host is mounted, answers each row's current Task, and locates a Task.
- * Summaries exist only where the Projects tab does.
+ * Summaries are available everywhere, the phone included (autobyteus-277 DEC-010); locating a Task
+ * opens it in Projects, so it acts only where the Projects tab is.
  */
 export const useTaskWorkerTasks = (rows: () => readonly RunHistoryTeamExecutionRow[]) => {
   const store = useTaskWorkerTaskStore()
   const locator = useTaskLocatorStore()
-  const enabled = isFeatureAvailableInRuntime('projects')
-  const workers = computed(() => enabled
-    ? rows().map(taskWorkerRefOf).filter((worker): worker is TaskWorkerRef => worker !== null)
-    : [])
+  const canLocate = isFeatureAvailableInRuntime('projects')
+  const workers = computed(() => rows().map(taskWorkerRefOf).filter((worker): worker is TaskWorkerRef => worker !== null))
   let release: (() => void) | null = null
   // Retain the new set before releasing the old one, so workers still listed keep their answers.
   watch(() => workers.value.map(taskWorkerKey).sort().join('|'), () => {
@@ -40,11 +39,14 @@ export const useTaskWorkerTasks = (rows: () => readonly RunHistoryTeamExecutionR
 
   /** The row's current Task when known; null for rows without one (one-line rows). */
   const taskOf = (row: RunHistoryTeamExecutionRow): TaskWorkerTask | null => {
-    const worker = enabled ? taskWorkerRefOf(row) : null
+    const worker = taskWorkerRefOf(row)
     return worker ? store.taskOf(worker) ?? null : null
   }
-  /** Locates the Task in the right panel; `openRun` opens the row's run when the page has no right panel. */
-  const locate = (task: TaskWorkerTask, openRun: () => void) => locator.locate(task, openRun)
+  /**
+   * Locates the Task in the right panel; `openRun` opens the row's run when the page has no right panel.
+   * Where Projects is not (the phone), `locate` does nothing.
+   */
+  const locate = (task: TaskWorkerTask, openRun: () => void) => { if (canLocate) locator.locate(task, openRun) }
 
   return { taskOf, locate }
 }

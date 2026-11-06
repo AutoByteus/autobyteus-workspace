@@ -65,7 +65,7 @@ const harness = (active = true, selected = true) => {
     selection: { kind: 'agent_execution' as const, agentRunId: 'implementation-run' } } : null);
   const draft = reactive({ text: 'Unsaved work', conversation: [{ text: 'Existing message' }] });
   const history = reactive({ selectedRunId: null, selectedTeamRunId: null, navigationTopologyRevision: 0, getTeamMemberNavigationAncestorRowKeys: () => [] });
-  const actions = { onSelectRun: vi.fn(), onTerminateRun: vi.fn(), onArchiveRun: vi.fn(), onDeleteRun: vi.fn(), onTerminateTeam: vi.fn(), onArchiveTeam: vi.fn(), onDeleteTeam: vi.fn(), onSelectTeam: vi.fn(), onOpenTeamRun: vi.fn(), onSelectTeamMember: vi.fn(), onOpenAgentOrgRun: vi.fn(), onSelectAgentOrgMember: vi.fn(), onInspectAgentOrgExecution: vi.fn(), onTerminateAgentOrg: vi.fn(), onArchiveAgentOrg: vi.fn(), onDeleteAgentOrg: vi.fn() };
+  const actions = { onSelectRun: vi.fn(), onOpenAgentRun: vi.fn(), onTerminateRun: vi.fn(), onArchiveRun: vi.fn(), onDeleteRun: vi.fn(), onTerminateTeam: vi.fn(), onArchiveTeam: vi.fn(), onDeleteTeam: vi.fn(), onSelectTeam: vi.fn(), onOpenTeamRun: vi.fn(), onSelectTeamMember: vi.fn(), onOpenAgentOrgRun: vi.fn(), onSelectAgentOrgMember: vi.fn(), onInspectAgentOrgExecution: vi.fn(), onTerminateAgentOrg: vi.fn(), onArchiveAgentOrg: vi.fn(), onDeleteAgentOrg: vi.fn() };
   const definitions = ref<{id: string; avatarUrl?: string | null}[]>([]);
   const deleting = ref(false);
   let tree: ReturnType<typeof useRunListDisclosure>;

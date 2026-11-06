@@ -29,6 +29,7 @@ import { buildOrgMemberDraftContextFileOwner, buildOrgMemberFinalContextFileOwne
 import { useAgentOrgRunStore } from '~/stores/agentOrgRunStore'
 import { parseAgentOrgExecutionTree } from '~/types/collaboration/agentOrgExecution'
 import { mentionsPresentInText, toCollaboratorMentionDtos } from '~/utils/collaborators/collaboratorMentionText'
+import { createRandomId } from '~/utils/randomId'
 
 const MAX_CONFIG_READ_ATTEMPTS = 3
 
@@ -243,7 +244,7 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     if (operations.value[id] || context.submissionPending || submissions.has(keyFor(id, agentRunId))) throw new Error('AgentOrg member submission is already pending.')
     if (access === 'continuable') operations.value = { ...operations.value, [id]: 'continuation' }
     let attachments = contextPaths.map((attachment) => ({ ...attachment }))
-    const messageId = crypto.randomUUID()
+    const messageId = createRandomId()
     const dedupeKey = `member_input:${id}:${agentRunId}:${messageId}`
     const mentions = mentionsPresentInText(content, context.requestedMentions)
     const submission = beginLocalUserSubmission(context, { text: content, attachments, navigationTarget: null, mentions, identity: { messageId, dedupeKey } })

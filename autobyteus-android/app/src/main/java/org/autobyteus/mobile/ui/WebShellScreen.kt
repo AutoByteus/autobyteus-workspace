@@ -32,6 +32,8 @@ class WebShellScreen(private val context: Context) {
         if (diagnostic != null) {
             root.addView(overlay(diagnostic, callbacks), FrameLayout.LayoutParams(match(), match()))
         }
+        // Android 15 edge-to-edge: the page stays clear of the system bars, a cutout and the keyboard.
+        SystemBarInsets.pad(root)
         return root
     }
 

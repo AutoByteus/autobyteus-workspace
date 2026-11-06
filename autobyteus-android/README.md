@@ -9,9 +9,10 @@ This project builds the Android WebView shell for the existing AutoByteus `/mobi
 - native persistence of a clean saved node entry, for example `https://desktop.tailnet-name.ts.net/mobile` or an acknowledged trusted private HTTP `/mobile` URL;
 - reachability checks against `/rest/remote-access/status`;
 - WebView containment for the saved AutoByteus origin;
+- the system-bar, display-cutout and keyboard insets: Android 15 draws a targetSdk 35 app edge-to-edge, so each screen's root takes them as padding (`ui/SystemBarInsets.kt`); before Android 15 the window keeps the bars apart and nothing moves;
 - Tailscale-oriented diagnostics and recovery actions.
 
-The existing desktop Phone Access service still owns pairing sessions and credentials. The existing `/mobile` web shell still owns mobile Home, Chat, Runs, Files, Activity, new agent/team run setup, and credential storage in WebView-local `localStorage` for this MVP.
+The existing desktop Phone Access service still owns pairing sessions and credentials. The existing `/mobile` web shell still owns the phone's screens (the run list, the run screen, its views, New run and the connection sheet) and credential storage in WebView-local `localStorage` for this MVP.
 
 Agent/team run setup is not native Android code. The WebView-served **Start new** flow owns the `Auto approve tools` switch, workspace selection, and **Load workspace by server path** behavior. Workspace paths entered there are absolute paths on the paired AutoByteus node or container, not paths on the Android filesystem.
 

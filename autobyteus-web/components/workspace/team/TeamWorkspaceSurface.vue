@@ -30,7 +30,7 @@
     />
     <div class="relative min-h-0 flex-1">
       <AgentEventMonitor
-        :read-only="target.access === 'read_only' && !('root' in target && (target.context.submissionPending || target.kind === 'agent_org_team_member'))"
+        :read-only="readOnly"
         :conversation="target.context.state.conversation"
         :run-id="target.context.state.runId"
         :agent-name="memberName"
@@ -55,7 +55,7 @@ import WorkspaceRecoveryNotice from '~/components/workspace/common/WorkspaceReco
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
 import RemoteNodeChip from '~/components/workspace/remote/RemoteNodeChip.vue'
 import RemoteRunNotice from '~/components/workspace/remote/RemoteRunNotice.vue'
-import { useRemoteRunView } from '~/composables/remoteRuns/useRemoteRunView'
+import { useTargetConversation } from '~/composables/workspace/useTargetConversation'
 
 type TeamTarget = Extract<ActiveAgentWorkspaceTarget,
   { kind: 'standalone_team_member' | 'agent_org_team_member' | 'agent_org_task_team_member' }>
@@ -68,11 +68,8 @@ defineEmits<{ (event: 'new-team'): void; (event: 'edit-config'): void }>()
 
 const definitions = useAgentDefinitionStore()
 const avatarFailed = ref(false)
-const memberName = computed(() => props.target.context.config.agentDefinitionName
-  || props.target.team.focusedMemberAddress.split('/').at(-1)?.replace(/[_-]+/g, ' ')
-  || props.target.team.teamDefinitionName)
 // autobyteus-278: a member of a Team another node runs shows its node, has no ⚙ or ＋, a notice and a box naming the node.
-const remoteView = useRemoteRunView({ agentRunId: () => props.target.context.state.runId, agentName: memberName })
+const { displayName: memberName, readOnly, senderNameByAgentRunId, remoteView } = useTargetConversation(() => props.target)
 const remote = remoteView.remote
 const initials = computed(() => memberName.value.split(/\s+/).filter(Boolean).slice(0, 2)
   .map((part) => part[0]?.toUpperCase() ?? '').join('') || 'AI')
@@ -80,8 +77,5 @@ const avatarUrl = computed(() => props.target.context.config.agentAvatarUrl?.tri
   || definitions.getAgentDefinitionById(props.target.context.config.agentDefinitionId)?.avatarUrl?.trim()
   || '')
 const showAvatar = computed(() => Boolean(avatarUrl.value) && !avatarFailed.value)
-const senderNameByAgentRunId = computed(() => Object.freeze(Object.fromEntries(Object.entries(
-  props.target.collaborationMessages.memberIdentityByAgentRunId(),
-).map(([agentRunId, identity]) => [agentRunId, identity.label]))))
 watch(avatarUrl, () => { avatarFailed.value = false })
 </script>

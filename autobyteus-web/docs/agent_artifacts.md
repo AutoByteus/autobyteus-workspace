@@ -146,11 +146,12 @@ Rules:
 - Selecting a message shows its content in the detail pane through the shared
   Markdown renderer while keeping raw absolute paths as plain text. Selecting a
   reference switches that same pane to the message-owned reference viewer.
-- Mobile Team Communication renders the same structured `referenceFiles` as
-  tappable phone rows instead of collapsing them to an inert count. Mobile uses
-  the same message-owned identity (`teamRunId`, `messageId`, `referenceId`) in a
-  full-screen wrapper and returns to the same message list/focused-member
-  context on close. Mobile does not scan message prose for paths.
+- The phone's Messages screen (⋮ → Messages, for a member of a Team or Org)
+  renders the same structured `referenceFiles` as tappable rows instead of
+  collapsing them to an inert count. It uses the same message-owned identity
+  (`teamRunId`, `messageId`, `referenceId`) in a full-screen wrapper that is a
+  history entry, so ← or Back closes it and returns to the same message list.
+  Mobile does not scan message prose for paths.
 
 ## Data Flow
 
@@ -163,7 +164,7 @@ flowchart LR
   E --> F[<run-memory-dir>/file_changes.json]
   D --> G[runFileChangesStore]
   G --> H[Desktop ArtifactsTab: Agent Artifacts]
-  G --> U[MobileArtifacts: focused run/member Agent Artifacts]
+  G --> U[Phone MobileArtifacts: the open agent's Agent Artifacts]
 
   I[Accepted team-route INTER_AGENT_MESSAGE] --> J[TeamCommunicationMessageProcessor]
   J --> K[TEAM_COMMUNICATION_MESSAGE]
@@ -175,7 +176,7 @@ flowchart LR
   P --> R[Team tab: Team Communication]
   R --> S[TeamCommunicationReferenceViewer]
   S --> T[REST: message reference content route]
-  P --> V[MobileTeamMessages]
+  P --> V[Phone MobileMessages]
   V --> W[MobileTeamReferenceViewer]
   W --> S
 ```
@@ -190,15 +191,14 @@ flowchart LR
 | Standalone Agent Artifact hydration | `autobyteus-web/services/runHydration/runContextHydrationService.ts` | Loads a standalone run's artifacts with its run context. |
 | Collaboration member run-state hydration | `autobyteus-web/services/runHydration/memberRunStateHydration.ts` | Shared owner for Team members, Agent Org members and the delegated runs of a standalone run (`services/agentCollaboration/agentRunCollaborationHydration.ts`). `fetchMemberRunState` fetches a member's projection and its artifacts in parallel. `commitMemberRunStates` commits all member Activity in one revision-guarded replacement, then merges each member's artifacts. On a revision conflict nothing is written, artifacts included. |
 | Desktop Artifacts tab | `autobyteus-web/components/workspace/agent/ArtifactsTab.vue` | Displays only run-scoped Agent Artifacts in the desktop right-side panel, and passes the active workspace target's owner subject (`activeWorkspaceTarget.browse`) to the viewer. |
-| Mobile Artifacts view | `autobyteus-web/components/mobile/MobileArtifacts.vue` | Displays only run-scoped Agent Artifacts for the mobile-selected agent run or focused team member run, using the same run artifact store and `ArtifactContentViewer` rather than the desktop right-panel layout. |
-| Mobile focused-run identity | `autobyteus-web/composables/mobile/useMobileFocusedRunIdentity.ts` | Centralizes the mobile agent/team focused run-id guard shared by Activity and Artifacts so stale mobile selections do not leak artifacts or activity from another run, and gives the focused run's owner subject (`focusedReadSubject`) that the mobile viewer reads through. |
+| Mobile Artifacts screen | `autobyteus-web/components/mobile/views/MobileArtifacts.vue` | The phone's ⋮ → Artifacts screen. Displays only the run-scoped Agent Artifacts of the open agent: the run screen's `ActiveAgentWorkspaceTarget`, the same target the desktop uses, so a phone screen cannot show another run's artifacts. It uses the same run artifact store and `ArtifactContentViewer`. One artifact is shown directly, several are one-line rows, and a run on another node says its files are on that node. |
 | Participant messages | `autobyteus-web/services/collaborationMessages/collaborationParticipantMessages.ts` | Loads one participant's messages of a hub, Team or Org run through `collaborationParticipantMessages` when the Team tab is shown; merges live messages by ID; reloads on a rebuild of the root only when a message could have been missed (another live sequence, or a message past what the lists hold; autobyteus-358). |
 | Member loader | `autobyteus-web/services/runHydration/memberLoader.ts` | Loads a Team member's, Org member's or hub copy's stored conversation, activities and files when it is opened; one generation per root, begun by every rebuild (autobyteus-358). |
 | Collaboration Messages section | `autobyteus-web/components/workspace/collaboration/CollaborationMessagesSection.vue` | Computes the focused member's message rows once per view and passes them to the panel. Shared by Team, AgentOrg, and standalone Messages. |
 | Collaboration Messages panel | `autobyteus-web/components/workspace/collaboration/CollaborationMessagesPanel.vue` | Renders compact sent/received message rows with a reference count, the bounded reference list (first 20 + Show all) under the selected message only, and Markdown message detail. |
 | Team reference viewer | `autobyteus-web/components/workspace/team/TeamCommunicationReferenceViewer.vue` | Opens a reference through the message-owned content route and owns local inline/maximized preview state. |
-| Mobile Team messages | `autobyteus-web/components/mobile/MobileTeamMessages.vue` | Renders the focused member's Team Communication messages in the mobile shell and exposes each structured reference file as a tappable phone row. |
-| Mobile Team reference wrapper | `autobyteus-web/components/mobile/MobileTeamReferenceViewer.vue` | Wraps `TeamCommunicationReferenceViewer` in a full-screen mobile surface, passes message-owned identity through, and disables rich HTML preview for mobile. |
+| Mobile Messages screen | `autobyteus-web/components/mobile/views/MobileMessages.vue` | The phone's ⋮ → Messages screen, offered only for a member of a Team or Org. Renders the messages between the open member and the other members, loaded when the screen shows them, and exposes each structured reference file as a tappable phone row. |
+| Mobile reference wrapper | `autobyteus-web/components/mobile/views/MobileTeamReferenceViewer.vue` | Wraps `CollaborationMessageReferenceViewer` in a full-screen phone surface (a 48 px bar with ← and the name), passes message-owned identity through, and disables rich HTML preview for mobile. |
 | Team reference presentation helper | `autobyteus-web/utils/teamCommunication/referenceFilePresentation.ts` | Centralizes reference display-name and icon selection so desktop and mobile Team Communication rows do not duplicate file-type presentation policy. |
 
 ## Viewer Resolution

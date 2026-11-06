@@ -129,7 +129,9 @@ export const selectTreeRunFromHistory = async (
   if (row.source === 'history') return store.openRun(row.runId, selectingOptions);
 
   if (!useAgentContextsStore().getRun(row.runId)) throw new Error(`Run '${row.runId}' is unavailable.`);
-  useAgentSelectionStore().selectRun(row.runId, 'agent');
+  // The phone selects only; its own route is its navigation (autobyteus-277).
+  if (options.selectionMode === 'mobile') useAgentSelectionStore().selectRunWithoutShellNavigation(row.runId, 'agent');
+  else useAgentSelectionStore().selectRun(row.runId, 'agent');
   store.selectedRunId = row.runId;
   store.selectedTeamRunId = null;
   store.selectedTeamMemberAddress = null;

@@ -482,7 +482,7 @@ const avatars: WorkspaceHistoryAvatarBindings = {
   getTeamMemberDisplayName: (member) => member.displayName || member.memberName, getTeamMemberInitials: () => 'M',
 };
 const actions: WorkspaceHistorySectionActions = {
-  onCreateRun: () => {}, onSelectRun: () => {},
+  onCreateRun: () => {}, onSelectRun: () => {}, onOpenAgentRun: () => {},
   onTerminateRun: () => {}, onArchiveRun: () => {}, onDeleteRun: () => {},
   onTerminateTeam: () => {}, onArchiveTeam: () => {}, onDeleteTeam: () => {},
   onSelectTeam: (team) => { if (expandedTeams.has(team.teamRunId)) expandedTeams.delete(team.teamRunId); else expandedTeams.add(team.teamRunId); },

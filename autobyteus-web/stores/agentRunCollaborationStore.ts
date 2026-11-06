@@ -6,6 +6,7 @@ import type { AgentContext } from '~/types/agent/AgentContext'
 import type { ContextFilePath } from '~/types/conversation'
 import type { ActiveAgentWorkspaceTarget } from '~/types/workspace/activeAgentWorkspaceTarget'
 import type { CollaborationMessagesContextView } from '~/types/workspace/collaborationMessagesContextView'
+import type { RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes'
 import { AgentRunCollaborationContext, type AgentRunTaskTreeRow } from '~/services/agentCollaboration/agentRunCollaborationContext'
 import { AgentRunCollaborationStreamingService } from '~/services/agentCollaboration/agentRunCollaborationStreamingService'
 import { readAgentRunCollaboration, buildAgentRunCollaborationContext } from '~/services/agentCollaboration/agentRunCollaborationHydration'
@@ -26,6 +27,7 @@ import {
 import { mentionsPresentInText, toCollaboratorMentionDtos } from '~/utils/collaborators/collaboratorMentionText'
 import { useRemoteRunsStore, type RemoteRunRetryAdapter } from '~/stores/remoteRunsStore'
 import { rebuildOfView, useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages'
+import { createRandomId } from '~/utils/randomId'
 
 /**
  * The client side of standalone runs' collaboration roots: the task children brought in with
@@ -268,6 +270,26 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
   }
   const selectedChild = (hostRunId: string): string | null => selection[hostRunId] ?? null
 
+  /**
+   * A listed standalone run's stored view, read once without restoring the run, when it has collaboration and is not
+   * loaded yet; a live run is kept current by its stream.
+   */
+  const ensureStoredView = (hostRunId: string, hasCollaboration: boolean): void => {
+    if (hasCollaboration && !contextFor(hostRunId)) void inspect(hostRunId)
+  }
+
+  /**
+   * A task row's open: a task Agent row selects its agent, a task Team row its coordinator. Answers whether a child
+   * was selected (false while the run's view is not loaded).
+   */
+  const selectTaskRow = (hostRunId: string, row: RunHistoryTransientExecutionRow): boolean => {
+    const context = contextFor(hostRunId)
+    if (!context) return false
+    const agentRunId = row.agentRunId ?? (row.teamRunIdForNode ? context.index.coordinatorRunIdOf(row.teamRunIdForNode) : null)
+    selectChild(hostRunId, agentRunId)
+    return true
+  }
+
   // Publication never changes disclosure: new Teams are closed until explicitly revealed.
   const isTaskTeamExpanded = (hostRunId: string, teamRunId: string) => (expandedTeams[hostRunId] ?? []).includes(teamRunId)
   const toggleTaskTeam = (hostRunId: string, teamRunId: string) => {
@@ -293,7 +315,7 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
     if (context.submissionPending) throw new Error('A message to this collaborator is already pending.')
     const mentions = mentionsPresentInText(content, context.requestedMentions)
     let attachments = paths.map((attachment) => ({ ...attachment }))
-    const messageId = crypto.randomUUID()
+    const messageId = createRandomId()
     const dedupeKey = `member_input:${hostRunId}:${agentRunId}:${messageId}`
     const submission = beginLocalUserSubmission(context, { text: content, attachments, navigationTarget: null, mentions, identity: { messageId, dedupeKey } })
     try {
@@ -373,6 +395,6 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
 
   return {
     contexts, errors, contextFor, syncHost, inspect, viewFor, attach, release, beginHostTermination,
-    selectChild, selectedChild, isTaskTeamExpanded, toggleTaskTeam, taskRows, hostMessagesView, childTargetFor, submit,
+    selectChild, selectedChild, ensureStoredView, selectTaskRow, isTaskTeamExpanded, toggleTaskTeam, taskRows, hostMessagesView, childTargetFor, submit,
   }
 })

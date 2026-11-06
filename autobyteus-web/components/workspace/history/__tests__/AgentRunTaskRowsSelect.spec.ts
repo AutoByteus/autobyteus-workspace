@@ -5,12 +5,12 @@ import type { RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes'
 import { AgentStatus } from '~/types/agent/AgentStatus'
 
 vi.mock('@iconify/vue', () => ({ Icon: { props: ['icon'], template: '<span :data-icon="icon" />' } }))
-const collaboration = vi.hoisted(() => ({ selectChild: vi.fn(), rows: [] as unknown[] }))
+const collaboration = vi.hoisted(() => ({ selectTaskRow: vi.fn(() => true), rows: [] as unknown[] }))
 vi.mock('~/stores/agentRunCollaborationStore', () => ({
   useAgentRunCollaborationStore: () => ({
     taskRows: () => collaboration.rows,
-    contextFor: () => ({ index: { coordinatorOf: () => ({ agentRunId: 'lead-run' }) } }), inspect: vi.fn(), isTaskTeamExpanded: () => false,
-    selectedChild: () => null, toggleTaskTeam: vi.fn(), selectChild: collaboration.selectChild,
+    contextFor: () => ({ index: { coordinatorOf: () => ({ agentRunId: 'lead-run' }) } }), ensureStoredView: vi.fn(), isTaskTeamExpanded: () => false,
+    selectedChild: () => null, toggleTaskTeam: vi.fn(), selectTaskRow: collaboration.selectTaskRow,
   }),
 }))
 
@@ -27,12 +27,20 @@ const row = (agentRunId: string): RunHistoryTransientExecutionRow => ({ kind: 't
 describe('AgentRunTaskRows selection', () => {
   beforeEach(() => { setActivePinia(createPinia()); vi.clearAllMocks(); collaboration.rows = [{ row: row('writer-run'), teamStatus: null, continuingAncestorDepths: [], hasFollowingSibling: false }] })
 
-  it.each([true, false])('selects the task agent and (re)opens its run when runSelected=%s', async (runSelected) => {
+  it.each([true, false])('selects the task row through the store and (re)opens its run when runSelected=%s', async (runSelected) => {
     const wrapper = mount(AgentRunTaskRows, { props: { runId: 'host-run', label: 'Manager run', runSelected, hasCollaboration: true },
       global: { stubs: { transition: false, 'transition-group': false } } })
     await wrapper.get('[data-test="workspace-team-transient-execution-row"]').trigger('click')
-    expect(collaboration.selectChild).toHaveBeenCalledWith('host-run', 'writer-run')
+    expect(collaboration.selectTaskRow).toHaveBeenCalledWith('host-run', expect.objectContaining({ agentRunId: 'writer-run' }))
     expect(wrapper.emitted('select-run')).toHaveLength(1)
+  })
+
+  it('opens nothing while the run\'s view is not loaded (the store selected no child)', async () => {
+    collaboration.selectTaskRow.mockReturnValueOnce(false)
+    const wrapper = mount(AgentRunTaskRows, { props: { runId: 'host-run', label: 'Manager run', runSelected: false, hasCollaboration: true },
+      global: { stubs: { transition: false, 'transition-group': false } } })
+    await wrapper.get('[data-test="workspace-team-transient-execution-row"]').trigger('click')
+    expect(wrapper.emitted('select-run')).toBeUndefined()
   })
 
   // delegated-team-aggregate-status REQ-005/006, AC-001: the context's Team status reaches the delegated Team row.

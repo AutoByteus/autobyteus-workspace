@@ -5,7 +5,7 @@ This guide covers the iOS app shell in `autobyteus-ios`. The app loads the exist
 ## Ownership boundaries
 
 - **iOS app:** native setup, QR scanning, saved node metadata, Phone Access status checks, trusted `WKWebView` containment, diagnostics, share pending-input handoff, build/signing-readiness discovery.
-- **Existing `/mobile` shell:** AutoByteus Home, Chat, Runs, Files, Activity, pairing bootstrap, and WebView-local mobile credential storage.
+- **Existing `/mobile` shell:** the run list, the run screen with its ⋮ views (Artifacts, Files, Messages, Activity), New run for agent runs, the connection sheet, pairing bootstrap, and WebView-local mobile credential storage.
 - **Remote Access backend:** Phone Access status, pairing sessions, pairing exchange, mobile credentials, revocation, and protected route authorization.
 - **Tailscale:** private network reachability only; it is not AutoByteus authorization.
 

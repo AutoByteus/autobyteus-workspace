@@ -45,6 +45,8 @@ export interface RunListSectionState {
 
 export interface RunListSectionActions {
   onSelectRun: (run: RunTreeRow) => Promise<void> | void;
+  /** The run row: opens the run's own agent, not a delegated child under it. */
+  onOpenAgentRun: (run: RunTreeRow) => Promise<void> | void;
   onTerminateRun: (runId: string) => Promise<void> | void;
   onArchiveRun: (run: RunTreeRow) => Promise<void> | void;
   onDeleteRun: (run: RunTreeRow) => void;

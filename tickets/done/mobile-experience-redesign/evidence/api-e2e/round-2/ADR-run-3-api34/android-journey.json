@@ -1,0 +1,211 @@
+{
+  "startedAt": "2026-11-06T15:13:26.403Z",
+  "device": {
+    "model": "sdk_gphone64_arm64",
+    "sdk": "34",
+    "webview": "com.google.android.webview, 113.0.5672.136"
+  },
+  "cases": {
+    "ADR-01": {
+      "result": "Pass",
+      "rows": 11,
+      "firstRowsAfterPairMs": 541,
+      "layout": {
+        "width": 412,
+        "height": 842,
+        "dpr": 2.625,
+        "horizontalScroll": false,
+        "secure": false,
+        "randomUUID": "undefined"
+      }
+    },
+    "ADR-07": {
+      "result": "Fail",
+      "error": "keyboard: {\"sdk\":\"34\",\"closed\":{\"statusBars\":{\"top\":0,\"bottom\":128,\"visible\":true},\"navigationBars\":{\"top\":2337,\"bottom\":2400,\"visible\":true},\"ime\":{\"top\":0,\"bottom\":0,\"visible\":false},\"webView\":{\"top\":128,\"bottom\":2337}},\"open\":{\"statusBars\":{\"top\":0,\"bottom\":128,\"visible\":true},\"navigationBars\":{\"top\":2337,\"bottom\":2400,\"visible\":true},\"ime\":{\"top\":1517,\"bottom\":2400,\"visible\":true},\"webView\":{\"top\":128,\"bottom\":1517}},\"composer\":{\"textareaBottom\":179.42857360839844,\"sendBottom\":178.2857208251953,\"innerHeight\":530,\"dpr\":2.625,\"safeBottom\":null,\"focused\":true,\"value\":\"typing with the keyboard\"},\"sendBottomPx\":596,\"gapToKeyboard\":921,\"controlGapToKeyboard\":62,\"layout\":{\"innerHeight\":530,\"visualViewport\":{\"height\":530,\"offsetTop\":0},\"scrollY\":0,\"conversationScrollTop\":327.23809814453125,\"screen\":{\"tag\":\"SECTION\",\"testid\":\"mobile-run-screen\",\"cls\":\"fixed inset-0 z-10 flex h-[100dvh] flex-col bg-white text-slate-900\",\"top\":0,\"bottom\":530,\"h\":530,\"pb\":\"0px\",\"mb\":\"0px\"},\"screenChildren\":[{\"tag\":\"HEADER\",\"testid\":null,\"cls\":\"relative flex h-14 flex-shrink-0 items-center border-b border-slate-200 bg-white pl-1 pr-1\",\"top\":0,\"bottom\":56,\"h\":56,\"pb\":\"0px\",\"mb\":\"0px\"},{\"tag\":\"DIV\",\"testid\":\"mobile-run-conversation\",\"cls\":\"flex h-full min-h-0 flex-col gap-3 overflow-hidden overscroll-none p-4 min-h-0 flex-1 over\",\"top\":56,\"bottom\":530,\"h\":474,\"pb\":\"16px\",\"mb\":\"0px\"}],\"conversationChildren\":[{\"tag\":\"DIV\",\"testid\":null,\"cls\":\"relative h-full min-h-0 min-h-0 flex-1\",\"top\":-255,\"bottom\":54,\"h\":309,\"pb\":\"0px\",\"mb\":\"0px\"},{\"tag\":\"DIV\",\"testid\":null,\"cls\":\"shrink-0\",\"top\":66,\"bottom\":187,\"h\":121,\"pb\":\"0px\",\"mb\":\"0px\"}],\"chain\":[{\"tag\":\"TEXTAREA\",\"testid\":null,\"cls\":\"composer-text relative w-full border-0 focus:ring-0 focus:outline-none resize-none bg-tran\",\"top\":111,\"bottom\":179,\"h\":68,\"pb\":\"10px\",\"mb\":\"0px\"},{\"tag\":\"DIV\",\"testid\":null,\"cls\":\"relative flex-grow\",\"top\":111,\"bottom\":186,\"h\":75,\"pb\":\"0px\",\"mb\":\"0px\"},{\"tag\":\"DIV\",\"testid\":null,\"cls\":\"flex flex-col bg-white\",\"top\":111,\"bottom\":186,\"h\":75,\"pb\":\"0px\",\"mb\":\"0px\"},{\"tag\":\"DIV\",\"testid\":null,\"cls\":\"border-t border-gray-100 rounded-b-xl\",\"top\":111,\"bottom\":186,\"h\":76,\"pb\":\"0px\",\"mb\":\"0px\"},{\"tag\":\"DIV\",\"testid\":null,\"cls\":\"rounded-xl border border-gray-200 bg-white shadow-sm focus-within:ring-2 focus-within:ring\",\"top\":66,\"bottom\":187,\"h\":121,\"pb\":\"0px\",\"mb\":\"0px\"},{\"tag\":\"DIV\",\"testid\":null,\"cls\":\"shrink-0\",\"top\":66,\"bottom\":187,\"h\":121,\"pb\":\"0px\",\"mb\":\"0px\"},{\"tag\":\"DIV\",\"testid\":\"mobile-run-conversation\",\"cls\":\"flex h-full min-h-0 flex-col gap-3 overflow-hidden overscroll-none p-4 min-h-0 flex-1 over\",\"top\":56,\"bottom\":530,\"h\":474,\"pb\":\"16px\",\"mb\":\"0px\"},{\"tag\":\"SECTION\",\"testid\":\"mobile-run-screen\",\"cls\":\"fixed inset-0 z-10 flex h-[100dvh] flex-col bg-white text-slate-900\",\"top\":0,\"bottom\":530,\"h\":530,\"pb\":\"0px\",\"mb\":\"0px\"},{\"tag\":\"MAIN\",\"testid\":\"mobile-remote-access-shell\",\"cls\":\"min-h-screen bg-white text-slate-900\",\"top\":0,\"bottom\":530,\"h\":530,\"pb\":\"0px\",\"mb\":\"0px\"},{\"tag\":\"DIV\",\"testid\":null,\"cls\":\"\",\"top\":0,\"bottom\":530,\"h\":530,\"pb\":\"0px\",\"mb\":\"0px\"},{\"tag\":\"DIV\",\"testid\":null,\"cls\":\"\",\"top\":0,\"bottom\":530,\"h\":530,\"pb\":\"0px\",\"mb\":\"0px\"}],\"keyboardInset\":null,\"virtualKeyboard\":null},\"noDoublePadding\":true,\"composerAboveKeyboard\":false}"
+    }
+  },
+  "network": [
+    {
+      "at": 1793978021691,
+      "op": "ListWorkspaceRunHistory",
+      "window": null
+    },
+    {
+      "at": 1793978021698,
+      "op": "ListCollaborationRootHistory",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978021701,
+      "op": "GetAllWorkspaces",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978021707,
+      "op": "GetAgentDefinitions",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978021710,
+      "op": "GetAgentTeamDefinitions",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978021721,
+      "op": "GetAgentOrgDefinitions",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978021736,
+      "op": "GetAgentRunCollaboration",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978021750,
+      "op": "GetRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978021750,
+      "op": "GetAgentRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978021751,
+      "op": "GetRunFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978021779,
+      "op": "GetTaskWorkerTasks",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978021791,
+      "op": "GetAgentRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978021791,
+      "op": "GetRunFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978021792,
+      "op": "GetRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978021798,
+      "op": "GetTaskWorkerTasks",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978021829,
+      "op": "GetRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978021829,
+      "op": "GetAgentRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978021829,
+      "op": "GetRunFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978021864,
+      "op": "GetRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978021865,
+      "op": "GetAgentRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978021865,
+      "op": "GetRunFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978021900,
+      "op": "GetRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978021900,
+      "op": "GetAgentRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978021900,
+      "op": "GetRunFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978021935,
+      "op": "GetRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978021936,
+      "op": "GetAgentRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978021936,
+      "op": "GetRunFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978021970,
+      "op": "GetRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978021970,
+      "op": "GetAgentRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978021971,
+      "op": "GetRunFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978022007,
+      "op": "GetTeamRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978022029,
+      "op": "GetTeamMemberRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978022030,
+      "op": "GetTeamMemberFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978022074,
+      "op": "GetTaskWorkerTasks",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978022083,
+      "op": "GetTeamMemberRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978022083,
+      "op": "GetTeamMemberFileChanges",
+      "window": "omitted"
+    }
+  ],
+  "notes": [],
+  "finishedAt": "2026-11-06T15:13:56.293Z"
+}

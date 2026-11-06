@@ -1,6 +1,6 @@
 # AutoByteus iOS Mobile Shell
 
-This project builds the native iOS wrapper for the existing AutoByteus `/mobile` experience. It does **not** run AutoByteus locally on iOS and it does not implement Home, Chat, Runs, Files, Activity, agent/team setup, or mobile credential exchange natively.
+This project builds the native iOS wrapper for the existing AutoByteus `/mobile` experience. It does **not** run AutoByteus locally on iOS and it does not implement the run list, the run screen and its views, New run, or mobile credential exchange natively.
 
 ## What the app owns
 
@@ -148,7 +148,7 @@ Before claiming production release readiness, validate on a physical iPhone when
 2. Enable Phone Access on the desktop/server node.
 3. Pair using a stable HTTPS `/mobile` URL.
 4. Scan QR with the in-app scanner and record camera permission/cancel recovery.
-5. Confirm `/mobile` Home/Chat/Runs/Files load in the WebView.
+5. Confirm the `/mobile` run list, a run screen and its ⋮ → Files view load in the WebView.
 6. Exercise attachment/file input in the WebView with a small local file.
 7. Force-quit/relaunch and confirm saved-node restore.
 8. Exercise an unreachable node and confirm native diagnostic recovery.

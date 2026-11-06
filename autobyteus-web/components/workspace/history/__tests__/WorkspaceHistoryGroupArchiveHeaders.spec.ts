@@ -33,7 +33,7 @@ const mountSection = (options: { agents?: any[]; archivingKeys?: string[]; withG
     onArchiveAgentGroup: vi.fn(), onArchiveTeamGroup: vi.fn(), onArchiveAgentOrgGroup: vi.fn(),
   };
   const actions = {
-    onCreateRun: vi.fn(), onSelectRun: vi.fn(), onTerminateRun: vi.fn(),
+    onCreateRun: vi.fn(), onSelectRun: vi.fn(), onOpenAgentRun: vi.fn(), onTerminateRun: vi.fn(),
     onArchiveRun: vi.fn(), onDeleteRun: vi.fn(), onSelectTeam: vi.fn(), onTerminateTeam: vi.fn(),
     onArchiveTeam: vi.fn(), onDeleteTeam: vi.fn(), onOpenTeamRun: vi.fn(), onSelectTeamMember: vi.fn(),
     ...(options.withGroupActions === false ? {} : groupActions),

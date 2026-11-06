@@ -1,137 +1,41 @@
 <template>
-  <main :class="shellClass" data-testid="mobile-remote-access-shell">
+  <main class="min-h-screen bg-white text-slate-900" data-testid="mobile-remote-access-shell">
     <MobilePairingBootstrap
       v-if="!sessionStore.isPaired || hasRoutePairingParam"
       @paired="onPaired"
-      @pairing-failed="cancelPostPairRefresh"
-      @pairing-started="beginPostPairRefresh"
+      @pairing-failed="postPair = false"
+      @pairing-started="postPair = true"
     >
       <template v-if="unsupportedMessage" #notice>
         <MobileUnsupportedFeatureNotice :message="unsupportedMessage" />
       </template>
     </MobilePairingBootstrap>
 
-    <template v-else>
-      <section
-        v-if="isPostPairChecking"
-        class="mx-auto flex min-h-screen w-full max-w-md flex-col justify-center px-5 py-8 text-center"
-        data-testid="mobile-post-pair-checking"
-      >
-        <div class="rounded-3xl border border-blue-200 bg-white p-6 shadow-sm">
-          <p class="text-xs font-bold uppercase tracking-[0.18em] text-blue-600">Pairing complete</p>
-          <h1 class="mt-3 text-2xl font-bold text-slate-950">Checking your desktop</h1>
-          <p class="mt-3 text-sm text-slate-600">
-            Refreshing Phone Access status and mobile work choices before Home opens.
-          </p>
-          <p class="mt-4 text-sm font-semibold text-blue-700">Checking status…</p>
-        </div>
-      </section>
-
-      <MobileHome
-        v-else-if="screen === 'home'"
-        :server-base-url="sessionStore.serverBaseUrl"
-        :status="sessionStore.lastStatus"
-        :is-refreshing="sessionStore.isCheckingStatus"
-        :diagnostic="sessionStore.lastDiagnostic"
-        :authorized-api-reachable="sessionStore.authorizedApiReachable"
-        :notice-message="unsupportedMessage"
-        :current-context="mobileWorkStore.currentContext"
-        :recent-items="recentWorkItems"
-        @refresh-status="checkStatus"
-        @select-context="openContext"
-        @open-work-picker="openContextSwitcher"
-        @open-files="openFiles"
-        @open-troubleshooting="screen = 'troubleshooting'"
-        @request-unpair="showUnpairConfirm = true"
-      />
-
-      <MobileWorkShell
-        v-else-if="screen === 'work'"
-        :context="mobileWorkStore.currentContext"
-        :active-tab="mobileWorkStore.activeTab"
-        @home="screen = 'home'"
-        @switch-context="openContextSwitcher"
-        @select-context="openContext"
-        @update:active-tab="mobileWorkStore.setActiveTab"
-      />
-
-      <MobileTroubleshooting
-        v-else
-        :server-base-url="sessionStore.serverBaseUrl"
-        :is-checking="sessionStore.isCheckingStatus"
-        :diagnostic="sessionStore.lastDiagnostic"
-        :status="sessionStore.lastStatus"
-        @home="screen = 'home'"
-        @check-status="checkStatus"
-      />
-
-      <MobileContextSwitcher
-        v-if="showContextSwitcher"
-        :segments="catalogSegments"
-        :selected-context="mobileWorkStore.currentContext"
-        @close="showContextSwitcher = false"
-        @select-context="openContext"
-        @retry-segment="retryCatalogSegment"
-      />
-
-      <MobileUnpairConfirm
-        v-if="showUnpairConfirm"
-        @cancel="showUnpairConfirm = false"
-        @confirm="unpairPhone"
-      />
-    </template>
+    <MobilePairedShell v-else :post-pair="postPair" :notice="unsupportedMessage" @checked="postPair = false" />
   </main>
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
-import MobileContextSwitcher from '~/components/mobile/MobileContextSwitcher.vue';
-import MobileHome from '~/components/mobile/MobileHome.vue';
+import MobilePairedShell from '~/components/mobile/MobilePairedShell.vue';
 import MobilePairingBootstrap from '~/components/mobile/MobilePairingBootstrap.vue';
-import MobileTroubleshooting from '~/components/mobile/MobileTroubleshooting.vue';
-import MobileUnpairConfirm from '~/components/mobile/MobileUnpairConfirm.vue';
 import MobileUnsupportedFeatureNotice from '~/components/mobile/MobileUnsupportedFeatureNotice.vue';
-import MobileWorkShell from '~/components/mobile/MobileWorkShell.vue';
-import { useMobileWorkCatalog } from '~/composables/mobile/useMobileWorkCatalog';
-import { useAgentContextsStore } from '~/stores/agentContextsStore';
-import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useMobileNodeSessionStore } from '~/stores/mobileNodeSessionStore';
-import { useMobileWorkStore } from '~/stores/mobileWorkStore';
-import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import type { MobileFeatureId } from '~/utils/mobileFeatureGates';
-import type { MobileCatalogSegmentId, MobileTaskTab, MobileWorkContext } from '~/types/mobileWork';
-import { preferredTabForMobileContext } from '~/types/mobileWork';
-import { clearMobileRunSelection, selectMobileRun } from '~/utils/mobile/mobileSelectionAdapter';
 
 // Keep the component name in the compiled chunk stable for existing page tests.
 defineOptions({ name: 'MobileRemoteAccessShell' });
 
 const sessionStore = useMobileNodeSessionStore();
-const mobileWorkStore = useMobileWorkStore();
-const runHistoryStore = useRunHistoryStore();
-const agentContextsStore = useAgentContextsStore();
-const teamContextsStore = useAgentTeamContextsStore();
 const route = useRoute();
-const {
-  recentWorkItems,
-  catalogSegments,
-  refreshMobileCatalogSegment,
-  refreshMobileWorkCatalog,
-} = useMobileWorkCatalog();
 
-type MobileScreen = 'home' | 'work' | 'troubleshooting';
-
-const screen = ref<MobileScreen>('home');
-const showContextSwitcher = ref(false);
-const showUnpairConfirm = ref(false);
-const isPostPairChecking = ref(false);
-const pendingPostPairRefresh = ref(false);
-const postPairRefreshPromise = ref<Promise<void> | null>(null);
+/** Just paired: the paired shell shows "Checking your desktop" until its first check ends. */
+const postPair = ref(false);
 const routePairingConsumed = ref(false);
 
 const unsupportedFeatureMessages: Partial<Record<MobileFeatureId, string>> = {
-  desktopWorkspace: 'The desktop workspace route is replaced by the phone-first mobile work shell. Use Home, Switch work, and Chat/Runs/Files/Artifacts/Activity instead.',
+  desktopWorkspace: 'The desktop workspace isn’t on the phone. Your runs are here.',
   desktopSettings: 'Desktop settings are managed from the desktop app. Phone Access exposes only phone connection controls.',
   desktopUpdates: 'Desktop update controls are not available from the phone client.',
   localFolderPicker: 'Local folder picking is not available from the phone client.',
@@ -143,145 +47,11 @@ const unsupportedMessage = computed(() => {
   const feature = String(route.query.unsupported ?? '') as MobileFeatureId;
   return unsupportedFeatureMessages[feature] ?? null;
 });
-const routePairingParam = computed(() => {
-  if (Array.isArray(route.query.pairing)) {
-    return String(route.query.pairing[0] ?? '').trim();
-  }
-  return String(route.query.pairing ?? '').trim();
-});
+const routePairingParam = computed(() => String((Array.isArray(route.query.pairing) ? route.query.pairing[0] : route.query.pairing) ?? '').trim());
 const hasRoutePairingParam = computed(() => Boolean(routePairingParam.value) && !routePairingConsumed.value);
-const shellClass = computed(() => [
-  'bg-slate-100 text-slate-900',
-  screen.value === 'work'
-    ? 'fixed inset-0 h-screen h-[100dvh] overflow-hidden overscroll-none'
-    : 'min-h-screen',
-]);
 
-async function checkStatus(): Promise<void> {
-  const [statusResult, catalogResult] = await Promise.allSettled([
-    sessionStore.fetchStatus(),
-    refreshMobileWorkCatalog(),
-  ]);
-  const statusReachable = statusResult.status === 'fulfilled' && Boolean(statusResult.value);
-  const catalogReachable = catalogResult.status === 'fulfilled' && catalogResult.value.hadSuccess;
-  const catalogAuthFailed = catalogResult.status === 'fulfilled' && catalogResult.value.hadAuthFailure && !catalogReachable;
-  if (catalogAuthFailed) {
-    sessionStore.rejectLocalSessionForAuthFailure();
-    return;
-  }
-  sessionStore.recordAuthorizedApiReachability(catalogReachable || statusReachable);
-}
-
-async function openRunContext(context: MobileWorkContext): Promise<void> {
-  if (context.kind === 'agent-run') {
-    if (agentContextsStore.getRun(context.runId)) {
-      selectMobileRun(context.runId, 'agent');
-    } else {
-      await runHistoryStore.openRun(context.runId, { selectionMode: 'mobile' });
-    }
-  } else if (context.kind === 'team-run') {
-    if (teamContextsStore.getTeamContextById(context.teamRunId)) {
-      const result = await runHistoryStore.inspectTeamMember(
-        context.teamRunId,
-        context.focusedAgentRunId,
-        { selectionMode: 'mobile' },
-      );
-      if (result.disposition === 'rejected') throw new Error(result.message);
-    } else {
-      await runHistoryStore.openTeamMemberRun(context.teamRunId, context.focusedAgentRunId, { selectionMode: 'mobile' });
-      selectMobileRun(context.teamRunId, 'team');
-    }
-  } else {
-    clearMobileRunSelection();
-  }
-}
-
-async function openContext(context: MobileWorkContext, tab?: MobileTaskTab): Promise<void> {
-  showContextSwitcher.value = false;
-  const targetTab = tab ?? preferredTabForMobileContext(context);
-  try {
-    await openRunContext(context);
-    mobileWorkStore.selectContext(context, targetTab);
-    if (context.kind === 'agent-definition') {
-      mobileWorkStore.requestRunSetup({ kind: 'agent', agentDefinitionId: context.agentDefinitionId });
-    } else if (context.kind === 'team-definition') {
-      mobileWorkStore.requestRunSetup({ kind: 'team', teamDefinitionId: context.teamDefinitionId });
-    }
-    screen.value = 'work';
-  } catch (error) {
-    console.warn('[MobileRemoteAccessShell] Failed to open selected mobile context.', error);
-  }
-}
-
-async function retryCatalogSegment(segmentId: MobileCatalogSegmentId): Promise<void> {
-  const success = await refreshMobileCatalogSegment(segmentId);
-  if (success) {
-    sessionStore.recordAuthorizedApiReachability(true);
-  }
-}
-
-function openFiles(): void {
-  mobileWorkStore.setActiveTab('files');
-  screen.value = 'work';
-}
-
-function openContextSwitcher(): void {
-  showContextSwitcher.value = true;
-}
-
-function unpairPhone(): void {
-  showUnpairConfirm.value = false;
-  mobileWorkStore.clearContext();
-  sessionStore.deleteLocalSession();
-  screen.value = 'home';
-  pendingPostPairRefresh.value = false;
-  isPostPairChecking.value = false;
-  postPairRefreshPromise.value = null;
-}
-
-function beginPostPairRefresh(): void {
-  screen.value = 'home';
-  pendingPostPairRefresh.value = true;
-  isPostPairChecking.value = true;
-}
-
-function cancelPostPairRefresh(): void {
-  pendingPostPairRefresh.value = false;
-  isPostPairChecking.value = false;
-  postPairRefreshPromise.value = null;
-}
-
-async function completePostPairRefresh(): Promise<void> {
-  if (!sessionStore.isPaired) {
-    return;
-  }
-  beginPostPairRefresh();
-  if (postPairRefreshPromise.value) {
-    return postPairRefreshPromise.value;
-  }
-
-  const refreshPromise = (async () => {
-    try {
-      await checkStatus();
-    } finally {
-      pendingPostPairRefresh.value = false;
-      isPostPairChecking.value = false;
-      postPairRefreshPromise.value = null;
-    }
-  })();
-  postPairRefreshPromise.value = refreshPromise;
-  return refreshPromise;
-}
-
-async function onPaired(): Promise<void> {
-  clearRoutePairingParam();
-  await completePostPairRefresh();
-}
-
-function clearRoutePairingParam(): void {
-  if (!hasRoutePairingParam.value || typeof window === 'undefined') {
-    return;
-  }
+function onPaired(): void {
+  if (!hasRoutePairingParam.value || typeof window === 'undefined') return;
   routePairingConsumed.value = true;
   const nextUrl = new URL(window.location.href);
   nextUrl.searchParams.delete('pairing');
@@ -289,20 +59,10 @@ function clearRoutePairingParam(): void {
 }
 
 watch(() => sessionStore.isPaired, (isPaired, wasPaired) => {
-  if (isPaired && pendingPostPairRefresh.value) {
-    void completePostPairRefresh();
-    return;
-  }
-  if (!isPaired && wasPaired) {
-    cancelPostPairRefresh();
-  }
+  if (!isPaired && wasPaired) postPair.value = false;
 });
 
-onMounted(async () => {
+onMounted(() => {
   sessionStore.initializeFromStorage();
-  if (!sessionStore.isPaired) {
-    return;
-  }
-  await checkStatus();
 });
 </script>

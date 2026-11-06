@@ -4,7 +4,7 @@ import { useEventMonitorFilePreview } from '../useEventMonitorFilePreview';
 const {
   activeContextStoreMock,
   fileExplorerStoreMock,
-  mobileWorkStoreMock,
+  mobileNavigationMock,
   windowNodeContextStoreMock,
   workspaceStoreMock,
   mapAbsolutePathToWorkspaceRelativeMock,
@@ -14,7 +14,7 @@ const {
 } = vi.hoisted(() => ({
   activeContextStoreMock: { activeWorkspaceTarget: null as any, resolveWorkspaceMetadataForTarget: vi.fn() },
   fileExplorerStoreMock: { openFilePreview: vi.fn() },
-  mobileWorkStoreMock: { currentContext: null as any, requestFilePreview: vi.fn() },
+  mobileNavigationMock: { openFile: vi.fn(async () => undefined) },
   windowNodeContextStoreMock: { isEmbeddedWindow: false, bindingRevision: 0 },
   workspaceStoreMock: {
     activeWorkspaceMetadata: {
@@ -39,8 +39,8 @@ vi.mock('~/stores/fileExplorer', () => ({
   useFileExplorerStore: () => fileExplorerStoreMock,
 }));
 
-vi.mock('~/stores/mobileWorkStore', () => ({
-  useMobileWorkStore: () => mobileWorkStoreMock,
+vi.mock('~/composables/mobile/useMobileNavigation', () => ({
+  useMobileNavigation: () => mobileNavigationMock,
 }));
 
 vi.mock('~/stores/windowNodeContextStore', () => ({
@@ -78,7 +78,6 @@ describe('useEventMonitorFilePreview', () => {
     activeContextStoreMock.activeWorkspaceTarget = null;
     activeContextStoreMock.resolveWorkspaceMetadataForTarget.mockReset();
     windowNodeContextStoreMock.bindingRevision = 0;
-    mobileWorkStoreMock.currentContext = null;
     windowNodeContextStoreMock.isEmbeddedWindow = false;
     isMobileRemoteAccessRuntimeMock.mockReturnValue(false);
     hasTrustedElectronLocalFileCapabilityMock.mockReturnValue(false);
@@ -221,7 +220,9 @@ describe('preserved mobile containment', () => {
     vi.clearAllMocks();
     revealToolMock.mockReset().mockResolvedValue(true);
     isMobileRemoteAccessRuntimeMock.mockReturnValue(true);
-    mobileWorkStoreMock.currentContext = { kind: 'workspace', workspaceId: 'B', rootPath: '/owned/B' };
+    // autobyteus-277 DS-008: the open target's folder; the file opens on the phone's Files screen.
+    activeContextStoreMock.activeWorkspaceTarget = { context: { state: { runId: 'run-B' }, config: {} }, workspaceRootPath: '/owned/B' };
+    workspaceStoreMock.resolveWorkspaceMetadataByRootPath.mockResolvedValue({ workspaceId: 'B', workspaceRootPath: '/owned/B' });
   });
   for (const inside of [true, false]) {
     it(`uses only mapped workspace content on mobile; inside: ${inside}`, async () => {
@@ -229,8 +230,8 @@ describe('preserved mobile containment', () => {
       expect((await useEventMonitorFilePreview({ ...options(), revealTool: null }).openPath(action)).status).toBe(inside ? 'opened' : 'unavailable');
       expect(fileExplorerStoreMock.openFilePreview).not.toHaveBeenCalled();
       expect(hasTrustedElectronLocalFileCapabilityMock).not.toHaveBeenCalled();
-      if (inside) expect(mobileWorkStoreMock.requestFilePreview).toHaveBeenCalledWith(expect.objectContaining({ workspaceId: 'B', relativePath: 'brief.md', readOnly: true }));
-      else expect(mobileWorkStoreMock.requestFilePreview).not.toHaveBeenCalled();
+      if (inside) expect(mobileNavigationMock.openFile).toHaveBeenCalledWith({ workspaceId: 'B', path: 'brief.md' });
+      else expect(mobileNavigationMock.openFile).not.toHaveBeenCalled();
     });
   }
 });

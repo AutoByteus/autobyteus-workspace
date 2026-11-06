@@ -10,8 +10,8 @@ const rows = vi.hoisted(() => ({ value: null as unknown as import('vue').Ref<unk
 vi.mock('~/stores/agentRunCollaborationStore', () => ({
   useAgentRunCollaborationStore: () => ({
     taskRows: () => rows.value.value,
-    contextFor: () => ({}), inspect: vi.fn(), isTaskTeamExpanded: () => false, selectedChild: () => null,
-    toggleTaskTeam: vi.fn(), selectChild: vi.fn(),
+    contextFor: () => ({}), ensureStoredView: vi.fn(), isTaskTeamExpanded: () => false, selectedChild: () => null,
+    toggleTaskTeam: vi.fn(), selectTaskRow: vi.fn(() => true),
   }),
 }))
 

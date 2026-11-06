@@ -1,0 +1,1539 @@
+{
+  "startedAt": "2026-11-06T16:01:22.158Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 62501,
+      "nodeId": "srv_8n9Ak7FAZ9D5CqrG8gJY67yXTXxfafr7",
+      "serverName": "AutoByteus Desktop"
+    },
+    "beta": {
+      "port": 62502,
+      "nodeId": "srv_BLLTDtYWie_5hqj3unhQmYv02kNl3k_j",
+      "serverName": "AutoByteus Desktop"
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_9f81a51f6e2c46bf849cd35bbf11777d",
+    "writerRun": "release_notes_writer_ab0cc4d7551143cfb8287dcbce036c69",
+    "squadRun": "docs_review_team_852c1dbb140a4ce78e380f6a0965da09",
+    "reviewer": "release_notes_writer_adf3b15cb3cb4ed9af2db2af54dce858",
+    "memberDelegated": "fact_checker_9705cee736f54fc6bc8f70d16028150c",
+    "remoteAgentRun": "publisher_30001fb3092742b28db8750a601d97cb",
+    "remoteTeamRun": "studio_team_760552e5f35e4a4fa033c66ff6395a00",
+    "plain": [
+      "fact_checker_ec955a0dfd854e00a5c84eecf6ea8a23",
+      "fact_checker_8c642d72da1c49e680eafc6e6b69a549",
+      "fact_checker_4a32ec054e1746c99bb04272c647b40c"
+    ],
+    "org": "delivery_org_28c92e2dbc974b0c9a19c26de05e13df",
+    "orgPlanner": "release_notes_writer_ea896fb057a545068d8a1622a7db9926",
+    "reviewOrg": "review_org_924c0e1f41d24b36bb2ec7a1deeecf8e",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_1fd41902a1004fd6bc670e635528f252",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_022c8beb42b24640b96ea4ef361713a1",
+    "deliveryLead": "fact_checker_125d3960e65548f08db071a9e35e0b82",
+    "deliveryMate": "release_notes_writer_bfc6211bf54b493ca93bf36e713146c2",
+    "leadDelegated": "changelog_helper_6e2de44fbfea49828ce586a895f82b28",
+    "approver": "approver_141c2a30abcb4386b9eeee69c32cfdc4",
+    "taskA": "launch-bb8e38-1",
+    "taskB": "launch-bb8e38-2"
+  },
+  "cases": {
+    "MSP-01": {
+      "result": "Pass",
+      "seconds": 11.5,
+      "desktopIds": [
+        "project_task_manager_9f81a51f6e2c46bf849cd35bbf11777d",
+        "approver_141c2a30abcb4386b9eeee69c32cfdc4",
+        "delivery_team_022c8beb42b24640b96ea4ef361713a1",
+        "delivery_org_28c92e2dbc974b0c9a19c26de05e13df",
+        "review_org_924c0e1f41d24b36bb2ec7a1deeecf8e",
+        "fact_checker_4a32ec054e1746c99bb04272c647b40c",
+        "fact_checker_8c642d72da1c49e680eafc6e6b69a549",
+        "fact_checker_ec955a0dfd854e00a5c84eecf6ea8a23"
+      ],
+      "phoneIds": [
+        "project_task_manager_9f81a51f6e2c46bf849cd35bbf11777d",
+        "approver_141c2a30abcb4386b9eeee69c32cfdc4",
+        "delivery_team_022c8beb42b24640b96ea4ef361713a1",
+        "delivery_org_28c92e2dbc974b0c9a19c26de05e13df",
+        "review_org_924c0e1f41d24b36bb2ec7a1deeecf8e",
+        "fact_checker_4a32ec054e1746c99bb04272c647b40c",
+        "fact_checker_8c642d72da1c49e680eafc6e6b69a549",
+        "fact_checker_ec955a0dfd854e00a5c84eecf6ea8a23"
+      ],
+      "foldBefore": "Show older (3)",
+      "foldOpen": "Show fewer",
+      "ages": [
+        "now",
+        "now",
+        "now",
+        "now",
+        "now",
+        "now",
+        "now",
+        "now"
+      ],
+      "desktopFold": "Show older (3)"
+    },
+    "MSP-15": {
+      "result": "Pass",
+      "seconds": 28,
+      "inProjects": [
+        null,
+        null
+      ],
+      "whileSwitching": [
+        null,
+        null
+      ],
+      "switchSeconds": 12.259,
+      "maxPolls": 4,
+      "workspacesReads": [
+        {
+          "dt": 77,
+          "window": 6
+        },
+        {
+          "dt": 272,
+          "window": 6
+        }
+      ]
+    },
+    "MSP-02": {
+      "result": "Pass",
+      "seconds": 31.7,
+      "phonePlace": {
+        "lead": 1,
+        "leadDelegated": 1
+      },
+      "desktopPlace": {
+        "lead": null,
+        "leadDelegated": 16,
+        "reviewer": 16,
+        "reviewerDelegated": 16
+      },
+      "phoneTitles": {
+        "writer": "Write the release notes.",
+        "squad": "Review the docs site.",
+        "spare": "Spare work. Marker SPARE.",
+        "leadDelegated": "Draft the changelog. Marker LEAD-DELEGATED."
+      },
+      "memberTitles": {
+        "lead": null,
+        "mate": null,
+        "reviewer": null,
+        "editor": null
+      },
+      "desktopTitles": {
+        "writer": [
+          "RN",
+          "release notes writer",
+          "Write the release notes."
+        ],
+        "spare": [
+          "CH",
+          "changelog helper",
+          "Spare work. Marker SPARE."
+        ],
+        "leadDelegated": [
+          "CH",
+          "changelog helper",
+          "Draft the changelog. Marker LEAD-DELEGATED."
+        ]
+      },
+      "liveStatuses": [
+        "idle",
+        "offline"
+      ],
+      "terminated": {
+        "success": true,
+        "message": "Agent run terminated successfully."
+      },
+      "unselected": {
+        "seen": [
+          "idle"
+        ],
+        "terminated": {
+          "success": true,
+          "message": "Agent run terminated successfully."
+        },
+        "afterRootOpened": "offline"
+      },
+      "reloaded": false,
+      "ptm": {
+        "key": "agent:project_task_manager_9f81a51f6e2c46bf849cd35bbf11777d",
+        "depth": 0,
+        "expanded": "true",
+        "current": null,
+        "status": "idle",
+        "name": "Project Task Manager",
+        "title": "CALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/release_notes_writer\",\"task_...",
+        "chip": null,
+        "unreachable": false,
+        "age": "now",
+        "buttons": [
+          "mobile-run-open",
+          "mobile-run-toggle"
+        ],
+        "label": "Project Task Manager, CALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/release_notes_writer\",\"task_..., Idle"
+      },
+      "writer": {
+        "key": "agent:project_task_manager_9f81a51f6e2c46bf849cd35bbf11777d/agent:release_notes_writer_ab0cc4d7551143cfb8287dcbce036c69",
+        "depth": 1,
+        "expanded": null,
+        "current": null,
+        "status": "idle",
+        "name": "release notes writer",
+        "title": "Write the release notes.",
+        "chip": null,
+        "unreachable": false,
+        "age": null,
+        "buttons": [
+          "mobile-run-open"
+        ],
+        "label": "release notes writer, Write the release notes., Idle"
+      },
+      "squad": {
+        "key": "agent:project_task_manager_9f81a51f6e2c46bf849cd35bbf11777d/team:docs_review_team_852c1dbb140a4ce78e380f6a0965da09",
+        "depth": 1,
+        "expanded": "false",
+        "current": null,
+        "status": "idle",
+        "name": "docs review team",
+        "title": "Review the docs site.",
+        "chip": null,
+        "unreachable": false,
+        "age": null,
+        "buttons": [
+          "mobile-run-open",
+          "mobile-run-toggle"
+        ],
+        "label": "docs review team, Review the docs site., Idle"
+      },
+      "members": [
+        {
+          "key": "agent:project_task_manager_9f81a51f6e2c46bf849cd35bbf11777d/agent:release_notes_writer_adf3b15cb3cb4ed9af2db2af54dce858",
+          "depth": 2,
+          "expanded": null,
+          "current": null,
+          "status": "idle",
+          "name": "reviewer",
+          "title": null,
+          "chip": null,
+          "unreachable": false,
+          "age": null,
+          "buttons": [
+            "mobile-run-open"
+          ],
+          "label": "reviewer, Idle"
+        },
+        {
+          "key": "agent:project_task_manager_9f81a51f6e2c46bf849cd35bbf11777d/agent:fact_checker_4798a740627441d19109110f51f5e94d",
+          "depth": 2,
+          "expanded": null,
+          "current": null,
+          "status": "offline",
+          "name": "editor",
+          "title": null,
+          "chip": null,
+          "unreachable": false,
+          "age": null,
+          "buttons": [
+            "mobile-run-open"
+          ],
+          "label": "editor, Stopped"
+        }
+      ],
+      "remoteAgent": {
+        "key": "agent:project_task_manager_9f81a51f6e2c46bf849cd35bbf11777d/agent:publisher_30001fb3092742b28db8750a601d97cb",
+        "depth": 1,
+        "expanded": null,
+        "current": null,
+        "status": "offline",
+        "name": "publisher",
+        "title": "Publish the draft. Marker REMOTE-AGENT.",
+        "chip": "beta-node",
+        "unreachable": false,
+        "age": null,
+        "buttons": [
+          "mobile-run-open"
+        ],
+        "label": "publisher, Publish the draft. Marker REMOTE-AGENT., Runs on beta-node, Stopped"
+      },
+      "remoteTeam": {
+        "key": "agent:project_task_manager_9f81a51f6e2c46bf849cd35bbf11777d/team:studio_team_760552e5f35e4a4fa033c66ff6395a00",
+        "depth": 1,
+        "expanded": "false",
+        "current": null,
+        "status": "offline",
+        "name": "studio team",
+        "title": "Cut the launch trailer. Marker REMOTE-TEAM.",
+        "chip": "beta-node",
+        "unreachable": false,
+        "age": null,
+        "buttons": [
+          "mobile-run-open",
+          "mobile-run-toggle"
+        ],
+        "label": "studio team, Cut the launch trailer. Marker REMOTE-TEAM., Runs on beta-node, Stopped"
+      },
+      "team": {
+        "teamRow": {
+          "key": "team:delivery_team_022c8beb42b24640b96ea4ef361713a1",
+          "depth": 0,
+          "expanded": "false",
+          "current": null,
+          "status": "idle",
+          "name": "Delivery Team",
+          "title": "GENERATE_IMAGE:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-EujJkt...",
+          "chip": null,
+          "unreachable": false,
+          "age": "now",
+          "buttons": [
+            "mobile-run-open",
+            "mobile-run-toggle"
+          ],
+          "label": "Delivery Team, GENERATE_IMAGE:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-EujJkt..., Idle"
+        },
+        "lead": {
+          "key": "team:delivery_team_022c8beb42b24640b96ea4ef361713a1/agent:fact_checker_125d3960e65548f08db071a9e35e0b82",
+          "depth": 1,
+          "expanded": null,
+          "current": null,
+          "status": "idle",
+          "name": "lead",
+          "title": null,
+          "chip": null,
+          "unreachable": false,
+          "age": null,
+          "buttons": [
+            "mobile-run-open"
+          ],
+          "label": "lead, Idle"
+        },
+        "mate": {
+          "key": "team:delivery_team_022c8beb42b24640b96ea4ef361713a1/agent:release_notes_writer_bfc6211bf54b493ca93bf36e713146c2",
+          "depth": 1,
+          "expanded": null,
+          "current": null,
+          "status": "idle",
+          "name": "mate",
+          "title": null,
+          "chip": null,
+          "unreachable": false,
+          "age": null,
+          "buttons": [
+            "mobile-run-open"
+          ],
+          "label": "mate, Idle"
+        },
+        "leadDelegatedNested": null
+      },
+      "orgRow": {
+        "key": "org:delivery_org_28c92e2dbc974b0c9a19c26de05e13df",
+        "depth": 0,
+        "expanded": "true",
+        "current": null,
+        "status": "running",
+        "name": "Delivery Org",
+        "title": "Plan the delivery. Marker ORG-PLANNER.",
+        "chip": null,
+        "unreachable": false,
+        "age": "1m",
+        "buttons": [
+          "mobile-run-open",
+          "mobile-run-toggle"
+        ],
+        "label": "Delivery Org, Plan the delivery. Marker ORG-PLANNER., Running"
+      },
+      "orgMembers": [
+        "planner",
+        "squad"
+      ],
+      "teamRows": [
+        [
+          "Delivery Team",
+          0
+        ],
+        [
+          "lead",
+          1
+        ],
+        [
+          "mate",
+          1
+        ],
+        [
+          "changelog helper",
+          1
+        ]
+      ]
+    },
+    "MSP-03": {
+      "result": "Pass",
+      "seconds": 8.8,
+      "results": [
+        {
+          "kind": "task agent",
+          "key": "agent:project_task_manager_9f81a51f6e2c46bf849cd35bbf11777d/agent:release_notes_writer_ab0cc4d7551143cfb8287dcbce036c69",
+          "scrollBefore": 40,
+          "states": [
+            "opening:",
+            "open:release notes writer"
+          ],
+          "screen": {
+            "state": "open",
+            "name": "release notes writer",
+            "subtitle": "Idle · in Project Task Manager",
+            "query": "?screen=run"
+          },
+          "nameOk": true,
+          "composer": 1,
+          "marker": "PHONE-MSG-1-f7adc1",
+          "reached": true,
+          "shownOnPhone": true,
+          "sendErrors": [],
+          "scrollAfter": 40,
+          "markedRows": [
+            "agent:project_task_manager_9f81a51f6e2c46bf849cd35bbf11777d/agent:release_notes_writer_ab0cc4d7551143cfb8287dcbce036c69 (release notes writer)"
+          ],
+          "marked": "true"
+        },
+        {
+          "kind": "task-team member",
+          "key": "agent:project_task_manager_9f81a51f6e2c46bf849cd35bbf11777d/agent:release_notes_writer_adf3b15cb3cb4ed9af2db2af54dce858",
+          "scrollBefore": 80,
+          "states": [
+            "opening:",
+            "open:reviewer"
+          ],
+          "screen": {
+            "state": "open",
+            "name": "reviewer",
+            "subtitle": "Idle · in docs review team",
+            "query": "?screen=run"
+          },
+          "nameOk": true,
+          "composer": 1,
+          "marker": "PHONE-MSG-2-95178d",
+          "reached": true,
+          "shownOnPhone": true,
+          "sendErrors": [],
+          "scrollAfter": 80,
+          "markedRows": [
+            "agent:project_task_manager_9f81a51f6e2c46bf849cd35bbf11777d/agent:release_notes_writer_adf3b15cb3cb4ed9af2db2af54dce858 (reviewer)"
+          ],
+          "marked": "true"
+        },
+        {
+          "kind": "Team run (its coordinator)",
+          "key": "team:delivery_team_022c8beb42b24640b96ea4ef361713a1",
+          "scrollBefore": 120,
+          "states": [
+            "opening:",
+            "open:lead"
+          ],
+          "screen": {
+            "state": "open",
+            "name": "lead",
+            "subtitle": "Idle · in Delivery Team",
+            "query": "?screen=run"
+          },
+          "nameOk": true,
+          "composer": 1,
+          "marker": "PHONE-MSG-3-121a1e",
+          "reached": true,
+          "shownOnPhone": true,
+          "sendErrors": [],
+          "scrollAfter": 120,
+          "markedRows": [
+            "team:delivery_team_022c8beb42b24640b96ea4ef361713a1/agent:fact_checker_125d3960e65548f08db071a9e35e0b82 (lead)"
+          ],
+          "marked": "true"
+        },
+        {
+          "kind": "Org run (its first member)",
+          "key": "org:delivery_org_28c92e2dbc974b0c9a19c26de05e13df",
+          "scrollBefore": 176,
+          "states": [
+            "list",
+            "opening:",
+            "open:planner"
+          ],
+          "screen": {
+            "state": "open",
+            "name": "planner",
+            "subtitle": "Idle · in Delivery Org",
+            "query": "?rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_28c92e2dbc974b0c9a19c26de05e13df&mode=active&memberAddress=/planner&screen=run"
+          },
+          "nameOk": true,
+          "composer": 1,
+          "marker": "PHONE-MSG-4-b8e63b",
+          "reached": true,
+          "shownOnPhone": true,
+          "sendErrors": [],
+          "scrollAfter": 176,
+          "markedRows": [
+            "org:delivery_org_28c92e2dbc974b0c9a19c26de05e13df/agent:release_notes_writer_ea896fb057a545068d8a1622a7db9926 (planner)"
+          ],
+          "marked": "true"
+        },
+        {
+          "kind": "Org run (first member a Team: its coordinator)",
+          "key": "org:review_org_924c0e1f41d24b36bb2ec7a1deeecf8e",
+          "scrollBefore": 714,
+          "states": [
+            "list",
+            "opening:",
+            "open:reviewer"
+          ],
+          "screen": {
+            "state": "open",
+            "name": "reviewer",
+            "subtitle": "Stopped · in squad",
+            "query": "?rootSubjectKind=agent_org&definitionId=review-org&orgRunId=review_org_924c0e1f41d24b36bb2ec7a1deeecf8e&mode=active&memberAddress=/squad&screen=run"
+          },
+          "nameOk": true,
+          "composer": 1,
+          "marker": "PHONE-MSG-5-0a9c1c",
+          "reached": true,
+          "shownOnPhone": true,
+          "sendErrors": [],
+          "scrollAfter": 714,
+          "markedRows": [
+            "org:review_org_924c0e1f41d24b36bb2ec7a1deeecf8e/agent:release_notes_writer_1fd41902a1004fd6bc670e635528f252 (reviewer)"
+          ],
+          "marked": "true"
+        },
+        {
+          "kind": "Org member",
+          "key": "org:delivery_org_28c92e2dbc974b0c9a19c26de05e13df/agent:release_notes_writer_ea896fb057a545068d8a1622a7db9926",
+          "scrollBefore": 40,
+          "states": [
+            "list",
+            "opening:",
+            "open:planner"
+          ],
+          "screen": {
+            "state": "open",
+            "name": "planner",
+            "subtitle": "Idle · in Delivery Org",
+            "query": "?rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_28c92e2dbc974b0c9a19c26de05e13df&mode=active&memberAddress=/planner&screen=run"
+          },
+          "nameOk": true,
+          "composer": 1,
+          "marker": "PHONE-MSG-6-f700b7",
+          "reached": true,
+          "shownOnPhone": true,
+          "sendErrors": [],
+          "scrollAfter": 40,
+          "markedRows": [
+            "org:delivery_org_28c92e2dbc974b0c9a19c26de05e13df/agent:release_notes_writer_ea896fb057a545068d8a1622a7db9926 (planner)"
+          ],
+          "marked": "true"
+        }
+      ],
+      "control": {}
+    },
+    "MSP-04": {
+      "result": "Pass",
+      "seconds": 2.5,
+      "screen": {
+        "state": "open",
+        "name": "Approver",
+        "subtitle": "Idle",
+        "chip": null,
+        "query": "?screen=run"
+      },
+      "answer": {
+        "outcome": "selected",
+        "optionId": "allow-once"
+      },
+      "commandShown": true
+    },
+    "MSP-05": {
+      "result": "Pass",
+      "seconds": 6.2,
+      "snapshots": [
+        {
+          "state": "opening",
+          "name": null,
+          "opening": true,
+          "buttons": [
+            "Back to runs"
+          ]
+        },
+        {
+          "state": "open",
+          "name": "lead",
+          "opening": false,
+          "buttons": [
+            "Back to runs",
+            "More",
+            "Upload files",
+            "Send message"
+          ]
+        }
+      ],
+      "forward": {
+        "state": "open",
+        "name": "lead",
+        "subtitle": "Idle · in Delivery Team",
+        "chip": null,
+        "query": "?screen=run"
+      },
+      "orgQuery": "?rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_28c92e2dbc974b0c9a19c26de05e13df&mode=active&memberAddress=/planner&screen=run",
+      "listQuery": "?rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_28c92e2dbc974b0c9a19c26de05e13df&mode=active&memberAddress=/planner",
+      "orgMarked": "true",
+      "afterReload": "?rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_28c92e2dbc974b0c9a19c26de05e13df&mode=active&memberAddress=/planner",
+      "second": {
+        "state": "open",
+        "name": "lead",
+        "subtitle": "Idle · in Delivery Team",
+        "chip": null,
+        "query": "?screen=run"
+      }
+    },
+    "MSP-06": {
+      "result": "Pass",
+      "seconds": 9.1,
+      "onBeta": true,
+      "sendErrors": [],
+      "row": {
+        "key": "agent:project_task_manager_9f81a51f6e2c46bf849cd35bbf11777d/agent:publisher_30001fb3092742b28db8750a601d97cb",
+        "depth": 1,
+        "expanded": null,
+        "current": null,
+        "status": "idle",
+        "name": "publisher",
+        "title": "Publish the draft. Marker REMOTE-AGENT.",
+        "chip": "beta-node",
+        "unreachable": false,
+        "age": null,
+        "buttons": [
+          "mobile-run-open"
+        ],
+        "label": "publisher, Publish the draft. Marker REMOTE-AGENT., Runs on beta-node, Idle"
+      },
+      "opened": {
+        "state": "open",
+        "name": "publisher",
+        "subtitle": "Idle · in Project Task Manager",
+        "chip": "beta-node",
+        "query": "?screen=run"
+      },
+      "placeholder": "Message publisher on beta-node…",
+      "uploads": 0,
+      "mention": {
+        "role": null,
+        "expanded": null
+      },
+      "live": true,
+      "down": [
+        {
+          "key": "agent:project_task_manager_9f81a51f6e2c46bf849cd35bbf11777d/agent:publisher_30001fb3092742b28db8750a601d97cb",
+          "depth": 1,
+          "expanded": null,
+          "current": null,
+          "status": "error",
+          "name": "publisher",
+          "title": "Publish the draft. Marker REMOTE-AGENT.",
+          "chip": "beta-nodeNot reachable",
+          "unreachable": true,
+          "age": null,
+          "buttons": [
+            "mobile-run-open"
+          ],
+          "label": "publisher, Publish the draft. Marker REMOTE-AGENT., Runs on beta-node, Not reachable"
+        },
+        {
+          "key": "agent:project_task_manager_9f81a51f6e2c46bf849cd35bbf11777d/team:studio_team_760552e5f35e4a4fa033c66ff6395a00",
+          "depth": 1,
+          "expanded": "false",
+          "current": null,
+          "status": "error",
+          "name": "studio team",
+          "title": "Cut the launch trailer. Marker REMOTE-TEAM.",
+          "chip": "beta-nodeNot reachable",
+          "unreachable": true,
+          "age": null,
+          "buttons": [
+            "mobile-run-open",
+            "mobile-run-toggle"
+          ],
+          "label": "studio team, Cut the launch trailer. Marker REMOTE-TEAM., Runs on beta-node, Not reachable"
+        }
+      ],
+      "notice": "beta-node isn't reachable This run's conversation can't be loaded right now. Your other runs work. Retry when the node is back. Retry",
+      "peerDown": [
+        "beta-node\nNot reachable"
+      ],
+      "recovered": true
+    },
+    "MSP-07": {
+      "result": "Pass",
+      "seconds": 44,
+      "freshAgent": "Project Task Manager",
+      "orgMarked": "true",
+      "orgListQuery": "?rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_28c92e2dbc974b0c9a19c26de05e13df&mode=active&memberAddress=/planner",
+      "orgAgent": "Release Notes Writer",
+      "agentOptions": [
+        "Daily Assistant General-purpose agent for practical tasks, with awareness of available specialist agents and teams.",
+        "Project Task Manager Project Task Manager (phone probe)",
+        "Release Notes Writer Release Notes Writer (phone probe)",
+        "Fact Checker Fact Checker (phone probe)",
+        "Changelog Helper Changelog Helper (phone probe)",
+        "Approver Approver (phone probe)"
+      ],
+      "factCheckerReadiness": "Choose a model before creating the run.",
+      "launchDisabledWhenMissing": true,
+      "sheets": {
+        "mobile-run-workspace-select": [
+          "workspace /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-EujJkt/alpha/workspace",
+          "Temp Workspace /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-EujJkt/alpha/data/temp_workspace"
+        ],
+        "blankPathOpenDisabled": true,
+        "badPath": {
+          "error": null,
+          "value": "folder-277",
+          "sheetOpen": 0
+        },
+        "mobile-run-runtime-select": [
+          "AutoByteus",
+          "Codex App Server",
+          "Claude Agent SDK",
+          "Antigravity CLI",
+          "Grok Build"
+        ],
+        "mobile-run-model-select": [
+          "claude-fable-5",
+          "claude-fable-5-1",
+          "claude-haiku-5-5",
+          "claude-opus-5",
+          "claude-opus-5-5",
+          "claude-sonnet-5",
+          "claude-sonnet-5-5",
+          "deepseek-v4-flash"
+        ]
+      },
+      "statesDuringFirst": [
+        "open"
+      ],
+      "newRunId": "project_task_manager_33303fc8dd9945fc9d45bcf4c21713dc",
+      "top": {
+        "key": "agent:project_task_manager_33303fc8dd9945fc9d45bcf4c21713dc",
+        "depth": 0,
+        "expanded": null,
+        "current": "true",
+        "status": "idle",
+        "name": "Project Task Manager",
+        "title": "First message. Marker NEWRUN-FIRST-10b76a",
+        "chip": null,
+        "unreachable": false,
+        "age": "now",
+        "buttons": [
+          "mobile-run-open"
+        ],
+        "label": "Project Task Manager, First message. Marker NEWRUN-FIRST-10b76a, Idle"
+      }
+    },
+    "MSP-08": {
+      "result": "Pass",
+      "seconds": 7.5,
+      "items": [
+        [
+          "mobile-run-menu-artifacts",
+          "Artifacts"
+        ],
+        [
+          "mobile-run-menu-files",
+          "Files"
+        ],
+        [
+          "mobile-run-menu-messages",
+          "Messages"
+        ],
+        [
+          "mobile-run-menu-activity",
+          "Activity"
+        ]
+      ],
+      "artifacts": {
+        "direct": 1,
+        "list": 0,
+        "title": "Artifacts",
+        "text": true
+      },
+      "filesTop": [
+        "docs",
+        "src",
+        "notes.md",
+        "README.md"
+      ],
+      "filters": 0,
+      "pathLine": "workspace docs",
+      "attach": 0,
+      "searchRows": [
+        "app.ts src/app.ts"
+      ],
+      "messages": [
+        "To mate Nov 6, 04:01 PM Read the guide first. Marker TEAM-NOTE. guide.md"
+      ],
+      "referenceText": true,
+      "activity": [
+        "generate_image generate_image success"
+      ],
+      "plainItems": [
+        "Artifacts",
+        "Files",
+        "Activity"
+      ],
+      "artifactsEmpty": "No Artifacts yet Generated or edited files for this run will appear here as they become available.",
+      "activityEmpty": "No activity yet",
+      "remoteArtifacts": "The files this run wrote are on beta-node. Open it in that node's window to see them.",
+      "remoteFiles": "The files of this run are on beta-node. Open it in that node's window to see them."
+    },
+    "MSP-14": {
+      "result": "Pass",
+      "seconds": 1.3,
+      "gone": true,
+      "reloaded": false
+    },
+    "MSP-10": {
+      "result": "Pass",
+      "seconds": 5,
+      "forbidden": [],
+      "tabs": 0,
+      "rowButtons": [
+        "mobile-run-open",
+        "mobile-run-toggle"
+      ],
+      "noticeText": "Unsupported on phone\n\nThe desktop workspace isn’t on the phone. Your runs are here.",
+      "noticeAbove": true,
+      "desktopRoute": {
+        "url": "/mobile/?unsupported=desktopWorkspace",
+        "notice": "Unsupported on phone\n\nThe desktop workspace isn’t on the phone. Your runs are here."
+      }
+    },
+    "MSP-11": {
+      "result": "Pass",
+      "seconds": 38,
+      "results": {
+        "390x844": {
+          "screens": {
+            "list": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 31,
+              "small": []
+            },
+            "run": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 7,
+              "small": [
+                {
+                  "label": "generate_image · fixture image",
+                  "size": "262×38",
+                  "shared": true
+                },
+                {
+                  "label": "Context Files (0)(drag, paste, or upload",
+                  "size": "296×24",
+                  "shared": true
+                },
+                {
+                  "label": "Upload files",
+                  "size": "28×28",
+                  "shared": true
+                },
+                {
+                  "label": "Send message",
+                  "size": "36×36",
+                  "shared": true
+                }
+              ]
+            },
+            "menu": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 11,
+              "small": [
+                {
+                  "label": "generate_image · fixture image",
+                  "size": "262×38",
+                  "shared": true
+                },
+                {
+                  "label": "Context Files (0)(drag, paste, or upload",
+                  "size": "296×24",
+                  "shared": true
+                },
+                {
+                  "label": "Upload files",
+                  "size": "28×28",
+                  "shared": true
+                },
+                {
+                  "label": "Send message",
+                  "size": "36×36",
+                  "shared": true
+                }
+              ]
+            },
+            "artifacts": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 4,
+              "small": [
+                {
+                  "label": "BUTTON",
+                  "size": "28×28",
+                  "shared": true
+                },
+                {
+                  "label": "BUTTON",
+                  "size": "28×28",
+                  "shared": true
+                },
+                {
+                  "label": "artifact-viewer-zen-toggle",
+                  "size": "28×28",
+                  "shared": true
+                }
+              ]
+            },
+            "files": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 7,
+              "small": []
+            },
+            "files-search": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 7,
+              "small": [
+                {
+                  "label": "Search files",
+                  "size": "286×40",
+                  "shared": false
+                }
+              ]
+            },
+            "file-open": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 6,
+              "small": []
+            },
+            "messages": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 2,
+              "small": []
+            },
+            "reference-open": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 3,
+              "small": []
+            },
+            "activity": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 1,
+              "small": []
+            },
+            "new-run": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 7,
+              "small": []
+            },
+            "agent-sheet": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 15,
+              "small": []
+            },
+            "connection-sheet": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 35,
+              "small": []
+            }
+          },
+          "walk": [
+            "files",
+            "run",
+            "list"
+          ],
+          "walkMessages": [
+            "messages",
+            "run",
+            "list"
+          ]
+        },
+        "360x800": {
+          "screens": {
+            "list": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 31,
+              "small": []
+            },
+            "run": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 7,
+              "small": [
+                {
+                  "label": "generate_image · fixture image",
+                  "size": "232×38",
+                  "shared": true
+                },
+                {
+                  "label": "Context Files (0)(drag, paste, or upload",
+                  "size": "266×24",
+                  "shared": true
+                },
+                {
+                  "label": "Upload files",
+                  "size": "28×28",
+                  "shared": true
+                },
+                {
+                  "label": "Send message",
+                  "size": "36×36",
+                  "shared": true
+                }
+              ]
+            },
+            "menu": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 11,
+              "small": [
+                {
+                  "label": "generate_image · fixture image",
+                  "size": "232×38",
+                  "shared": true
+                },
+                {
+                  "label": "Context Files (0)(drag, paste, or upload",
+                  "size": "266×24",
+                  "shared": true
+                },
+                {
+                  "label": "Upload files",
+                  "size": "28×28",
+                  "shared": true
+                },
+                {
+                  "label": "Send message",
+                  "size": "36×36",
+                  "shared": true
+                }
+              ]
+            },
+            "artifacts": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 4,
+              "small": [
+                {
+                  "label": "BUTTON",
+                  "size": "28×28",
+                  "shared": true
+                },
+                {
+                  "label": "BUTTON",
+                  "size": "28×28",
+                  "shared": true
+                },
+                {
+                  "label": "artifact-viewer-zen-toggle",
+                  "size": "28×28",
+                  "shared": true
+                }
+              ]
+            },
+            "files": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 7,
+              "small": []
+            },
+            "files-search": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 7,
+              "small": [
+                {
+                  "label": "Search files",
+                  "size": "256×40",
+                  "shared": false
+                }
+              ]
+            },
+            "file-open": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 6,
+              "small": []
+            },
+            "messages": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 2,
+              "small": []
+            },
+            "reference-open": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 3,
+              "small": []
+            },
+            "activity": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 1,
+              "small": []
+            },
+            "new-run": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 7,
+              "small": []
+            },
+            "agent-sheet": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 15,
+              "small": []
+            },
+            "connection-sheet": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 35,
+              "small": []
+            }
+          },
+          "walk": [
+            "files",
+            "run",
+            "list"
+          ],
+          "walkMessages": [
+            "messages",
+            "run",
+            "list"
+          ]
+        }
+      },
+      "sharedSmall": [
+        "generate_image · fixture image 262×38",
+        "Context Files (0)(drag, paste, or upload 296×24",
+        "Upload files 28×28",
+        "Send message 36×36",
+        "BUTTON 28×28",
+        "artifact-viewer-zen-toggle 28×28",
+        "generate_image · fixture image 232×38",
+        "Context Files (0)(drag, paste, or upload 266×24"
+      ]
+    },
+    "MSP-12": {
+      "result": "Pass",
+      "seconds": 68.9,
+      "onList": [
+        {
+          "dt": 2898,
+          "window": null,
+          "status": 200,
+          "bytes": 6599
+        },
+        {
+          "dt": 7887,
+          "window": null,
+          "status": 200,
+          "bytes": 6599
+        },
+        {
+          "dt": 12887,
+          "window": null,
+          "status": 200,
+          "bytes": 6599
+        }
+      ],
+      "onRun": [],
+      "onView": [],
+      "afterBack": [
+        {
+          "dt": 536,
+          "window": null,
+          "status": 200,
+          "bytes": 6599
+        },
+        {
+          "dt": 5549,
+          "window": null,
+          "status": 200,
+          "bytes": 6599
+        }
+      ],
+      "hidden": [],
+      "afterShown": [
+        {
+          "dt": 39,
+          "window": null,
+          "status": 200,
+          "bytes": 6599
+        },
+        {
+          "dt": 5032,
+          "window": null,
+          "status": 200,
+          "bytes": 6599
+        }
+      ],
+      "backAt": 1793981151233,
+      "shownAt": 1793981171152,
+      "bytesPerRead": {
+        "min": 6178,
+        "median": 6206,
+        "max": 6608
+      },
+      "firstRowsMs": 453,
+      "reads": 71
+    },
+    "MSP-09": {
+      "result": "Pass",
+      "seconds": 19.7,
+      "confirmOnTop": {
+        "onTop": true,
+        "hit": "Unpair"
+      },
+      "sessionLeft": null,
+      "dialogName": "AutoByteus Desktop",
+      "info": {
+        "name": "AutoByteus Desktop",
+        "url": "http://192.168.77.10:62501",
+        "status": "Connected",
+        "peers": [
+          "beta-node 2 agents · 1 teams"
+        ]
+      },
+      "afterCheck": "Connected",
+      "sheetDown": "Not reachable",
+      "barDown": "Not reachable",
+      "bannerDown": "Can’t reach AutoByteus Desktop. Check",
+      "rowsWhileDown": 21,
+      "c06": {
+        "bar": "Connected",
+        "banner": 0,
+        "rows": 21,
+        "pollsAfterBack": 6
+      },
+      "sheetBack": "Connected",
+      "barBack": "Connected",
+      "bannerBack": 0,
+      "confirmText": "Unpair this phone? This removes only the local phone session. Use desktop Phone Access to revoke credentials for all devices. Cancel Unpair"
+    },
+    "MSP-13": {
+      "result": "Pass",
+      "seconds": 19.2,
+      "reads": [
+        {
+          "at": 1793981198633,
+          "label": "phone-unknown-credential",
+          "case": "MSP-13",
+          "op": "ListWorkspaceRunHistory",
+          "window": null,
+          "status": 401,
+          "bytes": 123
+        }
+      ],
+      "onPairing": 1,
+      "revokedAll": 200,
+      "revokedShows": {
+        "pairing": false,
+        "list": "error",
+        "bar": "Connected"
+      },
+      "revokedReads": [
+        "ListWorkspaceRunHistory 403",
+        "ListCollaborationRootHistory 403",
+        "GetAllWorkspaces 403",
+        "GetAgentDefinitions 403",
+        "GetAgentTeamDefinitions 403",
+        "GetAgentOrgDefinitions 403"
+      ]
+    }
+  },
+  "browserErrors": [
+    {
+      "case": "setup",
+      "line": "phone console: WebSocket connection to 'ws://localhost:8000/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "setup",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-09",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-09",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-09",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-09",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-09",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-09",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-09",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-09",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-09",
+      "line": "phone-unpair console: WebSocket connection to 'ws://localhost:8000/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-unknown-credential console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-unknown-credential console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-unknown-credential console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-unknown-credential console: Failed to fetch all workspace metadata: ApolloError: Response not successful: Received status code 401\n    at new t (http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:84:153)\n    at http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:88:80744\n    at d (http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:83:8520)\n    at http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:83:8435\n    at new Promise (<anonymous>)\n    at Object.then (http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:83:8402)\n    at Object.error (http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:83:8530)\n    at mx (http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:83:1949)\n    at pf (http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:83:2318)\n    at t.error (http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:83:2891)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-unknown-credential console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-unknown-credential console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-unknown-credential console: Failed to fetch agent definitions: ApolloError: Response not successful: Received status code 401\n    at new t (http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:84:153)\n    at http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:88:80744\n    at d (http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:83:8520)\n    at http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:83:8435\n    at new Promise (<anonymous>)\n    at Object.then (http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:83:8402)\n    at Object.error (http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:83:8530)\n    at mx (http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:83:1949)\n    at pf (http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:83:2318)\n    at t.error (http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:83:2891)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-unknown-credential console: Failed to fetch agent team definitions: ApolloError: Response not successful: Received status code 401\n    at new t (http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:84:153)\n    at http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:88:80744\n    at d (http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:83:8520)\n    at http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:83:8435\n    at new Promise (<anonymous>)\n    at Object.then (http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:83:8402)\n    at Object.error (http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:83:8530)\n    at mx (http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:83:1949)\n    at pf (http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:83:2318)\n    at t.error (http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:83:2891)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-unknown-credential console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-revoked console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-revoked console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-revoked console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-revoked console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-revoked console: Failed to fetch all workspace metadata: ApolloError: Response not successful: Received status code 403\n    at new t (http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:84:153)\n    at http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:88:80744\n    at d (http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:83:8520)\n    at http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:83:8435\n    at new Promise (<anonymous>)\n    at Object.then (http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:83:8402)\n    at Object.error (http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:83:8530)\n    at mx (http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:83:1949)\n    at pf (http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:83:2318)\n    at t.error (http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:83:2891)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-revoked console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-revoked console: Failed to fetch agent definitions: ApolloError: Response not successful: Received status code 403\n    at new t (http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:84:153)\n    at http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:88:80744\n    at d (http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:83:8520)\n    at http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:83:8435\n    at new Promise (<anonymous>)\n    at Object.then (http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:83:8402)\n    at Object.error (http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:83:8530)\n    at mx (http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:83:1949)\n    at pf (http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:83:2318)\n    at t.error (http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:83:2891)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-revoked console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-revoked console: Failed to fetch agent team definitions: ApolloError: Response not successful: Received status code 403\n    at new t (http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:84:153)\n    at http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:88:80744\n    at d (http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:83:8520)\n    at http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:83:8435\n    at new Promise (<anonymous>)\n    at Object.then (http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:83:8402)\n    at Object.error (http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:83:8530)\n    at mx (http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:83:1949)\n    at pf (http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:83:2318)\n    at t.error (http://192.168.77.10:62501/mobile/_nuxt/QJl7ZaZ5.js:83:2891)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-revoked console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-revoked console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    }
+  ],
+  "network": {
+    "historyReads": 71
+  },
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "summary": {
+    "cases": {
+      "MSP-01": "Pass",
+      "MSP-15": "Pass",
+      "MSP-02": "Pass",
+      "MSP-03": "Pass",
+      "MSP-04": "Pass",
+      "MSP-05": "Pass",
+      "MSP-06": "Pass",
+      "MSP-07": "Pass",
+      "MSP-08": "Pass",
+      "MSP-14": "Pass",
+      "MSP-10": "Pass",
+      "MSP-11": "Pass",
+      "MSP-12": "Pass",
+      "MSP-09": "Pass",
+      "MSP-13": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-06T16:07:08.377Z"
+}

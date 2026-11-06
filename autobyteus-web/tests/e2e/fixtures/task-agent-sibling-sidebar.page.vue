@@ -84,12 +84,12 @@ const sectionState = {
   workspaceHistoryError: () => null, formatRelativeTime: () => 'now',
 };
 const actions = {
-  onTerminateRun: noop, onArchiveRun: noop, onDeleteRun: noop,
+  onCreateRun: noop, onTerminateRun: noop, onArchiveRun: noop, onDeleteRun: noop,
   onTerminateTeam: noop, onArchiveTeam: noop, onDeleteTeam: noop,
   ...useWorkspaceHistorySelectionActions({ runHistoryStore, selectionStore,
     setTeamExpanded: tree.setTeamExpanded, toggleTeam: tree.toggleTeam,
     expandTeamMemberAncestors: tree.expandTeamMemberAncestors,
-    emitRunSelected: noop, startPresetChat: async () => undefined, presentTeamStreamRecoveryFeedback: noop }),
+    emitRunSelected: noop, presentTeamStreamRecoveryFeedback: noop }),
 };
 const avatars = {
   showAgentAvatar: () => false, onAgentAvatarError: noop, getAgentInitials: () => 'A',

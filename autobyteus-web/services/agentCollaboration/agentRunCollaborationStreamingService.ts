@@ -13,6 +13,7 @@ import type { CollaboratorMentionDto } from '~/utils/collaborators/collaboratorM
 import { buildAgentRunCollaborationContext } from './agentRunCollaborationHydration'
 import type { AgentRunCollaborationContext } from './agentRunCollaborationContext'
 import { useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages'
+import { createRandomId } from '~/utils/randomId'
 
 type CommandAck = Extract<CollaborationStreamServerMessage, { type: 'AGENT_COMMAND_ACK' }>
 type PendingCommand = Readonly<{
@@ -132,7 +133,7 @@ export class AgentRunCollaborationStreamingService {
       root_subject_kind: 'agent' as const,
       root_run_id: this.options.hostRunId,
       target_agent_run_id: targetAgentRunId,
-      command_id: crypto.randomUUID(),
+      command_id: createRandomId(),
     }
   }
 
