@@ -47,7 +47,7 @@ The `/mobile` shell is rebuilt as the approved design on the desktop's owners. T
 - Current implementation revision ID: `IR-002` (IR-001 is the baseline)
 - Related solution revision IDs: `SR-003` (requirements), `SR-004` (design)
 - Related architecture-review revision IDs: `ARCH-REV-002`
-- Related code-review revision IDs: `CRR-001`
+- Related code-review revision IDs: `CRR-001` (Fail — Local Fix), `CRR-002` (Pass, targeted delta: CR-001…003 resolved; [code-review-report.md](code-review-report.md)); the reviewer routes on to API/E2E
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
 - Triggering finding IDs: CR-001, CR-002, CR-003 (`CRR-001`). The architecture review's non-blocking residual risks 1–5 are handled; see Known Risks.
