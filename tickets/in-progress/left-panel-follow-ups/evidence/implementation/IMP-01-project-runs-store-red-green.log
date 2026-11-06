@@ -1,0 +1,33 @@
+# Check: IMP-01
+# Command: cd autobyteus-web && env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR="$TMPDIR" NUXT_TEST=true pnpm exec vitest run stores/__tests__/projectRunsStore.spec.ts — red with projectRunsStore.ts from base d6bcff577b, green as committed (--reporter=verbose)
+# Commit: red: 00339421ed with projectRunsStore.ts from d6bcff577b; green: 00339421ed
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28 via corepack; env -i PATH HOME=<fresh mktemp dir> TMPDIR (TESTING.md isolation)
+# Date: 2026-11-06 CET
+# Full output: this file
+
+## Red: the base store
+   ✓ projectRunsStore > reads every Project when shown (DS-001) 6ms
+   ✓ projectRunsStore > re-reads on connected, a Project added and a run started here; never on Task changes or while hidden (REQ-003) 7ms
+   ✓ projectRunsStore > re-reads the Project listing a run after the web stops it, an Agent run or a Team run (AC-004) 18ms
+   ✓ projectRunsStore > keeps one read per Project in flight and one queued; an older answer never replaces a newer one 5ms
+   ✓ projectRunsStore > keeps the last good tree when a later read fails, and drops a deleted Project 5ms
+   ✓ projectRunsStore > shows the first-read error when nothing could be read, and Retry reads again 3ms
+   × projectRunsStore: runs added or removed elsewhere > a run added to the history while shown re-reads every loaded Project once 8ms
+   × projectRunsStore: runs added or removed elsewhere > a run removed, or a Team or Org run added, also re-reads 3ms
+   ✓ projectRunsStore: runs added or removed elsewhere > the same set (a status change, a poll with nothing new, a reorder) reads nothing 5ms
+   ✓ projectRunsStore: runs added or removed elsewhere > reads nothing while hidden, and the first value after showing again is only the baseline 5ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  2 failed | 8 passed (10)
+
+## Green
+   ✓ projectRunsStore > reads every Project when shown (DS-001) 7ms
+   ✓ projectRunsStore > re-reads on connected, a Project added and a run started here; never on Task changes or while hidden (REQ-003) 7ms
+   ✓ projectRunsStore > re-reads the Project listing a run after the web stops it, an Agent run or a Team run (AC-004) 16ms
+   ✓ projectRunsStore > keeps one read per Project in flight and one queued; an older answer never replaces a newer one 5ms
+   ✓ projectRunsStore > keeps the last good tree when a later read fails, and drops a deleted Project 5ms
+   ✓ projectRunsStore > shows the first-read error when nothing could be read, and Retry reads again 3ms
+   ✓ projectRunsStore: runs added or removed elsewhere > a run added to the history while shown re-reads every loaded Project once 2ms
+   ✓ projectRunsStore: runs added or removed elsewhere > a run removed, or a Team or Org run added, also re-reads 6ms
+   ✓ projectRunsStore: runs added or removed elsewhere > the same set (a status change, a poll with nothing new, a reorder) reads nothing 3ms
+   ✓ projectRunsStore: runs added or removed elsewhere > reads nothing while hidden, and the first value after showing again is only the baseline 5ms
+      Tests  10 passed (10)
