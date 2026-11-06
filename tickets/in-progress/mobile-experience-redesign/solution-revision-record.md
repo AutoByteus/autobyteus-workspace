@@ -168,3 +168,6 @@
   - The Solution Designer decided within it, citing the measured cost, and told the user in the conversation.
 - **Classification:** unchanged, `Large`, `High`.
 - **Handoff:** to the architecture reviewer for a scoped recheck of AR-009, AR-010 and the sections they touch.
+- **Architecture review result (2026-11-06):** `ARCH-REV-004`, `Pass`, on SR-005/SR-006 at commit `df7560a3ce`. AR-009 and AR-010 are resolved. The reviewer handed the package to `/software_engineering_team/implementation_engineer`; this pass is informational and not forwarded again.
+  - Non-blocking: opening a stopped root reuses its settled stored view (`agentRunCollaborationStore.ts:255-258`), so "updates when that run is opened" holds for a running root, as on the desktop; the AC-002a probe accounts for it.
+  - DEC-009 (a task agent started by a team member sits beside it) stands. The user asked how the desktop shows it, was shown the desktop tree (MSP-02-desktop-tree.png), and has not changed his answer.
