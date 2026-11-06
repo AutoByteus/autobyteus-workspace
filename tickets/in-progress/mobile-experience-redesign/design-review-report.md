@@ -2,35 +2,83 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-experience-redesign/tickets/in-progress/mobile-experience-redesign/requirements-doc.md` (Approved at SR-005: REQ-002a, REQ-003a, REQ-011; AC-002a, AC-003a, AC-011; DEC-009…DEC-014)
-- Upstream Investigation Notes: `…/investigation-notes.md` (E-01…E-37)
-- Upstream Solution Revision Record: `…/solution-revision-record.md` (SR-001…SR-005)
-- Reviewed Design Spec: `…/design-spec.md`, section "Revision For CRR-003 (SR-005)", at commit `a525b439fe`
-- Supplemental Task Artifacts Reviewed: `code-review-report.md` (CRR-003, "API/E2E Failure-Origin Review (Round 3)"); `follow-ups.md` (FU-007); the Product spec at `e6ca7b6098` (unchanged)
-- Relevant Solution Revision IDs: `SR-005`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-experience-redesign/tickets/in-progress/mobile-experience-redesign/requirements-doc.md` (SR-006: REQ-002a, AC-002a and DEC-013 revised; DEC-015 release)
+- Upstream Investigation Notes: `…/investigation-notes.md` (E-01…E-38)
+- Upstream Solution Revision Record: `…/solution-revision-record.md` (SR-001…SR-006)
+- Reviewed Design Spec: `…/design-spec.md`, sections "Revision For ARCH-REV-003 (SR-006)" and "Revision For CRR-003 (SR-005)", and the canonical sections AR-010 touched, at commit `df7560a3ce`
+- Supplemental Task Artifacts Reviewed: `follow-ups.md` (FU-007 widened); the Product spec at `e6ca7b6098` (unchanged)
+- Relevant Solution Revision IDs: `SR-005`, `SR-006`
 - Architecture Review Revision Record: `…/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-003`
-- Current Review Round: `3` (scoped to the SR-005 revision section)
-- Trigger: API/E2E round 1 Fail (API-REV-001), then CRR-003. The Solution Designer's scoped request of 2026-11-06.
-- Prior Review Round Reviewed: round 2 (`ARCH-REV-002`, Pass); its verdicts are kept below for every section SR-005 does not change.
-- Latest Authoritative Round: `3`
-- Current-State Evidence Basis: worktree `codex/mobile-experience-redesign` @ `a525b439fe`. Opened at the cited lines:
-  - `stores/agentRunCollaborationStore.ts:60-82, 150-178` (`read` → `publish`);
-  - `services/runHydration/memberLoader.ts:55-90`;
-  - `services/collaborationMessages/collaborationParticipantMessages.ts:36-121`;
-  - `services/agentCollaboration/agentRunCollaborationContext.ts:225-260`;
-  - `services/agentOrgExecution/agentOrgExecutionContext.ts:123-162`;
-  - `composables/projects/useTaskWorkerTasks.ts`, with its callers;
-  - `stores/remoteRunsStore.ts:13-80`;
-  - every `randomUUID` site in `autobyteus-web`;
-  - `autobyteus-android/app/build.gradle.kts` (targetSdk 35, `androidx.core:core:1.13.1`), `AndroidManifest.xml`, `MainActivity.kt`.
+- Current Architecture Review Revision ID: `ARCH-REV-004`
+- Current Review Round: `4` (scoped: AR-009, AR-010 and the sections they touch)
+- Trigger: the Solution Designer's SR-006 revision for ARCH-REV-003.
+- Prior Review Round Reviewed: round 3 (`ARCH-REV-003`, Fail).
+- Latest Authoritative Round: `4`
+- Current-State Evidence Basis: `df7560a3ce`. Re-opened `agentRunCollaborationStore.ts:248-258` (`syncHost`); the round-3 code evidence still holds (the code is unchanged).
 
 ## Routing Classification Review
+
+- `Large` / `High`, unchanged and justified. Independent review required: `Yes`.
+
+## Basis Confirmation (Round 4)
+
+- Overall Basis Status: `Confirmed`.
+- **REQ-002a, AC-002a and DEC-013 are revised to desktop parity.** A delegated row under a run that is not open shows the state last read. For those rows only, this narrows REQ-002's "each row shows its live state".
+  - The Solution Designer records this as within the user's direction ("I think it should follow how it is from the desktop"), consistent with DEC-001 (the list is the desktop Runs view). The user is informed, and FU-007 covers the live state for both surfaces.
+  - This is a requirements-owner decision. I do not re-decide it. I note it here so it stays visible.
+- Technically, the basis is coherent: the phone and the desktop share one owner and one behavior, and no new machinery is added.
+
+| Item | Status | Evidence |
+| --- | --- | --- |
+| AR-009 | Resolved | `refreshListedRoots` and `readRevision` are removed (no remaining mention in design-spec, apart from the F-08 row's "not added"). Nothing re-reads or republishes on the poll, so MP-004's consequence no longer exists. The reason is measured: E-38, a 1,235,612-byte view |
+| AR-010 | Resolved | Constraints (`No iOS change … Android only for the insets`), Task Size/Risk (SR-005 additions; no new permission or dependency), Change Scope (in scope, derived consumers, left alone), the file mapping and Sequence steps 7–9 now carry the SR-005 changes. I checked the ten id-helper call sites against my round-3 `grep` |
+| Residuals of round 3 | Taken | Org task rows show the name, as in the desktop's Org tree. `TeamLaunchDraft.ts:106` adopts the helper. The double-padding check is in the Guidance |
+
+## Material Premise Validation
+
+- `MP-004`: no longer applicable. The poll-driven re-read is removed.
+
+## Review Decision
+
+`Pass`. The design is ready for implementation.
+
+## Findings
+
+None open. AR-009 and AR-010 are resolved; AR-001…AR-008 were resolved in ARCH-REV-002.
+
+## Classification
+
+N/A (Pass).
+
+## Recommended Recipient
+
+Implementation Engineer (`/software_engineering_team/implementation_engineer`).
+
+## Residual Risks (Current, Non-Blocking)
+
+- **"Updates when that run is opened" holds when the run is running.** Opening a running root attaches its live stream. Opening a stopped root whose stored view is already settled (`phase: 'historical'`) reuses that view, with no re-read (`agentRunCollaborationStore.ts:255-258`, autobyteus-358 DS-004). So a stopped root's delegated rows keep their last-read state even after it is opened. This is the same as the desktop. AC-002a's probe should use a running root, or record this parity case explicitly. FU-007 covers the server-side fix.
+- **Carried from ARCH-REV-003:** none beyond the Android double-padding check, which is in the Guidance.
+- **Carried from ARCH-REV-002:** the pending-open commit attribution guard; the rewritten list entry after a failed open; the Org `mode` key; R-001 and R-002.
+- **DEC-015:** a beta release after finalization, for delivery. It does not affect the architecture.
+
+## Latest Authoritative Result
+
+- Review Decision: `Pass`
+- Material-Premise Gate: `Pass`
+- Notes: `Large` / `High`. `ARCH-REV-004` over SR-006, at commit `df7560a3ce`.
+
+---
+
+## Round 3 Record (ARCH-REV-003, SR-005)
+
+Its F-01, F-02, F-06, F-07 and F-09 verdicts remain authoritative. AR-009 and AR-010 are resolved above.
+
+### Routing Classification Review
 
 - Task size: `Large`. Architectural risk: `High`. Both are unchanged and justified: SR-005 adds more shared owners (the collaboration store, Task summaries, the id helper) and an Android shell change.
 - Independent Architecture Review required: `Yes`.
 
-## Upstream Behavior And Production-Path Basis Confirmation (Round 3)
+### Upstream Behavior And Production-Path Basis Confirmation (Round 3)
 
 - Overall Basis Status: `Confirmed`.
 - The user's answers for DEC-009…DEC-011 are recorded in his words. DEC-012…DEC-014 were decided by the Solution Designer within the approved direction. REQ-003a is a clarification of REQ-003, and DEC-014 rests on a documented supported edge (`docs/remote_access.md`).
@@ -47,7 +95,7 @@
 | F-09 / REQ-011: Android insets | Pass | Pass. targetSdk 35; `androidx.core` is present, so `ViewCompat` needs no new dependency; no permission change | Pass | Confirmed | — |
 | Canonical design sections vs SR-005 | — | — | **Fail**: Constraints, Change Scope and Task Size still say "no Android changes" and do not list the SR-005 shared changes | Needs Correction | AR-010 |
 
-## Round-3 Structural Verdicts (Changed Owners Only)
+### Round-3 Structural Verdicts (Changed Owners Only)
 
 | Owner / Change | Ownership And Boundary | Interface | Derived Consumers (P11) | Dependency Direction | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -60,9 +108,9 @@
 
 Persisted-data decision: unchanged (`Not Affected`). Legacy and compatibility: none added.
 
-## Material Premise Validation (Round 3)
+### Material Premise Validation (Round 3)
 
-### `MP-004` — A listed, not-open Agent root is re-read on every history poll
+#### `MP-004` — A listed, not-open Agent root is re-read on every history poll
 
 - Related requirement: REQ-002a and AC-002a (live states while the list is shown); QR-003 ("the poll does not make the phone sluggish"); R-001.
 - Relevant behavior ID(s): BEH-001.
@@ -83,13 +131,13 @@ Persisted-data decision: unchanged (`Not Affected`). Legacy and compatibility: n
 - Reachability: `Reachable`. It is the normal list with delegated work.
 - Review consequence: AR-009.
 
-## Review Decision
+### Round 3 Review Decision (superseded by round 4)
 
 `Fail`. AR-009 (Medium, blocking) and AR-010 (Low) need a design update. Everything else in SR-005 passes.
 
-## Findings
+### Round 3 Findings (resolved in round 4)
 
-### AR-009 — Design Impact — Medium (blocking)
+#### AR-009 — Design Impact — Medium (blocking)
 
 The refresh of listed roots (DEC-013) republishes on every poll, and its side effects are not decided.
 
@@ -109,7 +157,7 @@ The refresh of listed roots (DEC-013) republishes on every poll, and its side ef
 - **Proportionate because:** this is a recurring, open-ended cost on the phone's main screen, over cellular, which the requirements explicitly bound.
 - **Recipient:** Solution Designer.
 
-### AR-010 — Design Impact — Low
+#### AR-010 — Design Impact — Low
 
 The canonical design sections contradict SR-005.
 
@@ -125,22 +173,22 @@ The canonical design sections contradict SR-005.
 - **Required update:** bring Constraints, Change Scope (in scope, derived consumers, left alone), Task Size/Risk, the final file mapping and the Change / Refactor Sequence in line with SR-005.
 - **Recipient:** Solution Designer.
 
-## Classification
+### Round 3 Classification
 
 `Design Impact`.
 
-## Recommended Recipient
+### Round 3 Recommended Recipient (superseded)
 
 Solution Designer (`/software_engineering_team/solution_designer`).
 
-## Residual Risks (Round 3, non-blocking)
+### Residual Risks (Round 3, non-blocking)
 
 - **Org task rows and Task summaries.** `useTaskWorkerTasks` takes `RunHistoryTeamExecutionRow`. The desktop's Org tree does not use it, so Org task rows show no summary on the desktop. REQ-002a says "a task agent or task team shows its current Task's summary". Under DEC-009/DEC-010 ("follow the desktop"), I read that as: Org task rows show their name only, like the desktop. Implementation should state this explicitly in the tests.
 - **`types/agent/TeamLaunchDraft.ts:106`** keeps a bare `crypto.randomUUID()`. It is reachable only through team launch, which the phone removed, and the desktop runs in a secure context. List it with that decision, or let it adopt the helper too.
 - **Double inset padding.** If the WebView reports a non-zero `env(safe-area-inset-bottom)` inside the padded container, the "+" button and the composer would be padded twice. Check this on the API 35 emulator.
 - **Carried forward from ARCH-REV-002:** the pending-open commit attribution guard; the rewritten list entry after a failed open; the Org `mode` key; R-001 and R-002.
 
-## Latest Authoritative Result
+### Round 3 Result (superseded by round 4)
 
 - Review Decision: `Fail`
 - Material-Premise Gate: `Fail` (MP-004 `Reachable` drives AR-009)

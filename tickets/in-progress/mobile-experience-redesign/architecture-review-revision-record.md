@@ -9,6 +9,7 @@ The latest `design-review-report.md` is authoritative. This record keeps the chr
 | ARCH-REV-001 | Round 1 / `Architecture Design Complete` (Large, High) | SR-003 | N/A | Fail | AR-001…AR-008 |
 | ARCH-REV-002 | Round 2 / SR-004 design revision for ARCH-REV-001 | SR-003, SR-004 | Fail | Pass | AR-001…AR-008 (all resolved) |
 | ARCH-REV-003 | Round 3 / SR-005 revision after API-REV-001 and CRR-003 (scoped) | SR-005 | Pass | Fail | AR-009, AR-010 (new) |
+| ARCH-REV-004 | Round 4 / SR-006 revision for ARCH-REV-003 (scoped) | SR-005, SR-006 | Fail | Pass | AR-009, AR-010 (resolved) |
 
 ## Revision Entries
 
@@ -109,3 +110,33 @@ None.
   - `TeamLaunchDraft.ts:106` is unlisted;
   - possible double inset padding;
   - the ARCH-REV-002 carry-overs.
+
+### ARCH-REV-004 — Scoped recheck of SR-006: the refresh is removed for desktop parity; the canonical sections are aligned
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-experience-redesign/tickets/in-progress/mobile-experience-redesign/design-review-report.md`
+- Review round and trigger: round 4. The Solution Designer's SR-006 for ARCH-REV-003 (commit `df7560a3ce`).
+- Triggering role, report path, and finding IDs: Solution Designer, `solution-handoff.md` "Round 4 (SR-006)"; AR-009, AR-010.
+- Relevant solution revision IDs: `SR-005`, `SR-006`.
+- Prior authoritative decision: `Fail` (ARCH-REV-003).
+- Current authoritative decision: `Pass`.
+- What changed:
+  - DEC-013 now follows the desktop: delegated rows under a run that is not open show the state last read.
+  - `refreshListedRoots` and `readRevision` are not added. The choice is measured (E-38: a 1.2 MB view).
+  - FU-007 now covers both phone and desktop.
+  - The canonical sections include the SR-005 changes.
+  - The narrowing of REQ-002a is recorded as a requirements-owner decision within the user's "follow the desktop" direction, with the user informed. It is noted as visible, not re-decided.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-009 | Open (Medium) | Resolved | SR-006; E-38; DEC-013 revised; FU-007 | No poll re-read or republish remains; `design-spec.md` mentions neither `refreshListedRoots` nor `readRevision` apart from "not added" |
+| AR-010 | Open (Low) | Resolved | SR-006 | Constraints, Task Size/Risk, Change Scope (in scope, derived, left alone), file mapping and Sequence steps 7–9 updated; the ten id-helper call sites match the code `grep` |
+
+- New or remaining finding IDs: none open.
+- Material classification changes: none (Large / High).
+- Recommended recipient: Implementation Engineer.
+- Remaining risks or uncertainty, non-blocking:
+  - opening a stopped root reuses its settled stored view, as on the desktop (`agentRunCollaborationStore.ts:255-258`), so AC-002a's probe should use a running root;
+  - the ARCH-REV-002 carry-overs;
+  - the Android double-padding check.
