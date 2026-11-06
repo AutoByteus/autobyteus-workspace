@@ -10,6 +10,7 @@ This project builds the Android WebView shell for the existing AutoByteus `/mobi
 - reachability checks against `/rest/remote-access/status`;
 - WebView containment for the saved AutoByteus origin;
 - the system-bar, display-cutout and keyboard insets: Android 15 draws a targetSdk 35 app edge-to-edge, so each screen's root takes them as padding (`ui/SystemBarInsets.kt`); before Android 15 the window keeps the bars apart and nothing moves;
+- keeping the open page across rotation, window-size changes (split screen, a foldable unfolding) and a hardware keyboard: `MainActivity` declares them in `android:configChanges`, so Android re-lays out the same WebView and page instead of recreating the screen (dark mode, language and font size still recreate it);
 - Tailscale-oriented diagnostics and recovery actions.
 
 The existing desktop Phone Access service still owns pairing sessions and credentials. The existing `/mobile` web shell still owns the phone's screens (the run list, the run screen, its views, New run and the connection sheet) and credential storage in WebView-local `localStorage` for this MVP.
@@ -108,6 +109,12 @@ adb shell am start -n org.autobyteus.mobile/.MainActivity
 cd autobyteus-android
 ANDROID_HOME="$HOME/Library/Android/sdk" ./gradlew :app:testDebugUnitTest
 ANDROID_HOME="$HOME/Library/Android/sdk" ./gradlew :app:assembleDebug :app:compileDebugAndroidTestKotlin
+```
+
+The instrumented tests (`app/src/androidTest`: `SystemBarInsetsTest`, `WebShellWindowInsetsTest`, `AutoByteusMobileShellSmokeTest`, `MainActivityConfigurationChangeTest`) run on a running emulator or a connected device. No CI job runs them:
+
+```bash
+ANDROID_HOME="$HOME/Library/Android/sdk" ./gradlew :app:connectedDebugAndroidTest
 ```
 
 ## Real-device validation handoff

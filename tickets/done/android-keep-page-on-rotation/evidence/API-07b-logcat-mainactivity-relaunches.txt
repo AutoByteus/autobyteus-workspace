@@ -1,0 +1,11 @@
+# Check: MainActivity relaunches over the whole API-02…API-07 session on emulator autobyteus277_api35 (system log)
+# Command: adb logcat -d | grep 'finishDrawing of relaunch' (WindowManager writes one line each time it relaunches MainActivity's window); the emulator clock is UTC+1 (21:41 local = 20:41Z)
+# Commit: dd129696a4 (+ the API-02 control build without configChanges at 21:36 local)
+# Date: 2026-11-06T20:51:10Z
+
+11-06 21:36:20.720   565  1298 I WindowManager: finishDrawing of relaunch: Window{149eeb7 u0 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity} 337ms
+11-06 21:50:18.973   565  1298 I WindowManager: finishDrawing of relaunch: Window{f23c65d u0 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity} 155ms
+11-06 21:50:28.368   565  1759 I WindowManager: finishDrawing of relaunch: Window{2be7169 u0 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity} 108ms
+
+case windows (local time): API-02 control build 21:36 | API-03 Files rotation 21:41–21:43 | API-04 picker rotation 21:44–21:46 | API-05 scanner rotation 21:47–21:48 | API-06 display resize 21:49 | API-07 dark mode on/off 21:50
+reading: the only MainActivity relaunches are the control build (no configChanges, rotation) and the two dark-mode switches (uiMode, by design); none during the rotations, the picker, the scanner or the display resize with the fix

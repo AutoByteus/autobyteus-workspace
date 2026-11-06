@@ -1,0 +1,25 @@
+# Case: API-03 — AC-001 as written: a Files view (workspace file preview) open, adb emu rotate to landscape and back
+# Steps: app paired through an access-logging reverse proxy in front of the node (access-proxy.mjs: emulator -> http://10.0.2.2:50364 -> 127.0.0.1:50364 -> node 127.0.0.1:49901), launched from the launcher; Files -> Choose workspace -> Temp Workspace -> abx415-rotation-notes.md (test file); page marker through WebView DevTools (cdp415.mjs state mark); page network watch (cdp415.mjs watch: WebSocket creations/closes, Document requests, load events); counts of the node's requests (GET /mobile[/], all, upgrades) from the proxy log; adb emu rotate; read; settings user_rotation back to 0 and read again
+# Commit: dd129696a4 (debug APK built in the worktree)
+# Environment: emulator autobyteus277_api35 (Pixel 7, API 35), auto-rotate off (accelerometer_rotation=0); test node abx415-api-node (autobyteus/autobyteus-server:beta 9c5aa01bb2fc, -p 127.0.0.1:49901:8000, fresh volumes, test data)
+# Date: 2026-11-06T20:41:03Z
+
+portrait:   state={"href":"http://10.0.2.2:50364/mobile/","marker":"api03-before-rotation","navigationStart":1793997597533,"viewport":"412x839","title":"","heading":"Temp Workspace"} node[GET /mobile, all, upgrades]=2 106 3
+landscape:  state={"href":"http://10.0.2.2:50364/mobile/","marker":"api03-before-rotation","navigationStart":1793997597533,"viewport":"863x360","title":"","heading":"Temp Workspace"} node[GET /mobile, all, upgrades]=2 106 3 previewShown=true
+portrait again:  state={"href":"http://10.0.2.2:50364/mobile/","marker":"api03-before-rotation","navigationStart":1793997597533,"viewport":"863x360","title":"","heading":"Temp Workspace"} node[GET /mobile, all, upgrades]=2 106 3 previewShown=true
+
+page network watch (whole sequence):
+{"t":"2026-11-06T20:41:01.477Z","kind":"watch-start"}
+{"t":"2026-11-06T20:41:46.480Z","kind":"watch-end"}
+
+## correction: the first 'adb emu rotate' turned the emulator's sensor (display mRotation=3, i.e. 270°; auto-rotate became USER_ROTATION_FREE), so 'settings put system user_rotation 0' had no effect and the 'portrait again' line above is still landscape. Back to 0° by turning the sensor further with adb emu rotate:
+after emu rotate #2: mRotation=3 state={"href":"http://10.0.2.2:50364/mobile/","marker":"api03-before-rotation","navigationStart":1793997597533,"viewport":"863x360","title":"","heading":"Temp Workspace"} node[GET /mobile, all, upgrades]=2 106 3 previewShown=true
+after emu rotate #3: mRotation=1 state={"href":"http://10.0.2.2:50364/mobile/","marker":"api03-before-rotation","navigationStart":1793997597533,"viewport":"863x360","title":"","heading":"Temp Workspace"} node[GET /mobile, all, upgrades]=2 106 3 previewShown=true
+after emu rotate #4: mRotation=0 state={"href":"http://10.0.2.2:50364/mobile/","marker":"api03-before-rotation","navigationStart":1793997597533,"viewport":"412x839","title":"","heading":"Temp Workspace"} node[GET /mobile, all, upgrades]=2 106 3 previewShown=true
+page network watch (back to portrait):
+{"t":"2026-11-06T20:42:05.415Z","kind":"watch-start"}
+
+## proxy liveness check after the sequence
+last node request before the rotations: {"t":"2026-11-06T20:40:40.588Z","kind":"http","method":"POST","path":"/graphql"}
+page fetch('/rest/health') from DevTools at the end -> logged at once as line 107: {"t":"2026-11-06T20:42:53.763Z","kind":"http","method":"GET","path":"/rest/health"}
+reading: the proxy logs every node request live; the page made no request at all from the first rotation (20:41:03Z) to the end (idle file preview), so the node saw no second GET /mobile/ and no new WebSocket upgrade

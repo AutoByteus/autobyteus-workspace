@@ -1,0 +1,25 @@
+# Case: API-08 (a) — instrumented tests on Android 14
+# Command: cd autobyteus-android && ANDROID_HOME=$HOME/Library/Android/sdk ./gradlew :app:connectedDebugAndroidTest
+# Commit: dd129696a4 + MainActivityConfigurationChangeTest
+# Environment: emulator autobyteus277_api34 (Pixel 6 profile, 1080x2400, Android 14 / API 34, google_apis arm64), -no-window -no-snapshot -wipe-data; the only adb device
+# Date: 2026-11-06T20:52:00Z
+
+autobyteus277_api34(AVD) - 14 Tests 8/13 completed. (0 skipped) (0 failed)
+Finished 13 tests on autobyteus277_api34(AVD) - 14
+BUILD SUCCESSFUL in 31s
+
+file: TEST-autobyteus277_api34(AVD) - 14-_app-.xml
+tests=13 failures=0 errors=0 skipped=0
+  AutoByteusMobileShellSmokeTest.appPackageIsInstallable  passed
+  AutoByteusMobileShellSmokeTest.fileChooserAndQrActivityResultsHaveDistinctRequestCodes  passed
+  AutoByteusMobileShellSmokeTest.healthyWebShellGivesWebViewFullViewportWithoutNativeToolbar  passed
+  AutoByteusMobileShellSmokeTest.qrCoordinatorEmitsDecodedTextFromSuccessfulScanResult  passed
+  AutoByteusMobileShellSmokeTest.qrCoordinatorReturnsCancelDiagnosticForCanceledOrEmptyScan  passed
+  AutoByteusMobileShellSmokeTest.diagnosticWebShellKeepsRecoveryActionsInOverlay  passed
+  AutoByteusMobileShellSmokeTest.webViewSettingsPermitUserSelectedContentUrisButNotFilePaths  passed
+  AutoByteusMobileShellSmokeTest.qrCoordinatorOwnsCameraPermissionBeforeLaunchingScanner  passed
+  MainActivityConfigurationChangeTest.rotatingToLandscapeAndBackKeepsTheSameActivityAndTheTypedInput  passed
+  SystemBarInsetsTest.padsTheRootWithTheBarsAndTheCutout  passed
+  SystemBarInsetsTest.theKeyboardRaisesTheBottomAboveIt  passed
+  SystemBarInsetsTest.withoutInsetsNothingMoves  passed
+  WebShellWindowInsetsTest.thePageSitsInsideTheBarsAndAboveTheKeyboardAndItsSafeAreaReadsZero  passed
