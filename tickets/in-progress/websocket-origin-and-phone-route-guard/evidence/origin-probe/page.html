@@ -1,0 +1,7 @@
+<!doctype html><html><body><script>
+const P="127.0.0.1:47911";
+try { new WebSocket(`ws://${P}/ws/from-file-page`); } catch(e) {}
+fetch(`http://${P}/graphql-from-file-page`, {method:"POST", headers:{"content-type":"application/json"}, body:"{}"}).catch(()=>{});
+const f=document.createElement("iframe"); f.setAttribute("sandbox","allow-scripts");
+f.srcdoc=`<script>new WebSocket("ws://${P}/ws/from-sandboxed-iframe");<\/script>`; document.body.appendChild(f);
+</script></body></html>
