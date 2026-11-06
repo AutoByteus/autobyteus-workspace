@@ -3,14 +3,14 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: `SR-002`
+- Current solution revision ID: `SR-003`
 - Package identifier: `deepseek-dsh-runtime-investigation`
 - Request / ticket: Project Task `autobyteus-387` (project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`)
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), for the user
 - Requirements owner: Solution Designer
 - Date: 2026-11-06
 - Approved by and reference: `Solution Designer within the direction (user informed)`. The direction is the user's own words in the Solution Designer conversation of 2026-11-05/06 (quoted in `investigation-notes.md`, Initial Request And Clarifications): build the dsh runtime in this ticket, the key from the vault through our proxy, dsh changes handled as bugs, real-API experiments. The defaults in DEC-004…DEC-006 were presented to the user ("These defaults go in unless you say otherwise") before he answered "lets go with the ticket". The user was informed of this approval in the same conversation.
-- Exact approved requirements baseline / solution revision: this document at SR-002
+- Exact approved requirements baseline / solution revision: this document as approved at SR-001; SR-003 adds DEC-019 and DEC-020, Solution Designer decisions within the direction (user informed), with no change to the requirements or acceptance criteria
 - Behavior-defining supplements and their approved versions: None
 
 ## Problem And Desired Outcome
@@ -224,6 +224,8 @@ None.
 | DEC-016 | Runtime name | Brand guidelines restrict project names | `deepseek_harness` / "DeepSeek Harness" | Referring to the product by its name is not naming our project after it | Solution Designer | Decided |
 | DEC-017 | How do instructions reach dsh literally? | Persona templates throw on unknown `{{…}}` | Persona field; first message; plugin section | An AutoByteus plugin section with `interpolate: false` reading a per-run file (RT-018) | Solution Designer | Decided |
 | DEC-018 | What "signed in" means for dsh | Key comes from the vault | — | "Signed in" = the vault holds the DeepSeek key; hint points to the API key settings | Solution Designer | Decided |
+| DEC-019 | Keep dsh's plugin-inventory request field (`dsh_plugin_packages`)? | Privacy (architecture review AR-007) | Keep / disable with a home-patch row | Keep: it carries only npm package names and versions of active dsh plugins and never enters model input (dsh `docs/deepseek-llm-api-wire-extensions.md:41-72,158-160`); our plugin is a loose file with no package of its own. The session log, which carries content, stays off (DEC-004). The relay never changes request bodies. | Solution Designer | Decided |
+| DEC-020 | Where can dsh runs start? | The key must only travel through the credential proxy (REQ-009); the standalone application host and today's application scopes have no proxy (architecture review AR-003, P-001) | Launch anyway with dsh's own key resolution / refuse / give scopes the proxy | dsh runs wherever the process runs the credential proxy: in the studio (agents, Teams, Orgs and application launches, which get the studio's provider relay). In a host without a proxy (the standalone application host), dsh shows as unavailable with that reason, and any launch there is refused before dsh starts. dsh never falls back to a key it finds itself. | Solution Designer | Decided |
 
 ## Traceability
 

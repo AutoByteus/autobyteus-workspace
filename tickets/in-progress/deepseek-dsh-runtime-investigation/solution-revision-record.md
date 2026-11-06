@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | SR-001 | Mixed (Evidence + Requirements) | Investigation of autobyteus-387 and the user's decisions in conversation | RT-001…RT-022 | N/A | Approved | BEH-001…BEH-015, REQ-001…REQ-015 | Investigation answered; user extended the ticket to building; requirements approved within the direction |
 | SR-002 | Design | Architecture design on the approved SR-001 basis | N/A | N/A | Ready | All | `design-spec.md` complete; Large / High; routed to architecture review |
+| SR-003 | Design | Architecture review ARCH-REV-001, round 1 (Fail, Design Impact) | AR-001…AR-007 | Ready (SR-002) | Ready | BEH-001/004/005/006/009/010/011/012/013/015; DEC-019, DEC-020 added | Reopen traced as a restore form with held instructions; one end owner; relay access disposition per composition with refusal rule and process slot; Anthropic refusal envelope; `normalizeModels` removed; "provider relay" vocabulary; relay never alters bodies |
 
 ## Revision Entries
 
@@ -54,3 +55,35 @@
 - Downstream and architecture-review impact: independent architecture review required.
 - Remaining gaps, assumptions or blocked decisions: as SR-001.
 - Next action: architecture review.
+
+### SR-003 — Design revision after architecture review round 1
+
+- Phase and classification: `Design Impact`
+- Triggering user feedback, Product package, investigation evidence, or role/report/round: `design-review-report.md`, ARCH-REV-001, round 1 (Fail).
+- Triggering finding IDs: AR-001…AR-007.
+- Prior authoritative requirements/design status: requirements Approved; design Ready (SR-002), failed review.
+- Current authoritative requirements/design status: requirements Approved (intent unchanged; DEC-019/DEC-020 added within the direction); design `Ready`.
+- Requirement, behavior, acceptance-criteria, scenario or decision IDs affected: BEH-001/004/005/006/009/010/011/012/013/015; DEC-019 (keep dsh's plugin-inventory field), DEC-020 (dsh runs only where the credential proxy runs; unavailable and refused elsewhere).
+- Scenario-basis or scenario-validity changes: the reopen after an Agent Tools change (existing supported path) is now traced as a restore form; application launches in the studio included under SCN-001.
+- Why this revision was recorded: to resolve the review findings.
+- Canonical requirements, investigation and design sections changed:
+  - AR-001: DS-004 lists three restore forms. The backend holds the run's instructions and passes them on reopen (re-sent, not recomposed). `acp-agent-run-backend.ts` was added to the inventory, and its reopen call to the `"load"` → `"restore"` removal row.
+  - AR-002: DS-008 makes `AcpSessionLauncher.end` the one end owner, in the order unsubscribe → close session → close connection or stop process → release launch. The factory's `releaseResources` calls it. The unsubscribe is identity-scoped per generation.
+  - AR-003: a required `providerRelayAccess` disposition in `createForExecution` and in every composition (studio: the host's; application platform runtime: threaded from the studio; standalone host: `null`). A launch whose profile names a relay but has no access is refused before spawn. A process relay slot, set by the composition, serves the dsh catalog and the availability provider. dsh reports as unavailable, with a reason, where the slot is empty.
+  - AR-004: relay refusals use the Anthropic error envelope, with a status and type for each code.
+  - AR-005: `normalizeModels` removed from the shared launch contract.
+  - AR-006: "runtime model route" renamed to "provider relay" (`/relay/<relayId>`); dsh's own route kept as `DSH_PROVIDER_ROUTE`.
+  - AR-007: the relay never alters bodies; the probe-only field stripping is noted; DEC-019.
+  - Residual guidance adopted: `finished` delivered synchronously; `issue`/`clearGrants` keep the relay grant; home files written atomically; `customSkillDirs` is an empty list when unset.
+  - Requirements doc: approval-line alignment (review note), DEC-019, DEC-020. Investigation notes: architecture facts from the review.
+- Supplemental artifacts added, changed or removed: none (probe notes only).
+- Product design evidence or product decisions incorporated: None.
+- Intended behavior changed: `No` (DEC-020 states where the approved REQ-009 rule leaves dsh available; the user is informed).
+- Approval impact: none beyond informing the user of DEC-019/DEC-020.
+- Behavior-defining supplement versions and approval references: None.
+- Affected design/review basis invalidated or rebuilt: SR-002 design superseded by SR-003; ARCH-REV-001 applies to SR-002.
+- Post-design task-size/risk classification and rationale changes: unchanged, `Large` / `High` (inventory grows by compositions).
+- Applied handoff-rule outcome / result-file reference: `handoff-architecture-design-complete.md` (updated for SR-003); route `/software_engineering_team/architecture_reviewer`.
+- Downstream and architecture-review impact: architecture review round 2.
+- Remaining gaps, assumptions or blocked decisions: RSK-004, RSK-006.
+- Next action: architecture review round 2.

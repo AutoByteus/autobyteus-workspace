@@ -11,7 +11,7 @@
 - Finalization target remote / branch: `origin` / `personal` (RELEASE.md "Finalization Target")
 - Bootstrap result: worktree created from the refreshed base; ticket folder `tickets/in-progress/deepseek-dsh-runtime-investigation/`
 - Bootstrap blocker: None
-- Current solution revision ID: `SR-002`
+- Current solution revision ID: `SR-003`
 - Authorities read (requirements reading gate; file and date): `references/requirements-engineering.md`, `references/finding-the-cause.md`, `references/ticket-scope.md` (re-read after the 2026-11-06 skill update), `references/handoff.md`, `references/project-documents.md` (2026-11-06 update), 2026-11-05/06
 - Investigation status: Complete for requirements and architecture design
 
@@ -104,6 +104,13 @@
 | `autobyteus-agent-presentation-contracts/src/agent-runtime-names.ts:10`, `autobyteus-collaboration-stream-contracts/src/agent-org-execution-dtos.ts:17`, `autobyteus-team-stream-contracts/src/team-execution-view-dtos.ts:24,166`, `autobyteus-web/types/availableAgentRuntimes.ts:31`, `types/agentRuntimes.ts:23`, `utils/existingRunModelHelp.ts:5`, `components/settings/model-routing/modelRoutingPresentation.ts:10`, `services/activity/runActivityPresentation.ts:15`, `components/settings/agent-runtimes/*` | Runtime registration points (contracts, web) | REQ-001, REQ-013 | One entry each |
 | `agent-execution/backends/acp/input/acp-prompt-builder.ts:5-13` | No image blocks; files by path | Images reach dsh as paths | Unchanged |
 | `config/app-config.ts:234-245` | Loads the whole data-dir `.env` into `process.env` | FU-001 | Outside this ticket; dsh launch removes nothing it does not own (DEC-012 makes the key irrelevant) |
+| `agent-execution/backends/acp/backend/acp-agent-run-backend.ts:34-53,191-259` (SR-003, architecture review AR-001) | Third `open` caller: reopen after an Agent Tools change, `mode: "load"`, input holds no instructions; ends via `AcpSessionLauncher.end` | REQ-006 on reopen | Backend holds the instructions; reopen is a restore form |
+| `acp-session-launcher.ts:135-147` and `acp-agent-run-backend-factory.ts:82-92` (AR-002) | Two copies of ending an owner | — | One end owner with a stated order |
+| `agent-provider-factory-builder.ts:155-174`, `general-process-run-supervisor.ts:234-245`, `application-execution-scope-kernel-builder.ts:102-141`, `start-standalone-application-host.ts:264`, `build-studio-server.ts:209,316,355` (AR-003) | `createForExecution` takes explicit dispositions; studio passes the proxy host's access; application scopes and the standalone host pass `null`; the studio builds its application runtime in the same process as its proxy host | REQ-009 in every composition | Disposition per composition; refuse before spawn without access (DEC-020) |
+| `model-catalog-service.ts:68-77,363`, `runtime-availability-service.ts:109-154`, `application-launch-host-capability-validator.ts:76-86` (AR-003) | Catalog and availability are process singletons without DI; validator refuses unavailable runtimes with their reason | REQ-005/013 | Process relay slot set by the composition |
+| dsh `llm-deepseek/src/transport.ts:9-45`, `adapter.ts:155-166` (AR-004) | Failure text only from an object `error`; 401/403 or `authentication_error`/`permission_error` → `AUTH` (not retried); ≥500 → `SERVER` (retried) | AC-009 alternate | Anthropic error envelope for relay refusals |
+| `GLOSSARY.md:236-262` (AR-006) | Model Routing / Model Router terms | Vocabulary | "provider relay" |
+| dsh `docs/deepseek-llm-api-wire-extensions.md:41-72,158-160` (AR-007) | `dsh_plugin_packages` = active npm package names and versions; never model input | — | DEC-019 |
 
 ## Structural And Payload Surface Inventory
 
@@ -201,7 +208,7 @@ N/A — not applicable.
 
 | Artifact Path | Owner | Purpose | Scope | Related Requirement / AC IDs | Status | Approval Applicability / State |
 | --- | --- | --- | --- | --- | --- | --- |
-| `probes/` (`dsh-acp-probe.mjs`, `mock-anthropic.mjs`, `pass-forwarder.mjs`, `vault-forwarder.mjs`, `mcp-http-server.mjs`, `live-run.sh`, `live-run-home.sh`, `*-steps.mjs`, `dsh-plugin/`, `*.cordis.patch.yml`, `skill-fixture/`, `instructions-fixture.md`) | Solution Designer | Reproduce every RT finding | Investigation | REQ-002…REQ-015 | Current | Evidence; not behavior-defining |
+| `probes/` (`dsh-acp-probe.mjs`, `mock-anthropic.mjs`, `pass-forwarder.mjs`, `vault-forwarder.mjs`, `mcp-http-server.mjs`, `live-run.sh`, `live-run-home.sh`, `*-steps.mjs`, `dsh-plugin/`, `*.cordis.patch.yml`, `skill-fixture/`, `instructions-fixture.md`) | Solution Designer | Reproduce every RT finding. Note: `vault-forwarder.mjs` also deletes `dsh_session_log` and `dsh_plugin_packages` from request bodies; that is probe-only behavior, the product relay never alters bodies (design spec, DEC-019) | Investigation | REQ-002…REQ-015 | Current | Evidence; not behavior-defining |
 | `evidence/` (`p1`…`p21`) | Solution Designer | Recorded frames and forwarder logs (no key material) | Investigation | as RT rows | Current | Evidence |
 
 ## Assumptions, Unknowns, And Risks
