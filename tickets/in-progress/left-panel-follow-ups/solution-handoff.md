@@ -1,6 +1,6 @@
 # Solution Handoff — `left-panel-follow-ups`
 
-- Result: **Architecture Design Complete** (SR-001), `task_size=Small`, `architectural_risk=Low`.
+- Result: **Architecture Design Complete** (SR-002, after CRR-001), `task_size=Small`, `architectural_risk=Low`.
 - Origin: Project Task `autobyteus-388`, from `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), 2026-11-06.
 
 ## Decisions
@@ -12,6 +12,14 @@
 - **FU-004: the open Projects view follows runs started or removed elsewhere within one poll.**
   - It compares the run history poll's set of root runs and re-reads the loaded Projects when it changes.
   - No new feed event: one at `recordStart` would race with the run's own records.
+
+## SR-002 (after CRR-001, 2026-11-06)
+
+- **CR-001:** the Projects view's history read was windowed (6 per agent and folder), so another client archiving an older Agent run of a Project changed nothing in the set, and nothing was re-read (E-08).
+- **Choice:** option (a). The Projects view reads with the window `null`, as Runs does; only Workspaces keeps 6. autobyteus-385 measured the cost the same, p95 151 ms against 149 ms (E-09).
+- **Rejected:** (b), a second signal source; (c), a re-read on every poll (the escalation trigger); (d), a server event (it races, E-06).
+- **Tests:** a `projectRunsStore` spec with the removed run outside the old window (the local check), and the `RunSectionPanel` window per view. PLN-11 is the end-to-end check.
+- Still Small / Low.
 
 ## Approval
 

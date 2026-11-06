@@ -4,7 +4,7 @@
 
 - Package: `left-panel-follow-ups` (Project Task `autobyteus-388`), the follow-ups FU-001, FU-003, FU-004 and FU-005 of autobyteus-385.
 - Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/left-panel-follow-ups`, branch `codex/left-panel-follow-ups`, base `origin/personal` @ `d6bcff577b` (2026-11-06). Dependencies are installed.
-- Project documents present: `DESIGN.md`, `TESTING.md`, `RELEASE.md`. Current solution revision: `SR-001`.
+- Project documents present: `DESIGN.md`, `TESTING.md`, `RELEASE.md`. Current solution revision: `SR-002` (after CRR-001).
 - Authorities: the skill's `ticket-scope.md` and `project-documents.md` (updated 2026-11-06).
 
 ## Source Log
@@ -18,3 +18,5 @@
 | Code | `autobyteus-web/stores/projectRunsStore.ts:51-57,125-140` | The Projects view re-reads a Project on `connected`, `project_upserted`, this window's own run start, and archive, delete or stop, and when shown. A run started by another client is never seen until one of those happens (FU-004) | E-05 |
 | Code | `autobyteus-server-ts/src/projects/services/project-run-service.ts:39-52` (`recordStart` runs "before the run's own records are written"); `projects/changes/project-change-publisher.ts:30-45` (a flush on `setImmediate`) | A feed mark at `recordStart` would race: the Project's run listing joins entries with runs that exist, and the run's records are written after it, over async I/O. A client re-reading on that event could still miss the run. A correct server trigger would have to fire after each kind of run's history record exists (Agent and Team creation paths), which is cross-module plumbing | E-06 |
 | Code | `RunSectionPanel` host (today `WorkspaceAgentRunsTreePanel.vue:490-505`): history load and a 5 s `refreshTreeQuietly` poll in every view; `runHistoryStore.workspaceGroups` and team history | The run section already polls the run history every 5 s in all three views, the Projects view included. A run started anywhere appears there as a new root run id within one poll | E-07 |
+| Review | `code-review-report.md` CRR-001 CR-001; API/E2E PLN-11 (`evidence/api-e2e/API-03-04-pln/evidence.json`) | (SR-002) In the Projects view, the run history is read with the window 6 (`RunSectionPanel.vue:120`, `historyWindowOf`), so it holds only the newest 6 Agent runs per agent and folder. When another client archives a Project's Agent run that is outside that window, the windowed set does not change, so DEC-003 reads nothing (12 s, 0 reads) | E-08 |
+| Evidence | autobyteus-385 `api-e2e-execution-coverage-report.md` API-02 (`tickets/done/workspace-tree-vs-chooser/`) | (SR-002) On the shaped set (40 Agent, 200 Team and 10 Org runs), the poll read costs p95 151.2 ms with the window `null` and 148.9 ms with the window 6. The window barely changes the cost, which is dominated by Team and Org roots' `lastActivityAt`. Both are within the 250 ms budget | E-09 |

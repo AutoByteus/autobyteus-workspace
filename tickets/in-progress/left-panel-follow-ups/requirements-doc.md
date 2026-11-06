@@ -3,7 +3,7 @@
 ## Document Status
 
 - Status: `Approved`.
-- Current solution revision ID: `SR-001`.
+- Current solution revision ID: `SR-002` (after CRR-001 CR-001; requirements unchanged).
 - Request: Project Task `autobyteus-388`, from the user through `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`).
 - Approved by: the Solution Designer, within the direction (the user informed). The Task allows "done, or the team explains why it is not worth it" per item. Date: 2026-11-06.
 
@@ -13,7 +13,7 @@
 | --- | --- | --- | --- |
 | DEC-001 | FU-001 + FU-005: remove GraphQL `createAgentRun`? | **Keep it.** Remove only the web's unused `CreateAgentRun` document and its generated types. The probes keep using `createAgentRun` | It is the documented one-call creation API (E-02), used by 90 server test files and 18 probes (E-01). Moving them to prepare plus a WebSocket first message would make every test more complex for no product gain. The web document is dead code (E-03) |
 | DEC-002 | FU-003: rename the run section host | **Do it:** `WorkspaceAgentRunsTreePanel` becomes `RunSectionPanel`. The specs, the localization key namespace and the docs follow. The unused key `this_workspace` is removed | It hosts three views and the history load. A name after one view misleads (E-04) |
-| DEC-003 | FU-004: an open Projects view misses another client's new run | **Do it in the web, without a new feed event.** While the Projects view is shown, the run history poll's set of root runs is compared with the previous poll. When it changes (a run added or removed by anyone), every loaded Project is re-read | A server event at `recordStart` would race with the run's own records (E-06), and a correct one needs cross-module plumbing. The run section already polls every 5 s in every view (E-07), so this is exact within one poll, at the cost of one read per loaded Project per change |
+| DEC-003 | FU-004: an open Projects view misses another client's new run | **Do it in the web, without a new feed event.** While the Projects view is shown, the run history poll's set of root runs is compared with the previous poll. When it changes (a run added or removed by anyone), every loaded Project is re-read. **SR-002:** the Projects view reads the run history without a window (`null`), as the Runs view does, so the set holds every run and an older Agent run's removal is seen (E-08). The read costs the same as with the window (E-09) | A server event at `recordStart` would race with the run's own records (E-06), and a correct one needs cross-module plumbing. The run section already polls every 5 s in every view (E-07), so this is exact within one poll, at the cost of one read per loaded Project per change |
 
 ## Requirements
 
