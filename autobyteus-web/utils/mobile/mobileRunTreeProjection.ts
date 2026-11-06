@@ -7,7 +7,7 @@ import type {
   TeamTreeNode,
 } from '~/stores/runHistoryTypes';
 import { AgentStatus } from '~/types/agent/AgentStatus';
-import type { AgentOrgHistoryDisplayRow } from '~/utils/agentOrgHistoryRows';
+import { agentOrgFirstMemberAddress, type AgentOrgHistoryDisplayRow } from '~/utils/agentOrgHistoryRows';
 import { memberDisplayName } from '~/utils/collaboration/memberDisplayName';
 import type { RunListEntry } from '~/utils/runListProjection';
 import type { RunTreeRow } from '~/utils/runTreeProjection';
@@ -66,6 +66,8 @@ export interface MobileRunTreeSources {
   remoteReachable(runId: string): boolean;
   /** A remote run's title as its node reports it, if any. */
   remoteTitle(runId: string): string | null;
+  /** A Task worker row's current Task summary (task agents and task teams), if known (DEC-010). */
+  taskSummary(row: RunHistoryTeamExecutionRow): string | null;
   isRunExpanded(runId: string): boolean;
   isTeamExpanded(teamRunId: string): boolean;
   isTeamRowExpanded(teamRunId: string, rowKey: string): boolean;
@@ -87,11 +89,17 @@ const remoteOf = (row: RunHistoryTransientExecutionRow, sources: MobileRunTreeSo
     : null;
 const remoteTitleOf = (row: RunHistoryTransientExecutionRow, sources: MobileRunTreeSources): string =>
   (row.remote && row.transientKind !== 'task_team_child' ? sources.remoteTitle(row.remote.runId) : null) ?? '';
+/**
+ * A delegated row's second line, as on the desktop: its current Task's summary, else (a run on another node) its title;
+ * a row with neither (a member, a child with no Task) has none (REQ-002a, DEC-010).
+ */
+const delegatedTitleOf = (row: RunHistoryTransientExecutionRow, sources: MobileRunTreeSources): string =>
+  sources.taskSummary(row) || remoteTitleOf(row, sources);
 
 const taskRowsOf = (entry: Extract<RunListEntry, { kind: 'agent' }>, sources: MobileRunTreeSources): Row[] =>
   sources.taskRows(entry.runId).map(({ row, teamStatus }) => Object.freeze({
     key: child(entry, row.rowKey), depth: row.depth + 1, avatar: row.memberKind === 'agent_team' ? 'team' : 'agent',
-    name: row.displayName, title: remoteTitleOf(row, sources),
+    name: row.displayName, title: delegatedTitleOf(row, sources),
     status: String(row.memberKind === 'agent_team' ? teamStatus ?? AgentStatus.Offline : row.currentStatus || AgentStatus.Offline),
     remote: remoteOf(row, sources), hasChildren: row.hasChildren,
     expanded: Boolean(row.teamRunIdForNode && sources.isTaskTeamExpanded(entry.runId, row.teamRunIdForNode)),
@@ -125,7 +133,7 @@ const teamExecutionRow = (
     : (row.kind === 'stable_member' ? row.row.currentStatus : row.currentStatus) || AgentStatus.Offline;
   return Object.freeze({
     key: child(entry, row.rowKey), depth: row.depth + 1, avatar: row.memberKind === 'agent_team' ? 'team' : 'agent',
-    name: row.displayName, title: transient ? remoteTitleOf(transient, sources) : '', status: String(status),
+    name: row.displayName, title: transient ? delegatedTitleOf(transient, sources) : '', status: String(status),
     remote: transient ? remoteOf(transient, sources) : null, hasChildren: row.hasChildren, expanded,
     fold: row.hasChildren ? Object.freeze({ kind: 'teamRow', teamRunId: entry.runId, rowKey: row.rowKey }) : null,
     open: row.agentRunId
@@ -184,7 +192,9 @@ const topLevelRow = (entry: RunListEntry, hasChildren: boolean, expanded: boolea
   }
   return Object.freeze({ ...base, avatar: 'org', title: entry.orgRun.summary || '',
     status: entry.isActive ? AgentStatus.Running : AgentStatus.Offline,
-    fold: hasChildren ? Object.freeze({ kind: 'orgRun', rootRunId: entry.runId }) : null, open: Object.freeze({ kind: 'orgRun', orgRun: entry.orgRun }) });
+    fold: hasChildren ? Object.freeze({ kind: 'orgRun', rootRunId: entry.runId }) : null,
+    // It opens its first configured member (DEC-012): an Org without one has nothing to open.
+    open: agentOrgFirstMemberAddress(entry.orgRun) ? Object.freeze({ kind: 'orgRun', orgRun: entry.orgRun }) : null });
 };
 
 /**

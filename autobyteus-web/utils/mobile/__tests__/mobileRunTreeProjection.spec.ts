@@ -18,7 +18,7 @@ const task = (patch: Partial<RunHistoryTransientExecutionRow>): RunHistoryTransi
   hasChildren: false, ...patch,
 })
 const sources = (patch: Partial<MobileRunTreeSources>): MobileRunTreeSources => ({
-  entries: [], taskRows: () => [], orgRows: () => [], remoteReachable: () => true, remoteTitle: () => null,
+  entries: [], taskRows: () => [], orgRows: () => [], remoteReachable: () => true, remoteTitle: () => null, taskSummary: () => null,
   isRunExpanded: () => true, isTeamExpanded: () => false, isTeamRowExpanded: () => false, isAgentOrgRunExpanded: () => true,
   isAgentOrgTeamExpanded: () => false, isTaskTeamExpanded: () => false, isAgentOrgTaskTeamExpanded: () => false, ...patch,
 })
@@ -96,5 +96,27 @@ describe('buildMobileRunTreeRows', () => {
     expect(rows[2]).toMatchObject({ open: { kind: 'orgMember', address: '/content_team', agentRunId: null }, fold: { kind: 'orgTeam', rootRunId: 'org-1', address: '/content_team' } })
     expect(openAgentRunIdOf(rows[1]!)).toBe('lead')
     expect(openAgentRunIdOf(rows[2]!)).toBeNull()
+  })
+
+  // REQ-002a, DEC-010 (SR-005): the second line where the data has one, and one line otherwise.
+  it('a Task worker row shows its Task\'s summary; a remote run without a Task its title; a member one line', () => {
+    const rows = buildMobileRunTreeRows(sources({
+      entries: [agentEntry('host')], taskRows: () => hostRows, isTaskTeamExpanded: () => true,
+      taskSummary: (row) => (row.agentRunId === 'writer' ? 'Package the release-notes agent' : row.teamRunIdForNode === 'se-team' ? 'Image context files don\'t reach the model' : null),
+      remoteTitle: (runId) => (runId === 'marketing' ? 'Plan the 1.6 launch campaign' : null),
+    }))
+    expect(rows.map((row) => [row.name, row.title])).toEqual([
+      ['Project Task Manager', 'host title'],
+      ['Agent Package Creator', 'Package the release-notes agent'],
+      ['Software Engineering Team', 'Image context files don\'t reach the model'],
+      ['solution_designer', ''],
+      ['Marketing Team', 'Plan the 1.6 launch campaign'],
+    ])
+  })
+
+  it('an Org run with no member has nothing to open', () => {
+    const orgRun = { rootRunId: 'org-0', summary: '', isActive: false, executionTree: { rootOrg: { members: [] } } }
+    const entry = { kind: 'org', key: 'org:org-0', runId: 'org-0', name: 'Empty Org', lastActivityAt: '2026-11-06T08:00:00.000Z', isActive: false, folderRootPath: null, definitionId: 'd', orgRun } as unknown as RunListEntry
+    expect(buildMobileRunTreeRows(sources({ entries: [entry] }))[0]).toMatchObject({ open: null, hasChildren: false })
   })
 })

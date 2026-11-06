@@ -30,7 +30,7 @@ const run = { runId: 'host' } as never;
 const row = (open: MobileRunTreeRow['open'], key = 'agent:host'): MobileRunTreeRow => ({
   key, depth: 0, avatar: 'agent', name: 'n', title: '', status: 'idle', remote: null, hasChildren: false, expanded: false, fold: null, open, lastActivityAt: null,
 });
-const orgRun = { rootRunId: 'org-1', isActive: true, executionTree: { rootOrg: { orgDefinitionId: 'org-def' } } } as never;
+const orgRun = { rootRunId: 'org-1', isActive: true, executionTree: { rootOrg: { orgDefinitionId: 'org-def', members: [{ address: '/software_team', teamRunId: 't' }, { address: '/director', agentRunId: 'd' }] } } } as never;
 const ORG_KEYS = { rootSubjectKind: 'agent_org', definitionId: 'org-def', orgRunId: 'org-1', mode: 'active' };
 
 let pinia: Pinia;
@@ -121,7 +121,17 @@ describe('useMobileRunOpening', () => {
     await opening.open(row({ kind: 'orgRun', orgRun }, 'org:org-1'));
     expect(store.failure).toEqual({ key: 'org:org-1' });
     router.back(); await flushPromises();
-    expect(router.currentRoute.value.query).toEqual(ORG_KEYS);
+    expect(router.currentRoute.value.query).toEqual({ ...ORG_KEYS, memberAddress: '/software_team' });
+  });
+
+  // CRR-003 F-01, DEC-012: an Org run row opens its first configured member (a Team opens its coordinator there).
+  it('an Org run row selects the Org\'s first configured member, with that address on both entries', async () => {
+    const { router, opening, store } = await setup();
+    shared.execute.mockResolvedValue({ disposition: 'committed' });
+    await opening.open(row({ kind: 'orgRun', orgRun }, 'org:org-1'));
+    expect(shared.execute).toHaveBeenCalledWith({ rootSubjectKind: 'agent_org', rootRunId: 'org-1', action: 'select', memberAddress: '/software_team' });
+    expect(router.currentRoute.value.query).toEqual({ ...ORG_KEYS, memberAddress: '/software_team', screen: 'run' });
+    expect(store.pending).toBeNull();
   });
 
   it('Team stream recovery shows the desktop\'s toast, and the open fails', async () => {

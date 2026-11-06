@@ -12,13 +12,15 @@ import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useMobileRunOpeningStore } from '~/stores/mobileRunOpeningStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import type { MobileRowOpen, MobileRunTreeRow } from '~/utils/mobile/mobileRunTreeProjection';
+import { agentOrgFirstMemberAddress } from '~/utils/agentOrgHistoryRows';
 
 type OrgOpen = Extract<MobileRowOpen, { kind: 'orgRun' | 'orgMember' | 'orgExecution' }>;
 const isOrgOpen = (open: MobileRowOpen): open is OrgOpen =>
   open.kind === 'orgRun' || open.kind === 'orgMember' || open.kind === 'orgExecution';
 const orgCommandOf = (open: OrgOpen): WorkspaceHistorySubjectAction => {
   const rootRunId = open.orgRun.rootRunId;
-  if (open.kind === 'orgRun') return { rootSubjectKind: 'agent_org', rootRunId, action: 'open' };
+  // An Org run opens its first configured member (REQ-003a); the row has an open only when there is one.
+  if (open.kind === 'orgRun') return { rootSubjectKind: 'agent_org', rootRunId, action: 'select', memberAddress: agentOrgFirstMemberAddress(open.orgRun) ?? '' };
   if (open.kind === 'orgMember') return { rootSubjectKind: 'agent_org', rootRunId, action: 'select', memberAddress: open.address };
   return { rootSubjectKind: 'agent_org', rootRunId, action: 'inspect', agentRunId: open.agentRunId, memberAddress: open.address };
 };

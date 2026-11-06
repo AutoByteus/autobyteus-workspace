@@ -73,13 +73,18 @@ describe('useTaskWorkerTasks (delegated-copy-task-locator)', () => {
     expect(locate).toHaveBeenCalledWith(task, openRun)
   })
 
-  it('shows no summaries and reads nothing where the Projects tab is not available (mobile)', () => {
+  // autobyteus-277 DEC-010: the phone shows Task summaries too; only locating needs Projects.
+  it('where the Projects tab is not available (the phone) it still answers summaries, but locates nothing', () => {
     gate.projects = false
     const store = useTaskWorkerTaskStore()
-    const retain = vi.spyOn(store, 'retain')
+    const retain = vi.spyOn(store, 'retain').mockReturnValue(() => undefined)
     vi.spyOn(store, 'taskOf').mockReturnValue(task)
+    const locate = vi.spyOn(useTaskLocatorStore(), 'locate').mockImplementation(() => undefined)
     const { api } = host(() => [agentRow])
-    expect(retain).not.toHaveBeenCalled()
-    expect(api().taskOf(agentRow)).toBeNull()
+    expect(retain).toHaveBeenCalledTimes(1)
+    expect(api().taskOf(agentRow)).toEqual(task)
+    expect(api().canLocate).toBe(false)
+    api().locate(task, vi.fn())
+    expect(locate).not.toHaveBeenCalled()
   })
 })

@@ -1,4 +1,5 @@
 import { computed, watch } from 'vue';
+import { useTaskWorkerTasks } from '~/composables/projects/useTaskWorkerTasks';
 import { useRouteSelectedAgentOrg } from '~/composables/runHistory/useRouteSelectedAgentOrg';
 import { useRunListDisclosure } from '~/composables/useRunListDisclosure';
 import { useActiveContextStore } from '~/stores/activeContextStore';
@@ -9,6 +10,7 @@ import { useRemoteRunsStore } from '~/stores/remoteRunsStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useRunListStore } from '~/stores/runListStore';
 import { projectAgentOrgHistoryRows } from '~/utils/agentOrgHistoryRows';
+import { taskWorkerTaskLabel } from '~/utils/projects/taskText';
 import {
   buildMobileRunTreeRows,
   openAgentRunIdOf,
@@ -45,6 +47,11 @@ export function useMobileRunTree() {
   watch(() => runListStore.shownEntries.flatMap((entry) => entry.kind === 'agent' && entry.run.hasCollaboration ? [entry.runId] : []),
     (runIds) => runIds.forEach((runId) => collaboration.ensureStoredView(runId, true)), { immediate: true });
 
+  // The listed Task workers' current Tasks (the desktop's second line; summaries only, no locating on the phone).
+  const { taskOf } = useTaskWorkerTasks(() => runListStore.shownEntries.flatMap((entry) => entry.kind === 'agent'
+    ? collaboration.taskRows(entry.runId).map((display) => display.row)
+    : entry.kind === 'team' ? entry.team.executionRows : []));
+
   const rows = computed<MobileRunTreeRow[]>(() => buildMobileRunTreeRows({
     entries: runListStore.shownEntries,
     taskRows: (hostRunId) => collaboration.taskRows(hostRunId),
@@ -56,6 +63,10 @@ export function useMobileRunTree() {
     }),
     remoteReachable: (runId) => remoteRuns.run(runId)?.reachable !== false,
     remoteTitle: (runId) => remoteRuns.run(runId)?.title ?? null,
+    taskSummary: (row) => {
+      const task = taskOf(row);
+      return task ? taskWorkerTaskLabel(task) : null;
+    },
     isRunExpanded: disclosure.isRunExpanded,
     isTeamExpanded: disclosure.isTeamExpanded,
     isTeamRowExpanded: disclosure.isRowExpanded,
