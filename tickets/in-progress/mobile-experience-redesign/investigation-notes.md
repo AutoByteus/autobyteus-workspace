@@ -216,6 +216,8 @@ The architecture investigation of 2026-11-06 ran after the requirements were app
 | E-36 | `composables/projects/useTaskWorkerTasks.ts:21-48`; `server .../remote-access-route-policy.ts:88-96` | The Task summary line is turned off where the Projects tab is absent, by a client gate. A paired phone may call GraphQL and `/ws/*` | DEC-010: summaries can be shown on the phone; locating a Task stays where Projects is |
 | E-37 | `autobyteus-android/app/build.gradle.kts:41-46`; ADR-05 (`ADR-05-1-run-screen-under-status-bar.png`) | targetSdk 35, no inset handling: on Android 15 the clock and icons draw over the bars; ⋮ opens only with a lower tap | DEC-011 |
 
+| E-38 | Measured, read-only, on the user's node: `agentRunCollaboration(runId)` for the 4 Agent roots with collaboration (sizes only, no content kept) | 26,653, 129,852, **1,235,612** and 1,333 bytes; 0.00–0.02 s locally. `RunLastActivityReader` (`run-last-activity-reader.ts:60-80`) takes the newest memory file of the root and its located copies | AR-009: re-reading a view on every change of an active root is too heavy on a phone; DEC-013 revised to desktop parity, FU-007 |
+
 - Temporary diagnostics: none in the product. The probe script `/tmp/sd277-probe/probe.py` is outside the repository; it only reads and is not part of the package.
 
 ## Requirement Implications

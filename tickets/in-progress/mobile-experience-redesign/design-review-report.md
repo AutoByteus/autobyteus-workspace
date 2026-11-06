@@ -2,30 +2,157 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-experience-redesign/tickets/in-progress/mobile-experience-redesign/requirements-doc.md` (SR-003, Approved; unchanged in SR-004)
-- Upstream Investigation Notes: `…/investigation-notes.md` (E-01…E-32)
-- Upstream Solution Revision Record: `…/solution-revision-record.md` (SR-001…SR-004)
-- Reviewed Design Spec: `…/design-spec.md` (SR-004; ticket package at commit `407f0ee8e9`, which only pins the Product spec revision over `f4e5eb6634`)
-- Supplemental Task Artifacts Reviewed: Product `ui-ux-spec.md` with VIS-001…029 at design rev `e6ca7b6098` (spec text fixes only over `976457a4`: the SR reference, the TR-014 row, the TR-018/019 order; screenshots unchanged) (in place, `/Users/normy/autobyteus_org/autobyteus-web-design-worktrees/mobile-experience-redesign/tickets/in-progress/mobile-experience-redesign/`); `follow-ups.md`; `solution-handoff.md`
-- Relevant Solution Revision IDs: `SR-003` (requirements), `SR-004` (design revision for ARCH-REV-001)
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-experience-redesign/tickets/in-progress/mobile-experience-redesign/requirements-doc.md` (Approved at SR-005: REQ-002a, REQ-003a, REQ-011; AC-002a, AC-003a, AC-011; DEC-009…DEC-014)
+- Upstream Investigation Notes: `…/investigation-notes.md` (E-01…E-37)
+- Upstream Solution Revision Record: `…/solution-revision-record.md` (SR-001…SR-005)
+- Reviewed Design Spec: `…/design-spec.md`, section "Revision For CRR-003 (SR-005)", at commit `a525b439fe`
+- Supplemental Task Artifacts Reviewed: `code-review-report.md` (CRR-003, "API/E2E Failure-Origin Review (Round 3)"); `follow-ups.md` (FU-007); the Product spec at `e6ca7b6098` (unchanged)
+- Relevant Solution Revision IDs: `SR-005`
 - Architecture Review Revision Record: `…/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-002`
-- Current Review Round: `2`
-- Trigger: the Solution Designer's SR-004 revision for AR-001…AR-008. This is a scoped re-review of DS-003, DS-004, the run-screen and pending-open local spines, and AR-001…AR-008.
-- Prior Review Round Reviewed: round 1 (`ARCH-REV-001`, Fail)
-- Latest Authoritative Round: `2`
-- Current-State Evidence Basis:
-  - Round-1 evidence still applies; the code is unchanged (`f4e5eb6634` changes only ticket documents).
-  - Rechecked this round:
-    - `RunDefinitionGroups.vue:362-366`;
-    - `onCreateRun` / `startPresetChat` callers (`grep`);
-    - `WorkspaceAgentRunsTreePanel.vue:142-151`;
-    - `app.vue:12` (the `ToastContainer` renders on every page);
-    - `localization/messages/en/workspace.ts:40-42` (recovery copy);
-    - `agentSelectionStore.ts:48-54`;
-    - `useWorkspaceHistorySelectionActions.ts:51-150`.
+- Current Architecture Review Revision ID: `ARCH-REV-003`
+- Current Review Round: `3` (scoped to the SR-005 revision section)
+- Trigger: API/E2E round 1 Fail (API-REV-001), then CRR-003. The Solution Designer's scoped request of 2026-11-06.
+- Prior Review Round Reviewed: round 2 (`ARCH-REV-002`, Pass); its verdicts are kept below for every section SR-005 does not change.
+- Latest Authoritative Round: `3`
+- Current-State Evidence Basis: worktree `codex/mobile-experience-redesign` @ `a525b439fe`. Opened at the cited lines:
+  - `stores/agentRunCollaborationStore.ts:60-82, 150-178` (`read` → `publish`);
+  - `services/runHydration/memberLoader.ts:55-90`;
+  - `services/collaborationMessages/collaborationParticipantMessages.ts:36-121`;
+  - `services/agentCollaboration/agentRunCollaborationContext.ts:225-260`;
+  - `services/agentOrgExecution/agentOrgExecutionContext.ts:123-162`;
+  - `composables/projects/useTaskWorkerTasks.ts`, with its callers;
+  - `stores/remoteRunsStore.ts:13-80`;
+  - every `randomUUID` site in `autobyteus-web`;
+  - `autobyteus-android/app/build.gradle.kts` (targetSdk 35, `androidx.core:core:1.13.1`), `AndroidManifest.xml`, `MainActivity.kt`.
 
 ## Routing Classification Review
+
+- Task size: `Large`. Architectural risk: `High`. Both are unchanged and justified: SR-005 adds more shared owners (the collaboration store, Task summaries, the id helper) and an Android shell change.
+- Independent Architecture Review required: `Yes`.
+
+## Upstream Behavior And Production-Path Basis Confirmation (Round 3)
+
+- Overall Basis Status: `Confirmed`.
+- The user's answers for DEC-009…DEC-011 are recorded in his words. DEC-012…DEC-014 were decided by the Solution Designer within the approved direction. REQ-003a is a clarification of REQ-003, and DEC-014 rests on a documented supported edge (`docs/remote_access.md`).
+- Scope guardrail: Out of Scope now reads "Android and iOS shell changes, except REQ-011".
+- Prospective blocking finding traceability: `Yes`. AR-009 protects REQ-002a/AC-002a, QR-003 and R-001.
+
+| Behavior / Change | Design Alignment | Current-State Evidence | Target Path Coherence | Status | Required Action |
+| --- | --- | --- | --- | --- | --- |
+| F-01 / REQ-003a: an Org run opens its first configured member through `select` | Pass | Pass. `select(address)` takes the configured selection; a direct agent or a team coordinator (`agentOrgExecutionContext.ts:123-128`; E-34) | Pass. One sequence owner as before; `agentOrgRouteQuery` gets the same address | Confirmed | — |
+| F-02 / DEC-014: one guarded id helper | Pass | Pass. The bare calls exist at the cited lines | Pass | Confirmed | Residual: `types/agent/TeamLaunchDraft.ts:106` is unlisted (desktop-only team launch) |
+| F-06 / REQ-002a: second lines | Pass | Pass. The client gate is at `useTaskWorkerTasks.ts:28`; a remote title is in `remoteRunsStore.ts:24, 79-80` | Pass | Confirmed | Residual: Org task rows |
+| F-07 / DEC-009: rows lifted as on the desktop | Pass | Pass | Pass (no code change) | Confirmed | — |
+| F-08 / REQ-002a "live state … while the list is shown" | Pass | Pass. `read` exists (E-33) | **Fail**: each re-read is a full republish with side effects, on a trigger that repeats every poll | Needs Correction | AR-009 |
+| F-09 / REQ-011: Android insets | Pass | Pass. targetSdk 35; `androidx.core` is present, so `ViewCompat` needs no new dependency; no permission change | Pass | Confirmed | — |
+| Canonical design sections vs SR-005 | — | — | **Fail**: Constraints, Change Scope and Task Size still say "no Android changes" and do not list the SR-005 shared changes | Needs Correction | AR-010 |
+
+## Round-3 Structural Verdicts (Changed Owners Only)
+
+| Owner / Change | Ownership And Boundary | Interface | Derived Consumers (P11) | Dependency Direction | Verdict | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| `agentOrgFirstMemberAddress` in `utils/agentOrgHistoryRows.ts` | Pass (the Org row owner) | Pass (pure, one subject) | Pass (used by the phone only; the desktop is unchanged) | Pass | Pass | — |
+| `utils/randomId.ts` `createRandomId()` | Pass (one owner for the rule) | Pass | Pass (four guarded copies adopt it; five bare calls change) | Pass | Pass | Keep each caller's prefix (`client_`, `upload:` …) |
+| `useTaskWorkerTasks` gate split | Pass | Pass (`taskOf` everywhere; `locate` gated) | Pass (two desktop callers, `AgentRunTaskRows.vue:68` and `WorkspaceTeamExecutionTree.vue:126`, already have Projects) | Pass | Pass | — |
+| `useRunHistorySectionLoad.readRevision` | Pass | Pass | Pass | Pass | Pass | — |
+| `agentRunCollaborationStore.refreshListedRoots` | Pass (the store owns reads) | Pass | **Fail**: the consumers of a republished view are not listed or decided | Pass | **Fail** | AR-009 |
+| Android shell insets (`WebShellScreen.kt`, `ConnectionScreen.kt`, `MainActivity.kt`) | Pass | N/A | Pass | Pass | Pass | Verify that the WebView's `env(safe-area-inset-*)` reads 0 inside the padded container, so the bottom inset is not padded twice |
+
+Persisted-data decision: unchanged (`Not Affected`). Legacy and compatibility: none added.
+
+## Material Premise Validation (Round 3)
+
+### `MP-004` — A listed, not-open Agent root is re-read on every history poll
+
+- Related requirement: REQ-002a and AC-002a (live states while the list is shown); QR-003 ("the poll does not make the phone sluggish"); R-001.
+- Relevant behavior ID(s): BEH-001.
+- Initiating basis kind: `User` + `System`.
+- Trigger: the run list is shown (the normal main screen) while a listed Agent run has delegated work that is idle or running. Idle is not stopped, and task workers stay idle until their Task is DONE (VIS-001 shows several idle children).
+- Forward path, following DEC-013 as written:
+  - every 5 s poll: `readRevision` increments → `useMobileRunTree` → `refreshListedRoots`;
+  - the "child not stopped" clause holds on every poll → `read(hostRunId)`, unless the root has a live stream (only the selected host is synced);
+  - `read` runs `readAgentRunCollaboration` and then `publish`.
+- What each `publish` does (`agentRunCollaborationStore.ts:67-82`):
+  - `memberLoader().beginRoot()` starts a new generation, so no child is hydrated (`memberLoader.ts:60-63`);
+  - `participantMessages.reloadRoot('agent', …)` reloads every loaded or loading message list of that root, because a stored view has no live sequence (`collaborationParticipantMessages.ts:106-120`);
+  - `remoteRuns.register` runs for each remote execution;
+  - `ensureChildHydrated(hostRunId, selection[hostRunId])` re-reads the remembered selected child's conversation, which is now not hydrated.
+- Consequence:
+  - **Network:** while the list is shown, for each such root, one collaboration read plus a rebuilt context every 5 s, indefinitely. A root whose child the user opened earlier also gets that child's conversation re-read, and its Messages lists reloaded, every 5 s.
+  - **Cost:** the work does not follow change, and no payload was measured (E-25 measured only history, 36 KB).
+- Reachability: `Reachable`. It is the normal list with delegated work.
+- Review consequence: AR-009.
+
+## Review Decision
+
+`Fail`. AR-009 (Medium, blocking) and AR-010 (Low) need a design update. Everything else in SR-005 passes.
+
+## Findings
+
+### AR-009 — Design Impact — Medium (blocking)
+
+The refresh of listed roots (DEC-013) republishes on every poll, and its side effects are not decided.
+
+- **Protects:**
+  - REQ-002a and AC-002a (live states while the list is shown, at bounded cost);
+  - QR-003 ("the poll does not make the phone sluggish"); R-001 (cellular data);
+  - DESIGN.md rule 3 and best practice 4 ("Match payload and UI work to the change").
+- **Scope:** Within Approved Scope. Changes approved behavior: No.
+- **Evidence:** MP-004.
+  - The "child not stopped" clause is true on every poll for any root with an idle or running child.
+  - `read` → `publish` is a full rebuild. It resets the member-loader generation, reloads the root's loaded message lists, and re-hydrates the remembered selected child.
+  - The design lists none of these consumers (Principle 11) and gives no work count or payload.
+- **Required update:** decide the refresh so that its work follows change, and state what a refresh does to each consumer of a republished view.
+  - **Trigger.** For example: re-read when the root's history entry changed (`lastActivityAt`, which includes its delegated copies' memory files, E-33), or when its status changed. That catches the MSP-02 idle → offline case if it comes with a root change. Or show evidence for the child-state change that only the "not stopped" clause catches, and bound it.
+  - **Consumers of a republish.** Decide for each of member-loader hydration, participant-message lists, remote run registration and the selected child's re-hydration: either the refresh avoids it, or the cost is accepted with a measured payload for a representative root.
+  - The designer chooses the mechanism; I'm not prescribing one.
+- **Proportionate because:** this is a recurring, open-ended cost on the phone's main screen, over cellular, which the requirements explicitly bound.
+- **Recipient:** Solution Designer.
+
+### AR-010 — Design Impact — Low
+
+The canonical design sections contradict SR-005.
+
+- **Protects:** Scope guardrail (REQ-011's exception); Principle 14 (change inventory).
+- **Scope:** Within Approved Scope. Changes approved behavior: No.
+- **Evidence:** in `design-spec.md`:
+  - Constraints: "No Android or iOS changes" (`:82`);
+  - Change Scope's "Deliberately left alone: the server, the Android and iOS shells" (`:176`);
+  - Change Scope's shared-change and Derived consumers lists, which name none of `refreshListedRoots`, `readRevision`, the `useTaskWorkerTasks` split, `utils/randomId.ts` and its call sites, `agentOrgFirstMemberAddress`, or the Android files;
+  - Task Size And Architectural Risk, which does not mention the Android shell.
+
+  The SR-005 table says "Change Scope extension", but the sections implementation works from still say otherwise.
+- **Required update:** bring Constraints, Change Scope (in scope, derived consumers, left alone), Task Size/Risk, the final file mapping and the Change / Refactor Sequence in line with SR-005.
+- **Recipient:** Solution Designer.
+
+## Classification
+
+`Design Impact`.
+
+## Recommended Recipient
+
+Solution Designer (`/software_engineering_team/solution_designer`).
+
+## Residual Risks (Round 3, non-blocking)
+
+- **Org task rows and Task summaries.** `useTaskWorkerTasks` takes `RunHistoryTeamExecutionRow`. The desktop's Org tree does not use it, so Org task rows show no summary on the desktop. REQ-002a says "a task agent or task team shows its current Task's summary". Under DEC-009/DEC-010 ("follow the desktop"), I read that as: Org task rows show their name only, like the desktop. Implementation should state this explicitly in the tests.
+- **`types/agent/TeamLaunchDraft.ts:106`** keeps a bare `crypto.randomUUID()`. It is reachable only through team launch, which the phone removed, and the desktop runs in a secure context. List it with that decision, or let it adopt the helper too.
+- **Double inset padding.** If the WebView reports a non-zero `env(safe-area-inset-bottom)` inside the padded container, the "+" button and the composer would be padded twice. Check this on the API 35 emulator.
+- **Carried forward from ARCH-REV-002:** the pending-open commit attribution guard; the rewritten list entry after a failed open; the Org `mode` key; R-001 and R-002.
+
+## Latest Authoritative Result
+
+- Review Decision: `Fail`
+- Material-Premise Gate: `Fail` (MP-004 `Reachable` drives AR-009)
+- Notes: `Large` / `High`. The rest of SR-005 passes: F-01/DEC-012, F-02/DEC-014, F-06/DEC-010, F-07/DEC-009, F-09/DEC-011 and the TESTING.md rule. Round 4 will recheck only AR-009, AR-010 and the sections they touch.
+
+---
+
+## Round 2 Verdicts Kept (ARCH-REV-002, SR-004)
+
+These verdicts remain authoritative for every section SR-005 does not change.
+
+### Routing Classification Review
 
 - Task size: `Large`
 - Architectural risk: `High`
@@ -33,7 +160,7 @@
 - Independent Architecture Review required by the classification: `Yes`
 - Classification evidence or correction required: none.
 
-## Upstream Behavior And Production-Path Basis Confirmation
+### Upstream Behavior And Production-Path Basis Confirmation
 
 - Overall Basis Status: `Confirmed`
 - Approved requirements / intended behavior understood: Yes, unchanged at SR-003.
@@ -57,14 +184,14 @@
 | BEH-006 | User | Pass | Pass | Pass | Confirmed | — |
 | BEH-007 | User | Pass | Pass | Pass | Confirmed | — |
 
-## Supplemental Artifact Coherence Verdict
+### Supplemental Artifact Coherence Verdict
 
 | Artifact | Purpose And Scope Are Clear? | Linked To Relevant Core Artifacts? | Internally Complete? | Consistent With Related Core Artifacts? | Status And Approval Applicability Are Clear? | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
 | Product `ui-ux-spec.md` + VIS-001…029 (rev `e6ca7b6098`) | Pass | Pass | Pass | Pass | Pass | None. Round-1 cosmetic slips fixed at `e6ca7b6098` |
 | `follow-ups.md` (FU-001 = autobyteus-391) | Pass | Pass | Pass | Pass | Pass | — |
 
-## Task Design Health Assessment Verdict
+### Task Design Health Assessment Verdict
 
 | Assessment Area | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
@@ -73,7 +200,7 @@
 | Refactor needed now / no refactor needed / deferred decision is explicit | Pass | Yes | — |
 | Refactor decision is supported by the concrete design sections or residual-risk rationale | Pass | Removal plan, extractions, options | — |
 
-## Spine Inventory Verdict
+### Spine Inventory Verdict
 
 | Spine ID | Scope | Spine Is Readable? | Narrative Is Clear? | Facade Vs Governing Owner Is Clear? | Main Domain Subject Naming Is Clear? | One Owner Per Node, In Call Order? | Off-Spine Concerns Stay Off Main Line? | Verdict |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -85,7 +212,7 @@
 | Pending open (local) | `idle → opening(key) → idle` | Pass | Pass | N/A | Pass | Pass | — | Pass |
 | Run screen (local) | `opening` from the pending state → `open`; neither → list | Pass | Pass | N/A | Pass | Pass. The previous target is never rendered; no re-open | — | Pass |
 
-## Boundary Encapsulation Verdict
+### Boundary Encapsulation Verdict
 
 | Boundary / Owner | Authoritative Public Entry Point Is Clear? | Internal Owned Mechanisms Stay Internal? | Caller Bypass Risk Is Controlled? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
@@ -96,7 +223,7 @@
 | `useMobileNavigation` | Pass | Pass | Pass | Pass | Only writer of `/mobile`'s query |
 | `useRunHistorySectionLoad` | Pass | Pass | Pass | Pass | — |
 
-## Dependency Direction / Forbidden Shortcut Verdict
+### Dependency Direction / Forbidden Shortcut Verdict
 
 | Owner / Boundary | Allowed Dependencies Are Clear? | Forbidden Shortcuts Are Explicit? | Direction Is Coherent With Ownership? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
@@ -104,7 +231,7 @@
 | `useEventMonitorFilePreview` → `useMobileNavigation` | Pass | Pass | Pass | Pass | The existing runtime branch, rebound |
 | Shared → phone | Pass | Pass | Pass | Pass | No new edge (AR-002 resolved) |
 
-## Interface Boundary Verdict
+### Interface Boundary Verdict
 
 | Interface / API / Query / Command / Method | Subject Is Clear? | Responsibility Is Singular? | Identity Shape Is Explicit? | Generic Boundary Risk | Verdict |
 | --- | --- | --- | --- | --- | --- |
@@ -120,7 +247,7 @@
 | `useTargetConversation(target)` | Pass | Pass | Pass | Low | Pass (the name rule is stated) |
 | `useRunListDisclosure({ defaultExpansion })` | Pass | Pass | Pass | Low | Pass |
 
-## Existing Capability / Subsystem Reuse Verdict
+### Existing Capability / Subsystem Reuse Verdict
 
 | Need / Concern | Existing Capability Area Was Checked? | Reuse / Extension Decision Is Sound? | New Support Piece Is Justified? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
@@ -129,7 +256,7 @@
 | Opening the run's own agent | Pass | Pass | Pass | Pass | `onOpenAgentRun`, one owner, three users (AR-006) |
 | Pending open | Pass | Pass | Pass | Pass | A small phone store; the run screen and the list both need it across components |
 
-## Subsystem / Capability-Area Allocation Verdict
+### Subsystem / Capability-Area Allocation Verdict
 
 | Subsystem / Capability Area | Ownership Allocation Is Clear? | Reuse / Extend / Create-New Decision Is Sound? | Supports The Right Spine Owners? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
@@ -137,14 +264,14 @@
 | Shared workspace conversation | Pass | Pass | Pass | Pass | — |
 | Phone shell | Pass | Pass | Pass | Pass | — |
 
-## Reusable Owned Structures Verdict
+### Reusable Owned Structures Verdict
 
 | Repeated Structure / Logic | Extraction Need Was Evaluated? | Shared File Choice Is Sound? | Ownership Of Shared Structure Is Clear? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `useTargetConversation`, `useRunHistorySectionLoad`, `useRouteSelectedAgentOrg`, `agentOrgRouteQuery` | Pass | Pass | Pass | Pass | Each replaces two copies, or serves two shells |
 | `MobileScreenBar`, `MobileBottomSheet` | Pass | Pass | Pass | Pass | — |
 
-## Shared Structure / Data Model Tightness Verdict
+### Shared Structure / Data Model Tightness Verdict
 
 | Shared Structure / Type / Schema | One Clear Meaning Per Field? | Redundant Attributes Removed? | Overlapping Representation Risk Is Controlled? | Shared Core Vs Specialized Variant / Composition Decision Is Sound? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -155,7 +282,7 @@ Derived consumers of a changed structure listed with a decision for each (Princi
 
 Each domain word keeps one meaning (Principle 15): `Pass`.
 
-## File Responsibility Mapping Verdict
+### File Responsibility Mapping Verdict
 
 | File | Responsibility Is Singular And Clear? | Responsibility Matches The Intended Owner/Boundary? | Responsibilities Were Re-Tightened After Shared-Structure Extraction? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
@@ -165,14 +292,14 @@ Each domain word keeps one meaning (Principle 15): `Pass`.
 | `MobileRemoteAccessShell.vue` | Pass | Pass | N/A | Pass | Mounts the collaboration sync while paired |
 | Others | Pass | Pass | Pass | Pass | — |
 
-## Subsystem / Folder / File Placement Verdict
+### Subsystem / Folder / File Placement Verdict
 
 | Path / Item | Target Placement Is Clear? | Folder Matches Owning Boundary? | Mixed-Layer Or Over-Split Risk | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
 | `components/mobile/*`, `composables/mobile/`, `stores/mobileRunOpeningStore.ts`, `utils/mobile/` | Pass | Pass | Low | Pass | — |
 | `composables/runHistory/` (load, route Org), `composables/workspace/` | Pass | Pass | Low | Pass | — |
 
-## Removal / Decommission Completeness Verdict
+### Removal / Decommission Completeness Verdict
 
 | Item / Area | Redundant / Obsolete Piece To Remove Is Named? | Replacement Owner / Structure Is Clear? | Removal / Decommission Scope Is Explicit? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
@@ -181,26 +308,26 @@ Each domain word keeps one meaning (Principle 15): `Pass`.
 | `reopenSelected()` | Pass (removed) | N/A | Pass | Pass | MP-002 |
 | Duplicate `selectChild(run, null)` rule; the two route-Org copies; `onCreateRun`/`startPresetChat` in the shared composable | Pass | Pass | Pass | Pass | — |
 
-## Legacy / Backward-Compatibility Verdict
+### Legacy / Backward-Compatibility Verdict
 
 | Area | Compatibility Wrapper / Dual-Path / Legacy Retention Exists? | Clean-Cut Removal Is Explicit? | Verdict | Notes |
 | --- | --- | --- | --- | --- |
 | Phone shell; shared options | No | Pass | Pass | — |
 
-## Persisted-Data Transition Verdict (When Applicable)
+### Persisted-Data Transition Verdict (When Applicable)
 
 | Area / Stored Subject | Approved Decision | Representative Reader / Semantic / Invariant Evidence Is Sufficient? | Direct Use, Rebuild, Or Migration Choice Is Proportionate? | Migration Safety Is Complete If Required? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
 | `mobileWorkStore` (memory), the new pending store (memory); pairing session | Not Affected | Pass | Pass | N/A | Pass | — |
 
-## Change / Refactor Safety Verdict
+### Change / Refactor Safety Verdict
 
 | Area | Sequence Is Realistic? | Temporary Seams Are Explicit? | Cleanup / Removal Is Explicit? | Verdict |
 | --- | --- | --- | --- | --- |
 | Steps 1–2 (shared, desktop tests green) | Pass | Pass | Pass | Pass |
 | Steps 3–8 (phone, rebind, removal, docs, verify) | Pass | Pass | Pass | Pass |
 
-## Example Adequacy Verdict
+### Example Adequacy Verdict
 
 | Topic / Area | Example Was Needed? | Example Is Present And Clear? | Bad / Avoided Shape Is Explained When Helpful? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
@@ -208,44 +335,44 @@ Each domain word keeps one meaning (Principle 15): `Pass`.
 | Org open on the phone | Yes | Pass | Pass | Pass | — |
 | Run screen target, task team row, Back, poll | Yes | Pass | Pass | Pass | — |
 
-## Material Premise Validation (Only When Needed)
+### Material Premise Validation (Only When Needed)
 
-### `MP-001` — A tap opens a run while the previous run is still the open target
+#### `MP-001` — A tap opens a run while the previous run is still the open target
 
 - Reachability: `Reachable` (round 1).
 - Review consequence: resolved. `opening` is decided by `mobileRunOpeningStore.pending`, the push precedes the action, and the screen never renders the target while pending (design-spec Bounded Local Spines, DS-003).
 
-### `MP-002` — Selection present but no target on entering the run screen
+#### `MP-002` — Selection present but no target on entering the run screen
 
 - Reachability: `Not Reachable` on the evidence (E-29); no witness found by either role.
 - Review consequence: `reopenSelected()` is removed. Neither pending nor target → list.
 
-### `MP-003` — Returning to the list after opening an Org run
+#### `MP-003` — Returning to the list after opening an Org run
 
 - Reachability: `Reachable` (round 1).
 - Review consequence: resolved. `openRun` writes the Org keys onto the list entry, so the Org target, the row mark (`useRouteSelectedAgentOrg` → disclosure) and the preselection resolve after ←.
 
-## Unresolved Approved-Behavior Or Current-State Gaps
+### Unresolved Approved-Behavior Or Current-State Gaps
 
 None.
 
-## Review Decision
+### Round 2 Review Decision (superseded by round 3)
 
 `Pass`. The design is ready for implementation.
 
-## Findings
+### Round 2 Findings
 
 None open. AR-001…AR-008 are resolved; see `ARCH-REV-002` in the revision record.
 
-## Classification
+### Round 2 Classification
 
 N/A (Pass).
 
-## Recommended Recipient
+### Round 2 Recommended Recipient (superseded)
 
 Implementation Engineer (`/software_engineering_team/implementation_engineer`).
 
-## Residual Risks
+### Round 2 Residual Risks
 
 Non-blocking; for implementation and the next design touch.
 
@@ -263,7 +390,7 @@ Non-blocking; for implementation and the next design touch.
 - **R-001 / R-002** as the design states; verify on a device.
 - **The unified read-only rule:** test it per desktop surface.
 
-## Latest Authoritative Result
+### Round 2 Result (superseded by round 3)
 
 - Review Decision: `Pass`
 - Material-Premise Gate: `Pass`

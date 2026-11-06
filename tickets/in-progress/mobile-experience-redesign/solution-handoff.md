@@ -111,3 +111,13 @@ Scoped re-review: DS-003, DS-004, the run-screen and pending-open spines, and AR
   - then source review, and API/E2E again, with the `TESTING.md` phone rule owned by API/E2E.
 - **Note:** the CRR-003 report and record are still uncommitted from the code reviewer; this package commits them unchanged.
 - **Release (DEC-015, the user, 2026-11-06):** "For this ticket we definitely need to release the new beta, okay?" Delivery publishes a new beta carrying this ticket after finalization, under `RELEASE.md`. Any smoke waiver is taken in the user's own words.
+
+## Round 4 (SR-006)
+
+- **Trigger:** `ARCH-REV-003` Fail: AR-009 and AR-010.
+- **Changes:** `design-spec.md`, section "Revision For ARCH-REV-003 (SR-006)".
+  - DEC-013 is revised to desktop parity, measured (E-38: a 1.2 MB view).
+  - The canonical sections are aligned with SR-005.
+  - Residuals answered.
+- **Requirements:** REQ-002a and AC-002a are worded to desktop parity, within the user's direction ("follow how it is from the desktop"); the user is informed. FU-007 is widened to phone and desktop.
+- **Next:** a scoped architecture recheck (AR-009, AR-010 and the sections they touch), then implementation.

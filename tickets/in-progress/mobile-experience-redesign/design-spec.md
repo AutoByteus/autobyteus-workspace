@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-005` (design revision for CRR-003, on the requirements approved at SR-005; SR-004 was the ARCH-REV-001 revision).
+- Current solution revision ID: `SR-006` (design revision for ARCH-REV-003; SR-005 was the CRR-003 revision and its requirements approval; SR-004 the ARCH-REV-001 revision).
 - Approved requirements baseline: `requirements-doc.md` at SR-003. SR-003 is SR-002 with AC-006's wording refined and the optional "needs you" marker (REQ-010, DEC-005) removed at the user's request after his approval.
   - The user approved the mobile UI/UX on 2026-11-06: "okayyy. everything is good now. i approve".
   - The Solution Designer integrated the approved design within that direction (requirements-doc Document Status).
@@ -11,7 +11,7 @@
   - Design branch `design/mobile-experience-redesign` @ `e6ca7b6098b8bee1d194ad9cc0292c8e88ef59a6` (spec text fixes of the review's two cosmetic slips over `976457a4`, no visual or behavioral change).
   - It is normative for layout, copy, states and behavior. Its "Implementation Fidelity Boundary" applies: the reference's stores, fixtures and component split are not a prescription.
 - User approval of the design: `Not required`. The Task asks the user to approve the UI, which he did; the technical design needs no separate approval.
-- Design status: `Ready` (SR-005, below). The SR-004 design stays as reviewed (ARCH-REV-002 Pass) everywhere SR-005 does not change it.
+- Design status: `Ready` (SR-006: ARCH-REV-003's AR-009 and AR-010, below; SR-005 for CRR-003). The SR-004 design stays as reviewed (ARCH-REV-002 Pass) everywhere SR-005 and SR-006 do not change it.
 - Canonical investigation notes: [investigation-notes.md](investigation-notes.md). Architecture evidence is E-10…E-32 (E-28…E-32 from ARCH-REV-001).
 - Authorities read (2026-11-06):
   - `references/architecture-design.md` and `references/design-principles.md`;
@@ -24,6 +24,16 @@
   - `references/design-examples.md` was not used.
 - Project design-principle conflicts or discrepancies: none.
 
+## Revision For ARCH-REV-003 (SR-006)
+
+| Finding | Change | Where |
+| --- | --- | --- |
+| AR-009 | DEC-013 is revised to desktop parity. Delegated rows under a run that is not open show the state last read, and update when that run is opened. Nothing is re-read on the poll, so no republish reaches the member loader, the message lists, the remote registration or the remembered child. Measured: the largest collaboration view on the user's node is 1.2 MB (E-38). A lightweight live state for both phone and desktop needs a server read: FU-007 | F-08 row below; requirements REQ-002a, AC-002a, DEC-013 |
+| AR-010 | Constraints, Task Size and Risk, Change Scope (in scope, derived consumers, left alone), the file mapping and the Change / Refactor Sequence now include the SR-005 changes: the Android shell's insets, the `useTaskWorkerTasks` split, `utils/randomId.ts` and its call sites, and `agentOrgFirstMemberAddress` | Those sections |
+| Residual: Org task rows | Confirmed: an Org's task rows show one line, the name, as the desktop's Org tree does. `useTaskWorkerTasks` reads Team-execution rows only (DEC-010 (a)) | F-06 row |
+| Residual: `types/agent/TeamLaunchDraft.ts:106` | It adopts `createRandomId()` too, so the rule has one owner. It is desktop-only team launch, so there is no behavior change | F-02 row, file mapping |
+| Residual: double bottom padding | With the shell padding the WebView, the page's `env(safe-area-inset-bottom)` should read 0 on Android. Implementation verifies this on the API 35 emulator with the keyboard open and closed. If both apply, the shell padding stays and the phone CSS keeps `env()` for iOS | Guidance |
+
 ## Revision For CRR-003 (SR-005)
 
 Trigger: API/E2E round 1 (API-REV-001, Fail) and the code reviewer's failure-origin review CRR-003 (`code-review-report.md`, section "API/E2E Failure-Origin Review (Round 3)"). Local fixes F-03, F-04 and F-05 belong to implementation as CRR-003 states. They ride in the same revised package.
@@ -31,14 +41,14 @@ Trigger: API/E2E round 1 (API-REV-001, Fail) and the code reviewer's failure-ori
 | Finding | Design response | Decision |
 | --- | --- | --- |
 | F-01, an Org run row never opens | `MobileRowOpen { kind: 'orgRun' }` maps to the subject action's **`select`** with `memberAddress = agentOrgFirstMemberAddress(orgRun)`. The pure helper is new, exported from `utils/agentOrgHistoryRows.ts` (the Org row owner), and reads `executionTree.rootOrg.members[0].address`. The Org context's own rule then opens a direct agent, or a configured Team's coordinator (E-34). `agentOrgRouteQuery` receives the same address. The desktop is unchanged: it still opens an Org run unfocused | DEC-012 |
-| F-02, `crypto.randomUUID` on a trusted HTTP pairing | One guarded id helper, `utils/randomId.ts` `createRandomId()`, from `agentRunStore.ts:53-58`.<br>**Change Scope extension:** the bare calls in `stores/agentRunCollaborationStore.ts:317`, `stores/agentOrgContextsStore.ts:246`, `services/agentCollaboration/agentRunCollaborationStreamingService.ts:135`, `services/agentOrgExecution/agentOrgStreamingService.ts:237` and the fallback in `services/agentStreaming/TeamStreamingService.ts:157`.<br>The four existing guarded copies (`agentRunStore.ts:53-58`, `nodeStore.ts:38`, `teamRunCommandPresentation.ts:9`, `useContextAttachmentComposer.ts:48`) adopt it, so the rule has one owner | DEC-014 |
-| F-06, no second line on delegated rows | **Rows (DEC-010 (a)):** task agent and task team rows show their current Task's summary when known; a remote run shows its title; every other row (team members, Org members, a child with no Task) shows one line, its name. **Source.** `useTaskWorkerTasks` splits its gate: Task summaries (`retain`, `taskOf`) are available everywhere, and `locate` (opening the Task in Projects) stays where `projects` is available. The desktop is unchanged (Projects is there).<br>The phone's `buildMobileRunTreeRows` takes `taskOf(row)` and the remote runs store's title.<br>No invented text | DEC-010 (a) |
+| F-02, `crypto.randomUUID` on a trusted HTTP pairing | One guarded id helper, `utils/randomId.ts` `createRandomId()`, from `agentRunStore.ts:53-58`.<br>**Change Scope extension:** the bare calls in `stores/agentRunCollaborationStore.ts:317`, `stores/agentOrgContextsStore.ts:246`, `services/agentCollaboration/agentRunCollaborationStreamingService.ts:135`, `services/agentOrgExecution/agentOrgStreamingService.ts:237` and the fallback in `services/agentStreaming/TeamStreamingService.ts:157`.<br>The four existing guarded copies (`agentRunStore.ts:53-58`, `nodeStore.ts:38`, `teamRunCommandPresentation.ts:9`, `useContextAttachmentComposer.ts:48`) and the bare call in `types/agent/TeamLaunchDraft.ts:106` (desktop-only team launch) adopt it, so the rule has one owner | DEC-014 |
+| F-06, no second line on delegated rows | **Rows (DEC-010 (a)):** task agent and task team rows show their current Task's summary when known; a remote run shows its title; every other row (team members, Org members and an Org's task rows, as in the desktop's Org tree, and a child with no Task) shows one line, its name. **Source.** `useTaskWorkerTasks` splits its gate: Task summaries (`retain`, `taskOf`) are available everywhere, and `locate` (opening the Task in Projects) stays where `projects` is available. The desktop is unchanged (Projects is there).<br>The phone's `buildMobileRunTreeRows` takes `taskOf(row)` and the remote runs store's title.<br>No invented text | DEC-010 (a) |
 | F-07, a member's task agent beside or under it | No change: the phone keeps the shared rows, which lift a member's task agent beside the member, as the desktop does (`runHistoryTeamExecutionRows.ts:58-66`). The probe's VIS-002 expectation changes accordingly | DEC-009 (a) |
-| F-08, stale states under a root that is not open | `agentRunCollaborationStore.refreshListedRoots(roots: { runId, lastActivityAt }[])` (new). The store re-reads (`read`, E-33) a root whose `lastActivityAt` changed since its last read, or whose stored view has a child that is not stopped. It skips roots with a live stream.<br>`useRunHistorySectionLoad` exposes `readRevision`, which increments after each successful read. `useMobileRunTree` watches it and passes the shown Agent entries that have collaboration. The desktop does not call it (FU-007) | DEC-013 |
+| F-08, stale states under a root that is not open | **As on the desktop (revised for ARCH-REV-003 AR-009):** a delegated row under a run that is not open shows the state last read. The state is read when the list first shows the run (`ensureStoredView`, unchanged from SR-004), and again whenever that run is opened (`useAgentRunCollaborationSync`'s live stream or inspection). Nothing is re-read on the poll.<br>**Why not refresh (measured, E-38):** one collaboration view on the user's node is 1,235,612 bytes. A re-read on every change of an active root costs about 1.2 MB per 5 s poll on cellular (~860 MB/hour). Each re-read is also a full `publish`: a new member-loader generation, reloaded message lists, re-registered remote runs, and re-hydration of the remembered child (`agentRunCollaborationStore.ts:67-82`). Live streams for every listed root would be machinery the desktop does not have. A cheap current state needs a small per-child status read from the server, outside this ticket: follow-up FU-007, now for phone and desktop.<br>`refreshListedRoots` and `readRevision` are **not** added. This follows the user's "follow how it is from the desktop" | DEC-013 (revised) |
 | F-09, Android 15 status bar | The Android shell applies the system-bar, display-cutout and keyboard (IME) insets as padding on the WebView's container: `ViewCompat.setOnApplyWindowInsetsListener` in `ui/WebShellScreen.kt` / `MainActivity.kt`. There is no new permission, and targetSdk stays 35. The connection screen gets the same treatment. Verified on the API 35 emulator (ADR-05 turns green), and on an older-API emulator to show nothing moves where Android already kept the bars apart. **Change Scope extension:** `autobyteus-android/app/src/main/java/org/autobyteus/mobile/ui/WebShellScreen.kt`, `ui/ConnectionScreen.kt`, `MainActivity.kt` (and their tests) | DEC-011 (a) |
 | `TESTING.md` phone rule | Phone changes are validated with `test:e2e:mobile-shell` on a non-secure private HTTP origin, and phone overlays with real taps (hit-testing). Owner: the API/E2E engineer, in this ticket (`project-documents.md`, "When a later stage catches a problem") | — |
 
-The classification is unchanged: `Large`, `High`. The package goes to the architecture reviewer for a scoped review of this section (the changed shared owners: `useTaskWorkerTasks`, the collaboration store and the load composable's `readRevision`, the id helper, the Org first-member helper and the Android shell's insets), then to implementation, with CRR-003's local fixes F-03…F-05.
+The classification is unchanged: `Large`, `High`. The package goes to the architecture reviewer for a scoped review of this section (the changed shared owners: `useTaskWorkerTasks`, the id helper, the Org first-member helper and the Android shell's insets; ARCH-REV-003 then asked for AR-009 and AR-010, answered in the next section), then to implementation, with CRR-003's local fixes F-03…F-05.
 
 ## Revision For ARCH-REV-001 (SR-004)
 
@@ -79,7 +89,7 @@ The `/mobile` page renders `MobileRemoteAccessShell`. It switches between pairin
 - The phone talks only to its paired node.
 - The desktop stays unchanged.
 - Standard web APIs only.
-- No Android or iOS changes.
+- No iOS change. The Android shell changes only for the system-bar insets (REQ-011, DEC-011), with no new permission.
 
 ## Task Size And Architectural Risk (Mandatory)
 
@@ -88,11 +98,12 @@ The `/mobile` page renders `MobileRemoteAccessShell`. It switches between pairin
   - Shared desktop owners get a narrow extension or extraction: history load, conversation binding, collaboration row rules, the selection actions (with `onOpenAgentRun`, and `onCreateRun` moved), the subject actions (with `agentOrgRouteQuery`), the route's open Org, `selectTreeRun`'s mode, and disclosure. Two section contracts gain one action.
   - The file preview composable is rebound.
   - It spans the phone shell, shared stores and composables, and two desktop surfaces.
+  - SR-005 adds: the `useTaskWorkerTasks` gate split, one id helper (`utils/randomId.ts`) at ten call sites, the Org first-member helper, and the Android shell's insets (three Kotlin files).
 - **Architectural risk: `High`.**
   - Ownership boundaries move: the phone drops its own model for the shared target and selection owners, and the phone's navigation state moves into the `/mobile` route.
   - Shared owners that the desktop uses are changed (blast radius: the desktop Runs view, chat surfaces and Org opening).
   - A history poll runs on a phone.
-  - No server, persistence, security or contract change.
+  - No server, persistence, security or contract change. The Android change adds no permission or dependency (`androidx.core` is already present).
 - **Escalation trigger.** Return a Design Impact if implementation finds any of the following:
   - a desktop behavior change in the extracted owners (the surfaces' read-only rule, the history poll, Org opening);
   - an open action that cannot run without shell navigation;
@@ -146,9 +157,15 @@ The phone's screen state lives in `/mobile`'s route query, so the system Back ke
     - `useRouteSelectedAgentOrg` (new, from the two desktop copies);
     - `runHistorySelectionActions.selectTreeRunFromHistory` (local-run branch honors `selectionMode`);
     - `useRunListDisclosure` (default-expansion option for Org runs and Org task teams);
-    - `useEventMonitorFilePreview` (phone branch).
+    - `useEventMonitorFilePreview` (phone branch);
+    - `useTaskWorkerTasks` (gate split: summaries everywhere, `locate` where Projects is; SR-005);
+    - `utils/randomId.ts` (new, `createRandomId()`), adopted at `stores/agentRunCollaborationStore.ts:317`, `stores/agentOrgContextsStore.ts:246`, `services/agentCollaboration/agentRunCollaborationStreamingService.ts:135`, `services/agentOrgExecution/agentOrgStreamingService.ts:237`, `services/agentStreaming/TeamStreamingService.ts:157`, `stores/agentRunStore.ts:53-58`, `stores/nodeStore.ts:38`, `teamRunCommandPresentation.ts:9`, `useContextAttachmentComposer.ts:48` and `types/agent/TeamLaunchDraft.ts:106` (SR-005/SR-006);
+    - `agentOrgFirstMemberAddress` (new, in `utils/agentOrgHistoryRows.ts`; SR-005).
+  - The Android shell's system-bar, display-cutout and keyboard insets: `autobyteus-android/app/src/main/java/org/autobyteus/mobile/ui/WebShellScreen.kt`, `ui/ConnectionScreen.kt`, `MainActivity.kt` and their tests (REQ-011; SR-005).
   - Docs: `autobyteus-web/docs/remote_access.md` (phone section).
 - **Derived consumers.** These shared structures change; every consumer is listed with its decision (Principle 11):
+  - **`useTaskWorkerTasks`** (summaries available everywhere; `locate` gated on `projects`). Callers: `components/workspace/history/AgentRunTaskRows.vue` and `WorkspaceTeamExecutionTree.vue` (desktop, Projects present: unchanged), and the phone's `useMobileRunTree` (summaries only, no `locate`).
+  - **The id helper:** each of the ten call sites listed above swaps its own guard or bare call for `createRandomId()`. The ids keep the same shape (a UUID where `crypto.randomUUID` exists).
   - `mobileWorkStore` and `MobileWorkContext` are removed. Every consumer in E-23 is removed or rebound; `useEventMonitorFilePreview` is rebound (E-21).
   - **`useWorkspaceHistorySelectionActions`** (`shell` option, default `desktop`; adds `onOpenAgentRun`; drops `onCreateRun` and `startPresetChat`). Callers:
     - `components/runList/RunListPanel.vue:202`: keeps the default; stops passing `startPresetChat`; exposes `onOpenAgentRun` in its section actions;
@@ -173,14 +190,14 @@ The phone's screen state lives in `/mobile`'s route query, so the system Back ke
   - **`useRouteSelectedAgentOrg`** (new) replaces `RunListPanel.vue:149-155` and `WorkspaceAgentRunsTreePanel.vue:142-151`, with the same expression.
 - **Deliberately left alone:**
   - the desktop's visible behavior;
-  - the server, the Android and iOS shells;
+  - the server; the iOS shell; the Android shell beyond its insets (no permission, dependency or targetSdk change);
   - pairing (`MobilePairingBootstrap`, the session store, client data migrations);
   - the shared composer (no compact composer);
   - `AgentEventMonitor`;
   - the Team messages screen's loading and unavailable states (autobyteus-358);
   - mobile localization (phone copy stays English literals as today; the phone is not in `localization/audit/migrationScopes.ts`);
   - `mobileFeatureGates.ts` beyond the notice text.
-- **Follow-ups:** FU-001 (autobyteus-391).
+- **Follow-ups:** FU-001 (autobyteus-391); FU-007 (live states under runs that are not open, phone and desktop, needs a server read).
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
 
@@ -564,6 +581,10 @@ See the final mapping below. The draft was the same, except that `MobileScreenBa
 | `components/mobile/MobilePairingBootstrap.vue`, `MobileUnsupportedFeatureNotice.vue` (keep) | Phone | Pairing | Unchanged | — | — |
 | `utils/remoteAccess/remoteAccessAuthFailure.ts` (new, from the catalog's `isAuthFailureCause`) | Remote access | Session | 401 recognition | — | — |
 | `docs/remote_access.md` (modify) | Docs | — | Phone section | — | — |
+| `utils/randomId.ts` (new) and the ten call sites (modify) | Shared utility | Id helper | One guarded random id | — | — |
+| `composables/projects/useTaskWorkerTasks.ts` (modify) | Projects | Task summaries | Gate split | — | — |
+| `utils/agentOrgHistoryRows.ts` (modify) | Run history | Org rows | `agentOrgFirstMemberAddress` | — | — |
+| `autobyteus-android/app/src/main/java/org/autobyteus/mobile/ui/WebShellScreen.kt`, `ui/ConnectionScreen.kt`, `MainActivity.kt` (modify), with tests | Android shell | Insets | System-bar, cutout and IME padding | — | — |
 
 ## Applied Patterns (If Any)
 
@@ -636,13 +657,20 @@ Phone screens → phone composables (navigation, tree, opening, setup) → share
 4. **Phone screens:** the shell rewrite, run list and row, run screen and menu, the four views rebound, New run (agent only) with sheets, the connection sheet.
 5. **Rebind `useEventMonitorFilePreview`'s phone branch.**
 6. **Remove** everything in the Removal Plan, and its tests. Confirm with `grep` that nothing references `mobileWorkStore`, `MobileWorkContext` or `useMobileWorkCatalog`.
-7. **Docs:** `docs/remote_access.md`.
-8. **Verify:**
+7. **SR-005 changes:**
+   - the id helper and its ten call sites;
+   - the `useTaskWorkerTasks` split, and the phone rows' second line;
+   - `agentOrgFirstMemberAddress`, and the Org run row mapped to `select`;
+   - the Android shell's insets, with Android unit tests where they exist and the API 35 emulator check;
+   - CRR-003's local fixes F-03…F-05.
+8. **Docs:** `docs/remote_access.md` (phone section; Android 15 insets). The API/E2E engineer adds `TESTING.md`'s phone rule.
+9. **Verify:**
    - the web unit and component tests;
    - typecheck;
    - the guards;
    - a browser probe at 390×844 and 360×800 against a probe-owned stack with delegated, team, Org and remote fixture runs;
-   - the Android emulator and a device (an APK from this branch, or the existing APK against a node built from this branch);
+   - the Android emulator (API 35, and an older API) and a device. Since the shell changes, the APK is built from this branch;
+   - `test:e2e:mobile-shell` on a non-secure private HTTP origin, with real-tap checks of overlays (`TESTING.md`'s new rule);
    - the user's check on his phone.
 
 ## Key Tradeoffs
@@ -709,4 +737,8 @@ Phone screens → phone composables (navigation, tree, opening, setup) → share
   - absence checks for the "Not on the phone" list;
   - the desktop tests of every touched shared file.
   - A browser probe at both viewports for the touch-target size and no horizontal scroll.
+- **Android insets (REQ-011).**
+  - Pad the WebView's container with the system bars, the display cutout and the keyboard (IME), so the composer stays above the keyboard.
+  - On the API 35 emulator, check that the page's `env(safe-area-inset-bottom)` reads 0 inside the padded container, with the keyboard open and closed. If both paddings apply, keep the shell's and leave the CSS `env()` for iOS.
+  - On an older-API emulator, nothing should move.
 - **Evidence:** no secrets, pairing codes or tokens in screenshots or logs (QR-005).

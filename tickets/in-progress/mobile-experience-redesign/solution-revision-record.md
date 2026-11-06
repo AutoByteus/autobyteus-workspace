@@ -9,6 +9,7 @@
 | SR-003 | Mixed | The user dropped the optional marker (design rev `976457a4`); architecture design | — | Approved (SR-002) | Approved; design Ready | REQ-010, AC-010 removed; AC-006 wording; DS-001…DS-009 | Architecture Design Complete (Large, High) |
 | SR-004 | Design | ARCH-REV-001 round 1 (Fail, Design Impact) | AR-001…AR-008, MP-001…MP-003 | Design Ready (SR-003) | Design Ready (revised) | REQ-003, REQ-005, REQ-006 paths (DS-003, DS-004); no requirement change | Architecture Design Complete (Large, High), re-review |
 | SR-005 | Mixed | API-REV-001 Fail; CRR-003 failure-origin review; the user's answers | F-01…F-09 | Requirements Approved (SR-003); design Ready (SR-004) | Requirements Approved (SR-005); design Ready (SR-005) | REQ-002a, REQ-003a, REQ-011; AC-002a, AC-003a, AC-011; DEC-009…DEC-014 | Architecture Design Complete (Large, High), scoped re-review |
+| SR-006 | Design | ARCH-REV-003 round 3 (Fail, Design Impact) | AR-009, AR-010, MP-004 | Design Ready (SR-005) | Design Ready (revised) | REQ-002a and AC-002a wording, DEC-013 revised (desktop parity) | Architecture Design Complete (Large, High), scoped re-review |
 
 ## Revision Entries
 
@@ -149,3 +150,21 @@
   - Requirements: `Approved` at SR-005. Design: `Ready` at SR-005, with the Android shell Change Scope extension (REQ-011).
   - Handoff: `Architecture Design Complete` → `/software_engineering_team/architecture_reviewer` (Large / High rule), a scoped review of the "Revision For CRR-003" section. Then implementation with CRR-003's local fixes F-03…F-05, and API/E2E with the `TESTING.md` phone rule.
 - **Release decision (2026-11-06):** the user: "For this ticket we definitely need to release the new beta, okay?" Recorded as DEC-015: after finalization, delivery publishes a new beta carrying 277, following `RELEASE.md`. Any smoke waiver is taken only in his own words. Intended behavior is unchanged; the delivery scope changed from "no release" to "beta release".
+
+### SR-006 — Design revised for ARCH-REV-003
+
+- **Phase and classification:** Design, `Design Impact`. One requirement wording narrowed within the user's direction.
+- **Trigger:** `ARCH-REV-003`, round 3, `Fail`:
+  - AR-009 (Medium): the listed-root refresh runs on every poll, and each run is a full republish;
+  - AR-010 (Low): canonical sections that contradict SR-005.
+- **Evidence:** E-38, measured read-only on the user's node: collaboration views of 26 KB, 130 KB, **1.2 MB** and 1 KB.
+- **Changes:**
+  - DEC-013 is revised to desktop parity: no refresh of runs that are not open. REQ-002a and AC-002a are worded accordingly. FU-007 is widened to phone and desktop, with a server read as the cheap fix.
+  - The constraints, task size and risk, Change Scope, derived consumers, file mapping and sequence include the SR-005 changes.
+  - The residuals: Org task rows show the name only; `TeamLaunchDraft.ts:106` adopts the id helper; the double-bottom-padding check goes in the Guidance.
+- **Intended behavior changed:** `Yes`, narrowly. Delegated rows under a run that is not open update when it is opened, as on the desktop, instead of SR-005's "within one poll".
+- **Approval:**
+  - The direction is the user's answer, "I think it should follow how it is from the desktop", together with his "I trust you".
+  - The Solution Designer decided within it, citing the measured cost, and told the user in the conversation.
+- **Classification:** unchanged, `Large`, `High`.
+- **Handoff:** to the architecture reviewer for a scoped recheck of AR-009, AR-010 and the sections they touch.

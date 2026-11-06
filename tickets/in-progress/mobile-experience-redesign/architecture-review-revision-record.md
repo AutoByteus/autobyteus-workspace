@@ -8,6 +8,7 @@ The latest `design-review-report.md` is authoritative. This record keeps the chr
 | --- | --- | --- | --- | --- | --- |
 | ARCH-REV-001 | Round 1 / `Architecture Design Complete` (Large, High) | SR-003 | N/A | Fail | AR-001…AR-008 |
 | ARCH-REV-002 | Round 2 / SR-004 design revision for ARCH-REV-001 | SR-003, SR-004 | Fail | Pass | AR-001…AR-008 (all resolved) |
+| ARCH-REV-003 | Round 3 / SR-005 revision after API-REV-001 and CRR-003 (scoped) | SR-005 | Pass | Fail | AR-009, AR-010 (new) |
 
 ## Revision Entries
 
@@ -73,3 +74,38 @@ None.
   - the Org `mode` key is derived from the history item on the phone;
   - stale design-spec text about where the collaboration sync is mounted;
   - R-001 and R-002.
+
+### ARCH-REV-003 — Scoped re-review of SR-005: the listed-root refresh needs bounded work
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-experience-redesign/tickets/in-progress/mobile-experience-redesign/design-review-report.md`
+- Review round and trigger: round 3. API/E2E round 1 failed (API-REV-001); CRR-003 classified F-01…F-09; the Solution Designer revised the design as SR-005 (commit `a525b439fe`).
+- Triggering role, report path, and finding IDs: Solution Designer, `solution-handoff.md` "Round 3 (SR-005)"; `code-review-report.md` CRR-003, F-01…F-09.
+- Relevant solution revision IDs: `SR-005`.
+- Prior authoritative decision: `Pass` (ARCH-REV-002).
+- Current authoritative decision: `Fail` (Design Impact).
+- What changed in the review result:
+  - **Pass:**
+    - F-01, the Org first member through `select` (E-34 confirmed);
+    - F-02, one guarded id helper;
+    - F-06, the `useTaskWorkerTasks` gate split, plus remote titles;
+    - F-07, kept as on the desktop;
+    - F-09, Android insets (`androidx.core` present; no permission);
+    - the TESTING.md rule.
+  - **Fail:** F-08's `refreshListedRoots`. Its "child not stopped" trigger fires on every poll, and each `read` is a full `publish`: the member-loader generation resets, the message lists reload, the remembered child re-hydrates. MP-004 is reachable (AR-009).
+  - **Low:** the canonical design sections still say "no Android changes" and omit the SR-005 shared changes (AR-010).
+  - Round-2 verdicts are kept for the unchanged sections.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001…AR-008 | Resolved (ARCH-REV-002) | Resolved (unchanged) | SR-004 | SR-005 does not touch their sections |
+
+- New or remaining finding IDs: AR-009 (Medium, blocking), AR-010 (Low).
+- Material classification changes: none (Large / High).
+- Recommended recipient: Solution Designer.
+- Remaining risks or uncertainty, non-blocking:
+  - Org task rows show no summary, as on the desktop;
+  - `TeamLaunchDraft.ts:106` is unlisted;
+  - possible double inset padding;
+  - the ARCH-REV-002 carry-overs.
