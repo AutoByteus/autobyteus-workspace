@@ -11,6 +11,7 @@ The current code and [implementation-handoff.md](implementation-handoff.md) rema
 | IR-004 | `code_reviewer`, [code-review-report.md](code-review-report.md), `CRR-004` (Fail — Local Fix) | CR-004, CR-005 | `Local Fix` | `SR-006`, `ARCH-REV-004`, `CRR-004` | Fixed in `400457d5f7`; IMP-02, IMP-03, IMP-09 pass; to Code Review |
 | IR-003 | `architecture_reviewer`, [design-review-report.md](design-review-report.md), `ARCH-REV-004` (Pass of SR-005/SR-006); `CRR-003` local fixes; `API-REV-001` | F-01, F-02, F-03, F-04, F-05, F-06, F-09 | `Local Fix` (F-02…F-05) and the revised design (F-01, F-06, F-09) | `SR-005`, `SR-006`, `ARCH-REV-004`, `CRR-003`, `API-REV-001` | Implemented in `02905f49b5`…`1a48f4affe`; IMP-02, 03, 07, 08 pass; to Code Review |
 | IR-005 | `code_reviewer`, [code-review-report.md](code-review-report.md), `CRR-006` (failure-origin review of `API-REV-002`) | F-10 | `Local Fix` | `SR-006`, `CRR-006`, `API-REV-002` | Fixed in `e3dd8c4677`; IMP-02, 03, 10 (ADR-07 on API 35 and API 34), 11 pass; to Code Review (targeted delta) |
+| IR-006 | `delivery_engineer`, latest-base integration (Local Fix: conflicts with `personal`) | N/A (merge conflicts in 3 files, from autobyteus-388) | `Local Fix` | `CRR-007`, `CRR-008`, `API-REV-003` | Merged in `ed20da1cd1`; IMP-02, 03, 12 (the full web suite) pass; to Code Review |
 
 ## Revision Entries
 
@@ -147,3 +148,39 @@ The current code and [implementation-handoff.md](implementation-handoff.md) rema
   - IMP-03 guards: pass.
 - Next recipient or routing: Code Reviewer (targeted delta), then API/E2E reruns ADR-07.
 - Remaining limitations or risks: other phone screens with a field inside an `overflow: hidden` box were not run with the keyboard. That means New run's sheets and the Files search. A WebView without `overflow: clip` (Chromium < 90) keeps the old behaviour.
+
+### IR-006 — Latest-base integration with `personal`
+
+- Triggering role, report path, and round: `delivery_engineer`, a Local Fix message: `git merge --no-ff origin/personal` conflicted at the delivery checkpoint `7b0c5098f0`.
+- Triggering finding IDs: N/A. The conflicts were in `RunSectionPanel.vue`, `runHistoryStore.ts` and `runHistoryReadWindow.spec.ts`, plus the rename's reach into this branch's code.
+- Classification: `Local Fix`.
+- Prior authoritative result: IR-005 (`e3dd8c4677`). CRR-007 Pass, then API-REV-003 Pass and CRR-008, then the delivery checkpoint `7b0c5098f0`.
+- Current authoritative result: the merge commit `ed20da1cd1` (`7b0c5098f0` + `origin/personal` `9d8077fd2a`; base `e00581d485`). The package stays Large/High and goes to Code Review.
+- Related solution revision IDs: `SR-006`.
+- Related architecture-review revision IDs: `ARCH-REV-004`.
+- Related code-review revision IDs: `CRR-007`, `CRR-008`.
+- Related API/E2E revision IDs: `API-REV-003`.
+- Related delivery revision IDs: the delivery engineer's integration round.
+- Why this revision is recorded: the resolution changes effective desktop behavior on this branch. The Projects view's read window goes from 6 to `null`, as 388 intended.
+- Approved behavior or requirement IDs affected:
+  - none of this ticket's. The phone already read every run.
+  - 388's SR-002 now runs through this branch's `useRunHistorySectionLoad`.
+- Implementation delta:
+  - `historyWindowOf` is 388's: Workspaces 6, Runs and Projects `null`. The panel's interval constant stays removed, because the composable owns the poll.
+  - The comments in the store and the spec are merged.
+  - `useMobileRunOpening.ts` and its spec use the renamed `RunSectionPanel` stream-recovery keys, which fixes a raw-key toast.
+  - `docs/workspace_layout.md`: the phone reads every run.
+- Changed files or areas (in the merge's resolution):
+  - `autobyteus-web/components/workspace/history/RunSectionPanel.vue`
+  - `autobyteus-web/stores/runHistoryStore.ts`
+  - `autobyteus-web/stores/__tests__/runHistoryReadWindow.spec.ts`
+  - `autobyteus-web/composables/mobile/useMobileRunOpening.ts` and its spec
+  - `autobyteus-web/docs/workspace_layout.md`
+- Local validation and result:
+  - IMP-12: the full web suite passes, 703 files and 5214 tests, including 388's Projects window cases and every phone spec.
+  - IMP-02 typecheck: PASS.
+  - IMP-03 guards: pass.
+- Next recipient or routing: Code Review (Large/High), then API/E2E and delivery.
+- Remaining limitations or risks:
+  - The phone bundle and the emulators were not rerun on the merge. `personal` changes no phone file.
+  - A switch between Runs and Projects reads nothing extra, because the window stays `null`.

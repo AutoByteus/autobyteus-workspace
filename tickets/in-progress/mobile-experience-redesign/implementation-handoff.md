@@ -14,6 +14,7 @@
   - API/E2E round 1, [api-e2e-execution-coverage-report.md](api-e2e-execution-coverage-report.md) (`API-REV-001`, Fail: F-01…F-09);
   - the code reviewer's failure-origin review, [code-review-report.md](code-review-report.md) section "API/E2E Failure-Origin Review (Round 3)" (`CRR-003`: Local Fixes F-02…F-05);
   - the revised design (SR-005, SR-006; `ARCH-REV-004` Pass). Earlier: `CRR-001` (CR-001…003, fixed in IR-002).
+  - **IR-006:** the delivery engineer's Local Fix: the latest-base integration. `origin/personal` conflicted with this branch in three files, all from autobyteus-388.
   - **IR-005:** API/E2E round 2 (`API-REV-002`, Fail: F-10) and the code reviewer's failure-origin review, [code-review-report.md](code-review-report.md) section "API/E2E Failure-Origin Review (Round 6)" (`CRR-006`: F-10, Local Fix, implementation).
 
 ## Current Implementation Summary
@@ -51,6 +52,17 @@ The `/mobile` shell is rebuilt as the approved design on the desktop's owners. T
   - Docs: `remote_access.md`, `autobyteus-android/README.md`, `docs/android_mobile_access.md` (stale Home/Team steps too).
 - **IR-004: CRR-004 fixes** — commit `400457d5f7`: `createRandomId()` builds the UUID v4 from `crypto.getRandomValues` whenever `randomUUID` is missing, with no `Math.random` branch (CR-004); `useTaskWorkerTasks` returns `{ taskOf, locate }`, the Projects gate stays inside `locate` (CR-005).
 - **IR-005: CRR-006 F-10** — commit `e3dd8c4677`. The run screen hosts the shared `AgentEventMonitor` with `!overflow-clip` instead of `overflow-hidden` (`MobileRunTargetView.vue`). An `overflow: hidden` root is still a scroll container, so focusing the composer with the keyboard open scrolled it (330 px on API 35, 327 px on API 34), which put the composer under the bar. A clipping root cannot be scrolled. The shared monitor is unchanged, so the desktop is not affected. A component guard was added in `MobileRunScreen.spec.ts`. The reviewer's CRR-005/CRR-006 report and record are committed unchanged in `d646e1a17a`.
+- **IR-006: latest-base integration** — merge commit `ed20da1cd1`, which merges `origin/personal` `9d8077fd2a` into `7b0c5098f0`; the merge base is `e00581d485` and 97 commits come in.
+  - **The read window per view.** `RunSectionPanel.vue` (388 renamed it from `WorkspaceAgentRunsTreePanel.vue`) takes 388's `historyWindowOf`: Workspaces reads 6, Runs and Projects read `null`.
+    - Projects goes from 6 to `null`, as 388 intended, so another client's removal of any Project run is noticed.
+    - The desktop host still calls this branch's `useRunHistorySectionLoad({ window: () => historyWindowOf(mode), polling: () => true })`. The 5 s constant stays in that composable, and the panel's copy stays removed.
+    - One difference from 388's panel: a switch between Runs and Projects keeps the window at `null`, so it reads nothing extra. The set is already complete and the poll continues.
+  - **Comments.** `runHistoryStore.ts` `setHistoryWindow` and `runHistoryReadWindow.spec.ts` state 388's windows per view plus "the phone reads every run (`null`)".
+  - **The rename, followed in this branch's code.** `useMobileRunOpening.ts` and its spec use `workspace.components.workspace.history.RunSectionPanel.stream_recovery_{wait,retry}`. The old keys no longer exist, so the phone's stream-recovery toast would have shown the raw key.
+    - `RunListPanel.vue`, `runListStore.ts` and `workspaceSelectionComposition.spec.ts` merged clean, already renamed.
+    - A branch-wide search finds the old name only in ticket documents, which are history.
+  - **Docs.** `docs/workspace_layout.md`'s "The phone sets 5." now says the phone reads every run. It was stale since IR-001.
+  - **Other overlaps.** Both sides changed `RunListRow.vue`: 390 keeps the delegated rows mounted while folded (`v-show`). Both also changed `RunListPanel.vue` and `package.json` (version and probe scripts only). All merged without overlapping hunks.
 - **Polish and cleanup** — commits `e0788fe987`, `599002ecbf`, `b2d7a084dd`:
   - touch targets and the sheet's focus outline, from the rendered check;
   - removal of the helpers only the removed screens used;
@@ -58,12 +70,12 @@ The `/mobile` shell is rebuilt as the approved design on the desktop's owners. T
 
 - Implementation cycle: `Rework`
 - Implementation revision record: [implementation-revision-record.md](implementation-revision-record.md)
-- Current implementation revision ID: `IR-005` (IR-001 baseline, IR-002 CRR-001 fixes, IR-003 SR-005/SR-006 and CRR-003, IR-004 CRR-004 fixes, IR-005 CRR-006 F-10)
+- Current implementation revision ID: `IR-006` (IR-001 baseline, IR-002 CRR-001 fixes, IR-003 SR-005/SR-006 and CRR-003, IR-004 CRR-004 fixes, IR-005 CRR-006 F-10, IR-006 latest-base merge)
 - Related solution revision IDs: `SR-005` (requirements), `SR-006` (design; SR-005 for CRR-003)
 - Related architecture-review revision IDs: `ARCH-REV-002`, `ARCH-REV-004`
 - Related code-review revision IDs: `CRR-001` (Fail — Local Fix), `CRR-002` (Pass), `CRR-003` (failure-origin: Local Fixes F-02…F-05), `CRR-004` (Fail — Local Fix: CR-004, CR-005), `CRR-005` (Pass, targeted delta: CR-004 and CR-005 resolved), `CRR-006` (failure-origin of API-REV-002: F-10, Local Fix)
 - Related API/E2E revision IDs: `API-REV-001` (Fail), `API-REV-002` (Fail: F-10)
-- Related delivery revision IDs: `N/A`
+- Related delivery revision IDs: the delivery engineer's latest-base Local Fix (IR-006); see its delivery report.
 - Triggering finding IDs: F-10 (API-REV-002 / CRR-006, IR-005). Earlier: F-01, F-02, F-03, F-04, F-05, F-06, F-09 (API-REV-001 / CRR-003, through SR-005/SR-006); F-07 and F-08 need no code (DEC-009 (a), DEC-013 revised). The architecture reviews' residual risks are handled; see Known Risks.
 
 ## Routing Classification (Mandatory)
@@ -210,8 +222,8 @@ The evidence files are in [evidence/](evidence/).
 | Check ID | Command Or Steps | Commit Tested | Environment | Code It Exercises | Behavior / Criteria IDs | Result | Evidence Files | Look For |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | IMP-01 | `pnpm -C autobyteus-web test:nuxt --run` (the full web unit and component suite) | `599002ecbf` | macOS, Node v22.23.1 | All of `autobyteus-web`. It includes the new phone specs and the desktop specs of every touched shared file. | REQ-001…009; AC-001…003, 005…009 (component level); review residuals 1, 2, 5 | Pass | `evidence/IMP-01-web-unit-tests.txt` | `Test Files  700 passed (700)`; `Tests  5190 passed \| 2 skipped (5192)` |
-| IMP-02 | `pnpm -C autobyteus-web typecheck` | `e3dd8c4677` | same | Nuxt app, Electron main, build scripts, cross-package tests | — | Pass | `evidence/IMP-02-web-typecheck.txt` | `[typecheck] production errors: 0; test-file errors: 96 in 41 files (baseline 96 in 41 files)`; `[typecheck] PASS` |
-| IMP-03 | `pnpm -C autobyteus-web guard:web-boundary`, `guard:localization-boundary`, `audit:localization-literals` | `e3dd8c4677` | same | Web boundary and localization rules | QR-002 (no filler) | Pass (exit 0 each) | `evidence/IMP-03-web-guards.txt` | `[guard:web-boundary] Passed.`; `[guard:localization-boundary] Passed.` |
+| IMP-02 | `pnpm -C autobyteus-web typecheck` | `ed20da1cd1` | same | Nuxt app, Electron main, build scripts, cross-package tests | — | Pass | `evidence/IMP-02-web-typecheck.txt` | `[typecheck] production errors: 0; test-file errors: 96 in 41 files (baseline 96 in 41 files)`; `[typecheck] PASS` |
+| IMP-03 | `pnpm -C autobyteus-web guard:web-boundary`, `guard:localization-boundary`, `audit:localization-literals` | `ed20da1cd1` | same | Web boundary and localization rules | QR-002 (no filler) | Pass (exit 0 each) | `evidence/IMP-03-web-guards.txt` | `[guard:web-boundary] Passed.`; `[guard:localization-boundary] Passed.` |
 | IMP-04 | Rendered self-check. A temporary, uncommitted preview page rendered each phone surface with seeded data on a Nuxt dev server whose backend was `127.0.0.1:9`; `/rest/health` was answered ok and `/graphql` with an error. Headless Chrome at 390×844 and 360×800 measured horizontal scroll and the controls under 44×44 CSS px. | `e0788fe987` | macOS, Chrome, Nuxt dev | `components/mobile/**` presentation: run list (default, expanded with the open row, node not reachable with the notice, empty), Opening…, run screen, ⋮ menu, Artifacts, Activity, Messages, Files, New run, Agent sheet, connection sheet | AC-005, QR-001, QR-004 (`100dvh`, safe area); VIS-001, 002, 005, 006, 010, 012, 015, 016, 019, 022, 024 | Pass, with one limitation: the shared composer's own buttons | `evidence/IMP-04-render/IMP-04-render-facts.txt` and 29 PNGs `IMP-04-<view>-<width>x<height>.png` | Every view: `scrollWidth` = `clientWidth` (no horizontal scroll); `smallTargets: []` except `run`/`menu`: `Upload files 28×28`, `Send message 36×36` (the shared composer) |
 | IMP-06 | `pnpm -C autobyteus-web test:nuxt --run components/mobile composables/mobile` (the phone's specs, with the three CRR-001 tests) | `f2816cc7c1` | same | `components/mobile/**`, `composables/mobile/**` | CR-001 (REQ-008, VIS-024), CR-002, CR-003 (QR-001 roles and names) | Pass | `evidence/IMP-06-phone-tests-crr001.txt` | `Tests  83 passed (83)`; the case "Retry after a failed first check reads again through the status check: the runs list, the bar says Connected, the banner goes" |
 | IMP-07 | `pnpm -C autobyteus-web test:nuxt --run` (the full web suite, IR-003) | `1a48f4affe` | macOS, Node v22.23.1 | All of `autobyteus-web`, with the new specs: `utils/__tests__/randomId.spec.ts`, `agentOrgFirstMemberAddress.spec.ts`, the `useTaskWorkerTasks` phone case, the projection's second lines and memberless Org, the Org first-member open, the unpair sheet, `hideHeader`, the path targets | REQ-002a, REQ-003a; F-01…F-06 | Pass | `evidence/IMP-07-web-unit-tests-ir003.txt` | `Test Files  701 passed (701)`; `Tests  5198 passed \| 2 skipped (5200)` |
@@ -219,7 +231,20 @@ The evidence files are in [evidence/](evidence/).
 | IMP-09 | `pnpm -C autobyteus-web test:nuxt --run` (the full web suite, IR-004) | `400457d5f7` | macOS, Node v22.23.1 | All of `autobyteus-web`; `createRandomId` is used by shared stores and services, so the whole suite was rerun | CR-004, CR-005 | Pass | `evidence/IMP-09-web-unit-tests-ir004.txt` | `Test Files  701 passed (701)`; `Tests  5198 passed \| 2 skipped (5200)` |
 | IMP-10 | Android journey ADR-01 and ADR-07 with the keyboard open: `node …/evidence/api-e2e/scripts/android-journey.mjs <hold.json> <app-debug.apk> <out> --only=ADR-01,ADR-07` on AVD `autobyteus277_api35` and on `autobyteus277_api34`, against a probe-owned held stack (`test:e2e:mobile-shell --hold`, after the server build and `build:mobile-web`) | `e3dd8c4677` (its tree; the template comment was then moved, and production strips it) | macOS, Node v22.23.1, emulators API 35 (WebView 124) and API 34 (WebView 113) | `MobileRunTargetView.vue`'s clipping conversation root in the real WebView with the soft keyboard | F-10; REQ-003, REQ-011, AC-005, AC-011 | Pass on both | `evidence/IMP-10-adr07/README.md`, `api35/` and `api34/` (`android-journey.json`, screenshots) | `ADR-07 Pass`; `conversationScrollTop 0` (was 330/327); `gapToKeyboard 62` = `controlGapToKeyboard 62`; `noDoublePadding true`; bar 0–56, conversation 56–527 / 56–530 |
 | IMP-11 | `pnpm -C autobyteus-web test:nuxt --run components/mobile composables/mobile` (and the run screen spec, verbose) | `e3dd8c4677` | macOS, Node v22.23.1 | `components/mobile/**`, `composables/mobile/**`, with the new clipping-root guard | F-10 | Pass | `evidence/IMP-11-phone-tests-crr006.txt` | `Tests  85 passed (85)`; "hosts the conversation in a clipping root (overflow: clip, not hidden)" |
+| IMP-12 | `pnpm -C autobyteus-web test:nuxt --run` (the full web suite on the latest-base merge) | `ed20da1cd1` | macOS, Node v22.23.1 | All of `autobyteus-web` after 97 commits of `personal`: the run section (`RunSectionPanel` specs with 388's Projects window cases), run history (`runHistoryReadWindow`, `runHistoryStore`, `useRunHistorySectionLoad`), the run list (`RunListPanel`, `RunListRow`, `runListStore`, `workspaceSelectionComposition`), `projectRunsStore`, `AppLeftPanel`, and every phone spec, including `useMobileRunOpening` with the renamed keys | IR-006; 388 SR-002 under this branch's load; REQ-001…011 (component level) | Pass | `evidence/IMP-12-web-unit-tests-merge.txt` | `Test Files  703 passed (703)`; `Tests  5214 passed \| 2 skipped (5216)`; "the Projects view reads every run" |
 | IMP-05 | `pnpm -C autobyteus-web test:nuxt --run stores/__tests__/agentTeamRunStore.spec.ts` | `b2d7a084dd` | same | The Team run store, after the removal of `useTeamRunRuntimeCatalogSync` | — | Pass | `evidence/IMP-05-team-store-spec.txt` | `Tests  28 passed (28)` |
+
+IR-006 rerun plan. The merge brings in 97 commits; 48 of the files they change are in `autobyteus-web` outside `tickets/`, and none is in Android.
+
+- **Rerun:** the full web suite (IMP-12), IMP-02 and IMP-03.
+- **Still valid:** IMP-08, because no Android file changed on either side.
+- **Not rerun:** IMP-10 and IMP-11. IMP-12 contains every phone spec. The phone bundle was not rebuilt and the emulators were not run on the merge.
+  - `personal` changes no file in `components/mobile`, `composables/mobile`, `utils/mobile` or `mobileRunOpeningStore`; the phone's own files changed only in the toast's key.
+  - The shared files `personal` changes that the phone reads are behaviour-neutral for it:
+    - `runListStore.ts`: a comment only;
+    - `runActivityPresentation.ts`: a DeepSeek runtime label;
+    - `agentMutations.ts`: drops `CreateAgentRun`, which this branch does not use (typecheck passes).
+  - API/E2E decides whether ADR-07 or the probe is rerun on the merged state.
 
 IR-005 rerun plan (`git diff --name-only 10574b2fba e3dd8c4677`: `MobileRunTargetView.vue` and `MobileRunScreen.spec.ts`; nothing outside `components/mobile` imports `MobileRunTargetView`):
 
