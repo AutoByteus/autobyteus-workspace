@@ -1,6 +1,6 @@
 # Solution Handoff — `run-expand-motion`
 
-- Result: **Architecture Design Complete** (SR-001), `task_size=Small`, `architectural_risk=Low`.
+- Result: **Architecture Design Complete** (SR-002, after CRR-001), `task_size=Small`, `architectural_risk=Low`.
 - Origin: Project Task `autobyteus-390` (Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`), from `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), 2026-11-06.
 
 ## Request Summary
@@ -46,6 +46,18 @@ All in `/Users/normy/autobyteus_org/autobyteus-worktrees/run-expand-motion/ticke
 ## Open Risks
 
 R-01: a stopped run's stored delegated view after fold and unfold is covered by a component test. Losing it is the escalation trigger.
+
+## SR-002 Revision (after CRR-001, 2026-11-06)
+
+- **CR-001:** the late Task lines after SR-001's `v-if` expand slide the rows below (E-08). The root of every slide is the shared move transition `.tree-row-move` (E-09).
+- **SR-002:**
+  - Remove that rule and restore `v-show`, so the rows keep their Task answers.
+  - Without the rule nothing slides (E-10), and a finished Task's row still fades and closes, with the rows below gliding by layout (E-11).
+  - This also covers OBS-2 (the Workspaces tree) and the delegated-Team expand. The user said "it's better to be normal" (REQ-004).
+- **Tests:**
+  - a browser probe with late Task lines as the local check: it must fail on the base and on `c5cc87d89d`;
+  - the tests that encode the move rule are updated.
+- **The branch:** `codex/run-expand-motion` at `8f0e26e568`, with SR-001's code `c5cc87d89d` / `7cc31409af` and its tests, to be revised.
 
 ## Next Expected Action
 

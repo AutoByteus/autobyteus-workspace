@@ -7,7 +7,7 @@
 - Workspace root: `/Users/normy/autobyteus_org/autobyteus-worktrees/run-expand-motion`. Branch `codex/run-expand-motion`.
 - Resolved base: `origin/personal` @ `4500e7278d` (fetched 2026-11-06; v1.5.12-beta.2). Finalization target: `origin/personal`.
 - Bootstrap: worktree created; `pnpm install --frozen-lockfile` done. Project documents `DESIGN.md`, `TESTING.md` and `RELEASE.md` are present.
-- Current solution revision ID: `SR-001`.
+- Current solution revision ID: `SR-002` (after CRR-001 CR-001).
 - Authorities read: the skill's `ticket-scope.md` and `project-documents.md` (updated 2026-11-06); `TESTING.md` (setup, browser probes).
 - Investigation status: complete. The cause is proven by a reproduction and a control.
 
@@ -26,6 +26,11 @@ The user (2026-11-06, condensed by the PM): "After I click collapse and then cli
 | Probe | `evidence/page.html` + `evidence/probe.mjs` (copy `vue.global.js` 3.5.44 from `node_modules/.pnpm/vue@3.5.44*/node_modules/vue/dist/` beside the page), output `evidence/repro-v-show.json` | Same structure as the product: a run header, then 12 rows in a `tree-row` TransitionGroup under `v-show`, with the product's move CSS. Collapse, then expand. In the first frame the last row sits at `top: 0`, the top of the window, with `translate(0, -792px)`. It slides down over the next frames (107, 207, 300 … px) to its place at 792 px. **This is the "dropping out".** Every row does it at once, each from the top of the window | E-05 |
 | Probe | `evidence/page-vif.html`, output `evidence/control-v-if.json` | The control: the same page with the rows mounted by `v-if` instead of `v-show`. In every frame each row is at its final place (`top: 792`) with no transform | E-06 |
 | Docs | Product spec for the Runs list (design repo `9db2c8ec`, `tickets/done/left-panel-super-agents/ui-ux-spec.md`, UXJ-004 step 3; the chevron rotates −90° when folded); `workspace-tree-vs-chooser` spec (`7712ec14`), "Motion: the chooser's X fades in over 150ms; no other new motion" | No expand or collapse motion was designed. The effect is an accident, not a design | E-07 |
+
+| Review | `code-review-report.md` CRR-001 (CR-001 Design Impact), API/E2E `API-RXM-r2` | (SR-002) With SR-001's `v-if`, collapse unmounts `AgentRunTaskRows`. Its `useTaskWorkerTasks` releases the rows' workers, and `taskWorkerTaskStore.forgetAnswer` drops their Task answers (`:103-114`). On expand the rows mount without their Task line, and the answers arrive a moment later. Each row grows by one line, and the TransitionGroup's move transition slides the rows below (live frames: −18, −36 and −54 px over 200 ms). SR-001's control (E-06) had no late content, so it missed this | E-08 |
+| Code | `treeRowLeave.css:1-6`; Vue `TransitionGroupImpl` `willMove()` → `hasCSSTransform(moveClass)` | (SR-002) The move transition (`.tree-row-move`) is what slides rows. It applies to every row whose position changes between a render and its update: rows pushed by an inserted row (a delegated Team expanding), a row growing (a late Task line), or a reorder. Without a move class with a transform transition, `willMove()` is false, and the group translates nothing | E-09 |
+| Probe | `evidence/page-nomove.html` → `evidence/v-show-no-move.json` | (SR-002) The base structure (`v-show`) with the move rule removed: collapse, then expand. Every frame shows the rows at their place with `transform: none`. The original drop needs the move rule | E-10 |
+| Probe | `evidence/page-leave.html` + `evidence/probe-leave.mjs` → `evidence/leave-no-move.json` | (SR-002) The product's leave CSS without the move rule: a row leaves the group. The row below glides up 41 px over about 200 ms (492, 487, 482 … 451). A leaving row keeps its place while its `max-height` closes, so the rows below follow by layout. The move rule plays no part in the designed finished-Task motion | E-11 |
 
 ## The Cause, In Plain Words
 
