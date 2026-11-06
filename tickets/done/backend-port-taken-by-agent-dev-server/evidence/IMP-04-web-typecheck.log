@@ -1,0 +1,22 @@
+IMP-04 — web typecheck (Nuxt app, Electron main, build scripts, cross-package tests)
+Command: pnpm -C autobyteus-web typecheck
+Commit: c8ec06b5132870931b6833990e20db07642ccf45
+Environment: macOS 26.6.2 (Darwin 25.6.0), Node v26.12.0, pnpm 10.28.2 (via npx)
+Date: 2026-11-06
+
+Output (excerpt, final summary):
+
+[typecheck] Nuxt app (tsconfig.json): 69 errors, exit 2, 26.3s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.6s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.5s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 17.3s
+[typecheck] production errors: 0; test-file errors: 96 in 41 files (baseline 96 in 41 files)
+[typecheck] PASS
+
+Production errors: 0 (required). Test-file error count (96 in 41 files) exactly
+matches typecheck-baseline.json — no growth. None of the touched/new files in
+this change (serverRuntimeEnv.ts, baseServerManager.ts, serverStatusManager.ts,
+stores/serverStore.ts, and the five test files) appear in the error list
+(checked: `pnpm -C autobyteus-web typecheck 2>&1 | grep -iE
+"serverRuntimeEnv|platformServerEnvironment|ServerStatusManager|BackendPortAvailability|serverStore\.spec"`
+returned no matches).

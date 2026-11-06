@@ -1,0 +1,16 @@
+IMP-03 — new serverStore fallback-poller unit tests (AC-007, REQ-004)
+Command: pnpm -C autobyteus-web test:nuxt stores/__tests__/serverStore.spec.ts --run
+Commit: c8ec06b5132870931b6833990e20db07642ccf45
+Environment: macOS 26.6.2 (Darwin 25.6.0), Node v26.12.0, pnpm 10.28.2 (via npx)
+Date: 2026-11-06
+
+Output (excerpt, final summary):
+
+ ✓ stores/__tests__/serverStore.spec.ts (4 tests) 7ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+
+Cases: "stops calling health in ERROR and clears the STARTING-era health text",
+"resumes polling after a RESTARTING update", "stops polling once RUNNING, as today",
+"still polls while STARTING, unchanged".

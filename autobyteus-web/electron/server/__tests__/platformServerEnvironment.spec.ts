@@ -101,6 +101,10 @@ describe('platform server environment handoff', () => {
   }
 
   function stubCallerEnvironment(): void {
+    // The caller's own PORT/SERVER_PORT (if any) is not this test's concern; AC-004 asserts
+    // only that the composer itself injects neither, so the fixture must not carry one in.
+    vi.stubEnv('PORT', undefined)
+    vi.stubEnv('SERVER_PORT', undefined)
     vi.stubEnv('OPENAI_API_KEY', 'non-secret-openai-sentinel')
     vi.stubEnv('GOOGLE_API_KEY', 'non-secret-provider-sentinel')
     vi.stubEnv('SERPER_API_KEY', 'non-secret-search-sentinel')
@@ -133,8 +137,10 @@ describe('platform server environment handoff', () => {
       expect(env.HOME).toBe('/caller/home')
       expect(env.PATH).toBe('/caller/login-shell/bin')
       expect(env.ELECTRON_RUN_AS_NODE).toBe('1')
-      expect(env.PORT).toBe('31041')
-      expect(env.SERVER_PORT).toBe('31041')
+      // The backend's port travels only as the --port argument; a generic PORT/SERVER_PORT
+      // would leak into every agent runtime and tool shell this process spawns (AC-004).
+      expect(env).not.toHaveProperty('PORT')
+      expect(env).not.toHaveProperty('SERVER_PORT')
       expect(env.AUTOBYTEUS_SERVER_HOST).toBe('http://127.0.0.1:31041')
       expect(env.AUTOBYTEUS_DATA_DIR).toBe(path.join(root, 'data', 'server-data'))
     },
@@ -164,7 +170,8 @@ describe('platform server environment handoff', () => {
       expect(env.HOME).toBe('/caller/home')
       expect(env.PATH).toBe('/caller/login-shell/bin')
       expect(env.ELECTRON_RUN_AS_NODE).toBe('1')
-      expect(env.PORT).toBe('31041')
+      expect(env).not.toHaveProperty('PORT')
+      expect(env).not.toHaveProperty('SERVER_PORT')
       expect(env.DB_TYPE).toBe('sqlite')
       expect(env.AUTOBYTEUS_SERVER_HOST).toBe('http://127.0.0.1:31041')
       expect(env.AUTOBYTEUS_DATA_DIR).toBe(path.join(root, 'data', 'server-data'))

@@ -101,6 +101,16 @@ it.each(['initialize', 'restart'])('preserves delayed %s snapshots across reads 
   expect(bridge.getStatus().message).toBe('genuine failure')
 })
 
+it('answers a truthful "not running" error after an error event, never the STARTING-era "starting" text (AC-006)', async () => {
+  const manager = createManager()
+  const bridge = new ServerStatusManager(manager as unknown as BaseServerManager)
+  manager.emit('error', new Error('startup failed'))
+
+  const result = await bridge.checkServerHealth()
+
+  expect(result).toEqual({ status: 'error', message: 'Server is not running' })
+})
+
 it('does not republish running from a diagnostic health response after a genuine failure', async () => {
   const manager = createManager()
   manager.isRunning.mockReturnValue(true)

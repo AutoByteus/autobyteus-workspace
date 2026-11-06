@@ -135,8 +135,8 @@ async function main() {
     env: {
       ...childEnv,
       ELECTRON_RUN_AS_NODE: '1',
-      PORT: String(port),
-      SERVER_PORT: String(port),
+      // Mirrors production: the server takes its port only from `--port` above; no
+      // generic PORT/SERVER_PORT (see serverRuntimeEnv.ts).
       DATABASE_URL: databaseUrl,
       DB_TYPE: 'sqlite',
       AUTOBYTEUS_DATA_DIR: dataDir,

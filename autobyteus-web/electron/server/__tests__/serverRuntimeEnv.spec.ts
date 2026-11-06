@@ -35,7 +35,6 @@ function input(overrides: Partial<BuildServerProcessEnvInput> = {}): BuildServer
     policy: 'inherit-caller',
     callerEnv: productionLikeCallerEnv,
     loginShellPath: '/login-shell/bin',
-    port: 31041,
     appDataDir: '/tmp/isolated-root/server-data',
     publicServerUrl: 'http://127.0.0.1:31041',
     runtimeOverrides: {
@@ -55,8 +54,6 @@ describe('buildServerProcessEnv — inherit-caller (production)', () => {
       ...callerEnv,
       PATH: '/login-shell/bin',
       ELECTRON_RUN_AS_NODE: '1',
-      PORT: '31041',
-      SERVER_PORT: '31041',
       DATABASE_URL: 'file:/tmp/isolated-root/server-data/db/production.db',
       DB_TYPE: callerEnv.DB_TYPE ?? 'sqlite',
       AUTOBYTEUS_DATA_DIR: '/tmp/isolated-root/server-data',
@@ -69,6 +66,16 @@ describe('buildServerProcessEnv — inherit-caller (production)', () => {
 
     expect(env).toEqual(established)
     expect(Object.keys(env)).toEqual(Object.keys(established))
+  })
+
+  it('never sets generic PORT/SERVER_PORT: the server takes its port only from --port, and every agent runtime or tool shell this process spawns would otherwise inherit them (AC-001)', () => {
+    expect(productionLikeCallerEnv).not.toHaveProperty('PORT')
+    expect(productionLikeCallerEnv).not.toHaveProperty('SERVER_PORT')
+
+    const env = buildServerProcessEnv(input())
+
+    expect(env).not.toHaveProperty('PORT')
+    expect(env).not.toHaveProperty('SERVER_PORT')
   })
 
   it('keeps the caller PATH when no login-shell PATH is available', () => {
@@ -121,8 +128,6 @@ describe('buildServerProcessEnv — isolated-baseline (e2e)', () => {
       HTTPS_PROXY: 'http://proxy.local:3128',
       CODEX_HOME: '/Users/tester/.codex',
       ELECTRON_RUN_AS_NODE: '1',
-      PORT: '31041',
-      SERVER_PORT: '31041',
       DATABASE_URL: 'file:/tmp/isolated-root/server-data/db/production.db',
       DB_TYPE: 'sqlite',
       AUTOBYTEUS_DATA_DIR: '/tmp/isolated-root/server-data',
@@ -131,6 +136,12 @@ describe('buildServerProcessEnv — isolated-baseline (e2e)', () => {
       AUTOBYTEUS_BROWSER_BRIDGE_TOKEN: 'browser-token',
       AUTOBYTEUS_DESKTOP_EMBEDDED_NODE: '1',
     })
+  })
+
+  it('never sets generic PORT/SERVER_PORT either, for the same reason as the inherit-caller policy (AC-001)', () => {
+    const env = buildServerProcessEnv(input({ policy: 'isolated-baseline' }))
+    expect(env).not.toHaveProperty('PORT')
+    expect(env).not.toHaveProperty('SERVER_PORT')
   })
 
   it('never passes production AutoByteus, database, provider or runtime settings', () => {

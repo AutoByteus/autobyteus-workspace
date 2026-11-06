@@ -1,0 +1,28 @@
+DEL-02 — post-integration serverStore unit test on the merged state
+Merged state: 5adead4e95879e76e9631af0240a423184cc952a
+Command: npx pnpm@10.28.2 -C autobyteus-web test:nuxt stores/__tests__/serverStore.spec.ts --run
+Date: 2026-11-06
+
+> cross-env NUXT_TEST=true vitest stores/__tests__/serverStore.spec.ts --run
+stderr | stores/__tests__/serverStore.spec.ts
+stdout | stores/__tests__/serverStore.spec.ts
+stdout | stores/__tests__/serverStore.spec.ts > serverStore fallback health poller (REQ-004, AC-007) > stops calling health in ERROR and clears the STARTING-era health text
+stdout | stores/__tests__/serverStore.spec.ts > serverStore fallback health poller (REQ-004, AC-007) > stops calling health in ERROR and clears the STARTING-era health text
+stdout | stores/__tests__/serverStore.spec.ts > serverStore fallback health poller (REQ-004, AC-007) > stops calling health in ERROR and clears the STARTING-era health text
+stdout | stores/__tests__/serverStore.spec.ts > serverStore fallback health poller (REQ-004, AC-007) > stops calling health in ERROR and clears the STARTING-era health text
+stdout | stores/__tests__/serverStore.spec.ts > serverStore fallback health poller (REQ-004, AC-007) > resumes polling after a RESTARTING update
+stdout | stores/__tests__/serverStore.spec.ts > serverStore fallback health poller (REQ-004, AC-007) > resumes polling after a RESTARTING update
+stdout | stores/__tests__/serverStore.spec.ts > serverStore fallback health poller (REQ-004, AC-007) > resumes polling after a RESTARTING update
+stdout | stores/__tests__/serverStore.spec.ts > serverStore fallback health poller (REQ-004, AC-007) > resumes polling after a RESTARTING update
+stdout | stores/__tests__/serverStore.spec.ts > serverStore fallback health poller (REQ-004, AC-007) > resumes polling after a RESTARTING update
+stdout | stores/__tests__/serverStore.spec.ts > serverStore fallback health poller (REQ-004, AC-007) > stops polling once RUNNING, as today
+stdout | stores/__tests__/serverStore.spec.ts > serverStore fallback health poller (REQ-004, AC-007) > stops polling once RUNNING, as today
+stdout | stores/__tests__/serverStore.spec.ts > serverStore fallback health poller (REQ-004, AC-007) > stops polling once RUNNING, as today
+stdout | stores/__tests__/serverStore.spec.ts > serverStore fallback health poller (REQ-004, AC-007) > stops polling once RUNNING, as today
+stdout | stores/__tests__/serverStore.spec.ts > serverStore fallback health poller (REQ-004, AC-007) > still polls while STARTING, unchanged
+stdout | stores/__tests__/serverStore.spec.ts > serverStore fallback health poller (REQ-004, AC-007) > still polls while STARTING, unchanged
+stdout | stores/__tests__/serverStore.spec.ts > serverStore fallback health poller (REQ-004, AC-007) > still polls while STARTING, unchanged
+stdout | stores/__tests__/serverStore.spec.ts > serverStore fallback health poller (REQ-004, AC-007) > still polls while STARTING, unchanged
+ ✓ stores/__tests__/serverStore.spec.ts (4 tests) 7ms
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
