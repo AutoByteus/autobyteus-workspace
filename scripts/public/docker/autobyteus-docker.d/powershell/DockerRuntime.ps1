@@ -118,8 +118,8 @@ function Get-UsedPorts {
     Get-ChildItem -Path (Get-StateDir) -Filter '*.json' | ForEach-Object {
       try {
         $state = Get-Content -Raw -Path $_.FullName | ConvertFrom-Json
-        foreach ($port in @($state.backendPort, $state.vncPort, $state.noVncPort, $state.debugPort)) {
-          if ($port) { [void]$ports.Add([int]$port) }
+        foreach ($property in $state.PSObject.Properties) {
+          if ($property.Name -like '*Port' -and $property.Value) { [void]$ports.Add([int]$property.Value) }
         }
       } catch { }
     }
@@ -146,16 +146,12 @@ function Select-Ports([bool]$PreferDefaults) {
   if ($PreferDefaults) {
     return [ordered]@{
       backend = Pick-Port $used 8001
-      vnc = Pick-Port $used 5908
       noVnc = Pick-Port $used 6080
-      debug = Pick-Port $used 9228
     }
   }
   [ordered]@{
     backend = Pick-Port $used $null
-    vnc = Pick-Port $used $null
     noVnc = Pick-Port $used $null
-    debug = Pick-Port $used $null
   }
 }
 
@@ -183,9 +179,7 @@ Container: $($State.containerName)
 Image: $($State.imageRef)
 Backend: http://localhost:$($State.backendPort)
 GraphQL: http://localhost:$($State.backendPort)/graphql
-noVNC: http://localhost:$($State.noVncPort)
-VNC: localhost:$($State.vncPort)
-Chrome debug: localhost:$($State.debugPort)
+VNC Viewer: localhost:$($State.noVncPort) (this computer only)
 Workspace: $Script:WorkspaceContainerPath -> $(Get-NodeWorkspaceHostPath $nodeName)
 Shared folder: $Script:SharedContainerPath -> $(Get-SharedWorkspaceHostPath)
 Private app data: /home/autobyteus/data -> $(Normalize-NodeName $nodeName)-data (Docker named volume)
@@ -210,10 +204,10 @@ function Set-StateProperty($State, [string]$Name, $Value) {
   $State | Add-Member -NotePropertyName $Name -NotePropertyValue $Value
 }
 
-function Test-StateHasPorts($State) { $State -and $State.backendPort -and $State.vncPort -and $State.noVncPort -and $State.debugPort }
+function Test-StateHasPorts($State) { $State -and $State.backendPort -and $State.noVncPort }
 
 function New-NodeState([string]$NodeName, [string]$ContainerName, [string]$ImageRef, $Ports, [string]$CreatedAt) {
-  $state = [pscustomobject]@{ nodeName = $NodeName; containerName = $ContainerName; backendPort = [int]$Ports.backend; vncPort = [int]$Ports.vnc; noVncPort = [int]$Ports.noVnc; debugPort = [int]$Ports.debug; imageRef = $ImageRef; configHash = ''; createdAt = $CreatedAt; updatedAt = Get-NowUtc }
+  $state = [pscustomobject]@{ nodeName = $NodeName; containerName = $ContainerName; backendPort = [int]$Ports.backend; noVncPort = [int]$Ports.noVnc; imageRef = $ImageRef; configHash = ''; createdAt = $CreatedAt; updatedAt = Get-NowUtc }
   $state
 }
 
