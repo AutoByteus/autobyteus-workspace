@@ -142,14 +142,31 @@
 
 ## Product Design Findings
 
-- Pending (Product Team result not yet returned).
+- Product Design package: `/Users/normy/autobyteus_org/autobyteus-web-design-worktrees/mobile-experience-redesign/tickets/in-progress/mobile-experience-redesign/`: `ui-ux-spec.md`, `product-ticket.md`, `visual-references/VIS-001…029`, `evidence/user-screenshots/` (22, with README).
+- Design repository: `/Users/normy/autobyteus_org/autobyteus-web-design`. Branch: `design/mobile-experience-redesign` @ `976457a418d6355296c8a366bf403c865ee0646c` (pushed). Accepted base: `a0e18abb`. Integration into `personal` is pending until the implementation is confirmed (the user's standing rule).
+- Runnable reference: in the design worktree, `corepack pnpm exec nuxt dev --port 3277`, entry `/mobile`.
+- Explicit user confirmation (2026-11-06): "okayyy. everything is good now. i approve".
+- Journeys validated: UXJ-001…UXJ-008.
+- Decisions supported by evidence:
+  - DEC-003 A as built.
+  - DEC-004: the "What Is Not On The Phone" list.
+  - DEC-007: agent-only New run.
+  - OPT-001 (the "needs you" marker): dropped by the user after the approval (Product round 17).
+- Alternatives the user rejected: five tabs plus Home; a sibling strip or tree sheet on the run screen; a "Results" screen with tabs; an Agent | Team toggle; Files filters; cards with borders.
+- Mocked boundaries and production gaps: the spec's "Data, Contract, And Mock Boundaries" and its five findings for engineering (new run id change; no fallback navigation state; Back closes overlays; remote composer text-only; the node's own name).
+- Requirements sections affected: all (SR-002).
+- Verified on receipt (2026-11-06):
+  - the design worktree HEAD is `16678d53…` (first approval) and then `976457a4…` (the marker removed at the user's request, Product round 17);
+  - the spec links the runnable reference, the runbook and VIS-001…029, all present;
+  - the spec's repository, branch and revision match the Product message.
 
 ## Supplemental Artifact Inventory
 
 | Artifact | Owner | Purpose | Scope | Related IDs | Status | Approval |
 | --- | --- | --- | --- | --- | --- | --- |
 | `product-design-request.md` | Solution Designer | The brief sent to the Product Team | Product design | All | Sent 2026-11-06 | Not behavior-defining by itself |
-| Product UI/UX spec (Product-owned, path to come) | Product Team | Normative UI | Product design | REQ-001…REQ-009 | Pending | Needs the user's confirmation |
+| `/Users/normy/autobyteus_org/autobyteus-web-design-worktrees/mobile-experience-redesign/tickets/in-progress/mobile-experience-redesign/ui-ux-spec.md` with VIS-001…029 (rev `976457a4`) | Product Team | Normative UI | Product design | REQ-001…REQ-009 | Approved | The user, 2026-11-06 |
+| `follow-ups.md` | Solution Designer | FU-001 = autobyteus-391 | Follow-up | DEC-003 B | Sent | — |
 
 ## Assumptions, Unknowns, And Risks
 
@@ -157,14 +174,37 @@
 | --- | --- | --- | --- | --- | --- |
 | U-001 | Unknown (user decision) | How far remote nodes go on mobile: A through the paired node only; B also switch between several paired nodes; C start a run directly on a peer through the paired node | Scope, security, Android shell | The user (DEC-003) | Open |
 | U-002 | Unknown (user decision via UI approval) | What is not on mobile | Layout | Product proposes, the user approves | Open |
-| U-003 | Unknown (feasibility) | A "needs you" marker on run rows (waiting for an approval or an answer) | One of the things the user does outside | History has no such status; live contexts know pending approvals only for runs the phone streams. Architecture to measure; Product must not make it a hard visible element before that | Open |
+| U-003 | Unknown (feasibility) | A "needs you" marker on run rows (waiting for an approval or an answer) | One of the things the user does outside | History has no such status; live contexts know pending approvals only for runs the phone streams. Architecture to measure; Product must not make it a hard visible element before that | Closed: confirmed (E-26); the user dropped the marker (DEC-005) |
 | U-004 | Unknown | The user's own screenshots and worst problems | Prioritization | The user, during Product review | Open |
 | R-001 | Risk | The complete history window on a phone over Tailscale (payload, polling) | Performance, battery | Architecture: measure payload with the user's real history size | Open |
 | R-002 | Risk | Live streams for opened runs on a phone that sleeps | Reliability | Architecture: reconnect behavior, same as desktop | Open |
 
 ## Architecture Investigation Findings
 
-Not started; follows requirements approval.
+The architecture investigation of 2026-11-06 ran after the requirements were approved at SR-002. All paths are under `autobyteus-web/` unless noted. Every finding here was established by reading the code, except E-17, which was measured.
+
+| ID | Source | Observation | Design implication |
+| --- | --- | --- | --- |
+| E-10 | `components/workspace/history/WorkspaceAgentRunsTreePanel.vue:118-120, 380-409` | The desktop run section host owns the history load: window per view, `fetchTree` + `loadWorkspaceCatalogForNavigation` + agent/team/Org definition fetches on mount, a 5 s `refreshTreeQuietly` poll, cleared on unmount | The phone needs the same load and poll; one owner, not a second copy (Principle 13) |
+| E-11 | `stores/runListStore.ts:17-52`; `utils/runListProjection.ts:113-126` | `runListStore.entries`: every top-level Agent, Team, Org run newest first by `lastActivityAt`; `shownEntries`/`olderEntries`/`setOlderShown`/`showRun` give the fold. It only reads `runHistoryStore` | Reused as is for REQ-001 |
+| E-12 | `components/workspace/history/AgentRunTaskRows.vue:58-104`; `stores/agentRunCollaborationStore.ts:41-140, 320-340` | An Agent run's delegated rows are `collaboration.taskRows(runId)`; the stored view loads with `collaboration.inspect(runId)` when `hasCollaboration` (component-local rule, lines 60-64); a row tap does `selectChild(host, row.agentRunId ?? coordinatorRunIdOf(teamRunIdForNode))` then opens the host (lines 95-101); remote children come from the same context (278) | Reuse; move the two component-local rules (load stored view, select a task row) into the store so the phone does not copy them |
+| E-13 | `components/workspace/history/WorkspaceTeamExecutionTree.vue:120-150`; `TeamTreeNode.executionRows` | A Team run's members and their delegated work are `team.executionRows` with depth and `hasChildren`; expansion is per row key | Reuse the rows; the phone renders them |
+| E-14 | `components/workspace/history/AgentOrgRunMemberTree.vue:136-150`; `utils/agentOrgHistoryRows.ts:210` | An Org run's rows: `projectAgentOrgHistoryRows({ run, context, isTeamExpanded, isTaskTeamExpanded })` | Reuse |
+| E-15 | `composables/useRunListDisclosure.ts:33-156` | Expansion keyed by run identity; defaults: a run's delegated work shown, teams and members folded, Org runs folded (`:67`); reveals the open run (opens the fold) | Reuse one instance for the phone; the Org default differs from the spec (Org unfolded): a construction option |
+| E-16 | `composables/useWorkspaceHistorySelectionActions.ts:51-151`; `stores/runHistorySelectionActions.ts:114-139`; `composables/useWorkspaceHistorySubjectActions.ts:14-79` | The desktop open actions: Agent `selectTreeRun`; Team `openTeam` (focused or first member, then `selectionStore.selectRun(team,'team')` with shell navigation); member `selectTreeRun`; Org `openForInspection` + `select` + `router.push('/workspace', {rootSubjectKind:'agent_org', orgRunId, mode,…})`. The stores already take `selectionMode: 'mobile'` (`runHistoryLoadActions.ts:49-53`, `runHistoryTeamMemberInspectionActions.ts:90`), but `selectTreeRunFromHistory`'s local-run branch always calls `selectRun` (shell navigation, `:129`), and the two composables always navigate the desktop shell | Give both composables the existing mobile selection mode; fix the local-run branch to honor it |
+| E-17 | `stores/activeContextStore.ts:72-150`; `composables/agentInput/useComposerTarget.ts:55-60` | The open conversation of every kind, and the composer's target, come from `activeWorkspaceTarget`: Org when `route.query.rootSubjectKind === 'agent_org'` (any path), else the selected agent (or its selected task child) or the selected team's focused member | The phone renders `activeWorkspaceTarget`; it keeps the open Org in `/mobile`'s own query |
+| E-18 | `components/workspace/agent/AgentWorkspaceSurface.vue:29-109`; `components/workspace/team/TeamWorkspaceSurface.vue:30-87` | Both desktop surfaces bind `AgentEventMonitor` from the target with the same pieces: display name, read-only rule, sender names from `collaborationMessages`, `useRemoteRunView` (notice, placeholder, retry) | The phone needs the same binding; extract it once (Principle 11) |
+| E-19 | `composables/agentCollaboration/useAgentRunCollaborationSync.ts:15-33`, mounted only in `components/workspace/agent/AgentWorkspaceView.vue:47` | The selected standalone run's live collaboration stream is attached by this composable | The phone's run screen mounts it too |
+| E-20 | `stores/agentContextsStore.ts:160-173` | Promoting `temp-*` to the permanent id moves the selection (`selectRunWithoutShellNavigation`) | A screen that reads the selection follows the new id; the old `MobileChat` compared a stored copy of the id (`MobileChat.vue:73-77`), the cause of Product finding 1 |
+| E-21 | `composables/useEventMonitorFilePreview.ts:40-96` | On the phone, a file path tapped in a conversation is resolved through `mobileWorkStore.currentContext` and opened through `mobileWorkStore.requestFilePreview` | Rebind it to the open target and the phone's navigation owner |
+| E-22 | `stores/remoteCollaborationStore.ts:25-35`; `stores/remoteCollaborationOffersStore.ts:17-60` | Peers: `load()` → `peers`; per peer `ask(nodeId)` → `available` (entries) or `unavailable` (refusal code) | Reuse for the connection sheet |
+| E-23 | `composables/mobile/*`, `components/mobile/*`, `stores/mobileWorkStore.ts`, `types/mobileWork.ts` (consumer map by `grep`) | The mobile shell's own model (`MobileWorkContext`: agent-run, team-run, agent-definition, team-definition, workspace) feeds Home, Switch work, tabs, Files, Artifacts, Activity, Messages, run setup, pending team attachments; `mobileWorkStore` has no local storage | The model and its owners become unnecessary when the views read the open target; no stored data |
+| E-24 | `composables/mobile/useMobileRunSetupController.ts` (455 lines, 78 lines naming team), `useMobileRunLaunchCoordinator.ts:14-160` | New run supports agent and team, with team member focus and pending team attachments | Agent only (DEC-007): the team branches become dead |
+| E-25 | Measured: `python3 -I /tmp/sd277-probe/probe.py http://127.0.0.1:29695/graphql …` (read-only, the user's running node "AutoByteus Desktop"; sizes and counts only, no content kept) | `listWorkspaceRunHistory`: 36,463 bytes for 7 folders, 7 agent runs, 6 team runs; window 5, 6 or `null` give the same result; 0.03–0.05 s locally. `listCollaborationRootHistory`: 917 bytes, 6 roots | R-001: the complete window is small for his real history. A 5 s poll is ~26 MB/hour while the list is shown, so the phone polls only while the list is on screen and the page is visible |
+| E-26 | `/tmp/sd277-probe/list.graphql` fields; server `grep` for approval events | History items carry `status`, `statusSource` and `isActive` only. A pending tool approval is a stream event of a live run | Confirms U-003: no source for a "needs you" marker; the user dropped the marker (DEC-005) |
+| E-27 | `stores/mobileNodeSessionStore.ts`; `MobileRemoteAccessShell.vue:150-163` | A 401 on the catalog read rejects the local session (`rejectLocalSessionForAuthFailure`) | Keep that rule on the new history read |
+
+- Temporary diagnostics: none in the product. The probe script `/tmp/sd277-probe/probe.py` is outside the repository; it only reads and is not part of the package.
 
 ## Requirement Implications
 
