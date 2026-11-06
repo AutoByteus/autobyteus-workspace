@@ -59,6 +59,10 @@ R-01: a stopped run's stored delegated view after fold and unfold is covered by 
   - the tests that encode the move rule are updated.
 - **The branch:** `codex/run-expand-motion` at `8f0e26e568`, with SR-001's code `c5cc87d89d` / `7cc31409af` and its tests, to be revised.
 
+## SR-002 Narrowed (2026-11-06)
+
+After the reviewer's correction (`47ddf05fb5`, OBS-2 withdrawn, and the user reports that Workspaces and Projects are fine), the move is turned off only in the Runs view. That is one scoped rule on the run list's scroll container in `RunListPanel.vue`. The shared `treeRowLeave.css`, its tests and the other views are unchanged (AC-006). `v-show` is restored, as before.
+
 ## Next Expected Action
 
 Implementation with self-checks and executable validation, then delivery.
