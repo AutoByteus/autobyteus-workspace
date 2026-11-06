@@ -98,8 +98,30 @@ Revert the merge on `personal`. The phone's VNC Viewer entry and the stream limi
 
 ## Finalization Record
 
-(Filled in after the merge.)
+- Pre-commit checks: `check_repository_artifact_hygiene.py` exit 0; Secret Gate `origin/personal..HEAD` PASS.
+- Ticket branch: `codex/node-desktop-on-phone` at `4d4f732e0f` (archive commit), pushed as a new branch.
+- Finalization target: `origin/personal`, unchanged at `e427a0c9cf`. Re-integration and re-verification: `Not needed`.
+- Merge: `finalize/node-desktop-on-phone` from `origin/personal`; `--no-ff` → `eafc34b185`.
+  - Its tree is identical to the verified head.
+  - Secret Gate on the merged state: PASS.
+- Push: `origin/personal` fetched again and still `e427a0c9cf`; pushed `e427a0c9cf..eafc34b185`.
+- Repository finalization status: `Completed`. This record follows as a `docs(delivery)` commit on `personal`.
+
+## Post-Finalization Cleanup
+
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-desktop-on-phone`.
+- Right after this record is pushed:
+  - Remove and prune the worktree. Its untracked files are build output only.
+  - Delete the local `codex/` and `finalize/` branches; both are in `origin/personal`.
+  - Keep `origin/codex/node-desktop-on-phone`.
+  - The terminal message confirms the results.
+- Test resources: API/E2E removed its nodes, emulator data and isolated instances (execution report, cleanup). The user's nodes and phone were never addressed.
 
 ## Final Status
 
-(Filled in at the end.)
+- Verification complete (from the evidence): `Yes`
+- Repository finalization complete: `Yes`
+- Applicable release/deployment/rollout complete or not required: `Not required`
+- Applicable safe cleanup complete or not required: right after this record is pushed (above)
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
