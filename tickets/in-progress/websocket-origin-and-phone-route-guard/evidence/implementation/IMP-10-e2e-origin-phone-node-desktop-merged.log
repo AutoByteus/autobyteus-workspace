@@ -1,0 +1,510 @@
+# IMP-10
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/e2e/remote-access tests/e2e/node-desktop tests/unit/node-desktop tests/unit/api/websocket tests/unit/remote-access tests/integration/api/studio-server-http-contract.integration.test.ts --reporter=verbose --no-watch
+# Commit: 6f59bab2a2 (merge of origin/personal 6341292552; branch codex/websocket-origin-and-phone-route-guard)
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-06T23:44Z
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard/autobyteus-server-ts
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+Database reset successful
+The following migration(s) have been applied:
+migrations/
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > GET /rest/node-desktop reports a node desktop exactly on a Docker node
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-node-desktop-routes-5aqrJg
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > streams the node desktop to a trusted viewer in either mode
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-node-desktop-routes-MHMLGQ
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > streams the node desktop to a trusted viewer in either mode
+[node-desktop] stream ended mode=control viewer=loopback durationMs=1 toViewer=12 fromViewer=0 reason=viewer-closed
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > refuses every other query with 4400 before any desktop connection (AC-003)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-node-desktop-routes-qC5PL5
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > answers 4404 NODE_DESKTOP_UNAVAILABLE on a node without a node desktop
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-node-desktop-routes-xIAL26
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > refuses invalid, revoked and disabled phone credentials before any desktop connection (AC-005)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-node-desktop-routes-noSCnN
+ ✓ tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > GET /rest/node-desktop reports a node desktop exactly on a Docker node 50ms
+ ✓ tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > streams the node desktop to a trusted viewer in either mode 13ms
+ ✓ tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > refuses every other query with 4400 before any desktop connection (AC-003) 15ms
+ ✓ tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > answers 4404 NODE_DESKTOP_UNAVAILABLE on a node without a node desktop 5ms
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > refuses a 5th stream node-wide with 4429 before any desktop connection (AC-021)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-node-desktop-routes-vFGGo6
+ ✓ tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > refuses invalid, revoked and disabled phone credentials before any desktop connection (AC-005) 67ms
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > refuses a 5th stream node-wide with 4429 before any desktop connection (AC-021)
+[node-desktop] stream ended mode=view viewer=loopback durationMs=206 toViewer=12 fromViewer=0 reason=viewer-closed
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > refuses a 5th stream node-wide with 4429 before any desktop connection (AC-021)
+[node-desktop] stream ended mode=view viewer=loopback durationMs=207 toViewer=12 fromViewer=0 reason=viewer-closed
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > refuses a 5th stream node-wide with 4429 before any desktop connection (AC-021)
+[node-desktop] stream ended mode=view viewer=loopback durationMs=208 toViewer=12 fromViewer=0 reason=viewer-closed
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > refuses a 5th stream node-wide with 4429 before any desktop connection (AC-021)
+[node-desktop] stream ended mode=view viewer=loopback durationMs=3 toViewer=12 fromViewer=0 reason=viewer-closed
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > refuses a 3rd stream from one phone with 4429 while other viewers still fit (AC-021)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-node-desktop-routes-Sok8GP
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > refuses a 3rd stream from one phone with 4429 while other viewers still fit (AC-021)
+[node-desktop] stream ended mode=view viewer=mobile durationMs=9 toViewer=12 fromViewer=0 reason=viewer-closed
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > refuses a 3rd stream from one phone with 4429 while other viewers still fit (AC-021)
+[node-desktop] stream ended mode=view viewer=mobile durationMs=17 toViewer=12 fromViewer=0 reason=viewer-closed
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > refuses a 3rd stream from one phone with 4429 while other viewers still fit (AC-021)
+[node-desktop] stream ended mode=view viewer=loopback durationMs=1 toViewer=12 fromViewer=0 reason=viewer-closed
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > ends an open phone stream within 25 s of its revocation; a reconnect is refused (AC-012)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-node-desktop-routes-ad4KLF
+ ✓ tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > refuses a 5th stream node-wide with 4429 before any desktop connection (AC-021) 212ms
+ ✓ tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > refuses a 3rd stream from one phone with 4429 while other viewers still fit (AC-021) 46ms
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > ends an open phone stream within 25 s of its revocation; a reconnect is refused (AC-012)
+[node-desktop] stream ended mode=view viewer=loopback durationMs=20006 toViewer=12 fromViewer=0 reason=viewer-closed
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > ends an open phone stream within 25 s of its revocation; a reconnect is refused (AC-012)
+[node-desktop] stream ended mode=view viewer=mobile durationMs=20007 toViewer=12 fromViewer=0 reason=viewer-closed
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > ends open phone streams within 25 s of Phone Access being turned off (AC-012)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-node-desktop-routes-QRuBNe
+ ✓ tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > ends an open phone stream within 25 s of its revocation; a reconnect is refused (AC-012) 20058ms
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > ends open phone streams within 25 s of Phone Access being turned off (AC-012)
+[node-desktop] stream ended mode=view viewer=loopback durationMs=20005 toViewer=12 fromViewer=0 reason=viewer-closed
+ ✓ tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > ends open phone streams within 25 s of Phone Access being turned off (AC-012) 20039ms
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts
+AgentFactory (Singleton) initialized.
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-JPNd4e
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-JPNd4e/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-JPNd4e/.env
+◇ injected env (1) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-JPNd4e/.env // tip: ◈ secrets for agents [www.dotenvx.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-JPNd4e
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-JPNd4e/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-JPNd4e/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-JPNd4e/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-JPNd4e/memory
+============================================================
+Initialized server settings service with 32 predefined settings
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+AgentRunManager initialized.
+AgentRunManager initialized.
+stderr | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+AUTOBYTEUS_ALLOWED_ORIGINS: ignoring entries that are not http(s) origins: not-an-origin
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Loading workspace packages to trigger registration...
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully loaded workspace packages.
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-JPNd4e/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-JPNd4e/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-JPNd4e/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registered required tool unit: Core Tools
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registered required tool unit: Project Task Tools
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registered required tool unit: Agent Communication Tools
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully registered tool definition: 'publish_artifacts'
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registered required tool unit: Published Artifact Tools
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registered required tool unit: Agent Discovery Tools
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully registered tool definition: 'search_memory'
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registered required tool unit: Memory Tools
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registered required tool unit: Agent Runtime Tools
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registered required tool unit: Browser Tools
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully registered tool definition: 'search_web'
+stderr | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Overwriting existing tool definition for name: 'search_web'
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registered required tool unit: Search Tools
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > refuses a foreign or null Origin on every WebSocket route family before the route runs (AC-001) 15ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > accepts each allowed-origin class and refuses near misses (AC-002) 2846ms
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > accepts a phone credential on every phone WebSocket route (AC-005)
+Agent websocket attached for run phone-probe
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > accepts a phone credential on every phone WebSocket route (AC-005)
+Agent team websocket attached for team run phone-probe
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > refuses foreign-origin HTTP and preflights and grants CORS only to allowed origins (AC-003) 10ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > refuses a phone credential on WebSocket routes the phone does not offer (AC-004) 11ms
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > accepts a phone credential on every phone WebSocket route (AC-005)
+File explorer websocket attached for workspace phone-probe
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > accepts a phone credential on every phone WebSocket route (AC-005) 888ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > logs every refusal once with its code and redacted URL and never a credential (AC-006) 4ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > keeps today's refusal of a phone credential when Phone Access is disabled 20ms
+stdout | tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts > Phone Access running REST route behavior > keeps active and revoked device routes separate while proving HTTPS and trusted LAN HTTP QR policy
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-phone-access-routes-BFGH25
+stderr | tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts > Phone Access running REST route behavior > keeps active and revoked device routes separate while proving HTTPS and trusted LAN HTTP QR policy
+Remote Access request refused REMOTE_ACCESS_AUTH_INVALID /rest/remote-access/devices/revoked
+stderr | tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts > Phone Access running REST route behavior > keeps active and revoked device routes separate while proving HTTPS and trusted LAN HTTP QR policy
+Remote Access request refused REMOTE_ACCESS_DEVICE_REVOKED /rest/protected-probe
+stdout | tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts > Phone Access running REST route behavior > restores trusted-network remote-node management and protected routes without additional credentials
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-phone-access-routes-fs0Oop
+ ✓ tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts > Phone Access running REST route behavior > keeps active and revoked device routes separate while proving HTTPS and trusted LAN HTTP QR policy 419ms
+ ✓ tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts > Phone Access running REST route behavior > restores trusted-network remote-node management and protected routes without additional credentials 39ms
+stdout | tests/integration/api/studio-server-http-contract.integration.test.ts
+AgentFactory (Singleton) initialized.
+stdout | tests/integration/api/studio-server-http-contract.integration.test.ts > Studio server HTTP contract
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/studio-server-http-contract-Y4zkXx
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/studio-server-http-contract-Y4zkXx/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/studio-server-http-contract-Y4zkXx/.env
+◇ injected env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/studio-server-http-contract-Y4zkXx/.env // tip: ⌘ suppress logs { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/studio-server-http-contract-Y4zkXx
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/studio-server-http-contract-Y4zkXx/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/studio-server-http-contract-Y4zkXx/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/studio-server-http-contract-Y4zkXx/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/studio-server-http-contract-Y4zkXx/memory
+============================================================
+Initialized server settings service with 32 predefined settings
+stdout | tests/integration/api/studio-server-http-contract.integration.test.ts > Studio server HTTP contract
+AgentRunManager initialized.
+AgentRunManager initialized.
+stdout | tests/integration/api/studio-server-http-contract.integration.test.ts > Studio server HTTP contract
+Loading workspace packages to trigger registration...
+stdout | tests/integration/api/studio-server-http-contract.integration.test.ts > Studio server HTTP contract
+Successfully loaded workspace packages.
+stdout | tests/integration/api/studio-server-http-contract.integration.test.ts > Studio server HTTP contract
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/studio-server-http-contract-Y4zkXx/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/studio-server-http-contract-Y4zkXx/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/studio-server-http-contract-Y4zkXx/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+stdout | tests/integration/api/studio-server-http-contract.integration.test.ts > Studio server HTTP contract
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+stdout | tests/integration/api/studio-server-http-contract.integration.test.ts > Studio server HTTP contract
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+stdout | tests/integration/api/studio-server-http-contract.integration.test.ts > Studio server HTTP contract
+Registered required tool unit: Core Tools
+stdout | tests/integration/api/studio-server-http-contract.integration.test.ts > Studio server HTTP contract
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+stdout | tests/integration/api/studio-server-http-contract.integration.test.ts > Studio server HTTP contract
+Registered required tool unit: Project Task Tools
+stdout | tests/integration/api/studio-server-http-contract.integration.test.ts > Studio server HTTP contract
+Successfully registered tool definition: 'search_memory'
+stdout | tests/integration/api/studio-server-http-contract.integration.test.ts > Studio server HTTP contract
+Registered required tool unit: Memory Tools
+stdout | tests/integration/api/studio-server-http-contract.integration.test.ts > Studio server HTTP contract
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+stdout | tests/integration/api/studio-server-http-contract.integration.test.ts > Studio server HTTP contract
+Successfully registered tool definition: 'publish_artifacts'
+stdout | tests/integration/api/studio-server-http-contract.integration.test.ts > Studio server HTTP contract
+Registered required tool unit: Published Artifact Tools
+stdout | tests/integration/api/studio-server-http-contract.integration.test.ts > Studio server HTTP contract
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+stdout | tests/integration/api/studio-server-http-contract.integration.test.ts > Studio server HTTP contract
+Registered required tool unit: Agent Discovery Tools
+stdout | tests/integration/api/studio-server-http-contract.integration.test.ts > Studio server HTTP contract
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+stdout | tests/integration/api/studio-server-http-contract.integration.test.ts > Studio server HTTP contract
+Registered required tool unit: Agent Communication Tools
+stdout | tests/integration/api/studio-server-http-contract.integration.test.ts > Studio server HTTP contract
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+stdout | tests/integration/api/studio-server-http-contract.integration.test.ts > Studio server HTTP contract
+Registered required tool unit: Agent Runtime Tools
+stdout | tests/integration/api/studio-server-http-contract.integration.test.ts > Studio server HTTP contract
+Registered required tool unit: Browser Tools
+stderr | tests/integration/api/studio-server-http-contract.integration.test.ts > Studio server HTTP contract
+Overwriting existing tool definition for name: 'search_web'
+stdout | tests/integration/api/studio-server-http-contract.integration.test.ts > Studio server HTTP contract
+Successfully registered tool definition: 'search_web'
+stdout | tests/integration/api/studio-server-http-contract.integration.test.ts > Studio server HTTP contract
+Registered required tool unit: Search Tools
+stderr | tests/integration/api/studio-server-http-contract.integration.test.ts > Studio server HTTP contract > lets a trusted-network client POST /graphql but keeps GET /graphql local-only and serves it no GraphiQL page
+Remote Access request refused REMOTE_ACCESS_ROUTE_UNSUPPORTED /graphql?query=%7B__typename%7D
+ ✓ tests/integration/api/studio-server-http-contract.integration.test.ts > Studio server HTTP contract > serves GraphQL at POST /graphql and no GraphiQL page 28ms
+ ✓ tests/integration/api/studio-server-http-contract.integration.test.ts > Studio server HTTP contract > lets a trusted-network client POST /graphql but keeps GET /graphql local-only and serves it no GraphiQL page 7ms
+ ✓ tests/integration/api/studio-server-http-contract.integration.test.ts > Studio server HTTP contract > answers MCP gateway preflights from its access gate and rejects foreign origins 9ms
+ ✓ tests/integration/api/studio-server-http-contract.integration.test.ts > Studio server HTTP contract > adds the studio CORS plugin's headers to MCP gateway requests 7ms
+ ✓ tests/unit/remote-access/pairing-auth-service.test.ts > remote access pairing and auth services > blocks pairing creation while Phone Access is disabled 4ms
+ ✓ tests/unit/remote-access/pairing-auth-service.test.ts > remote access pairing and auth services > exchanges a single-use code for a credential and rejects reuse 25ms
+ ✓ tests/unit/remote-access/pairing-auth-service.test.ts > remote access pairing and auth services > requires acknowledgement before creating trusted private HTTP pairing sessions 8ms
+ ✓ tests/unit/remote-access/pairing-auth-service.test.ts > remote access pairing and auth services > rejects public HTTP and phone-unreachable local-only pairing URLs 7ms
+ ✓ tests/unit/remote-access/pairing-auth-service.test.ts > remote access pairing and auth services > preserves deployment base paths when building mobile pairing URLs 8ms
+ ✓ tests/unit/remote-access/pairing-auth-service.test.ts > remote access pairing and auth services > rejects disabled, per-device revoked, and revoke-all credentials 50ms
+ ✓ tests/unit/remote-access/pairing-auth-service.test.ts > remote access pairing and auth services > lists active and revoked device summaries through explicit service boundaries 27ms
+ ✓ tests/unit/remote-access/node-identity-service.test.ts > NodeIdentityService > creates the node ID once in remote-access/node-identity.json and keeps it 14ms
+ ✓ tests/unit/remote-access/node-identity-service.test.ts > NodeIdentityService > reads an existing node-identity.json 2ms
+ ✓ tests/unit/remote-access/node-identity-service.test.ts > NodeIdentityService > while the identity is held back (REQ-913): throws NodeIdentityNotMigratedError and creates or writes nothing 1ms
+ ✓ tests/unit/node-desktop/rfb-viewer-input-filter.test.ts > RfbViewerInputFilter > handshake > forwards RFB 3.7 and 3.8, security None, and forces ClientInit to shared 2ms
+ ✓ tests/unit/node-desktop/rfb-viewer-input-filter.test.ts > RfbViewerInputFilter > handshake > rejects another RFB version and another security type 0ms
+ ✓ tests/unit/node-desktop/rfb-viewer-input-filter.test.ts > RfbViewerInputFilter > handshake > accepts the handshake split into single bytes 0ms
+ ✓ tests/unit/node-desktop/rfb-viewer-input-filter.test.ts > RfbViewerInputFilter > message table > SetPixelFormat (0): view forward, control forward 1ms
+ ✓ tests/unit/node-desktop/rfb-viewer-input-filter.test.ts > RfbViewerInputFilter > message table > SetEncodings (2): view forward, control forward 1ms
+ ✓ tests/unit/node-desktop/rfb-viewer-input-filter.test.ts > RfbViewerInputFilter > message table > FramebufferUpdateRequest (3): view forward, control forward 0ms
+ ✓ tests/unit/node-desktop/rfb-viewer-input-filter.test.ts > RfbViewerInputFilter > message table > KeyEvent (4): view drop, control forward 0ms
+ ✓ tests/unit/node-desktop/rfb-viewer-input-filter.test.ts > RfbViewerInputFilter > message table > PointerEvent (5): view drop, control forward 0ms
+ ✓ tests/unit/node-desktop/rfb-viewer-input-filter.test.ts > RfbViewerInputFilter > message table > ClientCutText (6): view drop, control forward 1ms
+ ✓ tests/unit/node-desktop/rfb-viewer-input-filter.test.ts > RfbViewerInputFilter > message table > extended ClientCutText (6, negative length): view drop, control forward 1ms
+ ✓ tests/unit/node-desktop/rfb-viewer-input-filter.test.ts > RfbViewerInputFilter > message table > EnableContinuousUpdates (150): view forward, control forward 0ms
+ ✓ tests/unit/node-desktop/rfb-viewer-input-filter.test.ts > RfbViewerInputFilter > message table > ClientFence (248): view forward, control forward 0ms
+ ✓ tests/unit/node-desktop/rfb-viewer-input-filter.test.ts > RfbViewerInputFilter > message table > xvp (250): view drop, control drop 0ms
+ ✓ tests/unit/node-desktop/rfb-viewer-input-filter.test.ts > RfbViewerInputFilter > message table > SetDesktopSize (251): view drop, control drop 0ms
+ ✓ tests/unit/node-desktop/rfb-viewer-input-filter.test.ts > RfbViewerInputFilter > message table > QEMU extended key (255/0): view drop, control forward 0ms
+ ✓ tests/unit/node-desktop/rfb-viewer-input-filter.test.ts > RfbViewerInputFilter > message table > removes the ExtendedMouseButtons pseudo-encoding (-316) and fixes the count, in both modes 0ms
+ ✓ tests/unit/node-desktop/rfb-viewer-input-filter.test.ts > RfbViewerInputFilter > message table > rejects an unknown message type and a QEMU subtype other than 0 0ms
+ ✓ tests/unit/node-desktop/rfb-viewer-input-filter.test.ts > RfbViewerInputFilter > message table > rejects cut text over 1 MiB and a fence payload over 64 bytes before buffering them 0ms
+ ✓ tests/unit/node-desktop/rfb-viewer-input-filter.test.ts > RfbViewerInputFilter > message table > stays rejected after a rejection 0ms
+ ✓ tests/unit/node-desktop/rfb-viewer-input-filter.test.ts > RfbViewerInputFilter > extended clipboard in View only (D-5 row 6, IMP-DI-001) > forwards noVNC's Caps (other action bits set) unchanged in both modes 0ms
+ ✓ tests/unit/node-desktop/rfb-viewer-input-filter.test.ts > RfbViewerInputFilter > extended clipboard in View only (D-5 row 6, IMP-DI-001) > forwards Caps alone, one format unchanged in both modes 0ms
+ ✓ tests/unit/node-desktop/rfb-viewer-input-filter.test.ts > RfbViewerInputFilter > extended clipboard in View only (D-5 row 6, IMP-DI-001) > forwards Caps, two formats unchanged in both modes 0ms
+ ✓ tests/unit/node-desktop/rfb-viewer-input-filter.test.ts > RfbViewerInputFilter > extended clipboard in View only (D-5 row 6, IMP-DI-001) > forwards Caps, no format unchanged in both modes 0ms
+ ✓ tests/unit/node-desktop/rfb-viewer-input-filter.test.ts > RfbViewerInputFilter > extended clipboard in View only (D-5 row 6, IMP-DI-001) > drops Caps with a payload one format too short in View only and keeps framing; forwards it in Control 0ms
+ ✓ tests/unit/node-desktop/rfb-viewer-input-filter.test.ts > RfbViewerInputFilter > extended clipboard in View only (D-5 row 6, IMP-DI-001) > drops Caps with a payload one format too long in View only and keeps framing; forwards it in Control 1ms
+ ✓ tests/unit/node-desktop/rfb-viewer-input-filter.test.ts > RfbViewerInputFilter > extended clipboard in View only (D-5 row 6, IMP-DI-001) > drops Request in View only and keeps framing; forwards it in Control 0ms
+ ✓ tests/unit/node-desktop/rfb-viewer-input-filter.test.ts > RfbViewerInputFilter > extended clipboard in View only (D-5 row 6, IMP-DI-001) > drops Peek in View only and keeps framing; forwards it in Control 0ms
+ ✓ tests/unit/node-desktop/rfb-viewer-input-filter.test.ts > RfbViewerInputFilter > extended clipboard in View only (D-5 row 6, IMP-DI-001) > drops Notify in View only and keeps framing; forwards it in Control 0ms
+ ✓ tests/unit/node-desktop/rfb-viewer-input-filter.test.ts > RfbViewerInputFilter > extended clipboard in View only (D-5 row 6, IMP-DI-001) > drops Provide in View only and keeps framing; forwards it in Control 0ms
+ ✓ tests/unit/node-desktop/rfb-viewer-input-filter.test.ts > RfbViewerInputFilter > extended clipboard in View only (D-5 row 6, IMP-DI-001) > drops plain text in View only and keeps framing; forwards it in Control 0ms
+ ✓ tests/unit/node-desktop/rfb-viewer-input-filter.test.ts > RfbViewerInputFilter > extended clipboard in View only (D-5 row 6, IMP-DI-001) > decides the same with every message split into single bytes 1ms
+ ✓ tests/unit/node-desktop/rfb-viewer-input-filter.test.ts > RfbViewerInputFilter > framing across chunks > frames messages split at every byte and several messages in one chunk 1ms
+ ✓ tests/unit/node-desktop/rfb-viewer-input-filter.test.ts > RfbViewerInputFilter > framing across chunks > forwards no View only input byte however the input is split 0ms
+ ✓ tests/unit/node-desktop/node-desktop-viewers.test.ts > NodeDesktopViewers > admission > admits 4 streams node-wide and refuses the 5th with 4429 3ms
+ ✓ tests/unit/node-desktop/node-desktop-viewers.test.ts > NodeDesktopViewers > admission > admits 2 streams per phone and refuses its 3rd while other viewers still fit 1ms
+ ✓ tests/unit/node-desktop/node-desktop-viewers.test.ts > NodeDesktopViewers > admission > counts trusted-network and loopback viewers node-wide only 0ms
+ ✓ tests/unit/node-desktop/node-desktop-viewers.test.ts > NodeDesktopViewers > admission > releases a place when a stream ends 0ms
+ ✓ tests/unit/node-desktop/node-desktop-viewers.test.ts > NodeDesktopViewers > re-check of open phone streams > runs no timer while no phone stream is open 1ms
+ ✓ tests/unit/node-desktop/node-desktop-viewers.test.ts > NodeDesktopViewers > re-check of open phone streams > closes only the rejected phone streams, with the shared policy's code, within one interval 2ms
+ ✓ tests/unit/node-desktop/node-desktop-viewers.test.ts > NodeDesktopViewers > re-check of open phone streams > closes every phone stream when Phone Access is disabled 1ms
+ ✓ tests/unit/node-desktop/node-desktop-viewers.test.ts > NodeDesktopViewers > re-check of open phone streams > checks the phones of one cycle concurrently and never overlaps two cycles 1ms
+ ✓ tests/unit/node-desktop/node-desktop-viewers.test.ts > NodeDesktopViewers > re-check of open phone streams > leaves a stream whose check times out or fails and retries it next cycle 2ms
+ ✓ tests/unit/node-desktop/node-desktop-viewers.test.ts > NodeDesktopViewers > re-check of open phone streams > detects a revocation at most one interval plus one timeout after it happens 1ms
+ ✓ tests/unit/node-desktop/node-desktop-viewers.test.ts > NodeDesktopViewers > re-check of open phone streams > stops the timer when the last phone stream ends, and for good on dispose 0ms
+ ✓ tests/unit/node-desktop/node-desktop-viewers.test.ts > NodeDesktopViewers > re-check of open phone streams > never logs the credential 0ms
+ ✓ tests/unit/remote-access/route-policy.test.ts > RemoteAccessRoutePolicy > classifies core route families under the trusted-network model 1ms
+ ✓ tests/unit/remote-access/route-policy.test.ts > RemoteAccessRoutePolicy > allows trusted-network protected HTTP without bearer credentials 1ms
+ ✓ tests/unit/remote-access/route-policy.test.ts > RemoteAccessRoutePolicy > allows trusted-network Phone Access management routes without additional credentials 0ms
+ ✓ tests/unit/remote-access/route-policy.test.ts > RemoteAccessRoutePolicy > does not treat mobile credentials as owner-management authority 0ms
+ ✓ tests/unit/remote-access/route-policy.test.ts > RemoteAccessRoutePolicy > classifies the node-update route as owner-only and refuses phone credentials there 0ms
+ ✓ tests/unit/remote-access/route-policy.test.ts > RemoteAccessRoutePolicy > keeps mobile credential validation scoped to mobile-bearing protected requests 0ms
+ ✓ tests/unit/remote-access/route-policy.test.ts > RemoteAccessRoutePolicy > keeps GraphQL GET dev surface loopback-only 0ms
+ ✓ tests/unit/remote-access/route-policy.test.ts > RemoteAccessRoutePolicy > refuses a phone credential on GraphQL WebSocket upgrades (not a phone WebSocket route) 0ms
+ ✓ tests/unit/remote-access/route-policy.test.ts > RemoteAccessRoutePolicy > validates a phone credential on every phone WebSocket route 2ms
+ ✓ tests/unit/remote-access/route-policy.test.ts > RemoteAccessRoutePolicy > keeps today's refusal of a revoked or disabled phone credential on phone WebSocket routes 0ms
+ ✓ tests/unit/remote-access/route-policy.test.ts > RemoteAccessRoutePolicy > refuses a phone credential on WebSocket routes outside the phone list, before validating it 0ms
+ ✓ tests/unit/remote-access/route-policy.test.ts > RemoteAccessRoutePolicy > keeps trusted-network and loopback WebSocket access without a phone credential on every route 0ms
+ ✓ tests/unit/remote-access/route-policy.test.ts > RemoteAccessRoutePolicy > allows trusted-network WebSocket upgrades without access_token 0ms
+ ✓ tests/unit/remote-access/route-policy.test.ts > RemoteAccessRoutePolicy > classifies peer-node routes as REMOTE_PEER: no credential needed, a mobile credential refused (REQ-113, N-3) 0ms
+ ✓ tests/unit/remote-access/route-policy.test.ts > RemoteAccessRoutePolicy > refuses a phone query credential on the peer WebSocket with the phone-route refusal 0ms
+ ✓ tests/unit/remote-access/local-trust.test.ts > remote access local trust > accepts loopback client address 127.0.0.1 1ms
+ ✓ tests/unit/remote-access/local-trust.test.ts > remote access local trust > accepts loopback client address 127.2.3.4 0ms
+ ✓ tests/unit/remote-access/local-trust.test.ts > remote access local trust > accepts loopback client address ::1 2ms
+ ✓ tests/unit/remote-access/local-trust.test.ts > remote access local trust > accepts loopback client address ::ffff:127.0.0.1 0ms
+ ✓ tests/unit/remote-access/local-trust.test.ts > remote access local trust > accepts loopback client address ::ffff:127.9.8.7 0ms
+ ✓ tests/unit/remote-access/local-trust.test.ts > remote access local trust > rejects non-loopback client address 192.168.1.10 0ms
+ ✓ tests/unit/remote-access/local-trust.test.ts > remote access local trust > rejects non-loopback client address 100.64.1.2 0ms
+ ✓ tests/unit/remote-access/local-trust.test.ts > remote access local trust > rejects non-loopback client address 10.0.0.2 0ms
+ ✓ tests/unit/remote-access/local-trust.test.ts > remote access local trust > rejects non-loopback client address 8.8.8.8 0ms
+ ✓ tests/unit/remote-access/local-trust.test.ts > remote access local trust > rejects non-loopback client address undefined 0ms
+ ✓ tests/unit/remote-access/local-trust.test.ts > remote access local trust > rejects non-loopback client address not an ip 1ms
+ ✓ tests/unit/remote-access/local-trust.test.ts > remote access local trust > normalizes ipv4-mapped loopback as ipv4 0ms
+ ✓ tests/unit/remote-access/request-origin.test.ts > RequestOriginPolicy (REQ-002) > allows a request without Origin (desktop app fetch, peers, native clients) 1ms
+ ✓ tests/unit/remote-access/request-origin.test.ts > RequestOriginPolicy (REQ-002) > allows exactly file:// (packaged desktop app) and refuses other file origins 0ms
+ ✓ tests/unit/remote-access/request-origin.test.ts > RequestOriginPolicy (REQ-002) > allows the same origin by host[:port], case-insensitive, scheme not compared 0ms
+ ✓ tests/unit/remote-access/request-origin.test.ts > RequestOriginPolicy (REQ-002) > allows the first X-Forwarded-Host value when a gateway rewrites Host 2ms
+ ✓ tests/unit/remote-access/request-origin.test.ts > RequestOriginPolicy (REQ-002) > allows http/https loopback origins on any port 1ms
+ ✓ tests/unit/remote-access/request-origin.test.ts > RequestOriginPolicy (REQ-002) > allows configured origins exactly 0ms
+ ✓ tests/unit/remote-access/request-origin.test.ts > RequestOriginPolicy (REQ-002) > refuses foreign origins, near misses, null, other schemes and malformed values 0ms
+ ✓ tests/unit/remote-access/request-origin.test.ts > parseConfiguredOrigins > normalizes comma-separated web origins and reports invalid entries 0ms
+stdout | tests/unit/api/websocket/node-desktop.test.ts > /ws/node-desktop route > closes 4400 on viewer bytes before the stream starts, without resolving the desktop
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard/autobyteus-server-ts
+ ✓ tests/unit/api/websocket/node-desktop.test.ts > /ws/node-desktop route > closes 4400 on viewer bytes before the stream starts, without resolving the desktop 3ms
+ ✓ tests/unit/api/websocket/node-desktop.test.ts > /ws/node-desktop route > authorizes before it reads the query or resolves the desktop 1ms
+ ✓ tests/unit/api/websocket/node-desktop.test.ts > /ws/node-desktop route > validates the query before it resolves the desktop 0ms
+ ✓ tests/unit/api/websocket/node-desktop.test.ts > /ws/node-desktop route > does nothing more when the viewer leaves during authorization 0ms
+ ✓ tests/unit/api/websocket/node-desktop.test.ts > parseNodeDesktopStreamQuery > accepts exactly one mode and at most one access token 0ms
+ ✓ tests/unit/api/websocket/node-desktop.test.ts > parseNodeDesktopStreamQuery > refuses a missing, repeated or unknown mode and any other parameter 0ms
+ ✓ tests/unit/remote-access/pairing-url-policy.test.ts > pairing URL policy > allows HTTPS and preserves canonical deployment base paths 1ms
+ ✓ tests/unit/remote-access/pairing-url-policy.test.ts > pairing URL policy > allows acknowledged trusted private HTTP URL http://192.168.1.25:29695/mobile 0ms
+ ✓ tests/unit/remote-access/pairing-url-policy.test.ts > pairing URL policy > allows acknowledged trusted private HTTP URL http://10.0.0.5:29695 0ms
+ ✓ tests/unit/remote-access/pairing-url-policy.test.ts > pairing URL policy > allows acknowledged trusted private HTTP URL http://172.20.0.5:29695 0ms
+ ✓ tests/unit/remote-access/pairing-url-policy.test.ts > pairing URL policy > allows acknowledged trusted private HTTP URL http://169.254.1.2:29695 0ms
+ ✓ tests/unit/remote-access/pairing-url-policy.test.ts > pairing URL policy > allows acknowledged trusted private HTTP URL http://100.64.1.2:29695 0ms
+ ✓ tests/unit/remote-access/pairing-url-policy.test.ts > pairing URL policy > allows acknowledged trusted private HTTP URL http://printer.local:29695 0ms
+ ✓ tests/unit/remote-access/pairing-url-policy.test.ts > pairing URL policy > allows acknowledged trusted private HTTP URL http://autobyteus-node:29695 0ms
+ ✓ tests/unit/remote-access/pairing-url-policy.test.ts > pairing URL policy > allows acknowledged trusted private HTTP URL http://[fd00::1]:29695 1ms
+ ✓ tests/unit/remote-access/pairing-url-policy.test.ts > pairing URL policy > allows acknowledged trusted private HTTP URL http://[fe80::1]:29695 0ms
+ ✓ tests/unit/remote-access/pairing-url-policy.test.ts > pairing URL policy > requires acknowledgement for trusted private HTTP 0ms
+ ✓ tests/unit/remote-access/pairing-url-policy.test.ts > pairing URL policy > rejects public-looking HTTP URL http://example.com:29695 0ms
+ ✓ tests/unit/remote-access/pairing-url-policy.test.ts > pairing URL policy > rejects public-looking HTTP URL http://desktop.tailnet.ts.net:29695 0ms
+ ✓ tests/unit/remote-access/pairing-url-policy.test.ts > pairing URL policy > rejects public-looking HTTP URL http://8.8.8.8:29695 0ms
+ ✓ tests/unit/remote-access/pairing-url-policy.test.ts > pairing URL policy > rejects phone-unreachable local-only URL http://localhost:29695 0ms
+ ✓ tests/unit/remote-access/pairing-url-policy.test.ts > pairing URL policy > rejects phone-unreachable local-only URL https://127.0.0.1:29695 0ms
+ ✓ tests/unit/remote-access/pairing-url-policy.test.ts > pairing URL policy > rejects phone-unreachable local-only URL http://0.0.0.0:29695 0ms
+ ✓ tests/unit/remote-access/pairing-url-policy.test.ts > pairing URL policy > rejects phone-unreachable local-only URL http://host.docker.internal:29695 0ms
+ ✓ tests/unit/remote-access/pairing-url-policy.test.ts > pairing URL policy > rejects phone-unreachable local-only URL http://[::1]:29695 0ms
+stdout | tests/unit/api/websocket/file-explorer.test.ts > registerFileExplorerWebsocket > disconnects an established session on close
+File explorer websocket attached for workspace ws-1
+ ✓ tests/unit/api/websocket/file-explorer.test.ts > registerFileExplorerWebsocket > disconnects a late session when the socket closes before connect resolves 2ms
+ ✓ tests/unit/api/websocket/file-explorer.test.ts > registerFileExplorerWebsocket > disconnects an established session on close 1ms
+ ✓ tests/unit/api/websocket/file-explorer.test.ts > registerFileExplorerWebsocket > does not start backend connect after an authorization rejection closes the socket 1ms
+ ✓ tests/unit/remote-access/url-normalization.test.ts > remote access URL normalization > strips mobile shell paths and preserves deployment base paths 1ms
+ ✓ tests/unit/remote-access/url-normalization.test.ts > remote access URL normalization > strips API and WebSocket surfaces into the canonical server base 0ms
+ ✓ tests/unit/remote-access/url-normalization.test.ts > remote access URL normalization > keeps plain base paths and rejects unsupported schemes 0ms
+ ✓ tests/unit/remote-access/redact-sensitive-url.test.ts > redactSensitiveUrl > redacts websocket access tokens while preserving useful path and non-sensitive query 1ms
+ ✓ tests/unit/remote-access/redact-sensitive-url.test.ts > redactSensitiveUrl > redacts mixed-case sensitive keys 0ms
+ ✓ tests/unit/remote-access/redact-sensitive-url.test.ts > redactSensitiveUrl > redacts mobile pairing payload query while preserving non-sensitive diagnostics 0ms
+ ✓ tests/unit/remote-access/redact-sensitive-url.test.ts > redactSensitiveUrl > redacts pairing code query variants 0ms
+ ✓ tests/unit/remote-access/redact-sensitive-url.test.ts > redactSensitiveUrl > redacts generic credential query variants if they appear in diagnostics 0ms
+ ✓ tests/unit/node-desktop/node-desktop-availability.test.ts > resolveNodeDesktop > is the node desktop at 127.0.0.1:5900 when the Docker starter runs this server 1ms
+ ✓ tests/unit/node-desktop/node-desktop-availability.test.ts > resolveNodeDesktop > is none for an embedded or development server (no starter socket) 0ms
+ ✓ tests/unit/remote-access/client-facing-url-resolver.test.ts > ClientFacingUrlResolver > normalizes rest paths to root-relative URLs by default 1ms
+ ✓ tests/unit/remote-access/client-facing-url-resolver.test.ts > ClientFacingUrlResolver > uses paired mobile base URL when an absolute URL is required 0ms
+ Test Files  18 passed (18)
+      Tests  152 passed (152)
+   Start at  00:44:38
+   Duration  56.99s (transform 5.55s, setup 197ms, import 9.12s, tests 45.85s, environment 1ms)
+exit=0

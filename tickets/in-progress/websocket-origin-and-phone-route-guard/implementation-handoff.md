@@ -1,6 +1,25 @@
 # Implementation Handoff — websocket-origin-and-phone-route-guard (autobyteus-403)
 
-Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard`, branch `codex/websocket-origin-and-phone-route-guard`, base `origin/personal` @ `3bf9240d42`. Implementation commit: `88a93aaf26` (all checks ran on it). The ticket documents and evidence are committed right after it, with no source change.
+Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard`, branch `codex/websocket-origin-and-phone-route-guard`, base `origin/personal` @ `3bf9240d42`. Current source commit: `6f59bab2a2`, the merge of `origin/personal` @ `6341292552` (autobyteus-407) with the conflict resolution (IR-002). The checks IMP-09…IMP-12 ran on it. IR-001's implementation commit is `88a93aaf26`, where IMP-01…IMP-08 ran.
+
+## IR-002 — Base integration (Local Fix from delivery, DR-001)
+
+- Trigger: merging `origin/personal` conflicted with autobyteus-407 ("VNC Viewer on the phone; viewer limits and live phone revocation") in `remote-access-websocket-auth.ts`.
+- Resolution: see `implementation-revision-record.md` IR-002. In short:
+  - one close-code table, 407's `REMOTE_ACCESS_CLOSE_CODE_BY_FAILURE`, gains `REMOTE_ACCESS_ORIGIN_REFUSED` and `PHONE_ACCESS_ROUTE_REFUSED` (4403); the adapter throws `remoteAccessCloseForFailure`;
+  - `node-desktop.ts` reads the phone credential through the route policy's single reader `readWebSocketQueryCredential`, which the adapter re-exports, so handlers still depend only on the adapter;
+  - no second copy of the credential parsing.
+- Combined behavior on `/ws/node-desktop`:
+  - The origin gate refuses a foreign-origin upgrade with 403 (IMP-10, AC-001 case).
+  - `/ws/node-desktop` is a phone WebSocket route, so a phone credential is authorized by `authorizeWebSocket` and then admitted to 407's viewer registry. IMP-10, 407's node-desktop e2e: View only, Control, per-phone and node-wide limits, revoked and disabled re-check closing an open stream with 4403.
+  - The registry's re-check closes through the same table.
+- Classification after the fix: `Medium` / `High`, unchanged, so the route is code review.
+- Checks on `6f59bab2a2`:
+  - IMP-09: typecheck PASS.
+  - IMP-10: `vitest run tests/e2e/remote-access tests/e2e/node-desktop tests/unit/node-desktop tests/unit/api/websocket tests/unit/remote-access tests/integration/api/studio-server-http-contract.integration.test.ts`, 152 passed.
+  - IMP-11: `vitest run tests/e2e/terminal tests/e2e/file-explorer`, 26 passed.
+  - IMP-12: `test:unit`, including architecture: 8043 passed.
+- Still for API/E2E: the phone node desktop journey (View only and Control, live revocation ending the stream) on a real phone shell under the origin gate and the route limit, and a foreign-origin `/ws/node-desktop` from a browser page.
 
 ## Upstream Artifact Package
 
@@ -12,19 +31,19 @@ Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-
 - Supplemental task artifacts: `.../evidence/origin-probe/`; `.../follow-ups.md`
 - Design review report: `.../design-review-report.md` (round 2, Pass)
 - Architecture review revision record: `.../architecture-review-revision-record.md` (ARCH-REV-002)
-- Triggering rework report, revision record, or evidence: N/A (initial implementation)
+- Triggering rework report, revision record, or evidence: `release-deployment-report.md` (Escalation), `delivery-revision-record.md` DR-001
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (IR-002 base integration on top of IR-001)
 - Implementation revision record: `.../implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: SR-001, SR-003
 - Related architecture-review revision IDs: ARCH-REV-002
-- Related code-review revision IDs: N/A
-- Related API/E2E revision IDs: N/A
-- Related delivery revision IDs: N/A
-- Triggering finding IDs: N/A
+- Related code-review revision IDs: CRR-001, CRR-002
+- Related API/E2E revision IDs: API-REV-001
+- Related delivery revision IDs: DR-001
+- Triggering finding IDs: DR-001 base conflict (IR-002)
 
 What the change does, following the design's Change / Refactor Sequence, steps 1–5:
 
@@ -171,6 +190,10 @@ Evidence folder: `tickets/in-progress/websocket-origin-and-phone-route-guard/evi
 | IMP-06 | `pnpm -C autobyteus-server-ts exec vitest run tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts tests/e2e/node-desktop tests/e2e/terminal tests/e2e/file-explorer --no-watch` | `88a93aaf26` | macOS, Node 22, after `test:integration:prepare` | existing WS routes through the new adapter; plugin on bare Fastify apps | BEH-004…008 (server side) | Pass | `IMP-06-e2e-websocket-route-suites.log` | `Tests  33 passed (33)` |
 | IMP-07 | `env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts exec vitest run tests/e2e/update-notifications --no-watch` | `88a93aaf26` | macOS, Node 22, temp HOME | `/ws/update-notifications` and studio HTTP through the new gate | regression | Pass | `IMP-07-e2e-update-notifications.log` | `Tests  15 passed (15)` |
 | IMP-08 | Base reproduction: `git checkout 3bf9240d42 -- autobyteus-server-ts/src`, a copy of the IMP-04 test with the `PHONE_WEBSOCKET_ROUTES` import replaced by a local copy, run with `vitest run`; then `src` restored to `HEAD` | base `3bf9240d42` `src` + IMP-04 test | macOS, Node 22 | the same cases on the old gate | AC-001…AC-006 fail on base | Fails as expected | `IMP-08-base-reproduction.log` | `Tests  5 failed \| 2 passed (7)`; the 2 passing are the preserved behaviors (AC-005, disabled refusal) |
+| IMP-09 | `pnpm -C autobyteus-server-ts typecheck` | `6f59bab2a2` (IR-002 merge) | macOS, Node 22 | all server `src` + tests after the merge | — | Pass | `IMP-09-server-typecheck-merged.log` | `[typecheck] PASS` |
+| IMP-10 | `pnpm -C autobyteus-server-ts exec vitest run tests/e2e/remote-access tests/e2e/node-desktop tests/unit/node-desktop tests/unit/api/websocket tests/unit/remote-access tests/integration/api/studio-server-http-contract.integration.test.ts --reporter=verbose --no-watch` | `6f59bab2a2` | macOS, Node 22, real servers on 127.0.0.1 | origin gate + phone routes (IMP-04 case, now with a foreign-origin `/ws/node-desktop`), 407's node-desktop routes and viewer registry, close codes, contract test | AC-001…AC-006; 407 node desktop preserved | Pass | `IMP-10-e2e-origin-phone-node-desktop-merged.log` | `Tests  152 passed (152)` |
+| IMP-11 | `pnpm -C autobyteus-server-ts exec vitest run tests/e2e/terminal tests/e2e/file-explorer --no-watch` | `6f59bab2a2` | macOS, Node 22 | other WS routes through the adapter | regression | Pass | `IMP-11-e2e-websocket-route-suites-merged.log` | `Tests  26 passed (26)` |
+| IMP-12 | `pnpm -C autobyteus-server-ts test:unit` | `6f59bab2a2` | macOS, Node 22 | the whole server unit suite, architecture tests included | regression | Pass | `IMP-12-server-unit-merged.log` | `Test Files  939 passed \| 5 skipped (944)`, `Tests  8043 passed \| 9 skipped (8052)` |
 
 - Not run, and why:
   - The full server E2E suite (`pnpm test:e2e`) is left to API/E2E; the relevant WS and studio suites ran as IMP-04…IMP-07.
