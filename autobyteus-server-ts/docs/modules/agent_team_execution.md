@@ -23,7 +23,7 @@ the Team runtime.
   is a task-scoped runtime execution beneath its exact host and does not mutate
   configured membership or become a persistent configured child.
 - Per-Agent runtime selection stays below the Team boundary. `AgentRunManager`
-  selects the AutoByteus, Codex, Claude, AGY, or Grok Build backend from each launch setting.
+  selects the AutoByteus, Codex, Claude, AGY, Grok Build, or DeepSeek Harness backend from each launch setting.
   Each execution family injects its own provider factories, definition
   services, session authority, memory/context environment, and task-execution
   identity capabilities; Team execution never reaches across to another
@@ -37,6 +37,10 @@ its capsule, permissions, and trace behavior are documented in
 `grok_build` is likewise a selectable external member runtime with the same
 exact member address and root-owned provider binding (the Grok `sessionId`);
 see [Grok Build Runtime](./grok_build_runtime.md).
+
+`deepseek_harness` members work the same way, bound to the dsh `sessionId`
+and restored with `session/resume`; see
+[DeepSeek Harness Runtime](./deepseek_harness_runtime.md).
 
 ## Launch-Time Identity
 

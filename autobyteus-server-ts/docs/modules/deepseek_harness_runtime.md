@@ -147,6 +147,18 @@ command `npm install -g @deepseek-ai/dsh@latest`. Its sign-in route is `API_KEY_
   the relay.
 - `tests/e2e/runtime/deepseek-harness-live.e2e.test.ts` (`RUN_DEEPSEEK_HARNESS_E2E=1`, the test vault): real dsh against
   the real DeepSeek API through the product relay.
+- `tests/e2e/runtime/deepseek-harness-collaboration-live.e2e.test.ts` (same gate and vault): dsh members in a Team and an
+  Org, stop and restore, and a runtime switch to the scripted Antigravity CLI and back.
+- `tests/e2e/runtime/deepseek-harness-scripted-provider.e2e.test.ts` (`RUN_DEEPSEEK_HARNESS_SCRIPTED_E2E=1`, no test
+  vault, no paid inference): real dsh and the real relay against a scripted DeepSeek endpoint; key missing, changed and
+  removed, forced compaction (completed and refused), keep-alive streaming and a stall under a shortened idle timeout,
+  and the memory of concurrent dsh processes.
+- `tests/e2e/runtime/deepseek-harness-standalone-host.e2e.test.ts` (`RUN_DEEPSEEK_HARNESS_STANDALONE_E2E=1`, after
+  `pnpm -C autobyteus-server-ts build`): the standalone application host shows dsh unavailable and refuses a dsh launch
+  before dsh starts.
+
+Each file's header gives its full command. The dsh suites need a working dsh command (`DEEPSEEK_HARNESS_COMMAND` or `dsh`
+on `PATH`, Node.js 24.9 or later), except the standalone-host suite, which uses a stand-in.
 
 ## Related Documentation
 

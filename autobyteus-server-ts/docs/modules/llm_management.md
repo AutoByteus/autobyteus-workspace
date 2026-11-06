@@ -203,8 +203,8 @@ selected model does not declare. Resuming a saved run and launching a new
 standalone agent or team run do not go through this check; there the runtime
 adapters receive the stored config (`AnthropicLLM` reads only the keys it owns).
 
-Replacement for Claude Agent SDK, Codex App Server, Antigravity CLI, and
-Grok Build requires fresh membership in that runtime/workspace **offered** catalog and
+Replacement for Claude Agent SDK, Codex App Server, Antigravity CLI,
+Grok Build and DeepSeek Harness requires fresh membership in that runtime/workspace **offered** catalog and
 target-schema validation, not a platform context-capacity comparison. AutoByteus replacement
 continues to require verified positive saved and target context capacities with
 target >= saved capacity; the focused native evidence resolver accepts only

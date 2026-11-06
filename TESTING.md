@@ -110,6 +110,8 @@ types that the runner does not have.
   - `**/tsconfig*.json`, `**/typecheck-baseline.json`, `scripts/**`, `*/scripts/**`;
   - `autobyteus-web/nuxt.config.ts`, `autobyteus-web/build/**`, `autobyteus-web/electron/tsconfig*.json`,
     `autobyteus-web/generated/**`, `autobyteus-server-ts/prisma/**`, `autobyteus-server-ts/docker/**`;
+  - the contract packages `autobyteus-*-contracts/**` (their tracked `src/` and `dist/`, which other
+    packages' builds and type checks import);
   - `.github/workflows/**`;
   - and, whatever the path, a new import of another workspace package in any file the build
     type-checks (the web build's `pnpm typecheck` reads the app, Electron main, build scripts and
@@ -252,26 +254,6 @@ types that the runner does not have.
   `autobyteus-team-stream-contracts`, `autobyteus-collaboration-stream-contracts`) track
   their `dist/`, which their consumers import. After changing their source, rebuild with
   `pnpm -C <package> build` and commit the `dist/` changes too.
-
-## Fresh-start build
-
-A release runner clones the commit, runs `pnpm install --frozen-lockfile` and then the release job's
-build (`.github/workflows/release-desktop.yml`: the hygiene and licensing checks, then in
-`autobyteus-web` `pnpm build:electron:<platform>`, which runs the web guards, the web type check,
-`prepare-server` and the Electron build). Prove a change on a fresh start (DESIGN.md rule 12) when it
-touches any of these build inputs:
-
-- a `package.json` (scripts, dependencies, `exports`), `pnpm-lock.yaml`, `pnpm-workspace.yaml`;
-- a `tsconfig*.json`, Nuxt, Vite, Vitest or electron-builder configuration, `autobyteus-web/build/`;
-- codegen inputs or outputs (`autobyteus-web/codegen*`, `autobyteus-web/generated/`), the Prisma schema;
-- the tracked `dist/` or `src/` of the contract packages (`autobyteus-*-contracts`), or any other import
-  from one workspace package into code another package's gate compiles;
-- a test added to a project a type check compiles; `.github/workflows/`, `scripts/`.
-
-How: a clean clone of the commit (`git clone --no-local <worktree> <new folder>`, then check out the
-commit), `pnpm install --frozen-lockfile` alone, then the job's commands in its order for the host
-platform, unsigned. Steps that need the runner's secrets or another operating system are not proven
-locally; say so in the validation report.
 
 ## Test vault
 
