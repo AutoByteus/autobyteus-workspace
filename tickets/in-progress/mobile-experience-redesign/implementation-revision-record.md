@@ -10,6 +10,7 @@ The current code and [implementation-handoff.md](implementation-handoff.md) rema
 | IR-002 | `code_reviewer`, [code-review-report.md](code-review-report.md), `CRR-001` (Fail — Local Fix) | CR-001, CR-002, CR-003 | `Local Fix` | `SR-004`, `ARCH-REV-002`, `CRR-001` | Fixed in `f2816cc7c1`; IMP-02, IMP-03, IMP-06 pass; back to Code Review |
 | IR-004 | `code_reviewer`, [code-review-report.md](code-review-report.md), `CRR-004` (Fail — Local Fix) | CR-004, CR-005 | `Local Fix` | `SR-006`, `ARCH-REV-004`, `CRR-004` | Fixed in `400457d5f7`; IMP-02, IMP-03, IMP-09 pass; to Code Review |
 | IR-003 | `architecture_reviewer`, [design-review-report.md](design-review-report.md), `ARCH-REV-004` (Pass of SR-005/SR-006); `CRR-003` local fixes; `API-REV-001` | F-01, F-02, F-03, F-04, F-05, F-06, F-09 | `Local Fix` (F-02…F-05) and the revised design (F-01, F-06, F-09) | `SR-005`, `SR-006`, `ARCH-REV-004`, `CRR-003`, `API-REV-001` | Implemented in `02905f49b5`…`1a48f4affe`; IMP-02, 03, 07, 08 pass; to Code Review |
+| IR-005 | `code_reviewer`, [code-review-report.md](code-review-report.md), `CRR-006` (failure-origin review of `API-REV-002`) | F-10 | `Local Fix` | `SR-006`, `CRR-006`, `API-REV-002` | Fixed in `e3dd8c4677`; IMP-02, 03, 10 (ADR-07 on API 35 and API 34), 11 pass; to Code Review (targeted delta) |
 
 ## Revision Entries
 
@@ -113,3 +114,36 @@ The current code and [implementation-handoff.md](implementation-handoff.md) rema
 - Local validation and result: IMP-09 (the full web suite, 701 files, 5198 tests) passes; IMP-02 typecheck PASS; IMP-03 guards pass.
 - Next recipient or routing: Code Reviewer (targeted delta), then API/E2E round 2.
 - Remaining limitations or risks: the CRR-004 residuals for API/E2E (typing with the keyboard open on API 34; AC-002a with a running root).
+
+### IR-005 — CRR-006 F-10: the phone's conversation root clips
+
+- Triggering role, report path, and round: `code_reviewer`, `code-review-report.md` and `code-review-revision-record.md`, `CRR-006` (API/E2E Failure-Origin Review, round 6, of `API-REV-002`).
+- Triggering finding IDs: F-10.
+- Classification: `Local Fix`.
+- Prior authoritative result: IR-004 (`400457d5f7`), CRR-005 Pass, then API-REV-002 Fail on F-10. ADR-07 had failed on API 35 and API 34: the conversation root was scrolled by focus (`scrollTop` 330 / 327), which put the composer under the bar.
+- Current authoritative result: `e3dd8c4677`; the reviewer's report and record are in `d646e1a17a`. The package stays Large/High and goes to Code Review for a targeted delta.
+- Related solution revision IDs: `SR-006`.
+- Related architecture-review revision IDs: `ARCH-REV-004`.
+- Related code-review revision IDs: `CRR-006`.
+- Related API/E2E revision IDs: `API-REV-002`.
+- Related delivery revision IDs: N/A.
+- Why this revision is recorded: the failure-origin review routed F-10 to implementation.
+- Approved behavior or requirement IDs affected: REQ-003, REQ-011, AC-005, AC-011 (typing with the keyboard open).
+- Implementation delta:
+  - `MobileRunTargetView.vue` hosts `AgentEventMonitor` with `!overflow-clip` in place of `overflow-hidden`. The fix is at the phone's run-screen boundary, as the reviewer preferred.
+  - A clipping box is not a scroll container, so focus and `scrollIntoView` cannot scroll it.
+  - `AgentEventMonitor.vue` is unchanged, so the desktop is too.
+  - A comment at the monitor records why.
+  - Guard: `MobileRunScreen.spec.ts`, "hosts the conversation in a clipping root (overflow: clip, not hidden)".
+- Changed files or areas: `autobyteus-web/components/mobile/runScreen/MobileRunTargetView.vue`, `autobyteus-web/components/mobile/runScreen/__tests__/MobileRunScreen.spec.ts`.
+- Local validation and result:
+  - IMP-10: ADR-01 and ADR-07 pass on the API 35 and API 34 emulators against a probe-owned held stack.
+    - Conversation `scrollTop` is 0.
+    - Bar at 0–56, conversation from 56 down to the keyboard.
+    - Send sits 62 px above the keyboard, the same as the control reset.
+    - `noDoublePadding` true.
+  - IMP-11: the phone specs, 85 tests, pass.
+  - IMP-02 typecheck: PASS.
+  - IMP-03 guards: pass.
+- Next recipient or routing: Code Reviewer (targeted delta), then API/E2E reruns ADR-07.
+- Remaining limitations or risks: other phone screens with a field inside an `overflow: hidden` box were not run with the keyboard. That means New run's sheets and the Files search. A WebView without `overflow: clip` (Chromium < 90) keeps the old behaviour.

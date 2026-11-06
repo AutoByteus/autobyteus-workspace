@@ -1,0 +1,414 @@
+{
+  "startedAt": "2026-11-06T15:26:32.216Z",
+  "device": {
+    "model": "sdk_gphone64_arm64",
+    "sdk": "35",
+    "webview": "com.google.android.webview, 124.0.6367.219"
+  },
+  "cases": {
+    "ADR-01": {
+      "result": "Pass",
+      "rows": 15,
+      "firstRowsAfterPairMs": 522,
+      "layout": {
+        "width": 412,
+        "height": 839,
+        "dpr": 2.625,
+        "horizontalScroll": false,
+        "secure": false,
+        "randomUUID": "undefined"
+      }
+    },
+    "ADR-07": {
+      "result": "Pass",
+      "sdk": "35",
+      "closed": {
+        "statusBars": {
+          "top": 0,
+          "bottom": 136,
+          "visible": true
+        },
+        "navigationBars": {
+          "top": 2337,
+          "bottom": 2400,
+          "visible": true
+        },
+        "ime": {
+          "top": 0,
+          "bottom": 0,
+          "visible": false
+        },
+        "webView": {
+          "top": 136,
+          "bottom": 2337
+        }
+      },
+      "open": {
+        "statusBars": {
+          "top": 0,
+          "bottom": 136,
+          "visible": true
+        },
+        "navigationBars": {
+          "top": 2337,
+          "bottom": 2400,
+          "visible": true
+        },
+        "ime": {
+          "top": 1517,
+          "bottom": 2400,
+          "visible": true
+        },
+        "webView": {
+          "top": 136,
+          "bottom": 1517
+        }
+      },
+      "composer": {
+        "textareaBottom": 503.6190490722656,
+        "sendBottom": 502.4761962890625,
+        "innerHeight": 527,
+        "dpr": 2.625,
+        "safeBottom": null,
+        "focused": true,
+        "value": "typing with the keyboard"
+      },
+      "sendBottomPx": 1455,
+      "gapToKeyboard": 62,
+      "controlGapToKeyboard": 62,
+      "layout": {
+        "innerHeight": 527,
+        "visualViewport": {
+          "height": 527,
+          "offsetTop": 0
+        },
+        "scrollY": 0,
+        "conversationScrollTop": 0,
+        "screen": {
+          "tag": "SECTION",
+          "testid": "mobile-run-screen",
+          "cls": "fixed inset-0 z-10 flex h-[100dvh] flex-col bg-white text-slate-900",
+          "top": 0,
+          "bottom": 527,
+          "h": 527,
+          "pb": "0px",
+          "mb": "0px"
+        },
+        "screenChildren": [
+          {
+            "tag": "HEADER",
+            "testid": null,
+            "cls": "relative flex h-14 flex-shrink-0 items-center border-b border-slate-200 bg-white pl-1 pr-1",
+            "top": 0,
+            "bottom": 56,
+            "h": 56,
+            "pb": "0px",
+            "mb": "0px"
+          },
+          {
+            "tag": "DIV",
+            "testid": "mobile-run-conversation",
+            "cls": "flex h-full min-h-0 flex-col gap-3 overflow-hidden overscroll-none p-4 min-h-0 flex-1 !ove",
+            "top": 56,
+            "bottom": 527,
+            "h": 471,
+            "pb": "16px",
+            "mb": "0px"
+          }
+        ],
+        "conversationChildren": [
+          {
+            "tag": "DIV",
+            "testid": null,
+            "cls": "relative h-full min-h-0 min-h-0 flex-1",
+            "top": 72,
+            "bottom": 378,
+            "h": 306,
+            "pb": "0px",
+            "mb": "0px"
+          },
+          {
+            "tag": "DIV",
+            "testid": null,
+            "cls": "shrink-0",
+            "top": 390,
+            "bottom": 511,
+            "h": 121,
+            "pb": "0px",
+            "mb": "0px"
+          }
+        ],
+        "chain": [
+          {
+            "tag": "TEXTAREA",
+            "testid": null,
+            "cls": "composer-text relative w-full border-0 focus:ring-0 focus:outline-none resize-none bg-tran",
+            "top": 436,
+            "bottom": 504,
+            "h": 68,
+            "pb": "10px",
+            "mb": "0px"
+          },
+          {
+            "tag": "DIV",
+            "testid": null,
+            "cls": "relative flex-grow",
+            "top": 436,
+            "bottom": 510,
+            "h": 75,
+            "pb": "0px",
+            "mb": "0px"
+          },
+          {
+            "tag": "DIV",
+            "testid": null,
+            "cls": "flex flex-col bg-white",
+            "top": 436,
+            "bottom": 510,
+            "h": 75,
+            "pb": "0px",
+            "mb": "0px"
+          },
+          {
+            "tag": "DIV",
+            "testid": null,
+            "cls": "border-t border-gray-100 rounded-b-xl",
+            "top": 435,
+            "bottom": 510,
+            "h": 76,
+            "pb": "0px",
+            "mb": "0px"
+          },
+          {
+            "tag": "DIV",
+            "testid": null,
+            "cls": "rounded-xl border border-gray-200 bg-white shadow-sm focus-within:ring-2 focus-within:ring",
+            "top": 390,
+            "bottom": 511,
+            "h": 121,
+            "pb": "0px",
+            "mb": "0px"
+          },
+          {
+            "tag": "DIV",
+            "testid": null,
+            "cls": "shrink-0",
+            "top": 390,
+            "bottom": 511,
+            "h": 121,
+            "pb": "0px",
+            "mb": "0px"
+          },
+          {
+            "tag": "DIV",
+            "testid": "mobile-run-conversation",
+            "cls": "flex h-full min-h-0 flex-col gap-3 overflow-hidden overscroll-none p-4 min-h-0 flex-1 !ove",
+            "top": 56,
+            "bottom": 527,
+            "h": 471,
+            "pb": "16px",
+            "mb": "0px"
+          },
+          {
+            "tag": "SECTION",
+            "testid": "mobile-run-screen",
+            "cls": "fixed inset-0 z-10 flex h-[100dvh] flex-col bg-white text-slate-900",
+            "top": 0,
+            "bottom": 527,
+            "h": 527,
+            "pb": "0px",
+            "mb": "0px"
+          },
+          {
+            "tag": "MAIN",
+            "testid": "mobile-remote-access-shell",
+            "cls": "min-h-screen bg-white text-slate-900",
+            "top": 0,
+            "bottom": 527,
+            "h": 527,
+            "pb": "0px",
+            "mb": "0px"
+          },
+          {
+            "tag": "DIV",
+            "testid": null,
+            "cls": "",
+            "top": 0,
+            "bottom": 527,
+            "h": 527,
+            "pb": "0px",
+            "mb": "0px"
+          },
+          {
+            "tag": "DIV",
+            "testid": null,
+            "cls": "",
+            "top": 0,
+            "bottom": 527,
+            "h": 527,
+            "pb": "0px",
+            "mb": "0px"
+          }
+        ],
+        "keyboardInset": null,
+        "virtualKeyboard": null
+      },
+      "noDoublePadding": true,
+      "composerAboveKeyboard": true
+    }
+  },
+  "network": [
+    {
+      "at": 1793978806782,
+      "op": "ListWorkspaceRunHistory",
+      "window": null
+    },
+    {
+      "at": 1793978806782,
+      "op": "ListCollaborationRootHistory",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978806785,
+      "op": "GetAllWorkspaces",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978806852,
+      "op": "GetAgentDefinitions",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978806852,
+      "op": "GetAgentTeamDefinitions",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978806852,
+      "op": "GetAgentOrgDefinitions",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978806852,
+      "op": "GetAgentRunCollaboration",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978806882,
+      "op": "GetAgentRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978806882,
+      "op": "GetRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978806892,
+      "op": "GetRunFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978806920,
+      "op": "GetTaskWorkerTasks",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978806936,
+      "op": "GetRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978806936,
+      "op": "GetAgentRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978806936,
+      "op": "GetRunFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978806943,
+      "op": "GetTaskWorkerTasks",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978807003,
+      "op": "GetRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978807003,
+      "op": "GetAgentRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978807003,
+      "op": "GetRunFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978807080,
+      "op": "GetRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978807080,
+      "op": "GetAgentRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978807080,
+      "op": "GetRunFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978807116,
+      "op": "GetRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978807117,
+      "op": "GetAgentRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978807117,
+      "op": "GetRunFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978807151,
+      "op": "GetTeamRunResumeConfig",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978807172,
+      "op": "GetTeamMemberRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978807172,
+      "op": "GetTeamMemberFileChanges",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978807226,
+      "op": "GetTaskWorkerTasks",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978807227,
+      "op": "GetTeamMemberRunProjection",
+      "window": "omitted"
+    },
+    {
+      "at": 1793978807227,
+      "op": "GetTeamMemberFileChanges",
+      "window": "omitted"
+    }
+  ],
+  "notes": [],
+  "finishedAt": "2026-11-06T15:27:02.543Z"
+}
