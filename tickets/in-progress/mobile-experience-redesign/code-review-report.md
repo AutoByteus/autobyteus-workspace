@@ -1,6 +1,26 @@
 # Code Review Report — mobile-experience-redesign (autobyteus-277)
 
-> **Latest result: round 6, `API/E2E Failure-Origin Review` of API-REV-002 (CRR-006): `Fail`, `Local Fix` (implementation), F-10.** See [API/E2E Failure-Origin Review (Round 6)](#apie2e-failure-origin-review-round-6) and Latest Authoritative Result.
+> **Latest result: round 7, `Implementation Review` of IR-005 (CRR-007): `Pass`.** See [Implementation Review (Round 7)](#implementation-review-round-7) and Latest Authoritative Result.
+> - Round 6 (CRR-006) classified F-10, which is now resolved.
+
+## Implementation Review (Round 7)
+
+- Entry point: `Implementation Review`. Current revision: `CRR-007`, round 7.
+- Review scope: `Targeted Delta Review`. Code commit `e3dd8c4677` over `10574b2fba` touches only `MobileRunTargetView.vue` (one class and a comment) and its spec. That is within F-10's file and behavior. No shared file, interface or spine changed.
+- Trigger: IR-005, HEAD `c4c85f70fb`.
+- **F-10: resolved.**
+  - `MobileRunTargetView.vue:23-39` hosts `AgentEventMonitor` with `!overflow-clip` in place of `overflow-hidden`. The class falls through to the monitor's root, the element CRR-006 named, and `!important` beats that root's own `overflow-hidden` (`AgentEventMonitor.vue:2`). A clipping box is not a scroll container, so focus cannot scroll it.
+  - The fix sits at the phone's run-screen boundary. `AgentEventMonitor.vue` is unchanged, so the desktop is unchanged.
+- Evidence, read and not rerun:
+  - IMP-10 (`evidence/IMP-10-adr07/`): ADR-01 and ADR-07 **Pass** on API 35 (WebView 124) and API 34 (WebView 113). The conversation root's `scrollTop` is 0 with the composer focused (it was 330/327). The bar is at 0–56 and the conversation runs from 56 to the keyboard. Send is 62 px above the keyboard, equal to the control reset. `noDoublePadding` is true.
+  - The tested bundle contains `.\\!overflow-clip{overflow:clip!important}`. The run happened before one comment moved, which production strips, so the rendered markup is identical.
+  - IMP-11: phone specs, 85 passed. IMP-02 typecheck PASS. IMP-03 guards pass. IMP-09, IMP-08 and IMP-04 carry forward, because no shared, Android or other rendered file changed.
+- Test guard: `MobileRunScreen.spec.ts`, "hosts the conversation in a clipping root…", asserts the host's class. Focus scrolling cannot be expressed in happy-dom, so the emulator run is the behavioral proof. That is proportionate.
+- Candidates:
+  - **C-15 (rejected):** a WebView older than Chromium 90 lacks `overflow: clip` and keeps the old `hidden`. Android System WebView updates through the Play Store; the emulators ran 113 and 124. An unsupported old runtime. It is recorded as a residual, not a finding.
+  - **C-16 (not promoted):** other phone inputs with the keyboard open (New run's sheets and the Files search). New run's form and the Files list sit in real scroll containers (`overflow-y-auto`), not in `overflow: hidden` boxes, so this mechanism does not apply to them. The keyboard was not exercised on them, so it stays a residual for API/E2E.
+- Scorecard: the round-5 rows carry forward, with Runtime Correctness 9.3 (F-10 resolved at the owning boundary). Every category is ≥ 9.2, overall 9.4.
+- Result: `Pass`. Next: `/software_engineering_team/api_e2e_engineer`, which reruns ADR-07 and the run-screen cases.
 > - Round 5 (CRR-005, `Pass`) is the implementation-review basis.
 
 ## API/E2E Failure-Origin Review (Round 6)
@@ -560,7 +580,13 @@ The earliest stage that reproduces them is a browser run of the phone bundle. `T
 
 ## Latest Authoritative Result
 
-- **Round 6 (CRR-006, latest): `Fail`, `Local Fix` (implementation), F-10.**
+- **Round 7 (CRR-007, latest): `Pass`.**
+  - Entry point: `Implementation Review`, targeted delta.
+  - F-10 is resolved at the phone's run-screen boundary (`!overflow-clip`), with ADR-07 passing on API 35 and API 34 (IMP-10).
+  - Scenario gate: `Pass`. Material-premise gate: `Pass`.
+  - Score 9.4; every category ≥ 9.2.
+  - Recipient: `/software_engineering_team/api_e2e_engineer`.
+- Round 6 (CRR-006), superseded: `Fail`, `Local Fix` (implementation), F-10.
   - Entry point: `API/E2E Failure-Origin Review`.
   - Failure origin: the phone's run screen hosting the shared conversation view keeps the browser's focus scroll of an `overflow: hidden` root while the soft keyboard is open. This ticket owns it (REQ-003, REQ-011, AC-005). It was probably pre-existing in the base `MobileChat`, and it was not detectable in source review.
   - Scenario gate: `Pass`; a Supported Normal Scenario.

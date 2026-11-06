@@ -10,6 +10,8 @@
 | CRR-004 | [code-review-report.md](code-review-report.md) | Implementation Review, round 4 (Full Re-Audit) / IR-003 | Fail (CRR-003) | Fail (Local Fix) | F-01…F-09 (resolved or decided); CR-004, CR-005 (new) |
 | CRR-005 | [code-review-report.md](code-review-report.md) | Implementation Review, round 5 (targeted delta) / IR-004 | Fail (Local Fix) | Pass | CR-004, CR-005 (resolved) |
 | CRR-006 | [code-review-report.md](code-review-report.md) | API/E2E Failure-Origin Review, round 6 / API-REV-002 Fail | Pass | Fail (Local Fix, implementation) | API F-10 |
+| CRR-007 | [code-review-report.md](code-review-report.md) | Implementation Review, round 7 (targeted delta) / IR-005 | Fail (Local Fix) | Pass | API F-10 (resolved) |
+| CRR-008 | [api-e2e-test-review-report.md](api-e2e-test-review-report.md) | API/E2E Test-Code Review, round 1 / API-REV-003 Pass | N/A (first test review) | Pass | None |
 
 ## Revision Entries
 
@@ -221,3 +223,61 @@ None.
 - Material score or classification changes: none to the implementation scorecard; F-10 is runtime-only.
 - Recommended recipient: `/software_engineering_team/implementation_engineer`
 - Remaining risks or uncertainty: the user's device check; C-04.
+
+### CRR-007 — Targeted delta review of IR-005 (the F-10 fix)
+
+- Canonical review report updated: [code-review-report.md](code-review-report.md), section "Implementation Review (Round 7)" and Latest Authoritative Result
+- Review entry point and round: Implementation Review, round 7
+- Review scope: `Targeted Delta Review`. Commit `e3dd8c4677` touches only `MobileRunTargetView.vue` and its spec.
+- Triggering role, report path and finding or scenario IDs: `implementation_engineer`, [implementation-handoff.md](implementation-handoff.md) (IR-005), F-10
+- Relevant solution revision IDs: SR-005, SR-006
+- Relevant architecture-review revision IDs: ARCH-REV-004
+- Relevant implementation revision IDs: IR-005
+- Relevant API/E2E revision IDs: API-REV-002
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: CRR-006, `Fail` (Local Fix)
+- Current authoritative result: `Pass`
+- What changed in the review result and why: the phone's run screen hosts the conversation root with `!overflow-clip`, so focus cannot scroll it. The shared `AgentEventMonitor` is unchanged. IMP-10: ADR-07 passes on API 35 and API 34, with `scrollTop` 0 and a 62 px gap equal to the control.
+- Supported product scenario / material-premise basis changes: none.
+  - C-15 (a WebView older than Chromium 90) was rejected.
+  - C-16 (the keyboard on other phone inputs) is a residual.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| F-10 | Open (Local Fix) | Resolved | IR-005, `e3dd8c4677` | `MobileRunTargetView.vue:23-39`; `MobileRunScreen.spec.ts` guard; IMP-10 on API 35 and API 34 |
+
+- New or remaining finding IDs: none
+- Material score or classification changes: none; every category is ≥ 9.2.
+- Recommended recipient: `/software_engineering_team/api_e2e_engineer`. The implementation engineer gets an informational notification.
+- Remaining risks or uncertainty: the keyboard on New run's sheets and the Files search (C-16); a WebView older than Chromium 90; C-04; the user's device check.
+
+### CRR-008 — Proportional review of the durable test code (API-REV-003 Pass)
+
+- Canonical review report updated: [api-e2e-test-review-report.md](api-e2e-test-review-report.md), created
+- Review entry point and round: API/E2E Test-Code Review, round 1
+- Review scope: `N/A` (test review). Reviewed: `tests/e2e/mobile-shell-probe.mjs` (added); `package.json`, `node-vocabulary-probe.mjs`, `large-runs-load-less-cases.mjs`, `workspace-views-chooser-cases.mjs` and `owner-scoped-file-reads-probe.mjs` (updated)
+- Triggering role, report path and finding or scenario IDs: `api_e2e_engineer`, [api-e2e-execution-coverage-report.md](api-e2e-execution-coverage-report.md), API-REV-003 `Pass` (95%)
+- Relevant solution revision IDs: SR-005, SR-006
+- Relevant architecture-review revision IDs: ARCH-REV-004
+- Relevant implementation revision IDs: IR-005
+- Relevant API/E2E revision IDs: API-REV-001, API-REV-002, API-REV-003
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: N/A (first test review); the source review's latest is CRR-007 `Pass`
+- Current authoritative result: `Pass`
+- What changed in the review result and why:
+  - The probe proves the approved scenarios through the real surfaces: node-stored sends, the desktop comparison, the network log and failing on unknown browser errors.
+  - It follows `TESTING.md`'s probe rules: an owned stack, cleanup with a receipt, and never the user's data.
+  - The four updated probes follow the new phone paths, with no stale steps.
+  - One non-blocking note: the probe header cites a `TESTING.md` "phone changes" section that does not exist. It is comment-only, and delivery can drop it in docs sync.
+- Supported product scenario / material-premise basis changes: none.
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: none
+- Material score or classification changes: none
+- Recommended recipient: `/software_engineering_team/delivery_engineer`
+- Remaining risks or uncertainty: the user's device checks (QR-003, AC-005, AC-010, AC-011); iOS paired screens through WebKit only.
