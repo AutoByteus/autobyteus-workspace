@@ -110,3 +110,4 @@ Scoped re-review: DS-003, DS-004, the run-screen and pending-open spines, and AR
   - then implementation: the SR-005 design, plus CRR-003's local fixes F-03…F-05;
   - then source review, and API/E2E again, with the `TESTING.md` phone rule owned by API/E2E.
 - **Note:** the CRR-003 report and record are still uncommitted from the code reviewer; this package commits them unchanged.
+- **Release (DEC-015, the user, 2026-11-06):** "For this ticket we definitely need to release the new beta, okay?" Delivery publishes a new beta carrying this ticket after finalization, under `RELEASE.md`. Any smoke waiver is taken in the user's own words.

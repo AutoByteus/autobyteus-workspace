@@ -148,3 +148,4 @@
   - DEC-009, DEC-010 and DEC-011 are all (a), as recommended. The user was told in the Solution Designer's conversation.
   - Requirements: `Approved` at SR-005. Design: `Ready` at SR-005, with the Android shell Change Scope extension (REQ-011).
   - Handoff: `Architecture Design Complete` → `/software_engineering_team/architecture_reviewer` (Large / High rule), a scoped review of the "Revision For CRR-003" section. Then implementation with CRR-003's local fixes F-03…F-05, and API/E2E with the `TESTING.md` phone rule.
+- **Release decision (2026-11-06):** the user: "For this ticket we definitely need to release the new beta, okay?" Recorded as DEC-015: after finalization, delivery publishes a new beta carrying 277, following `RELEASE.md`. Any smoke waiver is taken only in his own words. Intended behavior is unchanged; the delivery scope changed from "no release" to "beta release".

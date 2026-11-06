@@ -242,6 +242,7 @@ The journeys are the spec's UXJ-001…UXJ-008; this table maps them to the requi
 | DEC-012 | Which member an Org run opens (F-01) | The spec's "(its first member)" had no owner; the desktop opens none | First configured member; a Team member opens its coordinator (the Org context's own rule for a configured team) | Follows the approved words; no new behavior | Solution Designer | Decided |
 | DEC-013 | Live states under a run that is not open (F-08) | REQ-002's "live state" | Refresh a listed root's stored delegation view after a history poll when its last activity changed or it has a child that is not stopped | Keeps REQ-002 true at bounded cost; the desktop has the same staleness (follow-up FU-007) | Solution Designer | Decided |
 | DEC-014 | Trusted private HTTP pairing (F-02) | `crypto.randomUUID` is missing outside a secure context; the phone is the only such client | One guarded id helper for the sends this ticket makes reachable | A documented supported edge (`docs/remote_access.md:9, 56`) | Solution Designer | Decided |
+| DEC-015 | Release of this ticket | The Task said "No release unless he asks" | The user, 2026-11-06: "For this ticket we definitely need to release the new beta, okay?" | Delivery finalizes on `personal` and then publishes a new **beta** that carries this ticket, following `RELEASE.md`. Any smoke waiver (for example Codex, whose quota holds until Nov 10) is taken only in the user's own words at release time | User | Decided |
 
 ## Traceability
 
