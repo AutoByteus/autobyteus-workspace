@@ -211,7 +211,7 @@ describe("AgentRunService termination", () => {
   it("an eligible run's Stop goes to its root (children, then host) and maps the host outcome", async () => {
     const agentRunManager = { getActiveRun: vi.fn(), terminateAgentRun: vi.fn(async () => true) };
     const historyCatalogService = { recordRunTerminated: vi.fn(async () => undefined) };
-    const standaloneRuns = { resolveRootAndEnsureHost: vi.fn(), stopRoot: vi.fn() };
+    const standaloneRuns = { resolveRootAndEnsureHost: vi.fn(), stopRoot: vi.fn(), refreshInheritedLaunch: vi.fn() };
     const service = new AgentRunService("/tmp/agent-run-service-test", {
       agentRunManager: agentRunManager as never,
       metadataService: {} as never,

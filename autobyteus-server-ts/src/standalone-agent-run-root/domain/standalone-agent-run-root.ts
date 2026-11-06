@@ -109,6 +109,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
   private readonly hostReadyListeners = new Set<(run: AgentRun) => void>();
   private termination: Promise<AgentOperationResult> | null = null;
   private failStopped = false;
+  private inheritedLaunch: AgentLaunchConfiguration;
   private frozenTerminationScope: FrozenRootTerminationScope | null = null;
 
   constructor(private readonly options: Readonly<{
@@ -135,6 +136,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     onTerminated?(): void;
   }>) {
     this.tree = options.tree;
+    this.inheritedLaunch = options.rootLaunchConfiguration;
     this.index = new StandaloneRootExecutionIndex(this.tree);
     if (options.root.rootSubjectKind !== "agent" || options.root.rootRunId !== this.tree.host.agentRunId
       || options.messages.hostRunId !== this.tree.host.agentRunId || options.host.hostRunId !== this.tree.host.agentRunId) {
@@ -158,7 +160,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     });
     this.collaborators = new StandaloneRootCollaborators({
       admission: options.collaboratorAdmission,
-      rootLaunchConfiguration: options.rootLaunchConfiguration,
+      inheritedLaunch: () => this.inheritedLaunch,
       getTree: () => this.tree,
     });
     this.taskExecutions = new RootTaskExecutionLifecycle(new StandaloneRootTaskExecutionAdapter({
@@ -506,6 +508,8 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     this.tree = tree;
     this.index = new StandaloneRootExecutionIndex(tree);
   }
+  /** The host's saved launch changed (a stopped-run edit): catalog copies started from now on inherit it. */
+  setInheritedLaunch(launch: AgentLaunchConfiguration): void { this.inheritedLaunch = launch; }
   private isAdmitting(): boolean { return this.lifecycle === "active"; }
   private assertAdmitting(): void {
     if (!this.isAdmitting()) throw new Error(`Agent root '${this.hostRunId}' is not accepting commands.`);
