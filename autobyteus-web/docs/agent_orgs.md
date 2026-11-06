@@ -732,7 +732,7 @@ report for the exact acceptance scope.
   Messages-only collaboration panel.
 - `components/workspace/org/AgentOrgWorkspaceView.vue`: focused/unfocused and
   stopped workspace states plus the enclosing-Org config/Back adapter.
-- `components/workspace/history/WorkspaceAgentRunsTreePanel.vue` and
+- `components/workspace/history/RunSectionPanel.vue` and
   `WorkspaceHistoryWorkspaceSection.vue`: always-mounted mixed-family
   Workspaces hierarchy and sibling Agent/Team/AgentOrg groups.
 

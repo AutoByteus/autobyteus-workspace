@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import { nextTick, reactive } from 'vue';
-import WorkspaceAgentRunsTreePanel from '../WorkspaceAgentRunsTreePanel.vue';
+import RunSectionPanel from '../RunSectionPanel.vue';
 import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
 import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore';
 import { useRunSectionModeStore } from '~/stores/runSectionModeStore';
@@ -398,7 +398,7 @@ vi.mock('~/composables/useToasts', () => ({
   }),
 }));
 
-describe('WorkspaceAgentRunsTreePanel', () => {
+describe('RunSectionPanel', () => {
   beforeEach(async () => {
     await localizationRuntime.setPreference('en');
     setActivePinia(createPinia());
@@ -489,7 +489,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
   const mountComponent = (options: {
     realConfirmationModal?: boolean;
     attachTo?: Element;
-  } = {}) => mount(WorkspaceAgentRunsTreePanel, {
+  } = {}) => mount(RunSectionPanel, {
     ...(options.attachTo ? { attachTo: options.attachTo } : {}),
     global: {
       stubs: {

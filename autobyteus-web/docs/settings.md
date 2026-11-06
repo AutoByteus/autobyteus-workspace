@@ -1331,7 +1331,7 @@ overlay.
 ### Workspace History Progressive Disclosure
 
 The Workspaces sidebar history tree uses progressive disclosure for its
-ordinary desktop render. `WorkspaceAgentRunsTreePanel.vue` wires the tree state
+ordinary desktop render. `RunSectionPanel.vue` wires the tree state
 from `useWorkspaceHistoryTreeState(...)`, and
 `WorkspaceHistoryWorkspaceSection.vue` renders only the visible level for the
 current expansion state.
@@ -1429,7 +1429,7 @@ a minute clock rather than background stream traffic.
 
 ### Workspace History Archive And Delete Actions
 
-`components/workspace/history/WorkspaceAgentRunsTreePanel.vue` owns the
+`components/workspace/history/RunSectionPanel.vue` owns the
 workspace history tree wiring and delegates row rendering to
 `WorkspaceHistoryWorkspaceSection.vue`. The row actions intentionally keep
 archive, termination, draft removal, and permanent delete separate:

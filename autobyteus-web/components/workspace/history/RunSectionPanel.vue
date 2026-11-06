@@ -7,7 +7,7 @@
     <div v-else id="run-section-panel" ref="treeScrollRef" role="region" aria-labelledby="run-section-title" class="min-h-0 flex-1 overflow-y-auto px-1 pb-2" data-test="workspace-history-tree-scroll">
       <ProjectsRunsTree v-if="modeStore.mode === 'projects'" :state="sectionState" :avatars="sectionAvatarBindings" :actions="sectionActions" :run-shown="runShown" />
       <template v-else>
-      <div v-if="runHistoryStore.loading" class="px-3 py-4 text-xs text-gray-500">{{ $t('workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.loading_task_history') }}</div>
+      <div v-if="runHistoryStore.loading" class="px-3 py-4 text-xs text-gray-500">{{ $t('workspace.components.workspace.history.RunSectionPanel.loading_task_history') }}</div>
 
       <div v-if="runHistoryStore.historyFamilyErrors?.workspace" class="px-3 py-2 text-xs text-red-600">
         {{ runHistoryStore.historyFamilyErrors?.workspace }}
@@ -266,8 +266,8 @@ const {
   },
   presentTeamStreamRecoveryFeedback: (feedback) => {
     const key = feedback === 'wait'
-      ? 'workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.stream_recovery_wait'
-      : 'workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.stream_recovery_retry';
+      ? 'workspace.components.workspace.history.RunSectionPanel.stream_recovery_wait'
+      : 'workspace.components.workspace.history.RunSectionPanel.stream_recovery_retry';
     addToast(t(key), 'info');
   },
 });

@@ -1,7 +1,7 @@
 import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 import { mount, flushPromises } from '@vue/test-utils';
-import Panel from '../WorkspaceAgentRunsTreePanel.vue';
+import Panel from '../RunSectionPanel.vue';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { useWorkspaceStore } from '~/stores/workspace';

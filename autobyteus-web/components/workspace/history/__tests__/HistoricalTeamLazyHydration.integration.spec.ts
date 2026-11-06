@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import { defineComponent, nextTick } from 'vue';
-import WorkspaceAgentRunsTreePanel from '../WorkspaceAgentRunsTreePanel.vue';
+import RunSectionPanel from '../RunSectionPanel.vue';
 import TeamWorkspaceView from '../../team/TeamWorkspaceView.vue';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
@@ -308,12 +308,12 @@ vi.mock('~/composables/useToasts', () => ({
 
 const Harness = defineComponent({
   components: {
-    WorkspaceAgentRunsTreePanel,
+    RunSectionPanel,
     TeamWorkspaceView,
   },
   template: `
     <div>
-      <WorkspaceAgentRunsTreePanel />
+      <RunSectionPanel />
       <TeamWorkspaceView />
     </div>
   `,

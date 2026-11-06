@@ -54,9 +54,9 @@ vi.mock('~/stores/applicationsCapabilityStore', () => ({
   useApplicationsCapabilityStore: () => applicationsCapabilityStoreMock,
 }))
 
-vi.mock('~/components/workspace/history/WorkspaceAgentRunsTreePanel.vue', () => ({
+vi.mock('~/components/workspace/history/RunSectionPanel.vue', () => ({
   default: {
-    name: 'WorkspaceAgentRunsTreePanel',
+    name: 'RunSectionPanel',
     props: { runShown: { type: Boolean, default: false } },
     emits: ['run-selected', 'run-created'],
     template: '<div></div>',
@@ -76,7 +76,7 @@ describe('AppLeftPanel Component', () => {
   it('DI-001: the Chat nav and the new-chat pencil start New chat only through useRunStart.newChat', async () => {
     const wrapper = mount(AppLeftPanel, {
       global: {
-        stubs: { Icon: true, WorkspaceAgentRunsTreePanel: true },
+        stubs: { Icon: true, RunSectionPanel: true },
         mocks: { $route: routeMock, $router: routerMock },
       },
     })
@@ -98,7 +98,7 @@ describe('AppLeftPanel Component', () => {
   describe('Draft rows under the Chat row (chat-new-draft-kept-on-navigation)', () => {
     beforeEach(() => setActivePinia(createPinia()))
     const mountPanel = () => mount(AppLeftPanel, {
-      global: { stubs: { Icon: true, WorkspaceAgentRunsTreePanel: true }, mocks: { $route: routeMock, $router: routerMock } },
+      global: { stubs: { Icon: true, RunSectionPanel: true }, mocks: { $route: routeMock, $router: routerMock } },
     })
     const chatRow = (wrapper: ReturnType<typeof mountPanel>) => wrapper.get('[data-test="app-left-panel-chat"]')
     const keepDraft = (text: string) => {
@@ -156,7 +156,7 @@ describe('AppLeftPanel Component', () => {
       global: {
         stubs: {
           Icon: true,
-          WorkspaceAgentRunsTreePanel: true,
+          RunSectionPanel: true,
         },
         mocks: {
           $route: routeMock,
@@ -179,7 +179,7 @@ describe('AppLeftPanel Component', () => {
       global: {
         stubs: {
           Icon: true,
-          WorkspaceAgentRunsTreePanel: true,
+          RunSectionPanel: true,
         },
         mocks: {
           $route: routeMock,
@@ -197,7 +197,7 @@ describe('AppLeftPanel Component', () => {
       global: {
         stubs: {
           Icon: true,
-          WorkspaceAgentRunsTreePanel: true,
+          RunSectionPanel: true,
         },
         mocks: {
           $route: routeMock,
@@ -239,7 +239,7 @@ describe('AppLeftPanel Component', () => {
       global: { stubs: { Icon: true } },
     })
 
-    wrapper.findComponent({ name: 'WorkspaceAgentRunsTreePanel' }).vm.$emit(
+    wrapper.findComponent({ name: 'RunSectionPanel' }).vm.$emit(
       'run-selected',
       { type: 'team', runId: 'standalone-team-run' },
     )
@@ -256,7 +256,7 @@ describe('AppLeftPanel Component', () => {
       global: { stubs: { Icon: true } },
     })
 
-    wrapper.findComponent({ name: 'WorkspaceAgentRunsTreePanel' }).vm.$emit(
+    wrapper.findComponent({ name: 'RunSectionPanel' }).vm.$emit(
       'run-selected',
       { type: 'team', runId: 'standalone-team-run' },
     )
@@ -270,7 +270,7 @@ describe('AppLeftPanel Component', () => {
     beforeEach(() => setActivePinia(createPinia()))
     const mountPanel = () => mount(AppLeftPanel, {
       attachTo: document.body,
-      global: { stubs: { Icon: true, WorkspaceAgentRunsTreePanel: true }, mocks: { $route: routeMock, $router: routerMock } },
+      global: { stubs: { Icon: true, RunSectionPanel: true }, mocks: { $route: routeMock, $router: routerMock } },
     })
 
     it('lights the Chat row only on New chat, not on an open run (AC-007, AC-011)', () => {
@@ -290,7 +290,7 @@ describe('AppLeftPanel Component', () => {
     // CR-001: the tree reveals only while a run is shown; the panel passes the shell's signal down.
     it('tells the tree whether a run is shown, so a stale selection is not revealed off a run', () => {
       const runShown = (wrapper: ReturnType<typeof mountPanel>) =>
-        wrapper.findComponent({ name: 'WorkspaceAgentRunsTreePanel' }).props('runShown')
+        wrapper.findComponent({ name: 'RunSectionPanel' }).props('runShown')
       routeMock.path = '/chat'
       routeMock.query = { id: 'run-1' }
       useAgentContextsStore().runs.set('run-1', {} as never)

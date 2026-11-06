@@ -208,8 +208,8 @@ const selection = useWorkspaceHistorySelectionActions({
   emitRunSelected: (payload) => emit('run-selected', payload),
   startPresetChat: (preset) => runStart.newChatInWorkspace(preset),
   presentTeamStreamRecoveryFeedback: (feedback) => addToast(t(feedback === 'wait'
-    ? 'workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.stream_recovery_wait'
-    : 'workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.stream_recovery_retry'), 'info'),
+    ? 'workspace.components.workspace.history.RunSectionPanel.stream_recovery_wait'
+    : 'workspace.components.workspace.history.RunSectionPanel.stream_recovery_retry'), 'info'),
 })
 const { execute: executeSubjectAction } = useWorkspaceHistorySubjectActions()
 
