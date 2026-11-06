@@ -105,13 +105,31 @@ Revert the merge on `personal`. The public launcher then serves v7 again. Users 
 
 ## Finalization Record
 
-(Filled in after the merge.)
+- Pre-commit checks: `check_repository_artifact_hygiene.py` passed (exit 0); Secret Gate `origin/personal..codex/docker-node-publish-needed-ports` PASS (5 commits).
+- Ticket branch: `codex/docker-node-publish-needed-ports` at `9b72e5b366` (archive commit), pushed as a new branch.
+- Finalization target: `origin/personal`, unchanged at `9d8077fd2a` since the integration refresh. Re-integration and re-verification: `Not needed`.
+- Merge: `finalize/docker-node-publish-needed-ports` from `origin/personal`; `--no-ff` → `dc8bee36b6`.
+  - Its tree is identical to the verified head `9b72e5b366`.
+  - Secret Gate on the merged state: PASS.
+- Push: `origin/personal` fetched again and still `9d8077fd2a`; pushed `9d8077fd2a..dc8bee36b6`.
+- Repository finalization status: `Completed`. This record follows as a `docs(delivery)` commit on `personal`.
+
+## Post-Finalization Cleanup
+
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-publish-needed-ports`.
+- Right after this record is pushed:
+  - Remove and prune the worktree. Its untracked files are build output only: `*/dist/`, plus `autobyteus-web/electron-dist`, which git ignores.
+  - Delete the local `codex/` and `finalize/` branches; both are in `origin/personal`.
+  - Keep `origin/codex/docker-node-publish-needed-ports`.
+  - Leave the main checkout untouched.
+  - The terminal message confirms the results.
+- Test resources: API/E2E removed every test node, volume, compose project, isolated instance and helper image (execution report, Temporary Methods And Cleanup). The user's nodes `autobyteus-server-0/1/2` were never touched.
 
 ## Final Status
 
 - Verification complete (from the evidence): `Yes`
-- Repository finalization complete: see the Finalization Record
+- Repository finalization complete: `Yes`
 - Applicable release/deployment/rollout complete or not required: `Not required`
-- Applicable safe cleanup complete or not required: see the Finalization Record
+- Applicable safe cleanup complete or not required: right after this record is pushed (above)
 - Unresolved blocker: `None`
-- Successful terminal package eligible for return: after finalization
+- Successful terminal package eligible for return: `Yes`
