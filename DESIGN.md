@@ -142,12 +142,9 @@ how to apply them; they do not replace user-approved product requirements.
      is merged (`pnpm release:test --ref <branch>`, RELEASE.md). Local runs
      and clean clones that built the packages first do not count.
 
-   Examples: `v1.5.9-beta.14` (the type check read
-   `application-sdk-contracts` from an unbuilt `dist/`) and
-   `v1.5.11-beta.11` (autobyteus-318 widened the same gate to compile the
-   server's source, which reads `autobyteus-ts` and the Prisma client; the
-   prepare step was not widened). Both stopped all five desktop builds
-   (RELEASE.md, Case Studies).
+   Two releases failed this way: `v1.5.9-beta.14` and `v1.5.11-beta.11`
+   (records: `tickets/done/test-and-tooling-hygiene-294/release-deployment-report.md`,
+   `tickets/done/release-beta-20261102/release-deployment-report.md`).
 
 ## Work in two phases: clean functionality, then evidence-led refinement
 

@@ -53,3 +53,22 @@
 
 ## Final Status
 - Release complete: `Yes` (all four workflows succeeded; assets complete). Repository: release commit on `personal`. Cleanup: the release worktree is removed (below).
+
+## Release story moved from RELEASE.md (autobyteus-401, 2026-11-06)
+
+This story was RELEASE.md's case study until the project documents kept rules only; the rules it taught stay in [RELEASE.md](../../../RELEASE.md).
+
+### `v1.5.11-beta.11`: the same gate, widened without its prepare step (2026-11-02)
+
+- **What happened:** the first build-only run for the beta failed all five desktop
+  builds in `pnpm typecheck` (about 390 `TS2307` errors). autobyteus-318 had added a
+  project to the web type gate that compiles the server's source, which reads
+  `autobyteus-ts` and the Prisma client; the gate's prepare step still built only
+  `application-sdk-contracts`.
+- **Why every earlier check passed:** the tickets before it ran on machines with those
+  outputs already built (316, 345 and 348 passed locally).
+- **What caught it:** the build-only run, before any tag: nothing was published and no
+  version number was used.
+- **Rule added from it:** [DESIGN.md](../../../DESIGN.md) rule 12 (the second incident of the
+  class, after `v1.5.9-beta.14`).
+- **Recovery:** the ticket `clean-runner-build-order` fixes the prepare step; the beta ships after it.

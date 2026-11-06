@@ -1,0 +1,27 @@
+# API-01 — AC-002: moved text covers the removed section; records only appended. Commit 10a6967442, 2026-11-06T14:54:14Z
+# Look for: 'removed lines: 67 non-blank', 'not found verbatim …: 3', each explained in the notes below; per record '- lines: 0' and 'appended at end: yes'
+
+## records: removed lines and where the hunk starts
+tickets/done/test-and-tooling-hygiene-294/release-deployment-report.md: old length 246 lines; hunks: @@ -246,0 +247,39 @@; - lines: 0; appended at end: yes
+tickets/done/release-beta-20261102/release-deployment-report.md: old length 55 lines; hunks: @@ -55,0 +56,19 @@; - lines: 0; appended at end: yes
+tickets/done/beta-release-v1.5.12-beta.2/release-deployment-report.md: old length 98 lines; hunks: @@ -98,0 +99,26 @@ The finalize branch held three local doc commits (`f9adfbd538`, `fb40d10ced`, `4; - lines: 0; appended at end: yes
+
+## headings appended
++## Release story moved from RELEASE.md (autobyteus-401, 2026-11-06)
++### `v1.5.9-beta.14`: a new build step failed only on the release runners (2026-10-28)
++## Release story moved from RELEASE.md (autobyteus-401, 2026-11-06)
++### `v1.5.11-beta.11`: the same gate, widened without its prepare step (2026-11-02)
++## Release story moved from RELEASE.md (autobyteus-401, 2026-11-06)
++### The per-tag build-only run moved to the ticket (2026-11-06)
+
+## removed lines: 67 non-blank of 75
+not found verbatim (normalized: whitespace joined, link targets ignored): 3
+  MISSING: ## Case Studies
+  MISSING:     the last case);
+  MISSING: - **Why:** both incidents above were one class, a build or gate that reads
+
+## notes (reader's check of the 3 lines)
+- '## Case Studies': the section heading itself; replaced in each record by '## Release story moved from RELEASE.md (autobyteus-401, 2026-11-06)'.
+- 'the last case);': the v1.5.9-beta.14 story's cross-reference; now '(removed on 2026-11-06; see [its record](../beta-release-v1.5.12-beta.2/release-deployment-report.md));' in the 294 record.
+- '- **Why:** both incidents above were one class, …': now '- **Why:** both incidents, `v1.5.9-beta.14` and `v1.5.11-beta.11`, were one class, …' in the beta.2 record (the stories no longer sit together).
+RESULT: PASS (every fact of the removed section is in the records; records only appended)
