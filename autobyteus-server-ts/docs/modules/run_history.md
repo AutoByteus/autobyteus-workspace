@@ -189,6 +189,8 @@ switch** (below); the previous agent runtime again, while a switch is pending, i
 (`applyRuntimeSelection`, `run-history/domain/runtime-selection-rule.ts`); see
 [Agent Team Execution](./agent_team_execution.md#agent-runtime-switch-of-a-member) and
 [User Model Choice And Stop Of Copies](./agent_communication.md#user-model-choice-and-stop-of-copies).
+A saved edit of a standalone Agent run also reaches the registered root of that run, so catalog copies delegated
+afterwards inherit the saved selection ([Standalone Agent Run Root](./standalone_agent_run_root.md#ownership)).
 
 When no Application lease exists, stopped updates delegate to the existing
 General lifecycle owners:
