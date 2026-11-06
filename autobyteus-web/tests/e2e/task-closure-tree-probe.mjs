@@ -334,7 +334,8 @@ const analyzeLeave = (frames) => {
   return { firstHiddenAt: firstHidden?.t ?? null, goneAt: gone?.t ?? null, leaveMs: firstHidden && gone ? gone.t - firstHidden.t : null,
     midOpacityFrames: frames.filter((f) => f.rows.some((r) => r && r.op > 0.05 && r.op < 0.95)).length,
     hiddenAndInertAtOnce: !!firstHidden && firstHidden.rows.every((r) => r === null || (r.hidden === 'true' && r.inert)),
-    moveClassAtLeaveStart: firstHidden ? firstHidden.rows.map((r) => !!r && r.cls.includes('tree-row-move')) : null,
+    // autobyteus-390: rows never slide; no row carries a move class (there is no move transition).
+    noMoveClassDuringLeave: frames.every((f) => f.rows.every((r) => !r || !r.cls.includes('tree-row-move'))),
     activeAtFirstHidden: firstHidden?.active ?? null };
 };
 const goneAll = (page, selectors) => async () => { for (const sel of selectors) if (await page.locator(sel).count()) return false; return true; };
@@ -365,6 +366,7 @@ const liveDone = async (kind, label) => {
     const leave = analyzeLeave(await page.evaluate(() => window.__samples));
     assert(leave.hiddenAndInertAtOnce, 'leaving rows not aria-hidden + inert at once', leave);
     assert(leave.midOpacityFrames >= 3, 'leaving rows did not fade/collapse (AC-010)', leave);
+    assert(leave.noMoveClassDuringLeave, 'a row carried the move class during the leave (autobyteus-390: rows never slide)', leave);
     assert(leave.leaveMs !== null && leave.leaveMs >= 150 && leave.leaveMs <= 450, 'leave duration outside ~200 ms', leave);
     for (const sel of [s.bRef && rowSelector(kind, s.bRef), rowSelector(kind, s.plainRef)].filter(Boolean)) assert(await page.locator(sel).count() === 1, `non-closed row left: ${sel}`);
     const active = await page.evaluate(() => document.activeElement?.getAttribute('data-test'));

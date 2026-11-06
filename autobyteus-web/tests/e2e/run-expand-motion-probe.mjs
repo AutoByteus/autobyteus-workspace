@@ -1,11 +1,15 @@
 #!/usr/bin/env node
-// autobyteus-390 (REQ-001, REQ-002; AC-001, AC-002): expanding an Agent run in the Runs view shows its delegated rows in
-// their final place at once; collapsing removes them at once. Against the product RunListRow in real headless Chrome.
+// autobyteus-390 (REQ-001, REQ-002, REQ-004; AC-001, AC-002, AC-005): rows of the left panel never slide. Against the
+// product RunListRow in real headless Chrome, an Agent run's delegated rows:
+//   - expand shows them complete (with their Task lines) at their final place from the first frame; collapse hides them;
+//   - Task answers that arrive after the rows are shown push the rows below at once, with no transform;
+//   - expanding a delegated Team pushes the rows below at once, with no transform;
+//   - a finished Task's row still fades and closes, and the row below glides up by layout.
 //   pnpm -C autobyteus-web test:e2e:run-expand-motion [--output-dir <fresh dir>] [--browser-executable <path>]
 // Prerequisites: pnpm install; pnpm exec nuxt prepare. Owns a Nuxt dev server on a free port with a dead backend URL,
 // a fixture route (tests/e2e/fixtures/run-expand-motion.page.vue) and Chrome; all are removed in finally.
-// Before the fix, the first frames after expand showed every row at the top of the window with a move transform
-// (`translate(0, -Npx)`), sliding down over 200 ms.
+// Before the fix: on the base, expand slid every row down from the top of the window; with SR-001's v-if, the rows came
+// back without their Task lines and slid when the answers arrived.
 import { createWriteStream, existsSync } from 'node:fs';
 import fs from 'node:fs/promises';
 import net from 'node:net';
@@ -88,59 +92,141 @@ try {
   page.on('console', (message) => { if (message.type() === 'error') evidence.browserEvents.push({ type: 'console:error', text: message.text() }); });
   // The fixture has no backend: GraphQL answers empty, and the shell's change-feed sockets stay quiet.
   await page.route('**/rest/health', (route) => route.fulfill({ status: 200, contentType: 'application/json', body: '{"status":"ok"}' }));
-  // The delegated rows ask which Task each worker is on (taskWorkerTasks): none here.
+  // Each delegated worker is on a Task (taskWorkerTasks). While `holdTasks` is set, the answers wait until released, as a
+  // slow answer does: the rows are shown first and their Task lines arrive later.
+  let holdTasks = false;
+  const heldTasks = [];
+  const taskAnswer = (workerKind) => (workerRunId) => ({ __typename: 'TaskWorkerTask', workerKind, workerRunId, task: {
+    taskId: `task-${workerRunId}`, projectId: 'probe-project', title: `Release notes for ${workerRunId}`,
+    description: `Release notes for ${workerRunId}`, status: 'IN_PROGRESS' } });
   await page.route('**/graphql', (route) => {
-    let query = '';
-    try { query = route.request().postDataJSON()?.query ?? ''; } catch { query = ''; }
-    const data = query.includes('taskWorkerTasks') ? { taskWorkerTasks: [] } : {};
-    return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ data }) });
+    let payload = {};
+    try { payload = route.request().postDataJSON() ?? {}; } catch { payload = {}; }
+    if (payload.operationName !== 'GetTaskWorkerTasks') {
+      return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ data: {} }) });
+    }
+    const { agentRunIds = [], teamRunIds = [] } = payload.variables ?? {};
+    const body = JSON.stringify({ data: { taskWorkerTasks: [...agentRunIds.map(taskAnswer('agent')), ...teamRunIds.map(taskAnswer('team'))] } });
+    const answer = () => route.fulfill({ status: 200, contentType: 'application/json', body });
+    if (holdTasks) { heldTasks.push(answer); return undefined; }
+    return answer();
   });
-  await page.routeWebSocket(/\/ws\//, () => undefined);
+  const releaseTasks = async () => { holdTasks = false; for (const answer of heldTasks.splice(0)) await answer(); };
+  await page.routeWebSocket(/\/ws\/projects(\?|$)/, (ws) => { ws.send(JSON.stringify({ type: 'connected' })); });
+  await page.routeWebSocket(/\/ws\/(?!projects)/, () => undefined);
   const load = async () => {
     await page.goto(`${baseUrl}${routePath}`, { waitUntil: 'domcontentloaded' });
     await page.waitForFunction(() => Boolean(window.__runExpandMotionProbe) && window.__runExpandMotionProbe.rowCount() > 0, undefined, { timeout: 120_000 });
   };
   // Warm-up: a cold Nuxt dev server may re-optimize dependencies and reload the page once (TESTING.md).
-  await load(); await sleep(3000); await load();
+  await load(); await sleep(3000); await load(); await sleep(1000);
+  holdTasks = true;
+  await load();
   evidence.browserEvents = [];
   const probe = (fn, ...args) => page.evaluate(([name, rest]) => window.__runExpandMotionProbe[name](...rest), [fn, args]);
+  /** Every sample of a row that was on screen before and after: no transform, and only at its old or its new top. */
+  const slides = (frames, before, after) => frames.flatMap(({ t, rows }) => rows
+    .filter((row) => !row.leaving && row.key in before && row.key in after)
+    .filter((row) => row.transform !== 'none' || (row.top !== before[row.key] && row.top !== after[row.key]))
+    .map((row) => ({ t, ...row, before: before[row.key], after: after[row.key] })));
+  const topsByKey = (rows) => Object.fromEntries(rows.map((row) => [row.key, row.top]));
 
-  await runCase('REM-01', 'Expanded at first: twelve delegated rows, at rest', async () => {
+  await runCase('REM-01', 'Expanded at first: twelve delegated rows at rest, before their Task answers arrive', async () => {
     assert(await probe('isExpanded') === true, 'The run does not start expanded');
+    await until('the Task answers asked', async () => heldTasks.length > 0, 15_000);
     const rows = await probe('sample');
     assert(rows.length === 12, 'Expected twelve delegated rows', { rows });
-    assert(rows.every((row) => row.transform === 'none'), 'A row is moving at rest', { rows });
+    assert(rows.every((row) => row.transform === 'none' && !row.taskLine), 'A row is moving, or already has its Task line', { rows });
     assert(rows[0].top > 150, 'The delegated rows are not below other runs', { rows });
-    await page.screenshot({ path: path.join(outputDir, 'REM-01-expanded.png') });
+    await page.screenshot({ path: path.join(outputDir, 'REM-01-before-task-answers.png') });
     return { rows };
   });
 
-  let expandedTops = [];
-  await runCase('REM-02', 'Collapse: the delegated rows are gone at once (AC-002)', async () => {
-    expandedTops = (await probe('sample')).map((row) => row.top);
+  await runCase('REM-02', 'Task answers arrive after the rows are shown: the rows below move to their new place at once, with no transform (AC-005)', async () => {
+    const before = topsByKey(await probe('sample'));
+    await probe('startRecording');
+    await releaseTasks();
+    await until('every Task line', async () => (await probe('taskLines')) === 12, 15_000);
+    await sleep(600);
+    const frames = await probe('stopRecording');
+    const settled = await probe('sample');
+    const after = topsByKey(settled);
+    const moved = Object.keys(after).filter((key) => after[key] !== before[key]);
+    assert(moved.length >= 10, 'The Task lines did not push the rows below', { before, after });
+    const offending = slides(frames, before, after);
+    assert(offending.length === 0, `${offending.length} row samples slid while the Task lines arrived`, { firstOffending: offending.slice(0, 6) });
+    await page.screenshot({ path: path.join(outputDir, 'REM-02-task-lines.png') });
+    return { frames: frames.length, moved: moved.length, before, after };
+  });
+
+  let expanded = [];
+  await runCase('REM-03', 'Collapse: the delegated rows are hidden at once (AC-002)', async () => {
+    expanded = await probe('sample');
     const { perFrame, settled } = await probe('toggleAndSample', FRAMES);
     assert(await probe('isExpanded') === false, 'The run did not collapse');
-    assert(perFrame.every((rows) => rows.length === 0) && settled.length === 0, 'Delegated rows are still in the DOM after collapse (hidden, not removed)', { perFrame, settled });
-    assert(await probe('treeInDom') === false, 'The delegated tree is still in the DOM');
-    await page.screenshot({ path: path.join(outputDir, 'REM-02-collapsed.png') });
+    assert(perFrame.every((rows) => rows.length === 0) && settled.length === 0, 'Delegated rows are still shown after collapse', { perFrame, settled });
+    assert(await probe('treeShown') === false, 'The delegated tree is still shown');
+    await page.screenshot({ path: path.join(outputDir, 'REM-03-collapsed.png') });
     return { perFrame: perFrame.map((rows) => rows.length) };
   });
 
-  await runCase('REM-03', `Expand: from the first frame, every row is at its final place with no transform (AC-001; ${FRAMES} frames)`, async () => {
+  await runCase('REM-04', `Expand: from the first frame, every row is complete (its Task line) at its final place with no transform (AC-001; ${FRAMES} frames)`, async () => {
     const { perFrame, settled } = await probe('toggleAndSample', FRAMES);
     assert(await probe('isExpanded') === true, 'The run did not expand');
     const finalTops = settled.map((row) => row.top);
+    const expandedTops = expanded.map((row) => row.top);
     assert(settled.length === 12 && JSON.stringify(finalTops) === JSON.stringify(expandedTops), 'Settled rows differ from before collapse', { finalTops, expandedTops });
+    assert(perFrame.every((rows) => rows.length === 12), 'Not every delegated row is on screen from the first frame', { counts: perFrame.map((rows) => rows.length) });
     const offending = perFrame.flatMap((rows, frame) => rows
       .map((row, index) => ({ frame, index, ...row, final: finalTops[index] }))
-      .filter((row) => row.transform !== 'none' || row.top !== row.final));
-    assert(perFrame.every((rows) => rows.length === 12), 'Not every delegated row is on screen from the first frame', { counts: perFrame.map((rows) => rows.length) });
-    assert(offending.length === 0, `${offending.length} row samples moved from elsewhere on screen`, { firstOffending: offending.slice(0, 6), frames: perFrame });
-    await page.screenshot({ path: path.join(outputDir, 'REM-03-expanded-again.png') });
+      .filter((row) => row.transform !== 'none' || row.top !== row.final || !row.taskLine));
+    assert(offending.length === 0, `${offending.length} row samples moved from elsewhere on screen, or lacked their Task line`, { firstOffending: offending.slice(0, 6), frames: perFrame });
+    await page.screenshot({ path: path.join(outputDir, 'REM-04-expanded-again.png') });
     return { frames: perFrame, settled };
   });
 
-  await runCase('REM-04', 'No browser errors during the cases', async () => {
+  await runCase('REM-05', 'Expanding a delegated Team: its members appear and the rows below move at once, with no transform (AC-005)', async () => {
+    const before = topsByKey(await probe('sample'));
+    await probe('startRecording');
+    await probe('expandTeam', 2);
+    await until('the Team\'s members', async () => (await probe('rowCount')) > 12, 10_000);
+    await sleep(600);
+    const frames = await probe('stopRecording');
+    const settled = await probe('sample');
+    const after = topsByKey(settled);
+    const pushed = Object.keys(before).filter((key) => after[key] !== undefined && after[key] > before[key]);
+    assert(pushed.length >= 9, 'The members did not push the rows below', { before, after });
+    const offending = slides(frames, before, after);
+    assert(offending.length === 0, `${offending.length} row samples slid when the Team expanded`, { firstOffending: offending.slice(0, 6) });
+    const members = settled.filter((row) => !(row.key in before));
+    assert(members.length > 0 && members.every((row) => row.transform === 'none'), 'The members are not at rest', { members });
+    await page.screenshot({ path: path.join(outputDir, 'REM-05-team-expanded.png') });
+    return { frames: frames.length, pushed: pushed.length, members: members.length };
+  });
+
+  await runCase('REM-06', 'A finished Task\'s row fades and closes; the row below glides up by layout, with no transform (AC-005, E-11)', async () => {
+    const before = await probe('sample');
+    // Team 5's row; after REM-05 the rows of Team 2's members sit above it, so it is found among the Team rows.
+    const closedKey = await probe('teamRowKey', 5);
+    const index = before.findIndex((row) => row.key === closedKey);
+    const nextKey = before[index + 1]?.key;
+    assert(closedKey && nextKey, 'No row to close, or none below it', { before });
+    await probe('startRecording');
+    await probe('closeDelegation', 5);
+    await until('the closed row is gone', async () => !(await probe('sample')).some((row) => row.key === closedKey), 5_000);
+    await sleep(300);
+    const frames = await probe('stopRecording');
+    const leavingOpacities = frames.flatMap(({ rows }) => rows.filter((row) => row.key === closedKey && row.leaving).map((row) => row.opacity));
+    const nextTops = [...new Set(frames.map(({ rows }) => rows.find((row) => row.key === nextKey)?.top).filter((top) => top !== undefined))];
+    const transforms = frames.flatMap(({ t, rows }) => rows.filter((row) => !row.leaving && row.transform !== 'none').map((row) => ({ t, ...row })));
+    assert(leavingOpacities.some((opacity) => opacity > 0.05 && opacity < 0.95), 'The finished row did not fade', { leavingOpacities });
+    assert(nextTops.length >= 3 && nextTops.every((top, i) => i === 0 || top < nextTops[i - 1]), 'The row below did not glide up', { nextTops });
+    assert(transforms.length === 0, 'A row moved with a transform', { transforms: transforms.slice(0, 6) });
+    await page.screenshot({ path: path.join(outputDir, 'REM-06-after-done.png') });
+    return { closedKey, nextKey, leavingOpacities: leavingOpacities.slice(0, 20), nextTops };
+  });
+
+  await runCase('REM-07', 'No browser errors during the cases', async () => {
     assert(evidence.browserEvents.length === 0, 'Browser errors', evidence.browserEvents);
     return { events: 0 };
   });
@@ -153,7 +239,7 @@ try {
   nuxtLog?.end();
   if (installed) await fs.rm(installedPagePath, { force: true });
   evidence.cleanup.installedPageRemoved = !existsSync(installedPagePath);
-  evidence.result = evidence.failures.length === 0 && Object.keys(evidence.cases).length === 4 ? 'Pass' : 'Fail';
+  evidence.result = evidence.failures.length === 0 && Object.keys(evidence.cases).length === 7 ? 'Pass' : 'Fail';
   evidence.finishedAt = new Date().toISOString();
   await save();
   console.log(JSON.stringify({ result: evidence.result, evidencePath, cleanup: evidence.cleanup }));

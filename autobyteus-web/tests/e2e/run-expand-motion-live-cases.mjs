@@ -36,17 +36,18 @@ export const registerRunExpandMotionLiveCases = (h) => {
   const expanded = async (page, runId) => (await page.locator(`${runRow(runId)} ${sel('run-list-disclosure')}`).getAttribute('aria-expanded')) === 'true'
   /** Clicks the run's disclosure and samples its delegated rows for FRAMES animation frames, then once settled. */
   const toggleAndSample = (page, runId) => page.evaluate(async ([treeSel, rowSel, frames]) => {
-    const rows = () => [...document.querySelectorAll(`${treeSel} > *`)]
+    // SR-002: folded rows stay mounted and hidden, so only rows with a layout box are on screen.
+    const rows = () => [...document.querySelectorAll(`${treeSel} > *`)].filter((row) => row.getClientRects().length > 0)
     const sample = () => rows().map((row) => ({ top: Math.round(row.getBoundingClientRect().top), transform: getComputedStyle(row).transform }))
     const frame = () => new Promise((resolve) => requestAnimationFrame(() => resolve()))
     document.querySelector(`${rowSel} [data-test="run-list-disclosure"]`).click()
     const perFrame = []
     for (let i = 0; i < frames; i += 1) { await frame(); perFrame.push(sample()) }
     await new Promise((resolve) => setTimeout(resolve, 700))
-    return { perFrame, settled: sample(), treeInDom: Boolean(document.querySelector(treeSel)) }
+    return { perFrame, settled: sample(), treeShown: Boolean(document.querySelector(treeSel)?.getClientRects().length) }
   }, [tree(runId), runRow(runId), FRAMES])
 
-  defineCase('RXM-001', 'AC-001/AC-002: a live run\'s delegated rows: collapse removes them from the first frame; expand shows each at its final place with no transform from the first frame', async (page) => {
+  defineCase('RXM-001', 'AC-001/AC-002: a live run\'s delegated rows: collapse hides them from the first frame; expand shows each at its final place with no transform from the first frame', async (page) => {
     const r = {}
     s.agentName = `RXM Manager ${Date.now().toString(36)}`
     s.agentId = (await gql('mutation($input:CreateAgentDefinitionInput!){createAgentDefinition(input:$input){id}}', { input: {
@@ -77,7 +78,7 @@ export const registerRunExpandMotionLiveCases = (h) => {
     await shot(page, 'RXM-001-expanded')
 
     r.collapse = await toggleAndSample(page, s.runId)
-    assert(r.collapse.perFrame.every((rows) => rows.length === 0) && !r.collapse.treeInDom, 'delegated rows stay in the DOM after collapse', r.collapse)
+    assert(r.collapse.perFrame.every((rows) => rows.length === 0) && !r.collapse.treeShown, 'delegated rows are still shown after collapse', r.collapse)
     assert(!(await expanded(page, s.runId)), 'the disclosure did not report collapsed')
     await shot(page, 'RXM-001-collapsed')
 
@@ -151,7 +152,7 @@ export const registerRunExpandMotionLiveCases = (h) => {
       r.foldKeptAcrossSwitch = !(await expanded(page, s.runId))
       if (!r.foldKeptAcrossSwitch) {
         await page.locator(`${runRow(s.runId)} ${sel('run-list-disclosure')}`).click(); await delay(500)
-        assert(!(await expanded(page, s.runId)) && (await page.locator(tree(s.runId)).count()) === 0, 'fold did not remove the tree')
+        assert(!(await expanded(page, s.runId)) && !(await page.locator(tree(s.runId)).isVisible()), 'fold did not hide the tree')
       }
       r.readsBeforeUnfold = reads.length
       await page.locator(`${runRow(s.runId)} ${sel('run-list-disclosure')}`).click()

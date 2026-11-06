@@ -1,6 +1,7 @@
 <template>
   <!-- autobyteus-390: the Runs view's rows (the product RunListRow), with an Agent run that delegated twelve Teams below
-       four other runs, so its delegated rows are well below the top of the window. -->
+       four other runs, so its delegated rows are well below the top of the window. Each delegated Team is on a Task, so
+       its row has a Task line once the probe lets the Task answers through. -->
   <main data-test="run-expand-motion-probe" class="min-h-screen bg-white p-4 text-slate-900">
     <aside class="w-80 border-r">
       <ul class="space-y-0.5" data-test="run-list">
@@ -37,7 +38,12 @@ const entries = [
 
 // The stored delegated view is already in the store, as after its first load: no server read.
 const collaboration = useAgentRunCollaborationStore();
-collaboration.contexts = { [HOST]: shallowReactive(buildMultiTeamContext(multiTeamView(DELEGATED, HOST))) };
+const contextWithout = (closed: readonly number[]) => {
+  const view = multiTeamView(DELEGATED, HOST);
+  view.execution_tree.taskExecutions = view.execution_tree.taskExecutions.filter((_, index) => !closed.includes(index));
+  return shallowReactive(buildMultiTeamContext(view));
+};
+collaboration.contexts = { [HOST]: contextWithout([]) };
 
 const disclosure = useRunListDisclosure({
   runHistoryStore: reactive({ selectedRunId: null, selectedTeamRunId: null, navigationTopologyRevision: 0, getTeamMemberNavigationAncestorRowKeys: () => [] }),
@@ -54,17 +60,35 @@ const avatars = {
   showOrgAvatar: () => false, getOrgAvatarUrl: () => '', onOrgAvatarError: noop,
 } as never;
 
-// The row group's own children: the elements its move transition slides.
-const rows = () => [...document.querySelectorAll<HTMLElement>(`[data-test="workspace-agent-run-task-tree"][data-run-id="${HOST}"] > *`)];
-const sample = () => rows().map((row) => ({ top: Math.round(row.getBoundingClientRect().top), transform: getComputedStyle(row).transform }));
+const treeSelector = `[data-test="workspace-agent-run-task-tree"][data-run-id="${HOST}"]`;
+// The row group's own children: the elements a move transition would slide.
+const rows = () => [...document.querySelectorAll<HTMLElement>(`${treeSelector} > *`)];
+// A row element keeps its element across renders (rows are keyed), so a key given on first sight follows the row.
+let nextKey = 0;
+const keyOf = (row: HTMLElement) => (row.dataset.probeKey ??= `row-${nextKey++}`);
+/** The `copy`-th delegated Team row (in order) of the tree. */
+const teamRow = (copy: number) => {
+  const node = document.querySelectorAll<HTMLElement>(`${treeSelector} [data-node-kind="agent_team"]`)[copy];
+  if (!node) throw new Error(`No delegated Team row ${copy}`);
+  return rows().find((row) => row.contains(node))!;
+};
+/** Every delegated row with a layout box: its key, top, transform, opacity and whether it is leaving. */
+const sample = () => rows().filter((row) => row.getClientRects().length > 0).map((row) => ({
+  key: keyOf(row), top: Math.round(row.getBoundingClientRect().top), transform: getComputedStyle(row).transform,
+  opacity: Number(getComputedStyle(row).opacity), leaving: row.className.includes('tree-row-leave'),
+  taskLine: Boolean(row.querySelector('[data-test="workspace-task-worker-task-summary"]')),
+}));
 const frame = () => new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+let recording: { frames: { t: number; rows: ReturnType<typeof sample> }[]; stop: boolean } | null = null;
 
 (window as any).__runExpandMotionProbe = {
   host: HOST,
   delegated: DELEGATED,
+  teamRowKey: (copy: number) => keyOf(teamRow(copy)),
   isExpanded: () => disclosure.isRunExpanded(HOST),
   rowCount: () => rows().length,
-  treeInDom: () => Boolean(document.querySelector(`[data-test="workspace-agent-run-task-tree"][data-run-id="${HOST}"]`)),
+  taskLines: () => document.querySelectorAll(`${treeSelector} [data-test="workspace-task-worker-task-summary"]`).length,
+  treeShown: () => Boolean(document.querySelector<HTMLElement>(treeSelector)?.getClientRects().length),
   sample,
   /** Clicks the run's disclosure and samples every delegated row for `frames` animation frames, then once settled. */
   async toggleAndSample(frames = 4, settleMs = 600) {
@@ -76,5 +100,26 @@ const frame = () => new Promise<void>((resolve) => requestAnimationFrame(() => r
     await new Promise((resolve) => setTimeout(resolve, settleMs));
     return { perFrame, settled: sample() };
   },
+  /** Records every animation frame until `stopRecording`. */
+  startRecording() {
+    recording = { frames: [], stop: false };
+    const current = recording;
+    const start = performance.now();
+    const tick = () => {
+      if (current.stop) return;
+      current.frames.push({ t: Math.round(performance.now() - start), rows: sample() });
+      if (current.frames.length < 600) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  },
+  stopRecording() { if (!recording) return []; recording.stop = true; return recording.frames; },
+  /** Opens a delegated Team row (its members appear under it). */
+  expandTeam(copy: number) {
+    const button = teamRow(copy).querySelector<HTMLButtonElement>('[data-test="workspace-team-transient-disclosure"]');
+    if (!button) throw new Error(`No disclosure on delegated Team ${copy}`);
+    button.click();
+  },
+  /** The delegation's Task is DONE: its row leaves the tree. */
+  closeDelegation(copy: number) { collaboration.contexts = { [HOST]: contextWithout([copy]) }; },
 };
 </script>

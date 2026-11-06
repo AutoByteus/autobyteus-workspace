@@ -14,7 +14,10 @@ vi.mock('~/services/agentCollaboration/agentRunCollaborationChildHydration', () 
   hydrateAgentRunCollaborationChild: vi.fn(async () => 'hydrated'),
 }));
 vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ getTeamMemberInspectionAttempt: () => null }) }));
-vi.mock('~/composables/projects/useTaskWorkerTasks', () => ({ useTaskWorkerTasks: () => ({ taskOf: () => null, locate: vi.fn() }) }));
+// Every delegated row is on a Task; the composable is what asks for the Task answers (one ask per mount).
+const tasks = vi.hoisted(() => ({ use: vi.fn() }));
+vi.mock('~/composables/projects/useTaskWorkerTasks', () => ({ useTaskWorkerTasks: tasks.use }));
+const TASK = { taskId: 'task-1', projectId: 'project-1', title: 'Ship the release notes', description: 'Ship the release notes', status: 'IN_PROGRESS' };
 
 import RunListRow from '../RunListRow.vue';
 import { useRunListDisclosure } from '~/composables/useRunListDisclosure';
@@ -23,9 +26,9 @@ import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { RunListSectionActions, RunListSectionState } from '~/components/runList/runListSectionContracts';
 import type { RunListEntry } from '~/utils/runListProjection';
 
-// autobyteus-390 (REQ-001…REQ-003, AC-002, AC-003, R-01): an Agent run's delegated rows are mounted only while the run is
-// expanded. Kept mounted and hidden (`v-show`), their row group measured the rows at the top of the window and slid them
-// down on expand.
+// autobyteus-390 SR-002 (REQ-002, REQ-003, AC-002, AC-003, R-01): an Agent run's delegated rows stay mounted while the run
+// is folded, only hidden, so they keep their Task answers and show complete on unfold (no late Task line, CRR-001 CR-001).
+// That rows never slide is the CSS's (no move transition; useLeavingTreeRows.spec) and the browser probe's.
 const HOST = 'host-run';
 const agentEntry = (): RunListEntry => ({
   kind: 'agent', key: `agent:${HOST}`, runId: HOST, name: 'Project Task Manager', lastActivityAt: '2026-11-06T00:00:00.000Z',
@@ -67,6 +70,7 @@ describe('RunListRow: an Agent run\'s delegated rows (autobyteus-390)', () => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
     hydration.read.mockImplementation(async () => multiTeamView());
+    tasks.use.mockImplementation(() => ({ taskOf: () => TASK, locate: vi.fn() }));
   });
 
   it('expanded at first: the stored delegated rows load once and show; the disclosure says expanded', async () => {
@@ -79,24 +83,31 @@ describe('RunListRow: an Agent run\'s delegated rows (autobyteus-390)', () => {
     wrapper.unmount();
   });
 
-  it('fold removes the rows from the DOM (not only hidden); unfold shows the same rows again without a second read (R-01)', async () => {
+  it('fold hides the rows and keeps them, with their Task lines; unfold shows the same rows with no new read (R-01)', async () => {
     const { wrapper, toggle } = render();
     await flushPromises();
     const before = rowKeys(wrapper);
+    const taskLines = wrapper.findAll('[data-test="workspace-task-worker-task-summary"]').length;
+    expect(taskLines).toBeGreaterThan(0);
+    const mountedTree = tree(wrapper).element;
 
     toggle();
     await flushPromises();
-    expect(tree(wrapper).exists()).toBe(false);
-    expect(wrapper.findAll('[role="treeitem"]')).toHaveLength(0);
-    // The stored view stays in the store, so the disclosure stays and can unfold it.
+    expect(tree(wrapper).exists()).toBe(true);
+    expect((tree(wrapper).element as HTMLElement).style.display).toBe('none');
+    expect(tree(wrapper).isVisible()).toBe(false);
     expect(useAgentRunCollaborationStore().taskRows(HOST).length).toBeGreaterThan(0);
     expect(disclosureButton(wrapper).attributes('aria-expanded')).toBe('false');
     expect(disclosureButton(wrapper).get('[data-icon]').classes()).toContain('-rotate-90');
 
     toggle();
     await flushPromises();
-    expect(tree(wrapper).exists()).toBe(true);
+    expect(tree(wrapper).isVisible()).toBe(true);
+    // The same mounted rows: their Task lines are there at once, with no second ask for the Task answers or the view.
+    expect(tree(wrapper).element).toBe(mountedTree);
     expect(rowKeys(wrapper)).toEqual(before);
+    expect(wrapper.findAll('[data-test="workspace-task-worker-task-summary"]')).toHaveLength(taskLines);
+    expect(tasks.use).toHaveBeenCalledTimes(1);
     expect(disclosureButton(wrapper).attributes('aria-expanded')).toBe('true');
     expect(hydration.read).toHaveBeenCalledTimes(1);
     wrapper.unmount();
@@ -106,10 +117,10 @@ describe('RunListRow: an Agent run\'s delegated rows (autobyteus-390)', () => {
     const { wrapper } = render();
     await flushPromises();
     await disclosureButton(wrapper).trigger('click');
-    expect(tree(wrapper).exists()).toBe(false);
+    expect(tree(wrapper).isVisible()).toBe(false);
     await disclosureButton(wrapper).trigger('click');
     await flushPromises();
-    expect(tree(wrapper).exists()).toBe(true);
+    expect(tree(wrapper).isVisible()).toBe(true);
     wrapper.unmount();
   });
 
@@ -118,7 +129,8 @@ describe('RunListRow: an Agent run\'s delegated rows (autobyteus-390)', () => {
     await flushPromises();
     toggle();
     await flushPromises();
-    expect(wrapper.find('[role="tree"]').exists()).toBe(false);
+    // Only its own (hidden) delegated tree.
+    expect(wrapper.findAll('[role="tree"]').map((node) => node.attributes('data-test'))).toEqual(['workspace-agent-run-task-tree']);
     expect(wrapper.find('[data-test="agent-org-run-member-tree"]').exists()).toBe(false);
     expect(wrapper.findAll('li[data-test="run-list-row"]')).toHaveLength(1);
     wrapper.unmount();
