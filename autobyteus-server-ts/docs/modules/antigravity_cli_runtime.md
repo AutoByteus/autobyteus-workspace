@@ -402,7 +402,7 @@ also deduplicates by boundary key. Other checkpoint states are ignored.
 
 Detection is on only when the run's CLI version is at least
 `AGY_COMPACTION_DETECTION_MIN_VERSION` (1.2.16), the version on which the
-signal was proven. `AgyAgentRunBackendFactory` decides this per created or
+signal was proven, compared by SemVer precedence (`1.2.16-rc.1` is below it). `AgyAgentRunBackendFactory` decides this per created or
 restored backend and logs one info line when it is off. Older AGY versions
 wrote early non-compaction checkpoint steps (`{{ CHECKPOINT 0 }}` truncation
 notices) to their transcripts and may also stream them, so on an older or
