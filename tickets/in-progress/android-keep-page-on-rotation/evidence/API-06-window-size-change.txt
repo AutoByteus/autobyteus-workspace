@@ -1,0 +1,15 @@
+# Case: API-06 — a window-size change without rotation keeps the page (REQ-001, SCN-001d)
+# Steps: open the saved node (the page reloads by this user action); mark the page; adb shell wm size 1600x2560 (display resize: screenSize and smallestScreenSize change, density 420 unchanged); read page, node GET /mobile count, MainActivity record; adb shell wm size reset; read again
+# Commit: dd129696a4; emulator autobyteus277_api35
+# Date: 2026-11-06T20:49:41Z
+
+before: {"href":"http://10.0.2.2:50364/mobile/","marker":"api06-before-resize","navigationStart":1793998172824,"viewport":"412x839","title":"","heading":"AutoByteus"} node[GET /mobile, all]=3 173 topResumedActivity=ActivityRecord{8fca4f8 size=Physical size: 1080x2400 
+resized: {"href":"http://10.0.2.2:50364/mobile/","marker":"api06-before-resize","navigationStart":1793998172824,"viewport":"610x896","title":"","heading":"AutoByteus"} node[GET /mobile, all]=3 173 topResumedActivity=ActivityRecord{8fca4f8 size=Physical size: 1080x2400 Override size: 1600x2560 
+reset: {"href":"http://10.0.2.2:50364/mobile/","marker":"api06-before-resize","navigationStart":1793998172824,"viewport":"412x831","title":"","heading":"AutoByteus"} node[GET /mobile, all]=3 173 topResumedActivity=ActivityRecord{8fca4f8 size=Physical size: 1080x2400 
+
+## insets after the reset (REQ-002): why the viewport is 412x831 and not 412x839
+type=displayCutout frame=[0,0][1080,136]
+type=navigationBars frame=[0,2316][1080,2400]
+type=statusBars frame=[0,0][1080,136]
+WebView bounds (uiautomator): bounds="[0,136][1080,2316]"
+reading: after the resize and reset the system's navigation bar is 84 px (frame from y=2316; IMP-04 showed the WebView ending at 2337 before); the WebView is exactly the screen minus the status bar/cutout (136) and the navigation bar (2316), so the page re-laid out for the system's new bar and stays clear

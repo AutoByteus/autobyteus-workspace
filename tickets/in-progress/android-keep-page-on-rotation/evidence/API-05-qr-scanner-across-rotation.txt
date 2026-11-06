@@ -1,0 +1,26 @@
+# CORRECTION (after API-07): an unchanged ActivityRecord id is no proof that the activity was not recreated (Android relaunches inside the same record; the dark-mode relaunches in API-07 kept 8fca4f8). The proof that MainActivity was not recreated here: its window stayed Window{8316170} before and after the scanner rotation (each relaunch gets a new window, e.g. f23c65d, 2be7169 in API-07), and the system log shows no 'finishDrawing of relaunch' for MainActivity in this case's window (API-07b-logcat-mainactivity-relaunches.txt).
+# Case: API-05 — the QR scanner (embedded zxing CaptureActivity) across a rotation (REQ-003, SCN-001c), with a no-rotation baseline
+# Steps: camera permission granted beforehand (pm grant); native connection screen; set the address field (tap, Ctrl+A, Del, adb shell input text), close the keyboard; tap SCAN QR; confirm CaptureActivity is in front; [rotation run: adb emu rotate while the scanner shows]; KEYCODE_BACK (cancel the scan); read focus, the MainActivity record (same ActivityRecord id = not recreated) and the field; rotate back to 0°
+# Commit: dd129696a4; emulator autobyteus277_api35 (virtual camera)
+# Date: 2026-11-06T20:48:04Z
+
+## baseline (no rotation)
+field: 'http://abx415-qr-baseline.example:8000/mobile' [android.widget.EditText] [52,1202][1028,1372] checked=false
+activities before: topResumedActivity=ActivityRecord{8fca4f8 u0 org.autobyteus.mobile/.MainActivity t16} * Hist  #0: ActivityRecord{8fca4f8 u0 org.autobyteus.mobile/.MainActivity t16} Resumed: ActivityRecord{8fca4f8 u0 org.autobyteus.mobile/.MainActivity t16} 
+scanner: mCurrentFocus=Window{413a227 u0 org.autobyteus.mobile/com.journeyapps.barcodescanner.CaptureActivity
+after back: mCurrentFocus=Window{8316170 u0 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity
+activities: mLastPausedActivity: ActivityRecord{5020a36 u0 org.autobyteus.mobile/com.journeyapps.barcodescanner.CaptureAct topResumedActivity=ActivityRecord{8fca4f8 u0 org.autobyteus.mobile/.MainActivity t16} * Hist  #0: ActivityRecord{8fca4f8 u0 org.autobyteus.mobile/.MainActivity t16} 
+field: not found: 'abx415-qr'
+diagnostic shown: 'QR scan was not completed' [TextView] [88,493][992,546] 'No QR text was returned from the scanner.\n\nScan the Phone Access QR again, or paste/manual-enter the Phone Acc' [TextView] [88,550][992,717] 
+
+## with rotation while the scanner shows
+field: 'http://abx415-qr-rotation.example:8000/mobile' [android.widget.EditText] [52,1502][1028,1672] checked=false
+activities before: mLastPausedActivity: ActivityRecord{5020a36 u0 org.autobyteus.mobile/com.journeyapps.barcodescanner.CaptureAct topResumedActivity=ActivityRecord{8fca4f8 u0 org.autobyteus.mobile/.MainActivity t16} * Hist  #0: ActivityRecord{8fca4f8 u0 org.autobyteus.mobile/.MainActivity t16} 
+scanner: mCurrentFocus=Window{e3ecc79 u0 org.autobyteus.mobile/com.journeyapps.barcodescanner.CaptureActivity
+rotated: mRotation=3 scanner: mCurrentFocus=Window{e3ecc79 u0 org.autobyteus.mobile/com.journeyapps.barcodescanner.CaptureActivity
+after back (landscape): mCurrentFocus=Window{8316170 u0 org.autobyteus.mobile/org.autobyteus.mobile.MainActivity
+activities: mLastPausedActivity: ActivityRecord{35394d3 u0 org.autobyteus.mobile/com.journeyapps.barcodescanner.CaptureAct topResumedActivity=ActivityRecord{8fca4f8 u0 org.autobyteus.mobile/.MainActivity t16} * Hist  #0: ActivityRecord{8fca4f8 u0 org.autobyteus.mobile/.MainActivity t16} 
+field: not found: 'abx415-qr'
+diagnostic shown: 'QR scan was not completed' [TextView] [88,384][2176,437] 'No QR text was returned from the scanner.\n\nScan the Phone Access QR again, or paste/manual-enter the Phone Acc' [TextView] [88,441][2176,568] 
+back at mRotation=0: field: not found: 'abx415-qr'
+app pid: 5815
