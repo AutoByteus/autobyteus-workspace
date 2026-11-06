@@ -1,0 +1,15 @@
+DEL-03 — full web unit/component suite under Node 22 (the CI version) on the merged state
+Why: IMP-07 ran under Node 26.12.0, where 32 files fail on a Node 25+ built-in localStorage global (FU-003); this run is the regression net IMP-07 could not give.
+Merged state: 5adead4e95879e76e9631af0240a423184cc952a
+Command: PATH=/opt/homebrew/opt/node@22/bin:$PATH npx pnpm@10.28.2 -C autobyteus-web test:nuxt --run
+Node: v22.23.3; Date: 2026-11-06
+
+Result (the run's other output lines, expected 'failed' messages logged by tests that exercise failure paths, are omitted):
+ Test Files  704 passed (704)
+      Tests  5220 passed (5220)
+   Duration  227.67s (transform 24.71s, setup 1471.50s, collect 146.94s, tests 68.36s, environment 125.77s, prepare 80.83s)
+
+Cause check (FU-003) on the sampled files, same worktree:
+  Node v22.23.3: RunSectionPanel.spec.ts + chatDraftStore.spec.ts + appFontSizeStore.spec.ts -> Test Files 3 passed (3), Tests 101 passed (101)
+  Node v26.12.0: the same three files -> Test Files 3 failed (3), Tests 101 failed (101) (TypeError reading window.localStorage)
+CI uses Node 22 (.github/workflows/release-*.yml: node-version: 22).

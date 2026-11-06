@@ -136,6 +136,13 @@ data does not free a port and is not offered as conflict recovery. Retrying
 while the external owner remains leaves it untouched; a healthy retry clears
 the stale diagnostic. Port-owner information never authorizes automatic kills.
 
+ERROR is a stopped state. While the server is in ERROR, `checkServerHealth()`
+answers `error` / "Server is not running" (not the STARTING-era "still
+starting"). The renderer's fallback health poller (`serverStore`) calls health
+only in STARTING and RESTARTING and stops once RUNNING; its timer ticks idle in
+any other status. Entering ERROR also clears the stale health text. Restart
+Server moves the status to RESTARTING, which resumes the poll until RUNNING.
+
 ### Confirmed backend and application shutdown
 
 Each managed backend child has a `ManagedBackendShutdownClient` bound to that
