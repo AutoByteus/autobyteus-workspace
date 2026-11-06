@@ -27,15 +27,17 @@ describe.skipIf(!enabled)("DeepSeek Harness in the standalone application host",
     }
     const receipt = JSON.parse(stdout.trim().split("\n").at(-1)!) as {
       result: string; error?: string; availability: { enabled: boolean; reason: string | null };
-      launch: { started: boolean; error?: string }; dshStarts: string[]; rootRemoved: boolean;
+      launch: { started: boolean; error?: string }; dshStarts: string[]; dshDataFiles: string[]; rootRemoved: boolean;
     };
     console.log(JSON.stringify(receipt));
     expect(receipt.result, receipt.error).toBe("Pass");
     expect(receipt.availability.enabled).toBe(false);
     expect(receipt.availability.reason).toMatch(/credential proxy/i);
     expect(receipt.launch.started).toBe(false);
-    expect(receipt.launch.error).toBeTruthy();
+    // The DEC-020 refusal itself, not any other failure before spawn.
+    expect(receipt.launch.error).toMatch(/^PROVIDER_RELAY_UNAVAILABLE: DeepSeek Harness needs the AutoByteus credential proxy/);
     expect(receipt.dshStarts, "dsh was never started for a run").toEqual([]);
+    expect(receipt.dshDataFiles, "no dsh home or run files were written").toEqual([]);
     expect(receipt.rootRemoved).toBe(true);
   }, 160_000);
 });
