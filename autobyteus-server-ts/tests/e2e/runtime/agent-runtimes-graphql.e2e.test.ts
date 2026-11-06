@@ -376,6 +376,29 @@ describe("Settings → Agent Runtimes GraphQL e2e (real studio server, scripted 
     expect((await read()).agentRuntimeSignInBrowserAvailable).toBe(true);
   }, 60_000);
 
+  it("AR-14 shows a prerelease as it is and orders it by SemVer precedence: update available, updated to the release, newer than the latest (autobyteus-393 AC-001, AC-002, AC-005)", async () => {
+    // A preview build of Codex is installed and the latest release is its stable version.
+    states.set("codex-version", "0.170.0-alpha.2");
+    sources.answers.codex = { status: 302, body: "rust-v0.170.0" };
+    await client.mutate("checkAgentRuntimes");
+    const behind = await waitRow(CODEX, "prerelease checked", (r) => r.updates.state !== "CHECKING" && r.installedVersion === "0.170.0-alpha.2");
+    expect(behind).toMatchObject({ installedVersion: "0.170.0-alpha.2", updates: { state: "UPDATE_AVAILABLE", latestVersion: "0.170.0" } });
+
+    // Update installs the release: an update from the prerelease to its release succeeded.
+    states.set("codex-update-to", "0.170.0");
+    expect(await client.mutate("updateAgentRuntime", CODEX)).toEqual({ data: { updateAgentRuntime: true } });
+    const updated = await waitRow(CODEX, "updated", (r) => r.operation?.kind === "UPDATE" && r.operation.state !== "RUNNING");
+    expect(updated.operation).toMatchObject({ kind: "UPDATE", state: "SUCCEEDED", fromVersion: "0.170.0-alpha.2", toVersion: "0.170.0", error: null });
+    expect(updated.installedVersion).toBe("0.170.0");
+    expect((await waitRow(CODEX, "re-checked", (r) => r.updates.state === "UP_TO_DATE")).updates.latestVersion).toBe("0.170.0");
+
+    // A preview of the next version is newer than the latest release: no update is offered.
+    states.set("codex-version", "0.171.0-rc.1");
+    await client.mutate("checkAgentRuntimes");
+    const ahead = await waitRow(CODEX, "newer prerelease checked", (r) => r.updates.state !== "CHECKING" && r.installedVersion === "0.171.0-rc.1");
+    expect(ahead.updates).toEqual({ state: "UP_TO_DATE", latestVersion: "0.170.0" });
+  }, 60_000);
+
   it("AR-12 closing the server stops a running vendor process (QR-003, SCN-A4)", async () => {
     states.set("codex-account", "signedOut");
     states.clearPid("codex", "login");

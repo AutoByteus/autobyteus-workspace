@@ -233,15 +233,25 @@ describeLive("DeepSeek Harness live (real dsh, real DeepSeek API, product relay)
     expect(JSON.stringify(flash!.configSchema)).toContain("reasoning_effort");
 
     await graphql("mutation { checkAgentRuntimes }").catch(() => undefined);
-    let row: { runtimeKind: string; installed: boolean; installedVersion: string | null; signInRoute: string; account: { state: string } } | undefined;
-    for (let attempt = 0; attempt < 60; attempt += 1) {
+    let row: { runtimeKind: string; installed: boolean; installedVersion: string | null; signInRoute: string; account: { state: string };
+      updates: { state: string; latestVersion: string | null } } | undefined;
+    for (let attempt = 0; attempt < 120; attempt += 1) {
       row = (await graphql<{ agentRuntimes: NonNullable<typeof row>[] }>(
-        "{ agentRuntimes { runtimeKind installed installedVersion signInRoute account { state } } }"))
+        "{ agentRuntimes { runtimeKind installed installedVersion signInRoute account { state } updates { state latestVersion } } }"))
         .agentRuntimes.find((entry) => entry.runtimeKind === "deepseek_harness");
-      if (row?.account.state === "SIGNED_IN") break;
+      if (row?.account.state === "SIGNED_IN" && row.updates.state !== "CHECKING") break;
       await wait(250);
     }
     expect(row).toMatchObject({ installed: true, signInRoute: "API_KEY_SETTING", account: { state: "SIGNED_IN" } });
+    // The row shows dsh's full version, prerelease included (autobyteus-393), and the registry's full latest version.
+    const fullVersion = /\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?/;
+    const ownVersion = fullVersion.exec(spawnSync(dshCommand, ["--version"], { encoding: "utf8" }).stdout)?.[0];
+    expect(row!.installedVersion).toBe(ownVersion);
+    const registry = spawnSync("npm", ["view", "@deepseek-ai/dsh", "version"], { encoding: "utf8" });
+    if (registry.status === 0) {
+      expect(row!.updates.latestVersion).toBe(fullVersion.exec(registry.stdout)?.[0]);
+      if (row!.updates.latestVersion === row!.installedVersion) expect(row!.updates.state).toBe("UP_TO_DATE");
+    }
     log("ROW", row);
   }, 180_000);
 
