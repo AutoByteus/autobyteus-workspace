@@ -3,10 +3,14 @@
 ## Round
 
 - Coverage investigation: [api-e2e-coverage-investigation.md](api-e2e-coverage-investigation.md) (round 2: section "Round 2 Plan")
-- API/E2E revision record: [api-e2e-revision-record.md](api-e2e-revision-record.md), `API-REV-003`
+- API/E2E revision record: [api-e2e-revision-record.md](api-e2e-revision-record.md), `API-REV-004`
 - Test progress log: [api-e2e-test-progress.md](api-e2e-test-progress.md)
 - Round and trigger:
-  - **Round 3 (latest):** the code reviewer's CRR-007 Pass, code `e3dd8c4677` (HEAD `c4c85f70fb`).
+  - **Round 4 (latest):** CRR-009, the latest-base merge `ed20da1cd1` (`origin/personal` `9d8077fd2a`, 97 commits), HEAD `dc1c959ccc`.
+    - The contract packages and server changed, a shared foundation, so everything was rerun on rebuilt outputs (`round-4/server-build.log`, `round-4/mobile-web-build.log`, both `exit 0`).
+    - New: MSP-15 (the desktop Projects view's `null` window) and the fresh-start build proof (FSB).
+    - The commit under test is `54e2eb4d07`: the merged tree plus MSP-15.
+  - Round 3: the code reviewer's CRR-007 Pass, code `e3dd8c4677` (HEAD `c4c85f70fb`).
     - The change since round 2 is one line in `MobileRunTargetView.vue`: the conversation host becomes `!overflow-clip`. Its spec changed with it.
     - Rerun by impact: MSP-03, MSP-05 and MSP-11 (the run screen and menu), and ADR-01, ADR-05, ADR-06, ADR-07 on API 35.
     - On API 34: ADR-01 and ADR-07.
@@ -18,7 +22,7 @@
   - The design's `TESTING.md` "phone rule" is not added, at the user's direction. The project documents hold only what every future change follows, and the probe's header carries the phone specifics.
   - At the user's request, `TESTING.md` was trimmed of one-suite details and a dated note, in two commits of its own: `c5319f0bf4` and `dce25fdd50`.
   - One API 34 attempt was lost to the emulator's own system restart; logcat shows no app crash. The rerun is the evidence.
-- Evidence folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-experience-redesign/tickets/in-progress/mobile-experience-redesign/evidence/api-e2e/`. Round 3 is under `round-3/`, round 2 under `round-2/`, and round 1's still-valid cases are in the folder root.
+- Evidence folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-experience-redesign/tickets/in-progress/mobile-experience-redesign/evidence/api-e2e/`. Round 4 is under `round-4/`, round 3 under `round-3/`, round 2 under `round-2/`, and round 1's still-valid cases are in the folder root.
 
 ## Routing Classification
 
@@ -44,10 +48,17 @@ Paths are relative to the evidence folder.
 
 | Case ID | Criteria | Boundary / Surface | Command Or Steps | Env | Result | Evidence Files | Look For | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| R4-MSP | AC-001…009, AC-002a, AC-003a | Merged tree, real stack | `pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=…/round-4/MSP-run-6` | ENV-1 (rebuilt) | Pass | `round-4/MSP-run-6/mobile-shell-probe.json` | All 15 cases `Pass`; `browserErrors` unknown: none; cleanup receipt clean | Supersedes the round-2/3 MSP rows for the merged tree |
+| MSP-15 | DS-001 (desktop shares the window) | Desktop window, same node | same run | ENV-1 | Pass | `cases.MSP-15`, `MSP-15-desktop-projects.png` | `"inProjects": [null, null]`; `"whileSwitching": [null, null]` over 12.3 s (≤ 4 polls); `"workspacesReads": [{"dt": 77, "window": 6}, …]` | Observed: the Workspaces switch also read a second time 272 ms later (it may be the poll coinciding); not asserted |
+| R4-ADR | AC-003a, AC-005, AC-008, AC-010, AC-011, C-12, C-16 | Android 15 (all ADR-01…08) and Android 14 (ADR-01, 07, 08) | `node scripts/android-journey.mjs … round-4/ADR-run-6-api35`; `… round-4/ADR-run-7-api34 --only=ADR-01,ADR-07,ADR-08` | ENV-2, ENV-3 | Pass | both `android-journey.json` | API 35: ADR-07 gap 62 with `scrollTop` 0; ADR-05 centre tap opens ⋮, WebView 136–2337 between the bars; ADR-03 `confirmOnTop: true`, `afterUnpairTap: "pairing"`. API 34: ADR-07 gap 62 with `scrollTop` 0 | APK unchanged and up to date |
+| R4-IOS | QR-004 | WebKit | `… round-4/IOS-run-3` | ENV-4 | Pass | `round-4/IOS-run-3/ios-webkit-journey.json` | `"result": "Pass"`, `"unknownErrors": []` | |
+| R4-DSK | AC-010 | Desktop regression, merged tree | DSK-01, DSK-02 (4 probes), DSK-03 into `round-4/` | ENV-5 | Pass | `round-4/DSK-01.log`, `round-4/DSK-02/*.log`, `round-4/DSK-03.log` | "probe: Pass" / "probe passed." ×6 | |
+| R4-UPD | Preserved behavior; DS-001 | Updated probes, merged tree | LRL-004 + WVC-004; OSR seed (30) + B-006, B-007; node-vocabulary | ENV-5 | Pass (NVP-05: Fail, out of scope) | `round-4/UPD-LRL-WVC.log` ("Summary: 2 Pass, 0 Fail"), `round-4/UPD-OSR.log`, `round-4/UPD-NVP/node-vocabulary-probe.json` (NVP-01…04 Pass) | as named | NVP-05 (desktop Memory Sync, no phone step): the dev server crashed on the backend restart again (`UPD-NVP/frontend.log:50` `read ECONNRESET`, restart at `:72`); FU-006 |
+| FSB | Build inputs changed by the ticket | Fresh-start build (TESTING.md) | `bash scripts/fresh-start-build.sh 54e2eb4d07… …/round-4/FSB`: `git clone --no-local`, checkout, `pnpm install --frozen-lockfile`, then `pnpm build:electron:mac -- --arm64` (`NO_TIMESTAMP=1 AUTOBYTEUS_BUILD_FLAVOR=personal PRISMA_CLI_BINARY_TARGETS=… CSC_IDENTITY_AUTO_DISCOVERY=false GITHUB_REPOSITORY=…`), then the job's two verify steps | macOS ARM64 | Pass | `round-4/FSB/steps.log`, `install.log`, `build.log`, `verify-prisma.log`, `verify-terminal.log` | `Lockfile is up to date`; `[guard:web-boundary] Passed.`; `[typecheck] PASS`; `PRISMA OK`; `TERMINAL RUNTIME OK`; `result: Pass`; `clone removed: yes` | Signing and notarization (runner secrets), macOS x64, Linux and Windows jobs: not tested. Only the contract packages' tracked `dist/` existed before the install |
 | R3-MSP | AC-003, AC-003a, AC-005 | Run screen and menu, real stack | `pnpm -C autobyteus-web test:e2e:mobile-shell --cases=MSP-03,MSP-05,MSP-11 --output-dir=…/round-3/MSP-run-5` | ENV-1 | Pass | `round-3/MSP-run-5/mobile-shell-probe.json` | All three Pass; the six MSP-03 kinds `reached: true`; Back walks unchanged at both sizes; no unknown browser errors | Round 3 rerun after F-10's fix |
 | R3-ADR-35 | AC-003a, AC-005, AC-011, C-12, C-16 | Android 15 | `node scripts/android-journey.mjs … round-3/ADR-run-4-api35 --only=ADR-01,ADR-05,ADR-06,ADR-07,ADR-08` | ENV-2 | Pass | `round-3/ADR-run-4-api35/android-journey.json`, `ADR-07-keyboard-open.png`, `ADR-08-*.png` | ADR-07: `"noDoublePadding": true`, `"composerAboveKeyboard": true`, `"gapToKeyboard": 62` (= the control's 62), `conversationScrollTop: 0`, bar at 0.<br>ADR-08: Files search field focused at 4–44 with the bar at 0, the `app.ts` row at 48–104; the folder path field at 467–515 of 527 with its sheet header at 270; keyboard `top 1517` | ADR-08's JSON got a note: the script's `result` key collision is fixed, and the values are as shown |
 | R3-ADR-34 | C-12, C-16 | Android 14 | `… round-3/ADR-run-5-api34 --only=ADR-01,ADR-07,ADR-08` | ENV-3 | Pass | `round-3/ADR-run-5-api34/android-journey.json`, `ADR-07-keyboard-open.png` | ADR-07: gap 62, `scrollTop` 0, no double padding. ADR-08: search 4–44, path field 470–518 of 530 | |
-| API-01 | All (component), AC-010 | Web unit/component suite | Reused IMP-09 | — | Pass | (handoff) | `Test Files  701 passed (701)` | Ran on `400457d5f7` |
+| API-01 | All (component), AC-010 | Web unit/component suite | Reused IMP-09; merged tree: IMP-12 (703 files, 5214 tests) | — | Pass | (handoff) | `Test Files  701 passed (701)` | Ran on `400457d5f7` |
 | API-04 | — | Typecheck, guards | Reused IMP-02, IMP-03 | — | Pass | (handoff) | `[typecheck] PASS`; the guards pass | Ran on `400457d5f7`. My later edits are probe `.mjs` files and `TESTING.md` |
 | API-06 | REQ-011 | Android instrumented tests | Reused IMP-08 | — | Pass | (handoff) | — | API 35 and API 34; no Android file changed since |
 | MSP-01 | AC-001 | Real stack, phone + desktop window | `pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=…/round-2/MSP-run-3` | ENV-1 | Pass | `round-2/MSP-run-3/mobile-shell-probe.json` | 8 runs; `phoneIds` = `desktopIds`; `"foldBefore": "Show older (3)"` | |
@@ -105,7 +116,7 @@ Paths are relative to the evidence folder.
 
 ## Validation Confidence Scorecard
 
-Round 3, final. Parts only the user can check (his phone, network and history) are not counted as gaps.
+Round 4 (merged tree), final; unchanged from round 3. Parts only the user can check (his phone, network and history) are not counted as gaps.
 
 | Category | Final | What Supports It | Residual |
 | --- | --- | --- | --- |
@@ -115,7 +126,7 @@ Round 3, final. Parts only the user can check (his phone, network and history) a
 | Environment, identity, fixture fidelity | 95% | HTTP pairing like a LAN/tailnet; emulators of the newest and previous API level | Tailscale itself is not emulated |
 | Failure, edge, lifecycle, recovery | 95% | Node and peer down/back, 401, background and wake, restart, Task DONE, unpair, keyboard | Revoked device (FU-003) |
 | User surface, browser, device | 95% | Both viewports; Android 15 and 14 with real taps and the Back key; keyboard on the run screen, Files search and the New run sheet; WebKit; iOS Safari (unpaired) | iOS Safari paired screens through WebKit only |
-| Durable regression coverage | 94% | `test:e2e:mobile-shell` and four updated probes; the shell insets' instrumented tests (IMP-08) and the clip's spec guard (IMP-10) | The Android journeys stay ticket scripts (no Android emulator layer in the repository) |
+| Durable regression coverage | 94% | `test:e2e:mobile-shell` (with MSP-15) and four updated probes; the fresh-start build proof; the shell insets' instrumented tests (IMP-08) and the clip's spec guard (IMP-10) | The Android journeys stay ticket scripts (no Android emulator layer in the repository) |
 
 - Overall final confidence: 95% (simple average: 95.1).
 - Every critical AC directly proven, apart from user-only parts: `Yes`.
@@ -160,11 +171,11 @@ Not applicable: round 3 passes. F-10 is resolved. One observation is not a findi
 
 ## Latest Authoritative Result
 
-- Result: `Pass` (round 3, `API-REV-003`).
+- Result: `Pass` (round 4 on the merged tree, `API-REV-004`; round 3 before the merge).
 - Criteria not proven: none. Only the user can check: QR-003's 2 s on his phone over Tailscale with his history, AC-005's confirmation on his phone, and AC-010/AC-011 on his Android device. What I tried: the same journeys on the probe stack (first rows in 0.47 s, 6.2 KB per read) and on the API 35 and API 34 emulators with this branch's APK. His network, history and device need him.
 - Broader validation: `Required`, executed.
 - Durable test code for the proportional test review:
-  - `autobyteus-web/tests/e2e/mobile-shell-probe.mjs` (added) and its `package.json` script;
+  - `autobyteus-web/tests/e2e/mobile-shell-probe.mjs` (added) and its `package.json` script; round 4 adds MSP-15 (`54e2eb4d07`);
   - the phone steps of `node-vocabulary-probe.mjs`, `large-runs-load-less-cases.mjs`, `workspace-views-chooser-cases.mjs` and `owner-scoped-file-reads-probe.mjs`.
   - `TESTING.md` changed at the user's request (`c5319f0bf4`, `dce25fdd50`); that is not test code.
 - Next recipient: `/software_engineering_team/code_reviewer` (proportional test-code review).

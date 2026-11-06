@@ -17,14 +17,14 @@ The plan: what must be proven, how, the decisions about existing tests, and the 
 - Code Review Revision Record: [code-review-revision-record.md](code-review-revision-record.md)
 - Delivery Revision Record: N/A (first API/E2E entry)
 - API/E2E Revision Record: [api-e2e-revision-record.md](api-e2e-revision-record.md)
-- Current API/E2E Revision ID: `API-REV-003`
-- Current Investigation Round: 3 (round 3: CRR-007 Pass, code `e3dd8c4677`)
+- Current API/E2E Revision ID: `API-REV-004`
+- Current Investigation Round: 4 (round 4: CRR-009, the latest-base merge `ed20da1cd1`, HEAD `dc1c959ccc`)
 - Trigger:
   - round 1: CRR-002 Pass, code `f2816cc7c1`, base `407f0ee8e9`;
   - round 2: CRR-005 Pass, HEAD `3e3ce3961b` (then `23c0c35395`, documents only), code `400457d5f7`.
   - The basis moved to requirements SR-005 (REQ-002a, REQ-003a, REQ-011; AC-002a, AC-003a, AC-011; DEC-009…015) and design SR-006 (ARCH-REV-004).
 - Prior Investigation Reviewed: round 1 (this file at `ccf43b875c`)
-- Latest Authoritative Investigation: round 3 (sections "Round 2 Plan" and "Round 3 Plan")
+- Latest Authoritative Investigation: round 4 (sections "Round 2 Plan" … "Round 4 Plan")
 
 ## Current Requirement And Design Basis
 
@@ -271,3 +271,21 @@ Found during execution (details and evidence in the execution report):
 | ADR-01, ADR-05, ADR-06, ADR-07 (API 35); ADR-01, ADR-07 (API 34) | Rerun | The run screen with the keyboard (F-10) and the screens around it |
 | ADR-08 (new) | Run on API 35 and API 34 | Review residual C-16: New run's folder path and the Files search, typed into with the keyboard open |
 | Everything else of round 2 | Still valid | Nothing it exercises changed |
+
+## Round 4 Plan
+
+**What changed:** the merge of `origin/personal` `9d8077fd2a` (97 commits) into the validated tree.
+- It brings in server source, the three contract packages (`src` and their tracked `dist`), web components and stores, and a new "Fresh-start build" section in `TESTING.md`.
+- For this ticket specifically: `RunSectionPanel.vue` (388's rename of the desktop host) keeps its windows on this branch's `useRunHistorySectionLoad`, so the desktop **Projects** view now reads with `null`. The phone's toast keys follow the rename.
+
+**Decision:** TESTING.md "Rerun by impact" step 4 applies: the contract packages and server changed, a shared foundation. Everything is rerun on rebuilt outputs (`pnpm -C autobyteus-server-ts build`, `pnpm -C autobyteus-web build:mobile-web`). The lockfile is unchanged, so no reinstall.
+
+| Case ID | Decision | Reason |
+| --- | --- | --- |
+| MSP-01…14 | Rerun | Foundation changed |
+| MSP-15 (new, durable) | Run | The desktop Projects view shares the phone's `null` window after the merge: it reads `null`; Runs ↔ Projects reads nothing beyond the poll; Workspaces reads once with 6 |
+| ADR-01…08 (API 35); ADR-01, 07, 08 (API 34) | Rerun | Foundation changed (the APK is unchanged and up to date) |
+| IOS-02 | Rerun | — |
+| DSK-01…03, UPD-LRL-004, UPD-WVC-004, UPD-OSR, UPD-NVP | Rerun | — |
+| FSB (new) | Run | TESTING.md "Fresh-start build": the ticket's diff against its base (`git diff --name-only 9d8077fd2a...HEAD`) matches build inputs `autobyteus-web/package.json` (the probe's script line) and `autobyteus-web/typecheck-baseline.json` (three removed spec entries). Proof: a fresh clone, `pnpm install --frozen-lockfile`, the macOS ARM64 release job's build and its two verify steps (`scripts/fresh-start-build.sh`) |
+| API-01, API-04 | Reused | IMP-12 (full web suite on the merged tree), IMP-02, IMP-03 |

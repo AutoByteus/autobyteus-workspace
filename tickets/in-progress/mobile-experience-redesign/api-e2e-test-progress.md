@@ -44,3 +44,15 @@ My progress log while tests run. Read it first when picking the run back up. Row
 | 2026-11-06 16:42 | ADR-01,07,08 | Started | — | API 34, `round-3/ADR-run-5-api34` |
 | 2026-11-06 16:43 | ADR-01,07,08 | Completed | Pass | API 34 `round-3/ADR-run-5-api34` (scrollTop 0, gap 62). Emulator and held stack stopped; secrets sweep clean |
 | 2026-11-06 16:44 | round 3 | Completed | Pass | Report, investigation and revision record (API-REV-003) written; next: commit, test-code review |
+| 2026-11-06 17:00 | round 4 | Started | — | Trigger CRR-009 (merge `ed20da1cd1`, HEAD `dc1c959ccc`). Contracts and server changed in the merge: everything Rerun; rebuilding server and phone bundle; fresh-start build proof required (ticket changes autobyteus-web/package.json, typecheck-baseline.json) |
+| 2026-11-06 17:01 | MSP-01…15 | Started | — | `round-4/MSP-run-6` (server and bundle rebuilt, exit 0) |
+| 2026-11-06 17:07 | MSP-01…15 | Completed | Pass | `round-4/MSP-run-6` |
+| 2026-11-06 17:08 | ADR-01…08 | Started | — | API 35, `round-4/ADR-run-6-api35` (APK up to date) |
+| 2026-11-06 17:10 | ADR-01…08 | Completed | Pass | API 35 `round-4/ADR-run-6-api35` |
+| 2026-11-06 17:11 | ADR-01,07,08 | Started | — | API 34, `round-4/ADR-run-7-api34` |
+| 2026-11-06 17:13 | ADR-01,07,08 (API 34), IOS-02 | Completed | Pass | `round-4/ADR-run-7-api34`, `round-4/IOS-run-3` |
+| 2026-11-06 17:13 | DSK-01…03, UPD-* | Started | — | Round 4 sequential |
+| 2026-11-06 17:21 | DSK-01…03, UPD-* | Completed | Pass | DSK-01…03, UPD-LRL-004, UPD-WVC-004, UPD-OSR, NVP-04 Pass; NVP-05 Fail out of scope, same cause as FU-006 (frontend.log:50 ECONNRESET, dev server restart :72) |
+| 2026-11-06 17:21 | FSB | Started | — | Fresh-start build of `54e2eb4d07` (clone, frozen install, macOS ARM64 job) |
+| 2026-11-06 17:31 | FSB | Completed | Pass | `round-4/FSB` (frozen install, mac ARM64 build, Prisma and terminal verification; clone removed) |
+| 2026-11-06 17:31 | round 4 | Completed | Pass | Reports updated (API-REV-004); next: commit, test-code review of MSP-15 |

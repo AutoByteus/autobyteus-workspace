@@ -9,6 +9,7 @@ The coverage investigation and the execution coverage report are the current tru
 | API-REV-001 | code_reviewer, code-review-report.md CRR-002 Pass, round 1 | SR-003, SR-004, ARCH-REV-002, IR-002, CRR-002 | N/A | Fail / 81% |
 | API-REV-002 | code_reviewer, code-review-report.md CRR-005 Pass, round 2 | SR-005, SR-006, ARCH-REV-004, IR-003, IR-004, CRR-003…CRR-005 | Fail / 81% | Fail / 90% |
 | API-REV-003 | code_reviewer, code-review-report.md CRR-007 Pass, round 3 | IR-005, CRR-006, CRR-007 | Fail / 90% | Pass / 95% |
+| API-REV-004 | code_reviewer, CRR-009 (latest-base merge), round 4 | IR-006, CRR-008, CRR-009 | Pass / 95% | Pass / 95% |
 
 ## Revision Entries
 
@@ -93,3 +94,22 @@ None.
 - New or remaining failure IDs: none.
 - Recommended owner: code_reviewer, proportional test-code review.
 - Remaining risks, blocked evidence, or untested scope: the user's phone (QR-003, AC-005's confirmation, AC-010/AC-011 on his device); iOS Safari's paired screens (WebKit covers them).
+
+### API-REV-004 — Round 4: the merged tree (latest base), everything rerun, the fresh-start build
+
+- Triggering role, report path, and round: code_reviewer, CRR-009, round 4. Merge `ed20da1cd1`; commit under test `54e2eb4d07`.
+- Why recorded: the merge changed the contract packages and server (a shared foundation), so every case is rerun.
+- Coverage decisions or durable test paths changed:
+  - `mobile-shell-probe.mjs` adds MSP-15: the desktop Projects view reads `null` after the merge, and Runs ↔ Projects reads nothing beyond the poll.
+  - Ticket script `scripts/fresh-start-build.sh` added.
+- Cases: MSP-01…15, ADR-01…08 (API 35), ADR-01/07/08 (API 34), IOS-02, DSK-01…03, UPD-LRL-004, UPD-WVC-004, UPD-OSR, UPD-NVP, FSB. All pass, except NVP-05, out of scope (FU-006).
+- Commands, environment, broader-validation delta: server and phone bundle rebuilt on the merged tree; the fresh-start build of the macOS ARM64 release job (TESTING.md's new section) from a fresh clone.
+
+#### Prior Failure Resolution
+
+None (round 3 passed).
+
+- Prior result and confidence: Pass, 95%. Current: Pass, 95%.
+- New or remaining failure IDs: none.
+- Recommended owner: code_reviewer, proportional test-code review of MSP-15.
+- Remaining risks: the user's phone; the other release jobs (macOS x64, Linux, Windows) and signing need the runner.
