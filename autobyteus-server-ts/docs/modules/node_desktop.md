@@ -42,11 +42,21 @@ Close codes:
 | 4400 | `NODE_DESKTOP_INVALID_REQUEST` | a missing, repeated or unknown `mode`, or any other query parameter |
 | 4400 | `NODE_DESKTOP_VIEWER_PROTOCOL` | bytes before the stream started, or a message the input filter rejects |
 | 4404 | `NODE_DESKTOP_UNAVAILABLE` | this node has no node desktop |
+| 4429 | `NODE_DESKTOP_TOO_MANY_VIEWERS` | the node already serves 4 streams, or this phone 2 |
 | 4502 | `NODE_DESKTOP_DISCONNECTED` | Xvnc refused, failed or ended the connection |
 | 1005 (no code) | — | the server shuts down: the WebSocket plugin closes its clients without a code |
 
 The web client maps these with `viewerStateForClose` (not allowed, no shared desktop, disconnected
 with Reconnect, cannot reach the node, closed).
+
+## Viewer limits and live revocation
+
+`NodeDesktopViewers` (`node-desktop-viewers.ts`, one per server, created with the route) is the node's list of open desktop streams. After the route has authorized the viewer, validated the query and resolved the node desktop, it constructs the stream (which opens nothing yet) and asks the registry to admit it:
+
+- at most **4** streams at once on the node, of every kind, and at most **2** per paired phone (by its device id); a further stream is closed with **4429 `NODE_DESKTOP_TOO_MANY_VIEWERS`** before any connection to Xvnc. Trusted-network and loopback viewers count toward the node-wide limit only.
+- An admitted stream is started at once; the registry forgets it when the stream ends (`onEnd`).
+- While any phone stream is open, the registry re-checks each phone stream's credential with the shared `RemoteAccessAuthService` in cycles that never overlap: the next cycle is scheduled 20 s after the previous one finished; one cycle checks its phones concurrently, each with a 5 s timeout (a timeout or an error leaves the stream for the next cycle). A rejected credential ends the stream with the shared policy's close code (`src/remote-access/domain/remote-access-close-codes.ts`): 4403 `REMOTE_ACCESS_DEVICE_REVOKED` or `PHONE_ACCESS_DISABLED`, 4401 for an invalid credential. A revocation is therefore detected within 25 s. Each successful check updates the device's `lastSeenAt`.
+- The timer is `unref`'d, stops when no phone stream remains, and stops for good when the server closes. The credential lives only in memory and is never logged.
 
 ## Mode and the input filter
 
@@ -109,8 +119,9 @@ Each stream logs one line when it ends, with metadata only:
 ```
 
 `viewer` is how the viewer was admitted (`RemoteAccessAuthContext.mode`); `reason` is one of
-`viewer-closed`, `viewer-error`, `viewer-protocol`, `desktop-closed`, `desktop-error`. No pixels,
-keystrokes, clipboard text, credentials or URLs are logged.
+`viewer-closed`, `viewer-error`, `viewer-protocol`, `desktop-closed`, `desktop-error`, or `node-closed`
+followed by `close=<reason>` when the node ended it (a revoked phone: `close=REMOTE_ACCESS_DEVICE_REVOKED`).
+No pixels, keystrokes, clipboard text, credentials or URLs are logged.
 
 ## Exposure
 

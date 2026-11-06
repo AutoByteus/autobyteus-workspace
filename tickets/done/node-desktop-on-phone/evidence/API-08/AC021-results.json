@@ -1,0 +1,78 @@
+[
+  {
+    "t": "2026-11-06T23:14:21.776Z",
+    "name": "A tab 1: paired, run created (no message), VNC Viewer open",
+    "status": "Connected · View only",
+    "upstream": "1"
+  },
+  {
+    "t": "2026-11-06T23:14:21.777Z",
+    "name": "view URL (shared by the other tabs)",
+    "path": "/mobile/?screen=desktop"
+  },
+  {
+    "t": "2026-11-06T23:14:54.100Z",
+    "name": "A tab 2 (2nd stream of the same phone)",
+    "status": "Connected · View only",
+    "offer": null,
+    "upstream": "2"
+  },
+  {
+    "t": "2026-11-06T23:14:56.394Z",
+    "name": "A tab 3 (3rd stream of the same phone)",
+    "status": "Too many viewers on this node right now",
+    "offer": "Retry",
+    "upstream": "2"
+  },
+  {
+    "t": "2026-11-06T23:14:56.484Z",
+    "name": "server log after the refusal",
+    "log": "[node-desktop] stream ended mode=view viewer=mobile durationMs=30325 toViewer=1696128 fromViewer=2366 reason=viewer-closed\n[node-desktop] stream ended mode=view viewer=mobile durationMs=60270 toViewer=1705914 fromViewer=3466 reason=viewer-closed"
+  },
+  {
+    "t": "2026-11-06T23:14:59.117Z",
+    "name": "A tab 1 closed",
+    "upstream": "1",
+    "log": "[node-desktop] stream ended mode=view viewer=mobile durationMs=34823 toViewer=1697392 fromViewer=2486 reason=viewer-closed"
+  },
+  {
+    "t": "2026-11-06T23:15:30.240Z",
+    "name": "A tab 3 Retry after a stream left",
+    "status": "Connected · View only",
+    "offer": null,
+    "upstream": "2"
+  },
+  {
+    "t": "2026-11-06T23:15:34.422Z",
+    "name": "2 raw trusted-network viewers added",
+    "filler": [
+      "{\"viewer\":1,\"open\":true,\"closed\":null,\"reason\":null}",
+      "{\"viewer\":2,\"open\":true,\"closed\":null,\"reason\":null}"
+    ],
+    "upstream": "4"
+  },
+  {
+    "t": "2026-11-06T23:15:36.945Z",
+    "name": "device B (5th stream node-wide)",
+    "status": "Too many viewers on this node right now",
+    "offer": "Retry",
+    "upstream": "4",
+    "log": "[node-desktop] stream ended mode=view viewer=mobile durationMs=34823 toViewer=1697392 fromViewer=2486 reason=viewer-closed"
+  },
+  {
+    "t": "2026-11-06T23:15:40.063Z",
+    "name": "fillers closed",
+    "upstream": "2"
+  },
+  {
+    "t": "2026-11-06T23:15:41.197Z",
+    "name": "device B Retry",
+    "status": "Connected · View only",
+    "upstream": "3"
+  },
+  {
+    "t": "2026-11-06T23:15:43.842Z",
+    "name": "all closed",
+    "upstream": "0"
+  }
+]

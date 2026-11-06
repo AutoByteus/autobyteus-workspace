@@ -1,6 +1,5 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { flushPromises, mount } from '@vue/test-utils';
-import VncViewer from '../VncViewer.vue';
 
 const fetchNodeDesktop = vi.hoisted(() => vi.fn());
 const endpoints = vi.hoisted(() => ({ rest: 'http://node-a.example:8001/rest' }));
@@ -10,7 +9,9 @@ vi.mock('~/stores/windowNodeContextStore', () => ({
   useWindowNodeContextStore: () => ({ getBoundEndpoints: () => endpoints }),
 }));
 
+// The availability answer is cached per node for the window: each case loads the modules afresh.
 const mountViewer = async () => {
+  const { default: VncViewer } = await import('../VncViewer.vue');
   const wrapper = mount(VncViewer, {
     global: { stubs: { NodeDesktopTile: { template: '<div data-testid="node-desktop-tile-stub" />' } } },
   });
@@ -19,6 +20,10 @@ const mountViewer = async () => {
 };
 
 describe('VncViewer', () => {
+  beforeEach(() => {
+    vi.resetModules();
+  });
+
   afterEach(() => {
     fetchNodeDesktop.mockReset();
     vi.restoreAllMocks();

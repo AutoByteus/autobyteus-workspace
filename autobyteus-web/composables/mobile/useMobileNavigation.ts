@@ -2,11 +2,12 @@ import { computed } from 'vue';
 import { useRoute, useRouter, type LocationQuery, type LocationQueryRaw } from 'vue-router';
 
 /** The phone's screens (UIS-001…UIS-010); the run list is the entry without a `screen` key. */
-export type MobileScreen = 'list' | 'run' | 'artifacts' | 'files' | 'messages' | 'activity' | 'new';
-export type MobileView = 'artifacts' | 'files' | 'messages' | 'activity';
+export type MobileScreen = 'list' | 'run' | 'artifacts' | 'files' | 'messages' | 'activity' | 'desktop' | 'new';
+export type MobileView = 'artifacts' | 'files' | 'messages' | 'activity' | 'desktop';
 
-const SCREENS: readonly MobileScreen[] = ['run', 'artifacts', 'files', 'messages', 'activity', 'new'];
-const SCREEN_KEYS = ['screen', 'file', 'workspace', 'reference', 'message'] as const;
+const SCREENS: readonly MobileScreen[] = ['run', 'artifacts', 'files', 'messages', 'activity', 'desktop', 'new'];
+/** `full=1`: the VNC Viewer's in-page full screen, its own entry, so Back leaves full screen first. */
+const SCREEN_KEYS = ['screen', 'file', 'workspace', 'reference', 'message', 'full'] as const;
 /** The Org route keys, built only by `agentOrgRouteQuery`; `activeWorkspaceTarget` resolves the open Org from them. */
 const ORG_KEYS = ['rootSubjectKind', 'definitionId', 'orgRunId', 'mode', 'memberAddress', 'agentRunId'] as const;
 
@@ -33,6 +34,7 @@ export function useMobileNavigation() {
   });
   const openFilePath = computed(() => (screen.value === 'files' ? one(route.query.file) || null : null));
   const openFileWorkspaceId = computed(() => (screen.value === 'files' ? one(route.query.workspace) || null : null));
+  const desktopFullScreen = computed(() => screen.value === 'desktop' && one(route.query.full) === '1');
   const openReference = computed(() => {
     if (screen.value !== 'messages') return null;
     const messageId = one(route.query.message);
@@ -52,6 +54,7 @@ export function useMobileNavigation() {
       return;
     }
     const parent: LocationQueryRaw = openFilePath.value ? { ...orgKeys(), screen: 'files' }
+      : desktopFullScreen.value ? { ...orgKeys(), screen: 'desktop' }
       : openReference.value ? { ...orgKeys(), screen: 'messages' }
         : screen.value === 'run' || screen.value === 'new' ? { ...orgKeys() }
           : screen.value === 'list' ? route.query : { ...orgKeys(), screen: 'run' };
@@ -86,13 +89,15 @@ export function useMobileNavigation() {
 
   const openView = (view: MobileView) => push({ ...orgKeys(), screen: view });
   const openNewRun = () => push({ ...orgKeys(), screen: 'new' });
+  /** Full screen is an entry above the VNC Viewer; leaving it is `back()`. */
+  const openDesktopFullScreen = () => push({ ...orgKeys(), screen: 'desktop', full: '1' });
   const openFile = (input: { workspaceId: string; path: string }) =>
     push({ ...orgKeys(), screen: 'files', workspace: input.workspaceId, file: input.path });
   const openMessageReference = (input: { messageId: string; referenceId: string }) =>
     push({ ...orgKeys(), screen: 'messages', message: input.messageId, reference: input.referenceId });
 
   return {
-    screen, openFilePath, openFileWorkspaceId, openReference,
-    back, toList, openRun, openView, openNewRun, openFile, openMessageReference,
+    screen, openFilePath, openFileWorkspaceId, openReference, desktopFullScreen,
+    back, toList, openRun, openView, openNewRun, openFile, openMessageReference, openDesktopFullScreen,
   };
 }

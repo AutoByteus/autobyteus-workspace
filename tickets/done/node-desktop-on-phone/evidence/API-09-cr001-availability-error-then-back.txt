@@ -1,0 +1,18 @@
+# Case: API-09 — CR-001 on the emulator: the phone's first availability request fails, then the node answers again; the ⋮ VNC Viewer entry appears on the next run screen without restarting the app
+# Steps: probes/cr001.sh (API-09-cr001.sh). App freshly started with the node reachable (no availability asked). The access proxy's fault switch makes GET /rest/node-desktop answer 502 while every other request is forwarded (a dropped request; a fully unreachable node cannot be reached from a fresh page, API-09a). New run (draft, no message) -> launch -> ⋮; fault off; Back to runs -> New run -> launch -> ⋮. Counts from the proxy log.
+# Commit: 165de82af4 (CR-001 fix 0baf15a981); emulator autobyteus277_api35; node abx407-api-node
+# Date: 2026-11-06T23:28:32Z
+
+(1) fresh page: /mobile/ node-desktop requests so far=4 injected=1
+(2) fault on: GET /rest/node-desktop via proxy -> 502 (this curl is counted too)
+    first run screen: ?screen=run node-desktop requests=8 injected=3
+    menu: {"opened":true,"entries":["Artifacts","Files","Activity"]}
+(3) fault off: GET /rest/node-desktop via proxy -> {"available":true}
+    next run screen: ?screen=run node-desktop requests=10 injected=3 pid=5511
+    menu: {"opened":true,"entries":["Artifacts","Files","Activity","VNC Viewer"]}
+node-desktop lines of the proxy log (this case):
+{"t":"2026-11-06T23:28:33.183Z","kind":"injected-502","path":"/rest/node-desktop"}
+{"t":"2026-11-06T23:28:39.079Z","kind":"http","method":"GET","path":"/rest/node-desktop"}
+{"t":"2026-11-06T23:28:39.079Z","kind":"injected-502","path":"/rest/node-desktop"}
+{"t":"2026-11-06T23:28:48.144Z","kind":"http","method":"GET","path":"/rest/node-desktop"}
+{"t":"2026-11-06T23:28:56.160Z","kind":"http","method":"GET","path":"/rest/node-desktop"}

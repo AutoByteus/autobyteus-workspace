@@ -31,7 +31,10 @@ const flush = () => new Promise((resolve) => setImmediate(resolve));
 
 const routeHandler = async (resolveTarget: () => { host: string; port: number } | null): Promise<Handler> => {
   let handler: Handler | null = null;
-  const app = { get: (_path: string, _options: unknown, route: Handler) => { handler = route; } };
+  const app = {
+    get: (_path: string, _options: unknown, route: Handler) => { handler = route; },
+    addHook: () => undefined,
+  };
   await registerNodeDesktopWebsocket(app as unknown as FastifyInstance, resolveTarget);
   return handler!;
 };

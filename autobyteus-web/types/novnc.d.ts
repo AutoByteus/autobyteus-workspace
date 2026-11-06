@@ -15,5 +15,7 @@ declare module '@novnc/novnc' {
     resizeSession: boolean;
 
     disconnect(): void;
+    /** Sends one key event; `down` omitted sends a press and a release. A no-op while `viewOnly`. */
+    sendKey(keysym: number, code: string | null, down?: boolean): void;
   }
 }

@@ -1,5 +1,6 @@
 <template>
-  <!-- The ⋮ menu (UIS-003, VIS-006, 026): the open agent's views; Messages only for a member of a Team or Org. -->
+  <!-- The ⋮ menu (UIS-003, VIS-006, 026): the open agent's views; Messages only for a member of a Team or Org; VNC Viewer
+       only when the paired node has a node desktop and the run is on that node (autobyteus-407). -->
   <div class="relative flex-shrink-0">
     <button
       ref="buttonRef"
@@ -38,7 +39,7 @@ import { computed, nextTick, ref, watch } from 'vue';
 import { Icon } from '@iconify/vue';
 import type { MobileView } from '~/composables/mobile/useMobileNavigation';
 
-const props = defineProps<{ showMessages: boolean }>();
+const props = defineProps<{ showMessages: boolean; showDesktop: boolean }>();
 const emit = defineEmits<{ (event: 'open-view', view: MobileView): void }>();
 
 const VIEWS: readonly { id: MobileView; label: string; icon: string }[] = [
@@ -46,8 +47,10 @@ const VIEWS: readonly { id: MobileView; label: string; icon: string }[] = [
   { id: 'files', label: 'Files', icon: 'heroicons:folder-20-solid' },
   { id: 'messages', label: 'Messages', icon: 'heroicons:chat-bubble-left-20-solid' },
   { id: 'activity', label: 'Activity', icon: 'heroicons:bolt-20-solid' },
+  { id: 'desktop', label: 'VNC Viewer', icon: 'heroicons:computer-desktop-20-solid' },
 ];
-const views = computed(() => VIEWS.filter((view) => view.id !== 'messages' || props.showMessages));
+const views = computed(() => VIEWS.filter((view) =>
+  (view.id !== 'messages' || props.showMessages) && (view.id !== 'desktop' || props.showDesktop)));
 const open = ref(false);
 const buttonRef = ref<HTMLButtonElement | null>(null);
 watch(open, (value) => { if (value) void nextTick(() => document.querySelector<HTMLElement>('[data-testid="mobile-run-menu"] [role="menuitem"]')?.focus()); });

@@ -5,11 +5,17 @@ import { createPinia, setActivePinia, type Pinia } from 'pinia';
 
 const active = vi.hoisted(() => ({ state: null as null | { target: any } }));
 vi.mock('~/stores/activeContextStore', () => ({ useActiveContextStore: () => ({ get activeWorkspaceTarget() { return active.state!.target; } }) }));
-const remote = vi.hoisted(() => ({ unreachable: false }));
+const remote = vi.hoisted(() => ({ unreachable: false, onOtherNode: false }));
+const desktop = vi.hoisted(() => ({ availability: 'unavailable' }));
+vi.mock('~/composables/useNodeDesktopAvailability', async () => {
+  const { computed: c } = await import('vue');
+  return { useNodeDesktopAvailability: () => ({ availability: c(() => desktop.availability), reload: vi.fn() }) };
+});
 vi.mock('~/composables/remoteRuns/useRemoteRunView', async () => {
   const { computed: c } = await import('vue');
   return { useRemoteRunView: () => ({
-    remote: c(() => (remote.unreachable ? { nodeName: 'office-mac', reachable: false } : null)),
+    remote: c(() => (remote.unreachable ? { nodeName: 'office-mac', reachable: false }
+      : remote.onOtherNode ? { nodeName: 'office-mac', reachable: true } : null)),
     unreachable: c(() => remote.unreachable), headerActionsAllowed: c(() => true),
     composerPlaceholder: (local: string | null) => local, retry: vi.fn(),
   }) };
@@ -39,7 +45,7 @@ const mountScreen = async (parentName: string | null = null) => {
 
 // autobyteus-277 REQ-003, AR-001, MP-001.
 describe('MobileRunScreen', () => {
-  beforeEach(() => { pinia = createPinia(); setActivePinia(pinia); active.state = reactive({ target: null }); remote.unreachable = false; });
+  beforeEach(() => { pinia = createPinia(); setActivePinia(pinia); active.state = reactive({ target: null }); remote.unreachable = false; remote.onOtherNode = false; desktop.availability = 'unavailable'; });
 
   it('while an open is pending it shows "Opening…" only, never the previous target', async () => {
     active.state!.target = targetOf('standalone_agent', 'previous-run', 'Previous Agent');
@@ -109,6 +115,32 @@ describe('MobileRunScreen', () => {
     await wrapper.get('[data-testid="mobile-run-menu-button"]').trigger('click');
     const items = wrapper.findAll('[role="menuitem"]').map((item) => item.text());
     expect(items).toEqual(messages ? ['Artifacts', 'Files', 'Messages', 'Activity'] : ['Artifacts', 'Files', 'Activity']);
+  });
+
+  it.each([
+    ['available', false, true],
+    ['unavailable', false, false],
+    ['loading', false, false],
+    ['error', false, false],
+    ['available', true, false],
+  ])('VNC Viewer is offered when the node desktop is %s and the run is remote=%s: %s (AC-S3-2)', async (availability, onOtherNode, shown) => {
+    desktop.availability = availability;
+    remote.onOtherNode = onOtherNode;
+    active.state!.target = targetOf('standalone_agent', 'r', 'Agent');
+    const { wrapper } = await mountScreen();
+    await wrapper.get('[data-testid="mobile-run-menu-button"]').trigger('click');
+    expect(wrapper.find('[data-testid="mobile-run-menu-desktop"]').exists()).toBe(shown);
+    if (shown) expect(wrapper.findAll('[role="menuitem"]').map((item) => item.text())).toEqual(['Artifacts', 'Files', 'Activity', 'VNC Viewer']);
+  });
+
+  it('VNC Viewer opens the desktop screen', async () => {
+    desktop.availability = 'available';
+    active.state!.target = targetOf('standalone_agent', 'r', 'Agent');
+    const { router, wrapper } = await mountScreen();
+    await wrapper.get('[data-testid="mobile-run-menu-button"]').trigger('click');
+    await wrapper.get('[data-testid="mobile-run-menu-desktop"]').trigger('click');
+    await flushPromises();
+    expect(router.currentRoute.value.query.screen).toBe('desktop');
   });
 
   it('a menu item opens its view screen', async () => {

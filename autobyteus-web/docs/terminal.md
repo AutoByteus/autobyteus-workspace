@@ -175,7 +175,7 @@ RightSideTabs owns tab visibility. For Terminal it hosts `TerminalPanel.vue` aft
 
 ### Mobile Phone Access
 
-Phase One Android pairing removes the mobile Tools/Terminal/VNC page entirely. The interactive terminal remains a desktop/workspace tool, not a standard `/mobile` Phone Access surface. Historical terminal-command tool output may still appear as read-only agent activity in the mobile Activity digest.
+The phone has no Tools or Terminal page. A run's ⋮ menu can open the node desktop in the VNC Viewer (`remote_access.md`, "Node desktop on the phone"). The interactive terminal remains a desktop/workspace tool, not a standard `/mobile` Phone Access surface. Historical terminal-command tool output may still appear as read-only agent activity in the mobile Activity digest.
 
 ## WebSocket Protocol (Summary)
 
