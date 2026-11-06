@@ -1,0 +1,5 @@
+(node:37095) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+WVC-004 Pass DS-002/design Risks: the desktop Runs view reads with null, and the paired phone reads the complete history (null, autobyteus-277 DS-001) without changing the desktop window
+Summary: 1 Pass, 0 Fail
+exit 0

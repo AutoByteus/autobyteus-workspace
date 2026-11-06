@@ -1,0 +1,94 @@
+{
+  "startedAt": "2026-11-06T11:05:36.084Z",
+  "cases": {
+    "WVC-004": {
+      "title": "DS-002/design Risks: the desktop Runs view reads with null, and the paired phone reads the complete history (null, autobyteus-277 DS-001) without changing the desktop window",
+      "result": "Pass",
+      "ms": 16773,
+      "details": {
+        "desktopReads": [
+          null
+        ],
+        "phoneReads": [
+          null
+        ],
+        "desktopReadsAfterPhone": [
+          null
+        ]
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 37126
+    },
+    {
+      "label": "frontend",
+      "pid": 37148
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 37148,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 37126,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-vFXGct"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-vFXGct",
+  "backendUrl": "http://127.0.0.1:55629",
+  "frontUrl": "http://127.0.0.1:55630",
+  "definitions": {
+    "ids": {
+      "manager": "manager-ce22",
+      "lead": "lead-2986",
+      "worker": "worker-cd23",
+      "plain": "plain-0499",
+      "engineer": "engineer-480f",
+      "reviewer": "reviewer-138f",
+      "writer": "writer-7c7b",
+      "offline": "offline-7533",
+      "unoffered": "unoffered-b510",
+      "badsettings": "badsettings-9983",
+      "incomplete": "incomplete-b43f",
+      "build": "build-team-19d6",
+      "pair": "pair-team-c4d1",
+      "squad": "squad-team-beaf",
+      "home": "home-team-555f",
+      "launchOrg": "launchorg-org-23ab",
+      "hostOrg": "hostorg-org-6bcb"
+    },
+    "names": {
+      "manager": "Manager ce22",
+      "lead": "Lead 2986",
+      "worker": "Worker cd23",
+      "plain": "Plain 0499",
+      "engineer": "Engineer 480f",
+      "reviewer": "Reviewer 138f",
+      "writer": "Writer 7c7b",
+      "offline": "Offline 7533",
+      "unoffered": "Unoffered b510",
+      "badsettings": "Badsettings 9983",
+      "incomplete": "Incomplete b43f",
+      "build": "Build Team 19d6",
+      "pair": "Pair Team c4d1",
+      "squad": "Squad Team beaf",
+      "home": "Home Team 555f",
+      "launchOrg": "LaunchOrg Org 23ab",
+      "hostOrg": "HostOrg Org 6bcb"
+    }
+  },
+  "browserErrors": [],
+  "summary": {
+    "pass": 1,
+    "fail": 0
+  },
+  "completedAt": "2026-11-06T11:06:31.114Z"
+}

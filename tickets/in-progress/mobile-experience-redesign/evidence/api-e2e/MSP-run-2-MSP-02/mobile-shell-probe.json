@@ -1,0 +1,335 @@
+{
+  "startedAt": "2026-11-06T10:31:03.610Z",
+  "result": "Fail",
+  "node": "v22.23.1",
+  "servers": {
+    "beta": {
+      "port": 63271,
+      "nodeId": "srv_cOANO8hQr6Er5DeEYoWjDK1_OB4dErkT",
+      "serverName": "AutoByteus Desktop"
+    },
+    "alpha": {
+      "port": 63270,
+      "nodeId": "srv_65qwYJvWiqro14hRQxw3KIphlnmyuVse",
+      "serverName": "AutoByteus Desktop"
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_97778b2cfac041588a310a06226902f4",
+    "writerRun": "release_notes_writer_50b5147024194fcea48a01b64f013c38",
+    "squadRun": "docs_review_team_748f7e28afba4e41a23863da9d4f3f65",
+    "reviewer": null,
+    "memberDelegated": "fact_checker_5ae24f76d2984557bba0ee5da0b6023d",
+    "remoteAgentRun": "publisher_6a9d6ca4e6244976af54531b7fd486d1",
+    "remoteTeamRun": "studio_team_30115c8eb4ab4686bec932c848a4d635",
+    "plain": [
+      "fact_checker_6ef395e8705b4d20b7d9434b3731c32c",
+      "fact_checker_466bbd6972cd4420b6643cd710e9bd95",
+      "fact_checker_cb4021e1e31f49d5825cd7eee46fd34c"
+    ],
+    "org": "delivery_org_b9e49cb6938948a4bc89ff764d178c39",
+    "orgPlanner": "release_notes_writer_ee275e1d3c6c498c99e90cd84e8caaea",
+    "delivery": "delivery_team_7a29b988a06c400796c3274ac37fe47f",
+    "deliveryLead": "fact_checker_1309c186a2174ae6995f720fec0fd534",
+    "deliveryMate": "release_notes_writer_069274431d6a4b83a27f90c145df5cd1",
+    "leadDelegated": "changelog_helper_88139cc7e95145788abc5a5a1d4f1a5c",
+    "approver": "approver_1e85e978a9344b5cbe5d9bf67232fa76",
+    "taskA": "launch-eec276-1",
+    "taskB": "launch-eec276-2"
+  },
+  "cases": {
+    "MSP-02": {
+      "result": "Fail",
+      "seconds": 34.1,
+      "error": "a member's own delegated work under the member (REQ-002, VIS-002); delegated rows show their title or Task line (spec Run row; VIS-001, 002)",
+      "details": {
+        "phonePlace": {
+          "lead": 1,
+          "leadDelegated": 1
+        },
+        "desktopPlace": {
+          "lead": null,
+          "leadDelegated": 16,
+          "reviewer": null,
+          "reviewerDelegated": 16
+        },
+        "phoneTitles": {
+          "writer": null,
+          "squad": null,
+          "spare": null,
+          "leadDelegated": null
+        },
+        "desktopTitles": {
+          "writer": [
+            "RN",
+            "release notes writer",
+            "Write the release notes."
+          ],
+          "spare": [
+            "CH",
+            "changelog helper",
+            "Spare work. Marker SPARE."
+          ],
+          "leadDelegated": [
+            "CH",
+            "changelog helper",
+            "Draft the changelog. Marker LEAD-DELEGATED."
+          ]
+        },
+        "liveStatuses": [
+          "idle",
+          "offline"
+        ],
+        "terminated": {
+          "success": true,
+          "message": "Agent run terminated successfully."
+        },
+        "unselected": {
+          "seen": [
+            "idle"
+          ],
+          "terminated": {
+            "success": true,
+            "message": "Agent run terminated successfully."
+          },
+          "afterRootOpened": "offline"
+        },
+        "reloaded": false,
+        "ptm": {
+          "key": "agent:project_task_manager_97778b2cfac041588a310a06226902f4",
+          "depth": 0,
+          "expanded": "true",
+          "current": null,
+          "status": "idle",
+          "name": "Project Task Manager",
+          "title": "CALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/release_notes_writer\",\"task_...",
+          "chip": null,
+          "unreachable": false,
+          "age": "1m",
+          "buttons": [
+            "mobile-run-open",
+            "mobile-run-toggle"
+          ],
+          "label": "Project Task Manager, CALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/release_notes_writer\",\"task_..., Idle"
+        },
+        "writer": {
+          "key": "agent:project_task_manager_97778b2cfac041588a310a06226902f4/agent:release_notes_writer_50b5147024194fcea48a01b64f013c38",
+          "depth": 1,
+          "expanded": null,
+          "current": null,
+          "status": "idle",
+          "name": "release notes writer",
+          "title": null,
+          "chip": null,
+          "unreachable": false,
+          "age": null,
+          "buttons": [
+            "mobile-run-open"
+          ],
+          "label": "release notes writer, Idle"
+        },
+        "squad": {
+          "key": "agent:project_task_manager_97778b2cfac041588a310a06226902f4/team:docs_review_team_748f7e28afba4e41a23863da9d4f3f65",
+          "depth": 1,
+          "expanded": "false",
+          "current": null,
+          "status": "idle",
+          "name": "docs review team",
+          "title": null,
+          "chip": null,
+          "unreachable": false,
+          "age": null,
+          "buttons": [
+            "mobile-run-open",
+            "mobile-run-toggle"
+          ],
+          "label": "docs review team, Idle"
+        },
+        "members": [
+          {
+            "key": "agent:project_task_manager_97778b2cfac041588a310a06226902f4/agent:release_notes_writer_32947bd47c6d45748e34dc8f86ee9fd0",
+            "depth": 2,
+            "expanded": null,
+            "current": null,
+            "status": "idle",
+            "name": "reviewer",
+            "title": null,
+            "chip": null,
+            "unreachable": false,
+            "age": null,
+            "buttons": [
+              "mobile-run-open"
+            ],
+            "label": "reviewer, Idle"
+          },
+          {
+            "key": "agent:project_task_manager_97778b2cfac041588a310a06226902f4/agent:fact_checker_c9218ec9c80f42a585429e6a1e976b5e",
+            "depth": 2,
+            "expanded": null,
+            "current": null,
+            "status": "offline",
+            "name": "editor",
+            "title": null,
+            "chip": null,
+            "unreachable": false,
+            "age": null,
+            "buttons": [
+              "mobile-run-open"
+            ],
+            "label": "editor, Stopped"
+          }
+        ],
+        "remoteAgent": {
+          "key": "agent:project_task_manager_97778b2cfac041588a310a06226902f4/agent:publisher_6a9d6ca4e6244976af54531b7fd486d1",
+          "depth": 1,
+          "expanded": null,
+          "current": null,
+          "status": "offline",
+          "name": "publisher",
+          "title": null,
+          "chip": "beta-node",
+          "unreachable": false,
+          "age": null,
+          "buttons": [
+            "mobile-run-open"
+          ],
+          "label": "publisher, Runs on beta-node, Stopped"
+        },
+        "remoteTeam": {
+          "key": "agent:project_task_manager_97778b2cfac041588a310a06226902f4/team:studio_team_30115c8eb4ab4686bec932c848a4d635",
+          "depth": 1,
+          "expanded": "false",
+          "current": null,
+          "status": "offline",
+          "name": "studio team",
+          "title": null,
+          "chip": "beta-node",
+          "unreachable": false,
+          "age": null,
+          "buttons": [
+            "mobile-run-open",
+            "mobile-run-toggle"
+          ],
+          "label": "studio team, Runs on beta-node, Stopped"
+        },
+        "team": {
+          "teamRow": {
+            "key": "team:delivery_team_7a29b988a06c400796c3274ac37fe47f",
+            "depth": 0,
+            "expanded": "false",
+            "current": null,
+            "status": "idle",
+            "name": "Delivery Team",
+            "title": "GENERATE_IMAGE:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qwpht3...",
+            "chip": null,
+            "unreachable": false,
+            "age": "1m",
+            "buttons": [
+              "mobile-run-open",
+              "mobile-run-toggle"
+            ],
+            "label": "Delivery Team, GENERATE_IMAGE:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-qwpht3..., Idle"
+          },
+          "lead": {
+            "key": "team:delivery_team_7a29b988a06c400796c3274ac37fe47f/agent:fact_checker_1309c186a2174ae6995f720fec0fd534",
+            "depth": 1,
+            "expanded": null,
+            "current": null,
+            "status": "idle",
+            "name": "lead",
+            "title": null,
+            "chip": null,
+            "unreachable": false,
+            "age": null,
+            "buttons": [
+              "mobile-run-open"
+            ],
+            "label": "lead, Idle"
+          },
+          "mate": {
+            "key": "team:delivery_team_7a29b988a06c400796c3274ac37fe47f/agent:release_notes_writer_069274431d6a4b83a27f90c145df5cd1",
+            "depth": 1,
+            "expanded": null,
+            "current": null,
+            "status": "idle",
+            "name": "mate",
+            "title": null,
+            "chip": null,
+            "unreachable": false,
+            "age": null,
+            "buttons": [
+              "mobile-run-open"
+            ],
+            "label": "mate, Idle"
+          },
+          "leadDelegatedNested": null
+        },
+        "orgRow": {
+          "key": "org:delivery_org_b9e49cb6938948a4bc89ff764d178c39",
+          "depth": 0,
+          "expanded": "true",
+          "current": null,
+          "status": "running",
+          "name": "Delivery Org",
+          "title": "Plan the delivery. Marker ORG-PLANNER.",
+          "chip": null,
+          "unreachable": false,
+          "age": "1m",
+          "buttons": [
+            "mobile-run-open",
+            "mobile-run-toggle"
+          ],
+          "label": "Delivery Org, Plan the delivery. Marker ORG-PLANNER., Running"
+        },
+        "orgMembers": [
+          "planner",
+          "squad"
+        ],
+        "teamRows": [
+          [
+            "Delivery Team",
+            0
+          ],
+          [
+            "lead",
+            1
+          ],
+          [
+            "mate",
+            1
+          ],
+          [
+            "changelog helper",
+            1
+          ]
+        ]
+      }
+    }
+  },
+  "browserErrors": [
+    {
+      "case": "setup",
+      "line": "phone console: WebSocket connection to 'ws://localhost:8000/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "setup",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    }
+  ],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "summary": {
+    "cases": {
+      "MSP-02": "Fail"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-06T10:33:19.367Z"
+}
