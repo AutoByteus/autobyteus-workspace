@@ -1,0 +1,20 @@
+# Investigation Notes
+
+## Investigation Meta
+
+- Package: `left-panel-follow-ups` (Project Task `autobyteus-388`), the follow-ups FU-001, FU-003, FU-004 and FU-005 of autobyteus-385.
+- Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/left-panel-follow-ups`, branch `codex/left-panel-follow-ups`, base `origin/personal` @ `d6bcff577b` (2026-11-06). Dependencies are installed.
+- Project documents present: `DESIGN.md`, `TESTING.md`, `RELEASE.md`. Current solution revision: `SR-001`.
+- Authorities: the skill's `ticket-scope.md` and `project-documents.md` (updated 2026-11-06).
+
+## Source Log
+
+| Type | Source | Finding | ID |
+| --- | --- | --- | --- |
+| Code | `git grep createAgentRun` (2026-11-06) | GraphQL `createAgentRun` (`api/graphql/types/agent-run.ts:202`) is used by **90 server E2E/integration test files** and **18 web browser probes**. The service `AgentRunService.createAgentRun` is also used by applications (`application-execution-scope.ts:42`, `application-run-binding-launch-service.ts:115`) and Model Routing (`model-router-agent.ts:134`). No other repository package calls the GraphQL mutation | E-01 |
+| Docs | `autobyteus-server-ts/docs/modules/agent_execution.md:433-447`; `docs/modules/projects.md:341,1293` | `createAgentRun` is the documented **one-call creation** API: it prepares and then activates, all or nothing. The interactive first-message flow uses `prepareAgentRun` plus a WebSocket message. These are two supported entry points, not an old one and a new one | E-02 |
+| Code | `autobyteus-web/graphql/mutations/agentMutations.ts:13-15` | The web's `CreateAgentRun` document is imported by nothing (probes send raw GraphQL strings). It is dead code in the web, with its generated types in `generated/graphql.ts` | E-03 |
+| Code | `git grep WorkspaceAgentRunsTreePanel` (excluding ticket history) | About 20 files: the component (416 lines) and its two specs, `AppLeftPanel.vue` and its two specs, `layouts` specs, three other specs, `RunListPanel.vue` (two keys), `stores/runListStore.ts` (a comment), four web docs, and four localization files. Keys `…WorkspaceAgentRunsTreePanel.stream_recovery_wait`/`_retry` (used by both panels) and `loading_task_history` are used. `this_workspace` is used nowhere | E-04 |
+| Code | `autobyteus-web/stores/projectRunsStore.ts:51-57,125-140` | The Projects view re-reads a Project on `connected`, `project_upserted`, this window's own run start, and archive, delete or stop, and when shown. A run started by another client is never seen until one of those happens (FU-004) | E-05 |
+| Code | `autobyteus-server-ts/src/projects/services/project-run-service.ts:39-52` (`recordStart` runs "before the run's own records are written"); `projects/changes/project-change-publisher.ts:30-45` (a flush on `setImmediate`) | A feed mark at `recordStart` would race: the Project's run listing joins entries with runs that exist, and the run's records are written after it, over async I/O. A client re-reading on that event could still miss the run. A correct server trigger would have to fire after each kind of run's history record exists (Agent and Team creation paths), which is cross-module plumbing | E-06 |
+| Code | `RunSectionPanel` host (today `WorkspaceAgentRunsTreePanel.vue:490-505`): history load and a 5 s `refreshTreeQuietly` poll in every view; `runHistoryStore.workspaceGroups` and team history | The run section already polls the run history every 5 s in all three views, the Projects view included. A run started anywhere appears there as a new root run id within one poll | E-07 |
