@@ -47,7 +47,17 @@ Then use direct local commands. `new-container` checks/pulls the image and creat
 autobyteus-docker new-container
 ```
 
-The first node uses `autobyteus-server-0` as its friendly name and prefers these host ports when available: Backend `8001`, VNC `5908`, noVNC `6080`, and Chrome debug `9228`. If a port is busy, the launcher retries with fresh ports. Repeated `new-container` calls create `autobyteus-server-1`, `autobyteus-server-2`, and so on.
+The first node uses `autobyteus-server-0` as its friendly name and prefers these host ports when available: Backend `8001` and VNC Viewer `6080`. If a port is busy, the launcher retries with fresh ports. Repeated `new-container` calls create `autobyteus-server-1`, `autobyteus-server-2`, and so on.
+
+Each node publishes two host ports: its Backend port on every network
+interface (other devices add the node with it) and its VNC Viewer port on
+`127.0.0.1` only, for the AutoByteus desktop app's VNC Viewer on the same
+computer. The node's raw VNC (container port 5900) and Chrome DevTools (9223)
+ports are not published, so a VNC app or `chrome://inspect` no longer reaches
+a node from outside it. Nodes created by an earlier launcher keep their old
+port publishing until you run `autobyteus-docker upgrade --all` (or
+`autobyteus-docker workspace apply`); the launcher then recreates each node
+once, keeping its Backend and VNC Viewer ports and its named volumes.
 
 Use the printed Backend URL in **Nodes -> Manage Nodes -> Add Remote Node**, then
 open that Docker node window over a trusted LAN, VPN, tailnet, or equivalent
@@ -268,9 +278,7 @@ docker run -d \
   --cap-add SYS_ADMIN \
   --security-opt seccomp=unconfined \
   -p 8001:8000 \
-  -p 5908:5900 \
-  -p 6080:6080 \
-  -p 9228:9223 \
+  -p 127.0.0.1:6080:6080 \
   -e AUTOBYTEUS_SERVER_HOST=http://localhost:8001 \
   -e AUTOBYTEUS_VNC_SERVER_HOSTS=localhost:6080 \
   -v autobyteus-server-workspace:/app/autobyteus-server-ts/workspace \
@@ -417,7 +425,7 @@ Public launcher commands for no-clone users:
 - `autobyteus-docker workspace paths`: Show the host folders backing `/home/autobyteus/workspace` and `/home/autobyteus/shared`.
 - `autobyteus-docker workspace apply --all`: Safely recreate managed containers to apply shared workspace bind mounts while keeping named volumes.
 - `autobyteus-docker storage`: Show private named volumes, host bind mounts, and launcher state.
-- `autobyteus-docker urls`: Show Backend/noVNC/VNC/debug URLs for `autobyteus-server-0` by default.
+- `autobyteus-docker urls`: Show the Backend, GraphQL and VNC Viewer (this computer only) URLs for all managed nodes by default.
 - `autobyteus-docker status`: Show managed launcher nodes.
 - `autobyteus-docker logs`: Show Docker logs for `autobyteus-server-0` by default.
 - `autobyteus-docker stop`: Stop `autobyteus-server-0` by default without removing named volumes.
@@ -679,9 +687,9 @@ Manual republish:
 - GraphQL: `http://localhost:8001/graphql`
 - REST: `http://localhost:8001/rest/*`
 - WS: `ws://localhost:8001/ws/...`
-- VNC: `localhost:5908`
-- noVNC: `http://localhost:6080`
-- Chrome debug proxy: `localhost:9228`
+- VNC Viewer: `localhost:6080`, published on `127.0.0.1` only (this computer only)
+
+VNC (container port 5900) and the Chrome debug proxy (9223) are not published.
 
 ## Data and Persistence
 

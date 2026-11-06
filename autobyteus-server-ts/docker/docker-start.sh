@@ -236,15 +236,11 @@ case "${cmd}" in
       done
 
       backend_port="$(pick_unique_port)"
-      vnc_port="$(pick_unique_port)"
       novnc_port="$(pick_unique_port)"
-      debug_port="$(pick_unique_port)"
 
       cat <<EOF > "${env_file}"
 AUTOBYTEUS_BACKEND_PORT=${backend_port}
-AUTOBYTEUS_VNC_PORT=${vnc_port}
 AUTOBYTEUS_WEB_VNC_PORT=${novnc_port}
-AUTOBYTEUS_CHROME_DEBUG_PORT=${debug_port}
 AUTOBYTEUS_IMAGE_TAG=${image_tag}
 EOF
     fi
@@ -277,7 +273,7 @@ EOF
     echo "Endpoints:"
     echo "  Backend: http://localhost:${AUTOBYTEUS_BACKEND_PORT}"
     echo "  GraphQL: http://localhost:${AUTOBYTEUS_BACKEND_PORT}/graphql"
-    echo "  noVNC:   http://localhost:${AUTOBYTEUS_WEB_VNC_PORT}"
+    echo "  VNC Viewer: localhost:${AUTOBYTEUS_WEB_VNC_PORT} (this computer only)"
     ;;
 
   down)

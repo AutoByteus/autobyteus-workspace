@@ -1,0 +1,23 @@
+# Case: API-11 — AC-007 in the real desktop app (isolated instance of this worktree's build), plus AC-005 rendered
+# Steps: pnpm --silent isolated-app start --build (worktree; API-11-00-isolated-instance-start.json: iso-60917-946b, controlPort 60917, app .../autobyteus-web/electron-dist/mac-arm64/AutoByteus.app);
+#        test node abx402-api-node created by the v8 bash launcher (API-11-01-test-node.log: Backend http://localhost:60167, VNC Viewer localhost:60168, 127.0.0.1:60168->6080/tcp, container env AUTOBYTEUS_VNC_SERVER_HOSTS=localhost:60168);
+#        driven over CDP with API-11-cdp.mjs (Runtime.evaluate clicks/inputs, Page.captureScreenshot):
+#        Nodes -> Add node (Address http://localhost:60167, Name abx402-docker-node, "Let agents on both nodes work together" unticked) -> Add node;
+#        Docker Guide tab -> read the "Show Docker node URLs" card; Manage Nodes -> "Open abx402-docker-node in its own window";
+#        in the node window: Show tools -> VNC Viewer tab; wait 8 s; read .vnc-viewer text and canvas
+# Commit: 71dc90b1f1 (source identical to 2575d870e8)
+# Environment: macOS 26.5.2 arm64; AutoByteus 1.5.12-beta.3 (enterprise flavor of this worktree build, isolated e2e profile, own data root); Docker Desktop 29.0.1; node server 1.5.11-beta.7
+# Date: 2026-11-06
+
+Nodes page after Add node (excerpt):
+  abx402-docker-node / localhost:60167 / Server 1.5.11-beta.7
+
+Docker Guide, "Show Docker node URLs" card (main window):
+  {"urlsEntry":"Show Docker node URLs\n\nPrints the Backend, GraphQL and VNC Viewer (this computer only) addresses for all managed nodes by default.\n\nCopy\nautobyteus-docker urls ...","mentionsNoVNC":false}
+  screenshot: API-11-02-docker-guide-urls.png
+
+Node window -> VNC Viewer tab:
+  {"viewerText":"localhost:60168\nConnected to VNC server\nDisconnect\nView Only","canvas":{"width":1920,"height":1080,"sampledNonBlackPixels":21378}}
+  screenshot: API-11-03-node-window-vnc-viewer.png (green dot, "localhost:60168 / Connected to VNC server", the node's desktop with Chromium)
+
+Unrelated observation: the node window's Workspaces panel shows `Cannot query field "lastActivityAt" on type "RunHistoryItemObject"` because the node server (1.5.11-beta.7) is older than the app (1.5.12-beta.3); the Nodes page offers "Update to 1.5.12-beta.3". Version skew of the test image, not this change.

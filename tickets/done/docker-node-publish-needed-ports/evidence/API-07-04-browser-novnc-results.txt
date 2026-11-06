@@ -1,0 +1,17 @@
+# Case: API-07 step 04 — the app's VNC Viewer transport in a real Chromium renderer
+# Steps: python3 -m http.server 58502 --bind 127.0.0.1 serving /private/tmp/abx402-api/novnc-page (index.html = API-07-novnc-page.html; ./novnc -> the worktree's @novnc/novnc 1.7.0-g7c36fab, the package autobyteus-web imports);
+#        open http://127.0.0.1:58502/index.html?url=<target> in a browser tab; the page runs new RFB(div, url, { credentials: { password: '' }, shared: true }) as composables/useVncSession.ts does; read window.__abx402 and the canvas after load
+# Setup: test node abx402-api-node, VNC Viewer port 58396 published as 127.0.0.1:58396->6080 only (API-07-02); localhost resolves to ::1 then 127.0.0.1 (API-07-03)
+# Commit: 71dc90b1f1 (source identical to 2575d870e8)
+# Environment: browser tab user agent "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) autobyteus/1.5.12-beta.3 Chrome/148.0.7778.280 Electron/42.11.16 Safari/537.36" (Chromium 148 inside Electron 42); page origin http://127.0.0.1:58502
+# Date: 2026-11-06
+
+target ws://localhost:58396  (what the app's VNC Viewer builds from AUTOBYTEUS_VNC_SERVER_HOSTS=localhost:<port>)
+  {"state":{"status":"connected","detail":"fb=1920x1080 name=vncuser@35c0bd419d20 canvas=1920x1080","url":"ws://localhost:58396"},"canvas":{"width":1920,"height":1080,"sampledNonBlackPixels":21378}}
+  screenshot: API-07-04-novnc-localhost-connected.png (the node's XFCE desktop with Chromium open, drawn by noVNC)
+
+negative control ws://[::1]:58396  (IPv6 loopback: no listener since the change)
+  {"state":{"status":"disconnected","detail":"{\"clean\":false}","url":"ws://[::1]:58396"},"canvas":false}
+
+negative control ws://192.168.2.158:58396  (the Mac's LAN address: another device's view)
+  {"state":{"status":"disconnected","detail":"{\"clean\":false}","url":"ws://192.168.2.158:58396"},"canvas":false}

@@ -1,0 +1,25 @@
+# Case: API-07 step 01
+# Command: autobyteus-docker.sh workspace apply --name abx402-api-node
+# Setup: test node abx402-api-node; AUTOBYTEUS_DOCKER_STATE_DIR=/private/tmp/abx402-api/bash/state AUTOBYTEUS_DOCKER_SHARED_WORKSPACE_DIR=/private/tmp/abx402-api/bash/shared; seed state (no ports): NODE_NAME, CONTAINER_NAME, IMAGE_REF=autobyteus/autobyteus-server:1.5.11-beta.7, CREATED_AT; v8 bash launcher = worktree scripts/public/docker/autobyteus-docker.sh
+# Commit: 71dc90b1f1 (launcher source identical to 2575d870e8)
+# Environment: macOS 26.5.2 arm64, /bin/bash 3.2, Docker Desktop 29.0.1, LAN IP 192.168.2.158
+# Date: 2026-11-06T15:38:46Z
+
+[AutoByteus Docker] Applying shared workspace bind mounts to abx402-api-node. Named volumes will be kept.
+[AutoByteus Docker] Checking image autobyteus/autobyteus-server:1.5.11-beta.7
+1.5.11-beta.7: Pulling from autobyteus/autobyteus-server
+Digest: sha256:8bcf8eabfafef982577b327951cb34f655daad77e1f2513b5f07d49797649666
+Status: Image is up to date for autobyteus/autobyteus-server:1.5.11-beta.7
+docker.io/autobyteus/autobyteus-server:1.5.11-beta.7
+[AutoByteus Docker] Started abx402-api-node.
+AutoByteus Docker node: abx402-api-node
+Container: abx402-api-node
+Image: autobyteus/autobyteus-server:1.5.11-beta.7
+Backend: http://localhost:58395
+GraphQL: http://localhost:58395/graphql
+VNC Viewer: localhost:58396 (this computer only)
+Workspace: /home/autobyteus/workspace -> /private/tmp/abx402-api/bash/shared/nodes/abx402-api-node
+Shared folder: /home/autobyteus/shared -> /private/tmp/abx402-api/bash/shared/shared
+Private app data: /home/autobyteus/data -> abx402-api-node-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+exit=0

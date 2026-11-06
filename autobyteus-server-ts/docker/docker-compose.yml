@@ -19,9 +19,7 @@ services:
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
     ports:
       - "${AUTOBYTEUS_BACKEND_PORT:-8001}:8000"
-      - "${AUTOBYTEUS_VNC_PORT:-5908}:5900"
-      - "${AUTOBYTEUS_WEB_VNC_PORT:-6080}:6080"
-      - "${AUTOBYTEUS_CHROME_DEBUG_PORT:-9228}:9223"
+      - "127.0.0.1:${AUTOBYTEUS_WEB_VNC_PORT:-6080}:6080"
     volumes:
       - autobyteus-server-workspace:/app/autobyteus-server-ts/workspace
       - autobyteus-server-data:/home/autobyteus/data

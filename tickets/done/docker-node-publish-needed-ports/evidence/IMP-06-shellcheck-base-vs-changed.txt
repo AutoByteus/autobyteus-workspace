@@ -1,0 +1,14 @@
+# Check: IMP-06
+# Command: shellcheck -s bash -S warning <bash launcher modules> autobyteus-server-ts/docker/docker-start.sh, on this commit and on base 6324fb056d (count of findings)
+# Commit: 2575d870e8
+# Environment: macOS 26.5.2 arm64, Docker 29.0.1, Node v22.23.1
+# Date: 2026-11-06
+
+changed: 13 findings
+base:    13 findings
+
+finding codes (changed vs base):
+2c2
+<   22 SC2034
+---
+>   20 SC2034

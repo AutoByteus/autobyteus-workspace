@@ -5,8 +5,8 @@ desired_config_hash() {
   workspace_root="$(shared_workspace_root)"
   node_workspace_host="$(node_workspace_host_path "$node_name")"
   shared_host="$(shared_workspace_host_path)"
-  { printf 'version=%s\nnode=%s\nimage=%s\nbackend=%s\nvnc=%s\nnovnc=%s\ndebug=%s\nworkspace_volume=%s-workspace\ndata_volume=%s-data\nroot_volume=%s-root-home\nchromium_profile_volume=%s-chromium-profile\nchromium_profile_target=%s\nserver_packages_volume=%s-server-packages\nserver_packages_target=%s\nshared_workspace_root=%s\nnode_workspace_host=%s\nnode_workspace_target=%s\nshared_workspace_host=%s\nshared_workspace_target=%s\ntemp_workspace_env=AUTOBYTEUS_TEMP_WORKSPACE_DIR=%s\nserver_host=http://localhost:%s\nvnc_hosts=localhost:%s\n' \
-    "$CONFIG_HASH_VERSION" "$node_name" "$image_ref" "$BACKEND_PORT" "$VNC_PORT" "$NOVNC_PORT" "$DEBUG_PORT" "$volume_prefix" "$volume_prefix" "$volume_prefix" "$volume_prefix" "$CHROMIUM_PROFILE_CONTAINER_PATH" "$volume_prefix" "$SERVER_PACKAGES_CONTAINER_PATH" "$workspace_root" "$node_workspace_host" "$WORKSPACE_CONTAINER_PATH" "$shared_host" "$SHARED_CONTAINER_PATH" "$TEMP_WORKSPACE_ENV_VALUE" "$BACKEND_PORT" "$NOVNC_PORT"
+  { printf 'version=%s\nnode=%s\nimage=%s\nbackend=%s\nnovnc=%s\nworkspace_volume=%s-workspace\ndata_volume=%s-data\nroot_volume=%s-root-home\nchromium_profile_volume=%s-chromium-profile\nchromium_profile_target=%s\nserver_packages_volume=%s-server-packages\nserver_packages_target=%s\nshared_workspace_root=%s\nnode_workspace_host=%s\nnode_workspace_target=%s\nshared_workspace_host=%s\nshared_workspace_target=%s\ntemp_workspace_env=AUTOBYTEUS_TEMP_WORKSPACE_DIR=%s\nserver_host=http://localhost:%s\nvnc_hosts=localhost:%s\n' \
+    "$CONFIG_HASH_VERSION" "$node_name" "$image_ref" "$BACKEND_PORT" "$NOVNC_PORT" "$volume_prefix" "$volume_prefix" "$volume_prefix" "$volume_prefix" "$CHROMIUM_PROFILE_CONTAINER_PATH" "$volume_prefix" "$SERVER_PACKAGES_CONTAINER_PATH" "$workspace_root" "$node_workspace_host" "$WORKSPACE_CONTAINER_PATH" "$shared_host" "$SHARED_CONTAINER_PATH" "$TEMP_WORKSPACE_ENV_VALUE" "$BACKEND_PORT" "$NOVNC_PORT"
   } | hash_text
 }
 
@@ -39,9 +39,7 @@ run_container() {
     --cap-add SYS_ADMIN \
     --security-opt seccomp=unconfined \
     -p "${BACKEND_PORT}:8000" \
-    -p "${VNC_PORT}:5900" \
-    -p "${NOVNC_PORT}:6080" \
-    -p "${DEBUG_PORT}:9223" \
+    -p "127.0.0.1:${NOVNC_PORT}:6080" \
     --mount "type=bind,source=${node_workspace_host},target=${WORKSPACE_CONTAINER_PATH}" \
     --mount "type=bind,source=${shared_host},target=${SHARED_CONTAINER_PATH}"
   )

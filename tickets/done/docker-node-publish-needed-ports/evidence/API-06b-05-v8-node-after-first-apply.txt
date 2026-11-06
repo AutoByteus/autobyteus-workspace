@@ -1,0 +1,30 @@
+# Case: API-06 (b) step 05
+# Command: docker ps / PortBindings / id + label / state JSON / data-volume marker after first v8 run
+# Setup: as API-06b-02 (test node abx402-ps-node; native arm64 PowerShell 7.4.6; real Docker engine; temp state/shared under /private/tmp/abx402-api/ps)
+# Commit: 71dc90b1f1 (launcher source identical to 2575d870e8)
+# Date: 2026-11-06T15:38:09Z
+
+abx402-ps-node	Up Less than a second	127.0.0.1:56186->6080/tcp, 0.0.0.0:56184->8000/tcp, [::]:56184->8000/tcp
+{"6080/tcp":[{"HostIp":"127.0.0.1","HostPort":"56186"}],"8000/tcp":[{"HostIp":"","HostPort":"56184"}]}
+id=827d51bf7fcdbe340b50d21b39e25ea57da5677d0100a3b619fa72b077417178 configHash=4b1f734e67e95beb74c5bfc4651739132d3af0f362de416ce83bf4c68faa63f4
+
+{
+  "nodeName": "abx402-ps-node",
+  "containerName": "abx402-ps-node",
+  "backendPort": 56184,
+  "noVncPort": 56186,
+  "imageRef": "autobyteus/autobyteus-server:1.5.11-beta.7",
+  "configHash": "4b1f734e67e95beb74c5bfc4651739132d3af0f362de416ce83bf4c68faa63f4",
+  "createdAt": "2026-11-06T00:00:00Z",
+  "updatedAt": "2026-11-06T15:38:09Z"
+}
+
+marker: abx402-ps-volume-marker
+bind /private/tmp/abx402-api/ps/shared/shared -> /home/autobyteus/shared
+volume abx402-ps-node-workspace/var/lib/docker/volumes/abx402-ps-node-workspace/_data -> /app/autobyteus-server-ts/workspace
+volume abx402-ps-node-data/var/lib/docker/volumes/abx402-ps-node-data/_data -> /home/autobyteus/data
+volume abx402-ps-node-root-home/var/lib/docker/volumes/abx402-ps-node-root-home/_data -> /root
+volume abx402-ps-node-chromium-profile/var/lib/docker/volumes/abx402-ps-node-chromium-profile/_data -> /home/vncuser/.config/chromium
+volume abx402-ps-node-server-packages/var/lib/docker/volumes/abx402-ps-node-server-packages/_data -> /home/autobyteus/server-packages
+bind /private/tmp/abx402-api/ps/shared/nodes/abx402-ps-node -> /home/autobyteus/workspace
+
