@@ -9,6 +9,7 @@
 | CRR-003 | `api-e2e-test-review-report.md` | Post-API/E2E test-code review, round 1 / API-REV-001 | N/A (first test review) | Fail (Local Fix, API/E2E) | TR-001 |
 | CRR-004 | `api-e2e-test-review-report.md` | Post-API/E2E test-code review, round 2 / API-REV-002 (TR-001 fix) | Fail (Local Fix, API/E2E) | Pass | TR-001 |
 | CRR-005 | `code-review-report.md` | Implementation Review, round 3 / IR-003 (delivery-stage fix, DR-001 DEL-02) | Pass (CRR-002) | Pass | — |
+| CRR-006 | `api-e2e-test-review-report.md` | Post-API/E2E test-code review, round 3 / API-REV-003 | Pass (CRR-004) | Not Applicable | — |
 
 ## Revision Entries
 
@@ -141,3 +142,28 @@ None open. CR-001 remains resolved; its fix needed the test follow-up recorded a
 - Material score or classification changes: none (scores as in CRR-002)
 - Recommended recipient: API/E2E engineer, per the pass rule (product unchanged since `fddcff0f13`; one architecture test changed). Delivery is waiting to rerun DEL-02 and finalize.
 - Remaining risks or uncertainty: unchanged from CRR-004
+
+### CRR-006 — No durable test change in API-REV-003
+
+- Canonical review report updated: `api-e2e-test-review-report.md`
+- Review entry point and round: post-API/E2E test-code review, round 3
+- Review scope: `N/A` (test review)
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, `api-e2e-execution-coverage-report.md` (API-REV-003, Round 3 Rerun Plan); API-06, API-09
+- Relevant solution revision IDs: SR-004
+- Relevant architecture-review revision IDs: N/A
+- Relevant implementation revision IDs: IR-003
+- Relevant API/E2E revision IDs: API-REV-003
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: Pass (CRR-004)
+- Current authoritative result: Not Applicable
+- What changed in the review result and why: `a9d85c0e2d..16eadc93c7` changes only ticket documents and evidence. API/E2E's reruns passed: web typecheck PASS (baseline 99), full test:nuxt 703 files passed.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+None open.
+
+- New or remaining finding IDs: None
+- Material score or classification changes: N/A
+- Recommended recipient: delivery engineer
+- Remaining risks or uncertainty: unchanged from CRR-004; delivery's own integrated-state reruns (DEL-02, the scripted-provider E2E) and the merge's build inputs remain with delivery

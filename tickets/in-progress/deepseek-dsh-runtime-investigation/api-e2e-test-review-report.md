@@ -2,7 +2,8 @@
 
 ## Review Meta
 
-- Review Round: 2
+- Review Round: 3 (latest: `Not Applicable`; rounds 1–2 below remain the review of this ticket's durable tests)
+- Round 3 trigger: API-REV-003, a rerun by impact on delivery's merged state (`a9d85c0e2d..16eadc93c7`). The delta is ticket documents and evidence only (`git diff --name-only`); API/E2E added, updated or removed no durable test. Reruns: API-09 web typecheck PASS (baseline 99) and API-06 full test:nuxt (703 files passed). The one test change since round 2, the architecture test in `ee6739fe7f`, is implementation-owned and was reviewed in CRR-005.
 - Trigger: API-REV-002 (TR-001 fix, `6e1dc44337`); round 1 was API-REV-001, durable tests added and updated in `fddcff0f13..f19c4ad87a`
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (AC-004, AC-009, AC-010…AC-014, DEC-020, RSK-004)
 - Investigation Notes Reviewed As Context: not needed for this bounded review
@@ -13,7 +14,7 @@
 - Implementation Revision Record Reviewed As Context: IR-002 (no product source changed after `fddcff0f13`, confirmed by `git diff --stat fddcff0f13..f19c4ad87a`)
 - Original Code Review Report: `code-review-report.md` (CRR-002, Pass)
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-004`
+- Current Code Review Revision ID: `CRR-006`
 - Coverage Investigation: `api-e2e-coverage-investigation.md`
 - Execution Coverage Report: `api-e2e-execution-coverage-report.md`
 - API/E2E Revision Record Reviewed As Context: `api-e2e-revision-record.md` (API-REV-001, API-REV-002)
@@ -62,8 +63,8 @@
 
 ## Latest Authoritative Result
 
-- Result: `Pass`
+- Result: `Not Applicable` (round 3: no durable test changed in API-REV-003); round 2 result `Pass` stands for this ticket's durable tests
 - Changed durable test paths reviewed: the five above
 - Unresolved finding IDs: None (TR-001 resolved)
 - Recommended Recipient: `delivery_engineer`
-- Notes: round 2 rechecked TR-001 only; the round-1 review stands for everything else. For the Solution Designer when the ticket leaves the team: like AC-006, the AC-009 key-removed alternate has no product trigger today.
+- Notes: round 3 found no durable test change (API-REV-003). Round 2 rechecked TR-001 only; the round-1 review stands for everything else. For the Solution Designer when the ticket leaves the team: like AC-006, the AC-009 key-removed alternate has no product trigger today.
