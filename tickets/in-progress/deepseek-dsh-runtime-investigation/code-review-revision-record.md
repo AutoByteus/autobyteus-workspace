@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 / IR-001 | N/A | Fail (Local Fix) | CR-001 |
 | CRR-002 | `code-review-report.md` | Implementation Review, round 2 / IR-002 (CR-001 fix) | Fail (Local Fix) | Pass | CR-001 |
+| CRR-003 | `api-e2e-test-review-report.md` | Post-API/E2E test-code review, round 1 / API-REV-001 | N/A (first test review) | Fail (Local Fix, API/E2E) | TR-001 |
 
 ## Revision Entries
 
@@ -60,3 +61,28 @@ None.
 - Material score or classification changes: Separation of Concerns and File Placement 8.8 → 9.3; result Pass
 - Recommended recipient: API/E2E engineer; informational notice to the implementation engineer
 - Remaining risks or uncertainty: AC-006 wording (Solution Designer); discovery placeholder depends on dsh (DEC-003); live AC-010/AC-012 and the other handoff hints left to API/E2E
+
+### CRR-003 — Test-code review of the API/E2E suites (API-REV-001)
+
+- Canonical review report updated: `api-e2e-test-review-report.md`
+- Review entry point and round: post-API/E2E test-code review, round 1
+- Review scope: `N/A` (test review)
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, `api-e2e-execution-coverage-report.md` (API-REV-001); API-10…API-16, API-20…API-22, API-25
+- Relevant solution revision IDs: SR-004
+- Relevant architecture-review revision IDs: N/A
+- Relevant implementation revision IDs: IR-002 (no product source changed after `fddcff0f13`)
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: N/A (the implementation review, CRR-002, passed)
+- Current authoritative result: Fail — `Local Fix` owned by API/E2E
+- What changed in the review result and why: five durable test files reviewed. They are sound, except that the standalone-host case accepts any launch error and leaves the recorded `dshDataFiles` unasserted, so it can pass without proving the DEC-020 refusal.
+- Supported product scenario / material-premise basis changes: none. AC-009's key-removed alternate has no product removal surface today (noted for the Solution Designer).
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: TR-001
+- Material score or classification changes: N/A
+- Recommended recipient: API/E2E engineer; then rerun API-25 and return for this test review
+- Remaining risks or uncertainty: AC-006 and the AC-009 key-removed trigger are requirement-basis notes for the Solution Designer
