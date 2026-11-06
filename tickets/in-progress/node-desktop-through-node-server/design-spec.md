@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-002` (revised for architecture review ARCH-REV-001: AR-001 … AR-005)
+- Current solution revision ID: `SR-004` (SR-002 for ARCH-REV-001 AR-001 … AR-005; SR-003 AR-006; SR-004 implementation finding IMP-DI-001)
 - Approved requirements baseline: `requirements-doc.md` at SR-001 (the user's approval of the autobyteus-394 plan, 2026-11-06, at the parent's SR-004; DEC-S1-1 within the direction).
 - Behavior-defining supplements: none.
 - User approval of the design: `Obtained` — the user reviewed the parent design (which defines S1) on 2026-11-06 and asked to create the slice Tasks; this spec restricts it to S1 and adds the S1 launcher detail.
@@ -181,13 +181,15 @@ DS-003, parent `RfbViewerInputFilter`:
 | 3 | FramebufferUpdateRequest | 10 | forward | forward |
 | 4 | KeyEvent | 8 | drop | forward |
 | 5 | PointerEvent | 6 (always: −316 is never advertised upstream) | drop | forward |
-| 6 | ClientCutText | 8 + abs(s32 at 4), ≤ 1 MiB else reject | drop | forward |
+| 6 | ClientCutText | 8 + abs(s32 at 4), ≤ 1 MiB else reject | forward **only** a well-formed extended-clipboard Caps message (length field negative; flags (u32 after the length) has the Caps action bit 1<<24; payload length = 4 + 4 × number of format bits set in flags' low 16 bits); drop every other ClientCutText (plain text, Request, Peek, Notify, Provide) | forward |
 | 150 | EnableContinuousUpdates | 10 | forward | forward |
 | 248 | ClientFence | 9 + u8 at 8 (≤ 64 else reject) | forward | forward |
 | 250 | xvp (shutdown/reboot) | 4 | drop | drop |
 | 251 | SetDesktopSize | 8 + 16·n (n = u8 at 6) | drop | drop |
 | 255 | QEMU, subtype 0 (extended key) | 12 | drop | forward |
 | other (incl. 255 other subtypes) | — | — | reject → close 4400 | reject → close 4400 |
+
+Why the Caps reply passes in View only (IMP-DI-001, S1-07): noVNC always advertises ExtendedClipboard and answers the server's Caps with its own Caps (an extended ClientCutText), in every mode. Dropping that reply made Xvnc treat the viewer as a client without notify support and push the clipboard as an unsolicited Provide (measured: 54 bytes of zlib text); noVNC 1.7.0 in View only returns from its Provide branch without consuming the payload (`rfb.js:2448-2459`) and then misreads the stream ("Unexpected server message (type 120)"), dropping the viewer and also delivering the clipboard over the wire. With the Caps reply forwarded, Xvnc sends only a content-free Notify, which noVNC ignores safely in View only (`:2436-2439`); any Request a viewer sends is still dropped. Caps carries no text and no input.
 
 Why −316 is removed: noVNC advertises the ExtendedMouseButtons pseudo-encoding (−316, `core/rfb.js:2272`) and, once the VNC server confirms it in a framebuffer update (`:2707-2708`), sends a 7-byte pointer event (`RFB.messages.extendedPointerEvent`) instead of the 6-byte one. The confirmation travels server→client, which the filter does not parse. Removing −316 from the viewer's SetEncodings (and fixing the count) keeps the server from ever enabling it, so every pointer event stays 6 bytes. Cost: mouse buttons 8 and above are not sent. The table was checked against every encoder in noVNC 1.7.0's `RFB.messages` (types 0, 2, 3, 4, 5, 6, 150, 248, 250, 251, 255/0; S1-05); the implementation adds a test per encoder.
 

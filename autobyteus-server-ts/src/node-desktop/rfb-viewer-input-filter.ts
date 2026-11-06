@@ -9,7 +9,7 @@
  * | 3    | FramebufferUpdateRequest   | 10                        | forward | forward |
  * | 4    | KeyEvent                   | 8                         | drop    | forward |
  * | 5    | PointerEvent               | 6                         | drop    | forward |
- * | 6    | ClientCutText              | 8 + abs(s32 at 4) ≤ 1 MiB | drop    | forward |
+ * | 6    | ClientCutText              | 8 + abs(s32 at 4) ≤ 1 MiB | Caps only | forward |
  * | 150  | EnableContinuousUpdates    | 10                        | forward | forward |
  * | 248  | ClientFence                | 9 + u8 at 8 (≤ 64)        | forward | forward |
  * | 250  | xvp (shutdown/reboot)      | 4                         | drop    | drop    |
@@ -18,6 +18,11 @@
  *
  * The ExtendedMouseButtons pseudo-encoding (−316) is removed from SetEncodings so that Xvnc never
  * enables the 7-byte pointer event: every PointerEvent keeps its 6-byte form.
+ *
+ * "Caps only": in View only the one ClientCutText that passes is a well-formed extended-clipboard
+ * Caps message (negative length, Caps bit 1<<24 in the flags, length = 4 + 4 × the format bits in
+ * the flags' low 16 bits). It carries capabilities, no text and no input. Without it Xvnc pushes the
+ * agent's clipboard to the viewer as an unsolicited Provide, which noVNC 1.7.0 misreads in View only.
  */
 export type NodeDesktopMode = "view" | "control";
 
@@ -34,7 +39,7 @@ const SECURITY_TYPE_NONE = 1;
 const SHARED_CLIENT_INIT = Buffer.from([1]);
 const EMPTY = Buffer.alloc(0);
 
-type Action = "forward" | "drop" | "forward-without-extended-mouse-buttons";
+type Action = "forward" | "drop" | "forward-without-extended-mouse-buttons" | "forward-clipboard-caps-only";
 
 type MessageRule = Readonly<{
   /** Bytes needed before the message length is known. */
@@ -69,7 +74,7 @@ const MESSAGE_RULES: ReadonlyMap<number, MessageRule> = new Map<number, MessageR
       const textLength = Math.abs(header.readInt32BE(4));
       return textLength > MAX_CLIENT_CUT_TEXT_BYTES ? "client cut text over 1 MiB" : 8 + textLength;
     },
-    view: "drop",
+    view: "forward-clipboard-caps-only",
     control: "forward",
   }],
   [150, fixed(10, "forward", "forward")],
@@ -96,6 +101,23 @@ type Stage = "version" | "security" | "client-init" | "messages" | "rejected";
 
 /** One framing step: `null` while more bytes are needed. */
 type Step = { forward: Buffer | null } | { reject: string } | null;
+
+const EXTENDED_CLIPBOARD_CAPS = 1 << 24;
+
+const countBits = (value: number): number => {
+  let count = 0;
+  for (let rest = value; rest !== 0; rest >>>= 1) count += rest & 1;
+  return count;
+};
+
+/** A ClientCutText that is exactly an extended-clipboard Caps message. */
+const isExtendedClipboardCaps = (message: Buffer): boolean => {
+  const length = message.readInt32BE(4);
+  if (length >= 0 || -length < 4) return false;
+  const flags = message.readUInt32BE(8);
+  if ((flags & EXTENDED_CLIPBOARD_CAPS) === 0) return false;
+  return -length === 4 + 4 * countBits(flags & 0xffff);
+};
 
 const withoutExtendedMouseButtons = (message: Buffer): Buffer => {
   const count = message.readUInt16BE(2);
@@ -177,6 +199,7 @@ export class RfbViewerInputFilter {
     const action = rule[this.mode];
     if (action === "drop") return { forward: null };
     if (action === "forward-without-extended-mouse-buttons") return { forward: withoutExtendedMouseButtons(message) };
+    if (action === "forward-clipboard-caps-only") return { forward: isExtendedClipboardCaps(message) ? message : null };
     return { forward: message };
   }
 

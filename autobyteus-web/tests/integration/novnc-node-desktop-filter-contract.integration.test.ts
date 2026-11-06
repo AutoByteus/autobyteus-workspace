@@ -49,6 +49,10 @@ const forwarded = (filter: RfbViewerInputFilter, chunk: Buffer): Buffer => {
 };
 
 const TEXT_FORMAT = 1;
+// noVNC's own Caps reply to the server's Caps (rfb.js `_handleServerCutText`, caps branch): these actions and
+// the literal `{ extendedClipboardFormatText: 0 }` object noVNC passes (one format bit, size 0, abs(length) 8).
+const NOVNC_CAPS_ACTIONS = [1 << 24, 1 << 25, 1 << 26, 1 << 27, 1 << 28];
+const novncCaps: Encoder = (sock) => messages.extendedClipboardCaps(sock, NOVNC_CAPS_ACTIONS, { extendedClipboardFormatText: 0 });
 const cases: Array<[name: string, view: 'forward' | 'drop', control: 'forward' | 'drop', encoder: Encoder]> = [
   ['pixelFormat', 'forward', 'forward', (sock) => messages.pixelFormat(sock, 24, true)],
   ['clientEncodings', 'forward', 'forward', (sock) => messages.clientEncodings(sock, [7, 1, 0, -223])],
@@ -59,7 +63,7 @@ const cases: Array<[name: string, view: 'forward' | 'drop', control: 'forward' |
   ['clientCutText', 'drop', 'forward', (sock) => messages.clientCutText(sock, new TextEncoder().encode('copied text'))],
   ['extendedClipboardNotify', 'drop', 'forward', (sock) => messages.extendedClipboardNotify(sock, [TEXT_FORMAT])],
   ['extendedClipboardRequest', 'drop', 'forward', (sock) => messages.extendedClipboardRequest(sock, [TEXT_FORMAT])],
-  ['extendedClipboardCaps', 'drop', 'forward', (sock) => messages.extendedClipboardCaps(sock, [1, 2, 4, 8, 16], { 0: 1024 })],
+  ['extendedClipboardCaps', 'forward', 'forward', novncCaps],
   ['extendedClipboardProvide', 'drop', 'forward', (sock) => messages.extendedClipboardProvide(sock, [TEXT_FORMAT], ['copied text'])],
   ['enableContinuousUpdates', 'forward', 'forward', (sock) => messages.enableContinuousUpdates(sock, true, 0, 0, 1920, 1080)],
   ['clientFence', 'forward', 'forward', (sock) => messages.clientFence(sock, 3, 'abc')],
@@ -67,6 +71,8 @@ const cases: Array<[name: string, view: 'forward' | 'drop', control: 'forward' |
   ['setDesktopSize', 'drop', 'drop', (sock) => messages.setDesktopSize(sock, 800, 600, 0, 0)],
 ];
 
+// extendedClipboardCaps passes in View only (D-5 row 6): without the viewer's Caps, Xvnc pushes the clipboard as
+// an unsolicited Provide, which noVNC 1.7.0 misreads in View only. Every other ClientCutText form is dropped there.
 describe('noVNC 1.7.0 messages through the node desktop input filter', () => {
   it.each(cases)('%s: view %s, control %s', (_name, view, control, encoder) => {
     const message = encode(encoder);
@@ -76,6 +82,13 @@ describe('noVNC 1.7.0 messages through the node desktop input filter', () => {
       expect(forwarded(filter, Buffer.concat([message, next])))
         .toEqual(action === 'forward' ? Buffer.concat([message, next]) : next);
     }
+  });
+
+  it('encodes noVNC\'s Caps reply with abs(length) 8 (one format, size 0)', () => {
+    const caps = encode(novncCaps);
+    expect(caps.readInt32BE(4)).toBe(-8);
+    expect(caps.readUInt32BE(8) & (1 << 24)).not.toBe(0);
+    expect(caps.length).toBe(16);
   });
 
   it('covers every encoder noVNC has (extendedPointerEvent is never enabled: -316 is removed)', () => {

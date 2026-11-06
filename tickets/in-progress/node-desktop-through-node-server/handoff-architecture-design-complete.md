@@ -1,6 +1,6 @@
 # Handoff — Architecture Design Complete: S1 (autobyteus-405)
 
-- Package: `node-desktop-through-node-server`, SR-002 (revised for ARCH-REV-001; see solution-revision-record.md SR-002)
+- Package: `node-desktop-through-node-server`, SR-004 (SR-002 for ARCH-REV-001; SR-003 AR-006; SR-004 implementation finding IMP-DI-001 — D-5 row 6, see solution-revision-record.md). Implementation so far: commit `6407bfc15f` (+ evidence `4b8e3b8900`) on the ticket branch
 - Task: autobyteus-405 (Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`), slice S1 of autobyteus-394; requested by `/project_task_manager` for the user; depends on S0 (autobyteus-402, delivered, merge `dc8bee36b6`)
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-desktop-through-node-server`, branch `codex/node-desktop-through-node-server`, base `origin/personal` @ `9e0681bf39b43f4aecb893866d0e7d50c19cbaf7`; finalization target `origin/personal`. Uncommitted: the ticket folder and `docs/design-cases.md` (Case 16).
 - Ticket folder: `tickets/in-progress/node-desktop-through-node-server/`

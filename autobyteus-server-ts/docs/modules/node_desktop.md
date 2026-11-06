@@ -63,7 +63,7 @@ viewer opens on its own (first open, Reconnect, window visible again) is View on
 | 3 | FramebufferUpdateRequest | forward | forward |
 | 4 | KeyEvent | drop | forward |
 | 5 | PointerEvent (always 6 bytes) | drop | forward |
-| 6 | ClientCutText (≤ 1 MiB) | drop | forward |
+| 6 | ClientCutText (≤ 1 MiB) | only a well-formed extended-clipboard Caps | forward |
 | 150 | EnableContinuousUpdates | forward | forward |
 | 248 | ClientFence (payload ≤ 64 bytes) | forward | forward |
 | 250 | xvp (shutdown/reboot) | drop | drop |
@@ -77,7 +77,12 @@ viewer opens on its own (first open, Reconnect, window visible again) is View on
   scales the picture instead (`resizeSession` is always false).
 - In Control, a paste larger than 1 MiB ends the stream with 4400 (the filter fails closed rather
   than buffer it).
-- In View only, noVNC does not copy the agent's clipboard to the viewer's device.
+- In View only the one ClientCutText that passes is a well-formed extended-clipboard **Caps**
+  message (negative length, Caps bit 1<<24, length = 4 + 4 × the format bits in the flags' low 16
+  bits). It carries capabilities only. With it Xvnc tells a View only viewer about clipboard changes
+  with a content-free Notify, which noVNC ignores; without it Xvnc would push the agent's clipboard
+  as a Provide, which noVNC 1.7.0 misreads in View only and which would put the clipboard on the
+  viewer's device. Plain text, Request, Peek, Notify and Provide are dropped.
 
 The web contract test `autobyteus-web/tests/integration/novnc-node-desktop-filter-contract.integration.test.ts`
 runs every encoder of noVNC's `RFB.messages` through the filter and fails when a noVNC upgrade adds one.

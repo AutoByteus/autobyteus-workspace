@@ -3,18 +3,19 @@
 ## Review Round Meta
 
 - Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/node-desktop-through-node-server/tickets/in-progress/node-desktop-through-node-server/requirements-doc.md` (SR-001, `Approved`)
-- Upstream Investigation Notes: `.../node-desktop-through-node-server/investigation-notes.md` (S1-01 … S1-06) + parent `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-desktop-access-through-node-server/tickets/in-progress/remote-desktop-access-through-node-server/investigation-notes.md` (AF-01 … AF-17)
-- Upstream Solution Revision Record: `.../node-desktop-through-node-server/solution-revision-record.md` (SR-001, SR-002)
-- Reviewed Design Spec: `.../node-desktop-through-node-server/design-spec.md` (SR-002, `Ready`)
+- Upstream Investigation Notes: `.../node-desktop-through-node-server/investigation-notes.md` (S1-01 … S1-07) + parent `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-desktop-access-through-node-server/tickets/in-progress/remote-desktop-access-through-node-server/investigation-notes.md` (AF-01 … AF-17)
+- Upstream Solution Revision Record: `.../node-desktop-through-node-server/solution-revision-record.md` (SR-001 … SR-004)
+- Reviewed Design Spec: `.../node-desktop-through-node-server/design-spec.md` (SR-004, `Ready`)
 - Supplemental Task Artifacts Reviewed: parent `probes/rfb-forwarding-probe.mjs`, `handshake-result.json`, `resize-result.json` (existence and role only)
-- Relevant Solution Revision IDs: `SR-001`, `SR-002`
+- Relevant Solution Revision IDs: `SR-001`, `SR-002`, `SR-003`, `SR-004`
 - Architecture Review Revision Record: `.../node-desktop-through-node-server/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-002`
-- Current Review Round: `2`
-- Trigger: SR-002 design revision for ARCH-REV-001 findings AR-001 … AR-005
-- Prior Review Round Reviewed: `1` (ARCH-REV-001, `Fail`)
-- Latest Authoritative Round: `2`
-- Current-State Evidence Basis (round 2 additions: `@fastify/websocket/index.js:208-221` default preClose `client.close()` with no code; noVNC `websock.js:297-307` `close()` with no code; `ServerSettingsEndpointCards.vue:236,252`; Node `net.Socket` `readableHighWaterMark` 65536). Round 1: worktree `codex/node-desktop-through-node-server` @ `9e0681bf39` (base `origin/personal`); code read on 2026-11-06: `autobyteus-server-ts/src/api/websocket/{terminal.ts, remote-access-websocket-auth.ts, index.ts}`, `src/api/security/{remote-access-route-policy.ts:60-100,160-185, remote-access-policy-plugin.ts}`, `src/node-update/{starter-client.ts:10, node-update-routes.ts:1-35}`, `docker/starter/server-supervisor.mjs:56`, `docker/docker-compose.yml`, `src/services/server-settings-service.ts:113-116`; web `composables/useVncSession.ts`, `components/workspace/tools/{VncViewer.vue, VncHostTile.vue}`, `components/layout/{RightSideTabs.vue:68, WorkspaceToolShell.vue:19-28}`, `utils/nodeEndpoints.ts`, `composables/useTerminalSession.ts:107-140`, `components/settings/ServerSettingsEndpointCards.vue:151-300`, `types/novnc.d.ts`; noVNC 1.7.0-g7c36fab `core/rfb.js` (constructor 92-115, 560-575, `_socketClose` 659-694, state dispatch 930-952, `_fail` 962-982, `RFB.messages` 3091-3402) and `core/websock.js` attach 265-290; `ws` 8 `lib/websocket.js:120-124,341,422`; launcher `bash/container-config.sh:1-49`, `bash/core.sh`, `bash/docker-runtime.sh` (grep); `DESIGN.md` rules 9, 11, "Before accepting a design".
+- Current Architecture Review Revision ID: `ARCH-REV-003`
+- Current Review Round: `3`
+- Trigger: SR-004, a design revision of D-5 row 6 (ClientCutText in View only) prompted by implementation Design Impact IMP-DI-001 (IR-001)
+- Prior Review Round Reviewed: `2` (ARCH-REV-002, `Pass`)
+- Latest Authoritative Round: `3`
+- Supplemental evidence reviewed in round 3: `evidence/IMP-14-real-node-clipboard-per-mode.txt`, `evidence/IMP-13-browser-probe-view-only-clipboard-desync.txt`, `implementation-handoff.md` (IMP-DI-001)
+- Current-State Evidence Basis (round 3 additions: noVNC `rfb.js:2370-2475` (`_handleServerCutText` extended branch: the Caps reply is not gated by `viewOnly`; Request/Peek/Notify return in View only after reading flags only; Provide returns in View only without consuming its zlib payload) and `:3235-3257` (`extendedClipboardCaps`: flags + one 4-byte size, i.e. abs(length) = 8). Round 2 additions: `@fastify/websocket/index.js:208-221` default preClose `client.close()` with no code; noVNC `websock.js:297-307` `close()` with no code; `ServerSettingsEndpointCards.vue:236,252`; Node `net.Socket` `readableHighWaterMark` 65536). Round 1: worktree `codex/node-desktop-through-node-server` @ `9e0681bf39` (base `origin/personal`); code read on 2026-11-06: `autobyteus-server-ts/src/api/websocket/{terminal.ts, remote-access-websocket-auth.ts, index.ts}`, `src/api/security/{remote-access-route-policy.ts:60-100,160-185, remote-access-policy-plugin.ts}`, `src/node-update/{starter-client.ts:10, node-update-routes.ts:1-35}`, `docker/starter/server-supervisor.mjs:56`, `docker/docker-compose.yml`, `src/services/server-settings-service.ts:113-116`; web `composables/useVncSession.ts`, `components/workspace/tools/{VncViewer.vue, VncHostTile.vue}`, `components/layout/{RightSideTabs.vue:68, WorkspaceToolShell.vue:19-28}`, `utils/nodeEndpoints.ts`, `composables/useTerminalSession.ts:107-140`, `components/settings/ServerSettingsEndpointCards.vue:151-300`, `types/novnc.d.ts`; noVNC 1.7.0-g7c36fab `core/rfb.js` (constructor 92-115, 560-575, `_socketClose` 659-694, state dispatch 930-952, `_fail` 962-982, `RFB.messages` 3091-3402) and `core/websock.js` attach 265-290; `ws` 8 `lib/websocket.js:120-124,341,422`; launcher `bash/container-config.sh:1-49`, `bash/core.sh`, `bash/docker-runtime.sh` (grep); `DESIGN.md` rules 9, 11, "Before accepting a design".
 
 ## Routing Classification Review
 
@@ -219,15 +220,56 @@ Notes:
 
 None.
 
+## Round 3 Recheck — D-5 Row 6 (SR-004)
+
+Scope: one row of the View only boundary. It protects REQ-006 (no keyboard, pointer or clipboard input in View only), REQ-017 / AC-020 (the View only viewer's clipboard stays unchanged), and AC-001 (the stream keeps working). The requirements did not change. Every other verdict stands from round 2.
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| The defect is real and reachable | Pass | MP-003 below. IMP-14 measured Xvnc sending `provide`, 54 bytes, first byte 120, to a View only viewer whose Caps reply had been dropped. IMP-13 shows noVNC failing with "Unexpected server message (type 120)" and the stream dropping. |
+| noVNC sends Caps in every mode | Pass | `rfb.js:2373-2405`: the Caps branch has no `viewOnly` check and always answers with `extendedClipboardCaps`. |
+| The well-formedness rule matches the real message | Pass | `extendedClipboardCaps` (`rfb.js:3235-3257`) writes the flags (actions caps, request, peek, notify, provide in the high byte; format bits in the low byte) plus one u32 per format. noVNC sets text only (`{extendedClipboardFormatText: 0}` → bit 0), so abs(length) = 8 = 4 + 4 × 1. The design requires a negative length, the Caps bit 1<<24, and payload = 4 + 4 × popcount(low 16 bits): exact. Framing still uses abs(length) ≤ 1 MiB, so a malformed Caps is dropped without desyncing the filter. |
+| What is forwarded carries no input or clipboard content | Pass | A Caps message holds only capability flags and per-format maximum sizes. The receiving VNC server handles a Caps message before any action (a Caps flag is processed as capabilities, not as Request/Provide), and it changes only that one connection's clipboard state. Plain text, Request, Peek, Notify and Provide are still dropped in View only, so REQ-006 and QR-001 hold: no key, pointer or clipboard-content bytes reach Xvnc. |
+| Server→viewer side after the fix | Pass | With the viewer's Caps (Notify bit set) forwarded, Xvnc announces changes with a content-free Notify, as IMP-14's Control run shows. noVNC reads only the flags and returns in View only (`rfb.js:2434-2439`), so the stream stays in sync. Any viewer Request is dropped, so no Provide follows. The clipboard no longer crosses the wire to noVNC View only viewers (REQ-017 improved). |
+| Rejected option B | Pass | Stripping ExtendedClipboard would fall back to plain ServerCutText. noVNC ignores that in View only (AF-06), but the text would still cross the wire. Option A is the tighter fit for REQ-017. |
+| Control unchanged | Pass | Row 6 still forwards every form in Control. |
+| Kinds and forms (Principle 1, design case 16) | Pass | The design table now lists every ClientCutText form noVNC 1.7.0 sends (plain, extended Caps/Request/Peek/Notify/Provide) with a decision for each. Case 16 records the second instance. |
+| Validation coverage of the new rule | Note | The design's Validation Plan does not name the row 6 forms. See AR-007 (non-blocking). |
+
+### MP-003 — A View only viewer whose Caps reply is dropped receives an unsolicited Provide
+
+- Related requirement: REQ-017 / AC-020; AC-001 (live desktop renders).
+- Initiating basis kind: `User`. The user opens the VNC Viewer in View only (the default, REQ-005) while the agent copies text (AC-020).
+- Forward path: noVNC advertises ExtendedClipboard. Xvnc sends Caps, and noVNC replies with Caps (`rfb.js:2397-2405`). The SR-002 filter dropped that reply. Xvnc treated the viewer as having no Notify support, and when the agent's clipboard changed it sent Provide with the zlib text. noVNC in View only returned without consuming the payload (`:2448-2450`), misread the next bytes, and disconnected.
+- Reachability: `Reachable`. Measured in IMP-13 and IMP-14 on a real Xvnc in a test-owned node.
+- Review consequence: justifies the SR-004 change. No further machinery needed.
+
 ## Review Decision
 
-- `Pass` — the behavior basis is confirmed and AR-001 … AR-005 are resolved in the SR-002 design spec. No in-scope machinery depends on an unsupported premise, so the design is ready for implementation.
+- `Pass` (round 3) — the SR-004 change to D-5 row 6 is correct, proportionate, and keeps REQ-006 while fixing the AC-001 / AC-020 failure measured in IMP-13/14. Round 2: the behavior basis is confirmed and AR-001 … AR-005 are resolved in the SR-002 design spec. No in-scope machinery depends on an unsupported premise, so the design is ready for implementation.
 
 ## Findings
 
-Round 1 findings AR-001 … AR-005 are resolved; see `architecture-review-revision-record.md` ARCH-REV-002.
+Round 1 findings AR-001 … AR-005 are resolved (ARCH-REV-002). AR-006 is resolved in SR-003: D-7 now has a 1005 → `disconnected` + Reconnect row (`design-spec.md` D-7). See `architecture-review-revision-record.md` ARCH-REV-003.
 
-### AR-006 — D-7 has no row for close code 1005 or for unlisted codes (non-blocking)
+### AR-007 — Validation Plan does not name the row 6 forms (non-blocking)
+
+- Type: `Design Impact`. Severity: Low (non-blocking).
+- Protects: REQ-006 / QR-001 (no clipboard input in View only), REQ-017 / AC-020, AC-001.
+- Evidence: the `design-spec.md` Validation Plan says "each table row" generically. Row 6 now holds six forms with different View only decisions, and design case 16 is exactly the risk of testing one form.
+- Required update: implementation adds these checks and records them in the implementation handoff. A spec edit is optional.
+  - Filter unit cases in View only:
+    - noVNC's exact Caps bytes (from `RFB.messages.extendedClipboardCaps`) are forwarded unchanged.
+    - A Caps message with a wrong payload length is dropped, and framing continues.
+    - Extended Request, Peek, Notify and Provide (Caps bit absent) and plain text are each dropped.
+    - A Caps message whose flags also carry other action bits is forwarded, because it is still a Caps message.
+    - Everything above is split across chunks.
+  - Real node: rerun IMP-14 and expect `notify` only in `view`, with no `provide`.
+  - Browser probe: IMP-13 passes after the agent's clipboard changes in View only (AC-001, AC-020).
+- Why proportionate: test cases only; the design is correct.
+- Recipient: implementation engineer.
+
+### AR-006 — D-7 has no row for close code 1005 or for unlisted codes (resolved in SR-003; kept for history)
 
 - Type: `Design Impact`. Severity: Low (non-blocking).
 - Protects: AC-011, plus the requirements UI state "disconnected with reason".
@@ -247,6 +289,9 @@ Implementation engineer (`/software_engineering_team/implementation_engineer`), 
 
 ## Residual Risks
 
+- REQ-017 stays enforced by the client, as approved (feasibility: "noVNC ignores server clipboard in View only"). A raw View only client that does not advertise ExtendedClipboard, or that sends a Caps without the Notify bit, can still receive the agent's clipboard from Xvnc; the server never filters server→viewer clipboard traffic. This was true before SR-004 and is not widened by it. The desktop app's noVNC viewer no longer receives the text at all.
+- SR-004 side note, accepted: a stream ended by a server shutdown writes no end-of-stream log line, because the process exits first; its upstream still closes. REQ-011 governs what logs contain, not that a line exists.
+
 - DEC-S1-1: a paired phone with a valid credential can open a `control` stream through a raw client before S3. This is approved (REQ-003, parent DEC-002). The live revocation cut-off is S3.
 - Until S2, 5900/6080/9223 still listen on the container interface inside the node, but none is published after S1.
 - In Control, a paste larger than the filter's 1 MiB `ClientCutText` cap closes the stream with 4400. This is fail-closed; record it in the module doc.
@@ -254,6 +299,6 @@ Implementation engineer (`/software_engineering_team/implementation_engineer`), 
 
 ## Latest Authoritative Result
 
-- Review Decision: `Pass`
-- Material-Premise Gate: `Pass` (MP-001 resolved by AR-001; MP-002 drives only the non-blocking AR-006)
-- Notes: the −316 removal (D-5), D-3, D-4, D-10 and DEC-S1-1 pass. Classification Large/High is unchanged.
+- Review Decision: `Pass` (ARCH-REV-003)
+- Material-Premise Gate: `Pass` (MP-001 resolved by AR-001; MP-002 resolved by SR-003; MP-003 justifies SR-004)
+- Notes: D-5 row 6 (SR-004), the −316 removal, D-3, D-4, D-10 and DEC-S1-1 pass. Classification Large/High is unchanged. AR-007 is non-blocking, for implementation.

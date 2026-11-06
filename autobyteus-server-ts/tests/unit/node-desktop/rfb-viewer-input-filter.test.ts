@@ -131,6 +131,64 @@ describe("RfbViewerInputFilter", () => {
     });
   });
 
+  describe("extended clipboard in View only (D-5 row 6, IMP-DI-001)", () => {
+    const CAPS = 1 << 24, REQUEST = 1 << 25, PEEK = 1 << 26, NOTIFY = 1 << 27, PROVIDE = 1 << 28;
+    const TEXT = 1;
+    const u32 = (value: number): number[] => {
+      const buffer = Buffer.alloc(4);
+      buffer.writeUInt32BE(value >>> 0);
+      return [...buffer];
+    };
+    const extended = (flags: number, ...rest: number[]) =>
+      Buffer.from([6, 0, 0, 0, ...s32(-(4 + rest.length)), ...u32(flags), ...rest]);
+    // The bytes noVNC 1.7.0 sends (RFB.messages.extendedClipboardCaps(sock, [caps, request, peek,
+    // notify, provide], { text: 0 })); the web contract test checks them against noVNC itself.
+    const noVncCaps = extended(CAPS | REQUEST | PEEK | NOTIFY | PROVIDE | TEXT, ...u32(0));
+    const forwardedCaps = [
+      ["noVNC's Caps (other action bits set)", noVncCaps],
+      ["Caps alone, one format", extended(CAPS | TEXT, ...u32(1024))],
+      ["Caps, two formats", extended(CAPS | TEXT | 2, ...u32(1024), ...u32(2048))],
+      ["Caps, no format", extended(CAPS)],
+    ] as const;
+    const droppedInView = [
+      ["Caps with a payload one format too short", extended(CAPS | TEXT | 2, ...u32(1024))],
+      ["Caps with a payload one format too long", extended(CAPS | TEXT, ...u32(1024), ...u32(2048))],
+      ["Request", extended(REQUEST | TEXT)],
+      ["Peek", extended(PEEK)],
+      ["Notify", extended(NOTIFY | TEXT)],
+      ["Provide", extended(PROVIDE | TEXT, 0x78, 0x9c, 1, 2, 3)],
+      ["plain text", message.clientCutText("agent secret")],
+    ] as const;
+
+    for (const [name, input] of forwardedCaps) {
+      it(`forwards ${name} unchanged in both modes`, () => {
+        for (const mode of ["view", "control"] as const) {
+          const filter = afterHandshake(mode);
+          expect(forwarded(filter, Buffer.concat([input, message.framebufferUpdateRequest()])))
+            .toEqual(Buffer.concat([input, message.framebufferUpdateRequest()]));
+        }
+      });
+    }
+
+    for (const [name, input] of droppedInView) {
+      it(`drops ${name} in View only and keeps framing; forwards it in Control`, () => {
+        const next = message.framebufferUpdateRequest();
+        expect(forwarded(afterHandshake("view"), Buffer.concat([input, next]))).toEqual(next);
+        expect(forwarded(afterHandshake("control"), Buffer.concat([input, next]))).toEqual(Buffer.concat([input, next]));
+      });
+    }
+
+    it("decides the same with every message split into single bytes", () => {
+      const stream = Buffer.concat([...forwardedCaps.map(([, input]) => input), ...droppedInView.map(([, input]) => input),
+        message.framebufferUpdateRequest()]);
+      const expectedView = Buffer.concat([...forwardedCaps.map(([, input]) => input), message.framebufferUpdateRequest()]);
+      const view = afterHandshake("view");
+      expect(Buffer.concat([...stream].map((byte) => forwarded(view, bytes(byte))))).toEqual(expectedView);
+      const control = afterHandshake("control");
+      expect(Buffer.concat([...stream].map((byte) => forwarded(control, bytes(byte))))).toEqual(stream);
+    });
+  });
+
   describe("framing across chunks", () => {
     it("frames messages split at every byte and several messages in one chunk", () => {
       const stream = Buffer.concat([

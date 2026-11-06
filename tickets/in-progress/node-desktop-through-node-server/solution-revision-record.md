@@ -7,6 +7,7 @@
 | SR-001 | Mixed | Task autobyteus-405 (slice S1 of autobyteus-394) | N/A | N/A | Requirements Approved; Design Ready | REQ-001…008, 010, 011, 017, 020; AC-001…011, 013, 014, 020, 022; DEC-S1-1 | Large/High → architecture review |
 | SR-002 | Design | Architecture review ARCH-REV-001 (Fail, Design Impact) | AR-001…AR-005 | Design Ready | Design Ready (revised) | AC-002, AC-003, AC-011, AC-013; REQ-005 | Revised; back to architecture review |
 | SR-003 | Design | Architecture review ARCH-REV-002 (Pass) + non-blocking AR-006 | AR-006 | Design Ready (revised) | Design Ready; review passed | AC-011 | D-7 row for 1005 added; implementation informed |
+| SR-004 | Design | Implementation Design Impact IMP-DI-001 (IR-001) | IMP-DI-001 | Design Ready; review passed | Design Ready (revised) | REQ-006, REQ-017; AC-006, AC-020 | D-5 row 6: View only forwards only a well-formed Caps; back to architecture review |
 
 ## Revision Entries
 
@@ -44,3 +45,17 @@
 - Change: D-7 row `1005 → disconnected + Reconnect` (server restart, AC-011)
 - Intended behavior changed: No. Classification unchanged (Large/High)
 - Route: the reviewer's pass handoff to `/software_engineering_team/implementation_engineer` stands (not repeated); implementation told of the AR-006 row
+
+### SR-004 — View only clipboard negotiation (IMP-DI-001)
+
+- Trigger: `/software_engineering_team/implementation_engineer`, IR-001, finding IMP-DI-001 (implementation commit `6407bfc15f`, evidence `4b8e3b8900`): dropping noVNC's extended-clipboard Caps reply in View only makes Xvnc push the clipboard as an unsolicited Provide, which noVNC 1.7.0 does not consume in View only → stream desync and the clipboard on the wire
+- Decision: option A — in View only, forward only a well-formed extended Caps ClientCutText; drop every other ClientCutText. Option B (strip the ExtendedClipboard pseudo-encoding) rejected: it keeps the stream working but sends the clipboard text in clear to View only viewers (REQ-017)
+- Canonical sections: design-spec.md D-5 table row 6 and the explanation under it; investigation-notes.md S1-07; `docs/design-cases.md` Case 16 (second instance of the same shape)
+- Intended behavior changed: No (REQ-006/REQ-017 unchanged; the design now meets them)
+- Side note accepted: a stream ended by a server shutdown logs no end line (process exits first); its upstream still closes. REQ-011 governs log content, not that a line exists; no change
+- Classification: unchanged (Large/High)
+- Route: revised package → `/software_engineering_team/architecture_reviewer` (security-relevant filter change, repeat review before dependent implementation)
+
+### Review record — ARCH-REV-003 (informational)
+
+- 2026-11-06: architecture review Pass for SR-003 and SR-004 (`design-review-report.md`, `architecture-review-revision-record.md`); D-5 row 6 sound, option B rejection confirmed; AR-006 resolved; AR-007 (non-blocking: a test per row 6 form) assigned by the reviewer to implementation. The reviewer's pass handoff to `/software_engineering_team/implementation_engineer` stands; not repeated.
