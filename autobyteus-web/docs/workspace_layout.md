@@ -22,7 +22,7 @@ Below the page entries is the **run section** (`RunSectionPanel`). Its header (`
 
 A view only shows: there is no add form, no "New Project" and no folder remove button. Folders are removed (unregistered) in the chat chooser ([Chat](./chat.md)). The views share the open-run mark, the reveal below and the run actions; choosing a view never changes the open conversation.
 
-**History read window.** The section loads the run history on mount and every 5 seconds. `runHistoryStore` owns the one read window (`setHistoryWindow`): the section sets it from the view before each read (`null`, every run, for Runs, whose fold and "Archive all older" need every run; 6 per agent and folder for Workspaces and Projects) and reads once when the view changes. Every read (list, per-folder, the retired-run reconcile) uses it. The phone sets 5.
+**History read window.** The section loads the run history on mount and every 5 seconds. `runHistoryStore` owns the one read window (`setHistoryWindow`): the section sets it from the view before each read (`null`, every run, for Runs, whose fold and "Archive all older" need every run, and for Projects, so that another client's removal of any run is noticed (autobyteus-388); 6 per agent and folder for Workspaces) and reads once when the view changes. Every read (list, per-folder, the retired-run reconcile) uses it. The phone sets 5.
 
 ### Collapsed strip: pages and Workspaces
 

@@ -116,8 +116,12 @@ const forwardRunSelected = (payload: { type: 'agent' | 'team'; runId: string }):
 };
 
 const HISTORY_REFRESH_INTERVAL_MS = 5000;
-/** The history read window per view (DS-002): every run for the Runs view (its fold and "Archive all older"), 6 otherwise. */
-const historyWindowOf = (mode: RunSectionMode): number | null => (mode === 'runs' ? null : 6);
+/**
+ * The history read window per view (DS-002): the Workspaces view shows today's capped tree (6 per agent and folder). The
+ * Runs view needs every run for its fold and "Archive all older"; the Projects view needs every run so that another
+ * client's removal of any run, not only of the newest 6, is noticed and the open Projects are read again (autobyteus-388).
+ */
+const historyWindowOf = (mode: RunSectionMode): number | null => (mode === 'workspaces' ? 6 : null);
 
 const runHistoryStore = useRunHistoryStore();
 const agentOrgRunStore = useAgentOrgRunStore();

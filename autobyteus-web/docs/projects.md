@@ -544,8 +544,9 @@ is read again only when its listing can change:
    or client, a Task Agent, the API): every loaded Project is read again when
    the set of root runs in `runHistoryStore` changes while the mode is shown.
    A status change leaves the set as it is, and the first value after showing
-   is only the baseline. The run section polls the history every 5 s, so such
-   a run is listed within one poll (autobyteus-388).
+   is only the baseline. The run section polls the history every 5 s, and in
+   the Projects view it reads every run (no per-agent window), so a run added
+   or removed is noticed within one poll, however old (autobyteus-388).
 
 Task events read nothing: delegated rows come from the run streams, as in
 Workspaces.

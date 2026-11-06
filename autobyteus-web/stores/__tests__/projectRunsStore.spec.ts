@@ -224,6 +224,20 @@ describe('projectRunsStore: runs added or removed elsewhere', () => {
     expect(projectReads()).toEqual(['P', 'Q'])
   })
 
+  // CR-001 (SR-002): the Projects view reads every run (no per-agent window), so a run older than its agent's 6 newest in
+  // the folder is in the set too, and its archive elsewhere re-reads the Projects. The host's window per view is pinned in
+  // RunSectionPanel.spec; this pins the store side with the history such a read holds.
+  it('an older Agent run of a Project (6 newer runs of its agent in the folder) archived elsewhere re-reads', async () => {
+    const runs = ['older', 'n1', 'n2', 'n3', 'n4', 'n5', 'n6']
+    setHistory(runs)
+    store.show()
+    await flush()
+    query.mockClear()
+    setHistory(runs.slice(1))
+    await flush()
+    expect(projectReads()).toEqual(['P', 'Q'])
+  })
+
   it('the same set (a status change, a poll with nothing new, a reorder) reads nothing', async () => {
     setHistory(['a', 'b'])
     store.show()
