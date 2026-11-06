@@ -1,0 +1,673 @@
+# API-01 Settings → Agent Runtimes GraphQL e2e (scripted runtime CLIs) with AR-14 (prerelease versions)
+# Command: env -i PATH=$PATH HOME=<temp> TMPDIR=$TMPDIR pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts --no-watch
+# Commit: d75db79bf5 (code b472fae14a) + AR-14 (working tree)
+# Env: macOS, Node v22.23.1
+# Date: 2026-11-06T13:51:27Z
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.12 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-version-prerelease-compare/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-version-prerelease-compare/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+(node:62252) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+Initialized server settings service with 33 predefined settings
+[90mstdout[2m | tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts[2m > [22m[2mSettings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-version-prerelease-compare/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-version-prerelease-compare/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-runtimes-e2e-5igPmu/data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-runtimes-e2e-5igPmu/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-runtimes-e2e-5igPmu/data/.env
+◇ injected env (2) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-runtimes-e2e-5igPmu/data/.env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-version-prerelease-compare/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-version-prerelease-compare/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-runtimes-e2e-5igPmu/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-runtimes-e2e-5igPmu/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-runtimes-e2e-5igPmu/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-runtimes-e2e-5igPmu/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-runtimes-e2e-5igPmu/data/memory
+============================================================
+
+[90mstdout[2m | tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts[2m > [22m[2mSettings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs)
+[22m[39mAgentRunManager initialized.
+AgentRunManager initialized.
+
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-runtimes-e2e-5igPmu/data/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-runtimes-e2e-5igPmu/data/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-runtimes-e2e-5igPmu/data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Registered required tool unit: Project Task Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Registered required tool unit: Agent Discovery Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'search_memory'
+Registered required tool unit: Memory Tools
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+Registered required tool unit: Agent Runtime Tools
+Registered required tool unit: Browser Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+{"level":30,"time":1793973099823,"pid":62252,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:56164"}
+{"level":30,"time":1793973099850,"pid":62252,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:56166"}
+{"level":30,"time":1793973099868,"pid":62252,"hostname":"MacBookPro","reqId":"req-1","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":7.899416000000201,"msg":"http request completed"}
+{"level":30,"time":1793973099878,"pid":62252,"hostname":"MacBookPro","reqId":"req-2","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.8424169999998412,"msg":"http request completed"}
+{"level":30,"time":1793973100295,"pid":62252,"hostname":"MacBookPro","reqId":"req-3","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":415.45458300000064,"msg":"http request completed"}
+{"level":30,"time":1793973100299,"pid":62252,"hostname":"MacBookPro","reqId":"req-4","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.5252499999987776,"msg":"http request completed"}
+{"level":30,"time":1793973100302,"pid":62252,"hostname":"MacBookPro","reqId":"req-5","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.596625000000131,"msg":"http request completed"}
+{"level":30,"time":1793973100308,"pid":62252,"hostname":"MacBookPro","reqId":"req-6","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.457624999999098,"msg":"http request completed"}
+{"level":30,"time":1793973100311,"pid":62252,"hostname":"MacBookPro","reqId":"req-7","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.7714999999989232,"msg":"http request completed"}
+{"level":30,"time":1793973100315,"pid":62252,"hostname":"MacBookPro","reqId":"req-8","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4616249999999127,"msg":"http request completed"}
+{"level":30,"time":1793973100370,"pid":62252,"hostname":"MacBookPro","reqId":"req-9","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.7395830000004935,"msg":"http request completed"}
+{"level":30,"time":1793973100374,"pid":62252,"hostname":"MacBookPro","reqId":"req-a","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.6758339999996679,"msg":"http request completed"}
+{"level":30,"time":1793973100428,"pid":62252,"hostname":"MacBookPro","reqId":"req-b","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.5697499999987485,"msg":"http request completed"}
+{"level":30,"time":1793973100482,"pid":62252,"hostname":"MacBookPro","reqId":"req-c","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4984999999996944,"msg":"http request completed"}
+{"level":30,"time":1793973100536,"pid":62252,"hostname":"MacBookPro","reqId":"req-d","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.5627079999994749,"msg":"http request completed"}
+{"level":30,"time":1793973100592,"pid":62252,"hostname":"MacBookPro","reqId":"req-e","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.5743750000001455,"msg":"http request completed"}
+{"level":30,"time":1793973100648,"pid":62252,"hostname":"MacBookPro","reqId":"req-f","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.5007089999999152,"msg":"http request completed"}
+{"level":30,"time":1793973100705,"pid":62252,"hostname":"MacBookPro","reqId":"req-g","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.1300830000000133,"msg":"http request completed"}
+{"level":30,"time":1793973100761,"pid":62252,"hostname":"MacBookPro","reqId":"req-h","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.0339590000003227,"msg":"http request completed"}
+{"level":30,"time":1793973100823,"pid":62252,"hostname":"MacBookPro","reqId":"req-i","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4475000000002183,"msg":"http request completed"}
+{"level":30,"time":1793973100876,"pid":62252,"hostname":"MacBookPro","reqId":"req-j","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.42666599999938626,"msg":"http request completed"}
+{"level":30,"time":1793973100930,"pid":62252,"hostname":"MacBookPro","reqId":"req-k","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4057919999995647,"msg":"http request completed"}
+{"level":30,"time":1793973100984,"pid":62252,"hostname":"MacBookPro","reqId":"req-l","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4696670000012091,"msg":"http request completed"}
+{"level":30,"time":1793973101038,"pid":62252,"hostname":"MacBookPro","reqId":"req-m","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.5209589999994932,"msg":"http request completed"}
+{"level":30,"time":1793973101095,"pid":62252,"hostname":"MacBookPro","reqId":"req-n","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4659590000010212,"msg":"http request completed"}
+{"level":30,"time":1793973101152,"pid":62252,"hostname":"MacBookPro","reqId":"req-o","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.602082999999766,"msg":"http request completed"}
+{"level":30,"time":1793973101206,"pid":62252,"hostname":"MacBookPro","reqId":"req-p","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.39787499999874854,"msg":"http request completed"}
+{"level":30,"time":1793973101275,"pid":62252,"hostname":"MacBookPro","reqId":"req-q","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.5399589999997261,"msg":"http request completed"}
+{"level":30,"time":1793973101328,"pid":62252,"hostname":"MacBookPro","reqId":"req-r","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4211670000004233,"msg":"http request completed"}
+{"level":30,"time":1793973101385,"pid":62252,"hostname":"MacBookPro","reqId":"req-s","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.42858299999898,"msg":"http request completed"}
+{"level":30,"time":1793973101443,"pid":62252,"hostname":"MacBookPro","reqId":"req-t","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.6603750000012951,"msg":"http request completed"}
+{"level":30,"time":1793973101514,"pid":62252,"hostname":"MacBookPro","reqId":"req-u","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.43808399999943504,"msg":"http request completed"}
+{"level":30,"time":1793973101574,"pid":62252,"hostname":"MacBookPro","reqId":"req-v","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4257080000006681,"msg":"http request completed"}
+{"level":30,"time":1793973101627,"pid":62252,"hostname":"MacBookPro","reqId":"req-w","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3677079999997659,"msg":"http request completed"}
+{"level":30,"time":1793973101680,"pid":62252,"hostname":"MacBookPro","reqId":"req-x","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3946250000008149,"msg":"http request completed"}
+{"level":30,"time":1793973101734,"pid":62252,"hostname":"MacBookPro","reqId":"req-y","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.5003749999996217,"msg":"http request completed"}
+{"level":30,"time":1793973101787,"pid":62252,"hostname":"MacBookPro","reqId":"req-z","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.38400000000001455,"msg":"http request completed"}
+{"level":30,"time":1793973101840,"pid":62252,"hostname":"MacBookPro","reqId":"req-10","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.38724999999976717,"msg":"http request completed"}
+{"level":30,"time":1793973101893,"pid":62252,"hostname":"MacBookPro","reqId":"req-11","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.38508399999955145,"msg":"http request completed"}
+{"level":30,"time":1793973101954,"pid":62252,"hostname":"MacBookPro","reqId":"req-12","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":5.483167000000321,"msg":"http request completed"}
+{"level":30,"time":1793973102009,"pid":62252,"hostname":"MacBookPro","reqId":"req-13","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.7761250000003201,"msg":"http request completed"}
+{"level":30,"time":1793973102064,"pid":62252,"hostname":"MacBookPro","reqId":"req-14","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.009249999999156,"msg":"http request completed"}
+{"level":30,"time":1793973102118,"pid":62252,"hostname":"MacBookPro","reqId":"req-15","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.48533300000053714,"msg":"http request completed"}
+{"level":30,"time":1793973102172,"pid":62252,"hostname":"MacBookPro","reqId":"req-16","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.7387920000001031,"msg":"http request completed"}
+{"level":30,"time":1793973102227,"pid":62252,"hostname":"MacBookPro","reqId":"req-17","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.5633749999997235,"msg":"http request completed"}
+{"level":30,"time":1793973102282,"pid":62252,"hostname":"MacBookPro","reqId":"req-18","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.6994169999998121,"msg":"http request completed"}
+{"level":30,"time":1793973102337,"pid":62252,"hostname":"MacBookPro","reqId":"req-19","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.7704590000012104,"msg":"http request completed"}
+{"level":30,"time":1793973102392,"pid":62252,"hostname":"MacBookPro","reqId":"req-1a","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.0679999999993015,"msg":"http request completed"}
+{"level":30,"time":1793973102448,"pid":62252,"hostname":"MacBookPro","reqId":"req-1b","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.8670840000013413,"msg":"http request completed"}
+{"level":30,"time":1793973102502,"pid":62252,"hostname":"MacBookPro","reqId":"req-1c","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.47687500000029104,"msg":"http request completed"}
+{"level":30,"time":1793973102555,"pid":62252,"hostname":"MacBookPro","reqId":"req-1d","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.29991700000027777,"msg":"http request completed"}
+{"level":30,"time":1793973102558,"pid":62252,"hostname":"MacBookPro","reqId":"req-1e","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3629579999997077,"msg":"http request completed"}
+{"level":30,"time":1793973102599,"pid":62252,"hostname":"MacBookPro","reqId":"req-1f","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":38.69341700000041,"msg":"http request completed"}
+{"level":30,"time":1793973102601,"pid":62252,"hostname":"MacBookPro","reqId":"req-1g","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3613329999989219,"msg":"http request completed"}
+{"level":30,"time":1793973102604,"pid":62252,"hostname":"MacBookPro","reqId":"req-1h","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.8177080000004935,"msg":"http request completed"}
+{"level":30,"time":1793973102606,"pid":62252,"hostname":"MacBookPro","reqId":"req-1i","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.24229099999865866,"msg":"http request completed"}
+{"level":30,"time":1793973102659,"pid":62252,"hostname":"MacBookPro","reqId":"req-1j","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.41541700000016135,"msg":"http request completed"}
+{"level":30,"time":1793973102712,"pid":62252,"hostname":"MacBookPro","reqId":"req-1k","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.37862500000119326,"msg":"http request completed"}
+{"level":30,"time":1793973102766,"pid":62252,"hostname":"MacBookPro","reqId":"req-1l","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4089169999988371,"msg":"http request completed"}
+{"level":30,"time":1793973102820,"pid":62252,"hostname":"MacBookPro","reqId":"req-1m","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4142499999998108,"msg":"http request completed"}
+{"level":30,"time":1793973102875,"pid":62252,"hostname":"MacBookPro","reqId":"req-1n","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.5134579999994457,"msg":"http request completed"}
+{"level":30,"time":1793973102929,"pid":62252,"hostname":"MacBookPro","reqId":"req-1o","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.651333000001614,"msg":"http request completed"}
+{"level":30,"time":1793973102985,"pid":62252,"hostname":"MacBookPro","reqId":"req-1p","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.9533329999994749,"msg":"http request completed"}
+{"level":30,"time":1793973103041,"pid":62252,"hostname":"MacBookPro","reqId":"req-1q","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.5354999999999563,"msg":"http request completed"}
+{"level":30,"time":1793973103095,"pid":62252,"hostname":"MacBookPro","reqId":"req-1r","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.9210000000002765,"msg":"http request completed"}
+{"level":30,"time":1793973103155,"pid":62252,"hostname":"MacBookPro","reqId":"req-1s","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.5877500000005966,"msg":"http request completed"}
+{"level":30,"time":1793973103210,"pid":62252,"hostname":"MacBookPro","reqId":"req-1t","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.8716249999997672,"msg":"http request completed"}
+{"level":30,"time":1793973103265,"pid":62252,"hostname":"MacBookPro","reqId":"req-1u","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.41216700000040873,"msg":"http request completed"}
+{"level":30,"time":1793973103319,"pid":62252,"hostname":"MacBookPro","reqId":"req-1v","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3468750000010914,"msg":"http request completed"}
+{"level":30,"time":1793973103322,"pid":62252,"hostname":"MacBookPro","reqId":"req-1w","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.0415830000001733,"msg":"http request completed"}
+{"level":30,"time":1793973103326,"pid":62252,"hostname":"MacBookPro","reqId":"req-1x","err":{"type":"GraphQLError","message":"This runtime is already updating or signing in.","stack":"GraphQLError: This runtime is already updating or signing in.\n    at withRuntimeErrors (/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-version-prerelease-compare/autobyteus-server-ts/src/api/graphql/types/agent-runtimes.ts:129:51)\n    at AgentRuntimesResolver.updateAgentRuntime (/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-version-prerelease-compare/autobyteus-server-ts/src/api/graphql/types/agent-runtimes.ts:157:11)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/runtime-version-prerelease-compare/node_modules/.pnpm/type-graphql@2.0.0-rc.4_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-version-prerelease-compare/node_modules/.pnpm/mercurius@16.12.1_graphql@16.12.0/node_modules/mercurius/index.js:713:23)","path":["updateAgentRuntime"],"locations":[{"line":1,"column":42}],"extensions":{"code":"AGENT_RUNTIME_BUSY"}},"msg":"This runtime is already updating or signing in."}
+{"level":30,"time":1793973103327,"pid":62252,"hostname":"MacBookPro","reqId":"req-1x","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.310875000001033,"msg":"http request completed"}
+{"level":30,"time":1793973103329,"pid":62252,"hostname":"MacBookPro","reqId":"req-1y","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3493749999997817,"msg":"http request completed"}
+{"level":30,"time":1793973103382,"pid":62252,"hostname":"MacBookPro","reqId":"req-1z","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4131250000009459,"msg":"http request completed"}
+{"level":30,"time":1793973103436,"pid":62252,"hostname":"MacBookPro","reqId":"req-20","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.46941700000024866,"msg":"http request completed"}
+{"level":30,"time":1793973103489,"pid":62252,"hostname":"MacBookPro","reqId":"req-21","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3876249999993888,"msg":"http request completed"}
+{"level":30,"time":1793973103543,"pid":62252,"hostname":"MacBookPro","reqId":"req-22","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.46154199999909906,"msg":"http request completed"}
+{"level":30,"time":1793973103597,"pid":62252,"hostname":"MacBookPro","reqId":"req-23","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.38008300000001327,"msg":"http request completed"}
+{"level":30,"time":1793973103649,"pid":62252,"hostname":"MacBookPro","reqId":"req-24","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4437500000003638,"msg":"http request completed"}
+{"level":30,"time":1793973103703,"pid":62252,"hostname":"MacBookPro","reqId":"req-25","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4796249999999418,"msg":"http request completed"}
+{"level":30,"time":1793973103756,"pid":62252,"hostname":"MacBookPro","reqId":"req-26","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3481659999997646,"msg":"http request completed"}
+{"level":30,"time":1793973103810,"pid":62252,"hostname":"MacBookPro","reqId":"req-27","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3663749999996071,"msg":"http request completed"}
+{"level":30,"time":1793973103864,"pid":62252,"hostname":"MacBookPro","reqId":"req-28","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.44325000000026193,"msg":"http request completed"}
+{"level":30,"time":1793973103918,"pid":62252,"hostname":"MacBookPro","reqId":"req-29","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.43174999999973807,"msg":"http request completed"}
+{"level":30,"time":1793973103971,"pid":62252,"hostname":"MacBookPro","reqId":"req-2a","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.42220799999995506,"msg":"http request completed"}
+{"level":30,"time":1793973104027,"pid":62252,"hostname":"MacBookPro","reqId":"req-2b","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.7499169999991864,"msg":"http request completed"}
+{"level":30,"time":1793973104084,"pid":62252,"hostname":"MacBookPro","reqId":"req-2c","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.37487499999952,"msg":"http request completed"}
+{"level":30,"time":1793973104140,"pid":62252,"hostname":"MacBookPro","reqId":"req-2d","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.9074999999993452,"msg":"http request completed"}
+{"level":30,"time":1793973104194,"pid":62252,"hostname":"MacBookPro","reqId":"req-2e","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.44891699999971024,"msg":"http request completed"}
+{"level":30,"time":1793973104250,"pid":62252,"hostname":"MacBookPro","reqId":"req-2f","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.4919580000005226,"msg":"http request completed"}
+{"level":30,"time":1793973104306,"pid":62252,"hostname":"MacBookPro","reqId":"req-2g","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.8770000000004075,"msg":"http request completed"}
+{"level":30,"time":1793973104360,"pid":62252,"hostname":"MacBookPro","reqId":"req-2h","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.7302500000005239,"msg":"http request completed"}
+{"level":30,"time":1793973104415,"pid":62252,"hostname":"MacBookPro","reqId":"req-2i","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.5774999999994179,"msg":"http request completed"}
+{"level":30,"time":1793973104470,"pid":62252,"hostname":"MacBookPro","reqId":"req-2j","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.6844579999997222,"msg":"http request completed"}
+{"level":30,"time":1793973104528,"pid":62252,"hostname":"MacBookPro","reqId":"req-2k","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.0282080000015412,"msg":"http request completed"}
+{"level":30,"time":1793973104583,"pid":62252,"hostname":"MacBookPro","reqId":"req-2l","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.8200830000005226,"msg":"http request completed"}
+{"level":30,"time":1793973104639,"pid":62252,"hostname":"MacBookPro","reqId":"req-2m","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.3996250000000146,"msg":"http request completed"}
+{"level":30,"time":1793973104694,"pid":62252,"hostname":"MacBookPro","reqId":"req-2n","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.8652090000014141,"msg":"http request completed"}
+{"level":30,"time":1793973104751,"pid":62252,"hostname":"MacBookPro","reqId":"req-2o","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.2631670000009763,"msg":"http request completed"}
+{"level":30,"time":1793973104813,"pid":62252,"hostname":"MacBookPro","reqId":"req-2p","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.8293749999993452,"msg":"http request completed"}
+{"level":30,"time":1793973104872,"pid":62252,"hostname":"MacBookPro","reqId":"req-2q","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.6488330000011047,"msg":"http request completed"}
+{"level":30,"time":1793973104924,"pid":62252,"hostname":"MacBookPro","reqId":"req-2r","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3927080000012211,"msg":"http request completed"}
+{"level":30,"time":1793973104927,"pid":62252,"hostname":"MacBookPro","reqId":"req-2s","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.9119580000005953,"msg":"http request completed"}
+{"level":30,"time":1793973104929,"pid":62252,"hostname":"MacBookPro","reqId":"req-2t","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.32629199999973935,"msg":"http request completed"}
+{"level":30,"time":1793973104931,"pid":62252,"hostname":"MacBookPro","reqId":"req-2u","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.2504160000007687,"msg":"http request completed"}
+{"level":30,"time":1793973104984,"pid":62252,"hostname":"MacBookPro","reqId":"req-2v","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3604159999995318,"msg":"http request completed"}
+{"level":30,"time":1793973105037,"pid":62252,"hostname":"MacBookPro","reqId":"req-2w","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.39341700000113633,"msg":"http request completed"}
+{"level":30,"time":1793973105090,"pid":62252,"hostname":"MacBookPro","reqId":"req-2x","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4448339999999007,"msg":"http request completed"}
+{"level":30,"time":1793973105144,"pid":62252,"hostname":"MacBookPro","reqId":"req-2y","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.596665999999459,"msg":"http request completed"}
+{"level":30,"time":1793973105199,"pid":62252,"hostname":"MacBookPro","reqId":"req-2z","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.8069580000010319,"msg":"http request completed"}
+{"level":30,"time":1793973105257,"pid":62252,"hostname":"MacBookPro","reqId":"req-30","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.9692090000007738,"msg":"http request completed"}
+{"level":30,"time":1793973105314,"pid":62252,"hostname":"MacBookPro","reqId":"req-31","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.9628339999999298,"msg":"http request completed"}
+{"level":30,"time":1793973105372,"pid":62252,"hostname":"MacBookPro","reqId":"req-32","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.2051250000004075,"msg":"http request completed"}
+{"level":30,"time":1793973105431,"pid":62252,"hostname":"MacBookPro","reqId":"req-33","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.124374999999418,"msg":"http request completed"}
+{"level":30,"time":1793973105486,"pid":62252,"hostname":"MacBookPro","reqId":"req-34","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.0163339999999152,"msg":"http request completed"}
+{"level":30,"time":1793973105542,"pid":62252,"hostname":"MacBookPro","reqId":"req-35","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.5523339999999735,"msg":"http request completed"}
+{"level":30,"time":1793973105595,"pid":62252,"hostname":"MacBookPro","reqId":"req-36","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.5609590000003664,"msg":"http request completed"}
+{"level":30,"time":1793973105649,"pid":62252,"hostname":"MacBookPro","reqId":"req-37","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.5185419999997976,"msg":"http request completed"}
+{"level":30,"time":1793973105705,"pid":62252,"hostname":"MacBookPro","reqId":"req-38","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.36266599999908067,"msg":"http request completed"}
+{"level":30,"time":1793973105758,"pid":62252,"hostname":"MacBookPro","reqId":"req-39","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3931249999986903,"msg":"http request completed"}
+{"level":30,"time":1793973105811,"pid":62252,"hostname":"MacBookPro","reqId":"req-3a","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4072919999998703,"msg":"http request completed"}
+{"level":30,"time":1793973105864,"pid":62252,"hostname":"MacBookPro","reqId":"req-3b","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.35887499999989814,"msg":"http request completed"}
+{"level":30,"time":1793973105918,"pid":62252,"hostname":"MacBookPro","reqId":"req-3c","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.37404199999946286,"msg":"http request completed"}
+{"level":30,"time":1793973105972,"pid":62252,"hostname":"MacBookPro","reqId":"req-3d","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3862910000007105,"msg":"http request completed"}
+{"level":30,"time":1793973106026,"pid":62252,"hostname":"MacBookPro","reqId":"req-3e","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.6302909999994881,"msg":"http request completed"}
+{"level":30,"time":1793973106080,"pid":62252,"hostname":"MacBookPro","reqId":"req-3f","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.684291999999914,"msg":"http request completed"}
+{"level":30,"time":1793973106134,"pid":62252,"hostname":"MacBookPro","reqId":"req-3g","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.5869590000002063,"msg":"http request completed"}
+{"level":30,"time":1793973106190,"pid":62252,"hostname":"MacBookPro","reqId":"req-3h","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.6584579999998823,"msg":"http request completed"}
+{"level":30,"time":1793973106244,"pid":62252,"hostname":"MacBookPro","reqId":"req-3i","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.6936249999998836,"msg":"http request completed"}
+{"level":30,"time":1793973106298,"pid":62252,"hostname":"MacBookPro","reqId":"req-3j","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4717500000006112,"msg":"http request completed"}
+{"level":30,"time":1793973106352,"pid":62252,"hostname":"MacBookPro","reqId":"req-3k","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.5147499999984575,"msg":"http request completed"}
+{"level":30,"time":1793973106409,"pid":62252,"hostname":"MacBookPro","reqId":"req-3l","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":3.208666999998968,"msg":"http request completed"}
+{"level":30,"time":1793973106464,"pid":62252,"hostname":"MacBookPro","reqId":"req-3m","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.7501669999983278,"msg":"http request completed"}
+{"level":30,"time":1793973106518,"pid":62252,"hostname":"MacBookPro","reqId":"req-3n","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3721670000013546,"msg":"http request completed"}
+{"level":30,"time":1793973106572,"pid":62252,"hostname":"MacBookPro","reqId":"req-3o","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4071670000012091,"msg":"http request completed"}
+{"level":30,"time":1793973106575,"pid":62252,"hostname":"MacBookPro","reqId":"req-3p","err":{"type":"GraphQLError","message":"This runtime is not installed.","stack":"GraphQLError: This runtime is not installed.\n    at withRuntimeErrors (/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-version-prerelease-compare/autobyteus-server-ts/src/api/graphql/types/agent-runtimes.ts:129:51)\n    at AgentRuntimesResolver.updateAgentRuntime (/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-version-prerelease-compare/autobyteus-server-ts/src/api/graphql/types/agent-runtimes.ts:157:11)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/runtime-version-prerelease-compare/node_modules/.pnpm/type-graphql@2.0.0-rc.4_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-version-prerelease-compare/node_modules/.pnpm/mercurius@16.12.1_graphql@16.12.0/node_modules/mercurius/index.js:713:23)","path":["updateAgentRuntime"],"locations":[{"line":1,"column":42}],"extensions":{"code":"AGENT_RUNTIME_NOT_INSTALLED"}},"msg":"This runtime is not installed."}
+{"level":30,"time":1793973106575,"pid":62252,"hostname":"MacBookPro","reqId":"req-3p","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.1331669999999576,"msg":"http request completed"}
+{"level":30,"time":1793973106579,"pid":62252,"hostname":"MacBookPro","reqId":"req-3q","err":{"type":"GraphQLError","message":"This runtime is not installed.","stack":"GraphQLError: This runtime is not installed.\n    at withRuntimeErrors (/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-version-prerelease-compare/autobyteus-server-ts/src/api/graphql/types/agent-runtimes.ts:129:51)\n    at AgentRuntimesResolver.startAgentRuntimeSignIn (/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-version-prerelease-compare/autobyteus-server-ts/src/api/graphql/types/agent-runtimes.ts:163:11)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/runtime-version-prerelease-compare/node_modules/.pnpm/type-graphql@2.0.0-rc.4_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-version-prerelease-compare/node_modules/.pnpm/mercurius@16.12.1_graphql@16.12.0/node_modules/mercurius/index.js:713:23)","path":["startAgentRuntimeSignIn"],"locations":[{"line":1,"column":42}],"extensions":{"code":"AGENT_RUNTIME_NOT_INSTALLED"}},"msg":"This runtime is not installed."}
+{"level":30,"time":1793973106579,"pid":62252,"hostname":"MacBookPro","reqId":"req-3q","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.7362499999981083,"msg":"http request completed"}
+{"level":30,"time":1793973106581,"pid":62252,"hostname":"MacBookPro","reqId":"req-3r","err":{"type":"GraphQLError","message":"Sign in from this runtime's command line.","stack":"GraphQLError: Sign in from this runtime's command line.\n    at withRuntimeErrors (/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-version-prerelease-compare/autobyteus-server-ts/src/api/graphql/types/agent-runtimes.ts:129:51)\n    at AgentRuntimesResolver.startAgentRuntimeSignIn (/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-version-prerelease-compare/autobyteus-server-ts/src/api/graphql/types/agent-runtimes.ts:163:11)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/runtime-version-prerelease-compare/node_modules/.pnpm/type-graphql@2.0.0-rc.4_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-version-prerelease-compare/node_modules/.pnpm/mercurius@16.12.1_graphql@16.12.0/node_modules/mercurius/index.js:713:23)","path":["startAgentRuntimeSignIn"],"locations":[{"line":1,"column":42}],"extensions":{"code":"AGENT_RUNTIME_SIGN_IN_UNSUPPORTED"}},"msg":"Sign in from this runtime's command line."}
+{"level":30,"time":1793973106582,"pid":62252,"hostname":"MacBookPro","reqId":"req-3r","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.7658330000012938,"msg":"http request completed"}
+{"level":30,"time":1793973106584,"pid":62252,"hostname":"MacBookPro","reqId":"req-3s","err":{"type":"GraphQLError","message":"Sign in from this runtime's command line.","stack":"GraphQLError: Sign in from this runtime's command line.\n    at withRuntimeErrors (/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-version-prerelease-compare/autobyteus-server-ts/src/api/graphql/types/agent-runtimes.ts:129:51)\n    at AgentRuntimesResolver.startAgentRuntimeSignIn (/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-version-prerelease-compare/autobyteus-server-ts/src/api/graphql/types/agent-runtimes.ts:163:11)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/runtime-version-prerelease-compare/node_modules/.pnpm/type-graphql@2.0.0-rc.4_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-version-prerelease-compare/node_modules/.pnpm/mercurius@16.12.1_graphql@16.12.0/node_modules/mercurius/index.js:713:23)","path":["startAgentRuntimeSignIn"],"locations":[{"line":1,"column":42}],"extensions":{"code":"AGENT_RUNTIME_SIGN_IN_UNSUPPORTED"}},"msg":"Sign in from this runtime's command line."}
+{"level":30,"time":1793973106584,"pid":62252,"hostname":"MacBookPro","reqId":"req-3s","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.5992919999989681,"msg":"http request completed"}
+{"level":30,"time":1793973106586,"pid":62252,"hostname":"MacBookPro","reqId":"req-3t","err":{"type":"GraphQLError","message":"Unknown agent runtime 'autobyteus'.","stack":"GraphQLError: Unknown agent runtime 'autobyteus'.\n    at requireAgentRuntimeKind (/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-version-prerelease-compare/autobyteus-server-ts/src/api/graphql/types/agent-runtimes.ts:119:11)\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-version-prerelease-compare/autobyteus-server-ts/src/api/graphql/types/agent-runtimes.ts:157:78\n    at withRuntimeErrors (/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-version-prerelease-compare/autobyteus-server-ts/src/api/graphql/types/agent-runtimes.ts:127:18)\n    at AgentRuntimesResolver.updateAgentRuntime (/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-version-prerelease-compare/autobyteus-server-ts/src/api/graphql/types/agent-runtimes.ts:157:11)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/runtime-version-prerelease-compare/node_modules/.pnpm/type-graphql@2.0.0-rc.4_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-version-prerelease-compare/node_modules/.pnpm/mercurius@16.12.1_graphql@16.12.0/node_modules/mercurius/index.js:713:23)","path":["updateAgentRuntime"],"locations":[{"line":1,"column":42}],"extensions":{"code":"AGENT_RUNTIME_UNKNOWN"}},"msg":"Unknown agent runtime 'autobyteus'."}
+{"level":30,"time":1793973106586,"pid":62252,"hostname":"MacBookPro","reqId":"req-3t","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4483749999999418,"msg":"http request completed"}
+{"level":30,"time":1793973106588,"pid":62252,"hostname":"MacBookPro","reqId":"req-3u","err":{"type":"GraphQLError","message":"Unknown agent runtime 'no_such_runtime'.","stack":"GraphQLError: Unknown agent runtime 'no_such_runtime'.\n    at requireAgentRuntimeKind (/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-version-prerelease-compare/autobyteus-server-ts/src/api/graphql/types/agent-runtimes.ts:119:11)\n    at /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-version-prerelease-compare/autobyteus-server-ts/src/api/graphql/types/agent-runtimes.ts:157:78\n    at withRuntimeErrors (/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-version-prerelease-compare/autobyteus-server-ts/src/api/graphql/types/agent-runtimes.ts:127:18)\n    at AgentRuntimesResolver.updateAgentRuntime (/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-version-prerelease-compare/autobyteus-server-ts/src/api/graphql/types/agent-runtimes.ts:157:11)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/runtime-version-prerelease-compare/node_modules/.pnpm/type-graphql@2.0.0-rc.4_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-version-prerelease-compare/node_modules/.pnpm/mercurius@16.12.1_graphql@16.12.0/node_modules/mercurius/index.js:713:23)","path":["updateAgentRuntime"],"locations":[{"line":1,"column":42}],"extensions":{"code":"AGENT_RUNTIME_UNKNOWN"}},"msg":"Unknown agent runtime 'no_such_runtime'."}
+{"level":30,"time":1793973106589,"pid":62252,"hostname":"MacBookPro","reqId":"req-3u","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4695419999989099,"msg":"http request completed"}
+{"level":30,"time":1793973106592,"pid":62252,"hostname":"MacBookPro","reqId":"req-3v","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.110292000001209,"msg":"http request completed"}
+{"level":30,"time":1793973106646,"pid":62252,"hostname":"MacBookPro","reqId":"req-3w","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3946250000008149,"msg":"http request completed"}
+{"level":30,"time":1793973106648,"pid":62252,"hostname":"MacBookPro","reqId":"req-3x","err":{"type":"GraphQLError","message":"This runtime is already updating or signing in.","stack":"GraphQLError: This runtime is already updating or signing in.\n    at withRuntimeErrors (/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-version-prerelease-compare/autobyteus-server-ts/src/api/graphql/types/agent-runtimes.ts:129:51)\n    at AgentRuntimesResolver.updateAgentRuntime (/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-version-prerelease-compare/autobyteus-server-ts/src/api/graphql/types/agent-runtimes.ts:157:11)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/runtime-version-prerelease-compare/node_modules/.pnpm/type-graphql@2.0.0-rc.4_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:26:98\n    at processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-version-prerelease-compare/node_modules/.pnpm/mercurius@16.12.1_graphql@16.12.0/node_modules/mercurius/index.js:713:23)","path":["updateAgentRuntime"],"locations":[{"line":1,"column":42}],"extensions":{"code":"AGENT_RUNTIME_BUSY"}},"msg":"This runtime is already updating or signing in."}
+{"level":30,"time":1793973106648,"pid":62252,"hostname":"MacBookPro","reqId":"req-3x","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.6358749999999418,"msg":"http request completed"}
+{"level":30,"time":1793973106651,"pid":62252,"hostname":"MacBookPro","reqId":"req-3y","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.36108299999978044,"msg":"http request completed"}
+{"level":30,"time":1793973106705,"pid":62252,"hostname":"MacBookPro","reqId":"req-3z","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.407999999999447,"msg":"http request completed"}
+{"level":30,"time":1793973106757,"pid":62252,"hostname":"MacBookPro","reqId":"req-40","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.5378329999984999,"msg":"http request completed"}
+{"level":30,"time":1793973106811,"pid":62252,"hostname":"MacBookPro","reqId":"req-41","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.5183340000003227,"msg":"http request completed"}
+{"level":30,"time":1793973106870,"pid":62252,"hostname":"MacBookPro","reqId":"req-42","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.6187499999978172,"msg":"http request completed"}
+{"level":30,"time":1793973106924,"pid":62252,"hostname":"MacBookPro","reqId":"req-43","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4366250000020955,"msg":"http request completed"}
+{"level":30,"time":1793973106974,"pid":62252,"hostname":"MacBookPro","reqId":"req-44","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":46.84479199999987,"msg":"http request completed"}
+{"level":30,"time":1793973106976,"pid":62252,"hostname":"MacBookPro","reqId":"req-45","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.41320900000209804,"msg":"http request completed"}
+{"level":30,"time":1793973107028,"pid":62252,"hostname":"MacBookPro","reqId":"req-46","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4652079999978014,"msg":"http request completed"}
+{"level":30,"time":1793973107031,"pid":62252,"hostname":"MacBookPro","reqId":"req-47","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.8241249999991851,"msg":"http request completed"}
+{"level":30,"time":1793973107084,"pid":62252,"hostname":"MacBookPro","reqId":"req-48","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.3032079999975394,"msg":"http request completed"}
+{"level":30,"time":1793973107088,"pid":62252,"hostname":"MacBookPro","reqId":"req-49","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3272919999981241,"msg":"http request completed"}
+{"level":30,"time":1793973107090,"pid":62252,"hostname":"MacBookPro","reqId":"req-4a","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.22504200000184937,"msg":"http request completed"}
+{"level":30,"time":1793973107139,"pid":62252,"hostname":"MacBookPro","reqId":"req-4b","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":46.197291000000405,"msg":"http request completed"}
+{"level":30,"time":1793973107141,"pid":62252,"hostname":"MacBookPro","reqId":"req-4c","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.41804100000081235,"msg":"http request completed"}
+{"level":30,"time":1793973107193,"pid":62252,"hostname":"MacBookPro","reqId":"req-4d","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3075840000019525,"msg":"http request completed"}
+{"level":30,"time":1793973107196,"pid":62252,"hostname":"MacBookPro","reqId":"req-4e","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.6699580000022252,"msg":"http request completed"}
+{"level":30,"time":1793973107249,"pid":62252,"hostname":"MacBookPro","reqId":"req-4f","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3693749999983993,"msg":"http request completed"}
+{"level":30,"time":1793973107302,"pid":62252,"hostname":"MacBookPro","reqId":"req-4g","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.45216699999946286,"msg":"http request completed"}
+{"level":30,"time":1793973107355,"pid":62252,"hostname":"MacBookPro","reqId":"req-4h","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3523749999985739,"msg":"http request completed"}
+{"level":30,"time":1793973107409,"pid":62252,"hostname":"MacBookPro","reqId":"req-4i","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4343749999970896,"msg":"http request completed"}
+{"level":30,"time":1793973107461,"pid":62252,"hostname":"MacBookPro","reqId":"req-4j","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3493330000019341,"msg":"http request completed"}
+{"level":30,"time":1793973107515,"pid":62252,"hostname":"MacBookPro","reqId":"req-4k","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.38383299999986775,"msg":"http request completed"}
+{"level":30,"time":1793973107569,"pid":62252,"hostname":"MacBookPro","reqId":"req-4l","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3633750000008149,"msg":"http request completed"}
+{"level":30,"time":1793973107621,"pid":62252,"hostname":"MacBookPro","reqId":"req-4m","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.43608300000050804,"msg":"http request completed"}
+{"level":30,"time":1793973107675,"pid":62252,"hostname":"MacBookPro","reqId":"req-4n","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.6595839999972668,"msg":"http request completed"}
+{"level":30,"time":1793973107729,"pid":62252,"hostname":"MacBookPro","reqId":"req-4o","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.44149999999717693,"msg":"http request completed"}
+{"level":30,"time":1793973107788,"pid":62252,"hostname":"MacBookPro","reqId":"req-4p","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.8002919999998994,"msg":"http request completed"}
+{"level":30,"time":1793973107844,"pid":62252,"hostname":"MacBookPro","reqId":"req-4q","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.7908749999987776,"msg":"http request completed"}
+{"level":30,"time":1793973107901,"pid":62252,"hostname":"MacBookPro","reqId":"req-4r","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.7467080000024,"msg":"http request completed"}
+{"level":30,"time":1793973107956,"pid":62252,"hostname":"MacBookPro","reqId":"req-4s","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.9812500000007276,"msg":"http request completed"}
+{"level":30,"time":1793973108009,"pid":62252,"hostname":"MacBookPro","reqId":"req-4t","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4017500000009022,"msg":"http request completed"}
+{"level":30,"time":1793973108065,"pid":62252,"hostname":"MacBookPro","reqId":"req-4u","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.0665829999998095,"msg":"http request completed"}
+{"level":30,"time":1793973108120,"pid":62252,"hostname":"MacBookPro","reqId":"req-4v","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.5164999999979045,"msg":"http request completed"}
+{"level":30,"time":1793973108179,"pid":62252,"hostname":"MacBookPro","reqId":"req-4w","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.5852500000000873,"msg":"http request completed"}
+{"level":30,"time":1793973108235,"pid":62252,"hostname":"MacBookPro","reqId":"req-4x","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.8709580000031565,"msg":"http request completed"}
+{"level":30,"time":1793973108289,"pid":62252,"hostname":"MacBookPro","reqId":"req-4y","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.37212499999805004,"msg":"http request completed"}
+{"level":30,"time":1793973108346,"pid":62252,"hostname":"MacBookPro","reqId":"req-4z","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.36737499999799184,"msg":"http request completed"}
+{"level":30,"time":1793973108400,"pid":62252,"hostname":"MacBookPro","reqId":"req-50","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.42579100000148173,"msg":"http request completed"}
+{"level":30,"time":1793973108454,"pid":62252,"hostname":"MacBookPro","reqId":"req-51","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.47120799999902374,"msg":"http request completed"}
+{"level":30,"time":1793973108513,"pid":62252,"hostname":"MacBookPro","reqId":"req-52","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4052499999997963,"msg":"http request completed"}
+{"level":30,"time":1793973108567,"pid":62252,"hostname":"MacBookPro","reqId":"req-53","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.9465839999975287,"msg":"http request completed"}
+{"level":30,"time":1793973108621,"pid":62252,"hostname":"MacBookPro","reqId":"req-54","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.5549160000009579,"msg":"http request completed"}
+{"level":30,"time":1793973108674,"pid":62252,"hostname":"MacBookPro","reqId":"req-55","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.40820800000074087,"msg":"http request completed"}
+{"level":30,"time":1793973108726,"pid":62252,"hostname":"MacBookPro","reqId":"req-56","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.39179199999853154,"msg":"http request completed"}
+{"level":30,"time":1793973108782,"pid":62252,"hostname":"MacBookPro","reqId":"req-57","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.493332999998529,"msg":"http request completed"}
+{"level":30,"time":1793973108836,"pid":62252,"hostname":"MacBookPro","reqId":"req-58","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.39066599999932805,"msg":"http request completed"}
+{"level":30,"time":1793973108890,"pid":62252,"hostname":"MacBookPro","reqId":"req-59","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.40649999999732245,"msg":"http request completed"}
+{"level":30,"time":1793973108944,"pid":62252,"hostname":"MacBookPro","reqId":"req-5a","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.405084000001807,"msg":"http request completed"}
+{"level":30,"time":1793973108998,"pid":62252,"hostname":"MacBookPro","reqId":"req-5b","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.482625000000553,"msg":"http request completed"}
+{"level":30,"time":1793973109053,"pid":62252,"hostname":"MacBookPro","reqId":"req-5c","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3559580000001006,"msg":"http request completed"}
+{"level":30,"time":1793973109106,"pid":62252,"hostname":"MacBookPro","reqId":"req-5d","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3627909999995609,"msg":"http request completed"}
+{"level":30,"time":1793973109164,"pid":62252,"hostname":"MacBookPro","reqId":"req-5e","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4112920000006852,"msg":"http request completed"}
+{"level":30,"time":1793973109216,"pid":62252,"hostname":"MacBookPro","reqId":"req-5f","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3845000000001164,"msg":"http request completed"}
+{"level":30,"time":1793973109269,"pid":62252,"hostname":"MacBookPro","reqId":"req-5g","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.49812499999825377,"msg":"http request completed"}
+{"level":30,"time":1793973109322,"pid":62252,"hostname":"MacBookPro","reqId":"req-5h","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.36445800000001327,"msg":"http request completed"}
+{"level":30,"time":1793973109376,"pid":62252,"hostname":"MacBookPro","reqId":"req-5i","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4712909999980184,"msg":"http request completed"}
+{"level":30,"time":1793973109429,"pid":62252,"hostname":"MacBookPro","reqId":"req-5j","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.39325000000098953,"msg":"http request completed"}
+{"level":30,"time":1793973109484,"pid":62252,"hostname":"MacBookPro","reqId":"req-5k","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.5712499999972351,"msg":"http request completed"}
+{"level":30,"time":1793973109545,"pid":62252,"hostname":"MacBookPro","reqId":"req-5l","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.5904579999987618,"msg":"http request completed"}
+{"level":30,"time":1793973109599,"pid":62252,"hostname":"MacBookPro","reqId":"req-5m","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4661659999983385,"msg":"http request completed"}
+{"level":30,"time":1793973109656,"pid":62252,"hostname":"MacBookPro","reqId":"req-5n","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":4.668832999999722,"msg":"http request completed"}
+{"level":30,"time":1793973109712,"pid":62252,"hostname":"MacBookPro","reqId":"req-5o","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.93604200000118,"msg":"http request completed"}
+{"level":30,"time":1793973109769,"pid":62252,"hostname":"MacBookPro","reqId":"req-5p","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.8335420000003069,"msg":"http request completed"}
+{"level":30,"time":1793973109825,"pid":62252,"hostname":"MacBookPro","reqId":"req-5q","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4037080000016431,"msg":"http request completed"}
+{"level":30,"time":1793973109881,"pid":62252,"hostname":"MacBookPro","reqId":"req-5r","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.2519999999967695,"msg":"http request completed"}
+{"level":30,"time":1793973109936,"pid":62252,"hostname":"MacBookPro","reqId":"req-5s","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.5063330000011774,"msg":"http request completed"}
+{"level":30,"time":1793973109994,"pid":62252,"hostname":"MacBookPro","reqId":"req-5t","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.1259159999972326,"msg":"http request completed"}
+{"level":30,"time":1793973110048,"pid":62252,"hostname":"MacBookPro","reqId":"req-5u","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.9539169999989099,"msg":"http request completed"}
+{"level":30,"time":1793973110105,"pid":62252,"hostname":"MacBookPro","reqId":"req-5v","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.28820899999846,"msg":"http request completed"}
+{"level":30,"time":1793973110160,"pid":62252,"hostname":"MacBookPro","reqId":"req-5w","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.867458999997325,"msg":"http request completed"}
+{"level":30,"time":1793973110213,"pid":62252,"hostname":"MacBookPro","reqId":"req-5x","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.6077499999992142,"msg":"http request completed"}
+{"level":30,"time":1793973110268,"pid":62252,"hostname":"MacBookPro","reqId":"req-5y","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.6412080000009155,"msg":"http request completed"}
+{"level":30,"time":1793973110326,"pid":62252,"hostname":"MacBookPro","reqId":"req-5z","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.0302909999991243,"msg":"http request completed"}
+{"level":30,"time":1793973110385,"pid":62252,"hostname":"MacBookPro","reqId":"req-60","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.8122920000023441,"msg":"http request completed"}
+{"level":30,"time":1793973110447,"pid":62252,"hostname":"MacBookPro","reqId":"req-61","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.8280000000013388,"msg":"http request completed"}
+{"level":30,"time":1793973110503,"pid":62252,"hostname":"MacBookPro","reqId":"req-62","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.8786670000008598,"msg":"http request completed"}
+{"level":30,"time":1793973110556,"pid":62252,"hostname":"MacBookPro","reqId":"req-63","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4937500000014552,"msg":"http request completed"}
+{"level":30,"time":1793973110611,"pid":62252,"hostname":"MacBookPro","reqId":"req-64","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.49275000000125146,"msg":"http request completed"}
+{"level":30,"time":1793973110665,"pid":62252,"hostname":"MacBookPro","reqId":"req-65","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.36820799999986775,"msg":"http request completed"}
+{"level":30,"time":1793973110718,"pid":62252,"hostname":"MacBookPro","reqId":"req-66","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.7662500000005821,"msg":"http request completed"}
+{"level":30,"time":1793973110772,"pid":62252,"hostname":"MacBookPro","reqId":"req-67","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.42525000000023283,"msg":"http request completed"}
+{"level":30,"time":1793973110826,"pid":62252,"hostname":"MacBookPro","reqId":"req-68","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4313750000001164,"msg":"http request completed"}
+{"level":30,"time":1793973110879,"pid":62252,"hostname":"MacBookPro","reqId":"req-69","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.38579099999697064,"msg":"http request completed"}
+{"level":30,"time":1793973110933,"pid":62252,"hostname":"MacBookPro","reqId":"req-6a","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4156670000011218,"msg":"http request completed"}
+{"level":30,"time":1793973110986,"pid":62252,"hostname":"MacBookPro","reqId":"req-6b","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3780830000032438,"msg":"http request completed"}
+{"level":30,"time":1793973111040,"pid":62252,"hostname":"MacBookPro","reqId":"req-6c","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3712919999998121,"msg":"http request completed"}
+{"level":30,"time":1793973111094,"pid":62252,"hostname":"MacBookPro","reqId":"req-6d","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4320419999967271,"msg":"http request completed"}
+{"level":30,"time":1793973111147,"pid":62252,"hostname":"MacBookPro","reqId":"req-6e","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.5115409999998519,"msg":"http request completed"}
+{"level":30,"time":1793973111202,"pid":62252,"hostname":"MacBookPro","reqId":"req-6f","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.37458300000071176,"msg":"http request completed"}
+{"level":30,"time":1793973111254,"pid":62252,"hostname":"MacBookPro","reqId":"req-6g","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3984999999993306,"msg":"http request completed"}
+{"level":30,"time":1793973111306,"pid":62252,"hostname":"MacBookPro","reqId":"req-6h","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3786660000005213,"msg":"http request completed"}
+{"level":30,"time":1793973111359,"pid":62252,"hostname":"MacBookPro","reqId":"req-6i","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.35324999999647844,"msg":"http request completed"}
+{"level":30,"time":1793973111413,"pid":62252,"hostname":"MacBookPro","reqId":"req-6j","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.35991700000158744,"msg":"http request completed"}
+{"level":30,"time":1793973111467,"pid":62252,"hostname":"MacBookPro","reqId":"req-6k","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3847079999977723,"msg":"http request completed"}
+{"level":30,"time":1793973111519,"pid":62252,"hostname":"MacBookPro","reqId":"req-6l","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4209579999987909,"msg":"http request completed"}
+{"level":30,"time":1793973111573,"pid":62252,"hostname":"MacBookPro","reqId":"req-6m","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.41195800000059535,"msg":"http request completed"}
+{"level":30,"time":1793973111627,"pid":62252,"hostname":"MacBookPro","reqId":"req-6n","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.634582999999111,"msg":"http request completed"}
+{"level":30,"time":1793973111682,"pid":62252,"hostname":"MacBookPro","reqId":"req-6o","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.8621249999996508,"msg":"http request completed"}
+{"level":30,"time":1793973111737,"pid":62252,"hostname":"MacBookPro","reqId":"req-6p","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.9181250000001455,"msg":"http request completed"}
+{"level":30,"time":1793973111792,"pid":62252,"hostname":"MacBookPro","reqId":"req-6q","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.2901660000025004,"msg":"http request completed"}
+{"level":30,"time":1793973111851,"pid":62252,"hostname":"MacBookPro","reqId":"req-6r","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.9209169999994629,"msg":"http request completed"}
+{"level":30,"time":1793973111908,"pid":62252,"hostname":"MacBookPro","reqId":"req-6s","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.0507089999991877,"msg":"http request completed"}
+{"level":30,"time":1793973111963,"pid":62252,"hostname":"MacBookPro","reqId":"req-6t","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.9251249999979336,"msg":"http request completed"}
+{"level":30,"time":1793973112018,"pid":62252,"hostname":"MacBookPro","reqId":"req-6u","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.8019999999996799,"msg":"http request completed"}
+{"level":30,"time":1793973112072,"pid":62252,"hostname":"MacBookPro","reqId":"req-6v","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3904580000016722,"msg":"http request completed"}
+{"level":30,"time":1793973112124,"pid":62252,"hostname":"MacBookPro","reqId":"req-6w","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.40429199999925913,"msg":"http request completed"}
+{"level":30,"time":1793973112178,"pid":62252,"hostname":"MacBookPro","reqId":"req-6x","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4269160000003467,"msg":"http request completed"}
+{"level":30,"time":1793973112232,"pid":62252,"hostname":"MacBookPro","reqId":"req-6y","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.6277079999999842,"msg":"http request completed"}
+{"level":30,"time":1793973112289,"pid":62252,"hostname":"MacBookPro","reqId":"req-6z","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.0560829999994894,"msg":"http request completed"}
+{"level":30,"time":1793973112346,"pid":62252,"hostname":"MacBookPro","reqId":"req-70","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.9061249999977008,"msg":"http request completed"}
+{"level":30,"time":1793973112405,"pid":62252,"hostname":"MacBookPro","reqId":"req-71","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.0198750000017753,"msg":"http request completed"}
+{"level":30,"time":1793973112461,"pid":62252,"hostname":"MacBookPro","reqId":"req-72","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.9481249999989814,"msg":"http request completed"}
+{"level":30,"time":1793973112519,"pid":62252,"hostname":"MacBookPro","reqId":"req-73","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.1083749999997963,"msg":"http request completed"}
+{"level":30,"time":1793973112578,"pid":62252,"hostname":"MacBookPro","reqId":"req-74","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":3.392250000000786,"msg":"http request completed"}
+{"level":30,"time":1793973112639,"pid":62252,"hostname":"MacBookPro","reqId":"req-75","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.8039580000004207,"msg":"http request completed"}
+{"level":30,"time":1793973112693,"pid":62252,"hostname":"MacBookPro","reqId":"req-76","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.5357919999987644,"msg":"http request completed"}
+{"level":30,"time":1793973112752,"pid":62252,"hostname":"MacBookPro","reqId":"req-77","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.6086249999971187,"msg":"http request completed"}
+{"level":30,"time":1793973112809,"pid":62252,"hostname":"MacBookPro","reqId":"req-78","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.042582999998558,"msg":"http request completed"}
+{"level":30,"time":1793973112869,"pid":62252,"hostname":"MacBookPro","reqId":"req-79","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.7956249999988358,"msg":"http request completed"}
+{"level":30,"time":1793973112927,"pid":62252,"hostname":"MacBookPro","reqId":"req-7a","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.8646670000016456,"msg":"http request completed"}
+{"level":30,"time":1793973112981,"pid":62252,"hostname":"MacBookPro","reqId":"req-7b","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.5549160000009579,"msg":"http request completed"}
+{"level":30,"time":1793973113035,"pid":62252,"hostname":"MacBookPro","reqId":"req-7c","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.44812499999898137,"msg":"http request completed"}
+{"level":30,"time":1793973113089,"pid":62252,"hostname":"MacBookPro","reqId":"req-7d","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.5783330000012938,"msg":"http request completed"}
+{"level":30,"time":1793973113145,"pid":62252,"hostname":"MacBookPro","reqId":"req-7e","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.178583000000799,"msg":"http request completed"}
+{"level":30,"time":1793973113200,"pid":62252,"hostname":"MacBookPro","reqId":"req-7f","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.9427079999986745,"msg":"http request completed"}
+{"level":30,"time":1793973113255,"pid":62252,"hostname":"MacBookPro","reqId":"req-7g","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.7624159999977564,"msg":"http request completed"}
+{"level":30,"time":1793973113308,"pid":62252,"hostname":"MacBookPro","reqId":"req-7h","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3986250000016298,"msg":"http request completed"}
+{"level":30,"time":1793973113362,"pid":62252,"hostname":"MacBookPro","reqId":"req-7i","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4248750000006112,"msg":"http request completed"}
+{"level":30,"time":1793973113416,"pid":62252,"hostname":"MacBookPro","reqId":"req-7j","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.34841600000072503,"msg":"http request completed"}
+{"level":30,"time":1793973113468,"pid":62252,"hostname":"MacBookPro","reqId":"req-7k","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3418339999989257,"msg":"http request completed"}
+{"level":30,"time":1793973113522,"pid":62252,"hostname":"MacBookPro","reqId":"req-7l","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.34591699999873526,"msg":"http request completed"}
+{"level":30,"time":1793973113576,"pid":62252,"hostname":"MacBookPro","reqId":"req-7m","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4922499999993306,"msg":"http request completed"}
+{"level":30,"time":1793973113628,"pid":62252,"hostname":"MacBookPro","reqId":"req-7n","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.34774999999717693,"msg":"http request completed"}
+{"level":30,"time":1793973113682,"pid":62252,"hostname":"MacBookPro","reqId":"req-7o","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3284590000002936,"msg":"http request completed"}
+{"level":30,"time":1793973113737,"pid":62252,"hostname":"MacBookPro","reqId":"req-7p","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.9034579999970447,"msg":"http request completed"}
+{"level":30,"time":1793973113792,"pid":62252,"hostname":"MacBookPro","reqId":"req-7q","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.37866700000085984,"msg":"http request completed"}
+{"level":30,"time":1793973113849,"pid":62252,"hostname":"MacBookPro","reqId":"req-7r","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.34683399999994435,"msg":"http request completed"}
+{"level":30,"time":1793973113905,"pid":62252,"hostname":"MacBookPro","reqId":"req-7s","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.32195800000044983,"msg":"http request completed"}
+{"level":30,"time":1793973113962,"pid":62252,"hostname":"MacBookPro","reqId":"req-7t","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.5522920000003069,"msg":"http request completed"}
+{"level":30,"time":1793973114016,"pid":62252,"hostname":"MacBookPro","reqId":"req-7u","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.47016599999915343,"msg":"http request completed"}
+{"level":30,"time":1793973114069,"pid":62252,"hostname":"MacBookPro","reqId":"req-7v","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3522499999999127,"msg":"http request completed"}
+{"level":30,"time":1793973114122,"pid":62252,"hostname":"MacBookPro","reqId":"req-7w","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.44162499999947613,"msg":"http request completed"}
+{"level":30,"time":1793973114176,"pid":62252,"hostname":"MacBookPro","reqId":"req-7x","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.39262500000040745,"msg":"http request completed"}
+{"level":30,"time":1793973114231,"pid":62252,"hostname":"MacBookPro","reqId":"req-7y","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.8053330000002461,"msg":"http request completed"}
+{"level":30,"time":1793973114290,"pid":62252,"hostname":"MacBookPro","reqId":"req-7z","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.5706669999999576,"msg":"http request completed"}
+{"level":30,"time":1793973114355,"pid":62252,"hostname":"MacBookPro","reqId":"req-80","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":8.158957999999984,"msg":"http request completed"}
+{"level":30,"time":1793973114411,"pid":62252,"hostname":"MacBookPro","reqId":"req-81","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.8177080000023125,"msg":"http request completed"}
+{"level":30,"time":1793973114466,"pid":62252,"hostname":"MacBookPro","reqId":"req-82","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.4970419999990554,"msg":"http request completed"}
+{"level":30,"time":1793973114526,"pid":62252,"hostname":"MacBookPro","reqId":"req-83","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.6047919999982696,"msg":"http request completed"}
+{"level":30,"time":1793973114585,"pid":62252,"hostname":"MacBookPro","reqId":"req-84","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":3.410374999999476,"msg":"http request completed"}
+{"level":30,"time":1793973114641,"pid":62252,"hostname":"MacBookPro","reqId":"req-85","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.8316660000018601,"msg":"http request completed"}
+{"level":30,"time":1793973114696,"pid":62252,"hostname":"MacBookPro","reqId":"req-86","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.7821249999979045,"msg":"http request completed"}
+{"level":30,"time":1793973114752,"pid":62252,"hostname":"MacBookPro","reqId":"req-87","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.9912080000030983,"msg":"http request completed"}
+{"level":30,"time":1793973114810,"pid":62252,"hostname":"MacBookPro","reqId":"req-88","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.859667000000627,"msg":"http request completed"}
+{"level":30,"time":1793973114865,"pid":62252,"hostname":"MacBookPro","reqId":"req-89","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.7602919999990263,"msg":"http request completed"}
+{"level":30,"time":1793973114920,"pid":62252,"hostname":"MacBookPro","reqId":"req-8a","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.8302500000027067,"msg":"http request completed"}
+{"level":30,"time":1793973114976,"pid":62252,"hostname":"MacBookPro","reqId":"req-8b","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.0255829999987327,"msg":"http request completed"}
+{"level":30,"time":1793973115035,"pid":62252,"hostname":"MacBookPro","reqId":"req-8c","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4088339999980235,"msg":"http request completed"}
+{"level":30,"time":1793973115090,"pid":62252,"hostname":"MacBookPro","reqId":"req-8d","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.1011250000010477,"msg":"http request completed"}
+{"level":30,"time":1793973115144,"pid":62252,"hostname":"MacBookPro","reqId":"req-8e","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.9090419999993173,"msg":"http request completed"}
+{"level":30,"time":1793973115199,"pid":62252,"hostname":"MacBookPro","reqId":"req-8f","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.0475409999999101,"msg":"http request completed"}
+{"level":30,"time":1793973115256,"pid":62252,"hostname":"MacBookPro","reqId":"req-8g","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.9477919999990263,"msg":"http request completed"}
+{"level":30,"time":1793973115310,"pid":62252,"hostname":"MacBookPro","reqId":"req-8h","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.7379160000018601,"msg":"http request completed"}
+{"level":30,"time":1793973115366,"pid":62252,"hostname":"MacBookPro","reqId":"req-8i","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.8249590000013995,"msg":"http request completed"}
+{"level":30,"time":1793973115423,"pid":62252,"hostname":"MacBookPro","reqId":"req-8j","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.159708999999566,"msg":"http request completed"}
+{"level":30,"time":1793973115480,"pid":62252,"hostname":"MacBookPro","reqId":"req-8k","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.8802919999980077,"msg":"http request completed"}
+{"level":30,"time":1793973115534,"pid":62252,"hostname":"MacBookPro","reqId":"req-8l","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.7244169999976293,"msg":"http request completed"}
+{"level":30,"time":1793973115590,"pid":62252,"hostname":"MacBookPro","reqId":"req-8m","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.2116249999999127,"msg":"http request completed"}
+{"level":30,"time":1793973115649,"pid":62252,"hostname":"MacBookPro","reqId":"req-8n","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.9136660000003758,"msg":"http request completed"}
+{"level":30,"time":1793973115705,"pid":62252,"hostname":"MacBookPro","reqId":"req-8o","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.72020799999882,"msg":"http request completed"}
+{"level":30,"time":1793973115764,"pid":62252,"hostname":"MacBookPro","reqId":"req-8p","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.8500830000011774,"msg":"http request completed"}
+{"level":30,"time":1793973115821,"pid":62252,"hostname":"MacBookPro","reqId":"req-8q","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.8887089999989257,"msg":"http request completed"}
+{"level":30,"time":1793973115874,"pid":62252,"hostname":"MacBookPro","reqId":"req-8r","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4810409999990952,"msg":"http request completed"}
+{"level":30,"time":1793973115927,"pid":62252,"hostname":"MacBookPro","reqId":"req-8s","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.337667000003421,"msg":"http request completed"}
+{"level":30,"time":1793973115981,"pid":62252,"hostname":"MacBookPro","reqId":"req-8t","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.42687500000101863,"msg":"http request completed"}
+{"level":30,"time":1793973116035,"pid":62252,"hostname":"MacBookPro","reqId":"req-8u","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3880840000019816,"msg":"http request completed"}
+{"level":30,"time":1793973116090,"pid":62252,"hostname":"MacBookPro","reqId":"req-8v","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.7628340000010212,"msg":"http request completed"}
+{"level":30,"time":1793973116146,"pid":62252,"hostname":"MacBookPro","reqId":"req-8w","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.1100829999995767,"msg":"http request completed"}
+{"level":30,"time":1793973116203,"pid":62252,"hostname":"MacBookPro","reqId":"req-8x","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.37779199999931734,"msg":"http request completed"}
+{"level":30,"time":1793973116256,"pid":62252,"hostname":"MacBookPro","reqId":"req-8y","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.35499999999956344,"msg":"http request completed"}
+{"level":30,"time":1793973116259,"pid":62252,"hostname":"MacBookPro","reqId":"req-8z","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.9264160000020638,"msg":"http request completed"}
+{"level":30,"time":1793973116261,"pid":62252,"hostname":"MacBookPro","reqId":"req-90","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.27495900000212714,"msg":"http request completed"}
+{"level":30,"time":1793973116263,"pid":62252,"hostname":"MacBookPro","reqId":"req-91","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.25779099999999744,"msg":"http request completed"}
+{"level":30,"time":1793973116265,"pid":62252,"hostname":"MacBookPro","reqId":"req-92","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.24458299999969313,"msg":"http request completed"}
+{"level":30,"time":1793973116311,"pid":62252,"hostname":"MacBookPro","reqId":"req-93","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":42.42754100000093,"msg":"http request completed"}
+{"level":30,"time":1793973116314,"pid":62252,"hostname":"MacBookPro","reqId":"req-94","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3282919999983278,"msg":"http request completed"}
+{"level":30,"time":1793973116367,"pid":62252,"hostname":"MacBookPro","reqId":"req-95","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.41758300000219606,"msg":"http request completed"}
+{"level":30,"time":1793973116370,"pid":62252,"hostname":"MacBookPro","reqId":"req-96","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.2495420000013837,"msg":"http request completed"}
+{"level":30,"time":1793973116412,"pid":62252,"hostname":"MacBookPro","reqId":"req-97","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":39.57574999999997,"msg":"http request completed"}
+{"level":30,"time":1793973116414,"pid":62252,"hostname":"MacBookPro","reqId":"req-98","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.33699999999953434,"msg":"http request completed"}
+{"level":30,"time":1793973116467,"pid":62252,"hostname":"MacBookPro","reqId":"req-99","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.38066600000092876,"msg":"http request completed"}
+{"level":30,"time":1793973116468,"pid":62252,"hostname":"MacBookPro","reqId":"req-9a","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.24437500000203727,"msg":"http request completed"}
+[AR-11] scanned 334 API responses, 404 stdout/stderr writes, 7 data files; markers 6; hits 0
+{"level":30,"time":1793973116476,"pid":62252,"hostname":"MacBookPro","reqId":"req-9b","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.2299999999995634,"msg":"http request completed"}
+{"level":30,"time":1793973116525,"pid":62252,"hostname":"MacBookPro","reqId":"req-9c","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":45.42454100000032,"msg":"http request completed"}
+{"level":30,"time":1793973116527,"pid":62252,"hostname":"MacBookPro","reqId":"req-9d","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3114999999997963,"msg":"http request completed"}
+{"level":30,"time":1793973116530,"pid":62252,"hostname":"MacBookPro","reqId":"req-9e","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.1649580000012065,"msg":"http request completed"}
+{"level":30,"time":1793973116533,"pid":62252,"hostname":"MacBookPro","reqId":"req-9f","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3847079999977723,"msg":"http request completed"}
+{"level":30,"time":1793973116587,"pid":62252,"hostname":"MacBookPro","reqId":"req-9g","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3958749999983411,"msg":"http request completed"}
+{"level":30,"time":1793973116640,"pid":62252,"hostname":"MacBookPro","reqId":"req-9h","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.36824999999953434,"msg":"http request completed"}
+{"level":30,"time":1793973116693,"pid":62252,"hostname":"MacBookPro","reqId":"req-9i","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3494170000012673,"msg":"http request completed"}
+{"level":30,"time":1793973116747,"pid":62252,"hostname":"MacBookPro","reqId":"req-9j","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.38133299999753945,"msg":"http request completed"}
+{"level":30,"time":1793973116800,"pid":62252,"hostname":"MacBookPro","reqId":"req-9k","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3554580000018177,"msg":"http request completed"}
+{"level":30,"time":1793973116860,"pid":62252,"hostname":"MacBookPro","reqId":"req-9l","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4062080000003334,"msg":"http request completed"}
+{"level":30,"time":1793973116923,"pid":62252,"hostname":"MacBookPro","reqId":"req-9m","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.35516700000152923,"msg":"http request completed"}
+{"level":30,"time":1793973116975,"pid":62252,"hostname":"MacBookPro","reqId":"req-9n","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.36675000000104774,"msg":"http request completed"}
+{"level":30,"time":1793973117031,"pid":62252,"hostname":"MacBookPro","reqId":"req-9o","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.2214170000006561,"msg":"http request completed"}
+{"level":30,"time":1793973117091,"pid":62252,"hostname":"MacBookPro","reqId":"req-9p","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.936041999997542,"msg":"http request completed"}
+{"level":30,"time":1793973117147,"pid":62252,"hostname":"MacBookPro","reqId":"req-9q","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.8530840000021271,"msg":"http request completed"}
+{"level":30,"time":1793973117205,"pid":62252,"hostname":"MacBookPro","reqId":"req-9r","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.0707079999992857,"msg":"http request completed"}
+{"level":30,"time":1793973117262,"pid":62252,"hostname":"MacBookPro","reqId":"req-9s","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.8880419999986771,"msg":"http request completed"}
+{"level":30,"time":1793973117324,"pid":62252,"hostname":"MacBookPro","reqId":"req-9t","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.7384999999994761,"msg":"http request completed"}
+{"level":30,"time":1793973117387,"pid":62252,"hostname":"MacBookPro","reqId":"req-9u","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.7503749999996217,"msg":"http request completed"}
+{"level":30,"time":1793973117444,"pid":62252,"hostname":"MacBookPro","reqId":"req-9v","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.9125420000018494,"msg":"http request completed"}
+{"level":30,"time":1793973117505,"pid":62252,"hostname":"MacBookPro","reqId":"req-9w","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.4110419999997248,"msg":"http request completed"}
+{"level":30,"time":1793973117563,"pid":62252,"hostname":"MacBookPro","reqId":"req-9x","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.4079170000004524,"msg":"http request completed"}
+{"level":30,"time":1793973117618,"pid":62252,"hostname":"MacBookPro","reqId":"req-9y","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.9344590000000608,"msg":"http request completed"}
+{"level":30,"time":1793973117674,"pid":62252,"hostname":"MacBookPro","reqId":"req-9z","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.0970420000012382,"msg":"http request completed"}
+{"level":30,"time":1793973117727,"pid":62252,"hostname":"MacBookPro","reqId":"req-a0","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.4718749999992724,"msg":"http request completed"}
+{"level":30,"time":1793973117789,"pid":62252,"hostname":"MacBookPro","reqId":"req-a1","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.1166669999984151,"msg":"http request completed"}
+{"level":30,"time":1793973117846,"pid":62252,"hostname":"MacBookPro","reqId":"req-a2","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.1828330000025744,"msg":"http request completed"}
+{"level":30,"time":1793973117907,"pid":62252,"hostname":"MacBookPro","reqId":"req-a3","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.5625829999989946,"msg":"http request completed"}
+{"level":30,"time":1793973117964,"pid":62252,"hostname":"MacBookPro","reqId":"req-a4","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.8821250000000873,"msg":"http request completed"}
+{"level":30,"time":1793973118021,"pid":62252,"hostname":"MacBookPro","reqId":"req-a5","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.0573330000006536,"msg":"http request completed"}
+{"level":30,"time":1793973118082,"pid":62252,"hostname":"MacBookPro","reqId":"req-a6","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.8469159999986005,"msg":"http request completed"}
+{"level":30,"time":1793973118145,"pid":62252,"hostname":"MacBookPro","reqId":"req-a7","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":6.131999999997788,"msg":"http request completed"}
+{"level":30,"time":1793973118202,"pid":62252,"hostname":"MacBookPro","reqId":"req-a8","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.8245420000021113,"msg":"http request completed"}
+{"level":30,"time":1793973118262,"pid":62252,"hostname":"MacBookPro","reqId":"req-a9","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.8673330000019632,"msg":"http request completed"}
+{"level":30,"time":1793973118321,"pid":62252,"hostname":"MacBookPro","reqId":"req-aa","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.9118749999979627,"msg":"http request completed"}
+{"level":30,"time":1793973118378,"pid":62252,"hostname":"MacBookPro","reqId":"req-ab","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.8584999999984575,"msg":"http request completed"}
+{"level":30,"time":1793973118432,"pid":62252,"hostname":"MacBookPro","reqId":"req-ac","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.7909169999984442,"msg":"http request completed"}
+{"level":30,"time":1793973118488,"pid":62252,"hostname":"MacBookPro","reqId":"req-ad","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.8427919999994629,"msg":"http request completed"}
+{"level":30,"time":1793973118543,"pid":62252,"hostname":"MacBookPro","reqId":"req-ae","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.8445830000018759,"msg":"http request completed"}
+{"level":30,"time":1793973118599,"pid":62252,"hostname":"MacBookPro","reqId":"req-af","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.7146250000005239,"msg":"http request completed"}
+{"level":30,"time":1793973118656,"pid":62252,"hostname":"MacBookPro","reqId":"req-ag","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.4719999999979336,"msg":"http request completed"}
+{"level":30,"time":1793973118710,"pid":62252,"hostname":"MacBookPro","reqId":"req-ah","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.46287500000107684,"msg":"http request completed"}
+{"level":30,"time":1793973118762,"pid":62252,"hostname":"MacBookPro","reqId":"req-ai","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3519159999996191,"msg":"http request completed"}
+{"level":30,"time":1793973118764,"pid":62252,"hostname":"MacBookPro","reqId":"req-aj","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.21912499999962165,"msg":"http request completed"}
+{"level":30,"time":1793973118818,"pid":62252,"hostname":"MacBookPro","reqId":"req-ak","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3163329999988491,"msg":"http request completed"}
+{"level":30,"time":1793973118860,"pid":62252,"hostname":"MacBookPro","reqId":"req-al","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":40.25725000000239,"msg":"http request completed"}
+{"level":30,"time":1793973118862,"pid":62252,"hostname":"MacBookPro","reqId":"req-am","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.33654200000091805,"msg":"http request completed"}
+{"level":30,"time":1793973118867,"pid":62252,"hostname":"MacBookPro","reqId":"req-an","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":2.4409169999998994,"msg":"http request completed"}
+{"level":30,"time":1793973118869,"pid":62252,"hostname":"MacBookPro","reqId":"req-ao","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.21525000000110595,"msg":"http request completed"}
+{"level":30,"time":1793973118923,"pid":62252,"hostname":"MacBookPro","reqId":"req-ap","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":0.3574579999985872,"msg":"http request completed"}
+{"level":30,"time":1793973118926,"pid":62252,"hostname":"MacBookPro","reqId":"req-aq","method":"POST","url":"/graphql","statusCode":200,"elapsedMs":1.0074580000000424,"msg":"http request completed"}
+ [31m❯[39m tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts [2m([22m[2m14 tests[22m[2m | [22m[31m3 failed[39m[2m)[22m[33m 19368[2mms[22m[39m
+[31m     [31m×[31m AR-01 lists the four runtimes and checks each on its own: one source failing, one slow, one not installed (AC-001, AC-002, AC-005, AC-006, AC-009, QR-002)[39m[32m 24[2mms[22m[39m
+[31m     [31m×[31m AR-02 Check again re-reads every row; the source that failed recovers (AC-002, SCN-A1)[39m[33m 428[2mms[22m[39m
+     [33m[2m✓[22m[39m AR-03 Update runs the vendor's updater with progress, then 'Updated from X to Y.' that the automatic re-check keeps (AC-003, AR-006) [33m 2298[2mms[22m[39m
+     [33m[2m✓[22m[39m AR-04 Update that exits 0 without a newer version is a failure with the vendor's text, version unchanged (AC-003) [33m 718[2mms[22m[39m
+     [33m[2m✓[22m[39m AR-05 Update failure shows the vendor's message without terminal codes; Try again runs it again; busy is refused (AC-003) [33m 3253[2mms[22m[39m
+     [32m✓[39m AR-06 refuses what the page never offers, with codes and safe messages[32m 16[2mms[22m[39m
+     [33m[2m✓[22m[39m AR-07 Sign in starts the runtime's own login, passes nothing of it to the client, and ends Signed in (AC-007, AC-011) [33m 336[2mms[22m[39m
+     [32m✓[39m AR-08 Cancel stops the login process and returns the row to Sign in (AC-007 cancel, QR-003)[32m 166[2mms[22m[39m
+     [33m[2m✓[22m[39m AR-09 a runtime installed later appears on the next check; a login that never finishes times out, even ignoring SIGTERM (AC-005, AC-007 time-out, QR-003) [33m 9175[2mms[22m[39m
+     [32m✓[39m AR-10 Codex with no OpenAI sign-in required shows no account state (DEC-008); a signed-in Grok reads Signed in[32m 104[2mms[22m[39m
+     [32m✓[39m AR-11 no sign-in URL, code or account detail appears in any API response, log or data file (AC-011, REQ-008)[32m 102[2mms[22m[39m
+[31m     [31m×[31m AR-13 the web's AgentRuntimes document reads the rows and the node's sign-in browser fact, which polls and sign-ins never change (remote-node-runtime-sign-in REQ-002, QR-002)[39m[32m 5[2mms[22m[39m
+     [33m[2m✓[22m[39m AR-14 shows a prerelease as it is and orders it by SemVer precedence: update available, updated to the release, newer than the latest (autobyteus-393 AC-001, AC-002, AC-005) [33m 2385[2mms[22m[39m
+     [32m✓[39m AR-12 closing the server stops a running vendor process (QR-003, SCN-A4)[32m 124[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 3 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts[2m > [22mSettings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs)[2m > [22mAR-01 lists the four runtimes and checks each on its own: one source failing, one slow, one not installed (AC-001, AC-002, AC-005, AC-006, AC-009, QR-002)
+[31m[1mAssertionError[22m: page order: expected [ 'codex_app_server', …(4) ] to deeply equal [ 'codex_app_server', …(3) ][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  [[22m
+[2m    "codex_app_server",[22m
+[2m    "claude_agent_sdk",[22m
+[2m    "antigravity_cli",[22m
+[2m    "grok_build",[22m
+[31m+   "deepseek_harness",[39m
+[2m  ][22m
+
+[36m [2m❯[22m tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts:[2m125:48[22m[39m
+    [90m123|[39m   it("AR-01 lists the four runtimes and checks each on its own: one so…
+    [90m124|[39m     expect(realTimeout.value, "the production operation time-out is 10…
+    [90m125|[39m     expect(await client.order(), "page order").toEqual([CODEX, CLAUDE,…
+    [90m   |[39m                                                [31m^[39m
+    [90m126|[39m     [35mconst[39m before [33m=[39m [35mawait[39m client[33m.[39m[34mrows[39m()[33m;[39m
+    [90m127|[39m     expect(before[CODEX]!.updates.state, "nothing is checked before th…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts[2m > [22mSettings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs)[2m > [22mAR-02 Check again re-reads every row; the source that failed recovers (AC-002, SCN-A1)
+[31m[1mAssertionError[22m: expected 1793973100299 to be greater than NaN[39m
+[36m [2m❯[22m tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts:[2m181:42[22m[39m
+    [90m179|[39m     [34mexpect[39m(claude[33m.[39minstalledVersion)[33m.[39m[34mtoBe[39m([32m"2.1.200"[39m)[33m;[39m
+    [90m180|[39m     const codex = await waitRow(CODEX, "re-checked", (r) => r.updates.…
+    [90m181|[39m     expect(Date.parse(codex.checkedAt!)).toBeGreaterThan(Date.parse(fi…
+    [90m   |[39m                                          [31m^[39m
+    [90m182|[39m   }[33m,[39m [34m60_000[39m)[33m;[39m
+    [90m183|[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts[2m > [22mSettings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs)[2m > [22mAR-13 the web's AgentRuntimes document reads the rows and the node's sign-in browser fact, which polls and sign-ins never change (remote-node-runtime-sign-in REQ-002, QR-002)
+[31m[1mAssertionError[22m: expected [ 'codex_app_server', …(4) ] to deeply equal [ 'codex_app_server', …(3) ][39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  [[22m
+[2m    "codex_app_server",[22m
+[2m    "claude_agent_sdk",[22m
+[2m    "antigravity_cli",[22m
+[2m    "grok_build",[22m
+[31m+   "deepseek_harness",[39m
+[2m  ][22m
+
+[36m [2m❯[22m tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts:[2m356:59[22m[39m
+    [90m354|[39m     [35mconst[39m first [33m=[39m [35mawait[39m [34mread[39m()[33m;[39m
+    [90m355|[39m     [34mexpect[39m(first[33m.[39magentRuntimeSignInBrowserAvailable)[33m.[39m[34mtoBe[39m([35mtrue[39m)[33m;[39m
+    [90m356|[39m     expect(first.agentRuntimes.map((r) => r.runtimeKind)).toEqual([COD…
+    [90m   |[39m                                                           [31m^[39m
+    [90m357|[39m     [90m// A node-level field: no row carries it.[39m
+    [90m358|[39m     expect(first.agentRuntimes.every((r) => !("agentRuntimeSignInBrows…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m3 failed[39m[22m[2m | [22m[1m[32m11 passed[39m[22m[90m (14)[39m
+[2m   Start at [22m 14:51:28
+[2m   Duration [22m 30.23s[2m (transform 6.87s, setup 44ms, import 9.58s, tests 19.37s, environment 0ms)[22m
+
+EXIT 1
