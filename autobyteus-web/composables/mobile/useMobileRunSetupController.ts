@@ -32,7 +32,7 @@ export function useMobileRunSetupController(options: { onLaunched: (runId: strin
   const agentChoices = computed<MobileLaunchPickerItem[]>(() => agentDefinitionStore.agentDefinitions.map((agent) => ({
     id: agent.id, label: agent.name, detail: agent.description || agent.role || undefined,
   })))
-  const workspaceChoices = computed<MobileLaunchPickerItem[]>(() => launchWorkspaces.workspaceItems.value.map((item) => ({ ...item, group: undefined })))
+  const workspaceChoices = computed<MobileLaunchPickerItem[]>(() => launchWorkspaces.workspaceItems.value)
 
   const agentConfig = computed<AgentRunConfig | null>(() => {
     const config = agentRunConfigStore.config

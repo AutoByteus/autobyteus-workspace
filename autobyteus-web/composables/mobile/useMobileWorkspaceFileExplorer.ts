@@ -26,7 +26,7 @@ export interface MobileResolvedWorkspace {
   kind?: string | null;
 }
 
-export function normalizeMobileWorkspaceRoot(value: string | null | undefined): string {
+function normalizeMobileWorkspaceRoot(value: string | null | undefined): string {
   return normalizeWorkspaceRootPath(value);
 }
 
@@ -75,7 +75,6 @@ export function useMobileWorkspaceFileExplorer(workspaceRootPathRef: MaybeRef<st
     };
   });
 
-  const workspaceId = computed(() => activeWorkspaceId.value || null);
   const resolutionStatus = computed<MobileWorkspaceResolutionStatus>(() => {
     if (!requestedRootPath.value) return 'no-workspace-context';
     if (resolvingKey.value) return 'resolving';
@@ -87,21 +86,6 @@ export function useMobileWorkspaceFileExplorer(workspaceRootPathRef: MaybeRef<st
   const searchResults = computed<MobileWorkspaceFileNode[]>(() => explorer.searchResults.value as MobileWorkspaceFileNode[]);
   const isSearchLoading = explorer.isSearchLoading;
   const searchError = explorer.searchError;
-  const recentFiles = computed<MobileWorkspaceFileNode[]>(() => {
-    const id = activeWorkspaceId.value;
-    if (!id) return [];
-    return (fileExplorerStore._getWorkspaceState(id)?.openFiles ?? [])
-      .slice(-8)
-      .reverse()
-      .map((file) => ({
-        id: `recent-${file.path}`,
-        name: file.path.split(/[\\/]/).pop() || file.path,
-        path: file.path,
-        is_file: true,
-        children: [],
-        childrenLoaded: true,
-      }));
-  });
 
   const releaseCurrentLiveSession = () => {
     releaseLiveSession?.();
@@ -279,8 +263,6 @@ export function useMobileWorkspaceFileExplorer(workspaceRootPathRef: MaybeRef<st
 
   return {
     workspace,
-    workspaceId,
-    requestedRootPath,
     resolutionStatus,
     workspaceResolutionError,
     resolveWorkspaceForContext,
@@ -295,6 +277,5 @@ export function useMobileWorkspaceFileExplorer(workspaceRootPathRef: MaybeRef<st
     openFileReadOnly,
     getOpenFileState,
     getFileOpenError,
-    recentFiles,
   };
 }

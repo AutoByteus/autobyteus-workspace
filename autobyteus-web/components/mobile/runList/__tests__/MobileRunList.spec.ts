@@ -45,4 +45,23 @@ describe('MobileRunList', () => {
     expect(items[1]!.get('[data-testid="mobile-run-toggle"]').attributes('aria-label')).toBe('Show members of Software Engineering Team');
     expect(items.every((item) => !/Archive|Delete|Stop/.test(item.text()))).toBe(true);
   });
+
+  it.each([
+    ['loading', { loading: true, error: null }, 'mobile-run-list-loading', null],
+    ['empty', { loading: false, error: null }, 'mobile-run-list-empty', 'Start with New run. Work an agent delegates appears under its run and leaves when it is done.'],
+    ['read error', { loading: false, error: 'offline' }, 'mobile-run-list-error', 'Couldn’t load your runs.'],
+  ])('with no run listed it shows the %s state (VIS-021…023)', async (_name, history, testId, text) => {
+    setActivePinia(createPinia());
+    const { useRunHistoryStore } = await import('~/stores/runHistoryStore');
+    const store = useRunHistoryStore();
+    store.loading = history.loading;
+    store.historyFamilyErrors = { workspace: history.error } as never;
+    const tree = { rows: computed(() => []), openRowKey: computed(() => null), toggle: vi.fn(), setTeamExpanded: vi.fn(), toggleTeam: vi.fn(), expandTeamMemberAncestors: vi.fn() };
+    const wrapper = mount(MobileRunList, { props: { tree: tree as never, nodeName: 'n', connected: true }, global: { plugins: [await createMobileTestRouter()] } });
+    await flushPromises();
+    const state = wrapper.get(`[data-testid="${testId}"]`);
+    if (text) expect(state.text()).toContain(text);
+    if (testId === 'mobile-run-list-loading') expect(state.findAll('.rounded-full')).toHaveLength(6);
+    expect(wrapper.find('[data-testid="mobile-new-run-button"]').exists()).toBe(true);
+  });
 });

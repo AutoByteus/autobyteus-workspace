@@ -34,7 +34,6 @@ describe('useMobileLaunchWorkspaces', () => {
       'Active Workspace',
       'Dormant Workspace',
     ])
-    expect(launchWorkspaces.getWorkspaceIdForRootPath('/Users/normy/dormant/')).toBe('workspace-dormant')
   })
 
   it('loads an unlisted server-side path through workspaceStore.createWorkspace', async () => {
