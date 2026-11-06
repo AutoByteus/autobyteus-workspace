@@ -1,0 +1,665 @@
+{
+  "startedAt": "2026-11-06T15:37:49.717Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "beta": {
+      "port": 58079,
+      "nodeId": "srv_JUI1wdxWoeKViB5KM9ieTo80bMpvkWed",
+      "serverName": "AutoByteus Desktop"
+    },
+    "alpha": {
+      "port": 58078,
+      "nodeId": "srv_yEjHTV9k_D5hCBaB1b4i_3imSQGdOD6f",
+      "serverName": "AutoByteus Desktop"
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_2ccab7f282ff48009446d8f88ba89675",
+    "writerRun": "release_notes_writer_db925219ea6c4bec868e02db8c4f0f11",
+    "squadRun": "docs_review_team_b51fb1d9f66341f29a7e7aae710766ce",
+    "reviewer": "release_notes_writer_c07f13b0d7794a1ab71dd13597a9576b",
+    "memberDelegated": "fact_checker_bcadc50239044ffdbc614f14dda92735",
+    "remoteAgentRun": "publisher_073990338b9f42d69ee57b4654c60846",
+    "remoteTeamRun": "studio_team_48d6136aac0d4e93b0707049d664aac6",
+    "plain": [
+      "fact_checker_26590ce5eba747269df7ebbd5b7f57d3",
+      "fact_checker_39bb5e0d670a42d69340cbdcfbea97e1",
+      "fact_checker_1a21814f8d194859abe99327c4dc7cd2"
+    ],
+    "org": "delivery_org_92b288196e0546278f9c9c365c5acf23",
+    "orgPlanner": "release_notes_writer_3d15df553aef44af86b4ff89873b046b",
+    "reviewOrg": "review_org_066b641a033f4eb386130bfe70e2f5a4",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_ee5f98db21724e9dabf9efc8d736efa8",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_45dc1798fd09431fa2d181b8d935cbc7",
+    "deliveryLead": "fact_checker_16ebe294d1b44415b30e91790b470b73",
+    "deliveryMate": "release_notes_writer_0cd08d0a0f35424a9578b585387ce6f7",
+    "leadDelegated": "changelog_helper_fb30e3443ff6470b8ba4206dbec5277d",
+    "approver": "approver_9ef6e9ef6c8f43e0ba71dacc09f71d89",
+    "taskA": "launch-954564-1",
+    "taskB": "launch-954564-2"
+  },
+  "cases": {
+    "MSP-03": {
+      "result": "Pass",
+      "seconds": 8.8,
+      "results": [
+        {
+          "kind": "task agent",
+          "key": "agent:project_task_manager_2ccab7f282ff48009446d8f88ba89675/agent:release_notes_writer_db925219ea6c4bec868e02db8c4f0f11",
+          "scrollBefore": 40,
+          "states": [
+            "opening:",
+            "open:release notes writer"
+          ],
+          "screen": {
+            "state": "open",
+            "name": "release notes writer",
+            "subtitle": "Idle · in Project Task Manager",
+            "query": "?screen=run"
+          },
+          "nameOk": true,
+          "composer": 1,
+          "marker": "PHONE-MSG-1-c47031",
+          "reached": true,
+          "shownOnPhone": true,
+          "sendErrors": [],
+          "scrollAfter": 40,
+          "markedRows": [
+            "agent:project_task_manager_2ccab7f282ff48009446d8f88ba89675/agent:release_notes_writer_db925219ea6c4bec868e02db8c4f0f11 (release notes writer)"
+          ],
+          "marked": "true"
+        },
+        {
+          "kind": "task-team member",
+          "key": "agent:project_task_manager_2ccab7f282ff48009446d8f88ba89675/agent:release_notes_writer_c07f13b0d7794a1ab71dd13597a9576b",
+          "scrollBefore": 80,
+          "states": [
+            "opening:",
+            "open:reviewer"
+          ],
+          "screen": {
+            "state": "open",
+            "name": "reviewer",
+            "subtitle": "Idle · in docs review team",
+            "query": "?screen=run"
+          },
+          "nameOk": true,
+          "composer": 1,
+          "marker": "PHONE-MSG-2-e175df",
+          "reached": true,
+          "shownOnPhone": true,
+          "sendErrors": [],
+          "scrollAfter": 80,
+          "markedRows": [
+            "agent:project_task_manager_2ccab7f282ff48009446d8f88ba89675/agent:release_notes_writer_c07f13b0d7794a1ab71dd13597a9576b (reviewer)"
+          ],
+          "marked": "true"
+        },
+        {
+          "kind": "Team run (its coordinator)",
+          "key": "team:delivery_team_45dc1798fd09431fa2d181b8d935cbc7",
+          "scrollBefore": 120,
+          "states": [
+            "opening:",
+            "open:lead"
+          ],
+          "screen": {
+            "state": "open",
+            "name": "lead",
+            "subtitle": "Idle · in Delivery Team",
+            "query": "?screen=run"
+          },
+          "nameOk": true,
+          "composer": 1,
+          "marker": "PHONE-MSG-3-c47352",
+          "reached": true,
+          "shownOnPhone": true,
+          "sendErrors": [],
+          "scrollAfter": 120,
+          "markedRows": [
+            "team:delivery_team_45dc1798fd09431fa2d181b8d935cbc7/agent:fact_checker_16ebe294d1b44415b30e91790b470b73 (lead)"
+          ],
+          "marked": "true"
+        },
+        {
+          "kind": "Org run (its first member)",
+          "key": "org:delivery_org_92b288196e0546278f9c9c365c5acf23",
+          "scrollBefore": 176,
+          "states": [
+            "list",
+            "opening:",
+            "open:planner"
+          ],
+          "screen": {
+            "state": "open",
+            "name": "planner",
+            "subtitle": "Idle · in Delivery Org",
+            "query": "?rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_92b288196e0546278f9c9c365c5acf23&mode=active&memberAddress=/planner&screen=run"
+          },
+          "nameOk": true,
+          "composer": 1,
+          "marker": "PHONE-MSG-4-159d5b",
+          "reached": true,
+          "shownOnPhone": true,
+          "sendErrors": [],
+          "scrollAfter": 176,
+          "markedRows": [
+            "org:delivery_org_92b288196e0546278f9c9c365c5acf23/agent:release_notes_writer_3d15df553aef44af86b4ff89873b046b (planner)"
+          ],
+          "marked": "true"
+        },
+        {
+          "kind": "Org run (first member a Team: its coordinator)",
+          "key": "org:review_org_066b641a033f4eb386130bfe70e2f5a4",
+          "scrollBefore": 714,
+          "states": [
+            "list",
+            "opening:",
+            "open:reviewer"
+          ],
+          "screen": {
+            "state": "open",
+            "name": "reviewer",
+            "subtitle": "Stopped · in squad",
+            "query": "?rootSubjectKind=agent_org&definitionId=review-org&orgRunId=review_org_066b641a033f4eb386130bfe70e2f5a4&mode=active&memberAddress=/squad&screen=run"
+          },
+          "nameOk": true,
+          "composer": 1,
+          "marker": "PHONE-MSG-5-955f5d",
+          "reached": true,
+          "shownOnPhone": true,
+          "sendErrors": [],
+          "scrollAfter": 714,
+          "markedRows": [
+            "org:review_org_066b641a033f4eb386130bfe70e2f5a4/agent:release_notes_writer_ee5f98db21724e9dabf9efc8d736efa8 (reviewer)"
+          ],
+          "marked": "true"
+        },
+        {
+          "kind": "Org member",
+          "key": "org:delivery_org_92b288196e0546278f9c9c365c5acf23/agent:release_notes_writer_3d15df553aef44af86b4ff89873b046b",
+          "scrollBefore": 40,
+          "states": [
+            "list",
+            "opening:",
+            "open:planner"
+          ],
+          "screen": {
+            "state": "open",
+            "name": "planner",
+            "subtitle": "Idle · in Delivery Org",
+            "query": "?rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_92b288196e0546278f9c9c365c5acf23&mode=active&memberAddress=/planner&screen=run"
+          },
+          "nameOk": true,
+          "composer": 1,
+          "marker": "PHONE-MSG-6-8711f3",
+          "reached": true,
+          "shownOnPhone": true,
+          "sendErrors": [],
+          "scrollAfter": 40,
+          "markedRows": [
+            "org:delivery_org_92b288196e0546278f9c9c365c5acf23/agent:release_notes_writer_3d15df553aef44af86b4ff89873b046b (planner)"
+          ],
+          "marked": "true"
+        }
+      ],
+      "control": {}
+    },
+    "MSP-05": {
+      "result": "Pass",
+      "seconds": 5.7,
+      "snapshots": [
+        {
+          "state": "opening",
+          "name": null,
+          "opening": true,
+          "buttons": [
+            "Back to runs"
+          ]
+        },
+        {
+          "state": "open",
+          "name": "lead",
+          "opening": false,
+          "buttons": [
+            "Back to runs",
+            "More",
+            "Upload files",
+            "Send message"
+          ]
+        }
+      ],
+      "forward": {
+        "state": "open",
+        "name": "lead",
+        "subtitle": "Idle · in Delivery Team",
+        "chip": null,
+        "query": "?screen=run"
+      },
+      "orgQuery": "?rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_92b288196e0546278f9c9c365c5acf23&mode=active&memberAddress=/planner&screen=run",
+      "listQuery": "?pairing=…&rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_92b288196e0546278f9c9c365c5acf23&mode=active&memberAddress=/planner",
+      "orgMarked": "true",
+      "afterReload": "?rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_92b288196e0546278f9c9c365c5acf23&mode=active&memberAddress=/planner",
+      "second": {
+        "state": "open",
+        "name": "lead",
+        "subtitle": "Idle · in Delivery Team",
+        "chip": null,
+        "query": "?screen=run"
+      }
+    },
+    "MSP-11": {
+      "result": "Pass",
+      "seconds": 38.5,
+      "results": {
+        "390x844": {
+          "screens": {
+            "list": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 31,
+              "small": []
+            },
+            "run": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 7,
+              "small": [
+                {
+                  "label": "generate_image · fixture image",
+                  "size": "262×38",
+                  "shared": true
+                },
+                {
+                  "label": "Context Files (0)(drag, paste, or upload",
+                  "size": "296×24",
+                  "shared": true
+                },
+                {
+                  "label": "Upload files",
+                  "size": "28×28",
+                  "shared": true
+                },
+                {
+                  "label": "Send message",
+                  "size": "36×36",
+                  "shared": true
+                }
+              ]
+            },
+            "menu": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 11,
+              "small": [
+                {
+                  "label": "generate_image · fixture image",
+                  "size": "262×38",
+                  "shared": true
+                },
+                {
+                  "label": "Context Files (0)(drag, paste, or upload",
+                  "size": "296×24",
+                  "shared": true
+                },
+                {
+                  "label": "Upload files",
+                  "size": "28×28",
+                  "shared": true
+                },
+                {
+                  "label": "Send message",
+                  "size": "36×36",
+                  "shared": true
+                }
+              ]
+            },
+            "artifacts": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 4,
+              "small": [
+                {
+                  "label": "BUTTON",
+                  "size": "28×28",
+                  "shared": true
+                },
+                {
+                  "label": "BUTTON",
+                  "size": "28×28",
+                  "shared": true
+                },
+                {
+                  "label": "artifact-viewer-zen-toggle",
+                  "size": "28×28",
+                  "shared": true
+                }
+              ]
+            },
+            "files": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 7,
+              "small": []
+            },
+            "files-search": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 7,
+              "small": [
+                {
+                  "label": "Search files",
+                  "size": "286×40",
+                  "shared": false
+                }
+              ]
+            },
+            "file-open": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 6,
+              "small": []
+            },
+            "messages": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 2,
+              "small": []
+            },
+            "reference-open": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 3,
+              "small": []
+            },
+            "activity": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 1,
+              "small": []
+            },
+            "new-run": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 7,
+              "small": []
+            },
+            "agent-sheet": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 15,
+              "small": []
+            },
+            "connection-sheet": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 35,
+              "small": []
+            }
+          },
+          "walk": [
+            "files",
+            "run",
+            "list"
+          ],
+          "walkMessages": [
+            "messages",
+            "run",
+            "list"
+          ]
+        },
+        "360x800": {
+          "screens": {
+            "list": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 31,
+              "small": []
+            },
+            "run": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 7,
+              "small": [
+                {
+                  "label": "generate_image · fixture image",
+                  "size": "232×38",
+                  "shared": true
+                },
+                {
+                  "label": "Context Files (0)(drag, paste, or upload",
+                  "size": "266×24",
+                  "shared": true
+                },
+                {
+                  "label": "Upload files",
+                  "size": "28×28",
+                  "shared": true
+                },
+                {
+                  "label": "Send message",
+                  "size": "36×36",
+                  "shared": true
+                }
+              ]
+            },
+            "menu": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 11,
+              "small": [
+                {
+                  "label": "generate_image · fixture image",
+                  "size": "232×38",
+                  "shared": true
+                },
+                {
+                  "label": "Context Files (0)(drag, paste, or upload",
+                  "size": "266×24",
+                  "shared": true
+                },
+                {
+                  "label": "Upload files",
+                  "size": "28×28",
+                  "shared": true
+                },
+                {
+                  "label": "Send message",
+                  "size": "36×36",
+                  "shared": true
+                }
+              ]
+            },
+            "artifacts": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 4,
+              "small": [
+                {
+                  "label": "BUTTON",
+                  "size": "28×28",
+                  "shared": true
+                },
+                {
+                  "label": "BUTTON",
+                  "size": "28×28",
+                  "shared": true
+                },
+                {
+                  "label": "artifact-viewer-zen-toggle",
+                  "size": "28×28",
+                  "shared": true
+                }
+              ]
+            },
+            "files": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 7,
+              "small": []
+            },
+            "files-search": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 7,
+              "small": [
+                {
+                  "label": "Search files",
+                  "size": "256×40",
+                  "shared": false
+                }
+              ]
+            },
+            "file-open": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 6,
+              "small": []
+            },
+            "messages": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 2,
+              "small": []
+            },
+            "reference-open": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 3,
+              "small": []
+            },
+            "activity": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 1,
+              "small": []
+            },
+            "new-run": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 7,
+              "small": []
+            },
+            "agent-sheet": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 15,
+              "small": []
+            },
+            "connection-sheet": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 35,
+              "small": []
+            }
+          },
+          "walk": [
+            "files",
+            "run",
+            "list"
+          ],
+          "walkMessages": [
+            "messages",
+            "run",
+            "list"
+          ]
+        }
+      },
+      "sharedSmall": [
+        "generate_image · fixture image 262×38",
+        "Context Files (0)(drag, paste, or upload 296×24",
+        "Upload files 28×28",
+        "Send message 36×36",
+        "BUTTON 28×28",
+        "artifact-viewer-zen-toggle 28×28",
+        "generate_image · fixture image 232×38",
+        "Context Files (0)(drag, paste, or upload 266×24"
+      ]
+    }
+  },
+  "browserErrors": [
+    {
+      "case": "setup",
+      "line": "phone console: WebSocket connection to 'ws://localhost:8000/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "setup",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    }
+  ],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "summary": {
+    "cases": {
+      "MSP-03": "Pass",
+      "MSP-05": "Pass",
+      "MSP-11": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-06T15:39:22.977Z"
+}

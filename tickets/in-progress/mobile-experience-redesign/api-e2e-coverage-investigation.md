@@ -17,14 +17,14 @@ The plan: what must be proven, how, the decisions about existing tests, and the 
 - Code Review Revision Record: [code-review-revision-record.md](code-review-revision-record.md)
 - Delivery Revision Record: N/A (first API/E2E entry)
 - API/E2E Revision Record: [api-e2e-revision-record.md](api-e2e-revision-record.md)
-- Current API/E2E Revision ID: `API-REV-002`
-- Current Investigation Round: 2
+- Current API/E2E Revision ID: `API-REV-003`
+- Current Investigation Round: 3 (round 3: CRR-007 Pass, code `e3dd8c4677`)
 - Trigger:
   - round 1: CRR-002 Pass, code `f2816cc7c1`, base `407f0ee8e9`;
   - round 2: CRR-005 Pass, HEAD `3e3ce3961b` (then `23c0c35395`, documents only), code `400457d5f7`.
   - The basis moved to requirements SR-005 (REQ-002a, REQ-003a, REQ-011; AC-002a, AC-003a, AC-011; DEC-009…015) and design SR-006 (ARCH-REV-004).
 - Prior Investigation Reviewed: round 1 (this file at `ccf43b875c`)
-- Latest Authoritative Investigation: round 2 (section "Round 2 Plan")
+- Latest Authoritative Investigation: round 3 (sections "Round 2 Plan" and "Round 3 Plan")
 
 ## Current Requirement And Design Basis
 
@@ -260,3 +260,14 @@ Found during execution (details and evidence in the execution report):
 | API-01…04 | Reused: IMP-09 (full web suite), IMP-02, IMP-03 at `400457d5f7`; IMP-08 (Android instrumented tests on API 35 and 34) | Ran on the code under test |
 
 `TESTING.md`: the design's "phone rule" item is not added, at the user's direction. The project documents hold only what every future change follows; the durable probe and its header carry the phone specifics. In the same session, at the user's request, `TESTING.md` was trimmed of one-suite details (`c5319f0bf4`, `dce25fdd50`).
+
+## Round 3 Plan
+
+**What changed** (`git diff --name-only 10574b2fba e3dd8c4677`, code only): `components/mobile/runScreen/MobileRunTargetView.vue` (the conversation host: `!overflow-clip` instead of `overflow-hidden`) and its spec.
+
+| Case ID | Decision | Reason |
+| --- | --- | --- |
+| MSP-03, MSP-05, MSP-11 | Rerun | They exercise the run screen and its menu |
+| ADR-01, ADR-05, ADR-06, ADR-07 (API 35); ADR-01, ADR-07 (API 34) | Rerun | The run screen with the keyboard (F-10) and the screens around it |
+| ADR-08 (new) | Run on API 35 and API 34 | Review residual C-16: New run's folder path and the Files search, typed into with the keyboard open |
+| Everything else of round 2 | Still valid | Nothing it exercises changed |

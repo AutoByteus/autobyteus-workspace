@@ -36,3 +36,11 @@ My progress log while tests run. Read it first when picking the run back up. Row
 | 2026-11-06 16:14 | DSK-01…03, UPD-LRL-004 | Started | — | Round 2 desktop regression (sequential) |
 | 2026-11-06 16:19 | DSK-01…03, UPD-LRL-004 | Completed | Pass | round-2 folders; secrets sweep clean |
 | 2026-11-06 16:21 | round 2 | Completed | Fail | F-10 (keyboard); everything else Pass or still valid. Report and revision record written; next: commit, failure-origin review |
+| 2026-11-06 16:37 | round 3 | Started | — | Trigger CRR-007, code `e3dd8c4677` (MobileRunTargetView overflow-clip). Rebuilding the phone bundle |
+| 2026-11-06 16:37 | MSP-03, MSP-05, MSP-11 | Started | — | `round-3/MSP-run-5` |
+| 2026-11-06 16:39 | MSP-03, MSP-05, MSP-11 | Completed | Pass | `round-3/MSP-run-5` |
+| 2026-11-06 16:40 | ADR-01,05,06,07,08 | Started | — | API 35, `round-3/ADR-run-4-api35` |
+| 2026-11-06 16:41 | ADR-01,05,06,07,08 | Completed | Pass | API 35 `round-3/ADR-run-4-api35` (ADR-07: scrollTop 0, gap 62; ADR-08 key collision in the script fixed, values in the JSON) |
+| 2026-11-06 16:42 | ADR-01,07,08 | Started | — | API 34, `round-3/ADR-run-5-api34` |
+| 2026-11-06 16:43 | ADR-01,07,08 | Completed | Pass | API 34 `round-3/ADR-run-5-api34` (scrollTop 0, gap 62). Emulator and held stack stopped; secrets sweep clean |
+| 2026-11-06 16:44 | round 3 | Completed | Pass | Report, investigation and revision record (API-REV-003) written; next: commit, test-code review |

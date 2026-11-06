@@ -8,6 +8,7 @@ The coverage investigation and the execution coverage report are the current tru
 | --- | --- | --- | --- | --- |
 | API-REV-001 | code_reviewer, code-review-report.md CRR-002 Pass, round 1 | SR-003, SR-004, ARCH-REV-002, IR-002, CRR-002 | N/A | Fail / 81% |
 | API-REV-002 | code_reviewer, code-review-report.md CRR-005 Pass, round 2 | SR-005, SR-006, ARCH-REV-004, IR-003, IR-004, CRR-003…CRR-005 | Fail / 81% | Fail / 90% |
+| API-REV-003 | code_reviewer, code-review-report.md CRR-007 Pass, round 3 | IR-005, CRR-006, CRR-007 | Fail / 90% | Pass / 95% |
 
 ## Revision Entries
 
@@ -69,3 +70,26 @@ None.
 - New or remaining failure IDs: F-10 (keyboard: the conversation container stays scrolled; no double padding).
 - Recommended owner: code_reviewer for failure-origin review; preliminary: implementation, Local Fix.
 - Remaining risks, blocked evidence, or untested scope: the user's phone (QR-003, AC-005's confirmation, AC-011 on his device).
+
+### API-REV-003 — Round 3: F-10's fix on Android 15 and 14; the run screen rerun
+
+- Triggering role, report path, and round: code_reviewer, CRR-007 (Pass), round 3. Code `e3dd8c4677`.
+- Triggering finding or case IDs: F-10; review residual C-16.
+- Related revision IDs: IR-005, CRR-006, CRR-007.
+- Why recorded: the third completed result.
+- Coverage decisions or durable test paths changed: none in the repository. The ticket's Android script gains ADR-08 (C-16), ADR-07 now also asserts an unscrolled conversation, and the ADR-08 key collision is fixed.
+- Cases rechecked: MSP-03, MSP-05, MSP-11; ADR-01, 05, 06, 07, 08 on API 35; ADR-01, 07, 08 on API 34. Everything else is still valid.
+- Commands, environment, broader-validation delta: the phone bundle rebuilt; the same APK (no Android change).
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| F-10 conversation scrolled with the keyboard open | Local Fix | Fixed (`overflow: clip` on the conversation host): `scrollTop` 0, composer 62 px above the keyboard on API 35 and API 34 | R3-ADR-35, R3-ADR-34 |
+
+- Canonical artifacts updated: coverage investigation (Round 3 Plan), execution coverage report, progress log.
+- Prior result and confidence: Fail, 90%.
+- Current result and confidence: Pass, 95%.
+- New or remaining failure IDs: none.
+- Recommended owner: code_reviewer, proportional test-code review.
+- Remaining risks, blocked evidence, or untested scope: the user's phone (QR-003, AC-005's confirmation, AC-010/AC-011 on his device); iOS Safari's paired screens (WebKit covers them).

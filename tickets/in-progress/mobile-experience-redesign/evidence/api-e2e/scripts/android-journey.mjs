@@ -13,7 +13,9 @@
 //
 // Round 2 (SR-005): ADR-05 expects the WebView between the system bars and a centre tap on ⋮ to work (REQ-011, AC-011);
 // ADR-06 sends a message to a delegated task agent over the HTTP pairing (AC-003a); ADR-07 types with the keyboard open and
-// measures the composer against the keyboard (C-12). `--only=ADR-01,ADR-07` runs a subset (ADR-01 pairs first).
+// measures the composer against the keyboard (C-12). Round 3: ADR-07 also asserts the conversation is not scrolled
+// (F-10); ADR-08 types into the Files search and New run's folder path with the keyboard open (C-16).
+// `--only=ADR-01,ADR-07` runs a subset (ADR-01 pairs first).
 // Usage: node android-journey.mjs <hold.json> <apk> <output dir> [--only=…]
 import fs from 'node:fs/promises';
 import http from 'node:http';
@@ -345,10 +347,53 @@ try {
     // C-12: the window is not padded twice (the WebView ends at the keyboard; the page is the WebView's height).
     facts.noDoublePadding = Boolean(open.ime?.visible && open.webView && Math.abs(open.webView.bottom - open.ime.top) <= 4 && Math.abs(layout.screen.h - layout.innerHeight) <= 1);
     // The composer sits right above the keyboard, with the conversation above it.
-    facts.composerAboveKeyboard = gapToKeyboard !== null && gapToKeyboard >= 0 && gapToKeyboard <= 120;
+    facts.composerAboveKeyboard = gapToKeyboard !== null && gapToKeyboard >= 0 && gapToKeyboard <= 120 && (layout.conversationScrollTop ?? 0) === 0;
     if (!facts.noDoublePadding || !facts.composerAboveKeyboard || !composer.value.includes('typing with the keyboard')) {
       throw new Error(`keyboard: ${JSON.stringify(facts)}`);
     }
+    return facts;
+  });
+
+  await runCase('ADR-08', async () => {
+    // C-16: the Files search and New run's folder path, typed into with the keyboard open.
+    const inView = sel => page.evaluate((s) => { const el = document.querySelector(s); if (!el) return null; const r = el.getBoundingClientRect();
+      return { top: Math.round(r.top), bottom: Math.round(r.bottom), innerHeight: window.innerHeight, scrollY: window.scrollY, focused: document.activeElement === el, value: el.value ?? null }; }, sel);
+    await toList(page);
+    await tapElement(page, `[data-testid="mobile-run-row-team:${hold.runs.delivery}"] [data-testid="mobile-run-open"]`);
+    await page.locator('[data-testid="mobile-run-screen"][data-state="open"]').waitFor({ timeout: 30_000 });
+    await tapElement(page, '[data-testid="mobile-run-menu-button"]');
+    await tapElement(page, '[data-testid="mobile-run-menu-files"]');
+    await page.locator('[data-testid="mobile-files-row"]').first().waitFor({ timeout: 30_000 });
+    await tapElement(page, '[data-testid="mobile-files-search-open"]');
+    await sleep(2_000);
+    adb('shell', 'input', 'text', 'app');
+    await sleep(2_500);
+    const filesBars = frames();
+    const search = await inView('[data-testid="mobile-files-search"]');
+    const result = await page.evaluate(() => { const row = [...document.querySelectorAll('[data-testid="mobile-files-row"]')].find(r => r.textContent.includes('app.ts')); if (!row) return null; const r = row.getBoundingClientRect(); return { top: Math.round(r.top), bottom: Math.round(r.bottom) }; });
+    const filesBar = await inView('[data-testid="mobile-files"] [data-testid="mobile-screen-bar"]');
+    screenshot('ADR-08-1-files-search-keyboard');
+    back(); await sleep(1_000);
+    await toList(page);
+    await tapElement(page, '[data-testid="mobile-new-run-button"]');
+    await page.locator('[data-testid="mobile-new-run"]').waitFor({ timeout: 20_000 });
+    await tapElement(page, '[data-testid="mobile-run-workspace-select-toggle"]');
+    await page.locator('[data-testid="mobile-run-workspace-path-input"]').waitFor({ timeout: 20_000 });
+    await tapElement(page, '[data-testid="mobile-run-workspace-path-input"]');
+    await sleep(2_000);
+    adb('shell', 'input', 'text', '/tmp/c16');
+    await sleep(2_000);
+    const sheetBars = frames();
+    const pathInput = await inView('[data-testid="mobile-run-workspace-path-input"]');
+    const sheetHeader = await page.evaluate(() => { const h = document.querySelector('[data-testid="mobile-run-workspace-select-sheet"] [role="dialog"] header'); if (!h) return null; const r = h.getBoundingClientRect(); return { top: Math.round(r.top), bottom: Math.round(r.bottom) }; });
+    screenshot('ADR-08-2-folder-path-keyboard');
+    back(); await sleep(800);
+    const facts = { filesBars, search, searchResult: result, filesBar, sheetBars, pathInput, sheetHeader };
+    const ok = filesBars.ime?.visible && sheetBars.ime?.visible
+      && search && search.focused && search.value === 'app' && search.top >= 0 && search.bottom <= search.innerHeight && filesBar && filesBar.top === 0
+      && result && result.bottom <= search.innerHeight
+      && pathInput && pathInput.focused && pathInput.value === '/tmp/c16' && pathInput.top >= 0 && pathInput.bottom <= pathInput.innerHeight && sheetHeader && sheetHeader.top >= 0;
+    if (!ok) throw new Error(`C-16: ${JSON.stringify(facts)}`);
     return facts;
   });
 
