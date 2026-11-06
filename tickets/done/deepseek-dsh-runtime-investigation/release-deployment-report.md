@@ -139,4 +139,35 @@ Revert the merge on `personal` (RELEASE.md Rollback). There is no app-data migra
 
 ## Finalization Record
 
-(filled after the push)
+- Ticket branch: `codex/deepseek-dsh-runtime-investigation` at `b64b9a72e7` (archive commit).
+  - Secret Gate `origin/personal..HEAD`: PASS (29 commits).
+  - Pushed to `origin/codex/deepseek-dsh-runtime-investigation` (new branch).
+- Finalization target: `origin/personal`, unchanged at `b7bb94beba` after verification.
+  - Delivery-owned edits protection: `Not needed`. Re-integration: `Not needed`.
+- Merge: `finalize/deepseek-dsh-runtime-investigation` from `origin/personal`; `git merge --no-ff` → `8136e251c2`.
+  - Its tree is identical to the verified ticket head (`git diff` empty).
+  - Secret Gate on the merged state: PASS (30 commits).
+- Push: `origin/personal` fetched again and still `b7bb94beba`; `git push origin HEAD:personal` → `b7bb94beba..8136e251c2`.
+- Repository finalization status: `Completed`.
+- This record is a follow-up `docs(delivery)` commit on `personal`, as earlier deliveries did.
+
+## Post-Finalization Cleanup
+
+- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation`.
+- Cleanup, right after this record is pushed:
+  - Remove and prune the ticket worktree. Its untracked files are only the workspace packages' build output (`*/dist/`).
+  - Delete the local `codex/` and `finalize/` branches; both are contained in `origin/personal`.
+  - Keep `origin/codex/deepseek-dsh-runtime-investigation`, as earlier deliveries did.
+  - Leave the main checkout untouched.
+  - The terminal message confirms the results.
+- API/E2E's temporary dsh install (`/tmp/ab387-ext`, `/tmp/ab387-dsh-bin`) is outside the repository and is not this delivery's; it is left in place.
+
+## Final Status
+
+- Verification complete (from the evidence): `Yes`
+- Repository finalization complete: `Yes`
+- Applicable release/deployment/rollout complete or not required: `Not required` (no release)
+- Applicable safe cleanup complete or not required: performed right after this record is pushed (above)
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: right after the cleanup
