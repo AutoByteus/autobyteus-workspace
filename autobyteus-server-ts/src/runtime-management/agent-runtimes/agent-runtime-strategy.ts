@@ -24,9 +24,9 @@ export interface AgentRuntimeStrategy {
   readonly installInstructionsUrl: string;
   /** The runtime's existing command resolver, unchanged (UD-007). */
   resolveExecutable(): string;
-  /** The installed `x.y.z`, read fresh; null when the runtime cannot be run (not installed). */
+  /** The installed full version (`x.y.z` and any prerelease), read fresh; null when the runtime cannot be run (not installed). */
   readVersion(executable: string, options?: RuntimeReadOptions): Promise<string | null>;
-  /** The newest `x.y.z` from the vendor's own source (DEC-002); throws when it cannot be read. */
+  /** The newest full version from the vendor's own source (DEC-002); throws when it cannot be read. */
   readLatestVersion(executable: string): Promise<string>;
   /** The runtime's own sign-in report; never reads credentials. */
   readSignIn(executable: string, cwd: string, options?: RuntimeReadOptions): Promise<SignInReading>;

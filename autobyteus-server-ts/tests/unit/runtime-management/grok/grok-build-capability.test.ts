@@ -57,6 +57,9 @@ describe("Grok Build capability", () => {
   it("rejects versions below the minimum and CLIs without agent-mode flags", async () => {
     process.env.FAKE_GROK_VERSION = "1.0.40";
     expect((await probeGrokBuildCli(LOADED_HOST)).diagnostic?.code).toBe("GROK_CLI_UNSUPPORTED");
+    // SemVer precedence: a prerelease of the minimum is below it.
+    process.env.FAKE_GROK_VERSION = "1.0.41-rc.1";
+    expect((await probeGrokBuildCli(LOADED_HOST)).diagnostic?.code).toBe("GROK_CLI_UNSUPPORTED");
     process.env.FAKE_GROK_VERSION = "1.2.0";
     process.env.FAKE_GROK_AGENT_HELP = "Commands:\n  stdio\n";
     expect((await probeGrokBuildCli(LOADED_HOST)).diagnostic?.code).toBe("GROK_CLI_UNSUPPORTED");
