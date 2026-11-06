@@ -1,0 +1,38 @@
+# Case: API-04 — AC-017 on the emulator (independent rerun) + Control after zooming in View only
+# Steps: app paired through the access proxy (http://10.0.2.2:56466), launched from the launcher, draft run (no message) -> ⋮ -> VNC Viewer by a real tap; node pointer parked with xdotool; View only: adb taps and a swipe on the picture; two-finger pinch and double tap through CDP Input.dispatchTouchEvent (cdp-touch.mjs; adb cannot do two fingers); one-finger pan with adb swipe; Fit; rotate (adb emu rotate) and back; full screen; then zoom in, switch to Control by a real tap -> fitted; Control tap aimed at a desktop point; full screen in Control -> handle
+# Commit: 165de82af4 (server package + /mobile bundle from the fresh clone); app debug APK (Android unchanged since 9d5da23341)
+# Environment: emulator autobyteus277_api35 (Pixel 7, API 35); node abx407-api-node; navigator.permissions is undefined in this WebView (noVNC's async clipboard is off)
+# Date: 2026-11-06T23:19:51Z
+
+opened: {"transform":"translate(0px, 0px) scale(1)","fit":false,"status":"Connected · View only"} node up=1 mouse=x:300 y:300
+## View only: taps and a drag on the picture
+stage rect: {"x":0,"y":88,"w":412.19049072265625,"h":751.2380981445312}
+after taps + swipe: {"transform":"translate(0px, 0px) scale(1)","fit":false,"status":"Connected · View only"} node mouse=x:300 y:300 (expected x:300 y:300)
+## pinch, pan, Fit, double tap
+after pinch: {"transform":"translate(-360.5px, -371px) scale(2.75)","fit":true,"status":"Connected · View only"} node mouse=x:300 y:300
+after one-finger pan: {"transform":"translate(-435.738px, -446.238px) scale(2.75)","fit":true,"status":"Connected · View only"} node mouse=x:300 y:300
+after Fit: {"transform":"translate(0px, 0px) scale(1)","fit":false,"status":"Connected · View only"}
+pinched again: {"transform":"translate(-309px, -318px) scale(2.5)","fit":true,"status":"Connected · View only"}
+after double tap: {"transform":"translate(0px, 0px) scale(1)","fit":false,"status":"Connected · View only"} node mouse=x:300 y:300
+
+## rotation
+before: {"transform":"translate(0px, 0px) scale(1)","status":"Connected · View only","viewport":"412x839","barVisible":true,"handle":false,"fsButton":true} node up=1 node-desktop upgrades so far=1
+landscape (mRotation=3): {"transform":"translate(0px, 0px) scale(1)","status":"Connected · View only","viewport":"863x360","barVisible":true,"handle":false,"fsButton":true} node up=1 upgrades=1 pid=4335
+back to portrait (mRotation=0): {"transform":"translate(0px, 0px) scale(1)","status":"Connected · View only","viewport":"412x839","barVisible":true,"handle":false,"fsButton":true} node up=1 upgrades=1
+## full screen (View only)
+full screen: {"transform":"translate(0px, 0px) scale(1)","viewport":"412x839","barVisible":false,"handle":false,"fsButton":false} query=?screen=desktop&full=1
+after one tap: {"transform":"translate(0px, 0px) scale(1)","status":"Connected · View only","viewport":"412x839","barVisible":true,"handle":false,"fsButton":true} node mouse=x:300 y:300
+full screen again: {"transform":"translate(0px, 0px) scale(1)","viewport":"412x839","barVisible":false,"handle":false,"fsButton":false}
+after system Back: {"transform":"translate(0px, 0px) scale(1)","status":"Connected · View only","viewport":"412x839","barVisible":true,"handle":false,"fsButton":true} query=?screen=desktop
+
+## Control after zooming in View only (SCN-004c)
+zoomed in View only: {"transform":"translate(-360.5px, -371px) scale(2.75)","status":"Connected · View only","barVisible":true,"handle":false,"keyboardBtn":false}
+tapped [data-testid="mobile-node-desktop-mode"] at device 835 198
+after the Control switch: {"transform":"none","status":"Connected · Control","barVisible":true,"handle":false,"keyboardBtn":true} canvas={"x":0,"y":347.69049072265625,"w":412.19049072265625,"h":231.85714721679688} node up=1
+tapped [data-testid="mobile-node-desktop-stage"] canvas at device 901 1499
+Control tap aimed at desktop 1600,800 -> node mouse=x:1598 y:799
+tapped [data-testid="mobile-node-desktop-stage"] canvas at device 225 1189
+Control tap aimed at desktop 400,250 -> node mouse=x:399 y:248
+## full screen in Control
+full screen: {"transform":"none","barVisible":false,"handle":true,"keyboardBtn":false}
+after tapping the handle: {"transform":"none","status":"Connected · Control","barVisible":true,"handle":false,"keyboardBtn":true} node mouse before=x:399 y:248 after=x:399 y:248

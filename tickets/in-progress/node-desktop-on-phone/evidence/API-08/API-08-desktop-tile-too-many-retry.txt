@@ -1,0 +1,9 @@
+# Case: API-08 (desktop app) — the desktop app's VNC Viewer tile when the node already serves 4 streams (AC-021), then Retry
+# Steps: isolated instance iso-59382-850c of the fresh-clone build; Nodes -> Add node http://127.0.0.1:56465 (collaboration off) -> open its window; filler.mjs holds 4 raw trusted-network viewers; node window: Show tools -> VNC Viewer; read the tile; stop the fillers; click Retry; read the tile; upstream counts (probes/node.sh up)
+# Commit: 165de82af4 (fresh-clone app and server package)
+# Date: 2026-11-06T23:16:49Z
+
+fillers: {"viewer":1,"open":true,"closed":null,"reason":null} {"viewer":2,"open":true,"closed":null,"reason":null} {"viewer":3,"open":true,"closed":null,"reason":null} {"viewer":4,"open":true,"closed":null,"reason":null}  upstream=4
+tile with 4 streams on the node: "{\"status\":\"Too many viewers on this node right now\",\"buttons\":[\"Retry\",\"Maximize view\"]}" upstream=4
+fillers stopped: upstream=0
+after Retry: "{\"status\":\"Connected · View only\",\"buttons\":[\"Disconnect\",\"Maximize view\",\"View only\"]}" upstream=1

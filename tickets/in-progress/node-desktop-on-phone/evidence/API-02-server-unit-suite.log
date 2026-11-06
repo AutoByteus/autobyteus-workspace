@@ -1,0 +1,31 @@
+# Case: API-02 — full server unit suite (IMP-S3-02 kept no output)
+# Command: pnpm -C autobyteus-server-ts test:unit
+# Commit: 165de82af4 (server source unchanged since 4f11061ecf)
+# Environment: macOS arm64, Node v22.23.1; worktree (prebuild done by the implementation); no other heavy run in parallel
+# Date: 2026-11-06T23:00:50Z
+
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:47441) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:47446) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:48621) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:50758) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:53711) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:56295) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:56608) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:56609) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:56610) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+ Test Files  938 passed | 5 skipped (943)
+      Tests  8030 passed | 9 skipped (8039)
+   Start at  00:00:50
+   Duration  650.39s (transform 16.48s, setup 9.30s, import 271.09s, tests 290.38s, environment 659ms)
+
