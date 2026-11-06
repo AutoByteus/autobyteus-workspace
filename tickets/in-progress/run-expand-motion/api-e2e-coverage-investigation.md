@@ -149,3 +149,15 @@ None. Escalation trigger R-01 (stored view lost after fold/unfold) is checked by
 - Reroute Required Before Validation Execution: `No`
 - Recommended Owner If Reroute Required: —
 - Notes: the server `dist` is built from this worktree before the live run (TESTING.md), after the fresh-start build (one heavy run at a time).
+
+## Round 2 (IR-002, SR-002 narrowed)
+
+- Trigger: CRR-001 CR-001 (`Design Impact`) → SR-002 narrowed to the Runs view → IR-002 (`3e6b5a3dd4`): `RunListPanel` turns the `tree-row` move off inside its scroll container; `RunListRow` is back to `v-show`. New criteria: AC-001 now requires rows with their Task line from the first frame; AC-005 (no row slides in the Runs view: Team expand, late Task line; the DONE row still fades and the row below glides up); AC-006 (Workspaces and Projects keep their motion).
+- Rerun plan (`git diff --name-only 85bf73750b 3f78b649ef`: `RunListPanel.vue`, `RunListRow.vue`, two specs, the fixture probe, my case module):
+  - API-01 → reuse IMP-06, IMP-07, IMP-11; API-02 → reuse IMP-08 (fixture: late Task lines, Team expand, leave glide, REM-07 the move kept outside the Runs view), IMP-09 (fails on base), IMP-10 (fails on SR-001).
+  - API-03 (RXM-001) rerun, extended: Task line in every frame after expand; a delegated Team's expand moves no row (AC-005).
+  - API-04 (RXM-002) rerun, extended: the row below glides up by layout (several positions) with no transform (AC-005).
+  - API-05 (RXM-003) rerun (the implementer's edit for `v-show`: hidden rather than removed; reviewed).
+  - API-06 rerun: `autobyteus-web/package.json` changed after its run (a build input).
+  - API-07 (new, AC-006): `task-closure-tree-probe.mjs` (the Workspaces tree's live DONE leave, BR-001…016), unchanged file.
+- A late Task line in the live app is not forced here: its timing depends on the read; IMP-08 holds the answers back deterministically on the product panel.
