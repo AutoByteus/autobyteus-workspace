@@ -1,0 +1,19 @@
+# Case: API-06 (a, rerun of the 6 environment failures) — same container image, as a non-root user with curl installed
+# Command: docker run --rm --platform linux/amd64 -v <worktree>:/w:ro mcr.microsoft.com/powershell:latest bash -c 'apt-get install python3 curl; useradd -m tester; su tester -c "python3 -m unittest <6 tests + parse + collision> -v"'
+# Commit: 71dc90b1f1 (source identical to 2575d870e8)
+# Environment: Ubuntu 22.04 x86_64 container, PowerShell 7.4.2, user tester (uid != 0)
+# Date: 2026-11-06T15:25:44Z
+
+test_bash_curl_pipe_mode_resolves_modules_from_source_base (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_bash_install_no_update_path_skips_profile_write (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_bash_install_path_profile_update_is_idempotent (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_bash_install_when_path_missing_updates_profile_and_prints_current_shell_guidance (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_bash_install_writes_entry_and_modules_for_installed_cli (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_targeted_destroy_reports_partial_cleanup_when_state_delete_fails (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_powershell_launcher_parses_when_pwsh_is_available (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_preferred_port_collision_falls_back_for_that_service (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 14.798s
+
+OK

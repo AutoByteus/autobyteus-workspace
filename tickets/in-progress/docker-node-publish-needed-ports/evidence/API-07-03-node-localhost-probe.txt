@@ -1,0 +1,90 @@
+# Case: API-07 step 03 — Node probe
+# Command: node API-07-localhost-probe.mjs /Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-publish-needed-ports/node_modules/.pnpm/ws@8.22.0/node_modules/ws/package.json 192.168.2.158 58395 58396
+# Setup: test node abx402-api-node (API-07-01/02); macOS resolver for localhost below
+# Commit: 71dc90b1f1
+# Environment: macOS 26.5.2 arm64, Node v22.23.1, Docker Desktop 29.0.1
+# Date: 2026-11-06T15:39:04Z
+
+dscacheutil -q host -a name localhost:
+name: localhost
+ipv6_address: ::1
+
+name: localhost
+ip_address: 127.0.0.1
+
+
+{
+  "node": "v22.23.1",
+  "defaultAutoSelectFamily": true,
+  "localhostLookupAll": [
+    {
+      "address": "::1",
+      "family": 6
+    },
+    {
+      "address": "127.0.0.1",
+      "family": 4
+    }
+  ],
+  "tcp": [
+    {
+      "label": "backend",
+      "host": "127.0.0.1",
+      "port": 58395,
+      "result": "connected",
+      "remoteAddress": "127.0.0.1"
+    },
+    {
+      "label": "backend",
+      "host": "::1",
+      "port": 58395,
+      "result": "connected",
+      "remoteAddress": "::1"
+    },
+    {
+      "label": "backend",
+      "host": "localhost",
+      "port": 58395,
+      "result": "connected",
+      "remoteAddress": "::1"
+    },
+    {
+      "label": "backend",
+      "host": "192.168.2.158",
+      "port": 58395,
+      "result": "connected",
+      "remoteAddress": "192.168.2.158"
+    },
+    {
+      "label": "vncViewer",
+      "host": "127.0.0.1",
+      "port": 58396,
+      "result": "connected",
+      "remoteAddress": "127.0.0.1"
+    },
+    {
+      "label": "vncViewer",
+      "host": "::1",
+      "port": 58396,
+      "result": "ECONNREFUSED"
+    },
+    {
+      "label": "vncViewer",
+      "host": "localhost",
+      "port": 58396,
+      "result": "connected",
+      "remoteAddress": "127.0.0.1"
+    },
+    {
+      "label": "vncViewer",
+      "host": "192.168.2.158",
+      "port": 58396,
+      "result": "ECONNREFUSED"
+    }
+  ],
+  "wsLocalhost": {
+    "url": "ws://localhost:58396",
+    "remoteAddress": "127.0.0.1",
+    "serverVersion": "RFB 003.008"
+  }
+}
