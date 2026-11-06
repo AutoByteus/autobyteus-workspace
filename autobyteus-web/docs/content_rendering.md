@@ -69,17 +69,19 @@ a link.
 `FileViewer.vue` is also reused outside the desktop file-explorer tabs for
 read-only surfaces:
 
-- `components/mobile/MobileFileViewer.vue` opens workspace files from the
-  `/mobile` Files tab in a full-screen phone viewer. It passes the
-  `fileExplorerStore.openFilePreview(...)` state to `FileViewer` with
-  `read-only=true`; text/Markdown/code, image, audio, video, PDF, CSV, and Excel
-  families use the same protected workspace content routes as desktop. Mobile
-  workspace HTML is shown as raw/read-only text rather than rich iframe preview.
+- `components/mobile/views/MobileFileViewer.vue` opens workspace files from the
+  `/mobile` Files screen (⋮ → Files) full screen, with a 48 px bar (← and the
+  name) and no Attach. It passes the `fileExplorerStore.openFilePreview(...)`
+  state to `FileViewer` with `read-only=true`; text/Markdown/code, image, audio,
+  video, PDF, CSV, and Excel families use the same protected workspace content
+  routes as desktop. Mobile workspace HTML is shown as raw/read-only text rather
+  than rich iframe preview.
 - `components/workspace/team/TeamCommunicationReferenceViewer.vue` opens
   Team Communication `referenceFiles` through the message-owned team reference
-  route. The mobile wrapper `MobileTeamReferenceViewer.vue` uses that same
-  viewer in a phone full-screen shell and disables rich HTML preview while
-  preserving raw/Markdown and protected binary/object-URL preview paths.
+  route. The phone's wrapper `components/mobile/views/MobileTeamReferenceViewer.vue`
+  wraps `CollaborationMessageReferenceViewer` in a full-screen phone shell and
+  disables rich HTML preview while preserving raw/Markdown and protected
+  binary/object-URL preview paths.
 - There is no task-delegation reference preview; the former
   `TeamTaskReferenceViewer.vue` and its task reference route are removed.
 
@@ -144,10 +146,11 @@ required, and repeated activation does not close an open drawer. Desktop
 previews preserve the center feed and selected member, wait for the shell's
 render flush, then focus the active file tab only while the originating monitor,
 selected context/source root, and node binding remain current. Existing drawer
-focus/Escape/return handling is retained. Phone-first
-previews are delivered as a typed pending request to `MobileFiles`, where the
-matching workspace/context request is rendered inline without Attach controls,
-an overlay, or automatic full-screen presentation.
+focus/Escape/return handling is retained. On the phone, the file opens in the
+open agent's folder (`activeWorkspaceTarget.workspaceRootPath`) on the Files
+screen, full screen and without Attach controls. It is a history entry
+(`useMobileNavigation`), so ← or Back closes it first. A path outside that
+folder shows the localized unavailable state.
 
 Native preview uses the selected execution's existing workspace ID even when
 its metadata projection is missing. If its ID is also missing, metadata recovery

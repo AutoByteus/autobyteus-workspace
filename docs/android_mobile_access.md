@@ -7,7 +7,7 @@ For Android and travel use, pair the phone with the current AutoByteus node thro
 ## Ownership boundaries
 
 - **Android app:** setup, app-owned QR scanning and camera permission handling, saved node entry, WebView containment, diagnostics, build/package.
-- **Existing `/mobile` shell:** AutoByteus Home, Chat, Runs, Files, Activity, pairing bootstrap, and mobile session restore. Phase One removes the mobile Tools/Terminal/VNC page.
+- **Existing `/mobile` shell:** the run list, the run screen with its ⋮ views (Artifacts, Files, Messages, Activity), New run for agent runs, the connection sheet, pairing bootstrap, and mobile session restore. Phase One removes the mobile Tools/Terminal/VNC page.
 - **Remote Access backend:** Phone Access status, trusted-network owner routes, pairing sessions, pairing exchange, mobile credentials, revocation.
 - **Public Docker launcher:** normal Docker node creation, shared workspace bind mounts, named volumes, and mobile-web asset packaging through the published image path.
 - **Tailscale:** private network reachability only; it is not AutoByteus authorization.

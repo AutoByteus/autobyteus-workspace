@@ -20,7 +20,7 @@
 // file reference, and delegates a task agent of its own), an Org run "Delivery Org" (first member an agent), an Org run
 // "Review Org" (first member a Team), the Grok run "Approver", and plain "Fact Checker" runs (more than five top-level runs).
 // The phone's origin is a private HTTP address, not a secure context (no `crypto.randomUUID`), as on a trusted
-// LAN/tailnet pairing (TESTING.md, phone changes).
+// LAN/tailnet pairing.
 //
 // Cases (phone at 390×844 unless named):
 //   MSP-01 AC-001  The same runs and order as the desktop Runs view of the same node; newest 5, "Show older (N)", "Show
