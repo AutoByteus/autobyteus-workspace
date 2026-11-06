@@ -17,11 +17,14 @@ The plan: what must be proven, how, the decisions about existing tests, and the 
 - Code Review Revision Record: [code-review-revision-record.md](code-review-revision-record.md)
 - Delivery Revision Record: N/A (first API/E2E entry)
 - API/E2E Revision Record: [api-e2e-revision-record.md](api-e2e-revision-record.md)
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: 1
-- Trigger: the code reviewer's CRR-002 Pass (Large/High route), HEAD `e7b3af5059`, code `f2816cc7c1`, base `407f0ee8e9`
-- Prior Investigation Reviewed: none (first round)
-- Latest Authoritative Investigation: round 1
+- Current API/E2E Revision ID: `API-REV-002`
+- Current Investigation Round: 2
+- Trigger:
+  - round 1: CRR-002 Pass, code `f2816cc7c1`, base `407f0ee8e9`;
+  - round 2: CRR-005 Pass, HEAD `3e3ce3961b` (then `23c0c35395`, documents only), code `400457d5f7`.
+  - The basis moved to requirements SR-005 (REQ-002a, REQ-003a, REQ-011; AC-002a, AC-003a, AC-011; DEC-009…015) and design SR-006 (ARCH-REV-004).
+- Prior Investigation Reviewed: round 1 (this file at `ccf43b875c`)
+- Latest Authoritative Investigation: round 2 (section "Round 2 Plan")
 
 ## Current Requirement And Design Basis
 
@@ -226,3 +229,34 @@ Found during execution (details and evidence in the execution report):
 - Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `Yes` (one probe added, four updated)
 - Reroute Required Before Validation Execution: `No`
 - Notes: the four stale probes were left by the implementation round; their updates are test-only and go to code review's test review with the new probe. Execution found implementation defects and design questions; see the execution report's Preliminary Classification.
+
+## Round 2 Plan
+
+**What changed** (`git diff --name-only f2816cc7c1 400457d5f7`, code only):
+- the id helper `utils/randomId.ts` at ten call sites in shared stores and streams;
+- the Task lines (`useTaskWorkerTasks`, the projection, `useMobileRunTree`);
+- the Org first member (`agentOrgHistoryRows.ts`, `useMobileRunOpening`);
+- the unpair sheet (`MobilePairedShell`), the reference header (`CollaborationMessageReferenceViewer`, `MobileTeamReferenceViewer`), the path targets (`MobileFiles`);
+- the Android shell's insets (`SystemBarInsets.kt`, `WebShellScreen.kt`, `ConnectionScreen.kt`).
+- No server change: the round-1 server build stays valid. The phone bundle is rebuilt; the APK is up to date with the sources (Gradle: all tasks up to date).
+
+**Basis changes for the probe's expectations:**
+- DEC-009: a member's task agent stays beside the member, as on the desktop.
+- DEC-010: second lines are the Task's summary or the remote title; members show one line.
+- DEC-013: a delegated row under a run that is not open shows its last-read state, and updates when that run is opened.
+- REQ-003a: an Org run opens its first configured member, or that Team's coordinator; every send works over plain HTTP.
+- REQ-011 / AC-011: on Android 15, nothing sits under the system bars, and a centre tap on ⋮ works.
+
+| Case ID | Decision | Reason |
+| --- | --- | --- |
+| MSP-01…14 | Rerun (whole probe) | Phone and shared stores changed; the probe's expectations updated for DEC-009, DEC-010, DEC-013 and AC-003a (a second Org whose first member is a Team) |
+| ADR-01…05 | Rerun on API 35 | Android shell changed (REQ-011) |
+| ADR-06 (new) | Run on API 35 | AC-003a on Android: a message to a delegated child typed and sent over HTTP |
+| ADR-07 (new) | Run on API 35 and API 34 | CRR-004 residual C-12: typing with the keyboard open (double padding) |
+| IOS-02 | Rerun | Phone web code changed |
+| DSK-01, DSK-02, DSK-03 | Rerun | Shared stores and streams (id helper), Task lines, Org rows |
+| UPD-LRL-004 | Rerun | Team streaming changed (id helper) |
+| UPD-WVC-004, UPD-OSR, UPD-NVP, IOS-01, API-05 (B08) | Still valid | They exercise the history load, the Artifacts view, the paired session's opening and the New run setup; none of those files changed (`MobilePairedShell`'s change is the unpair handler only) |
+| API-01…04 | Reused: IMP-09 (full web suite), IMP-02, IMP-03 at `400457d5f7`; IMP-08 (Android instrumented tests on API 35 and 34) | Ran on the code under test |
+
+`TESTING.md`: the design's "phone rule" item is not added, at the user's direction. The project documents hold only what every future change follows; the durable probe and its header carry the phone specifics. In the same session, at the user's request, `TESTING.md` was trimmed of one-suite details (`c5319f0bf4`, `dce25fdd50`).

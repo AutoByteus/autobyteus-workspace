@@ -7,6 +7,7 @@ The coverage investigation and the execution coverage report are the current tru
 | Revision ID | Triggering Role / Report / Round | Related Upstream Revision IDs | Prior Result / Confidence | Current Result / Confidence |
 | --- | --- | --- | --- | --- |
 | API-REV-001 | code_reviewer, code-review-report.md CRR-002 Pass, round 1 | SR-003, SR-004, ARCH-REV-002, IR-002, CRR-002 | N/A | Fail / 81% |
+| API-REV-002 | code_reviewer, code-review-report.md CRR-005 Pass, round 2 | SR-005, SR-006, ARCH-REV-004, IR-003, IR-004, CRR-003…CRR-005 | Fail / 81% | Fail / 90% |
 
 ## Revision Entries
 
@@ -30,3 +31,41 @@ None.
 - New or remaining failure IDs: F-01…F-09 (execution report, Findings).
 - Recommended owner: code_reviewer for failure-origin review; preliminary: implementation for F-01…F-06, Solution Designer for F-07, F-08 (Design Impact) and F-09 (prerequisite candidate).
 - Remaining risks, blocked evidence, or untested scope: QR-003 and AC-005's confirmation on the user's phone; his Android device; a paired iOS Safari session (IOS-02 in WebKit covers the paired screens).
+
+### API-REV-002 — Round 2: the SR-005 basis on real nodes, Android 15 and 14, WebKit and the desktop regression
+
+- Triggering role, report path, and round: code_reviewer, [code-review-report.md](code-review-report.md) CRR-005 (Pass), round 2. Code `400457d5f7`.
+- Triggering finding or case IDs: F-01…F-09 (round 1); AC-002a, AC-003a, AC-011; review residuals C-12 (keyboard on API 34) and the running-root live case.
+- Related revision IDs: SR-005, SR-006, ARCH-REV-004, IR-003, IR-004, CRR-003, CRR-004, CRR-005.
+- Why recorded: the second completed result.
+- Coverage decisions or durable test paths changed:
+  - `mobile-shell-probe.mjs` expectations follow DEC-009 (beside the member), DEC-010 (Task lines equal the desktop's; members one line) and DEC-013 (last-read state, updated when the root opens);
+  - a second Org whose first member is a Team (AC-003a); the Org run row in MSP-07;
+  - the reviewer lookup fixed.
+  - `TESTING.md`: the design's phone rule is not added (the user: project documents hold only what every future change follows). At his request, one-suite details and a dated note were removed (`c5319f0bf4`, `dce25fdd50`).
+- Cases added, changed, removed, or rechecked:
+  - added ADR-06 (send over HTTP on Android) and ADR-07 (keyboard, API 35 and API 34);
+  - rerun MSP-01…14, ADR-01…05, IOS-02, DSK-01…03, UPD-LRL-004;
+  - still valid: UPD-WVC-004, UPD-OSR, UPD-NVP, IOS-01, API-05 (B08).
+- Commands, environment, broader-validation delta: the phone bundle rebuilt; this branch's APK (up to date); the API 34 emulator added.
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| F-01 Org run row did not open | Local Fix | Fixed: opens the first member, or that Team's coordinator | MSP-03, MSP-07 |
+| F-02 sends failed on a non-secure origin | Local Fix | Fixed: one id helper | MSP-03, MSP-06, ADR-06 |
+| F-03 unpair confirmation under the sheet | Local Fix | Fixed | MSP-09, ADR-03 |
+| F-04 reference screen header and 28 px controls | Local Fix | Fixed | MSP-11 |
+| F-05 path part 41 px | Local Fix | Fixed | MSP-11 |
+| F-06 no second line on delegated rows | Local Fix | Fixed (DEC-010) | MSP-02 |
+| F-07 member's task agent beside the member | Design Impact | Decided: as on the desktop (DEC-009) | MSP-02 |
+| F-08 states under a run not open | Design Impact | Decided: as on the desktop (DEC-013) | MSP-02 |
+| F-09 Android 15 status bar | Requirement Gap | Fixed in the shell (REQ-011) | ADR-05, ADR-01 |
+
+- Canonical artifacts updated: coverage investigation (Round 2 Plan), execution coverage report, progress log.
+- Prior result and confidence: Fail, 81%.
+- Current result and confidence: Fail, 90% (requirement proof 85%, user surface 80%).
+- New or remaining failure IDs: F-10 (keyboard: the conversation container stays scrolled; no double padding).
+- Recommended owner: code_reviewer for failure-origin review; preliminary: implementation, Local Fix.
+- Remaining risks, blocked evidence, or untested scope: the user's phone (QR-003, AC-005's confirmation, AC-011 on his device).

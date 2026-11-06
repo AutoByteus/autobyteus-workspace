@@ -26,3 +26,13 @@ My progress log while tests run. Read it first when picking the run back up. Row
 | 2026-11-06 12:10 | DSK-01, DSK-03, UPD-* | Completed | Pass | DSK-01, DSK-03, UPD-LRL-004, UPD-OSR (B-006, B-007), UPD-NVP (NVP-04) Pass; NVP-05 fails out of scope (FU-006); WVC-004 failed on my recorder, fixed, rerun Pass (`UPD-WVC`) |
 | 2026-11-06 12:10 | API-04 | Completed | Pass | typecheck and guards on the final tree |
 | 2026-11-06 12:10 | round 1 | Completed | Fail | Report and revision record written; next: commit, then failure-origin review by the code reviewer |
+| 2026-11-06 15:22 | round 2 | Started | — | Trigger CRR-005 Pass, code `400457d5f7`. Rebuilding the phone bundle (web changed) and the APK (Android shell changed); server dist still valid (no server change since round 1) |
+| 2026-11-06 15:23 | MSP-01…14 | Started | — | Round 2 run `round-2/MSP-run-3` (bundle rebuilt, exit 0) |
+| 2026-11-06 15:37 | — | Checkpoint | — | At the user's direction: the phone rule is not added to TESTING.md (project-wide rules only); TESTING.md trimmed of one-suite details (own commit). MSP-run-3: all Pass but MSP-03 task-team member read-back; next: rerun MSP-03 with the Team member projection read |
+| 2026-11-06 15:43 | MSP-03 | Completed | Pass | `round-2/MSP-run-4-MSP-03` (probe's reviewer lookup fixed: the address is /docs_review_team/reviewer). Next: APK, emulators |
+| 2026-11-06 15:44 | ADR-01…07 | Started | — | API 35 emulator, `round-2/ADR-run-2-api35` |
+| 2026-11-06 16:14 | ADR-* | Completed | Fail | API 35 `round-2/ADR-run-2-api35`: ADR-01…06 Pass (03 unpair, 05 centre tap and bars, 06 send over HTTP); ADR-07 Fail: no double padding, but the conversation container is scrolled (scrollTop 330) so the composer sits 929 px above the keyboard. API 34 `round-2/ADR-run-3-api34`: ADR-01 Pass; ADR-07 same (scrollTop 327, gap 921; control scrollTop 0 → gap 62). One API 34 attempt lost to the emulator's own system restart (no app crash) |
+| 2026-11-06 16:14 | IOS-02 | Completed | Pass | `round-2/IOS-run-2` |
+| 2026-11-06 16:14 | DSK-01…03, UPD-LRL-004 | Started | — | Round 2 desktop regression (sequential) |
+| 2026-11-06 16:19 | DSK-01…03, UPD-LRL-004 | Completed | Pass | round-2 folders; secrets sweep clean |
+| 2026-11-06 16:21 | round 2 | Completed | Fail | F-10 (keyboard); everything else Pass or still valid. Report and revision record written; next: commit, failure-origin review |

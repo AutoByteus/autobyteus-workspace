@@ -11,7 +11,10 @@
 // The WebView of a debug build is inspectable: its DevTools socket is forwarded to the host and Playwright attaches over
 // CDP for DOM assertions; taps and the system Back key go through adb (`input tap`, `KEYCODE_BACK`).
 //
-// Usage: node android-journey.mjs <hold.json> <apk> <output dir>
+// Round 2 (SR-005): ADR-05 expects the WebView between the system bars and a centre tap on ⋮ to work (REQ-011, AC-011);
+// ADR-06 sends a message to a delegated task agent over the HTTP pairing (AC-003a); ADR-07 types with the keyboard open and
+// measures the composer against the keyboard (C-12). `--only=ADR-01,ADR-07` runs a subset (ADR-01 pairs first).
+// Usage: node android-journey.mjs <hold.json> <apk> <output dir> [--only=…]
 import fs from 'node:fs/promises';
 import http from 'node:http';
 import net from 'node:net';
@@ -19,7 +22,8 @@ import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 
-const [holdFile, apk, outDir] = process.argv.slice(2);
+const [holdFile, apk, outDir] = process.argv.slice(2).filter(arg => !arg.startsWith('--'));
+const only = (process.argv.find(arg => arg.startsWith('--only=')) ?? '').slice(7).split(',').filter(Boolean);
 const require = createRequire('/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-experience-redesign/autobyteus-web/package.json');
 const { chromium } = require('playwright-core');
 const hold = JSON.parse(await fs.readFile(holdFile, 'utf8'));
@@ -135,6 +139,13 @@ const screenOf = page => page.evaluate(() => (document.querySelector('[data-test
       : document.querySelector('[data-testid="mobile-run-screen"]') ? 'run' : document.querySelector('[data-testid="mobile-pairing-bootstrap"]') ? 'pairing'
         : document.querySelector('[data-testid="mobile-run-tree"]')?.offsetParent ? 'list' : 'other'));
 /** A tap as the user makes it: adb at the element's center in device pixels (CSS px × devicePixelRatio). */
+/** The system bars, the keyboard and the WebView, in device pixels. */
+const frames = () => {
+  const out = adb('shell', 'dumpsys', 'window');
+  const frame = type => { const m = new RegExp(`type=${type} frame=\\[(\\d+),(\\d+)\\]\\[(\\d+),(\\d+)\\][^}]*? visible=(true|false)`).exec(out); return m ? { top: Number(m[2]), bottom: Number(m[4]), visible: m[5] === 'true' } : null; };
+  const webView = /class="android\.webkit\.WebView"[^>]*?bounds="\[(\d+),(\d+)\]\[(\d+),(\d+)\]"/.exec(dumpUi());
+  return { statusBars: frame('statusBars'), navigationBars: frame('navigationBars'), ime: frame('ime'), webView: webView ? { top: Number(webView[2]), bottom: Number(webView[4]) } : null };
+};
 /** The status bar's bottom edge in device pixels (Android 15 draws the app under it: edge-to-edge). */
 let statusBarBottom = null;
 const statusBar = () => {
@@ -166,6 +177,7 @@ const toList = async (page) => {
   for (let n = 0; n < 5 && (await screenOf(page)) !== 'list'; n += 1) { back(); await sleep(1_200); }
 };
 const runCase = async (id, fn) => {
+  if (only.length && !only.includes(id)) return;
   try { evidence.cases[id] = { result: 'Pass', ...(await fn()) }; } catch (error) { evidence.cases[id] = { result: 'Fail', error: error.message }; try { screenshot(`${id}-failure`); } catch { /* none */ } }
   console.log(`[android] ${id} ${evidence.cases[id].result}${evidence.cases[id].error ? `: ${evidence.cases[id].error}` : ''}`);
   await save();
@@ -249,14 +261,94 @@ try {
     const atCenter = await tapElement(page, '[data-testid="mobile-run-menu-button"]', null, 'center');
     await sleep(1_200);
     const openedByCenterTap = await page.locator('[data-testid="mobile-run-menu"]').count();
-    if (openedByCenterTap) { back(); await sleep(800); }
+    // Close the menu with ⋮ itself (the system Back key would also leave the run screen; recorded below).
+    if (openedByCenterTap) { await page.evaluate(() => document.querySelector('[data-testid="mobile-run-menu-button"]').click()); await sleep(800); }
     const below = await tapElement(page, '[data-testid="mobile-run-menu-button"]');
     await sleep(1_200);
     const openedByLowerTap = await page.locator('[data-testid="mobile-run-menu"]').count();
     screenshot('ADR-05-2-menu-after-lower-tap');
-    const facts = { statusBarBottomPx: statusBar(), menuButtonCss: bar, menuButtonDevicePx: { top: Math.round(bar.top * bar.dpr), bottom: Math.round(bar.bottom * bar.dpr) }, atCenter, openedByCenterTap, below, openedByLowerTap,
+    const bars = frames();
+    const facts = { bars, statusBarBottomPx: statusBar(), menuButtonCss: bar, menuButtonDevicePx: { top: Math.round(bar.top * bar.dpr), bottom: Math.round(bar.bottom * bar.dpr) }, atCenter, openedByCenterTap, below, openedByLowerTap,
       underStatusBarCss: Math.max(0, Math.round(statusBar() / bar.dpr - bar.top)) };
-    if (openedByCenterTap === 0) throw Object.assign(new Error(`a tap at the ⋮'s center lands on the status bar: ${JSON.stringify(facts)}`), {});
+    const clear = bars.webView && bars.statusBars && bars.webView.top >= bars.statusBars.bottom && (!bars.navigationBars?.visible || bars.webView.bottom <= bars.navigationBars.top);
+    if (openedByCenterTap === 0 || !clear) throw Object.assign(new Error(`⋮ centre tap or bars: ${JSON.stringify(facts)}`), {});
+    return facts;
+  });
+
+  await runCase('ADR-06', async () => {
+    // A message to a delegated task agent, typed and sent with real taps over the HTTP pairing (AC-003a, DEC-014).
+    await toList(page);
+    await tapElement(page, `[data-testid="mobile-run-row-agent:${hold.runs.ptm}/agent:${hold.runs.writerRun}"] [data-testid="mobile-run-open"]`);
+    await page.locator('[data-testid="mobile-run-screen"][data-state="open"]').waitFor({ timeout: 30_000 });
+    await sleep(1_000);
+    await tapElement(page, '[data-testid="mobile-run-conversation"] textarea');
+    await sleep(1_500);
+    const marker = `ADR06${Date.now().toString(36).toUpperCase()}`;
+    adb('shell', 'input', 'text', `From%sAndroid%s${marker}`);
+    await sleep(800);
+    back(); // closes the keyboard
+    await sleep(1_000);
+    await tapElement(page, '[data-testid="mobile-run-conversation"] button[aria-label="Send message"]');
+    let reached = false;
+    await waitFor('the message on the node', async () => {
+      const body = await (await fetch(`${hold.alpha}/graphql`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({
+        query: 'query($h:String!,$m:String!,$a:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$m,agentRunId:$a){conversation}}',
+        variables: { h: hold.runs.ptm, m: '/release_notes_writer', a: hold.runs.writerRun } }) })).json();
+      return (reached = JSON.stringify(body).includes(marker));
+    }, 30_000).catch(() => undefined);
+    const shown = (await page.locator('[data-testid="mobile-run-conversation"]').innerText()).includes(marker);
+    const context = await page.evaluate(() => ({ secure: window.isSecureContext, randomUUID: typeof crypto.randomUUID }));
+    screenshot('ADR-06-message-sent');
+    if (!reached || !shown) throw new Error(`message: ${JSON.stringify({ reached, shown, context })}`);
+    return { marker, reached, shown, context };
+  });
+
+  await runCase('ADR-07', async () => {
+    // Typing with the keyboard open: the composer sits right above the keyboard, with no double padding (C-12).
+    await toList(page);
+    await tapElement(page, `[data-testid="mobile-run-row-team:${hold.runs.delivery}"] [data-testid="mobile-run-open"]`);
+    await page.locator('[data-testid="mobile-run-screen"][data-state="open"]').waitFor({ timeout: 30_000 });
+    await sleep(1_000);
+    const closed = frames();
+    await tapElement(page, '[data-testid="mobile-run-conversation"] textarea');
+    await sleep(2_500);
+    adb('shell', 'input', 'text', 'typing%swith%sthe%skeyboard');
+    await sleep(1_000);
+    const open = frames();
+    const composer = await page.evaluate(() => { const area = document.querySelector('[data-testid="mobile-run-conversation"] textarea'); const r = area.getBoundingClientRect();
+      const send = document.querySelector('[data-testid="mobile-run-conversation"] button[aria-label="Send message"]').getBoundingClientRect();
+      return { textareaBottom: r.bottom, sendBottom: send.bottom, innerHeight: window.innerHeight, dpr: window.devicePixelRatio,
+        safeBottom: getComputedStyle(document.documentElement).getPropertyValue('--probe') || null, focused: document.activeElement === area, value: area.value }; });
+    screenshot('ADR-07-keyboard-open');
+    const layout = await page.evaluate(() => {
+      const box = el => { if (!el) return null; const r = el.getBoundingClientRect(); const cs = getComputedStyle(el); return { tag: el.tagName, testid: el.getAttribute('data-testid'), cls: (el.className?.baseVal ?? el.className ?? '').toString().slice(0, 90), top: Math.round(r.top), bottom: Math.round(r.bottom), h: Math.round(r.height), pb: cs.paddingBottom, mb: cs.marginBottom }; };
+      const screen = document.querySelector('[data-testid="mobile-run-screen"]');
+      const area = document.querySelector('[data-testid="mobile-run-conversation"] textarea');
+      const chain = []; for (let el = area; el && el !== document.body; el = el.parentElement) chain.push(box(el));
+      return { innerHeight: window.innerHeight, visualViewport: window.visualViewport ? { height: Math.round(visualViewport.height), offsetTop: Math.round(visualViewport.offsetTop) } : null,
+        scrollY: window.scrollY, conversationScrollTop: document.querySelector('[data-testid="mobile-run-conversation"]')?.scrollTop ?? null, screen: box(screen), screenChildren: [...(screen?.children ?? [])].map(box),
+        conversationChildren: [...(document.querySelector('[data-testid="mobile-run-conversation"]')?.children ?? [])].map(box), chain,
+        keyboardInset: getComputedStyle(document.documentElement).getPropertyValue('--keyboard-inset') || null,
+        virtualKeyboard: 'virtualKeyboard' in navigator ? { overlaysContent: navigator.virtualKeyboard.overlaysContent, rect: navigator.virtualKeyboard.boundingRect?.height ?? null } : null };
+    });
+    // Control: the conversation container scrolled back to 0, the keyboard still open.
+    const control = await page.evaluate(() => { const c = document.querySelector('[data-testid="mobile-run-conversation"]'); c.scrollTop = 0;
+      const send = document.querySelector('[data-testid="mobile-run-conversation"] button[aria-label="Send message"]').getBoundingClientRect(); return { sendBottom: send.bottom, scrollTop: c.scrollTop }; });
+    screenshot('ADR-07-control-scrolltop-0');
+    back();
+    await sleep(800);
+    const webViewTop = open.webView?.top ?? 0;
+    const controlGapToKeyboard = open.ime?.visible ? open.ime.top - Math.round(webViewTop + control.sendBottom * composer.dpr) : null;
+    const sendBottomPx = Math.round(webViewTop + composer.sendBottom * composer.dpr);
+    const gapToKeyboard = open.ime?.visible ? open.ime.top - sendBottomPx : null;
+    const facts = { sdk: evidence.device.sdk, closed, open, composer, sendBottomPx, gapToKeyboard, controlGapToKeyboard, layout };
+    // C-12: the window is not padded twice (the WebView ends at the keyboard; the page is the WebView's height).
+    facts.noDoublePadding = Boolean(open.ime?.visible && open.webView && Math.abs(open.webView.bottom - open.ime.top) <= 4 && Math.abs(layout.screen.h - layout.innerHeight) <= 1);
+    // The composer sits right above the keyboard, with the conversation above it.
+    facts.composerAboveKeyboard = gapToKeyboard !== null && gapToKeyboard >= 0 && gapToKeyboard <= 120;
+    if (!facts.noDoublePadding || !facts.composerAboveKeyboard || !composer.value.includes('typing with the keyboard')) {
+      throw new Error(`keyboard: ${JSON.stringify(facts)}`);
+    }
     return facts;
   });
 
