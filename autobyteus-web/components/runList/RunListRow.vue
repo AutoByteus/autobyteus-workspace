@@ -94,10 +94,11 @@
 
     <!-- A Stop that failed says why under the Org row (existing feedback). -->
     <p v-if="orgTerminationError" class="px-7 py-1 text-xs text-red-600" role="alert" data-test="run-list-org-stop-error">{{ orgTerminationError }}</p>
-    <!-- Task Agents and task Teams this run delegated to; they leave when their Task closes. -->
+    <!-- Task Agents and task Teams this run delegated to; they leave when their Task closes. Mounted only while the run is
+         expanded, as every tree in the panel is: kept mounted and hidden, its row group measured the rows at the top of
+         the window and slid them down on expand (autobyteus-390). -->
     <AgentRunTaskRows
-      v-if="entry.kind === 'agent'"
-      v-show="state.isRunExpanded(entry.runId)"
+      v-if="entry.kind === 'agent' && state.isRunExpanded(entry.runId)"
       :run-id="entry.runId"
       :label="label"
       :run-selected="state.selectedRunId === entry.runId"
