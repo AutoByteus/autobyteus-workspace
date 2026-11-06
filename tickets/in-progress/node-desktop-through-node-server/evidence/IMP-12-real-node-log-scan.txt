@@ -1,0 +1,17 @@
+# Check: IMP-12
+# Command: docker logs + /home/autobyteus/data/logs/server.log of the test container after IMP-10/11; node-desktop lines and a scan for access_token / mra_
+# Setup: Test-owned container abx405-node-desktop-check (label com.autobyteus.api-e2e-owner=abx405-impl), -p 127.0.0.1:56039:8000 only, fresh volumes abx405-node-desktop-check-{data,root-home,chromium-profile,server-packages}; started by the image's starter (AUTOBYTEUS_STARTER_SOCKET set), Xvnc :99.
+# Commit: 6407bfc15f
+# Environment: macOS arm64, Docker Desktop (server 29.0.1), image autobyteus/autobyteus-server:beta (9c5aa01bb2fc) with this commit's server package (docker buildx --target server-package, linux/arm64) mounted read-only over /opt/autobyteus/server-package, Node v22.23.1
+# Date: 2026-11-06
+
+## [node-desktop] lines (container log and server.log both carry each line once)
+   1 [node-desktop] stream ended mode=control viewer=trusted_network durationMs=1242 toViewer=62 fromViewer=20 reason=viewer-closed
+   1 [node-desktop] stream ended mode=view viewer=trusted_network durationMs=161 toViewer=12 fromViewer=0 reason=desktop-closed
+   1 [node-desktop] stream ended mode=view viewer=trusted_network durationMs=2393 toViewer=62 fromViewer=14 reason=viewer-closed
+   1 [node-desktop] stream ended mode=view viewer=trusted_network durationMs=3 toViewer=12 fromViewer=0 reason=viewer-closed
+   1 [node-desktop] stream ended mode=view viewer=trusted_network durationMs=4 toViewer=12 fromViewer=0 reason=viewer-closed
+
+## lines containing access_token or mra_ (container log, server.log)
+0
+0
