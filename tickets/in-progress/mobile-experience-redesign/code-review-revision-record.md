@@ -12,6 +12,8 @@
 | CRR-006 | [code-review-report.md](code-review-report.md) | API/E2E Failure-Origin Review, round 6 / API-REV-002 Fail | Pass | Fail (Local Fix, implementation) | API F-10 |
 | CRR-007 | [code-review-report.md](code-review-report.md) | Implementation Review, round 7 (targeted delta) / IR-005 | Fail (Local Fix) | Pass | API F-10 (resolved) |
 | CRR-008 | [api-e2e-test-review-report.md](api-e2e-test-review-report.md) | API/E2E Test-Code Review, round 1 / API-REV-003 Pass | N/A (first test review) | Pass | None |
+| CRR-009 | [code-review-report.md](code-review-report.md) | Implementation Review, round 9 (targeted delta: latest-base merge) / IR-006 | Pass (CRR-007) | Pass | None |
+| CRR-010 | [api-e2e-test-review-report.md](api-e2e-test-review-report.md) | API/E2E Test-Code Review, round 2 / API-REV-004 Pass | Pass (CRR-008) | Pass | None |
 
 ## Revision Entries
 
@@ -281,3 +283,61 @@ None.
 - Material score or classification changes: none
 - Recommended recipient: `/software_engineering_team/delivery_engineer`
 - Remaining risks or uncertainty: the user's device checks (QR-003, AC-005, AC-010, AC-011); iOS paired screens through WebKit only.
+
+### CRR-009 — Review of the latest-base merge (IR-006)
+
+- Canonical review report updated: [code-review-report.md](code-review-report.md), section "Implementation Review (Round 9, Latest-Base Merge)" and Latest Authoritative Result
+- Review entry point and round: Implementation Review, round 9
+- Review scope: `Targeted Delta Review` of merge `ed20da1cd1` (`7b0c5098f0` + `origin/personal` `9d8077fd2a`): the conflict resolution and where `personal` meets this branch
+- Triggering role, report path and finding or scenario IDs: `implementation_engineer`, [implementation-handoff.md](implementation-handoff.md) (IR-006), for the delivery engineer's latest-base Local Fix
+- Relevant solution revision IDs: SR-005, SR-006
+- Relevant architecture-review revision IDs: ARCH-REV-004
+- Relevant implementation revision IDs: IR-006
+- Relevant API/E2E revision IDs: API-REV-003
+- Relevant delivery revision IDs: the delivery engineer's latest-base integration (see the implementation handoff's IR-006 section)
+- Prior authoritative result: CRR-007 `Pass` (source); CRR-008 `Pass` (tests)
+- Current authoritative result: `Pass`
+- What changed in the review result and why:
+  - `RunSectionPanel` carries 388's windows (Projects is now `null`) under this branch's `useRunHistorySectionLoad`, with nothing of 388's lost; its specs pass.
+  - The phone's toast keys follow the rename and resolve in `en` and `zh-CN`.
+  - The stale "the phone sets 5" lines are corrected.
+  - C-17 was rejected: a Runs↔Projects switch no longer reads once more, because the window stays `null` and the 5 s poll covers it.
+- Supported product scenario / material-premise basis changes: none.
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: none
+- Material score or classification changes: none
+- Recommended recipient: `/software_engineering_team/api_e2e_engineer`. The implementation engineer gets an informational notification.
+- Remaining risks or uncertainty: the phone bundle and emulator journeys on the merged tree are not rerun yet (IR-006 rerun plan); the user's device checks.
+
+### CRR-010 — Proportional review of the round-4 test change (MSP-15)
+
+- Canonical review report updated: [api-e2e-test-review-report.md](api-e2e-test-review-report.md), section "Round 2"
+- Review entry point and round: API/E2E Test-Code Review, round 2
+- Review scope: `N/A` (test review). `autobyteus-web/tests/e2e/mobile-shell-probe.mjs` gains MSP-15 in `54e2eb4d07`.
+- Triggering role, report path and finding or scenario IDs: `api_e2e_engineer`, [api-e2e-execution-coverage-report.md](api-e2e-execution-coverage-report.md), API-REV-004 `Pass` (95%)
+- Relevant solution revision IDs: SR-005, SR-006
+- Relevant architecture-review revision IDs: ARCH-REV-004
+- Relevant implementation revision IDs: IR-006
+- Relevant API/E2E revision IDs: API-REV-004
+- Relevant delivery revision IDs: the delivery engineer's latest-base integration
+- Prior authoritative result: CRR-008 `Pass` (tests); CRR-009 `Pass` (source)
+- Current authoritative result: `Pass`
+- What changed in the review result and why: MSP-15 proves the desktop windows after the merge through the real view menu and the GraphQL request log, with a poll-tolerant bound and cleanup.
+  - Non-blocking: the Workspaces check uses `some(...)`, so it would not catch a double read on that switch (a second 6-window read was observed, 272 ms later). It is optional to tighten.
+- Supported product scenario / material-premise basis changes: none.
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: none
+- Material score or classification changes: none
+- Recommended recipient: `/software_engineering_team/delivery_engineer`
+- Remaining risks or uncertainty:
+  - the user's device checks;
+  - NVP-05's out-of-scope dev-server crash (FU-006);
+  - signing, notarization and the non-mac builds need the release runner.

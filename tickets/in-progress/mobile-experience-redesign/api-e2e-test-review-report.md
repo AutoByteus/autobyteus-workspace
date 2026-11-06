@@ -1,5 +1,33 @@
 # API/E2E Test Review Report — mobile-experience-redesign (autobyteus-277)
 
+> **Latest result: round 2 (CRR-010), `Pass`.** See the next section. Round 1 (CRR-008) follows it and still holds for the paths round 2 does not change.
+
+## Round 2 (API-REV-004, on the latest-base merge)
+
+- Trigger: API/E2E round 4 `Pass` (95%, no category below 90%).
+  - Commit under test `54e2eb4d07` = merge `ed20da1cd1` + MSP-15; HEAD `e5a675ecfa`.
+  - Code review basis: CRR-009 `Pass`.
+- Testing guideline: `TESTING.md` at the merged tree, sections "Browser probes" and "Rules". It now includes the fresh-start build, which API/E2E ran (FSB); that is not test code.
+- **Changed durable test scope:** `autobyteus-web/tests/e2e/mobile-shell-probe.mjs`, updated in `54e2eb4d07` (+46 lines): case **MSP-15** and its header line.
+  - MSP-15 is for DS-001 and autobyteus-388's windows: the desktop Projects view reads every run (`null`), a Runs↔Projects switch reads nothing beyond the 5 s poll, and Workspaces reads with 6.
+  - No other repository test changed. `scripts/fresh-start-build.sh` is a ticket script, which counts as evidence.
+- **Checks:**
+  - **Intent (Pass).** The header line and the case name state what is checked and why: the desktop shares the history load with the phone.
+  - **Assertions (Pass).** They come from the GraphQL request log (`ListWorkspaceRunHistory` window values), not from the DOM. `null` is told apart from an omitted variable.
+    - "Reads nothing beyond the poll" checks the load owner's designed contract (`useRunHistorySectionLoad` re-reads when the window *changes*; design Ownership Map). It allows up to `ceil(seconds / 5) + 1` poll reads, so it does not pin timing.
+  - **Real trigger (Pass).** The view menu is clicked as a user would, in a fresh desktop context against the probe-owned node.
+  - **Isolation and cleanup (Pass).** The desktop context is closed before the assertions; an earlier failure is covered by the probe's `finally`, which closes the browser.
+  - **Reuse (Pass).** It uses the probe's `waitFor`, `assert` and `runCase`.
+  - **Determinism (Pass).** The sleeps (1.5 s, 11 s, 3 s × 4, 2 s) bound observation windows on a 5 s poll, and are not waits for a state.
+  - **No stale or duplicate coverage (Pass).** It complements WVC-004 (the phone's window) and 388's own panel specs.
+- **Findings:** none that need action.
+- **Non-blocking note.** The Workspaces check is `some(read => read.window === 6 && dt ≤ 1500)`, while the header says "reads once". The execution report observed a second 6-window read 272 ms later, unasserted and possibly the poll coinciding. The check proves the switch reads with 6, which is its purpose. It would not catch a double read on that switch. Tightening it, or explaining the second read, is optional and does not affect any approved criterion.
+- Round 1's note (the probe header's "(TESTING.md, phone changes)") stays with delivery's docs sync.
+- **Follow-ups added:** none.
+- **Result: `Pass`.** Recipient: `/software_engineering_team/delivery_engineer`.
+
+## Round 1
+
 ## Review Meta
 
 - Review Round: 1

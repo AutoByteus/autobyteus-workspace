@@ -1,6 +1,40 @@
 # Code Review Report — mobile-experience-redesign (autobyteus-277)
 
-> **Latest result: round 7, `Implementation Review` of IR-005 (CRR-007): `Pass`.** See [Implementation Review (Round 7)](#implementation-review-round-7) and Latest Authoritative Result.
+> **Latest result: round 9, `Implementation Review` of IR-006, the latest-base merge (CRR-009): `Pass`.** See [Implementation Review (Round 9)](#implementation-review-round-9-latest-base-merge) and Latest Authoritative Result. Round 8 (CRR-008) is the test-code review in [api-e2e-test-review-report.md](api-e2e-test-review-report.md).
+
+## Implementation Review (Round 9, Latest-Base Merge)
+
+- Entry point: `Implementation Review`. Current revision: `CRR-009`, round 9.
+- Review scope: `Targeted Delta Review` of the merge resolution.
+  - Merge commit: `ed20da1cd1` = `7b0c5098f0` + `origin/personal` `9d8077fd2a`, with merge base `e00581d485` and 97 incoming commits.
+  - The incoming commits are other tickets' delivered work and are not re-reviewed here.
+  - The scope is the conflict resolution and where `personal`'s changes meet this branch's owners.
+- Trigger: IR-006, the delivery engineer's Local Fix (latest-base integration). HEAD `dc1c959ccc`.
+- **Resolution checked against `personal`** (`git diff 9d8077fd2a ed20da1cd1`):
+  - `components/workspace/history/RunSectionPanel.vue`. This is autobyteus-388's rename of `WorkspaceAgentRunsTreePanel`, and it carries its `historyWindowOf` (`mode === 'workspaces' ? 6 : null`) with its comment. The difference from `personal` is exactly this branch's reviewed adoption:
+    - `useRunHistorySectionLoad({ window: () => historyWindowOf(mode), polling: () => true })` replaces the inline load, watch and 5 s timer;
+    - `useRouteSelectedAgentOrg` is used;
+    - `onOpenAgentRun` is present;
+    - `onCreateRun` is moved into the panel.
+    - Nothing of 388's is lost. Its panel specs, `RunSectionPanel.spec.ts` (60) and `.regressions.spec.ts` (3), pass under the composable (IMP-12).
+  - `stores/runHistoryStore.ts` (the `setHistoryWindow` doc) and `stores/__tests__/runHistoryReadWindow.spec.ts` (the describe comment). 388's windows per view, plus "the phone reads every run".
+  - `docs/workspace_layout.md`. The stale "The phone sets 5." becomes "The phone (`/mobile`) reads every run (`null`, autobyteus-277)".
+  - `composables/mobile/useMobileRunOpening.ts` and its spec. The stream-recovery toast keys follow the rename to `…history.RunSectionPanel.stream_recovery_{wait,retry}`. Both keys exist in `localization/messages/{en,zh-CN}/workspace.ts:40`. Without this the phone would show the raw key. `grep` finds the old panel name only in old ticket documents.
+- **Where `personal` meets this branch:**
+  - Of the shared web sources it changed, the phone reads only `runListStore` (a comment) and `runHistoryStore` (the doc line above).
+  - `projectRunsStore`'s new re-read on a change in the history poll's run set (388 REQ-003) relies on the 5 s poll the composable keeps, with `null` in Projects. It is desktop Projects only, and the phone does not import it.
+  - No phone, Android or phone-store file changed apart from the key rename.
+- **Candidate C-17 (rejected).** In `personal`'s own panel, a view switch between Runs and Projects (`null` → `null`) read the history once more. Under the composable the window watcher fires only on a value change, so that switch reads nothing extra.
+  - The set read is identical (every run). The next 5 s poll reads anyway, and the Projects re-read trigger depends on the poll's set, not on the switch.
+  - 388's tests "the Projects view reads every run…" and "starts in the Projects view with every run read…" pass.
+  - No supported scenario loses anything that is not already covered by the poll, so it is not a finding.
+- **Checks read, not rerun** (each on the merged tree `ed20da1cd1`):
+  - IMP-12: the full web suite, 703 files and 5214 tests, passes, including every resolved and renamed file's specs and the phone specs;
+  - IMP-02: typecheck PASS at the 96/41 baseline;
+  - IMP-03: guards pass.
+  - The phone bundle and the emulator journeys (IMP-10) are left to the rerun plan in the handoff.
+- Scorecard: the round-7 rows carry forward. Every category is ≥ 9.2, overall 9.4.
+- Result: `Pass`. Next: `/software_engineering_team/api_e2e_engineer`, which reruns the phone and desktop paths on the merged tree, with a proportional test-code review if any durable test changes.
 > - Round 6 (CRR-006) classified F-10, which is now resolved.
 
 ## Implementation Review (Round 7)
@@ -580,7 +614,13 @@ The earliest stage that reproduces them is a browser run of the phone bundle. `T
 
 ## Latest Authoritative Result
 
-- **Round 7 (CRR-007, latest): `Pass`.**
+- **Round 9 (CRR-009, latest): `Pass`.**
+  - Entry point: `Implementation Review`, a targeted delta of the latest-base merge `ed20da1cd1`.
+  - The resolution keeps autobyteus-388's windows (Projects reads `null`) under this branch's load composable, and the phone's toast keys follow the panel rename.
+  - IMP-12: 703 files and 5214 tests pass.
+  - Scenario gate: `Pass`. Material-premise gate: `Pass`.
+  - Recipient: `/software_engineering_team/api_e2e_engineer`.
+- Round 7 (CRR-007): `Pass`.
   - Entry point: `Implementation Review`, targeted delta.
   - F-10 is resolved at the phone's run-screen boundary (`!overflow-clip`), with ADR-07 passing on API 35 and API 34 (IMP-10).
   - Scenario gate: `Pass`. Material-premise gate: `Pass`.
