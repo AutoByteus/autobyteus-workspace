@@ -28,3 +28,7 @@
 | 2026-11-06 10:06 | API-08 | Completed | Pass | models + row SIGNED_IN with dsh from PATH |
 | 2026-11-06 10:11 | API-25 | Started | | round 2 (TR-001): stricter assertions; rerun API-25 only |
 | 2026-11-06 10:12 | API-25 | Completed | Pass | round 2: launch.error PROVIDER_RELAY_UNAVAILABLE, dshStarts [], dshDataFiles [] asserted |
+| 2026-11-06 10:54 | API-09 | Started | | round 3 (after delivery merge + CRR-005): web typecheck at a9d85c0e2d |
+| 2026-11-06 10:55 | API-09 | Completed | Pass | web typecheck PASS, baseline 99 unchanged |
+| 2026-11-06 10:55 | API-06 | Started | | round 3: full test:nuxt at a9d85c0e2d |
+| 2026-11-06 11:00 | API-06 | Completed | Pass | round 3: 703 files / 5164 tests passed |

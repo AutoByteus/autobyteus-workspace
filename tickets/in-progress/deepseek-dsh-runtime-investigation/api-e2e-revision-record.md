@@ -9,6 +9,7 @@ The latest coverage investigation (`api-e2e-coverage-investigation.md`) and exec
 | --- | --- | --- | --- | --- |
 | API-REV-001 | Code reviewer, `code-review-report.md`, CRR-002 Pass (round 1 of API/E2E) | SR-004, ARCH-REV-003, IR-002, CRR-002 | N/A | Pass / 95% |
 | API-REV-002 | Code reviewer, `api-e2e-test-review-report.md`, CRR-003 Fail, TR-001 (round 2) | CRR-003 | Pass / 95% | Pass / 95% |
+| API-REV-003 | Code reviewer, `code-review-report.md`, CRR-005 Pass after delivery DR-001 merge and DEL-02 fix (round 3) | DR-001, IR-003, CRR-005 | Pass / 95% | Pass / 95% |
 
 ## Revision Entries
 
@@ -69,3 +70,25 @@ None.
 - Recommended owner: code reviewer (re-review of TR-001).
 - Remaining risks, blocked evidence, or untested scope: unchanged from API-REV-001; plus the CRR-003 note on AC-009's
   "key removed later" (no product surface, Solution Designer).
+
+### API-REV-003 — Rerun by impact on delivery's merged state (`a9d85c0e2d`)
+
+- Triggering role, report path, and round: code reviewer, `code-review-report.md` (CRR-005, Pass), API/E2E round 3.
+- Triggering finding or case IDs: delivery DR-001 merge `7c1117e209` of origin/personal `d6bcff577b`; DEL-02 fix `ee6739fe7f` (IR-003).
+- Related revision IDs: DR-001, IR-003, CRR-005.
+- Why recorded: the merge changed web and server code (other tickets' run-history and Runs view work).
+- Coverage decisions or durable test paths changed: none by API/E2E.
+- Cases rechecked: API-09 (new, web typecheck) and API-06 (full web suite) rerun; server typecheck/unit covered by
+  IMP-10 on the merged state; every other case Still valid (plan and reasons in the execution report, "Round 3 Rerun Plan").
+- Commands, environment, fixture, or broader-validation delta: none.
+
+#### Prior Failure Resolution
+
+None.
+
+- Canonical artifacts and sections updated: execution report (Round, Round 3 Rerun Plan, API-06/API-09 rows), this record, progress log.
+- Prior result and confidence: Pass, 95%
+- Current result and confidence: Pass, 95%
+- New or remaining failure IDs: none.
+- Recommended owner: delivery (via the handoff rule recipient); no new test code to review.
+- Remaining risks, blocked evidence, or untested scope: unchanged; delivery's integrated-state checks (DEL-02, scripted-provider E2E, its release proof) are its own.

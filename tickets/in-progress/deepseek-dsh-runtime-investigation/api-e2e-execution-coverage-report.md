@@ -3,9 +3,9 @@
 ## Round
 
 - Coverage investigation: `api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-002`
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-003`
 - Test progress log: `api-e2e-test-progress.md`
-- Round and trigger: round 2, Local Fix TR-001 from the test-code review CRR-003 (`api-e2e-test-review-report.md`); round 1 after code review CRR-002
+- Round and trigger: round 3, rerun by impact after delivery's merge `7c1117e209` (origin/personal `d6bcff577b`) and the DEL-02 fix reviewed in CRR-005 (head `a9d85c0e2d`); round 2 was TR-001 (CRR-003); round 1 followed CRR-002
 - Prior round reviewed: round 1 (API-REV-001, Pass). Round 2 plan: TR-001 changes only `deepseek-harness-standalone-host.e2e.test.ts` assertions; `git diff --name-only fddcff0f13 HEAD -- autobyteus-server-ts/src autobyteus-ts/src` is empty, so every other case stays valid and only API-25 reran
 - Deviations from the investigation's plan, and why:
   - API-08 added: every earlier run found dsh through `DEEPSEEK_HARNESS_COMMAND`; a user's install puts `dsh` on PATH,
@@ -16,6 +16,21 @@
     (TESTING.md Rule 9), see API-06 Notes.
 - Evidence folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/tickets/in-progress/deepseek-dsh-runtime-investigation/evidence/api-e2e/`
   (the handoff message gives the commit that holds it). Implementation evidence stays in `evidence/implementation/`.
+
+## Round 3 Rerun Plan (rerun by impact)
+
+- Validated before: `1eb5ac6723` (product code `fddcff0f13`). Now: `a9d85c0e2d`.
+- `git diff --name-only 1eb5ac6723 a9d85c0e2d`, outside tickets: from the merge, server run-history read side (`run-history/services/*`, `run-last-activity-reader.ts`, GraphQL run-history types: `lastActivityAt`, list limits), `workspace-removal-guard.ts` (refusal text), about 100 web files (Runs view, stores, composables, localization), `autobyteus-web/package.json` (version, probe scripts), `generated/graphql.ts`, TESTING.md, RELEASE.md, GLOSSARY.md; from the DEL-02 fix, `tests/architecture/agent-provider-composition-boundaries.test.ts`. No lockfile, schema, `autobyteus-ts`, contract package, harness or dsh/ACP/credential-proxy source change; no `autobyteus-web/electron/` or settings/Agent Runtimes change.
+
+| Case | Decision | Reason |
+| --- | --- | --- |
+| API-01, API-02, API-03 (server typecheck, unit incl. architecture tests) | Covered by IMP-10 at `ee6739fe7f` (merged state) | `Test Files  932 passed \| 5 skipped (937)`, `[typecheck] PASS` (`evidence/implementation/IMP-10-del-02-unit-typecheck.log`); later commits are docs only |
+| API-09 (new): web typecheck | Rerun | Required after a merge (TESTING.md step 5) |
+| API-06 full web suite | Rerun | Code it exercises changed in the merge |
+| API-07 Electron main suite | Still valid | No `electron/` change |
+| API-04, API-05, API-08, API-10…API-16, API-20…API-22, API-25 | Still valid | They drive run creation, turns, restore, Team/Org runs, the relay and the standalone host; none calls the changed run-history listing or workspace removal, and no code they exercise changed. Delivery reruns the scripted-provider suite on its integrated state |
+| API-30 rendered row | Still valid | No settings/Agent Runtimes web change |
+| API-35 fresh-start build | Still valid for this ticket's build inputs | The merge's own build inputs (web scripts, merged codegen) are delivery's integrated-state proof; codegen currency is checked by `web-generated-graphql-current.test.ts` in IMP-10 |
 
 ## Routing Classification
 
@@ -45,7 +60,8 @@
 | API-03 | AC-009, AC-017, QR-002 | server integration suite | Reused: IMP-03 | — | Pass | (implementation) | (implementation) | Ran at `3514947952`; later source changes are the dsh launch profile discovery (`9dd599dfe3`, not exercised by integration tests; covered by IMP-02/08 and API-08) and the supervisor move (IMP-09) |
 | API-04 | AC-016, AC-017 | scripted Grok E2Es, integrations GraphQL E2E | Reused: IMP-04 + IMP-09 | — | Pass | (implementation) | (implementation) | IMP-09 reran them at `cb132711f6`; nothing after it but docs |
 | API-05 | AC-001…AC-009, AC-011, AC-013…AC-015, QR-001, DEC-020 (studio scope) | live dsh suite | Reused: IMP-08 | — | Pass | (implementation) | (implementation) | Ran at `9dd599dfe3`; only the supervisor input move since (construction-time, IMP-09) |
-| API-06 | AC-013, all web | full web unit/component suite | `pnpm -C autobyteus-web test:nuxt`; then the failing file alone; baseline fix; that file again | ENV-1 | Pass | `API-06-web-test-nuxt.log` (full), `API-06-web-test-nuxt-excerpt.log`, `API-06b-voice-input-rerun.log`, `API-06c-voice-input-after-baseline-fix.log` | `Tests  1 failed \| 5085 passed \| 2 skipped (5088)`; the failure `Error: Test timed out in 5000ms.` in `voice-input-extension.integration.test.ts`; alone `installs, enables, and inserts transcript text into the draft  2178ms`; after the fix `Tests  2 passed (2)` | Cause: that test extracts a real tar archive and starts two real worker processes (bash, then node; `voiceInputRuntimeService.ts:71,164`) under vitest's 5 s default; ~2 s alone, over 5 s beside the full suite's parallel workers. No file it exercises is touched by this ticket. Baseline fix `e3870adf3d` (30 s timeout for that case) |
+| API-06 | AC-013, all web | full web unit/component suite | `pnpm -C autobyteus-web test:nuxt`; then the failing file alone; baseline fix; that file again | ENV-1 (round 3: `a9d85c0e2d`) | Pass | round 3: `API-06-web-test-nuxt-r3.log` (`Test Files  703 passed (703)`, `Tests  5164 passed \| 2 skipped (5166)`); round 1: `API-06-web-test-nuxt.log` (full), `API-06-web-test-nuxt-excerpt.log`, `API-06b-voice-input-rerun.log`, `API-06c-voice-input-after-baseline-fix.log` | `Tests  1 failed \| 5085 passed \| 2 skipped (5088)`; the failure `Error: Test timed out in 5000ms.` in `voice-input-extension.integration.test.ts`; alone `installs, enables, and inserts transcript text into the draft  2178ms`; after the fix `Tests  2 passed (2)` | Cause: that test extracts a real tar archive and starts two real worker processes (bash, then node; `voiceInputRuntimeService.ts:71,164`) under vitest's 5 s default; ~2 s alone, over 5 s beside the full suite's parallel workers. No file it exercises is touched by this ticket. Baseline fix `e3870adf3d` (30 s timeout for that case) |
+| API-09 | round 3: merged state | web typecheck | `pnpm -C autobyteus-web typecheck` | ENV-1 at `a9d85c0e2d` | Pass | `API-09-web-typecheck-r3.log` | `test-file errors: 99 in 43 files (baseline 99 in 43 files)`, `[typecheck] PASS` | |
 | API-07 | regression | Electron main-process suite | `pnpm -C autobyteus-web test:electron` | ENV-1 | Pass | `API-07-web-test-electron.log` | `Tests  407 passed \| 1 skipped (408)` | |
 | API-08 | AC-005, AC-013, ASM-001 | dsh found as `dsh` on PATH (no `DEEPSEEK_HARNESS_COMMAND`) | `env -i PATH=/tmp/ab387-dsh-bin:$PATH … RUN_DEEPSEEK_HARNESS_E2E=1 … vitest run tests/e2e/runtime/deepseek-harness-live.e2e.test.ts -t 'is available'` | ENV-3 | Pass | `API-08-dsh-on-path.log` | `DSH_LIVE MODELS ["deepseek-v4-flash","deepseek-v4-pro","deepseek-flash"]`, `DSH_LIVE ROW {…"installed":true,…"account":{"state":"SIGNED_IN"}}` | No model call (discovery placeholder) |
 | API-10 | AC-009 (key missing) | GraphQL `createAgentRun` → launcher → relay access, real dsh installed | scripted-provider suite (command in the file header) | ENV-2 | Pass | `API-10-16-scripted-provider-rerun-api10-api16.log` | `DSH_SCRIPTED NO_KEY {"success":false,"message":"AgentCreationError: RELAY_KEY_NOT_SET: The DeepSeek API key is not set in AutoByteus. Save it in Settings → API Keys.","runId":null}`; `✓ refuses a dsh run…` | No upstream call and no dsh run process (checked by `DSH_HOME` + run instructions variable). First runs' process check was vacuous (pgrep pattern); rerun after the fix |
