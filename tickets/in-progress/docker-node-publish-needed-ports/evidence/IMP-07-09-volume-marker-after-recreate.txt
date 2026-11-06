@@ -1,0 +1,8 @@
+# Check: IMP-07 (step 09)
+# Command: docker exec abx402-port-check cat /home/autobyteus/data/abx402-marker.txt after step 05
+# Setup: Isolated test node abx402-port-check; AUTOBYTEUS_DOCKER_STATE_DIR=/private/tmp/abx-402-real/state AUTOBYTEUS_DOCKER_SHARED_WORKSPACE_DIR=/private/tmp/abx-402-real/shared; base (v7) launcher = git archive 6324fb056d extracted to /tmp/abx-402-base; worktree (v8) launcher = scripts/public/docker/autobyteus-docker.sh at 2575d870e8. Seed state written by hand before step 01 (no ports): NODE_NAME, CONTAINER_NAME, IMAGE_REF=autobyteus/autobyteus-server:1.5.11-beta.7, CREATED_AT.
+# Commit: 2575d870e8
+# Environment: macOS 26 arm64, Docker Desktop (server 29.0.1), image autobyteus/autobyteus-server:1.5.11-beta.7 (8bcf8eabfafe), Node v22.23.1, LAN IP 192.168.2.158
+# Date: 2026-11-06
+
+abx402-volume-marker
