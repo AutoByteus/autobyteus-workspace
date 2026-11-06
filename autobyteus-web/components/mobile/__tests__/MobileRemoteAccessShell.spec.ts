@@ -143,6 +143,8 @@ describe('MobileRemoteAccessShell', () => {
     await flushPromises();
     const confirm = wrapper.get('[data-testid="mobile-unpair-confirm"]');
     expect(confirm.text()).toContain('Unpair this phone?');
+    // CRR-003 F-03: the sheet (teleported to the body, so later in the DOM) closes, so nothing covers the confirmation.
+    expect(document.body.querySelector('[data-testid="mobile-connection-sheet"]')).toBeNull();
     await confirm.findAll('button').find((button) => button.text() === 'Unpair')!.trigger('click');
     expect(useMobileNodeSessionStore().deleteLocalSession).toHaveBeenCalledTimes(1);
     wrapper.unmount();

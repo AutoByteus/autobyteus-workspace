@@ -312,4 +312,17 @@ describe('CollaborationMessageReferenceViewer.vue', () => {
     expect(wrapper.find('button[title="Preview"]').exists()).toBe(false);
     expect(wrapper.get('[data-test="content"]').text()).toContain('Safe raw view');
   });
+
+  // autobyteus-277 CRR-003 F-04: the phone's reference screen has its own bar; the desktop keeps the header.
+  it('shows its header by default, and none when the host has its own bar (hideHeader)', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => ({ status: 200, ok: true, text: async () => '# Handoff' })));
+    const desktop = mountSubject();
+    await flushPromises();
+    expect(desktop.find('[data-test="team-reference-viewer-header"]').exists()).toBe(true);
+    const phone = mountSubject({ hideHeader: true, disableRichTextPreview: true });
+    await flushPromises();
+    expect(phone.find('[data-test="team-reference-viewer-header"]').exists()).toBe(false);
+    expect(phone.find('[data-test="team-reference-viewer-maximize-toggle"]').exists()).toBe(false);
+    expect(phone.find('[data-test="file-viewer"]').exists()).toBe(true);
+  });
 });

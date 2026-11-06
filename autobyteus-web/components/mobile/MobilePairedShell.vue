@@ -43,7 +43,7 @@
       :diagnostic="sessionStore.lastDiagnostic"
       @close="showConnection = false"
       @check="checkStatus()"
-      @unpair="showUnpairConfirm = true"
+      @unpair="openUnpairConfirm"
     />
     <MobileUnpairConfirm v-if="showUnpairConfirm" @cancel="showUnpairConfirm = false" @confirm="unpairPhone" />
   </template>
@@ -128,6 +128,11 @@ const connected = computed(() => !firstCheckDone.value || sessionStore.authorize
 
 const showConnection = ref(false);
 const showUnpairConfirm = ref(false);
+/** The confirmation replaces the sheet, so nothing covers it (CRR-003 F-03). */
+function openUnpairConfirm(): void {
+  showConnection.value = false;
+  showUnpairConfirm.value = true;
+}
 function unpairPhone(): void {
   showUnpairConfirm.value = false;
   showConnection.value = false;

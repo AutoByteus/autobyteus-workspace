@@ -34,7 +34,7 @@
         <nav v-if="!searching" class="sticky top-0 z-10 flex h-11 items-center gap-1 overflow-x-auto whitespace-nowrap border-b border-slate-100 bg-white px-4 text-sm" aria-label="Folder" data-testid="mobile-files-path">
           <template v-for="(crumb, index) in breadcrumb" :key="crumb.path || 'root'">
             <Icon v-if="index > 0" icon="heroicons:chevron-right-20-solid" class="h-4 w-4 flex-shrink-0 text-slate-300" aria-hidden="true" />
-            <button type="button" class="h-11 flex-shrink-0 px-1" :class="index === breadcrumb.length - 1 ? 'font-semibold text-slate-900' : 'text-slate-500'" @click="openCrumb(index)">
+            <button type="button" class="h-11 min-w-[2.75rem] flex-shrink-0 px-1" :class="index === breadcrumb.length - 1 ? 'font-semibold text-slate-900' : 'text-slate-500'" @click="openCrumb(index)">
               {{ index === 0 ? workspace.name : crumb.name }}
             </button>
           </template>

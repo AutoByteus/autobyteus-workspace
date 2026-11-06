@@ -7,6 +7,7 @@
         :content-path="contentPath"
         :reference="reference"
         :disable-rich-text-preview="true"
+        :hide-header="true"
       />
     </div>
   </section>

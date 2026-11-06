@@ -33,7 +33,7 @@ const mountView = async (component: unknown, target = targetOf(), query: Record<
   const router = await createMobileTestRouter(query);
   const wrapper = mount(component as never, { props: { target } as never, global: { plugins: [router, pinia], stubs: {
     FileViewer: { props: ['file'], template: '<div data-testid="file-viewer-stub">{{ file.path }}:{{ file.content }}</div>' },
-    CollaborationMessageReferenceViewer: { props: ['contentPath'], template: '<div data-testid="reference-stub">{{ contentPath }}</div>' },
+    CollaborationMessageReferenceViewer: { props: ['contentPath', 'hideHeader'], template: '<div data-testid="reference-stub" :data-hide-header="String(hideHeader)">{{ contentPath }}</div>' },
     ArtifactContentViewer: { props: ['artifact'], template: '<div data-testid="artifact-viewer-stub">{{ artifact?.path }}</div>' },
   } } });
   await flushPromises();
@@ -66,6 +66,8 @@ describe('the phone\'s view screens read the open target (autobyteus-277 DS-005,
       await wrapper.get('[data-testid="mobile-files-row"]').trigger('click');
       await flushPromises();
       expect(wrapper.get('[data-testid="mobile-files-path"]').text()).toMatch(/project\s*src/);
+      // CRR-003 F-05: each path part is a 44px-wide target.
+      expect(wrapper.findAll('[data-testid="mobile-files-path"] button').every((button) => button.classes().includes('min-w-[2.75rem]'))).toBe(true);
       expect(wrapper.text()).toContain('main.ts');
       expect(wrapper.text()).not.toMatch(/Filters|Recent|Attached|Markdown\/code|Attach/);
     });
@@ -149,6 +151,8 @@ describe('the phone\'s view screens read the open target (autobyteus-277 DS-005,
       await flushPromises();
       expect(router.currentRoute.value.query).toMatchObject({ screen: 'messages', message: 'm-1', reference: 'r-1' });
       expect(wrapper.get('[data-testid="reference-stub"]').text()).toBe('team-runs/t/messages/m-1/references/r-1/content');
+      // CRR-003 F-04: only the phone's bar (VIS-011), not the shared viewer's header.
+      expect(wrapper.get('[data-testid="reference-stub"]').attributes('data-hide-header')).toBe('true');
       await wrapper.get('[data-testid="mobile-team-reference-viewer"] [data-testid="mobile-screen-back"]').trigger('click');
       await flushPromises();
       expect(wrapper.find('[data-testid="mobile-team-reference-viewer"]').exists()).toBe(false);

@@ -5,7 +5,7 @@
       class="flex min-h-0 flex-col overflow-hidden bg-white"
       :class="isMaximized ? 'fixed inset-0 z-[120] min-h-screen shadow-md' : 'h-full'"
     >
-      <div class="flex min-h-[45px] flex-shrink-0 items-center justify-between border-b border-gray-100 bg-white px-3 py-2">
+      <div v-if="!hideHeader" class="flex min-h-[45px] flex-shrink-0 items-center justify-between border-b border-gray-100 bg-white px-3 py-2" data-test="team-reference-viewer-header">
         <div class="min-w-0">
           <div class="truncate text-xs font-semibold text-gray-800">{{ fileName }}</div>
           <div class="truncate text-[0.6875rem] text-gray-500">{{ reference.path }}</div>
@@ -87,6 +87,8 @@ const props = defineProps<{
   reference: TeamReferenceFile;
   refreshSignal?: number;
   disableRichTextPreview?: boolean;
+  /** The phone's reference screen has its own bar (VIS-011): no name, path, mode or maximize header here. */
+  hideHeader?: boolean;
 }>();
 
 const windowNodeContextStore = useWindowNodeContextStore();
