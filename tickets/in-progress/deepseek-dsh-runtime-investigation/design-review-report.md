@@ -4,17 +4,17 @@
 
 - Upstream Requirements Doc: `tickets/in-progress/deepseek-dsh-runtime-investigation/requirements-doc.md` (Approved at SR-001; SR-003 adds DEC-019/DEC-020)
 - Upstream Investigation Notes: `…/investigation-notes.md` (SR-003)
-- Upstream Solution Revision Record: `…/solution-revision-record.md` (SR-001…SR-003)
-- Reviewed Design Spec: `…/design-spec.md` (SR-003, status `Ready`)
-- Supplemental Task Artifacts Reviewed: `probes/` (`vault-forwarder.mjs`, `pass-forwarder.mjs`, `owned-home.cordis.patch.yml`, `dsh-plugin/`), `evidence/p9-*`, `evidence/p19-*`, `follow-ups.md`, `handoff-architecture-design-complete.md` (SR-003)
-- Relevant Solution Revision IDs: SR-003 (design revision), SR-002, SR-001
+- Upstream Solution Revision Record: `…/solution-revision-record.md` (SR-001…SR-004)
+- Reviewed Design Spec: `…/design-spec.md` (SR-004, status `Ready`)
+- Supplemental Task Artifacts Reviewed: `probes/` (`vault-forwarder.mjs`, `pass-forwarder.mjs`, `owned-home.cordis.patch.yml`, `dsh-plugin/`), `evidence/p9-*`, `evidence/p19-*`, `follow-ups.md`, `handoff-architecture-design-complete.md` (SR-004)
+- Relevant Solution Revision IDs: SR-004 (design revision), SR-003, SR-002, SR-001
 - Architecture Review Revision Record: `…/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-002`
-- Current Review Round: 2
-- Trigger: design revision SR-003 after ARCH-REV-001 (Fail)
-- Prior Review Round Reviewed: 1 (ARCH-REV-001, Fail, AR-001…AR-007)
-- Latest Authoritative Round: 2
-- Current-State Evidence Basis: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation`, commit `b40a9450b1` (documents only; code = base `3ef5e33eec`). Round 1 basis plus, in round 2: `agent-execution/services/agent-run-manager.ts:46-70,130,160-173`, `agent-execution/services/agent-run-resource-manager.ts:64,122-124`, `application-platform/execution/application-execution-scope-kernel-builder.ts:57-146`, `application-platform/runtime/build-application-platform-runtime.ts:69-101`, `compositions/build-studio-server.ts:200-215,310-320`, `standalone-application-host/start-standalone-application-host.ts:264-272`, `index.ts:8-17`, `credential-proxy/integration-run-access.ts:11-50`.
+- Current Architecture Review Revision ID: `ARCH-REV-003`
+- Current Review Round: 3
+- Trigger: design revision SR-004 after ARCH-REV-002 (Fail, AR-008)
+- Prior Review Round Reviewed: 2 (ARCH-REV-002, Fail, AR-008); round 1 (ARCH-REV-001, AR-001…AR-007, resolved in round 2)
+- Latest Authoritative Round: 3
+- Current-State Evidence Basis: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation`, commit `0f0ed76814` (documents only; code = base `3ef5e33eec`). Round 3 also opened `agent-execution/runtime/general-process-run-supervisor.ts:215-255` (the one `AgentRunManager`/`AgentRunResourceManager` construction for studio and standalone) and re-listed every construction site (`new AgentRunResourceManager`: supervisor `:223`, kernel builder `:102`; `AgentRunManager`: supervisor `:241` via `initializeProcessInstance`, kernel builder `:136`). Round 1 basis plus, in round 2: `agent-execution/services/agent-run-manager.ts:46-70,130,160-173`, `agent-execution/services/agent-run-resource-manager.ts:64,122-124`, `application-platform/execution/application-execution-scope-kernel-builder.ts:57-146`, `application-platform/runtime/build-application-platform-runtime.ts:69-101`, `compositions/build-studio-server.ts:200-215,310-320`, `standalone-application-host/start-standalone-application-host.ts:264-272`, `index.ts:8-17`, `credential-proxy/integration-run-access.ts:11-50`.
 
 ## Routing Classification Review
 
@@ -26,13 +26,13 @@
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Overall Basis Status: `Confirmed` for intent. One target path needs correction (BEH-009 in application scopes, AR-008).
+- Overall Basis Status: `Confirmed`.
 - Approved requirements / intended behavior understood: Yes. DEC-019 (keep dsh's plugin inventory field) and DEC-020 (dsh only where the process runs the credential proxy; refused and unavailable elsewhere) are recorded as Solution Designer decisions within the direction, user informed, with no change to REQ/AC. This review does not reopen them.
 - Relevant existing behavior and evidence confirmed: Yes. SR-003's new citations were opened and match the code: three `open` callers, two end copies, the `createForExecution` dispositions, the application scope wiring, and the process singletons.
 - Scope guardrail confirmed: Yes.
 - Every prospective blocking `Design Impact` finding traceable to an approved ID: `Yes`.
 - Remaining material ambiguity: None.
-- Statements about existing code the design relies on: correct as cited. One relied-on statement is incomplete: "Passes are revoked at run release (`agent-run-resource-manager.ts:124`)". Revocation happens only through `IntegrationRunAccess.revokeForRun` (`agent-run-resource-manager.ts:124`, `agent-run-manager.ts:172`), and the application execution scope passes `integrationRunAccess: null` to both (`application-execution-scope-kernel-builder.ts:110,146`). See AR-008.
+- Statements about existing code the design relies on: correct as cited. SR-004 now cites the revocation facts (`agent-run-resource-manager.ts:124`, `agent-run-manager.ts:169-173`, `application-execution-scope-kernel-builder.ts:110,146`); they match the code.
 
 | Behavior ID | Kind | Design Alignment With Approved Intent | Approved Trigger / Contract And Current-State Evidence | Target Outcome / Path / Spine Coherence | Status | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -42,7 +42,7 @@
 | BEH-005 | User | Pass | Pass | Pass | Confirmed | Process relay slot (AR-003 resolved) |
 | BEH-006 | System | Pass | Pass | Pass | Confirmed | Backend holds instructions for reopen |
 | BEH-007/008 | System | Pass | Pass | Pass | Confirmed | — |
-| BEH-009 | System | Pass | Pass | Fail | Needs Correction | AR-008: relay passes in application scopes are never revoked |
+| BEH-009 | System | Pass | Pass | Pass | Confirmed | One revocation owner, `RunPassRevocation`, wired in every composition with a pass (AR-008 resolved) |
 | BEH-010/011/012 | System | Pass | Pass | Pass | Confirmed | DS-008 end order (AR-002 resolved) |
 | BEH-013 | User | Pass | Pass | Pass | Confirmed | Unavailable with a reason without the relay |
 | BEH-014/015 | System | Pass | Pass | Pass | Confirmed | — |
@@ -76,13 +76,14 @@
 | DS-006 | Availability / status | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | DS-007 | Session state machine | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
 | DS-008 | End of a generation | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
-| (missing) | Run pass end (release / activation failure) | Fail | — | — | — | Fail | — | Fail (AR-008) |
+| Pass end | Release / activation failure → `RunPassRevocation.revokeForRun` | Pass | Pass | N/A | Pass | Pass | Pass | Pass (AR-008 resolved) |
 
 ## Boundary Encapsulation Verdict
 
 | Boundary / Owner | Authoritative Public Entry Point Is Clear? | Internal Owned Mechanisms Stay Internal? | Caller Bypass Risk Is Controlled? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `ProviderRelayAccess` | Pass | Pass | Pass | Fail | AR-008: the grant has no revocation on this boundary; a relay pass's lifetime depends on `IntegrationRunAccess` being wired |
+| `ProviderRelayAccess` | Pass | Pass | Pass | Pass | Grants only; the pass's end belongs to `RunPassRevocation` |
+| `RunPassRevocation` | Pass | Pass | Pass | Pass | One owner of a pass's end; `IntegrationRunAccess.revokeForRun` removed; bypass shapes named |
 | `ProviderRelayRoute` | Pass | Pass | Pass | Pass | — |
 | `AcpSessionLauncher` | Pass | Pass | Pass | Pass | Factory and backend end through `end` (AR-002 resolved) |
 | `AcpAgentSession` | Pass | Pass | Pass | Pass | — |
@@ -105,7 +106,7 @@
 | `AcpAgentLaunchProfile.runLaunch / discoveryLaunch` | Pass | Pass | Pass | Low | Pass (`normalizeModels` removed) |
 | `AcpSessionOpenRequest {mode: new \| restore, instructions}` | Pass | Pass | Pass | Low | Pass |
 | `createForExecution({…, providerRelayAccess})` | Pass | Pass | Pass | Low | Pass |
-| Pass revocation for a relay-granted run | Fail | — | — | Medium | Fail (AR-008) |
+| `RunPassRevocation.revokeForRun(runId)` | Pass | Pass | Pass | Low | Pass |
 
 ## Existing Capability / Subsystem Reuse Verdict
 
@@ -115,7 +116,7 @@
 | Owner end | Pass | Pass | N/A | Pass | `AcpSessionLauncher.end` extended |
 | Observation delivery | Pass | Pass | Pass | Pass | — |
 | Process relay slot | Pass | Pass | Pass | Pass | Justified: catalog and availability are DI-less singletons (`model-catalog-service.ts:68-77,363`) |
-| Pass revocation | Fail | Fail | N/A | Fail | AR-008: reuses `IntegrationRunAccess.revokeForRun` implicitly, which is `null` in application scopes |
+| Pass revocation | Pass | Pass | Pass | Pass | `RunPassRevocation` over `RunPassRegistry.revoke` |
 
 ## Subsystem / Capability-Area Allocation Verdict
 
@@ -124,7 +125,7 @@
 | `credential-proxy/provider-relays/` | Pass | Pass | Pass | Pass | — |
 | `runtime-management/acp`, `agent-execution/backends/acp` | Pass | Pass | Pass | Pass | — |
 | `runtime-management/deepseek-harness`, `agent-execution/backends/deepseek-harness` | Pass | Pass | Pass | Pass | — |
-| compositions | Pass | Pass | Fail | Fail | AR-008: the application scope threads `providerRelayAccess` into `createForExecution` only; its `AgentRunManager` and `AgentRunResourceManager` keep `integrationRunAccess: null` and revoke nothing |
+| compositions | Pass | Pass | Pass | Pass | `runPasses` from the same host wherever `integrationRunAccess` or `providerRelayAccess` is non-null; supervisor (studio host's / standalone `null`) and kernel builder `:102-111`, `:136-146` |
 
 ## Reusable Owned Structures Verdict
 
@@ -143,7 +144,7 @@
 | `AcpRunLaunchRequest`, `AcpSessionOpenRequest` | Pass | Pass | Pass | N/A | Pass | — |
 | `AcpPreparationOwner` + `launch`, `providerCalls` | Pass | Pass | Pass | N/A | Pass | Ended only by `end` |
 
-Derived consumers of a changed structure listed with a decision for each (Principle 11): `Pass` for owner, launch contract, effect and runtime kind. `Fail` for `RunPassHolder`'s new grant: its revocation consumers (`AgentRunManager.releaseLocalSessions`, `AgentRunResourceManager.release`) are not listed per composition (AR-008).
+Derived consumers of a changed structure listed with a decision for each (Principle 11): `Pass` for owner, launch contract, effect and runtime kind. `Pass` for `RunPassHolder`: both revocation callers are now listed with their decision (SR-004).
 
 Each domain word keeps one meaning, and each concept one name (Principle 15): `Pass` ("provider relay", `DSH_PROVIDER_ROUTE`, glossary distinction from Model Routing; AR-006 resolved).
 
@@ -154,7 +155,8 @@ Each domain word keeps one meaning, and each concept one name (Principle 15): `P
 | Shared ACP files (launcher, session, factory, backend, contracts) | Pass | Pass | N/A | Pass | — |
 | `credential-proxy/provider-relays/*`, `run-pass-registry.ts`, forwarder | Pass | Pass | N/A | Pass | — |
 | `provider-relay-process-access.ts` | Pass | Pass | N/A | Pass | — |
-| `application-execution-scope-kernel-builder.ts` | Pass | Fail | N/A | Fail | AR-008: also the revocation dispositions at `:110` and `:146` |
+| `application-execution-scope-kernel-builder.ts`, `general-process-run-supervisor.ts` | Pass | Pass | N/A | Pass | `providerRelayAccess` and `runPasses` dispositions |
+| `credential-proxy/run-pass-revocation.ts` | Pass | Pass | N/A | Pass | — |
 | dsh runtime/backend files, availability, catalog, strategy | Pass | Pass | N/A | Pass | — |
 
 ## Subsystem / Folder / File Placement Verdict
@@ -173,6 +175,7 @@ Each domain word keeps one meaning, and each concept one name (Principle 15): `P
 | `AcpExtEffect`/`AcpExtNotificationContext` | Pass | Pass | Pass | Pass | — |
 | Mode `"load"` (factory restore and backend reopen) | Pass | Pass | Pass | Pass | — |
 | Factory end copy | Pass | Pass | Pass | Pass | — |
+| `IntegrationRunAccess.revokeForRun` and the managers' `integrationRunAccess` revoke dependency | Pass | Pass | Pass | Pass | Replaced by `RunPassRevocation` (`runPasses`) |
 
 ## Legacy / Backward-Compatibility Verdict
 
@@ -194,7 +197,7 @@ Each domain word keeps one meaning, and each concept one name (Principle 15): `P
 | --- | --- | --- | --- | --- |
 | Step 1 shared ACP + Grok | Pass | Pass | Pass | Pass |
 | Step 2 credential proxy | Pass | Pass | Pass | Pass |
-| Step 3 compositions | Fail (AR-008: revocation dispositions missing in application scopes) | Pass | Pass | Fail |
+| Step 3 compositions | Pass | Pass | Pass | Pass |
 | Steps 4–6 dsh runtime, docs, live E2E incl. reopen | Pass | Pass | Pass | Pass |
 
 ## Example Adequacy Verdict
@@ -226,7 +229,7 @@ Each domain word keeps one meaning, and each concept one name (Principle 15): `P
 - Forward path: application scope kernel → `createForExecution({ providerRelayAccess: studio's })` → dsh factory → `AcpSessionLauncher.open` → `ProviderRelayAccess.prepareForRun` issues the run's pass with the relay grant. On release: `AgentRunResourceManager.release` → `this.dependencies.integrationRunAccess?.revokeForRun(runId)` (`agent-run-resource-manager.ts:122-124`), whose `integrationRunAccess` is `null` in the scope (`application-execution-scope-kernel-builder.ts:102-111`). On activation failure: `AgentRunManager.releaseLocalSessions` → `this.integrationRunAccess?.revokeForRun(runId)` (`agent-run-manager.ts:169-173`), `null` in the scope (`:146`). `ProviderRelayAccess` has no revoke operation (Interface Boundary Mapping).
 - Lifecycle preconditions and consequence: the pass and its relay grant stay in `RunPassRegistry` until the server restarts. The relay keeps accepting the ended run's pass, contrary to AC-009 and the run-pass contract, and the registry keeps one holder per ended application run.
 - Reachability: `Reachable`
-- Review consequence: AR-008.
+- Review consequence: AR-008. Resolved in round 3: `RunPassRevocation` reaches both release paths in the application scope (kernel builder `:102-111`, `:141-146`), so the pass ends with the run.
 
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
@@ -234,39 +237,30 @@ None in the requirements.
 
 ## Review Decision
 
-`Fail`
+`Pass`
 
 ## Findings
 
-AR-001…AR-007 are resolved; see `architecture-review-revision-record.md`, ARCH-REV-002, for how each was verified.
-
-### AR-008 — Relay-granted passes in application scopes are never revoked (Design Impact, Medium, blocking)
-
-- Protects: REQ-009 / AC-009 (a revoked pass is refused), and the governing run-pass contract (glossary **Run pass**).
-- Scope status: Within Approved Scope. Changes approved behavior: No.
-- Material premise: P-003 (Reachable).
-- Evidence: the only revocation is `IntegrationRunAccess.revokeForRun`, called at `agent-run-resource-manager.ts:124` (release) and `agent-run-manager.ts:172` (activation failure). The application execution scope passes `integrationRunAccess: null` to both (`application-execution-scope-kernel-builder.ts:110,146`). SR-003 threads `providerRelayAccess` into `createForExecution` only (Final File Responsibility Mapping; Change Sequence step 3). `ProviderRelayAccess` grants a pass but cannot revoke one. Revocation of a relay pass therefore happens only where integrations also happen to be wired: behavior by absence (Principle 13).
-- Required update: name the owner that ends a run's pass for a relay grant, and wire it everywhere `providerRelayAccess` is non-null. One proportionate shape: give `ProviderRelayAccess` `revokeForRun(runId)`, same registry and idempotent. In each composition, pass the revocation to `AgentRunManager` (`releaseLocalSessions`) and to `AgentRunResourceManager` (`release`), alongside or in place of the integration one. In the application scope, that means setting it at `:110` and `:146`. Alternatively, a single run-pass lifetime boundary covering both grants. State the choice. List these two consumers under Derived consumers of `RunPassHolder`.
-- Why proportionate: two dispositions and one method on an existing boundary. Without them an ended run's pass keeps working for the relay until restart.
-- Recommended recipient: Solution Designer.
+None open. AR-001…AR-007 were resolved in round 2 and AR-008 in round 3; see `architecture-review-revision-record.md` (ARCH-REV-002, ARCH-REV-003).
 
 ## Classification
 
-`Design Impact` (AR-008). No `Requirement Gap`.
+N/A (Pass).
 
 ## Recommended Recipient
 
-Solution Designer (`/software_engineering_team/solution_designer`).
+Implementation Engineer (`/software_engineering_team/implementation_engineer`).
 
 ## Residual Risks
 
-- The process relay slot is set when the proxy host is created, but `relayBaseUrl` needs the listener up (`credential-proxy-local-server.ts:44-47`). A catalog or availability read before `listen()` completes should report a transient diagnostic, not a cached "unavailable". This is implementation guidance.
-- The slot is per process. The standalone application host is a separate library entry (`index.ts:8-10`) and leaves it unset. If both compositions ever ran in one process, availability would read the studio's slot while the standalone host refuses launches. Not reachable today.
-- Carried from round 1, now adopted in the design: synchronous `finished`, `issue`/`clearGrants` keeping the relay grant, atomic home writes, the `customSkillDirs` guard, and pass visibility to shells for agents with integrations (recorded under Risks).
-- RSK-002/004/006 as recorded by the Solution Designer.
+- The process relay slot is set before the proxy listens. Discovery reports `DEEPSEEK_HARNESS_RELAY_NOT_READY` (transient, never cached) until then; availability depends only on the slot. Adopted.
+- The slot is per process. The standalone host is a separate library entry and leaves it unset. Not reachable today.
+- Implementation must keep the adopted guidance: synchronous `finished`, `issue`/`clearGrants` keeping the relay grant, atomic home writes, the `customSkillDirs` guard, and no logging of passes or header values.
+- Live E2E (step 6) must include a reopen, the key-absence scan, and a refusal check of the pass after release of an application-launch run.
+- RSK-002 (compaction header in dsh code), RSK-004 (process memory per run), RSK-006 (overlap with autobyteus-386 in the shared ACP layer).
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
-- Material-Premise Gate: `Pass` (P-001 resolved by DEC-020; P-002 Not Reachable; P-003 Reachable → AR-008)
-- Notes: SR-003 resolves AR-001…AR-007 cleanly; each resolution was verified against the revised spec and the code. One new, narrow gap remains (AR-008), opened by the newly supported application-launch path. Fix it and the design is ready for implementation.
+- Review Decision: `Pass`
+- Material-Premise Gate: `Pass` (P-001 resolved by DEC-020; P-002 Not Reachable; P-003 resolved by `RunPassRevocation`)
+- Notes: SR-004 resolves AR-008 with one run-pass lifetime owner, removes the integration-only revoke, and wires it at every construction of `AgentRunManager` and `AgentRunResourceManager`. The design is ready for implementation.

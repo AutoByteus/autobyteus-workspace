@@ -8,6 +8,7 @@ The latest `design-review-report.md` remains authoritative.
 | --- | --- | --- | --- | --- | --- |
 | ARCH-REV-001 | Round 1 / Architecture Design Complete (Large, High) | SR-001, SR-002 | N/A | Fail (Design Impact) | AR-001…AR-007 |
 | ARCH-REV-002 | Round 2 / design revision SR-003 | SR-003 | Fail | Fail (Design Impact) | AR-001…AR-007 resolved; AR-008 new |
+| ARCH-REV-003 | Round 3 / design revision SR-004 | SR-004 | Fail | Pass | AR-008 resolved |
 
 ## Revision Entries
 
@@ -56,3 +57,24 @@ None.
 - Material classification changes: None (`Large` / `High`)
 - Recommended recipient: Solution Designer
 - Remaining risks or uncertainty: slot set before the listener is up (transient diagnostic); per-process slot assumption (studio and standalone in separate processes); RSK-002/004/006.
+
+### ARCH-REV-003 — Round 3 on SR-004
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/tickets/in-progress/deepseek-dsh-runtime-investigation/design-review-report.md`
+- Review round and trigger: round 3; Solution Designer handoff (SR-004), commit `0f0ed76814`
+- Triggering role, report path, and finding IDs: Solution Designer, `design-spec.md` (SR-004); AR-008
+- Relevant solution revision IDs: SR-004
+- Prior authoritative decision: `Fail` (ARCH-REV-002)
+- Current authoritative decision: `Pass`
+- What changed in the review result: AR-008 resolved. No new findings. The AR-001…AR-007 resolutions are unchanged in SR-004.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-008 | Open (Medium) | Resolved | SR-004; Ownership Map `RunPassRevocation`; Boundary Encapsulation row; Dependency Rules; Interface `RunPassRevocation.revokeForRun`; Removal Plan row; file rows for `run-pass-revocation.ts`, `agent-run-manager.ts`, `agent-run-resource-manager.ts`, supervisor/studio, application runtime/scope/kernel builder, standalone host; Change Sequence step 3; Guidance (live refusal check after release) | One revocation owner ends the pass with all grants; `IntegrationRunAccess.revokeForRun` is removed; `runPasses` is non-null wherever `integrationRunAccess` or `providerRelayAccess` is non-null. Every construction site is covered: `general-process-run-supervisor.ts:223,241` (studio host's / standalone `null`) and `application-execution-scope-kernel-builder.ts:102,136` (studio host's, threaded). These are the only constructions in the code. |
+
+- New or remaining finding IDs: None
+- Material classification changes: None (`Large` / `High`)
+- Recommended recipient: Implementation Engineer; informational pass notice to the Solution Designer
+- Remaining risks or uncertainty: per-process slot assumption; RSK-002/004/006; adopted implementation guidance (see report Residual Risks).
