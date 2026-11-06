@@ -98,3 +98,15 @@ The Product spec is at the path above; the reviewer reads it in place.
 ## Next Expected Action
 
 Scoped re-review: DS-003, DS-004, the run-screen and pending-open spines, and AR-001…AR-008.
+
+## Round 3 (SR-005)
+
+- **Trigger:** API/E2E round 1 failed (API-REV-001). The code reviewer's failure-origin review CRR-003 classified the findings: Design Impact F-01, F-06, F-08; Requirement Gap F-07, F-09; Local Fix F-02…F-05.
+- **The user's answers** (2026-11-06): questions 1 and 2, "I think it should follow how it is from the desktop"; question 3, "I trust you". DEC-009, DEC-010 and DEC-011 are all (a).
+- **Requirements:** `Approved` at SR-005. New: REQ-002a, REQ-003a, REQ-011; AC-002a, AC-003a, AC-011.
+- **Design:** `design-spec.md`, section "Revision For CRR-003 (SR-005)". Evidence: E-33…E-37. Follow-up: FU-007.
+- **Next:**
+  - a scoped architecture review of that section;
+  - then implementation: the SR-005 design, plus CRR-003's local fixes F-03…F-05;
+  - then source review, and API/E2E again, with the `TESTING.md` phone rule owned by API/E2E.
+- **Note:** the CRR-003 report and record are still uncommitted from the code reviewer; this package commits them unchanged.

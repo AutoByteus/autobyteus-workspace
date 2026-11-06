@@ -8,7 +8,7 @@
 | SR-002 | Requirements | Product Design Completed, user-approved (design rev `16678d53`) | Product findings 1–7 | Draft | Approved | All REQ/AC; REQ-010 added; DEC-003 A, DEC-004, DEC-007, DEC-008 | Requirements approved |
 | SR-003 | Mixed | The user dropped the optional marker (design rev `976457a4`); architecture design | — | Approved (SR-002) | Approved; design Ready | REQ-010, AC-010 removed; AC-006 wording; DS-001…DS-009 | Architecture Design Complete (Large, High) |
 | SR-004 | Design | ARCH-REV-001 round 1 (Fail, Design Impact) | AR-001…AR-008, MP-001…MP-003 | Design Ready (SR-003) | Design Ready (revised) | REQ-003, REQ-005, REQ-006 paths (DS-003, DS-004); no requirement change | Architecture Design Complete (Large, High), re-review |
-| SR-005 | Mixed (in progress) | API-REV-001 Fail; CRR-003 failure-origin review | F-01…F-09 | Requirements Approved (SR-003); design Ready (SR-004) | Requirements Ready for Approval; design Needs Revision | REQ-002a, REQ-003a, REQ-011; AC-002a, AC-003a, AC-011; DEC-009…DEC-014 | Waiting for the user's DEC-009…DEC-011 |
+| SR-005 | Mixed | API-REV-001 Fail; CRR-003 failure-origin review; the user's answers | F-01…F-09 | Requirements Approved (SR-003); design Ready (SR-004) | Requirements Approved (SR-005); design Ready (SR-005) | REQ-002a, REQ-003a, REQ-011; AC-002a, AC-003a, AC-011; DEC-009…DEC-014 | Architecture Design Complete (Large, High), scoped re-review |
 
 ## Revision Entries
 
@@ -142,3 +142,9 @@
 - **Evidence:** E-33…E-37.
 - **Follow-ups:** FU-007 (desktop staleness).
 - **Next action:** the user's answers. Then finish SR-005 and route it to architecture review (Large / High), then implementation, with the local fixes F-03…F-05 and the `TESTING.md` rule for API/E2E.
+- **Completed (2026-11-06):** the user answered.
+  - Questions 1 and 2: "I think it should follow how it is from the desktop".
+  - Question 3: "What is your suggestion for question three? I think you understand better than me. You can really figure out the reasonable solution. I trust you."
+  - DEC-009, DEC-010 and DEC-011 are all (a), as recommended. The user was told in the Solution Designer's conversation.
+  - Requirements: `Approved` at SR-005. Design: `Ready` at SR-005, with the Android shell Change Scope extension (REQ-011).
+  - Handoff: `Architecture Design Complete` → `/software_engineering_team/architecture_reviewer` (Large / High rule), a scoped review of the "Revision For CRR-003" section. Then implementation with CRR-003's local fixes F-03…F-05, and API/E2E with the `TESTING.md` phone rule.
