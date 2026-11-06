@@ -211,6 +211,11 @@ export const useServerStore = defineStore('server', {
           clearInterval(healthCheckInterval)
           return
         }
+        // Only STARTING/RESTARTING are still waiting on a health answer; ERROR is a
+        // stopped state (polling it forever kept showing a stale "starting" message).
+        if (this.status !== ServerStatus.STARTING && this.status !== ServerStatus.RESTARTING) {
+          return
+        }
         this.checkServerHealth().then(result => {
           if (result.status === 'ok') {
             this.isInitialStartup = false
@@ -311,7 +316,11 @@ export const useServerStore = defineStore('server', {
         ? serverStatus.message || ''
         : ''
       this.errorMessage = serverStatus.status === ServerStatus.ERROR ? serverStatus.message || '' : ''
-      if (serverStatus.status === ServerStatus.ERROR) this.isInitialStartup = false
+      if (serverStatus.status === ServerStatus.ERROR) {
+        this.isInitialStartup = false
+        // Clear a STARTING-era health text; it describes a state the server has left.
+        this.healthCheckStatus = ''
+      }
     },
     
     /**

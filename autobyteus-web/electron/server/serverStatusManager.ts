@@ -108,20 +108,21 @@ export class ServerStatusManager extends EventEmitter {
     try {
       logger.info('ServerStatusManager: Checking server health')
       if (!this.manager.isRunning()) {
-        // If not running, the status will be handled by the 'error' or 'starting' state
-        // This check is mainly for when it's supposed to be running.
-        return {
-          status: 'starting',
-          message: 'Server is not running or still starting'
-        }
+        // ERROR is a stopped state: say so truthfully instead of reusing the
+        // STARTING-era text. Every other non-running status is still starting up.
+        return this.currentStatus === ServerStatus.ERROR
+          ? { status: 'error', message: 'Server is not running' }
+          : { status: 'starting', message: 'Server is not running or still starting' }
       }
-      
+
       const urls = this.manager.getServerUrls()
       const response = await axios.get(urls.health, { timeout: 5000 })
       // A diagnostic request from a previous running child must not revive a
       // stopped, failed, or restarting startup while its response was in flight.
       if (!this.manager.isRunning() || this.currentStatus !== ServerStatus.RUNNING) {
-        return { status: 'starting', message: 'Server is not running or still starting' }
+        return this.currentStatus === ServerStatus.ERROR
+          ? { status: 'error', message: 'Server is not running' }
+          : { status: 'starting', message: 'Server is not running or still starting' }
       }
       
       if (response.status === 200) {

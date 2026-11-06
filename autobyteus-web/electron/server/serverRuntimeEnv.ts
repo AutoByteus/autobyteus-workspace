@@ -102,7 +102,6 @@ export type BuildServerProcessEnvInput = Readonly<{
   callerEnv: NodeJS.ProcessEnv
   /** PATH resolved from the user's login shell; `null` when unavailable or not used (Windows). */
   loginShellPath: string | null
-  port: number
   appDataDir: string
   publicServerUrl: string
   runtimeOverrides: Record<string, string>
@@ -116,7 +115,6 @@ export function buildServerProcessEnv({
   policy,
   callerEnv,
   loginShellPath,
-  port,
   appDataDir,
   publicServerUrl,
   runtimeOverrides,
@@ -128,8 +126,10 @@ export function buildServerProcessEnv({
     ...inherited,
     ...(loginShellPath ? { PATH: loginShellPath } : {}),
     ELECTRON_RUN_AS_NODE: '1',
-    PORT: port.toString(),
-    SERVER_PORT: port.toString(),
+    // The server takes its port only from `--port` (see the spawn call in BaseServerManager).
+    // Do not add generic PORT/SERVER_PORT here: every agent runtime and tool shell this
+    // process spawns inherits this env, and a generic PORT would steer their own programs
+    // (e.g. a Nuxt dev server) onto the backend's port instead of their own default.
     // Ensure Prisma uses runtime server-data DB path from process start.
     DATABASE_URL: toPrismaSqliteUrl(path.join(appDataDir, 'db', 'production.db')),
     DB_TYPE: dbType,

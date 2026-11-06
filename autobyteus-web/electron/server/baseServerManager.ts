@@ -314,7 +314,6 @@ export abstract class BaseServerManager extends EventEmitter {
       policy: this.launchConfig.environmentPolicy,
       callerEnv: process.env,
       loginShellPath,
-      port: this.serverPort,
       appDataDir: this.appDataDir,
       publicServerUrl: this.serverUrl,
       runtimeOverrides: this.getRuntimeEnvOverrides(),

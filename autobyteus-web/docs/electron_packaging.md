@@ -1123,12 +1123,16 @@ maps the launch profile to a policy:
   case-insensitively.
 
 Both add the Electron-owned values: login-shell `PATH` when available,
-`ELECTRON_RUN_AS_NODE=1`, `PORT`/`SERVER_PORT`, `DATABASE_URL` and
+`ELECTRON_RUN_AS_NODE=1`, `DATABASE_URL` and
 `AUTOBYTEUS_DATA_DIR` under the data root, `AUTOBYTEUS_SERVER_HOST`, `DB_TYPE`,
 and the browser-bridge runtime overrides, then, last so that no inherited or
 override value changes it, `AUTOBYTEUS_DESKTOP_EMBEDDED_NODE=1` (the server is
 the desktop's own node, the only one that checks and updates the installed agent
-runtimes; see the server's `update_notifications.md`). In `e2e` mode, production
+runtimes; see the server's `update_notifications.md`). The server's own port
+travels only as its `--port` argument; the composer does not also set generic
+`PORT`/`SERVER_PORT`, because every agent runtime and tool shell this process
+spawns would inherit them and could bind their own programs to the backend's
+port. In `e2e` mode, production
 `AUTOBYTEUS_*`, `DB_NAME`, provider keys and runtime settings that a caller
 inherited (for example an agent shell inside AutoByteus) therefore never reach
 the isolated server. Its settings come from its own data root's `.env`.
