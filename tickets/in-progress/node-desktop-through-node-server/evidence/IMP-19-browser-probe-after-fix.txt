@@ -1,0 +1,75 @@
+# Check: IMP-19
+# Command: BACKEND_NODE_BASE_URL=http://127.0.0.1:57817 nuxt dev (warmed up), then node tests/e2e/vnc-live-probe.mjs --base-url <nuxt> --vnc-container abx405-node-desktop-check --vnc-display :99 --expected-container-label abx405-impl --output-dir <dir> --timeout-ms 90000
+# Setup: Test-owned container abx405-node-desktop-check (label com.autobyteus.api-e2e-owner=abx405-impl), -p 127.0.0.1:57817:8000 only, fresh volumes abx405-node-desktop-check-{data,root-home,chromium-profile,server-packages}; started by the image's starter, Xvnc :99. Removed with its volumes afterwards.
+# Commit: ce13fa9727
+# Environment: macOS arm64, Docker Desktop (server 29.0.1), image autobyteus/autobyteus-server:beta (9c5aa01bb2fc) with this commit's server package (docker buildx --target server-package, linux/arm64) mounted read-only over /opt/autobyteus/server-package, Node v22.23.1
+# Date: 2026-11-06
+
+{
+  "result": "Pass",
+  "scenarios": {
+    "VNC-LIVE-001-003": {
+      "result": "Pass",
+      "permissionStates": {
+        "read": "granted",
+        "write": "granted"
+      },
+      "initialCanvas": {
+        "x": 991,
+        "y": 112.5,
+        "width": 448,
+        "height": 252
+      },
+      "initialRemote": {
+        "width": 1920,
+        "height": 1080,
+        "text": "1920x1080"
+      },
+      "maximizedRemote": {
+        "width": 1920,
+        "height": 1080,
+        "text": "1920x1080"
+      },
+      "controlRemote": {
+        "width": 1920,
+        "height": 1080,
+        "text": "1920x1080"
+      },
+      "browserClipboardInViewOnly": "autobyteus-local-before-1793985538601",
+      "localToRemoteText": "autobyteus-local-to-remote-1793985542640",
+      "observedRemoteClipboard": "autobyteus-local-to-remote-1793985542640",
+      "remoteToLocalText": "autobyteus-remote-to-local-1793985542717",
+      "observedBrowserClipboard": "autobyteus-remote-to-local-1793985542717",
+      "nodeDesktopSockets": [
+        {
+          "url": "ws://127.0.0.1:57817/ws/node-desktop?mode=view",
+          "framesSent": 61,
+          "framesReceived": 42
+        },
+        {
+          "url": "ws://127.0.0.1:57817/ws/node-desktop?mode=view",
+          "framesSent": 148,
+          "framesReceived": 81
+        },
+        {
+          "url": "ws://127.0.0.1:57817/ws/node-desktop?mode=control",
+          "framesSent": 143,
+          "framesReceived": 80
+        }
+      ]
+    },
+    "VNC-LIVE-004-denied": {
+      "result": "Pass",
+      "permissionStates": {
+        "read": "denied",
+        "write": "denied"
+      },
+      "readAttempt": "NotAllowedError: Failed to execute 'readText' on 'Clipboard': Read permission denied."
+    },
+    "VNC-LIVE-004-unsupported": {
+      "result": "Pass",
+      "clipboardType": "undefined"
+    }
+  },
+  "evidence": "/private/tmp/abx-405-real/vnc-live-ir002/vnc-live-results.json"
+}

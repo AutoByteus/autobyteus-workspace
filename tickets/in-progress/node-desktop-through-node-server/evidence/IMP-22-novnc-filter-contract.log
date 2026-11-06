@@ -1,0 +1,30 @@
+# Check: IMP-22
+# Command: pnpm -C autobyteus-web exec vitest run tests/integration/novnc-node-desktop-filter-contract.integration.test.ts
+# Setup: worktree
+# Commit: ce13fa9727
+# Environment: macOS arm64, Node v22.23.1, Python 3.9.6, /bin/bash 3.2
+# Date: 2026-11-06
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/node-desktop-through-node-server/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/node-desktop-through-node-server/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/node-desktop-through-node-server/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/node-desktop-through-node-server/autobyteus-web/stores/serverStore.ts" is used
+
+ RUN  v3.2.7 /Users/normy/autobyteus_org/autobyteus-worktrees/node-desktop-through-node-server/autobyteus-web
+
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/node-desktop-through-node-server/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/node-desktop-through-node-server/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/node-desktop-through-node-server/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/node-desktop-through-node-server/autobyteus-web/stores/serverStore.ts" is used
+stderr | tests/integration/novnc-node-desktop-filter-contract.integration.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | tests/integration/novnc-node-desktop-filter-contract.integration.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ tests/integration/novnc-node-desktop-filter-contract.integration.test.ts (18 tests) 10ms
+
+ Test Files  1 passed (1)
+      Tests  18 passed (18)
+   Start at  18:23:33
+   Duration  5.42s (transform 2.95s, setup 4.86s, collect 39ms, tests 10ms, environment 160ms, prepare 158ms)
+
