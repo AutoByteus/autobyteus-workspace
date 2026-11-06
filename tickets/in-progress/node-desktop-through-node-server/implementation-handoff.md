@@ -16,7 +16,7 @@
 
 - Implementation cycle: `Initial` (IR-001) + `Design Impact` round (IR-002)
 - Implementation revision record: `.../node-desktop-through-node-server/implementation-revision-record.md`; current `IR-002`
-- Related revision IDs: SR-001…SR-004; ARCH-REV-002, ARCH-REV-003; CRR / API-REV / DR `N/A`
+- Related revision IDs: SR-001…SR-004; ARCH-REV-002, ARCH-REV-003; CRR-001 (`Pass`, no findings, `code-review-report.md`, on IR-002); API-REV / DR `N/A`
 - Triggering finding IDs: AR-006 (settled in IR-001), IMP-DI-001 (raised in IR-001, decided SR-004, implemented in IR-002), AR-007 (tests, IR-002)
 - Commits on `codex/node-desktop-through-node-server` (base `origin/personal` @ `9e0681bf39`): `6407bfc15f` (implementation), `4b8e3b8900` (IR-001 documents and evidence), `ce13fa9727` (IR-002 filter fix + AR-007 tests + SR-004/ARCH-REV-003 ticket documents), then this handoff and the IR-002 evidence.
 
