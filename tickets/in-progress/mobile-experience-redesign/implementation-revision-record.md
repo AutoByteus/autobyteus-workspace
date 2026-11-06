@@ -8,6 +8,7 @@ The current code and [implementation-handoff.md](implementation-handoff.md) rema
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | `architecture_reviewer`, [design-review-report.md](design-review-report.md), round 2 (Pass) | N/A | `Initial Baseline` | `SR-003`, `SR-004`, `ARCH-REV-002` | Implemented; checks IMP-01…05 pass; routed to Code Review |
 | IR-002 | `code_reviewer`, [code-review-report.md](code-review-report.md), `CRR-001` (Fail — Local Fix) | CR-001, CR-002, CR-003 | `Local Fix` | `SR-004`, `ARCH-REV-002`, `CRR-001` | Fixed in `f2816cc7c1`; IMP-02, IMP-03, IMP-06 pass; back to Code Review |
+| IR-004 | `code_reviewer`, [code-review-report.md](code-review-report.md), `CRR-004` (Fail — Local Fix) | CR-004, CR-005 | `Local Fix` | `SR-006`, `ARCH-REV-004`, `CRR-004` | Fixed in `400457d5f7`; IMP-02, IMP-03, IMP-09 pass; to Code Review |
 | IR-003 | `architecture_reviewer`, [design-review-report.md](design-review-report.md), `ARCH-REV-004` (Pass of SR-005/SR-006); `CRR-003` local fixes; `API-REV-001` | F-01, F-02, F-03, F-04, F-05, F-06, F-09 | `Local Fix` (F-02…F-05) and the revised design (F-01, F-06, F-09) | `SR-005`, `SR-006`, `ARCH-REV-004`, `CRR-003`, `API-REV-001` | Implemented in `02905f49b5`…`1a48f4affe`; IMP-02, 03, 07, 08 pass; to Code Review |
 
 ## Revision Entries
@@ -92,3 +93,23 @@ The current code and [implementation-handoff.md](implementation-handoff.md) rema
 - Local validation and result: IMP-07 (the full web suite, 701 files, 5198 tests) pass; IMP-02 typecheck PASS; IMP-03 guards pass; IMP-08 (Android unit tests, build, and the instrumented tests on API 35 and API 34: padding follows the bars and the keyboard, `env(safe-area-inset-*)` reads 0, nothing moves on API 34) pass.
 - Next recipient or routing: Code Reviewer (Large/High), then API/E2E.
 - Remaining limitations or risks: no device check; AC-002a's stopped-root case is desktop parity (ARCH-REV-004 residual 1); the shared composer's buttons stay below 44 px.
+
+### IR-004 — CRR-004 dead-code removals
+
+- Triggering role, report path, and round: `code_reviewer`, `code-review-report.md` and `code-review-revision-record.md`, `CRR-004` (Full Re-Audit of `ccf43b875c..1a48f4affe`).
+- Triggering finding IDs: CR-004, CR-005.
+- Classification: `Local Fix`.
+- Prior authoritative result: IR-003 (`1a48f4affe`), CRR-004 Fail.
+- Current authoritative result: `400457d5f7`; Large/High, to Code Review (targeted delta).
+- Related solution revision IDs: `SR-006`.
+- Related architecture-review revision IDs: `ARCH-REV-004`.
+- Related code-review revision IDs: `CRR-004`.
+- Related API/E2E revision IDs: `API-REV-001`.
+- Related delivery revision IDs: N/A.
+- Why this revision is recorded: the code review's two dead-code findings.
+- Approved behavior or requirement IDs affected: none (no reachable behavior changes; DEC-014's ids are still UUIDs from `randomUUID` or `getRandomValues`).
+- Implementation delta: CR-004, `utils/randomId.ts` drops the `Math.random` branch and builds the UUID v4 from `crypto.getRandomValues` whenever `randomUUID` is missing; CR-005, `useTaskWorkerTasks` returns `{ taskOf, locate }`, keeps `canLocate` inside `locate`, and its spec drops the `canLocate` assertion (it still checks that `locate` does nothing without Projects).
+- Changed files or areas: `autobyteus-web/utils/randomId.ts`, `autobyteus-web/composables/projects/useTaskWorkerTasks.ts`, `autobyteus-web/composables/projects/__tests__/useTaskWorkerTasks.spec.ts`.
+- Local validation and result: IMP-09 (the full web suite, 701 files, 5198 tests) passes; IMP-02 typecheck PASS; IMP-03 guards pass.
+- Next recipient or routing: Code Reviewer (targeted delta), then API/E2E round 2.
+- Remaining limitations or risks: the CRR-004 residuals for API/E2E (typing with the keyboard open on API 34; AC-002a with a running root).
