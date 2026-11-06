@@ -119,3 +119,4 @@
 - **Classification:** unchanged, `Large`, `High`.
 - **Handoff:** `Architecture Design Complete` (revised) → `/software_engineering_team/architecture_reviewer` for the scoped re-review (DS-003, DS-004, the run-screen spine, AR-001…AR-008).
 - **Remaining gaps:** none. The Product spec's cosmetic slips are the Product Team's; they were sent to the Product UI/UX Designer.
+- **Evidence-only note (2026-11-06, after the round-2 handoff):** the Product UI/UX Designer fixed the two cosmetic slips in the spec at design revision `e6ca7b6098b8bee1d194ad9cc0292c8e88ef59a6`, which changes only spec text over `976457a4`. The requirements and design now pin that revision. No intended behavior, design or approval change.

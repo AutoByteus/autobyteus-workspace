@@ -8,7 +8,7 @@
   - The Solution Designer integrated the approved design within that direction (requirements-doc Document Status).
 - Behavior-defining supplement: the Product UI/UX spec and VIS-001…029.
   - Spec: `/Users/normy/autobyteus_org/autobyteus-web-design-worktrees/mobile-experience-redesign/tickets/in-progress/mobile-experience-redesign/ui-ux-spec.md`.
-  - Design branch `design/mobile-experience-redesign` @ `976457a418d6355296c8a366bf403c865ee0646c`.
+  - Design branch `design/mobile-experience-redesign` @ `e6ca7b6098b8bee1d194ad9cc0292c8e88ef59a6` (spec text fixes of the review's two cosmetic slips over `976457a4`, no visual or behavioral change).
   - It is normative for layout, copy, states and behavior. Its "Implementation Fidelity Boundary" applies: the reference's stores, fixtures and component split are not a prescription.
 - User approval of the design: `Not required`. The Task asks the user to approve the UI, which he did; the technical design needs no separate approval.
 - Design status: `Ready` (revised for ARCH-REV-001 round 1, AR-001…AR-008; see Revision For ARCH-REV-001 below).

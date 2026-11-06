@@ -15,7 +15,7 @@
   - The **Solution Designer**, within that direction, integrated the approved design into these requirements and recorded DEC-003 as option A, as built and approved. Option B waits as Task autobyteus-391 for his word. The user is informed in the Solution Designer's result of 2026-11-06.
 - Exact approved requirements baseline: this document at SR-003.
 - Behavior-defining supplement, normative: the Product Team's UI/UX spec `/Users/normy/autobyteus_org/autobyteus-web-design-worktrees/mobile-experience-redesign/tickets/in-progress/mobile-experience-redesign/ui-ux-spec.md` with `visual-references/VIS-001…VIS-029`.
-  - Design repository `/Users/normy/autobyteus_org/autobyteus-web-design`, branch `design/mobile-experience-redesign`, revision `976457a418d6355296c8a366bf403c865ee0646c`, accepted base `a0e18abb`.
+  - Design repository `/Users/normy/autobyteus_org/autobyteus-web-design`, branch `design/mobile-experience-redesign`, revision `e6ca7b6098b8bee1d194ad9cc0292c8e88ef59a6` (spec text fixes of the review's two cosmetic slips over `976457a4`, no visual or behavioral change), accepted base `a0e18abb`.
   - Every visible detail in the screenshots is a requirement unless the spec marks it illustrative: run, agent, team and node names, ages, message and file texts, and "Embedded Node".
 - Investigation: [investigation-notes.md](investigation-notes.md). Its Source Log holds evidence IDs E-01…E-09.
 
@@ -167,7 +167,7 @@ The journeys are the spec's UXJ-001…UXJ-008; this table maps them to the requi
 - Product ticket record: `…/tickets/in-progress/mobile-experience-redesign/product-ticket.md`, with the user's screenshots in `evidence/user-screenshots/` (Product-owned).
 - Design repository and revision:
   - Repository: `/Users/normy/autobyteus_org/autobyteus-web-design`.
-  - Branch: `design/mobile-experience-redesign` @ `976457a418d6355296c8a366bf403c865ee0646c`.
+  - Branch: `design/mobile-experience-redesign` @ `e6ca7b6098b8bee1d194ad9cc0292c8e88ef59a6`.
   - Integration into `personal`: pending, by the user's standing rule. It is merged after implementation is confirmed.
 - UI/UX user-confirmation reference: "okayyy. everything is good now. i approve" (2026-11-06).
 - Approved visual-reference baseline: VIS-001…VIS-029.

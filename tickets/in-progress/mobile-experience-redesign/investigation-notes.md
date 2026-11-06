@@ -143,7 +143,7 @@
 ## Product Design Findings
 
 - Product Design package: `/Users/normy/autobyteus_org/autobyteus-web-design-worktrees/mobile-experience-redesign/tickets/in-progress/mobile-experience-redesign/`: `ui-ux-spec.md`, `product-ticket.md`, `visual-references/VIS-001…029`, `evidence/user-screenshots/` (22, with README).
-- Design repository: `/Users/normy/autobyteus_org/autobyteus-web-design`. Branch: `design/mobile-experience-redesign` @ `976457a418d6355296c8a366bf403c865ee0646c` (pushed). Accepted base: `a0e18abb`. Integration into `personal` is pending until the implementation is confirmed (the user's standing rule).
+- Design repository: `/Users/normy/autobyteus_org/autobyteus-web-design`. Branch: `design/mobile-experience-redesign` @ `e6ca7b6098b8bee1d194ad9cc0292c8e88ef59a6 (after `976457a4`, text fixes only)` (pushed). Accepted base: `a0e18abb`. Integration into `personal` is pending until the implementation is confirmed (the user's standing rule).
 - Runnable reference: in the design worktree, `corepack pnpm exec nuxt dev --port 3277`, entry `/mobile`.
 - Explicit user confirmation (2026-11-06): "okayyy. everything is good now. i approve".
 - Journeys validated: UXJ-001…UXJ-008.
@@ -165,7 +165,7 @@
 | Artifact | Owner | Purpose | Scope | Related IDs | Status | Approval |
 | --- | --- | --- | --- | --- | --- | --- |
 | `product-design-request.md` | Solution Designer | The brief sent to the Product Team | Product design | All | Sent 2026-11-06 | Not behavior-defining by itself |
-| `/Users/normy/autobyteus_org/autobyteus-web-design-worktrees/mobile-experience-redesign/tickets/in-progress/mobile-experience-redesign/ui-ux-spec.md` with VIS-001…029 (rev `976457a4`) | Product Team | Normative UI | Product design | REQ-001…REQ-009 | Approved | The user, 2026-11-06 |
+| `/Users/normy/autobyteus_org/autobyteus-web-design-worktrees/mobile-experience-redesign/tickets/in-progress/mobile-experience-redesign/ui-ux-spec.md` with VIS-001…029 (rev `e6ca7b60`) | Product Team | Normative UI | Product design | REQ-001…REQ-009 | Approved | The user, 2026-11-06 |
 | `follow-ups.md` | Solution Designer | FU-001 = autobyteus-391 | Follow-up | DEC-003 B | Sent | — |
 
 ## Assumptions, Unknowns, And Risks
