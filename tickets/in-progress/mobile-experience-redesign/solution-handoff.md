@@ -5,7 +5,7 @@
   - Rationale: shared desktop owners are extended or extracted, the phone's ownership of "what is open" moves to the shared target, and the phone's screen state moves into the route. See design-spec "Task Size And Architectural Risk".
 - **Route:** `/software_engineering_team/architecture_reviewer`, by the handoff rule for Large or High.
 - **Package:** `mobile-experience-redesign`. Project Task `autobyteus-277` (Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`), requested by `/project_task_manager` for the user.
-- **Solution revision:** `SR-003`.
+- **Solution revision:** `SR-004`: the design revised for `ARCH-REV-001` round 1. Requirements unchanged at SR-003.
 - **Workspace:**
   - Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-experience-redesign`, branch `codex/mobile-experience-redesign`.
   - Base `origin/personal` @ `e00581d485a128bddc428d4441400ed21dc14db7`; finalization target `origin/personal`.
@@ -91,6 +91,10 @@ The phone's model is removed: `mobileWorkStore`, `MobileWorkContext`, the catalo
 
 The Product spec is at the path above; the reviewer reads it in place.
 
+## Round 2 (SR-004)
+
+`design-spec.md` now opens with "Revision For ARCH-REV-001", which maps AR-001…AR-008 and the residual to the changed sections. The new evidence is E-28…E-32 in `investigation-notes.md`. Your report and revision record (`design-review-report.md`, `architecture-review-revision-record.md`) are committed unchanged with this package.
+
 ## Next Expected Action
 
-Independent architecture review of `design-spec.md` against the approved requirements and the Product spec.
+Scoped re-review: DS-003, DS-004, the run-screen and pending-open spines, and AR-001…AR-008.

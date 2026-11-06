@@ -204,6 +204,12 @@ The architecture investigation of 2026-11-06 ran after the requirements were app
 | E-26 | `/tmp/sd277-probe/list.graphql` fields; server `grep` for approval events | History items carry `status`, `statusSource` and `isActive` only. A pending tool approval is a stream event of a live run | Confirms U-003: no source for a "needs you" marker; the user dropped the marker (DEC-005) |
 | E-27 | `stores/mobileNodeSessionStore.ts`; `MobileRemoteAccessShell.vue:150-163` | A 401 on the catalog read rejects the local session (`rejectLocalSessionForAuthFailure`) | Keep that rule on the new history read |
 
+| E-28 | ARCH-REV-001 MP-001: `agentSelectionStore.ts:48-53`, `agentRunOpenCoordinator.ts:114-118` | The selection keeps the previous run until a new open commits; an open of an unloaded run or a Team reads over the network | The run screen's opening state must come from a pending-open owner, not from the target (SR-004) |
+| E-29 | ARCH-REV-001 MP-002 | No case found where the selection survives but the target is gone | The re-open is removed (SR-004) |
+| E-30 | ARCH-REV-001 MP-003: `activeContextStore.ts:73-76`, `RunListPanel.vue:149-155`, `useWorkspaceHistorySubjectActions.ts:68-70` | The Org target and the Org's selected state come only from the route query; Back to an entry without the Org keys loses them | The Org keys go on the list entry too (SR-004) |
+| E-31 | `app.vue:12`; `localization/messages/en/workspace.ts:40-42` | The toast container renders on every page, `/mobile` included; the Team stream-recovery copy exists | The phone reuses the desktop's toast; no new copy (SR-004) |
+| E-32 | `useWorkspaceHistorySelectionActions.ts:131-150`; callers via `grep` | `onCreateRun` is used only by `WorkspaceAgentRunsTreePanel.vue:256` and fixtures; it needs `startPresetChat` | It moves to its only caller, so the phone passes no unused parameter (SR-004) |
+
 - Temporary diagnostics: none in the product. The probe script `/tmp/sd277-probe/probe.py` is outside the repository; it only reads and is not part of the package.
 
 ## Requirement Implications

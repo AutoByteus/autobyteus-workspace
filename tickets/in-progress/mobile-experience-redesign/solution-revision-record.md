@@ -7,6 +7,7 @@
 | SR-001 | Requirements | Initial baseline for the Product brief | N/A | N/A | Draft | REQ-001…REQ-009, DEC-001…DEC-006 | Product Design Requested |
 | SR-002 | Requirements | Product Design Completed, user-approved (design rev `16678d53`) | Product findings 1–7 | Draft | Approved | All REQ/AC; REQ-010 added; DEC-003 A, DEC-004, DEC-007, DEC-008 | Requirements approved |
 | SR-003 | Mixed | The user dropped the optional marker (design rev `976457a4`); architecture design | — | Approved (SR-002) | Approved; design Ready | REQ-010, AC-010 removed; AC-006 wording; DS-001…DS-009 | Architecture Design Complete (Large, High) |
+| SR-004 | Design | ARCH-REV-001 round 1 (Fail, Design Impact) | AR-001…AR-008, MP-001…MP-003 | Design Ready (SR-003) | Design Ready (revised) | REQ-003, REQ-005, REQ-006 paths (DS-003, DS-004); no requirement change | Architecture Design Complete (Large, High), re-review |
 
 ## Revision Entries
 
@@ -91,3 +92,30 @@
 - **Handoff:** `Architecture Design Complete` → `/software_engineering_team/architecture_reviewer`. Result file: `solution-handoff.md`.
 - **Remaining gaps:** none blocking. R-001 and R-002 are verified on device.
 - **Next action:** independent architecture review.
+
+### SR-004 — Design revised for ARCH-REV-001
+
+- **Phase and classification:** Design, `Design Impact`.
+- **Trigger:** architecture review `ARCH-REV-001`, round 1: `Fail`, findings AR-001…AR-008. Report: `design-review-report.md`.
+- **Triggering finding IDs:** AR-001 (High), AR-002, AR-003 (Medium), AR-004…AR-008 (Low); premises MP-001, MP-002, MP-003.
+- **Prior status:** requirements `Approved` (SR-003); design `Ready` (SR-003).
+- **Current status:** requirements unchanged and approved (SR-003); design `Ready` (SR-004).
+- **IDs affected:** design paths for REQ-003, REQ-005 and REQ-006 (DS-003, DS-004, the run-screen and pending-open bounded spines). No requirement, AC or decision changed.
+- **Design changes:**
+  - **AR-001:** `mobileRunOpeningStore` owns the pending open. The order is: begin → push `screen=run` → shared action → commit or fail. The run screen shows "Opening…" while an open is pending. A failed open returns to the list, as the desktop leaves its view unchanged. The Team stream-recovery case shows the desktop's existing toast. `reopenSelected` is removed.
+  - **AR-002:** `useMobileNavigation` is the only `/mobile` writer, Org keys included, using the pure `agentOrgRouteQuery`. The mobile subject action does no navigation. No shared → phone import; no mobile `stop` branch.
+  - **AR-003:** `openRun` writes the subject's Org keys onto the list entry too. The disclosure takes `useRouteSelectedAgentOrg` (extracted from two desktop copies) and `hasSelectedChild` from the collaboration store.
+  - **AR-004:** `defaultExpansion` folds Org task teams on the phone.
+  - **AR-005:** the display-name rule is stated per kind.
+  - **AR-006:** `onOpenAgentRun` has one owner.
+  - **AR-007:** the callers, contracts and types are listed at their call sites. `onCreateRun` moves to its only caller.
+  - **AR-008:** the load composable returns its read result, and the 401 rule observes it.
+  - **Residual:** `useAgentRunCollaborationSync` moves to the paired shell.
+- **Sections changed:**
+  - `design-spec.md`: Solution basis, new section "Revision For ARCH-REV-001", Task Size text, Change Scope, DS-003/DS-004 rows and spines, narratives, Ownership Map, Bounded Local Spines, Off-Spine, Ownership Boundaries, Boundary Map, Dependency Rules, Interface Mapping and Check, File Mapping, Examples, Sequence, Tradeoffs, Guidance.
+  - `investigation-notes.md`: E-28…E-32.
+- **Intended behavior changed:** `No`. A failed open returning to the list uses an approved state (the list) and no new copy.
+- **Approval impact:** none. The requirements approval at SR-003 stands.
+- **Classification:** unchanged, `Large`, `High`.
+- **Handoff:** `Architecture Design Complete` (revised) → `/software_engineering_team/architecture_reviewer` for the scoped re-review (DS-003, DS-004, the run-screen spine, AR-001…AR-008).
+- **Remaining gaps:** none. The Product spec's cosmetic slips are the Product Team's; they were sent to the Product UI/UX Designer.

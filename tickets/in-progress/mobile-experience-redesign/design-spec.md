@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-003`.
+- Current solution revision ID: `SR-004` (design revision for ARCH-REV-001; requirements unchanged since SR-003).
 - Approved requirements baseline: `requirements-doc.md` at SR-003. SR-003 is SR-002 with AC-006's wording refined and the optional "needs you" marker (REQ-010, DEC-005) removed at the user's request after his approval.
   - The user approved the mobile UI/UX on 2026-11-06: "okayyy. everything is good now. i approve".
   - The Solution Designer integrated the approved design within that direction (requirements-doc Document Status).
@@ -11,7 +11,7 @@
   - Design branch `design/mobile-experience-redesign` @ `976457a418d6355296c8a366bf403c865ee0646c`.
   - It is normative for layout, copy, states and behavior. Its "Implementation Fidelity Boundary" applies: the reference's stores, fixtures and component split are not a prescription.
 - User approval of the design: `Not required`. The Task asks the user to approve the UI, which he did; the technical design needs no separate approval.
-- Design status: `Ready`.
+- Design status: `Ready` (revised for ARCH-REV-001 round 1, AR-001…AR-008; see Revision For ARCH-REV-001 below).
 - Canonical investigation notes: [investigation-notes.md](investigation-notes.md). Architecture evidence is E-10…E-27.
 - Authorities read (2026-11-06):
   - `references/architecture-design.md` and `references/design-principles.md`;
@@ -23,6 +23,20 @@
   - the autobyteus-385 and autobyteus-278 design specs (read-only).
   - `references/design-examples.md` was not used.
 - Project design-principle conflicts or discrepancies: none.
+
+## Revision For ARCH-REV-001 (SR-004)
+
+| Finding | Change | Where |
+| --- | --- | --- |
+| AR-001 | **One owner of the pending open**, `mobileRunOpeningStore`, and a fixed order: on tap the phone pushes `screen=run` first, then runs the shared action.<br>The run screen shows "Opening…" while an open is pending, and never renders the previous target.<br>Each parameter the phone passes to the selection actions is named.<br>A superseded open is ignored. A failed open returns the run screen to the list, as the desktop leaves the view unchanged. The Team stream-recovery feedback shows the desktop's existing toast copy, so there is no new copy and no Requirement Gap.<br>`reopenSelected()` is removed (MP-002: no trigger) | DS-003, Ownership Map, Bounded Local Spines, Interface Mapping, Guidance |
+| AR-002 | **The phone's navigation owner is the only writer of `/mobile`'s query, including the Org keys.**<br>The subject action's mobile shell opens and selects the Org with no navigation.<br>The Org keys are built by one pure helper, `agentOrgRouteQuery`, which the desktop path also uses.<br>No shared → phone import. No mobile `stop` branch | DS-003, DS-004, Dependency Rules, Interface Mapping |
+| AR-003 | **The open subject's keys live on the list entry.** `openRun` replaces the current list entry with the subject's Org keys (or none, for agent and team), then pushes the run entry with them. After ←, the Org target, the row mark and New run's preselection all still resolve.<br>The disclosure gets `selectedAgentOrg` from one extracted `useRouteSelectedAgentOrg` (the desktop's two copies adopt it), and `hasSelectedChild` from the collaboration store as on the desktop | DS-004, Ownership Map, Interface Mapping |
+| AR-004 | The phone folds Org task teams, as it does a standalone run's task teams and a team's members (REQ-002). Same construction option | Interface Mapping |
+| AR-005 | The display-name rule of `useTargetConversation`, per kind. The desktop headers keep their own titles | Guidance |
+| AR-006 | One owner for "open the run's own agent": `onOpenAgentRun` in the selection actions, used by `RunListRow`, `RunDefinitionGroups` and the phone | Interface Mapping, Derived consumers |
+| AR-007 | The callers, contracts and types are listed at their call sites | Change Scope |
+| AR-008 | The 401 rule observes the load composable's returned read result. There is no second read | DS-001, Interface Mapping |
+| Residual | `useAgentRunCollaborationSync` is mounted in the paired shell, not the run screen | Ownership Map |
 
 ## Current-State Read
 
@@ -55,7 +69,7 @@ The `/mobile` page renders `MobileRemoteAccessShell`. It switches between pairin
 
 - **Task size: `Large`.**
   - The phone shell is rebuilt: about 15 phone components and composables are added or rewritten, and about 20 phone files are removed.
-  - Seven shared desktop owners get a narrow extension or extraction: history load, conversation binding, collaboration row rules, selection and subject actions, the selection store action, and disclosure.
+  - Shared desktop owners get a narrow extension or extraction: history load, conversation binding, collaboration row rules, the selection actions (with `onOpenAgentRun`, and `onCreateRun` moved), the subject actions (with `agentOrgRouteQuery`), the route's open Org, `selectTreeRun`'s mode, and disclosure. Two section contracts gain one action.
   - The file preview composable is rebound.
   - It spans the phone shell, shared stores and composables, and two desktop surfaces.
 - **Architectural risk: `High`.**
@@ -111,17 +125,36 @@ The phone's screen state lives in `/mobile`'s route query, so the system Back ke
     - `useRunHistorySectionLoad` (new; the desktop host adopts it);
     - `useTargetConversation` (new; both desktop surfaces adopt it);
     - `agentRunCollaborationStore` (`ensureStoredView`, `selectTaskRow`; `AgentRunTaskRows` adopts them);
-    - `useWorkspaceHistorySelectionActions` and `useWorkspaceHistorySubjectActions` (`shell` option);
+    - `useWorkspaceHistorySelectionActions` (`shell` option; new `onOpenAgentRun`; `onCreateRun` moved to its only caller);
+    - `useWorkspaceHistorySubjectActions` (`shell` option; the pure `agentOrgRouteQuery` helper);
+    - `useRouteSelectedAgentOrg` (new, from the two desktop copies);
     - `runHistorySelectionActions.selectTreeRunFromHistory` (local-run branch honors `selectionMode`);
-    - `useRunListDisclosure` (Org default option);
+    - `useRunListDisclosure` (default-expansion option for Org runs and Org task teams);
     - `useEventMonitorFilePreview` (phone branch).
   - Docs: `autobyteus-web/docs/remote_access.md` (phone section).
 - **Derived consumers.** These shared structures change; every consumer is listed with its decision (Principle 11):
   - `mobileWorkStore` and `MobileWorkContext` are removed. Every consumer in E-23 is removed or rebound; `useEventMonitorFilePreview` is rebound (E-21).
-  - `useWorkspaceHistorySelectionActions` gains an option whose default is unchanged. Its desktop callers are `RunListPanel.vue:200` and the Workspaces/Projects tree hosts that call it (implementation lists them with `grep`); they keep the default.
-  - `useWorkspaceHistorySubjectActions` gains an option whose default is unchanged. Desktop callers keep the default.
-  - `useRunListDisclosure` gains an option whose default is unchanged.
-  - `selectTreeRunFromHistory`'s local branch: in desktop mode the behavior is unchanged.
+  - **`useWorkspaceHistorySelectionActions`** (`shell` option, default `desktop`; adds `onOpenAgentRun`; drops `onCreateRun` and `startPresetChat`). Callers:
+    - `components/runList/RunListPanel.vue:202`: keeps the default; stops passing `startPresetChat`; exposes `onOpenAgentRun` in its section actions;
+    - `components/workspace/history/WorkspaceAgentRunsTreePanel.vue:257`: keeps the default; destructures `onOpenAgentRun`; `onCreateRun` becomes its own 8-line function there (it already holds `runStart` and `selectionStore`);
+    - `tests/e2e/fixtures/task-agent-sibling-sidebar.page.vue:89`: drop `startPresetChat`.
+  - **Contracts gaining `onOpenAgentRun`:**
+    - `components/runList/runListSectionContracts.ts` `RunListSectionActions`, used by `RunListRow.vue:221-224` (its `openAgentRun` becomes `actions.onOpenAgentRun(run)`);
+    - `components/workspace/history/workspaceHistorySectionContracts.ts` `WorkspaceHistorySectionActions`, used by `RunDefinitionGroups.vue:362-366` (its `selectAgentRun` becomes `actions.onOpenAgentRun(run)`).
+    - Fixture pages that build these contracts (`tests/e2e/fixtures/*.page.vue`; implementation lists them with the typecheck) add the member.
+  - **`useWorkspaceHistorySubjectActions`** (`shell` option, default `desktop`). Callers keep the default:
+    - `RunListPanel.vue:214`;
+    - `WorkspaceAgentRunsTreePanel.vue:162`;
+    - `composables/runSettings/useRunStopAction.ts:21`;
+    - `composables/projects/useTaskRootNavigation.ts:22`.
+    - Its `router.push` query (`:71-76`) moves into the exported pure `agentOrgRouteQuery(run, command, isActive)`, which the desktop path calls.
+  - **The selection store, in the selection actions** (`useWorkspaceHistorySelectionActions.ts:13-18`): `SelectionStoreLike` gains `selectRunWithoutShellNavigation`.
+  - **The `runHistoryStore` interface the selection actions read** (`useWorkspaceHistorySelectionActions.ts:9-11`): `RunHistorySelectionStoreLike.selectTreeRun`'s options gain `selectionMode`.
+  - **`runHistoryStore.selectTreeRun`'s own options type** (`runHistoryStore.ts:524-528`, only `selectionIntent` today) gains `selectionMode`. It is passed through to `selectTreeRunFromHistory` (`runHistorySelectionActions.ts:114-139`), whose local branch (`:132`) uses `selectRunWithoutShellNavigation` when the mode is `mobile`. Desktop callers pass no mode: unchanged.
+  - **`useRunListDisclosure`** (`defaultExpansion` option, default `{ orgRuns: false, orgTaskTeams: true }`, today's behavior). Callers:
+    - `RunListPanel.vue:156` keeps the default;
+    - the phone passes `{ orgRuns: true, orgTaskTeams: false }`.
+  - **`useRouteSelectedAgentOrg`** (new) replaces `RunListPanel.vue:149-155` and `WorkspaceAgentRunsTreePanel.vue:142-151`, with the same expression.
 - **Deliberately left alone:**
   - the desktop's visible behavior;
   - the server, the Android and iOS shells;
@@ -208,7 +241,7 @@ The domain words are in `GLOSSARY.md`: run, delegated run, task agent, task team
 | --- | --- | --- | --- | --- | --- | --- |
 | DS-001 | Primary End-to-End | BEH-001 | The phone shell mounts (paired), or the poll ticks | The run list shows the runs | `useRunHistorySectionLoad` → `runHistoryStore` → `runListStore` | Same runs as the desktop |
 | DS-002 | Primary End-to-End | BEH-001, BEH-005 | Run list entries or row sources change | Flat tree rows with depth, state and node | `useMobileRunTree` with `buildMobileRunTreeRows` | Delegated work, members, remote |
-| DS-003 | Primary End-to-End | BEH-002, BEH-005 | Tap a tree row | The run screen shows that agent and its composer sends to it | `useMobileRunOpening` → the shared open action → selection or Org query → `activeWorkspaceTarget` | Talk to any agent |
+| DS-003 | Primary End-to-End | BEH-002, BEH-005 | Tap a tree row | The run screen shows that agent and its composer sends to it | `useMobileRunOpening` (sequence) with `mobileRunOpeningStore` (pending state) → `useMobileNavigation.openRun` → the shared open action → `activeWorkspaceTarget` | Talk to any agent |
 | DS-004 | Bounded Local | BEH-003 | ←, system Back, ⋮ item, "+" | The screen for the route query | `useMobileNavigation` | One-hand navigation; Back walks screens |
 | DS-005 | Primary End-to-End | BEH-003 | ⋮ → a view | The view for the open target | the view's component reading the open target | Results of that agent |
 | DS-006 | Primary End-to-End | BEH-004 | "+" → Create run | A new agent run, its run screen open, first message sent | `useMobileRunSetupController` → `useMobileRunLaunchCoordinator` → `agentContextsStore` | Start work |
@@ -224,7 +257,14 @@ The domain words are in `GLOSSARY.md`: run, delegated run, task agent, task team
   - Team: `team.executionRows`;
   - Org: `projectAgentOrgHistoryRows(run, orgContext, …)`.
   - Then `→ buildMobileRunTreeRows(entries, sources, disclosure, remoteRuns) → MobileRunRow[]`.
-- **DS-003.** `MobileRunRow tap → useMobileRunOpening.open(row) → [kind's shared action, mobile shell] → selection store (agent / team) or /mobile Org query → useMobileNavigation.openRun() (push screen=run) → MobileRunScreen → activeWorkspaceTarget → useTargetConversation(target) → AgentEventMonitor + composer (useComposerTarget) → send through target.interaction`.
+- **DS-003.** `MobileRunRow tap → useMobileRunOpening.open(row.open)`:
+  1. `mobileRunOpeningStore.begin(subjectKey)`; the run screen now shows "Opening…".
+  2. `useMobileNavigation.openRun({ orgQuery })`: replace the current list entry with the subject's Org keys (or none), then push `screen=run` with the same keys.
+  3. The kind's shared action, mobile shell: the selection actions for agent, task row, team and member; the subject action for Org.
+  4. Commit: the selection actions' `emitRunSelected` notification, or the subject action's `committed` outcome → `mobileRunOpeningStore.commit(subjectKey)`.
+  5. Then `MobileRunScreen → activeWorkspaceTarget → useTargetConversation(target) → AgentEventMonitor + composer (useComposerTarget) → send through target.interaction`.
+  - **Not committed** (failed, `rejected`, Team stream recovery): `mobileRunOpeningStore.fail(subjectKey)`. While the run screen of that open is shown, it goes back to the list; for Team stream recovery the desktop's toast shows first.
+  - **Superseded** (a newer `begin`): the old key's outcome is ignored.
 - **DS-005.** `⋮ item → useMobileNavigation.openView(view) → view screen → reads activeWorkspaceTarget (runId, browse, workspaceRootPath, collaborationMessages) → existing data owners (artifacts, file explorer, participant messages, agentActivityStore)`.
 - **DS-006.** `"+" → openNewRun() → MobileNewRun → useMobileRunSetupController (agent, folder, runtime, model, auto approve) → Create run → useMobileRunLaunchCoordinator.createAgentRun → agentContextsStore.createRunFromTemplate({ selectionMode: 'mobile' }) → useMobileNavigation.openRun({ replace: true }) → first message in the composer → agentRunStore → promoteTemporaryId → selection follows (DS-009)`.
 - **DS-007.** `list bar node button → MobileConnectionSheet → mobileNodeSessionStore (status, URL, fetchStatus, unpair) + remoteCollaborationStore.load() → remoteCollaborationOffersStore.ask(nodeId) per peer → rows`.
@@ -236,8 +276,8 @@ The domain words are in `GLOSSARY.md`: run, delegated run, task agent, task team
 | --- | --- | --- | --- | --- |
 | DS-001 | When the paired shell mounts, the shared load composable sets the complete window, loads history, the folder catalog and definitions, and polls every 5 s while the list is on screen and the page is visible. The run list reads `runListStore`. A read that fails with 401 rejects the session, as today (E-27) | history, run list | `useRunHistorySectionLoad` | visibility (`document.visibilityState`), auth failure |
 | DS-002 | Each shown entry contributes its delegated rows from the owner of its kind. The phone projection flattens them into rows with depth, state, title, node chip and folding, using one shared disclosure instance (Org runs unfolded). The open row is the row whose agent is the open target's | tree row | `useMobileRunTree` | stored-view loading, remote reachability |
-| DS-003 | A tap is dispatched by row kind to the desktop's own open action in mobile mode. Agent and Team open through the selection store; an Org through its context and `/mobile`'s Org query. Then the run screen is pushed. The run screen renders whatever the open target is, so a promoted id, a delegated child or a remote child all just work. While the target is not there yet it shows "Opening…" and re-opens once | open target | `useMobileRunOpening`, `MobileRunScreen` | remote notice (278), collaboration stream sync |
-| DS-004 | The route query is the phone's screen state. Every forward move is a router push; ← is `router.back()`. A query naming a screen whose subject is gone (a reload) is replaced by the list | screen | `useMobileNavigation` | — |
+| DS-003 | A tap marks an open as pending and pushes the run screen at once, which shows "Opening…". Then the shared open action runs in mobile mode: agent and team through the selection store; an Org through its context, with its keys already on both history entries. When the open commits, the pending state clears, and the run screen renders the open target, which is now the tapped subject. A promoted id, a delegated child or a remote child all just work. A failed open returns to the list | open target | `useMobileRunOpening`, `mobileRunOpeningStore`, `MobileRunScreen` | remote notice (278), recovery toast |
+| DS-004 | The route query is the phone's screen state, and its one writer is `useMobileNavigation`, for the screen keys and the Org keys. Every forward move is a router push; ← is `router.back()`. Opening a run first rewrites the current list entry with the subject's Org keys, so Back returns to a list where the same subject is still open. A query naming a screen whose subject is gone (a reload) is replaced by the list | screen | `useMobileNavigation` | — |
 | DS-005 | View screens read the open target; Messages appears only for member kinds | view | the view component | remote "on that node" wording |
 | DS-006 | New run preselects the agent of the open target, else the Project Task Manager, else the first agent; folder, runtime and model use the existing workspaces and config owners; Create run launches through the existing coordinator, agent only | agent run | `useMobileRunSetupController` | folder by path (`useMobileLaunchWorkspaces`) |
 | DS-007 | The sheet reads the session status and the peers; offers are asked per peer when the sheet opens | node, peer | `MobileConnectionSheet` | unpair confirm |
@@ -251,6 +291,7 @@ The domain words are in `GLOSSARY.md`: run, delegated run, task agent, task team
 - `runListStore`
 - `useMobileRunTree`
 - `useMobileRunOpening`
+- `mobileRunOpeningStore`
 - the shared open actions
 - `activeContextStore.activeWorkspaceTarget`
 - `useMobileNavigation`
@@ -266,6 +307,9 @@ The domain words are in `GLOSSARY.md`: run, delegated run, task agent, task team
   - the history load sequence: window, `fetchTree`, `loadWorkspaceCatalogForNavigation`, agent/team/Org definition fetches;
   - the 5 s poll's lifetime: start, stop, and pause while `polling` is false;
   - re-reading when the window changes.
+  - the result of each read: the initial load's result and `load()` return `{ ok: true } | { ok: false, cause }`.
+    - `cause` is the error `fetchTree` threw, or the store's recorded read error (`runHistoryStore.error`) when the read resolved with nothing listed. These are the same two checks `useMobileWorkCatalog.ts:313-327` makes today.
+    - The desktop host ignores the result, as it ignores the error today (`WorkspaceAgentRunsTreePanel.vue:392-398`).
   - It owns no view state. The desktop host passes the window from its view mode and `polling: true`.
 - **`runListStore`** (existing). Owns which runs, their order and the fold; unchanged.
 - **`useMobileRunTree`** (new, phone). Owns:
@@ -273,17 +317,28 @@ The domain words are in `GLOSSARY.md`: run, delegated run, task agent, task team
   - asking the collaboration store for stored views of listed Agent runs;
   - which row is open: the open target's agent run id.
   - The pure transformation lives in `buildMobileRunTreeRows`.
-- **`useMobileRunOpening`** (new, phone). Owns the dispatch from a row kind to the shared action and then `openRun()`. It owns no open rule of its own; the rules stay in the shared actions.
-- **`useMobileNavigation`** (new, phone). Owns the phone's screen state in the route query:
-  - keys `screen`, `file`/`workspace`, `reference`/`message`;
-  - push, back and replace;
-  - the list fallback for a screen without its subject.
-  - It never writes the Org keys; the subject actions write those.
+- **`mobileRunOpeningStore`** (new, phone, Pinia). Owns the pending open:
+  - `pending: { key, status: 'opening' } | null`, with `begin(key)`, `commit(key)`, `fail(key)`;
+  - a stale key's `commit` or `fail` is ignored.
+  - The tree row (`MobileRunList`) writes it through `useMobileRunOpening`; the run screen reads it.
+- **`useMobileRunOpening`** (new, phone, instantiated in `MobileRunList`). Owns the open sequence, in this order: `begin`, `openRun`, the shared action, then `commit` or `fail`. It owns no open rule; the rules stay in the shared actions.
+  - It instantiates `useWorkspaceHistorySelectionActions({ shell: 'mobile' })` with these parameters:
+    - `runHistoryStore`, `selectionStore`;
+    - `setTeamExpanded`, `toggleTeam` and `expandTeamMemberAncestors` from the phone's disclosure (`useMobileRunTree`);
+    - `emitRunSelected`: the commit notification for the pending key;
+    - `presentTeamStreamRecoveryFeedback`: the desktop's toast (`useToasts`, keys `…WorkspaceAgentRunsTreePanel.stream_recovery_wait|retry`), then `fail`.
+  - It also instantiates `useWorkspaceHistorySubjectActions({ shell: 'mobile' })`.
+- **`useMobileNavigation`** (new, phone). The only writer of `/mobile`'s query on the phone:
+  - screen keys `screen`, `file`/`workspace`, `reference`/`message`;
+  - the Org keys (`rootSubjectKind`, `definitionId`, `orgRunId`, `mode`, `memberAddress`, `agentRunId`), as built by `agentOrgRouteQuery`.
+  - It owns push, back and replace, and the list fallback for a screen without its subject.
+  - `openRun({ orgQuery })` replaces the current entry (the list) with the subject's Org keys, or with none, then pushes `screen=run` with the same keys.
+  - View, file and reference pushes keep the Org keys of the current entry.
 - **`MobileRunScreen`** (new, phone). Owns:
-  - the run screen's states (opening, open);
-  - its one re-open attempt;
+  - the run screen's states: `opening` while `mobileRunOpeningStore.pending` exists; `open` when no open is pending and `activeWorkspaceTarget` exists; otherwise (no target, no pending: a reload, or Forward to an entry whose subject is gone) it replaces to the list;
   - the ⋮ menu items (Messages only for member kinds);
-  - mounting `useAgentRunCollaborationSync`.
+  - leaving to the list when its pending open fails.
+- **`MobileRemoteAccessShell`** (rewrite, phone). Besides pairing and the screen switch, it mounts `useAgentRunCollaborationSync` while paired. The selection outlives every screen, so the live collaboration stream follows the selected host whatever screen is shown (review residual).
 - **`useTargetConversation`** (new, shared). Owns the binding of a target to `AgentEventMonitor`:
   - the display name;
   - the read-only rule;
@@ -339,19 +394,22 @@ DS-009 uses the existing stream owners: agent run stream, team stream, collabora
   - Forward moves push. ← and the system Back key are `router.back()`.
   - On entry, a screen whose subject is missing (no open target for `run` and the views, no paired session) is replaced by the list.
   - It matters because the system Back key must walk file → view → run → list (AC-005), and a reload must not show an empty screen.
-- **Run screen** (parent `MobileRunScreen`): `opening` (target absent, or its conversation not attached) → `open`.
-  - On entering `opening` with a selection but no target, it calls the shared re-open once for the selected run (`useMobileRunOpening.reopenSelected()`).
-  - With no selection and no Org query, it replaces to the list.
-  - "Opening…" is the only content while opening (Product finding 2).
+- **Pending open** (parent `mobileRunOpeningStore`): `idle → opening(key) → idle`.
+  - `commit(key)` or `fail(key)` returns it to idle; a newer `begin` replaces the key.
+  - The selection intent (`beginSelectionIntent`, taken inside the shared actions) makes the store's superseded open a no-op; the key check makes its late outcome a no-op on the phone.
+- **Run screen** (parent `MobileRunScreen`): `opening` (an open is pending) → `open` (no pending, a target).
+  - With neither an open pending nor a target, it replaces to the list.
+  - There is no re-open: MP-002 found no case where the selection survives without a target. Forward to an Org entry restores the Org target from its keys.
+  - "Opening…" is the only content while opening (Product finding 2). It never renders the previous target, because `opening` is decided by the pending state, not by the target.
 
 ## Off-Spine Concerns Around The Spine
 
 | Off-Spine Concern | Spines | Serves | Responsibility | Why It Exists | Risk If Misplaced |
 | --- | --- | --- | --- | --- | --- |
 | Page visibility for the poll | DS-001 | `useRunHistorySectionLoad` (through the phone's `polling` input) | Pause polling when hidden | Battery and data on a phone (E-25) | Polling in the background |
-| Auth failure on read | DS-001 | `MobileRemoteAccessShell` status check | 401 → `rejectLocalSessionForAuthFailure` | E-27 | Stale session |
+| Auth failure on read | DS-001 | `MobileRemoteAccessShell` status check | The status check awaits the load composable's returned read result (`load()` / the initial load's result, never a second `fetchTree`); a 401 cause → `rejectLocalSessionForAuthFailure` | E-27 | Stale session |
 | Remote run view | DS-003 | `useTargetConversation` | Notice, placeholder, retry (278) | Unreachable nodes | Divergent remote behavior |
-| Collaboration stream sync | DS-003, DS-009 | `MobileRunScreen` | Live child states while open | E-19 | Stale children |
+| Collaboration stream sync | DS-003, DS-009 | `MobileRemoteAccessShell` (paired) | Live child states of the selected host on every screen | E-19 | Stale children |
 | Relative ages | DS-002 | `MobileRunList` | Minute tick, `runHistoryStore.formatRelativeTime` | Ages "6m" | — |
 | Peer offers | DS-007 | `MobileConnectionSheet` | Ask on open, show counts or not reachable | Option A | Slow sheet if awaited serially (ask in parallel; rows render immediately) |
 
@@ -359,7 +417,7 @@ DS-009 uses the existing stream owners: agent run stream, team stream, collabora
 
 - **Shared owners** (the history store, run list store, collaboration store, open actions, target resolver) are the authority for data and open rules. Phone files call their public APIs only.
 - **The phone** owns presentation, its screen state (route) and its row flattening.
-- **The desktop** owns its shell navigation. The shared open composables reach the phone's route only through their `shell: 'mobile'` construction option. The destination path and query are given by `useMobileNavigation`'s exported `mobileRunScreenLocation`.
+- **The desktop** owns its shell navigation. In their `shell: 'mobile'` mode the shared open composables do no navigation at all: they select or open, and report the outcome. The phone's route is written only by `useMobileNavigation`; the Org key shape is the shared pure helper `agentOrgRouteQuery`.
 
 ## Boundary Encapsulation Map
 
@@ -367,14 +425,15 @@ DS-009 uses the existing stream owners: agent run stream, team stream, collabora
 | --- | --- | --- | --- | --- |
 | `activeContextStore.activeWorkspaceTarget` | selection store, collaboration child targets, team view, Org contexts | `MobileRunScreen`, view screens, `useEventMonitorFilePreview` | Reading `agentContextsStore.getRun` / team contexts directly to pick what is open (the old `MobileChat`) | Extend the target |
 | `agentRunCollaborationStore` | streaming service, member loader, context index | `useMobileRunTree`, `AgentRunTaskRows` | Calling `inspect` / `selectChild` with a component-local rule | `ensureStoredView`, `selectTaskRow` |
-| Shared open actions | `runHistoryStore.selectTreeRun`, team stream reopen, Org contexts | `useMobileRunOpening`, desktop panels | The phone calling `runHistoryStore.openTeamMemberRun` or `orgContexts.select` itself | Options on the actions |
-| `useMobileNavigation` | `vue-router` | phone components | Phone components calling `router.push` or `history.pushState` | Add a navigation method |
+| Shared open actions | `runHistoryStore.selectTreeRun`, team stream reopen, Org contexts | `useMobileRunOpening`, desktop panels | The phone calling `runHistoryStore.openTeamMemberRun` or `orgContexts.select` itself; a shared action navigating the phone | Options on the actions |
+| `mobileRunOpeningStore` | pending key | `useMobileRunOpening` (writes), `MobileRunScreen` (reads) | The run screen deciding "opening" from the target | — |
+| `useMobileNavigation` | `vue-router` | phone components | Phone components or shared actions calling `router.push` / `history.pushState` on `/mobile` | Add a navigation method |
 | `useRunHistorySectionLoad` | `runHistoryStore` load methods, the timer | desktop host, phone shell | A host starting its own poll | Add an input |
 
 ## Dependency Rules
 
 - Phone files may depend on shared stores and composables. Shared files never import from `components/mobile` or `composables/mobile`. The one exception is `useEventMonitorFilePreview`, which already branches on the phone runtime and calls `useMobileNavigation` (E-21; it is the existing owner of conversation file links).
-- `useWorkspaceHistorySubjectActions` may import `mobileRunScreenLocation` from `composables/mobile/useMobileNavigation.ts` (one constant) for its mobile shell. Rejected alternative: a function argument, because the composable must keep calling the router itself (Principle 13).
+- `composables/mobile/useMobileNavigation.ts` imports the shared pure `agentOrgRouteQuery` (phone → shared, the allowed direction). No shared → phone import is added (AR-002).
 - No phone file uses `history.pushState`. All navigation is through `vue-router`, so Nuxt's history state stays consistent (the reference's `pushState` is not a prescription).
 - No phone file reads `MobileWorkContext` (removed) or keeps its own copy of a run id.
 
@@ -385,14 +444,18 @@ DS-009 uses the existing stream owners: agent run stream, team stream, collabora
 | `useRunHistorySectionLoad({ window, polling })` | Run history load | Load and poll | `window: () => number \| null`, `polling: () => boolean` | Desktop: `historyWindowOf(mode)`, `() => true` |
 | `buildMobileRunTreeRows(input)` | Phone tree rows | Pure flattening | Entries plus per-kind sources plus disclosure functions | Returns `MobileRunTreeRow[]` |
 | `MobileRunTreeRow` | One row | Presentation data and its open subject | `key`, `depth`, `name`, `title`, `status`, `remote: { nodeName, reachable } \| null`, `hasChildren`, `expanded`, `open: MobileRowOpen` | `open` is discriminated: `{ kind: 'agentRun', run }`, `{ kind: 'taskRow', hostRun, row }`, `{ kind: 'team', team }`, `{ kind: 'teamMember', target: TeamMemberFocusTarget }`, `{ kind: 'orgRun', orgRun }`, `{ kind: 'orgMember', orgRun, address }`, `{ kind: 'orgExecution', orgRun, agentRunId, address }` |
-| `useMobileRunOpening().open(row.open)` / `reopenSelected()` | Opening | Dispatch to the shared action, then `openRun()` | `MobileRowOpen` | Agent: `collaboration.selectChild(runId, null)` then `onSelectRun`. Task row: `selectTaskRow` then `onSelectRun(hostRun)`. Team: `onOpenTeamRun`. Member: `onSelectTeamMember`. Org: subject `open` / `select` / `inspect` |
-| `useMobileNavigation()` | Screen state | `screen`, `openRun({ replace? })`, `openView(view)`, `openNewRun()`, `openFile({ workspaceId, path })`, `openReference({ messageId, referenceId })`, `back()`, `toList()` | Route query keys | Org keys untouched except by the subject actions; `openRun` for agent/team removes Org keys |
-| `useWorkspaceHistorySelectionActions({ …, shell? })` | Agent and Team open | Unchanged rules | `shell: 'desktop' \| 'mobile'` (default `desktop`) | Mobile: `selectionMode: 'mobile'` to store calls; `selectRunWithoutShellNavigation` instead of `selectRun` |
-| `useWorkspaceHistorySubjectActions({ shell? })` | Org open/select/inspect/stop | Unchanged rules | as above | Mobile: push `mobileRunScreenLocation` with the Org keys; `clearSelectionWithoutShellNavigation`; stop replaces within `/mobile` |
+| `useMobileRunOpening().open(row.open)` | Opening | `begin` → `openRun` → shared action → `commit` / `fail` | `MobileRowOpen` | Agent: `onOpenAgentRun(run)`. Task row: `selectTaskRow` then `onSelectRun(hostRun)`. Team: `onOpenTeamRun`. Member: `onSelectTeamMember`. Org: subject `open` / `select` / `inspect` (mobile shell), with `orgQuery = agentOrgRouteQuery(orgRun, command, orgRun.isActive)` |
+| `mobileRunOpeningStore` | Pending open | `begin(key)`, `commit(key)`, `fail(key)`, `pending` | `key` = the row's `MobileRunTreeRow.key` | — |
+| `useMobileNavigation()` | Screen state | `screen`, `openRun({ orgQuery?, replace? })`, `openView(view)`, `openNewRun()`, `openFile({ workspaceId, path })`, `openReference({ messageId, referenceId })`, `back()`, `toList()` | Route query keys | The only writer. `openRun` replaces the current entry with the subject's Org keys (none for agent/team), then pushes `screen=run`; `replace: true` (New run's Create) replaces the `new` entry instead of pushing |
+| `useWorkspaceHistorySelectionActions({ …, shell? })` | Agent and Team open | Unchanged rules; adds `onOpenAgentRun(run)` = `collaboration.selectChild(run.runId, null)` + `onSelectRun(run)` (AR-006); `onCreateRun`/`startPresetChat` move to `WorkspaceAgentRunsTreePanel` | `shell: 'desktop' \| 'mobile'` (default `desktop`) | Mobile: `selectionMode: 'mobile'` passed to `selectTreeRun`; `selectRunWithoutShellNavigation` instead of `selectRun`. Notifications (`emitRunSelected`) unchanged |
+| `useWorkspaceHistorySubjectActions({ shell? })` | Org open/select/inspect/stop | Unchanged rules | as above | Mobile: open, select, `clearSelectionWithoutShellNavigation`, return the outcome; **no** router call and no `orgShown` check. `stop` is unchanged and not used by the phone (DEC-008) |
+| `agentOrgRouteQuery(run, command, isActive)` | Org route keys | Pure | Org history item + command + whether active | Exported from `useWorkspaceHistorySubjectActions.ts`; the desktop path's `router.push` query (`:71-76`) uses it |
+| `useRouteSelectedAgentOrg()` | The route's open Org | `{ rootRunId, focusAddress, selection } \| null` | Route query + `agentOrgContextsStore` | Replaces `RunListPanel.vue:149-155`, `WorkspaceAgentRunsTreePanel.vue:142-151`; the phone passes it to its disclosure |
+| `useRunHistorySectionLoad(…).load()` and the initial load | Read result | Returns `{ ok: true } \| { ok: false, cause }` | — | The desktop ignores the result as today; the phone's status check reads it (AR-008) |
 | `collaboration.ensureStoredView(runId, hasCollaboration)` | A standalone root's stored view | Inspect once | Agent run id | Moved from `AgentRunTaskRows.vue:60-64` |
 | `collaboration.selectTaskRow(hostRunId, row)` | A task row | Select its agent or its team's coordinator | Host run id + `RunHistoryTransientExecutionRow` | Moved from `AgentRunTaskRows.vue:95-101` |
 | `useTargetConversation(target)` | One target's conversation | `displayName`, `readOnly`, `senderNameByAgentRunId`, `remoteView` | `ActiveAgentWorkspaceTarget` | Used by both desktop surfaces and the run screen |
-| `useRunListDisclosure({ …, orgRunsExpandedByDefault? })` | Expansion | As today | Option default `false` | The phone passes `true` |
+| `useRunListDisclosure({ …, defaultExpansion? })` | Expansion | As today | `{ orgRuns: boolean; orgTaskTeams: boolean }`, default `{ false, true }` | The phone passes `{ orgRuns: true, orgTaskTeams: false }` (AR-004); its `selectedAgentOrg` = `useRouteSelectedAgentOrg()`, `hasSelectedChild` = `(id) => Boolean(collaboration.selectedChild(id))`, as `RunListPanel.vue:156-159` |
 
 ## Interface Boundary Check
 
@@ -400,6 +463,8 @@ DS-009 uses the existing stream owners: agent run stream, team stream, collabora
 | --- | --- | --- | --- | --- |
 | `MobileRowOpen` | Yes | Yes (discriminated kinds) | Low | — |
 | `useMobileNavigation` | Yes | Yes (named methods per screen) | Low | — |
+| `mobileRunOpeningStore` | Yes | Yes (row key) | Low | — |
+| `agentOrgRouteQuery` | Yes | Yes | Low | — |
 | `selectTaskRow` | Yes | Yes | Low | — |
 | `useRunHistorySectionLoad` | Yes | N/A | Low | — |
 
@@ -466,12 +531,14 @@ See the final mapping below. The draft was the same, except that `MobileScreenBa
 | `composables/workspace/useTargetConversation.ts` (new) | Workspace | Binding | Name, read-only, senders, remote view | One binding | — |
 | `components/workspace/agent/AgentWorkspaceSurface.vue`, `components/workspace/team/TeamWorkspaceSurface.vue` (modify) | Desktop | Surfaces | Use the binding; header unchanged | — | Yes |
 | `stores/agentRunCollaborationStore.ts` (modify), `components/workspace/history/AgentRunTaskRows.vue` (modify) | Collaboration | Store | `ensureStoredView`, `selectTaskRow` | — | — |
-| `composables/useWorkspaceHistorySelectionActions.ts`, `composables/useWorkspaceHistorySubjectActions.ts`, `stores/runHistorySelectionActions.ts`, `composables/useRunListDisclosure.ts` (modify) | Run history | Open and disclosure | Options and the local-branch mode | — | — |
+| `composables/useWorkspaceHistorySelectionActions.ts`, `composables/useWorkspaceHistorySubjectActions.ts`, `stores/runHistorySelectionActions.ts`, `stores/runHistoryStore.ts` (`selectTreeRun` options), `composables/useRunListDisclosure.ts`, `components/runList/runListSectionContracts.ts`, `components/workspace/history/workspaceHistorySectionContracts.ts`, `components/runList/RunListRow.vue`, `components/workspace/history/RunDefinitionGroups.vue`, `components/runList/RunListPanel.vue`, `components/workspace/history/WorkspaceAgentRunsTreePanel.vue`, `tests/e2e/fixtures/task-agent-sibling-sidebar.page.vue` (modify) | Run history | Open and disclosure | Options, `onOpenAgentRun`, `agentOrgRouteQuery`, the local-branch mode, `onCreateRun` moved | — | — |
 | `composables/useEventMonitorFilePreview.ts` (modify) | Conversation | File links | Phone branch via target and navigation | — | — |
 | `components/mobile/MobileRemoteAccessShell.vue` (rewrite) | Phone | Shell | Pairing, post-pair check, status check and 401 rule, history load, screen switch by `useMobileNavigation`, unsupported notice | The shell | — |
-| `composables/mobile/useMobileNavigation.ts` (new) | Phone | Navigation | Route-query screen state; `mobileRunScreenLocation` | — | — |
+| `composables/mobile/useMobileNavigation.ts` (new) | Phone | Navigation | Route-query screen state and Org keys; the only `/mobile` writer | — | `agentOrgRouteQuery` |
+| `stores/mobileRunOpeningStore.ts` (new) | Phone | Pending open | `begin`/`commit`/`fail`, `pending` | One small state | — |
+| `composables/runHistory/useRouteSelectedAgentOrg.ts` (new); `RunListPanel.vue`, `WorkspaceAgentRunsTreePanel.vue` (adopt) | Run history | Route's open Org | One computed | — | — |
 | `composables/mobile/useMobileRunTree.ts` (new), `utils/mobile/mobileRunTreeProjection.ts` (new) | Phone | Tree | Wiring; pure flattening and row types | Store wiring vs pure function | — |
-| `composables/mobile/useMobileRunOpening.ts` (new) | Phone | Opening | Dispatch and re-open | — | — |
+| `composables/mobile/useMobileRunOpening.ts` (new) | Phone | Opening | The open sequence (begin, navigate, shared action, commit/fail) | — | — |
 | `components/mobile/runList/MobileRunList.vue`, `MobileRunRow.vue` (new) | Phone | List | Screen (bar with node button, banner, notice, tree, fold, "+", states); one row | — | — |
 | `components/mobile/runScreen/MobileRunScreen.vue`, `MobileRunMenu.vue` (new) | Phone | Run screen | Bar, opening state, conversation, ⋮ menu | — | `useTargetConversation` |
 | `components/mobile/views/MobileArtifacts.vue`, `MobileFiles.vue`, `MobileFileViewer.vue`, `MobileMessages.vue` (from `MobileTeamMessages.vue`), `MobileTeamReferenceViewer.vue`, `MobileActivity.vue` (from `MobileRunActivityList.vue`), `MobileRunActivityItem.vue` (move and rebind) | Phone | Views | One view each, reading the open target | — | `MobileScreenBar` |
@@ -499,7 +566,7 @@ See the final mapping below. The draft was the same, except that `MobileScreenBa
 | `components/mobile/connection/` | Folder | Phone | Connection sheet and unpair confirm | One sheet | Peer edits |
 | `composables/mobile/` | Folder | Phone | Navigation, tree, opening, setup, workspaces | Phone logic | Shared rules |
 | `utils/mobile/` | Folder | Phone | Pure tree projection | Pure | Store access |
-| `composables/runHistory/`, `composables/workspace/` | Folder | Shared | The two extracted composables | Shared owners | Phone imports (except the noted constant) |
+| `composables/runHistory/`, `composables/workspace/` | Folder | Shared | The extracted composables | Shared owners | Phone imports |
 
 ## Folder Boundary Check
 
@@ -514,7 +581,8 @@ See the final mapping below. The draft was the same, except that `MobileScreenBa
 | --- | --- | --- | --- |
 | What the run screen shows | `const target = computed(() => activeContext.activeWorkspaceTarget)`; render `target.context` with `useTargetConversation(target)` | `MobileChat`: `if (selection.selectedRunId !== props.context.runId) showEmptyFallback()` | A copy of the id goes stale at promotion (E-20) |
 | Opening a task team row | `if (collaboration.selectTaskRow(host.runId, row)) await selection.onSelectRun(host)` | Recomputing `coordinatorRunIdOf` in the phone row | One rule, one owner (Case 6) |
-| Org open on the phone | `subjectActions({ shell: 'mobile' }).execute({ rootSubjectKind: 'agent_org', rootRunId, action: 'open' })` → `/mobile?rootSubjectKind=agent_org&orgRunId=…&mode=…&screen=run` | `router.push('/workspace', …)` on the phone (blocked by the feature gate) | E-16, E-17 |
+| Tap → run screen order (AR-001) | `opening.begin(row.key); await nav.openRun({ orgQuery }); await actions.onOpenAgentRun(run) /* emitRunSelected → opening.commit(row.key) */; if (opening.pending?.key === row.key) opening.fail(row.key)` | Push after the open commits (no "Opening…"), or push before with the run screen keyed on the target (the previous run's composer shows) | MP-001 |
+| Org open on the phone (AR-002, AR-003) | `const orgQuery = agentOrgRouteQuery(orgRun, command, orgRun.isActive); opening.begin(key); await nav.openRun({ orgQuery }) /* replace list entry with orgQuery, push screen=run + orgQuery */; const outcome = await subject.execute(command, { selectionIntent }) /* mobile shell: no router call */; outcome.disposition === 'committed' ? opening.commit(key) : opening.fail(key)` | The subject action pushing `/mobile?…&screen=run` and the phone pushing again (two entries, two writers); `router.push('/workspace', …)` on the phone (blocked by the feature gate) | E-16, E-17, MP-003 |
 | Back | `navigation.back()` → `router.back()` | `history.pushState({ mx: 'run' }, '')` beside vue-router | Router state consistency |
 | Poll | `useRunHistorySectionLoad({ window: () => null, polling: () => navigation.screen.value === 'list' && pageVisible.value })` | `setInterval(fetchTree, 5000)` in the phone shell | One owner (E-10) |
 
@@ -538,12 +606,17 @@ Phone screens → phone composables (navigation, tree, opening, setup) → share
    - `useTargetConversation`; both surfaces adopt it.
    - The collaboration store's `ensureStoredView` and `selectTaskRow`; `AgentRunTaskRows` adopts them.
    - Run the existing desktop tests of these files.
-2. **Shared options.**
-   - `shell` on the two action composables;
-   - the local-run branch honors `selectionMode`;
-   - the disclosure Org option.
-   - Add tests for each in mobile mode.
-3. **Phone navigation and tree:** `useMobileNavigation`, `buildMobileRunTreeRows` with tests, `useMobileRunTree`, `useMobileRunOpening`.
+2. **Shared options and owners.**
+   - `shell` on the two action composables (mobile: no navigation);
+   - `agentOrgRouteQuery`;
+   - `onOpenAgentRun`, with `RunListRow` and `RunDefinitionGroups` adopting it through their contracts;
+   - `onCreateRun` moved to `WorkspaceAgentRunsTreePanel`;
+   - `useRouteSelectedAgentOrg`, with both desktop hosts adopting it;
+   - `selectTreeRun`'s `selectionMode`, and the local-run branch honoring it;
+   - the disclosure's `defaultExpansion`;
+   - the load composable's read result.
+   - Add tests for each in mobile mode, and keep the desktop tests green.
+3. **Phone navigation, opening and tree:** `useMobileNavigation`, `mobileRunOpeningStore`, `useMobileRunOpening`, `buildMobileRunTreeRows` with tests, `useMobileRunTree`.
 4. **Phone screens:** the shell rewrite, run list and row, run screen and menu, the four views rebound, New run (agent only) with sheets, the connection sheet.
 5. **Rebind `useEventMonitorFilePreview`'s phone branch.**
 6. **Remove** everything in the Removal Plan, and its tests. Confirm with `grep` that nothing references `mobileWorkStore`, `MobileWorkContext` or `useMobileWorkCatalog`.
@@ -558,8 +631,9 @@ Phone screens → phone composables (navigation, tree, opening, setup) → share
 
 ## Key Tradeoffs
 
-- **The route query as phone screen state.** Back works natively on Android and iOS, and a reload lands on a safe screen. The cost: Org keys share the query with phone keys; mitigated by one writer for each (subject actions for Org, `useMobileNavigation` for screens).
-- **Options on shared open actions instead of phone copies.** One rule per open kind. The cost: the shared composables know two shells; this follows the stores' existing `selectionMode` pattern.
+- **The route query as phone screen state.** Back works natively on Android and iOS, and a reload lands on a safe screen. The Org keys share the query with the phone keys; there is one writer for all of them (`useMobileNavigation`), with the Org key shape from the one shared helper. The open subject's keys are written onto the list entry as well, so the list keeps the open Org after ←. The cost is one `router.replace` before each run push.
+- **Options on shared open actions instead of phone copies.** One rule per open kind. The cost: the shared composables know two shells. In mobile mode they only skip navigation and pass `selectionMode`, following the stores' existing pattern.
+- **A failed open goes back to the list silently.** This matches the desktop, which logs the failure and leaves the previous view, and needs no new copy. The Team stream-recovery case keeps the desktop's toast.
 - **The complete history window on the phone.** It matches the desktop Runs view. The cost is data on cellular; the poll pauses when the list is hidden or the app is in the background (E-25).
 
 ## Risks
@@ -572,6 +646,20 @@ Phone screens → phone composables (navigation, tree, opening, setup) → share
 ## Guidance For Implementation
 
 - **Reproduction to start from:** none in the repository today. Start with a failing unit test of `buildMobileRunTreeRows`: a standalone run with a task agent and a task team (with members), and a remote task team, yields nested rows in that order with depths 0/1/1/2/1. Also a failing component test: `MobileRunScreen` keeps showing the conversation when the selected `temp-*` id is promoted.
+- **Open outcome per kind** (AR-001):
+  - *Committed*: the agent, task-row, team and member actions emit `emitRunSelected` (`useWorkspaceHistorySelectionActions.ts:56, 79, 94, 105, 112, 125`); the Org action returns `committed`.
+  - *Not committed*: the selection actions return without emitting (`superseded`, `rejected`, a caught error), and the Org action returns `superseded` or throws. After the action's promise settles, a still-pending key is `fail`ed.
+  - *Team stream recovery*: `presentTeamStreamRecoveryFeedback` → `useToasts().addToast(t('workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.stream_recovery_wait' | '…retry'), 'info')`, then `fail`.
+  - *`fail` while this open's run screen is shown*: `navigation.back()` to the list. On another screen: nothing more.
+  - A tap on the row of the already-open subject still runs the sequence; it commits at once.
+- **Display name** (`useTargetConversation.displayName`, AR-005):
+  - a target with a `team` field (`standalone_team_member`, `agent_org_team_member`, `agent_org_task_team_member`): `config.agentDefinitionName`, else the last segment of `team.focusedMemberAddress` with `_`/`-` as spaces, else `team.teamDefinitionName` (`TeamWorkspaceSurface.vue:71-73`);
+  - every other kind: `config.agentDefinitionName || 'Agent'` (`AgentWorkspaceSurface.vue:80`).
+  - The desktop headers keep their own titles: the agent surface's run title (`:93-101`) and the team surface's member name. The phone's bar shows `displayName`.
+- **The 401 rule** (AR-008):
+  - The shell's status check is `Promise.allSettled([sessionStore.fetchStatus(), firstCheck ? historyLoad.initialLoad : historyLoad.load()])`.
+  - A `cause` that `remoteAccessAuthFailure` recognizes → `rejectLocalSessionForAuthFailure()`. Otherwise reachability is recorded as today.
+  - There is no second `fetchTree` on mount.
 - **Read-only rule.** Today, `AgentWorkspaceSurface` allows sending for `agent_org_direct_agent` and `TeamWorkspaceSurface` for `agent_org_team_member`, when `'root' in target`. The unified rule: `access === 'read_only' && !('root' in target && (submissionPending || kind === 'agent_org_direct_agent' || kind === 'agent_org_team_member'))`. Verify that each desktop surface only ever receives its own Org kinds, so the desktop is unchanged (test both).
 - **Messages menu item.** Shown for the member kinds: `standalone_team_member`, `agent_org_direct_agent`, `agent_org_team_member`, `agent_org_task_team_member`, `agent_run_task_team_member` (spec: "members of a team or Org only"). Not shown for `standalone_agent`, `agent_run_task_agent` or `agent_org_task_agent`.
 - **The run screen's second line.** State · "in <parent name>". The parent is the open row's parent in `useMobileRunTree`. A top-level run has no "in". For a remote run, the node chip comes first.
@@ -580,7 +668,7 @@ Phone screens → phone composables (navigation, tree, opening, setup) → share
   - The node's own name is `mobileNodeSessionStore.lastStatus.serverName`.
   - The diagnostic text of `lastDiagnostic` shows in the sheet's state area.
   - "Check connection" runs the shell's status check.
-  - Peers: `remoteCollaborationStore.load()` on open, then `offersStore.ask` per peer in parallel. Show the entries count ("6 agents · 3 teams") or "Not reachable".
+  - Peers: `remoteCollaborationStore.load()` on open, then `remoteCollaborationOffersStore.askAll` (it already asks every peer at once). Show the entries count ("6 agents · 3 teams") or "Not reachable".
   - With no peers the "Peer nodes" section is absent.
 - **The paired node not reachable** (VIS-024) is the shell's existing diagnostic state, shown as the spec's bar line and banner.
 - **Files.**
@@ -591,7 +679,10 @@ Phone screens → phone composables (navigation, tree, opening, setup) → share
 - **Unsupported route.** The notice text for `desktopWorkspace` is the spec's "The desktop workspace isn’t on the phone. Your runs are here.", shown above the run list.
 - **Tests** (TESTING.md: web unit/component tests + a browser probe):
   - the projection;
-  - opening per kind in mobile mode (no shell navigation);
+  - opening per kind in mobile mode (no shell navigation, no router call from a shared action);
+  - the open order and states: the pending state, push before the action, no previous target shown, commit, failure → list, recovery toast, superseded;
+  - Back after an Org run: the list still marks it, and New run preselects its agent;
+  - `onOpenAgentRun` from `RunListRow` and `RunDefinitionGroups` (desktop);
   - navigation and Back;
   - the run screen states and promotion;
   - the Messages rule;
