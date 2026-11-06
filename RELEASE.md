@@ -165,33 +165,40 @@ failing to start; no check before tagging started a run.
 
 ### Build-only release run
 
-Before every tag, beta or stable, run the desktop release workflow build-only
-on the merge you pushed to `personal`, and tag only after it passes:
+A release has no build-only run before its tag (the user's decision,
+2026-11-06). The failure class it used to catch, a build or gate that passes
+on a prepared machine and fails on a fresh runner, is proven before the merge
+instead, by API/E2E's [Fresh-start build](TESTING.md#fresh-start-build) for
+every change that touches a build input.
+
+Run the build-only release run on the ticket branch, before the merge, for a
+change a Mac cannot reproduce and for the build-step and gate changes
+[DESIGN.md](DESIGN.md) rule 12 names:
+
+- a release workflow (`.github/workflows/release-*.yml`);
+- Windows or Linux packaging;
+- a runner image or OS (for example `macos-14` → `macos-15`);
+- a build step or gate.
 
 ```bash
-pnpm release:test --ref personal   # builds all five desktop targets; publishes nothing
+pnpm release:test --ref <ticket-branch>   # builds all five desktop targets; publishes nothing
 gh run list --workflow release-desktop.yml --limit 1
-gh run watch <run-id> --exit-status   # about 25 minutes
+gh run watch <run-id> --exit-status       # about 25 minutes
 ```
 
-- The design rule behind this run is [DESIGN.md](DESIGN.md) rule 12. For a change to
-  a build step or gate, run it on the ticket branch before the merge
-  (`pnpm release:test --ref <branch>`), not only on `personal` before the tag.
-- Local builds and clean clones do not replace this run. They usually have
-  the workspace packages' `*/dist/` already built (TESTING.md's install order
-  builds them), while a release runner starts from `pnpm install` alone.
 - Local builds are never signed. A local build (TESTING.md's Fresh-start
   build, or any test build) is unsigned (`CSC_IDENTITY_AUTO_DISCOVERY=false`);
   signing and notarization need the release runners' secrets and happen only
   there. Record them as not tested locally; do not try to sign locally.
-- Why this run stays before every tag: a local Mac can prove the macOS build
-  from a fresh start (TESTING.md's Fresh-start build), but not the Windows and
-  Linux builds, which only the runners make.
-- Do not skip it because a change "does not touch the build". That judgement
-  is how `v1.5.9-beta.14` shipped without desktop assets (see
-  [Case Studies](#case-studies)).
-- If it fails, nothing is published and no version number is used up. Fix the
-  problem on `personal` and run it again.
+- The accepted trade-off: a local Mac proves the macOS build from a fresh
+  start, but not the Windows and Linux builds, which only the runners make.
+  A change that breaks only those, without touching packaging, shows up in the
+  real release as a partial release, fixed forward with the next version. The
+  user accepted that risk for the time every release saves.
+- If it fails, nothing is published. Fix the problem on the branch and run it
+  again.
+- A failure in the real release is triaged first ([Recovery](#recovery)): a
+  platform failure is rerun, with no version used up; ours goes back to API/E2E.
 
 ## Cutting The Release
 
@@ -289,6 +296,38 @@ release. Record it as one.
 
 - **Never move or delete a published tag.** Other workflows have already
   published artifacts from it.
+
+### Triage every pipeline failure first
+
+Before acting on a failed job, or on a failed check before tagging, read its
+log and decide whose failure it is. Record each failed job's classification,
+the log line that shows it, the action and the result in the delivery report.
+
+- **The platform's** (GitHub runners, Apple notarization or stapling, an app
+  store, a package CDN, the network): the same commit would pass on a rerun.
+  Examples: "The job was not acquired by Runner", `NSURLErrorDomain … The
+  network connection was lost` followed by "staple … failed", and
+  `ERR_PNPM_FETCH_503`. Rerun only the failed jobs (below).
+- **Ours** (our code, configuration, scripts, dependencies or workflow files):
+  the same commit would fail again, so do not keep rerunning it.
+  1. Hand it to API/E2E with the run, the job and the failing log lines.
+     API/E2E reproduces it locally ([Fresh-start build](TESTING.md#fresh-start-build)),
+     or shows by a real attempt why no local machine can.
+  2. The failure's class becomes a local check, a TESTING.md rule or a durable
+     test, so a future change of the same kind fails before it is merged.
+     A pipeline step is added only for what API/E2E showed no local machine
+     can reproduce.
+  3. The defect is fixed through the normal route (on a release request, as a
+     new change through the Solution Designer).
+- **Unclear:** one rerun of the failed job decides; a second identical failure
+  is ours.
+
+An escape is fixed at the earliest stage that can reproduce it, in that stage's
+document, whoever owns it, not at the stage that noticed it. Fixing the stage
+that noticed it is how the per-tag build-only run came about (Case Studies).
+
+### Acting on it
+
 - **The tag's content is at fault** (a checkout-hostile path, a build break): a
   manual re-dispatch checks out the same tag and fails again. Fix the problem
   on `personal` and cut the next version (the next beta, or the next patch for
@@ -328,7 +367,8 @@ release. Record it as one.
   behind and lacked the [Secret Gate](#secret-gate). The gate was run late; it
   passed.
 - **Rules added from it:**
-  - [Build-only release run](#build-only-release-run) before every tag;
+  - a build-only release run before every tag (removed on 2026-11-06; see
+    the last case);
   - watch the four runs together, and report a release only when it is
     complete ([Watching The Rollout](#watching-the-rollout));
   - read this guide from `origin/personal`.
@@ -349,6 +389,28 @@ release. Record it as one.
 - **Rule added from it:** [DESIGN.md](DESIGN.md) rule 12 (the second incident of the
   class, after `v1.5.9-beta.14`).
 - **Recovery:** the ticket `clean-runner-build-order` fixes the prepare step; the beta ships after it.
+
+### The per-tag build-only run moved to the ticket (2026-11-06)
+
+- **Why:** both incidents above were one class, a build or gate that reads
+  output a fresh runner has not built, and a Mac can reproduce that class from
+  a fresh start. Running every release's desktop build twice cost about 30
+  minutes per tag and caught the problem at the last stage. Meanwhile the runs
+  it added mostly met platform failures (an Apple stapling network error, a CDN
+  503, unacquired macOS runners), which a rerun fixes in the real release too.
+- **How the rule came about:** the delivery noticed `v1.5.9-beta.14` at release
+  and patched the release guide, the document its role owns, concluding that
+  "local builds cannot replace this run". The cause was a local check that
+  pre-built the packages; the fix belonged to the testing guideline.
+- **What replaced it, decided by the user:**
+  - API/E2E's [Fresh-start build](TESTING.md#fresh-start-build) for every
+    change that touches a build input;
+  - the build-only release run on the ticket branch only for what a Mac cannot
+    reproduce and for build-step or gate changes
+    ([Build-only release run](#build-only-release-run));
+  - triage of every pipeline failure ([Recovery](#recovery)).
+- **First releases under it:** releases tagged before this change reached
+  `personal` (up to `v1.5.12-beta.3`) still followed the old rule.
 
 ## Rollback
 
