@@ -19,6 +19,7 @@ import {
   AgentOrgExecutionContext,
 } from './agentOrgExecutionContext'
 import type { CollaboratorMentionDto } from '~/utils/collaborators/collaboratorMentionText'
+import { createRandomId } from '~/utils/randomId'
 
 type CommandAck = Extract<CollaborationStreamServerMessage, { type: 'AGENT_COMMAND_ACK' }>
 type PendingCommand = Readonly<{
@@ -234,7 +235,7 @@ export class AgentOrgStreamingService {
       root_subject_kind: 'agent_org' as const,
       root_run_id: this.options.orgRunId,
       target_agent_run_id: targetAgentRunId,
-      command_id: crypto.randomUUID(),
+      command_id: createRandomId(),
     }
   }
 

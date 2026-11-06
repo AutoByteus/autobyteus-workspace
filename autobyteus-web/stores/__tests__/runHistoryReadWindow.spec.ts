@@ -3,7 +3,9 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useRunHistoryStore } from '~/stores/runHistoryStore'
 import { useRunHistoryRetiredRunsStore } from '~/stores/runHistoryRetiredRuns'
 import { GetWorkspaceRunHistory, ListWorkspaceRunHistory } from '~/graphql/queries/runHistoryQueries'
-import { useMobileWorkCatalog } from '~/composables/mobile/useMobileWorkCatalog'
+import { useRunHistorySectionLoad } from '~/composables/runHistory/useRunHistorySectionLoad'
+import { defineComponent, h } from 'vue'
+import { mount } from '@vue/test-utils'
 import type { RunHistoryWorkspaceGroup } from '~/stores/runHistoryTypes'
 
 const io = vi.hoisted(() => ({ query: vi.fn(), mutate: vi.fn() }))
@@ -31,7 +33,7 @@ const workspaceReads = () => io.query.mock.calls
   .filter((request) => request.query === ListWorkspaceRunHistory)
 
 // workspace-tree-vs-chooser DS-002 (from autobyteus-378): one read window owned by runHistoryStore; the run section sets
-// it per view (Runs and Projects: null, Workspaces: 6), the phone sets 5.
+// it per view (Runs and Projects: null, Workspaces: 6, autobyteus-388); the phone reads every run (autobyteus-277).
 describe('the run history read window (one value per store; null reads every run)', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
@@ -67,20 +69,20 @@ describe('the run history read window (one value per store; null reads every run
     expect(folderReads.map((request) => request.variables)).toEqual([{ workspaceId: 'ws-1', limitPerAgent: null }])
   })
 
-  it('the phone sets its own window of 5 before its read, whatever the desktop view set', async () => {
+  // autobyteus-277 DS-001: the phone lists the desktop Runs view's runs, so it reads every run, polled quietly.
+  it('the phone shell reads every run (no window), whatever the desktop view set, on its first read and its poll', async () => {
+    vi.useFakeTimers()
     const store = useRunHistoryStore()
-    store.setHistoryWindow(null)
-    await useMobileWorkCatalog().refreshMobileCatalogSegment('recent')
-    expect(store.historyWindow).toBe(5)
-    expect(workspaceReads().map((request) => request.variables)).toEqual([{ limitPerAgent: 5 }])
-  })
-
-  it('keeps the mobile window of 5 on quiet refreshes', async () => {
-    const store = useRunHistoryStore()
-    store.setHistoryWindow(5)
-    await store.fetchTree()
-    await store.refreshTreeQuietly()
-    expect(workspaceReads().map((request) => request.variables)).toEqual([{ limitPerAgent: 5 }, { limitPerAgent: 5 }])
+    store.setHistoryWindow(6)
+    const wrapper = mount(defineComponent({ setup() {
+      return { load: useRunHistorySectionLoad({ window: () => null, polling: () => true }) }
+    }, render: () => h('div') }))
+    await (wrapper.vm as unknown as { load: { initialLoad: Promise<unknown> } }).load.initialLoad
+    await vi.advanceTimersByTimeAsync(5_000)
+    expect(store.historyWindow).toBeNull()
+    expect(workspaceReads().map((request) => request.variables)).toEqual([{ limitPerAgent: null }, { limitPerAgent: null }])
+    wrapper.unmount()
+    vi.useRealTimers()
   })
 })
 

@@ -13,6 +13,7 @@ import { contextAttachmentPresentation } from '~/utils/contextFiles/contextAttac
 import type { DraftContextFileOwnerDescriptor } from '~/utils/contextFiles/contextFileOwner';
 import { resolveContextAttachmentUrl } from '~/utils/contextFiles/contextAttachmentUrl';
 import { authorizedFetch } from '~/utils/remoteAccess/authorizedTransport';
+import { createRandomId } from '~/utils/randomId';
 
 export type ContextAttachmentComposerTarget<TSubject> = {
   key: string;
@@ -44,10 +45,7 @@ export type ContextAttachmentComposerDisplayItem = {
   index?: number;
 };
 
-const buildUploadKey = (): string =>
-  typeof globalThis.crypto?.randomUUID === 'function'
-    ? `upload:${globalThis.crypto.randomUUID()}`
-    : `upload:${Date.now()}-${Math.random()}`;
+const buildUploadKey = (): string => `upload:${createRandomId()}`;
 
 const sameAttachment = (left: ContextAttachment, right: ContextAttachment): boolean =>
   contextAttachmentPresentation.getKey(left) === contextAttachmentPresentation.getKey(right);

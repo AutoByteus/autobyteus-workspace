@@ -1,0 +1,534 @@
+{
+  "startedAt": "2026-11-06T15:16:48.415Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "fixturePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-experience-redesign/autobyteus-web/tests/e2e/fixtures/task-agent-sibling-sidebar.page.vue",
+  "scenarios": {
+    "SIBLING-001": {
+      "result": "Pass",
+      "description": "Initially visible siblings; mouse/keyboard exact conversations; delayed loading, failure and retry",
+      "startedAt": "2026-11-06T15:16:59.868Z",
+      "details": {
+        "initial": {
+          "mode": "live",
+          "focus": "sibling-reviewer",
+          "rows": [
+            {
+              "key": "agent:sibling-worker",
+              "depth": 0,
+              "children": false,
+              "agent": "sibling-worker"
+            },
+            {
+              "key": "agent:sibling-task-a",
+              "depth": 0,
+              "children": false,
+              "agent": "sibling-task-a"
+            },
+            {
+              "key": "agent:sibling-task-b",
+              "depth": 0,
+              "children": false,
+              "agent": "sibling-task-b"
+            },
+            {
+              "key": "agent:sibling-reviewer",
+              "depth": 0,
+              "children": false,
+              "agent": "sibling-reviewer"
+            },
+            {
+              "key": "team:sibling-task-team",
+              "depth": 0,
+              "children": true,
+              "agent": null
+            },
+            {
+              "key": "agent:sibling-task-team-member",
+              "depth": 1,
+              "children": false,
+              "agent": "sibling-task-team-member"
+            },
+            {
+              "key": "agent:sibling-nested-task",
+              "depth": 1,
+              "children": false,
+              "agent": "sibling-nested-task"
+            }
+          ],
+          "ancestors": [
+            "team:sibling-task-team"
+          ],
+          "taskAncestors": [],
+          "attempts": {
+            "sibling-task-a": null,
+            "sibling-task-b": null,
+            "sibling-worker": null,
+            "sibling-nested-task": null
+          },
+          "authoritative": {
+            "sibling-task-a": false,
+            "sibling-task-b": false,
+            "sibling-worker": false,
+            "sibling-nested-task": false
+          }
+        },
+        "layout": [
+          {
+            "x": 56,
+            "padding": "14px",
+            "label": "Agent, Worker, level 1, idle, /Worker"
+          },
+          {
+            "x": 56,
+            "padding": "14px",
+            "label": "Temporary task agent, Worker, level 1, offline, Started by Reviewer, /Worker"
+          },
+          {
+            "x": 56,
+            "padding": "14px",
+            "label": "Temporary task agent, Worker, level 1, offline, Started by Reviewer, /Worker"
+          }
+        ],
+        "final": {
+          "mode": "live",
+          "focus": "sibling-worker",
+          "rows": [
+            {
+              "key": "agent:sibling-worker",
+              "depth": 0,
+              "children": false,
+              "agent": "sibling-worker"
+            },
+            {
+              "key": "agent:sibling-task-a",
+              "depth": 0,
+              "children": false,
+              "agent": "sibling-task-a"
+            },
+            {
+              "key": "agent:sibling-task-b",
+              "depth": 0,
+              "children": false,
+              "agent": "sibling-task-b"
+            },
+            {
+              "key": "agent:sibling-reviewer",
+              "depth": 0,
+              "children": false,
+              "agent": "sibling-reviewer"
+            },
+            {
+              "key": "team:sibling-task-team",
+              "depth": 0,
+              "children": true,
+              "agent": null
+            },
+            {
+              "key": "agent:sibling-task-team-member",
+              "depth": 1,
+              "children": false,
+              "agent": "sibling-task-team-member"
+            },
+            {
+              "key": "agent:sibling-nested-task",
+              "depth": 1,
+              "children": false,
+              "agent": "sibling-nested-task"
+            }
+          ],
+          "ancestors": [
+            "team:sibling-task-team"
+          ],
+          "taskAncestors": [],
+          "attempts": {
+            "sibling-task-a": null,
+            "sibling-task-b": null,
+            "sibling-worker": null,
+            "sibling-nested-task": null
+          },
+          "authoritative": {
+            "sibling-task-a": true,
+            "sibling-task-b": true,
+            "sibling-worker": true,
+            "sibling-nested-task": false
+          }
+        },
+        "requests": [
+          {
+            "operationName": "GetTeamMemberRunProjection",
+            "teamRunId": "sibling-root",
+            "agentRunId": "sibling-task-a",
+            "requestedAt": "2026-11-06T15:16:59.985Z"
+          },
+          {
+            "operationName": "GetTeamMemberRunProjection",
+            "teamRunId": "sibling-root",
+            "agentRunId": "sibling-task-b",
+            "requestedAt": "2026-11-06T15:17:00.793Z"
+          },
+          {
+            "operationName": "GetTeamMemberRunProjection",
+            "teamRunId": "sibling-root",
+            "agentRunId": "sibling-task-b",
+            "requestedAt": "2026-11-06T15:17:01.406Z"
+          },
+          {
+            "operationName": "GetTeamMemberRunProjection",
+            "teamRunId": "sibling-root",
+            "agentRunId": "sibling-worker",
+            "requestedAt": "2026-11-06T15:17:01.937Z"
+          }
+        ]
+      }
+    },
+    "SIBLING-002": {
+      "result": "Pass",
+      "description": "Task-Team containment and actual ancestor auto-reveal; outer collapse preserves siblings",
+      "startedAt": "2026-11-06T15:17:02.521Z",
+      "details": {
+        "final": {
+          "mode": "live",
+          "focus": "sibling-nested-task",
+          "rows": [
+            {
+              "key": "agent:sibling-worker",
+              "depth": 0,
+              "children": false,
+              "agent": "sibling-worker"
+            },
+            {
+              "key": "agent:sibling-task-a",
+              "depth": 0,
+              "children": false,
+              "agent": "sibling-task-a"
+            },
+            {
+              "key": "agent:sibling-task-b",
+              "depth": 0,
+              "children": false,
+              "agent": "sibling-task-b"
+            },
+            {
+              "key": "agent:sibling-reviewer",
+              "depth": 0,
+              "children": false,
+              "agent": "sibling-reviewer"
+            },
+            {
+              "key": "team:sibling-task-team",
+              "depth": 0,
+              "children": true,
+              "agent": null
+            },
+            {
+              "key": "agent:sibling-task-team-member",
+              "depth": 1,
+              "children": false,
+              "agent": "sibling-task-team-member"
+            },
+            {
+              "key": "agent:sibling-nested-task",
+              "depth": 1,
+              "children": false,
+              "agent": "sibling-nested-task"
+            }
+          ],
+          "ancestors": [
+            "team:sibling-task-team"
+          ],
+          "taskAncestors": [],
+          "attempts": {
+            "sibling-task-a": null,
+            "sibling-task-b": null,
+            "sibling-worker": null,
+            "sibling-nested-task": null
+          },
+          "authoritative": {
+            "sibling-task-a": true,
+            "sibling-task-b": true,
+            "sibling-worker": true,
+            "sibling-nested-task": true
+          }
+        }
+      }
+    },
+    "SIBLING-003": {
+      "result": "Pass",
+      "description": "Retained delegated execution reload uses exact conversation; no-delegation list unchanged",
+      "startedAt": "2026-11-06T15:17:03.511Z",
+      "details": {
+        "retained": {
+          "mode": "retained",
+          "focus": "sibling-task-b",
+          "rows": [
+            {
+              "key": "agent:sibling-worker",
+              "depth": 0,
+              "children": false,
+              "agent": "sibling-worker"
+            },
+            {
+              "key": "agent:sibling-task-a",
+              "depth": 0,
+              "children": false,
+              "agent": "sibling-task-a"
+            },
+            {
+              "key": "agent:sibling-task-b",
+              "depth": 0,
+              "children": false,
+              "agent": "sibling-task-b"
+            },
+            {
+              "key": "agent:sibling-reviewer",
+              "depth": 0,
+              "children": false,
+              "agent": "sibling-reviewer"
+            },
+            {
+              "key": "team:sibling-task-team",
+              "depth": 0,
+              "children": true,
+              "agent": null
+            },
+            {
+              "key": "agent:sibling-task-team-member",
+              "depth": 1,
+              "children": false,
+              "agent": "sibling-task-team-member"
+            },
+            {
+              "key": "agent:sibling-nested-task",
+              "depth": 1,
+              "children": false,
+              "agent": "sibling-nested-task"
+            }
+          ],
+          "ancestors": [
+            "team:sibling-task-team"
+          ],
+          "taskAncestors": [],
+          "attempts": {
+            "sibling-task-a": null,
+            "sibling-task-b": null,
+            "sibling-worker": null,
+            "sibling-nested-task": null
+          },
+          "authoritative": {
+            "sibling-task-a": false,
+            "sibling-task-b": true,
+            "sibling-worker": false,
+            "sibling-nested-task": false
+          }
+        },
+        "empty": {
+          "mode": "empty",
+          "focus": "sibling-worker",
+          "rows": [
+            {
+              "key": "agent:sibling-worker",
+              "depth": 0,
+              "children": false,
+              "agent": "sibling-worker"
+            },
+            {
+              "key": "agent:sibling-reviewer",
+              "depth": 0,
+              "children": false,
+              "agent": "sibling-reviewer"
+            }
+          ],
+          "ancestors": [],
+          "taskAncestors": [],
+          "attempts": {
+            "sibling-task-a": null,
+            "sibling-task-b": null,
+            "sibling-worker": null,
+            "sibling-nested-task": null
+          },
+          "authoritative": {
+            "sibling-task-a": false,
+            "sibling-task-b": false,
+            "sibling-worker": true,
+            "sibling-nested-task": false
+          }
+        }
+      }
+    }
+  },
+  "projectionRequests": [
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "teamRunId": "sibling-root",
+      "agentRunId": "sibling-task-a",
+      "requestedAt": "2026-11-06T15:16:59.985Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "teamRunId": "sibling-root",
+      "agentRunId": "sibling-task-b",
+      "requestedAt": "2026-11-06T15:17:00.793Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "teamRunId": "sibling-root",
+      "agentRunId": "sibling-task-b",
+      "requestedAt": "2026-11-06T15:17:01.406Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "teamRunId": "sibling-root",
+      "agentRunId": "sibling-worker",
+      "requestedAt": "2026-11-06T15:17:01.937Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "teamRunId": "sibling-root",
+      "agentRunId": "sibling-nested-task",
+      "requestedAt": "2026-11-06T15:17:02.872Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "teamRunId": "sibling-root",
+      "agentRunId": "sibling-task-a",
+      "requestedAt": "2026-11-06T15:17:04.057Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "teamRunId": "sibling-root",
+      "agentRunId": "sibling-task-b",
+      "requestedAt": "2026-11-06T15:17:05.203Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "teamRunId": "sibling-root",
+      "agentRunId": "sibling-worker",
+      "requestedAt": "2026-11-06T15:17:06.306Z"
+    }
+  ],
+  "browserEvents": [
+    {
+      "type": "console:error",
+      "text": "Failed to open team member run: Error: SIBLING_EXPECTED_PROJECTION_FAILURE\n    at selectTreeRunFromHistory (http://127.0.0.1:54429/_nuxt/stores/runHistorySelectionActions.ts:79:52)\n    at async Object.onSelectTeamMember (http://127.0.0.1:54429/_nuxt/composables/useWorkspaceHistorySelectionActions.ts:84:22)"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Checking server health at /rest/health"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:65534/rest/health net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "POST http://127.0.0.1:65534/graphql net::ERR_ABORTED"
+    },
+    {
+      "type": "requestfailed",
+      "text": "GET http://127.0.0.1:65534/rest/health net::ERR_ABORTED"
+    },
+    {
+      "type": "console:warning",
+      "text": "Task workers' Tasks could not be read. ApolloError: Failed to fetch\n    at new ApolloError2 (http://127.0.0.1:54429/_nuxt/node_modules/.cache/vite/client/deps/chunk-7JFNNDH2.js?v=d0c20cad:3056:26)\n    at http://127.0.0.1:54429/_nuxt/node_modules/.cache/vite/client/deps/@apollo_client_core.js?v=d0c20cad:5504:66\n    at both (http://127.0.0.1:54429/_nuxt/node_modules/.cache/vite/client/deps/chunk-7JFNNDH2.js?v=d0c20cad:2801:17)\n    at http://127.0.0.1:54429/_nuxt/node_modules/.cache/vite/client/deps/chunk-7JFNNDH2.js?v=d0c20cad:2790:26\n    at new Promise (<anonymous>)\n    at Object.then (http://127.0.0.1:54429/_nuxt/node_modules/.cache/vite/client/deps/chunk-7JFNNDH2.js?v=d0c20cad:2789:16)\n    at Object.error (http://127.0.0.1:54429/_nuxt/node_modules/.cache/vite/client/deps/chunk-7JFNNDH2.js?v=d0c20cad:2803:39)\n    at notifySubscription (http://127.0.0.1:54429/_nuxt/node_modules/.cache/vite/client/deps/chunk-7JFNNDH2.js?v=d0c20cad:1743:18)\n    at onNotify (http://127.0.0.1:54429/_nuxt/node_modules/.cache/vite/client/deps/chunk-7JFNNDH2.js?v=d0c20cad:1777:3)\n    at SubscriptionObserver2.error (http://127.0.0.1:54429/_nuxt/node_modules/.cache/vite/client/deps/chunk-7JFNNDH2.js?v=d0c20cad:1817:5)"
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    }
+  ],
+  "cleanup": {
+    "browserContext": "closed",
+    "browser": "closed",
+    "nuxt": {
+      "status": "terminated",
+      "pid": 48441,
+      "exitCode": null,
+      "signalCode": null,
+      "finalExitCode": null,
+      "finalSignalCode": "SIGTERM"
+    },
+    "nuxtLog": "closed",
+    "installedFixture": "removed"
+  },
+  "failures": [],
+  "port": 54429,
+  "baseUrl": "http://127.0.0.1:54429",
+  "browserVersion": "156.0.8078.80",
+  "result": "Pass",
+  "finishedAt": "2026-11-06T15:17:09.388Z",
+  "artifacts": {
+    "evidencePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-experience-redesign/tickets/in-progress/mobile-experience-redesign/evidence/api-e2e/round-2/DSK-02/task-agent-sibling-sidebar/evidence.json",
+    "nuxtLogPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-experience-redesign/tickets/in-progress/mobile-experience-redesign/evidence/api-e2e/round-2/DSK-02/task-agent-sibling-sidebar/nuxt.log",
+    "outputDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/mobile-experience-redesign/tickets/in-progress/mobile-experience-redesign/evidence/api-e2e/round-2/DSK-02/task-agent-sibling-sidebar"
+  }
+}

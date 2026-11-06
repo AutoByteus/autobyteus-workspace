@@ -235,12 +235,15 @@ const sectionState = reactive<WorkspaceHistorySectionState>({
   toggleTeamMember: () => undefined,
 });
 
+const selectRow = (run: { runId: string }) => {
+  sectionState.selectedRunId = run.runId;
+  selectedEvents.value.push(run.runId);
+};
 const sectionActions: WorkspaceHistorySectionActions = {
   onCreateRun: () => undefined,
-  onSelectRun: (run) => {
-    sectionState.selectedRunId = run.runId;
-    selectedEvents.value.push(run.runId);
-  },
+  onSelectRun: selectRow,
+  // The run row opens the run's own agent through the shared action (autobyteus-277); here it records the row.
+  onOpenAgentRun: selectRow,
   onTerminateRun: mutations.onTerminateRun,
   onArchiveRun: () => undefined,
   onDeleteRun: () => undefined,

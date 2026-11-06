@@ -33,9 +33,9 @@ autobyteus-web/
 │       ├── ImageViewer.vue
 │       ├── MarkdownPreviewer.vue
 │       └── VideoPlayer.vue
-├── components/mobile/
-│   ├── MobileFiles.vue               # Phone-first workspace browser
-│   └── MobileFileViewer.vue          # Read-only mobile file viewer/attach sheet
+├── components/mobile/views/
+│   ├── MobileFiles.vue               # Phone Files screen: the open agent's folder, read only
+│   └── MobileFileViewer.vue          # Phone full-screen read-only file viewer (no Attach)
 ├── composables/mobile/
 │   └── useMobileWorkspaceFileExplorer.ts # Mobile workspace resolution, lazy load, search, and open state coordinator
 ├── composables/
@@ -201,7 +201,7 @@ The runtime locator rules are deliberately different by environment:
 | --- | --- |
 | Embedded Electron | An embedded node binding **and** trusted local-file bridge permit an absolute local path. Text uses the main-process read IPC boundary. Binary viewers use the shared canonical `local-file://local/<encoded-absolute-path>` codec and the default-session protocol boundary; both paths recheck absolute shape, existence, readability, and regular-file status immediately before bytes are returned. |
 | Browser / remote / missing local bridge | The path must be contained by the selected workspace root and converted to a workspace-relative locator before the existing authorized content route is used. A remote-node Electron window never falls back to client-local bytes. Unmapped paths remain copyable and show localized host-only/unavailable status without a content request. |
-| Phone-first `/mobile` | The path must map to the selected run/team/workspace context. A revisioned request carries context, workspace, relative path, read-only intent, and inline presentation; `MobileFiles` rejects stale or mismatched requests and consumes only the current one. |
+| Phone-first `/mobile` | The path must lie in the open agent's folder (`activeWorkspaceTarget.workspaceRootPath`). The file opens on the Files screen as a history entry (`useMobileNavigation`), full screen and read only; `MobileFiles` reads it only when the entry's workspace is the open agent's, and shows the unavailable state otherwise. |
 
 Path recognition is opt-in to the Event Monitor Markdown renderer and passive
 output is inert. Explicit pointer or keyboard activation is required. The
@@ -516,31 +516,32 @@ target, dialogs, and close behavior centralized.
 
 ### Mobile Files and `useMobileWorkspaceFileExplorer`
 
-The `/mobile` Phone Access Files tab uses `MobileFiles.vue` and
+The `/mobile` Phone Access Files screen (⋮ → Files on the run screen) uses
+`components/mobile/views/MobileFiles.vue` and
 `useMobileWorkspaceFileExplorer.ts` instead of the desktop split-pane explorer
-layout. The mobile surface is read-only and delegates to the same authoritative
-workspace/file-explorer owners:
+layout. The mobile surface is read-only, has one bar (←, "Files", search) and
+no filters, and delegates to the same authoritative workspace/file-explorer
+owners:
 
-- workspace resolution comes from the current `MobileWorkContext`:
-  workspace contexts use their workspace id, and agent/team run contexts resolve
-  by workspace root path;
-- if a selected run/team-run workspace root cannot be resolved, mobile shows an
-  explicit unavailable/retry state instead of falling back to another active or
-  first workspace;
+- the folder is the open agent's: `activeWorkspaceTarget.workspaceRootPath`,
+  resolved to a registered workspace by its root path;
+- if that root cannot be resolved, mobile shows an explicit loading or
+  unavailable state instead of falling back to another active or first
+  workspace;
 - folder taps call `workspaceStore.fetchFolderChildren(workspaceId, path)` for
   unloaded folders before navigating;
 - full-workspace search calls `fileExplorerStore.searchFiles(query,
   workspaceId)`, so matches do not depend only on already-loaded tree nodes;
-- file taps call `fileExplorerStore.openFilePreview(path, workspaceId)` and
-  pass the resulting open-file state into `MobileFileViewer.vue`;
+- a file tap opens the file as a history entry (`useMobileNavigation`), so ← or
+  Back closes it first; the screen then calls
+  `fileExplorerStore.openFilePreview(path, workspaceId)` and passes the
+  resulting open-file state into `MobileFileViewer.vue`, full screen;
 - `MobileFileViewer.vue` reuses the shared `FileViewer` in read-only mode for
   supported text/Markdown/code, image, audio, video, PDF, CSV, and Excel
   previews through protected workspace content URLs and authorized resource
   loading;
-- the mobile **Attach** action is owned by
-  `useMobileFileContextCoordinator.ts` and adds workspace paths to the active
-  run, pending team-run, or next-run draft context without turning Files into an
-  editor.
+- an opened file has no **Attach** action; the phone does not add files to a
+  run's context.
 
 Mobile Files must not import desktop shell/split-pane owners such as
 `FileExplorerLayout`, `FileExplorerTabs`, `TeamCommunicationPanel`,

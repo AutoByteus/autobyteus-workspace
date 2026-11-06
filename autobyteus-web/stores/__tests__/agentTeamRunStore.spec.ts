@@ -138,9 +138,6 @@ vi.mock('~/composables/useRightSideTabs', () => ({
   useRightSideTabs: () => ({ setActiveTab: vi.fn() }),
 }))
 
-vi.mock('~/composables/useTeamRunRuntimeCatalogSync', () => ({
-  useTeamRunRuntimeCatalogSync: () => ({ reloadRuntimeKind: vi.fn() }),
-}))
 
 vi.mock('~/stores/agentTeamDefinitionStore', async () => {
   const { ref } = await import('vue')

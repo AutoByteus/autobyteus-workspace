@@ -1,0 +1,24 @@
+# IMP-08 Android shell insets (implementation engineer, autobyteus-277, REQ-011)
+# Commands (in autobyteus-android, ANDROID_HOME=$HOME/Library/Android/sdk):
+#   ./gradlew :app:testDebugUnitTest :app:assembleDebug :app:compileDebugAndroidTestKotlin
+#   ./gradlew :app:connectedDebugAndroidTest   on AVD autobyteus277_api35 (Android 15, API 35) and on a test-owned AVD autobyteus277_api34 (Android 14, API 34, created with avdmanager for this check)
+# Commit: 1a48f4affe (run on its tree before the commits were made); environment: macOS, Node v22.23.1; date 2026-11-06T14:09Z; JDK openjdk version "21.0.10" 2026-01-20
+
+## Build and JVM unit tests
+BUILD SUCCESSFUL in 14s
+
+## API 35 (connectedDebugAndroidTest; System.out lines of WebShellWindowInsetsTest)
+BUILD SUCCESSFUL in 17s
+INSETS closed bars=Insets{left=0, top=136, right=0, bottom=63} padding=136,63 page="0px|0px|839"
+INSETS open ime=Insets{left=0, top=136, right=0, bottom=883} padding=136,883 page="0px|0px|527"
+TestRunner: run finished: 12 tests, 0 failed, 0 ignored
+# page = env(safe-area-inset-top) | env(safe-area-inset-bottom) | innerHeight of a page in the padded WebView
+
+## API 34
+BUILD SUCCESSFUL in 28s
+INSETS legacy bars=Insets{left=0, top=128, right=0, bottom=63} padding=0,0 rootTop=128
+TestRunner: run finished: 12 tests, 0 failed, 0 ignored
+
+## The connection screen, installed debug APK (uiautomator dump on API 35)
+AutoByteus mobile title bounds="[52,209][1028,301]"   (= 136 px status-bar padding + the form's 28 dp)
+Screenshots: IMP-08-connection-screen-api35.png, IMP-08-connection-screen-api34.png (same layout; content below the status bar, gesture bar clear)

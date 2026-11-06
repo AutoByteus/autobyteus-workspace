@@ -10,6 +10,7 @@ import {
 } from '~/types/node';
 import { getBrowserServerBaseUrl } from '~/utils/browserServerConfig';
 import { normalizeNodeBaseUrl } from '~/utils/nodeEndpoints';
+import { createRandomId } from '~/utils/randomId';
 
 function nowIsoString(): string {
   return new Date().toISOString();
@@ -35,8 +36,7 @@ function createDefaultSnapshot(baseUrl: string): NodeRegistrySnapshot {
 }
 
 function generateRemoteEntryId(): string {
-  const randomId = globalThis.crypto?.randomUUID?.();
-  return randomId ? `remote-${randomId}` : `remote-${Date.now()}`;
+  return `remote-${createRandomId()}`;
 }
 
 function canUseLocalStorage(): boolean {

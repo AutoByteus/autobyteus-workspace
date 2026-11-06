@@ -7,7 +7,6 @@ import WorkspaceHistoryWorkspaceSection from '../WorkspaceHistoryWorkspaceSectio
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { buildRunHistoryTeamExecutionRows } from '~/stores/runHistoryTeamExecutionRows';
 import { useTaskWorkerTaskStore } from '~/stores/taskWorkerTaskStore';
-import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore';
 import type {
   AgentOrgHistoryDefinitionGroup,
   TeamMemberTreeRow,
@@ -148,7 +147,7 @@ const mountSubject = (options: {
   team.executionRows = buildRunHistoryTeamExecutionRows(team, liveContext);
 
   const actions = {
-    onCreateRun: vi.fn(), onSelectRun: vi.fn(),
+    onCreateRun: vi.fn(), onSelectRun: vi.fn(), onOpenAgentRun: vi.fn(),
     onTerminateRun: vi.fn(), onArchiveRun: vi.fn(), onDeleteRun: vi.fn(),
     onSelectTeam: vi.fn(), onTerminateTeam: vi.fn(), onArchiveTeam: vi.fn(),
     onDeleteTeam: vi.fn(), onSelectTeamMember: vi.fn(), onOpenTeamRun: vi.fn(),
@@ -641,15 +640,14 @@ describe('WorkspaceHistoryWorkspaceSection Task summary run opening', () => {
   it('opens the Agent run\'s own conversation (as its run row does) for an Agent host\'s open-run', async () => {
     const run = { runId: 'agent-run-1', summary: 'Manager run', currentStatus: AgentStatus.Idle, lastActivityAt: '2026-06-30T00:00:00.000Z',
       isActive: true, hasCollaboration: true, source: 'history', isDraft: false };
-    const selectChild = vi.spyOn(useAgentRunCollaborationStore(), 'selectChild');
     const { wrapper, actions } = mountSubject({
       workspaceTeams: [],
       agents: [{ agentDefinitionId: 'manager', agentName: 'Manager', runs: [run] }],
       stubs: { AgentRunTaskRows: { emits: ['open-run', 'select-run'], template: '<button data-test="stub-open-run" @click="$emit(\'open-run\')" />' } },
     });
     await wrapper.get('[data-test="stub-open-run"]').trigger('click');
-    expect(selectChild).toHaveBeenCalledWith('agent-run-1', null);
-    expect(actions.onSelectRun).toHaveBeenCalledWith(run);
+    // The run's own agent is the shared selection action's rule (`onOpenAgentRun`, autobyteus-277 AR-006).
+    expect(actions.onOpenAgentRun).toHaveBeenCalledWith(run);
     wrapper.unmount();
   });
 });

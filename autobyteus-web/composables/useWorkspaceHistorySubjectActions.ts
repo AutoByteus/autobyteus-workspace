@@ -2,6 +2,8 @@ import { useRoute, useRouter } from 'vue-router'
 import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore'
 import { useRunHistoryStore } from '~/stores/runHistoryStore'
 import { useAgentSelectionStore, type WorkspaceSelectionIntent, type WorkspaceSelectionOutcome } from '~/stores/agentSelectionStore'
+import type { AgentOrgRunHistoryItem } from '~/stores/runHistoryTypes'
+import type { WorkspaceHistoryShell } from '~/composables/useWorkspaceHistorySelectionActions'
 
 export type WorkspaceHistorySubjectAction = Readonly<{
   rootSubjectKind: 'agent_org'
@@ -11,7 +13,26 @@ export type WorkspaceHistorySubjectAction = Readonly<{
   agentRunId?: string
 }>
 
-export const useWorkspaceHistorySubjectActions = () => {
+/**
+ * The route keys that open an Org run: the one builder of them, for the desktop's `/workspace` and the phone's
+ * `/mobile` (autobyteus-277 AR-002). `activeWorkspaceTarget` resolves the Org from them on any path.
+ */
+export const agentOrgRouteQuery = (
+  run: AgentOrgRunHistoryItem,
+  command: WorkspaceHistorySubjectAction,
+  isActive: boolean,
+): Record<string, string> => ({
+  rootSubjectKind: 'agent_org', definitionId: run.executionTree.rootOrg.orgDefinitionId, orgRunId: run.rootRunId,
+  mode: isActive ? 'active' : 'history',
+  ...(command.action !== 'open' && command.memberAddress ? { memberAddress: command.memberAddress } : {}),
+  ...(command.action === 'inspect' && command.agentRunId ? { agentRunId: command.agentRunId } : {}),
+})
+
+/**
+ * Org open, select, inspect and stop from the run lists. On the desktop shell it navigates to the Org; on the phone
+ * shell it opens and selects only, and reports the outcome: the phone writes its own route (`useMobileNavigation`).
+ */
+export const useWorkspaceHistorySubjectActions = (setup: { shell?: WorkspaceHistoryShell } = {}) => {
   const route = useRoute()
   const router = useRouter()
   const historyStore = useRunHistoryStore()
@@ -33,7 +54,6 @@ export const useWorkspaceHistorySubjectActions = () => {
       run = historyStore.agentOrgHistory.find((item) => item.rootRunId === command.rootRunId)
     }
     if (!run) throw new Error(`AgentOrg history run '${command.rootRunId}' is unavailable.`)
-    const definitionId = run.executionTree.rootOrg.orgDefinitionId
 
     if (command.action === 'stop') {
       try { await orgContexts.stopAndInspect(run.rootRunId) }
@@ -63,17 +83,16 @@ export const useWorkspaceHistorySubjectActions = () => {
       if (!address || !context.index.configured.has(address)) throw new Error('AgentOrg member selection requires an exact address.')
       orgContexts.select(run.rootRunId, address)
     }
+    if (setup.shell === 'mobile') {
+      selection.clearSelectionWithoutShellNavigation()
+      return { disposition: 'committed' }
+    }
     // Another agent of the Org already shown keeps Settings open, with their unsaved edits; another run, or this Org
     // opened from elsewhere, opens at its chat (autobyteus-366, the same rule as `selectRun`).
     const orgShown = route.query.rootSubjectKind === 'agent_org' && String(route.query.orgRunId || '') === run.rootRunId
     if (orgShown) selection.clearSelectionWithoutShellNavigation()
     else selection.clearSelection()
-    await router.push({ path: '/workspace', query: {
-      rootSubjectKind: 'agent_org', definitionId, orgRunId: run.rootRunId,
-      mode: context.isActive ? 'active' : 'history',
-      ...(command.action !== 'open' && command.memberAddress ? { memberAddress: command.memberAddress } : {}),
-      ...(command.action === 'inspect' ? { agentRunId: command.agentRunId } : {}),
-    } })
+    await router.push({ path: '/workspace', query: agentOrgRouteQuery(run, command, context.isActive) })
     return { disposition: 'committed' }
   }
   return { execute }

@@ -365,26 +365,21 @@ try {
     return reloads === ((await fs.readFile(devLogPath, 'utf8').catch(() => '')).match(/optimized dependencies changed/g) ?? []).length
   })
   // Recheck the previously failing mobile journey before the remaining regression cases.
-  await scenario('B08', 'Dedicated mobile Agent/Team setup defaults and helper agree', async () => {
+  // The phone's New run starts agent runs only (autobyteus-277 DEC-007); its switch has no helper text.
+  await scenario('B08', 'Dedicated mobile Agent setup defaults to auto approve and opts out', async () => {
     await page.setViewportSize({ width: 390, height: 844 })
     await page.goto(`${evidence.baseUrl}${routePath}`, { waitUntil: 'domcontentloaded' })
     await page.locator('main[data-ready="true"]').waitFor({ timeout: timeoutMs })
     await page.locator(sel('probe-mobile')).click({ timeout: timeoutMs })
-    const observations = []
-    for (const target of ['agent', 'team']) {
-      await page.locator(`[data-testid="mobile-run-setup-${target}-mode"]`).click()
-      await page.locator(`[data-testid="mobile-run-${target}-select-toggle"]`).click()
-      await page.locator(`[data-testid="mobile-run-${target}-select-option"]`).filter({ hasText: target === 'agent' ? 'Approval Agent' : 'Approval Team' }).click()
-      const mobileToggle = page.locator('[data-testid="mobile-run-auto-approve-tools-switch"]')
-      await waitFor('Mobile fresh true', async () => await mobileToggle.getAttribute('aria-checked') === 'true')
-      const help = await page.locator('[data-testid="mobile-run-auto-approve-tools-help"]').innerText()
-      await page.screenshot({ path: path.join(outputDir, `B08-${target}-fresh.png`), fullPage: true })
-      await mobileToggle.click()
-      await waitFor('Mobile opt-out false', async () => await mobileToggle.getAttribute('aria-checked') === 'false')
-      observations.push({ target, freshChecked: true, optOutChecked: false, help })
-    }
+    await page.locator('[data-testid="mobile-run-target-select-toggle"]').click()
+    await page.locator('[data-testid="mobile-run-target-select-option"]').filter({ hasText: 'Approval Agent' }).click()
+    const mobileToggle = page.locator('[data-testid="mobile-run-auto-approve-tools-switch"]')
+    await waitFor('Mobile fresh true', async () => await mobileToggle.getAttribute('aria-checked') === 'true')
+    await page.screenshot({ path: path.join(outputDir, 'B08-agent-fresh.png'), fullPage: true })
+    await mobileToggle.click()
+    await waitFor('Mobile opt-out false', async () => await mobileToggle.getAttribute('aria-checked') === 'false')
+    const observations = [{ target: 'agent', freshChecked: true, optOutChecked: false }]
     evidence.mobileObservations = observations
-    assert(observations.every(row => !/off by default/i.test(row.help)), 'Mobile helper contradicts the approved fresh true default', observations)
     return observations
   })
   await scenario('B01', 'New chat Agent fresh true and first-send true', async () => {

@@ -207,6 +207,14 @@ const remoteRow = (executions: readonly RemoteTaskExecutionDto[]) => ({ row, tea
     openAgentRunId: row.agentRunId ?? coordinator?.agent_run_id ?? '', openAddress: coordinator?.address ?? row.memberAddress })
 }
 
+/**
+ * The member an Org run opens on the phone (autobyteus-277 DEC-012): the first member of its configuration. A direct
+ * agent opens itself; a configured Team opens its coordinator (the Org context's rule for a Team address). Null for an
+ * Org with no member.
+ */
+export const agentOrgFirstMemberAddress = (run: AgentOrgRunHistoryItem): string | null =>
+  run.executionTree.rootOrg.members[0]?.address ?? null
+
 export const projectAgentOrgHistoryRows = (input: Readonly<{
   run: AgentOrgRunHistoryItem
   context: AgentOrgExecutionContext | null

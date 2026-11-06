@@ -16,7 +16,7 @@
 //      - B-00n (AC-001..AC-006, REQ-007): desktop Artifacts tab journeys: open the run or member in the Workspaces
 //        sidebar, open the Artifacts tab, click the file; assert the content request goes to the owner route, answers
 //        200 and the viewer shows that file's text; a deleted copy file shows "File not found" (server: "not available",
-//        AC-001 alternate); B-006/B-007 (AC-012): the mobile Artifacts view (Phone Access, 390x844) of an agent run and of
+//        AC-001 alternate); B-006/B-007 (AC-012): the mobile Artifacts view (Phone Access, 390x844; run list → row → ⋮ → Artifacts) of an agent run and of
 //        a Team member. The phone pairs with a private-network URL (the server refuses loopback pairing URLs); the
 //        probe's browser routes that host, HTTP and WebSocket, to the probe backend. Each opened file records how many
 //        content requests the tab opening made (it selects the newest file) and how many the click made (a click on the
@@ -530,22 +530,26 @@ const freshMobilePage = async () => {
   page.on('response', (r) => { if (r.url().includes('/file-change-content')) contentResponses.push({ at: Date.now(), url: r.url().replace(mobileRemote(), stack.backendUrl), status: r.status() }); });
   await page.goto(`${stack.frontendUrl}/mobile?pairing=${encodeURIComponent(pairing)}`, { waitUntil: 'domcontentloaded', timeout: 180000 });
   await page.locator('[data-testid="mobile-pair-button"]').click({ timeout: 120000 });
-  await page.locator('[data-testid="mobile-home"]').waitFor({ timeout: 120000 }).catch(async (e) => { throw Object.assign(new Error(`mobile home: ${e.message}`), { details: await dumpTestIds() }); });
+  await page.locator('[data-testid="mobile-run-tree"]').waitFor({ timeout: 120000 }).catch(async (e) => { throw Object.assign(new Error(`mobile run list: ${e.message}`), { details: await dumpTestIds() }); });
 };
-/** Mobile: choose the run in the work picker (search its summary, the first message, which names the file), open Artifacts, open the file. */
-const mobileOpenArtifact = async (segment, runId, file) => {
-  await page.getByText('Choose work', { exact: true }).click();
-  await page.locator(`[data-testid="mobile-context-segment-${segment}"]`).click();
-  await page.locator('[data-testid="mobile-context-search"]').fill(file.path);
-  const row = page.locator('[data-testid="mobile-context-list"] [data-testid="mobile-readable-work-row"]', { hasText: file.path }).first();
-  await row.waitFor({ timeout: 60000 }).catch(async (e) => { throw Object.assign(new Error(`work row: ${e.message}`), { details: await dumpTestIds() }); });
-  await row.click();
-  await page.locator('[data-testid="mobile-work-shell"]').waitFor({ timeout: 60000 });
+/**
+ * Mobile (autobyteus-277): the run's row in the run list opens its agent (a Team run opens its coordinator); ⋮ → Artifacts.
+ * One artifact shows directly; several are rows, and the file's row opens it.
+ */
+const mobileOpenArtifact = async (rowKey, file) => {
+  const row = page.locator(`[data-testid="mobile-run-row-${rowKey}"]`);
+  const older = page.locator('[data-testid="mobile-run-list-show-older"]');
+  if (!(await row.count()) && (await older.count()) && (await older.innerText()).startsWith('Show older')) await older.click();
+  await row.locator('[data-testid="mobile-run-open"]').click({ timeout: 60000 }).catch(async (e) => { throw Object.assign(new Error(`run row: ${e.message}`), { details: await dumpTestIds() }); });
+  await page.locator('[data-testid="mobile-run-screen"][data-state="open"]').waitFor({ timeout: 60000 });
   const mark = Date.now();
-  await page.locator('[data-testid="mobile-tab-artifacts"]').click();
-  const artifactRow = page.locator('[data-testid="mobile-artifact-row"]', { hasText: file.path }).first();
-  await artifactRow.waitFor({ timeout: 60000 }).catch(async (e) => { throw Object.assign(new Error(`artifact row: ${e.message}`), { details: await dumpTestIds() }); });
-  await artifactRow.click();
+  await page.locator('[data-testid="mobile-run-menu-button"]').click();
+  await page.locator('[data-testid="mobile-run-menu-artifacts"]').click();
+  await page.locator('[data-testid="mobile-artifacts-viewer"], [data-testid="mobile-artifacts-list"]').first().waitFor({ timeout: 60000 })
+    .catch(async (e) => { throw Object.assign(new Error(`artifacts: ${e.message}`), { details: await dumpTestIds() }); });
+  if (await page.locator('[data-testid="mobile-artifacts-list"]').count()) {
+    await page.locator('[data-testid="mobile-artifact-row"]', { hasText: file.path }).first().click();
+  }
   const viewerText = () => page.locator('[data-testid="mobile-artifacts-viewer"]').innerText();
   await until(`${file.label}: mobile viewer shows the file`, async () => (await viewerText()).includes(file.text), 60000)
     .catch(async (e) => { throw Object.assign(e, { details: { shown: await viewerText().catch(() => null), requests: contentResponses.filter((r) => r.at >= mark) } }); });
@@ -631,13 +635,13 @@ const journeys = [
   }, { allowContent404: true }],
   ['B-006', 'Mobile (Phone Access): an agent run\'s file opens in the mobile Artifacts view through the run route (AC-012, REQ-007)', async () => {
     await freshMobilePage();
-    const opened = await mobileOpenArtifact('recent', setup.hubRunId, fileOf('standalone run'));
+    const opened = await mobileOpenArtifact(`agent:${setup.hubRunId}`, fileOf('standalone run'));
     await shot('B-006-mobile-agent-run-file');
     return { opened, requests: expectOnlyOwnerRequests(opened.mark, [fileOf('standalone run')]) };
   }],
   ['B-007', 'Mobile (Phone Access): a Team run member\'s file opens in the mobile Artifacts view through the team route (AC-012, REQ-007)', async () => {
     await freshMobilePage();
-    const opened = await mobileOpenArtifact('recent', setup.teamRunId, fileOf('team configured member'));
+    const opened = await mobileOpenArtifact(`team:${setup.teamRunId}`, fileOf('team configured member'));
     await shot('B-007-mobile-team-member-file');
     return { opened, requests: expectOnlyOwnerRequests(opened.mark, [fileOf('team configured member')]) };
   }],

@@ -18,7 +18,7 @@
 //   LRL-004 (AC-006, SCN-007) A stopped Team run whose stored message log is damaged (one line overwritten while the
 //           backend is down): the run opens with its member rows; the Team tab shows "unavailable" with the reason;
 //           a message to the run (resume) is refused with the reason and the run stays stopped; on the phone (Phone
-//           Access, 390×844) the run's message screen shows unavailable with the reason.
+//           Access, 390×844: the run list → the Team run → ⋮ → Messages) the messages screen shows unavailable with the reason.
 //   LRL-005 (AC-002, REQ-002; the reload rule of SR-004…SR-006) A running Team opened in a fresh page with its Team tab
 //           shown: one participant request for the focused member (the live snapshot after the open read keeps the
 //           list); a message arriving live is shown once with no new request; after a stop and a resume from the
@@ -438,17 +438,15 @@ export function registerLargeRunsLoadLessCases(h) {
       const mobile = await phone.newPage()
       await mobile.goto(`${env().frontUrl}/mobile?pairing=${encodeURIComponent(new URL(session.mobileUrl).searchParams.get('pairing'))}`, { waitUntil: 'domcontentloaded', timeout: 180000 })
       await mobile.locator('[data-testid="mobile-pair-button"]').click({ timeout: 120000 })
-      await mobile.locator('[data-testid="mobile-home"]').waitFor({ timeout: 120000 })
-      await mobile.getByText('Choose work', { exact: true }).click()
-      await mobile.locator('[data-testid="mobile-context-segment-teams"]').click()
-      // The work row names the Team, or the run by its first message.
-      await mobile.locator('[data-testid="mobile-context-search"]').fill(t)
-      const workRow = mobile.locator('[data-testid="mobile-readable-work-row"]', { hasText: new RegExp(`${r.names.team}|LRL4-${t}`) }).first()
-      await workRow.waitFor({ timeout: 60000 })
-      await workRow.click({ timeout: 10000 }).catch(() => workRow.dispatchEvent('click'))
-      await mobile.locator('[data-testid="mobile-work-shell"]').waitFor({ timeout: 60000 })
-      await mobile.locator('[data-testid="mobile-tab-activity"]').click()
-      await mobile.locator('[data-testid="mobile-open-team-messages"]').click()
+      // The phone's run list (autobyteus-277): the Team run's row opens its coordinator; ⋮ → Messages.
+      await mobile.locator('[data-testid="mobile-run-tree"]').waitFor({ timeout: 120000 })
+      const teamRow = mobile.locator(`[data-testid="mobile-run-row-team:${r.teamRunId}"]`)
+      const older = mobile.locator('[data-testid="mobile-run-list-show-older"]')
+      if (!(await teamRow.count()) && (await older.count()) && (await older.innerText()).startsWith('Show older')) await older.click()
+      await teamRow.locator('[data-testid="mobile-run-open"]').click({ timeout: 60000 })
+      await mobile.locator('[data-testid="mobile-run-screen"][data-state="open"]').waitFor({ timeout: 60000 })
+      await mobile.locator('[data-testid="mobile-run-menu-button"]').click()
+      await mobile.locator('[data-testid="mobile-run-menu-messages"]').click()
       const phoneUnavailable = mobile.locator('[data-testid="mobile-team-messages-unavailable"]').first()
       await phoneUnavailable.waitFor({ timeout: 30000 })
       r.phoneText = (await phoneUnavailable.innerText()).replace(/\s+/g, ' ').trim()

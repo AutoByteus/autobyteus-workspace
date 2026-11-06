@@ -1,0 +1,240 @@
+{
+  "startedAt": "2026-11-06T14:42:11.441Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "beta": {
+      "port": 63526,
+      "nodeId": "srv_-b7mEAVK54EKfUc4Jb04mv527hUTL66l",
+      "serverName": "AutoByteus Desktop"
+    },
+    "alpha": {
+      "port": 63525,
+      "nodeId": "srv__zYxiSszwZMjK3hepmYPANAcgc3tub1p",
+      "serverName": "AutoByteus Desktop"
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_ef59c078718e46bea3b8962269609983",
+    "writerRun": "release_notes_writer_510f259f792b4a9ca7b68222a38e3aec",
+    "squadRun": "docs_review_team_f323f194010649c0ad601bf3bb91deb0",
+    "reviewer": "release_notes_writer_d9681dbd753d44eabe2c956ae1685c89",
+    "memberDelegated": "fact_checker_2caedbfe478c46e5bfed85db11716abe",
+    "remoteAgentRun": "publisher_a17e2486736d4d6e89d9db0246ef00fb",
+    "remoteTeamRun": "studio_team_6d6272840a25410d81ccc62f962b0f44",
+    "plain": [
+      "fact_checker_0280a709df0442cd9b6abb1445ae3d6f",
+      "fact_checker_708afb97a49847658ae3060830a73b0c",
+      "fact_checker_a89ec50b7a5740a3bec43d68680ecb03"
+    ],
+    "org": "delivery_org_a269bed958fd4dd5867e91c35bb0f353",
+    "orgPlanner": "release_notes_writer_96da3725015c49d5a9c80e9292a90506",
+    "reviewOrg": "review_org_6e5b74f9d31d43df9978f02924de458d",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_ddbb7292165647aa93508332b208815f",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_03e91d057b644b90a987dd3cb3750f8a",
+    "deliveryLead": "fact_checker_4dbfc758ae944b408381246feab85dd8",
+    "deliveryMate": "release_notes_writer_a2a0a78946f842b68339d70251f8d2f9",
+    "leadDelegated": "changelog_helper_c001f8b6f5b041b0a8b34fcaab461e49",
+    "approver": "approver_b76ac696de3c4a0ebe21eea36a563782",
+    "taskA": "launch-341db7-1",
+    "taskB": "launch-341db7-2"
+  },
+  "cases": {
+    "MSP-03": {
+      "result": "Pass",
+      "seconds": 8.8,
+      "results": [
+        {
+          "kind": "task agent",
+          "key": "agent:project_task_manager_ef59c078718e46bea3b8962269609983/agent:release_notes_writer_510f259f792b4a9ca7b68222a38e3aec",
+          "scrollBefore": 40,
+          "states": [
+            "opening:",
+            "open:release notes writer"
+          ],
+          "screen": {
+            "state": "open",
+            "name": "release notes writer",
+            "subtitle": "Idle · in Project Task Manager",
+            "query": "?screen=run"
+          },
+          "nameOk": true,
+          "composer": 1,
+          "marker": "PHONE-MSG-1-c03932",
+          "reached": true,
+          "shownOnPhone": true,
+          "sendErrors": [],
+          "scrollAfter": 40,
+          "markedRows": [
+            "agent:project_task_manager_ef59c078718e46bea3b8962269609983/agent:release_notes_writer_510f259f792b4a9ca7b68222a38e3aec (release notes writer)"
+          ],
+          "marked": "true"
+        },
+        {
+          "kind": "task-team member",
+          "key": "agent:project_task_manager_ef59c078718e46bea3b8962269609983/agent:release_notes_writer_d9681dbd753d44eabe2c956ae1685c89",
+          "scrollBefore": 80,
+          "states": [
+            "opening:",
+            "open:reviewer"
+          ],
+          "screen": {
+            "state": "open",
+            "name": "reviewer",
+            "subtitle": "Idle · in docs review team",
+            "query": "?screen=run"
+          },
+          "nameOk": true,
+          "composer": 1,
+          "marker": "PHONE-MSG-2-14cbc9",
+          "reached": true,
+          "shownOnPhone": true,
+          "sendErrors": [],
+          "scrollAfter": 80,
+          "markedRows": [
+            "agent:project_task_manager_ef59c078718e46bea3b8962269609983/agent:release_notes_writer_d9681dbd753d44eabe2c956ae1685c89 (reviewer)"
+          ],
+          "marked": "true"
+        },
+        {
+          "kind": "Team run (its coordinator)",
+          "key": "team:delivery_team_03e91d057b644b90a987dd3cb3750f8a",
+          "scrollBefore": 120,
+          "states": [
+            "opening:",
+            "open:lead"
+          ],
+          "screen": {
+            "state": "open",
+            "name": "lead",
+            "subtitle": "Idle · in Delivery Team",
+            "query": "?screen=run"
+          },
+          "nameOk": true,
+          "composer": 1,
+          "marker": "PHONE-MSG-3-b0161a",
+          "reached": true,
+          "shownOnPhone": true,
+          "sendErrors": [],
+          "scrollAfter": 120,
+          "markedRows": [
+            "team:delivery_team_03e91d057b644b90a987dd3cb3750f8a/agent:fact_checker_4dbfc758ae944b408381246feab85dd8 (lead)"
+          ],
+          "marked": "true"
+        },
+        {
+          "kind": "Org run (its first member)",
+          "key": "org:delivery_org_a269bed958fd4dd5867e91c35bb0f353",
+          "scrollBefore": 176,
+          "states": [
+            "list",
+            "opening:",
+            "open:planner"
+          ],
+          "screen": {
+            "state": "open",
+            "name": "planner",
+            "subtitle": "Idle · in Delivery Org",
+            "query": "?rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_a269bed958fd4dd5867e91c35bb0f353&mode=active&memberAddress=/planner&screen=run"
+          },
+          "nameOk": true,
+          "composer": 1,
+          "marker": "PHONE-MSG-4-a9f2df",
+          "reached": true,
+          "shownOnPhone": true,
+          "sendErrors": [],
+          "scrollAfter": 176,
+          "markedRows": [
+            "org:delivery_org_a269bed958fd4dd5867e91c35bb0f353/agent:release_notes_writer_96da3725015c49d5a9c80e9292a90506 (planner)"
+          ],
+          "marked": "true"
+        },
+        {
+          "kind": "Org run (first member a Team: its coordinator)",
+          "key": "org:review_org_6e5b74f9d31d43df9978f02924de458d",
+          "scrollBefore": 714,
+          "states": [
+            "list",
+            "opening:",
+            "open:reviewer"
+          ],
+          "screen": {
+            "state": "open",
+            "name": "reviewer",
+            "subtitle": "Stopped · in squad",
+            "query": "?rootSubjectKind=agent_org&definitionId=review-org&orgRunId=review_org_6e5b74f9d31d43df9978f02924de458d&mode=active&memberAddress=/squad&screen=run"
+          },
+          "nameOk": true,
+          "composer": 1,
+          "marker": "PHONE-MSG-5-16a283",
+          "reached": true,
+          "shownOnPhone": true,
+          "sendErrors": [],
+          "scrollAfter": 714,
+          "markedRows": [
+            "org:review_org_6e5b74f9d31d43df9978f02924de458d/agent:release_notes_writer_ddbb7292165647aa93508332b208815f (reviewer)"
+          ],
+          "marked": "true"
+        },
+        {
+          "kind": "Org member",
+          "key": "org:delivery_org_a269bed958fd4dd5867e91c35bb0f353/agent:release_notes_writer_96da3725015c49d5a9c80e9292a90506",
+          "scrollBefore": 40,
+          "states": [
+            "list",
+            "opening:",
+            "open:planner"
+          ],
+          "screen": {
+            "state": "open",
+            "name": "planner",
+            "subtitle": "Idle · in Delivery Org",
+            "query": "?rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_a269bed958fd4dd5867e91c35bb0f353&mode=active&memberAddress=/planner&screen=run"
+          },
+          "nameOk": true,
+          "composer": 1,
+          "marker": "PHONE-MSG-6-d4e5a7",
+          "reached": true,
+          "shownOnPhone": true,
+          "sendErrors": [],
+          "scrollAfter": 40,
+          "markedRows": [
+            "org:delivery_org_a269bed958fd4dd5867e91c35bb0f353/agent:release_notes_writer_96da3725015c49d5a9c80e9292a90506 (planner)"
+          ],
+          "marked": "true"
+        }
+      ],
+      "control": {}
+    }
+  },
+  "browserErrors": [
+    {
+      "case": "setup",
+      "line": "phone console: WebSocket connection to 'ws://localhost:8000/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "setup",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    }
+  ],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "summary": {
+    "cases": {
+      "MSP-03": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-06T14:42:55.016Z"
+}

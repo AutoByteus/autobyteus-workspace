@@ -1,0 +1,812 @@
+{
+  "startedAt": "2026-11-06T10:12:27.755Z",
+  "result": "Fail",
+  "node": "v22.23.1",
+  "servers": {
+    "beta": {
+      "port": 60254,
+      "nodeId": "srv_X999ekMfww7nyjkb1Qjd1ImiAj8n6CHM",
+      "serverName": "AutoByteus Desktop"
+    },
+    "alpha": {
+      "port": 60253,
+      "nodeId": "srv_iE9rJPHrS16r_am0TF8FHcDs36NvvePS",
+      "serverName": "AutoByteus Desktop"
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_983ae63e844243eb9338b9628637768b",
+    "writerRun": "release_notes_writer_b0a1dbafe7dd41d59b247da182363d74",
+    "squadRun": "docs_review_team_5f43c5a649784af0bff28701cee1eb8f",
+    "reviewer": null,
+    "memberDelegated": "fact_checker_22fc2c15f5634604aff58d4e3ac5969c",
+    "remoteAgentRun": "publisher_47e50c2599f24c4cab54dfaf31509b1b",
+    "remoteTeamRun": "studio_team_e41f1ca3fc6c4868ba8eee702628f5b5",
+    "plain": [
+      "fact_checker_91d5505182724df193bb13be0a9b85b5",
+      "fact_checker_d358a87f0dc54bfbb3b55f067f770f8e",
+      "fact_checker_08b8f375609f43cd9aca28641582fda5"
+    ],
+    "org": "delivery_org_4f6d49809ab44573869cd6bee63877e2",
+    "orgPlanner": "release_notes_writer_03ae63a966cd4f3993399f4f6108c7cb",
+    "delivery": "delivery_team_d42080d4b2bb49a3be83d1c5b5fc6a2b",
+    "deliveryLead": "fact_checker_e152fe1e831d421297dbc5c30a15183d",
+    "deliveryMate": "release_notes_writer_de046a04b9294de8968323e8002b9e58",
+    "leadDelegated": "changelog_helper_a25efa9147eb420fbf16f08097ed3444",
+    "approver": "approver_7a24b5eb116c4273bc7a8079a8866dcd",
+    "taskA": "launch-b43b35-1",
+    "taskB": "launch-b43b35-2"
+  },
+  "cases": {
+    "MSP-01": {
+      "result": "Pass",
+      "seconds": 11.5,
+      "desktopIds": [
+        "project_task_manager_983ae63e844243eb9338b9628637768b",
+        "approver_7a24b5eb116c4273bc7a8079a8866dcd",
+        "delivery_team_d42080d4b2bb49a3be83d1c5b5fc6a2b",
+        "delivery_org_4f6d49809ab44573869cd6bee63877e2",
+        "fact_checker_08b8f375609f43cd9aca28641582fda5",
+        "fact_checker_d358a87f0dc54bfbb3b55f067f770f8e",
+        "fact_checker_91d5505182724df193bb13be0a9b85b5"
+      ],
+      "phoneIds": [
+        "project_task_manager_983ae63e844243eb9338b9628637768b",
+        "approver_7a24b5eb116c4273bc7a8079a8866dcd",
+        "delivery_team_d42080d4b2bb49a3be83d1c5b5fc6a2b",
+        "delivery_org_4f6d49809ab44573869cd6bee63877e2",
+        "fact_checker_08b8f375609f43cd9aca28641582fda5",
+        "fact_checker_d358a87f0dc54bfbb3b55f067f770f8e",
+        "fact_checker_91d5505182724df193bb13be0a9b85b5"
+      ],
+      "foldBefore": "Show older (2)",
+      "foldOpen": "Show fewer",
+      "ages": [
+        "1m",
+        "1m",
+        "1m",
+        "1m",
+        "1m",
+        "1m",
+        "1m"
+      ],
+      "desktopFold": "Show older (2)"
+    },
+    "MSP-02": {
+      "result": "Fail",
+      "seconds": 59.5,
+      "error": "the task agent's state changes live on the list",
+      "details": [
+        "idle"
+      ]
+    },
+    "MSP-03": {
+      "result": "Fail",
+      "seconds": 119.6,
+      "error": "each kind opens its agent's conversation, a message from the phone reaches it, ← keeps the scroll and marks the row",
+      "details": {
+        "failures": [
+          {
+            "kind": "task agent",
+            "key": "agent:project_task_manager_983ae63e844243eb9338b9628637768b/agent:release_notes_writer_b0a1dbafe7dd41d59b247da182363d74",
+            "scrollBefore": 40,
+            "states": [
+              "opening:",
+              "open:release notes writer"
+            ],
+            "screen": {
+              "state": "open",
+              "name": "release notes writer",
+              "subtitle": "Idle · in Project Task Manager",
+              "query": "?screen=run"
+            },
+            "nameOk": true,
+            "composer": 1,
+            "marker": "PHONE-MSG-1-5642a8",
+            "reached": false,
+            "shownOnPhone": false,
+            "sendErrors": [
+              "phone console: Failed to send message via activeContextStore: TypeError: crypto.randomUUID is not a function",
+              "phone console: Error sending requirement: TypeError: crypto.randomUUID is not a function"
+            ],
+            "scrollAfter": 40,
+            "markedRows": [
+              "agent:project_task_manager_983ae63e844243eb9338b9628637768b/agent:release_notes_writer_b0a1dbafe7dd41d59b247da182363d74 (release notes writer)"
+            ],
+            "marked": "true"
+          },
+          {
+            "kind": "task-team member",
+            "key": "agent:project_task_manager_983ae63e844243eb9338b9628637768b/agent:release_notes_writer_7326c2271a474ba881ac6ead1f353860",
+            "scrollBefore": 80,
+            "states": [
+              "opening:",
+              "open:reviewer"
+            ],
+            "screen": {
+              "state": "open",
+              "name": "reviewer",
+              "subtitle": "Idle · in docs review team",
+              "query": "?screen=run"
+            },
+            "nameOk": true,
+            "composer": 1,
+            "marker": "PHONE-MSG-2-e5f083",
+            "reached": false,
+            "shownOnPhone": false,
+            "sendErrors": [
+              "phone console: Failed to send message via activeContextStore: TypeError: crypto.randomUUID is not a function",
+              "phone console: Error sending requirement: TypeError: crypto.randomUUID is not a function"
+            ],
+            "scrollAfter": 80,
+            "markedRows": [
+              "agent:project_task_manager_983ae63e844243eb9338b9628637768b/agent:release_notes_writer_7326c2271a474ba881ac6ead1f353860 (reviewer)"
+            ],
+            "marked": "true"
+          },
+          {
+            "kind": "Org run (its first member)",
+            "key": "org:delivery_org_4f6d49809ab44573869cd6bee63877e2",
+            "scrollBefore": 160,
+            "states": [
+              "list",
+              "opening:",
+              "none:",
+              "list"
+            ],
+            "screen": {
+              "state": null,
+              "query": "?rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_4f6d49809ab44573869cd6bee63877e2&mode=active"
+            },
+            "problem": "the run screen did not open"
+          },
+          {
+            "kind": "Org member",
+            "key": "org:delivery_org_4f6d49809ab44573869cd6bee63877e2/agent:release_notes_writer_03ae63a966cd4f3993399f4f6108c7cb",
+            "scrollBefore": 200,
+            "states": [
+              "opening:",
+              "open:planner"
+            ],
+            "screen": {
+              "state": "open",
+              "name": "planner",
+              "subtitle": "Idle · in Delivery Org",
+              "query": "?rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_4f6d49809ab44573869cd6bee63877e2&mode=active&memberAddress=/planner&screen=run"
+            },
+            "nameOk": true,
+            "composer": 1,
+            "marker": "PHONE-MSG-5-fe9eb5",
+            "reached": false,
+            "shownOnPhone": false,
+            "sendErrors": [
+              "phone console: Failed to send message via activeContextStore: TypeError: crypto.randomUUID is not a function",
+              "phone console: Error sending requirement: TypeError: crypto.randomUUID is not a function"
+            ],
+            "scrollAfter": 200,
+            "markedRows": [
+              "org:delivery_org_4f6d49809ab44573869cd6bee63877e2/agent:release_notes_writer_03ae63a966cd4f3993399f4f6108c7cb (planner)"
+            ],
+            "marked": "true"
+          }
+        ],
+        "control": {
+          "insecureContext": {
+            "isSecureContext": false,
+            "randomUUID": "undefined"
+          },
+          "reached": true,
+          "shownOnPhone": true
+        }
+      }
+    },
+    "MSP-04": {
+      "result": "Pass",
+      "seconds": 2.5,
+      "screen": {
+        "state": "open",
+        "name": "Approver",
+        "subtitle": "Idle",
+        "chip": null,
+        "query": "?screen=run"
+      },
+      "answer": {
+        "outcome": "selected",
+        "optionId": "allow-once"
+      },
+      "commandShown": true
+    },
+    "MSP-05": {
+      "result": "Pass",
+      "seconds": 6.1,
+      "snapshots": [
+        {
+          "state": "opening",
+          "name": null,
+          "opening": true,
+          "buttons": [
+            "Back to runs"
+          ]
+        },
+        {
+          "state": "open",
+          "name": "lead",
+          "opening": false,
+          "buttons": [
+            "Back to runs",
+            "More",
+            "Upload files",
+            "Send message"
+          ]
+        }
+      ],
+      "forward": {
+        "state": "open",
+        "name": "lead",
+        "subtitle": "Idle · in Delivery Team",
+        "chip": null,
+        "query": "?screen=run"
+      },
+      "orgQuery": "?rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_4f6d49809ab44573869cd6bee63877e2&mode=active&memberAddress=/planner&screen=run",
+      "listQuery": "?rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_4f6d49809ab44573869cd6bee63877e2&mode=active&memberAddress=/planner",
+      "orgMarked": "true",
+      "afterReload": "?rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_4f6d49809ab44573869cd6bee63877e2&mode=active&memberAddress=/planner",
+      "second": {
+        "state": "open",
+        "name": "lead",
+        "subtitle": "Idle · in Delivery Team",
+        "chip": null,
+        "query": "?screen=run"
+      }
+    },
+    "MSP-06": {
+      "result": "Fail",
+      "seconds": 69.1,
+      "error": "a text message from the phone reaches the run on beta and its answer shows live",
+      "details": {
+        "onBeta": false,
+        "live": false,
+        "sendErrors": [
+          "phone console: Failed to send message via activeContextStore: TypeError: crypto.randomUUID is not a function",
+          "phone console: Error sending requirement: TypeError: crypto.randomUUID is not a function"
+        ]
+      }
+    },
+    "MSP-07": {
+      "result": "Pass",
+      "seconds": 43.9,
+      "freshAgent": "Project Task Manager",
+      "orgMarked": "true",
+      "orgListQuery": "?rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_4f6d49809ab44573869cd6bee63877e2&mode=active&memberAddress=/planner",
+      "orgAgent": "Release Notes Writer",
+      "agentOptions": [
+        "Daily Assistant General-purpose agent for practical tasks, with awareness of available specialist agents and teams.",
+        "Project Task Manager Project Task Manager (phone probe)",
+        "Release Notes Writer Release Notes Writer (phone probe)",
+        "Fact Checker Fact Checker (phone probe)",
+        "Changelog Helper Changelog Helper (phone probe)",
+        "Approver Approver (phone probe)"
+      ],
+      "factCheckerReadiness": "Choose a model before creating the run.",
+      "launchDisabledWhenMissing": true,
+      "sheets": {
+        "mobile-run-workspace-select": [
+          "workspace /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-el9x3T/alpha/workspace",
+          "Temp Workspace /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-el9x3T/alpha/data/temp_workspace"
+        ],
+        "blankPathOpenDisabled": true,
+        "badPath": {
+          "error": null,
+          "value": "folder-277",
+          "sheetOpen": 0
+        },
+        "mobile-run-runtime-select": [
+          "AutoByteus",
+          "Codex App Server",
+          "Claude Agent SDK",
+          "Antigravity CLI",
+          "Grok Build"
+        ],
+        "mobile-run-model-select": [
+          "claude-fable-5",
+          "claude-fable-5-1",
+          "claude-haiku-5-5",
+          "claude-opus-5",
+          "claude-opus-5-5",
+          "claude-sonnet-5",
+          "claude-sonnet-5-5",
+          "deepseek-v4-flash"
+        ]
+      },
+      "statesDuringFirst": [
+        "open"
+      ],
+      "newRunId": "project_task_manager_406544d908d148c3a46a79b527d5010c",
+      "top": {
+        "key": "agent:project_task_manager_406544d908d148c3a46a79b527d5010c",
+        "depth": 0,
+        "expanded": null,
+        "current": "true",
+        "status": "idle",
+        "name": "Project Task Manager",
+        "title": "First message. Marker NEWRUN-FIRST-aa31c8",
+        "chip": null,
+        "unreachable": false,
+        "age": "now",
+        "buttons": [
+          "mobile-run-open"
+        ],
+        "label": "Project Task Manager, First message. Marker NEWRUN-FIRST-aa31c8, Idle"
+      }
+    },
+    "MSP-08": {
+      "result": "Pass",
+      "seconds": 7.5,
+      "items": [
+        [
+          "mobile-run-menu-artifacts",
+          "Artifacts"
+        ],
+        [
+          "mobile-run-menu-files",
+          "Files"
+        ],
+        [
+          "mobile-run-menu-messages",
+          "Messages"
+        ],
+        [
+          "mobile-run-menu-activity",
+          "Activity"
+        ]
+      ],
+      "artifacts": {
+        "direct": 1,
+        "list": 0,
+        "title": "Artifacts",
+        "text": true
+      },
+      "filesTop": [
+        "docs",
+        "src",
+        "notes.md",
+        "README.md"
+      ],
+      "filters": 0,
+      "pathLine": "workspace docs",
+      "attach": 0,
+      "searchRows": [
+        "app.ts src/app.ts"
+      ],
+      "messages": [
+        "To mate Nov 6, 10:12 AM Read the guide first. Marker TEAM-NOTE. guide.md"
+      ],
+      "referenceText": true,
+      "activity": [
+        "generate_image generate_image success"
+      ],
+      "plainItems": [
+        "Artifacts",
+        "Files",
+        "Activity"
+      ],
+      "artifactsEmpty": "No Artifacts yet Generated or edited files for this run will appear here as they become available.",
+      "activityEmpty": "No activity yet",
+      "remoteArtifacts": "The files this run wrote are on beta-node. Open it in that node's window to see them.",
+      "remoteFiles": "The files of this run are on beta-node. Open it in that node's window to see them."
+    },
+    "MSP-14": {
+      "result": "Pass",
+      "seconds": 1.3,
+      "gone": true,
+      "reloaded": false
+    },
+    "MSP-10": {
+      "result": "Pass",
+      "seconds": 4.9,
+      "forbidden": [],
+      "tabs": 0,
+      "rowButtons": [
+        "mobile-run-open",
+        "mobile-run-toggle"
+      ],
+      "noticeText": "Unsupported on phone\n\nThe desktop workspace isn’t on the phone. Your runs are here.",
+      "noticeAbove": true,
+      "desktopRoute": {
+        "url": "/mobile/?unsupported=desktopWorkspace",
+        "notice": "Unsupported on phone\n\nThe desktop workspace isn’t on the phone. Your runs are here."
+      }
+    },
+    "MSP-11": {
+      "result": "Fail",
+      "seconds": 37.6,
+      "error": "every phone-owned control ≥ 44×44, no horizontal scroll, Back walks the screens",
+      "details": [
+        "390x844 file-open: docs 41×44",
+        "390x844 reference-open: BUTTON 28×28",
+        "390x844 reference-open: BUTTON 28×28",
+        "390x844 reference-open: BUTTON 28×28",
+        "360x800 file-open: docs 41×44",
+        "360x800 reference-open: BUTTON 28×28",
+        "360x800 reference-open: BUTTON 28×28",
+        "360x800 reference-open: BUTTON 28×28"
+      ]
+    },
+    "MSP-12": {
+      "result": "Pass",
+      "seconds": 68.9,
+      "onList": [
+        {
+          "dt": 3148,
+          "window": null,
+          "status": 200,
+          "bytes": 6599
+        },
+        {
+          "dt": 8103,
+          "window": null,
+          "status": 200,
+          "bytes": 6599
+        },
+        {
+          "dt": 13113,
+          "window": null,
+          "status": 200,
+          "bytes": 6599
+        }
+      ],
+      "onRun": [],
+      "onView": [],
+      "afterBack": [
+        {
+          "dt": 492,
+          "window": null,
+          "status": 200,
+          "bytes": 6599
+        },
+        {
+          "dt": 5514,
+          "window": null,
+          "status": 200,
+          "bytes": 6599
+        }
+      ],
+      "hidden": [],
+      "afterShown": [
+        {
+          "dt": 38,
+          "window": null,
+          "status": 200,
+          "bytes": 6599
+        },
+        {
+          "dt": 5033,
+          "window": null,
+          "status": 200,
+          "bytes": 6599
+        }
+      ],
+      "backAt": 1793960444887,
+      "shownAt": 1793960464779,
+      "bytesPerRead": {
+        "min": 6178,
+        "median": 6206,
+        "max": 6608
+      },
+      "firstRowsMs": 438,
+      "reads": 74
+    },
+    "MSP-09": {
+      "result": "Fail",
+      "seconds": 19.7,
+      "error": "unpair: the confirmation on top, then the pairing screen",
+      "details": {
+        "dialogName": "AutoByteus Desktop",
+        "info": {
+          "name": "AutoByteus Desktop",
+          "url": "http://192.168.77.10:60253",
+          "status": "Connected",
+          "peers": [
+            "beta-node 2 agents · 1 teams"
+          ]
+        },
+        "afterCheck": "Connected",
+        "sheetDown": "Not reachable",
+        "barDown": "Not reachable",
+        "bannerDown": "Can’t reach AutoByteus Desktop. Check",
+        "rowsWhileDown": 17,
+        "c06": {
+          "bar": "Connected",
+          "banner": 0,
+          "rows": 17,
+          "pollsAfterBack": 6
+        },
+        "sheetBack": "Connected",
+        "barBack": "Connected",
+        "bannerBack": 0,
+        "confirmText": "Unpair this phone? This removes only the local phone session. Use desktop Phone Access to revoke credentials for all devices. Cancel Unpair",
+        "confirmOnTop": {
+          "onTop": false,
+          "hit": "mobile-unpair"
+        },
+        "sessionLeft": null
+      }
+    },
+    "MSP-13": {
+      "result": "Pass",
+      "seconds": 19.3,
+      "reads": [
+        {
+          "at": 1793960492270,
+          "label": "phone-unknown-credential",
+          "case": "MSP-13",
+          "op": "ListWorkspaceRunHistory",
+          "window": null,
+          "status": 401,
+          "bytes": 123
+        }
+      ],
+      "onPairing": 1,
+      "revokedAll": 200,
+      "revokedShows": {
+        "pairing": false,
+        "list": "error",
+        "bar": "Connected"
+      },
+      "revokedReads": [
+        "ListWorkspaceRunHistory 403",
+        "ListCollaborationRootHistory 403",
+        "GetAllWorkspaces 403",
+        "GetAgentDefinitions 403",
+        "GetAgentTeamDefinitions 403",
+        "GetAgentOrgDefinitions 403"
+      ]
+    }
+  },
+  "browserErrors": [
+    {
+      "case": "setup",
+      "line": "phone console: WebSocket connection to 'ws://localhost:8000/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "setup",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-03",
+      "line": "phone console: Failed to send message via activeContextStore: TypeError: crypto.randomUUID is not a function\n    at Y (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:1652:19385)\n    at Object.send (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:1652:20629)\n    at Proxy.send (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:1891:77558)\n    at Proxy.C (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:82:2314)\n    at Object.send (http://192.168.77.10:60253/mobile/_nuxt/O8KUbCfl.js:2:41647)\n    at re (http://192.168.77.10:60253/mobile/_nuxt/O8KUbCfl.js:2:36271)\n    at N (http://192.168.77.10:60253/mobile/_nuxt/O8KUbCfl.js:2:36544)\n    at uu (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:2:22736)\n    at yo (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:2:22807)\n    at cj (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:4:16681)",
+      "known": false
+    },
+    {
+      "case": "MSP-03",
+      "line": "phone console: Error sending requirement: TypeError: crypto.randomUUID is not a function\n    at Y (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:1652:19385)\n    at Object.send (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:1652:20629)\n    at Proxy.send (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:1891:77558)\n    at Proxy.C (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:82:2314)\n    at Object.send (http://192.168.77.10:60253/mobile/_nuxt/O8KUbCfl.js:2:41647)\n    at re (http://192.168.77.10:60253/mobile/_nuxt/O8KUbCfl.js:2:36271)\n    at N (http://192.168.77.10:60253/mobile/_nuxt/O8KUbCfl.js:2:36544)\n    at uu (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:2:22736)\n    at yo (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:2:22807)\n    at cj (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:4:16681)",
+      "known": false
+    },
+    {
+      "case": "MSP-03",
+      "line": "phone console: Failed to send message via activeContextStore: TypeError: crypto.randomUUID is not a function\n    at Y (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:1652:19385)\n    at Object.send (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:1652:20629)\n    at Proxy.send (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:1891:77558)\n    at Proxy.C (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:82:2314)\n    at Object.send (http://192.168.77.10:60253/mobile/_nuxt/O8KUbCfl.js:2:41647)\n    at re (http://192.168.77.10:60253/mobile/_nuxt/O8KUbCfl.js:2:36271)\n    at N (http://192.168.77.10:60253/mobile/_nuxt/O8KUbCfl.js:2:36544)\n    at uu (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:2:22736)\n    at yo (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:2:22807)\n    at cj (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:4:16681)",
+      "known": false
+    },
+    {
+      "case": "MSP-03",
+      "line": "phone console: Error sending requirement: TypeError: crypto.randomUUID is not a function\n    at Y (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:1652:19385)\n    at Object.send (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:1652:20629)\n    at Proxy.send (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:1891:77558)\n    at Proxy.C (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:82:2314)\n    at Object.send (http://192.168.77.10:60253/mobile/_nuxt/O8KUbCfl.js:2:41647)\n    at re (http://192.168.77.10:60253/mobile/_nuxt/O8KUbCfl.js:2:36271)\n    at N (http://192.168.77.10:60253/mobile/_nuxt/O8KUbCfl.js:2:36544)\n    at uu (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:2:22736)\n    at yo (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:2:22807)\n    at cj (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:4:16681)",
+      "known": false
+    },
+    {
+      "case": "MSP-03",
+      "line": "phone console: Failed to send message via activeContextStore: TypeError: crypto.randomUUID is not a function\n    at N (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:1891:40017)\n    at Object.ue [as send] (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:1891:41363)\n    at Proxy.send (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:1891:77558)\n    at Proxy.C (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:82:2314)\n    at Object.send (http://192.168.77.10:60253/mobile/_nuxt/O8KUbCfl.js:2:41647)\n    at re (http://192.168.77.10:60253/mobile/_nuxt/O8KUbCfl.js:2:36271)\n    at N (http://192.168.77.10:60253/mobile/_nuxt/O8KUbCfl.js:2:36544)\n    at uu (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:2:22736)\n    at yo (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:2:22807)\n    at cj (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:4:16681)",
+      "known": false
+    },
+    {
+      "case": "MSP-03",
+      "line": "phone console: Error sending requirement: TypeError: crypto.randomUUID is not a function\n    at N (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:1891:40017)\n    at Object.ue [as send] (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:1891:41363)\n    at Proxy.send (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:1891:77558)\n    at Proxy.C (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:82:2314)\n    at Object.send (http://192.168.77.10:60253/mobile/_nuxt/O8KUbCfl.js:2:41647)\n    at re (http://192.168.77.10:60253/mobile/_nuxt/O8KUbCfl.js:2:36271)\n    at N (http://192.168.77.10:60253/mobile/_nuxt/O8KUbCfl.js:2:36544)\n    at uu (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:2:22736)\n    at yo (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:2:22807)\n    at cj (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:4:16681)",
+      "known": false
+    },
+    {
+      "case": "MSP-06",
+      "line": "phone console: Failed to send message via activeContextStore: TypeError: crypto.randomUUID is not a function\n    at Y (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:1652:19385)\n    at Object.send (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:1652:20629)\n    at Proxy.send (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:1891:77558)\n    at Proxy.C (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:82:2314)\n    at Object.send (http://192.168.77.10:60253/mobile/_nuxt/O8KUbCfl.js:2:41647)\n    at re (http://192.168.77.10:60253/mobile/_nuxt/O8KUbCfl.js:2:36271)\n    at N (http://192.168.77.10:60253/mobile/_nuxt/O8KUbCfl.js:2:36544)\n    at uu (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:2:22736)\n    at yo (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:2:22807)\n    at cj (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:4:16681)",
+      "known": false
+    },
+    {
+      "case": "MSP-06",
+      "line": "phone console: Error sending requirement: TypeError: crypto.randomUUID is not a function\n    at Y (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:1652:19385)\n    at Object.send (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:1652:20629)\n    at Proxy.send (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:1891:77558)\n    at Proxy.C (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:82:2314)\n    at Object.send (http://192.168.77.10:60253/mobile/_nuxt/O8KUbCfl.js:2:41647)\n    at re (http://192.168.77.10:60253/mobile/_nuxt/O8KUbCfl.js:2:36271)\n    at N (http://192.168.77.10:60253/mobile/_nuxt/O8KUbCfl.js:2:36544)\n    at uu (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:2:22736)\n    at yo (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:2:22807)\n    at cj (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:4:16681)",
+      "known": false
+    },
+    {
+      "case": "MSP-09",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-09",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-09",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-09",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-09",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-09",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-09",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-09",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-09",
+      "line": "phone-unpair console: WebSocket connection to 'ws://localhost:8000/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-unknown-credential console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": false
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-unknown-credential console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": false
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-unknown-credential console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": false
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-unknown-credential console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": false
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-unknown-credential console: Failed to fetch all workspace metadata: ApolloError: Response not successful: Received status code 401\n    at new t (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:84:153)\n    at http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:88:80744\n    at d (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:83:8520)\n    at http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:83:8435\n    at new Promise (<anonymous>)\n    at Object.then (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:83:8402)\n    at Object.error (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:83:8530)\n    at gx (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:83:1949)\n    at df (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:83:2318)\n    at t.error (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:83:2891)",
+      "known": false
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-unknown-credential console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": false
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-unknown-credential console: Failed to fetch agent definitions: ApolloError: Response not successful: Received status code 401\n    at new t (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:84:153)\n    at http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:88:80744\n    at d (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:83:8520)\n    at http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:83:8435\n    at new Promise (<anonymous>)\n    at Object.then (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:83:8402)\n    at Object.error (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:83:8530)\n    at gx (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:83:1949)\n    at df (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:83:2318)\n    at t.error (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:83:2891)",
+      "known": false
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-unknown-credential console: Failed to fetch agent team definitions: ApolloError: Response not successful: Received status code 401\n    at new t (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:84:153)\n    at http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:88:80744\n    at d (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:83:8520)\n    at http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:83:8435\n    at new Promise (<anonymous>)\n    at Object.then (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:83:8402)\n    at Object.error (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:83:8530)\n    at gx (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:83:1949)\n    at df (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:83:2318)\n    at t.error (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:83:2891)",
+      "known": false
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-unknown-credential console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": false
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-revoked console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": false
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-revoked console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": false
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-revoked console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": false
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-revoked console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": false
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-revoked console: Failed to fetch all workspace metadata: ApolloError: Response not successful: Received status code 403\n    at new t (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:84:153)\n    at http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:88:80744\n    at d (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:83:8520)\n    at http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:83:8435\n    at new Promise (<anonymous>)\n    at Object.then (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:83:8402)\n    at Object.error (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:83:8530)\n    at gx (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:83:1949)\n    at df (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:83:2318)\n    at t.error (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:83:2891)",
+      "known": false
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-revoked console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": false
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-revoked console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": false
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-revoked console: Failed to fetch agent definitions: ApolloError: Response not successful: Received status code 403\n    at new t (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:84:153)\n    at http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:88:80744\n    at d (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:83:8520)\n    at http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:83:8435\n    at new Promise (<anonymous>)\n    at Object.then (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:83:8402)\n    at Object.error (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:83:8530)\n    at gx (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:83:1949)\n    at df (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:83:2318)\n    at t.error (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:83:2891)",
+      "known": false
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-revoked console: Failed to fetch agent team definitions: ApolloError: Response not successful: Received status code 403\n    at new t (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:84:153)\n    at http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:88:80744\n    at d (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:83:8520)\n    at http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:83:8435\n    at new Promise (<anonymous>)\n    at Object.then (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:83:8402)\n    at Object.error (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:83:8530)\n    at gx (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:83:1949)\n    at df (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:83:2318)\n    at t.error (http://192.168.77.10:60253/mobile/_nuxt/CnEL65F6.js:83:2891)",
+      "known": false
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": false
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": false
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-revoked console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": false
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-revoked console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": false
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": false
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": false
+    }
+  ],
+  "network": {
+    "historyReads": 74
+  },
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "summary": {
+    "cases": {
+      "MSP-01": "Pass",
+      "MSP-02": "Fail",
+      "MSP-03": "Fail",
+      "MSP-04": "Pass",
+      "MSP-05": "Pass",
+      "MSP-06": "Fail",
+      "MSP-07": "Pass",
+      "MSP-08": "Pass",
+      "MSP-14": "Pass",
+      "MSP-10": "Pass",
+      "MSP-11": "Fail",
+      "MSP-12": "Pass",
+      "MSP-09": "Fail",
+      "MSP-13": "Pass"
+    },
+    "unknownBrowserErrors": 32
+  },
+  "finishedAt": "2026-11-06T10:22:02.057Z"
+}

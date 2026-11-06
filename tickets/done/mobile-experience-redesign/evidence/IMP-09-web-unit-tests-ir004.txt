@@ -1,0 +1,7 @@
+# IMP-09 web unit and component tests, IR-004 (implementation engineer, autobyteus-277)
+# Command: pnpm -C autobyteus-web test:nuxt --run
+# Commit: 400457d5f7 (run on its tree before the commit was made); environment: macOS, Node v22.23.1; date 2026-11-06T14:20Z
+# Excerpt:
+ Test Files  701 passed (701)
+      Tests  5198 passed | 2 skipped (5200)
+   Duration  246.50s (transform 26.96s, setup 1618.91s, collect 164.09s, tests 74.01s, environment 142.46s, prepare 87.83s)

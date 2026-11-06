@@ -1,0 +1,7 @@
+# IMP-01 web unit and component tests (implementation engineer, autobyteus-277)
+# Command: pnpm -C autobyteus-web test:nuxt --run
+# Commit: 599002ecbf; environment: macOS, Node v22.23.1, this worktree after pnpm install --frozen-lockfile, server prebuild, nuxt prepare; date 2026-11-06T08:40Z
+# Excerpt (the full log is not committed; it is /tmp/ie277/test-nuxt-full-2.log on the implementation machine):
+ Test Files  700 passed (700)
+      Tests  5190 passed | 2 skipped (5192)
+   Duration  349.42s (transform 37.17s, setup 2327.69s, collect 240.41s, tests 93.53s, environment 206.10s, prepare 117.12s)

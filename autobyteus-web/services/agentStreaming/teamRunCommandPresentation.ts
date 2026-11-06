@@ -4,13 +4,9 @@ import type {
   InterruptCommandTransportFailure,
   InterruptGenerationCommandAckPayload,
 } from '~/services/agentStreaming';
+import { createRandomId } from '~/utils/randomId';
 
-export const buildClientMessageId = (): string => {
-  const randomId = globalThis.crypto?.randomUUID?.();
-  return randomId
-    ? `client_${randomId}`
-    : `client_${Date.now()}_${Math.random().toString(36).slice(2)}`;
-};
+export const buildClientMessageId = (): string => `client_${createRandomId()}`;
 
 export const buildClientInterruptCommandId = (): string =>
   buildClientMessageId().replace(/^client_/, 'client_interrupt_');
