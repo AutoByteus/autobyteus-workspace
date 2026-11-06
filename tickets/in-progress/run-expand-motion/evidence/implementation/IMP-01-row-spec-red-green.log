@@ -1,0 +1,18 @@
+# Check: IMP-01
+# Command: cd autobyteus-web && env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR="$TMPDIR" NUXT_TEST=true pnpm exec vitest run components/runList/__tests__/RunListRow.agent.spec.ts — red with RunListRow.vue from 4500e7278d, green as committed
+# Commit: red: c5cc87d89d with RunListRow.vue from base 4500e7278d; green: 7cc31409af
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28 via corepack, Google Chrome headless (playwright-core); env -i PATH HOME=<fresh mktemp dir> TMPDIR (TESTING.md isolation)
+# Date: 2026-11-06 CET
+# Full output: this file
+
+## Red: base RunListRow (v-show)
+   ✓ RunListRow: an Agent run's delegated rows (autobyteus-390) > expanded at first: the stored delegated rows load once and show; the disclosure says expanded 31ms
+   × RunListRow: an Agent run's delegated rows (autobyteus-390) > fold removes the rows from the DOM (not only hidden); unfold shows the same rows again without a second read (R-01) 22ms
+   × RunListRow: an Agent run's delegated rows (autobyteus-390) > the disclosure button folds and unfolds it 16ms
+   × RunListRow: an Agent run's delegated rows (autobyteus-390) > a folded Agent row renders no Team or Org tree in its place 13ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+      Tests  3 failed | 1 passed (4)
+
+## Green: the fix
+ ✓ components/runList/__tests__/RunListRow.agent.spec.ts (4 tests) 98ms
+      Tests  4 passed (4)
