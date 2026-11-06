@@ -1,0 +1,26 @@
+# Check: IMP-05
+# Steps: aapt2 dump permissions / xmltree on the before and after debug APKs
+# Build: before: 3bf9240d42 (unchanged base); after: worktree with the manifest change (committed as the implementation commit)
+# Environment: Emulator autobyteus277_api35 (Pixel 7 profile, 1080x2400, 136 px top cutout, Android 15 / API 35, google_apis arm64), started -no-window -wipe-data; debug APK built in this worktree; isolated test node abx415-rotation-node (autobyteus/autobyteus-server:beta 9c5aa01bb2fc, -p 127.0.0.1:62261:8000, fresh volumes, test data only) reached from the emulator at http://10.0.2.2:62261, paired through its own REST routes
+# Date: 2026-11-06
+
+## before permissions
+package: org.autobyteus.mobile
+uses-permission: name='android.permission.INTERNET'
+uses-permission: name='android.permission.ACCESS_NETWORK_STATE'
+uses-permission: name='android.permission.CAMERA'
+permission: org.autobyteus.mobile.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+uses-permission: name='org.autobyteus.mobile.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION'
+## before MainActivity configChanges
+(none)
+## after permissions
+package: org.autobyteus.mobile
+uses-permission: name='android.permission.INTERNET'
+uses-permission: name='android.permission.ACCESS_NETWORK_STATE'
+uses-permission: name='android.permission.CAMERA'
+permission: org.autobyteus.mobile.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+uses-permission: name='org.autobyteus.mobile.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION'
+## after MainActivity configChanges
+            A: http://schemas.android.com/apk/res/android:configChanges(0x0101001f)=0x00000df0
+## permissions identical before and after
+0xdf0 = keyboard 0x10 | keyboardHidden 0x20 | navigation 0x40 | orientation 0x80 | screenLayout 0x100 | screenSize 0x400 | smallestScreenSize 0x800
