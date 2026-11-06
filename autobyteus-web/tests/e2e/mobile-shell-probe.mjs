@@ -17,18 +17,25 @@
 // Task Manager" (PTM) with a Project and two Tasks: Task A to the agent "Release Notes Writer" (a task agent), Task B to the
 // Team "Docs Review Team" whose coordinator delegates further (a member's delegated work); the PTM also delegates to beta's
 // /publisher and /studio_team (remote runs). A Team run "Delivery Team" (its lead writes a file and messages its mate with a
-// file reference), an Org run "Delivery Org", the Grok run "Approver", and plain "Fact Checker" runs (more than five
-// top-level runs in all).
+// file reference, and delegates a task agent of its own), an Org run "Delivery Org" (first member an agent), an Org run
+// "Review Org" (first member a Team), the Grok run "Approver", and plain "Fact Checker" runs (more than five top-level runs).
+// The phone's origin is a private HTTP address, not a secure context (no `crypto.randomUUID`), as on a trusted
+// LAN/tailnet pairing (TESTING.md, phone changes).
 //
 // Cases (phone at 390×844 unless named):
 //   MSP-01 AC-001  The same runs and order as the desktop Runs view of the same node; newest 5, "Show older (N)", "Show
 //                  fewer"; ages on top-level rows.
-//   MSP-02 AC-002  The PTM run's tree: the task agent and the task team under it, the team folded with its members, the
-//                  coordinator's own delegated work under it, the remote rows with their node chip; live states (a dot
-//                  changes while the task agent works, with no reload).
-//   MSP-03 AC-003  A tap on the task agent, a task-team member, the Team run (its coordinator) and the Org run (its first
-//                  member): each opens that agent's conversation with its composer; a message sent from the phone reaches
-//                  that run on the node; ← returns to the list at the same scroll with the row marked.
+//   MSP-02 AC-002, AC-002a  The PTM run's tree: the task agent and the task team under it, the team folded with its
+//                  members, the remote rows with their node chip; a Team member's task agent beside the member, as on the
+//                  desktop (DEC-009); second lines: a delegated task agent or task team shows its Task's summary, the same
+//                  line as the desktop Runs view; members show their name only (DEC-010); a delegated run stopped on the
+//                  node: its dot follows live while its root is open, and under a root not open it updates once that root
+//                  is opened (DEC-013).
+//   MSP-03 AC-003, AC-003a  A tap on the task agent, a task-team member, the Team run (its coordinator), the Org run whose
+//                  first member is an agent (that agent), the Org run whose first member is a Team (its coordinator) and an
+//                  Org member: each opens that agent's conversation with its composer; a message sent from the phone (a
+//                  non-secure origin) reaches that run on the node; ← returns to the list at the same scroll with the open
+//                  row marked.
 //   MSP-04 AC-003  A tool approval: a message from the phone to the Grok run raises an approval request; Approve on the
 //                  phone; the node answers the runtime with allow-once and the tool runs.
 //   MSP-05 AC-003  "Opening…" only while attaching: from the tap until the conversation, the run screen never shows another
@@ -37,10 +44,11 @@
 //   MSP-06 AC-004  The remote rows (chip, title, state); a remote run opens with its live conversation; a text message from
 //                  the phone reaches it on beta and its answer shows; no attachments, `@` opens nothing; beta down: red dot
 //                  and "Not reachable" on the rows, the notice with Retry when opened, other runs open; beta back: Retry.
-//   MSP-07 AC-006  "+" with nothing opened: the Project Task Manager preselected; after an Org member was opened and ←: the
-//                  row still marked and its agent preselected; every row's sheet; disabled with the reason; a bad folder
-//                  path's error; Create run opens the new run's Chat; its first message keeps the screen while its id
-//                  changes; the new run tops the list.
+//   MSP-07 AC-006  "+" with nothing opened: the Project Task Manager preselected; after the Org run was opened and ←: its
+//                  open member's row still marked and its agent preselected; every row's sheet; agents only; disabled with
+//                  the reason; a blank folder path cannot be opened (the node registers any other path, FU-004); Create
+//                  run opens the new run's Chat; its first message keeps the screen while its id changes; the new run tops
+//                  the list.
 //   MSP-08 AC-007  On the Team's coordinator: ⋮ items in order; Artifacts (one file shown directly), Files (tree, path,
 //                  search over the workspace, no filters, an opened file without Attach), Messages (a reference opens the
 //                  file), Activity (its tool calls); a standalone agent: no Messages, empty states; a remote run: "on that
@@ -56,7 +64,8 @@
 //   MSP-12 DS-001  The network log: reads with the complete window (`null`); a poll every 5 s only on the list; none on the
 //                  run screen or a view; none while the page is hidden; one read at once when shown again; bytes per read;
 //                  the time from opening to the listed runs (QR-003 on this stack).
-//   MSP-13 E-27    The device revoked on the node: the phone's next start lands on pairing after one history read.
+//   MSP-13 E-27    A credential the node does not know (401): the phone's next start reads once and lands on pairing.
+//                  A device revoked on the node (403) is recorded (outside the 401 rule, FU-003).
 //   MSP-14 AC-002  Task A DONE: the task agent's row leaves the list live.
 //
 // Prerequisites: `pnpm -C autobyteus-server-ts build` and `pnpm -C autobyteus-web build:mobile-web` (alpha serves
@@ -235,6 +244,10 @@ const setUp = async () => {
     instructions: 'Deliver.', handoffs: [], members: [{ memberName: 'planner', ref: ids.writer, refType: 'AGENT', refScope: 'SHARED' },
       { memberName: 'squad', ref: ids.squad, refType: 'AGENT_TEAM', refScope: 'SHARED' }] } })).createAgentOrgDefinition.id;
 
+  ids.reviewOrg = (await alpha.gql('mutation($i:CreateAgentOrgDefinitionInput!){createAgentOrgDefinition(input:$i){id}}', { i: { name: 'Review Org', description: 'Org whose first member is a Team (phone probe)',
+    instructions: 'Review.', handoffs: [], members: [{ memberName: 'squad', ref: ids.squad, refType: 'AGENT_TEAM', refScope: 'SHARED' },
+      { memberName: 'planner', ref: ids.writer, refType: 'AGENT', refScope: 'SHARED' }] } })).createAgentOrgDefinition.id;
+
   // The workspace the runs work in, with files for the Files screen.
   const workspace = path.join(root, 'alpha', 'workspace');
   await fs.mkdir(path.join(workspace, 'docs'), { recursive: true });
@@ -277,6 +290,12 @@ const setUp = async () => {
   assert(org.success, org.message);
   const orgTree = (await alpha.gql('query($id:String!){getAgentOrgRunConfig(orgRunId:$id){executionTree}}', { id: org.agentOrgRunId })).getAgentOrgRunConfig.executionTree;
   const orgPlanner = orgTree.rootOrg.members.find(member => member.address === '/planner')?.agentRunId;
+  const reviewOrg = (await alpha.gql('mutation($i:CreateAgentOrgRunInput!){createAgentOrgRun(input:$i){success message agentOrgRunId}}',
+    { i: { agentOrgDefinitionId: ids.reviewOrg, rootConfiguration: runConfig, agentOverrides: [], teamOverrides: [] } })).createAgentOrgRun;
+  assert(reviewOrg.success, reviewOrg.message);
+  const reviewOrgNodes = treeNodes((await alpha.gql('query($id:String!){getAgentOrgRunConfig(orgRunId:$id){executionTree}}', { id: reviewOrg.agentOrgRunId })).getAgentOrgRunConfig.executionTree);
+  const reviewOrgCoordinator = reviewOrgNodes.find(node => node.address?.endsWith('/reviewer') && node.agentRunId) ?? null;
+  assert(reviewOrgCoordinator, 'the Review Org squad\'s coordinator', reviewOrgNodes);
   await sendOver(wsUrl(`agent-org/${org.agentOrgRunId}`), { root_subject_kind: 'agent_org', root_run_id: org.agentOrgRunId, target_agent_run_id: orgPlanner,
     command_id: randomUUID(), message_id: randomUUID(), dedupe_key: randomUUID(), content: 'Plan the delivery. Marker ORG-PLANNER.', context_file_paths: [], image_urls: [] });
   await sleep(600);
@@ -336,16 +355,17 @@ const setUp = async () => {
   let memberDelegated = null;
   await waitFor('the reviewer\'s delegation', async () => {
     const nodes = treeNodes((await alpha.gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: ptm })).agentRunCollaboration);
-    reviewer = nodes.find(node => node.address === '/reviewer' && node.agentRunId)?.agentRunId ?? null;
+    reviewer = nodes.find(node => node.address?.endsWith('/reviewer') && node.agentRunId)?.agentRunId ?? null;
     memberDelegated = nodes.find(node => node.address === '/fact_checker' && node.agentRunId)?.agentRunId ?? null;
     stack.ptmTreeNodes = nodes;
     return Boolean(reviewer && memberDelegated);
   }, 60_000).catch(() => undefined);
 
   Object.assign(stack, { ids, workspace, runConfig, project, taskA, taskB, ptm, writerRun, squadRun, reviewer, memberDelegated, remoteAgentRun, remoteTeamRun,
-    spareRun, remoteAgentTitle, remoteTeamTitle, plain, org: org.agentOrgRunId, orgPlanner, delivery: delivery.teamRunId, deliveryLead, deliveryMate, leadDelegated, approver,
+    spareRun, remoteAgentTitle, remoteTeamTitle, plain, org: org.agentOrgRunId, orgPlanner, reviewOrg: reviewOrg.agentOrgRunId, reviewOrgCoordinator, delivery: delivery.teamRunId, deliveryLead, deliveryMate, leadDelegated, approver,
     notesPath, projection, agentSay, agentCall, leadProjection, wsUrl });
   evidence.runs = { ptm, writerRun, squadRun, reviewer, memberDelegated, remoteAgentRun, remoteTeamRun, plain, org: org.agentOrgRunId, orgPlanner,
+    reviewOrg: reviewOrg.agentOrgRunId, reviewOrgCoordinator,
     delivery: delivery.teamRunId, deliveryLead, deliveryMate, leadDelegated, approver, taskA: taskA.taskKey, taskB: taskB.taskKey };
 };
 
@@ -678,16 +698,23 @@ const runCases = async () => {
     await waitFor('the stopped run\'s dot to change', async () => (seen = await seenNow()).length >= 2, 30_000).catch(() => undefined);
     await page.evaluate(() => window.__statusObserver.disconnect());
     const liveOk = seen.length >= 2 && seen.some(status => status !== seen[0]);
-    const phoneTitles = { writer: writer.title, squad: squad.title, spare: (await rowsOf(page)).find(row => row.key === `${ptmKey}/agent:${stack.spareRun}`)?.title ?? null,
+    const allRows = await rowsOf(page);
+    const phoneTitles = { writer: writer.title, squad: squad.title, spare: allRows.find(row => row.key === `${ptmKey}/agent:${stack.spareRun}`)?.title ?? null,
       leadDelegated: childRow(teamRows, teamKey, 'changelog helper', 1)?.title ?? leadDelegatedNested?.title ?? null };
-    const facts = { phonePlace, desktopPlace, phoneTitles, desktopTitles, liveStatuses: seen, terminated, unselected: { seen: unselectedSeen, terminated: unselectedTerminated, afterRootOpened: unselectedAfterOpen },
+    const memberTitles = { lead: lead.title, mate: mate.title, reviewer: members[0]?.title ?? null, editor: members[1]?.title ?? null };
+    const desktopLine = label => desktopTitles[label]?.[2] ?? null;
+    const facts = { phonePlace, desktopPlace, phoneTitles, memberTitles, desktopTitles, liveStatuses: seen, terminated,
+      unselected: { seen: unselectedSeen, terminated: unselectedTerminated, afterRootOpened: unselectedAfterOpen },
       reloaded: (await page.evaluate(() => performance.getEntriesByType('navigation').length)) !== navigationsBefore,
       ptm, writer, squad, members, remoteAgent, remoteTeam, team: { teamRow, lead, mate, leadDelegatedNested }, orgRow, orgMembers: orgMembers.map(row => row.name),
       teamRows: teamRows.filter(row => row.key.startsWith(teamKey)).map(row => [row.name, row.depth]) };
     const failures = [
       [liveOk && !facts.reloaded, 'a delegated run\'s state changes live on the list (its root open)'],
-      [Boolean(leadDelegatedNested), 'a member\'s own delegated work under the member (REQ-002, VIS-002)'],
-      [Boolean(phoneTitles.writer && phoneTitles.spare), 'delegated rows show their title or Task line (spec Run row; VIS-001, 002)'],
+      [unselectedSeen.length === 1 && unselectedAfterOpen && unselectedAfterOpen !== unselectedSeen[0], 'under a root not open: the last-read state, updated once the root is opened (DEC-013)'],
+      [Boolean(childRow(teamRows, teamKey, 'changelog helper', 1)) && !leadDelegatedNested, 'a member\'s task agent beside the member, as on the desktop (DEC-009)'],
+      [phoneTitles.writer === 'Write the release notes.' && phoneTitles.squad === 'Review the docs site.', 'a task agent and a task team show their Task\'s summary (DEC-010)'],
+      [['writer', 'spare', 'leadDelegated'].every(label => phoneTitles[label] && phoneTitles[label] === desktopLine(label)), 'the same second line as the desktop Runs view'],
+      [Object.values(memberTitles).every(title => !title), 'members show one line, their name (DEC-010)'],
     ].filter(([ok]) => !ok).map(([, label]) => label);
     assert(failures.length === 0, failures.join('; '), facts);
     return facts;
@@ -702,9 +729,11 @@ const runCases = async () => {
     const kinds = [
       { kind: 'task agent', key: () => `${ptmKey}/agent:${stack.writerRun}`, name: 'release notes writer', parent: 'Project Task Manager', ids: { hostRunId: stack.ptm, memberAddress: '/release_notes_writer', agentRunId: stack.writerRun } },
       { kind: 'task-team member', key: async () => childRow(await rowsOf(page), squadKey, 'reviewer', 2)?.key, name: 'reviewer', parent: 'docs review team',
-        ids: { hostRunId: stack.ptm, memberAddress: '/docs_review_team/reviewer', agentRunId: stack.reviewer } },
+        ids: { hostRunId: stack.ptm, memberAddress: '/docs_review_team/reviewer', agentRunId: stack.reviewer, teamRunId: stack.squadRun } },
       { kind: 'Team run (its coordinator)', key: () => `team:${stack.delivery}`, name: 'lead', parent: 'Delivery Team', ids: { teamRunId: stack.delivery, agentRunId: stack.deliveryLead, runId: stack.deliveryLead } },
       { kind: 'Org run (its first member)', key: () => `org:${stack.org}`, name: 'planner', parent: 'Delivery Org', ids: { orgRunId: stack.org, agentRunId: stack.orgPlanner, memberAddress: '/planner', runId: stack.orgPlanner } },
+      { kind: 'Org run (first member a Team: its coordinator)', key: () => `org:${stack.reviewOrg}`, name: 'reviewer', parent: '(squad|Review Org)',
+        ids: { orgRunId: stack.reviewOrg, agentRunId: stack.reviewOrgCoordinator.agentRunId, memberAddress: stack.reviewOrgCoordinator.address, runId: stack.reviewOrgCoordinator.agentRunId } },
       { kind: 'Org member', key: () => `org:${stack.org}/agent:${stack.orgPlanner}`, name: 'planner', parent: 'Delivery Org', ids: { orgRunId: stack.org, agentRunId: stack.orgPlanner, memberAddress: '/planner', runId: stack.orgPlanner } },
     ];
     const results = [];
@@ -954,7 +983,7 @@ const runCases = async () => {
     // (b) An Org member opened, then ←: the row stays marked and its agent is preselected.
     await toList(page);
     await showOlder(page);
-    await openRow(page, `org:${stack.org}/agent:${stack.orgPlanner}`);
+    await openRow(page, `org:${stack.org}`);
     await page.locator(sel('mobile-run-back')).first().click();
     await page.locator(`${sel('mobile-run-tree')}:visible`).waitFor();
     const orgMarked = await page.locator(rowSel(`org:${stack.org}/agent:${stack.orgPlanner}`)).getAttribute('aria-current');
