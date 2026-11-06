@@ -8,6 +8,7 @@ The latest coverage investigation (`api-e2e-coverage-investigation.md`) and exec
 | Revision ID | Triggering Role / Report / Round | Related Upstream Revision IDs | Prior Result / Confidence | Current Result / Confidence |
 | --- | --- | --- | --- | --- |
 | API-REV-001 | Code reviewer, `code-review-report.md`, CRR-002 Pass (round 1 of API/E2E) | SR-004, ARCH-REV-003, IR-002, CRR-002 | N/A | Pass / 95% |
+| API-REV-002 | Code reviewer, `api-e2e-test-review-report.md`, CRR-003 Fail, TR-001 (round 2) | CRR-003 | Pass / 95% | Pass / 95% |
 
 ## Revision Entries
 
@@ -41,3 +42,30 @@ None.
 - Recommended owner: code reviewer (test-code review).
 - Remaining risks, blocked evidence, or untested scope: AC-006 wording (Solution Designer); no live-model compaction
   (TESTING.md: on user request only); signed x64 build (runner only); FU-002.
+
+### API-REV-002 — TR-001: the standalone-host test asserts the DEC-020 refusal itself
+
+- Triggering role, report path, and round: code reviewer, `api-e2e-test-review-report.md` (CRR-003, Fail), API/E2E round 2.
+- Triggering finding or case IDs: TR-001 (API-25).
+- Related revision IDs: CRR-003.
+- Why recorded: the test-code review found that API-25's durable test accepted any pre-spawn failure and did not assert
+  the recorded `dshDataFiles`.
+- Coverage decisions or durable test paths changed: `autobyteus-server-ts/tests/e2e/runtime/deepseek-harness-standalone-host.e2e.test.ts`
+  now asserts `launch.error` starts with `PROVIDER_RELAY_UNAVAILABLE: DeepSeek Harness needs the AutoByteus credential proxy`
+  and `dshDataFiles` is empty (receipt type extended).
+- Cases added, changed, removed, or rechecked: API-25 rerun; nothing else (no product source changed since `fddcff0f13`).
+- Commands, environment, fixture, or broader-validation delta: none (same command, same `dist/`).
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| TR-001 (CRR-003) | Local Fix (API/E2E-owned test code) | Assertions tightened; rerun passes (`API-25-standalone-host-r2.log`) | API-25 |
+
+- Canonical artifacts and sections updated: execution report (Round, API-25 row, Latest Authoritative Result notes), this record, progress log.
+- Prior result and confidence: Pass, 95%
+- Current result and confidence: Pass, 95%
+- New or remaining failure IDs: none.
+- Recommended owner: code reviewer (re-review of TR-001).
+- Remaining risks, blocked evidence, or untested scope: unchanged from API-REV-001; plus the CRR-003 note on AC-009's
+  "key removed later" (no product surface, Solution Designer).

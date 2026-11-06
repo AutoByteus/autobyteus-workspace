@@ -26,3 +26,5 @@
 | 2026-11-06 10:05 | API-30 | Completed | Pass | A: API key set; B: API key not set + hint; C: Not installed + install link; instances stopped, data roots and fresh clone removed. FU-002 recorded (prerelease version shown as x.y.z) |
 | 2026-11-06 10:05 | API-08 | Started | | dsh found as 'dsh' on PATH (no DEEPSEEK_HARNESS_COMMAND): live suite case 1 |
 | 2026-11-06 10:06 | API-08 | Completed | Pass | models + row SIGNED_IN with dsh from PATH |
+| 2026-11-06 10:11 | API-25 | Started | | round 2 (TR-001): stricter assertions; rerun API-25 only |
+| 2026-11-06 10:12 | API-25 | Completed | Pass | round 2: launch.error PROVIDER_RELAY_UNAVAILABLE, dshStarts [], dshDataFiles [] asserted |
