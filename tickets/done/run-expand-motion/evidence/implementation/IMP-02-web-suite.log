@@ -1,0 +1,36 @@
+# Check: IMP-02
+# Command: cd autobyteus-web && env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR="$TMPDIR" NUXT_TEST=true pnpm exec vitest run (full web suite), then the 7 files that failed to load rerun after 'pnpm -C autobyteus-server-ts prebuild'
+# Commit: c5cc87d89d (the later 7cc31409af changes only a type cast in RunListRow.agent.spec.ts, rerun in IMP-01)
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28 via corepack, Google Chrome headless (playwright-core); env -i PATH HOME=<fresh mktemp dir> TMPDIR (TESTING.md isolation)
+# Date: 2026-11-06 CET
+# Full output: IMP-02-web-suite.full.log.gz
+
+## Full suite (before prebuild)
+ FAIL  tests/integration/codex-turn-lifecycle-native-to-live-projection.integration.test.ts [ tests/integration/codex-turn-lifecycle-native-to-live-projection.integration.test.ts ]
+ FAIL  stores/__tests__/applicationHostStore.spec.ts [ stores/__tests__/applicationHostStore.spec.ts ]
+ FAIL  components/applications/__tests__/ApplicationIframeHost.spec.ts [ components/applications/__tests__/ApplicationIframeHost.spec.ts ]
+ FAIL  components/applications/__tests__/ApplicationSurface.spec.ts [ components/applications/__tests__/ApplicationSurface.spec.ts ]
+ FAIL  components/conversation/__tests__/UserMessageStoredUploadNames.spec.ts [ components/conversation/__tests__/UserMessageStoredUploadNames.spec.ts ]
+ FAIL  utils/application/__tests__/applicationAssetUrl.spec.ts [ utils/application/__tests__/applicationAssetUrl.spec.ts ]
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  components/applications/__tests__/ApplicationShell.spec.ts > ApplicationShell > shows the setup-first route, hides technical details by default, and does not auto-launch on initial load
+ FAIL  components/applications/__tests__/ApplicationShell.spec.ts > ApplicationShell > starts a fresh immersive launch after the setup panel reports launch-ready state
+ FAIL  components/applications/__tests__/ApplicationShell.spec.ts > ApplicationShell > owns immersive launch failure before an iframe launch exists
+ Test Files  7 failed | 695 passed (702)
+      Tests  3 failed | 5141 passed | 2 skipped (5146)
+
+## Load failures: the worktree had not run the TESTING.md setup step 'pnpm -C autobyteus-server-ts prebuild'
+Error: Failed to resolve entry for package "@autobyteus/application-sdk-contracts". The package may have incorrect main/module/exports specified in its package.json.
+Error: Failed to resolve import "autobyteus-ts/agent/message/context-file.js" from "../autobyteus-server-ts/tests/fixtures/recorded-upload-labels.ts". Does the file exist?
+Error: Failed to resolve import "autobyteus-ts/agent/sender-type.js" from "../autobyteus-server-ts/src/agent-execution/input/agent-run-compaction-recovery.ts". Does the file exist?
+
+## The 7 files rerun after prebuild
+ ✓ utils/application/__tests__/applicationAssetUrl.spec.ts (3 tests) 3ms
+ ✓ components/applications/__tests__/ApplicationIframeHost.spec.ts (2 tests) 13ms
+ ✓ components/applications/__tests__/ApplicationSurface.spec.ts (4 tests) 24ms
+ ✓ stores/__tests__/applicationHostStore.spec.ts (2 tests) 54ms
+ ✓ components/applications/__tests__/ApplicationShell.spec.ts (3 tests) 267ms
+ ✓ components/conversation/__tests__/UserMessageStoredUploadNames.spec.ts (3 tests) 51ms
+ ✓ tests/integration/codex-turn-lifecycle-native-to-live-projection.integration.test.ts (2 tests) 60ms
+ Test Files  7 passed (7)
+      Tests  19 passed (19)

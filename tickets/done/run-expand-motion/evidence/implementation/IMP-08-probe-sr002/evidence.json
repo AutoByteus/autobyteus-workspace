@@ -1,0 +1,731 @@
+{
+  "startedAt": "2026-11-06T06:46:45.154Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "REM-01": {
+      "description": "Expanded at first: twelve delegated rows at rest, before their Task answers arrive",
+      "result": "Pass",
+      "details": {
+        "rows": [
+          {
+            "key": "row-0",
+            "top": 244,
+            "transform": "none",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": false
+          },
+          {
+            "key": "row-1",
+            "top": 274,
+            "transform": "none",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": false
+          },
+          {
+            "key": "row-2",
+            "top": 304,
+            "transform": "none",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": false
+          },
+          {
+            "key": "row-3",
+            "top": 334,
+            "transform": "none",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": false
+          },
+          {
+            "key": "row-4",
+            "top": 364,
+            "transform": "none",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": false
+          },
+          {
+            "key": "row-5",
+            "top": 394,
+            "transform": "none",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": false
+          },
+          {
+            "key": "row-6",
+            "top": 424,
+            "transform": "none",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": false
+          },
+          {
+            "key": "row-7",
+            "top": 454,
+            "transform": "none",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": false
+          },
+          {
+            "key": "row-8",
+            "top": 484,
+            "transform": "none",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": false
+          },
+          {
+            "key": "row-9",
+            "top": 514,
+            "transform": "none",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": false
+          },
+          {
+            "key": "row-10",
+            "top": 544,
+            "transform": "none",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": false
+          },
+          {
+            "key": "row-11",
+            "top": 574,
+            "transform": "none",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": false
+          }
+        ]
+      }
+    },
+    "REM-02": {
+      "description": "Task answers arrive after the rows are shown: the rows below move to their new place at once, with no transform (AC-005)",
+      "result": "Pass",
+      "details": {
+        "frames": 37,
+        "moved": 11,
+        "before": {
+          "row-0": 244,
+          "row-1": 274,
+          "row-2": 304,
+          "row-3": 334,
+          "row-4": 364,
+          "row-5": 394,
+          "row-6": 424,
+          "row-7": 454,
+          "row-8": 484,
+          "row-9": 514,
+          "row-10": 544,
+          "row-11": 574
+        },
+        "after": {
+          "row-0": 244,
+          "row-1": 292,
+          "row-2": 340,
+          "row-3": 388,
+          "row-4": 436,
+          "row-5": 484,
+          "row-6": 532,
+          "row-7": 580,
+          "row-8": 628,
+          "row-9": 676,
+          "row-10": 724,
+          "row-11": 772
+        }
+      }
+    },
+    "REM-03": {
+      "description": "Collapse: the delegated rows are hidden at once (AC-002)",
+      "result": "Pass",
+      "details": {
+        "perFrame": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "REM-04": {
+      "description": "Expand: from the first frame, every row is complete (its Task line) at its final place with no transform (AC-001; 4 frames)",
+      "result": "Pass",
+      "details": {
+        "frames": [
+          [
+            {
+              "key": "row-0",
+              "top": 244,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-1",
+              "top": 292,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-2",
+              "top": 340,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-3",
+              "top": 388,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-4",
+              "top": 436,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-5",
+              "top": 484,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-6",
+              "top": 532,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-7",
+              "top": 580,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-8",
+              "top": 628,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-9",
+              "top": 676,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-10",
+              "top": 724,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-11",
+              "top": 772,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            }
+          ],
+          [
+            {
+              "key": "row-0",
+              "top": 244,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-1",
+              "top": 292,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-2",
+              "top": 340,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-3",
+              "top": 388,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-4",
+              "top": 436,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-5",
+              "top": 484,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-6",
+              "top": 532,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-7",
+              "top": 580,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-8",
+              "top": 628,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-9",
+              "top": 676,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-10",
+              "top": 724,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-11",
+              "top": 772,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            }
+          ],
+          [
+            {
+              "key": "row-0",
+              "top": 244,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-1",
+              "top": 292,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-2",
+              "top": 340,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-3",
+              "top": 388,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-4",
+              "top": 436,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-5",
+              "top": 484,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-6",
+              "top": 532,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-7",
+              "top": 580,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-8",
+              "top": 628,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-9",
+              "top": 676,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-10",
+              "top": 724,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-11",
+              "top": 772,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            }
+          ],
+          [
+            {
+              "key": "row-0",
+              "top": 244,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-1",
+              "top": 292,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-2",
+              "top": 340,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-3",
+              "top": 388,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-4",
+              "top": 436,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-5",
+              "top": 484,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-6",
+              "top": 532,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-7",
+              "top": 580,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-8",
+              "top": 628,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-9",
+              "top": 676,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-10",
+              "top": 724,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            },
+            {
+              "key": "row-11",
+              "top": 772,
+              "transform": "none",
+              "opacity": 1,
+              "leaving": false,
+              "taskLine": true
+            }
+          ]
+        ],
+        "settled": [
+          {
+            "key": "row-0",
+            "top": 244,
+            "transform": "none",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": true
+          },
+          {
+            "key": "row-1",
+            "top": 292,
+            "transform": "none",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": true
+          },
+          {
+            "key": "row-2",
+            "top": 340,
+            "transform": "none",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": true
+          },
+          {
+            "key": "row-3",
+            "top": 388,
+            "transform": "none",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": true
+          },
+          {
+            "key": "row-4",
+            "top": 436,
+            "transform": "none",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": true
+          },
+          {
+            "key": "row-5",
+            "top": 484,
+            "transform": "none",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": true
+          },
+          {
+            "key": "row-6",
+            "top": 532,
+            "transform": "none",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": true
+          },
+          {
+            "key": "row-7",
+            "top": 580,
+            "transform": "none",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": true
+          },
+          {
+            "key": "row-8",
+            "top": 628,
+            "transform": "none",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": true
+          },
+          {
+            "key": "row-9",
+            "top": 676,
+            "transform": "none",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": true
+          },
+          {
+            "key": "row-10",
+            "top": 724,
+            "transform": "none",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": true
+          },
+          {
+            "key": "row-11",
+            "top": 772,
+            "transform": "none",
+            "opacity": 1,
+            "leaving": false,
+            "taskLine": true
+          }
+        ]
+      }
+    },
+    "REM-05": {
+      "description": "Expanding a delegated Team: its members appear and the rows below move at once, with no transform (AC-005)",
+      "result": "Pass",
+      "details": {
+        "frames": 37,
+        "pushed": 9,
+        "members": 6
+      }
+    },
+    "REM-06": {
+      "description": "A finished Task's row fades and closes; the row below glides up by layout, with no transform (AC-005, E-11)",
+      "result": "Pass",
+      "details": {
+        "closedKey": "row-5",
+        "nextKey": "row-6",
+        "leavingOpacities": [
+          1,
+          1,
+          0.864767,
+          0.739757,
+          0.621725,
+          0.511949,
+          0.40879,
+          0.315249,
+          0.230839,
+          0.156219,
+          0.0933972,
+          0.0446139,
+          0.0120357,
+          0
+        ],
+        "nextTops": [
+          712,
+          705,
+          699,
+          694,
+          689,
+          684,
+          679,
+          675,
+          671,
+          668,
+          666,
+          665,
+          664
+        ]
+      }
+    },
+    "REM-07": {
+      "description": "AC-006: the move is off inside the Runs view only; the same tree row outside it keeps the shared move rule",
+      "result": "Pass",
+      "details": {
+        "insideRunsView": "none",
+        "outsideRunsView": "transform 0.2s ease-out"
+      }
+    },
+    "REM-08": {
+      "description": "No browser errors during the cases",
+      "result": "Pass",
+      "details": {
+        "events": 0
+      }
+    }
+  },
+  "browserEvents": [],
+  "cleanup": {
+    "browserClosed": true,
+    "nuxt": "SIGTERM",
+    "installedPageRemoved": true
+  },
+  "failures": [],
+  "browserVersion": "156.0.8078.80",
+  "result": "Pass",
+  "finishedAt": "2026-11-06T06:47:03.334Z"
+}

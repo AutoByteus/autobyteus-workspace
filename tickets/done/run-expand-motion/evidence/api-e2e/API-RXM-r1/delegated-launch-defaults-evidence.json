@@ -1,0 +1,161 @@
+{
+  "startedAt": "2026-11-06T06:20:47.531Z",
+  "cases": {
+    "RXM-001": {
+      "title": "AC-001/AC-002: a live run's delegated rows: collapse removes them from the first frame; expand shows each at its final place with no transform from the first frame",
+      "result": "Fail",
+      "ms": 15682,
+      "error": "12 row samples moved from elsewhere on screen",
+      "details": [
+        {
+          "frame": 0,
+          "index": 1,
+          "top": 533,
+          "transform": "none",
+          "final": 551
+        },
+        {
+          "frame": 0,
+          "index": 2,
+          "top": 563,
+          "transform": "none",
+          "final": 599
+        },
+        {
+          "frame": 0,
+          "index": 3,
+          "top": 593,
+          "transform": "none",
+          "final": 647
+        },
+        {
+          "frame": 1,
+          "index": 1,
+          "top": 533,
+          "transform": "matrix(1, 0, 0, 1, 0, -18)",
+          "final": 551
+        },
+        {
+          "frame": 1,
+          "index": 2,
+          "top": 563,
+          "transform": "matrix(1, 0, 0, 1, 0, -36)",
+          "final": 599
+        },
+        {
+          "frame": 1,
+          "index": 3,
+          "top": 593,
+          "transform": "matrix(1, 0, 0, 1, 0, -54)",
+          "final": 647
+        }
+      ]
+    },
+    "RXM-002": {
+      "title": "AC-003: while the run is expanded, the agent closes a Task (DONE): its row leaves with the designed fade, then the other rows are at rest",
+      "result": "Pass",
+      "ms": 1951,
+      "details": {
+        "called": "{\"content\":[{\"type\":\"text\",\"text\":\"{\"task\":{\"projectId\":\"project_8907e85c-9628-46c5-bfd5-92082a973c90\",\"taskId\":\"rxm-project-mw4l6fsi-1\",\"title\":\"RXM Task 1\",\"status\":\"DONE\"}}\"}],\"structuredContent\":{",
+        "leavingFrameCount": 14,
+        "fadeOpacities": [
+          1,
+          1,
+          0.865677,
+          0.739881,
+          0.621841,
+          0.511419,
+          0.40948,
+          0.315341,
+          0.230441,
+          0.156289,
+          0.0934545,
+          0.0444084,
+          0.0120592,
+          0
+        ],
+        "leaveMs": 216
+      }
+    },
+    "RXM-003": {
+      "title": "AC-003/R-01: a stopped run reopened: stored rows show; fold, Runs → Workspaces → Runs, unfold: same rows, fold kept, no read for the unfold; a delegated row is selected from the list",
+      "result": "Fail",
+      "ms": 5904,
+      "error": "the fold was not kept across the view switch",
+      "details": null
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 78366
+    },
+    {
+      "label": "frontend",
+      "pid": 81120
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 81120,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 78366,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-Y5y92Q"
+    }
+  ],
+  "observations": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-Y5y92Q",
+  "backendUrl": "http://127.0.0.1:56035",
+  "frontUrl": "http://127.0.0.1:56036",
+  "definitions": {
+    "ids": {
+      "manager": "manager-393e",
+      "lead": "lead-2ebf",
+      "worker": "worker-b925",
+      "plain": "plain-3a84",
+      "engineer": "engineer-521a",
+      "reviewer": "reviewer-94c1",
+      "writer": "writer-437a",
+      "offline": "offline-5b7a",
+      "unoffered": "unoffered-9b61",
+      "badsettings": "badsettings-b684",
+      "incomplete": "incomplete-1228",
+      "build": "build-team-ab35",
+      "pair": "pair-team-eddf",
+      "squad": "squad-team-758d",
+      "home": "home-team-905c",
+      "launchOrg": "launchorg-org-6f67",
+      "hostOrg": "hostorg-org-a44c"
+    },
+    "names": {
+      "manager": "Manager 393e",
+      "lead": "Lead 2ebf",
+      "worker": "Worker b925",
+      "plain": "Plain 3a84",
+      "engineer": "Engineer 521a",
+      "reviewer": "Reviewer 94c1",
+      "writer": "Writer 437a",
+      "offline": "Offline 5b7a",
+      "unoffered": "Unoffered 9b61",
+      "badsettings": "Badsettings b684",
+      "incomplete": "Incomplete 1228",
+      "build": "Build Team ab35",
+      "pair": "Pair Team eddf",
+      "squad": "Squad Team 758d",
+      "home": "Home Team 905c",
+      "launchOrg": "LaunchOrg Org 6f67",
+      "hostOrg": "HostOrg Org a44c"
+    }
+  },
+  "browserErrors": [],
+  "summary": {
+    "pass": 1,
+    "fail": 2
+  },
+  "completedAt": "2026-11-06T06:21:54.691Z"
+}
