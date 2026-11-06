@@ -39,6 +39,7 @@ import {
 } from '~/services/runSubmission/localUserSubmission';
 import { useToasts } from '~/composables/useToasts';
 import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
+import { createRandomId } from '~/utils/randomId';
 
 interface PrepareAgentRunMutationResultPayload {
   prepareAgentRun: {
@@ -50,13 +51,7 @@ interface PrepareAgentRunMutationResultPayload {
   };
 }
 
-const createClientMessageId = (): string => {
-  const randomId =
-    typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
-      ? crypto.randomUUID()
-      : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
-  return `client_${randomId}`;
-};
+const createClientMessageId = (): string => `client_${createRandomId()}`;
 
 const createClientInterruptCommandId = (): string =>
   createClientMessageId().replace(/^client_/, 'client_interrupt_');

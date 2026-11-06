@@ -27,6 +27,7 @@ import {
 import { mentionsPresentInText, toCollaboratorMentionDtos } from '~/utils/collaborators/collaboratorMentionText'
 import { useRemoteRunsStore, type RemoteRunRetryAdapter } from '~/stores/remoteRunsStore'
 import { rebuildOfView, useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages'
+import { createRandomId } from '~/utils/randomId'
 
 /**
  * The client side of standalone runs' collaboration roots: the task children brought in with
@@ -314,7 +315,7 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
     if (context.submissionPending) throw new Error('A message to this collaborator is already pending.')
     const mentions = mentionsPresentInText(content, context.requestedMentions)
     let attachments = paths.map((attachment) => ({ ...attachment }))
-    const messageId = crypto.randomUUID()
+    const messageId = createRandomId()
     const dedupeKey = `member_input:${hostRunId}:${agentRunId}:${messageId}`
     const submission = beginLocalUserSubmission(context, { text: content, attachments, navigationTarget: null, mentions, identity: { messageId, dedupeKey } })
     try {

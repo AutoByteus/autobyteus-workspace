@@ -34,6 +34,7 @@ import {
   beginTeamMemberGeneration,
   invalidateTeamMemberProjection,
 } from '~/services/runHydration/teamMemberProjectionHydrationService';
+import { createRandomId } from '~/utils/randomId';
 
 export type TeamStreamSyncPhase =
   | 'disconnected'
@@ -154,7 +155,7 @@ export class TeamStreamingService {
 
   sendMessage(content: string, agentRunId: string, contextFilePaths: string[] = [], imageUrls: string[] = [], identity: { messageId?: string; dedupeKey?: string; mentions?: readonly CollaboratorMentionDto[] } = {}): Promise<void> {
     const currentAgentRunId = this.requireCurrentAgentRun(agentRunId);
-    const messageId = identity.messageId?.trim() || crypto.randomUUID();
+    const messageId = identity.messageId?.trim() || createRandomId();
     const dedupeKey = identity.dedupeKey?.trim() || messageId;
     const key = sendKey(currentAgentRunId, messageId, dedupeKey);
     const existing = this.pendingTeamSends.get(key);
