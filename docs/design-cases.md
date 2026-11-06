@@ -221,3 +221,13 @@ Rule 12 of `DESIGN.md` (a release build starts from `pnpm install` alone).
 - **The fix (`clean-runner-build-order`):** the web gate's prepare step calls the server's one prepare step for its source (workspace packages and the Prisma client) instead of keeping its own list; rule 12 asks the question at design time.
 - **Why it mattered:** a release failed at its build for a reason no local check can show, and the fix and rerun cost a release cycle.
 - **Notice it by:** a new or widened type check, codegen or test gate that imports another workspace package or generated output; a prepare script that lists packages by hand; "it passes locally" as the only proof.
+
+### Case 16: A Protocol Filter That Framed One Form Of A Message (autobyteus-394 / autobyteus-405, SR-001)
+
+Principle 1 (several kinds or forms).
+
+- **The design said:** the node desktop stream's input filter frames each RFB message the viewer sends by its type, with a fixed length per type (PointerEvent = 6 bytes), checked against the RFC and the message names noVNC sends.
+- **What happened:** before review, reading noVNC 1.7.0's encoders showed a second form of the same type: once the VNC server confirms the ExtendedMouseButtons pseudo-encoding (−316), which noVNC always advertises, every pointer event is 7 bytes. The confirmation travels server→client, which the filter does not read, so the filter would have mis-framed the stream as soon as a VNC server with that extension answered.
+- **The fix (S1 design D-5):** the filter forwards the viewer's SetEncodings without −316, so the server never switches the extension on and pointer events keep one length. Every encoder in the client library is listed in the design with its length, and a test per encoder is required.
+- **Why it mattered:** the filter is the View only boundary. A framing error there either drops the viewer or, worse, lets bytes through under the wrong message type.
+- **Notice it by:** a filter, parser or proxy that frames messages by type only; a protocol with negotiated extensions; a length table built from the specification instead of from the encoders of the real client.

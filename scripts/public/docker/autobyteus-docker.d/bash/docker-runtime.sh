@@ -182,14 +182,12 @@ preferred_port_for_node() {
 
 choose_ports_for_node() {
   local node_name="$1" allow_friendly_preferences="$2"
-  local preferred_backend="" preferred_novnc=""
+  local preferred_backend=""
   collect_used_ports
   if [[ "$allow_friendly_preferences" == "1" ]]; then
     preferred_backend="$(preferred_port_for_node "$node_name" 8001 || true)"
-    preferred_novnc="$(preferred_port_for_node "$node_name" 6080 || true)"
   fi
   BACKEND_PORT="$(pick_port "$preferred_backend")"
-  NOVNC_PORT="$(pick_port "$preferred_novnc")"
 }
 
 node_name_available() {
@@ -250,7 +248,6 @@ Container: ${container_name}
 Image: ${image_ref}
 Backend: http://localhost:${BACKEND_PORT}
 GraphQL: http://localhost:${BACKEND_PORT}/graphql
-VNC Viewer: localhost:${NOVNC_PORT} (this computer only)
 Workspace: ${WORKSPACE_CONTAINER_PATH} -> $(node_workspace_host_path "$node_name")
 Shared folder: ${SHARED_CONTAINER_PATH} -> $(shared_workspace_host_path)
 Private app data: /home/autobyteus/data -> $(volume_prefix_for "$node_name")-data (Docker named volume)
@@ -289,14 +286,14 @@ start_node() {
   [[ -n "$desired_image_id" ]] || fail "Could not inspect image ${image_ref} after pull."
 
   if container_exists "$container_name" \
-    && [[ -n "${BACKEND_PORT:-}" && -n "${NOVNC_PORT:-}" ]]; then
+    && [[ -n "${BACKEND_PORT:-}" ]]; then
     config_hash="$(desired_config_hash "$node_name" "$image_ref")"
     current_image_id="$(container_image_id "$container_name")"
     current_config_hash="$(container_config_hash "$container_name")"
 
     if [[ "$current_image_id" == "$desired_image_id" && "$current_config_hash" == "$config_hash" ]]; then
       if container_running "$container_name"; then
-        write_state "$state_file" "$node_name" "$container_name" "$BACKEND_PORT" "$NOVNC_PORT" "$image_ref" "$created_at" "$config_hash"
+        write_state "$state_file" "$node_name" "$container_name" "$BACKEND_PORT" "$image_ref" "$created_at" "$config_hash"
         log "${node_name} is already running with the current image and launcher config."
         print_urls "$node_name" "$container_name" "$image_ref"
         return
@@ -304,7 +301,7 @@ start_node() {
 
       if start_output="$(docker start "$container_name" 2>&1)"; then
         if start_check_output="$(verify_container_started "$container_name" 2>&1)"; then
-          write_state "$state_file" "$node_name" "$container_name" "$BACKEND_PORT" "$NOVNC_PORT" "$image_ref" "$created_at" "$config_hash"
+          write_state "$state_file" "$node_name" "$container_name" "$BACKEND_PORT" "$image_ref" "$created_at" "$config_hash"
           log "Started ${node_name}."
           print_urls "$node_name" "$container_name" "$image_ref"
           return
@@ -315,7 +312,7 @@ start_node() {
       if is_bind_failure "$start_output"; then
         log "Saved ports are unavailable; recreating ${node_name} with fresh ports."
         docker rm -f "$container_name" >/dev/null 2>&1 || true
-        BACKEND_PORT="" NOVNC_PORT=""
+        BACKEND_PORT=""
         allow_friendly_preferences=0
       else
         fail "docker start failed: ${start_output}"
@@ -330,7 +327,7 @@ start_node() {
   fi
 
   for attempt in $(seq 1 "$MAX_RUN_ATTEMPTS"); do
-    if [[ "$attempt" -gt 1 || -z "${BACKEND_PORT:-}" || -z "${NOVNC_PORT:-}" ]]; then
+    if [[ "$attempt" -gt 1 || -z "${BACKEND_PORT:-}" ]]; then
       choose_ports_for_node "$node_name" "$allow_friendly_preferences"
     fi
     config_hash="$(desired_config_hash "$node_name" "$image_ref")"
@@ -341,7 +338,7 @@ start_node() {
 
     if output="$(run_container "$node_name" "$container_name" "$image_ref" "$config_hash")"; then
       if start_check_output="$(verify_container_started "$container_name" 2>&1)"; then
-        write_state "$state_file" "$node_name" "$container_name" "$BACKEND_PORT" "$NOVNC_PORT" "$image_ref" "$created_at" "$config_hash"
+        write_state "$state_file" "$node_name" "$container_name" "$BACKEND_PORT" "$image_ref" "$created_at" "$config_hash"
         log "Started ${node_name}."
         print_urls "$node_name" "$container_name" "$image_ref"
         return
@@ -352,7 +349,7 @@ start_node() {
     docker rm -f "$container_name" >/dev/null 2>&1 || true
     if is_bind_failure "$output" && [[ "$attempt" -lt "$MAX_RUN_ATTEMPTS" ]]; then
       log "Port bind failed; retrying with fresh ports (attempt $((attempt + 1))/${MAX_RUN_ATTEMPTS})."
-      BACKEND_PORT="" NOVNC_PORT=""
+      BACKEND_PORT=""
       allow_friendly_preferences=0
       continue
     fi

@@ -221,7 +221,7 @@ const baseConfig: NuxtConfig = {
   },
 
   // The app's type project (.nuxt/tsconfig.json, checked by `pnpm typecheck`). Electron main and the build
-  // scripts have their own projects. The three tests that import server code are checked in their own project,
+  // scripts have their own projects. The four tests that import server code are checked in their own project,
   // `tsconfig.cross-package-tests.json`, which uses the server build's options where the packages differ.
   // Paths are relative to .nuxt/; Nuxt appends them to its generated excludes.
   typescript: {
@@ -232,6 +232,7 @@ const baseConfig: NuxtConfig = {
         '../components/conversation/__tests__/UserMessageStoredUploadNames.spec.ts',
         '../services/runHydration/__tests__/acceptedInputIdentity.spec.ts',
         '../tests/integration/codex-turn-lifecycle-native-to-live-projection.integration.test.ts',
+        '../tests/integration/novnc-node-desktop-filter-contract.integration.test.ts',
         // Build outputs inside the package, not app source; they stay after a desktop or mobile build (and the release
         // job reruns the chain), and would otherwise enter the project (allowJs): prepare-server's bundled server,
         // electron-builder's packages, the mobile web build and `nuxt generate`'s output.

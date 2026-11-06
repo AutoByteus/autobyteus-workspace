@@ -110,12 +110,6 @@ const messages = {
   'workspace.components.workspace.tools.BrowserPanel.switch_to_desktop_view': '将活动标签切换到桌面视图',
   'workspace.components.workspace.tools.BrowserPanel.switch_to_mobile_view': '将活动标签切换到移动视图',
   'workspace.components.workspace.tools.Terminal.retry_connection': '重试连接',
-  'workspace.components.workspace.tools.VncHostTile.host_name': '主机名',
-  'workspace.components.workspace.tools.VncHostTile.toggle_interaction_mode': '切换交互模式',
-  'workspace.components.workspace.tools.VncViewer.as_a_comma_separated_list_for': '作为逗号分隔的列表（例如',
-  'workspace.components.workspace.tools.VncViewer.loading_vnc_settings': '正在加载 VNC 设置...',
-  'workspace.components.workspace.tools.VncViewer.localhost_6080_localhost_6081': '本地主机:6080,本地主机:6081',
-  'workspace.components.workspace.tools.VncViewer.no_vnc_hosts_configured': '未配置 VNC 主机。',
 } satisfies TranslationCatalog;
 
 export default messages;

@@ -51,6 +51,13 @@ delegated run, …) are defined in the
   Node and the architecture: its base image, system tools and agent CLIs
   (`system-level.json`). An image provides one level; a server package needs
   one.
+- **Node desktop:** the virtual graphical desktop inside a Docker node (Xvnc
+  display `:99`, RFB on `127.0.0.1:5900` inside the node) that its agents use,
+  shown in the VNC Viewer tab through the node's own server
+  (`/rest/node-desktop`, `/ws/node-desktop`, `src/node-desktop/`). It is not
+  the desktop app and not the user's own screen. A **viewer** is one client
+  connection showing it; its **mode** is `view` ("View only") or `control`
+  ("Control"), fixed per stream.
 - **Sibling:** a run shown at the same level as another run in the run tree
   (for example a task agent's run lifted beside its parent's other children).
   It is not a peer.

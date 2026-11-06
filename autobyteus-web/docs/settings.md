@@ -84,8 +84,14 @@ The remote AutoByteus LLM provider has been removed: Settings shows no
 model selection that names one of its former models stays visible as
 unavailable until the user picks another model. A leftover
 `AUTOBYTEUS_LLM_SERVER_HOSTS` value appears under Server Settings as an ordinary
-custom setting that can be deleted. The native AutoByteus runtime and the
-"AutoByteus VNC Hosts" card are unaffected.
+custom setting that can be deleted. The native AutoByteus runtime is
+unaffected.
+
+The "AutoByteus VNC Hosts" endpoint card and its `AUTOBYTEUS_VNC_SERVER_HOSTS`
+setting are retired: the VNC Viewer reaches a Docker node's desktop through
+the node's own server, so there is nothing to configure. A value saved
+earlier shows under Server Settings as an ordinary custom setting that can be
+deleted. The endpoint cards are LM Studio and Ollama.
 
 Custom OpenAI-compatible provider drafts still accept an API key for the probe
 and create transaction, but only non-secret provider metadata is persisted in

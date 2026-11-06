@@ -125,7 +125,11 @@ Right-tool order is also centralized there and should remain:
 6. Token, when applicable
 7. Artifacts
 8. Browser, when applicable
-9. VNC, when applicable
+9. VNC Viewer: the bound node's node desktop, through the node's own server
+   (`/ws/node-desktop`, View only by default, Control by a deliberate switch;
+   see [Node Desktop](../../autobyteus-server-ts/docs/modules/node_desktop.md)).
+   A node without one (the embedded node) says "This node has no shared desktop".
+   The tile disconnects when the window is hidden and reconnects in View only.
 
 Projects is never a contextual default (Team members / Activity stay the
 defaults), and a scope change keeps it selected: opening a worker from the

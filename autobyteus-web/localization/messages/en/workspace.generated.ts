@@ -110,12 +110,6 @@ const messages = {
   'workspace.components.workspace.tools.BrowserPanel.switch_to_desktop_view': 'Switch active tab to desktop view',
   'workspace.components.workspace.tools.BrowserPanel.switch_to_mobile_view': 'Switch active tab to mobile view',
   'workspace.components.workspace.tools.Terminal.retry_connection': 'Retry Connection',
-  'workspace.components.workspace.tools.VncHostTile.host_name': 'host.name',
-  'workspace.components.workspace.tools.VncHostTile.toggle_interaction_mode': 'Toggle interaction mode',
-  'workspace.components.workspace.tools.VncViewer.as_a_comma_separated_list_for': 'as a comma-separated list (for example',
-  'workspace.components.workspace.tools.VncViewer.loading_vnc_settings': 'Loading VNC settings...',
-  'workspace.components.workspace.tools.VncViewer.localhost_6080_localhost_6081': 'localhost:6080,localhost:6081',
-  'workspace.components.workspace.tools.VncViewer.no_vnc_hosts_configured': 'No VNC hosts configured.',
 } satisfies TranslationCatalog;
 
 export default messages;

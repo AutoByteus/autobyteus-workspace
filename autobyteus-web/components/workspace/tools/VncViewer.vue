@@ -1,72 +1,56 @@
 <template>
   <div class="vnc-viewer h-full flex flex-col bg-white">
-    <!-- Removed top border div to merge with tabs -->
-
     <div class="flex-1 overflow-auto">
-      <div v-if="serverSettingsStore.isLoading" class="flex items-center justify-center h-full text-sm text-gray-500">{{ $t('workspace.components.workspace.tools.VncViewer.loading_vnc_settings') }}</div>
-      <div v-else-if="hosts.length === 0" class="text-sm text-gray-500 space-y-2">
-        <p>{{ $t('workspace.components.workspace.tools.VncViewer.no_vnc_hosts_configured') }}</p>
-        <p class="text-xs text-gray-400">
-          Add <span class="font-mono">AUTOBYTEUS_VNC_SERVER_HOSTS</span>{{ $t('workspace.components.workspace.tools.VncViewer.as_a_comma_separated_list_for') }}<span class="font-mono">{{ $t('workspace.components.workspace.tools.VncViewer.localhost_6080_localhost_6081') }}</span>).
-        </p>
+      <div
+        v-if="availability === 'loading'"
+        class="flex items-center justify-center h-full text-sm text-gray-500"
+        data-testid="node-desktop-loading"
+      >
+        {{ $t('workspace.components.workspace.tools.VncViewer.checking_node_desktop') }}
       </div>
-      <div v-else class="vnc-stack">
-        <VncHostTile
-          v-for="host in hosts"
-          :key="host.id"
-          :host="host"
-          :password="vncPassword"
-          :auto-connect="true"
-        />
+      <div
+        v-else-if="availability === 'unavailable'"
+        class="flex items-center justify-center h-full text-sm text-gray-500"
+        data-testid="node-desktop-unavailable"
+      >
+        {{ $t('workspace.components.workspace.tools.VncViewer.no_shared_desktop') }}
       </div>
+      <div
+        v-else-if="availability === 'error'"
+        class="flex flex-col items-center justify-center h-full gap-2 text-sm text-gray-500"
+        data-testid="node-desktop-error"
+      >
+        <p>{{ $t('workspace.components.workspace.tools.VncViewer.cannot_reach_node') }}</p>
+        <button
+          class="px-2 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+          @click="loadAvailability"
+        >
+          {{ $t('workspace.components.workspace.tools.VncViewer.retry') }}
+        </button>
+      </div>
+      <NodeDesktopTile v-else />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from 'vue';
-import { useServerSettingsStore } from '~/stores/serverSettings';
-import VncHostTile, { type VncHostConfig } from '~/components/workspace/tools/VncHostTile.vue';
-import { parseCommaSeparatedHosts } from '~/utils/vncHosts';
+import { onMounted, ref } from 'vue';
+import NodeDesktopTile from '~/components/workspace/tools/NodeDesktopTile.vue';
+import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
+import { fetchNodeDesktop } from '~/utils/nodeDesktopClient';
 
-const serverSettingsStore = useServerSettingsStore();
+const availability = ref<'loading' | 'available' | 'unavailable' | 'error'>('loading');
 
-const VNC_HOSTS_KEY = 'AUTOBYTEUS_VNC_SERVER_HOSTS';
-const VNC_PASSWORD_KEYS = ['AUTOBYTEUS_VNC_SERVER_PASSWORD', 'AUTOBYTEUS_VNC_PASSWORD'];
-
-const getSettingValue = (key: string) => {
-  return serverSettingsStore.getSettingByKey(key)?.value?.trim() ?? '';
+const loadAvailability = async () => {
+  availability.value = 'loading';
+  try {
+    const { available } = await fetchNodeDesktop(useWindowNodeContextStore().getBoundEndpoints());
+    availability.value = available ? 'available' : 'unavailable';
+  } catch (error) {
+    console.warn('[VNC Viewer] could not ask the node for its node desktop:', error);
+    availability.value = 'error';
+  }
 };
 
-const parseHosts = (value: string): VncHostConfig[] => parseCommaSeparatedHosts(value);
-
-const hosts = computed(() => {
-  const configuredHosts = getSettingValue(VNC_HOSTS_KEY);
-  if (!configuredHosts) return [];
-  return parseHosts(configuredHosts);
-});
-
-const vncPassword = computed(() => {
-  const fromSettings = VNC_PASSWORD_KEYS.map(getSettingValue).find(Boolean);
-  return fromSettings || 'mysecretpassword';
-});
-
-onMounted(async () => {
-  if (serverSettingsStore.settings.length === 0 && !serverSettingsStore.isLoading) {
-    try {
-      await serverSettingsStore.fetchServerSettings();
-    } catch (error) {
-      console.error('Failed to load server settings for VNC hosts:', error);
-    }
-  }
-  console.log('[VNC Viewer] hosts resolved', hosts.value);
-});
+onMounted(loadAvailability);
 </script>
-
-<style scoped>
-.vnc-stack {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-</style>

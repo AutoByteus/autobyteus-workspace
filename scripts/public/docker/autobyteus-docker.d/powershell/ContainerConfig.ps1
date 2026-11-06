@@ -8,7 +8,6 @@ function Get-StateConfigHash($State) {
     "node=$nodeName",
     "image=$($State.imageRef)",
     "backend=$($State.backendPort)",
-    "novnc=$($State.noVncPort)",
     "workspace_volume=$volumePrefix-workspace",
     "data_volume=$volumePrefix-data",
     "root_volume=$volumePrefix-root-home",
@@ -22,8 +21,7 @@ function Get-StateConfigHash($State) {
     "shared_workspace_host=$(Get-SharedWorkspaceHostPath)",
     "shared_workspace_target=$Script:SharedContainerPath",
     "temp_workspace_env=AUTOBYTEUS_TEMP_WORKSPACE_DIR=$Script:TempWorkspaceEnvValue",
-    "server_host=http://localhost:$($State.backendPort)",
-    "vnc_hosts=localhost:$($State.noVncPort)"
+    "server_host=http://localhost:$($State.backendPort)"
   ) -join "`n"
   Get-StringSha256 $text
 }
@@ -41,7 +39,6 @@ function Get-ContainerRunArgs($State, [string]$NodeWorkspaceHost, [string]$Share
     '-e', 'AUTOBYTEUS_BIND_HOST=0.0.0.0',
     '-e', 'AUTOBYTEUS_SERVER_PORT=8000',
     '-e', "AUTOBYTEUS_SERVER_HOST=http://localhost:$($State.backendPort)",
-    '-e', "AUTOBYTEUS_VNC_SERVER_HOSTS=localhost:$($State.noVncPort)",
     '-e', 'APP_ENV=production',
     '-e', 'DB_TYPE=sqlite',
     '-e', 'LOG_LEVEL=INFO',
@@ -54,7 +51,6 @@ function Get-ContainerRunArgs($State, [string]$NodeWorkspaceHost, [string]$Share
     '--cap-add', 'SYS_ADMIN',
     '--security-opt', 'seccomp=unconfined',
     '-p', "$($State.backendPort):8000",
-    '-p', "127.0.0.1:$($State.noVncPort):6080",
     '--mount', "type=bind,source=$NodeWorkspaceHost,target=$Script:WorkspaceContainerPath",
     '--mount', "type=bind,source=$SharedWorkspaceHost,target=$Script:SharedContainerPath"
   )

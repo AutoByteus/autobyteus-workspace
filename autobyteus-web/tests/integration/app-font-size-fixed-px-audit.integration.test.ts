@@ -40,7 +40,7 @@ const TARGETED_FILES = Array.from(new Set([
   'components/fileExplorer/MonacoEditor.vue',
   'components/workspace/tools/Terminal.vue',
   'components/workspace/history/WorkspaceHistoryWorkspaceSection.vue',
-  'components/workspace/tools/VncHostTile.vue',
+  'components/workspace/tools/NodeDesktopTile.vue',
   'components/workspace/config/ModelConfigBasic.vue',
 ])).sort() as readonly string[];
 
