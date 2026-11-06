@@ -24,7 +24,7 @@ const messages = {
 const team = { focusedMemberAddress: '/team/writer', teamDefinitionName: 'Team' }
 const stubs = { AgentEventMonitor: { name: 'AgentEventMonitor', props: ['readOnly', 'agentName'], template: '<div />' }, AgentStatusDisplay: true, WorkspaceHeaderActions: true, WorkspaceRecoveryNotice: true }
 const readOnlyOf = (component: typeof AgentWorkspaceSurface | typeof TeamWorkspaceSurface, target: Record<string, unknown>) =>
-  shallowMount(component as never, { props: { target: { browse: { kind: 'run', runId: 'writer-run' }, collaborationMessages: messages, ...target } as never }, global: { stubs } })
+  shallowMount(component as never, { props: { target: { browse: { kind: 'run', runId: 'writer-run' }, collaborationMessages: messages, ...target } }, global: { stubs } } as never)
     .getComponent({ name: 'AgentEventMonitor' }).props('readOnly')
 
 describe('the unified read-only rule on each desktop surface', () => {
@@ -52,9 +52,9 @@ describe('the unified read-only rule on each desktop surface', () => {
 
   it('the display name: a Team member without an agent name is its address\'s last part; an agent without one is "Agent"', () => {
     const nameless = { ...context(), config: { ...context().config, agentDefinitionName: '' } }
-    const agentName = shallowMount(AgentWorkspaceSurface as never, { props: { target: { kind: 'standalone_agent', access: 'live', context: nameless, browse: { kind: 'run', runId: 'writer-run' } } as never }, global: { stubs } })
+    const agentName = shallowMount(AgentWorkspaceSurface as never, { props: { target: { kind: 'standalone_agent', access: 'live', context: nameless, browse: { kind: 'run', runId: 'writer-run' } } }, global: { stubs } } as never)
       .getComponent({ name: 'AgentEventMonitor' }).props('agentName')
-    const memberName = shallowMount(TeamWorkspaceSurface as never, { props: { target: { kind: 'standalone_team_member', access: 'live', team: { ...team, focusedMemberAddress: '/team/code_reviewer' }, context: nameless, collaborationMessages: messages, browse: { kind: 'run', runId: 'writer-run' } } as never }, global: { stubs } })
+    const memberName = shallowMount(TeamWorkspaceSurface as never, { props: { target: { kind: 'standalone_team_member', access: 'live', team: { ...team, focusedMemberAddress: '/team/code_reviewer' }, context: nameless, collaborationMessages: messages, browse: { kind: 'run', runId: 'writer-run' } } }, global: { stubs } } as never)
       .getComponent({ name: 'AgentEventMonitor' }).props('agentName')
     expect(agentName).toBe('Agent')
     expect(memberName).toBe('code reviewer')

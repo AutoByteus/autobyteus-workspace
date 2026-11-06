@@ -3,11 +3,10 @@ import { useWorkspaceFileExplorer } from '~/composables/useWorkspaceFileExplorer
 import { useFileExplorerStore } from '~/stores/fileExplorer';
 import type { OpenFileState } from '~/stores/fileExplorerState';
 import { useWorkspaceStore } from '~/stores/workspace';
-import type { MobileWorkContext } from '~/types/mobileWork';
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
-import { createWorkspaceMetadata, normalizeWorkspaceRootPath } from '~/utils/workspaceMetadata';
+import { normalizeWorkspaceRootPath } from '~/utils/workspaceMetadata';
 
-export type MobileWorkspaceResolutionStatus = 'no-context' | 'no-workspace-context' | 'resolving' | 'resolved' | 'unresolved';
+export type MobileWorkspaceResolutionStatus = 'no-workspace-context' | 'resolving' | 'resolved' | 'unresolved';
 
 export interface MobileWorkspaceFileNode {
   name: string;
@@ -31,21 +30,6 @@ export function normalizeMobileWorkspaceRoot(value: string | null | undefined): 
   return normalizeWorkspaceRootPath(value);
 }
 
-const contextWorkspaceRoot = (context: MobileWorkContext | null): string => {
-  if (!context) return '';
-  if (context.kind === 'agent-run' || context.kind === 'team-run') {
-    return normalizeMobileWorkspaceRoot(context.workspaceRootPath);
-  }
-  if (context.kind === 'workspace') {
-    return normalizeMobileWorkspaceRoot(context.rootPath);
-  }
-  return '';
-};
-
-const contextWorkspaceId = (context: MobileWorkContext | null): string | null => (
-  context?.kind === 'workspace' ? context.workspaceId : null
-);
-
 const formatError = (error: unknown): string => (
   error instanceof Error ? error.message : String(error)
 );
@@ -54,7 +38,8 @@ const metadataDisplayName = (metadata: WorkspaceMetadata | null): string => (
   metadata?.displayName || metadata?.workspaceRootPath?.split(/[\\/]/).filter(Boolean).at(-1) || metadata?.workspaceId || 'Workspace'
 );
 
-export function useMobileWorkspaceFileExplorer(contextRef: MaybeRef<MobileWorkContext | null>) {
+/** The open agent's folder (`activeWorkspaceTarget.workspaceRootPath`): its tree, its search and its files, read only. */
+export function useMobileWorkspaceFileExplorer(workspaceRootPathRef: MaybeRef<string | null>) {
   const workspaceStore = useWorkspaceStore();
   const fileExplorerStore = useFileExplorerStore();
   const activeWorkspaceId = ref('');
@@ -69,9 +54,7 @@ export function useMobileWorkspaceFileExplorer(contextRef: MaybeRef<MobileWorkCo
   let releaseLiveSession: (() => void) | null = null;
   let rootLoadAbortController: AbortController | null = null;
 
-  const context = computed(() => unref(contextRef));
-  const requestedRootPath = computed(() => contextWorkspaceRoot(context.value));
-  const requestedWorkspaceId = computed(() => contextWorkspaceId(context.value));
+  const requestedRootPath = computed(() => normalizeMobileWorkspaceRoot(unref(workspaceRootPathRef)));
 
   const workspace = computed<MobileResolvedWorkspace | null>(() => {
     const id = activeWorkspaceId.value || activeWorkspaceMetadata.value?.workspaceId || '';
@@ -94,11 +77,7 @@ export function useMobileWorkspaceFileExplorer(contextRef: MaybeRef<MobileWorkCo
 
   const workspaceId = computed(() => activeWorkspaceId.value || null);
   const resolutionStatus = computed<MobileWorkspaceResolutionStatus>(() => {
-    const current = context.value;
-    if (!current) return 'no-context';
-    if (current.kind === 'agent-definition' || current.kind === 'team-definition') {
-      return 'no-workspace-context';
-    }
+    if (!requestedRootPath.value) return 'no-workspace-context';
     if (resolvingKey.value) return 'resolving';
     if (activeWorkspaceId.value) return 'resolved';
     return 'unresolved';
@@ -135,33 +114,13 @@ export function useMobileWorkspaceFileExplorer(contextRef: MaybeRef<MobileWorkCo
   };
 
   const resolveContextWorkspaceMetadata = async (): Promise<WorkspaceMetadata | null> => {
-    const current = context.value;
     const rootPath = requestedRootPath.value;
-    if (!current || current.kind === 'agent-definition' || current.kind === 'team-definition' || !rootPath) {
-      return null;
-    }
-
-    if (current.kind === 'workspace') {
-      const registered = workspaceStore.workspaces[current.workspaceId];
-      if (registered) {
-        return workspaceStore.registerWorkspaceInfoMetadata(registered);
-      }
-      return createWorkspaceMetadata({
-        workspaceId: current.workspaceId,
-        workspaceRootPath: rootPath,
-        displayName: current.title,
-        kind: 'filesystem',
-      });
-    }
-
-    return workspaceStore.resolveWorkspaceMetadataByRootPath(rootPath);
+    return rootPath ? workspaceStore.resolveWorkspaceMetadataByRootPath(rootPath) : null;
   };
 
   async function resolveWorkspaceForContext(): Promise<void> {
-    const current = context.value;
     const root = requestedRootPath.value;
-    const directId = requestedWorkspaceId.value;
-    const key = `${current?.kind || 'none'}:${directId || ''}:${root}`;
+    const key = root;
     if (resolvingKey.value === key) return;
 
     const sequence = ++resolutionSequence;
@@ -175,14 +134,7 @@ export function useMobileWorkspaceFileExplorer(contextRef: MaybeRef<MobileWorkCo
     folderErrorByPath.value = {};
     fileOpenErrorByPath.value = {};
 
-    if (!current || current.kind === 'agent-definition' || current.kind === 'team-definition') {
-      return;
-    }
-    if (!root) {
-      workspaceResolutionError.value = 'The selected context does not include a workspace path.';
-      return;
-    }
-    if (resolvingKey.value === key) return;
+    if (!root) return;
 
     resolvingKey.value = key;
     try {
@@ -313,7 +265,7 @@ export function useMobileWorkspaceFileExplorer(contextRef: MaybeRef<MobileWorkCo
   );
 
   watch(
-    () => [context.value?.kind ?? 'none', requestedWorkspaceId.value ?? '', requestedRootPath.value] as const,
+    () => requestedRootPath.value,
     () => { void resolveWorkspaceForContext(); },
     { immediate: true },
   );

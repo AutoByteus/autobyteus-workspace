@@ -68,7 +68,7 @@ const harness = (active = true, selected = true) => {
     getTeamNavigationAncestry: () => null, getTeamMemberNavigationAncestorRowKeys: () => [],
     getAgentOrgNavigationAncestry: () => ({ workspaceId: 'ws', definitionId: 'org-definition', teamAddresses: ['/software'] }),
   });
-  const actions = { onCreateRun: vi.fn(), onSelectRun: vi.fn(), onTerminateRun: vi.fn(), onArchiveRun: vi.fn(), onDeleteRun: vi.fn(), onTerminateTeam: vi.fn(), onArchiveTeam: vi.fn(), onDeleteTeam: vi.fn(), onSelectTeam: vi.fn(), onOpenTeamRun: vi.fn(), onSelectTeamMember: vi.fn(), onOpenAgentOrgRun: vi.fn(), onSelectAgentOrgMember: vi.fn(), onInspectAgentOrgExecution: vi.fn(), onTerminateAgentOrg: vi.fn(), onArchiveAgentOrg: vi.fn(), onDeleteAgentOrg: vi.fn() };
+  const actions = { onCreateRun: vi.fn(), onSelectRun: vi.fn(), onOpenAgentRun: vi.fn(), onTerminateRun: vi.fn(), onArchiveRun: vi.fn(), onDeleteRun: vi.fn(), onTerminateTeam: vi.fn(), onArchiveTeam: vi.fn(), onDeleteTeam: vi.fn(), onSelectTeam: vi.fn(), onOpenTeamRun: vi.fn(), onSelectTeamMember: vi.fn(), onOpenAgentOrgRun: vi.fn(), onSelectAgentOrgMember: vi.fn(), onInspectAgentOrgExecution: vi.fn(), onTerminateAgentOrg: vi.fn(), onArchiveAgentOrg: vi.fn(), onDeleteAgentOrg: vi.fn() };
   const definitions = ref<{id: string; avatarUrl?: string | null}[]>([]);
   let tree: ReturnType<typeof useWorkspaceHistoryTreeState>;
   let avatars: ReturnType<typeof useRunHistoryAvatarState>;

@@ -183,7 +183,7 @@ describe('useWorkspaceHistorySelectionActions current AgentRun identity', () => 
   it('desktop shell (default): no selection mode is passed and the Team is selected with shell navigation', async () => {
     const { actions, runHistoryStore, selectionStore } = buildActions()
     await actions.onOpenTeamRun(buildTeamNode('build-review-lead-run'))
-    expect(runHistoryStore.selectTreeRun.mock.calls[0]![1]).not.toHaveProperty('selectionMode')
+    expect((runHistoryStore.selectTreeRun.mock.calls[0] as unknown[])[1]).not.toHaveProperty('selectionMode')
     expect(selectionStore.selectRun).toHaveBeenCalledWith('team-1', 'team')
     expect(selectionStore.selectRunWithoutShellNavigation).not.toHaveBeenCalled()
   })

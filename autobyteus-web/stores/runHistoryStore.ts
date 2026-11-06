@@ -119,7 +119,7 @@ export const useRunHistoryStore = defineStore('runHistory', {
 
     /**
      * The one read window (workspace-tree-vs-chooser DS-002): agent runs read per agent and folder, `null` for every run.
-     * The run section sets it from its view (Runs: `null`; Workspaces, Projects: 6); the phone sets 5. Every read uses it.
+     * The run section sets it from its view (Runs: `null`; Workspaces, Projects: 6); the phone reads every run (`null`). Every read uses it.
      */
     setHistoryWindow(limitPerAgent: number | null): void { this.historyWindow = limitPerAgent; },
 

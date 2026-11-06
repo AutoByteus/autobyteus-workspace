@@ -1,7 +1,6 @@
 import type { WorkspaceToolReveal } from '~/composables/layout/useWorkspaceToolReveal';
 import { useLocalization } from '~/composables/useLocalization';
 import { useFileExplorerStore } from '~/stores/fileExplorer';
-import { useMobileWorkStore } from '~/stores/mobileWorkStore';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { useWorkspaceStore } from '~/stores/workspace';
 import { useActiveContextStore } from '~/stores/activeContextStore';
@@ -10,7 +9,7 @@ import { mapAbsolutePathToWorkspaceRelative } from '~/utils/fileExplorer/absolut
 import { hasTrustedElectronLocalFileCapability } from '~/utils/fileExplorer/localFileCapability';
 import { isMobileRemoteAccessRuntime } from '~/utils/remoteAccess/mobileRuntime';
 import { normalizeWorkspaceRootPath } from '~/utils/workspaceMetadata';
-import { mobileWorkContextKey } from '~/types/mobileWork';
+import { useMobileNavigation } from '~/composables/mobile/useMobileNavigation';
 
 export type EventMonitorFilePreviewResult =
   | { status: 'opened'; path: string }
@@ -20,29 +19,13 @@ type EventMonitorPreviewLocator =
   | { kind: 'local-absolute'; workspaceId: string; path: string }
   | { kind: 'workspace-relative'; workspaceId: string; relativePath: string };
 
-const contextWorkspace = (context: ReturnType<typeof useMobileWorkStore>['currentContext']) => {
-  if (!context) return null;
-  if (context.kind === 'workspace') {
-    return {
-      workspaceId: context.workspaceId,
-      workspaceRootPath: context.rootPath,
-    };
-  }
-  if (context.kind === 'agent-run' || context.kind === 'team-run') {
-    return {
-      workspaceId: '',
-      workspaceRootPath: context.workspaceRootPath,
-    };
-  }
-  return null;
-};
-
 export function useEventMonitorFilePreview(options: {
   revealTool: WorkspaceToolReveal | null;
   isOriginCurrent: () => boolean;
 }) {
   const fileExplorerStore = useFileExplorerStore();
-  const mobileWorkStore = useMobileWorkStore();
+  // The phone opens a conversation's file on its Files screen (autobyteus-277 DS-008).
+  const mobileNavigation = isMobileRemoteAccessRuntime() ? useMobileNavigation() : null;
   const windowNodeContextStore = useWindowNodeContextStore();
   const workspaceStore = useWorkspaceStore();
   const activeContextStore = useActiveContextStore();
@@ -58,39 +41,23 @@ export function useEventMonitorFilePreview(options: {
     message: t('workspace.components.conversation.segments.renderer.MarkdownRenderer.file_preview_failed'),
   });
 
+  /** The phone: the file, in the open agent's folder, opens full screen on the Files screen (a history entry). */
   const openMobilePath = async (action: AbsoluteFilePathAction): Promise<EventMonitorFilePreviewResult> => {
-    const context = mobileWorkStore.currentContext;
-    const workspace = contextWorkspace(context);
-    if (!context || !workspace?.workspaceRootPath) {
+    const target = activeContextStore.activeWorkspaceTarget;
+    const workspaceRootPath = target?.workspaceRootPath;
+    if (!target || !workspaceRootPath || !mobileNavigation) {
       return unavailable('workspace.components.conversation.segments.renderer.MarkdownRenderer.file_available_on_host');
     }
-
-    let workspaceId = workspace.workspaceId;
-    if (!workspaceId) {
-      const metadata = await workspaceStore.resolveWorkspaceMetadataByRootPath(workspace.workspaceRootPath);
-      workspaceId = metadata?.workspaceId || '';
-    }
-    if (!workspaceId) {
-      return unavailable('workspace.components.conversation.segments.renderer.MarkdownRenderer.file_available_on_host');
-    }
-
-    const locator = mapAbsolutePathToWorkspaceRelative(action.normalizedCandidate, {
-      workspaceId,
-      workspaceRootPath: workspace.workspaceRootPath,
-    });
+    const metadata = await workspaceStore.resolveWorkspaceMetadataByRootPath(workspaceRootPath);
+    const workspaceId = metadata?.workspaceId || '';
+    const locator = workspaceId
+      ? mapAbsolutePathToWorkspaceRelative(action.normalizedCandidate, { workspaceId, workspaceRootPath })
+      : null;
     if (!locator) {
       return unavailable('workspace.components.conversation.segments.renderer.MarkdownRenderer.file_available_on_host');
     }
-
-    if (!options.isOriginCurrent()) return failed();
-    mobileWorkStore.requestFilePreview({
-      contextKey: mobileWorkContextKey(context),
-      workspaceId: locator.workspaceId,
-      relativePath: locator.relativePath,
-      source: 'event-monitor',
-      readOnly: true,
-      presentation: 'inline',
-    });
+    if (!options.isOriginCurrent() || activeContextStore.activeWorkspaceTarget?.context !== target.context) return failed();
+    await mobileNavigation.openFile({ workspaceId: locator.workspaceId, path: locator.relativePath });
     return { status: 'opened', path: locator.relativePath };
   };
 

@@ -220,6 +220,7 @@ const avatars: WorkspaceHistoryAvatarBindings = {
 const actions: WorkspaceHistorySectionActions = {
   onCreateRun: () => {},
   onSelectRun: () => {},
+  onOpenAgentRun: () => {},
   onTerminateRun: () => {},
   onArchiveRun: () => {},
   onDeleteRun: () => {},
