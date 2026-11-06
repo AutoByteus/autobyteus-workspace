@@ -12,7 +12,7 @@
   - It is normative for layout, copy, states and behavior. Its "Implementation Fidelity Boundary" applies: the reference's stores, fixtures and component split are not a prescription.
 - User approval of the design: `Not required`. The Task asks the user to approve the UI, which he did; the technical design needs no separate approval.
 - Design status: `Ready` (revised for ARCH-REV-001 round 1, AR-001…AR-008; see Revision For ARCH-REV-001 below).
-- Canonical investigation notes: [investigation-notes.md](investigation-notes.md). Architecture evidence is E-10…E-27.
+- Canonical investigation notes: [investigation-notes.md](investigation-notes.md). Architecture evidence is E-10…E-32 (E-28…E-32 from ARCH-REV-001).
 - Authorities read (2026-11-06):
   - `references/architecture-design.md` and `references/design-principles.md`;
   - the project's `DESIGN.md` at the repository root (rules 1–12, project documents);
@@ -95,7 +95,7 @@ The `/mobile` page renders `MobileRemoteAccessShell`. It switches between pairin
 | E-16 | `useWorkspaceHistorySelectionActions.ts`, `useWorkspaceHistorySubjectActions.ts`, `runHistorySelectionActions.ts:129` | Desktop shell navigation hard-wired; stores already take `selectionMode: 'mobile'` | `shell` option; local-run branch honors the mode | — |
 | E-17 | `activeContextStore.ts:72-150`; `useComposerTarget.ts:55-60` | One target for conversation and composer; Org from the route query on any path | The phone renders the target; Org keys in `/mobile`'s query | — |
 | E-18 | `AgentWorkspaceSurface.vue`, `TeamWorkspaceSurface.vue` | Same conversation binding twice | Extract `useTargetConversation` | Unified read-only rule: verify per kind (Guidance) |
-| E-19 | `useAgentRunCollaborationSync.ts`; `AgentWorkspaceView.vue:47` | Live collaboration stream attached by the view | The run screen mounts it | — |
+| E-19 | `useAgentRunCollaborationSync.ts`; `AgentWorkspaceView.vue:47` | Live collaboration stream attached by the view | The paired shell mounts it (SR-004) | — |
 | E-20 | `agentContextsStore.ts:160-173` | Selection follows the permanent id | The run screen reads the selection, not a copy | — |
 | E-21 | `useEventMonitorFilePreview.ts:40-96` | Phone path goes through `mobileWorkStore` | Rebind to the target and navigation | — |
 | E-22 | `remoteCollaborationStore.ts`, `remoteCollaborationOffersStore.ts` | Peers and offers | Reuse in the connection sheet | Offer read takes up to ~20 s per peer |
@@ -199,7 +199,7 @@ The phone's screen state lives in `/mobile`'s route query, so the system Back ke
   - *Derived data* (Principle 11): the phone recomputed the run list (E-01) that `runListStore` owns.
   - *Legacy cleanup* (Principle 8): the phone's catalog, tabs, Home, Switch sheet, member focus bar and team launch become unnecessary.
   - *Several kinds* (Principle 1): rows and open actions serve Agent, Team, Org, task agent, task team, member, and remote of each. Each is traced in DS-003's table.
-  - *Split sequence* (Principle 13): the subject action's navigation destination differs by shell. It is resolved by a construction option, so the composable still calls the router itself; no function is passed in.
+  - *Split sequence* (Principle 13): Org opening needs navigation on the desktop and none on the phone. In its mobile mode the subject action does no navigation and returns its outcome; the phone's sequence owner (`useMobileRunOpening`) calls `useMobileNavigation` itself, with the Org keys from the shared pure `agentOrgRouteQuery`. No function is passed in (SR-004).
   - *Behavior by absence*: avoided. The run screen's "Opening…" state is an explicit state of the screen owner (DS-003), not "no target, so …".
 - **Root cause classification:** `Boundary Or Ownership Issue`, with `Duplicated Policy Or Coordination`.
 - **Refactor needed now:** `Yes`.
@@ -382,7 +382,7 @@ The domain words are in `GLOSSARY.md`: run, delegated run, task agent, task team
 
 ## Return Or Event Spine(s) (If Applicable)
 
-DS-009 uses the existing stream owners: agent run stream, team stream, collaboration streaming service (`useAgentRunCollaborationSync` on the run screen), Org contexts, and the remote runs store.
+DS-009 uses the existing stream owners: agent run stream, team stream, collaboration streaming service (`useAgentRunCollaborationSync`, mounted in the paired shell), Org contexts, and the remote runs store.
 - Rows and the run screen are computed from them, with no copies.
 - `promoteTemporaryId` moves the selection (E-20). The run screen and the open row follow because they read the selection.
 - A delegated child whose Task closes leaves its rows. If it was open, `returnToHostWhenUnlisted` returns the target to the host, as on the desktop.
