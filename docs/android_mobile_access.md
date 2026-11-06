@@ -98,10 +98,10 @@ The Android app owns QR scanning. A separate ZXing-compatible scanner app is not
 
 ## Mobile run setup inside Android WebView
 
-Android loads the server-served `/mobile` shell for run setup; it does not implement agent/team setup natively. In **Start new**, mobile users can:
+Android loads the server-served `/mobile` shell for run setup; it does not implement run setup natively. In **New run** (the round **+** on the run list), mobile users start an agent run and can:
 
-- choose Agent or Team mode, a launch target, a workspace, and runtime/model settings;
-- enable **Auto approve tools** for that run when they intentionally want tool calls to execute without per-call approval; the switch is off by default and uses the same launch-config field as desktop;
+- choose the agent, a folder, and runtime/model settings;
+- enable **Auto approve tools** for that run when they intentionally want tool calls to execute without per-call approval; the switch starts from the agent's launch default and uses the same launch-config field as desktop;
 - select workspaces from the paired node's workspace store, including workspaces that are not tied to a live run;
 - load an unlisted workspace by entering an absolute **server-side** path on the paired AutoByteus node/container, not a path on the Android filesystem.
 
@@ -165,8 +165,8 @@ Record the mode used in validation evidence:
 4. QR scan launch: tap **Scan QR**, grant camera permission when prompted, and confirm the bundled `org.autobyteus.mobile/com.journeyapps.barcodescanner.CaptureActivity` scanner UI opens. The app must not depend on an external scanner package.
 5. Scanner recovery: cancel the scanner and confirm the app returns to the connection screen with the recoverable QR retry/paste/manual-entry guidance. When practical, also exercise Android camera-permission denial.
 6. First-run setup: scan the Phone Access QR, or enter/paste/share the stable Tailscale URL or pairing link, and verify the WebView opens `/mobile`.
-7. Pairing: complete the existing `/mobile?pairing=` flow and confirm Home/Chat is usable. If the QR/link uses trusted private HTTP, confirm Android leaves cleartext acknowledgement pending before the WebView loads the node.
-8. Mobile new-run setup: when the change touches run setup, open **Start new**, confirm **Auto approve tools** is visible and off by default for Agent and Team launch configs, toggle it intentionally, select an existing workspace, and exercise **Load workspace by server path** with a path on the paired node/container before creating the run.
+7. Pairing: complete the existing `/mobile?pairing=` flow and confirm the run list and a run's conversation are usable. If the QR/link uses trusted private HTTP, confirm Android leaves cleartext acknowledgement pending before the WebView loads the node.
+8. Mobile new-run setup: when the change touches run setup, open **New run** (the round **+**), confirm **Auto approve tools** is visible, toggle it intentionally, select an existing folder, and exercise **Open a folder by path** with a path on the paired node/container before creating the run.
 9. Attachment upload: open Chat, tap an attachment/file upload control, choose a small local file through the Android picker, and confirm the selected file appears in the existing mobile composer/upload path.
 10. Restore: force-stop and reopen:
 
