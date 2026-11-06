@@ -1,0 +1,18 @@
+# API-02 — mobile-shell probe as committed at HEAD (before the harness update), --cases=MSP-01
+# Command: node tests/e2e/<HEAD copy of mobile-shell-probe.mjs> --cases=MSP-01 --output-dir=<fresh>  (cwd autobyteus-web)
+# Commit: a24421610f (source 88a93aaf26); macOS 26.5.2, Node v22.23.1; 2026-11-06T22:18:57Z
+
+## Probe result
+mobile-shell probe: Fail
+locator.click: Timeout 60000ms exceeded.
+Call log:
+  - waiting for locator('[data-testid="mobile-pair-button"]')
+
+    at pairPhone (/Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard/autobyteus-web/tests/e2e/abx403-tmp-mobile-shell-probe-head.mjs:455:49)
+    at async runCases (/Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard/autobyteus-web/tests/e2e/abx403-tmp-mobile-shell-probe-head.mjs:570:3)
+    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard/autobyteus-web/tests/e2e/abx403-tmp-mobile-shell-probe-head.mjs:1493:5
+
+## alpha: refusal lines (count, line)
+  19 Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /mobile/_nuxt/<asset> origin http://192.168.77.10:49990
+   1 Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /mobile/_nuxt/default.CTHSKn2w.css origin http://192.168.77.10:49990
+   1 Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /mobile/_nuxt/entry.BacBB9RM.css origin http://192.168.77.10:49990

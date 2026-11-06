@@ -1,0 +1,53 @@
+# API-00b — Chrome --host-resolver-rules MAP: Host and Origin on HTTP and WebSocket (the LAN and ts.net shapes used by API-04)
+# Command: node map.mjs <worktree>/autobyteus-web <worktree>/autobyteus-server-ts
+# Date: 2026-11-06T21:59:53Z
+[
+ {
+  "method": "GET",
+  "url": "/",
+  "host": "192.168.77.10:62680",
+  "origin": "(none)"
+ },
+ {
+  "method": "GET",
+  "url": "/favicon.ico",
+  "host": "192.168.77.10:62680",
+  "origin": "(none)"
+ },
+ {
+  "method": "POST",
+  "url": "/graphql",
+  "host": "192.168.77.10:62680",
+  "origin": "http://192.168.77.10:62680"
+ },
+ {
+  "method": "UPGRADE",
+  "url": "/ws/x",
+  "host": "192.168.77.10:62680",
+  "origin": "http://192.168.77.10:62680"
+ },
+ {
+  "method": "GET",
+  "url": "/",
+  "host": "node.tail-probe.ts.net:62680",
+  "origin": "(none)"
+ },
+ {
+  "method": "GET",
+  "url": "/favicon.ico",
+  "host": "node.tail-probe.ts.net:62680",
+  "origin": "(none)"
+ },
+ {
+  "method": "POST",
+  "url": "/graphql",
+  "host": "node.tail-probe.ts.net:62680",
+  "origin": "http://node.tail-probe.ts.net:62680"
+ },
+ {
+  "method": "UPGRADE",
+  "url": "/ws/x",
+  "host": "node.tail-probe.ts.net:62680",
+  "origin": "http://node.tail-probe.ts.net:62680"
+ }
+]

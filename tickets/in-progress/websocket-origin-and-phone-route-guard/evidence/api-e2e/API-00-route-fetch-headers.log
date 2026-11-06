@@ -1,0 +1,36 @@
+# API-00 — Playwright route.fetch({url}) headers seen by the target (the mobile-shell probe's phone rewrite)
+# Command: node probe.mjs <worktree>/autobyteus-web [forward-host]   (source: probes/API-00-route-fetch-headers-probe.mjs)
+# Commit: a24421610f (probe is ticket-owned, outside the repo); macOS 26.5.2, Node v22.23.1, Chrome Google Chrome 156.0.8078.80 
+# Date: 2026-11-06T21:59:49Z
+
+## Mode 1: as the mobile-shell probe does today (url rewritten, headers as the browser sent them)
+[
+ {
+  "method": "GET",
+  "url": "/",
+  "host": "127.0.0.1:62646",
+  "origin": "(none)"
+ },
+ {
+  "method": "POST",
+  "url": "/graphql",
+  "host": "127.0.0.1:62646",
+  "origin": "http://192.168.77.10:62646"
+ }
+]
+
+## Mode 2: forward the phone's Host with the rewritten URL
+[
+ {
+  "method": "GET",
+  "url": "/",
+  "host": "192.168.77.10:62666",
+  "origin": "(none)"
+ },
+ {
+  "method": "POST",
+  "url": "/graphql",
+  "host": "192.168.77.10:62666",
+  "origin": "http://192.168.77.10:62666"
+ }
+]
