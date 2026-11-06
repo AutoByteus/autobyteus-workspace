@@ -1,0 +1,15 @@
+# IMP-06 web typecheck and guards
+# Command: pnpm -C autobyteus-web typecheck; guard:web-boundary; guard:localization-boundary; audit:localization-literals
+# Commit: d5566977b4
+# Environment: macOS (Darwin 25.5), Node 22.21.1 (server), dsh 0.2.2-rc.1 on Node 25.2.1
+# Date: 2026-11-06
+
+[typecheck] Nuxt app (tsconfig.json): 72 errors, exit 2, 38.3s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.0s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.7s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 23.9s
+[typecheck] production errors: 0; test-file errors: 99 in 43 files (baseline 99 in 43 files)
+[typecheck] PASS
+[guard:web-boundary] Passed.
+[guard:localization-boundary] Passed.
+audit:localization-literals exit 0
