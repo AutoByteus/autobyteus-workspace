@@ -35,6 +35,8 @@ class ConnectionScreen(private val context: Context) {
         val scroll = ScrollView(context).apply {
             setBackgroundColor(Color.rgb(248, 250, 252))
         }
+        // Android 15 edge-to-edge: the form stays clear of the system bars, a cutout and the keyboard.
+        SystemBarInsets.pad(scroll)
         val root = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(dp(20), dp(28), dp(20), dp(28))
