@@ -110,6 +110,7 @@ describe("Node allowed-origin gate and phone WebSocket routes", () => {
       for (const pathname of [
         "/ws/terminal/origin-probe",
         "/ws/projects",
+        "/ws/node-desktop?mode=view",
         "/graphql",
         "/rest/remote/run-observations",
       ]) {
@@ -118,7 +119,7 @@ describe("Node allowed-origin gate and phone WebSocket routes", () => {
       }
     }
     expect(terminalConnect).not.toHaveBeenCalled();
-    expect(refusalLines()).toHaveLength(8);
+    expect(refusalLines()).toHaveLength(10);
     expect(refusalLines()[0]).toBe(
       `Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/origin-probe origin ${FOREIGN_ORIGIN}`,
     );

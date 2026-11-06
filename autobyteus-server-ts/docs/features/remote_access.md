@@ -11,7 +11,8 @@ Phone Access is additive: paired phones receive explicit `mra_...` mobile creden
 | HTTP route classification and authorization; the WebSocket credential rule and phone WebSocket routes (`authorizeWebSocket`, `PHONE_WEBSOCKET_ROUTES`) | `src/api/security/remote-access-route-policy.ts` |
 | Fastify request gate (Origin check, CORS, route authorization, refusal log) | `src/api/security/remote-access-policy-plugin.ts` |
 | Allowed-origin rule and `AUTOBYTEUS_ALLOWED_ORIGINS` parsing | `src/api/security/remote-access-request-origin.ts` |
-| WebSocket close codes for `/ws/*` handlers (adapter over `authorizeWebSocket`) | `src/api/websocket/remote-access-websocket-auth.ts` |
+| `/ws/*` handler adapter over `authorizeWebSocket` (refusal → close, auth context) | `src/api/websocket/remote-access-websocket-auth.ts` |
+| WebSocket close code for each refusal code | `src/remote-access/domain/remote-access-close-codes.ts` |
 | Phone Access settings | `src/remote-access/services/remote-access-settings-service.ts` and `stores/remote-access-settings-store.ts` |
 | Pairing session creation/exchange | `src/remote-access/services/remote-access-pairing-service.ts` |
 | Paired device credentials and revocation | `src/remote-access/services/paired-device-service.ts` and `stores/paired-device-store.ts` |

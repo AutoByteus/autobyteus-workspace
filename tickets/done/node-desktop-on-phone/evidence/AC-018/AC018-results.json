@@ -1,0 +1,70 @@
+{
+  "steps": [
+    {
+      "name": "opened",
+      "query": "?screen=desktop",
+      "status": "Connected · View only",
+      "dimensions": "1920x1080"
+    },
+    {
+      "name": "view-only-clicks",
+      "mouseOnNode": "x:300 y:300",
+      "expected": "x:300 y:300"
+    },
+    {
+      "name": "zoom",
+      "zoomed": "translate(-1920px, -1068px) scale(4)",
+      "panned": "translate(-1800px, -1008px) scale(4)",
+      "fitVisible": true,
+      "fitted": "translate(0px, 0px) scale(1)",
+      "afterDoubleTap": "translate(0px, 0px) scale(1)",
+      "mouseOnNode": "x:300 y:300",
+      "dimensions": "1920x1080"
+    },
+    {
+      "name": "full-screen-view-only",
+      "fullQuery": "?screen=desktop&full=1",
+      "barHidden": true,
+      "afterTapQuery": "?screen=desktop",
+      "barBack": true
+    },
+    {
+      "name": "control-click",
+      "mouseOnNode": "x:959 y:540",
+      "expectedNear": "x:960 y:540",
+      "canvas": {
+        "x": 7.125,
+        "y": 88,
+        "width": 1265.765625,
+        "height": 712
+      },
+      "sockets": [
+        "ws://abx407-node.lan:60901/ws/agent-package-definitions?access_token=<redacted>",
+        "ws://abx407-node.lan:60901/ws/node-desktop?mode=view&access_token=<redacted>",
+        "ws://abx407-node.lan:60901/ws/node-desktop?mode=control&access_token=<redacted>"
+      ]
+    },
+    {
+      "name": "full-screen-control",
+      "handleVisible": true,
+      "afterHandleQuery": "?screen=desktop",
+      "barBack": true
+    }
+  ],
+  "dimensionsAtEnd": "1920x1080",
+  "result": "done",
+  "sockets": [
+    {
+      "url": "ws://abx407-node.lan:60901/ws/agent-package-definitions?access_token=<redacted>",
+      "closed": false
+    },
+    {
+      "url": "ws://abx407-node.lan:60901/ws/node-desktop?mode=view&access_token=<redacted>",
+      "closed": true
+    },
+    {
+      "url": "ws://abx407-node.lan:60901/ws/node-desktop?mode=control&access_token=<redacted>",
+      "closed": false
+    }
+  ]
+}

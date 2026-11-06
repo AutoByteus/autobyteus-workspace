@@ -34,23 +34,8 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
 import NodeDesktopTile from '~/components/workspace/tools/NodeDesktopTile.vue';
-import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
-import { fetchNodeDesktop } from '~/utils/nodeDesktopClient';
+import { useNodeDesktopAvailability } from '~/composables/useNodeDesktopAvailability';
 
-const availability = ref<'loading' | 'available' | 'unavailable' | 'error'>('loading');
-
-const loadAvailability = async () => {
-  availability.value = 'loading';
-  try {
-    const { available } = await fetchNodeDesktop(useWindowNodeContextStore().getBoundEndpoints());
-    availability.value = available ? 'available' : 'unavailable';
-  } catch (error) {
-    console.warn('[VNC Viewer] could not ask the node for its node desktop:', error);
-    availability.value = 'error';
-  }
-};
-
-onMounted(loadAvailability);
+const { availability, reload: loadAvailability } = useNodeDesktopAvailability();
 </script>

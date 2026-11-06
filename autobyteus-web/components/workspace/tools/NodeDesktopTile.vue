@@ -24,19 +24,17 @@
         </div>
         <div class="controls flex items-center space-x-2">
           <button
-            v-if="offersConnect"
+            v-if="offer"
             data-testid="node-desktop-connect"
-            @click="handleConnectClick"
+            @click="openViewOnly"
             class="px-2 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
           >
-            {{ offersReconnect
-              ? $t('workspace.components.workspace.tools.NodeDesktopTile.reconnect')
-              : $t('workspace.components.workspace.tools.NodeDesktopTile.connect') }}
+            {{ $t(`workspace.components.workspace.tools.NodeDesktopTile.${offer}`) }}
           </button>
           <button
             v-if="isConnected"
             data-testid="node-desktop-disconnect"
-            @click="handleDisconnectClick"
+            @click="stop"
             class="px-2 py-1 text-xs bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
           >
             {{ $t('workspace.components.workspace.tools.NodeDesktopTile.disconnect') }}
@@ -93,42 +91,24 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
 import { Icon } from '@iconify/vue';
 import { useLocalization } from '~/composables/useLocalization';
+import { useNodeDesktopConnection } from '~/composables/useNodeDesktopConnection';
 import { useVncSession } from '~/composables/useVncSession';
 
 const { t } = useLocalization();
-const {
-  isConnected,
-  isConnecting,
-  mode,
-  streamEnd,
-  connect,
-  disconnect,
-  switchMode,
-  refreshViewport,
-  setContainer,
-} = useVncSession();
+const session = useVncSession();
+const { isConnected, isConnecting, mode, streamEnd, refreshViewport } = session;
 
 const screen = ref<HTMLElement | null>(null);
+const { offer, openViewOnly, stop, switchMode } = useNodeDesktopConnection(session, screen);
 const isMaximized = ref(false);
 const toolbarVisible = ref(true);
-let resizeObserver: ResizeObserver | null = null;
-/** The tile should open a stream as soon as its screen has a size (auto-connect, Connect). */
-let pendingConnect = false;
-/** The window was hidden while a stream was open or opening; reconnect when it is visible. */
-let reconnectWhenVisible = false;
 let revealToolbarTimer: ReturnType<typeof setTimeout> | null = null;
 let hideToolbarTimer: ReturnType<typeof setTimeout> | null = null;
 const REVEAL_DELAY_MS = 150;
 const HIDE_DELAY_MS = 1000;
-
-const offersReconnect = computed(() =>
-  streamEnd.value?.state === 'disconnected' || streamEnd.value?.state === 'unreachable');
-const offersConnect = computed(() =>
-  !isConnected.value && !isConnecting.value
-  && (streamEnd.value === null || streamEnd.value.state === 'closed' || offersReconnect.value));
 
 const statusText = computed(() => {
   if (isConnected.value) {
@@ -172,49 +152,8 @@ const handleToolbarMouseLeave = () => {
   }, HIDE_DELAY_MS);
 };
 
-/** Every stream the tile opens on its own starts in View only (REQ-005, D-10). */
-const openViewOnlyWhenReady = () => {
-  if (document.visibilityState === 'hidden') {
-    reconnectWhenVisible = true;
-    pendingConnect = false;
-    return;
-  }
-  const element = screen.value;
-  if (!element || element.offsetWidth === 0 || element.offsetHeight === 0) {
-    pendingConnect = true;
-    return;
-  }
-  pendingConnect = false;
-  connect('view');
-};
-
-const handleConnectClick = () => {
-  openViewOnlyWhenReady();
-};
-
-const handleDisconnectClick = () => {
-  pendingConnect = false;
-  reconnectWhenVisible = false;
-  disconnect();
-};
-
 const handleModeClick = () => {
   switchMode(mode.value === 'view' ? 'control' : 'view');
-};
-
-const handleVisibilityChange = () => {
-  if (document.visibilityState === 'hidden') {
-    if (isConnected.value || isConnecting.value || pendingConnect) {
-      reconnectWhenVisible = true;
-      pendingConnect = false;
-      disconnect();
-    }
-    return;
-  }
-  if (reconnectWhenVisible) {
-    reconnectWhenVisible = false;
-    openViewOnlyWhenReady();
-  }
 };
 
 const setMaximized = (maximized: boolean) => {
@@ -233,37 +172,10 @@ const handleKeydown = (event: KeyboardEvent) => {
   }
 };
 
-onMounted(() => {
-  window.addEventListener('keydown', handleKeydown);
-  document.addEventListener('visibilitychange', handleVisibilityChange);
-  void nextTick(() => {
-    if (!screen.value) return;
-    setContainer(screen.value);
-    openViewOnlyWhenReady();
-    if (typeof ResizeObserver === 'undefined') return;
-    resizeObserver = new ResizeObserver((entries) => {
-      const rect = entries[0]?.contentRect;
-      if (!rect || rect.width === 0 || rect.height === 0) return;
-      if (pendingConnect && !isConnecting.value && !isConnected.value) openViewOnlyWhenReady();
-      if (isConnected.value) refreshViewport();
-    });
-    resizeObserver.observe(screen.value);
-  });
-});
-
+onMounted(() => window.addEventListener('keydown', handleKeydown));
 onBeforeUnmount(() => {
   window.removeEventListener('keydown', handleKeydown);
-  document.removeEventListener('visibilitychange', handleVisibilityChange);
   clearToolbarTimers();
-  resizeObserver?.disconnect();
-  resizeObserver = null;
-  pendingConnect = false;
-  reconnectWhenVisible = false;
-  disconnect();
-});
-
-watch(isConnected, (connected) => {
-  if (connected) refreshViewport();
 });
 </script>
 

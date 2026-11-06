@@ -139,7 +139,8 @@ const trustedNetworkContext = (clientAddress?: string): RemoteAccessAuthContext 
   };
 };
 
-const readWebSocketQueryCredential = (request: FastifyRequest): string | null => {
+/** The one reader of the WebSocket query credential (`access_token`). */
+export const readWebSocketQueryCredential = (request: FastifyRequest): string | null => {
   try {
     return new URL(request.url, "http://autobyteus.local")
       .searchParams

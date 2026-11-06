@@ -3,37 +3,27 @@ import type {
   RemoteAccessAuthContext,
   RemoteAccessAuthFailureCode,
 } from "../../remote-access/domain/models.js";
-import { getRemoteAccessRoutePolicy, setRemoteAccessAuthContext } from "../security/remote-access-route-policy.js";
+import {
+  getRemoteAccessRoutePolicy,
+  readWebSocketQueryCredential,
+  setRemoteAccessAuthContext,
+} from "../security/remote-access-route-policy.js";
 import { redactSensitiveUrl } from "../security/redact-sensitive-url.js";
+import { remoteAccessCloseForFailure } from "../../remote-access/domain/remote-access-close-codes.js";
+
+/** The WebSocket query credential as the route policy reads it, for handlers that keep it (node desktop viewers). */
+export { readWebSocketQueryCredential };
 
 export type RemoteAccessWebSocketRejection = {
   code: number;
   reason: RemoteAccessAuthFailureCode;
 };
 
-const closeCodeByFailure: Record<RemoteAccessAuthFailureCode, number> = {
-  REMOTE_ACCESS_AUTH_REQUIRED: 4401,
-  REMOTE_ACCESS_AUTH_INVALID: 4401,
-  REMOTE_ACCESS_DEVICE_REVOKED: 4403,
-  PHONE_ACCESS_DISABLED: 4403,
-  REMOTE_ACCESS_ROUTE_UNSUPPORTED: 4404,
-  REMOTE_ACCESS_LOCAL_ONLY: 4403,
-  REMOTE_ACCESS_PAIRING_EXPIRED: 4401,
-  REMOTE_ACCESS_PAIRING_INVALID: 4401,
-  REMOTE_ACCESS_PAIRING_CONSUMED: 4401,
-  REMOTE_ACCESS_PAIRING_URL_INVALID: 4403,
-  REMOTE_ACCESS_PAIRING_URL_LOCAL_ONLY: 4403,
-  REMOTE_ACCESS_PAIRING_HTTP_PRIVATE_REQUIRED: 4403,
-  REMOTE_ACCESS_PAIRING_HTTP_ACK_REQUIRED: 4403,
-  REMOTE_ACCESS_ORIGIN_REFUSED: 4403,
-  PHONE_ACCESS_ROUTE_REFUSED: 4403,
-};
-
 /** Adapter for `/ws/*` handlers: the route policy's WebSocket result as a close-code rejection. */
 export async function authorizeRemoteAccessWebSocket(request: FastifyRequest): Promise<RemoteAccessAuthContext> {
   const result = await getRemoteAccessRoutePolicy().authorizeWebSocket(request);
   if (!result.ok) {
-    throw { code: closeCodeByFailure[result.code], reason: result.code } satisfies RemoteAccessWebSocketRejection;
+    throw remoteAccessCloseForFailure(result.code) satisfies RemoteAccessWebSocketRejection;
   }
   setRemoteAccessAuthContext(request, result.context);
   return result.context;

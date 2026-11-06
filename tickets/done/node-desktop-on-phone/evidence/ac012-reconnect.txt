@@ -1,0 +1,20 @@
+{
+ "events": [
+  {
+   "t": 47,
+   "event": "created",
+   "url": "ws://10.0.2.2:60901/ws/node-desktop?mode=view&access_token=<redacted>"
+  },
+  {
+   "t": 52,
+   "event": "handshake",
+   "status": 101
+  },
+  {
+   "t": 65,
+   "event": "closed"
+  }
+ ],
+ "status": "{\"q\":\"?screen=desktop\",\"s\":\"This viewer is not allowed on this node\",\"btn\":null}"
+}
+upstream rows: 0

@@ -194,6 +194,88 @@ describe("node desktop routes", () => {
     expect(desktopConnections).toBe(1);
   });
 
+  type HeldStream = { socket: WebSocket; closed: Promise<{ code: number; reason: string; at: number }> };
+
+  /** Opens a stream and keeps it open once the desktop's RFB version has arrived. */
+  const hold = (query: string): Promise<HeldStream> =>
+    new Promise((resolve, reject) => {
+      const socket = new WebSocket(`${baseUrl}/ws/node-desktop${query}`);
+      held.push(socket);
+      const closed = new Promise<{ code: number; reason: string; at: number }>((done) => {
+        socket.on("close", (code, reason) => done({ code, reason: reason.toString(), at: Date.now() }));
+      });
+      socket.on("error", () => undefined);
+      socket.once("message", () => resolve({ socket, closed }));
+      closed.then((close) => reject(new Error(`closed before streaming: ${close.code} ${close.reason}`)));
+    });
+  const held: WebSocket[] = [];
+  afterEach(() => {
+    for (const socket of held.splice(0)) socket.terminate();
+  });
+
+  it("refuses a 5th stream node-wide with 4429 before any desktop connection (AC-021)", async () => {
+    for (let index = 0; index < 4; index += 1) await hold("?mode=view");
+    expect(desktopConnections).toBe(4);
+    expect(await connect("/ws/node-desktop?mode=control")).toEqual({
+      kind: "open-then-closed", firstMessage: null, code: 4429, reason: "NODE_DESKTOP_TOO_MANY_VIEWERS",
+    });
+    expect(desktopConnections).toBe(4);
+
+    // A place frees up when a stream ends.
+    held[0]!.close(1000);
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    expect(await connect("/ws/node-desktop?mode=view")).toMatchObject({ kind: "open-then-closed", code: 1000 });
+  });
+
+  it("refuses a 3rd stream from one phone with 4429 while other viewers still fit (AC-021)", async () => {
+    await setPhoneAccess(true);
+    const phone = await pairPhone("Busy Phone");
+    const token = encodeURIComponent(phone.credential);
+    await hold(`?mode=view&access_token=${token}`);
+    await hold(`?mode=view&access_token=${token}`);
+    expect(await connect(`/ws/node-desktop?mode=view&access_token=${token}`)).toEqual({
+      kind: "open-then-closed", firstMessage: null, code: 4429, reason: "NODE_DESKTOP_TOO_MANY_VIEWERS",
+    });
+    expect(desktopConnections).toBe(2);
+    expect(await connect("/ws/node-desktop?mode=view")).toMatchObject({ kind: "open-then-closed", code: 1000 });
+    expect(desktopConnections).toBe(3);
+  });
+
+  it("ends an open phone stream within 25 s of its revocation; a reconnect is refused (AC-012)", { timeout: 40_000 }, async () => {
+    await setPhoneAccess(true);
+    const phone = await pairPhone("Revoked While Watching");
+    const other = await pairPhone("Still Paired");
+    const stream = await hold(`?mode=view&access_token=${encodeURIComponent(phone.credential)}`);
+    const otherStream = await hold(`?mode=view&access_token=${encodeURIComponent(other.credential)}`);
+    const trustedStream = await hold("?mode=view");
+
+    const revokedAt = Date.now();
+    await revokeDevice(phone.device.deviceId);
+    const close = await stream.closed;
+
+    expect({ code: close.code, reason: close.reason }).toEqual({ code: 4403, reason: "REMOTE_ACCESS_DEVICE_REVOKED" });
+    expect(close.at - revokedAt).toBeLessThanOrEqual(25_000);
+    expect(otherStream.socket.readyState).toBe(WebSocket.OPEN);
+    expect(trustedStream.socket.readyState).toBe(WebSocket.OPEN);
+    expect(await connect(`/ws/node-desktop?mode=view&access_token=${encodeURIComponent(phone.credential)}`))
+      .toEqual({ kind: "open-then-closed", firstMessage: null, code: 4403, reason: "REMOTE_ACCESS_DEVICE_REVOKED" });
+  });
+
+  it("ends open phone streams within 25 s of Phone Access being turned off (AC-012)", { timeout: 40_000 }, async () => {
+    await setPhoneAccess(true);
+    const phone = await pairPhone("Watching Phone");
+    const stream = await hold(`?mode=control&access_token=${encodeURIComponent(phone.credential)}`);
+    const trustedStream = await hold("?mode=view");
+
+    const disabledAt = Date.now();
+    await setPhoneAccess(false);
+    const close = await stream.closed;
+
+    expect({ code: close.code, reason: close.reason }).toEqual({ code: 4403, reason: "PHONE_ACCESS_DISABLED" });
+    expect(close.at - disabledAt).toBeLessThanOrEqual(25_000);
+    expect(trustedStream.socket.readyState).toBe(WebSocket.OPEN);
+  });
+
   async function setPhoneAccess(enabled: boolean): Promise<void> {
     const response = await inject("PUT", "/rest/remote-access/settings", { phoneAccessEnabled: enabled });
     expect(response.statusCode).toBe(200);

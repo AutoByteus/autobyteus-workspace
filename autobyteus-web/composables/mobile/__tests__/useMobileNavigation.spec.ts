@@ -89,6 +89,36 @@ describe('useMobileNavigation', () => {
     expect(queryOf(router)).toEqual(ORG);
   });
 
+  it('VNC Viewer full screen is its own entry: Back leaves full screen, then the view, then the run (REQ-S3-3)', async () => {
+    const router = await createMobileTestRouter();
+    const { result: nav } = withSetup(router, useMobileNavigation);
+    await nav.openRun({ orgQuery: ORG });
+    await nav.openView('desktop');
+    expect(nav.screen.value).toBe('desktop');
+    expect(nav.desktopFullScreen.value).toBe(false);
+    await nav.openDesktopFullScreen();
+    expect(queryOf(router)).toEqual({ ...ORG, screen: 'desktop', full: '1' });
+    expect(nav.desktopFullScreen.value).toBe(true);
+    await goBack(router); expect(nav.screen.value).toBe('desktop'); expect(nav.desktopFullScreen.value).toBe(false);
+    await goBack(router); expect(nav.screen.value).toBe('run');
+  });
+
+  it('← in VNC Viewer full screen entered by a reload goes to the view, then the run', async () => {
+    const router = await createMobileTestRouter({ ...ORG, screen: 'desktop', full: '1' });
+    const { result: nav } = withSetup(router, useMobileNavigation);
+    expect(nav.desktopFullScreen.value).toBe(true);
+    await nav.back();
+    expect(queryOf(router)).toEqual({ ...ORG, screen: 'desktop' });
+    await nav.back();
+    expect(queryOf(router)).toEqual({ ...ORG, screen: 'run' });
+  });
+
+  it('full=1 means nothing on another screen', async () => {
+    const router = await createMobileTestRouter({ screen: 'files', full: '1' });
+    const { result: nav } = withSetup(router, useMobileNavigation);
+    expect(nav.desktopFullScreen.value).toBe(false);
+  });
+
   it('toList replaces a screen whose subject is gone with the list', async () => {
     const router = await createMobileTestRouter({ screen: 'run' });
     const { result: nav } = withSetup(router, useMobileNavigation);

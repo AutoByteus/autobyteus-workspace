@@ -28,7 +28,9 @@ export const NODE_DESKTOP_CLOSE = Object.freeze({
   disconnected: { code: 4502, reason: "NODE_DESKTOP_DISCONNECTED" },
 });
 
-type EndCause = "viewer-closed" | "viewer-error" | "viewer-protocol" | "desktop-closed" | "desktop-error";
+export type NodeDesktopClose = Readonly<{ code: number; reason: string }>;
+
+type EndCause = "viewer-closed" | "viewer-error" | "viewer-protocol" | "desktop-closed" | "desktop-error" | "node-closed";
 
 export type NodeDesktopStreamOptions = Readonly<{
   socket: NodeDesktopViewerSocket;
@@ -41,7 +43,9 @@ export type NodeDesktopStreamOptions = Readonly<{
 /**
  * One viewer of the node desktop: a WebSocket bridged to Xvnc's TCP port. Viewer bytes pass the
  * RFB input filter for the stream's mode; Xvnc bytes go to the viewer unchanged. Whichever side
- * ends first, the other is closed and one metadata-only line is logged (REQ-011).
+ * ends first, the other is closed and one metadata-only line is logged (REQ-011). Construction
+ * opens nothing; `start()` connects to Xvnc. The node can end the stream with `close()`, and
+ * `onEnd` tells whoever admitted it (the viewer registry) that it has ended.
  */
 export class NodeDesktopStream {
   private readonly filter: RfbViewerInputFilter;
@@ -51,6 +55,7 @@ export class NodeDesktopStream {
   private startedAt = 0;
   private bytesToViewer = 0;
   private bytesFromViewer = 0;
+  private readonly endListeners: Array<() => void> = [];
 
   constructor(private readonly options: NodeDesktopStreamOptions) {
     this.filter = new RfbViewerInputFilter(options.mode);
@@ -70,6 +75,17 @@ export class NodeDesktopStream {
     socket.on("message", (data: Buffer) => this.fromViewer(data));
     socket.on("close", () => this.end("viewer-closed"));
     socket.on("error", () => this.end("viewer-error"));
+  }
+
+  /** Ends the stream from the node's side (for example a revoked phone), closing the viewer with `close`. */
+  close(close: NodeDesktopClose): void {
+    this.end("node-closed", close);
+  }
+
+  /** Calls `listener` once when the stream has ended, whichever side ended it. */
+  onEnd(listener: () => void): void {
+    if (this.ended) listener();
+    else this.endListeners.push(listener);
   }
 
   private toViewer(chunk: Buffer): void {
@@ -100,15 +116,17 @@ export class NodeDesktopStream {
     if (!this.tcp.write(result.forward)) this.options.socket.pause();
   }
 
-  private end(cause: EndCause): void {
+  private end(cause: EndCause, nodeClose?: NodeDesktopClose): void {
     if (this.ended) return;
     this.ended = true;
     this.tcp?.destroy();
-    const close = cause === "viewer-protocol"
-      ? NODE_DESKTOP_CLOSE.viewerProtocol
-      : cause === "desktop-closed" || cause === "desktop-error"
-        ? NODE_DESKTOP_CLOSE.disconnected
-        : null;
+    const close = cause === "node-closed"
+      ? nodeClose ?? null
+      : cause === "viewer-protocol"
+        ? NODE_DESKTOP_CLOSE.viewerProtocol
+        : cause === "desktop-closed" || cause === "desktop-error"
+          ? NODE_DESKTOP_CLOSE.disconnected
+          : null;
     if (close) {
       try {
         this.options.socket.close(close.code, close.reason);
@@ -119,7 +137,8 @@ export class NodeDesktopStream {
     console.info(
       `[node-desktop] stream ended mode=${this.options.mode} viewer=${this.options.viewerKind}`
       + ` durationMs=${Date.now() - this.startedAt} toViewer=${this.bytesToViewer}`
-      + ` fromViewer=${this.bytesFromViewer} reason=${cause}`,
+      + ` fromViewer=${this.bytesFromViewer} reason=${cause}${nodeClose ? ` close=${nodeClose.reason}` : ""}`,
     );
+    for (const listener of this.endListeners.splice(0)) listener();
   }
 }

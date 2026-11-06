@@ -1,0 +1,21 @@
+# Case: API-07 (a) — AC-012 / SCN-009a: the owner turns Phone Access off while the phone streams, then on again
+# Command: probes/ac012.sh off (API-07-ac012.sh): owner PUT /rest/remote-access/settings {phoneAccessEnabled:false} on the node's loopback owner route; phone status + node upstream polled every second; node log; reopen (← then ⋮ → VNC Viewer, real taps) -> refused; Phone Access on; reopen -> connects
+# Commit: 165de82af4; emulator autobyteus277_api35; node abx407-api-node
+# Date: 2026-11-06T23:24:23Z
+
+before: status=Connected · View only up=1
+owner: Phone Access off -> {"settings":{"phoneAccessEnabled":false,"updatedAt":"2026-11-06T23:24:23.864Z","updatedBy"
+  +1.2s status=Connected · View only up=1
+  +2.4s status=Connected · View only up=1
+  +3.6s status=Connected · View only up=1
+  +4.8s status=This viewer is not allowed on this node up=0
+node log: [node-desktop] stream ended mode=view viewer=mobile durationMs=44748 toViewer=1380743 fromViewer=1366 reason=node-closed close=PHONE_ACCESS_DISABLED
+## reopen the view
+reopened: status=This viewer is not allowed on this node up=0 page=?screen=desktop
+## owner: Phone Access on again -> {"settings":{"phoneAccessEnabled":true,"updatedAt":"2026-11-06T23:24:41.881Z","updatedBy":
+reopened after on: status=Connected · View only up=1
+
+## proxy log (the phone's node-desktop upgrades): the reopen while off at 23:24:36Z was refused (up 0), the reopen after on at 23:24:49Z connected
+{"t":"2026-11-06T23:23:43.411Z","kind":"upgrade","method":"GET","path":"/ws/node-desktop"}
+{"t":"2026-11-06T23:24:36.643Z","kind":"upgrade","method":"GET","path":"/ws/node-desktop"}
+{"t":"2026-11-06T23:24:49.525Z","kind":"upgrade","method":"GET","path":"/ws/node-desktop"}

@@ -14,7 +14,7 @@
           </span>
         </span>
       </div>
-      <MobileRunMenu :show-messages="showMessages" @open-view="$emit('open-view', $event)" />
+      <MobileRunMenu :show-messages="showMessages" :show-desktop="showDesktop" @open-view="$emit('open-view', $event)" />
     </header>
 
     <div v-if="unreachable" class="min-h-0 flex-1 overflow-y-auto" data-testid="mobile-run-unreachable">
@@ -49,6 +49,7 @@ import RemoteNodeChip from '~/components/workspace/remote/RemoteNodeChip.vue';
 import RemoteRunNotice from '~/components/workspace/remote/RemoteRunNotice.vue';
 import MobileRunMenu from '~/components/mobile/runScreen/MobileRunMenu.vue';
 import type { MobileView } from '~/composables/mobile/useMobileNavigation';
+import { useNodeDesktopAvailability } from '~/composables/useNodeDesktopAvailability';
 import { useTargetConversation } from '~/composables/workspace/useTargetConversation';
 import type { ActiveAgentWorkspaceTarget } from '~/types/workspace/activeAgentWorkspaceTarget';
 import { mobileRunStatusLabel } from '~/utils/mobile/mobileRunStatusLabel';
@@ -75,4 +76,8 @@ const MEMBER_KINDS: ReadonlySet<ActiveAgentWorkspaceTarget['kind']> = new Set([
   'standalone_team_member', 'agent_org_direct_agent', 'agent_org_team_member', 'agent_org_task_team_member', 'agent_run_task_team_member',
 ]);
 const showMessages = computed(() => MEMBER_KINDS.has(props.target.kind));
+
+/** The paired node's desktop, for a run on that node only: a remote run's screen is on another node (DEC-S3-2). */
+const { availability: desktopAvailability } = useNodeDesktopAvailability();
+const showDesktop = computed(() => desktopAvailability.value === 'available' && !remote.value);
 </script>
