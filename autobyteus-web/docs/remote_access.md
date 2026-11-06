@@ -183,6 +183,10 @@ The mobile shell gates truly desktop-only or Electron-only features instead of e
 
 Phase One explicitly removes mobile Terminal and VNC from supported mobile features. Backend operation-level hard denial and broader mobile authorization/token/session hardening are tracked for Phase Two; Docker-node pairing is not a substitute for that future work.
 
+For WebSockets the backend now enforces the phone's surface: a phone credential opens only the phone WebSocket routes (agent, team, org and agent-collaboration run streams, projects, agent package definitions, file explorer, node desktop). It is refused on every other WebSocket route, such as the terminal, update notifications, application WebSockets and GraphQL subscriptions, with close code 4403 and reason `PHONE_ACCESS_ROUTE_REFUSED` (HTTP 403 for a GraphQL upgrade). This refusal does not unpair the phone. A new phone WebSocket surface must be added to the backend's phone route list (`autobyteus-server-ts/docs/features/remote_access.md`, Route Policy).
+
+The node also accepts browser requests only from allowed origins: the phone shell is served by the node itself (same origin, also through Tailscale Serve or a Host-preserving proxy) and passes. A gateway that rewrites `Host` without `X-Forwarded-Host` needs its phone URL's origin in the node setting `AUTOBYTEUS_ALLOWED_ORIGINS`; otherwise the node answers 403 `REMOTE_ACCESS_ORIGIN_REFUSED` (see `autobyteus-server-ts/docs/features/remote_access.md`, Allowed Origins).
+
 Examples of mobile-unsupported surfaces include:
 
 - desktop settings management;

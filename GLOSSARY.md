@@ -30,6 +30,15 @@ delegated run, …) are defined in the
   (`NodeEntry.nodeId`) when it reaches the node.
 - **Client address:** the network address a request came from
   (`normalizeClientAddress`, `isLoopbackClientAddress`). It is not a peer.
+- **Allowed origin:** a browser `Origin` a node accepts on HTTP requests and
+  WebSocket upgrades: none, the node's own origin (`Host` or
+  `X-Forwarded-Host`), `file://` (the packaged desktop app), a loopback
+  origin, or one listed in `AUTOBYTEUS_ALLOWED_ORIGINS`
+  (`RequestOriginPolicy`, `remote-access-request-origin.ts`). Others are
+  refused with `REMOTE_ACCESS_ORIGIN_REFUSED`.
+- **Phone WebSocket route:** a WebSocket route pattern a paired phone's
+  credential may open (`PHONE_WEBSOCKET_ROUTES`). A phone credential on any
+  other WebSocket route is refused with `PHONE_ACCESS_ROUTE_REFUSED`.
 - **Server package:** one release's server for one architecture: a
   self-contained folder with `server-package.json`, `package.json`, `dist/`,
   `prisma/`, `node_modules/` and `mobile-web/`. A release publishes it as

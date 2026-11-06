@@ -1,6 +1,7 @@
 import type { FastifyRequest } from "fastify";
 import { describe, expect, it, vi } from "vitest";
 import {
+  PHONE_WEBSOCKET_ROUTES,
   RemoteAccessRoutePolicy,
   classifyHttpRoute,
 } from "../../../src/api/security/remote-access-route-policy.js";
@@ -10,12 +11,29 @@ const request = (input: {
   url: string;
   remoteAddress?: string;
   headers?: Record<string, string>;
+  routePattern?: string;
 }): FastifyRequest => ({
   method: input.method,
   url: input.url,
   headers: input.headers ?? {},
+  routeOptions: { url: input.routePattern },
   raw: { socket: { remoteAddress: input.remoteAddress } },
 } as unknown as FastifyRequest);
+
+const mobileAuthService = () => ({
+  authorizeMobileCredential: vi.fn(async () => ({
+    ok: true as const,
+    context: { mode: "mobile" as const, isAuthenticated: true, deviceId: "device-1" },
+  })),
+});
+
+const webSocketUpgrade = (routePattern: string, url: string) => request({
+  method: "GET",
+  url,
+  remoteAddress: "100.64.1.2",
+  headers: { upgrade: "websocket" },
+  routePattern,
+});
 
 describe("RemoteAccessRoutePolicy", () => {
   it("classifies core route families under the trusted-network model", () => {
@@ -115,23 +133,76 @@ describe("RemoteAccessRoutePolicy", () => {
     }))).resolves.toMatchObject({ ok: true, context: { mode: "loopback", isAuthenticated: true } });
   });
 
-  it("validates mra access_token query credential for GraphQL WebSocket upgrades", async () => {
+  it("refuses a phone credential on GraphQL WebSocket upgrades (not a phone WebSocket route)", async () => {
+    const authService = mobileAuthService();
+    const policy = new RemoteAccessRoutePolicy(authService as never);
+    const result = await policy.authorizeHttpRequest(webSocketUpgrade("/graphql", "/graphql?access_token=mra_secret"));
+
+    expect(result).toMatchObject({ ok: false, statusCode: 403, code: "PHONE_ACCESS_ROUTE_REFUSED" });
+    expect(authService.authorizeMobileCredential).not.toHaveBeenCalled();
+  });
+
+  it("validates a phone credential on every phone WebSocket route", async () => {
+    expect([...PHONE_WEBSOCKET_ROUTES].sort()).toEqual([
+      "/ws/agent-collaboration/:runId",
+      "/ws/agent-org/:orgRunId",
+      "/ws/agent-package-definitions",
+      "/ws/agent-team/:teamRunId",
+      "/ws/agent/:runId",
+      "/ws/file-explorer/:workspaceId",
+      "/ws/node-desktop",
+      "/ws/projects",
+    ]);
+    for (const routePattern of PHONE_WEBSOCKET_ROUTES) {
+      const authService = mobileAuthService();
+      const policy = new RemoteAccessRoutePolicy(authService as never);
+      await expect(policy.authorizeWebSocket(webSocketUpgrade(routePattern, "/ws/x?access_token=mra_secret")), routePattern)
+        .resolves.toMatchObject({ ok: true, context: { mode: "mobile", deviceId: "device-1" } });
+      expect(authService.authorizeMobileCredential).toHaveBeenCalledWith("mra_secret");
+    }
+  });
+
+  it("keeps today's refusal of a revoked or disabled phone credential on phone WebSocket routes", async () => {
     const authService = {
       authorizeMobileCredential: vi.fn(async () => ({
-        ok: true as const,
-        context: { mode: "mobile" as const, isAuthenticated: true },
+        ok: false as const, statusCode: 403, code: "REMOTE_ACCESS_DEVICE_REVOKED" as const, message: "revoked",
       })),
     };
     const policy = new RemoteAccessRoutePolicy(authService as never);
-    const result = await policy.authorizeHttpRequest(request({
-      method: "GET",
-      url: "/graphql?access_token=mra_secret",
-      remoteAddress: "100.64.1.2",
-      headers: { upgrade: "websocket" },
-    }));
+    await expect(policy.authorizeWebSocket(webSocketUpgrade("/ws/agent/:runId", "/ws/agent/r1?access_token=mra_old")))
+      .resolves.toMatchObject({ ok: false, code: "REMOTE_ACCESS_DEVICE_REVOKED" });
+  });
 
-    expect(result.ok).toBe(true);
-    expect(authService.authorizeMobileCredential).toHaveBeenCalledWith("mra_secret");
+  it("refuses a phone credential on WebSocket routes outside the phone list, before validating it", async () => {
+    for (const routePattern of [
+      "/ws/terminal/:sessionId",
+      "/ws/update-notifications",
+      "/ws/applications/:applicationId/backend/notifications",
+      "/ws/applications/:applicationId/backend/routes/*",
+      "/ws/applications/:applicationId/agent-communication/*",
+      "/ws/some-future-route",
+    ]) {
+      const authService = mobileAuthService();
+      const policy = new RemoteAccessRoutePolicy(authService as never);
+      await expect(policy.authorizeWebSocket(webSocketUpgrade(routePattern, "/ws/x?access_token=mra_secret")), routePattern)
+        .resolves.toMatchObject({ ok: false, statusCode: 403, code: "PHONE_ACCESS_ROUTE_REFUSED" });
+      expect(authService.authorizeMobileCredential).not.toHaveBeenCalled();
+    }
+    const policy = new RemoteAccessRoutePolicy(mobileAuthService() as never);
+    await expect(policy.authorizeWebSocket(request({ method: "GET", url: "/ws/unknown?access_token=mra_secret" })))
+      .resolves.toMatchObject({ ok: false, code: "PHONE_ACCESS_ROUTE_REFUSED" });
+  });
+
+  it("keeps trusted-network and loopback WebSocket access without a phone credential on every route", async () => {
+    const authService = mobileAuthService();
+    const policy = new RemoteAccessRoutePolicy(authService as never);
+    await expect(policy.authorizeWebSocket(webSocketUpgrade("/ws/terminal/:sessionId", "/ws/terminal/s1")))
+      .resolves.toMatchObject({ ok: true, context: { mode: "trusted_network", isAuthenticated: false } });
+    await expect(policy.authorizeWebSocket(request({
+      method: "GET", url: "/ws/terminal/s1?access_token=not-a-phone-token", remoteAddress: "127.0.0.1",
+      routePattern: "/ws/terminal/:sessionId",
+    }))).resolves.toMatchObject({ ok: true, context: { mode: "loopback", isAuthenticated: true } });
+    expect(authService.authorizeMobileCredential).not.toHaveBeenCalled();
   });
 
   it("allows trusted-network WebSocket upgrades without access_token", async () => {
@@ -157,7 +228,19 @@ describe("RemoteAccessRoutePolicy", () => {
     await expect(policy.authorizeHttpRequest(request({ method: "POST", url: "/rest/remote/messages", remoteAddress: "100.64.1.2" })))
       .resolves.toMatchObject({ ok: true, context: { mode: "trusted_network", isAuthenticated: false } });
     await expect(policy.authorizeHttpRequest(request({ method: "POST", url: "/rest/remote/messages", remoteAddress: "100.64.1.2",
-      headers: { authorization: "Bearer mra_device_secret" } }))).resolves.toMatchObject({ ok: false, statusCode: 403 });
+      headers: { authorization: "Bearer mra_device_secret" } }))).resolves.toMatchObject({ ok: false, statusCode: 403, code: "REMOTE_ACCESS_AUTH_INVALID" });
+    expect(authService.authorizeMobileCredential).not.toHaveBeenCalled();
+  });
+
+  it("refuses a phone query credential on the peer WebSocket with the phone-route refusal", async () => {
+    const authService = mobileAuthService();
+    const policy = new RemoteAccessRoutePolicy(authService as never);
+    await expect(policy.authorizeHttpRequest(webSocketUpgrade(
+      "/rest/remote/run-observations",
+      "/rest/remote/run-observations?access_token=mra_device_secret",
+    ))).resolves.toMatchObject({ ok: false, statusCode: 403, code: "PHONE_ACCESS_ROUTE_REFUSED" });
+    await expect(policy.authorizeHttpRequest(webSocketUpgrade("/rest/remote/run-observations", "/rest/remote/run-observations")))
+      .resolves.toMatchObject({ ok: true, context: { mode: "trusted_network" } });
     expect(authService.authorizeMobileCredential).not.toHaveBeenCalled();
   });
 });

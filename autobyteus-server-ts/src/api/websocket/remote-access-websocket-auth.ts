@@ -1,16 +1,9 @@
 import type { FastifyRequest } from "fastify";
-import {
-  WEBSOCKET_ACCESS_TOKEN_QUERY_KEY,
-  type RemoteAccessAuthContext,
-  type RemoteAccessAuthFailureCode,
-  type RemoteAccessRouteClassification,
+import type {
+  RemoteAccessAuthContext,
+  RemoteAccessAuthFailureCode,
 } from "../../remote-access/domain/models.js";
-import {
-  getRemoteAccessAuthService,
-  isMobileRemoteAccessCredential,
-} from "../../remote-access/services/remote-access-auth-service.js";
-import { isLoopbackClientAddress } from "../security/remote-access-local-trust.js";
-import { setRemoteAccessAuthContext } from "../security/remote-access-route-policy.js";
+import { getRemoteAccessRoutePolicy, setRemoteAccessAuthContext } from "../security/remote-access-route-policy.js";
 import { redactSensitiveUrl } from "../security/redact-sensitive-url.js";
 
 export type RemoteAccessWebSocketRejection = {
@@ -32,52 +25,18 @@ const closeCodeByFailure: Record<RemoteAccessAuthFailureCode, number> = {
   REMOTE_ACCESS_PAIRING_URL_LOCAL_ONLY: 4403,
   REMOTE_ACCESS_PAIRING_HTTP_PRIVATE_REQUIRED: 4403,
   REMOTE_ACCESS_PAIRING_HTTP_ACK_REQUIRED: 4403,
+  REMOTE_ACCESS_ORIGIN_REFUSED: 4403,
+  PHONE_ACCESS_ROUTE_REFUSED: 4403,
 };
 
-const parseRequestUrl = (request: FastifyRequest): URL =>
-  new URL(request.url, "http://autobyteus.local");
-
-export const extractRemoteAccessWebSocketCredential = (request: FastifyRequest): string | null => {
-  try {
-    const parsed = parseRequestUrl(request);
-    return parsed.searchParams.get(WEBSOCKET_ACCESS_TOKEN_QUERY_KEY)?.trim() || null;
-  } catch {
-    return null;
+/** Adapter for `/ws/*` handlers: the route policy's WebSocket result as a close-code rejection. */
+export async function authorizeRemoteAccessWebSocket(request: FastifyRequest): Promise<RemoteAccessAuthContext> {
+  const result = await getRemoteAccessRoutePolicy().authorizeWebSocket(request);
+  if (!result.ok) {
+    throw { code: closeCodeByFailure[result.code], reason: result.code } satisfies RemoteAccessWebSocketRejection;
   }
-};
-
-const trustedNetworkContext = (clientAddress?: string): RemoteAccessAuthContext => {
-  const isLoopback = isLoopbackClientAddress(clientAddress);
-  return {
-    mode: isLoopback ? "loopback" : "trusted_network",
-    isAuthenticated: isLoopback,
-  };
-};
-
-export async function authorizeRemoteAccessWebSocket(
-  request: FastifyRequest,
-  routeClass: RemoteAccessRouteClassification = "TRUSTED_NETWORK_WEBSOCKET",
-): Promise<RemoteAccessAuthContext> {
-  if (routeClass !== "TRUSTED_NETWORK_WEBSOCKET") {
-    throw { code: 4404, reason: "REMOTE_ACCESS_ROUTE_UNSUPPORTED" } satisfies RemoteAccessWebSocketRejection;
-  }
-
-  const credential = extractRemoteAccessWebSocketCredential(request);
-  if (isMobileRemoteAccessCredential(credential)) {
-    const result = await getRemoteAccessAuthService().authorizeMobileCredential(credential);
-    if (!result.ok) {
-      throw {
-        code: closeCodeByFailure[result.code] ?? 4401,
-        reason: result.code,
-      } satisfies RemoteAccessWebSocketRejection;
-    }
-    setRemoteAccessAuthContext(request, result.context);
-    return result.context;
-  }
-
-  const context = trustedNetworkContext(request.raw.socket.remoteAddress);
-  setRemoteAccessAuthContext(request, context);
-  return context;
+  setRemoteAccessAuthContext(request, result.context);
+  return result.context;
 }
 
 export const closeSocketForRemoteAccessRejection = (

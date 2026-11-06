@@ -99,7 +99,11 @@ export type RemoteAccessAuthFailureCode =
   | "REMOTE_ACCESS_PAIRING_URL_INVALID"
   | "REMOTE_ACCESS_PAIRING_URL_LOCAL_ONLY"
   | "REMOTE_ACCESS_PAIRING_HTTP_PRIVATE_REQUIRED"
-  | "REMOTE_ACCESS_PAIRING_HTTP_ACK_REQUIRED";
+  | "REMOTE_ACCESS_PAIRING_HTTP_ACK_REQUIRED"
+  /** The request's browser Origin is not an allowed origin of the node. */
+  | "REMOTE_ACCESS_ORIGIN_REFUSED"
+  /** A paired phone's credential on a WebSocket route that is not a phone WebSocket route. */
+  | "PHONE_ACCESS_ROUTE_REFUSED";
 
 export type RemoteAccessRejection = {
   ok: false;
@@ -126,9 +130,6 @@ export type ResolveRestResourceUrlInput = {
   prefer?: "relative" | "absolute";
 };
 
-export type WebSocketAuthPolicy = "WEBSOCKET_AUTH_QUERY_TOKEN";
-
-export const WEBSOCKET_AUTH_POLICY: WebSocketAuthPolicy = "WEBSOCKET_AUTH_QUERY_TOKEN";
 export const WEBSOCKET_ACCESS_TOKEN_QUERY_KEY = "access_token";
 export const REMOTE_ACCESS_MOBILE_CREDENTIAL_PREFIX = "mra_";
 
