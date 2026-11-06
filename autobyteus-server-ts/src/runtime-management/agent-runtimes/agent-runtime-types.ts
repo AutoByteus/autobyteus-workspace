@@ -1,19 +1,23 @@
 import type { RuntimeKind } from "../runtime-kind-enum.js";
 
-/** The four external runtimes the Agent Runtimes page shows, in page order. */
+/** The five external runtimes the Agent Runtimes page shows, in page order. */
 export type AgentRuntimeKind =
   | RuntimeKind.CODEX_APP_SERVER
   | RuntimeKind.CLAUDE_AGENT_SDK
   | RuntimeKind.ANTIGRAVITY_CLI
-  | RuntimeKind.GROK_BUILD;
+  | RuntimeKind.GROK_BUILD
+  | RuntimeKind.DEEPSEEK_HARNESS;
 
 export type AgentRuntimeUpdateState = "checking" | "upToDate" | "updateAvailable" | "checkFailed" | "notChecked";
 
 /** `notApplicable`: not installed, or Codex with a provider that needs no OpenAI sign-in (DEC-008). */
 export type AgentRuntimeAccountState = "checking" | "signedIn" | "signedOut" | "unknown" | "notApplicable";
 
-/** BROWSER: the page starts the runtime's own login. COMMAND_LINE: the user signs in from its command line. */
-export type AgentRuntimeSignInRoute = "browser" | "commandLine";
+/**
+ * BROWSER: the page starts the runtime's own login. COMMAND_LINE: the user signs in from its command line.
+ * API_KEY_SETTING: the runtime uses a provider key from the AutoByteus vault, set in Settings → API Keys (DeepSeek Harness).
+ */
+export type AgentRuntimeSignInRoute = "browser" | "commandLine" | "apiKeySetting";
 
 export type AgentRuntimeOperation =
   | Readonly<{ kind: "update"; state: "running"; command: string; step: string | null; fromVersion: string }>

@@ -184,6 +184,7 @@ describe("Run projection tool-call GraphQL e2e", () => {
         claudeBackendFactory: {} as never,
         agyBackendFactory: {} as never,
         grokBackendFactory: {} as never,
+        deepSeekHarnessBackendFactory: {} as never,
         activationRegistry: {} as never,
         memoryRecorder: {} as never,
         providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },

@@ -487,6 +487,7 @@ export enum AgentRuntimeOperationState {
 }
 
 export enum AgentRuntimeSignInRoute {
+  ApiKeySetting = 'API_KEY_SETTING',
   Browser = 'BROWSER',
   CommandLine = 'COMMAND_LINE'
 }

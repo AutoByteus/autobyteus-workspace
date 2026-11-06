@@ -121,6 +121,7 @@ const createHarness = (input: {
       claude: {} as never,
       antigravity: {} as never,
       grok: {} as never,
+      deepSeekHarness: {} as never,
     };
   });
   const providerBuilder: AgentProviderFactoryBuilder = { createForExecution };
@@ -145,6 +146,8 @@ const createHarness = (input: {
     artifactDeliverySink: { accept: vi.fn(async () => undefined) },
     modelSelectionValidator: { validate: vi.fn(), validateMany: vi.fn() },
     applicationAgentTools,
+    providerRelayAccess: null,
+    runPasses: null,
   };
   return {
     buildInput,
@@ -255,8 +258,9 @@ describe("buildApplicationExecutionScopeKernel construction transaction", () => 
       agentDefinitionService: harness.buildInput.agentDefinitionService,
       agentToolMcpRunSessions: harness.authority.runSessions,
       applicationAgentTools: harness.buildInput.applicationAgentTools,
-      // The standalone application host's runs get no integration access in this step.
+      // Application runs get no integration access in this step.
       integrationRunAccess: null,
+      providerRelayAccess: null,
     });
     expect(harness.complete).toHaveBeenCalledWith({
       executionCapabilities: {
@@ -283,5 +287,30 @@ describe("buildApplicationExecutionScopeKernel construction transaction", () => 
     kernel.abortConstruction();
     expect(harness.close).toHaveBeenCalledTimes(1);
     expect(harness.abort).not.toHaveBeenCalled();
+  });
+
+  it("gives the studio's provider relays to the scope's backends and its pass revocation to both run managers (AR-008)", () => {
+    const harness = createHarness();
+    const providerRelayAccess = { prepareForRun: vi.fn(), relayBaseUrl: vi.fn(), observe: vi.fn() };
+    const runPasses = { revokeForRun: vi.fn() };
+    const kernel = buildApplicationExecutionScopeKernel({ ...harness.buildInput, providerRelayAccess, runPasses });
+    expect(harness.createForExecution).toHaveBeenCalledWith(expect.objectContaining({ integrationRunAccess: null, providerRelayAccess }));
+    const agentRunManager = (kernel.agentRunService as unknown as { agentRunManager: { runPasses: unknown; activationRegistry: unknown } }).agentRunManager;
+    expect(agentRunManager.runPasses).toBe(runPasses);
+    const resourceManager = (agentRunManager.activationRegistry as { resourceManager: { dependencies: Record<string, unknown> } }).resourceManager;
+    expect(resourceManager.dependencies.runPasses).toBe(runPasses);
+    kernel.abortConstruction();
+  });
+
+  it("refuses provider relays without the same host's pass revocation", () => {
+    const harness = createHarness();
+    for (const input of [
+      { ...harness.buildInput, providerRelayAccess: undefined },
+      { ...harness.buildInput, runPasses: undefined },
+      { ...harness.buildInput, providerRelayAccess: { prepareForRun: vi.fn(), relayBaseUrl: vi.fn(), observe: vi.fn() } },
+    ]) {
+      expect(() => buildApplicationExecutionScopeKernel(input as never))
+        .toThrow("Application execution scope providerRelayAccess and runPasses dispositions are required.");
+    }
   });
 });

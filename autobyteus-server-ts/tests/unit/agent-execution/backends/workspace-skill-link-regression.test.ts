@@ -31,7 +31,7 @@ import { CodexAppServerClientManager } from "../../../../src/runtime-management/
 import type { CodexAppServerClient } from "../../../../src/runtime-management/codex/client/codex-app-server-client.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 import { Skill } from "../../../../src/skills/domain/models.js";
-import { FAKE_ACP_AGENT, fixturePath, fixtureSessionId } from "./acp/acp-fake-agent-harness.js";
+import { fakeAcpLaunchProfile, fixturePath, fixtureSessionId } from "./acp/acp-fake-agent-harness.js";
 import { createAgentToolMcpRunSessionsStub } from "../../../helpers/agent-tool-mcp-run-sessions-stub.js";
 
 type Runtime = "claude" | "codex" | "grok";
@@ -106,8 +106,8 @@ const prepare = async (runtime: Runtime, input: { scope: Scope; restore: boolean
     const materializer = new WorkspaceSkillMaterializer(GROK_WORKSPACE_SKILL_MATERIALIZATION_PROFILE);
     const fixture = input.restore ? "load" : "prompt";
     const factory = new AcpAgentRunBackendFactory({
-      launchProfile: { agentLabel: "Fake Grok", command: () => process.execPath, args: () => [FAKE_ACP_AGENT],
-        env: (base) => ({ ...base, FAKE_ACP_FIXTURE: fixturePath(fixture), FAKE_ACP_REPORT_MCP_READY: "1" }), normalizeModels: () => [] },
+      launchProfile: fakeAcpLaunchProfile("Fake Grok", () => ({ FAKE_ACP_FIXTURE: fixturePath(fixture), FAKE_ACP_REPORT_MCP_READY: "1" })),
+      integrationRunAccess: null, providerRelayAccess: null,
       sessionProfile: grokBuildSessionProfile, definitions: definitions as never, skills: skills as never,
       workspaces: resolver, mcpSessions: createAgentToolMcpRunSessionsStub() as never,
       skillMaterializer: materializer,

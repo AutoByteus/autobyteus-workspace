@@ -1,4 +1,7 @@
 import { createCredentialProxyHost, type CredentialProxyHost } from "../credential-proxy/credential-proxy-host.js";
+import type { ProviderRelayAccess } from "../credential-proxy/provider-relays/provider-relay-access.js";
+import { setProcessProviderRelayAccess } from "../credential-proxy/provider-relays/provider-relay-process-access.js";
+import type { RunPassRevocation } from "../credential-proxy/run-pass-revocation.js";
 import { NativeCommandShutdown } from "./native-command-shutdown.js";
 import { CONTEXT_FILE_MAX_BYTES } from "../context-files/domain/context-file-upload-policy.js";
 import fastify, { LogController, type FastifyInstance } from "fastify";
@@ -151,6 +154,7 @@ const closeStudioProcessResources = async (input: {
         await input.agentToolsMcpHost?.close();
       } finally {
         try {
+          if (input.credentialProxyHost) setProcessProviderRelayAccess(null);
           await input.credentialProxyHost?.close();
         } catch (error) {
           console.warn("CREDENTIAL_PROXY_CLOSE_FAILED", error);
@@ -205,6 +209,8 @@ const createStudioApplicationServices = (input: {
   contextFilePathEnvironment: ContextFilePathEnvironment;
   modelCatalogService: ModelCatalogService;
   modelSelectionValidator: RunModelSelectionValidator;
+  providerRelayAccess: ProviderRelayAccess;
+  runPasses: RunPassRevocation;
 }) => {
   const applicationRuntime = buildApplicationPlatformRuntime({
     appConfig: input.appConfig,
@@ -218,6 +224,9 @@ const createStudioApplicationServices = (input: {
     runtimeAvailabilityService: getRuntimeAvailabilityService(),
     modelCatalogService: input.modelCatalogService,
     modelSelectionValidator: input.modelSelectionValidator,
+    // The studio's application launches get its provider relays and end their passes through the same host.
+    providerRelayAccess: input.providerRelayAccess,
+    runPasses: input.runPasses,
     modelAvailabilityService: getModelAvailabilityService(),
     llmProviderService: getLlmProviderService(),
     codexClientManager: getCodexAppServerClientManager(),
@@ -314,6 +323,8 @@ export const buildStudioServer = async (input: {
       loggingConfig: input.loggingConfig,
     });
     credentialProxyHost = createCredentialProxyHost({ agentDefinitions: hostDefinitionServices.agentDefinitionService });
+    // Before it listens: the model catalog and runtime availability read it (discovery waits for the listener).
+    setProcessProviderRelayAccess(credentialProxyHost.providerRelayAccess);
     const agentProviderFactoryBuilder = createProcessAgentProviderFactoryBuilder({
       workspaceManager, nativeCommandProcessScope: nativeShutdown.scope,
     });
@@ -353,6 +364,8 @@ export const buildStudioServer = async (input: {
       agentProviderFactoryBuilder,
       agentToolMcpSessionAuthority: generalProcessAuthority,
       integrationRunAccess: credentialProxyHost.runAccess,
+      providerRelayAccess: credentialProxyHost.providerRelayAccess,
+      runPasses: credentialProxyHost.runPasses,
       modelSelectionValidator,
       taskExecutionResources,
       // One notice slot: the agent runtime hand-over first (a pending tool list notice must not delay it by one input),
@@ -384,6 +397,8 @@ export const buildStudioServer = async (input: {
       contextFilePathEnvironment,
       modelCatalogService,
       modelSelectionValidator,
+      providerRelayAccess: credentialProxyHost.providerRelayAccess,
+      runPasses: credentialProxyHost.runPasses,
     });
     const currentApplicationRuntime = applicationServices.applicationRuntime;
     applicationRuntime = currentApplicationRuntime;

@@ -232,7 +232,7 @@ describe("credential proxy host", () => {
 
   it("refuses a revoked pass", async () => {
     const api = (await apiUrlFor("run-1"));
-    host.runAccess.revokeForRun("run-1");
+    host.runPasses.revokeForRun("run-1");
     await refused(await fetch(`${api}/user`), "RUN_PASS_INVALID");
   });
 

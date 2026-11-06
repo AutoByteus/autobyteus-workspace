@@ -1,4 +1,4 @@
-import type { AcpExtEffect, AcpMcpServerStatus } from "../acp/acp-agent-session-profile.js";
+import type { AcpSessionEffect, AcpMcpServerStatus } from "../acp/acp-agent-session-profile.js";
 
 /** Grok reports per-server MCP readiness only through this extension notification. */
 export const GROK_MCP_SERVER_STATUS_METHOD = "_x.ai/mcp/server_status";
@@ -11,7 +11,7 @@ const toStatus = (value: unknown): AcpMcpServerStatus => {
 };
 
 /** `{name, status, reason}` of `_x.ai/mcp/server_status` as a typed readiness effect. */
-export const interpretGrokMcpServerStatus = (params: Record<string, unknown>): AcpExtEffect | null => {
+export const interpretGrokMcpServerStatus = (params: Record<string, unknown>): AcpSessionEffect | null => {
   const server = typeof params.name === "string" && params.name ? params.name : null;
   if (!server) return null;
   return {

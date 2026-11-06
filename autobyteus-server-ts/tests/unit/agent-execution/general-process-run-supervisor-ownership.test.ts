@@ -43,7 +43,7 @@ const createAuthority = (): ScopedAgentToolMcpSessionAuthority => ({
 });
 
 const createProviderBuilder = (): AgentProviderFactoryBuilder => ({
-  createForExecution: vi.fn(() => ({ autoByteus: {} as never, codex: {} as never, claude: {} as never, antigravity: {} as never, grok: {} as never })),
+  createForExecution: vi.fn(() => ({ autoByteus: {} as never, codex: {} as never, claude: {} as never, antigravity: {} as never, grok: {} as never, deepSeekHarness: {} as never })),
 });
 
 const createSupervisorInput = () => {
@@ -67,6 +67,8 @@ const createSupervisorInput = () => {
     agentProviderFactoryBuilder: createProviderBuilder(),
     agentToolMcpSessionAuthority: createAuthority(),
     integrationRunAccess: null,
+    providerRelayAccess: null,
+    runPasses: null,
     modelSelectionValidator: { validate: vi.fn(), validateMany: vi.fn(), listOptions: vi.fn() },
     taskExecutionResources: { ownerOf: vi.fn(() => null) } as unknown as TaskExecutionResourcePort,
   };
@@ -198,11 +200,19 @@ describe("GeneralProcessRunSupervisor ownership", () => {
     for (const property of [
       "memoryDir", "contextFilePathEnvironment", "agentDefinitionService", "agentTeamDefinitionService",
       "agentOrgDefinitionService", "definitionAdmissionService", "workspaceManager", "agentProviderFactoryBuilder",
-      "agentToolMcpSessionAuthority", "integrationRunAccess", "modelSelectionValidator",
+      "agentToolMcpSessionAuthority", "integrationRunAccess", "providerRelayAccess", "runPasses", "modelSelectionValidator",
     ] as const) {
       const invalid = { ...createSupervisorInput() } as Record<string, unknown>;
       delete invalid[property];
       expect(() => new GeneralProcessRunSupervisor(invalid as never)).toThrow("Complete GeneralProcessRunSupervisor input is required.");
     }
+  });
+
+  it("rejects an access without the pass revocation of the same host before manager mutation (AR-008)", () => {
+    const withRelayOnly = { ...createSupervisorInput(), providerRelayAccess: { prepareForRun: vi.fn(), relayBaseUrl: vi.fn(), observe: vi.fn() } };
+    expect(() => new GeneralProcessRunSupervisor(withRelayOnly as never)).toThrow("Complete GeneralProcessRunSupervisor input is required.");
+    const withIntegrationsOnly = { ...createSupervisorInput(), integrationRunAccess: { environmentForRun: vi.fn() } };
+    expect(() => new GeneralProcessRunSupervisor(withIntegrationsOnly as never)).toThrow("Complete GeneralProcessRunSupervisor input is required.");
+    expect(() => AgentOrgRunManager.getInstance()).toThrow();
   });
 });

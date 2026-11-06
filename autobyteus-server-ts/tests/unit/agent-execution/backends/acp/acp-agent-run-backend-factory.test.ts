@@ -19,7 +19,7 @@ import type { IntegrationRunAccess } from "../../../../../src/credential-proxy/i
 import { grokBuildSessionProfile } from "../../../../../src/agent-execution/backends/grok/grok-build-session-profile.js";
 import { getGrokWorkspaceSkillMaterializer } from "../../../../../src/agent-execution/backends/grok/grok-workspace-skill-materializer.js";
 import {
-  FAKE_ACP_AGENT,
+  fakeAcpLaunchProfile,
   fixturePath,
   fixtureSessionId,
   makeTestTempDir,
@@ -43,16 +43,11 @@ afterEach(async () => { for (const backend of backends.splice(0)) await backend.
 const tempDir = makeTestTempDir;
 afterAll(removeTestTempDirs);
 
-const launchProfileFor = (fixture: string, recordFile: string, reportMcpReady: boolean): AcpAgentLaunchProfile => ({
-  agentLabel: "Fake Agent",
-  command: () => process.execPath,
-  args: () => [FAKE_ACP_AGENT],
-  env: (base) => ({
-    ...base, FAKE_ACP_FIXTURE: fixture, FAKE_ACP_RECORD: recordFile,
+const launchProfileFor = (fixture: string, recordFile: string, reportMcpReady: boolean): AcpAgentLaunchProfile =>
+  fakeAcpLaunchProfile("Fake Agent", () => ({
+    FAKE_ACP_FIXTURE: fixture, FAKE_ACP_RECORD: recordFile,
     ...(reportMcpReady ? { FAKE_ACP_REPORT_MCP_READY: "1" } : {}),
-  }),
-  normalizeModels: () => [],
-});
+  }));
 
 const createFactory = (fixture: string, options: {
   /** The fixture carries its own MCP server status rows; otherwise the fake agent reports ready. */
@@ -74,6 +69,7 @@ const createFactory = (fixture: string, options: {
     mcpSessions: mcpSessions as unknown as AgentToolMcpRunSessionActivator,
     skillMaterializer: (options.skillMaterializer ?? getGrokWorkspaceSkillMaterializer()) as ReturnType<typeof getGrokWorkspaceSkillMaterializer>,
     integrationRunAccess: options.integrationRunAccess ?? null,
+    providerRelayAccess: null,
   });
   const recorded = () => fs.existsSync(recordFile)
     ? fs.readFileSync(recordFile, "utf8").split("\n").filter(Boolean).map((line) => JSON.parse(line)) : [];
@@ -129,14 +125,14 @@ describe("AcpAgentRunBackendFactory", () => {
     const environmentForRun = vi.fn(async (run: { agentDefinitionId: string }): Promise<Record<string, string>> => (run.agentDefinitionId === "def-1" ? variables : {}));
     const spawn = vi.spyOn(AcpAgentProcess, "spawn");
     try {
-      const { factory } = createFactory(fixturePath("prompt"), { integrationRunAccess: { environmentForRun, revokeForRun: vi.fn() } });
+      const { factory } = createFactory(fixturePath("prompt"), { integrationRunAccess: { environmentForRun } });
       backends.push(await factory.beginPreparation({ kind: "new", config: config(), runId: "run-1" }).prepare());
       expect(environmentForRun).toHaveBeenCalledWith({ runId: "run-1", agentDefinitionId: "def-1" }, process.env);
       const env = spawn.mock.calls[0]![0].env as Record<string, string>;
       expect(env).toMatchObject({ ...variables, FAKE_ACP_FIXTURE: fixturePath("prompt"), PATH: process.env.PATH });
       expect(process.env.AUTOBYTEUS_GITHUB_API_URL).toBeUndefined();
 
-      const { factory: other } = createFactory(fixturePath("prompt"), { integrationRunAccess: { environmentForRun, revokeForRun: vi.fn() } });
+      const { factory: other } = createFactory(fixturePath("prompt"), { integrationRunAccess: { environmentForRun } });
       backends.push(await other.beginPreparation({ kind: "new", config: config({ agentDefinitionId: "def-2" }), runId: "run-2" }).prepare());
       expect(spawn.mock.calls[1]![0].env).not.toHaveProperty("AUTOBYTEUS_GITHUB_API_URL");
     } finally {
@@ -206,17 +202,20 @@ describe("AcpAgentRunBackendFactory", () => {
     expect(batches.flat().some((event) => event.eventType === AgentRunEventType.SYSTEM_INSTRUCTIONS_SUPPLIED)).toBe(false);
   });
 
-  it("rejects restore without an exact session binding or without session/load support", async () => {
+  it("rejects restore without an exact session binding or without session/load or session/resume support", async () => {
     const { factory } = createFactory(fixturePath("load"));
     await expect(factory.beginPreparation({ kind: "restore", context: new AgentRunContext({ runId: "run-1", config: config(), runtimeContext: null }) }).prepare())
       .rejects.toBeInstanceOf(AgentCreationError);
     await expect(factory.beginPreparation({ kind: "restore", context: new AgentRunContext({ runId: "run-1", config: config(), runtimeContext: new AcpAgentRunContext("run-1") }) }).prepare())
       .rejects.toThrow("PLATFORM_AGENT_RUN_BINDING_INVALID");
-    const noLoad = withInitialize(readFixture("load"), (result) => { result.agentCapabilities.loadSession = false; });
-    const { factory: dshLike } = createFactory(writeCustomFixture(noLoad));
-    await expect(dshLike.beginPreparation({ kind: "restore", context: new AgentRunContext({
+    const noRestore = withInitialize(readFixture("load"), (result) => {
+      result.agentCapabilities.loadSession = false;
+      delete result.agentCapabilities.sessionCapabilities.resume;
+    });
+    const { factory: automationOnly } = createFactory(writeCustomFixture(noRestore));
+    await expect(automationOnly.beginPreparation({ kind: "restore", context: new AgentRunContext({
       runId: "run-1", config: config(), runtimeContext: new AcpAgentRunContext(fixtureSessionId("load")),
-    }) }).prepare()).rejects.toThrow("Fake Agent does not support session/load");
+    }) }).prepare()).rejects.toThrow("Fake Agent does not support session/load or session/resume");
   });
 
   it("surfaces a load failure as an AgentCreationError carrying the agent text (restore wraps it as cause, AR-006)", async () => {

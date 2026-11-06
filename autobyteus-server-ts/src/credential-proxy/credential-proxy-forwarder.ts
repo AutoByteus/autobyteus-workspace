@@ -34,9 +34,9 @@ export type ForwardResponse = Readonly<{
   body: Buffer | Readable | null;
 }>;
 
-/** Request headers never forwarded: the caller's credentials, our own host, proxy and hop-by-hop headers. */
+/** Request headers never forwarded: the caller's credentials (a relay's pass), our own host, proxy and hop-by-hop headers. */
 const DROPPED_REQUEST_HEADERS = new Set([
-  "authorization", "cookie", "host", "connection", "keep-alive", "transfer-encoding", "te", "trailer", "upgrade",
+  "authorization", "x-api-key", "cookie", "host", "connection", "keep-alive", "transfer-encoding", "te", "trailer", "upgrade",
   "expect", "accept-encoding", "content-length",
 ]);
 const DROPPED_RESPONSE_HEADERS = new Set([
@@ -88,13 +88,14 @@ export const buildUpstreamUrl = (route: DeliveryRoute, method: string, rawPathAn
   return upstream;
 };
 
-const authorizationFor = (route: DeliveryRoute, token: string): string =>
-  route.auth === "bearer"
-    ? `Bearer ${token}`
-    : `Basic ${Buffer.from(`x-access-token:${token}`, "utf8").toString("base64")}`;
+const setCredential = (headers: Headers, route: DeliveryRoute, token: string): void => {
+  if (route.auth === "x-api-key") headers.set("x-api-key", token);
+  else if (route.auth === "bearer") headers.set("authorization", `Bearer ${token}`);
+  else headers.set("authorization", `Basic ${Buffer.from(`x-access-token:${token}`, "utf8").toString("base64")}`);
+};
 
 /**
- * Forwards one checked call (DS-005). The token is revealed only while the upstream `Authorization` is built; it never
+ * Forwards one checked call (DS-005). The token is revealed only while the upstream credential header is set; it never
  * enters a log, an error or the activity record. The proxy never follows a redirect: a `Location` on the route's own
  * origin is rewritten through the proxy for the same route and pass, any other `Location` is passed unchanged.
  */
@@ -117,7 +118,7 @@ export class CredentialProxyForwarder {
       headers.set(lower, Array.isArray(value) ? value.join(", ") : value);
     }
     const token = input.token.revealToTrustedConsumer();
-    headers.set("authorization", authorizationFor(route, token));
+    setCredential(headers, route, token);
     // Identity responses only: the body passes through (or is redacted) exactly as the upstream sent it.
     headers.set("accept-encoding", "identity");
     const hasBody = request.body !== null && !["GET", "HEAD"].includes(request.method);

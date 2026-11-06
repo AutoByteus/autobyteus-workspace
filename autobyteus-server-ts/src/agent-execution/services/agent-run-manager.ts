@@ -1,4 +1,4 @@
-import type { IntegrationRunAccess } from "../../credential-proxy/integration-run-access.js";
+import type { RunPassRevocation } from "../../credential-proxy/run-pass-revocation.js";
 import type { AgentRunBackendFactory } from "../backends/agent-run-backend-factory.js";
 import { AgentRun } from "../domain/agent-run.js";
 import type {
@@ -44,12 +44,13 @@ export type AgentRunManagerOptions = Readonly<{
   claudeBackendFactory: AgentRunBackendFactory;
   agyBackendFactory: AgentRunBackendFactory;
   grokBackendFactory: AgentRunBackendFactory;
+  deepSeekHarnessBackendFactory: AgentRunBackendFactory;
   activationRegistry: AgentRunActivationRegistry;
   memoryRecorder: AgentRunMemoryRecorder;
   providerInputNormalizer: Pick<AgentRunProviderInputNormalizer, "normalizeForProvider">;
   agentToolMcpRunSessionDeactivator: AgentToolMcpRunSessionDeactivator;
-  /** Ends a run's credential-proxy pass when its activation fails before it is attached (`null`: none). */
-  integrationRunAccess: Pick<IntegrationRunAccess, "revokeForRun"> | null;
+  /** Ends a run's credential-proxy pass when its activation fails before it is attached (`null`: this host issues none). */
+  runPasses: RunPassRevocation | null;
   /** Supplies platform notices that ride along with each run's next external input (none by default). */
   inputPreface?: AgentRunInputPreface | null;
   /** Told when a run is published (the matching release is reported by the resource manager). */
@@ -63,11 +64,12 @@ export class AgentRunManager {
   private readonly claudeBackendFactory: AgentRunBackendFactory;
   private readonly agyBackendFactory: AgentRunBackendFactory;
   private readonly grokBackendFactory: AgentRunBackendFactory;
+  private readonly deepSeekHarnessBackendFactory: AgentRunBackendFactory;
   private readonly activationRegistry: AgentRunActivationRegistry;
   private readonly memoryRecorder: AgentRunMemoryRecorder;
   private readonly providerInputNormalizer: Pick<AgentRunProviderInputNormalizer, "normalizeForProvider">;
   private readonly agentToolMcpRunSessionDeactivator: AgentToolMcpRunSessionDeactivator;
-  private readonly integrationRunAccess: Pick<IntegrationRunAccess, "revokeForRun"> | null;
+  private readonly runPasses: RunPassRevocation | null;
   private readonly inputPreface: AgentRunInputPreface | null;
   private readonly lifecycleObserver: Pick<AgentRunLifecycleObserver, "runPublished"> | null;
   private readonly activations = new Set<AgentRunActivationOperation>();
@@ -107,6 +109,7 @@ export class AgentRunManager {
       options?.claudeBackendFactory,
       options?.agyBackendFactory,
       options?.grokBackendFactory,
+      options?.deepSeekHarnessBackendFactory,
       options?.activationRegistry,
       options?.memoryRecorder,
       options?.providerInputNormalizer,
@@ -123,11 +126,12 @@ export class AgentRunManager {
     this.claudeBackendFactory = options.claudeBackendFactory;
     this.agyBackendFactory = options.agyBackendFactory;
     this.grokBackendFactory = options.grokBackendFactory;
+    this.deepSeekHarnessBackendFactory = options.deepSeekHarnessBackendFactory;
     this.memoryRecorder = options.memoryRecorder;
     this.providerInputNormalizer = options.providerInputNormalizer;
     this.agentToolMcpRunSessionDeactivator =
       options.agentToolMcpRunSessionDeactivator;
-    this.integrationRunAccess = options.integrationRunAccess ?? null;
+    this.runPasses = options.runPasses ?? null;
     this.activationRegistry = options.activationRegistry;
     this.inputPreface = options.inputPreface ?? null;
     this.lifecycleObserver = options.lifecycleObserver ?? null;
@@ -169,7 +173,7 @@ export class AgentRunManager {
         // The run's local sessions: its Agent Tools MCP session and its credential-proxy pass (AR-002).
         releaseLocalSessions: () => {
           this.agentToolMcpRunSessionDeactivator.deactivateForRun(runId);
-          this.integrationRunAccess?.revokeForRun(runId);
+          this.runPasses?.revokeForRun(runId);
         },
       });
       this.activations.add(operation);
@@ -402,6 +406,7 @@ export class AgentRunManager {
     if (runtimeKind === RuntimeKind.CLAUDE_AGENT_SDK) return this.claudeBackendFactory;
     if (runtimeKind === RuntimeKind.ANTIGRAVITY_CLI) return this.agyBackendFactory;
     if (runtimeKind === RuntimeKind.GROK_BUILD) return this.grokBackendFactory;
+    if (runtimeKind === RuntimeKind.DEEPSEEK_HARNESS) return this.deepSeekHarnessBackendFactory;
     return null;
   }
 

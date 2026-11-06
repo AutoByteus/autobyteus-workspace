@@ -28,7 +28,7 @@ export interface AvailableModel {
 }
 
 export interface ExternalAgentRuntimeEntry {
-  runtime: 'codex_app_server' | 'claude_agent_sdk' | 'antigravity_cli' | 'grok_build'
+  runtime: 'codex_app_server' | 'claude_agent_sdk' | 'antigravity_cli' | 'grok_build' | 'deepseek_harness'
   name: string
   signIn?: 'not checked'
   limits: UsageLimitView[] | 'not reported' | UnknownText

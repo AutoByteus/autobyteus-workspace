@@ -508,11 +508,12 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
         claudeBackendFactory: unavailableBackendFactory,
         agyBackendFactory: unavailableBackendFactory,
         grokBackendFactory: unavailableBackendFactory,
+        deepSeekHarnessBackendFactory: unavailableBackendFactory,
         activationRegistry: infrastructure.activationRegistry,
         memoryRecorder: infrastructure.memoryRecorder,
         providerInputNormalizer: infrastructure.providerInputNormalizer,
         agentToolMcpRunSessionDeactivator: deactivator,
-        integrationRunAccess: null,
+        runPasses: null,
       });
       (AgentRunManager as any).instance = runManager;
       agentRunManagerOverridden = true;

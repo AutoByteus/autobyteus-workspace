@@ -177,6 +177,8 @@ const messages = {
     "AutoByteus-supplied · Codex App Server baseInstructions",
   "workspace.components.progress.SystemInstructionActivityItem.source.grok":
     "AutoByteus-supplied · Grok Build rules",
+  "workspace.components.progress.SystemInstructionActivityItem.source.deepseekHarness":
+    "AutoByteus-supplied · DeepSeek Harness instructions plugin",
   "workspace.components.progress.SystemInstructionActivityItem.source.unknown":
     "AutoByteus-supplied system instructions",
   "workspace.components.workspace.team.TeamOverviewPanel.messages": "Messages",

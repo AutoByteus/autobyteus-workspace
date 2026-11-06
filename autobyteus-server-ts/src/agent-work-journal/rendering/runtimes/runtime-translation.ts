@@ -5,6 +5,7 @@ import { antigravityTranslation } from "./antigravity-translation.js";
 import { autobyteusTranslation } from "./autobyteus-translation.js";
 import { claudeTranslation } from "./claude-translation.js";
 import { codexTranslation } from "./codex-translation.js";
+import { deepSeekHarnessTranslation } from "./deepseek-harness-translation.js";
 import { grokTranslation } from "./grok-translation.js";
 
 /** A tool call as recorded: its name and arguments. */
@@ -75,6 +76,7 @@ export const getRuntimeTranslation = (runtimeKind: RuntimeKind | string | null):
     [RuntimeKind.CODEX_APP_SERVER, codexTranslation],
     [RuntimeKind.ANTIGRAVITY_CLI, antigravityTranslation],
     [RuntimeKind.GROK_BUILD, grokTranslation],
+    [RuntimeKind.DEEPSEEK_HARNESS, deepSeekHarnessTranslation],
     [RuntimeKind.AUTOBYTEUS, autobyteusTranslation],
   ]);
   return (runtimeKind && registry.get(runtimeKind)) || genericTranslation;

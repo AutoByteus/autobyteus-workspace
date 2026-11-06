@@ -6,6 +6,7 @@ export declare const agentOrgLaunchConfigurationDtoSchema: z.ZodObject<{
         codex_app_server: "codex_app_server";
         antigravity_cli: "antigravity_cli";
         grok_build: "grok_build";
+        deepseek_harness: "deepseek_harness";
     }>;
     llmModelIdentifier: z.ZodString;
     llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
@@ -98,6 +99,7 @@ export declare const userLaunchSelectionDtoSchema: z.ZodObject<{
         codex_app_server: "codex_app_server";
         antigravity_cli: "antigravity_cli";
         grok_build: "grok_build";
+        deepseek_harness: "deepseek_harness";
     }>>;
     llmModelIdentifier: z.ZodString;
     llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
@@ -216,6 +218,7 @@ export declare const delegatedLaunchSelectionsChangedEventDtoSchema: z.ZodObject
                 codex_app_server: "codex_app_server";
                 antigravity_cli: "antigravity_cli";
                 grok_build: "grok_build";
+                deepseek_harness: "deepseek_harness";
             }>>;
             llmModelIdentifier: z.ZodString;
             llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
@@ -230,6 +233,7 @@ export declare const delegatedLaunchSelectionsChangedEventDtoSchema: z.ZodObject
                 codex_app_server: "codex_app_server";
                 antigravity_cli: "antigravity_cli";
                 grok_build: "grok_build";
+                deepseek_harness: "deepseek_harness";
             }>>;
             llmModelIdentifier: z.ZodString;
             llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
@@ -294,6 +298,7 @@ export declare const agentOrgExecutionTreeDtoSchema: z.ZodObject<{
                 codex_app_server: "codex_app_server";
                 antigravity_cli: "antigravity_cli";
                 grok_build: "grok_build";
+                deepseek_harness: "deepseek_harness";
             }>;
             llmModelIdentifier: z.ZodString;
             llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
@@ -314,6 +319,7 @@ export declare const agentOrgExecutionTreeDtoSchema: z.ZodObject<{
                     codex_app_server: "codex_app_server";
                     antigravity_cli: "antigravity_cli";
                     grok_build: "grok_build";
+                    deepseek_harness: "deepseek_harness";
                 }>;
                 llmModelIdentifier: z.ZodString;
                 llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
@@ -334,6 +340,7 @@ export declare const agentOrgExecutionTreeDtoSchema: z.ZodObject<{
                     codex_app_server: "codex_app_server";
                     antigravity_cli: "antigravity_cli";
                     grok_build: "grok_build";
+                    deepseek_harness: "deepseek_harness";
                 }>;
                 llmModelIdentifier: z.ZodString;
                 llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
@@ -354,6 +361,7 @@ export declare const agentOrgExecutionTreeDtoSchema: z.ZodObject<{
                         codex_app_server: "codex_app_server";
                         antigravity_cli: "antigravity_cli";
                         grok_build: "grok_build";
+                        deepseek_harness: "deepseek_harness";
                     }>;
                     llmModelIdentifier: z.ZodString;
                     llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
@@ -438,6 +446,7 @@ export declare const agentOrgExecutionViewDtoSchema: z.ZodObject<{
                     codex_app_server: "codex_app_server";
                     antigravity_cli: "antigravity_cli";
                     grok_build: "grok_build";
+                    deepseek_harness: "deepseek_harness";
                 }>;
                 llmModelIdentifier: z.ZodString;
                 llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
@@ -458,6 +467,7 @@ export declare const agentOrgExecutionViewDtoSchema: z.ZodObject<{
                         codex_app_server: "codex_app_server";
                         antigravity_cli: "antigravity_cli";
                         grok_build: "grok_build";
+                        deepseek_harness: "deepseek_harness";
                     }>;
                     llmModelIdentifier: z.ZodString;
                     llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
@@ -478,6 +488,7 @@ export declare const agentOrgExecutionViewDtoSchema: z.ZodObject<{
                         codex_app_server: "codex_app_server";
                         antigravity_cli: "antigravity_cli";
                         grok_build: "grok_build";
+                        deepseek_harness: "deepseek_harness";
                     }>;
                     llmModelIdentifier: z.ZodString;
                     llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
@@ -498,6 +509,7 @@ export declare const agentOrgExecutionViewDtoSchema: z.ZodObject<{
                             codex_app_server: "codex_app_server";
                             antigravity_cli: "antigravity_cli";
                             grok_build: "grok_build";
+                            deepseek_harness: "deepseek_harness";
                         }>;
                         llmModelIdentifier: z.ZodString;
                         llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
@@ -804,6 +816,7 @@ export declare const agentOrgExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z
                 codex_app_server: "codex_app_server";
                 antigravity_cli: "antigravity_cli";
                 grok_build: "grok_build";
+                deepseek_harness: "deepseek_harness";
             }>>;
             llmModelIdentifier: z.ZodString;
             llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
@@ -818,6 +831,7 @@ export declare const agentOrgExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z
                 codex_app_server: "codex_app_server";
                 antigravity_cli: "antigravity_cli";
                 grok_build: "grok_build";
+                deepseek_harness: "deepseek_harness";
             }>>;
             llmModelIdentifier: z.ZodString;
             llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;

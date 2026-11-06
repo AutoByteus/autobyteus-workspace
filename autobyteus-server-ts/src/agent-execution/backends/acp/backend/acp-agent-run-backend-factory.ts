@@ -1,4 +1,5 @@
 import type { IntegrationRunAccess } from "../../../../credential-proxy/integration-run-access.js";
+import type { ProviderRelayAccess } from "../../../../credential-proxy/provider-relays/provider-relay-access.js";
 import { workspaceCollisionPolicyForScope } from "../../shared/workspace-skill-collision-policy.js";
 import type { SystemInstructionTraceRecord } from "autobyteus-ts";
 import { createBackendPreparation, type AgentRunBackendPreparation } from "../../agent-run-backend-preparation.js";
@@ -29,6 +30,7 @@ import { AcpAgentRunBackend } from "./acp-agent-run-backend.js";
 import {
   AcpSessionEventSink,
   AcpSessionLauncher,
+  createAcpPreparationOwner,
   type AcpPreparationOwner,
 } from "../session/acp-session-launcher.js";
 import { AcpAgentRunContext } from "./acp-agent-run-context.js";
@@ -50,6 +52,8 @@ export type AcpAgentRunBackendFactoryDependencies = Readonly<{
   instructionCapture?: SystemInstructionCaptureService;
   /** The run's integration variables for the agent process (`null`: none on this host). */
   integrationRunAccess: IntegrationRunAccess | null;
+  /** The runs' provider relay access (`null`: this host runs no credential proxy). */
+  providerRelayAccess: ProviderRelayAccess | null;
 }>;
 
 type PreparedRun = Readonly<{
@@ -62,30 +66,29 @@ type PreparedRun = Readonly<{
 
 /**
  * Create/restore sequencing for any ACP agent, parameterized by its launch and session
- * profiles. Acquires workspace, skills, Agent Tools MCP, one agent process and one session;
- * on failure it stops the process and releases the skills it acquired. Agent JSON-RPC errors
- * and safe ACP errors surface as `AgentCreationError` so the caller shows the agent's text.
+ * profiles. Acquires workspace, skills, Agent Tools MCP, composes the run's instructions (for
+ * every launch), then one agent process and one session; on failure or release it ends what
+ * the owner holds (`AcpSessionLauncher.end`) and releases the skills it acquired. Agent
+ * JSON-RPC errors and safe ACP errors surface as `AgentCreationError` so the caller shows the
+ * agent's text.
  */
 export class AcpAgentRunBackendFactory implements AgentRunBackendFactory {
   constructor(private readonly deps: AcpAgentRunBackendFactoryDependencies) {
     this.launcher = new AcpSessionLauncher({
-      launchProfile: deps.launchProfile, sessionProfile: deps.sessionProfile, integrationRunAccess: deps.integrationRunAccess,
+      launchProfile: deps.launchProfile, sessionProfile: deps.sessionProfile,
+      integrationRunAccess: deps.integrationRunAccess, providerRelayAccess: deps.providerRelayAccess,
     });
   }
 
   beginPreparation(request: AgentRunBackendPreparationRequest): AgentRunBackendPreparation {
-    const owner: AcpPreparationOwner = { process: null, connection: null, session: null, skills: [] };
+    const owner = createAcpPreparationOwner();
     const operation = createBackendPreparation({
       prepare: (assertAccepting) => request.kind === "new"
         ? this.createBackend(request.config, request.runId, owner, assertAccepting, release)
         : this.restoreBackend(request.context, owner, assertAccepting, release),
       releaseResources: async () => {
         const errors: unknown[] = [];
-        try { owner.session?.close(); } catch (error) { errors.push(error); }
-        try {
-          if (owner.connection) await owner.connection.close();
-          else await owner.process?.stop();
-        } catch (error) { errors.push(error); }
+        try { await AcpSessionLauncher.end(owner); } catch (error) { errors.push(error); }
         try { await this.deps.skillMaterializer.cleanupMaterializedWorkspaceSkills(owner.skills); }
         catch (error) { errors.push(error); }
         if (errors.length) throw new AggregateError(errors, "ACP exact preparation release failed.");
@@ -102,18 +105,15 @@ export class AcpAgentRunBackendFactory implements AgentRunBackendFactory {
 
   private async createBackend(config: AgentRunConfig, runId: string, owner: AcpPreparationOwner, assertAccepting: () => void, release: () => Promise<void>): Promise<AcpAgentRunBackend> {
     const prepared = await this.prepare(config, runId, owner, assertAccepting);
-    const composedPrompt = composeSharedCarpenterPrompt({
-      agentDefinition: prepared.definition, memberExecutionContext: config.memberExecutionContext, project: config.project,
-    });
+    const instructions = this.composeInstructions(prepared.definition, config);
     const sink = new AcpSessionEventSink();
     const suppliedAt = Date.now() / 1000;
     const opened = await this.launcher.open({
       owner, runId, config, workingDirectory: prepared.workingDirectory, descriptor: prepared.descriptor,
-      sink, assertAccepting, mode: "new",
-      newSessionMeta: this.deps.sessionProfile.newSessionMeta({ composedPrompt, autoExecuteTools: config.autoExecuteTools }),
+      sink, assertAccepting, instructions, mode: "new",
     });
-    const trace = this.captureInstructions(config, composedPrompt, suppliedAt);
-    return this.bindBackend(config, runId, prepared, opened.sessionId, trace, owner, sink, release);
+    const trace = this.captureInstructions(config, instructions, suppliedAt);
+    return this.bindBackend(config, runId, prepared, opened.sessionId, instructions, trace, owner, sink, release);
   }
 
   private async restoreBackend(context: AgentRunContext<RuntimeAgentRunContext>, owner: AcpPreparationOwner, assertAccepting: () => void, release: () => Promise<void>): Promise<AcpAgentRunBackend> {
@@ -122,13 +122,20 @@ export class AcpAgentRunBackendFactory implements AgentRunBackendFactory {
       throw new AgentCreationError(`PLATFORM_AGENT_RUN_BINDING_INVALID: ${this.deps.launchProfile.agentLabel} restore requires the exact session id.`);
     }
     const prepared = await this.prepare(context.config, context.runId, owner, assertAccepting);
+    // Composed from the current definition, as at creation: a launch whose agent does not keep them needs them again.
+    const instructions = this.composeInstructions(prepared.definition, context.config);
     const sink = new AcpSessionEventSink();
-    // The agent keeps the run-start instructions; they are not re-sent on load.
     await this.launcher.open({
       owner, runId: context.runId, config: context.config, workingDirectory: prepared.workingDirectory,
-      descriptor: prepared.descriptor, sink, assertAccepting, mode: "load", sessionId,
+      descriptor: prepared.descriptor, sink, assertAccepting, instructions, mode: "restore", sessionId,
     });
-    return this.bindBackend(context.config, context.runId, prepared, sessionId, null, owner, sink, release);
+    return this.bindBackend(context.config, context.runId, prepared, sessionId, instructions, null, owner, sink, release);
+  }
+
+  private composeInstructions(definition: AgentDefinition, config: AgentRunConfig): string {
+    return composeSharedCarpenterPrompt({
+      agentDefinition: definition, memberExecutionContext: config.memberExecutionContext, project: config.project,
+    });
   }
 
   private async prepare(config: AgentRunConfig, runId: string, owner: AcpPreparationOwner, assertAccepting: () => void): Promise<PreparedRun> {
@@ -156,6 +163,7 @@ export class AcpAgentRunBackendFactory implements AgentRunBackendFactory {
     runId: string,
     prepared: PreparedRun,
     sessionId: string,
+    instructions: string,
     trace: SystemInstructionTraceRecord | null,
     owner: AcpPreparationOwner,
     sink: AcpSessionEventSink,
@@ -166,6 +174,7 @@ export class AcpAgentRunBackendFactory implements AgentRunBackendFactory {
         runId, config, runtimeContext: new AcpAgentRunContext(sessionId, prepared.workingDirectory),
       }),
       workingDirectory: prepared.workingDirectory,
+      instructions,
       owner, sink, launcher: this.launcher,
       agentTools: { runSessions: this.deps.mcpSessions, exposure: prepared.exposure, openedToolNames: prepared.descriptor.enabledTools },
       pendingSystemInstruction: trace, cleanup: release,

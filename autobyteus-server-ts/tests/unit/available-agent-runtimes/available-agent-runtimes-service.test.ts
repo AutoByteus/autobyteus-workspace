@@ -59,6 +59,7 @@ const LIMITS: Record<AgentRuntimeKind, () => UsageLimitsReading> = {
   [RuntimeKind.CLAUDE_AGENT_SDK]: () => parseClaudeUsageLimits(JSON.parse(fixture("claude-get-usage.json"))),
   [RuntimeKind.ANTIGRAVITY_CLI]: () => parseAntigravityUsageLimits(fixture("antigravity-usage.json")),
   [RuntimeKind.GROK_BUILD]: () => parseGrokUsageLimits(JSON.parse(fixture("grok-billing.json"))),
+  [RuntimeKind.DEEPSEEK_HARNESS]: () => ({ state: "not_reported" }),
 };
 
 type StrategyOverrides = Partial<Pick<AgentRuntimeStrategy, "readVersion" | "readSignIn" | "readUsageLimits" | "resolveExecutable">>;

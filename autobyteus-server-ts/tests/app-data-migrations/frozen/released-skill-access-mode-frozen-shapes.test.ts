@@ -24,6 +24,7 @@ import type { TeamRunExecutionTreeFileV1 } from "../../../src/app-data-migration
 import { transformTeamRunExecutionTreeV1ToV2 } from "../../../src/app-data-migrations/migrations/team-run-execution-tree-v2/team-run-execution-tree-v2-app-data-migration.js";
 import { decodeFlatTeamRunMetadataToMemberTree } from "../../../src/app-data-migrations/frozen/team-run-member-tree-prerequisite-converter.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { RuntimeKind as FrozenRuntimeKind } from "../../../src/app-data-migrations/frozen/server/runtime-management/runtime-kind-enum.js";
 
 /**
  * The run-level skill access mode no longer exists in current code. Released app-data
@@ -107,7 +108,7 @@ const releasedAgent = (address: string, mode: "PRELOADED_ONLY" | "NONE" = "PRELO
   platformAgentRunId: null,
   role: null,
   description: null,
-  runtimeKind: RuntimeKind.AUTOBYTEUS,
+  runtimeKind: FrozenRuntimeKind.AUTOBYTEUS,
   llmModelIdentifier: "model",
   llmConfig: null,
   autoExecuteTools: true,
@@ -125,7 +126,7 @@ const releasedRoot = (
   teamRunId: "team-run",
   coordinatorAddress: assertAgentTeamAddress("/lead"),
   defaultLaunchConfiguration: {
-    runtimeKind: RuntimeKind.AUTOBYTEUS,
+    runtimeKind: FrozenRuntimeKind.AUTOBYTEUS,
     llmModelIdentifier: "model",
     llmConfig: null,
     autoExecuteTools: true,

@@ -804,6 +804,7 @@ describe("StandaloneAgentRunLifecycleService previous runtime release", () => {
       claudeBackendFactory: testBackendFactory(unavailable) as never,
       agyBackendFactory: testBackendFactory(unavailable) as never,
       grokBackendFactory: testBackendFactory(unavailable) as never,
+      deepSeekHarnessBackendFactory: testBackendFactory(unavailable) as never,
       activationRegistry,
       memoryRecorder: memoryRecorder as never,
       providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },

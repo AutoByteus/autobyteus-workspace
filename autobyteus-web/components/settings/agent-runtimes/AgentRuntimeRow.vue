@@ -55,10 +55,11 @@
           <span v-else-if="runtime.account.state === 'CHECKING'" class="agent-runtime-line gap-2 text-gray-500" :data-testid="`runtime-${id}-signin`">
             <span class="h-3 w-3 animate-spin rounded-full border-2 border-gray-300 border-t-gray-600" aria-hidden="true"></span>{{ t('settings.agentRuntimes.checking') }}
           </span>
-          <span v-else-if="runtime.account.state === 'SIGNED_IN'" class="agent-runtime-line gap-1.5 text-gray-700" :data-testid="`runtime-${id}-signin`"><span class="h-1.5 w-1.5 rounded-full bg-green-600" aria-hidden="true"></span>{{ t('settings.agentRuntimes.signIn.signedIn') }}</span>
+          <span v-else-if="runtime.account.state === 'SIGNED_IN'" class="agent-runtime-line gap-1.5 text-gray-700" :data-testid="`runtime-${id}-signin`"><span class="h-1.5 w-1.5 rounded-full bg-green-600" aria-hidden="true"></span>{{ usesApiKey ? t('settings.agentRuntimes.signIn.apiKeySet') : t('settings.agentRuntimes.signIn.signedIn') }}</span>
           <template v-else-if="runtime.account.state === 'SIGNED_OUT'">
-            <span class="agent-runtime-line gap-1.5 text-amber-700" :data-testid="`runtime-${id}-signin`"><span class="h-1.5 w-1.5 rounded-full bg-amber-500" aria-hidden="true"></span>{{ t('settings.agentRuntimes.signIn.notSignedIn') }}</span>
+            <span class="agent-runtime-line gap-1.5 text-amber-700" :data-testid="`runtime-${id}-signin`"><span class="h-1.5 w-1.5 rounded-full bg-amber-500" aria-hidden="true"></span>{{ usesApiKey ? t('settings.agentRuntimes.signIn.apiKeyNotSet') : t('settings.agentRuntimes.signIn.notSignedIn') }}</span>
             <p v-if="canSignInHere(nodeAccess) && runtime.signInRoute === 'COMMAND_LINE'" class="-mt-1 text-gray-500" :data-testid="`runtime-${id}-signin-hint`">{{ ownNode ? t('settings.agentRuntimes.signIn.hint') : t('settings.agentRuntimes.signIn.hintOnNode') }}</p>
+            <p v-else-if="usesApiKey" class="-mt-1 text-gray-500" :data-testid="`runtime-${id}-signin-hint`">{{ ownNode ? t('settings.agentRuntimes.signIn.apiKeyHint') : t('settings.agentRuntimes.signIn.apiKeyHintOnNode') }}</p>
           </template>
           <span v-else class="agent-runtime-line text-gray-500" :data-testid="`runtime-${id}-signin`">{{ t('settings.agentRuntimes.signIn.unknown') }}</span>
         </div>
@@ -150,6 +151,8 @@ const id = computed(() => props.runtime.runtimeKind)
 const name = computed(() => agentRuntimeName(props.runtime.runtimeKind))
 /** On a remote node the copy says where sign-in happens: on that node. */
 const ownNode = computed(() => props.nodeAccess === 'own')
+/** The runtime's "sign-in" is a provider key in the AutoByteus vault (DeepSeek Harness). */
+const usesApiKey = computed(() => props.runtime.signInRoute === 'API_KEY_SETTING')
 const updating = computed(() => isUpdating(props.runtime))
 const signingIn = computed(() => isSigningIn(props.runtime))
 const blocked = computed(() => isBlockedByAgents(props.runtime))

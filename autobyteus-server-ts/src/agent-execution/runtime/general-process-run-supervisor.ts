@@ -1,4 +1,6 @@
 import type { IntegrationRunAccess } from "../../credential-proxy/integration-run-access.js";
+import type { ProviderRelayAccess } from "../../credential-proxy/provider-relays/provider-relay-access.js";
+import type { RunPassRevocation } from "../../credential-proxy/run-pass-revocation.js";
 import { DelegatedLaunchSelectionService } from "../../run-history/services/delegated-launch-selection-service.js";
 import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
@@ -102,6 +104,10 @@ export type GeneralProcessRunSupervisorInput = Readonly<{
    * (the standalone application host): its runs get no integration access in this step.
    */
   integrationRunAccess: IntegrationRunAccess | null;
+  /** The studio's provider relays for runtimes that call their model through one (`null`: no credential proxy here). */
+  providerRelayAccess: ProviderRelayAccess | null;
+  /** Ends a run's pass at release and on a failed activation; from the same proxy host, non-null whenever an access is. */
+  runPasses: RunPassRevocation | null;
   modelSelectionValidator: RunModelSelectionValidator & Pick<RunModelSelectionService, "listOptions" | "listOptionsMany">;
   /** Neutral Task agent resource port from the host composition, forwarded to every root builder. */
   taskExecutionResources: TaskExecutionResourcePort;
@@ -137,6 +143,9 @@ const requireGeneralProcessRunSupervisorInput = (
     || !input.agentProviderFactoryBuilder
     || !input.agentToolMcpSessionAuthority
     || input.integrationRunAccess === undefined
+    || input.providerRelayAccess === undefined
+    || input.runPasses === undefined
+    || ((input.integrationRunAccess || input.providerRelayAccess) && !input.runPasses)
     || !input.modelSelectionValidator
     || typeof input.modelSelectionValidator.validate !== "function"
     || typeof input.modelSelectionValidator.listOptions !== "function"
@@ -228,7 +237,7 @@ export class GeneralProcessRunSupervisor {
         workJournalUpdater: new WorkJournalRunUpdater({ memoryRecorder, journalService: getWorkJournalService() }),
         lifecycleObserver: input.platformInputNotices ?? null,
         mcpServerInstances: McpServerInstanceManager.getInstance(),
-        integrationRunAccess: input.integrationRunAccess,
+        runPasses: input.runPasses,
       });
       const activationRegistry = new AgentRunActivationRegistry(resourceManager);
       const providerFactories = input.agentProviderFactoryBuilder.createForExecution({
@@ -236,6 +245,7 @@ export class GeneralProcessRunSupervisor {
         agentToolMcpRunSessions: input.agentToolMcpSessionAuthority.runSessions,
         applicationAgentTools: null,
         integrationRunAccess: input.integrationRunAccess,
+        providerRelayAccess: input.providerRelayAccess,
       });
       agentRunManager = AgentRunManager.initializeProcessInstance({
         autoByteusBackendFactory: providerFactories.autoByteus,
@@ -243,12 +253,13 @@ export class GeneralProcessRunSupervisor {
         claudeBackendFactory: providerFactories.claude,
         agyBackendFactory: providerFactories.antigravity,
         grokBackendFactory: providerFactories.grok,
+        deepSeekHarnessBackendFactory: providerFactories.deepSeekHarness,
         activationRegistry,
         memoryRecorder,
         providerInputNormalizer,
         agentToolMcpRunSessionDeactivator:
           input.agentToolMcpSessionAuthority.runSessions,
-        integrationRunAccess: input.integrationRunAccess,
+        runPasses: input.runPasses,
         inputPreface: input.platformInputNotices ?? null,
         lifecycleObserver: input.platformInputNotices ?? null,
       });

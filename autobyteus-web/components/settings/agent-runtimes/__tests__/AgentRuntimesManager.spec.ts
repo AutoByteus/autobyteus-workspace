@@ -120,6 +120,19 @@ describe('AgentRuntimesManager', () => {
     expect(has('runtime-claude_agent_sdk-signin-button')).toBe(false)
   })
 
+  it('shows a vault-key runtime\'s key state with a pointer to the API key settings, and no Sign in (DeepSeek Harness)', async () => {
+    current = [...baseline(), runtime('deepseek_harness', { signInRoute: 'API_KEY_SETTING', account: { state: 'SIGNED_OUT' } })]
+    await mountPage()
+    expect(wrapper!.findAll('li').map((item) => item.get('h4').text()).at(-1)).toBe('DeepSeek Harness')
+    expect(textOf(get('runtime-deepseek_harness-signin'))).toBe('API key not set')
+    expect(textOf(get('runtime-deepseek_harness-signin-hint'))).toBe('Save its API key in Settings → API Keys.')
+    expect(has('runtime-deepseek_harness-signin-button')).toBe(false)
+    set('deepseek_harness', { account: { state: 'SIGNED_IN' } })
+    await poll()
+    expect(textOf(get('runtime-deepseek_harness-signin'))).toBe('API key set')
+    expect(has('runtime-deepseek_harness-signin-hint')).toBe(false)
+  })
+
   it('signs in through the runtime, offers Cancel while waiting, and says when it did not finish', async () => {
     await mountPage()
     io.mutate.mockClear()

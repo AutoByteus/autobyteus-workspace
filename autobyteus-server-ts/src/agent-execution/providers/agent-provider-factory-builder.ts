@@ -20,6 +20,7 @@ import type { CodexAppServerClientManager } from "../../runtime-management/codex
 import { AgyAgentRunBackendFactory } from "../backends/antigravity/backend/agy-agent-run-backend-factory.js";
 import type { AcpAgentRunBackendFactory } from "../backends/acp/backend/acp-agent-run-backend-factory.js";
 import { createGrokBuildAgentRunBackendFactory } from "../backends/grok/grok-build-agent-run-backend-factory.js";
+import { createDeepSeekHarnessAgentRunBackendFactory } from "../backends/deepseek-harness/deepseek-harness-agent-run-backend-factory.js";
 import { ClaudeWorkspaceResolver } from "../backends/claude/claude-workspace-resolver.js";
 import { ClaudeAgentRunBackendFactory } from "../backends/claude/backend/claude-agent-run-backend-factory.js";
 import { ClaudeSessionBootstrapper } from "../backends/claude/backend/claude-session-bootstrapper.js";
@@ -27,6 +28,7 @@ import { ClaudeSessionManager } from "../backends/claude/session/claude-session-
 import type { ClaudeSdkClient } from "../../runtime-management/claude/client/claude-sdk-client.js";
 import type { ApplicationAgentToolCapability } from "../../application-agent-tools/services/application-agent-tool-capability.js";
 import type { IntegrationRunAccess } from "../../credential-proxy/integration-run-access.js";
+import type { ProviderRelayAccess } from "../../credential-proxy/provider-relays/provider-relay-access.js";
 
 export type AgentProviderFactoryBuilderProcessInput = Readonly<{
   workspaceManager: WorkspaceManager;
@@ -58,6 +60,7 @@ export type AgentProviderFactorySet = Readonly<{
   claude: ClaudeAgentRunBackendFactory;
   antigravity: AgyAgentRunBackendFactory;
   grok: AcpAgentRunBackendFactory;
+  deepSeekHarness: AcpAgentRunBackendFactory;
 }>;
 
 export interface AgentProviderFactoryBuilder {
@@ -67,6 +70,8 @@ export interface AgentProviderFactoryBuilder {
     applicationAgentTools: ApplicationAgentToolCapability | null;
     /** The runs' integration access (`null`: this host's runs get none). */
     integrationRunAccess: IntegrationRunAccess | null;
+    /** The runs' provider relays (`null`: this host runs no credential proxy, so relay runtimes are refused). */
+    providerRelayAccess: ProviderRelayAccess | null;
   }>): AgentProviderFactorySet;
 }
 
@@ -157,6 +162,7 @@ export const createAgentProviderFactoryBuilder = (
       agentToolMcpRunSessions: AgentToolMcpRunSessionAuthority;
       applicationAgentTools: ApplicationAgentToolCapability | null;
       integrationRunAccess: IntegrationRunAccess | null;
+      providerRelayAccess: ProviderRelayAccess | null;
     }>): AgentProviderFactorySet => {
       requireRecord(input, "execution input");
       requireLeaf(input.agentDefinitionService, "agentDefinitionService");
@@ -169,6 +175,11 @@ export const createAgentProviderFactoryBuilder = (
       if (!("integrationRunAccess" in input) || input.integrationRunAccess === undefined) {
         throw new Error(
           "Agent provider factory builder integrationRunAccess disposition is required.",
+        );
+      }
+      if (!("providerRelayAccess" in input) || input.providerRelayAccess === undefined) {
+        throw new Error(
+          "Agent provider factory builder providerRelayAccess disposition is required.",
         );
       }
       const integrationRunAccess = input.integrationRunAccess;
@@ -218,6 +229,13 @@ export const createAgentProviderFactoryBuilder = (
           workspaces: new ClaudeWorkspaceResolver(process.workspaceManager),
           mcpSessions: input.agentToolMcpRunSessions,
           integrationRunAccess,
+        }),
+        deepSeekHarness: createDeepSeekHarnessAgentRunBackendFactory({
+          definitions: input.agentDefinitionService, skills: process.skillService,
+          workspaces: new ClaudeWorkspaceResolver(process.workspaceManager),
+          mcpSessions: input.agentToolMcpRunSessions,
+          integrationRunAccess,
+          providerRelayAccess: input.providerRelayAccess,
         }),
         claude: new ClaudeAgentRunBackendFactory(
           claudeSessionManager,
