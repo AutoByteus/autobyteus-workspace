@@ -83,7 +83,6 @@ describe('useTaskWorkerTasks (delegated-copy-task-locator)', () => {
     const { api } = host(() => [agentRow])
     expect(retain).toHaveBeenCalledTimes(1)
     expect(api().taskOf(agentRow)).toEqual(task)
-    expect(api().canLocate).toBe(false)
     api().locate(task, vi.fn())
     expect(locate).not.toHaveBeenCalled()
   })

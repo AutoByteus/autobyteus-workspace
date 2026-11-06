@@ -44,9 +44,9 @@ export const useTaskWorkerTasks = (rows: () => readonly RunHistoryTeamExecutionR
   }
   /**
    * Locates the Task in the right panel; `openRun` opens the row's run when the page has no right panel.
-   * `canLocate` is false where Projects is not (the phone), and `locate` then does nothing.
+   * Where Projects is not (the phone), `locate` does nothing.
    */
   const locate = (task: TaskWorkerTask, openRun: () => void) => { if (canLocate) locator.locate(task, openRun) }
 
-  return { taskOf, locate, canLocate }
+  return { taskOf, locate }
 }
