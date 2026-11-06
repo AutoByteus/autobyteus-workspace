@@ -94,8 +94,30 @@ Revert the merge on `personal`. Rotation then reloads the page again. There is n
 
 ## Finalization Record
 
-(Filled in after the merge.)
+- Pre-commit checks: `check_repository_artifact_hygiene.py` exit 0; Secret Gate `origin/personal..HEAD` PASS.
+- Ticket branch: `codex/android-keep-page-on-rotation` at `0b4288b1bb` (archive commit), pushed as a new branch.
+- Finalization target: `origin/personal`, unchanged at `3bf9240d42`. Re-integration and re-verification: `Not needed`.
+- Merge: `finalize/android-keep-page-on-rotation` from `origin/personal`; `--no-ff` → `9d5da23341`.
+  - Its tree is identical to the verified head.
+  - Secret Gate on the merged state: PASS.
+- Push: `origin/personal` fetched again and still `3bf9240d42`; pushed `3bf9240d42..9d5da23341`.
+- Repository finalization status: `Completed`. This record follows as a `docs(delivery)` commit on `personal`.
+
+## Post-Finalization Cleanup
+
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/android-keep-page-on-rotation`.
+- Right after this record is pushed:
+  - Remove and prune the worktree. Its untracked files are build output only.
+  - Delete the local `codex/` and `finalize/` branches; both are in `origin/personal`.
+  - Keep `origin/codex/android-keep-page-on-rotation`.
+  - The terminal message confirms the results.
+- Test resources: API/E2E shut down the emulators, cleared app data, and removed the test node, its volumes and the proxy (`API-99-cleanup.txt`). The user's nodes and phone were never touched.
 
 ## Final Status
 
-(Filled in at the end.)
+- Verification complete (from the evidence): `Yes`
+- Repository finalization complete: `Yes`
+- Applicable release/deployment/rollout complete or not required: `Not required`
+- Applicable safe cleanup complete or not required: right after this record is pushed (above)
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
