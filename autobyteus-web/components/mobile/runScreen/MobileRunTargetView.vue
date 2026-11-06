@@ -20,6 +20,9 @@
     <div v-if="unreachable" class="min-h-0 flex-1 overflow-y-auto" data-testid="mobile-run-unreachable">
       <RemoteRunNotice :node-name="remote?.nodeName ?? ''" @retry="remoteView.retry()" />
     </div>
+    <!-- The conversation's root clips (`overflow: clip`), so it is no scroll container: focusing the composer cannot
+         scroll it, and with the keyboard open the bar stays at the top and the composer sits right above the keyboard
+         (CRR-006 F-10; an `overflow: hidden` box can still be scrolled by focus, and kept that scroll after the resize). -->
     <AgentEventMonitor
       v-else
       :read-only="readOnly"
@@ -32,7 +35,7 @@
       :has-earlier-active-trace-events="target.context.state.hasEarlierActiveTraceEvents"
       :browse-subject="target.browse"
       :composer-placeholder="remoteView.composerPlaceholder(null)"
-      class="min-h-0 flex-1 overflow-hidden"
+      class="min-h-0 flex-1 !overflow-clip"
       data-testid="mobile-run-conversation"
     />
   </section>

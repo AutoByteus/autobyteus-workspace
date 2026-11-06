@@ -62,6 +62,15 @@ describe('MobileRunScreen', () => {
     expect(wrapper.get('[data-testid="mobile-run-conversation"]').text()).toBe('solution_designer:member-run');
   });
 
+  // CRR-006 F-10: the hosted conversation root is no scroll container, so focusing the composer cannot scroll it away.
+  it('hosts the conversation in a clipping root (overflow: clip, not hidden)', async () => {
+    active.state!.target = targetOf('standalone_agent', 'run-1', 'Daily Assistant');
+    const { wrapper } = await mountScreen(null);
+    const classes = wrapper.get('[data-testid="mobile-run-conversation"]').classes();
+    expect(classes).toContain('!overflow-clip');
+    expect(classes).not.toContain('overflow-hidden');
+  });
+
   it('a top-level run has no "in"', async () => {
     active.state!.target = targetOf('standalone_agent', 'run-1', 'Daily Assistant');
     const { wrapper } = await mountScreen(null);
