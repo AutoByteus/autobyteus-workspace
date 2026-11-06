@@ -63,7 +63,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useRoute, useRouter } from 'vue-router';
 import { Icon } from '@iconify/vue';
@@ -98,6 +98,8 @@ import { useWorkspaceHistoryGroupArchive } from '~/composables/useWorkspaceHisto
 import { useWorkspaceHistorySubjectActions } from '~/composables/useWorkspaceHistorySubjectActions';
 import { useLocalization } from '~/composables/useLocalization';
 import { useRunStart } from '~/composables/runSettings/useRunStart';
+import { useRunHistorySectionLoad } from '~/composables/runHistory/useRunHistorySectionLoad';
+import { useRouteSelectedAgentOrg } from '~/composables/runHistory/useRouteSelectedAgentOrg';
 import type { RunTreeWorkspaceNode } from '~/utils/runTreeProjection';
 
 const props = withDefaults(defineProps<{
@@ -115,7 +117,6 @@ const forwardRunSelected = (payload: { type: 'agent' | 'team'; runId: string }):
   else emit('run-selected', { type: 'team', runId: payload.runId });
 };
 
-const HISTORY_REFRESH_INTERVAL_MS = 5000;
 /** The history read window per view (DS-002): every run for the Runs view (its fold and "Archive all older"), 6 otherwise. */
 const historyWindowOf = (mode: RunSectionMode): number | null => (mode === 'runs' ? null : 6);
 
@@ -139,16 +140,7 @@ const addWorkspaceToast = (message: string, type: 'success' | 'error' | 'warning
   addToast(message, type === 'warning' ? 'info' : type);
 };
 
-const selectedAgentOrg = computed(() => {
-  if (route?.query.rootSubjectKind !== 'agent_org') return null;
-  const rootRunId = String(route.query.orgRunId || '').trim();
-  if (!rootRunId) return null;
-  return {
-    rootRunId,
-    focusAddress: agentOrgContextsStore.contextFor(rootRunId)?.selectedAddress ?? null,
-    selection: agentOrgContextsStore.contextFor(rootRunId)?.selection ?? null,
-  };
-});
+const selectedAgentOrg = useRouteSelectedAgentOrg();
 const treeState = useWorkspaceHistoryTreeState({
   runHistoryStore,
   selectionStore,
@@ -250,10 +242,10 @@ const {
 
 const {
   onSelectRun,
+  onOpenAgentRun,
   onSelectTeam,
   onOpenTeamRun,
   onSelectTeamMember,
-  onCreateRun,
 } = useWorkspaceHistorySelectionActions({
   runHistoryStore,
   selectionStore,
@@ -261,9 +253,6 @@ const {
   toggleTeam: treeState.toggleTeam,
   expandTeamMemberAncestors: treeState.expandTeamMemberAncestors,
   emitRunSelected: (payload) => forwardRunSelected(payload),
-  startPresetChat: async (preset) => {
-    await runStart.newChatInWorkspace(preset);
-  },
   presentTeamStreamRecoveryFeedback: (feedback) => {
     const key = feedback === 'wait'
       ? 'workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.stream_recovery_wait'
@@ -271,6 +260,16 @@ const {
     addToast(t(key), 'info');
   },
 });
+
+/** `+` on an agent group: a New chat preset to that agent and folder; it supersedes any run open in flight. */
+const onCreateRun = async (workspaceRootPath: string, agentDefinitionId: string): Promise<void> => {
+  selectionStore.beginSelectionIntent();
+  try {
+    await runStart.newChatInWorkspace({ workspaceRootPath, agentDefinitionId });
+  } catch (error) {
+    console.error('Failed to start a chat:', error);
+  }
+};
 
 const onToggleWorkspace = async (workspaceNode: RunTreeWorkspaceNode): Promise<void> => {
   const presentationId = 'stableKey' in workspaceNode
@@ -350,6 +349,7 @@ const sectionAvatarBindings: WorkspaceHistoryAvatarBindings = {
 const sectionActions: WorkspaceHistorySectionActions = {
   onCreateRun,
   onSelectRun,
+  onOpenAgentRun,
   onTerminateRun,
   onArchiveRun,
   onDeleteRun,
@@ -379,34 +379,8 @@ const sectionActions: WorkspaceHistorySectionActions = {
   }).catch(() => undefined),
 };
 
-let refreshTimerId: ReturnType<typeof setInterval> | null = null;
-
-// The read window follows the view: one read when the view changes (DS-002).
-watch(() => modeStore.mode, (mode) => {
-  runHistoryStore.setHistoryWindow(historyWindowOf(mode));
-  void runHistoryStore.fetchTree().catch(() => undefined);
-});
-
-onMounted(async () => {
-  runHistoryStore.setHistoryWindow(historyWindowOf(modeStore.mode));
-  await Promise.all([
-    runHistoryStore.loadWorkspaceCatalogForNavigation().catch(() => undefined),
-    runHistoryStore.fetchTree().catch(() => undefined),
-    agentDefinitionStore.fetchAllAgentDefinitions().catch(() => undefined),
-    agentTeamDefinitionStore.fetchAllAgentTeamDefinitions().catch(() => undefined),
-    agentOrgDefinitionStore.fetchAll().catch(() => undefined),
-  ]);
-  refreshTimerId = setInterval(() => {
-    void runHistoryStore.refreshTreeQuietly();
-  }, HISTORY_REFRESH_INTERVAL_MS);
-});
-
-onBeforeUnmount(() => {
-  if (refreshTimerId !== null) {
-    clearInterval(refreshTimerId);
-    refreshTimerId = null;
-  }
-});
+// The run section's history load and 5 s poll; the read window follows the view (DS-002).
+useRunHistorySectionLoad({ window: () => historyWindowOf(modeStore.mode), polling: () => true });
 </script>
 
 <style scoped>

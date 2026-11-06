@@ -21,6 +21,10 @@ interface SelectionStoreLike {
 
 export type SelectedAgentOrg = Readonly<{ rootRunId: string; focusAddress: string | null; selection?: OrgWorkspaceSelection | null }>;
 
+/** What starts unfolded: the desktop folds Org runs and unfolds their delegated Teams; the phone the other way round. */
+export type RunListDefaultExpansion = Readonly<{ orgRuns: boolean; orgTaskTeams: boolean }>;
+const DESKTOP_DEFAULT_EXPANSION: RunListDefaultExpansion = Object.freeze({ orgRuns: false, orgTaskTeams: true });
+
 type Flags = Record<string, boolean>;
 const set = (flags: { value: Flags }, key: string, value: boolean): void => { flags.value = { ...flags.value, [key]: value }; };
 const pair = (first: string, second: string): string => `${first.trim()}\u0000${second.trim()}`;
@@ -37,13 +41,15 @@ export const useRunListDisclosure = (params: {
   selectedAgentOrg?: MaybeRef<SelectedAgentOrg | null>;
   /** Whether a delegated copy under this Agent run is the open conversation (its folded work then unfolds). */
   hasSelectedChild?: (runId: string) => boolean;
+  defaultExpansion?: RunListDefaultExpansion;
 }) => {
+  const defaults = params.defaultExpansion ?? DESKTOP_DEFAULT_EXPANSION;
   const foldedRuns = ref<Flags>({});
   const expandedTeams = ref<Flags>({});
   const expandedTeamMembers = ref<Flags>({});
   const expandedOrgRuns = ref<Flags>({});
   const expandedOrgTeams = ref<Flags>({});
-  const foldedOrgTaskTeams = ref<Flags>({});
+  const expandedOrgTaskTeams = ref<Flags>({});
 
   /** A run's delegated work: shown unless folded this session (UIT-005). */
   const isRunExpanded = (runId: string): boolean => !foldedRuns.value[runId];
@@ -64,15 +70,16 @@ export const useRunListDisclosure = (params: {
     return keys.length > 0;
   };
 
-  const isAgentOrgRunExpanded = (rootRunId: string): boolean => expandedOrgRuns.value[rootRunId.trim()] ?? false;
+  const isAgentOrgRunExpanded = (rootRunId: string): boolean => expandedOrgRuns.value[rootRunId.trim()] ?? defaults.orgRuns;
   const toggleAgentOrgRun = (rootRunId: string): void => set(expandedOrgRuns, rootRunId.trim(), !isAgentOrgRunExpanded(rootRunId));
   const isAgentOrgTeamExpanded = (rootRunId: string, address: string): boolean => expandedOrgTeams.value[pair(rootRunId, address)] ?? false;
   const toggleAgentOrgTeam = (rootRunId: string, address: string): void =>
     set(expandedOrgTeams, pair(rootRunId, address), !isAgentOrgTeamExpanded(rootRunId, address));
   // Delegated Teams key by execution: one Team can be mounted and delegated (repeatedly) under the same address.
-  const isAgentOrgTaskTeamExpanded = (rootRunId: string, teamRunId: string): boolean => !foldedOrgTaskTeams.value[pair(rootRunId, teamRunId)];
+  const isAgentOrgTaskTeamExpanded = (rootRunId: string, teamRunId: string): boolean =>
+    expandedOrgTaskTeams.value[pair(rootRunId, teamRunId)] ?? defaults.orgTaskTeams;
   const toggleAgentOrgTaskTeam = (rootRunId: string, teamRunId: string): void =>
-    set(foldedOrgTaskTeams, pair(rootRunId, teamRunId), isAgentOrgTaskTeamExpanded(rootRunId, teamRunId));
+    set(expandedOrgTaskTeams, pair(rootRunId, teamRunId), !isAgentOrgTaskTeamExpanded(rootRunId, teamRunId));
 
   const selectedAgentOrg = computed(() => (params.selectedAgentOrg ? unref(params.selectedAgentOrg) : null));
   const isAgentOrgRunSelected = (rootRunId: string): boolean =>

@@ -101,6 +101,7 @@ import { useLocalization } from '~/composables/useLocalization'
 import { useToasts } from '~/composables/useToasts'
 import { useRunHistoryAvatarState } from '~/composables/useRunHistoryAvatarState'
 import { useRunListDisclosure } from '~/composables/useRunListDisclosure'
+import { useRouteSelectedAgentOrg } from '~/composables/runHistory/useRouteSelectedAgentOrg'
 import { useRunListArchiveOlder } from '~/composables/useRunListArchiveOlder'
 import { useWorkspaceHistoryMutations } from '~/composables/useWorkspaceHistoryMutations'
 import { useWorkspaceHistorySelectionActions } from '~/composables/useWorkspaceHistorySelectionActions'
@@ -146,13 +147,7 @@ const agentTeamDefinitionStore = useAgentTeamDefinitionStore()
 const agentOrgDefinitionStore = useAgentOrgDefinitionStore()
 const toastOf = (message: string, type: 'success' | 'error' | 'warning' | 'info'): void => addToast(message, type === 'warning' ? 'info' : type)
 
-const selectedAgentOrg = computed(() => {
-  if (route?.query.rootSubjectKind !== 'agent_org') return null
-  const rootRunId = String(route.query.orgRunId || '').trim()
-  if (!rootRunId) return null
-  const context = agentOrgContextsStore.contextFor(rootRunId)
-  return { rootRunId, focusAddress: context?.selectedAddress ?? null, selection: context?.selection ?? null }
-})
+const selectedAgentOrg = useRouteSelectedAgentOrg()
 const disclosure = useRunListDisclosure({
   runHistoryStore, runListStore: runList, selectionStore, selectedAgentOrg,
   hasSelectedChild: (runId) => Boolean(collaboration.selectedChild(runId)),
@@ -206,7 +201,6 @@ const selection = useWorkspaceHistorySelectionActions({
   toggleTeam: disclosure.toggleTeam,
   expandTeamMemberAncestors: (_workspaceId, teamRunId, agentRunId) => disclosure.expandTeamMemberAncestors(teamRunId, agentRunId),
   emitRunSelected: (payload) => emit('run-selected', payload),
-  startPresetChat: (preset) => runStart.newChatInWorkspace(preset),
   presentTeamStreamRecoveryFeedback: (feedback) => addToast(t(feedback === 'wait'
     ? 'workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.stream_recovery_wait'
     : 'workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.stream_recovery_retry'), 'info'),
@@ -251,6 +245,7 @@ const orgAction = (action: 'open' | 'stop') => (run: { rootRunId: string }) =>
   executeSubjectAction({ rootSubjectKind: 'agent_org', rootRunId: run.rootRunId, action })
 const sectionActions: RunListSectionActions = {
   onSelectRun: selection.onSelectRun,
+  onOpenAgentRun: selection.onOpenAgentRun,
   onTerminateRun: mutations.onTerminateRun,
   onArchiveRun: mutations.onArchiveRun,
   onDeleteRun: mutations.onDeleteRun,

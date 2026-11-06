@@ -10,8 +10,8 @@ const collaboration = vi.hoisted(() => ({ rows: [] as unknown[] }))
 vi.mock('~/stores/agentRunCollaborationStore', () => ({
   useAgentRunCollaborationStore: () => ({
     taskRows: () => collaboration.rows,
-    contextFor: () => ({ index: { coordinatorOf: () => ({ agentRunId: 'lead-run' }) } }), inspect: vi.fn(), isTaskTeamExpanded: () => true,
-    selectedChild: () => null, toggleTaskTeam: vi.fn(), selectChild: vi.fn(),
+    contextFor: () => ({ index: { coordinatorOf: () => ({ agentRunId: 'lead-run' }) } }), ensureStoredView: vi.fn(), isTaskTeamExpanded: () => true,
+    selectedChild: () => null, toggleTaskTeam: vi.fn(), selectTaskRow: vi.fn(() => true),
   }),
 }))
 

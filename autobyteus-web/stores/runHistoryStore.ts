@@ -523,7 +523,7 @@ export const useRunHistoryStore = defineStore('runHistory', {
 
     async selectTreeRun(
       row: RunTreeRow | import('~/stores/runHistoryTypes').TeamMemberFocusTarget,
-      options: { selectionIntent?: WorkspaceSelectionIntent } = {},
+      options: { selectionIntent?: WorkspaceSelectionIntent; selectionMode?: RunHistorySelectionMode } = {},
     ): Promise<WorkspaceSelectionOutcome> {
       return selectTreeRunFromHistory(this, row, options);
     },

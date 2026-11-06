@@ -31,7 +31,7 @@
     />
     <div class="min-h-0 flex-1">
       <AgentEventMonitor
-        :read-only="target.access === 'read_only' && !('root' in target && (target.context.submissionPending || target.kind === 'agent_org_direct_agent'))"
+        :read-only="readOnly"
         :conversation="target.context.state.conversation"
         :run-id="target.context.state.runId"
         :agent-name="agentName"
@@ -58,7 +58,7 @@ import WorkspaceRecoveryNotice from '~/components/workspace/common/WorkspaceReco
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
 import RemoteNodeChip from '~/components/workspace/remote/RemoteNodeChip.vue'
 import RemoteRunNotice from '~/components/workspace/remote/RemoteRunNotice.vue'
-import { useRemoteRunView } from '~/composables/remoteRuns/useRemoteRunView'
+import { useTargetConversation } from '~/composables/workspace/useTargetConversation'
 import { useStandaloneRunTitle } from '~/composables/chat/useStandaloneRunTitle'
 import type { SkillTaggingCapability } from '~/composables/agentInput/useSkillTagMenu'
 
@@ -77,9 +77,8 @@ defineEmits<{ (event: 'new-agent'): void; (event: 'edit-config'): void }>()
 
 const definitions = useAgentDefinitionStore()
 const avatarFailed = ref(false)
-const agentName = computed(() => props.target.context.config.agentDefinitionName || 'Agent')
 // autobyteus-278: a run another node runs shows its node, has no ⚙ or ＋, a notice when its node did not answer, and a box naming it.
-const remoteView = useRemoteRunView({ agentRunId: () => props.target.context.state.runId, agentName })
+const { displayName: agentName, readOnly, senderNameByAgentRunId, remoteView } = useTargetConversation(() => props.target)
 const remote = remoteView.remote
 const avatarUrl = computed(() => props.target.context.config.agentAvatarUrl?.trim()
   || definitions.getAgentDefinitionById(props.target.context.config.agentDefinitionId)?.avatarUrl?.trim()
@@ -99,11 +98,6 @@ const fallbackTitle = computed(() => {
 const isRunChild = computed(() => props.target.kind === 'agent_run_task_agent' || props.target.kind === 'agent_run_task_team_member')
 const headerTitle = computed(() => isRunChild.value ? agentName.value : standaloneRunTitle.title.value ?? fallbackTitle.value)
 const headerFullTitle = computed(() => isRunChild.value ? agentName.value : standaloneRunTitle.fullTitle.value ?? fallbackTitle.value)
-const senderNameByAgentRunId = computed(() => 'collaborationMessages' in props.target
-  ? Object.freeze(Object.fromEntries(Object.entries(
-      props.target.collaborationMessages.memberIdentityByAgentRunId(),
-    ).map(([agentRunId, identity]) => [agentRunId, identity.label])))
-  : Object.freeze({}))
 
 watch(avatarUrl, () => { avatarFailed.value = false })
 </script>

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { useWorkspaceHistorySubjectActions } from '../useWorkspaceHistorySubjectActions'
+import { agentOrgRouteQuery, useWorkspaceHistorySubjectActions } from '../useWorkspaceHistorySubjectActions'
 
 const mocks = vi.hoisted(() => ({
   route: { query: {} as Record<string, string> }, push: vi.fn(), replace: vi.fn(),
@@ -85,5 +85,41 @@ describe('Org browse is inspection and Stop retains the same exact route', () =>
     mocks.route.query = { rootSubjectKind: 'agent_org', orgRunId: 'other', mode: 'active' }
     await useWorkspaceHistorySubjectActions().execute({ rootSubjectKind: 'agent_org', rootRunId: 'org-run', action: 'stop' })
     expect(mocks.replace).not.toHaveBeenCalled(); expect(mocks.clear).not.toHaveBeenCalled()
+  })
+})
+
+// autobyteus-277 AR-002: the phone's shell opens and selects the Org and reports the outcome; its route is its own.
+describe('the phone shell', () => {
+  it.each(['open', 'select', 'inspect'] as const)('%s opens the Org with no navigation and commits', async (action) => {
+    mocks.route.query = { rootSubjectKind: 'agent_org', orgRunId: 'org-run', mode: 'history' }
+    const outcome = await useWorkspaceHistorySubjectActions({ shell: 'mobile' }).execute({ rootSubjectKind: 'agent_org', rootRunId: 'org-run', action,
+      memberAddress: '/team/coordinator', agentRunId: 'task-exact' })
+    expect(outcome).toEqual({ disposition: 'committed' })
+    expect(mocks.contexts.openForInspection).toHaveBeenCalledOnce()
+    expect(mocks.clearKeepingView).toHaveBeenCalledOnce()
+    expect(mocks.clear).not.toHaveBeenCalled()
+    expect(mocks.push).not.toHaveBeenCalled()
+    expect(mocks.replace).not.toHaveBeenCalled()
+  })
+
+  it('a failed open throws before any selection change, as on the desktop', async () => {
+    mocks.contexts.openForInspection.mockRejectedValueOnce(new Error('unavailable'))
+    await expect(useWorkspaceHistorySubjectActions({ shell: 'mobile' }).execute({ rootSubjectKind: 'agent_org', rootRunId: 'org-run', action: 'open' }))
+      .rejects.toThrow('unavailable')
+    expect(mocks.clearKeepingView).not.toHaveBeenCalled()
+    expect(mocks.push).not.toHaveBeenCalled()
+  })
+})
+
+describe('agentOrgRouteQuery, the one builder of the Org route keys', () => {
+  const run = { rootRunId: 'org-run', executionTree: { rootOrg: { orgDefinitionId: 'org-def' } } } as never
+  it.each([
+    [{ action: 'open', memberAddress: '/team' }, true, { mode: 'active' }],
+    [{ action: 'select', memberAddress: '/team' }, false, { mode: 'history', memberAddress: '/team' }],
+    [{ action: 'inspect', memberAddress: '/team/coordinator', agentRunId: 'task-exact' }, false,
+      { mode: 'history', memberAddress: '/team/coordinator', agentRunId: 'task-exact' }],
+  ] as const)('%j (active=%s)', (command, isActive, expected) => {
+    expect(agentOrgRouteQuery(run, { rootSubjectKind: 'agent_org', rootRunId: 'org-run', ...command }, isActive))
+      .toEqual({ rootSubjectKind: 'agent_org', definitionId: 'org-def', orgRunId: 'org-run', ...expected })
   })
 })

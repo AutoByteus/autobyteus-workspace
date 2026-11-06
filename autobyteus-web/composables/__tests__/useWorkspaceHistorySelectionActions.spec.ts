@@ -1,4 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
+import { createPinia, setActivePinia } from 'pinia';
+import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { useWorkspaceHistorySelectionActions } from '../useWorkspaceHistorySelectionActions';
 import type { TeamMemberTreeRow, TeamTreeNode } from '~/stores/runHistoryTypes';
@@ -68,23 +70,29 @@ const buildTeamNode = (focusedAgentRunId: string): TeamTreeNode => {
   };
 };
 
-const buildActions = () => {
+const buildActions = (shell?: 'desktop' | 'mobile') => {
   const runHistoryStore = {
     selectTreeRun: vi.fn(async () => ({ disposition: 'committed' as const })),
   };
-  const selectionStore = { beginSelectionIntent: () => ({ isCurrent: () => true }), selectedType: null, selectedRunId: null, selectRun: vi.fn() };
+  const selectionStore = {
+    beginSelectionIntent: () => ({ isCurrent: () => true }), selectedType: null, selectedRunId: null,
+    selectRun: vi.fn(), selectRunWithoutShellNavigation: vi.fn(),
+  };
   const presentTeamStreamRecoveryFeedback = vi.fn();
+  const emitRunSelected = vi.fn();
   return {
     runHistoryStore,
+    selectionStore,
+    emitRunSelected,
     presentTeamStreamRecoveryFeedback,
     actions: useWorkspaceHistorySelectionActions({
       runHistoryStore,
       selectionStore,
       setTeamExpanded: vi.fn(),
       toggleTeam: vi.fn(),
-      emitRunSelected: vi.fn(),
-      startPresetChat: vi.fn(async () => undefined),
+      emitRunSelected,
       presentTeamStreamRecoveryFeedback,
+      shell,
     }),
   };
 };
@@ -130,7 +138,7 @@ describe('useWorkspaceHistorySelectionActions current AgentRun identity', () => 
     const actions = useWorkspaceHistorySelectionActions({
       runHistoryStore: { selectTreeRun },
       selectionStore: { beginSelectionIntent: () => ({ isCurrent: () => true }), selectedType: 'team', selectedRunId: 'team-1', selectRun: vi.fn() },
-      setTeamExpanded: vi.fn(), toggleTeam, emitRunSelected, startPresetChat: vi.fn(), presentTeamStreamRecoveryFeedback: vi.fn(),
+      setTeamExpanded: vi.fn(), toggleTeam, emitRunSelected, presentTeamStreamRecoveryFeedback: vi.fn(),
     } as any)
     await actions[action](buildTeamNode('program-manager-run'))
     expect(toggleTeam).toHaveBeenCalledTimes(toggles ? 1 : 0)
@@ -146,18 +154,49 @@ describe('useWorkspaceHistorySelectionActions current AgentRun identity', () => 
     )
   })
 
-  it('starts a New chat preset to the agent and workspace from the agent row plus', async () => {
-    const startPresetChat = vi.fn(async () => undefined)
-    const actions = useWorkspaceHistorySelectionActions({
-      runHistoryStore: { selectTreeRun: vi.fn() },
-      selectionStore: { beginSelectionIntent: () => ({ isCurrent: () => true }), selectedType: null, selectedRunId: null, selectRun: vi.fn() },
-      setTeamExpanded: vi.fn(),
-      toggleTeam: vi.fn(),
-      emitRunSelected: vi.fn(),
-      startPresetChat,
-      presentTeamStreamRecoveryFeedback: vi.fn(),
-    })
-    await actions.onCreateRun('/ws/a', 'agent-def-1')
-    expect(startPresetChat).toHaveBeenCalledWith({ workspaceRootPath: '/ws/a', agentDefinitionId: 'agent-def-1' })
+  // autobyteus-277: the phone opens through the same rules, selecting only; its route is its own.
+  it('mobile shell: an agent run opens in the mobile selection mode', async () => {
+    const { actions, runHistoryStore, emitRunSelected } = buildActions('mobile')
+    const run = { runId: 'run-1' } as never
+    await actions.onSelectRun(run)
+    expect(runHistoryStore.selectTreeRun).toHaveBeenCalledWith(run, expect.objectContaining({ selectionMode: 'mobile' }))
+    expect(emitRunSelected).toHaveBeenCalledWith({ type: 'agent', runId: 'run-1' })
+  })
+
+  it('mobile shell: a Team run opens its member in the mobile mode and selects the Team without shell navigation', async () => {
+    const { actions, runHistoryStore, selectionStore } = buildActions('mobile')
+    await actions.onOpenTeamRun(buildTeamNode('build-review-lead-run'))
+    expect(runHistoryStore.selectTreeRun).toHaveBeenCalledWith(
+      expect.objectContaining({ memberAddress: '/BuildSquad/review_lead' }), expect.objectContaining({ selectionMode: 'mobile' }),
+    )
+    expect(selectionStore.selectRunWithoutShellNavigation).toHaveBeenCalledWith('team-1', 'team')
+    expect(selectionStore.selectRun).not.toHaveBeenCalled()
+  })
+
+  it('mobile shell: a Team member opens in the mobile mode', async () => {
+    const { actions, runHistoryStore } = buildActions('mobile')
+    const member = { teamRunId: 'team-1', memberAddress: '/program_manager', agentRunId: 'program-manager-run' }
+    await actions.onSelectTeamMember(member)
+    expect(runHistoryStore.selectTreeRun).toHaveBeenCalledWith(member, expect.objectContaining({ selectionMode: 'mobile' }))
+  })
+
+  it('desktop shell (default): no selection mode is passed and the Team is selected with shell navigation', async () => {
+    const { actions, runHistoryStore, selectionStore } = buildActions()
+    await actions.onOpenTeamRun(buildTeamNode('build-review-lead-run'))
+    expect(runHistoryStore.selectTreeRun.mock.calls[0]![1]).not.toHaveProperty('selectionMode')
+    expect(selectionStore.selectRun).toHaveBeenCalledWith('team-1', 'team')
+    expect(selectionStore.selectRunWithoutShellNavigation).not.toHaveBeenCalled()
+  })
+
+  it('onOpenAgentRun opens the run\'s own agent: its selected child is cleared, then the run opens', async () => {
+    setActivePinia(createPinia())
+    const collaboration = useAgentRunCollaborationStore()
+    const selectChild = vi.spyOn(collaboration, 'selectChild')
+    const { actions, runHistoryStore } = buildActions()
+    const run = { runId: 'agent-run-1' } as never
+    await actions.onOpenAgentRun(run)
+    expect(selectChild).toHaveBeenCalledWith('agent-run-1', null)
+    expect(runHistoryStore.selectTreeRun).toHaveBeenCalledWith(run, expect.any(Object))
+    expect(selectChild.mock.invocationCallOrder[0]!).toBeLessThan(runHistoryStore.selectTreeRun.mock.invocationCallOrder[0]!)
   })
 });

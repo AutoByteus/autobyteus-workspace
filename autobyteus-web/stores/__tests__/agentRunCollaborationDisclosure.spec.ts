@@ -117,3 +117,43 @@ describe('standalone delegated Team disclosure', () => {
     expect(store.errors['host-run']).toBeUndefined()
   })
 })
+
+// autobyteus-277: the task rows' two rules live in the store, for the desktop rows and the phone's tree alike.
+describe('task row rules', () => {
+  beforeEach(() => {
+    setActivePinia(createPinia()); vi.clearAllMocks(); Socket.instances.length = 0
+    vi.stubGlobal('WebSocket', Socket)
+    hydration.read.mockImplementation(async (host: string) => multiTeamView(2, host))
+    hydration.build.mockImplementation(async ({ view }) => shallowReactive(buildMultiTeamContext(view)))
+  })
+
+  it('ensureStoredView reads a run with collaboration once, and never one without', async () => {
+    const store = useAgentRunCollaborationStore()
+    store.ensureStoredView('plain-run', false)
+    store.ensureStoredView('host-run', true)
+    store.ensureStoredView('host-run', true)
+    await flush()
+    expect(hydration.read).toHaveBeenCalledTimes(1)
+    expect(hydration.read).toHaveBeenCalledWith('host-run')
+    store.ensureStoredView('host-run', true)
+    await flush()
+    expect(hydration.read).toHaveBeenCalledTimes(1)
+    expect(Socket.instances).toHaveLength(0)
+  })
+
+  it('selectTaskRow: a task Team row selects its coordinator; nothing is selected before the view is loaded', async () => {
+    const store = useAgentRunCollaborationStore()
+    const teamRow = { agentRunId: null, teamRunIdForNode: teamId(1) } as never
+    expect(store.selectTaskRow('host-run', teamRow)).toBe(false)
+    await store.inspect('host-run')
+    expect(store.selectTaskRow('host-run', teamRow)).toBe(true)
+    expect(store.selectedChild('host-run')).toBe(memberId(1, 0))
+  })
+
+  it('selectTaskRow: a task agent row selects that agent', async () => {
+    const store = useAgentRunCollaborationStore()
+    await store.inspect('host-run')
+    expect(store.selectTaskRow('host-run', { agentRunId: memberId(0, 2), teamRunIdForNode: null } as never)).toBe(true)
+    expect(store.selectedChild('host-run')).toBe(memberId(0, 2))
+  })
+})

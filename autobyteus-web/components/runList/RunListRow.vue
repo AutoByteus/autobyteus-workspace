@@ -218,10 +218,7 @@ const actionLabels = computed(() => {
 })
 
 /** The run row shows the run's own agent again (not a delegated copy under it). */
-const openAgentRun = (run: RunTreeRow) => {
-  collaboration.selectChild(run.runId, null)
-  return props.actions.onSelectRun(run)
-}
+const openAgentRun = (run: RunTreeRow) => props.actions.onOpenAgentRun(run)
 const open = () => {
   const entry = props.entry
   if (entry.kind === 'agent') return openAgentRun(entry.run)

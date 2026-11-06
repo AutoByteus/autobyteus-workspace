@@ -59,9 +59,7 @@ const { t } = useLocalization()
 const collaboration = useAgentRunCollaborationStore()
 
 // The stored view is read without restoring the run; a live run is kept current by its stream.
-const loadStored = () => {
-  if (props.hasCollaboration && !collaboration.contextFor(props.runId)) void collaboration.inspect(props.runId)
-}
+const loadStored = () => collaboration.ensureStoredView(props.runId, props.hasCollaboration)
 onMounted(loadStored)
 watch(() => props.hasCollaboration, loadStored)
 
@@ -94,11 +92,7 @@ const toggle = (row: RunHistoryTransientExecutionRow): void => {
  * already the selected run (F-006); re-selecting the current run only navigates.
  */
 const select = (row: RunHistoryTransientExecutionRow): void => {
-  const context = collaboration.contextFor(props.runId)
-  if (!context) return
-  const agentRunId = row.agentRunId ?? (row.teamRunIdForNode ? context.index.coordinatorRunIdOf(row.teamRunIdForNode) : null)
-  collaboration.selectChild(props.runId, agentRunId)
-  emit('select-run')
+  if (collaboration.selectTaskRow(props.runId, row)) emit('select-run')
 }
 </script>
 

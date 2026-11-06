@@ -360,10 +360,7 @@ const props = defineProps<{
 }>();
 const collaboration = useAgentRunCollaborationStore();
 /** The run row shows the run's own agent again (not a task child under it). */
-const selectAgentRun = (run: Parameters<typeof props.actions.onSelectRun>[0]) => {
-  collaboration.selectChild(run.runId, null);
-  return props.actions.onSelectRun(run);
-};
+const selectAgentRun = (run: Parameters<typeof props.actions.onOpenAgentRun>[0]) => props.actions.onOpenAgentRun(run);
 const workspacePresentationId = computed(() => props.node.stableKey);
 /** "+" on an agent group: another run of that agent, in the folder (Workspaces) or under the Project (Projects). */
 const createAgentRun = (agentDefinitionId: string) => props.projectScope
