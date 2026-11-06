@@ -1,0 +1,19 @@
+IMP-06 — packaged server startup verification script, mirroring production without PORT/SERVER_PORT (AC-008)
+Commands:
+  pnpm -C autobyteus-server-ts build
+  node autobyteus-web/scripts/verify-packaged-server-startup.mjs --server-root <worktree>/autobyteus-server-ts --runtime-executable $(which node) --timeout-ms 60000
+Commit: c8ec06b5132870931b6833990e20db07642ccf45
+Environment: macOS 26.6.2 (Darwin 25.6.0), Node v26.12.0 as the runtime executable
+Date: 2026-11-06
+
+Output (excerpt, final lines):
+
+{"level":30,...,"msg":"Server listening at http://127.0.0.1:55809"}
+{"level":30,...,"msg":"Server listening at http://127.0.0.1:55802"}
+[...] Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Packaged server startup validation passed for <worktree>/autobyteus-server-ts
+
+The spawned child env (scripts/verify-packaged-server-startup.mjs) no longer sets
+PORT/SERVER_PORT; the server still starts and passes its own health check using
+only --port, confirming AC-008.

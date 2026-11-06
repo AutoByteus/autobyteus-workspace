@@ -1,0 +1,77 @@
+AE-03 — real full-app lifecycle check (start, healthy, restart, healthy, stop) with no
+conflict, on the built worktree Electron app, closing residual desktop-shell/integration-
+realism confidence: confirms the fixed env composer and the unchanged restart path both
+work end to end in a real packaged app process, not just in isolation.
+Commands:
+  pnpm isolated-app start --app <worktree>/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app --data-root <test dir> --server-port 56321
+  curl http://127.0.0.1:56321/rest/health
+  pnpm isolated-app restart <instanceId>
+  curl http://127.0.0.1:56321/rest/health
+  pnpm isolated-app stop <instanceId>
+Commit: 3da0884b2 (HEAD; docs-only since c8ec06b51, no code change)
+Environment: macOS 26.6.2 (Darwin 25.6.0), Node v26.12.0, worktree Electron build (arm64, unsigned)
+Date: 2026-11-06
+
+--- start result ---
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "start",
+  "result": {
+    "instanceId": "iso-56779-bd4a",
+    "pid": 41614,
+    "executablePath": "/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-taken-by-agent-dev-server/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:56321",
+    "graphqlUrl": "http://127.0.0.1:56321/graphql",
+    "controlEndpoint": "http://127.0.0.1:56779",
+    "controlPort": 56779,
+    "serverPort": 56321,
+    "dataRoot": "/private/tmp/abp-api-e2e-probe/iso-data-root-2",
+    "ownsDataRoot": false,
+    "keepDataRoot": false,
+    "testUpdateFeedUrl": null,
+    "databaseUrl": "file:/private/tmp/abp-api-e2e-probe/iso-data-root-2/server-data/db/production.db",
+    "logPath": "/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/autobyteus-isolated-app/iso-56779-bd4a.log"
+  }
+}
+
+--- health after start ---
+{"status":"ok","message":"Server is running"}
+
+--- restart result (new pid, same ports) ---
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "restart",
+  "result": {
+    "instanceId": "iso-56779-bd4a",
+    "pid": 41805,
+    "executablePath": "/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-taken-by-agent-dev-server/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:56321",
+    "graphqlUrl": "http://127.0.0.1:56321/graphql",
+    "controlEndpoint": "http://127.0.0.1:56779",
+    "controlPort": 56779,
+    "serverPort": 56321,
+    "dataRoot": "/private/tmp/abp-api-e2e-probe/iso-data-root-2",
+    "ownsDataRoot": false,
+    "keepDataRoot": false,
+    "testUpdateFeedUrl": null,
+    "databaseUrl": "file:/private/tmp/abp-api-e2e-probe/iso-data-root-2/server-data/db/production.db",
+    "logPath": "/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/autobyteus-isolated-app/iso-56779-bd4a.log"
+  }
+}
+
+--- health after restart ---
+{"status":"ok","message":"Server is running"}
+
+--- app.log excerpt: clean restart, no ERROR/PortConflictError ---
+[2026-11-06T18:03:38.902Z] [INFO] [electron.server.base-server-manager] Server installation directory: .../AutoByteus.app/Contents/Resources/server
+[2026-11-06T18:03:39.000Z] [INFO] [electron.embedded-server.stdout] App data directory: /private/tmp/abp-api-e2e-probe/iso-data-root-2/server-data
+[2026-11-06T18:03:40.261Z] [INFO] [electron.embedded-server.stdout] {"msg":"Server listening at http://127.0.0.1:56869"}
+[2026-11-06T18:03:40.283Z] [INFO] [electron.embedded-server.stdout] {"msg":"Server listening at http://127.0.0.1:56321"}
+[2026-11-06T18:03:40.283Z] [INFO] [server.runtime] Server listening on 0.0.0.0:56321
+(only ERROR-level line in the whole log is an unrelated stderr tool-definition warning,
+ 'Overwriting existing tool definition for name: search_web' — not a ServerStatusManager ERROR)
+
+Cleanup: instance stopped (ports released), test data root removed, user's real app
+(port 29695) confirmed untouched throughout.

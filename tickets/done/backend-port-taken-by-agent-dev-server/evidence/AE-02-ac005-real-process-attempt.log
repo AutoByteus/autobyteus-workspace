@@ -1,0 +1,71 @@
+AE-02 — AC-005 real-process variant attempt and structural finding.
+Goal: exercise the real BaseServerManager.startAttempt() -> waitForPortToBeFree() ->
+PortConflictError / ServerStatusManager ERROR / no-kill / recovery path in a real,
+test-owned Electron app process (not just the unit-level real-socket test, IMP-01).
+
+Steps run:
+1) Built the worktree Electron app and started an isolated instance (test-owned data root
+   /tmp/abp-api-e2e-probe/iso-data-root, test-owned port 56321, never 29695):
+   'pnpm isolated-app start --build --data-root <dir> --server-port 56321' -> ok, RUNNING.
+2) Stopped it ('isolated-app stop <id>'): port released, data root kept (ownsDataRoot=false,
+   so the tool never deletes it).
+3) Held port 56321 with a real [::] dual-stack listener (node net.createServer().listen(port))
+   — the incident's exact holder shape.
+4) Attempted 'isolated-app start' again on the same port/data-root while held: it failed
+   immediately with SERVER_PORT_IN_USE. Reading instanceLifecycle.mjs's selectServerPort(),
+   this is the CLI wrapper's OWN pre-launch portAvailable() guard, not the product's
+   BaseServerManager conflict path — it never launches Electron at all.
+5) To reach the product's own code, launched the built AutoByteus.app binary directly
+   (bypassing the CLI wrapper) with the exact e2e-profile env/args
+   (AUTOBYTEUS_ELECTRON_LAUNCH_PROFILE=e2e, AUTOBYTEUS_ELECTRON_SERVER_PORT=56321,
+   AUTOBYTEUS_ELECTRON_DATA_ROOT=<dir>, --remote-debugging-port, --autobyteus-isolated-instance)
+   while the same [::] holder was still listening. Result: electron/main.ts's bootstrap()
+   calls assertEmbeddedServerListenerPortAvailable() for the 'e2e' profile BEFORE
+   BaseServerManager/ElectronApplication even exist; that function
+   (electron/launch-profile/e2eLaunchPreflight.ts) is a single assertBackendPortAvailable()
+   check with no retry, so it rejects immediately and bootstrap() calls app.exit(1).
+   See the captured log below: '[electron-bootstrap] Startup failed: listen EADDRINUSE:
+   address already in use 0.0.0.0:56321' — a hard, non-recoverable exit, not the product's
+   PortConflictError / ServerStatusManager ERROR / recoverable-screen path.
+
+Structural finding: resolveElectronLaunchProfile() (electronLaunchProfile.ts) has exactly
+two profiles. 'e2e' (the only test-owned, port/data-root-overridable profile — used by
+every isolated-app mechanism) takes the fast-fail preflight above for a port conflict,
+by design, so isolated/e2e test runs fail fast instead of engaging the production
+retry/recovery UX. 'production' is the ONLY profile whose launch reaches
+BaseServerManager.startAttempt() -> waitForPortToBeFree() -> PortConflictError ->
+ServerStatusManager ERROR (the real BEH-004/005 conflict-recovery path AC-005 describes),
+and it is hard-wired to PRODUCTION_EMBEDDED_SERVER_PORT (29695) and the real canonical
+user data path (electronLaunchProfile.ts: 'production' rejects AUTOBYTEUS_ELECTRON_SERVER_PORT/
+AUTOBYTEUS_ELECTRON_DATA_ROOT entirely). There is no test-owned way to reach that orchestration
+in a real full desktop-app process without using port 29695 / the real app data directory,
+which QR-002 and TESTING.md Rule 2 forbid. This is a pre-existing structural property of the
+launch-profile design, not something this ticket introduced or could safely work around.
+
+Consequence: AC-005's real-process variant is Not Tested / Infeasible at the full-app
+orchestration level, for a reason outside this ticket's control. The real-socket unit test
+(IMP-01, BackendPortAvailability.spec.ts) already exercises the exact detection function
+(assertBackendPortAvailable/waitForBackendPort) both profiles ultimately call, with the
+incident's [::] holder shape, the no-kill assertion, and the post-close recovery assertion —
+see its own evidence (evidence/IMP-01-electron-targeted.log).
+
+Cleanup: holder process killed (port 56321 confirmed free); isolated instance stopped
+(serverPortReleased=true, controlPortReleased=true); 'isolated-app list' shows no remaining
+records; the directly-launched probe process exited on its own (app.exit(1)) and left no
+process; the test-owned data root was removed. No effect on the user's installed app
+(verified running throughout at its own port 29695 / ~/.autobyteus, untouched).
+
+--- direct-launch-conflict.log (captured stdout/stderr of the direct launch attempt) ---
+[2026-11-06T17:58:43.133Z] [INFO] [electron] Application started
+[electron-bootstrap] Startup failed: listen EADDRINUSE: address already in use 0.0.0.0:56321
+
+--- isolated-app CLI's own guard (the SERVER_PORT_IN_USE attempt) ---
+{
+  "schemaVersion": 1,
+  "ok": false,
+  "command": "start",
+  "error": {
+    "code": "SERVER_PORT_IN_USE",
+    "message": "Server port 56321 is already in use"
+  }
+}

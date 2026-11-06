@@ -1,0 +1,23 @@
+# Captured 2026-11-06T07:05:45Z
+## lsof :29695
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    81559 normy 2278u  IPv6 0x263f7b4015f96832      0t0  TCP *:29695 (LISTEN)
+## process 81559 / parent 81541
+  PID  PPID STARTED                      COMMAND
+81541     1 Do.  5 Nov. 22:09:12 2026    npm run dev --host 0.0.0.0 --port 4601        
+81559 81541 Do.  5 Nov. 22:09:12 2026    node /Users/normy/normy-projects/galavion-design-worktrees/a1-system-frame-20261105/node_modules/.bin/nuxt dev --host 0.0.0.0 --port 4601
+## selected env of 81559 (tokens omitted)
+CLAUDE_CODE_ENTRYPOINT=sdk-ts
+CLAUDE_PID=81385
+CLAUDE_AGENT_SDK_VERSION=0.3.280
+SERVER_PORT=29695
+AUTOBYTEUS_DATA_DIR=/Users/normy/.autobyteus/server-data
+AUTOBYTEUS_DESKTOP_EMBEDDED_NODE=1
+AUTOBYTEUS_SERVER_HOST=http://127.0.0.1:29695
+PORT=29695
+CLAUDE_CODE_SESSION_ID=6070976e-9a46-4a00-b1e5-1a586ddfdf1a
+## probe
+HTTP/1.1 101 Switching Protocols
+Upgrade: websocket
+Connection: Upgrade
+Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=
