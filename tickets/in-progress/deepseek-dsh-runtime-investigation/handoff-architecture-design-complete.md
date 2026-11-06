@@ -1,12 +1,19 @@
-# Handoff — Architecture Design Complete (autobyteus-387, SR-003)
+# Handoff — Architecture Design Complete (autobyteus-387, SR-004)
 
 ## Result
 
-- Classification: `Architecture Design Complete` (revised after ARCH-REV-001 round 1)
+- Classification: `Architecture Design Complete` (revised after ARCH-REV-002 round 2)
 - `task_size`: `Large`; `architectural_risk`: `High`
-- Route: architecture review round 2 (`/software_engineering_team/architecture_reviewer`), per the handoff rule for Large or High.
+- Route: architecture review round 3 (`/software_engineering_team/architecture_reviewer`), per the handoff rule for Large or High.
 
-## What Changed Since Round 1 (SR-002 → SR-003)
+## What Changed Since Round 2 (SR-003 → SR-004)
+
+| Finding | Resolution (design spec section) |
+| --- | --- |
+| AR-008: relay passes never revoked in application scopes | One run-pass lifetime owner, `RunPassRevocation` (`credential-proxy/run-pass-revocation.ts`, exposed as `CredentialProxyHost.runPasses`). `AgentRunManager` (activation failure) and `AgentRunResourceManager` (release) depend on `runPasses: RunPassRevocation \| null` instead of `integrationRunAccess`, and `IntegrationRunAccess.revokeForRun` is removed. Every composition passes `runPasses` from the same host wherever `integrationRunAccess` or `providerRelayAccess` is non-null: the studio general process and the studio's application scopes (kernel builder `:102-111`, `:141-146`) get the host's; the standalone host passes `null`. Both revocation callers are listed under the `RunPassHolder` consumers (Change Scope, Ownership Map, Boundary Encapsulation Map, Dependency Rules, Interface Boundary Mapping, Removal Plan, Final File Responsibility Mapping, Change Sequence step 3) |
+| Guidance: slot set before the proxy listens | While the proxy is not yet listening, discovery reports a transient `DEEPSEEK_HARNESS_RELAY_NOT_READY` that nothing caches; availability depends only on the slot (Guidance For Implementation) |
+
+## What Changed In Round 1 (SR-002 → SR-003)
 
 | Finding | Resolution (design spec section) |
 | --- | --- |
@@ -32,8 +39,8 @@
 
 `/Users/normy/autobyteus_org/autobyteus-worktrees/deepseek-dsh-runtime-investigation/tickets/in-progress/deepseek-dsh-runtime-investigation/`
 
-- `design-spec.md` (SR-003), `requirements-doc.md`, `investigation-notes.md`, `solution-revision-record.md` (SR-001…SR-003), `follow-ups.md` (FU-001, not yet sent)
-- Review artifacts (reviewer-owned): `design-review-report.md`, `architecture-review-revision-record.md` (ARCH-REV-001 applies to SR-002)
+- `design-spec.md` (SR-004), `requirements-doc.md`, `investigation-notes.md`, `solution-revision-record.md` (SR-001…SR-004), `follow-ups.md` (FU-001, not yet sent)
+- Review artifacts (reviewer-owned): `design-review-report.md`, `architecture-review-revision-record.md` (ARCH-REV-001 applies to SR-002, ARCH-REV-002 to SR-003)
 - `probes/`, `evidence/` (no key material)
 
 ## Workspace
@@ -46,9 +53,10 @@
 
 ## Expected Next Action
 
-Architecture review round 2 of `design-spec.md` (SR-003).
+Architecture review round 3 of `design-spec.md` (SR-004).
 
 ## Handoff Route Record
 
 - Round 1: SR-002 → `/software_engineering_team/architecture_reviewer` (2026-11-06) → Fail (ARCH-REV-001).
-- Round 2: SR-003 → `/software_engineering_team/architecture_reviewer` (rule: Architecture Design Complete, Large or High).
+- Round 2: SR-003 → `/software_engineering_team/architecture_reviewer` → Fail (ARCH-REV-002, AR-008).
+- Round 3: SR-004 → `/software_engineering_team/architecture_reviewer` (rule: Architecture Design Complete, Large or High).

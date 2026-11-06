@@ -7,6 +7,7 @@
 | SR-001 | Mixed (Evidence + Requirements) | Investigation of autobyteus-387 and the user's decisions in conversation | RT-001…RT-022 | N/A | Approved | BEH-001…BEH-015, REQ-001…REQ-015 | Investigation answered; user extended the ticket to building; requirements approved within the direction |
 | SR-002 | Design | Architecture design on the approved SR-001 basis | N/A | N/A | Ready | All | `design-spec.md` complete; Large / High; routed to architecture review |
 | SR-003 | Design | Architecture review ARCH-REV-001, round 1 (Fail, Design Impact) | AR-001…AR-007 | Ready (SR-002) | Ready | BEH-001/004/005/006/009/010/011/012/013/015; DEC-019, DEC-020 added | Reopen traced as a restore form with held instructions; one end owner; relay access disposition per composition with refusal rule and process slot; Anthropic refusal envelope; `normalizeModels` removed; "provider relay" vocabulary; relay never alters bodies |
+| SR-004 | Design | Architecture review ARCH-REV-002, round 2 (Fail, Design Impact) | AR-008 | Ready (SR-003) | Ready | BEH-009, REQ-009/AC-009 | One run-pass lifetime owner (`RunPassRevocation`) wired into `AgentRunManager` and `AgentRunResourceManager` in every composition, application scopes included |
 
 ## Revision Entries
 
@@ -87,3 +88,26 @@
 - Downstream and architecture-review impact: architecture review round 2.
 - Remaining gaps, assumptions or blocked decisions: RSK-004, RSK-006.
 - Next action: architecture review round 2.
+
+### SR-004 — One run-pass lifetime owner (architecture review round 2)
+
+- Phase and classification: `Design Impact`
+- Triggering user feedback, Product package, investigation evidence, or role/report/round: `design-review-report.md`, ARCH-REV-002, round 2 (Fail; AR-001…AR-007 resolved).
+- Triggering finding IDs: AR-008.
+- Prior authoritative requirements/design status: requirements Approved; design Ready (SR-003), failed review.
+- Current authoritative requirements/design status: requirements Approved (unchanged); design `Ready`.
+- Requirement, behavior, acceptance-criteria, scenario or decision IDs affected: BEH-009, REQ-009, AC-009.
+- Scenario-basis or scenario-validity changes: none (P-003, a dsh run launched from an application in the studio, is SCN-001 under DEC-020).
+- Why this revision was recorded: relay-granted passes in application scopes were never revoked, because revocation lived only on `IntegrationRunAccess`, which those scopes pass as `null`.
+- Canonical sections changed: design spec Current-State Read, Change Scope (revocation callers under `RunPassHolder` consumers), Task Design Health (one fact, one owner), Ownership Map (`RunPassRevocation`), Boundary Encapsulation Map, Dependency Rules, Interface Boundary Mapping, Removal Plan (`IntegrationRunAccess.revokeForRun` and the `integrationRunAccess` revoke dependencies), Final File Responsibility Mapping (`run-pass-revocation.ts`, `integration-run-access.ts`, `agent-run-resource-manager.ts`, `agent-run-manager.ts`, compositions), Change Sequence step 3, Guidance (slot before listen; post-release refusal check).
+- Supplemental artifacts added, changed or removed: none.
+- Product design evidence or product decisions incorporated: None.
+- Intended behavior changed: `No`.
+- Approval impact: none.
+- Behavior-defining supplement versions and approval references: None.
+- Affected design/review basis invalidated or rebuilt: SR-003 superseded by SR-004; ARCH-REV-002 applies to SR-003.
+- Post-design task-size/risk classification and rationale changes: unchanged, `Large` / `High`.
+- Applied handoff-rule outcome / result-file reference: `handoff-architecture-design-complete.md` (updated for SR-004); route `/software_engineering_team/architecture_reviewer`.
+- Downstream and architecture-review impact: architecture review round 3.
+- Remaining gaps, assumptions or blocked decisions: RSK-004, RSK-006.
+- Next action: architecture review round 3.

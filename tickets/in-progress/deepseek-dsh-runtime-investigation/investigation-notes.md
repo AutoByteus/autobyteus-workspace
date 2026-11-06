@@ -11,7 +11,7 @@
 - Finalization target remote / branch: `origin` / `personal` (RELEASE.md "Finalization Target")
 - Bootstrap result: worktree created from the refreshed base; ticket folder `tickets/in-progress/deepseek-dsh-runtime-investigation/`
 - Bootstrap blocker: None
-- Current solution revision ID: `SR-003`
+- Current solution revision ID: `SR-004`
 - Authorities read (requirements reading gate; file and date): `references/requirements-engineering.md`, `references/finding-the-cause.md`, `references/ticket-scope.md` (re-read after the 2026-11-06 skill update), `references/handoff.md`, `references/project-documents.md` (2026-11-06 update), 2026-11-05/06
 - Investigation status: Complete for requirements and architecture design
 
