@@ -57,28 +57,26 @@ describe('useLeavingTreeRows', () => {
     const css = fs.readFileSync(path.resolve(__dirname, '../treeRowLeave.css'), 'utf8').replace(/\s+/g, ' ')
     expect(css).toContain('.tree-row-leave-active { overflow: hidden; transition: opacity 200ms ease-out, max-height 200ms ease-out, margin-top 200ms ease-out, transform 200ms ease-out; }')
     expect(css).toContain('.tree-row-leave-to { opacity: 0; max-height: 0; min-height: 0; margin-top: 0 !important; }')
-    expect(css).toContain('@media (prefers-reduced-motion: reduce) { .tree-row-leave-active { transition: none; } }')
+    expect(css).toContain('.tree-row-move { transition: transform 200ms ease-out; }')
+    expect(css).toContain('@media (prefers-reduced-motion: reduce) { .tree-row-leave-active, .tree-row-move { transition: none; } }')
     expect(css).not.toContain('enter-active')
   })
 
-  // autobyteus-390 (REQ-004): rows never slide. Without a move transition, Vue's TransitionGroup moves no row that was
-  // added, grown (a late Task line) or expanded above others; the rows below a leaving row follow it by layout.
-  it('has no move transition, so no row slides', () => {
-    const css = fs.readFileSync(path.resolve(__dirname, '../treeRowLeave.css'), 'utf8')
-    expect(css).not.toMatch(/\.tree-row-move\b/)
-  })
-
-  it('a leaving row fades and collapses (opacity, height, margin) in 200 ms', () => {
+  it('still fades and collapses a leaving row that carries the move class (CR-002)', () => {
     const style = document.createElement('style')
     // The media query does not match here; the cascade of the remaining rules is what a browser applies.
     style.textContent = fs.readFileSync(path.resolve(__dirname, '../treeRowLeave.css'), 'utf8')
     document.head.append(style)
     const row = document.createElement('div')
-    row.className = 'tree-row-leave-active tree-row-leave-to'
+    row.className = 'tree-row-move tree-row-leave-active tree-row-leave-to'
     document.body.append(row)
     try {
       const transition = getComputedStyle(row).transition
-      for (const property of ['opacity', 'max-height', 'margin-top']) expect(transition).toContain(`${property} 200ms ease-out`)
+      for (const property of ['opacity', 'max-height', 'margin-top', 'transform']) expect(transition).toContain(`${property} 200ms ease-out`)
+      const moving = document.createElement('div')
+      moving.className = 'tree-row-move'
+      document.body.append(moving)
+      expect(getComputedStyle(moving).transition).toBe('transform 200ms ease-out')
     } finally {
       style.remove()
     }

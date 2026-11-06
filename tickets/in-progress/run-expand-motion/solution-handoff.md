@@ -63,6 +63,10 @@ R-01: a stopped run's stored delegated view after fold and unfold is covered by 
 
 After the reviewer's correction (`47ddf05fb5`, OBS-2 withdrawn, and the user reports that Workspaces and Projects are fine), the move is turned off only in the Runs view. That is one scoped rule on the run list's scroll container in `RunListPanel.vue`. The shared `treeRowLeave.css`, its tests and the other views are unchanged (AC-006). `v-show` is restored, as before.
 
+## Decision On The User's "Small Moving" Feedback (2026-11-06)
+
+The narrowed SR-002 stands: the move is off in the Runs view only, and `v-show` is restored. The Workspaces and Projects views keep their small moves. In the Runs view, a move rule would let late Task lines cascade (about 230 px for the last of 13 rows), and the drop can only be ruled out for certain without it. The implementation (`b7fc37aa75`, the full removal) must be narrowed: restore the shared `treeRowLeave.css`, its spec and the `task-closure-tree` probe to the base, and add the scoped override.
+
 ## Next Expected Action
 
 Implementation with self-checks and executable validation, then delivery.

@@ -1,10 +1,11 @@
 #!/usr/bin/env node
-// autobyteus-390 (REQ-001, REQ-002, REQ-004; AC-001, AC-002, AC-005): rows of the left panel never slide. Against the
-// product RunListRow in real headless Chrome, an Agent run's delegated rows:
+// autobyteus-390 (REQ-001, REQ-002, REQ-004; AC-001, AC-002, AC-005, AC-006): rows of the Runs view never slide. Against
+// the product RunListPanel in real headless Chrome, an Agent run's delegated rows:
 //   - expand shows them complete (with their Task lines) at their final place from the first frame; collapse hides them;
 //   - Task answers that arrive after the rows are shown push the rows below at once, with no transform;
 //   - expanding a delegated Team pushes the rows below at once, with no transform;
-//   - a finished Task's row still fades and closes, and the row below glides up by layout.
+//   - a finished Task's row still fades and closes, and the row below glides up by layout;
+//   - outside the Runs view (the Workspaces and Projects trees) the shared move rule is unchanged.
 //   pnpm -C autobyteus-web test:e2e:run-expand-motion [--output-dir <fresh dir>] [--browser-executable <path>]
 // Prerequisites: pnpm install; pnpm exec nuxt prepare. Owns a Nuxt dev server on a free port with a dead backend URL,
 // a fixture route (tests/e2e/fixtures/run-expand-motion.page.vue) and Chrome; all are removed in finally.
@@ -226,7 +227,14 @@ try {
     return { closedKey, nextKey, leavingOpacities: leavingOpacities.slice(0, 20), nextTops };
   });
 
-  await runCase('REM-07', 'No browser errors during the cases', async () => {
+  await runCase('REM-07', 'AC-006: the move is off inside the Runs view only; the same tree row outside it keeps the shared move rule', async () => {
+    const transitions = await probe('moveTransitions');
+    assert(!/transform/.test(transitions.insideRunsView), 'The Runs view still moves rows', transitions);
+    assert(/transform 0\.2s ease-out/.test(transitions.outsideRunsView), 'The shared move rule is gone outside the Runs view', transitions);
+    return transitions;
+  });
+
+  await runCase('REM-08', 'No browser errors during the cases', async () => {
     assert(evidence.browserEvents.length === 0, 'Browser errors', evidence.browserEvents);
     return { events: 0 };
   });
@@ -239,7 +247,7 @@ try {
   nuxtLog?.end();
   if (installed) await fs.rm(installedPagePath, { force: true });
   evidence.cleanup.installedPageRemoved = !existsSync(installedPagePath);
-  evidence.result = evidence.failures.length === 0 && Object.keys(evidence.cases).length === 7 ? 'Pass' : 'Fail';
+  evidence.result = evidence.failures.length === 0 && Object.keys(evidence.cases).length === 8 ? 'Pass' : 'Fail';
   evidence.finishedAt = new Date().toISOString();
   await save();
   console.log(JSON.stringify({ result: evidence.result, evidencePath, cleanup: evidence.cleanup }));

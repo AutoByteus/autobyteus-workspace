@@ -28,7 +28,7 @@ import type { RunListEntry } from '~/utils/runListProjection';
 
 // autobyteus-390 SR-002 (REQ-002, REQ-003, AC-002, AC-003, R-01): an Agent run's delegated rows stay mounted while the run
 // is folded, only hidden, so they keep their Task answers and show complete on unfold (no late Task line, CRR-001 CR-001).
-// That rows never slide is the CSS's (no move transition; useLeavingTreeRows.spec) and the browser probe's.
+// That rows never slide is the Runs view's scoped rule (RunListPanel.spec) and the browser probe's.
 const HOST = 'host-run';
 const agentEntry = (): RunListEntry => ({
   kind: 'agent', key: `agent:${HOST}`, runId: HOST, name: 'Project Task Manager', lastActivityAt: '2026-11-06T00:00:00.000Z',
