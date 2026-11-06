@@ -1,0 +1,9 @@
+sr002 window null: poll p50 157.6 ms, p95 194.5 ms, max 302.4 ms (cold 225.6 ms); {"agentRuns":40,"teamRuns":200,"orgRuns":10}; 890068 bytes; load 16.6/44.9/62.4 → 22.1/45.2/62.3
+sr002 window 6: poll p50 146.8 ms, p95 169.6 ms, max 202 ms (cold 300.2 ms); {"agentRuns":24,"teamRuns":200,"orgRuns":10}; 884234 bytes; load 22.1/45.2/62.3 → 28.4/45.4/62.1
+RB-C1 Pass window null returns every seeded run (Agent, Team, Org)
+RB-C2 Pass window 6 returns the newest 6 runs per agent and folder, and every Team and Org run
+RB-C3 Pass per-folder workspaceRunHistory with null is complete
+RB-C4 Pass every Agent, Team and Org item carries lastActivityAt at or after createdAt, after it for a run with a turn
+RB-B1 Pass uncapped poll read (Runs view) p95 within 250 ms
+RB-B2 Pass capped poll read (Workspaces view) p95 within 250 ms
+PASS /Users/normy/autobyteus_org/autobyteus-worktrees/left-panel-follow-ups/tickets/in-progress/left-panel-follow-ups/evidence/api-e2e/API-06-read-budget/evidence.json

@@ -102,7 +102,7 @@
         class="min-h-0 flex-1 border-b border-gray-200 bg-white outline-none"
       >
         <div class="h-full">
-          <WorkspaceAgentRunsTreePanel :run-shown="isWorkspacesActive" @run-selected="onRunningRunSelected" />
+          <RunSectionPanel :run-shown="isWorkspacesActive" @run-selected="onRunningRunSelected" />
         </div>
       </section>
     </div>
@@ -132,7 +132,7 @@ import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { computed, nextTick, onMounted } from 'vue';
 import { Icon } from '@iconify/vue';
 import { useRoute, useRouter, type RouteLocationRaw } from 'vue-router';
-import WorkspaceAgentRunsTreePanel from '~/components/workspace/history/WorkspaceAgentRunsTreePanel.vue';
+import RunSectionPanel from '~/components/workspace/history/RunSectionPanel.vue';
 import SidebarNotificationsEntry from '~/components/layout/SidebarNotificationsEntry.vue';
 import { useAppLeftPanelSectionResize } from '~/composables/useAppLeftPanelSectionResize';
 import { useLeftPanel } from '~/composables/useLeftPanel';

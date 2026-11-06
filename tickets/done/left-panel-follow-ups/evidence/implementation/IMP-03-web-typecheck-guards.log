@@ -1,0 +1,19 @@
+# Check: IMP-03
+# Command: cd autobyteus-web && env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR="$TMPDIR" pnpm typecheck; pnpm -s guard:web-boundary; pnpm -s guard:localization-boundary; pnpm -s audit:localization-literals
+# Commit: 00339421ed
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28 via corepack; env -i PATH HOME=<fresh mktemp dir> TMPDIR (TESTING.md isolation)
+# Date: 2026-11-06 CET
+# Full output: this file
+
+[typecheck] Nuxt app (tsconfig.json): 72 errors, exit 2, 41.9s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.2s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.7s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 27.5s
+[typecheck] production errors: 0; test-file errors: 99 in 43 files (baseline 99 in 43 files)
+[typecheck] PASS
+## guard:web-boundary
+[guard:web-boundary] Passed.
+## guard:localization-boundary
+[guard:localization-boundary] Passed.
+## audit:localization-literals
+[audit:localization-literals] Passed with zero unresolved findings.

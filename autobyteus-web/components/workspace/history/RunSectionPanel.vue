@@ -7,7 +7,7 @@
     <div v-else id="run-section-panel" ref="treeScrollRef" role="region" aria-labelledby="run-section-title" class="min-h-0 flex-1 overflow-y-auto px-1 pb-2" data-test="workspace-history-tree-scroll">
       <ProjectsRunsTree v-if="modeStore.mode === 'projects'" :state="sectionState" :avatars="sectionAvatarBindings" :actions="sectionActions" :run-shown="runShown" />
       <template v-else>
-      <div v-if="runHistoryStore.loading" class="px-3 py-4 text-xs text-gray-500">{{ $t('workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.loading_task_history') }}</div>
+      <div v-if="runHistoryStore.loading" class="px-3 py-4 text-xs text-gray-500">{{ $t('workspace.components.workspace.history.RunSectionPanel.loading_task_history') }}</div>
 
       <div v-if="runHistoryStore.historyFamilyErrors?.workspace" class="px-3 py-2 text-xs text-red-600">
         {{ runHistoryStore.historyFamilyErrors?.workspace }}
@@ -116,8 +116,12 @@ const forwardRunSelected = (payload: { type: 'agent' | 'team'; runId: string }):
 };
 
 const HISTORY_REFRESH_INTERVAL_MS = 5000;
-/** The history read window per view (DS-002): every run for the Runs view (its fold and "Archive all older"), 6 otherwise. */
-const historyWindowOf = (mode: RunSectionMode): number | null => (mode === 'runs' ? null : 6);
+/**
+ * The history read window per view (DS-002): the Workspaces view shows today's capped tree (6 per agent and folder). The
+ * Runs view needs every run for its fold and "Archive all older"; the Projects view needs every run so that another
+ * client's removal of any run, not only of the newest 6, is noticed and the open Projects are read again (autobyteus-388).
+ */
+const historyWindowOf = (mode: RunSectionMode): number | null => (mode === 'workspaces' ? 6 : null);
 
 const runHistoryStore = useRunHistoryStore();
 const agentOrgRunStore = useAgentOrgRunStore();
@@ -266,8 +270,8 @@ const {
   },
   presentTeamStreamRecoveryFeedback: (feedback) => {
     const key = feedback === 'wait'
-      ? 'workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.stream_recovery_wait'
-      : 'workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.stream_recovery_retry';
+      ? 'workspace.components.workspace.history.RunSectionPanel.stream_recovery_wait'
+      : 'workspace.components.workspace.history.RunSectionPanel.stream_recovery_retry';
     addToast(t(key), 'info');
   },
 });
