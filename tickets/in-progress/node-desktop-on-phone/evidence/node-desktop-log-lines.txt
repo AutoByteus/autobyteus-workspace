@@ -1,0 +1,7 @@
+[node-desktop] stream ended mode=view viewer=mobile durationMs=84863 toViewer=1731413 fromViewer=4326 reason=viewer-closed
+[node-desktop] stream ended mode=control viewer=mobile durationMs=817954 toViewer=1875541 fromViewer=29248 reason=viewer-closed
+[node-desktop] stream ended mode=view viewer=mobile durationMs=1143150 toViewer=1397448 fromViewer=39506 reason=viewer-closed
+[node-desktop] stream ended mode=view viewer=mobile durationMs=12772 toViewer=1275646 fromViewer=1166 reason=viewer-closed
+[node-desktop] stream ended mode=control viewer=mobile durationMs=47264 toViewer=1283141 fromViewer=1364 reason=node-closed close=REMOTE_ACCESS_DEVICE_REVOKED
+[node-desktop] stream ended mode=view viewer=mobile durationMs=4725 toViewer=1282359 fromViewer=1206 reason=viewer-closed
+[node-desktop] stream ended mode=control viewer=mobile durationMs=3226 toViewer=1284611 fromViewer=1170 reason=viewer-closed

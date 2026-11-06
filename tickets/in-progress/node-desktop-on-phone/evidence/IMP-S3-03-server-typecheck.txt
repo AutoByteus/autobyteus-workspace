@@ -1,0 +1,4 @@
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 8.8s
+[typecheck] server tests (tsconfig.tests.json): 1182 errors, exit 2, 23.2s
+[typecheck] production errors: 0; test-file errors: 1182 in 365 files (baseline 1182 in 365 files)
+[typecheck] PASS
