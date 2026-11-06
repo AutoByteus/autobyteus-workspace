@@ -2,15 +2,18 @@
 
 ## Upstream Artifact Package
 
-- Upstream review applicability and handoff-rule result: independent architecture review selected (Large/High); `ARCH-REV-002` **Pass** received from `architecture_reviewer`; the handoff rule for a Large/High implementation selects Code Review.
-- Requirements doc: [requirements-doc.md](requirements-doc.md) — SR-003, Approved (REQ-001…009, AC-001…010).
+- Upstream review applicability and handoff-rule result: independent architecture review selected (Large/High). `ARCH-REV-002` passed the SR-004 design; this round implements SR-005/SR-006, which passed as `ARCH-REV-004`. The handoff rule for a Large/High implementation selects Code Review.
+- Requirements doc: [requirements-doc.md](requirements-doc.md) — SR-005, Approved (REQ-001…009 plus REQ-002a, REQ-003a, REQ-011; AC-001…011; DEC-009…015).
 - Investigation notes: [investigation-notes.md](investigation-notes.md) — E-01…E-32.
-- Solution revision record: [solution-revision-record.md](solution-revision-record.md) — SR-001…SR-004, plus the editorial entry of commit `45fbb2ceee` (design-spec stale text, review residual 4).
-- Design spec (required on every route): [design-spec.md](design-spec.md) — SR-004 (with the `45fbb2ceee` editorial fixes).
+- Solution revision record: [solution-revision-record.md](solution-revision-record.md) — SR-001…SR-006.
+- Design spec (required on every route): [design-spec.md](design-spec.md) — SR-006 (sections "Revision For ARCH-REV-003 (SR-006)" and "Revision For CRR-003 (SR-005)").
 - Supplemental task artifacts: the Product UI/UX spec and VIS-001…029, `/Users/normy/autobyteus_org/autobyteus-web-design-worktrees/mobile-experience-redesign/tickets/in-progress/mobile-experience-redesign/ui-ux-spec.md` at design revision `e6ca7b6098` (normative); [follow-ups.md](follow-ups.md).
-- Design review report: [design-review-report.md](design-review-report.md) — round 2, Pass.
-- Architecture review revision record: [architecture-review-revision-record.md](architecture-review-revision-record.md) — `ARCH-REV-002`.
-- Triggering rework report, revision record, or evidence, when applicable: [code-review-report.md](code-review-report.md) and [code-review-revision-record.md](code-review-revision-record.md), `CRR-001` (Fail — Local Fix: CR-001, CR-002, CR-003).
+- Design review report: [design-review-report.md](design-review-report.md) — `ARCH-REV-004`, Pass.
+- Architecture review revision record: [architecture-review-revision-record.md](architecture-review-revision-record.md) — up to `ARCH-REV-004`.
+- Triggering rework report, revision record, or evidence, when applicable:
+  - API/E2E round 1, [api-e2e-execution-coverage-report.md](api-e2e-execution-coverage-report.md) (`API-REV-001`, Fail: F-01…F-09);
+  - the code reviewer's failure-origin review, [code-review-report.md](code-review-report.md) section "API/E2E Failure-Origin Review (Round 3)" (`CRR-003`: Local Fixes F-02…F-05);
+  - the revised design (SR-005, SR-006; `ARCH-REV-004` Pass). Earlier: `CRR-001` (CR-001…003, fixed in IR-002).
 
 ## Current Implementation Summary
 
@@ -37,6 +40,14 @@ The `/mobile` shell is rebuilt as the approved design on the desktop's owners. T
   - Removed: `mobileWorkStore`, `MobileWorkContext`, the catalog, Home, the tabs, the Switch sheet, team launch, and their tests.
   - Docs: `autobyteus-web/docs/remote_access.md`.
 - **CRR-001 fixes** — commit `f2816cc7c1` (IR-002): the run list's Retry goes through the paired shell's status check (CR-001); the Files folder error names no tab (CR-002); a bottom sheet passes its title id to a custom header, so the connection sheet's dialog is named (CR-003).
+- **IR-003: SR-005/SR-006 and CRR-003's local fixes** — commits `02905f49b5`, `02718f21bf`, `4207af0889`, `9b4066b4df`, `1a48f4affe`:
+  - `utils/randomId.ts` `createRandomId()` at the ten listed call sites, each keeping its prefix, so the sends work on a trusted private HTTP pairing (F-02, DEC-014).
+  - `useTaskWorkerTasks`: summaries everywhere, `locate` only where Projects is (`canLocate`). The phone's delegated rows show their Task's summary, else a remote run's title; members and an Org's task rows show their name only (F-06, REQ-002a, DEC-010).
+  - `agentOrgFirstMemberAddress` in `utils/agentOrgHistoryRows.ts`; the phone's Org run row opens through `select` with that address, and the same address is in the route keys (F-01, REQ-003a, DEC-012).
+  - F-03: Unpair closes the sheet before the confirmation shows. F-04: `CollaborationMessageReferenceViewer` `hideHeader` (default false), used by the phone's reference screen. F-05: the Files path parts are 44 px wide.
+  - The Android shell's insets: `ui/SystemBarInsets.kt` pads `WebShellScreen`'s and `ConnectionScreen`'s roots with the system bars, display cutout and keyboard (F-09, REQ-011, DEC-011). No permission, dependency or targetSdk change.
+  - Not added, as the design says: `refreshListedRoots`, `readRevision` (DEC-013 revised; FU-007).
+  - Docs: `remote_access.md`, `autobyteus-android/README.md`, `docs/android_mobile_access.md` (stale Home/Team steps too).
 - **Polish and cleanup** — commits `e0788fe987`, `599002ecbf`, `b2d7a084dd`:
   - touch targets and the sheet's focus outline, from the rendered check;
   - removal of the helpers only the removed screens used;
@@ -44,13 +55,13 @@ The `/mobile` shell is rebuilt as the approved design on the desktop's owners. T
 
 - Implementation cycle: `Rework`
 - Implementation revision record: [implementation-revision-record.md](implementation-revision-record.md)
-- Current implementation revision ID: `IR-002` (IR-001 is the baseline)
-- Related solution revision IDs: `SR-003` (requirements), `SR-004` (design)
-- Related architecture-review revision IDs: `ARCH-REV-002`
-- Related code-review revision IDs: `CRR-001` (Fail — Local Fix), `CRR-002` (Pass, targeted delta: CR-001…003 resolved; [code-review-report.md](code-review-report.md)); the reviewer routes on to API/E2E
-- Related API/E2E revision IDs: `N/A`
+- Current implementation revision ID: `IR-003` (IR-001 baseline, IR-002 CRR-001 fixes)
+- Related solution revision IDs: `SR-005` (requirements), `SR-006` (design; SR-005 for CRR-003)
+- Related architecture-review revision IDs: `ARCH-REV-002`, `ARCH-REV-004`
+- Related code-review revision IDs: `CRR-001` (Fail — Local Fix), `CRR-002` (Pass), `CRR-003` (failure-origin: Local Fixes F-02…F-05)
+- Related API/E2E revision IDs: `API-REV-001` (Fail)
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: CR-001, CR-002, CR-003 (`CRR-001`). The architecture review's non-blocking residual risks 1–5 are handled; see Known Risks.
+- Triggering finding IDs: F-01, F-02, F-03, F-04, F-05, F-06, F-09 (API-REV-001 / CRR-003, through SR-005/SR-006); F-07 and F-08 need no code (DEC-009 (a), DEC-013 revised). The architecture reviews' residual risks are handled; see Known Risks.
 
 ## Routing Classification (Mandatory)
 
@@ -59,7 +70,7 @@ The `/mobile` shell is rebuilt as the approved design on the desktop's owners. T
 - Design classification section / evidence reference: design-spec "Task Size And Architectural Risk".
 - Classification confirmed or changed: `Confirmed`
 - Evidence and rationale:
-  - 135 files changed in `autobyteus-web`.
+  - 135 files changed in `autobyteus-web` up to IR-002; IR-003 adds the id helper at ten sites, the `useTaskWorkerTasks` split, the Org first-member helper and three Kotlin files.
   - Shared owners used by the desktop changed: the history load, the conversation binding, the collaboration row rules, the open actions, disclosure and route-Org.
   - Ownership moved from the phone's model to the shared target and selection owners.
   - A history poll runs on the phone.
@@ -80,6 +91,7 @@ The `/mobile` shell is rebuilt as the approved design on the desktop's owners. T
 | BEH-005 (REQ-004; DS-002, DS-003) | A run on another node: chip, state, title; opens as in 278; unreachable: notice and Retry | The rows' `remote` from the transient rows and `remoteRunsStore`; `MobileRunTargetView` shows `RemoteRunNotice` when `remoteView.unreachable`; the composer stays text-only through the existing `useComposerTarget` | Implemented. The two-server behavior itself is not exercised here (API/E2E) |
 | BEH-006 (REQ-008; DS-007) | The node name opens the connection sheet; read-only peers; unpair | `MobileRunList` node button → `MobileConnectionSheet` (`remoteCollaborationStore.load()`, `remoteCollaborationOffersStore.askAll`) → `MobileUnpairConfirm` → `deleteLocalSession`; the not-reachable bar and banner from `authorizedApiReachable` after the first check | Implemented |
 | BEH-007 (REQ-009) | No row actions on the phone | `MobileRunRow` has the body and the chevron only | Implemented |
+| REQ-002a, REQ-003a, REQ-011 (IR-003) | Second lines where data exists; an Org run opens its first member; sends on HTTP pairing; Android 15 insets | `useMobileRunTree` → `useTaskWorkerTasks.taskOf` → `buildMobileRunTreeRows` (`taskSummary` → Task summary, else remote title, else none); `MobileRowOpen { orgRun }` → `useMobileRunOpening` → subject `execute({ action: 'select', memberAddress: agentOrgFirstMemberAddress(orgRun) })` with the same address in `agentOrgRouteQuery`; `createRandomId()` in the collaboration, Org, Team and agent sends; `WebShellScreen`/`ConnectionScreen` → `SystemBarInsets.pad(root)` | Implemented. Delegated rows under a run that is not open keep the state last read, as on the desktop (DEC-013) |
 | Preserved | Pairing, the post-pair check, unpair, the unsupported notice, the 401 rule | `MobileRemoteAccessShell` (pairing, route pairing link), `MobilePairedShell` (`checkStatus`: `Promise.allSettled([fetchStatus, initialLoad / load()])`, `isRemoteAccessAuthFailure`); the list's Retry and the sheet's Check connection both run `checkStatus` (CR-001) | Kept. Notice copy for `desktopWorkspace` per spec |
 
 - Changes stayed within the requirements doc's Scope Guardrail: `Yes`
@@ -113,9 +125,16 @@ Where the implementation goes past, or differs from, the letter of the design. E
 7. **Statuses and names.**
    - An Org run's dot is Running while it is active, else Stopped (the desktop's running/stopped).
    - Org member names use `memberDisplayName`, as the desktop's Org rows do (underscores become spaces).
-8. **Row title lines.** Delegated rows have a title line only when it exists in the product: a remote run's title from its node. The Task summary lines are a Projects feature, and Projects is not on the phone (`mobileFeatureGates`).
+8. **Row title lines (revised in IR-003).** As SR-005 decides: a Task worker's current Task summary, else a remote run's title, else no second line. The phone reads the summaries through the same `useTaskWorkerTasks`, now that only `locate` is gated on Projects. Assumption 8 of IR-001 is withdrawn.
+9. **Android insets (IR-003).** The inset rule is one small helper, `ui/SystemBarInsets.kt`, that both screens call on their root. `MainActivity.kt` needs no change: it already sets each screen as the content view. No `windowSoftInputMode` change was needed: on API 35 the keyboard's inset reaches the padded root (883 px), and the page gets shorter above it.
+10. **An Org run with no member** has nothing to open (`open: null`), rather than a `select` without an address.
+11. **`createRandomId()` outside a secure context** builds a UUID v4 from `crypto.getRandomValues`, which every context has, so ids keep the UUID shape there too.
 
 ## Known Risks
+
+- **ARCH-REV-004 residual 1 (AC-002a probe).** Opening a *stopped* root reuses its settled stored view and does not re-read it (`agentRunCollaborationStore.ts` `syncHost`), as on the desktop. For AC-002a's "a child's changed state shows once that run is opened", use a running root, or record the stopped-root case as desktop parity.
+- **ARCH-REV-004 residual 2 (double bottom padding): checked.** On API 35, inside the padded WebView, the page's `env(safe-area-inset-top)` and `env(safe-area-inset-bottom)` read `0px` with the keyboard closed and open (IMP-08). On API 34 the root gets no padding and nothing moves.
+- **Not checked on a device.** The insets were checked on the API 35 and API 34 emulators, not on the user's phone. The phone screens on a paired node over HTTP (the id helper's real case) are for `test:e2e:mobile-shell` (API/E2E).
 
 - **CRR-001 residual risks, for API/E2E (not findings):** C-06, the poll lists runs while the bar keeps its last "Not reachable" until a check (as designed); C-04, a failed open whose screen had an earlier target can show that target for a moment before Back lands on the list.
 
@@ -177,6 +196,7 @@ Where the implementation goes past, or differs from, the letter of the design. E
 - The worktree had no `node_modules`, so I ran TESTING.md's install order: `pnpm install --frozen-lockfile`, `pnpm -C autobyteus-server-ts prebuild`, `pnpm -C autobyteus-web exec nuxt prepare`.
 - The untracked `autobyteus-application-*/dist/` folders are build outputs of the typecheck's `prepare:shared-types` step and are not committed.
 - No dependency changed.
+- IR-003 created a test-owned AVD, `autobyteus277_api34` (Android 14, `system-images;android-34;google_apis;arm64-v8a`, Pixel 6), for the older-API check, and kept it for the API/E2E rerun beside `autobyteus277_api35`. Both emulators are stopped. Remove it with `avdmanager delete avd -n autobyteus277_api34`.
 
 ## Checks Run
 
@@ -185,11 +205,18 @@ The evidence files are in [evidence/](evidence/).
 | Check ID | Command Or Steps | Commit Tested | Environment | Code It Exercises | Behavior / Criteria IDs | Result | Evidence Files | Look For |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | IMP-01 | `pnpm -C autobyteus-web test:nuxt --run` (the full web unit and component suite) | `599002ecbf` | macOS, Node v22.23.1 | All of `autobyteus-web`. It includes the new phone specs and the desktop specs of every touched shared file. | REQ-001…009; AC-001…003, 005…009 (component level); review residuals 1, 2, 5 | Pass | `evidence/IMP-01-web-unit-tests.txt` | `Test Files  700 passed (700)`; `Tests  5190 passed \| 2 skipped (5192)` |
-| IMP-02 | `pnpm -C autobyteus-web typecheck` | `f2816cc7c1` | same | Nuxt app, Electron main, build scripts, cross-package tests | — | Pass | `evidence/IMP-02-web-typecheck.txt` | `[typecheck] production errors: 0; test-file errors: 96 in 41 files (baseline 96 in 41 files)`; `[typecheck] PASS` |
-| IMP-03 | `pnpm -C autobyteus-web guard:web-boundary`, `guard:localization-boundary`, `audit:localization-literals` | `f2816cc7c1` | same | Web boundary and localization rules | QR-002 (no filler) | Pass (exit 0 each) | `evidence/IMP-03-web-guards.txt` | `[guard:web-boundary] Passed.`; `[guard:localization-boundary] Passed.` |
+| IMP-02 | `pnpm -C autobyteus-web typecheck` | `1a48f4affe` | same | Nuxt app, Electron main, build scripts, cross-package tests | — | Pass | `evidence/IMP-02-web-typecheck.txt` | `[typecheck] production errors: 0; test-file errors: 96 in 41 files (baseline 96 in 41 files)`; `[typecheck] PASS` |
+| IMP-03 | `pnpm -C autobyteus-web guard:web-boundary`, `guard:localization-boundary`, `audit:localization-literals` | `1a48f4affe` | same | Web boundary and localization rules | QR-002 (no filler) | Pass (exit 0 each) | `evidence/IMP-03-web-guards.txt` | `[guard:web-boundary] Passed.`; `[guard:localization-boundary] Passed.` |
 | IMP-04 | Rendered self-check. A temporary, uncommitted preview page rendered each phone surface with seeded data on a Nuxt dev server whose backend was `127.0.0.1:9`; `/rest/health` was answered ok and `/graphql` with an error. Headless Chrome at 390×844 and 360×800 measured horizontal scroll and the controls under 44×44 CSS px. | `e0788fe987` | macOS, Chrome, Nuxt dev | `components/mobile/**` presentation: run list (default, expanded with the open row, node not reachable with the notice, empty), Opening…, run screen, ⋮ menu, Artifacts, Activity, Messages, Files, New run, Agent sheet, connection sheet | AC-005, QR-001, QR-004 (`100dvh`, safe area); VIS-001, 002, 005, 006, 010, 012, 015, 016, 019, 022, 024 | Pass, with one limitation: the shared composer's own buttons | `evidence/IMP-04-render/IMP-04-render-facts.txt` and 29 PNGs `IMP-04-<view>-<width>x<height>.png` | Every view: `scrollWidth` = `clientWidth` (no horizontal scroll); `smallTargets: []` except `run`/`menu`: `Upload files 28×28`, `Send message 36×36` (the shared composer) |
 | IMP-06 | `pnpm -C autobyteus-web test:nuxt --run components/mobile composables/mobile` (the phone's specs, with the three CRR-001 tests) | `f2816cc7c1` | same | `components/mobile/**`, `composables/mobile/**` | CR-001 (REQ-008, VIS-024), CR-002, CR-003 (QR-001 roles and names) | Pass | `evidence/IMP-06-phone-tests-crr001.txt` | `Tests  83 passed (83)`; the case "Retry after a failed first check reads again through the status check: the runs list, the bar says Connected, the banner goes" |
+| IMP-07 | `pnpm -C autobyteus-web test:nuxt --run` (the full web suite, IR-003) | `1a48f4affe` | macOS, Node v22.23.1 | All of `autobyteus-web`, with the new specs: `utils/__tests__/randomId.spec.ts`, `agentOrgFirstMemberAddress.spec.ts`, the `useTaskWorkerTasks` phone case, the projection's second lines and memberless Org, the Org first-member open, the unpair sheet, `hideHeader`, the path targets | REQ-002a, REQ-003a; F-01…F-06 | Pass | `evidence/IMP-07-web-unit-tests-ir003.txt` | `Test Files  701 passed (701)`; `Tests  5198 passed \| 2 skipped (5200)` |
+| IMP-08 | Android: `./gradlew :app:testDebugUnitTest :app:assembleDebug :app:compileDebugAndroidTestKotlin`, then `:app:connectedDebugAndroidTest` on AVD `autobyteus277_api35` (API 35) and on a test-owned AVD `autobyteus277_api34` (API 34); the debug APK's connection screen on both (screenshot, view bounds) | `1a48f4affe` | macOS, JDK 21, Android emulators (arm64) | `autobyteus-android` `ui/SystemBarInsets.kt`, `WebShellScreen.kt`, `ConnectionScreen.kt`; instrumented `SystemBarInsetsTest`, `WebShellWindowInsetsTest` (a real WebView in the real window) | REQ-011, AC-011 (emulator part); ARCH-REV-004 residual 2 | Pass | `evidence/IMP-08-android/IMP-08-android-insets.txt`, `IMP-08-connection-screen-api35.png`, `IMP-08-connection-screen-api34.png` | API 35: `padding=136,63 page="0px\|0px\|839"` closed, `padding=136,883 page="0px\|0px\|527"` open; API 34: `padding=0,0 rootTop=128`; `run finished: 12 tests, 0 failed` on both |
 | IMP-05 | `pnpm -C autobyteus-web test:nuxt --run stores/__tests__/agentTeamRunStore.spec.ts` | `b2d7a084dd` | same | The Team run store, after the removal of `useTeamRunRuntimeCatalogSync` | — | Pass | `evidence/IMP-05-team-store-spec.txt` | `Tests  28 passed (28)` |
+
+IR-003 rerun plan (`git diff --name-only bb80e60c97 1a48f4affe`, code only: the id helper and its ten call sites, `useTaskWorkerTasks`, the projection, `useMobileRunTree`, `useMobileRunOpening`, `agentOrgHistoryRows.ts`, `MobilePairedShell.vue`, `CollaborationMessageReferenceViewer.vue`, `MobileTeamReferenceViewer.vue`, `MobileFiles.vue`, three Kotlin files, specs and docs):
+
+- **Rerun:** the full web suite (IMP-07), because shared stores and services changed; IMP-02 and IMP-03; IMP-08 is new.
+- **Still valid:** IMP-04 for the surfaces it rendered: the row second lines are text in the existing title line, and the other changes do not touch those screens' layout. The reference screen (F-04) was not in IMP-04; API/E2E's MSP-11 renders it.
 
 IR-002 rerun plan (`git diff --name-only b2d7a084dd f2816cc7c1`: `MobileRunList.vue`, `MobilePairedShell.vue`, `MobileBottomSheet.vue`, `MobileConnectionSheet.vue`, `useMobileWorkspaceFileExplorer.ts` and three phone specs):
 
@@ -205,7 +232,8 @@ Not run, and left to API/E2E or the device:
 
 - a browser probe against a probe-owned real stack with delegated, Team, Org and remote fixture runs (design step 8);
 - the two-server remote run journey of 278;
-- the Android emulator and the user's device;
+- the user's device (IMP-08 covers the API 35 and API 34 emulators);
+- `test:e2e:mobile-shell` on a non-secure private HTTP origin with real-tap overlay checks (TESTING.md's new phone rule, owned by API/E2E);
 - iOS Safari/WKWebView;
 - cellular cost (R-001) and wake (R-002);
 - server suites, which nothing here touches.
@@ -248,6 +276,7 @@ Not run, and left to API/E2E or the device:
 - The 401 path: a revoked device lands on pairing with no extra read.
 - The poll pauses on the run screen and in the background, and resumes on return (network log).
 - `fresh-run-auto-approval` probe B08 changed to agent only; rerun it.
+- IR-003: on the non-secure HTTP origin, a message to a delegated child and to an Org member reaches the node (F-02); an Org run row opens its first member, and a Team first member opens its coordinator (F-01); Task lines under Task workers and none under members (F-06); Unpair's confirmation is hit-testable (F-03); the reference screen shows only the phone bar (F-04); the path parts measure ≥ 44 px (F-05); Android 15 on the emulator and the user's phone: no bar or control under the system bars, ⋮ opens with a center tap (AC-011).
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 

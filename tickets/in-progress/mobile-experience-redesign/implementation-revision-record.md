@@ -8,6 +8,7 @@ The current code and [implementation-handoff.md](implementation-handoff.md) rema
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | `architecture_reviewer`, [design-review-report.md](design-review-report.md), round 2 (Pass) | N/A | `Initial Baseline` | `SR-003`, `SR-004`, `ARCH-REV-002` | Implemented; checks IMP-01…05 pass; routed to Code Review |
 | IR-002 | `code_reviewer`, [code-review-report.md](code-review-report.md), `CRR-001` (Fail — Local Fix) | CR-001, CR-002, CR-003 | `Local Fix` | `SR-004`, `ARCH-REV-002`, `CRR-001` | Fixed in `f2816cc7c1`; IMP-02, IMP-03, IMP-06 pass; back to Code Review |
+| IR-003 | `architecture_reviewer`, [design-review-report.md](design-review-report.md), `ARCH-REV-004` (Pass of SR-005/SR-006); `CRR-003` local fixes; `API-REV-001` | F-01, F-02, F-03, F-04, F-05, F-06, F-09 | `Local Fix` (F-02…F-05) and the revised design (F-01, F-06, F-09) | `SR-005`, `SR-006`, `ARCH-REV-004`, `CRR-003`, `API-REV-001` | Implemented in `02905f49b5`…`1a48f4affe`; IMP-02, 03, 07, 08 pass; to Code Review |
 
 ## Revision Entries
 
@@ -65,3 +66,29 @@ The current code and [implementation-handoff.md](implementation-handoff.md) rema
 - Local validation and result: IMP-06 (the phone specs, 83 tests, with the new cases: a failed first check then Retry gives a populated list, "Connected" and no banner; the list's Retry emits and reads nothing itself; the connection dialog is named "AutoByteus Desktop") pass; IMP-02 typecheck PASS; IMP-03 guards pass. IMP-01 and IMP-04 still valid (see the handoff's rerun plan).
 - Next recipient or routing: Code Reviewer (targeted delta review), then API/E2E.
 - Remaining limitations or risks: the reviewer's C-06 and C-04, recorded in the handoff's Known Risks for API/E2E.
+
+### IR-003 — SR-005/SR-006 and CRR-003's local fixes
+
+- Triggering role, report path, and round: `architecture_reviewer`, `design-review-report.md`, `ARCH-REV-004` Pass of SR-005/SR-006; `code-review-report.md` "API/E2E Failure-Origin Review (Round 3)" (`CRR-003`); `api-e2e-execution-coverage-report.md` (`API-REV-001`, Fail).
+- Triggering finding IDs: F-01, F-02, F-03, F-04, F-05, F-06, F-09 (F-07 and F-08 need no code: DEC-009 (a), DEC-013 revised).
+- Classification: `Local Fix` for F-02…F-05 (CRR-003); the revised design for F-01, F-06, F-09.
+- Prior authoritative result: IR-002 (`f2816cc7c1`), CRR-002 Pass, then API-REV-001 Fail.
+- Current authoritative result: `1a48f4affe`; Large/High, to Code Review.
+- Related solution revision IDs: `SR-005`, `SR-006`.
+- Related architecture-review revision IDs: `ARCH-REV-004`.
+- Related code-review revision IDs: `CRR-003`.
+- Related API/E2E revision IDs: `API-REV-001`.
+- Related delivery revision IDs: N/A.
+- Why this revision is recorded: the revised design and the local fixes the API/E2E failure led to.
+- Approved behavior or requirement IDs affected: REQ-002a, REQ-003a, REQ-011; REQ-003 (sends on HTTP), REQ-005/QR-001 (F-03, F-05), REQ-007/VIS-011 (F-04).
+- Implementation delta:
+  - `utils/randomId.ts` `createRandomId()` (randomUUID, else a UUID v4 from `getRandomValues`), adopted at the ten listed sites with their prefixes.
+  - `useTaskWorkerTasks`: summaries everywhere, `locate` gated (`canLocate`); `buildMobileRunTreeRows` takes `taskSummary`; `useMobileRunTree` feeds it from the listed Task workers.
+  - `agentOrgFirstMemberAddress`; the Org run row → `select` with that address (and `open: null` for an Org without members).
+  - F-03: `openUnpairConfirm` closes the sheet first. F-04: `hideHeader` on the shared reference viewer. F-05: `min-w-[2.75rem]` on the path parts.
+  - Android: `ui/SystemBarInsets.kt`, applied in `WebShellScreen` and `ConnectionScreen`; two instrumented tests.
+  - Docs: `remote_access.md`, the Android README, `docs/android_mobile_access.md`.
+- Changed files or areas: see the handoff's IR-003 summary and rerun plan.
+- Local validation and result: IMP-07 (the full web suite, 701 files, 5198 tests) pass; IMP-02 typecheck PASS; IMP-03 guards pass; IMP-08 (Android unit tests, build, and the instrumented tests on API 35 and API 34: padding follows the bars and the keyboard, `env(safe-area-inset-*)` reads 0, nothing moves on API 34) pass.
+- Next recipient or routing: Code Reviewer (Large/High), then API/E2E.
+- Remaining limitations or risks: no device check; AC-002a's stopped-root case is desktop parity (ARCH-REV-004 residual 1); the shared composer's buttons stay below 44 px.

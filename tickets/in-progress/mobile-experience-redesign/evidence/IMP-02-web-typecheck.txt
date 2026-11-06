@@ -1,10 +1,10 @@
-# IMP-02 web typecheck (implementation engineer, autobyteus-277), rerun for IR-002
+# IMP-02 web typecheck, rerun for IR-003 (implementation engineer, autobyteus-277)
 # Command: pnpm -C autobyteus-web typecheck
-# Commit: f2816cc7c1 (run on its tree before the commit was made); environment: macOS, Node v22.23.1; date 2026-11-06T08:59Z
+# Commit: 1a48f4affe (run on its tree before the commits were made); environment: macOS, Node v22.23.1; date 2026-11-06T14:09Z
 # Excerpt:
-[typecheck] Nuxt app (tsconfig.json): 69 errors, exit 2, 55.2s
-[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.7s
-[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.7s
-[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 31.3s
+[typecheck] Nuxt app (tsconfig.json): 69 errors, exit 2, 34.7s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.8s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 21.4s
 [typecheck] production errors: 0; test-file errors: 96 in 41 files (baseline 96 in 41 files)
 [typecheck] PASS
