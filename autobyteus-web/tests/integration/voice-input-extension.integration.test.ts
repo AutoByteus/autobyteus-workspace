@@ -290,5 +290,7 @@ describe('voice input extension integration', () => {
 
     expect(activeContextStoreMock.activeAgentContext.requirement).toBe('draft fixture transcript')
     expect(addToastMock).not.toHaveBeenCalled()
-  })
+    // Real tar extraction and two real worker processes (bash, then node): about 2 s alone, more beside the
+    // full suite's parallel workers, so vitest's 5 s default is too tight.
+  }, 30_000)
 })
