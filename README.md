@@ -145,12 +145,21 @@ autobyteus-docker new-container
 Repeated `new-container` calls create `autobyteus-server-0`, then
 `autobyteus-server-1`, then `autobyteus-server-2`, and so on. Fresh indexed
 nodes prefer friendly sequential ports when those ports are free: server-0 uses
-Backend/VNC/noVNC/debug ports `8001`/`5908`/`6080`/`9228`, server-1 uses
-`8002`/`5909`/`6081`/`9229`, server-2 uses
-`8003`/`5910`/`6082`/`9230`, and later nodes continue the same offsets. If a
+Backend/VNC Viewer ports `8001`/`6080`, server-1 uses `8002`/`6081`, server-2
+uses `8003`/`6082`, and later nodes continue the same offsets. If a
 preferred port is unavailable, that service uses a safe random fallback port.
 Existing nodes keep their saved ports during normal inspect/start paths unless
 those ports become unavailable and the launcher must recreate with fresh ports.
+
+Each node publishes two host ports: its Backend port on every network
+interface (other devices add the node with it) and its VNC Viewer port on
+`127.0.0.1` only, for the AutoByteus desktop app's VNC Viewer on the same
+computer. The node's raw VNC (container port 5900) and Chrome DevTools (9223)
+ports are not published, so a VNC app or `chrome://inspect` no longer reaches
+a node from outside it. Nodes created by an earlier launcher keep their old
+port publishing until you run `autobyteus-docker upgrade --all` (or
+`autobyteus-docker workspace apply`); the launcher then recreates each node
+once, keeping its Backend and VNC Viewer ports and its named volumes.
 
 Use the printed Backend URL in **Nodes -> Manage Nodes -> Add Remote Node**, then open
 that Docker node window only over a trusted LAN, VPN, tailnet, or equivalent
@@ -221,8 +230,7 @@ Backend: printed by the launcher, usually http://localhost:8001
 GraphQL: <Backend>/graphql
 REST:    <Backend>/rest/*
 WS:      ws://localhost:<Backend port>/ws/...
-noVNC:   printed by the launcher, usually http://localhost:6080
-VNC:     printed by the launcher, usually localhost:5908
+VNC Viewer: printed by the launcher, usually localhost:6080 (this computer only)
 ```
 
 Upgrade every managed Docker node while keeping named volumes. A plain upgrade

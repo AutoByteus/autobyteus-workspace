@@ -1,0 +1,18 @@
+# Check: IMP-04
+# Command: docker compose -f autobyteus-server-ts/docker/docker-compose.yml config (ports section); bash -n autobyteus-server-ts/docker/docker-start.sh
+# Commit: 2575d870e8
+# Environment: macOS 26.5.2 arm64, Docker 29.0.1, Node v22.23.1
+# Date: 2026-11-06
+
+    ports:
+      - mode: ingress
+        target: 8000
+        published: "8001"
+        protocol: tcp
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 6080
+        published: "6080"
+        protocol: tcp
+    restart: unless-stopped
+docker-start.sh: bash -n OK

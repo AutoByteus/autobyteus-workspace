@@ -412,9 +412,18 @@ Backend: printed by the launcher, usually http://localhost:8001
 GraphQL: <Backend>/graphql
 REST:    <Backend>/rest/*
 WS:      ws://localhost:<Backend port>/ws/...
-noVNC:   printed by the launcher, usually http://localhost:6080
-VNC:     printed by the launcher, usually localhost:5908
+VNC Viewer: printed by the launcher, usually localhost:6080 (this computer only)
 ```
+
+Each node publishes two host ports: its Backend port on every network
+interface (other devices add the node with it) and its VNC Viewer port on
+`127.0.0.1` only, for the AutoByteus desktop app's VNC Viewer on the same
+computer. The node's raw VNC (container port 5900) and Chrome DevTools (9223)
+ports are not published, so a VNC app or `chrome://inspect` no longer reaches
+a node from outside it. Nodes created by an earlier launcher keep their old
+port publishing until you run `autobyteus-docker upgrade --all` (or
+`autobyteus-docker workspace apply`); the launcher then recreates each node
+once, keeping its Backend and VNC Viewer ports and its named volumes.
 
 Upgrade every managed Docker node while keeping named volumes. A plain upgrade
 uses each node's saved image ref, so mixed fleets stay on their current image

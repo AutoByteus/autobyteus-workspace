@@ -1,0 +1,22 @@
+# Case: API-06 (b) step 09
+# Command: ps-run.sh <v8 launcher> destroy --name abx402-ps-node; docker volume rm abx402-ps-node-{workspace,data,root-home,chromium-profile,server-packages}; receipts
+# Setup: as API-06b-02 (test node abx402-ps-node; native arm64 PowerShell 7.4.6; real Docker engine; temp state/shared under /private/tmp/abx402-api/ps)
+# Commit: 71dc90b1f1 (launcher source identical to 2575d870e8)
+# Date: 2026-11-06T15:38:30Z
+
+[AutoByteus Docker] Removed managed container abx402-ps-node for abx402-ps-node. Named volumes and host workspaces were kept.
+[AutoByteus Docker] Removed launcher state for abx402-ps-node.
+[AutoByteus Docker] Keeping image sha256:8bcf8eabfafef982577b327951cb34f655daad77e1f2513b5f07d49797649666; it is still used by a Docker container.
+exit=0
+abx402-ps-node-workspace
+abx402-ps-node-data
+abx402-ps-node-root-home
+abx402-ps-node-chromium-profile
+abx402-ps-node-server-packages
+containers named abx402-ps-node: []
+volumes abx402-ps-node-*: []
+state files: []
+user nodes:
+autobyteus-server-2	Up 3 days
+autobyteus-server-1	Up 3 days
+autobyteus-server-0	Up 3 days

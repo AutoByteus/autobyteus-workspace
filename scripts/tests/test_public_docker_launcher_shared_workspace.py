@@ -242,12 +242,8 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
             self.assertIn("SYS_ADMIN", run_args)
             self.assertIn("--security-opt", run_args)
             self.assertIn("seccomp=unconfined", run_args)
-            self.assertTrue(has_unqualified_port_mapping(run_args, "8000"), run_args)
-            self.assertTrue(has_unqualified_port_mapping(run_args, "5900"), run_args)
-            self.assertTrue(has_unqualified_port_mapping(run_args, "6080"), run_args)
-            self.assertTrue(has_unqualified_port_mapping(run_args, "9223"), run_args)
+            assert_publishes_only_backend_and_loopback_vnc_viewer(self, run_args)
             self.assertFalse(any(arg.startswith(f"{REMOVED_NODE_PROFILE_ENV}=") for arg in run_args), run_args)
-            self.assertFalse(any(arg.startswith("127.0.0.1:") for arg in run_args), run_args)
             self.assertFalse(any(arg.startswith(f"{REMOVED_PROFILE_LABEL}=") for arg in run_args), run_args)
             self.assertIn(
                 f"type=bind,source={shared_root / 'nodes' / 'autobyteus-server-0'},target=/home/autobyteus/workspace",
@@ -265,6 +261,55 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
             self.assertIn("IMAGE_REF=autobyteus/test:v1", state_text)
             self.assertRegex(state_text, r"CONFIG_HASH=[0-9a-f]{64}")
             self.assertNotIn(REMOVED_STATE_FIELD, state_text)
+            assert_state_has_only_backend_and_vnc_viewer_ports(self, state_text)
+            vnc_viewer_port = read_state_value(state_text, "NOVNC_PORT")
+            self.assertIn(f"VNC Viewer: localhost:{vnc_viewer_port} (this computer only)", result.stdout)
+            assert_no_removed_port_output(self, result.stdout)
+
+    def test_urls_and_help_name_backend_graphql_and_local_vnc_viewer_only(self) -> None:
+        with fake_docker_environment() as env:
+            run_launcher(env, "new-container", "--image", "autobyteus/test", "--tag", "v1")
+            state_text = state_path(env, "autobyteus-server-0").read_text(encoding="utf-8")
+            backend_port = read_state_value(state_text, "BACKEND_PORT")
+            vnc_viewer_port = read_state_value(state_text, "NOVNC_PORT")
+
+            urls = run_launcher(env, "urls").stdout
+            help_text = run_launcher(env, "help").stdout
+
+            self.assertIn(f"Backend: http://localhost:{backend_port}", urls)
+            self.assertIn(f"GraphQL: http://localhost:{backend_port}/graphql", urls)
+            self.assertIn(f"VNC Viewer: localhost:{vnc_viewer_port} (this computer only)", urls)
+            assert_no_removed_port_output(self, urls)
+            self.assertIn("Show Backend, GraphQL and VNC Viewer (this computer only) URLs", help_text)
+            assert_no_removed_port_output(self, help_text)
+
+    def test_upgrade_recreates_a_v7_node_once_with_its_saved_ports_and_volumes(self) -> None:
+        with fake_docker_environment(controlled_busy_ports=()) as env:
+            write_v7_node(env, "autobyteus-server-0", backend_port=8001, vnc_viewer_port=6080)
+
+            first = run_launcher(env, "upgrade", "--all")
+
+            self.assertIn("Launcher config changed for autobyteus-server-0", first.stdout)
+            records = read_run_arg_records(env)
+            self.assertEqual(1, len(records))
+            run_args = records[0]
+            self.assertEqual(["8001:8000", "127.0.0.1:6080:6080"], published_ports(run_args))
+            for volume in ("workspace:/app/autobyteus-server-ts/workspace", "data:/home/autobyteus/data",
+                           "root-home:/root", "chromium-profile:/home/vncuser/.config/chromium",
+                           "server-packages:/home/autobyteus/server-packages"):
+                self.assertIn(f"autobyteus-server-0-{volume}", run_args)
+            assert_no_volume_or_prune_calls(self, env)
+            self.assertEqual([], read_port_probe_receipts(env))
+            state_text = state_path(env, "autobyteus-server-0").read_text(encoding="utf-8")
+            self.assertEqual("8001", read_state_value(state_text, "BACKEND_PORT"))
+            self.assertEqual("6080", read_state_value(state_text, "NOVNC_PORT"))
+            assert_state_has_only_backend_and_vnc_viewer_ports(self, state_text)
+            self.assertIn("VNC Viewer: localhost:6080 (this computer only)", first.stdout)
+
+            second = run_launcher(env, "upgrade", "--all")
+
+            self.assertIn("autobyteus-server-0 is already running with the current image and launcher config.", second.stdout)
+            self.assertEqual(1, len(read_run_arg_records(env)))
 
     def test_profile_option_is_rejected_as_unknown(self) -> None:
         with fake_docker_environment() as env:
@@ -553,19 +598,15 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
             records = read_run_arg_records(env)
             self.assertEqual(3, len(records))
             expected_mappings = [
-                ("8001:8000", "5908:5900", "6080:6080", "9228:9223"),
-                ("8002:8000", "5909:5900", "6081:6080", "9229:9223"),
-                ("8003:8000", "5910:5900", "6082:6080", "9230:9223"),
+                ["8001:8000", "127.0.0.1:6080:6080"],
+                ["8002:8000", "127.0.0.1:6081:6080"],
+                ["8003:8000", "127.0.0.1:6082:6080"],
             ]
-            self.assertEqual(len(records), len(expected_mappings))
             self.assertEqual([r[r.index("--name") + 1] for r in records],
                              [f"autobyteus-server-{i}" for i in range(3)])
-            for record, mappings in zip(records, expected_mappings):
-                for mapping in mappings:
-                    self.assertIn(mapping, record)
+            self.assertEqual(expected_mappings, [published_ports(record) for record in records])
             queries = assert_port_probe_receipts(self, env)
-            self.assertEqual([int(mapping.split(":")[0]) for mappings in expected_mappings for mapping in mappings],
-                             [query["port"] for query in queries])
+            self.assertEqual([8001, 6080, 8002, 6081, 8003, 6082], [query["port"] for query in queries])
             self.assertTrue(all(query["available"] for query in queries))
 
     def test_preferred_port_collision_falls_back_for_that_service(self) -> None:
@@ -583,9 +624,8 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
             state_text = (Path(env["AUTOBYTEUS_DOCKER_STATE_DIR"]) / "nodes" / "autobyteus-server-0.env").read_text(encoding="utf-8")
             self.assertNotIn("8001:8000", run_args)
             self.assertNotEqual("8001", read_state_value(state_text, "BACKEND_PORT"))
-            self.assertIn("5908:5900", run_args)
-            self.assertIn("6080:6080", run_args)
-            self.assertIn("9228:9223", run_args)
+            self.assertIn("127.0.0.1:6080:6080", run_args)
+            assert_publishes_only_backend_and_loopback_vnc_viewer(self, run_args)
 
     def test_bind_failure_retry_uses_random_ports_after_first_friendly_attempt(self) -> None:
         with fake_docker_environment(controlled_busy_ports=()) as env:
@@ -596,16 +636,17 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
             records = read_run_arg_records(env)
             self.assertEqual(2, len(records))
             self.assertIn("Port bind failed; retrying with fresh ports", result.stdout)
-            for mapping in ("8001:8000", "5908:5900", "6080:6080", "9228:9223"):
-                self.assertIn(mapping, records[0])
+            self.assertEqual(["8001:8000", "127.0.0.1:6080:6080"], published_ports(records[0]))
+            for mapping in ("8001:8000", "127.0.0.1:6080:6080"):
                 self.assertNotIn(mapping, records[1])
+            assert_publishes_only_backend_and_loopback_vnc_viewer(self, records[1])
             self.assertEqual([r[r.index("--name") + 1] for r in records], ["autobyteus-server-0"] * 2)
             queries = assert_port_probe_receipts(self, env)
-            self.assertEqual(8, len(queries))
-            self.assertEqual([8001, 5908, 6080, 9228], [query["port"] for query in queries[:4]])
-            retry_ports = [int(records[1][i + 1].split(":")[0]) for i, arg in enumerate(records[1]) if arg == "-p"]
-            self.assertEqual(retry_ports, [query["port"] for query in queries[4:]])
-            self.assertEqual(4, sum(r["kind"] == "random-delegated" for r in read_port_probe_receipts(env)))
+            self.assertEqual(4, len(queries))
+            self.assertEqual([8001, 6080], [query["port"] for query in queries[:2]])
+            retry_ports = [int(mapping.split(":")[-2]) for mapping in published_ports(records[1])]
+            self.assertEqual(retry_ports, [query["port"] for query in queries[2:]])
+            self.assertEqual(2, sum(r["kind"] == "random-delegated" for r in read_port_probe_receipts(env)))
 
     def test_controlled_busy_preferred_port_uses_real_random_fallback(self) -> None:
         with fake_docker_environment(controlled_busy_ports=(8001,)) as env:
@@ -617,11 +658,10 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
             backend_port = int(read_state_value(state, "BACKEND_PORT"))
             self.assertNotEqual(8001, backend_port)
             self.assertIn(f"{backend_port}:8000", records[0])
-            for mapping in ("5908:5900", "6080:6080", "9228:9223"):
-                self.assertIn(mapping, records[0])
+            self.assertEqual([f"{backend_port}:8000", "127.0.0.1:6080:6080"], published_ports(records[0]))
             queries = assert_port_probe_receipts(self, env)
-            self.assertEqual([8001, backend_port, 5908, 6080, 9228], [q["port"] for q in queries])
-            self.assertEqual([False, True, True, True, True], [q["available"] for q in queries])
+            self.assertEqual([8001, backend_port, 6080], [q["port"] for q in queries])
+            self.assertEqual([False, True, True], [q["available"] for q in queries])
             self.assertEqual(1, sum(r["kind"] == "random-delegated" for r in read_port_probe_receipts(env)))
 
     def test_port_probe_double_delegates_python_and_rejects_probe_drift(self) -> None:
@@ -716,7 +756,17 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
         powershell_text = read_combined_text(POWERSHELL_LAUNCHER_SOURCES)
 
         for text in (bash_text, powershell_text):
-            self.assertIn("v7", text)
+            self.assertIn("v8", text)
+            self.assertNotIn("v7", text)
+            self.assertIn(":8000", text)
+            self.assertIn("127.0.0.1:", text)
+            self.assertIn(":6080", text)
+            self.assertIn("VNC Viewer: localhost:", text)
+            self.assertIn("(this computer only)", text)
+            self.assertIn("Show Backend, GraphQL and VNC Viewer (this computer only) URLs", text)
+            for removed in (":5900", ":9223", "5908", "9228", "noVNC", "Chrome debug"):
+                self.assertNotIn(removed, text)
+            self.assertNotRegex(text, r"\b(VNC_PORT|DEBUG_PORT|vncPort|debugPort)\b")
             self.assertIn("server_packages_volume", text)
             self.assertIn("server_packages_target", text)
             self.assertIn("-server-packages", text)
@@ -744,6 +794,8 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
             self.assertIn("No rollback", text)
         self.assertIn("image_ref_override_explicit", bash_text)
         self.assertIn("upgrade_image_ref_for_node", bash_text)
+        self.assertIn('-p "127.0.0.1:${NOVNC_PORT}:6080"', bash_text)
+        self.assertIn('"127.0.0.1:$($State.noVncPort):6080"', powershell_text)
         self.assertIn("imageRefOverrideExplicit", powershell_text)
         self.assertIn("Get-UpgradeImageRefForNode", powershell_text)
         self.assertIn("exact_managed_container_names", bash_text)
@@ -808,9 +860,7 @@ def write_node_state(
                 f"NODE_NAME={node_name_field or node_name}",
                 f"CONTAINER_NAME={container_name}",
                 "BACKEND_PORT=8001",
-                "VNC_PORT=5908",
                 "NOVNC_PORT=6080",
-                "DEBUG_PORT=9228",
                 "IMAGE_REF=autobyteus/test:v1",
                 "CREATED_AT=2026-07-13T00:00:00Z",
                 "CONFIG_HASH=fake-config-hash",
@@ -826,6 +876,7 @@ def write_fake_container(
     container_name: str,
     node_name: str,
     launcher_label: str = "server-docker",
+    config_hash: str = "fake-config-hash",
 ) -> None:
     path = Path(env["FAKE_DOCKER_ROOT"]) / "containers" / container_name
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -835,7 +886,7 @@ def write_fake_container(
                 f"node_name={node_name}",
                 f"launcher_label={launcher_label}",
                 "image_id=sha256:fake-image",
-                "config_hash=fake-config-hash",
+                f"config_hash={config_hash}",
             )
         )
         + "\n",
@@ -857,9 +908,50 @@ def read_combined_text(paths: list[Path]) -> str:
     return "\n".join(path.read_text(encoding="utf-8") for path in paths)
 
 
-def has_unqualified_port_mapping(args: list[str], container_port: str) -> bool:
-    suffix = f":{container_port}"
-    return any(arg.endswith(suffix) and not arg.startswith("127.0.0.1:") for arg in args)
+def published_ports(args: list[str]) -> list[str]:
+    return [args[i + 1] for i, arg in enumerate(args) if arg == "-p"]
+
+
+def assert_publishes_only_backend_and_loopback_vnc_viewer(test: unittest.TestCase, args: list[str]) -> None:
+    ports = published_ports(args)
+    test.assertEqual(2, len(ports), ports)
+    test.assertRegex(ports[0], r"^[0-9]+:8000$")
+    test.assertRegex(ports[1], r"^127\.0\.0\.1:[0-9]+:6080$")
+
+
+def assert_state_has_only_backend_and_vnc_viewer_ports(test: unittest.TestCase, state_text: str) -> None:
+    keys = [line.split("=", 1)[0] for line in state_text.splitlines()]
+    test.assertEqual(["BACKEND_PORT", "NOVNC_PORT"], [key for key in keys if key.endswith("PORT")])
+
+
+def assert_no_removed_port_output(test: unittest.TestCase, text: str) -> None:
+    for removed in ("noVNC", "VNC:", "Chrome debug", "debug URLs"):
+        test.assertNotIn(removed, text)
+
+
+def write_v7_node(env: dict[str, str], node_name: str, backend_port: int, vnc_viewer_port: int) -> None:
+    """A node as the v7 launcher left it: four saved ports and a v7 config-hash label."""
+    path = state_path(env, node_name)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        "\n".join(
+            (
+                f"NODE_NAME={node_name}",
+                f"CONTAINER_NAME={node_name}",
+                f"BACKEND_PORT={backend_port}",
+                "VNC_PORT=5908",
+                f"NOVNC_PORT={vnc_viewer_port}",
+                "DEBUG_PORT=9228",
+                "IMAGE_REF=autobyteus/test:v1",
+                "CREATED_AT=2026-07-13T00:00:00Z",
+                "CONFIG_HASH=v7-config-hash",
+                "UPDATED_AT=2026-07-13T00:00:00Z",
+            )
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    write_fake_container(env, node_name, node_name, config_hash="v7-config-hash")
 
 
 def entry_shell_quote(value: str) -> str:

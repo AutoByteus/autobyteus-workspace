@@ -8,9 +8,7 @@ function Get-StateConfigHash($State) {
     "node=$nodeName",
     "image=$($State.imageRef)",
     "backend=$($State.backendPort)",
-    "vnc=$($State.vncPort)",
     "novnc=$($State.noVncPort)",
-    "debug=$($State.debugPort)",
     "workspace_volume=$volumePrefix-workspace",
     "data_volume=$volumePrefix-data",
     "root_volume=$volumePrefix-root-home",
@@ -56,9 +54,7 @@ function Get-ContainerRunArgs($State, [string]$NodeWorkspaceHost, [string]$Share
     '--cap-add', 'SYS_ADMIN',
     '--security-opt', 'seccomp=unconfined',
     '-p', "$($State.backendPort):8000",
-    '-p', "$($State.vncPort):5900",
-    '-p', "$($State.noVncPort):6080",
-    '-p', "$($State.debugPort):9223",
+    '-p', "127.0.0.1:$($State.noVncPort):6080",
     '--mount', "type=bind,source=$NodeWorkspaceHost,target=$Script:WorkspaceContainerPath",
     '--mount', "type=bind,source=$SharedWorkspaceHost,target=$Script:SharedContainerPath"
   )

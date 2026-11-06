@@ -1,0 +1,108 @@
+# Case: API-06 (a) — launcher test file with pwsh available
+# Command: docker run --rm --platform linux/amd64 -v <worktree>:/w:ro mcr.microsoft.com/powershell:latest bash -c 'apt-get install -y python3; cd /w && PYTHONDONTWRITEBYTECODE=1 python3 -m unittest scripts.tests.test_public_docker_launcher_shared_workspace -v'
+# Commit: 71dc90b1f1 (source identical to 2575d870e8)
+# Environment: Ubuntu 22.04 x86_64 container (Rosetta on Docker Desktop 29.0.1, macOS arm64), PowerShell 7.4.2; fake Docker from the test harness; the container's own network namespace (host port 8001 is free there)
+# Date: 2026-11-06T15:22:58Z
+
+Python 3.10.12
+PowerShell 7.4.2
+test_bash_curl_pipe_mode_resolves_modules_from_source_base (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ERROR
+test_bash_install_no_update_path_skips_profile_write (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ERROR
+test_bash_install_path_profile_update_is_idempotent (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ERROR
+test_bash_install_when_path_missing_updates_profile_and_prints_current_shell_guidance (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ERROR
+test_bash_install_writes_entry_and_modules_for_installed_cli (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ERROR
+test_bind_failure_retry_uses_random_ports_after_first_friendly_attempt (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_controlled_busy_preferred_port_uses_real_random_fallback (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_destroy_all_remains_explicit_and_volume_safe (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_destroy_selector_preflight_happens_before_state_or_docker_setup (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_label_only_targeted_destroy_allows_one_exact_managed_candidate (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_mutating_commands_do_not_default_to_all_nodes (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_new_container_adds_bind_mounts_without_removing_named_volumes (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_new_containers_prefer_sequential_friendly_ports (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_port_probe_double_delegates_python_and_rejects_probe_drift (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_powershell_launcher_matches_the_shared_workspace_cli_contract (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_powershell_launcher_parses_when_pwsh_is_available (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_preferred_port_collision_falls_back_for_that_service (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_profile_option_is_rejected_as_unknown (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_public_docker_docs_keep_targeted_destroy_and_buildx_ownership_boundary (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_public_launcher_source_files_stay_within_reviewable_size_guard (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_read_only_discovery_commands_default_to_all_nodes (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_read_only_discovery_commands_keep_explicit_single_node_output (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_read_only_discovery_commands_reject_all_with_name (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_stale_targeted_destroy_forgets_state_and_reuses_lowest_free_slot (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_targeted_destroy_refuses_duplicate_candidates_and_state_label_disagreement (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_targeted_destroy_refuses_malformed_and_mismatched_state (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_targeted_destroy_refuses_unknown_buildx_and_unmanaged_name_collisions (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_targeted_destroy_removes_only_selected_node_and_keeps_workspaces (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_targeted_destroy_reports_partial_cleanup_when_state_delete_fails (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... FAIL
+test_upgrade_all_follows_the_beta_track_after_a_one_time_switch (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_upgrade_all_preserves_each_node_saved_image_ref_by_default (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_upgrade_all_with_explicit_image_retargets_all_nodes (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_upgrade_all_with_explicit_tag_retargets_all_nodes (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_upgrade_recreates_a_v7_node_once_with_its_saved_ports_and_volumes (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_urls_and_help_name_backend_graphql_and_local_vnc_viewer_only (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_workspace_apply_all_recreates_stale_containers_with_current_bind_mounts (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_workspace_paths_and_storage_commands_report_the_launcher_owned_mapping (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+
+======================================================================
+ERROR: test_bash_curl_pipe_mode_resolves_modules_from_source_base (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/w/scripts/tests/test_public_docker_launcher_shared_workspace.py", line 478, in test_bash_curl_pipe_mode_resolves_modules_from_source_base
+    result = subprocess.run(
+  File "/usr/lib/python3.10/subprocess.py", line 526, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['bash', '-s', '--', 'storage', '--name', 'Pipe Node']' returned non-zero exit status 1.
+
+======================================================================
+ERROR: test_bash_install_no_update_path_skips_profile_write (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/w/scripts/tests/test_public_docker_launcher_shared_workspace.py", line 573, in test_bash_install_no_update_path_skips_profile_write
+    install = subprocess.run(
+  File "/usr/lib/python3.10/subprocess.py", line 526, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/w/scripts/public/docker/autobyteus-docker.sh', 'install', '--no-update-path']' returned non-zero exit status 1.
+
+======================================================================
+ERROR: test_bash_install_path_profile_update_is_idempotent (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/w/scripts/tests/test_public_docker_launcher_shared_workspace.py", line 558, in test_bash_install_path_profile_update_is_idempotent
+    subprocess.run([str(BASH_LAUNCHER), "install"], check=True, text=True, capture_output=True, env=env)
+  File "/usr/lib/python3.10/subprocess.py", line 526, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/w/scripts/public/docker/autobyteus-docker.sh', 'install']' returned non-zero exit status 1.
+
+======================================================================
+ERROR: test_bash_install_when_path_missing_updates_profile_and_prints_current_shell_guidance (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/w/scripts/tests/test_public_docker_launcher_shared_workspace.py", line 530, in test_bash_install_when_path_missing_updates_profile_and_prints_current_shell_guidance
+    install = subprocess.run(
+  File "/usr/lib/python3.10/subprocess.py", line 526, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/w/scripts/public/docker/autobyteus-docker.sh', 'install']' returned non-zero exit status 1.
+
+======================================================================
+ERROR: test_bash_install_writes_entry_and_modules_for_installed_cli (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/w/scripts/tests/test_public_docker_launcher_shared_workspace.py", line 496, in test_bash_install_writes_entry_and_modules_for_installed_cli
+    install = subprocess.run(
+  File "/usr/lib/python3.10/subprocess.py", line 526, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/w/scripts/public/docker/autobyteus-docker.sh', 'install']' returned non-zero exit status 1.
+
+======================================================================
+FAIL: test_targeted_destroy_reports_partial_cleanup_when_state_delete_fails (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/w/scripts/tests/test_public_docker_launcher_shared_workspace.py", line 187, in test_targeted_destroy_reports_partial_cleanup_when_state_delete_fails
+    self.assertNotEqual(0, result.returncode)
+AssertionError: 0 == 0
+
+----------------------------------------------------------------------
+Ran 37 tests in 133.995s
+
+FAILED (failures=1, errors=5)
