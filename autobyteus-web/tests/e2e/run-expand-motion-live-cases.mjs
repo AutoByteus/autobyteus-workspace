@@ -5,10 +5,12 @@
 // Setup through public APIs: an agent with `update_task`, a Project with four Tasks. The run is started in New chat; the
 // agent hands each Task to a Team copy and later closes one, each through its own tool call typed into the composer.
 // Cases (run in order; each uses the run the first one starts):
-//   RXM-001 (AC-001, AC-002) In the Runs view, collapse removes the run's delegated tree from the first frame; expand shows
-//           every delegated row at its final place with `transform: none` in each of the first 4 frames.
-//   RXM-002 (AC-003) While the run is expanded, the agent closes one Task (DONE): that row leaves with the designed
-//           motion (`tree-row-leave-active`, opacity between 0 and 1 in some frame), then the other rows are at rest.
+//   RXM-001 (AC-001, AC-002, AC-005) In the Runs view, collapse hides the run's delegated rows from the first frame;
+//           expand shows every delegated row at its final place, with its Task line and `transform: none`, in each of the
+//           first 4 frames; a delegated Team expanded there shows its members at once and moves no row with a transform.
+//   RXM-002 (AC-003, AC-005) While the run is expanded, the agent closes one Task (DONE): that row fades and closes
+//           (`tree-row-leave-active`, opacity between 0 and 1), the row below glides up by layout with no transform, then
+//           the other rows are at rest.
 //   RXM-003 (AC-003, R-01) The run is stopped and the app reopened: the stored rows show; folded, the view switched
 //           (Runs → Workspaces → Runs) and unfolded, the same rows show, the unfold reads nothing
 //           (`GetAgentRunCollaboration`), and a delegated row clicked in the list is selected. Whether the fold survived
@@ -32,20 +34,22 @@ export const registerRunExpandMotionLiveCases = (h) => {
     await waitFor(`${view} view`, async () => (await mode(page)) === view, 15000)
     await settle(page, 1000)
   }
-  const rowCount = (page, runId) => page.locator(`${tree(runId)} > *`).count()
+  /** Delegated rows on screen (folded rows stay mounted and hidden, SR-002). */
+  const rowCount = (page, runId) => page.evaluate((treeSel) => [...document.querySelectorAll(`${treeSel} > *`)].filter((row) => row.getClientRects().length > 0).length, tree(runId))
   const expanded = async (page, runId) => (await page.locator(`${runRow(runId)} ${sel('run-list-disclosure')}`).getAttribute('aria-expanded')) === 'true'
   /** Clicks the run's disclosure and samples its delegated rows for FRAMES animation frames, then once settled. */
-  const toggleAndSample = (page, runId) => page.evaluate(async ([treeSel, rowSel, frames]) => {
+  const toggleAndSample = (page, runId, clickSel = null) => page.evaluate(async ([treeSel, clickSel, frames]) => {
     // SR-002: folded rows stay mounted and hidden, so only rows with a layout box are on screen.
     const rows = () => [...document.querySelectorAll(`${treeSel} > *`)].filter((row) => row.getClientRects().length > 0)
-    const sample = () => rows().map((row) => ({ top: Math.round(row.getBoundingClientRect().top), transform: getComputedStyle(row).transform }))
+    const sample = () => rows().map((row) => ({ top: Math.round(row.getBoundingClientRect().top), transform: getComputedStyle(row).transform,
+      taskLine: /RXM Task \d/.test(row.textContent ?? '') }))
     const frame = () => new Promise((resolve) => requestAnimationFrame(() => resolve()))
-    document.querySelector(`${rowSel} [data-test="run-list-disclosure"]`).click()
+    document.querySelector(clickSel).click()
     const perFrame = []
     for (let i = 0; i < frames; i += 1) { await frame(); perFrame.push(sample()) }
     await new Promise((resolve) => setTimeout(resolve, 700))
     return { perFrame, settled: sample(), treeShown: Boolean(document.querySelector(treeSel)?.getClientRects().length) }
-  }, [tree(runId), runRow(runId), FRAMES])
+  }, [tree(runId), clickSel ?? `${runRow(runId)} [data-test="run-list-disclosure"]`, FRAMES])
 
   defineCase('RXM-001', 'AC-001/AC-002: a live run\'s delegated rows: collapse hides them from the first frame; expand shows each at its final place with no transform from the first frame', async (page) => {
     const r = {}
@@ -89,8 +93,20 @@ export const registerRunExpandMotionLiveCases = (h) => {
     r.offending = r.expand.perFrame.flatMap((rows, frame) => rows.map((row, index) => ({ frame, index, ...row, final: finalTops[index] }))
       .filter((row) => row.transform !== 'none' || row.top !== row.final))
     assert(r.offending.length === 0, `${r.offending.length} row samples moved from elsewhere on screen`, r.offending.slice(0, 6))
+    assert(r.expand.perFrame.every((rows) => rows.every((row) => row.taskLine)), 'a row is shown without its Task line after expand (SR-002 AC-001)', r.expand.perFrame)
     assert(await expanded(page, s.runId), 'the disclosure did not report expanded')
     await shot(page, 'RXM-001-expanded-again')
+    // AC-005: a delegated Team row expanded in the Runs view moves no row with a transform; its members show at once.
+    const teamToggle = `${tree(s.runId)} [data-test="workspace-team-transient-disclosure"]`
+    r.teamExpand = await toggleAndSample(page, s.runId, teamToggle)
+    r.teamExpandRows = r.teamExpand.perFrame.map((rows) => rows.length)
+    assert(r.teamExpand.settled.length > 4 && r.teamExpand.perFrame.every((rows) => rows.length === r.teamExpand.settled.length), 'the Team\'s members are not all shown from the first frame', r.teamExpandRows)
+    r.teamOffending = r.teamExpand.perFrame.flatMap((rows, frame) => rows.map((row, index) => ({ frame, index, ...row, final: r.teamExpand.settled[index].top }))
+      .filter((row) => row.transform !== 'none' || row.top !== row.final))
+    assert(r.teamOffending.length === 0, `${r.teamOffending.length} row samples slid when a Team expanded`, r.teamOffending.slice(0, 6))
+    await shot(page, 'RXM-001-team-expanded')
+    await page.locator(teamToggle).first().click()
+    await waitFor('the Team collapsed again', async () => (await rowCount(page, s.runId)) === 4, 15000)
     return { runId: s.runId, tasks: s.tasks, ...r }
   })
 
@@ -103,7 +119,7 @@ export const registerRunExpandMotionLiveCases = (h) => {
       const tick = () => {
         const rows = [...document.querySelectorAll(`${treeSel} > *`)]
         record.frames.push({ t: Math.round(performance.now()), rows: rows.map((row) => ({ leaving: row.classList.contains('tree-row-leave-active'),
-          opacity: Number(getComputedStyle(row).opacity), transform: getComputedStyle(row).transform })) })
+          opacity: Number(getComputedStyle(row).opacity), transform: getComputedStyle(row).transform, top: Math.round(row.getBoundingClientRect().top) })) })
         if (!record.stop && record.frames.length < 1200) requestAnimationFrame(tick)
       }
       requestAnimationFrame(tick)
@@ -118,6 +134,14 @@ export const registerRunExpandMotionLiveCases = (h) => {
     r.fadeOpacities = leavingFrames.flatMap((f) => f.rows.filter((row) => row.leaving).map((row) => row.opacity)).slice(0, 20)
     r.leaveMs = leavingFrames.length ? leavingFrames.at(-1).t - leavingFrames[0].t : 0
     assert(r.fadeOpacities.some((o) => o > 0 && o < 1), 'no frame showed the leaving row fading', r)
+    // AC-005: the rows below glide up by layout as the leaving row closes, never by a move transform.
+    r.movedByTransform = leavingFrames.flatMap((f) => f.rows.filter((row) => !row.leaving && row.transform !== 'none')).length
+    assert(r.movedByTransform === 0, 'a row below the leaving row moved with a transform', leavingFrames.slice(0, 3))
+    // The row right below the leaving one.
+    const nextTops = leavingFrames.map((f) => { const i = f.rows.findIndex((row) => row.leaving); return f.rows.slice(i + 1).find((row) => !row.leaving)?.top })
+      .filter((top) => top !== undefined)
+    r.nextRowTops = [...new Set(nextTops)]
+    assert(r.nextRowTops.length >= 3, 'the row below did not glide up (fewer than 3 positions while the row closed)', r.nextRowTops)
     const atRest = await page.evaluate((treeSel) => [...document.querySelectorAll(`${treeSel} > *`)].map((row) => getComputedStyle(row).transform), tree(s.runId))
     assert(atRest.length === 3 && atRest.every((t) => t === 'none'), 'the remaining rows are not at rest', atRest)
     await shot(page, 'RXM-002-after-done')
@@ -143,7 +167,7 @@ export const registerRunExpandMotionLiveCases = (h) => {
       r.storedRows = await page.locator(`${tree(s.runId)} > *`).evaluateAll((els) => els.map((e) => e.textContent.trim().replace(/\s+/g, ' ').slice(0, 80)))
       r.readsOnOpen = reads.length
       await page.locator(`${runRow(s.runId)} ${sel('run-list-disclosure')}`).click(); await delay(500)
-      assert(!(await expanded(page, s.runId)) && (await page.locator(tree(s.runId)).count()) === 0, 'fold did not remove the tree')
+      assert(!(await expanded(page, s.runId)) && !(await page.locator(tree(s.runId)).isVisible()), 'fold did not hide the tree')
       await chooseView(page, 'workspaces')
       await chooseView(page, 'runs')
       await page.locator(runRow(s.runId)).waitFor({ timeout: 30000 })
