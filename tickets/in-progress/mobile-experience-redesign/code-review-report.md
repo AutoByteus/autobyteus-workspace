@@ -1,6 +1,132 @@
 # Code Review Report — mobile-experience-redesign (autobyteus-277)
 
-> **Latest result: round 3, `API/E2E Failure-Origin Review` (CRR-003).** It is recorded in the section [API/E2E Failure-Origin Review (Round 3)](#apie2e-failure-origin-review-round-3) and in Latest Authoritative Result. The sections between here and that section are the implementation review of rounds 1–2 (CRR-001, CRR-002), and they are the basis for the round-3 judgement. Only the score rationale they affect is updated.
+> **Latest result: round 4, `Implementation Review` of IR-003 (CRR-004): `Fail`, `Local Fix`.** See [Implementation Review (Round 4)](#implementation-review-round-4) and Latest Authoritative Result.
+> - Round 3, the failure-origin review (CRR-003), is in its own section.
+> - Rounds 1–2 (CRR-001, CRR-002) are in the sections below. Their evidence still holds for the files round 4 does not change.
+
+## Implementation Review (Round 4)
+
+### Meta
+
+- Entry point: `Implementation Review`.
+- Current revision: `CRR-004`, round 4.
+- Review scope: `Full Re-Audit`. The delta changes shared interfaces and behavior:
+  - `useTaskWorkerTasks`' gate;
+  - a prop on the shared `CollaborationMessageReferenceViewer`;
+  - one id helper at ten call sites in shared stores and services;
+  - the Org open mapping;
+  - the Android shell.
+  - It also reaches files beyond CRR-003's findings.
+- All structural checks and the full scorecard were rerun on the delta. The round-1 audit of the files it leaves alone carries forward.
+- Trigger: the implementation engineer's IR-003 (HEAD `e1e3ba4f13`). The code delta is `ccf43b875c..1a48f4affe`, in the commits `02905f49b5`, `02718f21bf`, `4207af0889`, `9b4066b4df` and `1a48f4affe`.
+- Basis:
+  - requirements at SR-005 (REQ-002a, REQ-003a, REQ-011; AC-002a, AC-003a, AC-011; DEC-009…DEC-015);
+  - the design at SR-006 ("Revision For CRR-003 (SR-005)" and "Revision For ARCH-REV-003 (SR-006)");
+  - ARCH-REV-004 Pass;
+  - the implementation handoff's assumptions 8–11.
+- Checks read, not rerun; each ran on `1a48f4affe`:
+  - IMP-07: 701 files, 5198 tests;
+  - IMP-02: typecheck PASS;
+  - IMP-03: guards;
+  - IMP-08: Android unit tests and build; instrumented tests on API 35 and API 34, 12/12 each.
+- Classification: `Large`/`High`, confirmed.
+
+### Behavior Basis And Prior Findings
+
+| Item | Status | Implementation evidence |
+| --- | --- | --- |
+| F-01 / REQ-003a / DEC-012 (an Org run opens its first member) | Resolved | `agentOrgFirstMemberAddress` (`utils/agentOrgHistoryRows.ts:210-216`) reads `rootOrg.members[0].address`. The Org run row maps to `select` with that address, and the same command builds `agentOrgRouteQuery` (`useMobileRunOpening.ts:21-24, 83`). A Team address resolves to its coordinator through the context's own rule (`agentOrgExecutionViewIndex.ts:117-128`). An Org with no member has `open: null` (`mobileRunTreeProjection.ts:195-197`). The desktop is unchanged. Tests: `useMobileRunOpening.spec.ts` "an Org run row selects the Org's first configured member…", `agentOrgFirstMemberAddress.spec.ts`, and the projection spec |
+| F-02 / DEC-014 (ids outside a secure context) | Resolved, with CR-004 | `utils/randomId.ts`; all ten sites adopt it, each keeping its prefix. `grep` finds `randomUUID` only in the helper |
+| F-03 (unpair confirmation covered) | Resolved | `MobilePairedShell.vue:131-135` closes the sheet before the confirmation shows; the shell spec asserts that the sheet is gone |
+| F-04 (reference screen header) | Resolved | `CollaborationMessageReferenceViewer` takes `hideHeader` (default false; the desktop is unchanged), and the phone's screen sets it. The loading, deleted and unavailable states stay in the shared viewer (autobyteus-358). Covered by a spec of each |
+| F-05 (path part 41 px) | Resolved | `MobileFiles.vue:37` has `min-w-[2.75rem]` |
+| F-06 / REQ-002a / DEC-010 (second line) | Resolved | `useTaskWorkerTasks` answers summaries everywhere and locates only where Projects is. `useMobileRunTree.ts:50-53, 66-69` feeds `taskSummary`. `delegatedTitleOf` shows the Task summary, else the remote title, else nothing (`mobileRunTreeProjection.ts:92-97`). Members and the Org's task rows show one line, as designed. The desktop is unchanged, because `isFeatureAvailableInRuntime('projects')` is true outside the phone runtime (`mobileFeatureGates.ts:41-46`) |
+| F-07 / DEC-009 | No code change (desktop parity), as decided | — |
+| F-08 / DEC-013 (revised at SR-006) | No code change (desktop parity), as decided; `refreshListedRoots`/`readRevision` are not added | — |
+| F-09 / REQ-011 / DEC-011 (Android 15 insets) | Resolved | `ui/SystemBarInsets.kt` pads the roots of `WebShellScreen` and `ConnectionScreen` with the system bars, the display cutout and the IME, and consumes them. No permission, dependency or targetSdk change. IMP-08 on API 35: padding 136/63, with the keyboard 883, and the page's `env(safe-area-inset-*)` is `0px` (ARCH-REV-004 residual 2 closed). On API 34: padding 0, because the decor already took the bars |
+| CR-001…CR-003 | Resolved (unchanged) | — |
+
+- Behavior basis status: `Confirmed`. No contradicted or new behavior was found.
+
+### Candidate Gate (Round 4)
+
+| Candidate | Observation | Scenario / Contract | Evidence | Disposition | Reason |
+| --- | --- | --- | --- | --- | --- |
+| C-09 | `createRandomId()` keeps a third branch, filling the bytes from `Math.random()`, for a runtime without `crypto.getRandomValues` | The review rule against fallback machinery for an unsupported premise; Core Principle 7 (branches that never run) | The helper's own comment says `getRandomValues` is something "every context has" (`utils/randomId.ts:4-5`). Every runtime that loads this code has it: the Android WebView 124, WKWebView, Electron's renderer, Node 22 (Nuxt server and Vitest). No test reaches the branch | **Promote → CR-004** | Defensive machinery for a context that does not exist. It also produces non-cryptographic ids silently, if it ever ran. Remove the branch |
+| C-10 | `useTaskWorkerTasks` returns `canLocate`, but no caller reads it; only its spec does | Core Principle 7 (code only its own tests call) | `grep canLocate`: the composable and `useTaskWorkerTasks.spec.ts:86`. The callers destructure `{ taskOf, locate }` (`WorkspaceTeamExecutionTree.vue:126`, `AgentRunTaskRows.vue:68`, `useMobileRunTree.ts:51`) | **Promote → CR-005** | A dead export in a shared composable. Keep `canLocate` internal; the spec can assert the behavior (`locate` does nothing), which it already does |
+| C-11 | The `if (canLocate)` guard inside `locate`: the desktop components never mount in the phone runtime | Design SR-005 F-06 row: "`locate` … stays where `projects` is available" | The design prescribes it | Reject | It follows the reviewed design, keeps the shared owner's contract explicit, and is one line |
+| C-12 | Android 11–14 with the keyboard open: could the IME padding add to the window's own resize? | REQ-011, AC-011 | On API 34 the decor already consumed the insets (IMP-08 `padding=0,0` with root insets of 128), and consumed insets reach children as zero for every type. The keyboard was not exercised on API 34 | Reject (as a finding) | Code and evidence point to no double padding. Recorded as a residual for API/E2E: type on an Android 14 emulator |
+| C-13 | Cancelling the unpair confirmation does not reopen the connection sheet | AC-008 (the baseline confirmation) | `MobilePairedShell.vue:131-135, 47` | Reject | Cancel returns to the run list, a coherent result. The approved spec does not ask for a return to the sheet |
+| C-14 | `useMobileRunTree` retains Task-worker summaries for every listed Agent and Team run, folded or not | DS-002 / DEC-010 | `useMobileRunTree.ts:50-53`; the desktop's `AgentRunTaskRows` retains for every mounted row as well | Reject | It matches the desktop owner's lifetime. The cost is a summary read per listed worker, not a collaboration view |
+
+### Structural Checks (Round 4, Full Re-Audit Of The Delta)
+
+All pass except Dead code (CR-004, CR-005). In detail:
+- **Pass:**
+  - **Spine:** the Org open goes through the shared subject action; the second line comes from the shared Task owner.
+  - **Ownership:** `agentOrgFirstMemberAddress` sits with the Org row owner; the id rule has one owner; the Android insets are one object.
+  - **Dependency direction:** phone → shared only. `useTaskWorkerTasks` stays in `composables/projects/` and is read by the phone's tree, which the design allows.
+  - **Authoritative boundary:** no Org context bypass; `select` goes through the subject action.
+  - **Interfaces:** `hideHeader` has a desktop-safe default; `taskSummary(row)` is a named source.
+  - **Reuse:** `taskWorkerTaskLabel` and the context's own coordinator rule are reused.
+  - **Shared-structure tightness:** no new row fields.
+  - **Legacy and compatibility:** none; the four old guarded copies are removed.
+  - **Docs:** `remote_access.md`, `docs/android_mobile_access.md` (stale Home/Team steps fixed), the Android README.
+  - **Tests:** each fix has a spec; the instrumented Android tests measure the real WebView.
+- **Fail — dead code in the touched files:** CR-004 and CR-005.
+- **Sizes:** every changed source file is small. `utils/randomId.ts` has 17 lines; `SystemBarInsets.kt` 27; `mobileRunTreeProjection.ts` grows to 218 effective lines. `runHistoryStore.ts` is untouched this round.
+
+### Scorecard (Round 4)
+
+| Priority | Category | Score | Why | Weak | Improve |
+| --- | --- | --- | --- | --- | --- |
+| 1 | Data-Flow Spine | 9.5 | The Org open and the second line flow through the designed shared owners | — | — |
+| 2 | Ownership and Boundary | 9.5 | One id owner; the first member sits with the Org row owner; the insets are one object | — | — |
+| 3 | API / Interface | 9.3 | `hideHeader` and `taskSummary` are explicit | `canLocate` is exposed with no caller (CR-005) | Keep it internal |
+| 4 | Separation of Concerns and Placement | 9.4 | Each change is in its owner's file | — | — |
+| 5 | Shared-Structure Tightness | 9.4 | No new row fields; four id copies became one | — | — |
+| 6 | Naming and Readability | 9.4 | `createRandomId`, `agentOrgFirstMemberAddress`, `SystemBarInsets.pad` | — | — |
+| 7 | API/E2E Readiness | 9.3 | Specs per fix; instrumented Android measurements | The keyboard on Android ≤14 was not exercised (residual) | API/E2E on an API 34 emulator |
+| 8 | Runtime Correctness And Behavioral Fidelity | 9.3 | F-01…F-06 and F-09 resolved as designed, with tests | — | — |
+| 9 | No Backward-Compatibility / Legacy | 9.0 | — | CR-004: a fallback branch kept for an unsupported runtime | Remove it |
+| 10 | Cleanup Completeness | 9.0 | The old guarded copies are gone | CR-004, CR-005 | Remove both |
+
+Overall 9.3 (an average, not the decision rule). Two categories are below 9.2.
+
+### Findings (Round 4)
+
+#### CR-004 — `createRandomId()` keeps a `Math.random` fallback for a runtime that does not exist (Local Fix, implementation)
+
+- Contract: the review rule against fallback machinery for an unsupported premise, and Core Principle 7. Candidate C-09.
+- Evidence:
+  - `autobyteus-web/utils/randomId.ts:11-12`: `else for (...) bytes[index] = Math.floor(Math.random() * 256)`.
+  - The helper's own doc (`:4-5`) says `crypto.getRandomValues` is something "every context has".
+  - All target runtimes have it: Android WebView 124, WKWebView, Electron's renderer, and Node 22 for the Nuxt server and Vitest.
+  - No test reaches the branch. If it ever ran, it would silently produce ids that are not cryptographically random.
+- Required action: remove the branch. With `randomUUID` absent, build the UUID v4 from `crypto.getRandomValues` unconditionally.
+
+#### CR-005 — `useTaskWorkerTasks` exports `canLocate`, which only its spec reads (Local Fix, implementation)
+
+- Contract: Core Principle 7, code that only its own tests call. Candidate C-10.
+- Evidence:
+  - `composables/projects/useTaskWorkerTasks.ts:51` returns `{ taskOf, locate, canLocate }`.
+  - All three callers destructure only `taskOf`/`locate`.
+  - `useTaskWorkerTasks.spec.ts:86` is the only reader.
+- Required action:
+  - Return `{ taskOf, locate }` and keep `canLocate` internal to the `locate` guard.
+  - In the spec, assert the behavior only: `locate` does nothing where Projects is absent, which it already checks.
+
+### Classification And Route (Round 4)
+
+- `Local Fix`, owned by implementation: CR-004 and CR-005. Both are two-line removals with no design change.
+- Recipient: `/software_engineering_team/implementation_engineer`.
+- Re-review: a targeted delta. Then API/E2E round 2, including the AC-002a/AC-003a/AC-011 cases, `TESTING.md`'s phone rule and the residual below.
+
+### Residual Risks (Round 4)
+
+- Android 11–14 with the keyboard open: no double padding is expected (C-12), but it was not exercised. API/E2E should type a message on an API 34 emulator.
+- AC-002a: a stopped root's children follow desktop parity (the handoff's residual 1), so the probe should use a running root for the live case.
+- Earlier residuals: C-04 (a failed open shows the earlier target for a moment); the shared composer's Upload and Send buttons below 44 px; the user's device check.
 
 ## Review Round Meta
 
@@ -357,6 +483,14 @@ The earliest stage that reproduces them is a browser run of the phone bundle. `T
 
 ## Latest Authoritative Result
 
+- **Round 4 (CRR-004, latest): `Fail`, `Local Fix` (implementation).**
+  - Entry point: `Implementation Review`, `Full Re-Audit`.
+  - Findings: CR-004 (a `Math.random` fallback branch in `createRandomId`) and CR-005 (`canLocate` exported with no caller).
+  - CRR-003's F-01…F-06 and F-09 are resolved as SR-005/SR-006 designed; F-07 and F-08 are decided as desktop parity.
+  - Scenario gate: `Pass`. Material-premise gate: `Pass`.
+  - Score 9.3 average. No Backward-Compatibility and Cleanup are at 9.0.
+  - Recipient: `/software_engineering_team/implementation_engineer`.
+- Round 3 (CRR-003), superseded:
 - Review Decision: `Fail`. This is the failure-origin result of round 3 (CRR-003), which supersedes round 2's `Pass` for routing.
 - Review Entry Point: `API/E2E Failure-Origin Review`
 - Supported Product Scenario Gate: `Pass`. Every failing scenario is approved behavior on a supported surface; F-02's HTTP origin is a Supported Explicit Edge.

@@ -7,6 +7,7 @@
 | CRR-001 | [code-review-report.md](code-review-report.md) | Implementation Review, round 1 / IR-001 handoff | N/A | Fail (Local Fix) | CR-001, CR-002, CR-003 |
 | CRR-002 | [code-review-report.md](code-review-report.md) | Implementation Review, round 2 (targeted delta) / IR-002 handoff | Fail (Local Fix) | Pass | CR-001, CR-002, CR-003 (resolved) |
 | CRR-003 | [code-review-report.md](code-review-report.md) | API/E2E Failure-Origin Review, round 3 / API-REV-001 Fail | Pass | Fail (Design Impact, Requirement Gap, Local Fix) | API F-01…F-09 |
+| CRR-004 | [code-review-report.md](code-review-report.md) | Implementation Review, round 4 (Full Re-Audit) / IR-003 | Fail (CRR-003) | Fail (Local Fix) | F-01…F-09 (resolved or decided); CR-004, CR-005 (new) |
 
 ## Revision Entries
 
@@ -116,3 +117,44 @@ None.
 - Remaining risks or uncertainty:
   - the user's Android version (F-09);
   - a `TESTING.md` phone rule is needed (a non-secure origin, real-tap overlay checks), owned by API/E2E.
+
+### CRR-004 — Implementation review of IR-003 (SR-005/SR-006 and the CRR-003 local fixes)
+
+- Canonical review report updated: [code-review-report.md](code-review-report.md), section "Implementation Review (Round 4)" and Latest Authoritative Result
+- Review entry point and round: Implementation Review, round 4
+- Review scope: `Full Re-Audit`. The delta changes shared interfaces and behavior (`useTaskWorkerTasks`, the shared reference viewer, an id helper at ten sites, the Org open mapping, the Android shell) and reaches files beyond CRR-003's findings.
+- Triggering role, report path and finding or scenario IDs: `implementation_engineer`, [implementation-handoff.md](implementation-handoff.md) (IR-003), CRR-003 F-01…F-09
+- Relevant solution revision IDs: SR-005, SR-006
+- Relevant architecture-review revision IDs: ARCH-REV-004
+- Relevant implementation revision IDs: IR-003 (code `1a48f4affe`)
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: CRR-003, `Fail` (failure-origin)
+- Current authoritative result: `Fail`, `Local Fix` (implementation)
+- What changed in the review result and why:
+  - F-01…F-06 and F-09 are implemented as SR-005/SR-006 designed, each with tests; F-07 and F-08 are decided as desktop parity.
+  - Two new dead-code findings:
+    - CR-004: `createRandomId()` keeps a `Math.random` branch for a runtime without `crypto.getRandomValues`, which its own comment says does not exist;
+    - CR-005: `useTaskWorkerTasks` exports `canLocate`, which only its spec reads.
+- Supported product scenario / material-premise basis changes: none.
+  - C-11…C-14 were rejected.
+  - C-12, the keyboard on Android 11–14, is recorded as a residual for API/E2E.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| F-01 | Open (Design Impact) | Resolved | SR-005 DEC-012; `02718f21bf` | `useMobileRunOpening.ts:21-24`; `agentOrgHistoryRows.ts:210-216`; specs |
+| F-02 | Open (Local Fix) | Resolved (see CR-004) | DEC-014; `02905f49b5` | `utils/randomId.ts`; ten sites; `grep` |
+| F-03 | Open | Resolved | `4207af0889` | `MobilePairedShell.vue:131-135`; shell spec |
+| F-04 | Open | Resolved | `4207af0889` | `hideHeader`; specs of the viewer and the phone screen |
+| F-05 | Open | Resolved | `4207af0889` | `MobileFiles.vue:37` |
+| F-06 | Open (Design Impact) | Resolved | DEC-010; `02718f21bf` | `useTaskWorkerTasks` split; projection spec |
+| F-07 | Open (Requirement Gap) | Decided, no code change | DEC-009 (a) | — |
+| F-08 | Open (Design Impact) | Decided, no code change | DEC-013 (revised at SR-006) | — |
+| F-09 | Open (Requirement Gap) | Resolved | DEC-011 (a), REQ-011; `9b4066b4df` | IMP-08 on API 35 and API 34 |
+
+- New or remaining finding IDs: CR-004, CR-005
+- Material score or classification changes: No Backward-Compatibility and Cleanup are at 9.0; every other category is ≥ 9.3.
+- Recommended recipient: `/software_engineering_team/implementation_engineer`
+- Remaining risks or uncertainty: the keyboard on Android ≤14 (not exercised); AC-002a's live case needs a running root.
