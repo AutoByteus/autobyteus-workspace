@@ -3,7 +3,8 @@
 ## Scope
 
 Reports, for the node it runs on, each external agent runtime's installed
-version, update state and sign-in state: Codex, Claude, Antigravity and Grok.
+version, update state and sign-in state: Codex, Claude, Antigravity, Grok and
+DeepSeek Harness.
 It also starts the vendor's own update and login commands. This is the server
 side of Settings -> Agent Runtimes (see
 [Settings](../../../autobyteus-web/docs/settings.md#settings-agent-runtimes)).
@@ -27,7 +28,7 @@ Out of scope:
 ## TS Source
 
 - `src/runtime-management/agent-runtimes/agent-runtime-status-service.ts` —
-  `AgentRuntimeStatusService`, the only public boundary. It owns the four rows
+  `AgentRuntimeStatusService`, the only public boundary. It owns the five rows
   (last results, current operation, `checkedAt`), runs the checks for each
   runtime on their own, allows one operation per runtime, enforces the
   agents-running rule, and stops its processes on `close()`. It also reports
@@ -69,13 +70,16 @@ Out of scope:
 | Claude | `claude auth status --json`, JSON read whatever the exit code (signed out exits 1); without JSON, exit 0 + "logged in" text → signed in | `downloads.claude.ai/claude-code-releases/<channel>`, channel = `autoUpdatesChannel` in the user's Claude `settings.json` (`CLAUDE_CONFIG_DIR` or `~/.claude`), default `latest` | `claude update` | No: command-line hint |
 | Antigravity | `agy models` through `listAntigravityModels`; `AGY_SIGN_IN_REQUIRED` → signed out | the vendor updater manifest for the OS and CPU | `agy update` | No: command-line hint |
 | Grok | `grok models`: "You are not authenticated." → signed out; other exit 0 → signed in | `grok update --check --json` | `grok update` | `grok login --oauth` |
+| DeepSeek Harness | the vault's value-free status of `provider.deepseek.api-key` (the key the credential proxy adds to its model calls): configured → signed in ("API key set"), missing → signed out ("API key not set") | `npm view @deepseek-ai/dsh version` | `npm install -g @deepseek-ai/dsh@latest` | No: route `API_KEY_SETTING`, a pointer to Settings → API Keys |
 
 A failed version source marks only that row `CHECK_FAILED` and keeps the
 installed version. A failed sign-in read gives `UNKNOWN`.
 
 ## GraphQL API
 
-- `agentRuntimes: [AgentRuntime!]!` — the four rows. It only reads, and never
+- `agentRuntimes: [AgentRuntime!]!` — the five rows. `signInRoute` is
+  `BROWSER`, `COMMAND_LINE` or `API_KEY_SETTING` (a provider key in the vault,
+  DeepSeek Harness). It only reads, and never
   starts work.
 - `agentRuntimeSignInBrowserAvailable: Boolean!` — whether this node's
   runtimes' own logins can open a browser on this node's desktop. Read only;
@@ -95,7 +99,7 @@ installed version. A failed sign-in read gives `UNKNOWN`.
   and no output of a login process is kept, returned or logged.
 - Refusals carry `extensions.code`: `AGENT_RUNTIME_AGENTS_RUNNING`,
   `AGENT_RUNTIME_BUSY`, `AGENT_RUNTIME_NOT_INSTALLED`,
-  `AGENT_RUNTIME_SIGN_IN_UNSUPPORTED`, `AGENT_RUNTIME_UNKNOWN` (only the four
+  `AGENT_RUNTIME_SIGN_IN_UNSUPPORTED`, `AGENT_RUNTIME_UNKNOWN` (only the five
   external runtime kinds are accepted).
 
 Remote and Docker node windows read the same query and run the same

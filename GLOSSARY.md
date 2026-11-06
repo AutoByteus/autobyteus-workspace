@@ -157,12 +157,22 @@ delegated run, …) are defined in the
 - **Integration state:** a card's state: `NEEDS_TOKEN` (shown "Installed, needs a
   token"), `CONNECTED` (shown "Connected as @login") or `NEEDS_NEWER_APP`.
 - **Credential proxy:** the server's loopback listener that forwards an allowed
-  run's calls to an integration, adding the token. Not the General MCP Gateway or
-  the Agent Tools MCP Server.
-- **Run pass:** the unguessable value in a run's proxy address
-  (`/r/<pass>/…`). One per run, live while the run is active, revoked when the
-  run is released or its activation fails. It carries the run's grants. It is not
-  the token and not a session.
+  run's calls to an integration, adding the token, or a runtime's calls to its
+  model provider through a provider relay, adding the key. Not the General MCP
+  Gateway or the Agent Tools MCP Server.
+- **Run pass:** the unguessable value in a run's proxy address for integrations
+  (`/r/<pass>/…`) and in the API-key header for a provider relay. One per run,
+  live while the run is active, revoked when the run is released or its
+  activation fails (`RunPassRevocation`). It carries the run's integration grants
+  and its provider relay grant. It is not the token or key, and not a session.
+- **Provider relay:** the credential proxy's app-owned forwarding of one
+  runtime's model-provider calls, granted to the run by its runtime (DeepSeek
+  Harness → DeepSeek's Messages API, relay `deepseek`, path `/relay/deepseek/…`).
+  Not Model Routing or the Model Router, and not an integration.
+- **Provider call observation:** what a provider relay reports about one
+  forwarded call to the run's session: started, stream activity, finished with
+  the provider's usage. The session turns them into usage, compaction and
+  liveness.
 - **Grant (integration):** what a run's preparation found: the integration, its
   skill and the source it came from, checked again on every call. Not a stored
   permission: access follows the agent's skills.
@@ -203,6 +213,12 @@ delegated run, …) are defined in the
   | `claude_agent_sdk` | Claude Agent SDK |
   | `antigravity_cli` | Antigravity CLI |
   | `grok_build` | Grok Build |
+  | `deepseek_harness` | DeepSeek Harness |
+- **DeepSeek Harness (dsh):** DeepSeek's own agent program, run over ACP. Its
+  **dsh home** is the AutoByteus-owned `DSH_HOME` under the server's app data;
+  the user's `~/.dsh` is never used. Its **dsh provider route** is dsh's own name
+  for its route to DeepSeek's API (`deepseek-official`), held only as
+  `DSH_PROVIDER_ROUTE`.
 - **Agent runtime switch:** replacing the agent runtime, model and model settings
   of a stopped Agent, keeping its run (same run ID, chat, history row, workspace).
   It applies to a standalone Agent run, a Team member, an Org member (a direct Agent
