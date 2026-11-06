@@ -94,4 +94,30 @@ Revert the merge on `personal`. There is no data migration.
 
 ## Finalization Record
 
-(filled after the push)
+- Pre-commit checks: `check_repository_artifact_hygiene.py` passed; Secret Gate `origin/personal..HEAD` PASS.
+- Ticket branch: `codex/runtime-version-prerelease-compare` at `3706d7f2db` (archive commit), pushed as a new branch.
+- Finalization target: `origin/personal`, unchanged at `b78fd86fe4`. Re-integration and re-verification: `Not needed`.
+- Merge: `finalize/runtime-version-prerelease-compare` from `origin/personal`; `--no-ff` → `0a18802f51`.
+  - Its tree is identical to the verified head.
+  - Secret Gate on the merged state: PASS.
+- Push: `origin/personal` fetched again and still `b78fd86fe4`; `b78fd86fe4..0a18802f51`.
+- Repository finalization status: `Completed`. This record follows as a `docs(delivery)` commit on `personal`.
+
+## Post-Finalization Cleanup
+
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-version-prerelease-compare`.
+- Right after this record is pushed:
+  - Remove and prune the worktree. Its untracked files are build output only: `*/dist/`, plus `autobyteus-web/electron-dist`, which git ignores.
+  - Delete the local `codex/` and `finalize/` branches; both are in `origin/personal`.
+  - Keep `origin/codex/runtime-version-prerelease-compare`.
+  - Leave the main checkout untouched.
+  - The terminal message confirms the results.
+
+## Final Status
+
+- Verification complete (from the evidence): `Yes`
+- Repository finalization complete: `Yes`
+- Applicable release/deployment/rollout complete or not required: `Not required`
+- Applicable safe cleanup complete or not required: right after this record is pushed (above)
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
