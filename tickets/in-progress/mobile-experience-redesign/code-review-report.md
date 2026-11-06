@@ -1,6 +1,83 @@
 # Code Review Report — mobile-experience-redesign (autobyteus-277)
 
-> **Latest result: round 4, `Implementation Review` of IR-003 (CRR-004): `Fail`, `Local Fix`.** See [Implementation Review (Round 4)](#implementation-review-round-4) and Latest Authoritative Result.
+> **Latest result: round 6, `API/E2E Failure-Origin Review` of API-REV-002 (CRR-006): `Fail`, `Local Fix` (implementation), F-10.** See [API/E2E Failure-Origin Review (Round 6)](#apie2e-failure-origin-review-round-6) and Latest Authoritative Result.
+> - Round 5 (CRR-005, `Pass`) is the implementation-review basis.
+
+## API/E2E Failure-Origin Review (Round 6)
+
+### Meta
+
+- Entry point: `API/E2E Failure-Origin Review`. Current revision: `CRR-006`, round 6. Review scope: `N/A` (failure-origin).
+- Trigger: API-REV-002 `Fail` on F-10.
+- Reviewed:
+  - [api-e2e-execution-coverage-report.md](api-e2e-execution-coverage-report.md) (round 2, F-10 and ADR-07);
+  - [api-e2e-coverage-investigation.md](api-e2e-coverage-investigation.md);
+  - [api-e2e-revision-record.md](api-e2e-revision-record.md), API-REV-002.
+- Failing scenario: ADR-07, typing in the run screen's composer with the soft keyboard open, on Android 15 (API 35) and Android 14 (API 34) emulators with this branch's APK.
+- Command: `node …/evidence/api-e2e/scripts/android-journey.mjs` (API 34: `--only=ADR-01,ADR-07`).
+- Code under test: `400457d5f7`. HEAD `10574b2fba` adds the probe, reports and `TESTING.md` edits only.
+- Evidence:
+  - `evidence/api-e2e/round-2/ADR-run-2-api35/android-journey.json` and `ADR-07-keyboard-open.png`;
+  - `evidence/api-e2e/round-2/ADR-run-3-api34/android-journey.json`, `ADR-07-keyboard-open.png` and `ADR-07-control-scrolltop-0.png`.
+
+### Basis
+
+- The scenario is approved behavior, and supported:
+  - REQ-003: the run screen is one bar and the conversation, with its composer;
+  - REQ-011 / AC-011: the composer stays visible and tappable on Android;
+  - AC-005: matches the references on the user's phone.
+- Typing a reply on the phone is the core of UC-002, so this is a **Supported Normal Scenario**. The trigger is a real tap on the composer and the real soft keyboard.
+- The test is valid. The control shows the expected layout with the same keyboard once the stray scroll is removed: `scrollTop = 0` gives a 62 px gap above the keyboard.
+
+### Origin
+
+| Item | Finding |
+| --- | --- |
+| What scrolls | The conversation view's root. `AgentEventMonitor.vue:2` renders `flex h-full min-h-0 flex-col … overflow-hidden … p-4`. The phone's run screen passes it `data-testid="mobile-run-conversation"` and `min-h-0 flex-1 overflow-hidden` (`MobileRunTargetView.vue:23-36`), inside the `fixed inset-0 h-[100dvh]` section (`:2`). The evidence names that same element (`screenChildren[1]`, `conversationScrollTop` 330 on API 35 and 327 on API 34). Its first child sits at `top: -258`/`-255`, so it was moved up by that scroll |
+| Why | On focus, the browser scrolls the focused textarea into view through every scrollable ancestor, and an `overflow: hidden` box is still scrollable that way. The WebView then shrinks to the keyboard (`webView.bottom 1517 = ime.top 1517`) and `100dvh` re-lays the screen. The stray `scrollTop` survives the re-layout, and nothing resets it. The composer ends up under the bar, with a keyboard-tall blank below |
+| Not the cause | The shell's new insets: there is no double padding on either API level (C-12 closed), and API 34 resizes the window the classic way and fails the same way. The 100dvh layout is fine; the control layout is correct once the scroll is removed |
+| Whose functionality | The phone's run screen hosting the shared conversation view. This ticket rebuilt that screen (`MobileRunTargetView`) and owns REQ-003, REQ-011 and AC-005. The desktop has no soft keyboard, and its layout never shrinks under a focused composer |
+| Introduced or pre-existing | The base `MobileChat.vue` hosted `AgentEventMonitor` the same way, inside an `overflow-hidden` shell, so the same defect probably existed at the base. It was not run there. The answer does not change the classification: an old bug in the functionality this ticket changes, which fails an in-scope acceptance criterion, belongs to this ticket (`ticket-scope.md`, Common situations) |
+| Detectable in source review? | No. It comes from the soft keyboard and the browser's focus scrolling, which only a device or emulator shows. IMP-08 measured the keyboard on a test page, not on the run screen |
+
+### Classification And Required Outcome
+
+- **F-10: `Local Fix`, owned by implementation. Scope: this ticket.**
+- Required outcome: with the keyboard open on Android (API 35 and API 34), the run screen keeps its bar at the top and the conversation above the composer, and the composer sits directly above the keyboard (ADR-07 passes). The conversation view's root must not keep a focus scroll.
+- The mechanism is the implementation's choice, with two constraints:
+  1. Prefer a fix at the phone's run screen boundary. One example: the host keeps the view's root unscrollable with `overflow: clip`, or resets it on resize or focus.
+  2. A change to the shared `AgentEventMonitor` root has to be shown desktop-neutral, with its desktop specs, because the desktop renders the same root.
+- Verify on the API 35 emulator, and add a component-level guard where one can express it.
+
+### Other Items
+
+- **The system Back key while the ⋮ menu is open leaves the run screen.** Not a finding. The spec defines only "tap outside closes" for the menu, and Back walking the screens is approved (AC-005). It is recorded here only as an observation, with no follow-up.
+- **`TESTING.md` phone rule (CRR-003 / design step 8).** Dropped at the user's direction: the project documents hold only what every future change follows, and the probe's header carries the phone specifics. That supersedes CRR-003's recommendation. No action.
+- **The rest of API-REV-002 passes** on the non-secure origin, WebKit and the desktop regression. That confirms CRR-004/005's resolutions (F-01…F-06, F-09), and C-12 is closed.
+
+### Route
+
+- Recipient: `/software_engineering_team/implementation_engineer`, under the rule "failure-origin review confirms … an implementation defect".
+- After the fix: source review (a targeted delta), then API/E2E reruns ADR-07 (and a proportional rerun of the run-screen cases).
+> - Round 4 (CRR-004) failed on CR-004 and CR-005, both now resolved.
+
+## Implementation Review (Round 5)
+
+- Entry point: `Implementation Review`. Current revision: `CRR-005`, round 5.
+- Review scope: `Targeted Delta Review`. Code commit `400457d5f7` over `1a48f4affe` touches only the two files of CR-004 and CR-005 and one spec line. No interface, spine or data shape changed beyond removing the unread return.
+- Trigger: IR-004, HEAD `3e3ce3961b`.
+- Checks read, not rerun: IMP-09, the full web suite on `400457d5f7` (701 files, 5198 tests passed); IMP-02 typecheck PASS; IMP-03 guards. IMP-08 (Android) and IMP-04 carry forward, because no Android file or rendered markup changed.
+- **CR-004: resolved.** `utils/randomId.ts:7-14`: `randomUUID` where it exists, otherwise `crypto.getRandomValues(new Uint8Array(16))` unconditionally. The `Math.random` branch is gone. The `randomId.spec.ts` cases still cover both paths.
+- **CR-005: resolved.** `useTaskWorkerTasks` returns `{ taskOf, locate }`. `canLocate` is internal (`:29, :49`), and `grep` finds no other reader. The spec still asserts that `locate` does nothing without Projects.
+- Scorecard: No Backward-Compatibility 9.0 → 9.5; Cleanup Completeness 9.0 → 9.4; API / Interface 9.3 → 9.4. The other round-4 rows carry forward: Spine 9.5, Ownership 9.5, Separation 9.4, Tightness 9.4, Naming 9.4, API/E2E Readiness 9.3, Runtime Correctness 9.3. Every category is ≥ 9.2, for an overall 9.4.
+- Residuals for API/E2E round 2:
+  - type with the keyboard open on an Android 14 (API 34) emulator (C-12);
+  - AC-002a's live case with a running root;
+  - C-04, a failed open showing the earlier target for a moment;
+  - the shared composer's Upload and Send buttons below 44 px (out of scope);
+  - the user's device check.
+  - API/E2E also owns `TESTING.md`'s phone rule, which is part of this ticket.
+- Result: `Pass`. Next: `/software_engineering_team/api_e2e_engineer`.
 > - Round 3, the failure-origin review (CRR-003), is in its own section.
 > - Rounds 1–2 (CRR-001, CRR-002) are in the sections below. Their evidence still holds for the files round 4 does not change.
 
@@ -483,7 +560,18 @@ The earliest stage that reproduces them is a browser run of the phone bundle. `T
 
 ## Latest Authoritative Result
 
-- **Round 4 (CRR-004, latest): `Fail`, `Local Fix` (implementation).**
+- **Round 6 (CRR-006, latest): `Fail`, `Local Fix` (implementation), F-10.**
+  - Entry point: `API/E2E Failure-Origin Review`.
+  - Failure origin: the phone's run screen hosting the shared conversation view keeps the browser's focus scroll of an `overflow: hidden` root while the soft keyboard is open. This ticket owns it (REQ-003, REQ-011, AC-005). It was probably pre-existing in the base `MobileChat`, and it was not detectable in source review.
+  - Scenario gate: `Pass`; a Supported Normal Scenario.
+  - Recipient: `/software_engineering_team/implementation_engineer`.
+- Round 5 (CRR-005), the implementation-review basis: `Pass`.
+  - Entry point: `Implementation Review`, targeted delta.
+  - CR-004 and CR-005 are resolved. CRR-003's F-01…F-06 and F-09 are resolved, and F-07 and F-08 are decided as desktop parity.
+  - Scenario gate: `Pass`. Material-premise gate: `Pass`.
+  - Score: 9.4 average; every category ≥ 9.2.
+  - Recipient: `/software_engineering_team/api_e2e_engineer`.
+- Round 4 (CRR-004), superseded: `Fail`, `Local Fix` (implementation).
   - Entry point: `Implementation Review`, `Full Re-Audit`.
   - Findings: CR-004 (a `Math.random` fallback branch in `createRandomId`) and CR-005 (`canLocate` exported with no caller).
   - CRR-003's F-01…F-06 and F-09 are resolved as SR-005/SR-006 designed; F-07 and F-08 are decided as desktop parity.
