@@ -226,6 +226,26 @@ test, not its whole suite. A second full run of a suite proves nothing the first
   their `dist/`, which their consumers import. After changing their source, rebuild with
   `pnpm -C <package> build` and commit the `dist/` changes too.
 
+## Fresh-start build
+
+A release runner clones the commit, runs `pnpm install --frozen-lockfile` and then the release job's
+build (`.github/workflows/release-desktop.yml`: the hygiene and licensing checks, then in
+`autobyteus-web` `pnpm build:electron:<platform>`, which runs the web guards, the web type check,
+`prepare-server` and the Electron build). Prove a change on a fresh start (DESIGN.md rule 12) when it
+touches any of these build inputs:
+
+- a `package.json` (scripts, dependencies, `exports`), `pnpm-lock.yaml`, `pnpm-workspace.yaml`;
+- a `tsconfig*.json`, Nuxt, Vite, Vitest or electron-builder configuration, `autobyteus-web/build/`;
+- codegen inputs or outputs (`autobyteus-web/codegen*`, `autobyteus-web/generated/`), the Prisma schema;
+- the tracked `dist/` or `src/` of the contract packages (`autobyteus-*-contracts`), or any other import
+  from one workspace package into code another package's gate compiles;
+- a test added to a project a type check compiles; `.github/workflows/`, `scripts/`.
+
+How: a clean clone of the commit (`git clone --no-local <worktree> <new folder>`, then check out the
+commit), `pnpm install --frozen-lockfile` alone, then the job's commands in its order for the host
+platform, unsigned. Steps that need the runner's secrets or another operating system are not proven
+locally; say so in the validation report.
+
 ## Test vault
 
 Set `AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault` for any test that needs real provider
