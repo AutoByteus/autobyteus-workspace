@@ -20,8 +20,10 @@ const load = async (state: Ref<NodeDesktopAvailability>): Promise<void> => {
 
 /**
  * Whether the bound node has a node desktop (`GET /rest/node-desktop`): the one client-side owner of
- * that answer. The first caller for a node asks it; later callers share the answer. `reload` asks
- * again (Retry after an error).
+ * that answer. The first caller for a node asks it; later callers share an answer the node gave
+ * (`available` / `unavailable`). An `error` is not an answer: the next caller asks again, so a node
+ * that was briefly unreachable does not hide the desktop for the page's life. `reload` asks again
+ * (Retry after an error).
  */
 export function useNodeDesktopAvailability() {
   const nodeContext = useWindowNodeContextStore();
@@ -32,6 +34,8 @@ export function useNodeDesktopAvailability() {
     if (!state) {
       state = ref<NodeDesktopAvailability>('loading');
       availabilityByNode.set(node, state);
+      void load(state);
+    } else if (state.value === 'error') {
       void load(state);
     }
     return state;

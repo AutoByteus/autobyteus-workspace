@@ -52,6 +52,23 @@ describe('useNodeDesktopAvailability', () => {
     expect(fetchNodeDesktop).toHaveBeenCalledTimes(2);
   });
 
+  it('does not keep an error as the shared answer: a later caller asks again (CR-001)', async () => {
+    vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    fetchNodeDesktop.mockRejectedValueOnce(new Error('offline')).mockResolvedValueOnce({ available: true });
+    const first = await consumer();
+    await flushPromises();
+    expect(first.api.availability.value).toBe('error');
+
+    const second = await consumer();
+    await flushPromises();
+    expect(second.api.availability.value).toBe('available');
+    // The first caller shares the new answer, and an answer the node gave stays cached.
+    expect(first.api.availability.value).toBe('available');
+    await consumer();
+    await flushPromises();
+    expect(fetchNodeDesktop).toHaveBeenCalledTimes(2);
+  });
+
   it('reports an error and asks again on reload', async () => {
     vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     fetchNodeDesktop.mockRejectedValueOnce(new Error('offline')).mockResolvedValueOnce({ available: true });
