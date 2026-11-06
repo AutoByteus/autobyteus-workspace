@@ -1,13 +1,6 @@
-import type { IntegrationRunAccess } from "../../credential-proxy/integration-run-access.js";
-import type { ProviderRelayAccess } from "../../credential-proxy/provider-relays/provider-relay-access.js";
-import type { RunPassRevocation } from "../../credential-proxy/run-pass-revocation.js";
 import { DelegatedLaunchSelectionService } from "../../run-history/services/delegated-launch-selection-service.js";
-import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
-import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
-import type { AgentOrgDefinitionService } from "../../agent-org-definition/services/agent-org-definition-service.js";
 import { AgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
 import { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
-import type { AgentProviderFactoryBuilder } from "../providers/agent-provider-factory-builder.js";
 import type { ScopedAgentToolMcpSessionAuthority } from "../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import { AgentRunIdentityAllocator } from "../services/agent-run-identity-allocator.js";
 import { AgentRunManager } from "../services/agent-run-manager.js";
@@ -21,7 +14,6 @@ import { AgentRunProviderInputNormalizer } from "../input/agent-run-provider-inp
 import { ContextFileLayout } from "../../context-files/store/context-file-layout.js";
 import { ContextFileOwnerResolver } from "../../context-files/services/context-file-owner-resolver.js";
 import { ContextFileLocalPathResolver } from "../../context-files/services/context-file-local-path-resolver.js";
-import type { ContextFilePathEnvironment } from "../../context-files/domain/context-file-path-environment.js";
 import { AgentRunStatusProjectionService } from "../services/agent-run-status-projection-service.js";
 import { AgentRunProvisioningService } from "../services/agent-run-provisioning-service.js";
 import {
@@ -57,9 +49,6 @@ import {
 } from "../../services/run-file-changes/run-file-change-service.js";
 import { createGeneralProcessPublishedArtifactRelayService } from "../../application-orchestration/services/application-published-artifact-relay-service.js";
 import { TokenUsageCapability } from "../../token-usage/providers/token-usage-capability.js";
-import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
-import type { RunModelSelectionValidator, RunModelSelectionService } from "../../llm-management/services/run-model-selection-service.js";
-import type { DefinitionAdmissionService } from "../../collaboration-definition-admission/services/definition-admission-service.js";
 import { AgentOrgRunHistoryCatalogService } from "../../run-history/services/agent-org-run-history-catalog-service.js";
 import { CollaborationRootHistoryService } from "../../run-history/services/collaboration-root-history-service.js";
 import { AgentOrgExecutionTreeLocationService } from "../../agent-org-execution/services/agent-org-execution-tree-location-service.js";
@@ -76,85 +65,18 @@ import {
 import { StandaloneRootLocationService } from "../../standalone-agent-run-root/services/standalone-root-location-service.js";
 import { getRuntimeAvailabilityService } from "../../runtime-management/runtime-availability-service.js";
 import type { CollaboratorAdmission } from "../../agent-collaboration/collaborators/collaborator-admission.js";
-import type { TaskExecutionResourcePort } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import {
   bindProcessCollaboratorAdmission,
   createCollaboratorAdmission,
   createCollaboratorDefinitionCatalog,
   releaseProcessCollaboratorAdmission,
 } from "../../agent-collaboration/collaborators/collaborator-definition-catalog.js";
+import {
+  requireGeneralProcessRunSupervisorInput,
+  type GeneralProcessRunSupervisorInput,
+} from "./general-process-run-supervisor-input.js";
 import { getInternalAgentVisibility } from "../../agent-definition/services/internal-agent-visibility.js";
 import { PROCESS_MODEL_ROUTING } from "../../model-routing/services/model-routing-binding.js";
-import type { RuntimeSwitching } from "../domain/runtime-switch-memory-port.js";
-import type { AgentRunInputPreface } from "../domain/agent-run-input-preface.js";
-import type { AgentRunLifecycleObserver } from "../domain/agent-run-lifecycle-observer.js";
-
-export type GeneralProcessRunSupervisorInput = Readonly<{
-  memoryDir: string;
-  contextFilePathEnvironment: ContextFilePathEnvironment;
-  agentDefinitionService: AgentDefinitionService;
-  agentTeamDefinitionService: AgentTeamDefinitionService;
-  agentOrgDefinitionService: AgentOrgDefinitionService;
-  definitionAdmissionService: DefinitionAdmissionService;
-  workspaceManager: WorkspaceManager;
-  agentProviderFactoryBuilder: AgentProviderFactoryBuilder;
-  agentToolMcpSessionAuthority: ScopedAgentToolMcpSessionAuthority;
-  /**
-   * The studio's credential proxy: runs of allowed agents get its variables; their passes end at release. `null`
-   * (the standalone application host): its runs get no integration access in this step.
-   */
-  integrationRunAccess: IntegrationRunAccess | null;
-  /** The studio's provider relays for runtimes that call their model through one (`null`: no credential proxy here). */
-  providerRelayAccess: ProviderRelayAccess | null;
-  /** Ends a run's pass at release and on a failed activation; from the same proxy host, non-null whenever an access is. */
-  runPasses: RunPassRevocation | null;
-  modelSelectionValidator: RunModelSelectionValidator & Pick<RunModelSelectionService, "listOptions" | "listOptionsMany">;
-  /** Neutral Task agent resource port from the host composition, forwarded to every root builder. */
-  taskExecutionResources: TaskExecutionResourcePort;
-  /**
-   * Platform notices that ride along with each run's next external input, told when runs are
-   * published and released (the host composition owns and closes it). None by default.
-   */
-  platformInputNotices?: (AgentRunInputPreface & AgentRunLifecycleObserver) | null;
-  /**
-   * The memory and hand-over notice ports of an agent runtime switch (autobyteus-316), forwarded to the standalone lifecycle.
-   * None (the application host): a lifecycle without them fails closed on a pending switch.
-   */
-  runtimeSwitching?: RuntimeSwitching | null;
-}>;
-
-const requireGeneralProcessRunSupervisorInput = (
-  input: GeneralProcessRunSupervisorInput | null | undefined,
-): GeneralProcessRunSupervisorInput => {
-  if (
-    !input
-    || typeof input.memoryDir !== "string"
-    || !input.memoryDir.trim()
-    || !input.contextFilePathEnvironment
-    || typeof input.contextFilePathEnvironment.appDataDir !== "string"
-    || !input.contextFilePathEnvironment.appDataDir.trim()
-    || typeof input.contextFilePathEnvironment.baseUrl !== "string"
-    || !input.contextFilePathEnvironment.baseUrl.trim()
-    || !input.agentDefinitionService
-    || !input.agentTeamDefinitionService
-    || !input.agentOrgDefinitionService
-    || !input.definitionAdmissionService
-    || !input.workspaceManager
-    || !input.agentProviderFactoryBuilder
-    || !input.agentToolMcpSessionAuthority
-    || input.integrationRunAccess === undefined
-    || input.providerRelayAccess === undefined
-    || input.runPasses === undefined
-    || ((input.integrationRunAccess || input.providerRelayAccess) && !input.runPasses)
-    || !input.modelSelectionValidator
-    || typeof input.modelSelectionValidator.validate !== "function"
-    || typeof input.modelSelectionValidator.listOptions !== "function"
-    || !input.taskExecutionResources
-  ) {
-    throw new Error("Complete GeneralProcessRunSupervisor input is required.");
-  }
-  return input;
-};
 
 export class GeneralProcessRunSupervisor {
   readonly agentRunService: AgentRunService;
