@@ -20,7 +20,7 @@ import RunListRow from '../RunListRow.vue';
 import { useRunListDisclosure } from '~/composables/useRunListDisclosure';
 import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore';
 import { AgentStatus } from '~/types/agent/AgentStatus';
-import type { RunListSectionState } from '~/components/runList/runListSectionContracts';
+import type { RunListSectionActions, RunListSectionState } from '~/components/runList/runListSectionContracts';
 import type { RunListEntry } from '~/utils/runListProjection';
 
 // autobyteus-390 (REQ-001…REQ-003, AC-002, AC-003, R-01): an Agent run's delegated rows are mounted only while the run is
@@ -43,7 +43,8 @@ const AVATARS = {
 } as never;
 
 const render = () => {
-  const actions = { onSelectRun: vi.fn() };
+  // Partial: an Agent row's fold reaches none of the actions.
+  const actions = { onSelectRun: vi.fn() } as unknown as RunListSectionActions;
   let disclosure!: ReturnType<typeof useRunListDisclosure>;
   const wrapper = mount(defineComponent({ setup() {
     disclosure = useRunListDisclosure({
