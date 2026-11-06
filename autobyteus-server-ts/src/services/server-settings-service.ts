@@ -111,11 +111,6 @@ export class ServerSettingsService {
     );
 
     this.registerPredefinedSetting(
-      "AUTOBYTEUS_VNC_SERVER_HOSTS",
-      "Comma-separated host:port values for AutoByteus VNC WebSocket endpoints (e.g., localhost:6080,localhost:6081)",
-    );
-
-    this.registerPredefinedSetting(
       "OLLAMA_HOSTS",
       "Comma-separated host URLs for Ollama servers (e.g., http://localhost:11434)",
     );

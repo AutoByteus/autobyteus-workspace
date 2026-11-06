@@ -79,6 +79,7 @@ export function deriveNodeEndpoints(baseUrl: string): NodeEndpoints {
     agentPackageDefinitionsWs: `${wsBase}/ws/agent-package-definitions`,
     updateNotificationsWs: `${wsBase}/ws/update-notifications`,
     terminalWs: `${wsBase}/ws/terminal`,
+    nodeDesktopWs: `${wsBase}/ws/node-desktop`,
     fileExplorerWs: `${wsBase}/ws/file-explorer`,
     health: `${httpBase}/rest/health`,
   };

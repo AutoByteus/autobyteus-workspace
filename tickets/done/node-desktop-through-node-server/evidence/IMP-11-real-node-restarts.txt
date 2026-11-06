@@ -1,0 +1,32 @@
+# Check: IMP-11
+# Command: node check-restarts.mjs <ws package.json> http://127.0.0.1:56039 abx405-node-desktop-check (supervisorctl restart tigervnc, then autobyteus_server)
+# Setup: Test-owned container abx405-node-desktop-check (label com.autobyteus.api-e2e-owner=abx405-impl), -p 127.0.0.1:56039:8000 only, fresh volumes abx405-node-desktop-check-{data,root-home,chromium-profile,server-packages}; started by the image's starter (AUTOBYTEUS_STARTER_SOCKET set), Xvnc :99.
+# Commit: 6407bfc15f
+# Environment: macOS arm64, Docker Desktop (server 29.0.1), image autobyteus/autobyteus-server:beta (9c5aa01bb2fc) with this commit's server package (docker buildx --target server-package, linux/arm64) mounted read-only over /opt/autobyteus/server-package, Node v22.23.1
+# Date: 2026-11-06
+
+{
+  "xvncRestart": {
+    "versionBefore": "RFB 003.008",
+    "restart": "tigervnc: stopped\ntigervnc: started",
+    "viewerClose": {
+      "code": 4502,
+      "reason": "NODE_DESKTOP_DISCONNECTED"
+    },
+    "upstreamAfter": 0,
+    "reconnectVersion": "RFB 003.008"
+  },
+  "serverRestart": {
+    "versionBefore": "RFB 003.008",
+    "upstreamWhileOpen": 1,
+    "restart": "autobyteus_server: stopped\nautobyteus_server: started",
+    "viewerClose": {
+      "code": 1005,
+      "reason": ""
+    },
+    "healthPolls": 3,
+    "upstreamAfter": 0,
+    "reconnectVersion": "RFB 003.008"
+  },
+  "upstreamAtEnd": 0
+}

@@ -1,0 +1,111 @@
+# Case: API-04 (run 3, authoritative) — clipboard messages from a raw viewer vs the real Xvnc, per mode; plus reachability
+# Runs: run 1 (API-04-clipboard-boundary-run1-unsolicited-provide.txt) had an invalid positive control; run 2 decoded Xvnc's Provide without Z_SYNC_FLUSH (shown '<undecodable>'); run 3 = this file
+# Command: node API-04-clipboard-boundary.mjs <ws package.json> http://192.168.2.158:62053 abx405-api-node
+# Setup: test node abx405-api-node (API-04-node-run.sh): image autobyteus/autobyteus-server:beta 9c5aa01bb2fc (Xvnc TigerVNC 1.13.1), this commit's fresh-clone server package (API-07) read-only over /opt/autobyteus/server-package, fresh volumes, -p 192.168.2.158:62053:8000 only
+# Commit: 952bc1fcd0 (source identical to ce13fa9727)
+# Environment: macOS 26.5.2 arm64, Docker Desktop 29.0.1, Node v22.23.1
+# Date: 2026-11-06T17:49:17Z
+
+docker ps: 192.168.2.158:62053->8000/tcp
+LAN  GET /rest/node-desktop: {"available":true}
+loopback GET http://127.0.0.1:62053/rest/node-desktop: http_code=000 (000 = refused)
+
+[
+  {
+    "mode": "view",
+    "steps": {
+      "requestAfterAgentCopy": {
+        "serverSentAfterCopy": [
+          [
+            "notify"
+          ],
+          [
+            "notify"
+          ]
+        ],
+        "repliesToRequest": [],
+        "agentMarker": "abx405-api-agent-view-1793987360082",
+        "provideTexts": [],
+        "provideCarriedAgentText": false,
+        "open": true
+      },
+      "viewerNotifyThenProvide": {
+        "serverRepliesToNotify": [],
+        "nodeClipboardIsViewerText": false,
+        "nodeClipboardIsAgentText": true,
+        "open": true
+      },
+      "capsWithRequestAndProvideBits": {
+        "replies": [],
+        "provideCarriedAnyText": false,
+        "nodeClipboardUnchangedFromStep2": true,
+        "open": true
+      },
+      "legacyCutText": {
+        "nodeClipboardIsLegacyText": false,
+        "open": true
+      }
+    },
+    "closedAtEnd": {
+      "code": 1000,
+      "reason": ""
+    }
+  },
+  {
+    "mode": "control",
+    "steps": {
+      "requestAfterAgentCopy": {
+        "serverSentAfterCopy": [
+          [
+            "notify"
+          ],
+          [
+            "notify"
+          ]
+        ],
+        "repliesToRequest": [
+          [
+            "provide"
+          ]
+        ],
+        "agentMarker": "abx405-api-agent-control-1793987373304",
+        "provideTexts": [
+          "abx405-api-agent-control-1793987373304"
+        ],
+        "provideCarriedAgentText": true,
+        "open": true
+      },
+      "viewerNotifyThenProvide": {
+        "serverRepliesToNotify": [
+          [
+            "request"
+          ],
+          [
+            "notify"
+          ],
+          [
+            "request"
+          ]
+        ],
+        "nodeClipboardIsViewerText": true,
+        "nodeClipboardIsAgentText": false,
+        "open": true
+      },
+      "capsWithRequestAndProvideBits": {
+        "replies": [],
+        "provideCarriedAnyText": false,
+        "nodeClipboardUnchangedFromStep2": true,
+        "open": true
+      },
+      "legacyCutText": {
+        "nodeClipboardIsLegacyText": true,
+        "open": true
+      }
+    },
+    "closedAtEnd": {
+      "code": 1000,
+      "reason": ""
+    }
+  }
+]
+exit=0

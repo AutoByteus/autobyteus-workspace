@@ -1,0 +1,70 @@
+# NOTE: during this run the launcher's own 'docker pull autobyteus/autobyteus-server:beta' fetched a newer beta from Docker Hub (69e9c09535fa, created 2026-11-06T17:19Z), so the recreate reason is 'Image changed' (image and v9 config changed together). The v9-only recreate is API-06c (image pinned by digest). The local beta tag was restored to 9c5aa01bb2fc afterwards (API-06c-06).
+# Case: API-06 (b) step 04
+# Command: ps-run.sh <v9 launcher> workspace apply --name abx405-ps-node (first S1 run)
+# Setup: test node abx405-ps-node; real Docker Desktop 29.0.1 engine via /var/run/docker.sock; native arm64 PowerShell 7.4.6 in mcr.microsoft.com/dotnet/runtime-deps:8.0 (runner API-06-ps-run.sh); AUTOBYTEUS_DOCKER_STATE_DIR=/private/tmp/abx405-api/ps/state, AUTOBYTEUS_DOCKER_SHARED_WORKSPACE_DIR=/private/tmp/abx405-api/ps/shared; v8 PS launcher = git archive 9e0681bf39 (S0, delivered); v9 PS launcher = worktree; image autobyteus/autobyteus-server:beta (9c5aa01bb2fc)
+# Commit: 952bc1fcd0 (launcher source identical to ce13fa9727)
+# Date: 2026-11-06T17:39:52Z
+
+[AutoByteus Docker] Applying shared workspace bind mounts to abx405-ps-node. Named volumes will be kept.
+[AutoByteus Docker] Checking image autobyteus/autobyteus-server:beta
+beta: Pulling from autobyteus/autobyteus-server
+49139fa0e962: Pulling fs layer
+43e76429a2b4: Pulling fs layer
+6e8c7ef31839: Pulling fs layer
+8cd925673397: Pulling fs layer
+7ae73549d040: Pulling fs layer
+74f14194d8d5: Pulling fs layer
+2171217b1f8d: Pulling fs layer
+2c674212706b: Pulling fs layer
+bcddbb7e2655: Pulling fs layer
+230416b9ad37: Pulling fs layer
+40ecbbcc16bf: Pulling fs layer
+1d15dfd09889: Pulling fs layer
+25af4b57d275: Pulling fs layer
+6b7033ee32c9: Pulling fs layer
+f445abc2ea66: Pulling fs layer
+74f14194d8d5: Download complete
+2c674212706b: Download complete
+43e76429a2b4: Download complete
+7ae73549d040: Download complete
+2171217b1f8d: Download complete
+1d15dfd09889: Download complete
+25af4b57d275: Download complete
+230416b9ad37: Download complete
+f445abc2ea66: Download complete
+bcddbb7e2655: Download complete
+6b7033ee32c9: Download complete
+6e8c7ef31839: Download complete
+49139fa0e962: Download complete
+49139fa0e962: Pull complete
+8cd925673397: Download complete
+40ecbbcc16bf: Download complete
+43e76429a2b4: Pull complete
+1d15dfd09889: Pull complete
+25af4b57d275: Pull complete
+40ecbbcc16bf: Pull complete
+8cd925673397: Pull complete
+74f14194d8d5: Pull complete
+2c674212706b: Pull complete
+7ae73549d040: Pull complete
+2171217b1f8d: Pull complete
+230416b9ad37: Pull complete
+f445abc2ea66: Pull complete
+bcddbb7e2655: Pull complete
+6b7033ee32c9: Pull complete
+6e8c7ef31839: Pull complete
+Digest: sha256:69e9c09535faf60353aa57b5bddce497b9ba5d672ddb124b20af9830785cc356
+Status: Downloaded newer image for autobyteus/autobyteus-server:beta
+docker.io/autobyteus/autobyteus-server:beta
+[AutoByteus Docker] Image changed for abx405-ps-node; recreating the managed container while keeping named volumes.
+[AutoByteus Docker] Started abx405-ps-node.
+AutoByteus Docker node: abx405-ps-node
+Container: abx405-ps-node
+Image: autobyteus/autobyteus-server:beta
+Backend: http://localhost:61122
+GraphQL: http://localhost:61122/graphql
+Workspace: /home/autobyteus/workspace -> /private/tmp/abx405-api/ps/shared/nodes/abx405-ps-node
+Shared folder: /home/autobyteus/shared -> /private/tmp/abx405-api/ps/shared/shared
+Private app data: /home/autobyteus/data -> abx405-ps-node-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+exit=0

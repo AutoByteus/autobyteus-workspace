@@ -15,7 +15,8 @@
     "types/**/*.d.ts",
     "components/conversation/__tests__/UserMessageStoredUploadNames.spec.ts",
     "services/runHydration/__tests__/acceptedInputIdentity.spec.ts",
-    "tests/integration/codex-turn-lifecycle-native-to-live-projection.integration.test.ts"
+    "tests/integration/codex-turn-lifecycle-native-to-live-projection.integration.test.ts",
+    "tests/integration/novnc-node-desktop-filter-contract.integration.test.ts"
   ],
   "exclude": []
 }

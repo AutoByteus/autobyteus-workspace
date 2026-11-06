@@ -57,14 +57,13 @@ describe('ServerSettingsEndpointCards', () => {
       endpointSetting('LMSTUDIO_HOSTS', 'http://localhost:1234'),
       endpointSetting('OLLAMA_HOSTS', 'http://localhost:11434'),
       endpointSetting('AUTOBYTEUS_LLM_SERVER_HOSTS', 'https://llm.example.com:443'),
-      endpointSetting('AUTOBYTEUS_VNC_SERVER_HOSTS', 'localhost:5900'),
       endpointSetting('LOG_LEVEL', 'INFO'),
     ])
 
     expect(wrapper.text()).not.toContain('Add one or more endpoints per provider. No commas needed.')
     expect(wrapper.text()).toContain('LM Studio')
     expect(wrapper.text()).toContain('Ollama')
-    expect(wrapper.text()).toContain('AutoByteus VNC Hosts')
+    expect(wrapper.text()).not.toContain('AutoByteus VNC Hosts')
     expect(wrapper.text()).not.toContain('AutoByteus LLM Hosts')
     expect(wrapper.find('[data-testid="quick-setting-card-AUTOBYTEUS_LLM_SERVER_HOSTS"]').exists()).toBe(false)
     expect(wrapper.find('[data-testid="quick-setting-card-LMSTUDIO_HOSTS"]').exists()).toBe(true)
@@ -73,7 +72,7 @@ describe('ServerSettingsEndpointCards', () => {
     expect(wrapper.find('[data-testid^="quick-row-host-LMSTUDIO_HOSTS-"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid^="quick-row-port-LMSTUDIO_HOSTS-"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid^="quick-row-protocol-LMSTUDIO_HOSTS-"]').exists()).toBe(true)
-    expect(wrapper.find('[data-testid^="quick-row-protocol-AUTOBYTEUS_VNC_SERVER_HOSTS-"]').exists()).toBe(false)
+    expect(wrapper.find('[data-testid="quick-setting-card-AUTOBYTEUS_VNC_SERVER_HOSTS"]').exists()).toBe(false)
   })
 
   it('only shows quick card status messaging after a field changes', async () => {

@@ -47,6 +47,8 @@ export interface NodeEndpoints {
   agentPackageDefinitionsWs: string;
   updateNotificationsWs: string;
   terminalWs: string;
+  /** One viewer stream of the node desktop (the agent's virtual desktop of a Docker node). */
+  nodeDesktopWs: string;
   fileExplorerWs: string;
   health: string;
 }

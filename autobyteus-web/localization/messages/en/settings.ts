@@ -388,7 +388,7 @@ const settingsMessages = {
   'settings.components.settings.DockerNodeStartGuideCard.commands.storage.title': 'Inspect Docker storage',
   'settings.components.settings.DockerNodeStartGuideCard.commands.storage.description': 'Shows private named volumes, host bind mounts, and launcher state for all managed nodes by default.',
   'settings.components.settings.DockerNodeStartGuideCard.commands.urls.title': 'Show Docker node URLs',
-  'settings.components.settings.DockerNodeStartGuideCard.commands.urls.description': 'Prints the Backend, GraphQL and VNC Viewer (this computer only) addresses for all managed nodes by default.',
+  'settings.components.settings.DockerNodeStartGuideCard.commands.urls.description': 'Prints the Backend and GraphQL addresses for all managed nodes by default.',
   'settings.components.settings.DockerNodeStartGuideCard.commands.status.title': 'Show Docker node status',
   'settings.components.settings.DockerNodeStartGuideCard.commands.status.description': 'Lists managed nodes and their current Docker status.',
   'settings.components.settings.DockerNodeStartGuideCard.commands.logs.title': 'Show Docker node logs',

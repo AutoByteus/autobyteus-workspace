@@ -4,7 +4,7 @@ $Script:LauncherLabelKey = 'com.autobyteus.launcher'
 $Script:LauncherLabelValue = 'server-docker'
 $Script:NodeLabelKey = 'com.autobyteus.nodeName'
 $Script:ConfigLabelKey = 'com.autobyteus.configHash'
-$Script:ConfigHashVersion = 'v8'
+$Script:ConfigHashVersion = 'v9'
 $Script:NodeNamePrefix = 'autobyteus-server'
 $Script:DefaultNodeName = "$($Script:NodeNamePrefix)-0"
 $Script:DefaultImage = 'autobyteus/autobyteus-server'
@@ -35,7 +35,7 @@ Commands:
   workspace paths    Show host/container paths for node and shared workspaces
   workspace apply    Recreate node(s) to apply shared workspace bind mounts safely
   storage            Show named volumes and host bind mounts for node(s)
-  urls | ports       Show Backend, GraphQL and VNC Viewer (this computer only) URLs
+  urls | ports       Show Backend and GraphQL URLs
   status | ps        Show managed Docker nodes and the server version each runs
   update [--name <node> | --all] [--version <X.Y.Z[-beta.N]>]
                      Update the server inside running node(s), keeping the container and image
@@ -135,7 +135,6 @@ function Save-NodeState($State) {
     nodeName = $State.nodeName
     containerName = $State.containerName
     backendPort = [int]$State.backendPort
-    noVncPort = [int]$State.noVncPort
     imageRef = $State.imageRef
     configHash = $State.configHash
     createdAt = $State.createdAt

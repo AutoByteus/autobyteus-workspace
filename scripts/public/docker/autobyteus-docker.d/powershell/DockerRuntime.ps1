@@ -146,12 +146,10 @@ function Select-Ports([bool]$PreferDefaults) {
   if ($PreferDefaults) {
     return [ordered]@{
       backend = Pick-Port $used 8001
-      noVnc = Pick-Port $used 6080
     }
   }
   [ordered]@{
     backend = Pick-Port $used $null
-    noVnc = Pick-Port $used $null
   }
 }
 
@@ -179,7 +177,6 @@ Container: $($State.containerName)
 Image: $($State.imageRef)
 Backend: http://localhost:$($State.backendPort)
 GraphQL: http://localhost:$($State.backendPort)/graphql
-VNC Viewer: localhost:$($State.noVncPort) (this computer only)
 Workspace: $Script:WorkspaceContainerPath -> $(Get-NodeWorkspaceHostPath $nodeName)
 Shared folder: $Script:SharedContainerPath -> $(Get-SharedWorkspaceHostPath)
 Private app data: /home/autobyteus/data -> $(Normalize-NodeName $nodeName)-data (Docker named volume)
@@ -204,10 +201,10 @@ function Set-StateProperty($State, [string]$Name, $Value) {
   $State | Add-Member -NotePropertyName $Name -NotePropertyValue $Value
 }
 
-function Test-StateHasPorts($State) { $State -and $State.backendPort -and $State.noVncPort }
+function Test-StateHasPorts($State) { $State -and $State.backendPort }
 
 function New-NodeState([string]$NodeName, [string]$ContainerName, [string]$ImageRef, $Ports, [string]$CreatedAt) {
-  $state = [pscustomobject]@{ nodeName = $NodeName; containerName = $ContainerName; backendPort = [int]$Ports.backend; noVncPort = [int]$Ports.noVnc; imageRef = $ImageRef; configHash = ''; createdAt = $CreatedAt; updatedAt = Get-NowUtc }
+  $state = [pscustomobject]@{ nodeName = $NodeName; containerName = $ContainerName; backendPort = [int]$Ports.backend; imageRef = $ImageRef; configHash = ''; createdAt = $CreatedAt; updatedAt = Get-NowUtc }
   $state
 }
 

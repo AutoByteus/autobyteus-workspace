@@ -47,14 +47,14 @@
           :key="row.id"
           class="grid gap-2"
         >
-          <div v-if="field.format === 'url'" class="grid grid-cols-1 sm:grid-cols-12 gap-2 items-center">
+          <div class="grid grid-cols-1 sm:grid-cols-12 gap-2 items-center">
             <select
               v-model="row.protocol"
               class="sm:col-span-3 h-11 px-3 border border-gray-200 bg-white rounded-lg text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
               :data-testid="`quick-row-protocol-${field.key}-${row.id}`"
               @change="onQuickEndpointRowChange(field.key)"
             >
-              <option v-for="protocol in getProtocolOptions(field)" :key="protocol" :value="protocol">
+              <option v-for="protocol in URL_PROTOCOL_OPTIONS" :key="protocol" :value="protocol">
                 {{ protocol }}
               </option>
             </select>
@@ -72,35 +72,6 @@
               v-model="row.port"
               type="text"
               class="sm:col-span-2 h-11 px-3 border border-gray-200 bg-white rounded-lg text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-              :placeholder="$t('settings.components.settings.ServerSettingsManager.port')"
-              :data-testid="`quick-row-port-${field.key}-${row.id}`"
-              @input="onQuickEndpointRowChange(field.key)"
-            >
-
-            <button
-              type="button"
-              class="sm:col-span-1 h-11 inline-flex items-center justify-center rounded-lg border border-transparent text-gray-400 hover:text-red-500 hover:border-red-100 hover:bg-red-50 transition-colors"
-              :data-testid="`quick-row-remove-${field.key}-${row.id}`"
-              @click="removeQuickEndpointRow(field.key, row.id)"
-            >
-              <Icon icon="heroicons:x-mark" class="w-4 h-4" />
-            </button>
-          </div>
-
-          <div v-else class="grid grid-cols-1 sm:grid-cols-12 gap-2 items-center">
-            <input
-              v-model="row.host"
-              type="text"
-              class="sm:col-span-8 h-11 px-3 border border-gray-200 bg-white rounded-lg text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-              :placeholder="$t('settings.components.settings.ServerSettingsManager.host')"
-              :data-testid="`quick-row-host-${field.key}-${row.id}`"
-              @input="onQuickEndpointRowChange(field.key)"
-            >
-
-            <input
-              v-model="row.port"
-              type="text"
-              class="sm:col-span-3 h-11 px-3 border border-gray-200 bg-white rounded-lg text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
               :placeholder="$t('settings.components.settings.ServerSettingsManager.port')"
               :data-testid="`quick-row-port-${field.key}-${row.id}`"
               @input="onQuickEndpointRowChange(field.key)"
@@ -148,13 +119,10 @@ import { useServerSettingsStore } from '~/stores/serverSettings'
 type NotificationPayload = { type: 'success' | 'error'; message: string }
 const emit = defineEmits<{ notify: [payload: NotificationPayload] }>()
 
-type QuickFieldFormat = 'url' | 'hostPort'
-
 interface QuickSetupField {
   key: string
   label: string
   description: string
-  format: QuickFieldFormat
   defaultProtocol: string
 }
 
@@ -166,12 +134,9 @@ interface QuickEndpointRow {
   path: string
 }
 
-const VNC_HOSTS_KEY = 'AUTOBYTEUS_VNC_SERVER_HOSTS'
-
 const quickSetupFields: QuickSetupField[] = [
-  { key: 'LMSTUDIO_HOSTS', label: 'LM Studio', description: 'Local LLM inference server', format: 'url', defaultProtocol: 'http' },
-  { key: 'OLLAMA_HOSTS', label: 'Ollama', description: 'Run open-source models locally', format: 'url', defaultProtocol: 'http' },
-  { key: VNC_HOSTS_KEY, label: 'AutoByteus VNC Hosts', description: 'Remote desktop access', format: 'hostPort', defaultProtocol: 'ws' },
+  { key: 'LMSTUDIO_HOSTS', label: 'LM Studio', description: 'Local LLM inference server', defaultProtocol: 'http' },
+  { key: 'OLLAMA_HOSTS', label: 'Ollama', description: 'Run open-source models locally', defaultProtocol: 'http' },
 ]
 
 const iconActionButtonClass =
@@ -191,10 +156,7 @@ const quickFieldByKey = computed(() => {
   return map
 })
 
-const protocolOptionsByFormat: Record<QuickFieldFormat, string[]> = {
-  url: ['http', 'https'],
-  hostPort: ['ws', 'wss'],
-}
+const URL_PROTOCOL_OPTIONS = ['http', 'https']
 
 const getQuickField = (key: string): QuickSetupField => {
   const field = quickFieldByKey.value.get(key)
@@ -233,23 +195,11 @@ const parseUrlTokenToRow = (field: QuickSetupField, token: string): QuickEndpoin
   }
 }
 
-const parseHostPortTokenToRow = (field: QuickSetupField, token: string): QuickEndpointRow => {
-  const match = token.match(/^(?:(ws|wss):\/\/)?([^/:]+)(?::(\d+))?$/i)
-  if (!match) return { ...createQuickEndpointRow(field), host: token }
-  return {
-    ...createQuickEndpointRow(field),
-    protocol: (match[1] ?? field.defaultProtocol).toLowerCase(),
-    host: match[2] ?? '',
-    port: match[3] ?? '',
-    path: '',
-  }
-}
-
 const parseQuickSettingValue = (key: string, rawValue: string): QuickEndpointRow[] => {
   const field = getQuickField(key)
   const tokens = splitEndpointTokens(rawValue)
   if (tokens.length === 0) return [createQuickEndpointRow(field)]
-  const rows = tokens.map(token => field.format === 'url' ? parseUrlTokenToRow(field, token) : parseHostPortTokenToRow(field, token))
+  const rows = tokens.map(token => parseUrlTokenToRow(field, token))
   return rows.length > 0 ? rows : [createQuickEndpointRow(field)]
 }
 
@@ -267,7 +217,7 @@ const quickRowIsInvalid = (field: QuickSetupField, row: QuickEndpointRow): boole
   if (!quickRowHasAnyValue(field, row)) return false
   if (!row.host.trim()) return true
   if (!isValidPort(row.port)) return true
-  if (field.format === 'url' && !row.protocol.trim()) return true
+  if (!row.protocol.trim()) return true
   return false
 }
 
@@ -280,11 +230,8 @@ const serializeQuickRows = (key: string): string => {
       const protocol = row.protocol.trim() || field.defaultProtocol
       const host = row.host.trim() || 'localhost'
       const port = row.port.trim()
-      if (field.format === 'url') {
-        const path = normalizePath(row.path)
-        return `${protocol}://${host}${port ? `:${port}` : ''}${path}`
-      }
-      return port ? `${host}:${port}` : host
+      const path = normalizePath(row.path)
+      return `${protocol}://${host}${port ? `:${port}` : ''}${path}`
     })
     .join(',')
 }
@@ -317,7 +264,6 @@ const hasQuickSettingValidationErrors = (key: string): boolean => {
   return rows.some(row => quickRowIsInvalid(field, row))
 }
 
-const getProtocolOptions = (field: QuickSetupField): string[] => protocolOptionsByFormat[field.format]
 const isQuickSettingChanged = (key: string) => quickEditedSettings[key] !== quickOriginalSettings[key]
 const isQuickSettingUpdating = (key: string) => quickIsUpdating[key] === true
 const isQuickSettingSaveBlocked = (key: string) =>

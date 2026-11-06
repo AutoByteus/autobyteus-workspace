@@ -1,0 +1,75 @@
+# Check: IMP-14
+# Command: node check-clipboard-desync.mjs <ws package.json> http://127.0.0.1:56039 abx405-node-desktop-check (raw viewer advertising ExtendedClipboard like noVNC; replies with noVNC's caps; xclip writes the agent clipboard)
+# Setup: Test-owned container abx405-node-desktop-check (label com.autobyteus.api-e2e-owner=abx405-impl), -p 127.0.0.1:56039:8000 only, fresh volumes abx405-node-desktop-check-{data,root-home,chromium-profile,server-packages}; started by the image's starter (AUTOBYTEUS_STARTER_SOCKET set), Xvnc :99.
+# Commit: 6407bfc15f
+# Environment: macOS arm64, Docker Desktop (server 29.0.1), image autobyteus/autobyteus-server:beta (9c5aa01bb2fc) with this commit's server package (docker buildx --target server-package, linux/arm64) mounted read-only over /opt/autobyteus/server-package, Node v22.23.1
+# Date: 2026-11-06
+
+[
+  {
+    "mode": "view",
+    "cutTexts": [
+      {
+        "kind": "extended",
+        "actions": [
+          "caps",
+          "request",
+          "peek",
+          "notify",
+          "provide"
+        ],
+        "payloadBytes": 4,
+        "firstPayloadByte": 0
+      },
+      {
+        "kind": "extended",
+        "actions": [
+          "notify"
+        ],
+        "payloadBytes": 0,
+        "firstPayloadByte": null
+      },
+      {
+        "kind": "extended",
+        "actions": [
+          "provide"
+        ],
+        "payloadBytes": 54,
+        "firstPayloadByte": 120
+      }
+    ]
+  },
+  {
+    "mode": "control",
+    "cutTexts": [
+      {
+        "kind": "extended",
+        "actions": [
+          "caps",
+          "request",
+          "peek",
+          "notify",
+          "provide"
+        ],
+        "payloadBytes": 4,
+        "firstPayloadByte": 0
+      },
+      {
+        "kind": "extended",
+        "actions": [
+          "notify"
+        ],
+        "payloadBytes": 0,
+        "firstPayloadByte": null
+      },
+      {
+        "kind": "extended",
+        "actions": [
+          "notify"
+        ],
+        "payloadBytes": 0,
+        "firstPayloadByte": null
+      }
+    ]
+  }
+]

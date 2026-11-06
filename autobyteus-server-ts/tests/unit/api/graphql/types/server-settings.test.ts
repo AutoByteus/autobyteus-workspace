@@ -30,15 +30,15 @@ describe("ServerSettingsResolver", () => {
 
   it("maps available server settings from service", () => {
     mockServerSettingsService.getAvailableSettings.mockReturnValue([{
-      key: "AUTOBYTEUS_VNC_SERVER_HOSTS",
-      value: "localhost:6080",
+      key: "OLLAMA_HOSTS",
+      value: "http://localhost:11434",
       description: "desc",
       isEditable: true,
       isDeletable: false,
     }]);
     expect(new ServerSettingsResolver().getServerSettings()).toEqual([{
-      key: "AUTOBYTEUS_VNC_SERVER_HOSTS",
-      value: "localhost:6080",
+      key: "OLLAMA_HOSTS",
+      value: "http://localhost:11434",
       description: "desc",
       isEditable: true,
       isDeletable: false,

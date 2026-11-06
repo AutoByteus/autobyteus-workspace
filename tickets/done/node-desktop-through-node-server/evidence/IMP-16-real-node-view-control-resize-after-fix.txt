@@ -1,0 +1,64 @@
+# Check: IMP-16
+# Command: node IMP-10-check-node-desktop.mjs <ws package.json> http://127.0.0.1:57817 abx405-node-desktop-check
+# Setup: Test-owned container abx405-node-desktop-check (label com.autobyteus.api-e2e-owner=abx405-impl), -p 127.0.0.1:57817:8000 only, fresh volumes abx405-node-desktop-check-{data,root-home,chromium-profile,server-packages}; started by the image's starter, Xvnc :99. Removed with its volumes afterwards.
+# Commit: ce13fa9727
+# Environment: macOS arm64, Docker Desktop (server 29.0.1), image autobyteus/autobyteus-server:beta (9c5aa01bb2fc) with this commit's server package (docker buildx --target server-package, linux/arm64) mounted read-only over /opt/autobyteus/server-package, Node v22.23.1
+# Date: 2026-11-06
+
+{
+  "base": "http://127.0.0.1:57817",
+  "container": "abx405-node-desktop-check",
+  "availability": {
+    "status": 200,
+    "body": {
+      "available": true
+    }
+  },
+  "dimensionsBefore": "1920x1080",
+  "upstreamBefore": 0,
+  "view": {
+    "query": "?mode=view",
+    "closed": {
+      "code": 1000,
+      "reason": ""
+    },
+    "serverVersion": "RFB 003.008",
+    "securityTypes": [
+      1
+    ],
+    "securityResult": 0,
+    "width": 1920,
+    "height": 1080,
+    "desktopName": "vncuser@f453ac3a5d05"
+  },
+  "mouseAfterViewPointer": "x:300 y:300 screen:0 window:6291460",
+  "dimensionsAfterViewResize": "1920x1080",
+  "viewStillOpen": true,
+  "control": {
+    "query": "?mode=control",
+    "closed": {
+      "code": 1000,
+      "reason": ""
+    },
+    "serverVersion": "RFB 003.008",
+    "securityTypes": [
+      1
+    ],
+    "securityResult": 0,
+    "width": 1920,
+    "height": 1080,
+    "desktopName": "vncuser@f453ac3a5d05"
+  },
+  "upstreamWithTwoViewers": 2,
+  "mouseAfterControlPointer": "x:53 y:59 screen:0 window:6291460",
+  "dimensionsAfterControlResize": "1920x1080",
+  "controlStillOpen": true,
+  "upstreamAfterClose": 0,
+  "upstreamClosedWithinMs": 114,
+  "refusedTargetQuery": {
+    "code": 4400,
+    "reason": "NODE_DESKTOP_INVALID_REQUEST"
+  },
+  "upstreamAfterRefusal": 0,
+  "dimensionsAfter": "1920x1080"
+}

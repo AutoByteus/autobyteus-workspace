@@ -51,6 +51,7 @@ This directory mirrors the module documentation layout used in `autobyteus-serve
 | Skill Update Notices (tell active runs when a used skill changes) | [skill_update_notices.md](./skill_update_notices.md) |
 | Restart Resume (busy runs continue after an update restart) | [restart_resume.md](./restart_resume.md) |
 | Skills | [skills.md](./skills.md) |
+| Node Desktop (a Docker node's desktop in the VNC Viewer, through the node's server) | [node_desktop.md](./node_desktop.md) |
 | Terminal | [terminal.md](./terminal.md) |
 | Token Usage | [token_usage.md](./token_usage.md) |
 | Update Notifications (background update checks of imported GitHub packages and skill sources, one notification per source) | [update_notifications.md](./update_notifications.md) |

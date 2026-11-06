@@ -1,0 +1,26 @@
+# NOTE: attempt 1 of step 07. Electron's CDP has no Browser.getWindowForTarget, so the window was never minimized (visibilityState stayed 'visible'); the open stream correctly stayed open. Not a result for AC-010; the minimize is done through macOS in step 07b.
+# Case: API-05 step 07 — minimizing the window ends the stream; restoring reconnects in View only (AC-010, REQ-008, D-10)
+# Steps: first switch the tile to Control (so the reconnect mode is meaningful); CDP Browser.setWindowBounds windowState=minimized on the node window; sample document.visibilityState, upstream sockets to Xvnc inside the node (probes/upstream.sh: /proc/net/tcp state 01 to :5900) every 250 ms for 3 s; node log line; then windowState=normal; wait; tile status
+# Commit: 952bc1fcd0; node abx405-api-node; app iso-62503-d542
+# Date: 2026-11-06T17:55:16Z
+
+"Connected · Control"
+upstream before minimize: 1
+minimize at epochMs=1793987717277: {"id":1,"error":{"code":-32601,"message":"'Browser.getWindowForTarget' wasn't found"}}
+  +101ms upstream=1
+  +467ms upstream=1
+  +831ms upstream=1
+  +1189ms upstream=1
+  +1582ms upstream=1
+  +1963ms upstream=1
+  +2360ms upstream=1
+  +2749ms upstream=1
+  +3137ms upstream=1
+  +3518ms upstream=1
+  +3900ms upstream=1
+  +4273ms upstream=1
+visibilityState while minimized: "visible" tile="Connected · Control"
+node log: 2026-11-06T17:55:16.932592096Z [node-desktop] stream ended mode=view viewer=trusted_network durationMs=73982 toViewer=1352436 fromViewer=1166 reason=viewer-closed
+upstream after 3 s more (no stream while minimized): 1
+restore: {"id":1,"error":{"code":-32601,"message":"'Browser.getWindowForTarget' wasn't found"}}
+visibilityState after restore: "visible" tile="Connected · Control" mode="Control" upstream=1

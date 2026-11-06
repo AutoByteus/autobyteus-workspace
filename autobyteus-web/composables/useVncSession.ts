@@ -1,269 +1,134 @@
-import { computed, ref, shallowRef, unref, watch, type MaybeRef } from 'vue';
+import { computed, ref, shallowRef } from 'vue';
 import RFB from '@novnc/novnc';
+import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
+import { getActiveRemoteAccessCredential } from '~/utils/remoteAccess/authorizedTransport';
+import { redactRemoteAccessWebSocketUrl } from '~/utils/remoteAccess/websocketAuth';
+import {
+  nodeDesktopStreamUrl,
+  viewerStateForClose,
+  type NodeDesktopMode,
+  type NodeDesktopStreamEnd,
+} from '~/utils/nodeDesktopClient';
 
-interface VncSessionOptions {
-  url: MaybeRef<string>;
-  password: MaybeRef<string>;
-  viewOnly?: boolean;
-  label?: string;
-}
+type ConnectionStatus = 'disconnected' | 'connecting' | 'connected';
 
-export function useVncSession(options: VncSessionOptions) {
-  const INITIAL_RESIZE_RETRY_DELAY_MS = 120;
-  const INITIAL_RESIZE_RESTORE_DELAY_MS = 320;
-  const connectionStatus = ref<'disconnected' | 'connecting' | 'connected'>('disconnected');
-  const errorMessage = ref('');
+/**
+ * One viewer of the bound node's node desktop: the noVNC session and the WebSocket it runs on.
+ * The composable creates the socket and listens for its close itself (noVNC's own disconnect event
+ * carries no close code), then hands the socket to noVNC as its channel. One socket and one RFB
+ * per connection; a mode switch reconnects. The node enforces the mode; noVNC's `viewOnly` only
+ * keeps the client from sending input. The agent's desktop is never resized: the picture scales.
+ */
+export function useVncSession() {
+  const connectionStatus = ref<ConnectionStatus>('disconnected');
+  /** How the last stream ended when the viewer did not end it; null otherwise. */
+  const streamEnd = ref<NodeDesktopStreamEnd | null>(null);
+  const mode = ref<NodeDesktopMode>('view');
   const rfb = shallowRef<RFB | null>(null);
   const container = shallowRef<HTMLElement | null>(null);
-  const viewOnly = ref(options.viewOnly ?? true);
-  const fullscreenFitEnabled = ref(false);
-  let restoreViewOnlyAfterFullscreen: boolean | null = null;
-  let initialResizeRetryTimer: ReturnType<typeof setTimeout> | null = null;
-  let initialResizeRestoreTimer: ReturnType<typeof setTimeout> | null = null;
-
-  const url = computed(() => String(unref(options.url) ?? '').trim());
-  const password = computed(() => String(unref(options.password) ?? ''));
-  const label = options.label ? ` ${options.label}` : '';
-
-  watch(connectionStatus, (status) => {
-    console.log(`[vncSession${label}] status -> ${status}`);
-  });
 
   const isConnected = computed(() => connectionStatus.value === 'connected');
   const isConnecting = computed(() => connectionStatus.value === 'connecting');
-  const statusMessage = computed(() => {
-    switch (connectionStatus.value) {
-      case 'connected':
-        return 'Connected to VNC server';
-      case 'connecting':
-        return 'Connecting to VNC server...';
-      case 'disconnected':
-        return errorMessage.value || 'Disconnected';
-      default:
-        return 'Unknown status';
-    }
-  });
 
   const setContainer = (element: HTMLElement | null) => {
     container.value = element;
-    if (element) {
-      console.log(`[vncSession${label}] container set`, {
-        width: element.offsetWidth,
-        height: element.offsetHeight,
-      });
-    } else {
-      console.log(`[vncSession${label}] container set: null`);
-    }
   };
 
-  const applyViewportStrategy = (session: RFB | null = rfb.value) => {
-    if (!session) return;
-    // Keep client-side fit as universal fallback; enable remote resize when fullscreen-fit mode is active.
+  const applyViewportStrategy = (session: RFB) => {
     session.scaleViewport = true;
     session.clipViewport = false;
-    session.resizeSession = fullscreenFitEnabled.value;
-    session.viewOnly = viewOnly.value;
+    session.resizeSession = false;
+    session.viewOnly = mode.value === 'view';
   };
 
-  const clearInitialResizeTimers = () => {
-    if (initialResizeRetryTimer !== null) {
-      clearTimeout(initialResizeRetryTimer);
-      initialResizeRetryTimer = null;
-    }
-    if (initialResizeRestoreTimer !== null) {
-      clearTimeout(initialResizeRestoreTimer);
-      initialResizeRestoreTimer = null;
+  /** Ends the current stream as the viewer's own action: no error state follows. */
+  const dropSession = () => {
+    const session = rfb.value;
+    rfb.value = null;
+    if (!session) return;
+    try {
+      session.disconnect();
+    } catch (error) {
+      console.warn('[vncSession] error during RFB disconnect:', error);
     }
   };
 
-  const triggerInitialRemoteResize = (session: RFB) => {
-    clearInitialResizeTimers();
+  const connect = (nextMode: NodeDesktopMode = 'view') => {
+    const target = container.value;
+    if (!target || connectionStatus.value !== 'disconnected') return;
 
-    // noVNC skips remote resize requests while viewOnly=true, so briefly enable control mode.
-    session.viewOnly = false;
-    session.resizeSession = true;
-    window.dispatchEvent(new Event('resize'));
+    mode.value = nextMode;
+    streamEnd.value = null;
+    connectionStatus.value = 'connecting';
 
-    // Retry once shortly after first layout pass in case container dimensions were late to settle.
-    initialResizeRetryTimer = setTimeout(() => {
-      if (rfb.value !== session) return;
-      window.dispatchEvent(new Event('resize'));
-      initialResizeRetryTimer = null;
-    }, INITIAL_RESIZE_RETRY_DELAY_MS);
+    const endpoints = useWindowNodeContextStore().getBoundEndpoints();
+    const url = nodeDesktopStreamUrl(endpoints, nextMode, getActiveRemoteAccessCredential());
+    console.info('[vncSession] connecting', { url: redactRemoteAccessWebSocketUrl(url), mode: nextMode });
 
-    // Restore the intended user mode and fullscreen policy.
-    initialResizeRestoreTimer = setTimeout(() => {
+    let lastClose: { code: number; reason: string } | null = null;
+    let session: RFB;
+    try {
+      const socket = new WebSocket(url);
+      // Registered before noVNC sets its own `onclose`, so this runs first on every close.
+      socket.addEventListener('close', (event) => {
+        lastClose = { code: event.code, reason: event.reason };
+      });
+      session = new RFB(target, socket, { shared: true });
+    } catch (error) {
+      console.error('[vncSession] connection setup failed:', error);
+      connectionStatus.value = 'disconnected';
+      streamEnd.value = viewerStateForClose({ code: 1006, reason: '' });
+      return;
+    }
+    rfb.value = session;
+    applyViewportStrategy(session);
+
+    session.addEventListener('connect', () => {
       if (rfb.value !== session) return;
       applyViewportStrategy(session);
-      initialResizeRestoreTimer = null;
-    }, INITIAL_RESIZE_RESTORE_DELAY_MS);
-  };
-
-  const connect = () => {
-    if (connectionStatus.value !== 'disconnected' || !container.value) {
-      if (!container.value) {
-        errorMessage.value = 'VNC container not set.';
-        console.warn(`[vncSession${label}] connect skipped: container not set.`);
-      } else {
-        console.warn(`[vncSession${label}] connect skipped: status`, connectionStatus.value);
-      }
-      return;
-    }
-
-    if (!url.value) {
-      errorMessage.value = 'VNC host not configured.';
-      console.warn(`[vncSession${label}] connect skipped: url not configured.`);
-      return;
-    }
-
-    console.log(`[vncSession${label}] connecting`, {
-      url: url.value,
-      container: {
-        width: container.value.offsetWidth,
-        height: container.value.offsetHeight,
-      },
+      connectionStatus.value = 'connected';
     });
 
-    if (rfb.value) {
-      try {
-        rfb.value.disconnect();
-      } catch (e) {
-        console.warn('[vncSession] Error disconnecting existing RFB instance:', e);
-      }
-      cleanupConnection();
-    }
-
-    connectionStatus.value = 'connecting';
-    errorMessage.value = '';
-
-    try {
-      const sessionRfb = new RFB(container.value, url.value, {
-        credentials: { password: password.value },
-        shared: true,
-      });
-
-      rfb.value = sessionRfb;
-      applyViewportStrategy(sessionRfb);
-
-      sessionRfb.addEventListener('connect', () => {
-        if (rfb.value !== sessionRfb) return;
-        connectionStatus.value = 'connected';
-        errorMessage.value = '';
-        console.log(`[vncSession${label}] connected`);
-        if (rfb.value) {
-          applyViewportStrategy(rfb.value);
-          triggerInitialRemoteResize(rfb.value);
-        }
-      });
-
-      sessionRfb.addEventListener('disconnect', (e: any) => {
-        if (rfb.value !== sessionRfb) return;
-        const reason = e.detail?.reason || 'Disconnected unexpectedly';
-        if (!e.detail?.clean) {
-          errorMessage.value = reason;
-          console.error(`[vncSession${label}] disconnected with error:`, reason, e.detail);
-        } else {
-          errorMessage.value = 'Disconnected.';
-          console.log(`[vncSession${label}] disconnected cleanly.`);
-        }
-        connectionStatus.value = 'disconnected';
-        cleanupConnection();
-      });
-
-      sessionRfb.addEventListener('credentialsrequired', () => {
-        if (rfb.value !== sessionRfb) return;
-        console.log(`[vncSession${label}] credentials required`);
-        if (rfb.value) rfb.value.sendCredentials({ password: password.value });
-      });
-
-      sessionRfb.addEventListener('securityfailure', (e: any) => {
-        if (rfb.value !== sessionRfb) return;
-        const reason = e.detail?.reason || 'Security failure';
-        console.error(`[vncSession${label}] security failure:`, reason, e.detail);
-      });
-
-      sessionRfb.addEventListener('desktopname', (e: any) => {
-        if (rfb.value !== sessionRfb) return;
-        console.log(`[vncSession${label}] desktop name`, { name: e.detail?.name });
-      });
-    } catch (err: any) {
-      console.error(`[vncSession${label}] connection failed during setup:`, err);
+    session.addEventListener('disconnect', () => {
+      if (rfb.value !== session) return;
+      rfb.value = null;
       connectionStatus.value = 'disconnected';
-      errorMessage.value = `Connection setup failed: ${err.message || String(err)}`;
-      cleanupConnection();
-    }
+      streamEnd.value = viewerStateForClose(lastClose ?? { code: 0, reason: '' });
+      console.info('[vncSession] stream ended', { code: lastClose?.code ?? null, state: streamEnd.value.state });
+    });
   };
 
   const disconnect = () => {
-    if (rfb.value) {
-      try {
-        rfb.value.disconnect();
-      } catch (e) {
-        console.warn(`[vncSession${label}] error during RFB disconnect:`, e);
-      }
-    }
-    cleanupConnection();
+    dropSession();
     connectionStatus.value = 'disconnected';
-    if (!errorMessage.value || errorMessage.value === 'Connected to VNC server' || errorMessage.value === 'Connecting to VNC server...') {
-      errorMessage.value = 'Disconnected';
-    }
+    streamEnd.value = null;
   };
 
-  const cleanupConnection = () => {
-    clearInitialResizeTimers();
-    if (rfb.value) {
-      rfb.value = null;
-    }
+  /** Reopens the stream in the other mode (the node fixes the mode per stream). */
+  const switchMode = (nextMode: NodeDesktopMode) => {
+    if (nextMode === mode.value && connectionStatus.value !== 'disconnected') return;
+    disconnect();
+    connect(nextMode);
   };
 
-  const toggleViewOnly = () => {
-    viewOnly.value = !viewOnly.value;
-    if (fullscreenFitEnabled.value && restoreViewOnlyAfterFullscreen !== null) {
-      // User explicitly changed mode while maximized; do not restore stale value on exit.
-      restoreViewOnlyAfterFullscreen = null;
-    }
-    applyViewportStrategy();
-  };
-
-  const enterFullscreenFitMode = () => {
-    fullscreenFitEnabled.value = true;
-    if (viewOnly.value) {
-      restoreViewOnlyAfterFullscreen = true;
-      viewOnly.value = false;
-    } else {
-      restoreViewOnlyAfterFullscreen = null;
-    }
-    refreshViewport();
-  };
-
-  const exitFullscreenFitMode = () => {
-    fullscreenFitEnabled.value = false;
-    if (restoreViewOnlyAfterFullscreen !== null) {
-      viewOnly.value = restoreViewOnlyAfterFullscreen;
-      restoreViewOnlyAfterFullscreen = null;
-    }
-    refreshViewport();
-  };
-
+  /** Re-applies the scale-to-fit strategy after the tile changes size (for example Maximize). */
   const refreshViewport = () => {
-    if (!rfb.value) return;
-    applyViewportStrategy();
+    const session = rfb.value;
+    if (!session) return;
+    applyViewportStrategy(session);
     window.dispatchEvent(new Event('resize'));
   };
 
   return {
     connectionStatus,
-    errorMessage,
-    viewOnly,
+    streamEnd,
+    mode,
     isConnected,
     isConnecting,
-    statusMessage,
     setContainer,
     connect,
     disconnect,
-    toggleViewOnly,
-    enterFullscreenFitMode,
-    exitFullscreenFitMode,
+    switchMode,
     refreshViewport,
   };
 }

@@ -1,6 +1,7 @@
 import type { FastifyInstance } from "fastify";
 import { registerFileExplorerWebsocket } from "./file-explorer.js";
 import { registerTerminalWebsocket } from "./terminal.js";
+import { registerNodeDesktopWebsocket } from "./node-desktop.js";
 import { registerProjectChangesWebsocket } from "./projects.js";
 import { registerUpdateNotificationsWebsocket } from "./update-notifications.js";
 import { registerAgentPackageDefinitionsWebsocket } from "./agent-package-definitions.js";
@@ -26,6 +27,7 @@ export async function registerWebsocketRoutes(
 ): Promise<void> {
   await registerFileExplorerWebsocket(app);
   await registerTerminalWebsocket(app);
+  await registerNodeDesktopWebsocket(app);
   await registerProjectChangesWebsocket(app);
   await registerUpdateNotificationsWebsocket(app);
   await registerAgentPackageDefinitionsWebsocket(app, dependencies.agentPackageDefinitionChangeHub);

@@ -388,7 +388,7 @@ const settingsMessages = {
   'settings.components.settings.DockerNodeStartGuideCard.commands.storage.title': '查看 Docker 存储',
   'settings.components.settings.DockerNodeStartGuideCard.commands.storage.description': '默认显示所有已管理节点的私有命名卷、主机绑定挂载和启动器状态。',
   'settings.components.settings.DockerNodeStartGuideCard.commands.urls.title': '显示 Docker 节点 URL',
-  'settings.components.settings.DockerNodeStartGuideCard.commands.urls.description': '默认打印所有已管理节点的 Backend、GraphQL 和 VNC Viewer（仅限本机）地址。',
+  'settings.components.settings.DockerNodeStartGuideCard.commands.urls.description': '默认打印所有已管理节点的 Backend 和 GraphQL 地址。',
   'settings.components.settings.DockerNodeStartGuideCard.commands.status.title': '显示 Docker 节点状态',
   'settings.components.settings.DockerNodeStartGuideCard.commands.status.description': '列出已管理节点及其当前 Docker 状态。',
   'settings.components.settings.DockerNodeStartGuideCard.commands.logs.title': '显示 Docker 节点日志',

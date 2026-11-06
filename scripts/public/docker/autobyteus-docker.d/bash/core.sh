@@ -3,7 +3,7 @@ LAUNCHER_LABEL_KEY="com.autobyteus.launcher"
 LAUNCHER_LABEL_VALUE="server-docker"
 NODE_LABEL_KEY="com.autobyteus.nodeName"
 CONFIG_LABEL_KEY="com.autobyteus.configHash"
-CONFIG_HASH_VERSION="v8"
+CONFIG_HASH_VERSION="v9"
 NODE_NAME_PREFIX="autobyteus-server"
 DEFAULT_NODE_NAME="${NODE_NAME_PREFIX}-0"
 DEFAULT_IMAGE="autobyteus/autobyteus-server"
@@ -35,7 +35,7 @@ Commands:
   workspace paths    Show host/container paths for all nodes by default
   workspace apply    Recreate node(s) to apply shared workspace bind mounts safely
   storage            Show named volumes and host bind mounts for all nodes by default
-  urls | ports       Show Backend, GraphQL and VNC Viewer (this computer only) URLs for all nodes by default
+  urls | ports       Show Backend and GraphQL URLs for all nodes by default
   status | ps        Show managed Docker nodes and the server version each runs
   update [--name <node> | --all] [--version <X.Y.Z[-beta.N]>]
                      Update the server inside running node(s), keeping the container and image
@@ -113,7 +113,7 @@ state_path_for() { printf '%s/%s.env\n' "$(state_dir)" "$(normalize_node_name "$
 
 load_state() {
   local file="$1"
-  NODE_NAME="" CONTAINER_NAME="" BACKEND_PORT="" NOVNC_PORT="" IMAGE_REF="" CREATED_AT="" CONFIG_HASH=""
+  NODE_NAME="" CONTAINER_NAME="" BACKEND_PORT="" IMAGE_REF="" CREATED_AT="" CONFIG_HASH=""
   unset PROFILE
   if [[ -f "$file" ]]; then
     # shellcheck disable=SC1090
@@ -123,10 +123,10 @@ load_state() {
 }
 
 write_state() {
-  local file="$1" node_name="$2" container_name="$3" backend="$4" novnc="$5" image_ref="$6" created_at="$7" config_hash="$8"
+  local file="$1" node_name="$2" container_name="$3" backend="$4" image_ref="$5" created_at="$6" config_hash="$7"
   {
-    printf 'NODE_NAME=%s\nCONTAINER_NAME=%s\nBACKEND_PORT=%s\nNOVNC_PORT=%s\nIMAGE_REF=%s\nCREATED_AT=%s\nCONFIG_HASH=%s\nUPDATED_AT=%s\n' \
-      "$node_name" "$container_name" "$backend" "$novnc" "$image_ref" "$created_at" "$config_hash" "$(now_utc)"
+    printf 'NODE_NAME=%s\nCONTAINER_NAME=%s\nBACKEND_PORT=%s\nIMAGE_REF=%s\nCREATED_AT=%s\nCONFIG_HASH=%s\nUPDATED_AT=%s\n' \
+      "$node_name" "$container_name" "$backend" "$image_ref" "$created_at" "$config_hash" "$(now_utc)"
   } > "$file"
   chmod 600 "$file" 2>/dev/null || true
 }

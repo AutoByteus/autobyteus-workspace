@@ -1,0 +1,20 @@
+# Case: API-06 (a, rerun of scripts.tests.test_public_docker_launcher_update) — the module's fake starter needs node (its header: 'FAKE_STARTER_CLI, needs node'), which the first container lacked
+# Command: same container as API-06a-launcher-tests-with-pwsh.log plus apt-get install nodejs; su tester -c 'python3 -m unittest scripts.tests.test_public_docker_launcher_update -v'
+# Commit: 952bc1fcd0 (source identical to ce13fa9727)
+# Environment: Debian 12 arm64 container, PowerShell 7.4.6, Python 3.11, Debian nodejs
+# Date: 2026-11-06T17:38:58Z
+
+v18.20.4
+test_a_failed_update_ends_with_its_code_and_a_non_zero_exit (scripts.tests.test_public_docker_launcher_update.LauncherUpdateTest.test_a_failed_update_ends_with_its_code_and_a_non_zero_exit) ... ok
+test_an_image_without_a_starter_cannot_update_in_place (scripts.tests.test_public_docker_launcher_update.LauncherUpdateTest.test_an_image_without_a_starter_cannot_update_in_place) ... ok
+test_status_says_not_available_without_a_starter_or_a_container (scripts.tests.test_public_docker_launcher_update.LauncherUpdateTest.test_status_says_not_available_without_a_starter_or_a_container) ... ok
+test_status_shows_what_each_starter_runs (scripts.tests.test_public_docker_launcher_update.LauncherUpdateTest.test_status_shows_what_each_starter_runs) ... ok
+test_update_all_updates_each_node_in_turn (scripts.tests.test_public_docker_launcher_update.LauncherUpdateTest.test_update_all_updates_each_node_in_turn) ... ok
+test_update_follows_the_steps_to_the_result (scripts.tests.test_public_docker_launcher_update.LauncherUpdateTest.test_update_follows_the_steps_to_the_result) ... ok
+test_update_refuses_options_that_do_not_apply (scripts.tests.test_public_docker_launcher_update.LauncherUpdateTest.test_update_refuses_options_that_do_not_apply) ... ok
+test_without_a_version_the_saved_image_tag_chooses_the_track_or_refuses (scripts.tests.test_public_docker_launcher_update.LauncherUpdateTest.test_without_a_version_the_saved_image_tag_chooses_the_track_or_refuses) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 14.618s
+
+OK
