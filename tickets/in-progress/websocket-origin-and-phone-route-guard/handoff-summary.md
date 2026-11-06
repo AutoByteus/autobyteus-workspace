@@ -1,6 +1,6 @@
 # Handoff Summary: websocket-origin-and-phone-route-guard (autobyteus-403)
 
-- Status: verified from the evidence (audited, not redone), archived and finalized on `personal`. **No release**: the ticket says "release only on the user's word", and the release guide's default is no release. A beta or stable release is available on request; this ticket's `release-notes.md` carries a `## What you need to do` section for it.
+- Status: **Blocked (DR-001)**. The evidence was audited and judged sufficient on the first integrated state (`18fd9f4e5c`). The latest `origin/personal` (`6341292552`, autobyteus-407) conflicts in `remote-access-websocket-auth.ts` and depends on code this ticket removed (`release-deployment-report.md`, Escalation). Not archived, not finalized. This summary is updated after re-integration. **No release**: the ticket says "release only on the user's word", and the release guide's default is no release. A beta or stable release is available on request; this ticket's `release-notes.md` carries a `## What you need to do` section for it.
 - Classification: `task_size=Medium`, `architectural_risk=High`, reviewed route. Architecture review passed; source review CRR-001 Pass (9.5); API/E2E API-REV-001 Pass, 95.4%; test-code review CRR-002 Pass.
 
 ## What Changed
