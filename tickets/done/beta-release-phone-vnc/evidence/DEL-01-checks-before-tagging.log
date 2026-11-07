@@ -1,0 +1,14 @@
+=== licensing
+Tracked files scanned: 7894
+exit=0
+=== hygiene
+Longest tracked path: 200 chars: tickets/done/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.js
+exit=0
+=== secrets v1.5.12-beta.5..HEAD
+secret gate: scanning 32 commit(s) in v1.5.12-beta.5..HEAD
+secret gate: PASS (no secrets found)
+exit=0
+=== install
+exit=0
+=== server prebuild
+exit=0
