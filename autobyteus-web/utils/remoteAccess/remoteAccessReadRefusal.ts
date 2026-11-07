@@ -37,10 +37,6 @@ export const remoteAccessReadRefusal = (cause: unknown): RemoteAccessReadRefusal
   const { status, code } = typeof cause === 'object' ? readStatusAndCode(cause) : { status: null, code: null };
   if (code === PHONE_ACCESS_OFF_CODE) return 'phone_access_off';
   if (status === 401 || (code !== null && SESSION_REJECTED_CODES.has(code))) return 'session_rejected';
-  // A read whose failure only kept its message text (today's 401 and auth-code rule).
-  const message = messageOf(cause);
-  if (message.includes(PHONE_ACCESS_OFF_CODE)) return 'phone_access_off';
-  return /\b401\b|REMOTE_ACCESS_AUTH_REQUIRED|REMOTE_ACCESS_AUTH_INVALID|REMOTE_ACCESS_DEVICE_REVOKED/i.test(message)
-    ? 'session_rejected'
-    : null;
+  // A read whose failure only kept its message text: today's 401 and auth-code rule, nothing more.
+  return /\b401\b|REMOTE_ACCESS_AUTH_REQUIRED|REMOTE_ACCESS_AUTH_INVALID/i.test(messageOf(cause)) ? 'session_rejected' : null;
 };

@@ -111,7 +111,7 @@ export const resolveRunWorkspaceChoice = async (
     if (!rootPath) throw new Error(t('chat.launch.workspaceUnavailable'))
     return resolveRunWorkspaceChoice({ kind: 'folder', rootPath })
   }
-  let workspaceId: string | null
+  let workspaceId: string
   try {
     workspaceId = await findOrRegisterWorkspaceByRootPath(choice.rootPath)
   } catch (cause) {
@@ -119,9 +119,7 @@ export const resolveRunWorkspaceChoice = async (
     const refusal = readWorkspacePathRefusal(cause)
     throw new Error(refusal ? workspacePathRefusalText(refusal, choice.rootPath, t) : t('chat.launch.workspaceUnavailable'))
   }
-  const workspaceMetadata = workspaceId
-    ? await resolveRunHistoryWorkspaceMetadataByRootPath(choice.rootPath)
-    : null
-  if (!workspaceId || !workspaceMetadata) throw new Error(t('chat.launch.workspaceUnavailable'))
+  const workspaceMetadata = await resolveRunHistoryWorkspaceMetadataByRootPath(choice.rootPath)
+  if (!workspaceMetadata) throw new Error(t('chat.launch.workspaceUnavailable'))
   return { workspaceId, workspaceMetadata }
 }

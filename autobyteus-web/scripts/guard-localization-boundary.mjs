@@ -68,7 +68,6 @@ for (const includeDir of includeDirs) {
     const content = fs.readFileSync(filePath, 'utf8');
     const lines = content.split('\n');
 
-
     for (let index = 0; index < lines.length; index += 1) {
       const line = lines[index];
       const trimmed = line.trim();

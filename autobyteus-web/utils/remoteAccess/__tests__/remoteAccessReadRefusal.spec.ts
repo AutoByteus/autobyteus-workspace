@@ -32,6 +32,9 @@ describe('remoteAccessReadRefusal (autobyteus-426 REQ-002)', () => {
     expect(remoteAccessReadRefusal(new Error('REMOTE_ACCESS_AUTH_REQUIRED'))).toBe('session_rejected');
     // A bare 403 message cannot say which refusal it was: a reachability failure, as before.
     expect(remoteAccessReadRefusal('Response not successful: Received status code 403')).toBeNull();
+    // The new codes are read from the status and body only, never from message text.
+    expect(remoteAccessReadRefusal(new Error('REMOTE_ACCESS_DEVICE_REVOKED'))).toBeNull();
+    expect(remoteAccessReadRefusal('PHONE_ACCESS_DISABLED')).toBeNull();
   });
 
   it('treats every other failure as reachability', () => {
