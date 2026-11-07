@@ -41,7 +41,7 @@ Previews now run with an opaque origin on both source paths, and the workspace s
 - Evidence and rationale for confirmation or change: the delta is the two production files the design names (`HtmlPreviewer.vue` 7 changed lines, `workspaces.ts` +5 lines), their two spec files and two docs. No new owner, file, API, route or persistence (Small). It changes a security boundary: what previewed content may do and a new response header on a node route (High). None of the design's escalation triggers fired: no preview surface outside `HtmlPreviewer` (only `HtmlPreviewer.vue` and `ApplicationIframeHost.vue` render iframes); the CSP header did not break any non-HTML file the preview loads (CSS, classic JS, PNG all load with it, IMP-08); no change to the Origin rule or the Electron shell was needed.
 - Selected route (`Direct API/E2E`/`Code Review`/`Solution Designer`): `Code Review`
 - Lightweight implementation self-review completed for the direct route: `Not Applicable` (High route)
-- New design impact or escalation trigger: `None`. One basis question, R-3, is reported to the Solution Designer: see Known Risks. It does not block code review.
+- New design impact or escalation trigger: `None`. Basis question R-3 was answered upstream as SR-004 (AC-004 reworded; FU-003); see Known Risks.
 
 ## Reviewed Behavior Implementation Trace
 
@@ -71,7 +71,7 @@ Previews now run with an opaque origin on both source paths, and the workspace s
 
 ## Known Risks
 
-- **R-3, reported to the Solution Designer (basis question, not fixed here per the architecture review):** from reading the code, AC-004's "preview updates after the file changes" does not hold for workspace previews today, and this ticket does not change that. `FileExplorerTabs.vue:31,177` keys `FileViewer` by `[currentWorkspaceId, activeFile]` only, and on the workspace path `HtmlPreviewer.updateSrc` assigns the same static URL again (`HtmlPreviewer.vue` `updateSrc`). So when the open file's content changes, the iframe neither remounts nor reloads. Blob previews do refresh, because each content change makes a new Blob URL (IMP-02 revoke test). I have not measured this in the running app. Validation should check it as preserved behavior.
+- **R-3, resolved upstream as SR-004 (no implementation change):** the Solution Designer confirmed the reading below and reworded AC-004. An artifact preview updates when its content changes; a workspace preview shows the changed file after it is reopened, as before. The missing automatic reload is pre-existing and recorded as follow-up FU-003 (not urgent). Original finding: from reading the code, the workspace preview does not reload when the file changes, and this ticket does not change that. `FileExplorerTabs.vue:31,177` keys `FileViewer` by `[currentWorkspaceId, activeFile]` only, and on the workspace path `HtmlPreviewer.updateSrc` assigns the same static URL again (`HtmlPreviewer.vue` `updateSrc`). So when the open file's content changes, the iframe neither remounts nor reloads. Blob previews do refresh, because each content change makes a new Blob URL (IMP-02 revoke test).
 - Behaviour change for users (approved, DEC-001): workspace previews lose relative module scripts, `fetch` of workspace files, workspace web fonts and workers; all previews lose browser storage and cookies. Blob previews never resolved relative resources and still do not (the dead `<base>` pointed at the app's origin root).
 - Refused `Origin: null` requests from previews will show as `REMOTE_ACCESS_ORIGIN_REFUSED` warnings in the node log (design Key Tradeoffs).
 - RSK-001, FU-001, FU-002 as recorded upstream; no new follow-ups.
@@ -136,16 +136,16 @@ Evidence folder: `tickets/in-progress/html-preview-isolation/evidence/`. Environ
 - Testing guideline or development / preview instructions and rendered surface used: the iframe/Blob shape rendered in real Electron (IMP-08), with the app window's webPreferences and the real static-route code. I did not start the full app (isolated desktop instance): that is API/E2E's layer, and the component's only rendered change is the sandbox attribute and the Blob bytes.
 - States, layouts, viewports, and interactions inspected: workspace preview, blob preview, static URL top-level; scripts, CSS, image, other-site script, module, fetch, storage, parent access, preload call.
 - Visual or interaction issues found and corrected: none in the product. A harness escaping bug (content embedded in a `<script>`) was fixed in the harness.
-- Check IDs with the supporting evidence, and remaining unverified states or limitations: IMP-08. The screenshot shows the workspace preview with styled heading and image, and the blob preview unstyled (no base URL, as documented). Not verified: the real app shell, the phone web app, and refresh on file change (R-3).
+- Check IDs with the supporting evidence, and remaining unverified states or limitations: IMP-08. The screenshot shows the workspace preview with styled heading and image, and the blob preview unstyled (no base URL, as documented). Not verified: the real app shell, the phone web app, and the AC-004 update/reopen behaviour (SR-004).
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
 - AC-002/AC-003 hostile page: reuse `IMP-08-rendered-check/harness/workspace/report.html` as a starting point, adding a WS to `/ws/terminal/…` and a POST to `/graphql` against the real node. The node log should show `REMOTE_ACCESS_ORIGIN_REFUSED`.
-- AC-004: the synthetic workspace already has a real relative `pixel.png` (R-1). Check refresh after editing the file on both paths (R-3; expected to fail on the workspace path today).
+- AC-004: the synthetic workspace already has a real relative `pixel.png` (R-1). Use AC-004 as reworded in SR-004: an artifact preview updates when its content changes; a workspace preview shows the changed file after it is reopened (automatic reload is FU-003, out of scope).
 - AC-005: the top-level static URL reports origin `null` (IMP-08). Also check that non-HTML files (CSS, JS, PNG) still load with the header.
 - AC-006: phone/browser web app with a stored phone credential; preview an HTML artifact; `localStorage` must throw.
 - AC-007: the approved losses (module, `fetch`) behave as IMP-08 shows; the docs now state them. Release notes are delivery's.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-Yes: AC-002, AC-003, AC-004 (including refresh, R-3), AC-006 and AC-007 on a worktree build per TESTING.md, with synthetic pages only (QR-002).
+Yes: AC-002, AC-003, AC-004 (as reworded in SR-004), AC-006 and AC-007 on a worktree build per TESTING.md, with synthetic pages only (QR-002).
