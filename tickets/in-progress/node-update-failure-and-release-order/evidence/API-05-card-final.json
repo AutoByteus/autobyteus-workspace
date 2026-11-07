@@ -1,0 +1,11 @@
+{
+ "at": "2026-11-07T20:14:59.875Z",
+ "route": "#/nodes",
+ "serverVersion": "Server 1.5.12-beta.3",
+ "updateButton": "Update to 1.5.12-beta.7",
+ "progress": null,
+ "notice": null,
+ "autoSwitchChecked": "true",
+ "autoFailedLine": "Automatic update failed. Nothing was changed.\nNo server package was published for 1.5.12-beta.7 (linux-arm64).",
+ "autoUpdatedLine": null
+}
