@@ -103,9 +103,10 @@ test, not its whole suite. A second full run of a suite proves nothing the first
 ## Fresh-start build
 
 A release runner clones the commit, runs `pnpm install --frozen-lockfile` and then its build job
-(`.github/workflows/release-desktop.yml`, `release-server-docker.yml`). A worktree build can pass
-only because an earlier setup step built a package's `dist/`, the Prisma client or generated
-types that the runner does not have.
+(`.github/workflows/release-desktop.yml`, `release-server-docker.yml`); the Android job
+(`release-android.yml`) runs Gradle alone. A worktree build can pass only because an earlier setup
+step built a package's `dist/`, the Prisma client or generated types that the runner does not have,
+or because Gradle's cache already holds a dependency the runner must download.
 
 - **When.** Any path of `git diff --name-only <base>...HEAD` matches a build input:
   - `pnpm-lock.yaml`, `pnpm-workspace.yaml`, `.npmrc`, `.gitmodules`, `package.json`, `*/package.json`;
@@ -115,6 +116,8 @@ types that the runner does not have.
   - the contract packages `autobyteus-*-contracts/**` (their tracked `src/` and `dist/`, which other
     packages' builds and type checks import);
   - `.github/workflows/**`;
+  - the Android build: `autobyteus-android/**/*.gradle.kts`, `autobyteus-android/gradle/**`,
+    `autobyteus-android/gradle.properties`, `autobyteus-android/gradlew`;
   - and, whatever the path, a new import of another workspace package in any file the build
     type-checks (the web build's `pnpm typecheck` reads the app, Electron main, build scripts and
     the test files, so a test file can break the release build).
@@ -126,7 +129,10 @@ types that the runner does not have.
   sets `GITHUB_REPOSITORY`, which the updater configuration reads, and a local clone's origin is a
   path). Then the job's "Verify bundled Prisma" and "Verify packaged terminal runtime" steps, from
   the clone's root. Signing, notarization and the other operating systems need the runner: record
-  them as not tested.
+  them as not tested. For Android: in the clone, `cd autobyteus-android` and
+  `GRADLE_USER_HOME=<new empty folder> ./gradlew --no-daemon clean :app:assembleDebug` (the job's
+  unsigned command; the empty Gradle home makes Gradle download what the runner downloads). The
+  signed `:app:assembleRelease` needs the runner's keystore secrets: record it as not tested.
 - **A change to a build step or gate** also needs the build-only release run on the ticket
   branch before the merge, as [DESIGN.md](DESIGN.md) rule 12 and RELEASE.md say.
 
