@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-013` (round 2 after ARCH-REV-001; SR-012 was round 1)
+- Current solution revision ID: `SR-014` (round 3 after ARCH-REV-002; SR-013 round 2; SR-012 round 1)
 - Approved requirements baseline: [requirements-doc.md](requirements-doc.md) at SR-011, `Approved`: the user's approval of the UI/UX design ("if things are consistant. then i approve", 2026-11-07) plus the Solution Designer within his direction. SR-012 adds DEC-019…DEC-021, which simplify the design without a visible change (below).
 - Behavior-defining supplement: the Product Team's UI/UX spec `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/one-step-phone-pairing/ui-ux-spec.md` (Approved; UI reference `d2e960cc`, record `34677c88`), VIS-001…VIS-034, UXJ-001…008, TR-001…018. Its texts are normative.
 - User approval of the design: `Obtained`. The user, 2026-11-07, in the Solution Designer's conversation, answering "Shall I go ahead?": "I trust that you can make reasonable decisions. For this ticket, we need to release a beta. since for my codex i dont have limit now, i waive for codex if delivery engineer asks".
@@ -210,7 +210,7 @@ One node-side owner reports this computer's network facts. A desktop-side compos
 | Desktop's own node (embedded entry) | its `NodeNetwork` | `configuredBaseUrl` | `https://<dnsName>` (443), then `http://<tailscale address>:<port>` | `http://<vpn address>:<port>` each | `http://<local address>:<port>` default-route first (embedded node) |
 | Local Docker node (`runsInContainer` and loopback base URL) | the embedded node's `NodeNetwork` (host facts) + its own `configuredBaseUrl` | its `configuredBaseUrl` | `https://<dnsName>:<its Serve port>`, then `http://<host tailscale address>:<port>` | host VPN addresses with `<port>` | host local addresses with `<port>` (embedded node) |
 | Remote node not in a container | its own `NodeNetwork` | its `configuredBaseUrl` | as the desktop's own node, with its facts | its VPN addresses | its local addresses (that remote node) |
-| Remote node in a container (facts empty) | its `configuredBaseUrl` + the desktop's base URL for it | its `configuredBaseUrl` | the desktop's base URL when its host ends in `.ts.net` | — | the desktop's base URL when its host is a private IPv4 or an unconfirmed `100.64/10` address; network ID `this-computer` (that remote node) |
+| Remote node in a container (facts empty but for `configuredBaseUrl` and `localNetwork.allowed` under `this-computer`) | its `configuredBaseUrl` + the desktop's base URL for it | its `configuredBaseUrl` | the desktop's base URL when its host ends in `.ts.net` | — | the desktop's base URL when its host is a private IPv4 or an unconfirmed `100.64/10` address; network ID `this-computer` (that remote node) |
 | Any remote node: the desktop's base URL for it | classified by its host | an `https://` DNS name that is not `.ts.net` | a `.ts.net` host | — | a private IPv4 / unconfirmed `100.64/10` host; an `http://` DNS name |
 
 - A candidate equal to one already listed is not repeated.
@@ -274,7 +274,7 @@ Before the page loads, `NodeConnectionFlow` maps:
 | `NodeNetworkService` (server) | This computer's network facts as one node sees them; the allowed local networks of this computer (read/write). It runs no Tailscale command and makes no network change |
 | `phoneConnectionWays` (web, pure) | The way policy: which facts make which way, the order (company address, Tailscale, VPN, local network), address building with the node's port, readiness from checks, Recommended, blocked reason, the HTTP acknowledgement each way carries (Tailscale, VPN, company: yes; local network: only when allowed) |
 | `phoneAccessStore` (web) | DS-001…003, DS-007 sequencing: load, check, tab state, code lifecycle (create, timer, discard), phone access switch, allow/forget network, devices |
-| `RemoteAccessPairingService` (server) | Sessions: create with way, discard by code, discard all when phone access turns off, exchange (unchanged checks), device creation with the session's way |
+| `RemoteAccessPairingService` (server) | Sessions: create with way, discard by `sessionId`, discard all when phone access turns off, exchange (unchanged checks), device creation with the session's way |
 | `PairedDeviceService` (server) | Devices; stores `connectionWay` |
 | `mobileNodeSessionStore` (page) | Exchange against its origin; session with `nodeName` |
 | `NodeConnectionFlow` (Android) | The connect sequence: parse → check → save → open; reasons |
@@ -368,7 +368,7 @@ Anything else is excluded. A `100.64/10` address with a hardware address is carr
 
 | Interface | Subject | Responsibility | Identity Shape | Notes |
 | --- | --- | --- | --- | --- |
-| `GET /rest/remote-access/network` (owner) | This node's computer network | Returns `NodeNetwork` | — | Container: `tailscale: null, vpnAddresses: [], localNetwork: null` |
+| `GET /rest/remote-access/network` (owner) | This node's computer network | Returns `NodeNetwork` | — | Container: `tailscale: null, vpnAddresses: [], localNetwork: { networkId: "this-computer", addresses: [], allowed }` (the node's own remembered answer; DS-002 ignores it and uses the host facts) |
 | `PUT /rest/remote-access/network/local-networks/:networkId` (owner) body `{ allowed: boolean }` | One local network of this computer | Allow / forget | `networkId` (`gw_…` or `this-computer`) | 400 for another shape |
 | `POST /rest/remote-access/pairing-sessions` (owner) body adds `connectionWay` (required, one of four) | A new code | Unchanged otherwise | — | 400 `REMOTE_ACCESS_PAIRING_WAY_INVALID` |
 | `DELETE /rest/remote-access/pairing-sessions/:sessionId` (owner) | One open code | Discard | `sessionId` (`pss_<32 hex>`, returned by POST; opaque, never the code) | 204 even when unknown; nothing secret in the path (AR-005) |
@@ -385,7 +385,7 @@ type NodeNetwork = {
   configuredBaseUrl: string | null;        // AUTOBYTEUS_SERVER_HOST unless loopback; also set for a node in a container (a company address on a Docker deployment); checked by node ID like every address
   tailscale: { address: string; dnsName: string | null } | null;
   vpnAddresses: string[];
-  localNetwork: { networkId: string; addresses: string[]; allowed: boolean } | null;
+  localNetwork: { networkId: string; addresses: string[]; allowed: boolean } | null; // in a container: networkId "this-computer", no addresses; null only when a non-container computer has no local network
 };
 ```
 
@@ -468,16 +468,16 @@ See Target Mapping (one table, to avoid two lists).
 | `…/remote-access/services/ip-address-ranges.ts` | Add | off-spine | IPv4 helpers | — |
 | `…/remote-access/stores/allowed-local-network-store.ts` | Add | store | `allowed-local-networks.json` | — |
 | `…/remote-access/services/pairing-url-policy.ts` | Modify | URL policy | Import ranges; rules unchanged | — |
-| `…/remote-access/services/remote-access-pairing-service.ts` | Modify | sessions | `connectionWay`; opaque `sessionId`; `discardSession(sessionId)`; discard all on disable (subscribe in constructor); a consumed session is kept until it expires so a second use answers `REMOTE_ACCESS_PAIRING_CONSUMED` (today it is deleted at once, line 134, and answers INVALID) | — |
+| `…/remote-access/services/remote-access-pairing-service.ts` | Modify | sessions | `connectionWay`; opaque `sessionId`; `discardSession(sessionId)`; discard all on disable (subscribe in constructor); a consumed session is kept until it expires so a second use answers `REMOTE_ACCESS_PAIRING_CONSUMED`: the delete on consume (line 134) goes, and `pruneExpiredSessions` (line 156) drops a session only when it has expired, not when it is consumed | — |
 | `…/remote-access/services/paired-device-service.ts`, `stores/paired-device-store.ts` | Modify | devices | `connectionWay` | — |
 | `…/remote-access/domain/models.ts` | Modify | types | `ConnectionWay`, `NodeNetwork`; remove candidate types; session/device fields; error code `REMOTE_ACCESS_PAIRING_WAY_INVALID` | — |
 | `…/remote-access/services/address-candidate-service.ts` | Remove | — | — | — |
 | `…/api/rest/remote-access.ts` | Modify | routes | Status without `serverName`; `/network`, `/network/local-networks/:networkId`, `DELETE /pairing-sessions/:sessionId`; drop `/address-candidates` | — |
-| `…/api/security/remote-access-route-policy.ts` | Modify | policy | Owner class for the new paths (`/rest/remote-access/network`, `^/rest/remote-access/network/local-networks/[^/]+$`, `^/rest/remote-access/pairing-sessions/pss_[0-9a-f]+$`); drop candidates | — |
+| `…/api/security/remote-access-route-policy.ts` | Modify | policy | Owner class for the new paths (`/rest/remote-access/network`, `^/rest/remote-access/network/local-networks/[^/]+$`, `^/rest/remote-access/pairing-sessions/[^/]+$`); drop candidates | — |
 | `autobyteus-server-ts/docs/features/remote_access.md` | Modify | docs | Routes, network facts, ways, discard | — |
 | `autobyteus-web/types/remoteAccess.ts` | Modify | types | `ConnectionWay`, `NodeNetwork`, device way; remove candidate types and status `serverName`; session `nodeName` | — |
 | `autobyteus-web/utils/phoneAccess/phoneConnectionWays.ts` | Add | policy | Compose ways (see example) | Requests |
-| `autobyteus-web/utils/phoneAccess/tailscaleServeCommand.ts` | Add | text | `<tailscale> serve --bg <port>` for the embedded node (HTTPS 443); for another node on this computer `--bg --https=<p> <port>` with `p = 8443 + k`, `k` = the node's position among this desktop's non-embedded entries on this computer ordered by port (0-based), so `p` is in 8443…8542, distinct per node, never above 65535 (AR-007); macOS path `/Applications/Tailscale.app/Contents/MacOS/Tailscale`, else `tailscale` | `serve reset` |
+| `autobyteus-web/utils/phoneAccess/tailscaleServeCommand.ts` | Add | text | `<tailscale> serve --bg <port>` for the embedded node (HTTPS 443); for another node on this computer `--bg --https=<p> <port>` with `p = 8443 + k`, `k` = the node's position among this desktop's non-embedded entries on this computer ordered by entry `createdAt` (0-based), so adding a node never changes another node's command, so `p` is in 8443…8542, distinct per node, never above 65535 (AR-007); macOS path `/Applications/Tailscale.app/Contents/MacOS/Tailscale`, else `tailscale` | `serve reset` |
 | `autobyteus-web/utils/phoneAccessRemoteNode.ts` | Modify | check | Timeout signal | — |
 | `autobyteus-web/stores/phoneAccessStore.ts` | Replace | `phoneAccessStore` | DS-001…003, 007; picks the QR `serverName` (DEC-016: the embedded node → `NodeNetwork.computerName` of the host facts; other nodes → their registry entry name) | Way rules |
 | `autobyteus-web/components/settings/phone/PhonesPanel.vue` | Add | view | Header switch, blocked message, tabs (WAI-ARIA), phones | — |
@@ -519,7 +519,7 @@ See Target Mapping (one table, to avoid two lists).
 
 | Topic | Good | Avoided | Why |
 | --- | --- | --- | --- |
-| Way composition (local Docker node on port 8001, host with Tailscale and Wi-Fi) | `compose({ target: dockerNetwork, host: embeddedNetwork, port: 8001 })` → `tailscale: ['https://<dns>:18001', 'http://100.x.y.z:8001']`, `local_network: ['http://192.168.1.20:8001']`; each checked against the Docker node's `nodeId`; first passing address per way is used | The Docker node listing its own `172.17.x.x` addresses | Facts belong to the computer, the port to the node |
+| Way composition (local Docker node on port 8001, host with Tailscale and Wi-Fi) | `compose({ target: dockerNetwork, host: embeddedNetwork, port: 8001 })` → `tailscale: ['https://<dns>:8443', 'http://100.x.y.z:8001']`, `local_network: ['http://192.168.1.20:8001']`; each checked against the Docker node's `nodeId`; first passing address per way is used | The Docker node listing its own `172.17.x.x` addresses | Facts belong to the computer, the port to the node |
 | HTTP acknowledgement | `tailscale`, `vpn`, typed company address → `true`; `local_network` → `true` only when `localNetwork.allowed` (or pressed now) | A checkbox, or `true` for an un-allowed network | Trust stays explicit for local networks |
 | Bridge | `getShellBridge()?.showNodeList()` (a web message from the main frame of the node's origin) | `addJavascriptInterface`, visible to every frame including sandboxed previews | Keeps autobyteus-417's "a preview cannot act as the app" (AR-001) |
 | Android scan | `ConnectionInputResolver`: parsed pairing payload → acknowledged; plain typed `http://` → needs the sheet's tick | Asking again after a scan | REQ-010 |

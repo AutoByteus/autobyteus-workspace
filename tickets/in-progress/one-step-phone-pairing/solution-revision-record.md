@@ -17,6 +17,7 @@
 | SR-011 | Mixed | Product Design Completed, approved by the user (spec rev d2e960cc / record 34677c88) | N/A | Ready for Approval | Approved | All; DEC-004, DEC-016…018 | Requirements approved; architecture design starts |
 | SR-012 | Design | Architecture design | N/A | N/A (no design) | Design Ready; user approval of the design pending | DEC-019…021; REQ-009, REQ-010 wording | design-spec.md; Large / High |
 | SR-013 | Mixed | ARCH-REV-001 Fail (Design Impact) | AR-001…AR-009 | Design Ready (round 1) | Design Ready (round 2) | REQ-008, AC-001/002/005, DEC-001/003/006, DEC-022…024 | Bridge by origin-limited web messages; way table per node kind; classifier aligned with DEC-003; default-route order; opaque session ID; entry-form table and failed exchange; Serve port range; name owner |
+| SR-014 | Design | ARCH-REV-002 Fail (AR-010, Low) | AR-010, N-1…N-6 | Design Ready (round 2) | Design Ready (round 3) | REQ-004 path for container nodes | Container reports its own allowed answer; consumed-session pruning; small wording |
 
 ## Revision Entries
 
@@ -152,3 +153,16 @@
 - Requirement wording (AR-009, within the direction): REQ-008, AC-001, AC-002, AC-005, DEC-001, DEC-003 note, DEC-006 superseded, supplements row, evidence range; DEC-022…DEC-024 added. No change to what the user approved on screen except the two small copy decisions DEC-022 and DEC-024.
 - Approval impact: none beyond the Solution Designer's within-direction decisions; the user is informed in the Solution Designer's message.
 - Next action: architecture review round 2.
+
+### SR-014 — Round 3 after ARCH-REV-002
+
+- Trigger: ARCH-REV-002, `Fail`, AR-010 (Low): a remote node in a container reported `localNetwork: null`, so its remembered Wi-Fi/LAN answer could not be read.
+- Change: a container reports `localNetwork: { networkId: "this-computer", addresses: [], allowed }`; DS-002 ignores it (host facts).
+- Non-blocking items folded in:
+  - N-1: `pruneExpiredSessions` keeps consumed sessions until they expire;
+  - N-2: discard by `sessionId` in the Ownership Map;
+  - N-3: route pattern `[^/]+`;
+  - N-4: example port;
+  - N-5: Serve port by entry `createdAt`;
+  - N-6: FU-001 wording.
+- Requirements unchanged. Next action: architecture review round 3.

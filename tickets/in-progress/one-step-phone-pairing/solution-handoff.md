@@ -74,3 +74,4 @@ Independent architecture review of design-spec.md against the approved requireme
 - Shared-intent decision (AR-006): DEC-023, a pairing link shared into the app pairs at once, like Paste a link.
 - The user, 2026-11-07, on the computer name: "If we cannot get the computer name, that's also fine from my side". Fallback recorded.
 - 2026-11-07: returned to `/software_engineering_team/architecture_reviewer` for round 2.
+- 2026-11-07: round 3 (SR-014, AR-010 and N-1…N-6) returned to `/software_engineering_team/architecture_reviewer`.
