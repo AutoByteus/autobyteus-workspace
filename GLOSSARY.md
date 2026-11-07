@@ -30,12 +30,31 @@ delegated run, …) are defined in the
   (`NodeEntry.nodeId`) when it reaches the node.
 - **Client address:** the network address a request came from
   (`normalizeClientAddress`, `isLoopbackClientAddress`). It is not a peer.
+- **Allowed host:** a name a node accepts as a request's `Host` (port not
+  compared): an IP address; `localhost` and `*.localhost`; dotless names and
+  names ending `.local`, `.lan`, `.home.arpa` or `.internal`; names ending
+  `.ts.net`; the hosts of `AUTOBYTEUS_SERVER_HOST` and of
+  `AUTOBYTEUS_ALLOWED_ORIGINS` entries; names in `AUTOBYTEUS_ALLOWED_HOSTS`
+  (a `.x` entry covers `x` and every name under it); the hosts of the node's
+  open pairing sessions and active paired phones (`RequestHostPolicy`,
+  `remote-access-request-host.ts`). Others are refused with
+  `REMOTE_ACCESS_HOST_REFUSED`, before any other rule. `X-Forwarded-Host` is
+  not read for it.
 - **Allowed origin:** a browser `Origin` a node accepts on HTTP requests and
   WebSocket upgrades: none, the node's own origin (`Host` or
-  `X-Forwarded-Host`), `file://` (the packaged desktop app), a loopback
-  origin, or one listed in `AUTOBYTEUS_ALLOWED_ORIGINS`
-  (`RequestOriginPolicy`, `remote-access-request-origin.ts`). Others are
-  refused with `REMOTE_ACCESS_ORIGIN_REFUSED`.
+  `X-Forwarded-Host`), `file://` (the packaged desktop app), or one listed in
+  `AUTOBYTEUS_ALLOWED_ORIGINS` (`RequestOriginPolicy`,
+  `remote-access-request-origin.ts`). A localhost page is no exception: its
+  origin is allowed only when listed. Others are refused with
+  `REMOTE_ACCESS_ORIGIN_REFUSED`.
+- **Tool endpoint:** a node endpoint whose clients are programs:
+  `/mcp/gateway` and the agent-tools and credential-proxy listeners. It
+  accepts no `Origin` or one listed in `AUTOBYTEUS_ALLOWED_ORIGINS`
+  (`createToolEndpointOriginPolicy`).
+- **User file reply:** a node route's answer with a user file's content
+  (`sendUserFile`, `user-file-reply.ts`): the file's type,
+  `Content-Security-Policy: sandbox allow-scripts` (it runs in an opaque
+  origin, never the node's) and `X-Content-Type-Options: nosniff`.
 - **Phone WebSocket route:** a WebSocket route pattern a paired phone's
   credential may open (`PHONE_WEBSOCKET_ROUTES`). A phone credential on any
   other WebSocket route is refused with `PHONE_ACCESS_ROUTE_REFUSED`.

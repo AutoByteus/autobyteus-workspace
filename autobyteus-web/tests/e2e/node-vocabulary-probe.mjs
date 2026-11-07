@@ -94,6 +94,10 @@ const runCase = async (id, fn) => {
 const root = realpathSync(mkdtempSync(path.join(os.tmpdir(), 'node-vocabulary-probe-')));
 const children = new Set();
 
+// The probe's frontend origin, chosen before any node starts: every node accepts it (autobyteus-416).
+const frontendPort = await freePort();
+const frontendUrl = `http://${lanAddress}:${frontendPort}`;
+
 const serverAt = async (name, port) => {
   const dataDir = path.join(root, name, 'data');
   const home = path.join(root, name, 'home');
@@ -107,7 +111,7 @@ const serverAt = async (name, port) => {
     const child = spawn(process.execPath, [appEntry, '--host', '127.0.0.1', '--port', String(port), '--data-dir', dataDir], {
       cwd: serverDir, stdio: ['ignore', 'pipe', 'pipe'],
       env: { PATH: process.env.PATH, HOME: home, TMPDIR: process.env.TMPDIR ?? os.tmpdir(), APP_ENV: 'test', LOG_LEVEL: 'WARN',
-        HTTP_ACCESS_LOG_MODE: 'off', AUTOBYTEUS_SERVER_HOST: baseUrl } });
+        HTTP_ACCESS_LOG_MODE: 'off', AUTOBYTEUS_SERVER_HOST: baseUrl, AUTOBYTEUS_ALLOWED_ORIGINS: frontendUrl } });
     child.stdout.pipe(log); child.stderr.pipe(log);
     child.once('close', () => log.end());
     children.add(child);
@@ -184,8 +188,6 @@ try {
   assert(betaStatus.status === 503 && betaStatus.body?.code === 'NODE_IDENTITY_NOT_MIGRATED', `beta is held back: ${JSON.stringify(betaStatus)}`);
 
   // Phone access: a real pairing for the phone shell's released session.
-  const frontendPort = await freePort();
-  const frontendUrl = `http://${lanAddress}:${frontendPort}`;
   await alpha.rest('PUT', '/remote-access/settings', { phoneAccessEnabled: true });
   const pairing = await alpha.rest('POST', '/remote-access/pairing-sessions', { connectionWay: 'local_network', serverBaseUrl: `${frontendUrl}/mobile`, trustedPrivateHttpAcknowledged: true });
   assert(pairing.status === 201, `pairing session: ${JSON.stringify(pairing)}`);

@@ -20,6 +20,8 @@ export const developmentBackendPort = 8000;
 export const developmentFrontendPort = 3000;
 export const developmentBackendUrl = `http://${developmentHost}:${developmentBackendPort}`;
 export const developmentFrontendUrl = `http://${developmentHost}:${developmentFrontendPort}`;
+/** The frontend's origins, as a developer may open it; the backend accepts exactly these (autobyteus-416). */
+export const developmentFrontendOrigins = `${developmentFrontendUrl},http://localhost:${developmentFrontendPort}`;
 
 export const developmentTemplateKeys = Object.freeze([
   'APP_ENV',
@@ -33,6 +35,7 @@ export const launcherOwnedBackendKeys = Object.freeze([
   'AUTOBYTEUS_LOG_DIR',
   'AUTOBYTEUS_MEMORY_DIR',
   'AUTOBYTEUS_TEMP_WORKSPACE_DIR',
+  'AUTOBYTEUS_ALLOWED_ORIGINS',
 ]);
 
 const launcherOwnedBackendKeySet = new Set(launcherOwnedBackendKeys);
@@ -244,6 +247,7 @@ const runtimeEnvironmentContent = (retainedLines, values) => {
     `AUTOBYTEUS_LOG_DIR=${values.logsDirectory}`,
     `AUTOBYTEUS_MEMORY_DIR=${values.memoryDirectory}`,
     `AUTOBYTEUS_TEMP_WORKSPACE_DIR=${values.tempWorkspaceDirectory}`,
+    `AUTOBYTEUS_ALLOWED_ORIGINS=${developmentFrontendOrigins}`,
   ];
   return `${[...retained, ...owned].join('\n')}\n`;
 };
@@ -259,6 +263,7 @@ const buildChildEnvironment = (databaseUrl, dataRoot) => {
     AUTOBYTEUS_LOG_DIR: path.join(dataRoot, 'logs'),
     AUTOBYTEUS_MEMORY_DIR: path.join(dataRoot, 'memory'),
     AUTOBYTEUS_TEMP_WORKSPACE_DIR: path.join(dataRoot, 'temp_workspace'),
+    AUTOBYTEUS_ALLOWED_ORIGINS: developmentFrontendOrigins,
   });
 
   const frontendEnvironment = {

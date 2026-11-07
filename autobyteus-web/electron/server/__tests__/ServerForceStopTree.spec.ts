@@ -38,7 +38,7 @@ class WedgedServerManager extends BaseServerManager {
 
 const newManager = () => new WedgedServerManager({
   clientEndpoint: createEmbeddedServerClientEndpoint(54329), listenerPolicy: 'preserve-backend-default',
-  baseDataRoot: '/test-owned-data', environmentPolicy: 'isolated-baseline',
+  baseDataRoot: '/test-owned-data', environmentPolicy: 'isolated-baseline', developmentRendererOrigin: null,
 })
 
 const spawned: number[] = []
@@ -61,7 +61,7 @@ it.skipIf(process.platform === 'win32')('force-stops a wedged server and its who
   spawned.push(server.pid!, pids.cli, pids.tool)
   const manager = new WedgedServerManager({
     clientEndpoint: createEmbeddedServerClientEndpoint(54329), listenerPolicy: 'preserve-backend-default',
-    baseDataRoot: '/test-owned-data', environmentPolicy: 'isolated-baseline',
+    baseDataRoot: '/test-owned-data', environmentPolicy: 'isolated-baseline', developmentRendererOrigin: null,
   })
   manager.adopt(server)
   expect(manager.isServerProcessGone()).toBe(false)

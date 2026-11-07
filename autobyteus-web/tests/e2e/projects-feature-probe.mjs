@@ -292,9 +292,11 @@ try {
   await fs.mkdir(outputDir, { recursive: true });
   if (!skipServerBuild) await run('corepack', ['pnpm', '-C', serverDir, 'build'], root, process.env, path.join(outputDir, 'server-build.log'));
   ownedRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'autobyteus-projects-pages-e2e-'));
-  nodeA = await createNode(ownedRoot, 'node-a'); nodeB = await createNode(ownedRoot, 'node-b');
-  await startNode(nodeA); await startNode(nodeB);
   const frontendPort = await choosePort(); frontendUrl = `http://127.0.0.1:${frontendPort}`;
+  nodeA = await createNode(ownedRoot, 'node-a'); nodeB = await createNode(ownedRoot, 'node-b');
+  // The nodes accept their frontend's origin (autobyteus-416).
+  for (const owned of [nodeA, nodeB]) owned.env.AUTOBYTEUS_ALLOWED_ORIGINS = frontendUrl;
+  await startNode(nodeA); await startNode(nodeB);
   evidence.isolation = { tempRoot: ownedRoot, nodeA: nodeA.url, nodeB: nodeB.url, frontend: frontendUrl };
   frontend = start('corepack', ['pnpm', 'dev', '--host', '127.0.0.1', '--port', String(frontendPort)], webDir, { ...scrubbedEnv(), NODE_ENV: 'development', BACKEND_NODE_BASE_URL: nodeA.url }, path.join(outputDir, 'frontend.log'));
   await waitFor('frontend', async () => { if (exited(frontend)) throw new Error('frontend exited'); return fetch(frontendUrl).then(r => r.ok).catch(() => false); }, 240000);

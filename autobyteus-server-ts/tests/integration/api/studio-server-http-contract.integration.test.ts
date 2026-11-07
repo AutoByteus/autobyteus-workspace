@@ -5,9 +5,10 @@
 // - A trusted-network client (non-loopback socket address) can POST /graphql,
 //   but GET /graphql stays local-only, and no GraphiQL page is served to it.
 // - The MCP gateway's CORS answers: its access gate answers preflights and
-//   rejects foreign origins, and the studio CORS plugin adds its headers to
-//   loopback-origin requests. A route config such as { cors: false } would
-//   turn those plugin headers off on Fastify 5.
+//   rejects foreign and unlisted localhost origins (autobyteus-416), and the
+//   studio CORS plugin adds its headers to requests from a configured origin.
+//   A route config such as { cors: false } would turn those plugin headers off
+//   on Fastify 5.
 // Run: pnpm -C autobyteus-server-ts exec vitest run tests/integration/api/studio-server-http-contract.integration.test.ts --no-watch
 import fs from "node:fs/promises";
 import os from "node:os";
@@ -19,7 +20,9 @@ import {
   type StartedStudioE2eRuntimeServer,
 } from "../../e2e/helpers/studio-runtime-test-server.js";
 
-const LOOPBACK_ORIGIN = "http://127.0.0.1:3000";
+/** A development frontend's origin, listed in AUTOBYTEUS_ALLOWED_ORIGINS as the launchers do (autobyteus-416 REQ-005). */
+const CONFIGURED_ORIGIN = "http://127.0.0.1:3000";
+const UNLISTED_LOCALHOST_ORIGIN = "http://localhost:5173";
 const FOREIGN_ORIGIN = "https://evil.example";
 const TRUSTED_NETWORK_CLIENT = "192.168.1.50";
 const GRAPHIQL_PATHS = ["/graphiql", "/graphiql/main.js", "/graphiql/config.js", "/graphiql/sw.js"];
@@ -58,7 +61,7 @@ describe("Studio server HTTP contract", () => {
     appDataDir = await fs.mkdtemp(path.join(os.tmpdir(), "studio-server-http-contract-"));
     await fs.writeFile(
       path.join(appDataDir, ".env"),
-      "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\n",
+      `AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\nAUTOBYTEUS_ALLOWED_ORIGINS=${CONFIGURED_ORIGIN}\n`,
       "utf-8",
     );
     appConfigProvider.config.setCustomAppDataDir(appDataDir);
@@ -115,20 +118,20 @@ describe("Studio server HTTP contract", () => {
     expect(String(graphiql.headers["content-type"])).not.toContain("text/html");
   });
 
-  it("answers MCP gateway preflights from its access gate and rejects foreign origins", async () => {
-    const loopbackPreflight = await mcpGateway({
+  it("answers MCP gateway preflights for a configured origin and rejects foreign and unlisted localhost origins", async () => {
+    const configuredPreflight = await mcpGateway({
       method: "OPTIONS",
       headers: {
-        origin: LOOPBACK_ORIGIN,
+        origin: CONFIGURED_ORIGIN,
         "access-control-request-method": "POST",
         "access-control-request-headers": "content-type",
       },
     });
-    expect(loopbackPreflight.status).toBe(204);
-    expect(corsHeaders(loopbackPreflight)).toEqual({
+    expect(configuredPreflight.status).toBe(204);
+    expect(corsHeaders(configuredPreflight)).toEqual({
       "access-control-allow-headers": MCP_GATEWAY_ALLOWED_HEADERS,
       "access-control-allow-methods": MCP_GATEWAY_ALLOWED_METHODS,
-      "access-control-allow-origin": LOOPBACK_ORIGIN,
+      "access-control-allow-origin": CONFIGURED_ORIGIN,
       vary: "Origin",
     });
 
@@ -142,14 +145,22 @@ describe("Studio server HTTP contract", () => {
     const foreignPost = await mcpPost({ origin: FOREIGN_ORIGIN });
     expect(foreignPost.status).toBe(403);
     expect(corsHeaders(foreignPost)).toEqual({});
+
+    for (const method of ["OPTIONS", "POST"] as const) {
+      const unlisted = method === "POST"
+        ? await mcpPost({ origin: UNLISTED_LOCALHOST_ORIGIN })
+        : await mcpGateway({ method, headers: { origin: UNLISTED_LOCALHOST_ORIGIN, "access-control-request-method": "POST" } });
+      expect(unlisted.status, method).toBe(403);
+      expect(corsHeaders(unlisted), method).toEqual({});
+    }
   });
 
   it("adds the studio CORS plugin's headers to MCP gateway requests", async () => {
-    const loopbackPost = await mcpPost({ origin: LOOPBACK_ORIGIN });
-    expect(loopbackPost.status).toBe(200);
-    expect(await loopbackPost.json()).toMatchObject({ jsonrpc: "2.0", id: "contract-ping", result: {} });
-    expect(corsHeaders(loopbackPost)).toEqual({
-      "access-control-allow-origin": LOOPBACK_ORIGIN,
+    const configuredPost = await mcpPost({ origin: CONFIGURED_ORIGIN });
+    expect(configuredPost.status).toBe(200);
+    expect(await configuredPost.json()).toMatchObject({ jsonrpc: "2.0", id: "contract-ping", result: {} });
+    expect(corsHeaders(configuredPost)).toEqual({
+      "access-control-allow-origin": CONFIGURED_ORIGIN,
       vary: "Origin",
     });
 

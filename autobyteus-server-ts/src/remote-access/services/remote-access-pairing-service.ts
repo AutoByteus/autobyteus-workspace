@@ -1,4 +1,5 @@
 import { randomBytes } from "node:crypto";
+import { hostNameOfUrl } from "../../api/security/request-host-name.js";
 import { normalizeNodeBaseUrl } from "./url-normalization.js";
 import { validatePairingServerBaseUrl } from "./pairing-url-policy.js";
 import {
@@ -166,6 +167,21 @@ export class RemoteAccessPairingService {
       serverBaseUrl: session.serverBaseUrl,
       device: toDeviceSummary(record),
     };
+  }
+
+  /**
+   * Whether `hostName` (normalized, as `parseRequestHostName` returns it) is the host of an open pairing
+   * session or of a non-revoked paired phone: a name the owner chose for this node.
+   */
+  async isPairedPhoneHost(hostName: string): Promise<boolean> {
+    this.pruneExpiredSessions();
+    for (const session of this.sessionsByCode.values()) {
+      if (!session.consumedAt && hostNameOfUrl(session.serverBaseUrl) === hostName) {
+        return true;
+      }
+    }
+    const devices = await this.deviceService.listActiveDeviceSummaries();
+    return devices.some((device) => hostNameOfUrl(device.clientFacingBaseUrl) === hostName);
   }
 
   /** Discards one session (open or consumed); unknown IDs are ignored. */

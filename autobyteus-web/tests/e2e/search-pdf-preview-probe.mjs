@@ -127,7 +127,7 @@ DB_TYPE=sqlite
 DATABASE_URL=${db}
 AUTOBYTEUS_SERVER_HOST=${base}
 `);
-  const backend = start('backend', process.execPath, [path.join(server, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(backendPort), '--data-dir', data], server, { ...clean, APP_ENV: 'development', DB_TYPE: 'sqlite', DATABASE_URL: db, AUTOBYTEUS_SERVER_HOST: base });
+  const backend = start('backend', process.execPath, [path.join(server, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(backendPort), '--data-dir', data], server, { ...clean, APP_ENV: 'development', DB_TYPE: 'sqlite', DATABASE_URL: db, AUTOBYTEUS_SERVER_HOST: base, AUTOBYTEUS_ALLOWED_ORIGINS: front });
   await until('backend ready', async () => { assert.equal(backend.exitCode, null); return (await fetch(`${base}/rest/health`, { signal: AbortSignal.timeout(2000) })).ok; });
   const created = await gql('mutation($input:CreateWorkspaceInput!){createWorkspace(input:$input){workspaceId}}', { input: { rootPath: root } }); id = created.createWorkspace.workspaceId; ev.workspaceId = id;
   await run('API-002', async () => {

@@ -7,6 +7,7 @@ import {
   __testOnly as runtimeTestOnly,
   developmentBackendUrl,
   developmentDataRoot,
+  developmentFrontendOrigins,
   developmentFrontendUrl,
   launcherOwnedBackendKeys,
   materializeDevelopmentRuntime,
@@ -66,6 +67,10 @@ test('materialization owns the fixed development data paths and routing keys', (
       runtime.backendEnvironment.AUTOBYTEUS_TEMP_WORKSPACE_DIR,
       path.join(developmentDataRoot, 'temp_workspace'),
     );
+    // The backend accepts exactly the frontend's origins (autobyteus-416 REQ-005).
+    assert.equal(developmentFrontendOrigins, 'http://127.0.0.1:3000,http://localhost:3000');
+    assert.equal(runtime.backendEnvironment.AUTOBYTEUS_ALLOWED_ORIGINS, developmentFrontendOrigins);
+    assert.ok(runtimeSource.split(/\r?\n/).includes(`AUTOBYTEUS_ALLOWED_ORIGINS=${developmentFrontendOrigins}`));
     assert.equal(runtime.frontendEnvironment.BACKEND_NODE_BASE_URL, developmentBackendUrl);
     assert.equal(
       runtime.frontendEnvironment.BACKEND_FILE_EXPLORER_WS_ENDPOINT,
@@ -88,7 +93,7 @@ test('materialization owns the fixed development data paths and routing keys', (
 
 test('runtime materialization retains non-launcher settings while replacing owned assignments', () => {
   const content = runtimeTestOnly.runtimeEnvironmentContent(
-    ['LOG_LEVEL=DEBUG', 'DATABASE_URL=file:/tmp/hostile.db', 'CUSTOM_SETTING=value', ''],
+    ['LOG_LEVEL=DEBUG', 'DATABASE_URL=file:/tmp/hostile.db', 'AUTOBYTEUS_ALLOWED_ORIGINS=http://localhost:5173', 'CUSTOM_SETTING=value', ''],
     {
       APP_ENV: 'development',
       DB_TYPE: 'sqlite',
@@ -101,6 +106,7 @@ test('runtime materialization retains non-launcher settings while replacing owne
   assert.match(content, /^LOG_LEVEL=DEBUG$/m);
   assert.match(content, /^CUSTOM_SETTING=value$/m);
   assert.equal((content.match(/^DATABASE_URL=/gm) ?? []).length, 1);
+  assert.deepEqual(content.match(/^AUTOBYTEUS_ALLOWED_ORIGINS=.*$/gm), ['AUTOBYTEUS_ALLOWED_ORIGINS=http://127.0.0.1:3000,http://localhost:3000']);
   assert.match(content, /^DATABASE_URL=file:\/\/\/workspace\/\.autobyteus\/development\/server-data\/db\/development\.db$/m);
 });
 

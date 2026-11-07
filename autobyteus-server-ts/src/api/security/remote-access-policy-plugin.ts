@@ -1,12 +1,11 @@
 import cors from "@fastify/cors";
-import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import { appConfigProvider } from "../../config/app-config-provider.js";
+import type { FastifyInstance } from "fastify";
 import type { RemoteAccessRejection } from "../../remote-access/domain/models.js";
-import { redactSensitiveUrl } from "./redact-sensitive-url.js";
-import { createRequestOriginPolicy, parseConfiguredOrigins } from "./remote-access-request-origin.js";
+import { getNodeBrowserAccess } from "./node-browser-access.js";
+import { refuseRemoteAccessRequest, toLoggableRequestValue } from "./remote-access-refusal.js";
+import { createRequestOriginPolicy } from "./remote-access-request-origin.js";
 import { getRemoteAccessRoutePolicy, setRemoteAccessAuthContext } from "./remote-access-route-policy.js";
 
-const ALLOWED_ORIGINS_SETTING = "AUTOBYTEUS_ALLOWED_ORIGINS";
 const CORS_METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"];
 
 const ORIGIN_REFUSED: RemoteAccessRejection = {
@@ -21,40 +20,15 @@ const shouldDeferToWebSocketHandler = (requestUrl: string): boolean => {
   return path.startsWith("/ws/");
 };
 
-const readConfiguredOrigins = (): string[] => {
-  const { origins, invalidEntries } = parseConfiguredOrigins(
-    appConfigProvider.config.get(ALLOWED_ORIGINS_SETTING, "") ?? "",
-  );
-  if (invalidEntries.length > 0) {
-    console.warn(`${ALLOWED_ORIGINS_SETTING}: ignoring entries that are not http(s) origins: ${invalidEntries.join(", ")}`);
-  }
-  return origins;
-};
-
-// The one reply and log line for every refusal this gate sends. Never logs headers or credentials.
-const refuse = (
-  request: FastifyRequest,
-  reply: FastifyReply,
-  rejection: RemoteAccessRejection,
-  origin?: string,
-): FastifyReply => {
-  const originPart = origin === undefined ? "" : ` origin ${origin}`;
-  console.warn(`Remote Access request refused ${rejection.code} ${redactSensitiveUrl(request.url)}${originPart}`);
-  return reply.code(rejection.statusCode).send({
-    error: rejection.code,
-    code: rejection.code,
-    message: rejection.message,
-  });
-};
-
 /**
- * The node's request gate: every HTTP request and WebSocket upgrade meets the allowed-origin rule first,
- * then route authorization (`/ws/*` upgrades are authorized by their handlers). CORS grants follow the same
- * rule. Register after `registerMcpGatewayRoutes`, whose narrower origin rule for `/mcp/gateway` runs first.
+ * The node's origin/auth hook: every HTTP request and WebSocket upgrade that passed the Host gate meets the
+ * allowed-origin rule, then route authorization (`/ws/*` upgrades are authorized by their handlers). CORS
+ * grants follow the same rule. Register after `registerMcpGatewayRoutes`, whose tool-endpoint origin rule
+ * for `/mcp/gateway` runs first.
  */
 export async function registerRemoteAccessPolicyPlugin(app: FastifyInstance): Promise<void> {
   const policy = getRemoteAccessRoutePolicy();
-  const originPolicy = createRequestOriginPolicy(readConfiguredOrigins());
+  const originPolicy = createRequestOriginPolicy(getNodeBrowserAccess().allowedOrigins);
 
   // Callback form: @fastify/cors fails every request for a one-argument synchronous delegator.
   // `origin: true` reflects the request's Origin, and grants nothing to a request without one.
@@ -66,7 +40,8 @@ export async function registerRemoteAccessPolicyPlugin(app: FastifyInstance): Pr
 
   app.addHook("onRequest", async (request, reply) => {
     if (!originPolicy.isAllowed(request.headers)) {
-      return refuse(request, reply, ORIGIN_REFUSED, String(request.headers.origin));
+      const origin = toLoggableRequestValue(String(request.headers.origin));
+      return refuseRemoteAccessRequest(request, reply, ORIGIN_REFUSED, `origin ${origin}`);
     }
     if (shouldDeferToWebSocketHandler(request.url)) {
       return;
@@ -77,6 +52,6 @@ export async function registerRemoteAccessPolicyPlugin(app: FastifyInstance): Pr
       setRemoteAccessAuthContext(request, result.context);
       return;
     }
-    return refuse(request, reply, result);
+    return refuseRemoteAccessRequest(request, reply, result);
   });
 }

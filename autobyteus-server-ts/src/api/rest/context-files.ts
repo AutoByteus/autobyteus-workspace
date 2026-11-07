@@ -25,6 +25,7 @@ import { appConfigProvider } from "../../config/app-config-provider.js";
 import { AgentOrgExecutionTreeLocationService } from "../../agent-org-execution/services/agent-org-execution-tree-location-service.js";
 import { CollaborationExecutionLocationService } from "../../agent-collaboration/execution/services/collaboration-execution-location-service.js";
 import { StandaloneRootLocationService } from "../../standalone-agent-run-root/services/standalone-root-location-service.js";
+import { sendUserFile, type UserFileContent } from "./user-file-reply.js";
 
 const logger = {
   error: (...args: unknown[]) => console.error(...args),
@@ -76,11 +77,10 @@ const sendDraftRouteError = (error: unknown, reply: { code(status: number): { se
   throw error;
 };
 
-const sendFile = async (filePath: string, reply: { type: (mimeType: string) => void; send: (data: unknown) => unknown }) => {
-  const mimeType = lookupMime(filePath) || "application/octet-stream";
-  reply.type(String(mimeType));
-  return reply.send(fs.createReadStream(filePath));
-};
+const contextFileContent = (filePath: string): UserFileContent => ({
+  mimeType: String(lookupMime(filePath) || "application/octet-stream"),
+  body: fs.createReadStream(filePath),
+});
 
 export async function registerContextFileRoutes(app: FastifyInstance): Promise<void> {
   const { uploadService, finalizationService, readService } = buildServices();
@@ -146,7 +146,7 @@ export async function registerContextFileRoutes(app: FastifyInstance): Promise<v
       const { owner, storedFilename } = parseDraftRequest(request.url);
       const filePath = await readService.getDraftFilePath(owner, storedFilename);
       if (!filePath) return reply.code(404).send({ detail: "File not found." });
-      return sendFile(filePath, reply);
+      return sendUserFile(reply, contextFileContent(filePath));
     } catch (error) {
       return sendDraftRouteError(error, reply);
     }
@@ -173,7 +173,7 @@ export async function registerContextFileRoutes(app: FastifyInstance): Promise<v
       if (!filePath) {
         return reply.code(404).send({ detail: "File not found." });
       }
-      return sendFile(filePath, reply);
+      return sendUserFile(reply, contextFileContent(filePath));
     } catch (error) {
       if (error instanceof ContextFileDescriptorError) return reply.code(400).send({ detail: error.message });
       if (error instanceof StandaloneContextFileOwnerNotFoundError) return reply.code(404).send({ detail: "File not found." });
@@ -200,7 +200,7 @@ export async function registerContextFileRoutes(app: FastifyInstance): Promise<v
     try {
       const filePath = await readService.getFinalFilePath(owner, request.params.storedFilename);
       if (!filePath) return reply.code(404).send({ detail: "File not found." });
-      return sendFile(filePath, reply);
+      return sendUserFile(reply, contextFileContent(filePath));
     } catch (error) {
       if (error instanceof ContextFileDescriptorError) return reply.code(400).send({ detail: error.message });
       if (error instanceof TeamContextFileOwnerNotFoundError) return reply.code(404).send({ detail: "File not found." });
@@ -215,7 +215,7 @@ export async function registerContextFileRoutes(app: FastifyInstance): Promise<v
       const owner = parseFinalContextFileOwnerDescriptor({ kind: "org_member_final", orgRunId, agentRunId });
       const filePath = await readService.getFinalFilePath(owner, storedFilename);
       if (!filePath) return reply.code(404).send({ detail: "File not found." });
-      return sendFile(filePath, reply);
+      return sendUserFile(reply, contextFileContent(filePath));
     } catch (error) {
       if (error instanceof OrgContextFileOwnerNotFoundError) return reply.code(404).send({ detail: "File not found." });
       if (error instanceof ContextFileDescriptorError) return reply.code(400).send({ detail: error.message });
@@ -234,7 +234,7 @@ export async function registerContextFileRoutes(app: FastifyInstance): Promise<v
           storedFilename,
         );
         if (!filePath) return reply.code(404).send({ detail: "File not found." });
-        return sendFile(filePath, reply);
+        return sendUserFile(reply, contextFileContent(filePath));
       } catch (error) {
         if (error instanceof AgentCollaborationContextFileOwnerNotFoundError) return reply.code(404).send({ detail: "File not found." });
         if (error instanceof ContextFileDescriptorError) return reply.code(400).send({ detail: error.message });

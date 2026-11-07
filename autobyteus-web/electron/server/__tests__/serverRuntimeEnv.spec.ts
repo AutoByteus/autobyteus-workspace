@@ -37,6 +37,7 @@ function input(overrides: Partial<BuildServerProcessEnvInput> = {}): BuildServer
     loginShellPath: '/login-shell/bin',
     appDataDir: '/tmp/isolated-root/server-data',
     publicServerUrl: 'http://127.0.0.1:31041',
+    developmentRendererOrigin: null,
     runtimeOverrides: {
       AUTOBYTEUS_BROWSER_BRIDGE_BASE_URL: 'http://127.0.0.1:41234',
       AUTOBYTEUS_BROWSER_BRIDGE_TOKEN: 'browser-token',
@@ -206,5 +207,34 @@ describe('buildServerProcessEnv — isolated-baseline (e2e)', () => {
     expect(env.PATHEXT).toBe('.EXE')
     expect(env.Path).toBe('C:\\bin')
     expect(env).not.toHaveProperty('AutoByteus_Memory_Dir')
+  })
+})
+
+describe('buildServerProcessEnv — development renderer origin (autobyteus-416 D7)', () => {
+  const DEV_ORIGIN = 'http://localhost:3000'
+
+  it('lists the development renderer origin in AUTOBYTEUS_ALLOWED_ORIGINS', () => {
+    const env = buildServerProcessEnv(input({ developmentRendererOrigin: DEV_ORIGIN }))
+    expect(env.AUTOBYTEUS_ALLOWED_ORIGINS).toBe(DEV_ORIGIN)
+  })
+
+  it('appends it after the caller value under inherit-caller', () => {
+    const env = buildServerProcessEnv(input({
+      callerEnv: { ...productionLikeCallerEnv, AUTOBYTEUS_ALLOWED_ORIGINS: ' https://gateway.example ' },
+      developmentRendererOrigin: DEV_ORIGIN,
+    }))
+    expect(env.AUTOBYTEUS_ALLOWED_ORIGINS).toBe(`https://gateway.example,${DEV_ORIGIN}`)
+  })
+
+  it('does not inherit the caller value under isolated-baseline', () => {
+    const callerEnv = { ...productionLikeCallerEnv, AUTOBYTEUS_ALLOWED_ORIGINS: 'https://gateway.example' }
+    expect(buildServerProcessEnv(input({ policy: 'isolated-baseline', callerEnv, developmentRendererOrigin: DEV_ORIGIN }))
+      .AUTOBYTEUS_ALLOWED_ORIGINS).toBe(DEV_ORIGIN)
+    expect(buildServerProcessEnv(input({ policy: 'isolated-baseline', callerEnv })))
+      .not.toHaveProperty('AUTOBYTEUS_ALLOWED_ORIGINS')
+  })
+
+  it('adds nothing when packaged (no development renderer) and the caller lists none', () => {
+    expect(buildServerProcessEnv(input())).not.toHaveProperty('AUTOBYTEUS_ALLOWED_ORIGINS')
   })
 })

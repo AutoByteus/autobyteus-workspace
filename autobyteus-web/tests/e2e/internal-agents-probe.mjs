@@ -185,10 +185,12 @@ try {
   await fs.mkdir(path.join(ownedRoot, 'workspace'), { recursive: true });
   await fs.writeFile(path.join(dataRoot, 'agents', INTERNAL_ID, 'agent.md'), ['---', `name: ${INTERNAL_NAME}`, 'description: The system\'s own helper (probe)', 'role: assistant', '---', '', 'Follow the user\'s request.'].join('\n'));
   await fs.writeFile(path.join(dataRoot, 'agents', INTERNAL_ID, 'agent-config.json'), JSON.stringify({ internal: true, toolNames: [], skillNames: [] }, null, 2));
+  const frontendPort = await choosePort();
+  const frontendUrl = `http://127.0.0.1:${frontendPort}`;
   const port = await choosePort();
   const url = `http://127.0.0.1:${port}`;
   const databaseUrl = pathToFileURL(databasePath).href;
-  const env = { ...scrubbedEnv(), HOME: path.join(dataRoot, 'home'), APP_ENV: 'development', DB_TYPE: 'sqlite', DATABASE_URL: databaseUrl, AUTOBYTEUS_SERVER_HOST: url,
+  const env = { ...scrubbedEnv(), HOME: path.join(dataRoot, 'home'), APP_ENV: 'development', DB_TYPE: 'sqlite', DATABASE_URL: databaseUrl, AUTOBYTEUS_SERVER_HOST: url, AUTOBYTEUS_ALLOWED_ORIGINS: frontendUrl,
     AUTOBYTEUS_LOG_DIR: path.join(dataRoot, 'logs'), AUTOBYTEUS_MEMORY_DIR: path.join(dataRoot, 'memory'), AUTOBYTEUS_TEMP_WORKSPACE_DIR: path.join(dataRoot, 'temp_workspace'),
     AUTOBYTEUS_AGENT_PACKAGE_ROOTS: '', AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS: '', AUTOBYTEUS_SKILLS_PATHS: '', ANTIGRAVITY_CLI_COMMAND: agyCli, AGY_FAKE_CASE: 'linked_skills' };
   await fs.writeFile(path.join(dataRoot, '.env'), ['APP_ENV=development', 'DB_TYPE=sqlite', `DATABASE_URL=${databaseUrl}`, `AUTOBYTEUS_SERVER_HOST=${url}`].join('\n') + '\n');
@@ -202,8 +204,6 @@ try {
   const normalRunId = await recordRun(normalId, 'Normal run. Reply OK.');
   evidence.isolation = { tempRoot: ownedRoot, backend: url, internalRunId, normalRunId };
 
-  const frontendPort = await choosePort();
-  const frontendUrl = `http://127.0.0.1:${frontendPort}`;
   frontend = start('corepack', ['pnpm', 'dev', '--host', '127.0.0.1', '--port', String(frontendPort)], webDir, { ...scrubbedEnv(), NODE_ENV: 'development', BACKEND_NODE_BASE_URL: url }, path.join(outputDir, 'frontend.log'));
   await waitFor('frontend', async () => { if (exited(frontend)) throw new Error('frontend exited'); return fetch(frontendUrl).then(r => r.ok).catch(() => false); }, 240000);
   browser = await chromium.launch({ headless: true, executablePath, args: ['--disable-dev-shm-usage'] });

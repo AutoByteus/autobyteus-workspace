@@ -179,6 +179,17 @@ Rules:
 
 This keeps Browser browser-like without turning the shell into an uncontrolled multi-window surface.
 
+## Local `file://` pages
+
+Browser tabs open `http:`, `https:` and `file:` URLs. A local HTML file opened in a tab (by the user or an agent's browser tool) loads and runs, but it must not reach a node with the desktop app's rights: Electron sends what the packaged desktop renderer sends (no `Origin` on fetch, `Origin: file://` on WebSockets), so a node could not tell the two apart.
+
+The Browser session's request policy (`BrowserSessionProfile.applySessionPolicy`, rule `isFileDocumentRequest` in `electron/browser/browser-file-document-request.ts`) therefore sets `Origin: null` on every request made by a `file://` document, and by anything it creates (`about:blank`, `srcdoc` and `blob:` iframes, `about:blank` popups, workers, `sendBeacon` and `keepalive` requests on unload). Nodes refuse `Origin: null` as a foreign page's (autobyteus-416). The rule leaves alone:
+
+- GET/HEAD navigations (address bar, links, an agent's `navigate`, iframe `src`): a node URL opened from a tab that showed a local file displays normally;
+- every request of an `http(s)` page, an agent-started local server included: it keeps its own `Origin`.
+
+A tab's page can still load and use any web server; only its requests to nodes lose the app's rights. The policy is the only place that changes Browser request headers.
+
 ## Runtime Flow
 
 ### Open browser and project a successful result

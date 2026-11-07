@@ -536,16 +536,18 @@ describe("Agent Tools MCP tokenless route integration", () => {
     const options = await app.inject({
       method: "OPTIONS",
       url: sessionUrl(enabledSessionId),
-      headers: { origin: "http://127.0.0.1:3000" },
     });
     expect(options.statusCode).toBe(204);
     expect(options.headers["access-control-allow-headers"]).not.toContain("authorization");
-    const rejected = await app.inject({
-      method: "OPTIONS",
-      url: sessionUrl(enabledSessionId),
-      headers: { origin: "https://evil.example" },
-    });
-    expect(rejected.statusCode).toBe(403);
+    // A page's Origin is refused, a localhost page's included (autobyteus-416 REQ-004): runtimes send none.
+    for (const origin of ["https://evil.example", "http://127.0.0.1:3000", "http://localhost:5173"]) {
+      const rejected = await app.inject({
+        method: "OPTIONS",
+        url: sessionUrl(enabledSessionId),
+        headers: { origin },
+      });
+      expect(rejected.statusCode, origin).toBe(403);
+    }
   });
 });
 
