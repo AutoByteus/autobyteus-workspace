@@ -61,6 +61,7 @@ const launchConfig: EmbeddedServerLaunchConfig = {
   listenerPolicy: 'preserve-backend-default',
   baseDataRoot: path.join('/user/home', '.autobyteus'),
   environmentPolicy: 'inherit-caller',
+  developmentRendererOrigin: null,
 }
 
 class TestServerManager extends BaseServerManager {

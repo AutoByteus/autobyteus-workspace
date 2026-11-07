@@ -1,0 +1,1891 @@
+{
+  "mode": "real-stack-browser",
+  "label": "current",
+  "startedAt": "2026-11-07T22:32:51.842Z",
+  "stackRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security",
+  "stackHead": "fa59313c67",
+  "probeHead": "fa59313c67",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "cpus": 10,
+  "loadAtStart": [
+    9.5,
+    21,
+    21.5
+  ],
+  "cases": {
+    "S-API": {
+      "result": "Pass",
+      "description": "Server timings over HTTP: hub view, hub conversation, a copy projection, a copy artifact list (generic and scoped)",
+      "ms": 106,
+      "load": [
+        14.5,
+        21.6,
+        21.7
+      ],
+      "details": {
+        "hubView": {
+          "samples": [
+            {
+              "ms": 11.4,
+              "bytes": 18701,
+              "error": null
+            },
+            {
+              "ms": 5.5,
+              "bytes": 18701,
+              "error": null
+            },
+            {
+              "ms": 4.6,
+              "bytes": 18701,
+              "error": null
+            }
+          ],
+          "firstMs": 10.6,
+          "medianMs": 5.5,
+          "bytes": 18701,
+          "supported": true,
+          "error": null
+        },
+        "hubConversation": {
+          "samples": [
+            {
+              "ms": 6.7,
+              "bytes": 269452,
+              "error": null
+            },
+            {
+              "ms": 6.6,
+              "bytes": 269452,
+              "error": null
+            },
+            {
+              "ms": 5.5,
+              "bytes": 269452,
+              "error": null
+            }
+          ],
+          "firstMs": 10.1,
+          "medianMs": 6.6,
+          "bytes": 269452,
+          "supported": true,
+          "error": null
+        },
+        "copyProjection": {
+          "samples": [
+            {
+              "ms": 4.4,
+              "bytes": 588,
+              "error": null
+            },
+            {
+              "ms": 4.6,
+              "bytes": 588,
+              "error": null
+            },
+            {
+              "ms": 5.4,
+              "bytes": 588,
+              "error": null
+            }
+          ],
+          "firstMs": 5.1,
+          "medianMs": 4.6,
+          "bytes": 588,
+          "supported": true,
+          "error": null
+        },
+        "copyArtifactsGeneric": {
+          "samples": [
+            {
+              "ms": 2.4,
+              "bytes": 33,
+              "error": null
+            },
+            {
+              "ms": 2.5,
+              "bytes": 33,
+              "error": null
+            },
+            {
+              "ms": 2.3,
+              "bytes": 33,
+              "error": null
+            }
+          ],
+          "firstMs": 3,
+          "medianMs": 2.4,
+          "bytes": 33,
+          "supported": true,
+          "error": null
+        },
+        "copyArtifactsScoped": {
+          "samples": [
+            {
+              "ms": 3.1,
+              "bytes": 54,
+              "error": null
+            },
+            {
+              "ms": 3.1,
+              "bytes": 54,
+              "error": null
+            },
+            {
+              "ms": 3,
+              "bytes": 54,
+              "error": null
+            }
+          ],
+          "firstMs": 3.8,
+          "medianMs": 3.1,
+          "bytes": 54,
+          "supported": true,
+          "error": null
+        }
+      }
+    },
+    "S-001": {
+      "result": "Pass",
+      "description": "Stopped hub cold sample 1: T-1, T-2, T-3 with request counts; reopen without refetch",
+      "ms": 7038,
+      "load": [
+        14,
+        21.3,
+        21.6
+      ],
+      "details": {
+        "teamRowsShown": 5,
+        "t1": {
+          "hubRowToCopyRowsMs": 17,
+          "hubRowAt": 601.4000000953674,
+          "copyRowsAt": 618.4000000953674,
+          "requestStart": 0,
+          "opsUntilRows": {
+            "GetUpdateNotifications": 1,
+            "GetUpdateAutomationSettings": 1,
+            "GetApplicationsCapability": 1,
+            "GetServerSettings": 1,
+            "ListWorkspaceRunHistory": 1,
+            "ListCollaborationRootHistory": 1,
+            "GetAllWorkspaces": 1,
+            "GetAgentDefinitions": 1,
+            "GetAgentTeamDefinitions": 1,
+            "GetAgentOrgDefinitions": 1,
+            "GetWorkspaceRunHistory": 1,
+            "GetAgentRunCollaboration": 2,
+            "GetTaskWorkerTasks": 3
+          }
+        },
+        "hubClickToConversationMs": 106.20000004768372,
+        "hubClickOps": {
+          "GetRunProjection": 1,
+          "GetAgentRunResumeConfig": 1,
+          "GetRunFileChanges": 1,
+          "CollaborationParticipantMessages": 1,
+          "GetSkills": 1
+        },
+        "hubClickSettledOps": {
+          "GetRunProjection": 1,
+          "GetAgentRunResumeConfig": 1,
+          "GetRunFileChanges": 1,
+          "CollaborationParticipantMessages": 1,
+          "GetSkills": 2
+        },
+        "copyClickToConversationMs": 31.100000143051147,
+        "copyClickMemberOps": {
+          "GetAgentRunCollaborationMemberProjection": 1,
+          "GetAgentRunCollaborationMemberFileChanges": 1
+        },
+        "copyReopenMs": 20.700000047683716,
+        "copyReopenOps": {},
+        "state": {
+          "selected": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+          "child": "implementation_engineer_d772dea97dda40f39d52650c108a1da1",
+          "target": "implementation_engineer_d772dea97dda40f39d52650c108a1da1",
+          "conversationId": "implementation_engineer_d772dea97dda40f39d52650c108a1da1",
+          "messageCount": 1,
+          "pending": [],
+          "error": null,
+          "phase": "historical",
+          "rows": 17,
+          "teams": 5
+        }
+      }
+    },
+    "S-002": {
+      "result": "Pass",
+      "description": "Stopped hub cold sample 2: T-1, T-2, T-3 with request counts; reopen without refetch",
+      "ms": 6667,
+      "load": [
+        13.4,
+        21,
+        21.5
+      ],
+      "details": {
+        "teamRowsShown": 5,
+        "t1": {
+          "hubRowToCopyRowsMs": 16.90000009536743,
+          "hubRowAt": 545.7999999523163,
+          "copyRowsAt": 562.7000000476837,
+          "requestStart": 39,
+          "opsUntilRows": {
+            "GetUpdateNotifications": 1,
+            "GetUpdateAutomationSettings": 1,
+            "GetApplicationsCapability": 1,
+            "GetServerSettings": 1,
+            "ListWorkspaceRunHistory": 1,
+            "ListCollaborationRootHistory": 1,
+            "GetAllWorkspaces": 1,
+            "GetAgentDefinitions": 1,
+            "GetAgentTeamDefinitions": 1,
+            "GetAgentOrgDefinitions": 1,
+            "GetWorkspaceRunHistory": 1,
+            "GetAgentRunCollaboration": 2,
+            "GetTaskWorkerTasks": 3
+          }
+        },
+        "hubClickToConversationMs": 77,
+        "hubClickOps": {
+          "GetRunProjection": 1,
+          "GetAgentRunResumeConfig": 1,
+          "GetRunFileChanges": 1,
+          "CollaborationParticipantMessages": 1,
+          "GetSkills": 1
+        },
+        "hubClickSettledOps": {
+          "GetRunProjection": 1,
+          "GetAgentRunResumeConfig": 1,
+          "GetRunFileChanges": 1,
+          "CollaborationParticipantMessages": 1,
+          "GetSkills": 2
+        },
+        "copyClickToConversationMs": 32.5,
+        "copyClickMemberOps": {
+          "GetAgentRunCollaborationMemberProjection": 1,
+          "GetAgentRunCollaborationMemberFileChanges": 1
+        },
+        "copyReopenMs": 10.599999904632568,
+        "copyReopenOps": {},
+        "state": {
+          "selected": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+          "child": "implementation_engineer_d772dea97dda40f39d52650c108a1da1",
+          "target": "implementation_engineer_d772dea97dda40f39d52650c108a1da1",
+          "conversationId": "implementation_engineer_d772dea97dda40f39d52650c108a1da1",
+          "messageCount": 1,
+          "pending": [],
+          "error": null,
+          "phase": "historical",
+          "rows": 17,
+          "teams": 5
+        }
+      }
+    },
+    "S-003": {
+      "result": "Pass",
+      "description": "Stopped hub cold sample 3: T-1, T-2, T-3 with request counts; reopen without refetch",
+      "ms": 6638,
+      "load": [
+        12.7,
+        20.7,
+        21.4
+      ],
+      "details": {
+        "teamRowsShown": 5,
+        "t1": {
+          "hubRowToCopyRowsMs": 19.59999990463257,
+          "hubRowAt": 542.7000000476837,
+          "copyRowsAt": 562.2999999523163,
+          "requestStart": 78,
+          "opsUntilRows": {
+            "GetUpdateNotifications": 1,
+            "GetUpdateAutomationSettings": 1,
+            "GetApplicationsCapability": 1,
+            "GetServerSettings": 1,
+            "ListWorkspaceRunHistory": 1,
+            "ListCollaborationRootHistory": 1,
+            "GetAllWorkspaces": 1,
+            "GetAgentDefinitions": 1,
+            "GetAgentTeamDefinitions": 1,
+            "GetAgentOrgDefinitions": 1,
+            "GetWorkspaceRunHistory": 1,
+            "GetAgentRunCollaboration": 2,
+            "GetTaskWorkerTasks": 3
+          }
+        },
+        "hubClickToConversationMs": 75.5,
+        "hubClickOps": {
+          "GetRunProjection": 1,
+          "GetAgentRunResumeConfig": 1,
+          "GetRunFileChanges": 1,
+          "CollaborationParticipantMessages": 1,
+          "GetSkills": 1
+        },
+        "hubClickSettledOps": {
+          "GetRunProjection": 1,
+          "GetAgentRunResumeConfig": 1,
+          "GetRunFileChanges": 1,
+          "CollaborationParticipantMessages": 1,
+          "GetSkills": 2
+        },
+        "copyClickToConversationMs": 23.899999856948853,
+        "copyClickMemberOps": {
+          "GetAgentRunCollaborationMemberProjection": 1,
+          "GetAgentRunCollaborationMemberFileChanges": 1
+        },
+        "copyReopenMs": 8.799999952316284,
+        "copyReopenOps": {},
+        "state": {
+          "selected": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+          "child": "implementation_engineer_d772dea97dda40f39d52650c108a1da1",
+          "target": "implementation_engineer_d772dea97dda40f39d52650c108a1da1",
+          "conversationId": "implementation_engineer_d772dea97dda40f39d52650c108a1da1",
+          "messageCount": 1,
+          "pending": [],
+          "error": null,
+          "phase": "historical",
+          "rows": 17,
+          "teams": 5
+        }
+      }
+    },
+    "S-ROWS": {
+      "result": "Pass",
+      "description": "Every Team row and every member row with statuses and Task summaries (AC-005)",
+      "ms": 5722,
+      "load": [
+        12.5,
+        20.6,
+        21.3
+      ],
+      "details": {
+        "collapsed": [
+          {
+            "kind": "agent_team",
+            "teamRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+            "address": "/large_hub_engineering_team",
+            "agentRunId": null,
+            "depth": "0",
+            "expanded": "false",
+            "label": "Temporary task team, large hub engineering team, level 1, offline, Started by large hub manager probe, /large_hub_engineering_team, Task: Engineering Task 1",
+            "status": null,
+            "summary": "Engineering Task 1",
+            "text": "large hub engineering team Engineering Task 1"
+          },
+          {
+            "kind": "agent_team",
+            "teamRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+            "address": "/large_hub_engineering_team",
+            "agentRunId": null,
+            "depth": "0",
+            "expanded": "false",
+            "label": "Temporary task team, large hub engineering team, level 1, offline, Started by large hub manager probe, /large_hub_engineering_team, Task: Engineering Task 2",
+            "status": null,
+            "summary": "Engineering Task 2",
+            "text": "large hub engineering team Engineering Task 2"
+          },
+          {
+            "kind": "agent_team",
+            "teamRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+            "address": "/large_hub_engineering_team",
+            "agentRunId": null,
+            "depth": "0",
+            "expanded": "false",
+            "label": "Temporary task team, large hub engineering team, level 1, offline, Started by large hub manager probe, /large_hub_engineering_team, Task: Engineering Task 3",
+            "status": null,
+            "summary": "Engineering Task 3",
+            "text": "large hub engineering team Engineering Task 3"
+          },
+          {
+            "kind": "agent_team",
+            "teamRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+            "address": "/large_hub_engineering_team",
+            "agentRunId": null,
+            "depth": "0",
+            "expanded": "false",
+            "label": "Temporary task team, large hub engineering team, level 1, offline, Started by large hub manager probe, /large_hub_engineering_team, Task: Engineering Task 4",
+            "status": null,
+            "summary": "Engineering Task 4",
+            "text": "large hub engineering team Engineering Task 4"
+          },
+          {
+            "kind": "agent_team",
+            "teamRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+            "address": "/large_hub_engineering_team",
+            "agentRunId": null,
+            "depth": "0",
+            "expanded": "false",
+            "label": "Temporary task team, large hub engineering team, level 1, offline, Started by large hub manager probe, /large_hub_engineering_team, Task: Engineering Task 5",
+            "status": null,
+            "summary": "Engineering Task 5",
+            "text": "large hub engineering team Engineering Task 5"
+          }
+        ],
+        "expanded": [
+          {
+            "kind": "agent_team",
+            "teamRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+            "address": "/large_hub_engineering_team",
+            "agentRunId": null,
+            "depth": "0",
+            "expanded": "true",
+            "label": "Temporary task team, large hub engineering team, level 1, offline, Started by large hub manager probe, /large_hub_engineering_team, Task: Engineering Task 1",
+            "status": null,
+            "summary": "Engineering Task 1",
+            "text": "large hub engineering team Engineering Task 1"
+          },
+          {
+            "kind": "agent",
+            "teamRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+            "address": "/large_hub_engineering_team/solution_designer",
+            "agentRunId": "solution_designer_0eb49e79e5e840d788fe5c12d7536060",
+            "depth": "1",
+            "expanded": null,
+            "label": "Temporary task agent, solution designer, level 2, offline, /large_hub_engineering_team/solution_designer",
+            "status": null,
+            "summary": null,
+            "text": "SD solution designer"
+          },
+          {
+            "kind": "agent",
+            "teamRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+            "address": "/large_hub_engineering_team/architecture_reviewer",
+            "agentRunId": "architecture_reviewer_2b4b24f53b5140a99a4fafd68d090f14",
+            "depth": "1",
+            "expanded": null,
+            "label": "Temporary task agent, architecture reviewer, level 2, offline, /large_hub_engineering_team/architecture_reviewer",
+            "status": null,
+            "summary": null,
+            "text": "AR architecture reviewer"
+          },
+          {
+            "kind": "agent",
+            "teamRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+            "address": "/large_hub_engineering_team/implementation_engineer",
+            "agentRunId": "implementation_engineer_af4043a9aa194858ba485874ef783d89",
+            "depth": "1",
+            "expanded": null,
+            "label": "Temporary task agent, implementation engineer, level 2, offline, /large_hub_engineering_team/implementation_engineer",
+            "status": null,
+            "summary": null,
+            "text": "IE implementation engineer"
+          },
+          {
+            "kind": "agent",
+            "teamRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+            "address": "/large_hub_engineering_team/code_reviewer",
+            "agentRunId": "code_reviewer_6c58ab5e44b14d8fbb68b03be3bdac09",
+            "depth": "1",
+            "expanded": null,
+            "label": "Temporary task agent, code reviewer, level 2, offline, /large_hub_engineering_team/code_reviewer",
+            "status": null,
+            "summary": null,
+            "text": "CR code reviewer"
+          },
+          {
+            "kind": "agent",
+            "teamRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+            "address": "/large_hub_engineering_team/api_e2e_engineer",
+            "agentRunId": "api_e2e_engineer_57f7dc0faf8f4847a49cfdcec9ce3226",
+            "depth": "1",
+            "expanded": null,
+            "label": "Temporary task agent, api e2e engineer, level 2, offline, /large_hub_engineering_team/api_e2e_engineer",
+            "status": null,
+            "summary": null,
+            "text": "AE api e2e engineer"
+          },
+          {
+            "kind": "agent",
+            "teamRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+            "address": "/large_hub_engineering_team/delivery_engineer",
+            "agentRunId": "delivery_engineer_49d4ff4682524a11a0bc93003a21f7d5",
+            "depth": "1",
+            "expanded": null,
+            "label": "Temporary task agent, delivery engineer, level 2, offline, /large_hub_engineering_team/delivery_engineer",
+            "status": null,
+            "summary": null,
+            "text": "DE delivery engineer"
+          },
+          {
+            "kind": "agent_team",
+            "teamRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+            "address": "/large_hub_engineering_team",
+            "agentRunId": null,
+            "depth": "0",
+            "expanded": "true",
+            "label": "Temporary task team, large hub engineering team, level 1, offline, Started by large hub manager probe, /large_hub_engineering_team, Task: Engineering Task 2",
+            "status": null,
+            "summary": "Engineering Task 2",
+            "text": "large hub engineering team Engineering Task 2"
+          },
+          {
+            "kind": "agent",
+            "teamRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+            "address": "/large_hub_engineering_team/solution_designer",
+            "agentRunId": "solution_designer_2dabba7fb70a40449136518cb617bc9b",
+            "depth": "1",
+            "expanded": null,
+            "label": "Temporary task agent, solution designer, level 2, offline, /large_hub_engineering_team/solution_designer",
+            "status": null,
+            "summary": null,
+            "text": "SD solution designer"
+          },
+          {
+            "kind": "agent",
+            "teamRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+            "address": "/large_hub_engineering_team/architecture_reviewer",
+            "agentRunId": "architecture_reviewer_bd895880ac4c4ca6bed696b47615bb6a",
+            "depth": "1",
+            "expanded": null,
+            "label": "Temporary task agent, architecture reviewer, level 2, offline, /large_hub_engineering_team/architecture_reviewer",
+            "status": null,
+            "summary": null,
+            "text": "AR architecture reviewer"
+          },
+          {
+            "kind": "agent",
+            "teamRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+            "address": "/large_hub_engineering_team/implementation_engineer",
+            "agentRunId": "implementation_engineer_ae88a8f6560842a985ea859265befab2",
+            "depth": "1",
+            "expanded": null,
+            "label": "Temporary task agent, implementation engineer, level 2, offline, /large_hub_engineering_team/implementation_engineer",
+            "status": null,
+            "summary": null,
+            "text": "IE implementation engineer"
+          },
+          {
+            "kind": "agent",
+            "teamRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+            "address": "/large_hub_engineering_team/code_reviewer",
+            "agentRunId": "code_reviewer_5345b2e64c3d4ff2b9344a5ea99a735a",
+            "depth": "1",
+            "expanded": null,
+            "label": "Temporary task agent, code reviewer, level 2, offline, /large_hub_engineering_team/code_reviewer",
+            "status": null,
+            "summary": null,
+            "text": "CR code reviewer"
+          },
+          {
+            "kind": "agent",
+            "teamRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+            "address": "/large_hub_engineering_team/api_e2e_engineer",
+            "agentRunId": "api_e2e_engineer_342744df571e494980e091a99cd6bd0b",
+            "depth": "1",
+            "expanded": null,
+            "label": "Temporary task agent, api e2e engineer, level 2, offline, /large_hub_engineering_team/api_e2e_engineer",
+            "status": null,
+            "summary": null,
+            "text": "AE api e2e engineer"
+          },
+          {
+            "kind": "agent",
+            "teamRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+            "address": "/large_hub_engineering_team/delivery_engineer",
+            "agentRunId": "delivery_engineer_9cf7650a7acb4a799c8c85782ce75f89",
+            "depth": "1",
+            "expanded": null,
+            "label": "Temporary task agent, delivery engineer, level 2, offline, /large_hub_engineering_team/delivery_engineer",
+            "status": null,
+            "summary": null,
+            "text": "DE delivery engineer"
+          },
+          {
+            "kind": "agent_team",
+            "teamRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+            "address": "/large_hub_engineering_team",
+            "agentRunId": null,
+            "depth": "0",
+            "expanded": "true",
+            "label": "Temporary task team, large hub engineering team, level 1, offline, Started by large hub manager probe, /large_hub_engineering_team, Task: Engineering Task 3",
+            "status": null,
+            "summary": "Engineering Task 3",
+            "text": "large hub engineering team Engineering Task 3"
+          },
+          {
+            "kind": "agent",
+            "teamRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+            "address": "/large_hub_engineering_team/solution_designer",
+            "agentRunId": "solution_designer_559dd6a435084884b3c8f5f9d1a1b649",
+            "depth": "1",
+            "expanded": null,
+            "label": "Temporary task agent, solution designer, level 2, offline, /large_hub_engineering_team/solution_designer",
+            "status": null,
+            "summary": null,
+            "text": "SD solution designer"
+          },
+          {
+            "kind": "agent",
+            "teamRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+            "address": "/large_hub_engineering_team/architecture_reviewer",
+            "agentRunId": "architecture_reviewer_266ca4bcc652407f9a779a3a59ffc386",
+            "depth": "1",
+            "expanded": null,
+            "label": "Temporary task agent, architecture reviewer, level 2, offline, /large_hub_engineering_team/architecture_reviewer",
+            "status": null,
+            "summary": null,
+            "text": "AR architecture reviewer"
+          },
+          {
+            "kind": "agent",
+            "teamRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+            "address": "/large_hub_engineering_team/implementation_engineer",
+            "agentRunId": "implementation_engineer_d772dea97dda40f39d52650c108a1da1",
+            "depth": "1",
+            "expanded": null,
+            "label": "Temporary task agent, implementation engineer, level 2, offline, /large_hub_engineering_team/implementation_engineer",
+            "status": null,
+            "summary": null,
+            "text": "IE implementation engineer"
+          },
+          {
+            "kind": "agent",
+            "teamRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+            "address": "/large_hub_engineering_team/code_reviewer",
+            "agentRunId": "code_reviewer_afa3da05734340a5949d6c3752d14b6b",
+            "depth": "1",
+            "expanded": null,
+            "label": "Temporary task agent, code reviewer, level 2, offline, /large_hub_engineering_team/code_reviewer",
+            "status": null,
+            "summary": null,
+            "text": "CR code reviewer"
+          },
+          {
+            "kind": "agent",
+            "teamRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+            "address": "/large_hub_engineering_team/api_e2e_engineer",
+            "agentRunId": "api_e2e_engineer_503d250613f645bd8aff1cca41cf901d",
+            "depth": "1",
+            "expanded": null,
+            "label": "Temporary task agent, api e2e engineer, level 2, offline, /large_hub_engineering_team/api_e2e_engineer",
+            "status": null,
+            "summary": null,
+            "text": "AE api e2e engineer"
+          },
+          {
+            "kind": "agent",
+            "teamRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+            "address": "/large_hub_engineering_team/delivery_engineer",
+            "agentRunId": "delivery_engineer_619149161a924180bebb2c829a9359c0",
+            "depth": "1",
+            "expanded": null,
+            "label": "Temporary task agent, delivery engineer, level 2, offline, /large_hub_engineering_team/delivery_engineer",
+            "status": null,
+            "summary": null,
+            "text": "DE delivery engineer"
+          },
+          {
+            "kind": "agent_team",
+            "teamRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+            "address": "/large_hub_engineering_team",
+            "agentRunId": null,
+            "depth": "0",
+            "expanded": "true",
+            "label": "Temporary task team, large hub engineering team, level 1, offline, Started by large hub manager probe, /large_hub_engineering_team, Task: Engineering Task 4",
+            "status": null,
+            "summary": "Engineering Task 4",
+            "text": "large hub engineering team Engineering Task 4"
+          },
+          {
+            "kind": "agent",
+            "teamRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+            "address": "/large_hub_engineering_team/solution_designer",
+            "agentRunId": "solution_designer_3319608b7d1a4e8996bcefcd28adb73f",
+            "depth": "1",
+            "expanded": null,
+            "label": "Temporary task agent, solution designer, level 2, offline, /large_hub_engineering_team/solution_designer",
+            "status": null,
+            "summary": null,
+            "text": "SD solution designer"
+          },
+          {
+            "kind": "agent",
+            "teamRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+            "address": "/large_hub_engineering_team/architecture_reviewer",
+            "agentRunId": "architecture_reviewer_204f548292424a33ba549b55b833f2a0",
+            "depth": "1",
+            "expanded": null,
+            "label": "Temporary task agent, architecture reviewer, level 2, offline, /large_hub_engineering_team/architecture_reviewer",
+            "status": null,
+            "summary": null,
+            "text": "AR architecture reviewer"
+          },
+          {
+            "kind": "agent",
+            "teamRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+            "address": "/large_hub_engineering_team/implementation_engineer",
+            "agentRunId": "implementation_engineer_81e3b4fcc591411ea955b24e0c5363a0",
+            "depth": "1",
+            "expanded": null,
+            "label": "Temporary task agent, implementation engineer, level 2, offline, /large_hub_engineering_team/implementation_engineer",
+            "status": null,
+            "summary": null,
+            "text": "IE implementation engineer"
+          },
+          {
+            "kind": "agent",
+            "teamRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+            "address": "/large_hub_engineering_team/code_reviewer",
+            "agentRunId": "code_reviewer_7defcb34b4bf45b2aad823c0becd3164",
+            "depth": "1",
+            "expanded": null,
+            "label": "Temporary task agent, code reviewer, level 2, offline, /large_hub_engineering_team/code_reviewer",
+            "status": null,
+            "summary": null,
+            "text": "CR code reviewer"
+          },
+          {
+            "kind": "agent",
+            "teamRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+            "address": "/large_hub_engineering_team/api_e2e_engineer",
+            "agentRunId": "api_e2e_engineer_711c951d7f434dafac7eecb9d963a119",
+            "depth": "1",
+            "expanded": null,
+            "label": "Temporary task agent, api e2e engineer, level 2, offline, /large_hub_engineering_team/api_e2e_engineer",
+            "status": null,
+            "summary": null,
+            "text": "AE api e2e engineer"
+          },
+          {
+            "kind": "agent",
+            "teamRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+            "address": "/large_hub_engineering_team/delivery_engineer",
+            "agentRunId": "delivery_engineer_d1c06260460b411d935fa568c61b7471",
+            "depth": "1",
+            "expanded": null,
+            "label": "Temporary task agent, delivery engineer, level 2, offline, /large_hub_engineering_team/delivery_engineer",
+            "status": null,
+            "summary": null,
+            "text": "DE delivery engineer"
+          },
+          {
+            "kind": "agent_team",
+            "teamRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+            "address": "/large_hub_engineering_team",
+            "agentRunId": null,
+            "depth": "0",
+            "expanded": "true",
+            "label": "Temporary task team, large hub engineering team, level 1, offline, Started by large hub manager probe, /large_hub_engineering_team, Task: Engineering Task 5",
+            "status": null,
+            "summary": "Engineering Task 5",
+            "text": "large hub engineering team Engineering Task 5"
+          },
+          {
+            "kind": "agent",
+            "teamRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+            "address": "/large_hub_engineering_team/solution_designer",
+            "agentRunId": "solution_designer_794d5b5424d24f03bd99e2a1aff33dfc",
+            "depth": "1",
+            "expanded": null,
+            "label": "Temporary task agent, solution designer, level 2, offline, /large_hub_engineering_team/solution_designer",
+            "status": null,
+            "summary": null,
+            "text": "SD solution designer"
+          },
+          {
+            "kind": "agent",
+            "teamRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+            "address": "/large_hub_engineering_team/architecture_reviewer",
+            "agentRunId": "architecture_reviewer_714e08320ca24f3eb5acad1af737e89e",
+            "depth": "1",
+            "expanded": null,
+            "label": "Temporary task agent, architecture reviewer, level 2, offline, /large_hub_engineering_team/architecture_reviewer",
+            "status": null,
+            "summary": null,
+            "text": "AR architecture reviewer"
+          },
+          {
+            "kind": "agent",
+            "teamRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+            "address": "/large_hub_engineering_team/implementation_engineer",
+            "agentRunId": "implementation_engineer_8b48454a7b1446529f84e874a130c909",
+            "depth": "1",
+            "expanded": null,
+            "label": "Temporary task agent, implementation engineer, level 2, offline, /large_hub_engineering_team/implementation_engineer",
+            "status": null,
+            "summary": null,
+            "text": "IE implementation engineer"
+          },
+          {
+            "kind": "agent",
+            "teamRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+            "address": "/large_hub_engineering_team/code_reviewer",
+            "agentRunId": "code_reviewer_7042acd6c8e24e1aa2ff70cf58920970",
+            "depth": "1",
+            "expanded": null,
+            "label": "Temporary task agent, code reviewer, level 2, offline, /large_hub_engineering_team/code_reviewer",
+            "status": null,
+            "summary": null,
+            "text": "CR code reviewer"
+          },
+          {
+            "kind": "agent",
+            "teamRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+            "address": "/large_hub_engineering_team/api_e2e_engineer",
+            "agentRunId": "api_e2e_engineer_370365b014434969b75687ff754fbb74",
+            "depth": "1",
+            "expanded": null,
+            "label": "Temporary task agent, api e2e engineer, level 2, offline, /large_hub_engineering_team/api_e2e_engineer",
+            "status": null,
+            "summary": null,
+            "text": "AE api e2e engineer"
+          },
+          {
+            "kind": "agent",
+            "teamRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+            "address": "/large_hub_engineering_team/delivery_engineer",
+            "agentRunId": "delivery_engineer_ee3c899f7a8546e1a50eeb40c9dc7e50",
+            "depth": "1",
+            "expanded": null,
+            "label": "Temporary task agent, delivery engineer, level 2, offline, /large_hub_engineering_team/delivery_engineer",
+            "status": null,
+            "summary": null,
+            "text": "DE delivery engineer"
+          }
+        ],
+        "counts": {
+          "collapsed": 5,
+          "expanded": 35
+        },
+        "memberRequestsWholeRun": {
+          "GetAgentRunCollaborationMemberProjection": 6,
+          "GetAgentRunCollaborationMemberFileChanges": 6
+        },
+        "comparison": null
+      }
+    }
+  },
+  "cleanup": {
+    "browserClosed": true,
+    "frontend": {
+      "pid": 95999,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 94636,
+      "status": "terminated",
+      "exit": 0
+    },
+    "runRootRemoved": true,
+    "backendPortClosed": true,
+    "frontendPortClosed": true
+  },
+  "failures": [],
+  "setup": {
+    "hostId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+    "otherHostId": "large_hub_manager_probe_b7529f8b547142dab54691c593462f35",
+    "shape": {
+      "teams": 5,
+      "childAgents": 30,
+      "unrelatedTeamRuns": 10,
+      "hubMessageLogBytes": 262017,
+      "hubViewBytes": 18701,
+      "memoryBytes": 1765157,
+      "memoryFolders": {
+        "agent_teams": 17,
+        "agents": 2,
+        "run_history_index.json": 0,
+        "team_run_history_index.json": 0
+      }
+    },
+    "markers": [
+      {
+        "index": 2,
+        "teamRunId": "large_hub_engineering_team_f0db85eace7b4b61bb180f9ba7672b5c",
+        "taskId": "project_task_258c5cf3-b86c-4268-a832-4e5609dcaf7c",
+        "address": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_d772dea97dda40f39d52650c108a1da1",
+        "marker": "Persisted marker for copy 2"
+      },
+      {
+        "index": 3,
+        "teamRunId": "large_hub_engineering_team_65180ce4b88548e3828bbb3529bf7e72",
+        "taskId": "project_task_29113188-9913-4202-a825-4c719203324d",
+        "address": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_81e3b4fcc591411ea955b24e0c5363a0",
+        "marker": "Persisted marker for copy 3"
+      }
+    ]
+  },
+  "browser": "156.0.8078.80",
+  "result": "Pass",
+  "errors": [],
+  "errorDetails": [],
+  "warnings": [],
+  "requests": [
+    {
+      "at": 1794090790874,
+      "op": "GetUpdateNotifications",
+      "v": {}
+    },
+    {
+      "at": 1794090790878,
+      "op": "GetUpdateAutomationSettings",
+      "v": {}
+    },
+    {
+      "at": 1794090790913,
+      "op": "GetApplicationsCapability",
+      "v": {}
+    },
+    {
+      "at": 1794090790914,
+      "op": "GetServerSettings",
+      "v": {}
+    },
+    {
+      "at": 1794090790915,
+      "op": "ListWorkspaceRunHistory",
+      "v": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "at": 1794090790915,
+      "op": "ListCollaborationRootHistory",
+      "v": {}
+    },
+    {
+      "at": 1794090790916,
+      "op": "GetAllWorkspaces",
+      "v": {}
+    },
+    {
+      "at": 1794090790917,
+      "op": "GetAgentDefinitions",
+      "v": {}
+    },
+    {
+      "at": 1794090790917,
+      "op": "GetAgentTeamDefinitions",
+      "v": {}
+    },
+    {
+      "at": 1794090790918,
+      "op": "GetAgentOrgDefinitions",
+      "v": {}
+    },
+    {
+      "at": 1794090791067,
+      "op": "GetWorkspaceRunHistory",
+      "v": {
+        "limitPerAgent": 6,
+        "workspaceId": "agent_ws_fac3d8a9c3ffcbdaa3742723cde0b2c82e4b6e9cd0d980dd5d6ec246cf3f156c"
+      }
+    },
+    {
+      "at": 1794090791147,
+      "op": "GetAgentRunCollaboration",
+      "v": {
+        "runId": "large_hub_manager_probe_b7529f8b547142dab54691c593462f35"
+      }
+    },
+    {
+      "at": 1794090791147,
+      "op": "GetAgentRunCollaboration",
+      "v": {
+        "runId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee"
+      }
+    },
+    {
+      "at": 1794090791177,
+      "op": "GetTaskWorkerTasks",
+      "v": {
+        "agentRunIds": [],
+        "teamRunIds": [
+          "large_hub_engineering_team_188bf56303f34db48b0bce928e1c9bd8",
+          "large_hub_engineering_team_b299cc2cd31a4e8687686ff89c8c6b79"
+        ]
+      }
+    },
+    {
+      "at": 1794090791177,
+      "op": "GetTaskWorkerTasks",
+      "v": {
+        "agentRunIds": [],
+        "teamRunIds": [
+          "large_hub_engineering_team_72210ce473d146238e83b45f4f943587",
+          "large_hub_engineering_team_9089bf79cb6742d090b88c67e77c3126",
+          "large_hub_engineering_team_f0db85eace7b4b61bb180f9ba7672b5c",
+          "large_hub_engineering_team_65180ce4b88548e3828bbb3529bf7e72",
+          "large_hub_engineering_team_34abed7731ba44a0905fac483a596f8c"
+        ]
+      }
+    },
+    {
+      "at": 1794090791180,
+      "op": "GetTaskWorkerTasks",
+      "v": {
+        "agentRunIds": [],
+        "teamRunIds": [
+          "large_hub_engineering_team_188bf56303f34db48b0bce928e1c9bd8",
+          "large_hub_engineering_team_b299cc2cd31a4e8687686ff89c8c6b79",
+          "large_hub_engineering_team_72210ce473d146238e83b45f4f943587",
+          "large_hub_engineering_team_9089bf79cb6742d090b88c67e77c3126",
+          "large_hub_engineering_team_f0db85eace7b4b61bb180f9ba7672b5c",
+          "large_hub_engineering_team_65180ce4b88548e3828bbb3529bf7e72",
+          "large_hub_engineering_team_34abed7731ba44a0905fac483a596f8c"
+        ]
+      }
+    },
+    {
+      "at": 1794090791463,
+      "op": "GetRunProjection",
+      "v": {
+        "runId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee"
+      }
+    },
+    {
+      "at": 1794090791463,
+      "op": "GetAgentRunResumeConfig",
+      "v": {
+        "runId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee"
+      }
+    },
+    {
+      "at": 1794090791463,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee"
+      }
+    },
+    {
+      "at": 1794090791560,
+      "op": "CollaborationParticipantMessages",
+      "v": {
+        "rootKind": "agent",
+        "rootRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+        "agentRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee"
+      }
+    },
+    {
+      "at": 1794090791560,
+      "op": "GetSkills",
+      "v": {}
+    },
+    {
+      "at": 1794090791713,
+      "op": "GetSkills",
+      "v": {}
+    },
+    {
+      "at": 1794090793389,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_d772dea97dda40f39d52650c108a1da1"
+      }
+    },
+    {
+      "at": 1794090793389,
+      "op": "GetAgentRunCollaborationMemberFileChanges",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_d772dea97dda40f39d52650c108a1da1"
+      }
+    },
+    {
+      "at": 1794090793389,
+      "op": "GetRunProjection",
+      "v": {
+        "runId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee"
+      }
+    },
+    {
+      "at": 1794090793389,
+      "op": "GetAgentRunResumeConfig",
+      "v": {
+        "runId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee"
+      }
+    },
+    {
+      "at": 1794090793389,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee"
+      }
+    },
+    {
+      "at": 1794090793389,
+      "op": "CollaborationParticipantMessages",
+      "v": {
+        "rootKind": "agent",
+        "rootRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+        "agentRunId": "implementation_engineer_d772dea97dda40f39d52650c108a1da1"
+      }
+    },
+    {
+      "at": 1794090794587,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_81e3b4fcc591411ea955b24e0c5363a0"
+      }
+    },
+    {
+      "at": 1794090794588,
+      "op": "GetAgentRunCollaborationMemberFileChanges",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_81e3b4fcc591411ea955b24e0c5363a0"
+      }
+    },
+    {
+      "at": 1794090794588,
+      "op": "GetRunProjection",
+      "v": {
+        "runId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee"
+      }
+    },
+    {
+      "at": 1794090794588,
+      "op": "GetAgentRunResumeConfig",
+      "v": {
+        "runId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee"
+      }
+    },
+    {
+      "at": 1794090794588,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee"
+      }
+    },
+    {
+      "at": 1794090794588,
+      "op": "CollaborationParticipantMessages",
+      "v": {
+        "rootKind": "agent",
+        "rootRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+        "agentRunId": "implementation_engineer_81e3b4fcc591411ea955b24e0c5363a0"
+      }
+    },
+    {
+      "at": 1794090795709,
+      "op": "GetRunProjection",
+      "v": {
+        "runId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee"
+      }
+    },
+    {
+      "at": 1794090795709,
+      "op": "GetAgentRunResumeConfig",
+      "v": {
+        "runId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee"
+      }
+    },
+    {
+      "at": 1794090795709,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee"
+      }
+    },
+    {
+      "at": 1794090795943,
+      "op": "ListWorkspaceRunHistory",
+      "v": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "at": 1794090795943,
+      "op": "ListCollaborationRootHistory",
+      "v": {}
+    },
+    {
+      "at": 1794090797886,
+      "op": "GetUpdateNotifications",
+      "v": {}
+    },
+    {
+      "at": 1794090797889,
+      "op": "GetUpdateAutomationSettings",
+      "v": {}
+    },
+    {
+      "at": 1794090797913,
+      "op": "GetApplicationsCapability",
+      "v": {}
+    },
+    {
+      "at": 1794090797914,
+      "op": "GetServerSettings",
+      "v": {}
+    },
+    {
+      "at": 1794090797921,
+      "op": "ListWorkspaceRunHistory",
+      "v": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "at": 1794090797921,
+      "op": "ListCollaborationRootHistory",
+      "v": {}
+    },
+    {
+      "at": 1794090797921,
+      "op": "GetAllWorkspaces",
+      "v": {}
+    },
+    {
+      "at": 1794090797922,
+      "op": "GetAgentDefinitions",
+      "v": {}
+    },
+    {
+      "at": 1794090797925,
+      "op": "GetAgentTeamDefinitions",
+      "v": {}
+    },
+    {
+      "at": 1794090797926,
+      "op": "GetAgentOrgDefinitions",
+      "v": {}
+    },
+    {
+      "at": 1794090798063,
+      "op": "GetWorkspaceRunHistory",
+      "v": {
+        "limitPerAgent": 6,
+        "workspaceId": "agent_ws_fac3d8a9c3ffcbdaa3742723cde0b2c82e4b6e9cd0d980dd5d6ec246cf3f156c"
+      }
+    },
+    {
+      "at": 1794090798129,
+      "op": "GetAgentRunCollaboration",
+      "v": {
+        "runId": "large_hub_manager_probe_b7529f8b547142dab54691c593462f35"
+      }
+    },
+    {
+      "at": 1794090798129,
+      "op": "GetAgentRunCollaboration",
+      "v": {
+        "runId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee"
+      }
+    },
+    {
+      "at": 1794090798155,
+      "op": "GetTaskWorkerTasks",
+      "v": {
+        "agentRunIds": [],
+        "teamRunIds": [
+          "large_hub_engineering_team_188bf56303f34db48b0bce928e1c9bd8",
+          "large_hub_engineering_team_b299cc2cd31a4e8687686ff89c8c6b79"
+        ]
+      }
+    },
+    {
+      "at": 1794090798157,
+      "op": "GetTaskWorkerTasks",
+      "v": {
+        "agentRunIds": [],
+        "teamRunIds": [
+          "large_hub_engineering_team_72210ce473d146238e83b45f4f943587",
+          "large_hub_engineering_team_9089bf79cb6742d090b88c67e77c3126",
+          "large_hub_engineering_team_f0db85eace7b4b61bb180f9ba7672b5c",
+          "large_hub_engineering_team_65180ce4b88548e3828bbb3529bf7e72",
+          "large_hub_engineering_team_34abed7731ba44a0905fac483a596f8c"
+        ]
+      }
+    },
+    {
+      "at": 1794090798160,
+      "op": "GetTaskWorkerTasks",
+      "v": {
+        "agentRunIds": [],
+        "teamRunIds": [
+          "large_hub_engineering_team_188bf56303f34db48b0bce928e1c9bd8",
+          "large_hub_engineering_team_b299cc2cd31a4e8687686ff89c8c6b79",
+          "large_hub_engineering_team_72210ce473d146238e83b45f4f943587",
+          "large_hub_engineering_team_9089bf79cb6742d090b88c67e77c3126",
+          "large_hub_engineering_team_f0db85eace7b4b61bb180f9ba7672b5c",
+          "large_hub_engineering_team_65180ce4b88548e3828bbb3529bf7e72",
+          "large_hub_engineering_team_34abed7731ba44a0905fac483a596f8c"
+        ]
+      }
+    },
+    {
+      "at": 1794090798430,
+      "op": "GetRunProjection",
+      "v": {
+        "runId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee"
+      }
+    },
+    {
+      "at": 1794090798430,
+      "op": "GetAgentRunResumeConfig",
+      "v": {
+        "runId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee"
+      }
+    },
+    {
+      "at": 1794090798430,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee"
+      }
+    },
+    {
+      "at": 1794090798499,
+      "op": "CollaborationParticipantMessages",
+      "v": {
+        "rootKind": "agent",
+        "rootRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+        "agentRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee"
+      }
+    },
+    {
+      "at": 1794090798499,
+      "op": "GetSkills",
+      "v": {}
+    },
+    {
+      "at": 1794090798610,
+      "op": "GetSkills",
+      "v": {}
+    },
+    {
+      "at": 1794090800168,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_d772dea97dda40f39d52650c108a1da1"
+      }
+    },
+    {
+      "at": 1794090800168,
+      "op": "GetAgentRunCollaborationMemberFileChanges",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_d772dea97dda40f39d52650c108a1da1"
+      }
+    },
+    {
+      "at": 1794090800168,
+      "op": "GetRunProjection",
+      "v": {
+        "runId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee"
+      }
+    },
+    {
+      "at": 1794090800168,
+      "op": "GetAgentRunResumeConfig",
+      "v": {
+        "runId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee"
+      }
+    },
+    {
+      "at": 1794090800169,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee"
+      }
+    },
+    {
+      "at": 1794090800169,
+      "op": "CollaborationParticipantMessages",
+      "v": {
+        "rootKind": "agent",
+        "rootRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+        "agentRunId": "implementation_engineer_d772dea97dda40f39d52650c108a1da1"
+      }
+    },
+    {
+      "at": 1794090801315,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_81e3b4fcc591411ea955b24e0c5363a0"
+      }
+    },
+    {
+      "at": 1794090801315,
+      "op": "GetAgentRunCollaborationMemberFileChanges",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_81e3b4fcc591411ea955b24e0c5363a0"
+      }
+    },
+    {
+      "at": 1794090801316,
+      "op": "GetRunProjection",
+      "v": {
+        "runId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee"
+      }
+    },
+    {
+      "at": 1794090801316,
+      "op": "GetAgentRunResumeConfig",
+      "v": {
+        "runId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee"
+      }
+    },
+    {
+      "at": 1794090801316,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee"
+      }
+    },
+    {
+      "at": 1794090801316,
+      "op": "CollaborationParticipantMessages",
+      "v": {
+        "rootKind": "agent",
+        "rootRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+        "agentRunId": "implementation_engineer_81e3b4fcc591411ea955b24e0c5363a0"
+      }
+    },
+    {
+      "at": 1794090802434,
+      "op": "GetRunProjection",
+      "v": {
+        "runId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee"
+      }
+    },
+    {
+      "at": 1794090802434,
+      "op": "GetAgentRunResumeConfig",
+      "v": {
+        "runId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee"
+      }
+    },
+    {
+      "at": 1794090802434,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee"
+      }
+    },
+    {
+      "at": 1794090802954,
+      "op": "ListWorkspaceRunHistory",
+      "v": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "at": 1794090802954,
+      "op": "ListCollaborationRootHistory",
+      "v": {}
+    },
+    {
+      "at": 1794090804577,
+      "op": "GetUpdateNotifications",
+      "v": {}
+    },
+    {
+      "at": 1794090804582,
+      "op": "GetUpdateAutomationSettings",
+      "v": {}
+    },
+    {
+      "at": 1794090804611,
+      "op": "GetApplicationsCapability",
+      "v": {}
+    },
+    {
+      "at": 1794090804611,
+      "op": "GetServerSettings",
+      "v": {}
+    },
+    {
+      "at": 1794090804614,
+      "op": "ListWorkspaceRunHistory",
+      "v": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "at": 1794090804614,
+      "op": "ListCollaborationRootHistory",
+      "v": {}
+    },
+    {
+      "at": 1794090804615,
+      "op": "GetAllWorkspaces",
+      "v": {}
+    },
+    {
+      "at": 1794090804615,
+      "op": "GetAgentDefinitions",
+      "v": {}
+    },
+    {
+      "at": 1794090804615,
+      "op": "GetAgentTeamDefinitions",
+      "v": {}
+    },
+    {
+      "at": 1794090804615,
+      "op": "GetAgentOrgDefinitions",
+      "v": {}
+    },
+    {
+      "at": 1794090804728,
+      "op": "GetWorkspaceRunHistory",
+      "v": {
+        "limitPerAgent": 6,
+        "workspaceId": "agent_ws_fac3d8a9c3ffcbdaa3742723cde0b2c82e4b6e9cd0d980dd5d6ec246cf3f156c"
+      }
+    },
+    {
+      "at": 1794090804794,
+      "op": "GetAgentRunCollaboration",
+      "v": {
+        "runId": "large_hub_manager_probe_b7529f8b547142dab54691c593462f35"
+      }
+    },
+    {
+      "at": 1794090804794,
+      "op": "GetAgentRunCollaboration",
+      "v": {
+        "runId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee"
+      }
+    },
+    {
+      "at": 1794090804818,
+      "op": "GetTaskWorkerTasks",
+      "v": {
+        "agentRunIds": [],
+        "teamRunIds": [
+          "large_hub_engineering_team_188bf56303f34db48b0bce928e1c9bd8",
+          "large_hub_engineering_team_b299cc2cd31a4e8687686ff89c8c6b79"
+        ]
+      }
+    },
+    {
+      "at": 1794090804818,
+      "op": "GetTaskWorkerTasks",
+      "v": {
+        "agentRunIds": [],
+        "teamRunIds": [
+          "large_hub_engineering_team_72210ce473d146238e83b45f4f943587",
+          "large_hub_engineering_team_9089bf79cb6742d090b88c67e77c3126",
+          "large_hub_engineering_team_f0db85eace7b4b61bb180f9ba7672b5c",
+          "large_hub_engineering_team_65180ce4b88548e3828bbb3529bf7e72",
+          "large_hub_engineering_team_34abed7731ba44a0905fac483a596f8c"
+        ]
+      }
+    },
+    {
+      "at": 1794090804820,
+      "op": "GetTaskWorkerTasks",
+      "v": {
+        "agentRunIds": [],
+        "teamRunIds": [
+          "large_hub_engineering_team_188bf56303f34db48b0bce928e1c9bd8",
+          "large_hub_engineering_team_b299cc2cd31a4e8687686ff89c8c6b79",
+          "large_hub_engineering_team_72210ce473d146238e83b45f4f943587",
+          "large_hub_engineering_team_9089bf79cb6742d090b88c67e77c3126",
+          "large_hub_engineering_team_f0db85eace7b4b61bb180f9ba7672b5c",
+          "large_hub_engineering_team_65180ce4b88548e3828bbb3529bf7e72",
+          "large_hub_engineering_team_34abed7731ba44a0905fac483a596f8c"
+        ]
+      }
+    },
+    {
+      "at": 1794090805096,
+      "op": "GetRunProjection",
+      "v": {
+        "runId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee"
+      }
+    },
+    {
+      "at": 1794090805096,
+      "op": "GetAgentRunResumeConfig",
+      "v": {
+        "runId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee"
+      }
+    },
+    {
+      "at": 1794090805097,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee"
+      }
+    },
+    {
+      "at": 1794090805164,
+      "op": "CollaborationParticipantMessages",
+      "v": {
+        "rootKind": "agent",
+        "rootRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+        "agentRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee"
+      }
+    },
+    {
+      "at": 1794090805164,
+      "op": "GetSkills",
+      "v": {}
+    },
+    {
+      "at": 1794090805296,
+      "op": "GetSkills",
+      "v": {}
+    },
+    {
+      "at": 1794090806839,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_d772dea97dda40f39d52650c108a1da1"
+      }
+    },
+    {
+      "at": 1794090806839,
+      "op": "GetAgentRunCollaborationMemberFileChanges",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_d772dea97dda40f39d52650c108a1da1"
+      }
+    },
+    {
+      "at": 1794090806839,
+      "op": "GetRunProjection",
+      "v": {
+        "runId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee"
+      }
+    },
+    {
+      "at": 1794090806839,
+      "op": "GetAgentRunResumeConfig",
+      "v": {
+        "runId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee"
+      }
+    },
+    {
+      "at": 1794090806839,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee"
+      }
+    },
+    {
+      "at": 1794090806840,
+      "op": "CollaborationParticipantMessages",
+      "v": {
+        "rootKind": "agent",
+        "rootRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+        "agentRunId": "implementation_engineer_d772dea97dda40f39d52650c108a1da1"
+      }
+    },
+    {
+      "at": 1794090807967,
+      "op": "GetAgentRunCollaborationMemberProjection",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_81e3b4fcc591411ea955b24e0c5363a0"
+      }
+    },
+    {
+      "at": 1794090807968,
+      "op": "GetAgentRunCollaborationMemberFileChanges",
+      "v": {
+        "hostRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+        "memberAddress": "/large_hub_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_81e3b4fcc591411ea955b24e0c5363a0"
+      }
+    },
+    {
+      "at": 1794090807968,
+      "op": "GetRunProjection",
+      "v": {
+        "runId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee"
+      }
+    },
+    {
+      "at": 1794090807968,
+      "op": "GetAgentRunResumeConfig",
+      "v": {
+        "runId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee"
+      }
+    },
+    {
+      "at": 1794090807968,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee"
+      }
+    },
+    {
+      "at": 1794090807968,
+      "op": "CollaborationParticipantMessages",
+      "v": {
+        "rootKind": "agent",
+        "rootRunId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee",
+        "agentRunId": "implementation_engineer_81e3b4fcc591411ea955b24e0c5363a0"
+      }
+    },
+    {
+      "at": 1794090809081,
+      "op": "GetRunProjection",
+      "v": {
+        "runId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee"
+      }
+    },
+    {
+      "at": 1794090809081,
+      "op": "GetAgentRunResumeConfig",
+      "v": {
+        "runId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee"
+      }
+    },
+    {
+      "at": 1794090809081,
+      "op": "GetRunFileChanges",
+      "v": {
+        "runId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee"
+      }
+    },
+    {
+      "at": 1794090809642,
+      "op": "ListWorkspaceRunHistory",
+      "v": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "at": 1794090809642,
+      "op": "ListCollaborationRootHistory",
+      "v": {}
+    },
+    {
+      "at": 1794090811227,
+      "op": "GetUpdateNotifications",
+      "v": {}
+    },
+    {
+      "at": 1794090811230,
+      "op": "GetUpdateAutomationSettings",
+      "v": {}
+    },
+    {
+      "at": 1794090811260,
+      "op": "GetApplicationsCapability",
+      "v": {}
+    },
+    {
+      "at": 1794090811261,
+      "op": "GetServerSettings",
+      "v": {}
+    },
+    {
+      "at": 1794090811263,
+      "op": "ListWorkspaceRunHistory",
+      "v": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "at": 1794090811264,
+      "op": "ListCollaborationRootHistory",
+      "v": {}
+    },
+    {
+      "at": 1794090811264,
+      "op": "GetAllWorkspaces",
+      "v": {}
+    },
+    {
+      "at": 1794090811264,
+      "op": "GetAgentDefinitions",
+      "v": {}
+    },
+    {
+      "at": 1794090811264,
+      "op": "GetAgentTeamDefinitions",
+      "v": {}
+    },
+    {
+      "at": 1794090811265,
+      "op": "GetAgentOrgDefinitions",
+      "v": {}
+    },
+    {
+      "at": 1794090811412,
+      "op": "GetWorkspaceRunHistory",
+      "v": {
+        "limitPerAgent": 6,
+        "workspaceId": "agent_ws_fac3d8a9c3ffcbdaa3742723cde0b2c82e4b6e9cd0d980dd5d6ec246cf3f156c"
+      }
+    },
+    {
+      "at": 1794090811477,
+      "op": "GetAgentRunCollaboration",
+      "v": {
+        "runId": "large_hub_manager_probe_b7529f8b547142dab54691c593462f35"
+      }
+    },
+    {
+      "at": 1794090811477,
+      "op": "GetAgentRunCollaboration",
+      "v": {
+        "runId": "large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee"
+      }
+    },
+    {
+      "at": 1794090811501,
+      "op": "GetTaskWorkerTasks",
+      "v": {
+        "agentRunIds": [],
+        "teamRunIds": [
+          "large_hub_engineering_team_188bf56303f34db48b0bce928e1c9bd8",
+          "large_hub_engineering_team_b299cc2cd31a4e8687686ff89c8c6b79"
+        ]
+      }
+    },
+    {
+      "at": 1794090811502,
+      "op": "GetTaskWorkerTasks",
+      "v": {
+        "agentRunIds": [],
+        "teamRunIds": [
+          "large_hub_engineering_team_72210ce473d146238e83b45f4f943587",
+          "large_hub_engineering_team_9089bf79cb6742d090b88c67e77c3126",
+          "large_hub_engineering_team_f0db85eace7b4b61bb180f9ba7672b5c",
+          "large_hub_engineering_team_65180ce4b88548e3828bbb3529bf7e72",
+          "large_hub_engineering_team_34abed7731ba44a0905fac483a596f8c"
+        ]
+      }
+    },
+    {
+      "at": 1794090811503,
+      "op": "GetTaskWorkerTasks",
+      "v": {
+        "agentRunIds": [],
+        "teamRunIds": [
+          "large_hub_engineering_team_188bf56303f34db48b0bce928e1c9bd8",
+          "large_hub_engineering_team_b299cc2cd31a4e8687686ff89c8c6b79",
+          "large_hub_engineering_team_72210ce473d146238e83b45f4f943587",
+          "large_hub_engineering_team_9089bf79cb6742d090b88c67e77c3126",
+          "large_hub_engineering_team_f0db85eace7b4b61bb180f9ba7672b5c",
+          "large_hub_engineering_team_65180ce4b88548e3828bbb3529bf7e72",
+          "large_hub_engineering_team_34abed7731ba44a0905fac483a596f8c"
+        ]
+      }
+    }
+  ],
+  "loadAtEnd": [
+    12.5,
+    20.6,
+    21.3
+  ]
+}

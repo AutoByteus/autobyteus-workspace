@@ -79,7 +79,7 @@ try {
   const backendPort=await port(),frontendPort=await port();
   const base=`http://127.0.0.1:${backendPort}`,front=`http://127.0.0.1:${frontendPort}`;
   evidence.runtime={dataRoot,workspace,backendUrl:base,frontendUrl:front};
-  const env={...process.env,APP_ENV:'development',DB_TYPE:'sqlite',DATABASE_URL:dbUrl,AUTOBYTEUS_SERVER_HOST:base,DISABLE_HTTP_REQUEST_LOGS:'true'};
+  const env={...process.env,APP_ENV:'development',DB_TYPE:'sqlite',DATABASE_URL:dbUrl,AUTOBYTEUS_SERVER_HOST:base,AUTOBYTEUS_ALLOWED_ORIGINS:front,DISABLE_HTTP_REQUEST_LOGS:'true'};
   await fs.writeFile(path.join(dataRoot,'.env'),`APP_ENV=development\nDB_TYPE=sqlite\nDATABASE_URL=${dbUrl}\nAUTOBYTEUS_SERVER_HOST=${base}\n`);
   await run('corepack',['pnpm','-C',serverDir,'exec','prisma','migrate','deploy','--schema','./prisma/schema.prisma'],rootDir,env,path.join(outDir,'migrate.log'));
   const startBackend=async label=>{const child=spawnOwned(process.execPath,[path.join(serverDir,'dist/app.js'),'--host','127.0.0.1','--port',String(backendPort),'--data-dir',dataRoot],serverDir,env,path.join(outDir,`${label}.log`));await wait(`${label} health`,async()=>{assert(child.exitCode===null&&child.signalCode===null,`${label} exited before ready`);try{return (await fetch(`${base}/rest/health`,{signal:AbortSignal.timeout(2000)})).ok;}catch{return false;}},90000);evidence.processes.push({label,pid:child.pid,readyAt:new Date().toISOString()});return child;};

@@ -148,10 +148,11 @@ let ownedRoot, node, frontend, browser;
 try {
   if (!skipServerBuild) await run('corepack', ['pnpm', '-C', serverDir, 'build'], root, process.env, path.join(outputDir, 'server-build.log'));
   ownedRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'autobyteus-embedding-settings-e2e-'));
-  node = await createNode(ownedRoot);
-  await startNode(node);
   const frontendPort = await choosePort();
   const frontendUrl = `http://127.0.0.1:${frontendPort}`;
+  node = await createNode(ownedRoot);
+  node.env.AUTOBYTEUS_ALLOWED_ORIGINS = frontendUrl; // the node accepts its frontend's origin (autobyteus-416)
+  await startNode(node);
   evidence.isolation = { tempRoot: ownedRoot, backend: node.url, frontend: frontendUrl };
   frontend = start('corepack', ['pnpm', 'dev', '--host', '127.0.0.1', '--port', String(frontendPort)], webDir, { ...scrubbedEnv(), NODE_ENV: 'development', BACKEND_NODE_BASE_URL: node.url }, path.join(outputDir, 'frontend.log'));
   await waitFor('frontend', async () => { if (exited(frontend)) throw new Error('frontend exited'); return fetch(frontendUrl).then(r => r.ok).catch(() => false); }, 240000);

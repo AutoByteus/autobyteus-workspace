@@ -38,7 +38,7 @@ try{
   await fs.chmod(wrapper,0o755);
   const bp=await port(),fp=await port(),base=`http://127.0.0.1:${bp}`,front=`http://127.0.0.1:${fp}`,dbUrl=pathToFileURL(db).href;
   evidence.environment={dataRoot,workspace,backendUrl:base,frontendUrl:front,wrapper,realAgy,chrome};
-  const env={...process.env,APP_ENV:'development',DB_TYPE:'sqlite',DATABASE_URL:dbUrl,AUTOBYTEUS_SERVER_HOST:base,DISABLE_HTTP_REQUEST_LOGS:'true',ANTIGRAVITY_CLI_COMMAND:wrapper,AGY_REAL_COMMAND:realAgy,AGY_WRAPPER_MODE_FILE:modeFile,AGY_WRAPPER_CALLS_FILE:callsFile};
+  const env={...process.env,APP_ENV:'development',DB_TYPE:'sqlite',DATABASE_URL:dbUrl,AUTOBYTEUS_SERVER_HOST:base,AUTOBYTEUS_ALLOWED_ORIGINS:front,DISABLE_HTTP_REQUEST_LOGS:'true',ANTIGRAVITY_CLI_COMMAND:wrapper,AGY_REAL_COMMAND:realAgy,AGY_WRAPPER_MODE_FILE:modeFile,AGY_WRAPPER_CALLS_FILE:callsFile};
   await fs.writeFile(path.join(dataRoot,'.env'),`APP_ENV=development\nDB_TYPE=sqlite\nDATABASE_URL=${dbUrl}\nAUTOBYTEUS_SERVER_HOST=${base}\n`);
   await run('corepack',['pnpm','-C',serverDir,'exec','prisma','migrate','deploy','--schema','./prisma/schema.prisma'],rootDir,env,path.join(outDir,'migrate.log'));
   backend=spawnOwned(process.execPath,[path.join(serverDir,'dist/app.js'),'--host','127.0.0.1','--port',String(bp),'--data-dir',dataRoot],serverDir,env,path.join(outDir,'backend.log'));

@@ -226,7 +226,10 @@ try {
   if (!skipServerBuild) await run('corepack', ['pnpm', '-C', serverDir, 'build'], root, process.env, path.join(outputDir, 'server-build.log'));
   ownedRoot = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), 'autobyteus-agent-runtimes-e2e-')));
   fakes = await createFakes(ownedRoot);
+  const frontendPort = await choosePort();
+  const frontendUrl = `http://127.0.0.1:${frontendPort}`;
   node = await createNode(ownedRoot, fakes);
+  node.env.AUTOBYTEUS_ALLOWED_ORIGINS = frontendUrl; // the node accepts its frontend's origin (autobyteus-416)
   await startNode(node);
   // A second node with a desktop browser, its own scripted runtimes (Grok installed) and plain vendor sources.
   desktopFakes = await createFakes(path.join(ownedRoot, 'desktop'));
@@ -234,9 +237,8 @@ try {
   desktopFakes.sources.antigravity = { status: 200, body: JSON.stringify({ version: '1.4.3' }) };
   await desktopFakes.writeSources();
   desktopNode = await createNode(path.join(ownedRoot, 'desktop'), desktopFakes, { name: 'desktop-backend', desktop: true, grokInstalled: true });
+  desktopNode.env.AUTOBYTEUS_ALLOWED_ORIGINS = frontendUrl; // the node accepts its frontend's origin (autobyteus-416)
   await startNode(desktopNode);
-  const frontendPort = await choosePort();
-  const frontendUrl = `http://127.0.0.1:${frontendPort}`;
   evidence.isolation = { tempRoot: ownedRoot, backend: node.url, desktopBackend: desktopNode.url, frontend: frontendUrl };
   frontend = start('corepack', ['pnpm', 'dev', '--host', '127.0.0.1', '--port', String(frontendPort)], webDir, { ...scrubbedEnv(), NODE_ENV: 'development', BACKEND_NODE_BASE_URL: node.url }, path.join(outputDir, 'frontend.log'));
   await waitFor('frontend', async () => { if (exited(frontend)) throw new Error('frontend exited'); return fetch(frontendUrl).then(r => r.ok).catch(() => false); }, 240000);

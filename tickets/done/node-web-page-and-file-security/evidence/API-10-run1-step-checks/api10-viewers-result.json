@@ -1,0 +1,81 @@
+{
+  "ok": false,
+  "step": "api10-viewers",
+  "at": "2026-11-07T21:57:57.849Z",
+  "error": "every viewer displays",
+  "details": {
+    "failed": [
+      "notes.txt",
+      "preview.html"
+    ],
+    "results": {
+      "report.pdf": {
+        "result": "Pass",
+        "canvases": 2
+      },
+      "sheet.xlsx": {
+        "result": "Pass",
+        "cell": "API10-SHEET-CELL"
+      },
+      "image.png": {
+        "result": "Pass",
+        "naturalWidth": 64
+      },
+      "clip.webm": {
+        "result": "Pass",
+        "readyState": 4,
+        "duration": 2,
+        "width": 160
+      },
+      "sound.wav": {
+        "result": "Pass",
+        "readyState": 4,
+        "duration": 2
+      },
+      "notes.md": {
+        "result": "Pass",
+        "text": true,
+        "imageNaturalWidth": 64
+      },
+      "notes.txt": {
+        "result": "Fail",
+        "error": "Timed out waiting for text"
+      },
+      "preview.html": {
+        "result": "Fail",
+        "error": "the HTML preview renders and its script runs"
+      },
+      "topLevelAttachmentPdf": {
+        "url": "<node>/rest/workspaces/agent_ws_888b22b81fff39e777b9c4adeebcd7c59657d57e7cccbde0ad92c2097ea34346/content?path=docs%2Fattachment.pdf",
+        "doc": {
+          "embeds": [],
+          "contentType": "application/pdf",
+          "bodyChildren": 0
+        },
+        "headers": {
+          "contentType": "application/pdf",
+          "csp": "sandbox allow-scripts",
+          "nosniff": "nosniff"
+        }
+      },
+      "upload": {
+        "fileUrl": "/rest/files/documents/a9a2be6d-199a-4306-aaca-27943fa1d976.pdf"
+      },
+      "topLevelMediaPdf": {
+        "url": "<node>/rest/files/documents/a9a2be6d-199a-4306-aaca-27943fa1d976.pdf",
+        "doc": {
+          "embeds": [],
+          "contentType": "application/pdf",
+          "bodyChildren": 0
+        },
+        "headers": {
+          "contentType": "application/pdf",
+          "csp": "sandbox allow-scripts",
+          "nosniff": "nosniff"
+        }
+      },
+      "refusalLines": []
+    }
+  },
+  "stack": "Error: every viewer displays\n    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/tickets/in-progress/node-web-page-and-file-security/probes/api-desktop-step.mjs:25:59)\n    at default (file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/tickets/in-progress/node-web-page-and-file-security/probes/desktop-steps/api10-viewers.mjs:64:3)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/tickets/in-progress/node-web-page-and-file-security/probes/api-desktop-step.mjs:50:78"
+}

@@ -1,0 +1,29 @@
+# API-13 Electron dev mode; commit fa59313c67 (source da207045a5); 2026-11-07T22:06:39Z
+# BUILD_TARGET=electron nuxt dev --port 3000 (autobyteus-web), AUTOBYTEUS_ELECTRON_LAUNCH_PROFILE=e2e, data root /private/tmp/api416-13-K3ui, server port 59634
+nuxt pid 96849
+
+== embedded node health
+{"status":"ok","message":"Server is running"}
+
+== embedded node process 3352: AUTOBYTEUS_ALLOWED_ORIGINS from its environment (ps eww)
+AUTOBYTEUS_ALLOWED_ORIGINS=http://localhost:3000
+
+== renderer URL Electron loaded (app log)
+[2026-11-07T22:06:49.367Z] [INFO] [electron.embedded-server.stdout] Loading environment from: /private/tmp/api416-13-K3ui/server-data/.env
+[2026-11-07T22:06:50.874Z] [INFO] [electron.embedded-server.stdout] Loading workspace packages to trigger registration...
+[2026-11-07T22:06:50.934Z] [INFO] [electron.embedded-server.stdout] Loading and registering all MCP server configurations from file...
+
+== established TCP connections to the embedded node's port, by process
+
+== controls (curl, Origin header as a page would send it)
+Origin http://localhost:3000 (the dev renderer): 200
+Origin http://localhost:5173 (unlisted): 403
+
+== refusal lines in the embedded node log (server-data/logs/server.log)
+Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=api13-unlisted origin http://localhost:5173
+
+== cleanup
+processes left with the worktree's Electron: 0
+embedded node left: 0
+port 3000 listeners: 0
+data root removed: /private/tmp/api416-13-K3ui

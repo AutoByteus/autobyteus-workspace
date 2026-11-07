@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "step": "api11-local-server",
+  "at": "2026-11-07T21:56:04.944Z",
+  "result": {
+    "state": {
+      "h": "API11 LOCAL APP",
+      "node": "error TypeError",
+      "ws": "closed 1006",
+      "own": "own server answered api11",
+      "origin": "http://localhost:57757"
+    },
+    "refusalLines": [
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=api11-fetch origin http://localhost:57757",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api11-session?f=api11-ws origin http://localhost:57757"
+    ]
+  }
+}

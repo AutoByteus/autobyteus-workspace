@@ -1,5 +1,6 @@
 import { timingSafeEqual } from "node:crypto";
 import type { FastifyRequest } from "fastify";
+import { parseRequestHostName } from "../api/security/request-host-name.js";
 import { extractBearerToken, readSingleHeader } from "./mcp-gateway-http-helpers.js";
 
 export const MCP_GATEWAY_TOKEN_ENV_VAR = "AUTOBYTEUS_MCP_GATEWAY_TOKEN";
@@ -70,22 +71,8 @@ const isLoopbackAddress = (address: string | null | undefined): boolean => {
   return normalized === "::1" || normalized === "localhost" || normalized === "127.0.0.1" || normalized.startsWith("127.");
 };
 
-const isLoopbackHostHeader = (hostHeader: string | null): boolean => {
-  const host = parseHostHeader(hostHeader);
-  return isLoopbackAddress(host);
-};
-
-const parseHostHeader = (hostHeader: string | null): string | null => {
-  const normalized = hostHeader?.trim() ?? "";
-  if (!normalized) {
-    return null;
-  }
-  if (normalized.startsWith("[")) {
-    const closeIndex = normalized.indexOf("]");
-    return closeIndex > 0 ? normalized.slice(1, closeIndex) : null;
-  }
-  return normalized.split(":")[0] ?? null;
-};
+const isLoopbackHostHeader = (hostHeader: string | null): boolean =>
+  isLoopbackAddress(hostHeader === null ? null : parseRequestHostName(hostHeader));
 
 const normalizeAddress = (address: string | null | undefined): string | null => {
   const normalized = address?.trim().replace(/^\[|\]$/g, "").toLowerCase() ?? "";

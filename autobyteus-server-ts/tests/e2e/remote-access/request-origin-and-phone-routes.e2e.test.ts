@@ -1,6 +1,11 @@
-// The node's allowed-origin gate and phone WebSocket routes on the real studio server
-// (autobyteus-403, AC-001…AC-006). It starts the studio composition on a loopback port and
-// sends real WebSocket upgrades (`ws` client with an Origin header) and HTTP requests:
+// The node's request gate (Host gate, allowed-origin rule) and phone WebSocket routes on the real
+// studio server (autobyteus-403 AC-001…AC-006; autobyteus-416 AC-001…AC-005). It starts the studio
+// composition on a loopback port and sends real WebSocket upgrades (`ws` client with Host and Origin
+// headers) and HTTP requests:
+// - a request addressed to a name that is not the node's (DNS rebinding) is refused with 403
+//   REMOTE_ACCESS_HOST_REFUSED before any hook or route, on HTTP, preflights, /mcp/gateway and every WS
+//   family, whatever its Origin or X-Forwarded-Host; each allowed-host class and setting passes;
+// - a localhost page's Origin passes only when listed in AUTOBYTEUS_ALLOWED_ORIGINS;
 // - every WS route family (/ws/*, /graphql, /rest/remote/run-observations) and HTTP refuse a
 //   foreign Origin with 403 REMOTE_ACCESS_ORIGIN_REFUSED before the route runs;
 // - each allowed-origin class (REQ-002) passes; CORS is granted only to allowed origins;
@@ -24,7 +29,11 @@ import {
 
 const FOREIGN_ORIGIN = "https://evil.example";
 const CONFIGURED_ORIGIN = "https://gateway.example";
-const LOOPBACK_DEV_ORIGIN = "http://localhost:3000";
+/** A development frontend's origin, listed as the launchers list theirs (416 REQ-005). */
+const LISTED_LOOPBACK_ORIGIN = "http://127.0.0.1:3000";
+const UNLISTED_LOOPBACK_ORIGINS = ["http://localhost:5173", "http://127.0.0.1:8080", "http://[::1]:3000"];
+const REBINDING_HOST = "evil.example";
+const HOST_HINT = "(add it to AUTOBYTEUS_ALLOWED_HOSTS if this is the node's name)";
 const TRUSTED_NETWORK_CLIENT = "100.64.1.2";
 const SETTLE_MS = 400;
 
@@ -40,6 +49,7 @@ describe("Node allowed-origin gate and phone WebSocket routes", () => {
   let wsBase: URL;
   let phone: PairingExchangeResult;
   let warnings: string[];
+  let startWarnings: string[];
 
   const upgrade = (pathname: string, headers: Record<string, string> = {}): Promise<UpgradeOutcome> =>
     new Promise((resolve) => {
@@ -73,17 +83,37 @@ describe("Node allowed-origin gate and phone WebSocket routes", () => {
   const corsHeaders = (headers: Record<string, unknown>): Record<string, unknown> =>
     Object.fromEntries(Object.entries(headers).filter(([name]) => name.startsWith("access-control-") || name === "vary"));
 
+  const openServerConnectionsAfterSettling = async (): Promise<number> => {
+    const count = () => new Promise<number>((resolve, reject) =>
+      started.fastify.server.getConnections((error, connections) => (error ? reject(error) : resolve(connections))));
+    for (let attempt = 0; attempt < 20 && await count() > 0; attempt += 1) {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+    return count();
+  };
+
   const refusalLines = (): string[] => warnings.filter((line) => line.startsWith("Remote Access"));
 
   beforeAll(async () => {
     appDataDir = await fs.mkdtemp(path.join(os.tmpdir(), "request-origin-and-phone-routes-"));
     await fs.writeFile(
       path.join(appDataDir, ".env"),
-      `AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\nAUTOBYTEUS_ALLOWED_ORIGINS=${CONFIGURED_ORIGIN}, not-an-origin\n`,
+      [
+        "AUTOBYTEUS_SERVER_HOST=http://studio-node.company.example:8000",
+        "APP_ENV=test",
+        `AUTOBYTEUS_ALLOWED_ORIGINS=${CONFIGURED_ORIGIN}, ${LISTED_LOOPBACK_ORIGIN}, not-an-origin`,
+        "AUTOBYTEUS_ALLOWED_HOSTS=node.example.com, .corp.example, http://not-a-name",
+        "",
+      ].join("\n"),
       "utf-8",
     );
     appConfigProvider.config.setCustomAppDataDir(appDataDir);
+    startWarnings = [];
+    const startWarn = vi.spyOn(console, "warn").mockImplementation((...args: unknown[]) => {
+      startWarnings.push(args.map(String).join(" "));
+    });
     started = await startStudioE2eRuntimeServer("127.0.0.1");
+    startWarn.mockRestore();
     wsBase = new URL(started.mainUrl);
     wsBase.protocol = "ws:";
     configureNodeIdentityCapability(true);
@@ -132,14 +162,14 @@ describe("Node allowed-origin gate and phone WebSocket routes", () => {
       ["same origin as Host", { Origin: `http://${wsBase.host}` }],
       ["Tailscale Serve shape", { Origin: "https://desktop.tail.ts.net", Host: "desktop.tail.ts.net" }],
       ["X-Forwarded-Host", { Origin: "https://node.gateway.example", "X-Forwarded-Host": "node.gateway.example" }],
-      ["loopback development", { Origin: LOOPBACK_DEV_ORIGIN }],
+      ["listed loopback development origin", { Origin: LISTED_LOOPBACK_ORIGIN }],
       ["configured origin", { Origin: CONFIGURED_ORIGIN }],
     ];
     for (const [label, headers] of accepted) {
       expect({ label, outcome: await upgrade("/ws/projects", headers) })
         .toEqual({ label, outcome: { kind: "opened", close: null } });
     }
-    for (const origin of ["https://desktop.tail.ts.net.evil.example", "file:///x", "https://desktop.tail.ts.net:8443"]) {
+    for (const origin of ["https://desktop.tail.ts.net.evil.example", "file:///x", "https://desktop.tail.ts.net:8443", ...UNLISTED_LOOPBACK_ORIGINS]) {
       expect({ origin, outcome: await upgrade("/ws/projects", { Origin: origin, Host: "desktop.tail.ts.net" }) })
         .toEqual({ origin, outcome: { kind: "refused", status: 403 } });
     }
@@ -168,10 +198,10 @@ describe("Node allowed-origin gate and phone WebSocket routes", () => {
     const allowedPreflight = await inject({
       method: "OPTIONS",
       url: "/graphql",
-      headers: { origin: LOOPBACK_DEV_ORIGIN, "access-control-request-method": "POST" },
+      headers: { origin: LISTED_LOOPBACK_ORIGIN, "access-control-request-method": "POST" },
     });
     expect(allowedPreflight.statusCode).toBe(204);
-    expect(allowedPreflight.headers["access-control-allow-origin"]).toBe(LOOPBACK_DEV_ORIGIN);
+    expect(allowedPreflight.headers["access-control-allow-origin"]).toBe(LISTED_LOOPBACK_ORIGIN);
     expect(allowedPreflight.headers["access-control-allow-methods"]).toBe("GET, POST, PUT, PATCH, DELETE, OPTIONS");
 
     const allowedPost = await inject({
@@ -269,13 +299,125 @@ describe("Node allowed-origin gate and phone WebSocket routes", () => {
     }
   });
 
-  async function pairPhone(): Promise<PairingExchangeResult> {
+  it("refuses a request addressed to a name that is not the node's on every entry form, before any route (416 AC-001)", async () => {
+    const terminalConnect = vi.spyOn(TerminalHandler.prototype, "connect");
+    const rebound = `${REBINDING_HOST}:${wsBase.port}`;
+    const reboundOrigin = `http://${rebound}`;
+    const httpCases: Array<Parameters<typeof inject>[0]> = [
+      { method: "POST", url: "/graphql", headers: { host: rebound, origin: reboundOrigin, "content-type": "application/json" }, payload: typenameQuery },
+      { method: "POST", url: "/graphql", headers: { host: rebound, "content-type": "application/json" }, payload: typenameQuery },
+      { method: "POST", url: "/graphql", headers: { host: rebound, "x-forwarded-host": wsBase.host, origin: reboundOrigin, "content-type": "application/json" }, payload: typenameQuery },
+      { method: "GET", url: "/rest/workspaces/any/content?path=page.html", headers: { host: rebound } },
+      { method: "OPTIONS", url: "/graphql", headers: { host: rebound, origin: reboundOrigin, "access-control-request-method": "POST" } },
+      { method: "POST", url: "/mcp/gateway", headers: { host: rebound, origin: reboundOrigin, "content-type": "application/json" }, payload: { jsonrpc: "2.0", id: 1, method: "tools/list" } },
+    ];
+    for (const options of httpCases) {
+      const response = await inject(options);
+      expect({ url: options.url, status: response.statusCode, body: response.json() }).toEqual({
+        url: options.url,
+        status: 403,
+        body: expect.objectContaining({ code: "REMOTE_ACCESS_HOST_REFUSED" }),
+      });
+      expect(corsHeaders(response.headers)).toEqual({});
+    }
+    for (const pathname of ["/ws/terminal/rebinding-probe", "/ws/projects", "/graphql", "/rest/remote/run-observations"]) {
+      for (const headers of [{ Host: rebound, Origin: reboundOrigin }, { Host: rebound }] as Array<Record<string, string>>) {
+        expect({ pathname, headers, outcome: await upgrade(pathname, headers) })
+          .toEqual({ pathname, headers, outcome: { kind: "refused", status: 403 } });
+      }
+    }
+    expect(terminalConnect).not.toHaveBeenCalled();
+    // The server closes each refused upgrade's socket (the WebSocket plugin marks upgrades before the Host gate).
+    expect(await openServerConnectionsAfterSettling()).toBe(0);
+    expect(refusalLines()).toHaveLength(httpCases.length + 8);
+    expect(refusalLines()[0]).toBe(
+      `Remote Access request refused REMOTE_ACCESS_HOST_REFUSED /graphql host ${REBINDING_HOST} ${HOST_HINT}`,
+    );
+    expect(refusalLines().every((line) => line.includes(`host ${REBINDING_HOST} ${HOST_HINT}`))).toBe(true);
+  });
+
+  it("accepts every allowed-host class, configured name and paired-phone host, and refuses other public names (416 AC-002, AC-003)", async () => {
+    const pairingOnly = await inject({
+      method: "POST",
+      url: "/rest/remote-access/pairing-sessions",
+      payload: { connectionWay: "company_address", serverBaseUrl: "https://pairing-only.example.org", serverName: "AutoByteus Desktop" },
+    });
+    expect(pairingOnly.statusCode).toBe(201);
+    const companyPhone = await pairPhone("https://phone-entry.example.org", "company_address");
+
+    const allowedHosts = [
+      `127.0.0.1:${wsBase.port}`,
+      `[::1]:${wsBase.port}`,
+      "localhost",
+      "x.localhost:3000",
+      "mymac",
+      "mymac.local:29695",
+      "router.lan",
+      "nas.home.arpa",
+      "host.docker.internal:8001",
+      "svc.internal",
+      "desktop.tail1234.ts.net",
+      "studio-node.company.example:8000",
+      "gateway.example",
+      "node.example.com",
+      "corp.example",
+      "a.corp.example",
+      "pairing-only.example.org",
+      "phone-entry.example.org",
+    ];
+    for (const host of allowedHosts) {
+      const response = await inject({ method: "POST", url: "/graphql", headers: { host, "content-type": "application/json" }, payload: typenameQuery });
+      expect({ host, status: response.statusCode }).toEqual({ host, status: 200 });
+    }
+    expect(await upgrade("/ws/projects", { Host: "mymac.local" })).toEqual({ kind: "opened", close: null });
+    expect(await upgrade(`/ws/projects?access_token=${encodeURIComponent(companyPhone.credential)}`, {
+      Host: "phone-entry.example.org",
+      Origin: "https://phone-entry.example.org",
+    })).toEqual({ kind: "opened", close: null });
+
+    for (const host of ["other.example.com", "evilcorp.example", "node.example.com.evil.example", "localhost.evil.example"]) {
+      const response = await inject({ method: "POST", url: "/graphql", headers: { host, "content-type": "application/json" }, payload: typenameQuery });
+      expect({ host, status: response.statusCode, code: response.json().code })
+        .toEqual({ host, status: 403, code: "REMOTE_ACCESS_HOST_REFUSED" });
+    }
+  });
+
+  it("warns once at start about invalid entries of the two settings (416 AC-003)", () => {
+    expect(startWarnings.filter((line) => line.startsWith("AUTOBYTEUS_ALLOWED_"))).toEqual([
+      "AUTOBYTEUS_ALLOWED_ORIGINS: ignoring entries that are not http(s) origins: not-an-origin",
+      "AUTOBYTEUS_ALLOWED_HOSTS: ignoring entries that are not host names or .suffix entries: http://not-a-name",
+    ]);
+  });
+
+  it("refuses unlisted localhost pages on HTTP, WebSockets and /mcp/gateway, and accepts the listed one (416 AC-005)", async () => {
+    const terminalConnect = vi.spyOn(TerminalHandler.prototype, "connect");
+    for (const origin of UNLISTED_LOOPBACK_ORIGINS) {
+      const post = await inject({ method: "POST", url: "/graphql", headers: { origin, "content-type": "application/json" }, payload: typenameQuery });
+      expect({ origin, status: post.statusCode, code: post.json().code }).toEqual({ origin, status: 403, code: "REMOTE_ACCESS_ORIGIN_REFUSED" });
+      expect(await upgrade("/ws/terminal/localhost-page", { Origin: origin })).toEqual({ kind: "refused", status: 403 });
+      const mcp = await inject({
+        method: "POST",
+        url: "/mcp/gateway",
+        headers: { origin, "content-type": "application/json", accept: "application/json" },
+        payload: { jsonrpc: "2.0", id: 1, method: "tools/list" },
+      });
+      expect({ origin, status: mcp.statusCode }).toEqual({ origin, status: 403 });
+    }
+    expect(terminalConnect).not.toHaveBeenCalled();
+    const listed = await inject({ method: "POST", url: "/graphql", headers: { origin: LISTED_LOOPBACK_ORIGIN, "content-type": "application/json" }, payload: typenameQuery });
+    expect(listed.statusCode).toBe(200);
+  });
+
+  async function pairPhone(
+    serverBaseUrl = "https://desktop.tailnet.ts.net/mobile",
+    connectionWay = "tailscale",
+  ): Promise<PairingExchangeResult> {
     const enabled = await inject({ method: "PUT", url: "/rest/remote-access/settings", payload: { phoneAccessEnabled: true } });
     expect(enabled.statusCode).toBe(200);
     const session = await inject({
       method: "POST",
       url: "/rest/remote-access/pairing-sessions",
-      payload: { connectionWay: "tailscale", serverBaseUrl: "https://desktop.tailnet.ts.net/mobile", serverName: "AutoByteus Desktop" },
+      payload: { connectionWay, serverBaseUrl, serverName: "AutoByteus Desktop" },
     });
     expect(session.statusCode).toBe(201);
     const { payload, mobileUrl } = session.json() as { payload: { pairingCode: string }; mobileUrl: string };

@@ -858,7 +858,7 @@ try {
     child.once('exit', (code) => (code === 0 ? resolve() : reject(new Error(`prisma migrate deploy exited ${code}`))))
   })
   const backend = spawnOwned('backend', process.execPath, [path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(backendPort), '--data-dir', dataRoot], serverDir,
-    { ...baseEnv(), APP_ENV: 'development', DB_TYPE: 'sqlite', DATABASE_URL: dbUrl, AUTOBYTEUS_SERVER_HOST: backendUrl, DISABLE_HTTP_REQUEST_LOGS: 'true' })
+    { ...baseEnv(), APP_ENV: 'development', DB_TYPE: 'sqlite', DATABASE_URL: dbUrl, AUTOBYTEUS_SERVER_HOST: backendUrl, AUTOBYTEUS_ALLOWED_ORIGINS: frontUrl, DISABLE_HTTP_REQUEST_LOGS: 'true' })
   await waitFor('backend health', async () => { assert(backend.exitCode === null, 'backend exited'); return (await fetch(`${backendUrl}/rest/health`, { signal: AbortSignal.timeout(2000) })).ok }, 120000, 500)
   await gql('mutation($input:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$input){id}}', { input: { name: 'Probe Team', description: 'Draft rows probe team', instructions: 'Coordinate briefly.', coordinatorMemberName: 'lead', nodes: [{ memberName: 'lead', ref: 'probe-helper', refScope: 'SHARED' }, { memberName: 'writer', ref: 'probe-writer', refScope: 'SHARED' }] } })
   const teams = (await gql('{ agentTeamDefinitions { id name } }')).agentTeamDefinitions

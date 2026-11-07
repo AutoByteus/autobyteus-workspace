@@ -316,6 +316,7 @@ export abstract class BaseServerManager extends EventEmitter {
       loginShellPath,
       appDataDir: this.appDataDir,
       publicServerUrl: this.serverUrl,
+      developmentRendererOrigin: this.launchConfig.developmentRendererOrigin,
       runtimeOverrides: this.getRuntimeEnvOverrides(),
     })
   }

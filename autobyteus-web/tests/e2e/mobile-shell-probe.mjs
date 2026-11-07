@@ -147,6 +147,10 @@ const root = realpathSync(mkdtempSync(path.join(os.tmpdir(), 'mobile-shell-probe
 const children = new Set();
 const saveEvidence = () => fs.writeFile(path.join(outputDir, 'mobile-shell-probe.json'), `${redact(JSON.stringify(evidence, null, 2))}\n`);
 
+// The probe's frontend origin, chosen before any node starts: every node accepts it (autobyteus-416).
+const frontendPort = await freePort();
+const frontendUrl = `http://127.0.0.1:${frontendPort}`;
+
 const serverAt = async (name, port, extraEnv = {}) => {
   const dataDir = path.join(root, name, 'data');
   const home = path.join(root, name, 'home');
@@ -160,7 +164,7 @@ const serverAt = async (name, port, extraEnv = {}) => {
     const child = spawn(process.execPath, [appEntry, '--host', bindHost, '--port', String(port), '--data-dir', dataDir], {
       cwd: serverDir, stdio: ['ignore', 'pipe', 'pipe'],
       env: { PATH: process.env.PATH, HOME: home, TMPDIR: process.env.TMPDIR ?? os.tmpdir(), APP_ENV: 'test', LOG_LEVEL: 'WARN',
-        AUTOBYTEUS_HTTP_ACCESS_LOG_MODE: name === 'alpha' ? 'all' : 'off', AUTOBYTEUS_SERVER_HOST: baseUrl,
+        AUTOBYTEUS_HTTP_ACCESS_LOG_MODE: name === 'alpha' ? 'all' : 'off', AUTOBYTEUS_SERVER_HOST: baseUrl, AUTOBYTEUS_ALLOWED_ORIGINS: frontendUrl,
         ANTIGRAVITY_CLI_COMMAND: agyCli, AGY_FAKE_CASE: 'linked_skills', ...extraEnv } });
     child.stdout.pipe(log); child.stderr.pipe(log);
     child.once('close', () => log.end());
@@ -569,8 +573,6 @@ const historyReads = (filter = () => true) => phoneNet.filter(entry => entry.op 
 
 const runCases = async () => {
   // The desktop window (MSP-01's comparison) against the same node.
-  const frontendPort = await freePort();
-  const frontendUrl = `http://127.0.0.1:${frontendPort}`;
   const frontendLog = createWriteStream(path.join(outputDir, 'frontend.log'));
   frontend = spawn('corepack', ['pnpm', 'dev', '--host', '127.0.0.1', '--port', String(frontendPort)], { cwd: webDir, detached: true,
     stdio: ['ignore', 'pipe', 'pipe'], env: { ...process.env, NODE_ENV: 'development', BACKEND_NODE_BASE_URL: alpha.baseUrl } });

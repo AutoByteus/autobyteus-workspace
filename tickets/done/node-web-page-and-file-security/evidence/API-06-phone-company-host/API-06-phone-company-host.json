@@ -1,0 +1,133 @@
+{
+  "startedAt": "2026-11-07T21:46:02.265Z",
+  "result": "Pass",
+  "steps": {
+    "C1": {
+      "result": "Pass"
+    },
+    "J1": {
+      "result": "Pass",
+      "pageOrigin": "https://node.corp-probe.example:55071",
+      "listState": "empty"
+    },
+    "J2": {
+      "result": "Pass",
+      "marker": "API416-06-011df9",
+      "storedOnAlpha": true
+    }
+  },
+  "controls": [
+    {
+      "name": "corp-unpaired",
+      "host": "node.corp-probe.example",
+      "status": 200,
+      "code": null,
+      "servesPhoneBundle": true
+    },
+    {
+      "name": "other-unpaired",
+      "host": "other.corp-probe.example",
+      "status": 403,
+      "code": "REMOTE_ACCESS_HOST_REFUSED",
+      "servesPhoneBundle": false
+    }
+  ],
+  "proxyUpgrades": [
+    {
+      "path": "/ws/agent-package-definitions?access_token=…",
+      "origin": "https://node.corp-probe.example:55071",
+      "host": "node.corp-probe.example:55071",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "path": "/ws/agent/phone_agent_11e32111243540c2a696fcf45d96443b?access_token=…",
+      "origin": "https://node.corp-probe.example:55071",
+      "host": "node.corp-probe.example:55071",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "path": "/ws/agent-collaboration/phone_agent_11e32111243540c2a696fcf45d96443b?access_token=…",
+      "origin": "https://node.corp-probe.example:55071",
+      "host": "node.corp-probe.example:55071",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    }
+  ],
+  "handshakes": [
+    {
+      "url": "wss://node.corp-probe.example:55071/ws/agent-package-definitions?access_token=…",
+      "origin": "https://node.corp-probe.example:55071",
+      "host": "node.corp-probe.example:55071",
+      "status": 101
+    },
+    {
+      "url": "wss://node.corp-probe.example:55071/ws/agent/phone_agent_11e32111243540c2a696fcf45d96443b?access_token=…",
+      "origin": "https://node.corp-probe.example:55071",
+      "host": "node.corp-probe.example:55071",
+      "status": 101
+    },
+    {
+      "url": "wss://node.corp-probe.example:55071/ws/agent-collaboration/phone_agent_11e32111243540c2a696fcf45d96443b?access_token=…",
+      "origin": "https://node.corp-probe.example:55071",
+      "host": "node.corp-probe.example:55071",
+      "status": 101
+    }
+  ],
+  "sockets": [
+    {
+      "url": "wss://node.corp-probe.example:55071/ws/agent-package-definitions?access_token=…",
+      "frames": 1
+    },
+    {
+      "url": "wss://node.corp-probe.example:55071/ws/agent/phone_agent_11e32111243540c2a696fcf45d96443b?access_token=…",
+      "frames": 16
+    },
+    {
+      "url": "wss://node.corp-probe.example:55071/ws/agent-collaboration/phone_agent_11e32111243540c2a696fcf45d96443b?access_token=…",
+      "frames": 3
+    }
+  ],
+  "browserErrors": [
+    "console: Failed to load resource: net::ERR_CONNECTION_REFUSED"
+  ],
+  "cleanup": {
+    "serverExited": true,
+    "rootRemoved": true,
+    "proxyClosed": true
+  },
+  "error": null,
+  "node": {
+    "base": "http://127.0.0.1:55070",
+    "serverHost": "https://node.corp-probe.example:55071"
+  },
+  "certDir": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api416-06-cert-DV7ygA",
+  "controlRefusalLines": [
+    "Remote Access request refused REMOTE_ACCESS_HOST_REFUSED /mobile host other.corp-probe.example (add it to AUTOBYTEUS_ALLOWED_HOSTS if this is the node's name)",
+    "Remote Access request refused REMOTE_ACCESS_HOST_REFUSED /favicon.ico host other.corp-probe.example (add it to AUTOBYTEUS_ALLOWED_HOSTS if this is the node's name)"
+  ],
+  "runHistory": {
+    "listWorkspaceRunHistory": [
+      {
+        "agentDefinitions": [
+          {
+            "agentName": "Phone Agent",
+            "runs": [
+              {
+                "runId": "phone_agent_11e32111243540c2a696fcf45d96443b"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "storedRunId": "phone_agent_11e32111243540c2a696fcf45d96443b",
+  "journeyRefusalLines": [],
+  "summary": {
+    "handshakes": 3,
+    "badHandshakes": [],
+    "badProxyUpgrades": [],
+    "journeyRefusals": 0,
+    "unknownErrors": []
+  },
+  "finishedAt": "2026-11-07T21:46:12.675Z"
+}

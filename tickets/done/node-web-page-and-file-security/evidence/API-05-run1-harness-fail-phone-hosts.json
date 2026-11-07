@@ -1,0 +1,417 @@
+{
+  "startedAt": "2026-11-07T21:28:26.387Z",
+  "result": "Fail",
+  "worktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security",
+  "journeys": {
+    "chrome-lan": {
+      "name": "chrome-lan",
+      "origin": "http://192.168.77.10:52028",
+      "steps": {
+        "pair": {
+          "result": "Fail",
+          "error": "pairing session",
+          "details": {
+            "status": 400,
+            "body": {
+              "error": "REMOTE_ACCESS_PAIRING_WAY_INVALID",
+              "code": "REMOTE_ACCESS_PAIRING_WAY_INVALID",
+              "message": "connectionWay must be one of company_address, tailscale, vpn, local_network."
+            }
+          }
+        },
+        "runList": {
+          "result": "Fail",
+          "error": "Agent, Team and Org runs listed",
+          "details": []
+        },
+        "agentRun": {
+          "result": "Fail",
+          "error": "locator.waitFor: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator('[data-testid=\"mobile-run-tree\"]:visible') to be visible\n",
+          "details": null
+        },
+        "teamRun": {
+          "result": "Fail",
+          "error": "locator.waitFor: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator('[data-testid=\"mobile-run-tree\"]:visible') to be visible\n",
+          "details": null
+        },
+        "orgRun": {
+          "result": "Fail",
+          "error": "locator.waitFor: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator('[data-testid=\"mobile-run-tree\"]:visible') to be visible\n",
+          "details": null
+        },
+        "delegatedTree": {
+          "result": "Fail",
+          "error": "locator.waitFor: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator('[data-testid=\"mobile-run-tree\"]:visible') to be visible\n",
+          "details": null
+        },
+        "remoteRun": {
+          "result": "Fail",
+          "error": "locator.waitFor: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator('[data-testid=\"mobile-run-tree\"]:visible') to be visible\n",
+          "details": null
+        },
+        "files": {
+          "result": "Fail",
+          "error": "locator.waitFor: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator('[data-testid=\"mobile-run-tree\"]:visible') to be visible\n",
+          "details": null
+        },
+        "newRun": {
+          "result": "Fail",
+          "error": "locator.waitFor: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator('[data-testid=\"mobile-run-tree\"]:visible') to be visible\n",
+          "details": null
+        }
+      },
+      "sockets": [],
+      "handshakes": [],
+      "browserErrors": [],
+      "blockedLocalhost8000": 0,
+      "startedAt": "2026-11-07T21:28:53.677Z",
+      "finishedAt": "2026-11-07T21:31:35.884Z",
+      "unknownBrowserErrors": []
+    },
+    "chrome-tailscale": {
+      "name": "chrome-tailscale",
+      "origin": "https://alpha.tail-probe.ts.net:52154",
+      "steps": {
+        "pair": {
+          "result": "Fail",
+          "error": "pairing session",
+          "details": {
+            "status": 400,
+            "body": {
+              "error": "REMOTE_ACCESS_PAIRING_WAY_INVALID",
+              "code": "REMOTE_ACCESS_PAIRING_WAY_INVALID",
+              "message": "connectionWay must be one of company_address, tailscale, vpn, local_network."
+            }
+          }
+        },
+        "runList": {
+          "result": "Fail",
+          "error": "Agent, Team and Org runs listed",
+          "details": []
+        },
+        "agentRun": {
+          "result": "Fail",
+          "error": "locator.waitFor: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator('[data-testid=\"mobile-run-tree\"]:visible') to be visible\n",
+          "details": null
+        },
+        "teamRun": {
+          "result": "Fail",
+          "error": "locator.waitFor: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator('[data-testid=\"mobile-run-tree\"]:visible') to be visible\n",
+          "details": null
+        },
+        "orgRun": {
+          "result": "Fail",
+          "error": "locator.waitFor: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator('[data-testid=\"mobile-run-tree\"]:visible') to be visible\n",
+          "details": null
+        },
+        "delegatedTree": {
+          "result": "Fail",
+          "error": "locator.waitFor: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator('[data-testid=\"mobile-run-tree\"]:visible') to be visible\n",
+          "details": null
+        },
+        "remoteRun": {
+          "result": "Fail",
+          "error": "locator.waitFor: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator('[data-testid=\"mobile-run-tree\"]:visible') to be visible\n",
+          "details": null
+        },
+        "files": {
+          "result": "Fail",
+          "error": "locator.waitFor: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator('[data-testid=\"mobile-run-tree\"]:visible') to be visible\n",
+          "details": null
+        },
+        "newRun": {
+          "result": "Fail",
+          "error": "locator.waitFor: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator('[data-testid=\"mobile-run-tree\"]:visible') to be visible\n",
+          "details": null
+        }
+      },
+      "sockets": [],
+      "handshakes": [],
+      "browserErrors": [],
+      "blockedLocalhost8000": 0,
+      "startedAt": "2026-11-07T21:31:35.884Z",
+      "finishedAt": "2026-11-07T21:34:18.023Z",
+      "unknownBrowserErrors": []
+    },
+    "webkit-tailscale": {
+      "name": "webkit-tailscale",
+      "origin": "https://alpha.tail-probe.ts.net:52154",
+      "steps": {
+        "pair": {
+          "result": "Fail",
+          "error": "pairing session",
+          "details": {
+            "status": 400,
+            "body": {
+              "error": "REMOTE_ACCESS_PAIRING_WAY_INVALID",
+              "code": "REMOTE_ACCESS_PAIRING_WAY_INVALID",
+              "message": "connectionWay must be one of company_address, tailscale, vpn, local_network."
+            }
+          }
+        },
+        "runList": {
+          "result": "Fail",
+          "error": "Agent, Team and Org runs listed",
+          "details": []
+        },
+        "agentRun": {
+          "result": "Fail",
+          "error": "locator.waitFor: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator('[data-testid=\"mobile-run-tree\"]:visible') to be visible\n",
+          "details": null
+        },
+        "teamRun": {
+          "result": "Fail",
+          "error": "locator.waitFor: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator('[data-testid=\"mobile-run-tree\"]:visible') to be visible\n",
+          "details": null
+        },
+        "orgRun": {
+          "result": "Fail",
+          "error": "locator.waitFor: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator('[data-testid=\"mobile-run-tree\"]:visible') to be visible\n",
+          "details": null
+        },
+        "delegatedTree": {
+          "result": "Fail",
+          "error": "locator.waitFor: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator('[data-testid=\"mobile-run-tree\"]:visible') to be visible\n",
+          "details": null
+        },
+        "remoteRun": {
+          "result": "Fail",
+          "error": "locator.waitFor: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator('[data-testid=\"mobile-run-tree\"]:visible') to be visible\n",
+          "details": null
+        },
+        "files": {
+          "result": "Fail",
+          "error": "locator.waitFor: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator('[data-testid=\"mobile-run-tree\"]:visible') to be visible\n",
+          "details": null
+        },
+        "newRun": {
+          "result": "Fail",
+          "error": "locator.waitFor: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator('[data-testid=\"mobile-run-tree\"]:visible') to be visible\n",
+          "details": null
+        }
+      },
+      "sockets": [],
+      "handshakes": [],
+      "browserErrors": [],
+      "blockedLocalhost8000": 0,
+      "startedAt": "2026-11-07T21:34:18.023Z",
+      "finishedAt": "2026-11-07T21:36:59.275Z",
+      "unknownBrowserErrors": []
+    },
+    "chrome-company-paired": {
+      "name": "chrome-company-paired",
+      "origin": "https://node.corp-probe.example:52154",
+      "steps": {
+        "pair": {
+          "result": "Fail",
+          "error": "pairing session",
+          "details": {
+            "status": 400,
+            "body": {
+              "error": "REMOTE_ACCESS_PAIRING_WAY_INVALID",
+              "code": "REMOTE_ACCESS_PAIRING_WAY_INVALID",
+              "message": "connectionWay must be one of company_address, tailscale, vpn, local_network."
+            }
+          }
+        },
+        "runList": {
+          "result": "Fail",
+          "error": "Agent, Team and Org runs listed",
+          "details": []
+        },
+        "agentRun": {
+          "result": "Fail",
+          "error": "locator.waitFor: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator('[data-testid=\"mobile-run-tree\"]:visible') to be visible\n",
+          "details": null
+        },
+        "teamRun": {
+          "result": "Fail",
+          "error": "locator.waitFor: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator('[data-testid=\"mobile-run-tree\"]:visible') to be visible\n",
+          "details": null
+        },
+        "orgRun": {
+          "result": "Fail",
+          "error": "locator.waitFor: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator('[data-testid=\"mobile-run-tree\"]:visible') to be visible\n",
+          "details": null
+        },
+        "delegatedTree": {
+          "result": "Fail",
+          "error": "locator.waitFor: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator('[data-testid=\"mobile-run-tree\"]:visible') to be visible\n",
+          "details": null
+        },
+        "remoteRun": {
+          "result": "Fail",
+          "error": "locator.waitFor: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator('[data-testid=\"mobile-run-tree\"]:visible') to be visible\n",
+          "details": null
+        },
+        "files": {
+          "result": "Fail",
+          "error": "locator.waitFor: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator('[data-testid=\"mobile-run-tree\"]:visible') to be visible\n",
+          "details": null
+        },
+        "newRun": {
+          "result": "Fail",
+          "error": "locator.waitFor: Timeout 20000ms exceeded.\nCall log:\n  - waiting for locator('[data-testid=\"mobile-run-tree\"]:visible') to be visible\n",
+          "details": null
+        }
+      },
+      "sockets": [],
+      "handshakes": [],
+      "browserErrors": [],
+      "blockedLocalhost8000": 0,
+      "startedAt": "2026-11-07T21:36:59.279Z",
+      "finishedAt": "2026-11-07T21:39:41.426Z",
+      "unknownBrowserErrors": []
+    }
+  },
+  "proxyUpgrades": [],
+  "logCheck": {
+    "refusalLinesBefore": {
+      "alpha": 2,
+      "beta": 0
+    },
+    "refusalLinesDuringJourneys": {
+      "alpha": [],
+      "beta": []
+    }
+  },
+  "cleanup": {
+    "holdExited": true,
+    "holdCleanup": {
+      "frontendExited": true,
+      "serversLeft": 0,
+      "rootRemoved": true
+    },
+    "proxiesClosed": true
+  },
+  "error": null,
+  "hold": {
+    "alpha": "http://127.0.0.1:52028",
+    "beta": "http://127.0.0.1:52029",
+    "runs": {
+      "ptm": "project_task_manager_64b223357f6a46a4b70957a6b06d7243",
+      "writerRun": "release_notes_writer_943ce6d872ff41df92c16c33cec80429",
+      "squadRun": "docs_review_team_ae3e4ae3809b4096820f33232869ef9d",
+      "reviewer": "release_notes_writer_015617bf1e5646e7a737de696a95168a",
+      "memberDelegated": "fact_checker_7e493c0c9c744f62bdc334c6b74d994c",
+      "remoteAgentRun": "publisher_db0b1e83597b46348b8fb24f411e6fec",
+      "remoteTeamRun": "studio_team_50279c8b256049eabefbc169e484a229",
+      "plain": [
+        "fact_checker_74291761a4d1412ca577411931643c64",
+        "fact_checker_22263f5781ee4a0596c0cdf6fe62cf1e",
+        "fact_checker_cb722a6bed4e4d768b5e34f73b2c35c4"
+      ],
+      "org": "delivery_org_82b35141fb8b4fbda72e9c78a1a089c3",
+      "orgPlanner": "release_notes_writer_35ed444415494ffd8f4174eb2c1b61c8",
+      "reviewOrg": "review_org_f8bb031fccf840cbba5cf0b558a72bf4",
+      "reviewOrgCoordinator": {
+        "address": "/squad/reviewer",
+        "agentRunId": "release_notes_writer_1730b38b16ba4b17a9e8273fc486fe71",
+        "teamRunId": null
+      },
+      "delivery": "delivery_team_8e3d4715898a4aa6983dfe20662faa88",
+      "deliveryLead": "fact_checker_ce206441bea44c9b88e0952f9d5f82b2",
+      "deliveryMate": "release_notes_writer_ee8dab01a924431daf446a203c940ae9",
+      "leadDelegated": "changelog_helper_fe3917434de748958d1e70bbe5b29155",
+      "approver": "approver_f2a1fbe011e140b7bc4b1d2155994d44",
+      "taskA": "launch-3515e8-1",
+      "taskB": "launch-3515e8-2"
+    }
+  },
+  "tsProxy": {
+    "origin": "https://alpha.tail-probe.ts.net:52154",
+    "upstream": "http://127.0.0.1:52028",
+    "certDir": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api416-05-cert-LUlMWB"
+  },
+  "hostControls": [
+    {
+      "name": "pre-ts-unpaired",
+      "host": "alpha.tail-probe.ts.net",
+      "status": 200,
+      "code": null,
+      "bodyStart": "<!DOCTYPE html><html><head><meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<script type=\"importmap\">{\"imports\":{\"#en"
+    },
+    {
+      "name": "pre-corp-unpaired",
+      "host": "node.corp-probe.example",
+      "status": 403,
+      "code": "REMOTE_ACCESS_HOST_REFUSED",
+      "bodyStart": "{\"error\":\"REMOTE_ACCESS_HOST_REFUSED\",\"code\":\"REMOTE_ACCESS_HOST_REFUSED\",\"message\":\"Requests addressed to this host name are not accepted by this node.\"}"
+    },
+    {
+      "name": "post-other-corp-unpaired",
+      "host": "other.corp-probe.example",
+      "status": 403,
+      "code": "REMOTE_ACCESS_HOST_REFUSED",
+      "bodyStart": "{\"error\":\"REMOTE_ACCESS_HOST_REFUSED\",\"code\":\"REMOTE_ACCESS_HOST_REFUSED\",\"message\":\"Requests addressed to this host name are not accepted by this node.\"}"
+    },
+    {
+      "name": "post-corp-paired",
+      "host": "node.corp-probe.example",
+      "status": 403,
+      "code": "REMOTE_ACCESS_HOST_REFUSED",
+      "bodyStart": "{\"error\":\"REMOTE_ACCESS_HOST_REFUSED\",\"code\":\"REMOTE_ACCESS_HOST_REFUSED\",\"message\":\"Requests addressed to this host name are not accepted by this node.\"}"
+    }
+  ],
+  "hostControlLinesPre": [
+    "Remote Access request refused REMOTE_ACCESS_HOST_REFUSED /mobile host node.corp-probe.example (add it to AUTOBYTEUS_ALLOWED_HOSTS if this is the node's name)",
+    "Remote Access request refused REMOTE_ACCESS_HOST_REFUSED /favicon.ico host node.corp-probe.example (add it to AUTOBYTEUS_ALLOWED_HOSTS if this is the node's name)"
+  ],
+  "hostControlLinesPost": [
+    "Remote Access request refused REMOTE_ACCESS_HOST_REFUSED /mobile host other.corp-probe.example (add it to AUTOBYTEUS_ALLOWED_HOSTS if this is the node's name)",
+    "Remote Access request refused REMOTE_ACCESS_HOST_REFUSED /favicon.ico host other.corp-probe.example (add it to AUTOBYTEUS_ALLOWED_HOSTS if this is the node's name)",
+    "Remote Access request refused REMOTE_ACCESS_HOST_REFUSED /mobile host node.corp-probe.example (add it to AUTOBYTEUS_ALLOWED_HOSTS if this is the node's name)",
+    "Remote Access request refused REMOTE_ACCESS_HOST_REFUSED /favicon.ico host node.corp-probe.example (add it to AUTOBYTEUS_ALLOWED_HOSTS if this is the node's name)"
+  ],
+  "hostControlsOk": false,
+  "asm002": {
+    "routesUsed": [],
+    "outsidePhoneList": []
+  },
+  "summary": {
+    "failedSteps": [
+      "chrome-lan:pair",
+      "chrome-lan:runList",
+      "chrome-lan:agentRun",
+      "chrome-lan:teamRun",
+      "chrome-lan:orgRun",
+      "chrome-lan:delegatedTree",
+      "chrome-lan:remoteRun",
+      "chrome-lan:files",
+      "chrome-lan:newRun",
+      "chrome-tailscale:pair",
+      "chrome-tailscale:runList",
+      "chrome-tailscale:agentRun",
+      "chrome-tailscale:teamRun",
+      "chrome-tailscale:orgRun",
+      "chrome-tailscale:delegatedTree",
+      "chrome-tailscale:remoteRun",
+      "chrome-tailscale:files",
+      "chrome-tailscale:newRun",
+      "webkit-tailscale:pair",
+      "webkit-tailscale:runList",
+      "webkit-tailscale:agentRun",
+      "webkit-tailscale:teamRun",
+      "webkit-tailscale:orgRun",
+      "webkit-tailscale:delegatedTree",
+      "webkit-tailscale:remoteRun",
+      "webkit-tailscale:files",
+      "webkit-tailscale:newRun",
+      "chrome-company-paired:pair",
+      "chrome-company-paired:runList",
+      "chrome-company-paired:agentRun",
+      "chrome-company-paired:teamRun",
+      "chrome-company-paired:orgRun",
+      "chrome-company-paired:delegatedTree",
+      "chrome-company-paired:remoteRun",
+      "chrome-company-paired:files",
+      "chrome-company-paired:newRun"
+    ],
+    "unknownErrors": [],
+    "badHandshakes": [],
+    "badProxyUpgrades": [],
+    "refusals": 0,
+    "outsidePhoneList": []
+  },
+  "finishedAt": "2026-11-07T21:39:49.818Z"
+}

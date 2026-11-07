@@ -1,0 +1,13 @@
+# IMP-10 D6 in real Electron (BrowserSessionProfile + isFileDocumentRequest transpiled from source, run in the pinned Electron binary)
+# Command: pnpm -C autobyteus-web exec vitest run --config ./electron/vitest.config.ts electron/browser/__tests__/browser-file-document-request.electron.spec.ts --reporter=verbose
+# Commit: da207045a5
+# Environment: macOS (Darwin 25.5.0) desktop session, Electron 42.11.16
+# Date: 2026-11-07
+# Forms driven: top-level, about:blank / srcdoc / blob: iframes, about:blank popup (fetch, XHR, WS each), dedicated worker (fetch, WS), form-POST navigation, sendBeacon and keepalive fetch on pagehide; GET navigations (iframe src, address bar); http control page (fetch/XHR/beacon/cross-origin/form POST, WS, same-origin GET)
+
+ ✓ browser/__tests__/browser-file-document-request.electron.spec.ts > Browser session policy in real Electron (autobyteus-416 D6) > runs in the Electron version the package pins 1ms
+ ✓ browser/__tests__/browser-file-document-request.electron.spec.ts > Browser session policy in real Electron (autobyteus-416 D6) > sends every request a file:// document makes, in every form, with Origin: null 0ms
+ ✓ browser/__tests__/browser-file-document-request.electron.spec.ts > Browser session policy in real Electron (autobyteus-416 D6) > leaves GET navigations from a file:// tab unchanged (AR-002) 1ms
+ ✓ browser/__tests__/browser-file-document-request.electron.spec.ts > Browser session policy in real Electron (autobyteus-416 D6) > leaves an http page untouched: its non-GET requests and WebSocket carry its own Origin (control) 0ms
+ Test Files  1 passed (1)
+      Tests  4 passed (4)

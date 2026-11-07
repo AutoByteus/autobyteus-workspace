@@ -97,6 +97,9 @@ function pickBaselineEnv(callerEnv: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
  */
 export const DESKTOP_EMBEDDED_NODE_ENV = 'AUTOBYTEUS_DESKTOP_EMBEDDED_NODE'
 
+/** The node setting listing the browser origins it accepts besides its own and the packaged app's. */
+const ALLOWED_ORIGINS_SETTING_NAME = 'AUTOBYTEUS_ALLOWED_ORIGINS'
+
 export type BuildServerProcessEnvInput = Readonly<{
   policy: ServerEnvironmentPolicy
   callerEnv: NodeJS.ProcessEnv
@@ -104,6 +107,8 @@ export type BuildServerProcessEnvInput = Readonly<{
   loginShellPath: string | null
   appDataDir: string
   publicServerUrl: string
+  /** Appended to `AUTOBYTEUS_ALLOWED_ORIGINS`, so the node accepts the development renderer (autobyteus-416). */
+  developmentRendererOrigin: string | null
   runtimeOverrides: Record<string, string>
 }>
 
@@ -117,10 +122,14 @@ export function buildServerProcessEnv({
   loginShellPath,
   appDataDir,
   publicServerUrl,
+  developmentRendererOrigin,
   runtimeOverrides,
 }: BuildServerProcessEnvInput): NodeJS.ProcessEnv {
   const inherited = policy === 'inherit-caller' ? { ...callerEnv } : pickBaselineEnv(callerEnv)
   const dbType = policy === 'inherit-caller' ? callerEnv.DB_TYPE ?? 'sqlite' : 'sqlite'
+  const allowedOrigins = [inherited[ALLOWED_ORIGINS_SETTING_NAME]?.trim(), developmentRendererOrigin]
+    .filter((origin): origin is string => Boolean(origin))
+    .join(',')
 
   return {
     ...inherited,
@@ -135,6 +144,7 @@ export function buildServerProcessEnv({
     DB_TYPE: dbType,
     AUTOBYTEUS_DATA_DIR: appDataDir,
     AUTOBYTEUS_SERVER_HOST: publicServerUrl,
+    ...(allowedOrigins ? { [ALLOWED_ORIGINS_SETTING_NAME]: allowedOrigins } : {}),
     ...runtimeOverrides,
     [DESKTOP_EMBEDDED_NODE_ENV]: '1',
   }

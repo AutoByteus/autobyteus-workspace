@@ -74,6 +74,7 @@ export class ElectronApplication {
       listenerPolicy: 'preserve-backend-default',
       baseDataRoot: profile.baseDataRoot,
       environmentPolicy: profile.name === 'e2e' ? 'isolated-baseline' : 'inherit-caller',
+      developmentRendererOrigin: isDev ? new URL(this.getStartUrl()).origin : null,
     })
     this.serverStatusManager = new ServerStatusManager(this.serverManager)
     const installHooks = {

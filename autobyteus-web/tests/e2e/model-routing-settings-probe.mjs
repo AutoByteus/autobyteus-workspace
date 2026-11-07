@@ -300,7 +300,10 @@ try {
   if (!skipServerBuild) await run('corepack', ['pnpm', '-C', serverDir, 'build'], root, process.env, path.join(outputDir, 'server-build.log'));
   ownedRoot = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), 'autobyteus-model-routing-e2e-')));
   fakes = await createFakes(ownedRoot, true);
+  const frontendPort = await choosePort();
+  const frontendUrl = `http://127.0.0.1:${frontendPort}`;
   node = await createNode(ownedRoot, fakes, { name: 'backend', grokInstalled: true });
+  node.env.AUTOBYTEUS_ALLOWED_ORIGINS = frontendUrl; // the node accepts its frontend's origin (autobyteus-416)
   await startNode(node);
   for (const [providerId, apiKey] of Object.entries(KEYS)) {
     const saved = await gql(node, 'mutation($p:String!,$k:String!){ saveProviderApiKey(providerId:$p, apiKey:$k){ apiKeyConfigured } }', { p: providerId, k: apiKey });
@@ -309,9 +312,8 @@ try {
   // A second node: every CLI signed out (Grok missing) and no key.
   remoteFakes = await createFakes(path.join(ownedRoot, 'remote'), false);
   remoteNode = await createNode(path.join(ownedRoot, 'remote'), remoteFakes, { name: 'remote-backend', grokInstalled: false });
+  remoteNode.env.AUTOBYTEUS_ALLOWED_ORIGINS = frontendUrl; // the node accepts its frontend's origin (autobyteus-416)
   await startNode(remoteNode);
-  const frontendPort = await choosePort();
-  const frontendUrl = `http://127.0.0.1:${frontendPort}`;
   evidence.isolation = { tempRoot: ownedRoot, backend: node.url, remoteBackend: remoteNode.url, frontend: frontendUrl };
   frontend = start('corepack', ['pnpm', 'dev', '--host', '127.0.0.1', '--port', String(frontendPort)], webDir, { ...scrubbedEnv(), NODE_ENV: 'development', BACKEND_NODE_BASE_URL: node.url }, path.join(outputDir, 'frontend.log'));
   await waitFor('frontend', async () => { if (exited(frontend)) throw new Error('frontend exited'); return fetch(frontendUrl).then(r => r.ok).catch(() => false); }, 240000);

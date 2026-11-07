@@ -80,6 +80,7 @@ describe('platform server environment handoff', () => {
 
   async function launchWithPolicy(
     environmentPolicy: EmbeddedServerLaunchConfig['environmentPolicy'],
+    developmentRendererOrigin: string | null = null,
   ): Promise<{ env: NodeJS.ProcessEnv; args: string[]; root: string }> {
     const root = fs.mkdtempSync(path.join(os.tmpdir(), 'autobyteus-server-env-test-'))
     cleanupRoots.push(root)
@@ -92,6 +93,7 @@ describe('platform server environment handoff', () => {
       listenerPolicy: 'preserve-backend-default',
       baseDataRoot: path.join(root, 'data'),
       environmentPolicy,
+      developmentRendererOrigin,
     }, serverRoot)
 
     await manager.launchForTest()
@@ -178,6 +180,17 @@ describe('platform server environment handoff', () => {
       expect(env.DATABASE_URL).toBe(
         `file:${path.join(root, 'data', 'server-data', 'db', 'production.db')}`,
       )
+    },
+  )
+
+  it.skipIf(process.env.NUXT_TEST === 'true')(
+    'passes the launch config development renderer origin to the node (autobyteus-416 D7)',
+    async () => {
+      stubCallerEnvironment()
+
+      const { env } = await launchWithPolicy('inherit-caller', 'http://localhost:3000')
+
+      expect(env.AUTOBYTEUS_ALLOWED_ORIGINS).toBe('http://localhost:3000')
     },
   )
 })

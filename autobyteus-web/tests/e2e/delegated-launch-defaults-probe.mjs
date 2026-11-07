@@ -1686,7 +1686,7 @@ try {
     child.once('exit', (code) => (code === 0 ? resolve() : reject(new Error(`prisma migrate deploy exited ${code}`))))
   })
   Object.assign(backendEnv, {
-    ...baseEnv(), HOME: home, APP_ENV: 'development', DB_TYPE: 'sqlite', DATABASE_URL: dbUrl, AUTOBYTEUS_SERVER_HOST: backendUrl, DISABLE_HTTP_REQUEST_LOGS: 'true',
+    ...baseEnv(), HOME: home, APP_ENV: 'development', DB_TYPE: 'sqlite', DATABASE_URL: dbUrl, AUTOBYTEUS_SERVER_HOST: backendUrl, AUTOBYTEUS_ALLOWED_ORIGINS: frontUrl, DISABLE_HTTP_REQUEST_LOGS: 'true',
     ANTIGRAVITY_CLI_COMMAND: agy, AGY_FAKE_CASE: 'linked_skills', AGY_FAKE_ARGV_LOG: argvLog, AGY_FAKE_TOOL_LOG: agyToolLog,
     GROK_BUILD_COMMAND: grok, FAKE_ACP_FIXTURE: path.join(serverDir, 'tests/fixtures/grok-acp/prompt.jsonl'), FAKE_ACP_REPORT_MCP_READY: '1',
     CODEX_APP_SERVER_COMMAND: missingCodex,
