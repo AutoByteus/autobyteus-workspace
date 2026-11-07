@@ -79,12 +79,13 @@ class MainActivity : Activity(), NodeConnectionFlow.Screens {
         )
         fileChooserCoordinator = WebFileChooserCoordinator(this) { diagnostic -> showWebDiagnostic(diagnostic) }
 
-        val sharedText = extractSharedText(intent)
+        // A recreated activity already handled the share that started it (autobyteus-426 REQ-003, CRR-003 F-API-002).
+        val sharedText = OpenPageRestore.sharedTextToHandle(extractSharedText(intent), recreated = savedInstanceState != null)
         // After Android ended the process in the background, the page that was open (autobyteus-426 REQ-003).
         val restored = OpenPageRestore.read(savedInstanceState, savedNodeStore.loadEntries())
         val lastUsed = savedNodeStore.loadSelectedEntry()
         when {
-            !sharedText.isNullOrBlank() -> flow.connect(sharedText, EntryForm.Shared)
+            sharedText != null -> flow.connect(sharedText, EntryForm.Shared)
             restored != null -> flow.open(restored.entry, restored.url)
             // Opening the app still opens the last used node (REQ-012).
             lastUsed != null -> flow.open(lastUsed)

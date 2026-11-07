@@ -49,4 +49,14 @@ class OpenPageRestoreTest {
         assertNull(OpenPageRestore.restore(office.id, null, saved))
         assertNull(OpenPageRestore.restore("", filesScreen, saved))
     }
+
+    // CRR-003 F-API-002: a share-started task recreated after process death does not re-run its old pairing link.
+    @Test
+    fun actsOnASharedTextOnlyOnAFreshStart() {
+        val link = "http://10.0.0.2:29695/mobile?pairing=abc"
+        assertEquals(link, OpenPageRestore.sharedTextToHandle(link, recreated = false))
+        assertNull(OpenPageRestore.sharedTextToHandle(link, recreated = true))
+        assertNull(OpenPageRestore.sharedTextToHandle("   ", recreated = false))
+        assertNull(OpenPageRestore.sharedTextToHandle(null, recreated = false))
+    }
 }
