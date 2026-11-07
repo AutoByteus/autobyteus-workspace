@@ -7,7 +7,7 @@
 - Workspace root: `/Users/normy/autobyteus_org/autobyteus-worktrees/one-step-phone-pairing`
 - Repository mode: `Git`
 - Task worktree / branch: `/Users/normy/autobyteus_org/autobyteus-worktrees/one-step-phone-pairing`, branch `codex/one-step-phone-pairing`
-- Resolved base remote / branch / revision: `origin/personal` @ `ff68bfb5fa14b4849acc317371575b349ae8a1dd` (fetched 2026-11-07)
+- Resolved base remote / branch / revision: `origin/personal` @ `677f61de0b` (rebased 2026-11-07 at the user's request; first base `ff68bfb5fa`). The 12 new base commits (autobyteus-417 HTML preview isolation, 1.5.12-beta.6 release) touch none of the pairing code; the only server change near it is a sandbox header on workspace file routes (`api/rest/workspaces.ts`), no effect on Phone Access
 - Finalization target remote / branch: `origin` / `personal` (RELEASE.md, Finalization Target)
 - Bootstrap result: worktree created from the fetched base; no blocker
 - Bootstrap blocker: None
