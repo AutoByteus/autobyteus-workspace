@@ -64,7 +64,7 @@ class AutoByteusWebView(
     }
 
     fun loadTrusted(url: String) {
-        when (TrustedNavigationPolicy.classify(url, entry).type) {
+        when (TrustedNavigationPolicy.classify(url, entry, isMainFrame = true).type) {
             NavigationDecisionType.AllowInWebView -> webView.loadUrl(url)
             NavigationDecisionType.OpenExternal -> openExternal(url)
             NavigationDecisionType.Block -> onDiagnostic(ConnectionDiagnosticMapper.unsafeNavigationBlocked(url))
@@ -100,23 +100,7 @@ class AutoByteusWebView(
     private inner class Client : WebViewClient() {
         override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
             val url = request.url.toString()
-            val decision = TrustedNavigationPolicy.classify(url, entry)
-            return when (decision.type) {
-                NavigationDecisionType.AllowInWebView -> false
-                NavigationDecisionType.OpenExternal -> {
-                    openExternal(url)
-                    true
-                }
-                NavigationDecisionType.Block -> {
-                    onDiagnostic(ConnectionDiagnosticMapper.unsafeNavigationBlocked(url))
-                    true
-                }
-            }
-        }
-
-        @Deprecated("Deprecated in Android framework")
-        override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-            val decision = TrustedNavigationPolicy.classify(url, entry)
+            val decision = TrustedNavigationPolicy.classify(url, entry, request.isForMainFrame)
             return when (decision.type) {
                 NavigationDecisionType.AllowInWebView -> false
                 NavigationDecisionType.OpenExternal -> {
