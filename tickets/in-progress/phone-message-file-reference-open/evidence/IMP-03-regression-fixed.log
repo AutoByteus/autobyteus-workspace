@@ -1,0 +1,30 @@
+# Check: IMP-03 regression spec with the fix
+# Command: pnpm -C autobyteus-web exec vitest run components/workspace/agent/__tests__/AgentEventMonitor.mobileFileOpen.spec.ts --no-watch
+# Commit: 61c886c0fe (run on the identical working tree before commit)
+# Environment: macOS (Darwin 25.5.0), Node via pnpm, vitest nuxt environment
+# Date: 2026-11-07
+# Owner: implementation engineer
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/phone-message-file-reference-open/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/phone-message-file-reference-open/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/phone-message-file-reference-open/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/phone-message-file-reference-open/autobyteus-web/stores/serverStore.ts" is used
+
+ RUN  v3.2.7 /Users/normy/autobyteus_org/autobyteus-worktrees/phone-message-file-reference-open/autobyteus-web
+
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/phone-message-file-reference-open/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/phone-message-file-reference-open/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/phone-message-file-reference-open/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/phone-message-file-reference-open/autobyteus-web/stores/serverStore.ts" is used
+stderr | components/workspace/agent/__tests__/AgentEventMonitor.mobileFileOpen.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/workspace/agent/__tests__/AgentEventMonitor.mobileFileOpen.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/agent/__tests__/AgentEventMonitor.mobileFileOpen.spec.ts (2 tests) 193ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  20:41:50
+   Duration  6.48s (transform 3.48s, setup 5.50s, collect 191ms, tests 193ms, environment 202ms, prepare 167ms)
+
