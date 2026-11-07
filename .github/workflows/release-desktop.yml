@@ -681,9 +681,6 @@ jobs:
             release-artifacts/**/*.zip.blockmap
             release-artifacts/**/*.exe
             release-artifacts/**/*.AppImage
-            release-artifacts/**/latest-linux*.yml
-            release-artifacts/latest-mac.yml
-            release-artifacts/**/latest.yml
 
       - name: Publish release assets with generated notes fallback
         if: ${{ steps.release_notes.outputs.has_curated_notes != 'true' }}
@@ -701,6 +698,59 @@ jobs:
             release-artifacts/**/*.zip.blockmap
             release-artifacts/**/*.exe
             release-artifacts/**/*.AppImage
-            release-artifacts/**/latest-linux*.yml
-            release-artifacts/latest-mac.yml
-            release-artifacts/**/latest.yml
+
+      # The updater files (latest*.yml) make every desktop on this channel offer this version, and a desktop that
+      # updates asks its nodes for it 2 minutes after it starts. So they go up only once both architectures' server
+      # packages are on the release (autobyteus-412). The Server Docker Release uploads them; the binaries above
+      # create the release if the Android APK Release has not, so it never waits for this job. Up to 60 minutes.
+      - name: Wait for the server packages
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ needs.prepare-release.outputs.release_tag }}
+        run: |
+          set -euo pipefail
+
+          LEVEL_FILE="autobyteus-server-ts/docker/system-level.json"
+          if [[ ! -f "${LEVEL_FILE}" ]]; then
+            echo "::notice::This ref predates server packages (no ${LEVEL_FILE}); the updater files of ${RELEASE_TAG} are published without waiting."
+            exit 0
+          fi
+
+          VERSION="${RELEASE_TAG#v}"
+          EXPECTED=()
+          for arch in x64 arm64; do
+            for suffix in .tar.gz .json .json.sig; do
+              EXPECTED+=("autobyteus-server-${VERSION}-linux-${arch}${suffix}")
+            done
+          done
+
+          for _ in $(seq 1 120); do
+            ASSETS="$(gh release view "${RELEASE_TAG}" --json assets --jq '.assets[].name' || true)"
+            MISSING=()
+            for name in "${EXPECTED[@]}"; do
+              grep -Fxq -- "${name}" <<< "${ASSETS}" || MISSING+=("${name}")
+            done
+            if [[ ${#MISSING[@]} -eq 0 ]]; then
+              echo "The six server package files of ${RELEASE_TAG} are on the release."
+              exit 0
+            fi
+            sleep 30
+          done
+          echo "::error::The server packages of ${RELEASE_TAG} did not appear within 60 minutes; missing: ${MISSING[*]}. The desktop updater files were not published. Rerun the Server Docker Release's failed jobs, then rerun this job."
+          exit 1
+
+      - name: Publish the desktop updater files
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ needs.prepare-release.outputs.release_tag }}
+        run: |
+          set -euo pipefail
+
+          gh release upload "${RELEASE_TAG}" \
+            release-artifacts/latest-mac.yml \
+            release-artifacts/linux-x64/latest-linux.yml \
+            release-artifacts/linux-arm64/latest-linux-arm64.yml \
+            release-artifacts/windows-x64/latest.yml \
+            --clobber

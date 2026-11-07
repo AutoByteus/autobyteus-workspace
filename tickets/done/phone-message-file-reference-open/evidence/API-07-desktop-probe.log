@@ -1,0 +1,21 @@
+# Case: API-07 desktop event-monitor-file-preview-probe (packaged Electron, isolated instance)
+# Run 1: pnpm -C autobyteus-web test:e2e:event-monitor-file-preview --output-dir /tmp/427-runs/API-07-desktop --ledger-file /tmp/427-runs/API-07-ledger.md  (builds the app at 6ccf01c10d)
+# Run 2: same with --skip-build, probe fix 1 (GetAgentOrgMemberFileChanges answered)
+# Run 3: same with --skip-build, probe fix 2 (delegated copy launch snapshot); probe as committed in the baseline-fix commit
+# app.asar sha256 (all runs, one build): 4fff865f110d1074c9e52eae41f62d072a5fbea45904018eae11cbf86cec4366
+# Environment: macOS Darwin 25.5.0 arm64; isolated-app instances iso-55152-ca8d, iso-55627-a837, iso-55817-e5a0 (stopped, data roots removed)
+# Date: 2026-11-07
+
+== run 1 ==
+{"ok":false,"evidence":"/tmp/427-runs/API-07-desktop/evidence.json","cases":{"N-001":"Fail","N-008":"Pass"},"cleanup":{"stop":{"instanceId":"iso-55152-ca8d","wasRunning":true,"forced":true,"dataRoot":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/au
+ ELIFECYCLE  Command failed with exit code 1.
+exit 1
+
+== run 2 ==
+{"ok":false,"evidence":"/tmp/427-runs/API-07b-desktop/evidence.json","cases":{"N-001":"Fail","N-008":"Pass"},"cleanup":{"stop":{"instanceId":"iso-55627-a837","wasRunning":true,"forced":false,"dataRoot":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/
+ ELIFECYCLE  Command failed with exit code 1.
+exit 1
+
+== run 3 ==
+{"ok":true,"evidence":"/tmp/427-runs/API-07c-desktop/evidence.json","cases":{"N-001":"Pass","N-002":"Pass","N-003":"Pass","N-004":"Pass","N-005":"Pass","N-009":"Pass","N-006":"Pass","N-007":"Pass","N-008":"Pass"},"cleanup":{"stop":{"instanceId":"iso-55817-e5a0","wasRunning":true,"forced":true,"dataRoot":"/private/var/folders/7w/
+exit 0

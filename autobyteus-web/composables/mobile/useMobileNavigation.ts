@@ -101,3 +101,9 @@ export function useMobileNavigation() {
     back, toList, openRun, openView, openNewRun, openFile, openMessageReference, openDesktopFullScreen,
   };
 }
+
+/**
+ * What a conversation's file open needs from the phone navigation. `useMobileNavigation` reads the route through
+ * `inject`, so a component takes it in setup and hands this to code that runs later (autobyteus-427).
+ */
+export type MobileFileNavigation = Pick<ReturnType<typeof useMobileNavigation>, 'openFile'>;

@@ -34,6 +34,17 @@ export function reconcileNodeAutoUpdate(
 }
 
 /**
+ * autobyteus-412: a failed attempt at `entry.version` no longer describes a node that answers, for that version as its
+ * target, that it runs it or a newer one (`same`/`older`) with no update running (a trial can still roll back). The
+ * node got there another way (the card's button, the host command, a new image), so the failure is dropped; it is not
+ * "updated automatically".
+ */
+export function isSupersededFailure(entry: NodeAutoUpdateEntry | null, status: NodeServerStatus): boolean {
+  if (!entry || entry.outcome !== 'AUTO_FAILED' || status.target?.version !== entry.version) return false;
+  return (status.target.relation === 'same' || status.target.relation === 'older') && status.update?.state !== 'running';
+}
+
+/**
  * DS-003 step 3: request the update to `version` only when the node can update in place, is older than `version`,
  * is not updating or blocked, and has had no attempt at `version` that is pending or failed (one attempt per version
  * per node, REQ-004). Never a same or older version (no downgrade).

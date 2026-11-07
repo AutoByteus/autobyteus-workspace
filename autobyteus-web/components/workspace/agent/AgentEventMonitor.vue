@@ -43,6 +43,8 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, toRef } from 'vue';
 import { useWorkspaceToolReveal } from '~/composables/layout/useWorkspaceToolReveal';
+import { useMobileNavigation } from '~/composables/mobile/useMobileNavigation';
+import { isMobileRemoteAccessRuntime } from '~/utils/remoteAccess/mobileRuntime';
 import type { Conversation } from '~/types/conversation';
 import AgentUserInputForm from '~/components/agentInput/AgentUserInputForm.vue';
 import CollaboratorAddFailureNotice from '~/components/agentInput/CollaboratorAddFailureNotice.vue';
@@ -79,6 +81,8 @@ const effectiveRunId = computed(() => props.runId || props.conversation.id);
 const compactionActivities = computed(() => activityStore.getCompactionActivities(effectiveRunId.value));
 const filePreviewStatus = ref('');
 const revealTool = useWorkspaceToolReveal();
+// Taken in setup: it reads the route through inject, which the lazily created opener cannot (autobyteus-427).
+const mobileNavigation = isMobileRemoteAccessRuntime() ? useMobileNavigation() : null;
 let isLive = true;
 onBeforeUnmount(() => { isLive = false; });
 const browse = useEventMonitorActiveTraceBrowse({
@@ -98,7 +102,7 @@ const handleFilePathAction = async (action: AbsoluteFilePathAction): Promise<voi
   const isOriginCurrent = () => isLive && effectiveRunId.value === originRunId;
   const { useEventMonitorFilePreview } = await import('~/composables/useEventMonitorFilePreview');
   if (!isOriginCurrent()) return;
-  const result = await useEventMonitorFilePreview({ revealTool, isOriginCurrent }).openPath(action);
+  const result = await useEventMonitorFilePreview({ revealTool, mobileNavigation, isOriginCurrent }).openPath(action);
   if (!isOriginCurrent()) return;
   filePreviewStatus.value = result.status === 'opened' ? '' : result.message;
 };

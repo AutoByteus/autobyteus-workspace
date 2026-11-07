@@ -1,0 +1,59 @@
+# Case: API-06
+# Command / steps: proxy log (harness/proxy.mjs) from the case's MARK line; ua 'Mozilla…' = the window, ua 'node' = the main process (NodeUpdateClient)
+# Commit: 405c28d45e (code = df789a89a5)
+# Environment: macOS 26 arm64, Node v22.23.1, pnpm 10.28.2, Python 3.9.6, Docker; packaged AutoByteus 1.5.12-beta.7 built in the fresh clone; isolated instance (e2e profile) on data root /private/tmp/ab412-e2e/data-root; test node ab412-e2e-node (autobyteus/autobyteus-server:beta, built-in 1.5.12-beta.3, 127.0.0.1:18412) behind the logging proxy 127.0.0.1:18413
+# Date: 2026-11-07
+# ---
+{"at":"2026-11-07T20:15:15Z","event":"MARK API-06 click Update to"}
+{"at":"2026-11-07T20:15:16.064Z","method":"POST","url":"/rest/node-update","status":202,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:15:16.069Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:15:16.074Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"node"}
+{"at":"2026-11-07T20:15:18.076Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:15:20.080Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:15:22.086Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:15:24.091Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:15:26.097Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:15:28.102Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:15:30.112Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:15:32.130Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:15:34.137Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:15:36.146Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:15:38.151Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:15:40.157Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:15:42.164Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:15:44.174Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:15:46.182Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:15:48.190Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":"upstream-error","error":"ECONNRESET"}
+{"at":"2026-11-07T20:15:50.208Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:15:50.214Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"node"}
+{"at":"2026-11-07T20:15:52.216Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:15:54.225Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:15:56.233Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:15:58.238Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:16:00.248Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:16:02.260Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:16:04.266Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:16:06.278Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:16:08.284Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:16:10.324Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:16:12.347Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:16:14.356Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:16:16.365Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:16:18.370Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:16:20.375Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:16:22.392Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:16:24.397Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:16:26.414Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:16:28.421Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:16:30.427Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:16:32.436Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:16:34.462Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:16:36.475Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:16:38.481Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:16:40.502Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:16:42.515Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:16:44.524Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:16:46.531Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:16:48.546Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:16:50.561Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:16:50.572Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"node"}

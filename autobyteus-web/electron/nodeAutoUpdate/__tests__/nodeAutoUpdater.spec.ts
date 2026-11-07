@@ -241,6 +241,135 @@ describe('NodeAutoUpdater (autobyteus-356, DS-003)', () => {
     expect(getStatus.mock.calls.length).toBe(asked);
   });
 
+  it('412 RUN-02: a pass clears AUTO_FAILED for V once the node runs V (updated another way), and requests nothing (AC-001)', async () => {
+    record.set('a', { version: V, requestedAt: '2026-11-01T09:00:00.000Z', outcome: 'AUTO_FAILED', reason: 'No server package was published for 1.6.0 (linux-arm64).', read: true });
+    answers[node('a').baseUrl] = updated();
+    await createUpdater().runPass();
+    expect(record.get('a')).toBeNull();
+    expect(onChange).toHaveBeenLastCalledWith({});
+    expect(requestUpdate).not.toHaveBeenCalled();
+  });
+
+  it('412 AC-004: a pass leaves AUTO_FAILED for V while the node is still older, and does not request V again', async () => {
+    record.set('a', { version: V, requestedAt: '2026-11-01T09:00:00.000Z', outcome: 'AUTO_FAILED', reason: 'rolled back', read: true });
+    await createUpdater().runPass();
+    expect(record.get('a')?.outcome).toBe('AUTO_FAILED');
+    expect(onChange).not.toHaveBeenCalled();
+    expect(requestUpdate).not.toHaveBeenCalled();
+  });
+
+  it('412 AR-003: a pass of a desktop that moved past the failed version neither clears that failure nor needs to', async () => {
+    const failedEarlier = { version: '1.5.5', requestedAt: '2026-11-01T09:00:00.000Z', outcome: 'AUTO_FAILED' as const, reason: 'x', read: true };
+    record.set('a', failedEarlier);
+    answers[node('a').baseUrl] = updated(); // the node already runs the desktop's V (> 1.5.5); asked ?target=V
+    await createUpdater().runPass();
+    expect(getStatus).toHaveBeenCalledExactlyOnceWith(node('a').baseUrl, V);
+    expect(record.get('a')).toEqual(failedEarlier);
+    expect(requestUpdate).not.toHaveBeenCalled();
+  });
+
+  describe('recheckFailure (412 DS-002)', () => {
+    const failed = (version = V) => ({ version, requestedAt: '2026-11-01T09:00:00.000Z', outcome: 'AUTO_FAILED' as const, reason: 'No package.', read: true });
+
+    it('(b) a switch-off node: asks ?target=<entry version>, removes the failure, broadcasts, never requests an update', async () => {
+      nodes = [nodes[0]!, node('a', { autoUpdate: undefined })];
+      record.set('a', failed('1.5.9'));
+      answers[node('a').baseUrl] = olderStatus({ version: '1.5.9', target: { version: '1.5.9', relation: 'same' } });
+      await createUpdater(false).recheckFailure('a'); // the switch and the packaged flag are not read
+      expect(getStatus).toHaveBeenCalledExactlyOnceWith(node('a').baseUrl, '1.5.9');
+      expect(record.get('a')).toBeNull();
+      expect(onChange).toHaveBeenLastCalledWith({});
+      expect(requestUpdate).not.toHaveBeenCalled();
+    });
+
+    it('a node that runs a newer version than the failed one is cleared too (AC-002)', async () => {
+      record.set('a', failed('1.5.9'));
+      answers[node('a').baseUrl] = olderStatus({ version: V, target: { version: '1.5.9', relation: 'older' } });
+      await createUpdater().recheckFailure('a');
+      expect(record.get('a')).toBeNull();
+    });
+
+    it.each<[string, NodeServerStatus | null]>([
+      ['still older', olderStatus()],
+      ['in its trial', olderStatus({ version: V, target: { version: V, relation: 'same' }, update: { state: 'running', targetVersion: V, step: 'trial', code: null, message: null } })],
+      ['not reachable', null],
+    ])('a node %s keeps its failure, with no broadcast', async (_name, status) => {
+      record.set('a', failed());
+      answers[node('a').baseUrl] = status;
+      await createUpdater().recheckFailure('a');
+      expect(record.get('a')?.outcome).toBe('AUTO_FAILED');
+      expect(onChange).not.toHaveBeenCalled();
+      expect(requestUpdate).not.toHaveBeenCalled();
+    });
+
+    it.each<[string, () => void]>([
+      ['a pending entry', () => record.set('a', { ...failed(), outcome: 'PENDING' })],
+      ['an automatic success', () => record.set('a', { ...failed(), outcome: 'AUTO_UPDATED' })],
+      ['no entry', () => undefined],
+      ['an entry whose node is gone', () => { record.set('gone', failed()); }],
+    ])('does not ask the node for %s', async (_name, arrange) => {
+      arrange();
+      const updater = createUpdater();
+      await updater.recheckFailure('a');
+      await updater.recheckFailure('gone');
+      expect(getStatus).not.toHaveBeenCalled();
+    });
+
+    it('does nothing after shutdown, or once stopped while it waits for the node', async () => {
+      record.set('a', failed());
+      let answer: (status: NodeServerStatus | null) => void = () => undefined;
+      answers[node('a').baseUrl] = () => new Promise((resolve) => { answer = resolve; });
+      const updater = createUpdater();
+      const recheck = updater.recheckFailure('a');
+      await flush();
+      updater.stop();
+      answer(updated());
+      await recheck;
+      expect(record.get('a')?.outcome).toBe('AUTO_FAILED');
+      await updater.recheckFailure('a');
+      expect(getStatus).toHaveBeenCalledOnce();
+    });
+
+    it('(c) AR-002: a pass that starts while a recheck waits does nothing for that node; a PENDING stored meanwhile is kept', async () => {
+      nodes.push(node('b'));
+      record.set('a', failed());
+      let answer: (status: NodeServerStatus | null) => void = () => undefined;
+      answers[node('a').baseUrl] = () => new Promise((resolve) => { answer = resolve; });
+      const updater = createUpdater();
+      const recheck = updater.recheckFailure('a');
+      await flush();
+      expect(getsFor('a')).toBe(1);
+
+      await updater.runPass(); // a is held by the recheck; b is checked as usual
+      expect(getsFor('a')).toBe(1);
+      expect(getsFor('b')).toBe(1);
+
+      // Another writer stored a new attempt for this node while the recheck waited.
+      const pending = { version: '1.6.1', requestedAt: '2026-11-01T10:00:00.000Z', outcome: 'PENDING' as const, reason: null, read: false };
+      record.set('a', pending);
+      answer(updated());
+      await recheck;
+      expect(record.get('a')).toEqual(pending);
+    });
+
+    it('a second recheck while the first waits is dropped (the guard), and the guard is released after the answer', async () => {
+      record.set('a', failed());
+      let answer: (status: NodeServerStatus | null) => void = () => undefined;
+      answers[node('a').baseUrl] = () => new Promise((resolve) => { answer = resolve; });
+      const updater = createUpdater();
+      const first = updater.recheckFailure('a');
+      await flush();
+      await updater.recheckFailure('a');
+      expect(getsFor('a')).toBe(1);
+      answer(null);
+      await first;
+      answers[node('a').baseUrl] = updated();
+      await updater.recheckFailure('a');
+      expect(getsFor('a')).toBe(2);
+      expect(record.get('a')).toBeNull();
+    });
+  });
+
   it('stops its passes and follows at shutdown', async () => {
     const updater = createUpdater();
     updater.start();

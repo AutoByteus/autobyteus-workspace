@@ -1,0 +1,70 @@
+# Case: API-03
+# Command / steps: in the clone: python3 -m unittest scripts/tests/test_desktop_release_server_package_wait.py test_release_channel_workflow_steps.py test_desktop_release_beta.py test_server_package_release.py test_merge_latest_mac_metadata.py -v; docker run --rm -v <clone>:/repo -w /repo rhysd/actionlint:latest -no-color .github/workflows/release-desktop.yml (and the base 6225a734a3 file)
+# Commit: 405c28d45e (code = df789a89a5)
+# Environment: macOS 26 arm64, Node v22.23.1, pnpm 10.28.2, Python 3.9.6, Docker; packaged AutoByteus 1.5.12-beta.7 built in the fresh clone; isolated instance (e2e profile) on data root /private/tmp/ab412-e2e/data-root; test node ab412-e2e-node (autobyteus/autobyteus-server:beta, built-in 1.5.12-beta.3, 127.0.0.1:18412) behind the logging proxy 127.0.0.1:18413
+# Date: 2026-11-07
+# ---
+test_softprops_uploads_no_updater_file (scripts.tests.test_desktop_release_server_package_wait.PublishJobOrderTest) ... ok
+test_the_updater_files_are_the_ones_the_job_validated (scripts.tests.test_desktop_release_server_package_wait.PublishJobOrderTest) ... ok
+test_the_wait_and_the_updater_upload_are_the_last_steps_and_always_run (scripts.tests.test_desktop_release_server_package_wait.PublishJobOrderTest) ... ok
+test_a_failed_asset_read_counts_as_missing_and_the_wait_goes_on (scripts.tests.test_desktop_release_server_package_wait.ServerPackageWaitTest) ... ok
+test_a_ref_without_server_packages_is_not_held (scripts.tests.test_desktop_release_server_package_wait.ServerPackageWaitTest) ... ok
+test_gives_up_after_60_minutes_naming_the_tag_and_every_missing_file (scripts.tests.test_desktop_release_server_package_wait.ServerPackageWaitTest) ... ok
+test_packages_already_on_the_release_pass_at_once (scripts.tests.test_desktop_release_server_package_wait.ServerPackageWaitTest) ... ok
+test_the_six_names_are_the_ones_nodes_fetch (scripts.tests.test_desktop_release_server_package_wait.ServerPackageWaitTest) ... ok
+test_the_upload_fails_when_an_updater_file_is_missing (scripts.tests.test_desktop_release_server_package_wait.ServerPackageWaitTest) ... ok
+test_uploads_the_four_updater_files_replacing_any_earlier_copy (scripts.tests.test_desktop_release_server_package_wait.ServerPackageWaitTest) ... ok
+test_waits_until_all_six_files_are_there (scripts.tests.test_desktop_release_server_package_wait.ServerPackageWaitTest) ... ok
+test_helper_matches_the_android_workflow (scripts.tests.test_release_channel_workflow_steps.AndroidVersionCodeStepTest) ... ok
+test_the_matrix_covers_accepted_and_refused_versions (scripts.tests.test_release_channel_workflow_steps.AndroidVersionCodeStepTest) ... ok
+test_beta_tag_push_publishes_a_prerelease (scripts.tests.test_release_channel_workflow_steps.DesktopReleaseMetadataStepTest) ... ok
+test_build_only_dispatch_is_unchanged (scripts.tests.test_release_channel_workflow_steps.DesktopReleaseMetadataStepTest) ... ok
+test_manual_dispatch_of_a_beta_tag_is_always_a_prerelease (scripts.tests.test_release_channel_workflow_steps.DesktopReleaseMetadataStepTest) ... ok
+test_manual_dispatch_of_a_stable_tag_follows_the_input (scripts.tests.test_release_channel_workflow_steps.DesktopReleaseMetadataStepTest) ... ok
+test_stable_tag_push_publishes_a_normal_release (scripts.tests.test_release_channel_workflow_steps.DesktopReleaseMetadataStepTest) ... ok
+test_a_later_tag_pushed_during_the_build_wins (scripts.tests.test_release_channel_workflow_steps.DockerMoveBetaTagStepTest) ... ok
+test_newest_beta_moves_beta_to_its_version_image (scripts.tests.test_release_channel_workflow_steps.DockerMoveBetaTagStepTest) ... ok
+test_newest_stable_moves_beta_too (scripts.tests.test_release_channel_workflow_steps.DockerMoveBetaTagStepTest) ... ok
+test_older_republish_leaves_beta_unchanged_even_without_the_helper_in_its_checkout (scripts.tests.test_release_channel_workflow_steps.DockerMoveBetaTagStepTest) ... ok
+test_step_runs_only_for_the_default_variant (scripts.tests.test_release_channel_workflow_steps.DockerMoveBetaTagStepTest) ... ok
+test_prerelease_tags_use_generated_notes_even_with_curated_notes_present (scripts.tests.test_release_channel_workflow_steps.ReleaseNotesModeStepTest) ... ok
+test_stable_tags_keep_curated_notes (scripts.tests.test_release_channel_workflow_steps.ReleaseNotesModeStepTest) ... ok
+test_stable_tags_without_curated_notes_fall_back_to_generated (scripts.tests.test_release_channel_workflow_steps.ReleaseNotesModeStepTest) ... ok
+test_after_patch_ninety_nine_beta_moves_to_the_next_minor_and_release_refuses_patch_100 (scripts.tests.test_desktop_release_beta.DesktopReleaseBetaCommandTest) ... ok
+test_beta_twice_publishes_consecutive_betas_without_curated_notes (scripts.tests.test_desktop_release_beta.DesktopReleaseBetaCommandTest) ... ok
+test_explicit_base_and_no_push (scripts.tests.test_desktop_release_beta.DesktopReleaseBetaCommandTest) ... ok
+test_refuses_a_base_whose_stable_release_exists (scripts.tests.test_desktop_release_beta.DesktopReleaseBetaCommandTest) ... ok
+test_refuses_a_dirty_worktree_and_the_wrong_branch (scripts.tests.test_desktop_release_beta.DesktopReleaseBetaCommandTest) ... ok
+test_each_variant_builds_from_its_recorded_base_digest (scripts.tests.test_server_package_release.CheckSystemLevelStepTest) ... ok
+test_refuses_unknown_variants_changed_system_parts_and_refs_before_packages (scripts.tests.test_server_package_release.CheckSystemLevelStepTest) ... ok
+test_a_base_image_change_needs_a_new_level (scripts.tests.test_server_package_release.CheckSystemLevelTest) ... ok
+test_a_system_part_change_needs_a_new_level (scripts.tests.test_server_package_release.CheckSystemLevelTest) ... ok
+test_changes_after_the_system_part_need_no_new_level (scripts.tests.test_server_package_release.CheckSystemLevelTest) ... ok
+test_repository_system_level_matches_its_inputs (scripts.tests.test_server_package_release.CheckSystemLevelTest) ... ok
+test_the_dockerfile_default_base_must_be_the_recorded_default (scripts.tests.test_server_package_release.CheckSystemLevelTest) ... ok
+test_description_is_the_package_json_plus_its_archive (scripts.tests.test_server_package_release.DescribeServerPackageTest) ... ok
+test_description_refuses_another_version_or_archive_name (scripts.tests.test_server_package_release.DescribeServerPackageTest) ... ok
+test_package_json_records_this_build_and_its_migration_folders (scripts.tests.test_server_package_release.DescribeServerPackageTest) ... ok
+test_package_json_refuses_a_link_that_points_outside_the_package (scripts.tests.test_server_package_release.DescribeServerPackageTest) ... ok
+test_package_json_refuses_a_package_without_its_migration_folders (scripts.tests.test_server_package_release.DescribeServerPackageTest) ... ok
+test_package_json_refuses_versions_nodes_cannot_order (scripts.tests.test_server_package_release.DescribeServerPackageTest) ... ok
+test_keeps_an_existing_key_unless_replacing_and_writes_nothing_when_gh_fails (scripts.tests.test_server_package_release.GenerateSigningKeyTest) ... ok
+test_sets_the_secret_from_stdin_and_writes_the_matching_public_key (scripts.tests.test_server_package_release.GenerateSigningKeyTest) ... ok
+test_a_release_that_never_appears_fails_the_job (scripts.tests.test_server_package_release.PackageJobTest) ... ok
+test_job_runs_for_the_default_variant_only_and_alone_may_write_contents (scripts.tests.test_server_package_release.PackageJobTest) ... ok
+test_steps_publish_the_images_package_signed_in_upload_order (scripts.tests.test_server_package_release.PackageJobTest) ... ok
+test_refuses_without_a_usable_matching_secret (scripts.tests.test_server_package_release.SignServerPackageTest) ... ok
+test_signature_is_base64_over_the_exact_description_bytes (scripts.tests.test_server_package_release.SignServerPackageTest) ... ok
+test_merge_contains_both_arch_zip_entries (scripts.tests.test_merge_latest_mac_metadata.MergeLatestMacMetadataTest) ... ok
+test_merge_fails_when_x64_zip_missing (scripts.tests.test_merge_latest_mac_metadata.MergeLatestMacMetadataTest) ... ok
+test_write_round_trip_preserves_dual_arch_entries (scripts.tests.test_merge_latest_mac_metadata.MergeLatestMacMetadataTest) ... ok
+
+----------------------------------------------------------------------
+Ran 54 tests in 26.122s
+
+OK
+EXIT 0
+== actionlint 1.7.12 (rhysd/actionlint:latest, includes shellcheck) on 405c28d45e
+EXIT 0
+== actionlint on base 6225a734a3 (same file, for comparison)
+EXIT 0

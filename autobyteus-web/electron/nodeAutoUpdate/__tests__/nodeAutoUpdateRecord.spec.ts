@@ -71,4 +71,21 @@ describe('NodeAutoUpdateRecord', () => {
     expect(record.retain(new Set(['node-a']))).toBe(true);
     expect(Object.keys(new NodeAutoUpdateRecord(userData).all())).toEqual(['node-a']);
   });
+
+  it('412: removes one entry and saves; nothing to remove is false', () => {
+    const record = new NodeAutoUpdateRecord(userData);
+    record.set('node-a', entry);
+    record.set('node-b', entry);
+    expect(record.remove('node-a')).toBe(true);
+    expect(record.remove('node-a')).toBe(false);
+    expect(record.remove('missing')).toBe(false);
+    expect(new NodeAutoUpdateRecord(userData).all()).toEqual({ 'node-b': entry });
+  });
+
+  it('412 QR-002: a file written before this change, with a stale failure, is read unchanged', () => {
+    const stale = { version: '1.5.12-beta.7', requestedAt: '2026-11-07T12:05:27.988Z', outcome: 'AUTO_FAILED',
+      reason: 'No server package was published for 1.5.12-beta.7 (linux-arm64).', read: true };
+    fs.writeFileSync(filePath(), JSON.stringify({ entries: { 'docker-8001': stale, 'docker-8003': stale } }, null, 2));
+    expect(new NodeAutoUpdateRecord(userData).all()).toEqual({ 'docker-8001': stale, 'docker-8003': stale });
+  });
 });

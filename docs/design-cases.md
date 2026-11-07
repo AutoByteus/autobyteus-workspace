@@ -25,7 +25,7 @@ Principles 2 and 13.
 - **Why it mattered:** with the callback, refusal, timeout and partial failure had no single owner, and the next retry or queueing rule would have landed on whichever side someone touched first.
 - **Notice it by:** a function passed to one mechanism so it can reach another collaborator; an owner written "A + B". A chain of many coordinators with no main owner is a different mistake (Common Bad-Practice Pattern 2).
 
-### Case 2: One Entry Form Traced, Another Left Open (autobyteus-191, AR-003; autobyteus-278, AR-401; autobyteus-280, AR-002; autobyteus-303, AR-003, CR-003)
+### Case 2: One Entry Form Traced, Another Left Open (autobyteus-191, AR-003; autobyteus-278, AR-401; autobyteus-280, AR-002; autobyteus-303, AR-003, CR-003; autobyteus-427)
 
 Principle 1.
 
@@ -39,7 +39,8 @@ Principle 1.
 - **Again in autobyteus-303 (CR-003, found by API/E2E):** AutoByteus models were taken from the factory's loaded list, traced for static providers only. Discovered providers (Ollama, LM Studio, custom endpoints) are loaded once per configuration by another path and not retried, so a local server serving 4 models was missing. Fix: the read reloads discovered providers through the catalog's own refresh, with a rule per provider kind.
 - **Again in backend-port-conflict-20261024 (AR-001):** D1 described backend SIGTERM → app.close as the desktop shutdown path, but Windows used taskkill and had no graceful application request. D2 adds a child-associated IPC request into the same backend close owner, with startup cancellation, result/exit confirmation and bounded forced fallback; the application request and fallback are implemented and independently reviewed. macOS packaged transport and deterministic Windows sequencing are verified; actual Windows/WSL execution remains untested. Merely waiting longer for taskkill would not invoke WSL/native cleanup.
 - **Again in autobyteus-416 (ARCH-REV-001, AR-001/AR-002):** the design kept requests from `file://` pages in the in-app browser away from nodes. The rule keyed on the requesting frame's URL, and only the top-level document was measured. An `about:blank` or `srcdoc` iframe of the page (URL `about:…`, origin still `file://`) kept the desktop app's look. The rule also matched GET navigations away from the page, so a node URL opened in that tab got 403. Fix: decide on the frame's origin. Leave GET/HEAD navigations alone. Cover requests without a frame (unload beacons) by "a non-GET request without Origin". Measure every form: top-level, `about:blank`, `srcdoc` and `blob:` iframes, popup, worker, beacon, form POST, plus a control page.
-- **Notice it by:** one example standing for every entry form of a tool or API, or one kind ("a run") standing for several.
+- **Again in autobyteus-427:** a file link in a conversation opens on the desktop and on the phone through one opener, created lazily after a tap. The desktop path received its context-bound capability (`revealTool`) from the component's setup; the phone path took its own (`useMobileNavigation()`, vue-router `inject`) inside the opener, where no injection context exists, so every phone tap threw. Every test doubled `useMobileNavigation`, and no browser case tapped a conversation file on the phone. Fix: the component captures the phone navigation in setup and passes it to the opener, as it does `revealTool`. Lesson: code that runs after setup takes each context-bound capability as a value from the mounted component, for every form of the action.
+- **Notice it by:** one example standing for every entry form of a tool or API, or one kind ("a run") standing for several; a lazily created helper that calls an `inject`-based composable itself.
 
 ### Case 3: A Reader Of Derived Data Left Out (autobyteus-191, F-002; autobyteus-275, CR-002; autobyteus-269, F-001; autobyteus-278, F-005; autobyteus-280, AR-003)
 
@@ -145,7 +146,7 @@ Principles 1, 2 and 13.
 - **Notice it by:** a resource that outlives its registry owner, an asynchronous teardown invoked without an exit barrier, or a completion predicate that checks a parent rather than the resource set. Port-owner inspection is diagnostic evidence, never authority to kill unrelated processes.
 
 
-### Case 10: Lifetime Continuity Assumed Between Snapshots (backend-port-conflict-20261024, IMP-DI-001; autobyteus-285, CRR-002 F-API-001)
+### Case 10: Lifetime Continuity Assumed Between Snapshots (backend-port-conflict-20261024, IMP-DI-001; autobyteus-285, CRR-002 F-API-001; autobyteus-412, ARCH-REV-001 AR-002)
 
 Principles 1, 2 and 13.
 
@@ -154,7 +155,10 @@ Principles 1, 2 and 13.
 - **The designed correction:** D3 creates a gated internal group/session leader before user code and retains it beyond command-result/agent lifetime until the group is verified empty. It separates command RESULT from anchor exit; WSL explicitly creates a new session. The retained anchor is implemented and independently reviewed; real native scope and composed host tests verify quick shell exit and TERM-resistant cleanup on macOS. WSL session mechanics have deterministic coverage, not live-platform certification.
 - **Why it mattered:** faster polling is not an ownership mechanism, and fail-closed is not a successful implementation of a normal supported path.
 - **Again in autobyteus-285 (CRR-002, F-API-001):** restart resume checked a run's eligibility ("not live, not archived") and then restored and posted to it, which took 0.3–0.5 s. An archive or a user's message in that window still got a paid notice turn, and "live" was the wrong test, because a user's message is admitted before its run is visible as live. Fix: restore first; re-check after it (final, because archiving refuses an active run); post with a first-input-only rule decided inside the run's own dispatch queue.
-- **Notice it by:** a promised live identity handoff with no overlap guarantee, or resource completion tied to the exit of a short-lived launcher rather than an explicitly retained owner.
+- **Again in autobyteus-412 (ARCH-REV-001 AR-002):**
+  - What happened: a card-triggered recheck of a node's automatic-update failure read the record entry, checked that no pass was checking the node, waited up to 10 s for the node, and then removed the entry unconditionally. It did not hold the per-node `checking` guard that passes hold. A pass in that window could write a new `PENDING` entry, which the recheck then deleted; the follow stopped and the outcome was lost.
+  - Fix (SR-002): the recheck holds the same `checking` guard for the whole sequence. After the await it reads the entry again and removes it only if it is still the `AUTO_FAILED` entry for the version it asked about.
+- **Notice it by:** a promised live identity handoff with no overlap guarantee, or resource completion tied to the exit of a short-lived launcher rather than an explicitly retained owner; a check made before an `await` and acted on after it; a second writer to state that the first writer guards per item, without the same guard.
 
 
 ### Case 11: A New Kind Of Run Classified By A Rule It Never Met (autobyteus-32, ARCH-REV-001 AR-001, AR-002)

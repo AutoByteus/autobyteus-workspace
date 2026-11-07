@@ -55,6 +55,11 @@
 //                  search over the workspace, no filters, an opened file without Attach), Messages (a reference opens the
 //                  file), Activity (its tool calls); a standalone agent: no Messages, empty states; a remote run: "on that
 //                  node" wording.
+//   MSP-16 autobyteus-427  A file link in a conversation (the Delivery Team lead's own message, Markdown links to absolute
+//                  paths): a tap on a file in the workspace's sub-folder opens the file viewer with its text, the URL is
+//                  `screen=files`, the folder's workspace id and the relative path; the system Back returns to the
+//                  conversation; a tap on a file outside the workspace opens nothing and shows "This file is available only
+//                  on the host workspace."; no opener failure in the console.
 //   MSP-09 AC-008  The connection sheet: the node's name from the pairing code (the name the desktop gives it, the dialog's
 //                  name; the node's status carries none), URL, state, the refresh icon while connected and no peer list
 //                  (one-step-phone-pairing REQ-019, AC-016); alpha down: the bar and the banner, "Retry" in the sheet;
@@ -1201,6 +1206,75 @@ const runCases = async () => {
     assert(artifactsEmpty.startsWith('No Artifacts yet') && activityEmpty === 'No activity yet', 'empty states', { artifactsEmpty, activityEmpty });
     assert(remoteArtifacts.includes(PEER) && remoteFiles.includes(PEER), 'a remote run: the files are on that node', { remoteArtifacts, remoteFiles });
     return { items, artifacts, filesTop, filters, pathLine, attach, searchRows, messages, referenceText, activity, plainItems, artifactsEmpty, activityEmpty, remoteArtifacts, remoteFiles };
+  });
+
+  await runCase('MSP-16', async () => {
+    // The lead's own message (an AI message through the real runtime, stream and stored projection) names a file inside
+    // the workspace and one outside it, each as a Markdown link to its absolute path. Its text comes back as `ECHO:"…"`.
+    const draftPath = path.join(stack.workspace, 'drafts', 'draft-v3.txt');
+    const outsidePath = path.join(path.dirname(stack.workspace), 'outside-427', 'private.txt');
+    await fs.mkdir(path.dirname(draftPath), { recursive: true });
+    await fs.mkdir(path.dirname(outsidePath), { recursive: true });
+    await fs.writeFile(draftPath, 'DRAFT-V3-TEXT-5150: the third draft.\n');
+    await fs.writeFile(outsidePath, 'OUTSIDE-TEXT-9090 must not show on the phone.\n');
+    const marker = 'FILE-LINK-427';
+    await sendOver(stack.wsUrl(`agent-team/${stack.delivery}`), { message_id: randomUUID(), dedupe_key: `team_member_input:probe:${randomUUID()}`,
+      context_file_paths: [], image_urls: [], agent_run_id: stack.deliveryLead,
+      content: `ECHO_INPUT ${marker} The draft is in [draft-v3.txt](${draftPath}); the old one is [private.txt](${outsidePath}).` });
+    await waitFor('the lead\'s answer naming the files', async () => /ECHO:[^]*FILE-LINK-427/.test(await stack.leadProjection()), 60_000);
+    const workspaceId = (await alpha.gql('query($r:String!){workspaceMetadata(rootPath:$r){workspaceId}}', { r: stack.workspace })).workspaceMetadata?.workspaceId;
+    const consoleLines = [];
+    const onConsole = message => { if (['warning', 'error'].includes(message.type())) consoleLines.push(`${message.type()}: ${message.text()}`.slice(0, 300)); };
+    page.on('console', onConsole);
+    try {
+      await toList(page);
+      await openRow(page, `team:${stack.delivery}`);
+      const conversation = page.locator(sel('mobile-run-conversation'));
+      const control = filePath => conversation.locator(`[data-event-monitor-file-action-control="true"][title="${filePath}"]`);
+      await control(draftPath).first().waitFor({ timeout: 30_000 });
+      const links = { draft: await control(draftPath).count(), outside: await control(outsidePath).count(),
+        draftLabel: (await control(draftPath).last().innerText()).trim(), draftAria: await control(draftPath).last().getAttribute('aria-label') };
+      const before = await runScreen(page);
+      await shot(page, 'MSP-16-conversation');
+      // Tap the file inside the workspace: the Files screen shows it as a new entry.
+      await control(draftPath).last().scrollIntoViewIfNeeded();
+      await control(draftPath).last().tap();
+      const viewer = page.locator(sel('mobile-file-viewer'));
+      await viewer.waitFor({ timeout: 20_000 }).catch(() => undefined);
+      await waitFor('the draft\'s text in the viewer', async () => (await viewer.innerText().catch(() => '')).includes('DRAFT-V3-TEXT-5150'), 20_000).catch(() => undefined);
+      const opened = { viewer: await viewer.count(), text: (await viewer.innerText().catch(() => '')).includes('DRAFT-V3-TEXT-5150'),
+        query: Object.fromEntries(new URL(page.url()).searchParams), status: await page.locator(sel('event-monitor-file-preview-status')).count() };
+      await shot(page, 'MSP-16-file-open');
+      // The system Back key (history Back) returns to the conversation.
+      if (opened.viewer) {
+        await page.goBack();
+        await waitFor('the conversation again', async () => (await runScreen(page)).state === 'open' && (await viewer.count()) === 0, 15_000).catch(() => undefined);
+      }
+      const after = await runScreen(page);
+      const back = { state: after.state, query: after.query, name: after.name, link: await control(draftPath).count(),
+        composer: await page.locator(`${sel('mobile-run-conversation')} textarea`).count() };
+      await shot(page, 'MSP-16-back');
+      // Tap the file outside the workspace: nothing opens; the status line says so.
+      const urlBefore = page.url();
+      await control(outsidePath).last().scrollIntoViewIfNeeded();
+      await control(outsidePath).last().tap();
+      const status = page.locator(sel('event-monitor-file-preview-status'));
+      await status.waitFor({ timeout: 15_000 }).catch(() => undefined);
+      await sleep(1_500);
+      const outside = { status: (await status.innerText().catch(() => '')).trim(), urlUnchanged: page.url() === urlBefore, viewer: await viewer.count(),
+        leaked: (await page.locator('body').innerText()).includes('OUTSIDE-TEXT-9090') };
+      await shot(page, 'MSP-16-outside');
+      const warnings = consoleLines.filter(line => /inject\(\)|File preview failed|reading 'query'/.test(line));
+      assert(links.draft >= 1 && links.outside >= 1, 'the message renders both paths as file links', links);
+      assert(opened.viewer === 1 && opened.text, 'a tap on the workspace file shows its text in the phone\'s file viewer', { opened, consoleLines });
+      assert(opened.query.screen === 'files' && opened.query.workspace === workspaceId && opened.query.file === 'drafts/draft-v3.txt', 'the URL is the Files screen with the workspace and the relative path', { query: opened.query, workspaceId });
+      assert(back.state === 'open' && back.query === before.query && back.link >= 1 && back.composer >= 1, 'Back returns to the conversation', { before: before.query, back });
+      assert(outside.status === 'This file is available only on the host workspace.' && outside.urlUnchanged && outside.viewer === 0 && !outside.leaked, 'a path outside the workspace opens nothing and shows the status line', outside);
+      assert(warnings.length === 0, 'no opener failure in the console', warnings);
+      return { draftPath: path.relative(root, draftPath), outsidePath: path.relative(root, outsidePath), workspaceId, links, before: before.query, opened, back, outside, consoleLines };
+    } finally {
+      page.off('console', onConsole);
+    }
   });
 
   await runCase('MSP-14', async () => {

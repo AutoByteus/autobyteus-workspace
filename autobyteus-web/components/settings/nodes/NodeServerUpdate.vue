@@ -97,6 +97,14 @@ watch(() => autoEntry.value ? `${autoEntry.value.requestedAt}|${autoEntry.value.
 const autoReported = (targetVersion: string | null): boolean =>
   !!autoEntry.value && autoEntry.value.outcome !== 'PENDING' && autoEntry.value.version === targetVersion
 const status = computed(() => entry.value?.status ?? null)
+// autobyteus-412: an automatic failure for a version the node has since reached is stale. Whenever the cell has an answer
+// from the node and the entry is a failure, the main process reads the node about that version and drops the failure;
+// this window decides nothing. Either side may change first (the entries load after the first answer), so both are watched.
+watch(() => `${status.value?.version}|${status.value?.update?.state}|${autoEntry.value?.version}|${autoEntry.value?.outcome}`, () => {
+  const entryId = autoUpdateEntryId.value
+  if (props.part !== 'cell' || !status.value || !entryId || autoEntry.value?.outcome !== 'AUTO_FAILED') return
+  autoUpdates.recheck(entryId).catch((cause) => console.warn('Failed to ask the desktop to check the node again:', cause))
+}, { immediate: true })
 const versionText = computed(() => status.value?.version ? t(k('update.version'), { version: status.value.version }) : t(k('update.versionUnknown')))
 
 const STEP_KEYS: Record<string, string> = {

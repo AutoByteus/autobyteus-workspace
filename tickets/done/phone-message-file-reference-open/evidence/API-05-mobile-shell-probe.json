@@ -1,0 +1,100 @@
+{
+  "startedAt": "2026-11-07T19:51:17.186Z",
+  "result": "Fail",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 52596,
+      "nodeId": "srv_N_Mn_7-JLmNHMJBG__ELCBI6pzlzi2zb",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "beta": {
+      "port": 52597,
+      "nodeId": "srv_OhIusQmYJYH2-CONhmPCfXGrbzqTwKeM",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_4308bd88602f4860a7ef8236133f2b4d",
+    "writerRun": "release_notes_writer_03f0d0f31f744b7480d8a85ee21d77f4",
+    "squadRun": "docs_review_team_7c4bb3c540054e83bd547a2e84ca53c9",
+    "reviewer": "release_notes_writer_750cfd59ee0846aa8eb261b2f8f17947",
+    "memberDelegated": "fact_checker_e99f84c7bba34b0c904a1c7f9bb8af47",
+    "remoteAgentRun": "publisher_d520c0e95b7947368dd2708f5e0e84f8",
+    "remoteTeamRun": "studio_team_9b74b22edbdf458ebfe56bba224a48a9",
+    "plain": [
+      "fact_checker_790d8714ad7548ec81db32bffe5a2abf",
+      "fact_checker_9fbac36e03a34b778f614721ae00b501",
+      "fact_checker_5a07db9021c24d5aae6424f00f3ff8ba"
+    ],
+    "org": "delivery_org_b0c29eaa3fbe4e848503b4e49e4d6a39",
+    "orgPlanner": "release_notes_writer_a813ea4f27f34f13961623b7d19e6564",
+    "reviewOrg": "review_org_4a11f0994b27420d9fa9403a23efa228",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_7b793a44efe141d6a360d04fb24a46a1",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_9938ef40bcfa4ba685541e5a5a2a9903",
+    "deliveryLead": "fact_checker_e8c8886783d84a538d067dde1fb75d84",
+    "deliveryMate": "release_notes_writer_5de07b6f481f4499a5adbf6b7b4bbca5",
+    "leadDelegated": "changelog_helper_76c94064f0914af1b240353a4e2877f2",
+    "approver": "approver_83f14d3891d94b37a61af0b83f8328c4",
+    "taskA": "launch-4b5718-1",
+    "taskB": "launch-4b5718-2"
+  },
+  "cases": {
+    "MSP-16": {
+      "result": "Fail",
+      "seconds": 84,
+      "error": "a tap on the workspace file shows its text in the phone's file viewer",
+      "details": {
+        "opened": {
+          "viewer": 0,
+          "text": false,
+          "query": {
+            "screen": "run"
+          },
+          "status": 1
+        },
+        "consoleLines": [
+          "warning: [EventMonitorFilePreview] File preview failed. TypeError: Cannot read properties of undefined (reading 'query')\n    at t (http://192.168.77.10:52596/mobile/_nuxt/DAkIDJEh.js:1:877)\n    at Object.openFile (http://192.168.77.10:52596/mobile/_nuxt/DAkIDJEh.js:1:1847)\n    at M (http://192.168.7"
+        ]
+      }
+    }
+  },
+  "browserErrors": [
+    {
+      "case": "setup",
+      "line": "phone console: WebSocket connection to 'ws://localhost:8000/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    },
+    {
+      "case": "setup",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true
+    }
+  ],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "summary": {
+    "cases": {
+      "MSP-16": "Fail"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-07T19:53:20.541Z"
+}

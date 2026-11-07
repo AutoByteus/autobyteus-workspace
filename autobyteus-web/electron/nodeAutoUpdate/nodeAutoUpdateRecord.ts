@@ -45,6 +45,15 @@ export class NodeAutoUpdateRecord {
     this.save();
   }
 
+  /** Drops one node's entry (a superseded failure, autobyteus-412). False when it has none. */
+  remove(entryId: string): boolean {
+    if (!this.entries[entryId]) return false;
+    const { [entryId]: _removed, ...kept } = this.entries;
+    this.entries = kept;
+    this.save();
+    return true;
+  }
+
   /** The user saw the node's outcome. False when there is nothing unread to mark. */
   markRead(entryId: string): boolean {
     const entry = this.entries[entryId];
