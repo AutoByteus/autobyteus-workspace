@@ -26,7 +26,7 @@ Previews now run with an opaque origin on both source paths, and the workspace s
 - Current implementation revision ID: `IR-001`
 - Related solution revision IDs: `SR-003`
 - Related architecture-review revision IDs: `ARCH-REV-001`
-- Related code-review revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001` (`Pass` on IR-001, no findings; `code-review-report.md`; the reviewer routed the package to API/E2E)
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
 - Triggering finding IDs: `N/A`
