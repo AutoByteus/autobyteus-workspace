@@ -8,6 +8,7 @@
 | SR-002 | Requirements | The user's answers, 2026-11-07; Product Design requested | N/A | Ready for Approval | Ready for Approval | DEC-001…004; REQ-008 | DEC-001 B, DEC-003 yes (user); DEC-002 A (Solution Designer); DEC-004 open (once vs. never); Product brief sent |
 | SR-003 | Requirements | Product review interim note (user's changes), 2026-11-07 | N/A | Ready for Approval | Ready for Approval | REQ-004, REQ-013, REQ-019 (new), AC-011, AC-016 (new); 277 REQ-008 peer list superseded | Answers to the designer's three questions |
 | SR-004 | Requirements | The user's VPN question and "sections" question, 2026-11-07 | N/A | Ready for Approval | Ready for Approval | REQ-002, REQ-005, REQ-010, DEC-012 | Company VPN supported; no per-network sections; Other options grouped by purpose |
+| SR-005 | Requirements | The user's WireGuard/shared-office question and "select the address?" question, 2026-11-07 | N/A | Ready for Approval | Ready for Approval | REQ-002, REQ-004, DEC-004, DEC-013 | VPN trusted like Tailscale; local Wi-Fi asked once per network; all decisions settled |
 
 ## Revision Entries
 
@@ -61,3 +62,10 @@
 - IDs affected: REQ-002 (admin-configured address first, VPN private addresses included), REQ-005 (network-neutral wording), REQ-010 (phone message mentions VPN), DEC-012 (new, Solution Designer at the user's word)
 - Intended behavior changed: Yes, within this ticket's area; sent to the Product Team
 - Next action: the designer reflects it; approval with the confirmed design
+
+### SR-005 — VPN trusted like Tailscale; local Wi-Fi once per network
+
+- Trigger: the user, 2026-11-07: shared office with WireGuard, "Do I turn this network allowed? When do I turn this on?"; "I still need to select the address … Yes or no … you know the different network environments more than me"; earlier "without encryption, people feel scared" (copy)
+- IDs affected: REQ-002 (VPN rank, never select), REQ-004 (once per network, calm copy, "Not now" state), DEC-004 settled, DEC-013 new; U-004, U-005 added
+- Approval impact: all decisions settled; requirements approval follows his confirmation of the design
+- Sent to the Product Team the same day
