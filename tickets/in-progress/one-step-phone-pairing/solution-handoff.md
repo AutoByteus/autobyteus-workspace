@@ -63,3 +63,7 @@ On the desktop, one press per way to connect, with the best ready way pre-select
 ## Expected next step
 
 Independent architecture review of design-spec.md against the approved requirements and the UI/UX spec. On Pass, implementation follows the configured route. Findings that change intended behavior return to the Solution Designer.
+
+## Route taken
+
+- 2026-11-07: sent to `/software_engineering_team/architecture_reviewer` (run `architecture_reviewer_216348f5f87944b4a511f6990bebad76`) by the rule for Large or High.
