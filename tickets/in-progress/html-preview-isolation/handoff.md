@@ -53,3 +53,7 @@ Independent architecture review of the design. On Pass, the reviewer's route con
 ## Architecture review result (informational)
 
 - 2026-11-07: Pass, ARCH-REV-001 on SR-003, no findings; Small / High confirmed. Report: `design-review-report.md`; record: `architecture-review-revision-record.md`. The reviewer delivered the package to `/software_engineering_team/implementation_engineer`. Residual risks R-1…R-4 for validation: no real relative image in the probe, the no-Origin GET clause of REQ-003, refresh on the workspace path, and the Electron version. No Solution Designer action; no duplicate forwarding.
+
+## SR-004 — answer to implementation R-3 (2026-11-07)
+
+Evidence correction, no change to intended behavior and no renewed approval needed. AC-004 has been reworded: an artifact (blob) preview updates when its content changes; a workspace preview shows the changed file after it is reopened, as before this ticket. The missing automatic reload is pre-existing and recorded as FU-003 (not urgent). Not fixed in this ticket. The user is informed. Answer sent to the implementation engineer.

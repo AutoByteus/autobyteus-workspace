@@ -3,7 +3,7 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: `SR-003`
+- Current solution revision ID: `SR-004`
 - Package identifier: `html-preview-isolation`
 - Request / ticket: Project Task `autobyteus-417` (FU-002 of autobyteus-403)
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`)
@@ -28,7 +28,7 @@
 | BEH-002 | User | SCN-002, SCN-003, SCN-004 | Artifact / reference / local-file preview runs at the app window's origin: reads window, calls preload, app storage, node rights | Opaque origin; window, preload, storage and node refused | Page renders, inline scripts run | Probe `blob/*` |
 | BEH-003 | User | SCN-002, SCN-004 | Phone web app: an HTML artifact preview shares the phone app's origin and its stored credential (phone references show HTML as code) | Opaque origin; credential unreadable | Phone artifact/reference preview renders | Read |
 | BEH-004 | User | SCN-005 | Application iframe pages work | Unchanged | All | Read |
-| BEH-005 | User | SCN-001…003 | Preview blocks popups, forms, dialogs, top navigation; refreshes on content change | Unchanged | All | Read |
+| BEH-005 | User | SCN-001…003 | Preview blocks popups, forms, dialogs, top navigation. A blob preview refreshes when its content changes (new Blob URL). A workspace preview does not reload when the open file changes (viewer keyed by workspace + file, same static URL re-assigned; `FileExplorerTabs.vue:31,177`, `HtmlPreviewer.vue` `updateSrc`); it shows the new version when the file is reopened or another tab is selected and back (corrected SR-004, R-3) | Unchanged | All | Read |
 | BEH-006 | User | SCN-001 | Workspace HTML can be opened at its static URL outside the preview (in-app browser, a tab) and then has the node's origin | Runs isolated wherever it is opened | Content served unchanged | Read |
 
 ## Stakeholders, Actors, And Outcomes
@@ -85,7 +85,7 @@ None.
 | REQ-001 | Every HTML preview (UC-001…UC-003, desktop and phone/browser) runs the previewed page with an opaque origin, never the app window's or a node's origin. | BEH-001…003 | Must | The origin is what grants app and node rights | Measured (`*/scripts-only`: origin `null`) | Task; DEC-001 |
 | REQ-002 | A previewed page cannot read or script the app window, cannot call the preload API, and cannot read the app's browser storage (desktop app storage, phone credential). | BEH-002, BEH-003 | Must | Task "cannot reach the app window, the preload API" | Measured (`SecurityError` on each) | Task |
 | REQ-003 | A previewed page's WebSocket and API requests to any node carry an Origin the node refuses, so it gets no node rights; no request it can make without an Origin changes node state. | BEH-001, BEH-002 | Must | Task "or the node with the app's rights" | Measured (`Origin: null`); Read (gate refuses `null`; GET mutations refused) | Task |
-| REQ-004 | Previews keep working for their purpose: the page renders; inline scripts, classic scripts, stylesheets and images run/load, including relative ones of a workspace file; resources from other sites (CDN) load; the preview refreshes when the file changes. | BEH-001…003, BEH-005 | Must | Task "keep the preview useful" | Measured (classic relative script, CSS, inline) | Task |
+| REQ-004 | Previews keep working for their purpose: the page renders; inline scripts, classic scripts, stylesheets and images run/load, including relative ones of a workspace file; resources from other sites (CDN) load; a blob preview refreshes when its content changes, and a workspace preview keeps today's refresh behavior (BEH-005). | BEH-001…003, BEH-005 | Must | Task "keep the preview useful" | Measured (classic relative script, CSS, inline) | Task |
 | REQ-005 | Workspace HTML the node serves for the preview runs isolated also when its URL is opened outside the preview. | BEH-006 | Should | Same isolation for the route whose only consumer is the preview | Read (CSP `sandbox`); verify in design | DEC-003 |
 | REQ-006 | What a previewed page can no longer do is exactly what DEC-001 approves, and the user-facing notes say so. | BEH-001 | Must | "The user is told before behaviour changes" | Measured losses (probe) | DEC-001 |
 | REQ-007 | Application iframe pages and non-HTML viewers behave as before. | BEH-004 | Must | Task constraint | N/A | Task |
@@ -97,7 +97,7 @@ None.
 | AC-001 | REQ-001 | SCN-001…003 | Workspace preview and blob preview mounted | Preview iframe never grants `allow-same-origin` | — | Web component test |
 | AC-002 | REQ-001, REQ-002 | SCN-004 | Desktop isolated instance (or Electron with the app's window settings); a hostile test page previewed as a workspace file and as an artifact | Page reports origin `null`; `parent.document`, `parent.electronAPI` and `localStorage` throw; no IPC call from it reaches the main process | — | Real Electron check |
 | AC-003 | REQ-003 | SCN-004 | Same hostile page against a real node | Its WebSocket to `/ws/terminal/…` and its POST to `/graphql` are refused (`REMOTE_ACCESS_ORIGIN_REFUSED`); no terminal session is created | — | Isolated instance or server E2E + browser |
-| AC-004 | REQ-004 | SCN-001, SCN-002 | Test pages: workspace page with inline script, relative classic script, relative CSS and image; artifact page with inline script | Each renders and its scripts run; preview updates after the file changes | — | Isolated instance / browser probe |
+| AC-004 | REQ-004 | SCN-001, SCN-002 | Test pages: workspace page with inline script, relative classic script, relative CSS and image; artifact page with inline script | Each renders and its scripts run (relative image loads); an artifact preview updates when its content changes; a workspace preview shows the changed file after reopening it (same as before this change) | — | Isolated instance / browser probe |
 | AC-005 | REQ-005 | SCN-001 | Request a workspace HTML file from the static route; open it top-level | Response sandboxes the document; opened top-level it reports origin `null` | Non-HTML files still served with their type | Server test + probe |
 | AC-006 | REQ-002, REQ-004 | SCN-002 | Phone/browser web app with a stored phone credential; preview an HTML artifact | Preview renders; it cannot read the credential (origin `null`) | — | Browser probe |
 | AC-007 | REQ-006 | SCN-005 | Per DEC-001 | The approved losses behave as documented (option A: relative module script and relative `fetch` do not run/load; storage throws); release notes and docs state them | — | Probe + docs check |

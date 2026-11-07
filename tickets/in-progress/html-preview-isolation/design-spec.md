@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-003`
+- Current solution revision ID: `SR-004`
 - Approved requirements baseline: `requirements-doc.md` at SR-002, approved by the user on 2026-11-07 in the Solution Designer conversation (DEC-001 = option A: `allow-scripts` only; DEC-006: no storage stand-in, user informed)
 - Behavior-defining supplements: None
 - User approval of the design: `Not required` (the Task does not ask for it)
@@ -51,7 +51,7 @@ Drop `allow-same-origin` from the preview iframe, remove the blob preview's dead
 - In scope: UC-001…UC-004. Areas: the HTML previewer (web), the workspace static route (server), their tests, the HTML preview docs.
 - Derived consumers: N/A (no shared structure changes).
 - Deliberately left alone: the node's Origin rule and CORS (403's, unchanged: it is what refuses the opaque preview); `ApplicationIframeHost.vue` (REQ-007); the Electron shell and preload; the `/content` route and other file routes (no preview uses them as documents; FU-002); Markdown preview; the in-app browser.
-- Follow-ups: FU-001 (loopback origins, urgent), FU-002 (other node file routes serve HTML at the node's origin, urgent).
+- Follow-ups: FU-001 (loopback origins, urgent), FU-002 (other node file routes serve HTML at the node's origin, urgent), FU-003 (workspace HTML preview does not reload when the open file changes).
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
 
@@ -61,7 +61,7 @@ Drop `allow-same-origin` from the preview iframe, remove the blob preview's dead
 | BEH-002 | User | REQ-001…004; AC-001…004 | Artifacts, references, local files (desktop) | App window origin (probe) | Opaque; window/preload/storage/node refused | DS-002 |
 | BEH-003 | User | REQ-001, 002, 004; AC-006 | Phone Artifacts | Phone app origin (Read) | Opaque; credential unreadable | DS-002 |
 | BEH-004 | User | REQ-007; AC-008 | Applications | Separate component | Preserved | N/A |
-| BEH-005 | User | REQ-004 | Preview chrome | No popups/forms/modals/top navigation; refresh; revoke | Preserved (sandbox flags unchanged apart from `allow-same-origin`) | DS-001, DS-002 |
+| BEH-005 | User | REQ-004 | Preview chrome | No popups/forms/modals/top navigation; blob refresh on content change; workspace preview reloads only on reopen (pre-existing, SR-004); revoke | Preserved (sandbox flags unchanged apart from `allow-same-origin`) | DS-001, DS-002 |
 | BEH-006 | User | REQ-005; AC-005 | Static URL opened outside the preview | Node origin | Opaque wherever opened (CSP) | DS-001 |
 
 ## Relevant Supplemental Task Artifacts

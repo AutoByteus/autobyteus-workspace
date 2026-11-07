@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | SR-001 | Requirements | Initial coherent baseline (Task autobyteus-417) | N/A | N/A | Ready for Approval | BEH-001…006; REQ-001…007; AC-001…008 | Waiting for the user on DEC-001 |
 | SR-002 | Requirements | User answers on DEC-001 (2026-11-07) | DEC-001, DEC-006 | Ready for Approval | Approved | REQ-006, AC-007; DEC-001, DEC-006; ASM-001 | Approved by the user; option A |
+| SR-004 | Evidence | Implementation R-3 (basis question), 2026-11-07 | R-3 | Approved; design Ready | Approved; design Ready | BEH-005, REQ-004, AC-004 (wording) | Evidence correction; FU-003 |
 | SR-003 | Mixed (Evidence + Design) | Architecture design | N/A | Approved; design N/A | Approved; design Ready | UC-002, BEH-003, SCN-002 (wording); DS-001…003 | Design complete; Small / High |
 
 ## Revision Entries
@@ -65,3 +66,14 @@
 - Next action: hand off per rules
 
 Review note (not a solution round): architecture review Pass ARCH-REV-001 on SR-003, 2026-11-07, no findings (`design-review-report.md`). Requirements and design unchanged.
+
+### SR-004 — Workspace preview refresh: evidence correction
+
+- Phase and classification: Evidence, `Refinement` (evidence-only clarification)
+- Triggering input: implementation engineer's basis question R-3 (`implementation-handoff.md` § Known Risks), raised by the architecture review as residual risk R-3
+- Finding: BEH-005/REQ-004/AC-004 said the preview refreshes when the file changes. Read and confirmed: true for blob previews; a workspace preview does not reload when the open file changes (`FileExplorerTabs.vue:31,177`; `HtmlPreviewer.vue` `updateSrc` re-assigns the same URL). Pre-existing; this ticket does not change it.
+- IDs affected: BEH-005, REQ-004, AC-004 (wording now matches current behavior); design behavior map row BEH-005; FU-003 added
+- Intended behavior changed: No. The preserved behavior is what the product does today; the earlier wording overstated it. Nothing the user had is removed. The user is informed in the conversation.
+- Approval impact: none (evidence-only)
+- Design/review impact: none; the design's file changes are unaffected
+- Next action: reply to the implementation engineer; downstream validation uses the corrected AC-004

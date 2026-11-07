@@ -11,7 +11,7 @@
 - Finalization target remote / branch: `origin` / `personal` (RELEASE.md)
 - Bootstrap result: worktree created from refreshed `origin/personal`
 - Bootstrap blocker: None
-- Current solution revision ID: `SR-003`
+- Current solution revision ID: `SR-004`
 - Authorities read (design reading gate, 2026-11-07): `references/architecture-design.md`, `references/design-principles.md`, `references/project-documents.md`, `DESIGN.md`, `GLOSSARY.md`, web docs `file_explorer.md`, `agent_artifacts.md`, `content_rendering.md`
 - Authorities read (requirements reading gate; 2026-11-07): `references/requirements-engineering.md`, `references/finding-the-cause.md`, `references/ticket-scope.md`, `references/handoff.md`; `TESTING.md` (test layers, choosing the path, browser probes, rules)
 - Investigation status: Complete (requirements and architecture)
@@ -62,7 +62,7 @@
 | BEH-003 | User | Phone web app (served by the node) previews an HTML artifact | Same blob preview; the app window's origin is the node's origin | Page shares the phone app's origin: reads its window and the stored phone credential in `localStorage`; full node rights | Code (same-origin policy) + BEH-002 measurement | Read |
 | BEH-004 | User | Application iframe pages (installed applications) | `ApplicationIframeHost`, no sandbox, origin-checked bridge | Works; unrelated to the preview | Code | Read |
 | BEH-005 | System | Preview sends `postMessage` to the app window | Only listener checks source and origin | No effect | Code | Read |
-| BEH-006 | User | Preview chrome | No `allow-popups/forms/modals/top-navigation`; preview refreshes on content change; blob URLs revoked | Popups, forms, `alert` and top navigation already blocked | Code, spec | Read |
+| BEH-006 | User | Preview chrome | No `allow-popups/forms/modals/top-navigation`; blob preview refreshes on content change (new Blob URL); workspace preview does not reload when the open file changes (`FileExplorerTabs.vue:31,177` keys `FileViewer` by workspace + file; `HtmlPreviewer` re-assigns the same static URL) — corrected 2026-11-07 (implementation R-3, Read); blob URLs revoked | Popups, forms, `alert` and top navigation already blocked | Code, spec | Read |
 
 ## Relevant Codebase And Technical Facts
 
