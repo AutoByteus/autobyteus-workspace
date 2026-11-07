@@ -12,22 +12,23 @@
 - Design Review Report Reviewed As Context: `design-review-report.md` (round 2, Pass)
 - Architecture Review Revision Record Reviewed As Context: `architecture-review-revision-record.md`
 - Relevant Architecture Review Revision IDs: ARCH-REV-002
-- Implementation Handoff Reviewed As Context: `implementation-handoff.md`
+- Implementation Handoff Reviewed As Context: `implementation-handoff.md` (IR-002 section)
+- Delivery Revision Record Reviewed As Context: `delivery-revision-record.md` (DR-001: base integration blocked by an autobyteus-407 conflict); `release-deployment-report.md`
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001
+- Relevant Implementation Revision IDs: IR-001, IR-002
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: 1
-- Review Scope: `Full Review`
-- Review Scope Evidence (round >1): N/A
-- Trigger: implementation IR-001 ready for source review (implementation engineer, 2026-11-06)
-- Prior Review Round Reviewed: N/A
-- Latest Authoritative Round: 1
+- Current Code Review Revision ID: `CRR-003`
+- Current Review Round: 2
+- Review Scope: `Full Re-Audit`
+- Review Scope Evidence (round >1): the merge resolution touches the WS spine (adapter, route policy export), a shared module from autobyteus-407 (`remote-access-close-codes.ts`) and a WS handler (`node-desktop.ts`). These are beyond round 1's files. All structural checks were rerun on the merged code. The IR-001 files the merge did not touch are byte-identical to `88a93aaf26`: `remote-access-policy-plugin.ts`, `remote-access-request-origin.ts`, `build-studio-server.ts`, `models.ts` and both unit tests (`git diff 88a93aaf26 6f59bab2a2 --stat` is empty for them). So their round-1 evidence carries forward.
+- Trigger: IR-002, the delivery Local Fix for DR-001: merge of origin/personal @ 6341292552 (autobyteus-407, node desktop on the phone), merge commit `6f59bab2a2` (implementation engineer, 2026-11-07)
+- Prior Review Round Reviewed: 1 (CRR-001 Pass); test review CRR-002 Pass
+- Latest Authoritative Round: 2
 - Coverage Investigation / Execution Report / API/E2E Revision Record: N/A (implementation review)
 - Delivery Revision Record: N/A
 - Failing Scenario IDs / Commands / Evidence: N/A
 
-Reviewed code: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard`, branch `codex/websocket-origin-and-phone-route-guard`, range `git diff 3bf9240d42 88a93aaf26`. Commit `a24421610f` holds only ticket documents (`git diff 88a93aaf26 a24421610f -- . ':!tickets'` is empty).
+Round 2 reviewed code: `git diff 6341292552 6f59bab2a2 -- autobyteus-server-ts` (this ticket applied on top of 407), plus `node-desktop-viewers.ts` for context. Ticket docs and evidence are in `1e1d6482a7`. Round 1 reviewed code: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard`, branch `codex/websocket-origin-and-phone-route-guard`, range `git diff 3bf9240d42 88a93aaf26`. Commit `a24421610f` holds only ticket documents (`git diff 88a93aaf26 a24421610f -- . ':!tickets'` is empty).
 
 ## Routing Classification Review
 
@@ -67,6 +68,21 @@ Reviewed code: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/websoc
   - the standalone application server, the MCP gateway rule and the message gateway (out of scope by design).
 - Checks rerun: none. All recorded checks IMP-01…IMP-08 ran on `88a93aaf26`, and no source changed after them. I read the IMP-04, IMP-05 and IMP-08 log results (`7 passed`, `4 passed`, `5 failed | 2 passed` on base).
 
+## Round 2 — Base Integration (IR-002)
+
+The resolution, checked against the merged code:
+
+1. **One close-code table.** 407's `REMOTE_ACCESS_CLOSE_CODE_BY_FAILURE` (`remote-access-close-codes.ts`) gains both new codes at 4403, and IR-001's local `closeCodeByFailure` is gone. The adapter throws `remoteAccessCloseForFailure(result.code)`. The `?? 4401` fallback is removed. It was unreachable: the table is an exhaustive `Readonly<Record<RemoteAccessAuthFailureCode, number>>`, and both callers pass a typed code: the adapter, and 407's `NodeDesktopViewers.recheckEntry` (`node-desktop-viewers.ts:112`, which gets it from `authorizeMobileCredential`). Typecheck IMP-09 passes.
+2. **The adapter keeps IR-001's shape.** It makes one `authorizeWebSocket` call. 407's second credential parser, its trusted-network context and the `routeClass` parameter are not revived. A grep finds no `extractRemoteAccessWebSocketCredential` anywhere in `src`, `tests` or `autobyteus-web`.
+3. **node-desktop keeps the phone's credential through the policy's reader.** `node-desktop.ts:99` uses `readWebSocketQueryCredential(req)` to build 407's viewer identity, after `authorizeRemoteAccessWebSocket(req)` has accepted the same request. The credential is not used for authorization there; 407's live re-check validates it again through `authorizeMobileCredential`. `remote-access-route-policy.ts` keeps one reader and exports it, and the adapter re-exports it under the same name. Handlers therefore still depend only on the adapter, and the code now has one query-credential reader instead of 407's two.
+4. **Tests and docs.** The e2e AC-001 case adds a foreign-Origin `/ws/node-desktop?mode=view` upgrade, which returns 403. The server doc names `remote-access-close-codes.ts` as the close-code owner. `autobyteus-server-ts/README.md` and `docs/android_mobile_access.md` mention the allowed-origin rule, and both match the code (delivery docs sync).
+
+Checks on `6f59bab2a2`, all recorded by implementation (not rerun):
+- IMP-09: typecheck PASS.
+- IMP-10: 152 passed. Covers the origin/phone e2e, 407's node-desktop e2e (View only, Control, limits, live revoked/disabled re-check closing with 4403), viewer, websocket and remote-access units, and the contract test.
+- IMP-11: 26 passed.
+- IMP-12: 8043 passed, including the architecture tests.
+
 ## Upstream Behavior And Production-Path Basis Confirmation
 
 - Approved requirements basis understood: `Yes`.
@@ -83,6 +99,7 @@ Reviewed code: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/websoc
 | BEH-001 | Confirmed | `registerRemoteAccessPolicyPlugin` `onRequest`: `originPolicy.isAllowed(request.headers)` → `refuse(...ORIGIN_REFUSED...)` runs before `shouldDeferToWebSocketHandler` (`remote-access-policy-plugin.ts:67-73`). So every `/ws/*`, `/graphql` and `/rest/remote/run-observations` upgrade meets it. IMP-04 AC-001: 403 on all four families for both foreign and `null`; `TerminalHandler.connect` not called | — |
 | BEH-002 | Confirmed | Same gate for HTTP. CORS goes through a callback delegator from the same rule (`:61-65`). In `@fastify/cors` (`index.js:131-139,165-200`), `origin:false` means no ACAO and `next()` to the gate, which answers 403. An allowed preflight is answered 204 by CORS before the gate, as before. A no-Origin request gets `origin:true`, which reflects `undefined` and so sends no ACAO; strict preflight still answers 400 as before | — |
 | BEH-003 | Confirmed | `RemoteAccessRoutePolicy.authorizeWebSocket` (`remote-access-route-policy.ts:208-218`). `/graphql` reaches it through `authorizeHttpRequest:197-199`; `/ws/*` through the adapter (`remote-access-websocket-auth.ts:33-40`). All 13 `/ws/*` handlers call the adapter: `grep "websocket: true"` lists 14 node routes, and the 14th, `/remote/run-observations`, is covered by the `REMOTE_PEER` branch `:185-187` | — |
+| BEH-003 (round 2, `/ws/node-desktop`) | Confirmed | `/ws/node-desktop` stays a phone WebSocket route (REQ-004, S3/407). The path is handler → adapter → `authorizeWebSocket` (listed pattern) → `authorizeMobileCredential` → viewer built from the same credential → 407's registry admits it and re-checks it live. A foreign Origin on it is refused 403 at the gate (IMP-10) | — |
 | BEH-004…008 | Confirmed (server side) | The origin rule allows: absent, `file://`, Host / first X-Forwarded-Host, loopback (brackets handled by `normalizeClientAddress`), configured. IMP-04 AC-002 uses real upgrades; IMP-05 shows the MCP gateway contract is unchanged; IMP-06/IMP-07 keep the existing WS suites green. Executable client validation is API/E2E's (AC-007…AC-009) | — |
 
 ## Supported Product Scenario And Reachability Gate (Mandatory)
@@ -107,6 +124,9 @@ Reviewed code: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/websoc
 | CR-C04 | Same-origin also accepts the first `X-Forwarded-Host` value | DEC-003, REQ-002b | A browser cannot set X-Forwarded-Host on a WS handshake. A cross-origin fetch that sets it is non-simple, so its preflight (foreign Origin) is refused first | Not reachable by an attacker page | REQ-002, External Contracts | Reject | — | Approved rule; DNS rebinding is FU-001 |
 | CR-C05 | `closeCodeByFailure.REMOTE_ACCESS_ORIGIN_REFUSED` (4403) is never reached | Engineering contract: exhaustive `Record` | — | Type completeness only | ARCH-REV-002 accepted it | Reject | — | Required by the exhaustive `Record` type; it is not dead logic |
 | CR-C06 | A revoked or invalid `mra_` credential on a non-phone route gets `PHONE_ACCESS_ROUTE_REFUSED`, not `AUTH_INVALID`/`DEVICE_REVOKED` | REQ-004, design ("route check before credential validation") | Revoked phone opening `/ws/terminal` | Client does not unpair, but it never offers that route | design-spec `authorizeWebSocket`; `remoteAccessAuthFailure.ts` | Reject | — | Designed order; it keeps the refusal free of validation work (QR-001) |
+| CR-C08 | `node-desktop.ts` (a WS handler the design said to leave alone) changed one import and one call | Design Change Scope; base integration with 407 | 407 added the handler's credential read after the design was written | The change is a rename to the policy's single reader. Behavior is identical (same parsing, `trim() \|\| null`) | Merge diff; IMP-10 node-desktop e2e | Reject | — | Forced by the base, minimal, and it removes a duplicate reader. Not a design deviation that needs upstream revision |
+| CR-C09 | The adapter re-exports `readWebSocketQueryCredential` | Design Dependency Rules (handlers → adapter only; no handler reading `access_token` for authorization) | — | The reader serves only viewer identity after authorization | `remote-access-websocket-auth.ts:15` | Reject | — | Keeps the dependency rule; one reader, one name (P15) |
+| CR-C10 | `?? 4401` removed from 407's `remoteAccessCloseForFailure` | Dead code in a touched file (P7) | — | Both callers pass a typed `RemoteAccessAuthFailureCode`; the table is exhaustive | Grep of callers; IMP-09 | Reject | — | Correct removal of unreachable code |
 | CR-C07 | Origin value logged raw in `refuse(...)` | REQ-005 / AC-006 | Foreign page | Node's HTTP parser rejects CR/LF in header values, so no log injection. Origin carries no credential | AC-006 lines in IMP-04 | Reject | — | As designed: the origin value is logged for the origin refusal only |
 
 ## Structural / Design Checks
@@ -125,14 +145,14 @@ Reviewed code: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/websoc
 | Empty indirection check | Pass | The adapter owns the close-code translation and context set (designed facade) | — |
 | Scope-appropriate separation of concerns and file responsibility clarity | Pass | Origin logic only in `remote-access-request-origin.ts`; no origin logic in the route policy | — |
 | Ownership-driven dependency check | Pass | `request-origin` → `local-trust` only; adapter → route policy only; composition no longer imports CORS | — |
-| Authoritative Boundary Rule check | Pass | The adapter no longer calls `RemoteAccessAuthService` directly alongside the policy. The bypass the base code had is removed | — |
+| Authoritative Boundary Rule check | Pass | The adapter no longer calls `RemoteAccessAuthService` directly alongside the policy; the bypass the base code had is removed. Round 2: `node-desktop.ts` depends only on the adapter; 407's live re-check of an admitted stream validates through the auth service, which is base behavior and not a second route rule | — |
 | File placement check | Pass | All in `src/api/security` / `src/api/websocket` per design | — |
 | Flat-vs-over-split layout judgment | Pass | One new file for one new owner | — |
 | Interface/API boundary clarity | Pass | `isAllowed(headers)`, `authorizeWebSocket(request)` (route pattern identity), `parseConfiguredOrigins(raw)`; the dead `routeClass` parameter is gone | — |
 | Naming quality and one-vocabulary check | Pass | `RequestOriginPolicy`, `PHONE_WEBSOCKET_ROUTES`, `REMOTE_ACCESS_ORIGIN_REFUSED`, `PHONE_ACCESS_ROUTE_REFUSED` match the glossary entries and families | — |
 | No unjustified duplication in changed scope | Pass | — | — |
 | Patch-on-patch complexity control | Pass | Initial round; straight-line code | — |
-| Dead code removed in the touched files and modules | Pass | Removed: `extractRemoteAccessWebSocketCredential`, the adapter's `trustedNetworkContext`/`parseRequestUrl`, `routeClass` + 4404 branch, `?? 4401`, CORS import, `WebSocketAuthPolicy`/`WEBSOCKET_AUTH_POLICY`. A repo grep finds no remaining reference | — |
+| Dead code removed in the touched files and modules | Pass | Round 2: IR-001's local `closeCodeByFailure` is dropped in favor of 407's table; the `?? 4401` fallback is removed (CR-C10); 407's duplicate reader is not revived. Round 1 removals: `extractRemoteAccessWebSocketCredential`, the adapter's `trustedNetworkContext`/`parseRequestUrl`, `routeClass` + 4404 branch, `?? 4401`, CORS import, `WebSocketAuthPolicy`/`WEBSOCKET_AUTH_POLICY`. A repo grep finds no remaining reference | — |
 | Relevant test scenarios and assertions are clear and requirement-aligned | Pass | Unit REQ-002 table incl. near misses; route-policy per pattern, refusal before validation, peer WS. E2E AC-001…AC-006 on the real studio server with real upgrades, `hasRoute` per listed pattern, exact log lines | — |
 | Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | `upgrade`/`inject`/`pairPhone` helpers; `webSocketUpgrade`/`mobileAuthService` in unit test | — |
 | No stale, duplicated, or compatibility-only tests retained | Pass | The old "validates mra on GraphQL WS" test was replaced by the refusal test | — |
@@ -148,6 +168,10 @@ Reviewed code: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/websoc
 | `remote-access-websocket-auth.ts` | 99 | 63 | Pass | Pass | Pass | Pass | — | — |
 | `build-studio-server.ts` | 493 | 488 | Pass (removals only) | Pass | Pass | Pass | — | — |
 | `models.ts` | 133 | 135 | Pass | Pass | Pass | Pass | — | — |
+| Round 2 (base 6341292552 → 6f59bab2a2): `remote-access-websocket-auth.ts` | 82 | 53 | Pass | Pass | Pass | Pass | — | — |
+| Round 2: `remote-access-close-codes.ts` | 22 | 24 | Pass | Pass | Pass | Pass | — | — |
+| Round 2: `node-desktop.ts` | 108 | 108 | Pass | Pass | Pass | Pass | — | — |
+| Round 2: `remote-access-route-policy.ts` | 182 | 211 | Pass | Pass | Pass | Pass | — | — |
 
 ## Legacy / Backward-Compatibility Verdict
 
@@ -176,7 +200,7 @@ None remaining.
 
 | Premise ID | Current Status | Changed Evidence / Reason |
 | --- | --- | --- |
-| MP-001 | Confirmed | `registerMcpGatewayRoutes` still runs before the plugin (`build-studio-server.ts:457-460`); the gateway rule is untouched; IMP-05 passes on the unchanged contract test |
+| MP-001 | Confirmed | `registerMcpGatewayRoutes` still runs before the plugin; the gateway rule is untouched. Round 2: `build-studio-server.ts` is identical to IR-001, and IMP-10 includes the unchanged contract test |
 
 No new or reclassified premises.
 
@@ -221,11 +245,11 @@ None: the review passes.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Pass`
+- Review Decision: `Pass` (round 2, CRR-003)
 - Review Entry Point: `Implementation Review`
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass` (MP-001 confirmed)
 - Score Summary: 9.5 average; every category ≥ 9.4
 - Failure Origin: N/A
 - Recommended Recipient: API/E2E engineer
-- Notes: classification Medium / High preserved. The delegator deviation is accepted as REQ-003-preserving (CR-C01).
+- Notes: classification Medium / High preserved. The delegator deviation is accepted as REQ-003-preserving (CR-C01). Round 2: the base integration with autobyteus-407 keeps one WS credential rule, one query-credential reader and one close-code table. The scorecard is unchanged, because no category moved: the resolution reduced duplication and added no new owner. Next is API/E2E, for the phone journey on the node desktop under the origin gate (View only, Control, live revocation) and a foreign-origin `/ws/node-desktop` from a browser page.

@@ -8,6 +8,7 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) is autho
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 / IR-001 | N/A | Pass | None |
 | CRR-002 | `api-e2e-test-review-report.md` | Proportional test-code review, round 1 / API-REV-001 | N/A (first test review) | Pass | None |
+| CRR-003 | `code-review-report.md` | Implementation Review, round 2 / IR-002 (delivery Local Fix, DR-001 base integration) | Pass (CRR-001) | Pass | None |
 
 ## Revision Entries
 
@@ -60,3 +61,28 @@ None
 - Material score or classification changes: None; Medium / High preserved
 - Recommended recipient: delivery engineer
 - Remaining risks or uncertainty: real Tailscale Serve and on-device wrapper checks are for the user (AC-008); FU-004 is outside scope.
+
+### CRR-003 — Source re-review of the base integration with autobyteus-407
+
+- Canonical review report updated: `tickets/in-progress/websocket-origin-and-phone-route-guard/code-review-report.md`
+- Review entry point and round: Implementation Review, round 2
+- Review scope: `Full Re-Audit`. The resolution touches the WS spine, a 407 shared module and a WS handler. IR-001 files that the merge did not touch are byte-identical to `88a93aaf26`, so their evidence carries forward.
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, `implementation-handoff.md` (IR-002), from the delivery engineer's DR-001 (`delivery-revision-record.md`); merge commit `6f59bab2a2`
+- Relevant solution revision IDs: SR-001, SR-003
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-001, IR-002
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: CRR-001 `Pass` (source); CRR-002 `Pass` (tests)
+- Current authoritative result: `Pass`
+- What changed in the review result and why: the resolution keeps one WS credential rule (`authorizeWebSocket`), one query-credential reader (the policy's, re-exported by the adapter for 407's node-desktop viewer identity) and one close-code table (407's, with both new codes at 4403). The unreachable `?? 4401` is removed. Candidates CR-C08…CR-C10 were recorded and rejected as non-findings. IMP-09…IMP-12 on `6f59bab2a2` pass.
+- Supported product scenario / material-premise basis changes: `/ws/node-desktop` traced as a phone WebSocket route under 407; MP-001 still confirmed.
+
+#### Prior Finding Resolution
+
+None (no prior findings)
+
+- New or remaining finding IDs: None
+- Material score or classification changes: None; scorecard unchanged; Medium / High preserved
+- Recommended recipient: API/E2E engineer
+- Remaining risks or uncertainty: the phone journey on the node desktop (View only, Control, live revocation) under the origin gate and route limit, and a foreign-origin `/ws/node-desktop` from a real browser page, are for API/E2E. CRR-002's test review still covers the mobile-shell probe, which is unchanged in the merge.

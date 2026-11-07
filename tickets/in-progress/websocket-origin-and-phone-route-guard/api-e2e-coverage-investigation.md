@@ -18,11 +18,35 @@ The plan: what must be proven, how, the decisions about existing tests, and the 
 - Delivery Revision Record (delivery re-entry only): N/A
 - Relevant Delivery Revision IDs: N/A
 - API/E2E Revision Record (created after the first completed result): `.../api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: 1
-- Trigger: code review pass CRR-001 (round 1, Full Review) of IR-001; message from `/software_engineering_team/code_reviewer`
-- Prior Investigation Reviewed: None (first round)
+- Current API/E2E Revision ID: `API-REV-002` (round 2)
+- Current Investigation Round: 2
+- Trigger: round 2 follows the code review pass CRR-003 (Full Re-Audit) of IR-002, delivery's Local Fix DR-001: a merge of origin/personal @ 6341292552 (autobyteus-407, node desktop on the phone) at `6f59bab2a2`. Round 1 followed CRR-001 of IR-001
+- Prior Investigation Reviewed: round 1 (this file, API-REV-001)
+- Delivery Revision Record: `delivery-revision-record.md` (DR-001)
 - Latest Authoritative Investigation: this file
+
+## Round 2 Rerun Plan (IR-002, `6f59bab2a2`)
+
+- Validated in round 1: `a24421610f` (source `88a93aaf26`) plus the probe update `14e3681cdc`. Diff `git diff --name-only 7e645da171 1e1d6482a7`, outside tickets:
+  - Server: `remote-access-websocket-auth.ts` (the adapter, used by all 13 `/ws/*` handlers), `remote-access-route-policy.ts` (3 lines: the query-credential reader exported), `remote-access-close-codes.ts` (407's table, now with both new codes), `node-desktop.ts`, `node-desktop-stream.ts`, `node-desktop-viewers.ts` (407: viewer identity, limits, live re-check).
+  - Web: the phone's node-desktop view (`MobileNodeDesktop.vue`, run menu entry, navigation, zoom), the desktop VNC Viewer (`NodeDesktopTile.vue`, `VncViewer.vue`, `useVncSession.ts`, `useNodeDesktopConnection.ts`), and `mobileFeatureGates.ts`.
+  - Android: a rotation fix (autobyteus-415, not this boundary).
+  - No dependency, lockfile, schema, `autobyteus-ts`, contract or harness change.
+- Unchanged and byte-identical to round 1 (the code reviewer and `git diff`): the origin plugin, the origin rule, the composition, `models.ts`, the unit tests and `mobile-shell-probe.mjs`.
+
+| Case | Decision | Reason |
+| --- | --- | --- |
+| IMP-01…IMP-08 | Superseded by IMP-09…IMP-12 (implementation, on `6f59bab2a2`) | Reused as round-2 repository evidence: typecheck, the origin/phone/node-desktop e2e (152), the terminal/file-explorer e2e (26), the full unit suite (8043) |
+| API-00 | Still valid | A measurement of Playwright and Chrome, independent of the product |
+| API-01 | Rerun | The adapter used by every `/ws/*` route changed |
+| API-02 | Still valid (no rerun) | Historical "before" evidence for the probe update; the probe is unchanged |
+| API-03 | Rerun | Phone UI (run menu, navigation, feature gates) and the adapter changed |
+| API-04 | Rerun | Same |
+| API-05 | Rerun | Route-policy file changed (peer branch untouched, but cheap) |
+| API-06/07 | Rerun, extended | Add a foreign-origin `/ws/node-desktop` upgrade from a real browser page (asked by CRR-003) |
+| API-08 | Rerun, extended | Desktop VNC components and node-desktop server changed. Add VNC Control next to View only |
+| API-09 (new) | New | The phone's node desktop under the origin gate and the phone route limit, from Chrome (LAN shape and a Tailscale-shaped HTTPS proxy) and WebKit (through that proxy), against a test-owned Docker node running this branch's package: View only (taps do not reach the desktop), Control (a click moves the node's mouse), live revocation (the open stream closes with 4403 `REMOTE_ACCESS_DEVICE_REVOKED`), handshake Origin = phone origin, node log |
+| WEB-TC (new) | New | `pnpm -C autobyteus-web typecheck` after the merge (TESTING.md rerun rule 5); server typecheck is IMP-09 |
 
 ## Current Requirement And Design Basis
 
@@ -191,7 +215,7 @@ None so far. Any legitimate client found sending an Origin outside REQ-002, or a
 ## Investigation Decision
 
 - Proceed To API/E2E Execution: `Yes`
-- Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `Yes` (update `mobile-shell-probe.mjs`)
+- Repository-Resident Durable Coverage Will Be Added / Updated / Removed: round 1 `Yes` (update `mobile-shell-probe.mjs`, `14e3681cdc`); round 2 `No`
 - Reroute Required Before Validation Execution: `No`
 - Recommended Owner If Reroute Required: N/A
 - Notes: The probe update is test-only (commit `14e3681cdc`). On the reviewed route it goes to the code reviewer for test-code review with the result. Executed as planned. The deviations (WebKit v2248 installed, the instance's own `.env` for the scripted runtime and applications, the full server package in the Docker node) are listed in the execution report's Round section. API-01 found four base E2E failures outside this change (FU-004).

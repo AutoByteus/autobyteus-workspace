@@ -1,0 +1,247 @@
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Database migrations completed successfully.
+prisma:info Starting a sqlite pool with 21 connections.
+[2026-11-07T00:46:09.329Z] [INFO] [secret-management.vault] Secret vault: application database
+Initialized server settings service with 32 predefined settings
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-TKWBjP/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-TKWBjP/server-data/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-TKWBjP/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Registered required tool unit: Agent Discovery Tools
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+Registered required tool unit: Agent Runtime Tools
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'search_memory'
+Registered required tool unit: Memory Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+{"level":30,"time":1794012369566,"pid":52459,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:57456"}
+{"level":30,"time":1794012369586,"pid":52459,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:57411"}
+{"level":30,"time":1794012369586,"pid":52459,"hostname":"MacBookPro","msg":"Server listening at http://192.168.2.158:57411"}
+{"level":30,"time":1794012369586,"pid":52459,"hostname":"MacBookPro","msg":"Server listening at http://100.127.30.107:57411"}
+[2026-11-07T00:46:09.586Z] [INFO] [server.runtime] Server listening on 0.0.0.0:57411
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+Background task 'Memory Search' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Database migrations completed successfully.
+prisma:info Starting a sqlite pool with 21 connections.
+[2026-11-07T00:46:45.067Z] [INFO] [secret-management.vault] Secret vault: application database
+Initialized server settings service with 32 predefined settings
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-TKWBjP/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-TKWBjP/server-data/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-TKWBjP/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Registered required tool unit: Agent Discovery Tools
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+Registered required tool unit: Agent Runtime Tools
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'search_memory'
+Registered required tool unit: Memory Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+{"level":30,"time":1794012405181,"pid":68149,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:57567"}
+{"level":30,"time":1794012405199,"pid":68149,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:57411"}
+{"level":30,"time":1794012405199,"pid":68149,"hostname":"MacBookPro","msg":"Server listening at http://192.168.2.158:57411"}
+{"level":30,"time":1794012405199,"pid":68149,"hostname":"MacBookPro","msg":"Server listening at http://100.127.30.107:57411"}
+[2026-11-07T00:46:45.199Z] [INFO] [server.runtime] Server listening on 0.0.0.0:57411
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+Background task 'Memory Search' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Agent Definition created successfully with ID: desk-checker
+Creating new workspace for rootPath: /tmp/abx403-r2/desk-ws
+Created metadata-only FileSystemWorkspace at /tmp/abx403-r2/desk-ws.
+Created and registered workspace ID: agent_ws_9247c76a709c29058223f554b411368e9b69e81d489d0db3f21163302e1a8f7f
+Creating new workspace for rootPath: /tmp/abx403-r2/desk-ws
+Created metadata-only FileSystemWorkspace at /tmp/abx403-r2/desk-ws.
+Reusing registered workspace ID: agent_ws_9247c76a709c29058223f554b411368e9b69e81d489d0db3f21163302e1a8f7f
+AGY compaction detection off for run desk_checker_d07aab872f2f4667baa70dfdd0f89857: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Added new custom server setting: AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS
+Server setting 'AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS' updated
+[CodexAppServerClient] stderr: [2m2026-11-07T00:46:46.560324Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[CodexAppServerClient] stderr: [2m2026-11-07T00:46:47.255998Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[CodexAppServerClient] stderr: [2m2026-11-07T00:46:47.895089Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[CodexAppServerClient] stderr: [2m2026-11-07T00:46:47.993735Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-TKWBjP/server-data/memory/agents/desk_checker_d07aab872f2f4667baa70dfdd0f89857/raw_traces_manifest.json
+Agent websocket attached for run desk_checker_d07aab872f2f4667baa70dfdd0f89857
+Created agent session f416e7d4-7211-42ea-8e92-81c49e35cbd5 for run desk_checker_d07aab872f2f4667baa70dfdd0f89857
+Agent WebSocket connected: session=f416e7d4-7211-42ea-8e92-81c49e35cbd5, run=desk_checker_d07aab872f2f4667baa70dfdd0f89857
+Created terminal session 2e86be42-fdd9-488f-95ee-6d2819df870e using backend IsolatedPtySession for target /tmp/abx403-r2/desk-ws
+Terminal WebSocket connected: 2e86be42-fdd9-488f-95ee-6d2819df870e
+Terminal websocket attached for cwd /tmp/abx403-r2/desk-ws
+Created WorkspaceFileExplorer for agent_ws_9247c76a709c29058223f554b411368e9b69e81d489d0db3f21163302e1a8f7f (file-explorer-websocket).
+FileSystemWatcher initialized for '/tmp/abx403-r2/desk-ws' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Started filesystem watcher for workspace /tmp/abx403-r2/desk-ws
+Acquired file watcher lease for /tmp/abx403-r2/desk-ws (file-explorer-websocket); active leases: 1
+FileExplorerSession created: be656eea-fb4a-4d8e-8a45-c3657f4c5858 for workspace agent_ws_9247c76a709c29058223f554b411368e9b69e81d489d0db3f21163302e1a8f7f
+Created file explorer session be656eea-fb4a-4d8e-8a45-c3657f4c5858 for workspace agent_ws_9247c76a709c29058223f554b411368e9b69e81d489d0db3f21163302e1a8f7f. Active sessions: 1
+File explorer WebSocket connected: be656eea-fb4a-4d8e-8a45-c3657f4c5858 for workspace agent_ws_9247c76a709c29058223f554b411368e9b69e81d489d0db3f21163302e1a8f7f
+File explorer websocket attached for workspace agent_ws_9247c76a709c29058223f554b411368e9b69e81d489d0db3f21163302e1a8f7f
+Watcher detected creation: /tmp/abx403-r2/desk-ws/abx403-live-embedded.md
+Released file watcher lease for /tmp/abx403-r2/desk-ws (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /tmp/abx403-r2/desk-ws
+FileExplorerSession closed: be656eea-fb4a-4d8e-8a45-c3657f4c5858
+Closed file explorer session be656eea-fb4a-4d8e-8a45-c3657f4c5858. Active sessions: 0
+File explorer WebSocket disconnected: be656eea-fb4a-4d8e-8a45-c3657f4c5858
+Closed PTY session 2e86be42-fdd9-488f-95ee-6d2819df870e
+Terminal WebSocket disconnected: 2e86be42-fdd9-488f-95ee-6d2819df870e
+[CodexAppServerClient] stderr: [2m2026-11-07T00:47:19.107248Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[CodexAppServerClient] stderr: [2m2026-11-07T00:47:19.207183Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[CodexAppServerClient] stderr: [2m2026-11-07T00:47:19.541756Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[CodexAppServerClient] stderr: [2m2026-11-07T00:47:19.649474Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[CodexAppServerClient] stderr: [2m2026-11-07T00:47:19.755007Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.

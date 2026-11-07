@@ -25,3 +25,21 @@
 | 23:12Z | API-08 | Checkpoint | — | instance .env: scripted AGY (linked_skills), ENABLE_APPLICATIONS=true, restarted; Docker node recreated with AGY_FAKE_CASE=linked_skills and re-seeded |
 | 23:20Z | API-08 | Completed | Pass | embedded + Docker: run stream, terminal, files live; Brief Studio iframe WS connected; VNC Connected; 13 WS routes file:// → 101; HTTP no Origin, no errors; 0 refusals in 3 logs |
 | 23:24Z | cleanup | Completed | — | instance stopped (data root removed, list empty); container removed; temp builds removed; no probe processes |
+| 00:00Z | round 2 | Started | — | API-REV-002 plan written (investigation § Round 2 Rerun Plan); rebuilding server dist + mobile bundle |
+| 00:02Z | WEB-TC | Completed | Pass | web typecheck: production errors 0; test files 96 = baseline |
+| 00:02Z | API-01 | Started | — | round 2 full server e2e on 1e1d6482a7 |
+| 00:15Z | API-01 | Completed | Fail (out of scope) | 4 failed / 493 passed; the same 4 FU-004 base failures; no new failure |
+| 00:15Z | API-03 | Started | — | round 2 mobile-shell probe |
+| 00:21Z | API-03 | Completed | Pass | 15/15, 0 unknown browser errors; alpha refusals only MSP-13 |
+| 00:21Z | API-04 | Started | — | round 2 phone origins |
+| 00:24Z | API-04 | Completed | Pass | 3x9 steps pass; WS 101 with phone origins; 0 node refusals; ASM-002 none outside list; unclassified lines = known localhost:8000 feed + proxy-refused Iconify (summary) |
+| 00:24Z | API-05 | Started | — | round 2 remote-runs-in-tree |
+| 00:26Z | API-05 | Completed | Pass | RTP-01..07, liveAnswer true, 0 refusals |
+| 00:26Z | API-06/07 | Started | — | round 2 attack + gateway, with /ws/node-desktop |
+| 00:27Z | API-06/07 | Completed | Pass | foreign /ws/node-desktop 403 + logged; 8 refusal lines; gateway with/without setting as round 1 |
+| 00:27Z | API-09 | Started | — | docker buildx server-package for the Docker node |
+| 00:29Z | API-09 | Checkpoint | — | Docker node abx403-api-e2e-node on 127.0.0.1:55369 (package 1.5.12-beta.5 from 1e1d6482a7), node desktop available, evil GET 403 |
+| 00:39Z | API-09 | Completed | Pass | attempt 1 failed: my subclassing WebSocket wrapper broke noVNC (shown: same journey without the recorder passes View only + Control); final run with a native-returning recorder: 3 journeys x 5 steps Pass, 4403 DEVICE_REVOKED live, handshakes 101 with phone origins |
+| 00:40Z | API-08 | Started | — | round 2: Docker node recreated with scripted AGY + seeded; isolated-app start --build |
+| 00:49Z | API-08 | Completed | Pass | embedded: stream, terminal, files live, app iframe WS connected; Docker: stream, terminal, files live, VNC View only (mouse unmoved) + Control (x:1440 y:807); WS file:// → 101; HTTP no Origin; 0 refusals |
+| 00:49Z | cleanup | Completed | — | instance stopped + data root removed, list empty; container removed; temp builds removed; no probe processes |

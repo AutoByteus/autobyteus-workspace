@@ -2,16 +2,15 @@
 
 ## Round
 
-- Coverage investigation: `api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-001`
+- Coverage investigation: `api-e2e-coverage-investigation.md` (round 2 rerun plan in "Round 2 Rerun Plan")
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-002`
 - Test progress log: `api-e2e-test-progress.md`
-- Round and trigger: round 1, after code review pass CRR-001 (Full Review of IR-001)
-- Prior round reviewed: None
+- Round and trigger: round 2. Code review pass CRR-003 (Full Re-Audit) of IR-002, delivery's Local Fix DR-001: merge `6f59bab2a2` of origin/personal @ 6341292552 (autobyteus-407, node desktop on the phone). Tested commit `1e1d6482a7`.
+- Prior round reviewed: round 1, API-REV-001 (Pass, 95.4%) on `a24421610f` + `14e3681cdc`
 - Deviations from the investigation's plan, and why:
-  - API-04 also runs the phone journey in WebKit through the Tailscale-shaped proxy (planned). Playwright's WebKit build v2248 was installed into the user's Playwright cache for this, because only v2227 was present.
-  - API-08 gave the isolated instance's embedded node the scripted AGY CLI and turned applications on (`ENABLE_APPLICATIONS=true`) in that instance's own `server-data/.env`, with restarts. The embedded server receives only a baseline environment, and the instance starts with applications off.
-  - The Docker node runs this worktree's full server package (`docker buildx … --target server-package`), not a `dist`-only mount. The image's built-in package is 1.5.12-beta.3 and differs in many files beyond this change, so TESTING.md does not allow a `dist`-only mount.
-- Evidence folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard/tickets/in-progress/websocket-origin-and-phone-route-guard/evidence/api-e2e/`. The temporary probe sources are in `evidence/api-e2e/probes/`.
+  - API-09 attempt 1: the probe's in-page WebSocket recorder subclassed `WebSocket`, which broke noVNC ("Cannot reach the node"; the node sent 12 messages and got 0). The same journey without a recorder passed View only and Control (`round2/API-09/API-09-control-run-without-recorder.json`). The final run uses a recorder that hands the page the browser's own WebSocket objects.
+  - As in round 1: the embedded node got the scripted AGY CLI and `ENABLE_APPLICATIONS=true` through the isolated instance's own `.env`, and the Docker node runs this commit's full server package.
+- Evidence folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard/tickets/in-progress/websocket-origin-and-phone-route-guard/evidence/api-e2e/`. Round-2 files are in `round2/`; round-1 files that are still valid (API-00, API-02) stay at the top level. Probe sources are in `probes/` and `round2/probes/`.
 
 ## Routing Classification
 
@@ -19,134 +18,130 @@
 - Architectural risk: `High`
 - Input route: `Reviewed`
 - Successful-output route: `Code Review`
-- Proportional test-code review decision: `Required` (`autobyteus-web/tests/e2e/mobile-shell-probe.mjs`, commit `14e3681cdc`)
+- Proportional test-code review decision: `Not Required` this round. No durable test changed since the reviewed `14e3681cdc` (`mobile-shell-probe.mjs` is byte-identical). The temporary probes live in the evidence folder only.
 
 ## Tested Builds And Environments
 
 | Env ID | Commit Tested | Platform / OS | Runtime, Browser, Or App Build | Other Settings That Matter |
 | --- | --- | --- | --- | --- |
-| ENV-1 | `a24421610f` (source `88a93aaf26`) | macOS 26.5.2 arm64 | Node 22.23.1; server `dist` built from this worktree; headless Chrome (stable) via playwright-core | Server E2E: `env -i PATH HOME=<resolved temp> TMPDIR` |
-| ENV-2 | `a24421610f` + the probe update (committed as `14e3681cdc`) | macOS 26.5.2 arm64 | Server `dist` and phone bundle (`build:mobile-web`) built from this worktree; Chrome; Playwright WebKit 26.0 (v2248) | Probe-owned alpha/beta on 127.0.0.1 with temp data roots; scripted AGY CLI and the fake Grok ACP fixture; Chrome `--host-resolver-rules` for `192.168.77.10` and `*.ts.net`/`evil.example`/`gw.example.test`; self-signed TLS proxies |
-| ENV-3 | `a24421610f` (source `88a93aaf26`) | macOS 26.5.2 arm64 | Packaged Electron app built by `pnpm --silent isolated-app start --build` (instance `iso-58042-7c90`, control port 58042, backend 58043; renderer `file://…/renderer/index.html`) + a test-owned Docker node `abx403-api-e2e-node` (image `autobyteus/autobyteus-server:beta`, this worktree's server package 1.5.12-beta.5 mounted read-only over `/opt/autobyteus/server-package`, `127.0.0.1:57310`, no volumes) | Scripted AGY CLI (`AGY_FAKE_CASE=linked_skills`) on both nodes; Brief Studio imported as a local package on the embedded node |
+| ENV-1 | `a24421610f` (round 1) | macOS 26.5.2 arm64 | Node 22.23.1; Chrome; playwright-core | Round-1 measurements (API-00, API-02) |
+| ENV-R2-1 | `1e1d6482a7` (source merge `6f59bab2a2`) | macOS 26.5.2 arm64 | Node 22.23.1; server `dist`, phone bundle and web typecheck rebuilt after the merge | Server E2E: `env -i PATH HOME=<resolved temp> TMPDIR` |
+| ENV-R2-2 | `1e1d6482a7` | macOS 26.5.2 arm64 | Probe-owned alpha/beta from this `dist`; Chrome; Playwright WebKit 26.0 (v2248) | Chrome host mapping for `192.168.77.10`, `*.ts.net`, `evil.example`, `gw.example.test`; self-signed TLS proxies |
+| ENV-R2-3 | `1e1d6482a7` | macOS 26.5.2 arm64 | Test-owned Docker node `abx403-api-e2e-node` (image `autobyteus/autobyteus-server:beta`, this commit's server package 1.5.12-beta.5 read-only over `/opt/autobyteus/server-package`, `127.0.0.1:55369`, no volumes; node desktop `available: true`) | Phone Access on; API-09 without AGY, API-08 with the scripted AGY CLI (`linked_skills`) |
+| ENV-R2-4 | `1e1d6482a7` | macOS 26.5.2 arm64 | Packaged Electron app from `pnpm --silent isolated-app start --build` (instance `iso-57410-6022`, control 57410, backend 57411, `file://` renderer) + ENV-R2-3 | Scripted AGY and applications enabled in the instance's own `.env`; Brief Studio imported |
 
 ## Cases
 
 | Case ID | Criteria | Boundary / Surface | Command Or Steps | Env | Result | Evidence Files | Look For | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| IMP-01 | Regression | Server typecheck | Reused | — | Pass | (implementation handoff) | — | Ran on `88a93aaf26`; `git diff --name-only 88a93aaf26 HEAD` touches only ticket files |
-| IMP-02 | REQ-002, REQ-004, REQ-007; AC-002, AC-004, AC-005 (unit) | Origin rule, route policy, WS handler units, architecture | Reused | — | Pass | (implementation handoff) | — | Same commit |
-| IMP-03 | Regression | Whole server unit suite | Reused | — | Pass | (implementation handoff) | — | Same commit |
-| IMP-04 | AC-001…AC-006 | Real studio server, real upgrades (`ws` client), CORS via inject | Reused | — | Pass | (implementation handoff) | — | Same commit; the AC-006 log assertions are in this test |
-| IMP-05 | BEH-002 preserved (MCP gateway rule, studio CORS headers) | Studio HTTP contract | Reused | — | Pass | (implementation handoff) | — | Same commit |
-| IMP-06, IMP-07 | BEH-004…008 server side | Existing WS route suites, update notifications | Reused | — | Pass | (implementation handoff) | — | Same commit |
-| IMP-08 | AC-001…AC-006 fail on base | Base reproduction | Reused | — | Fails as expected | (implementation handoff) | — | Same commit |
-| API-00 | SCN-A02 | Playwright URL rewrite headers; Chrome host mapping | `node probes/API-00-route-fetch-headers-probe.mjs <web> [forward-host]`; `node probes/API-00-chrome-host-mapping-probe.mjs <web> <server>` | ENV-1 | Pass | `API-00-route-fetch-headers.log`, `API-00-chrome-host-mapping.log` | Mode 1: `"host": "127.0.0.1:…"` with `"origin": "http://192.168.77.10:…"`. Mode 2: host `192.168.77.10:…`. Mapping: the `UPGRADE` rows have host and origin `192.168.77.10:…` and `node.tail-probe.ts.net:…` | A measurement |
-| API-01 | Regression, QR-003 | All 235 server E2E files through the new gate | `env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" pnpm test:e2e` | ENV-1 | Fail (out of scope, FU-004) | `API-01-server-e2e.excerpt.log`, `API-01-server-e2e.full.log.gz`, `API-01-AR14-head-vs-base.log` | `Test Files  4 failed \| 111 passed \| 120 skipped (235)`; each of the 4 failures is quoted with its assertion; AR-14 shows `× AR-14 …` on HEAD and on base `src` | The 4 failures do not involve the gate. A reworded workspace-removal message, a `lastActivityAt` field that the test expects removed, the `deepseek_harness` runtime kind added in d5566977b4, and AR-14 failing identically on base `src` 3bf9240d42. Recorded as FU-004. Every suite that crosses the gate passed. The only refusal lines in the run come from passing tests that assert refusals |
-| API-02 | AC-008 (harness) | Mobile-shell probe as committed at HEAD | `node tests/e2e/<HEAD copy of mobile-shell-probe.mjs> --cases=MSP-01 --output-dir=<fresh>` | ENV-2 | Fail (expected: harness) | `API-02-mobile-shell-before-update.log` | `locator('[data-testid="mobile-pair-button"]')` timeout; `19 Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /mobile/_nuxt/<asset> origin http://192.168.77.10:49990` | Shows why the probe needed the update: its Host-rewriting emulation is refused, as the measurement in API-00 predicted. It is not a product defect, because a real phone keeps its Host (API-04) |
-| API-03 | AC-008, AC-009 (MSP-06), REQ-006 | Phone shell (LAN shape, Host and Origin kept), alpha + beta, desktop comparison window on Nuxt dev (loopback) | `pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<fresh>` with the updated probe | ENV-2 | Pass | `API-03/API-03-summary.log`, `API-03/mobile-shell-probe.json`, `API-03/server-alpha.log`, `API-03/server-beta.log`, 3 screenshots | `mobile-shell probe: Pass`; all 15 cases `Pass`; `"unknownBrowserErrors": 0`; beta has no refusal lines; alpha's lines start at log line 298, after its MSP-09 restart: `REMOTE_ACCESS_AUTH_INVALID`/`REMOTE_ACCESS_DEVICE_REVOKED` | Alpha's refusals are MSP-13's unknown (401) and revoked (403) credentials, with today's codes. No `REMOTE_ACCESS_ORIGIN_REFUSED` and no `PHONE_ACCESS_ROUTE_REFUSED`. Cleanup: `serversLeft: 0`, `rootRemoved: true` |
-| API-04 | AC-008, ASM-001, ASM-002, SCN-004, SCN-009 | Phone shell on the browser's own network stack: LAN shape (Chrome), Tailscale-Serve-shaped HTTPS proxy (Chrome and WebKit) | `node probes/abx403-phone-origins-probe.mjs <worktree> <out>` (the mobile-shell probe's `--hold` stack); WebKit rerun: `ABX403_JOURNEYS=webkit-tailscale node …` | ENV-2 | Pass | `API-04/API-04-summary.log`, `API-04/API-04-phone-origins.json`, `API-04/API-04-webkit-rerun.json`, `API-04/server-alpha.log`, `API-04/server-beta.log`, screenshots | Each journey: `pair`, `runList`, `agentRun`, `teamRun`, `orgRun`, `delegatedTree`, `remoteRun`, `files`, `newRun` all `Pass`. WS handshakes `('http://192.168.77.10:55079', 101)` and `('https://alpha.tail-probe.ts.net:55195', 101)`. Proxy upgrades with Host `alpha.tail-probe.ts.net:55195` → `HTTP/1.1 101 Switching Protocols`. `node refusal lines during journeys: {'alpha': [], 'beta': []}`. `outsidePhoneList: []` | Messages sent from the phone are verified stored on alpha (agent run, new run) and on beta (remote run). The probe recorded `Fail` only for WebKit console lines. The rerun shows their cause: 27 are Iconify icon fetches (`api.iconify.design`, `api.unisvg.com`, `api.simplesvg.com`) that the probe's own CONNECT proxy refuses by design, and one is the known `localhost:8000/health` feed of the phone bundle. None reached the node. Attempt 1 (`newRun` failed on the probe's own navigation behind the file viewer) and attempt 2 (the probe hung on proxy cleanup) were probe defects, fixed before this run |
-| API-05 | AC-009, SCN-006, SCN-007 | Two nodes collaborating (peer REST, `/rest/remote/run-observations`); desktop shell on Nuxt dev (loopback) | `pnpm -C autobyteus-web test:e2e:remote-runs-in-tree --output-dir=<fresh>` | ENV-2 | Pass | `API-05/remote-runs-in-tree-probe.json`, `API-05/server-alpha.log`, `API-05/server-beta.log`, `API-05/RTP-04-after-owner-message.png` | `RTP-01`…`RTP-07` all `Pass`; RTP-04 `"liveAnswer": true`, `"ownerMessageCount": 1`; `grep -c` of refusal lines = 0 on both nodes | Peers send no Origin |
-| API-06 | AC-001, AC-003, SCN-001, SCN-002, SCN-A01, REQ-005 | A real Chrome page at `http://evil.example:<port>` and a sandboxed `null` iframe against a real node; loopback control page | `node probes/abx403-browser-attack-and-gateway-probe.mjs <worktree> <out>` | ENV-2 | Pass | `API-06-07/API-06-07-browser-attack-and-gateway.json`, `API-06-07/API-06-07-node.log` | Foreign: `terminal`, `projects`, `graphqlWs` and `peerObservation` each `"opened": false, "frames": 0`; `preflightedPost` `TypeError: Failed to fetch`; `nullOriginIframe` `"opened": false`. Node log: 7 lines `Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED …`, incl. `/ws/terminal/abx403-evil-term origin http://evil.example:56853` and `/ws/projects origin null`. `definitionsAfter`: only `ABX403-LOOPBACK-PREFLIGHT`. Control: terminal `"opened": true, "frames": 5` | The simple `text/plain` POST is refused at the gate (it is one of the `/graphql` lines). Attempt 1 failed only on the probe's own log filter (API-07, below) |
-| API-07 | REQ-002b/e, SCN-009, DEC-005 | Host-rewriting HTTPS gateway (no X-Forwarded-Host), with and without `AUTOBYTEUS_ALLOWED_ORIGINS` | Same probe, gateway part | ENV-2 | Pass | Same files | Without the setting: POST `"status": 403` with `REMOTE_ACCESS_ORIGIN_REFUSED`, WS `"opened": false`, gateway upgrade `HTTP/1.1 403 Forbidden`. With `AUTOBYTEUS_ALLOWED_ORIGINS=https://gw.example.test:<p>,ftp://not-an-origin`: POST 200, WS opened, upgrade `HTTP/1.1 101`. Log: `AUTOBYTEUS_ALLOWED_ORIGINS: ignoring entries that are not http(s) origins: ftp://not-an-origin` (once) | Attempt 1 counted the probe's own start banner as a second warning; the check was fixed to match the warning text |
-| API-08 | AC-007, SCN-003, SCN-008, ASM-001 | Packaged desktop app (`file://` renderer) on the embedded node and a test-owned Docker node | `pnpm --silent isolated-app start --build`, then the journey steps over CDP (`probes/abx403-desktop-step.mjs` + `probes/API-08-steps/*.mjs`) with `probes/abx403-desktop-ws-recorder.mjs` recording every renderer WS handshake and HTTP request. Embedded: open run, send a message, streamed answer; Terminal (`echo …$((40+3))`); Files (tree; a file created on disk appears live); Brief Studio → Enter application (iframe `/ws/applications/…/backend/notifications`). Docker: Nodes → Add node `http://127.0.0.1:57310` → Open window; the same run, Terminal and Files steps; VNC Viewer → Connect | ENV-3 | Pass | `API-08/API-08-desktop-ws-recorder.jsonl`, `API-08/API-08-embedded-server.log`, `API-08/API-08-instance.log`, `API-08/API-08-docker-node.log`, screenshots `API-08-embedded-run-streamed.png`, `API-08-embedded2-terminal.png`, `API-08-embedded2-files.png`, `API-08-22-brief-studio-entered.png`, `API-08-docker-run-streamed.png`, `API-08-docker-terminal.png`, `API-08-docker-files.png`, `API-08-docker-vnc.png`; `API-08-isolated-start.json`, `API-08-isolated-stop.json` | Recorder: 13 WS routes on both nodes (agent, agent-collaboration, agent-package-definitions, file-explorer, terminal, update-notifications, and node-desktop on the Docker node), each with origin `file://` and status `101`; 476 HTTP requests, all `sentOrigin: null`; no `http-error`. Run answers `OK`; terminal `ABX403_TERM_embedded2_43` and `ABX403_TERM_docker_43`; `liveFileAppeared: true` on both; app iframe origin `http://127.0.0.1:58043`, socket first frame `{"type":"connected",…}`; VNC `Connected · View only` with canvas 448×252; 0 refusal lines in all three logs | The app iframe runs in a separate (out-of-process) frame, so its socket was captured with Playwright's `websocket` event instead of the page CDP session. `/ws/update-notifications` (not a phone route) works from the desktop app, as REQ-004 intends |
+| IMP-09…IMP-12 | AC-001…AC-006, REQ-007, 407 node desktop preserved, regression | Server typecheck; origin/phone/node-desktop e2e + contract (152); terminal/file-explorer e2e (26); full unit suite (8043) | Reused | — | Pass | (implementation handoff) | — | Ran on `6f59bab2a2`; since then only ticket files changed. They replace IMP-01…IMP-08 as the repository evidence |
+| WEB-TC | Regression after the merge | Web typecheck (Nuxt, Electron main, scripts, cross-package tests) | `pnpm -C autobyteus-web typecheck` | ENV-R2-1 | Pass | (log not committed; result line here) | `[typecheck] production errors: 0; test-file errors: 96 in 41 files (baseline 96 in 41 files)`, `[typecheck] PASS` | TESTING.md rerun rule 5 |
+| API-00 | SCN-A02 | Playwright URL rewrite headers; Chrome host mapping | Round 1 | ENV-1 | Pass (still valid) | `API-00-route-fetch-headers.log`, `API-00-chrome-host-mapping.log` | as round 1 | Independent of the product |
+| API-01 | Regression, QR-003 | All 235 server E2E files | `env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" pnpm test:e2e` | ENV-R2-1 | Fail (out of scope, FU-004) | `round2/API-01-server-e2e.excerpt.log`, `round2/API-01-server-e2e.full.log.gz` | `Test Files  4 failed \| 111 passed \| 120 skipped (235)`, `Tests  4 failed \| 493 passed` | The same 4 base failures as round 1 (FU-004); no new failure. 493 passed, up from 489, including 407's node-desktop e2e. AR-14's base result: round-1 `API-01-AR14-head-vs-base.log` |
+| API-02 | AC-008 (harness) | Mobile-shell probe before the update | Round 1 | ENV-1 | Fail, expected (still valid as history) | `API-02-mobile-shell-before-update.log` | as round 1 | The probe is unchanged since its update |
+| API-03 | AC-008, AC-009 (MSP-06), REQ-006 | Phone shell (LAN shape), alpha + beta, desktop comparison window on Nuxt dev | `pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<fresh>` | ENV-R2-2 | Pass | `round2/API-03/API-03-summary.log`, `round2/API-03/mobile-shell-probe.json`, `round2/API-03/server-alpha.log`, `round2/API-03/server-beta.log` | `mobile-shell probe: Pass`, 15/15 cases, `"unknownBrowserErrors": 0`; alpha only `REMOTE_ACCESS_AUTH_INVALID`/`REMOTE_ACCESS_DEVICE_REVOKED` (MSP-13); beta none | Same as round 1 |
+| API-04 | AC-008, ASM-001, ASM-002 | Phone shell on the browser's own network stack: LAN shape (Chrome), Tailscale-shaped HTTPS proxy (Chrome, WebKit) | `node probes/abx403-phone-origins-probe.mjs <worktree> <out>` | ENV-R2-2 | Pass | `round2/API-04/API-04-summary.log`, `round2/API-04/API-04-phone-origins.json`, `round2/API-04/server-alpha.log`, `round2/API-04/server-beta.log`, screenshots | All 9 steps `Pass` in all 3 journeys; WS handshakes `('http://192.168.77.10:53883', 101)` and `('https://alpha.tail-probe.ts.net:53985', 101)`; proxy upgrades `HTTP/1.1 101`; `node refusals during journeys {'alpha': [], 'beta': []}`; `outsidePhoneList: []` | The probe's own verdict is `Fail` only for browser lines, each traced in the summary: the known `localhost:8000` feed (the filter missed it once the URL suffix was added) and 30 Iconify fetches that the probe's CONNECT proxy refuses by design. None reached the node |
+| API-05 | AC-009, SCN-006, SCN-007 | Two nodes collaborating | `pnpm -C autobyteus-web test:e2e:remote-runs-in-tree --output-dir=<fresh>` | ENV-R2-2 | Pass | `round2/API-05/remote-runs-in-tree-probe.json`, `round2/API-05/server-alpha.log`, `round2/API-05/server-beta.log` | RTP-01…RTP-07 `Pass`, RTP-04 `"liveAnswer": true`; 0 refusal lines on both nodes | — |
+| API-06 | AC-001, AC-003, SCN-001/002/A01, REQ-005; a foreign `/ws/node-desktop` | A real Chrome page at `http://evil.example:<port>` and a sandboxed `null` iframe; loopback control | `node round2/probes/abx403-browser-attack-and-gateway-probe.mjs <worktree> <out>` (adds `/ws/node-desktop`) | ENV-R2-2 | Pass | `round2/API-06-07/API-06-07-browser-attack-and-gateway.json`, `round2/API-06-07/API-06-07-node.log` | `nodeDesktop`: `"opened": false, "frames": 0`, Chrome `Error during WebSocket handshake: Unexpected response code: 403`; log `Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/node-desktop origin http://evil.example:54991`; 8 refusal lines in all; control `/ws/node-desktop` from `http://127.0.0.1:54992` → `101` | — |
+| API-07 | REQ-002b/e, DEC-005 | Host-rewriting gateway with and without `AUTOBYTEUS_ALLOWED_ORIGINS` | Same probe | ENV-R2-2 | Pass | Same files | `withoutRefusedPost`, `withoutRefusedWs`, `withAllowedPost`, `withAllowedWs`, `invalidEntryWarned` all `true` | — |
+| API-08 | AC-007, SCN-003, SCN-008, ASM-001 | Packaged desktop app on the embedded node and the Docker node | `pnpm --silent isolated-app start --build`; steps over CDP (`probes/abx403-desktop-step.mjs`, `probes/API-08-steps/*.mjs`, new `round2/probes/API-08-steps/s-vnc2.mjs`); recorder `probes/abx403-desktop-ws-recorder.mjs`. Embedded: run stream, Terminal, Files (live), Brief Studio iframe. Docker: Nodes → Add node → Open window; run stream, Terminal, Files (live), VNC Viewer View only, then Control | ENV-R2-4 | Pass | `round2/API-08/API-08-desktop-ws-recorder.jsonl`, `round2/API-08/API-08-embedded-server.log`, `round2/API-08/API-08-instance.log`, `round2/API-08/API-08-docker-node.log`, screenshots (`API-08-docker-vnc-view-only.png`, `API-08-docker-vnc-control.png`, …), `API-08-isolated-start.json`, `API-08-isolated-stop.json` | Answers `OK` on both nodes; `ABX403_TERM_embedded_43`, `ABX403_TERM_docker_43`; `liveFileAppeared: true` ×2; app iframe origin `http://127.0.0.1:57411`, first frame `{"type":"connected",…}`; VNC `Connected · View only` with node mouse `x:300 y:300` after a click, then `Connected · Control` with mouse `x:1440 y:807` (expected ≈ `x:1440 y:810`). Recorder: every WS (incl. `ws://DOCKER/ws/node-desktop` ×2) origin `file://` → `101`; 78 HTTP requests, all `sentOrigin: null`; no HTTP errors; 0 refusal lines in all 3 logs | The recorder attached after the restarted window had opened the embedded node's app-wide sockets, so those two are absent this round (round 1 recorded them: `file://` → 101) |
+| API-09 | REQ-004, REQ-005, AC-005, REQ-006 (with 407: View only, Control, live re-check); SCN-004 | The phone's node desktop under the origin gate and the phone route limit, against the Docker node: Chrome LAN shape, Chrome and WebKit through the Tailscale-shaped HTTPS proxy | `node round2/probes/abx403-phone-node-desktop-probe.mjs <worktree> <out> abx403-api-e2e-node <port>`: pair; New run (draft, catalog model, no message); ⋮ → VNC Viewer; View only taps; Control tap; owner revokes every device; the open stream must close 4403 | ENV-R2-3 | Pass | `round2/API-09/API-09-phone-node-desktop.json`, `round2/API-09/API-09-docker-node.log`, `round2/API-09/API-09-control-run-without-recorder.json`, screenshots (`API-09-chrome-lan-control.png`, `API-09-chrome-lan-liveRevocation.png`, `API-09-webkit-tailscale-openViewer.png`, `API-09-chrome-tailscale-control.png`, attempt-1 image) | Each journey: `openViewer` `Connected · View only`; `viewOnly` `x:300 y:300`; `control` `Connected · Control`, `x:1440 y:810` (WebKit `x:1437 y:805`); `liveRevocation` `{'code': 4403, 'reason': 'REMOTE_ACCESS_DEVICE_REVOKED'}` after 18–21 s, UI `This viewer is not allowed on this node`. Handshakes `/ws/node-desktop` with the phone's origin → 101 (Chrome via CDP; TS via the proxy: `HTTP/1.1 101`). Node log: `[node-desktop] stream ended mode=control viewer=mobile … close=REMOTE_ACCESS_DEVICE_REVOKED` per journey; no `REMOTE_ACCESS_ORIGIN_REFUSED`/`PHONE_ACCESS_ROUTE_REFUSED` from the journeys | The only origin refusal in the node log is my own `curl -H 'origin: https://evil.example' /rest/health` check before the run. The browser lines are not from this change: noVNC's "requires a secure context" warning on the LAN HTTP page, a headless clipboard-permission denial in Control, the known `localhost:8000` feed, and the proxy-refused Iconify hosts |
 
 ## Acceptance-Criteria Proof
 
 | Acceptance-Criteria ID | Critical | Proven By Case IDs | Result | For A User-Only Part: What You Tried And Why It Still Needs The User |
 | --- | --- | --- | --- | --- |
-| AC-001 | Yes | IMP-04, IMP-08, API-06 | Proven | — |
-| AC-002 | Yes | IMP-02, IMP-04, API-04 (real-browser same-origin via Host and through a Host-preserving proxy), API-07 (configured origin), API-03/05 (loopback dev origin) | Proven | — |
-| AC-003 | Yes | IMP-04, IMP-05, API-06 (real-browser preflight and simple POST) | Proven | — |
-| AC-004 | Yes | IMP-02, IMP-04 | Proven | — |
-| AC-005 | Yes | IMP-04, API-03, API-04 (every phone route used by the shell answers 101 with the credential) | Proven | — |
-| AC-006 | Yes | IMP-04, API-06 (refusal lines with route and origin, no credential) | Proven | — |
-| AC-007 | Yes | API-08 | Proven | A Docker node on the user's own machine and a remote node on another host are the user's setups. A test-owned Docker node from the same image, running this branch's package, was used instead |
-| AC-008 | Yes | API-03, API-04 | Proven (with a part only the user can check) | Real Tailscale Serve on the user's tailnet and the iOS/Android wrapper apps on devices. I emulated Tailscale Serve from its source (`serve.go`: Host kept, X-Forwarded-Host/Proto/For set) with a TLS proxy, and ran the WKWebView engine (WebKit) through it. Both wrappers load the node's `/mobile` URL straight into the WebView (`AutoByteusWebViewController.swift:62`, `AutoByteusWebView.kt:65`). A real tailnet and devices are the user's own |
+| AC-001 | Yes | IMP-10, API-06 (incl. foreign `/ws/node-desktop`) | Proven | — |
+| AC-002 | Yes | IMP-10, API-04, API-07, API-03/05, API-09 | Proven | — |
+| AC-003 | Yes | IMP-10, API-06 | Proven | — |
+| AC-004 | Yes | IMP-10 | Proven | — |
+| AC-005 | Yes | IMP-10, API-03, API-04, API-09 (`/ws/node-desktop` with a phone credential, both modes) | Proven | — |
+| AC-006 | Yes | IMP-10, API-06 | Proven | — |
+| AC-007 | Yes | API-08 | Proven | The user's own Docker/remote nodes (a test-owned node from the same image ran this commit's package) |
+| AC-008 | Yes | API-03, API-04, API-09 | Proven (with a part only the user can check) | Real Tailscale Serve and the wrapper apps on devices, as in round 1: the proxy is emulated from Tailscale's source, and WebKit stands in for WKWebView |
 | AC-009 | Yes | API-05, API-03 (MSP-06), API-04 (`remoteRun`) | Proven | — |
-| AC-010 | No | Code review CRR-001 (docs reviewed) | Proven by review, not executable | — |
+| AC-010 | No | Code review (docs) | Proven by review | — |
+| 407 on the phone under this gate (CRR-003 ask) | Yes | API-09, IMP-10 | Proven | — |
 
 ## Validation Confidence Scorecard (Mandatory)
 
 | Confidence Category | Post-Repository Score | Final Score | What Supports It (Case IDs) | Residual Uncertainty | What Could Improve It |
 | --- | --- | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 75% | 96% | IMP-02/04/05; API-03…08 | AC-010 is proven by review only (docs) | — |
-| Changed-boundary execution directness | 85% | 97% | IMP-04 real upgrades; API-04/06/08 real browsers and the packaged app against real servers | — | — |
-| Cross-boundary integration realism and mock gap | 70% | 95% | API-04 (TLS proxy shaped like Tailscale Serve), API-05 (two real nodes), API-08 (real Docker node) | Tailscale Serve and the wrapper WebViews are emulated; the real ones are user-only (AC-008) | The user's tailnet and devices |
-| Environment, configuration, identity, and fixture fidelity | 80% | 95% | Worktree builds; a full server package in the Docker node; real pairing; `AUTOBYTEUS_ALLOWED_ORIGINS` (API-07) | Scripted runtimes instead of models (the transport is identical) | — |
-| Failure, edge-case, lifecycle, and recovery evidence | 85% | 95% | IMP-02/04 near misses; API-06 `null` origin and simple POST; MSP-09 restart, MSP-13 unknown/revoked credentials; API-07 | — | — |
-| User-surface, browser, and desktop-shell confidence | 50% | 95% | API-03/04 (Chrome, WebKit), API-05 (Nuxt dev), API-08 (packaged Electron) | Electron dev (`http://localhost:3000`) not run; the same loopback class (unit: `localhost`; probes: `127.0.0.1`) is covered | Run Electron dev on a disposable data root |
-| Durable regression coverage quality and relevance | 90% | 95% | IMP-02/04 durable; `mobile-shell-probe.mjs` now sends the phone's Origin and Host on its sockets | The real-browser checks (API-04/06/07) stay temporary (self-signed TLS, host mapping) | — |
+| Requirement and acceptance-criteria proof | 80% | 96% | IMP-09…12; API-03…09 | AC-010 by review | — |
+| Changed-boundary execution directness | 85% | 97% | IMP-10; API-06/08/09 real browsers and the packaged app against real servers and a real node desktop | — | — |
+| Cross-boundary integration realism and mock gap | 75% | 95% | API-04/09 (Tailscale-shaped proxy), API-05, API-08/09 (real Docker node desktop) | Tailscale Serve and the WebViews are emulated (user-only) | The user's tailnet and devices |
+| Environment, configuration, identity, and fixture fidelity | 85% | 95% | Rebuilt `dist`, phone bundle and server package after the merge; real pairing and revocation | Scripted runtime instead of models (the transport is identical) | — |
+| Failure, edge-case, lifecycle, and recovery evidence | 85% | 96% | API-06 (`null`, simple POST, foreign node-desktop), API-09 live revocation 4403, MSP-09/13, API-07 | — | — |
+| User-surface, browser, and desktop-shell confidence | 55% | 95% | API-03/04/09 (Chrome, WebKit), API-05 (Nuxt dev), API-08 (packaged Electron incl. VNC Control) | Electron dev not run (loopback class covered) | — |
+| Durable regression coverage quality and relevance | 90% | 95% | IMP-09…12 durable (incl. 407's node-desktop e2e and the foreign `/ws/node-desktop` case); `mobile-shell-probe.mjs` | The real-browser checks stay temporary | — |
 
-- Overall post-repository confidence: 76% (the AC-007/008/009 gap called for broader validation)
-- Overall final confidence: 95.4%
-- Calculation method: simple average of the seven final scores (96+97+95+95+95+95+95)/7
+- Overall post-repository confidence: 79%
+- Overall final confidence: 95.6%
+- Calculation method: simple average (96+97+95+95+96+95+95)/7
 - Every critical acceptance criterion directly proven, apart from parts only the user can check: `Yes`
 - Any final applicable category below `90%`: `No`
 - Default final confidence target of `95%` met: `Yes`
-- Confidence-limiting residual risks: a real Tailscale Serve node and the wrapper apps on devices (user-only); Electron dev not run (loopback class covered); FU-004 (four base E2E failures outside this change)
+- Confidence-limiting residual risks: a real Tailscale Serve node and the wrapper apps on devices (user-only); Electron dev not run; FU-004 (four base E2E failures outside this change)
 
 ## Broader Validation Decision (Mandatory)
 
 - Decision: `Required` (executed)
 - Execution mode: `Browser` + `Project Desktop Validation` + `Worker or Distributed` + `Live API`
-- Confidence gap or residual risk it addresses, and the expected gain: the requirements depend on what real clients send (Origin and Host from the packaged renderer, the phone shell on LAN and behind a TLS proxy, peers). Repository tests set those headers themselves. The journeys removed that gap
-- Browser validation needed, and why or why not: yes. The phone shell and attacker pages are browser surfaces whose Origin and Host the browser sets
+- Confidence gap or residual risk it addresses, and the expected gain: the merge combined this gate with 407's phone node desktop (a new phone WebSocket client, viewer limits and a live re-check) and changed the adapter all `/ws/*` handlers use. Only real clients show that the phone's VNC Viewer, the desktop's VNC Viewer and the other sockets still work under the gate
+- Browser validation needed, and why or why not: yes. The phone's and attacker pages' Origin and Host are set by the browser, and noVNC runs in the browser
 - If `Not Required`: N/A
 - If `Blocked`: N/A
 
 ## Desktop Application Validation
 
-- Approach executed, and any deviation from the investigation's plan: an isolated worktree build driven over CDP, with a recorder on the renderer's network events. Deviations (the instance's own `.env`, the full server package in the Docker node) are listed under Round
-- Cases proving web-equivalent behavior, and cases proving shell-specific or lifecycle behavior: API-08 proves the shell's own `file://` origin on WebSockets and its Origin-less fetch on both nodes. API-03/05 prove the web shell at a loopback origin
-- Effect on any already-running desktop application: `None` (own data root, ports and process group; `stop` removed the data root; `list` shows no instance)
-- Behavior not directly proven and its confidence consequence: Electron dev, which is the same loopback class (see the scorecard)
+- Approach executed: as round 1, plus VNC Control (`s-vnc2.mjs`)
+- Cases proving web-equivalent behavior, and cases proving shell-specific or lifecycle behavior: API-08 (`file://` origin on every WebSocket, Origin-less fetch); API-03/05 (loopback web shell)
+- Effect on any already-running desktop application: `None` (`stop` removed the data root; `list` → `[]`)
+- Behavior not directly proven and its confidence consequence: Electron dev (loopback class covered)
 
 ## Compatibility / Legacy Scope Check
 
 - Reviewed requirements/design introduce, tolerate, or ambiguously describe backward compatibility in scope: `No`
-- Compatibility-only or legacy-retention behavior observed in implementation: `No`
+- Compatibility-only or legacy-retention behavior observed in implementation: `No` (IR-002 removed the unreachable `?? 4401` fallback; one close-code table)
 - Durable coverage added or retained only for compatibility-only behavior: `No`
 - If compatibility-related invalid scope was observed, reroute classification used: N/A
 - Upstream recipient notified: N/A
 
 ## Durable Coverage Changed In The Codebase
 
-- Repository-resident durable coverage added, updated, or removed this round: `Yes`
+- Repository-resident durable coverage added, updated, or removed this round: `No` (round 1 updated `autobyteus-web/tests/e2e/mobile-shell-probe.mjs` in `14e3681cdc`, reviewed in `api-e2e-test-review-report.md`; unchanged since)
 
 | Path / Test | Change | Case IDs | For A Removal |
 | --- | --- | --- | --- |
-| `autobyteus-web/tests/e2e/mobile-shell-probe.mjs` (commit `14e3681cdc`) | Updated: the LAN emulation forwards the phone's Host on HTTP and sends the phone's Origin and Host on the upstream WebSocket (`ws`); header comment | API-02 (before), API-03 (after) | — |
+| None this round | — | — | — |
 
-- Added or updated paths attached for proportional test-code review: `Yes`
+- Added or updated paths attached for proportional test-code review: `Not Applicable`
 - Diff or repository evidence supplied for removed paths: N/A
 
 ## Dependencies Mocked Or Emulated
 
 | Dependency | Method | Why Real Dependency Was Not Used | Confidence Limitation |
 | --- | --- | --- | --- |
-| Tailscale Serve | A TLS reverse proxy that keeps Host and sets X-Forwarded-Host/Proto/For, as in `serve.go` | Needs the user's tailnet | Proxy shape taken from source; user-only part of AC-008 |
-| Phone LAN address | Chrome `--host-resolver-rules MAP 192.168.77.10 127.0.0.1` (the browser's real Host and Origin) | Avoids binding a test node with a terminal to the LAN | The node sees a loopback client address; the phone credential is checked whatever the address |
-| iOS/Android wrappers | Playwright WebKit (the WKWebView engine) and Chrome | Device builds | User-only part of AC-008 |
-| Models and runtimes | Scripted AGY CLI; fake Grok ACP replay (in the probe) | No paid inference needed to test transport | None for this change |
+| Tailscale Serve | TLS reverse proxy keeping Host, setting X-Forwarded-Host/Proto/For (`serve.go`) | The user's tailnet | User-only part of AC-008 |
+| Phone LAN address | Chrome host mapping (the browser's real Host and Origin) | Avoids binding test nodes to the LAN | The node sees a loopback client; the phone credential is checked whatever the address |
+| iOS/Android wrappers | Playwright WebKit and Chrome | Device builds | User-only part of AC-008 |
+| Models | Scripted AGY CLI; a draft run for the phone viewer | No inference needed | None for this change |
 
 ## Temporary Methods And Cleanup
 
 | Item | Owned By This Run | Cleanup Action | Result |
 | --- | --- | --- | --- |
-| Probe stacks (API-02/03/04/05) | Yes | Each probe's `finally` | `serversLeft: 0`, `rootRemoved: true` in every receipt; no probe processes left (`pgrep`) |
-| API-04 TLS and CONNECT proxies, self-signed cert | Yes | Closed by the probe; cert dir removed | `proxiesClosed: true` |
-| API-06/07 node, gateway, cert | Yes | Probe `finally` | `nodeStopped: true`, `rootRemoved: true` |
-| Isolated instance `iso-58042-7c90` | Yes | `pnpm --silent isolated-app stop iso-58042-7c90` | `wasRunning: true`, `dataRootRemoved: true`; `list` → `[]` |
-| Docker container `abx403-api-e2e-node` | Yes | `docker rm -f -v` | No container with label `com.autobyteus.api-e2e-owner=abx403` left |
-| Server package build (`/tmp/abx403-api-e2e/server-package`), desk workspace, Brief Studio copy, AGY fixture copy | Yes | `rm -rf` | Removed |
-| `/tmp/abx403-api-e2e` (probe sources and raw outputs) | Yes | Removed after commit | Sources kept in `evidence/api-e2e/probes/` |
-| Playwright WebKit v2248 in `~/Library/Caches/ms-playwright` | Yes (installed for API-04) | Kept: a shared test browser that matches this repository's playwright-core | — |
-| User's containers (`autobyteus-server-*`, `abx407-phone-node`), user's app | No | Not touched | — |
+| Probe stacks (API-03/04/05/06/07) | Yes | Each probe's `finally` | `serversLeft: 0`, `rootRemoved: true`, `nodeStopped: true`, `proxiesClosed: true` |
+| API-09 TLS/CONNECT proxies, cert | Yes | Probe `finally` | `proxiesClosed: true` |
+| Docker container `abx403-api-e2e-node` (API-09, then recreated for API-08) | Yes | `docker rm -f -v` | No container with label `com.autobyteus.api-e2e-owner=abx403` left |
+| Isolated instance `iso-57410-6022` | Yes | `pnpm --silent isolated-app stop iso-57410-6022` | `ok`, `wasRunning: true`, `dataRootRemoved: true`; `list` → `[]` |
+| Server package build, desk workspace, Brief Studio copy, AGY fixture copy, `/tmp/abx403-r2` | Yes | `rm -rf` | Removed after the commit |
+| User's app and containers | No | Not touched | — |
 
 ## Latest Authoritative Result
 
 - Result: `Pass`
 - Criteria not proven, or parts only the user can check: AC-008 on real Tailscale Serve and on the wrapper apps on devices (only the user can check)
 - Preliminary classification and recommended owner (on `Fail`): N/A
-- Next recipient from `get_handoff_rules`: code reviewer (test-code review of `mobile-shell-probe.mjs`)
-- Notes: FU-004 records four base E2E failures outside this change.
+- Next recipient from `get_handoff_rules`: code reviewer (the reviewed route; no durable test changed this round)
+- Notes: FU-004 is unchanged (four base E2E failures outside this change). Round 1's result, API-REV-001, is in the revision record.
