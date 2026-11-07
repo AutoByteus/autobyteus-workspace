@@ -2,8 +2,8 @@
 
 ## Review Meta
 
-- Review Round: 1
-- Trigger: API/E2E passed (API-REV-001, round 1), 2026-11-07. One durable test changed in `14e3681cdc`.
+- Review Round: 2 (latest). Round 1 (CRR-002) reviewed the probe update below.
+- Trigger: round 2 — API/E2E passed (API-REV-002, 95.6%) after IR-002, the base integration with autobyteus-407. No durable test code changed during this API/E2E round: `git diff 6f59bab2a2 896b65a5f2 -- . ':!tickets'` is empty. Round 1 — API/E2E passed (API-REV-001); one durable test changed in `14e3681cdc`.
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (SR-001; AC-008, ASM-001/ASM-002, REQ-002b)
 - Investigation Notes Reviewed As Context: `investigation-notes.md` (BEH-005: wrappers load the node's `/mobile` URL)
 - Solution Revision Record Reviewed As Context: `solution-revision-record.md` (not reread beyond context)
@@ -13,13 +13,13 @@
 - Implementation Revision Record Reviewed As Context: IR-001
 - Original Code Review Report: `code-review-report.md` (CRR-001, Pass)
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-002`
+- Current Code Review Revision ID: `CRR-004` (round 1: CRR-002)
 - Coverage Investigation: `api-e2e-coverage-investigation.md`
 - Execution Coverage Report: `api-e2e-execution-coverage-report.md`
 - API/E2E Revision Record Reviewed As Context: `api-e2e-revision-record.md` (API-REV-001)
 - Delivery Revision Record Reviewed As Context: N/A
-- API/E2E Result: Pass
-- Final Validation Confidence: 95.4%
+- API/E2E Result: Pass (round 2, API-REV-002; round 1, API-REV-001)
+- Final Validation Confidence: 95.6% (round 2); 95.4% (round 1)
 - Prior unresolved test-review findings rechecked: None (first test review)
 - Project testing guideline(s) applied: `TESTING.md` (repository root), Browser probes section: a probe owns its stack and fails on browser errors. No conflicts or discrepancies.
 - Supported Product Scenario Basis Confirmed: `Yes`. SCN-004 / AC-008: a paired phone on a LAN reaches the node at its private address, and the page, API and WebSockets share the node's origin.
@@ -30,7 +30,8 @@
 | --- | --- | --- | --- | --- |
 | `autobyteus-web/tests/e2e/mobile-shell-probe.mjs` | Updated (+18/−8) | SCN-004, AC-008, REQ-002b, REQ-006 | Phone `/mobile` shell journeys against a probe-owned node, reached through an emulated private-network address | The only non-ticket change between `88a93aaf26` and `7e645da171`. The source is unchanged |
 
-- No durable test file changed: `No`
+- No durable test file changed: round 2 `Yes`. `mobile-shell-probe.mjs` is byte-identical to `14e3681cdc`, which round 1 reviewed. The one-path e2e addition in `request-origin-and-phone-routes.e2e.test.ts` came from implementation (IR-002), not API/E2E, and was reviewed in source review CRR-003. Round 1: `No` (one file, reviewed below).
+- Review result when no durable test file changed: round 2 `Not Applicable`
 
 ## Proportional Test-Code Checks
 
@@ -56,8 +57,8 @@ None.
 
 ## Latest Authoritative Result
 
-- Result: `Pass`
-- Changed durable test paths reviewed: `autobyteus-web/tests/e2e/mobile-shell-probe.mjs` (`14e3681cdc`)
+- Result: `Not Applicable` (round 2: no durable test changed during API-REV-002). Round 1 result `Pass` stands for `mobile-shell-probe.mjs`.
+- Changed durable test paths reviewed: none in round 2; round 1 `autobyteus-web/tests/e2e/mobile-shell-probe.mjs` (`14e3681cdc`)
 - Unresolved finding IDs: None
 - Recommended Recipient: `delivery_engineer`
-- Notes: Source review CRR-001 still applies because the source is unchanged at `88a93aaf26`. AC-008 on a real Tailscale Serve node and on the iOS/Android wrapper apps on devices is left for the user to check, as API/E2E reported.
+- Notes: the current source review is CRR-003 (merge `6f59bab2a2`); API/E2E tested `1e1d6482a7`, which has the same source. The probe-only failure in API-09's first attempt came from a temporary in-page recorder, not durable test code, so it is evidence and not reviewed here. AC-008 on a real Tailscale Serve node and on the iOS/Android wrapper apps on devices is left for the user to check, as API/E2E reported.

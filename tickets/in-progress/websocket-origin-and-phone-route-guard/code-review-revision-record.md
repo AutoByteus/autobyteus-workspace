@@ -9,6 +9,7 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) is autho
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 / IR-001 | N/A | Pass | None |
 | CRR-002 | `api-e2e-test-review-report.md` | Proportional test-code review, round 1 / API-REV-001 | N/A (first test review) | Pass | None |
 | CRR-003 | `code-review-report.md` | Implementation Review, round 2 / IR-002 (delivery Local Fix, DR-001 base integration) | Pass (CRR-001) | Pass | None |
+| CRR-004 | `api-e2e-test-review-report.md` | Proportional test-code review, round 2 / API-REV-002 | Pass (CRR-002) | Not Applicable | None |
 
 ## Revision Entries
 
@@ -86,3 +87,28 @@ None (no prior findings)
 - Material score or classification changes: None; scorecard unchanged; Medium / High preserved
 - Recommended recipient: API/E2E engineer
 - Remaining risks or uncertainty: the phone journey on the node desktop (View only, Control, live revocation) under the origin gate and route limit, and a foreign-origin `/ws/node-desktop` from a real browser page, are for API/E2E. CRR-002's test review still covers the mobile-shell probe, which is unchanged in the merge.
+
+### CRR-004 — Test review after API/E2E round 2: no durable test changed
+
+- Canonical review report updated: `tickets/in-progress/websocket-origin-and-phone-route-guard/api-e2e-test-review-report.md`
+- Review entry point and round: Successful API/E2E test-code review, round 2
+- Review scope: `N/A` (test review)
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, `api-e2e-execution-coverage-report.md` (API-REV-002, Pass, 95.6%); API-09, API-06 and the impact reruns
+- Relevant solution revision IDs: SR-001, SR-003
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-001, IR-002
+- Relevant API/E2E revision IDs: API-REV-001, API-REV-002
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: CRR-002 `Pass`
+- Current authoritative result: `Not Applicable`
+- What changed in the review result and why: `git diff 6f59bab2a2 896b65a5f2 -- . ':!tickets'` is empty, so API/E2E changed no durable test. The probe is identical to the version CRR-002 reviewed.
+- Supported product scenario / material-premise basis changes: None
+
+#### Prior Finding Resolution
+
+None
+
+- New or remaining finding IDs: None
+- Material score or classification changes: None; Medium / High preserved
+- Recommended recipient: delivery engineer
+- Remaining risks or uncertainty: real Tailscale Serve and on-device wrapper checks are for the user; FU-004 is outside scope.
