@@ -6,6 +6,7 @@ The current code and `implementation-handoff.md` are authoritative; this record 
 
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
+| IR-003 | Architecture reviewer, `design-review-report.md` (ARCH-REV-005 Pass on SR-008), answering CRR-003 | F-API-001, F-API-002 | `Design Impact` (resolved upstream; implemented) | SR-008; ARCH-REV-005; CRR-003; API-REV-001; DR N/A | D-02 rebuilt on the phone's own credential check (`40d8d088e5`); D-03 re-delivery rule (`35263117c9`); ready for source review |
 | IR-002 | Code reviewer, `code-review-report.md` (CRR-001 Fail), round 1 | F-001, F-002, F-003 | `Local Fix` | SR-005; ARCH-REV-003; CRR-001; API-REV N/A; DR N/A | Three bounded fixes in `1d2cdd15ab`; ready for the Targeted Delta Review |
 | IR-001 | Architecture reviewer, `design-review-report.md` (ARCH-REV-002 Pass, then ARCH-REV-003 for D-02 and ARCH-REV-004 for D-19), round 1 | N/A | `Initial Baseline` | SR-004, SR-005, SR-006; ARCH-REV-002, ARCH-REV-003, ARCH-REV-004; CRR N/A; API-REV N/A; DR N/A | Round 1 implemented (D-01…D-03, D-05…D-08, D-10…D-14, D-16…D-19); one Design Impact raised and resolved during the round (D-02, SR-005) |
 
@@ -53,3 +54,30 @@ The current code and `implementation-handoff.md` are authoritative; this record 
 - Local validation and result: IMP-14 (affected specs 52/52, the guard and its integration test, web typecheck PASS at baseline)
 - Next recipient or routing: Code Reviewer (Targeted Delta Review), as the handoff rules route a High-risk Local Fix
 - Remaining limitations or risks: unchanged from IR-001
+
+### IR-003 — SR-008: D-02 credential check, D-03 re-delivery rule
+
+- Triggering role, report path, and round: architecture reviewer (`architecture_reviewer_d40b29b15ce84a0290edd732f58a7e5e`), `design-review-report.md` § SR-008 D-02 / D-03 Re-Review (ARCH-REV-005 Pass), answering CRR-003 (`code-review-report.md`), which came from API/E2E round 1 (API-REV-001 Fail), round 1
+- Triggering finding IDs: F-API-001, F-API-002
+- Classification: `Design Impact` (resolved by the Solution Designer as SR-008; implemented here)
+- Prior authoritative result: IR-002, CRR-002 Pass; API-REV-001 Fail (MSP-13, MSP-18, API-08)
+- Current authoritative result: D-02 and D-03 rebuilt as SR-008 (`40d8d088e5`, `35263117c9`); ready for source review
+- Related solution revision IDs: SR-008
+- Related architecture-review revision IDs: ARCH-REV-005
+- Related code-review revision IDs: CRR-003
+- Related API/E2E revision IDs: API-REV-001
+- Related delivery revision IDs: `N/A`
+- Why recorded: two API/E2E failures traced to the design (the history store is not a reliable source of the check's outcome; a recreated share-started task re-ran its used pairing link)
+- Approved behavior or requirement IDs affected: REQ-002 (AC-002, AC-003), REQ-003 (AC-004a; AC-004b is round 2, DEC-013)
+- Implementation delta:
+  - D-02:
+    - `mobileNodeSessionStore.checkCredential()`: `fetchWithRemoteAccessCredential` with the session's own credential; `POST <node>/graphql { __typename }`.
+    - `remoteAccessReadRefusal({ status, code })`: status and code only.
+    - `MobilePairedShell.checkStatus` takes the outcome from `checkCredential` only.
+    - Removed `historyReadFailure`: `runHistoryStore.ts`, `runHistorySelectionActions.ts`, `runHistoryTeamMemberInspectionActions.ts`, `useRunHistorySectionLoad.ts` and their specs restored to base; the set and clear points removed from `runHistoryLoadActions.ts` (D-08's split kept).
+    - The specs were rewritten; the store spec is renamed `mobileNodeSessionStore.checks.spec.ts`.
+  - D-03: `OpenPageRestore.sharedTextToHandle(sharedText, recreated)`; `MainActivity.onCreate` acts on a shared text only when `savedInstanceState == null`; unit-tested.
+- Changed files or areas: the files above
+- Local validation and result: IMP-15 (196 affected web specs, web typecheck at baseline, guard, Android unit tests incl. `OpenPageRestoreTest` 6/6)
+- Next recipient or routing: Code Reviewer (source review; High route); afterwards API/E2E reruns MSP-13, MSP-18, API-08 and the full web suite
+- Remaining limitations or risks: not run here: the full web suite, the phone-bundle probe and the emulator (API-08). Run screens (AC-004b) wait for round 2.
