@@ -19,6 +19,7 @@ const storedSession = (): MobileNodeSession => ({
     deviceId: 'device-1',
     displayName: 'Phone',
     clientFacingBaseUrl: 'http://desktop-private.local:29695',
+    connectionWay: null,
     createdAt: '2026-05-16T00:00:00.000Z',
     lastSeenAt: null,
     revokedAt: null,

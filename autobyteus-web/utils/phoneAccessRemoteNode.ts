@@ -10,8 +10,15 @@ export const formatPhoneAccessRequestError = (error: unknown): string => {
   return error instanceof Error ? error.message : String(error)
 }
 
-export const fetchRemoteAccessStatusFromBaseUrl = async (baseUrl: string): Promise<RemoteAccessStatus> => {
-  const response = await fetch(`${normalizeNodeBaseUrl(baseUrl)}/rest/remote-access/status`, { method: 'GET' })
+/** A node's public status at `baseUrl`; the check gives up after `timeoutMs`. */
+export const fetchRemoteAccessStatusFromBaseUrl = async (
+  baseUrl: string,
+  options: { timeoutMs: number },
+): Promise<RemoteAccessStatus> => {
+  const response = await fetch(`${normalizeNodeBaseUrl(baseUrl)}/rest/remote-access/status`, {
+    method: 'GET',
+    signal: AbortSignal.timeout(options.timeoutMs),
+  })
   if (!response.ok) {
     throw new Error(`Status check failed for ${baseUrl} with HTTP ${response.status}.`)
   }

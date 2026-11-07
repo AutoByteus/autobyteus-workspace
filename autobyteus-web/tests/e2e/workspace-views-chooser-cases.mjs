@@ -339,7 +339,7 @@ export const registerWorkspaceViewsChooserCases = (h) => {
     const settings = await fetch(`${backendUrl}/rest/remote-access/settings`, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ phoneAccessEnabled: true }) })
     assert(settings.ok, 'Phone Access enabled', await settings.text())
     const session = await (await fetch(`${backendUrl}/rest/remote-access/pairing-sessions`, { method: 'POST', headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ serverBaseUrl: remote, trustedPrivateHttpAcknowledged: true }) })).json()
+      body: JSON.stringify({ connectionWay: 'local_network', serverBaseUrl: remote, trustedPrivateHttpAcknowledged: true }) })).json()
     assert(session.mobileUrl, 'pairing session', session)
     const phone = await context.browser().newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2, locale: 'en-US' })
     const phoneReads = []

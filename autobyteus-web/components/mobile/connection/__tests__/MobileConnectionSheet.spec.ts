@@ -1,53 +1,68 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { flushPromises, mount } from '@vue/test-utils';
-import { createPinia, setActivePinia } from 'pinia';
 import MobileConnectionSheet from '../MobileConnectionSheet.vue';
-import { useRemoteCollaborationStore } from '~/stores/remoteCollaborationStore';
-import { useRemoteCollaborationOffersStore } from '~/stores/remoteCollaborationOffersStore';
 
-const props = { nodeName: 'AutoByteus Desktop', serverBaseUrl: 'http://100.64.0.1:29695', connected: true, isChecking: false, diagnostic: null };
+const props = { nodeName: 'Office Mac', serverBaseUrl: 'http://192.168.1.20:29695', connected: true, isChecking: false, diagnostic: null };
 const sheet = () => document.body.querySelector('[data-testid="mobile-connection-sheet"]')!;
 
-// autobyteus-277 REQ-008, DEC-003 A: the paired node and its peers, read only.
+/** A stand-in for the Android app's web-message object: it answers `hello` and records what the page asks. */
+const installShell = (nodeCount: number) => {
+  const listeners = new Set<(event: { data: string }) => void>();
+  const posted: unknown[] = [];
+  (window as unknown as { AutoByteusShell?: unknown }).AutoByteusShell = {
+    postMessage: (message: string) => {
+      const parsed = JSON.parse(message) as { type: string };
+      posted.push(parsed);
+      if (parsed.type === 'hello') {
+        queueMicrotask(() => listeners.forEach((listener) => listener({ data: JSON.stringify({ type: 'shell', nodeCount, deviceName: 'Test Phone' }) })));
+      }
+    },
+    addEventListener: (_type: string, listener: (event: { data: string }) => void) => listeners.add(listener),
+    removeEventListener: (_type: string, listener: (event: { data: string }) => void) => listeners.delete(listener),
+  };
+  return posted;
+};
+
+// one-step-phone-pairing UIS-005: status with refresh/Retry, Switch node in the app, Unpair from <node>; no peer list.
 describe('MobileConnectionSheet', () => {
-  beforeEach(() => { setActivePinia(createPinia()); document.body.innerHTML = ''; });
+  beforeEach(() => { document.body.innerHTML = ''; });
+  afterEach(() => { delete (window as unknown as { AutoByteusShell?: unknown }).AutoByteusShell; });
 
-  it('lists the peers with what they offer or "Not reachable", asking every peer at once when it opens', async () => {
-    const peers = useRemoteCollaborationStore();
-    const offers = useRemoteCollaborationOffersStore();
-    vi.spyOn(peers, 'load').mockImplementation(async () => { peers.peers = [{ nodeId: 'n1', name: 'docker' }, { nodeId: 'n2', name: 'office-mac' }] as never; });
-    const askAll = vi.spyOn(offers, 'askAll').mockImplementation(() => {
-      offers.peers = {
-        n1: { phase: 'available', checkedAt: 'now', entries: [...Array(6)].map((_, i) => ({ name: `a${i}`, kind: 'agent' })).concat([...Array(3)].map((_, i) => ({ name: `t${i}`, kind: 'agent_team' }))) },
-        n2: { phase: 'unavailable', code: 'PEER_UNREACHABLE' },
-      } as never;
-    });
+  it('in a browser: a refresh icon while reachable, no Switch node, no peers, and Unpair from the node', async () => {
     const wrapper = mount(MobileConnectionSheet, { props, attachTo: document.body });
     await flushPromises();
-    expect(askAll).toHaveBeenCalledWith(peers.peers);
-    expect(sheet().querySelector('[data-testid="mobile-connection-name"]')!.textContent).toBe('AutoByteus Desktop');
-    expect(sheet().querySelector('[data-testid="mobile-connection-status"]')!.textContent).toContain('Connected');
-    expect([...sheet().querySelectorAll('[data-testid="mobile-peer-detail"]')].map((detail) => detail.textContent?.trim()))
-      .toEqual(['6 agents · 3 teams', 'Not reachable']);
-    expect(sheet().textContent).toContain('Peer nodes');
-    wrapper.unmount();
-  });
-
-  it('without peers the Peer nodes section is absent; Check connection and Unpair this phone are there', async () => {
-    vi.spyOn(useRemoteCollaborationStore(), 'load').mockResolvedValue(undefined);
-    const wrapper = mount(MobileConnectionSheet, { props, attachTo: document.body });
-    await flushPromises();
-    expect(sheet().querySelector('[data-testid="mobile-peers"]')).toBeNull();
-    (sheet().querySelector('[data-testid="mobile-check-connection"]') as HTMLButtonElement).click();
+    const check = sheet().querySelector('[data-testid="mobile-check-connection"]') as HTMLButtonElement;
+    expect(check.getAttribute('aria-label')).toBe('Check connection');
+    expect(check.textContent?.trim()).toBe('');
+    expect(sheet().querySelector('[data-testid="mobile-switch-node"]')).toBeNull();
+    expect(sheet().textContent).not.toContain('Peer nodes');
+    expect(sheet().textContent).not.toContain('Add a node');
+    expect(sheet().querySelector('[data-testid="mobile-unpair"]')!.textContent?.trim()).toBe('Unpair from Office Mac');
+    check.click();
     (sheet().querySelector('[data-testid="mobile-unpair"]') as HTMLButtonElement).click();
     expect(wrapper.emitted('check')).toHaveLength(1);
     expect(wrapper.emitted('unpair')).toHaveLength(1);
-    expect(sheet().querySelector('[role="dialog"]')!.getAttribute('aria-modal')).toBe('true');
-    // CRR-001 CR-003: the dialog is named by its heading, the node's name.
     const dialog = sheet().querySelector('[role="dialog"]')!;
-    const labelledBy = dialog.getAttribute('aria-labelledby');
-    expect(labelledBy).toBeTruthy();
-    expect(document.getElementById(labelledBy!)?.textContent).toBe('AutoByteus Desktop');
+    expect(dialog.getAttribute('aria-modal')).toBe('true');
+    expect(document.getElementById(dialog.getAttribute('aria-labelledby')!)?.textContent).toBe('Office Mac');
+    wrapper.unmount();
+  });
+
+  it('not reachable: amber "Not reachable" and the word Retry', async () => {
+    const wrapper = mount(MobileConnectionSheet, { props: { ...props, connected: false }, attachTo: document.body });
+    await flushPromises();
+    expect(sheet().querySelector('[data-testid="mobile-connection-status"]')!.textContent).toContain('Not reachable');
+    expect(sheet().querySelector('[data-testid="mobile-check-connection"]')!.textContent?.trim()).toBe('Retry');
+    wrapper.unmount();
+  });
+
+  it('in the Android app: Switch node with the phone\'s node count asks the app for its node list', async () => {
+    const posted = installShell(3);
+    const wrapper = mount(MobileConnectionSheet, { props, attachTo: document.body });
+    await flushPromises();
+    expect(sheet().querySelector('[data-testid="mobile-switch-node-count"]')!.textContent?.trim()).toBe('3 nodes on this phone');
+    (sheet().querySelector('[data-testid="mobile-switch-node"]') as HTMLButtonElement).click();
+    expect(posted).toEqual([{ type: 'hello' }, { type: 'showNodeList' }]);
     wrapper.unmount();
   });
 });

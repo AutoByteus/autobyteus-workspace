@@ -187,7 +187,7 @@ try {
   const frontendPort = await freePort();
   const frontendUrl = `http://${lanAddress}:${frontendPort}`;
   await alpha.rest('PUT', '/remote-access/settings', { phoneAccessEnabled: true });
-  const pairing = await alpha.rest('POST', '/remote-access/pairing-sessions', { serverBaseUrl: `${frontendUrl}/mobile`, trustedPrivateHttpAcknowledged: true });
+  const pairing = await alpha.rest('POST', '/remote-access/pairing-sessions', { connectionWay: 'local_network', serverBaseUrl: `${frontendUrl}/mobile`, trustedPrivateHttpAcknowledged: true });
   assert(pairing.status === 201, `pairing session: ${JSON.stringify(pairing)}`);
   const exchange = await alpha.rest('POST', '/remote-access/pairing-exchanges', { pairingCode: pairing.body.payload.pairingCode, deviceName: 'Probe Phone' });
   assert(exchange.status === 201 && /^mra_/.test(exchange.body.credential ?? ''), `pairing exchange: ${exchange.status}`);

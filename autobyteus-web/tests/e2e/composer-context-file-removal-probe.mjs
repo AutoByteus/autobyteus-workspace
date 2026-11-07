@@ -417,7 +417,7 @@ const universalRoutes = async () => {
   await fetch(`${stack.backendUrl}/rest/remote-access/settings`, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ phoneAccessEnabled: true }) });
   const serverBaseUrl = `http://192.168.77.10:${stack.backendPort}`;
   const session = await (await fetch(`${stack.backendUrl}/rest/remote-access/pairing-sessions`, { method: 'POST', headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ serverBaseUrl, trustedPrivateHttpAcknowledged: true }) })).json();
+    body: JSON.stringify({ connectionWay: 'local_network', serverBaseUrl, trustedPrivateHttpAcknowledged: true }) })).json();
   const exchange = await (await fetch(`${stack.backendUrl}/rest/remote-access/pairing-exchanges`, { method: 'POST', headers: { 'content-type': 'application/json' },
     body: JSON.stringify({ pairingCode: session.payload?.pairingCode, deviceName: 'probe phone', serverBaseUrl }) })).json();
   const credential = exchange.credential ?? exchange.accessToken ?? exchange.token;

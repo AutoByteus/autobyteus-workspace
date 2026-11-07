@@ -37,4 +37,19 @@ class MainActivityManifestTest {
             mainActivity.getAttributeNS(androidNamespace, "configChanges").split('|').toSet(),
         )
     }
+
+    @Test
+    fun theAppHoldsNoNewPermission() {
+        // one-step-phone-pairing QR-003: the scanner, the bridge (androidx.webkit, a library) and the node list need
+        // no permission beyond the ones the app already held.
+        val manifest = DocumentBuilderFactory.newInstance()
+            .apply { isNamespaceAware = true }
+            .newDocumentBuilder()
+            .parse(File("src/main/AndroidManifest.xml"))
+        val permissions = manifest.getElementsByTagName("uses-permission")
+        assertEquals(
+            setOf("android.permission.INTERNET", "android.permission.ACCESS_NETWORK_STATE", "android.permission.CAMERA"),
+            (0 until permissions.length).map { (permissions.item(it) as Element).getAttributeNS(androidNamespace, "name") }.toSet(),
+        )
+    }
 }

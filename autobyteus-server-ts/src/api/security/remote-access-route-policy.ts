@@ -75,8 +75,10 @@ export const classifyHttpRoute = (
     return "PUBLIC_PAIRING_EXCHANGE";
   }
   if (
-    path === "/rest/remote-access/address-candidates"
+    path === "/rest/remote-access/network"
+    || /^\/rest\/remote-access\/network\/local-networks\/[^/]+$/.test(path)
     || path === "/rest/remote-access/pairing-sessions"
+    || /^\/rest\/remote-access\/pairing-sessions\/[^/]+$/.test(path)
     || path === "/rest/remote-access/devices"
     || path === "/rest/remote-access/devices/revoked"
     || /^\/rest\/remote-access\/devices\/[^/]+$/.test(path)

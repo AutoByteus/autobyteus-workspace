@@ -2,6 +2,7 @@ import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
 import { getPairedDeviceStore, type PairedDeviceStore } from "../stores/paired-device-store.js";
 import {
   REMOTE_ACCESS_MOBILE_CREDENTIAL_PREFIX,
+  type ConnectionWay,
   type PairedDeviceRecord,
   type PairedDeviceSummary,
   toDeviceSummary,
@@ -43,6 +44,7 @@ export class PairedDeviceService {
   async createDevice(input: {
     displayName?: string | null;
     clientFacingBaseUrl: string;
+    connectionWay: ConnectionWay;
   }): Promise<{ record: PairedDeviceRecord; credential: string }> {
     const now = new Date().toISOString();
     const credential = generateCredential();
@@ -51,6 +53,7 @@ export class PairedDeviceService {
       displayName: normalizeDisplayName(input.displayName),
       credentialHash: hashRemoteAccessCredential(credential),
       clientFacingBaseUrl: input.clientFacingBaseUrl,
+      connectionWay: input.connectionWay,
       createdAt: now,
       lastSeenAt: null,
       revokedAt: null,

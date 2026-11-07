@@ -380,7 +380,7 @@ const setUp = async () => {
 const pairingFor = async (serverBaseUrl) => {
   const settings = await alpha.rest('PUT', '/remote-access/settings', { phoneAccessEnabled: true });
   assert(settings.status === 200, 'Phone Access on', settings);
-  const session = await alpha.rest('POST', '/remote-access/pairing-sessions', { serverBaseUrl, trustedPrivateHttpAcknowledged: true });
+  const session = await alpha.rest('POST', '/remote-access/pairing-sessions', { connectionWay: 'local_network', serverBaseUrl, trustedPrivateHttpAcknowledged: true });
   assert(session.status === 201 && session.body.mobileUrl, 'pairing session', session.status);
   return session.body.mobileUrl;
 };

@@ -1,7 +1,7 @@
 import path from "node:path";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { readJsonArrayFile, updateJsonArrayFile, writeJsonArrayFile } from "../../persistence/file/store-utils.js";
-import type { PairedDeviceRecord } from "../domain/models.js";
+import { isConnectionWay, type PairedDeviceRecord } from "../domain/models.js";
 
 type AppConfigLike = {
   getAppDataDir(): string;
@@ -14,6 +14,14 @@ const isValidRecord = (record: PairedDeviceRecord): boolean =>
   && Boolean(record?.clientFacingBaseUrl)
   && Boolean(record?.createdAt);
 
+/** Rows written before devices carried their way to connect read as `connectionWay: null`. */
+const normalizeRecord = (record: PairedDeviceRecord): PairedDeviceRecord => ({
+  ...record,
+  connectionWay: isConnectionWay(record.connectionWay) ? record.connectionWay : null,
+  lastSeenAt: record.lastSeenAt ?? null,
+  revokedAt: record.revokedAt ?? null,
+});
+
 export class PairedDeviceStore {
   constructor(private readonly config: AppConfigLike = appConfigProvider.config) {}
 
@@ -23,11 +31,7 @@ export class PairedDeviceStore {
 
   async listRecords(): Promise<PairedDeviceRecord[]> {
     const rows = await readJsonArrayFile<PairedDeviceRecord>(this.getFilePath());
-    return rows.filter(isValidRecord).map((record) => ({
-      ...record,
-      lastSeenAt: record.lastSeenAt ?? null,
-      revokedAt: record.revokedAt ?? null,
-    }));
+    return rows.filter(isValidRecord).map(normalizeRecord);
   }
 
   async writeRecords(records: PairedDeviceRecord[]): Promise<void> {
@@ -38,11 +42,7 @@ export class PairedDeviceStore {
     updater: (records: PairedDeviceRecord[]) => PairedDeviceRecord[] | Promise<PairedDeviceRecord[]>,
   ): Promise<PairedDeviceRecord[]> {
     return updateJsonArrayFile<PairedDeviceRecord>(this.getFilePath(), async (records) => {
-      const normalized = records.filter(isValidRecord).map((record) => ({
-        ...record,
-        lastSeenAt: record.lastSeenAt ?? null,
-        revokedAt: record.revokedAt ?? null,
-      }));
+      const normalized = records.filter(isValidRecord).map(normalizeRecord);
       return updater(normalized);
     });
   }

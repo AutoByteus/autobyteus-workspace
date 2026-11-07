@@ -4,10 +4,17 @@ import android.content.Context
 import org.json.JSONArray
 import org.json.JSONObject
 
-class SavedNodeStore(context: Context) {
+/** The phone's saved nodes, as the connect sequence uses them. */
+interface NodeEntries {
+    fun loadEntries(): List<SavedNodeEntry>
+    fun saveEntry(entry: SavedNodeEntry): SavedNodeEntry
+    fun selectEntry(entryId: String)
+}
+
+class SavedNodeStore(context: Context) : NodeEntries {
     private val preferences = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
 
-    fun loadEntries(): List<SavedNodeEntry> {
+    override fun loadEntries(): List<SavedNodeEntry> {
         val raw = preferences.getString(KEY_ENTRIES, null) ?: return emptyList()
         return runCatching {
             val array = JSONArray(raw)
@@ -26,7 +33,7 @@ class SavedNodeStore(context: Context) {
         return entries.firstOrNull { it.id == selectedId } ?: entries.firstOrNull()
     }
 
-    fun saveEntry(entry: SavedNodeEntry): SavedNodeEntry {
+    override fun saveEntry(entry: SavedNodeEntry): SavedNodeEntry {
         val existing = loadEntries()
         val merged = listOf(entry) + existing.filterNot { it.id == entry.id }
         preferences.edit()
@@ -45,7 +52,7 @@ class SavedNodeStore(context: Context) {
             .apply()
     }
 
-    fun selectEntry(entryId: String) {
+    override fun selectEntry(entryId: String) {
         if (loadEntries().any { it.id == entryId }) {
             preferences.edit().putString(KEY_SELECTED_ID, entryId).apply()
         }

@@ -1,6 +1,6 @@
 import type { FastifyInstance } from "fastify";
 import { RemoteAccessError } from "../../remote-access/domain/models.js";
-import { getAddressCandidateService } from "../../remote-access/services/address-candidate-service.js";
+import { getNodeNetworkService } from "../../remote-access/services/node-network-service.js";
 import { getPairedDeviceService } from "../../remote-access/services/paired-device-service.js";
 import { getRemoteAccessPairingService } from "../../remote-access/services/remote-access-pairing-service.js";
 import { getRemoteAccessSettingsService } from "../../remote-access/services/remote-access-settings-service.js";
@@ -36,15 +36,27 @@ export async function registerRemoteAccessRoutes(app: FastifyInstance): Promise<
       phoneAccessEnabled: settings.phoneAccessEnabled,
       pairingAvailable: settings.phoneAccessEnabled,
       nodeId,
-      serverName: "AutoByteus Desktop",
     };
   });
 
-  app.get<{ Querystring: { manualServerBaseUrl?: string } }>("/remote-access/address-candidates", async (request) => ({
-    candidates: getAddressCandidateService().listCandidates({
-      manualServerBaseUrl: request.query.manualServerBaseUrl,
-    }),
+  app.get("/remote-access/network", async () => ({
+    network: await getNodeNetworkService().getNodeNetwork(),
   }));
+
+  app.put<{ Params: { networkId: string }; Body: { allowed?: boolean } }>(
+    "/remote-access/network/local-networks/:networkId",
+    async (request, reply) => {
+      if (typeof request.body?.allowed !== "boolean") {
+        return reply.code(400).send({ detail: "allowed boolean is required." });
+      }
+      try {
+        await getNodeNetworkService().setLocalNetworkAllowed(request.params.networkId, request.body.allowed);
+        return { networkId: request.params.networkId, allowed: request.body.allowed };
+      } catch (error) {
+        return sendRemoteAccessError(reply, error);
+      }
+    },
+  );
 
   app.get("/remote-access/settings", async () => ({
     settings: await getRemoteAccessSettingsService().getSettings(),
@@ -60,18 +72,29 @@ export async function registerRemoteAccessRoutes(app: FastifyInstance): Promise<
   });
 
   app.post<{
-    Body: { serverBaseUrl?: string; serverName?: string | null; trustedPrivateHttpAcknowledged?: boolean };
+    Body: {
+      serverBaseUrl?: string;
+      serverName?: string | null;
+      connectionWay?: string;
+      trustedPrivateHttpAcknowledged?: boolean;
+    };
   }>("/remote-access/pairing-sessions", async (request, reply) => {
     try {
       const result = await getRemoteAccessPairingService().createPairingSession({
         serverBaseUrl: request.body?.serverBaseUrl ?? "",
         serverName: request.body?.serverName,
+        connectionWay: request.body?.connectionWay,
         trustedPrivateHttpAcknowledged: request.body?.trustedPrivateHttpAcknowledged,
       });
       return reply.code(201).send(result);
     } catch (error) {
       return sendRemoteAccessError(reply, error);
     }
+  });
+
+  app.delete<{ Params: { sessionId: string } }>("/remote-access/pairing-sessions/:sessionId", async (request, reply) => {
+    getRemoteAccessPairingService().discardSession(request.params.sessionId);
+    return reply.code(204).send();
   });
 
   app.post<{

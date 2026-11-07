@@ -23,6 +23,8 @@ class AutoByteusWebView(
     private val context: Context,
     val entry: SavedNodeEntry,
     private val fileChooserCoordinator: WebFileChooserCoordinator,
+    /** The shell bridge for this entry's origin; registered before the first page loads. */
+    private val shellBridge: ShellBridge?,
     private val onPageStarted: (String) -> Unit,
     private val onPageFinished: (String) -> Unit,
     private val onDiagnostic: (ConnectionDiagnostic) -> Unit,
@@ -56,6 +58,7 @@ class AutoByteusWebView(
             webViewClient = Client()
             setDownloadListener(DownloadListener { url, _, _, _, _ -> openExternal(url) })
         }
+        shellBridge?.register(webView)
         loadTrusted(initialUrl)
         return webView
     }

@@ -4,11 +4,16 @@ import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
 
+/** Whether a node answers at an entry's address with phone access on. */
+interface NodeStatusCheck {
+    fun validate(entry: SavedNodeEntry): ConnectionValidationResult
+}
+
 class ConnectionValidator(
     private val connectTimeoutMs: Int = 5_000,
     private val readTimeoutMs: Int = 5_000,
-) {
-    fun validate(entry: SavedNodeEntry): ConnectionValidationResult = validate(entry.baseUrl, entry)
+) : NodeStatusCheck {
+    override fun validate(entry: SavedNodeEntry): ConnectionValidationResult = validate(entry.baseUrl, entry)
 
     fun validate(baseUrl: String, existingEntry: SavedNodeEntry? = null): ConnectionValidationResult {
         val normalized = try {
@@ -32,7 +37,7 @@ class ConnectionValidator(
                 val body = connection.inputStream.bufferedReader().use { it.readText() }
                 val status = RemoteAccessStatus.fromJson(body)
                 if (!status.phoneAccessEnabled) {
-                    ConnectionValidationResult.Failed(ConnectionDiagnosticMapper.phoneAccessDisabled(status.serverName))
+                    ConnectionValidationResult.Failed(ConnectionDiagnosticMapper.phoneAccessDisabled(entry.displayName))
                 } else {
                     ConnectionValidationResult.Reachable(entry, status)
                 }
@@ -43,10 +48,10 @@ class ConnectionValidator(
     }
 }
 
+/** A node's public status. It carries no name: the phone takes a node's name from its QR. */
 data class RemoteAccessStatus(
     val phoneAccessEnabled: Boolean,
     val pairingAvailable: Boolean,
-    val serverName: String,
 ) {
     companion object {
         fun fromJson(jsonText: String): RemoteAccessStatus {
@@ -54,7 +59,6 @@ data class RemoteAccessStatus(
             return RemoteAccessStatus(
                 phoneAccessEnabled = json.optBoolean("phoneAccessEnabled", false),
                 pairingAvailable = json.optBoolean("pairingAvailable", false),
-                serverName = json.optString("serverName", "AutoByteus Desktop"),
             )
         }
     }

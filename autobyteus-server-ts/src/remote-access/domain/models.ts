@@ -28,14 +28,26 @@ export type RemoteAccessSettings = {
   updatedBy?: "loopback-desktop";
 };
 
-export type RemoteAccessUrlCandidateKind = "loopback" | "lan" | "tailnet_like" | "manual";
+/** How a phone reaches a node. */
+export const CONNECTION_WAYS = ["company_address", "tailscale", "vpn", "local_network"] as const;
+export type ConnectionWay = (typeof CONNECTION_WAYS)[number];
 
-export type RemoteAccessUrlCandidate = {
-  id: string;
-  kind: RemoteAccessUrlCandidateKind;
-  label: string;
-  serverBaseUrl: string;
-  source: string;
+export const isConnectionWay = (value: unknown): value is ConnectionWay =>
+  typeof value === "string" && (CONNECTION_WAYS as readonly string[]).includes(value);
+
+/** The network ID used when this computer's local network cannot be recognised. */
+export const THIS_COMPUTER_NETWORK_ID = "this-computer";
+
+/** One node's report of the network of the computer it runs on. */
+export type NodeNetwork = {
+  computerName: string;
+  runsInContainer: boolean;
+  /** `AUTOBYTEUS_SERVER_HOST` unless it is a local-only address. */
+  configuredBaseUrl: string | null;
+  tailscale: { address: string; dnsName: string | null } | null;
+  vpnAddresses: string[];
+  /** In a container: network ID `this-computer` and no addresses. `null` only when a computer has no local network. */
+  localNetwork: { networkId: string; addresses: string[]; allowed: boolean } | null;
 };
 
 export type RemoteAccessPairingPayload = {
@@ -47,7 +59,9 @@ export type RemoteAccessPairingPayload = {
 };
 
 export type RemoteAccessPairingSession = {
+  sessionId: string;
   pairingCode: string;
+  connectionWay: ConnectionWay;
   serverBaseUrl: string;
   serverName: string;
   expiresAt: string;
@@ -56,6 +70,8 @@ export type RemoteAccessPairingSession = {
 };
 
 export type CreatePairingSessionResult = {
+  /** Opaque ID to discard the session; never the code. */
+  sessionId: string;
   payload: RemoteAccessPairingPayload;
   qrText: string;
   mobileUrl: string;
@@ -66,6 +82,7 @@ export type PairedDeviceRecord = {
   displayName: string;
   credentialHash: string;
   clientFacingBaseUrl: string;
+  connectionWay: ConnectionWay | null;
   createdAt: string;
   lastSeenAt: string | null;
   revokedAt: string | null;
@@ -75,6 +92,7 @@ export type PairedDeviceSummary = {
   deviceId: string;
   displayName: string;
   clientFacingBaseUrl: string;
+  connectionWay: ConnectionWay | null;
   createdAt: string;
   lastSeenAt: string | null;
   revokedAt: string | null;
@@ -100,6 +118,8 @@ export type RemoteAccessAuthFailureCode =
   | "REMOTE_ACCESS_PAIRING_URL_LOCAL_ONLY"
   | "REMOTE_ACCESS_PAIRING_HTTP_PRIVATE_REQUIRED"
   | "REMOTE_ACCESS_PAIRING_HTTP_ACK_REQUIRED"
+  | "REMOTE_ACCESS_PAIRING_WAY_INVALID"
+  | "REMOTE_ACCESS_NETWORK_ID_INVALID"
   /** The request's browser Origin is not an allowed origin of the node. */
   | "REMOTE_ACCESS_ORIGIN_REFUSED"
   /** A paired phone's credential on a WebSocket route that is not a phone WebSocket route. */
@@ -150,6 +170,7 @@ export const toDeviceSummary = (record: PairedDeviceRecord): PairedDeviceSummary
   deviceId: record.deviceId,
   displayName: record.displayName,
   clientFacingBaseUrl: record.clientFacingBaseUrl,
+  connectionWay: record.connectionWay,
   createdAt: record.createdAt,
   lastSeenAt: record.lastSeenAt,
   revokedAt: record.revokedAt,
