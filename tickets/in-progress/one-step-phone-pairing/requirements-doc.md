@@ -2,8 +2,8 @@
 
 ## Document Status
 
-- Status: `Ready for Approval` (SR-009; SR-008 before). All decisions settled; approval follows the user's confirmation of the Product design. The user's answers of 2026-11-07 settle DEC-001 and DEC-003; DEC-002 is decided A within his direction; DEC-004 (warning once per computer or never) stays open and is shown in the Product design for his choice. Approval follows the Product design and his confirmation of it.
-- Current solution revision ID: `SR-009`
+- Status: `Ready for Approval` (SR-010; SR-009 before). All decisions settled; approval follows the user's confirmation of the Product design. The user's answers of 2026-11-07 settle DEC-001 and DEC-003; DEC-002 is decided A within his direction; DEC-004 (warning once per computer or never) stays open and is shown in the Product design for his choice. Approval follows the Product design and his confirmation of it.
+- Current solution revision ID: `SR-010`
 - Package identifier: `one-step-phone-pairing`
 - Request / ticket: Project Task `autobyteus-395` (Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`); also covers the cancelled `autobyteus-391`
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), for the user
@@ -117,6 +117,7 @@ None found.
 | REQ-020 | The desktop never presents the Wi-Fi permission and a hand-typed address as two settings to fill in. When a way works, nothing is asked. When none works, one choice of two alternatives: "Allow this Wi-Fi" or "Use a different address", and no QR until one is chosen. Otherwise "Use a different address" is only a small link under the QR. A hand-typed plain local address is subject to REQ-004 | BEH-001…003 | Must | The user's confusion, 2026-11-07 | N/A | DEC-014; SR-006 |
 | REQ-021 | The desktop panel has a collapsed "How does this work?" section at its bottom (also opened by a "How?" link on the result line). Inside: a short intro, one card per way to connect (same Wi-Fi; Tailscale; your own VPN; an address set up for this node), each with When / Setup / Safety in plain words, the card in use marked "In use"; then the QR code and phones (once, 5 minutes, one-time code not a password; revoke a lost phone; never opened to the public internet). No commands | BEH-001 | Should | The user, 2026-11-07: "I'm kind of afraid that the user don't understand how things work"; "a separate section for each types, make it more detailed … so they feel more secure … know how to set it up" | N/A | SR-007, SR-008 |
 | REQ-022 | The desktop Phone Setup panel shows the ways to connect as four tabs (Same Wi-Fi or LAN, Tailscale, Your VPN, Company address). On opening, the best ready way is pre-selected and marked "Recommended", so pressing its "Show QR code" needs no choice. Each tab shows a detected status, a one-line How it works, When / Setup / Safety, and its own "Show QR code", enabled only when ready; the QR then holds only that way's address. Same Wi-Fi: the first press is the explicit "Allow and show QR code" decision (REQ-004). Company address: the configured address or a field for the address IT gave. Supersedes the single-button layout of REQ-001/REQ-005, REQ-020 and the cards of REQ-021 (their content moves into the tabs) | BEH-001…003 | Must | The user, 2026-11-07: "I would list those as separate tabs … user click this one … very transparent for them" | Detection: E-03, E-06; U-001, U-004, U-005 | DEC-015; SR-009 |
+| REQ-023 | Phone access is a visible per-node on/off switch in the panel header ("Phone access [On]") with one line on what it means (off: no phone can reach this node; paired phones stay paired and work again when on). "Show QR code" turns it on and says so when it is off. No "Other options" fold. The Wi-Fi network's name is not shown (on macOS it needs the Location permission) | BEH-001, BEH-006 | Must | The user, 2026-11-07: "turn off phone access in other options feels weird … Is it the global thing … put it somewhere on the main page" | Wi-Fi name: macOS Location permission (Read, platform rule) | DEC-009; SR-010 |
 
 ## Acceptance Criteria
 
@@ -247,6 +248,7 @@ None found.
 | REQ-020 | UC-001…003 | BEH-001…003 | AC-002, AC-005 | SCN-002, SCN-004 | Product design |
 | REQ-021 | UC-001…003 | BEH-001 | AC-001 | SCN-001…004 | Product design |
 | REQ-022 | UC-001…003 | BEH-001…003 | AC-001, AC-002, AC-004, AC-005 | SCN-001…004 | Product design |
+| REQ-023 | UC-001, UC-007 | BEH-001, BEH-006 | AC-001 | SCN-001, SCN-008 | Product design |
 
 ## Architecture Phase Input
 

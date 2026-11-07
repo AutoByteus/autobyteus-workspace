@@ -13,6 +13,7 @@
 | SR-007 | Requirements | The user's "explain how everything works" question, 2026-11-07 | N/A | Ready for Approval | Ready for Approval | REQ-021 (new) | Collapsed "How does this work?" section |
 | SR-008 | Requirements | The user: one section per network type, more detail, 2026-11-07 | N/A | Ready for Approval | Ready for Approval | REQ-021 | Four cards with When / Setup / Safety; text prepared by the Solution Designer |
 | SR-009 | Requirements | The user: separate tabs per network type, 2026-11-07 | N/A | Ready for Approval | Ready for Approval | REQ-022 (new), DEC-015; REQ-001/005/020/021 superseded in layout | Four tabs, best ready one pre-selected |
+| SR-010 | Requirements | The user on "Turn off phone access", 2026-11-07 | N/A | Ready for Approval | Ready for Approval | REQ-023 (new) | Header switch per node; Other options removed; no Wi-Fi name |
 
 ## Revision Entries
 
@@ -103,3 +104,9 @@
 ### SR-009a — Tab naming and "How it works" (refinement within SR-009)
 
 - The user, 2026-11-07: "Yes, exactly like that … same Wi-Fi or LAN? … no ambiguity, and under each one … how it works". First tab named "Same Wi-Fi or LAN"; each tab gets a one-line How it works. Sent to the Product Team.
+
+### SR-010 — Phone access switch in the header; no Wi-Fi name
+
+- Trigger: the user, 2026-11-07, on "Turn off phone access" in Other options: "feels weird … when do they need to turn off phone access? Is it the global thing …"
+- IDs affected: REQ-023 new. Phone access is per node: a header switch with its meaning; Other options removed. The design's "This network: Home-5G" is dropped because reading the Wi-Fi name on macOS needs the Location permission
+- Sent to the Product Team the same day
