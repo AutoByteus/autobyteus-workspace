@@ -151,7 +151,7 @@ const props = defineProps<{
 }>();
 
 const store = useMemorySyncStore();
-const { t } = useLocalization();
+const { t, resolvedLocale } = useLocalization();
 const hubForm = reactive({ enabled: false, advertisedHubBaseUrl: '' });
 const sourceForm = reactive({
   enabled: false,
@@ -324,7 +324,7 @@ const formatBoolean = (value?: boolean | null) => {
 const formatTimestamp = (value?: string | null) => {
   if (!value) return '—';
   const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
+  return Number.isNaN(date.getTime()) ? value : date.toLocaleString(resolvedLocale.value);
 };
 
 const formatBytes = (value: number) => {

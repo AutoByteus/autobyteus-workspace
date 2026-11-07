@@ -8,13 +8,13 @@ import type { IndexStep } from '~/types/memorySearch';
  * the badge on its label and the notice on the Search tab, and the text of each step.
  */
 export function useMemoryIndexView() {
-  const { t } = useLocalization();
+  const { t, resolvedLocale } = useLocalization();
   const store = useMemorySearchStore();
   void store.loadIndexStatus();
 
   const index = computed(() => store.index);
 
-  const fmt = (value: number) => value.toLocaleString();
+  const fmt = (value: number) => value.toLocaleString(resolvedLocale.value);
   const percent = (step: IndexStep) => (step.total ? Math.floor((step.done / step.total) * 100) : 0);
   const unit = (step: IndexStep) => t(step.id === 'text' || step.id === 'meaning' ? 'memory.index.unit.files' : 'memory.index.unit.runs');
   const stepName = (id: string) => t(`memory.index.step.${id}.name`);
@@ -28,7 +28,7 @@ export function useMemoryIndexView() {
   const formatTimestamp = (value?: string | null) => {
     if (!value) return '';
     const date = new Date(value);
-    return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
+    return Number.isNaN(date.getTime()) ? value : date.toLocaleString(resolvedLocale.value);
   };
 
   /** Tone: dot colour; `spinner` while a step runs. `attention` = the user may need to act. */

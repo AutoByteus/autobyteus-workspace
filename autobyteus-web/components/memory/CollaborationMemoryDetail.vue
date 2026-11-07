@@ -110,7 +110,7 @@ const emit = defineEmits<{
   inspectMember: [runId: string, member: CollaborationMemberMemoryTargetSummary];
 }>();
 
-const { t } = useLocalization();
+const { t, resolvedLocale } = useLocalization();
 const searchInput = ref(props.search);
 
 watch(() => props.search, (value) => { searchInput.value = value; });
@@ -137,6 +137,6 @@ const taskTeamLabel = (startedAt?: string | null) => startedAt
 const formatTimestamp = (value?: string | null) => {
   if (!value) return '—';
   const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
+  return Number.isNaN(date.getTime()) ? value : date.toLocaleString(resolvedLocale.value);
 };
 </script>

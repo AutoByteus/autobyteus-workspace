@@ -283,7 +283,7 @@ const isMessageSelected = (message: CollaborationMessagePerspectiveRow): boolean
 const formatTimestamp = (value: string): string => {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return value;
-  return date.toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+  return date.toLocaleString(resolvedLocale.value, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 };
 
 const selectMessage = (message: CollaborationMessagePerspectiveRow) => {

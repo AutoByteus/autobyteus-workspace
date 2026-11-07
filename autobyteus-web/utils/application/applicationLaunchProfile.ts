@@ -1,3 +1,4 @@
+import { useLocalization } from '~/composables/useLocalization'
 import type {
   ApplicationAgentLaunchOverride,
   ApplicationLaunchOverride,
@@ -418,6 +419,6 @@ export const formatUpdatedAt = (
     return t('applications.components.applications.ApplicationLaunchSetupPanel.notSavedYet')
   }
   return t('applications.components.applications.ApplicationLaunchSetupPanel.lastUpdated', {
-    value: new Date(updatedAt).toLocaleString(),
+    value: new Date(updatedAt).toLocaleString(useLocalization().resolvedLocale.value),
   })
 }

@@ -56,6 +56,7 @@
 </template>
 
 <script setup lang="ts">
+import { useLocalization } from '~/composables/useLocalization';
 import { computed, ref } from 'vue';
 import { Icon } from '@iconify/vue';
 import type { SystemInstructionActivity } from '~/types/activity/RunActivity';
@@ -63,6 +64,8 @@ import {
   countUnicodeCodePoints,
   getSystemInstructionSourceKey,
 } from '~/services/activity/runActivityPresentation';
+
+const { resolvedLocale } = useLocalization();
 
 const props = defineProps<{
   activity: SystemInstructionActivity;
@@ -74,7 +77,7 @@ const expanded = ref(false);
 const contentId = computed(() => `system-instruction-content-${props.activity.activityId}`);
 const titleId = computed(() => `system-instruction-title-${props.activity.activityId}`);
 const characterCount = computed(() => countUnicodeCodePoints(props.activity.content));
-const captureTime = computed(() => props.activity.timestamp.toLocaleString(undefined, {
+const captureTime = computed(() => props.activity.timestamp.toLocaleString(resolvedLocale.value, {
   dateStyle: 'medium',
   timeStyle: 'medium',
 }));

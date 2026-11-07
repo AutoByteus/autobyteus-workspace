@@ -38,11 +38,14 @@
 </template>
 
 <script setup lang="ts">
+import { useLocalization } from '~/composables/useLocalization';
 import { computed, ref, watch } from 'vue';
 import { Icon } from '@iconify/vue';
 import { useMemoryExplorerStore } from '~/stores/memoryExplorerStore';
 import type { AgentRunMemorySummary, AgentWithMemorySelector } from '~/types/memory';
 import MemoryBadges from './MemoryBadges.vue';
+
+const { resolvedLocale } = useLocalization();
 
 const props = defineProps<{ selector: AgentWithMemorySelector }>();
 defineEmits<{ back: []; inspectRun: [run: AgentRunMemorySummary] }>();
@@ -67,6 +70,6 @@ const changePage = async (page: number) => store.changeAgentRunsPage(props.selec
 const formatTimestamp = (value?: string | null) => {
   if (!value) return '—';
   const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
+  return Number.isNaN(date.getTime()) ? value : date.toLocaleString(resolvedLocale.value);
 };
 </script>

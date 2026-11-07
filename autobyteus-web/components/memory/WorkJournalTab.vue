@@ -45,7 +45,7 @@
                 <span v-if="item.open" class="flex-shrink-0 rounded-full bg-emerald-50 px-1.5 text-[10px] font-semibold text-emerald-700">{{ $t('memory.journal.active') }}</span>
               </span>
               <span class="mt-0.5 block text-[11px] text-gray-500">{{ dayRange(item) }}</span>
-              <span class="block text-[11px] text-gray-500">{{ $t('memory.journal.file_size', { lines: item.lines.toLocaleString(), size: formatSize(item.sizeKb) }) }}</span>
+              <span class="block text-[11px] text-gray-500">{{ $t('memory.journal.file_size', { lines: item.lines.toLocaleString(resolvedLocale), size: formatSize(item.sizeKb) }) }}</span>
               <span v-if="matchCount(item.name)" class="mt-1 inline-flex items-center gap-1 text-[11px] font-semibold text-amber-700" data-test="work-journal-file-marker">
                 <span class="h-1.5 w-1.5 rounded-full bg-amber-500" aria-hidden="true" />{{ $t('memory.journal.matched_in_file', { count: matchCount(item.name) }) }}
               </span>
@@ -66,7 +66,7 @@
           <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-gray-100 px-3 py-2">
             <div class="min-w-0 flex-1 basis-56">
               <p class="truncate font-mono text-xs font-semibold text-gray-800">{{ store.current.name }}</p>
-              <p class="text-[11px] text-gray-500">{{ $t('memory.journal.file_size', { lines: store.current.lines.toLocaleString(), size: formatSize(store.current.sizeKb) }) }} · {{ dayRange(store.current) }}</p>
+              <p class="text-[11px] text-gray-500">{{ $t('memory.journal.file_size', { lines: store.current.lines.toLocaleString(resolvedLocale), size: formatSize(store.current.sizeKb) }) }} · {{ dayRange(store.current) }}</p>
             </div>
             <div class="flex flex-wrap items-center gap-2">
               <label class="sr-only" for="work-journal-day">{{ $t('memory.journal.jump_to_day') }}</label>
@@ -84,7 +84,7 @@
 
           <div ref="scroller" class="relative max-h-[62vh] min-h-[320px] overflow-auto bg-white font-mono text-xs leading-5" tabindex="0" role="region" :aria-label="store.current.name" data-test="work-journal-lines">
             <button v-if="store.from > 1" type="button" class="sticky left-0 block w-full border-b border-gray-100 bg-gray-50 px-3 py-2 text-left font-sans text-xs font-semibold text-blue-600 hover:bg-blue-50" data-test="work-journal-earlier" @click="loadEarlier">
-              ↑ {{ $t('memory.journal.earlier', { count: Math.min(JOURNAL_WINDOW, store.from - 1) }) }} <span class="font-normal text-gray-500">({{ $t('memory.journal.not_shown', { count: (store.from - 1).toLocaleString() }) }})</span>
+              ↑ {{ $t('memory.journal.earlier', { count: Math.min(JOURNAL_WINDOW, store.from - 1) }) }} <span class="font-normal text-gray-500">({{ $t('memory.journal.not_shown', { count: (store.from - 1).toLocaleString(resolvedLocale) }) }})</span>
             </button>
             <div v-for="line in store.lines" :key="line.n" :data-line="line.n" class="flex" :class="isMatched(line.n) ? 'bg-amber-50' : ''">
               <span class="sticky left-0 w-14 flex-shrink-0 select-none border-r px-2 text-right" :class="isMatched(line.n) ? 'border-amber-300 bg-amber-100 text-amber-800' : 'border-gray-100 bg-gray-50 text-gray-400'">{{ line.n }}</span>
@@ -95,12 +95,12 @@
               <span v-else class="min-w-0 flex-1 whitespace-pre-wrap break-words px-3 text-gray-500">{{ withoutLink(line.text) || ' ' }}<span v-if="trailingLink(line.text)" class="break-all text-gray-300" data-test="work-journal-raw-link">{{ trailingLink(line.text) }}</span></span>
             </div>
             <button v-if="store.to < store.current.lines" type="button" class="sticky left-0 block w-full border-t border-gray-100 bg-gray-50 px-3 py-2 text-left font-sans text-xs font-semibold text-blue-600 hover:bg-blue-50" data-test="work-journal-later" @click="store.loadLater()">
-              ↓ {{ $t('memory.journal.later', { count: Math.min(JOURNAL_WINDOW, store.current.lines - store.to) }) }} <span class="font-normal text-gray-500">({{ $t('memory.journal.not_shown', { count: (store.current.lines - store.to).toLocaleString() }) }})</span>
+              ↓ {{ $t('memory.journal.later', { count: Math.min(JOURNAL_WINDOW, store.current.lines - store.to) }) }} <span class="font-normal text-gray-500">({{ $t('memory.journal.not_shown', { count: (store.current.lines - store.to).toLocaleString(resolvedLocale) }) }})</span>
             </button>
           </div>
 
           <div class="flex flex-col gap-1 border-t border-gray-100 px-3 py-2 text-[11px] text-gray-500 md:flex-row md:items-center md:justify-between">
-            <span data-test="work-journal-range">{{ $t('memory.journal.showing', { from: store.from.toLocaleString(), to: store.to.toLocaleString(), total: store.current.lines.toLocaleString() }) }}</span>
+            <span data-test="work-journal-range">{{ $t('memory.journal.showing', { from: store.from.toLocaleString(resolvedLocale), to: store.to.toLocaleString(resolvedLocale), total: store.current.lines.toLocaleString(resolvedLocale) }) }}</span>
             <span v-if="store.current.lines > 5000">{{ $t('memory.journal.large_file') }}</span>
           </div>
         </div>
@@ -118,7 +118,7 @@ import type { JournalFileInfo, MatchKind } from '~/types/memorySearch';
 
 defineEmits<{ openIndex: [] }>();
 
-const { t } = useLocalization();
+const { t, resolvedLocale } = useLocalization();
 const store = useMemoryJournalStore();
 const searchStore = useMemorySearchStore();
 
@@ -181,7 +181,7 @@ const parts = (text: string) => {
 const formatDay = (day: string | null) => {
   if (!day) return '';
   const date = new Date(`${day}T12:00:00Z`);
-  return Number.isNaN(date.getTime()) ? day : date.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+  return Number.isNaN(date.getTime()) ? day : date.toLocaleDateString(resolvedLocale.value, { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
 };
 const dayRange = (item: JournalFileInfo) => (item.firstDay === item.lastDay ? formatDay(item.firstDay) : `${formatDay(item.firstDay)} – ${formatDay(item.lastDay)}`);
 const formatSize = (kb: number) => (kb >= 1024 ? `${(kb / 1024).toFixed(1)} MB` : `${kb} KB`);

@@ -124,7 +124,7 @@ defineEmits<{
 }>();
 
 const activeContextStore = useActiveContextStore();
-const { t } = useLocalization();
+const { t, resolvedLocale } = useLocalization();
 
 const currentAgentRunId = computed(() => activeContextStore.activeAgentContext?.state.runId ?? '');
 
@@ -134,7 +134,7 @@ const countsLabel = computed(() => confirmed.value
   : tasks.value.length ? t('workspace.components.progress.BackgroundTaskPanel.recordedCounts', counts.value)
     : t('workspace.components.progress.BackgroundTaskPanel.unconfirmedCounts'));
 const availabilityLabel = computed(() => t(`workspace.components.progress.BackgroundTaskPanel.${mode.value === 'loading' ? 'loading' : 'unavailable'}`));
-const observedTime = (iso: string): string => new Date(iso).toLocaleString();
+const observedTime = (iso: string): string => new Date(iso).toLocaleString(resolvedLocale.value);
 
 const descriptionOf = (task: BackgroundTaskPanelRow): string =>
   task.description.trim() || t(snapshotView.value ? 'workspace.components.progress.BackgroundTaskPanel.shellCommand' : 'workspace.components.progress.BackgroundTaskPanel.untitled');

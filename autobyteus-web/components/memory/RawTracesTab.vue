@@ -73,8 +73,11 @@
 </template>
 
 <script setup lang="ts">
+import { useLocalization } from '~/composables/useLocalization';
 import { ref, watch } from 'vue';
 import type { MemoryTraceEvent, RawTraceFileSummary } from '~/types/memory';
+
+const { resolvedLocale } = useLocalization();
 
 const props = withDefaults(defineProps<{
   traces: MemoryTraceEvent[] | null;
@@ -118,7 +121,7 @@ const onFileChange = (event: Event) => {
   emit('selectFile', target.value);
 };
 
-const formatCount = (value: number) => value.toLocaleString();
+const formatCount = (value: number) => value.toLocaleString(resolvedLocale.value);
 
 const formatJson = (payload: unknown) => {
   try {

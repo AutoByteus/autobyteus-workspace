@@ -1,5 +1,12 @@
 import { mount } from '@vue/test-utils';
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { ref } from 'vue';
+
+const appLocale = vi.hoisted(() => ({ value: 'en' }));
+vi.mock('~/composables/useLocalization', () => ({
+  useLocalization: () => ({ resolvedLocale: ref(appLocale.value) }),
+}));
+
 import SystemInstructionActivityItem from '../SystemInstructionActivityItem.vue';
 
 const translations: Record<string, string> = {
@@ -18,6 +25,8 @@ const translate = (key: string, values: Record<string, unknown> = {}) =>
   );
 
 describe('SystemInstructionActivityItem', () => {
+  beforeEach(() => { appLocale.value = 'en'; });
+
   it('is collapsed by default and reveals exact selectable whitespace in a bounded pre', async () => {
     const content = '  first\n\nemoji 😀\n' + 'x'.repeat(500);
     const wrapper = mount(SystemInstructionActivityItem, {
@@ -57,8 +66,25 @@ describe('SystemInstructionActivityItem', () => {
       'max-h-80', 'overflow-auto', 'whitespace-pre-wrap', 'font-mono', 'select-text',
     ]));
     expect(wrapper.text()).toContain('517 characters');
-    expect(wrapper.text()).toContain(`Captured ${new Date(10_000).toLocaleString(undefined, {
+    expect(wrapper.text()).toContain(`Captured ${new Date(10_000).toLocaleString('en', {
       dateStyle: 'medium', timeStyle: 'medium',
     })}`);
+  });
+
+  // autobyteus-426 AC-017: the capture time inside the translated sentence follows the app's language, not the OS's.
+  it('formats the capture time in the app locale', () => {
+    appLocale.value = 'zh-CN';
+    const wrapper = mount(SystemInstructionActivityItem, {
+      props: {
+        activity: { kind: 'system_instruction', activityId: 'zh', content: 'x', timestamp: new Date(Date.UTC(2026, 10, 7, 9, 30, 5)) },
+        runtimeKind: 'autobyteus',
+      },
+      global: { stubs: { Icon: { props: ['icon'], template: '<svg />' } }, mocks: { $t: translate } },
+    });
+    const options = { dateStyle: 'medium', timeStyle: 'medium' } as const;
+    const zh = new Intl.DateTimeFormat('zh-CN', options).format(new Date(Date.UTC(2026, 10, 7, 9, 30, 5)));
+    const de = new Intl.DateTimeFormat('de-DE', options).format(new Date(Date.UTC(2026, 10, 7, 9, 30, 5)));
+    expect(zh).not.toBe(de);
+    expect(wrapper.text()).toContain(`Captured ${zh}`);
   });
 });

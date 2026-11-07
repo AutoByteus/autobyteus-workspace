@@ -14,7 +14,7 @@ import { createNodeIdToNodeDictionary } from '~/utils/fileExplorer/fileUtils';
 import { TreeNode } from '~/utils/fileExplorer/TreeNode';
 import { createMobileTestRouter } from '~/composables/mobile/__tests__/mobileTestRouter';
 
-vi.mock('~/composables/useLocalization', () => ({ useLocalization: () => ({ t: (key: string, params?: Record<string, string>) => `${key}${params?.node ? `:${params.node}` : ''}` }) }));
+vi.mock('~/composables/useLocalization', () => ({ useLocalization: () => ({ resolvedLocale: { value: 'en' }, t: (key: string, params?: Record<string, string>) => `${key}${params?.node ? `:${params.node}` : ''}` }) }));
 
 let pinia: Pinia;
 const ROOT = '/Users/normy/project';

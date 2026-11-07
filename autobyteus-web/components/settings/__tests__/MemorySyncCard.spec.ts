@@ -66,6 +66,7 @@ vi.mock('~/stores/memorySyncStore', () => ({
 
 vi.mock('~/composables/useLocalization', () => ({
   useLocalization: () => ({
+    resolvedLocale: { value: 'en' },
     t: (key: string) => {
       return translationCatalog[key.split('.').pop() || key] ?? key;
     },

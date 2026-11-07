@@ -153,7 +153,7 @@ const emit = defineEmits<{
   selectOrg: [org: AgentOrgWithMemorySummary];
 }>();
 
-const { t } = useLocalization();
+const { t, resolvedLocale } = useLocalization();
 const { badge: indexBadge } = useMemoryIndexView();
 const sections: Array<{ id: MemorySection; label: string }> = [
   { id: 'browse', label: t('memory.tabs.browse') },
@@ -222,6 +222,6 @@ const changePage = async (page: number) => store.changeHomePage(store.homeTab, p
 const formatTimestamp = (value?: string | null) => {
   if (!value) return '—';
   const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
+  return Number.isNaN(date.getTime()) ? value : date.toLocaleString(resolvedLocale.value);
 };
 </script>

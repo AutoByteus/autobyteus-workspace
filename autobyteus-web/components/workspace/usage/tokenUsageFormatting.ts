@@ -1,14 +1,17 @@
+import { useLocalization } from '~/composables/useLocalization';
 import type { TokenUsageApiCostStatus, TokenUsageRunSummary, TokenUsageUnitPriceSummary } from '~/types/tokenUsageMeter';
 
 export type TokenUsageTranslator = (key: string, params?: Record<string, string | number>) => string;
 
 export const createTokenUsageFormatter = (t: TokenUsageTranslator) => {
-  const formatInteger = (value: number): string => new Intl.NumberFormat().format(value);
+  /** The app's UI locale, read at each use so a language change re-formats. */
+  const locale = (): string => useLocalization().resolvedLocale.value;
+  const formatInteger = (value: number): string => new Intl.NumberFormat(locale()).format(value);
 
   const formatCompactInteger = (value: number): string => {
     const absoluteValue = Math.abs(value);
     if (absoluteValue < 10_000) return formatInteger(value);
-    return new Intl.NumberFormat(undefined, {
+    return new Intl.NumberFormat(locale(), {
       notation: 'compact',
       compactDisplay: 'short',
       maximumFractionDigits: absoluteValue >= 1_000_000 ? 2 : 1,
@@ -26,7 +29,7 @@ export const createTokenUsageFormatter = (t: TokenUsageTranslator) => {
     if (status === 'mixed') return t('shell.tokenUsage.priceStatusMixed');
     if (value === null) return t('shell.tokenUsage.unpriced');
     const fractionDigits = Math.abs(value) >= 1 ? 2 : 4;
-    return new Intl.NumberFormat(undefined, {
+    return new Intl.NumberFormat(locale(), {
       style: 'currency',
       currency: currency || 'USD',
       currencyDisplay: 'narrowSymbol',
@@ -52,7 +55,7 @@ export const createTokenUsageFormatter = (t: TokenUsageTranslator) => {
 
   const formatUnitPriceAmount = (value: number, currency: string | null): string => {
     const fractionDigits = Math.abs(value) >= 1 ? 2 : 4;
-    return new Intl.NumberFormat(undefined, {
+    return new Intl.NumberFormat(locale(), {
       style: 'currency',
       currency: currency || 'USD',
       currencyDisplay: 'narrowSymbol',
