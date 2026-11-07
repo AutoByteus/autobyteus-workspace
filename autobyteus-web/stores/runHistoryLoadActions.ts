@@ -56,6 +56,7 @@ interface RunHistoryOpenOptions {
 export interface RunHistoryFetchStoreLike {
   loading: boolean;
   error: string | null;
+  historyReadFailure: unknown;
   workspaceGroups: RunHistoryWorkspaceGroup[];
   agentAvatarByDefinitionId: Record<string, string>;
   resumeConfigByRunId: Record<string, RunResumeConfigPayload>;
@@ -107,6 +108,7 @@ export const fetchRunHistoryTree = async (
   if (!quiet) {
     store.loading = true;
     store.error = null;
+    store.historyReadFailure = null;
   }
 
   try {
@@ -132,6 +134,7 @@ export const fetchRunHistoryTree = async (
         useRunHistoryRetiredRunsStore().reconcileHistoryRead(store.workspaceGroups, limitPerAgent);
         store.historyFamilyErrors = { ...store.historyFamilyErrors, workspace: null };
         store.error = null;
+        store.historyReadFailure = null;
         store.refreshRunNavigationTopology('workspace-history-ready');
         const nextAvatars = await buildNextAgentAvatarIndex(
           store.agentAvatarByDefinitionId,
@@ -149,7 +152,10 @@ export const fetchRunHistoryTree = async (
         if (workspaceGeneration !== store.workspaceRequestGeneration || requests !== store.agentOrgRequestSequenceById) return;
         const detail = error instanceof Error ? error.message : String(error);
         store.historyFamilyErrors = { ...store.historyFamilyErrors, workspace: detail };
-        if (!quiet) store.error = detail;
+        if (!quiet) {
+          store.error = detail;
+          store.historyReadFailure = error;
+        }
       }
     })();
 
@@ -183,6 +189,7 @@ export const fetchRunHistoryTree = async (
     };
     if (!quiet && workspaceGeneration === store.workspaceRequestGeneration) {
       store.error = detail;
+      store.historyReadFailure = error;
     }
   } finally {
     if (!quiet && workspaceGeneration === store.workspaceRequestGeneration && requests === store.agentOrgRequestSequenceById) {
@@ -413,6 +420,7 @@ export const openHistoricalRun = async (
   const stopWatching = watch(intent.isCurrent, (current) => { if (!current) store.openingRun = false; }, { flush: 'sync' });
   store.openingRun = true;
   store.error = null;
+  store.historyReadFailure = null;
 
   try {
     const result = await openAgentRun({
@@ -433,6 +441,7 @@ export const openHistoricalRun = async (
   } catch (error: any) {
     if (!intent.isCurrent()) return { disposition: 'superseded' };
     store.error = error?.message || `Failed to open run '${runId}'.`;
+    store.historyReadFailure = null;
     throw error;
   } finally {
     stopWatching();
@@ -451,14 +460,14 @@ export const resolveRunHistoryWorkspaceMetadataByRootPath = async (
   }
 };
 
-export const ensureRunHistoryWorkspaceByRootPath = async (
+/**
+ * The workspace ID for a root path: a workspace already listed, else the one the node registers for it.
+ * Throws when the node refuses the path (`WORKSPACE_PATH_REFUSED`) or the request fails.
+ */
+export const findOrRegisterWorkspaceByRootPath = async (
   rootPath: string,
-): Promise<string | null> => {
+): Promise<string> => {
   const workspaceStore = useWorkspaceStore();
-  if (!rootPath.trim()) {
-    return null;
-  }
-
   const normalizedRootPath = normalizeRootPath(rootPath) || rootPath.trim();
   const findWorkspaceIdByRootPath = (): string | null => {
     const matchingWorkspace = workspaceStore.allWorkspaces.find((workspace) => {
@@ -486,13 +495,18 @@ export const ensureRunHistoryWorkspaceByRootPath = async (
     }
   }
 
-  try {
-    const fetchedWorkspaceId = findWorkspaceIdByRootPath();
-    if (fetchedWorkspaceId) {
-      return fetchedWorkspaceId;
-    }
+  return findWorkspaceIdByRootPath() ?? await workspaceStore.createWorkspace({ root_path: normalizedRootPath });
+};
 
-    return await workspaceStore.createWorkspace({ root_path: normalizedRootPath });
+/** History restore: the workspace for a recorded root path, or `null` when there is none to open. */
+export const ensureRunHistoryWorkspaceByRootPath = async (
+  rootPath: string,
+): Promise<string | null> => {
+  if (!rootPath.trim()) {
+    return null;
+  }
+  try {
+    return await findOrRegisterWorkspaceByRootPath(rootPath);
   } catch {
     return null;
   }

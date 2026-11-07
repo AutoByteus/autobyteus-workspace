@@ -93,12 +93,14 @@ vi.mock('~/stores/workspaceCenterViewStore', () => ({
   useWorkspaceCenterViewStore: () => ({ showChat: mocks.showChat }),
 }))
 vi.mock('~/stores/runHistoryLoadActions', () => ({
-  ensureRunHistoryWorkspaceByRootPath: (rootPath: string) => mocks.resolveWorkspace(rootPath),
+  findOrRegisterWorkspaceByRootPath: (rootPath: string) => mocks.resolveWorkspace(rootPath),
   resolveRunHistoryWorkspaceMetadataByRootPath: async (rootPath: string) => ({
     workspaceId: 'ws-folder', workspaceRootPath: rootPath, displayName: 'folder', kind: 'filesystem',
   }),
 }))
 
+import { ApolloError } from '@apollo/client/core'
+import { GraphQLError } from 'graphql'
 import { launchAgentChat, launchTeamChat, resolveChatLaunchReadiness } from '../chatLaunchService'
 import { readChatLastModel } from '~/utils/chat/chatLastModelPreference'
 
@@ -201,11 +203,22 @@ describe('chatLaunchService', () => {
   })
 
   it('keeps the New chat intact when the workspace cannot be resolved', async () => {
-    mocks.resolveWorkspace.mockResolvedValue(null)
+    mocks.resolveWorkspace.mockRejectedValue(new Error('network down'))
     const draft = buildDraft()
 
-    await expect(launchAgentChat(draft, { navigate: vi.fn() })).rejects.toThrow()
+    await expect(launchAgentChat(draft, { navigate: vi.fn() })).rejects.toThrow('The selected workspace could not be opened.')
     expect(mocks.events).toEqual(['starting', 'clear-starting'])
+    expect(registered).toBeNull()
+    expect(draft.context.requirement).toBe('hello')
+  })
+
+  it('shows why the node refused a typed folder instead of the generic launch error (autobyteus-426 AC-008)', async () => {
+    mocks.resolveWorkspace.mockRejectedValue(new ApolloError({
+      graphQLErrors: [new GraphQLError('refused', { extensions: { code: 'WORKSPACE_PATH_REFUSED', reason: 'not_a_folder' } })],
+    }))
+    const draft = buildDraft()
+
+    await expect(launchAgentChat(draft, { navigate: vi.fn() })).rejects.toThrow('This path is a file, not a folder.')
     expect(registered).toBeNull()
     expect(draft.context.requirement).toBe('hello')
   })

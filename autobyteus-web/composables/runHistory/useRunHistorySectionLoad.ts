@@ -35,7 +35,8 @@ export const useRunHistorySectionLoad = (options: {
     } catch (cause) {
       return { ok: false, cause };
     }
-    if (runHistoryStore.error && !listsAnyRun()) return { ok: false, cause: runHistoryStore.error };
+    // The thrown error carries a refusal's status and code (the phone's check classifies it); the message does not.
+    if (runHistoryStore.error && !listsAnyRun()) return { ok: false, cause: runHistoryStore.historyReadFailure ?? runHistoryStore.error };
     return { ok: true };
   };
 

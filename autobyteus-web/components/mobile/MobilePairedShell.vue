@@ -19,7 +19,7 @@
       v-show="navigation.screen.value === 'list'"
       :tree="tree"
       :node-name="nodeName"
-      :connected="connected"
+      :connection="connection"
       :notice="notice"
       @open-connection="showConnection = true"
       @new-run="navigation.openNewRun()"
@@ -69,7 +69,8 @@ import { useMobileRunTree } from '~/composables/mobile/useMobileRunTree';
 import { useRunHistorySectionLoad } from '~/composables/runHistory/useRunHistorySectionLoad';
 import { useActiveContextStore } from '~/stores/activeContextStore';
 import { useMobileNodeSessionStore } from '~/stores/mobileNodeSessionStore';
-import { isRemoteAccessAuthFailure } from '~/utils/remoteAccess/remoteAccessAuthFailure';
+import type { MobileRunListConnection } from '~/components/mobile/runList/MobileRunList.vue';
+import { remoteAccessReadRefusal } from '~/utils/remoteAccess/remoteAccessReadRefusal';
 
 const props = defineProps<{
   /** Just paired: "Connected to <node>" shows until the first check ends. */
@@ -99,7 +100,10 @@ const historyLoad = useRunHistorySectionLoad({
 useAgentRunCollaborationSync();
 
 const firstCheckDone = ref(false);
-/** Status and the history read together; a read refused for this phone's credential rejects the session (E-27). */
+/**
+ * Status and the history read together, one outcome per check: a read refused for this phone's credential (401, auth
+ * codes, a revoked device) rejects the session (E-27); Phone Access off keeps it and says so; else reachability.
+ */
 async function checkStatus(first = false): Promise<void> {
   const [statusResult, readResult] = await Promise.allSettled([
     sessionStore.fetchStatus(),
@@ -107,11 +111,17 @@ async function checkStatus(first = false): Promise<void> {
   ]);
   const statusReachable = statusResult.status === 'fulfilled' && Boolean(statusResult.value);
   const read = readResult.status === 'fulfilled' ? readResult.value : { ok: false as const, cause: readResult.reason };
-  if (!read.ok && isRemoteAccessAuthFailure(read.cause)) {
-    sessionStore.rejectLocalSessionForAuthFailure();
-    return;
+  const refusal = read.ok ? null : remoteAccessReadRefusal(read.cause);
+  switch (refusal) {
+    case 'session_rejected':
+      sessionStore.rejectLocalSessionForAuthFailure();
+      return;
+    case 'phone_access_off':
+      sessionStore.recordCheckOutcome('phone_access_off');
+      return;
+    case null:
+      sessionStore.recordCheckOutcome(read.ok || statusReachable ? 'reachable' : 'unreachable');
   }
-  sessionStore.recordAuthorizedApiReachability(read.ok || statusReachable);
 }
 onMounted(async () => {
   try {
@@ -126,6 +136,11 @@ onMounted(async () => {
 const nodeName = computed(() => sessionStore.session?.nodeName || hostOf(sessionStore.serverBaseUrl));
 /** Reachable until the first check says otherwise. */
 const connected = computed(() => !firstCheckDone.value || sessionStore.authorizedApiReachable);
+/** The run list's connection state: Phone Access off is its own state, not "Not reachable". */
+const connection = computed<MobileRunListConnection>(() => {
+  if (sessionStore.phoneAccessOff) return 'phone_access_off';
+  return connected.value ? 'connected' : 'unreachable';
+});
 
 const showConnection = ref(false);
 const showUnpairConfirm = ref(false);

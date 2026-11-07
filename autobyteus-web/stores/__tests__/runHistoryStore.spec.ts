@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { ApolloError } from '@apollo/client/core';
 import { createPinia, setActivePinia } from 'pinia';
 import { useRunHistoryStore } from '../runHistoryStore';
 import { parseAgentOrgHistoryItems } from '../runHistoryStoreSupport';
@@ -591,6 +592,37 @@ describe('runHistoryStore', () => {
     await store.loadWorkspaceCatalogForNavigation();
     expect(workspaceStoreMock.fetchAllWorkspaces).toHaveBeenCalledTimes(1);
     expect(store.navigationTopologyRevision).toBe(2);
+  });
+
+  it('keeps the failed history read\'s thrown error beside its message, and clears both with the next read (autobyteus-426 D-02)', async () => {
+    const refused = new ApolloError({
+      networkError: Object.assign(new Error('Response not successful: Received status code 403'), {
+        name: 'ServerError', statusCode: 403, response: {}, result: { error: 'PHONE_ACCESS_DISABLED', code: 'PHONE_ACCESS_DISABLED' },
+      }),
+    });
+    let failWorkspace = true;
+    queryMock.mockImplementation(async ({ query }: { query: string }) => {
+      if (query === 'ListWorkspaceRunHistory') {
+        if (failWorkspace) throw refused;
+        return { data: { listWorkspaceRunHistory: [] }, errors: [] };
+      }
+      if (query === 'ListCollaborationRootHistory') return { data: { listCollaborationRootHistory: [] }, errors: [] };
+      throw new Error(`Unexpected query: ${String(query)}`);
+    });
+    const store = useRunHistoryStore();
+
+    await store.fetchTree();
+    expect(store.error).toBe('Response not successful: Received status code 403');
+    expect(store.historyReadFailure).toBe(refused);
+
+    // A quiet read (the poll) shows nothing and changes neither.
+    await store.fetchTree({ quiet: true });
+    expect(store.historyReadFailure).toBe(refused);
+
+    failWorkspace = false;
+    await store.fetchTree();
+    expect(store.error).toBeNull();
+    expect(store.historyReadFailure).toBeNull();
   });
 
   it('fetches run history tree from GraphQL', async () => {

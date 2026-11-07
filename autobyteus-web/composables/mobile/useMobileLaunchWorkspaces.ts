@@ -1,6 +1,8 @@
 import { computed, ref } from 'vue'
 import { useWorkspaceStore, type WorkspaceInfo } from '~/stores/workspace'
 import type { MobileLaunchPickerItem } from '~/types/mobileLaunch'
+import { useLocalization } from '~/composables/useLocalization'
+import { readWorkspacePathRefusal, workspacePathRefusalText } from '~/utils/workspace/workspacePathRefusal'
 
 export interface MobileLaunchWorkspaceLoadResult {
   workspaceId: string
@@ -67,7 +69,10 @@ export function useMobileLaunchWorkspaces() {
       const workspaceId = await workspaceStore.createWorkspace({ root_path: rootPath })
       return { workspaceId, rootPath }
     } catch (cause) {
-      error.value = errorMessage(cause, 'Could not load that workspace path.')
+      const refusal = readWorkspacePathRefusal(cause)
+      error.value = refusal
+        ? workspacePathRefusalText(refusal, rootPath, useLocalization().t)
+        : errorMessage(cause, 'Could not load that workspace path.')
       throw cause
     } finally {
       isLoadingPath.value = false

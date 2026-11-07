@@ -17,6 +17,7 @@ vi.mock('~/composables/runHistory/useRunHistorySectionLoad', () => ({
   },
 }));
 
+import { ApolloError } from '@apollo/client/core';
 import MobileRemoteAccessShell from '../MobileRemoteAccessShell.vue';
 import { useMobileNodeSessionStore } from '~/stores/mobileNodeSessionStore';
 import { createMobileTestRouter } from '~/composables/mobile/__tests__/mobileTestRouter';
@@ -121,15 +122,66 @@ describe('MobileRemoteAccessShell', () => {
     const { wrapper } = await mountShell();
     const session = useMobileNodeSessionStore();
     expect(session.rejectLocalSessionForAuthFailure).toHaveBeenCalledTimes(1);
-    expect(session.recordAuthorizedApiReachability).not.toHaveBeenCalled();
+    expect(session.recordCheckOutcome).not.toHaveBeenCalled();
     expect(load.load).not.toHaveBeenCalled();
+    wrapper.unmount();
+  });
+
+  // autobyteus-426 REQ-002: the history read's refusal as Apollo hands it over (IMP-02), not only the axios shape.
+  const refusedRead = (code: string) => ({
+    ok: false,
+    cause: new ApolloError({
+      networkError: Object.assign(new Error('Response not successful: Received status code 403'), {
+        name: 'ServerError', statusCode: 403, response: {}, result: { error: code, code, message: 'refused' },
+      }),
+    }),
+  });
+
+  it('rejects the session of a revoked phone like a 401: the pairing screen shows (AC-002)', async () => {
+    load.initialLoad = Promise.resolve(refusedRead('REMOTE_ACCESS_DEVICE_REVOKED'));
+    const { wrapper } = await mountShell();
+    const session = useMobileNodeSessionStore();
+    expect(session.rejectLocalSessionForAuthFailure).toHaveBeenCalledTimes(1);
+    expect(session.recordCheckOutcome).not.toHaveBeenCalled();
+    await flushPromises();
+    expect(wrapper.find('[data-testid="mobile-run-list"]').exists()).toBe(false);
+    wrapper.unmount();
+  });
+
+  it('keeps the session when Phone Access is off and says so; Check loads the runs once it is on (AC-003)', async () => {
+    load.initialLoad = Promise.resolve(refusedRead('PHONE_ACCESS_DISABLED'));
+    const { wrapper } = await mountShell();
+    const session = useMobileNodeSessionStore();
+    expect(session.rejectLocalSessionForAuthFailure).not.toHaveBeenCalled();
+    expect(session.recordCheckOutcome).toHaveBeenCalledWith('phone_access_off');
+    expect(wrapper.get('[data-testid="mobile-node-state"]').text()).toBe('Phone access off');
+    expect(wrapper.get('[data-testid="mobile-node-offline-banner"]').text()).toContain('Office Mac is reachable, but Phone access is off.');
+
+    // Off, then the network is gone: "Can’t reach" (off → unreachable).
+    load.load.mockResolvedValueOnce({ ok: false, cause: new Error('Failed to fetch') } as never);
+    vi.mocked(session.fetchStatus).mockResolvedValueOnce(null);
+    await wrapper.get('[data-testid="mobile-node-offline-check"]').trigger('click');
+    (document.body.querySelector('[data-testid="mobile-check-connection"]') as HTMLButtonElement).click();
+    await flushPromises();
+    expect(session.recordCheckOutcome).toHaveBeenLastCalledWith('unreachable');
+    expect(wrapper.get('[data-testid="mobile-node-state"]').text()).toBe('Not reachable');
+    expect(wrapper.get('[data-testid="mobile-node-offline-banner"]').text()).toContain('Can’t reach Office Mac.');
+
+    // Phone Access on again: the next check reads the runs with no re-pairing (→ reachable).
+    load.load.mockResolvedValueOnce({ ok: true });
+    (document.body.querySelector('[data-testid="mobile-check-connection"]') as HTMLButtonElement).click();
+    await flushPromises();
+    expect(session.recordCheckOutcome).toHaveBeenLastCalledWith('reachable');
+    expect(wrapper.get('[data-testid="mobile-node-state"]').text()).toBe('Connected');
+    expect(wrapper.find('[data-testid="mobile-node-offline-banner"]').exists()).toBe(false);
+    expect(session.rejectLocalSessionForAuthFailure).not.toHaveBeenCalled();
     wrapper.unmount();
   });
 
   it('records the node reachable when the first read succeeds; the node name opens the sheet and Check connection reads again', async () => {
     const { wrapper } = await mountShell();
     const session = useMobileNodeSessionStore();
-    expect(session.recordAuthorizedApiReachability).toHaveBeenCalledWith(true);
+    expect(session.recordCheckOutcome).toHaveBeenCalledWith('reachable');
     await wrapper.get('[data-testid="mobile-node-button"]').trigger('click');
     await flushPromises();
     const sheet = document.body.querySelector('[data-testid="mobile-connection-sheet"]');

@@ -65,6 +65,8 @@ const parseQrText = (value: string): RemoteAccessPairingPayload => {
 
 /** Why a pairing link made no session, in the words the pairing page shows. */
 export type MobilePairingFailure = 'expired' | 'used' | 'phone_access_off' | 'no_answer';
+/** What one phone check found: the node's API answered, it did not, or it refused because Phone Access is off. */
+export type MobileCheckOutcome = 'reachable' | 'unreachable' | 'phone_access_off';
 
 const pairingFailureFor = (status: number, code?: string): MobilePairingFailure => {
   if (code === 'REMOTE_ACCESS_PAIRING_CONSUMED') return 'used';
@@ -98,6 +100,8 @@ export const useMobileNodeSessionStore = defineStore('mobileNodeSession', () => 
   const lastDiagnostic = ref<MobileConnectionDiagnostic | null>(null);
   const lastPairingFailure = ref<MobilePairingFailure | null>(null);
   const authorizedApiReachable = ref(false);
+  /** The last phone check found Phone Access off on the node (the phone stays paired). */
+  const phoneAccessOff = ref(false);
 
   const activeCredential = computed(() => session.value?.credential ?? null);
   const isPaired = computed(() => Boolean(session.value));
@@ -192,14 +196,17 @@ export const useMobileNodeSessionStore = defineStore('mobileNodeSession', () => 
     return pairWithPayload(parseQrText(qrText), deviceName);
   }
 
-  function recordAuthorizedApiReachability(reachable: boolean): void {
-    authorizedApiReachable.value = reachable;
+  /** One outcome per phone check sets both connection facts (a later check always replaces an earlier "off"). */
+  function recordCheckOutcome(outcome: MobileCheckOutcome): void {
+    phoneAccessOff.value = outcome === 'phone_access_off';
+    authorizedApiReachable.value = outcome === 'reachable';
   }
 
   function rejectLocalSessionForAuthFailure(): void {
     mobileCredentialStorage.clear();
     session.value = null;
     authorizedApiReachable.value = false;
+    phoneAccessOff.value = false;
     lastDiagnostic.value = diagnosticForKind('auth_required');
   }
 
@@ -208,6 +215,7 @@ export const useMobileNodeSessionStore = defineStore('mobileNodeSession', () => 
     session.value = null;
     lastDiagnostic.value = null;
     authorizedApiReachable.value = false;
+    phoneAccessOff.value = false;
   }
 
   return {
@@ -218,13 +226,14 @@ export const useMobileNodeSessionStore = defineStore('mobileNodeSession', () => 
     lastDiagnostic,
     lastPairingFailure,
     authorizedApiReachable,
+    phoneAccessOff,
     activeCredential,
     isPaired,
     serverBaseUrl,
     initializeFromStorage,
     fetchStatus,
     pairWithQrText,
-    recordAuthorizedApiReachability,
+    recordCheckOutcome,
     rejectLocalSessionForAuthFailure,
     deleteLocalSession,
   };

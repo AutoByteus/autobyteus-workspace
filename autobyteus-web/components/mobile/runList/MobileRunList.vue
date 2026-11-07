@@ -23,9 +23,10 @@
       </button>
     </header>
 
-    <div v-if="!connected" class="flex flex-shrink-0 items-center gap-3 border-b border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900" role="alert" data-testid="mobile-node-offline-banner">
+    <div v-if="!connected" class="flex flex-shrink-0 items-center gap-3 border-b border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900" role="alert" data-testid="mobile-node-offline-banner" :data-connection="connection">
       <Icon icon="heroicons:exclamation-triangle-20-solid" class="h-5 w-5 flex-shrink-0 text-amber-500" aria-hidden="true" />
-      <p class="min-w-0 flex-1">Can’t reach {{ nodeName }}.</p>
+      <p v-if="connection === 'phone_access_off'" class="min-w-0 flex-1">{{ nodeName }} is reachable, but Phone access is off.</p>
+      <p v-else class="min-w-0 flex-1">Can’t reach {{ nodeName }}.</p>
       <button type="button" class="h-11 flex-shrink-0 rounded-lg px-3 text-sm font-semibold text-amber-900 underline active:bg-amber-100" data-testid="mobile-node-offline-check" @click="$emit('open-connection')">Check</button>
     </div>
 
@@ -84,6 +85,11 @@
   </section>
 </template>
 
+<script lang="ts">
+/** The bar and banner state: the node answered; it did not; or it answered that Phone Access is off. */
+export type MobileRunListConnection = 'connected' | 'unreachable' | 'phone_access_off';
+</script>
+
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { Icon } from '@iconify/vue';
@@ -98,7 +104,7 @@ import type { MobileRunTreeRow } from '~/utils/mobile/mobileRunTreeProjection';
 const props = defineProps<{
   tree: ReturnType<typeof useMobileRunTree>;
   nodeName: string;
-  connected: boolean;
+  connection: MobileRunListConnection;
   notice?: string | null;
 }>();
 /** `retry`: the read failed; the shell checks the node again (status, history and the 401 rule). */
@@ -131,5 +137,11 @@ const relative = (isoTime: string): string => { void tick.value; return runHisto
 onMounted(() => { timer = setInterval(() => { tick.value += 1; }, 60_000); });
 onBeforeUnmount(() => { if (timer !== null) clearInterval(timer); });
 
-const connectionLabel = computed(() => (props.connected ? 'Connected' : 'Not reachable'));
+const connected = computed(() => props.connection === 'connected');
+const CONNECTION_LABELS: Readonly<Record<MobileRunListConnection, string>> = {
+  connected: 'Connected',
+  unreachable: 'Not reachable',
+  phone_access_off: 'Phone access off',
+};
+const connectionLabel = computed(() => CONNECTION_LABELS[props.connection]);
 </script>
