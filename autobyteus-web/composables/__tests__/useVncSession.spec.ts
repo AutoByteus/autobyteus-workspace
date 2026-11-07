@@ -36,7 +36,8 @@ interface MockRfb {
   resizeSessionWrites: boolean[];
   disconnect: ReturnType<typeof vi.fn>;
   sendKey: ReturnType<typeof vi.fn>;
-  emit: (event: string) => void;
+  clipboardPasteFrom: ReturnType<typeof vi.fn>;
+  emit: (event: string, detail?: unknown) => void;
 }
 
 vi.mock('@novnc/novnc', () => {
@@ -48,18 +49,19 @@ vi.mock('@novnc/novnc', () => {
     private resize = false;
     disconnect = vi.fn();
     sendKey = vi.fn();
-    private listeners = new Map<string, Array<() => void>>();
+    clipboardPasteFrom = vi.fn();
+    private listeners = new Map<string, Array<(event?: unknown) => void>>();
     constructor(_target: HTMLElement, readonly socket: unknown, readonly options: unknown) {}
     get resizeSession() { return this.resize; }
     set resizeSession(value: boolean) {
       this.resizeSessionWrites.push(value);
       this.resize = value;
     }
-    addEventListener(event: string, listener: () => void) {
+    addEventListener(event: string, listener: (event?: unknown) => void) {
       this.listeners.set(event, [...(this.listeners.get(event) ?? []), listener]);
     }
-    emit(event: string) {
-      (this.listeners.get(event) ?? []).forEach((listener) => listener());
+    emit(event: string, detail?: unknown) {
+      (this.listeners.get(event) ?? []).forEach((listener) => listener({ detail }));
     }
   }
   const constructor = vi.fn((target: HTMLElement, socket: unknown, options: unknown) => {
@@ -303,5 +305,39 @@ describe('useVncSession', () => {
     expect(FakeWebSocket.instances.at(-1)!.url).toBe('ws://node-a.example:8001/ws/node-desktop?mode=view');
     expect(session.streamEnd.value).toBeNull();
     expect(rfbs().at(-1)!.viewOnly).toBe(true);
+  });
+
+  describe('clipboard (autobyteus-426 REQ-005)', () => {
+    it('keeps the text the node desktop last copied until the stream ends', () => {
+      const { session, rfb } = connectedSession('control');
+      expect(session.remoteClipboardText.value).toBeNull();
+      rfb.emit('clipboard', { text: 'first' });
+      rfb.emit('clipboard', { text: 'from the desktop' });
+      expect(session.remoteClipboardText.value).toBe('from the desktop');
+
+      rfb.emit('disconnect');
+      expect(session.remoteClipboardText.value).toBeNull();
+    });
+
+    it('forgets it when the viewer disconnects or switches mode', () => {
+      const { session, rfb } = connectedSession('control');
+      rfb.emit('clipboard', { text: 'copied' });
+      session.disconnect();
+      expect(session.remoteClipboardText.value).toBeNull();
+    });
+
+    it('sends text to the desktop clipboard only in Control while connected', () => {
+      const view = connectedSession('view');
+      expect(view.session.sendClipboardText('nope')).toBe(false);
+      expect(view.rfb.clipboardPasteFrom).not.toHaveBeenCalled();
+
+      const control = connectedSession('control');
+      expect(control.session.sendClipboardText('hello desktop')).toBe(true);
+      expect(control.rfb.clipboardPasteFrom).toHaveBeenCalledWith('hello desktop');
+
+      control.rfb.emit('disconnect');
+      expect(control.session.sendClipboardText('late')).toBe(false);
+      expect(control.rfb.clipboardPasteFrom).toHaveBeenCalledTimes(1);
+    });
   });
 });

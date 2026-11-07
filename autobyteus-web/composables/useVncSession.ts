@@ -1,4 +1,4 @@
-import { computed, ref, shallowRef } from 'vue';
+import { computed, readonly, ref, shallowRef } from 'vue';
 import RFB from '@novnc/novnc';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { getActiveRemoteAccessCredential } from '~/utils/remoteAccess/authorizedTransport';
@@ -43,6 +43,8 @@ export function useVncSession() {
   const mode = ref<NodeDesktopMode>('view');
   const rfb = shallowRef<RFB | null>(null);
   const container = shallowRef<HTMLElement | null>(null);
+  /** The text last copied on the node desktop, as noVNC hands it over when it cannot write the local clipboard itself. */
+  const remoteClipboardText = ref<string | null>(null);
   /** The current stream's socket, so a mode switch can wait for it to close. */
   let socketInUse: WebSocket | null = null;
   /** Cancels a mode switch that is still waiting for the old socket to close. */
@@ -111,9 +113,15 @@ export function useVncSession() {
       connectionStatus.value = 'connected';
     });
 
+    session.addEventListener('clipboard', (event) => {
+      if (rfb.value !== session) return;
+      remoteClipboardText.value = (event as CustomEvent<{ text: string }>).detail.text;
+    });
+
     session.addEventListener('disconnect', () => {
       if (rfb.value !== session) return;
       rfb.value = null;
+      remoteClipboardText.value = null;
       connectionStatus.value = 'disconnected';
       streamEnd.value = viewerStateForClose(lastClose ?? { code: 0, reason: '' });
       console.info('[vncSession] stream ended', { code: lastClose?.code ?? null, state: streamEnd.value.state });
@@ -124,6 +132,7 @@ export function useVncSession() {
     cancelPendingSwitch?.();
     cancelPendingSwitch = null;
     dropSession();
+    remoteClipboardText.value = null;
     connectionStatus.value = 'disconnected';
     streamEnd.value = null;
   };
@@ -180,6 +189,14 @@ export function useVncSession() {
     }
   };
 
+  /** Puts text on the node desktop's clipboard in Control; false when it was not sent (View only, not connected). */
+  const sendClipboardText = (text: string): boolean => {
+    const session = rfb.value;
+    if (!session || mode.value !== 'control' || connectionStatus.value !== 'connected') return false;
+    session.clipboardPasteFrom(text);
+    return true;
+  };
+
   /** Presses one key on the node desktop in Control (no-op in View only). */
   const pressKey = (key: NodeDesktopKey) => sendKeysym(KEYSYM_BY_KEY[key]);
 
@@ -204,5 +221,7 @@ export function useVncSession() {
     refreshViewport,
     typeText,
     pressKey,
+    remoteClipboardText: readonly(remoteClipboardText),
+    sendClipboardText,
   };
 }
