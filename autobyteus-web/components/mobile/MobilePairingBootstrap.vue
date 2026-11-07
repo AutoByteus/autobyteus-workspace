@@ -118,7 +118,7 @@ const failureReason = computed(() => {
     case 'used':
       return 'This code was already used. Make a new one on your computer.';
     case 'phone_access_off':
-      return `${nodeName.value} is reachable, but Phone access is off. Turn it on in Nodes › Phone Setup on your computer.`;
+      return `${nodeName.value} is reachable, but Phone access is off.`;
     case 'no_answer':
       return `${nodeName.value} didn’t answer. Check that the computer is on and awake.`;
     default:
