@@ -195,6 +195,13 @@ describe('setup-bound lazy file activation', () => {
     wrapper.getComponent({ name: 'AgentConversationFeed' }).vm.$emit('file-path-action', action);
     await flushPromises(); expect(launcher.create.mock.calls[0][0].revealTool).toBeNull();
   });
+  it('passes no phone navigation off the phone (the phone case: AgentEventMonitor.mobileFileOpen.spec.ts)', async () => {
+    const wrapper = mountMonitor(vi.fn());
+    wrapper.getComponent({ name: 'AgentConversationFeed' }).vm.$emit('file-path-action', action);
+    await flushPromises();
+    const options = launcher.create.mock.calls[0][0];
+    expect(options).toHaveProperty('mobileNavigation', null);
+  });
   for (const invalidation of ['run-switch', 'unmount'] as const) {
     it(`does not invoke after ${invalidation} during lazy import`, async () => {
       const wrapper = mountMonitor(vi.fn());
