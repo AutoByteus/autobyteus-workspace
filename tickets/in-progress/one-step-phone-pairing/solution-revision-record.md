@@ -99,3 +99,7 @@
 - Trigger: the user, 2026-11-07: "on the phone setup, I would list those as separate tabs … different types of network … the user feel sometimes very insecure, but if they click each one, it's very transparent for them"
 - IDs affected: REQ-022 new, DEC-015 new; layout of REQ-001, REQ-005, REQ-020, REQ-021 superseded (their behavior: automatic detection, checks, calm copy, facts, stays)
 - Sent to the Product Team the same day
+
+### SR-009a — Tab naming and "How it works" (refinement within SR-009)
+
+- The user, 2026-11-07: "Yes, exactly like that … same Wi-Fi or LAN? … no ambiguity, and under each one … how it works". First tab named "Same Wi-Fi or LAN"; each tab gets a one-line How it works. Sent to the Product Team.
