@@ -216,7 +216,7 @@ One node-side owner reports this computer's network facts. A desktop-side compos
 - A candidate equal to one already listed is not repeated.
 - A typed company address ("Use this address") goes through the same node-ID check (REQ-003). If it does not reach the node, no code is made and the tab shows "This address doesn't reach <node name>." (DEC-022). A typed plain `http://` address is the user's explicit choice (DEC-021) and is sent with the acknowledgement; the node's URL policy still refuses public HTTP.
 - `configuredBaseUrl` is kept for a node in a container: a company address set on a Docker deployment (`AUTOBYTEUS_SERVER_HOST`) is rank 0. A loopback value is dropped; any other wrong value fails the node-ID check.
-- The QR name (DEC-016): the embedded node → host `computerName`; any other node → its registry entry name. The store picks it.
+- The QR name (DEC-016): the embedded node → host `computerName`; any other node → its registry entry name. The store picks it. `computerName` is macOS `scutil --get ComputerName` (measured readable, E-22), else `os.hostname()` without `.local`; when both are empty the registry name is used. The user, 2026-11-07: "If we cannot get the computer name, that's also fine from my side" (no extra effort beyond these two reads).
 
 ### Android entry forms (round 2, AR-006)
 
@@ -472,7 +472,7 @@ See Target Mapping (one table, to avoid two lists).
 | `…/remote-access/services/paired-device-service.ts`, `stores/paired-device-store.ts` | Modify | devices | `connectionWay` | — |
 | `…/remote-access/domain/models.ts` | Modify | types | `ConnectionWay`, `NodeNetwork`; remove candidate types; session/device fields; error code `REMOTE_ACCESS_PAIRING_WAY_INVALID` | — |
 | `…/remote-access/services/address-candidate-service.ts` | Remove | — | — | — |
-| `…/api/rest/remote-access.ts` | Modify | routes | Status without `serverName`; `/network`, `/network/local-networks/:networkId`, `DELETE /pairing-sessions/:pairingCode`; drop `/address-candidates` | — |
+| `…/api/rest/remote-access.ts` | Modify | routes | Status without `serverName`; `/network`, `/network/local-networks/:networkId`, `DELETE /pairing-sessions/:sessionId`; drop `/address-candidates` | — |
 | `…/api/security/remote-access-route-policy.ts` | Modify | policy | Owner class for the new paths (`/rest/remote-access/network`, `^/rest/remote-access/network/local-networks/[^/]+$`, `^/rest/remote-access/pairing-sessions/pss_[0-9a-f]+$`); drop candidates | — |
 | `autobyteus-server-ts/docs/features/remote_access.md` | Modify | docs | Routes, network facts, ways, discard | — |
 | `autobyteus-web/types/remoteAccess.ts` | Modify | types | `ConnectionWay`, `NodeNetwork`, device way; remove candidate types and status `serverName`; session `nodeName` | — |
