@@ -75,7 +75,7 @@ import { useLocalization } from '~/composables/useLocalization';
 import { usePhoneAccessStore } from '~/stores/phoneAccessStore';
 import type { PairedDeviceSummary } from '~/types/remoteAccess';
 
-const { t } = useLocalization();
+const { t, resolvedLocale } = useLocalization();
 const store = usePhoneAccessStore();
 
 const confirmingRevokeAll = ref(false);
@@ -84,11 +84,14 @@ const historyOpen = ref(false);
 const wayLabel = (device: PairedDeviceSummary): string | null =>
   device.connectionWay ? t(`settings.components.settings.phone.phones.via.${device.connectionWay}`) : null;
 
+/** Dates follow the app's language, not the computer's, so they read as part of the app's sentences. */
+const locale = (): string => String(resolvedLocale.value || 'en');
+
 /** "2 minutes ago", "yesterday": the largest whole unit. */
 const relativeTime = (iso: string): string => {
   const seconds = Math.round((Date.parse(iso) - Date.now()) / 1000);
   const units: [Intl.RelativeTimeFormatUnit, number][] = [['day', 86400], ['hour', 3600], ['minute', 60]];
-  const format = new Intl.RelativeTimeFormat(undefined, { numeric: 'auto' });
+  const format = new Intl.RelativeTimeFormat(locale(), { numeric: 'auto' });
   for (const [unit, size] of units) {
     if (Math.abs(seconds) >= size) return format.format(Math.round(seconds / size), unit);
   }
@@ -105,7 +108,7 @@ const activeDetail = (device: PairedDeviceSummary): string => {
 
 const revokedDetail = (device: PairedDeviceSummary): string => {
   const revoked = t('settings.components.settings.phone.phones.revokedOn', {
-    date: device.revokedAt ? new Date(device.revokedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : '',
+    date: device.revokedAt ? new Date(device.revokedAt).toLocaleDateString(locale(), { month: 'short', day: 'numeric' }) : '',
   });
   const way = wayLabel(device);
   return way ? `${revoked} · ${t('settings.components.settings.phone.phones.connectedThrough', { way })}` : revoked;
