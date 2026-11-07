@@ -31,7 +31,7 @@ Commits on the branch:
 - Current implementation revision ID: `IR-001`
 - Related solution revision IDs: `SR-001` (requirements), `SR-002` (design)
 - Related architecture-review revision IDs: `ARCH-REV-002`
-- Related code-review revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001` — Pass, no findings (`code-review-report.md`, commit `405c28d45e`; informational, no implementation action)
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
 - Triggering finding IDs: `N/A`
