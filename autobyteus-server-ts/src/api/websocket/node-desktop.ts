@@ -99,7 +99,7 @@ export async function registerNodeDesktopWebsocket(
       const viewer = viewerFor(context, readWebSocketQueryCredential(req));
       if (!viewer) return refuse(INVALID_REQUEST);
       const stream = new NodeDesktopStream({ socket, target, mode, viewerKind: context.mode });
-      const admission = viewers.admit(viewer, stream);
+      const admission = viewers.admit(viewer, stream, mode);
       if (admission !== "admitted") return refuse(admission.refused);
       streaming = true;
       stream.start();
