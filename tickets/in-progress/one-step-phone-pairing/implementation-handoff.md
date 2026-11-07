@@ -158,3 +158,7 @@ Small choices made inside the design; none changes an approved behavior:
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
 All of "Not run" above, plus the existing browser probes that pair phones (now with `connectionWay`).
+
+## Downstream Review Status
+
+- Code review: `Pass`, CRR-001 for IR-001 ([code-review-report.md](code-review-report.md)); the code reviewer routed the package to API/E2E, including MSP-09. No implementation action.
