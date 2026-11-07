@@ -19,6 +19,7 @@ import org.autobyteus.mobile.shell.ConnectionInputResolver
 import org.autobyteus.mobile.shell.EntryForm
 import org.autobyteus.mobile.shell.NodeConnectionFlow
 import org.autobyteus.mobile.shell.NodeReachability
+import org.autobyteus.mobile.shell.OpenPageRestore
 import org.autobyteus.mobile.shell.QrScanCoordinator
 import org.autobyteus.mobile.ui.ShellUi
 import org.autobyteus.mobile.ui.WebShellScreen
@@ -79,13 +80,24 @@ class MainActivity : Activity(), NodeConnectionFlow.Screens {
         fileChooserCoordinator = WebFileChooserCoordinator(this) { diagnostic -> showWebDiagnostic(diagnostic) }
 
         val sharedText = extractSharedText(intent)
+        // After Android ended the process in the background, the page that was open (autobyteus-426 REQ-003).
+        val restored = OpenPageRestore.read(savedInstanceState, savedNodeStore.loadEntries())
         val lastUsed = savedNodeStore.loadSelectedEntry()
         when {
             !sharedText.isNullOrBlank() -> flow.connect(sharedText, EntryForm.Shared)
+            restored != null -> flow.open(restored.entry, restored.url)
             // Opening the app still opens the last used node (REQ-012).
             lastUsed != null -> flow.open(lastUsed)
             else -> showStart()
         }
+    }
+
+    /** Only a saved node's page is kept; a pairing page that has not paired yet is not. */
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        val webHost = currentWebHost ?: return
+        val url = webHost.webView.url ?: return
+        if (screen == Screen.Web && isPageSaved()) OpenPageRestore.save(outState, webHost.entry.id, url)
     }
 
     override fun onNewIntent(intent: Intent) {
