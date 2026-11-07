@@ -54,13 +54,14 @@ describe("Runtime capability GraphQL e2e", () => {
     }
   };
 
-  it("returns backend-owned runtime capability metadata for all five runtime kinds", async () => {
+  it("returns backend-owned runtime capability metadata for all six runtime kinds", async () => {
     const capabilities = await queryCapabilities();
     expect(capabilities.map((capability) => capability.runtimeKind).sort()).toEqual([
       "antigravity_cli",
       "autobyteus",
       "claude_agent_sdk",
       "codex_app_server",
+      "deepseek_harness",
       "grok_build",
     ]);
   }, CAPABILITY_QUERY_TIMEOUT_MS);

@@ -85,7 +85,12 @@ describe("Settings → Agent Runtimes GraphQL e2e (real studio server, scripted 
   const row = async (kind: string): Promise<AgentRuntimeRow> => (await client.rows())[kind]!;
   const waitRow = async (kind: string, label: string, predicate: (row: AgentRuntimeRow) => boolean, ms = 20_000) => {
     let last: AgentRuntimeRow | undefined;
-    await until(async () => predicate(last = await row(kind)), `${kind} ${label} (last: ${JSON.stringify(last)})`, ms);
+    try {
+      await until(async () => predicate(last = await row(kind)), `${kind} ${label}`, ms);
+    } catch (error) {
+      // The label names the last row read, so it is built after the wait has failed.
+      throw new Error(`${(error as Error).message} (last: ${JSON.stringify(last)})`);
+    }
     return last!;
   };
   const expectCode = async (promise: ReturnType<typeof client.mutate>, code: string) => {
@@ -390,7 +395,10 @@ describe("Settings → Agent Runtimes GraphQL e2e (real studio server, scripted 
     const updated = await waitRow(CODEX, "updated", (r) => r.operation?.kind === "UPDATE" && r.operation.state !== "RUNNING");
     expect(updated.operation).toMatchObject({ kind: "UPDATE", state: "SUCCEEDED", fromVersion: "0.170.0-alpha.2", toVersion: "0.170.0", error: null });
     expect(updated.installedVersion).toBe("0.170.0");
-    expect((await waitRow(CODEX, "re-checked", (r) => r.updates.state === "UP_TO_DATE")).updates.latestVersion).toBe("0.170.0");
+    // The automatic re-check after the update shows "Up to date" as soon as the latest version is read, but it ends
+    // (checkedAt moves) only when the sign-in read ends too; a check started before that is skipped for this row.
+    const reChecked = await waitRow(CODEX, "re-checked", (r) => r.updates.state === "UP_TO_DATE" && r.checkedAt !== updated.checkedAt);
+    expect(reChecked.updates.latestVersion).toBe("0.170.0");
 
     // A preview of the next version is newer than the latest release: no update is offered.
     states.set("codex-version", "0.171.0-rc.1");

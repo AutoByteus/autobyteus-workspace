@@ -428,7 +428,6 @@ describe("Workspace run history GraphQL e2e", () => {
           agentDefinitions {
             runs {
               runId
-              lastActivityAt
               lastKnownStatus
             }
           }
@@ -441,7 +440,6 @@ describe("Workspace run history GraphQL e2e", () => {
     );
     expect(removedStandaloneMessages).toEqual(
       expect.arrayContaining([
-        expect.stringContaining('Cannot query field "lastActivityAt"'),
         expect.stringContaining('Cannot query field "lastKnownStatus"'),
       ]),
     );
@@ -453,7 +451,6 @@ describe("Workspace run history GraphQL e2e", () => {
             runs {
               teamRunId
               status
-              lastActivityAt
               lastKnownStatus
               deleteLifecycle
             }
@@ -468,7 +465,6 @@ describe("Workspace run history GraphQL e2e", () => {
     expect(removedTeamMessages).toEqual(
       expect.arrayContaining([
         expect.stringContaining('Cannot query field "status"'),
-        expect.stringContaining('Cannot query field "lastActivityAt"'),
         expect.stringContaining('Cannot query field "lastKnownStatus"'),
         expect.stringContaining('Cannot query field "deleteLifecycle"'),
       ]),
