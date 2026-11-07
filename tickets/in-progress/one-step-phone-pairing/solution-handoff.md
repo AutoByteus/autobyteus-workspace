@@ -67,3 +67,10 @@ Independent architecture review of design-spec.md against the approved requireme
 ## Route taken
 
 - 2026-11-07: sent to `/software_engineering_team/architecture_reviewer` (run `architecture_reviewer_216348f5f87944b4a511f6990bebad76`) by the rule for Large or High.
+
+## Round 2 (SR-013, after ARCH-REV-001)
+
+- All findings AR-001…AR-009 are addressed in design-spec.md: the bridge, the way composition per node kind, Android entry forms, the classifier rules, the opaque session ID and the Serve port rule. Requirements wording is updated, and DEC-022…DEC-024 are recorded in requirements-doc.md.
+- Shared-intent decision (AR-006): DEC-023, a pairing link shared into the app pairs at once, like Paste a link.
+- The user, 2026-11-07, on the computer name: "If we cannot get the computer name, that's also fine from my side". Fallback recorded.
+- 2026-11-07: returned to `/software_engineering_team/architecture_reviewer` for round 2.
