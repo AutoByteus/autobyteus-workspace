@@ -1,0 +1,19 @@
+# API-17 Phones list "Last seen" and "Revoked" dates use the operating system's language, not the app's (REQ-014; UI/UX spec texts "Last seen 2 minutes ago", "Revoked Oct 28")
+# found during API-15 in the isolated desktop instance (packaged build of 27b24037dd, code 55fdae0a34), macOS with AppleLocale de_DE,
+# AppleLanguages ("de-DE","en-US","zh-Hans-DE") — the user's machine; the app's UI language is English. 2026-11-07
+
+## Observed in the desktop (Nodes › Phone Setup › Connected phones / History)
+active row:  "Phone Last seen jetzt Revoke"            (expected "Last seen just now"-style English, spec "Last seen 2 minutes ago")
+history row: "History (1) Phone Revoked 7. Nov."       (spec "Revoked Oct 28")
+
+## Renderer facts (main window, CDP evaluate)
+navigator.language "de"; Intl default locale "de"
+new Intl.RelativeTimeFormat(undefined, {numeric:'auto'}).format(-2,'minute') -> "vor 2 Minuten"     ('en' -> "2 minutes ago")
+new Date('2026-10-28T12:00:00Z').toLocaleDateString(undefined, {month:'short', day:'numeric'}) -> "28. Okt."   ('en' -> "Oct 28")
+
+## Cause (read)
+autobyteus-web/components/settings/phone/ConnectedPhones.vue:91   const format = new Intl.RelativeTimeFormat(undefined, { numeric: 'auto' });
+autobyteus-web/components/settings/phone/ConnectedPhones.vue:108  new Date(device.revokedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
+Both format with the OS locale and put the result inside the app's English (or zh-CN) sentence, so the line mixes languages.
+useLocalization() (already used in the file for `t`) exposes `resolvedLocale`, the app's UI locale.
+Not caught by PhonesPanel.spec.ts: the test environment's default locale is English.

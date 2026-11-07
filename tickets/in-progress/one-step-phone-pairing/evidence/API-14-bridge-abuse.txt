@@ -1,0 +1,52 @@
+# API-14 Bridge abuse: can a frame inside a paired node page drive the Android app through window.AutoByteusShell? (AR-001, RU-03)
+# steps: HEAD debug APK (API-05 build) on emulator autobyteus277_api35 (Android 15, WebView 124.0.6367.219), paired to the isolated desktop's embedded node;
+#        adb forward tcp:9333 localabstract:webview_devtools_remote_<pid>; raw CDP Runtime.evaluate in the page (/tmp/ospp-e2e/scripts/bridge-abuse.mjs):
+#        three iframes run a hostile script: typeof AutoByteusShell; own postMessage(showNodeList); parent.AutoByteusShell.postMessage(startScan); report to the parent.
+#        The product's HTML previewer is <iframe sandbox="allow-scripts" :src="blob:…"> (components/fileExplorer/viewers/HtmlPreviewer.vue); /mobile hosts no application iframes.
+#        App screen read with uiautomator after each step. commit 27b24037dd; 2026-11-07
+
+## run 1 (sandboxed srcdoc, same-origin subframe, sandboxed blob)
+{
+  "mainFrame": {
+    "origin": true,
+    "type": "object",
+    "hasPostMessage": "function"
+  },
+  "frames": {
+    "sandboxed-srcdoc": {
+      "type": "undefined",
+      "origin": "null",
+      "parentType": "blocked: SecurityError",
+      "ownPost": "failed: TypeError",
+      "parentPost": "failed: SecurityError"
+    },
+    "same-origin-subframe": {
+      "type": "object",
+      "origin": "http://<tailnet address>:49411",
+      "parentType": "object",
+      "ownPost": "sent",
+      "parentPost": "sent"
+    }
+  },
+  "screenAfterFrames": "['Close scanner', 'Scan', 'Point the camera at the QR code on your computer.']",
+  "screenAfterMainFrame": "['Back', 'Switch node', 'Docker Test Node, Online', 'Docker Test Node', 'Online', 'More for Docker Test Node', '<computer name>, Online, current node', '<computer name>', 'Online', 'More for <computer name>', 'Other ways to connect, collapsed', 'Other ways to connect', 'Scan', 'Scan']"
+}
+
+## run 2 (only the previewer's pattern: sandboxed frame with a blob: URL)
+{
+  "mainFrame": {
+    "origin": true,
+    "type": "object",
+    "hasPostMessage": "function"
+  },
+  "frames": {},
+  "screenAfterFrames": "['normyâ..s MacBook Pro, Connected. Connection', 'No runs yet', 'Start with New run. Work an agent delegates appears under its run and leaves when it is done.', 'New run', 'sandboxed-srcdoc', 'same-origin-subframe', 'Navigation blocked', 'The app blocked an untrusted in-WebView navigation: blob:http://<tailnet address>:49411/3c041f27-f8e7-4c91-9eba-a4749f975ee3&#10;&#10;Open unrelated links in the system browser. AutoByteus mobile stays on the saved node origin.', 'RETRY', 'EDIT', 'BROWSER']",
+  "screenAfterMainFrame": "['Back', 'Switch node', 'Docker Test Node, Online', 'Docker Test Node', 'Online', 'More for Docker Test Node', '<computer name>, Online, current node', '<computer name>', 'Online', 'More for <computer name>', 'Other ways to connect, collapsed', 'Other ways to connect', 'Scan', 'Scan']"
+}
+
+## Reading
+- main frame of the node's origin: the object exists; its showNodeList opens the app's Switch node list (positive control).
+- sandboxed frame (opaque origin, the preview pattern): typeof AutoByteusShell = undefined; parent.AutoByteusShell -> SecurityError; nothing reached the app.
+- sandboxed blob: frame (exactly HtmlPreviewer): never loads in the app; the WebView's existing navigation containment blocks blob: and shows "Navigation blocked" (pre-existing, AutoByteusWebView navigation policy unchanged by this ticket) -> follow-ups.md FU-005.
+- same-origin NON-sandboxed subframe (not produced by /mobile): its own object's showNodeList was ignored (main-frame rule), but it can call the PARENT's object, which posts as the main frame:
+  startScan opened the scanner. Same-origin script already has the page's credential in localStorage, so this is not a new privilege; no product path renders such a frame on /mobile.

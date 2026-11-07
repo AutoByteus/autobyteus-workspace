@@ -1,0 +1,58 @@
+# API-07 Node network facts on a real Linux kernel (U-001, U-004, U-005, AC-003 on Linux, QR-006)
+# steps: test-owned privileged container ospp-e2e-linux from autobyteus/autobyteus-server:beta (arm64, kernel 6.12.54-linuxkit),
+#        this worktree's server package (docker buildx --target server-package of 27b24037dd, code 55fdae0a34) mounted read-only;
+#        /.dockerenv removed so the node reads its own facts; test interfaces created in the container's own network namespace
+#        (/tmp/ospp-e2e/scripts/linux-node-setup.sh, tun-holder.py attaches to the TUN devices as tailscaled does); GET over real HTTP.
+# date: 2026-11-07
+
+## Interfaces (ip -br addr / ip -br link, IPv4 view from os.networkInterfaces())
+lo          IPv4  127.0.0.1                  00:00:00:00:00:00 internal
+lo          IPv6  ::1                        00:00:00:00:00:00 internal
+eth0        IPv4  172.17.0.6                 1a:13:66:6d:c2:c0 
+eth0        IPv4  169.254.10.10              1a:13:66:6d:c2:c0 
+wg0         IPv4  10.66.0.2                  00:00:00:00:00:00 
+tailscale0  IPv4  100.101.102.103            00:00:00:00:00:00 
+tailscale0  IPv6  fe80::dc22:219a:138a:fbc6  00:00:00:00:00:00 
+tun1        IPv4  100.88.1.5                 00:00:00:00:00:00 
+tun1        IPv6  fe80::5413:820c:2956:2910  00:00:00:00:00:00 
+docker0     IPv4  172.31.0.1                 a2:6d:42:73:a9:e0 
+docker0     IPv6  fe80::a06d:42ff:fe73:a9e0  a2:6d:42:73:a9:e0 
+br-0a1b2c   IPv4  192.168.240.1              fa:2f:05:3e:1b:f0 
+br-0a1b2c   IPv6  fe80::f82f:5ff:fe3e:1bf0   fa:2f:05:3e:1b:f0 
+dummy0      IPv4  100.70.0.9                 46:6c:33:c5:f8:21 
+dummy0      IPv6  fe80::446c:33ff:fec5:f821  46:6c:33:c5:f8:21 
+dummy1      IPv4  8.8.4.4                    a6:8f:bc:c7:bf:87 
+dummy1      IPv6  fe80::a48f:bcff:fec7:bf87  a6:8f:bc:c7:bf:87 
+
+## /proc/net/route
+Iface	Destination	Gateway 	Flags	RefCnt	Use	Metric	Mask		MTU	Window	IRTT                                                       
+eth0	00000000	010011AC	0003	0	0	0	00000000	0	0	0                                                                               
+eth0	0000FEA9	00000000	0001	0	0	0	0000FFFF	0	0	0                                                                               
+eth0	000011AC	00000000	0001	0	0	0	0000FFFF	0	0	0                                                                               
+docker0	00001FAC	00000000	0001	0	0	0	0000FFFF	0	0	0                                                                            
+br-0a1b2c	00F0A8C0	00000000	0001	0	0	0	00FFFFFF	0	0	0                                                                          
+
+## /proc/net/arp
+IP address       HW type     Flags       HW address            Mask     Device
+172.17.0.1       0x1         0x2         12:2d:b8:28:fc:32     *        eth0
+
+## GET /rest/remote-access/network
+{"network":{"computerName":"93eb79b52f15","runsInContainer":false,"configuredBaseUrl":null,"tailscale":{"address":"100.101.102.103","dnsName":null},"vpnAddresses":["10.66.0.2"],"localNetwork":{"networkId":"gw_3cfe72a56fd965c0","addresses":["172.17.0.6","100.88.1.5"],"allowed":false}}}
+
+## expected network ID = gw_ + sha256(gateway hardware address)[:16]
+gw_3cfe72a56fd965c0
+
+## no default route (router not recognised) -> this-computer; route restored -> gw_ again
+"localNetwork":{"networkId":"this-computer","addresses":["172.17.0.6","100.88.1.5"],"allowed":false}
+"localNetwork":{"networkId":"gw_3cfe72a56fd965c0","addresses":["172.17.0.6","100.88.1.5"],"allowed":false}
+
+## allowed answer is per network: allow gw_ -> allowed:true; unrecognised network (this-computer) -> allowed:false (asked again); forget -> []
+{"networkId":"gw_3cfe72a56fd965c0","allowed":true} -> "localNetwork":{"networkId":"gw_3cfe72a56fd965c0",...,"allowed":true}
+route removed -> "localNetwork":{"networkId":"this-computer",...,"allowed":false}; allowed-local-networks.json {"networkIds":["gw_3cfe72a56fd965c0"]}; PUT allowed:false -> {"networkIds":[]}
+
+## Reading
+tailscale0 (TUN, no hardware address, 100.64/10, reverse lookup fails = MagicDNS off) -> tailscale {address, dnsName:null}: confirmed by the interface name (U-001 Linux)
+wg0 (WireGuard, no hardware address, 10/8) -> vpnAddresses (U-004 Linux)
+eth0 172.17.0.6 (default route, hardware address) first, then tun1 100.88.1.5 (unconfirmed 100.64/10 tunnel) -> localNetwork.addresses
+excluded: docker0 172.31.0.1 and br-0a1b2c 192.168.240.1 (bridges, by name, both carrying), dummy0 100.70.0.9 (100.64/10 with a hardware address = CGNAT),
+          dummy1 8.8.4.4 (public), eth0 169.254.10.10 (link-local), every IPv6 (fd00:66::5, fe80::), loopback (AC-003)

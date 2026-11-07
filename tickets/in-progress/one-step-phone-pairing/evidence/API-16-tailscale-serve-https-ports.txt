@@ -1,0 +1,11 @@
+# API-16 Tailscale Serve --https=<8443…8542> (U-006, REQ-008 optional Advanced text) — documentation check only, NOT run
+# steps: read https://tailscale.com/kb/1242/tailscale-serve and https://tailscale.com/kb/1223/funnel; read-only `Tailscale serve --help` (Tailscale 1.98.2, macOS)
+# date: 2026-11-07. Serve was not run: it would change the user's tailnet configuration (design guidance; no test tailnet on this machine).
+
+kb/1242 (Serve): "`--https=<port>` Expose an HTTPS server at the specified port (default)." — no port restriction stated for Serve.
+kb/1223 (Funnel): "Funnel can only listen on ports `443`, `8443`, and `10000`." — the limit is stated for Funnel (public) only;
+                  "The same port number cannot be used for Serve (available only within the tailnet) and Funnel".
+CLI help (1.98.2): "--https value  Expose an HTTPS server at the specified port (default mode)" — no range given.
+
+Reading: nothing in Tailscale's documentation or CLI refuses an HTTPS Serve port in 8443…8542. Whether Serve accepts e.g. 8444 on a real tailnet is unproven
+until the command runs on a tailnet (the user's). Only the optional Advanced command text for a second node on this computer depends on it.

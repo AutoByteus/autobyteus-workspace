@@ -1,0 +1,9 @@
+# API-18 The released Android app pairs with a QR made by the new desktop (AC-007, REQ-009, REQ-017; payload unchanged)
+# steps: base APK (677f61de0b) installed fresh on emulator autobyteus277_api35; Docker Test Node window (isolated desktop) › Same Wi-Fi or LAN › Show QR code;
+#        the link shared into the old app; old app: HTTP tick, SAVE AND OPEN; commit 27b24037dd; 2026-11-07
+desktop code: way local_network, payload {version:1, serverBaseUrl:"http://<lan address>:49816", pairingCode:<24 chars>, expiresAt, serverName:"Docker Test Node"}
+old app parsed it and opened http://<lan address>:49816/mobile?pairing=… (first and only address)
+new page in the old app (no shell bridge there = browser variant): ['AutoByteus', 'Docker Test Node', 'Connect this phone to use its runs.', 'Connect to Docker Test Node', 'Get the Android app']
+one tap -> ['Docker Test Node, Connected. Connection', 'No runs yet', …]
+Docker node devices: [('sdk_gphone64_arm64','local_network'), ('Phone','local_network')]   (the old app sends no model name: the page's default "Phone")
+old app saved entry displayName "AutoByteus Desktop"   (the released app names entries from the status default; design rejection log: no regression versus today)

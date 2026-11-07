@@ -1,0 +1,24 @@
+# API-12 Android app with two nodes paired from the real desktop's codes (AC-008 share form, AC-009, AC-010, AC-011, AC-016 in the app, RU-01, RU-02)
+# steps: HEAD debug APK from the API-05 fresh-start build, `adb uninstall` + `adb install` (fresh install) on emulator autobyteus277_api35 (Android 15, WebView 124.0.6367.219,
+#        model sdk_gphone64_arm64); codes made in the isolated desktop (API-08/09 windows); links shared into the app with
+#        `am start -a android.intent.action.SEND -t text/plain --es android.intent.extra.TEXT <mobileUrl>` (DEC-023); screens read with uiautomator (ui.sh texts).
+# commit 27b24037dd; 2026-11-07. Computer name and addresses replaced by placeholders.
+
+1. First launch (0 nodes, AC-010): ['AutoByteus', 'Scan the QR code on your computer', 'On your computer, open Nodes › Phone Setup and press Show QR code.', 'Other ways to connect', 'Scan']
+   Scan -> camera permission dialog ("While using the app") -> scanner: ['Close scanner', 'Scan', 'Point the camera at the QR code on your computer.'] (decode: API-13)
+   Other ways to connect -> ['Type an address', 'Paste a link']; Paste a link with an empty clipboard opens the Type an address sheet (no error).
+2. Embedded node, Tailscale code (desktop main window "Show QR code", way tailscale, http://<tailnet address>:49411), shared into the app:
+   no checkbox, no name field, no extra tap -> page run list ['<computer name>, Connected. Connection', 'No runs yet', …]
+   embedded node GET /rest/remote-access/devices -> ('sdk_gphone64_arm64', 'tailscale')    (device name = model name)
+   saved_nodes.xml entry: displayName "<computer name>" (from the QR, DEC-016), baseUrl http://<tailnet address>:49411, httpAcknowledged true
+3. Docker Test Node, Wi-Fi code (Docker window, way local_network, http://<lan address>:49816 = host address + published port), shared into the app (app force-stopped first:
+   SEND into the running activity does not reach onNewIntent, pre-existing, handoff Known Risks):
+   page ['Docker Test Node, Connected. Connection', 'No runs yet', …]; Docker node GET /devices -> ('sdk_gphone64_arm64', 'local_network')   (RU-01)
+4. Node sheet in the app (AC-016, REQ-013, DEC-018): ['Docker Test Node', 'http://<lan address>:49816', 'Connected', 'Check connection' (refresh icon label),
+   'Switch node 2 nodes on this phone', 'Unpair from Docker Test Node']   — no peer list, no Add a node
+5. Switch node (AC-011): ['Back', 'Switch node', 'Docker Test Node, Online, current node', '<computer name>, Online', 'Other ways to connect', 'Scan']
+   tap '<computer name>' -> ['<computer name>, Connected. Connection', 'No runs yet', …]   (B's run list)
+6. Docker container paused (docker pause), Switch node from the sheet (AC-011 alternate):
+   first ['Docker Test Node, Checking…', '<computer name>, Online, current node'] then ['Docker Test Node, Not reachable', …]   screenshot API-12-android-switch-node-unreachable.png
+   (container unpaused afterwards)
+7. Back from a page with no history -> start screen with two nodes (AC-010): ['AutoByteus', 'YOUR NODES', 'Docker Test Node, Online', '<computer name>, Online', 'Other ways to connect', 'Scan']

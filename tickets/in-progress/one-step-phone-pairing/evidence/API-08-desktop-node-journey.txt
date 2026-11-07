@@ -1,0 +1,76 @@
+# API-08 Desktop node journey: AC-001, AC-002, AC-006, AC-013, RU-04, U-003, QR-004
+# surface: isolated desktop instance iso-49410-016d = packaged build of this worktree (pnpm --silent isolated-app start --build;
+#   renderer file://…/app.asar/dist/renderer/index.html)
+# commit: 27b24037dd (code 55fdae0a34); macOS arm64 with Wi-Fi and Tailscale (facts read-only); driven over the instance's CDP control port with
+#   playwright-core (/tmp/ospp-e2e/scripts/run.mjs + steps/*.mjs: DOM state by data-testid, the renderer's /rest/remote-access requests and answers);
+#   phone exchanges by POST <serverBaseUrl>/rest/remote-access/pairing-exchanges (phone-exchange.sh)
+# embedded node of the instance (port 49411), Phone access off at start (fresh data root)
+# date: 2026-11-07. Real computer name, addresses, tailnet name and network ID replaced by placeholders; pairing codes replaced by their length.
+
+## 1. Open Nodes › Phone Setup (main window, file:// origin)
+{
+ "msFromTabClickToReady": 159,
+ "tabs": [
+  "Same Wi-Fi or LAN: ready=True selected=false",
+  "Tailscale Recommended: ready=True selected=true",
+  "Your VPN: ready=False selected=false",
+  "Company address: ready=False selected=false"
+ ],
+ "status": "Ready: Tailscale is on, on this computer.",
+ "button": "Turn on and show QR code",
+ "access": "Off"
+}
+checks from the renderer (file:// origin, U-003): GET http://<lan address>:49411/rest/remote-access/status 200; GET http://<tailnet address>:49411/… 200;
+  GET https://<host>.<tailnet>.ts.net/rest/remote-access/status 200 (this answer carries ANOTHER node's ID: the host's own AutoByteus behind Tailscale Serve;
+  a read-only status request the product makes; left out by the node-ID check)
+
+## 2. Press "Turn on and show QR code" (AC-001)
+ms click → QR: 194
+access: On   line: "Works anywhere through Tailscale"   timer: "Valid for 5:00"   QR image: True
+  → PUT http://127.0.0.1:49411/rest/remote-access/settings
+  ← PUT http://127.0.0.1:49411/rest/remote-access/settings 200
+  → POST http://127.0.0.1:49411/rest/remote-access/pairing-sessions
+  ← POST http://127.0.0.1:49411/rest/remote-access/pairing-sessions 201 {"requestBody":{"serverBaseUrl":"http://<tailnet address>:49411","serverName":"<computer name>","connectionWay":"tailscale","trustedPrivateHttpAcknowledged":true},"sessionId":"pss_48a0f0318becb1dc8aa288e284beb858","payload":{"version":1,"serverBaseUrl":"http://<tailnet address>:49411","pairingCode":"<code 24 chars>","expiresAt":"2026-11-07T09:43:24.562Z","serverName":"<computer name>"},"mobileUrlBase":"http://<tailnet address>:49411/mobile"}
+-> the QR holds http://<tailnet address>:49411 (the HTTPS name reached another node and was not used); serverName = this computer's name (DEC-016)
+
+## 3. Tab change to Same Wi-Fi or LAN discards the shown code (AC-013, REQ-015)
+status: "This computer is on a Wi-Fi or LAN network."
+question: "Allow phones on this network? Fine for home and office networks. Not for public Wi-Fi. This network. We ask once for each network."
+button: {'text': 'Allow and show QR code', 'disabled': False}
+  → DELETE http://127.0.0.1:49411/rest/remote-access/pairing-sessions/pss_48a0f0318becb1dc8aa288e284beb858
+  ← DELETE http://127.0.0.1:49411/rest/remote-access/pairing-sessions/pss_48a0f0318becb1dc8aa288e284beb858 204
+phone exchange of the discarded code: 400 {"code": "REMOTE_ACCESS_PAIRING_INVALID"}
+
+## 4. "Allow and show QR code" (AC-002, REQ-004)
+ms click → QR: 199   line: "Works on this network"   allowed row: "Wi-Fi/LAN allowed on this network This network. Applies to every node on this computer. We ask again on a new network."
+  → PUT http://127.0.0.1:49411/rest/remote-access/network/local-networks/gw_<16 hex, this Wi-Fi>
+  ← PUT http://127.0.0.1:49411/rest/remote-access/network/local-networks/gw_<16 hex, this Wi-Fi> 200
+  → POST http://127.0.0.1:49411/rest/remote-access/pairing-sessions
+  ← POST http://127.0.0.1:49411/rest/remote-access/pairing-sessions 201 {"requestBody":{"serverBaseUrl":"http://<lan address>:49411","serverName":"<computer name>","connectionWay":"local_network","trustedPrivateHttpAcknowledged":true},"sessionId":"pss_cd5ba8fda890412bf25af291998eb1f6","payload":{"version":1,"serverBaseUrl":"http://<lan address>:49411","pairingCode":"<code 24 chars>","expiresAt":"2026-11-07T09:43:59.210Z","serverName":"<computer name>"},"mobileUrlBase":"http://<lan address>:49411/mobile"}
+allowed-local-networks.json on the embedded node: {"networkIds": ["gw_<16 hex, this Wi-Fi>"]}
+phone exchange #1: 201 {"device": {"displayName": "API-E2E Phone A", "connectionWay": "local_network"}, "credential": "<present>"}
+phone exchange #2 (same code): 400 {"code": "REMOTE_ACCESS_PAIRING_CONSUMED"}   (AC-013: a used code is refused)
+
+## 5. Close (AC-013)
+  → DELETE http://127.0.0.1:49411/rest/remote-access/pairing-sessions/pss_cd5b… 204; QR gone; button "Show QR code"
+
+## 6. Leave and reopen Phone Setup (Manage tab → Phone Setup tab): the same network is remembered
+ms to ready: 58
+Same Wi-Fi or LAN: ready=True selected=false
+Tailscale Recommended: ready=True selected=true
+Your VPN: ready=False selected=false
+Company address: ready=False selected=false
+phones: ['API-E2E Phone A Connects through Wi-Fi · Not used yet Revoke']
+Same Wi-Fi tab: button "Show QR code", no question, row "Wi-Fi/LAN allowed on this network This network. Applies to every node on this computer. We ask again on a new network."
+
+## 7. Wi-Fi/LAN allowed switch off (AC-002 alternate)
+  → PUT …/network/local-networks/gw_<16 hex, this Wi-Fi> 200; question back; button "Allow and show QR code"; allowed-local-networks.json {"networkIds": []}
+
+## 8. Tailscale › Advanced (AC-006, REQ-008)
+"Advanced Secure web address Optional. Run this once in a terminal on this computer to give <computer name> an https:// address on your Tailscale network. AutoByteus shows it and does not run it. /Applications/Tailscale.app/Contents/MacOS/Tailscale serve --bg 49411 Copy Check again"
+(no `serve reset`; the command was not run, U-006)
+
+## 9. Phone access switched off while a code is shown, then on (RU-04)
+code shown (56 ms): "Works anywhere through Tailscale"
+switch off → access Off, QR gone, button "Turn on and show QR code" (PUT /settings 200); switch on → access On, button "Show QR code"
+phone exchange of that code: 400 {"code": "REMOTE_ACCESS_PAIRING_INVALID"}
