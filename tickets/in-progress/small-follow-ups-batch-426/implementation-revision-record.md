@@ -6,6 +6,7 @@ The current code and `implementation-handoff.md` are authoritative; this record 
 
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
+| IR-002 | Code reviewer, `code-review-report.md` (CRR-001 Fail), round 1 | F-001, F-002, F-003 | `Local Fix` | SR-005; ARCH-REV-003; CRR-001; API-REV N/A; DR N/A | Three bounded fixes in `1d2cdd15ab`; ready for the Targeted Delta Review |
 | IR-001 | Architecture reviewer, `design-review-report.md` (ARCH-REV-002 Pass, then ARCH-REV-003 for D-02 and ARCH-REV-004 for D-19), round 1 | N/A | `Initial Baseline` | SR-004, SR-005, SR-006; ARCH-REV-002, ARCH-REV-003, ARCH-REV-004; CRR N/A; API-REV N/A; DR N/A | Round 1 implemented (D-01…D-03, D-05…D-08, D-10…D-14, D-16…D-19); one Design Impact raised and resolved during the round (D-02, SR-005) |
 
 ## Revision Entries
@@ -29,3 +30,26 @@ The current code and `implementation-handoff.md` are authoritative; this record 
 - Local validation and result: `implementation-handoff.md` § Checks Run (IMP-01…IMP-14)
 - Next recipient or routing: Code Reviewer (`task_size=Medium`, `architectural_risk=High`)
 - Remaining limitations or risks: `implementation-handoff.md` § Known Risks; probe runs (B04, NVP-05), the phone-bundle cases and the emulator checks (AC-004, AC-005, AC-007) are left to API/E2E
+
+### IR-002 — CRR-001 local fixes
+
+- Triggering role, report path, and round: code reviewer (`code_reviewer_54f114daa05e40fda891656b2c93e4bb`), `tickets/in-progress/small-follow-ups-batch-426/code-review-report.md`, CRR-001 (Full Review of IR-001 at `af76ab7ff5`), round 1
+- Triggering finding IDs: F-001, F-002, F-003
+- Classification: `Local Fix`
+- Prior authoritative result: IR-001, CRR-001 Fail (Runtime Correctness and Cleanup 9.0 < 9.2)
+- Current authoritative result: fixes in `1d2cdd15ab`; ready for the Targeted Delta Review
+- Related solution revision IDs: SR-005 (D-02 message-fallback scope; D-13 text)
+- Related architecture-review revision IDs: ARCH-REV-003 (no classification by message text for the new codes)
+- Related code-review revision IDs: CRR-001
+- Related API/E2E revision IDs: `N/A`
+- Related delivery revision IDs: `N/A`
+- Why recorded: code-review findings, implementation-owned
+- Approved behavior or requirement IDs affected: REQ-002 (F-001), REQ-008 (F-002), REQ-013 (F-003); no intended behavior changes
+- Implementation delta:
+  - F-001: `autobyteus-web/utils/remoteAccess/remoteAccessReadRefusal.ts`. The message fallback is exactly today's 401 / AUTH_REQUIRED / AUTH_INVALID rule. The two new codes are read only from the status and body (Apollo `networkError`, axios `response`). The spec adds: a bare message naming either code returns null.
+  - F-002: `autobyteus-web/services/workspace/runWorkspaceChoice.ts`. The workspace ID is typed `string`; the metadata is resolved unconditionally; only the `!workspaceMetadata` check is kept. Also a stray blank line removed in `scripts/guard-localization-boundary.mjs`.
+  - F-003: `docs/design-cases.md` Case 5. New "Again in autobyteus-426 (SR-005, IMP-02)" bullet with D-13's text, and "autobyteus-426, SR-005" added to the heading list.
+- Changed files or areas: the four files above plus the rule's spec
+- Local validation and result: IMP-14 (affected specs 52/52, the guard and its integration test, web typecheck PASS at baseline)
+- Next recipient or routing: Code Reviewer (Targeted Delta Review), as the handoff rules route a High-risk Local Fix
+- Remaining limitations or risks: unchanged from IR-001
