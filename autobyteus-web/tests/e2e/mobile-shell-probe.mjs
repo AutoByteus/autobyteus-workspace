@@ -48,9 +48,10 @@
 //                  and "Not reachable" on the rows, the notice with Retry when opened, other runs open; beta back: Retry.
 //   MSP-07 AC-006  "+" with nothing opened: the Project Task Manager preselected; after the Org run was opened and ←: its
 //                  open member's row still marked and its agent preselected; every row's sheet; agents only; disabled with
-//                  the reason; a blank folder path cannot be opened (the node registers any other path, FU-004); Create
-//                  run opens the new run's Chat; its first message keeps the screen while its id changes; the new run tops
-//                  the list.
+//                  the reason; a blank folder path cannot be opened; a missing path, a file and a relative path are refused
+//                  with their reason under the field and nothing is registered, an existing folder registers (autobyteus-426
+//                  D-08); Create run opens the new run's Chat; its first message keeps the screen while its id changes; the
+//                  new run tops the list.
 //   MSP-08 AC-007  On the Team's coordinator: ⋮ items in order; Artifacts (one file shown directly), Files (tree, path,
 //                  search over the workspace, no filters, an opened file without Attach), Messages (a reference opens the
 //                  file), Activity (its tool calls); a standalone agent: no Messages, empty states; a remote run: "on that
@@ -74,7 +75,16 @@
 //                  run screen or a view; none while the page is hidden; one read at once when shown again; bytes per read;
 //                  the time from opening to the listed runs (QR-003 on this stack).
 //   MSP-13 E-27    A credential the node does not know (401): the phone's next start reads once and lands on pairing.
-//                  A device revoked on the node (403) is recorded (outside the 401 rule, FU-003).
+//                  A device revoked on the node (403, autobyteus-426 D-02): the open phone's Check and a later start both
+//                  land on pairing, the stored session removed.
+//   MSP-17 autobyteus-426 D-19  A read-only conversation (the task agent of an Org run stopped on the node): a tap on a
+//                  file outside the workspace shows "This file is available only on the host workspace."; no composer.
+//   MSP-18 autobyteus-426 D-02  Phone Access off on the node: the open phone's Check and a later start show the bar "Phone
+//                  access off" and "<node> is reachable, but Phone access is off." with Check; the session is kept; on
+//                  again, Check loads the runs (no re-pairing); off, then the node stopped: "Can’t reach <node>.".
+//   MSP-19 autobyteus-426 D-01  The definitions feed: no WebSocket at all while not paired (30 s); after pairing one feed
+//                  socket to the paired node with `access_token`; after unpair it closes and is not opened again; the
+//                  desktop window still opens it.
 //   MSP-14 AC-002  Task A DONE: the task agent's row leaves the list live.
 //   MSP-15 DS-001  The desktop window of the same node, which shares the history load with the phone: the Projects view
 //                  reads every run (window `null`, as the Runs view and the phone); switching Runs ↔ Projects reads
@@ -125,7 +135,7 @@ const PEER = 'beta-node';
 const ALPHA_NAME = 'Alpha Test Node';
 const PHONE_HOST = '192.168.77.10';
 const redact = text => String(text).replace(/mra_[A-Za-z0-9_-]+/g, 'mra_…').replace(/pairing=[^&\s"']+/g, 'pairing=…');
-const evidence = { startedAt: new Date().toISOString(), result: 'Fail', node: process.version, servers: {}, runs: {}, cases: {}, browserErrors: [], network: {}, cleanup: {}, error: null };
+const evidence = { startedAt: new Date().toISOString(), result: 'Fail', node: process.version, servers: {}, runs: {}, cases: {}, browserErrors: [], failedRequests: [], network: {}, cleanup: {}, error: null };
 const assert = (condition, message, details) => { if (!condition) throw Object.assign(new Error(message), { details }); };
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 const waitFor = async (description, fn, timeoutMs = 60_000) => {
@@ -397,17 +407,26 @@ const pairingFor = async (serverBaseUrl) => {
 const phoneOrigin = () => `http://${PHONE_HOST}:${alpha.port}`;
 /** Every GraphQL operation a phone sent: when, which context, the history window, the status and the bytes. */
 const phoneNet = [];
-/** Known browser lines that are not this change (each with its cause; see the execution report). */
-const KNOWN_BROWSER_LINES = [
-  // Pre-existing (follow-up FU-002): app.vue keeps the definitions feed open app-wide; in the phone bundle the window
-  // node's endpoints default to localhost:8000, so the feed's WebSocket is refused on a phone.
-  /ws:\/\/localhost:8000\/ws\/agent-package-definitions|Failed to load resource: net::ERR_CONNECTION_REFUSED/,
-];
+/** Every WebSocket a phone opened to its node: which context, the URL, when it opened and closed. */
+const phoneSockets = [];
+/**
+ * Browser lines a case produces on purpose; any other browser error fails the probe. There is no app-wide exemption:
+ * the phone opens the definitions feed only while paired, to its node (autobyteus-426 D-01), so nothing retries
+ * `localhost:8000` any more.
+ */
+const EXPECTED_BY_CASE = {
+  // The three refused folder paths (autobyteus-426 D-08): the workspace store logs each refused registration.
+  'MSP-07': /Error creating workspace metadata: ApolloError: (No folder exists at the workspace path|The workspace path is a file, not a folder|Workspace path must be an absolute path)\./,
+  // The paired node stopped on purpose: the phone's requests are refused while it is down.
+  'MSP-09': /Failed to load resource: net::ERR_CONNECTION_REFUSED/,
+  // The phone's credential refused on purpose (401 unknown, 403 revoked).
+  'MSP-13': /status of 40[13]|Response not successful: Received status code 40[13]/,
+  // Phone Access off (403 PHONE_ACCESS_DISABLED), then the node stopped.
+  'MSP-18': /status of 403|Response not successful: Received status code 403|Failed to load resource: net::ERR_CONNECTION_REFUSED|Error: Bound backend is not ready/,
+};
 const recordBrowserError = (label, text) => {
   const line = redact(`${label}: ${text}`);
-  // MSP-13 refuses the phone's credential on purpose (401 unknown, 403 revoked): those reads fail by design.
-  const expected = currentCase === 'MSP-13' && /status of 40[13]|Response not successful: Received status code 40[13]/.test(line);
-  evidence.browserErrors.push({ case: currentCase, line, known: expected || KNOWN_BROWSER_LINES.some(pattern => pattern.test(line)) });
+  evidence.browserErrors.push({ case: currentCase, line, known: Boolean(EXPECTED_BY_CASE[currentCase]?.test(line)) });
 };
 let currentCase = 'setup';
 /**
@@ -433,16 +452,21 @@ const openPhone = async ({ width = 390, height = 844, storageState, label = 'pho
   });
   const wsOrigin = phoneOrigin().replace(/^http/, 'ws');
   await context.routeWebSocket(url => url.href.startsWith(wsOrigin), (ws) => {
+    const socket = { label, case: currentCase, url: ws.url(), at: Date.now(), closedAt: null };
+    phoneSockets.push(socket);
+    const closed = () => { socket.closedAt ??= Date.now(); };
     const upstream = new PhoneUpstreamWebSocket(ws.url().replace(wsOrigin, alpha.baseUrl.replace(/^http/, 'ws')), { headers: { origin: phoneOrigin(), host: phoneHost } });
     const queued = [];
     upstream.on('open', () => { for (const message of queued.splice(0)) upstream.send(message); });
     upstream.on('message', (data, isBinary) => { try { ws.send(isBinary ? data : String(data)); } catch { /* closed */ } });
-    upstream.on('close', () => { try { ws.close(); } catch { /* closed */ } });
-    upstream.on('error', () => { try { ws.close(); } catch { /* closed */ } });
+    upstream.on('close', () => { closed(); try { ws.close(); } catch { /* closed */ } });
+    upstream.on('error', () => { closed(); try { ws.close(); } catch { /* closed */ } });
     ws.onMessage(message => { if (upstream.readyState === 1) upstream.send(message); else queued.push(message); });
-    ws.onClose(() => upstream.close());
+    ws.onClose(() => { closed(); upstream.close(); });
   });
   const page = await context.newPage();
+  // The URL behind a "Failed to load resource" console line (the console line names none).
+  page.on('requestfailed', request => evidence.failedRequests.push({ case: currentCase, label, url: redact(request.url()), error: request.failure()?.errorText ?? null }));
   page.on('pageerror', error => recordBrowserError(`${label} pageerror`, error.message));
   page.on('console', message => { if (message.type() === 'error') recordBrowserError(`${label} console`, message.text()); });
   return { context, page };
@@ -1070,17 +1094,34 @@ const runCases = async () => {
         await shot(page, 'MSP-07-folder-sheet');
         await page.locator(sel('mobile-run-workspace-path-input')).fill('   ');
         sheets.blankPathOpenDisabled = await page.locator(sel('mobile-run-workspace-load')).isDisabled();
-        await page.locator(sel('mobile-run-workspace-path-input')).fill('/definitely/not/a/folder-277');
+        // autobyteus-426 D-08: a path the node has not registered must be an existing absolute folder; the reason shows
+        // under the field and nothing is registered. Then an existing folder registers and is chosen.
+        const registered = async () => (await alpha.gql('{workspaces{workspaceRootPath}}')).workspaces.map(entry => entry.workspaceRootPath);
+        const before = await registered();
+        sheets.refusals = [];
+        for (const [typed, expected] of [['/definitely/not/a/folder-426', 'No folder at this path.'], ['/etc/hosts', 'This path is a file, not a folder.'],
+          ['relative/dir', 'Enter a full path, starting with /.']]) {
+          await page.locator(sel('mobile-run-workspace-path-input')).fill(typed);
+          await page.locator(sel('mobile-run-workspace-load')).click();
+          await waitFor(`the refusal of ${typed}`, async () => (await page.locator(sel('mobile-run-workspace-error')).innerText().catch(() => '')).trim() === expected, 15_000).catch(() => undefined);
+          sheets.refusals.push({ typed, expected, error: (await page.locator(sel('mobile-run-workspace-error')).innerText().catch(() => '')).trim(),
+            sheetOpen: await page.locator(sel(`${id}-sheet`)).count(), value: (await page.locator(sel('mobile-run-workspace-select-value')).innerText()).trim() });
+          if (typed === '/etc/hosts') await shot(page, 'MSP-07-path-refused-file');
+        }
+        const after = await registered();
+        sheets.registeredAdded = after.filter(rootPath => !before.includes(rootPath));
+        const extraFolder = path.join(root, 'alpha', 'extra-folder-426');
+        await fs.mkdir(extraFolder, { recursive: true });
+        await page.locator(sel('mobile-run-workspace-path-input')).fill(extraFolder);
         await page.locator(sel('mobile-run-workspace-load')).click();
-        await sleep(2_500);
-        // The node registers any non-empty path (unchanged server behavior), so there is no product error to show here.
-        sheets.badPath = { error: await page.locator(sel('mobile-run-workspace-error')).innerText().catch(() => null),
-          value: (await page.locator(sel('mobile-run-workspace-select-value')).innerText()).trim(), sheetOpen: await page.locator(sel(`${id}-sheet`)).count() };
+        await waitFor('the existing folder chosen', async () => (await page.locator(sel('mobile-run-workspace-select-value')).innerText()).includes('extra-folder-426'), 15_000).catch(() => undefined);
+        sheets.existingFolder = { value: (await page.locator(sel('mobile-run-workspace-select-value')).innerText()).trim(), sheetOpen: await page.locator(sel(`${id}-sheet`)).count(),
+          error: await page.locator(sel('mobile-run-workspace-error')).count(), registered: (await registered()).includes(extraFolder) };
       }
       if (await page.locator(sel(`${id}-sheet`)).count()) await page.locator(`${sel(`${id}-sheet`)} ${sel('mobile-sheet-close')}`).click();
       await sleep(300);
     }
-    // The probe's own folder again (the node registered the bad path, FU-004), then a PTM run and its first message.
+    // The probe's own folder again (the extra folder was chosen last), then a PTM run and its first message.
     await page.locator(sel('mobile-run-workspace-select-toggle')).click();
     await page.locator(sel('mobile-run-workspace-select-option')).filter({ hasText: stack.workspace }).first().click();
     await sleep(500);
@@ -1114,6 +1155,10 @@ const runCases = async () => {
     assert(agentOptions.length > 0 && !agentOptions.some(text => /Delivery Team|Docs Review Team|Delivery Org/.test(text)), 'agents only', agentOptions);
     assert(launchDisabledWhenMissing && Boolean(factCheckerReadiness), 'disabled with the reason when something is missing', { factCheckerReadiness, launchDisabledWhenMissing });
     assert(sheets.blankPathOpenDisabled, 'a blank path cannot be opened', sheets);
+    assert(sheets.refusals.every(entry => entry.error === entry.expected && entry.sheetOpen === 1) && sheets.registeredAdded.length === 0,
+      'a missing path, a file and a relative path are refused with their reason under the field; nothing is registered (D-08)', sheets);
+    assert(sheets.existingFolder.registered && sheets.existingFolder.error === 0 && sheets.existingFolder.value.includes('extra-folder-426'),
+      'an existing folder registers and is chosen', sheets.existingFolder);
     assert(afterFirst.state === 'open' && afterFirst.conversation.includes(marker) && statesDuringFirst.every(state => state === 'open'), 'the first message keeps the screen', { statesDuringFirst });
     assert(newRunId && !newRunId.startsWith('temp') && stored, 'the new run tops the list with its permanent id', { top, stored });
     return { freshAgent, orgMarked, orgListQuery, orgAgent, agentOptions, factCheckerReadiness, launchDisabledWhenMissing, sheets, statesDuringFirst, newRunId, top };
@@ -1530,6 +1575,210 @@ const runCases = async () => {
     return facts;
   });
 
+  await runCase('MSP-19', async () => {
+    // autobyteus-426 D-01: the definitions feed is open only while the phone is paired, to its node with the credential.
+    const feed = await openPhone({ label: 'phone-feed' });
+    const otherSockets = [];
+    feed.page.on('websocket', ws => { if (!ws.url().startsWith(phoneOrigin().replace(/^http/, 'ws'))) otherSockets.push({ url: redact(ws.url()), at: Date.now() }); });
+    const mine = () => phoneSockets.filter(socket => socket.label === 'phone-feed');
+    const feedSockets = () => mine().filter(socket => new URL(socket.url).pathname === '/ws/agent-package-definitions');
+    const describe = socket => ({ path: new URL(socket.url).pathname, host: new URL(socket.url).host, accessToken: new URL(socket.url).searchParams.has('access_token'),
+      openSeconds: socket.closedAt ? Math.round((socket.closedAt - socket.at) / 100) / 10 : null });
+    // (1) Not paired: the pairing screen for 30 s.
+    await feed.page.goto(`${phoneOrigin()}/mobile`, { waitUntil: 'domcontentloaded', timeout: 120_000 });
+    await feed.page.locator(sel('mobile-pairing-bootstrap')).waitFor({ timeout: 60_000 });
+    await sleep(30_000);
+    const unpaired = { node: mine().map(describe), other: otherSockets.slice() };
+    await shot(feed.page, 'MSP-19-unpaired');
+    // (2) Paired: one feed socket to the paired node with the credential.
+    await feed.page.goto(await pairingFor(phoneOrigin()), { waitUntil: 'domcontentloaded', timeout: 120_000 });
+    await feed.page.locator(sel('mobile-pair-button')).click({ timeout: 60_000 });
+    await feed.page.locator(sel('mobile-run-tree')).waitFor({ timeout: 60_000 });
+    await waitFor('the feed socket', async () => feedSockets().length > 0, 20_000).catch(() => undefined);
+    await sleep(5_000);
+    const paired = { feed: feedSockets().map(describe), feedHosts: [...new Set(feedSockets().map(socket => new URL(socket.url).host))], other: otherSockets.slice() };
+    // (3) Unpaired by the user: the feed closes and is not opened again.
+    await feed.page.locator(sel('mobile-node-button')).click();
+    await feed.page.locator(sel('mobile-unpair')).click();
+    await feed.page.locator(sel('mobile-unpair-confirm')).waitFor();
+    const unpairButton = feed.page.locator(sel('mobile-unpair-confirm')).getByRole('button', { name: 'Unpair', exact: true });
+    const onTop = await unpairButton.evaluate(button => { const r = button.getBoundingClientRect(); return button.contains(document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)); });
+    if (onTop) await unpairButton.click(); else await unpairButton.dispatchEvent('click');
+    await feed.page.locator(sel('mobile-pairing-bootstrap')).waitFor({ timeout: 20_000 });
+    const unpairAt = Date.now();
+    await sleep(20_000);
+    const afterUnpair = { feedStillOpen: feedSockets().filter(socket => socket.closedAt === null).length, feedOpenedAfter: feedSockets().filter(socket => socket.at > unpairAt).length,
+      nodeSocketsOpenedAfter: mine().filter(socket => socket.at > unpairAt).map(describe), other: otherSockets.slice() };
+    await shot(feed.page, 'MSP-19-after-unpair');
+    await feed.context.close();
+    // The desktop window of the same node still opens the feed.
+    const desktopContext = await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: 'en-US', timezoneId: 'UTC' });
+    const desktop = await desktopContext.newPage();
+    const desktopFeed = [];
+    desktop.on('websocket', ws => { if (ws.url().includes('/ws/agent-package-definitions')) desktopFeed.push(redact(ws.url())); });
+    await desktop.goto(stack.frontendUrl, { waitUntil: 'domcontentloaded', timeout: 240_000 });
+    await waitFor('the desktop window\'s feed socket', async () => desktopFeed.length > 0, 60_000).catch(() => undefined);
+    await desktopContext.close();
+    const facts = { unpaired, paired, afterUnpair, desktopFeed: desktopFeed.length };
+    const failures = [
+      [unpaired.node.length === 0 && unpaired.other.length === 0, 'no WebSocket attempt to any address while not paired (30 s)'],
+      [paired.feed.length === 1 && paired.feed[0].accessToken && paired.feedHosts[0] === new URL(phoneOrigin()).host && paired.other.length === 0, 'after pairing: one feed socket to the paired node with access_token'],
+      [afterUnpair.feedStillOpen === 0 && afterUnpair.feedOpenedAfter === 0 && afterUnpair.other.length === 0, 'after unpair: the feed closed and not retried'],
+      [desktopFeed.length > 0, 'the desktop window still opens the feed'],
+    ].filter(([ok]) => !ok).map(([, label]) => label);
+    assert(failures.length === 0, failures.join('; '), facts);
+    return facts;
+  });
+
+  await runCase('MSP-17', async () => {
+    // autobyteus-426 D-19: a read-only conversation on the phone shows why a file link did not open. The phone's read-only
+    // conversations are an Org's delegated work: here a task agent of an Org run that was then stopped on the node.
+    const outsidePath = path.join(path.dirname(stack.workspace), 'outside-426', 'old-notes.txt');
+    await fs.mkdir(path.dirname(outsidePath), { recursive: true });
+    await fs.writeFile(outsidePath, 'OUTSIDE-TEXT-4260 must not show on the phone.\n');
+    const marker = 'FILE-LINK-426-RO';
+    const created = (await alpha.gql('mutation($i:CreateAgentOrgRunInput!){createAgentOrgRun(input:$i){success message agentOrgRunId}}',
+      { i: { agentOrgDefinitionId: stack.ids.org, rootConfiguration: stack.runConfig, agentOverrides: [], teamOverrides: [] } })).createAgentOrgRun;
+    assert(created.success, created.message);
+    const orgRunId = created.agentOrgRunId;
+    const orgTree = async () => (await alpha.gql('query($id:String!){getAgentOrgRunConfig(orgRunId:$id){executionTree}}', { id: orgRunId })).getAgentOrgRunConfig.executionTree;
+    const planner = (await orgTree()).rootOrg.members.find(member => member.address === '/planner')?.agentRunId;
+    assert(planner, 'the Org\'s planner');
+    await sendOver(stack.wsUrl(`agent-org/${orgRunId}`), { root_subject_kind: 'agent_org', root_run_id: orgRunId, target_agent_run_id: planner,
+      command_id: randomUUID(), message_id: randomUUID(), dedupe_key: randomUUID(), context_file_paths: [], image_urls: [],
+      content: callTool('delegate_task', { recipient_address: '/changelog_helper', description: `ECHO_INPUT ${marker} The old notes are in [old-notes.txt](${outsidePath}).` }) });
+    let task = null;
+    await waitFor('the Org\'s task agent', async () => (task = treeNodes(await orgTree()).find(node => node.agentRunId && /changelog_helper/.test(node.address ?? '')) ?? null) !== null, 60_000);
+    let echoed = false;
+    await waitFor('the task agent\'s answer naming the file', async () => (echoed = await storedHas(alpha, { orgRunId, memberAddress: task.address, agentRunId: task.agentRunId }, `ECHO:`)), 60_000).catch(() => undefined);
+    const terminated = (await alpha.gql('mutation($id:String!){terminateAgentOrgRun(agentOrgRunId:$id){success message}}', { id: orgRunId })).terminateAgentOrgRun;
+    assert(terminated.success, terminated.message);
+    // The phone: the stopped Org's task agent.
+    await toList(page);
+    const taskKeyIn = rows => rows.find(row => row.key.endsWith(`agent:${task.agentRunId}`))?.key ?? null;
+    let taskKey = null;
+    await waitFor('the task agent\'s row', async () => {
+      await showOlder(page);
+      const rows = await rowsOf(page);
+      for (const row of rows.filter(entry => entry.key.includes(orgRunId) && entry.expanded === 'false')) {
+        await page.locator(`${rowSel(row.key)} ${sel('mobile-run-toggle')}`).click().catch(() => undefined);
+      }
+      return (taskKey = taskKeyIn(await rowsOf(page))) !== null;
+    }, 45_000);
+    await openRow(page, taskKey);
+    const conversation = page.locator(sel('mobile-run-conversation'));
+    const control = conversation.locator(`[data-event-monitor-file-action-control="true"][title="${outsidePath}"]`);
+    await control.first().waitFor({ timeout: 30_000 }).catch(() => undefined);
+    const before = { links: await control.count(), composer: await page.locator(`${sel('mobile-run-conversation')} textarea`).count(),
+      status: await page.locator(sel('event-monitor-file-preview-status')).count() };
+    await shot(page, 'MSP-17-read-only-conversation');
+    const urlBefore = page.url();
+    if (before.links) { await control.last().scrollIntoViewIfNeeded(); await control.last().tap(); }
+    const status = page.locator(sel('event-monitor-file-preview-status'));
+    await status.waitFor({ timeout: 15_000 }).catch(() => undefined);
+    await sleep(1_000);
+    const after = { status: (await status.innerText().catch(() => '')).trim(), role: await status.getAttribute('role').catch(() => null),
+      composer: await page.locator(`${sel('mobile-run-conversation')} textarea`).count(), urlUnchanged: page.url() === urlBefore,
+      viewer: await page.locator(sel('mobile-file-viewer')).count(), leaked: (await page.locator('body').innerText()).includes('OUTSIDE-TEXT-4260') };
+    await shot(page, 'MSP-17-read-only-status');
+    // ← back to the list (recorded; the next cases start from the list).
+    const backs = [];
+    for (let step = 0; step < 4 && !(await page.locator(`${sel('mobile-run-list')}:visible`).count()); step += 1) {
+      const back = page.locator(`${sel('mobile-run-back')}:visible, ${sel('mobile-screen-back')}:visible`).first();
+      backs.push({ step, count: await back.count(), enabled: await back.isEnabled().catch(() => null), screen: (await runScreen(page)).state, query: (await runScreen(page)).query });
+      if (!(await back.count())) break;
+      await back.click({ timeout: 10_000 }).catch(error => backs.push({ step, clickError: error.message.split('\n')[0] }));
+      await sleep(1_000);
+    }
+    const backToList = { backs, list: await page.locator(`${sel('mobile-run-list')}:visible`).count() };
+    await shot(page, 'MSP-17-after-back');
+    const facts = { orgRunId, task, echoed, terminated: terminated.success, taskKey, before, after, backToList };
+    assert(before.links >= 1 && before.composer === 0 && before.status === 0, 'the read-only conversation: the file link, no composer, no status yet', facts);
+    assert(after.status === 'This file is available only on the host workspace.' && after.composer === 0 && after.urlUnchanged && after.viewer === 0 && !after.leaked,
+      'a tap on a file outside the workspace: the status line, still no composer, nothing opened (AC-019)', facts);
+    return facts;
+  });
+
+  await runCase('MSP-18', async () => {
+    // autobyteus-426 D-02: Phone Access turned off on the node keeps the phone paired; the bar and the banner say so; once
+    // it is on again, Check loads the runs without pairing again. Off, then the node stopped: "Can’t reach" (off → unreachable).
+    await shot(page, 'MSP-18-start');
+    let reopened = false;
+    await toList(page).catch(async () => { reopened = true; await page.goto(`${phoneOrigin()}/mobile`, { waitUntil: 'domcontentloaded' }); await page.locator(sel('mobile-run-tree')).waitFor({ timeout: 60_000 }); });
+    const session = (p = page) => p.evaluate(() => { try { return JSON.parse(localStorage.getItem('autobyteus.remote_access.mobile_session') ?? 'null')?.credential ?? null; } catch { return 'unreadable'; } });
+    const credentialBefore = await session();
+    /** The connection sheet's check (the banner's Check opens the same sheet), until the bar reads `until` (30 s at most). */
+    const check = async (p, until) => {
+      if (!(await p.locator(sel('mobile-connection-sheet')).count())) {
+        if (await p.locator(sel('mobile-node-offline-check')).count()) await p.locator(sel('mobile-node-offline-check')).click();
+        else await p.locator(sel('mobile-node-button')).click();
+      }
+      await p.locator(sel('mobile-connection-sheet')).waitFor();
+      await p.locator(sel('mobile-check-connection')).click();
+      await waitFor(`the bar to read ${until}`, async () => (await p.locator(sel('mobile-node-state')).innerText()).trim() === until, 30_000).catch(() => undefined);
+      const sheetStatus = (await p.locator(sel('mobile-connection-status')).innerText().catch(() => '')).trim();
+      if (await p.locator(sel('mobile-connection-sheet')).count()) await p.locator(sel('mobile-sheet-close')).click();
+      await sleep(500);
+      return sheetStatus;
+    };
+    const state = async (p = page) => ({ bar: (await p.locator(sel('mobile-node-state')).innerText().catch(() => '')).trim(),
+      banner: (await p.locator(sel('mobile-node-offline-banner')).innerText().catch(() => '')).replace(/\s+/g, ' ').trim(),
+      bannerConnection: await p.locator(sel('mobile-node-offline-banner')).getAttribute('data-connection').catch(() => null),
+      bannerCheck: await p.locator(sel('mobile-node-offline-check')).count(), rows: (await rowsOf(p)).length,
+      listError: await p.locator(sel('mobile-run-list-error')).count(), pairing: await p.locator(sel('mobile-pairing-bootstrap')).count() });
+    const setPhoneAccess = async enabled => { const response = await alpha.rest('PUT', '/remote-access/settings', { phoneAccessEnabled: enabled }); assert(response.status === 200, `Phone Access ${enabled}`, response); };
+    /** A start of the phone (the same paired storage) while the node is as it is now: the check on opening. */
+    const startPhone = async label => {
+      const started = await openPhone({ storageState: await phone.context.storageState(), label });
+      await started.page.goto(`${phoneOrigin()}/mobile`, { waitUntil: 'domcontentloaded' });
+      await waitFor('the first check', async () => (await started.page.locator(sel('mobile-node-offline-banner')).count()) > 0
+        || (await started.page.locator(sel('mobile-pairing-bootstrap')).count()) > 0 || (await rowsOf(started.page)).length > 0, 60_000).catch(() => undefined);
+      await sleep(2_000);
+      return started;
+    };
+    // (1) The open phone, its runs listed: Phone Access off, then its Check.
+    await setPhoneAccess(false);
+    const openSheet = await check(page, 'Phone access off');
+    const openCheck = { ...(await state()), sheet: openSheet, credentialKept: (await session()) === credentialBefore };
+    await shot(page, 'MSP-18-open-phone-check-while-off');
+    // (2) A start of the phone while off: the check on opening.
+    const later = await startPhone('phone-off-start');
+    const offStart = { ...(await state(later.page)), credentialKept: (await session(later.page)) === credentialBefore };
+    await shot(later.page, 'MSP-18-phone-access-off-on-opening');
+    // (3) On again: that phone's banner Check → the sheet's check → Connected, its runs listed, the same credential.
+    await setPhoneAccess(true);
+    const onSheet = await check(later.page, 'Connected');
+    const on = { ...(await state(later.page)), sheet: onSheet, credentialKept: (await session(later.page)) === credentialBefore };
+    await shot(later.page, 'MSP-18-phone-access-on-again');
+    await later.context.close();
+    // (4) Off (a start shows it), then the node stopped: that phone's Check shows "Can’t reach", not the off banner.
+    await setPhoneAccess(false);
+    const down = await startPhone('phone-off-then-down');
+    const offBeforeDown = await state(down.page);
+    await alpha.stop();
+    const downSheet = await check(down.page, 'Not reachable');
+    const offThenDown = { ...(await state(down.page)), sheet: downSheet };
+    await shot(down.page, 'MSP-18-off-then-unreachable');
+    await alpha.start();
+    await setPhoneAccess(true);
+    const backSheet = await check(down.page, 'Connected');
+    const back = { ...(await state(down.page)), sheet: backSheet, credentialKept: (await session(down.page)) === credentialBefore };
+    await down.context.close();
+    // The open phone again, Phone Access on: Connected.
+    await check(page, 'Connected');
+    const offBanner = `${ALPHA_NAME} is reachable, but Phone access is off. Check`;
+    const facts = { reopened, openCheck, offStart, on, offBeforeDown, offThenDown, back };
+    const failures = [
+      [openCheck.bar === 'Phone access off' && openCheck.banner === offBanner && openCheck.bannerConnection === 'phone_access_off' && openCheck.credentialKept && openCheck.pairing === 0, 'off: the open phone\'s Check (runs listed) shows the bar and the banner, the session kept'],
+      [offStart.bar === 'Phone access off' && offStart.banner === offBanner && offStart.bannerCheck === 1 && offStart.credentialKept && offStart.pairing === 0, 'off: the check on opening shows the bar and the banner with Check, the session kept'],
+      [on.bar === 'Connected' && on.banner === '' && on.rows > 0 && on.credentialKept, 'on again: Check loads the runs with no re-pairing'],
+      [offBeforeDown.bar === 'Phone access off' && offThenDown.bar === 'Not reachable' && offThenDown.banner === `Can’t reach ${ALPHA_NAME}. Check` && offThenDown.bannerConnection === 'unreachable', 'off, then the node down: "Can’t reach"'],
+      [back.bar === 'Connected' && back.banner === '' && back.credentialKept, 'the node back with Phone Access on: Connected'],
+    ].filter(([ok]) => !ok).map(([, label]) => label);
+    assert(failures.length === 0, failures.join('; '), facts);
+    return facts;
+  });
+
   await runCase('MSP-13', async () => {
     // A credential the node does not know (401, REMOTE_ACCESS_AUTH_INVALID: the node's pairing data was reset): the next
     // start reads once and lands on pairing (E-27, AR-008).
@@ -1550,20 +1799,39 @@ const runCases = async () => {
     const sessionLeft = await invalid.page.evaluate(() => localStorage.getItem('autobyteus.remote_access.mobile_session'));
     await shot(invalid.page, 'MSP-13-unknown-credential-to-pairing');
     await invalid.context.close();
-    // A device revoked on the node (403, REMOTE_ACCESS_DEVICE_REVOKED): observed as is (the rule covers 401 only, as before).
+    // A device revoked on the node (403, REMOTE_ACCESS_DEVICE_REVOKED; autobyteus-426 D-02): the session is rejected as a 401
+    // is. (1) The open phone's Check: the pairing screen, the stored session gone. (2) A later start of a phone that kept the
+    // revoked credential: the check on opening lands on pairing too.
+    await toList(page);
     const revokedAll = await alpha.rest('DELETE', '/remote-access/devices');
+    await page.locator(sel('mobile-node-button')).click();
+    await page.locator(sel('mobile-connection-sheet')).waitFor();
+    await page.locator(sel('mobile-check-connection')).click();
+    await page.locator(sel('mobile-pairing-bootstrap')).waitFor({ timeout: 30_000 }).catch(() => undefined);
+    const openPhoneAfterCheck = { pairing: await page.locator(sel('mobile-pairing-bootstrap')).count(),
+      sessionLeft: await page.evaluate(() => localStorage.getItem('autobyteus.remote_access.mobile_session')) };
+    await shot(page, 'MSP-13-revoked-check-to-pairing');
     const revoked = await openPhone({ storageState: paired, label: 'phone-revoked' });
     await revoked.page.goto(`${phoneOrigin()}/mobile`, { waitUntil: 'domcontentloaded' });
-    await sleep(10_000);
+    await revoked.page.locator(sel('mobile-pairing-bootstrap')).waitFor({ timeout: 60_000 }).catch(() => undefined);
+    await sleep(3_000);
     const revokedShows = await revoked.page.evaluate(() => ({ pairing: Boolean(document.querySelector('[data-testid="mobile-pairing-bootstrap"]')),
       list: document.querySelector('[data-testid="mobile-run-list-error"]') ? 'error' : document.querySelector('[data-testid="mobile-run-tree"]') ? 'rows' : 'other',
-      bar: document.querySelector('[data-testid="mobile-node-state"]')?.textContent?.trim() ?? null }));
+      bar: document.querySelector('[data-testid="mobile-node-state"]')?.textContent?.trim() ?? null,
+      sessionLeft: localStorage.getItem('autobyteus.remote_access.mobile_session') }));
     const revokedReads = phoneNet.filter(entry => entry.label === 'phone-revoked').map(entry => `${entry.op} ${entry.status}`);
     await shot(revoked.page, 'MSP-13-revoked-device');
     await revoked.context.close();
-    assert(onPairing === 1 && sessionLeft === null, 'an unknown credential lands on pairing', { onPairing, sessionLeft });
-    assert(reads.length === 1 && reads[0].status === 401, 'one history read, refused with 401', reads);
-    return { reads, onPairing, revokedAll: revokedAll.status, revokedShows, revokedReads: [...new Set(revokedReads)] };
+    const facts = { reads, onPairing, sessionLeft, revokedAll: revokedAll.status, openPhoneAfterCheck, revokedShows, revokedReads: [...new Set(revokedReads)] };
+    const failures = [
+      [onPairing === 1 && sessionLeft === null, 'an unknown credential lands on pairing'],
+      [reads.length === 1 && reads[0].status === 401, 'one history read, refused with 401'],
+      [revokedAll.status === 200, 'the node revoked the phone'],
+      [openPhoneAfterCheck.pairing === 1 && openPhoneAfterCheck.sessionLeft === null, 'a revoked phone\'s Check (runs listed): the pairing screen, the session removed (AC-002)'],
+      [revokedShows.pairing && revokedShows.sessionLeft === null && facts.revokedReads.some(entry => entry.endsWith(' 403')), 'a revoked phone\'s next start: refused with 403, the pairing screen, the session removed (AC-002)'],
+    ].filter(([ok]) => !ok).map(([, label]) => label);
+    assert(failures.length === 0, failures.join('; '), facts);
+    return facts;
   });
 };
 
@@ -1596,6 +1864,15 @@ try {
   } else {
     await runCases();
     const failed = Object.entries(evidence.cases).filter(([, entry]) => entry.result !== 'Pass').map(([id]) => id);
+    // Pre-existing, outside this probe's changes (autobyteus-426 FU-003): each phone page start runs the browser health
+    // check of `serverStore` (plugins/10.serverStore.client.ts) against the window node's default endpoint,
+    // `http://localhost:8000/health`, which a phone refuses. Its console line names no URL, so each such line counts as
+    // known only against a recorded failed request to exactly that URL from the same phone in the same case.
+    const healthFailures = evidence.failedRequests.filter(entry => entry.url === 'http://localhost:8000/health' && entry.error === 'net::ERR_CONNECTION_REFUSED');
+    for (const entry of evidence.browserErrors.filter(item => !item.known && /: Failed to load resource: net::ERR_CONNECTION_REFUSED$/.test(item.line))) {
+      const index = healthFailures.findIndex(failure => failure.case === entry.case && entry.line.startsWith(`${failure.label} console:`));
+      if (index >= 0) { healthFailures.splice(index, 1); entry.known = true; entry.cause = 'FU-003: serverStore health check of http://localhost:8000/health'; }
+    }
     const unknownErrors = evidence.browserErrors.filter(entry => !entry.known);
     evidence.result = failed.length === 0 && unknownErrors.length === 0 && Object.keys(evidence.cases).length > 0 ? 'Pass' : 'Fail';
     evidence.summary = { cases: Object.fromEntries(Object.entries(evidence.cases).map(([id, entry]) => [id, entry.result])), unknownBrowserErrors: unknownErrors.length };

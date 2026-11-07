@@ -297,10 +297,17 @@ describe("Project Task production HTTP boundaries", () => {
   });
 
   it("API-AGG: public registration is not mkdir; failed aggregate save preserves registry and prior records", async () => {
+    // autobyteus-426 D-08: a path not yet registered must be an existing folder; refusing it creates nothing.
     const missingPath = path.join(root, "not-created-folder");
+    const refused = await fetch(`${origin}/graphql`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({
+      query: "mutation($i:CreateWorkspaceInput!){createWorkspace(input:$i){workspaceId}}", variables: { i: { rootPath: `${missingPath}/../not-created-folder` } } }) });
+    expect((await refused.json()).errors[0].extensions).toMatchObject({ code: "WORKSPACE_PATH_REFUSED", reason: "missing" });
+    await expect(fs.stat(missingPath)).rejects.toMatchObject({ code: "ENOENT" });
+    const folderPath = path.join(root, "registered-folder");
+    await fs.mkdir(folderPath);
     const registered = (await gql<{ createWorkspace: { workspaceId: string; workspaceRootPath: string } }>(
-      "mutation($i:CreateWorkspaceInput!){createWorkspace(input:$i){workspaceId workspaceRootPath}}", { i: { rootPath: `${missingPath}/../not-created-folder` } })).createWorkspace;
-    expect(registered.workspaceRootPath).toBe(missingPath); await expect(fs.stat(missingPath)).rejects.toMatchObject({ code: "ENOENT" });
+      "mutation($i:CreateWorkspaceInput!){createWorkspace(input:$i){workspaceId workspaceRootPath}}", { i: { rootPath: `${folderPath}/../registered-folder` } })).createWorkspace;
+    expect(registered.workspaceRootPath).toBe(folderPath);
     const projectId = await createProject("Aggregate existing");
     const task = (await call("create_task", { project_id: projectId, title: "Done still counts", description: "Done still counts" })).structuredContent.task as Task;
     await call("update_task", { task_id: task.taskId, status: "DONE" });
@@ -319,7 +326,7 @@ describe("Project Task production HTTP boundaries", () => {
     await gql("mutation($i:RemoveWorkspaceInput!){removeWorkspace(input:$i){success}}", { i: { workspaceId: registered.workspaceId } });
     const reread = await gql<{ updateProject: { workspaces: Link[] } }>(
       `mutation($i:UpdateProjectInput!){updateProject(input:$i){${fields}}}`, { i: { projectId, name: "Aggregate renamed", description: "saved", workspaces: [{ workspaceRootPath: registered.workspaceRootPath, description: "retained unregistered" }] } });
-    expect(reread.updateProject.workspaces[0]).toMatchObject({ workspaceRootPath: missingPath, availability: "UNREGISTERED" });
+    expect(reread.updateProject.workspaces[0]).toMatchObject({ workspaceRootPath: folderPath, availability: "UNREGISTERED" });
     expect(await list(projectId)).toHaveLength(1);
     await gql("mutation($id:String!){deleteProject(projectId:$id)}", { id: projectId });
     await expect(fs.stat(missingPath)).rejects.toMatchObject({ code: "ENOENT" });
