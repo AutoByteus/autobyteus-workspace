@@ -17,3 +17,22 @@ autobyteus-web/components/settings/phone/ConnectedPhones.vue:108  new Date(devic
 Both format with the OS locale and put the result inside the app's English (or zh-CN) sentence, so the line mixes languages.
 useLocalization() (already used in the file for `t`) exposes `resolvedLocale`, the app's UI locale.
 Not caught by PhonesPanel.spec.ts: the test environment's default locale is English.
+
+# ---------------------------------------------------------------------------------------------------------------
+# Round 2 (API-REV-002): rerun after IR-002 (fix c113dae1a7; head 8ea55b1e6b)
+# surface: fresh isolated desktop instance iso-57743-8b43 = packaged build of this worktree (pnpm --silent isolated-app start --build), same macOS host
+#   (AppleLocale de_DE, renderer navigator.language "de"); app language preference "System Default" -> English (German is not an app language)
+# data: on the instance's embedded node, two phones paired by POST /pairing-sessions + /pairing-exchanges ("Pixel 8", "Old Phone", way tailscale);
+#   "Pixel 8" used once over the LAN address with its credential (POST /graphql 200 -> lastSeenAt 10:34:19Z); "Old Phone" revoked (DELETE /devices/<id> 200)
+# read at 10:36:52Z (Nodes › Phone Setup, History opened), then Settings › Language = 简体中文 and read again, then back to System Default; 2026-11-07
+
+## App in English on the German computer
+active:  ['Pixel 8 Connects through Tailscale · Last seen 3 minutes ago Revoke']
+history: ['History (1)'] ['Old Phone Revoked Nov 7 · Connected through Tailscale']
+navigator.language: de
+
+## App in 简体中文 (zh-CN) on the German computer
+active:  ['Pixel 8 通过Tailscale连接 · 最近使用 3分钟前 撤销']
+history: ['历史（1）'] ['Old Phone 11月7日 已撤销 · 曾通过Tailscale连接']
+
+Result round 2: Pass — no German text in either language; English rows match the spec's shape ("Last seen 2 minutes ago" -> "Last seen 3 minutes ago" at 2 min 33 s; "Revoked Oct 28" -> "Revoked Nov 7").

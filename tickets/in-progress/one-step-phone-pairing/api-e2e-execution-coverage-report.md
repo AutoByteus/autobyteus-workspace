@@ -3,10 +3,11 @@
 ## Round
 
 - Coverage investigation: [api-e2e-coverage-investigation.md](api-e2e-coverage-investigation.md)
-- API/E2E revision record and current revision ID: [api-e2e-revision-record.md](api-e2e-revision-record.md), `API-REV-001`
+- API/E2E revision record and current revision ID: [api-e2e-revision-record.md](api-e2e-revision-record.md), `API-REV-002`
 - Test progress log: [api-e2e-test-progress.md](api-e2e-test-progress.md)
-- Round and trigger: round 1, code review pass CRR-001 (head `27b24037dd`, code `55fdae0a34`, base `origin/personal` `677f61de0b`)
-- Prior round reviewed: N/A
+- Round and trigger: round 2, code reviewer's delta pass CRR-003 of IR-002 (fix `c113dae1a7`, head `8ea55b1e6b`); round 1 was triggered by CRR-001 (code `55fdae0a34`, base `origin/personal` `677f61de0b`)
+- Prior round reviewed: round 1 (API-REV-001, `Fail` on API-17)
+- Rerun by impact (TESTING.md): `git diff --name-only 55fdae0a34 8ea55b1e6b` outside `tickets/` = `ConnectedPhones.vue`, its new spec `ConnectedPhones.spec.ts`, and this round's own `mobile-shell-probe.mjs` and `TESTING.md`. `ConnectedPhones.vue` renders only the phones rows: API-17 **Rerun**; the new spec is the implementation's IMP-11 (**Reused**, API-19); every other case **Still valid** (nothing it exercises changed; the phones-row texts quoted in API-08 and API-15 were the defect's own observations).
 - Deviations from the investigation's plan, and why:
   - API-10: the nothing-checkable variant uses the same Linux node registered through a loopback forward (`http://127.0.0.1:<port>`, the SSH-tunnel case) instead of IPv6: Docker Desktop did not answer on this Mac's IPv6 address.
   - API-11: the first expiry code was discarded when a harness step navigated the main window (CDP window order is not stable); the case was restarted in the Docker node's window and the harness now orders windows by Electron window ID.
@@ -21,7 +22,7 @@
 - Architectural risk: `High`
 - Input route: `Reviewed`
 - Successful-output route: `Code Review`
-- Proportional test-code review decision: `Not Applicable` this round (result `Fail`; failure-origin review requested). The changed probe `autobyteus-web/tests/e2e/mobile-shell-probe.mjs` goes to test-code review with the passing round.
+- Proportional test-code review decision: `Required` (reviewed route): `autobyteus-web/tests/e2e/mobile-shell-probe.mjs` and the `TESTING.md` fresh-start rule.
 
 ## Tested Builds And Environments
 
@@ -30,6 +31,7 @@
 | ENV-1 | `27b24037dd` (code `55fdae0a34`) + probe change | macOS arm64 (Darwin 25.5), Node 22 | MSP probe stack: worktree `dist` server ×2, `build:mobile-web`, `nuxt dev`, headless Chrome | Probe-owned data roots; phone origin `http://192.168.77.10:<port>` (synthetic) |
 | ENV-2 | `27b24037dd` | macOS arm64, Wi-Fi + Tailscale 1.98.2 (facts read-only), AppleLocale `de_DE`, app UI English | Isolated desktop `iso-49410-016d`: packaged worktree build (`isolated-app start --build`), renderer `file://…/app.asar/dist/renderer/index.html`; driven over CDP (playwright-core) | Own data root and ports (backend 49411); real network facts of this Mac |
 | ENV-3 | `27b24037dd` | Docker Desktop (linuxkit 6.12.54, arm64) | Image `autobyteus/autobyteus-server:beta` + this worktree's server package (`docker buildx --target server-package`) mounted read-only | Test containers `ospp-e2e-*`, fresh volumes; never the user's `autobyteus-server-0/1/2` |
+| ENV-5 | `8ea55b1e6b` (fix `c113dae1a7`) | macOS arm64, AppleLocale `de_DE`, renderer `navigator.language` "de" | Fresh isolated desktop `iso-57743-8b43` (packaged build of this head) | App language System Default (→ English) and 简体中文 |
 | ENV-4 | `27b24037dd` / base `677f61de0b` | Android emulator `autobyteus277_api35` (Android 15, WebView 124.0.6367.219, model `sdk_gphone64_arm64`) | HEAD debug APK from the API-05 fresh-start build; base debug APK from `677f61de0b` | Emulator reaches the host as `10.0.2.2` and on the LAN/tailnet addresses |
 
 ## Cases
@@ -52,7 +54,8 @@
 | API-14 | AR-001 bridge abuse, RU-03 | Android WebView bridge | WebView DevTools (raw CDP): hostile script in sandboxed `srcdoc`, sandboxed `blob:` (the previewer's pattern) and same-origin subframes; main-frame control | ENV-4 | Pass | `API-14-bridge-abuse.txt` | sandboxed: `"type": "undefined"`, `"parentType": "blocked: SecurityError"`; main frame `showNodeList` → `'Switch node'` list; blob frame → `Navigation blocked` | Blob preview cannot load in the app at all (pre-existing containment) → FU-005; a same-origin non-sandboxed subframe can call the parent's object (same-origin script already holds the credential; /mobile renders no such frame) |
 | API-15 | AC-014, REQ-017, QR-005, persisted data, REQ-016 (revoke) | Emulator + node upgraded in place | Released-server container + base APK, old pairing flow; container recreated on the same volumes with the worktree package; `adb install -r` HEAD APK; open; desktop phones list; Revoke | ENV-2, ENV-3, ENV-4 | Pass | `API-15-pre-change-phone-upgrade.txt` | `['10.0.2.2:54021, Connected. Connection', 'No runs yet', …]` with no input; same `nodeId`; `"connectionWay":null`; `lastSeenAt "…10:09:05Z"`; `History (1) Phone Revoked …`; phone `Couldn’t load your runs.` after revoke | Old saved name "AutoByteus Desktop" kept until re-scan (design: acceptable) |
 | API-16 | U-006, REQ-008 | Tailscale Serve HTTPS ports | Docs and read-only CLI help | — | Not Tested | `API-16-tailscale-serve-https-ports.txt` | `Funnel can only listen on ports 443, 8443, and 10000` (Funnel only); Serve `--https value  Expose an HTTPS server at the specified port` | Running Serve changes the user's tailnet configuration |
-| API-17 | REQ-014 (spec texts "Last seen 2 minutes ago", "Revoked Oct 28"); AC-012 surface | Desktop phones list | Observed during API-15 on the `de_DE` host; renderer locale facts by CDP evaluate; code read | ENV-2 | **Fail** | `API-17-phones-list-locale.txt` | `"Phone Last seen jetzt Revoke"`, `"History (1) Phone Revoked 7. Nov."`; `ConnectedPhones.vue:91 new Intl.RelativeTimeFormat(undefined, …)`, `:108 toLocaleDateString(undefined, …)` | The user's own Mac is `de_DE` with the app in English |
+| API-17 | REQ-014 (spec texts "Last seen 2 minutes ago", "Revoked Oct 28"); AC-012 surface | Desktop phones list | Round 1: observed during API-15 on the `de_DE` host. Round 2: fresh packaged instance of `8ea55b1e6b`; two phones paired on its embedded node, one used over the LAN address with its credential, one revoked; Nodes › Phone Setup with History open; then Settings › Language = 简体中文; back to System Default | ENV-2 (round 1), ENV-5 (round 2) | **Pass** (round 2; round 1 Fail) | `API-17-phones-list-locale.txt` (round 2 section at the end) | English: `Pixel 8 Connects through Tailscale · Last seen 3 minutes ago Revoke`, `Old Phone Revoked Nov 7 · Connected through Tailscale`; zh-CN: `最近使用 3分钟前`, `Old Phone 11月7日 已撤销`; `navigator.language: de` | Round 1 cause: `undefined` locale; fixed by `resolvedLocale` (c113dae1a7) |
+| API-19 | REQ-014 dates (durable) | Web spec | Reused IMP-11 (`pnpm -C autobyteus-web test:nuxt --run components/settings/phone`, and the new spec against the pre-fix component) | — | Pass | (IMP-11) | (IMP-11) | Ran on `c113dae1a7`, the code under test; fails on the old code, passes on the fix |
 | API-18 | AC-007, REQ-009, REQ-017 | Released app + new desktop QR | Base APK fresh; Docker node Wi-Fi code from the desktop shared into it; HTTP tick; open; one tap | ENV-2, ENV-3, ENV-4 | Pass | `API-18-released-app-new-qr.txt` | `'Connect to Docker Test Node'` → `['Docker Test Node, Connected. Connection', …]`; devices `('Phone','local_network')` | — |
 | QR-001 check | QR-001, REQ-016 | Node logs | The 8 pairing codes of this run grepped in the instance log, its `server-data/logs`, and the containers' logs; `pairing=` grepped | ENV-2, ENV-3 | Pass | (recorded here) | 0 matches for every code; 0 `pairing=` matches | — |
 
@@ -76,27 +79,27 @@
 | AC-014 | Yes | API-15 | Proven | — |
 | AC-015 | No | API-06, API-18 | Proven | — |
 | AC-016 | Yes | API-06, API-12 | Proven | — |
-| REQ-014 texts (spec "Last seen 2 minutes ago", "Revoked Oct 28") | No | API-17 | **Not Proven (Fail)** | — |
+| REQ-014 texts (spec "Last seen 2 minutes ago", "Revoked Oct 28") | No | API-17 (round 2), API-19 | Proven | — |
 
 ## Validation Confidence Scorecard (Mandatory)
 
 | Confidence Category | Post-Repository Score | Final Score | What Supports It (Case IDs) | Residual Uncertainty | What Could Improve It |
 | --- | --- | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 75% | 88% | API-05…API-18 | REQ-014 dates fail (API-17); AC-005 on one machine; camera decode and Serve ports for the user | Fix API-17; user checks |
-| Changed-boundary execution directness | 75% | 95% | API-07…API-15 real routes, real containers, packaged renderer, real WebView bridge | — | — |
-| Cross-boundary integration realism and mock gap | 70% | 92% | API-08…API-12, API-15, API-18 | Second computer emulated by a network namespace | The user's own remote node |
-| Environment, configuration, identity, and fixture fidelity | 75% | 90% | Real Mac facts (ENV-2), real Linux kernel (API-07), released server and app (API-15, API-18) | Linux interfaces created by the test (not a real tailscaled/WireGuard peer); macOS VPN not measured | A Linux host with Tailscale |
+| Requirement and acceptance-criteria proof | 75% | 95% | API-05…API-19 | The parts left are the user's (AC-006 after Serve setup, Scan with a real camera, his own second computer); they are listed, not scored as gaps | User checks |
+| Changed-boundary execution directness | 75% | 95% | API-07…API-17 real routes, real containers, packaged renderer (both rounds), real WebView bridge | — | — |
+| Cross-boundary integration realism and mock gap | 70% | 95% | API-08…API-12, API-15, API-18 | Second computer emulated by a network namespace (a real one is the user's) | The user's own remote node |
+| Environment, configuration, identity, and fixture fidelity | 75% | 95% | Real Mac facts and locale (ENV-2, ENV-5), real Linux kernel (API-07), released server and app (API-15, API-18) | Linux Tailscale/WireGuard interfaces created by the test (kernel facts real, no peer traffic) | A Linux host with Tailscale (user) |
 | Failure, edge-case, lifecycle, and recovery evidence | 80% | 95% | Discard by tab/close/off, consumed, expired, unpublished port, nothing checkable, wrong typed address, unreachable node, revoke | — | — |
-| User-surface, browser, and desktop-shell confidence | 70% | 85% | API-06, API-08…API-12 | API-17 visible mixed-language text; camera decode not run | Fix API-17; real phone scan |
-| Durable regression coverage quality and relevance | 85% | 90% | MSP-06/09 updated (API-06); TESTING.md fresh-start rule (API-05); existing unit/E2E suites | No durable test for the phones list's locale; the Linux check is a temporary probe | A spec asserting the app locale in `ConnectedPhones` |
+| User-surface, browser, and desktop-shell confidence | 70% | 95% | API-06, API-08…API-12, API-17 (English and zh-CN on a German OS) | Camera decode is the user's | Real phone scan |
+| Durable regression coverage quality and relevance | 85% | 95% | MSP-06/09 updated (API-06); ConnectedPhones locale spec (API-19); TESTING.md Android rule (API-05); existing unit/E2E suites whose Linux fixtures match the real kernel (API-07) | The Linux real-kernel check is a temporary probe | — |
 
 - Overall post-repository confidence: 76%
-- Overall final confidence: 91%
+- Overall final confidence: 95%
 - Calculation method: simple average of the seven categories.
 - Every critical acceptance criterion directly proven, apart from parts only the user can check: `Yes`
-- Any final applicable category below `90%`: `Yes` — requirement proof 88% and user surface 85%, both from API-17.
-- Default final confidence target of `95%` met: `No`
-- Confidence-limiting residual risks: API-17 (fail); AC-005 on one physical machine; Scan decode with a real camera; Serve HTTPS ports (U-006).
+- Any final applicable category below `90%`: `No`
+- Default final confidence target of `95%` met: `Yes`
+- Confidence-limiting residual risks: none open for this team; for the user: AC-005 on his own second computer, Scan decode with a real camera, Serve HTTPS ports (U-006).
 
 ## Broader Validation Decision (Mandatory)
 
@@ -142,7 +145,7 @@
 | `autobyteus-web/tests/e2e/mobile-shell-probe.mjs` MSP-09 | Updated | API-06 | "the peer with what it offers" replaced by "no peer list in the sheet"; adds refresh icon / "Retry" (AC-016), "Unpair from <node>" (DEC-018), the name from the pairing code (REQ-011), the browser page with one "Connect to <name>" tap and "Get the Android app" (AC-015) |
 | `TESTING.md` Fresh-start build | Updated | API-05 | Android build inputs and the Android job's command with an empty Gradle home |
 
-- Added or updated paths attached for proportional test-code review: `No` (failure round; with the passing round)
+- Added or updated paths attached for proportional test-code review: `Yes`
 - Diff or repository evidence supplied for removed paths: the commit `test(mobile): …` in the handoff
 
 ## Dependencies Mocked Or Emulated
@@ -158,6 +161,7 @@
 
 | Item | Owned By This Run | Cleanup Action | Result |
 | --- | --- | --- | --- |
+| Isolated instance `iso-57743-8b43` (round 2) | Yes | `isolated-app stop` | `dataRootRemoved: true`, ports released; `list` → `[]`; app language set back to System Default before stopping |
 | Isolated instance `iso-49410-016d` | Yes | `isolated-app stop` | `dataRootRemoved: true`, ports released; `list` → `[]` |
 | Containers `ospp-e2e-docker-a/-b`, `ospp-e2e-linux`, `ospp-e2e-old` and 9 volumes | Yes | `docker rm -f -v`, `docker volume rm` | 0 left; the user's `autobyteus-server-0/1/2` untouched and running |
 | Emulator app data, port forwards, emulator | Yes | `adb uninstall`, `adb forward --remove-all`, `adb emu kill` | done |
@@ -167,12 +171,12 @@
 
 ## Preliminary Classification (On `Fail`)
 
-- `Local Fix` — implementation (`autobyteus-web/components/settings/phone/ConnectedPhones.vue`): format "Last seen …" and "Revoked …" with the app's UI locale (`useLocalization().resolvedLocale`, already imported for `t`) instead of `undefined` (the OS locale), and add a spec that renders the list with a non-English OS locale and the app in English.
+N/A (round 2 `Pass`). Round 1's `Local Fix` (API-17) was confirmed by the code reviewer (CR-001), fixed in IR-002 and passes in round 2.
 
 ## Latest Authoritative Result
 
-- Result: `Fail`
-- Criteria not proven, or parts only the user can check: Fail: REQ-014 texts (API-17). User-only: AC-006 after-setup state (U-006), AC-008 Scan with a real camera, AC-005 with his own second computer.
-- Preliminary classification and recommended owner: `Local Fix`, implementation engineer (confirmed by the code reviewer's failure-origin review).
-- Next recipient from `get_handoff_rules`: in the handoff message.
-- Notes: every other case passed. Follow-ups added: FU-004 (remote-node copy "this computer"), FU-005 (HTML preview blocked inside the Android app, pre-existing). Delivery note: `autobyteus-android/README.md` still describes the removed scan-and-tick flow and the Phone Setup guide.
+- Result: `Pass`
+- Criteria not proven, or parts only the user can check: user-only: AC-006 after-setup state (U-006, Serve on his tailnet), AC-008 Scan with a real phone camera (API-13), AC-005 with his own second computer.
+- Preliminary classification and recommended owner: N/A
+- Next recipient from `get_handoff_rules`: `/software_engineering_team/code_reviewer` (proportional test-code review of `mobile-shell-probe.mjs` and the `TESTING.md` rule)
+- Notes: follow-ups FU-004 (remote-node copy "this computer") and FU-005 (HTML preview blocked in the Android app, pre-existing) added in round 1. Delivery note: `autobyteus-android/README.md` still describes the removed scan-and-tick flow and the Phone Setup guide.

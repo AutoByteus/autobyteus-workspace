@@ -31,3 +31,7 @@
 | 2026-11-07 11:13 | API-18 | Completed | Pass | released app paired with a new QR (browser variant page, one tap) |
 | 2026-11-07 11:13 | API-17 | Completed | Fail | phones list relative time/date in OS locale ('Last seen jetzt', 'Revoked 7. Nov.') in an English UI |
 | 2026-11-07 11:16 | all | Completed | Fail | API-17 fail; others pass or Not Tested (API-13, API-16); cleanup done; reports written |
+| 2026-11-07 11:25 | round 2 | Started |  | IR-002 (c113dae1a7, head 8ea55b1e6b): rerun API-17 in a fresh packaged build; other cases still valid (only ConnectedPhones.vue + its spec changed) |
+| 2026-11-07 11:25 | API-17 | Started |  | isolated-app start --build (background) |
+| 2026-11-07 11:37 | API-17 | Completed | Pass | round 2: English 'Last seen 3 minutes ago', 'Revoked Nov 7'; zh-CN '最近使用 3分钟前', '11月7日 已撤销'; instance stopped, data root removed |
+| 2026-11-07 11:38 | round 2 | Completed | Pass | reports updated; API-REV-002 |

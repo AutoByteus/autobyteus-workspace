@@ -17,8 +17,8 @@ The plan: what must be proven, how, the decisions about existing tests, and the 
 - Code Review Revision Record: [code-review-revision-record.md](code-review-revision-record.md)
 - Delivery Revision Record: N/A (first API/E2E round)
 - API/E2E Revision Record: [api-e2e-revision-record.md](api-e2e-revision-record.md) (written with the first result)
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: `1`
+- Current API/E2E Revision ID: `API-REV-002`
+- Current Investigation Round: `2` (rerun by impact after IR-002: API-17 rerun, IMP-11 reused as API-19; all other cases still valid)
 - Trigger: code reviewer's implementation-review pass (CRR-001), branch `codex/one-step-phone-pairing`, head `27b24037dd` (code at `55fdae0a34`), base `origin/personal` `677f61de0b`
 - Prior Investigation Reviewed: N/A
 - Latest Authoritative Investigation: this file, round 1
@@ -155,6 +155,9 @@ The plan: what must be proven, how, the decisions about existing tests, and the 
 | API-13 | AC-008 (Scan entry form) | Emulator camera decode | Temporary Probe | Emulator virtual scene with the QR image as a poster (`-virtualscene-poster`), Scan | Time-boxed; the emulator camera is the only camera here |
 | API-14 | Bridge abuse (AR-001), RU-03 | WebView bridge | Temporary Probe | WebView DevTools (debug build) on a paired page: `typeof AutoByteusShell` in the main frame, a same-origin iframe and a sandboxed `srcdoc` iframe; post `showNodeList` from each; observe the app | Needs the WebView inspector; no repository harness for it |
 | API-15 | AC-014, REQ-017, QR-005, persisted data | Emulator + node upgrade in place | Journey | Base APK (fresh clone of `677f61de0b`) paired by the old flow to a test container on the released `beta` server; then the same container data with this worktree's server package and `adb install -r` the HEAD APK; open the app | Pre-change data made by the real old app and node |
+| API-17 | REQ-014 texts | Desktop phones list | Journey (added in round 1, rerun in round 2) | Fresh packaged instance; paired + used + revoked phones on the embedded node; read rows in English and zh-CN on the de_DE host | Round 1 found the locale defect during API-15 |
+| API-18 | AC-007 | Released app + new QR | Journey (added in round 1) | Base APK shares a new desktop code | Payload unchanged |
+| API-19 | REQ-014 dates (durable) | Web spec | Reused | IMP-11 | Runs on the fix commit `c113dae1a7` |
 | API-16 | U-006, REQ-008 | Tailscale Serve `--https=8443…8542` | Not Tested (docs check) | Read Tailscale's Serve CLI docs; do not run Serve on this machine | Running it changes the user's tailnet configuration (design guidance) |
 
 - Test progress log needed: `Yes` ([api-e2e-test-progress.md](api-e2e-test-progress.md)).
