@@ -1,0 +1,5 @@
+# Follow-ups — node-web-page-and-file-security (autobyteus-416)
+
+| ID | Found by (role, document) | What is wrong, where | Evidence | Why it is outside this ticket | Urgent (`Yes`/`No`) | Suggested Task description | Sent (to, date) |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| FU-001 | Solution Designer, investigation-notes.md (Source Log) | The standalone application host accepts a browser WebSocket when the Origin host equals `Host` and checks no Host allowlist, so a DNS-rebinding page passes. It listens on `127.0.0.1` by default; rebinding to loopback reaches it. | `autobyteus-server-ts/src/standalone-application-host/api/standalone-browser-websocket-origin.ts:3-23`; `config/standalone-application-host-config.ts:28-77` | A separate product (an application run on its own), not a node; this ticket's rule set is the node's | Yes | "Defend the standalone application host against DNS rebinding: refuse requests whose Host is not the host's own name (loopback, configured), on HTTP and WebSocket; reuse the node's Host rule from autobyteus-416; tests." | |
