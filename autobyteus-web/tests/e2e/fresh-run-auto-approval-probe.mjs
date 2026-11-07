@@ -242,6 +242,8 @@ const operationResponse = (name, variables) => {
     case 'GetAgentOrgDefinitions': return { agentOrgDefinitions: [] }
     case 'GetSkills': return { skills: [] }
     case 'GetServerSettings': return { serverSettings: [] }
+    // The Projects list (always on since 0fd2656528): the fixture node has no Project.
+    case 'GetProjects': return { projects: [] }
     default: throw new Error(`Unexpected GraphQL operation ${name}`)
   }
 }
