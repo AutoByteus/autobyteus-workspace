@@ -167,6 +167,7 @@ None found.
 | QR-003 | REQ-013 | Security | No new Android permission; no credential crosses between nodes' pages or into the app's native list | Android | Manifest test; review |
 | QR-004 | REQ-001 | Operability | The QR appears within 3 s of the click on a normal LAN (address checks run in parallel with short timeouts) | Desktop | E2E timing |
 | QR-005 | REQ-017 | Compatibility | Installed app and existing pairings unchanged in behavior | All | AC-007, AC-014 |
+| QR-006 | REQ-002, REQ-004 | Compatibility | Platform priority: macOS and Linux hosts are verified for Tailscale, VPN and local-network recognition; Windows is low priority (the user, 2026-11-07): no Windows-specific work, it uses the safe fallbacks (an unrecognised VPN is treated as local Wi-Fi and asked; the Wi-Fi answer is remembered per computer) | Desktop and node hosts | Checks on macOS and Linux; Windows only must not break |
 
 ## Data Continuity And Acceptable Loss
 
@@ -244,7 +245,7 @@ None found.
 - Scenarios to map: SCN-001…SCN-009.
 - Constraints: trusted private network model; 403 Origin rule and phone route list; additive QR payload; no new Android permission; no credential crossing.
 - Deferred to architecture: who gathers and checks host addresses for a Docker node (desktop side) and how the desktop asks the Docker node to make the code with them; where the remembered trust decision lives; how the page asks the app for its node list; the HTTPS port choice per node for the Tailscale command.
-- Technical facts to verify: U-001 (Linux/Windows, MagicDNS off), U-003 (desktop probing other nodes' addresses under the Origin rule), U-004 (recognising a VPN tunnel connection on macOS, Linux, Windows), U-005 (recognising the current local network without a new permission).
+- Technical facts to verify (macOS and Linux; Windows low priority, QR-006): U-001 (Linux, MagicDNS off), U-003 (desktop probing other nodes' addresses under the Origin rule), U-004 (recognising a VPN tunnel connection on macOS, Linux, Windows), U-005 (recognising the current local network without a new permission).
 - Feasibility risks: R-001 (an address checked from the computer may not be reachable from the phone — covered by trying in turn and plain words).
 
 ## Readiness Check

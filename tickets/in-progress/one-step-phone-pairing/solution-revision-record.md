@@ -69,3 +69,7 @@
 - IDs affected: REQ-002 (VPN rank, never select), REQ-004 (once per network, calm copy, "Not now" state), DEC-004 settled, DEC-013 new; U-004, U-005 added
 - Approval impact: all decisions settled; requirements approval follows his confirmation of the design
 - Sent to the Product Team the same day
+
+### SR-005a — Platform priority (factual addition within SR-005)
+
+- The user, 2026-11-07: "The majority of the users are on Mac and Linux … Windows is very low priority." Recorded as QR-006: macOS and Linux verified; Windows gets the safe fallbacks only. No behavior change.
