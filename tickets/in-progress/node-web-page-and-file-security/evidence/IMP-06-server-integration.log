@@ -1,0 +1,13 @@
+# IMP-06 server integration suite
+# Command: pnpm -C autobyteus-server-ts test:integration:prepare && pnpm -C autobyteus-server-ts test:integration
+# Commit: da207045a5
+# Environment: macOS (Darwin 25.5.0), node v22.23.1
+# Date: 2026-11-07
+
+integration-prepare.log:prepare exit 0
+integration.log: Test Files  89 passed | 20 skipped (109)
+integration.log:      Tests  517 passed | 69 skipped (586)
+integration.log:integration exit 0
+
+
+The run includes the changed integration files: tests/integration/api/studio-server-http-contract.integration.test.ts, tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts, tests/integration/api/rest/context-files.integration.test.ts, and the unchanged tests/integration/mcp-gateway/mcp-gateway-routes.integration.test.ts and tests/integration/credential-proxy/*.integration.test.ts (no failures in the run).

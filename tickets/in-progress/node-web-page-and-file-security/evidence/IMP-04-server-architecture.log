@@ -1,0 +1,8 @@
+# IMP-04 server architecture tests (incl. tracked-imports, user-file-replies)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/architecture --no-watch
+# Commit: da207045a5
+# Environment: macOS (Darwin 25.5.0), node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-07
+
+ Test Files  11 passed (11)
+      Tests  64 passed (64)

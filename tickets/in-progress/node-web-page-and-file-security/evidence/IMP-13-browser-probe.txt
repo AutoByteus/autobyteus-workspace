@@ -1,0 +1,27 @@
+# IMP-13 representative browser probe: remote-nodes-page (multi-node; module-level frontend origin listed on every node)
+# Command: pnpm -C autobyteus-web test:e2e:remote-nodes-page -- --output-dir=<fresh tmp dir>
+# Commit: da207045a5 (server dist built from it)
+# Environment: macOS (Darwin 25.5.0), node v22.23.1, headless Chrome via playwright-core, Nuxt dev, probe-owned servers and data roots
+# Date: 2026-11-07
+# Full output dir (screenshots, server logs, evidence JSON) kept outside the repository: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.w3TgJlse5q/remote-nodes-page
+
+## Probe output (case lines)
+[probe] NP-01 Pass
+[probe] NP-02 Pass
+[probe] NP-03 Pass
+[probe] NP-11 Pass
+[probe] NP-04 Pass
+[probe] NP-05 Pass
+[probe] NP-06 Pass
+[probe] NP-07 Pass
+[probe] NP-08 Pass
+[probe] NP-09 Pass
+[probe] NP-10 Pass
+[probe] NP-12 Pass
+remote-nodes-page probe: Pass
+
+## Refusal lines across all probe server logs (grep -h "Remote Access request refused" server-*.log | wc -l)
+0
+
+## Cleanup receipt (remote-nodes-page-probe.json)
+{"result":"Pass","cleanup":{"frontendExited":true,"serversLeft":0,"rootRemoved":true}}
