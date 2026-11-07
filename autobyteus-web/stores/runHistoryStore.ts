@@ -83,8 +83,6 @@ export const useRunHistoryStore = defineStore('runHistory', {
     loading: false,
     openingRun: false,
     error: null as string | null,
-    /** The thrown error of the history read whose message `error` shows; set and cleared with it (classification only). */
-    historyReadFailure: null as unknown,
   }),
 
   getters: {

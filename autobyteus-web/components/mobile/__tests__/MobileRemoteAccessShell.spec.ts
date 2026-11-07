@@ -5,6 +5,9 @@ import { createTestingPinia } from '@pinia/testing';
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 
+// The credential check's answers, in order (autobyteus-426 D-02, SR-008); the last one repeats.
+const credential = vi.hoisted(() => ({ outcomes: ['reachable'] as string[] }));
+const nextOutcome = async () => (credential.outcomes.length > 1 ? credential.outcomes.shift()! : credential.outcomes[0]!);
 const load = vi.hoisted(() => ({
   options: null as null | { window: () => number | null; polling: () => boolean },
   initialLoad: Promise.resolve({ ok: true }) as Promise<unknown>,
@@ -17,7 +20,6 @@ vi.mock('~/composables/runHistory/useRunHistorySectionLoad', () => ({
   },
 }));
 
-import { ApolloError } from '@apollo/client/core';
 import MobileRemoteAccessShell from '../MobileRemoteAccessShell.vue';
 import { useMobileNodeSessionStore } from '~/stores/mobileNodeSessionStore';
 import { createMobileTestRouter } from '~/composables/mobile/__tests__/mobileTestRouter';
@@ -39,6 +41,7 @@ const mountShell = async (query: Record<string, string> = {}, session: unknown =
   const sessionStore = useMobileNodeSessionStore(pinia);
   vi.mocked(sessionStore.initializeFromStorage).mockImplementation(() => undefined);
   vi.mocked(sessionStore.fetchStatus).mockImplementation(async () => reachableStatus);
+  vi.mocked(sessionStore.checkCredential).mockImplementation(nextOutcome as never);
   vi.mocked(sessionStore.deleteLocalSession).mockImplementation(() => undefined);
   const wrapper = mount(MobileRemoteAccessShell, {
     attachTo: document.body,
@@ -61,6 +64,7 @@ describe('MobileRemoteAccessShell', () => {
     load.options = null;
     load.initialLoad = Promise.resolve({ ok: true });
     load.load.mockClear();
+    credential.outcomes = ['reachable'];
     document.body.innerHTML = '';
   });
 
@@ -116,40 +120,22 @@ describe('MobileRemoteAccessShell', () => {
     wrapper.unmount();
   });
 
-  // AR-008, E-27: the status check reads the load's own result; a 401 rejects the local session.
-  it('rejects the local session when the first history read is refused with 401, without a second read', async () => {
-    load.initialLoad = Promise.resolve({ ok: false, cause: Object.assign(new Error('Request failed with status code 401'), { response: { status: 401 } }) });
+  // AR-008, E-27: a credential the node no longer accepts (401, auth codes, a revoked device) rejects the local session.
+  it('rejects the local session when the first credential check is refused, without a second read', async () => {
+    credential.outcomes = ['session_rejected'];
     const { wrapper } = await mountShell();
     const session = useMobileNodeSessionStore();
+    expect(session.checkCredential).toHaveBeenCalledTimes(1);
     expect(session.rejectLocalSessionForAuthFailure).toHaveBeenCalledTimes(1);
     expect(session.recordCheckOutcome).not.toHaveBeenCalled();
     expect(load.load).not.toHaveBeenCalled();
-    wrapper.unmount();
-  });
-
-  // autobyteus-426 REQ-002: the history read's refusal as Apollo hands it over (IMP-02), not only the axios shape.
-  const refusedRead = (code: string) => ({
-    ok: false,
-    cause: new ApolloError({
-      networkError: Object.assign(new Error('Response not successful: Received status code 403'), {
-        name: 'ServerError', statusCode: 403, response: {}, result: { error: code, code, message: 'refused' },
-      }),
-    }),
-  });
-
-  it('rejects the session of a revoked phone like a 401: the pairing screen shows (AC-002)', async () => {
-    load.initialLoad = Promise.resolve(refusedRead('REMOTE_ACCESS_DEVICE_REVOKED'));
-    const { wrapper } = await mountShell();
-    const session = useMobileNodeSessionStore();
-    expect(session.rejectLocalSessionForAuthFailure).toHaveBeenCalledTimes(1);
-    expect(session.recordCheckOutcome).not.toHaveBeenCalled();
     await flushPromises();
     expect(wrapper.find('[data-testid="mobile-run-list"]').exists()).toBe(false);
     wrapper.unmount();
   });
 
   it('keeps the session when Phone Access is off and says so; Check loads the runs once it is on (AC-003)', async () => {
-    load.initialLoad = Promise.resolve(refusedRead('PHONE_ACCESS_DISABLED'));
+    credential.outcomes = ['phone_access_off', 'unreachable', 'reachable'];
     const { wrapper } = await mountShell();
     const session = useMobileNodeSessionStore();
     expect(session.rejectLocalSessionForAuthFailure).not.toHaveBeenCalled();
@@ -158,8 +144,6 @@ describe('MobileRemoteAccessShell', () => {
     expect(wrapper.get('[data-testid="mobile-node-offline-banner"]').text()).toContain('Office Mac is reachable, but Phone access is off.');
 
     // Off, then the network is gone: "Can’t reach" (off → unreachable).
-    load.load.mockResolvedValueOnce({ ok: false, cause: new Error('Failed to fetch') } as never);
-    vi.mocked(session.fetchStatus).mockResolvedValueOnce(null);
     await wrapper.get('[data-testid="mobile-node-offline-check"]').trigger('click');
     (document.body.querySelector('[data-testid="mobile-check-connection"]') as HTMLButtonElement).click();
     await flushPromises();
@@ -168,13 +152,33 @@ describe('MobileRemoteAccessShell', () => {
     expect(wrapper.get('[data-testid="mobile-node-offline-banner"]').text()).toContain('Can’t reach Office Mac.');
 
     // Phone Access on again: the next check reads the runs with no re-pairing (→ reachable).
-    load.load.mockResolvedValueOnce({ ok: true });
     (document.body.querySelector('[data-testid="mobile-check-connection"]') as HTMLButtonElement).click();
     await flushPromises();
     expect(session.recordCheckOutcome).toHaveBeenLastCalledWith('reachable');
     expect(wrapper.get('[data-testid="mobile-node-state"]').text()).toBe('Connected');
     expect(wrapper.find('[data-testid="mobile-node-offline-banner"]').exists()).toBe(false);
     expect(session.rejectLocalSessionForAuthFailure).not.toHaveBeenCalled();
+    expect(session.checkCredential).toHaveBeenCalledTimes(3);
+    wrapper.unmount();
+  });
+
+  // CRR-003 F-API-001: the history read is content only; a read that lists runs (or a quiet poll that superseded the
+  // check's read) does not decide the outcome, and neither does a read that failed.
+  it('takes the outcome from the credential check only, whatever the history read during the check answers', async () => {
+    credential.outcomes = ['phone_access_off', 'reachable'];
+    load.initialLoad = Promise.resolve({ ok: true });
+    const { wrapper } = await mountShell();
+    const session = useMobileNodeSessionStore();
+    expect(session.recordCheckOutcome).toHaveBeenLastCalledWith('phone_access_off');
+    expect(wrapper.get('[data-testid="mobile-node-state"]').text()).toBe('Phone access off');
+
+    load.load.mockResolvedValueOnce({ ok: false, cause: 'Response not successful: Received status code 401' } as never);
+    await wrapper.get('[data-testid="mobile-node-offline-check"]').trigger('click');
+    (document.body.querySelector('[data-testid="mobile-check-connection"]') as HTMLButtonElement).click();
+    await flushPromises();
+    expect(session.rejectLocalSessionForAuthFailure).not.toHaveBeenCalled();
+    expect(session.recordCheckOutcome).toHaveBeenLastCalledWith('reachable');
+    expect(wrapper.get('[data-testid="mobile-node-state"]').text()).toBe('Connected');
     wrapper.unmount();
   });
 
@@ -192,6 +196,7 @@ describe('MobileRemoteAccessShell', () => {
     await flushPromises();
     expect(load.load).toHaveBeenCalledTimes(1);
     expect(session.fetchStatus).toHaveBeenCalledTimes(2);
+    expect(session.checkCredential).toHaveBeenCalledTimes(2);
     wrapper.unmount();
   });
 
@@ -211,9 +216,9 @@ describe('MobileRemoteAccessShell', () => {
   });
 
   it('the paired node not reachable: the bar says so and a banner offers Check (VIS-024)', async () => {
+    credential.outcomes = ['unreachable'];
     load.initialLoad = Promise.resolve({ ok: false, cause: new Error('Network Error') });
     const { wrapper } = await mountShell();
-    useMobileNodeSessionStore().authorizedApiReachable = false;
     await nextTick();
     expect(wrapper.get('[data-testid="mobile-node-state"]').text()).toBe('Not reachable');
     expect(wrapper.get('[data-testid="mobile-node-offline-banner"]').text()).toContain('Can’t reach Office Mac.');
@@ -229,6 +234,8 @@ describe('MobileRemoteAccessShell', () => {
     const session = useMobileNodeSessionStore(pinia);
     vi.mocked(session.initializeFromStorage).mockImplementation(() => undefined);
     vi.mocked(session.fetchStatus).mockResolvedValueOnce(null).mockImplementation(async () => reachableStatus);
+    credential.outcomes = ['unreachable', 'reachable'];
+    vi.mocked(session.checkCredential).mockImplementation(nextOutcome as never);
     const history = useRunHistoryStore(pinia);
     history.historyFamilyErrors = { workspace: 'Network Error', agentOrg: null };
     load.load.mockImplementation(async () => {

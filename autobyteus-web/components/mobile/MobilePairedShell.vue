@@ -70,7 +70,6 @@ import { useRunHistorySectionLoad } from '~/composables/runHistory/useRunHistory
 import { useActiveContextStore } from '~/stores/activeContextStore';
 import { useMobileNodeSessionStore } from '~/stores/mobileNodeSessionStore';
 import type { MobileRunListConnection } from '~/components/mobile/runList/MobileRunList.vue';
-import { remoteAccessReadRefusal } from '~/utils/remoteAccess/remoteAccessReadRefusal';
 
 const props = defineProps<{
   /** Just paired: "Connected to <node>" shows until the first check ends. */
@@ -101,27 +100,22 @@ useAgentRunCollaborationSync();
 
 const firstCheckDone = ref(false);
 /**
- * Status and the history read together, one outcome per check: a read refused for this phone's credential (401, auth
- * codes, a revoked device) rejects the session (E-27); Phone Access off keeps it and says so; else reachability.
+ * One phone check (open, Retry, Check): the credential check, the public status (the connection sheet's diagnostic) and
+ * the history read (the list's content) together. The outcome comes only from the credential check: a credential the
+ * node no longer accepts (401, auth codes, a revoked device) ends the session (E-27); Phone Access off keeps it and says
+ * so; otherwise reachable or not.
  */
 async function checkStatus(first = false): Promise<void> {
-  const [statusResult, readResult] = await Promise.allSettled([
-    sessionStore.fetchStatus(),
-    first ? historyLoad.initialLoad : historyLoad.load(),
+  const [outcome] = await Promise.all([
+    sessionStore.checkCredential(),
+    sessionStore.fetchStatus().catch(() => null),
+    (first ? historyLoad.initialLoad : historyLoad.load()).catch(() => undefined),
   ]);
-  const statusReachable = statusResult.status === 'fulfilled' && Boolean(statusResult.value);
-  const read = readResult.status === 'fulfilled' ? readResult.value : { ok: false as const, cause: readResult.reason };
-  const refusal = read.ok ? null : remoteAccessReadRefusal(read.cause);
-  switch (refusal) {
-    case 'session_rejected':
-      sessionStore.rejectLocalSessionForAuthFailure();
-      return;
-    case 'phone_access_off':
-      sessionStore.recordCheckOutcome('phone_access_off');
-      return;
-    case null:
-      sessionStore.recordCheckOutcome(read.ok || statusReachable ? 'reachable' : 'unreachable');
+  if (outcome === 'session_rejected') {
+    sessionStore.rejectLocalSessionForAuthFailure();
+    return;
   }
+  sessionStore.recordCheckOutcome(outcome);
 }
 onMounted(async () => {
   try {

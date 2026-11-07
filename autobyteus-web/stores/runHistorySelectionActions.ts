@@ -31,7 +31,6 @@ export interface RunHistoryOpenOptions {
 interface RunHistorySelectionStoreLike extends TeamMemberInspectionAttemptStoreState {
   openingRun: boolean;
   error: string | null;
-  historyReadFailure: unknown;
   selectedRunId: string | null;
   selectedTeamRunId: string | null;
   selectedTeamMemberAddress: string | null;
@@ -69,7 +68,6 @@ export const openTeamMemberRunFromHistory = async (
   if (!intent.isCurrent()) return { disposition: 'superseded' };
   store.openingRun = true;
   store.error = null;
-  store.historyReadFailure = null;
   const attempt = setTeamMemberInspectionLoading(store, teamRunId, agentRunId);
   const key = teamMemberInspectionIdentity(teamRunId, agentRunId);
   const clearOwned = () => {

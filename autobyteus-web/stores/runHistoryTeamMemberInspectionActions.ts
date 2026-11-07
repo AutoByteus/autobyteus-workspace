@@ -18,7 +18,6 @@ export interface TeamMemberInspectionAttemptStoreState {
 
 export interface RunHistoryTeamMemberInspectionStoreState extends RunHistoryNavigationStoreState, TeamMemberInspectionAttemptStoreState {
   error: string | null;
-  historyReadFailure: unknown;
   selectedRunId: string | null;
   selectedTeamRunId: string | null;
   selectedTeamMemberAddress: string | null;
@@ -81,7 +80,6 @@ export const inspectTeamMemberForStore = async (
   };
   const stopWatching = watch(intent.isCurrent, (current) => { if (!current) clearOwned(); }, { flush: 'sync' });
   store.error = null;
-  store.historyReadFailure = null;
   const result = await inspectMountedTeamMember({
     teamRunId,
     agentRunId,

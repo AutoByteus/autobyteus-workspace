@@ -56,7 +56,6 @@ interface RunHistoryOpenOptions {
 export interface RunHistoryFetchStoreLike {
   loading: boolean;
   error: string | null;
-  historyReadFailure: unknown;
   workspaceGroups: RunHistoryWorkspaceGroup[];
   agentAvatarByDefinitionId: Record<string, string>;
   resumeConfigByRunId: Record<string, RunResumeConfigPayload>;
@@ -108,7 +107,6 @@ export const fetchRunHistoryTree = async (
   if (!quiet) {
     store.loading = true;
     store.error = null;
-    store.historyReadFailure = null;
   }
 
   try {
@@ -134,7 +132,6 @@ export const fetchRunHistoryTree = async (
         useRunHistoryRetiredRunsStore().reconcileHistoryRead(store.workspaceGroups, limitPerAgent);
         store.historyFamilyErrors = { ...store.historyFamilyErrors, workspace: null };
         store.error = null;
-        store.historyReadFailure = null;
         store.refreshRunNavigationTopology('workspace-history-ready');
         const nextAvatars = await buildNextAgentAvatarIndex(
           store.agentAvatarByDefinitionId,
@@ -152,10 +149,7 @@ export const fetchRunHistoryTree = async (
         if (workspaceGeneration !== store.workspaceRequestGeneration || requests !== store.agentOrgRequestSequenceById) return;
         const detail = error instanceof Error ? error.message : String(error);
         store.historyFamilyErrors = { ...store.historyFamilyErrors, workspace: detail };
-        if (!quiet) {
-          store.error = detail;
-          store.historyReadFailure = error;
-        }
+        if (!quiet) store.error = detail;
       }
     })();
 
@@ -189,7 +183,6 @@ export const fetchRunHistoryTree = async (
     };
     if (!quiet && workspaceGeneration === store.workspaceRequestGeneration) {
       store.error = detail;
-      store.historyReadFailure = error;
     }
   } finally {
     if (!quiet && workspaceGeneration === store.workspaceRequestGeneration && requests === store.agentOrgRequestSequenceById) {
@@ -420,7 +413,6 @@ export const openHistoricalRun = async (
   const stopWatching = watch(intent.isCurrent, (current) => { if (!current) store.openingRun = false; }, { flush: 'sync' });
   store.openingRun = true;
   store.error = null;
-  store.historyReadFailure = null;
 
   try {
     const result = await openAgentRun({
@@ -441,7 +433,6 @@ export const openHistoricalRun = async (
   } catch (error: any) {
     if (!intent.isCurrent()) return { disposition: 'superseded' };
     store.error = error?.message || `Failed to open run '${runId}'.`;
-    store.historyReadFailure = null;
     throw error;
   } finally {
     stopWatching();

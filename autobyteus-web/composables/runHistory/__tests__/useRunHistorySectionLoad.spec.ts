@@ -4,7 +4,7 @@ import { flushPromises, mount } from '@vue/test-utils'
 
 const stores = vi.hoisted(() => ({
   history: {
-    error: null as string | null, historyReadFailure: null as unknown, workspaceGroups: [] as any[], agentOrgHistory: [] as any[],
+    error: null as string | null, workspaceGroups: [] as any[], agentOrgHistory: [] as any[],
     setHistoryWindow: vi.fn(), fetchTree: vi.fn(async () => undefined), refreshTreeQuietly: vi.fn(async () => undefined),
     loadWorkspaceCatalogForNavigation: vi.fn(async () => undefined),
   },
@@ -32,7 +32,7 @@ const host = (input: { window: number | null; polling: boolean }) => {
 describe('useRunHistorySectionLoad (autobyteus-277 DS-001)', () => {
   beforeEach(() => {
     vi.useFakeTimers(); vi.clearAllMocks()
-    stores.history.error = null; stores.history.historyReadFailure = null; stores.history.workspaceGroups = []; stores.history.agentOrgHistory = []
+    stores.history.error = null; stores.history.workspaceGroups = []; stores.history.agentOrgHistory = []
     stores.history.fetchTree.mockImplementation(async () => undefined)
   })
   afterEach(() => vi.useRealTimers())
@@ -94,17 +94,6 @@ describe('useRunHistorySectionLoad (autobyteus-277 DS-001)', () => {
     await expect(load().initialLoad).resolves.toEqual({ ok: false, cause: 'offline' })
     stores.history.workspaceGroups = [{ agentDefinitions: [{ runs: [{}] }], teamDefinitions: [] }]
     await expect(load().load()).resolves.toEqual({ ok: true })
-    await flushPromises()
-  })
-
-  it('reports the failed read\'s thrown error as its cause when the store kept it (autobyteus-426 D-02)', async () => {
-    const thrown = Object.assign(new Error('Response not successful: Received status code 403'), { networkError: { statusCode: 403 } })
-    stores.history.fetchTree.mockImplementation(async () => {
-      stores.history.error = thrown.message
-      stores.history.historyReadFailure = thrown
-    })
-    const { load } = host({ window: null, polling: false })
-    await expect(load().initialLoad).resolves.toEqual({ ok: false, cause: thrown })
     await flushPromises()
   })
 })
