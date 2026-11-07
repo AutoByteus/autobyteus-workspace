@@ -6,9 +6,6 @@ import { useRunHistoryStore } from '~/stores/runHistoryStore';
 
 export const RUN_HISTORY_REFRESH_INTERVAL_MS = 5000;
 
-/** One history read: it listed what the node has, or why it did not (the error it threw, else the store's error). */
-export type RunHistoryReadResult = Readonly<{ ok: true }> | Readonly<{ ok: false; cause: unknown }>;
-
 /**
  * The history load of a run section host (mobile-experience-redesign DS-001): the desktop run section and the phone
  * shell. It sets the read window, reads the history with the folder catalog and the agent, Team and Org definitions,
@@ -24,37 +21,24 @@ export const useRunHistorySectionLoad = (options: {
   const agentTeamDefinitionStore = useAgentTeamDefinitionStore();
   const agentOrgDefinitionStore = useAgentOrgDefinitionStore();
 
-  const listsAnyRun = (): boolean => (runHistoryStore.agentOrgHistory?.length ?? 0) > 0
-    || runHistoryStore.workspaceGroups.some((group) => group.agentDefinitions.some((agent) => agent.runs.length > 0)
-      || group.teamDefinitions.some((team) => team.runs.length > 0));
-
-  /** The history read; a read that listed nothing while the store recorded an error did not reach the node. */
-  const readHistory = async (): Promise<RunHistoryReadResult> => {
-    try {
-      await runHistoryStore.fetchTree();
-    } catch (cause) {
-      return { ok: false, cause };
-    }
-    if (runHistoryStore.error && !listsAnyRun()) return { ok: false, cause: runHistoryStore.error };
-    return { ok: true };
-  };
-
-  /** Sets the window and reads the history, the folder catalog and the definitions. */
-  const load = async (): Promise<RunHistoryReadResult> => {
+  /**
+   * Sets the window and reads the history, the folder catalog and the definitions; settles when they are read (the
+   * store shows any failure). No read decides anything about the connection (autobyteus-426 SR-008).
+   */
+  const load = async (): Promise<void> => {
     runHistoryStore.setHistoryWindow(options.window());
-    const [result] = await Promise.all([
-      readHistory(),
+    await Promise.all([
+      runHistoryStore.fetchTree().catch(() => undefined),
       runHistoryStore.loadWorkspaceCatalogForNavigation().catch(() => undefined),
       agentDefinitionStore.fetchAllAgentDefinitions().catch(() => undefined),
       agentTeamDefinitionStore.fetchAllAgentTeamDefinitions().catch(() => undefined),
       agentOrgDefinitionStore.fetchAll().catch(() => undefined),
     ]);
-    return result;
   };
 
-  let resolveInitialLoad: (result: RunHistoryReadResult) => void = () => undefined;
-  /** The result of the load the host's mount starts. */
-  const initialLoad = new Promise<RunHistoryReadResult>((resolve) => { resolveInitialLoad = resolve; });
+  let resolveInitialLoad: () => void = () => undefined;
+  /** Settles when the load the host's mount starts has finished. */
+  const initialLoad = new Promise<void>((resolve) => { resolveInitialLoad = resolve; });
 
   let timer: ReturnType<typeof setInterval> | null = null;
   const stopPolling = (): void => {
@@ -83,8 +67,8 @@ export const useRunHistorySectionLoad = (options: {
   });
 
   onMounted(async () => {
-    const result = await load();
-    resolveInitialLoad(result);
+    await load();
+    resolveInitialLoad();
     if (unmounted) return;
     loaded = true;
     if (options.polling()) startPolling();

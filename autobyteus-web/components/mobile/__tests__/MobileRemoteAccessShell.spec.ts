@@ -10,8 +10,8 @@ const credential = vi.hoisted(() => ({ outcomes: ['reachable'] as string[] }));
 const nextOutcome = async () => (credential.outcomes.length > 1 ? credential.outcomes.shift()! : credential.outcomes[0]!);
 const load = vi.hoisted(() => ({
   options: null as null | { window: () => number | null; polling: () => boolean },
-  initialLoad: Promise.resolve({ ok: true }) as Promise<unknown>,
-  load: vi.fn(async () => ({ ok: true })),
+  initialLoad: Promise.resolve() as Promise<void>,
+  load: vi.fn(async () => undefined),
 }));
 vi.mock('~/composables/runHistory/useRunHistorySectionLoad', () => ({
   useRunHistorySectionLoad: (options: { window: () => number | null; polling: () => boolean }) => {
@@ -62,7 +62,7 @@ const toBase64Url = (value: object): string => btoa(JSON.stringify(value)).repla
 describe('MobileRemoteAccessShell', () => {
   beforeEach(() => {
     load.options = null;
-    load.initialLoad = Promise.resolve({ ok: true });
+    load.initialLoad = Promise.resolve();
     load.load.mockClear();
     credential.outcomes = ['reachable'];
     document.body.innerHTML = '';
@@ -166,13 +166,13 @@ describe('MobileRemoteAccessShell', () => {
   // check's read) does not decide the outcome, and neither does a read that failed.
   it('takes the outcome from the credential check only, whatever the history read during the check answers', async () => {
     credential.outcomes = ['phone_access_off', 'reachable'];
-    load.initialLoad = Promise.resolve({ ok: true });
+    load.initialLoad = Promise.resolve();
     const { wrapper } = await mountShell();
     const session = useMobileNodeSessionStore();
     expect(session.recordCheckOutcome).toHaveBeenLastCalledWith('phone_access_off');
     expect(wrapper.get('[data-testid="mobile-node-state"]').text()).toBe('Phone access off');
 
-    load.load.mockResolvedValueOnce({ ok: false, cause: 'Response not successful: Received status code 401' } as never);
+    load.load.mockRejectedValueOnce(new Error('Response not successful: Received status code 401'));
     await wrapper.get('[data-testid="mobile-node-offline-check"]').trigger('click');
     (document.body.querySelector('[data-testid="mobile-check-connection"]') as HTMLButtonElement).click();
     await flushPromises();
@@ -217,7 +217,7 @@ describe('MobileRemoteAccessShell', () => {
 
   it('the paired node not reachable: the bar says so and a banner offers Check (VIS-024)', async () => {
     credential.outcomes = ['unreachable'];
-    load.initialLoad = Promise.resolve({ ok: false, cause: new Error('Network Error') });
+    load.initialLoad = Promise.resolve();
     const { wrapper } = await mountShell();
     await nextTick();
     expect(wrapper.get('[data-testid="mobile-node-state"]').text()).toBe('Not reachable');
@@ -227,7 +227,7 @@ describe('MobileRemoteAccessShell', () => {
 
   // CRR-001 CR-001: Retry is the shell's status check, so the bar and the banner follow the node coming back.
   it('Retry after a failed first check reads again through the status check: the runs list, the bar says Connected, the banner goes', async () => {
-    load.initialLoad = Promise.resolve({ ok: false, cause: new Error('Network Error') });
+    load.initialLoad = Promise.resolve();
     const { useRunHistoryStore } = await import('~/stores/runHistoryStore');
     const router = await createMobileTestRouter();
     const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false, initialState: initialState() });
@@ -242,7 +242,6 @@ describe('MobileRemoteAccessShell', () => {
       history.historyFamilyErrors = { workspace: null, agentOrg: null };
       history.workspaceGroups = [{ workspaceRootPath: '/ws', workspaceName: 'ws', teamDefinitions: [],
         agentDefinitions: [{ agentDefinitionId: 'a', agentName: 'Daily Assistant', runs: [{ runId: 'r1', summary: 'Draft the reply', status: 'IDLE', createdAt: '2026-11-06T08:00:00.000Z', lastActivityAt: '2026-11-06T08:00:00.000Z', isActive: false }] }] }] as never;
-      return { ok: true };
     });
     const wrapper = mount(MobileRemoteAccessShell, { attachTo: document.body, global: { plugins: [router, pinia], stubs: { NuxtLink: { template: '<a><slot /></a>' } } } });
     await flushPromises();
