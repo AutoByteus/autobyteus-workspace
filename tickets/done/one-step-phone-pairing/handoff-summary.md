@@ -59,4 +59,6 @@ Each criterion was traced through the execution report to its cases; the files w
 
 ## Release
 
-- Beta, by the user's decision. Tag, workflows and assets: [release-deployment-report.md](release-deployment-report.md).
+- **Beta `v1.5.12-beta.7`**, by the user's decision. Release commit `84596c87b8` on `personal`. Desktop, Android, iOS (TestFlight) and Server Docker workflows all succeeded. The GitHub pre-release has 23/23 assets, and Docker `:beta` = `1.5.12-beta.7`. The user's action ("update your nodes first"; the new Android app) is in the release notes, together with html-preview-isolation's section.
+- Release smoke check: Claude, Antigravity and AutoByteus pass. Codex and Grok were refused by quota and waived by the user (Codex in the requirements doc; Grok: "Waive Grok").
+- Details: [release-deployment-report.md](release-deployment-report.md).
