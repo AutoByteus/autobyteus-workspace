@@ -1,0 +1,37 @@
+listening 47921
+HTTP GET /rest/workspaces/ws-1/static/report.html?label=csp/top-level origin=<absent>
+HTTP GET /rest/workspaces/ws-1/static/style.css origin=<absent>
+HTTP GET /rest/workspaces/ws-1/static/classic.js origin=<absent>
+HTTP GET /rest/workspaces/ws-1/static/module.js origin=null
+HTTP GET /rest/workspaces/ws-1/static/pixel.png origin=<absent>
+HTTP GET /rest/workspaces/ws-1/static/report.html?label=csp/iframe-scripts-only origin=<absent>
+HTTP GET /rest/workspaces/ws-1/static/report.html?label=csp/iframe-with-same-origin-attr origin=<absent>
+HTTP GET /rest/workspaces/ws-1/static/report.html?label=csp/iframe-no-sandbox-attr origin=<absent>
+HTTP GET /rest/workspaces/ws-1/static/style.css origin=<absent>
+HTTP GET /rest/workspaces/ws-1/static/pixel.png origin=<absent>
+HTTP GET /rest/workspaces/ws-1/static/classic.js origin=<absent>
+HTTP GET /rest/workspaces/ws-1/static/module.js origin=null
+HTTP GET /rest/workspaces/ws-1/static/data.json origin=null
+HTTP OPTIONS /graphql origin=null
+HTTP OPTIONS /graphql?abs=csp/top-level origin=null
+WS /ws/terminal/x?from=csp/top-level origin=null
+HTTP GET /rest/workspaces/ws-1/static/style.css origin=<absent>
+HTTP GET /rest/workspaces/ws-1/static/data.json origin=null
+HTTP OPTIONS /graphql origin=null
+HTTP OPTIONS /graphql?abs=csp/iframe-scripts-only origin=null
+HTTP GET /rest/workspaces/ws-1/static/classic.js origin=<absent>
+HTTP GET /rest/workspaces/ws-1/static/module.js origin=null
+HTTP GET /rest/workspaces/ws-1/static/pixel.png origin=<absent>
+WS /ws/terminal/x?from=csp/iframe-scripts-only origin=null
+HTTP GET /rest/workspaces/ws-1/static/pixel.png origin=<absent>
+HTTP GET /rest/workspaces/ws-1/static/style.css origin=<absent>
+HTTP GET /rest/workspaces/ws-1/static/module.js origin=null
+HTTP GET /rest/workspaces/ws-1/static/classic.js origin=<absent>
+HTTP GET /rest/workspaces/ws-1/static/data.json origin=null
+HTTP OPTIONS /graphql origin=null
+HTTP OPTIONS /graphql?abs=csp/iframe-with-same-origin-attr origin=null
+HTTP OPTIONS /graphql origin=null
+HTTP OPTIONS /graphql?abs=csp/iframe-no-sandbox-attr origin=null
+HTTP GET /rest/workspaces/ws-1/static/data.json origin=null
+WS /ws/terminal/x?from=csp/iframe-with-same-origin-attr origin=null
+WS /ws/terminal/x?from=csp/iframe-no-sandbox-attr origin=null

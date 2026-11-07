@@ -1,0 +1,18 @@
+# API-10 node log excerpt (isolated instance iso-50112-c4ac, worktree build of cdba18ba35 code; HEAD 2d59c0db2c)
+# Source: instance log (embedded server stdout/stderr), window 04:54:45-04:54:58Z 2026-11-07; agent_ws ids shortened; health/app GraphQL 200s omitted
+# Command: python3 accesslog.py <instance log> 2026-11-07T04:54:45 2026-11-07T04:54:58
+2026-11-07T04:54:48.732Z Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /rest/workspaces/agent_ws_…/static/module.js origin null
+2026-11-07T04:54:48.733Z GET /rest/workspaces/agent_ws_…/static/module.js 403
+2026-11-07T04:54:48.738Z Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /rest/workspaces/agent_ws_…/static/data.json origin null
+2026-11-07T04:54:48.738Z GET /rest/workspaces/agent_ws_…/static/data.json 403
+2026-11-07T04:54:48.740Z Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/hostile-ws?cwd=%2Fprivate%2Fvar%2Ffolders%2F7w%2F9r4_s1_s42z3f7c136bpjf0r0000gn%2FT%2Fapi417.7wR5caKuvW%2Fmarkers origin null
+2026-11-07T04:54:48.740Z GET /ws/terminal/hostile-ws?cwd=%2Fprivate%2Fvar%2Ffolders%2F7w%2F9r4_s1_s42z3f7c136bpjf0r0000gn%2FT%2Fapi417.7wR5caKuvW%2Fmarkers 403
+2026-11-07T04:54:48.747Z GET /graphql?query=mutation%7BcreateAgentDefinition%28input%3A%7Bname%3A%22HOSTILE-GET-ws%22%2Crole%3A%22assistant%22%2Cdescription%3A%22api417+hostile+probe%22%2Cinstruction 405
+2026-11-07T04:54:48.747Z OPTIONS /graphql 403
+2026-11-07T04:54:48.747Z POST /graphql 403
+2026-11-07T04:54:48.747Z Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql origin null
+2026-11-07T04:54:48.747Z Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql origin null
+2026-11-07T04:54:48.747Z Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql origin null
+2026-11-07T04:54:48.748Z OPTIONS /graphql 403
+2026-11-07T04:54:48.751Z Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /rest/workspaces/agent_ws_…/static/font.ttf origin null
+2026-11-07T04:54:48.752Z GET /rest/workspaces/agent_ws_…/static/font.ttf 403

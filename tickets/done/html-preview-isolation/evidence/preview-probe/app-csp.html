@@ -1,0 +1,20 @@
+<!doctype html>
+<html><head><title>AppWindow</title></head><body>
+<script>
+// CSP check: the static route sends `Content-Security-Policy: sandbox allow-scripts` (server run with PROBE_CSP_SANDBOX=1).
+const STATIC = 'http://127.0.0.1:47921/rest/workspaces/ws-1/static/report.html';
+window.addEventListener('message', (e) => {
+  console.log('PROBE ' + JSON.stringify({ frame: e.data.probe, check: e.data.name, value: e.data.value, eventOrigin: e.origin }));
+});
+for (const f of [
+  { label: 'csp/iframe-scripts-only', sandbox: 'allow-scripts' },
+  { label: 'csp/iframe-with-same-origin-attr', sandbox: 'allow-scripts allow-same-origin' },
+  { label: 'csp/iframe-no-sandbox-attr', sandbox: null },
+]) {
+  const el = document.createElement('iframe');
+  if (f.sandbox !== null) el.setAttribute('sandbox', f.sandbox);
+  el.src = `${STATIC}?label=${f.label}`;
+  document.body.appendChild(el);
+}
+</script>
+</body></html>

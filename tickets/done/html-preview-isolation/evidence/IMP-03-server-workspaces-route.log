@@ -1,0 +1,21 @@
+# IMP-03 server workspace route tests
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/api/rest/workspaces.test.ts --no-watch
+# Commit: cdba18ba35 (worktree /Users/normy/autobyteus_org/autobyteus-worktrees/html-preview-isolation)
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-07T04:35Z
+
+stderr | tests/unit/api/rest/workspaces.test.ts > REST workspaces routes > preview document sandbox > leaves static error replies and the content route without the sandbox header
+Attempted to access non-existent workspace: gone
+stderr | tests/unit/api/rest/workspaces.test.ts > preserves healthy media bytes, encoded paths, HTML and relative static assets
+File not found in workspace ws1: deleted.png
+ ✓ tests/unit/api/rest/workspaces.test.ts > REST workspaces routes > serves workspace file content 77ms
+ ✓ tests/unit/api/rest/workspaces.test.ts > REST workspaces routes > returns 404 when workspace is missing 2ms
+ ✓ tests/unit/api/rest/workspaces.test.ts > REST workspaces routes > serves static workspace assets 3ms
+ ✓ tests/unit/api/rest/workspaces.test.ts > REST workspaces routes > returns 400 for workspace path violations 1ms
+ ✓ tests/unit/api/rest/workspaces.test.ts > REST workspaces routes > preview document sandbox > sandboxes every file the static route serves, HTML and assets alike 4ms
+ ✓ tests/unit/api/rest/workspaces.test.ts > REST workspaces routes > preview document sandbox > leaves static error replies and the content route without the sandbox header 5ms
+ ✓ tests/unit/api/rest/workspaces.test.ts > preserves healthy media bytes, encoded paths, HTML and relative static assets 7ms
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  05:35:36
+   Duration  786ms (transform 59ms, setup 44ms, import 106ms, tests 102ms, environment 0ms)

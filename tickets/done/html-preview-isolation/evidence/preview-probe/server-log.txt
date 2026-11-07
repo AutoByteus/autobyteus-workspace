@@ -1,0 +1,24 @@
+listening 47921
+HTTP GET /rest/workspaces/ws-1/static/report.html origin=<absent>
+HTTP GET /rest/workspaces/ws-1/static/report.html?label=static/current origin=<absent>
+HTTP GET /rest/workspaces/ws-1/static/report.html?label=static/scripts-only origin=<absent>
+HTTP POST /graphql?abs=blob/current origin=<absent>
+WS /ws/terminal/x?from=blob/current origin=file://
+HTTP GET /rest/workspaces/ws-1/static/style.css origin=<absent>
+HTTP GET /rest/workspaces/ws-1/static/classic.js origin=<absent>
+HTTP GET /rest/workspaces/ws-1/static/module.js origin=http://127.0.0.1:47921
+HTTP GET /rest/workspaces/ws-1/static/pixel.png origin=<absent>
+HTTP OPTIONS /graphql?abs=blob/scripts-only origin=null
+HTTP GET /rest/workspaces/ws-1/static/style.css origin=<absent>
+WS /ws/terminal/x?from=blob/scripts-only origin=null
+HTTP GET /rest/workspaces/ws-1/static/pixel.png origin=<absent>
+HTTP GET /rest/workspaces/ws-1/static/module.js origin=null
+HTTP GET /rest/workspaces/ws-1/static/classic.js origin=<absent>
+HTTP GET /rest/workspaces/ws-1/static/data.json origin=null
+HTTP POST /graphql origin=http://127.0.0.1:47921
+HTTP POST /graphql?abs=static/current origin=http://127.0.0.1:47921
+HTTP OPTIONS /graphql origin=null
+HTTP OPTIONS /graphql?abs=static/scripts-only origin=null
+WS /ws/terminal/x?from=static/scripts-only origin=null
+HTTP GET /rest/workspaces/ws-1/static/data.json origin=<absent>
+WS /ws/terminal/x?from=static/current origin=http://127.0.0.1:47921

@@ -1,0 +1,33 @@
+<!doctype html>
+<html><head><title>AppWindow</title></head><body>
+<script>
+// Mirrors HtmlPreviewer.vue: a blob: URL made by the app window (with the same <base>),
+// or the node's workspace static URL; each with the current and the proposed sandbox.
+const NODE = 'http://127.0.0.1:47921';
+const STATIC = `${NODE}/rest/workspaces/ws-1/static/report.html`;
+window.addEventListener('message', (e) => {
+  console.log('PROBE ' + JSON.stringify({ frame: e.data.probe, check: e.data.name, value: e.data.value, eventOrigin: e.origin }));
+});
+(async () => {
+  const html = await (await fetch(STATIC)).text();
+  const blobFor = (label) => {
+    const baseUrl = window.location.origin;
+    const content = `<base href="${baseUrl}/" />\n<script>window.PROBE_LABEL=${JSON.stringify(label)}<\/script>\n${html}`;
+    return URL.createObjectURL(new Blob([content], { type: 'text/html' }));
+  };
+  const frames = [
+    { label: 'blob/current', src: blobFor('blob/current'), sandbox: 'allow-scripts allow-same-origin' },
+    { label: 'blob/scripts-only', src: blobFor('blob/scripts-only'), sandbox: 'allow-scripts' },
+    { label: 'static/current', src: `${STATIC}?label=static/current`, sandbox: 'allow-scripts allow-same-origin' },
+    { label: 'static/scripts-only', src: `${STATIC}?label=static/scripts-only`, sandbox: 'allow-scripts' },
+  ];
+  console.log('PROBE ' + JSON.stringify({ frame: 'app', check: 'app-origin', value: window.location.origin, blobSample: frames[0].src }));
+  for (const f of frames) {
+    const el = document.createElement('iframe');
+    el.setAttribute('sandbox', f.sandbox);
+    el.src = f.src;
+    document.body.appendChild(el);
+  }
+})();
+</script>
+</body></html>

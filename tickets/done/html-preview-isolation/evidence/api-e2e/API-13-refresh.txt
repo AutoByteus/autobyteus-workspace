@@ -1,0 +1,115 @@
+# API-13 AC-004 refresh on the real desktop app (isolated instance iso-50112-c4ac, worktree build; code cdba18ba35), 2026-11-07
+# Steps: (a) previewing artifact.html (ART-V1) in Artifacts, the agent writes the file again (GENERATE_IMAGE with ART-V2 content) -> read the preview frame, no user action.
+#        (b) Files area previewing hostile.html (WS-V1); file changed on disk to WS-V2 -> read after 10 s, no user action; again WS-V3 -> read after 5 s; then WS-V4, click classic.js and back to hostile.html (reopen) -> read.
+# Frames read through CDP (s-versions.js): #version text and self.origin of every preview frame.
+
+## api13a
+{
+ "at": "2026-11-07T04:59:35.689Z",
+ "frames": [
+  {
+   "url": "",
+   "version": "ART-V2",
+   "origin": "null"
+  },
+  {
+   "url": "",
+   "version": "WS-V1",
+   "origin": "null"
+  }
+ ],
+ "iframes": [
+  {
+   "src": "http://127.0.0.1:50113/rest/workspaces/agent_ws_…/static/hostile.html",
+   "sandbox": "allow-scripts",
+   "visible": false
+  },
+  {
+   "src": "blob:file:///5d51e35f-4690-47fd-a4ef-198eaeaad031",
+   "sandbox": "allow-scripts",
+   "visible": true
+  }
+ ]
+}
+
+## api13b1
+{
+ "at": "2026-11-07T04:59:45.494Z",
+ "frames": [
+  {
+   "url": "",
+   "version": "WS-V1",
+   "origin": "null"
+  }
+ ],
+ "iframes": [
+  {
+   "src": "http://127.0.0.1:50113/rest/workspaces/agent_ws_…/static/hostile.html",
+   "sandbox": "allow-scripts",
+   "visible": true
+  }
+ ]
+}
+
+## api13b2
+{
+ "at": "2026-11-07T05:00:02.270Z",
+ "frames": [
+  {
+   "url": "",
+   "version": "WS-V2",
+   "origin": "null"
+  }
+ ],
+ "iframes": [
+  {
+   "src": "http://127.0.0.1:50113/rest/workspaces/agent_ws_…/static/hostile.html",
+   "sandbox": "allow-scripts",
+   "visible": true
+  }
+ ]
+}
+
+## api13b3
+{
+ "at": "2026-11-07T05:00:38.209Z",
+ "frames": [
+  {
+   "url": "",
+   "version": "WS-V3",
+   "origin": "null"
+  }
+ ],
+ "iframes": [
+  {
+   "src": "http://127.0.0.1:50113/rest/workspaces/agent_ws_…/static/hostile.html",
+   "sandbox": "allow-scripts",
+   "visible": true
+  }
+ ]
+}
+
+## api13b4
+{
+ "at": "2026-11-07T05:00:45.934Z",
+ "frames": [
+  {
+   "url": "",
+   "version": "WS-V4",
+   "origin": "null"
+  }
+ ],
+ "iframes": [
+  {
+   "src": "http://127.0.0.1:50113/rest/workspaces/agent_ws_…/static/hostile.html",
+   "sandbox": "allow-scripts",
+   "visible": true
+  }
+ ]
+}
+
+## Watcher and refusal lines in the window (accesslog.py + grep Watcher)
+[2026-11-07T04:59:52.060Z] [INFO] [electron.embedded-server.stdout] Watcher detected modification: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api417.7wR5caKuvW/workspace/hostile.html
+[2026-11-07T05:00:33.096Z] [INFO] [electron.embedded-server.stdout] Watcher detected modification: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api417.7wR5caKuvW/workspace/hostile.html
+[2026-11-07T05:00:38.512Z] [INFO] [electron.embedded-server.stdout] Watcher detected modification: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api417.7wR5caKuvW/workspace/hostile.html
+REMOTE_ACCESS_ORIGIN_REFUSED lines from the reloaded hostile pages: 25

@@ -92,6 +92,20 @@ Before deleting the registry entry, `WorkspaceRemovalGuard` blocks removal when 
 
 Re-adding/loading the same root later creates the same deterministic workspace id and makes the workspace visible again. Preserved history for that root can be shown again through workspace-scoped history after the workspace is registered.
 
+## Workspace Static Route (HTML Preview)
+
+`GET /rest/workspaces/:workspaceId/static/*` (`src/api/rest/workspaces.ts`)
+serves workspace files for the web app's HTML preview. Its only consumer is the
+preview iframe. Every file it serves carries
+`Content-Security-Policy: sandbox allow-scripts`, so a workspace page runs
+with an opaque origin (`null`) wherever its URL is opened: in the preview, in
+the in-app browser or in a tab. It never runs at this node's origin, and the
+node's Origin rule refuses its WebSocket and API requests
+([Remote Access](../features/remote_access.md)). Do not remove the header or add
+`allow-same-origin` to it. Error replies and the `/content` route do not send
+it. The client side and what previewed pages can and cannot do are in
+`autobyteus-web/docs/file_explorer.md` (HTML Preview Resource Contract).
+
 ## Workspace History Boundary
 
 Workspace-specific run-history lookup uses the visible-workspace boundary.

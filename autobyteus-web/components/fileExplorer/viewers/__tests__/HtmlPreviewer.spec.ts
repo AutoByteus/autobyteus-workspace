@@ -41,7 +41,26 @@ describe('HtmlPreviewer', () => {
       'http://node.example/rest/workspaces/workspace-2/static/docs/My%20preview.html',
     )
     expect(createObjectUrl).not.toHaveBeenCalled()
-    expect(wrapper.find('iframe').attributes('sandbox')).toBe('allow-scripts allow-same-origin')
+    // Opaque origin: the previewed page must never get the node's origin.
+    expect(wrapper.find('iframe').attributes('sandbox')).toBe('allow-scripts')
+  })
+
+  it('isolates Blob previews and puts only the content in the Blob', async () => {
+    const content = '<!doctype html><h1>Artifact preview</h1><script>document.title = "ran"</script>'
+    const wrapper = mount(HtmlPreviewer, {
+      props: {
+        content,
+        path: 'reports/artifact.html',
+        relativeResourceContext: null,
+      },
+    })
+    await flushPromises()
+
+    // Opaque origin: the previewed page must never get the app window's origin.
+    expect(wrapper.find('iframe').attributes('sandbox')).toBe('allow-scripts')
+    const blob = createObjectUrl.mock.calls[0]?.[0] as Blob
+    expect(blob.type).toBe('text/html')
+    expect(await blob.text()).toBe(content)
   })
 
   it('uses a Blob URL for a local absolute path without workspace context', async () => {

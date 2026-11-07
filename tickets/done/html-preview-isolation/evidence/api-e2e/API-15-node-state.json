@@ -1,0 +1,21 @@
+{
+ "label": "API-15",
+ "checkedAt": "2026-11-07T05:02:58.840Z",
+ "since": "2026-11-07T05:02:37.000Z",
+ "markers": [
+  "control-api12.marker"
+ ],
+ "hostileDefinitions": [],
+ "allDefinitions": [
+  "Daily Assistant",
+  "Preview Writer",
+  "CONTROL-api12"
+ ],
+ "refusals": [
+  "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/hostile-phone?cwd=%2Fprivate%2Fvar%2Ffolders%2F7w%2F9r4_s1_s42z3f7c136bpjf0r0000gn%2FT%2Fapi417.7wR5caKuvW%2Fmarkers origin null",
+  "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql origin null",
+  "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql origin null",
+  "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql origin null"
+ ],
+ "terminalAttached": []
+}

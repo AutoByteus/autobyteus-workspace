@@ -1,0 +1,21 @@
+# IMP-02 HtmlPreviewer spec
+# Command: cd autobyteus-web && NUXT_TEST=true pnpm exec vitest run components/fileExplorer/viewers/__tests__/HtmlPreviewer.spec.ts
+# Commit: cdba18ba35 (worktree /Users/normy/autobyteus_org/autobyteus-worktrees/html-preview-isolation)
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-07T04:35Z
+
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/html-preview-isolation/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/html-preview-isolation/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/html-preview-isolation/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/html-preview-isolation/autobyteus-web/stores/serverStore.ts" is used
+stderr | components/fileExplorer/viewers/__tests__/HtmlPreviewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+stdout | components/fileExplorer/viewers/__tests__/HtmlPreviewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+ ✓ components/fileExplorer/viewers/__tests__/HtmlPreviewer.spec.ts > HtmlPreviewer > uses the explicit workspace identity for static HTML previews 6ms
+ ✓ components/fileExplorer/viewers/__tests__/HtmlPreviewer.spec.ts > HtmlPreviewer > isolates Blob previews and puts only the content in the Blob 3ms
+ ✓ components/fileExplorer/viewers/__tests__/HtmlPreviewer.spec.ts > HtmlPreviewer > uses a Blob URL for a local absolute path without workspace context 4ms
+ ✓ components/fileExplorer/viewers/__tests__/HtmlPreviewer.spec.ts > HtmlPreviewer > revokes Blob URLs when content changes and on unmount 6ms
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  05:35:28
+   Duration  6.78s (transform 3.49s, setup 6.09s, collect 14ms, tests 19ms, environment 224ms, prepare 167ms)
