@@ -11,6 +11,7 @@
 | SR-005 | Requirements | The user's WireGuard/shared-office question and "select the address?" question, 2026-11-07 | N/A | Ready for Approval | Ready for Approval | REQ-002, REQ-004, DEC-004, DEC-013 | VPN trusted like Tailscale; local Wi-Fi asked once per network; all decisions settled |
 | SR-006 | Requirements | The user's "do I have to do both" question, 2026-11-07 | N/A | Ready for Approval | Ready for Approval | REQ-007, REQ-020 (new), DEC-014 | Wi-Fi permission and hand-typed address shown as alternatives only when needed |
 | SR-007 | Requirements | The user's "explain how everything works" question, 2026-11-07 | N/A | Ready for Approval | Ready for Approval | REQ-021 (new) | Collapsed "How does this work?" section |
+| SR-008 | Requirements | The user: one section per network type, more detail, 2026-11-07 | N/A | Ready for Approval | Ready for Approval | REQ-021 | Four cards with When / Setup / Safety; text prepared by the Solution Designer |
 
 ## Revision Entries
 
@@ -86,3 +87,8 @@
 
 - Trigger: the user, 2026-11-07: "do we need a separate section … to explain how everything works? … hidden, but you look and open it"
 - IDs affected: REQ-021 new (Solution Designer within his direction); sent to the Product Team the same day
+
+### SR-008 — "How does this work?" by network type
+
+- Trigger: the user, 2026-11-07: "separate section for each types, make it more detailed because the user really care about this, so they feel more secure … I think you should prepare the text"; also his question on what "company's address" means (wording changed to "an address set up for this node")
+- IDs affected: REQ-021; text sent to the Product Team the same day
