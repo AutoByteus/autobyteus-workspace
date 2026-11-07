@@ -5,8 +5,8 @@
 - Current solution revision ID: `SR-012`
 - Approved requirements baseline: [requirements-doc.md](requirements-doc.md) at SR-011, `Approved`: the user's approval of the UI/UX design ("if things are consistant. then i approve", 2026-11-07) plus the Solution Designer within his direction. SR-012 adds DEC-019…DEC-021, which simplify the design without a visible change (below).
 - Behavior-defining supplement: the Product Team's UI/UX spec `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/one-step-phone-pairing/ui-ux-spec.md` (Approved; UI reference `d2e960cc`, record `34677c88`), VIS-001…VIS-034, UXJ-001…008, TR-001…018. Its texts are normative.
-- User approval of the design: required by the Task ("Design first; nothing is built before the user approves"). Status: `Pending`, asked in the Solution Designer's conversation on 2026-11-07.
-- Design status: `Ready` (pending the user's approval before routing)
+- User approval of the design: `Obtained`. The user, 2026-11-07, in the Solution Designer's conversation, answering "Shall I go ahead?": "I trust that you can make reasonable decisions. For this ticket, we need to release a beta. since for my codex i dont have limit now, i waive for codex if delivery engineer asks".
+- Design status: `Ready`
 - Canonical investigation notes: [investigation-notes.md](investigation-notes.md) (E-01…E-27)
 - Authorities read (2026-11-07): `references/architecture-design.md`, `references/design-principles.md`, `/DESIGN.md` (root; rules 1, 4, 5, 7, 9, 10, 11, 12; Data Migration Guideline pointer; GLOSSARY.md), `GLOSSARY.md` (Nodes). `design-examples.md` not used.
 - Conflicts or discrepancies: none with the general principles. DESIGN.md rule 9 (no compatibility between versions) does not cover the Android app on the phone; REQ-017 keeps installed apps and existing pairings working. This design needs no compatibility code for it: the QR payload is unchanged (DEC-019).

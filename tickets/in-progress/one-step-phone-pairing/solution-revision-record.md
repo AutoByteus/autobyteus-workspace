@@ -131,3 +131,7 @@
 - Design: design-spec.md; task_size Large, architectural_risk High
 - Follow-ups: FU-003 added
 - Next action: ask the user to approve the plan (the Task requires it before building); then route by the handoff rules (Large/High → architecture review)
+
+### SR-012a — The user's approval of the design and release direction
+
+- The user, 2026-11-07: "I trust that you can make reasonable decisions. For this ticket, we need to release a beta. since for my codex i dont have limit now, i waive for codex if delivery engineer asks". Recorded in design-spec.md (approval basis) and requirements-doc.md (release direction). Routed: Architecture Design Complete, Large / High → architecture review.
