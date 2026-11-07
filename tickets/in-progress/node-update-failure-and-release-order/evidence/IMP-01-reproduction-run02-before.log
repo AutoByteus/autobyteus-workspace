@@ -1,0 +1,69 @@
+# IMP-01 reproduction (RUN-02) before the fix
+# Command: pnpm -C autobyteus-web exec vitest run --config ./electron/vitest.config.ts electron/nodeAutoUpdate/__tests__/nodeAutoUpdater.spec.ts -t RUN-02
+# Commit: 6225a734a3 + the new test only (no source change)
+# Env: macOS 26.5.2, node v22.23.1
+# Date: 2026-11-07T19:29:43Z
+
+▲ [WARNING] Cannot find base config file "./.nuxt/tsconfig.json" [tsconfig.json]
+
+    tsconfig.json:2:13:
+      2 │   "extends": "./.nuxt/tsconfig.json",
+        ╵              ~~~~~~~~~~~~~~~~~~~~~~~
+
+
+ RUN  v3.2.7 /Users/normy/autobyteus_org/autobyteus-worktrees/node-update-failure-and-release-order/autobyteus-web/electron
+
+ ❯ nodeAutoUpdate/__tests__/nodeAutoUpdater.spec.ts (18 tests | 1 failed | 17 skipped) 8ms
+   ↓ NodeAutoUpdater (autobyteus-356, DS-003) > does nothing in an unpackaged build
+   ↓ NodeAutoUpdater (autobyteus-356, DS-003) > first pass after 2 minutes: an older node with the switch on is asked to update to the desktop version (AC-004)
+   ↓ NodeAutoUpdater (autobyteus-356, DS-003) > a node at the same version gets no request (AC-004)
+   ↓ NodeAutoUpdater (autobyteus-356, DS-003) > a node at a newer version gets no request (AC-004)
+   ↓ NodeAutoUpdater (autobyteus-356, DS-003) > a node at in-place update unavailable gets no request (AC-004)
+   ↓ NodeAutoUpdater (autobyteus-356, DS-003) > follows an accepted update every 10 s through the restart and records AUTO_UPDATED (AC-004)
+   ↓ NodeAutoUpdater (autobyteus-356, DS-003) > a trial that rolls back records AUTO_FAILED with the node reason and is not tried again for that version (AC-005)
+   ↓ NodeAutoUpdater (autobyteus-356, DS-003) > a follow ends after 15 minutes with the entry pending; a later pass finds it unfinished and does not repeat
+   ↓ NodeAutoUpdater (autobyteus-356, DS-003) > a node being followed is skipped by a pass
+   ↓ NodeAutoUpdater (autobyteus-356, DS-003) > a request refused before the start (409) changes nothing and is tried again at the next pass
+   ↓ NodeAutoUpdater (autobyteus-356, DS-003) > a request not delivered (network error or timeout) changes nothing and is tried again at the next pass
+   ↓ NodeAutoUpdater (autobyteus-356, DS-003) > an unreachable node gets no request and is tried again later (AC-005)
+   ↓ NodeAutoUpdater (autobyteus-356, DS-003) > passes never overlap, and nodes are checked one after another
+   ↓ NodeAutoUpdater (autobyteus-356, DS-003) > a node whose switch turns on is checked at once
+   ↓ NodeAutoUpdater (autobyteus-356, DS-003) > a switch turned off while the node is asked sends no request
+   ↓ NodeAutoUpdater (autobyteus-356, DS-003) > a removed node loses its entry and its follow
+   × NodeAutoUpdater (autobyteus-356, DS-003) > 412 RUN-02: a pass clears AUTO_FAILED for V once the node runs V (updated another way), and requests nothing (AC-001) 7ms
+     → expected { version: '1.6.0', …(4) } to be null
+   ↓ NodeAutoUpdater (autobyteus-356, DS-003) > stops its passes and follows at shutdown
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  nodeAutoUpdate/__tests__/nodeAutoUpdater.spec.ts > NodeAutoUpdater (autobyteus-356, DS-003) > 412 RUN-02: a pass clears AUTO_FAILED for V once the node runs V (updated another way), and requests nothing (AC-001)
+AssertionError: expected { version: '1.6.0', …(4) } to be null
+
+- Expected: 
+null
+
++ Received: 
+{
+  "outcome": "AUTO_FAILED",
+  "read": true,
+  "reason": "No server package was published for 1.6.0 (linux-arm64).",
+  "requestedAt": "2026-11-01T09:00:00.000Z",
+  "version": "1.6.0",
+}
+
+ ❯ nodeAutoUpdate/__tests__/nodeAutoUpdater.spec.ts:248:29
+    246|     answers[node('a').baseUrl] = updated();
+    247|     await createUpdater().runPass();
+    248|     expect(record.get('a')).toBeNull();
+       |                             ^
+    249|     expect(onChange).toHaveBeenLastCalledWith({});
+    250|     expect(requestUpdate).not.toHaveBeenCalled();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 17 skipped (18)
+   Start at  20:29:43
+   Duration  341ms (transform 61ms, setup 0ms, collect 61ms, tests 8ms, environment 0ms, prepare 70ms)
+
