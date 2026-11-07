@@ -92,6 +92,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   },
   getNodeAutoUpdateState: () => ipcRenderer.invoke('node-auto-update:get-state'),
   markNodeAutoUpdateRead: (entryId: string) => ipcRenderer.invoke('node-auto-update:mark-read', entryId),
+  recheckNodeAutoUpdate: (entryId: string) => ipcRenderer.invoke('node-auto-update:recheck', entryId),
   onNodeAutoUpdateChanged: (callback: (entries: any) => void) => {
     return registerIpcListener('node-auto-update:changed', callback)
   },

@@ -1,7 +1,7 @@
 import { logger } from '../logger';
 import type { NodeEntry } from '../../types/node';
 import type { NodeAutoUpdateEntries } from '../../shared/nodeAutoUpdateTypes';
-import { decideNodeAutoUpdate, reconcileNodeAutoUpdate } from './decideNodeAutoUpdate';
+import { decideNodeAutoUpdate, isSupersededFailure, reconcileNodeAutoUpdate } from './decideNodeAutoUpdate';
 import type { NodeAutoUpdateRecord } from './nodeAutoUpdateRecord';
 import type { NodeUpdateClient } from './nodeUpdateClient';
 
@@ -30,7 +30,8 @@ const isAutoUpdated = (node: NodeEntry): boolean => node.nodeType === 'remote' &
  * Packaged builds only, remote entries with the switch on only. A pass runs 2 minutes after the start and then every
  * 60 minutes, never overlapping, checking the nodes one after another; a node whose switch turns on is checked at
  * once. An accepted update is followed on its own timer (every 10 s, at most 15 minutes), and a followed node is
- * skipped by passes until its follow ends.
+ * skipped by passes until its follow ends. It is also the one writer that drops a failure the node has passed
+ * (autobyteus-412): at its own checks, and when a window asks for a recheck of any remote entry (`recheckFailure`).
  */
 export class NodeAutoUpdater {
   private passTimer: ReturnType<typeof setTimeout> | null = null;
@@ -157,8 +158,41 @@ export class NodeAutoUpdater {
     this.follows.set(entryId, setTimeout(() => { void tick(); }, NODE_AUTO_UPDATE_FOLLOW_INTERVAL_MS));
   }
 
+  /**
+   * A window's card has a new answer from the node while its entry is AUTO_FAILED (autobyteus-412, DS-002): ask the
+   * node about the failed version itself and drop the failure when the node has reached it. Any remote entry, switch on
+   * or off; never an update request. It holds the node's `checking` guard, so a pass leaves the node alone meanwhile,
+   * and reads the entry again after the answer, so an entry another writer stored meanwhile stays.
+   */
+  async recheckFailure(entryId: string): Promise<void> {
+    if (this.stopped || this.checking.has(entryId) || this.follows.has(entryId)) return;
+    const entry = this.options.record.get(entryId);
+    if (entry?.outcome !== 'AUTO_FAILED') return;
+    const version = entry.version;
+    const node = this.options.getNodes().find((candidate) => candidate.id === entryId && candidate.nodeType === 'remote');
+    if (!node) return;
+    this.checking.add(entryId);
+    try {
+      const status = await this.options.client.getStatus(node.baseUrl, version);
+      if (this.stopped || !status) return;
+      const current = this.options.record.get(entryId);
+      if (current?.version !== version || !isSupersededFailure(current, status)) return;
+      this.options.record.remove(entryId);
+      this.emitChange();
+    } finally {
+      this.checking.delete(entryId);
+    }
+  }
+
+  /** A failure the node has passed is dropped first; otherwise a pending attempt at `version` is reconciled. */
   private reconcile(entryId: string, status: Parameters<typeof reconcileNodeAutoUpdate>[1], version: string): void {
-    const next = reconcileNodeAutoUpdate(this.options.record.get(entryId), status, version, this.now());
+    const entry = this.options.record.get(entryId);
+    if (isSupersededFailure(entry, status)) {
+      this.options.record.remove(entryId);
+      this.emitChange();
+      return;
+    }
+    const next = reconcileNodeAutoUpdate(entry, status, version, this.now());
     if (!next) return;
     this.options.record.set(entryId, next);
     this.emitChange();

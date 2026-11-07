@@ -1,0 +1,39 @@
+# Case: API-02
+# Command / steps: git clone --no-local <worktree> /tmp/ab412-e2e/clone; git checkout 405c28d45e; pnpm install --frozen-lockfile
+# Commit: 405c28d45e (code = df789a89a5)
+# Environment: macOS 26 arm64, Node v22.23.1, pnpm 10.28.2, Python 3.9.6, Docker; packaged AutoByteus 1.5.12-beta.7 built in the fresh clone; isolated instance (e2e profile) on data root /private/tmp/ab412-e2e/data-root; test node ab412-e2e-node (autobyteus/autobyteus-server:beta, built-in 1.5.12-beta.3, 127.0.0.1:18412) behind the logging proxy 127.0.0.1:18413
+# Date: 2026-11-07
+# ---
+Scope: all 13 workspace projects
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +1662
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 1662, reused 626, downloaded 0, added 0
+Progress: resolved 1662, reused 1658, downloaded 0, added 63
+Progress: resolved 1662, reused 1658, downloaded 0, added 247
+Progress: resolved 1662, reused 1658, downloaded 0, added 458
+Progress: resolved 1662, reused 1658, downloaded 0, added 616
+Progress: resolved 1662, reused 1658, downloaded 0, added 662
+Progress: resolved 1662, reused 1658, downloaded 0, added 840
+Progress: resolved 1662, reused 1658, downloaded 0, added 1002
+Progress: resolved 1662, reused 1658, downloaded 0, added 1254
+Progress: resolved 1662, reused 1658, downloaded 0, added 1392
+Progress: resolved 1662, reused 1658, downloaded 0, added 1662, done
+ WARN  Failed to create bin at /private/tmp/ab412-e2e/clone/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/private/tmp/ab412-e2e/clone/autobyteus-application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /private/tmp/ab412-e2e/clone/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/private/tmp/ab412-e2e/clone/autobyteus-application-devkit/dist/cli.js'
+
+autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+autobyteus-ts postinstall: [node-pty-fix] repaired: /private/tmp/ab412-e2e/clone/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+autobyteus-ts postinstall: Done
+ WARN  Failed to create bin at /private/tmp/ab412-e2e/clone/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/private/tmp/ab412-e2e/clone/applications/brief-studio/node_modules/@autobyteus/application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /private/tmp/ab412-e2e/clone/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/private/tmp/ab412-e2e/clone/applications/socratic-math-teacher/node_modules/@autobyteus/application-devkit/dist/cli.js'
+╭ Warning ─────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│   Ignored build scripts: @google/genai@2.24.0.                               │
+│   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+│   to run scripts.                                                            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 14.1s using pnpm v10.28.2
+EXIT 0

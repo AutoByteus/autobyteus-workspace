@@ -372,7 +372,13 @@ the approved design repository's `tickets/done/manage-nodes-professional/ui-ux-s
     then says "Updated automatically to `<version>`" (new until seen) or "Automatic update
     failed. Nothing was changed." with the node's reason (IPC `node-auto-update:get-state`,
     `node-auto-update:mark-read`, broadcast `node-auto-update:changed`); the notice under the
-    row does not repeat that result.
+    row does not repeat that result. A failure for a version the node already runs, or has
+    passed, does not stay (autobyteus-412): whenever the cell has a new answer from the node
+    while the outcome is a failure, it asks the desktop to check again (`node-auto-update:recheck`,
+    switch on or off). The main process asks the node about the failed version and drops the
+    failure if the node has reached it; the cell then shows no automatic outcome, and the
+    notice shows as it would without one (for example "Updated to `<version>`." after the
+    cell's own update).
 - **Add** (`AddNodePanel.vue`, the band under the Nodes header): Address, Name, the
   collaboration capsule (on by default), Add node. An address already in the list, whatever its node's state, or another address of a
   listed node (by node ID) is not added again: "This is X, already in your list." Adding

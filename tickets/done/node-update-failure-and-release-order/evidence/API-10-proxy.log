@@ -1,0 +1,14 @@
+# Case: API-10
+# Command / steps: proxy log (harness/proxy.mjs) from the case's MARK line; ua 'Mozilla…' = the window, ua 'node' = the main process (NodeUpdateClient)
+# Commit: 405c28d45e (code = df789a89a5)
+# Environment: macOS 26 arm64, Node v22.23.1, pnpm 10.28.2, Python 3.9.6, Docker; packaged AutoByteus 1.5.12-beta.7 built in the fresh clone; isolated instance (e2e profile) on data root /private/tmp/ab412-e2e/data-root; test node ab412-e2e-node (autobyteus/autobyteus-server:beta, built-in 1.5.12-beta.3, 127.0.0.1:18412) behind the logging proxy 127.0.0.1:18413
+# Date: 2026-11-07
+# ---
+{"at":"2026-11-07T20:25:27Z","event":"MARK API-10 start"}
+{"at":"2026-11-07T20:27:27.787Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"node"}
+{"at":"2026-11-07T20:27:54Z","event":"MARK API-10 Nodes view"}
+{"at":"2026-11-07T20:27:54.359Z","method":"GET","url":"/rest/remote-access/status","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:27:54.363Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:27:54.365Z","method":"POST","url":"/graphql","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:27:54.366Z","method":"POST","url":"/graphql","status":200,"ua":"Mozilla/5.0 (Macintosh; Intel Mac OS X 1"}
+{"at":"2026-11-07T20:27:54.369Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.3","status":200,"ua":"node"}

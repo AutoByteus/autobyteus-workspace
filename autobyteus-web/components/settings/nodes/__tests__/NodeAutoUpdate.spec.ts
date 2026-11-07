@@ -12,6 +12,7 @@ vi.mock('~/stores/nodeListStore', () => ({ useNodeListStore: () => h.list }))
 import NodeServerUpdate from '../NodeServerUpdate.vue'
 import { useAppUpdateStore } from '~/stores/appUpdateStore'
 import { useNodeStore } from '~/stores/nodeStore'
+import { useNodeServerUpdateStore } from '~/stores/nodeServerUpdateStore'
 
 /** autobyteus-356 (UC-002, UC-003): a remote node's "Update automatically" and its outcome, under its server line. */
 
@@ -33,6 +34,7 @@ const api = {
   getNodeAutoUpdateState: vi.fn(async () => outcomes),
   markNodeAutoUpdateRead: vi.fn(async (entryId: string) => ({ ...outcomes, [entryId]: { ...outcomes[entryId]!, read: true } })),
   onNodeAutoUpdateChanged: vi.fn((callback: (entries: NodeAutoUpdateEntries) => void) => { changed = callback; return () => undefined }),
+  recheckNodeAutoUpdate: vi.fn(async (_entryId: string) => undefined),
   upsertNodeRegistry: vi.fn(async (change: NodeRegistryChange) => {
     if (change.type !== 'set-auto-update') throw new Error('unexpected')
     registryVersion += 1
@@ -178,5 +180,65 @@ describe('NodeAutoUpdate', () => {
     changed!(outcomes)
     await flushPromises()
     expect(vi.mocked(fetch).mock.calls.length - before).toBe(1)
+  })
+
+  describe('412 (d): a failure for a version the node has reached', () => {
+    const failedAt = (version = '1.5.12') => ({ 'remote-1': { version, requestedAt: '2026-11-07T12:05:28.005Z', outcome: 'AUTO_FAILED' as const,
+      reason: 'No server package was published for 1.5.12 (linux-arm64).', read: true } })
+    const runsTarget = { inPlaceUpdate: 'available', version: '1.5.12', target: { version: '1.5.12', relation: 'same' },
+      update: { state: 'succeeded', targetVersion: '1.5.12', step: null, code: null, message: null } }
+    const failure = (wrapper: Awaited<ReturnType<typeof mountLine>>) => wrapper.find('[data-testid="node-auto-update-failed-remote-1"]')
+
+    it('AR-001 first view, switch off: the entries load after the first answer → exactly one recheck; the broadcast removes the line (AC-003)', async () => {
+      outcomes = failedAt()
+      const wrapper = await mountLine(runsTarget)
+      expect(api.getNodeAutoUpdateState).toHaveBeenCalledOnce()
+      expect(api.recheckNodeAutoUpdate).toHaveBeenCalledExactlyOnceWith('remote-1')
+      expect(failure(wrapper).exists()).toBe(true) // until the main process answers
+
+      outcomes = {}
+      changed!(outcomes) // the main process dropped the failure
+      await flushPromises()
+      expect(failure(wrapper).exists()).toBe(false)
+      expect(wrapper.find('[data-testid="node-auto-update-updated-remote-1"]').exists()).toBe(false) // not "updated automatically" (DEC-004)
+      expect(api.recheckNodeAutoUpdate).toHaveBeenCalledOnce()
+    })
+
+    it('a failure the main process keeps (node still older) is rechecked once more when the answer changes later', async () => {
+      outcomes = failedAt()
+      const wrapper = await mountLine(older)
+      expect(api.recheckNodeAutoUpdate).toHaveBeenCalledOnce()
+      nodeAnswer = runsTarget // updated meanwhile from the host command
+      await useNodeServerUpdateStore().refresh(B)
+      await flushPromises()
+      expect(api.recheckNodeAutoUpdate).toHaveBeenCalledTimes(2)
+      expect(failure(wrapper).exists()).toBe(true)
+    })
+
+    it.each<[string, NodeAutoUpdateEntries]>([
+      ['an automatic success', { 'remote-1': { ...failedAt()['remote-1'], outcome: 'AUTO_UPDATED', reason: null } }],
+      ['a pending attempt', { 'remote-1': { ...failedAt()['remote-1'], outcome: 'PENDING', reason: null } }],
+      ['no entry', {}],
+    ])('no recheck for %s', async (_name, entries) => {
+      outcomes = entries
+      await mountLine(runsTarget, entry({ autoUpdate: true }))
+      expect(api.recheckNodeAutoUpdate).not.toHaveBeenCalled()
+    })
+
+    it('AC-003: right after the card\'s own update succeeds, the failure goes and the card\'s "Updated to <version>." shows', async () => {
+      outcomes = failedAt()
+      const wrapper = await mountLine({ ...older, update: { state: 'running', targetVersion: '1.5.12', step: 'downloading', code: null, message: null } })
+      const asked = api.recheckNodeAutoUpdate.mock.calls.length
+      nodeAnswer = { ...runsTarget, update: { ...runsTarget.update, message: 'Updated to 1.5.12.' } }
+      await useNodeServerUpdateStore().refresh(B)
+      await flushPromises()
+      expect(api.recheckNodeAutoUpdate.mock.calls.length).toBe(asked + 1)
+      expect(wrapper.find(`[data-testid="node-server-notice-${B}"]`).exists()).toBe(false) // hidden while the stale failure stands
+
+      changed!({})
+      await flushPromises()
+      expect(failure(wrapper).exists()).toBe(false)
+      expect(wrapper.get(`[data-testid="node-server-notice-${B}"]`).text()).toBe('Updated to 1.5.12.')
+    })
   })
 })

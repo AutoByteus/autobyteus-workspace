@@ -263,14 +263,40 @@ git push origin vX.Y.Z[-beta.N]
 
 ## Watching The Rollout
 
-Pushing a `v*` tag starts four independent workflows:
+Pushing a `v*` tag starts four workflows:
 
 | Workflow | Publishes |
 | --- | --- |
-| Desktop Release | macOS ARM64 and x64 (`.dmg`, `.zip`, blockmaps), Linux x64 and ARM64 AppImages, the Windows `.exe`, and the `latest*.yml` updater metadata, on the GitHub release |
+| Desktop Release | macOS ARM64 and x64 (`.dmg`, `.zip`, blockmaps), Linux x64 and ARM64 AppImages, the Windows `.exe`, and the `latest*.yml` updater metadata, on the GitHub release. The updater metadata goes up last, after the server packages (below) |
 | Android APK Release | The signed APK and its `.sha256`, on the same GitHub release |
 | iOS App Store Connect Release | A TestFlight upload |
 | Server Docker Release | `autobyteus/autobyteus-server:X.Y.Z[-beta.N]`. A stable tag also moves `:latest`; the newest tag, stable or beta, moves `:beta`. Then, on the GitHub release, the signed server package per architecture (`x64`, `arm64`): `autobyteus-server-X.Y.Z[-beta.N]-linux-<arch>.tar.gz`, `.json` and `.json.sig` |
+
+The four runs start independently, with one order between them on the GitHub
+release. A desktop is offered a version as soon as the release has its
+`latest*.yml` files, and a desktop that updates asks its Docker nodes for the
+same version 2 minutes after it starts, so the nodes need the server packages
+by then (autobyteus-412). So Desktop Release's publish job:
+
+1. uploads the binaries (this creates the GitHub release when the Android APK
+   Release has not yet);
+2. "Wait for the server packages": waits until the six server package files
+   (`x64` and `arm64`, each `.tar.gz`, `.json` and `.json.sig`) are on the
+   release, checking every 30 seconds for up to 60 minutes. A ref without
+   `autobyteus-server-ts/docker/system-level.json` predates server packages and
+   does not wait;
+3. "Publish the desktop updater files": uploads the four `latest*.yml` files.
+
+The Server Docker Release's package job waits up to 30 minutes for the GitHub
+release to exist, then uploads its files. The desktop publish job therefore
+usually finishes after the Server Docker Release, and nothing waits in a
+circle. After the run, the asset times show the order (AC-005 of autobyteus-412):
+
+```bash
+gh release view vX.Y.Z[-beta.N] --json assets --jq '.assets[] | [.createdAt, .name] | @tsv' | sort
+```
+
+Every `latest*.yml` is newer than all six `autobyteus-server-*` files.
 
 A release is done only when all four have succeeded. Watch the four runs
 together, not one after another, and act on the first failure. Desktop builds
@@ -290,8 +316,10 @@ Compare the assets with the table above: a complete release has 23. Until all
 four runs have succeeded and the assets are complete, the release is in
 progress: report it as "tagged, workflows running", never as released. The
 workflows publish independently, so a desktop failure still leaves the Android
-APK, the TestFlight build and the Docker image published. That is a partial
-release. Record it as one.
+APK, the TestFlight build and the Docker image published. A failed or late
+server package job now also leaves the desktop without its updater files:
+the installers are on the release, but no desktop is offered the version.
+Either is a partial release. Record it as one.
 
 ## Recovery
 
@@ -339,6 +367,25 @@ run, removed on the user's decision ([`tickets/done/beta-release-v1.5.12-beta.2/
   with `gh run rerun <run-id> --failed`, or republish an existing tag with
   `pnpm release:manual-dispatch vX.Y.Z --ref personal`. Do not dispatch manually
   right after a fresh tag push. The push has already started the workflows.
+- **The server packages are missing** (the desktop job "Publish GitHub Release"
+  failed at "Wait for the server packages", whose error names the tag and the
+  missing files; no `latest*.yml` is on the release). Triage the Server Docker
+  Release's failure first (above). Then:
+  1. Rerun its failed jobs: `gh run rerun <server-run-id> --failed`, or fix
+     and cut the next version when the failure is ours. Wait until the six
+     files are on the release (`gh release view vX.Y.Z[-beta.N] --json assets`).
+  2. Rerun the desktop run's failed job: `gh run rerun <desktop-run-id>
+     --failed`. It re-uploads the binaries, finds the packages at once and
+     publishes the updater files. The build jobs are not rerun.
+
+  The same steps recover the combined case. When the Android APK Release
+  fails and the desktop builds take longer than 30 minutes, no workflow has
+  created the GitHub release within the server package job's 30-minute wait,
+  so that job fails first ("did not appear within 30 minutes"). The desktop
+  publish job then creates the release with its binaries and fails after its
+  own 60-minute wait. By then the release exists, so rerunning the Server
+  Docker Release's failed jobs uploads the packages; then rerun the desktop
+  publish job. Recover the Android release on its own, as above.
 
 ## Rollback
 
@@ -391,6 +438,11 @@ What the release workflows build, validate and need.
   - iOS simulator build/test workflow artifacts, plus signed `.ipa` upload to App Store Connect/TestFlight when iOS publish secrets are configured
   - Docker Hub server image for `linux/amd64,linux/arm64`
   - signed server packages for `linux-x64` and `linux-arm64` on the same GitHub Release (archive, description, signature), taken out of the pushed image
+- Desktop publish order (`release-desktop.yml`, job `publish-release`; autobyteus-412):
+  - the binaries go up with `softprops/action-gh-release` (curated or generated notes); its `files` lists hold no `latest*.yml`
+  - "Wait for the server packages" polls `gh release view --json assets` 120 times, 30 s apart, for the six `autobyteus-server-<version>-linux-<x64|arm64>{.tar.gz,.json,.json.sig}` files, and fails naming the tag and the missing files; it is skipped for a ref without `autobyteus-server-ts/docker/system-level.json`
+  - "Publish the desktop updater files" then runs `gh release upload --clobber` for `release-artifacts/latest-mac.yml` (the merged one), `linux-x64/latest-linux.yml`, `linux-arm64/latest-linux-arm64.yml` and `windows-x64/latest.yml`
+  - `scripts/tests/test_desktop_release_server_package_wait.py` runs both steps with a fake `gh` and `sleep`; the order itself shows only on a real tag (Watching The Rollout)
 - Release notes:
   - Stable GitHub Releases use curated user-facing notes from `.github/release-notes/release-notes.md` when that file exists in the tagged revision.
   - The release helper prepares that file from the ticket `release-notes.md`.
