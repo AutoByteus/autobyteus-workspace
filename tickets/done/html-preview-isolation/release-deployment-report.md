@@ -143,3 +143,33 @@ None. This repository deploys no hosted service.
 - See Finalization Record below.
 
 ## Finalization Record
+
+Recorded 2026-11-07, after the push to `personal`.
+
+- Ticket branch commit result: `Completed`. Checkpoint `b3aeb1cced`, base merge `1d8ecc9a79`, delivery commit `41a8e00aa9` (docs sync, delivery documents, ticket archived to `tickets/done/html-preview-isolation/`).
+- Artifact hygiene before the final commit: `Repository artifact hygiene check passed.`
+- Secret Gate before the first push: `scripts/check_secrets.sh origin/personal..codex/html-preview-isolation` → `scanning 8 commit(s)`, `PASS (no secrets found)`, exit 0.
+- Ticket branch push result: `Completed` (`origin/codex/html-preview-isolation` created at `41a8e00aa9`).
+- Target branch update result: `Completed`. `git fetch origin personal` → `c35d9dea11`, the verified base.
+- Target advanced after verification / acceptance: `No` (`c35d9dea11` at verification, at the merge and immediately before the push).
+- Delivery-owned edits protected before re-integration: `Not needed`.
+- Re-integration before final merge result: `Not needed`.
+- Merge into target result: `Completed`. `finalize/html-preview-isolation` from `origin/personal`, `git merge --no-ff codex/html-preview-isolation` → `6f9dfa10ea`.
+- Secret Gate on the merged state: `scripts/check_secrets.sh` → `scanning 9 commit(s) in origin/personal..HEAD`, `PASS`, exit 0.
+- Push target branch result: `Completed`, `c35d9dea11..6f9dfa10ea HEAD -> personal`.
+- Repository finalization status: `Completed`.
+- Release / publication / deployment: `Not required` (no release; the user did not ask for one).
+- Local ticket branch cleanup result: `Completed` (`git branch -d codex/html-preview-isolation`, merged at `41a8e00aa9`).
+- Remote branch cleanup result: `Completed` (`git push origin --delete codex/html-preview-isolation`).
+- Worktree cleanup result: done after this record commit is pushed, from the main checkout: `git worktree remove --force` (the only untracked content is build output, `*/dist/` and `electron-dist/`), `git worktree prune`, and `git branch -D finalize/html-preview-isolation` (its commits are on `personal`). The result is in the terminal message to the Solution Designer.
+
+### Final Status
+
+- Verification complete (from the evidence, or the user's check where needed): `Yes` (from the evidence; no user check needed)
+- Repository finalization complete: `Yes`
+- Applicable release/deployment/rollout complete or not required: `Yes` (`Not required`)
+- Applicable safe cleanup complete or not required: `Yes`. Branches are done here; the worktree is removed right after this commit (above).
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: `Yes`, after the worktree removal
+- Terminal message/reference: `send_message_to` → `/software_engineering_team/solution_designer`
