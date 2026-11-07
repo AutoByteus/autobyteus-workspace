@@ -46,6 +46,7 @@ const localContext = buildTestTeamContext({
 const buildStore = () => ({
   openingRun: false,
   error: null as string | null,
+  historyReadFailure: null as unknown,
   selectedRunId: 'standalone-before' as string | null,
   selectedTeamRunId: 'team-before' as string | null,
   selectedTeamMemberAddress: '/before' as string | null,
