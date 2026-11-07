@@ -6,6 +6,7 @@ The current code and `implementation-handoff.md` are authoritative; this record 
 
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
+| IR-004 | Code reviewer, `code-review-report.md` (CRR-004 Fail, round 4) | F-004, F-005 | `Local Fix` | SR-008; ARCH-REV-005; CRR-004; API-REV-001; DR N/A | Fixes in `c8b4b659cd`; ready for the Targeted Delta Review |
 | IR-003 | Architecture reviewer, `design-review-report.md` (ARCH-REV-005 Pass on SR-008), answering CRR-003 | F-API-001, F-API-002 | `Design Impact` (resolved upstream; implemented) | SR-008; ARCH-REV-005; CRR-003; API-REV-001; DR N/A | D-02 rebuilt on the phone's own credential check (`40d8d088e5`); D-03 re-delivery rule (`35263117c9`); ready for source review |
 | IR-002 | Code reviewer, `code-review-report.md` (CRR-001 Fail), round 1 | F-001, F-002, F-003 | `Local Fix` | SR-005; ARCH-REV-003; CRR-001; API-REV N/A; DR N/A | Three bounded fixes in `1d2cdd15ab`; ready for the Targeted Delta Review |
 | IR-001 | Architecture reviewer, `design-review-report.md` (ARCH-REV-002 Pass, then ARCH-REV-003 for D-02 and ARCH-REV-004 for D-19), round 1 | N/A | `Initial Baseline` | SR-004, SR-005, SR-006; ARCH-REV-002, ARCH-REV-003, ARCH-REV-004; CRR N/A; API-REV N/A; DR N/A | Round 1 implemented (D-01…D-03, D-05…D-08, D-10…D-14, D-16…D-19); one Design Impact raised and resolved during the round (D-02, SR-005) |
@@ -81,3 +82,25 @@ The current code and `implementation-handoff.md` are authoritative; this record 
 - Local validation and result: IMP-15 (196 affected web specs, web typecheck at baseline, guard, Android unit tests incl. `OpenPageRestoreTest` 6/6)
 - Next recipient or routing: Code Reviewer (source review; High route); afterwards API/E2E reruns MSP-13, MSP-18, API-08 and the full web suite
 - Remaining limitations or risks: not run here: the full web suite, the phone-bundle probe and the emulator (API-08). Run screens (AC-004b) wait for round 2.
+
+### IR-004 — CRR-004 local fixes
+
+- Triggering role, report path, and round: code reviewer (`code_reviewer_54f114daa05e40fda891656b2c93e4bb`), `code-review-report.md` § Round 4 Review Of SR-008, CRR-004
+- Triggering finding IDs: F-004, F-005
+- Classification: `Local Fix`
+- Prior authoritative result: IR-003, CRR-004 Fail (Cleanup 9.0 < 9.2)
+- Current authoritative result: fixes in `c8b4b659cd`; ready for the Targeted Delta Review
+- Related solution revision IDs: SR-008 (D-02, D-13 text)
+- Related architecture-review revision IDs: ARCH-REV-005
+- Related code-review revision IDs: CRR-004
+- Related API/E2E revision IDs: API-REV-001
+- Related delivery revision IDs: `N/A`
+- Why recorded: code-review findings, implementation-owned
+- Approved behavior or requirement IDs affected: REQ-002 (no behavior change), REQ-013
+- Implementation delta:
+  - F-004: `autobyteus-web/composables/runHistory/useRunHistorySectionLoad.ts`. Removed `RunHistoryReadResult`, `listsAnyRun` and `readHistory`'s ok/cause; `load` and `initialLoad` now settle void. Every read, the window and the polling are unchanged; the history read's failure is still caught and the store shows it. Specs updated: `useRunHistorySectionLoad.spec.ts` and the shell spec's load mocks.
+  - F-005: `docs/design-cases.md` Case 5. The autobyteus-426 bullet now has D-13's SR-008 text; the heading lists "autobyteus-426, SR-005, SR-008".
+- Changed files or areas: the files above
+- Local validation and result: IMP-16 (279 specs, web typecheck at baseline, guard)
+- Next recipient or routing: Code Reviewer (Targeted Delta Review), then API/E2E (MSP-13, MSP-18, API-08, full web suite)
+- Remaining limitations or risks: unchanged from IR-003
