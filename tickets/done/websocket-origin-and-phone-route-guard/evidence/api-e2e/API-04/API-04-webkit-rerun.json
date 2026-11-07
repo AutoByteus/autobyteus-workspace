@@ -1,0 +1,511 @@
+{
+  "startedAt": "2026-11-06T22:51:53.977Z",
+  "result": "Fail",
+  "worktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard",
+  "journeys": {
+    "webkit-tailscale": {
+      "name": "webkit-tailscale",
+      "origin": "https://alpha.tail-probe.ts.net:55795",
+      "steps": {
+        "pair": {
+          "result": "Pass",
+          "pageOrigin": "https://alpha.tail-probe.ts.net:55795",
+          "secure": true
+        },
+        "runList": {
+          "result": "Pass",
+          "topLevel": 8,
+          "rows": 18
+        },
+        "agentRun": {
+          "result": "Pass",
+          "name": "Fact Checker",
+          "marker": "ABX403-webkit-tailscale-AGENT-b5a1e8",
+          "storedOnAlpha": true
+        },
+        "teamRun": {
+          "result": "Pass",
+          "name": "lead"
+        },
+        "orgRun": {
+          "result": "Pass",
+          "name": "planner"
+        },
+        "delegatedTree": {
+          "result": "Pass",
+          "children": 6,
+          "opened": "release notes writer"
+        },
+        "remoteRun": {
+          "result": "Pass",
+          "chip": "beta-node",
+          "marker": "ABX403-webkit-tailscale-REMOTE-2e5db9",
+          "storedOnBeta": true
+        },
+        "files": {
+          "result": "Pass",
+          "top": [
+            "docs",
+            "src",
+            "notes.md",
+            "README.md"
+          ],
+          "fileText": "GUIDE-TEXT-7731"
+        },
+        "newRun": {
+          "result": "Pass",
+          "newRunId": "project_task_manager_156bb0b908814efeb162aba55ca285b8",
+          "marker": "ABX403-webkit-tailscale-NEWRUN-7c24e2",
+          "storedOnAlpha": true
+        }
+      },
+      "sockets": [
+        {
+          "url": "wss://alpha.tail-probe.ts.net:55795/ws/agent-package-definitions?access_token=…",
+          "pattern": "/ws/agent-package-definitions",
+          "closed": false,
+          "framesReceived": 1
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:55795/ws/projects?access_token=…",
+          "pattern": "/ws/projects",
+          "closed": false,
+          "framesReceived": 1
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:55795/ws/agent/approver_bc87e64ce81043d18e6d7c7a923a071a?access_token=…",
+          "pattern": "/ws/agent/:runId",
+          "closed": false,
+          "framesReceived": 3
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:55795/ws/agent/fact_checker_5e51bec9f6ff4923a934574f4e51f479?access_token=…",
+          "pattern": "/ws/agent/:runId",
+          "closed": false,
+          "framesReceived": 3
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:55795/ws/agent/fact_checker_a14b4a9ae10d42c8a7982fd0c8749bb9?access_token=…",
+          "pattern": "/ws/agent/:runId",
+          "closed": false,
+          "framesReceived": 3
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:55795/ws/agent/fact_checker_bece449d28054cdbaa353600aa6555bd?access_token=…",
+          "pattern": "/ws/agent/:runId",
+          "closed": false,
+          "framesReceived": 16
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:55795/ws/agent/project_task_manager_c86d78a0d825488dbd4a1c239f01c30f?access_token=…",
+          "pattern": "/ws/agent/:runId",
+          "closed": false,
+          "framesReceived": 3
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:55795/ws/agent-team/delivery_team_719c1e87d21a47999bb6e586ca8f7524?access_token=…",
+          "pattern": "/ws/agent-team/:teamRunId",
+          "closed": false,
+          "framesReceived": 3
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:55795/ws/agent-collaboration/fact_checker_bece449d28054cdbaa353600aa6555bd?access_token=…",
+          "pattern": "/ws/agent-collaboration/:runId",
+          "closed": false,
+          "framesReceived": 3
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:55795/ws/agent-org/delivery_org_c0a6ddaa4b014238a92b17fbf0846986?access_token=…",
+          "pattern": "/ws/agent-org/:orgRunId",
+          "closed": false,
+          "framesReceived": 3
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:55795/ws/agent-collaboration/project_task_manager_c86d78a0d825488dbd4a1c239f01c30f?access_token=…",
+          "pattern": "/ws/agent-collaboration/:runId",
+          "closed": false,
+          "framesReceived": 22
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:55795/ws/file-explorer/agent_ws_50d169ab59b0d0ab166bf5ff013d4de40216b35786ee24d894c07c21ef195fbd?access_token=…",
+          "pattern": "/ws/file-explorer/:workspaceId",
+          "closed": true,
+          "framesReceived": 1
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:55795/ws/agent/project_task_manager_156bb0b908814efeb162aba55ca285b8?access_token=…",
+          "pattern": "/ws/agent/:runId",
+          "closed": false,
+          "framesReceived": 16
+        },
+        {
+          "url": "wss://alpha.tail-probe.ts.net:55795/ws/agent-collaboration/project_task_manager_156bb0b908814efeb162aba55ca285b8?access_token=…",
+          "pattern": "/ws/agent-collaboration/:runId",
+          "closed": false,
+          "framesReceived": 3
+        }
+      ],
+      "handshakes": [],
+      "browserErrors": [
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Not allowed to request resource @ https://alpha.tail-probe.ts.net:55795/mobile/_nuxt/SuqUgYGW.js",
+        "pageerror: /localhost:8000/health due to access control checks.",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)"
+      ],
+      "blockedLocalhost8000": 1,
+      "startedAt": "2026-11-06T22:52:16.844Z",
+      "failedRequests": [
+        "GET https://api.iconify.design/heroicons.json?icons=building-office-2-20-solid%2Cchevron-down-20-solid%2Ccomputer-desktop-20-solid%2Cplus-20-solid%2Cuser-group-20-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.unisvg.com/heroicons.json?icons=building-office-2-20-solid%2Cchevron-down-20-solid%2Ccomputer-desktop-20-solid%2Cplus-20-solid%2Cuser-group-20-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.simplesvg.com/heroicons.json?icons=building-office-2-20-solid%2Cchevron-down-20-solid%2Ccomputer-desktop-20-solid%2Cplus-20-solid%2Cuser-group-20-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.iconify.design/heroicons.json?icons=arrow-left-20-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.unisvg.com/heroicons.json?icons=arrow-left-20-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.simplesvg.com/heroicons.json?icons=arrow-left-20-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.iconify.design/heroicons.json?icons=paper-airplane-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.unisvg.com/heroicons.json?icons=paper-airplane-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.simplesvg.com/heroicons.json?icons=paper-airplane-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.iconify.design/heroicons.json?icons=stop-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.unisvg.com/heroicons.json?icons=stop-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.simplesvg.com/heroicons.json?icons=stop-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.iconify.design/heroicons.json?icons=check-circle-solid%2Cchevron-right The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.unisvg.com/heroicons.json?icons=check-circle-solid%2Cchevron-right The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.simplesvg.com/heroicons.json?icons=check-circle-solid%2Cchevron-right The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.iconify.design/heroicons.json?icons=bolt-20-solid%2Cchat-bubble-left-20-solid%2Cdocument-text-20-solid%2Cfolder-20-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.unisvg.com/heroicons.json?icons=bolt-20-solid%2Cchat-bubble-left-20-solid%2Cdocument-text-20-solid%2Cfolder-20-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.simplesvg.com/heroicons.json?icons=bolt-20-solid%2Cchat-bubble-left-20-solid%2Cdocument-text-20-solid%2Cfolder-20-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.iconify.design/heroicons.json?icons=chevron-right-20-solid%2Cdocument-20-solid%2Cmagnifying-glass-20-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.unisvg.com/heroicons.json?icons=chevron-right-20-solid%2Cdocument-20-solid%2Cmagnifying-glass-20-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.simplesvg.com/heroicons.json?icons=chevron-right-20-solid%2Cdocument-20-solid%2Cmagnifying-glass-20-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.iconify.design/heroicons.json?icons=x-mark-20-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.unisvg.com/heroicons.json?icons=x-mark-20-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.simplesvg.com/heroicons.json?icons=x-mark-20-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.iconify.design/heroicons.json?icons=check-circle-20-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.unisvg.com/heroicons.json?icons=check-circle-20-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "GET https://api.simplesvg.com/heroicons.json?icons=check-circle-20-solid The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)"
+      ],
+      "finishedAt": "2026-11-06T22:52:39.643Z",
+      "unknownBrowserErrors": [
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Not allowed to request resource @ https://alpha.tail-probe.ts.net:55795/mobile/_nuxt/SuqUgYGW.js",
+        "pageerror: /localhost:8000/health due to access control checks.",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)"
+      ]
+    }
+  },
+  "proxyUpgrades": [
+    {
+      "at": "2026-11-06T22:52:18.305Z",
+      "journey": "webkit-tailscale",
+      "path": "/ws/agent-package-definitions?access_token=…",
+      "pattern": "/ws/agent-package-definitions",
+      "origin": "https://alpha.tail-probe.ts.net:55795",
+      "host": "alpha.tail-probe.ts.net:55795",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "at": "2026-11-06T22:52:18.412Z",
+      "journey": "webkit-tailscale",
+      "path": "/ws/projects?access_token=…",
+      "pattern": "/ws/projects",
+      "origin": "https://alpha.tail-probe.ts.net:55795",
+      "host": "alpha.tail-probe.ts.net:55795",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "at": "2026-11-06T22:52:18.434Z",
+      "journey": "webkit-tailscale",
+      "path": "/ws/agent/approver_bc87e64ce81043d18e6d7c7a923a071a?access_token=…",
+      "pattern": "/ws/agent/:runId",
+      "origin": "https://alpha.tail-probe.ts.net:55795",
+      "host": "alpha.tail-probe.ts.net:55795",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "at": "2026-11-06T22:52:18.486Z",
+      "journey": "webkit-tailscale",
+      "path": "/ws/agent/fact_checker_5e51bec9f6ff4923a934574f4e51f479?access_token=…",
+      "pattern": "/ws/agent/:runId",
+      "origin": "https://alpha.tail-probe.ts.net:55795",
+      "host": "alpha.tail-probe.ts.net:55795",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "at": "2026-11-06T22:52:18.530Z",
+      "journey": "webkit-tailscale",
+      "path": "/ws/agent/fact_checker_a14b4a9ae10d42c8a7982fd0c8749bb9?access_token=…",
+      "pattern": "/ws/agent/:runId",
+      "origin": "https://alpha.tail-probe.ts.net:55795",
+      "host": "alpha.tail-probe.ts.net:55795",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "at": "2026-11-06T22:52:18.624Z",
+      "journey": "webkit-tailscale",
+      "path": "/ws/agent/fact_checker_bece449d28054cdbaa353600aa6555bd?access_token=…",
+      "pattern": "/ws/agent/:runId",
+      "origin": "https://alpha.tail-probe.ts.net:55795",
+      "host": "alpha.tail-probe.ts.net:55795",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "at": "2026-11-06T22:52:18.657Z",
+      "journey": "webkit-tailscale",
+      "path": "/ws/agent/project_task_manager_c86d78a0d825488dbd4a1c239f01c30f?access_token=…",
+      "pattern": "/ws/agent/:runId",
+      "origin": "https://alpha.tail-probe.ts.net:55795",
+      "host": "alpha.tail-probe.ts.net:55795",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "at": "2026-11-06T22:52:18.726Z",
+      "journey": "webkit-tailscale",
+      "path": "/ws/agent-team/delivery_team_719c1e87d21a47999bb6e586ca8f7524?access_token=…",
+      "pattern": "/ws/agent-team/:teamRunId",
+      "origin": "https://alpha.tail-probe.ts.net:55795",
+      "host": "alpha.tail-probe.ts.net:55795",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "at": "2026-11-06T22:52:21.596Z",
+      "journey": "webkit-tailscale",
+      "path": "/ws/agent-collaboration/fact_checker_bece449d28054cdbaa353600aa6555bd?access_token=…",
+      "pattern": "/ws/agent-collaboration/:runId",
+      "origin": "https://alpha.tail-probe.ts.net:55795",
+      "host": "alpha.tail-probe.ts.net:55795",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "at": "2026-11-06T22:52:25.042Z",
+      "journey": "webkit-tailscale",
+      "path": "/ws/agent-org/delivery_org_c0a6ddaa4b014238a92b17fbf0846986?access_token=…",
+      "pattern": "/ws/agent-org/:orgRunId",
+      "origin": "https://alpha.tail-probe.ts.net:55795",
+      "host": "alpha.tail-probe.ts.net:55795",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "at": "2026-11-06T22:52:27.169Z",
+      "journey": "webkit-tailscale",
+      "path": "/ws/agent-collaboration/project_task_manager_c86d78a0d825488dbd4a1c239f01c30f?access_token=…",
+      "pattern": "/ws/agent-collaboration/:runId",
+      "origin": "https://alpha.tail-probe.ts.net:55795",
+      "host": "alpha.tail-probe.ts.net:55795",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "at": "2026-11-06T22:52:31.979Z",
+      "journey": "webkit-tailscale",
+      "path": "/ws/file-explorer/agent_ws_50d169ab59b0d0ab166bf5ff013d4de40216b35786ee24d894c07c21ef195fbd?access_token=…",
+      "pattern": "/ws/file-explorer/:workspaceId",
+      "origin": "https://alpha.tail-probe.ts.net:55795",
+      "host": "alpha.tail-probe.ts.net:55795",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "at": "2026-11-06T22:52:34.198Z",
+      "journey": "webkit-tailscale",
+      "path": "/ws/agent/project_task_manager_156bb0b908814efeb162aba55ca285b8?access_token=…",
+      "pattern": "/ws/agent/:runId",
+      "origin": "https://alpha.tail-probe.ts.net:55795",
+      "host": "alpha.tail-probe.ts.net:55795",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "at": "2026-11-06T22:52:34.253Z",
+      "journey": "webkit-tailscale",
+      "path": "/ws/agent-collaboration/project_task_manager_156bb0b908814efeb162aba55ca285b8?access_token=…",
+      "pattern": "/ws/agent-collaboration/:runId",
+      "origin": "https://alpha.tail-probe.ts.net:55795",
+      "host": "alpha.tail-probe.ts.net:55795",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    }
+  ],
+  "logCheck": {
+    "refusalLinesBefore": {
+      "alpha": 0,
+      "beta": 0
+    },
+    "refusalLinesDuringJourneys": {
+      "alpha": [],
+      "beta": []
+    }
+  },
+  "cleanup": {
+    "holdExited": true,
+    "holdCleanup": {
+      "frontendExited": true,
+      "serversLeft": 0,
+      "rootRemoved": true
+    },
+    "proxiesClosed": true
+  },
+  "error": null,
+  "hold": {
+    "alpha": "http://127.0.0.1:55678",
+    "beta": "http://127.0.0.1:55679",
+    "runs": {
+      "ptm": "project_task_manager_c86d78a0d825488dbd4a1c239f01c30f",
+      "writerRun": "release_notes_writer_207dd3f6beb6414bac1cdf6785d8df2c",
+      "squadRun": "docs_review_team_63c799a900a4400cb299a482e94e0338",
+      "reviewer": "release_notes_writer_4a4ccf09c2c84779b39d40136a36f8f5",
+      "memberDelegated": "fact_checker_4744dee61ae74760a6ab262171d238d1",
+      "remoteAgentRun": "publisher_bb6678ad0f3843a79d915ac633592948",
+      "remoteTeamRun": "studio_team_ef3f907442b7424e81fee3a4437ab936",
+      "plain": [
+        "fact_checker_bece449d28054cdbaa353600aa6555bd",
+        "fact_checker_a14b4a9ae10d42c8a7982fd0c8749bb9",
+        "fact_checker_5e51bec9f6ff4923a934574f4e51f479"
+      ],
+      "org": "delivery_org_c0a6ddaa4b014238a92b17fbf0846986",
+      "orgPlanner": "release_notes_writer_e9f06d00560b4a1cbbd0f95c736ab88e",
+      "reviewOrg": "review_org_bc67c62b4ed5456fb2f4e5484d2e2eb7",
+      "reviewOrgCoordinator": {
+        "address": "/squad/reviewer",
+        "agentRunId": "release_notes_writer_ca4082e3bcc247438d074887d0ed1b66",
+        "teamRunId": null
+      },
+      "delivery": "delivery_team_719c1e87d21a47999bb6e586ca8f7524",
+      "deliveryLead": "fact_checker_07a326107b3f42ea82fa26b7ded311d9",
+      "deliveryMate": "release_notes_writer_b95eeb987b084c7eb48bd56db019c949",
+      "leadDelegated": "changelog_helper_add95c4084c84845b509b1ee5df5e270",
+      "approver": "approver_bc87e64ce81043d18e6d7c7a923a071a",
+      "taskA": "launch-6f8e8f-1",
+      "taskB": "launch-6f8e8f-2"
+    }
+  },
+  "tsProxy": {
+    "origin": "https://alpha.tail-probe.ts.net:55795",
+    "upstream": "http://127.0.0.1:55678",
+    "certDir": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abx403-ts-cert-m3Hdqd"
+  },
+  "connectRefused": [
+    "api.iconify.design:443",
+    "api.unisvg.com:443",
+    "api.simplesvg.com:443",
+    "api.iconify.design:443",
+    "api.unisvg.com:443",
+    "api.simplesvg.com:443",
+    "api.iconify.design:443",
+    "api.unisvg.com:443",
+    "api.simplesvg.com:443",
+    "api.iconify.design:443",
+    "api.unisvg.com:443",
+    "api.simplesvg.com:443",
+    "api.iconify.design:443",
+    "api.unisvg.com:443",
+    "api.simplesvg.com:443",
+    "api.iconify.design:443",
+    "api.unisvg.com:443",
+    "api.simplesvg.com:443",
+    "api.iconify.design:443",
+    "api.unisvg.com:443",
+    "api.simplesvg.com:443",
+    "api.iconify.design:443",
+    "api.unisvg.com:443",
+    "api.simplesvg.com:443",
+    "api.iconify.design:443",
+    "api.unisvg.com:443",
+    "api.simplesvg.com:443"
+  ],
+  "asm002": {
+    "routesUsed": [
+      "/ws/agent-collaboration/:runId",
+      "/ws/agent-org/:orgRunId",
+      "/ws/agent-package-definitions",
+      "/ws/agent-team/:teamRunId",
+      "/ws/agent/:runId",
+      "/ws/file-explorer/:workspaceId",
+      "/ws/projects"
+    ],
+    "outsidePhoneList": []
+  },
+  "summary": {
+    "failedSteps": [],
+    "unknownErrors": [
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Not allowed to request resource @ https://alpha.tail-probe.ts.net:55795/mobile/_nuxt/SuqUgYGW.js",
+      "webkit-tailscale: pageerror: /localhost:8000/health due to access control checks.",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)",
+      "webkit-tailscale: console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.)"
+    ],
+    "badHandshakes": [],
+    "badProxyUpgrades": [],
+    "refusals": 0,
+    "outsidePhoneList": []
+  },
+  "finishedAt": "2026-11-06T22:52:42.610Z"
+}

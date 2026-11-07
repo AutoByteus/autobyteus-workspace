@@ -1,0 +1,491 @@
+{
+  "startedAt": "2026-11-07T00:37:31.965Z",
+  "result": "Pass",
+  "container": "abx403-api-e2e-node",
+  "nodeUrl": "http://127.0.0.1:55369",
+  "journeys": {
+    "chrome-lan": {
+      "name": "chrome-lan",
+      "origin": "http://192.168.77.10:55369",
+      "steps": {
+        "pair": {
+          "result": "Pass",
+          "pageOrigin": "http://192.168.77.10:55369"
+        },
+        "openViewer": {
+          "result": "Pass",
+          "status": "Connected · View only",
+          "query": "?screen=desktop",
+          "sockets": [
+            {
+              "url": "ws://192.168.77.10:55369/ws/node-desktop?mode=view&access_token=…",
+              "open": true,
+              "close": null
+            }
+          ]
+        },
+        "viewOnly": {
+          "result": "Pass",
+          "mouseOnNode": "x:300 y:300"
+        },
+        "control": {
+          "result": "Pass",
+          "status": "Connected · Control",
+          "mouseOnNode": "x:1440 y:810",
+          "expectedNear": "x:1440 y:810",
+          "sockets": [
+            {
+              "url": "ws://192.168.77.10:55369/ws/node-desktop?mode=view&access_token=…",
+              "open": true,
+              "close": {
+                "code": 1005,
+                "reason": ""
+              }
+            },
+            {
+              "url": "ws://192.168.77.10:55369/ws/node-desktop?mode=control&access_token=…",
+              "open": true,
+              "close": null
+            }
+          ]
+        },
+        "liveRevocation": {
+          "result": "Pass",
+          "close": {
+            "code": 4403,
+            "reason": "REMOTE_ACCESS_DEVICE_REVOKED"
+          },
+          "secondsAfterRevocation": 20.7,
+          "uiStatus": "This viewer is not allowed on this node"
+        }
+      },
+      "handshakes": [
+        {
+          "path": "/ws/agent-package-definitions"
+        },
+        {
+          "path": "/ws/agent-package-definitions",
+          "origin": "http://192.168.77.10:55369",
+          "host": "192.168.77.10:55369",
+          "status": 101
+        },
+        {
+          "path": "/ws/node-desktop",
+          "origin": "http://192.168.77.10:55369",
+          "host": "192.168.77.10:55369",
+          "status": 101
+        },
+        {
+          "path": "/ws/node-desktop",
+          "origin": "http://192.168.77.10:55369",
+          "host": "192.168.77.10:55369",
+          "status": 101
+        }
+      ],
+      "sockets": [
+        {
+          "url": "ws://localhost:8000/ws/agent-package-definitions",
+          "open": false,
+          "close": {
+            "code": 1006,
+            "reason": ""
+          }
+        },
+        {
+          "url": "ws://192.168.77.10:55369/ws/agent-package-definitions?access_token=…",
+          "open": true,
+          "close": null
+        },
+        {
+          "url": "ws://192.168.77.10:55369/ws/node-desktop?mode=view&access_token=…",
+          "open": true,
+          "close": {
+            "code": 1005,
+            "reason": ""
+          }
+        },
+        {
+          "url": "ws://192.168.77.10:55369/ws/node-desktop?mode=control&access_token=…",
+          "open": true,
+          "close": {
+            "code": 4403,
+            "reason": "REMOTE_ACCESS_DEVICE_REVOKED"
+          }
+        }
+      ],
+      "browserErrors": [
+        "console: WebSocket connection to 'ws://localhost:8000/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ ",
+        "console: noVNC requires a secure context (TLS). Expect crashes! @ http://192.168.77.10:55369/mobile/_nuxt/BrgD0lGM.js",
+        "console: noVNC requires a secure context (TLS). Expect crashes! @ http://192.168.77.10:55369/mobile/_nuxt/BrgD0lGM.js",
+        "console: Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8000/health"
+      ],
+      "startedAt": "2026-11-07T00:37:32.020Z",
+      "nodeLogRefusals": [
+        "[node-desktop] stream ended mode=control viewer=mobile durationMs=21665 toViewer=3087530 fromViewer=2324 reason=node-closed close=REMOTE_ACCESS_DEVICE_REVOKED"
+      ],
+      "finishedAt": "2026-11-07T00:38:19.219Z"
+    },
+    "chrome-tailscale": {
+      "name": "chrome-tailscale",
+      "origin": "https://node.tail-probe.ts.net:56402",
+      "steps": {
+        "pair": {
+          "result": "Pass",
+          "pageOrigin": "https://node.tail-probe.ts.net:56402"
+        },
+        "openViewer": {
+          "result": "Pass",
+          "status": "Connected · View only",
+          "query": "?screen=desktop",
+          "sockets": [
+            {
+              "url": "wss://node.tail-probe.ts.net:56402/ws/node-desktop?mode=view&access_token=…",
+              "open": true,
+              "close": null
+            }
+          ]
+        },
+        "viewOnly": {
+          "result": "Pass",
+          "mouseOnNode": "x:300 y:300"
+        },
+        "control": {
+          "result": "Pass",
+          "status": "Connected · Control",
+          "mouseOnNode": "x:1440 y:810",
+          "expectedNear": "x:1440 y:810",
+          "sockets": [
+            {
+              "url": "wss://node.tail-probe.ts.net:56402/ws/node-desktop?mode=view&access_token=…",
+              "open": true,
+              "close": {
+                "code": 1005,
+                "reason": ""
+              }
+            },
+            {
+              "url": "wss://node.tail-probe.ts.net:56402/ws/node-desktop?mode=control&access_token=…",
+              "open": true,
+              "close": null
+            }
+          ]
+        },
+        "liveRevocation": {
+          "result": "Pass",
+          "close": {
+            "code": 4403,
+            "reason": "REMOTE_ACCESS_DEVICE_REVOKED"
+          },
+          "secondsAfterRevocation": 18.1,
+          "uiStatus": "This viewer is not allowed on this node"
+        }
+      },
+      "handshakes": [
+        {
+          "path": "/ws/agent-package-definitions"
+        },
+        {
+          "path": "/ws/agent-package-definitions",
+          "origin": "https://node.tail-probe.ts.net:56402",
+          "host": "node.tail-probe.ts.net:56402",
+          "status": 101
+        },
+        {
+          "path": "/ws/node-desktop",
+          "origin": "https://node.tail-probe.ts.net:56402",
+          "host": "node.tail-probe.ts.net:56402",
+          "status": 101
+        },
+        {
+          "path": "/ws/node-desktop",
+          "origin": "https://node.tail-probe.ts.net:56402",
+          "host": "node.tail-probe.ts.net:56402",
+          "status": 101
+        }
+      ],
+      "sockets": [
+        {
+          "url": "ws://localhost:8000/ws/agent-package-definitions",
+          "open": false,
+          "close": {
+            "code": 1006,
+            "reason": ""
+          }
+        },
+        {
+          "url": "wss://node.tail-probe.ts.net:56402/ws/agent-package-definitions?access_token=…",
+          "open": true,
+          "close": null
+        },
+        {
+          "url": "wss://node.tail-probe.ts.net:56402/ws/node-desktop?mode=view&access_token=…",
+          "open": true,
+          "close": {
+            "code": 1005,
+            "reason": ""
+          }
+        },
+        {
+          "url": "wss://node.tail-probe.ts.net:56402/ws/node-desktop?mode=control&access_token=…",
+          "open": true,
+          "close": {
+            "code": 4403,
+            "reason": "REMOTE_ACCESS_DEVICE_REVOKED"
+          }
+        }
+      ],
+      "browserErrors": [
+        "console: WebSocket connection to 'ws://localhost:8000/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ ",
+        "console: Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8000/health",
+        "console: Clipboard read failed:  NotAllowedError: Failed to execute 'readText' on 'Clipboard': Read permission denied. @ https://node.tail-probe.ts.net:56402/mobile/_nuxt/BrgD0lGM.js"
+      ],
+      "startedAt": "2026-11-07T00:38:19.219Z",
+      "nodeLogRefusals": [
+        "[node-desktop] stream ended mode=control viewer=mobile durationMs=18703 toViewer=3086719 fromViewer=2324 reason=node-closed close=REMOTE_ACCESS_DEVICE_REVOKED"
+      ],
+      "finishedAt": "2026-11-07T00:39:05.096Z"
+    },
+    "webkit-tailscale": {
+      "name": "webkit-tailscale",
+      "origin": "https://node.tail-probe.ts.net:56402",
+      "steps": {
+        "pair": {
+          "result": "Pass",
+          "pageOrigin": "https://node.tail-probe.ts.net:56402"
+        },
+        "openViewer": {
+          "result": "Pass",
+          "status": "Connected · View only",
+          "query": "?screen=desktop",
+          "sockets": [
+            {
+              "url": "wss://node.tail-probe.ts.net:56402/ws/node-desktop?mode=view&access_token=…",
+              "open": true,
+              "close": null
+            }
+          ]
+        },
+        "viewOnly": {
+          "result": "Pass",
+          "mouseOnNode": "x:300 y:300"
+        },
+        "control": {
+          "result": "Pass",
+          "status": "Connected · Control",
+          "mouseOnNode": "x:1437 y:805",
+          "expectedNear": "x:1440 y:810",
+          "sockets": [
+            {
+              "url": "wss://node.tail-probe.ts.net:56402/ws/node-desktop?mode=view&access_token=…",
+              "open": true,
+              "close": {
+                "code": 1005,
+                "reason": ""
+              }
+            },
+            {
+              "url": "wss://node.tail-probe.ts.net:56402/ws/node-desktop?mode=control&access_token=…",
+              "open": true,
+              "close": null
+            }
+          ]
+        },
+        "liveRevocation": {
+          "result": "Pass",
+          "close": {
+            "code": 4403,
+            "reason": "REMOTE_ACCESS_DEVICE_REVOKED"
+          },
+          "secondsAfterRevocation": 18.1,
+          "uiStatus": "This viewer is not allowed on this node"
+        }
+      },
+      "handshakes": [],
+      "sockets": [
+        {
+          "url": "ws://localhost:8000/ws/agent-package-definitions",
+          "open": false,
+          "close": null
+        },
+        {
+          "url": "wss://node.tail-probe.ts.net:56402/ws/agent-package-definitions?access_token=…",
+          "open": true,
+          "close": null
+        },
+        {
+          "url": "wss://node.tail-probe.ts.net:56402/ws/node-desktop?mode=view&access_token=…",
+          "open": true,
+          "close": {
+            "code": 1005,
+            "reason": ""
+          }
+        },
+        {
+          "url": "wss://node.tail-probe.ts.net:56402/ws/node-desktop?mode=control&access_token=…",
+          "open": true,
+          "close": {
+            "code": 4403,
+            "reason": "REMOTE_ACCESS_DEVICE_REVOKED"
+          }
+        }
+      ],
+      "browserErrors": [
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.) @ ",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.) @ ",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.) @ ",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.) @ ",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.) @ ",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.) @ ",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.) @ ",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.) @ ",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.) @ ",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.) @ ",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.) @ ",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.) @ ",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.) @ ",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.) @ ",
+        "console: Failed to load resource: The operation couldn’t be completed. (kCFErrorDomainCFNetwork error 310.) @ ",
+        "console: Not allowed to request resource @ https://node.tail-probe.ts.net:56402/mobile/_nuxt/D9X_g3rQ.js",
+        "pageerror: /localhost:8000/health due to access control checks."
+      ],
+      "startedAt": "2026-11-07T00:39:05.097Z",
+      "nodeLogRefusals": [
+        "[node-desktop] stream ended mode=control viewer=mobile durationMs=18719 toViewer=3094784 fromViewer=2328 reason=node-closed close=REMOTE_ACCESS_DEVICE_REVOKED"
+      ],
+      "finishedAt": "2026-11-07T00:39:28.438Z"
+    }
+  },
+  "proxyUpgrades": [
+    {
+      "journey": "chrome-tailscale",
+      "path": "/ws/agent-package-definitions",
+      "origin": "https://node.tail-probe.ts.net:56402",
+      "host": "node.tail-probe.ts.net:56402",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "journey": "chrome-tailscale",
+      "path": "/ws/node-desktop",
+      "origin": "https://node.tail-probe.ts.net:56402",
+      "host": "node.tail-probe.ts.net:56402",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "journey": "chrome-tailscale",
+      "path": "/ws/node-desktop",
+      "origin": "https://node.tail-probe.ts.net:56402",
+      "host": "node.tail-probe.ts.net:56402",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "journey": "webkit-tailscale",
+      "path": "/ws/agent-package-definitions",
+      "origin": "https://node.tail-probe.ts.net:56402",
+      "host": "node.tail-probe.ts.net:56402",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "journey": "webkit-tailscale",
+      "path": "/ws/node-desktop",
+      "origin": "https://node.tail-probe.ts.net:56402",
+      "host": "node.tail-probe.ts.net:56402",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    },
+    {
+      "journey": "webkit-tailscale",
+      "path": "/ws/node-desktop",
+      "origin": "https://node.tail-probe.ts.net:56402",
+      "host": "node.tail-probe.ts.net:56402",
+      "status": "HTTP/1.1 101 Switching Protocols"
+    }
+  ],
+  "cleanup": {
+    "proxiesClosed": true
+  },
+  "error": null,
+  "tsProxy": {
+    "origin": "https://node.tail-probe.ts.net:56402"
+  },
+  "connectRefused": [
+    "api.iconify.design:443",
+    "api.unisvg.com:443",
+    "api.simplesvg.com:443",
+    "api.iconify.design:443",
+    "api.unisvg.com:443",
+    "api.simplesvg.com:443",
+    "api.iconify.design:443",
+    "api.unisvg.com:443",
+    "api.simplesvg.com:443",
+    "api.iconify.design:443",
+    "api.unisvg.com:443",
+    "api.simplesvg.com:443",
+    "api.iconify.design:443",
+    "api.unisvg.com:443",
+    "api.simplesvg.com:443"
+  ],
+  "summary": {
+    "failed": [],
+    "desktopHandshakes": [
+      {
+        "journey": "chrome-lan",
+        "path": "/ws/node-desktop",
+        "origin": "http://192.168.77.10:55369",
+        "host": "192.168.77.10:55369",
+        "status": 101
+      },
+      {
+        "journey": "chrome-lan",
+        "path": "/ws/node-desktop",
+        "origin": "http://192.168.77.10:55369",
+        "host": "192.168.77.10:55369",
+        "status": 101
+      },
+      {
+        "journey": "chrome-tailscale",
+        "path": "/ws/node-desktop",
+        "origin": "https://node.tail-probe.ts.net:56402",
+        "host": "node.tail-probe.ts.net:56402",
+        "status": 101
+      },
+      {
+        "journey": "chrome-tailscale",
+        "path": "/ws/node-desktop",
+        "origin": "https://node.tail-probe.ts.net:56402",
+        "host": "node.tail-probe.ts.net:56402",
+        "status": 101
+      }
+    ],
+    "proxyDesktop": [
+      {
+        "journey": "chrome-tailscale",
+        "path": "/ws/node-desktop",
+        "origin": "https://node.tail-probe.ts.net:56402",
+        "host": "node.tail-probe.ts.net:56402",
+        "status": "HTTP/1.1 101 Switching Protocols"
+      },
+      {
+        "journey": "chrome-tailscale",
+        "path": "/ws/node-desktop",
+        "origin": "https://node.tail-probe.ts.net:56402",
+        "host": "node.tail-probe.ts.net:56402",
+        "status": "HTTP/1.1 101 Switching Protocols"
+      },
+      {
+        "journey": "webkit-tailscale",
+        "path": "/ws/node-desktop",
+        "origin": "https://node.tail-probe.ts.net:56402",
+        "host": "node.tail-probe.ts.net:56402",
+        "status": "HTTP/1.1 101 Switching Protocols"
+      },
+      {
+        "journey": "webkit-tailscale",
+        "path": "/ws/node-desktop",
+        "origin": "https://node.tail-probe.ts.net:56402",
+        "host": "node.tail-probe.ts.net:56402",
+        "status": "HTTP/1.1 101 Switching Protocols"
+      }
+    ],
+    "unexpectedRefusals": []
+  },
+  "finishedAt": "2026-11-07T00:39:28.440Z"
+}

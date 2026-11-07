@@ -10,7 +10,9 @@
 // - The phone loads the production phone bundle that alpha serves at `/mobile` (`pnpm -C autobyteus-web build:mobile-web`),
 //   so page, API and streams share the node's origin as on a real phone. It pairs through Phone Access with a private
 //   network URL (`http://192.168.77.10:<alpha port>`; the node refuses loopback pairing URLs); the probe's browser routes
-//   that host, HTTP and WebSocket, to alpha. A Phone Access credential is checked on every request whatever the address.
+//   that host, HTTP and WebSocket, to alpha, keeping the phone's Host (and its Origin on WebSockets) as a real LAN path
+//   does: alpha refuses an Origin that matches neither Host nor an allowed origin (autobyteus-403). A Phone Access
+//   credential is checked on every request whatever the address.
 // - The desktop window for the comparison is `nuxt dev` against alpha.
 //
 // Data (public GraphQL/REST/WebSocket only): on beta, Publisher and the Team "Studio Team". On alpha, the agent "Project
@@ -90,6 +92,8 @@ import { fileURLToPath } from 'node:url';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
+/** `ws` lets the phone's upstream socket carry the phone's own Host (the built-in WebSocket cannot set Host). */
+const PhoneUpstreamWebSocket = require('ws');
 const webDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const serverDir = path.join(path.dirname(webDir), 'autobyteus-server-ts');
 const appEntry = path.join(serverDir, 'dist', 'app.js');
@@ -398,10 +402,16 @@ const recordBrowserError = (label, text) => {
   evidence.browserErrors.push({ case: currentCase, line, known: expected || KNOWN_BROWSER_LINES.some(pattern => pattern.test(line)) });
 };
 let currentCase = 'setup';
-/** A phone browser: 390×844 by default; alpha is reached through the private-network origin, HTTP and WebSocket. */
+/**
+ * A phone browser: 390×844 by default; alpha is reached through the private-network origin, HTTP and WebSocket.
+ * The emulated network keeps what a real LAN path keeps: the phone's Host (`192.168.77.10:<port>`) on every request, and
+ * on the WebSocket leg also the phone's Origin. Alpha's request gate compares Origin with Host (autobyteus-403), so a
+ * rewrite that dropped the Host would be refused like a Host-rewriting proxy.
+ */
 const openPhone = async ({ width = 390, height = 844, storageState, label = 'phone' } = {}) => {
   const context = await browser.newContext({ viewport: { width, height }, isMobile: true, hasTouch: true, deviceScaleFactor: 2, locale: 'en-US', timezoneId: 'UTC',
     ...(storageState ? { storageState } : {}) });
+  const phoneHost = new URL(phoneOrigin()).host;
   await context.route(`${phoneOrigin()}/**`, async (route) => {
     const request = route.request();
     let op = null; let windowVar;
@@ -409,18 +419,18 @@ const openPhone = async ({ width = 390, height = 844, storageState, label = 'pho
       try { const body = JSON.parse(request.postData() ?? '{}'); op = body.operationName ?? 'anonymous'; windowVar = body.variables?.limitPerAgent; } catch { op = 'unparsed'; }
     }
     let response;
-    try { response = await route.fetch({ url: request.url().replace(phoneOrigin(), alpha.baseUrl), timeout: 20_000 }); } catch { await route.abort('connectionrefused').catch(() => undefined); return; }
+    try { response = await route.fetch({ url: request.url().replace(phoneOrigin(), alpha.baseUrl), headers: { ...request.headers(), host: phoneHost }, timeout: 20_000 }); } catch { await route.abort('connectionrefused').catch(() => undefined); return; }
     if (op) phoneNet.push({ at: Date.now(), label, case: currentCase, op, window: windowVar === undefined ? 'omitted' : windowVar, status: response.status(), bytes: (await response.body().catch(() => Buffer.alloc(0))).length });
     await route.fulfill({ response }).catch(() => undefined);
   });
   const wsOrigin = phoneOrigin().replace(/^http/, 'ws');
   await context.routeWebSocket(url => url.href.startsWith(wsOrigin), (ws) => {
-    const upstream = new WebSocket(ws.url().replace(wsOrigin, alpha.baseUrl.replace(/^http/, 'ws')));
+    const upstream = new PhoneUpstreamWebSocket(ws.url().replace(wsOrigin, alpha.baseUrl.replace(/^http/, 'ws')), { headers: { origin: phoneOrigin(), host: phoneHost } });
     const queued = [];
-    upstream.addEventListener('open', () => { for (const message of queued.splice(0)) upstream.send(message); });
-    upstream.addEventListener('message', event => { try { ws.send(typeof event.data === 'string' ? event.data : String(event.data)); } catch { /* closed */ } });
-    upstream.addEventListener('close', () => { try { ws.close(); } catch { /* closed */ } });
-    upstream.addEventListener('error', () => { try { ws.close(); } catch { /* closed */ } });
+    upstream.on('open', () => { for (const message of queued.splice(0)) upstream.send(message); });
+    upstream.on('message', (data, isBinary) => { try { ws.send(isBinary ? data : String(data)); } catch { /* closed */ } });
+    upstream.on('close', () => { try { ws.close(); } catch { /* closed */ } });
+    upstream.on('error', () => { try { ws.close(); } catch { /* closed */ } });
     ws.onMessage(message => { if (upstream.readyState === 1) upstream.send(message); else queued.push(message); });
     ws.onClose(() => upstream.close());
   });

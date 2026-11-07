@@ -15,11 +15,13 @@ export const REMOTE_ACCESS_CLOSE_CODE_BY_FAILURE: Readonly<Record<RemoteAccessAu
   REMOTE_ACCESS_PAIRING_URL_LOCAL_ONLY: 4403,
   REMOTE_ACCESS_PAIRING_HTTP_PRIVATE_REQUIRED: 4403,
   REMOTE_ACCESS_PAIRING_HTTP_ACK_REQUIRED: 4403,
+  REMOTE_ACCESS_ORIGIN_REFUSED: 4403,
+  PHONE_ACCESS_ROUTE_REFUSED: 4403,
 });
 
 export type RemoteAccessWebSocketClose = Readonly<{ code: number; reason: RemoteAccessAuthFailureCode }>;
 
 export const remoteAccessCloseForFailure = (failure: RemoteAccessAuthFailureCode): RemoteAccessWebSocketClose => ({
-  code: REMOTE_ACCESS_CLOSE_CODE_BY_FAILURE[failure] ?? 4401,
+  code: REMOTE_ACCESS_CLOSE_CODE_BY_FAILURE[failure],
   reason: failure,
 });

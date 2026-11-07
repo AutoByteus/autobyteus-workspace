@@ -108,6 +108,21 @@ const allowedWithoutAuth = new Set<RemoteAccessRouteClassification>([
   "PUBLIC_PAIRING_EXCHANGE",
 ]);
 
+/**
+ * Phone WebSocket routes: the WebSocket route patterns a paired phone's credential may open.
+ * Deny by default: a WebSocket route added later stays closed to phones until it is listed here.
+ */
+export const PHONE_WEBSOCKET_ROUTES: ReadonlySet<string> = new Set([
+  "/ws/agent/:runId",
+  "/ws/agent-team/:teamRunId",
+  "/ws/agent-org/:orgRunId",
+  "/ws/agent-collaboration/:runId",
+  "/ws/projects",
+  "/ws/agent-package-definitions",
+  "/ws/file-explorer/:workspaceId",
+  "/ws/node-desktop",
+]);
+
 const reject = (
   statusCode: number,
   code: RemoteAccessAuthorizationResult extends infer T
@@ -124,7 +139,8 @@ const trustedNetworkContext = (clientAddress?: string): RemoteAccessAuthContext 
   };
 };
 
-const readWebSocketQueryCredential = (request: FastifyRequest): string | null => {
+/** The one reader of the WebSocket query credential (`access_token`). */
+export const readWebSocketQueryCredential = (request: FastifyRequest): string | null => {
   try {
     return new URL(request.url, "http://autobyteus.local")
       .searchParams
@@ -134,6 +150,9 @@ const readWebSocketQueryCredential = (request: FastifyRequest): string | null =>
     return null;
   }
 };
+
+const refusePhoneRoute = (): RemoteAccessAuthorizationResult =>
+  reject(403, "PHONE_ACCESS_ROUTE_REFUSED", "Phone credentials do not open this route.");
 
 export class RemoteAccessRoutePolicy {
   constructor(
@@ -163,6 +182,10 @@ export class RemoteAccessRoutePolicy {
       if (isMobileRemoteAccessCredential(bearerCredential)) {
         return reject(403, "REMOTE_ACCESS_AUTH_INVALID", "Mobile credentials do not authorize peer-node routes.");
       }
+      // The peer WebSocket (/rest/remote/run-observations) is not a phone WebSocket route.
+      if (isMobileRemoteAccessCredential(readWebSocketQueryCredential(request))) {
+        return refusePhoneRoute();
+      }
       return { ok: true, context: trustedNetworkContext(clientAddress) };
     }
     if (routeClass === "TRUSTED_NETWORK_OWNER") {
@@ -173,17 +196,26 @@ export class RemoteAccessRoutePolicy {
     }
 
     if (routeClass === "TRUSTED_NETWORK_WEBSOCKET") {
-      const credential = readWebSocketQueryCredential(request);
-      if (isMobileRemoteAccessCredential(credential)) {
-        return this.authService.authorizeMobileCredential(credential);
-      }
-      return { ok: true, context: trustedNetworkContext(clientAddress) };
+      return this.authorizeWebSocket(request);
     }
 
     if (isMobileRemoteAccessCredential(bearerCredential)) {
       return this.authService.authorizeMobileCredential(bearerCredential);
     }
     return { ok: true, context: trustedNetworkContext(clientAddress) };
+  }
+
+  /** The one WebSocket credential rule, for `/graphql` upgrades (request hook) and `/ws/*` (route handlers). */
+  async authorizeWebSocket(request: FastifyRequest): Promise<RemoteAccessAuthorizationResult> {
+    const credential = readWebSocketQueryCredential(request);
+    if (!isMobileRemoteAccessCredential(credential)) {
+      return { ok: true, context: trustedNetworkContext(request.raw.socket.remoteAddress) };
+    }
+    const routePattern = request.routeOptions.url;
+    if (!routePattern || !PHONE_WEBSOCKET_ROUTES.has(routePattern)) {
+      return refusePhoneRoute();
+    }
+    return this.authService.authorizeMobileCredential(credential);
   }
 }
 

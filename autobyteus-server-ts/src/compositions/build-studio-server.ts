@@ -6,7 +6,6 @@ import { NativeCommandShutdown } from "./native-command-shutdown.js";
 import { CONTEXT_FILE_MAX_BYTES } from "../context-files/domain/context-file-upload-policy.js";
 import fastify, { LogController, type FastifyInstance } from "fastify";
 import { installClientConnectionClose } from "../shutdown/client-connection-close.js";
-import cors from "@fastify/cors";
 import multipart from "@fastify/multipart";
 import websocket from "@fastify/websocket";
 import { shutdownPrisma } from "repository_prisma";
@@ -456,10 +455,6 @@ export const buildStudioServer = async (input: {
         includeNoisyRoutes: input.loggingConfig.includeNoisyHttpAccessRoutes,
       });
       await registerMcpGatewayRoutes(app);
-      await app.register(cors, {
-        origin: true,
-        methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-      });
       await app.register(multipart, { limits: { fileSize: CONTEXT_FILE_MAX_BYTES } });
       await app.register(websocket);
       await registerRemoteAccessPolicyPlugin(app);

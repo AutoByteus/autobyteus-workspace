@@ -1,0 +1,18 @@
+# API-04 — phone shell on the browser's own network stack (LAN shape, Tailscale-Serve-shaped HTTPS proxy; Chrome and WebKit)
+# Command: node probes/abx403-phone-origins-probe.mjs <worktree> <out>; WebKit rerun: ABX403_JOURNEYS=webkit-tailscale node … (adds failed-request URLs)
+# Commit: worktree HEAD a24421610f (source 88a93aaf26) + mobile-shell probe update; macOS 26.5.2, Node v22.23.1, Chrome 1xx stable, Playwright WebKit 26.0 (v2248); 2026-11-06T22:53:01Z
+chrome-lan origin=http://192.168.77.10:55079 steps={'pair': 'Pass', 'runList': 'Pass', 'agentRun': 'Pass', 'teamRun': 'Pass', 'orgRun': 'Pass', 'delegatedTree': 'Pass', 'remoteRun': 'Pass', 'files': 'Pass', 'newRun': 'Pass'}
+  ws handshakes (origin,status): [('http://192.168.77.10:55079', 101)]
+  ws routes opened: ['/ws/agent-collaboration/:runId', '/ws/agent-org/:orgRunId', '/ws/agent-package-definitions', '/ws/agent-team/:teamRunId', '/ws/agent/:runId', '/ws/file-explorer/:workspaceId', '/ws/projects']
+chrome-tailscale origin=https://alpha.tail-probe.ts.net:55195 steps={'pair': 'Pass', 'runList': 'Pass', 'agentRun': 'Pass', 'teamRun': 'Pass', 'orgRun': 'Pass', 'delegatedTree': 'Pass', 'remoteRun': 'Pass', 'files': 'Pass', 'newRun': 'Pass'}
+  ws handshakes (origin,status): [('https://alpha.tail-probe.ts.net:55195', 101)]
+  ws routes opened: ['/ws/agent-collaboration/:runId', '/ws/agent-org/:orgRunId', '/ws/agent-package-definitions', '/ws/agent-team/:teamRunId', '/ws/agent/:runId', '/ws/file-explorer/:workspaceId', '/ws/projects']
+webkit-tailscale origin=https://alpha.tail-probe.ts.net:55195 steps={'pair': 'Pass', 'runList': 'Pass', 'agentRun': 'Pass', 'teamRun': 'Pass', 'orgRun': 'Pass', 'delegatedTree': 'Pass', 'remoteRun': 'Pass', 'files': 'Pass', 'newRun': 'Pass'}
+  ws handshakes (origin,status): []
+  ws routes opened: ['/ws/agent-collaboration/:runId', '/ws/agent-org/:orgRunId', '/ws/agent-package-definitions', '/ws/agent-team/:teamRunId', '/ws/agent/:runId', '/ws/file-explorer/:workspaceId', '/ws/projects']
+TS proxy upgrades (journey, origin, host, node status): [('chrome-tailscale', 'https://alpha.tail-probe.ts.net:55195', 'alpha.tail-probe.ts.net:55195', 'HTTP/1.1 101 Switching Protocols'), ('webkit-tailscale', 'https://alpha.tail-probe.ts.net:55195', 'alpha.tail-probe.ts.net:55195', 'HTTP/1.1 101 Switching Protocols')]
+node refusal lines during journeys: {'alpha': [], 'beta': []}
+ASM-002: {'routesUsed': ['/ws/agent-collaboration/:runId', '/ws/agent-org/:orgRunId', '/ws/agent-package-definitions', '/ws/agent-team/:teamRunId', '/ws/agent/:runId', '/ws/file-explorer/:workspaceId', '/ws/projects'], 'outsidePhoneList': []}
+cleanup: {'holdExited': True, 'holdCleanup': {'frontendExited': True, 'serversLeft': 0, 'rootRemoved': True}, 'proxiesClosed': True}
+WebKit unknown console lines explained (rerun): CONNECT proxy refused (by design, not the node): {'api.iconify.design:443': 9, 'api.unisvg.com:443': 9, 'api.simplesvg.com:443': 9} ; failed requests: {'https://api.iconify.design/heroicons.json': 9, 'https://api.unisvg.com/heroicons.json': 9, 'https://api.simplesvg.com/heroicons.json': 9}
+WebKit rerun steps: {'pair': 'Pass', 'runList': 'Pass', 'agentRun': 'Pass', 'teamRun': 'Pass', 'orgRun': 'Pass', 'delegatedTree': 'Pass', 'remoteRun': 'Pass', 'files': 'Pass', 'newRun': 'Pass'} node refusals: {'alpha': [], 'beta': []}

@@ -18,7 +18,7 @@ import type { RemoteAccessAuthContext } from "../../remote-access/domain/models.
 import {
   authorizeRemoteAccessWebSocket,
   closeSocketForRemoteAccessRejection,
-  extractRemoteAccessWebSocketCredential,
+  readWebSocketQueryCredential,
 } from "./remote-access-websocket-auth.js";
 
 const INVALID_REQUEST = { code: 4400, reason: "NODE_DESKTOP_INVALID_REQUEST" } as const;
@@ -96,7 +96,7 @@ export async function registerNodeDesktopWebsocket(
       if (!mode) return refuse(INVALID_REQUEST);
       const target = resolveTarget();
       if (!target) return refuse(UNAVAILABLE);
-      const viewer = viewerFor(context, extractRemoteAccessWebSocketCredential(req));
+      const viewer = viewerFor(context, readWebSocketQueryCredential(req));
       if (!viewer) return refuse(INVALID_REQUEST);
       const stream = new NodeDesktopStream({ socket, target, mode, viewerKind: context.mode });
       const admission = viewers.admit(viewer, stream);

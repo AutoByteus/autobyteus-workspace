@@ -1,0 +1,105 @@
+{
+ "startedAt": "2026-11-07T00:37:14.759Z",
+ "result": "Fail",
+ "container": "abx403-api-e2e-node",
+ "nodeUrl": "http://127.0.0.1:55369",
+ "journeys": {
+  "chrome-lan": {
+   "name": "chrome-lan",
+   "origin": "http://192.168.77.10:55369",
+   "steps": {
+    "pair": {
+     "result": "Pass",
+     "pageOrigin": "http://192.168.77.10:55369"
+    },
+    "openViewer": {
+     "result": "Pass",
+     "status": "Connected \u00b7 View only",
+     "query": "?screen=desktop",
+     "sockets": []
+    },
+    "viewOnly": {
+     "result": "Pass",
+     "mouseOnNode": "x:300 y:300"
+    },
+    "control": {
+     "result": "Pass",
+     "status": "Connected \u00b7 Control",
+     "mouseOnNode": "x:1440 y:810",
+     "expectedNear": "x:1440 y:810",
+     "sockets": []
+    },
+    "liveRevocation": {
+     "result": "Fail",
+     "error": "one open node-desktop stream before revocation",
+     "details": []
+    }
+   },
+   "handshakes": [
+    {
+     "path": "/ws/agent-package-definitions"
+    },
+    {
+     "path": "/ws/agent-package-definitions",
+     "origin": "http://192.168.77.10:55369",
+     "host": "192.168.77.10:55369",
+     "status": 101
+    },
+    {
+     "path": "/ws/node-desktop",
+     "origin": "http://192.168.77.10:55369",
+     "host": "192.168.77.10:55369",
+     "status": 101
+    },
+    {
+     "path": "/ws/node-desktop",
+     "origin": "http://192.168.77.10:55369",
+     "host": "192.168.77.10:55369",
+     "status": 101
+    }
+   ],
+   "sockets": [],
+   "browserErrors": [
+    "console: WebSocket connection to 'ws://localhost:8000/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://192.168.77.10:55369/mobile/_nuxt/D9X_g3rQ.js",
+    "console: noVNC requires a secure context (TLS). Expect crashes! @ http://192.168.77.10:55369/mobile/_nuxt/BrgD0lGM.js",
+    "console: noVNC requires a secure context (TLS). Expect crashes! @ http://192.168.77.10:55369/mobile/_nuxt/BrgD0lGM.js",
+    "console: Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8000/health"
+   ],
+   "startedAt": "2026-11-07T00:37:14.810Z",
+   "nodeLogRefusals": [],
+   "finishedAt": "2026-11-07T00:37:21.510Z"
+  }
+ },
+ "proxyUpgrades": [],
+ "cleanup": {
+  "proxiesClosed": true
+ },
+ "error": null,
+ "tsProxy": {
+  "origin": "https://node.tail-probe.ts.net:56350"
+ },
+ "summary": {
+  "failed": [
+   "chrome-lan:liveRevocation"
+  ],
+  "desktopHandshakes": [
+   {
+    "journey": "chrome-lan",
+    "path": "/ws/node-desktop",
+    "origin": "http://192.168.77.10:55369",
+    "host": "192.168.77.10:55369",
+    "status": 101
+   },
+   {
+    "journey": "chrome-lan",
+    "path": "/ws/node-desktop",
+    "origin": "http://192.168.77.10:55369",
+    "host": "192.168.77.10:55369",
+    "status": 101
+   }
+  ],
+  "proxyDesktop": [],
+  "unexpectedRefusals": []
+ },
+ "finishedAt": "2026-11-07T00:37:21.512Z"
+}

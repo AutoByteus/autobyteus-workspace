@@ -1,0 +1,178 @@
+# IMP-04
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts --reporter=verbose --no-watch
+# Commit: 88a93aaf26 (branch codex/websocket-origin-and-phone-route-guard)
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-06T21:32Z
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard/autobyteus-server-ts
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+Database reset successful
+The following migration(s) have been applied:
+migrations/
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts
+AgentFactory (Singleton) initialized.
+(node:60914) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-Uhqi1K
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-Uhqi1K/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-Uhqi1K/.env
+◇ injected env (1) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-Uhqi1K/.env // tip: ⌘ suppress logs { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-Uhqi1K
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-Uhqi1K/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-Uhqi1K/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-Uhqi1K/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-Uhqi1K/memory
+============================================================
+Initialized server settings service with 32 predefined settings
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+AgentRunManager initialized.
+AgentRunManager initialized.
+stderr | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+AUTOBYTEUS_ALLOWED_ORIGINS: ignoring entries that are not http(s) origins: not-an-origin
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Loading workspace packages to trigger registration...
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully loaded workspace packages.
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-Uhqi1K/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-Uhqi1K/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-Uhqi1K/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registered required tool unit: Core Tools
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully registered tool definition: 'publish_artifacts'
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registered required tool unit: Published Artifact Tools
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registered required tool unit: Agent Discovery Tools
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registered required tool unit: Agent Communication Tools
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully registered tool definition: 'search_memory'
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registered required tool unit: Memory Tools
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registered required tool unit: Agent Runtime Tools
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registered required tool unit: Browser Tools
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully registered tool definition: 'search_web'
+stderr | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Overwriting existing tool definition for name: 'search_web'
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registered required tool unit: Search Tools
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > refuses a foreign or null Origin on every WebSocket route family before the route runs (AC-001) 13ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > accepts each allowed-origin class and refuses near misses (AC-002) 2871ms
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > accepts a phone credential on every phone WebSocket route (AC-005)
+Agent websocket attached for run phone-probe
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > accepts a phone credential on every phone WebSocket route (AC-005)
+Agent team websocket attached for team run phone-probe
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > refuses foreign-origin HTTP and preflights and grants CORS only to allowed origins (AC-003) 5ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > refuses a phone credential on WebSocket routes the phone does not offer (AC-004) 8ms
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > accepts a phone credential on every phone WebSocket route (AC-005)
+File explorer websocket attached for workspace phone-probe
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > accepts a phone credential on every phone WebSocket route (AC-005) 881ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > logs every refusal once with its code and redacted URL and never a credential (AC-006) 6ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > keeps today's refusal of a phone credential when Phone Access is disabled 22ms
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  22:32:42
+   Duration  12.40s (transform 5.69s, setup 40ms, import 7.54s, tests 4.38s, environment 0ms)
+exit=0

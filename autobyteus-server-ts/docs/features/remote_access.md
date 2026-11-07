@@ -8,9 +8,11 @@ Phone Access is additive: paired phones receive explicit `mra_...` mobile creden
 
 | Concern | Owner |
 | --- | --- |
-| HTTP route classification and authorization | `src/api/security/remote-access-route-policy.ts` |
-| Fastify request hook | `src/api/security/remote-access-policy-plugin.ts` |
-| WebSocket remote-access credential checks | `src/api/websocket/remote-access-websocket-auth.ts` |
+| HTTP route classification and authorization; the WebSocket credential rule and phone WebSocket routes (`authorizeWebSocket`, `PHONE_WEBSOCKET_ROUTES`) | `src/api/security/remote-access-route-policy.ts` |
+| Fastify request gate (Origin check, CORS, route authorization, refusal log) | `src/api/security/remote-access-policy-plugin.ts` |
+| Allowed-origin rule and `AUTOBYTEUS_ALLOWED_ORIGINS` parsing | `src/api/security/remote-access-request-origin.ts` |
+| `/ws/*` handler adapter over `authorizeWebSocket` (refusal → close, auth context) | `src/api/websocket/remote-access-websocket-auth.ts` |
+| WebSocket close code for each refusal code | `src/remote-access/domain/remote-access-close-codes.ts` |
 | Phone Access settings | `src/remote-access/services/remote-access-settings-service.ts` and `stores/remote-access-settings-store.ts` |
 | Pairing session creation/exchange | `src/remote-access/services/remote-access-pairing-service.ts` |
 | Paired device credentials and revocation | `src/remote-access/services/paired-device-service.ts` and `stores/paired-device-store.ts` |
@@ -18,6 +20,20 @@ Phone Access is additive: paired phones receive explicit `mra_...` mobile creden
 | Client-facing absolute/relative resource URLs | `src/remote-access/services/client-facing-url-resolver.ts` |
 | Mobile static asset serving | `src/api/static/mobile-web.ts` |
 | Sensitive URL redaction | `src/api/security/redact-sensitive-url.ts` |
+
+## Allowed Origins
+
+Every HTTP request and every WebSocket upgrade, on any path (`/ws/*`, `/graphql`, `/rest/remote/run-observations` and routes added later), first meets the node's allowed-origin rule in the request gate, before route authorization and before any route handler. A request is allowed when its browser `Origin` header is:
+
+- absent (the desktop app's HTTP requests, peer nodes, native and command-line clients);
+- the same origin: the Origin's host[:port] equals the request's `Host`, or the first `X-Forwarded-Host` value, case-insensitive. The scheme is not compared, so a phone shell reached through Tailscale Serve (`https://<name>.ts.net`, plain HTTP to the node) is the same origin;
+- exactly `file://` (the packaged desktop app's renderer);
+- an `http`/`https` loopback origin on any port: `localhost`, `127.0.0.0/8`, `[::1]` (development, Electron dev, e2e);
+- listed in the optional node setting `AUTOBYTEUS_ALLOWED_ORIGINS` (environment or the node's `.env`): comma-separated exact origins such as `https://gateway.example.com`, default empty, read at server start. Use it only for a gateway that rewrites `Host` and sends no `X-Forwarded-Host`. Entries that are not `http(s)` origins are ignored with one warning at start.
+
+Everything else is refused, including `Origin: null`, other schemes and malformed values: the request gets HTTP 403 `{ code: "REMOTE_ACCESS_ORIGIN_REFUSED" }` (for a WebSocket, the handshake fails; no socket opens and nothing route-specific starts). CORS headers are granted from the same rule: an allowed Origin is reflected in `Access-Control-Allow-Origin`, a refused one gets none, and a request without Origin is answered as before.
+
+The MCP gateway (`/mcp/gateway`) keeps its own narrower rule, which runs first: only an absent or loopback Origin, with its own preflight answer.
 
 ## Route Policy
 
@@ -49,7 +65,9 @@ The route policy classifies every HTTP request before normal route handling:
 - Local-dev-only routes:
   - GraphQL GET/development UI surfaces remain loopback-only.
 
-Trusted-network owner/protected/WebSocket routes are reachable without an additional credential under the product model above. When a request presents an `mra_...` mobile credential on protected REST/GraphQL/WebSocket routes, the backend validates it and records a mobile auth context. Mobile credentials are rejected on owner-management routes such as settings changes, pairing-session creation, device listing, and revocation.
+Trusted-network owner/protected/WebSocket routes are reachable without an additional credential under the product model above. When a request presents an `mra_...` mobile credential on protected REST/GraphQL routes or on a phone WebSocket route, the backend validates it and records a mobile auth context. Mobile credentials are rejected on owner-management routes such as settings changes, pairing-session creation, device listing, and revocation.
+
+Phone WebSocket routes are the WebSocket route patterns a paired phone's credential may open (`PHONE_WEBSOCKET_ROUTES`): `/ws/agent/:runId`, `/ws/agent-team/:teamRunId`, `/ws/agent-org/:orgRunId`, `/ws/agent-collaboration/:runId`, `/ws/projects`, `/ws/agent-package-definitions`, `/ws/file-explorer/:workspaceId` and `/ws/node-desktop`. A mobile credential (`access_token=mra_...`) on any other WebSocket route is refused before it is validated, with `PHONE_ACCESS_ROUTE_REFUSED`: close code 4403 on `/ws/*` (today `/ws/terminal/...`, `/ws/update-notifications`, `/ws/applications/...`), HTTP 403 on a `/graphql` upgrade and on the peer WebSocket `/rest/remote/run-observations`. A WebSocket route added later stays closed to phones until it is added to the list. The list is keyed by Fastify route pattern (`request.routeOptions.url`), so renaming a route parameter must update it; the e2e test `tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts` fails when a listed pattern is not registered. The refusal is not a session failure: the phone does not unpair on it.
 
 ## Pairing Model
 
@@ -80,6 +98,8 @@ Accepted mobile requests get an auth context with `mode: "mobile"`, the paired `
 Mobile credentials do not authorize owner-management routes. This prevents paired phones from creating pairing sessions, changing Phone Access settings, listing all devices, or revoking devices.
 
 Credential-bearing URLs, pairing payloads, mobile credentials, and authorization headers must be redacted before logging or diagnostic output.
+
+Every refusal is logged once at warn level, with its code and the redacted URL: `Remote Access request refused <code> <url>` from the request gate (HTTP replies, including `/graphql` upgrades and the peer WebSocket), followed by `origin <value>` for `REMOTE_ACCESS_ORIGIN_REFUSED`; `Remote Access WebSocket rejected <url>: <code>` for a `/ws/*` close. No other header and no credential is logged.
 
 ## Server Instance Identity
 
@@ -136,7 +156,8 @@ Validation for this feature should cover:
 - backend-generated `/mobile?pairing=...` bootstrapping into the phone shell;
 - pairing exchange, persisted mobile session reload, and mobile deep links;
 - trusted-network REST, GraphQL, and WebSocket reachability without additional credentials;
-- mobile `mra_...` authorization for protected REST/GraphQL/WebSocket routes;
+- refusal of non-allowed Origins on every WebSocket route family and on HTTP, and acceptance of each allowed-origin class;
+- mobile `mra_...` authorization for protected REST/GraphQL routes and phone WebSocket routes, and its refusal on the other WebSocket routes;
 - rejection of mobile credentials on owner-management routes;
 - paired-device revoke and revoke-all invalidation, including active-list vs revoked-history separation;
 - Phone Access enabled state and credential usability after backend restart against the same app data;
@@ -146,4 +167,4 @@ Validation for this feature should cover:
 
 ## Phase Two Boundary
 
-Phase One establishes Phone Access pairing over trusted private-network URLs and preserves trusted private-network desktop access to the backend. It does not complete least-privilege mobile backend authorization, mobile token rotation, native secure credential storage, strict owner pairing/admin authorization, or backend hard denial of every high-risk mobile operation. Those items are tracked in `../../../docs/future-tickets/mobile-backend-authorization-hardening.md` from this feature doc.
+Phase One establishes Phone Access pairing over trusted private-network URLs and preserves trusted private-network desktop access to the backend. For WebSockets, Phase Two's route limit is done: a phone credential opens only the phone WebSocket routes (see Route Policy). It does not complete least-privilege mobile backend authorization, mobile token rotation, native secure credential storage, strict owner pairing/admin authorization, or backend hard denial of every high-risk mobile operation. Those items are tracked in `../../../docs/future-tickets/mobile-backend-authorization-hardening.md` from this feature doc.
