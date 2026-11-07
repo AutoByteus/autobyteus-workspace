@@ -1,0 +1,59 @@
+{
+  "startedAt": "2026-11-07T22:06:48.373Z",
+  "cases": {
+    "missing": {
+      "typed": "/definitely/not/a/folder-426",
+      "expected": "No folder at this path.",
+      "folder": {
+        "formError": "",
+        "chip": "folder-426"
+      },
+      "shown": true,
+      "genericShown": false,
+      "url": "/chat"
+    },
+    "file": {
+      "typed": "/etc/hosts",
+      "expected": "This path is a file, not a folder.",
+      "folder": {
+        "formError": "",
+        "chip": "hosts"
+      },
+      "shown": true,
+      "genericShown": false,
+      "url": "/chat"
+    },
+    "relative": {
+      "typed": "relative/dir",
+      "formError": "Enter an absolute folder path.",
+      "chip": "Temp workspace"
+    },
+    "existing": {
+      "typed": "<root>/existing-folder-426",
+      "folder": {
+        "formError": "",
+        "chip": "existing-folder-426"
+      },
+      "url": "/chat?id=daily_assistant_56eca3ebc0044b8caf3df27b7db954c1",
+      "registered": true,
+      "errorShown": false
+    }
+  },
+  "browserErrors": [
+    "console: Error creating workspace metadata: ApolloError: No folder exists at the workspace path. (/definitely/not/a/folder-426)\n    at new ApolloError2 (http://127.0.0.1:59663/_nuxt/node_modules/.cache/vite/client/deps/chunk-7JFNNDH2.js?v=55f03611:3056:26)\n    at http://127.0.0.1:59663/_nuxt/node_mo",
+    "console: Chat send failed: Error: No folder at this path.\n    at resolveRunWorkspaceChoice (http://127.0.0.1:59663/_nuxt/services/workspace/runWorkspaceChoice.ts:70:11)\n    at async launchAgentChat (http://127.0.0.1:59663/_nuxt/services/chat/chatLaunchService.ts:78:48)\n    at async Object.send (http",
+    "console: Error creating workspace metadata: ApolloError: The workspace path is a file, not a folder. (/etc/hosts)\n    at new ApolloError2 (http://127.0.0.1:59663/_nuxt/node_modules/.cache/vite/client/deps/chunk-7JFNNDH2.js?v=55f03611:3056:26)\n    at http://127.0.0.1:59663/_nuxt/node_modules/.cache/v",
+    "console: Chat send failed: Error: This path is a file, not a folder.\n    at resolveRunWorkspaceChoice (http://127.0.0.1:59663/_nuxt/services/workspace/runWorkspaceChoice.ts:70:11)\n    at async launchAgentChat (http://127.0.0.1:59663/_nuxt/services/chat/chatLaunchService.ts:78:48)\n    at async Object"
+  ],
+  "cleanup": {
+    "rootRemoved": true,
+    "childrenExited": [
+      true,
+      true
+    ]
+  },
+  "model": "gemini-3.8-flash-low",
+  "registeredAdded": [],
+  "result": "Pass",
+  "finishedAt": "2026-11-07T22:09:00.832Z"
+}

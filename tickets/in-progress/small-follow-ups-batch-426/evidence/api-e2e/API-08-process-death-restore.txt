@@ -1,0 +1,31 @@
+# API-08 Android process death: the open page after Android ends the app in the background (AC-004, REQ-003, RR-02)
+# build/device/node: as API-07 (worktree debug APK; emulator autobyteus277_api35, Android 15, WebView 124.0.6367.219; hold-stack alpha at http://10.0.2.2:56731)
+# steps per run: open the Delivery Team lead → ⋮ → Files → docs → guide.md (CDP clicks on the product's own controls); Home;
+#   adb shell am kill org.autobyteus.mobile (pidof empty afterwards); Recents (KEYCODE_APP_SWITCH) → tap the app's card; read the page over CDP
+# date: 2026-11-08 00:05-00:12 (local)
+
+## Run A: the task the app was first started in by a shared pairing link (ACTION_SEND text/plain, how the app was paired)
+before: http://10.0.2.2:56731/mobile/?screen=files&workspace=agent_ws_229c…&file=docs/guide.md, viewer shows "GUIDE-TEXT-7731" (API-08-1-before.png)
+pid before 3275 → after kill [] → after reopen 4013 ("Start proc 4013:org.autobyteus.mobile … for next-top-activity")
+after: href http://10.0.2.2:56731/mobile/?pairing=<the code shared at pairing>; screen "Can’t reach Alpha Test Node" / "This code has expired. Make a new one on your computer." / "Scan again" (API-08-3-after.png)
+why: Android recreates the activity with the intent that started it (the SEND); MainActivity.onCreate handles shared text before
+     OpenPageRestore (MainActivity.kt:82-88) — the design's RR-02 ("a re-delivered share intent wins over the restore"). With
+     launchMode standard, an activity a share started keeps that SEND intent, so a phone paired by sharing the link sees an
+     expired-code screen after every process death instead of its page.
+
+## Run B: a task started from the launcher (MAIN/LAUNCHER, new task; the saved node opened as last used)
+before: http://10.0.2.2:56731/mobile/?screen=files&workspace=agent_ws_229c…&file=docs/guide.md, "GUIDE-TEXT-7731" shown (API-08-4-launcher-before.png)
+pid before 4182 → after kill [] → after reopen 4311
+document loaded with (performance navigation entry): http://10.0.2.2:56731/mobile/?screen=files&workspace=agent_ws_229c…&file=docs/guide.md
+   → the Android side restored exactly the saved node and URL (OpenPageRestore → NodeConnectionFlow.open(entry, url))
+then: location.href http://10.0.2.2:56731/mobile/, history.length 1, no file viewer: the run list (API-08-5-launcher-after.png)
+why: the phone web shell does not keep the open run in its URL (the URL above names no run) and lands on the list when a
+     run-screen URL is loaded fresh (277 behavior, asserted by MSP-05 "a reload of a run entry lands on the list").
+     Design premise E-03 ("the WebView's current URL names the open page") does not hold for run screens, so the user sees the
+     run list — the same as before this ticket.
+
+## Run C (alternate): the node removed while the process is dead
+on the Files screen (http://10.0.2.2:56731/mobile/?screen=files); Home; am kill (pid []);
+shared_prefs/saved_nodes.xml of the debug app (adb shell run-as) set to entries [] (no selected entry) — the app has no way to
+remove a node while its process is dead, so the store was edited; then Recents → the card:
+screen: "AutoByteus" / "Scan the QR code on your computer" / "Other ways to connect" / "Scan" — ordinary start, no WebView (API-08-6-node-removed-after.png)

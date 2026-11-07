@@ -1,0 +1,62 @@
+# API-04 (MSP-13, MSP-18): D-02 failure. The phone's Check on an open phone does not learn that its own history read failed
+# commands: pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<evidence>/API-04 (full run);
+#           diagnostic runs: --cases=MSP-19,MSP-17,MSP-18,MSP-13 (API-04-run2), first full run (API-04-run1)
+# commit: product 42a86a5e93 (the last code commit 1d2cdd15ab); probe = the working tree, committed with this report
+# env: macOS arm64, Node v22.23.1, headless Chrome; probe-owned node alpha (worktree dist), phone bundle of 42a86a5e93 at
+#      /mobile on the private-network origin http://192.168.77.10:<port>
+# date: 2026-11-07
+
+## Observed (API-04/mobile-shell-probe.json; screenshots in API-04/ and API-04-run2/)
+
+MSP-13 (AC-002), revoked (DELETE /rest/remote-access/devices → 200), then the open phone's Check (connection sheet ↻):
+  openPhoneAfterCheck {'pairing': 0, 'sessionLeft': '{"entryId":"mobile-paired-node",…,"revokedAt":null}…'}
+  → the phone stays on its run list, bar "Connected", the stored session is kept (screenshot API-04/MSP-13-revoked-check-to-pairing.png)
+  The node refused those reads: server-alpha.log "Remote Access request refused REMOTE_ACCESS_DEVICE_REVOKED /graphql" (×14 in run1)
+  The same revoked credential on a NEW start of the phone (check on opening): revokedShows {'pairing': True, 'sessionLeft': None},
+  revokedReads ['ListWorkspaceRunHistory 403', …] → correct.
+
+MSP-18 (AC-003), Phone Access off (PUT /rest/remote-access/settings {phoneAccessEnabled:false} → 200):
+  openCheck   {'bar': 'Connected', 'banner': '', 'rows': 27, 'sheet': 'Connected', 'credentialKept': True}   ← the open phone's Check
+  offStart    {'bar': 'Phone access off', 'banner': 'Alpha Test Node is reachable, but Phone access is off. Check', 'bannerConnection': 'phone_access_off', 'rows': 0, 'listError': 1}   ← a new start (correct)
+  on          {'bar': 'Connected', 'rows': 13, 'credentialKept': True}   ← on again, Check from the off banner (correct)
+  offBeforeDown {'bar': 'Phone access off', …}  then alpha stopped, Check:
+  offThenDown {'bar': 'Connected', 'banner': '', 'rows': 0, 'listError': 0, 'sheet': 'Connected'}   ← expected "Not reachable" / "Can’t reach Alpha Test Node."
+
+## Cause (read from the code at 42a86a5e93)
+
+MobilePairedShell.checkStatus (components/mobile/MobilePairedShell.vue:107-125) classifies `read.cause` only when
+`read.ok` is false. `read` comes from useRunHistorySectionLoad.readHistory (composables/runHistory/useRunHistorySectionLoad.ts:28-36):
+
+    try { await runHistoryStore.fetchTree(); } catch (cause) { return { ok: false, cause }; }
+    if (runHistoryStore.error && !listsAnyRun()) return { ok: false, cause: runHistoryStore.historyReadFailure ?? runHistoryStore.error };
+    return { ok: true };
+
+fetchTree never throws for a refused or failed read (stores/runHistoryLoadActions.ts:150-158, 182-193 catch it and record
+`error` / `historyReadFailure`). Two ways a failed Check read then reports `{ ok: true }`:
+
+1. Runs already listed. On a failed read the store keeps the earlier `workspaceGroups` (only a successful read replaces them, :133),
+   so `listsAnyRun()` is true and the failure is ignored. Every Check on an open phone that has loaded its list is in this state:
+   revoked → `session_rejected` never reached (MSP-13); Phone Access off → `phone_access_off` never reached (MSP-18 openCheck);
+   both end in `recordCheckOutcome(read.ok || statusReachable ? 'reachable' : …)` = "Connected".
+2. A quiet poll lands during the Check's read. The non-quiet read clears `error`/`historyReadFailure` at its start (:110-111);
+   with the node down it first waits up to 10 s for `waitForBoundBackendReady` (stores/windowNodeContextStore.ts:168-197). The
+   list's 5 s quiet poll (useRunHistorySectionLoad startPolling → refreshTreeQuietly → fetchTree({quiet:true})) increments
+   `workspaceRequestGeneration` (:107) during that wait, so the Check read's catch skips recording its failure
+   (`workspaceGeneration === store.workspaceRequestGeneration` false, :186-189). `error` stays null → `{ ok: true }` → "reachable",
+   although the status read failed too (MSP-18 offThenDown: rows 0, so cause 1 does not apply).
+
+The check on opening works because the store is empty then (no listed runs) and its read answers at once (node up), before
+a poll tick can supersede it.
+
+## Why it was not seen earlier
+
+The specs (IMP-09, IMP-14) mount the shell with an empty history store and a stubbed read result; MSP-09 (node down) reads the
+bar right after the sheet's ↻, inside the up-to-10 s readiness wait, where fetchStatus has already set
+`authorizedApiReachable=false` — a transient state, before checkStatus records its outcome.
+
+## Criteria affected
+
+AC-002 (revoked: "phone checks (open, Retry, Check) → pairing screen; stored session removed"): open passes, Check fails.
+AC-003 (off: bar not Connected + banner + Check; on again Check loads runs; alternate off → unreachable "Can’t reach"):
+  the check on opening and the "on again" Check pass; the open phone's Check while off fails; off → unreachable fails.
+Design reference: design-spec D-02 / DS-002 ("readHistory returns historyReadFailure ?? error as cause"), SR-005.
