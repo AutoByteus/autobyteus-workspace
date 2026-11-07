@@ -2,8 +2,8 @@
 
 ## Document Status
 
-- Status: `Ready for Approval` (SR-006; SR-005 before). All decisions settled; approval follows the user's confirmation of the Product design. The user's answers of 2026-11-07 settle DEC-001 and DEC-003; DEC-002 is decided A within his direction; DEC-004 (warning once per computer or never) stays open and is shown in the Product design for his choice. Approval follows the Product design and his confirmation of it.
-- Current solution revision ID: `SR-006`
+- Status: `Ready for Approval` (SR-007; SR-006 before). All decisions settled; approval follows the user's confirmation of the Product design. The user's answers of 2026-11-07 settle DEC-001 and DEC-003; DEC-002 is decided A within his direction; DEC-004 (warning once per computer or never) stays open and is shown in the Product design for his choice. Approval follows the Product design and his confirmation of it.
+- Current solution revision ID: `SR-007`
 - Package identifier: `one-step-phone-pairing`
 - Request / ticket: Project Task `autobyteus-395` (Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`); also covers the cancelled `autobyteus-391`
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), for the user
@@ -115,6 +115,7 @@ None found.
 | REQ-018 | A phone without the app: scanning the QR with the camera opens the node's page in the browser, which pairs with one "Connect to <name>" tap and offers the Android app download | BEH-004 | Should | "pointed at a node without typing a URL" | E-13, E-19 | DEC-007 |
 | REQ-019 | The 277 node sheet (UIS-010/VIS-019) changes: the read-only "Peer nodes" list is removed from it; "Check connection" becomes a refresh icon button while the node is reachable and the word "Retry" when it is not. The node chips on runs ("docker", "office-mac") stay. This supersedes the peer-list part of 277 REQ-008 / DEC-003 A | BEH-005 | Must | The user in the Product review, 2026-11-07 (relayed by the Product UI/UX Designer; his words to be recorded from the confirmed spec) | N/A | SR-003 |
 | REQ-020 | The desktop never presents the Wi-Fi permission and a hand-typed address as two settings to fill in. When a way works, nothing is asked. When none works, one choice of two alternatives: "Allow this Wi-Fi" or "Use a different address", and no QR until one is chosen. Otherwise "Use a different address" is only a small link under the QR. A hand-typed plain local address is subject to REQ-004 | BEH-001…003 | Must | The user's confusion, 2026-11-07 | N/A | DEC-014; SR-006 |
+| REQ-021 | The desktop panel has a collapsed "How does this work?" section at its bottom (also opened by a "How?" link on the result line): five plain points (how the phone finds the computer and in which order; same Wi-Fi needs nothing; away needs Tailscale or the company VPN; the QR works once for 5 minutes and the phone stays connected; a lost phone is removed from the list). No commands, no URLs | BEH-001 | Should | The user, 2026-11-07: "I'm kind of afraid that the user don't understand how things work … a separate section which is hidden" | N/A | SR-007 |
 
 ## Acceptance Criteria
 
@@ -242,6 +243,7 @@ None found.
 | REQ-018 | UC-004 | BEH-004 | AC-015 | SCN-005 | Product design |
 | REQ-019 | UC-006 | BEH-005 | AC-016 | SCN-007 | Product design |
 | REQ-020 | UC-001…003 | BEH-001…003 | AC-002, AC-005 | SCN-002, SCN-004 | Product design |
+| REQ-021 | UC-001…003 | BEH-001 | AC-001 | SCN-001…004 | Product design |
 
 ## Architecture Phase Input
 

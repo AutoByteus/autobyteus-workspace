@@ -10,6 +10,7 @@
 | SR-004 | Requirements | The user's VPN question and "sections" question, 2026-11-07 | N/A | Ready for Approval | Ready for Approval | REQ-002, REQ-005, REQ-010, DEC-012 | Company VPN supported; no per-network sections; Other options grouped by purpose |
 | SR-005 | Requirements | The user's WireGuard/shared-office question and "select the address?" question, 2026-11-07 | N/A | Ready for Approval | Ready for Approval | REQ-002, REQ-004, DEC-004, DEC-013 | VPN trusted like Tailscale; local Wi-Fi asked once per network; all decisions settled |
 | SR-006 | Requirements | The user's "do I have to do both" question, 2026-11-07 | N/A | Ready for Approval | Ready for Approval | REQ-007, REQ-020 (new), DEC-014 | Wi-Fi permission and hand-typed address shown as alternatives only when needed |
+| SR-007 | Requirements | The user's "explain how everything works" question, 2026-11-07 | N/A | Ready for Approval | Ready for Approval | REQ-021 (new) | Collapsed "How does this work?" section |
 
 ## Revision Entries
 
@@ -80,3 +81,8 @@
 - Trigger: the user, 2026-11-07: "what is the relationship between local Wi-Fi allowed and enter an address by hand? … do I have to do two both at the same time?"
 - IDs affected: REQ-007 wording, REQ-020 new, DEC-014 new (Solution Designer at the user's standing word)
 - Sent to the Product Team the same day
+
+### SR-007 — "How does this work?" section
+
+- Trigger: the user, 2026-11-07: "do we need a separate section … to explain how everything works? … hidden, but you look and open it"
+- IDs affected: REQ-021 new (Solution Designer within his direction); sent to the Product Team the same day
