@@ -2,69 +2,66 @@
 
 ## Release / Publication / Deployment Scope
 
-Finalize the reviewed and validated autobyteus-403 change into `origin/personal`. No release (below). **Current state: Blocked** at the second base refresh by a source conflict with autobyteus-407; nothing pushed.
+Finalize the reviewed and validated autobyteus-403 change into `origin/personal`. No release. Current revision `DR-002`: completed. DR-001 had been blocked by a conflict with autobyteus-407, cleared by IR-002.
 
 ## Project Release Guide
 
-- Release guide path and revision: `RELEASE.md` at ticket-branch `5e028310e5` (identical to `origin/personal` `6341292552`; not changed by either base commit range)
+- Release guide path and revision: `RELEASE.md` at `origin/personal` `6341292552` (unchanged by this ticket)
 - Deviations from the guide and why: `None`
 - Proposed guide fixes, and whether the user agreed: `None`
 
 ## Handoff Summary
 
-- Handoff summary artifact: `tickets/in-progress/websocket-origin-and-phone-route-guard/handoff-summary.md`
-- Handoff summary status: `Blocked` (written against the first integrated state `18fd9f4e5c`; to be updated after re-integration)
-- Delivery revision record: `tickets/in-progress/websocket-origin-and-phone-route-guard/delivery-revision-record.md`
-- Current delivery revision ID: `DR-001`
+- Handoff summary artifact: `tickets/done/websocket-origin-and-phone-route-guard/handoff-summary.md`
+- Handoff summary status: `Updated`
+- Delivery revision record: `tickets/done/websocket-origin-and-phone-route-guard/delivery-revision-record.md`
+- Current delivery revision ID: `DR-002`
 - Notes: —
 
 ## Initial Delivery Integration Refresh
 
 - Bootstrap base reference: `origin/personal` @ `3bf9240d42`
-- Latest tracked remote base reference checked: first `e427a0c9cf`, then `6341292552`
-- Base advanced since bootstrap or previous refresh: `Yes` (twice)
-- New base commits integrated into the ticket branch: `Yes` for `e427a0c9cf` (merge `18fd9f4e5c`); `No` for `6341292552` (merge aborted on conflict)
-- Local checkpoint commit result: `Completed` — `f942c0eeb2` (CRR-002 documents), `5e028310e5` (delivery documents)
+- Latest tracked remote base reference checked: `6341292552` (checked again before each push)
+- Base advanced since bootstrap or previous refresh: `Yes` (twice in DR-001: `e427a0c9cf`, then `6341292552`); `No` when DR-002 resumed
+- New base commits integrated into the ticket branch: `Yes`. `e427a0c9cf` went in by delivery's merge `18fd9f4e5c`. `6341292552` went in by the implementation engineer's merge `6f59bab2a2` (IR-002), after delivery's attempt conflicted.
+- Local checkpoint commit result: `Completed` (`f942c0eeb2`, `5e028310e5`)
 - Integration method: `Merge`
-- Integration result: `Completed` for `e427a0c9cf`; `Blocked` for `6341292552`
-- Post-integration executable checks rerun: `Yes` on `18fd9f4e5c`: `pnpm -C autobyteus-server-ts exec vitest run tests/unit/remote-access tests/unit/api/websocket tests/architecture tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts --no-watch` → `Test Files 22 passed (22)`, `Tests 151 passed (151)` (`evidence/delivery/DEL-01-merged-state-remote-access-checks.log`)
-- Post-integration verification result: `Passed` on `18fd9f4e5c`; `Blocked` for `6341292552`
-- Delivery edits started only after integrated state was current: `Yes` (current at the time; the base moved again during delivery)
-- Handoff state current with latest tracked remote base: `No`
-- Blocker: see Escalation / Reroute
-
-### The conflict
-
-`git merge origin/personal` (`6341292552`) → `CONFLICT (content): Merge conflict in autobyteus-server-ts/src/api/websocket/remote-access-websocket-auth.ts`. The source commit on the base is `4f11061ecf` (autobyteus-407, "VNC Viewer on the phone; viewer limits and live phone revocation"). It is a semantic conflict, not only a textual one:
-
-1. **Close-code table moved.** 407 moved `closeCodeByFailure` into the new domain module `src/remote-access/domain/remote-access-close-codes.ts` (`REMOTE_ACCESS_CLOSE_CODE_BY_FAILURE: Readonly<Record<RemoteAccessAuthFailureCode, number>>`, plus `remoteAccessCloseForFailure`). This ticket adds `REMOTE_ACCESS_ORIGIN_REFUSED` and `PHONE_ACCESS_ROUTE_REFUSED` to `RemoteAccessAuthFailureCode` and to the old table. After the merge the new module's `Record<…>` lacks both, which is a type error, and they would fall to the `?? 4401` default instead of 4403.
-2. **Removed helper now imported.** This ticket removed `extractRemoteAccessWebSocketCredential` from `remote-access-websocket-auth.ts`; its credential parsing is now in `RemoteAccessRoutePolicy` (`remote-access-route-policy.ts:146`). 407's `src/api/websocket/node-desktop.ts` imports it to hand the phone's credential to the new `NodeDesktopViewers` registry (`viewerFor(context, extractRemoteAccessWebSocketCredential(req))`).
-3. **New live re-check path.** 407's `NodeDesktopViewers` re-checks an open phone stream with `authService.authorizeMobileCredential(...)` and closes with `remoteAccessCloseForFailure(...)`. It does not go through this ticket's route policy. `/ws/node-desktop` is in `PHONE_WEBSOCKET_ROUTES`, so the intent is compatible, but the combined behavior (the phone VNC stream under the origin gate and the route limit, plus live revocation) has not been run.
-
-The merge was aborted (`git merge --abort`); the ticket branch is clean at `5e028310e5`.
+- Integration result: `Completed`
+- Post-integration executable checks rerun: `Yes`.
+  - DR-001 DEL-01 on `18fd9f4e5c`: `Test Files 22 passed`, `Tests 151 passed`.
+  - Round 2 by implementation and API/E2E on `1e1d6482a7`, whose source is identical to the final HEAD: IMP-10 `Tests 152 passed`, IMP-11 26/26, IMP-12 `8043 passed | 9 skipped`; API-01, API-03…API-09 Pass (API-01 with the four FU-004 base failures).
+- Post-integration verification result: `Passed`
+- No-rerun rationale (DR-002): `origin/personal` was still `6341292552`, already merged, and the round-2 checks ran on the same source
+- Delivery edits started only after integrated state was current: `Yes`
+- Handoff state current with latest tracked remote base: `Yes`
+- Blocker: `None` (DR-001's is resolved)
 
 ## Verification
 
-- Evidence judged: `Sufficient` for the change as validated (on `18fd9f4e5c`); re-verification is required after the 407 integration
-- Evidence relied on: the execution report's Acceptance-Criteria Proof and Cases. I opened the critical evidence files: API-06/07 JSON and node log, the API-03 summary and node logs, the API-04 summary and node logs, API-05 JSON and logs, the API-08 recorder JSONL and logs, and the IMP-02/04/08 logs. 95.4% final confidence, no category below 95%. Integrated rerun DEL-01.
+- Evidence judged: `Sufficient`
+- Evidence relied on: the execution report's Acceptance-Criteria Proof and Cases for both rounds. I opened the critical files:
+  - Round 1: API-03…08 and IMP-02/04/08 (detail in the handoff summary).
+  - Round 2: `round2/API-09/API-09-phone-node-desktop.json` and `API-09-docker-node.log`, `round2/API-06-07/API-06-07-browser-attack-and-gateway.json`, the API-03 and API-04 summaries, the API-01 excerpt, and the IMP-10/11/12 logs.
+  - Final confidence 95.6%, every category at least 95%.
 
 | Acceptance-Criteria ID | Cases And Files Checked | What You Saw | Judgement (`Proven`/`Not Proven`/`User Check`) |
 | --- | --- | --- | --- |
-| AC-001 | API-06 `API-06-07-browser-attack-and-gateway.json`, `API-06-07-node.log`; IMP-04/08 logs | Foreign terminal/projects/graphqlWs/peerObservation `"opened": false, "frames": 0`; `null` iframe refused; `REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/abx403-evil-term origin http://evil.example:56853`; control terminal `"frames": 5`; IMP-04 `7 passed`, IMP-08 `5 failed \| 2 passed` on base | Proven |
-| AC-002 | API-04 summary; API-07 JSON; API-08 recorder | LAN `('http://192.168.77.10:55079', 101)`; Tailscale-shaped `Host alpha.tail-probe.ts.net:55195 → 101`; gateway 403 without the setting, 200/101 with it; `file://` 101 | Proven |
-| AC-003 | API-06 JSON; IMP-04/05 | Foreign preflighted POST `Failed to fetch`; `definitionsAfter: ['ABX403-LOOPBACK-PREFLIGHT']` | Proven |
-| AC-004 | IMP-02 (`144 passed`), IMP-04 | Route refusals 4403/403 per route | Proven |
-| AC-005 | IMP-04; API-04 ASM-002 | Every listed pattern registered and opens; `outsidePhoneList: []` | Proven |
-| AC-006 | API-06 `checks` | `foreignLogLines: 7`, `noCredentialInLogs: true` | Proven |
-| AC-007 | API-08 `API-08-desktop-ws-recorder.jsonl`, three logs | 16/16 handshakes `origin: "file://"` → 101 over 7 routes incl. node-desktop; 488 HTTP requests without Origin; 0 refusals | Proven |
-| AC-008 | API-03 summary and logs; API-04 summary, WebKit rerun, logs | MSP-01…15 Pass, 0 origin/route refusals; three journeys all steps Pass, `{'alpha': [], 'beta': []}` | Proven (the approved criterion names a Host-preserving proxy shaped like Tailscale Serve; real tailnet and devices are residual risk) |
-| AC-009 | API-05 JSON and logs; API-04 `remoteRun` | RTP-01…07 Pass, 0 refusals | Proven |
-| AC-010 | CRR-001; this delivery's docs sync | Docs match the code | Proven by review |
+| AC-001 | API-06 (both rounds), IMP-04/08/10 | Foreign terminal/projects/graphqlWs/peerObservation/nodeDesktop `"opened": false, "frames": 0`; `null` iframe refused; refusal lines with route and origin; loopback control opens | Proven |
+| AC-002 | API-04, API-07, API-08, API-03/05, API-09 | LAN and Tailscale-shaped same-origin → 101; gateway 403 without the setting, 200/101 with it; `file://` → 101 | Proven |
+| AC-003 | API-06, IMP-04/05/10 | Foreign preflighted POST `Failed to fetch`; no definition created | Proven |
+| AC-004 | IMP-02/04/10 | 4403 / 403 `PHONE_ACCESS_ROUTE_REFUSED` per non-phone route | Proven |
+| AC-005 | IMP-04/10, API-03, API-04, API-09 | Every phone pattern opens with the credential; `outsidePhoneList: []`; `/ws/node-desktop` View only and Control | Proven |
+| AC-006 | API-06 `checks` | `foreignLogLines: 8`, `foreignNodeDesktopLogged: true`, `noCredentialInLogs: true` | Proven |
+| AC-007 | API-08 recorder and logs | 16/16 handshakes `origin: "file://"` → 101; HTTP without Origin; 0 refusals | Proven |
+| AC-008 | API-03, API-04, API-09 | MSP-01…15 Pass; three phone journeys every step Pass with no refusals; phone VNC Viewer in Chrome and WebKit through the Tailscale-shaped proxy | Proven (the approved criterion's method; a real tailnet and devices are residual) |
+| AC-009 | API-05, API-04 `remoteRun` | RTP-01…07 Pass, 0 refusals | Proven |
+| AC-010 | CRR-001/003; docs sync | Docs match the code | Proven by review |
+| 407 under this gate | API-09, IMP-10 | Live revocation closes the phone stream `{"code": 4403, "reason": "REMOTE_ACCESS_DEVICE_REVOKED"}` 18–21 s after revocation | Proven |
 
-- More evidence requested: `None` for the validated change. After the 407 merge is resolved, the combined phone node-desktop behavior needs executable proof (Escalation below).
-- User check needed: `No`. The approved AC-008 is proven by its stated method. Real Tailscale Serve and the wrapper apps on devices remain residual risk, recorded in the handoff summary.
+- More evidence requested: DR-001 sent the combined phone node-desktop behavior back through the implementation engineer. API-09 closed it.
+- User check needed: `No`. The approved AC-008 names a Host-preserving proxy shaped like Tailscale Serve as its method, and that is proven. A real Tailscale Serve node and the wrapper apps on devices remain residual risk, not a user gate.
 - User check reference, when needed: N/A
-- Re-verification after later re-integration: `Pending` — required after the conflict resolution
+- Re-verification after later re-integration: done in DR-002 on the round-2 evidence above
 
 ## Release Decision
 
@@ -73,16 +70,15 @@ The merge was aborted (`git merge --abort`); the ticket branch is clean at `5e02
 
 ## Docs Sync Result
 
-- Docs sync artifact: `tickets/in-progress/websocket-origin-and-phone-route-guard/docs-sync-report.md`
+- Docs sync artifact: `tickets/done/websocket-origin-and-phone-route-guard/docs-sync-report.md`
 - Docs sync result: `Updated`
-- Docs updated: `autobyteus-server-ts/README.md`, `docs/android_mobile_access.md` (delivery); feature docs and glossary (source commit)
+- Docs updated: `autobyteus-server-ts/docs/features/remote_access.md`, `autobyteus-web/docs/remote_access.md`, `GLOSSARY.md` (source); `autobyteus-server-ts/README.md`, `docs/android_mobile_access.md`, `autobyteus-server-ts/docs/modules/node_desktop.md` (delivery)
 - No-impact rationale: N/A
-- Note: 407 also edits `autobyteus-web/docs/remote_access.md` and `docs/android_mobile_access.md`; both auto-merged in the aborted attempt. Docs sync is rechecked after re-integration.
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/<ticket-name>`: `No` (blocked before verification is final)
-- Archived ticket path: N/A
+- Ticket moved to `tickets/done/<ticket-name>`: `Yes` (`33ddfde7db`)
+- Archived ticket path: `tickets/done/websocket-origin-and-phone-route-guard/`
 
 ## Version / Tag / Release Commit
 
@@ -92,47 +88,36 @@ Not applicable (no release).
 
 - Bootstrap context source: ticket `handoff.md`; RELEASE.md Finalization Target
 - Ticket branch: `codex/websocket-origin-and-phone-route-guard`
-- Ticket branch commit result: local checkpoints `f942c0eeb2`, `5e028310e5`
-- Ticket branch push result: `Not done` (the Secret Gate and push come after the block is cleared)
+- Ticket branch commit result: `33ddfde7db`
+- Ticket branch push result: pushed to `origin/codex/websocket-origin-and-phone-route-guard` after the Secret Gate (`origin/personal..codex/websocket-origin-and-phone-route-guard`, 13 commits: PASS)
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after verification / acceptance: `Yes` (`e427a0c9cf` → `6341292552`)
-- Delivery-owned edits protected before re-integration: `Completed` (`5e028310e5`)
-- Re-integration before final merge result: `Blocked` (conflict)
-- Target branch update result: N/A
-- Merge into target result: N/A
-- Push target branch result: N/A
-- Repository finalization status: `Blocked`
-- Blocker: source conflict with autobyteus-407 (above)
+- Target advanced after verification / acceptance: `No` (`6341292552` at each check)
+- Delivery-owned edits protected before re-integration: `Completed` (DR-001 checkpoints)
+- Re-integration before final merge result: `Not needed` (already current)
+- Target branch update result: `finalize/websocket-origin-and-phone-route-guard` from `origin/personal` `6341292552`
+- Merge into target result: `git merge --no-ff` → `6f69dfb52d`; tree identical to the verified ticket branch (`git diff --quiet HEAD codex/…`); Secret Gate on the merged state (14 commits): PASS
+- Push target branch result: `6341292552..6f69dfb52d  HEAD -> personal`; `origin/personal` = `6f69dfb52d`
+- Repository finalization status: `Completed`
+- Checks before the final commit: `python3 scripts/check_repository_artifact_hygiene.py` passed (86141 tracked files; no path over 200 characters; no Windows-hostile names); `python3 scripts/check_licensing.py` passed; no `dist/` or packaged output in the ticket's diff
 
 ## Release / Publication / Deployment
 
 - Applicable: `No`
 - Release/publication/deployment result: `Not required`
-- Release notes handoff result: `Not required` for this delivery. `release-notes.md` is written for the next release and carries a `## What you need to do` section (`AUTOBYTEUS_ALLOWED_ORIGINS` for a Host-rewriting gateway).
+- Release notes handoff result: `Not required` for this delivery. `release-notes.md` is ready for the next release, with a `## What you need to do` section (`AUTOBYTEUS_ALLOWED_ORIGINS` for a gateway that rewrites `Host` without `X-Forwarded-Host`), which the next beta's notes must collect (RELEASE.md, Beta notes with a user action).
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/websocket-origin-and-phone-route-guard`
-- Worktree cleanup result: `Not yet` (blocked; the worktree is needed for the fix)
-- Local ticket branch cleanup result: `Not yet`
-- Remote branch cleanup result: `Not required`
-
-## Escalation / Reroute
-
-- Classification: `Local Fix` (integration of the latest base; no requirement or design change: 407's phone node-desktop route is already in `PHONE_WEBSOCKET_ROUTES`, and both changes intend phone credentials on `/ws/node-desktop`)
-- Recommended recipient: implementation engineer, then the normal route (code review of the resolution; API/E2E for the combined behavior)
-- Why final handoff could not complete: merging `origin/personal` `6341292552` conflicts in `remote-access-websocket-auth.ts`, and 407's code depends on a helper this ticket removed and on a close-code table that lacks this ticket's codes. Resolving it changes reviewed High-risk source, and the combined phone node-desktop behavior is unproven.
-- What the fix needs:
-  1. Merge `origin/personal` into the ticket branch.
-  2. Put `REMOTE_ACCESS_ORIGIN_REFUSED: 4403` and `PHONE_ACCESS_ROUTE_REFUSED: 4403` in 407's `REMOTE_ACCESS_CLOSE_CODE_BY_FAILURE`, and have the adapter use `remoteAccessCloseForFailure`, with no second table.
-  3. Give `node-desktop.ts` the phone credential from the single owner (the route policy's parsing, or an exported helper there), not a revived copy.
-  4. Rerun the server unit/architecture suites, IMP-04, and 407's `tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts` and `tests/unit/node-desktop/node-desktop-viewers.test.ts`.
-  5. Have API/E2E prove the phone node desktop (View only/Control, live revocation closing the stream) under the origin gate and the route limit, plus a foreign-origin `/ws/node-desktop` refusal.
+- Worktree cleanup result: `Completed` after this record is pushed (`git worktree remove`; only untracked build output was left in it)
+- Worktree prune result: `Completed` (`git worktree prune`)
+- Local ticket branch cleanup result: `Completed` (`codex/…` and `finalize/…` deleted; both merged into `origin/personal`)
+- Remote branch cleanup result: `Not required` (the remote ticket branch is kept as other tickets keep theirs)
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification / acceptance: `tickets/in-progress/websocket-origin-and-phone-route-guard/release-notes.md`
+- Release notes artifact created before verification / acceptance: `tickets/done/websocket-origin-and-phone-route-guard/release-notes.md`
 - Archived release notes artifact used for release/publication: N/A (no release)
 - Release notes status: `Updated`
 
@@ -148,19 +133,19 @@ None. The repository deploys no hosted service (RELEASE.md, Deployment).
 
 ## Verification Checks
 
-DEL-01 on `18fd9f4e5c` (above). Further checks are pending re-integration.
+DEL-01 (DR-001) and the round-2 checks above; the hygiene, licensing and Secret Gate checks under Repository Finalization.
 
 ## Rollback Criteria
 
-Revert the merge on `personal` (RELEASE.md, Rollback). No data migration, so rolling back is possible.
+Revert merge `6f69dfb52d` on `personal` (RELEASE.md, Rollback). There is no data migration, so rolling back is possible. Revert it if browser clients the change should allow are refused: for example a phone behind a gateway that cannot send `X-Forwarded-Host`, when `AUTOBYTEUS_ALLOWED_ORIGINS` is not an option.
 
 ## Final Status
 
-- Verification complete: `No` (re-verification needed after the 407 integration)
-- Repository finalization complete: `No`
+- Verification complete (from the evidence): `Yes`
+- Repository finalization complete: `Yes`
 - Applicable release/deployment/rollout complete or not required: `Yes` (not required)
-- Applicable safe cleanup complete or not required: `No`
-- Unresolved blocker: source conflict with autobyteus-407 at `origin/personal` `6341292552`
-- Successful terminal package eligible for return: `No`
-- Terminal package sent to the Solution Designer: `No`
-- Terminal message/reference: N/A
+- Applicable safe cleanup complete or not required: `Yes`
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: `Yes`
+- Terminal message/reference: Delivery Completed message to `/software_engineering_team/solution_designer`

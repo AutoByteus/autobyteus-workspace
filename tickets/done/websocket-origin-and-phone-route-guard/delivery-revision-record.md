@@ -36,7 +36,7 @@
 - Handoff summary: `handoff-summary.md` (updated)
 - Release/publication/deployment report: `release-deployment-report.md` (final)
 - Integration and post-integration verification: `6f59bab2a2` (IR-002) + round 2 (IMP-10…12, API-01, API-03…09)
-- Verification and finalization state: verified from the evidence; finalized on `origin/personal` (see the report for the merge and push)
+- Verification and finalization state: verified from the evidence; merged `--no-ff` as `6f69dfb52d` and pushed to `origin/personal`; worktree and local branches cleaned up
 - Terminal return to the Solution Designer: `Sent` after finalization and cleanup
 - Terminal return message/reference: the Delivery Completed message to the Solution Designer
 - Why this delivery revision was recorded: the block was cleared and delivery completed
