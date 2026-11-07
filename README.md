@@ -415,6 +415,11 @@ available:
 - Backend: `http://127.0.0.1:8000`
 - Frontend: `http://127.0.0.1:3000`
 
+The launcher sets the backend's `AUTOBYTEUS_ALLOWED_ORIGINS` to the frontend's
+origins (`http://127.0.0.1:3000` and `http://localhost:3000`) and replaces any
+other value, so the development backend refuses a page from another local
+port.
+
 Development state persists under
 `<repo>/.autobyteus/development/server-data/` (database, vault key, logs,
 memory, workspaces, and runtime `.env`). It is separate from test state and

@@ -558,6 +558,11 @@ template, atomically materializes the ignored runtime environment under
 - backend: `http://127.0.0.1:8000`;
 - frontend: `http://127.0.0.1:3000`.
 
+The launcher sets the backend's `AUTOBYTEUS_ALLOWED_ORIGINS` to the frontend's
+origins (`http://127.0.0.1:3000` and `http://localhost:3000`) and replaces any
+other value; a page from another local port is refused
+([Remote Access](docs/features/remote_access.md#allowed-origins)).
+
 The launcher proves both endpoints are ready before reporting success, owns
 only the two child processes it started, and stops them on `Ctrl+C`. The
 development database, adjacent vault key, logs, memory, workspaces, and

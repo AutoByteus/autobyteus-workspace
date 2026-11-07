@@ -351,6 +351,11 @@ ticket-owned automation does not require a new global package command.
 - A probe owns its stack: free ports, a Nuxt dev server, fresh headless Chrome, and either
   fixture routes or a probe-owned backend and data root. It removes them on success or
   failure; check its cleanup receipt.
+- A probe-owned backend must be told the exact origin of the frontend the probe serves
+  (`AUTOBYTEUS_ALLOWED_ORIGINS=http://127.0.0.1:<frontend-port>`): a node refuses a page from
+  any other localhost port with `REMOTE_ACCESS_ORIGIN_REFUSED`. Choose the frontend port before
+  starting the node, and list every frontend on every node a multi-node probe starts. See
+  [Allowed Origins](autobyteus-server-ts/docs/features/remote_access.md#allowed-origins).
 - Probes fail on browser errors. A probe whose fixture page renders product components must
   supply every boundary those components reach (GraphQL operations, WebSockets). Shared
   fixture helpers live in `autobyteus-web/tests/e2e/fixtures/`.
