@@ -150,11 +150,11 @@
 - Critical journey and states: SCN-001…SCN-008 in the requirements doc.
 - Constraints and non-goals: requirements doc Scope Guardrail; feasibility per requirement there.
 - Existing context: 277 UI/UX spec (`/Users/normy/autobyteus_org/autobyteus-web-design-worktrees/mobile-experience-redesign/tickets/in-progress/mobile-experience-redesign/ui-ux-spec.md`); screenshots in the Task.
-- Product Design request artifact: to be written after the user's answers to the `Needs user` decisions (they change the screens).
+- Product Design request artifact: [product-design-request.md](product-design-request.md), delegated 2026-11-07 to `/product_team` (team run `product_team_b757e3f9fae5423b9e4167f8540e437e`, coordinator `product_ui_ux_designer_a1399629bb864a55aecc65bb555fd38b`) at the user's request ("yes send to product team").
 
 ## Product Design Findings
 
-- Not yet requested.
+- Requested 2026-11-07; awaiting the Product Team's result.
 
 ## Supplemental Artifact Inventory
 
