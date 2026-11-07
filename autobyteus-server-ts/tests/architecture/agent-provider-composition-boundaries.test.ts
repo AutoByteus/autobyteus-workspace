@@ -4,6 +4,10 @@ import { fileURLToPath } from "node:url";
 import ts from "typescript";
 import { describe, expect, it } from "vitest";
 
+// These read and scan every server source file synchronously (about 2 s alone); the full suite's parallel workers
+// slow that past vitest's default 5 s, so the bound is the work's, not a timing assertion.
+const WHOLE_SOURCE_SCAN_TIMEOUT_MS = 30_000;
+
 const THIS_FILE = fileURLToPath(import.meta.url);
 const ROOT = resolve(dirname(THIS_FILE), "../../..");
 const SERVER = join(ROOT, "autobyteus-server-ts");
@@ -569,7 +573,7 @@ describe("agent provider composition boundaries", () => {
       .map(relativeRoot)).toEqual([
       "autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts",
     ]);
-  });
+  }, WHOLE_SOURCE_SCAN_TIMEOUT_MS);
   it("selects one host validator and propagates it to the two exact lifecycle roots", () => {
     const hosts = [
       "autobyteus-server-ts/src/compositions/build-studio-server.ts",
@@ -618,7 +622,7 @@ describe("agent provider composition boundaries", () => {
     ]) {
       expect(read(join(ROOT, relativePath)), relativePath).not.toContain("getModelCatalogService");
     }
-  });
+  }, WHOLE_SOURCE_SCAN_TIMEOUT_MS);
 
   it("carries one explicit task-identity capability through both subject roots", () => {
     const teamManager = read(join(SRC, "agent-team-execution/services/agent-team-run-manager.ts"));
@@ -678,7 +682,7 @@ describe("agent provider composition boundaries", () => {
       "autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts",
       "autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts",
     ].sort());
-  });
+  }, WHOLE_SOURCE_SCAN_TIMEOUT_MS);
 
   it("creates one frozen context path value per host and shares it across both roots", () => {
     const hostPaths = [
