@@ -1,0 +1,18 @@
+# DEL-01 one relevant check on the merged state (ticket branch 1d8ecc9a79 = codex/html-preview-isolation + origin/personal c35d9dea11), 2026-11-07, macOS 26 arm64, node v22.23.1
+# Base commits integrated: c5c4bc8e4a (autobyteus-web/package.json version 1.5.12-beta.6), c35d9dea11 (ticket docs of autobyteus-419). No overlap with this ticket's files.
+
+$ cd autobyteus-web && NUXT_TEST=true pnpm exec vitest run components/fileExplorer/viewers/__tests__/HtmlPreviewer.spec.ts
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  06:09:07
+   Duration  6.99s (transform 3.50s, setup 6.15s, collect 18ms, tests 57ms, environment 213ms, prepare 198ms)
+
+
+$ pnpm -C autobyteus-server-ts exec vitest run tests/unit/api/rest/workspaces.test.ts --no-watch
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  06:09:15
+   Duration  760ms (transform 57ms, setup 40ms, import 109ms, tests 105ms, environment 0ms)
+
