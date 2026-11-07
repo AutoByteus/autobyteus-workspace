@@ -166,3 +166,7 @@
   - N-5: Serve port by entry `createdAt`;
   - N-6: FU-001 wording.
 - Requirements unchanged. Next action: architecture review round 3.
+
+### SR-014a — Architecture review Pass (informational)
+
+- ARCH-REV-003, `Pass`, on SR-014 (Large / High); no open findings. The reviewer handed off to `/software_engineering_team/implementation_engineer`. Recorded only; no forwarding by the Solution Designer.
