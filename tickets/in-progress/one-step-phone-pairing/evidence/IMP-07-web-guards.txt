@@ -1,0 +1,5 @@
+# IMP-07 web guards
+# commands: pnpm -C autobyteus-web guard:web-boundary; guard:localization-boundary; audit:localization-literals; commit b2c7239d5e; 2026-11-07, macOS Darwin 25.5, Node v22.23.1
+[guard:web-boundary] Passed.
+[guard:localization-boundary] Passed.
+[audit:localization-literals] Passed with zero unresolved findings.

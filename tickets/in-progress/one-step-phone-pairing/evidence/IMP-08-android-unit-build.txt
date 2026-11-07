@@ -1,0 +1,14 @@
+# IMP-08 Android unit tests, debug build, instrumented-test compile
+# command: cd autobyteus-android && ./gradlew :app:testDebugUnitTest :app:assembleDebug :app:compileDebugAndroidTestKotlin; commit b2c7239d5e; 2026-11-07, macOS Darwin 25.5, Node v22.23.1, JDK 21, AGP 8.13.2
+BUILD SUCCESSFUL in 2s
+testsuite name="org.autobyteus.mobile.MainActivityManifestTest" tests="2" skipped="0" failures="0" errors="0"
+testsuite name="org.autobyteus.mobile.connection.ConnectionDiagnosticMapperTest" tests="3" skipped="0" failures="0" errors="0"
+testsuite name="org.autobyteus.mobile.connection.NodeUrlNormalizerTest" tests="4" skipped="0" failures="0" errors="0"
+testsuite name="org.autobyteus.mobile.connection.PairingLinkParserTest" tests="5" skipped="0" failures="0" errors="0"
+testsuite name="org.autobyteus.mobile.datamigrations.SavedNodeEntryKeysMigrationTest" tests="6" skipped="0" failures="0" errors="0"
+testsuite name="org.autobyteus.mobile.shell.ConnectionInputResolverTest" tests="3" skipped="0" failures="0" errors="0"
+testsuite name="org.autobyteus.mobile.shell.NodeConnectionFlowTest" tests="7" skipped="0" failures="0" errors="0"
+testsuite name="org.autobyteus.mobile.shell.NodeReachabilityTest" tests="2" skipped="0" failures="0" errors="0"
+testsuite name="org.autobyteus.mobile.web.FileChooserRequestPolicyTest" tests="3" skipped="0" failures="0" errors="0"
+testsuite name="org.autobyteus.mobile.web.ShellBridgeMessagesTest" tests="4" skipped="0" failures="0" errors="0"
+testsuite name="org.autobyteus.mobile.web.TrustedNavigationPolicyTest" tests="3" skipped="0" failures="0" errors="0"
