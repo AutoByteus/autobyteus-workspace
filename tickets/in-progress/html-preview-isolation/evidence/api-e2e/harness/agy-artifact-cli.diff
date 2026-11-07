@@ -1,0 +1,4 @@
+230c230
+<       writeFileSync(generateImage[1], "fake image bytes");
+---
+>       writeFileSync(generateImage[1], existsSync(generateImage[1] + ".next") ? readFileSync(generateImage[1] + ".next") : "fake image bytes"); // api417 harness: content from <path>.next

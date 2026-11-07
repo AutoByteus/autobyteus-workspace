@@ -1,0 +1,21 @@
+{
+ "label": "API-10",
+ "checkedAt": "2026-11-07T04:54:58.880Z",
+ "since": "2026-11-07T04:53:29.000Z",
+ "markers": [],
+ "hostileDefinitions": [],
+ "allDefinitions": [
+  "Daily Assistant",
+  "Preview Writer"
+ ],
+ "refusals": [
+  "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /rest/workspaces/agent_ws_b9363bcf711d0f11a5739bb63b7fea7ad66f364f5119f36270d59a20d23353d2/static/module.js origin null",
+  "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /rest/workspaces/agent_ws_b9363bcf711d0f11a5739bb63b7fea7ad66f364f5119f36270d59a20d23353d2/static/data.json origin null",
+  "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/hostile-ws?cwd=%2Fprivate%2Fvar%2Ffolders%2F7w%2F9r4_s1_s42z3f7c136bpjf0r0000gn%2FT%2Fapi417.7wR5caKuvW%2Fmarkers origin null",
+  "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql origin null",
+  "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql origin null",
+  "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql origin null",
+  "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /rest/workspaces/agent_ws_b9363bcf711d0f11a5739bb63b7fea7ad66f364f5119f36270d59a20d23353d2/static/font.ttf origin null"
+ ],
+ "terminalAttached": []
+}

@@ -1,0 +1,5 @@
+# API-12 / API-10 / API-11: every PTY/terminal session line in the instance log so far (grep -n 'PTY session\|Terminal WebSocket\|Terminal websocket' <instance log>), 2026-11-07T04:58:19Z
+892:[2026-11-07T04:58:12.267Z] [INFO] [electron.embedded-server.stdout] Terminal WebSocket connected: control-api12
+893:[2026-11-07T04:58:12.267Z] [INFO] [electron.embedded-server.stdout] Terminal websocket attached for cwd /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api417.7wR5caKuvW/markers
+895:[2026-11-07T04:58:12.436Z] [INFO] [electron.embedded-server.stdout] Closed PTY session control-api12
+896:[2026-11-07T04:58:12.437Z] [INFO] [electron.embedded-server.stdout] Terminal WebSocket disconnected: control-api12
