@@ -144,7 +144,7 @@ Principles 1, 2 and 13.
 - **Notice it by:** a resource that outlives its registry owner, an asynchronous teardown invoked without an exit barrier, or a completion predicate that checks a parent rather than the resource set. Port-owner inspection is diagnostic evidence, never authority to kill unrelated processes.
 
 
-### Case 10: Lifetime Continuity Assumed Between Snapshots (backend-port-conflict-20261024, IMP-DI-001; autobyteus-285, CRR-002 F-API-001)
+### Case 10: Lifetime Continuity Assumed Between Snapshots (backend-port-conflict-20261024, IMP-DI-001; autobyteus-285, CRR-002 F-API-001; autobyteus-412, ARCH-REV-001 AR-002)
 
 Principles 1, 2 and 13.
 
@@ -153,7 +153,10 @@ Principles 1, 2 and 13.
 - **The designed correction:** D3 creates a gated internal group/session leader before user code and retains it beyond command-result/agent lifetime until the group is verified empty. It separates command RESULT from anchor exit; WSL explicitly creates a new session. The retained anchor is implemented and independently reviewed; real native scope and composed host tests verify quick shell exit and TERM-resistant cleanup on macOS. WSL session mechanics have deterministic coverage, not live-platform certification.
 - **Why it mattered:** faster polling is not an ownership mechanism, and fail-closed is not a successful implementation of a normal supported path.
 - **Again in autobyteus-285 (CRR-002, F-API-001):** restart resume checked a run's eligibility ("not live, not archived") and then restored and posted to it, which took 0.3–0.5 s. An archive or a user's message in that window still got a paid notice turn, and "live" was the wrong test, because a user's message is admitted before its run is visible as live. Fix: restore first; re-check after it (final, because archiving refuses an active run); post with a first-input-only rule decided inside the run's own dispatch queue.
-- **Notice it by:** a promised live identity handoff with no overlap guarantee, or resource completion tied to the exit of a short-lived launcher rather than an explicitly retained owner.
+- **Again in autobyteus-412 (ARCH-REV-001 AR-002):**
+  - What happened: a card-triggered recheck of a node's automatic-update failure read the record entry, checked that no pass was checking the node, waited up to 10 s for the node, and then removed the entry unconditionally. It did not hold the per-node `checking` guard that passes hold. A pass in that window could write a new `PENDING` entry, which the recheck then deleted; the follow stopped and the outcome was lost.
+  - Fix (SR-002): the recheck holds the same `checking` guard for the whole sequence. After the await it reads the entry again and removes it only if it is still the `AUTO_FAILED` entry for the version it asked about.
+- **Notice it by:** a promised live identity handoff with no overlap guarantee, or resource completion tied to the exit of a short-lived launcher rather than an explicitly retained owner; a check made before an `await` and acted on after it; a second writer to state that the first writer guards per item, without the same guard.
 
 
 ### Case 11: A New Kind Of Run Classified By A Rule It Never Met (autobyteus-32, ARCH-REV-001 AR-001, AR-002)
