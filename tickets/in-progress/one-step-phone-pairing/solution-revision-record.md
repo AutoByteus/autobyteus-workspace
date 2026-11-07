@@ -7,6 +7,7 @@
 | SR-001 | Requirements | Initial coherent baseline (Task autobyteus-395 with 391 merged, 2026-11-07) | N/A | N/A | Ready for Approval | BEH-001…007; REQ-001…018; AC-001…015; DEC-001…011 | Four decisions asked of the user |
 | SR-002 | Requirements | The user's answers, 2026-11-07; Product Design requested | N/A | Ready for Approval | Ready for Approval | DEC-001…004; REQ-008 | DEC-001 B, DEC-003 yes (user); DEC-002 A (Solution Designer); DEC-004 open (once vs. never); Product brief sent |
 | SR-003 | Requirements | Product review interim note (user's changes), 2026-11-07 | N/A | Ready for Approval | Ready for Approval | REQ-004, REQ-013, REQ-019 (new), AC-011, AC-016 (new); 277 REQ-008 peer list superseded | Answers to the designer's three questions |
+| SR-004 | Requirements | The user's VPN question and "sections" question, 2026-11-07 | N/A | Ready for Approval | Ready for Approval | REQ-002, REQ-005, REQ-010, DEC-012 | Company VPN supported; no per-network sections; Other options grouped by purpose |
 
 ## Revision Entries
 
@@ -52,3 +53,11 @@
 - Decisions for the designer, as architecture owner: old Phone Setup cards and their unused text keys are removed (no dead code); the phone-access store shrinks to connect / code / devices plus the "Other options" manual address, with address choice and checks moving out of the page; the storage place of the remembered decision is an architecture detail, its behavior is REQ-004
 - Intended behavior changed: Yes (user-directed, within this ticket's area); approval with the confirmed design
 - Next action: integrate the confirmed design; record the user's words for REQ-019 from it
+
+### SR-004 — Company VPN; no sections per network type
+
+- Phase and classification: Requirements, `Refinement`
+- Trigger: the user, 2026-11-07: "we will use VPN a lot of times in the future … do we also support that?"; "Maybe use different sections … You know the best"
+- IDs affected: REQ-002 (admin-configured address first, VPN private addresses included), REQ-005 (network-neutral wording), REQ-010 (phone message mentions VPN), DEC-012 (new, Solution Designer at the user's word)
+- Intended behavior changed: Yes, within this ticket's area; sent to the Product Team
+- Next action: the designer reflects it; approval with the confirmed design
