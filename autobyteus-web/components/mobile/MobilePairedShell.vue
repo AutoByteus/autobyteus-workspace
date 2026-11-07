@@ -3,15 +3,15 @@
        scroll and folds). It owns the history load and poll, the status check, and the live collaboration stream. -->
   <section
     v-if="postPair && !firstCheckDone"
-    class="mx-auto flex min-h-screen w-full max-w-md flex-col justify-center px-5 py-8 text-center"
+    class="flex min-h-screen w-full flex-col items-center justify-center px-6 text-center"
+    role="status"
     data-testid="mobile-post-pair-checking"
   >
-    <div class="rounded-3xl border border-blue-200 bg-white p-6 shadow-sm">
-      <p class="text-xs font-bold uppercase tracking-[0.18em] text-blue-600">Pairing complete</p>
-      <h1 class="mt-3 text-2xl font-bold text-slate-950">Checking your desktop</h1>
-      <p class="mt-3 text-sm text-slate-600">Refreshing Phone Access status before your runs open.</p>
-      <p class="mt-4 text-sm font-semibold text-blue-700">Checking status…</p>
-    </div>
+    <span class="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
+      <Icon icon="heroicons:check-20-solid" class="h-8 w-8" aria-hidden="true" />
+    </span>
+    <h1 class="mt-5 text-[1.375rem] font-semibold leading-7 text-slate-950">Connected to {{ nodeName }}</h1>
+    <p class="mt-2 text-[0.9375rem] leading-6 text-slate-600">Opening your runs…</p>
   </section>
 
   <template v-else>
@@ -51,6 +51,7 @@
 </template>
 
 <script setup lang="ts">
+import { Icon } from '@iconify/vue';
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import MobileConnectionSheet from '~/components/mobile/connection/MobileConnectionSheet.vue';
 import MobileUnpairConfirm from '~/components/mobile/connection/MobileUnpairConfirm.vue';
@@ -71,7 +72,7 @@ import { useMobileNodeSessionStore } from '~/stores/mobileNodeSessionStore';
 import { isRemoteAccessAuthFailure } from '~/utils/remoteAccess/remoteAccessAuthFailure';
 
 const props = defineProps<{
-  /** Just paired: "Checking your desktop" shows until the first check ends. */
+  /** Just paired: "Connected to <node>" shows until the first check ends. */
   postPair: boolean;
   /** The unsupported-route notice, shown above the run list. */
   notice: string | null;
@@ -121,10 +122,8 @@ onMounted(async () => {
   }
 });
 
-/** The paired node's own name, kept from its last answer while it does not answer. */
-const lastNodeName = ref('');
-watch(() => sessionStore.lastStatus?.serverName, (name) => { if (name) lastNodeName.value = name; }, { immediate: true });
-const nodeName = computed(() => lastNodeName.value || hostOf(sessionStore.serverBaseUrl));
+/** The node's name from the QR it was paired with; sessions paired before it was kept show the address's host. */
+const nodeName = computed(() => sessionStore.session?.nodeName || hostOf(sessionStore.serverBaseUrl));
 /** Reachable until the first check says otherwise. */
 const connected = computed(() => !firstCheckDone.value || sessionStore.authorizedApiReachable);
 

@@ -275,7 +275,7 @@ describe("Node allowed-origin gate and phone WebSocket routes", () => {
     const session = await inject({
       method: "POST",
       url: "/rest/remote-access/pairing-sessions",
-      payload: { serverBaseUrl: "https://desktop.tailnet.ts.net/mobile", serverName: "AutoByteus Desktop" },
+      payload: { connectionWay: "tailscale", serverBaseUrl: "https://desktop.tailnet.ts.net/mobile", serverName: "AutoByteus Desktop" },
     });
     expect(session.statusCode).toBe(201);
     const { payload, mobileUrl } = session.json() as { payload: { pairingCode: string }; mobileUrl: string };

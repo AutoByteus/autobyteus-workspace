@@ -30,7 +30,7 @@ defineOptions({ name: 'MobileRemoteAccessShell' });
 const sessionStore = useMobileNodeSessionStore();
 const route = useRoute();
 
-/** Just paired: the paired shell shows "Checking your desktop" until its first check ends. */
+/** Just paired: the paired shell shows "Connected to <node>" until its first check ends. */
 const postPair = ref(false);
 const routePairingConsumed = ref(false);
 

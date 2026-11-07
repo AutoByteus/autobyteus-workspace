@@ -40,6 +40,10 @@ describe("RemoteAccessRoutePolicy", () => {
     expect(classifyHttpRoute("GET", "/rest/health")).toBe("PUBLIC_HEALTH");
     expect(classifyHttpRoute("GET", "/rest/remote-access/status")).toBe("PUBLIC_HEALTH_STATUS");
     expect(classifyHttpRoute("POST", "/rest/remote-access/pairing-sessions")).toBe("TRUSTED_NETWORK_OWNER");
+    expect(classifyHttpRoute("DELETE", "/rest/remote-access/pairing-sessions/pss_0123")).toBe("TRUSTED_NETWORK_OWNER");
+    expect(classifyHttpRoute("DELETE", "/rest/remote-access/pairing-sessions/anything")).toBe("TRUSTED_NETWORK_OWNER");
+    expect(classifyHttpRoute("GET", "/rest/remote-access/network")).toBe("TRUSTED_NETWORK_OWNER");
+    expect(classifyHttpRoute("PUT", "/rest/remote-access/network/local-networks/gw_0123456789abcdef")).toBe("TRUSTED_NETWORK_OWNER");
     expect(classifyHttpRoute("POST", "/rest/remote-access/pairing-exchanges")).toBe("PUBLIC_PAIRING_EXCHANGE");
     expect(classifyHttpRoute("GET", "/rest/remote-access/devices/revoked")).toBe("TRUSTED_NETWORK_OWNER");
     expect(classifyHttpRoute("POST", "/graphql")).toBe("TRUSTED_NETWORK_PROTECTED");

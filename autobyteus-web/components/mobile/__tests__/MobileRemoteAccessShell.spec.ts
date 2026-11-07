@@ -22,13 +22,12 @@ import { useMobileNodeSessionStore } from '~/stores/mobileNodeSessionStore';
 import { createMobileTestRouter } from '~/composables/mobile/__tests__/mobileTestRouter';
 
 const pairedSession = {
-  entryId: 'mobile-paired-node', serverBaseUrl: 'http://desktop-private.local:29695', credential: 'credential-1', pairedAt: '2026-05-18T12:00:00.000Z',
+  entryId: 'mobile-paired-node', serverBaseUrl: 'http://desktop-private.local:29695', nodeName: 'Office Mac', credential: 'credential-1', pairedAt: '2026-05-18T12:00:00.000Z',
   device: { deviceId: 'device-1', displayName: 'Phone', clientFacingBaseUrl: 'http://desktop-private.local:29695', createdAt: '2026-05-18T12:00:00.000Z', lastSeenAt: null, revokedAt: null },
 };
 const initialState = (session: unknown = pairedSession) => ({
   mobileNodeSession: {
     session, initialized: true, isPairing: false, isCheckingStatus: false, lastDiagnostic: null, authorizedApiReachable: true,
-    lastStatus: { phoneAccessEnabled: true, pairingAvailable: true, serverName: 'AutoByteus Desktop' },
   },
 });
 
@@ -38,7 +37,7 @@ const mountShell = async (query: Record<string, string> = {}, session: unknown =
   const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false, initialState: initialState(session) });
   const sessionStore = useMobileNodeSessionStore(pinia);
   vi.mocked(sessionStore.initializeFromStorage).mockImplementation(() => undefined);
-  vi.mocked(sessionStore.fetchStatus).mockImplementation(async () => sessionStore.lastStatus);
+  vi.mocked(sessionStore.fetchStatus).mockImplementation(async () => reachableStatus);
   vi.mocked(sessionStore.deleteLocalSession).mockImplementation(() => undefined);
   const wrapper = mount(MobileRemoteAccessShell, {
     attachTo: document.body,
@@ -51,6 +50,8 @@ const mountShell = async (query: Record<string, string> = {}, session: unknown =
   return { router, wrapper };
 };
 
+const reachableStatus = { phoneAccessEnabled: true, pairingAvailable: true, nodeId: 'srv_test_000000000000000000000000000000000000' };
+
 const toBase64Url = (value: object): string => btoa(JSON.stringify(value)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
 
 // autobyteus-277: the phone's one main screen is the run list; pairing is unchanged.
@@ -62,12 +63,19 @@ describe('MobileRemoteAccessShell', () => {
     document.body.innerHTML = '';
   });
 
-  it('lands a paired phone on the run list with the paired node\'s own name', async () => {
+  it('lands a paired phone on the run list with the node\'s name from its QR (REQ-011)', async () => {
     const { wrapper } = await mountShell();
     expect(wrapper.find('[data-testid="mobile-run-list"]').exists()).toBe(true);
-    expect(wrapper.get('[data-testid="mobile-node-name"]').text()).toBe('AutoByteus Desktop');
+    expect(wrapper.get('[data-testid="mobile-node-name"]').text()).toBe('Office Mac');
     expect(wrapper.get('[data-testid="mobile-node-state"]').text()).toBe('Connected');
     expect(wrapper.get('[data-testid="mobile-new-run-button"]').attributes('aria-label')).toBe('New run');
+    wrapper.unmount();
+  });
+
+  it('a session paired before the name was kept shows the address\'s host', async () => {
+    const { nodeName: _name, ...withoutName } = pairedSession;
+    const { wrapper } = await mountShell({}, withoutName);
+    expect(wrapper.get('[data-testid="mobile-node-name"]').text()).toBe('desktop-private.local:29695');
     wrapper.unmount();
   });
 
@@ -125,9 +133,9 @@ describe('MobileRemoteAccessShell', () => {
     await wrapper.get('[data-testid="mobile-node-button"]').trigger('click');
     await flushPromises();
     const sheet = document.body.querySelector('[data-testid="mobile-connection-sheet"]');
-    expect(sheet?.textContent).toContain('AutoByteus Desktop');
+    expect(sheet?.textContent).toContain('Office Mac');
     expect(sheet?.textContent).toContain('http://desktop-private.local:29695');
-    expect(sheet?.textContent).toContain('Unpair this phone');
+    expect(sheet?.textContent).toContain('Unpair from Office Mac');
     (document.body.querySelector('[data-testid="mobile-check-connection"]') as HTMLButtonElement).click();
     await flushPromises();
     expect(load.load).toHaveBeenCalledTimes(1);
@@ -135,7 +143,7 @@ describe('MobileRemoteAccessShell', () => {
     wrapper.unmount();
   });
 
-  it('Unpair this phone asks the baseline confirmation, then removes the local session', async () => {
+  it('Unpair from <node> asks the baseline confirmation, then removes the local session', async () => {
     const { wrapper } = await mountShell();
     await wrapper.get('[data-testid="mobile-node-button"]').trigger('click');
     await flushPromises();
@@ -156,7 +164,7 @@ describe('MobileRemoteAccessShell', () => {
     useMobileNodeSessionStore().authorizedApiReachable = false;
     await nextTick();
     expect(wrapper.get('[data-testid="mobile-node-state"]').text()).toBe('Not reachable');
-    expect(wrapper.get('[data-testid="mobile-node-offline-banner"]').text()).toContain('Can’t reach AutoByteus Desktop.');
+    expect(wrapper.get('[data-testid="mobile-node-offline-banner"]').text()).toContain('Can’t reach Office Mac.');
     wrapper.unmount();
   });
 
@@ -168,7 +176,7 @@ describe('MobileRemoteAccessShell', () => {
     const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false, initialState: initialState() });
     const session = useMobileNodeSessionStore(pinia);
     vi.mocked(session.initializeFromStorage).mockImplementation(() => undefined);
-    vi.mocked(session.fetchStatus).mockResolvedValueOnce(null).mockImplementation(async () => session.lastStatus);
+    vi.mocked(session.fetchStatus).mockResolvedValueOnce(null).mockImplementation(async () => reachableStatus);
     const history = useRunHistoryStore(pinia);
     history.historyFamilyErrors = { workspace: 'Network Error', agentOrg: null };
     load.load.mockImplementation(async () => {

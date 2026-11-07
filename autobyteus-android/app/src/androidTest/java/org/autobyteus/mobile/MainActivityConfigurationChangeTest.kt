@@ -28,8 +28,8 @@ class MainActivityConfigurationChangeTest {
     private val instrumentation = InstrumentationRegistry.getInstrumentation()
 
     @Before
-    fun startOnTheConnectionScreen() {
-        // No saved node: the activity opens the native connection screen and makes no network call.
+    fun startOnTheStartScreen() {
+        // No saved node: the activity opens the native start screen and makes no network call.
         SavedNodeStore(instrumentation.targetContext).clear()
     }
 
@@ -41,8 +41,11 @@ class MainActivityConfigurationChangeTest {
             var input: EditText? = null
             scenario.onActivity {
                 activity = it
+                // Other ways to connect › Type an address opens the address sheet.
+                findClickable(it.window.decorView, "Other ways to connect")!!.performClick()
+                findClickable(it.window.decorView, "Type an address")!!.performClick()
                 input = findEditText(it.window.decorView)
-                assertNotNull("the connection screen shows an address field", input)
+                assertNotNull("the Type an address sheet shows an address field", input)
                 input!!.setText(typed)
             }
 
@@ -58,7 +61,7 @@ class MainActivityConfigurationChangeTest {
                 scenario.onActivity {
                     assertSame("the activity is not recreated", activity, it)
                     val current = findEditText(it.window.decorView)
-                    assertSame("the connection screen is not rebuilt", input, current)
+                    assertSame("the screen and its sheet are not rebuilt", input, current)
                     assertEquals(typed, current!!.text.toString())
                 }
             }
@@ -77,6 +80,16 @@ class MainActivityConfigurationChangeTest {
             Thread.sleep(100)
         }
         throw AssertionError("the screen did not reach orientation $orientation within 10 s")
+    }
+
+    private fun findClickable(view: View, description: String): View? {
+        if (view.isClickable && view.contentDescription?.toString()?.startsWith(description) == true) return view
+        if (view is ViewGroup) {
+            for (index in 0 until view.childCount) {
+                findClickable(view.getChildAt(index), description)?.let { return it }
+            }
+        }
+        return null
     }
 
     private fun findEditText(view: View): EditText? {

@@ -506,7 +506,7 @@ const freshMobilePage = async () => {
   const settings = await fetch(`${stack.backendUrl}/rest/remote-access/settings`, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ phoneAccessEnabled: true }) });
   assert(settings.ok, 'Phone Access enabled', await settings.text());
   const session = await (await fetch(`${stack.backendUrl}/rest/remote-access/pairing-sessions`, { method: 'POST', headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ serverBaseUrl: mobileRemote(), trustedPrivateHttpAcknowledged: true }) })).json();
+    body: JSON.stringify({ connectionWay: 'local_network', serverBaseUrl: mobileRemote(), trustedPrivateHttpAcknowledged: true }) })).json();
   assert(session.mobileUrl, 'pairing session', session);
   const pairing = new URL(session.mobileUrl).searchParams.get('pairing');
   const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2 });

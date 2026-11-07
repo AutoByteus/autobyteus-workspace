@@ -1,5 +1,13 @@
 import { RemoteAccessError } from "../domain/models.js";
 import { normalizeNodeBaseUrl, RemoteAccessUrlError } from "./url-normalization.js";
+import {
+  isIpv4LinkLocal,
+  isIpv4LoopbackOrUnspecified,
+  isIpv4Private,
+  isIpv4TailscaleRange,
+  parseIpv4Address,
+  type Ipv4Octets,
+} from "./ip-address-ranges.js";
 
 export type PairingUrlTransportSecurity = "https" | "trusted_private_http";
 
@@ -16,18 +24,6 @@ export type PairingServerBaseUrlPolicyOptions = {
 const normalizeHostname = (hostname: string): string =>
   hostname.trim().toLowerCase().replace(/^\[|\]$/g, "").replace(/\.$/, "");
 
-const parseIpv4Address = (hostname: string): [number, number, number, number] | null => {
-  const parts = hostname.split(".");
-  if (parts.length !== 4) {
-    return null;
-  }
-  const octets = parts.map((part) => Number(part));
-  if (!octets.every((part) => Number.isInteger(part) && part >= 0 && part <= 255)) {
-    return null;
-  }
-  return octets as [number, number, number, number];
-};
-
 const firstIpv6Hextet = (hostname: string): number | null => {
   if (!hostname.includes(":")) {
     return null;
@@ -40,15 +36,8 @@ const firstIpv6Hextet = (hostname: string): number | null => {
   return Number.isFinite(parsed) ? parsed : null;
 };
 
-const isIpv4LoopbackOrUnspecified = (octets: [number, number, number, number]): boolean =>
-  octets[0] === 127 || octets[0] === 0;
-
-const isIpv4PrivateOrLocal = (octets: [number, number, number, number]): boolean =>
-  octets[0] === 10
-  || (octets[0] === 172 && octets[1] >= 16 && octets[1] <= 31)
-  || (octets[0] === 192 && octets[1] === 168)
-  || (octets[0] === 169 && octets[1] === 254)
-  || (octets[0] === 100 && octets[1] >= 64 && octets[1] <= 127);
+const isIpv4PrivateOrLocal = (octets: Ipv4Octets): boolean =>
+  isIpv4Private(octets) || isIpv4LinkLocal(octets) || isIpv4TailscaleRange(octets);
 
 const isIpv6LoopbackOrUnspecified = (hostname: string): boolean =>
   hostname === "::1"

@@ -1,236 +1,155 @@
 import { defineStore } from 'pinia';
-import { computed, ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 import apiService from '~/services/api';
 import { useNodeStore } from '~/stores/nodeStore';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
+import { EMBEDDED_ENTRY_ID } from '~/types/node';
 import type {
+  ConnectionWay,
+  NodeNetwork,
   PairedDeviceSummary,
   RemoteAccessPairingSessionResponse,
   RemoteAccessSettings,
   RemoteAccessStatus,
-  RemoteAccessUrlCandidate,
 } from '~/types/remoteAccess';
 import { normalizeNodeBaseUrl } from '~/utils/nodeEndpoints';
 import {
-  evaluatePhoneAccessPairingUrl,
-  normalizeAllowedPhoneAccessCandidate,
-  type PhoneAccessPairingUrlDecision,
-} from '~/utils/phoneAccessPairingUrlPolicy';
-import {
-  fetchRemoteAccessStatusFromBaseUrl,
-  formatPhoneAccessRequestError,
-} from '~/utils/phoneAccessRemoteNode';
+  blockedReason as computeBlockedReason,
+  composeConnectionWays,
+  httpAcknowledgedFor,
+  readinessFromChecks,
+  recognizeNodeKind,
+  recommendedWay as computeRecommendedWay,
+  portOfBaseUrl,
+  type BlockedReason,
+  type ComposedWays,
+  type PhoneNodeKind,
+  type WayReadiness,
+} from '~/utils/phoneAccess/phoneConnectionWays';
+import { tailscaleServeHttpsPortFor } from '~/utils/phoneAccess/tailscaleServeCommand';
+import { fetchRemoteAccessStatusFromBaseUrl, formatPhoneAccessRequestError } from '~/utils/phoneAccessRemoteNode';
 
-const defaultSettings = (): RemoteAccessSettings => ({
-  phoneAccessEnabled: false,
-  updatedAt: new Date(0).toISOString(),
+/** Each address check gives up after 2 s; all run at once (QR-004). */
+const ADDRESS_CHECK_TIMEOUT_MS = 2000;
+
+export type PhoneCodePhase = 'none' | 'creating' | 'shown' | 'expired';
+
+/** The code on screen: which way and address it holds, and the node's session to discard it. */
+export type PhoneCode = {
+  way: ConnectionWay;
+  address: string;
+  /** The address the user typed on the Company address tab ("the address you entered"). */
+  typed: boolean;
+  sessionId: string;
+  qrText: string;
+  expiresAt: string;
+};
+
+/** Why a typed company address made no code. */
+export type TypedAddressError = { kind: 'not_this_node' } | { kind: 'refused'; message: string };
+
+const emptyReadiness = (): WayReadiness => ({
+  company_address: { ready: false, address: null },
+  tailscale: { ready: false, address: null },
+  vpn: { ready: false, address: null },
+  local_network: { ready: false, address: null },
 });
 
-const trustedPrivateHttpAcknowledgementError = 'Acknowledge that this private HTTP URL is trusted and cleartext before creating a QR code.';
+/** A request to the embedded node from another node's window (this computer's facts and its allowed networks). */
+const requestEmbeddedNode = async <T>(baseUrl: string, path: string, init: RequestInit = {}): Promise<T> => {
+  const response = await fetch(`${normalizeNodeBaseUrl(baseUrl)}/rest${path}`, {
+    ...init,
+    headers: { 'Content-Type': 'application/json' },
+  });
+  if (!response.ok) {
+    throw new Error(`Request to ${path} failed with HTTP ${response.status}.`);
+  }
+  return response.json() as Promise<T>;
+};
 
 export const usePhoneAccessStore = defineStore('phoneAccess', () => {
   const windowNodeContextStore = useWindowNodeContextStore();
   const nodeStore = useNodeStore();
 
-  const settings = ref<RemoteAccessSettings>(defaultSettings());
-  const candidates = ref<RemoteAccessUrlCandidate[]>([]);
+  const isLoading = ref(false);
+  const loadError = ref<string | null>(null);
+  const phoneAccessEnabled = ref(false);
   const activeDevices = ref<PairedDeviceSummary[]>([]);
   const revokedDevices = ref<PairedDeviceSummary[]>([]);
-  const activePairing = ref<RemoteAccessPairingSessionResponse | null>(null);
-  const selectedServerBaseUrl = ref('');
-  const manualServerBaseUrl = ref('');
-  const trustedPrivateHttpAcknowledged = ref(false);
-  const isLoading = ref(false);
-  const error = ref<string | null>(null);
-  const info = ref<string | null>(null);
-  const advertisedUrlVerified = ref(false);
-  const advertisedUrlVerificationMessage = ref<string | null>(null);
 
-  const phoneAccessEnabled = computed(() => settings.value.phoneAccessEnabled);
-  const isRemoteNodeWindow = computed(() => !windowNodeContextStore.isEmbeddedWindow);
-  const managementBaseUrl = computed(() => normalizeNodeBaseUrl(windowNodeContextStore.nodeBaseUrl));
-  const currentNode = computed(() => nodeStore.getEntryById(windowNodeContextStore.entryId));
-  const currentNodeName = computed(() => (
-    isRemoteNodeWindow.value
-      ? currentNode.value?.name || 'AutoByteus Remote Node'
-      : 'AutoByteus Desktop'
-  ));
-  const canManagePhoneAccess = computed(() => true);
+  const kind = ref<PhoneNodeKind>('embedded');
+  const targetNodeId = ref<string | null>(null);
+  const targetNetwork = ref<NodeNetwork | null>(null);
+  const composed = ref<ComposedWays | null>(null);
+  const readiness = ref<WayReadiness>(emptyReadiness());
+  const reachedAddresses = ref<Set<string>>(new Set());
+  const isChecking = ref(false);
+  /** Ways whose "Check again" found nothing (the plain note under the status). */
+  const stillNotFound = ref<Set<ConnectionWay>>(new Set());
 
-  const selectedUrlValidation = computed<PhoneAccessPairingUrlDecision>(() =>
-    evaluatePhoneAccessPairingUrl(selectedServerBaseUrl.value, { requiresPhoneFacingUrl: isRemoteNodeWindow.value }));
+  const selectedWay = ref<ConnectionWay>('tailscale');
+  const codePhase = ref<PhoneCodePhase>('none');
+  const code = ref<PhoneCode | null>(null);
+  const codeError = ref<string | null>(null);
+  const typedAddressError = ref<TypedAddressError | null>(null);
 
-  const selectedUrlRequiresTrustedPrivateHttpAcknowledgement = computed(() =>
-    selectedUrlValidation.value.requiresTrustedPrivateHttpAcknowledgement);
+  const currentEntry = computed(() => nodeStore.getEntryById(windowNodeContextStore.entryId));
+  const embeddedEntry = computed(() => nodeStore.getEntryById(EMBEDDED_ENTRY_ID));
+  const targetBaseUrl = computed(() =>
+    normalizeNodeBaseUrl(currentEntry.value?.baseUrl || windowNodeContextStore.nodeBaseUrl));
 
-  const selectedUrlWarning = computed(() =>
-    selectedUrlValidation.value.warning || selectedUrlValidation.value.message);
+  /** The node's name on the phone (DEC-016): this computer's name for the desktop's own node, else its name here. */
+  const nodeName = computed(() => {
+    const registryName = currentEntry.value?.name ?? '';
+    if (kind.value === 'embedded') return targetNetwork.value?.computerName || registryName;
+    return registryName;
+  });
 
-  const canCreatePairingSession = computed(() => (
-    phoneAccessEnabled.value
-    && Boolean(selectedServerBaseUrl.value.trim())
-    && (!isRemoteNodeWindow.value || Boolean(manualServerBaseUrl.value.trim()))
-    && selectedUrlValidation.value.isValid
-    && selectedUrlValidation.value.isAndroidFacing
-    && (!selectedUrlRequiresTrustedPrivateHttpAcknowledgement.value || trustedPrivateHttpAcknowledged.value)
-  ));
+  const recommendedWay = computed(() => computeRecommendedWay(readiness.value));
+  const blockedReason = computed<BlockedReason | null>(() =>
+    composed.value && !isLoading.value ? computeBlockedReason(kind.value, composed.value, readiness.value) : null);
+  const localNetworkAllowed = computed(() => composed.value?.localNetwork.allowed ?? false);
+  const tailscaleHttpsReady = computed(() =>
+    Boolean(composed.value?.tailscaleHttpsUrl && reachedAddresses.value.has(composed.value.tailscaleHttpsUrl)));
+  /** The Tailscale Serve HTTPS port for a node on this computer other than the desktop's own; `null` otherwise. */
+  const tailscaleServeHttpsPort = computed(() =>
+    kind.value === 'local_container' ? tailscaleServeHttpsPortFor(windowNodeContextStore.entryId, nodeStore.nodes) : null);
+  /** The Advanced command applies to nodes on this computer, where its Tailscale runs. */
+  const offersTailscaleServeCommand = computed(() => kind.value !== 'remote' && readiness.value.tailscale.ready);
+  const nodePort = computed(() => portOfBaseUrl(targetBaseUrl.value));
 
-  function resetAdvertisedVerification(): void {
-    advertisedUrlVerified.value = false;
-    advertisedUrlVerificationMessage.value = null;
-  }
-
-  function resetSelectedUrlDependentState(): void {
-    trustedPrivateHttpAcknowledged.value = false;
-    resetAdvertisedVerification();
-    activePairing.value = null;
-    info.value = null;
-  }
-
-  function selectDefaultCandidate(): void {
-    if (isRemoteNodeWindow.value || selectedServerBaseUrl.value) {
-      return;
-    }
-    const allowedCandidates = candidates.value
-      .map((candidate) => {
-        const normalizedBaseUrl = normalizeAllowedPhoneAccessCandidate(candidate);
-        return normalizedBaseUrl
-          ? { candidate, normalizedBaseUrl, decision: evaluatePhoneAccessPairingUrl(normalizedBaseUrl) }
-          : null;
-      })
-      .filter((entry): entry is {
-        candidate: RemoteAccessUrlCandidate;
-        normalizedBaseUrl: string;
-        decision: PhoneAccessPairingUrlDecision;
-      } => Boolean(entry));
-    const preferred = allowedCandidates.find((entry) => entry.decision.transportSecurity === 'https')
-      || allowedCandidates.find((entry) => entry.decision.transportSecurity === 'trusted_private_http');
-    selectedServerBaseUrl.value = preferred?.normalizedBaseUrl || '';
-  }
-
-  function handleRequestError(loadError: unknown): void {
-    error.value = formatPhoneAccessRequestError(loadError);
-  }
-
-  async function loadAll(): Promise<void> {
-    isLoading.value = true;
-    error.value = null;
-    try {
-      const [settingsResponse, candidatesResponse, activeDevicesResponse, revokedDevicesResponse] = await Promise.all([
-        apiService.get<{ settings: RemoteAccessSettings }>('/remote-access/settings'),
-        apiService.get<{ candidates: RemoteAccessUrlCandidate[] }>('/remote-access/address-candidates'),
-        apiService.get<{ devices: PairedDeviceSummary[] }>('/remote-access/devices'),
-        apiService.get<{ devices: PairedDeviceSummary[] }>('/remote-access/devices/revoked'),
-      ]);
-      settings.value = settingsResponse.data.settings;
-      candidates.value = candidatesResponse.data.candidates;
-      activeDevices.value = activeDevicesResponse.data.devices;
-      revokedDevices.value = revokedDevicesResponse.data.devices;
-      selectDefaultCandidate();
-    } catch (loadError) {
-      handleRequestError(loadError);
-    } finally {
-      isLoading.value = false;
-    }
-  }
-
-  async function setEnabled(enabled: boolean): Promise<void> {
-    error.value = null;
-    const response = await apiService.put<{ settings: RemoteAccessSettings }>('/remote-access/settings', {
-      phoneAccessEnabled: enabled,
+  async function readNetworkFacts(): Promise<void> {
+    const response = await apiService.get<{ network: NodeNetwork }>('/remote-access/network');
+    targetNetwork.value = response.data.network;
+    kind.value = recognizeNodeKind({
+      isEmbeddedEntry: windowNodeContextStore.isEmbeddedWindow,
+      targetBaseUrl: targetBaseUrl.value,
+      targetNetwork: response.data.network,
     });
-    settings.value = response.data.settings;
-    if (!enabled) {
-      activePairing.value = null;
-    }
-  }
-
-  async function refreshCandidates(): Promise<void> {
-    error.value = null;
-    const params: Record<string, string> = {};
-    if (manualServerBaseUrl.value.trim()) {
-      params.manualServerBaseUrl = manualServerBaseUrl.value.trim();
-      selectedServerBaseUrl.value = normalizeNodeBaseUrl(manualServerBaseUrl.value);
-      resetAdvertisedVerification();
-    }
-    const response = await apiService.get<{ candidates: RemoteAccessUrlCandidate[] }>('/remote-access/address-candidates', {
-      params,
+    const hostNetwork = kind.value === 'local_container' && embeddedEntry.value
+      ? (await requestEmbeddedNode<{ network: NodeNetwork }>(embeddedEntry.value.baseUrl, '/remote-access/network')).network
+      : null;
+    composed.value = composeConnectionWays({
+      kind: kind.value,
+      targetBaseUrl: targetBaseUrl.value,
+      targetNetwork: response.data.network,
+      hostNetwork,
+      tailscaleServePort: tailscaleServeHttpsPortFor(windowNodeContextStore.entryId, nodeStore.nodes),
     });
-    candidates.value = response.data.candidates;
-    if (!manualServerBaseUrl.value.trim()) {
-      selectDefaultCandidate();
-    }
   }
 
-  async function verifyAdvertisedUrlForRemoteQr(): Promise<string | null> {
-    resetAdvertisedVerification();
-    const validation = selectedUrlValidation.value;
-    if (!validation.isValid || !validation.isAndroidFacing) {
-      return validation.message || 'Enter a phone-facing private network URL for this remote node.';
-    }
-    try {
-      const [managementResponse, advertisedStatus] = await Promise.all([
-        apiService.get<RemoteAccessStatus>('/remote-access/status'),
-        fetchRemoteAccessStatusFromBaseUrl(validation.normalizedBaseUrl),
-      ]);
-      const managementId = managementResponse.data.nodeId;
-      const advertisedId = advertisedStatus.nodeId;
-      if (!managementId || !advertisedId) {
-        return 'Could not verify this URL because one status response does not include a server instance ID.';
-      }
-      if (managementId !== advertisedId) {
-        return 'The phone-facing URL reaches a different AutoByteUs node. Map the private network URL to this node, then retry.';
-      }
-      advertisedUrlVerified.value = true;
-      advertisedUrlVerificationMessage.value = 'Phone-facing URL verified for this node.';
-      return null;
-    } catch (verifyError) {
-      return `${formatPhoneAccessRequestError(verifyError)} Use a phone-facing HTTPS URL or acknowledged trusted private HTTP URL mapped to this node.`;
-    }
-  }
-
-  async function createPairingSession(): Promise<void> {
-    error.value = null;
-    info.value = null;
-    if (!phoneAccessEnabled.value) {
-      error.value = 'Enable Phone Access before creating a QR code.';
-      return;
-    }
-    if (!selectedServerBaseUrl.value.trim() || (isRemoteNodeWindow.value && !manualServerBaseUrl.value.trim())) {
-      error.value = isRemoteNodeWindow.value
-        ? 'Enter the phone-facing private network URL for this remote node first.'
-        : 'Choose or enter a server URL first.';
-      return;
-    }
-    try {
-      const validation = selectedUrlValidation.value;
-      if (!validation.isValid || (isRemoteNodeWindow.value && !validation.isAndroidFacing)) {
-        error.value = validation.message;
-        return;
-      }
-      if (validation.requiresTrustedPrivateHttpAcknowledgement && !trustedPrivateHttpAcknowledged.value) {
-        error.value = trustedPrivateHttpAcknowledgementError;
-        return;
-      }
-      if (isRemoteNodeWindow.value) {
-        const verifyError = await verifyAdvertisedUrlForRemoteQr();
-        if (verifyError) {
-          error.value = verifyError;
-          return;
-        }
-      }
-      const response = await apiService.post<RemoteAccessPairingSessionResponse>('/remote-access/pairing-sessions', {
-        serverBaseUrl: validation.normalizedBaseUrl,
-        serverName: currentNodeName.value,
-        ...(validation.requiresTrustedPrivateHttpAcknowledgement ? { trustedPrivateHttpAcknowledged: true } : {}),
-      });
-      activePairing.value = response.data;
-      info.value = isRemoteNodeWindow.value
-        ? 'Pairing QR code created for the verified remote node URL.'
-        : 'Pairing QR code created.';
-    } catch (createError) {
-      handleRequestError(createError);
-    }
+  /** Checks every candidate at once; an address counts only when it answers with this node's ID (REQ-003). */
+  async function checkAddresses(): Promise<void> {
+    const ways = composed.value;
+    if (!ways) return;
+    const all = [...new Set(Object.values(ways.candidates).flat())];
+    const results = await Promise.allSettled(all.map((address) =>
+      fetchRemoteAccessStatusFromBaseUrl(address, { timeoutMs: ADDRESS_CHECK_TIMEOUT_MS })));
+    reachedAddresses.value = new Set(all.filter((_address, index) => {
+      const result = results[index];
+      return result?.status === 'fulfilled' && Boolean(targetNodeId.value) && result.value.nodeId === targetNodeId.value;
+    }));
+    readiness.value = readinessFromChecks(ways.candidates, reachedAddresses.value);
   }
 
   async function refreshDevices(): Promise<void> {
@@ -242,52 +161,224 @@ export const usePhoneAccessStore = defineStore('phoneAccess', () => {
     revokedDevices.value = revokedResponse.data.devices;
   }
 
+  /** Opens the panel: facts, checks, then the best ready way is selected (TR-001). */
+  async function load(): Promise<void> {
+    isLoading.value = true;
+    loadError.value = null;
+    try {
+      const [settingsResponse, statusResponse] = await Promise.all([
+        apiService.get<{ settings: RemoteAccessSettings }>('/remote-access/settings'),
+        apiService.get<RemoteAccessStatus>('/remote-access/status'),
+        refreshDevices(),
+      ]);
+      phoneAccessEnabled.value = settingsResponse.data.settings.phoneAccessEnabled;
+      targetNodeId.value = statusResponse.data.nodeId ?? null;
+      await readNetworkFacts();
+      isChecking.value = true;
+      await checkAddresses();
+      selectedWay.value = recommendedWay.value ?? 'tailscale';
+    } catch (error) {
+      loadError.value = formatPhoneAccessRequestError(error);
+    } finally {
+      isChecking.value = false;
+      isLoading.value = false;
+    }
+  }
+
+  /** "Check again": reads the facts and checks again; the open tab stays (TR-007). */
+  async function checkAgain(way: ConnectionWay): Promise<void> {
+    isChecking.value = true;
+    const others = [...stillNotFound.value].filter((entry) => entry !== way);
+    stillNotFound.value = new Set(others);
+    try {
+      await readNetworkFacts();
+      await checkAddresses();
+      if (!readiness.value[way].ready) stillNotFound.value = new Set([...others, way]);
+    } catch (error) {
+      loadError.value = formatPhoneAccessRequestError(error);
+    } finally {
+      isChecking.value = false;
+    }
+  }
+
+  /** Close, a tab change, a new code or leaving the page: the node forgets the shown code (REQ-015). */
+  async function discardCode(): Promise<void> {
+    const shown = code.value;
+    code.value = null;
+    codePhase.value = 'none';
+    codeError.value = null;
+    if (!shown) return;
+    try {
+      await apiService.delete(`/remote-access/pairing-sessions/${encodeURIComponent(shown.sessionId)}`);
+    } catch {
+      // The code expires on the node within 5 minutes either way.
+    }
+  }
+
+  function selectWay(way: ConnectionWay): void {
+    if (way === selectedWay.value) return;
+    void discardCode(); // a code holds only its own tab's address (TR-002)
+    typedAddressError.value = null;
+    selectedWay.value = way;
+  }
+
+  async function ensurePhoneAccessOn(): Promise<void> {
+    if (phoneAccessEnabled.value) return;
+    const response = await apiService.put<{ settings: RemoteAccessSettings }>('/remote-access/settings', { phoneAccessEnabled: true });
+    phoneAccessEnabled.value = response.data.settings.phoneAccessEnabled;
+  }
+
+  /** Remembers or forgets this local network on the node that keeps the answer (the embedded node on this computer). */
+  async function writeLocalNetworkAllowed(allowed: boolean): Promise<void> {
+    const ways = composed.value;
+    if (!ways) return;
+    const path = `/remote-access/network/local-networks/${encodeURIComponent(ways.localNetwork.networkId)}`;
+    if (ways.localNetwork.keeper === 'embedded' && kind.value !== 'embedded' && embeddedEntry.value) {
+      await requestEmbeddedNode(embeddedEntry.value.baseUrl, path, { method: 'PUT', body: JSON.stringify({ allowed }) });
+    } else {
+      await apiService.put(path, { allowed });
+    }
+    composed.value = { ...ways, localNetwork: { ...ways.localNetwork, allowed } };
+  }
+
+  async function createCode(way: ConnectionWay, address: string, typed: boolean): Promise<void> {
+    const response = await apiService.post<RemoteAccessPairingSessionResponse>('/remote-access/pairing-sessions', {
+      serverBaseUrl: address,
+      serverName: nodeName.value,
+      connectionWay: way,
+      // A typed address is the user's explicit choice (DEC-021); the node still refuses public HTTP.
+      trustedPrivateHttpAcknowledged: typed || httpAcknowledgedFor(way, localNetworkAllowed.value),
+    });
+    code.value = {
+      way,
+      address,
+      typed,
+      sessionId: response.data.sessionId,
+      qrText: response.data.qrText,
+      expiresAt: response.data.payload.expiresAt,
+    };
+    codePhase.value = 'shown';
+  }
+
+  /** "Show QR code" (also "Allow and show QR code", "Turn on and show QR code", "New code") for the open tab (DS-003). */
+  async function showCode(): Promise<void> {
+    const way = selectedWay.value;
+    const address = readiness.value[way].address;
+    if (!address) return;
+    await discardCode();
+    codePhase.value = 'creating';
+    try {
+      await ensurePhoneAccessOn();
+      if (way === 'local_network' && !localNetworkAllowed.value) {
+        await writeLocalNetworkAllowed(true); // pressing "Allow and show QR code" is the decision (REQ-004)
+      }
+      await createCode(way, address, false);
+    } catch (error) {
+      codePhase.value = 'none';
+      codeError.value = formatPhoneAccessRequestError(error);
+    }
+  }
+
+  /** "Use this address" on the Company address tab: the typed address must reach this node (REQ-003, DEC-022). */
+  async function useTypedAddress(rawAddress: string): Promise<void> {
+    typedAddressError.value = null;
+    let address: string;
+    try {
+      address = normalizeNodeBaseUrl(rawAddress);
+    } catch {
+      typedAddressError.value = { kind: 'not_this_node' };
+      return;
+    }
+    await discardCode();
+    codePhase.value = 'creating';
+    const status = await fetchRemoteAccessStatusFromBaseUrl(address, { timeoutMs: ADDRESS_CHECK_TIMEOUT_MS }).catch(() => null);
+    if (!status?.nodeId || status.nodeId !== targetNodeId.value) {
+      codePhase.value = 'none';
+      typedAddressError.value = { kind: 'not_this_node' };
+      return;
+    }
+    try {
+      await ensurePhoneAccessOn();
+      await createCode('company_address', address, true);
+    } catch (error) {
+      codePhase.value = 'none';
+      typedAddressError.value = { kind: 'refused', message: formatPhoneAccessRequestError(error) };
+    }
+  }
+
+  /** "New code" after expiry: the same way and address. */
+  async function newCode(): Promise<void> {
+    const previous = code.value;
+    if (previous?.typed) {
+      await useTypedAddress(previous.address);
+      return;
+    }
+    await showCode();
+  }
+
+  function markCodeExpired(): void {
+    if (codePhase.value === 'shown') codePhase.value = 'expired';
+  }
+
+  /** The header switch (TR-009): off discards the shown code; paired phones stay paired. */
+  async function setPhoneAccessEnabled(enabled: boolean): Promise<void> {
+    const response = await apiService.put<{ settings: RemoteAccessSettings }>('/remote-access/settings', { phoneAccessEnabled: enabled });
+    phoneAccessEnabled.value = response.data.settings.phoneAccessEnabled;
+    if (!enabled) {
+      code.value = null; // the node discards every code when phone access turns off
+      codePhase.value = 'none';
+    }
+  }
+
+  /** The allowed row's switch off (TR-006): forgets this network and discards a shown Wi-Fi/LAN code. */
+  async function forgetLocalNetwork(): Promise<void> {
+    if (code.value?.way === 'local_network') await discardCode();
+    await writeLocalNetworkAllowed(false);
+  }
+
   async function revokeDevice(deviceId: string): Promise<void> {
     await apiService.delete(`/remote-access/devices/${encodeURIComponent(deviceId)}`);
     await refreshDevices();
   }
 
-  async function revokeAllDevices(): Promise<number> {
-    const response = await apiService.delete<{ result: { revokedCount: number } }>('/remote-access/devices');
+  async function revokeAllDevices(): Promise<void> {
+    await apiService.delete('/remote-access/devices');
     await refreshDevices();
-    return response.data.result.revokedCount;
   }
 
-  watch(selectedServerBaseUrl, (nextUrl, previousUrl) => {
-    if (nextUrl !== previousUrl) {
-      resetSelectedUrlDependentState();
-    }
-  });
-
   return {
-    settings,
-    candidates,
+    isLoading,
+    loadError,
+    isChecking,
+    phoneAccessEnabled,
     activeDevices,
     revokedDevices,
-    activePairing,
-    selectedServerBaseUrl,
-    manualServerBaseUrl,
-    trustedPrivateHttpAcknowledged,
-    isLoading,
-    error,
-    info,
-    advertisedUrlVerified,
-    advertisedUrlVerificationMessage,
-    phoneAccessEnabled,
-    isRemoteNodeWindow,
-    managementBaseUrl,
-    currentNodeName,
-    canManagePhoneAccess,
-    selectedUrlValidation,
-    selectedUrlRequiresTrustedPrivateHttpAcknowledgement,
-    selectedUrlWarning,
-    canCreatePairingSession,
-    loadAll,
-    setEnabled,
-    refreshCandidates,
-    verifyAdvertisedUrlForRemoteQr,
-    createPairingSession,
-    refreshDevices,
+    kind,
+    nodeName,
+    nodePort,
+    readiness,
+    recommendedWay,
+    blockedReason,
+    localNetworkAllowed,
+    tailscaleHttpsReady,
+    tailscaleServeHttpsPort,
+    offersTailscaleServeCommand,
+    stillNotFound,
+    selectedWay,
+    codePhase,
+    code,
+    codeError,
+    typedAddressError,
+    load,
+    checkAgain,
+    selectWay,
+    showCode,
+    useTypedAddress,
+    newCode,
+    discardCode,
+    markCodeExpired,
+    setPhoneAccessEnabled,
+    forgetLocalNetwork,
     revokeDevice,
     revokeAllDevices,
   };

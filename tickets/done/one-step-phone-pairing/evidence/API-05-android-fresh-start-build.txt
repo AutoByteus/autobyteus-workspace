@@ -1,0 +1,32 @@
+# API-05 Fresh-start build of the Android app (release-android.yml build job, unsigned path)
+# steps: git clone --no-local <worktree> /tmp/ospp-e2e/clone-head; git checkout 27b24037dd; cd autobyteus-android; GRADLE_USER_HOME=<new empty dir> ANDROID_HOME=~/Library/Android/sdk
+#        ./gradlew --no-daemon clean :app:assembleDebug   (the job's command when no signing secrets are set; JDK 21 on PATH, the job uses 17)
+# commit: 27b24037dd (Android code unchanged since b2c7239d5e); macOS arm64; 2026-11-07
+# not tested: the signed :app:assembleRelease path (needs the runner's keystore secrets); Linux runner JDK 17
+
+## gradle log (excerpt)
+Downloading https://services.gradle.org/distributions/gradle-8.13-bin.zip
+.............10%.............20%.............30%.............40%.............50%.............60%.............70%.............80%.............90%.............100%
+
+Welcome to Gradle 8.13!
+
+...
+> Task :app:createDebugApkListingFileRedirect
+> Task :app:assembleDebug
+
+BUILD SUCCESSFUL in 1m 22s
+36 actionable tasks: 35 executed, 1 up-to-date
+
+## the new library came from the network into the empty Gradle home
+GRADLE_USER_HOME/caches/modules-2/files-2.1/androidx.webkit/ -> webkit
+
+## APK
+2503190 /tmp/ospp-e2e/clone-head/autobyteus-android/app/build/outputs/apk/debug/app-debug.apk
+aapt2 dump permissions:
+package: org.autobyteus.mobile
+uses-permission: name='android.permission.INTERNET'
+uses-permission: name='android.permission.ACCESS_NETWORK_STATE'
+uses-permission: name='android.permission.CAMERA'
+permission: org.autobyteus.mobile.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+uses-permission: name='org.autobyteus.mobile.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION'
+contains: META-INF/androidx.webkit_webkit.version

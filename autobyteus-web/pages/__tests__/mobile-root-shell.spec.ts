@@ -65,8 +65,7 @@ describe('mobile static root shell rendering', () => {
     expect(wrapper.find('[data-testid="mobile-unsupported-feature"]').exists()).toBe(true);
     expect(wrapper.text()).toContain('Desktop settings are managed from the desktop app.');
     expect(wrapper.text()).toContain('Connect this phone');
-    expect(wrapper.find('[data-testid="mobile-show-pairing-text"]').exists()).toBe(true);
-    expect(wrapper.find('[data-testid="mobile-pairing-text"]').exists()).toBe(false);
+    expect(wrapper.get('[data-testid="mobile-other-ways"]').attributes('open')).toBeUndefined();
     expect(wrapper.text()).not.toContain('Agent Teams');
     expect(wrapper.text()).not.toContain('Skills');
     expect(navigateToMock).not.toHaveBeenCalled();
@@ -84,10 +83,10 @@ describe('mobile static root shell rendering', () => {
     await nextTick();
     await nextTick();
 
-    expect(wrapper.text()).toContain('Connect this phone');
-    expect(wrapper.find('[data-testid="mobile-pairing-detected"]').exists()).toBe(true);
+    expect(wrapper.text()).toContain('Connect this phone to use its runs.');
+    expect(wrapper.get('[data-testid="mobile-pairing-node-name"]').text()).toBe('desktop-private.local:29695');
     expect(wrapper.find('[data-testid="mobile-pairing-text"]').exists()).toBe(false);
-    expect(wrapper.get('[data-testid="mobile-pair-button"]').text()).toContain('Pair this phone');
+    expect(wrapper.get('[data-testid="mobile-pair-button"]').text()).toBe('Connect to desktop-private.local:29695');
     expect(wrapper.find('[data-testid="mobile-unsupported-feature"]').exists()).toBe(false);
     expect(wrapper.text()).not.toContain('Agent Teams');
     expect(wrapper.text()).not.toContain('Skills');

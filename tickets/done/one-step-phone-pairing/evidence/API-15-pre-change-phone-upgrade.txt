@@ -1,0 +1,26 @@
+# API-15 A phone paired before the change keeps working after the node and the app are updated (AC-014, REQ-017, QR-005, persisted data "Directly Usable — No Migration")
+# steps: test-owned container ospp-e2e-old from autobyteus/autobyteus-server:beta (the released server: status has serverName, /address-candidates 200, /network 404),
+#        published 127.0.0.1:54021 (the emulator reaches it as http://10.0.2.2:54021), fresh volumes ospp-e2e-old-{data,root,packages};
+#        base APK built from 677f61de0b (git archive of autobyteus-android, ./gradlew :app:assembleDebug) installed fresh on emulator autobyteus277_api35;
+#        old flow: PUT /settings phoneAccessEnabled, POST /pairing-sessions {serverBaseUrl:"http://10.0.2.2:54021", trustedPrivateHttpAcknowledged:true} (no connectionWay),
+#        link shared into the old app -> HTTP tick -> SAVE AND OPEN -> old page "Pair this phone" (device-name field "Phone") -> run list.
+#        Update in place: container recreated on the SAME volumes and port with this worktree's server package mounted; `adb install -r` of the HEAD APK (API-05 build; app data kept).
+# commit 27b24037dd (code 55fdae0a34); 2026-11-07
+
+## Before the update (made by the released app and node)
+old status: {"phoneAccessEnabled":false,"pairingAvailable":false,"nodeId":"srv_Tq9SifMPNswODCA6dar_sA7ls0pm9iAB","serverName":"AutoByteus Desktop"}
+old device record: {"deviceId":"device_da91…","displayName":"Phone","clientFacingBaseUrl":"http://10.0.2.2:54021","createdAt":"…10:07:53Z","lastSeenAt":"…10:07:54Z","revokedAt":null}   (no connectionWay)
+old app saved_nodes.xml entry: displayName "AutoByteus Desktop" (the status constant), baseUrl http://10.0.2.2:54021, httpAcknowledged true
+old page session (localStorage autobyteus.remote_access.mobile_session): keys entryId, serverBaseUrl, credential (<redacted>), device, pairedAt   (no nodeName)
+
+## After the update
+new status: {"phoneAccessEnabled":true,"pairingAvailable":true,"nodeId":"srv_Tq9SifMPNswODCA6dar_sA7ls0pm9iAB"}   (same node ID; no serverName); GET /network 200
+devices: [{"displayName":"Phone","connectionWay":null,"lastSeenAt":"…10:07:54Z",…}]   (absent way read as null)
+app launch (no input): ['10.0.2.2:54021, Connected. Connection', 'No runs yet', …]   -> opens the last node into its run list, no pairing (REQ-012, REQ-017)
+devices after opening: lastSeenAt "…10:09:05Z"   (the pre-change credential is in use)
+node sheet: ['10.0.2.2:54021', 'http://10.0.2.2:54021', 'Connected', 'Check connection', 'Switch node 1 node on this phone', 'Unpair from 10.0.2.2:54021']
+   (no nodeName in the old session -> the address names the node, as the design says)
+Switch node list: ['AutoByteus Desktop, Online, current node', …]   (old saved name kept until the node is scanned again; design: acceptable)
+desktop (instance, node added as "Upgraded Node", its window › Phone Setup): Connected phones ['Phone Last seen jetzt Revoke'] — no "Connects through" for the row without a way;
+   Revoke -> DELETE …/devices/device_da91… 200 -> "History (1) Phone Revoked 7. Nov." (no "Connected through")   [locale of "jetzt" / "7. Nov.": API-17]
+phone after the revoke: ['10.0.2.2:54021, Connected. Connection', 'Couldn’t load your runs.', 'Retry', …]   (revoke works at once, REQ-016)

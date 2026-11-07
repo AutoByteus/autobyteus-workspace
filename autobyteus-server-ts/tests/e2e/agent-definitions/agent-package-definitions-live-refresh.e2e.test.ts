@@ -269,7 +269,7 @@ describe("Agent package definitions live refresh at the real server/wire boundar
     // A paired phone (real pairing through the Remote Access REST API) is accepted and receives the feed.
     expect((await rest("PUT", "/rest/remote-access/settings", { phoneAccessEnabled: true })).status).toBe(200);
     const session = await rest("POST", "/rest/remote-access/pairing-sessions",
-      { serverBaseUrl: "https://apar-e2e.tailnet.ts.net/mobile", serverName: "AutoByteus E2E" });
+      { connectionWay: "tailscale", serverBaseUrl: "https://apar-e2e.tailnet.ts.net/mobile", serverName: "AutoByteus E2E" });
     expect(session.status, JSON.stringify(session.body)).toBe(201);
     const exchange = await rest("POST", "/rest/remote-access/pairing-exchanges", {
       pairingCode: session.body.payload.pairingCode, serverBaseUrl: String(session.body.mobileUrl).split("?", 1)[0], deviceName: "APAR phone",

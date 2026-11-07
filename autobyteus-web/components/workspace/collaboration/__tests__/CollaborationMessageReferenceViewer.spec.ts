@@ -52,6 +52,7 @@ const storedSession = (): MobileNodeSession => ({
     deviceId: 'device-1',
     displayName: 'Phone',
     clientFacingBaseUrl: 'http://127.0.0.1:4100',
+    connectionWay: null,
     createdAt: '2026-05-16T00:00:00.000Z',
     lastSeenAt: null,
     revokedAt: null,

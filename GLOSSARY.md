@@ -39,6 +39,27 @@ delegated run, …) are defined in the
 - **Phone WebSocket route:** a WebSocket route pattern a paired phone's
   credential may open (`PHONE_WEBSOCKET_ROUTES`). A phone credential on any
   other WebSocket route is refused with `PHONE_ACCESS_ROUTE_REFUSED`.
+- **Way to connect:** how a phone reaches a node (`connectionWay`):
+  `company_address` (an address set up for the node), `tailscale`, `vpn` (the
+  user's own VPN) or `local_network` (the same Wi-Fi or LAN). The desktop's
+  Phone Setup tabs, the pairing session and the paired phone's record use it.
+  It replaces "address candidate" in Phone Access; Memory Sync and Remote
+  Collaboration keep their own address candidates.
+- **Node network:** one node's report of the network of the computer it runs
+  on (`NodeNetwork`, `GET /rest/remote-access/network`): the computer's name,
+  whether the node runs in a container, its configured address, its Tailscale
+  address and name, its VPN addresses and its local network. It holds no port
+  and no URL: the desktop builds addresses from it with the node's port.
+- **Local network / network ID:** the Wi-Fi or LAN this computer is on,
+  recognised by its **network ID** (`networkId`): `gw_<hash>` of the router's
+  hardware address, or `this-computer` when it cannot be recognised.
+- **Allowed local network:** a local network the owner allowed phones on
+  ("Allow and show QR code"), kept by the node whose computer it is in
+  `remote-access/allowed-local-networks.json`.
+- **Shell bridge:** the Android app's `AutoByteusShell` object in its WebView,
+  given only to the main frame of the open node's origin: the page tells the
+  app it paired, or asks it to show its node list or its scanner. It carries
+  no credential.
 - **Server package:** one release's server for one architecture: a
   self-contained folder with `server-package.json`, `package.json`, `dist/`,
   `prisma/`, `node_modules/` and `mobile-web/`. A release publishes it as

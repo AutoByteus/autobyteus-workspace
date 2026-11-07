@@ -14,7 +14,8 @@ Phone Access is additive: paired phones receive explicit `mra_...` mobile creden
 | `/ws/*` handler adapter over `authorizeWebSocket` (refusal → close, auth context) | `src/api/websocket/remote-access-websocket-auth.ts` |
 | WebSocket close code for each refusal code | `src/remote-access/domain/remote-access-close-codes.ts` |
 | Phone Access settings | `src/remote-access/services/remote-access-settings-service.ts` and `stores/remote-access-settings-store.ts` |
-| Pairing session creation/exchange | `src/remote-access/services/remote-access-pairing-service.ts` |
+| This computer's network facts (Tailscale, VPN, local network, computer name) and the allowed local networks | `src/remote-access/services/node-network-service.ts` with `network-interface-classifier.ts`, `default-route.ts`, `computer-name.ts`, `ip-address-ranges.ts` and `stores/allowed-local-network-store.ts` |
+| Pairing session creation/exchange/discard | `src/remote-access/services/remote-access-pairing-service.ts` |
 | Paired device credentials and revocation | `src/remote-access/services/paired-device-service.ts` and `stores/paired-device-store.ts` |
 | Stable node identity (the node ID) | `src/remote-access/services/node-identity-service.ts` |
 | Client-facing absolute/relative resource URLs | `src/remote-access/services/client-facing-url-resolver.ts` |
@@ -48,8 +49,10 @@ The route policy classifies every HTTP request before normal route handling:
 - Trusted-network owner routes:
   - `GET /rest/remote-access/settings`
   - `PUT /rest/remote-access/settings`
-  - `GET /rest/remote-access/address-candidates`
+  - `GET /rest/remote-access/network`
+  - `PUT /rest/remote-access/network/local-networks/:networkId`
   - `POST /rest/remote-access/pairing-sessions`
+  - `DELETE /rest/remote-access/pairing-sessions/:sessionId`
   - `GET /rest/remote-access/devices`
   - `GET /rest/remote-access/devices/revoked`
   - `DELETE /rest/remote-access/devices/:deviceId`
@@ -69,17 +72,46 @@ Trusted-network owner/protected/WebSocket routes are reachable without an additi
 
 Phone WebSocket routes are the WebSocket route patterns a paired phone's credential may open (`PHONE_WEBSOCKET_ROUTES`): `/ws/agent/:runId`, `/ws/agent-team/:teamRunId`, `/ws/agent-org/:orgRunId`, `/ws/agent-collaboration/:runId`, `/ws/projects`, `/ws/agent-package-definitions`, `/ws/file-explorer/:workspaceId` and `/ws/node-desktop`. A mobile credential (`access_token=mra_...`) on any other WebSocket route is refused before it is validated, with `PHONE_ACCESS_ROUTE_REFUSED`: close code 4403 on `/ws/*` (today `/ws/terminal/...`, `/ws/update-notifications`, `/ws/applications/...`), HTTP 403 on a `/graphql` upgrade and on the peer WebSocket `/rest/remote/run-observations`. A WebSocket route added later stays closed to phones until it is added to the list. The list is keyed by Fastify route pattern (`request.routeOptions.url`), so renaming a route parameter must update it; the e2e test `tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts` fails when a listed pattern is not registered. The refusal is not a session failure: the phone does not unpair on it.
 
+## Node Network And Ways To Connect
+
+`GET /rest/remote-access/network` returns `{ network: NodeNetwork }`, this node's report of the computer it runs on:
+
+```ts
+type NodeNetwork = {
+  computerName: string;            // macOS `scutil --get ComputerName`, else the host name without `.local`
+  runsInContainer: boolean;        // `/.dockerenv`
+  configuredBaseUrl: string | null; // AUTOBYTEUS_SERVER_HOST unless loopback, localhost or host.docker.internal
+  tailscale: { address: string; dnsName: string | null } | null;
+  vpnAddresses: string[];
+  localNetwork: { networkId: string; addresses: string[]; allowed: boolean } | null;
+};
+```
+
+The node reads only ordinary network facts: `os.networkInterfaces()`, one reverse DNS lookup per `100.64/10` tunnel address (1 s timeout), and the default route. It runs no Tailscale command and changes nothing. IPv4 only:
+
+1. Excluded: internal, link-local `169.254/16`, public, and interfaces named `docker*`, `br-*`, `veth*`, `virbr*`, `vmnet*`, `vmenet*`, `vboxnet*`, `vnic*`, `lxcbr*`, `lxdbr*`, `incusbr*`, `cni*`, `flannel*`, `bridge*`, `awdl*`, `llw*`, `anpi*`; a `100.64/10` address with a hardware address (carrier-grade NAT).
+2. Tailscale: a `100.64/10` address whose reverse name ends in `.ts.net` (the DNS name) or on a `tailscale*` interface.
+3. VPN: a private address (`10/8`, `172.16/12`, `192.168/16`) on an interface without a hardware address.
+4. Local network: a private address with a hardware address, plus unconfirmed `100.64/10` tunnel addresses; the default-route interface's address first.
+
+The local network is recognised by its network ID: `gw_<first 16 hex of sha256>` of the router's hardware address (macOS `route -n get default` + `arp -n`; Linux `/proc/net/route` + `/proc/net/arp`), or `this-computer` when it cannot be read. `PUT /rest/remote-access/network/local-networks/:networkId` with `{ allowed: boolean }` remembers or forgets the owner's "Allow phones on this network" answer in `remote-access/allowed-local-networks.json` (`{ networkIds: string[] }`); another ID shape is refused with `REMOTE_ACCESS_NETWORK_ID_INVALID`.
+
+A node in a container sees only container-internal addresses, so it reports no addresses: `tailscale: null`, `vpnAddresses: []`, `localNetwork: { networkId: "this-computer", addresses: [], allowed }`. For a Docker node on the desktop's computer, the desktop takes the facts of its own embedded node and the Docker node's published port.
+
+The desktop (Nodes › Phone Setup) turns these facts and the node's port into the four ways to connect (`company_address`, `tailscale`, `vpn`, `local_network`), checks each address with `GET <address>/rest/remote-access/status` (same `nodeId`), and makes a code for the chosen way's first checked address. The node never decides the way.
+
 ## Pairing Model
 
-1. The owner enables Phone Access with `PUT /rest/remote-access/settings` from the current desktop/Electron node window.
-2. The owner creates a pairing session with `POST /rest/remote-access/pairing-sessions` and a selected client-facing `serverBaseUrl`. Remote-node windows require a manually entered phone-facing private-network URL (HTTPS or acknowledged trusted private HTTP) whose status identity matches the management target.
-3. The service normalizes the selected URL to the canonical server base. Reserved AutoByteus surfaces such as `/mobile`, `/rest`, `/graphql`, and `/ws` are stripped while deployment base paths are preserved.
-4. New desktop-created pairing sessions accept `https://` URLs and acknowledged trusted private `http://` URLs after normalization. Public HTTP and phone-unreachable local-only hosts are rejected by the pairing service.
-5. The service creates a five-minute, single-use pairing code and returns a `/mobile?pairing=<payload>` URL suitable for a QR code or copy/paste. The pairing payload stores the canonical server base, while the returned mobile URL appends `/mobile` for the user-facing shell.
-6. The phone calls `POST /rest/remote-access/pairing-exchanges` with the pairing code and server base URL.
-7. The backend creates a paired device record and returns the only copy of the raw mobile credential to the phone.
+1. The owner turns Phone Access on with `PUT /rest/remote-access/settings` (the desktop's "Show QR code" does it when it is off).
+2. The owner creates a pairing session with `POST /rest/remote-access/pairing-sessions` `{ serverBaseUrl, serverName, connectionWay, trustedPrivateHttpAcknowledged }`. `connectionWay` is required (`REMOTE_ACCESS_PAIRING_WAY_INVALID` otherwise). The desktop sends one address it has checked to reach this node; `serverName` is the name the phone shows for the node (the desktop's own node: the computer's name; any other node: its name on the Nodes page).
+3. The service normalizes the URL to the canonical server base. Reserved AutoByteus surfaces such as `/mobile`, `/rest`, `/graphql`, and `/ws` are stripped while deployment base paths are preserved.
+4. Pairing sessions accept `https://` URLs and acknowledged trusted private `http://` URLs after normalization. Public HTTP and phone-unreachable local-only hosts are rejected.
+5. The service creates a five-minute, single-use pairing code and returns `{ sessionId, payload, qrText, mobileUrl }`. `qrText` is a `/mobile?pairing=<payload>` URL; the payload is `{ version: 1, serverBaseUrl, pairingCode, expiresAt, serverName }`. `sessionId` (`pss_<32 hex>`) is opaque and never the code.
+6. `DELETE /rest/remote-access/pairing-sessions/:sessionId` discards a code (204, also for an unknown ID): the desktop calls it when the code is closed, replaced or its tab changes. Turning Phone Access off discards every code.
+7. The phone calls `POST /rest/remote-access/pairing-exchanges` with the pairing code and server base URL.
+8. The backend creates a paired device record with the session's `connectionWay` and returns the only copy of the raw mobile credential to the phone. A second use of the code answers `REMOTE_ACCESS_PAIRING_CONSUMED` until the code expires; an expired code answers `REMOTE_ACCESS_PAIRING_EXPIRED` once, an unknown or discarded one `REMOTE_ACCESS_PAIRING_INVALID`.
 
-Pairing sessions are in-memory, short-lived, and consumed during exchange. Paired devices persist under the app data directory in `remote-access/paired-devices.json`; only a SHA-256 credential hash is stored.
+Pairing sessions are in memory and short-lived. Paired devices persist under the app data directory in `remote-access/paired-devices.json`; only a SHA-256 credential hash is stored. Device summaries carry `connectionWay` (`null` for phones paired before devices recorded it).
 
 ## Mobile Credential Enforcement
 
@@ -103,9 +135,9 @@ Every refusal is logged once at warn level, with its code and the redacted URL: 
 
 ## Server Instance Identity
 
-`GET /rest/remote-access/status` returns the stable node ID (`nodeId`) in addition to Phone Access availability metadata. The identity is persisted under the app data directory and is used by the desktop Phone Access UI to prove that a manually entered phone-facing private-network URL reaches the same node as the desktop management URL before a QR is created.
+`GET /rest/remote-access/status` returns `{ phoneAccessEnabled, pairingAvailable, nodeId }`. The node ID is persisted under the app data directory and is used by the desktop Phone Setup panel to prove that every address it puts in a QR reaches the same node before a code is made. The status carries no name: a node has no name of its own; the phone takes it from the QR.
 
-Display names, hostnames, and user-entered URLs are not node identity. Remote-node QR creation should fail when the management URL and advertised phone-facing URL cannot both return matching `nodeId` values.
+Display names, hostnames, and user-entered URLs are not node identity.
 
 ## Client-facing URL Resolution
 

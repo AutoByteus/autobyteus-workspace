@@ -1,0 +1,8 @@
+# IMP-04 web typecheck
+# command: pnpm -C autobyteus-web typecheck; commit b2c7239d5e; 2026-11-07, macOS Darwin 25.5, Node v22.23.1
+[typecheck] Nuxt app (tsconfig.json): 69 errors, exit 2, 51.4s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.8s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.8s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 31.7s
+[typecheck] production errors: 0; test-file errors: 96 in 41 files (baseline 96 in 41 files)
+[typecheck] PASS

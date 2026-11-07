@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { mkdtemp, rm } from "node:fs/promises";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import fastify, { type FastifyInstance, type FastifyRequest } from "fastify";
@@ -37,7 +37,6 @@ type RemoteAccessStatusResponse = {
   phoneAccessEnabled: boolean;
   pairingAvailable: boolean;
   nodeId: string;
-  serverName: string;
 };
 
 describe("Phone Access running REST route behavior", () => {
@@ -77,7 +76,7 @@ describe("Phone Access running REST route behavior", () => {
       method: "POST",
       url: "/rest/remote-access/pairing-sessions",
       remoteAddress: "100.64.1.2",
-      payload: { serverBaseUrl: "http://192.168.1.25:29695/mobile" },
+      payload: { connectionWay: "tailscale", serverBaseUrl: "http://192.168.1.25:29695/mobile" },
     });
     expect(httpWithoutAcknowledgementResponse.statusCode).toBe(400);
     expect(httpWithoutAcknowledgementResponse.json()).toMatchObject({ code: "REMOTE_ACCESS_PAIRING_HTTP_ACK_REQUIRED" });
@@ -86,7 +85,7 @@ describe("Phone Access running REST route behavior", () => {
       method: "POST",
       url: "/rest/remote-access/pairing-sessions",
       remoteAddress: "100.64.1.2",
-      payload: { serverBaseUrl: "http://example.com:29695/mobile", trustedPrivateHttpAcknowledged: true },
+      payload: { connectionWay: "tailscale", serverBaseUrl: "http://example.com:29695/mobile", trustedPrivateHttpAcknowledged: true },
     });
     expect(publicHttpResponse.statusCode).toBe(400);
     expect(publicHttpResponse.json()).toMatchObject({ code: "REMOTE_ACCESS_PAIRING_HTTP_PRIVATE_REQUIRED" });
@@ -95,7 +94,7 @@ describe("Phone Access running REST route behavior", () => {
       method: "POST",
       url: "/rest/remote-access/pairing-sessions",
       remoteAddress: "100.64.1.2",
-      payload: { serverBaseUrl: "http://127.0.0.1:29695/mobile", trustedPrivateHttpAcknowledged: true },
+      payload: { connectionWay: "tailscale", serverBaseUrl: "http://127.0.0.1:29695/mobile", trustedPrivateHttpAcknowledged: true },
     });
     expect(localOnlyResponse.statusCode).toBe(400);
     expect(localOnlyResponse.json()).toMatchObject({ code: "REMOTE_ACCESS_PAIRING_URL_LOCAL_ONLY" });
@@ -218,6 +217,7 @@ describe("Phone Access running REST route behavior", () => {
     expect(firstStatusResponse.statusCode).toBe(200);
     const firstStatus = firstStatusResponse.json() as RemoteAccessStatusResponse;
     expect(firstStatus.nodeId).toMatch(/^srv_[A-Za-z0-9_-]{32,}$/);
+    expect(Object.keys(firstStatus).sort()).toEqual(["nodeId", "pairingAvailable", "phoneAccessEnabled"]);
 
     resetNodeIdentityServiceForTests();
     const secondStatusResponse = await inject({
@@ -243,6 +243,7 @@ describe("Phone Access running REST route behavior", () => {
       url: "/rest/remote-access/pairing-sessions",
       remoteAddress: "100.64.1.2",
       payload: {
+        connectionWay: "tailscale",
         serverBaseUrl: "https://docker.tailnet.ts.net/mobile?pairing=old",
         serverName: "AutoByteus Docker Node",
       },
@@ -301,6 +302,106 @@ describe("Phone Access running REST route behavior", () => {
     expect(graphqlNoCredentialResponse.statusCode).not.toBe(401);
   });
 
+  it("serves the node's network facts, remembers an allowed local network, discards a session by its ID and records each phone's way", async () => {
+    // The network route reads the configured base URL, which needs a fully initialized config.
+    const originalServerHost = process.env.AUTOBYTEUS_SERVER_HOST;
+    process.env.AUTOBYTEUS_SERVER_HOST = "http://127.0.0.1:29695";
+    await writeFile(path.join(appDataDir, ".env"), "AUTOBYTEUS_SERVER_HOST=http://127.0.0.1:29695\nAPP_ENV=test\n");
+    try {
+      appConfigProvider.config.initialize();
+    } finally {
+      if (originalServerHost === undefined) delete process.env.AUTOBYTEUS_SERVER_HOST;
+      else process.env.AUTOBYTEUS_SERVER_HOST = originalServerHost;
+    }
+
+    const networkResponse = await inject({ method: "GET", url: "/rest/remote-access/network", remoteAddress: "100.64.1.2" });
+    expect(networkResponse.statusCode).toBe(200);
+    const { network } = networkResponse.json() as { network: Record<string, unknown> };
+    expect(Object.keys(network).sort()).toEqual([
+      "computerName", "configuredBaseUrl", "localNetwork", "runsInContainer", "tailscale", "vpnAddresses",
+    ]);
+    // A loopback configured address is never offered to a phone.
+    expect(network.configuredBaseUrl).toBeNull();
+
+    const badNetworkId = await inject({
+      method: "PUT",
+      url: "/rest/remote-access/network/local-networks/not-a-network",
+      remoteAddress: "100.64.1.2",
+      payload: { allowed: true },
+    });
+    expect(badNetworkId.statusCode).toBe(400);
+    expect(badNetworkId.json()).toMatchObject({ code: "REMOTE_ACCESS_NETWORK_ID_INVALID" });
+
+    const allowResponse = await inject({
+      method: "PUT",
+      url: "/rest/remote-access/network/local-networks/this-computer",
+      remoteAddress: "100.64.1.2",
+      payload: { allowed: true },
+    });
+    expect(allowResponse.statusCode).toBe(200);
+    expect(JSON.parse(await readFile(path.join(appDataDir, "remote-access", "allowed-local-networks.json"), "utf8")))
+      .toEqual({ networkIds: ["this-computer"] });
+
+    await enablePhoneAccess();
+    const missingWay = await inject({
+      method: "POST",
+      url: "/rest/remote-access/pairing-sessions",
+      remoteAddress: "100.64.1.2",
+      payload: { serverBaseUrl: "https://desktop.tailnet.ts.net" },
+    });
+    expect(missingWay.statusCode).toBe(400);
+    expect(missingWay.json()).toMatchObject({ code: "REMOTE_ACCESS_PAIRING_WAY_INVALID" });
+
+    const discarded = await createPairingSession("http://192.168.1.25:29695", true, "local_network");
+    expect(discarded.sessionId).toMatch(/^pss_[0-9a-f]{32}$/);
+    const deleteResponse = await inject({
+      method: "DELETE",
+      url: `/rest/remote-access/pairing-sessions/${discarded.sessionId}`,
+      remoteAddress: "100.64.1.2",
+    });
+    expect(deleteResponse.statusCode).toBe(204);
+    const unknownDelete = await inject({
+      method: "DELETE",
+      url: "/rest/remote-access/pairing-sessions/pss_unknown",
+      remoteAddress: "100.64.1.2",
+    });
+    expect(unknownDelete.statusCode).toBe(204);
+    const discardedExchange = await inject({
+      method: "POST",
+      url: "/rest/remote-access/pairing-exchanges",
+      remoteAddress: "192.168.1.30",
+      payload: { pairingCode: discarded.payload.pairingCode, deviceName: "Phone" },
+    });
+    expect(discardedExchange.statusCode).toBe(400);
+    expect(discardedExchange.json()).toMatchObject({ code: "REMOTE_ACCESS_PAIRING_INVALID" });
+
+    const used = await createPairingSession("http://192.168.1.25:29695", true, "local_network");
+    const exchange = await exchangePairingSession(used, "Wi-Fi Phone");
+    expect(exchange.device.connectionWay).toBe("local_network");
+    const secondUse = await inject({
+      method: "POST",
+      url: "/rest/remote-access/pairing-exchanges",
+      remoteAddress: "192.168.1.30",
+      payload: { pairingCode: used.payload.pairingCode, deviceName: "Phone" },
+    });
+    expect(secondUse.statusCode).toBe(400);
+    expect(secondUse.json()).toMatchObject({ code: "REMOTE_ACCESS_PAIRING_CONSUMED" });
+
+    const devices = await inject({ method: "GET", url: "/rest/remote-access/devices", remoteAddress: "100.64.1.2" });
+    expect((devices.json() as DevicesResponse).devices).toMatchObject([
+      { deviceId: exchange.device.deviceId, connectionWay: "local_network" },
+    ]);
+
+    const mobileOnNetworkRoute = await inject({
+      method: "GET",
+      url: "/rest/remote-access/network",
+      remoteAddress: "192.168.1.30",
+      headers: { authorization: `Bearer ${exchange.credential}` },
+    });
+    expect(mobileOnNetworkRoute.statusCode).toBe(403);
+    expect(mobileOnNetworkRoute.json()).toMatchObject({ code: "REMOTE_ACCESS_AUTH_INVALID" });
+  });
+
   async function enablePhoneAccess(): Promise<void> {
     const response = await inject({
       method: "PUT",
@@ -314,12 +415,14 @@ describe("Phone Access running REST route behavior", () => {
   async function createPairingSession(
     serverBaseUrl: string,
     trustedPrivateHttpAcknowledged = false,
+    connectionWay = "tailscale",
   ): Promise<CreatePairingSessionResult> {
     const response = await inject({
       method: "POST",
       url: "/rest/remote-access/pairing-sessions",
       remoteAddress: "100.64.1.2",
       payload: {
+        connectionWay,
         serverBaseUrl,
         serverName: "AutoByteus Desktop",
         ...(trustedPrivateHttpAcknowledged ? { trustedPrivateHttpAcknowledged: true } : {}),

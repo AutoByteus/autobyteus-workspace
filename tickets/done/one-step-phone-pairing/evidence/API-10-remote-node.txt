@@ -1,0 +1,68 @@
+# API-10 Node on another computer: AC-005, REQ-007, DEC-021, DEC-022, QR-004
+# surface: isolated desktop instance iso-49410-016d = packaged build of this worktree (pnpm --silent isolated-app start --build;
+#   renderer file://…/app.asar/dist/renderer/index.html)
+# commit: 27b24037dd (code 55fdae0a34); macOS arm64 with Wi-Fi and Tailscale (facts read-only); driven over the instance's CDP control port with
+#   playwright-core (/tmp/ospp-e2e/scripts/run.mjs + steps/*.mjs: DOM state by data-testid, the renderer's /rest/remote-access requests and answers);
+#   phone exchanges by POST <serverBaseUrl>/rest/remote-access/pairing-exchanges (phone-exchange.sh)
+# remote node = ospp-e2e-linux (API-07: reports its own Linux facts tailscale 100.101.102.103, vpn 10.66.0.2, local 172.17.0.6 / 100.88.1.5, none reachable from this Mac), published 0.0.0.0:64911
+# date: 2026-11-07. Real computer name, addresses, tailnet name and network ID replaced by placeholders; pairing codes replaced by their length.
+
+## 1. Added at http://<lan address>:64911 ("Linux Test Node"), its window › Phone Setup
+ms tab click → ready: 2079  (its own four candidates time out at 2 s, in parallel; QR-004)
+Same Wi-Fi or LAN Recommended: ready=True selected=true
+Tailscale: ready=False selected=false
+Your VPN: ready=False selected=false
+Company address: ready=False selected=false
+status: "This computer is on a Wi-Fi or LAN network."  question: "Allow phones on this network? Fine for home and office networks. Not for public Wi-Fi. This network. We ask once for each network."  button: {'text': 'Turn on, allow and show QR code', 'disabled': False}
+  GET http://<lan address>:64911/rest/remote-access/status 200
+  GET http://127.0.0.1:49411/rest/remote-access/status 200
+  GET http://127.0.0.1:49817/rest/remote-access/status 200
+  GET http://127.0.0.1:49816/rest/remote-access/status 200
+  GET http://<lan address>:64911/rest/remote-access/settings 200
+  GET http://<lan address>:64911/rest/remote-access/devices 200
+  GET http://<lan address>:64911/rest/remote-access/status 200
+  GET http://<lan address>:64911/rest/remote-access/devices/revoked 200
+  GET http://<lan address>:64911/rest/remote-access/network 200
+  GET http://<lan address>:64911/rest/remote-access/status 200
+-> only the address the desktop uses for it (classified as the local network) answers with its node ID
+
+## 2. "Turn on, allow and show QR code"
+ms click → QR: 198   line "Works on this network"
+  → PUT http://<lan address>:64911/rest/remote-access/settings
+  ← PUT http://<lan address>:64911/rest/remote-access/settings 200
+  → PUT http://<lan address>:64911/rest/remote-access/network/local-networks/gw_3cfe72a56fd965c0
+  ← PUT http://<lan address>:64911/rest/remote-access/network/local-networks/gw_3cfe72a56fd965c0 200
+  → POST http://<lan address>:64911/rest/remote-access/pairing-sessions
+  ← POST http://<lan address>:64911/rest/remote-access/pairing-sessions 201 {"requestBody":{"serverBaseUrl":"http://<lan address>:64911","serverName":"Linux Test Node","connectionWay":"local_network","trustedPrivateHttpAcknowledged":true},"sessionId":"pss_1c67358f172af69d95895da38075fbc6","payload":{"version":1,"serverBaseUrl":"http://<lan address>:64911","pairingCode":"<code 24 chars>","expiresAt":"2026-11-07T09:50:11.883Z","serverName":"Linux Test Node"},"mobileUrlBase":"http://<lan address>:64911/mobile"}
+-> the allow answer is kept by the remote node itself: its allowed-local-networks.json = {"networkIds": ["gw_3cfe72a56fd965c0"]}
+
+## 3. Company address tab: typed address of ANOTHER node (the embedded node, http://<lan address>:49411) (DEC-022)
+  (tab change: → DELETE …:64911/…/pairing-sessions/pss_1c67… 204)
+  → GET http://<lan address>:49411/rest/remote-access/status 200 (another node ID)
+  shown: "This address doesn’t reach Linux Test Node."   QR: none
+
+## 4. Company address tab: typed address of this node, http://<lan address>:64911 (DEC-021)
+  → GET …:64911/rest/remote-access/status 200; → POST …:64911/rest/remote-access/pairing-sessions 201
+  request {"serverBaseUrl":"http://<lan address>:64911","serverName":"Linux Test Node","connectionWay":"company_address","trustedPrivateHttpAcknowledged":true}
+  line: "Works through the address you entered (http://<lan address>:64911)"
+
+## 5. Nothing checkable: the same node removed and added again through a loopback forward, http://127.0.0.1:64911 ("Tunnelled Linux Node"; not in a container, so a remote node)
+ms tab click → ready: 2090
+blocked: None
+Same Wi-Fi or LAN: ready=False selected=false
+Tailscale: ready=False selected=true
+Your VPN: ready=False selected=false
+Company address: ready=False selected=false
+Tailscale: "Not set up yet." button {'text': 'Show QR code', 'disabled': True}
+Company address: "Not set up yet." field "Enter the address your IT gave you" + "Use this address"
+Same Wi-Fi or LAN: "This computer isn’t on a Wi-Fi or LAN network." (disabled)   Your VPN: "No VPN found on this computer. Connect it, then Check again." (disabled)
+  GET http://127.0.0.1:64911/rest/remote-access/status 200
+  GET http://127.0.0.1:49411/rest/remote-access/status 200
+  GET http://127.0.0.1:49817/rest/remote-access/status 200
+  GET http://127.0.0.1:49816/rest/remote-access/status 200
+  GET http://127.0.0.1:64911/rest/remote-access/devices 200
+  GET http://127.0.0.1:64911/rest/remote-access/devices/revoked 200
+  GET http://127.0.0.1:64911/rest/remote-access/settings 200
+  GET http://127.0.0.1:64911/rest/remote-access/status 200
+  GET http://127.0.0.1:64911/rest/remote-access/network 200
+-> AC-005 alternate. Copy observation: for a remote node these not-ready lines speak of "this computer" (follow-ups.md FU-004)

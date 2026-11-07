@@ -283,6 +283,7 @@ describe("node desktop routes", () => {
 
   async function pairPhone(deviceName: string): Promise<PairingExchangeResult> {
     const session = (await inject("POST", "/rest/remote-access/pairing-sessions", {
+      connectionWay: "tailscale",
       serverBaseUrl: "https://desktop.tailnet.ts.net/mobile",
       serverName: "AutoByteus Desktop",
     })).json() as CreatePairingSessionResult;

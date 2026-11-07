@@ -439,6 +439,7 @@ describe('MarkdownRenderer', () => {
         deviceId: 'device-1',
         displayName: 'Phone',
         clientFacingBaseUrl: 'http://node.example',
+        connectionWay: null,
         createdAt: '2026-07-12T00:00:00.000Z',
         lastSeenAt: null,
         revokedAt: null,

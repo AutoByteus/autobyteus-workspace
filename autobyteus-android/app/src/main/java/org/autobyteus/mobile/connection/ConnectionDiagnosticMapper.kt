@@ -4,47 +4,54 @@ import java.io.IOException
 import java.net.SocketTimeoutException
 import javax.net.ssl.SSLException
 
+/** Why the Can't reach screen shows, in the approved design's plain words. */
+enum class CantReachReason(val canRetry: Boolean, val offersTailscale: Boolean) {
+    /** Nothing answered at the address: not on the same network, and no Tailscale. */
+    NoSharedNetwork(canRetry = true, offersTailscale = true),
+    /** The address answered with an error: the node is asleep or not serving. */
+    NoAnswer(canRetry = true, offersTailscale = false),
+    PhoneAccessOff(canRetry = true, offersTailscale = false),
+    /** A typed address that could not be read. */
+    AddressNotUsable(canRetry = false, offersTailscale = false),
+    NotAnAutoByteusCode(canRetry = false, offersTailscale = false),
+}
+
 object ConnectionDiagnosticMapper {
+    /** The body under "Can't reach <node>". */
+    fun cantReachText(reason: CantReachReason, nodeName: String): String = when (reason) {
+        CantReachReason.NoSharedNetwork -> "Connect to the same Wi-Fi or VPN as the computer, or turn on Tailscale."
+        CantReachReason.NoAnswer -> "$nodeName didn’t answer. Check that the computer is on and awake."
+        CantReachReason.PhoneAccessOff -> "$nodeName is reachable, but Phone access is off."
+        CantReachReason.AddressNotUsable -> "Check the address and try again."
+        CantReachReason.NotAnAutoByteusCode -> "That isn’t an AutoByteus QR code."
+    }
+
+    fun cantReachReasonFor(diagnostic: ConnectionDiagnostic): CantReachReason = when (diagnostic.kind) {
+        ConnectionFailureKind.NetworkUnreachable -> CantReachReason.NoSharedNetwork
+        ConnectionFailureKind.PhoneAccessDisabled -> CantReachReason.PhoneAccessOff
+        ConnectionFailureKind.InvalidUrl, ConnectionFailureKind.HttpNeedsAcknowledgement -> CantReachReason.AddressNotUsable
+        else -> CantReachReason.NoAnswer
+    }
+
     fun invalidUrl(message: String): ConnectionDiagnostic = ConnectionDiagnostic(
         kind = ConnectionFailureKind.InvalidUrl,
-        title = "Check the AutoByteus URL",
+        title = "Check the address",
         message = message,
-        recoveryAction = "Use a stable Tailscale Serve, MagicDNS, LAN, or private-network URL that reaches the desktop node.",
-    )
-
-    fun cameraPermissionDenied(): ConnectionDiagnostic = ConnectionDiagnostic(
-        kind = ConnectionFailureKind.InvalidUrl,
-        title = "Camera permission is needed",
-        message = "AutoByteus needs camera permission to scan the Phone Access QR.",
-        recoveryAction = "Grant camera permission and scan again, or paste/manual-enter the Phone Access link text.",
-    )
-
-    fun qrScanCanceled(): ConnectionDiagnostic = ConnectionDiagnostic(
-        kind = ConnectionFailureKind.InvalidUrl,
-        title = "QR scan was not completed",
-        message = "No QR text was returned from the scanner.",
-        recoveryAction = "Scan the Phone Access QR again, or paste/manual-enter the Phone Access link text.",
-    )
-
-    fun qrScanUnavailable(): ConnectionDiagnostic = ConnectionDiagnostic(
-        kind = ConnectionFailureKind.InvalidUrl,
-        title = "QR scanner could not start",
-        message = "The in-app QR scanner could not start on this device.",
-        recoveryAction = "Try Scan QR again after checking camera permission, or paste/manual-enter the Phone Access link text.",
+        recoveryAction = "Check the address and try again.",
     )
 
     fun httpNeedsAcknowledgement(url: String): ConnectionDiagnostic = ConnectionDiagnostic(
         kind = ConnectionFailureKind.HttpNeedsAcknowledgement,
-        title = "HTTP needs explicit acknowledgement",
-        message = "$url uses cleartext HTTP. Prefer Tailscale Serve HTTPS for travel. Continue with HTTP only for a private LAN or tailnet you trust.",
-        recoveryAction = "Tick the HTTP acknowledgement box or switch to an https:// Tailscale Serve URL.",
+        title = "This address has no extra protection",
+        message = "$url has no extra protection. Fine at home or in your office; on public Wi-Fi, use Tailscale.",
+        recoveryAction = "Tick the box to use it.",
     )
 
-    fun phoneAccessDisabled(serverName: String? = null): ConnectionDiagnostic = ConnectionDiagnostic(
+    fun phoneAccessDisabled(nodeName: String? = null): ConnectionDiagnostic = ConnectionDiagnostic(
         kind = ConnectionFailureKind.PhoneAccessDisabled,
-        title = "Phone Access is disabled",
-        message = "${serverName ?: "This AutoByteus node"} is reachable, but Phone Access is off.",
-        recoveryAction = "Open AutoByteus on the desktop, go to Nodes -> Phone Setup, enable Phone Access, then retry.",
+        title = "Phone access is off",
+        message = "${nodeName ?: "This AutoByteus node"} is reachable, but Phone access is off.",
+        recoveryAction = "On your computer, open Nodes › Phone Setup and turn Phone access on, then retry.",
     )
 
     fun fromHttpStatus(statusCode: Int): ConnectionDiagnostic = when (statusCode) {
@@ -52,13 +59,13 @@ object ConnectionDiagnosticMapper {
             kind = ConnectionFailureKind.AuthRequired,
             title = "Pair this phone again",
             message = "The node rejected the current mobile credential.",
-            recoveryAction = "Reset the saved node in this app, create a fresh Phone Access QR/link on desktop, and pair again.",
+            recoveryAction = "Remove the node in this app, show a new QR code on your computer, and scan it again.",
         )
         403 -> ConnectionDiagnostic(
             kind = ConnectionFailureKind.DeviceRevoked,
             title = "Phone credential was rejected",
-            message = "Phone Access may be disabled or this phone may have been revoked on the desktop node.",
-            recoveryAction = "Enable Phone Access or revoke/re-pair from the desktop Phone Access card.",
+            message = "Phone access may be off, or this phone may have been revoked on the computer.",
+            recoveryAction = "Turn Phone access on, or show a new QR code on your computer and scan it again.",
         )
         else -> ConnectionDiagnostic(
             kind = ConnectionFailureKind.WebViewLoadFailed,

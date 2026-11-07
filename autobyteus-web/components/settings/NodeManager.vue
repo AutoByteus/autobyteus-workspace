@@ -43,9 +43,7 @@
         aria-labelledby="node-manager-tab-phoneSetup"
         data-testid="node-manager-panel-phoneSetup"
       >
-        <PhoneSetupGuideCard />
-
-        <PhoneAccessCard />
+        <PhonesPanel />
       </div>
       <div
         v-else-if="activeTab === 'dockerGuide'"
@@ -76,8 +74,7 @@ import NodeManagerTabs from '~/components/settings/NodeManagerTabs.vue';
 import MemorySyncCard from '~/components/settings/MemorySyncCard.vue';
 import NodeList from '~/components/settings/nodes/NodeList.vue';
 import ThisNodeCard from '~/components/settings/nodes/ThisNodeCard.vue';
-import PhoneAccessCard from '~/components/settings/PhoneAccessCard.vue';
-import PhoneSetupGuideCard from '~/components/settings/PhoneSetupGuideCard.vue';
+import PhonesPanel from '~/components/settings/phone/PhonesPanel.vue';
 import { useLocalization } from '~/composables/useLocalization';
 import { useNodeStore } from '~/stores/nodeStore';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';

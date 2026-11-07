@@ -1,0 +1,24 @@
+# IMP-10 Android app on an emulator against the same isolated test node
+# steps: assembleDebug of d92d94472f (ScanScreen layout fix included); emulator autobyteus277_api35 (Android 15, WebView 124), headless;
+#        adb install, pm clear; codes made with POST /pairing-sessions on the test node; ACTION_SEND text into the app
+# Screenshots in this folder carry no real name or address (the node sheet screenshot showed a real LAN address and is not kept).
+1. First launch (IMP-10-android-first-launch.png): "AutoByteus", "Scan the QR code on your computer",
+   "On your computer, open Nodes › Phone Setup and press Show QR code." (DEC-024), "Other ways to connect", "Scan".
+2. Shared pairing link (DEC-023), cold start: "Connecting to Test Node" -> page paired at once, no checkbox, no name field;
+   run list "Test Node, Connected"; test node device displayName = the emulator's model name, connectionWay local_network.
+   -> confirms the androidx.webkit listener accepts an http://<IPv4>:<port> origin rule and the bridge hello/paired round trip.
+3. Node sheet in the app: "Connected", "Check connection", "Switch node 1 node on this phone", "Unpair from Test Node" (VIS-029).
+4. Switch node (IMP-10-android-switch-node.png): back arrow, "Switch node", "Test Node, Online, current node" with check, Scan (VIS-028);
+   system Back -> the page again.
+5. Consumed code shared (IMP-10-android-page-code-already-used.png): "Can’t reach Used Code Node",
+   "This code was already used. Make a new one on your computer.", Scan again; saved nodes still only "Test Node".
+6. Type an address (IMP-10-android-type-address-http.png): http:// shows "This address has no extra protection. Fine at home or in
+   your office; on public Wi-Fi, use Tailscale." (DEC-017), Connect disabled until ticked.
+7. Unreachable typed address (IMP-10-android-cant-reach.png): "Can’t reach 192.168.77.250",
+   "Connect to the same Wi-Fi or VPN as the computer, or turn on Tailscale.", Open Tailscale, Retry, Scan again (VIS-027).
+8. Scanner (IMP-10-android-scanner.png): dark header with back arrow and "Scan", brackets over the camera, hint in a dark bar
+   (first build drew header/hint over the camera image, unreadable on a bright scene; fixed). Emulator virtual scene, no QR decode tried.
+9. App start with a saved node opens it directly (REQ-012); Back from a page with no history -> the node list.
+Observed: one ANR on the first cold start right after emulator boot, main thread in HardwareRenderer.destroyHardwareResources during
+activity stop (framework render thread, no app frame); not reproduced afterwards.
+Observed (pre-existing, unchanged): `am start` SEND to the already-running activity does not reach onNewIntent (standard launch mode).
