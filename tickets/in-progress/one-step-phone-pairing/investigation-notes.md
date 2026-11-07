@@ -11,9 +11,9 @@
 - Finalization target remote / branch: `origin` / `personal` (RELEASE.md, Finalization Target)
 - Bootstrap result: worktree created from the fetched base; no blocker
 - Bootstrap blocker: None
-- Current solution revision ID: `SR-001`
+- Current solution revision ID: `SR-012`
 - Authorities read (requirements reading gate; 2026-11-07): `references/requirements-engineering.md`, `references/finding-the-cause.md`, `references/ticket-scope.md`; templates for requirements, investigation notes and solution revision record
-- Investigation status: requirements investigation complete for SR-001; architecture investigation not started (it follows approval)
+- Investigation status: requirements and architecture investigation complete (SR-012)
 
 ## Initial Request And Clarifications
 
@@ -55,6 +55,14 @@
 | 2026-11-07 | Doc | `tickets/done/phone-setup-lan-qr/requirements.md`, `tickets/done/android-pairing-security-hardening/requirements.md` | Why the HTTP acknowledgement exists | E-17: home-network HTTP was restored as an explicit trusted-network path with acknowledgement on the desktop and the existing Android acknowledgement; Docker node QR creation was made to require a manually entered phone-facing URL because candidates inside the container are not reachable | — |
 | 2026-11-07 | Doc | `tickets/done/android-keep-page-on-rotation/follow-ups.md` FU-002 (in autobyteus-409) | The PM's "QR-scan address clearing" | E-18: cancelling a scan clears the typed address on the connection screen. A scan-first screen with the address field moved to "Other ways" changes this screen | Coordinate with 409 |
 | 2026-11-07 | Doc | `tickets/done/android-apk-build-and-download/requirements.md` | How a fresh phone gets the app | E-19: the APK is published on GitHub Releases and offered on the AutoByteus website; the node does not serve it | — |
+| 2026-11-07 | Command | `route -n get default`; `arp -n <gateway>` (macOS, no sudo; values not recorded) | Recognise a local network without a permission | E-20 (Measured): gateway and its hardware address readable | — |
+| 2026-11-07 | Runtime | `node -e os.networkInterfaces()` (addresses redacted) | Tell Tailscale/VPN from Wi-Fi | E-21 (Measured): Tailscale on `utun5` in `100.64/10` with no hardware address; Wi-Fi `en0` with one | Linux bridges have hardware addresses: exclude by name |
+| 2026-11-07 | Command | `scutil --get ComputerName` | Name for the desktop node (DEC-016) | E-22 (Measured): readable | — |
+| 2026-11-07 | Code | `grep` readers of status `serverName`, `address-candidates`, server-addressing service | Derived consumers | E-23: `serverName` read by Android `MainActivity.kt:169`, `ConnectionValidator.kt:57`, web `MobilePairedShell.vue:126`, iOS `ConnectionValidator.swift:30` (default when absent); candidates route read only by `phoneAccessStore.ts:121,156`; server-addressing service also used by `api/graphql/types/memory-sync.ts:80`, `remote-collaboration-settings.ts:121` | — |
+| 2026-11-07 | Runtime | `curl http://<tailnet-ip>:{8001,8003}/rest/remote-access/status` | Docker nodes over Tailscale | E-24 (Measured): both 200 | — |
+| 2026-11-07 | Code | `remote-access-settings-service.ts:17-28`, `stores/remote-access-settings-store.ts` | Where to keep allowed networks | E-25: `setPhoneAccessEnabled` writes a whole new settings object (would drop other fields) | Separate file |
+| 2026-11-07 | Code | `api/security/remote-access-route-policy.ts:77-86` | New owner routes | E-26: owner routes listed by path | — |
+| 2026-11-07 | Code | `autobyteus-web/types/node.ts:5` | Is a Docker node known as such? | E-27: `NodeType = 'embedded' \| 'remote'`; a local Docker node is a remote entry with a loopback base URL | Detect by `runsInContainer` + loopback |
 
 ## Relevant Existing Behavior And Supported Product Paths
 
@@ -154,7 +162,11 @@
 
 ## Product Design Findings
 
-- Requested 2026-11-07; awaiting the Product Team's result.
+- Product Design package: `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/one-step-phone-pairing/` (`ui-ux-spec.md`, `product-ticket.md`, `visual-references/VIS-001…034`).
+- UI reference: design repository root, revision `d2e960cc`; record `34677c88` on `personal` = `origin/personal`; runbook section "one-step-phone-pairing".
+- User confirmation: "if things are consistant. then i approve" (2026-11-07).
+- Journeys validated: UXJ-001…008. Mocked: detection, network identity, scanning/connecting timeline, phones and nodes.
+- Open items the spec listed, settled by the Solution Designer: DEC-004 (once per network), DEC-016 (computer name), DEC-017 (typed http wording), DEC-018 (Unpair label); the Advanced command stays (DEC-002 A).
 
 ## Supplemental Artifact Inventory
 

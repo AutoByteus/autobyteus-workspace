@@ -15,6 +15,7 @@
 | SR-009 | Requirements | The user: separate tabs per network type, 2026-11-07 | N/A | Ready for Approval | Ready for Approval | REQ-022 (new), DEC-015; REQ-001/005/020/021 superseded in layout | Four tabs, best ready one pre-selected |
 | SR-010 | Requirements | The user on "Turn off phone access", 2026-11-07 | N/A | Ready for Approval | Ready for Approval | REQ-023 (new) | Header switch per node; Other options removed; no Wi-Fi name |
 | SR-011 | Mixed | Product Design Completed, approved by the user (spec rev d2e960cc / record 34677c88) | N/A | Ready for Approval | Approved | All; DEC-004, DEC-016…018 | Requirements approved; architecture design starts |
+| SR-012 | Design | Architecture design | N/A | N/A (no design) | Design Ready; user approval of the design pending | DEC-019…021; REQ-009, REQ-010 wording | design-spec.md; Large / High |
 
 ## Revision Entries
 
@@ -120,3 +121,13 @@
 - IDs affected: DEC-004 recorded as once per network (delegated by the user, built and approved in the design); DEC-016 (desktop node shown under the computer's name), DEC-017 (calm wording for a typed http address), DEC-018 ("Unpair from <node name>") settle the spec's open items
 - Approval: requirements `Approved` at SR-011: the user's design approval plus the Solution Designer within his direction; user informed 2026-11-07
 - Next action: architecture investigation and design-spec.md
+
+### SR-012 — Architecture design
+
+- Phase: Design (with three technical requirement simplifications, no visible change)
+- Trigger: requirements approved at SR-011
+- Evidence added: E-20…E-27 (gateway identity, interface kinds, computer name measured on macOS; readers; settings write; route policy; node types)
+- Requirement edits: DEC-019 (one checked address per code; payload unchanged; supersedes DEC-006), DEC-020 (network ID from the router's hardware address), DEC-021 (typed company http address is the user's explicit choice); REQ-009, REQ-010 wording
+- Design: design-spec.md; task_size Large, architectural_risk High
+- Follow-ups: FU-003 added
+- Next action: ask the user to approve the plan (the Task requires it before building); then route by the handoff rules (Large/High → architecture review)
