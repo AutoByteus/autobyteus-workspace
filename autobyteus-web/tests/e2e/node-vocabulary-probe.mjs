@@ -95,7 +95,7 @@ const runCase = async (id, fn) => {
 const root = realpathSync(mkdtempSync(path.join(os.tmpdir(), 'node-vocabulary-probe-')));
 const children = new Set();
 
-const serverAt = async (name, port) => {
+const serverAt = async (name, port, allowedOrigin) => {
   const dataDir = path.join(root, name, 'data');
   const home = path.join(root, name, 'home');
   await fs.mkdir(dataDir, { recursive: true });
@@ -108,7 +108,7 @@ const serverAt = async (name, port) => {
     const child = spawn(process.execPath, [appEntry, '--host', '127.0.0.1', '--port', String(port), '--data-dir', dataDir], {
       cwd: serverDir, stdio: ['ignore', 'pipe', 'pipe'],
       env: { PATH: process.env.PATH, HOME: home, TMPDIR: process.env.TMPDIR ?? os.tmpdir(), APP_ENV: 'test', LOG_LEVEL: 'WARN',
-        HTTP_ACCESS_LOG_MODE: 'off', AUTOBYTEUS_SERVER_HOST: baseUrl } });
+        HTTP_ACCESS_LOG_MODE: 'off', AUTOBYTEUS_SERVER_HOST: baseUrl, AUTOBYTEUS_ALLOWED_ORIGINS: allowedOrigin } });
     child.stdout.pipe(log); child.stderr.pipe(log);
     child.once('close', () => log.end());
     children.add(child);
@@ -157,7 +157,11 @@ await fs.mkdir(outputDir, { recursive: true });
 try {
   assert(existsSync(appEntry), 'Build the worktree server first: pnpm -C autobyteus-server-ts build');
   assert(lanAddress, 'A LAN IPv4 address is needed for the phone pairing');
-  const [alpha, beta] = await Promise.all([serverAt('alpha', await freePort()), serverAt('beta', await freePort())]);
+  // The window is served on the LAN address, so the browser reaches beta from that origin: the nodes allow it the way a
+  // user allows a browser window on another origin (`AUTOBYTEUS_ALLOWED_ORIGINS`; the origin gate of autobyteus-403).
+  const frontendPort = await freePort();
+  const frontendUrl = `http://${lanAddress}:${frontendPort}`;
+  const [alpha, beta] = await Promise.all([serverAt('alpha', await freePort(), frontendUrl), serverAt('beta', await freePort(), frontendUrl)]);
 
   // Earlier use, through the servers' own APIs: peers both ways; beta syncs its memory into alpha's hub.
   for (const node of [alpha, beta]) await node.gql('mutation{setRemoteCollaborationEnabled(enabled:true){enabled}}');
@@ -185,8 +189,6 @@ try {
   assert(betaStatus.status === 503 && betaStatus.body?.code === 'NODE_IDENTITY_NOT_MIGRATED', `beta is held back: ${JSON.stringify(betaStatus)}`);
 
   // Phone access: a real pairing for the phone shell's released session.
-  const frontendPort = await freePort();
-  const frontendUrl = `http://${lanAddress}:${frontendPort}`;
   await alpha.rest('PUT', '/remote-access/settings', { phoneAccessEnabled: true });
   const pairing = await alpha.rest('POST', '/remote-access/pairing-sessions', { connectionWay: 'local_network', serverBaseUrl: `${frontendUrl}/mobile`, trustedPrivateHttpAcknowledged: true });
   assert(pairing.status === 201, `pairing session: ${JSON.stringify(pairing)}`);
@@ -259,10 +261,17 @@ try {
     return { lines };
   });
 
+  /**
+   * The Memory page's sources: the source select's options. The page shows the select only for more than one source
+   * (`MemoryHome.vue`, `store.sources.length > 1`, since 44ac4d3344), so a loaded page without it browses this node's
+   * memory alone (`['local']`).
+   */
   const memorySources = async () => {
     await page.goto(`${frontendUrl}/memory`, { waitUntil: 'domcontentloaded' });
-    await page.locator('#memory-source-select').waitFor({ state: 'visible', timeout: 60_000 });
+    await page.locator('[data-test="memory-browse"]').waitFor({ state: 'visible', timeout: 60_000 });
+    await page.locator('#memory-source-select').waitFor({ state: 'visible', timeout: 10_000 }).catch(() => undefined);
     await sleep(1_500);
+    if (!(await page.locator('#memory-source-select').count())) return ['local'];
     return page.locator('#memory-source-select option').evaluateAll(options => options.map(option => option.value));
   };
   const cardLabel = async () => {
