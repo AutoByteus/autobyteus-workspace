@@ -1,0 +1,15 @@
+# Case: API-05 mobile-shell-probe MSP-16 on the BASE phone bundle (expected Fail)
+# Command: pnpm -C autobyteus-web test:e2e:mobile-shell --cases=MSP-16 --output-dir=/tmp/427-runs/API-05-msp16-base
+# Bundle: pnpm -C autobyteus-web build:mobile-web with AgentEventMonitor.vue, useEventMonitorFilePreview.ts, useMobileNavigation.ts checked out from 6225a734a3 (restored to HEAD right after the build); probe file from the API/E2E working tree (committed in this round)
+# Server: autobyteus-server-ts build of 6ccf01c10d (no server change in this ticket)
+# Environment: macOS Darwin 25.5.0, headless Chrome (playwright-core), phone 390x844 touch, probe-owned alpha/beta nodes
+# Date: 2026-11-07
+
+
+> autobyteus@1.5.12-beta.7 test:e2e:mobile-shell /Users/normy/autobyteus_org/autobyteus-worktrees/phone-message-file-reference-open/autobyteus-web
+> node tests/e2e/mobile-shell-probe.mjs --cases=MSP-16 --output-dir=/tmp/427-runs/API-05-msp16-base
+
+[mobile-shell] MSP-16 …
+[mobile-shell] MSP-16 Fail: a tap on the workspace file shows its text in the phone's file viewer
+mobile-shell probe: Fail
+ ELIFECYCLE  Command failed with exit code 1.

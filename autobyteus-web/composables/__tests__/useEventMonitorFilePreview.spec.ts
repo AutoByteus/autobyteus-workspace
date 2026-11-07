@@ -39,10 +39,6 @@ vi.mock('~/stores/fileExplorer', () => ({
   useFileExplorerStore: () => fileExplorerStoreMock,
 }));
 
-vi.mock('~/composables/mobile/useMobileNavigation', () => ({
-  useMobileNavigation: () => mobileNavigationMock,
-}));
-
 vi.mock('~/stores/windowNodeContextStore', () => ({
   useWindowNodeContextStore: () => windowNodeContextStoreMock,
 }));
@@ -69,7 +65,7 @@ vi.mock('~/composables/useLocalization', () => ({
   }),
 }));
 
-const options = () => ({ revealTool: revealToolMock, isOriginCurrent: () => true });
+const options = () => ({ revealTool: revealToolMock, mobileNavigation: null, isOriginCurrent: () => true });
 
 describe('useEventMonitorFilePreview', () => {
   beforeEach(() => {
@@ -227,7 +223,7 @@ describe('preserved mobile containment', () => {
   for (const inside of [true, false]) {
     it(`uses only mapped workspace content on mobile; inside: ${inside}`, async () => {
       mapAbsolutePathToWorkspaceRelativeMock.mockReturnValue(inside ? { workspaceId: 'B', relativePath: 'brief.md' } : null);
-      expect((await useEventMonitorFilePreview({ ...options(), revealTool: null }).openPath(action)).status).toBe(inside ? 'opened' : 'unavailable');
+      expect((await useEventMonitorFilePreview({ ...options(), revealTool: null, mobileNavigation: mobileNavigationMock }).openPath(action)).status).toBe(inside ? 'opened' : 'unavailable');
       expect(fileExplorerStoreMock.openFilePreview).not.toHaveBeenCalled();
       expect(hasTrustedElectronLocalFileCapabilityMock).not.toHaveBeenCalled();
       if (inside) expect(mobileNavigationMock.openFile).toHaveBeenCalledWith({ workspaceId: 'B', path: 'brief.md' });
@@ -271,7 +267,7 @@ describe('bounded reveal acceptance and focus', () => {
       const button = document.createElement('button');
       button.dataset.eventMonitorActiveFileTab = 'true'; document.body.appendChild(button);
       const focus = vi.spyOn(button, 'focus');
-      expect((await useEventMonitorFilePreview({ revealTool: revealToolMock, isOriginCurrent: () => current }).openPath(action)).status).toBe('failed');
+      expect((await useEventMonitorFilePreview({ revealTool: revealToolMock, mobileNavigation: null, isOriginCurrent: () => current }).openPath(action)).status).toBe('failed');
       await new Promise(resolve => setTimeout(resolve, 0));
       expect(focus).not.toHaveBeenCalled(); button.remove();
     });
@@ -281,7 +277,7 @@ describe('bounded reveal acceptance and focus', () => {
     const button = document.createElement('button');
     button.dataset.eventMonitorActiveFileTab = 'true'; document.body.appendChild(button);
     const focus = vi.spyOn(button, 'focus');
-    const launch = useEventMonitorFilePreview({ revealTool: revealToolMock, isOriginCurrent: () => current });
+    const launch = useEventMonitorFilePreview({ revealTool: revealToolMock, mobileNavigation: null, isOriginCurrent: () => current });
     expect((await launch.openPath(action)).status).toBe('opened');
     current = false; await new Promise(resolve => setTimeout(resolve, 0));
     expect(focus).not.toHaveBeenCalled();
