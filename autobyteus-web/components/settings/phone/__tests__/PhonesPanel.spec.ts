@@ -177,7 +177,7 @@ describe('PhonesPanel', () => {
     expect(wrapper.get('[data-testid="phone-tab-vpn"]').attributes('aria-selected')).toBe('true');
     await wrapper.get('[data-testid="phone-tab-vpn"]').trigger('keydown', { key: 'End' });
     expect(wrapper.get('[data-testid="phone-tab-company_address"]').attributes('aria-selected')).toBe('true');
-    expect(wrapper.get('[data-testid="phone-typed-address"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="phone-typed-address"]').exists()).toBe(true);
     wrapper.unmount();
   });
 
