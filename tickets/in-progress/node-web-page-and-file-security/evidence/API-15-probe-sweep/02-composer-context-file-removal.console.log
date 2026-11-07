@@ -1,0 +1,5 @@
+
+> autobyteus@1.5.12-beta.7 test:e2e:composer-context-file-removal /Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/autobyteus-web
+> node tests/e2e/composer-context-file-removal-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/tickets/in-progress/node-web-page-and-file-security/evidence/API-15-probe-sweep/composer-context-file-removal
+
+Composer context-file removal probe: Pass. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/tickets/in-progress/node-web-page-and-file-security/evidence/API-15-probe-sweep/composer-context-file-removal/evidence.json

@@ -1,0 +1,73 @@
+{
+  "ok": true,
+  "step": "api10-viewers",
+  "at": "2026-11-07T21:58:15.868Z",
+  "result": {
+    "report.pdf": {
+      "result": "Pass",
+      "canvases": 2
+    },
+    "sheet.xlsx": {
+      "result": "Pass",
+      "cell": "API10-SHEET-CELL"
+    },
+    "image.png": {
+      "result": "Pass",
+      "naturalWidth": 64
+    },
+    "clip.webm": {
+      "result": "Pass",
+      "readyState": 4,
+      "duration": 2,
+      "width": 160
+    },
+    "sound.wav": {
+      "result": "Pass",
+      "readyState": 4,
+      "duration": 2
+    },
+    "notes.md": {
+      "result": "Pass",
+      "text": true,
+      "imageNaturalWidth": 64
+    },
+    "notes.txt": {
+      "result": "Pass",
+      "text": true
+    },
+    "preview.html": {
+      "result": "Pass",
+      "frameText": "API10 HTML PREVIEW SCRIPT RAN"
+    },
+    "topLevelAttachmentPdf": {
+      "url": "<node>/rest/workspaces/agent_ws_888b22b81fff39e777b9c4adeebcd7c59657d57e7cccbde0ad92c2097ea34346/content?path=docs%2Fattachment.pdf",
+      "doc": {
+        "embeds": [],
+        "contentType": "application/pdf",
+        "bodyChildren": 0
+      },
+      "headers": {
+        "contentType": "application/pdf",
+        "csp": "sandbox allow-scripts",
+        "nosniff": "nosniff"
+      }
+    },
+    "upload": {
+      "fileUrl": "/rest/files/documents/6cdb0dcc-c8d7-4655-a11c-e2145c1a422a.pdf"
+    },
+    "topLevelMediaPdf": {
+      "url": "<node>/rest/files/documents/6cdb0dcc-c8d7-4655-a11c-e2145c1a422a.pdf",
+      "doc": {
+        "embeds": [],
+        "contentType": "application/pdf",
+        "bodyChildren": 0
+      },
+      "headers": {
+        "contentType": "application/pdf",
+        "csp": "sandbox allow-scripts",
+        "nosniff": "nosniff"
+      }
+    },
+    "refusalLines": []
+  }
+}

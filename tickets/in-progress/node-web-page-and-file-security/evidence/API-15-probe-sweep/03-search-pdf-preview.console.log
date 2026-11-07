@@ -1,0 +1,9 @@
+
+> autobyteus@1.5.12-beta.7 test:e2e:search-pdf-preview /Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/autobyteus-web
+> node tests/e2e/search-pdf-preview-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/tickets/in-progress/node-web-page-and-file-security/evidence/API-15-probe-sweep/search-pdf-preview
+
+API-002: Started
+API-002: Pass
+API-003: Started
+API-003: Pass
+{"cases":{"API-002":"Pass","API-003":"Pass"},"cleanup":{"browserClosed":true,"processes":[{"pid":82860,"exitCode":0,"signal":null,"liveGroupMembers":0},{"pid":82516,"exitCode":0,"signal":null,"liveGroupMembers":0}],"fixturePageRemoved":true,"ownedRootRemoved":true,"baseClosed":true,"frontClosed":true}}

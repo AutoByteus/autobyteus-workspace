@@ -1,0 +1,16 @@
+{
+  "ok": true,
+  "step": "api07-app-window",
+  "at": "2026-11-07T21:53:08.726Z",
+  "result": {
+    "rendererUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat",
+    "own": {
+      "status": 200,
+      "hasData": true,
+      "ws": "opened"
+    },
+    "nodesPageStart": "Chat\nAgents\nAgent Teams\nAgent Orgs\nProjects\nSkills\nMemory\nNodes\nIntegrations\nWorkspaces\n\nNo runs in any folder yet\n\nA folder is listed here once it has a run. Start one with Chat and choose its folder.\n\nSettings\nManage Nodes\nMemory Sync\nPhone Setup\nDocker Guide\nNFS Guide\nTHIS NODE\nEmbedded Node\nEmbedded\n\nhttp://127.0.0.1:57277\n\nRemote collaboration\nOff\n\nLet agents on this node work with agents on the nodes you choose below, and let those nodes start this node's shared agents. For a trusted private network only: nodes are not authenticated, and no credential is shared.\n\nOff by default. While it",
+    "refusalLines": 0,
+    "backendUrl": "http://127.0.0.1:57277"
+  }
+}

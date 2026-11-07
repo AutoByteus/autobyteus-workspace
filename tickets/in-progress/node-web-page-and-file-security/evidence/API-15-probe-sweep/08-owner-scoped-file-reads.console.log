@@ -1,0 +1,21 @@
+
+> autobyteus@1.5.12-beta.7 test:e2e:owner-scoped-file-reads /Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/autobyteus-web
+> node tests/e2e/owner-scoped-file-reads-probe.mjs --from-seed /tmp/api416-15-seed-GozQ/owner --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/tickets/in-progress/node-web-page-and-file-security/evidence/API-15-probe-sweep/owner-scoped-file-reads
+
+[2026-11-07T22:31:20.553Z] T-API start: Server time of owner-scoped list and content reads, member run-id reads and a scanning control (AC-010, QR-001, QR-002)
+[2026-11-07T22:31:20.975Z] T-API Pass
+[2026-11-07T22:31:43.424Z] B-001 start: Desktop: a delegated copy's file opens through the hub route (AC-001, REQ-007)
+[2026-11-07T22:31:47.869Z] B-001 Pass
+[2026-11-07T22:31:47.869Z] B-002 start: Desktop: a Team run's configured member and team task agent files open through the team route (AC-002, AC-003, REQ-007)
+[2026-11-07T22:31:54.892Z] B-002 Pass
+[2026-11-07T22:31:54.893Z] B-003 start: Desktop: an Org run's direct agent, member-team member, org-root and member-team task agent files open through the org route (AC-004, AC-005, REQ-007)
+[2026-11-07T22:32:07.525Z] B-003 Pass
+[2026-11-07T22:32:07.525Z] B-004 start: Desktop: a standalone run's own file opens through the run route (AC-006)
+[2026-11-07T22:32:12.481Z] B-004 Pass
+[2026-11-07T22:32:12.481Z] B-005 start: Desktop: a delegated copy's deleted file shows "File not found" through the hub route (AC-001 alternate, REQ-008)
+[2026-11-07T22:32:16.925Z] B-005 Pass
+[2026-11-07T22:32:16.925Z] B-006 start: Mobile (Phone Access): an agent run's file opens in the mobile Artifacts view through the run route (AC-012, REQ-007)
+[2026-11-07T22:32:20.515Z] B-006 Pass
+[2026-11-07T22:32:20.515Z] B-007 start: Mobile (Phone Access): a Team run member's file opens in the mobile Artifacts view through the team route (AC-012, REQ-007)
+[2026-11-07T22:32:23.742Z] B-007 Pass
+{"result":"Pass","cases":{"T-API":"Pass","B-001":"Pass","B-002":"Pass","B-003":"Pass","B-004":"Pass","B-005":"Pass","B-006":"Pass","B-007":"Pass"},"failures":[],"cleanup":{"frontend":{"pid":55737,"status":"terminated","exit":"SIGTERM"},"backend":{"pid":55296,"status":"terminated","exit":0},"dataCopyRemoved":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-QE4IZe"},"evidencePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/tickets/in-progress/node-web-page-and-file-security/evidence/API-15-probe-sweep/owner-scoped-file-reads/evidence.json"}

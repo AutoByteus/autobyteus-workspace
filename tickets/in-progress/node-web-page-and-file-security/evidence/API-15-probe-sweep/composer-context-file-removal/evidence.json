@@ -1,0 +1,1176 @@
+{
+  "startedAt": "2026-11-07T22:26:54.545Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "CF-001": {
+      "result": "Pass",
+      "description": "Universal draft routes over real HTTP: every owner kind, status mapping, traversal, bearer",
+      "details": {
+        "perKind": [
+          {
+            "kind": "agent_draft",
+            "locator": "/rest/drafts/agent-runs/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/context-files/ctx_3bc245799798__notes.txt",
+            "get": 200,
+            "getBytesMatch": true,
+            "delete": 204,
+            "goneAfterDelete": true,
+            "getAfterDelete": 404,
+            "deleteMissing": 204
+          },
+          {
+            "kind": "team_member_draft",
+            "locator": "/rest/drafts/team-runs/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/members/%2Fsquad%2Freviewer/context-files/ctx_6ecda2a32f02__notes.txt",
+            "get": 200,
+            "getBytesMatch": true,
+            "delete": 204,
+            "goneAfterDelete": true,
+            "getAfterDelete": 404,
+            "deleteMissing": 204
+          },
+          {
+            "kind": "org_member_draft",
+            "locator": "/rest/drafts/agent-org-runs/delivery_org_0b87_eae807e1b77e4644990b0fbce31d7fc8/agent-runs/manager_0b87_37bc9f42fb4541ae82b86b9ee6f1f601/context-files/ctx_d74bd8d0e224__notes.txt",
+            "get": 200,
+            "getBytesMatch": true,
+            "delete": 204,
+            "goneAfterDelete": true,
+            "getAfterDelete": 404,
+            "deleteMissing": 204
+          },
+          {
+            "kind": "agent_collaboration_member_draft",
+            "locator": "/rest/drafts/agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_cf374c48890640c282926f152a5e7657/context-files/ctx_9a3c4ef79d2a__notes.txt",
+            "get": 200,
+            "getBytesMatch": true,
+            "delete": 204,
+            "goneAfterDelete": true,
+            "getAfterDelete": 404,
+            "deleteMissing": 204
+          }
+        ],
+        "mapping": [
+          {
+            "method": "GET",
+            "path": "/rest/drafts/team-runs/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/members/no-root/context-files/ctx_a__b.txt",
+            "status": 400,
+            "detail": "AgentTeam address 'no-root' is invalid: a canonical rooted value beginning with '/' is required",
+            "expected": [
+              400
+            ]
+          },
+          {
+            "method": "GET",
+            "path": "/rest/drafts/agent-org-runs/delivery_org_0b87_eae807e1b77e4644990b0fbce31d7fc8/agent-runs/%20padded/context-files/ctx_a__b.txt",
+            "status": 400,
+            "detail": "agentRunId must be a safe non-empty identity.",
+            "expected": [
+              400
+            ]
+          },
+          {
+            "method": "GET",
+            "path": "/rest/drafts/agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/a%2Fb/context-files/ctx_a__b.txt",
+            "status": 400,
+            "detail": "agentRunId must be a safe non-empty identity.",
+            "expected": [
+              400
+            ]
+          },
+          {
+            "method": "GET",
+            "path": "/rest/drafts/agent-runs/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/context-files/%2E%2E%2Fctx_s1__sentinel.txt",
+            "status": 400,
+            "detail": "storedFilename is invalid.",
+            "expected": [
+              400
+            ]
+          },
+          {
+            "method": "GET",
+            "path": "/rest/drafts/agent-runs/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/context-files/..%2F..%2Fcontext_files%2Fctx_s1__sentinel.txt",
+            "status": 400,
+            "detail": "storedFilename is invalid.",
+            "expected": [
+              400
+            ]
+          },
+          {
+            "method": "GET",
+            "path": "/rest/drafts/agent-org-runs/delivery_org_0b87_eae807e1b77e4644990b0fbce31d7fc8/agent-runs/%2E%2E/context-files/ctx_s3__sentinel.txt",
+            "status": 400,
+            "detail": "agentRunId must be a safe non-empty identity.",
+            "expected": [
+              400
+            ]
+          },
+          {
+            "method": "GET",
+            "path": "/rest/drafts/agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/%2E%2E/context-files/ctx_a__b.txt",
+            "status": 400,
+            "detail": "agentRunId must be a safe non-empty identity.",
+            "expected": [
+              400
+            ]
+          },
+          {
+            "method": "GET",
+            "path": "/rest/drafts/agent-org-runs/delivery_org_0b87_eae807e1b77e4644990b0fbce31d7fc8/agent-runs/unknown-member/context-files/ctx_a__b.txt",
+            "status": 404,
+            "detail": "File not found.",
+            "expected": [
+              404
+            ]
+          },
+          {
+            "method": "GET",
+            "path": "/rest/drafts/agent-org-runs/missing-org/agent-runs/manager_0b87_37bc9f42fb4541ae82b86b9ee6f1f601/context-files/ctx_a__b.txt",
+            "status": 404,
+            "detail": "File not found.",
+            "expected": [
+              404
+            ]
+          },
+          {
+            "method": "GET",
+            "path": "/rest/drafts/agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/unknown-child/context-files/ctx_a__b.txt",
+            "status": 404,
+            "detail": "File not found.",
+            "expected": [
+              404
+            ]
+          },
+          {
+            "method": "GET",
+            "path": "/rest/drafts/agent-collaborations/missing-host/agent-runs/release_notes_writer_0b87_cf374c48890640c282926f152a5e7657/context-files/ctx_a__b.txt",
+            "status": 404,
+            "detail": "File not found.",
+            "expected": [
+              404
+            ]
+          },
+          {
+            "method": "GET",
+            "path": "/rest/drafts/unknown-runs/x/context-files/ctx_a__b.txt",
+            "status": 404,
+            "detail": "File not found.",
+            "expected": [
+              404
+            ]
+          },
+          {
+            "method": "GET",
+            "path": "/rest/drafts/agent-runs/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/context-files/../../agent-runs/victim/context-files/ctx_s3__sentinel.txt",
+            "status": 404,
+            "detail": "File not found.",
+            "expected": [
+              404
+            ]
+          },
+          {
+            "method": "GET",
+            "path": "/rest/drafts/agent-runs/../../../context_files/ctx_s2__sentinel.txt",
+            "status": 404,
+            "detail": "File not found.",
+            "expected": [
+              404
+            ]
+          },
+          {
+            "method": "GET",
+            "path": "/rest/drafts/agent-runs/%2E%2E/context-files/ctx_s1__sentinel.txt",
+            "status": 400,
+            "detail": "draftRunId must be a safe non-empty identity.",
+            "expected": [
+              400
+            ]
+          },
+          {
+            "method": "GET",
+            "path": "/rest/drafts/agent-runs/..%2F..%2Fx/context-files/ctx_s2__sentinel.txt",
+            "status": 400,
+            "detail": "draftRunId must be a safe non-empty identity.",
+            "expected": [
+              400
+            ]
+          },
+          {
+            "method": "GET",
+            "path": "/rest/drafts/agent-runs/..%2Fagent-runs%2Fvictim/context-files/ctx_s3__sentinel.txt",
+            "status": 400,
+            "detail": "draftRunId must be a safe non-empty identity.",
+            "expected": [
+              400
+            ]
+          },
+          {
+            "method": "GET",
+            "path": "/rest/drafts/team-runs/..%2Fagent-runs%2Fvictim/members/%2Fsquad%2Freviewer/context-files/ctx_s3__sentinel.txt",
+            "status": 400,
+            "detail": "teamDraftId must be a safe non-empty identity.",
+            "expected": [
+              400
+            ]
+          },
+          {
+            "method": "GET",
+            "path": "/rest/drafts/team-runs/%2E%2E/members/%2Fsquad%2Freviewer/context-files/ctx_s1__sentinel.txt",
+            "status": 400,
+            "detail": "teamDraftId must be a safe non-empty identity.",
+            "expected": [
+              400
+            ]
+          },
+          {
+            "method": "GET",
+            "path": "/rest/runs/%2E%2E/context-files/ctx_s1__sentinel.txt",
+            "status": 400,
+            "detail": "runId must be a safe non-empty identity.",
+            "expected": [
+              400
+            ]
+          },
+          {
+            "method": "GET",
+            "path": "/rest/runs/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/context-files/ctx_a%00.txt",
+            "status": 400,
+            "detail": "storedFilename is invalid.",
+            "expected": [
+              400
+            ]
+          },
+          {
+            "method": "GET",
+            "path": "/rest/drafts/agent-runs/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/context-files/%2E",
+            "status": 400,
+            "detail": "storedFilename is invalid.",
+            "expected": [
+              400
+            ]
+          },
+          {
+            "method": "DELETE",
+            "path": "/rest/drafts/team-runs/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/members/no-root/context-files/ctx_a__b.txt",
+            "status": 400,
+            "detail": "AgentTeam address 'no-root' is invalid: a canonical rooted value beginning with '/' is required",
+            "expected": [
+              400
+            ]
+          },
+          {
+            "method": "DELETE",
+            "path": "/rest/drafts/agent-org-runs/delivery_org_0b87_eae807e1b77e4644990b0fbce31d7fc8/agent-runs/%20padded/context-files/ctx_a__b.txt",
+            "status": 400,
+            "detail": "agentRunId must be a safe non-empty identity.",
+            "expected": [
+              400
+            ]
+          },
+          {
+            "method": "DELETE",
+            "path": "/rest/drafts/agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/a%2Fb/context-files/ctx_a__b.txt",
+            "status": 400,
+            "detail": "agentRunId must be a safe non-empty identity.",
+            "expected": [
+              400
+            ]
+          },
+          {
+            "method": "DELETE",
+            "path": "/rest/drafts/agent-runs/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/context-files/%2E%2E%2Fctx_s1__sentinel.txt",
+            "status": 400,
+            "detail": "storedFilename is invalid.",
+            "expected": [
+              400
+            ]
+          },
+          {
+            "method": "DELETE",
+            "path": "/rest/drafts/agent-runs/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/context-files/..%2F..%2Fcontext_files%2Fctx_s1__sentinel.txt",
+            "status": 400,
+            "detail": "storedFilename is invalid.",
+            "expected": [
+              400
+            ]
+          },
+          {
+            "method": "DELETE",
+            "path": "/rest/drafts/agent-org-runs/delivery_org_0b87_eae807e1b77e4644990b0fbce31d7fc8/agent-runs/%2E%2E/context-files/ctx_s3__sentinel.txt",
+            "status": 400,
+            "detail": "agentRunId must be a safe non-empty identity.",
+            "expected": [
+              400
+            ]
+          },
+          {
+            "method": "DELETE",
+            "path": "/rest/drafts/agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/%2E%2E/context-files/ctx_a__b.txt",
+            "status": 400,
+            "detail": "agentRunId must be a safe non-empty identity.",
+            "expected": [
+              400
+            ]
+          },
+          {
+            "method": "DELETE",
+            "path": "/rest/drafts/agent-org-runs/delivery_org_0b87_eae807e1b77e4644990b0fbce31d7fc8/agent-runs/unknown-member/context-files/ctx_a__b.txt",
+            "status": 404,
+            "detail": "File not found.",
+            "expected": [
+              404
+            ]
+          },
+          {
+            "method": "DELETE",
+            "path": "/rest/drafts/agent-org-runs/missing-org/agent-runs/manager_0b87_37bc9f42fb4541ae82b86b9ee6f1f601/context-files/ctx_a__b.txt",
+            "status": 404,
+            "detail": "File not found.",
+            "expected": [
+              404
+            ]
+          },
+          {
+            "method": "DELETE",
+            "path": "/rest/drafts/agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/unknown-child/context-files/ctx_a__b.txt",
+            "status": 404,
+            "detail": "File not found.",
+            "expected": [
+              404
+            ]
+          },
+          {
+            "method": "DELETE",
+            "path": "/rest/drafts/agent-collaborations/missing-host/agent-runs/release_notes_writer_0b87_cf374c48890640c282926f152a5e7657/context-files/ctx_a__b.txt",
+            "status": 404,
+            "detail": "File not found.",
+            "expected": [
+              404
+            ]
+          },
+          {
+            "method": "DELETE",
+            "path": "/rest/drafts/unknown-runs/x/context-files/ctx_a__b.txt",
+            "status": 404,
+            "detail": "File not found.",
+            "expected": [
+              404
+            ]
+          },
+          {
+            "method": "DELETE",
+            "path": "/rest/drafts/agent-runs/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/context-files/../../agent-runs/victim/context-files/ctx_s3__sentinel.txt",
+            "status": 404,
+            "detail": "File not found.",
+            "expected": [
+              404
+            ]
+          },
+          {
+            "method": "DELETE",
+            "path": "/rest/drafts/agent-runs/../../../context_files/ctx_s2__sentinel.txt",
+            "status": 404,
+            "detail": "File not found.",
+            "expected": [
+              404
+            ]
+          },
+          {
+            "method": "DELETE",
+            "path": "/rest/drafts/agent-runs/%2E%2E/context-files/ctx_s1__sentinel.txt",
+            "status": 400,
+            "detail": "draftRunId must be a safe non-empty identity.",
+            "expected": [
+              400
+            ]
+          },
+          {
+            "method": "DELETE",
+            "path": "/rest/drafts/agent-runs/..%2F..%2Fx/context-files/ctx_s2__sentinel.txt",
+            "status": 400,
+            "detail": "draftRunId must be a safe non-empty identity.",
+            "expected": [
+              400
+            ]
+          },
+          {
+            "method": "DELETE",
+            "path": "/rest/drafts/agent-runs/..%2Fagent-runs%2Fvictim/context-files/ctx_s3__sentinel.txt",
+            "status": 400,
+            "detail": "draftRunId must be a safe non-empty identity.",
+            "expected": [
+              400
+            ]
+          },
+          {
+            "method": "DELETE",
+            "path": "/rest/drafts/team-runs/..%2Fagent-runs%2Fvictim/members/%2Fsquad%2Freviewer/context-files/ctx_s3__sentinel.txt",
+            "status": 400,
+            "detail": "teamDraftId must be a safe non-empty identity.",
+            "expected": [
+              400
+            ]
+          },
+          {
+            "method": "DELETE",
+            "path": "/rest/drafts/team-runs/%2E%2E/members/%2Fsquad%2Freviewer/context-files/ctx_s1__sentinel.txt",
+            "status": 400,
+            "detail": "teamDraftId must be a safe non-empty identity.",
+            "expected": [
+              400
+            ]
+          },
+          {
+            "method": "DELETE",
+            "path": "/rest/drafts/agent-runs/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/context-files/%2E",
+            "status": 400,
+            "detail": "storedFilename is invalid.",
+            "expected": [
+              400
+            ]
+          }
+        ],
+        "rejected": [
+          {
+            "route": "upload",
+            "owner": {
+              "kind": "agent_draft",
+              "draftRunId": "../agent-runs/victim"
+            },
+            "status": 400,
+            "detail": "draftRunId must be a safe non-empty identity."
+          },
+          {
+            "route": "upload",
+            "owner": {
+              "kind": "agent_draft",
+              "draftRunId": ".."
+            },
+            "status": 400,
+            "detail": "draftRunId must be a safe non-empty identity."
+          },
+          {
+            "route": "upload",
+            "owner": {
+              "kind": "agent_draft",
+              "draftRunId": " manager_0b87_8edf0b76a8a94a35825ce56b69731ed5"
+            },
+            "status": 400,
+            "detail": "draftRunId must be a safe non-empty identity."
+          },
+          {
+            "route": "upload",
+            "owner": {
+              "kind": "agent_draft",
+              "draftRunId": "manager_0b87_8edf0b76a8a94a35825ce56b69731ed5",
+              "extra": 1
+            },
+            "status": 400,
+            "detail": "Standalone draft context-file owner has unsupported fields."
+          },
+          {
+            "route": "upload",
+            "owner": {
+              "kind": "team_member_draft",
+              "teamDraftId": "../agent-runs/victim",
+              "memberAddress": "/manager"
+            },
+            "status": 400,
+            "detail": "teamDraftId must be a safe non-empty identity."
+          },
+          {
+            "route": "upload",
+            "owner": {
+              "kind": "team_member_draft",
+              "teamDraftId": "delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9",
+              "memberAddress": "/manager",
+              "extra": 1
+            },
+            "status": 400,
+            "detail": "Team draft context-file owner has unsupported fields."
+          },
+          {
+            "route": "finalize",
+            "owner": {
+              "kind": "agent_draft",
+              "draftRunId": "../agent-runs/victim"
+            },
+            "status": 400,
+            "detail": "draftRunId must be a safe non-empty identity."
+          },
+          {
+            "route": "finalize",
+            "owner": {
+              "kind": "agent_draft",
+              "draftRunId": "victim",
+              "extra": 1
+            },
+            "status": 400,
+            "detail": "Standalone draft context-file owner has unsupported fields."
+          },
+          {
+            "route": "finalize",
+            "owner": {
+              "kind": "team_member_draft",
+              "teamDraftId": "../agent-runs/victim",
+              "memberAddress": "/manager"
+            },
+            "status": 400,
+            "detail": "teamDraftId must be a safe non-empty identity."
+          }
+        ],
+        "snapshotUnchanged": true,
+        "contextFilesChecked": 4,
+        "sentinelState": {
+          "draftRootLevel": true,
+          "appDataLevel": true,
+          "otherOwner": true,
+          "keeperDraft": true
+        },
+        "bearer": {
+          "forgedDelete": 401,
+          "keptAfterForged": true,
+          "bearerDelete": 204,
+          "goneAfterBearer": true
+        }
+      }
+    },
+    "CF-002": {
+      "result": "Pass",
+      "description": "Delegated Agent copy: paste, +, path, ×, Clear All; drafts leave the disk",
+      "details": {
+        "ownerFolder": "agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_cf374c48890640c282926f152a5e7657/context_files",
+        "added": [
+          "agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_cf374c48890640c282926f152a5e7657/context_files/ctx_33ac384c6731__image.png",
+          "agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_cf374c48890640c282926f152a5e7657/context_files/ctx_74c481a42f9c__spec-a.txt",
+          "agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_cf374c48890640c282926f152a5e7657/context_files/ctx_b98cefc3ce69__spec-b.txt"
+        ],
+        "removals": [
+          {
+            "method": "DELETE",
+            "path": "/rest/drafts/agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_cf374c48890640c282926f152a5e7657/context-files/ctx_33ac384c6731__image.png",
+            "status": 204,
+            "failed": "net::ERR_ABORTED"
+          },
+          {
+            "method": "DELETE",
+            "path": "/rest/drafts/agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_cf374c48890640c282926f152a5e7657/context-files/ctx_74c481a42f9c__spec-a.txt",
+            "status": 204,
+            "failed": "net::ERR_ABORTED"
+          },
+          {
+            "method": "DELETE",
+            "path": "/rest/drafts/agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_cf374c48890640c282926f152a5e7657/context-files/ctx_b98cefc3ce69__spec-b.txt",
+            "status": 204,
+            "failed": "net::ERR_ABORTED"
+          },
+          {
+            "method": "DELETE",
+            "path": "/rest/drafts/agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_cf374c48890640c282926f152a5e7657/context-files/ctx_0af8806b917b__image.png",
+            "status": 204,
+            "failed": "net::ERR_ABORTED"
+          }
+        ]
+      }
+    },
+    "CF-003": {
+      "result": "Pass",
+      "description": "Delegated Team-copy member (19.png): paste, +, path, ×, Clear All; drafts leave the disk",
+      "details": {
+        "ownerFolder": "agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_b2d89a2d3c9542bf872ea9ef3c1f95c2/context_files",
+        "added": [
+          "agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_b2d89a2d3c9542bf872ea9ef3c1f95c2/context_files/ctx_200e0ac66ddd__spec-a.txt",
+          "agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_b2d89a2d3c9542bf872ea9ef3c1f95c2/context_files/ctx_b4c5fdc4d451__image.png",
+          "agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_b2d89a2d3c9542bf872ea9ef3c1f95c2/context_files/ctx_de77c80f099d__spec-b.txt"
+        ],
+        "removals": [
+          {
+            "method": "DELETE",
+            "path": "/rest/drafts/agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_b2d89a2d3c9542bf872ea9ef3c1f95c2/context-files/ctx_b4c5fdc4d451__image.png",
+            "status": 204,
+            "failed": "net::ERR_ABORTED"
+          },
+          {
+            "method": "DELETE",
+            "path": "/rest/drafts/agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_b2d89a2d3c9542bf872ea9ef3c1f95c2/context-files/ctx_200e0ac66ddd__spec-a.txt",
+            "status": 204,
+            "failed": "net::ERR_ABORTED"
+          },
+          {
+            "method": "DELETE",
+            "path": "/rest/drafts/agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_b2d89a2d3c9542bf872ea9ef3c1f95c2/context-files/ctx_de77c80f099d__spec-b.txt",
+            "status": 204,
+            "failed": "net::ERR_ABORTED"
+          },
+          {
+            "method": "DELETE",
+            "path": "/rest/drafts/agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_b2d89a2d3c9542bf872ea9ef3c1f95c2/context-files/ctx_6fedf9f13b8c__image.png",
+            "status": 204,
+            "failed": "net::ERR_ABORTED"
+          }
+        ]
+      }
+    },
+    "CF-006": {
+      "result": "Pass",
+      "description": "Regressions: Manager, New chat, Team members, Org direct member, Org team member, Org task agent",
+      "details": {
+        "manager": {
+          "ownerFolder": "agent-runs/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/context_files",
+          "added": [
+            "agent-runs/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/context_files/ctx_51dfb22ee59d__spec-a.txt",
+            "agent-runs/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/context_files/ctx_f86f8affc326__spec-b.txt",
+            "agent-runs/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/context_files/ctx_fc3383cba20e__image.png"
+          ],
+          "removals": [
+            {
+              "method": "DELETE",
+              "path": "/rest/drafts/agent-runs/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/context-files/ctx_fc3383cba20e__image.png",
+              "status": 204,
+              "failed": "net::ERR_ABORTED"
+            },
+            {
+              "method": "DELETE",
+              "path": "/rest/drafts/agent-runs/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/context-files/ctx_51dfb22ee59d__spec-a.txt",
+              "status": 204,
+              "failed": "net::ERR_ABORTED"
+            },
+            {
+              "method": "DELETE",
+              "path": "/rest/drafts/agent-runs/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/context-files/ctx_f86f8affc326__spec-b.txt",
+              "status": 204,
+              "failed": "net::ERR_ABORTED"
+            },
+            {
+              "method": "DELETE",
+              "path": "/rest/drafts/agent-runs/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/context-files/ctx_9c6547a988cd__image.png",
+              "status": 204,
+              "failed": "net::ERR_ABORTED"
+            }
+          ]
+        },
+        "new-chat": {
+          "ownerFolder": "agent-runs/temp-chat-1794090438621-1/context_files",
+          "added": [
+            "agent-runs/temp-chat-1794090438621-1/context_files/ctx_49bca605526b__spec-b.txt",
+            "agent-runs/temp-chat-1794090438621-1/context_files/ctx_51f999bfe0b9__image.png",
+            "agent-runs/temp-chat-1794090438621-1/context_files/ctx_e6e082d1b24c__spec-a.txt"
+          ],
+          "removals": [
+            {
+              "method": "DELETE",
+              "path": "/rest/drafts/agent-runs/temp-chat-1794090438621-1/context-files/ctx_51f999bfe0b9__image.png",
+              "status": 204,
+              "failed": "net::ERR_ABORTED"
+            },
+            {
+              "method": "DELETE",
+              "path": "/rest/drafts/agent-runs/temp-chat-1794090438621-1/context-files/ctx_e6e082d1b24c__spec-a.txt",
+              "status": 204,
+              "failed": "net::ERR_ABORTED"
+            },
+            {
+              "method": "DELETE",
+              "path": "/rest/drafts/agent-runs/temp-chat-1794090438621-1/context-files/ctx_49bca605526b__spec-b.txt",
+              "status": 204,
+              "failed": "net::ERR_ABORTED"
+            },
+            {
+              "method": "DELETE",
+              "path": "/rest/drafts/agent-runs/temp-chat-1794090438621-1/context-files/ctx_e2d3b5aa5d70__image.png",
+              "status": 204,
+              "failed": "net::ERR_ABORTED"
+            }
+          ]
+        },
+        "team-member": {
+          "ownerFolder": "team-runs/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/members/%2Fmanager/context_files",
+          "added": [
+            "team-runs/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/members/%2Fmanager/context_files/ctx_12b01a75fc2f__spec-b.txt",
+            "team-runs/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/members/%2Fmanager/context_files/ctx_32e0c3b93da6__spec-a.txt",
+            "team-runs/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/members/%2Fmanager/context_files/ctx_9ca209e43ccd__image.png"
+          ],
+          "removals": [
+            {
+              "method": "DELETE",
+              "path": "/rest/drafts/team-runs/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/members/%2Fmanager/context-files/ctx_9ca209e43ccd__image.png",
+              "status": 204,
+              "failed": "net::ERR_ABORTED"
+            },
+            {
+              "method": "DELETE",
+              "path": "/rest/drafts/team-runs/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/members/%2Fmanager/context-files/ctx_32e0c3b93da6__spec-a.txt",
+              "status": 204,
+              "failed": "net::ERR_ABORTED"
+            },
+            {
+              "method": "DELETE",
+              "path": "/rest/drafts/team-runs/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/members/%2Fmanager/context-files/ctx_12b01a75fc2f__spec-b.txt",
+              "status": 204,
+              "failed": "net::ERR_ABORTED"
+            },
+            {
+              "method": "DELETE",
+              "path": "/rest/drafts/team-runs/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/members/%2Fmanager/context-files/ctx_295139ed12c8__image.png",
+              "status": 204,
+              "failed": "net::ERR_ABORTED"
+            }
+          ]
+        },
+        "team-worker": {
+          "ownerFolder": "team-runs/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/members/%2Fworker/context_files",
+          "added": [
+            "team-runs/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/members/%2Fworker/context_files/ctx_14e968c521a3__image.png",
+            "team-runs/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/members/%2Fworker/context_files/ctx_70abdabcc322__spec-a.txt",
+            "team-runs/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/members/%2Fworker/context_files/ctx_8010db56f73c__spec-b.txt"
+          ],
+          "removals": [
+            {
+              "method": "DELETE",
+              "path": "/rest/drafts/team-runs/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/members/%2Fworker/context-files/ctx_14e968c521a3__image.png",
+              "status": 204,
+              "failed": "net::ERR_ABORTED"
+            },
+            {
+              "method": "DELETE",
+              "path": "/rest/drafts/team-runs/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/members/%2Fworker/context-files/ctx_70abdabcc322__spec-a.txt",
+              "status": 204,
+              "failed": "net::ERR_ABORTED"
+            },
+            {
+              "method": "DELETE",
+              "path": "/rest/drafts/team-runs/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/members/%2Fworker/context-files/ctx_8010db56f73c__spec-b.txt",
+              "status": 204,
+              "failed": "net::ERR_ABORTED"
+            },
+            {
+              "method": "DELETE",
+              "path": "/rest/drafts/team-runs/delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9/members/%2Fworker/context-files/ctx_9d1bc61b919f__image.png",
+              "status": 204,
+              "failed": "net::ERR_ABORTED"
+            }
+          ]
+        },
+        "org-member": {
+          "ownerFolder": "agent-org-runs/delivery_org_0b87_eae807e1b77e4644990b0fbce31d7fc8/agent-runs/manager_0b87_37bc9f42fb4541ae82b86b9ee6f1f601/context_files",
+          "added": [
+            "agent-org-runs/delivery_org_0b87_eae807e1b77e4644990b0fbce31d7fc8/agent-runs/manager_0b87_37bc9f42fb4541ae82b86b9ee6f1f601/context_files/ctx_218b22d230ff__spec-a.txt",
+            "agent-org-runs/delivery_org_0b87_eae807e1b77e4644990b0fbce31d7fc8/agent-runs/manager_0b87_37bc9f42fb4541ae82b86b9ee6f1f601/context_files/ctx_7470e5599544__spec-b.txt",
+            "agent-org-runs/delivery_org_0b87_eae807e1b77e4644990b0fbce31d7fc8/agent-runs/manager_0b87_37bc9f42fb4541ae82b86b9ee6f1f601/context_files/ctx_def1bf675c79__image.png"
+          ],
+          "removals": [
+            {
+              "method": "DELETE",
+              "path": "/rest/drafts/agent-org-runs/delivery_org_0b87_eae807e1b77e4644990b0fbce31d7fc8/agent-runs/manager_0b87_37bc9f42fb4541ae82b86b9ee6f1f601/context-files/ctx_def1bf675c79__image.png",
+              "status": 204,
+              "failed": "net::ERR_ABORTED"
+            },
+            {
+              "method": "DELETE",
+              "path": "/rest/drafts/agent-org-runs/delivery_org_0b87_eae807e1b77e4644990b0fbce31d7fc8/agent-runs/manager_0b87_37bc9f42fb4541ae82b86b9ee6f1f601/context-files/ctx_218b22d230ff__spec-a.txt",
+              "status": 204,
+              "failed": "net::ERR_ABORTED"
+            },
+            {
+              "method": "DELETE",
+              "path": "/rest/drafts/agent-org-runs/delivery_org_0b87_eae807e1b77e4644990b0fbce31d7fc8/agent-runs/manager_0b87_37bc9f42fb4541ae82b86b9ee6f1f601/context-files/ctx_7470e5599544__spec-b.txt",
+              "status": 204,
+              "failed": "net::ERR_ABORTED"
+            },
+            {
+              "method": "DELETE",
+              "path": "/rest/drafts/agent-org-runs/delivery_org_0b87_eae807e1b77e4644990b0fbce31d7fc8/agent-runs/manager_0b87_37bc9f42fb4541ae82b86b9ee6f1f601/context-files/ctx_95ddbf6e1f64__image.png",
+              "status": 204,
+              "failed": "net::ERR_ABORTED"
+            }
+          ]
+        },
+        "org-team-member": {
+          "ownerFolder": "agent-org-runs/delivery_org_0b87_eae807e1b77e4644990b0fbce31d7fc8/agent-runs/release_notes_writer_0b87_528dc18aa1aa4b4f92b5b75762b5bc21/context_files",
+          "added": [
+            "agent-org-runs/delivery_org_0b87_eae807e1b77e4644990b0fbce31d7fc8/agent-runs/release_notes_writer_0b87_528dc18aa1aa4b4f92b5b75762b5bc21/context_files/ctx_1ca595c9005a__image.png",
+            "agent-org-runs/delivery_org_0b87_eae807e1b77e4644990b0fbce31d7fc8/agent-runs/release_notes_writer_0b87_528dc18aa1aa4b4f92b5b75762b5bc21/context_files/ctx_a141f58ae3f9__spec-a.txt",
+            "agent-org-runs/delivery_org_0b87_eae807e1b77e4644990b0fbce31d7fc8/agent-runs/release_notes_writer_0b87_528dc18aa1aa4b4f92b5b75762b5bc21/context_files/ctx_eddb1aa47f73__spec-b.txt"
+          ],
+          "removals": [
+            {
+              "method": "DELETE",
+              "path": "/rest/drafts/agent-org-runs/delivery_org_0b87_eae807e1b77e4644990b0fbce31d7fc8/agent-runs/release_notes_writer_0b87_528dc18aa1aa4b4f92b5b75762b5bc21/context-files/ctx_1ca595c9005a__image.png",
+              "status": 204,
+              "failed": "net::ERR_ABORTED"
+            },
+            {
+              "method": "DELETE",
+              "path": "/rest/drafts/agent-org-runs/delivery_org_0b87_eae807e1b77e4644990b0fbce31d7fc8/agent-runs/release_notes_writer_0b87_528dc18aa1aa4b4f92b5b75762b5bc21/context-files/ctx_a141f58ae3f9__spec-a.txt",
+              "status": 204,
+              "failed": "net::ERR_ABORTED"
+            },
+            {
+              "method": "DELETE",
+              "path": "/rest/drafts/agent-org-runs/delivery_org_0b87_eae807e1b77e4644990b0fbce31d7fc8/agent-runs/release_notes_writer_0b87_528dc18aa1aa4b4f92b5b75762b5bc21/context-files/ctx_eddb1aa47f73__spec-b.txt",
+              "status": 204,
+              "failed": "net::ERR_ABORTED"
+            },
+            {
+              "method": "DELETE",
+              "path": "/rest/drafts/agent-org-runs/delivery_org_0b87_eae807e1b77e4644990b0fbce31d7fc8/agent-runs/release_notes_writer_0b87_528dc18aa1aa4b4f92b5b75762b5bc21/context-files/ctx_f3754241c949__image.png",
+              "status": 204,
+              "failed": "net::ERR_ABORTED"
+            }
+          ]
+        },
+        "org-task-agent": {
+          "ownerFolder": "agent-org-runs/delivery_org_0b87_eae807e1b77e4644990b0fbce31d7fc8/agent-runs/release_notes_writer_0b87_02db9c747186465cbdd6eeccc251cb02/context_files",
+          "added": [
+            "agent-org-runs/delivery_org_0b87_eae807e1b77e4644990b0fbce31d7fc8/agent-runs/release_notes_writer_0b87_02db9c747186465cbdd6eeccc251cb02/context_files/ctx_e0a5d59dccb5__spec-a.txt",
+            "agent-org-runs/delivery_org_0b87_eae807e1b77e4644990b0fbce31d7fc8/agent-runs/release_notes_writer_0b87_02db9c747186465cbdd6eeccc251cb02/context_files/ctx_e6ced881d55a__image.png",
+            "agent-org-runs/delivery_org_0b87_eae807e1b77e4644990b0fbce31d7fc8/agent-runs/release_notes_writer_0b87_02db9c747186465cbdd6eeccc251cb02/context_files/ctx_f3a70c114b9f__spec-b.txt"
+          ],
+          "removals": [
+            {
+              "method": "DELETE",
+              "path": "/rest/drafts/agent-org-runs/delivery_org_0b87_eae807e1b77e4644990b0fbce31d7fc8/agent-runs/release_notes_writer_0b87_02db9c747186465cbdd6eeccc251cb02/context-files/ctx_e6ced881d55a__image.png",
+              "status": 204,
+              "failed": "net::ERR_ABORTED"
+            },
+            {
+              "method": "DELETE",
+              "path": "/rest/drafts/agent-org-runs/delivery_org_0b87_eae807e1b77e4644990b0fbce31d7fc8/agent-runs/release_notes_writer_0b87_02db9c747186465cbdd6eeccc251cb02/context-files/ctx_e0a5d59dccb5__spec-a.txt",
+              "status": 204,
+              "failed": "net::ERR_ABORTED"
+            },
+            {
+              "method": "DELETE",
+              "path": "/rest/drafts/agent-org-runs/delivery_org_0b87_eae807e1b77e4644990b0fbce31d7fc8/agent-runs/release_notes_writer_0b87_02db9c747186465cbdd6eeccc251cb02/context-files/ctx_f3a70c114b9f__spec-b.txt",
+              "status": 204,
+              "failed": "net::ERR_ABORTED"
+            },
+            {
+              "method": "DELETE",
+              "path": "/rest/drafts/agent-org-runs/delivery_org_0b87_eae807e1b77e4644990b0fbce31d7fc8/agent-runs/release_notes_writer_0b87_02db9c747186465cbdd6eeccc251cb02/context-files/ctx_6b352f200add__image.png",
+              "status": 204,
+              "failed": "net::ERR_ABORTED"
+            }
+          ]
+        }
+      }
+    },
+    "CF-007": {
+      "result": "Pass",
+      "description": "Pasted foreign draft URL is cloned; removing it keeps the source",
+      "details": {
+        "source": "/rest/drafts/agent-runs/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/context-files/ctx_9bd7873dfc6e__manager-notes.txt",
+        "clone": "agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_b2d89a2d3c9542bf872ea9ef3c1f95c2/context_files/ctx_56d6cfcc736f__manager-notes.txt",
+        "deletes": [
+          {
+            "method": "DELETE",
+            "path": "/rest/drafts/agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_b2d89a2d3c9542bf872ea9ef3c1f95c2/context-files/ctx_56d6cfcc736f__manager-notes.txt",
+            "status": 204,
+            "failed": "net::ERR_ABORTED"
+          },
+          {
+            "method": "DELETE",
+            "path": "/rest/drafts/agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_b2d89a2d3c9542bf872ea9ef3c1f95c2/context-files/ctx_d20761d9b7d6__manager-notes.txt",
+            "status": 204,
+            "failed": "net::ERR_ABORTED"
+          }
+        ]
+      }
+    },
+    "CF-008": {
+      "result": "Pass",
+      "description": "Injected DELETE/upload failure: visible error naming the file, item kept, retry clears",
+      "details": {
+        "removeError": "Couldn't remove spec-a.txt. Simulated server failure.",
+        "clearError": "Couldn't remove spec-b.txt. Disk busy.",
+        "uploadError": "Couldn't attach spec-c.txt. Upload rejected by the server.",
+        "initialFiles": [
+          "ctx_4a00e15cd498__spec-b.txt",
+          "ctx_5d0d06399ce8__spec-a.txt"
+        ],
+        "net": [
+          {
+            "method": "POST",
+            "path": "/rest/context-files/upload",
+            "status": 200
+          },
+          {
+            "method": "POST",
+            "path": "/rest/context-files/upload",
+            "status": 200
+          },
+          {
+            "method": "DELETE",
+            "path": "/rest/drafts/agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_cf374c48890640c282926f152a5e7657/context-files/ctx_5d0d06399ce8__spec-a.txt",
+            "status": 500
+          },
+          {
+            "method": "DELETE",
+            "path": "/rest/drafts/agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_cf374c48890640c282926f152a5e7657/context-files/ctx_5d0d06399ce8__spec-a.txt",
+            "status": 204,
+            "failed": "net::ERR_ABORTED"
+          },
+          {
+            "method": "DELETE",
+            "path": "/rest/drafts/agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_cf374c48890640c282926f152a5e7657/context-files/ctx_4a00e15cd498__spec-b.txt",
+            "status": 500
+          },
+          {
+            "method": "DELETE",
+            "path": "/rest/drafts/agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_cf374c48890640c282926f152a5e7657/context-files/ctx_4a00e15cd498__spec-b.txt",
+            "status": 204,
+            "failed": "net::ERR_ABORTED"
+          },
+          {
+            "method": "POST",
+            "path": "/rest/context-files/upload",
+            "status": 500
+          },
+          {
+            "method": "POST",
+            "path": "/rest/context-files/upload",
+            "status": 200
+          },
+          {
+            "method": "DELETE",
+            "path": "/rest/drafts/agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_cf374c48890640c282926f152a5e7657/context-files/ctx_1c1af74ebf69__spec-c.txt",
+            "status": 204,
+            "failed": "net::ERR_ABORTED"
+          }
+        ]
+      }
+    },
+    "CF-009": {
+      "result": "Pass",
+      "description": "Org task agent while its message is pending: + disabled, paste shows message, path still attaches",
+      "details": {
+        "title": "This agent can't receive uploaded files right now.",
+        "message": "This agent can't receive uploaded files right now.",
+        "pathAccepted": true,
+        "afterSend": {
+          "composerVisible": false,
+          "plusDisabled": null
+        },
+        "afterReselect": {
+          "title": "Upload files",
+          "count": 1
+        },
+        "net": [
+          {
+            "method": "POST",
+            "path": "/rest/context-files/upload",
+            "status": 200
+          },
+          {
+            "method": "POST",
+            "path": "/rest/context-files/finalize",
+            "status": 200
+          }
+        ]
+      }
+    },
+    "CF-011": {
+      "result": "Pass",
+      "description": "+ on the Manager run → New chat → attach → send: temp-chat draft finalized, agent-final file readable",
+      "details": {
+        "draftRunId": "temp-chat-1794090463805-1",
+        "finalLocator": "/rest/runs/manager_0b87_5189579de5bc403ea39636086b822628/context-files/ctx_9a15513e33d2__spec-c.txt",
+        "finalRead": 200,
+        "net": [
+          {
+            "method": "POST",
+            "path": "/rest/context-files/upload",
+            "status": 200
+          },
+          {
+            "method": "POST",
+            "path": "/rest/context-files/finalize",
+            "status": 200
+          }
+        ]
+      }
+    },
+    "CF-012": {
+      "result": "Pass",
+      "description": "+ on a Team run → New chat for the team → attach → send: temp-chat draft finalized, team-member final file readable",
+      "details": {
+        "draftRunId": "temp-chat-1794090465847-1",
+        "finalLocator": "/rest/team-runs/delivery_team_0b87_722a98bd65bc45f6b40b62dcd2b19be0/agent-runs/manager_0b87_5991d48da4644d02995d5cf9cf03a33c/context-files/ctx_95d94c1da009__spec-c.txt",
+        "finalRead": 200,
+        "net": [
+          {
+            "method": "POST",
+            "path": "/rest/context-files/upload",
+            "status": 200
+          },
+          {
+            "method": "POST",
+            "path": "/rest/context-files/finalize",
+            "status": 200
+          }
+        ]
+      }
+    },
+    "CF-004": {
+      "result": "Pass",
+      "description": "Server unreachable during ×: visible error, item kept; retry after it returns",
+      "details": {
+        "stopped": {
+          "pid": 57020,
+          "status": "terminated",
+          "exit": 0
+        },
+        "outageError": "Couldn't remove spec-b.txt. Failed to fetch",
+        "deletes": [
+          {
+            "method": "DELETE",
+            "path": "/rest/drafts/agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_b2d89a2d3c9542bf872ea9ef3c1f95c2/context-files/ctx_c6390db5abfd__spec-b.txt",
+            "failed": "net::ERR_CONNECTION_REFUSED"
+          },
+          {
+            "method": "DELETE",
+            "path": "/rest/drafts/agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_b2d89a2d3c9542bf872ea9ef3c1f95c2/context-files/ctx_c6390db5abfd__spec-b.txt",
+            "status": 204,
+            "failed": "net::ERR_ABORTED"
+          }
+        ]
+      }
+    },
+    "CF-005": {
+      "result": "Pass",
+      "description": "Delegated children after root stop + backend restart + reload",
+      "details": {
+        "terminate": {
+          "success": false,
+          "message": "Agent run not found."
+        },
+        "backendStarts": 3,
+        "agentCopy": {
+          "ownerFolder": "agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_cf374c48890640c282926f152a5e7657/context_files",
+          "added": [
+            "agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_cf374c48890640c282926f152a5e7657/context_files/ctx_585c30f328b4__spec-b.txt",
+            "agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_cf374c48890640c282926f152a5e7657/context_files/ctx_ad215939ffc1__spec-a.txt",
+            "agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_cf374c48890640c282926f152a5e7657/context_files/ctx_d4f4a152494b__image.png"
+          ],
+          "removals": [
+            {
+              "method": "DELETE",
+              "path": "/rest/drafts/agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_cf374c48890640c282926f152a5e7657/context-files/ctx_d4f4a152494b__image.png",
+              "status": 204,
+              "failed": "net::ERR_ABORTED"
+            },
+            {
+              "method": "DELETE",
+              "path": "/rest/drafts/agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_cf374c48890640c282926f152a5e7657/context-files/ctx_ad215939ffc1__spec-a.txt",
+              "status": 204,
+              "failed": "net::ERR_ABORTED"
+            },
+            {
+              "method": "DELETE",
+              "path": "/rest/drafts/agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_cf374c48890640c282926f152a5e7657/context-files/ctx_585c30f328b4__spec-b.txt",
+              "status": 204,
+              "failed": "net::ERR_ABORTED"
+            },
+            {
+              "method": "DELETE",
+              "path": "/rest/drafts/agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_cf374c48890640c282926f152a5e7657/context-files/ctx_313c4019f57a__image.png",
+              "status": 204,
+              "failed": "net::ERR_ABORTED"
+            }
+          ]
+        },
+        "teamCopyMember": {
+          "ownerFolder": "agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_b2d89a2d3c9542bf872ea9ef3c1f95c2/context_files",
+          "added": [
+            "agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_b2d89a2d3c9542bf872ea9ef3c1f95c2/context_files/ctx_69f121c206f1__spec-a.txt",
+            "agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_b2d89a2d3c9542bf872ea9ef3c1f95c2/context_files/ctx_d140446286cc__spec-b.txt",
+            "agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_b2d89a2d3c9542bf872ea9ef3c1f95c2/context_files/ctx_d5cb203ef96c__image.png"
+          ],
+          "removals": [
+            {
+              "method": "DELETE",
+              "path": "/rest/drafts/agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_b2d89a2d3c9542bf872ea9ef3c1f95c2/context-files/ctx_d5cb203ef96c__image.png",
+              "status": 204,
+              "failed": "net::ERR_ABORTED"
+            },
+            {
+              "method": "DELETE",
+              "path": "/rest/drafts/agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_b2d89a2d3c9542bf872ea9ef3c1f95c2/context-files/ctx_69f121c206f1__spec-a.txt",
+              "status": 204,
+              "failed": "net::ERR_ABORTED"
+            },
+            {
+              "method": "DELETE",
+              "path": "/rest/drafts/agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_b2d89a2d3c9542bf872ea9ef3c1f95c2/context-files/ctx_d140446286cc__spec-b.txt",
+              "status": 204,
+              "failed": "net::ERR_ABORTED"
+            },
+            {
+              "method": "DELETE",
+              "path": "/rest/drafts/agent-collaborations/manager_0b87_8edf0b76a8a94a35825ce56b69731ed5/agent-runs/release_notes_writer_0b87_b2d89a2d3c9542bf872ea9ef3c1f95c2/context-files/ctx_e0dcc836a34a__image.png",
+              "status": 204,
+              "failed": "net::ERR_ABORTED"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 57048,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 74694,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [],
+  "stack": {
+    "backendUrl": "http://127.0.0.1:63766",
+    "frontendUrl": "http://127.0.0.1:63767",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ"
+  },
+  "world": {
+    "names": {
+      "manager": "Manager 0b87",
+      "worker": "Release Notes Writer 0b87",
+      "helper": "Fact Checker 0b87",
+      "squad": "Docs Review Team 0b87",
+      "team": "Delivery Team 0b87",
+      "org": "Delivery Org 0b87"
+    },
+    "agentRoot": "manager_0b87_8edf0b76a8a94a35825ce56b69731ed5",
+    "agentCopy": "release_notes_writer_0b87_cf374c48890640c282926f152a5e7657",
+    "teamCopy": {
+      "teamRunId": "docs_review_team_0b87_a5347ce599364f02bca1526bbd529a31",
+      "members": [
+        {
+          "address": "/docs_review_team_0b87/reviewer",
+          "agentRunId": "release_notes_writer_0b87_b2d89a2d3c9542bf872ea9ef3c1f95c2"
+        },
+        {
+          "address": "/docs_review_team_0b87/editor",
+          "agentRunId": "fact_checker_0b87_c86f279bb3584a3a8504c266faa04c22"
+        }
+      ]
+    },
+    "teamCopyCoordinator": {
+      "address": "/docs_review_team_0b87/reviewer",
+      "agentRunId": "release_notes_writer_0b87_b2d89a2d3c9542bf872ea9ef3c1f95c2"
+    },
+    "teamRoot": "delivery_team_0b87_35d86ab3733849baaa2ab6f0636b93b9",
+    "orgRoot": "delivery_org_0b87_eae807e1b77e4644990b0fbce31d7fc8",
+    "orgManager": "manager_0b87_37bc9f42fb4541ae82b86b9ee6f1f601",
+    "orgSquad": "docs_review_team_0b87_127070f9719045e9adfe1def4b92acdf",
+    "orgSquadMember": "release_notes_writer_0b87_528dc18aa1aa4b4f92b5b75762b5bc21",
+    "orgTask": "release_notes_writer_0b87_02db9c747186465cbdd6eeccc251cb02",
+    "workspaceFile": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/composer-context-file-removal-eOY4HZ/workspace/release-checklist.md"
+  },
+  "browserVersion": "156.0.8078.80",
+  "result": "Pass",
+  "finishedAt": "2026-11-07T22:28:07.221Z"
+}

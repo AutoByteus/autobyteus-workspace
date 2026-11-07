@@ -1,0 +1,4 @@
+# API-13 (CDP run): refusal lines in the embedded node log during the dev window session, 2026-11-07T22:24:01Z
+(none)
+# embedded node env:
+AUTOBYTEUS_ALLOWED_ORIGINS=http://localhost:3000

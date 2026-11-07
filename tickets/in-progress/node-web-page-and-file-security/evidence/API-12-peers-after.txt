@@ -1,0 +1,5 @@
+# API-12 peers after the desktop turned collaboration on (GraphQL peerNodes), 2026-11-07T22:05:20Z
+embedded node 127.0.0.1:57277:
+{"data":{"peerNodes":[{"name":"api416-docker","baseUrl":"http://localhost:58235"},{"name":"api416-lan-ip","baseUrl":"http://192.168.2.158:58236"}],"remoteCollaborationCapability":{"enabled":true}}}
+docker node 127.0.0.1:58235:
+{"data":{"peerNodes":[{"name":"Embedded Node","baseUrl":"http://host.docker.internal:57277"}],"remoteCollaborationCapability":{"enabled":true}}}

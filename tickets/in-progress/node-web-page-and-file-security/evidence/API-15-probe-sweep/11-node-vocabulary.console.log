@@ -1,0 +1,15 @@
+
+> autobyteus@1.5.12-beta.7 test:e2e:node-vocabulary /Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/autobyteus-web
+> node tests/e2e/node-vocabulary-probe.mjs --output-dir=/Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/tickets/in-progress/node-web-page-and-file-security/evidence/API-15-probe-sweep/node-vocabulary
+
+[probe] NVP-01 started
+[probe] NVP-01 Pass
+[probe] NVP-02 started
+[probe] NVP-02 Pass
+[probe] NVP-03 started
+[probe] NVP-03 Pass
+[probe] NVP-04 started
+[probe] NVP-04 Pass
+[probe] NVP-05 started
+[probe] result Fail; evidence /Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/tickets/in-progress/node-web-page-and-file-security/evidence/API-15-probe-sweep/node-vocabulary
+ ELIFECYCLE  Command failed with exit code 1.

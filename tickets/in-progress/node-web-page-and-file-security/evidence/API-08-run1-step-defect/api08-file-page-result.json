@@ -1,0 +1,111 @@
+{
+  "ok": false,
+  "step": "api08-file-page",
+  "at": "2026-11-07T21:53:38.267Z",
+  "error": "every form and kind refused with Origin null",
+  "details": {
+    "missing": [
+      "top-fetch",
+      "popup-fetch",
+      "popup-xhr",
+      "popup-ws",
+      "popup-gqlws"
+    ],
+    "matrix": {
+      "top-fetch": {
+        "lines": 0,
+        "refusedOriginNull": false,
+        "page": "status 403"
+      },
+      "top-xhr": {
+        "lines": 1,
+        "refusedOriginNull": true,
+        "page": "status 403"
+      },
+      "top-ws": {
+        "lines": 1,
+        "refusedOriginNull": true,
+        "page": "closed 1006"
+      },
+      "top-gqlws": {
+        "lines": 1,
+        "refusedOriginNull": true,
+        "page": "closed 1006"
+      },
+      "blank-fetch": {
+        "lines": 1,
+        "refusedOriginNull": true,
+        "page": "status 403"
+      },
+      "blank-xhr": {
+        "lines": 1,
+        "refusedOriginNull": true,
+        "page": "status 403"
+      },
+      "blank-ws": {
+        "lines": 1,
+        "refusedOriginNull": true,
+        "page": "closed 1006"
+      },
+      "blank-gqlws": {
+        "lines": 1,
+        "refusedOriginNull": true,
+        "page": "closed 1006"
+      },
+      "srcdoc-fetch": {
+        "lines": 1,
+        "refusedOriginNull": true,
+        "page": "status 403"
+      },
+      "srcdoc-xhr": {
+        "lines": 1,
+        "refusedOriginNull": true,
+        "page": "status 403"
+      },
+      "srcdoc-ws": {
+        "lines": 1,
+        "refusedOriginNull": true,
+        "page": "closed 1006"
+      },
+      "srcdoc-gqlws": {
+        "lines": 1,
+        "refusedOriginNull": true,
+        "page": "closed 1006"
+      },
+      "popup-fetch": {
+        "lines": 0,
+        "refusedOriginNull": false,
+        "page": null
+      },
+      "popup-xhr": {
+        "lines": 0,
+        "refusedOriginNull": false,
+        "page": null
+      },
+      "popup-ws": {
+        "lines": 0,
+        "refusedOriginNull": false,
+        "page": null
+      },
+      "popup-gqlws": {
+        "lines": 0,
+        "refusedOriginNull": false,
+        "page": null
+      }
+    },
+    "lines": [
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=top-xhr origin null",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api08-top?f=top-ws origin null",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=blank-fetch origin null",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=blank-xhr origin null",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=srcdoc-fetch origin null",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=srcdoc-xhr origin null",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=top-gqlws origin null",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api08-blank?f=blank-ws origin null",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=blank-gqlws origin null",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/api08-srcdoc?f=srcdoc-ws origin null",
+      "Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql?f=srcdoc-gqlws origin null"
+    ]
+  },
+  "stack": "Error: every form and kind refused with Origin null\n    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/tickets/in-progress/node-web-page-and-file-security/probes/api-desktop-step.mjs:25:59)\n    at default (file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/tickets/in-progress/node-web-page-and-file-security/probes/desktop-steps/api08-file-page.mjs:43:3)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/tickets/in-progress/node-web-page-and-file-security/probes/api-desktop-step.mjs:47:78"
+}

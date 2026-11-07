@@ -1,0 +1,7 @@
+
+> autobyteus@1.5.12-beta.7 test:e2e:owner-scoped-file-reads /Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/autobyteus-web
+> node tests/e2e/owner-scoped-file-reads-probe.mjs --seed-to /tmp/api416-15-seed-GozQ/owner --unrelated 10
+
+[2026-11-07T22:31:13.384Z] SEED start: Seed hub, Team and Org runs with member files, plus 10 unrelated saved team runs, through public APIs
+[2026-11-07T22:31:17.951Z] SEED Pass
+{"result":"Pass","cases":{"SEED":"Pass"},"failures":[],"cleanup":{"frontend":{"pid":null,"status":"not-running"},"backend":{"pid":52681,"status":"terminated","exit":0}},"evidencePath":"/tmp/api416-15-seed-GozQ/owner-seed-evidence/evidence.json"}
