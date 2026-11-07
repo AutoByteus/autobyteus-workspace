@@ -16,6 +16,7 @@ import integrationsMessages from './integrations';
 import serverMessages from './server.generated';
 import generatedSettingsMessages from './settings.generated';
 import settingsMessages from './settings';
+import phoneSetupRemoteNodeMessages from './phoneSetupRemoteNode';
 import updateNotificationsMessages from './updateNotifications';
 import apiKeySettingsMessages from './api-key-settings';
 import packageMigrationSettingsMessages from './package-migration-settings';
@@ -62,6 +63,7 @@ const zhCnMessages: TranslationCatalog = {
   ...manualServerMessages,
   ...generatedSettingsMessages,
   ...settingsMessages,
+  ...phoneSetupRemoteNodeMessages,
   ...updateNotificationsMessages,
   ...apiKeySettingsMessages,
   ...packageMigrationSettingsMessages,

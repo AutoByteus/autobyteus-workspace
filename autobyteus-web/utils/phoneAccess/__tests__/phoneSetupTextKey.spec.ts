@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import enSettings from '~/localization/messages/en/settings';
-import zhCnSettings from '~/localization/messages/zh-CN/settings';
+import enMessages from '~/localization/messages/en';
+import zhCnMessages from '~/localization/messages/zh-CN';
 import { PHONE_SETUP_TEXT_PREFIX, REMOTE_WORDED_PATHS, phoneSetupTextKey } from '~/utils/phoneAccess/phoneSetupTextKey';
 
 // autobyteus-426 REQ-016 (ARCH-REV-001 AR-002): a rule over an explicit list, never a key-existence lookup.
@@ -14,7 +14,7 @@ describe('phoneSetupTextKey', () => {
   });
 
   it('has the remote line and today\'s line in English and Chinese for every listed path', () => {
-    for (const catalog of [enSettings, zhCnSettings] as Array<Record<string, string>>) {
+    for (const catalog of [enMessages, zhCnMessages] as Array<Record<string, string>>) {
       for (const path of REMOTE_WORDED_PATHS) {
         expect(catalog[`${PHONE_SETUP_TEXT_PREFIX}remote.${path}`], `remote.${path}`).toBeTruthy();
         expect(catalog[`${PHONE_SETUP_TEXT_PREFIX}${path}`], path).toBeTruthy();
@@ -23,7 +23,7 @@ describe('phoneSetupTextKey', () => {
   });
 
   it('names the node in every remote line and keeps "this computer" for the desktop only', () => {
-    const catalog = enSettings as Record<string, string>;
+    const catalog = enMessages as Record<string, string>;
     const nodeNamed = REMOTE_WORDED_PATHS.filter((path) => !['note.vpn', 'how.tailscale.setupStep2'].includes(path));
     for (const path of nodeNamed) expect(catalog[`${PHONE_SETUP_TEXT_PREFIX}remote.${path}`], path).toContain('{{name}}');
   });
