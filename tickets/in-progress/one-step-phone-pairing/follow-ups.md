@@ -1,0 +1,6 @@
+# Follow-ups — one-step-phone-pairing (autobyteus-395)
+
+| ID | Found by (role, document) | What is wrong, where | Evidence | Why it is outside this ticket | Urgent (`Yes`/`No`) | Suggested Task description | Sent (to, date) |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| FU-001 | Solution Designer, requirements-doc DEC-011 | The iOS app does not get the scan-first screen, several addresses in the QR, node names or "Switch node" | `autobyteus-ios` not changed by this ticket; autobyteus-279 paused | iOS work is paused; the QR stays readable where iOS reads the v1 field | No | "iOS app: bring the phone pairing and several-nodes experience of autobyteus-395 to the iOS shell (scan-first screen, address list in the QR, node names, Switch node), and check ATS with HTTP private addresses." | |
+| FU-002 | Solution Designer, requirements-doc DEC-005 | One saved node cannot be used at two addresses (home Wi-Fi and Tailscale) without pairing twice: the credential lives in the page storage of one origin | investigation-notes E-11 | Not needed when the phone has Tailscale (the Tailscale address also works at home); needs native credential storage in the app | No | "Phone: let one paired node be reached at several addresses (Wi-Fi at home, Tailscale away) without re-pairing, by keeping the node's credential in the app per node instead of per page origin." | |
