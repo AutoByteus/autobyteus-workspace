@@ -14,6 +14,7 @@
 | SR-008 | Requirements | The user: one section per network type, more detail, 2026-11-07 | N/A | Ready for Approval | Ready for Approval | REQ-021 | Four cards with When / Setup / Safety; text prepared by the Solution Designer |
 | SR-009 | Requirements | The user: separate tabs per network type, 2026-11-07 | N/A | Ready for Approval | Ready for Approval | REQ-022 (new), DEC-015; REQ-001/005/020/021 superseded in layout | Four tabs, best ready one pre-selected |
 | SR-010 | Requirements | The user on "Turn off phone access", 2026-11-07 | N/A | Ready for Approval | Ready for Approval | REQ-023 (new) | Header switch per node; Other options removed; no Wi-Fi name |
+| SR-011 | Mixed | Product Design Completed, approved by the user (spec rev d2e960cc / record 34677c88) | N/A | Ready for Approval | Approved | All; DEC-004, DEC-016…018 | Requirements approved; architecture design starts |
 
 ## Revision Entries
 
@@ -110,3 +111,12 @@
 - Trigger: the user, 2026-11-07, on "Turn off phone access" in Other options: "feels weird … when do they need to turn off phone access? Is it the global thing …"
 - IDs affected: REQ-023 new. Phone access is per node: a header switch with its meaning; Other options removed. The design's "This network: Home-5G" is dropped because reading the Wi-Fi name on macOS needs the Location permission
 - Sent to the Product Team the same day
+
+### SR-011 — Product design integrated; requirements approved
+
+- Phase and classification: Mixed (requirements approval + Product integration)
+- Trigger: Design Completed from the Product UI/UX Designer (run `product_ui_ux_designer_a1399629bb864a55aecc65bb555fd38b`), 2026-11-07; the user: "if things are consistant. then i approve"
+- Verified: spec status Approved; UI reference revision `d2e960cc`, record `34677c88` (design repository `personal` = `origin/personal`), 34 visual references, runnable entry points and mocked boundaries recorded
+- IDs affected: DEC-004 recorded as once per network (delegated by the user, built and approved in the design); DEC-016 (desktop node shown under the computer's name), DEC-017 (calm wording for a typed http address), DEC-018 ("Unpair from <node name>") settle the spec's open items
+- Approval: requirements `Approved` at SR-011: the user's design approval plus the Solution Designer within his direction; user informed 2026-11-07
+- Next action: architecture investigation and design-spec.md

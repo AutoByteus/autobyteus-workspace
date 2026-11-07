@@ -2,16 +2,22 @@
 
 ## Document Status
 
-- Status: `Ready for Approval` (SR-010; SR-009 before). All decisions settled; approval follows the user's confirmation of the Product design. The user's answers of 2026-11-07 settle DEC-001 and DEC-003; DEC-002 is decided A within his direction; DEC-004 (warning once per computer or never) stays open and is shown in the Product design for his choice. Approval follows the Product design and his confirmation of it.
-- Current solution revision ID: `SR-010`
+- Status: `Approved` (SR-011).
+- Current solution revision ID: `SR-011`
 - Package identifier: `one-step-phone-pairing`
 - Request / ticket: Project Task `autobyteus-395` (Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`); also covers the cancelled `autobyteus-391`
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), for the user
 - Requirements owner: Solution Designer
 - Date: 2026-11-07
-- Approved by and reference: not yet
-- Exact approved requirements baseline: not yet
-- Behavior-defining supplements: the Product Team's UI/UX design, requested 2026-11-07 ([product-design-request.md](product-design-request.md)); not yet approved
+- Approved by and reference:
+  - **The user** approved the UI/UX design on 2026-11-07 in the Product UI/UX Designer's conversation: "if things are consistant. then i approve" (earlier: "Yes, this is much cleaner now."; "Yes, exactly like that."). Node-sheet changes in his words: "Yeah, let's remove it. Make it cleaner. … let's remove pure notes as well" ("peer nodes"). Start button: "the SCan QRCode can be replaced by Scan directly right?".
+  - His decisions in the Solution Designer's conversation (2026-11-07): DEC-001 B, DEC-003, DEC-015 (tabs), the VPN and Windows priority statements, quoted in Decisions.
+  - **The Solution Designer**, within that direction (he left the network choices to it: "you know the best", "you know the different network environments more than me"), approved these requirements at SR-011 with DEC-004 (once per network, as in the approved design) and DEC-016…DEC-018; the user is informed in the Solution Designer's message of 2026-11-07.
+- Exact approved requirements baseline: this document at SR-011, with the UI/UX spec below.
+- Behavior-defining supplement, normative: the Product Team's UI/UX spec `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/one-step-phone-pairing/ui-ux-spec.md` (status Approved) with `visual-references/VIS-001…VIS-034`.
+  - Design repository `/Users/normy/autobyteus_org/autobyteus-web-design`, branch `personal`, UI reference revision `d2e960cca2856724d8fdea4b7563fd602fc18f3f`, final record commit `34677c88cae86b25b0c600ece322857626c43e67`, accepted design base `e0a52bcfa554d474bcfc2ad5e58621e690c05499`; ticket record `product-ticket.md` next to the spec.
+  - Every visible detail in the screenshots is a requirement unless the spec marks it illustrative (fixture names such as "Desktop", "Docker node 1", "Pixel 8", addresses, times, and "Embedded Node" in the baseline browser sheet), and except the three open items the spec lists, settled here by DEC-016…DEC-018.
+  - Where the spec's layout differs from earlier REQ wording ("Connect a phone" button, single panel, Other options, How does this work? section, Add a node in the sheet), the spec and REQ-019…REQ-023 govern.
 - Investigation: [investigation-notes.md](investigation-notes.md), evidence E-01…E-19
 
 ## Problem And Desired Outcome
@@ -157,10 +163,14 @@ None found.
 ## UI, Interaction, And Experience Requirements
 
 - Applicable: `Yes`
-- Linked UI/UX supplement: the Product Team's design, to be requested after DEC-001…DEC-004 (they change the screens). Not yet approved.
-- Runnable reference, repository, ticket, revision, confirmation, visual baseline: N/A until returned.
+- Linked UI/UX supplement: `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/one-step-phone-pairing/ui-ux-spec.md` (Approved), VIS-001…VIS-034.
+- Runnable reference: the design repository root, `corepack pnpm install --ignore-workspace --frozen-lockfile` then `corepack pnpm dev --port 3210`; desktop `/nodes?nodeTab=phoneSetup`, phone `/android`, browser `/mobile?pairing=<sample>`; starting-state key `autobyteus.prototype.phonePairing` (runbook section "one-step-phone-pairing").
+- Product ticket: `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/one-step-phone-pairing/product-ticket.md` (externally owned).
+- Design repository revision: UI reference `d2e960cc`, record `34677c88`, base `e0a52bcf`, source pin `d74f75a51a`.
+- UI/UX user confirmation: "if things are consistant. then i approve" (2026-11-07).
+- Mocked boundaries: detection, network identity, scanning/connecting timeline, phones and nodes are synthetic in the reference (spec "Data, Contract, And Mock Boundaries").
 - Required screens and states: desktop "Connect a phone" panel (states: Tailscale HTTPS ready; Tailscale without HTTPS name; Wi-Fi only with trust question; nothing reachable; QR with time left; expired); paired phones with history; phone first screen (0 nodes, several nodes, one unreachable); pairing progress and failure; node sheet with Switch node / Add a node; the browser pairing page.
-- Product decisions that need the user: DEC-001 (switch inside the page) and any taste decision the Product Team brings.
+- Product decisions that need the user: none open (DEC-016…DEC-018 settle the spec's open items within his direction).
 
 ## Quality And Non-Functional Requirements
 
@@ -209,7 +219,10 @@ None found.
 | DEC-001 | Switch between nodes inside the page (277 DEC-003 B)? | Scope and the Android app; his 277 wish | A: only the app's first screen. B: "Switch node" and "Add a node" in the page's node sheet, opening the app's node list; no credential crosses | B costs one small signal from page to app and makes several nodes as easy as he asked. Browser users keep separate tabs. **B.** The user, 2026-11-07: "they want to be able to connect multiple nodes so that they could switch between different nodes on phone"; "yes send to product team" | The user | Decided (B) |
 | DEC-002 | May AutoByteus run the Tailscale HTTPS command for him? | Today it deliberately does not run Tailscale | A: show the one exact command + Copy + Check again. B: a "Set it up for me" button that runs that one command on his click | With Tailscale on, the tailnet address already works anywhere (DEC-003), so the HTTPS name is polish. A keeps his network his own with one copy-paste once per node. **A**, decided within his direction: it keeps today's rule that AutoByteus does not run Tailscale, and with DEC-003 the HTTPS name is optional, so the hint sits under "Other options", not in the main path | Solution Designer | Decided (A) |
 | DEC-003 | Treat a confirmed Tailscale address (100.x with a `.ts.net` name) as private and encrypted, with no cleartext warning? | Decides whether Tailscale without HTTPS setup is one click | Tailscale encrypts device to device (WireGuard); today it is grouped with LAN HTTP and needs the checkbox | Honest and the simplest path to "with Tailscale it just works"; the page is plain HTTP inside the tunnel, which today's phone features accept (E-14). Unconfirmed 100.x stays "home network". **Yes.** The user, 2026-11-07: "no matter they connect tailscale or not. they just want to generate a qrcode, and scan immediately" | The user | Decided (yes) |
-| DEC-004 | Home-network HTTP: ask once per node on the desktop and remember it; no second question on the phone for a scanned QR? | Trust decision placement | Today: checkbox every time on desktop and again on the phone | The decision stays explicit, once, where the QR is made; the QR could not exist without it. Typed HTTP addresses on the phone keep their own question. **Recommend once per computer.** No second question on the phone after a scan is settled by his "scan immediately". Once-per-computer vs. never: asked 2026-11-07, not yet answered; the Product design shows the once-per-computer version and notes the "never" variant for his choice Settled in SR-005 as **once per network** (falls back to per computer when the network cannot be recognised), by the Solution Designer at the user's word "you know the different network environments more than me" | Solution Designer (the user delegated) | Decided |
+| DEC-004 | Local Wi-Fi/LAN question: when and how often? | Trust decision placement | Every time (today) / once per computer / once per network / never | Laptops move between home and cafés, so once per network is the safest version that still asks only once at home; the press of "Allow and show QR code" is the decision; no second question on the phone after a scan. **Once per network** (per computer if the network cannot be recognised). The user left it to the Solution Designer ("you know the different network environments more than me") and approved the design built this way ("if things are consistant. then i approve"); "never ask" stays a described variant in the spec, not built | Solution Designer (delegated by the user) | Decided |
+| DEC-016 | Name of the desktop's own node on the phone | The registry calls it "Embedded Node", which means nothing on a phone next to "Docker node 1" (spec finding) | Registry name / the computer's name | The phone shows the desktop's own node under this computer's name (e.g. "MacBook Pro"), so several computers are told apart; Docker and remote nodes keep their names from the Nodes page | Solution Designer | Decided |
+| DEC-017 | Wording for a typed `http://` address on the phone ("This address isn't encrypted…") | The user: "without encryption, people feel scared" | Keep / calm wording | Same calm tone as the desktop: "This address has no extra protection. Fine at home or in your office; on public Wi-Fi, use Tailscale." | Solution Designer | Decided |
+| DEC-018 | "Unpair this phone" in the node sheet now affects only the open node | Clarity with several nodes | Keep / name the node | "Unpair from <node name>", with the existing confirmation | Solution Designer | Decided |
 | DEC-005 | One saved node usable at several addresses (Wi-Fi at home, Tailscale away) without re-pairing? | Would need the app to hold credentials natively | With Tailscale on the phone, the Tailscale address also works at home, so this matters only for phones without Tailscale | Not needed for his flow; large change. Out of scope, follow-up FU-002 | Solution Designer | Decided |
 | DEC-006 | Several addresses in one QR? | Phone may not be on the same network as the best address | QR v1 has one `serverBaseUrl` | Ordered list, phone tries in turn; the first address stays in the old field so installed apps work | Solution Designer | Decided |
 | DEC-007 | Confirm before pairing? | A link could pair a phone to a stranger's node | App scanner: user meant it. Browser link: could come from anywhere | App scan pairs at once; browser shows one "Connect to <name>" tap | Solution Designer | Decided |
@@ -267,15 +280,15 @@ None found.
 - Scope and non-goals are clear: `Yes`
 - Requirements and acceptance criteria are testable and traceable: `Yes`
 - Applicable scenarios are covered with validity and evidence: `Yes` (SCN-007 depends on DEC-001)
-- Product design and supplemental evidence integrated: `N/A` (not yet requested)
-- UI/UX approval basis recorded: `N/A` (pending)
+- Product design and supplemental evidence integrated: `Yes`
+- UI/UX approval basis recorded: `Yes`
 - Material assumptions and decisions visible, with reasoning and recommendation: `Yes`
-- Content ready for approval: `Yes`, pending the user's DEC-001…DEC-004
-- Remaining content blocker: the user's answers
+- Content ready for approval: `Yes`
+- Remaining content blocker: None
 
 ### Approved Basis Ready For Design
 
-- Approval recorded: `No`
-- Exact requirements and supplement approval basis recorded: `No`
-- Approved requirements package ready for architecture design: `No`
-- Remaining blocker: the user's decisions; then the Product design and his confirmation of it
+- Approval recorded: `Yes` (SR-011; the user's design approval and the Solution Designer within his direction)
+- Exact requirements and supplement approval basis recorded: `Yes`
+- Approved requirements package ready for architecture design: `Yes`
+- Remaining blocker: None
