@@ -8,6 +8,7 @@ The latest [design-review-report.md](design-review-report.md) remains authoritat
 | --- | --- | --- | --- | --- | --- |
 | ARCH-REV-001 | Round 1 / Architecture Design Complete (Large / High), 2026-11-07 | SR-011, SR-012, SR-012a | N/A | Fail | AR-001…AR-009 |
 | ARCH-REV-002 | Round 2 / revised package SR-013 (head 101608a9de), 2026-11-07 | SR-013 | Fail | Fail | AR-001…AR-009 resolved; AR-010 new |
+| ARCH-REV-003 | Round 3 / revised package SR-014 (head 6ae9cf8a57), 2026-11-07 | SR-014 | Fail | Pass | AR-010 resolved |
 
 ## Revision Entries
 
@@ -57,4 +58,26 @@ None.
 - New or remaining finding IDs: AR-010 (Low, blocking); notes N-1…N-6 (non-blocking)
 - Material classification changes: none; Large / High
 - Recommended recipient: Solution Designer
+- Remaining risks or uncertainty: U-001/U-004/U-005 Linux read only; U-003 packaged build; U-006 Serve ports; phones with a WebView lacking `WEB_MESSAGE_LISTENER`
+
+### ARCH-REV-003 — Round 3: AR-010 resolved; Pass
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/one-step-phone-pairing/tickets/in-progress/one-step-phone-pairing/design-review-report.md`
+- Review round and trigger: round 3; revised package SR-014 from the Solution Designer, head `6ae9cf8a57`
+- Triggering role, report path, and finding IDs: Solution Designer, `solution-handoff.md`; AR-010, N-1…N-6
+- Relevant solution revision IDs: `SR-014`
+- Prior authoritative decision: `Fail` (ARCH-REV-002)
+- Current authoritative decision: `Pass`
+- What changed: the `/network` contract for containers now carries the `this-computer` answer; the round-2 notes are applied. The changes since `101608a9de` were confirmed by diff and checked for leftover old text (none). Requirements unchanged.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-010 | Open (Low, blocking) | Resolved | SR-014 | design-spec Interface Boundary Mapping `/network` row, `NodeNetwork` comment, way-composition "Remote node in a container" row |
+| N-1…N-6 | Non-blocking notes | Applied | SR-014 | Target Mapping (pairing service lines 134/156; route pattern; Serve port by `createdAt`), Ownership Map, Concrete Examples `:8443`, follow-ups.md FU-001 |
+
+- New or remaining finding IDs: none
+- Material classification changes: none; Large / High
+- Recommended recipient: implementation engineer (primary); Solution Designer (informational)
 - Remaining risks or uncertainty: U-001/U-004/U-005 Linux read only; U-003 packaged build; U-006 Serve ports; phones with a WebView lacking `WEB_MESSAGE_LISTENER`

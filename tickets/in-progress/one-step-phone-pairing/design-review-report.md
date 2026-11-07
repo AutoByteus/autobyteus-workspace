@@ -4,16 +4,16 @@
 
 - Upstream Requirements Doc: [requirements-doc.md](requirements-doc.md) (`Approved` SR-011; SR-012 DEC-019…021; SR-013 DEC-022…024 and wording fixes)
 - Upstream Investigation Notes: [investigation-notes.md](investigation-notes.md) (E-01…E-27, U-001…U-005)
-- Upstream Solution Revision Record: [solution-revision-record.md](solution-revision-record.md) (SR-001…SR-013)
-- Reviewed Design Spec: [design-spec.md](design-spec.md) (SR-013, status `Ready`, user approval `Obtained`)
+- Upstream Solution Revision Record: [solution-revision-record.md](solution-revision-record.md) (SR-001…SR-014)
+- Reviewed Design Spec: [design-spec.md](design-spec.md) (SR-014, status `Ready`, user approval `Obtained`)
 - Supplemental Task Artifacts Reviewed: Product UI/UX spec `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/one-step-phone-pairing/ui-ux-spec.md` (Approved; VIS-001…034); [follow-ups.md](follow-ups.md); [solution-handoff.md](solution-handoff.md) ("Round 2")
-- Relevant Solution Revision IDs: `SR-011`, `SR-012`, `SR-012a`, `SR-013`
+- Relevant Solution Revision IDs: `SR-011`, `SR-012`, `SR-012a`, `SR-013`, `SR-014`
 - Architecture Review Revision Record: [architecture-review-revision-record.md](architecture-review-revision-record.md)
-- Current Architecture Review Revision ID: `ARCH-REV-002`
-- Current Review Round: `2`
-- Trigger: revised package after ARCH-REV-001 `Fail`, from the Solution Designer (run `solution_designer_03f4f2aaf88941a0a3030151229dc1fa`), head `101608a9de`
-- Prior Review Round Reviewed: `1` (ARCH-REV-001)
-- Latest Authoritative Round: `2`
+- Current Architecture Review Revision ID: `ARCH-REV-003`
+- Current Review Round: `3`
+- Trigger: revised package SR-014 after ARCH-REV-002 `Fail`, from the Solution Designer (run `solution_designer_03f4f2aaf88941a0a3030151229dc1fa`), head `6ae9cf8a57`
+- Prior Review Round Reviewed: `2` (ARCH-REV-002)
+- Latest Authoritative Round: `3`
 - Current-State Evidence Basis: the round-1 code reads still hold (base `677f61de0b` unchanged; round 2 changed only ticket documents, `git diff 4bd116d379..101608a9de`). Re-read for round 2: `remote-access-pairing-service.ts:154-160` (`pruneExpiredSessions` drops consumed sessions); `MainActivity.kt:196-216` (a new `AutoByteusWebView` per opened entry, which suits a bridge registered per origin); Android `androidx.webkit` `WebViewCompat.addWebMessageListener` documentation (origin rules, main-frame flag).
 
 ## Routing Classification Review
@@ -38,7 +38,7 @@
 | --- | --- | --- | --- | --- | --- | --- |
 | BEH-001 | User | Pass | Pass | Pass | Confirmed | — |
 | BEH-002 | User | Pass | Pass | Pass | Confirmed | — |
-| BEH-003 | User | Pass | Pass | Fail | Needs Correction | AR-010: a remote node in a container cannot report its remembered local-network answer |
+| BEH-003 | User | Pass | Pass | Pass | Confirmed | AR-010 resolved (SR-014): a container reports `localNetwork: { networkId: "this-computer", addresses: [], allowed }` |
 | BEH-004 | User | Pass | Pass | Pass | Confirmed | Entry-form table, failed exchange and reasons are defined |
 | BEH-005 | User | Pass | Pass | Pass | Confirmed | Bridge limited by origin and main frame; `NodeReachability` owns list checks |
 | BEH-006 | User | Pass | Pass | Pass | Confirmed | — |
@@ -96,7 +96,7 @@
 
 | Interface / API / Query / Command / Method | Subject Is Clear? | Responsibility Is Singular? | Identity Shape Is Explicit? | Generic Boundary Risk | Verdict |
 | --- | --- | --- | --- | --- | --- |
-| `GET /rest/remote-access/network` | Pass | Pass | Pass | Low | Fail (AR-010: a container reports `localNetwork: null`, so the remembered `this-computer` answer has no read path) |
+| `GET /rest/remote-access/network` | Pass | Pass | Pass | Low | Pass (AR-010 resolved: a container reports its `this-computer` answer; DS-002 ignores it) |
 | `PUT /rest/remote-access/network/local-networks/:networkId` | Pass | Pass | Pass | Low | Pass |
 | `POST /pairing-sessions` (+ `connectionWay`, returns `sessionId`) | Pass | Pass | Pass | Low | Pass |
 | `DELETE /pairing-sessions/:sessionId` | Pass | Pass | Pass | Low | Pass. Nit: the route-policy pattern `pss_[0-9a-f]+` makes a malformed ID fall to the default class. `^/rest/remote-access/pairing-sessions/[^/]+$`, as for devices, is simpler. Non-blocking |
@@ -131,7 +131,7 @@
 
 | Shared Structure / Type / Schema | One Clear Meaning Per Field? | Redundant Attributes Removed? | Overlapping Representation Risk Is Controlled? | Shared Core Vs Specialized Variant / Composition Decision Is Sound? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| `NodeNetwork` | Fail | Pass | Pass | N/A | Fail | `configuredBaseUrl` fixed (only loopback dropped). AR-010: `localNetwork` is `null` for a container although that node keeps an allowed answer under `this-computer` |
+| `NodeNetwork` | Pass | Pass | Pass | N/A | Pass | `configuredBaseUrl` drops only loopback; a container's `localNetwork` carries its `this-computer` answer with no addresses (AR-010 resolved) |
 | Pairing session (`+connectionWay`, `sessionId`) | Pass | Pass | Pass | N/A | Pass | — |
 | Device record, page session | Pass | Pass | Pass | N/A | Pass | — |
 
@@ -212,46 +212,35 @@ None.
 
 ## Review Decision
 
-- `Fail`: one small but contract-level contradiction remains (AR-010). All ARCH-REV-001 findings are resolved.
+- `Pass`: the behavior basis is confirmed, the design is ready for implementation, and no in-scope mechanism or finding depends on an unsupported premise.
 
 ## Findings
 
-### AR-010 — A container node has no read path for its remembered local-network answer (Design Impact, Low, blocking)
+None open. All earlier findings are resolved: AR-001…AR-009 (ARCH-REV-002) and AR-010 (ARCH-REV-003). Round-2 notes N-1…N-6 are applied in SR-014: N-1, a consumed session is kept until expiry (line 134's delete removed; prune at line 156 drops only expired sessions); N-2, discard by `sessionId`; N-3, route pattern `pairing-sessions/[^/]+`; N-4, example port `:8443`; N-5, Serve port ordered by entry `createdAt`; N-6, FU-001 wording.
 
-- Protected authority: REQ-004 (remembered answer, per computer when unrecognised), TR-005/TR-006, AC-002; BEH-003.
-- Scope status: `Within Approved Scope`. Changes approved behavior: `No`.
-- Evidence: the composition table row "Remote node in a container" says the answer is kept by that node under `this-computer`. The Interface Boundary Mapping and `NodeNetwork` give a container `localNetwork: null`. Premise P-004.
-- Required update: make the contract say how the store reads that answer. For example, a container's `NodeNetwork.localNetwork` is `{ networkId: 'this-computer', addresses: [], allowed }`, which the local-Docker path (DS-002) ignores because it uses the host facts. Or add an explicit allowed read. Update the interface row and the type comment to match.
-- Proportionate: a one-row contract fix; no new mechanism.
-- Recipient: Solution Designer.
-
-### Non-blocking notes (fix with AR-010 or in implementation)
-
-- N-1: `pruneExpiredSessions` (`remote-access-pairing-service.ts:156`) deletes consumed sessions before the lookup (line 108). Keeping a consumed session until expiry, so that reuse answers CONSUMED, needs that line changed too. Name it in the Target Mapping row.
-- N-2: Ownership Map, `RemoteAccessPairingService`: "discard by code" → "discard by `sessionId`".
-- N-3: Route policy: classify `^/rest/remote-access/pairing-sessions/[^/]+$` as owner (as devices), not only `pss_[0-9a-f]+`.
-- N-4: Concrete Examples: the Docker composition example still shows `https://<dns>:18001`; per the 8443…8542 rule it is `https://<dns>:<8443+k>`.
-- N-5 (recommendation): the Serve port by position "ordered by port" shifts when a node with a lower port is added. The shown command for an existing node would then change, and running it could replace another node's Serve mapping. Ordering by the entry's `createdAt` makes additions never shift existing nodes. Optional Advanced text only (REQ-008, Should).
-- N-6: follow-ups.md FU-001 text still says "address list in the QR".
+Notes for implementation (not findings):
+- Confirm that `addWebMessageListener` origin rules accept `http://<IPv4>:<port>` origins, and register the listener before `loadUrl` for each entry's WebView.
+- Show "Update Android System WebView" only when `WebViewFeature.isFeatureSupported(WEB_MESSAGE_LISTENER)` is false.
+- Discard-all on disable and DELETE by `sessionId` must also cover consumed-but-unexpired sessions now that they are kept.
 
 ## Classification
 
-- `Design Impact` (AR-010).
+N/A (Pass).
 
 ## Recommended Recipient
 
-Solution Designer (`/software_engineering_team/solution_designer`).
+Implementation engineer (`/software_engineering_team/implementation_engineer`); informational notice to the Solution Designer.
 
 ## Residual Risks
 
-- U-001 / U-004 / U-005 on Linux are read, not run; covered by fixtures and one real Linux host check.
-- U-003: renderer status fetch on the packaged build (existing path).
-- U-006: Tailscale Serve accepting `--https=8443…8542` (optional text only).
-- A phone whose Android System WebView lacks `WEB_MESSAGE_LISTENER` (pre-2020 WebView, no Play updates) gets "Update Android System WebView" instead of its pages. This touches REQ-017 for such phones only. Low reachability on minSdk 26 with Play-updated WebView; the visible text is outside the spec and is accepted as a technical refusal.
-- `addWebMessageListener` origin rules for `http://<IPv4>:<port>` origins: the implementation confirms against the androidx.webkit reference ([WebViewCompat](https://developer.android.com/reference/kotlin/androidx/webkit/WebViewCompat)).
+- U-001 / U-004 / U-005 on Linux are read, not run; covered by recorded Linux interface fixtures and one real Linux host check (design Risks).
+- U-003: the renderer status fetch on the packaged build (existing path; implementation confirms).
+- U-006: Tailscale Serve accepting `--https=8443…8542` (optional Advanced text only).
+- A phone whose Android System WebView lacks `WEB_MESSAGE_LISTENER` gets "Update Android System WebView" instead of its pages (affects REQ-017 for such phones only; low reachability on minSdk 26 with a Play-updated WebView). See the [androidx.webkit WebViewCompat reference](https://developer.android.com/reference/kotlin/androidx/webkit/WebViewCompat).
+- The Serve port position still shifts when a node is removed (not when one is added). Optional text only; the node-ID check keeps the QR honest.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
-- Material-Premise Gate: `Pass` (P-004 Reachable; P-001…P-003 closed)
-- Notes: round 2 resolves AR-001…AR-009. Only AR-010, a one-row contract fix, blocks. Notes N-1…N-6 can ride along. `task_size = Large`, `architectural_risk = High`.
+- Review Decision: `Pass`
+- Material-Premise Gate: `Pass` (P-001…P-004 closed by the design)
+- Notes: the design is ready for implementation. `task_size = Large`, `architectural_risk = High`.
