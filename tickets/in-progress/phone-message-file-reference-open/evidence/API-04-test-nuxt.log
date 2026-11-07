@@ -1,0 +1,15 @@
+# Case: API-04 full web unit/component suite
+# Command: pnpm -C autobyteus-web test:nuxt
+# Commit: 6ccf01c10d (production code = 61c886c0fe); working tree also had the uncommitted probe .mjs (not a vitest file)
+# Environment: macOS Darwin 25.5.0, vitest nuxt environment
+# Date: 2026-11-07
+# Full log:    49140 lines; excerpt below is the summary
+
+
+ ✓ localization/messages/__tests__/shellCatalog.spec.ts (1 test) 1ms
+
+ Test Files  713 passed (713)
+      Tests  5312 passed | 2 skipped (5314)
+   Start at  20:55:14
+   Duration  420.74s (transform 37.58s, setup 2858.40s, collect 279.17s, tests 101.73s, environment 225.05s, prepare 135.47s)
+
