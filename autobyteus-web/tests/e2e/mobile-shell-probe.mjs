@@ -55,10 +55,12 @@
 //                  search over the workspace, no filters, an opened file without Attach), Messages (a reference opens the
 //                  file), Activity (its tool calls); a standalone agent: no Messages, empty states; a remote run: "on that
 //                  node" wording.
-//   MSP-09 AC-008  The connection sheet: the node's own name (the dialog's name), URL, state, Check connection, the peer
-//                  with what it offers, and (beta down) not reachable; alpha down: the bar and the banner, Check; alpha
-//                  back: Check clears them (and the poll's behavior meanwhile, review residual C-06); unpair → the
-//                  confirmation → the pairing screen.
+//   MSP-09 AC-008  The connection sheet: the node's name from the pairing code (the name the desktop gives it, the dialog's
+//                  name; the node's status carries none), URL, state, the refresh icon while connected and no peer list
+//                  (one-step-phone-pairing REQ-019, AC-016); alpha down: the bar and the banner, "Retry" in the sheet;
+//                  alpha back: Retry clears them (and the poll's behavior meanwhile, review residual C-06); a browser
+//                  pairing link: the node's name, one "Connect to <name>" tap and "Get the Android app" (AC-015);
+//                  "Unpair from <node>" → the confirmation → the pairing screen (DEC-018).
 //   MSP-10 AC-009  None of the "Not on the phone" items; `?unsupported=desktopWorkspace` shows the notice above the list.
 //   MSP-11 AC-005  Every screen at 390×844 and 360×800: no horizontal scroll, every phone-owned control ≥ 44×44 (the shared
 //                  composer and conversation are listed apart); Back walks file → Files → run → list and reference →
@@ -114,6 +116,8 @@ const hold = arg('hold', false) === true;
 const bindHost = typeof arg('bind') === 'string' ? arg('bind') : '127.0.0.1';
 const MODEL = 'gemini-3.8-flash-low';
 const PEER = 'beta-node';
+/** The name the desktop gives alpha in its pairing codes (one-step-phone-pairing DEC-016); the node's status has none. */
+const ALPHA_NAME = 'Alpha Test Node';
 const PHONE_HOST = '192.168.77.10';
 const redact = text => String(text).replace(/mra_[A-Za-z0-9_-]+/g, 'mra_…').replace(/pairing=[^&\s"']+/g, 'pairing=…');
 const evidence = { startedAt: new Date().toISOString(), result: 'Fail', node: process.version, servers: {}, runs: {}, cases: {}, browserErrors: [], network: {}, cleanup: {}, error: null };
@@ -163,8 +167,7 @@ const serverAt = async (name, port, extraEnv = {}) => {
     }, 120_000);
     const status = await (await fetch(`${baseUrl}/rest/remote-access/status`)).json();
     node.nodeId = status.nodeId;
-    node.serverName = status.serverName;
-    evidence.servers[name] = { port, nodeId: node.nodeId, serverName: status.serverName };
+    evidence.servers[name] = { port, nodeId: node.nodeId, statusFields: Object.keys(status).sort() };
   };
   node.stop = async () => {
     const child = node.child;
@@ -380,7 +383,7 @@ const setUp = async () => {
 const pairingFor = async (serverBaseUrl) => {
   const settings = await alpha.rest('PUT', '/remote-access/settings', { phoneAccessEnabled: true });
   assert(settings.status === 200, 'Phone Access on', settings);
-  const session = await alpha.rest('POST', '/remote-access/pairing-sessions', { connectionWay: 'local_network', serverBaseUrl, trustedPrivateHttpAcknowledged: true });
+  const session = await alpha.rest('POST', '/remote-access/pairing-sessions', { connectionWay: 'local_network', serverBaseUrl, serverName: ALPHA_NAME, trustedPrivateHttpAcknowledged: true });
   assert(session.status === 201 && session.body.mobileUrl, 'pairing session', session.status);
   return session.body.mobileUrl;
 };
@@ -992,11 +995,6 @@ const runCases = async () => {
     let down = null;
     await waitFor('the remote rows not reachable', async () => { down = (await rowsOf(page)).filter(entry => entry.key.startsWith(`${ptmKey}/`) && entry.chip); return down.length >= 2 && down.every(entry => entry.unreachable && entry.status === 'error'); }, 60_000).catch(() => undefined);
     await shot(page, 'MSP-06-peer-down-list');
-    await page.locator(sel('mobile-node-button')).click();
-    await page.locator(sel('mobile-connection-sheet')).waitFor();
-    await sleep(1_500);
-    const peerDown = await page.locator(sel('mobile-peer')).allInnerTexts();
-    await page.locator(sel('mobile-sheet-close')).click();
     const downKey = down?.find(entry => entry.key.endsWith(stack.remoteAgentRun))?.key ?? remoteKey;
     await page.locator(`${rowSel(downKey)} ${sel('mobile-run-open')}`).click();
     const runNotice = page.locator(`${sel('mobile-run-screen')} ${sel('mobile-run-unreachable')}`);
@@ -1019,10 +1017,9 @@ const runCases = async () => {
     assert(down?.length >= 2 && down.every(entry => entry.unreachable && entry.status === 'error'), 'red dot and "Not reachable" on the remote rows', down);
     assert(notice.includes(`${PEER} isn't reachable`) && notice.includes('Retry') && composerWhileDown === 0, 'the notice with Retry, no composer', { notice, composerWhileDown });
     assert(other.state === 'open' && other.name === 'lead', 'other runs open while the peer is down', other);
-    assert(peerDown.some(text => text.includes(PEER) && /not reachable/i.test(text)), 'the peer is not reachable in the connection sheet', peerDown);
     assert(retryShown > 0 && recovered, 'Retry recovers when the peer is back', { retryShown, recovered });
     assert(onBeta && live, 'a text message from the phone reaches the run on beta and its answer shows live', { onBeta, live, sendErrors });
-    return { onBeta, sendErrors, row, opened: { ...opened, conversation: undefined }, placeholder, uploads, mention, live, down, notice, peerDown, recovered };
+    return { onBeta, sendErrors, row, opened: { ...opened, conversation: undefined }, placeholder, uploads, mention, live, down, notice, recovered };
   });
 
   await runCase('MSP-07', async () => {
@@ -1375,40 +1372,57 @@ const runCases = async () => {
     const sheet = page.locator(sel('mobile-connection-sheet'));
     await sheet.waitFor();
     await sleep(2_500);
+    const check = page.locator(sel('mobile-check-connection'));
+    const checkControl = async () => ({ label: await check.getAttribute('aria-label'), text: (await check.innerText()).trim() });
     const dialogName = await page.evaluate(() => { const d = document.querySelector('[data-testid="mobile-connection-sheet"] [role="dialog"], [data-testid="mobile-connection-sheet"][role="dialog"]'); const id = d?.getAttribute('aria-labelledby'); return id ? document.getElementById(id)?.textContent?.trim() : null; });
+    const sheetText = (await sheet.innerText()).replace(/\s+/g, ' ');
     const info = { name: (await page.locator(sel('mobile-connection-name')).innerText()).trim(), url: (await page.locator(sel('mobile-connection-url')).innerText()).trim(),
-      status: (await page.locator(sel('mobile-connection-status')).innerText()).trim(), peers: (await page.locator(sel('mobile-peer')).allInnerTexts()).map(text => text.replace(/\s+/g, ' ')) };
-    await page.locator(sel('mobile-check-connection')).click();
+      status: (await page.locator(sel('mobile-connection-status')).innerText()).trim(), peerRows: await page.locator(sel('mobile-peer')).count(), mentionsPeer: sheetText.includes(PEER),
+      check: await checkControl(), switchNode: await page.locator(sel('mobile-switch-node')).count(), unpair: (await page.locator(sel('mobile-unpair')).innerText()).trim() };
+    await check.click();
     await sleep(1_500);
     const afterCheck = (await page.locator(sel('mobile-connection-status')).innerText()).trim();
     await shot(page, 'MSP-09-connection-sheet');
-    // The paired node down.
+    // The paired node down: the refresh icon checks, the sheet says not reachable and offers "Retry".
     await alpha.stop();
-    await page.locator(sel('mobile-check-connection')).click();
+    await check.click();
     await waitFor('not reachable in the sheet', async () => /not reachable/i.test(await page.locator(sel('mobile-connection-status')).innerText()), 30_000).catch(() => undefined);
+    await waitFor('Retry in the sheet', async () => (await checkControl()).text === 'Retry', 30_000).catch(() => undefined);
     const sheetDown = (await page.locator(sel('mobile-connection-status')).innerText()).trim();
+    const checkDown = await checkControl();
+    await shot(page, 'MSP-09-sheet-not-reachable');
     await page.locator(sel('mobile-sheet-close')).click();
     const barDown = (await page.locator(sel('mobile-node-state')).innerText()).trim();
     const bannerDown = (await page.locator(sel('mobile-node-offline-banner')).innerText().catch(() => '')).replace(/\s+/g, ' ').trim();
     const rowsWhileDown = (await rowsOf(page)).length;
     await shot(page, 'MSP-09-node-down');
-    // The node back: the poll lists the runs meanwhile (C-06), Check clears the bar and the banner.
+    // The node back: the poll lists the runs meanwhile (C-06), Retry clears the bar and the banner.
     await alpha.start();
     await sleep(12_000);
     const c06 = { bar: (await page.locator(sel('mobile-node-state')).innerText()).trim(), banner: await page.locator(sel('mobile-node-offline-banner')).count(), rows: (await rowsOf(page)).length,
       pollsAfterBack: historyReads(entry => entry.label === 'phone' && entry.case === 'MSP-09' && entry.status === 200).length };
     await (c06.banner ? page.locator(sel('mobile-node-offline-check')) : page.locator(sel('mobile-node-button'))).click();
     await sheet.waitFor();
-    await page.locator(sel('mobile-check-connection')).click();
+    await check.click();
     await waitFor('connected again', async () => /connected/i.test(await page.locator(sel('mobile-connection-status')).innerText()), 30_000).catch(() => undefined);
     const sheetBack = (await page.locator(sel('mobile-connection-status')).innerText()).trim();
+    const checkBack = await checkControl();
     await page.locator(sel('mobile-sheet-close')).click();
     const barBack = (await page.locator(sel('mobile-node-state')).innerText()).trim();
     const bannerBack = await page.locator(sel('mobile-node-offline-banner')).count();
-    // Unpair, on a phone of its own.
+    // A browser on another phone opens a pairing link (AC-015): the node's name, one tap, the app offered; then unpair.
     const other = await openPhone({ label: 'phone-unpair' });
-    await pairPhone(other.page);
+    await other.page.goto(await pairingFor(phoneOrigin()), { waitUntil: 'domcontentloaded', timeout: 120_000 });
+    const pairButton = other.page.locator(sel('mobile-pair-button'));
+    await pairButton.waitFor({ timeout: 60_000 });
+    const pairingPage = { name: (await other.page.locator(sel('mobile-pairing-node-name')).innerText()).trim(), button: (await pairButton.innerText()).trim(),
+      getApp: await other.page.locator(sel('mobile-get-app')).getAttribute('href'), visibleInputs: await other.page.locator('input:visible, textarea:visible').count() };
+    await shot(other.page, 'MSP-09-browser-pairing-page');
+    await pairButton.click();
+    await other.page.locator(sel('mobile-run-tree')).waitFor({ timeout: 60_000 });
+    const pairedSession = await other.page.evaluate(() => { try { const s = JSON.parse(localStorage.getItem('autobyteus.remote_access.mobile_session') ?? 'null'); return s ? { nodeName: s.nodeName ?? null, hasCredential: Boolean(s.credential ?? s.token ?? s.accessToken) } : null; } catch { return 'unreadable'; } });
     await other.page.locator(sel('mobile-node-button')).click();
+    const otherUnpair = (await other.page.locator(sel('mobile-unpair')).innerText()).trim();
     await other.page.locator(sel('mobile-unpair')).click();
     await other.page.locator(sel('mobile-unpair-confirm')).waitFor();
     const confirmText = (await other.page.locator(sel('mobile-unpair-confirm')).innerText()).replace(/\s+/g, ' ').trim();
@@ -1422,18 +1436,24 @@ const runCases = async () => {
     const sessionLeft = await other.page.evaluate(() => localStorage.getItem('autobyteus.remote_access.mobile_session'));
     await shot(other.page, 'MSP-09-after-unpair');
     await other.context.close();
-    const facts = { dialogName, info, afterCheck, sheetDown, barDown, bannerDown, rowsWhileDown, c06, sheetBack, barBack, bannerBack, confirmText, confirmOnTop, sessionLeft };
+    const statusFields = evidence.servers.alpha?.statusFields ?? [];
+    const facts = { dialogName, info, afterCheck, sheetDown, checkDown, barDown, bannerDown, rowsWhileDown, c06, sheetBack, checkBack, barBack, bannerBack, pairingPage, pairedSession, otherUnpair, confirmText, confirmOnTop, sessionLeft, statusFields };
     const failures = [
-      [dialogName === info.name && info.name === alpha.serverName, 'the sheet is named by the node\'s own name'],
-      [info.url === phoneOrigin() && /connected/i.test(info.status) && /connected/i.test(afterCheck), 'URL, state and Check connection'],
-      [info.peers.some(text => text.includes(PEER) && /\d+ agents?/.test(text)), 'the peer with what it offers'],
-      [/not reachable/i.test(sheetDown) && barDown === 'Not reachable' && bannerDown.startsWith(`Can’t reach ${info.name}.`) && bannerDown.includes('Check'), 'the node down: the bar and the banner'],
+      [dialogName === info.name && info.name === ALPHA_NAME && !statusFields.includes('serverName'), 'the sheet is named by the name in the pairing code; the status carries no name'],
+      [info.url === phoneOrigin() && /connected/i.test(info.status) && /connected/i.test(afterCheck), 'URL, state and the refresh check'],
+      [info.check.label === 'Check connection' && info.check.text === '' && checkBack.label === 'Check connection', 'a refresh icon while connected (AC-016)'],
+      [info.peerRows === 0 && !info.mentionsPeer, 'no peer list in the sheet (REQ-019)'],
+      [info.switchNode === 0 && info.unpair === `Unpair from ${ALPHA_NAME}`, 'no Switch node in a browser; "Unpair from <node>" (DEC-018)'],
+      [/not reachable/i.test(sheetDown) && checkDown.text === 'Retry' && checkDown.label === null, '"Retry" when not reachable (AC-016)'],
+      [barDown === 'Not reachable' && bannerDown.startsWith(`Can’t reach ${info.name}.`) && bannerDown.includes('Check'), 'the node down: the bar and the banner'],
       [rowsWhileDown > 0, 'the runs as last loaded stay'],
-      [/connected/i.test(sheetBack) && barBack === 'Connected' && bannerBack === 0, 'Check clears the bar and the banner'],
-      [confirmText.includes('Unpair this phone?') && confirmOnTop.onTop && sessionLeft === null, 'unpair: the confirmation on top, then the pairing screen'],
+      [/connected/i.test(sheetBack) && barBack === 'Connected' && bannerBack === 0, 'Retry clears the bar and the banner'],
+      [pairingPage.name === ALPHA_NAME && pairingPage.button === `Connect to ${ALPHA_NAME}` && /github\.com\/AutoByteus\/autobyteus-workspace\/releases/.test(pairingPage.getApp ?? '') && pairingPage.visibleInputs === 0, 'the browser pairing page: name, one "Connect to <name>" tap, the app offered, no name field (AC-015)'],
+      [pairedSession?.nodeName === ALPHA_NAME, 'the page session keeps the node name'],
+      [otherUnpair === `Unpair from ${ALPHA_NAME}` && confirmText.includes('Unpair this phone?') && confirmOnTop.onTop && sessionLeft === null, 'unpair: the confirmation on top, then the pairing screen'],
     ].filter(([ok]) => !ok).map(([, label]) => label);
     assert(failures.length === 0, failures.join('; '), facts);
-    return { confirmOnTop, sessionLeft, dialogName, info, afterCheck, sheetDown, barDown, bannerDown, rowsWhileDown, c06, sheetBack, barBack, bannerBack, confirmText };
+    return facts;
   });
 
   await runCase('MSP-13', async () => {
