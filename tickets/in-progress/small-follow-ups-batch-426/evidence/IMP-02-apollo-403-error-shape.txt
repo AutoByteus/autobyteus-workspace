@@ -1,0 +1,17 @@
+# IMP-02 — Apollo error shape for a 403 phone read refusal (D-02 premise check)
+# Command: node /tmp/ie426-scratch/apollo403.mjs <worktree>/autobyteus-web  (stub fetch answering the server's refusal body; @apollo/client 3.14 from the worktree)
+# Commit: base 6225a734a3 (web code unchanged on this path); macOS, Node v22.23.1; 2026-11-07
+# Script:
+#   import { createRequire } from 'node:module';
+#   const require = createRequire(process.argv[2] + '/package.json');
+#   const { ApolloClient, InMemoryCache, HttpLink, gql } = require('@apollo/client/core');
+#   const fetch403 = async () => new Response(JSON.stringify({ error: 'REMOTE_ACCESS_DEVICE_REVOKED', code: 'REMOTE_ACCESS_DEVICE_REVOKED', message: 'This phone was removed.' }), { status: 403, headers: { 'content-type': 'application/json' } });
+#   const client = new ApolloClient({ cache: new InMemoryCache(), link: new HttpLink({ uri: 'http://x/graphql', fetch: fetch403 }) });
+#   try { await client.query({ query: gql`query Q { a }`, fetchPolicy: 'network-only' }); }
+#   catch (e) { console.log(JSON.stringify({ name: e.name, message: e.message, statusCode: e.networkError?.statusCode, result: e.networkError?.result })); }
+# Output:
+{"name":"ApolloError","message":"Response not successful: Received status code 403","statusCode":403,"result":{"error":"REMOTE_ACCESS_DEVICE_REVOKED","code":"REMOTE_ACCESS_DEVICE_REVOKED","message":"This phone was removed."}}
+# Code path that drops the code:
+150:        const detail = error instanceof Error ? error.message : String(error);
+152:        if (!quiet) store.error = detail;
+38:    if (runHistoryStore.error && !listsAnyRun()) return { ok: false, cause: runHistoryStore.error };
