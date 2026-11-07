@@ -2,8 +2,8 @@
 
 ## Document Status
 
-- Status: `Ready for Approval` (SR-002). The user's answers of 2026-11-07 settle DEC-001 and DEC-003; DEC-002 is decided A within his direction; DEC-004 (warning once per computer or never) stays open and is shown in the Product design for his choice. Approval follows the Product design and his confirmation of it.
-- Current solution revision ID: `SR-002`
+- Status: `Ready for Approval` (SR-003; SR-002 before). The user's answers of 2026-11-07 settle DEC-001 and DEC-003; DEC-002 is decided A within his direction; DEC-004 (warning once per computer or never) stays open and is shown in the Product design for his choice. Approval follows the Product design and his confirmation of it.
+- Current solution revision ID: `SR-003`
 - Package identifier: `one-step-phone-pairing`
 - Request / ticket: Project Task `autobyteus-395` (Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`); also covers the cancelled `autobyteus-391`
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), for the user
@@ -68,6 +68,7 @@
 - iOS app changes (autobyteus-279 is paused); the QR stays readable by its parser where it reads v1 (FU-001).
 - Least-privilege phone authorization, credential rotation, native secure credential storage (future-tickets/mobile-backend-authorization-hardening.md).
 - Starting runs directly on a peer from the phone (277 DEC-003 C).
+- Showing peer nodes on the phone in another place after the sheet's peer list is removed (REQ-019).
 - The Product Team's design process and repository.
 
 ### Non-Goals
@@ -97,7 +98,7 @@ None found.
 | REQ-001 | The desktop offers one action, "Connect a phone", for the node of the current window (desktop node, Docker node, node on another machine). It shows a pairing QR without the user typing, choosing or confirming an address, except for the one-time home-network trust decision (REQ-004). If Phone Access is off, the action turns it on (the click is the consent) | BEH-001…003 | Must | The user's "just one button" | N/A | User 2026-11-06; DEC-009 |
 | REQ-002 | Addresses offered to the phone are worked out automatically and ranked: (1) the node's Tailscale HTTPS name when it is verified to reach this node; (2) its Tailscale address; (3) its home-network (private LAN IPv4) address. Loopback, container-internal, link-local (`fe80::`, `169.254.*`) and public addresses are never offered | BEH-001…003 | Must | Today's default can be a useless link-local address | E-03, E-06 (Measured on macOS) | DEC-003 |
 | REQ-003 | Every address put into the QR has been checked to reach the same node (same node ID) at the time the QR is made. An address that cannot be checked is left out | BEH-001…003 | Must | Honest QR; reuses the existing same-node check | E-02, E-06 | — |
-| REQ-004 | Home-network HTTP stays an explicit trust decision: the first time a node would use it, the desktop asks once, in plain words ("Your phone will connect over this Wi-Fi without encryption. Only on a network you trust."), and remembers the answer for that node, visible and changeable | BEH-001 | Must | Keeps the trust decision without asking every time | N/A | DEC-004 (Needs user) |
+| REQ-004 | Home-network HTTP stays an explicit trust decision (variant "once", DEC-004): the first time a node on a computer would use it, the desktop asks once, in plain words ("Your phone will connect over this Wi-Fi without encryption. Only on a network you trust."), with one "Use this Wi-Fi" button. The answer is remembered for that computer: every node on it (the desktop node and the Docker nodes on it) shares it; a node on another computer asks once for its own computer. Visible and changeable. Variant "never": no question (the user decides, DEC-004) | BEH-001 | Must | Keeps the trust decision without asking every time | N/A | DEC-004 (Needs user: once vs. never); SR-003 |
 | REQ-005 | The panel says in one line how the phone will connect: "anywhere, through Tailscale" or "on this Wi-Fi only". Only when something is missing it adds the one thing to do (e.g. "To connect away from home, install Tailscale on this computer and your phone") | BEH-001…003 | Must | Plain words instead of a guide | N/A | — |
 | REQ-006 | Docker node: the same action works from the Docker node's window. Its addresses are the host computer's addresses (REQ-002) with the port the node is published on; each is checked to reach that Docker node (REQ-003) | BEH-002 | Must | Docker node "also … scan" | E-04, E-05 (Measured) | — |
 | REQ-007 | Node on another machine: the same action works from its window; its addresses come from that node and from the address the desktop reaches it at, each checked (REQ-003). When none can be checked, the panel says so and offers "Enter an address" under "Other options" | BEH-003 | Must | Remote nodes too | E-02 | — |
@@ -106,12 +107,13 @@ None found.
 | REQ-010 | Phone, in the app: scanning a pairing QR connects with no other input. The app tries the QR's addresses in order and pairs with the first that answers; it asks no HTTP acknowledgement for a scanned pairing QR (the desktop made that decision) and no device name (it uses the phone's model name). If no address answers, it says in plain words what is missing (e.g. "Your phone is not on the same Wi-Fi as <node> and Tailscale is not on") | BEH-004 | Must | "scan, and then I'm connected" | E-09, E-13 | DEC-004, DEC-007 |
 | REQ-011 | Every node appears on the phone under its own name: the name the desktop shows for it (from the QR), not a fixed "AutoByteus Desktop" | BEH-005 | Must | Several nodes must be told apart | E-10 (Measured) | — |
 | REQ-012 | The app's first screen is scan-first: one primary "Scan QR code" action, the saved nodes as a simple list (name, reachable or not, open; remove behind a secondary action), and typing an address, pasting a link and HTTP options under "Other ways to connect". No setup paragraph. Opening the app still opens the last used node | BEH-005 | Must | "complicated and ugly" | N/A | Product design |
-| REQ-013 | Adding a node never removes another. In the Android app, the page's node sheet offers "Switch node" (the app's node list with reachability) and "Add a node" (the scanner), one tap from any screen. No credential leaves its node's page | BEH-005 | Must (if DEC-001 = B) | 391; "switch between different nodes … very convenient" | E-11 | DEC-001 (Needs user) |
+| REQ-013 | Adding a node never removes another; a node is added from the app's node list (its Scan button). In the Android app, the page's node sheet offers "Switch node" (the app's node list with reachability), one tap from any screen. No "Add a node" entry in the sheet. No credential leaves its node's page | BEH-005 | Must | 391; "switch between different nodes … very convenient" | E-11 | DEC-001 (B); SR-003 (user in the Product review) |
 | REQ-014 | Desktop paired phones: active phones with name, how they connect and last seen, Revoke per phone; "Revoke all" kept but not next to the main action; revoked phones hidden behind "History (n)", kept | BEH-006 | Should | Tidy; nothing lost | E-15 | DEC-008 |
 | REQ-015 | The QR is shown on request, with its remaining time; when it expires, one "New code" action. Closing the panel discards the shown code | BEH-001 | Should | Smaller leak window; clear state | N/A | DEC-010 |
 | REQ-016 | Preserved security rules: 5-minute single-use code; credential shown only to the phone once; phone credentials cannot manage pairing or devices; revoke works at once; pairing data is redacted in logs; HTTP refused on non-private hosts | BEH-007 | Must | Security baseline | E-15 | — |
 | REQ-017 | Existing paired phones, existing saved nodes and existing pairing links keep working without pairing again | BEH-007 | Must | Task constraint | E-11, E-15 | — |
 | REQ-018 | A phone without the app: scanning the QR with the camera opens the node's page in the browser, which pairs with one "Connect to <name>" tap and offers the Android app download | BEH-004 | Should | "pointed at a node without typing a URL" | E-13, E-19 | DEC-007 |
+| REQ-019 | The 277 node sheet (UIS-010/VIS-019) changes: the read-only "Peer nodes" list is removed from it; "Check connection" becomes a refresh icon button while the node is reachable and the word "Retry" when it is not. The node chips on runs ("docker", "office-mac") stay. This supersedes the peer-list part of 277 REQ-008 / DEC-003 A | BEH-005 | Must | The user in the Product review, 2026-11-07 (relayed by the Product UI/UX Designer; his words to be recorded from the confirmed spec) | N/A | SR-003 |
 
 ## Acceptance Criteria
 
@@ -127,7 +129,8 @@ None found.
 | AC-008 | REQ-010 | SCN-005 | App, fresh install, isolated node, HTTP LAN QR | Scan → run list, no checkbox, no name field, no extra tap | No address answers → plain-words reason, Scan again | Android instrumented / emulator |
 | AC-009 | REQ-011 | SCN-006 | Two isolated nodes named differently on the desktop | The phone lists both with those names | — | Android unit + emulator |
 | AC-010 | REQ-012 | SCN-006 | App with 0 and with 2 saved nodes | First screen per the approved design; scan primary; typing under "Other ways" | — | Emulator screenshots vs. design |
-| AC-011 | REQ-013 | SCN-007 | Two paired nodes, inside node A's page | "Switch node" → node list → tap B → B's run list; "Add a node" → scanner | Node B unreachable → shown as such | Emulator |
+| AC-011 | REQ-013 | SCN-007 | Two paired nodes, inside node A's page | "Switch node" → node list → tap B → B's run list; the list's Scan adds a node | Node B unreachable → shown as such | Emulator |
+| AC-016 | REQ-019 | SCN-007 | Node sheet open | No peer list; refresh icon when reachable; "Retry" when not; run chips unchanged | — | Component test + emulator |
 | AC-012 | REQ-014 | SCN-008 | Node with 1 active, 31 revoked | Active list shows 1; "History (31)" collapsed; records unchanged | — | Component test |
 | AC-013 | REQ-015, 016 | SCN-001 | QR shown | Remaining time visible; after 5 min "New code"; a used or closed code is refused | — | Unit + E2E |
 | AC-014 | REQ-017 | SCN-009 | Phone paired before the change | Opens and works after the update, no re-pair | — | Emulator with pre-change data |
@@ -232,6 +235,7 @@ None found.
 | REQ-016 | UC-008 | BEH-007 | AC-013 | SCN-009 | — |
 | REQ-017 | UC-008 | BEH-007 | AC-007, 014 | SCN-009 | — |
 | REQ-018 | UC-004 | BEH-004 | AC-015 | SCN-005 | Product design |
+| REQ-019 | UC-006 | BEH-005 | AC-016 | SCN-007 | Product design |
 
 ## Architecture Phase Input
 

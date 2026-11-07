@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | SR-001 | Requirements | Initial coherent baseline (Task autobyteus-395 with 391 merged, 2026-11-07) | N/A | N/A | Ready for Approval | BEH-001…007; REQ-001…018; AC-001…015; DEC-001…011 | Four decisions asked of the user |
 | SR-002 | Requirements | The user's answers, 2026-11-07; Product Design requested | N/A | Ready for Approval | Ready for Approval | DEC-001…004; REQ-008 | DEC-001 B, DEC-003 yes (user); DEC-002 A (Solution Designer); DEC-004 open (once vs. never); Product brief sent |
+| SR-003 | Requirements | Product review interim note (user's changes), 2026-11-07 | N/A | Ready for Approval | Ready for Approval | REQ-004, REQ-013, REQ-019 (new), AC-011, AC-016 (new); 277 REQ-008 peer list superseded | Answers to the designer's three questions |
 
 ## Revision Entries
 
@@ -42,3 +43,12 @@
 - Approval impact: requirements approval waits for the Product design and his confirmation, with DEC-004 answered
 - Handoff: Product Design Requested, delegated to `/product_team` at the user's explicit request
 - Next action: integrate the returned, user-confirmed design; then approve requirements and design the architecture
+
+### SR-003 — The user's changes in the Product review; answers to the designer
+
+- Phase and classification: Requirements, `Refinement`
+- Trigger: interim note from the Product UI/UX Designer (run `product_ui_ux_designer_a1399629bb864a55aecc65bb555fd38b`), 2026-11-07: at the user's word the node sheet loses "Peer nodes" and "Add a node", and "Check connection" becomes a refresh icon / "Retry"; three questions on the desktop tab
+- IDs affected: REQ-004 (the "once" variant is once per computer, shared by the nodes on it), REQ-013 (no "Add a node" in the sheet; the app's list has Scan), REQ-019 and AC-016 new (supersedes the peer-list part of 277 REQ-008 / DEC-003 A), AC-011
+- Decisions for the designer, as architecture owner: old Phone Setup cards and their unused text keys are removed (no dead code); the phone-access store shrinks to connect / code / devices plus the "Other options" manual address, with address choice and checks moving out of the page; the storage place of the remembered decision is an architecture detail, its behavior is REQ-004
+- Intended behavior changed: Yes (user-directed, within this ticket's area); approval with the confirmed design
+- Next action: integrate the confirmed design; record the user's words for REQ-019 from it
