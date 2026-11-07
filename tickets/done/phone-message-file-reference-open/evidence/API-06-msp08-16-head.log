@@ -1,0 +1,15 @@
+# Case: API-06 mobile-shell-probe MSP-08 + MSP-16 on the HEAD phone bundle
+# Command: pnpm -C autobyteus-web test:e2e:mobile-shell --cases=MSP-08,MSP-16 --output-dir=/tmp/427-runs/API-06-msp08-16-head
+# Bundle: pnpm -C autobyteus-web build:mobile-web at 6ccf01c10d (production code = 61c886c0fe)
+# Environment: macOS Darwin 25.5.0, headless Chrome (playwright-core), phone 390x844 touch, probe-owned alpha/beta nodes
+# Date: 2026-11-07
+
+
+> autobyteus@1.5.12-beta.7 test:e2e:mobile-shell /Users/normy/autobyteus_org/autobyteus-worktrees/phone-message-file-reference-open/autobyteus-web
+> node tests/e2e/mobile-shell-probe.mjs --cases=MSP-08,MSP-16 --output-dir=/tmp/427-runs/API-06-msp08-16-head
+
+[mobile-shell] MSP-08 …
+[mobile-shell] MSP-08 Pass
+[mobile-shell] MSP-16 …
+[mobile-shell] MSP-16 Pass
+mobile-shell probe: Pass

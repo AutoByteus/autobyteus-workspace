@@ -135,6 +135,10 @@ try {
         const selectedRoot = id === `${scope}-pending` ? rootC : rootB;
         root.members[2].defaultLaunchConfiguration.workspaceRootPath = selectedRoot;
         root.members[2].members.forEach(member => { member.launchConfiguration.workspaceRootPath = selectedRoot; });
+        // The selected agent is a delegated copy of that Team: a copy runs from the launch snapshot it recorded.
+        const copy = root.taskExecutions.find(execution => execution.teamRunId === 'team-task');
+        copy.source.defaultLaunchConfiguration.workspaceRootPath = selectedRoot;
+        copy.source.members.forEach(member => { member.launchConfiguration.workspaceRootPath = selectedRoot; });
         response = { data: { getAgentOrgRunInspection: { root_subject_kind: 'agent_org', root_run_id: id, root_org: view } } };
       }
       if (op === 'GetAgentOrgMemberRunProjection') {
@@ -150,6 +154,8 @@ try {
         pendingMetadata.add(release); await held; pendingMetadata.delete(release);
       }
       if (op === 'GetRunFileChanges') response = { data: { getRunFileChanges: [] } };
+      // The saved Org exists only in this fixture, so its member's file changes are answered here too.
+      if (op === 'GetAgentOrgMemberFileChanges') response = { data: { getAgentOrgMemberFileChanges: [] } };
       if (response) return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(response) });
       return route.continue();
     });

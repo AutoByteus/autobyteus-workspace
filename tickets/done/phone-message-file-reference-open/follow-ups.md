@@ -1,0 +1,5 @@
+# Follow-ups
+
+| ID | Found by (role, document) | What is wrong, where | Evidence | Why it is outside this ticket | Urgent (`Yes`/`No`) | Suggested Task description | Sent (to, date) |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| FU-001 | Solution Designer, investigation-notes.md S-10 | On a read-only conversation (desktop and phone), a file link that cannot be opened (outside the workspace, remote run, or a failure) shows nothing: the status line sits inside `v-if="!readOnly"` with the composer (`autobyteus-web/components/workspace/agent/AgentEventMonitor.vue:23-32`), so the tap looks dead | Read: `AgentEventMonitor.vue:23-32`, `composables/workspace/useTargetConversation.ts:25-29` | The fix opens files on read-only conversations too; only the "cannot open" feedback is missing there, and it is old behavior on both surfaces | No | "Show the 'file cannot be opened' status on read-only conversations too (desktop and phone): today it sits with the composer and is hidden when the conversation is read-only, so a tap on an unopenable file link does nothing visible." | |
