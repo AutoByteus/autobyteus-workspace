@@ -4,12 +4,10 @@ Phone Access lets a phone browser, PWA, AutoByteus Android shell, or AutoByteus 
 
 ## What Phone Access Does
 
-- The desktop app exposes **Phone Setup** in the top-level **Nodes** screen for the current node window. Embedded and remote-node windows use the trusted private-network product model for desktop/Electron access; paired phones use separate mobile credentials.
-- Phone Setup contains a Tailscale Serve guide plus the **Phone Access** card. The card enables or disables phone access, lists reachable server URL candidates, accepts a manual private-network URL, creates a short-lived pairing QR/link, and separates active paired phones from revoked/history records.
-- New desktop-created pairing QR codes support Tailscale/private `https://` URLs and acknowledged trusted Local LAN/private `http://` URLs. Tailscale Serve HTTPS remains the recommended path, for example `https://desktop.tailnet-name.ts.net/mobile`.
-- For remote-node Phone Access, create the QR from the opened node window. Remote-node QR creation requires a manual phone-facing private-network URL (HTTPS or acknowledged trusted private HTTP) and verifies that URL reaches the same node ID (`nodeId`) as the desktop management URL.
-- The pairing QR opens `<selected-private-node>/mobile?pairing=<payload>` on the phone. The payload contains a short-lived one-time pairing code and the selected canonical server base URL.
-- After pairing, the phone stores a mobile node session locally and uses the same node endpoint model as the desktop web app to derive REST, GraphQL, and WebSocket URLs from the paired base URL.
+- The desktop app exposes **Phone Setup** in the top-level **Nodes** screen for the node of the current window: the desktop's own node, a Docker node on this computer, or a node on another machine. Desktop/Electron access to a node uses the trusted private-network product model; paired phones use separate mobile credentials.
+- Phone Setup is one panel, **Phones** (`components/settings/phone/PhonesPanel.vue`, state in `stores/phoneAccessStore.ts`). The user never types or chooses an address: see [Connecting a phone](#connecting-a-phone).
+- The pairing QR opens `<address>/mobile?pairing=<payload>` on the phone. The payload (`version: 1`, unchanged) holds a five-minute single-use pairing code, one address the desktop checked to reach this node, and the node's name as the phone shows it (`serverName`).
+- After pairing, the phone stores a mobile node session locally (with the node's name, `nodeName`) and uses the same node endpoint model as the desktop web app to derive REST, GraphQL, and WebSocket URLs from the paired base URL.
 - Supported mobile routes run in a phone shell; desktop-only routes redirect back to the mobile shell with an explicit unsupported-feature notice.
 
 
@@ -25,7 +23,7 @@ Stale or unsupported phone links such as `/mobile/workspace` stay inside the mob
 - **Run screen** — a tap on a row's body opens that agent's conversation with the shared composer; a Team run opens its coordinator, and an Org run opens the first member of its configuration (a Team member opens its coordinator). One 56px bar: ←, the agent's name with its state and "in <parent>", and ⋮. While an open is pending the screen shows only "Opening…". A run on a node that does not answer shows the remote notice instead of the conversation.
 - **⋮ views** — Artifacts, Files, Messages (members of a Team or Org only) and Activity, each its own screen for the open agent. Files is a read-only browser of the open agent's folder with one search over the workspace, no filters; an opened file is full screen with no Attach. Messages lists the member's messages with their file references; a reference opens full screen. A remote run's Artifacts and Files say the files are on that node.
 - **New run** — an agent run only: Agent, Folder (with "Open a folder by path", an absolute path on the paired node), Runtime, Model and Auto approve tools, each choice a bottom sheet. Agent is preselected: the agent of the run opened before, else the Project Task Manager, else the first agent. **Create run** creates the run and opens its conversation for the first message.
-- **Connection sheet** — the paired node's own name and URL, its state, **Check connection**, the read-only **Peer nodes** with their reachability and what they offer, and **Unpair this phone**.
+- **Connection sheet** — the paired node's own name and URL, its state with a refresh icon while it is reachable and **Retry** when it is not, **Switch node** in the Android app (it opens the app's node list; the shell bridge, below), and **Unpair from <node>**. The sheet lists no peer nodes; runs on other nodes keep their node chips in the run list.
 
 ### Trusted private HTTP and Android 15
 
@@ -54,18 +52,22 @@ The `/mobile` route links lightweight browser install metadata through `mobile.w
 
 ## Network Model
 
-AutoByteus does not require or special-case a VPN vendor. Phone Access only requires that the phone can reach the desktop/server node URL selected during pairing.
+AutoByteus does not require or special-case a VPN vendor, and it never installs, runs or configures Tailscale or any other network software. Phone Access only requires that the phone can reach the address in the QR.
 
-Supported setup profiles include:
+The node reports the network facts of the computer it runs on (`GET /rest/remote-access/network`; the rules are in `autobyteus-server-ts/docs/features/remote_access.md`, Node Network And Ways To Connect). The desktop turns them into four **ways to connect**, in this order of preference:
 
-- **Same LAN:** use the desktop's LAN address and the AutoByteus server port when the local firewall allows it. Local LAN HTTP uses cleartext and requires an explicit trusted-private-network acknowledgement before QR creation.
-- **Tailscale:** use the desktop's full MagicDNS hostname/FQDN when possible.
-- **Tailscale Serve HTTPS:** recommended for Android, iOS, and travel; expose the desktop node as a stable HTTPS tailnet URL such as `https://desktop.tailnet-name.ts.net/mobile`. IPv4 and IPv6 values shown in the Tailscale app are useful diagnostics, but the preferred HTTPS Serve URL uses the MagicDNS hostname that matches the certificate/Serve hostname path.
-- **Headscale:** use the same Tailscale-compatible client flow against a self-hosted control plane.
-- **Company VPN / private DNS:** use the internal hostname or IP that resolves to the desktop/server node.
-- **NetBird, Netmaker, or WireGuard:** use the private overlay address or hostname that reaches the node.
+| Way (`connectionWay`) | Address used | Trust decision |
+| --- | --- | --- |
+| Company address (`company_address`) | The node's configured address (`AUTOBYTEUS_SERVER_HOST`), or one the user types ("Enter the address your IT gave you") | None: typing it and pressing **Use this address** is the decision |
+| Tailscale (`tailscale`) | The node's Tailscale HTTPS name when it reaches this node, else its Tailscale address (`100.x`, confirmed by a `.ts.net` reverse name or a `tailscale*` interface) with the node's port | None: Tailscale encrypts device to device |
+| Your VPN (`vpn`) | A private address on a tunnel interface (WireGuard and similar, also Headscale, NetBird, Netmaker) with the node's port | None |
+| Same Wi-Fi or LAN (`local_network`) | The computer's local address with the node's port, default-route first | Asked once per local network: "Allow phones on this network?" |
 
-Public/routable HTTP URLs and phone-unreachable local-only hosts such as `localhost`, `127.*`, `0.0.0.0`, `::1`, and `host.docker.internal` are not valid phone-facing QR targets. Use HTTPS for public-looking hostnames.
+- Every address is checked before it goes into a QR: `GET <address>/rest/remote-access/status` must answer with the node's own `nodeId` within 2 s. A way is ready when one of its addresses passes.
+- Never offered: loopback, link-local (`fe80::`, `169.254.*`), container-internal and bridge addresses, IPv6 addresses, and public plain-HTTP addresses. An unconfirmed `100.64/10` address is treated as a local-network address.
+- The "Allow phones on this network?" answer is kept per local network, recognised by its network ID (`gw_<hash>` of the router's hardware address, or `this-computer` when it cannot be read), and shared by every node on this computer. On a new network the desktop asks again. **Wi-Fi/LAN allowed on this network** in the tab turns it off again.
+- Platform priority: macOS and Linux hosts are checked for Tailscale, VPN and network recognition. On Windows an unrecognised VPN is treated as a local network and asked, and the answer is kept per computer.
+- The node's URL policy still refuses public HTTP and phone-unreachable local-only hosts (`localhost`, `127.*`, `0.0.0.0`, `::1`, `host.docker.internal`), also for a typed company address.
 
 For phone/mobile clients, the app-level pairing credential is still required; a private network or VPN is not treated as sufficient mobile authorization by itself. Desktop/Electron remote-node access to the full backend is separate and follows the trusted private-network product model documented below.
 
@@ -76,7 +78,7 @@ Phone Access keeps two URL identities separate:
 - **Canonical `serverBaseUrl`:** the internal node API base used for REST, GraphQL, and WebSocket calls. It is the origin plus any deployment base path, without `/mobile`, `/rest`, `/graphql`, `/ws`, query, or hash.
 - **`mobileUrl`:** the user-facing phone shell URL derived by appending `/mobile` to the canonical server base.
 
-You may paste a mobile shell URL into the Phone Access field. AutoByteus normalizes it before creating the pairing payload:
+A typed company address may be a mobile shell URL. The node normalizes every address before creating the pairing payload:
 
 ```text
 Input:              https://desktop.tailnet.ts.net/mobile
@@ -93,22 +95,30 @@ Stored serverBase:  https://gateway.example.com/autobyteus
 QR/mobileUrl:       https://gateway.example.com/autobyteus/mobile?pairing=...
 ```
 
-## Normal Docker Node Pairing Flow
+## Connecting a phone
 
-1. Install the Docker launcher from **Nodes -> Docker Guide**.
-2. Create a Docker node:
+The same steps work in every node's window: the desktop's own node, a Docker node, or a node on another machine.
 
-   ```bash
-   autobyteus-docker new-container
-   ```
+1. Open the node's window (for a Docker node or a node on another machine: add it in **Nodes -> Manage Nodes**, then click **Open**) and go to **Nodes -> Phone Setup**.
+2. The panel shows the four ways to connect as tabs (**Same Wi-Fi or LAN**, **Tailscale**, **Your VPN**, **Company address**). Each tab says whether it is ready on this computer, how it works, and When / Setup / Safety in plain words. The best ready way is selected and marked **Recommended**.
+3. Press the tab's **Show QR code**. When Phone access is off the button reads **Turn on and show QR code**; the press turns it on. On **Same Wi-Fi or LAN** the first press on a network is **Allow and show QR code**, the "Allow phones on this network?" decision.
+4. The QR appears with one line on how the phone will connect ("Works anywhere through Tailscale", "Works through your VPN", "Works on this network", "Works through the address set up for this node (…)"), its remaining time ("Valid for 5:00") and **Close**. The QR holds only that tab's best checked address.
+5. Scan it with the AutoByteus Android app: the phone connects with no other input. A phone without the app scans it with its camera: the browser opens the node's page, which pairs with one **Connect to <node>** tap and offers **Get the Android app**.
 
-3. Add the printed Backend URL as a remote node in **Nodes -> Manage Nodes**, then click **Open** on that Docker node.
-4. In the Docker node window, open **Nodes -> Phone Setup**. Desktop/Electron access to that node follows the trusted private-network product model and does not require a separate setup secret.
-5. Configure a phone-facing private-network URL that maps to the Docker node. Prefer Tailscale Serve or company-controlled HTTPS ingress; trusted private HTTP is available only with cleartext acknowledgement.
-6. Paste the phone-facing `/mobile` URL in the Docker node Phone Access card. AutoByteus compares `/rest/remote-access/status` from the management URL and advertised URL and requires matching `nodeId` values before QR creation.
-7. Enable Phone Access, create the QR, and scan it with the Android/iOS native wrapper or open it in the mobile browser. The pairing exchange and paired-device records belong to the Docker node.
+The code's life on the desktop:
 
-The embedded host desktop node should not mint QR codes for a different remote node, and Docker bridge/LAN addresses must not be treated as loopback owner trust.
+- **Close**, another tab, **New code**, leaving the panel or turning Phone access off discards the code on the node (`DELETE /rest/remote-access/pairing-sessions/:sessionId`); a phone using it is refused.
+- After five minutes the panel says "This code has expired" and offers **New code**. A used code is refused.
+
+The phone's name for the node comes from the QR: the desktop's own node is named after this computer (for example "MacBook Pro"); every other node keeps its name from the Nodes page.
+
+Per kind of node:
+
+- **The desktop's own node:** the addresses are this computer's. **Advanced** in the Tailscale tab shows, when Tailscale runs but its HTTPS name does not reach this node, the one command that gives the node an `https://` name on the tailnet (`tailscale serve --bg <port>`), with **Copy** and **Check again**. AutoByteus shows it and never runs it, and never offers `serve reset`, which would remove the user's other Serve mappings.
+- **A Docker node on this computer** (the node runs in a container and the desktop reaches it on loopback): the addresses are this computer's addresses with the port the node is published on, each checked to reach the Docker node. A node published only on `127.0.0.1` gets "<node> isn't reachable from other devices. Publish its port on this computer's network, then try again." Its Advanced command uses its own HTTPS port (`--https=8443…8542`, by the order the nodes were added), so it does not take the desktop's 443. The "Allow phones on this network?" answer is kept by the desktop's own node, for every node on this computer.
+- **A node on another machine:** the addresses are that node's own and the address the desktop reaches it at, each checked. When none can be checked, every tab is not ready and **Company address** offers "Enter the address your IT gave you"; a typed address that does not reach the node gets "This address doesn't reach <node>." and no code. That node keeps its own "Allow phones on this network?" answers.
+
+The pairing exchange and paired-device records belong to the node whose window made the code. Docker bridge and LAN addresses are never treated as loopback owner trust.
 
 ## Trusted Remote Node Access vs Phone Credentials
 
@@ -119,33 +129,11 @@ Remote node windows have two separate authority boundaries:
 
 Mobile credentials must not authorize owner-management routes such as settings changes, pairing-session creation, device listing, or revocation. Pairing payloads contain a short-lived one-time code and server base URL, not desktop owner authority. Credential-bearing URLs, pairing payloads, mobile credentials, and authorization headers must be redacted from logs and diagnostics.
 
-## Embedded Desktop Pairing Flow
+## Pairing codes
 
-Use this when the embedded desktop node itself is the node your phone should use. For a separate server Docker node, use the Docker flow above.
+Pairing codes are short-lived (five minutes) and single-use. The long-lived credential is returned only to the phone after the code exchange. The QR holds no long-lived secret.
 
-1. Start the desktop Electron app so the bundled server is running.
-2. Open **Nodes -> Phone Setup**.
-3. Install/sign in to Tailscale.app on the Mac and Tailscale on the phone.
-4. On macOS with **Tailscale.app** installed, sign in through the app UI and confirm the full MagicDNS hostname/FQDN there. AutoByteus only shows copyable commands; it does not run Tailscale or inspect local Tailscale state. Use the bundled app executable directly for Serve:
-
-   ```bash
-   /Applications/Tailscale.app/Contents/MacOS/Tailscale serve 29695
-   /Applications/Tailscale.app/Contents/MacOS/Tailscale serve --bg 29695
-   /Applications/Tailscale.app/Contents/MacOS/Tailscale serve status
-   /Applications/Tailscale.app/Contents/MacOS/Tailscale serve reset
-   ```
-
-5. Recommended travel/stable setup: copy the private HTTPS MagicDNS URL from `serve status` and use the `/mobile` shell URL shape, for example `https://desktop.tailnet-name.ts.net/mobile`. The Tailscale Serve HTTPS QR target normally does **not** include `:29695`; that port belongs to local HTTP/interface reachability.
-6. Prefer the full MagicDNS hostname/FQDN shown by Tailscale when you need a stable HTTPS origin. For home/local pairing, you may instead select a discovered private LAN or tailnet IP HTTP candidate such as `http://192.168.x.x:29695` or `http://100.x.y.z:29695` and acknowledge cleartext trusted-network use.
-7. Enable **Phone Access**.
-8. Paste the HTTPS MagicDNS `/mobile` URL into the **Phone-facing private network URL** field, or choose a discovered trusted Local LAN/private HTTP candidate. HTTP candidates require the cleartext trusted-network acknowledgement before **Create QR code** is enabled.
-9. Click **Create QR code**.
-10. Scan or open the QR/link on the phone before the one-time code expires. AutoByteus Android and iOS own their **Scan QR** flows with app-owned scanner/camera permission handling; they do not require a separately installed generic QR scanner app.
-11. The phone exchanges the code for a per-device credential and stores the paired session.
-
-Pairing codes are short-lived and single-use. The long-lived credential is returned only to the phone after the code exchange.
-
-Official Tailscale references for this setup:
+Official Tailscale references for the optional secure web address:
 
 - [Tailscale Serve](https://tailscale.com/docs/features/tailscale-serve)
 - [HTTPS certificates](https://tailscale.com/docs/how-to/set-up-https-certificates)
@@ -155,7 +143,7 @@ Official Tailscale references for this setup:
 
 A paired phone stores its session in browser/WebView `localStorage` under the mobile web origin. That is acceptable for the current Phone Access MVP but should be treated as less protected than native secure storage. The current native Android/iOS wrappers deliberately load the same `/mobile` shell and do not persist `mra_...` credentials natively; the iOS wrapper saves only node profile metadata. Any future native credential-storage hardening should be designed separately with backend authorization changes.
 
-Because this storage is origin-scoped, pair through the stable travel URL when possible. For example, pairing with `http://192.168.1.25:29695/mobile` and later opening `https://desktop.tailnet-name.ts.net/mobile` uses a different origin and may require re-pairing. The native Android/iOS wrappers save the clean stable `/mobile` URL profile, not the one-time `?pairing=` URL.
+Because this storage is origin-scoped, a phone paired through one way keeps that address: a phone paired on the home Wi-Fi does not switch to the Tailscale address on its own (one node at several addresses is follow-up work). For a phone that travels, use the **Tailscale** tab: with Tailscale on the phone, that address also works at home. The native Android/iOS wrappers save the clean `/mobile` URL profile, not the one-time `?pairing=` URL.
 
 After pairing, the mobile shell:
 
@@ -167,14 +155,25 @@ After pairing, the mobile shell:
 - uses authorized fetch helpers for media, file, artifact, team-reference, and application setup resources;
 - keeps server-owned agent/team/workspace routes reachable when those routes accept paired mobile credentials.
 
-The local **Unpair this phone** action deletes only the phone's local session and returns the UI to the pairing bootstrap without leaving the run list or post-pair checking state active. It does not revoke the server-side device record; use the desktop Phone Access card to revoke credentials on the node. Failed or expired pairing exchanges likewise stay on the pairing bootstrap and must not write a local mobile session.
+The local **Unpair from <node>** action deletes only the phone's local session for that node and returns the UI to the pairing bootstrap without leaving the run list or post-pair checking state active. It does not revoke the server-side device record; use **Revoke** in the desktop's **Connected phones** list to revoke credentials on the node. Failed or expired pairing exchanges likewise stay on the pairing bootstrap and must not write a local mobile session.
+
+### Pairing page
+
+`MobilePairingBootstrap.vue` handles `/mobile?pairing=<payload>`:
+
+- **In the Android app** (the shell bridge answers): it pairs at once, with the phone's model name as the device name, then tells the app it paired. A failed exchange shows the reason with **Scan again** and back: "This code has expired. Make a new one on your computer." (expired, or closed or replaced on the desktop), "This code was already used. Make a new one on your computer.", Phone access off, or the node did not answer.
+- **In a browser:** the page shows the node's name, **Connect to <node>** (one tap pairs) and **Get the Android app**.
+
+### Android shell bridge
+
+The Android app gives the page one object, `window.AutoByteusShell` (`utils/remoteAccess/shellBridge.ts` on the page; `web/ShellBridge.kt` in the app, androidx.webkit web messages). Only the main frame of the open node's origin gets it; sandboxed frames and other origins do not. The page uses it to ask for the phone's model name and the number of saved nodes, to report a successful pairing with the node's name (the app saves the node only then), and to ask the app to show its node list (**Switch node**) or its scanner (**Scan again**). It carries no credential: each node's credential stays in that node's page.
 
 ## Revocation and Disable Semantics
 
-- **Disable Phone Access:** paired-device records remain in server data, but non-loopback mobile credentials are rejected while disabled and new pairing sessions cannot be created.
+- **Disable Phone Access** (the **Phone access** switch in the panel header): paired-device records remain in server data, but non-loopback mobile credentials are rejected while disabled, new pairing sessions cannot be created, and every shown code is discarded. Paired phones work again when it is turned back on.
 - **Revoke one phone:** that device credential stops working for REST, GraphQL, WebSocket, and protected resource access.
 - **Revoke all phones:** every active paired credential is marked revoked and each phone must pair again.
-- **Active vs revoked lists:** `GET /remote-access/devices` returns active paired-device summaries only. Revoked records are retained and exposed to local desktop management through `GET /remote-access/devices/revoked`; they appear only in the non-actionable Revoked/History view.
+- **Active vs revoked lists:** `GET /remote-access/devices` returns active paired-device summaries only; the desktop's **Connected phones** list shows each with its name, how it connects and when it was last seen, and **Revoke**. **Revoke all** sits apart from the main action and asks first. Revoked records are retained and exposed to local desktop management through `GET /remote-access/devices/revoked`; they appear only behind the collapsed, non-actionable **History (n)**. Dates and times there follow the app's language.
 - Local desktop loopback access remains available for desktop management endpoints.
 
 ## Node desktop on the phone
@@ -256,18 +255,19 @@ Installing a new native wrapper build does not update the desktop-served `/mobil
 
 ## Troubleshooting
 
-- **Phone cannot reach server:** verify the selected base URL from the phone, OS firewall/private-network ACLs, and VPN/overlay connection.
-- **Create QR is blocked for HTTP:** public HTTP and local-only hosts are rejected. For Local LAN/private HTTP, use a private IP/local hostname and acknowledge cleartext trusted-network use; otherwise use Tailscale Serve HTTPS.
+- **Phone cannot reach server** (the app says "Can't reach <node>"): the phone is not on the way the QR uses. Connect it to the same Wi-Fi or VPN as the computer, or turn on Tailscale on the phone, then scan again; also check OS firewall and private-network ACLs.
+- **No tab is ready:** the panel found no address that reaches this node. Connect the computer to a Wi-Fi, VPN or Tailscale and press **Check again**, or enter the node's address under **Company address**. A Docker node published only on `127.0.0.1` must be published on the computer's network.
+- **A typed company address is refused:** "This address doesn't reach <node>." means it answers with another node's ID or not at all; public HTTP and local-only hosts are refused by the node.
 - **Android/iOS over Tailscale cannot reach server:** verify Tailscale is connected on the phone, the desktop is online and awake, the app is not excluded by Tailscale split tunneling, and the saved URL is the same stable URL used during pairing.
 - **Native Scan QR does not open the bundled scanner:** rebuild and reinstall the current AutoByteus Android APK or iOS app, then verify the app has camera permission. Current AutoByteus native wrappers do not depend on an external QR scanner app.
-- **Pairing says disabled:** enable Phone Access from the desktop node before creating or using a QR.
-- **Pairing code invalid or expired:** create a new QR. Codes are short-lived and single-use.
+- **Pairing says disabled:** turn **Phone access** on in the node's Phone Setup panel (**Show QR code** does it).
+- **Pairing code invalid or expired:** press **New code** on the desktop. Codes are short-lived and single-use, and a code closed or replaced on the desktop is refused.
 - **Mobile Files shows no files for an open run:** confirm the run's workspace root is registered on the paired node, then retry from Files. The mobile shell should show a workspace-unavailable state rather than silently browsing a different workspace.
 - **Mobile reference file does not open:** confirm the paired credential is still valid and the node can serve the message-owned `/rest/team-runs/.../team-communication/.../references/.../content` route; reference files are not loaded through the Artifacts route.
 - **The mobile run list shows `Error 500` or `localeCompare` after a mobile-web fix:** verify the desktop/server node is serving the freshly rebuilt `/mobile` bundle, not an older packaged `mobile-web/` copy.
 - **Credential rejected after pairing:** check whether Phone Access was disabled or the device was revoked; pair again after re-enabling or revocation.
 - **Docker node desktop window cannot reach backend:** confirm the Backend URL printed by `autobyteus-docker` is reachable from the desktop over a trusted LAN, VPN, tailnet, or equivalent private-network path. Do not expose the full backend directly to the public internet.
 - **WebSocket blocked:** confirm the private network/proxy permits WebSocket traffic to the server port.
-- **Remote-node QR creation says URL mismatch:** the phone-facing URL is not reaching the same node as the desktop management URL. Recheck the Tailscale Serve/private ingress/LAN mapping to the node Backend.
+- **The Tailscale HTTPS name is not used:** it answers with another node's ID (for example another AutoByteus on the same computer took the Serve mapping) or does not answer; the Tailscale address is used meanwhile. Run the Advanced command for this node and press **Check again**.
 - **Fresh Docker `/mobile` returns missing assets:** upgrade/recreate from a current server Docker image. Current public launcher, remote-server, and all-in-one image paths package `autobyteus-server-ts/mobile-web` during the image build.
 - **Desktop-only screen on phone:** use the mobile shell link or supported mobile route; unsupported desktop features should render an explanatory mobile notice rather than a desktop shell.

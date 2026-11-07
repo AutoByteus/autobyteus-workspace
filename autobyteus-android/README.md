@@ -4,47 +4,41 @@ This project builds the Android WebView shell for the existing AutoByteus `/mobi
 
 ## What the app owns
 
-- first-run setup for scan/paste/manual node URL entry;
-- app-owned Phone Access QR scanning, Android camera permission handling, and scan cancel/denial diagnostics;
-- native persistence of a clean saved node entry, for example `https://desktop.tailnet-name.ts.net/mobile` or an acknowledged trusted private HTTP `/mobile` URL;
-- reachability checks against `/rest/remote-access/status`;
+- the node list: a scan-first start screen (**Scan**, the saved nodes with their reachability, **Other ways to connect** with **Type an address** and **Paste a link**) and the same list as **Switch node** from inside a node's page (`ui/start/`);
+- app-owned QR scanning in its own Scan screen (journeyapps `BarcodeView`), Android camera permission handling, and denial recovery (`ui/connect/ScanScreen.kt`, `shell/QrScanCoordinator.kt`);
+- the connect sequence (`shell/NodeConnectionFlow.kt`): parse the scanned, pasted, shared or typed text, check the address answers, open the node's page, and save the node under the name from the QR only when the page reports a successful pairing; plain-words reasons on the Can't reach screen when it fails;
+- native persistence of clean saved node entries, one per node, each with its own name and address;
+- reachability checks against `/rest/remote-access/status` (`shell/NodeReachability.kt` checks every saved node in parallel while the list is open);
+- the shell bridge (`web/ShellBridge.kt`, `androidx.webkit` web messages): `window.AutoByteusShell`, only for the main frame of the open node's origin. The page asks it for the phone's model name, reports a pairing, and asks for the node list or the scanner. It carries no credential;
 - WebView containment for the saved AutoByteus origin;
 - the system-bar, display-cutout and keyboard insets: Android 15 draws a targetSdk 35 app edge-to-edge, so each screen's root takes them as padding (`ui/SystemBarInsets.kt`); before Android 15 the window keeps the bars apart and nothing moves;
 - keeping the open page across rotation, window-size changes (split screen, a foldable unfolding) and a hardware keyboard: `MainActivity` declares them in `android:configChanges`, so Android re-lays out the same WebView and page instead of recreating the screen (dark mode, language and font size still recreate it);
-- Tailscale-oriented diagnostics and recovery actions.
+- network diagnostics and recovery actions (**Open Tailscale**, **Scan again**).
 
 The existing desktop Phone Access service still owns pairing sessions and credentials. The existing `/mobile` web shell still owns the phone's screens (the run list, the run screen, its views, New run and the connection sheet) and credential storage in WebView-local `localStorage` for this MVP.
 
 Agent/team run setup is not native Android code. The WebView-served **Start new** flow owns the `Auto approve tools` switch, workspace selection, and **Load workspace by server path** behavior. Workspace paths entered there are absolute paths on the paired AutoByteus node or container, not paths on the Android filesystem.
 
-## Recommended Tailscale setup
+## Connecting to a node
 
-1. Sign in to Tailscale on the desktop/server node and the Android phone.
-2. Prefer Tailscale Serve HTTPS for travel, such as:
+1. In the desktop AutoByteus app, open the node's window and go to **Nodes -> Phone Setup**. The desktop picks and checks the address itself and marks the best way **Recommended** (Tailscale, your VPN, a company address, or the same Wi-Fi or LAN after "Allow phones on this network?").
+2. Press **Show QR code**.
+3. In AutoByteus Android, tap **Scan** and scan it. The app checks the address answers and pairs: no checkbox, no device name (it uses the phone's model name), no extra tap. The node appears in the list under its own name.
 
-   ```text
-   https://desktop.tailnet-name.ts.net/mobile
-   ```
+For a phone that travels, install Tailscale on the computer and the phone and use the **Tailscale** tab: that address works away from home and at home. The full desktop flow is in `../autobyteus-web/docs/remote_access.md`, Connecting a phone.
 
-3. In the desktop AutoByteus app, open **Nodes -> Phone Setup**.
-4. On macOS with Tailscale.app installed, use the app-direct Serve commands from the Phone Setup guide. AutoByteus only shows copyable commands; it does not run Tailscale or inspect local Tailscale state:
+Credentials are origin-scoped because the web shell stores the MVP credential in WebView localStorage, so a saved node keeps the address it was paired with.
 
-   ```bash
-   /Applications/Tailscale.app/Contents/MacOS/Tailscale serve --bg 29695
-   /Applications/Tailscale.app/Contents/MacOS/Tailscale serve status
-   ```
+## Entry forms
 
-5. Enable Phone Access.
-6. Copy the HTTPS MagicDNS URL from `serve status`, append `/mobile`, and paste it into the Phone-facing private network URL field before creating the QR/link. The preferred travel URL looks like `https://desktop.tailnet-name.ts.net/mobile` without `:29695`. For trusted home/local pairing, the desktop Phone Access flow can also create QR links from acknowledged private LAN/tailnet HTTP candidates such as `http://192.168.x.x:29695/mobile`.
-7. Pair from Android by tapping **Scan QR** in AutoByteus Android, sharing/pasting the link into AutoByteus Android, or manually entering the stable URL.
+| Entry | Input | Pairs |
+| --- | --- | --- |
+| **Scan** | Pairing QR | At once |
+| **Paste a link** | Pairing link | At once |
+| Shared text from another app (`ACTION_SEND`) | Pairing link | At once; other text opens **Type an address**, pre-filled |
+| **Type an address** | Plain node address | The page opens unpaired and offers its own pairing; a plain `http://` address needs the sheet's tick |
 
-Credentials are origin-scoped because the web shell stores the MVP credential in WebView localStorage. Pair with the final stable origin, preferably HTTPS for travel such as `https://desktop.tailnet-name.ts.net/mobile`; switching from a LAN HTTP origin to a different HTTPS origin later can require pairing again.
-
-## QR scanning
-
-The Android app includes its own QR scanner activity through `com.journeyapps:zxing-android-embedded` and requests `android.permission.CAMERA` when **Scan QR** is used. Users do not need to install a separate ZXing-compatible scanner app.
-
-Decoded QR text is passed into the same connection input resolver used by paste, Android text-share, and manual entry. Trusted private HTTP QR links remain pending until the user acknowledges cleartext LAN/tailnet use before WebView load. Cancelling the scanner, denying camera permission, or receiving an empty scan result returns to the connection screen with recoverable guidance instead of crashing or leaving a stale busy state.
+Users do not need to install a separate ZXing-compatible scanner app. Denying camera permission shows a note that the link can be pasted instead; closing the scanner returns to the node list. On a WebView without web-message support the app shows "Update Android System WebView" instead of the page.
 
 ## Build
 
