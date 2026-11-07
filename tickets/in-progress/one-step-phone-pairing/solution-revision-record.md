@@ -12,6 +12,7 @@
 | SR-006 | Requirements | The user's "do I have to do both" question, 2026-11-07 | N/A | Ready for Approval | Ready for Approval | REQ-007, REQ-020 (new), DEC-014 | Wi-Fi permission and hand-typed address shown as alternatives only when needed |
 | SR-007 | Requirements | The user's "explain how everything works" question, 2026-11-07 | N/A | Ready for Approval | Ready for Approval | REQ-021 (new) | Collapsed "How does this work?" section |
 | SR-008 | Requirements | The user: one section per network type, more detail, 2026-11-07 | N/A | Ready for Approval | Ready for Approval | REQ-021 | Four cards with When / Setup / Safety; text prepared by the Solution Designer |
+| SR-009 | Requirements | The user: separate tabs per network type, 2026-11-07 | N/A | Ready for Approval | Ready for Approval | REQ-022 (new), DEC-015; REQ-001/005/020/021 superseded in layout | Four tabs, best ready one pre-selected |
 
 ## Revision Entries
 
@@ -92,3 +93,9 @@
 
 - Trigger: the user, 2026-11-07: "separate section for each types, make it more detailed because the user really care about this, so they feel more secure … I think you should prepare the text"; also his question on what "company's address" means (wording changed to "an address set up for this node")
 - IDs affected: REQ-021; text sent to the Product Team the same day
+
+### SR-009 — Tabs per network type
+
+- Trigger: the user, 2026-11-07: "on the phone setup, I would list those as separate tabs … different types of network … the user feel sometimes very insecure, but if they click each one, it's very transparent for them"
+- IDs affected: REQ-022 new, DEC-015 new; layout of REQ-001, REQ-005, REQ-020, REQ-021 superseded (their behavior: automatic detection, checks, calm copy, facts, stays)
+- Sent to the Product Team the same day
