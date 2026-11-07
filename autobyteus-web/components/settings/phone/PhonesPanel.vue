@@ -83,6 +83,7 @@ import { Icon } from '@iconify/vue';
 import { computed, nextTick, onBeforeUnmount, onMounted } from 'vue';
 import ConnectedPhones from '~/components/settings/phone/ConnectedPhones.vue';
 import PhoneWayTab from '~/components/settings/phone/PhoneWayTab.vue';
+import { phoneSetupTextKey } from '~/utils/phoneAccess/phoneSetupTextKey';
 import { useLocalization } from '~/composables/useLocalization';
 import { usePhoneAccessStore } from '~/stores/phoneAccessStore';
 import type { ConnectionWay } from '~/types/remoteAccess';
@@ -102,7 +103,9 @@ const blockedMessage = computed(() => {
   if (store.blockedReason === 'docker_unpublished') {
     return t('settings.components.settings.phone.blocked.dockerUnpublished', { name: store.nodeName });
   }
-  return store.blockedReason === 'no_network' ? t('settings.components.settings.phone.blocked.noNetwork') : null;
+  return store.blockedReason === 'no_network'
+    ? t(phoneSetupTextKey(store.kind, 'blocked.noNetwork'), { name: store.nodeName })
+    : null;
 });
 
 /** WAI-ARIA tabs: Left/Right/Home/End move and select. */

@@ -79,6 +79,8 @@ beforeEach(() => {
   setActivePinia(createPinia());
   vi.clearAllMocks();
   reachable = [];
+  Object.assign(windowContext, { entryId: 'embedded-local', isEmbeddedWindow: true, nodeBaseUrl: 'http://127.0.0.1:29695' });
+  nodeEntries.splice(1);
   document.body.innerHTML = '';
 });
 
@@ -209,5 +211,103 @@ describe('PhonesPanel', () => {
     await flushPromises();
     expect(apiServiceMock.delete).toHaveBeenCalledWith('/remote-access/devices');
     wrapper.unmount();
+  });
+
+  // autobyteus-426 REQ-016 / AC-016: in a node's window on another computer the node is named (Product spec VIS-001…009).
+  describe('a node on another computer', () => {
+    const REMOTE_URL = 'http://192.168.1.50:29695';
+    const asRemoteNode = () => {
+      nodeEntries.push({ id: 'office-mac', name: 'Office Mac', baseUrl: REMOTE_URL, nodeType: 'remote', createdAt: '2026-01-01T00:00:00.000Z', updatedAt: '' } as never);
+      Object.assign(windowContext, { entryId: 'office-mac', isEmbeddedWindow: false, nodeBaseUrl: REMOTE_URL });
+    };
+    const remoteNetwork = (overrides: Partial<NodeNetwork> = {}) => network({
+      computerName: 'Office Mac',
+      tailscale: { address: '100.101.102.104', dnsName: 'office-mac.example-tailnet.ts.net' },
+      vpnAddresses: ['10.8.0.5'],
+      localNetwork: { networkId: 'gw_fedcba9876543210', addresses: ['192.168.1.50'], allowed: true },
+      ...overrides,
+    });
+    const status = (wrapper: Awaited<ReturnType<typeof mountPanel>>) => wrapper.get('[data-testid="phone-way-status"]').text();
+    const openTab = async (wrapper: Awaited<ReturnType<typeof mountPanel>>, way: string) => {
+      await wrapper.get(`[data-testid="phone-tab-${way}"]`).trigger('click');
+      await flushPromises();
+    };
+
+    it('nothing reached: each not-ready line and the notes after Check again name the node (VIS-001…004)', async () => {
+      asRemoteNode();
+      setup({ network: remoteNetwork() });
+      const wrapper = await mountPanel();
+
+      await openTab(wrapper, 'tailscale');
+      expect(status(wrapper)).toBe('Office Mac isn’t reachable through Tailscale from this computer.');
+      await wrapper.get('[data-testid="phone-check-again"]').trigger('click');
+      await flushPromises();
+      expect(wrapper.get('[data-testid="phone-check-note"]').text()).toBe('Still not reachable. Tailscale must be on for Office Mac and for this computer.');
+      expect(wrapper.get('[data-testid="phone-how-body"]').text()).toContain('Install Tailscale (free) on Office Mac, on this computer and on your phone. Get Tailscale.');
+      expect(wrapper.get('[data-testid="phone-how-body"]').text()).toContain('Sign in to the same account on all three, and keep it on.');
+
+      await openTab(wrapper, 'vpn');
+      expect(status(wrapper)).toBe('Office Mac isn’t reachable through a VPN from this computer. Connect both to your VPN, then Check again.');
+      await wrapper.get('[data-testid="phone-check-again"]').trigger('click');
+      await flushPromises();
+      expect(wrapper.get('[data-testid="phone-check-note"]').text()).toBe('Still not reachable through a VPN.');
+
+      await openTab(wrapper, 'local_network');
+      expect(status(wrapper)).toBe('Office Mac isn’t reachable on a Wi-Fi or LAN address from this computer.');
+
+      await openTab(wrapper, 'company_address');
+      expect(status(wrapper)).toBe('Not set up yet.');
+      wrapper.unmount();
+    });
+
+    it('ready ways and How it works name the node; the allowed note says the node remembers it (VIS-005…008)', async () => {
+      asRemoteNode();
+      reachable = ['http://100.101.102.104:29695', 'http://10.8.0.5:29695', REMOTE_URL];
+      setup({ network: remoteNetwork() });
+      const wrapper = await mountPanel();
+
+      await openTab(wrapper, 'tailscale');
+      expect(status(wrapper)).toBe('Ready: Office Mac is reachable through Tailscale from this computer.');
+      expect(wrapper.find('[data-testid="phone-advanced"]').exists()).toBe(false);
+      await wrapper.get('[data-testid="phone-how-toggle"]').trigger('click');
+      expect(wrapper.get('[data-testid="phone-how-body"]').text()).toBe([
+        'Tailscale builds a private, encrypted connection between your phone and Office Mac, wherever they are.',
+        'When', 'You want to use your phone away from home, on mobile data or any Wi-Fi.',
+        'Setup', 'Install Tailscale (free) on Office Mac, on this computer and on your phone, sign in to the same account on all three, and keep it on. AutoByteus finds it by itself.',
+        'Safety', 'The connection is encrypted between your phone and Office Mac, and only devices signed in to your Tailscale account can reach it.',
+      ].join(''));
+
+      await openTab(wrapper, 'vpn');
+      expect(status(wrapper)).toBe('Ready: Office Mac is reachable through a VPN from this computer.');
+      await wrapper.get('[data-testid="phone-how-toggle"]').trigger('click');
+      expect(wrapper.get('[data-testid="phone-how-body"]').text()).toBe([
+        'Your VPN puts your phone and Office Mac in the same private network.',
+        'When', 'You already use your own VPN that connects your phone and Office Mac.',
+        'Setup', 'Connect Office Mac, this computer and your phone to the VPN. AutoByteus finds it by itself.',
+        'Safety', 'As protected as your VPN: the connection is encrypted between your devices.',
+      ].join(''));
+
+      await openTab(wrapper, 'local_network');
+      expect(status(wrapper)).toBe('Office Mac is reachable on a Wi-Fi or LAN address from this computer.');
+      expect(wrapper.get('[data-testid="phone-wifi-allowed"]').text()).toContain('This network. Office Mac remembers it. We ask again on a new network.');
+      await wrapper.get('[data-testid="phone-how-toggle"]').trigger('click');
+      expect(wrapper.get('[data-testid="phone-how-body"]').text()).toBe([
+        'Your phone talks to Office Mac directly over your local network, like two devices at home.',
+        'When', 'Your phone and Office Mac are on the same Wi-Fi or LAN, such as a home or office network.',
+        'Setup', 'Nothing to install. The first time on a network, AutoByteus asks for your OK.',
+        'Safety', 'The connection has no extra protection, so others on the same network could see it. Fine at home and in your office. On public Wi-Fi (café, hotel, airport) use Tailscale instead. Works only while the phone is on the same network as Office Mac.',
+      ].join(''));
+      wrapper.unmount();
+    });
+
+    it('no address at all: the blocked message names the node (VIS-009)', async () => {
+      asRemoteNode();
+      Object.assign(windowContext, { nodeBaseUrl: 'http://office-mac.local:29695' });
+      nodeEntries[1] = { ...nodeEntries[1]!, baseUrl: 'http://[fd00::5]:29695' } as never;
+      setup({ network: remoteNetwork({ tailscale: null, vpnAddresses: [], localNetwork: null }) });
+      const wrapper = await mountPanel();
+      expect(wrapper.get('[data-testid="phones-blocked"]').text()).toBe('Office Mac isn’t on a network a phone could use. Connect it to Wi-Fi or a VPN, then try again.');
+      wrapper.unmount();
+    });
   });
 });
