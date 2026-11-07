@@ -92,9 +92,14 @@ On each matching tag, the workflow:
 4. Uploads per-platform artifacts with `actions/upload-artifact`
 5. Downloads artifacts in `publish-release`
 6. Merges ARM64 + x64 `latest-mac.yml` files into one canonical updater manifest
-7. Publishes final assets to the tag release using `softprops/action-gh-release`
+7. Publishes the binaries to the tag release using `softprops/action-gh-release`
+   (this creates the release when the Android APK Release has not)
+8. Waits for the six server package files of the tag (`autobyteus-server-<version>-linux-<x64|arm64>`
+   `.tar.gz`, `.json`, `.json.sig`, uploaded by the Server Docker Release), up to 60 minutes; a
+   ref without `autobyteus-server-ts/docker/system-level.json` skips the wait (autobyteus-412)
+9. Publishes the four updater files with `gh release upload --clobber`
 
-Published file patterns:
+Binaries (step 7):
 
 - `**/*.dmg`
 - `**/*.dmg.blockmap`
@@ -102,9 +107,13 @@ Published file patterns:
 - `**/*.zip.blockmap`
 - `**/*.exe`
 - `**/*.AppImage`
-- `release-artifacts/latest-mac.yml`
-- `**/latest-linux*.yml`
-- `**/latest.yml`
+
+Updater files (step 9): `release-artifacts/latest-mac.yml`,
+`release-artifacts/linux-x64/latest-linux.yml`,
+`release-artifacts/linux-arm64/latest-linux-arm64.yml`,
+`release-artifacts/windows-x64/latest.yml`. When the server packages do not
+appear in time, step 8 fails naming the missing files and the updater files
+stay unpublished; see RELEASE.md, Recovery.
 
 Linux AppImage blockmaps are embedded in the AppImage and validated through
 numeric `blockMapSize` entries in `latest-linux.yml` and
@@ -147,9 +156,9 @@ keeping raw provider diagnostics in Electron logs.
 
 Operationally, treat release-time updater errors as incomplete deployment until
 the desktop workflow has finished and the published release contains all file
-patterns above. A separate release-orchestration improvement would be required
-to prevent the public/latest release from being visible before desktop updater
-assets are ready.
+patterns above. The release itself can still be visible before the updater
+files exist; desktops are offered the version only once they do, which is after
+the server packages.
 
 ## Optional Apple Signing/Notarization Secrets
 

@@ -76,6 +76,7 @@ declare global {
       onAppUpdateState: (callback: (updateState: AppUpdateState) => void) => Cleanup;
       getNodeAutoUpdateState: () => Promise<NodeAutoUpdateEntries>;
       markNodeAutoUpdateRead: (entryId: string) => Promise<NodeAutoUpdateEntries>;
+      recheckNodeAutoUpdate: (entryId: string) => Promise<void>;
       onNodeAutoUpdateChanged: (callback: (entries: NodeAutoUpdateEntries) => void) => Cleanup;
 
       getLogFilePath: () => Promise<string>;

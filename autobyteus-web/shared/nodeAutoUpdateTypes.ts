@@ -20,4 +20,5 @@ export type NodeAutoUpdateEntries = Record<string, NodeAutoUpdateEntry>
 
 export const NODE_AUTO_UPDATE_IPC_GET_STATE = 'node-auto-update:get-state'
 export const NODE_AUTO_UPDATE_IPC_MARK_READ = 'node-auto-update:mark-read'
+export const NODE_AUTO_UPDATE_IPC_RECHECK = 'node-auto-update:recheck'
 export const NODE_AUTO_UPDATE_CHANGED_CHANNEL = 'node-auto-update:changed'
