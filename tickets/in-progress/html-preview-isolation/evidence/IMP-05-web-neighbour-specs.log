@@ -1,0 +1,31 @@
+# IMP-05 neighbouring web specs (file explorer viewers, artifacts, agent workspace, application iframes incl. ApplicationIframeHost; mobile views)
+# Command: cd autobyteus-web && NUXT_TEST=true pnpm exec vitest run components/fileExplorer components/agents components/workspace/agent components/applications components/mobile
+# Commit: cdba18ba35 (worktree /Users/normy/autobyteus_org/autobyteus-worktrees/html-preview-isolation)
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-07T04:35Z
+
+stderr | components/fileExplorer/viewers/__tests__/HtmlPreviewer.spec.ts
+stderr | components/workspace/agent/__tests__/ArtifactContentViewer.spec.ts
+stdout | components/fileExplorer/viewers/__tests__/HtmlPreviewer.spec.ts
+stdout | components/workspace/agent/__tests__/ArtifactContentViewer.spec.ts
+ ✓ components/fileExplorer/viewers/__tests__/HtmlPreviewer.spec.ts (4 tests) 18ms
+ ✓ components/workspace/agent/__tests__/ArtifactContentViewer.spec.ts (23 tests) 139ms
+stderr | components/mobile/views/__tests__/MobileFileViewer.spec.ts
+stderr | components/fileExplorer/__tests__/FileViewer.spec.ts
+stdout | components/mobile/views/__tests__/MobileFileViewer.spec.ts
+ ✓ components/mobile/views/__tests__/MobileFileViewer.spec.ts (11 tests) 34ms
+stdout | components/fileExplorer/__tests__/FileViewer.spec.ts
+ ✓ components/fileExplorer/__tests__/FileViewer.spec.ts (6 tests) 26ms
+stderr | components/applications/__tests__/ApplicationIframeHost.spec.ts
+stdout | components/applications/__tests__/ApplicationIframeHost.spec.ts
+stdout | components/applications/__tests__/ApplicationIframeHost.spec.ts > ApplicationIframeHost > emits matching ready signals and posts bootstrap only when instructed by the launch owner
+[ApplicationIframeHost] iframe loaded applicationId=bundle-app__pkg__sample-app iframeLaunchId=bundle-app__pkg__sample-app::iframe-launch-1 src=http://127.0.0.1:43123/rest/application-bundles/sample-app/assets/ui/index.html?autobyteusContractVersion=4&autobyteusApplicationId=bundle-app__pkg__sample-app&autobyteusIframeLaunchId=bundle-app__pkg__sample-app%3A%3Aiframe-launch-1&autobyteusHostOrigin=file%3A%2F%2F
+stdout | components/applications/__tests__/ApplicationIframeHost.spec.ts > ApplicationIframeHost > emits matching ready signals and posts bootstrap only when instructed by the launch owner
+[ApplicationIframeHost] received ready event applicationId=bundle-app__pkg__sample-app iframeLaunchId=bundle-app__pkg__sample-app::iframe-launch-1 origin=http://127.0.0.1:43123
+stdout | components/applications/__tests__/ApplicationIframeHost.spec.ts > ApplicationIframeHost > emits matching ready signals and posts bootstrap only when instructed by the launch owner
+[ApplicationIframeHost] posted bootstrap payload applicationId=bundle-app__pkg__sample-app iframeLaunchId=bundle-app__pkg__sample-app::iframe-launch-1
+stderr | components/applications/__tests__/ApplicationIframeHost.spec.ts > ApplicationIframeHost > emits a bridge error when the bootstrap payload cannot be cloned into postMessage
+[ApplicationIframeHost] bridge error applicationId=bundle-app__pkg__sample-app iframeLaunchId=bundle-app__pkg__sample-app::iframe-launch-1 message=Failed to execute 'postMessage' on 'Window': #<Object> could not be cloned.
+ ✓ components/applications/__tests__/ApplicationIframeHost.spec.ts (2 tests) 19ms
+ Test Files  46 passed (46)
+      Tests  295 passed (295)

@@ -1,0 +1,96 @@
+# IMP-01 reproduction (preview-probe, current sandbox = base behaviour)
+# Command: evidence/preview-probe: node server.mjs 47921 <log> & electron main.cjs | grep PROBE (Electron 42.4.1, main checkout); run by /tmp/hpi-scripts/run-probe.sh
+# Commit: ff68bfb5fa (probe mirrors base HtmlPreviewer) (worktree /Users/normy/autobyteus_org/autobyteus-worktrees/html-preview-isolation)
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-07T04:35Z
+
+## Electron output
+PROBE {"frame":"app","check":"app-origin","value":"file://","blobSample":"blob:file:///8b704a9e-b403-4885-a0d9-a70750e68d27"}
+PROBE {"frame":"main-process","check":"ipc-received","value":"senderFrame=file:///Users/normy/autobyteus_org/autobyteus-worktrees/html-preview-isolation/tickets/in-progress/html-preview-isolation/evidence/preview-probe/app.html"}
+PROBE {"frame":"blob/current","check":"origin","value":"file://","eventOrigin":"null"}
+PROBE {"frame":"blob/current","check":"inline-script","value":"ran","eventOrigin":"null"}
+PROBE {"frame":"blob/current","check":"classic-script","value":"not-yet","eventOrigin":"null"}
+PROBE {"frame":"blob/current","check":"parent-document","value":"AppWindow","eventOrigin":"null"}
+PROBE {"frame":"blob/current","check":"parent-electronAPI","value":"object","eventOrigin":"null"}
+PROBE {"frame":"blob/current","check":"localStorage","value":"works","eventOrigin":"null"}
+PROBE {"frame":"blob/current","check":"ws-open","value":"attempted","eventOrigin":"null"}
+PROBE {"frame":"blob/current","check":"img-relative","value":"error","eventOrigin":"null"}
+PROBE {"frame":"blob/current","check":"parent-electronAPI-call","value":"main process answered","eventOrigin":"null"}
+PROBE {"frame":"blob/current","check":"fetch-relative-json","value":"failed: TypeError","eventOrigin":"null"}
+PROBE {"frame":"blob/current","check":"post-graphql","value":"failed: TypeError","eventOrigin":"null"}
+PROBE {"frame":"blob/current","check":"post-node-absolute","value":"status 404","eventOrigin":"null"}
+PROBE {"frame":"blob/scripts-only","check":"origin","value":"null","eventOrigin":"null"}
+PROBE {"frame":"blob/scripts-only","check":"inline-script","value":"ran","eventOrigin":"null"}
+PROBE {"frame":"blob/scripts-only","check":"classic-script","value":"not-yet","eventOrigin":"null"}
+PROBE {"frame":"blob/scripts-only","check":"parent-document","value":"blocked: SecurityError","eventOrigin":"null"}
+PROBE {"frame":"blob/scripts-only","check":"parent-electronAPI","value":"blocked: SecurityError","eventOrigin":"null"}
+PROBE {"frame":"blob/scripts-only","check":"parent-electronAPI-call","value":"blocked: SecurityError","eventOrigin":"null"}
+PROBE {"frame":"blob/scripts-only","check":"localStorage","value":"blocked: SecurityError","eventOrigin":"null"}
+PROBE {"frame":"blob/scripts-only","check":"ws-open","value":"attempted","eventOrigin":"null"}
+PROBE {"frame":"static/scripts-only","check":"origin","value":"null","eventOrigin":"null"}
+PROBE {"frame":"static/scripts-only","check":"inline-script","value":"ran","eventOrigin":"null"}
+PROBE {"frame":"static/scripts-only","check":"classic-script","value":"ran","eventOrigin":"null"}
+PROBE {"frame":"static/scripts-only","check":"parent-document","value":"blocked: SecurityError","eventOrigin":"null"}
+PROBE {"frame":"static/scripts-only","check":"parent-electronAPI","value":"blocked: SecurityError","eventOrigin":"null"}
+PROBE {"frame":"static/scripts-only","check":"parent-electronAPI-call","value":"blocked: SecurityError","eventOrigin":"null"}
+PROBE {"frame":"static/scripts-only","check":"localStorage","value":"blocked: SecurityError","eventOrigin":"null"}
+PROBE {"frame":"static/scripts-only","check":"ws-open","value":"attempted","eventOrigin":"null"}
+PROBE {"frame":"static/current","check":"origin","value":"http://127.0.0.1:47921","eventOrigin":"http://127.0.0.1:47921"}
+PROBE {"frame":"static/current","check":"inline-script","value":"ran","eventOrigin":"http://127.0.0.1:47921"}
+PROBE {"frame":"static/current","check":"classic-script","value":"ran","eventOrigin":"http://127.0.0.1:47921"}
+PROBE {"frame":"static/current","check":"parent-document","value":"blocked: SecurityError","eventOrigin":"http://127.0.0.1:47921"}
+PROBE {"frame":"static/current","check":"parent-electronAPI","value":"blocked: SecurityError","eventOrigin":"http://127.0.0.1:47921"}
+PROBE {"frame":"static/current","check":"parent-electronAPI-call","value":"blocked: SecurityError","eventOrigin":"http://127.0.0.1:47921"}
+PROBE {"frame":"static/current","check":"localStorage","value":"works","eventOrigin":"http://127.0.0.1:47921"}
+PROBE {"frame":"static/current","check":"ws-open","value":"attempted","eventOrigin":"http://127.0.0.1:47921"}
+PROBE {"frame":"static/current","check":"img-relative","value":"error","eventOrigin":"http://127.0.0.1:47921"}
+PROBE {"frame":"blob/scripts-only","check":"img-relative","value":"error","eventOrigin":"null"}
+PROBE {"frame":"blob/scripts-only","check":"fetch-relative-json","value":"failed: TypeError","eventOrigin":"null"}
+PROBE {"frame":"blob/scripts-only","check":"post-graphql","value":"failed: TypeError","eventOrigin":"null"}
+PROBE {"frame":"static/current","check":"post-graphql","value":"status 404","eventOrigin":"http://127.0.0.1:47921"}
+PROBE {"frame":"static/current","check":"post-node-absolute","value":"status 404","eventOrigin":"http://127.0.0.1:47921"}
+PROBE {"frame":"static/scripts-only","check":"fetch-relative-json","value":"failed: TypeError","eventOrigin":"null"}
+PROBE {"frame":"static/scripts-only","check":"post-graphql","value":"failed: TypeError","eventOrigin":"null"}
+PROBE {"frame":"static/scripts-only","check":"post-node-absolute","value":"failed: TypeError","eventOrigin":"null"}
+PROBE {"frame":"blob/scripts-only","check":"post-node-absolute","value":"failed: TypeError","eventOrigin":"null"}
+PROBE {"frame":"static/current","check":"fetch-relative-json","value":"loaded","eventOrigin":"http://127.0.0.1:47921"}
+PROBE {"frame":"static/scripts-only","check":"img-relative","value":"error","eventOrigin":"null"}
+PROBE {"frame":"blob/current","check":"module-script","value":"did-not-run","eventOrigin":"null"}
+PROBE {"frame":"blob/current","check":"classic-script-late","value":"did-not-run","eventOrigin":"null"}
+PROBE {"frame":"blob/current","check":"css","value":"rgb(0, 0, 0)","eventOrigin":"null"}
+PROBE {"frame":"blob/scripts-only","check":"module-script","value":"did-not-run","eventOrigin":"null"}
+PROBE {"frame":"blob/scripts-only","check":"classic-script-late","value":"did-not-run","eventOrigin":"null"}
+PROBE {"frame":"blob/scripts-only","check":"css","value":"rgb(0, 0, 0)","eventOrigin":"null"}
+PROBE {"frame":"static/scripts-only","check":"module-script","value":"did-not-run","eventOrigin":"null"}
+PROBE {"frame":"static/scripts-only","check":"classic-script-late","value":"ran","eventOrigin":"null"}
+PROBE {"frame":"static/scripts-only","check":"css","value":"rgb(255, 0, 0)","eventOrigin":"null"}
+PROBE {"frame":"static/current","check":"module-script","value":"ran","eventOrigin":"http://127.0.0.1:47921"}
+PROBE {"frame":"static/current","check":"classic-script-late","value":"ran","eventOrigin":"http://127.0.0.1:47921"}
+PROBE {"frame":"static/current","check":"css","value":"rgb(255, 0, 0)","eventOrigin":"http://127.0.0.1:47921"}
+
+## Stand-in node log
+listening 47921
+HTTP GET / origin=<absent>
+HTTP GET /rest/workspaces/ws-1/static/report.html origin=<absent>
+HTTP GET /rest/workspaces/ws-1/static/report.html?label=static/current origin=<absent>
+HTTP GET /rest/workspaces/ws-1/static/report.html?label=static/scripts-only origin=<absent>
+HTTP POST /graphql?abs=blob/current origin=<absent>
+WS /ws/terminal/x?from=blob/current origin=file://
+HTTP GET /rest/workspaces/ws-1/static/style.css origin=<absent>
+HTTP GET /rest/workspaces/ws-1/static/classic.js origin=<absent>
+HTTP GET /rest/workspaces/ws-1/static/module.js origin=null
+HTTP GET /rest/workspaces/ws-1/static/pixel.png origin=<absent>
+HTTP OPTIONS /graphql?abs=blob/scripts-only origin=null
+HTTP GET /rest/workspaces/ws-1/static/classic.js origin=<absent>
+HTTP GET /rest/workspaces/ws-1/static/module.js origin=http://127.0.0.1:47921
+WS /ws/terminal/x?from=blob/scripts-only origin=null
+HTTP GET /rest/workspaces/ws-1/static/data.json origin=null
+HTTP GET /rest/workspaces/ws-1/static/style.css origin=<absent>
+HTTP GET /rest/workspaces/ws-1/static/pixel.png origin=<absent>
+HTTP OPTIONS /graphql origin=null
+HTTP OPTIONS /graphql?abs=static/scripts-only origin=null
+HTTP GET /rest/workspaces/ws-1/static/data.json origin=<absent>
+HTTP POST /graphql origin=http://127.0.0.1:47921
+HTTP POST /graphql?abs=static/current origin=http://127.0.0.1:47921
+WS /ws/terminal/x?from=static/scripts-only origin=null
+WS /ws/terminal/x?from=static/current origin=http://127.0.0.1:47921

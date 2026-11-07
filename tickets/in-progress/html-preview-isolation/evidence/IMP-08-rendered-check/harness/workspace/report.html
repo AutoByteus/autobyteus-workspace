@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+<head>
+  <title>Synthetic preview page</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="classic.js"></script>
+  <script src="http://127.0.0.1:47932/cdn/lib.js"></script>
+  <script type="module" src="module.js"></script>
+</head>
+<body>
+  <h1>Synthetic report</h1>
+  <img src="pixel.png" onerror="report('img-relative', 'error')" onload="report('img-relative', 'loaded ' + this.naturalWidth + 'x' + this.naturalHeight)">
+  <script>
+    function report(name, value) {
+      const label = new URLSearchParams(location.search).get('label') || 'blob';
+      if (parent === window) { console.log('PROBE ' + JSON.stringify({ frame: label, check: name, value: String(value) })); return; }
+      parent.postMessage({ probe: label, name, value: String(value) }, '*');
+    }
+    report('origin', self.origin);
+    report('inline-script', 'ran');
+    try { report('parent-document', parent.document.title || 'accessible'); } catch (e) { report('parent-document', 'blocked: ' + e.name); }
+    try { report('parent-electronAPI', typeof parent.electronAPI); } catch (e) { report('parent-electronAPI', 'blocked: ' + e.name); }
+    try { if (typeof parent.electronAPI === 'object') parent.electronAPI.ping().then(v => report('parent-electronAPI-call', v)).catch(e => report('parent-electronAPI-call', 'failed: ' + e)); } catch (e) { report('parent-electronAPI-call', 'blocked: ' + e.name); }
+    try { localStorage.setItem('k', 'v'); report('localStorage', 'works'); } catch (e) { report('localStorage', 'blocked: ' + e.name); }
+    fetch('data.json').then(r => r.json()).then(j => report('fetch-relative-json', j.ok)).catch(e => report('fetch-relative-json', 'failed: ' + e.name));
+    setTimeout(() => {
+      report('classic-script', window.CLASSIC_LOADED === true ? 'ran' : 'did-not-run');
+      report('other-site-script', window.CDN_LOADED === true ? 'ran' : 'did-not-run');
+      report('module-script', window.MODULE_LOADED === true ? 'ran' : 'did-not-run');
+      report('css', getComputedStyle(document.querySelector('h1')).color);
+    }, 1200);
+  </script>
+</body>
+</html>
