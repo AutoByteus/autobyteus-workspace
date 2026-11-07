@@ -9,6 +9,7 @@
 | SR-003 | Requirements | Product review interim note (user's changes), 2026-11-07 | N/A | Ready for Approval | Ready for Approval | REQ-004, REQ-013, REQ-019 (new), AC-011, AC-016 (new); 277 REQ-008 peer list superseded | Answers to the designer's three questions |
 | SR-004 | Requirements | The user's VPN question and "sections" question, 2026-11-07 | N/A | Ready for Approval | Ready for Approval | REQ-002, REQ-005, REQ-010, DEC-012 | Company VPN supported; no per-network sections; Other options grouped by purpose |
 | SR-005 | Requirements | The user's WireGuard/shared-office question and "select the address?" question, 2026-11-07 | N/A | Ready for Approval | Ready for Approval | REQ-002, REQ-004, DEC-004, DEC-013 | VPN trusted like Tailscale; local Wi-Fi asked once per network; all decisions settled |
+| SR-006 | Requirements | The user's "do I have to do both" question, 2026-11-07 | N/A | Ready for Approval | Ready for Approval | REQ-007, REQ-020 (new), DEC-014 | Wi-Fi permission and hand-typed address shown as alternatives only when needed |
 
 ## Revision Entries
 
@@ -73,3 +74,9 @@
 ### SR-005a — Platform priority (factual addition within SR-005)
 
 - The user, 2026-11-07: "The majority of the users are on Mac and Linux … Windows is very low priority." Recorded as QR-006: macOS and Linux verified; Windows gets the safe fallbacks only. No behavior change.
+
+### SR-006 — Wi-Fi permission and a different address are alternatives, shown only when needed
+
+- Trigger: the user, 2026-11-07: "what is the relationship between local Wi-Fi allowed and enter an address by hand? … do I have to do two both at the same time?"
+- IDs affected: REQ-007 wording, REQ-020 new, DEC-014 new (Solution Designer at the user's standing word)
+- Sent to the Product Team the same day
