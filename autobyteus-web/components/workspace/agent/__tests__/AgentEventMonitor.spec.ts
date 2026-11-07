@@ -162,8 +162,8 @@ it('retains the exact historical conversation while removing all composer slots 
 
 describe('setup-bound lazy file activation', () => {
   const action = { normalizedCandidate: '/owned/B/brief.md' };
-  const mountMonitor = (revealTool?: any) => mount(AgentEventMonitor, {
-    props: { conversation, browseSubject: { kind: 'run', runId: 'agent-42' } },
+  const mountMonitor = (revealTool?: any, readOnly = false) => mount(AgentEventMonitor, {
+    props: { conversation, readOnly, browseSubject: { kind: 'run', runId: 'agent-42' } },
     global: {
       provide: revealTool ? { [WORKSPACE_TOOL_REVEAL_KEY as symbol]: revealTool } : {},
       stubs: {
@@ -188,6 +188,24 @@ describe('setup-bound lazy file activation', () => {
     expect(launcher.open).toHaveBeenCalledWith(action);
     expect(wrapper.get('[data-testid="event-monitor-file-preview-status"]').text()).toBe('ordinary failure');
     wrapper.unmount(); expect(options.isOriginCurrent()).toBe(false);
+  });
+  // autobyteus-426 REQ-019 / AC-019: the status shows on read-only and writable conversations; the composer only on writable.
+  it.each([true, false])('shows why a file did not open with readOnly=%s, the composer only when writable', async (readOnly) => {
+    const wrapper = mountMonitor(vi.fn(), readOnly);
+    expect(wrapper.find('[data-testid="event-monitor-file-preview-status"]').exists()).toBe(false);
+    wrapper.getComponent({ name: 'AgentConversationFeed' }).vm.$emit('file-path-action', action);
+    await flushPromises();
+    const status = wrapper.get('[data-testid="event-monitor-file-preview-status"]');
+    expect(status.text()).toBe('ordinary failure');
+    expect(status.attributes()).toMatchObject({ role: 'status', 'aria-live': 'polite' });
+    expect(status.classes()).toEqual(['mb-2', 'rounded-md', 'border', 'border-amber-200', 'bg-amber-50', 'px-3', 'py-2', 'text-xs', 'text-amber-800']);
+    expect(wrapper.findComponent({ name: 'AgentUserInputForm' }).exists()).toBe(!readOnly);
+    expect(wrapper.findComponent({ name: 'CollaboratorAddFailureNotice' }).exists()).toBe(!readOnly);
+
+    launcher.open.mockResolvedValueOnce({ status: 'opened' });
+    wrapper.getComponent({ name: 'AgentConversationFeed' }).vm.$emit('file-path-action', action);
+    await flushPromises();
+    expect(wrapper.find('[data-testid="event-monitor-file-preview-status"]').exists()).toBe(false);
   });
   it('passes a null capability for the mobile/no-provider monitor, without setup effects', async () => {
     const wrapper = mountMonitor();
