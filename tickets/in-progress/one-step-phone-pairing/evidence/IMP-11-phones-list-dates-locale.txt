@@ -1,0 +1,15 @@
+# IMP-11 CR-001: phones-list dates in the app's language on a German computer
+# command: pnpm -C autobyteus-web test:nuxt --run components/settings/phone (with the fix), and the new spec against the pre-fix ConnectedPhones.vue
+# commit: c113dae1a7; macOS, Node v22.23.1; 2026-11-07
+## with the fix
+ ✓ components/settings/phone/__tests__/ConnectedPhones.spec.ts (2 tests) 59ms
+ ✓ components/settings/phone/__tests__/PhonesPanel.spec.ts (7 tests) 173ms
+      Tests  9 passed (9)
+## without the fix (ConnectedPhones.vue from 55fdae0a34)
+   × ConnectedPhones dates > app in English on a German computer: "Last seen 2 minutes ago" and "Revoked Oct 28" 45ms
+   × ConnectedPhones dates > app in Chinese on a German computer: the dates are Chinese too 12ms
+Received: "Pixel 8Connects through Tailscale · Last seen vor 2 MinutenRevoke"
+Received: "Pixel 8通过Tailscale连接 · 最近使用 vor 2 Minuten撤销"
+      Tests  2 failed (2)
+## web typecheck
+[typecheck] production errors: 0; test-file errors: 96 in 41 files (baseline 96 in 41 files)

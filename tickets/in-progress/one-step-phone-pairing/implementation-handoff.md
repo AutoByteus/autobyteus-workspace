@@ -14,14 +14,16 @@
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (IR-002: Local Fix CR-001)
 - Implementation revision record: [implementation-revision-record.md](implementation-revision-record.md)
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-014`
 - Related architecture-review revision IDs: `ARCH-REV-003`
-- Related code-review / API-E2E / delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
-- Branch `codex/one-step-phone-pairing`; implementation commits `d92d94472f` (feature), `b2c7239d5e` (spec typing), `55fdae0a34` (page reason text); this handoff and evidence in the commit after them.
+- Related code-review revision IDs: `CRR-001` (Pass), `CRR-002` (failure-origin review)
+- Related API/E2E revision IDs: `API-REV-001` (API-17 Fail)
+- Related delivery revision IDs: `N/A`
+- Triggering finding IDs: `CR-001`
+- Branch `codex/one-step-phone-pairing`; implementation commits `d92d94472f` (feature), `b2c7239d5e` (spec typing), `55fdae0a34` (page reason text); this handoff and evidence in the commit after them. IR-002 fix: `c113dae1a7` (dates in the phones list follow the app's language).
 
 **Server (`autobyteus-server-ts/src/remote-access`).** `NodeNetworkService` reports this computer's network facts (`GET /rest/remote-access/network`) from `os.networkInterfaces()`, one reverse lookup per `100.64/10` tunnel address (1 s), the default route (macOS `route`/`arp`; Linux `/proc/net/route`/`/proc/net/arp`) and the computer name; in a container it reports no addresses and its own `this-computer` answer. Pure rules in `network-interface-classifier.ts`, IPv4 ranges in `ip-address-ranges.ts` (the pairing URL policy imports them; rules unchanged), network ID in `default-route.ts`, allowed networks in `allowed-local-network-store.ts` (`PUT /network/local-networks/:networkId`). Pairing sessions require `connectionWay`, return an opaque `sessionId` (`DELETE /pairing-sessions/:sessionId`, 204), are all discarded when Phone Access turns off, keep a consumed code until it expires (second use → `CONSUMED`), and the device record carries the way. Status drops `serverName`; the candidates route and service are removed; route policy lists the new owner routes.
 
@@ -131,6 +133,7 @@ Small choices made inside the design; none changes an approved behavior:
 | IMP-07 | web guards (`guard:web-boundary`, `guard:localization-boundary`, `audit:localization-literals`) | `b2c7239d5e` | macOS | web sources, i18n | — | Pass | `evidence/IMP-07-web-guards.txt` | `Passed with zero unresolved findings.` |
 | IMP-08 | `./gradlew :app:testDebugUnitTest :app:assembleDebug :app:compileDebugAndroidTestKotlin` | `b2c7239d5e` | macOS, JDK 21, AGP 8.13.2 | Android flow, resolver, bridge rules, reachability, mapper, manifest | BEH-004, BEH-005; E-09, E-10; QR-003 | Pass (42 tests) | `evidence/IMP-08-android-unit-build.txt` | `BUILD SUCCESSFUL`, `ShellBridgeMessagesTest" tests="4"`, `NodeConnectionFlowTest" tests="7"` |
 | IMP-09 | isolated test node from `dist` + `nuxt dev`; desktop panel and `/mobile` in the browser | working tree of `d92d94472f` | macOS, Chrome via agent tools | panel, store, checks, code lifecycle, Wi-Fi allow/forget, browser pairing | BEH-001, BEH-004, BEH-005; AC-001 (dev renderer), AC-002, AC-015, AC-016 | Pass | `evidence/IMP-09-rendered-desktop-and-browser.txt` | `"Tailscale Recommended:true"`, `"Works anywhere through Tailscale"`, `devices: [("Phone", "local_network")]` |
+| IMP-11 | `pnpm -C autobyteus-web test:nuxt --run components/settings/phone`; the new spec also run against the pre-fix `ConnectedPhones.vue`; web typecheck | `c113dae1a7` | macOS, Node 22, German computer default stubbed | `ConnectedPhones.vue` date formatting | REQ-014, AC-012; CR-001 | Pass (fails before the fix, passes after) | `evidence/IMP-11-phones-list-dates-locale.txt` | `Last seen vor 2 Minuten` before; `Tests  9 passed (9)` after |
 | IMP-10 | debug APK on emulator (Android 15) against the same test node | working tree of `d92d94472f` + ScanScreen fix | headless emulator, WebView 124 | start screen, flow, bridge, switch node, sheets, can't reach, scanner | BEH-004, BEH-005; AC-008 (shared link), AC-010, AC-011 | Pass | `evidence/IMP-10-android-emulator.txt`, `evidence/IMP-10-android-*.png` | shared link → run list, device name = model; "Test Node, Online, current node" |
 
 - Not run, and why: real Docker container node (AC-004), two nodes on two machines (AC-005), packaged Electron build (U-003 for `file://`), real Linux host detection (U-001/U-004/U-005), Tailscale Serve `--https` ports (U-006), scanning a real QR with a camera, iOS (out of scope), `mobile-shell-probe` and the other browser probes (API/E2E), Electron main tests (no Electron change).
@@ -160,5 +163,7 @@ Small choices made inside the design; none changes an approved behavior:
 All of "Not run" above, plus the existing browser probes that pair phones (now with `connectionWay`).
 
 ## Downstream Review Status
+
+- IR-002 (CR-001, Local Fix): `ConnectedPhones.vue` formatted "Last seen …" and "Revoked …" with the computer's locale (`undefined`), so a de_DE Mac showed German dates inside English sentences. Both now use the app's `resolvedLocale` from `useLocalization()`, as other Nodes components do. New `ConnectedPhones.spec.ts` stubs a German computer default and asserts the English and zh-CN rows. Classification unchanged: Large / High. Same OS-locale formatting elsewhere is FU-006 (code reviewer), not part of this fix.
 
 - Code review: `Pass`, CRR-001 for IR-001 ([code-review-report.md](code-review-report.md)); the code reviewer routed the package to API/E2E, including MSP-09. No implementation action.
