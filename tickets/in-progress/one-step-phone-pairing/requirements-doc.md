@@ -167,7 +167,7 @@ None found.
 | QR-003 | REQ-013 | Security | No new Android permission; no credential crosses between nodes' pages or into the app's native list | Android | Manifest test; review |
 | QR-004 | REQ-001 | Operability | The QR appears within 3 s of the click on a normal LAN (address checks run in parallel with short timeouts) | Desktop | E2E timing |
 | QR-005 | REQ-017 | Compatibility | Installed app and existing pairings unchanged in behavior | All | AC-007, AC-014 |
-| QR-006 | REQ-002, REQ-004 | Compatibility | Platform priority: macOS and Linux hosts are verified for Tailscale, VPN and local-network recognition; Windows is low priority (the user, 2026-11-07): no Windows-specific work, it uses the safe fallbacks (an unrecognised VPN is treated as local Wi-Fi and asked; the Wi-Fi answer is remembered per computer) | Desktop and node hosts | Checks on macOS and Linux; Windows only must not break |
+| QR-006 | REQ-002, REQ-004 | Compatibility | Platform priority: macOS and Linux hosts are verified for Tailscale, VPN and local-network recognition; Windows is low priority (the user, 2026-11-07): no Windows-specific work, it uses the safe fallbacks (an unrecognised VPN is treated as local Wi-Fi and asked; the Wi-Fi answer is remembered per computer). If the same approach also works on Windows, that is a welcome bonus (the user: "if it can work, then that's fine … That's a bonus"), not a requirement | Desktop and node hosts | Checks on macOS and Linux; Windows only must not break |
 
 ## Data Continuity And Acceptable Loss
 
