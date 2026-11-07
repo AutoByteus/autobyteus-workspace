@@ -54,6 +54,16 @@ Web specs that exercise HTML sanitisation (DOMPurify) declare `// @vitest-enviro
 default happy-dom lets DOMPurify skip nodes, so injected markup survives there although a real DOM
 removes it.
 
+A web spec of code that runs after a component's setup (an event handler, code after an `await` or a
+lazy `import()`) mounts the component with a real router and Pinia and does not double a composable
+that calls `inject` (`useRoute`, `useRouter`, `useMobileNavigation`, `useWorkspaceToolReveal`):
+`inject` works only during setup, and a double hides a call made too late. The production bundle
+drops Vue's `inject()` warning, so such a call fails there without a hint.
+
+Renderer behavior that the phone (`/mobile`) also offers is proven on the phone bundle too: a case in
+`pnpm -C autobyteus-web test:e2e:mobile-shell` that performs the user's action there. A desktop probe
+or a dev server does not run the phone's routing or its production build.
+
 ## Choosing the path
 
 Start with the smallest layer that directly proves the change, then add the layer that

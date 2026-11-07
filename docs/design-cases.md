@@ -25,7 +25,7 @@ Principles 2 and 13.
 - **Why it mattered:** with the callback, refusal, timeout and partial failure had no single owner, and the next retry or queueing rule would have landed on whichever side someone touched first.
 - **Notice it by:** a function passed to one mechanism so it can reach another collaborator; an owner written "A + B". A chain of many coordinators with no main owner is a different mistake (Common Bad-Practice Pattern 2).
 
-### Case 2: One Entry Form Traced, Another Left Open (autobyteus-191, AR-003; autobyteus-278, AR-401; autobyteus-280, AR-002; autobyteus-303, AR-003, CR-003)
+### Case 2: One Entry Form Traced, Another Left Open (autobyteus-191, AR-003; autobyteus-278, AR-401; autobyteus-280, AR-002; autobyteus-303, AR-003, CR-003; autobyteus-427)
 
 Principle 1.
 
@@ -38,7 +38,8 @@ Principle 1.
 - **Again in autobyteus-303 (AR-003):** the design reused `RuntimeAvailabilityService` for "installed" across four agent runtimes. It checks something different for each: `which`/`--version` via `spawnSync` for Codex and Claude, `agy --help` + `agy models` for Antigravity (so a signed-out Antigravity was left out and the "sign-in could not be checked" rule could never apply), a version + help probe for Grok. Fix: one rule for all, the Agent Runtimes page's `strategy.readVersion(...) !== null`.
 - **Again in autobyteus-303 (CR-003, found by API/E2E):** AutoByteus models were taken from the factory's loaded list, traced for static providers only. Discovered providers (Ollama, LM Studio, custom endpoints) are loaded once per configuration by another path and not retried, so a local server serving 4 models was missing. Fix: the read reloads discovered providers through the catalog's own refresh, with a rule per provider kind.
 - **Again in backend-port-conflict-20261024 (AR-001):** D1 described backend SIGTERM → app.close as the desktop shutdown path, but Windows used taskkill and had no graceful application request. D2 adds a child-associated IPC request into the same backend close owner, with startup cancellation, result/exit confirmation and bounded forced fallback; the application request and fallback are implemented and independently reviewed. macOS packaged transport and deterministic Windows sequencing are verified; actual Windows/WSL execution remains untested. Merely waiting longer for taskkill would not invoke WSL/native cleanup.
-- **Notice it by:** one example standing for every entry form of a tool or API, or one kind ("a run") standing for several.
+- **Again in autobyteus-427:** a file link in a conversation opens on the desktop and on the phone through one opener, created lazily after a tap. The desktop path received its context-bound capability (`revealTool`) from the component's setup; the phone path took its own (`useMobileNavigation()`, vue-router `inject`) inside the opener, where no injection context exists, so every phone tap threw. Every test doubled `useMobileNavigation`, and no browser case tapped a conversation file on the phone. Fix: the component captures the phone navigation in setup and passes it to the opener, as it does `revealTool`. Lesson: code that runs after setup takes each context-bound capability as a value from the mounted component, for every form of the action.
+- **Notice it by:** one example standing for every entry form of a tool or API, or one kind ("a run") standing for several; a lazily created helper that calls an `inject`-based composable itself.
 
 ### Case 3: A Reader Of Derived Data Left Out (autobyteus-191, F-002; autobyteus-275, CR-002; autobyteus-269, F-001; autobyteus-278, F-005; autobyteus-280, AR-003)
 

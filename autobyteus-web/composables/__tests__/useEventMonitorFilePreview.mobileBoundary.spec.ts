@@ -1,13 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
-// Build-mode detection, external Apollo, the open target and the phone's navigation are doubled; the path mapper,
-// the workspace store and the launcher are production implementations.
+// Build-mode detection, external Apollo and the open target are doubled, and the phone's navigation is passed as a double;
+// the path mapper, the workspace store and the launcher are production implementations.
 vi.mock('~/utils/remoteAccess/mobileRuntime', () => ({ isMobileRemoteAccessRuntime: () => true }));
 vi.mock('~/composables/useLocalization', () => ({ useLocalization: () => ({ t: (key: string) => key }) }));
 const io = vi.hoisted(() => ({ query: vi.fn() }));
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => io }));
 const phone = vi.hoisted(() => ({ target: null as unknown, openFile: vi.fn(async () => undefined) }));
-vi.mock('~/composables/mobile/useMobileNavigation', () => ({ useMobileNavigation: () => ({ openFile: phone.openFile }) }));
 vi.mock('~/stores/activeContextStore', () => ({ useActiveContextStore: () => ({ get activeWorkspaceTarget() { return phone.target; } }) }));
 import { useEventMonitorFilePreview } from '../useEventMonitorFilePreview';
 import { useWorkspaceStore } from '~/stores/workspace';
@@ -18,6 +17,8 @@ const bridge = vi.fn();
 const action = (path: string) => ({ id: path, rawCandidate: path, normalizedCandidate: path,
   sourceKind: 'prose' as const, displayLabel: path, previewType: 'Text' as const });
 const metadataB = { data: { workspaceMetadata: { workspaceId: 'B', workspaceRootPath: '/owned/B', displayName: 'B', kind: 'filesystem' } } };
+const opener = (isOriginCurrent: () => boolean = () => true) =>
+  useEventMonitorFilePreview({ revealTool: null, mobileNavigation: { openFile: phone.openFile }, isOriginCurrent });
 const targetIn = (workspaceRootPath: string | null) => ({ context: { state: { runId: 'member-B' }, config: {} }, workspaceRootPath });
 
 beforeEach(() => {
@@ -32,7 +33,7 @@ describe('the phone: a conversation file link opens in the open agent\'s folder 
     it(`maps only an actual contained candidate: ${path}`, async () => {
       io.query.mockResolvedValue(metadataB);
       const open = vi.spyOn(useFileExplorerStore(), 'openFilePreview');
-      const result = await useEventMonitorFilePreview({ revealTool: null, isOriginCurrent: () => true }).openPath(action(path));
+      const result = await opener().openPath(action(path));
       expect(result.status).toBe(path === '/owned/B/brief.md' ? 'opened' : 'unavailable');
       expect(open).not.toHaveBeenCalled(); expect(bridge).not.toHaveBeenCalled();
       if (result.status === 'opened') expect(phone.openFile).toHaveBeenCalledExactlyOnceWith({ workspaceId: 'B', path: 'brief.md' });
@@ -42,7 +43,7 @@ describe('the phone: a conversation file link opens in the open agent\'s folder 
 
   it('a target without a folder on this node (a remote run) has no file to open here', async () => {
     phone.target = targetIn(null);
-    const result = await useEventMonitorFilePreview({ revealTool: null, isOriginCurrent: () => true }).openPath(action('/owned/B/brief.md'));
+    const result = await opener().openPath(action('/owned/B/brief.md'));
     expect(result.status).toBe('unavailable');
     expect(io.query).not.toHaveBeenCalled(); expect(phone.openFile).not.toHaveBeenCalled();
   });
@@ -50,7 +51,7 @@ describe('the phone: a conversation file link opens in the open agent\'s folder 
   it('resolves the folder by its root path and rejects an obsolete origin after the await', async () => {
     let settle!: (value: unknown) => void, current = true;
     io.query.mockReturnValue(new Promise(resolve => { settle = resolve; }));
-    const pending = useEventMonitorFilePreview({ revealTool: null, isOriginCurrent: () => current }).openPath(action('/owned/B/brief.md'));
+    const pending = opener(() => current).openPath(action('/owned/B/brief.md'));
     current = false;
     settle(metadataB);
     expect((await pending).status).toBe('failed');

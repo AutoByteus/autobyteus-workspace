@@ -9,7 +9,7 @@ import { mapAbsolutePathToWorkspaceRelative } from '~/utils/fileExplorer/absolut
 import { hasTrustedElectronLocalFileCapability } from '~/utils/fileExplorer/localFileCapability';
 import { isMobileRemoteAccessRuntime } from '~/utils/remoteAccess/mobileRuntime';
 import { normalizeWorkspaceRootPath } from '~/utils/workspaceMetadata';
-import { useMobileNavigation } from '~/composables/mobile/useMobileNavigation';
+import type { MobileFileNavigation } from '~/composables/mobile/useMobileNavigation';
 
 export type EventMonitorFilePreviewResult =
   | { status: 'opened'; path: string }
@@ -21,11 +21,12 @@ type EventMonitorPreviewLocator =
 
 export function useEventMonitorFilePreview(options: {
   revealTool: WorkspaceToolReveal | null;
+  /** The phone opens a conversation's file on its Files screen (autobyteus-277 DS-008); null off the phone. */
+  mobileNavigation: MobileFileNavigation | null;
   isOriginCurrent: () => boolean;
 }) {
   const fileExplorerStore = useFileExplorerStore();
-  // The phone opens a conversation's file on its Files screen (autobyteus-277 DS-008).
-  const mobileNavigation = isMobileRemoteAccessRuntime() ? useMobileNavigation() : null;
+  const { mobileNavigation } = options;
   const windowNodeContextStore = useWindowNodeContextStore();
   const workspaceStore = useWorkspaceStore();
   const activeContextStore = useActiveContextStore();

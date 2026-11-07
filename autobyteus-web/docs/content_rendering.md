@@ -138,8 +138,11 @@ existing `FileViewer` path with an
 explicit `source: 'event-monitor'` and `readOnly: true` intent. Existing file
 tabs are reused by the File Explorer store, and no artifact/reference row or
 persisted record is created. `AgentEventMonitor` captures the local workspace
-shell's reveal capability during setup and passes it into the lazy launcher;
-the launcher does not attempt injection from its asynchronous action handler.
+shell's reveal capability and, on the phone, the phone navigation
+(`useMobileNavigation()`, as the `mobileNavigation` option; `null` elsewhere)
+during setup and passes both into the lazy launcher. The launcher calls no
+`inject`-based composable itself: it runs after setup, from an asynchronous
+action handler, where `inject` returns nothing.
 Once content or an ordinary file error settles, the shell selects Files
 explicitly before mounting its tab host and reveals the fitting dock or its
 responsive drawer from that same activation. No second Files-strip click is
