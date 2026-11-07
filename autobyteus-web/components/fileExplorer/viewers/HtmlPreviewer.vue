@@ -5,7 +5,7 @@
       v-else
       :src="iframeSrc"
       class="absolute inset-0 w-full h-full border-none"
-      sandbox="allow-scripts allow-same-origin"
+      sandbox="allow-scripts"
       :title="$t('tools.components.fileExplorer.viewers.HtmlPreviewer.html_preview')"
     ></iframe>
   </div>
@@ -44,11 +44,8 @@ const buildBlobUrl = async () => {
   }
   iframeSrc.value = null
 
-  const baseUrl = window.location.origin
-  const htmlWithBase = `<base href="${baseUrl}/" />\n${props.content || ''}`
-
   await nextTick()
-  const blob = new Blob([htmlWithBase], { type: 'text/html' })
+  const blob = new Blob([props.content || ''], { type: 'text/html' })
   iframeSrc.value = URL.createObjectURL(blob)
 }
 

@@ -9,6 +9,10 @@ const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
+// Workspace files served for the HTML preview run sandboxed with an opaque origin wherever they
+// are opened, so a previewed page never gets this node's origin (and its rights).
+const PREVIEW_DOCUMENT_SANDBOX = "sandbox allow-scripts";
+
 export async function registerWorkspaceRoutes(app: FastifyInstance): Promise<void> {
   app.get<{
     Params: { workspaceId: string };
@@ -81,6 +85,7 @@ export async function registerWorkspaceRoutes(app: FastifyInstance): Promise<voi
       }
 
       const mimeType = lookupMime(absolutePath) || "application/octet-stream";
+      reply.header("Content-Security-Policy", PREVIEW_DOCUMENT_SANDBOX);
       reply.type(mimeType.toString());
       return reply.send(fs.createReadStream(absolutePath));
     } catch (error) {

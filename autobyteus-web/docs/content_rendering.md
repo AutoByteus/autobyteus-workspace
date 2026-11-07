@@ -321,17 +321,25 @@ global active-workspace store or from the file path alone.
   already-loaded content in a managed `Blob` URL. The adapter does not send
   the host absolute path to a workspace route. Blob URLs are revoked when the
   source changes or the viewer unmounts.
-- The iframe remains sandboxed with `allow-scripts allow-same-origin` for both
-  source strategies. Mobile workspace HTML continues to use the raw,
-  read-only mobile presentation described above rather than this rich iframe
-  path.
+- The iframe is sandboxed with `allow-scripts` only, for both source
+  strategies, so the previewed page has an opaque origin: it cannot reach the
+  app window, the preload API or app storage, and nodes refuse its requests.
+  The workspace static route also sends
+  `Content-Security-Policy: sandbox allow-scripts` on the files it serves.
+  Mobile workspace HTML continues to use the raw, read-only mobile
+  presentation described above rather than this rich iframe path.
+- Previewed pages run inline and classic scripts and load stylesheets, images
+  and CDN resources; relative module scripts, `fetch` of workspace files,
+  workspace web fonts, Web Workers and browser storage are unavailable. The
+  full contract is in
+  [File Explorer: HTML Preview Resource Contract](./file_explorer.md#html-preview-resource-contract).
 
 The backend static route remains the containment authority. An absolute path
 or traversal candidate must not be converted into a workspace static URL or
 used to bypass the workspace boundary; the server rejects such candidates
-without returning the outside file payload. Relative local HTML assets loaded
-from the existing Blob base may retain browser-origin limitations; changing
-that behavior requires a separate trusted-resource design.
+without returning the outside file payload. The Blob holds the content only
+and has no base URL, so relative resources of local HTML do not resolve;
+changing that behavior requires a separate trusted-resource design.
 
 ### Mermaid Support
 

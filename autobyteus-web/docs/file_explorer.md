@@ -223,15 +223,35 @@ selection is explicit:
   and any HTML file without workspace context is rendered from the content
   already loaded into a managed Blob URL. The absolute host path is never
   interpolated into a workspace static URL or sent to the server.
-- Both paths use the existing sandboxed iframe. Blob URLs are revoked when
+- Both paths render in one iframe with `sandbox="allow-scripts"` and nothing
+  else. The Blob holds the loaded content only. Blob URLs are revoked when
   content/source changes and when the viewer is unmounted.
+
+Previews run isolated. A previewed page has an opaque origin (`null`), never
+the app window's or a node's origin, so it cannot read or script the app
+window, call the preload API, or read the app's storage (including the phone
+credential), and the node refuses its WebSocket and API requests
+(`Origin: null`). The workspace static route also sends
+`Content-Security-Policy: sandbox allow-scripts` on every file it serves, so a
+workspace page runs isolated wherever its URL is opened, not only inside the
+preview. Do not add `allow-same-origin` (or popups, forms, modals or top
+navigation) to the preview iframe.
+
+What previewed pages can do: render, run inline and classic scripts, load
+stylesheets and images, including relative ones next to a workspace file, and
+load scripts, styles and images from other sites (CDN libraries). What they
+cannot do: load relative `type="module"` scripts, `fetch`/XHR the workspace's
+files, load web fonts from the workspace, start Web Workers, or use browser
+storage (`localStorage`, `sessionStorage`, IndexedDB) or cookies. Run complex
+UIs that need these from a server in the in-app browser instead.
 
 The server remains authoritative for static-route containment. Absolute or
 traversal candidates sent to the static route are rejected and must not expose
 an outside HTML payload. Do not restore path-only or global-active-workspace
-inference to select a static URL. Relative assets in local HTML retain the
-existing Blob-base limitation; expanding that behavior requires an approved
-follow-up resource/security design.
+inference to select a static URL. Relative resources of a Blob preview (local
+files, artifacts, references) do not resolve: the Blob has no base URL.
+Expanding that behavior requires an approved follow-up resource/security
+design.
 
 Event Monitor raw Markdown `file:` destinations use the same scoped capability
 as absolute-path candidates. Only empty-authority absolute URIs with valid
