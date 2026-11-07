@@ -167,3 +167,4 @@ All of "Not run" above, plus the existing browser probes that pair phones (now w
 - IR-002 (CR-001, Local Fix): `ConnectedPhones.vue` formatted "Last seen …" and "Revoked …" with the computer's locale (`undefined`), so a de_DE Mac showed German dates inside English sentences. Both now use the app's `resolvedLocale` from `useLocalization()`, as other Nodes components do. New `ConnectedPhones.spec.ts` stubs a German computer default and asserts the English and zh-CN rows. Classification unchanged: Large / High. Same OS-locale formatting elsewhere is FU-006 (code reviewer), not part of this fix.
 
 - Code review: `Pass`, CRR-001 for IR-001 ([code-review-report.md](code-review-report.md)); the code reviewer routed the package to API/E2E, including MSP-09. No implementation action.
+- Code review of IR-002: `Pass`, CRR-003 (CR-001 resolved). The code reviewer routed the package to API/E2E to rerun API-17. No implementation action.
