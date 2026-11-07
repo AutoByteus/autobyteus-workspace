@@ -34,6 +34,7 @@ import process from 'node:process';
 import { execFileSync, spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import { waitForDevServerReady } from './fixtures/dev-server-ready.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -328,6 +329,8 @@ try {
     await fs.rm(metadata);
     forgetMigration(alpha, '20261024_memory_sync_source_id_names');
     await alpha.start();
+    // The dev server proxies alpha and may restart after alpha went away: navigate once it answers again.
+    await waitForDevServerReady(frontendUrl);
     phase = 'NVP-05';
     await page.goto(`${frontendUrl}/nodes?nodeTab=memorySync`, { waitUntil: 'domcontentloaded' });
     await page.locator('[data-testid="node-manager-panel-memorySync"]').waitFor({ state: 'visible', timeout: 60_000 });
