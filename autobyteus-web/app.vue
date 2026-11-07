@@ -34,6 +34,8 @@ import { ServerStatus } from '~/types/serverStatus'
 import { useAgentPackageDefinitionChangeFeed } from '~/composables/agentPackages/useAgentPackageDefinitionChangeFeed'
 import { useUpdateNotificationChangeFeed } from '~/composables/notifications/useUpdateNotificationChangeFeed'
 import { isFeatureAvailableInRuntime } from '~/utils/mobileFeatureGates'
+import { isMobileRemoteAccessRuntime } from '~/utils/remoteAccess/mobileRuntime'
+import { useMobileNodeSessionStore } from '~/stores/mobileNodeSessionStore'
 
 const config = useRuntimeConfig()
 const serverStore = useServerStore()
@@ -43,7 +45,12 @@ const isAppReady = computed(() =>
   !isEmbeddedWindow.value || serverStore.status === ServerStatus.RUNNING
 )
 // Agents, Teams, Orgs, packages and the `@` menus follow agent package definition changes without a page reload.
-useAgentPackageDefinitionChangeFeed(isAppReady)
+// The phone opens the feed only while it has a paired session (to the paired node, with its credential).
+const mobileNodeSession = useMobileNodeSessionStore()
+const definitionFeedEnabled = computed(() =>
+  isAppReady.value && (!isMobileRemoteAccessRuntime() || mobileNodeSession.isPaired)
+)
+useAgentPackageDefinitionChangeFeed(definitionFeedEnabled)
 // Update notifications live where Settings does (desktop and browser windows, not the mobile client).
 const showsNotifications = computed(() => isFeatureAvailableInRuntime('desktopSettings'))
 useUpdateNotificationChangeFeed(computed(() => isAppReady.value && showsNotifications.value))
