@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-012`
+- Current solution revision ID: `SR-013` (round 2 after ARCH-REV-001; SR-012 was round 1)
 - Approved requirements baseline: [requirements-doc.md](requirements-doc.md) at SR-011, `Approved`: the user's approval of the UI/UX design ("if things are consistant. then i approve", 2026-11-07) plus the Solution Designer within his direction. SR-012 adds DEC-019…DEC-021, which simplify the design without a visible change (below).
 - Behavior-defining supplement: the Product Team's UI/UX spec `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/one-step-phone-pairing/ui-ux-spec.md` (Approved; UI reference `d2e960cc`, record `34677c88`), VIS-001…VIS-034, UXJ-001…008, TR-001…018. Its texts are normative.
 - User approval of the design: `Obtained`. The user, 2026-11-07, in the Solution Designer's conversation, answering "Shall I go ahead?": "I trust that you can make reasonable decisions. For this ticket, we need to release a beta. since for my codex i dont have limit now, i waive for codex if delivery engineer asks".
@@ -44,9 +44,9 @@
   - **A new persisted file and additive record fields.**
 - Escalation trigger:
   - **Detection:** detection on Linux cannot tell Tailscale, VPN or bridge interfaces apart by the rules below.
-  - **Tailscale Serve:** Serve refuses the HTTPS port rule (U-006).
+  - **Tailscale Serve:** Serve refuses the HTTPS port rule 8443…8542 (U-006).
   - **The 403 Origin rule** blocks the desktop's address checks.
-  - **The Android bridge** needs a new permission.
+  - **The Android bridge:** it needs a new permission, or `WEB_MESSAGE_LISTENER` is missing on supported phones.
 
   Any of these returns to the Solution Designer as `Design Impact`.
 
@@ -80,6 +80,8 @@ One node-side owner reports this computer's network facts. A desktop-side compos
   - `RemoteAccessStatus` without `serverName`: Android `ConnectionValidator`, `MainActivity` and the disabled message use the entry's name; `/mobile` `MobilePairedShell` uses the session's node name. iOS `ConnectionValidator.swift` decodes it with a default and stays unchanged (out of scope, FU-001).
   - The pairing session gains `connectionWay`, which the device record carries. The desktop phones list shows it. `/rest/remote-access/devices` and `/devices/revoked` summaries gain it.
   - Address candidates removed: only `phoneAccessStore` read the route.
+  - The pairing-session POST answer gains `sessionId`; only the desktop store reads it.
+  - Android build gains `androidx.webkit` (library); the manifest is unchanged (`MainActivityManifestTest`).
 - **Deliberately left alone:**
   - `server-addressing/server-address-candidate-service.ts`, still used by Memory Sync and Remote Collaboration; its private-IP helpers duplicate the new ranges file (FU-003).
   - Least-privilege phone authorization and the credential in page storage (future tickets).
@@ -184,7 +186,7 @@ One node-side owner reports this computer's network facts. A desktop-side compos
 | DS-001 | Primary | BEH-001, 003 | Phone Setup opens (desktop or remote window) | Tabs with ready ways and Recommended | `phoneAccessStore` | Detection → ways |
 | DS-002 | Primary | BEH-002 | Phone Setup opens in a local Docker node's window | Same | `phoneAccessStore` | Host facts come from the embedded node |
 | DS-003 | Primary | BEH-001…003 | "Show QR code" / "Allow and show QR code" | QR with timer | `phoneAccessStore` → node `RemoteAccessPairingService` | Code per way |
-| DS-004 | Primary | BEH-004, 005 | App Scan / node row tap | Node page paired / Can't reach | Android `NodeConnectionFlow` | Connect without questions |
+| DS-004 | Primary | BEH-004, 005 | Each app entry form (table "Android entry forms") | Node page paired / Can't reach | Android `NodeConnectionFlow` | Connect without questions |
 | DS-005 | Primary | BEH-004 | Page loaded with `?pairing=` | Session saved, run list | `/mobile` `mobileNodeSessionStore` | Exchange in the page's origin |
 | DS-006 | Primary | BEH-005 | Node sheet › Switch node | App's node list | Android `MainActivity` via bridge | Switch from inside |
 | DS-007 | Primary | BEH-006 | Revoke / Revoke all / History | Lists updated | `phoneAccessStore` → `PairedDeviceService` | Unchanged semantics, way shown |
@@ -194,10 +196,56 @@ One node-side owner reports this computer's network facts. A desktop-side compos
 
 - DS-001: `PhonesPanel (mount) -> phoneAccessStore.load -> node GET /rest/remote-access/network + /status + /settings + /devices -> NodeNetworkService -> phoneConnectionWays.compose (candidates per way) -> address check (GET <candidate>/rest/remote-access/status, nodeId match) -> ways with readiness -> PhonesPanel tabs`
 - DS-002: `PhonesPanel -> phoneAccessStore.load -> Docker node GET /network (runsInContainer: true) -> embedded node GET /network (host facts) -> phoneConnectionWays.compose(host facts, Docker node's port) -> address check against the Docker node's nodeId -> tabs (or "isn't reachable from other devices")`
-- DS-003: `PhoneWayTab "Show QR code" -> phoneAccessStore.showCode(way) -> [PUT /settings phoneAccessEnabled=true when off] -> [PUT <facts owner>/network/local-networks/:networkId allowed=true when first time] -> POST /pairing-sessions {serverBaseUrl, serverName, connectionWay, trustedPrivateHttpAcknowledged} -> RemoteAccessPairingService.createPairingSession -> validatePairingServerBaseUrl -> session in memory -> {payload, qrText} -> PhoneCodeBlock (QR, timer)`; Close / tab switch / New code / switch off → `DELETE /pairing-sessions/:pairingCode`.
-- DS-004: `ScanScreen (decoded text) -> NodeConnectionFlow.connect(text) -> PairingLinkParser -> ConnectingScreen -> ConnectionValidator (status of the QR address) -> SavedNodeStore.saveEntry(name from QR) -> WebShell opens <address>/mobile?pairing=… -> page DS-005`; failure → `CantReachScreen(reason)`.
-- DS-005: `MobilePairingBootstrap (pairing param) -> [in app: AutoByteusShell.deviceName(); auto] / [browser: "Connect to <node>"] -> mobileNodeSessionStore.pairWithPayload (POST <page origin>/rest/remote-access/pairing-exchanges) -> RemoteAccessPairingService.exchangePairingCode -> PairedDeviceService.createDevice(connectionWay) -> session {nodeName} saved -> run list`
-- DS-006: `MobileConnectionSheet "Switch node" -> AutoByteusShell.showNodeList() -> MainActivity (UI thread) -> StartScreen in switch mode (current node marked) -> NodeConnectionFlow.open(entry)`
+- DS-003: `PhoneWayTab "Show QR code" -> phoneAccessStore.showCode(way) -> [PUT /settings phoneAccessEnabled=true when off] -> [PUT <facts owner>/network/local-networks/:networkId allowed=true when first time] -> POST /pairing-sessions {serverBaseUrl, serverName, connectionWay, trustedPrivateHttpAcknowledged} -> RemoteAccessPairingService.createPairingSession -> validatePairingServerBaseUrl -> session in memory -> {payload, qrText} -> PhoneCodeBlock (QR, timer)`; Close / tab switch / New code / switch off → `DELETE /pairing-sessions/:sessionId` (the opaque ID from POST).
+- DS-004: `ScanScreen / Paste a link / shared text (decoded text) -> NodeConnectionFlow.connect(text) -> PairingLinkParser -> ConnectingScreen -> ConnectionValidator (status of the QR address) -> WebShell opens <address>/mobile?pairing=… -> page DS-005 -> bridge {type:"paired", nodeName} -> NodeConnectionFlow saves the entry (name from the QR) -> run list`; failure before the page → `CantReachScreen(reason)`; failure in the page → the page's can't-reach state (nothing saved). Saved-entry opens (app start, row tap, Switch node pick) skip parsing and saving.
+- DS-005: `MobilePairingBootstrap (pairing param) -> [in app: shell bridge present → hello → {deviceName}; pair at once] / [browser: "Connect to <node>"] -> mobileNodeSessionStore.pairWithPayload (POST <page origin>/rest/remote-access/pairing-exchanges) -> RemoteAccessPairingService.exchangePairingCode -> PairedDeviceService.createDevice(connectionWay) -> session {nodeName} saved -> [in app: bridge post {type:"paired", nodeName}] -> run list`
+- DS-006: `MobileConnectionSheet "Switch node" -> shell bridge post {type:"showNodeList"} -> MainActivity (UI thread, main frame of the open node's origin only) -> StartScreen in switch mode (current node marked) -> NodeConnectionFlow.open(entry)`
+
+### Way composition per node kind (round 2, AR-002)
+
+`phoneConnectionWays.compose({ target, targetEntry, hostFacts })` builds, per way, an ordered list of candidate base URLs; the store checks each (`GET <url>/rest/remote-access/status`, 2 s, `nodeId` equal to the target's) and uses the first that passes. The port is always the port of the target's base URL in the desktop's registry.
+
+| Node kind (how recognised) | Facts used | Company address | Tailscale | Your VPN | Same Wi-Fi or LAN (allowed answer kept by) |
+| --- | --- | --- | --- | --- | --- |
+| Desktop's own node (embedded entry) | its `NodeNetwork` | `configuredBaseUrl` | `https://<dnsName>` (443), then `http://<tailscale address>:<port>` | `http://<vpn address>:<port>` each | `http://<local address>:<port>` default-route first (embedded node) |
+| Local Docker node (`runsInContainer` and loopback base URL) | the embedded node's `NodeNetwork` (host facts) + its own `configuredBaseUrl` | its `configuredBaseUrl` | `https://<dnsName>:<its Serve port>`, then `http://<host tailscale address>:<port>` | host VPN addresses with `<port>` | host local addresses with `<port>` (embedded node) |
+| Remote node not in a container | its own `NodeNetwork` | its `configuredBaseUrl` | as the desktop's own node, with its facts | its VPN addresses | its local addresses (that remote node) |
+| Remote node in a container (facts empty) | its `configuredBaseUrl` + the desktop's base URL for it | its `configuredBaseUrl` | the desktop's base URL when its host ends in `.ts.net` | — | the desktop's base URL when its host is a private IPv4 or an unconfirmed `100.64/10` address; network ID `this-computer` (that remote node) |
+| Any remote node: the desktop's base URL for it | classified by its host | an `https://` DNS name that is not `.ts.net` | a `.ts.net` host | — | a private IPv4 / unconfirmed `100.64/10` host; an `http://` DNS name |
+
+- A candidate equal to one already listed is not repeated.
+- A typed company address ("Use this address") goes through the same node-ID check (REQ-003). If it does not reach the node, no code is made and the tab shows "This address doesn't reach <node name>." (DEC-022). A typed plain `http://` address is the user's explicit choice (DEC-021) and is sent with the acknowledgement; the node's URL policy still refuses public HTTP.
+- `configuredBaseUrl` is kept for a node in a container: a company address set on a Docker deployment (`AUTOBYTEUS_SERVER_HOST`) is rank 0. A loopback value is dropped; any other wrong value fails the node-ID check.
+- The QR name (DEC-016): the embedded node → host `computerName`; any other node → its registry entry name. The store picks it.
+
+### Android entry forms (round 2, AR-006)
+
+| Entry form | Input | HTTP acknowledged | Pairs in the page | Saved when |
+| --- | --- | --- | --- | --- |
+| Scan (the app's scanner) | Pairing link | Yes (a code exists only if the node's owner made it) | At once | The page reports `paired` |
+| Paste a link | Pairing link | Yes | At once | Same |
+| Shared text (`ACTION_SEND` from another app) | Pairing link | Yes | At once (DEC-023: sharing into the app is a deliberate act, like pasting) | Same |
+| Type an address | Plain address, no code | Only with the sheet's tick | Not applicable: the page opens unpaired and shows its "Connect this phone" state | When the address answers (as today) |
+| App start | Last used saved entry | Already decided | Not applicable | Already saved |
+| Node row tap / Switch node pick | Saved entry | Already decided | Not applicable | Already saved |
+
+Shared text that is not a pairing link goes to the Type an address sheet, pre-filled.
+
+**Failed exchange.** The page shows the spec's can't-reach screen layout itself, with "Scan again" (bridge `startScan`) and the back arrow (bridge `showNodeList`). Nothing was saved, so nothing is removed. Error codes map to the spec's reasons:
+
+| Server answer | Reason shown |
+| --- | --- |
+| `REMOTE_ACCESS_PAIRING_EXPIRED` | "This code has expired. Make a new one on your computer." |
+| `REMOTE_ACCESS_PAIRING_CONSUMED` | "This code was already used. Make a new one on your computer." |
+| `REMOTE_ACCESS_PAIRING_INVALID` (closed or replaced on the desktop, or unknown) | "This code has expired. Make a new one on your computer." |
+| `PHONE_ACCESS_DISABLED` | The existing "<node> is reachable, but Phone access is off" text (`ConnectionDiagnosticMapper.phoneAccessDisabled`) |
+| Network failure | "<node> didn't answer. Check that the computer is on and awake." |
+
+Before the page loads, `NodeConnectionFlow` maps:
+- an unreachable address → "Connect to the same Wi-Fi or VPN as the computer, or turn on Tailscale." with "Open Tailscale";
+- an unparseable text → "That isn't an AutoByteus QR code."
+
+**List reachability.** `NodeReachability` runs `ConnectionValidator` for every saved entry in parallel when the list opens. Rows show "Checking…" until each answers, then "Online" or "Not reachable". It is cancelled when the list closes.
 
 ## Spine Narratives (Mandatory)
 
@@ -206,7 +254,7 @@ One node-side owner reports this computer's network facts. A desktop-side compos
 | DS-001 | The panel loads the node's network facts and status. The composer builds each way's addresses with the node's port. Each address is checked in parallel (2 s timeout) for the same node ID. A way is ready when one address passes. The best ready way is pre-selected | Store, NodeNetworkService, composer, check | `phoneAccessStore` | Interface classifier, network ID, computer name |
 | DS-002 | The Docker node says it runs in a container and its base URL is loopback, so it is on this computer. The store asks the embedded node for this computer's facts and composes them with the Docker node's published port. Checks compare with the Docker node's ID. None passing while the host has ways gives "isn't reachable from other devices" | Same + embedded node | `phoneAccessStore` | — |
 | DS-003 | The button turns phone access on if needed, records the allowed local network on the computer that owns it when first asked, then creates a session for the way's best checked address. Closing or changing discards it on the node | Store, pairing service | `phoneAccessStore` (desktop), `RemoteAccessPairingService` (node) | URL policy |
-| DS-004 | The app parses the QR and checks the address answers. It saves the entry under the QR's name and opens the page with the pairing link. If nothing answers it shows the plain reason | Flow, parser, validator, store | `NodeConnectionFlow` | Diagnostic mapper |
+| DS-004 | The app parses the link and checks the address answers, then opens the page with the pairing link. The entry is saved under the QR's name only when the page reports a successful pairing through the bridge, so a failed code leaves nothing behind. If nothing answers it shows the plain reason | Flow, parser, validator, store | `NodeConnectionFlow` | Diagnostic mapper, `NodeReachability` |
 | DS-005 | The page exchanges the code against its own origin. In the app it uses the bridge's device name, with no tap. In a browser, one tap | Bootstrap, session store, pairing service | `mobileNodeSessionStore` | Shell bridge client |
 | DS-006 | The page asks the app to show its node list. The app shows it with the current node marked. A tap connects through DS-004 without a pairing link | Sheet, bridge, activity, flow | `MainActivity` | — |
 | DS-007 | Unchanged routes; rows show the way | Store, device service | `PairedDeviceService` | — |
@@ -230,7 +278,8 @@ One node-side owner reports this computer's network facts. A desktop-side compos
 | `PairedDeviceService` (server) | Devices; stores `connectionWay` |
 | `mobileNodeSessionStore` (page) | Exchange against its origin; session with `nodeName` |
 | `NodeConnectionFlow` (Android) | The connect sequence: parse → check → save → open; reasons |
-| `ShellBridge` (Android) | The four bridge methods; nothing else |
+| `ShellBridge` (Android) | The web message listener for the open node's origin; accepts four message types from the main frame only; replies with `{nodeCount, deviceName}`; nothing else |
+| `NodeReachability` (Android) | Parallel status checks of saved entries for the list (Checking… / Online / Not reachable), with `ConnectionValidator`, cancelled when the list closes |
 
 ## Thin Entry Facades / Public Wrappers (If Applicable)
 
@@ -274,20 +323,20 @@ One node-side owner reports this computer's network facts. A desktop-side compos
 | Concern | Spine | Serves | Responsibility | Why | Risk If On Main Line |
 | --- | --- | --- | --- | --- | --- |
 | `network-interface-classifier.ts` | DS-008 | `NodeNetworkService` | Pure rules (below) | Testable without a machine | Rules mixed with I/O |
-| `local-network-identity.ts` | DS-008 | `NodeNetworkService` | Gateway hardware address → `gw_<sha256 first 16 hex>`; macOS `route -n get default` + `arp -n` (`execFile`, 1 s timeout); Linux `/proc/net/route` + `/proc/net/arp`; otherwise or on failure `this-computer` | Per-OS detail | — |
+| `default-route.ts` | DS-008 | `NodeNetworkService` | The default route: its interface name and the gateway's hardware address (macOS `route -n get default` + `arp -n`, `execFile`, 1 s timeout; Linux `/proc/net/route` + `/proc/net/arp`; otherwise none). `networkId` = `gw_<sha256 first 16 hex>` of the hardware address, or `this-computer` | Per-OS detail; one read serves both the network ID and the address order (AR-004) | — |
 | `computer-name.ts` | DS-008 | `NodeNetworkService` | macOS `scutil --get ComputerName`; else `os.hostname()` without `.local` | DEC-016 | — |
 | `ip-address-ranges.ts` | DS-008, DS-003 | Classifier, URL policy | IPv4 parse, private ranges, Tailscale range, link-local | One copy in remote-access (pairing-url-policy imports it) | — |
 | `allowed-local-network-store.ts` | DS-003 | `NodeNetworkService` | JSON file | Persistence | — |
 | `tailscaleServeCommand.ts` (web) | DS-001 | Tailscale tab | The optional command per OS and port | Text only | — |
-| Shell bridge client (`utils/remoteAccess/shellBridge.ts`, web) | DS-005, DS-006 | Page | Typed access to `window.AutoByteusShell`; `null` in a browser | One place knows the bridge | — |
+| Shell bridge client (`utils/remoteAccess/shellBridge.ts`, web) | DS-005, DS-006 | Page | Wraps the injected `window.AutoByteusShell` web-message object: `hello()` → `{nodeCount, deviceName}`, `paired(nodeName)`, `showNodeList()`, `startScan()`; `null` in a browser | One place knows the bridge | — |
 | `ConnectionDiagnosticMapper.kt` | DS-004 | Flow | Spec reasons | Exists | — |
 
 **Classifier rules** (IPv4 only; IPv6 never offered):
 
-1. Excluded: internal; link-local `169.254/16`; public; names starting `docker`, `br-`, `veth`, `virbr`, `vmnet`, `vboxnet`, `cni`, `flannel`, `bridge`, `awdl`, `llw`, `anpi`.
-2. Tailscale: in `100.64.0.0/10` and (no hardware address, or name `tailscale*`). The DNS name is the reverse name when it ends in `.ts.net`, else `null`.
-3. VPN: private (`10/8`, `172.16/12`, `192.168/16`) with no hardware address.
-4. Local network: private with a hardware address.
+1. Excluded: internal; link-local `169.254/16`; public; names starting `docker`, `br-`, `veth`, `virbr`, `vmnet`, `vmenet`, `vboxnet`, `vnic`, `lxcbr`, `lxdbr`, `incusbr`, `cni`, `flannel`, `bridge`, `awdl`, `llw`, `anpi`.
+2. Tailscale (confirmed, DEC-003): in `100.64.0.0/10` and either its reverse name ends in `.ts.net` (lookup through a `dns.Resolver` with `timeout: 1000, tries: 1`) or the interface name starts with `tailscale`. The DNS name is the reverse name when it ends in `.ts.net`, else `null`. An unconfirmed `100.64/10` address with no hardware address is a local-network address (asked, DEC-003: "unconfirmed 100.x stays home network").
+3. VPN: private (`10/8`, `172.16/12`, `192.168/16`) with no hardware address, in the order the OS lists them.
+4. Local network: private with a hardware address, plus unconfirmed `100.64/10` tunnel addresses (rule 2). Order: the default-route interface's address first, then the rest in OS order. Because every host address reaches the node, the first passing one (the default-route address on a normal machine) is used (AR-004).
 
 Anything else is excluded. A `100.64/10` address with a hardware address is carrier-grade NAT and is excluded.
 
@@ -322,18 +371,18 @@ Anything else is excluded. A `100.64/10` address with a hardware address is carr
 | `GET /rest/remote-access/network` (owner) | This node's computer network | Returns `NodeNetwork` | — | Container: `tailscale: null, vpnAddresses: [], localNetwork: null` |
 | `PUT /rest/remote-access/network/local-networks/:networkId` (owner) body `{ allowed: boolean }` | One local network of this computer | Allow / forget | `networkId` (`gw_…` or `this-computer`) | 400 for another shape |
 | `POST /rest/remote-access/pairing-sessions` (owner) body adds `connectionWay` (required, one of four) | A new code | Unchanged otherwise | — | 400 `REMOTE_ACCESS_PAIRING_WAY_INVALID` |
-| `DELETE /rest/remote-access/pairing-sessions/:pairingCode` (owner) | One open code | Discard | `pairingCode` | 204 even when unknown |
+| `DELETE /rest/remote-access/pairing-sessions/:sessionId` (owner) | One open code | Discard | `sessionId` (`pss_<32 hex>`, returned by POST; opaque, never the code) | 204 even when unknown; nothing secret in the path (AR-005) |
 | `GET /rest/remote-access/status` (public) | Node status | Drops `serverName` | — | `nodeId`, `phoneAccessEnabled`, `pairingAvailable` stay |
 | `PairedDeviceSummary.connectionWay: ConnectionWay \| null` | Device | Display | — | — |
 | QR payload | Pairing | **Unchanged** `{version:1, serverBaseUrl, pairingCode, expiresAt, serverName}` | — | `serverName` = the desktop's name for the node (DEC-016) |
-| `window.AutoByteusShell` (Android, `@JavascriptInterface`) | The app | `nodeCount(): Int`, `deviceName(): String` (`Build.MODEL`), `showNodeList()`, `startScan()` | — | No credential, no entry data |
+| `window.AutoByteusShell` (Android, androidx.webkit `WebViewCompat.addWebMessageListener`, allowed origin = the open entry's origin) | The app | Page → app messages: `{type:"hello"}` (reply `{type:"shell", nodeCount, deviceName}`), `{type:"paired", nodeName}`, `{type:"showNodeList"}`, `{type:"startScan"}`. The listener ignores messages with `isMainFrame == false` or another source origin; opaque-origin preview frames get no object | — | No credential, no entry data; `androidx.webkit` is a library, not a permission (AR-001) |
 
 ```ts
 type ConnectionWay = 'company_address' | 'tailscale' | 'vpn' | 'local_network';
 type NodeNetwork = {
   computerName: string;
   runsInContainer: boolean;
-  configuredBaseUrl: string | null;        // AUTOBYTEUS_SERVER_HOST, null when loopback or in a container
+  configuredBaseUrl: string | null;        // AUTOBYTEUS_SERVER_HOST unless loopback; also set for a node in a container (a company address on a Docker deployment); checked by node ID like every address
   tailscale: { address: string; dnsName: string | null } | null;
   vpnAddresses: string[];
   localNetwork: { networkId: string; addresses: string[]; allowed: boolean } | null;
@@ -346,7 +395,7 @@ type NodeNetwork = {
 | --- | --- | --- | --- | --- |
 | `/network` | Yes | Yes | Low | — |
 | `/network/local-networks/:networkId` | Yes | Yes | Low | — |
-| `DELETE /pairing-sessions/:pairingCode` | Yes | Yes | Low | — |
+| `DELETE /pairing-sessions/:sessionId` | Yes | Yes | Low | — |
 | Shell bridge | Yes (app shell actions) | N/A | Low | Four methods only |
 
 ## Main Domain Subject Naming Check
@@ -414,23 +463,23 @@ See Target Mapping (one table, to avoid two lists).
 | --- | --- | --- | --- | --- |
 | `autobyteus-server-ts/src/remote-access/services/node-network-service.ts` | Add | `NodeNetworkService` | `getNodeNetwork()`, `setLocalNetworkAllowed(networkId, allowed)` | Way policy |
 | `…/remote-access/services/network-interface-classifier.ts` | Add | off-spine | Pure rules above | I/O |
-| `…/remote-access/services/local-network-identity.ts` | Add | off-spine | Network ID per OS | — |
+| `…/remote-access/services/default-route.ts` | Add | off-spine | Default-route interface and gateway hardware address; network ID | — |
 | `…/remote-access/services/computer-name.ts` | Add | off-spine | Computer name | — |
 | `…/remote-access/services/ip-address-ranges.ts` | Add | off-spine | IPv4 helpers | — |
 | `…/remote-access/stores/allowed-local-network-store.ts` | Add | store | `allowed-local-networks.json` | — |
 | `…/remote-access/services/pairing-url-policy.ts` | Modify | URL policy | Import ranges; rules unchanged | — |
-| `…/remote-access/services/remote-access-pairing-service.ts` | Modify | sessions | `connectionWay`; `discardSession(code)`; discard all on disable (subscribe in constructor) | — |
+| `…/remote-access/services/remote-access-pairing-service.ts` | Modify | sessions | `connectionWay`; opaque `sessionId`; `discardSession(sessionId)`; discard all on disable (subscribe in constructor); a consumed session is kept until it expires so a second use answers `REMOTE_ACCESS_PAIRING_CONSUMED` (today it is deleted at once, line 134, and answers INVALID) | — |
 | `…/remote-access/services/paired-device-service.ts`, `stores/paired-device-store.ts` | Modify | devices | `connectionWay` | — |
 | `…/remote-access/domain/models.ts` | Modify | types | `ConnectionWay`, `NodeNetwork`; remove candidate types; session/device fields; error code `REMOTE_ACCESS_PAIRING_WAY_INVALID` | — |
 | `…/remote-access/services/address-candidate-service.ts` | Remove | — | — | — |
 | `…/api/rest/remote-access.ts` | Modify | routes | Status without `serverName`; `/network`, `/network/local-networks/:networkId`, `DELETE /pairing-sessions/:pairingCode`; drop `/address-candidates` | — |
-| `…/api/security/remote-access-route-policy.ts` | Modify | policy | Owner class for the new paths (`/rest/remote-access/network`, `^/rest/remote-access/network/local-networks/[^/]+$`, `^/rest/remote-access/pairing-sessions/[^/]+$`); drop candidates | — |
+| `…/api/security/remote-access-route-policy.ts` | Modify | policy | Owner class for the new paths (`/rest/remote-access/network`, `^/rest/remote-access/network/local-networks/[^/]+$`, `^/rest/remote-access/pairing-sessions/pss_[0-9a-f]+$`); drop candidates | — |
 | `autobyteus-server-ts/docs/features/remote_access.md` | Modify | docs | Routes, network facts, ways, discard | — |
 | `autobyteus-web/types/remoteAccess.ts` | Modify | types | `ConnectionWay`, `NodeNetwork`, device way; remove candidate types and status `serverName`; session `nodeName` | — |
 | `autobyteus-web/utils/phoneAccess/phoneConnectionWays.ts` | Add | policy | Compose ways (see example) | Requests |
-| `autobyteus-web/utils/phoneAccess/tailscaleServeCommand.ts` | Add | text | `<tailscale> serve --bg <port>` for the embedded node (HTTPS 443); `--bg --https=<port+10000> <port>` for others; macOS path `/Applications/Tailscale.app/Contents/MacOS/Tailscale`, else `tailscale` | `serve reset` |
+| `autobyteus-web/utils/phoneAccess/tailscaleServeCommand.ts` | Add | text | `<tailscale> serve --bg <port>` for the embedded node (HTTPS 443); for another node on this computer `--bg --https=<p> <port>` with `p = 8443 + k`, `k` = the node's position among this desktop's non-embedded entries on this computer ordered by port (0-based), so `p` is in 8443…8542, distinct per node, never above 65535 (AR-007); macOS path `/Applications/Tailscale.app/Contents/MacOS/Tailscale`, else `tailscale` | `serve reset` |
 | `autobyteus-web/utils/phoneAccessRemoteNode.ts` | Modify | check | Timeout signal | — |
-| `autobyteus-web/stores/phoneAccessStore.ts` | Replace | `phoneAccessStore` | DS-001…003, 007 | Way rules |
+| `autobyteus-web/stores/phoneAccessStore.ts` | Replace | `phoneAccessStore` | DS-001…003, 007; picks the QR `serverName` (DEC-016: the embedded node → `NodeNetwork.computerName` of the host facts; other nodes → their registry entry name) | Way rules |
 | `autobyteus-web/components/settings/phone/PhonesPanel.vue` | Add | view | Header switch, blocked message, tabs (WAI-ARIA), phones | — |
 | `…/phone/PhoneWayTab.vue` | Add | view | Status, buttons, local-network card/row, company field, How it works, Advanced | — |
 | `…/phone/PhoneCodeBlock.vue` | Add | view | QR, result line, timer, Close/New code, footnote, About | — |
@@ -438,20 +487,22 @@ See Target Mapping (one table, to avoid two lists).
 | `autobyteus-web/components/settings/NodeManager.vue` | Modify | view | Mount `PhonesPanel` | — |
 | Removed web files | Remove | — | Listed in Removal Plan | — |
 | `autobyteus-web/localization/messages/{en,zh-CN}/settings.ts` | Modify | i18n | New keys; old removed | — |
-| `autobyteus-web/utils/remoteAccess/shellBridge.ts` | Add | bridge client | `getShellBridge(): ShellBridge \| null` | — |
+| `autobyteus-web/utils/remoteAccess/shellBridge.ts` | Add | bridge client | `getShellBridge(): ShellBridge \| null` over the web-message object | — |
 | `autobyteus-web/components/mobile/MobilePairingBootstrap.vue` | Modify | page | Spec page; auto-pair in app; Connecting/Connected/expired/used states in the app with "Scan again" → `startScan()` | — |
 | `autobyteus-web/stores/mobileNodeSessionStore.ts` | Modify | session | Pair against the page's own origin; save `nodeName`; parse `?pairing=` | — |
 | `autobyteus-web/components/mobile/MobilePairedShell.vue` | Modify | page | Node name from session (host fallback) | — |
 | `autobyteus-web/components/mobile/connection/MobileConnectionSheet.vue` | Modify | page | Spec sheet; Switch node row when bridge present; "Unpair from <node>" (DEC-018) | Peers |
 | `autobyteus-android/.../shell/NodeConnectionFlow.kt` | Add | flow | DS-004 | Views |
-| `…/web/ShellBridge.kt` | Add | bridge | Four `@JavascriptInterface` methods | Credentials |
+| `…/web/ShellBridge.kt` | Add | bridge | Web message listener (origin rule, main frame), four message types, reply | Credentials |
+| `…/shell/NodeReachability.kt` | Add | list checks | Parallel `ConnectionValidator` checks for the list | Views |
+| `autobyteus-android/app/build.gradle.kts` | Modify | build | `androidx.webkit:webkit` (library; the manifest gains no permission) | — |
 | `…/web/AutoByteusWebView.kt` | Modify | WebView | Register bridge | — |
 | `…/ui/start/StartScreen.kt`, `NodeRow.kt` | Add | view | Start screen and Switch node mode (VIS-018…021, 028, 034) | — |
 | `…/ui/connect/ScanScreen.kt`, `ConnectingScreen.kt`, `CantReachScreen.kt` | Add | view | VIS-024…027 | — |
 | `…/ui/sheets/TypeAddressSheet.kt`, `RemoveNodeSheet.kt` | Add | view | VIS-022, 023 (DEC-017 text) | — |
 | `…/ui/ConnectionScreen.kt` | Remove | — | — | — |
 | `…/MainActivity.kt` | Modify | activity | Screen switching; delegates to the flow | Connect logic |
-| `…/shell/ConnectionInputResolver.kt`, `QrScanCoordinator.kt` | Modify | input, permission | Pairing payload = acknowledged; typed HTTP needs the sheet's tick; scanner launch → ScanScreen | — |
+| `…/shell/ConnectionInputResolver.kt`, `QrScanCoordinator.kt` | Modify | input, permission | Per the entry-form table: a parsed pairing payload is acknowledged; a typed plain `http://` address needs the sheet's tick; scanner launch → ScanScreen | — |
 | `…/connection/ConnectionValidator.kt`, `ConnectionDiagnosticMapper.kt` | Modify | check, texts | No `serverName`; spec reasons | — |
 | `GLOSSARY.md` | Modify | vocabulary | Terms above | — |
 
@@ -470,7 +521,7 @@ See Target Mapping (one table, to avoid two lists).
 | --- | --- | --- | --- |
 | Way composition (local Docker node on port 8001, host with Tailscale and Wi-Fi) | `compose({ target: dockerNetwork, host: embeddedNetwork, port: 8001 })` → `tailscale: ['https://<dns>:18001', 'http://100.x.y.z:8001']`, `local_network: ['http://192.168.1.20:8001']`; each checked against the Docker node's `nodeId`; first passing address per way is used | The Docker node listing its own `172.17.x.x` addresses | Facts belong to the computer, the port to the node |
 | HTTP acknowledgement | `tailscale`, `vpn`, typed company address → `true`; `local_network` → `true` only when `localNetwork.allowed` (or pressed now) | A checkbox, or `true` for an un-allowed network | Trust stays explicit for local networks |
-| Bridge | `getShellBridge()?.showNodeList()` | Reading saved entries or credentials through the bridge | Minimal surface |
+| Bridge | `getShellBridge()?.showNodeList()` (a web message from the main frame of the node's origin) | `addJavascriptInterface`, visible to every frame including sandboxed previews | Keeps autobyteus-417's "a preview cannot act as the app" (AR-001) |
 | Android scan | `ConnectionInputResolver`: parsed pairing payload → acknowledged; plain typed `http://` → needs the sheet's tick | Asking again after a scan | REQ-010 |
 
 ## Backward-Compatibility Rejection Log (Mandatory)
@@ -478,7 +529,7 @@ See Target Mapping (one table, to avoid two lists).
 | Candidate | Why Considered | Decision | Replacement |
 | --- | --- | --- | --- |
 | Keep `/address-candidates` alongside `/network` | Old desktop windows | Rejected (DESIGN.md rule 9) | Removed |
-| Keep status `serverName` for old apps | Installed Android/iOS apps read it | Rejected; their readers default the field (Android `optString`, iOS `decodeIfPresent`) and the name comes from the QR | Removed |
+| Keep status `serverName` for old apps | Installed Android/iOS apps read it | Rejected. Honest effect: installed apps default the missing field to "AutoByteus Desktop" (Android `ConnectionValidator.kt:57`, iOS `ConnectionValidator.swift:30`) and keep overwriting the QR name with it (`MainActivity.kt:185`) until the app is updated; no regression versus today. The updated app takes the name from the QR | Removed |
 | QR payload with an address list plus the old field | Fallback addresses | Rejected (DEC-019): one checked address per code | Payload unchanged |
 | Second HTTP check on the phone for scanned codes | Old behavior | Rejected (REQ-010) | — |
 
@@ -502,14 +553,14 @@ N/A.
 - **One address per code (DEC-019)** over an address list: simpler contract and no payload change. A phone without MagicDNS could miss the Tailscale HTTPS name, so the check prefers the HTTPS name only when it passed from the desktop; otherwise it uses the Tailscale IP.
 - **The desktop composes ways, not the node:** only the desktop knows both a Docker node and its host. It costs a few parallel status checks (each ≤ 2 s) when the panel opens.
 - **Allowed networks in their own file** rather than in settings: settings writes replace the whole object (E-25), and the subject differs.
-- **A `@JavascriptInterface` bridge** over a custom URL scheme: one surface for detection, count, device name and actions. Any frame in the WebView could call it. The methods expose a node count and the phone model, and open screens. This is accepted and recorded.
+- **androidx.webkit web messages** over `@JavascriptInterface` (round 2, AR-001): the object exists only for the open node's origin, and the app acts only on main-frame messages. This keeps sandboxed HTML previews (autobyteus-417) from driving the app. It costs one library dependency (no permission). If the phone's WebView lacks `WEB_MESSAGE_LISTENER` (WebView older than 2020), the app shows "Update Android System WebView" instead of opening a page: a feature requirement, not a second path.
 
 ## Risks
 
 - U-001/U-004/U-005 on Linux (detection rules read, not run). Mitigation: the fallbacks (unrecognised → local network and asked; network ID `this-computer`); API/E2E runs the classifier with recorded Linux interface fixtures and one real Linux host check (Docker image host or CI runner).
-- U-006: Tailscale Serve accepting `--https=<port+10000>`. Only the optional Advanced text depends on it. Implementation confirms from Tailscale docs; it does not run the command on the user's machine.
+- U-006: Tailscale Serve accepting `--https=<8443…8542>`. Only the optional Advanced text depends on it. Implementation confirms from Tailscale docs; it does not run the command on the user's machine.
 - U-003: desktop checks against other nodes' addresses under the Origin rule. A renderer `fetch` from `file://` or loopback is allowed by `remote-access-request-origin.ts`; implementation confirms on the packaged build.
-- A spoofed bridge call from a page frame: harmless by design (above).
+- Bridge abuse from a preview frame: closed by the origin rule and the main-frame check (AR-001).
 
 ## Guidance For Implementation
 

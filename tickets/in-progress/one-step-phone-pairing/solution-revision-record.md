@@ -16,6 +16,7 @@
 | SR-010 | Requirements | The user on "Turn off phone access", 2026-11-07 | N/A | Ready for Approval | Ready for Approval | REQ-023 (new) | Header switch per node; Other options removed; no Wi-Fi name |
 | SR-011 | Mixed | Product Design Completed, approved by the user (spec rev d2e960cc / record 34677c88) | N/A | Ready for Approval | Approved | All; DEC-004, DEC-016…018 | Requirements approved; architecture design starts |
 | SR-012 | Design | Architecture design | N/A | N/A (no design) | Design Ready; user approval of the design pending | DEC-019…021; REQ-009, REQ-010 wording | design-spec.md; Large / High |
+| SR-013 | Mixed | ARCH-REV-001 Fail (Design Impact) | AR-001…AR-009 | Design Ready (round 1) | Design Ready (round 2) | REQ-008, AC-001/002/005, DEC-001/003/006, DEC-022…024 | Bridge by origin-limited web messages; way table per node kind; classifier aligned with DEC-003; default-route order; opaque session ID; entry-form table and failed exchange; Serve port range; name owner |
 
 ## Revision Entries
 
@@ -135,3 +136,19 @@
 ### SR-012a — The user's approval of the design and release direction
 
 - The user, 2026-11-07: "I trust that you can make reasonable decisions. For this ticket, we need to release a beta. since for my codex i dont have limit now, i waive for codex if delivery engineer asks". Recorded in design-spec.md (approval basis) and requirements-doc.md (release direction). Routed: Architecture Design Complete, Large / High → architecture review.
+
+### SR-013 — Round 2 after ARCH-REV-001
+
+- Trigger: architecture review ARCH-REV-001, `Fail`, findings AR-001…AR-009 (`design-review-report.md`).
+- Design changes:
+  - AR-001: androidx.webkit `addWebMessageListener` limited to the open node's origin, main frame only.
+  - AR-002: way composition table per node kind; `configuredBaseUrl` kept in containers; typed company address checked (DEC-022).
+  - AR-003: Tailscale confirmed by `.ts.net` reverse name or `tailscale*` interface, as DEC-003 says.
+  - AR-004: local addresses ordered default-route first; more virtual adapters excluded.
+  - AR-005: opaque `sessionId` for discard.
+  - AR-006: entry-form table, failed-exchange surface and reasons, `NodeReachability`; a consumed code answers CONSUMED until it expires; shared text decided (DEC-023).
+  - AR-007: Serve HTTPS port 8443…8542 by position.
+  - AR-008: the store picks the QR name; honest note on installed apps; resolver timeout.
+- Requirement wording (AR-009, within the direction): REQ-008, AC-001, AC-002, AC-005, DEC-001, DEC-003 note, DEC-006 superseded, supplements row, evidence range; DEC-022…DEC-024 added. No change to what the user approved on screen except the two small copy decisions DEC-022 and DEC-024.
+- Approval impact: none beyond the Solution Designer's within-direction decisions; the user is informed in the Solution Designer's message.
+- Next action: architecture review round 2.
