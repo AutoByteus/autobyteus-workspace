@@ -192,7 +192,8 @@ import { causeText, failureText, NODES_PAGE_KEY } from '~/utils/nodeConnectionEr
 /** One node (UIS-002): dot, name (click to rename), address, collaboration switch, Open, Remove; its server version and
  * in-place update (remote nodes); one line; details. */
 const props = defineProps<{ row: NodeRow }>()
-const serverAsked = computed(() => !props.row.isEmbedded)
+// The node's server version is an owner read: a node this desktop has no key for cannot answer it (autobyteus-437).
+const serverAsked = computed(() => !props.row.isEmbedded && !needsConnecting.value)
 const emit = defineEmits<{ guide: [] }>()
 
 const { t } = useLocalization()

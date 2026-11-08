@@ -1,5 +1,5 @@
 import path from "node:path";
-import { readJsonArrayFile, writeJsonArrayFile } from "../../persistence/file/store-utils.js";
+import { readJsonArrayFile, writeJsonFile } from "../../persistence/file/store-utils.js";
 
 /** One persistent owner credential: a desktop that connected with a setup code. The node keeps only its hash. */
 export type OwnerCredentialRecord = Readonly<{
@@ -60,6 +60,7 @@ export class OwnerCredentialStore {
   }
 
   async write(records: readonly OwnerCredentialRecord[]): Promise<void> {
-    await writeJsonArrayFile(this.filePath(), [...records, ...this.unreadableRows]);
+    // A credential file: mode 0600 (design § credential file permissions), though it holds hashes only.
+    await writeJsonFile(this.filePath(), [...records, ...this.unreadableRows], { mode: 0o600 });
   }
 }

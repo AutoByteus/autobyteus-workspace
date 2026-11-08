@@ -31,6 +31,9 @@ describe("OwnerCredentialService", () => {
     expect(issued.credential).toMatch(/^own_[A-Za-z0-9_-]{43}$/);
     const file = await fs.readFile(path.join(dir, "node-access", "owner-credentials.json"), "utf8");
     expect(file).not.toContain(issued.credential);
+    if (process.platform !== "win32") {
+      expect((await fs.stat(path.join(dir, "node-access", "owner-credentials.json"))).mode & 0o777).toBe(0o600);
+    }
     await expect(service.list()).resolves.toEqual([{ credentialId: issued.credentialId, desktopName: "Ryan's MacBook", createdAt: "2026-11-08T10:00:00.000Z", lastSeenAt: null }]);
     await expect(service.verify(issued.credential)).resolves.toEqual({ ok: true, identity: { kind: "owner", credentialId: issued.credentialId } });
     await expect(service.verify("own_made_up")).resolves.toMatchObject({ ok: false, refusal: { code: "NODE_CREDENTIAL_INVALID" } });
