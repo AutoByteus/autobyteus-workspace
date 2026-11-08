@@ -10,6 +10,7 @@ The latest `design-review-report.md` is authoritative.
 | ARCH-REV-002 | Round 2 / focused re-review of SR-004 | SR-004 | Fail | Pass | AR-001, AR-002, AR-003 (resolved) |
 | ARCH-REV-003 | Round 3 / focused re-review of SR-005 (D-02, implementation Design Impact) | SR-005 | Pass | Pass | none |
 | ARCH-REV-004 | Round 4 / item 19 added (D-19) | SR-006 | Pass | Pass | none |
+| ARCH-REV-005 | Round 5 / CRR-003 (F-API-001, F-API-002): D-02, D-03 | SR-008 | Pass | Pass | none (notes N-1, N-2) |
 
 ## Revision Entries
 
@@ -98,3 +99,29 @@ None.
 - Material classification changes: none (Medium / High; D-19 itself is low-risk UI)
 - Recommended recipient: Implementation Engineer
 - Remaining risks or uncertainty: RR-01…RR-03; U-01; DS-002 spine text correction still pending (non-blocking)
+
+### ARCH-REV-005 — SR-008: the phone check reads its own request; re-delivered share not run again: Pass
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-426/tickets/in-progress/small-follow-ups-batch-426/design-review-report.md` (§ SR-008 D-02 / D-03 Re-Review)
+- Review round and trigger: round 5; the code reviewer's CRR-003 failure-origin review after API-REV-001 (F-API-001, F-API-002, Design Impact), revised by the Solution Designer as SR-008, 2026-11-08
+- Triggering role, report path, and finding IDs: Code Reviewer, `code-review-report.md` (F-API-001, F-API-002); evidence `evidence/api-e2e/API-08-process-death-restore.txt`, investigation A-08, E-03 correction
+- Relevant solution revision IDs: SR-008
+- Prior authoritative decision: Pass (ARCH-REV-004)
+- Current authoritative decision: `Pass`
+- What changed:
+  - D-02: SR-005's history-store classification (accepted in ARCH-REV-003) is replaced by `checkCredential()`. ARCH-REV-003 missed two things: the quiet poll superseding the read, and the `ok` gate. Both are recorded.
+  - D-03: the re-delivery rule is accepted, and RR-02 is superseded.
+  - AC-004 is split (AC-004b in round 2, DEC-013 Needs user). Round 1 does not depend on it.
+  - Notes: N-1 (stale interface row at `design-spec.md:227`), N-2 (`checkCredential` uses the store's own credential through `fetchWithRemoteAccessCredential`).
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001 | Resolved | Resolved (still holds) | SR-008 D-02 | `recordCheckOutcome` keeps one outcome per check, now from `checkCredential` |
+| AR-002, AR-003 | Resolved | Resolved (unaffected) | — | — |
+
+- New or remaining finding IDs: none (non-blocking notes N-1, N-2)
+- Material classification changes: none (Medium / High)
+- Recommended recipient: Implementation Engineer (then source review and the API/E2E reruns MSP-13, MSP-18, API-08 and the full web suite, per CRR-003)
+- Remaining risks or uncertainty: RR-01, RR-03; U-01; DEC-013 (round 2) with the user

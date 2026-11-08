@@ -78,3 +78,12 @@ Independent architecture review of round 1. On Pass, the reviewer hands to imple
 - 2026-11-07: sent to `/software_engineering_team/architecture_reviewer` for review of D-19.
 
 - 2026-11-07: ARCH-REV-004 Pass on SR-006 (D-19); routed to implementation by the reviewer (informational). Its repeated DS-002 note is already resolved: `design-spec.md:133` names `recordCheckOutcome`; no `recordPhoneAccessOff` remains in the design spec.
+
+## Revision SR-008 (CRR-003: F-API-001, F-API-002)
+
+- D-02: the phone check reads its own request (`checkCredential`, a `{ __typename }` GraphQL read with the phone credential); SR-005's history-store change removed; desktop history unchanged.
+- D-03: a re-delivered share on recreation is not run again; native restore kept; AC-004a this round; AC-004b (run screens) in round 2 pending the user's DEC-013.
+- After review: implementation → source review → API/E2E reruns MSP-13, MSP-18, API-08 and the full web suite (CRR-003).
+- 2026-11-08: sent to `/software_engineering_team/architecture_reviewer`.
+
+- 2026-11-08: ARCH-REV-005 Pass on SR-008; routed to implementation by the reviewer.

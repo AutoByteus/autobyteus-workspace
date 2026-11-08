@@ -104,3 +104,25 @@
 - Handoff: revision → `/software_engineering_team/architecture_reviewer`
 
 - 2026-11-07: ARCH-REV-004 Pass on SR-006 (D-19); routed to implementation by the reviewer (informational). Its repeated DS-002 note is already resolved: `design-spec.md:133` names `recordCheckOutcome`; no `recordPhoneAccessOff` remains in the design spec.
+
+### SR-007 — Items 20–22 planned into round 2
+
+- Phase and classification: Requirements (`Refinement`: scope added by the delegator)
+- Trigger: `/project_task_manager`, 2026-11-08, Task comment: items 20 (416 FU-002, distinct peer error for REMOTE_ACCESS_HOST_REFUSED), 21 (416 FU-003, token-statistics TS-E2E-002 day-of-month fixture), 22 (416 FU-004, stale MRP-02 and NVP-05 assertions); optional 416 CR-N1 (`parseWebOrigin` duplicate)
+- Decision: DEC-012 — round 2 (with item 9); item 22's NVP-05 half already fixed in round 1 (`898fbd2a31`)
+- Round 1: unchanged (no reopening)
+- Next action: round-2 requirements and design once round 1 is finalized on `personal` (item 9 builds on round 1's run-history changes; 20–22 on 416)
+
+### SR-008 — CRR-003: the phone check reads its own request; item 3 split
+
+- Phase and classification: Mixed (`Design Impact` F-API-001, F-API-002 from the code reviewer's API/E2E failure-origin review; a `Requirement Gap` for run screens)
+- Trigger: `/software_engineering_team/code_reviewer` (`code_reviewer_54f114daa05e40fda891656b2c93e4bb`), CRR-003 after API-REV-001, 2026-11-08
+- F-API-001 → D-02 revised: `checkCredential()` (one `{ __typename }` GraphQL read with the phone credential) is the only source of the check's outcome; SR-005's `historyReadFailure` store change and the Apollo-shape reading are removed (clean cut); evidence A-08, A-09
+- F-API-002 → D-03 revised: a re-delivered share on recreation (`savedInstanceState != null`) is not run again; native restore kept; AC-004 split into AC-004a (round 1) and AC-004b (round 2)
+- Requirement Gap: DEC-013 (should run screens reopen from the URL, changing 277's reload rule) — `Needs user`, asked in the Solution Designer's conversation 2026-11-08, recommendation (A); round 2 either way, so round 1 does not wait
+- E-03 corrected; D-13's 426 lesson rewritten
+- Intended behavior changed: REQ-003 narrowed for round 1 (run screens to round 2); the re-delivered share no longer overrides the restore (a fix of preserved behavior that was meant for new shares)
+- Classification: unchanged (Medium / High)
+- Handoff: revision → `/software_engineering_team/architecture_reviewer`; reruns per CRR-003: MSP-13, MSP-18, API-08, full web suite through implementation, source review and API/E2E
+
+- 2026-11-08: ARCH-REV-005 Pass on SR-008; routed to implementation by the reviewer (informational). Its N-1 fixed: the Interface Boundary Mapping row of `remoteAccessReadRefusal` now reads `({ status, code })`, no message text (editorial); RR-02 marked superseded by D-03.

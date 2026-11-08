@@ -11,7 +11,7 @@
 - Finalization target remote / branch: `origin` / `personal` (RELEASE.md, Finalization Target)
 - Bootstrap result: worktree and branch created from `origin/personal`; ticket folder `tickets/in-progress/small-follow-ups-batch-426/`
 - Bootstrap blocker: None
-- Current solution revision ID: `SR-006`
+- Current solution revision ID: `SR-008`
 - Authorities read (requirements reading gate; 2026-11-07): `references/requirements-engineering.md`, `references/finding-the-cause.md`, `references/ticket-scope.md`
 - Investigation status: Complete for requirements; architecture findings appended below (§ Architecture Investigation Findings)
 
@@ -122,3 +122,7 @@ See `requirements-doc.md` § Relevant Current And Desired Behavior (BEH-001…BE
 - E-14 correction (SR-005): the runtime row does expose `checkedAt` (`api/graphql/types/agent-runtimes.ts:67`); my "no check-finished field" was wrong. R-01 resolved by implementation: the automatic re-check ends ~108 ms after the update (not a product bug).
 
 - E-19 (item 19, SR-006; Read on `origin/personal` `933163361c`): `autobyteus-web/components/workspace/agent/AgentEventMonitor.vue:23-39`: the status `<p data-testid="event-monitor-file-preview-status">` is inside `<div v-if="!readOnly">` with the composer slots; `handleFilePathAction` (`:97-108`) sets `filePreviewStatus` for every conversation (remote-run message, or the preview result's message). So a read-only conversation computes the status and never shows it. Callers: `AgentWorkspaceSurface.vue:33`, `TeamWorkspaceSurface.vue:32`, `AgentTeamEventMonitor.vue:3`, `MobileRunTargetView.vue:26`. 427 (`ea3fbffc8e`) changed this file and the phone navigation path (`useMobileNavigation` into the preview); the 426 branch's base `6225a734a3` predates it. Source row: `/Users/normy/autobyteus_org/autobyteus-delivery-records/phone-message-file-reference-427-20261107/tickets/done/phone-message-file-reference-open/follow-ups.md` FU-001.
+
+- A-08 (SR-008; Reproduced by API/E2E, verified by the code reviewer, CRR-003 F-API-001; `evidence/api-e2e/API-04-D02-failure-analysis.txt`): the phone's Check never classified its own read: `useRunHistorySectionLoad.readHistory` answers `ok` whenever runs are still listed (`:38`), and a failed read keeps the earlier groups; a quiet poll during the Check's read bumps `workspaceRequestGeneration` (`runHistoryLoadActions.ts:107`) and the Check's failure is dropped (`:189`). History-store state is display state; it cannot carry one call's outcome.
+- A-09 (SR-008; Read): a phone credential is authorized on every HTTP GraphQL request without an operation list (`remote-access-route-policy.ts:203-205`); refusals answer `{error, code, message}` (`remote-access-policy-plugin.ts:43-45`). A `{ __typename }` query is the smallest authorized read.
+- E-03 correction (SR-008; Measured by API/E2E, API-08): the `/mobile` URL names views (files, messages…) but no run: opening a run is store state, and a fresh run-screen URL lands on the list (277 DS-004, MSP-05). Run B: the native restore reloaded the exact URL, and the page showed the list. Run A: a share-started task re-runs its `ACTION_SEND` on recreation (the activity keeps its starting intent) and shows "This code has expired".

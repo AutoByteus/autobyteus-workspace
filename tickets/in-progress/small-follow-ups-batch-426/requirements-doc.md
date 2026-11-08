@@ -3,14 +3,14 @@
 ## Document Status
 
 - Status: `Approved` (round 1: REQ-001…REQ-003, REQ-005…REQ-008, REQ-010…REQ-014, REQ-016, REQ-017, REQ-018, REQ-019; item 4 dropped by DEC-001, item 15 by DEC-011). Round 2 (REQ-009): `Draft` (DEC-002)
-- Current solution revision ID: `SR-006`
+- Current solution revision ID: `SR-008`
 - Package identifier: `small-follow-ups-batch-426`
 - Request / ticket: Project Task `autobyteus-426`, project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), at the user's word of 2026-11-07
 - Requirements owner: Solution Designer
 - Date: 2026-11-07
 - Approved by and reference: `Solution Designer within the direction (user informed)`; reference: the Solution Designer's message to the user in its conversation, 2026-11-07 (SR-001); REQ-016's text approved by the user through the Product Team (SR-003)
-- Exact approved requirements baseline / solution revision: this document at SR-006, round-1 rows
+- Exact approved requirements baseline / solution revision: this document at SR-008, round-1 rows
 - Behavior-defining supplements and their approved versions: Product spec `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/phone-setup-remote-node-wording/ui-ux-spec.md` at design commit `0341b3af`, user-approved 2026-11-07 (REQ-016)
 
 ## Problem And Desired Outcome
@@ -24,8 +24,8 @@
 
 | Round | Items | Why |
 | --- | --- | --- |
-| 1 | 1, 2, 3, 5, 6, 7, 8, 10, 11, 12, 13, 14, 16, 17, 18, 19; 4 and 15 dropped | Local fixes in existing owners; item 16's Product text arrived before round 1 left design (SR-003) |
-| 2 | 9 | Adds a new server read that also serves the desktop and phone polls |
+| 1 | 1, 2, 3 (AC-004a), 5, 6, 7, 8, 10, 11, 12, 13, 14, 16, 17, 18, 19; 4 and 15 dropped | Local fixes in existing owners; item 16's Product text arrived before round 1 left design (SR-003) |
+| 2 | 9, 20, 21, 22 (MRP-02 half), 3 (run screens, AC-004b, after DEC-013) | 9 adds a new server read that also serves the desktop and phone polls; 20–22 came from autobyteus-416 (Task comment 2026-11-08) after round 1 was in code review, and touch files outside round 1 — they are built on a base with 416 and round 1. Item 22's NVP-05 half is already done in round 1 (`898fbd2a31`, a baseline fix found while running NVP-05) |
 
 ## Relevant Current And Desired Behavior
 
@@ -115,7 +115,7 @@ None.
 | --- | --- | --- | --- | --- | --- | --- |
 | REQ-001 | On `/mobile` (and the mobile build) the agent package definitions feed is open only while the phone has a paired session, to the paired node with the phone credential; it closes when the session ends (unpair, rejection). Desktop and browser windows keep it as today. | BEH-001 | Normal | Item 1 lead, second option scoped to "not paired" | N/A | Task item 1; E-01; DEC-003 |
 | REQ-002 | A read refused with `REMOTE_ACCESS_DEVICE_REVOKED` (HTTP 403) rejects the phone's session exactly as the 401 rule does, at the same points (the phone's check on opening, Retry and Check; the quiet history poll and live streams keep today's behavior), and the pairing screen shows. A read refused with `PHONE_ACCESS_DISABLED` keeps the session; the run list's bar is not "Connected" and its banner says "`<node>` is reachable, but Phone access is off." with Check; when Phone Access is on again, Check/Retry loads the runs with no re-pairing. | BEH-002 | Normal | Revoked credentials never work again; a disabled node keeps its devices (E-02) | N/A | Task item 2; DEC-005 |
-| REQ-003 | When the Android system ends the app's process in the background and the user returns, the app reopens the node and `/mobile` page that were open. A saved page that the navigation policy would not allow for that node, or a node no longer saved, is not opened (the ordinary start applies). | BEH-003 | Normal | Item 3 lead | N/A (standard Activity saved state) | Task item 3; E-03 |
+| REQ-003 | When the Android system ends the app's process in the background and the user returns, the app reloads the node and the `/mobile` URL that were open (AC-004a); the web shell shows what that URL names. A share that started the app is not run again on that return (it was handled when it arrived); a new share still wins. A saved page the navigation policy would not allow for that node, or a node no longer saved, is not opened (the ordinary start applies). Reopening a **run screen** needs the URL to name the open run — round 2, DEC-013 (AC-004b). | BEH-003 | Normal | Item 3 lead; CRR-003 F-API-002 | N/A (standard Activity saved state; measured API-08) | Task item 3; E-03 (corrected SR-008) |
 | REQ-005 | In Control mode with a connected node desktop, the phone view offers Paste and Copy. Paste: the user gives text (with the phone's own paste) and it is put on the node desktop's clipboard. Copy: the text last copied on the node desktop is put on the phone's clipboard by a tap; when the phone does not allow that, the text is shown selectable so the user can copy it with the system menu. Nothing is read from or written to the phone's clipboard without the user's tap. | BEH-005 | Normal | Item 5 lead | U-01: programmatic copy unmeasured; the selectable fallback always works | Task item 5; E-05; DEC-007 |
 | REQ-006 | Each 4429 refusal writes one node log line with only: refusal reason, mode, viewer kind, open stream count and the limit that refused it. | BEH-006 | Low | Item 6 lead | N/A | Task item 6; E-06 |
 | REQ-007 | Inside the Android app's WebView, a subframe navigation to a `blob:` URL whose origin is the open node's origin loads in place. Main-frame `blob:` navigations, `blob:` of other origins and all other non-http(s) schemes stay blocked; other origins still open in the system browser. The preview frame gets no `AutoByteusShell` object and stays sandboxed (no `allow-same-origin`). | BEH-007 | Normal | Item 7 lead | N/A | Task item 7; E-07 |
@@ -139,7 +139,8 @@ None.
 | AC-001 | REQ-001 | SCN-001 | Phone page open, not paired, for 30 s; then pair; then unpair | No WebSocket attempt to `localhost:8000` or any address while unpaired; after pairing one feed socket to the paired node with `access_token`; after unpair it closes and is not retried | Desktop window still opens the feed | Browser probe (console/network) + spec |
 | AC-002 | REQ-002 | SCN-002 | Paired phone; node revokes it; phone checks (open, Retry, Check) | Pairing screen shows; stored session removed; feed closed | 401 path unchanged | Probe on an isolated node + spec |
 | AC-003 | REQ-002 | SCN-003 | Paired phone; Phone Access turned off; phone checks | Bar not "Connected"; banner "`<node>` is reachable, but Phone access is off." with Check; session kept; after turning it on, Check loads the runs | Network down still shows "Can’t reach `<node>`.", also when the previous check found Phone Access off (off → unreachable); off → reachable shows Connected | Probe + spec |
-| AC-004 | REQ-003 | SCN-004 | Android app on a run's Files screen; app in background; `adb shell am kill org.autobyteus.mobile`; reopen from recents | The same node opens on the same Files screen URL | Saved URL not allowed or node removed → ordinary start | Emulator check + unit test of the restore decision |
+| AC-004a | REQ-003 | SCN-004 | Android app on a node page; Home; `adb shell am kill org.autobyteus.mobile`; reopen from Recents — once in a task started from the launcher, once in a task started by a shared pairing link | The same node and the same `/mobile` URL load (the document's navigation entry); the share-started task shows the node page, not "This code has expired" | Node removed meanwhile → ordinary start; a new share while the process is dead still connects | Emulator check (API-08) + unit tests of the restore and the re-delivery rule |
+| AC-004b | REQ-003 | SCN-004 | (Round 2, DEC-013) the same, on a run's screen | The same run and screen reopen | | Round 2 |
 | AC-005 | REQ-005 | SCN-005 | Android app, Control mode connected | Paste: text pasted in the Paste box appears on the node desktop when pasted there; Copy: text copied on the node desktop is on the phone clipboard after tapping Copy, or is shown selectable | No Paste/Copy in View only or when not connected; no clipboard read on open | Emulator check + component spec |
 | AC-006 | REQ-006 | SCN-006 | A 5th stream node-wide, and a 3rd from one phone | One log line each with reason, mode, viewer kind, open count, limit; no device ID, credential, address | | Server spec of the route |
 | AC-007 | REQ-007 | SCN-007 | Android app, a node page opens an HTML preview of non-workspace content | The preview shows inside the page; `window.AutoByteusShell` undefined inside it; frame sandbox has no `allow-same-origin` | Main-frame `blob:`, foreign-origin `blob:`, `file:`, `javascript:` stay blocked; another origin opens externally | Policy unit tests + emulator check |
@@ -237,6 +238,8 @@ None.
 | DEC-008 | Item 18: public and link-local | Honest labels; compatibility | Remote Collaboration tries URLs in order | Public: new kind `public`, labelled, after private/tailnet; link-local: not listed (not routable between machines) | Solution Designer | Decided |
 | DEC-009 | Item 11: proxy handler or probe wait? | Premise contradicted (E-11) | Vite already handles proxy errors | Probe-side wait for the dev server after a backend restart | Solution Designer | Decided |
 | DEC-010 | Item 17: numbers too? | Mixed formats in sentences | Numbers inside translated sentences (E-17) | Include numbers; one guard covers all OS-locale calls | Solution Designer | Decided |
+| DEC-012 | Items 20–22 (added 2026-11-08): round 1 or 2? | Round 1 was implemented, validated and in code review; 416 (where they come from) is not in the branch | Adding them to round 1 reopens implementation, review and validation for unrelated files | Round 2 with item 9, from a base that has 416 and round 1; item 22's NVP-05 half stays in round 1 (already fixed); the optional 416 CR-N1 cleanup (`parseWebOrigin` duplicate) is judged in round 2's investigation | Solution Designer | Decided |
+| DEC-013 | Item 3: should a run screen reopen after Android ends the app (and on a reload)? | The run-list screen is what the user sees today after process death; the Task's lead asks to reopen the last page | API-08 (CRR-003 F-API-002): the native restore reloads the exact URL, but the `/mobile` URL names no run (opening a run is store state), and 277 made a fresh run-screen URL land on the list ("a reload must not show an empty screen", 277 design DS-004). (A) put the open run in the `/mobile` URL (its run ID; Org runs already carry keys) so a restore **and a reload** reopen the run and its screen; a run that no longer exists still falls back to the list. (B) keep 277's rule; item 3 then brings back only non-run pages, and is closed as partly done | Recommend (A): it is what item 3 asks, the fallback keeps 277's safety reason, and a reload reopening the run is what a user expects. It changes 277's approved reload behavior, so the user decides. Round 2 either way | User | Needs user |
 | DEC-011 | Item 15: keep or drop? | DESIGN.md rule 9 (the user's rule): a desktop and a node of different versions are not designed for — "no version checks …, no fallback for a client or server that does not know a new route"; reviewers do not raise it. Item 15 is exactly that case (Phone Setup on a node without `/rest/remote-access/network`). Rule 9's one exception is the frozen node-update contract C1 (`/rest/node-update`), which a Docker node answers in every version | (A) Drop item 15 per rule 9; the 395 release notes already tell users to update their nodes. (B) Keep it only through C1: when the window's node is a Docker node and C1 reports an update, Phone Setup shows the Product's "Update `<node>`" text instead of loading (no new version check; non-Docker remote nodes keep the raw error). (C) Keep it as asked, as a stated exception to rule 9 | Recommend (A): rule 9 exists so the product does not grow per-version handling; the case is temporary (it disappears once nodes update, and Docker nodes can update automatically since autobyteus-356). (B) is the only shape that stays inside the rules if the user still wants it. **Decided: (A), drop item 15.** The user, 2026-11-07, asked "only small ui update or?" and then: "i trust your judgement …"; the Solution Designer chose (A) for the reasons above | Solution Designer (at the user's word) | Decided |
 
 ## Traceability
@@ -245,7 +248,7 @@ None.
 | --- | --- | --- | --- | --- |
 | REQ-001 | UC-001 | BEH-001 | AC-001 | SCN-001 |
 | REQ-002 | UC-002 | BEH-002 | AC-002, AC-003 | SCN-002, SCN-003 |
-| REQ-003 | UC-003 | BEH-003 | AC-004 | SCN-004 |
+| REQ-003 | UC-003 | BEH-003 | AC-004a, AC-004b (round 2) | SCN-004 |
 | REQ-005 | UC-005 | BEH-005 | AC-005 | SCN-005 |
 | REQ-006 | UC-006 | BEH-006 | AC-006 | SCN-006 |
 | REQ-007 | UC-007 | BEH-007 | AC-007 | SCN-007 |

@@ -1,19 +1,19 @@
-# Design Review Report — small-follow-ups-batch-426, round 1 (review round 4)
+# Design Review Report — small-follow-ups-batch-426, round 1 (review round 5)
 
 ## Review Round Meta
 
 - Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-426/tickets/in-progress/small-follow-ups-batch-426/requirements-doc.md`
 - Upstream Investigation Notes: `…/small-follow-ups-batch-426/investigation-notes.md`
-- Upstream Solution Revision Record: `…/small-follow-ups-batch-426/solution-revision-record.md` (SR-001…SR-006)
-- Reviewed Design Spec: `…/small-follow-ups-batch-426/design-spec.md` (SR-006, D-01…D-19)
+- Upstream Solution Revision Record: `…/small-follow-ups-batch-426/solution-revision-record.md` (SR-001…SR-008)
+- Reviewed Design Spec: `…/small-follow-ups-batch-426/design-spec.md` (SR-008, D-01…D-19)
 - Supplemental Task Artifacts Reviewed: `product-design-request.md`; Product spec `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/phone-setup-remote-node-wording/ui-ux-spec.md` (design commit `0341b3af`); `follow-ups.md` (FU-001); `handoff-architecture-design-complete.md`
-- Relevant Solution Revision IDs: SR-001…SR-006
+- Relevant Solution Revision IDs: SR-001…SR-008
 - Architecture Review Revision Record: `…/small-follow-ups-batch-426/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-004`
-- Current Review Round: 4
-- Trigger: item 19 added to round 1 (SR-006, D-19); review of D-19 and its sequencing
-- Prior Review Round Reviewed: 3 (ARCH-REV-003, Pass)
-- Latest Authoritative Round: 4
+- Current Architecture Review Revision ID: `ARCH-REV-005`
+- Current Review Round: 5
+- Trigger: SR-008, answering the code reviewer's API/E2E failure-origin review CRR-003 (F-API-001 → D-02, F-API-002 → D-03); focused re-review of D-02 and D-03
+- Prior Review Round Reviewed: 4 (ARCH-REV-004, Pass)
+- Latest Authoritative Round: 5
 - Current-State Evidence Basis: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-426`, branch `codex/small-follow-ups-batch-426`, base `6225a734a3`. I read the cited code (paths below) on 2026-11-07.
 
 ## Routing Classification Review
@@ -52,8 +52,8 @@
 | Behavior ID | Kind | Design Alignment | Trigger / Evidence | Target Path / Spine | Status | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
 | BEH-001 | System | Pass | Pass | Pass | Confirmed | — |
-| BEH-002 | User | Pass | Pass (SR-005: refusal code measured on the real Apollo path, IMP-02 / A-07) | Pass | Confirmed | AR-001 resolved; SR-005 D-02 revision verified (ARCH-REV-003) |
-| BEH-003 | System | Pass | Pass | Pass | Confirmed | — |
+| BEH-002 | User | Pass | Pass (A-08: history state cannot carry one check's outcome) | Pass | Confirmed | SR-008 `checkCredential` verified (ARCH-REV-005) |
+| BEH-003 | System | Pass | Pass (E-03 corrected by API-08) | Pass | Confirmed | SR-008 AC-004a this round; AC-004b round 2 (DEC-013) |
 | BEH-005 | User | Pass | Pass (U-01 handled by the fallback) | Pass | Confirmed | — |
 | BEH-006 | Operational | Pass | Pass | Pass | Confirmed | — |
 | BEH-007 | User | Pass | Pass | Pass | Confirmed | — |
@@ -265,6 +265,35 @@ None beyond the findings.
 - Sequencing checked: `6225a734a3..origin/personal` (10 commits, autobyteus-427) changes `AgentEventMonitor.vue`, `useEventMonitorFilePreview.ts`, `useMobileNavigation.ts`, their specs and probes, `docs/content_rendering.md` and `docs/design-cases.md`. Two files overlap with this branch's work so far: `docs/content_rendering.md` (D-12) and `docs/design-cases.md` (D-13). 427 changes only Case 2's heading and adds no Case 17, so D-13's new Case 17 number does not collide. The ordering is sound: take in `origin/personal` first, then build D-19 on 427's version.
 - Implementation guidance (no design change): commit or otherwise secure the uncommitted work before taking in `origin/personal`, following RELEASE.md's branch rules. Resolve the two docs files by keeping both sides. Re-run the 427 specs touched by the merge (`AgentEventMonitor.spec.ts`, `AgentEventMonitor.mobileFileOpen.spec.ts`) with D-19.
 
+## SR-008 D-02 / D-03 Re-Review (ARCH-REV-005)
+
+### D-02 — the phone check reads its own request (F-API-001)
+
+- Premise correction accepted. A-08 (reproduced by API/E2E, verified by the code reviewer) shows:
+  - `readHistory` answers `ok` while runs are listed (`useRunHistorySectionLoad.ts:38`).
+  - A quiet poll during the check's read moves `workspaceRequestGeneration` forward (`runHistoryLoadActions.ts:107`), and the check's failure is then dropped (`:189`).
+  - History-store state is shared display state, so it cannot carry the outcome of one call. ARCH-REV-003 accepted SR-005's premise that every check's read is the one classified ("a non-quiet `fetchTree` clears both first"). It did not account for a concurrent quiet poll superseding the read, or for the `ok` gate. That review miss is recorded here.
+- Revised shape fits:
+  - `checkCredential()` is one bounded read (`POST /graphql { __typename }`, about 100 bytes), sent only on open, Retry and Check. The poll and live streams are untouched, as REQ-002 requires.
+  - It is the single source of the check's outcome. `remoteAccessReadRefusal({ status, code })` classifies with no client-library shapes and no message text.
+  - The SR-005 store change is removed as a clean cut, and the desktop history goes back to its pre-ticket behavior.
+  - This extra request replaces the option ARCH-REV-003 accepted only because no extra read was then needed. It is proportionate: one small request per user-started check.
+- Server facts verified:
+  - A phone bearer credential on a default-class HTTP route goes to `authService.authorizeMobileCredential` (`api/security/remote-access-route-policy.ts:203-205`).
+  - The refusal body is `{ error, code, message }` with the rejection's status (`api/security/remote-access-policy-plugin.ts:35-48`).
+  - Revocation is checked before Phone Access off (`remote-access/services/remote-access-auth-service.ts:55,60`), so a revoked phone on a node with Phone Access off is still rejected.
+- Note N-1 (non-blocking): the Interface Boundary Mapping row `remoteAccessReadRefusal(cause) … keep the message-text fallback` (`design-spec.md:227`) still has the SR-004 wording. D-02 (`:273`, `({ status, code })`, no message text) is authoritative. The Solution Designer corrects the row.
+- Note N-2 (implementation guidance): `authorizedFetch` resolves the credential through `useMobileNodeSessionStore()` (`utils/remoteAccess/authorizedTransport.ts:39-41`). Inside the store, `checkCredential` should call `fetchWithRemoteAccessCredential(url, init, session.credential)` with the store's own session credential. That way the store does not reach back into itself through the transport.
+
+### D-03 — a re-delivered share is not run again (F-API-002)
+
+- Evidence: in API-08 Run A, the share-started task re-handles its `ACTION_SEND` (expired-code screen). In Run B, the native restore reloads the exact URL. In Run C, a removed node gives the ordinary start.
+- The new rule is explicit, not inferred from absence: in Android's lifecycle, a non-null `savedInstanceState` means recreation, and its starting intent was already handled. Without a `launchMode` in `AndroidManifest.xml`, each new `SEND` creates a fresh activity instance with no saved state, so a new share still wins, and `onNewIntent` is unchanged.
+- RR-02 is superseded: the re-delivered share was a defect, not preserved behavior. REQ-003 now says this.
+- Unit-test the re-delivery rule, as AC-004a asks.
+- REQ-003 and AC-004 are narrowed for round 1 (AC-004a). Run screens (AC-004b) move to round 2 behind the user's DEC-013. This is a round split within the Task's "rounds allowed", recorded in SR-008. Round 1 does not depend on DEC-013's answer, so nothing blocks here.
+- E-03 correction and D-13 rewrite: consistent, no structural impact.
+
 ## Review Decision
 
 `Pass`. The behavior basis is confirmed; AR-001…AR-003 are resolved in SR-004 (verified in the canonical artifacts, see ARCH-REV-002); no in-scope machinery depends on an unsupported premise.
@@ -294,6 +323,6 @@ Implementation Engineer (`/software_engineering_team/implementation_engineer`).
 
 ## Latest Authoritative Result
 
-- Review Decision: `Pass` (ARCH-REV-004: D-19 and its sequencing; earlier rounds' results stand)
+- Review Decision: `Pass` (ARCH-REV-005: revised D-02 and D-03; earlier rounds' results stand)
 - Material-Premise Gate: `Pass`
-- Notes: RR-01…RR-03 still apply. The DS-002 spine text (`recordPhoneAccessOff`) is still the non-blocking text correction noted in ARCH-REV-003.
+- Notes: N-1 (stale interface row, for the Solution Designer) and N-2 (credential source inside the store, for implementation) are non-blocking. RR-01 and RR-03 still apply; RR-02 is superseded by D-03's re-delivery rule.
