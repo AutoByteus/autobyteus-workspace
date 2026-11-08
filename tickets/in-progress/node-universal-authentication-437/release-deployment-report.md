@@ -65,7 +65,7 @@ Status: **Blocked at the post-integration check (DR-001)**. Nothing pushed, merg
 ## Release Decision
 
 - Decision: `Beta`
-- Decided by: the user at delivery ("a beta release … I don't have any codex credits but I waive for them"): the Codex runtime of `scripts/release_smoke.py` is waived if its quota refuses.
+- Decided by: the user at delivery ("a beta release … I don't have any codex credits but I waive for them"), then confirmed ("when everything is fine, please release a beta … waive for both codex and grok in case of token limit"). Waiver: the **Codex** and **Grok** runtimes of `scripts/release_smoke.py` are waived only if their quota refuses ("usage limit", 429). Any other failure of those runtimes still blocks the tag. Claude, Antigravity and AutoByteus are not waived.
 
 ## Docs Sync Result
 
