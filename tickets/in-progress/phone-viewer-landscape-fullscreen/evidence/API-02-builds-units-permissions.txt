@@ -1,0 +1,68 @@
+# Case: API-02 — environment builds from a fresh clone of d76be54fb0 + Android unit tests + APK permissions (AC-007)
+# Script: API-02-build.sh (server package via buildx with a copy of Dockerfile.monorepo without its '# syntax' line, because Docker Desktop cannot reach Docker Hub here; ./gradlew :app:testDebugUnitTest :app:assembleDebug); then /Users/normy/Library/Android/sdk/build-tools/35.0.0/aapt2 dump permissions on the APK and git diff of the manifest/Gradle files since the base
+# Date: 2026-11-08
+
+# builds; commit d76be54fb0; 2026-11-08T07:47:00Z; macOS 26.5.2 arm64; docker 29.0.1
+== HEAD: d76be54fb03716bd1a7745347b05a017d5cc994f
+1d0
+< # syntax=docker/dockerfile:1
+== step: buildx server-package
+#35 18.71 Embedding runtime validation passed
+#35 18.85 Wrote server-package.json: 1.5.12-beta.8 linux-arm64, Node modules 127, system level 1, 62 migrations
+#35 DONE 19.2s
+
+#36 [server-package 1/1] COPY --from=builder /out/server-package /
+#36 DONE 1.8s
+
+#37 exporting to client directory
+#37 copying files
+#37 copying files 466.26MB 5.0s
+#37 copying files 687.22MB 7.8s done
+#37 DONE 7.9s
+exit=0
+LICENSE
+README.md
+application-packages
+dist
+mobile-web
+node_modules
+package.json
+prisma
+server-package.json
+/private/tmp/abx432-api/server-package/mobile-web/_nuxt/BjmYpvv1.js
+/private/tmp/abx432-api/server-package/mobile-web/_nuxt/D4OrGzfa.js
+== step: Android :app:testDebugUnitTest :app:assembleDebug
+> Task :app:createDebugApkListingFileRedirect
+> Task :app:assembleDebug
+
+BUILD SUCCESSFUL in 13s
+41 actionable tasks: 41 executed
+exit=0
+-rw-r--r--@ 1 normy  wheel  2508822 Nov  8 08:50 app/build/outputs/apk/debug/app-debug.apk
+<testsuite name="org.autobyteus.mobile.MainActivityManifestTest" tests="3" skipped="0" failures="0" errors="0"
+<testsuite name="org.autobyteus.mobile.connection.ConnectionDiagnosticMapperTest" tests="3" skipped="0" failures="0" errors="0"
+<testsuite name="org.autobyteus.mobile.connection.NodeUrlNormalizerTest" tests="4" skipped="0" failures="0" errors="0"
+<testsuite name="org.autobyteus.mobile.connection.PairingLinkParserTest" tests="5" skipped="0" failures="0" errors="0"
+<testsuite name="org.autobyteus.mobile.datamigrations.SavedNodeEntryKeysMigrationTest" tests="6" skipped="0" failures="0" errors="0"
+<testsuite name="org.autobyteus.mobile.shell.ConnectionInputResolverTest" tests="3" skipped="0" failures="0" errors="0"
+<testsuite name="org.autobyteus.mobile.shell.NodeConnectionFlowTest" tests="7" skipped="0" failures="0" errors="0"
+<testsuite name="org.autobyteus.mobile.shell.NodeReachabilityTest" tests="2" skipped="0" failures="0" errors="0"
+<testsuite name="org.autobyteus.mobile.shell.OpenPageRestoreTest" tests="6" skipped="0" failures="0" errors="0"
+<testsuite name="org.autobyteus.mobile.ui.DesktopFullScreenControllerTest" tests="8" skipped="0" failures="0" errors="0"
+<testsuite name="org.autobyteus.mobile.web.FileChooserRequestPolicyTest" tests="3" skipped="0" failures="0" errors="0"
+<testsuite name="org.autobyteus.mobile.web.ShellBridgeMessagesTest" tests="6" skipped="0" failures="0" errors="0"
+<testsuite name="org.autobyteus.mobile.web.TrustedNavigationPolicyTest" tests="5" skipped="0" failures="0" errors="0"
+== ALL DONE 2026-11-08T07:50:32Z
+
+## APK permissions (aapt2 dump permissions)
+package: org.autobyteus.mobile
+uses-permission: name='android.permission.INTERNET'
+uses-permission: name='android.permission.ACCESS_NETWORK_STATE'
+uses-permission: name='android.permission.CAMERA'
+permission: org.autobyteus.mobile.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+uses-permission: name='org.autobyteus.mobile.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION'
+
+## manifest/Gradle files changed since the base eebbc2b8ee: []
+## manifest uses-permission lines at the base vs now:
+3
+3
