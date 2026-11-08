@@ -384,7 +384,11 @@ is in [docs/android_mobile_access.md](docs/android_mobile_access.md).
 - A probe-owned backend also needs a launch owner credential, and the page must send it: serve
   the frontend through the Nuxt dev proxy with `AUTOBYTEUS_DEVELOPMENT_OWNER_CREDENTIAL` (the
   proxy adds it to every request it forwards) and `AUTOBYTEUS_DEVELOPMENT_FRONTEND_URL`, as
-  `pnpm dev` does, or attach it in the probe's browser.
+  `pnpm dev` does, or attach it in the probe's browser. The probe's own calls carry it too,
+  including the "other window" sockets a case opens from the probe process:
+  `autobyteus-web/tests/e2e/fixtures/probe-node-access.mjs` gives the node environment
+  (`probeNodeEnvironment`), `ownerHeaders` for HTTP, `ownerSocketUrl` for WebSockets, and
+  `attachToBrowserContext` for a desktop window's context (never a phone's).
 - Probes fail on browser errors. A probe whose fixture page renders product components must
   supply every boundary those components reach (GraphQL operations, WebSockets). Shared
   fixture helpers live in `autobyteus-web/tests/e2e/fixtures/`.

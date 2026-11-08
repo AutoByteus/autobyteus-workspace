@@ -1,6 +1,6 @@
 # Delivery / Release / Deployment Report — node-universal-authentication-437 (autobyteus-437), slice 1 "no key, no access"
 
-Status: **Blocked at the post-integration check (DR-001)**. Nothing pushed, merged or tagged.
+Status: **DR-002: integrated state verified from the evidence; waiting for the user's AC-008 check before finalization.** Nothing pushed, merged or tagged. DR-001 (blocked at the post-integration check) is kept below where it still applies.
 
 ## Release / Publication / Deployment Scope
 
@@ -16,10 +16,10 @@ Status: **Blocked at the post-integration check (DR-001)**. Nothing pushed, merg
 
 ## Handoff Summary
 
-- Handoff summary artifact: not yet written (written only on a passing integrated state).
-- Handoff summary status: `Blocked`
+- Handoff summary artifact: `tickets/in-progress/node-universal-authentication-437/handoff-summary.md`
+- Handoff summary status: `Updated` (DR-002)
 - Delivery revision record: `tickets/in-progress/node-universal-authentication-437/delivery-revision-record.md`
-- Current delivery revision ID: `DR-001`
+- Current delivery revision ID: `DR-002`
 
 ## Initial Delivery Integration Refresh
 
@@ -41,9 +41,10 @@ Status: **Blocked at the post-integration check (DR-001)**. Nothing pushed, merg
 | DR1-05 phone probe (AC-005) on the merged state | `pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=…/DR1-mobile-shell` | **Fail** | `DR1-mobile-shell.log`, `DR1-mobile-shell/mobile-shell-probe.json`, `DR1-mobile-shell/server-gamma.log` |
 
 - DR1-05 detail: MSP-01…MSP-20 all `Pass` (the 20 cases API-03 r2 proved). The base's new block MSP-21…23 (`mobile-live-reconnect-cases.mjs`, autobyteus-434) fails at its setup: `Error: Timed out waiting for the warm-up replies stored on the node` (`mobile-live-reconnect-cases.mjs:172`). `server-gamma.log` lines 121–123: `Node request refused NODE_CREDENTIAL_REQUIRED /ws/agent-team/…`, `/ws/agent/…`, `/ws/agent-org/…` from `127.0.0.1`. The case module's node-side clients (`nodeClient`, line ~136: `new NodeWebSocket(\`${wsBase}/ws/${route}\`)`) open without the probe's credential; the probe never calls `attachToProbeProcess()`, and these sockets do not use `ownerSocketUrl`. Same class as API-16's LRL-001…005 fix in `fa6ec192a0`.
-- Post-integration verification result: `Blocked`
+- DR-002: API/E2E fixed the probe (`43e6d41eb0`, test-only) and ran MSP-21…23 on the merged state: Pass (`evidence/api-e2e/R3-API-03-mobile-shell-msp21-23.log`: `MSP-21 Pass`, `MSP-22 Pass`, `MSP-23 Pass`, `mobile-shell probe: Pass`; 0 unknown browser errors). Run 1 failed only on the favicon known-error rule (401, not 404, under deny by default). CRR-006 Pass. `origin/personal` unchanged at `31aa11b241` on DR-002's fetch.
+- Post-integration verification result: `Passed` (DR-002)
 - Delivery edits started only after integrated state was current: `Yes` (only this report and the revision record; no docs sync yet)
-- Blocker: the base's MSP-21…23 have not run under this ticket's enforcement, so the merged state's phone live-reconnect behaviour (autobyteus-434 AC-001…005) is unproven with keys on.
+- Blocker (DR-001, resolved in DR-002): the base's MSP-21…23 had not run under this ticket's enforcement.
 
 ## Verification
 
@@ -54,12 +55,12 @@ Status: **Blocked at the post-integration check (DR-001)**. Nothing pushed, merg
 | AC-001 | API-04 `API-04/API-04-real-network.log`; R-IMP | `POST 127.0.0.1 /graphql -> 401 NODE_CREDENTIAL_REQUIRED`, made-up key `401 NODE_CREDENTIAL_INVALID`, `/rest/health -> 200` exempt | Proven |
 | AC-003 | API-01 r2 `R2-API-01-electron/R2-API-01-transcript.txt` | `searchFiles` 200 with `src/app-437.ts`; terminal `R2-TERM-42`; credential-shaped strings in DOM/storage 0 | Proven |
 | AC-004 | API-02 `API-02-docker/API-02-desktop-transcript.txt` | "Needs connecting. This desktop has no key for docker-3 yet." then connected with the setup code; refusal lines carry no credential | Proven |
-| AC-005 | API-03 r2 `R2-API-03-mobile-shell/mobile-shell-probe.json`; DR1-05 | 20/20 `Pass` before integration; 20/20 again on the merged state; MSP-21…23 (new in the base) not yet run with keys | Proven for MSP-01…20; merged-state MSP-21…23 **pending** |
+| AC-005 | API-03 r2 `R2-API-03-mobile-shell/mobile-shell-probe.json`; DR1-05 | 20/20 `Pass` before integration; 20/20 again on the merged state; MSP-21…23 (new in the base) not yet run with keys | Proven, also on the merged state (MSP-01…20 DR1-05; MSP-21…23 API-REV-003) |
 | AC-006 | API-11 `API-11-gateway/API-11-gateway.log` | signed offer and `delegate_task` through an nginx base path; `result Pass` | Proven |
 | AC-008 | API-04 | LAN not allowed `403 NODE_NETWORK_REFUSED`, Tailscale owner key `200` on this computer's real addresses | Proven on this computer; second physical device: **User Check** |
 | AC-002, 007, 009 | R-IMP (implementation Checks Run) | as listed in the execution report | Proven |
 
-- More evidence requested: API/E2E — MSP-21…23 on the merged state with the credential (this round).
+- More evidence requested: API/E2E — MSP-21…23 on the merged state with the credential (DR-001). Result: Pass (API-REV-003, CRR-006).
 - User check needed: `Yes`. AC-008 needs a phone on the home Wi-Fi (allowed / not allowed) and on another network. API/E2E tried the tailnet Linux host (no SSH), the phone (not on adb) and Android emulators (NAT to loopback).
 
 ## Release Decision
@@ -69,7 +70,13 @@ Status: **Blocked at the post-integration check (DR-001)**. Nothing pushed, merg
 
 ## Docs Sync Result
 
-- Not started (blocked before docs sync, as the integration rule requires).
+- Docs sync artifact: `tickets/in-progress/node-universal-authentication-437/docs-sync-report.md`
+- Docs sync result: `Updated`
+- Docs updated: `autobyteus-web/docs/remote_access.md` (revocation closes the phone viewer at once, not the removed 20 s re-check); `TESTING.md` (the probe credential fixture for the probe's own calls and sockets).
+
+## Secret Gate (ticket branch, before the first push)
+
+- `scripts/check_secrets.sh origin/personal..HEAD`: the first run found 1 `generic-api-key` finding in `autobyteus-web/components/tools/__tests__/McpGatewayPanel.spec.ts:21` (commit `54d98f0152`, never pushed). By shape and context, the test's two mocked gateway tokens are made up: `mcpg_` + the word `secretvalue` / `regenerated` + the sequential digits `1234567890` / `0987654321`. I added the narrowest entry to `.gitleaks.toml` (exactly these two values, generic rule only, with the reason). Rerun: `secret gate: PASS (no secrets found)` over 32 commits (`evidence/delivery/DR2-secret-gate-ticket-branch.log`).
 
 ## Ticket State Transition
 
@@ -104,9 +111,9 @@ Status: **Blocked at the post-integration check (DR-001)**. Nothing pushed, merg
 
 ## Final Status
 
-- Verification complete: `No` (merged-state MSP-21…23; AC-008 user check)
+- Verification complete: `No` (AC-008 user check)
 - Repository finalization complete: `No`
 - Applicable release complete: `No`
-- Unresolved blocker: MSP-21…23 without a credential on the merged state
+- Unresolved blocker: the user's AC-008 check (or the user's decision to release the beta without it)
 - Successful terminal package eligible for return: `No`
 - Terminal package sent to the Solution Designer: `No`
