@@ -66,4 +66,18 @@
 
 #### Finalization results
 
-- Recorded after the push to `personal`, in a follow-up delivery commit.
+- Ticket branch commit: `3ce6da054f` (archive, docs sync, delivery documents).
+- Checks before the push:
+  - artifact hygiene passed: 88,416 tracked files, longest path 200;
+  - Secret Gate `origin/personal..codex/phone-node-name-privacy`: PASS, 23 commits.
+- Ticket branch push: `origin/codex/phone-node-name-privacy` (new branch).
+- Merge into `personal`:
+  - `finalize/phone-node-name-privacy` from `origin/personal` `b690a5dfdb`; `git merge --no-ff` gave `2e0bbfc6c7`.
+  - Secret Gate on the merged state: PASS, 24 commits.
+  - `origin/personal` was still `b690a5dfdb` just before the push, and the merge's files are identical to the ticket branch's.
+- Push to `personal`: `b690a5dfdb..2e0bbfc6c7`.
+- Release: none (`No release`).
+- Cleanup, right after this record is pushed:
+  - remove and prune the worktree (its untracked files are build output only);
+  - delete the local `codex/` and `finalize/` branches;
+  - keep `origin/codex/phone-node-name-privacy`, as earlier tickets did.
