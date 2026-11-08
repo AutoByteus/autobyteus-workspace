@@ -1,0 +1,47 @@
+# IMP-18 Android JVM tests, debug APK, instrumented tests on the merged tree (IR-005)
+# commands: JAVA_HOME=/opt/homebrew/opt/openjdk@17 ./gradlew :app:testDebugUnitTest :app:assembleDebug :app:compileDebugAndroidTestKotlin;
+#   ANDROID_SERIAL=emulator-5570 ./gradlew :app:connectedDebugAndroidTest
+# commit: e8516bce5c (ran on the working tree this commit records unchanged)
+# env: macOS, JDK 17; own read-only emulator codex_api35_arm64 (port 5570), API 35, WebView 124.0.6367.219
+# date: 2026-11-08
+
+BUILD SUCCESSFUL in 2s
+4e7073ad8affa22bb90704f91bb512e708956b4c70c53e6b87d035134de62a35  autobyteus-android/app/build/outputs/apk/debug/app-debug.apk
+org.autobyteus.mobile.MainActivityManifestTest tests 3 failures 0
+org.autobyteus.mobile.connection.ConnectionDiagnosticMapperTest tests 7 failures 0
+org.autobyteus.mobile.connection.NodeUrlNormalizerTest tests 4 failures 0
+org.autobyteus.mobile.connection.PairingLinkParserTest tests 5 failures 0
+org.autobyteus.mobile.connection.SavedNodeEntryTest tests 4 failures 0
+org.autobyteus.mobile.datamigrations.SavedNodeEntryKeysMigrationTest tests 6 failures 0
+org.autobyteus.mobile.shell.ConnectionInputResolverTest tests 3 failures 0
+org.autobyteus.mobile.shell.NodeConnectionFlowTest tests 14 failures 0
+org.autobyteus.mobile.shell.NodeReachabilityTest tests 2 failures 0
+org.autobyteus.mobile.shell.OpenPageRestoreTest tests 6 failures 0
+org.autobyteus.mobile.shell.OpenPageStateTest tests 8 failures 0
+org.autobyteus.mobile.ui.DesktopFullScreenControllerTest tests 8 failures 0
+org.autobyteus.mobile.ui.DesktopFullScreenRequestTest tests 8 failures 0
+    aRequestUnderAnOverlayIsHeldAndAppliedAfterThePageIsReady
+    thePlainPageShownAgainWhileOnDarkensItsNewRootOnceAndOffGivesItsOwnColourBack
+    offIsAppliedAtOnceInEveryState
+    aRequestBeforeThePageIsReadyIsAppliedWhenThePlainPageShows
+    turningOnWhenThePlainPageShowsDarkensTheRootOnlyOnce
+    anyOtherScreenTurnsFullScreenOffAndAReturnToThePlainPageTurnsItBackOn
+    aNewDocumentClearsTheRequest
+    theWebHostsEndTurnsItOffAndClearsTheRequest
+org.autobyteus.mobile.web.FileChooserRequestPolicyTest tests 3 failures 0
+org.autobyteus.mobile.web.ShellBridgeMessagesTest tests 7 failures 0
+org.autobyteus.mobile.web.TrustedNavigationPolicyTest tests 5 failures 0
+JVM TOTAL tests 93 failures 0 errors 0
+instrumented AutoByteusMobileShellSmokeTest appPackageIsInstallable ok
+instrumented AutoByteusMobileShellSmokeTest cameraPermissionAndFileChooserRequestsHaveDistinctCodes ok
+instrumented AutoByteusMobileShellSmokeTest qrCoordinatorOpensTheScannerOnlyWithTheCameraPermission ok
+instrumented AutoByteusMobileShellSmokeTest healthyWebShellGivesWebViewFullViewportWithoutNativeToolbar ok
+instrumented AutoByteusMobileShellSmokeTest diagnosticWebShellKeepsRecoveryActionsInOverlay ok
+instrumented AutoByteusMobileShellSmokeTest webViewSettingsPermitUserSelectedContentUrisButNotFilePaths ok
+instrumented DesktopFullScreenWindowTest fullScreenTurnsToLandscapeAndHidesTheBarsAndOffGivesBothBack ok
+instrumented MainActivityConfigurationChangeTest rotatingToLandscapeAndBackKeepsTheSameActivityAndTheTypedInput ok
+instrumented SystemBarInsetsTest padsTheRootWithTheBarsAndTheCutout ok
+instrumented SystemBarInsetsTest theKeyboardRaisesTheBottomAboveIt ok
+instrumented SystemBarInsetsTest withoutInsetsNothingMoves ok
+instrumented WebShellWindowInsetsTest thePageSitsInsideTheBarsAndAboveTheKeyboardAndItsSafeAreaReadsZero ok
+INSTRUMENTED TOTAL 12 failures 0
