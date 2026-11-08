@@ -7,6 +7,7 @@ import {
   StandaloneRootUnavailableError,
   getStandaloneAgentRunRootManager,
 } from "../../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
+import { sendUserFile } from "./user-file-reply.js";
 
 /**
  * Reference files of messages between the children of a standalone Agent run's collaboration
@@ -37,8 +38,7 @@ export async function registerAgentCollaborationReferenceRoutes(
           orgRunId: request.params.hostRunId, messageId: request.params.messageId, referenceId: request.params.referenceId,
         });
         reply.header("cache-control", "no-store");
-        reply.type(resolved.mimeType);
-        return reply.send(resolved.stream);
+        return sendUserFile(reply, { mimeType: resolved.mimeType, body: resolved.stream });
       } catch (error) {
         if (error instanceof AgentOrgReferenceContentError) {
           const status = error.code === "INVALID_REFERENCE_PATH" ? 400 : error.code === "REFERENCE_CONTENT_FORBIDDEN" ? 403 : 404;

@@ -41,5 +41,14 @@ export const useNodeAutoUpdateStore = defineStore('nodeAutoUpdate', () => {
     entries.value = await window.electronAPI.markNodeAutoUpdateRead(entryId)
   }
 
-  return { entries, supported, initialize, outcomeOf, isEnabled, setEnabled, markRead }
+  /**
+   * The card has a new answer from the node while its outcome is a failure (autobyteus-412): the desktop reads the node
+   * about the failed version and drops the failure when the node has reached it. The result comes by broadcast.
+   */
+  async function recheck(entryId: string): Promise<void> {
+    if (outcomeOf(entryId)?.outcome !== 'AUTO_FAILED' || !supported()) return
+    await window.electronAPI.recheckNodeAutoUpdate(entryId)
+  }
+
+  return { entries, supported, initialize, outcomeOf, isEnabled, setEnabled, markRead, recheck }
 })

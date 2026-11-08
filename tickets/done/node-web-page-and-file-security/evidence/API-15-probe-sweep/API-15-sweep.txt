@@ -1,0 +1,84 @@
+# API-15 probe sweep; commit fa59313c67 (source da207045a5); started 2026-11-07T22:26:12Z
+[2026-11-07T22:26:12Z] start token-statistics-ui
+[2026-11-07T22:26:54Z] end token-statistics-ui exit=1
+    > node tests/e2e/token-statistics-ui-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/tickets/in-progress/node-web-page-and-file-security/evidence/API-15-probe-sweep/token-statistics-ui
+    
+    Fail: /Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/tickets/in-progress/node-web-page-and-file-security/evidence/API-15-probe-sweep/token-statistics-ui/token-statistics-browser-result.json
+     ELIFECYCLE  Command failed with exit code 1.
+[2026-11-07T22:26:54Z] start composer-context-file-removal
+[2026-11-07T22:28:07Z] end composer-context-file-removal exit=0
+    > autobyteus@1.5.12-beta.7 test:e2e:composer-context-file-removal /Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/autobyteus-web
+    > node tests/e2e/composer-context-file-removal-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/tickets/in-progress/node-web-page-and-file-security/evidence/API-15-probe-sweep/composer-context-file-removal
+    
+    Composer context-file removal probe: Pass. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/tickets/in-progress/node-web-page-and-file-security/evidence/API-15-probe-sweep/composer-context-file-removal/evidence.json
+[2026-11-07T22:28:07Z] start search-pdf-preview
+[2026-11-07T22:28:31Z] end search-pdf-preview exit=0
+    API-002: Pass
+    API-003: Started
+    API-003: Pass
+    {"cases":{"API-002":"Pass","API-003":"Pass"},"cleanup":{"browserClosed":true,"processes":[{"pid":82860,"exitCode":0,"signal":null,"liveGroupMembers":0},{"pid":82516,"exitCode":0,"signal":null,"liveGroupMembers":0}],"fixturePageRemoved":true,"ownedRootRemoved":true,"baseClosed":true,"frontClosed":true}}
+[2026-11-07T22:28:31Z] start file-explorer-pending-save-draft
+[2026-11-07T22:28:59Z] end file-explorer-pending-save-draft exit=0
+    PSD-010: Pass
+    PSD-011: Started
+    PSD-011: Pass
+    {"cases":{"PSD-001":"Pass","PSD-002":"Pass","PSD-003":"Pass","PSD-004":"Pass","PSD-005":"Pass","PSD-006":"Pass","PSD-007":"Pass","PSD-008":"Pass","PSD-009":"Pass","PSD-010":"Pass","PSD-011":"Pass"},"cleanup":{"browserClosed":true,"processes":[{"pid":92300,"exitCode":0,"signal":null,"liveGroupMembers":0},{"pid":92212,"exitCode":0,"signal":null,"liveGroupMembers":0}],"fixturePageRemoved":true,"ownedRootRemoved":true,"baseClosed":true,"frontClosed":true}}
+[2026-11-07T22:28:59Z] start embedding-settings
+[2026-11-07T22:30:02Z] end embedding-settings exit=0
+    Pass EMB-006 A new Task is indexed with no search within 10 s (REQ-011, AC-015); Rebuild with inline confirmation (REQ-006)
+    Pass EMB-007 Leave and return: current state shown; restart: Active · Ready with files on disk (REQ-007, AC-013)
+    Pass EMB-008 zh-CN copy and narrow layout render
+    Result: Pass (/Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/tickets/in-progress/node-web-page-and-file-security/evidence/API-15-probe-sweep/embedding-settings/result.json)
+[2026-11-07T22:30:02Z] start model-routing-settings
+[2026-11-07T22:31:10Z] end model-routing-settings exit=1
+    Pass MRP-06 A node that can't be read: the load error with Check again
+    Pass MRP-07 No key, e-mail or account value in the page, its GraphQL responses, the nodes' output, logs or data files; providers asked only at their usage endpoints (REQ-008)
+    Result: Fail (/Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/tickets/in-progress/node-web-page-and-file-security/evidence/API-15-probe-sweep/model-routing-settings/result.json)
+     ELIFECYCLE  Command failed with exit code 1.
+[2026-11-07T22:31:10Z] start owner-scoped-file-reads
+[2026-11-07T22:31:18Z] end owner-scoped-file-reads exit=0
+    
+    [2026-11-07T22:31:13.384Z] SEED start: Seed hub, Team and Org runs with member files, plus 10 unrelated saved team runs, through public APIs
+    [2026-11-07T22:31:17.951Z] SEED Pass
+    {"result":"Pass","cases":{"SEED":"Pass"},"failures":[],"cleanup":{"frontend":{"pid":null,"status":"not-running"},"backend":{"pid":52681,"status":"terminated","exit":0}},"evidencePath":"/tmp/api416-15-seed-GozQ/owner-seed-evidence/evidence.json"}
+[2026-11-07T22:31:18Z] start owner-scoped-file-reads
+[2026-11-07T22:32:25Z] end owner-scoped-file-reads exit=0
+    [2026-11-07T22:32:20.515Z] B-006 Pass
+    [2026-11-07T22:32:20.515Z] B-007 start: Mobile (Phone Access): a Team run member's file opens in the mobile Artifacts view through the team route (AC-012, REQ-007)
+    [2026-11-07T22:32:23.742Z] B-007 Pass
+    {"result":"Pass","cases":{"T-API":"Pass","B-001":"Pass","B-002":"Pass","B-003":"Pass","B-004":"Pass","B-005":"Pass","B-006":"Pass","B-007":"Pass"},"failures":[],"cleanup":{"frontend":{"pid":55737,"status":"terminated","exit":"SIGTERM"},"backend":{"pid":55296,"status":"terminated","exit":0},"dataCopyRemoved":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-QE4IZe"},"evidencePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/tickets/in-progress/node-web-page-and-file-security/evidence/API-15-probe-sweep/owner-scoped-file-reads/evidence.json"}
+[2026-11-07T22:32:25Z] start delegated-copies-large-hub
+[2026-11-07T22:32:51Z] end delegated-copies-large-hub exit=0
+      report commands: 5 acks; problems: []; first ack: {"type":"AGENT_COMMAND_ACK","payload":{"root_subject_kind":"agent","root_run_id":"large_hub_manager_probe_84d766d55fe5422eabb216d2233e20ee","command_id":"564b2286-a62d-45a7-ae5b-65b7feb9a4f2","command_type":"SEND_MESSAGE","target_agent_run_id":"solution_designer_0eb49e79e5e840d788fe5c12d7536060","st
+      message log: {"at":"2026-11-07T22:32:49.929Z","liveViewMessages":27,"liveViewReports":25,"storedMessages":27,"storedReports":25,"storedFiles":["communication_messages_active.jsonl"]}
+    [2026-11-07T22:32:51.223Z] SEED Pass
+    {"result":"Seeded","label":"current","cases":{"SEED":"Pass"},"errors":0,"cleanup":{"frontend":{"pid":null,"status":"not-running"},"backend":{"pid":81754,"status":"terminated","exit":0},"backendPortClosed":true,"frontendPortClosed":true,"seedKept":"/tmp/api416-15-seed-GozQ/hub (test-owned seed; remove after the measurements)"},"evidencePath":"/tmp/api416-15-seed-GozQ/hub-seed-evidence/evidence.json"}
+[2026-11-07T22:32:51Z] start delegated-copies-large-hub
+[2026-11-07T22:33:46Z] end delegated-copies-large-hub exit=0
+    [2026-11-07T22:33:30.147Z] S-003 Pass
+    [2026-11-07T22:33:30.147Z] S-ROWS start: Every Team row and every member row with statuses and Task summaries (AC-005)
+    [2026-11-07T22:33:35.869Z] S-ROWS Pass
+    {"result":"Pass","label":"current","cases":{"S-API":"Pass","S-001":"Pass","S-002":"Pass","S-003":"Pass","S-ROWS":"Pass"},"errors":0,"cleanup":{"browserClosed":true,"frontend":{"pid":95999,"status":"terminated","exit":"SIGTERM"},"backend":{"pid":94636,"status":"terminated","exit":0},"runRootRemoved":true,"backendPortClosed":true,"frontendPortClosed":true},"evidencePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/tickets/in-progress/node-web-page-and-file-security/evidence/API-15-probe-sweep/delegated-copies-large-hub/evidence.json"}
+[2026-11-07T22:33:46Z] start node-vocabulary
+[2026-11-07T22:35:37Z] end node-vocabulary exit=1
+    [probe] NVP-04 Pass
+    [probe] NVP-05 started
+    [probe] result Fail; evidence /Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/tickets/in-progress/node-web-page-and-file-security/evidence/API-15-probe-sweep/node-vocabulary
+     ELIFECYCLE  Command failed with exit code 1.
+[2026-11-07T22:35:37Z] start remote-run-title
+[2026-11-07T22:36:38Z] end remote-run-title exit=0
+    > autobyteus@1.5.12-beta.7 test:e2e:remote-run-title /Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/autobyteus-web
+    > node tests/e2e/remote-run-title-probe.mjs --output-dir=/Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/tickets/in-progress/node-web-page-and-file-security/evidence/API-15-probe-sweep/remote-run-title
+    
+    remote-run-title probe: Pass
+[2026-11-07T22:36:38Z] start projects-feature
+[2026-11-07T22:36:38Z] end projects-feature exit=254
+    undefined
+     ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command "autobyteus-web" not found
+# finished 2026-11-07T22:36:38Z
+[2026-11-07T22:37:44Z] start projects (rerun under its package script name; the first call used projects-feature, which is not a script: ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL)
+[2026-11-07T22:38:53Z] end projects exit=0
+    [PT-E2E-016] Pass
+    [PT-E2E-017] Task keys and depends on: key lines, Blocked by / Dependency cancelled badges, key chip copy, Dependencies card links, picker (newest first, loop greyed, keyboard), new Task with a dependency, live clear, delete drops dependents, key URLs (task-keys AC-011–015, 017, 018, 026)
+    [PT-E2E-017] Pass
+    {"result":"Pass","error":null,"cases":{"PT-E2E-001":"Pass","PT-E2E-002":"Pass","PT-E2E-003":"Pass","PT-E2E-004":"Pass","PT-E2E-005":"Pass","PT-E2E-006":"Pass","PT-E2E-007":"Pass","PT-E2E-008":"Pass","PT-E2E-009":"Pass","PT-E2E-010":"Pass","PT-E2E-011":"Pass","PT-E2E-012":"Pass","PT-E2E-013":"Pass","PT-E2E-014":"Pass","PT-E2E-015":"Pass","PT-E2E-016":"Pass","PT-E2E-017":"Pass"},"cleanup":{"browser":"closed","frontend":"terminated:71544","nodeA":"terminated:82269","nodeB":"terminated:70647","frontendPortReleased":true,"nodeAPortReleased":true,"nodeBPortReleased":true,"tempRootRemoved":true}}

@@ -22,9 +22,10 @@ desktop. Nothing else names the target; a client cannot name a host, port or URL
 - `GET /rest/node-desktop` → `200 { available: boolean }`. Route class
   `TRUSTED_NETWORK_PROTECTED`.
 - `GET /ws/node-desktop?mode=view|control[&access_token=…]` (WebSocket upgrade): one viewer stream.
-  Before the route runs, the request gate refuses a browser `Origin` that is not allowed with
-  HTTP 403 `REMOTE_ACCESS_ORIGIN_REFUSED`, so the handshake fails and no socket opens
-  (`../features/remote_access.md`, Allowed Origins). `/ws/node-desktop` is a phone WebSocket
+  Before the route runs, the request gate refuses a request addressed to a name that is not
+  the node's with HTTP 403 `REMOTE_ACCESS_HOST_REFUSED`, and a browser `Origin` that is not
+  allowed with HTTP 403 `REMOTE_ACCESS_ORIGIN_REFUSED`, so the handshake fails and no socket
+  opens (`../features/remote_access.md`, Allowed Hosts and Allowed Origins). `/ws/node-desktop` is a phone WebSocket
   route, so a paired phone's credential is accepted here.
   The route, in this order:
   1. authorizes with the shared WebSocket policy (`authorizeRemoteAccessWebSocket`, the same as

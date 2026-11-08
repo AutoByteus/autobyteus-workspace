@@ -3,6 +3,7 @@ import type { NodeServerStatus } from '../../../shared/nodeUpdateContract';
 import type { NodeAutoUpdateEntry } from '../../../shared/nodeAutoUpdateTypes';
 import {
   decideNodeAutoUpdate,
+  isSupersededFailure,
   NODE_AUTO_UPDATE_PENDING_TIMEOUT_MS,
   NODE_DID_NOT_FINISH_REASON,
   reconcileNodeAutoUpdate,
@@ -101,5 +102,34 @@ describe('reconcileNodeAutoUpdate (DS-003 step 2)', () => {
 
   it('a running update is never timed out', () => {
     expect(reconcileNodeAutoUpdate(entry(), older({ update: update('running') }), V, requestedAtMs + 2 * NODE_AUTO_UPDATE_PENDING_TIMEOUT_MS)).toBeNull();
+  });
+});
+
+describe('isSupersededFailure (autobyteus-412, FU-003)', () => {
+  const failed = entry({ outcome: 'AUTO_FAILED', reason: 'No server package was published for 1.6.0 (linux-arm64).', read: true });
+  const runsV = (overrides: Partial<NodeServerStatus> = {}): NodeServerStatus =>
+    older({ version: V, target: { version: V, relation: 'same' }, ...overrides });
+
+  it.each<[string, NodeServerStatus]>([
+    ['RUN-02: the node runs V after its own update succeeded', runsV({ update: update('succeeded') })],
+    ['the node runs V, no update on record (a new image)', runsV({ update: update('idle', { targetVersion: null }) })],
+    ['the node runs a newer version (AC-002)', older({ version: '1.7.0', target: { version: V, relation: 'older' } })],
+    ['the node runs V, a later update of another version failed', runsV({ update: update('failed', { targetVersion: '1.6.1' }) })],
+    ['the node runs V and gives no update state', runsV({ update: undefined })],
+  ])('cleared: %s', (_name, status) => {
+    expect(isSupersededFailure(failed, status)).toBe(true);
+  });
+
+  it.each<[string, NodeAutoUpdateEntry | null, NodeServerStatus]>([
+    ['the node is still older than V (AC-004)', failed, older()],
+    ['the node runs V in its trial (update running; it can roll back)', failed, runsV({ update: update('running', { step: 'trial' }) })],
+    ['AR-003: a pass of a desktop at V+1 (target V+1, node runs V+1) leaves the V failure',
+      failed, older({ version: '1.7.0', target: { version: '1.7.0', relation: 'same' } })],
+    ['no target in the answer', failed, runsV({ target: undefined })],
+    ['no entry', null, runsV()],
+    ['a pending entry', entry(), runsV()],
+    ['an automatic success', entry({ outcome: 'AUTO_UPDATED' }), runsV()],
+  ])('not cleared: %s', (_name, current, status) => {
+    expect(isSupersededFailure(current, status)).toBe(false);
   });
 });

@@ -1,0 +1,16 @@
+# IMP-01 reproduce-416.sh before the fix
+# Command: bash tickets/in-progress/node-web-page-and-file-security/probes/reproduce-416.sh <tmp dir>
+# Commit: 6225a734a3 (no source change), server dist built from it
+# Environment: macOS (Darwin 25.5.0), node v22.23.1, isolated node on 127.0.0.1:<free port>, own temp data root
+# Date: 2026-11-07
+
+R1a rebinding POST /graphql (Host+Origin evil.example) | status=200 | type=application/json; charset=utf-8 | csp=none | nosniff=none
+R1b rebinding same-origin GET file (Host evil.example, no Origin) | status=200 | type=text/html | csp=none | nosniff=none
+R1c control: foreign Origin, real Host (refused since 403) | status=403 | type=application/json; charset=utf-8 | csp=none | nosniff=none
+R2a localhost:5173 page POST /graphql | status=200 | type=application/json; charset=utf-8 | csp=none | nosniff=none
+R2b 127.0.0.1:8080 page POST /graphql | status=200 | type=application/json; charset=utf-8 | csp=none | nosniff=none
+R2c localhost:5173 page POST /mcp/gateway | status=200 | type=application/json; charset=utf-8 | csp=none | nosniff=none
+R3a workspace content page.html | status=200 | type=text/html | csp=none | nosniff=none
+R3b workspace content pic.svg | status=200 | type=image/svg+xml | csp=none | nosniff=none
+R3c workspace content doc.pdf | status=200 | type=application/pdf | csp=none | nosniff=none
+R3d workspace static page.html (417 preview route) | status=200 | type=text/html | csp=sandbox allow-scripts | nosniff=none

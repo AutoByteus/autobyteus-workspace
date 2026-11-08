@@ -168,6 +168,13 @@ const writeExecutionTree = async (input: {
   writeAttachmentSidecars(teamDir, "team");
 };
 
+
+// autobyteus-416 AC-007: every context-file read (F4–F8) answers through sendUserFile.
+const expectUserFileHeaders = (response: { headers: Record<string, unknown> }) => {
+  expect(response.headers["content-security-policy"]).toBe("sandbox allow-scripts");
+  expect(response.headers["x-content-type-options"]).toBe("nosniff");
+};
+
 describe("REST context-files routes", () => {
   let tempDir: string;
   let memoryDir: string;
@@ -199,6 +206,7 @@ describe("REST context-files routes", () => {
     const draftRead = await app.inject({ method: "GET", url: uploaded.locator });
     expect(draftRead.statusCode).toBe(200);
     expect(draftRead.body).toBe("standalone notes");
+    expectUserFileHeaders(draftRead);
 
     const finalized = await finalizeAttachment(
       app,
@@ -211,7 +219,9 @@ describe("REST context-files routes", () => {
       locator: `/rest/runs/run-A/context-files/${encodeURIComponent(uploaded.storedFilename)}`,
       phase: "final",
     });
-    expect((await app.inject({ method: "GET", url: finalized.locator })).body).toBe("standalone notes");
+    const finalRead = await app.inject({ method: "GET", url: finalized.locator });
+    expect(finalRead.body).toBe("standalone notes");
+    expectUserFileHeaders(finalRead);
     expect((await app.inject({ method: "GET", url: uploaded.locator })).statusCode).toBe(404);
   });
 
@@ -292,6 +302,7 @@ describe("REST context-files routes", () => {
     const exact = await app.inject({ method: "GET", url: finalized.locator });
     expect(exact.statusCode).toBe(200);
     expect(exact.body).toBe("exact Team member bytes");
+    expectUserFileHeaders(exact);
   });
 
   it("does not convert an unexpected final Team access fault into a client error", async () => {

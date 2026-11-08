@@ -144,8 +144,12 @@ let ownedRoot, alpha, beta, frontend, browser;
 try {
   await fs.mkdir(outputDir, { recursive: true });
   ownedRoot = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), 'mr-decisions-probe-')));
+  const frontendPort = await choosePort();
+  const frontendUrl = `http://127.0.0.1:${frontendPort}`;
   alpha = await createNode(ownedRoot, 'alpha');
+  alpha.env.AUTOBYTEUS_ALLOWED_ORIGINS = frontendUrl; // the node accepts its frontend's origin (autobyteus-416)
   beta = await createNode(ownedRoot, 'beta');
+  beta.env.AUTOBYTEUS_ALLOWED_ORIGINS = frontendUrl; // the node accepts its frontend's origin (autobyteus-416)
   await fs.writeFile(alpha.planFile, JSON.stringify({ mode: 'valid', runtime: AGY, model: ALT, taskKind: 'writing', reason: REASON.alpha, readRuntimes: true }));
   await fs.writeFile(beta.planFile, JSON.stringify({ mode: 'valid', runtime: AGY, model: ALT, taskKind: 'writing', reason: REASON.beta, readRuntimes: true }));
   await Promise.all([startNode(alpha), startNode(beta)]);
@@ -173,8 +177,6 @@ try {
   assert(evidence.observations.remoteDelegation.includes('chosen by the Model Router'), `remote delegation routed: ${evidence.observations.remoteDelegation}`);
   evidence.ids = ids;
 
-  const frontendPort = await choosePort();
-  const frontendUrl = `http://127.0.0.1:${frontendPort}`;
   evidence.isolation = { tempRoot: ownedRoot, alpha: alpha.url, beta: beta.url, frontend: frontendUrl };
   frontend = start('corepack', ['pnpm', 'dev', '--host', '127.0.0.1', '--port', String(frontendPort)], webDir, { ...scrubbedEnv(), NODE_ENV: 'development', BACKEND_NODE_BASE_URL: alpha.url }, path.join(outputDir, 'frontend.log'));
   await waitFor('frontend', async () => { if (exited(frontend)) throw new Error('frontend exited'); return fetch(frontendUrl).then((r) => r.ok).catch(() => false); }, 240000);

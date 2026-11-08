@@ -292,6 +292,7 @@ try {
     DB_TYPE: 'sqlite',
     DATABASE_URL: databaseUrl,
     AUTOBYTEUS_SERVER_HOST: backendUrl,
+    AUTOBYTEUS_ALLOWED_ORIGINS: frontendUrl, // the node accepts its frontend's origin (autobyteus-416)
     AUTOBYTEUS_LOG_DIR: path.join(dataRoot, 'logs'),
     AUTOBYTEUS_MEMORY_DIR: path.join(dataRoot, 'memory'),
     AUTOBYTEUS_TEMP_WORKSPACE_DIR: path.join(dataRoot, 'temp_workspace'),

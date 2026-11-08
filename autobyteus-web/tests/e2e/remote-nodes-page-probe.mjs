@@ -113,6 +113,10 @@ const children = new Set();
 const blackHoles = [];
 
 /** One server process with its own data root and HOME. */
+// The probe's frontend origin, chosen before any node starts: every node accepts it (autobyteus-416).
+const frontendPort = await freePort();
+const frontendUrl = `http://127.0.0.1:${frontendPort}`;
+
 const startServer = async (name, port) => {
   const dir = path.join(root, name);
   const dataDir = path.join(dir, 'data');
@@ -127,7 +131,7 @@ const startServer = async (name, port) => {
   const child = spawn(process.execPath, [appEntry, '--host', '127.0.0.1', '--port', String(port), '--data-dir', dataDir], {
     cwd: serverDir, stdio: ['ignore', 'pipe', 'pipe'],
     env: { PATH: process.env.PATH, HOME: home, TMPDIR: process.env.TMPDIR ?? os.tmpdir(), APP_ENV: 'test', LOG_LEVEL: 'WARN',
-      HTTP_ACCESS_LOG_MODE: 'off', AUTOBYTEUS_SERVER_HOST: baseUrl } });
+      HTTP_ACCESS_LOG_MODE: 'off', AUTOBYTEUS_SERVER_HOST: baseUrl, AUTOBYTEUS_ALLOWED_ORIGINS: frontendUrl } });
   child.stdout.pipe(log); child.stderr.pipe(log);
   child.once('close', () => log.end());
   children.add(child);
@@ -214,8 +218,6 @@ try {
   ] };
 
   // The web app against alpha.
-  const frontendPort = await freePort();
-  const frontendUrl = `http://127.0.0.1:${frontendPort}`;
   const frontendLog = createWriteStream(path.join(outputDir, 'frontend.log'));
   frontend = spawn('corepack', ['pnpm', 'dev', '--host', '127.0.0.1', '--port', String(frontendPort)], { cwd: webDir, detached: true,
     stdio: ['ignore', 'pipe', 'pipe'], env: { ...process.env, NODE_ENV: 'development', BACKEND_NODE_BASE_URL: alpha.baseUrl } });

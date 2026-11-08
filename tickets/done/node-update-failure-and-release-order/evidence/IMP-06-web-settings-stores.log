@@ -1,0 +1,9 @@
+# IMP-06 web settings and stores tests
+# Command: pnpm -C autobyteus-web prepare:shared-types; NUXT_TEST=true pnpm -C autobyteus-web exec vitest run components/settings stores
+# Commit: df789a89a5
+# Env: macOS 26.5.2 arm64, node v22.23.1
+# Date: 2026-11-07T19:46:40Z
+# Note: a first run failed to load stores/__tests__/applicationHostStore.spec.ts because the generated @autobyteus/application-sdk-contracts dist/ had been removed from the worktree; rebuilt with prepare:shared-types, then rerun.
+
+ Test Files  176 passed (176)
+      Tests  1544 passed (1544)

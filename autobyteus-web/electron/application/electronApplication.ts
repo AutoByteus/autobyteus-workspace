@@ -74,6 +74,7 @@ export class ElectronApplication {
       listenerPolicy: 'preserve-backend-default',
       baseDataRoot: profile.baseDataRoot,
       environmentPolicy: profile.name === 'e2e' ? 'isolated-baseline' : 'inherit-caller',
+      developmentRendererOrigin: isDev ? new URL(this.getStartUrl()).origin : null,
     })
     this.serverStatusManager = new ServerStatusManager(this.serverManager)
     const installHooks = {
@@ -448,11 +449,12 @@ export class ElectronApplication {
   private startNodeAutoUpdates(): void {
     const record = new NodeAutoUpdateRecord(app.getPath('userData'))
     const broadcast = (entries: NodeAutoUpdateEntries) => this.shellWindowRegistry.broadcast(NODE_AUTO_UPDATE_CHANGED_CHANNEL, entries)
-    registerNodeAutoUpdateIpc(ipcMain, record, broadcast)
-    this.nodeAutoUpdater = new NodeAutoUpdater({ getNodes: () => this.nodeRegistrySnapshot.nodes, appVersion: app.getVersion(),
+    const updater = new NodeAutoUpdater({ getNodes: () => this.nodeRegistrySnapshot.nodes, appVersion: app.getVersion(),
       isPackaged: app.isPackaged, record, client: createNodeUpdateClient(), onChange: broadcast })
-    this.nodeAutoUpdater.nodesChanged()
-    this.nodeAutoUpdater.start()
+    this.nodeAutoUpdater = updater
+    registerNodeAutoUpdateIpc(ipcMain, record, broadcast, (entryId) => void updater.recheckFailure(entryId))
+    updater.nodesChanged()
+    updater.start()
   }
   private async stopResources(): Promise<void> {
     this.nodeAutoUpdater?.stop()

@@ -177,7 +177,7 @@ try {
   const clean = { PATH: process.env.PATH, HOME: home, TMPDIR: owned, LANG: 'C.UTF-8', TZ: 'UTC' };
   const db = `file:${path.join(data, 'db/probe.db')}`;
   await fs.writeFile(path.join(data, '.env'), `APP_ENV=development\nDB_TYPE=sqlite\nDATABASE_URL=${db}\nAUTOBYTEUS_SERVER_HOST=${base}\n`);
-  const backend = start('backend', process.execPath, [path.join(server, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(backendPort), '--data-dir', data], server, { ...clean, APP_ENV: 'development', DB_TYPE: 'sqlite', DATABASE_URL: db, AUTOBYTEUS_SERVER_HOST: base });
+  const backend = start('backend', process.execPath, [path.join(server, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(backendPort), '--data-dir', data], server, { ...clean, APP_ENV: 'development', DB_TYPE: 'sqlite', DATABASE_URL: db, AUTOBYTEUS_SERVER_HOST: base, AUTOBYTEUS_ALLOWED_ORIGINS: front });
   await until('backend ready', async () => { assert.equal(backend.exitCode, null); return (await fetch(`${base}/rest/health`, { signal: AbortSignal.timeout(2000) })).ok; }, 120000);
   id = (await gql('mutation($input:CreateWorkspaceInput!){createWorkspace(input:$input){workspaceId}}', { input: { rootPath: root } })).createWorkspace.workspaceId; ev.workspaceId = id;
   await fs.copyFile(path.join(web, 'tests/e2e/fixtures/file-explorer-pending-save-draft.page.vue'), fixturePage); installedPage = true;

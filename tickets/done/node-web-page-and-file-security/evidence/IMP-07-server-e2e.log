@@ -1,0 +1,24 @@
+# IMP-07 server e2e: request gate, phone routes, node desktop, two-node remote collaboration
+# Commands (clean environment, HOME=<fresh resolved tmp>):
+#   env -i PATH HOME TMPDIR pnpm -C autobyteus-server-ts exec vitest run tests/e2e/remote-access/ tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts --no-watch
+#   env -i PATH HOME TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<repo>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts --no-watch
+# Commit: da207045a5 (server dist built from it for the two-node run)
+# Environment: macOS (Darwin 25.5.0), node v22.23.1; real studio servers on 127.0.0.1
+# Date: 2026-11-07
+
+## Run 1 (remote-access, node-desktop; the two-node file was skipped here without its gate)
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts (11 tests) 4946ms
+     ✓ accepts each allowed-origin class and refuses near misses (AC-002)  2857ms
+     ✓ accepts a phone credential on every phone WebSocket route (AC-005)  893ms
+     ✓ accepts every allowed-host class, configured name and paired-phone host, and refuses other public names (416 AC-002, AC-003)  861ms
+ ✓ tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts (3 tests) 502ms
+     ✓ keeps active and revoked device routes separate while proving HTTPS and trusted LAN HTTP QR policy  414ms
+ ✓ tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts (9 tests) 40523ms
+     ✓ ends an open phone stream within 25 s of its revocation; a reconnect is refused (AC-012)  20048ms
+     ✓ ends open phone streams within 25 s of Phone Access being turned off (AC-012)  20051ms
+ Test Files  3 passed | 1 skipped (4)
+      Tests  23 passed | 41 skipped (64)
+
+## Run 2 (two nodes, peer HTTP and run-observation WebSocket by 127.0.0.1)
+ Test Files  1 passed (1)
+      Tests  41 passed (41)

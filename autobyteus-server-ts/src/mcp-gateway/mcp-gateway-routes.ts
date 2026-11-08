@@ -3,7 +3,6 @@ import {
   accepts,
   handleGatewayOptions,
   isGatewayJsonContentType,
-  isOriginAllowed,
   isSupportedGatewayRouteMethod,
   readSingleHeader,
   sendGatewayHttpError,
@@ -21,6 +20,11 @@ import {
   McpGatewayMethodDispatcher,
   getMcpGatewayMethodDispatcher,
 } from "./mcp-gateway-method-dispatcher.js";
+import { getNodeBrowserAccess } from "../api/security/node-browser-access.js";
+import {
+  createToolEndpointOriginPolicy,
+  type RequestOriginPolicy,
+} from "../api/security/remote-access-request-origin.js";
 
 const MCP_GATEWAY_ROUTE = "/mcp/gateway";
 const SUPPORTED_PROTOCOL_VERSIONS = new Set(["2025-03-26", "2025-06-18", "2025-11-25"]);
@@ -37,13 +41,14 @@ export async function registerMcpGatewayRoutes(
 ): Promise<void> {
   const accessGate = deps.accessGate ?? getMcpGatewayAccessGate();
   const dispatcher = deps.dispatcher ?? getMcpGatewayMethodDispatcher();
+  const originPolicy = createToolEndpointOriginPolicy(getNodeBrowserAccess().allowedOrigins);
 
-  registerMcpGatewayRequestGate(app, accessGate);
+  registerMcpGatewayRequestGate(app, accessGate, originPolicy);
   await app.register(async (mcpApp) => {
     registerRawBodyParsers(mcpApp);
     mcpApp.all<{ Body: unknown }>(
       MCP_GATEWAY_ROUTE,
-      async (request, reply) => handleMcpGatewayRequest({ request, reply, accessGate, dispatcher }),
+      async (request, reply) => handleMcpGatewayRequest({ request, reply, accessGate, originPolicy, dispatcher }),
     );
   });
 }
@@ -65,12 +70,12 @@ const registerRawBodyParsers = (app: FastifyInstance): void => {
 const registerMcpGatewayRequestGate = (
   app: FastifyInstance,
   accessGate: McpGatewayAccessGate,
+  originPolicy: RequestOriginPolicy,
 ): void => {
   app.addHook("onRequest", async (request, reply) => {
     if (!isMcpGatewayUrl(request.url)) return;
 
-    const origin = readSingleHeader(request.headers.origin);
-    if (!isOriginAllowed(origin)) {
+    if (!originPolicy.isAllowed(request.headers)) {
       await sendGatewayHttpError(reply, 403, "forbidden", "Forbidden");
       return;
     }
@@ -93,11 +98,11 @@ const handleMcpGatewayRequest = async (input: {
   request: FastifyRequest<{ Body: unknown }>;
   reply: FastifyReply;
   accessGate: McpGatewayAccessGate;
+  originPolicy: RequestOriginPolicy;
   dispatcher: McpGatewayMethodDispatcher;
 }) => {
-  const { request, reply, accessGate, dispatcher } = input;
-  const origin = readSingleHeader(request.headers.origin);
-  if (!isOriginAllowed(origin)) {
+  const { request, reply, accessGate, originPolicy, dispatcher } = input;
+  if (!originPolicy.isAllowed(request.headers)) {
     return sendGatewayHttpError(reply, 403, "forbidden", "Forbidden");
   }
   if (request.method === "OPTIONS") {

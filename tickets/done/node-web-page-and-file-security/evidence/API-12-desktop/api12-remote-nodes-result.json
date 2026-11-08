@@ -1,0 +1,41 @@
+{
+  "ok": true,
+  "step": "api12-remote-nodes",
+  "at": "2026-11-07T22:04:45.921Z",
+  "result": {
+    "docker": {
+      "url": "http://localhost:58235",
+      "rowText": "api416-docker localhost:58235 Server 1.5.12-beta.3 Update automatically Keep this node on this app's version. 1 Agent /home/autobyteus/server-packages is not this node's own volume, so an update would be lost when the container is recreated. Reinstall the launcher, then run: autobyteus-docker upgrade --all",
+      "collaboration": null,
+      "inWindow": {
+        "status": 200,
+        "names": [
+          "Daily Assistant",
+          "Docker Proof Agent"
+        ],
+        "ws": "opened",
+        "href": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat"
+      },
+      "seededAgentListed": true
+    },
+    "lan-ip": {
+      "url": "http://192.168.2.158:58236",
+      "rowText": "api416-lan-ip 192.168.2.158:58236 Server version unknown 1 Agent",
+      "collaboration": {
+        "question": "Let agents work with api416-lan-ip? Agents on this node and on api416-lan-ip will be able to work with each other. These changes happen: On this node (Embedded Node) • Register api416-lan-ip as “api416-lan-ip” On api416-lan-ip • Turn on remote collaboration (it is off) • Register this node as “Embedded Node” api416-lan-ip finds this node's address once it is on. Trusted private network only: nodes",
+        "outcome": "closed by itself",
+        "partial": false
+      },
+      "inWindow": {
+        "status": 200,
+        "names": [
+          "Daily Assistant",
+          "Host Proof Agent"
+        ],
+        "ws": "opened",
+        "href": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-web-page-and-file-security/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat"
+      },
+      "seededAgentListed": true
+    }
+  }
+}

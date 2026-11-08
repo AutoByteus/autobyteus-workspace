@@ -9,8 +9,14 @@ Phone Access is additive: paired phones receive explicit `mra_...` mobile creden
 | Concern | Owner |
 | --- | --- |
 | HTTP route classification and authorization; the WebSocket credential rule and phone WebSocket routes (`authorizeWebSocket`, `PHONE_WEBSOCKET_ROUTES`) | `src/api/security/remote-access-route-policy.ts` |
-| Fastify request gate (Origin check, CORS, route authorization, refusal log) | `src/api/security/remote-access-policy-plugin.ts` |
-| Allowed-origin rule and `AUTOBYTEUS_ALLOWED_ORIGINS` parsing | `src/api/security/remote-access-request-origin.ts` |
+| The node's first request rule: the Host gate (DNS rebinding defence) | `src/api/security/remote-access-host-gate.ts` |
+| Allowed-host rule (classes, configured names, the paired-phone lookup on a miss) | `src/api/security/remote-access-request-host.ts`; `Host` parsing in `request-host-name.ts` |
+| The browser-access settings, read once at start (`AUTOBYTEUS_ALLOWED_ORIGINS`, `AUTOBYTEUS_ALLOWED_HOSTS`, the host of `AUTOBYTEUS_SERVER_HOST`) | `src/api/security/node-browser-access.ts` |
+| Fastify origin/auth hook (Origin check, CORS, route authorization) | `src/api/security/remote-access-policy-plugin.ts` |
+| The refusal reply and log line of both hooks | `src/api/security/remote-access-refusal.ts` |
+| Allowed-origin rules: the node's, and the tool endpoints' (`/mcp/gateway`, agent-tools and credential-proxy listeners) | `src/api/security/remote-access-request-origin.ts` |
+| Hosts of open pairing sessions and active paired phones (`isPairedPhoneHost`) | `src/remote-access/services/remote-access-pairing-service.ts` |
+| How a user file is answered (`sendUserFile`) | `src/api/rest/user-file-reply.ts` |
 | `/ws/*` handler adapter over `authorizeWebSocket` (refusal → close, auth context) | `src/api/websocket/remote-access-websocket-auth.ts` |
 | WebSocket close code for each refusal code | `src/remote-access/domain/remote-access-close-codes.ts` |
 | Phone Access settings | `src/remote-access/services/remote-access-settings-service.ts` and `stores/remote-access-settings-store.ts` |
@@ -22,19 +28,40 @@ Phone Access is additive: paired phones receive explicit `mra_...` mobile creden
 | Mobile static asset serving | `src/api/static/mobile-web.ts` |
 | Sensitive URL redaction | `src/api/security/redact-sensitive-url.ts` |
 
+## Allowed Hosts
+
+The node's first request rule (`remote-access-host-gate.ts`, registered before every other hook): every HTTP request and every WebSocket upgrade, on any path and with or without an `Origin`, must be addressed to one of the node's names. A page an attacker re-points at the node through DNS (DNS rebinding) is same-origin with itself, so only the `Host` it was addressed by tells it apart. The port is not compared. A request whose `Host` is (`RequestHostPolicy`, `remote-access-request-host.ts`):
+
+- an IP address (IPv4 or IPv6);
+- `localhost` or a name ending `.localhost`;
+- a name public DNS cannot give an attacker: a dotless name, or a name ending `.local`, `.lan`, `.home.arpa` or `.internal` (including `host.docker.internal`);
+- a name ending `.ts.net` (outside a tailnet, Tailscale names resolve only to Tailscale's relays);
+- the host of `AUTOBYTEUS_SERVER_HOST` or of an `AUTOBYTEUS_ALLOWED_ORIGINS` entry;
+- listed in the optional node setting `AUTOBYTEUS_ALLOWED_HOSTS` (environment or the node's `.env`, read at start, default empty): comma-separated names; an entry starting with `.` covers that name and every name under it (`.corp.example` covers `corp.example` and `a.corp.example`, not `evilcorp.example`). Entries that are not names are ignored with one warning at start. There is no "allow every host" value;
+- the host of an open pairing session or of an active paired phone (checked only when no class or setting matched),
+
+passes, as does a request with no `Host` header. Names are compared lowercased, without IPv6 brackets or a trailing dot. `X-Forwarded-Host` is not read for this rule: a re-pointed page can set it. Everything else is refused before any other rule or handler: HTTP 403 `{ code: "REMOTE_ACCESS_HOST_REFUSED", message: "Requests addressed to this host name are not accepted by this node." }` (for a WebSocket, the handshake fails). The log line names the host and the setting to use: `Remote Access request refused REMOTE_ACCESS_HOST_REFUSED <redacted url> host <name> (add it to AUTOBYTEUS_ALLOWED_HOSTS if this is the node's name)`; a malformed `Host` is logged escaped and cut at 100 characters.
+
+Who needs the setting: a node reached through a public DNS name the node cannot recognise, such as a reverse proxy that keeps `Host` with a company domain, a peer node or desktop entry added by a DNS name, or a Docker node addressed by a service name with a dot. A Host-rewriting gateway that sets `Host` to the node's IP or `localhost` needs nothing.
+
 ## Allowed Origins
 
-Every HTTP request and every WebSocket upgrade, on any path (`/ws/*`, `/graphql`, `/rest/remote/run-observations` and routes added later), first meets the node's allowed-origin rule in the request gate, before route authorization and before any route handler. A request is allowed when its browser `Origin` header is:
+Every HTTP request and every WebSocket upgrade that passed the Host rule, on any path (`/ws/*`, `/graphql`, `/rest/remote/run-observations` and routes added later), then meets the node's allowed-origin rule, before route authorization and before any route handler. A request is allowed when its browser `Origin` header is:
 
 - absent (the desktop app's HTTP requests, peer nodes, native and command-line clients);
 - the same origin: the Origin's host[:port] equals the request's `Host`, or the first `X-Forwarded-Host` value, case-insensitive. The scheme is not compared, so a phone shell reached through Tailscale Serve (`https://<name>.ts.net`, plain HTTP to the node) is the same origin;
-- exactly `file://` (the packaged desktop app's renderer);
-- an `http`/`https` loopback origin on any port: `localhost`, `127.0.0.0/8`, `[::1]` (development, Electron dev, e2e);
-- listed in the optional node setting `AUTOBYTEUS_ALLOWED_ORIGINS` (environment or the node's `.env`): comma-separated exact origins such as `https://gateway.example.com`, default empty, read at server start. Use it only for a gateway that rewrites `Host` and sends no `X-Forwarded-Host`. Entries that are not `http(s)` origins are ignored with one warning at start.
+- exactly `file://` (the packaged desktop app's renderer). A local HTML file opened in the desktop's in-app browser does not send this: the in-app browser marks every request made by a `file://` page, and by anything the page creates, with `Origin: null` (autobyteus-416);
+- listed in the optional node setting `AUTOBYTEUS_ALLOWED_ORIGINS` (environment or the node's `.env`): comma-separated exact origins such as `https://gateway.example.com`, default empty, read at server start. Entries that are not `http(s)` origins are ignored with one warning at start.
+
+A page served from a localhost port (`localhost`, `127.0.0.0/8`, `[::1]`) is not an exception: any local program, including a dev server an agent starts, can serve one. Its origin is allowed only when listed exactly, for example `AUTOBYTEUS_ALLOWED_ORIGINS=http://localhost:5173` for a developer's own tool. The launchers in this repository list their frontend themselves: Electron development mode (its renderer's origin), the development stack (`http://127.0.0.1:3000` and `http://localhost:3000`), and the browser probes.
 
 Everything else is refused, including `Origin: null`, other schemes and malformed values: the request gets HTTP 403 `{ code: "REMOTE_ACCESS_ORIGIN_REFUSED" }` (for a WebSocket, the handshake fails; no socket opens and nothing route-specific starts). CORS headers are granted from the same rule: an allowed Origin is reflected in `Access-Control-Allow-Origin`, a refused one gets none, and a request without Origin is answered as before.
 
-The MCP gateway (`/mcp/gateway`) keeps its own narrower rule, which runs first: only an absent or loopback Origin, with its own preflight answer.
+The node's tool endpoints, whose clients are programs, have their own narrower rule (`createToolEndpointOriginPolicy`): no `Origin`, or one listed in `AUTOBYTEUS_ALLOWED_ORIGINS`. It applies to the MCP gateway (`/mcp/gateway`, its hook runs before the origin rule above, with its own preflight answer) and to the loopback agent-tools and credential-proxy listeners, which also keep their loopback client and `Host` checks.
+
+## User Files
+
+Every route that returns a user file's content (workspace files and the HTML preview's static route, uploaded media, composer drafts and sent-message attachments, run file changes, message references) answers through one owner, `sendUserFile` (`src/api/rest/user-file-reply.ts`): the file's own type, `Content-Security-Policy: sandbox allow-scripts` and `X-Content-Type-Options: nosniff`. Opened anywhere (a viewer, a tab, the in-app browser, an agent's browser tool) the file displays, and an HTML or SVG file's scripts run in an opaque origin, walled off from the node: its requests to the node carry `Origin: null` and are refused. PDFs render under this policy. Project Task context files keep their own `attachment` answer, and installed applications' assets are served at the node's origin by design. An architecture test (`tests/architecture/user-file-replies.test.ts`) keeps every file route on `sendUserFile`.
 
 ## Route Policy
 
@@ -131,7 +158,7 @@ Mobile credentials do not authorize owner-management routes. This prevents paire
 
 Credential-bearing URLs, pairing payloads, mobile credentials, and authorization headers must be redacted before logging or diagnostic output.
 
-Every refusal is logged once at warn level, with its code and the redacted URL: `Remote Access request refused <code> <url>` from the request gate (HTTP replies, including `/graphql` upgrades and the peer WebSocket), followed by `origin <value>` for `REMOTE_ACCESS_ORIGIN_REFUSED`; `Remote Access WebSocket rejected <url>: <code>` for a `/ws/*` close. No other header and no credential is logged.
+Every refusal is logged once at warn level, with its code and the redacted URL: `Remote Access request refused <code> <url>` from the request gate (HTTP replies, including `/graphql` upgrades and the peer WebSocket), followed by `origin <value>` for `REMOTE_ACCESS_ORIGIN_REFUSED` and by `host <name> (add it to AUTOBYTEUS_ALLOWED_HOSTS if this is the node's name)` for `REMOTE_ACCESS_HOST_REFUSED` (both values escaped and cut at 100 characters); `Remote Access WebSocket rejected <url>: <code>` for a `/ws/*` close. No other header and no credential is logged.
 
 ## Server Instance Identity
 
@@ -188,7 +215,9 @@ Validation for this feature should cover:
 - backend-generated `/mobile?pairing=...` bootstrapping into the phone shell;
 - pairing exchange, persisted mobile session reload, and mobile deep links;
 - trusted-network REST, GraphQL, and WebSocket reachability without additional credentials;
-- refusal of non-allowed Origins on every WebSocket route family and on HTTP, and acceptance of each allowed-origin class;
+- refusal of requests addressed to a name that is not the node's on every entry form, and acceptance of each allowed-host class and setting;
+- refusal of non-allowed Origins, localhost pages included, on every WebSocket route family and on HTTP, and acceptance of each allowed-origin class;
+- the user-file headers on every user-file route;
 - mobile `mra_...` authorization for protected REST/GraphQL routes and phone WebSocket routes, and its refusal on the other WebSocket routes;
 - rejection of mobile credentials on owner-management routes;
 - paired-device revoke and revoke-all invalidation, including active-list vs revoked-history separation;

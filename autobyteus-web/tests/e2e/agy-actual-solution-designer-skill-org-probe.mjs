@@ -40,7 +40,7 @@ try{
   const bp=await port(),fp=await port(),base=`http://127.0.0.1:${bp}`,front=`http://127.0.0.1:${fp}`,dbUrl=pathToFileURL(db).href;
   evidence.environment={...evidence.environment,dataRoot,workspace,backendUrl:base,frontendUrl:front,sourceLinks:links};
   // Bind the read-only mounted package in both owned backend processes, matching normal startup; never use the user's data root.
-  const env={...process.env,APP_ENV:'development',DB_TYPE:'sqlite',DATABASE_URL:dbUrl,AUTOBYTEUS_SERVER_HOST:base,AUTOBYTEUS_AGENT_PACKAGE_ROOTS:packageRoot,DISABLE_HTTP_REQUEST_LOGS:'true'};
+  const env={...process.env,APP_ENV:'development',DB_TYPE:'sqlite',DATABASE_URL:dbUrl,AUTOBYTEUS_SERVER_HOST:base,AUTOBYTEUS_ALLOWED_ORIGINS:front,AUTOBYTEUS_AGENT_PACKAGE_ROOTS:packageRoot,DISABLE_HTTP_REQUEST_LOGS:'true'};
   await fs.writeFile(path.join(dataRoot,'.env'),`APP_ENV=development\nDB_TYPE=sqlite\nDATABASE_URL=${dbUrl}\nAUTOBYTEUS_SERVER_HOST=${base}\n`);
   await run('corepack',['pnpm','-C',serverDir,'exec','prisma','migrate','deploy','--schema','./prisma/schema.prisma'],rootDir,env,path.join(outDir,'migrate.log'));
   backend=spawnOwned(process.execPath,[path.join(serverDir,'dist/app.js'),'--host','127.0.0.1','--port',String(bp),'--data-dir',dataRoot],serverDir,env,path.join(outDir,'backend.log'));

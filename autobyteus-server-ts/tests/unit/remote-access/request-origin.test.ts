@@ -1,13 +1,13 @@
 import { describe, expect, it } from "vitest";
 import {
   createRequestOriginPolicy,
-  parseConfiguredOrigins,
+  createToolEndpointOriginPolicy,
 } from "../../../src/api/security/remote-access-request-origin.js";
 
-const policy = createRequestOriginPolicy(["https://gateway.example"]);
+const policy = createRequestOriginPolicy(["https://gateway.example", "http://127.0.0.1:3000"]);
 const allowed = (headers: Record<string, string | string[] | undefined>): boolean => policy.isAllowed(headers);
 
-describe("RequestOriginPolicy (REQ-002)", () => {
+describe("RequestOriginPolicy (403 REQ-002; 416 REQ-004)", () => {
   it("allows a request without Origin (desktop app fetch, peers, native clients)", () => {
     expect(allowed({ host: "192.168.1.25:29695" })).toBe(true);
     expect(allowed({})).toBe(true);
@@ -38,10 +38,16 @@ describe("RequestOriginPolicy (REQ-002)", () => {
     })).toBe(false);
   });
 
-  it("allows http/https loopback origins on any port", () => {
-    for (const origin of ["http://localhost:3000", "https://localhost", "http://127.0.0.1:5173", "http://127.5.6.7:1", "http://[::1]:3000"]) {
-      expect(allowed({ origin, host: "192.168.1.25:29695" }), origin).toBe(true);
+  it("refuses loopback origins on any port unless listed exactly (416 DEC-002 = A)", () => {
+    for (const origin of ["http://localhost:5173", "https://localhost", "http://127.0.0.1:8080", "http://127.5.6.7:1", "http://[::1]:3000", "http://localhost:3000"]) {
+      expect(allowed({ origin, host: "192.168.1.25:29695" }), origin).toBe(false);
     }
+    expect(allowed({ origin: "http://127.0.0.1:3000", host: "192.168.1.25:29695" })).toBe(true);
+  });
+
+  it("still allows the node's own loopback origin (same origin)", () => {
+    expect(allowed({ origin: "http://127.0.0.1:29695", host: "127.0.0.1:29695" })).toBe(true);
+    expect(allowed({ origin: "http://localhost:29695", host: "localhost:29695" })).toBe(true);
   });
 
   it("allows configured origins exactly", () => {
@@ -68,12 +74,28 @@ describe("RequestOriginPolicy (REQ-002)", () => {
   });
 });
 
-describe("parseConfiguredOrigins", () => {
-  it("normalizes comma-separated web origins and reports invalid entries", () => {
-    expect(parseConfiguredOrigins(" https://Gateway.Example/base , http://10.0.0.5:8080,,file://,null, ftp://x ")).toEqual({
-      origins: ["https://gateway.example", "http://10.0.0.5:8080"],
-      invalidEntries: ["file://", "null", "ftp://x"],
-    });
-    expect(parseConfiguredOrigins("")).toEqual({ origins: [], invalidEntries: [] });
+describe("tool-endpoint origin rule (416 REQ-004, DEC-007)", () => {
+  const toolPolicy = createToolEndpointOriginPolicy(["http://127.0.0.1:3000"]);
+  const toolAllowed = (headers: Record<string, string | string[] | undefined>): boolean => toolPolicy.isAllowed(headers);
+
+  it("allows programs (no Origin) and configured origins only", () => {
+    expect(toolAllowed({ host: "127.0.0.1:8000" })).toBe(true);
+    expect(toolAllowed({ origin: "http://127.0.0.1:3000", host: "127.0.0.1:8000" })).toBe(true);
+  });
+
+  it("refuses loopback origins on any port, the node's own origin, file:// and null", () => {
+    for (const origin of [
+      "http://localhost:5173",
+      "http://127.0.0.1:8080",
+      "http://[::1]:3000",
+      "http://127.0.0.1:8000",
+      "file://",
+      "null",
+      "",
+      "https://evil.example",
+    ]) {
+      expect(toolAllowed({ origin, host: "127.0.0.1:8000" }), origin).toBe(false);
+    }
+    expect(toolAllowed({ origin: ["http://127.0.0.1:3000"], host: "127.0.0.1:8000" })).toBe(false);
   });
 });

@@ -784,6 +784,22 @@ main process, so it runs with no window open. Packaged builds only.
   running or its update succeeded; `AUTO_FAILED` with the node's reason when
   it failed or was refused; `AUTO_FAILED` "The node did not finish the update."
   30 minutes after the request with no update running.
+- A failure that the node has passed is dropped (autobyteus-412,
+  `isSupersededFailure`): an `AUTO_FAILED` entry for V is removed when the node
+  answers `?target=V` with `relation` `same` or `older` and no update running,
+  whichever route updated it (the card's "Update to V", `autobyteus-docker
+  update`, a new image). It is not counted as "Updated automatically". A pass
+  applies the rule first, so it clears a failure for its own V; a failure for
+  an earlier version is cleared by the card's recheck. A failure for V stays
+  while the node is older than V, and V is still not requested again.
+- The recheck: when a node card in a window has a new answer from its node and
+  the entry is `AUTO_FAILED`, the window sends `node-auto-update:recheck` with
+  the entry ID. `NodeAutoUpdater.recheckFailure` asks the node itself about the
+  failed version (through the entry's `baseUrl`, switch on or off) and removes
+  the entry only when the rule holds for the entry as it is after the answer.
+  It holds the node's per-node guard while it waits, so a pass skips that node
+  meanwhile, and it never requests an update. The window sends only the ID and
+  decides nothing.
 - Outcomes are kept in `userData/node-auto-updates.json` (tolerant read, atomic
   writes, entries of removed nodes dropped) and reach windows through
   `node-auto-update:get-state`, `node-auto-update:mark-read` and the broadcast
@@ -915,7 +931,11 @@ uploaded every desktop updater asset and metadata file listed above. A packaged
 app that checks for updates during that window can receive missing
 `latest-mac.yml`, `latest-linux.yml`, `latest-linux-arm64.yml`, `latest.yml`, or asset-not-found provider
 errors even though the final release will become complete after the desktop
-workflow finishes.
+workflow finishes. The desktop workflow uploads the four `latest*.yml` updater
+files last, only after both architectures' server packages are on the release
+(autobyteus-412), so desktops are offered a version only once its nodes can
+update to it. For a release, that window therefore lasts until the Server Docker
+Release has uploaded its packages (RELEASE.md, Watching The Rollout).
 
 App-side behavior for that condition is intentionally `release-preparing`: show
 calm retry guidance such as "The latest update is still being prepared on

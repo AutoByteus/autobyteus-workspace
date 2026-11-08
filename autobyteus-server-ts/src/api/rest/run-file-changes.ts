@@ -19,6 +19,7 @@ import {
   StandaloneRootMemberViewProjectionService,
   getStandaloneRootMemberViewProjectionService,
 } from "../../standalone-agent-run-root/services/standalone-root-member-view-projection-service.js";
+import { sendUserFile } from "./user-file-reply.js";
 
 type ContentQuery = { path?: string; memberAddress?: string };
 
@@ -46,8 +47,7 @@ const sendFileChangeContent = (reply: FastifyReply, resolved: ResolvedRunFileCha
 
   const mimeType = (lookupMime(absolutePath!) || (entry.type === "file" ? "text/plain" : "application/octet-stream")).toString();
   reply.header("cache-control", "no-store");
-  reply.type(mimeType);
-  return reply.send(fs.createReadStream(absolutePath!));
+  return sendUserFile(reply, { mimeType, body: fs.createReadStream(absolutePath!) });
 };
 
 /** A member read whose agent is not in the named owner answers "not found"; other errors propagate. */

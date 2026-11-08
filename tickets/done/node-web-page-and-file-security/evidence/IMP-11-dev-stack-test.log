@@ -1,0 +1,13 @@
+# IMP-11 development stack launcher test
+# Command: node --test scripts/development/run-dev.test.mjs
+# Commit: da207045a5
+# Environment: macOS (Darwin 25.5.0), node v22.23.1
+# Date: 2026-11-07
+
+ok 1 - development template accepts exactly the approved credential-free schema
+ok 2 - materialization owns the fixed development data paths and routing keys
+ok 3 - runtime materialization retains non-launcher settings while replacing owned assignments
+ok 4 - occupied fixed ports are rejected before stack startup
+# tests 4
+# pass 4
+# fail 0

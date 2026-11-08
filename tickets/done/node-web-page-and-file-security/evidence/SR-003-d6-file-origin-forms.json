@@ -1,0 +1,971 @@
+{
+ "electron": "42.11.16",
+ "seen": [
+  {
+   "kind": "http",
+   "method": "POST",
+   "url": "/top-fetch",
+   "origin": "null"
+  },
+  {
+   "kind": "http",
+   "method": "POST",
+   "url": "/top-xhr",
+   "origin": "null"
+  },
+  {
+   "kind": "ws",
+   "url": "/top-ws",
+   "origin": "null"
+  },
+  {
+   "kind": "http",
+   "method": "POST",
+   "url": "/blank-fetch",
+   "origin": "null"
+  },
+  {
+   "kind": "http",
+   "method": "POST",
+   "url": "/blank-xhr",
+   "origin": "null"
+  },
+  {
+   "kind": "ws",
+   "url": "/blank-ws",
+   "origin": "null"
+  },
+  {
+   "kind": "http",
+   "method": "POST",
+   "url": "/popup-fetch",
+   "origin": "null"
+  },
+  {
+   "kind": "http",
+   "method": "POST",
+   "url": "/popup-xhr",
+   "origin": "null"
+  },
+  {
+   "kind": "http",
+   "method": "POST",
+   "url": "/srcdoc-xhr",
+   "origin": "null"
+  },
+  {
+   "kind": "http",
+   "method": "GET",
+   "url": "/subframe-nav-get",
+   "origin": "(none)"
+  },
+  {
+   "kind": "http",
+   "method": "POST",
+   "url": "/srcdoc-fetch",
+   "origin": "null"
+  },
+  {
+   "kind": "http",
+   "method": "POST",
+   "url": "/blobframe-fetch",
+   "origin": "null"
+  },
+  {
+   "kind": "http",
+   "method": "POST",
+   "url": "/blobframe-xhr",
+   "origin": "null"
+  },
+  {
+   "kind": "http",
+   "method": "POST",
+   "url": "/worker-fetch",
+   "origin": "null"
+  },
+  {
+   "kind": "ws",
+   "url": "/popup-ws",
+   "origin": "null"
+  },
+  {
+   "kind": "ws",
+   "url": "/srcdoc-ws",
+   "origin": "null"
+  },
+  {
+   "kind": "ws",
+   "url": "/blobframe-ws",
+   "origin": "null"
+  },
+  {
+   "kind": "ws",
+   "url": "/worker-ws",
+   "origin": "null"
+  },
+  {
+   "kind": "http",
+   "method": "POST",
+   "url": "/beacon-on-hide",
+   "origin": "null"
+  },
+  {
+   "kind": "http",
+   "method": "POST",
+   "url": "/keepalive-on-hide",
+   "origin": "null"
+  },
+  {
+   "kind": "http",
+   "method": "POST",
+   "url": "/top-fetch",
+   "origin": "null"
+  },
+  {
+   "kind": "http",
+   "method": "POST",
+   "url": "/top-xhr",
+   "origin": "null"
+  },
+  {
+   "kind": "http",
+   "method": "POST",
+   "url": "/blank-fetch",
+   "origin": "null"
+  },
+  {
+   "kind": "http",
+   "method": "POST",
+   "url": "/blank-xhr",
+   "origin": "null"
+  },
+  {
+   "kind": "ws",
+   "url": "/top-ws",
+   "origin": "null"
+  },
+  {
+   "kind": "http",
+   "method": "POST",
+   "url": "/popup-fetch",
+   "origin": "null"
+  },
+  {
+   "kind": "http",
+   "method": "POST",
+   "url": "/popup-xhr",
+   "origin": "null"
+  },
+  {
+   "kind": "http",
+   "method": "POST",
+   "url": "/srcdoc-fetch",
+   "origin": "null"
+  },
+  {
+   "kind": "http",
+   "method": "GET",
+   "url": "/subframe-nav-get",
+   "origin": "(none)"
+  },
+  {
+   "kind": "http",
+   "method": "POST",
+   "url": "/blobframe-fetch",
+   "origin": "null"
+  },
+  {
+   "kind": "http",
+   "method": "POST",
+   "url": "/srcdoc-xhr",
+   "origin": "null"
+  },
+  {
+   "kind": "http",
+   "method": "POST",
+   "url": "/blobframe-xhr",
+   "origin": "null"
+  },
+  {
+   "kind": "http",
+   "method": "POST",
+   "url": "/worker-fetch",
+   "origin": "null"
+  },
+  {
+   "kind": "ws",
+   "url": "/blank-ws",
+   "origin": "null"
+  },
+  {
+   "kind": "ws",
+   "url": "/srcdoc-ws",
+   "origin": "null"
+  },
+  {
+   "kind": "ws",
+   "url": "/popup-ws",
+   "origin": "null"
+  },
+  {
+   "kind": "ws",
+   "url": "/blobframe-ws",
+   "origin": "null"
+  },
+  {
+   "kind": "ws",
+   "url": "/worker-ws",
+   "origin": "null"
+  },
+  {
+   "kind": "http",
+   "method": "POST",
+   "url": "/beacon-on-hide",
+   "origin": "null"
+  },
+  {
+   "kind": "http",
+   "method": "POST",
+   "url": "/keepalive-on-hide",
+   "origin": "null"
+  },
+  {
+   "kind": "http",
+   "method": "POST",
+   "url": "/form-post-nav",
+   "origin": "null"
+  },
+  {
+   "kind": "http",
+   "method": "POST",
+   "url": "/top-fetch",
+   "origin": "null"
+  },
+  {
+   "kind": "http",
+   "method": "POST",
+   "url": "/top-xhr",
+   "origin": "null"
+  },
+  {
+   "kind": "http",
+   "method": "POST",
+   "url": "/blank-fetch",
+   "origin": "null"
+  },
+  {
+   "kind": "http",
+   "method": "POST",
+   "url": "/blank-xhr",
+   "origin": "null"
+  },
+  {
+   "kind": "http",
+   "method": "POST",
+   "url": "/popup-fetch",
+   "origin": "null"
+  },
+  {
+   "kind": "http",
+   "method": "POST",
+   "url": "/popup-xhr",
+   "origin": "null"
+  },
+  {
+   "kind": "http",
+   "method": "GET",
+   "url": "/subframe-nav-get",
+   "origin": "(none)"
+  },
+  {
+   "kind": "http",
+   "method": "POST",
+   "url": "/srcdoc-fetch",
+   "origin": "null"
+  },
+  {
+   "kind": "http",
+   "method": "POST",
+   "url": "/srcdoc-xhr",
+   "origin": "null"
+  },
+  {
+   "kind": "http",
+   "method": "POST",
+   "url": "/blobframe-fetch",
+   "origin": "null"
+  },
+  {
+   "kind": "http",
+   "method": "POST",
+   "url": "/blobframe-xhr",
+   "origin": "null"
+  },
+  {
+   "kind": "http",
+   "method": "POST",
+   "url": "/worker-fetch",
+   "origin": "null"
+  },
+  {
+   "kind": "ws",
+   "url": "/top-ws",
+   "origin": "null"
+  },
+  {
+   "kind": "http",
+   "method": "GET",
+   "url": "/address-bar-get-nav",
+   "origin": "(none)"
+  },
+  {
+   "kind": "http",
+   "method": "POST",
+   "url": "/beacon-on-hide",
+   "origin": "null"
+  },
+  {
+   "kind": "http",
+   "method": "POST",
+   "url": "/keepalive-on-hide",
+   "origin": "null"
+  },
+  {
+   "kind": "ws",
+   "url": "/popup-ws",
+   "origin": "null"
+  },
+  {
+   "kind": "http",
+   "method": "GET",
+   "url": "/control-page",
+   "origin": "(none)"
+  }
+ ],
+ "decisions": [
+  {
+   "url": "file:///tmp/n416-d6/page.html",
+   "resourceType": "mainFrame",
+   "method": "GET",
+   "frame": {
+    "url": "",
+    "origin": "null"
+   },
+   "mark": false
+  },
+  {
+   "url": "/top-fetch",
+   "resourceType": "xhr",
+   "method": "POST",
+   "frame": {
+    "url": "file:///tmp/n416-d6/page.html",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/top-xhr",
+   "resourceType": "xhr",
+   "method": "POST",
+   "frame": {
+    "url": "file:///tmp/n416-d6/page.html",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/top-ws",
+   "resourceType": "webSocket",
+   "method": "GET",
+   "frame": {
+    "url": "file:///tmp/n416-d6/page.html",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/blank-fetch",
+   "resourceType": "xhr",
+   "method": "POST",
+   "frame": {
+    "url": "file:///tmp/n416-d6/page.html",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/blank-xhr",
+   "resourceType": "xhr",
+   "method": "POST",
+   "frame": {
+    "url": "file:///tmp/n416-d6/page.html",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/blank-ws",
+   "resourceType": "webSocket",
+   "method": "GET",
+   "frame": {
+    "url": "about:blank",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/popup-fetch",
+   "resourceType": "xhr",
+   "method": "POST",
+   "frame": {
+    "url": "file:///tmp/n416-d6/page.html",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/popup-ws",
+   "resourceType": "webSocket",
+   "method": "GET",
+   "frame": {
+    "url": "about:blank",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/popup-xhr",
+   "resourceType": "xhr",
+   "method": "POST",
+   "frame": {
+    "url": "file:///tmp/n416-d6/page.html",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/subframe-nav-get",
+   "resourceType": "subFrame",
+   "method": "GET",
+   "frame": {
+    "url": "",
+    "origin": "file://"
+   },
+   "mark": false
+  },
+  {
+   "url": "/srcdoc-fetch",
+   "resourceType": "xhr",
+   "method": "POST",
+   "frame": {
+    "url": "about:srcdoc",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/srcdoc-xhr",
+   "resourceType": "xhr",
+   "method": "POST",
+   "frame": {
+    "url": "about:srcdoc",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/srcdoc-ws",
+   "resourceType": "webSocket",
+   "method": "GET",
+   "frame": {
+    "url": "about:srcdoc",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/blobframe-fetch",
+   "resourceType": "xhr",
+   "method": "POST",
+   "frame": {
+    "url": "blob:file:///252615e4-d58d-4cb8-91de-f3d9d8293c8d",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/blobframe-xhr",
+   "resourceType": "xhr",
+   "method": "POST",
+   "frame": {
+    "url": "blob:file:///252615e4-d58d-4cb8-91de-f3d9d8293c8d",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/blobframe-ws",
+   "resourceType": "webSocket",
+   "method": "GET",
+   "frame": {
+    "url": "blob:file:///252615e4-d58d-4cb8-91de-f3d9d8293c8d",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/worker-fetch",
+   "resourceType": "xhr",
+   "method": "POST",
+   "frame": {
+    "url": "file:///tmp/n416-d6/page.html",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/worker-ws",
+   "resourceType": "webSocket",
+   "method": "GET",
+   "frame": {
+    "url": "file:///tmp/n416-d6/page.html",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "file:///tmp/n416-d6/page.html",
+   "resourceType": "mainFrame",
+   "method": "GET",
+   "frame": {
+    "url": "file:///tmp/n416-d6/page.html",
+    "origin": "file://"
+   },
+   "mark": false
+  },
+  {
+   "url": "/beacon-on-hide",
+   "resourceType": "ping",
+   "method": "POST",
+   "frame": {
+    "url": "file:///tmp/n416-d6/page.html",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/keepalive-on-hide",
+   "resourceType": "xhr",
+   "method": "POST",
+   "frame": {
+    "url": "file:///tmp/n416-d6/page.html",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/top-fetch",
+   "resourceType": "xhr",
+   "method": "POST",
+   "frame": {
+    "url": "file:///tmp/n416-d6/page.html",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/top-xhr",
+   "resourceType": "xhr",
+   "method": "POST",
+   "frame": {
+    "url": "file:///tmp/n416-d6/page.html",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/blank-fetch",
+   "resourceType": "xhr",
+   "method": "POST",
+   "frame": {
+    "url": "file:///tmp/n416-d6/page.html",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/blank-xhr",
+   "resourceType": "xhr",
+   "method": "POST",
+   "frame": {
+    "url": "file:///tmp/n416-d6/page.html",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/top-ws",
+   "resourceType": "webSocket",
+   "method": "GET",
+   "frame": {
+    "url": "file:///tmp/n416-d6/page.html",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/blank-ws",
+   "resourceType": "webSocket",
+   "method": "GET",
+   "frame": {
+    "url": "about:blank",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/popup-fetch",
+   "resourceType": "xhr",
+   "method": "POST",
+   "frame": {
+    "url": "file:///tmp/n416-d6/page.html",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/popup-xhr",
+   "resourceType": "xhr",
+   "method": "POST",
+   "frame": {
+    "url": "file:///tmp/n416-d6/page.html",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/srcdoc-fetch",
+   "resourceType": "xhr",
+   "method": "POST",
+   "frame": {
+    "url": "about:srcdoc",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/subframe-nav-get",
+   "resourceType": "subFrame",
+   "method": "GET",
+   "frame": {
+    "url": "",
+    "origin": "file://"
+   },
+   "mark": false
+  },
+  {
+   "url": "/blobframe-fetch",
+   "resourceType": "xhr",
+   "method": "POST",
+   "frame": {
+    "url": "blob:file:///aaeb3c28-a81e-475f-8c22-f10ccb925301",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/srcdoc-xhr",
+   "resourceType": "xhr",
+   "method": "POST",
+   "frame": {
+    "url": "about:srcdoc",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/blobframe-xhr",
+   "resourceType": "xhr",
+   "method": "POST",
+   "frame": {
+    "url": "blob:file:///aaeb3c28-a81e-475f-8c22-f10ccb925301",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/worker-fetch",
+   "resourceType": "xhr",
+   "method": "POST",
+   "frame": {
+    "url": "file:///tmp/n416-d6/page.html",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/srcdoc-ws",
+   "resourceType": "webSocket",
+   "method": "GET",
+   "frame": {
+    "url": "about:srcdoc",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/popup-ws",
+   "resourceType": "webSocket",
+   "method": "GET",
+   "frame": {
+    "url": "about:blank",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/blobframe-ws",
+   "resourceType": "webSocket",
+   "method": "GET",
+   "frame": {
+    "url": "blob:file:///aaeb3c28-a81e-475f-8c22-f10ccb925301",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/worker-ws",
+   "resourceType": "webSocket",
+   "method": "GET",
+   "frame": {
+    "url": "file:///tmp/n416-d6/page.html",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "file:///tmp/n416-d6/form.html",
+   "resourceType": "mainFrame",
+   "method": "GET",
+   "frame": {
+    "url": "file:///tmp/n416-d6/page.html",
+    "origin": "file://"
+   },
+   "mark": false
+  },
+  {
+   "url": "/beacon-on-hide",
+   "resourceType": "ping",
+   "method": "POST",
+   "frame": {
+    "url": "file:///tmp/n416-d6/page.html",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/keepalive-on-hide",
+   "resourceType": "xhr",
+   "method": "POST",
+   "frame": {
+    "url": "file:///tmp/n416-d6/page.html",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/form-post-nav",
+   "resourceType": "mainFrame",
+   "method": "POST",
+   "frame": {
+    "url": "file:///tmp/n416-d6/form.html",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "file:///tmp/n416-d6/page.html",
+   "resourceType": "mainFrame",
+   "method": "GET",
+   "frame": {
+    "url": "http://127.0.0.1:52932/form-post-nav",
+    "origin": "http://127.0.0.1:52932"
+   },
+   "mark": false
+  },
+  {
+   "url": "/top-fetch",
+   "resourceType": "xhr",
+   "method": "POST",
+   "frame": {
+    "url": "file:///tmp/n416-d6/page.html",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/top-xhr",
+   "resourceType": "xhr",
+   "method": "POST",
+   "frame": {
+    "url": "file:///tmp/n416-d6/page.html",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/blank-fetch",
+   "resourceType": "xhr",
+   "method": "POST",
+   "frame": {
+    "url": "file:///tmp/n416-d6/page.html",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/blank-xhr",
+   "resourceType": "xhr",
+   "method": "POST",
+   "frame": {
+    "url": "file:///tmp/n416-d6/page.html",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/popup-fetch",
+   "resourceType": "xhr",
+   "method": "POST",
+   "frame": {
+    "url": "file:///tmp/n416-d6/page.html",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/popup-xhr",
+   "resourceType": "xhr",
+   "method": "POST",
+   "frame": {
+    "url": "file:///tmp/n416-d6/page.html",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/subframe-nav-get",
+   "resourceType": "subFrame",
+   "method": "GET",
+   "frame": {
+    "url": "",
+    "origin": "file://"
+   },
+   "mark": false
+  },
+  {
+   "url": "/srcdoc-fetch",
+   "resourceType": "xhr",
+   "method": "POST",
+   "frame": {
+    "url": "about:srcdoc",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/srcdoc-xhr",
+   "resourceType": "xhr",
+   "method": "POST",
+   "frame": {
+    "url": "about:srcdoc",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/blobframe-fetch",
+   "resourceType": "xhr",
+   "method": "POST",
+   "frame": {
+    "url": "blob:file:///97fd4c43-a7bf-40a6-9730-92303d15fc7d",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/blobframe-xhr",
+   "resourceType": "xhr",
+   "method": "POST",
+   "frame": {
+    "url": "blob:file:///97fd4c43-a7bf-40a6-9730-92303d15fc7d",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/worker-fetch",
+   "resourceType": "xhr",
+   "method": "POST",
+   "frame": {
+    "url": "file:///tmp/n416-d6/page.html",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/top-ws",
+   "resourceType": "webSocket",
+   "method": "GET",
+   "frame": {
+    "url": "file:///tmp/n416-d6/page.html",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/address-bar-get-nav",
+   "resourceType": "mainFrame",
+   "method": "GET",
+   "frame": {
+    "url": "file:///tmp/n416-d6/page.html",
+    "origin": "file://"
+   },
+   "mark": false
+  },
+  {
+   "url": "/beacon-on-hide",
+   "resourceType": "ping",
+   "method": "POST",
+   "frame": null,
+   "mark": true
+  },
+  {
+   "url": "/keepalive-on-hide",
+   "resourceType": "xhr",
+   "method": "POST",
+   "frame": null,
+   "mark": true
+  },
+  {
+   "url": "/popup-ws",
+   "resourceType": "webSocket",
+   "method": "GET",
+   "frame": {
+    "url": "about:blank",
+    "origin": "file://"
+   },
+   "mark": true
+  },
+  {
+   "url": "/control-page",
+   "resourceType": "mainFrame",
+   "method": "GET",
+   "frame": {
+    "url": "http://127.0.0.1:52932/address-bar-get-nav",
+    "origin": "http://127.0.0.1:52932"
+   },
+   "mark": false
+  }
+ ]
+}

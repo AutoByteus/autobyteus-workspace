@@ -119,7 +119,7 @@ const spawnLogged = (cmd, args, cwd, env, name) => {
 };
 const baseEnv = () => Object.fromEntries(['PATH', 'TMPDIR', 'LANG', 'SHELL'].filter((k) => process.env[k]).map((k) => [k, process.env[k]]));
 const serverEnv = () => ({ APP_ENV: 'production', DB_TYPE: 'sqlite', DATABASE_URL: `file:${path.join(stack.dataDir, 'db', 'production.db')}`,
-  AUTOBYTEUS_SERVER_HOST: stack.backendUrl });
+  AUTOBYTEUS_SERVER_HOST: stack.backendUrl, AUTOBYTEUS_ALLOWED_ORIGINS: stack.frontendUrl });
 const startBackend = async () => {
   stack.starts += 1;
   await fsp.writeFile(path.join(stack.dataDir, '.env'), `${Object.entries(serverEnv()).map(([k, v]) => `${k}=${v}`).join('\n')}\n`, { mode: 0o600 });
@@ -131,8 +131,7 @@ const startBackend = async () => {
     headers: { 'content-type': 'application/json' }, body: '{"query":"{__typename}"}' })).ok, 60000);
 };
 const startFrontend = async () => {
-  const frontendPort = await freePort();
-  stack.frontendUrl = `http://127.0.0.1:${frontendPort}`;
+  const { frontendPort } = stack;
   const ws = stack.backendUrl.replace(/^http/, 'ws');
   stack.frontend = spawnLogged('pnpm', ['exec', 'nuxi', 'dev', '--host', '127.0.0.1', '--port', String(frontendPort)], webDir,
     { ...baseEnv(), HOME: process.env.HOME, NODE_ENV: 'development', NUXT_TELEMETRY_DISABLED: '1', BACKEND_NODE_BASE_URL: stack.backendUrl,
@@ -147,6 +146,8 @@ const prepareStack = async (root) => {
   await fsp.mkdir(stack.dataDir, { recursive: true });
   stack.privateHome = await fsp.mkdtemp(path.join(os.tmpdir(), 'owner-scoped-reads-home-'));
   stack.backendPort = await freePort(); stack.backendUrl = `http://127.0.0.1:${stack.backendPort}`;
+  // Chosen before the backend starts: the node accepts its frontend's origin (autobyteus-416).
+  stack.frontendPort = await freePort(); stack.frontendUrl = `http://127.0.0.1:${stack.frontendPort}`;
 };
 const gqlRaw = async (query, variables = {}) => {
   const started = performance.now();

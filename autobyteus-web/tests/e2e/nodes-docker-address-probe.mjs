@@ -104,6 +104,10 @@ const graphqlClient = (name, baseUrl) => async (query, variables) => {
 };
 const gqlErrors = async (gql, query, variables) => { try { await gql(query, variables); return null; } catch (error) { return error.errors ?? [{ message: error.message }]; } };
 
+// The probe's frontend origins (one frontend per backend), chosen before any node starts: every node accepts both (autobyteus-416).
+const frontendPorts = { desk: await freePort(), docker: await freePort() };
+const frontendOrigins = Object.values(frontendPorts).map(port => `http://127.0.0.1:${port}`).join(',');
+
 /** A server of this worktree on the host, with its own data root and HOME. */
 const startServer = async (name, port) => {
   const dir = path.join(root, name);
@@ -116,7 +120,7 @@ const startServer = async (name, port) => {
   const log = createWriteStream(path.join(outputDir, `server-${name}.log`), { flags: 'a' });
   const child = spawn(process.execPath, [appEntry, '--host', '127.0.0.1', '--port', String(port), '--data-dir', dataDir], {
     cwd: serverDir, stdio: ['ignore', 'pipe', 'pipe'],
-    env: { PATH: process.env.PATH, HOME: home, TMPDIR: process.env.TMPDIR ?? os.tmpdir(), APP_ENV: 'test', LOG_LEVEL: 'WARN', HTTP_ACCESS_LOG_MODE: 'off', AUTOBYTEUS_SERVER_HOST: baseUrl } });
+    env: { PATH: process.env.PATH, HOME: home, TMPDIR: process.env.TMPDIR ?? os.tmpdir(), APP_ENV: 'test', LOG_LEVEL: 'WARN', HTTP_ACCESS_LOG_MODE: 'off', AUTOBYTEUS_SERVER_HOST: baseUrl, AUTOBYTEUS_ALLOWED_ORIGINS: frontendOrigins } });
   child.stdout.pipe(log); child.stderr.pipe(log);
   child.once('close', () => log.end());
   children.add(child);
@@ -156,7 +160,7 @@ const imageDistDiff = async () => {
 
 const startContainer = async port => {
   await run('docker', ['run', '-d', '--name', containerName, '-p', `127.0.0.1:${port}:8000`,
-    '-v', `${distDir}:/opt/autobyteus/server-package/dist:ro`, '-e', `AUTOBYTEUS_SERVER_HOST=http://localhost:${port}`, image]);
+    '-v', `${distDir}:/opt/autobyteus/server-package/dist:ro`, '-e', `AUTOBYTEUS_SERVER_HOST=http://localhost:${port}`, '-e', `AUTOBYTEUS_ALLOWED_ORIGINS=${frontendOrigins}`, image]);
   containerStarted = true;
   const baseUrl = `http://127.0.0.1:${port}`;
   await waitFor('the Docker node health', async () => fetch(`${baseUrl}/rest/health`).then(response => response.ok).catch(() => false), 240_000);
@@ -175,7 +179,7 @@ const offerOf = async (on, peer) => (await on.gql('query($id:String!){peerNodeOf
 
 let frontend, browser;
 const startFrontend = async (backend, name) => {
-  const port = await freePort();
+  const port = frontendPorts[name];
   const url = `http://127.0.0.1:${port}`;
   const log = createWriteStream(path.join(outputDir, `frontend-${name}.log`));
   const child = spawn('corepack', ['pnpm', 'dev', '--host', '127.0.0.1', '--port', String(port)], { cwd: webDir, detached: true,

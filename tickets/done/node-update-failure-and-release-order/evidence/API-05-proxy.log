@@ -1,0 +1,9 @@
+# Case: API-05
+# Command / steps: proxy log (harness/proxy.mjs) from the case's MARK line; ua 'Mozilla…' = the window, ua 'node' = the main process (NodeUpdateClient)
+# Commit: 405c28d45e (code = df789a89a5)
+# Environment: macOS 26 arm64, Node v22.23.1, pnpm 10.28.2, Python 3.9.6, Docker; packaged AutoByteus 1.5.12-beta.7 built in the fresh clone; isolated instance (e2e profile) on data root /private/tmp/ab412-e2e/data-root; test node ab412-e2e-node (autobyteus/autobyteus-server:beta, built-in 1.5.12-beta.3, 127.0.0.1:18412) behind the logging proxy 127.0.0.1:18413
+# Date: 2026-11-07
+# ---
+{"at":"2026-11-07T20:12:54Z","event":"MARK API-05 switch on click"}
+{"at":"2026-11-07T20:12:54.336Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"node"}
+{"at":"2026-11-07T20:14:09.734Z","method":"GET","url":"/rest/node-update?target=1.5.12-beta.7","status":200,"ua":"node"}

@@ -5,7 +5,7 @@ const electronState = vi.hoisted(() => {
     options: Record<string, unknown>
     bounds: { x: number; y: number; width: number; height: number } | null
   }> = []
-  const browserSession = { id: 'browser-session' }
+  const browserSession = { id: 'browser-session', webRequest: { onBeforeSendHeaders: vi.fn() } }
   const foreignSession = { id: 'foreign-session' }
   const fromPartitionMock = vi.fn(() => browserSession)
 

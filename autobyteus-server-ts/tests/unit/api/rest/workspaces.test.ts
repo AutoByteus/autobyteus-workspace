@@ -108,7 +108,7 @@ describe("REST workspaces routes", () => {
     });
   });
 
-  describe("preview document sandbox", () => {
+  describe("user file sandbox", () => {
     const PREVIEW_SANDBOX = "sandbox allow-scripts";
     let root: string;
 
@@ -134,25 +134,28 @@ describe("REST workspaces routes", () => {
       fs.rmSync(root, { recursive: true, force: true });
     });
 
-    it("sandboxes every file the static route serves, HTML and assets alike", async () => {
+    it("sandboxes every file both routes serve, HTML and assets alike, with nosniff (416 REQ-007)", async () => {
       const app = fastify();
       await registerWorkspaceRoutes(app);
       try {
         for (const [url, mime] of [
           ["/workspaces/ws1/static/site/index.html", "text/html"],
           ["/workspaces/ws1/static/site/style.css", "text/css"],
+          [`/workspaces/ws1/content?path=${encodeURIComponent("site/index.html")}`, "text/html"],
+          [`/workspaces/ws1/content?path=${encodeURIComponent("site/style.css")}`, "text/css"],
         ]) {
           const response = await app.inject({ method: "GET", url });
           expect(response.statusCode).toBe(200);
           expect(String(response.headers["content-type"])).toContain(mime);
           expect(response.headers["content-security-policy"]).toBe(PREVIEW_SANDBOX);
+          expect(response.headers["x-content-type-options"]).toBe("nosniff");
         }
       } finally {
         await app.close();
       }
     });
 
-    it("leaves static error replies and the content route without the sandbox header", async () => {
+    it("leaves error replies without the sandbox header", async () => {
       const app = fastify();
       await registerWorkspaceRoutes(app);
       try {
@@ -163,17 +166,11 @@ describe("REST workspaces routes", () => {
         const outside = await app.inject({ method: "GET", url: "/workspaces/ws1/static/escape/secret.html" });
         expect(outside.statusCode).toBe(400);
 
-        const content = await app.inject({
-          method: "GET",
-          url: `/workspaces/ws1/content?path=${encodeURIComponent("site/index.html")}`,
-        });
-        expect(content.statusCode).toBe(200);
-
         mockWorkspaceManager.getWorkspaceById.mockReturnValue(undefined);
         const missingWorkspace = await app.inject({ method: "GET", url: "/workspaces/gone/static/site/index.html" });
         expect(missingWorkspace.statusCode).toBe(404);
 
-        for (const response of [missingFile, outside, content, missingWorkspace]) {
+        for (const response of [missingFile, outside, missingWorkspace]) {
           expect(response.headers["content-security-policy"]).toBeUndefined();
         }
       } finally {

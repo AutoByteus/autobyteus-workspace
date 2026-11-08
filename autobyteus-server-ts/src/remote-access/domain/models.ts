@@ -122,6 +122,8 @@ export type RemoteAccessAuthFailureCode =
   | "REMOTE_ACCESS_NETWORK_ID_INVALID"
   /** The request's browser Origin is not an allowed origin of the node. */
   | "REMOTE_ACCESS_ORIGIN_REFUSED"
+  /** The request's `Host` is not an allowed host of the node (DNS rebinding defence). */
+  | "REMOTE_ACCESS_HOST_REFUSED"
   /** A paired phone's credential on a WebSocket route that is not a phone WebSocket route. */
   | "PHONE_ACCESS_ROUTE_REFUSED";
 

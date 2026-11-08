@@ -15,6 +15,7 @@ import { getFastifyLoggerOptions } from "../logging/runtime-logger-bootstrap.js"
 import { registerHttpAccessLogPolicy } from "../logging/http-access-log-policy.js";
 import { SERVER_ROUTE_PARAM_MAX_LENGTH } from "../api/fastify-runtime-config.js";
 import { registerMcpGatewayRoutes } from "../mcp-gateway/mcp-gateway-routes.js";
+import { registerRemoteAccessHostGate } from "../api/security/remote-access-host-gate.js";
 import { registerRemoteAccessPolicyPlugin } from "../api/security/remote-access-policy-plugin.js";
 import { registerMobileWebStaticRoutes } from "../api/static/mobile-web.js";
 import { registerRestRoutes } from "../api/rest/index.js";
@@ -454,9 +455,13 @@ export const buildStudioServer = async (input: {
         mode: input.loggingConfig.httpAccessLogMode,
         includeNoisyRoutes: input.loggingConfig.includeNoisyHttpAccessRoutes,
       });
+      // First, so its onRequest hook marks every upgrade: only a marked upgrade's socket is destroyed when a
+      // later hook refuses it.
+      await app.register(websocket);
+      // The node's first request rule: before the MCP gateway hook, CORS preflights and the origin/auth hook.
+      registerRemoteAccessHostGate(app);
       await registerMcpGatewayRoutes(app);
       await app.register(multipart, { limits: { fileSize: CONTEXT_FILE_MAX_BYTES } });
-      await app.register(websocket);
       await registerRemoteAccessPolicyPlugin(app);
       await registerMobileWebStaticRoutes(app);
       await app.register(
