@@ -55,10 +55,24 @@ Notes, not findings: `ownerSocketUrl` carries the owner credential in `access_to
 
 - Follow-ups this review added: None (FU-003 and FU-004 were added by API/E2E).
 
+## Round 2 (CRR-006): Delivery Re-Entry, API-REV-003
+
+- Trigger: Delivery DR-001 was blocked on the merged state. The merged base (origin/personal `31aa11b241`, merged as `3e85115f6e`; state under test `8a31d5141c`) brought autobyteus-434's phone cases MSP-21…23, whose node-side sockets carried no credential. API/E2E test commit `43e6d41eb0`; no product code changed.
+- Changed durable test path: `autobyteus-web/tests/e2e/mobile-live-reconnect-cases.mjs` (Updated; +9/−6)
+
+| Check | Result | Evidence / Notes |
+| --- | --- | --- |
+| Assertions prove approved requirements | Pass | The node's own sockets use `ownerSocketUrl`, the API-16 rule every probe now follows. The "other window" is an owner's window, which carries the owner credential in the product (DS-002). |
+| Known-error rule stays narrow | Pass | Only the phone origin's own `/favicon.ico` at the origin root counts, now expected as 401 instead of 404. That is approved behavior: the root path is not exempt and is refused before any route (NA-1, NA-2). Path, origin and status are matched exactly; nothing else is relaxed. |
+| Determinism / isolation | Pass | Run 2 on the merged state: MSP-21…23 pass, `mobile-shell probe: Pass`, 0 unknown browser errors, cleanup complete (`R3-API-03-mobile-shell-msp21-23.log`). Run 1 failed only on the old 404 expectation (`…-run1*`). |
+| Real trigger and steps | Pass | The phone keeps its own credential; only the probe's stand-in for the owner's second window gained the owner credential. |
+
+- Findings: none.
+
 ## Latest Authoritative Result
 
-- Result: `Pass`
-- Changed durable test paths reviewed: the fixture, 7 round-1 probes, 34 probes + `large-runs-load-less-cases.mjs`, `agent-org-role-labels-probe.mjs`, `memory-search-probe.mjs`, the launcher pytest
+- Result: `Pass` (round 2, CRR-006; round 1 CRR-005 Pass stands)
+- Changed durable test paths reviewed: round 2 `mobile-live-reconnect-cases.mjs`; round 1: the fixture, 7 round-1 probes, 34 probes + `large-runs-load-less-cases.mjs`, `agent-org-role-labels-probe.mjs`, `memory-search-probe.mjs`, the launcher pytest
 - Unresolved finding IDs: none
 - Recommended Recipient: `delivery_engineer`
 - Notes: test-side residuals are the 7 live probes, which were not run because they need paid inference or a signed-in CLI, and FU-003/FU-004, which are pre-existing.

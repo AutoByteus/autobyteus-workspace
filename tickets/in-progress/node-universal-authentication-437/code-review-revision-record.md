@@ -9,6 +9,7 @@
 | CRR-003 | `code-review-report.md` | API/E2E Failure-Origin Review (API-REV-001: API-15, API-03 MSP-08, API-08 NVP-05) | Pass | Fail (Local Fix, implementation) | CR-003, CR-004, CR-005 |
 | CRR-004 | `code-review-report.md` | Implementation Review, round 4 (IR-003 Local Fix) | Fail (Local Fix) | Pass | CR-003, CR-004, CR-005 |
 | CRR-005 | `api-e2e-test-review-report.md` | Proportional test-code review after API/E2E pass (API-REV-002) | N/A (first test review) | Pass | None |
+| CRR-006 | `api-e2e-test-review-report.md` | Proportional test-code review, delivery re-entry (API-REV-003, DR-001) | Pass | Pass | None |
 
 ## Revision Entries
 
@@ -147,3 +148,28 @@ None (no prior test-review findings).
 - Material score or classification changes: N/A
 - Recommended recipient: delivery engineer
 - Remaining risks or uncertainty: 7 live probes not run; FU-003, FU-004 pre-existing; AC-008 from a second device remains the user's check; the Windows launcher has not run on Windows.
+
+### CRR-006 — Test-code review of the delivery re-entry (API-REV-003)
+
+- Canonical review report updated: `api-e2e-test-review-report.md` § Round 2
+- Review entry point and round: Successful API/E2E test-code review, round 2 (delivery re-entry)
+- Review scope: `N/A` (test review): `mobile-live-reconnect-cases.mjs` (`43e6d41eb0`)
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, `api-e2e-execution-coverage-report.md` Round 3; MSP-21…23
+- Relevant solution revision IDs: SR-006
+- Relevant architecture-review revision IDs: ARCH-REV-003
+- Relevant implementation revision IDs: IR-003
+- Relevant API/E2E revision IDs: API-REV-003
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: Pass (CRR-005)
+- Current authoritative result: Pass
+- What changed in the review result and why: the merged base's new phone cases now carry the probe's owner credential on their node-side sockets. Their favicon known-error expectation follows the approved deny-by-default answer (401), matched exactly as before.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: none
+- Material score or classification changes: N/A
+- Recommended recipient: delivery engineer
+- Remaining risks or uncertainty: unchanged from CRR-005.
