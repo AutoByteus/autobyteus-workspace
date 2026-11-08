@@ -67,6 +67,7 @@ const nodesPageMessages = {
   'settings.components.settings.NodesPage.cause.dnsFrom': "{{host}} can't be found from {{node}}.",
   'settings.components.settings.NodesPage.cause.notAutobyteus': "Something answers there, but it isn't an AutoByteus node.",
   'settings.components.settings.NodesPage.cause.identityPending': "This node's identity is waiting for its data migration.",
+  'settings.components.settings.NodesPage.cause.hostRefused': 'The node at this address doesn’t accept the name {{host}}. Add {{host}} to AUTOBYTEUS_ALLOWED_HOSTS on that node, or use its IP address.',
   'settings.components.settings.NodesPage.dir.thisToIt': 'This node → {{name}}',
   'settings.components.settings.NodesPage.dir.itToThis': '{{name}} → this node',
   'settings.components.settings.NodesPage.dir.via': 'via {{address}}',

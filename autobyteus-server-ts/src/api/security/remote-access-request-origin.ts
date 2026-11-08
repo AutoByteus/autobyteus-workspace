@@ -1,3 +1,5 @@
+import { parseWebOrigin } from "./web-origin.js";
+
 /** The packaged desktop app's renderer sends exactly this Origin on its WebSockets. */
 const DESKTOP_APP_FILE_ORIGIN = "file://";
 
@@ -14,15 +16,6 @@ const firstHeaderValue = (value: string | string[] | undefined): string | null =
   const single = Array.isArray(value) ? value[0] : value;
   const first = single?.split(",", 1)[0]?.trim().toLowerCase();
   return first || null;
-};
-
-const parseWebOrigin = (value: string): URL | null => {
-  try {
-    const parsed = new URL(value);
-    return parsed.protocol === "http:" || parsed.protocol === "https:" ? parsed : null;
-  } catch {
-    return null;
-  }
 };
 
 /**

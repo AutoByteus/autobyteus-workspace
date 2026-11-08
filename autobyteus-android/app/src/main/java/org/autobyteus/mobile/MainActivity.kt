@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import org.autobyteus.mobile.connection.CantReachReason
 import org.autobyteus.mobile.connection.ConnectionDiagnostic
@@ -22,6 +23,8 @@ import org.autobyteus.mobile.shell.NodeReachability
 import org.autobyteus.mobile.shell.OpenPageState
 import org.autobyteus.mobile.shell.OpenPageRestore
 import org.autobyteus.mobile.shell.QrScanCoordinator
+import org.autobyteus.mobile.ui.DesktopFullScreenController
+import org.autobyteus.mobile.ui.DesktopFullScreenRequest
 import org.autobyteus.mobile.ui.ShellUi
 import org.autobyteus.mobile.ui.WebShellScreen
 import org.autobyteus.mobile.ui.connect.CantReachScreen
@@ -50,6 +53,8 @@ class MainActivity : Activity(), NodeConnectionFlow.Screens {
     private lateinit var startScreen: StartScreen
     private lateinit var scanScreen: ScanScreen
     private lateinit var webShellScreen: WebShellScreen
+    /** The open document's desktop full-screen request over 432's controller (D-2 with DEC-011). */
+    private lateinit var fullScreenRequest: DesktopFullScreenRequest
     private val checks = Executors.newFixedThreadPool(4)
     private val mainThread = Executor { runOnUiThread(it) }
 
@@ -62,6 +67,7 @@ class MainActivity : Activity(), NodeConnectionFlow.Screens {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        fullScreenRequest = DesktopFullScreenRequest(DesktopFullScreenController.forActivity(this))
         // autobyteus-290 SM-10: the saved entries' stored keys follow the code before the store first reads them.
         SavedNodeEntryKeysMigration.run(this)
         savedNodeStore = SavedNodeStore(this)
@@ -150,7 +156,7 @@ class MainActivity : Activity(), NodeConnectionFlow.Screens {
     override fun onDestroy() {
         reachability.cancel()
         scanScreen.close()
-        currentWebHost?.destroy()
+        destroyWebHost()
         checks.shutdownNow()
         super.onDestroy()
     }
@@ -159,7 +165,7 @@ class MainActivity : Activity(), NodeConnectionFlow.Screens {
 
     override fun showConnecting(nodeName: String) {
         leaveCurrentScreen(Screen.Connecting)
-        setContentView(ConnectingScreen(ui).connecting(nodeName, ::cancelConnecting))
+        showScreen(ConnectingScreen(ui).connecting(nodeName, ::cancelConnecting))
     }
 
     override fun showCantReach(nodeName: String, reason: CantReachReason) {
@@ -171,7 +177,7 @@ class MainActivity : Activity(), NodeConnectionFlow.Screens {
             primary = if (reason.canRetry) "Retry" to { flow.retry() } else null,
             secondary = "Scan again" to { qrScanCoordinator.startQrScan() },
         )
-        setContentView(CantReachScreen(ui).render(content, ::showList))
+        showScreen(CantReachScreen(ui).render(content, ::showList))
     }
 
     override fun showTypeAddress(prefill: String) {
@@ -184,14 +190,17 @@ class MainActivity : Activity(), NodeConnectionFlow.Screens {
             showUpdateWebView()
             return
         }
-        currentWebHost?.destroy()
+        destroyWebHost()
         pageState.open(entry.id)
-        if (!pairing) setContentView(ConnectingScreen(ui).connected(entry.shownName))
+        if (!pairing) showScreen(ConnectingScreen(ui).connected(entry.shownName))
         val webHost = AutoByteusWebView(
             context = this,
             entry = entry,
             fileChooserCoordinator = fileChooserCoordinator,
             shellBridge = ShellBridge(entry, bridgeActions),
+            // A new document ends the old one's full screen and its request (432 D-2); it decides nothing about
+            // visibility: only the page's pageReady shows the page (DS-006).
+            onPageStarted = { fullScreenRequest.clear() },
             onDiagnostic = { diagnostic -> showWebDiagnostic(diagnostic) },
             onOpenedOutside = { Toast.makeText(this, "Opening outside AutoByteus", Toast.LENGTH_SHORT).show() },
         )
@@ -215,6 +224,8 @@ class MainActivity : Activity(), NodeConnectionFlow.Screens {
             listScreen = Screen.Start
             qrScanCoordinator.startQrScan()
         }
+        override fun onDesktopFullScreen(on: Boolean) =
+            fullScreenRequest.onRequest(on, plainPageOnScreen = screen == Screen.Web && pageState.overlay == null)
     }
 
     private fun showStart() = renderList(Screen.Start)
@@ -238,7 +249,7 @@ class MainActivity : Activity(), NodeConnectionFlow.Screens {
         listScreen = mode
         val entries = savedNodeStore.loadEntries()
         val switchMode = mode == Screen.SwitchList
-        setContentView(startScreen.render(
+        showScreen(startScreen.render(
             entries = entries,
             currentEntryId = currentWebHost?.entry?.id,
             switchMode = switchMode,
@@ -282,7 +293,7 @@ class MainActivity : Activity(), NodeConnectionFlow.Screens {
     private fun showScanner() {
         if (screen != Screen.Scan && screen != Screen.CantReach) listScreen = if (screen == Screen.SwitchList) Screen.SwitchList else Screen.Start
         leaveCurrentScreen(Screen.Scan)
-        setContentView(scanScreen.render(
+        showScreen(scanScreen.render(
             onCode = { text ->
                 scanScreen.close()
                 flow.connect(text, EntryForm.Scan)
@@ -303,11 +314,22 @@ class MainActivity : Activity(), NodeConnectionFlow.Screens {
         showList()
     }
 
-    /** The page, under its overlay while one is set (a return from Switch node keeps it). */
+    /**
+     * The page, under its overlay while one is set (a return from Switch node keeps it). With an overlay it is not the
+     * plain page: it goes through showScreen, which ends full screen. The plain page is the one screen that may have
+     * desktop full screen on (432 D-2), applying the document's request (DEC-011).
+     */
     private fun showPage() {
         val webHost = currentWebHost ?: return showStart()
         leaveCurrentScreen(Screen.Web)
-        setContentView(webShellScreen.render(webView = webHost.webView, diagnostic = pageState.overlay, callbacks = webCallbacks(webHost.entry)))
+        val overlay = pageState.overlay
+        val root = webShellScreen.render(webView = webHost.webView, diagnostic = overlay, callbacks = webCallbacks(webHost.entry))
+        if (overlay != null) {
+            showScreen(root)
+        } else {
+            setContentView(root)
+            fullScreenRequest.plainPageShown()
+        }
     }
 
     /** Back from a page with no history: the node list. */
@@ -318,7 +340,7 @@ class MainActivity : Activity(), NodeConnectionFlow.Screens {
     }
 
     private fun closePage() {
-        currentWebHost?.destroy()
+        destroyWebHost()
         currentWebHost = null
         pageState.close()
     }
@@ -345,7 +367,22 @@ class MainActivity : Activity(), NodeConnectionFlow.Screens {
             body = "AutoByteus needs a newer Android System WebView to open your nodes. Update it, then try again.",
             primary = "Open Google Play" to { externalActions.openExternal("market://details?id=com.google.android.webview") },
         )
-        setContentView(CantReachScreen(ui).render(content, ::showStart))
+        showScreen(CantReachScreen(ui).render(content, ::showStart))
+    }
+
+    /**
+     * Desktop full screen belongs to the plain open page (autobyteus-432 D-2): it ends whenever the activity shows
+     * anything else (the page under an overlay included), and the document's request ends whenever the page's host is
+     * destroyed or a new document starts loading (`onPageStarted`), so a page that wants it asks again.
+     */
+    private fun showScreen(view: View) {
+        fullScreenRequest.otherScreenShown()
+        setContentView(view)
+    }
+
+    private fun destroyWebHost() {
+        fullScreenRequest.clear()
+        currentWebHost?.destroy()
     }
 
     private fun leaveCurrentScreen(next: Screen) {

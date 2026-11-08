@@ -35,6 +35,25 @@ class ShellBridgeMessagesTest {
         assertNull(read(null))
     }
 
+    // autobyteus-432: the VNC Viewer's desktop full screen, under the same main-frame and origin rule.
+    @Test
+    fun readsDesktopFullScreenOnAndOffFromTheMainFrameOfTheNodesOrigin() {
+        assertEquals(ShellBridgeAction.DesktopFullScreen(true), read("""{"type":"desktopFullScreen","on":true}"""))
+        assertEquals(ShellBridgeAction.DesktopFullScreen(false), read("""{"type":"desktopFullScreen","on":false}"""))
+    }
+
+    @Test
+    fun ignoresDesktopFullScreenFromASubframeAnotherOriginOrWithoutABooleanOn() {
+        val on = """{"type":"desktopFullScreen","on":true}"""
+        assertNull(read(on, isMainFrame = false))
+        assertNull(read(on, sourceOrigin = "http://192.168.1.25:8001"))
+        assertNull(read(on, sourceOrigin = "null"))
+        assertNull(read("""{"type":"desktopFullScreen"}"""))
+        assertNull(read("""{"type":"desktopFullScreen","on":"true"}"""))
+        assertNull(read("""{"type":"desktopFullScreen","on":1}"""))
+        assertNull(read("""{"type":"desktopFullScreen","on":null}"""))
+    }
+
     @Test
     fun answersHelloWithTheNodeCountTheModelNameAndTheOpenNodesName() {
         val reply = JSONObject(ShellBridgeMessages.helloReply(nodeCount = 3, deviceName = "Pixel 8", nodeName = "Test Desktop"))

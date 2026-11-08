@@ -4,11 +4,39 @@ import {
   type AgentRunCollaborationViewDto,
 } from '@autobyteus/collaboration-stream-contracts'
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata'
-import { GetAgentRunCollaboration } from '~/graphql/queries/collaboratorQueries'
+import { compactionRecoveryBlockSchema } from '@autobyteus/agent-presentation-contracts'
+import { GetAgentRunCollaboration, GetAgentRunCollaborationStatuses } from '~/graphql/queries/collaboratorQueries'
+import type { GetAgentRunCollaborationStatusesQuery } from '~/generated/graphql'
 import { getApolloClient } from '~/utils/apolloClient'
 import { useRunHistoryStore } from '~/stores/runHistoryStore'
 import { AgentRunCollaborationIndex } from './agentRunCollaborationIndex'
-import { AgentRunCollaborationContext } from './agentRunCollaborationContext'
+import { AgentRunCollaborationContext, type CollaborationChildStatus } from './agentRunCollaborationContext'
+
+/** One listed run's answer to the history poll's status read (autobyteus-426 D-09). */
+export type AgentRunCollaborationStatusesAnswer = Readonly<{
+  runId: string
+  isActive: boolean
+  statuses: readonly CollaborationChildStatus[]
+}>
+
+/** The children's states of the given runs (states only, never the view), in the order asked. Never restores. */
+export const readAgentRunCollaborationStatuses = async (runIds: readonly string[]): Promise<AgentRunCollaborationStatusesAnswer[]> => {
+  const result = await getApolloClient().query<GetAgentRunCollaborationStatusesQuery>({
+    query: GetAgentRunCollaborationStatuses, variables: { runIds: [...runIds] },
+    fetchPolicy: 'network-only', context: { queryDeduplication: false },
+  })
+  if (result.errors?.length) throw new Error(result.errors.map((error: { message: string }) => error.message).join(', '))
+  return (result.data?.agentRunCollaborationStatuses ?? []).map((answer) => ({
+    runId: answer.runId,
+    isActive: answer.isActive,
+    statuses: answer.statuses.map((status) => ({
+      agentRunId: status.agentRunId,
+      memberAddress: status.memberAddress,
+      status: status.status,
+      recoverableBlock: compactionRecoveryBlockSchema.nullable().parse(status.recoverableBlock ?? null),
+    })),
+  }))
+}
 
 /** The stored or live view of a standalone run's collaboration root; null when it has none. Never restores. */
 export const readAgentRunCollaboration = async (hostRunId: string): Promise<AgentRunCollaborationViewDto | null> => {

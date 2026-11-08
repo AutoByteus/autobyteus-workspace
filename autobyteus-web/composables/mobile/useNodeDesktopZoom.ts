@@ -9,6 +9,8 @@ const TAP_SLOP_PX = 8;
 const WHEEL_ZOOM_STEP = 0.01;
 
 type Point = { x: number; y: number };
+/** The fitted picture inside the layer, at scale 1. */
+type Box = { left: number; top: number; width: number; height: number };
 
 const distance = (a: Point, b: Point) => Math.hypot(a.x - b.x, a.y - b.y);
 const middle = (a: Point, b: Point): Point => ({ x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 });
@@ -17,12 +19,19 @@ const clamp = (value: number, min: number, max: number) => Math.min(max, Math.ma
 /**
  * View only zoom of the fitted node desktop picture (DS-S3-4): a page-level transform, so no input
  * reaches the desktop. On the gesture layer above the picture: a two-finger pinch scales (1×–4×)
- * around the pinch centre, a one-finger drag pans (clamped to the picture), a double tap returns to
- * fit, and a single tap (after the double-tap window) calls `onSingleTap`. Ctrl+wheel (a trackpad
- * pinch in a desktop browser) zooms around the pointer. A resize or rotation returns to fit. While
- * the layer is absent (Control) the picture stays fitted, so noVNC's coordinates stay correct.
+ * around the pinch centre, a one-finger drag pans, a double tap toggles Fit ↔ Fill (autobyteus-432:
+ * at fit the picture grows, centred and undistorted, until it covers the layer; otherwise back to
+ * fit), and a single tap (after the double-tap window) calls `onSingleTap`. Ctrl+wheel (a trackpad
+ * pinch in a desktop browser) zooms around the pointer. Along each axis the picture is kept covering
+ * the layer when it is larger than the layer, and centred when it is smaller, so no letterbox is panned
+ * into view. `picture` gives the picture's own size (noVNC's canvas: the desktop's size), which noVNC
+ * fits into the layer and centres; without one the layer is the picture. A resize or rotation returns to fit. While the layer is absent (Control) the picture stays
+ * fitted, so noVNC's coordinates stay correct.
  */
-export function useNodeDesktopZoom(layer: Ref<HTMLElement | null>, options: { onSingleTap?: () => void } = {}) {
+export function useNodeDesktopZoom(
+  layer: Ref<HTMLElement | null>,
+  options: { onSingleTap?: () => void; picture?: () => { width: number; height: number } | null } = {},
+) {
   const scale = ref(1);
   const x = ref(0);
   const y = ref(0);
@@ -39,11 +48,29 @@ export function useNodeDesktopZoom(layer: Ref<HTMLElement | null>, options: { on
 
   const size = () => ({ width: attached?.clientWidth ?? 0, height: attached?.clientHeight ?? 0 });
 
+  /** The fitted picture's box at scale 1: the picture's size fitted into the layer, centred (as noVNC places it). */
+  const pictureBox = (): Box => {
+    const { width, height } = size();
+    const picture = options.picture?.();
+    if (!picture || picture.width <= 0 || picture.height <= 0) return { left: 0, top: 0, width, height };
+    const fit = Math.min(width / picture.width, height / picture.height);
+    const fitted = { width: picture.width * fit, height: picture.height * fit };
+    return { left: (width - fitted.width) / 2, top: (height - fitted.height) / 2, ...fitted };
+  };
+
+  /** The offset along one axis: covering the layer when the scaled picture is larger, else centred. */
+  const offset = (wanted: number, layerSize: number, start: number, length: number, at: number) => {
+    const scaled = length * at;
+    if (scaled < layerSize) return (layerSize - scaled) / 2 - start * at;
+    return clamp(wanted, layerSize - (start + length) * at, -start * at);
+  };
+
   const place = (nextScale: number, nextX: number, nextY: number) => {
     const { width, height } = size();
+    const box = pictureBox();
     scale.value = clamp(nextScale, 1, NODE_DESKTOP_MAX_ZOOM);
-    x.value = clamp(nextX, width - width * scale.value, 0);
-    y.value = clamp(nextY, height - height * scale.value, 0);
+    x.value = offset(nextX, width, box.left, box.width, scale.value);
+    y.value = offset(nextY, height, box.top, box.height, scale.value);
   };
 
   /** Back to fit (double tap, Fit, a resize, a rotation, Control). */
@@ -53,6 +80,19 @@ export function useNodeDesktopZoom(layer: Ref<HTMLElement | null>, options: { on
     y.value = 0;
     pinch = null;
     drag = null;
+  };
+
+  /** Fit → Fill: the smallest scale at which the picture covers the layer, centred. Otherwise → Fit. */
+  const toggleFill = () => {
+    if (scale.value > 1) {
+      reset();
+      return;
+    }
+    const { width, height } = size();
+    const box = pictureBox();
+    if (box.width <= 0 || box.height <= 0) return;
+    const cover = clamp(Math.max(width / box.width, height / box.height), 1, NODE_DESKTOP_MAX_ZOOM);
+    place(cover, width / 2 - (box.left + box.width / 2) * cover, height / 2 - (box.top + box.height / 2) * cover);
   };
 
   /** Scales to `nextScale` keeping the picture point under `at` (layer coordinates) where it is. */
@@ -129,7 +169,7 @@ export function useNodeDesktopZoom(layer: Ref<HTMLElement | null>, options: { on
     if (lastTap && now - lastTap.at < DOUBLE_TAP_MS && distance(lastTap.point, tap) < DOUBLE_TAP_DISTANCE_PX) {
       lastTap = null;
       clearSingleTap();
-      reset();
+      toggleFill();
       return;
     }
     lastTap = { point: tap, at: now };

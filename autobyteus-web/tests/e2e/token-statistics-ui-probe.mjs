@@ -31,6 +31,13 @@ const browserExecutableArg = getArg('browser-executable', process.env.PLAYWRIGHT
 const browserCandidates = ['/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser'];
 const executablePath = browserExecutableArg || browserCandidates.find((candidate) => existsSync(candidate));
 const skipServerBuild = hasFlag('skip-server-build');
+// autobyteus-426 REQ-021: `--day=YYYY-MM-DD` runs the probe on that day (12:00 UTC) on both clocks: the probe's own
+// server through a test-only preload (fixtures/shifted-clock.mjs) and the browser through Playwright's clock; the seed
+// gets the same `now`. Without it the real clock is used.
+const dayArg = getArg('day');
+if (dayArg !== undefined && !/^\d{4}-\d{2}-\d{2}$/.test(dayArg)) throw new Error(`--day must be YYYY-MM-DD, got ${dayArg}`);
+const fixedInstant = dayArg ? new Date(`${dayArg}T12:00:00.000Z`) : null;
+const shiftedClockModule = pathToFileURL(path.join(scriptDir, 'fixtures', 'shifted-clock.mjs')).href;
 
 const evidence = {
   startedAt: new Date().toISOString(),
@@ -181,7 +188,24 @@ const waitOperationResponseCount = (name, count) => waitFor(`${name} response co
 const bodyText = (page) => page.locator('body').innerText();
 const integerFromText = (text) => Number(text.replace(/[^0-9-]/g, ''));
 
+/** The coverage label the app shows for a range the fixture covers fully or partly. */
+const coverageLabel = (page, coverage) => page.getByText(coverage === 'full' ? 'Full coverage' : 'Partial coverage', { exact: true });
+/** Last month: before tracking began, or partly covered when the fixture's coverage starts in it (the 1st to the 4th). */
+const lastMonthCoverage = (page) => evidence.fixture.lastMonthCoverage === 'before_tracking'
+  ? page.getByText('This range is before analytics tracking began.')
+  : coverageLabel(page, 'partial');
+/** Applies a custom UTC date range through the range menu. */
+const applyCustomRange = async (page, start, end) => {
+  await selectRange(page, 'Custom', false);
+  const custom = page.locator('section').filter({ has: page.getByRole('button', { name: 'Apply', exact: true }) }).last();
+  await custom.locator('input[type="date"]').nth(0).fill(start);
+  await custom.locator('input[type="date"]').nth(1).fill(end);
+  const before = operationCount('GetTokenUsageAnalytics');
+  await page.getByRole('button', { name: 'Apply', exact: true }).click();
+  await waitOperationCount('GetTokenUsageAnalytics', before + 1);
+};
 const initTracking = async (context, locale) => {
+  if (fixedInstant) await context.clock.setSystemTime(fixedInstant);
   await context.addInitScript((selectedLocale) => {
     localStorage.setItem('autobyteus.localization.preference-mode', selectedLocale);
     const state = window.__tokenStatisticsE2E = { blobCount: 0, objectUrlCount: 0, downloadClickCount: 0 };
@@ -297,6 +321,7 @@ try {
     AUTOBYTEUS_MEMORY_DIR: path.join(dataRoot, 'memory'),
     AUTOBYTEUS_TEMP_WORKSPACE_DIR: path.join(dataRoot, 'temp_workspace'),
     DISABLE_HTTP_REQUEST_LOGS: 'false',
+    ...(fixedInstant ? { AUTOBYTEUS_E2E_CLOCK_START: fixedInstant.toISOString() } : {}),
   };
   await fs.mkdir(path.join(dataRoot, 'logs'), { recursive: true });
   await fs.mkdir(path.join(dataRoot, 'memory'), { recursive: true });
@@ -313,9 +338,10 @@ try {
     env: serverEnvironment,
     logPath: path.join(outputDir, 'database-migrate.log'),
   });
-  evidence.fixture = await seedTokenStatisticsFixture({ serverDir, databaseUrl, now: new Date() });
+  evidence.fixture = await seedTokenStatisticsFixture({ serverDir, databaseUrl, now: fixedInstant ?? new Date() });
+  evidence.clock = fixedInstant ? { day: dayArg, instant: fixedInstant.toISOString() } : { day: 'real clock' };
 
-  backend = startService(process.execPath, [path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(backendPort), '--data-dir', dataRoot], {
+  backend = startService(process.execPath, [...(fixedInstant ? ['--import', shiftedClockModule] : []), path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(backendPort), '--data-dir', dataRoot], {
     cwd: serverDir,
     env: serverEnvironment,
     logPath: path.join(outputDir, 'backend.log'),
@@ -388,7 +414,7 @@ try {
     await page.keyboard.press('Escape');
 
     await selectRange(page, 'Last month');
-    await page.getByText('This range is before analytics tracking began.').waitFor({ state: 'visible' });
+    await lastMonthCoverage(page).waitFor({ state: 'visible' });
     await selectRange(page, 'This month');
     await page.locator('[data-summary-id="total"]').waitFor({ state: 'visible' });
     await selectRange(page, 'Custom', false);
@@ -403,11 +429,13 @@ try {
     const variables = evidence.graphql.requests.findLast((entry) => entry.operationName === 'GetTokenUsageAnalytics').variables.input;
     assert(variables.rangePreset === 'CUSTOM' && variables.startTime.endsWith('T00:00:00.000Z') && variables.endTimeExclusive.endsWith('T00:00:00.000Z'), 'Custom UTC variables are incoherent', variables);
     await selectRange(page, 'This month');
-    await page.getByText('Partial coverage', { exact: true }).waitFor({ state: 'visible' });
+    await coverageLabel(page, evidence.fixture.thisMonthCoverage).waitFor({ state: 'visible' });
     return { initial, final: operationCount('GetTokenUsageAnalytics'), customVariables: variables };
   })();
 
   evidence.scenarios['TS-E2E-002-truth-matrix-and-gaps'] = await (async () => {
+    // On the 1st to the 4th the fixture's partial-pricing days lie in the previous month: show the fixture's own range.
+    if (evidence.fixture.coverageBeforeMonth) await applyCustomRange(page, evidence.fixture.coverageStart.slice(0, 10), evidence.fixture.now.slice(0, 10));
     await applyProvider(page, 'OpenAI E2E');
     const positiveCache = await cardValue(page, 'cache-rate');
     const beforeMetric = operationCount('GetTokenUsageAnalytics');
@@ -507,7 +535,7 @@ try {
     await page.unroute('**/graphql');
     await page.getByRole('button', { name: 'Retry' }).click();
     await waitOperationCount('GetTokenUsageAnalytics', before + 2);
-    await page.getByText('This range is before analytics tracking began.').waitFor({ state: 'visible' });
+    await lastMonthCoverage(page).waitFor({ state: 'visible' });
     await selectRange(page, 'This month');
     await page.locator('[data-summary-id="total"]').waitFor({ state: 'visible' });
     return { requestsAdded: operationCount('GetTokenUsageAnalytics') - before, staleDuringLoading: false, staleAfterFailure: false };
@@ -583,7 +611,11 @@ try {
       visibleTicks: Array.from(document.querySelectorAll('.line-x-labels span')).filter((node) => getComputedStyle(node).display !== 'none').length,
     }));
     assert(layout.clientWidth === 390 && layout.scrollWidth === 390, 'Narrow page overflow detected', layout);
-    assert(Math.abs(layout.gridWidths[0] - layout.gridWidths[1]) < 0.5 && layout.visibleTicks === 3, 'Narrow summary/tick reflow mismatch', layout);
+    // This month has one bucket per day so far: five ticks from five buckets on (else one per bucket); narrow hides the
+    // 2nd and 4th (TokenUsageTrendChart xTicks and its narrow rule), so three from the 5th on (autobyteus-426 REQ-021).
+    const ticks = Math.min(5, evidence.fixture.dayOfMonth);
+    const expectedTicks = ticks - (ticks >= 2 ? 1 : 0) - (ticks >= 4 ? 1 : 0);
+    assert(Math.abs(layout.gridWidths[0] - layout.gridWidths[1]) < 0.5 && layout.visibleTicks === expectedTicks, 'Narrow summary/tick reflow mismatch', { ...layout, expectedTicks });
     await filterButton(narrowPage).focus();
     await narrowPage.keyboard.press('Enter');
     await filterPanel(narrowPage).waitFor({ state: 'visible' });

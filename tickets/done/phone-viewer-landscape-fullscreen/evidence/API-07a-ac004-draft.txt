@@ -1,0 +1,17 @@
+# Case: API-07 (A) — AC-004 with a draft run (attempt 2, authoritative): Home and return in full screen; Android ending the app in the background (am kill) and the user reopening it from the launcher
+# Command: app force-stopped and started with the launcher intent (MAIN/LAUNCHER) so the task is a user's; then probes/ac004.sh A; no uiautomator while in landscape
+# Commit: d76be54fb0; emulator-5554 autobyteus277_api35; node abx432-api-node
+# Date: 2026-11-08T08:03:44Z
+
+A0 viewer (draft run) | rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page="{\"q\":\"?screen=desktop\",\"status\":\"Connected · View only\",\"bar\":true,\"handle\":false,\"viewport\":[412,867],\"canvas\":[0,362,412,232],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+A1 full | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[915,412],\"canvas\":[91,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+A2 Home (app in the background) | mDisplayRotation=ROTATION_0 SCREEN_ORIENTATION_SENSOR_LANDSCAPE bars: visible=true visible=true  pid=6176
+A3 back in the app | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[915,412],\"canvas\":[91,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+A4 Home, then Android ends the app (am kill) | mDisplayRotation=ROTATION_0 SCREEN_ORIENTATION_SENSOR_LANDSCAPE bars: visible=true visible=true  pid=
+A5 reopened from the launcher | rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page="{\"q\":\"\",\"status\":null,\"bar\":false,\"handle\":false,\"viewport\":[412,867],\"canvas\":null,\"picture\":null}"
+A5 android | mDisplayRotation=ROTATION_0 SCREEN_ORIENTATION_UNSPECIFIED bars: visible=true visible=true  pid=6452
+
+MainActivity creations during this case (events):
+11-08 09:01:45.543   560   646 I wm_create_activity: [0,189744969,9,org.autobyteus.mobile/.MainActivity,android.intent.action.MAIN,NULL,NULL,272629760]
+11-08 09:01:55.306   560   586 I wm_create_activity: [0,262854090,9,org.autobyteus.mobile/.MainActivity,android.intent.action.MAIN,NULL,NULL,272629760]
+11-08 09:02:55.330   560  1817 I wm_create_activity: [0,153635769,10,org.autobyteus.mobile/.MainActivity,android.intent.action.MAIN,NULL,NULL,268435456]

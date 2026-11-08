@@ -1,9 +1,9 @@
 /**
  * The Android app's shell bridge (`window.AutoByteusShell`): an androidx.webkit web-message object the app gives only
- * to the main frame of the open node's origin. The page tells the app it is ready or paired, or asks it to show its
- * node list or its scanner; the app's `hello` reply tells the page about this phone and the open node. It carries no
- * credential.
- * In a browser there is no bridge.
+ * to the main frame of the open node's origin. The page tells the app it is ready or paired, asks it to show its node
+ * list or its scanner, or turns the VNC Viewer's desktop full screen (landscape, hidden system bars) on or off; the
+ * app's `hello` reply tells the page about this phone and the open node. It carries no credential. In a browser there
+ * is no bridge.
  */
 export type ShellHello = {
   /** Saved nodes on this phone, for "N nodes on this phone". */
@@ -24,6 +24,7 @@ export type ShellBridge = {
   paired(nodeName: string): void;
   showNodeList(): void;
   startScan(): void;
+  desktopFullScreen(on: boolean): void;
 };
 
 type ShellMessageEvent = { data: unknown };
@@ -82,5 +83,6 @@ export const getShellBridge = (): ShellBridge | null => {
     paired: (nodeName) => post({ type: 'paired', nodeName }),
     showNodeList: () => post({ type: 'showNodeList' }),
     startScan: () => post({ type: 'startScan' }),
+    desktopFullScreen: (on) => post({ type: 'desktopFullScreen', on }),
   };
 };

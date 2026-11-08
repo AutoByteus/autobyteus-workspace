@@ -88,6 +88,7 @@ class AutoByteusMobileShellSmokeTest {
                 entry = entry,
                 fileChooserCoordinator = WebFileChooserCoordinator(Activity()) {},
                 shellBridge = null,
+                onPageStarted = {},
                 onDiagnostic = {},
                 onOpenedOutside = {},
             )

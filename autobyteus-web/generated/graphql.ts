@@ -405,6 +405,14 @@ export enum AgentPackageUpdateStatus {
   UpToDate = 'UP_TO_DATE'
 }
 
+export type AgentRunChildStatusObject = {
+  __typename?: 'AgentRunChildStatusObject';
+  agentRunId: Scalars['String']['output'];
+  memberAddress: Scalars['String']['output'];
+  recoverableBlock?: Maybe<Scalars['JSON']['output']>;
+  status: Scalars['String']['output'];
+};
+
 export type AgentRunCollaborationMemberProjectionPayload = {
   __typename?: 'AgentRunCollaborationMemberProjectionPayload';
   activities: Array<Scalars['JSON']['output']>;
@@ -414,6 +422,13 @@ export type AgentRunCollaborationMemberProjectionPayload = {
   lastActivityAt?: Maybe<Scalars['String']['output']>;
   memberAddress: Scalars['String']['output'];
   summary?: Maybe<Scalars['String']['output']>;
+};
+
+export type AgentRunCollaborationStatusesObject = {
+  __typename?: 'AgentRunCollaborationStatusesObject';
+  isActive: Scalars['Boolean']['output'];
+  runId: Scalars['String']['output'];
+  statuses: Array<AgentRunChildStatusObject>;
 };
 
 export type AgentRunMemoryPage = {
@@ -2889,6 +2904,7 @@ export type Query = {
   agentRunCollaborationMemberEventMonitorActiveTracePage: EventMonitorActiveTracePage;
   agentRunCollaborationMemberFileChanges: Array<RunFileChangeEntryObject>;
   agentRunCollaborationMemberProjection: AgentRunCollaborationMemberProjectionPayload;
+  agentRunCollaborationStatuses: Array<AgentRunCollaborationStatusesObject>;
   agentRunModelOptions: RunModelOptionsObject;
   agentRuntimeSignInBrowserAvailable: Scalars['Boolean']['output'];
   agentRuntimes: Array<AgentRuntime>;
@@ -3066,6 +3082,11 @@ export type QueryAgentRunCollaborationMemberProjectionArgs = {
   agentRunId: Scalars['String']['input'];
   hostRunId: Scalars['String']['input'];
   memberAddress: Scalars['String']['input'];
+};
+
+
+export type QueryAgentRunCollaborationStatusesArgs = {
+  runIds: Array<Scalars['String']['input']>;
 };
 
 
@@ -5560,6 +5581,13 @@ export type GetAgentRunCollaborationQueryVariables = Exact<{
 
 
 export type GetAgentRunCollaborationQuery = { __typename?: 'Query', agentRunCollaboration?: any | null };
+
+export type GetAgentRunCollaborationStatusesQueryVariables = Exact<{
+  runIds: Array<Scalars['String']['input']> | Scalars['String']['input'];
+}>;
+
+
+export type GetAgentRunCollaborationStatusesQuery = { __typename?: 'Query', agentRunCollaborationStatuses: Array<{ __typename?: 'AgentRunCollaborationStatusesObject', runId: string, isActive: boolean, statuses: Array<{ __typename?: 'AgentRunChildStatusObject', agentRunId: string, memberAddress: string, status: string, recoverableBlock?: any | null }> }> };
 
 export type GetAgentRunCollaborationMemberProjectionQueryVariables = Exact<{
   hostRunId: Scalars['String']['input'];
@@ -11619,6 +11647,43 @@ export function useGetAgentRunCollaborationLazyQuery(variables?: GetAgentRunColl
   return VueApolloComposable.useLazyQuery<GetAgentRunCollaborationQuery, GetAgentRunCollaborationQueryVariables>(GetAgentRunCollaborationDocument, variables, options);
 }
 export type GetAgentRunCollaborationQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAgentRunCollaborationQuery, GetAgentRunCollaborationQueryVariables>;
+export const GetAgentRunCollaborationStatusesDocument = gql`
+    query GetAgentRunCollaborationStatuses($runIds: [String!]!) {
+  agentRunCollaborationStatuses(runIds: $runIds) {
+    runId
+    isActive
+    statuses {
+      agentRunId
+      memberAddress
+      status
+      recoverableBlock
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAgentRunCollaborationStatusesQuery__
+ *
+ * To run a query within a Vue component, call `useGetAgentRunCollaborationStatusesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAgentRunCollaborationStatusesQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetAgentRunCollaborationStatusesQuery({
+ *   runIds: // value for 'runIds'
+ * });
+ */
+export function useGetAgentRunCollaborationStatusesQuery(variables: GetAgentRunCollaborationStatusesQueryVariables | VueCompositionApi.Ref<GetAgentRunCollaborationStatusesQueryVariables> | ReactiveFunction<GetAgentRunCollaborationStatusesQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationStatusesQuery, GetAgentRunCollaborationStatusesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationStatusesQuery, GetAgentRunCollaborationStatusesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationStatusesQuery, GetAgentRunCollaborationStatusesQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetAgentRunCollaborationStatusesQuery, GetAgentRunCollaborationStatusesQueryVariables>(GetAgentRunCollaborationStatusesDocument, variables, options);
+}
+export function useGetAgentRunCollaborationStatusesLazyQuery(variables?: GetAgentRunCollaborationStatusesQueryVariables | VueCompositionApi.Ref<GetAgentRunCollaborationStatusesQueryVariables> | ReactiveFunction<GetAgentRunCollaborationStatusesQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationStatusesQuery, GetAgentRunCollaborationStatusesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationStatusesQuery, GetAgentRunCollaborationStatusesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentRunCollaborationStatusesQuery, GetAgentRunCollaborationStatusesQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetAgentRunCollaborationStatusesQuery, GetAgentRunCollaborationStatusesQueryVariables>(GetAgentRunCollaborationStatusesDocument, variables, options);
+}
+export type GetAgentRunCollaborationStatusesQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAgentRunCollaborationStatusesQuery, GetAgentRunCollaborationStatusesQueryVariables>;
 export const GetAgentRunCollaborationMemberProjectionDocument = gql`
     query GetAgentRunCollaborationMemberProjection($hostRunId: String!, $memberAddress: String!, $agentRunId: String!) {
   agentRunCollaborationMemberProjection(

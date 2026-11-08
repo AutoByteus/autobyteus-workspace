@@ -50,6 +50,7 @@ import {
 } from "./standalone-root-builder.js";
 import type { PairedAgentAccess } from "../../agent-collaboration/execution/remote/paired-agent-access.js";
 import { StandalonePairedAgentAccess } from "./standalone-paired-agent-access.js";
+import type { CollaborationAgentStatusSnapshot } from "../../agent-collaboration/execution/domain/collaboration-agent-execution-event.js";
 
 /** Host facts and mechanics the manager needs from the standalone side; wired at process composition. */
 export type StandaloneRootHostServices = StandaloneHostActivationBackend & Readonly<{
@@ -96,6 +97,13 @@ const launchConfigurationOf = (metadata: AgentRunMetadata): AgentLaunchConfigura
  * also the process's `StandaloneRunCommandPort` and `StandaloneRunLifecyclePort`, through which
  * `agent-execution` reaches the roots without importing them.
  */
+/** One run's answer to the history poll's status read. */
+export type StandaloneRootAgentStatuses = Readonly<{
+  runId: string;
+  isActive: boolean;
+  statuses: readonly CollaborationAgentStatusSnapshot[];
+}>;
+
 export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, StandaloneRunLifecyclePort {
   private readonly layout: AgentMemoryLayout;
   private readonly store: StandaloneRootPackageStore;
@@ -147,6 +155,17 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
 
   getActiveTree(hostRunId: string): StandaloneRootTreeSnapshot | null {
     return this.getActive(hostRunId)?.getExecutionTreeSnapshot() ?? null;
+  }
+
+  /**
+   * The children's states of each listed run, as the history poll asks for them (autobyteus-426 REQ-009): an active
+   * root answers its live snapshots; any other run answers inactive with none. No snapshot connection, tree or log read.
+   */
+  getAgentStatuses(hostRunIds: readonly string[]): StandaloneRootAgentStatuses[] {
+    return hostRunIds.map((runId) => {
+      const root = this.getActive(runId);
+      return { runId, isActive: root !== null, statuses: root?.getAgentStatusSnapshots() ?? [] };
+    });
   }
 
   /**

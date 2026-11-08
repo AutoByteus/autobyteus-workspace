@@ -1,0 +1,1 @@
+full-screen-entered | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[863,412],\"canvas\":[65,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"

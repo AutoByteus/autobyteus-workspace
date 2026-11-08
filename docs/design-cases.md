@@ -250,7 +250,17 @@ Principle 1 (several kinds or forms).
 - **Lesson:** before a design repeats a read, measure what one read carries and how often it runs; a poll multiplies it.
 - **Notice it by:** a refresh or re-read added to a poll or a list without the size of one read and its frequency written next to it.
 
-### Case 18: A Screen Designed By Its Text, Not By What It Covers (autobyteus-433, CRR-001 F-001)
+### Case 18: Absence Concluded From A Search For One Mechanism Name (autobyteus-432, ARCH-REV-001 AR-432-001)
+
+Principle 1 (statements about existing code; several forms).
+
+- **The design said:** "the Android app has no bridge from the page to the app", after searching only for `addJavascriptInterface`, and added a new `@JavascriptInterface` named `AutoByteusShell`.
+- **What happened:** the app already had `window.AutoByteusShell`, built with the other mechanism, `WebViewCompat.addWebMessageListener`, limited to the node's main frame and origin (autobyteus-417), with one web owner (`shellBridge.ts`). The new object would have replaced or shadowed it: either the new call never ran, or pairing broke — and the call would have been open to every frame.
+- **The fix (SR-002):** a new message on the existing bridge, under its main-frame/origin rule.
+- **Why it mattered:** a "nothing exists" claim decides the whole design; here it would have broken an existing security boundary.
+- **Notice it by:** "no X exists" backed by one search term; a platform with several ways to do the same thing (here two WebView bridge APIs); a new global name chosen without searching for that name itself.
+
+### Case 19: A Screen Designed By Its Text, Not By What It Covers (autobyteus-433, CRR-001 F-001)
 
 Principle 1 (the complete path to its outcome, through the real dependency).
 

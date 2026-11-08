@@ -1,0 +1,6 @@
+pointer before: x:300 y:300 screen:0 window:6291460
+after double tap: "translate(-76.9133px, -36.7188px) scale(1.17825)" q="?screen=desktop&full=1"
+after drag right: "translate(-76.9133px, -36.7188px) scale(1.17825)"
+after drag left/up: "translate(-76.9133px, -73.4375px) scale(1.17825)"
+after double tap: "translate(0px, 0px) scale(1)" q="?screen=desktop&full=1"
+pointer after: x:300 y:300 screen:0 window:6291460

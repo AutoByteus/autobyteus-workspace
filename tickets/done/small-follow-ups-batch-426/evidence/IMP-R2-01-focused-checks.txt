@@ -1,0 +1,7 @@
+# IMP-R2-01 round-2 focused checks (server unit + E2E, web specs)
+# Commits: D-09 06cc2aabad, D-20 094c896407, D-23 23483d0cf8 (unchanged since); macOS, Node v22.23.1; 2026-11-08
+## pnpm -C autobyteus-server-ts exec vitest run tests/unit/api/graphql/agent-run-collaboration-statuses.test.ts  → Tests 3 passed (3)
+## pnpm -C autobyteus-server-ts exec vitest run tests/unit/remote-collaboration/{peer-client,peer-address-resolver,node-identity-hold-back,remote-collaboration-settings}.test.ts  → Tests 34 passed (34)
+## pnpm -C autobyteus-server-ts exec vitest run tests/unit/remote-access tests/unit/agent-tools/mcp/agent-tools-mcp-local-access.test.ts (D-23 origin and allow-list parsing)  → Test Files 18 passed (18), Tests 182 passed (182)
+## env -i … vitest run tests/e2e/remote-collaboration/peer-host-refused.e2e.test.ts  → Tests 2 passed (2): addPeerNode PEER_HOST_REFUSED {host: lvh.me, address}; resolvePeerAddress attempts [{result: host_refused}]
+## web: pnpm -C autobyteus-web exec vitest run stores/__tests__/agentRunCollaborationListedStatuses.spec.ts (8) services/agentCollaboration/__tests__/agentRunCollaborationStatuses.spec.ts (5) composables/runHistory (7) stores/__tests__/runHistoryActiveListedRuns.spec.ts (1) utils/__tests__/nodeConnectionErrorText.spec.ts components/settings/nodes (71) → all pass

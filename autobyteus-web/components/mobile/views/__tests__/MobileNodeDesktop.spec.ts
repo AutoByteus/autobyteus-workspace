@@ -174,7 +174,50 @@ describe('MobileNodeDesktop', () => {
     });
   });
 
-  describe('full screen (REQ-S3-3)', () => {
+  describe('full screen (REQ-S3-3; autobyteus-432)', () => {
+    it('hides the bars and shows the exit handle in View only too; the handle leaves full screen', async () => {
+      const { router, wrapper } = await mountView();
+      session.current.connectionStatus.value = 'connected';
+      await flushPromises();
+      await wrapper.get('[data-testid="mobile-node-desktop-full-screen"]').trigger('click');
+      await flushPromises();
+      expect(wrapper.find('[data-testid="mobile-node-desktop-gestures"]').exists()).toBe(true);
+      await wrapper.get('[data-testid="mobile-node-desktop-handle"]').trigger('click');
+      await new Promise((resolve) => setTimeout(resolve, 20));
+      await flushPromises();
+      expect(router.currentRoute.value.query).toEqual({ screen: 'desktop' });
+    });
+
+    it('in the Android app asks the app for desktop full screen when the route enters it, and gives it back', async () => {
+      const posted: unknown[] = [];
+      (window as unknown as { AutoByteusShell?: unknown }).AutoByteusShell = {
+        postMessage: (message: string) => posted.push(JSON.parse(message)),
+        addEventListener: () => undefined,
+        removeEventListener: () => undefined,
+      };
+      try {
+        const { wrapper } = await mountView();
+        expect(posted).toEqual([{ type: 'desktopFullScreen', on: false }]);
+        await wrapper.get('[data-testid="mobile-node-desktop-full-screen"]').trigger('click');
+        await flushPromises();
+        expect(posted.at(-1)).toEqual({ type: 'desktopFullScreen', on: true });
+        await wrapper.get('[data-testid="mobile-node-desktop-handle"]').trigger('click');
+        await new Promise((resolve) => setTimeout(resolve, 20));
+        await flushPromises();
+        expect(posted.at(-1)).toEqual({ type: 'desktopFullScreen', on: false });
+
+        // A page that opens (or reopens after Android ended the app) with `full=1` asks at once; leaving gives it back.
+        wrapper.unmount();
+        posted.length = 0;
+        const reopened = await mountView({ screen: 'desktop', full: '1' });
+        expect(posted).toEqual([{ type: 'desktopFullScreen', on: true }]);
+        reopened.wrapper.unmount();
+        expect(posted.at(-1)).toEqual({ type: 'desktopFullScreen', on: false });
+      } finally {
+        delete (window as unknown as { AutoByteusShell?: unknown }).AutoByteusShell;
+      }
+    });
+
     it('hides the bars; in View only one tap shows them again', async () => {
       const { router, wrapper } = await mountView();
       session.current.connectionStatus.value = 'connected';
@@ -183,7 +226,6 @@ describe('MobileNodeDesktop', () => {
       await flushPromises();
       expect(router.currentRoute.value.query).toEqual({ screen: 'desktop', full: '1' });
       expect(wrapper.find('[data-testid="mobile-screen-bar"]').exists()).toBe(false);
-      expect(wrapper.find('[data-testid="mobile-node-desktop-handle"]').exists()).toBe(false);
 
       vi.useFakeTimers();
       const layer = wrapper.get('[data-testid="mobile-node-desktop-gestures"]').element as HTMLElement;
@@ -195,6 +237,36 @@ describe('MobileNodeDesktop', () => {
       await new Promise((resolve) => setTimeout(resolve, 20));
       await flushPromises();
       expect(router.currentRoute.value.query).toEqual({ screen: 'desktop' });
+    });
+
+    it('in Control full screen the strip opens the keyboard and the clipboard without leaving full screen (AC-005)', async () => {
+      const { router, wrapper } = await inControl();
+      await wrapper.get('[data-testid="mobile-node-desktop-full-screen"]').trigger('click');
+      await flushPromises();
+      expect(wrapper.find('[data-testid="mobile-screen-bar"]').exists()).toBe(false);
+      const strip = wrapper.get('[data-testid="mobile-node-desktop-full-screen-strip"]');
+      expect(strip.element.closest('canvas')).toBeNull();
+
+      await wrapper.get('[data-testid="mobile-node-desktop-strip-keyboard"]').trigger('click');
+      const input = wrapper.get('[data-testid="mobile-node-desktop-keyboard-input"]').element as HTMLTextAreaElement;
+      expect(document.activeElement).toBe(input);
+      expect(input.value).toBe(SENTINEL);
+
+      await wrapper.get('[data-testid="mobile-node-desktop-strip-clipboard"]').trigger('click');
+      await flushPromises();
+      expect(document.body.querySelector('[data-testid="mobile-node-desktop-clipboard"]')).not.toBeNull();
+      expect(router.currentRoute.value.query).toEqual({ screen: 'desktop', full: '1' });
+    });
+
+    it('in View only full screen the strip has only the exit handle', async () => {
+      const { wrapper } = await mountView();
+      session.current.connectionStatus.value = 'connected';
+      await flushPromises();
+      await wrapper.get('[data-testid="mobile-node-desktop-full-screen"]').trigger('click');
+      await flushPromises();
+      expect(wrapper.find('[data-testid="mobile-node-desktop-handle"]').exists()).toBe(true);
+      expect(wrapper.find('[data-testid="mobile-node-desktop-strip-keyboard"]').exists()).toBe(false);
+      expect(wrapper.find('[data-testid="mobile-node-desktop-strip-clipboard"]').exists()).toBe(false);
     });
 
     it('in Control a tap is the desktop\'s, so a handle outside the canvas shows the controls', async () => {

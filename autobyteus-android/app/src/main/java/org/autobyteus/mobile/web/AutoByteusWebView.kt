@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.view.ViewGroup
@@ -24,6 +25,11 @@ class AutoByteusWebView(
     private val fileChooserCoordinator: WebFileChooserCoordinator,
     /** The shell bridge for this entry's origin; registered before the first page loads. */
     private val shellBridge: ShellBridge?,
+    /**
+     * A main-frame document starts loading: only for autobyteus-432's full-screen reset. It decides nothing about
+     * whether the page shows (only the page's `pageReady` does, autobyteus-433 DS-006).
+     */
+    private val onPageStarted: () -> Unit,
     private val onDiagnostic: (ConnectionDiagnostic) -> Unit,
     /** A link or download is opening in another app; the toast says so without its URL. */
     private val onOpenedOutside: () -> Unit,
@@ -110,6 +116,10 @@ class AutoByteusWebView(
                     true
                 }
             }
+        }
+
+        override fun onPageStarted(view: WebView, url: String, favicon: Bitmap?) {
+            onPageStarted()
         }
 
         override fun onReceivedError(

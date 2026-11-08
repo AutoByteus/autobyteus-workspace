@@ -9,7 +9,12 @@ import type { CollaborationMessagesContextView } from '~/types/workspace/collabo
 import type { RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes'
 import { AgentRunCollaborationContext, type AgentRunTaskTreeRow } from '~/services/agentCollaboration/agentRunCollaborationContext'
 import { AgentRunCollaborationStreamingService } from '~/services/agentCollaboration/agentRunCollaborationStreamingService'
-import { readAgentRunCollaboration, buildAgentRunCollaborationContext } from '~/services/agentCollaboration/agentRunCollaborationHydration'
+import {
+  readAgentRunCollaboration,
+  readAgentRunCollaborationStatuses,
+  buildAgentRunCollaborationContext,
+  type AgentRunCollaborationStatusesAnswer,
+} from '~/services/agentCollaboration/agentRunCollaborationHydration'
 import { hubChildLoadTarget } from '~/services/agentCollaboration/agentRunCollaborationChildHydration'
 import { memberLoader } from '~/services/runHydration/memberLoader'
 import {
@@ -177,6 +182,56 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
   }
   /** Loads the stored (or live) view without restoring anything; a failure is kept as the hub's error. */
   const inspect = async (hostRunId: string): Promise<void> => { await read(hostRunId) }
+
+  /** The status read on the history poll that is still running; a tick that finds one skips its own. */
+  let statusRefresh: Promise<void> | null = null
+
+  /** The answer names exactly the context's local children (ID and address), each once. */
+  const sameLocalChildren = (context: AgentRunCollaborationContext, answer: AgentRunCollaborationStatusesAnswer): boolean => {
+    const named = new Set(answer.statuses.map((status) => status.agentRunId))
+    return named.size === answer.statuses.length && named.size === context.index.agents.size
+      && answer.statuses.every((status) => context.index.agents.get(status.agentRunId)?.address === status.memberAddress)
+  }
+
+  /**
+   * The history poll's refresh of task rows under listed runs that are not open (autobyteus-426 REQ-009, D-09): one
+   * states-only read for the hubs with a published context, no stream, no inspection and no termination, that are
+   * listed active (`activeIds`) or whose context is still live. Each answer, in order: dropped unless its hub is as
+   * it was at selection; nothing when both are inactive; a view re-read when the active state or the local children
+   * changed; else the states are applied.
+   */
+  const refreshListedStatuses = (activeIds: readonly string[]): Promise<void> => {
+    if (statusRefresh) return statusRefresh
+    const listedActive = new Set(activeIds)
+    const revision = binding.bindingRevision
+    const selected = Object.entries(contexts.value).filter(([hostRunId, context]) => !services.has(hostRunId)
+      && !inspections.has(hostRunId) && !terminations.has(hostRunId) && (listedActive.has(hostRunId) || context.isActive))
+    if (!selected.length) return Promise.resolve()
+    const refresh = (async () => {
+      let answers: AgentRunCollaborationStatusesAnswer[]
+      try {
+        answers = await readAgentRunCollaborationStatuses(selected.map(([hostRunId]) => hostRunId))
+      } catch (cause) {
+        console.warn('[agentRunCollaboration] Could not read the listed runs\' child states.', cause)
+        return
+      }
+      const answerOf = new Map(answers.map((answer) => [answer.runId, answer]))
+      for (const [hostRunId, context] of selected) {
+        const answer = answerOf.get(hostRunId)
+        const current = contexts.value[hostRunId] === context && binding.bindingRevision === revision
+          && !services.has(hostRunId) && !inspections.has(hostRunId) && !terminations.has(hostRunId)
+        if (!answer || !current) continue
+        if (!answer.isActive && !context.isActive) continue
+        if (answer.isActive !== context.isActive || !sameLocalChildren(context, answer)) {
+          void inspect(hostRunId)
+          continue
+        }
+        context.applyStatuses(answer.statuses)
+      }
+    })().finally(() => { if (statusRefresh === refresh) statusRefresh = null })
+    statusRefresh = refresh
+    return refresh
+  }
 
   /**
    * The hub's stored view for Settings (autobyteus-358, DS-004): the inspection in flight, else the published view,
@@ -394,7 +449,7 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
   }, { flush: 'sync' })
 
   return {
-    contexts, errors, contextFor, syncHost, inspect, viewFor, attach, release, beginHostTermination,
+    contexts, errors, contextFor, syncHost, inspect, refreshListedStatuses, viewFor, attach, release, beginHostTermination,
     selectChild, selectedChild, ensureStoredView, selectTaskRow, isTaskTeamExpanded, toggleTaskTeam, taskRows, hostMessagesView, childTargetFor, submit,
   }
 })
