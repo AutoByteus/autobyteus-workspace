@@ -1,0 +1,5 @@
+# Follow-ups
+
+| ID | Found by (role, document) | What is wrong, where | Evidence | Why it is outside this ticket | Urgent (`Yes`/`No`) | Suggested Task description | Sent (to, date) |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| FU-001 | Solution Designer, `design-spec.md` | The Android in-page overlay for an HTTP error other than 401/403 reads "AutoByteus returned HTTP <code>" / "The saved node was reached, but the mobile shell could not load successfully." / "Verify the saved URL, Phone Access state, and that the desktop server is serving /mobile.": technical words a phone user does not understand | `autobyteus-android/app/src/main/java/org/autobyteus/mobile/connection/ConnectionDiagnosticMapper.kt` `fromHttpStatus` `else` branch (Read) | It prints no address, so the privacy goal is met without it; it is a wording change in another message | No | "Phone app: say an HTTP error from the node's page in plain words (which node, what to try), like the Can't reach screen, instead of 'AutoByteus returned HTTP 502 … Verify the saved URL …'." | |
