@@ -1,0 +1,11 @@
+text: Test Desktop, Connected. Connection
+text: No runs yet
+text: Start with New run. Work an agent delegates appears under its run and leaves when it is done.
+text: New run
+text: This link can’t open here
+text: AutoByteus on your phone opens only its own pages.
+
+Tap Retry to go back to your runs.
+text: RETRY
+text: EDIT
+text: BROWSER

@@ -1,0 +1,20 @@
+# API-02 rerun of MSP-12 and MSP-09 after the probe baseline fix
+# command: pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=/tmp/pnnp-e2e/msp-run2 --cases=MSP-12,MSP-09
+# commit: f7bb05f5ec
+# env: macOS 26.5.2, Node v22.23.1, headless Chrome (probe-owned stack)
+# date: 2026-11-08T07:12:25.675Z
+
+
+> autobyteus@1.5.12-beta.8 test:e2e:mobile-shell /Users/normy/autobyteus_org/autobyteus-worktrees/phone-node-name-privacy/autobyteus-web
+> node tests/e2e/mobile-shell-probe.mjs --output-dir=/tmp/pnnp-e2e/msp-run2 --cases=MSP-12,MSP-09
+
+[mobile-shell] MSP-12 …
+[mobile-shell] MSP-12 Pass
+[mobile-shell] MSP-09 …
+[mobile-shell] MSP-09 Pass
+mobile-shell probe: Pass
+unexpected browser errors: []
+expected MSP-09 refusals recorded: 12
+cleanup {'frontendExited': True, 'serversLeft': 0, 'rootRemoved': True}
+MSP-09 info {"name": "Alpha Test Node", "urlLines": 0, "addressShown": [], "status": "Connected", "peerRows": 0, "mentionsPeer": false, "check": {"label": "Check connection", "text": ""}, "switchNode": 0, "unpair": "Unpair from Alpha Test Node"}
+addressShownDown []
