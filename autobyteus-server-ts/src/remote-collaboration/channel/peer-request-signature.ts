@@ -48,6 +48,19 @@ const signatureOf = (secret: string, fields: SignedFields): string =>
     .digest("hex");
 
 /**
+ * Where a request to a peer goes, and the path it signs (NA-9): the URL is the peer's base URL plus the node route; the
+ * signed path is the node route with its query, as the receiving node sees it. A peer behind a gateway at a base path
+ * (`https://gateway.example.com/autobyteus`) receives the route without that base path, so the base path is never
+ * signed: one rule on both sides.
+ */
+export const peerRequestTarget = (baseUrl: string, routePath: string): Readonly<{ url: URL; pathWithQuery: string }> => {
+  const url = new URL(`${baseUrl.replace(/\/+$/, "")}${routePath}`);
+  const basePath = new URL(baseUrl).pathname.replace(/\/+$/, "");
+  const nodePath = basePath && url.pathname.startsWith(`${basePath}/`) ? url.pathname.slice(basePath.length) : url.pathname;
+  return Object.freeze({ url, pathWithQuery: `${nodePath}${url.search}` });
+};
+
+/**
  * The headers of one request from this node to its peer (NA-9, design DS-005). The secret never travels; a captured
  * request names its receiver and its moment, and its nonce works once.
  */

@@ -5,7 +5,7 @@ import type {
 } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import type { PeerNode } from "../domain/peer-node.js";
 import { remoteObservationFrameOf } from "./peer-run-view-answers.js";
-import { signPeerRequest } from "./peer-request-signature.js";
+import { peerRequestTarget, signPeerRequest } from "./peer-request-signature.js";
 
 /** The part of a WebSocket the observation client uses (the runtime's `WebSocket`, or a test double). */
 export type PeerWebSocket = {
@@ -64,10 +64,8 @@ export const openPeerRunObservation = (input: Readonly<{
     if (!fromNodeId || closedByUs) return end();
     const secret = await input.peerSecret(peer.nodeId).catch(() => null);
     if (!secret || closedByUs) return end();
-    const url = new URL(`${peer.baseUrl.replace(/^http/, "ws")}${input.path}`);
-    const headers = signPeerRequest({
-      secret, method: "GET", pathWithQuery: `${url.pathname}${url.search}`, fromNodeId, toNodeId: peer.nodeId, body: null,
-    });
+    const { url, pathWithQuery } = peerRequestTarget(peer.baseUrl.replace(/^http/, "ws"), input.path);
+    const headers = signPeerRequest({ secret, method: "GET", pathWithQuery, fromNodeId, toNodeId: peer.nodeId, body: null });
     try { socket = (input.openWebSocket ?? openRuntimeWebSocket)(url.toString(), headers); } catch { return end(); }
     openingTimer = setTimeout(() => { if (!accepted) end(); }, input.openingTimeoutMs);
     socket.onopen = () => socket?.send(JSON.stringify({

@@ -12,6 +12,7 @@
 import { spawnSync } from "node:child_process";
 import { randomBytes } from "node:crypto";
 import fs from "node:fs/promises";
+import http from "node:http";
 import net from "node:net";
 import os from "node:os";
 import path from "node:path";
@@ -22,6 +23,7 @@ import { configureMemorySyncCapability } from "../../../src/memory-sync/shared/m
 import { requestSetupCode } from "../../../src/node-access/services/local-control-socket.js";
 import type { PairingExchangeResult } from "../../../src/remote-access/domain/models.js";
 import { configureNodeIdentityCapability } from "../../../src/remote-access/services/node-identity-service.js";
+import { PeerClient } from "../../../src/remote-collaboration/channel/peer-client.js";
 import { signPeerRequest } from "../../../src/remote-collaboration/channel/peer-request-signature.js";
 import {
   startStudioE2eRuntimeServer,
@@ -354,6 +356,34 @@ describe("Node access model (NA-1…NA-15): every request needs a key", () => {
     const answer = await inject({ method: "POST", url: "/rest/remote/messages", payload: body, headers: signedHeaders(PEER_A, "POST", "/rest/remote/messages", body) });
     expect(answer.statusCode, JSON.stringify(answer.body)).toBe(200);
     expect(answer.body).toMatchObject({ nodeId: ownNodeId });
+  });
+
+  it("NAS-20 a peer behind a gateway at a base path (company address): the signature covers the route the node receives", async () => {
+    // A gateway that serves the node at /autobyteus and strips that base path, as a company reverse proxy does.
+    const port = Number(started.mainUrl.port);
+    const gateway = http.createServer((request, response) => {
+      if (!request.url?.startsWith("/autobyteus/")) { response.writeHead(404).end(); return; }
+      const upstream = http.request({ host: THIS_COMPUTER, port, method: request.method, path: request.url.slice("/autobyteus".length),
+        headers: { ...request.headers, host: `127.0.0.1:${port}` } }, (answer) => {
+        response.writeHead(answer.statusCode ?? 502, answer.headers);
+        answer.pipe(response);
+      });
+      request.pipe(upstream);
+    });
+    await new Promise<void>((resolve) => gateway.listen(0, THIS_COMPUTER, () => resolve()));
+    try {
+      const gatewayUrl = `http://127.0.0.1:${(gateway.address() as { port: number }).port}/autobyteus`;
+      // This test acts as PEER_A's node: its client signs with the secret the two share.
+      const thisNodeSeenFromPeerA = { nodeId: ownNodeId, name: "via-gateway", baseUrl: gatewayUrl, addedAt: new Date().toISOString(), paired: true };
+      const client = new PeerClient({
+        peers: { findByName: async () => thisNodeSeenFromPeerA, findByNodeId: async () => thisNodeSeenFromPeerA, peerSecret: async () => PEER_A.secret },
+        capability: { isEnabled: () => true },
+        ownNodeId: async () => PEER_A.nodeId,
+      });
+      await expect(client.checkAvailability(ownNodeId)).resolves.toEqual({ accepted: true });
+    } finally {
+      await new Promise<void>((resolve) => gateway.close(() => resolve()));
+    }
   });
 
   it("NAS-21 a request claiming a peer's node ID without its signature, or signed with another secret, gets 401", async () => {

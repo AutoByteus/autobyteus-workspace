@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { describe, expect, it, vi } from "vitest";
 import { PeerClient } from "../../../src/remote-collaboration/channel/peer-client.js";
+import { PeerRequestSignatureVerifier } from "../../../src/remote-collaboration/channel/peer-request-signature.js";
 import type { PeerNode } from "../../../src/remote-collaboration/domain/peer-node.js";
 
 /** Design § Contract Between Nodes / § Ownership Map `PeerClient` (QR-102, REQ-109, REQ-113, AR-004). */
@@ -47,6 +48,21 @@ describe("PeerClient", () => {
     expect(headers["x-autobyteus-peer-signature"]).toMatch(/^[0-9a-f]{64}$/);
     expect(JSON.stringify(init)).not.toContain("peer-secret-for-tests");
     expect(init.signal).toBeInstanceOf(AbortSignal);
+  });
+
+  it("NAS-20 a peer at a gateway base path: the request goes to the base path and the signature covers the node route", async () => {
+    const gatewayPeer: PeerNode = { ...PEER, baseUrl: "https://gateway.example.com/autobyteus" };
+    const fetch = vi.fn(async () => answer({ accepted: true, nodeId: PEER.nodeId }));
+    const gatewayClient = new PeerClient({
+      peers: { findByName: async () => gatewayPeer, findByNodeId: async () => gatewayPeer, peerSecret: async () => "peer-secret-for-tests" },
+      capability: { isEnabled: () => true }, ownNodeId: async () => SELF, fetch: fetch as never,
+    });
+    await expect(gatewayClient.checkAvailability(PEER.nodeId)).resolves.toEqual({ accepted: true });
+    const [url, init] = fetch.mock.calls[0]! as unknown as [string, RequestInit];
+    expect(url).toBe("https://gateway.example.com/autobyteus/rest/remote/availability");
+    const verifier = new PeerRequestSignatureVerifier({ ownNodeId: async () => PEER.nodeId, peerSecret: async () => "peer-secret-for-tests" });
+    await expect(verifier.verify({ method: "POST", pathWithQuery: "/rest/remote/availability", headers: init.headers as Record<string, string> }))
+      .resolves.toMatchObject({ ok: true, identity: { kind: "peer", nodeId: SELF } });
   });
 
   it("NAS-23 refuses locally, sending nothing, when this node holds no secret for the peer (paired before peers paired)", async () => {

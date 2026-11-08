@@ -1,5 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { PeerClient } from "../../../src/remote-collaboration/channel/peer-client.js";
+import { openPeerRunObservation } from "../../../src/remote-collaboration/channel/peer-run-observation-client.js";
+import { PeerRequestSignatureVerifier } from "../../../src/remote-collaboration/channel/peer-request-signature.js";
 import type { PeerWebSocket } from "../../../src/remote-collaboration/channel/peer-run-observation-client.js";
 import type { PeerNode } from "../../../src/remote-collaboration/domain/peer-node.js";
 
@@ -67,6 +69,25 @@ describe("PeerClient run views (autobyteus-278)", () => {
     await expect(f.client.ownerCommand(PEER.nodeId, TEAM, "lead-run", command)).resolves.toMatchObject({ accepted: false, code: "TARGET_NOT_PERMITTED" });
     expect(f.fetch.mock.calls[1]![0]).toBe("http://peer:29700/rest/remote/owner-commands");
     expect(JSON.parse(String(f.fetch.mock.calls[1]![1].body))).toEqual({ fromNodeId: SELF, toNodeId: PEER.nodeId, targetRoot: TEAM, agentRunId: "lead-run", command });
+  });
+
+  it("NAS-20 an observation of a peer at a gateway base path opens the base path and signs the node route", async () => {
+    let opened: { url: string; headers: Readonly<Record<string, string>> } | null = null;
+    openPeerRunObservation({
+      resolvePeer: async () => ({ ...PEER, baseUrl: "https://gateway.example.com/autobyteus" }),
+      peerSecret: async () => "peer-secret-for-tests",
+      ownNodeId: async () => SELF,
+      path: "/rest/remote/run-observations",
+      targetRoot: TEAM,
+      observer: { onFrame: vi.fn(), onEnd: vi.fn() },
+      openWebSocket: (url, headers) => { opened = { url, headers }; return new FakeSocket(url); },
+      openingTimeoutMs: 50,
+    });
+    await flush();
+    expect(opened!.url).toBe("wss://gateway.example.com/autobyteus/rest/remote/run-observations");
+    const verifier = new PeerRequestSignatureVerifier({ ownNodeId: async () => PEER.nodeId, peerSecret: async () => "peer-secret-for-tests" });
+    await expect(verifier.verify({ method: "GET", pathWithQuery: "/rest/remote/run-observations", headers: opened!.headers }))
+      .resolves.toMatchObject({ ok: true, identity: { kind: "peer", nodeId: SELF } });
   });
 
   it("N-401: an observation accepts frames only after the first frame names the pinned node; close() ends it silently", async () => {

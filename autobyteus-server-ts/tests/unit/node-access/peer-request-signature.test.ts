@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { NodeIdentityNotMigratedError } from "../../../src/remote-access/services/node-identity-service.js";
 import {
+  peerRequestTarget,
   PeerRequestSignatureVerifier,
   signPeerRequest,
 } from "../../../src/remote-collaboration/channel/peer-request-signature.js";
@@ -68,6 +69,19 @@ describe("peer request signature", () => {
       now: () => T,
     });
     await expect(verifier.verify(signedRequest())).resolves.toMatchObject({ ok: false, refusal: { statusCode: 503, code: "NODE_IDENTITY_NOT_MIGRATED" } });
+  });
+
+  it("NAS-20 a peer at a gateway base path (company address) signs the node route its receiver sees, not the base path", async () => {
+    const target = peerRequestTarget("https://gateway.example.com/autobyteus", "/rest/remote/messages");
+    expect(target.url.toString()).toBe("https://gateway.example.com/autobyteus/rest/remote/messages");
+    expect(target.pathWithQuery).toBe("/rest/remote/messages");
+    expect(peerRequestTarget("http://192.168.2.31:29695", "/rest/remote/run-observations?x=1").pathWithQuery).toBe("/rest/remote/run-observations?x=1");
+    expect(peerRequestTarget("wss://gateway.example.com/autobyteus/", "/rest/remote/run-observations").pathWithQuery).toBe("/rest/remote/run-observations");
+    // The receiving node (behind the prefix-stripping gateway) verifies the route it receives.
+    const body = JSON.stringify({ fromNodeId: A, toNodeId: B });
+    const headers = signPeerRequest({ secret: SECRET, method: "POST", pathWithQuery: target.pathWithQuery, fromNodeId: A, toNodeId: B, body, now: new Date(T) });
+    await expect(verifierOn(B).verify({ method: "POST", pathWithQuery: "/rest/remote/messages", headers }))
+      .resolves.toEqual({ ok: true, identity: { kind: "peer", nodeId: A } });
   });
 
   it("NAS-23 a peer without a secret on this node is refused", async () => {

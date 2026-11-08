@@ -42,7 +42,7 @@ import {
 import { availableCollaboratorEntry, type AvailableCollaboratorEntry } from "../../agent-collaboration/collaborators/available-collaborator-entry.js";
 import type { PeerIdentityProbe } from "../settings/peer-directory.js";
 import { transportFailureReason, type TransportFailureReason } from "./transport-failure-reason.js";
-import { signPeerRequest } from "./peer-request-signature.js";
+import { peerRequestTarget, signPeerRequest } from "./peer-request-signature.js";
 import type {
   PeerPairingExchangeAnswer,
   PeerPairingExchangeRequest,
@@ -356,12 +356,12 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe, PeerPair
     let answer: PeerAnswer;
     try {
       const requestBody = JSON.stringify(body({ fromNodeId, toNodeId: peer.nodeId }));
-      const url = new URL(`${peer.baseUrl}${path}`);
+      const { url, pathWithQuery } = peerRequestTarget(peer.baseUrl, path);
       const response = await this.fetchJson(url.toString(), {
         method: "POST",
         headers: {
           "content-type": "application/json",
-          ...signPeerRequest({ secret, method: "POST", pathWithQuery: `${url.pathname}${url.search}`, fromNodeId, toNodeId: peer.nodeId, body: requestBody }),
+          ...signPeerRequest({ secret, method: "POST", pathWithQuery, fromNodeId, toNodeId: peer.nodeId, body: requestBody }),
         },
         body: requestBody,
       }, timeoutMs);
