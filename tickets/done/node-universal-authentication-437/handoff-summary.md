@@ -17,11 +17,11 @@ Every AutoByteus node refuses any request without a key. The desktop app, phones
 ## Verification
 
 - Judged from the evidence: AC-001…007 and AC-009 proven; AC-005 also on the merged state. See `release-deployment-report.md` § Verification.
-- AC-008 (network admission): proven on this computer's real LAN and Tailscale addresses. **A second physical device is the user's check.**
+- AC-008 (network admission): proven on this computer's real LAN and Tailscale addresses. The second-device check was **skipped by the user** for this beta.
 
 ## What Users Must Do
 
-`release-notes.md` § "What you need to do": setup codes for Docker and self-started nodes, **Pair again** for linked nodes, `AUTOBYTEUS_ALLOWED_CLIENT_NETWORKS` for VPN phones, the MCP gateway token.
+`release-notes.md` § "What you need to do": bring Docker nodes to this version, then setup codes for Docker and self-started nodes, **Pair again** for linked nodes, `AUTOBYTEUS_ALLOWED_CLIENT_NETWORKS` for VPN phones, the MCP gateway token.
 
 ## Residual Risks
 
@@ -33,5 +33,6 @@ Every AutoByteus node refuses any request without a key. The desktop app, phones
 
 ## Release
 
-- Decision: Beta (user). Smoke-check runtimes Codex and Grok waived on quota refusal only.
+- Decision: Beta (user). Smoke-check runtimes Codex and Grok waived on quota refusal only; Codex used the waiver (usage limit); Grok passed.
+- Outcome: merged into `personal` (`ec2380485c`); `v1.5.12-beta.9` on `4e2ffeaaef`: Desktop, Android, iOS and Server Docker workflows all succeeded; 23 assets; Docker `:1.5.12-beta.9` and `:beta`; the beta notes carry the user actions.
 - Rollback: revert the merge on `personal` and cut a new beta. The new credential files are additive (`Directly Usable — No Migration`), and an older build ignores them.

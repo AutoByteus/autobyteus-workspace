@@ -5,7 +5,7 @@
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
 | DR-001 | Code reviewer CRR-005 Pass (validated package at `32e9ad944c` + test commits, reports `b51a126ace`) | N/A | Blocked: post-integration phone probe MSP-21…23 | `release-deployment-report.md`, `evidence/delivery/` |
-| DR-002 | Code reviewer CRR-006 Pass on API-REV-003 (MSP-21…23 fixed and passing on the merged state) | Blocked (DR-001) | Verified from the evidence; waiting for the user's AC-008 check | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `.gitleaks.toml`, `autobyteus-web/docs/remote_access.md`, `TESTING.md` |
+| DR-002 | Code reviewer CRR-006 Pass on API-REV-003 (MSP-21…23 fixed and passing on the merged state) | Blocked (DR-001) | Delivery Completed: finalized on `personal`; beta `v1.5.12-beta.9` published | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `.gitleaks.toml`, `autobyteus-web/docs/remote_access.md`, `TESTING.md` |
 
 ## Revision Entries
 
@@ -26,12 +26,13 @@
 - Next recipient/action: API/E2E engineer — give MSP-21…23's node-side clients the probe credential and run them on the merged state; then delivery resumes (docs sync, Secret Gate, merge, pre-tag checks, beta).
 - Remaining blockers, rollback concerns, or untested scope: AC-008 second device (user); Windows launcher not run on Windows; 7 live probes not run.
 
-### DR-002 — Merged state verified; docs synced; waiting for the user's AC-008 check
+### DR-002 — Merged state verified; docs synced; finalized; beta v1.5.12-beta.9 published
 
 - Delivery round and trigger: re-entry on CRR-006 Pass (API-REV-003, test fix `43e6d41eb0`).
 - Prior authoritative result: DR-001 `Blocked`.
 - Current authoritative result: the merged state is verified from the evidence (MSP-01…20 DR1-05, MSP-21…23 R3). `origin/personal` is unchanged. Docs sync made two updates. The Secret Gate passes after one narrow allowlist entry for made-up test tokens. Finalization waits for the user's AC-008 second-device check.
 - Docs sync report: `docs-sync-report.md`. Handoff summary: `handoff-summary.md`. Release report: `release-deployment-report.md`.
 - Release decision: Beta (user); Codex and Grok smoke-check runtimes waived on quota refusal only.
-- Terminal return to the Solution Designer: `Not yet eligible`.
-- Next recipient/action: the user (AC-008); then archive the ticket, merge into `personal`, run the checks before tagging, tag `v1.5.12-beta.9`, watch the four workflows, add the beta's user actions (autobyteus-432, 433, 437), clean up.
+- Terminal return to the Solution Designer: `Sent` after cleanup.
+- Outcome: the user skipped AC-008's second-device check. Merged `ec2380485c` and pushed to `personal`. Checks before tagging passed, with the user's Codex quota waiver used. Release-notes order fix `443abf8759`. Tag `v1.5.12-beta.9` on `4e2ffeaaef`: 4/4 workflows succeeded, 23/23 assets, publish order correct, Docker `:1.5.12-beta.9` and `:beta` published, beta notes carry the 437/433/432 user actions.
+- Steps taken after the user's answer: archive the ticket, merge into `personal`, run the checks before tagging, tag `v1.5.12-beta.9`, watch the four workflows, add the beta's user actions (autobyteus-432, 433, 437), clean up.
