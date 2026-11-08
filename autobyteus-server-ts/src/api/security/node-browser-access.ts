@@ -1,6 +1,7 @@
 import { isIP } from "node:net";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { hostNameOfUrl, normalizeHostName } from "./request-host-name.js";
+import { parseWebOrigin } from "./web-origin.js";
 
 const ALLOWED_ORIGINS_SETTING = "AUTOBYTEUS_ALLOWED_ORIGINS";
 const ALLOWED_HOSTS_SETTING = "AUTOBYTEUS_ALLOWED_HOSTS";
@@ -31,15 +32,6 @@ const HOST_LABEL = "[a-z0-9_](?:[a-z0-9_-]*[a-z0-9_])?";
 const HOST_NAME = new RegExp(`^${HOST_LABEL}(?:\\.${HOST_LABEL})*$`);
 
 const splitEntries = (raw: string): string[] => raw.split(",").map((value) => value.trim()).filter(Boolean);
-
-const parseWebOrigin = (value: string): URL | null => {
-  try {
-    const parsed = new URL(value);
-    return parsed.protocol === "http:" || parsed.protocol === "https:" ? parsed : null;
-  } catch {
-    return null;
-  }
-};
 
 /** Parses the comma-separated `AUTOBYTEUS_ALLOWED_ORIGINS` value into exact web origins. */
 export const parseConfiguredOrigins = (raw: string): ConfiguredOrigins => {

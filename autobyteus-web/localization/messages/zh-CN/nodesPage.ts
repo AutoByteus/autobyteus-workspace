@@ -67,6 +67,7 @@ const nodesPageMessages = {
   'settings.components.settings.NodesPage.cause.dnsFrom': '{{node}} 找不到 {{host}}。',
   'settings.components.settings.NodesPage.cause.notAutobyteus': '该地址有应答，但它不是 AutoByteus 节点。',
   'settings.components.settings.NodesPage.cause.identityPending': '该节点的身份正在等待数据迁移。',
+  'settings.components.settings.NodesPage.cause.hostRefused': '该地址上的节点不接受名称 {{host}}。请在该节点的 AUTOBYTEUS_ALLOWED_HOSTS 中添加 {{host}}，或改用它的 IP 地址。',
   'settings.components.settings.NodesPage.dir.thisToIt': '本节点 → {{name}}',
   'settings.components.settings.NodesPage.dir.itToThis': '{{name}} → 本节点',
   'settings.components.settings.NodesPage.dir.via': '经由 {{address}}',
