@@ -41,3 +41,26 @@
 | 08:38Z | API-11 | Completed | Pass | first load 502 / Retry drop / Retry refused: only the overlay, no address; Retry after recovery closes it (page shows unpaired: Retry loads /mobile without the pairing link, pre-existing → FU-003) |
 | 08:38Z | API-08 | Completed | Fail | real APK: reload (API-08-03), Retry (API-08-11/12), Back (API-08-05) while down: WebView's error page with the URL full-screen, no overlay, no Retry |
 | 08:41Z | round 2 | Completed | Fail | report, revision record API-REV-002, FU-003 written; next: commit, failure-origin review |
+| 09:07Z | round 3 | Checkpoint | — | Round 3 (IR-004, 60adcf3bc8): plan in 'Round 3 Basis And Rerun Plan'. Reused IMP-14, IMP-15 (= API-03). Next: builds, API-02 full probe, emulator API-04…API-12 |
+| 09:14Z | API-02 (r3) | Started | — | full mobile-shell probe, output /tmp/pnnp-e2e/msp-run3 |
+| 09:23Z | API-02 (r3) | Completed | Pass | 19/19 MSP Pass, probe Pass, 0 unexpected errors |
+| 09:24Z | API-04 (r3) | Started | — | share A's link; AC-001; sheet |
+| 09:25Z | API-04 (r3) | Completed | Pass | page shown after 24 s (cold first open); AC-001 header 'Test Desktop' with session nodeName absent; sheet without address |
+| 09:25Z | API-08 (r3) | Started | — | A loaded, then down: reload, Retry ×2, recovery Retry, Back while down |
+| 09:27Z | API-08 (r3) | Completed | Pass | reload, Retry ×2, Back while down: only the overlay, no address; Retry after recovery shows the page |
+| 09:27Z | API-08b (r3) | Completed | Pass | link overlay → A down → RETRY: 'Can’t reach Test Desktop' only; recovery shows the page |
+| 09:27Z | API-09 (r3) | Started | — | blocked + Retry (up), external toast, download toast, no-app |
+| 09:28Z | API-09 (r3) | Completed | Pass | blocked link hides page, Retry closes; external + download toast 'Opening outside AutoByteus'; no-app overlay; no URL |
+| 09:29Z | API-11 (r3) | Started | — | proxy first load 502 / drop / refused / pass |
+| 09:30Z | API-11 (r3) | Completed | Pass | first load 502/drop/refused: overlay only; recovery shows page; loaded page + drop + reload: overlay only |
+| 09:30Z | API-05 (r3) | Started | — | typed http://hostbox-9f3.example-tailnet.ts.net:47331 + tick |
+| 09:32Z | API-05 (r3) | Completed | Pass | typed ts.net: page in 2 s; rows and ⋮ sheet 'AutoByteus node'; hello nodeName "" |
+| 09:32Z | API-06 (r3) | Started | — | typed B, paired on its page as 'Test Node' |
+| 09:33Z | API-06 (r3) | Completed | Pass | B typed → paired on its page → row 'Test Node' |
+| 09:33Z | API-10 (r3) | Started | — | reopen B; Switch node; Remove; relaunch; Unpair |
+| 09:35Z | API-10 (r3) | Completed | Pass | reopen B ≤3 s; Switch node lists 3 names; Remove confirmation by name; relaunch opens Test Node; Unpair → pairing |
+| 09:35Z | API-12 | Started | — | proxy 'stale': released 1.5.12-beta.8 /mobile bundle (no pageReady) |
+| 09:35Z | API-12 | Completed | Pass (observed, accepted) | stale bundle: 'Connecting to Test Server' + Cancel after 25 s, no address; Cancel → list. The released bundle did not render through the proxy (empty body) |
+| 09:38Z | API-13 | Started | — | Android 14 / WebView 113 AVD pnnp433_api34: pair A; reload/Retry/Back while down; recovery |
+| 09:41Z | API-13 | Completed | Pass | Android 14 / WebView 113.0.5672.136: reload, Retry, Back while down → overlay only, no address; recovery shows the page |
+| 09:41Z | round 3 | Completed | Pass | report, revision record API-REV-003 written; next: commit, hand off to delivery |

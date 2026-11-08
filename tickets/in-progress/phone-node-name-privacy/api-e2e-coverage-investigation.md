@@ -18,11 +18,29 @@ The plan: what must be proven, how, the decisions about existing tests, and the 
 - Delivery Revision Record (delivery re-entry only): `N/A`
 - Relevant Delivery Revision IDs: `N/A`
 - API/E2E Revision Record (created after the first completed result): `api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-002` (round 2); `API-REV-001` round 1
-- Current Investigation Round: 2
-- Trigger: round 2 — Implementation Complete IR-003 (code `ea45dc1643`, documents `2175dfba74`), SR-003/SR-004 after CRR-001 F-001 (`code-review-report.md`, from API-REV-001 API-08/08b); round 1 — IR-001 (code `ba3ba5b23e`)
+- Current API/E2E Revision ID: `API-REV-003` (round 3); `API-REV-002` round 2; `API-REV-001` round 1
+- Current Investigation Round: 3
+- Trigger: round 3 — Implementation Complete IR-004 (code `60adcf3bc8`, documents `9446d19783`), SR-005 after CRR-002 F-002 (from API-REV-002 API-08/08b); round 2 — Implementation Complete IR-003 (code `ea45dc1643`, documents `2175dfba74`), SR-003/SR-004 after CRR-001 F-001 (`code-review-report.md`, from API-REV-001 API-08/08b); round 1 — IR-001 (code `ba3ba5b23e`)
 - Prior Investigation Reviewed: round 1 (this file, below), `api-e2e-execution-coverage-report.md` round 1, `api-e2e-revision-record.md` API-REV-001
 - Latest Authoritative Investigation: this file
+
+## Round 3 Basis And Rerun Plan
+
+- Changed design (SR-005): WebView load callbacks no longer decide when the page shows. The node's page sends the bridge message `pageReady` once per document, from `MobileRemoteAccessShell` `onMounted`; nothing is sent in a browser. The app (`OpenPageState`) clears an overlay and shows the page only on `pageReady` from the open entry, which fails closed, because WebView's error page has no bridge. A node serving an older `/mobile` bundle never sends `pageReady`, so the app stays on "Opening your runs…" (accepted under `DESIGN.md` rule 9: one release).
+- Code changed since round 2's `ea45dc1643` (source): web `MobileRemoteAccessShell.vue`, `utils/remoteAccess/shellBridge.ts` (+ spec); Android `MainActivity.kt`, `shell/OpenPageState.kt` (new), `web/AutoByteusWebView.kt`, `web/ShellBridge.kt`, `web/MainFrameLoadOutcome.kt` (removed) (+ tests). No server source, no build input.
+
+| Case | Decision | Reason |
+| --- | --- | --- |
+| API-01 web (IMP-02) | Superseded: reuse IMP-14 | ran on `60adcf3bc8`: `Tests  175 passed (175)`, guards `exit=0` ×3, typecheck `PASS` |
+| API-01 Android (IMP-10) | Superseded: reuse IMP-15 | ran on `60adcf3bc8`: `JVM TOTAL tests 74 failures 0 errors 0`, `OpenPageStateTest tests 8 failures 0` |
+| API-03 | Rerun by reuse: IMP-15 | `INSTRUMENTED TOTAL 11 failures 0`, same image |
+| API-02 (full mobile-shell probe) | Rerun | `MobileRemoteAccessShell` is the phone page's root: every MSP case mounts it |
+| API-07 | Still valid | `NodeConnectionFlow`, `ConnectionInputResolver`, `showCantReach` unchanged; no page is open |
+| API-04, API-05, API-06, API-08, API-08b, API-09 (all parts), API-10, API-11 | Rerun | every one opens a page or raises an overlay, which now go through `pageReady`/`OpenPageState` |
+| new API-13 | Add (during the round) | the load-failure cases (reload, Retry, Back while down, recovery) on a second Android / WebView version (Android 14, WebView 113), to close the post-run confidence gap "one WebView version" |
+| new API-12 | Add | the stale-bundle state SR-005 accepts: a node serving the previous `/mobile` bundle (no `pageReady`). Observed and recorded, not scored (accepted by design) |
+
+Builds: rebuild the `/mobile` bundle (web changed) and the APK; the server `dist` is unchanged since round 1 (no server source change).
 
 ## Round 2 Basis And Rerun Plan
 

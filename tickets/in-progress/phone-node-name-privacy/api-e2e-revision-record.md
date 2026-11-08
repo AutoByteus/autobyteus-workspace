@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- |
 | API-REV-001 | Implementation engineer, `implementation-handoff.md`, round 1 | SR-002, IR-001 | N/A | Fail / 66% |
 | API-REV-002 | Implementation engineer, `implementation-handoff.md` (IR-003), round 2 | SR-003, SR-004, IR-003, CRR-001 | Fail / 66% | Fail / 66% |
+| API-REV-003 | Implementation engineer, `implementation-handoff.md` (IR-004), round 3 | SR-005, IR-004, CRR-002 | Fail / 66% | Pass / 95% |
 
 ## Revision Entries
 
@@ -53,3 +54,27 @@ None.
 - New or remaining failure IDs: API-08 (r2), API-08b (r2) (AC-007, AC-009, QR-001)
 - Recommended owner: Solution Designer (preliminary `Design Impact`: DS-006's "one `onPageFinished` per load" premise fails for a failure over a loaded page), through the code reviewer's failure-origin review
 - Remaining risks, blocked evidence, or untested scope: the deferred reruns above; the user-only part of AC-001; FU-001 and FU-003 out of scope
+
+### API-REV-003 — Round 3 on IR-004: the page shows only on the node page's `pageReady`; every load failure keeps the overlay; Pass
+
+- Triggering role, report path, and round: implementation engineer, `implementation-handoff.md` (IR-004, code `60adcf3bc8`, documents `9446d19783`), round 3
+- Triggering finding or case IDs: CRR-002 F-002 (from API-REV-002 API-08/08b (r2))
+- Related revision IDs: SR-005, IR-004, CRR-002
+- Why this revision was recorded: revalidation of the second fix
+- Coverage decisions or durable test paths changed: none in the repository
+- Cases added, changed, removed, or rechecked: rechecked API-08 and API-08b first (pass), plus round 2's cause state §8 through the proxy (API-11-05, pass). Rerun API-02 (full probe), API-04, API-05, API-06, API-09 (all parts), API-10, API-11. Added API-12 (stale bundle, observed as accepted) and API-13 (Android 14 / WebView 113). Reused IMP-14 and IMP-15 (= API-03). Still valid: API-07.
+- Commands, environment, fixture, or broader-validation delta: `/mobile` bundle and APK rebuilt from `60adcf3bc8`; a new API 35 AVD and a second API 34 AVD (both deleted afterwards); the proxy gained a `stale` mode that serves the released 1.5.12-beta.8 bundle (a copy, deleted afterwards)
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| API-08 (r2) / API-08b (r2): a failed reload, Retry or Back over a loaded page showed WebView's error page full-screen | Design Impact (CRR-002 F-002) | Resolved: the page shows only on `pageReady`; every failure keeps the opaque overlay with no address; recovery closes it | API-08 (r3), API-08b (r3), API-11 (r3) (API-11-05), API-13 |
+| API-08 / API-08b (round 1): error page behind a translucent overlay | Design Impact (CRR-001 F-001) | Resolved | same |
+
+- Canonical artifacts and sections updated: investigation ("Round 3 Basis And Rerun Plan"), execution report (Round, ENV-4/5, the (r3) and API-12/13 Cases rows, Acceptance-Criteria Proof, Scorecard, Classification, Result), test progress, `evidence/emulator-r3/`, `API-02-r3-*`
+- Prior result and confidence: `Fail`, 66%
+- Current result and confidence: `Pass`, 95%
+- New or remaining failure IDs: None
+- Recommended owner: delivery
+- Remaining risks, blocked evidence, or untested scope: the user-only part of AC-001; no instrumented test of a failed load over a loaded page; a node with the older bundle leaves the app on "Connecting/Opening your runs…" (accepted, RISK-001); FU-001, FU-003 out of scope
