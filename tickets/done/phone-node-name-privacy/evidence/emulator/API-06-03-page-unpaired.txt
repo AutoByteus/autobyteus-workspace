@@ -1,0 +1,6 @@
+text: AutoByteus
+text: Connect this phone
+text: Scan the QR code on your computer with this phone’s camera.
+content-desc: Get the Android app
+text: Get the Android app
+text: Other ways to connect

@@ -38,7 +38,6 @@
     <MobileConnectionSheet
       v-if="showConnection"
       :node-name="nodeName"
-      :server-base-url="sessionStore.serverBaseUrl"
       :connected="connected"
       :is-checking="sessionStore.isCheckingStatus"
       :diagnostic="sessionStore.lastDiagnostic"
@@ -69,6 +68,8 @@ import { useMobileRunTree } from '~/composables/mobile/useMobileRunTree';
 import { useRunHistorySectionLoad } from '~/composables/runHistory/useRunHistorySectionLoad';
 import { useActiveContextStore } from '~/stores/activeContextStore';
 import { useMobileNodeSessionStore } from '~/stores/mobileNodeSessionStore';
+import { nodeNameOrDefault } from '~/utils/remoteAccess/nodeName';
+import { getShellBridge } from '~/utils/remoteAccess/shellBridge';
 import type { MobileRunListConnection } from '~/components/mobile/runList/MobileRunList.vue';
 
 const props = defineProps<{
@@ -126,8 +127,17 @@ onMounted(async () => {
   }
 });
 
-/** The node's name from the QR it was paired with; sessions paired before it was kept show the address's host. */
-const nodeName = computed(() => sessionStore.session?.nodeName || hostOf(sessionStore.serverBaseUrl));
+/** The Android app's name for this node (its first page's name); `''` in a browser or while the app has not answered. */
+const appNodeName = ref('');
+onMounted(async () => {
+  const hello = await getShellBridge()?.hello();
+  appNodeName.value = hello?.nodeName ?? '';
+});
+/**
+ * The node's name, never its address (autobyteus-433): the app's name for it, else the name from the QR the page paired
+ * with (absent for sessions paired before it was kept), else "AutoByteus node".
+ */
+const nodeName = computed(() => nodeNameOrDefault(appNodeName.value, sessionStore.session?.nodeName));
 /** Reachable until the first check says otherwise. */
 const connected = computed(() => !firstCheckDone.value || sessionStore.authorizedApiReachable);
 /** The run list's connection state: Phone Access off is its own state, not "Not reachable". */
@@ -158,8 +168,4 @@ watch([() => navigation.screen.value, viewTarget], ([screen, target]) => {
 
 /** Create run: the new run's conversation, for its first message, in place of New run. */
 const onLaunched = (): void => { void navigation.openRun({ replace: true }); };
-
-function hostOf(url: string): string {
-  try { return new URL(url).host || url; } catch { return url; }
-}
 </script>

@@ -23,14 +23,12 @@ class ConnectionInputResolver {
     fun resolveTypedAddress(rawText: String, httpAcknowledged: Boolean): ConnectionInputResolution {
         val normalized = try {
             NodeUrlNormalizer.normalize(rawText)
-        } catch (error: Exception) {
-            return ConnectionInputResolution.Failure(
-                ConnectionDiagnosticMapper.invalidUrl(error.message ?: "The address could not be read."),
-            )
+        } catch (_: Exception) {
+            return ConnectionInputResolution.Failure(ConnectionDiagnosticMapper.invalidUrl())
         }
         val entry = SavedNodeEntry.fromNormalized(normalized, httpAcknowledged = normalized.scheme == "https" || httpAcknowledged)
         if (entry.isHttp && !entry.httpAcknowledged) {
-            return ConnectionInputResolution.Failure(ConnectionDiagnosticMapper.httpNeedsAcknowledgement(entry.mobileUrl))
+            return ConnectionInputResolution.Failure(ConnectionDiagnosticMapper.httpNeedsAcknowledgement())
         }
         return ConnectionInputResolution.Success(entry, normalized.mobileUrl)
     }

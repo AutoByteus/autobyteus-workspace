@@ -45,7 +45,7 @@ class NodeRow(
         avatar.clipChildren = false
 
         val texts = ui.vertical()
-        texts.addView(ui.singleLine(ui.text(entry.displayName, 16f, ShellColors.slate900, bold = true)))
+        texts.addView(ui.singleLine(ui.text(entry.shownName, 16f, ShellColors.slate900, bold = true)))
         texts.addView(stateText)
 
         openArea.apply {
@@ -58,7 +58,7 @@ class NodeRow(
         }
         view.clipChildren = false
         view.addView(openArea, LinearLayout.LayoutParams(0, wrap(), 1f))
-        view.addView(ui.iconButton(R.drawable.ic_ellipsis_vertical, "More for ${entry.displayName}", ShellColors.slate400, onMore))
+        view.addView(ui.iconButton(R.drawable.ic_ellipsis_vertical, "More for ${entry.shownName}", ShellColors.slate400, onMore))
         setState(NodeReachabilityState.Checking)
     }
 
@@ -71,6 +71,6 @@ class NodeRow(
         stateText.text = label
         stateText.setTextColor(textColor)
         dot.background = ui.circle(dotColor, ringColor, 2)
-        openArea.contentDescription = listOfNotNull(entry.displayName, label, if (isCurrent) "current node" else null).joinToString(", ")
+        openArea.contentDescription = listOfNotNull(entry.shownName, label, if (isCurrent) "current node" else null).joinToString(", ")
     }
 }

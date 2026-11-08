@@ -1,0 +1,14 @@
+text: Webpage not available
+text: x+AAAAAElFTkSuQmCC
+text: Webpage not available
+text: The webpage at 
+text: http://hostbox-9f3.home.arpa:47331/mobile
+text:  could not be loaded because:
+text: net::ERR_CONNECTION_REFUSED
+text: Can’t reach Test Desktop
+text: Check that Tailscale or your Wi-Fi is on and the computer is awake.
+
+Then tap Retry.
+text: RETRY
+text: EDIT
+text: BROWSER

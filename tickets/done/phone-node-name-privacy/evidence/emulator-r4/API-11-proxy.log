@@ -1,0 +1,23 @@
+proxy 127.0.0.1:47333 -> 127.0.0.1:47331, mode pass
+11:28:21 mode pass -> 502; open connections closed
+11:28:22 pass GET /rest/remote-access/status HTTP/1.1
+11:28:22 502 GET /mobile?pairing=eyJ2ZXJzaW9uIjoxLCJzZXJ2ZXJCYXNlVXJsIjoiaHR0cDovL2hvc3Rib3gtOWYzLmhvbWUuYXJwYTo0NzMzMyIsInBhaXJpbmdDb2RlIjoiMDhIZlZmOGxfaFczSENGRFZxOVl2LW1OIiwiZXhwaXJlc0F0IjoiMjAyNi0xMS0wOFQxMDozMzoyMS4yNDJaIiwic2VydmVyTmFtZSI6IlRlc3QgU2VydmVyIn0 HTTP/1.1
+11:28:22 pass GET /favicon.ico HTTP/1.1
+11:28:27 mode 502 -> drop; open connections closed
+11:28:30 drop GET /mobile HTTP/1.1
+proxy 127.0.0.1:47333 -> 127.0.0.1:47331, mode pass
+11:28:50 pass GET /mobile HTTP/1.1
+11:28:50 pass GET /mobile/_nuxt/CANf7qp3.js HTTP/1.1
+11:28:50 pass GET /mobile/_nuxt/default.CTHSKn2w.css HTTP/1.1
+11:28:50 pass GET /mobile/_nuxt/PRlB0AEK.js HTTP/1.1
+11:28:50 pass GET /mobile/_nuxt/DxfFyxED.js HTTP/1.1
+11:28:50 pass GET /mobile/_nuxt/J1bxg2UA.js HTTP/1.1
+11:28:56 mode pass -> drop; open connections closed
+11:28:57 drop GET /mobile/ HTTP/1.1
+11:29:05 mode drop -> pass; open connections closed
+11:29:08 pass GET /mobile HTTP/1.1
+11:29:08 pass GET /mobile/_nuxt/CANf7qp3.js HTTP/1.1
+11:29:08 pass GET /mobile/_nuxt/default.CTHSKn2w.css HTTP/1.1
+11:29:08 pass GET /mobile/_nuxt/DxfFyxED.js HTTP/1.1
+11:29:08 pass GET /mobile/_nuxt/J1bxg2UA.js HTTP/1.1
+11:29:08 pass GET /mobile/_nuxt/PRlB0AEK.js HTTP/1.1

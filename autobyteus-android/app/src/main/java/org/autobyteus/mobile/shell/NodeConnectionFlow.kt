@@ -40,6 +40,8 @@ class NodeConnectionFlow(
     private var attempt: Attempt? = null
     /** The entry of a pairing link whose page is open, saved when the page reports it paired. */
     private var pendingPairing: SavedNodeEntry? = null
+    /** The saved entry whose page is open (a saved node, or a typed address that answered); `null` for a pairing link. */
+    private var openEntry: SavedNodeEntry? = null
     private var generation = 0
 
     /** A scanned, pasted or shared text: a pairing link connects at once (REQ-010, DEC-023). */
@@ -60,8 +62,9 @@ class NodeConnectionFlow(
     fun connectTyped(address: String, httpAcknowledged: Boolean) {
         when (val resolution = resolver.resolveTypedAddress(address, httpAcknowledged)) {
             is ConnectionInputResolution.Success -> run(Attempt(resolution.entry, resolution.webViewUrl, Save.OnReachable))
+            // "Can't connect": the typed text is not repeated (autobyteus-433 REQ-004); the sheet still holds it.
             is ConnectionInputResolution.Failure -> screens.showCantReach(
-                nodeName = address.trim(),
+                nodeName = "",
                 reason = ConnectionDiagnosticMapper.cantReachReasonFor(resolution.diagnostic),
             )
         }
@@ -86,17 +89,23 @@ class NodeConnectionFlow(
     }
 
     /**
-     * The page reports the code was exchanged (bridge `paired`): the node is saved under its QR name (REQ-011).
-     * The page's name is the same QR's; it is used only when the QR carried none (the entry then has its host).
+     * The page reports the code was exchanged (bridge `paired`): a pairing link's node is saved under its QR name
+     * (REQ-011); an open saved node with no name takes the page's QR name (autobyteus-433 REQ-005). The page's name is
+     * used only for an entry with no known name: a named node is never renamed by its page.
      */
     fun onPaired(pageNodeName: String) {
-        val entry = pendingPairing ?: return
+        val pending = pendingPairing
         pendingPairing = null
-        val qrHadName = entry.displayName != entry.host
-        entries.saveEntry(entry.copy(
-            displayName = if (qrHadName || pageNodeName.isBlank()) entry.displayName else pageNodeName,
+        val entry = pending ?: openEntry?.takeIf { it.knownName == null } ?: return
+        val pageName = pageNodeName.trim()
+        val takesPageName = entry.knownName == null && pageName.isNotEmpty()
+        if (pending == null && !takesPageName) return
+        val saved = entry.copy(
+            displayName = if (takesPageName) pageName else entry.displayName,
             updatedAtEpochMillis = clock(),
-        ))
+        )
+        entries.saveEntry(saved)
+        openEntry = saved
     }
 
     /** The page with a pairing link was left without pairing (back to the list, Scan again). */
@@ -107,7 +116,7 @@ class NodeConnectionFlow(
     private fun run(next: Attempt) {
         attempt = next
         val current = ++generation
-        screens.showConnecting(next.entry.displayName)
+        screens.showConnecting(next.entry.shownName)
         background.execute {
             val result = statusCheck.validate(next.entry)
             mainThread.execute {
@@ -115,7 +124,7 @@ class NodeConnectionFlow(
                 when (result) {
                     is ConnectionValidationResult.Reachable -> opened(next)
                     is ConnectionValidationResult.Failed -> screens.showCantReach(
-                        nodeName = next.entry.displayName,
+                        nodeName = next.entry.shownName,
                         reason = ConnectionDiagnosticMapper.cantReachReasonFor(result.diagnostic),
                     )
                 }
@@ -126,11 +135,19 @@ class NodeConnectionFlow(
     private fun opened(reached: Attempt) {
         val now = clock()
         when (reached.save) {
-            Save.OnPaired -> pendingPairing = reached.entry
-            Save.OnReachable -> entries.saveEntry(reached.entry.copy(updatedAtEpochMillis = now))
+            Save.OnPaired -> {
+                pendingPairing = reached.entry
+                openEntry = null
+            }
+            Save.OnReachable -> {
+                val saved = reached.entry.copy(updatedAtEpochMillis = now)
+                entries.saveEntry(saved)
+                openEntry = saved
+            }
             Save.AlreadySaved -> {
                 pendingPairing = null
                 entries.selectEntry(reached.entry.id)
+                openEntry = reached.entry
             }
         }
         screens.openPage(reached.entry, reached.url, pairing = reached.save == Save.OnPaired)

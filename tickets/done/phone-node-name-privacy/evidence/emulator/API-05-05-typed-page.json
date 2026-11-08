@@ -1,0 +1,24 @@
+{
+ "pageUrl": "http://hostbox-9f3.example-tailnet.ts.net:47331/mobile/",
+ "value": {
+  "headerName": null,
+  "headerState": null,
+  "headerAria": null,
+  "banner": null,
+  "sheetOpen": false,
+  "sheetText": null,
+  "sheetAddressLine": false,
+  "bodyText": "AutoByteus\nConnect this phone\n\nScan the QR code on your computer with this phone’s camera.\n\nGet the Android app\nOther ways to connect",
+  "ariaLabels": [],
+  "titles": [],
+  "documentTitle": "",
+  "helloReply": {
+   "type": "shell",
+   "nodeCount": 2,
+   "deviceName": "sdk_gphone64_arm64",
+   "nodeName": ""
+  },
+  "sessionNodeName": "(no session)",
+  "sessionKeys": null
+ }
+}

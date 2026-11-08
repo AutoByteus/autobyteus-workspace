@@ -1,0 +1,21 @@
+# IMP-19 rendered check of the merged APK: 432's desktop full screen with 433's overlay and pageReady (DEC-011)
+# commit: e8516bce5c (APK sha256 in IMP-18; the /mobile bundle from the merged tree, IMP-17), served by the IMP-13 fake test node
+# env: own read-only emulator codex_api35_arm64 (port 5570), API 35, WebView 124.0.6367.219; fake node 127.0.0.1:8437 (10.0.2.2)
+# The page's full-screen request was sent from the live document through DevTools:
+#   window.AutoByteusShell.postMessage(JSON.stringify({type:'desktopFullScreen', on:true|false}))  (the real bridge path;
+#   the fake node's unpaired page has no VNC viewer). requestedOrientation from adb shell dumpsys activity activities.
+# date: 2026-11-08
+# NN-*.png screenshot, NN-*.xml uiautomator dump
+#  01 page open (node ok)                                        requestedOrientation=UNSPECIFIED
+#  02 request on, plain page on screen -> applied at once         SENSOR_LANDSCAPE (rotation 90), Android's "Viewing full screen" hint
+#  03 node stopped, reload -> overlay                            UNSPECIFIED (rotation 0): the overlay ends full screen; overlay text, no address
+#  04 node back, Retry -> page (new document: request cleared)   UNSPECIFIED
+#  05 request on again                                            SENSOR_LANDSCAPE
+#  06 successful reload (onPageStarted clears; 432 reset)         UNSPECIFIED
+#  07 blocked same-origin link -> overlay over the LIVE document  UNSPECIFIED ("This link can’t open here")
+#  08 the live document asks for full screen under the overlay   UNSPECIFIED: held, not applied
+#  09 the same document posts pageReady -> plain page            SENSOR_LANDSCAPE: the held request applied; dark cutout strip (root darkened)
+#  10 request off                                                 UNSPECIFIED at once
+# No dump contains 10.0.2.2 / 8437 / http / webpage / ERR_ / chromewebdata.
+# Not exercised here: a real VNC viewer reopened at full=1 (needs a real node with a desktop) and Switch node; covered by
+# DesktopFullScreenRequestTest (request before pageReady; other screen resets) and left to API/E2E (design-spec SR-006 Validation).

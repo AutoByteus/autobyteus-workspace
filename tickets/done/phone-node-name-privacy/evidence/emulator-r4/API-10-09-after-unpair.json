@@ -1,0 +1,24 @@
+{
+ "pageUrl": "http://nodebox-2c7.home.arpa:47332/mobile/",
+ "value": {
+  "headerName": null,
+  "headerState": null,
+  "headerAria": null,
+  "banner": null,
+  "sheetOpen": false,
+  "sheetText": null,
+  "sheetAddressLine": false,
+  "bodyText": "AutoByteus\nConnect this phone\n\nScan the QR code on your computer with this phone’s camera.\n\nGet the Android app\nOther ways to connect",
+  "ariaLabels": [],
+  "titles": [],
+  "documentTitle": "",
+  "helloReply": {
+   "type": "shell",
+   "nodeCount": 2,
+   "deviceName": "sdk_gphone64_arm64",
+   "nodeName": "Test Node"
+  },
+  "sessionNodeName": "(no session)",
+  "sessionKeys": null
+ }
+}

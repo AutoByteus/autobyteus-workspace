@@ -1,0 +1,31 @@
+proxy 127.0.0.1:47333 -> 127.0.0.1:47331, mode pass
+09:29:31 pass GET /rest/health HTTP/1.1
+09:34:52 mode pass -> 502; open connections closed
+09:34:53 pass GET /rest/remote-access/status HTTP/1.1
+09:34:53 502 GET /mobile?pairing=eyJ2ZXJzaW9uIjoxLCJzZXJ2ZXJCYXNlVXJsIjoiaHR0cDovL2hvc3Rib3gtOWYzLmhvbWUuYXJwYTo0NzMzMyIsInBhaXJpbmdDb2RlIjoiTm5xRFprazJpcWhzMjJtcjB1RGN0ZjlPIiwiZXhwaXJlc0F0IjoiMjAyNi0xMS0wOFQwODozOTo1MS44OTFaIiwic2VydmVyTmFtZSI6IlRlc3QgU2VydmVyIn0 HTTP/1.1
+09:34:53 pass GET /favicon.ico HTTP/1.1
+09:35:02 mode 502 -> drop; open connections closed
+09:35:05 drop GET /mobile HTTP/1.1
+proxy 127.0.0.1:47333 -> 127.0.0.1:47331, mode pass
+09:35:43 pass GET /mobile HTTP/1.1
+09:35:43 pass GET /mobile/_nuxt/COZyThmg.js HTTP/1.1
+09:35:44 pass GET /mobile/_nuxt/default.CTHSKn2w.css HTTP/1.1
+09:35:44 pass GET /mobile/_nuxt/C0peU2YB.js HTTP/1.1
+09:35:44 pass GET /mobile/_nuxt/J1bxg2UA.js HTTP/1.1
+09:35:44 pass GET /mobile/_nuxt/DN8rrJ5d.js HTTP/1.1
+09:35:50 mode pass -> drop; open connections closed
+09:35:51 drop GET /mobile/ HTTP/1.1
+09:36:30 mode drop -> pass; open connections closed
+09:37:28 mode pass -> 502; open connections closed
+09:37:29 pass GET /rest/remote-access/status HTTP/1.1
+09:37:29 502 GET /mobile?pairing=eyJ2ZXJzaW9uIjoxLCJzZXJ2ZXJCYXNlVXJsIjoiaHR0cDovL2hvc3Rib3gtOWYzLmhvbWUuYXJwYTo0NzMzMyIsInBhaXJpbmdDb2RlIjoiRS1oczl0eGtoUmlzRjFWZ3R3MmNNYlNyIiwiZXhwaXJlc0F0IjoiMjAyNi0xMS0wOFQwODo0MjoyNy44MjVaIiwic2VydmVyTmFtZSI6IlRlc3QgU2VydmVyIn0 HTTP/1.1
+09:37:29 pass GET /favicon.ico HTTP/1.1
+09:37:43 mode 502 -> drop; open connections closed
+09:37:46 drop GET /mobile HTTP/1.1
+proxy 127.0.0.1:47333 -> 127.0.0.1:47331, mode pass
+09:38:07 pass GET /mobile HTTP/1.1
+09:38:07 pass GET /mobile/_nuxt/COZyThmg.js HTTP/1.1
+09:38:07 pass GET /mobile/_nuxt/default.CTHSKn2w.css HTTP/1.1
+09:38:07 pass GET /mobile/_nuxt/C0peU2YB.js HTTP/1.1
+09:38:07 pass GET /mobile/_nuxt/DxfFyxED.js HTTP/1.1
+09:38:07 pass GET /mobile/_nuxt/J1bxg2UA.js HTTP/1.1

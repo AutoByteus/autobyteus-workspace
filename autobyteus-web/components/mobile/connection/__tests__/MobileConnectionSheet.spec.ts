@@ -1,9 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { flushPromises, mount } from '@vue/test-utils';
 import MobileConnectionSheet from '../MobileConnectionSheet.vue';
+import { diagnosticForKind } from '~/utils/remoteAccess/mobileConnectionDiagnostics';
 
-const props = { nodeName: 'Office Mac', serverBaseUrl: 'http://192.168.1.20:29695', connected: true, isChecking: false, diagnostic: null };
+const props = { nodeName: 'Office Mac', connected: true, isChecking: false, diagnostic: null };
 const sheet = () => document.body.querySelector('[data-testid="mobile-connection-sheet"]')!;
+/** Anything that reads as an address: a URL scheme, a host with a domain or a port, an IPv4 address. */
+const ADDRESS_SHAPES = [/:\/\//, /\b[\w-]+\.(?:ts\.net|local|lan|home)\b/i, /\b\d{1,3}(?:\.\d{1,3}){3}\b/, /:\d{2,5}\b/];
 
 /** A stand-in for the Android app's web-message object: it answers `hello` and records what the page asks. */
 const installShell = (nodeCount: number) => {
@@ -45,6 +48,20 @@ describe('MobileConnectionSheet', () => {
     const dialog = sheet().querySelector('[role="dialog"]')!;
     expect(dialog.getAttribute('aria-modal')).toBe('true');
     expect(document.getElementById(dialog.getAttribute('aria-labelledby')!)?.textContent).toBe('Office Mac');
+    wrapper.unmount();
+  });
+
+  // autobyteus-433 AC-002: the name and the state only; no address line, connected or not reachable with its diagnostic.
+  it.each([
+    ['connected', { connected: true, diagnostic: null }],
+    ['not reachable, with its diagnostic', { connected: false, diagnostic: diagnosticForKind('network_unreachable') }],
+  ])('shows the node\'s name and state and no address (%s)', async (_state, state) => {
+    const wrapper = mount(MobileConnectionSheet, { props: { ...props, ...state }, attachTo: document.body });
+    await flushPromises();
+    expect(sheet().querySelector('[data-testid="mobile-connection-url"]')).toBeNull();
+    expect(sheet().querySelector('[data-testid="mobile-connection-name"]')!.textContent).toBe('Office Mac');
+    const text = sheet().textContent ?? '';
+    for (const shape of ADDRESS_SHAPES) expect(text).not.toMatch(shape);
     wrapper.unmount();
   });
 

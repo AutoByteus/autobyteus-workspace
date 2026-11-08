@@ -85,6 +85,7 @@
 import { Icon } from '@iconify/vue';
 import { computed, onMounted, ref } from 'vue';
 import { readPairingLink, useMobileNodeSessionStore, type MobilePairingFailure } from '~/stores/mobileNodeSessionStore';
+import { nodeNameOrDefault } from '~/utils/remoteAccess/nodeName';
 import { getShellBridge, type ShellBridge } from '~/utils/remoteAccess/shellBridge';
 
 const emit = defineEmits<{
@@ -108,10 +109,8 @@ const failure = ref<MobilePairingFailure | null>(null);
 
 const linkPayload = computed(() => readPairingLink(pairingLink.value));
 const hasLink = computed(() => linkPayload.value !== null);
-const nodeName = computed(() => {
-  const payload = linkPayload.value ?? readPairingLink(pastedText.value);
-  return payload?.serverName?.trim() || hostOf(payload?.serverBaseUrl ?? '');
-});
+/** The QR's name for the node, else "AutoByteus node": never its address (autobyteus-433). */
+const nodeName = computed(() => nodeNameOrDefault((linkPayload.value ?? readPairingLink(pastedText.value))?.serverName));
 
 const failureReason = computed(() => {
   switch (failure.value) {
@@ -131,7 +130,8 @@ async function pair(text: string, deviceName = 'Phone'): Promise<void> {
   emit('pairing-started');
   try {
     const session = await sessionStore.pairWithQrText(text, deviceName);
-    bridge.value?.paired(session.nodeName ?? nodeName.value);
+    // Only the QR's name: the app must never store the "AutoByteus node" label as the node's name.
+    bridge.value?.paired(session.nodeName ?? '');
     emit('paired');
   } catch {
     failure.value = sessionStore.lastPairingFailure ?? 'no_answer';
@@ -142,10 +142,6 @@ async function pair(text: string, deviceName = 'Phone'): Promise<void> {
 function pairPasted(): void {
   pastedTextInvalid.value = readPairingLink(pastedText.value) === null;
   if (!pastedTextInvalid.value) void pair(pastedText.value);
-}
-
-function hostOf(url: string): string {
-  try { return new URL(url).host; } catch { return url; }
 }
 
 onMounted(async () => {

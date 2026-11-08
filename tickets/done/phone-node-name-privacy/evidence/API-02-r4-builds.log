@@ -1,0 +1,15 @@
+# API-02 (r4) builds and server typecheck on the merged tree
+# command: pnpm -C autobyteus-server-ts build; pnpm -C autobyteus-server-ts typecheck; pnpm -C autobyteus-web build:mobile-web; cd autobyteus-android && ./gradlew :app:assembleDebug (JDK 17)
+# commit: c6fb992a4b (code merge e8516bce5c)
+# env: macOS 26.5.2, Node v22.23.1
+# date: 2026-11-08T10:03:58Z
+
+server build exit=0
+server typecheck exit=0
+[typecheck] production errors: 0; test-file errors: 1182 in 365 files (baseline 1182 in 365 files)
+[typecheck] PASS
+mobile-web build exit=0
+bundle files with pageReady: 1, desktopFullScreen: 2, mobile-connection-url: 0
+apk build exit=0
+APK sha256 4e7073ad8affa22bb90704f91bb512e708956b4c70c53e6b87d035134de62a35
+source diff vs e8516bce5c (lines): 0

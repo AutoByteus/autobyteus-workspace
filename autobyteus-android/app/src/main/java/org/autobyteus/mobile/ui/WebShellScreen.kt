@@ -28,6 +28,9 @@ class WebShellScreen(private val context: Context) {
         val root = FrameLayout(context).apply {
             setBackgroundColor(Color.rgb(248, 250, 252))
         }
+        // Under an overlay the page stays in the layout but is neither drawn nor in the accessibility tree: after a
+        // failed load it is WebView's own error page, which prints the node's URL (autobyteus-433 DS-004).
+        webView.visibility = if (diagnostic == null) View.VISIBLE else View.INVISIBLE
         root.addView(webView, FrameLayout.LayoutParams(match(), match()))
         if (diagnostic != null) {
             root.addView(overlay(diagnostic, callbacks), FrameLayout.LayoutParams(match(), match()))
@@ -39,7 +42,8 @@ class WebShellScreen(private val context: Context) {
 
     private fun overlay(diagnostic: ConnectionDiagnostic, callbacks: Callbacks): View {
         val frame = FrameLayout(context).apply {
-            setBackgroundColor(Color.argb(235, 248, 250, 252))
+            // Opaque: nothing of the page shows through.
+            setBackgroundColor(Color.rgb(248, 250, 252))
         }
         val card = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
