@@ -313,6 +313,7 @@ class MainActivity : Activity(), NodeConnectionFlow.Screens {
         leaveCurrentScreen(Screen.Web)
         // The plain open page is the one screen that keeps desktop full screen (D-2); everything else uses showScreen.
         setContentView(webShellScreen.render(webView = webHost.webView, diagnostic = null, callbacks = webCallbacks(webHost.entry)))
+        desktopFullScreen.pageShown()
     }
 
     /** Back from a page with no history: the node list. */

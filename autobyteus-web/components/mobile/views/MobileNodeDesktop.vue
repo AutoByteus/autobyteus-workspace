@@ -85,17 +85,26 @@
         class="absolute inset-0 touch-none select-none"
         data-testid="mobile-node-desktop-gestures"
       />
-      <!-- Full screen: the controls come back from this handle, outside noVNC's canvas (in Control a tap on the
-           desktop is a click; in View only a tap also works, but the handle shows how). -->
-      <button
+      <!-- Full screen: a small strip outside noVNC's canvas (in Control a tap on the desktop is a click). Show controls
+           brings the bars back in both modes (in View only a tap also works); in Control, Keyboard and Clipboard
+           work here too, so typing and pasting do not leave full screen (autobyteus-432 AC-005). -->
+      <div
         v-if="fullScreen"
-        type="button"
-        class="absolute left-1/2 top-0 z-10 h-7 -translate-x-1/2 rounded-b-lg bg-slate-900/70 px-4 text-xs font-medium text-white"
-        data-testid="mobile-node-desktop-handle"
-        @click="leaveFullScreen"
+        class="absolute left-1/2 top-0 z-10 flex -translate-x-1/2 divide-x divide-white/20 overflow-hidden rounded-b-lg bg-slate-900/70 text-xs font-medium text-white"
+        data-testid="mobile-node-desktop-full-screen-strip"
       >
-        {{ t('mobile.nodeDesktop.show_controls') }}
-      </button>
+        <template v-if="mode === 'control' && isConnected">
+          <button type="button" class="h-7 px-3 active:bg-slate-900" data-testid="mobile-node-desktop-strip-keyboard" @click="openKeyboard">
+            {{ t('mobile.nodeDesktop.keyboard') }}
+          </button>
+          <button type="button" class="h-7 px-3 active:bg-slate-900" data-testid="mobile-node-desktop-strip-clipboard" @click="clipboardOpen = true">
+            {{ t('mobile.nodeDesktop.clipboard') }}
+          </button>
+        </template>
+        <button type="button" class="h-7 px-4 active:bg-slate-900" data-testid="mobile-node-desktop-handle" @click="leaveFullScreen">
+          {{ t('mobile.nodeDesktop.show_controls') }}
+        </button>
+      </div>
       <p
         v-if="fullScreen && !isConnected"
         class="absolute inset-x-0 top-1/2 -translate-y-1/2 px-6 text-center text-sm text-slate-200"

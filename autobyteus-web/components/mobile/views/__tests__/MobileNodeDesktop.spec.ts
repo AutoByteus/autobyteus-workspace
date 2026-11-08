@@ -239,6 +239,36 @@ describe('MobileNodeDesktop', () => {
       expect(router.currentRoute.value.query).toEqual({ screen: 'desktop' });
     });
 
+    it('in Control full screen the strip opens the keyboard and the clipboard without leaving full screen (AC-005)', async () => {
+      const { router, wrapper } = await inControl();
+      await wrapper.get('[data-testid="mobile-node-desktop-full-screen"]').trigger('click');
+      await flushPromises();
+      expect(wrapper.find('[data-testid="mobile-screen-bar"]').exists()).toBe(false);
+      const strip = wrapper.get('[data-testid="mobile-node-desktop-full-screen-strip"]');
+      expect(strip.element.closest('canvas')).toBeNull();
+
+      await wrapper.get('[data-testid="mobile-node-desktop-strip-keyboard"]').trigger('click');
+      const input = wrapper.get('[data-testid="mobile-node-desktop-keyboard-input"]').element as HTMLTextAreaElement;
+      expect(document.activeElement).toBe(input);
+      expect(input.value).toBe(SENTINEL);
+
+      await wrapper.get('[data-testid="mobile-node-desktop-strip-clipboard"]').trigger('click');
+      await flushPromises();
+      expect(document.body.querySelector('[data-testid="mobile-node-desktop-clipboard"]')).not.toBeNull();
+      expect(router.currentRoute.value.query).toEqual({ screen: 'desktop', full: '1' });
+    });
+
+    it('in View only full screen the strip has only the exit handle', async () => {
+      const { wrapper } = await mountView();
+      session.current.connectionStatus.value = 'connected';
+      await flushPromises();
+      await wrapper.get('[data-testid="mobile-node-desktop-full-screen"]').trigger('click');
+      await flushPromises();
+      expect(wrapper.find('[data-testid="mobile-node-desktop-handle"]').exists()).toBe(true);
+      expect(wrapper.find('[data-testid="mobile-node-desktop-strip-keyboard"]').exists()).toBe(false);
+      expect(wrapper.find('[data-testid="mobile-node-desktop-strip-clipboard"]').exists()).toBe(false);
+    });
+
     it('in Control a tap is the desktop\'s, so a handle outside the canvas shows the controls', async () => {
       const { router, wrapper } = await inControl();
       await wrapper.get('[data-testid="mobile-node-desktop-full-screen"]').trigger('click');
