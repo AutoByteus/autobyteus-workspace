@@ -1,11 +1,13 @@
+import { createHash } from "node:crypto";
 import { describe, expect, it, vi } from "vitest";
 import { PeerClient } from "../../../src/remote-collaboration/channel/peer-client.js";
+import { PeerRequestSignatureVerifier } from "../../../src/remote-collaboration/channel/peer-request-signature.js";
 import type { PeerNode } from "../../../src/remote-collaboration/domain/peer-node.js";
 
 /** Design § Contract Between Nodes / § Ownership Map `PeerClient` (QR-102, REQ-109, REQ-113, AR-004). */
 
 const SELF = "srv_self_node_000000000000000000000000";
-const PEER: PeerNode = { nodeId: "srv_peer_node_000000000000000000000000", name: "docker", baseUrl: "http://peer:29700", addedAt: "2026-10-20T09:00:00.000Z" };
+const PEER: PeerNode = { nodeId: "srv_peer_node_000000000000000000000000", name: "docker", baseUrl: "http://peer:29700", addedAt: "2026-10-20T09:00:00.000Z", paired: true };
 
 const answer = (body: unknown, status = 200) => ({ ok: status >= 200 && status < 300, status, json: async () => body });
 
@@ -14,7 +16,7 @@ const client = (fetchImpl: (url: string, init: RequestInit) => Promise<ReturnTyp
   return {
     fetch,
     client: new PeerClient({
-      peers: { findByName: async (name) => name === "docker" ? PEER : null, findByNodeId: async (nodeId) => nodeId === PEER.nodeId ? PEER : null },
+      peers: { findByName: async (name) => name === "docker" ? PEER : null, peerSecret: async () => "peer-secret-for-tests", findByNodeId: async (nodeId) => nodeId === PEER.nodeId ? PEER : null },
       capability: { isEnabled: () => options.enabled ?? true },
       ownNodeId: async () => SELF,
       timeoutMs: options.timeoutMs,
@@ -32,15 +34,57 @@ const message = {
 };
 
 describe("PeerClient", () => {
-  it("sends the envelope and the request to the peer's pinned URL, with no credential, and returns the peer's run ID", async () => {
+  it("NAS-20 sends the envelope and the request to the peer's pinned URL, signed with the pair's secret (never sent), and returns the peer's run ID", async () => {
     const f = client(async () => answer({ accepted: true, nodeId: PEER.nodeId, kind: "agent", agentRunId: "publisher_7f3", launches: [] }));
     await expect(f.client.startDelegatedRun(start)).resolves.toEqual({ accepted: true, kind: "agent", agentRunId: "publisher_7f3", launches: [] });
     const [url, init] = f.fetch.mock.calls[0]!;
     expect(url).toBe("http://peer:29700/rest/remote/delegated-runs");
     expect(JSON.parse(String(init.body))).toEqual({ fromNodeId: SELF, toNodeId: PEER.nodeId, address: "/publisher",
       delegator: { agentRunId: "agent_a1" }, coordinatingRun: { kind: "agent", runId: "agent_a1" }, task: { text: "Publish the video draft.", title: "Publish the video draft.", taskKey: null, projectId: null, taskId: null } });
-    expect(init.headers).toEqual({ "content-type": "application/json" });
+    const headers = init.headers as Record<string, string>;
+    expect(headers["content-type"]).toBe("application/json");
+    expect(headers).toMatchObject({ "x-autobyteus-peer-from": SELF, "x-autobyteus-peer-to": PEER.nodeId });
+    expect(headers["x-autobyteus-peer-body-sha256"]).toBe(createHash("sha256").update(String(init.body)).digest("hex"));
+    expect(headers["x-autobyteus-peer-signature"]).toMatch(/^[0-9a-f]{64}$/);
+    expect(JSON.stringify(init)).not.toContain("peer-secret-for-tests");
     expect(init.signal).toBeInstanceOf(AbortSignal);
+  });
+
+  it("NAS-20 a peer at a gateway base path: the request goes to the base path and the signature covers the node route", async () => {
+    const gatewayPeer: PeerNode = { ...PEER, baseUrl: "https://gateway.example.com/autobyteus" };
+    const fetch = vi.fn(async () => answer({ accepted: true, nodeId: PEER.nodeId }));
+    const gatewayClient = new PeerClient({
+      peers: { findByName: async () => gatewayPeer, findByNodeId: async () => gatewayPeer, peerSecret: async () => "peer-secret-for-tests" },
+      capability: { isEnabled: () => true }, ownNodeId: async () => SELF, fetch: fetch as never,
+    });
+    await expect(gatewayClient.checkAvailability(PEER.nodeId)).resolves.toEqual({ accepted: true });
+    const [url, init] = fetch.mock.calls[0]! as unknown as [string, RequestInit];
+    expect(url).toBe("https://gateway.example.com/autobyteus/rest/remote/availability");
+    const verifier = new PeerRequestSignatureVerifier({ ownNodeId: async () => PEER.nodeId, peerSecret: async () => "peer-secret-for-tests" });
+    await expect(verifier.verify({ method: "POST", pathWithQuery: "/rest/remote/availability", headers: init.headers as Record<string, string> }))
+      .resolves.toMatchObject({ ok: true, identity: { kind: "peer", nodeId: SELF } });
+  });
+
+  it("NAS-23 refuses locally, sending nothing, when this node holds no secret for the peer (paired before peers paired)", async () => {
+    const f = client(async () => answer({ accepted: true, nodeId: PEER.nodeId }));
+    const unpaired = new PeerClient({
+      peers: { findByName: async () => PEER, findByNodeId: async () => PEER, peerSecret: async () => null },
+      capability: { isEnabled: () => true }, ownNodeId: async () => SELF, fetch: f.fetch as never,
+    });
+    await expect(unpaired.checkAvailability(PEER.nodeId)).resolves.toMatchObject({ accepted: false, code: "PEER_NOT_PAIRED" });
+    expect(f.fetch).not.toHaveBeenCalled();
+  });
+
+  it("NAS-23 reads the peer's 401 (it holds no secret for this node) as not paired", async () => {
+    const f = client(async () => ({ ok: false, status: 401, json: async () => ({ code: "NODE_CREDENTIAL_INVALID" }) }) as never);
+    await expect(f.client.checkAvailability(PEER.nodeId)).resolves.toMatchObject({ accepted: false, code: "PEER_NOT_PAIRED" });
+  });
+
+  it("NAS-36 reads a 401 from another node now at the peer's address as an identity mismatch, not as unpaired", async () => {
+    const f = client(async (url) => url.endsWith("/rest/remote-access/status")
+      ? answer({ nodeId: "srv_other_node_00000000000000000000000", status: "ok" })
+      : ({ ok: false, status: 401, json: async () => ({ code: "NODE_CREDENTIAL_INVALID" }) }) as never);
+    await expect(f.client.checkAvailability(PEER.nodeId)).resolves.toMatchObject({ accepted: false, code: "PEER_IDENTITY_MISMATCH" });
   });
 
   it("autobyteus-247 G-7: reads a started Team (its coordinator and members); an answer without the run it started is unreachable", async () => {

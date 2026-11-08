@@ -5,6 +5,7 @@ import net from "node:net";
 import { createHash } from "node:crypto";
 import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
 
 /**
  * Memory Sync of a converted raw-trace manifest between two real built server processes (autobyteus-343: design
@@ -61,7 +62,7 @@ const startServerProcess = async (name: string, dataDir: string): Promise<Server
   const env: NodeJS.ProcessEnv = { ...process.env, AUTOBYTEUS_SERVER_HOST: baseUrl, APP_ENV: "test", LOG_LEVEL: "ERROR", HTTP_ACCESS_LOG_MODE: "off", HOME: path.join(dataDir, "home") };
   delete env.DATABASE_URL; delete env.DATABASE_URL_TEST; delete env.AUTOBYTEUS_MEMORY_DIR;
   fs.mkdirSync(path.join(dataDir, "home"), { recursive: true });
-  const child = spawn(process.execPath, [appEntry, "--host", "127.0.0.1", "--port", String(port), "--data-dir", dataDir], { cwd: serverRoot, env, stdio: ["ignore", "pipe", "pipe"] });
+  const child = spawn(process.execPath, [appEntry, "--host", "127.0.0.1", "--port", String(port), "--data-dir", dataDir], { cwd: serverRoot, env: { ...env, ...builtServerLaunchEnvironment() }, stdio: ["ignore", "pipe", "pipe"] });
   const logs: string[] = [];
   const capture = (chunk: Buffer) => { for (const line of chunk.toString("utf-8").split(/\r?\n/)) if (line.trim()) logs.push(line); while (logs.length > 240) logs.shift(); };
   child.stdout.on("data", capture); child.stderr.on("data", capture);

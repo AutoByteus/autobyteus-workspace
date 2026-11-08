@@ -27,6 +27,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { randomUUID } from 'node:crypto'
+import { ownerSocketUrl } from './fixtures/probe-node-access.mjs'
 
 const PARTICIPANT_OP = 'CollaborationParticipantMessages'
 const TEAM_OPS = ['GetTeamMemberRunProjection', 'GetTeamMemberFileChanges']
@@ -86,7 +87,7 @@ export function registerLargeRunsLoadLessCases(h) {
   /** A second client of a Team run: sends a message to one member over the Team stream, as the phone would. */
   const teamSend = async (teamRunId, agentRunId, content) => {
     const url = `${env().backendUrl.replace(/^http/, 'ws')}/ws/agent-team/${teamRunId}`
-    const ws = new WebSocket(url)
+    const ws = new WebSocket(ownerSocketUrl(url)) // the owner's second client carries the credential (autobyteus-437)
     await new Promise((resolve, reject) => { ws.addEventListener('open', resolve, { once: true }); ws.addEventListener('error', reject, { once: true }) })
     const id = `lrl-${randomUUID()}`
     const ack = new Promise((resolve) => ws.addEventListener('message', (e) => { try { const m = JSON.parse(String(e.data)); if (m.payload?.message_id === id || /SEND_MESSAGE/.test(m.type)) resolve(m) } catch { /* ignore */ } }))

@@ -1,0 +1,30 @@
+
+> autobyteus@1.5.12-beta.8 test:e2e:remote-nodes-page /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web
+> node tests/e2e/remote-nodes-page-probe.mjs --output-dir=/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/tickets/in-progress/node-universal-authentication-437/evidence/api-e2e/API-09-remote-nodes-page
+
+[probe] NP-01 started
+[probe] NP-01 Pass
+[probe] NP-02 started
+[probe] NP-02 Pass
+[probe] NP-03 started
+[probe] NP-03 Pass
+[probe] NP-11 started
+[probe] NP-11 Pass
+[probe] NP-04 started
+[probe] NP-04 Pass
+[probe] NP-05 started
+[probe] NP-05 Pass
+[probe] NP-13 started
+[probe] NP-13 Pass
+[probe] NP-06 started
+[probe] NP-06 Pass
+[probe] NP-07 started
+remote-nodes-page probe: Fail
+locator.waitFor: Timeout 25000ms exceeded.
+Call log:
+  - waiting for locator('[data-testid="node-change-partial"]') to be visible
+
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/tests/e2e/remote-nodes-page-probe.mjs:618:63
+    at async runCase (/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/tests/e2e/remote-nodes-page-probe.mjs:112:19)
+    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/tests/e2e/remote-nodes-page-probe.mjs:609:3
+ ELIFECYCLE  Command failed with exit code 1.

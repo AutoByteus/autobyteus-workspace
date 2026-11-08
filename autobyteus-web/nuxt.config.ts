@@ -36,9 +36,26 @@ const backendNodeBaseUrlFromEnv =
   process.env.BACKEND_NODE_BASE_URL ||
   process.env.BACKEND_REST_BASE_URL?.replace(/\/rest\/?$/, '') ||
   defaultBackendNodeBaseUrl
-// For local and Docker development, the Vite proxy forwards API requests to the backend server.
+// For local and Docker development, the Nuxt dev server's proxy forwards API requests to the backend server.
 const backendProxyUrl = backendNodeBaseUrlFromEnv
 const backendWsBaseUrl = toWsBaseUrl(backendNodeBaseUrlFromEnv)
+/**
+ * Development (`pnpm dev`): the node needs a credential on every request (node access model NA-1). The development
+ * runtime gives this server process the node's launch owner credential; the dev server's proxy (Nitro `devProxy`,
+ * which Nuxt also hands WebSocket upgrades to; Vite's proxy never sees them) adds it to every request it forwards,
+ * HTTP and WebSocket, and the window uses the frontend's own origin as its node so every request goes through the
+ * proxy. The credential stays in this process: it is never in `runtimeConfig.public`.
+ */
+const developmentOwnerCredential = process.env.AUTOBYTEUS_DEVELOPMENT_OWNER_CREDENTIAL?.trim() || null
+const developmentFrontendUrl = process.env.AUTOBYTEUS_DEVELOPMENT_FRONTEND_URL?.trim() || null
+const developmentProxyHeaders = developmentOwnerCredential ? { authorization: `Bearer ${developmentOwnerCredential}` } : undefined
+/** A dev proxy rule for one backend route prefix; Nitro strips the prefix it matched, so the target keeps it. */
+const developmentProxyRule = (prefix: string, ws: boolean) => ({
+  target: `${backendProxyUrl.replace(/\/+$/, '')}${prefix}`,
+  changeOrigin: true,
+  ws,
+  headers: developmentProxyHeaders,
+})
 
 let serverUrls = {
   graphqlBaseUrl: '',
@@ -64,7 +81,7 @@ if (isElectronBuild) {
     fileExplorerWsEndpoint: `${PRODUCTION_EMBEDDED_SERVER_WS_BASE_URL}/ws/file-explorer`
   };
 } else if (isDevelopment) {
-  defaultNodeBaseUrl = backendProxyUrl;
+  defaultNodeBaseUrl = developmentFrontendUrl ?? backendProxyUrl;
   serverUrls = {
     graphqlBaseUrl: '/graphql',
     restBaseUrl: '/rest',
@@ -115,9 +132,17 @@ const baseConfig: NuxtConfig = {
     appManifest: !isTest
   },
 
-  // In development, HTTP requests are proxied via vite.server.proxy.
+  // In development, API requests and WebSocket upgrades are proxied by the Nuxt dev server (Nitro devProxy).
   // Static output is only needed for production/electron builds.
-  ...(isDevelopment ? {} : {
+  ...(isDevelopment ? {
+    nitro: {
+      devProxy: {
+        '/graphql': developmentProxyRule('/graphql', true),
+        '/rest': developmentProxyRule('/rest', false),
+        '/ws': developmentProxyRule('/ws', true),
+      },
+    },
+  } : {
     nitro: {
       preset: 'static',
       output: {
@@ -141,16 +166,6 @@ const baseConfig: NuxtConfig = {
           '**/node_modules/**'
         ]
       },
-      proxy: isDevelopment ? {
-        '/graphql': {
-          target: backendProxyUrl,
-          changeOrigin: true,
-        },
-        '/rest': {
-          target: backendProxyUrl,
-          changeOrigin: true,
-        }
-      } : undefined,
     },
     assetsInclude: ['**/*.jpeg', '**/*.jpg', '**/*.png', '**/*.svg'],
     worker: {
@@ -172,7 +187,7 @@ const baseConfig: NuxtConfig = {
   },
 
   runtimeConfig: {
-    // backendUrl is no longer needed as we use Vite's dev proxy
+    // backendUrl is no longer needed: development goes through the dev server's proxy
     public: {
       graphqlBaseUrl: serverUrls.graphqlBaseUrl,
       restBaseUrl: serverUrls.restBaseUrl,

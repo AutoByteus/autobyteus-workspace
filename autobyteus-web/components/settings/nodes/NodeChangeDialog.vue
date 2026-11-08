@@ -31,16 +31,15 @@
                     class="mt-0.5 block text-xs text-slate-500"
                     :data-testid="`node-change-name-taken-${line.step.id}`"
                   >{{ t(k('step.nameTaken'), { wanted: line.step.wanted }) }}</span>
-                  <p v-if="line.step.id === 'registerThere' && addressLine(line) && line.status !== 'failed'" class="mt-0.5 text-xs text-slate-500" :data-testid="`node-change-address-${line.step.id}`">
-                    {{ addressLine(line) }}
+                  <p v-if="line.step.id === 'pair' && line.step.nameThere && line.status !== 'failed'" class="mt-0.5 text-xs text-slate-500" :data-testid="`node-change-name-there-${line.step.id}`">
+                    {{ t(k('step.pairNameThere'), { node: plan.target.name, name: line.step.nameThere }) }}
                   </p>
                   <div v-if="line.status === 'failed' && line.error" class="mt-2">
                     <NodeAddressHint
                       v-if="hintOf(line)"
-                      :node="line.resolve?.id === 'resolveHere' ? plan.here.name : plan.target.name"
+                      :node="plan.target.name"
                       :hint="hintOf(line)!"
                       :test-id="`node-change-hint-${line.step.id}`"
-                      @use="(address) => dialog.useAddress(line.resolve!.id, address)"
                       @guide="goGuide"
                     />
                     <p v-else class="text-sm text-red-700" role="alert" :data-testid="`node-change-error-${line.step.id}`">{{ errorOf(line) }}</p>
@@ -86,8 +85,7 @@ import { addressHintOf, failureText, NODES_PAGE_KEY } from '~/utils/nodeConnecti
 
 /**
  * The one confirmation (UIS-004) for turn on, finish, turn off and remove: every change on both nodes, grouped by
- * the node it happens on, then each step while it runs, a partial result and Try again. Looking up an address is
- * part of the register line it serves (its address, or why none was found).
+ * the node it happens on (pairing happens on both), then each step while it runs, a partial result and Try again.
  */
 const emit = defineEmits<{ guide: [] }>()
 const { t } = useLocalization()
@@ -112,24 +110,13 @@ const cancelButton = 'rounded-md border border-gray-300 bg-white px-4 py-2 text-
 const confirmClass = computed(() => `inline-flex justify-center rounded-md border border-transparent px-4 py-2 text-sm font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-60 ${
   plan.value?.kind === 'remove' ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500' : 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500'}`)
 
-interface Line { step: NodeChangeStep; resolve?: NodeChangeStep; status: NodeChangeStepStatus; error?: NodeChangeStep['error'] }
+interface Line { step: NodeChangeStep; status: NodeChangeStepStatus; error?: NodeChangeStep['error'] }
 
-const SIDE: Partial<Record<NodeChangeStep['id'], 'here' | 'there'>> = {
-  turnOnHere: 'here', registerHere: 'here', removeHere: 'here', turnOnThere: 'there', registerThere: 'there', removeThere: 'there',
+const SIDE: Partial<Record<NodeChangeStep['id'], 'here' | 'there' | 'both'>> = {
+  turnOnHere: 'here', removeHere: 'here', turnOnThere: 'there', removeThere: 'there', pair: 'both',
 }
 
-/** The visible lines: a register line carries its address lookup (status, error) before its own. */
-const lines = computed<Line[]>(() => {
-  const steps = plan.value?.steps ?? []
-  return steps.filter((step) => step.id !== 'resolveHere' && step.id !== 'resolveThere').map((step) => {
-    const resolve = step.id === 'registerHere' ? steps.find((entry) => entry.id === 'resolveHere')
-      : step.id === 'registerThere' ? steps.find((entry) => entry.id === 'resolveThere') : undefined
-    if (resolve && (resolve.status === 'failed' || resolve.status === 'running') && step.status !== 'done') {
-      return { step, resolve, status: resolve.status === 'failed' ? 'failed' : (busy.value ? 'running' : 'todo'), error: resolve.error }
-    }
-    return { step, resolve, status: step.status, error: step.error }
-  })
-})
+const lines = computed<Line[]>(() => (plan.value?.steps ?? []).map((step) => ({ step, status: step.status, error: step.error })))
 
 const groups = computed(() => {
   const p = plan.value!
@@ -138,6 +125,7 @@ const groups = computed(() => {
   return [
     { id: 'here', title: t(k('dialog.here'), { name: p.here.name }), lines: lines.value.filter((line) => SIDE[line.step.id] === 'here') },
     { id: 'there', title: t(k('dialog.there'), { name: p.target.name }), lines: lines.value.filter((line) => SIDE[line.step.id] === 'there') },
+    { id: 'both', title: t(k('dialog.both')), lines: lines.value.filter((line) => SIDE[line.step.id] === 'both') },
   ].filter((group) => group.lines.length)
 })
 
@@ -145,9 +133,8 @@ const stepText = (step: NodeChangeStep): string => {
   const node = plan.value!.target.name
   switch (step.id) {
     case 'turnOnHere': return t(k('step.turnOnHere'))
-    case 'registerHere': return t(k('step.registerHere'), { node, name: step.name ?? '' })
     case 'turnOnThere': return t(k('step.turnOnThere'))
-    case 'registerThere': return t(k('step.registerThere'), { name: step.name ?? '' })
+    case 'pair': return t(k('step.pair'), { node, name: step.name ?? '' })
     case 'removeHere': return t(k('step.unregisterHere'), { node })
     case 'removeThere': return t(k('step.unregisterThere'), { node })
     case 'removeFromList': return t(k('step.removeFromList'), { node })
@@ -155,21 +142,14 @@ const stepText = (step: NodeChangeStep): string => {
   }
 }
 
-/** DEC-709 (b): the address the other node will use, or that it finds it once its collaboration is on. */
-const addressLine = (line: Line): string => {
-  const node = plan.value!.target.name
-  const resolve = line.resolve
-  if (!resolve || line.step.status === 'done' && !resolve.address) return ''
-  if (resolve.address) return t(k('step.address'), { node, address: resolve.address })
-  if (resolve.findsLater && resolve.status !== 'running') return t(k('step.findsLater'), { node })
-  return t(k('step.finding'), { node })
+/** The Docker loopback hint for a failed pairing, without an address to try: each node finds the other's address. */
+const hintOf = (line: Line) => {
+  const hint = line.step.id === 'pair' ? addressHintOf(line.error) : null
+  return hint ? { ...hint, suggestion: null } : null
 }
-
-const hintOf = (line: Line) => line.resolve && line.error === line.resolve.error ? addressHintOf(line.error) : null
 const errorOf = (line: Line): string => {
   const p = plan.value!
-  const fromNode = line.resolve?.id === 'resolveThere' || SIDE[line.step.id] === 'there' ? p.target.name : undefined
-  return failureText(t, line.error!, { node: p.target.name, fromNode: line.resolve ? fromNode : undefined, name: line.step.name })
+  return failureText(t, line.error!, { node: p.target.name, name: line.step.name })
 }
 
 const removeLeftThere = computed(() => plan.value?.kind === 'remove'

@@ -14,6 +14,7 @@ import { spawn, execFileSync } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import assert from 'node:assert/strict';
 import WebSocket from 'ws';
+import { attachOwnerCredentialToLoopback, createTestOwnerCredential } from '../../../../test-support/node-access/owner-credential-attachment.mjs';
 
 const serverDir = resolve(process.env.BUSY_STOP_SERVER_DIR ?? '.');
 const own = await fs.realpath(await fs.mkdtemp(join(tmpdir(), 'busy-run-stop-now-')));
@@ -60,10 +61,13 @@ await new Promise(r => model.listen(0, '127.0.0.1', r));
 const origin = `http://127.0.0.1:${model.address().port}`;
 const freePort = () => new Promise(r => { const s = createServer(); s.listen(0, '127.0.0.1', () => { const p = s.address().port; s.close(() => r(p)); }); });
 
+// The fixture starts its servers as the desktop app starts its own node: with a launch owner credential (NA-5).
+const ownerCredential = createTestOwnerCredential();
+attachOwnerCredentialToLoopback(ownerCredential);
 const servers = [], sockets = [];
 const startServer = async label => {
   const port = await freePort();
-  const env = { PATH: process.env.PATH, HOME: home, TMPDIR: own, AUTOBYTEUS_SERVER_HOST: `http://127.0.0.1:${port}`, LMSTUDIO_HOSTS: origin, APP_ENV: 'test' };
+  const env = { PATH: process.env.PATH, HOME: home, TMPDIR: own, AUTOBYTEUS_SERVER_HOST: `http://127.0.0.1:${port}`, LMSTUDIO_HOSTS: origin, APP_ENV: 'test', AUTOBYTEUS_LAUNCH_OWNER_CREDENTIAL: ownerCredential };
   const child = spawn(process.execPath, [join(serverDir, 'dist/app.js'), '--port', String(port), '--data-dir', data], { cwd: serverDir, env, stdio: ['ignore', 'pipe', 'pipe'] });
   const server = { label, port, child, pid: child.pid, log: '', exit: null };
   child.stdout.on('data', b => { server.log += b; }); child.stderr.on('data', b => { server.log += b; });

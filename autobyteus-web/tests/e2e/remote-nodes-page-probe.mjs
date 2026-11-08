@@ -11,10 +11,12 @@
 //   writes, with `capabilities` and `capabilityProbeState`.
 // - gamma collaborates and is stopped. It also has a desktop entry ("gamma box") that was never reached.
 // - delta collaborates and has its switch off.
-// - epsilon is registered on alpha only.
+// - epsilon was paired, then removed this node on its side: alpha still lists it ("Pair again").
 // - zeta's address is taken over by another server.
 // - theta is black-holed: a TCP listener that never answers.
-// - lambda already knows another node as "Embedded Node".
+// - lambda already knows another node as "Embedded Node" (paired with the first zeta).
+// Nodes pair by invite (autobyteus-437); every node starts with the probe's launch owner credential and the browser
+// context carries it (fixtures/probe-node-access.mjs).
 // iota, kappa, lambda and mu are added through the page. The web app runs with `nuxt dev` against alpha (browser mode,
 // so there is no Open). The browser is Chrome through playwright-core.
 //
@@ -37,8 +39,8 @@
 //   its IP address."; a plain HTTP server (answers, but no node) keeps "isn't an AutoByteus node"; kappa's address is unchanged.
 // - NP-06 (naming rule): lambda already has a node named "Embedded Node", so this node is registered there as
 //   "Embedded Node 2".
-// - NP-07 (naming race): mu gains a node named "Embedded Node" between the confirmation and Turn on. The step fails
-//   with "mu already has a node named Embedded Node.". The row keeps Try again, which plans again with a free name.
+// - NP-07 (naming race): mu gains a node named "Embedded Node" between the confirmation and Turn on. Pairing by invite
+//   (autobyteus-437) gives the new peer a free name on mu itself: mu calls this node "Embedded Node 2".
 // - NP-08 (AC-708): rename with an invalid name, then a taken one, then a saved one, on this node's peer and in the
 //   desktop list.
 // - NP-09 (AC-705): Turn off kappa: both registrations go and kappa's switch is untouched. Then turn off lambda while
@@ -59,6 +61,7 @@ import process from 'node:process';
 import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import { attachToBrowserContext, ownerHeaders, pairNodes, probeNodeEnvironment, redactCredentials } from './fixtures/probe-node-access.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -134,7 +137,7 @@ const startServer = async (name, port) => {
   const child = spawn(process.execPath, [appEntry, '--host', '127.0.0.1', '--port', String(port), '--data-dir', dataDir], {
     cwd: serverDir, stdio: ['ignore', 'pipe', 'pipe'],
     env: { PATH: process.env.PATH, HOME: home, TMPDIR: process.env.TMPDIR ?? os.tmpdir(), APP_ENV: 'test', LOG_LEVEL: 'WARN',
-      HTTP_ACCESS_LOG_MODE: 'off', AUTOBYTEUS_SERVER_HOST: baseUrl, AUTOBYTEUS_ALLOWED_ORIGINS: frontendUrl } });
+      HTTP_ACCESS_LOG_MODE: 'off', AUTOBYTEUS_SERVER_HOST: baseUrl, AUTOBYTEUS_ALLOWED_ORIGINS: frontendUrl, ...probeNodeEnvironment() } });
   child.stdout.pipe(log); child.stderr.pipe(log);
   child.once('close', () => log.end());
   children.add(child);
@@ -144,7 +147,7 @@ const startServer = async (name, port) => {
   }, 120_000);
   const nodeId = (await (await fetch(`${baseUrl}/rest/remote-access/status`)).json()).nodeId;
   const gql = async (query, variables) => {
-    const body = await (await fetch(`${baseUrl}/graphql`, { method: 'POST', headers: { 'content-type': 'application/json' },
+    const body = await (await fetch(`${baseUrl}/graphql`, { method: 'POST', headers: ownerHeaders({ 'content-type': 'application/json' }),
       body: JSON.stringify({ query, variables }) })).json();
     if (body.errors?.length) throw new Error(`${name}: ${JSON.stringify(body.errors)}`);
     return body.data;
@@ -163,8 +166,9 @@ const stopServer = async server => {
   children.delete(child);
 };
 const setSwitch = (server, enabled) => server.gql('mutation($e:Boolean!){setRemoteCollaborationEnabled(enabled:$e){enabled}}', { e: enabled });
-const register = (on, peer, name) => on.gql('mutation($i:AddPeerNodeInput!){addPeerNode(input:$i){nodeId}}',
-  { i: { nodeId: peer.nodeId, baseUrl: peer.baseUrl, name } });
+/** Pairs `on` with `peer` by invite (autobyteus-437 DS-004): `on` calls `peer` `name`, `peer` calls `on` `nameThere`. */
+const pair = (on, peer, name, nameThere) => pairNodes({ inviter: peer.gql, accepter: on.gql, inviterName: name, accepterName: nameThere });
+const forget = (on, peer) => on.gql('mutation($id:String!){removePeerNode(nodeId:$id)}', { id: peer.nodeId });
 const peersOf = async server => (await server.gql('{ peerNodes { nodeId name baseUrl } }')).peerNodes;
 const switchOf = async server => (await server.gql('{ remoteCollaborationCapability { enabled } }')).remoteCollaborationCapability.enabled;
 /** The peers file itself, as the server wrote it (null when it was never written). */
@@ -193,10 +197,12 @@ try {
   await shareAgent(alpha, 'Alpha Helper');
   await shareAgent(kappa, 'Kappa Helper');
   await setSwitch(alpha, true);
-  for (const peer of [beta, gamma, delta, epsilon, zeta, theta]) await register(alpha, peer, peer.name);
-  for (const peer of [beta, gamma, delta, zeta, theta]) await register(peer, alpha, 'Embedded Node');
-  // lambda already knows another node as "Embedded Node" (another desktop registered there first).
-  await register(lambda, iota, 'Embedded Node');
+  // Peers pair by invite, so both sides always hold each other (autobyteus-437); epsilon's owner removed this node there
+  // afterwards, which leaves epsilon registered on alpha only.
+  for (const peer of [beta, gamma, delta, epsilon, zeta, theta]) await pair(alpha, peer, peer.name, 'Embedded Node');
+  await forget(epsilon, alpha);
+  // lambda already knows another node as "Embedded Node" (another desktop paired it there first).
+  await pair(lambda, zeta, 'Embedded Node', 'lambda');
   await setSwitch(alpha, false);
   await stopServer(gamma);
   await setSwitch(delta, false);
@@ -232,6 +238,9 @@ try {
 
   browser = await chromium.launch({ headless: true, executablePath, args: ['--no-sandbox', '--disable-dev-shm-usage'] });
   const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: 'en-US', timezoneId: 'UTC' });
+  // The window reaches every node directly: the context carries the probe's credential, standing in for the desktop's
+  // main process, which attaches each node's (fixtures/probe-node-access.mjs).
+  await attachToBrowserContext(context);
   await context.addInitScript(({ key, registry }) => {
     localStorage.setItem('autobyteus.localization.preference-mode', 'en');
     // Only the first page load gets the release-shaped list; later loads keep what the page saved.
@@ -264,8 +273,7 @@ try {
   const requestsSince = (since, filter = () => true) => evidence.requests.filter(entry => entry.at >= since && filter(entry));
   // A request that asks about a node: to another node, or to alpha about its peers (not the app's own health and
   // history checks, which run on every page).
-  const NODE_OPS = new Set(['GetPeerNodeOffer', 'GetPeerNodeAvailability', 'GetRemoteCollaborationSettings', 'GetRemoteCollaborationCapability',
-    'GetPeerAddressCandidates', 'ResolvePeerAddress']);
+  const NODE_OPS = new Set(['GetPeerNodeOffer', 'GetPeerNodeAvailability', 'GetRemoteCollaborationSettings', 'GetRemoteCollaborationCapability']);
   const asksAboutNodes = entry => (entry.to !== 'alpha' && !entry.to.startsWith('other:')) || NODE_OPS.has(entry.op) || entry.path === '/rest/remote-access/status';
   const offerAsks = (since, nodeId) => requestsSince(since, entry => entry.op === 'GetPeerNodeOffer' && (!nodeId || entry.nodeId === nodeId));
   const clean = value => value.trim().replace(/\s+/g, ' ');
@@ -395,7 +403,8 @@ try {
       gamma: { line: 'Not reachable. Nothing answers at that address and port.', tone: 'info', fix: 'Check again' },
       gammaEntry: { line: 'Not reachable. Nothing answers at that address and port.', tone: 'info', fix: 'Check again' },
       delta: { line: 'Remote collaboration is off on delta.', tone: 'warn', fix: 'Turn on there' },
-      epsilon: { line: "epsilon doesn't know this node yet.", tone: 'warn', fix: 'Register this node there' },
+      // epsilon removed this node, so it no longer holds the peer secret: signed requests fail there (NAS-23, M-9).
+      epsilon: { line: "epsilon and this node aren't paired yet. Pair them so their agents can work together.", tone: 'warn', fix: 'Pair again' },
       zeta: { line: 'A different node answers at this address.', tone: 'error', fix: 'Change address' },
       theta: { line: 'Not reachable. No answer within 20 seconds.', tone: 'info', fix: 'Check again' },
     };
@@ -470,10 +479,10 @@ try {
     const steps = await dialogSteps();
     await shot('NP-04-add-kappa-confirmation');
     expect(confirmText.startsWith('Let agents work with kappa?'), `title: ${confirmText}`);
-    expect(JSON.stringify(steps.map(entry => entry.id)) === JSON.stringify(['registerHere', 'turnOnThere', 'registerThere']), `steps: ${JSON.stringify(steps)}`);
-    expect(steps[0]?.text === 'Register kappa as “kappa”' && steps[1]?.text === 'Turn on remote collaboration (it is off)'
-      && steps[2]?.text === "Register this node as “Embedded Node” kappa finds this node's address once it is on.", `step texts: ${JSON.stringify(steps)}`);
-    expect(confirmText.includes('Trusted private network only: nodes are not authenticated.'), 'trusted note');
+    expect(JSON.stringify(steps.map(entry => entry.id)) === JSON.stringify(['turnOnThere', 'pair']), `steps: ${JSON.stringify(steps)}`);
+    expect(steps[0]?.text === 'Turn on remote collaboration (it is off)'
+      && steps[1]?.text === 'Pair this node with kappa (here it is called “kappa”) kappa calls this node “Embedded Node”.', `step texts: ${JSON.stringify(steps)}`);
+    expect(confirmText.includes('Paired nodes share a secret, and each proves every request to the other with it.'), 'pairing note');
     await page.locator('[data-testid="node-change-cancel"]').click();
     await waitDialogGone();
     await waitSettled(kappa.nodeId);
@@ -529,7 +538,7 @@ try {
     const onAlpha = (await peersOf(alpha)).find(peer => peer.nodeId === kappa.nodeId);
     const onKappa = await peersOf(kappa);
     const offers = { alphaAsksKappa: await offerOf(alpha, kappa), kappaAsksAlpha: await offerOf(kappa, alpha) };
-    expect(JSON.stringify(steps.map(entry => entry.id)) === JSON.stringify(['registerHere', 'turnOnThere', 'registerThere']), `steps: ${JSON.stringify(steps)}`);
+    expect(JSON.stringify(steps.map(entry => entry.id)) === JSON.stringify(['turnOnThere', 'pair']), `steps: ${JSON.stringify(steps)}`);
     assert(onAlpha?.name === 'kappa' && onAlpha.baseUrl === kappa.baseUrl, `kappa on alpha: ${JSON.stringify(onAlpha)}`);
     assert(onKappa.length === 1 && onKappa[0].nodeId === alpha.nodeId && onKappa[0].name === 'Embedded Node' && onKappa[0].baseUrl === alpha.baseUrl, `alpha on kappa: ${JSON.stringify(onKappa)}`);
     assert(await switchOf(kappa) === true, "kappa's switch turned on");
@@ -585,17 +594,16 @@ try {
     await dialog().waitFor({ state: 'visible', timeout: 15_000 });
     await waitAddressesFound();
     const steps = await dialogSteps();
-    const nameTaken = await text(page.locator('[data-testid="node-change-name-taken-registerThere"]'));
-    const addressLine = await text(page.locator('[data-testid="node-change-address-registerThere"]'));
+    const nameThere = await text(page.locator('[data-testid="node-change-name-there-pair"]'));
     await shot('NP-06-lambda-name-collision');
-    expect(steps.find(entry => entry.id === 'registerThere')?.text.startsWith('Register this node as “Embedded Node 2”'), `steps: ${JSON.stringify(steps)}`);
-    expect(nameTaken === '“Embedded Node” is already used there, so it gets a number.', `name note: ${nameTaken}`);
-    expect(addressLine === `lambda reaches this node at ${alpha.baseUrl}.`, `address line: ${addressLine}`);
+    expect(steps.find(entry => entry.id === 'pair')?.text.startsWith('Pair this node with lambda (here it is called “lambda”)'), `steps: ${JSON.stringify(steps)}`);
+    expect(nameThere === 'lambda calls this node “Embedded Node 2”.', `name there: ${nameThere}`);
+    const addressLine = null; // the addresses are found by the nodes while pairing (M-9); the dialog shows none
     await page.locator('[data-testid="node-change-confirm"]').click();
     await waitDialogGone();
     const onLambda = (await peersOf(lambda)).find(peer => peer.nodeId === alpha.nodeId);
     assert(onLambda?.name === 'Embedded Node 2', `alpha on lambda: ${JSON.stringify(onLambda)}`);
-    return { steps, nameTaken, addressLine, onLambda, lambdaPeers: await peersOf(lambda) };
+    return { steps, nameThere, addressLine, onLambda, lambdaPeers: await peersOf(lambda) };
   });
 
   await runCase('NP-07', async () => {
@@ -603,33 +611,21 @@ try {
     await dialog().waitFor({ state: 'visible', timeout: 15_000 });
     await waitAddressesFound();
     const planned = await dialogSteps();
-    // mu's own owner registers another node as "Embedded Node" before Turn on is pressed here.
-    await register(mu, iota, 'Embedded Node');
-    await page.locator('[data-testid="node-change-confirm"]').click();
-    await page.locator('[data-testid="node-change-partial"]').waitFor({ state: 'visible', timeout: 25_000 });
-    const failed = { steps: await dialogSteps(), error: await text(page.locator('[data-testid="node-change-error-registerThere"]')), partial: await text(page.locator('[data-testid="node-change-partial"]')) };
-    await shot('NP-07-mu-name-race-dialog');
-    await page.locator('[data-testid="node-change-close"]').click();
-    await waitDialogGone();
-    await waitSettled(mu.nodeId, 25_000);
-    const rowLine = { line: await line(mu.nodeId), tone: await tone(mu.nodeId), fix: await text(fixButton(mu.nodeId)) };
-    await openDetails(mu.nodeId);
-    const stepsDetail = await text(page.locator(`[data-testid="node-steps-${mu.nodeId}"]`));
-    await shot('NP-07-mu-row-try-again');
-    await fixButton(mu.nodeId).click();
-    await dialog().waitFor({ state: 'visible', timeout: 15_000 });
-    await waitAddressesFound();
-    const replanned = { title: (await dialogText()).split('?')[0], steps: await dialogSteps() };
+    // mu's own owner pairs another node as "Embedded Node" before Turn on is pressed here.
+    await setSwitch(iota, true);
+    await pair(mu, iota, 'Embedded Node', 'mu');
+    // Pairing by invite (autobyteus-437): mu's pairing exchange gives the new peer a free name itself (its naming rule:
+    // a taken name gets a number), so the race no longer fails and needs no Try again.
     await page.locator('[data-testid="node-change-confirm"]').click();
     await waitDialogGone();
     await waitFor('mu working', async () => await settled(mu.nodeId) && (await line(mu.nodeId)) === null, 25_000);
+    await shot('NP-07-mu-paired-after-race');
     const onMu = (await peersOf(mu)).find(peer => peer.nodeId === alpha.nodeId);
-    expect(planned.find(entry => entry.id === 'registerThere')?.text.startsWith('Register this node as “Embedded Node”'), `planned: ${JSON.stringify(planned)}`);
-    expect(failed.error === 'mu already has a node named Embedded Node.' && failed.partial === 'Not everything could be done. What was done stays done.', `failed: ${JSON.stringify(failed)}`);
-    expect(rowLine.line === 'Turned on here, but not finished on mu. mu already has a node named Embedded Node.' && rowLine.tone === 'warn' && rowLine.fix === 'Try again', `row line: ${JSON.stringify(rowLine)}`);
-    expect(replanned.title === 'Finish connecting mu' && replanned.steps.length === 1 && replanned.steps[0].text.startsWith('Register this node as “Embedded Node 2”'), `replanned: ${JSON.stringify(replanned)}`);
+    const muNames = (await peersOf(mu)).map(peer => peer.name).sort();
+    expect(planned.find(entry => entry.id === 'pair')?.text.endsWith('mu calls this node “Embedded Node”.'), `planned: ${JSON.stringify(planned)}`);
     assert(onMu?.name === 'Embedded Node 2', `alpha on mu: ${JSON.stringify(onMu)}`);
-    return { planned, failed, rowLine, stepsDetail, replanned, onMu };
+    expect(JSON.stringify(muNames) === JSON.stringify(['Embedded Node', 'Embedded Node 2']), `mu's peers: ${JSON.stringify(muNames)}`);
+    return { planned, onMu, muNames };
   });
 
   await runCase('NP-08', async () => {
@@ -728,8 +724,8 @@ try {
     const toOthers = evidence.requests.filter(entry => entry.to !== 'alpha' && !entry.to.startsWith('other:'));
     const opsToOthers = [...new Set(toOthers.map(entry => entry.op ?? entry.path))].sort();
     // `/rest/node-update`: since autobyteus-305 the window asks each remote node it reaches for its server version.
-    const allowed = ['/rest/node-update', '/rest/remote-access/status', 'AddPeerNode', 'GetPeerAddressCandidates', 'GetPeerNodeAvailability',
-      'GetRemoteCollaborationCapability', 'GetRemoteCollaborationSettings', 'RemovePeerNode', 'ResolvePeerAddress', 'SetRemoteCollaborationEnabled'];
+    const allowed = ['/rest/node-update', '/rest/remote-access/status', 'CreatePeerInvite', 'GetPeerNodeAvailability',
+      'GetRemoteCollaborationCapability', 'GetRemoteCollaborationSettings', 'RemovePeerNode', 'SetRemoteCollaborationEnabled'];
     expect(JSON.stringify(offerHosts) === JSON.stringify(['alpha']), `offers only from alpha: ${offerHosts}`);
     expect(opsToOthers.every(op => allowed.includes(op)), `the other nodes see only their settings API and identity page: ${opsToOthers}`);
     return { offerHosts, opsToOthers, requestsToOthers: toOthers.length, totalRequests: evidence.requests.length,
@@ -759,7 +755,7 @@ try {
   await fs.rm(root, { recursive: true, force: true }).catch(() => undefined);
   evidence.cleanup = { frontendExited: !frontend || exited(frontend), serversLeft: children.size, rootRemoved: !existsSync(root) };
   evidence.finishedAt = new Date().toISOString();
-  await fs.writeFile(path.join(outputDir, 'remote-nodes-page-probe.json'), `${JSON.stringify(evidence, null, 2)}\n`);
+  await fs.writeFile(path.join(outputDir, 'remote-nodes-page-probe.json'), `${redactCredentials(JSON.stringify(evidence, null, 2))}\n`);
   console.log(`remote-nodes-page probe: ${evidence.result}${evidence.error ? `\n${evidence.error}` : ''}`);
   process.exit(process.exitCode ?? 0);
 }

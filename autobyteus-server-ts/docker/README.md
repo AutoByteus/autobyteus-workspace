@@ -47,25 +47,38 @@ Then use direct local commands. `new-container` checks/pulls the image and creat
 autobyteus-docker new-container
 ```
 
+`new-container` prints the new node's **setup code** when the node is ready. Every request to a node needs a key
+([Node Access Model](../docs/design/node_access_model.md)): in the desktop app, open **Nodes**, add the node by its
+Backend URL and enter the code to connect it. The code works once, for 30 minutes; it is never written to a file or a
+log. For another code later (a second desktop, a reinstalled app), run on the node's computer:
+
+```bash
+autobyteus-docker setup-code --name autobyteus-server-0
+```
+
 The first node uses `autobyteus-server-0` as its friendly name and prefers Backend port `8001` when available. If the port is busy, the launcher retries with fresh ports. Repeated `new-container` calls create `autobyteus-server-1`, `autobyteus-server-2`, and so on.
 
-Each node publishes one host port: its Backend port, on every network
-interface (other devices add the node with it). The desktop app's VNC Viewer
+Each node publishes one host port, its Backend port, on this computer
+(`127.0.0.1`) and, when Tailscale runs here, on this computer's Tailscale
+address: a container cannot tell this computer from the local network, so the
+published addresses decide who reaches it. `new-container --allow-local-network`
+publishes the node on every address of this computer, your local network too
+(kept in the node's launcher state). The desktop app's VNC Viewer
 shows the node's desktop through that same Backend address
 (`/ws/node-desktop`), so it works for a node on this computer, another machine
 or a cloud VM; View only is the default and the node enforces it. The node's
 VNC (container port 5900), websockify (6080) and Chrome DevTools (9223) ports
 are not published, so a VNC app or `chrome://inspect` does not reach a node
 from outside it. Nodes created by an earlier launcher keep their old port
-publishing until you run `autobyteus-docker upgrade --all` (or
+publishing until you run `autobyteus-docker setup-code`, `upgrade --all` (or
 `autobyteus-docker workspace apply`); the launcher then recreates each node
 once, keeping its Backend port and its named volumes.
 
-Use the printed Backend URL in **Nodes -> Manage Nodes -> Add Remote Node**, then
-open that Docker node window over a trusted LAN, VPN, tailnet, or equivalent
-private-network path. Desktop/Electron access to that node follows the trusted
-private-network product model; do not expose the full backend directly to the
-public internet. Phone pairing still issues separate `mra_...` mobile credentials,
+Use the printed Backend URL in **Nodes -> Manage Nodes -> Add Remote Node** and
+connect it with the setup code. From another device, reach the node over
+Tailscale (its Tailscale address), or create it with `--allow-local-network`;
+do not expose the backend directly to the public internet. Phone pairing issues
+separate `mra_...` phone credentials,
 and the server Docker image packages the `/mobile` web shell into
 `autobyteus-server-ts/mobile-web` so the QR target is served by a fresh
 container.
@@ -288,7 +301,7 @@ docker run -d \
   autobyteus/autobyteus-server:latest
 ```
 
-This direct command is intentionally not the primary no-clone path because it has fixed ports and no multi-node state management.
+This direct command is intentionally not the primary no-clone path because it has fixed ports and no multi-node state management. It publishes the port on every address; use `-p 127.0.0.1:8001:8000` to keep the node on this computer. Get a setup code with `docker exec autobyteus-server node /opt/autobyteus/server-package/dist/node-access-cli.js setup-code --data-dir /home/autobyteus/data`.
 
 ## Compaction Runtime Settings
 
@@ -417,7 +430,8 @@ survive container recreation.
 Public launcher commands for no-clone users:
 
 - `autobyteus-docker install`: Install or replace the local launcher without touching Docker containers, volumes, or state.
-- `autobyteus-docker new-container`: Check/pull the configured image and create the next indexed managed Docker node (`autobyteus-server-0`, `autobyteus-server-1`, ...).
+- `autobyteus-docker new-container [--allow-local-network]`: Check/pull the configured image, create the next indexed managed Docker node (`autobyteus-server-0`, `autobyteus-server-1`, ...) published on this computer and its Tailscale address (every address with `--allow-local-network`), and print its setup code.
+- `autobyteus-docker setup-code [--name <node>]`: Print a one-time setup code (30 minutes) for the desktop app to connect to a node; recreates a node made by an older launcher first (keeping its volumes and port).
 - `autobyteus-docker upgrade --all`: Recreate all managed containers with each node's saved image ref while keeping named volumes; pass `--tag` or `--image` only when intentionally retargeting every node.
 - `autobyteus-docker destroy --all`: Remove all managed containers and unused old images while keeping named volumes.
 - `autobyteus-docker destroy --name <node>`: Remove one uniquely proven managed server container and its launcher state while keeping named volumes and host workspaces; stale state is explicitly forgotten.

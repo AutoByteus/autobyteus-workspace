@@ -114,6 +114,10 @@ import { randomUUID } from 'node:crypto'
 import { createRequire } from 'node:module'
 import { DatabaseSync } from 'node:sqlite'
 import { fileURLToPath, pathToFileURL } from 'node:url'
+import { attachToBrowserContext, attachToProbeProcess, ownerSocketUrl, withNodeCredential } from './fixtures/probe-node-access.mjs'
+// Every node needs a credential (autobyteus-437): the probe's nodes start with its launch credential, and the probe's
+// own calls and its desktop browser contexts carry it (fixtures/probe-node-access.mjs).
+attachToProbeProcess()
 
 const require = createRequire(import.meta.url)
 const { chromium } = require('playwright-core')
@@ -189,7 +193,7 @@ const gql = async (query, variables = {}) => {
   return json.data
 }
 const startBackend = async (label) => {
-  const child = spawnOwned(label, process.execPath, [path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(backendPort), '--data-dir', dataRoot], serverDir, backendEnv)
+  const child = spawnOwned(label, process.execPath, [path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(backendPort), '--data-dir', dataRoot], serverDir, withNodeCredential(backendEnv))
   await waitFor(`${label} health`, async () => { assert(child.exitCode === null, `${label} exited`); return (await fetch(`${backendUrl}/rest/health`, { signal: AbortSignal.timeout(2000) })).ok }, 120000, 500)
   return child
 }
@@ -1325,7 +1329,7 @@ const saveSettings = async (page) => {
 const modelLocked = async (row) => (await row.locator(`${sel('run-setting-model')} ${sel('run-setting-locked')}`).count()) > 0
 /** The delegating agent (not the user) acts: one scripted tool call sent over the run's backend WebSocket. */
 const agentActs = async (route, rootId, payload) => {
-  const socket = new WebSocket(`${backendUrl.replace('http', 'ws')}/ws/${route}/${rootId}`)
+  const socket = new WebSocket(ownerSocketUrl(`${backendUrl.replace('http', 'ws')}/ws/${route}/${rootId}`))
   const frames = []
   socket.addEventListener('message', (event) => frames.push(event.data))
   await new Promise((resolve, reject) => { socket.addEventListener('open', resolve, { once: true }); socket.addEventListener('error', reject, { once: true }) })
@@ -1704,6 +1708,7 @@ try {
     await waitFor('Nuxt dev', async () => (await fetch(`${frontUrl}/chat`, { signal: AbortSignal.timeout(5000) })).ok, 240000, 1000)
     browser = await chromium.launch({ headless: true, executablePath: chrome })
     context = await browser.newContext({ viewport: { width: 1512, height: 952 }, locale: 'en-US' })
+    await attachToBrowserContext(context)
     page = await context.newPage()
   }
   page.setDefaultTimeout(30000)

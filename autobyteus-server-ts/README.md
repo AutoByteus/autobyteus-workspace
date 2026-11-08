@@ -105,6 +105,18 @@ Optional custom data directory:
 node autobyteus-server-ts/dist/app.js --data-dir /path/to/data --host 0.0.0.0 --port 8000
 ```
 
+Every request to a node needs a credential ([Node Access Model](docs/design/node_access_model.md)). To connect the
+desktop app to a server you started yourself, get a one-time setup code on the server's computer and enter it on the
+desktop's **Nodes** page:
+
+```bash
+node autobyteus-server-ts/dist/node-access-cli.js setup-code --data-dir /path/to/data
+```
+
+The node accepts connections from this computer, its Tailscale address and local networks its owner allowed; list
+other networks (a company VPN) in `AUTOBYTEUS_ALLOWED_CLIENT_NETWORKS` (comma-separated CIDR, e.g.
+`10.20.0.0/16`).
+
 Android run helpers (from workspace root):
 
 ```bash
@@ -361,14 +373,14 @@ autobyteus-docker new-container
 
 Repeated `new-container` calls create `autobyteus-server-0`, then `autobyteus-server-1`, then `autobyteus-server-2`, and so on.
 
-Use the printed Backend URL in **Nodes -> Manage Nodes -> Add Remote Node**, then
-open that Docker node window over a trusted LAN, VPN, tailnet, or equivalent
-private-network path. The default product model does not add a separate owner
-credential for desktop/Electron access to that node; do not expose the full
-backend directly to the public internet. Paired phones receive only separate
-`mra_...` mobile credentials, and those credentials do not authorize
-owner-management routes. Current server Docker images package the `/mobile` web
-shell into the runtime image for QR/mobile startup.
+Use the printed Backend URL in **Nodes -> Manage Nodes -> Add Remote Node** and
+connect it with the setup code `new-container` printed (`autobyteus-docker
+setup-code` prints another). The node is published on this computer and its
+Tailscale address (`--allow-local-network` for every address); do not expose
+the backend directly to the public internet. Paired phones receive separate
+`mra_...` phone credentials, which do not open owner actions. Current server
+Docker images package the `/mobile` web shell into the runtime image for
+QR/mobile startup.
 
 The launcher keeps private Docker named volumes outside the container writable
 layer:

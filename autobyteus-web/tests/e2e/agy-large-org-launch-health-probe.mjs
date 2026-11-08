@@ -10,6 +10,10 @@ import { spawn, spawnSync } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import { createRequire } from 'node:module';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { attachToBrowserContext, attachToProbeProcess, withNodeCredential } from './fixtures/probe-node-access.mjs';
+// Every node needs a credential (autobyteus-437): the probe's nodes start with its launch credential, and the probe's
+// own calls and its desktop browser contexts carry it (fixtures/probe-node-access.mjs).
+attachToProbeProcess();
 
 if (process.env.RUN_AGY_E2E !== '1') throw new Error('Set RUN_AGY_E2E=1 for the real AGY browser/backend probe.');
 const here=path.dirname(fileURLToPath(import.meta.url)), webDir=path.resolve(here,'../..'), rootDir=path.resolve(webDir,'..'), serverDir=path.join(rootDir,'autobyteus-server-ts');
@@ -41,7 +45,7 @@ try{
   const env={...process.env,APP_ENV:'development',DB_TYPE:'sqlite',DATABASE_URL:dbUrl,AUTOBYTEUS_SERVER_HOST:base,AUTOBYTEUS_ALLOWED_ORIGINS:front,DISABLE_HTTP_REQUEST_LOGS:'true',ANTIGRAVITY_CLI_COMMAND:wrapper,AGY_REAL_COMMAND:realAgy,AGY_WRAPPER_MODE_FILE:modeFile,AGY_WRAPPER_CALLS_FILE:callsFile};
   await fs.writeFile(path.join(dataRoot,'.env'),`APP_ENV=development\nDB_TYPE=sqlite\nDATABASE_URL=${dbUrl}\nAUTOBYTEUS_SERVER_HOST=${base}\n`);
   await run('corepack',['pnpm','-C',serverDir,'exec','prisma','migrate','deploy','--schema','./prisma/schema.prisma'],rootDir,env,path.join(outDir,'migrate.log'));
-  backend=spawnOwned(process.execPath,[path.join(serverDir,'dist/app.js'),'--host','127.0.0.1','--port',String(bp),'--data-dir',dataRoot],serverDir,env,path.join(outDir,'backend.log'));
+  backend=spawnOwned(process.execPath,[path.join(serverDir,'dist/app.js'),'--host','127.0.0.1','--port',String(bp),'--data-dir',dataRoot],serverDir,withNodeCredential(env),path.join(outDir,'backend.log'));
   await wait('backend health',async()=>{assert(backend.exitCode===null&&backend.signalCode===null,'backend exited');try{return (await fetch(`${base}/rest/health`,{signal:AbortSignal.timeout(2000)})).ok}catch{return false}},90000);
   const modelCatalog=await gql(base,'query($runtimeKind:String){providerModelCatalogSnapshots(runtimeKind:$runtimeKind){llmModels{modelIdentifier}}}',{runtimeKind:'antigravity_cli'});
   const slugs=modelCatalog.providerModelCatalogSnapshots.flatMap(x=>x.llmModels.map(m=>m.modelIdentifier));const model=process.env.AGY_E2E_TOOL_MODEL&&slugs.includes(process.env.AGY_E2E_TOOL_MODEL)?process.env.AGY_E2E_TOOL_MODEL:slugs.includes('gemini-3.8-flash-low')?'gemini-3.8-flash-low':slugs[0];assert(model,'AGY catalog empty');evidence.environment.model=model;
@@ -52,7 +56,7 @@ try{
   const orgId=(await gql(base,'mutation($input:CreateAgentOrgDefinitionInput!){createAgentOrgDefinition(input:$input){id}}',{input:{name:`agy-r7-large-org-${stamp}`,description:'SR-023 real 18-placement launch',instructions,members,handoffs:[],defaultLaunchConfig:{runtimeKind:'antigravity_cli',llmModelIdentifier:model,llmConfig:null}}})).createAgentOrgDefinition.id;evidence.environment.orgDefinitionId=orgId;
   frontend=spawnOwned('corepack',['pnpm','dev','--host','127.0.0.1','--port',String(fp)],webDir,{...process.env,NODE_ENV:'development',NUXT_TEST:'true',BACKEND_NODE_BASE_URL:base},path.join(outDir,'frontend.log'));
   await wait('Nuxt ready',async()=>{assert(frontend.exitCode===null&&frontend.signalCode===null,'frontend exited');try{return(await fetch(`${front}/workspace`,{signal:AbortSignal.timeout(3000)})).ok}catch{return false}},90000);
-  browser=await chromium.launch({headless:true,executablePath:chrome,args:['--no-sandbox','--disable-dev-shm-usage']});page=await browser.newPage({viewport:{width:1440,height:1000}});page.setDefaultTimeout(20000);
+  browser=await chromium.launch({headless:true,executablePath:chrome,args:['--no-sandbox','--disable-dev-shm-usage']});page=await browser.newPage({viewport:{width:1440,height:1000}});await attachToBrowserContext(page.context());page.setDefaultTimeout(20000);
   const browserErrors=[];page.on('pageerror',e=>browserErrors.push(e.message));evidence.environment.browserErrors=browserErrors;
   const route=`${front}/workspace?rootSubjectKind=agent_org&definitionId=${orgId}&mode=configuration`;
   // run-settings-ui-unification: the Org launch page (one settings card + Run); the workspace comes from the card's workspace menu.
@@ -80,7 +84,7 @@ try{
   // A fresh backend process must read the same configured identities from the isolated store.
   const beforeRestart=JSON.stringify(root);
   evidence.cleanup.backendA=await stopOwned(backend);backend=null;
-  backend=spawnOwned(process.execPath,[path.join(serverDir,'dist/app.js'),'--host','127.0.0.1','--port',String(bp),'--data-dir',dataRoot],serverDir,env,path.join(outDir,'backend-after-restart.log'));
+  backend=spawnOwned(process.execPath,[path.join(serverDir,'dist/app.js'),'--host','127.0.0.1','--port',String(bp),'--data-dir',dataRoot],serverDir,withNodeCredential(env),path.join(outDir,'backend-after-restart.log'));
   await wait('restarted backend health',async()=>{assert(backend.exitCode===null&&backend.signalCode===null,'restarted backend exited');try{return (await fetch(`${base}/rest/health`,{signal:AbortSignal.timeout(2000)})).ok}catch{return false}},90000);
   const persisted=(await gql(base,'query($orgRunId:String!){getAgentOrgRunConfig(orgRunId:$orgRunId){isActive executionTree}}',{orgRunId:runId})).getAgentOrgRunConfig;
   assert(JSON.stringify(persisted.executionTree.rootOrg)===beforeRestart,'18-placement Org tree/identities changed across backend restart');

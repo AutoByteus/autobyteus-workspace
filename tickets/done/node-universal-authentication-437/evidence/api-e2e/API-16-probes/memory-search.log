@@ -1,0 +1,12 @@
+# API-16 memory-search: node tests/e2e/memory-search-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/tickets/in-progress/node-universal-authentication-437/evidence/api-e2e/API-16-probes/memory-search
+# commit 32e9ad944c + round-2 probe migration; 2026-11-08T18:58:54Z
+memory-search probe: Fail (15 checks passed); evidence in /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/tickets/in-progress/node-universal-authentication-437/evidence/api-e2e/API-16-probes/memory-search
+[
+  {
+    message: 'MS-PROBE-030: The matched lines are highlighted',
+    details: 0,
+    stack: 'Error: MS-PROBE-030: The matched lines are highlighted\n' +
+      '    at check (file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/tests/e2e/memory-search-probe.mjs:46:39)\n' +
+      '    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/tests/e2e/memory-search-probe.mjs:260:3'
+  }
+]

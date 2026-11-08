@@ -2,22 +2,15 @@ import { EventEmitter } from "node:events";
 import type { FastifyInstance } from "fastify";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const auth = vi.hoisted(() => ({
-  authorize: vi.fn(),
-  closeForRejection: vi.fn(),
-}));
-
-vi.mock("../../../../src/api/websocket/remote-access-websocket-auth.js", () => ({
-  authorizeRemoteAccessWebSocket: auth.authorize,
-  closeSocketForRemoteAccessRejection: auth.closeForRejection,
-}));
-
 import {
   parseNodeDesktopStreamQuery,
   registerNodeDesktopWebsocket,
 } from "../../../../src/api/websocket/node-desktop.js";
+import { admitRequest, setWebSocketRefusal } from "../../../../src/api/security/node-access-gate.js";
+import { OpenSocketRegistry } from "../../../../src/api/security/open-socket-registry.js";
+import { NODE_ACCESS_REFUSALS } from "../../../../src/node-access/domain/node-access-refusal.js";
 
-type Handler = (socket: unknown, request: { url: string }) => void;
+type Handler = (socket: unknown, request: { url: string; raw: object }) => void;
 
 class FakeSocket extends EventEmitter {
   bufferedAmount = 0;
@@ -26,8 +19,6 @@ class FakeSocket extends EventEmitter {
   pause = vi.fn();
   resume = vi.fn();
 }
-
-const flush = () => new Promise((resolve) => setImmediate(resolve));
 
 const routeHandler = async (resolveTarget: () => { host: string; port: number } | null): Promise<Handler> => {
   let handler: Handler | null = null;
@@ -39,62 +30,38 @@ const routeHandler = async (resolveTarget: () => { host: string; port: number } 
   return handler!;
 };
 
-describe("/ws/node-desktop route", () => {
-  beforeEach(() => {
-    auth.authorize.mockReset();
-    auth.closeForRejection.mockReset();
-  });
+/** An upgrade the node access gate admitted (its hook ran before the route). */
+const admitted = (url: string) => {
+  const request = { url, raw: {} };
+  admitRequest(request as never, { kind: "owner", credentialId: "launch" }, new OpenSocketRegistry());
+  return request;
+};
 
-  it("closes 4400 on viewer bytes before the stream starts, without resolving the desktop", async () => {
-    let admit: (value: unknown) => void = () => undefined;
-    auth.authorize.mockReturnValue(new Promise((resolve) => { admit = resolve; }));
+describe("/ws/node-desktop route (behind the node access gate)", () => {
+  it("NAS-09 a refused upgrade is closed with the gate's code before the route reads anything", async () => {
     const resolveTarget = vi.fn(() => ({ host: "127.0.0.1", port: 5900 }));
     const socket = new FakeSocket();
-    (await routeHandler(resolveTarget))(socket, { url: "/ws/node-desktop?mode=view" });
+    const request = { url: "/ws/node-desktop?mode=view&access_token=mra_x", raw: {} };
+    setWebSocketRefusal(request as never, NODE_ACCESS_REFUSALS.phoneRouteRefused);
+    (await routeHandler(resolveTarget))(socket, request);
 
-    socket.emit("message", Buffer.from("RFB 003.008\n"));
-    expect(socket.close).toHaveBeenCalledWith(4400, "NODE_DESKTOP_VIEWER_PROTOCOL");
-    admit({ mode: "trusted_network", isAuthenticated: false });
-    await flush();
-    expect(resolveTarget).not.toHaveBeenCalled();
-    expect(socket.close).toHaveBeenCalledTimes(1);
-  });
-
-  it("authorizes before it reads the query or resolves the desktop", async () => {
-    auth.authorize.mockRejectedValue({ code: 4401, reason: "REMOTE_ACCESS_AUTH_INVALID" });
-    const resolveTarget = vi.fn(() => ({ host: "127.0.0.1", port: 5900 }));
-    const socket = new FakeSocket();
-    (await routeHandler(resolveTarget))(socket, { url: "/ws/node-desktop?mode=view&host=10.0.0.5" });
-    await flush();
-
-    expect(auth.closeForRejection).toHaveBeenCalledWith(socket, { code: 4401, reason: "REMOTE_ACCESS_AUTH_INVALID" }, expect.anything());
-    expect(socket.close).not.toHaveBeenCalled();
+    expect(socket.close).toHaveBeenCalledWith(4403, "PHONE_ACCESS_ROUTE_REFUSED");
     expect(resolveTarget).not.toHaveBeenCalled();
   });
 
   it("validates the query before it resolves the desktop", async () => {
-    auth.authorize.mockResolvedValue({ mode: "loopback", isAuthenticated: true });
     const resolveTarget = vi.fn(() => ({ host: "127.0.0.1", port: 5900 }));
     const socket = new FakeSocket();
-    (await routeHandler(resolveTarget))(socket, { url: "/ws/node-desktop?mode=view&port=5901" });
-    await flush();
+    (await routeHandler(resolveTarget))(socket, admitted("/ws/node-desktop?mode=view&port=5901"));
 
     expect(socket.close).toHaveBeenCalledWith(4400, "NODE_DESKTOP_INVALID_REQUEST");
     expect(resolveTarget).not.toHaveBeenCalled();
   });
 
-  it("does nothing more when the viewer leaves during authorization", async () => {
-    let admit: (value: unknown) => void = () => undefined;
-    auth.authorize.mockReturnValue(new Promise((resolve) => { admit = resolve; }));
-    const resolveTarget = vi.fn(() => ({ host: "127.0.0.1", port: 5900 }));
+  it("closes 4404 when the node has no desktop", async () => {
     const socket = new FakeSocket();
-    (await routeHandler(resolveTarget))(socket, { url: "/ws/node-desktop?mode=view" });
-    socket.emit("close");
-    admit({ mode: "loopback", isAuthenticated: true });
-    await flush();
-
-    expect(resolveTarget).not.toHaveBeenCalled();
-    expect(socket.close).not.toHaveBeenCalled();
+    (await routeHandler(() => null))(socket, admitted("/ws/node-desktop?mode=view"));
+    expect(socket.close).toHaveBeenCalledWith(4404, "NODE_DESKTOP_UNAVAILABLE");
   });
 });
 

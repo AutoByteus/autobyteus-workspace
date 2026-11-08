@@ -10,9 +10,20 @@ export const SetRemoteCollaborationEnabled = gql`
   ${RemoteCollaborationCapabilityFields}
 `
 
-export const AddPeerNode = gql`
-  mutation AddPeerNode($input: AddPeerNodeInput!) {
-    addPeerNode(input: $input) {
+/** autobyteus-437: on node A, an invite for one other node (10 minutes, single use). */
+export const CreatePeerInvite = gql`
+  mutation CreatePeerInvite {
+    createPeerInvite {
+      inviteText
+      expiresAt
+    }
+  }
+`
+
+/** autobyteus-437: on node B, pairs with the node that created the invite; both then hold the peer secret. */
+export const AcceptPeerInvite = gql`
+  mutation AcceptPeerInvite($inviteText: String!, $name: String!, $nameOnInviter: String) {
+    acceptPeerInvite(inviteText: $inviteText, name: $name, nameOnInviter: $nameOnInviter) {
       ...PeerNodeFields
     }
   }

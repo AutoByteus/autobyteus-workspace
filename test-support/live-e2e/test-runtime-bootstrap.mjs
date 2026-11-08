@@ -1,3 +1,4 @@
+import { attachOwnerCredential, createTestOwnerCredential } from '../node-access/owner-credential-attachment.mjs';
 import fs from 'node:fs';
 import fsPromises from 'node:fs/promises';
 import net from 'node:net';
@@ -273,6 +274,10 @@ const waitForServer = async (running, timeoutMs) => {
  * Starts the built server on a test-owned runtime root. The server uses the
  * test vault only when the caller passes `testVaultSetting` (a live opt-in:
  * `test:e2e:real` and live suites); otherwise it uses its own database vault.
+ * Like the desktop app with its own node, it hands the server a launch owner
+ * credential (`AUTOBYTEUS_LAUNCH_OWNER_CREDENTIAL`) and attaches it to this
+ * process's requests to that server (node access model NA-1, NA-5); the
+ * result's `ownerCredential` is that credential.
  */
 export const startBuiltTestServer = async (options = {}) => {
   if (!fs.existsSync(builtServerEntry)) throw stableError('TEST_SERVER_BUILD_REQUIRED');
@@ -284,6 +289,7 @@ export const startBuiltTestServer = async (options = {}) => {
     serverUrlOverride: `http://${host}:${port}`,
   });
   let output = '';
+  const ownerCredential = createTestOwnerCredential();
   const child = spawn(
     process.execPath,
     [builtServerEntry, '--host', host, '--port', String(port), '--data-dir', materialized.runtimeRoot],
@@ -292,19 +298,23 @@ export const startBuiltTestServer = async (options = {}) => {
       env: createSanitizedTestEnvironment({
         ...options.environment,
         [testVaultSettingName]: options.testVaultSetting,
+        AUTOBYTEUS_LAUNCH_OWNER_CREDENTIAL: ownerCredential,
       }),
       stdio: 'pipe',
     },
   );
   child.stdout.on('data', (chunk) => { output += chunk.toString('utf8'); });
   child.stderr.on('data', (chunk) => { output += chunk.toString('utf8'); });
+  const detachOwnerCredential = attachOwnerCredential(`http://${host}:${port}`, ownerCredential);
   const running = {
     ...materialized,
     host,
     port,
     child,
+    ownerCredential,
     output: () => output,
     async stop() {
+      detachOwnerCredential();
       if (child.exitCode !== null) {
         if (child.exitCode !== 0) throw stableError('TEST_SERVER_EXITED_NONZERO');
         return;
@@ -327,6 +337,7 @@ export const startBuiltTestServer = async (options = {}) => {
     await waitForServer(running, options.timeoutMs ?? 120_000);
     return running;
   } catch (error) {
+    detachOwnerCredential();
     if (child.exitCode === null) child.kill('SIGKILL');
     throw error;
   }

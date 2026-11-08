@@ -1,0 +1,13 @@
+
+> autobyteus@1.5.12-beta.8 test:e2e:nodes-docker-address /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web
+> node tests/e2e/nodes-docker-address-probe.mjs --docker-image=abtest437/autobyteus-server:test --output-dir=/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/tickets/in-progress/node-universal-authentication-437/evidence/api-e2e/API-10-nodes-docker-address
+
+[probe] ND-01 started
+nodes-docker-address probe: Fail
+Error: the Docker node on desk: {"nodeId":"srv_KUCiY0liLyB0sKc7xiqnFTNMAlLfNYhM","name":"docker","baseUrl":"http://localhost:55854"}
+    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/tests/e2e/nodes-docker-address-probe.mjs:66:64)
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/tests/e2e/nodes-docker-address-probe.mjs:309:5
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async runCase (file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/tests/e2e/nodes-docker-address-probe.mjs:91:19)
+    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/tests/e2e/nodes-docker-address-probe.mjs:289:3
+ ELIFECYCLE  Command failed with exit code 1.

@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { useNodeListStore } from '~/stores/nodeListStore'
 import { useNodeCollaborationConnector } from '~/services/nodeCollaboration/windowNodeCollaborationConnector'
-import type { NodeChangePlan, NodeChangePlanKind, NodeChangeStepId } from '~/services/nodeCollaboration/nodeChangePlan'
+import type { NodeChangePlan, NodeChangePlanKind } from '~/services/nodeCollaboration/nodeChangePlan'
 
 /** After a run that did everything, the dialog stays this long so the last step shows done (UI/UX spec TR-705). */
 export const DIALOG_CLOSE_DELAY_MS = 700
@@ -31,7 +31,6 @@ export const useNodeChangeDialogStore = defineStore('nodeChangeDialog', () => {
       const next = await connector.plan(kind, subject.target, subject.here)
       if (!next.steps.length) { list.askAgain(key); return }
       plan.value = next
-      void connector.resolveAhead(plan.value)
     } catch {
       // The node could not be read now: its row says why, with Check again.
       list.askAgain(key)
@@ -62,21 +61,10 @@ export const useNodeChangeDialogStore = defineStore('nodeChangeDialog', () => {
     }
   }
 
-  /** "Use this": the node tries the suggested address first, then its other candidates (design § Loopback Hint Surface). */
-  const useAddress = async (stepId: NodeChangeStepId, address: string): Promise<void> => {
-    const current = plan.value
-    const entry = current?.steps.find((candidate) => candidate.id === stepId)
-    if (!current || !entry) return
-    entry.firstAddress = address
-    entry.address = undefined
-    if (current.phase === 'confirm') await connector.resolveAhead(current, stepId)
-    else await confirm()
-  }
-
   /** Cancel, Close, Esc, or the tab left: a plan that is running is never dropped. */
   const cancel = (): void => {
     if (plan.value?.phase !== 'running') plan.value = null
   }
 
-  return { plan, preparing, request, confirm, useAddress, cancel }
+  return { plan, preparing, request, confirm, cancel }
 })

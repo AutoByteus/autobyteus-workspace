@@ -1,0 +1,381 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/.env
+◇ injected env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/.env // tip: ⌁ auth for agents [www.vestauth.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:57986
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:57986
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "development.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/db/development.db"
+
+SQLite database development.db created at file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/db/development.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Database migrations completed successfully.
+(node:58951) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+[2026-11-08T18:52:32.486Z] [INFO] [secret-management.vault] Secret vault: application database
+Initialized server settings service with 32 predefined settings
+AgentRunManager initialized.
+Node access: local control socket not opened. The node's local control socket path is 110 bytes, longer than the 103 bytes a Unix socket path may have: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/node-access/local-control.sock. Use a shorter data folder path.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Registered required tool unit: Agent Discovery Tools
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+Registered required tool unit: Agent Runtime Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'search_memory'
+Registered required tool unit: Memory Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+{"level":30,"time":1794163952797,"pid":58951,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:57994"}
+{"level":30,"time":1794163952821,"pid":58951,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:57986"}
+[2026-11-08T18:52:32.821Z] [INFO] [server.runtime] Server listening on 127.0.0.1:57986
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+Background task 'Memory Search' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Agent Definition created successfully with ID: solution-designer
+Agent Definition created successfully with ID: architecture-reviewer
+Agent Definition created successfully with ID: implementation-engineer
+Agent Definition created successfully with ID: code-reviewer
+Agent Definition created successfully with ID: api-e2e-engineer
+Agent Definition created successfully with ID: delivery-engineer
+Agent Definition created successfully with ID: project-task-manager-probe
+Agent Team Definition created successfully with ID: software-engineering-team-probe
+Agent Team Definition created successfully with ID: late-engineering-team-probe
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/workspace.
+Created and registered workspace ID: agent_ws_66ea1fb15f35a52d2838c8706d17f5f28bfd3f8e2cf3bc4203389cc039036c60
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/workspace.
+Reusing registered workspace ID: agent_ws_66ea1fb15f35a52d2838c8706d17f5f28bfd3f8e2cf3bc4203389cc039036c60
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/workspace.
+Reusing registered workspace ID: agent_ws_66ea1fb15f35a52d2838c8706d17f5f28bfd3f8e2cf3bc4203389cc039036c60
+AGY compaction detection off for run project_task_manager_probe_8ba038429a934b859f389c264ca08fc4: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/workspace.
+Reusing registered workspace ID: agent_ws_66ea1fb15f35a52d2838c8706d17f5f28bfd3f8e2cf3bc4203389cc039036c60
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/workspace.
+Reusing registered workspace ID: agent_ws_66ea1fb15f35a52d2838c8706d17f5f28bfd3f8e2cf3bc4203389cc039036c60
+AGY compaction detection off for run project_task_manager_probe_f823bfa0dbb44dd293a9e50147cc9677: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Agent websocket attached for run project_task_manager_probe_8ba038429a934b859f389c264ca08fc4
+Created agent session c70cd6d9-fdb6-44d6-b9d5-dbe44c5578d2 for run project_task_manager_probe_8ba038429a934b859f389c264ca08fc4
+Agent WebSocket connected: session=c70cd6d9-fdb6-44d6-b9d5-dbe44c5578d2, run=project_task_manager_probe_8ba038429a934b859f389c264ca08fc4
+Agent websocket attached for run project_task_manager_probe_f823bfa0dbb44dd293a9e50147cc9677
+Created agent session 3913d378-d2dd-43b4-b9b9-3eac8f8c35f1 for run project_task_manager_probe_f823bfa0dbb44dd293a9e50147cc9677
+Agent WebSocket connected: session=3913d378-d2dd-43b4-b9b9-3eac8f8c35f1, run=project_task_manager_probe_f823bfa0dbb44dd293a9e50147cc9677
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/workspace.
+Reusing registered workspace ID: agent_ws_66ea1fb15f35a52d2838c8706d17f5f28bfd3f8e2cf3bc4203389cc039036c60
+AGY compaction detection off for run solution_designer_2473f2f5890c4b4ba62ac3a321a05880: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/workspace.
+Reusing registered workspace ID: agent_ws_66ea1fb15f35a52d2838c8706d17f5f28bfd3f8e2cf3bc4203389cc039036c60
+AGY compaction detection off for run solution_designer_1d66052e334947679b4a4b2e8aac89a1: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/workspace.
+Reusing registered workspace ID: agent_ws_66ea1fb15f35a52d2838c8706d17f5f28bfd3f8e2cf3bc4203389cc039036c60
+AGY compaction detection off for run solution_designer_40a2d8e3ea62419cb1db48dc6014fab7: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/workspace.
+Reusing registered workspace ID: agent_ws_66ea1fb15f35a52d2838c8706d17f5f28bfd3f8e2cf3bc4203389cc039036c60
+AGY compaction detection off for run solution_designer_1425e13556f84dffb04b846d8f36e948: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/workspace.
+Reusing registered workspace ID: agent_ws_66ea1fb15f35a52d2838c8706d17f5f28bfd3f8e2cf3bc4203389cc039036c60
+AGY compaction detection off for run solution_designer_9bdb73a9c2754522807b19c48a9ec133: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/workspace.
+Reusing registered workspace ID: agent_ws_66ea1fb15f35a52d2838c8706d17f5f28bfd3f8e2cf3bc4203389cc039036c60
+AGY compaction detection off for run solution_designer_c8fd4cea8a3f47fc994c61aad8a35fe3: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/workspace.
+Reusing registered workspace ID: agent_ws_66ea1fb15f35a52d2838c8706d17f5f28bfd3f8e2cf3bc4203389cc039036c60
+AGY compaction detection off for run solution_designer_61b39e046dc24d1bb8f49acf29b57625: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/workspace.
+Reusing registered workspace ID: agent_ws_66ea1fb15f35a52d2838c8706d17f5f28bfd3f8e2cf3bc4203389cc039036c60
+AGY compaction detection off for run solution_designer_13bc5783d18c4f169c7df4896bfe983c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agent_teams/software_engineering_team_probe_24023da4264a4936a1222fc574762d5a/implementation_engineer_5cd7e469cff949e7bbd77d09105be14a/raw_traces_manifest.json
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/workspace.
+Reusing registered workspace ID: agent_ws_66ea1fb15f35a52d2838c8706d17f5f28bfd3f8e2cf3bc4203389cc039036c60
+AGY compaction detection off for run implementation_engineer_5cd7e469cff949e7bbd77d09105be14a: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agent_teams/software_engineering_team_probe_24023da4264a4936a1222fc574762d5a/implementation_engineer_5cd7e469cff949e7bbd77d09105be14a/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agent_teams/software_engineering_team_probe_24023da4264a4936a1222fc574762d5a/implementation_engineer_5cd7e469cff949e7bbd77d09105be14a/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agent_teams/software_engineering_team_probe_46530489646d4b33aff460c07e0d8b36/implementation_engineer_1d3a7deb43d14f69be158bae21c4cc82/raw_traces_manifest.json
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/workspace.
+Reusing registered workspace ID: agent_ws_66ea1fb15f35a52d2838c8706d17f5f28bfd3f8e2cf3bc4203389cc039036c60
+AGY compaction detection off for run implementation_engineer_1d3a7deb43d14f69be158bae21c4cc82: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agent_teams/software_engineering_team_probe_46530489646d4b33aff460c07e0d8b36/implementation_engineer_1d3a7deb43d14f69be158bae21c4cc82/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agent_teams/software_engineering_team_probe_46530489646d4b33aff460c07e0d8b36/implementation_engineer_1d3a7deb43d14f69be158bae21c4cc82/raw_traces_manifest.json
+Closed agent session 3913d378-d2dd-43b4-b9b9-3eac8f8c35f1
+Agent WebSocket disconnected: 3913d378-d2dd-43b4-b9b9-3eac8f8c35f1
+Closed agent session c70cd6d9-fdb6-44d6-b9d5-dbe44c5578d2
+Agent WebSocket disconnected: c70cd6d9-fdb6-44d6-b9d5-dbe44c5578d2
+Created terminal session 4f29bc52-28d9-449a-88df-b0334a5fc9fb using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-home-mffvK0
+Terminal WebSocket connected: 4f29bc52-28d9-449a-88df-b0334a5fc9fb
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-home-mffvK0
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agents/project_task_manager_probe_8ba038429a934b859f389c264ca08fc4/raw_traces_manifest.json
+Closed PTY session 4f29bc52-28d9-449a-88df-b0334a5fc9fb
+Terminal WebSocket disconnected: 4f29bc52-28d9-449a-88df-b0334a5fc9fb
+Created terminal session 6a3f27f2-c1ce-402b-b1cc-8de8aea334d7 using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-home-mffvK0
+Terminal WebSocket connected: 6a3f27f2-c1ce-402b-b1cc-8de8aea334d7
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-home-mffvK0
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agents/project_task_manager_probe_8ba038429a934b859f389c264ca08fc4/raw_traces_manifest.json
+Closed PTY session 6a3f27f2-c1ce-402b-b1cc-8de8aea334d7
+Terminal WebSocket disconnected: 6a3f27f2-c1ce-402b-b1cc-8de8aea334d7
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agents/project_task_manager_probe_8ba038429a934b859f389c264ca08fc4/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agent_teams/software_engineering_team_probe_24023da4264a4936a1222fc574762d5a/implementation_engineer_5cd7e469cff949e7bbd77d09105be14a/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agents/project_task_manager_probe_8ba038429a934b859f389c264ca08fc4/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agents/project_task_manager_probe_8ba038429a934b859f389c264ca08fc4/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agents/project_task_manager_probe_8ba038429a934b859f389c264ca08fc4/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agents/project_task_manager_probe_8ba038429a934b859f389c264ca08fc4/raw_traces_manifest.json
+Created terminal session 86c52fdf-4aba-4a72-803d-0e64b003aded using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-home-mffvK0
+Terminal WebSocket connected: 86c52fdf-4aba-4a72-803d-0e64b003aded
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-home-mffvK0
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agents/project_task_manager_probe_8ba038429a934b859f389c264ca08fc4/raw_traces_manifest.json
+Closed PTY session 86c52fdf-4aba-4a72-803d-0e64b003aded
+Terminal WebSocket disconnected: 86c52fdf-4aba-4a72-803d-0e64b003aded
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agents/project_task_manager_probe_8ba038429a934b859f389c264ca08fc4/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agent_teams/software_engineering_team_probe_24023da4264a4936a1222fc574762d5a/implementation_engineer_5cd7e469cff949e7bbd77d09105be14a/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agents/project_task_manager_probe_8ba038429a934b859f389c264ca08fc4/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agents/project_task_manager_probe_8ba038429a934b859f389c264ca08fc4/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agents/project_task_manager_probe_8ba038429a934b859f389c264ca08fc4/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agents/project_task_manager_probe_8ba038429a934b859f389c264ca08fc4/raw_traces_manifest.json
+Created terminal session 3f1db002-e34c-4d7a-b58d-e35f7971b1c7 using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-home-mffvK0
+Terminal WebSocket connected: 3f1db002-e34c-4d7a-b58d-e35f7971b1c7
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-home-mffvK0
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agents/project_task_manager_probe_8ba038429a934b859f389c264ca08fc4/raw_traces_manifest.json
+Closed PTY session 3f1db002-e34c-4d7a-b58d-e35f7971b1c7
+Terminal WebSocket disconnected: 3f1db002-e34c-4d7a-b58d-e35f7971b1c7
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agents/project_task_manager_probe_8ba038429a934b859f389c264ca08fc4/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agent_teams/software_engineering_team_probe_24023da4264a4936a1222fc574762d5a/implementation_engineer_5cd7e469cff949e7bbd77d09105be14a/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agents/project_task_manager_probe_8ba038429a934b859f389c264ca08fc4/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agents/project_task_manager_probe_8ba038429a934b859f389c264ca08fc4/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agents/project_task_manager_probe_8ba038429a934b859f389c264ca08fc4/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agents/project_task_manager_probe_8ba038429a934b859f389c264ca08fc4/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agents/project_task_manager_probe_8ba038429a934b859f389c264ca08fc4/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agents/project_task_manager_probe_8ba038429a934b859f389c264ca08fc4/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agent_teams/software_engineering_team_probe_24023da4264a4936a1222fc574762d5a/solution_designer_40a2d8e3ea62419cb1db48dc6014fab7/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agents/project_task_manager_probe_8ba038429a934b859f389c264ca08fc4/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agents/project_task_manager_probe_8ba038429a934b859f389c264ca08fc4/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agents/project_task_manager_probe_8ba038429a934b859f389c264ca08fc4/raw_traces_manifest.json
+Created terminal session 3b7f00b8-b22b-4a61-9484-aedf009634cd using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-home-mffvK0
+Terminal WebSocket connected: 3b7f00b8-b22b-4a61-9484-aedf009634cd
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-home-mffvK0
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agents/project_task_manager_probe_8ba038429a934b859f389c264ca08fc4/raw_traces_manifest.json
+Closed PTY session 3b7f00b8-b22b-4a61-9484-aedf009634cd
+Terminal WebSocket disconnected: 3b7f00b8-b22b-4a61-9484-aedf009634cd
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agents/project_task_manager_probe_8ba038429a934b859f389c264ca08fc4/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agent_teams/software_engineering_team_probe_24023da4264a4936a1222fc574762d5a/solution_designer_40a2d8e3ea62419cb1db48dc6014fab7/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agents/project_task_manager_probe_8ba038429a934b859f389c264ca08fc4/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agent_teams/software_engineering_team_probe_24023da4264a4936a1222fc574762d5a/implementation_engineer_5cd7e469cff949e7bbd77d09105be14a/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agents/project_task_manager_probe_8ba038429a934b859f389c264ca08fc4/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agent_teams/software_engineering_team_probe_24023da4264a4936a1222fc574762d5a/implementation_engineer_5cd7e469cff949e7bbd77d09105be14a/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agents/project_task_manager_probe_8ba038429a934b859f389c264ca08fc4/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agents/project_task_manager_probe_8ba038429a934b859f389c264ca08fc4/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agent_teams/software_engineering_team_probe_24023da4264a4936a1222fc574762d5a/implementation_engineer_5cd7e469cff949e7bbd77d09105be14a/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_probe_8ba038429a934b859f389c264ca08fc4
+Created agent session e0b7d325-8ac9-4099-a0d8-312faeb54018 for run project_task_manager_probe_8ba038429a934b859f389c264ca08fc4
+Agent WebSocket connected: session=e0b7d325-8ac9-4099-a0d8-312faeb54018, run=project_task_manager_probe_8ba038429a934b859f389c264ca08fc4
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/workspace.
+Reusing registered workspace ID: agent_ws_66ea1fb15f35a52d2838c8706d17f5f28bfd3f8e2cf3bc4203389cc039036c60
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agents/project_task_manager_probe_8ba038429a934b859f389c264ca08fc4/raw_traces_manifest.json
+Agent websocket attached for run project_task_manager_probe_8ba038429a934b859f389c264ca08fc4
+Created agent session 82c1c80c-4b3e-45f8-b4cb-7243a0bcb8a7 for run project_task_manager_probe_8ba038429a934b859f389c264ca08fc4
+Agent WebSocket connected: session=82c1c80c-4b3e-45f8-b4cb-7243a0bcb8a7, run=project_task_manager_probe_8ba038429a934b859f389c264ca08fc4
+AGY compaction detection off for run project_task_manager_probe_8ba038429a934b859f389c264ca08fc4: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/workspace.
+Reusing registered workspace ID: agent_ws_66ea1fb15f35a52d2838c8706d17f5f28bfd3f8e2cf3bc4203389cc039036c60
+AGY compaction detection off for run solution_designer_173b7e78c47b43599fbeb7af95e3bcc5: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/workspace.
+Reusing registered workspace ID: agent_ws_66ea1fb15f35a52d2838c8706d17f5f28bfd3f8e2cf3bc4203389cc039036c60
+AGY compaction detection off for run solution_designer_e7e6b9cb24814d5ca33560ecb3156880: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agent_teams/software_engineering_team_probe_24023da4264a4936a1222fc574762d5a/implementation_engineer_5cd7e469cff949e7bbd77d09105be14a/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/memory/agents/project_task_manager_probe_8ba038429a934b859f389c264ca08fc4/raw_traces_manifest.json
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-team-collapse-Dx0BB8/workspace.
+Reusing registered workspace ID: agent_ws_66ea1fb15f35a52d2838c8706d17f5f28bfd3f8e2cf3bc4203389cc039036c60
+AGY compaction detection off for run implementation_engineer_5cd7e469cff949e7bbd77d09105be14a: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Closed agent session e0b7d325-8ac9-4099-a0d8-312faeb54018
+Agent WebSocket disconnected: e0b7d325-8ac9-4099-a0d8-312faeb54018
+Closed agent session 82c1c80c-4b3e-45f8-b4cb-7243a0bcb8a7
+Agent WebSocket disconnected: 82c1c80c-4b3e-45f8-b4cb-7243a0bcb8a7

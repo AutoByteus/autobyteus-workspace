@@ -79,6 +79,9 @@ regexes = [
   '''^[A-Za-z]+(?:/[A-Za-z]+)+$''',
   '''^(?:API|IR|SR|DR|CR|CRR|AR|FU|AC|LIVE|UC|REV)-[A-Za-z0-9.-]+$''',
   '''^[a-z]+(?:[A-Z][a-z]+)+[0-9]{0,4}$''',
+  # Made-up MCP gateway tokens in the McpGatewayPanel unit test (autobyteus-437):
+  # a word plus a run of sequential digits, exactly these two values.
+  '''^mcpg_(?:secretvalue1234567890|regenerated0987654321)$''',
 ]
 
 # File-pin maps in ticket evidence: "path/file.ts": "<sha256>". Scoped to the

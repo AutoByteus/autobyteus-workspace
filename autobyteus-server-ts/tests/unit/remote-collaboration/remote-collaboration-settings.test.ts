@@ -44,53 +44,64 @@ describe("PeerDirectory", () => {
     return { dir, store, probe, peers };
   };
 
-  it("registers the named node by URL and name, checking that the URL answers with it, in peers.json with exact keys", async () => {
+  const SECRET = "peer-secret-for-tests";
+
+  it("NAS-19 saves a paired peer with its secret in peers.json (mode 0600, exact keys); lists it as paired, never with the secret", async () => {
     const f = await directory();
-    await expect(f.peers.add({ nodeId: B, baseUrl: "localhost:29700/rest", name: "docker" })).resolves.toEqual({
-      nodeId: B, name: "docker", baseUrl: "http://localhost:29700", addedAt: "2026-10-20T09:00:00.000Z" });
-    expect(f.probe.fetchNodeId).toHaveBeenCalledWith("http://localhost:29700");
-    expect(await readJson(path.join(f.dir, "remote-collaboration", "peers.json"))).toEqual({ peers: [
-      { nodeId: B, name: "docker", baseUrl: "http://localhost:29700", addedAt: "2026-10-20T09:00:00.000Z" }] });
-    await expect(f.peers.findByName("DOCKER")).resolves.toMatchObject({ nodeId: B });
-    await expect(f.peers.findByNodeId(B)).resolves.toMatchObject({ name: "docker" });
+    await expect(f.peers.savePairedPeer({ nodeId: B, baseUrl: "http://localhost:29700", name: "docker", peerSecret: SECRET })).resolves.toEqual({
+      nodeId: B, name: "docker", baseUrl: "http://localhost:29700", addedAt: "2026-10-20T09:00:00.000Z", paired: true });
+    const file = path.join(f.dir, "remote-collaboration", "peers.json");
+    expect(await readJson(file)).toEqual({ peers: [
+      { nodeId: B, name: "docker", baseUrl: "http://localhost:29700", addedAt: "2026-10-20T09:00:00.000Z", peerSecret: SECRET }] });
+    if (process.platform !== "win32") expect((await fs.stat(file)).mode & 0o777).toBe(0o600);
+    expect(JSON.stringify(await f.peers.list())).not.toContain(SECRET);
+    await expect(f.peers.findByName("DOCKER")).resolves.toMatchObject({ nodeId: B, paired: true });
+    await expect(f.peers.peerSecret(B)).resolves.toBe(SECRET);
   });
 
-  it("one-nodes-tab: refuses a URL that answers with a different node than the one named (PEER_IDENTITY_MISMATCH)", async () => {
-    const f = await directory({ identity: "srv_someone_else_000000000000000000000" });
-    await expect(f.peers.add({ nodeId: B, baseUrl: "http://b", name: "docker" })).rejects.toMatchObject({
-      code: "PEER_IDENTITY_MISMATCH", details: { address: "http://b" } });
-    expect(await f.peers.list()).toEqual([]);
+  it("NAS-23 a peer registered before peers paired reads as unpaired; pairing it keeps its name and history and sets address and secret", async () => {
+    const f = await directory();
+    await fs.mkdir(path.join(f.dir, "remote-collaboration"), { recursive: true });
+    await fs.writeFile(path.join(f.dir, "remote-collaboration", "peers.json"), JSON.stringify({ peers: [
+      { nodeId: B, name: "nas", baseUrl: "http://localhost:8001", addedAt: "2026-10-01T09:00:00.000Z" }] }));
+    await expect(f.peers.list()).resolves.toEqual([{ nodeId: B, name: "nas", baseUrl: "http://localhost:8001", addedAt: "2026-10-01T09:00:00.000Z", paired: false }]);
+    await expect(f.peers.peerSecret(B)).resolves.toBeNull();
+    await expect(f.peers.savePairedPeer({ nodeId: B, baseUrl: "http://host.docker.internal:8001", name: "other", peerSecret: SECRET }))
+      .resolves.toEqual({ nodeId: B, name: "nas", baseUrl: "http://host.docker.internal:8001", addedAt: "2026-10-01T09:00:00.000Z", paired: true });
   });
 
-  it("refuses to contact a URL while the switch is off, a URL that is this node, a node registered twice and a taken name", async () => {
-    const off = await directory({ enabled: false });
-    await expect(off.peers.add({ nodeId: B, baseUrl: "http://b", name: "b" })).rejects.toMatchObject({ code: "REMOTE_COLLABORATION_OFF" });
-    expect(off.probe.fetchNodeId).not.toHaveBeenCalled();
-    const self = await directory({ identity: SELF });
-    await expect(self.peers.add({ nodeId: SELF, baseUrl: "http://me", name: "me" })).rejects.toMatchObject({ code: "PEER_IS_THIS_NODE" });
+  it("refuses pairing this node itself and a peer that is already paired; a wanted name is made valid and unique", async () => {
     const f = await directory();
-    await f.peers.add({ nodeId: B, baseUrl: "http://b", name: "docker" });
-    await expect(f.peers.add({ nodeId: B, baseUrl: "http://b-again", name: "other" })).rejects.toMatchObject({ code: "PEER_ALREADY_REGISTERED" });
-    await expect(f.peers.add({ nodeId: B, baseUrl: "http://c", name: "Docker" })).rejects.toMatchObject({ code: "PEER_NAME_TAKEN" });
-    await expect(f.peers.add({ nodeId: B, baseUrl: "http://c", name: "/bad" })).rejects.toMatchObject({ code: "PEER_NAME_INVALID" });
-    expect((await f.peers.list()).length).toBe(1);
+    await expect(f.peers.assertPairable(SELF)).rejects.toMatchObject({ code: "PEER_IS_THIS_NODE" });
+    await f.peers.savePairedPeer({ nodeId: B, baseUrl: "http://b", name: "docker", peerSecret: SECRET });
+    await expect(f.peers.assertPairable(B)).rejects.toMatchObject({ code: "PEER_ALREADY_REGISTERED" });
+    await expect(f.peers.savePairedPeer({ nodeId: B, baseUrl: "http://b", name: "docker", peerSecret: "another" }))
+      .rejects.toMatchObject({ code: "PEER_ALREADY_REGISTERED" });
+    const C = "srv_peer_c_00000000000000000000000000";
+    await expect(f.peers.savePairedPeer({ nodeId: C, baseUrl: "http://c", name: "Docker", peerSecret: SECRET })).resolves.toMatchObject({ name: "Docker 2" });
+    const D = "srv_peer_d_00000000000000000000000000";
+    await expect(f.peers.savePairedPeer({ nodeId: D, baseUrl: "http://d", name: "/MacBook Pro (2)", peerSecret: SECRET })).resolves.toMatchObject({ name: "MacBook Pro -2-" });
   });
 
-  it("renames (the name only) and removes a peer", async () => {
+  it("renames (the name only); removing a peer forgets its secret and publishes the revocation that closes its sockets (NA-11)", async () => {
     const f = await directory();
-    await f.peers.add({ nodeId: B, baseUrl: "http://b", name: "docker" });
+    const revoked = vi.fn();
+    f.peers.onClientRevoked(revoked);
+    await f.peers.savePairedPeer({ nodeId: B, baseUrl: "http://b", name: "docker", peerSecret: SECRET });
     await expect(f.peers.rename(B, "nas")).resolves.toMatchObject({ nodeId: B, name: "nas", baseUrl: "http://b" });
     await expect(f.peers.findByName("docker")).resolves.toBeNull();
     await f.peers.remove(B);
     expect(await f.peers.list()).toEqual([]);
+    await expect(f.peers.peerSecret(B)).resolves.toBeNull();
+    expect(revoked).toHaveBeenCalledWith(expect.objectContaining({ kind: "peer", id: B, refusal: expect.objectContaining({ code: "PEER_UNPAIRED" }) }));
     await expect(f.peers.remove(B)).rejects.toMatchObject({ code: "PEER_NOT_FOUND" });
   });
 
   it("one-nodes-tab TR-711: changes a peer's address only when the pinned node answers there, with the switch on", async () => {
     const f = await directory();
-    await f.peers.add({ nodeId: B, baseUrl: "http://b", name: "docker" });
+    await f.peers.savePairedPeer({ nodeId: B, baseUrl: "http://b", name: "docker", peerSecret: SECRET });
     await expect(f.peers.changeAddress(B, "host.docker.internal:8001")).resolves.toMatchObject({
-      nodeId: B, name: "docker", baseUrl: "http://host.docker.internal:8001", addedAt: "2026-10-20T09:00:00.000Z" });
+      nodeId: B, name: "docker", baseUrl: "http://host.docker.internal:8001", addedAt: "2026-10-20T09:00:00.000Z", paired: true });
     expect((await readJson(path.join(f.dir, "remote-collaboration", "peers.json"))).peers[0].baseUrl).toBe("http://host.docker.internal:8001");
     f.probe.fetchNodeId.mockResolvedValueOnce("srv_someone_else_000000000000000000000");
     await expect(f.peers.changeAddress(B, "http://wrong")).rejects.toMatchObject({ code: "PEER_IDENTITY_MISMATCH" });
@@ -106,12 +117,12 @@ describe("PeerDirectory", () => {
       throw new RemoteCollaborationSettingsError("PEER_UNREACHABLE", `${url} could not be reached`, { reason: "refused", address: url });
     };
     const docker = await directory({ inContainer: true, probe: unreachable });
-    await docker.peers.add({ nodeId: B, baseUrl: "http://b", name: "docker" });
+    await docker.peers.savePairedPeer({ nodeId: B, baseUrl: "http://b", name: "docker", peerSecret: SECRET });
     await expect(docker.peers.changeAddress(B, "http://127.0.0.1:29695")).rejects.toMatchObject({
       code: "PEER_UNREACHABLE", details: { reason: "refused", address: "http://127.0.0.1:29695", loopbackInContainer: true } });
     await expect(docker.peers.changeAddress(B, "http://192.168.2.10:29695")).rejects.toMatchObject({ details: { loopbackInContainer: false } });
     const host = await directory({ inContainer: false, probe: unreachable });
-    await host.peers.add({ nodeId: B, baseUrl: "http://b", name: "docker" });
+    await host.peers.savePairedPeer({ nodeId: B, baseUrl: "http://b", name: "docker", peerSecret: SECRET });
     await expect(host.peers.changeAddress(B, "http://localhost:29695")).rejects.toMatchObject({ details: { loopbackInContainer: false } });
   });
 });

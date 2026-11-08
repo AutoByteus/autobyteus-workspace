@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { NodeEndpoints } from '~/types/node';
 import { deriveNodeEndpoints } from '~/utils/nodeEndpoints';
-import { fetchNodeDesktop, nodeDesktopStreamUrl } from '~/utils/nodeDesktopClient';
+import { fetchNodeDesktop, nodeDesktopStreamUrl, viewerStateForClose } from '~/utils/nodeDesktopClient';
 
 const fetchSpy = vi.hoisted(() => vi.fn());
 vi.mock('~/utils/remoteAccess/authorizedTransport', () => ({ authorizedFetch: fetchSpy }));
@@ -35,5 +35,13 @@ describe('nodeDesktopClient', () => {
   it('fails when the node does not answer 200', async () => {
     fetchSpy.mockResolvedValueOnce(new Response('missing', { status: 404 }));
     await expect(fetchNodeDesktop(endpoints('http://node-a.example:8001'))).rejects.toThrow('404');
+  });
+
+  it('NAS-33 a desktop disconnected from the node (owner credential revoked) reads as needing connecting; other refusals stay not allowed', () => {
+    expect(viewerStateForClose({ code: 4403, reason: 'NODE_CREDENTIAL_REVOKED' }))
+      .toEqual({ state: 'not-allowed', messageKey: 'workspace.components.workspace.tools.NodeDesktopTile.needs_connecting' });
+    for (const close of [{ code: 4403, reason: 'REMOTE_ACCESS_DEVICE_REVOKED' }, { code: 4401, reason: 'NODE_CREDENTIAL_INVALID' }, { code: 4403, reason: 'PHONE_ACCESS_ROUTE_REFUSED' }]) {
+      expect(viewerStateForClose(close).messageKey, close.reason).toBe('workspace.components.workspace.tools.NodeDesktopTile.not_allowed');
+    }
   });
 });

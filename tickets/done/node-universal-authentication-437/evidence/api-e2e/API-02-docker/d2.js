@@ -1,0 +1,11 @@
+const main = pages.find(p => p.url().includes('renderer/index.html'));
+await main.getByTestId('node-list-card').getByRole('button', { name: 'Turn on' }).last().click();
+await main.waitForTimeout(2500);
+const dlg = (await main.locator('[role="dialog"]').innerText()).slice(0, 500);
+await main.locator('[role="dialog"]').getByRole('button', { name: 'Turn on' }).click();
+await main.waitForTimeout(15000);
+const open = await main.locator('[role="dialog"]').count();
+const dlg2 = open ? (await main.locator('[role="dialog"]').innerText()).slice(0, 800) : null;
+const card = await main.getByTestId('node-list-card').innerText();
+await main.screenshot({ path: '/tmp/abtest437/d2.png' });
+return { dlg, dlg2, card: card.slice(card.indexOf('docker-3')) };

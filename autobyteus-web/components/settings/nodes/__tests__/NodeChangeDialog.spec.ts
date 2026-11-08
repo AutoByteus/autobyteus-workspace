@@ -13,13 +13,10 @@ import NodeChangeDialog from '../NodeChangeDialog.vue'
 const target = { rowKey: 'srv_8003', name: '8003', nodeId: 'srv_8003', entryIds: ['remote-8003'], windowAddress: 'http://localhost:8003' }
 const here = { name: 'Embedded Node', nodeId: 'srv_a', windowAddress: 'http://127.0.0.1:29695' }
 const plan = (overrides: Partial<NodeChangePlan>): NodeChangePlan => ({
-  kind: 'connect', target, here, phase: 'confirm', candidates: { here: [], there: [] },
+  kind: 'connect', target, here, phase: 'confirm',
   steps: [
-    { id: 'resolveHere', status: 'todo', findsLater: false, address: 'http://localhost:8003' },
-    { id: 'registerHere', status: 'todo', name: '8003', wanted: '8003' },
     { id: 'turnOnThere', status: 'todo' },
-    { id: 'resolveThere', status: 'todo', findsLater: true },
-    { id: 'registerThere', status: 'todo', name: 'Embedded Node', wanted: 'Embedded Node' },
+    { id: 'pair', status: 'todo', name: '8003', wanted: '8003', nameThere: 'Embedded Node' },
   ],
   ...overrides,
 })
@@ -31,59 +28,53 @@ const text = (wrapper: ReturnType<typeof mountWith>, testId: string) => wrapper.
 
 describe('NodeChangeDialog', () => {
   beforeEach(() => {
-    h.dialog = reactive({ plan: null, confirm: vi.fn(), cancel: vi.fn(), useAddress: vi.fn() })
+    h.dialog = reactive({ plan: null, confirm: vi.fn(), cancel: vi.fn() })
   })
 
-  it('VIS-003: every change on both nodes, grouped by node; DEC-709 (b) address line; trusted note; Cancel / Turn on', async () => {
+  it('NAS-19 VIS-003: every change grouped by node, the pairing on both; the pairing note; Cancel / Turn on', async () => {
     const wrapper = mountWith(plan({}))
     expect(wrapper.get('[role="dialog"]').attributes('aria-modal')).toBe('true')
     expect(wrapper.get('h3').text()).toBe('Let agents work with 8003?')
     expect(wrapper.text()).toContain('Agents on this node and on 8003 will be able to work with each other. These changes happen:')
-    expect(text(wrapper, 'node-change-group-here')).toContain('On this node (Embedded Node)')
-    expect(text(wrapper, 'node-change-step-registerHere')).toBe('•Register 8003 as “8003”')
     expect(text(wrapper, 'node-change-group-there')).toContain('Turn on remote collaboration (it is off)')
-    expect(text(wrapper, 'node-change-step-registerThere')).toContain('Register this node as “Embedded Node”')
-    expect(text(wrapper, 'node-change-address-registerThere')).toBe("8003 finds this node's address once it is on.")
-    expect(text(wrapper, 'node-change-trusted')).toBe('Trusted private network only: nodes are not authenticated.')
+    expect(text(wrapper, 'node-change-group-both')).toContain('On both nodes')
+    expect(text(wrapper, 'node-change-step-pair')).toContain('Pair this node with 8003 (here it is called “8003”)')
+    expect(text(wrapper, 'node-change-name-there-pair')).toBe('8003 calls this node “Embedded Node”.')
+    expect(text(wrapper, 'node-change-trusted')).toBe('Paired nodes share a secret, and each proves every request to the other with it.')
     expect(text(wrapper, 'node-change-confirm')).toBe('Turn on')
     await wrapper.get('[data-testid="node-change-confirm"]').trigger('click')
     expect(h.dialog.confirm).toHaveBeenCalled()
   })
 
-  it('VIS-021: the address the other node will use, and a name made unique, when its collaboration is already on', () => {
+  it('NAS-23 VIS-021: Pair again, with a name made unique', () => {
     const wrapper = mountWith(plan({ kind: 'finish', steps: [
-      { id: 'resolveThere', status: 'todo', address: 'http://192.168.2.10:29695' },
-      { id: 'registerThere', status: 'todo', name: 'Embedded Node 2', wanted: 'Embedded Node' },
+      { id: 'pair', status: 'todo', name: '8003 2', wanted: '8003', nameThere: 'Embedded Node' },
     ] }))
     expect(wrapper.get('h3').text()).toBe('Finish connecting 8003?')
-    expect(text(wrapper, 'node-change-address-registerThere')).toBe('8003 reaches this node at http://192.168.2.10:29695.')
-    expect(text(wrapper, 'node-change-name-taken-registerThere')).toBe('“Embedded Node” is already used there, so it gets a number.')
+    expect(text(wrapper, 'node-change-name-taken-pair')).toBe('“8003” is already used there, so it gets a number.')
     expect(text(wrapper, 'node-change-confirm')).toBe('Make these changes')
   })
 
   it('VIS-004: running shows ✓ for what is done and "Working…"', () => {
     const wrapper = mountWith(plan({ phase: 'running', steps: [
-      { id: 'resolveHere', status: 'done', address: 'http://localhost:8003' },
-      { id: 'registerHere', status: 'done', name: '8003' },
-      { id: 'turnOnThere', status: 'running' },
+      { id: 'turnOnThere', status: 'done' },
+      { id: 'pair', status: 'running', name: '8003' },
     ] }))
-    expect(text(wrapper, 'node-change-step-registerHere')).toContain('✓')
+    expect(text(wrapper, 'node-change-step-turnOnThere')).toContain('✓')
     expect(text(wrapper, 'node-change-confirm')).toBe('Working…')
     expect(wrapper.get('[data-testid="node-change-confirm"]').attributes('disabled')).toBeDefined()
   })
 
   it('VIS-014: a partial result: ✓ ✗ ○, the cause, "What was done stays done", Close / Try again', async () => {
     const wrapper = mountWith(plan({ phase: 'failed', steps: [
-      { id: 'resolveHere', status: 'done', address: 'http://localhost:8005' },
-      { id: 'registerHere', status: 'done', name: '8005' },
+      { id: 'turnOnHere', status: 'done' },
       { id: 'turnOnThere', status: 'failed', error: { code: 'PEER_UNREACHABLE', message: 'x', reason: 'refused', address: 'http://localhost:8005' } },
-      { id: 'resolveThere', status: 'notRun' },
-      { id: 'registerThere', status: 'notRun', name: 'Embedded Node' },
+      { id: 'pair', status: 'notRun', name: '8005' },
     ] }))
-    expect(text(wrapper, 'node-change-step-registerHere')).toContain('✓')
+    expect(text(wrapper, 'node-change-step-turnOnHere')).toContain('✓')
     expect(text(wrapper, 'node-change-step-turnOnThere')).toContain('✗')
     expect(text(wrapper, 'node-change-error-turnOnThere')).toBe('Nothing answers at that address and port.')
-    expect(text(wrapper, 'node-change-step-registerThere')).toContain('○')
+    expect(text(wrapper, 'node-change-step-pair')).toContain('○')
     expect(text(wrapper, 'node-change-partial')).toBe('Not everything could be done. What was done stays done.')
     await wrapper.get('[data-testid="node-change-retry"]').trigger('click')
     expect(h.dialog.confirm).toHaveBeenCalled()
@@ -91,20 +82,16 @@ describe('NodeChangeDialog', () => {
     expect(h.dialog.cancel).toHaveBeenCalled()
   })
 
-  it('VIS-018: the Docker hint under the register line; Use this looks again with that address; Docker Guide', async () => {
+  it('VIS-018: a pairing that failed on a Docker loopback address shows the hint (without an address to use) and the Docker Guide', async () => {
     const wrapper = mountWith(plan({ phase: 'failed', steps: [
       { id: 'turnOnThere', status: 'done' },
-      { id: 'resolveThere', status: 'failed', error: { code: 'PEER_UNREACHABLE', message: 'x', address: 'http://127.0.0.1:29695', loopbackInContainer: true } },
-      { id: 'registerThere', status: 'notRun', name: 'Embedded Node' },
+      { id: 'pair', status: 'failed', name: '8003', error: { code: 'PEER_UNREACHABLE', message: 'x', address: 'http://127.0.0.1:29695', loopbackInContainer: true } },
     ] }))
-    expect(text(wrapper, 'node-change-step-registerThere')).toContain('✗')
-    const hint = text(wrapper, 'node-change-hint-registerThere')
+    expect(text(wrapper, 'node-change-step-pair')).toContain('✗')
+    const hint = text(wrapper, 'node-change-hint-pair')
     expect(hint).toContain("8003 can't reach http://127.0.0.1:29695.")
-    expect(hint).toContain('8003 runs in Docker, where 127.0.0.1 is the container itself.')
-    expect(hint).toContain('Try http://host.docker.internal:29695')
-    await wrapper.get('[data-testid="node-change-hint-registerThere-use"]').trigger('click')
-    expect(h.dialog.useAddress).toHaveBeenCalledWith('resolveThere', 'http://host.docker.internal:29695')
-    await wrapper.get('[data-testid="node-change-hint-registerThere-guide"]').trigger('click')
+    expect(wrapper.find('[data-testid="node-change-hint-pair-use"]').exists()).toBe(false)
+    await wrapper.get('[data-testid="node-change-hint-pair-guide"]').trigger('click')
     expect(wrapper.emitted('guide')).toHaveLength(1)
   })
 

@@ -16,7 +16,8 @@ import { registerHttpAccessLogPolicy } from "../logging/http-access-log-policy.j
 import { SERVER_ROUTE_PARAM_MAX_LENGTH } from "../api/fastify-runtime-config.js";
 import { registerMcpGatewayRoutes } from "../mcp-gateway/mcp-gateway-routes.js";
 import { registerRemoteAccessHostGate } from "../api/security/remote-access-host-gate.js";
-import { registerRemoteAccessPolicyPlugin } from "../api/security/remote-access-policy-plugin.js";
+import { registerNodeAccessPlugin } from "../api/security/node-access-plugin.js";
+import { startNodeAccess, type NodeAccess } from "./node-access-composition.js";
 import { registerMobileWebStaticRoutes } from "../api/static/mobile-web.js";
 import { registerRestRoutes } from "../api/rest/index.js";
 import { registerWebsocketRoutes } from "../api/websocket/index.js";
@@ -286,11 +287,13 @@ export const buildStudioServer = async (input: {
   let agentRuntimeStatus: AgentRuntimeStatusHandle | null = null;
   let applicationRuntime: ApplicationPlatformRuntime | null = null;
   let releaseRemoteCollaboration: (() => void) | null = null;
+  let nodeAccess: NodeAccess | null = null;
   let releaseModelRouting: (() => void) | null = null;
   let processResourcesClosed = false;
   const closeProcessResources = async (): Promise<void> => {
     if (processResourcesClosed) return;
     processResourcesClosed = true;
+    await nodeAccess?.close();
     releaseRemoteCollaboration?.();
     releaseModelRouting?.();
     await closeStudioProcessResources({
@@ -377,7 +380,7 @@ export const buildStudioServer = async (input: {
     // One root resolution for inbound remote messages and restart resume (autobyteus-285 D5).
     const rootResolver = createCollaborationRootResolver({ standaloneRoots: getStandaloneAgentRunRootManager(),
       teamRuns: generalProcessRunSupervisor.teamRunService, orgRuns: generalProcessRunSupervisor.agentOrgRunService });
-    releaseRemoteCollaboration = composeStudioRemoteCollaboration({
+    const remoteCollaboration = composeStudioRemoteCollaboration({
       appDataDir: input.appConfig.getAppDataDir(),
       tempWorkspaceDir: input.appConfig.getTempWorkspaceDir(),
       agentRuns: generalProcessRunSupervisor.agentRunService,
@@ -385,6 +388,9 @@ export const buildStudioServer = async (input: {
       orgRuns: generalProcessRunSupervisor.agentOrgRunService,
       rootResolver,
     });
+    releaseRemoteCollaboration = remoteCollaboration.release;
+    // autobyteus-437: the node access gate (every request needs a credential) and its credential services.
+    const currentNodeAccess = nodeAccess = await startNodeAccess({ appDataDir: input.appConfig.getAppDataDir(), remoteCollaboration: remoteCollaboration.services });
     const restartResume = composeRestartResume({ appDataDir: input.appConfig.getAppDataDir(), rootResolver,
       orgHistory: generalProcessRunSupervisor.agentOrgRunHistoryCatalogService });
     const applicationServices = createStudioApplicationServices({
@@ -458,16 +464,17 @@ export const buildStudioServer = async (input: {
       // First, so its onRequest hook marks every upgrade: only a marked upgrade's socket is destroyed when a
       // later hook refuses it.
       await app.register(websocket);
-      // The node's first request rule: before the MCP gateway hook, CORS preflights and the origin/auth hook.
+      // The node's first request rule: before the MCP gateway hook, CORS preflights and the origin/access hook.
       registerRemoteAccessHostGate(app);
-      await registerMcpGatewayRoutes(app);
+      await registerMcpGatewayRoutes(app, { accessGate: currentNodeAccess.mcpGatewayAccess });
       await app.register(multipart, { limits: { fileSize: CONTEXT_FILE_MAX_BYTES } });
-      await registerRemoteAccessPolicyPlugin(app);
+      await registerNodeAccessPlugin(app, currentNodeAccess.gate);
       await registerMobileWebStaticRoutes(app);
       await app.register(
         async (restApp) => registerRestRoutes(restApp, {
           lifecycleReadiness: currentApplicationRuntime.lifecycle,
           application: currentApplicationRuntime.rest,
+          nodeAccess: currentNodeAccess,
         }),
         { prefix: "/rest" },
       );

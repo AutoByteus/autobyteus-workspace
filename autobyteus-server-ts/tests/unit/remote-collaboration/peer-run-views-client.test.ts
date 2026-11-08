@@ -1,12 +1,14 @@
 import { describe, expect, it, vi } from "vitest";
 import { PeerClient } from "../../../src/remote-collaboration/channel/peer-client.js";
+import { openPeerRunObservation } from "../../../src/remote-collaboration/channel/peer-run-observation-client.js";
+import { PeerRequestSignatureVerifier } from "../../../src/remote-collaboration/channel/peer-request-signature.js";
 import type { PeerWebSocket } from "../../../src/remote-collaboration/channel/peer-run-observation-client.js";
 import type { PeerNode } from "../../../src/remote-collaboration/domain/peer-node.js";
 
 /** autobyteus-278: the delegating node's outbound calls about runs its delegation started (§ Interface Boundary Mapping). */
 
 const SELF = "srv_self_node_000000000000000000000000";
-const PEER: PeerNode = { nodeId: "srv_peer_node_000000000000000000000000", name: "docker", baseUrl: "http://peer:29700", addedAt: "2026-10-20T09:00:00.000Z" };
+const PEER: PeerNode = { nodeId: "srv_peer_node_000000000000000000000000", name: "docker", baseUrl: "http://peer:29700", addedAt: "2026-10-20T09:00:00.000Z", paired: true };
 const answer = (body: unknown) => ({ ok: true, status: 200, json: async () => body });
 const TEAM = { kind: "agent_team" as const, runId: "team-run" };
 
@@ -29,7 +31,7 @@ const client = (fetchImpl?: (url: string, init: RequestInit) => Promise<ReturnTy
   return {
     fetch, sockets,
     client: new PeerClient({
-      peers: { findByName: async () => PEER, findByNodeId: async (nodeId) => nodeId === PEER.nodeId ? PEER : null },
+      peers: { findByName: async () => PEER, peerSecret: async () => "peer-secret-for-tests", findByNodeId: async (nodeId) => nodeId === PEER.nodeId ? PEER : null },
       capability: { isEnabled: () => options.enabled ?? true },
       ownNodeId: async () => SELF,
       timeoutMs: 50,
@@ -38,7 +40,8 @@ const client = (fetchImpl?: (url: string, init: RequestInit) => Promise<ReturnTy
     }),
   };
 };
-const flush = async () => { for (let index = 0; index < 5; index += 1) await Promise.resolve(); };
+// The opening reads the peer, this node's ID and the peer secret (signed upgrade) before it opens the socket.
+const flush = async () => { for (let index = 0; index < 10; index += 1) await Promise.resolve(); };
 const statusMessage = { type: "AGENT_STATUS", payload: { status: "running", trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null } };
 
 describe("PeerClient run views (autobyteus-278)", () => {
@@ -66,6 +69,25 @@ describe("PeerClient run views (autobyteus-278)", () => {
     await expect(f.client.ownerCommand(PEER.nodeId, TEAM, "lead-run", command)).resolves.toMatchObject({ accepted: false, code: "TARGET_NOT_PERMITTED" });
     expect(f.fetch.mock.calls[1]![0]).toBe("http://peer:29700/rest/remote/owner-commands");
     expect(JSON.parse(String(f.fetch.mock.calls[1]![1].body))).toEqual({ fromNodeId: SELF, toNodeId: PEER.nodeId, targetRoot: TEAM, agentRunId: "lead-run", command });
+  });
+
+  it("NAS-20 an observation of a peer at a gateway base path opens the base path and signs the node route", async () => {
+    let opened: { url: string; headers: Readonly<Record<string, string>> } | null = null;
+    openPeerRunObservation({
+      resolvePeer: async () => ({ ...PEER, baseUrl: "https://gateway.example.com/autobyteus" }),
+      peerSecret: async () => "peer-secret-for-tests",
+      ownNodeId: async () => SELF,
+      path: "/rest/remote/run-observations",
+      targetRoot: TEAM,
+      observer: { onFrame: vi.fn(), onEnd: vi.fn() },
+      openWebSocket: (url, headers) => { opened = { url, headers }; return new FakeSocket(url); },
+      openingTimeoutMs: 50,
+    });
+    await flush();
+    expect(opened!.url).toBe("wss://gateway.example.com/autobyteus/rest/remote/run-observations");
+    const verifier = new PeerRequestSignatureVerifier({ ownNodeId: async () => PEER.nodeId, peerSecret: async () => "peer-secret-for-tests" });
+    await expect(verifier.verify({ method: "GET", pathWithQuery: "/rest/remote/run-observations", headers: opened!.headers }))
+      .resolves.toMatchObject({ ok: true, identity: { kind: "peer", nodeId: SELF } });
   });
 
   it("N-401: an observation accepts frames only after the first frame names the pinned node; close() ends it silently", async () => {

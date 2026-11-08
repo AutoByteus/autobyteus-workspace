@@ -24,7 +24,7 @@ const phoneSetupRemoteNodeMessages = {
   'settings.components.settings.phone.remote.how.tailscale.safety': '手机和 {{name}} 之间的连接是加密的，只有登录你的 Tailscale 账号的设备才能访问。',
   'settings.components.settings.phone.remote.how.vpn.line': '你的 VPN 把手机和 {{name}} 放在同一个私有网络中。',
   'settings.components.settings.phone.remote.how.vpn.when': '你已经在使用连接手机和 {{name}} 的 VPN。',
-  'settings.components.settings.phone.remote.how.vpn.setup': '将 {{name}}、这台电脑和手机连接到 VPN。AutoByteus 会自动找到它。',
+  'settings.components.settings.phone.remote.how.vpn.setup': '将 {{name}}、这台电脑和手机连接到 VPN，并在 {{name}} 的 AUTOBYTEUS_ALLOWED_CLIENT_NETWORKS 中列出该 VPN 网络（例如 10.8.0.0/16）：节点只接受你列出的网络。',
 } satisfies TranslationCatalog;
 
 export default phoneSetupRemoteNodeMessages;

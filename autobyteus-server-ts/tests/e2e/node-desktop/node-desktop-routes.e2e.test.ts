@@ -1,7 +1,8 @@
 /**
- * /rest/node-desktop and /ws/node-desktop on a test-owned Fastify server with the Remote Access
- * policy, the shared WebSocket authorization and a fake RFB desktop that counts its connections
- * (AC-003, AC-005; REQ-002, REQ-003). No Xvnc, no Docker.
+ * /rest/node-desktop and /ws/node-desktop on a test-owned Fastify server behind the node access gate
+ * (owner and phone credentials, the open-socket registry) and a fake RFB desktop that counts its
+ * connections (AC-003, AC-005; REQ-002, REQ-003). The test is the node's owner desktop: its requests
+ * carry the owner credential. No Xvnc, no Docker.
  * Run: pnpm -C autobyteus-server-ts exec vitest run tests/e2e/node-desktop --no-watch
  */
 import "reflect-metadata";
@@ -16,13 +17,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import WebSocket from "ws";
 import { registerNodeDesktopRoutes } from "../../../src/api/rest/node-desktop.js";
 import { registerRemoteAccessRoutes } from "../../../src/api/rest/remote-access.js";
-import { registerRemoteAccessPolicyPlugin } from "../../../src/api/security/remote-access-policy-plugin.js";
-import { resetRemoteAccessRoutePolicyForTests } from "../../../src/api/security/remote-access-route-policy.js";
 import { registerNodeDesktopWebsocket } from "../../../src/api/websocket/node-desktop.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { STARTER_SOCKET_ENV } from "../../../src/node-update/starter-client.js";
 import type { CreatePairingSessionResult, PairingExchangeResult } from "../../../src/remote-access/domain/models.js";
-import { resetRemoteAccessAuthServiceForTests } from "../../../src/remote-access/services/remote-access-auth-service.js";
+import { PhoneCredentialVerifier } from "../../../src/remote-access/services/phone-credential-verifier.js";
+import { registerTestNodeAccess } from "../../helpers/node-access-test-gate.js";
+import { attachOwnerCredential } from "../../../../test-support/node-access/owner-credential-attachment.mjs";
 import {
   configureNodeIdentityCapability,
   resetNodeIdentityServiceForTests,
@@ -35,6 +36,8 @@ import { resetRemoteAccessSettingsStoreForTests } from "../../../src/remote-acce
 
 const RFB_VERSION = Buffer.from("RFB 003.008\n", "latin1");
 const OWNER_ADDRESS = "100.64.1.2";
+/** The owner desktop's credential (this test node's launch credential). */
+const OWNER = "own_node_desktop_routes_owner";
 
 type Outcome =
   | { kind: "open-then-closed"; firstMessage: Buffer | null; code: number; reason: string }
@@ -47,6 +50,7 @@ describe("node desktop routes", () => {
   let desktop: net.Server;
   let desktopConnections: number;
   let nodeHasDesktop: boolean;
+  let detachOwner: () => void = () => undefined;
 
   beforeEach(async () => {
     appDataDir = await mkdtemp(path.join(os.tmpdir(), "autobyteus-node-desktop-routes-"));
@@ -69,7 +73,8 @@ describe("node desktop routes", () => {
 
     app = fastify();
     await app.register(websocket);
-    await registerRemoteAccessPolicyPlugin(app);
+    const phoneCredentials = new PhoneCredentialVerifier();
+    await registerTestNodeAccess(app, { launchCredential: OWNER, verifiers: [phoneCredentials], revocationSources: [phoneCredentials] });
     await app.register(async (restApp) => {
       await registerRemoteAccessRoutes(restApp);
       await registerNodeDesktopRoutes(restApp);
@@ -77,14 +82,17 @@ describe("node desktop routes", () => {
     await registerNodeDesktopWebsocket(app, () => (nodeHasDesktop ? { host: "127.0.0.1", port: desktopPort } : null));
     await app.listen({ host: "127.0.0.1", port: 0 });
     baseUrl = `ws://127.0.0.1:${(app.server.address() as AddressInfo).port}`;
+    detachOwner = attachOwnerCredential(baseUrl.replace(/^ws/, "http"), OWNER);
   });
 
   afterEach(async () => {
     vi.restoreAllMocks();
+    detachOwner();
     delete process.env[STARTER_SOCKET_ENV];
     await app.close();
     await new Promise<void>((resolve) => desktop.close(() => resolve()));
-    await rm(appDataDir, { recursive: true, force: true });
+    // A phone's last-seen is written in the background (at most once a minute); retry while it finishes.
+    await rm(appDataDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 20 });
     resetRemoteAccessSingletons();
     appConfigProvider.resetForTests();
   });
@@ -113,16 +121,16 @@ describe("node desktop routes", () => {
     });
 
   it("GET /rest/node-desktop reports a node desktop exactly on a Docker node", async () => {
-    const withoutStarter = await app.inject({ method: "GET", url: "/rest/node-desktop" });
+    const withoutStarter = await inject("GET", "/rest/node-desktop");
     expect(withoutStarter.statusCode).toBe(200);
     expect(withoutStarter.json()).toEqual({ available: false });
 
     process.env[STARTER_SOCKET_ENV] = "/run/autobyteus/starter.sock";
-    const withStarter = await app.inject({ method: "GET", url: "/rest/node-desktop" });
+    const withStarter = await inject("GET", "/rest/node-desktop");
     expect(withStarter.json()).toEqual({ available: true });
   });
 
-  it("streams the node desktop to a trusted viewer in either mode", async () => {
+  it("NAS-01 streams the node desktop to the owner's desktop in either mode", async () => {
     for (const mode of ["view", "control"]) {
       const outcome = await connect(`/ws/node-desktop?mode=${mode}`);
       expect(outcome).toMatchObject({ kind: "open-then-closed", code: 1000 });
@@ -142,7 +150,6 @@ describe("node desktop routes", () => {
       "?mode=view&target=10.0.0.5:5900",
       "?mode=view&url=ws://10.0.0.5:6080",
       "?mode=view&password=x",
-      "?mode=view&access_token=a&access_token=b",
     ];
     for (const query of queries) {
       expect(await connect(`/ws/node-desktop${query}`), query).toEqual({
@@ -152,6 +159,9 @@ describe("node desktop routes", () => {
         reason: "NODE_DESKTOP_INVALID_REQUEST",
       });
     }
+    // Two query credentials are not one credential: the gate refuses it before the route reads the query.
+    expect(await connect("/ws/node-desktop?mode=view&access_token=a&access_token=b")).toMatchObject({ kind: "open-then-closed", code: 4401 });
+    // An unknown path, with the owner's credential, is answered 404 without an upgrade.
     for (const variant of ["/ws/node-desktop/", "/ws/node-desktop/5900?mode=view", "/ws/node-desktop/10.0.0.5:5900?mode=view"]) {
       expect(await connect(variant), variant).toEqual({ kind: "http", statusCode: 404 });
     }
@@ -169,7 +179,7 @@ describe("node desktop routes", () => {
     expect(desktopConnections).toBe(0);
   });
 
-  it("refuses invalid, revoked and disabled phone credentials before any desktop connection (AC-005)", async () => {
+  it("NAS-12 NAS-10 refuses invalid, revoked and disabled phone credentials before any desktop connection (AC-005)", async () => {
     expect(await connect("/ws/node-desktop?mode=view&access_token=mra_not-a-real-credential")).toMatchObject({
       kind: "open-then-closed",
       code: 4401,
@@ -225,7 +235,7 @@ describe("node desktop routes", () => {
     expect(desktopConnections).toBe(4);
     // One metadata-only node log line names the refusal (autobyteus-426 AC-006).
     expect(refusalLines()).toEqual([
-      expect.stringMatching(/^\[node-desktop\] stream refused reason=NODE_DESKTOP_TOO_MANY_VIEWERS limit=node mode=control viewer=(loopback|trusted_network) open=4 max=4$/),
+      "[node-desktop] stream refused reason=NODE_DESKTOP_TOO_MANY_VIEWERS limit=node mode=control viewer=owner open=4 max=4",
     ]);
 
     // A place frees up when a stream ends.
@@ -246,13 +256,13 @@ describe("node desktop routes", () => {
     expect(desktopConnections).toBe(2);
     // No device ID, credential or address in the line (autobyteus-426 AC-006, QR-002).
     expect(refusalLines()).toEqual([
-      "[node-desktop] stream refused reason=NODE_DESKTOP_TOO_MANY_VIEWERS limit=phone mode=view viewer=mobile open=2 max=2",
+      "[node-desktop] stream refused reason=NODE_DESKTOP_TOO_MANY_VIEWERS limit=phone mode=view viewer=phone open=2 max=2",
     ]);
     expect(await connect("/ws/node-desktop?mode=view")).toMatchObject({ kind: "open-then-closed", code: 1000 });
     expect(desktopConnections).toBe(3);
   });
 
-  it("ends an open phone stream within 25 s of its revocation; a reconnect is refused (AC-012)", { timeout: 40_000 }, async () => {
+  it("NAS-37 ends an open phone stream at once when the phone is revoked; a reconnect is refused (AC-012)", { timeout: 40_000 }, async () => {
     await setPhoneAccess(true);
     const phone = await pairPhone("Revoked While Watching");
     const other = await pairPhone("Still Paired");
@@ -265,14 +275,14 @@ describe("node desktop routes", () => {
     const close = await stream.closed;
 
     expect({ code: close.code, reason: close.reason }).toEqual({ code: 4403, reason: "REMOTE_ACCESS_DEVICE_REVOKED" });
-    expect(close.at - revokedAt).toBeLessThanOrEqual(25_000);
+    expect(close.at - revokedAt).toBeLessThanOrEqual(2_000);
     expect(otherStream.socket.readyState).toBe(WebSocket.OPEN);
     expect(trustedStream.socket.readyState).toBe(WebSocket.OPEN);
     expect(await connect(`/ws/node-desktop?mode=view&access_token=${encodeURIComponent(phone.credential)}`))
       .toEqual({ kind: "open-then-closed", firstMessage: null, code: 4403, reason: "REMOTE_ACCESS_DEVICE_REVOKED" });
   });
 
-  it("ends open phone streams within 25 s of Phone Access being turned off (AC-012)", { timeout: 40_000 }, async () => {
+  it("NAS-37 ends open phone streams at once when Phone Access is turned off (AC-012)", { timeout: 40_000 }, async () => {
     await setPhoneAccess(true);
     const phone = await pairPhone("Watching Phone");
     const stream = await hold(`?mode=control&access_token=${encodeURIComponent(phone.credential)}`);
@@ -283,7 +293,7 @@ describe("node desktop routes", () => {
     const close = await stream.closed;
 
     expect({ code: close.code, reason: close.reason }).toEqual({ code: 4403, reason: "PHONE_ACCESS_DISABLED" });
-    expect(close.at - disabledAt).toBeLessThanOrEqual(25_000);
+    expect(close.at - disabledAt).toBeLessThanOrEqual(2_000);
     expect(trustedStream.socket.readyState).toBe(WebSocket.OPEN);
   });
 
@@ -313,13 +323,11 @@ describe("node desktop routes", () => {
   }
 
   function inject(method: InjectOptions["method"], url: string, payload?: InjectOptions["payload"]) {
-    return app.inject({ method, url, payload, remoteAddress: OWNER_ADDRESS });
+    return app.inject({ method, url, payload, remoteAddress: OWNER_ADDRESS, headers: { authorization: `Bearer ${OWNER}` } });
   }
 });
 
 function resetRemoteAccessSingletons(): void {
-  resetRemoteAccessRoutePolicyForTests();
-  resetRemoteAccessAuthServiceForTests();
   resetRemoteAccessPairingServiceForTests();
   resetRemoteAccessSettingsServiceForTests();
   resetNodeIdentityServiceForTests();

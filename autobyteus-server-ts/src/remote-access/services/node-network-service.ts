@@ -1,5 +1,11 @@
 import { promises as dns } from "node:dns";
+import { EventEmitter } from "node:events";
 import os from "node:os";
+import type {
+  NetworkAdmissionFacts,
+  NetworkAdmissionFactsSource,
+} from "../../node-access/domain/network-admission-facts.js";
+import { TAILSCALE_NETWORKS, createIpNetworkSet } from "../../node-access/domain/ip-network.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { runsInContainer } from "../../server-addressing/runs-in-container.js";
 import {
@@ -17,6 +23,7 @@ import {
   classifyInterfaces,
   flattenNetworkInterfaces,
   listTailscaleRangeTunnelAddresses,
+  type ClassifiedInterfaces,
   type InterfaceAddress,
 } from "./network-interface-classifier.js";
 import { isPhoneUnreachableLocalOnlyHost } from "./pairing-url-policy.js";
@@ -63,11 +70,32 @@ const phoneReachableConfiguredBaseUrl = (raw: string): string | null => {
   }
 };
 
+const tailscaleNetworks = createIpNetworkSet(TAILSCALE_NETWORKS);
+
+/** Every address of the interface that carries this computer's Tailscale IPv4 address, in the Tailscale ranges. */
+const tailscaleInterfaceAddresses = (entries: InterfaceAddress[], tailscaleAddress: string): string[] => {
+  const interfaceName = entries.find((entry) => entry.address === tailscaleAddress)?.interfaceName;
+  return entries
+    .filter((entry) => entry.interfaceName === interfaceName)
+    .map((entry) => ({ address: entry.address.split("%", 1)[0] ?? entry.address, family: entry.family === "IPv6" ? "ipv6" as const : "ipv4" as const }))
+    .filter((entry) => tailscaleNetworks.contains(entry.address, entry.family))
+    .map((entry) => entry.address);
+};
+
+type ComputerInterfaces = Readonly<{
+  entries: InterfaceAddress[];
+  classified: ClassifiedInterfaces;
+  localNetworkId: string;
+}>;
+
 /**
- * This computer's network facts as one node sees them, and the local networks the owner allowed phones on.
+ * This computer's network facts as one node sees them, and the local networks the owner allowed phones on; also the
+ * facts network admission matches client addresses against (NA-3).
  * It runs no Tailscale command and changes nothing on the network.
  */
-export class NodeNetworkService {
+export class NodeNetworkService implements NetworkAdmissionFactsSource {
+  private readonly events = new EventEmitter();
+
   constructor(
     private readonly facts: NodeNetworkFactsSource = systemFactsSource,
     private readonly allowedStore: AllowedLocalNetworkStore = getAllowedLocalNetworkStore(),
@@ -93,26 +121,13 @@ export class NodeNetworkService {
       };
     }
 
-    const entries = this.facts.networkInterfaces();
-    const tunnelAddresses = listTailscaleRangeTunnelAddresses(entries);
-    const [defaultRoute, reverseNameList] = await Promise.all([
-      this.facts.defaultRoute(),
-      Promise.all(tunnelAddresses.map((address) => this.facts.reverseLookup(address))),
-    ]);
-    const reverseNames = new Map(tunnelAddresses.map((address, index) => [address, reverseNameList[index] ?? null]));
-    const classified = classifyInterfaces({
-      entries,
-      reverseNames,
-      defaultRouteInterfaceName: defaultRoute.interfaceName,
-    });
-
+    const { classified, localNetworkId } = await this.readComputerInterfaces();
     let localNetwork: NodeNetwork["localNetwork"] = null;
     if (classified.localAddresses.length > 0) {
-      const networkId = localNetworkIdFor(defaultRoute.gatewayHardwareAddress);
       localNetwork = {
-        networkId,
+        networkId: localNetworkId,
         addresses: classified.localAddresses,
-        allowed: await this.allowedStore.isAllowed(networkId),
+        allowed: await this.allowedStore.isAllowed(localNetworkId),
       };
     }
 
@@ -126,11 +141,47 @@ export class NodeNetworkService {
     };
   }
 
+  async readAdmissionFacts(): Promise<NetworkAdmissionFacts> {
+    if (this.facts.runsInContainer()) {
+      return { runsInContainer: true, tailscaleAddresses: [], localNetwork: null };
+    }
+    const { entries, classified, localNetworkId } = await this.readComputerInterfaces();
+    return {
+      runsInContainer: false,
+      tailscaleAddresses: classified.tailscale ? tailscaleInterfaceAddresses(entries, classified.tailscale.address) : [],
+      localNetwork: classified.localSubnets.length > 0
+        ? { subnets: classified.localSubnets, allowed: await this.allowedStore.isAllowed(localNetworkId) }
+        : null,
+    };
+  }
+
+  onAdmissionFactsChanged(listener: () => void): () => void {
+    this.events.on("admissionFactsChanged", listener);
+    return () => this.events.off("admissionFactsChanged", listener);
+  }
+
   async setLocalNetworkAllowed(networkId: string, allowed: boolean): Promise<void> {
     if (!NETWORK_ID_PATTERN.test(networkId)) {
       throw new RemoteAccessError("REMOTE_ACCESS_NETWORK_ID_INVALID", "Unknown local network ID.", 400);
     }
     await this.allowedStore.setAllowed(networkId, allowed);
+    this.events.emit("admissionFactsChanged");
+  }
+
+  private async readComputerInterfaces(): Promise<ComputerInterfaces> {
+    const entries = this.facts.networkInterfaces();
+    const tunnelAddresses = listTailscaleRangeTunnelAddresses(entries);
+    const [defaultRoute, reverseNameList] = await Promise.all([
+      this.facts.defaultRoute(),
+      Promise.all(tunnelAddresses.map((address) => this.facts.reverseLookup(address))),
+    ]);
+    const reverseNames = new Map(tunnelAddresses.map((address, index) => [address, reverseNameList[index] ?? null]));
+    const classified = classifyInterfaces({
+      entries,
+      reverseNames,
+      defaultRouteInterfaceName: defaultRoute.interfaceName,
+    });
+    return { entries, classified, localNetworkId: localNetworkIdFor(defaultRoute.gatewayHardwareAddress) };
   }
 }
 

@@ -47,6 +47,8 @@ import { NodeAutoUpdater } from '../nodeAutoUpdate/nodeAutoUpdater'
 import { NodeAutoUpdateRecord } from '../nodeAutoUpdate/nodeAutoUpdateRecord'
 import { createNodeUpdateClient } from '../nodeAutoUpdate/nodeUpdateClient'
 import { registerNodeAutoUpdateIpc } from '../nodeAutoUpdate/nodeAutoUpdateIpc'
+import { startDesktopNodeAccess } from '../nodeAccess/desktopNodeAccess'
+import type { NodeConnectService } from '../nodeAccess/nodeConnectService'
 import { NODE_AUTO_UPDATE_CHANGED_CHANNEL, type NodeAutoUpdateEntries } from '../../shared/nodeAutoUpdateTypes'
 
 type ElectronApplicationOptions = {
@@ -66,6 +68,7 @@ export class ElectronApplication {
     error => logger.error('Application shutdown incomplete', error))
   private nodeRegistrySnapshot: NodeRegistrySnapshot = { version: 0, nodes: [] }
   private nodeAutoUpdater: NodeAutoUpdater | null = null
+  private nodeAccess: NodeConnectService | null = null
 
   constructor({ profile }: ElectronApplicationOptions) {
     this.profile = profile
@@ -128,7 +131,11 @@ export class ElectronApplication {
   }
 
   private commitNodeRegistrySnapshot(snapshot: NodeRegistrySnapshot): void {
+    const removed = this.nodeRegistrySnapshot.nodes.filter((node) => !snapshot.nodes.some((next) => next.id === node.id))
     this.nodeRegistrySnapshot = snapshot
+    // A removed node's credential is revoked on the node and forgotten here (autobyteus-437 REQ-011).
+    for (const node of removed) void this.nodeAccess?.nodeRemoved(node.id, node.baseUrl)
+    this.nodeAccess?.refresh()
     saveNodeRegistrySnapshot(app.getPath('userData'), snapshot)
     this.broadcastNodeRegistrySnapshot()
     this.nodeAutoUpdater?.nodesChanged()
@@ -395,6 +402,14 @@ export class ElectronApplication {
         error,
       ),
     })
+    // Before any window loads: the app windows' requests to nodes carry their credentials (autobyteus-437).
+    this.nodeAccess = startDesktopNodeAccess({
+      userDataPath: app.getPath('userData'),
+      nodes: () => this.nodeRegistrySnapshot.nodes,
+      embedded: () => ({ baseUrl: this.activeEmbeddedBaseUrl, credential: this.serverManager.getLaunchOwnerCredential() }),
+      onLaunchCredentialChanged: (listener) => { this.serverManager.on('launch-credential-changed', listener) },
+      broadcast: (channel, states) => this.shellWindowRegistry.broadcast(channel, states),
+    })
     this.installIpcHandlers()
     this.startNodeAutoUpdates()
     this.serverStatusManager.on('status-change', (status) => {
@@ -450,7 +465,8 @@ export class ElectronApplication {
     const record = new NodeAutoUpdateRecord(app.getPath('userData'))
     const broadcast = (entries: NodeAutoUpdateEntries) => this.shellWindowRegistry.broadcast(NODE_AUTO_UPDATE_CHANGED_CHANNEL, entries)
     const updater = new NodeAutoUpdater({ getNodes: () => this.nodeRegistrySnapshot.nodes, appVersion: app.getVersion(),
-      isPackaged: app.isPackaged, record, client: createNodeUpdateClient(), onChange: broadcast })
+      isPackaged: app.isPackaged, record,
+      client: createNodeUpdateClient({ credentialFor: (baseUrl) => this.nodeAccess?.credentialFor(baseUrl) ?? null }), onChange: broadcast })
     this.nodeAutoUpdater = updater
     registerNodeAutoUpdateIpc(ipcMain, record, broadcast, (entryId) => void updater.recheckFailure(entryId))
     updater.nodesChanged()

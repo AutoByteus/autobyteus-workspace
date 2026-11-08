@@ -36,9 +36,38 @@
           </div>
         </div>
 
-        <div class="rounded-xl border border-blue-100 bg-blue-50/80 p-4 text-sm text-blue-800 lg:col-span-2">
-          <p class="font-semibold">{{ t('tools.components.tools.McpGatewayPanel.access_mode') }}</p>
-          <p class="mt-1 leading-6">{{ t('tools.components.tools.McpGatewayPanel.bearer_token_guidance') }}</p>
+        <div class="rounded-xl border border-blue-100 bg-blue-50/80 p-4 text-sm text-blue-800 lg:col-span-2" data-testid="mcp-gateway-token">
+          <p class="font-semibold">{{ t('tools.components.tools.McpGatewayPanel.gateway_token') }}</p>
+          <p class="mt-1 leading-6">{{ t('tools.components.tools.McpGatewayPanel.token_guidance') }}</p>
+          <p v-if="tokenError" class="mt-2 text-red-700" role="alert" data-testid="mcp-gateway-token-error">{{ tokenError }}</p>
+          <template v-else-if="token">
+            <div class="mt-2 rounded-lg border border-blue-200 bg-white px-3 py-2 font-mono text-xs leading-5 text-gray-900" data-testid="mcp-gateway-token-value">
+              <span class="break-all">{{ tokenShown ? token.token : maskedToken }}</span>
+            </div>
+            <div class="mt-2 flex flex-wrap gap-2">
+              <button type="button" class="rounded-md border border-blue-200 bg-white px-2.5 py-1 text-xs font-medium text-blue-700 hover:bg-blue-100" data-testid="mcp-gateway-token-show" @click="tokenShown = !tokenShown">
+                {{ tokenShown ? t('tools.components.tools.McpGatewayPanel.hide') : t('tools.components.tools.McpGatewayPanel.show') }}
+              </button>
+              <button type="button" class="rounded-md border border-blue-200 bg-white px-2.5 py-1 text-xs font-medium text-blue-700 hover:bg-blue-100" data-testid="mcp-gateway-token-copy" @click="copyToken">
+                {{ tokenCopied ? t('tools.components.tools.McpGatewayPanel.copied') : t('tools.components.tools.McpGatewayPanel.copy') }}
+              </button>
+              <button
+                v-if="token.source === 'node'"
+                type="button"
+                class="rounded-md border border-blue-200 bg-white px-2.5 py-1 text-xs font-medium text-blue-700 hover:bg-blue-100 disabled:opacity-50"
+                :disabled="regenerating"
+                data-testid="mcp-gateway-token-regenerate"
+                @click="regenerateToken"
+              >
+                {{ t('tools.components.tools.McpGatewayPanel.regenerate') }}
+              </button>
+            </div>
+            <p class="mt-2 text-xs leading-5 text-blue-700">
+              {{ token.source === 'environment'
+                ? t('tools.components.tools.McpGatewayPanel.token_from_environment')
+                : t('tools.components.tools.McpGatewayPanel.regenerate_hint') }}
+            </p>
+          </template>
         </div>
       </div>
 
@@ -67,11 +96,14 @@
 
 <script setup lang="ts">
 import { Icon } from '@iconify/vue';
-import { computed, onBeforeUnmount, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import apiService from '~/services/api';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { useLocalization } from '~/composables/useLocalization';
 
-type CopyTarget = 'endpoint' | 'config';
+type CopyTarget = 'endpoint' | 'config' | 'token';
+/** The node's MCP gateway token (autobyteus-437 NA-12): every client needs it, this computer included. */
+type GatewayToken = { token: string; source: 'environment' | 'node' };
 
 const { t } = useLocalization();
 const windowNodeContextStore = useWindowNodeContextStore();
@@ -97,6 +129,40 @@ const configSnippet = computed(() => JSON.stringify({
     },
   },
 }, null, 2));
+
+const token = ref<GatewayToken | null>(null);
+const tokenError = ref<string | null>(null);
+const tokenShown = ref(false);
+const regenerating = ref(false);
+const maskedToken = computed(() => (token.value ? `${token.value.token.slice(0, 5)}${'•'.repeat(24)}` : ''));
+const tokenCopied = computed(() => copiedTarget.value === 'token');
+
+const loadToken = async () => {
+  try {
+    token.value = (await apiService.get<GatewayToken>('/mcp-gateway/token')).data;
+    tokenError.value = null;
+  } catch {
+    tokenError.value = t('tools.components.tools.McpGatewayPanel.token_unavailable');
+  }
+};
+
+const regenerateToken = async () => {
+  regenerating.value = true;
+  try {
+    token.value = (await apiService.post<GatewayToken>('/mcp-gateway/token/regenerate')).data;
+    tokenShown.value = true;
+  } catch {
+    tokenError.value = t('tools.components.tools.McpGatewayPanel.token_unavailable');
+  } finally {
+    regenerating.value = false;
+  }
+};
+
+const copyToken = () => {
+  if (token.value) void copyText(token.value.token, 'token');
+};
+
+onMounted(() => { void loadToken(); });
 
 const endpointCopied = computed(() => copiedTarget.value === 'endpoint');
 const configCopied = computed(() => copiedTarget.value === 'config');

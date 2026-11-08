@@ -8,6 +8,10 @@ import path from 'node:path';
 import process from 'node:process';
 import { createRequire } from 'node:module';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { attachToBrowserContext, attachToProbeProcess, withNodeCredential } from './fixtures/probe-node-access.mjs';
+// Every node needs a credential (autobyteus-437): the probe's nodes start with its launch credential, and the probe's
+// own calls and its desktop browser contexts carry it (fixtures/probe-node-access.mjs).
+attachToProbeProcess();
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -335,6 +339,7 @@ const attachPageEvidence = (page, label) => {
 };
 const createPage = async (browser, label, locale = 'en') => {
   const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: locale === 'zh-CN' ? 'zh-CN' : 'en-US', timezoneId: 'UTC' });
+  await attachToBrowserContext(context);
   await initContext(context, locale);
   const page = await context.newPage();
   attachPageEvidence(page, label);
@@ -506,7 +511,7 @@ const runDetailScenario = async (browser, frontendUrl) => {
     await page.screenshot({ path: path.join(outputDir, 'detail-org-narrow-en.png'), fullPage: true });
     await page.setViewportSize({ width: 1440, height: 1000 });
 
-    await page.getByRole('button', { name: /^View/ }).click();
+    await page.getByRole('button', { name: /^View ↗/ }).click();
     await page.waitForURL(new RegExp(`/agent-teams\\?.*id=${fixture.alpha.teamRef}.*returnToOrg=${fixture.alpha.id}`), { timeout: timeoutMs });
     await page.getByRole('heading', { name: fixture.alpha.teamDefinitionName, exact: true }).waitFor({ state: 'visible', timeout: timeoutMs });
     const teamHandoffManager = page.locator('[data-test="handoff-manager-team"]');
@@ -842,7 +847,7 @@ try {
   });
   backend = startService(process.execPath, [path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(backendPort), '--data-dir', dataRoot], {
     cwd: serverDir,
-    env: serverEnvironment,
+    env: withNodeCredential(serverEnvironment),
     logPath: path.join(outputDir, 'backend.log'),
   });
   await waitFor('backend health', () => {

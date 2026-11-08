@@ -20,6 +20,8 @@ export const REMOTE_REFUSAL = Object.freeze({
   BAD_REQUEST: "REMOTE_REQUEST_INVALID",
   /** autobyteus-290: this node's or the peer's identity is waiting for its data migration (capability `node_identity`). */
   NODE_IDENTITY_NOT_MIGRATED: "NODE_IDENTITY_NOT_MIGRATED",
+  /** autobyteus-437: the two nodes do not share a peer secret (paired before peers paired, or unpaired on one side). */
+  PEER_NOT_PAIRED: "PEER_NOT_PAIRED",
 } as const);
 
 /** Texts of refusals a root decides before anything is sent, and of its results for remote runs. */

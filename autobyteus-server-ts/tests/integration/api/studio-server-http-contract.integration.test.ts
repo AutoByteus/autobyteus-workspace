@@ -2,11 +2,14 @@
 // (autobyteus-248). It starts the studio composition on a loopback port and
 // sends real HTTP requests:
 // - GraphQL is served at POST /graphql, and the GraphiQL IDE pages are gone.
-// - A trusted-network client (non-loopback socket address) can POST /graphql,
-//   but GET /graphql stays local-only, and no GraphiQL page is served to it.
+// - Every request needs a credential and an admitted network (autobyteus-437):
+//   the owner's credential opens POST /graphql; a client from a network the
+//   node does not admit is refused before its credential is read; no GraphiQL
+//   page is served.
 // - The MCP gateway's CORS answers: its access gate answers preflights and
 //   rejects foreign and unlisted localhost origins (autobyteus-416), and the
-//   studio CORS plugin adds its headers to requests from a configured origin.
+//   studio CORS plugin adds its headers to requests from a configured origin
+//   that carry the gateway token (autobyteus-437: always required).
 //   A route config such as { cors: false } would turn those plugin headers off
 //   on Fastify 5.
 // Run: pnpm -C autobyteus-server-ts exec vitest run tests/integration/api/studio-server-http-contract.integration.test.ts --no-watch
@@ -24,7 +27,8 @@ import {
 const CONFIGURED_ORIGIN = "http://127.0.0.1:3000";
 const UNLISTED_LOCALHOST_ORIGIN = "http://localhost:5173";
 const FOREIGN_ORIGIN = "https://evil.example";
-const TRUSTED_NETWORK_CLIENT = "192.168.1.50";
+/** A local network the node was not told to admit (no allowed local network, no AUTOBYTEUS_ALLOWED_CLIENT_NETWORKS). */
+const NOT_ADMITTED_CLIENT = "192.168.1.50";
 const GRAPHIQL_PATHS = ["/graphiql", "/graphiql/main.js", "/graphiql/config.js", "/graphiql/sw.js"];
 const MCP_GATEWAY_ALLOWED_HEADERS = "authorization, content-type, accept, mcp-protocol-version, mcp-session-id";
 const MCP_GATEWAY_ALLOWED_METHODS = "GET, POST, DELETE, OPTIONS";
@@ -41,6 +45,7 @@ describe("Studio server HTTP contract", () => {
   let appDataDir: string;
   let started: StartedStudioE2eRuntimeServer;
   let baseUrl: URL;
+  let gatewayToken: string;
 
   const http = (pathname: string, init?: RequestInit) => fetch(new URL(pathname, baseUrl), init);
 
@@ -54,7 +59,7 @@ describe("Studio server HTTP contract", () => {
   const mcpPost = (headers: Record<string, string> = {}) =>
     mcpGateway({
       method: "POST",
-      headers: { accept: "application/json", "content-type": "application/json", ...headers },
+      headers: { accept: "application/json", "content-type": "application/json", authorization: `Bearer ${gatewayToken}`, ...headers },
     });
 
   beforeAll(async () => {
@@ -67,6 +72,8 @@ describe("Studio server HTTP contract", () => {
     appConfigProvider.config.setCustomAppDataDir(appDataDir);
     started = await startStudioE2eRuntimeServer("127.0.0.1");
     baseUrl = new URL(started.mainUrl);
+    // The owner reads the gateway token (an owner route; this process attaches the launch credential).
+    gatewayToken = ((await (await http("/rest/mcp-gateway/token")).json()) as { token: string }).token;
   }, 30_000);
 
   afterAll(async () => {
@@ -90,29 +97,41 @@ describe("Studio server HTTP contract", () => {
     }
   });
 
-  it("lets a trusted-network client POST /graphql but keeps GET /graphql local-only and serves it no GraphiQL page", async () => {
+  it("opens POST /graphql to the owner's credential, refuses a network the node does not admit, and serves no GraphiQL page", async () => {
+    const owner = { authorization: `Bearer ${started.ownerCredential}` };
     const post = await started.fastify.inject({
       method: "POST",
       url: "/graphql",
-      remoteAddress: TRUSTED_NETWORK_CLIENT,
-      headers: { "content-type": "application/json" },
+      remoteAddress: "127.0.0.1",
+      headers: { "content-type": "application/json", ...owner },
       payload: typenameQuery,
     });
     expect(post.statusCode).toBe(200);
     expect(post.json()).toEqual({ data: { __typename: "Query" } });
 
-    const get = await started.fastify.inject({
+    const notAdmitted = await started.fastify.inject({
+      method: "POST",
+      url: "/graphql",
+      remoteAddress: NOT_ADMITTED_CLIENT,
+      headers: { "content-type": "application/json", ...owner },
+      payload: typenameQuery,
+    });
+    expect(notAdmitted.statusCode).toBe(403);
+    expect(notAdmitted.json()).toMatchObject({ code: "NODE_NETWORK_REFUSED" });
+
+    const withoutCredential = await started.fastify.inject({
       method: "GET",
       url: "/graphql?query=%7B__typename%7D",
-      remoteAddress: TRUSTED_NETWORK_CLIENT,
+      remoteAddress: "127.0.0.1",
     });
-    expect(get.statusCode).toBe(404);
-    expect(get.json()).toMatchObject({ code: "REMOTE_ACCESS_ROUTE_UNSUPPORTED" });
+    expect(withoutCredential.statusCode).toBe(401);
+    expect(withoutCredential.json()).toMatchObject({ code: "NODE_CREDENTIAL_REQUIRED" });
 
     const graphiql = await started.fastify.inject({
       method: "GET",
       url: "/graphiql",
-      remoteAddress: TRUSTED_NETWORK_CLIENT,
+      remoteAddress: "127.0.0.1",
+      headers: owner,
     });
     expect(graphiql.statusCode).toBe(404);
     expect(String(graphiql.headers["content-type"])).not.toContain("text/html");

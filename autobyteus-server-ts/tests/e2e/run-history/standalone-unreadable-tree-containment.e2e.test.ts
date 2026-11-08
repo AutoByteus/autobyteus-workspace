@@ -6,6 +6,7 @@ import { createHash } from "node:crypto";
 import { spawn, spawnSync, type ChildProcess } from "node:child_process";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { callTool, segment, startCollaborationHarness, type CollaborationHarness, type Rec } from "../helpers/collaboration-root-harness.js";
+import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
 
 // remove-nested-task-team AC-002 (REQ-003, DESIGN.md rule 7) through the real Studio server and GraphQL, on data made by real
 // Agent roots (scripted AGY actor; no inference): three standalone runs each delegate a task agent and are stopped; then one
@@ -164,7 +165,7 @@ suite("An unreadable standalone tree is contained to its own run (real HTTP/Grap
     const serverDir = path.resolve(__dirname, "../../..");
     const child: ChildProcess = spawn(process.execPath, [path.join(serverDir, "dist", "app.js"), "--data-dir", h.dataDir, "--host", "127.0.0.1", "--port", "0"],
       { cwd: serverDir, env: { PATH: process.env.PATH ?? "", HOME: process.env.HOME ?? "", TMPDIR: process.env.TMPDIR ?? "/tmp", USER: process.env.USER ?? "tester",
-        DATABASE_URL: process.env.DATABASE_URL ?? "", ANTIGRAVITY_CLI_COMMAND: cli, AGY_FAKE_CASE: "linked_skills" }, stdio: ["ignore", "pipe", "pipe"] });
+        DATABASE_URL: process.env.DATABASE_URL ?? "", ANTIGRAVITY_CLI_COMMAND: cli, AGY_FAKE_CASE: "linked_skills", ...builtServerLaunchEnvironment() }, stdio: ["ignore", "pipe", "pipe"] });
     let output = "";
     child.stdout!.on("data", (chunk) => { output += String(chunk); });
     child.stderr!.on("data", (chunk) => { output += String(chunk); });

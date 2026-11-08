@@ -1,3 +1,4 @@
+import { peerCallerOf } from "../../helpers/peer-caller.js";
 import { remoteTaskExecutionDtos } from "../../../src/services/agent-streaming/remote-task-execution-dto-projection.js";
 import { PeerStartedRunDecisions } from "../../../src/remote-collaboration/inbound/peer-started-run-decisions.js";
 import fs from "node:fs/promises";
@@ -105,7 +106,7 @@ const buildNode = async (input: Readonly<{
   const resources = new InMemoryTaskExecutionResources();
   const peerDirectory = {
     findByName: async (name: string) => input.peers.find((peer) => peer.name === name) ?? null,
-    findByNodeId: async (nodeId: string) => input.peers.find((peer) => peer.nodeId === nodeId) ?? null,
+    peerSecret: async () => "peer-secret-for-tests", findByNodeId: async (nodeId: string) => input.peers.find((peer) => peer.nodeId === nodeId) ?? null,
   };
   const enabled = input.enabled ?? (() => true);
   const client = new PeerClient({
@@ -116,14 +117,14 @@ const buildNode = async (input: Readonly<{
       if (!gateway) throw new TypeError("fetch failed");
       const body = JSON.parse(String(init.body));
       const route = url.slice(url.indexOf("/rest/remote/") + "/rest/remote/".length);
-    const response = route === "delegated-runs" ? await gateway.startDelegatedRun(body) : route === "messages" ? await gateway.deliverMessage(body)
-      : route === "availability" ? await gateway.checkAvailability(body) : route === "run-summaries" ? await gateway.runSummaries(body)
-        : route === "agent-projection" ? await gateway.agentProjection(body) : route === "owner-commands" ? await gateway.ownerCommand(body)
-          : await gateway.listAvailableAgents(body);
+    const response = route === "delegated-runs" ? await gateway.startDelegatedRun(body, peerCallerOf(init.headers)) : route === "messages" ? await gateway.deliverMessage(body, peerCallerOf(init.headers))
+      : route === "availability" ? await gateway.checkAvailability(body, peerCallerOf(init.headers)) : route === "run-summaries" ? await gateway.runSummaries(body, peerCallerOf(init.headers))
+        : route === "agent-projection" ? await gateway.agentProjection(body, peerCallerOf(init.headers)) : route === "owner-commands" ? await gateway.ownerCommand(body, peerCallerOf(init.headers))
+          : await gateway.listAvailableAgents(body, peerCallerOf(init.headers));
       return { ok: response.status === 200, status: response.status, json: async () => structuredClone(response.answer) };
     }) as never,
     // autobyteus-278: an observation socket bridged in process to the peer's gateway (the route's own logic).
-    openWebSocket: (url: string) => {
+    openWebSocket: (url: string, headers: Readonly<Record<string, string>>) => {
       const target = input.peers.find((peer) => url.startsWith(peer.baseUrl.replace(/^http/, "ws")));
       const gateway = target && input.network.get(target.nodeId);
       if (!gateway) throw new TypeError("connect failed");
@@ -132,7 +133,7 @@ const buildNode = async (input: Readonly<{
       const socket: PeerWebSocket = {
         onopen: null, onmessage: null, onclose: null, onerror: null,
         send: (data) => {
-          void gateway.openRunObservation(JSON.parse(data), { send: deliver, close: () => { observation?.close(); socket.onclose?.(); } }).then((response) => {
+          void gateway.openRunObservation(JSON.parse(data), peerCallerOf(headers), { send: deliver, close: () => { observation?.close(); socket.onclose?.(); } }).then((response) => {
             const answer = response.answer;
             if (!answer.accepted || !("observation" in answer)) { deliver(answer); socket.onclose?.(); return; }
             observation = answer.observation;
@@ -230,9 +231,9 @@ const logLines = async (file: string) => (await fs.readFile(file, "utf8")).split
 
 const twoNodes = async (options: { bEnabled?: () => boolean } = {}) => {
   const network = new Map<string, PeerGateway>();
-  const a = await buildNode({ nodeId: A_ID, network, peers: [{ nodeId: B_ID, name: "docker", baseUrl: "http://b:29700", addedAt: T0 }] });
+  const a = await buildNode({ nodeId: A_ID, network, peers: [{ nodeId: B_ID, name: "docker", baseUrl: "http://b:29700", addedAt: T0, paired: true }] });
   const b = await buildNode({ nodeId: B_ID, network, enabled: options.bEnabled,
-    peers: [{ nodeId: A_ID, name: "desktop", baseUrl: "http://host.docker.internal:29695", addedAt: T0 }] });
+    peers: [{ nodeId: A_ID, name: "desktop", baseUrl: "http://host.docker.internal:29695", addedAt: T0, paired: true }] });
   a.metadata.set(DELEGATOR, { runId: DELEGATOR, agentDefinitionId: "assistant", workspaceRootPath: "/work", memoryDir: path.join(a.memoryDir, "agents", DELEGATOR),
     llmModelIdentifier: "gpt", llmConfig: null, autoExecuteTools: false, runtimeKind: RuntimeKind.CODEX_APP_SERVER, platformAgentRunId: null, startedAt: T0 });
   a.runOf(DELEGATOR).active = true;
@@ -308,9 +309,9 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     await send(b, { runId: "publisher_r1", address: "/publisher" }, DELEGATOR, "First reply.");
     const network = new Map<string, PeerGateway>();
     const a2 = await buildNode({ nodeId: A_ID, network, memoryDir: a.memoryDir, metadata: a.metadata,
-      peers: [{ nodeId: B_ID, name: "docker", baseUrl: "http://b:29700", addedAt: T0 }] });
+      peers: [{ nodeId: B_ID, name: "docker", baseUrl: "http://b:29700", addedAt: T0, paired: true }] });
     const b2 = await buildNode({ nodeId: B_ID, network, memoryDir: b.memoryDir, metadata: b.metadata,
-      peers: [{ nodeId: A_ID, name: "desktop", baseUrl: "http://host.docker.internal:29695", addedAt: T0 }] });
+      peers: [{ nodeId: A_ID, name: "desktop", baseUrl: "http://host.docker.internal:29695", addedAt: T0, paired: true }] });
     // After the restart the delegating host is not live: B's reply restores it (AC-106). B's run is the sender, so it runs.
     b2.runOf("publisher_r1").active = true;
     expect(a2.runOf(DELEGATOR).active).toBe(false);

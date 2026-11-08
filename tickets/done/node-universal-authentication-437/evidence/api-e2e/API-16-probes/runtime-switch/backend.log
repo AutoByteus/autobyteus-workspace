@@ -1,0 +1,200 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-switch-probe-GW6RpA/server-data
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-switch-probe-GW6RpA/server-data/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-switch-probe-GW6RpA/server-data/.env
+◇ injected env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-switch-probe-GW6RpA/server-data/.env // tip: ⌁ auth for agents [www.vestauth.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:63952
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:63952
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-switch-probe-GW6RpA/server-data
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-switch-probe-GW6RpA/server-data/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-switch-probe-GW6RpA/server-data/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-switch-probe-GW6RpA/server-data/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-switch-probe-GW6RpA/server-data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "probe.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-switch-probe-GW6RpA/server-data/db/probe.db"
+
+27 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:94277) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+[2026-11-08T19:12:57.970Z] [INFO] [secret-management.vault] Secret vault: application database
+Initialized server settings service with 32 predefined settings
+AgentRunManager initialized.
+Node access: local control socket not opened. The node's local control socket path is 119 bytes, longer than the 103 bytes a Unix socket path may have: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-switch-probe-GW6RpA/server-data/node-access/local-control.sock. Use a shorter data folder path.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-switch-probe-GW6RpA/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-switch-probe-GW6RpA/server-data/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-switch-probe-GW6RpA/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Registered required tool unit: Agent Discovery Tools
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+Registered required tool unit: Agent Runtime Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'search_memory'
+Registered required tool unit: Memory Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+{"level":30,"time":1794165178293,"pid":94277,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:63960"}
+{"level":30,"time":1794165178318,"pid":94277,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:63952"}
+[2026-11-08T19:12:58.318Z] [INFO] [server.runtime] Server listening on 127.0.0.1:63952
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+Background task 'Memory Search' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Created terminal session 49b40be1-d810-430b-a4ad-198bf260fd3c using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-switch-probe-GW6RpA/home
+Terminal WebSocket connected: 49b40be1-d810-430b-a4ad-198bf260fd3c
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-switch-probe-GW6RpA/home
+Closed PTY session 49b40be1-d810-430b-a4ad-198bf260fd3c
+Terminal WebSocket disconnected: 49b40be1-d810-430b-a4ad-198bf260fd3c
+Discovering LM Studio models from host: http://127.0.0.1:63954
+Agent Definition created successfully with ID: switch-probe-agent
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-switch-probe-GW6RpA/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-switch-probe-GW6RpA/workspace.
+Created and registered workspace ID: agent_ws_893d465fbfd8a4e1116fac643c6734a498d3fd62c2c1954f46c2cc57e89c29f3
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-switch-probe-GW6RpA/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-switch-probe-GW6RpA/workspace.
+Reusing registered workspace ID: agent_ws_893d465fbfd8a4e1116fac643c6734a498d3fd62c2c1954f46c2cc57e89c29f3
+MediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-switch-probe-GW6RpA/server-data/media
+AgentRuntimeState initialized for agent_id 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f': LLM instance 'LMStudioLLM' and 6 tools prepared and stored in state.
+AgentContext composed for agent_id 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f' with config: 'Switch Probe Agent'.
+AgentWorker initialized for agent_id 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f'.
+Registered AgentContext for agent_id 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f'. Context registered.
+Agent facade initialized for agent_id 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f'.
+Agent 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f' created and stored successfully.
+Agent 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f' requesting runtime to start.
+AgentRuntime for 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f': Starting worker.
+AgentWorker 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f': Starting...
+AgentWorker 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f' asyncRun(): Starting.
+Agent 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f': Runtime init completed (event store initialized).
+Agent 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f': Runtime init completed (status deriver initialized).
+Agent 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f': Runtime init completed (AgentEventInbox initialized).
+Agent 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f' to become idle (timeout: 30s)...
+AgentEventStream (ID: aa14b86f-48c5-482a-8664-a568fab824dc) initialized for agent_id 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f'. Subscribed to notifier.
+Agent 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: 2d16ce4c-caed-47db-be2a-382a0ca9a944, AgentID: switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f': Bootstrapper starting direct lifecycle execution.
+Agent 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f': Executing McpServerPrewarmingStep.
+Agent 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f': Executing SystemPromptProcessingStep.
+Agent 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f': No configured skills. Skipping skill catalog.
+Agent 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f': Final processed system prompt configured and captured. Trace ID: rt_1794165199518_2c6100eb-449c-418e-bab2-4041a137f025. Final length: 4309.
+Agent 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: 2d16ce4c-caed-47db-be2a-382a0ca9a944, AgentID: switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f' initialized successfully. Entering main event scheduler loop.
+Agent 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f' has become idle.
+AgentEventStream (ID: aa14b86f-48c5-482a-8664-a568fab824dc) for 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: 3259a56d-c928-4c44-b6e0-b0e5e1e92b3a) initialized for agent_id 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f'. Subscribed to notifier.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-switch-probe-GW6RpA/server-data/memory/agents/switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-switch-probe-GW6RpA/server-data/memory/agents/switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f/raw_traces_manifest.json
+Agent websocket attached for run switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f
+Created agent session e0d3fe31-7095-432d-9791-382544693c1f for run switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f
+Agent WebSocket connected: session=e0d3fe31-7095-432d-9791-382544693c1f, run=switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f
+AgentExternalEventNotifier (NotifierID: 2d16ce4c-caed-47db-be2a-382a0ca9a944, AgentID: switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 2d16ce4c-caed-47db-be2a-382a0ca9a944, AgentID: switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f': UserInputContextBuildingProcessor completed. Final content length: 27
+AgentExternalEventNotifier (NotifierID: 2d16ce4c-caed-47db-be2a-382a0ca9a944, AgentID: switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 2d16ce4c-caed-47db-be2a-382a0ca9a944, AgentID: switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+AgentExternalEventNotifier (NotifierID: 2d16ce4c-caed-47db-be2a-382a0ca9a944, AgentID: switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 2d16ce4c-caed-47db-be2a-382a0ca9a944, AgentID: switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 2d16ce4c-caed-47db-be2a-382a0ca9a944, AgentID: switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 2d16ce4c-caed-47db-be2a-382a0ca9a944, AgentID: switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Removing agent 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f'. Attempting graceful shutdown.
+Agent 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f' requesting runtime to stop (timeout: 10s).
+AgentExternalEventNotifier (NotifierID: 2d16ce4c-caed-47db-be2a-382a0ca9a944, AgentID: switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f': Stop requested.
+AgentExternalEventNotifier (NotifierID: 2d16ce4c-caed-47db-be2a-382a0ca9a944, AgentID: switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 2d16ce4c-caed-47db-be2a-382a0ca9a944, AgentID: switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f' asyncRun() loop has finished.
+AgentWorker 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f': Running shutdown sequence on worker loop.
+AgentWorker 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f': Shutdown resource cleanup completed successfully.
+AgentWorker 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f': Shutdown sequence completed.
+Unregistered AgentContext for agent_id 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f'.
+AgentRuntime for 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f': Context unregistered.
+AgentRuntime for 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f' stop() method completed.
+AgentEventStream (ID: 3259a56d-c928-4c44-b6e0-b0e5e1e92b3a) for 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: 3259a56d-c928-4c44-b6e0-b0e5e1e92b3a) for 'switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f': close() called. Unsubscribing all listeners and signaling.
+Closed agent session e0d3fe31-7095-432d-9791-382544693c1f
+Agent WebSocket disconnected: e0d3fe31-7095-432d-9791-382544693c1f
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-switch-probe-GW6RpA/server-data/memory/agents/switch_probe_agent_bc6c691a718d418cab02f3cc31ee072f/raw_traces_manifest.json

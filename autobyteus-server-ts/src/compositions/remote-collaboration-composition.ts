@@ -22,6 +22,7 @@ import {
   bindProcessRemoteCollaboration,
   composeRemoteCollaboration,
   releaseProcessRemoteCollaboration,
+  type RemoteCollaborationServices,
 } from "../remote-collaboration/remote-collaboration-services.js";
 import { getNodeIdentityService } from "../remote-access/services/node-identity-service.js";
 import { getServerSettingsService } from "../services/server-settings-service.js";
@@ -32,7 +33,8 @@ import type { CollaborationRootResolver } from "./collaboration-root-resolver.js
 /**
  * Binds this node's remote collaboration (CM-10 … CM-12) around the process's run services: the settings,
  * the peer client as the roots' `RemoteRunChannel`, and the peer gateway behind `/rest/remote/*`. Inbound
- * messages reach roots only through their managers' public resolve / restore APIs. Returns its release.
+ * messages reach roots only through their managers' public resolve / restore APIs. Returns the services (the node
+ * access gate takes the peer verifier and the peer revocations from them) and its release.
  */
 export const composeStudioRemoteCollaboration = (input: Readonly<{
   appDataDir: string;
@@ -43,7 +45,7 @@ export const composeStudioRemoteCollaboration = (input: Readonly<{
   orgRuns: Pick<AgentOrgRunService, "storedRemoteLinkCheck">;
   /** The node's one root resolution (autobyteus-285 D5); the receivers keep their own "not found" handling. */
   rootResolver: CollaborationRootResolver;
-}>): (() => void) => {
+}>): Readonly<{ services: RemoteCollaborationServices; release: () => void }> => {
   const resolve = (rootSubjectKind: RootSubjectKind, rootRunId: string) =>
     input.rootResolver.resolveOrRestore(createRootExecutionIdentity({ rootSubjectKind, rootRunId }));
   const roots: RemoteRootDirectory = {
@@ -102,5 +104,5 @@ export const composeStudioRemoteCollaboration = (input: Readonly<{
     bindProcessRemoteRunChannel(services.client);
     bindProcessPeerDiscoveryChannel(services.discovery);
   } catch (error) { release(); throw error; }
-  return release;
+  return Object.freeze({ services, release });
 };

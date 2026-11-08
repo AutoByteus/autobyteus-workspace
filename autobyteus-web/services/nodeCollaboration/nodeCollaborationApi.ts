@@ -1,13 +1,11 @@
 import type { ApolloClient } from '@apollo/client/core'
 import type { DocumentNode } from 'graphql'
 import {
-  GetPeerAddressCandidates,
   GetPeerNodeAvailability,
   GetRemoteCollaborationCapability,
   GetRemoteCollaborationSettings,
-  ResolvePeerAddress,
 } from '~/graphql/queries/remoteCollaborationQueries'
-import { AddPeerNode, ChangePeerAddress, RemovePeerNode, SetRemoteCollaborationEnabled } from '~/graphql/mutations/remoteCollaborationMutations'
+import { ChangePeerAddress, CreatePeerInvite, RemovePeerNode, SetRemoteCollaborationEnabled } from '~/graphql/mutations/remoteCollaborationMutations'
 import type { PeerNode } from '~/stores/remoteCollaborationStore'
 import { directNodeApolloClient } from '~/services/nodeCollaboration/directNodeApolloClient'
 import { windowFailureReason, type NodeTransportReason } from '~/utils/nodeIdentityProbe'
@@ -26,9 +24,8 @@ export interface NodeCollaborationApi {
   capability(): Promise<{ enabled: boolean }>
   setEnabled(enabled: boolean): Promise<void>
   peers(): Promise<PeerNode[]>
-  peerAddressCandidates(): Promise<string[]>
-  resolvePeerAddress(nodeId: string, baseUrls: string[]): Promise<string>
-  addPeer(input: { nodeId: string; name: string; baseUrl: string }): Promise<PeerNode>
+  /** autobyteus-437: an invite of that node for one other node to pair with it. */
+  createInvite(): Promise<{ inviteText: string; expiresAt: string }>
   removePeer(nodeId: string): Promise<void>
   changePeerAddress(nodeId: string, baseUrl: string): Promise<PeerNode>
   peerNodeAvailability(nodeId: string): Promise<NodeAvailability>
@@ -61,9 +58,7 @@ export const createNodeCollaborationApi = (
     capability: async () => ({ enabled: (await query<{ remoteCollaborationCapability: { enabled: boolean } }>(GetRemoteCollaborationCapability)).remoteCollaborationCapability.enabled }),
     setEnabled: async (enabled) => { await mutate(SetRemoteCollaborationEnabled, { enabled }) },
     peers: async () => (await query<{ peerNodes: PeerNode[] }>(GetRemoteCollaborationSettings)).peerNodes,
-    peerAddressCandidates: async () => (await query<{ peerAddressCandidates: string[] }>(GetPeerAddressCandidates)).peerAddressCandidates,
-    resolvePeerAddress: async (nodeId, baseUrls) => (await query<{ resolvePeerAddress: string }>(ResolvePeerAddress, { nodeId, baseUrls })).resolvePeerAddress,
-    addPeer: async (input) => (await mutate<{ addPeerNode: PeerNode }>(AddPeerNode, { input })).addPeerNode,
+    createInvite: async () => (await mutate<{ createPeerInvite: { inviteText: string; expiresAt: string } }>(CreatePeerInvite, {})).createPeerInvite,
     removePeer: async (nodeId) => { await mutate(RemovePeerNode, { nodeId }) },
     changePeerAddress: async (nodeId, address) => (await mutate<{ changePeerAddress: PeerNode }>(ChangePeerAddress, { nodeId, baseUrl: address })).changePeerAddress,
     peerNodeAvailability: async (nodeId) => {

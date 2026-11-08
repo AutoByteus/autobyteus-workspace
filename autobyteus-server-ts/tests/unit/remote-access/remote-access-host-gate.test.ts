@@ -70,7 +70,7 @@ describe("registerRemoteAccessHostGate", () => {
       headers: { host: "Evil.Example.:29695", authorization: "Bearer mra_secret", cookie: "c=mra_secret" },
     });
     expect(warnings).toEqual([
-      `Remote Access request refused REMOTE_ACCESS_HOST_REFUSED /graphql?access_token=%5BREDACTED%5D&x=1 host evil.example ${HINT}`,
+      `Node request refused REMOTE_ACCESS_HOST_REFUSED /graphql?access_token=%5BREDACTED%5D&x=1 from 127.0.0.1 host evil.example ${HINT}`,
     ]);
     expect(warnings.join("\n")).not.toContain("mra_secret");
   });

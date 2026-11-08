@@ -1,0 +1,17 @@
+# R2 API-15 pnpm dev window WebSockets after the CR-003 fix: node scripts/development/run-dev.mjs (clean env), commit 32e9ad944c; 2026-11-08T17:54:59Z
+--- curl upgrade ws://127.0.0.1:3000/ws/projects (no credential from the client)
+HTTP/1.1 101 Switching Protocols
+upgrade: websocket
+connection: Upgrade
+sec-websocket-accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=
+--- curl upgrade ws://127.0.0.1:3000/graphql (no credential from the client)
+HTTP/1.1 101 Switching Protocols
+upgrade: websocket
+connection: Upgrade
+sec-websocket-accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=
+--- HTTP GraphQL through the proxy
+{"data":{"__typename":"Query"}} 200
+--- the backend directly without a credential (the proxy is what adds it)
+{"error":"NODE_CREDENTIAL_REQUIRED","code":"NODE_CREDENTIAL_REQUIRED","message":"This node needs a credential. Connect it on the Nodes page."} 401
+--- Nuxt restarts in the dev output: 0
+--- credential strings in the dev output: 0

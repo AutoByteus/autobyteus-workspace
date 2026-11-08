@@ -6,6 +6,7 @@ import type {
   AppUpdateState,
 } from '../shared/appUpdateTypes';
 import type { NodeAutoUpdateEntries } from '../shared/nodeAutoUpdateTypes';
+import type { NodeAccessActionResult, NodeAccessStates } from '../shared/nodeAccessTypes';
 import type {
   NodeRegistryChange,
   NodeRegistrySnapshot,
@@ -66,6 +67,10 @@ interface Window {
     markNodeAutoUpdateRead: (entryId: string) => Promise<NodeAutoUpdateEntries>;
     recheckNodeAutoUpdate: (entryId: string) => Promise<void>;
     onNodeAutoUpdateChanged: (callback: (entries: NodeAutoUpdateEntries) => void) => Cleanup;
+    getNodeAccessStates: () => Promise<NodeAccessStates>;
+    connectNode: (entryId: string, setupCode: string) => Promise<NodeAccessActionResult>;
+    disconnectNode: (entryId: string) => Promise<NodeAccessActionResult>;
+    onNodeAccessChanged: (callback: (states: NodeAccessStates) => void) => Cleanup;
 
     getLogFilePath: () => Promise<string>;
     openLogFile: (filePath: string) => Promise<{ success: boolean; error?: string }>;

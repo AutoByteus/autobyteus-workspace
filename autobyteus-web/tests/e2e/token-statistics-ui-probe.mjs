@@ -9,6 +9,10 @@ import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { seedTokenStatisticsFixture } from './token-statistics-seed.mjs';
+import { attachToBrowserContext, attachToProbeProcess, withNodeCredential } from './fixtures/probe-node-access.mjs';
+// Every node needs a credential (autobyteus-437): the probe's nodes start with its launch credential, and the probe's
+// own calls and its desktop browser contexts carry it (fixtures/probe-node-access.mjs).
+attachToProbeProcess();
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -343,7 +347,7 @@ try {
 
   backend = startService(process.execPath, [...(fixedInstant ? ['--import', shiftedClockModule] : []), path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(backendPort), '--data-dir', dataRoot], {
     cwd: serverDir,
-    env: serverEnvironment,
+    env: withNodeCredential(serverEnvironment),
     logPath: path.join(outputDir, 'backend.log'),
   });
   await waitFor('backend health', () => {
@@ -362,6 +366,7 @@ try {
 
   browser = await chromium.launch({ headless: true, executablePath, args: ['--no-sandbox', '--disable-dev-shm-usage'] });
   const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, locale: 'en-US', timezoneId: 'UTC' });
+  await attachToBrowserContext(context);
   await initTracking(context, 'en');
   const page = await context.newPage();
   attachPageEvidence(page, 'desktop-en');
@@ -599,6 +604,7 @@ try {
   await context.close();
 
   const narrowContext = await browser.newContext({ viewport: { width: 390, height: 844 }, locale: 'en-US', timezoneId: 'UTC' });
+  await attachToBrowserContext(narrowContext);
   await initTracking(narrowContext, 'en');
   const narrowPage = await narrowContext.newPage();
   attachPageEvidence(narrowPage, 'narrow-en');
@@ -630,6 +636,7 @@ try {
   await narrowContext.close();
 
   const zhContext = await browser.newContext({ viewport: { width: 390, height: 844 }, locale: 'zh-CN', timezoneId: 'UTC' });
+  await attachToBrowserContext(zhContext);
   await initTracking(zhContext, 'zh-CN');
   const zhPage = await zhContext.newPage();
   attachPageEvidence(zhPage, 'narrow-zh-CN');

@@ -1,0 +1,11 @@
+# API-16-base rhrb-base-2: (cwd /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web) node tests/e2e/run-history-read-budget-probe.mjs --from-seed /tmp/abtest437r2/seeds/run-history --stack-root /tmp/abtest437r2/base-wt --label base --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/tickets/in-progress/node-universal-authentication-437/evidence/api-e2e/API-16-base/rhrb-base-2
+# 2026-11-08T19:48:18Z; load 78.25 90.27 83.77
+base window null: poll p50 147.5 ms, p95 169.2 ms, max 170.5 ms (cold 173.6 ms); {"agentRuns":40,"teamRuns":200,"orgRuns":10}; 931786 bytes; load 78.2/90.3/83.8 → 78.8/89.8/83.7
+base window 6: poll p50 142.9 ms, p95 169.1 ms, max 188.5 ms (cold 143.3 ms); {"agentRuns":24,"teamRuns":200,"orgRuns":10}; 925952 bytes; load 78.8/89.8/83.7 → 79.5/89.6/83.7
+RB-C1 Pass window null returns every seeded run (Agent, Team, Org)
+RB-C2 Pass window 6 returns the newest 6 runs per agent and folder, and every Team and Org run
+RB-C3 Pass per-folder workspaceRunHistory with null is complete
+RB-C4 Pass every Agent, Team and Org item carries lastActivityAt at or after createdAt, after it for a run with a turn
+RB-B1 Pass uncapped poll read (Runs view) p95 within 250 ms
+RB-B2 Pass capped poll read (Workspaces view) p95 within 250 ms
+PASS /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/tickets/in-progress/node-universal-authentication-437/evidence/api-e2e/API-16-base/rhrb-base-2/evidence.json

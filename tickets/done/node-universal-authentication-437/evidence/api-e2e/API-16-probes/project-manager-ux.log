@@ -1,0 +1,3 @@
+# API-16 project-manager-ux: node tests/e2e/project-manager-ux-probe.mjs --output-dir=/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/tickets/in-progress/node-universal-authentication-437/evidence/api-e2e/API-16-probes/project-manager-ux
+# commit 32e9ad944c + round-2 probe migration; 2026-11-08T19:00:58Z
+Project manager UX probe: Pass. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/tickets/in-progress/node-universal-authentication-437/evidence/api-e2e/API-16-probes/project-manager-ux/evidence.json

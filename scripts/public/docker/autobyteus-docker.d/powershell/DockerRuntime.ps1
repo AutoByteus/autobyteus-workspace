@@ -180,7 +180,7 @@ GraphQL: http://localhost:$($State.backendPort)/graphql
 Workspace: $Script:WorkspaceContainerPath -> $(Get-NodeWorkspaceHostPath $nodeName)
 Shared folder: $Script:SharedContainerPath -> $(Get-SharedWorkspaceHostPath)
 Private app data: /home/autobyteus/data -> $(Normalize-NodeName $nodeName)-data (Docker named volume)
-Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+Next step: paste Backend into Add Remote Node in AutoByteus and connect it with a setup code (autobyteus-docker setup-code).
 "@ | Write-Host
 }
 
@@ -248,6 +248,8 @@ function Start-Node([string]$NodeName, [string]$ImageRef, [bool]$PreferDefaults)
   $existingState = Read-NodeState $NodeName
   $containerName = if ($existingState) { $existingState.containerName } else { $NodeName }
   $createdAt = if ($existingState) { $existingState.createdAt } else { Get-NowUtc }
+  # new-container --allow-local-network: kept in the node's state for every later recreate.
+  $allowLocalNetwork = ($existingState -and [bool]$existingState.allowLocalNetwork) -or [bool]$Script:RequestedAllowLocalNetwork
 
   if ((Test-ContainerExists $containerName) -and -not (Test-ManagedContainer $containerName)) {
     Fail-Launcher "Container $containerName already exists and is not managed by this launcher. Use --name with another friendly name."
@@ -262,6 +264,7 @@ function Start-Node([string]$NodeName, [string]$ImageRef, [bool]$PreferDefaults)
   $state = $existingState
   if ($state) {
     $state.imageRef = $ImageRef
+    Set-StateProperty $state 'allowLocalNetwork' $allowLocalNetwork
     Set-StateProperty $state 'configHash' (Get-StateConfigHash $state)
   }
 
@@ -310,6 +313,7 @@ function Start-Node([string]$NodeName, [string]$ImageRef, [bool]$PreferDefaults)
       $ports = Select-Ports $PreferDefaults
       $PreferDefaults = $false
       $state = New-NodeState $NodeName $containerName $ImageRef $ports $createdAt
+      Set-StateProperty $state 'allowLocalNetwork' $allowLocalNetwork
     } else {
       $state.imageRef = $ImageRef
     }
@@ -465,6 +469,7 @@ function New-Container([string]$ImageRef) {
   $nodeName = Get-NextNodeName
   $preferDefaults = $nodeName -eq $Script:DefaultNodeName
   Start-Node $nodeName $ImageRef $preferDefaults
+  Show-SetupCodeOfRunningNode $nodeName
 }
 
 function Reset-Nodes([string]$ImageRef) {

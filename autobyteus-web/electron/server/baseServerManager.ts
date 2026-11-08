@@ -1,4 +1,5 @@
 import type { ChildProcess } from 'child_process'
+import { randomBytes } from 'crypto'
 import axios from 'axios'
 import { EventEmitter } from 'events'
 import { waitForBackendPort, assertBackendPortAvailable, isAddressInUse, PortConflictError } from './backendPortAvailability'
@@ -18,6 +19,14 @@ import { buildServerProcessEnv } from './serverRuntimeEnv'
 import type { EmbeddedServerUrls } from '../../types/serverStatus'
 
 const logger = rootLogger.child('server.base-server-manager')
+
+/**
+ * The variable that hands the node this start's launch owner credential (node access model NA-5, NA-15). It is set
+ * only in the node process's spawn environment; the node removes it from its environment before any other code loads.
+ */
+export const LAUNCH_OWNER_CREDENTIAL_ENV = 'AUTOBYTEUS_LAUNCH_OWNER_CREDENTIAL'
+
+const createLaunchOwnerCredential = (): string => `own_${randomBytes(32).toString('base64url')}`
 const stdoutLogger = rootLogger.child('embedded-server.stdout')
 const stderrLogger = rootLogger.child('embedded-server.stderr')
 
@@ -41,6 +50,8 @@ export abstract class BaseServerManager extends EventEmitter {
   protected gracefulShutdownTimeoutMs: number = 20000
   protected appDataService: AppDataService
   protected runtimeEnvOverrides: Record<string, string> = {}
+  /** This start's launch owner credential: memory only, never stored or logged; a new one at every start. */
+  private launchOwnerCredential: string | null = null
   protected healthPollIntervalMs: number = 250
   private stopPromise: Promise<void> | null = null
   private pendingStartup: { promise: Promise<void>; cancel: () => void } | null = null
@@ -306,19 +317,30 @@ export abstract class BaseServerManager extends EventEmitter {
     return { ...this.runtimeEnvOverrides }
   }
 
+  /** The launch owner credential of the node process started last (null before the first start). */
+  public getLaunchOwnerCredential(): string | null {
+    return this.launchOwnerCredential
+  }
+
   /**
-   * Compose the server child environment under this launch's environment policy.
+   * Compose the server child environment under this launch's environment policy, with a fresh launch owner
+   * credential for this start (the spawn environment only; never Electron's own environment).
    */
   protected buildServerEnv(loginShellPath: string | null): NodeJS.ProcessEnv {
-    return buildServerProcessEnv({
-      policy: this.launchConfig.environmentPolicy,
-      callerEnv: process.env,
-      loginShellPath,
-      appDataDir: this.appDataDir,
-      publicServerUrl: this.serverUrl,
-      developmentRendererOrigin: this.launchConfig.developmentRendererOrigin,
-      runtimeOverrides: this.getRuntimeEnvOverrides(),
-    })
+    this.launchOwnerCredential = createLaunchOwnerCredential()
+    this.emit('launch-credential-changed')
+    return {
+      ...buildServerProcessEnv({
+        policy: this.launchConfig.environmentPolicy,
+        callerEnv: process.env,
+        loginShellPath,
+        appDataDir: this.appDataDir,
+        publicServerUrl: this.serverUrl,
+        developmentRendererOrigin: this.launchConfig.developmentRendererOrigin,
+        runtimeOverrides: this.getRuntimeEnvOverrides(),
+      }),
+      [LAUNCH_OWNER_CREDENTIAL_ENV]: this.launchOwnerCredential,
+    }
   }
 
   /**

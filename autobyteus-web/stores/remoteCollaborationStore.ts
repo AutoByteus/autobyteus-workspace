@@ -1,20 +1,20 @@
 import { defineStore } from 'pinia'
 import type { DocumentNode } from 'graphql'
 import { getApolloClient } from '~/utils/apolloClient'
-import {
-  GetPeerAddressCandidates,
-  GetRemoteCollaborationSettings,
-  ResolvePeerAddress,
-} from '~/graphql/queries/remoteCollaborationQueries'
-import { AddPeerNode, ChangePeerAddress, RemovePeerNode, RenamePeerNode } from '~/graphql/mutations/remoteCollaborationMutations'
+import { GetRemoteCollaborationSettings } from '~/graphql/queries/remoteCollaborationQueries'
+import { AcceptPeerInvite, ChangePeerAddress, RemovePeerNode, RenamePeerNode } from '~/graphql/mutations/remoteCollaborationMutations'
 import { throwSettingsErrors } from '~/utils/nodeSettingsError'
 
-/** A node registered on the bound node for remote collaboration. `baseUrl` is how the bound node reaches it. */
+/**
+ * A node registered on the bound node for remote collaboration. `baseUrl` is how the bound node reaches it; `paired`:
+ * both nodes hold their shared peer secret (autobyteus-437); a peer registered before peers paired shows "Pair again".
+ */
 export interface PeerNode {
   nodeId: string
   name: string
   baseUrl: string
   addedAt: string
+  paired: boolean
 }
 
 /**
@@ -33,23 +33,14 @@ export const useRemoteCollaborationStore = defineStore('remoteCollaborationStore
       this.peers = await this.query<{ peerNodes?: PeerNode[] }>(GetRemoteCollaborationSettings, {}).then((data) => data?.peerNodes ?? [])
     },
 
-    /** How other nodes may reach this node (its own address candidates). */
-    async addressCandidates(): Promise<string[]> {
-      const data = await this.query<{ peerAddressCandidates?: string[] }>(GetPeerAddressCandidates, {})
-      return data?.peerAddressCandidates ?? []
-    },
-
-    /** The first of `baseUrls` at which this node reaches the node `nodeId` (this node's switch must be on). */
-    async resolveAddress(nodeId: string, baseUrls: string[]): Promise<string> {
-      const data = await this.query<{ resolvePeerAddress?: string }>(ResolvePeerAddress, { nodeId, baseUrls })
-      if (!data?.resolvePeerAddress) throw new Error('No address was returned.')
-      return data.resolvePeerAddress
-    },
-
-    async add(input: { nodeId: string; name: string; baseUrl: string }): Promise<PeerNode> {
-      const added = (await this.mutate<{ addPeerNode: PeerNode }>(AddPeerNode, { input })).addPeerNode
-      this.peers = [...this.peers.filter((peer) => peer.nodeId !== added.nodeId), added]
-      return added
+    /**
+     * Pairs this node with the node that created `inviteText` (autobyteus-437 DS-004): `name` is this node's name for it,
+     * `nameOnInviter` that node's name for this one.
+     */
+    async acceptInvite(inviteText: string, name: string, nameOnInviter: string | null): Promise<PeerNode> {
+      const paired = (await this.mutate<{ acceptPeerInvite: PeerNode }>(AcceptPeerInvite, { inviteText, name, nameOnInviter })).acceptPeerInvite
+      this.peers = [...this.peers.filter((peer) => peer.nodeId !== paired.nodeId), paired]
+      return paired
     },
 
     async rename(nodeId: string, name: string): Promise<PeerNode> {

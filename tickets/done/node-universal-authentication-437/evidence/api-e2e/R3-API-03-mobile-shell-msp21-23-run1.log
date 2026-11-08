@@ -1,0 +1,12 @@
+
+> autobyteus@1.5.12-beta.8 test:e2e:mobile-shell /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web
+> node tests/e2e/mobile-shell-probe.mjs --cases=MSP-21,MSP-22,MSP-23 --output-dir=/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/tickets/in-progress/node-universal-authentication-437/evidence/api-e2e/R3-API-03-mobile-shell-msp21-23
+
+[mobile-shell] MSP-21 …
+[mobile-shell] MSP-21 Pass
+[mobile-shell] MSP-22 …
+[mobile-shell] MSP-22 Pass
+[mobile-shell] MSP-23 …
+[mobile-shell] MSP-23 Pass
+mobile-shell probe: Fail
+ ELIFECYCLE  Command failed with exit code 1.

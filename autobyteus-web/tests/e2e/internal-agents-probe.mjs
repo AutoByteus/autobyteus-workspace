@@ -25,6 +25,10 @@ import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { prepareOutputDir, probeOutputDir } from './fixtures/probe-output-dir.mjs';
+import { attachToBrowserContext, attachToProbeProcess, withNodeCredential } from './fixtures/probe-node-access.mjs';
+// Every node needs a credential (autobyteus-437): the probe's nodes start with its launch credential, and the probe's
+// own calls and its desktop browser contexts carry it (fixtures/probe-node-access.mjs).
+attachToProbeProcess();
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -196,7 +200,7 @@ try {
   await fs.writeFile(path.join(dataRoot, '.env'), ['APP_ENV=development', 'DB_TYPE=sqlite', `DATABASE_URL=${databaseUrl}`, `AUTOBYTEUS_SERVER_HOST=${url}`].join('\n') + '\n');
   await run('corepack', ['pnpm', '-C', serverDir, 'exec', 'prisma', 'migrate', 'deploy', '--schema', './prisma/schema.prisma'], root, env, path.join(outputDir, 'backend-migrate.log'));
   node = { url, port, dataRoot, process: null };
-  node.process = start(process.execPath, [path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(port), '--data-dir', dataRoot], serverDir, env, path.join(outputDir, 'backend.log'));
+  node.process = start(process.execPath, [path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(port), '--data-dir', dataRoot], serverDir, withNodeCredential(env), path.join(outputDir, 'backend.log'));
   await waitFor('backend health', async () => { if (exited(node.process)) throw new Error('backend exited'); return fetch(`${url}/rest/health`).then(r => r.ok).catch(() => false); }, 120000);
   const normalId = (await gql(`mutation($input:CreateAgentDefinitionInput!){createAgentDefinition(input:$input){id}}`,
     { input: { name: NORMAL_NAME, role: 'assistant', description: 'A normal agent (probe)', instructions: 'Follow the user\'s request.', toolNames: [] } })).createAgentDefinition.id;
@@ -209,6 +213,7 @@ try {
   browser = await chromium.launch({ headless: true, executablePath, args: ['--disable-dev-shm-usage'] });
   evidence.browserVersion = browser.version();
   const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: 'en-US' });
+  await attachToBrowserContext(context);
   await context.addInitScript(() => { if (!localStorage.getItem('autobyteus.localization.preference-mode')) localStorage.setItem('autobyteus.localization.preference-mode', 'en'); });
   page = await context.newPage();
   page.on('pageerror', e => evidence.browserErrors.push(e.message));

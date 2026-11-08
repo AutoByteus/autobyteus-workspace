@@ -5,11 +5,15 @@ import type { NodeChangeTarget } from '../nodeChangePlan'
 import type { PeerNode } from '~/stores/remoteCollaborationStore'
 import { NodeSettingsError } from '~/utils/nodeSettingsError'
 
-/** one-nodes-tab DS-003: the plan rule, the naming rule (§ Naming Rule) and the run rules (§ Run Rules, AR-007). */
+/**
+ * one-nodes-tab DS-003: the plan rule, the naming rule (§ Naming Rule) and the run rules (§ Run Rules, AR-007); with
+ * autobyteus-437, two nodes collaborate once paired: one `pair` step (an invite there, accepted here).
+ */
 
 const A = 'srv_thisNodeAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
 const B = 'srv_node8003BBBBBBBBBBBBBBBBBBBBBBBBBBBB'
-const peer = (nodeId: string, name: string, baseUrl = 'http://x'): PeerNode => ({ nodeId, name, baseUrl, addedAt: '2026-10-23T08:00:00.000Z' })
+const peer = (nodeId: string, name: string, baseUrl = 'http://x', paired = true): PeerNode =>
+  ({ nodeId, name, baseUrl, addedAt: '2026-10-23T08:00:00.000Z', paired })
 const refusal = (code: string, extra: Record<string, unknown> = {}) => new NodeSettingsError({ code, message: code, ...extra })
 
 const target: NodeChangeTarget = { rowKey: B, name: '8003', nodeId: B, entryIds: ['remote-8003'], windowAddress: 'http://localhost:8003' }
@@ -23,9 +27,7 @@ const world = (input: { hereOn?: boolean; herePeers?: PeerNode[]; thereOn?: bool
     capability: vi.fn(async () => { if (input.thereDown) throw refusal('PEER_UNREACHABLE', { reason: 'refused' }); return { enabled: input.thereOn ?? false } }),
     setEnabled: vi.fn(async (on) => log(`there.setEnabled(${on})`)),
     peers: vi.fn(async () => { if (input.thereDown) throw refusal('PEER_UNREACHABLE'); return input.therePeers ?? [] }),
-    peerAddressCandidates: vi.fn(async () => ['http://localhost:8003', 'http://host.docker.internal:8003', 'http://172.17.0.4:8003']),
-    resolvePeerAddress: vi.fn(async (nodeId, urls) => { log(`there.resolve(${nodeId},${urls.join(' ')})`); return 'http://host.docker.internal:29695' }),
-    addPeer: vi.fn(async (peerInput) => { log(`there.addPeer(${peerInput.nodeId},${peerInput.name},${peerInput.baseUrl})`); return peer(peerInput.nodeId, peerInput.name) }),
+    createInvite: vi.fn(async () => { log('there.createInvite()'); return { inviteText: 'abpi_invite', expiresAt: '2026-11-08T10:10:00.000Z' } }),
     removePeer: vi.fn(async (nodeId) => log(`there.removePeer(${nodeId})`)),
     changePeerAddress: vi.fn(),
     peerNodeAvailability: vi.fn(),
@@ -35,9 +37,7 @@ const world = (input: { hereOn?: boolean; herePeers?: PeerNode[]; thereOn?: bool
       switchOn: () => input.hereOn ?? true,
       setSwitch: vi.fn(async (on) => log(`here.setSwitch(${on})`)),
       loadPeers: vi.fn(async () => herePeers),
-      candidates: vi.fn(async () => ['http://127.0.0.1:29695', 'http://host.docker.internal:29695', 'http://192.168.2.10:29695']),
-      resolveAddress: vi.fn(async (nodeId, urls) => { log(`here.resolve(${nodeId},${urls.join(' ')})`); return 'http://localhost:8003' }),
-      addPeer: vi.fn(async (peerInput) => log(`here.addPeer(${peerInput.nodeId},${peerInput.name},${peerInput.baseUrl})`)),
+      acceptInvite: vi.fn(async (invite, name, nameOnInviter) => log(`here.acceptInvite(${invite},${name},${nameOnInviter})`)),
       renamePeer: vi.fn(async (nodeId, name) => log(`here.rename(${nodeId},${name})`)),
       removePeer: vi.fn(async (nodeId) => log(`here.removePeer(${nodeId})`)),
       changePeerAddress: vi.fn(async (nodeId, url) => log(`here.changeAddress(${nodeId},${url})`)),
@@ -72,29 +72,34 @@ describe('registrationName (§ Naming Rule)', () => {
 })
 
 describe('nodeCollaborationConnector plans', () => {
-  it('connect, this node on and 8003 off, nothing registered: only the needed steps, in order; 8003 finds its address once on', async () => {
+  it('NAS-19 connect, this node on and 8003 off, nothing registered: turn 8003 on, then one pairing step with both names', async () => {
     const f = world({ hereOn: true, thereOn: false })
     const plan = await f.connector.plan('connect', target, here)
-    expect(ids(plan)).toEqual(['resolveHere', 'registerHere', 'turnOnThere', 'resolveThere', 'registerThere'])
-    expect(plan.steps.find((step) => step.id === 'registerHere')).toMatchObject({ name: '8003', wanted: '8003' })
-    expect(plan.steps.find((step) => step.id === 'registerThere')).toMatchObject({ name: 'Embedded Node', wanted: 'Embedded Node' })
-    expect(plan.steps.find((step) => step.id === 'resolveHere')).toMatchObject({ findsLater: false })
-    expect(plan.steps.find((step) => step.id === 'resolveThere')).toMatchObject({ findsLater: true })
+    expect(ids(plan)).toEqual(['turnOnThere', 'pair'])
+    expect(plan.steps.find((step) => step.id === 'pair')).toMatchObject({ name: '8003', wanted: '8003', nameThere: 'Embedded Node' })
     expect(f.calls).toEqual([]) // nothing changes on any node before the owner confirms (QR-702)
   })
 
-  it('this node off: turning it on is part of the plan, and this node finds its address once on (DEC-709 b)', async () => {
+  it('this node off: turning it on is part of the plan, before the pairing', async () => {
     const plan = await world({ hereOn: false, thereOn: true }).connector.plan('connect', target, here)
-    expect(ids(plan)).toEqual(['turnOnHere', 'resolveHere', 'registerHere', 'resolveThere', 'registerThere'])
-    expect(plan.steps[1]).toMatchObject({ findsLater: true })
-    expect(plan.steps[3]).toMatchObject({ findsLater: false })
+    expect(ids(plan)).toEqual(['turnOnHere', 'pair'])
   })
 
-  it('finish: only what is missing; a name already used there gets a number (AR-002)', async () => {
-    const f = world({ hereOn: true, herePeers: [peer(B, '8003')], thereOn: true, therePeers: [peer('srv_other', 'Embedded Node')] })
-    const plan = await f.connector.plan('finish', target, here)
-    expect(ids(plan)).toEqual(['resolveThere', 'registerThere'])
-    expect(plan.steps[1]).toMatchObject({ name: 'Embedded Node 2', wanted: 'Embedded Node' })
+  it('NAS-23 finish: peers registered before pairing pair again under the names they have; a name used there gets a number', async () => {
+    const unpaired = world({ hereOn: true, herePeers: [peer(B, '8003', 'http://x', false)], thereOn: true, therePeers: [peer(A, 'My Mac', 'http://y', false)] })
+    const again = await unpaired.connector.plan('finish', target, here)
+    expect(ids(again)).toEqual(['pair'])
+    expect(again.steps[0]).toMatchObject({ name: '8003', nameThere: 'My Mac' })
+    const taken = world({ hereOn: true, herePeers: [peer(B, '8003', 'http://x', false)], thereOn: true, therePeers: [peer('srv_other', 'Embedded Node')] })
+    const plan = await taken.connector.plan('finish', target, here)
+    expect(plan.steps[0]).toMatchObject({ id: 'pair', nameThere: 'Embedded Node 2' })
+  })
+
+  it('a pair paired on one side only is removed there first; a pair paired on both sides needs nothing', async () => {
+    const oneSided = await world({ hereOn: true, herePeers: [peer(B, '8003')], thereOn: true, therePeers: [] }).connector.plan('finish', target, here)
+    expect(ids(oneSided)).toEqual(['removeHere', 'pair'])
+    const done = await world({ hereOn: true, herePeers: [peer(B, '8003')], thereOn: true, therePeers: [peer(A, 'Embedded Node')] }).connector.plan('finish', target, here)
+    expect(ids(done)).toEqual([])
   })
 
   it('a node this window cannot read now gives no plan', async () => {
@@ -112,65 +117,42 @@ describe('nodeCollaborationConnector plans', () => {
     expect(ids(listOnly)).toEqual(['removeFromList'])
   })
 
-  it('resolveAhead finds the address of each side that is on, the window address first, then the other side\'s candidates', async () => {
-    const f = world({ hereOn: true, thereOn: true })
-    const plan = await f.connector.plan('connect', target, here)
-    await f.connector.resolveAhead(plan)
-    expect(f.calls).toEqual([
-      `here.resolve(${B},http://localhost:8003 http://host.docker.internal:8003 http://172.17.0.4:8003)`,
-      `there.resolve(${A},http://127.0.0.1:29695 http://host.docker.internal:29695 http://192.168.2.10:29695)`,
-    ])
-    expect(plan.steps.find((step) => step.id === 'resolveThere')).toMatchObject({ status: 'todo', address: 'http://host.docker.internal:29695' })
-  })
-
-  it('resolveAhead keeps a failure with its details; the run looks again', async () => {
-    const f = world({ hereOn: true, thereOn: true })
-    vi.mocked(f.there.resolvePeerAddress).mockRejectedValueOnce(refusal('PEER_UNREACHABLE', { address: 'http://127.0.0.1:29695', loopbackInContainer: true }))
-    const plan = await f.connector.plan('connect', target, here)
-    await f.connector.resolveAhead(plan)
-    expect(plan.steps.find((step) => step.id === 'resolveThere')).toMatchObject({ status: 'failed', error: { code: 'PEER_UNREACHABLE', loopbackInContainer: true } })
-    await f.connector.run(plan)
-    expect(plan.phase).toBe('done')
-  })
 })
 
 describe('nodeCollaborationConnector run rules (§ Run Rules)', () => {
-  it('connect runs in order: switch here, resolve, register here, switch there, resolve there, register there', async () => {
+  it('NAS-19 connect runs in order: switch here, switch there, then the pairing: an invite there, accepted here', async () => {
     const f = world({ hereOn: false, thereOn: false })
     const plan = await f.connector.plan('connect', target, here)
     await f.connector.run(plan)
     expect(plan.phase).toBe('done')
     expect(f.calls).toEqual([
       'here.setSwitch(true)',
-      `here.resolve(${B},http://localhost:8003 http://host.docker.internal:8003 http://172.17.0.4:8003)`,
-      `here.addPeer(${B},8003,http://localhost:8003)`,
       'there.setEnabled(true)',
-      `there.resolve(${A},http://127.0.0.1:29695 http://host.docker.internal:29695 http://192.168.2.10:29695)`,
-      `there.addPeer(${A},Embedded Node,http://host.docker.internal:29695)`,
+      'there.createInvite()',
+      'here.acceptInvite(abpi_invite,8003,Embedded Node)',
     ])
   })
 
   it('connect stops at the first failure: done stays done, the rest is not run; Try again runs only what is left', async () => {
-    const f = world({ hereOn: true, thereOn: false })
+    const f = world({ hereOn: false, thereOn: false })
     vi.mocked(f.there.setEnabled).mockRejectedValueOnce(refusal('PEER_UNREACHABLE', { reason: 'timeout', address: 'http://localhost:8003' }))
     const plan = await f.connector.plan('connect', target, here)
     await f.connector.run(plan)
     expect(plan.phase).toBe('failed')
-    expect(statuses(plan)).toEqual(['resolveHere:done', 'registerHere:done', 'turnOnThere:failed', 'resolveThere:notRun', 'registerThere:notRun'])
-    expect(plan.steps[2]!.error).toMatchObject({ code: 'PEER_UNREACHABLE', reason: 'timeout' })
+    expect(statuses(plan)).toEqual(['turnOnHere:done', 'turnOnThere:failed', 'pair:notRun'])
+    expect(plan.steps[1]!.error).toMatchObject({ code: 'PEER_UNREACHABLE', reason: 'timeout' })
     f.calls.length = 0
     await f.connector.run(plan)
     expect(plan.phase).toBe('done')
-    expect(f.calls[0]).toBe('there.setEnabled(true)')
-    expect(f.calls.some((call) => call.startsWith('here.addPeer'))).toBe(false)
+    expect(f.calls).toEqual(['there.setEnabled(true)', 'there.createInvite()', 'here.acceptInvite(abpi_invite,8003,Embedded Node)'])
   })
 
-  it('a name taken there between plan and run fails that step with PEER_NAME_TAKEN (the row re-plans with fresh facts)', async () => {
-    const f = world({ hereOn: true, herePeers: [peer(B, '8003')], thereOn: true })
-    vi.mocked(f.there.addPeer).mockRejectedValueOnce(refusal('PEER_NAME_TAKEN'))
-    const plan = await f.connector.plan('finish', target, here)
+  it('a pairing refused there fails the pair step with the code (the row re-plans with fresh facts)', async () => {
+    const f = world({ hereOn: true, thereOn: true })
+    vi.mocked(f.deps.here.acceptInvite).mockRejectedValueOnce(refusal('PEER_INVITE_INVALID'))
+    const plan = await f.connector.plan('connect', target, here)
     await f.connector.run(plan)
-    expect(plan.steps.find((step) => step.id === 'registerThere')).toMatchObject({ status: 'failed', error: { code: 'PEER_NAME_TAKEN' } })
+    expect(plan.steps.find((step) => step.id === 'pair')).toMatchObject({ status: 'failed', error: { code: 'PEER_INVITE_INVALID' } })
   })
 
   it('disconnect continues: removeThere runs even when removeHere failed, and each failure is reported', async () => {
@@ -210,7 +192,6 @@ describe('nodeCollaborationConnector run rules (§ Run Rules)', () => {
     expect(ids(plan)).toEqual(['changeAddressHere'])
     await f.connector.run(plan)
     expect(f.calls).toEqual([`here.changeAddress(${B},http://192.168.2.31:8003)`])
-    expect(f.deps.here.resolveAddress).not.toHaveBeenCalled()
     vi.mocked(f.deps.here.changePeerAddress).mockRejectedValueOnce(
       refusal('PEER_UNREACHABLE', { reason: 'refused', address: 'http://127.0.0.1:29695', loopbackInContainer: true }))
     const failed = await f.connector.plan('changeAddress', target, here, { address: 'http://127.0.0.1:29695' })

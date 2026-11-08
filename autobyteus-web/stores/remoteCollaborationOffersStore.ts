@@ -10,8 +10,8 @@ export interface PeerOfferEntry {
   description?: string
 }
 
-/** The four refusals the page words (UI/UX spec ST-03 … ST-06); any other refusal reads as not reachable. */
-export const PEER_REFUSAL_CODES = ['REMOTE_COLLABORATION_OFF', 'PEER_NOT_REGISTERED', 'PEER_UNREACHABLE', 'PEER_IDENTITY_MISMATCH'] as const
+/** The refusals the page words (UI/UX spec ST-03 … ST-06; autobyteus-437 not paired); any other reads as not reachable. */
+export const PEER_REFUSAL_CODES = ['REMOTE_COLLABORATION_OFF', 'PEER_NOT_REGISTERED', 'PEER_NOT_PAIRED', 'PEER_UNREACHABLE', 'PEER_IDENTITY_MISMATCH'] as const
 export type PeerRefusalCode = (typeof PEER_REFUSAL_CODES)[number]
 
 export type PeerOffer =

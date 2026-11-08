@@ -1,0 +1,114 @@
+# API-15 headless Chrome on the pnpm dev window (devcheck.mjs), after two warm-up loads
+{
+ "text": "Die Website ist nicht erreichbar\n\n127.0.0.1 hat die Verbindung abgelehnt.\n\nVersuche Folgendes:\n\nVerbindung prüfen\nProxy und Firewall prüfen\nERR_CONNECTION_REFUSED\nNeu laden\nDetails",
+ "gqlStatuses": [
+  200
+ ],
+ "gqlCount": 40,
+ "events": [
+  {
+   "ev": "created",
+   "url": "ws://127.0.0.1:3000/_nuxt/?token=M7fUgKKTg04A",
+   "at": 247
+  },
+  {
+   "ev": "handshake",
+   "status": 101,
+   "at": 276
+  },
+  {
+   "ev": "created",
+   "url": "ws://127.0.0.1:3000/ws/agent-package-definitions",
+   "at": 1681
+  },
+  {
+   "ev": "created",
+   "url": "ws://127.0.0.1:3000/ws/update-notifications",
+   "at": 1681
+  },
+  {
+   "ev": "closed",
+   "at": 1693
+  },
+  {
+   "ev": "error",
+   "msg": "Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+   "at": 1694
+  },
+  {
+   "ev": "error",
+   "msg": "Error during WebSocket handshake: Unexpected response code: 200",
+   "at": 1694
+  },
+  {
+   "ev": "closed",
+   "at": 1695
+  },
+  {
+   "ev": "closed",
+   "at": 1695
+  },
+  {
+   "ev": "created",
+   "url": "ws://127.0.0.1:3000/ws/update-notifications",
+   "at": 2695
+  },
+  {
+   "ev": "created",
+   "url": "ws://127.0.0.1:3000/ws/agent-package-definitions",
+   "at": 2695
+  },
+  {
+   "ev": "error",
+   "msg": "Error during WebSocket handshake: Unexpected response code: 200",
+   "at": 4862
+  },
+  {
+   "ev": "closed",
+   "at": 4862
+  },
+  {
+   "ev": "error",
+   "msg": "Error during WebSocket handshake: net::ERR_CONNECTION_RESET",
+   "at": 5011
+  },
+  {
+   "ev": "closed",
+   "at": 5011
+  },
+  {
+   "ev": "created",
+   "url": "ws://127.0.0.1:3000/ws/update-notifications",
+   "at": 6864
+  },
+  {
+   "ev": "created",
+   "url": "ws://127.0.0.1:3000/ws/agent-package-definitions",
+   "at": 7013
+  },
+  {
+   "ev": "error",
+   "msg": "Error during WebSocket handshake: Unexpected response code: 200",
+   "at": 10341
+  },
+  {
+   "ev": "closed",
+   "at": 10342
+  },
+  {
+   "ev": "error",
+   "msg": "Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+   "at": 10355
+  }
+ ],
+ "errors": [
+  "Failed to load resource: net::ERR_CONNECTION_REFUSED",
+  "WebSocket connection to 'ws://127.0.0.1:3000/ws/update-notifications' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED",
+  "WebSocket connection to 'ws://127.0.0.1:3000/ws/agent-package-definitions' failed: Error during WebSocket handshake: Unexpected response code: 200",
+  "WebSocket connection to 'ws://127.0.0.1:3000/ws/update-notifications' failed: Error during WebSocket handshake: Unexpected response code: 200",
+  "WebSocket connection to 'ws://127.0.0.1:3000/ws/agent-package-definitions' failed: Error during WebSocket handshake: net::ERR_CONNECTION_RESET",
+  "Failed to load resource: net::ERR_EMPTY_RESPONSE",
+  "WebSocket connection to 'ws://127.0.0.1:3000/ws/update-notifications' failed: Error during WebSocket handshake: Unexpected response code: 200",
+  "WebSocket connection to 'ws://127.0.0.1:3000/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+ ]
+}

@@ -25,6 +25,10 @@ import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { prepareOutputDir, probeOutputDir } from './fixtures/probe-output-dir.mjs';
+import { attachToBrowserContext, attachToProbeProcess, withNodeCredential } from './fixtures/probe-node-access.mjs';
+// Every node needs a credential (autobyteus-437): the probe's nodes start with its launch credential, and the probe's
+// own calls and its desktop browser contexts carry it (fixtures/probe-node-access.mjs).
+attachToProbeProcess();
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -143,7 +147,7 @@ const createNode = async (ownedRoot, fakes, { name = 'backend', desktop = false,
 };
 const startNode = async node => {
   node.process = start(process.execPath, ['--import', pathToFileURL(sourcesStub).href, path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(node.port), '--data-dir', node.dataRoot],
-    serverDir, node.env, path.join(outputDir, `${node.name}.log`));
+    serverDir, withNodeCredential(node.env), path.join(outputDir, `${node.name}.log`));
   await waitFor('backend health', async () => {
     if (exited(node.process)) throw new Error(`backend exited ${node.process.exitCode}/${node.process.signalCode}`);
     return fetch(`${node.url}/rest/health`).then(response => response.ok).catch(() => false);
@@ -245,6 +249,7 @@ try {
   browser = await chromium.launch({ headless: true, executablePath, args: ['--disable-dev-shm-usage'] });
   evidence.browserVersion = browser.version();
   const context = await browser.newContext({ viewport: { width: 1440, height: 1100 }, locale: 'en-US', timezoneId: 'Europe/Berlin' });
+  await attachToBrowserContext(context);
   await context.addInitScript(() => { if (!localStorage.getItem('autobyteus.localization.preference-mode')) localStorage.setItem('autobyteus.localization.preference-mode', 'en'); });
   page = await context.newPage();
   page.on('pageerror', e => evidence.browserErrors.push(e.message));

@@ -1,7 +1,7 @@
-import type { FastifyInstance } from "fastify";
+import type { FastifyInstance, FastifyRequest } from "fastify";
 import { getMemoryHubIngestionService, MemoryHubIngestionError } from "../../memory-sync/hub/memory-hub-ingestion-service.js";
 import { MemoryHubCredentialError } from "../../memory-sync/hub/memory-hub-credential-service.js";
-import { readBearerToken } from "../../memory-sync/hub/memory-hub-auth.js";
+import { getClientIdentity } from "../security/node-access-gate.js";
 import type { MemorySyncBatch } from "../../memory-sync/shared/memory-sync-types.js";
 import { MemorySyncNotMigratedError } from "../../memory-sync/shared/memory-sync-capability.js";
 
@@ -19,11 +19,18 @@ const sendMemorySyncError = (
   return reply.code(400).send({ error: "MemorySyncRequestError", message: error instanceof Error ? error.message : String(error) });
 };
 
+/** The memory sync source credential the node access gate verified (these routes admit only that kind, NA-7). */
+const sourceCredentialId = (request: FastifyRequest): string => {
+  const identity = getClientIdentity(request);
+  if (identity?.kind !== "memory_sync_source") throw new MemoryHubCredentialError("Memory Hub source token is required.");
+  return identity.credentialId;
+};
+
 export async function registerMemorySyncRoutes(app: FastifyInstance): Promise<void> {
   app.get<{ Querystring: { memorySyncSourceId?: string } }>("/memory-sync/v1/health", async (request, reply) => {
     try {
       return await getMemoryHubIngestionService().health({
-        token: readBearerToken(request.headers.authorization),
+        credentialId: sourceCredentialId(request),
         memorySyncSourceId: request.query.memorySyncSourceId ?? "",
       });
     } catch (error) {
@@ -37,7 +44,7 @@ export async function registerMemorySyncRoutes(app: FastifyInstance): Promise<vo
     async (request, reply) => {
       try {
         return await getMemoryHubIngestionService().commitBatch({
-          token: readBearerToken(request.headers.authorization),
+          credentialId: sourceCredentialId(request),
           batch: request.body,
         });
       } catch (error) {

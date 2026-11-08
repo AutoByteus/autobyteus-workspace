@@ -16,10 +16,11 @@ delegated run, …) are defined in the
 - **This node / remote node:** a point of view. Every node other than this one
   is a remote node, even a Docker node on the same machine. *Remote* names a
   location (remote runs, remote access, the remote chip, `nodeType: 'remote'`).
-- **Peer:** a remote node registered with this node: both nodes registered each
-  other, and this node pinned the peer's node ID (`PeerNode`, `peers.json`,
-  "add a peer", `list_peer_nodes`). *Peer* names a relationship; a remote node
-  that isn't registered is not a peer.
+- **Peer:** a remote node paired with this node: both nodes hold the same
+  **peer secret** and this node pinned the peer's node ID (`PeerNode`,
+  `peers.json`, "pair", `list_peer_nodes`). *Peer* names a relationship; a
+  remote node that isn't paired is not a peer. A peer recorded before nodes
+  paired has no secret (`paired: false`): the Nodes page shows "Pair again".
 - **Embedded local:** how the desktop starts its own server
   (`nodeType: 'embedded'`, `isDesktopEmbeddedNode`). It is not a kind of node.
 - **Entry:** a client's own record of a node it can open: the desktop's node
@@ -30,6 +31,30 @@ delegated run, …) are defined in the
   (`NodeEntry.nodeId`) when it reaches the node.
 - **Client address:** the network address a request came from
   (`normalizeClientAddress`, `isLoopbackClientAddress`). It is not a peer.
+- **Credential:** the secret a client presents to a node on every request
+  (node access model, `autobyteus-server-ts/docs/design/node_access_model.md`);
+  the node keeps only its hash. Kinds: **owner credential** (`own_…`, a
+  desktop's, one per desktop per node, full authority), **phone credential**
+  (`mra_…`), **peer secret** (shared by two paired nodes; never sent, it signs
+  their requests) and **memory sync source credential** (`mhub_…`). The MCP
+  gateway token is the tool endpoint's own token, not a credential kind.
+- **Launch credential:** the owner credential the desktop app creates each time
+  it starts its own node and hands it privately
+  (`AUTOBYTEUS_LAUNCH_OWNER_CREDENTIAL`, taken out of the node's environment
+  at once); never stored.
+- **Setup code:** a one-time code (30 minutes) that a desktop exchanges for an
+  owner credential; read only on the node's own computer (`setup-code` of
+  `autobyteus-docker` or `dist/node-access-cli.js`) or created by an owner
+  desktop. It is never written to a file or a log.
+- **Peer invite code:** a one-time code (10 minutes) in a peer invite
+  (`abpi_…`) that a node's owner creates; another node exchanges it to pair.
+- **Network admission:** whether a node accepts a connection by where it
+  arrived: this computer, its Tailscale address, an allowed local network, or
+  a network listed in `AUTOBYTEUS_ALLOWED_CLIENT_NETWORKS`. Refused with
+  `NODE_NETWORK_REFUSED` before any credential is read.
+- **Client identity:** what the node access gate established for a request
+  (`ClientIdentity`): an owner (`credentialId`), a phone (`deviceId`), a peer
+  (`nodeId`) or a memory sync source (`credentialId`).
 - **Allowed host:** a name a node accepts as a request's `Host` (port not
   compared): an IP address; `localhost` and `*.localhost`; dotless names and
   names ending `.local`, `.lan`, `.home.arpa` or `.internal`; names ending

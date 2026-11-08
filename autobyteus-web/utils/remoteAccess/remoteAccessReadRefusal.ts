@@ -1,6 +1,6 @@
 /**
  * Why the node refused the phone's credential check, when the refusal is about the phone and not about reaching the node:
- * - `session_rejected`: the credential no longer works (401, `REMOTE_ACCESS_AUTH_REQUIRED`/`_INVALID`, or the device was
+ * - `session_rejected`: the credential no longer works (401, `NODE_CREDENTIAL_REQUIRED`/`_INVALID`, or the device was
  *   revoked, `REMOTE_ACCESS_DEVICE_REVOKED`); the paired session ends;
  * - `phone_access_off`: Phone Access is off on the node (`PHONE_ACCESS_DISABLED`); the phone stays paired.
  * `null` for every other answer (a reachability problem).
@@ -9,8 +9,8 @@
 export type RemoteAccessReadRefusal = 'session_rejected' | 'phone_access_off';
 
 const SESSION_REJECTED_CODES: ReadonlySet<string> = new Set([
-  'REMOTE_ACCESS_AUTH_REQUIRED',
-  'REMOTE_ACCESS_AUTH_INVALID',
+  'NODE_CREDENTIAL_REQUIRED',
+  'NODE_CREDENTIAL_INVALID',
   'REMOTE_ACCESS_DEVICE_REVOKED',
 ]);
 

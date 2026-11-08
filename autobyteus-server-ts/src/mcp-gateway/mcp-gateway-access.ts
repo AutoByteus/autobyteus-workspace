@@ -1,80 +1,39 @@
-import { timingSafeEqual } from "node:crypto";
 import type { FastifyRequest } from "fastify";
-import { parseRequestHostName } from "../api/security/request-host-name.js";
+import { secretsEqual } from "../node-access/domain/credential-secret.js";
+import type { NetworkAdmissionCheck } from "../node-access/domain/network-admission-facts.js";
 import { extractBearerToken, readSingleHeader } from "./mcp-gateway-http-helpers.js";
+import type { McpGatewayTokenService } from "./mcp-gateway-token-service.js";
 
-export const MCP_GATEWAY_TOKEN_ENV_VAR = "AUTOBYTEUS_MCP_GATEWAY_TOKEN";
+export type McpGatewayAccessRefusal = Readonly<{
+  ok: false;
+  statusCode: 401 | 403;
+  error: "unauthorized" | "forbidden";
+  code: "NODE_NETWORK_REFUSED" | "MCP_GATEWAY_TOKEN_REQUIRED";
+  message: string;
+}>;
 
-export type McpGatewayAccessDecision =
-  | { ok: true }
-  | { ok: false; statusCode: 401; error: "unauthorized"; message: string };
+export type McpGatewayAccessDecision = Readonly<{ ok: true }> | McpGatewayAccessRefusal;
 
-export type McpGatewayAccessConfig = {
-  bearerToken: string | null;
-};
-
-export type McpGatewayAccessDeps = {
-  readConfiguredToken?: () => string | null | undefined;
-};
-
+/**
+ * The MCP gateway's checks after its origin rule (node access model §2, NA-12): network admission the same way as the
+ * node's request gate, then its token, from every client, this computer included.
+ */
 export class McpGatewayAccessGate {
-  private readonly readConfiguredToken: () => string | null | undefined;
+  constructor(
+    private readonly admission: NetworkAdmissionCheck,
+    private readonly tokens: Pick<McpGatewayTokenService, "getToken">,
+  ) {}
 
-  constructor(deps: McpGatewayAccessDeps = {}) {
-    this.readConfiguredToken = deps.readConfiguredToken ?? (() => process.env[MCP_GATEWAY_TOKEN_ENV_VAR]);
-  }
-
-  resolveConfig(): McpGatewayAccessConfig {
-    return { bearerToken: normalizeToken(this.readConfiguredToken()) };
-  }
-
-  validateRequest(request: FastifyRequest): McpGatewayAccessDecision {
-    const configuredToken = this.resolveConfig().bearerToken;
-    if (!configuredToken) {
-      return isLocalLoopbackRequest(request)
-        ? { ok: true }
-        : { ok: false, statusCode: 401, error: "unauthorized", message: "Gateway bearer token is required for non-local access." };
+  async validateRequest(request: FastifyRequest): Promise<McpGatewayAccessDecision> {
+    const socket = request.raw.socket;
+    if (!(await this.admission.admits({ clientAddress: socket?.remoteAddress, localAddress: socket?.localAddress }))) {
+      return { ok: false, statusCode: 403, error: "forbidden", code: "NODE_NETWORK_REFUSED", message: "This node does not accept connections from your network." };
     }
-
     const requestToken = extractBearerToken(readSingleHeader(request.headers.authorization));
-    if (!requestToken || !tokensMatch(requestToken, configuredToken)) {
-      return { ok: false, statusCode: 401, error: "unauthorized", message: "Unauthorized" };
+    const { token } = await this.tokens.getToken();
+    if (!requestToken || !secretsEqual(requestToken, token)) {
+      return { ok: false, statusCode: 401, error: "unauthorized", code: "MCP_GATEWAY_TOKEN_REQUIRED", message: "The MCP gateway token is required." };
     }
     return { ok: true };
   }
 }
-
-export const getMcpGatewayAccessGate = (): McpGatewayAccessGate => new McpGatewayAccessGate();
-
-const normalizeToken = (value: string | null | undefined): string | null => {
-  const normalized = typeof value === "string" ? value.trim() : "";
-  return normalized.length > 0 ? normalized : null;
-};
-
-const tokensMatch = (actual: string, expected: string): boolean => {
-  const actualBuffer = Buffer.from(actual, "utf8");
-  const expectedBuffer = Buffer.from(expected, "utf8");
-  return actualBuffer.length === expectedBuffer.length && timingSafeEqual(actualBuffer, expectedBuffer);
-};
-
-const isLocalLoopbackRequest = (request: FastifyRequest): boolean =>
-  isLoopbackAddress(request.ip) && isLoopbackHostHeader(readSingleHeader(request.headers.host));
-
-const isLoopbackAddress = (address: string | null | undefined): boolean => {
-  const normalized = normalizeAddress(address);
-  if (!normalized) {
-    return false;
-  }
-  if (normalized.startsWith("::ffff:")) {
-    return isLoopbackAddress(normalized.slice("::ffff:".length));
-  }
-  return normalized === "::1" || normalized === "localhost" || normalized === "127.0.0.1" || normalized.startsWith("127.");
-};
-
-const isLoopbackHostHeader = (hostHeader: string | null): boolean =>
-  isLoopbackAddress(hostHeader === null ? null : parseRequestHostName(hostHeader));
-
-const normalizeAddress = (address: string | null | undefined): string | null => {
-  const normalized = address?.trim().replace(/^\[|\]$/g, "").toLowerCase() ?? "";
-  return normalized.length > 0 ? normalized : null;
-};

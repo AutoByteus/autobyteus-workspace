@@ -1,0 +1,23 @@
+const main = pages.find(p => p.url().includes('renderer/index.html'));
+await main.locator('[data-testid^="node-open-srv_W8aJsZu"]').click();
+await new Promise(r => setTimeout(r, 8000));
+const all = browser.contexts().flatMap(c => c.pages()).filter(p => p.url().includes('renderer/index.html'));
+let win;
+for (const p of all) { const n = await p.evaluate(() => performance.getEntriesByType('resource').map(e => e.name).filter(n => n.includes('/graphql')).slice(-1)[0]).catch(() => ''); if (String(n).includes(':8004')) win = p; }
+if (!win) return { pages: all.map(p => p.url()) };
+const cdp = await win.context().newCDPSession(win);
+await cdp.send('Network.enable');
+const ws = []; const t0 = Date.now();
+cdp.on('Network.webSocketCreated', e => ws.push({ ev: 'created', url: e.url.replace(/\?.*/, ''), at: Date.now() - t0 }));
+cdp.on('Network.webSocketHandshakeResponseReceived', e => ws.push({ ev: 'handshake', status: e.response.status, at: Date.now() - t0 }));
+cdp.on('Network.webSocketClosed', e => ws.push({ ev: 'closed', at: Date.now() - t0 }));
+const show = win.getByRole('button', { name: 'Show tools', exact: true });
+if (await show.isVisible().catch(() => false)) await show.click();
+await win.waitForTimeout(800);
+await win.locator('[data-test="right-side-tab-list"]').getByText('VNC Viewer', { exact: true }).click();
+await win.waitForTimeout(8000);
+const panel = (await win.locator('[data-test="workspace-right-panel"]').innerText().catch(() => '')).slice(0, 400);
+const canvases = await win.locator('canvas').evaluateAll(cs => cs.map(c => ({ w: c.width, h: c.height })));
+await win.screenshot({ path: '/tmp/abtest437/d3.png' });
+globalThis.__ws = ws;
+return { panel, canvases, ws };

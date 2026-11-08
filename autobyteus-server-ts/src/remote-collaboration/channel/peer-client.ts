@@ -42,6 +42,13 @@ import {
 import { availableCollaboratorEntry, type AvailableCollaboratorEntry } from "../../agent-collaboration/collaborators/available-collaborator-entry.js";
 import type { PeerIdentityProbe } from "../settings/peer-directory.js";
 import { transportFailureReason, type TransportFailureReason } from "./transport-failure-reason.js";
+import { peerRequestTarget, signPeerRequest } from "./peer-request-signature.js";
+import type {
+  PeerPairingExchangeAnswer,
+  PeerPairingExchangeRequest,
+  PeerPairingExchangeTransport,
+} from "../settings/peer-pairing-service.js";
+import { REMOTE_PEER_PAIRING_EXCHANGES_PATH } from "../domain/remote-requests.js";
 
 /** QR-102: a call to a peer answers or is refused within this bound, under the runtimes' tool-call timeouts (A-11). */
 export const PEER_REQUEST_TIMEOUT_MS = 20_000;
@@ -132,11 +139,16 @@ const PROBE_FAILURE_TEXT: Readonly<Record<TransportFailureReason, string>> = Obj
  * Outbound transport to peer nodes (design § Contract Between Nodes). It applies this node's switch and the
  * peer registration, sends the envelope `{fromNodeId, toNodeId}` with a bounded timeout, refuses an answer
  * whose `nodeId` is not the pinned one (a different server behind the URL), and maps every failure to a
- * refusal the agent reads. It knows nothing about runs and never retries (QR-101). It carries no credential.
+ * refusal the agent reads. It knows nothing about runs and never retries (QR-101). Every request to a peer is signed
+ * with the pair's peer secret (node access model NA-9); the secret itself is never sent.
  */
-export class PeerClient implements RemoteRunChannel, PeerIdentityProbe {
+export class PeerClient implements RemoteRunChannel, PeerIdentityProbe, PeerPairingExchangeTransport {
   constructor(private readonly dependencies: Readonly<{
-    peers: Readonly<{ findByName(name: string): Promise<PeerNode | null>; findByNodeId(nodeId: string): Promise<PeerNode | null> }>;
+    peers: Readonly<{
+      findByName(name: string): Promise<PeerNode | null>;
+      findByNodeId(nodeId: string): Promise<PeerNode | null>;
+      peerSecret(nodeId: string): Promise<string | null>;
+    }>;
     capability: Readonly<{ isEnabled(): boolean }>;
     ownNodeId(): Promise<string>;
     timeoutMs?: number;
@@ -237,6 +249,7 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe {
   observeRun(nodeId: string, targetRoot: RemoteTargetRoot, observer: RemoteRunObserver): RemoteRunObservationStream {
     return openPeerRunObservation({
       resolvePeer: async () => this.dependencies.capability.isEnabled() ? this.dependencies.peers.findByNodeId(nodeId) : null,
+      peerSecret: (peerNodeId) => this.dependencies.peers.peerSecret(peerNodeId),
       ownNodeId: this.dependencies.ownNodeId,
       path: REMOTE_RUN_OBSERVATIONS_PATH,
       targetRoot,
@@ -287,6 +300,31 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe {
     return id;
   }
 
+  /**
+   * `PeerPairingExchangeTransport`: calls the inviting node's pairing exchange at `baseUrl` (unsigned: the two nodes
+   * share no secret yet). A refusal becomes the settings error the Nodes page words.
+   */
+  async exchangePeerInvite(baseUrl: string, request: PeerPairingExchangeRequest): Promise<PeerPairingExchangeAnswer> {
+    let response: Awaited<ReturnType<PeerClient["fetchJson"]>>;
+    try {
+      response = await this.fetchJson(`${baseUrl}${REMOTE_PEER_PAIRING_EXCHANGES_PATH}`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(request),
+      }, PEER_START_REQUEST_TIMEOUT_MS);
+    } catch (error) {
+      const reason = transportFailureReason(error);
+      throw new RemoteCollaborationSettingsError("PEER_UNREACHABLE", `${baseUrl} could not be reached: ${PROBE_FAILURE_TEXT[reason]}.`,
+        { reason, address: baseUrl });
+    }
+    const answer = await response.json().catch(() => null) as { nodeId?: unknown; peerSecret?: unknown; code?: unknown; message?: unknown } | null;
+    if (response.ok && typeof answer?.nodeId === "string" && typeof answer.peerSecret === "string" && answer.peerSecret) {
+      return Object.freeze({ nodeId: answer.nodeId, peerSecret: answer.peerSecret });
+    }
+    const message = typeof answer?.message === "string" ? answer.message : `The node at ${baseUrl} refused the pairing (HTTP ${response.status}).`;
+    throw new RemoteCollaborationSettingsError(answer?.code === "PEER_INVITE_INVALID" ? "PEER_INVITE_INVALID" : "PEER_PAIRING_REFUSED", message, { address: baseUrl });
+  }
+
   private async call<TResult>(
     nodeId: string,
     path: string,
@@ -311,31 +349,46 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe {
       }
       throw error;
     }
+    const secret = await this.dependencies.peers.peerSecret(peer.nodeId);
+    const notPaired = () => refusal(REMOTE_REFUSAL.PEER_NOT_PAIRED, peerRefusalText(peer.name, REMOTE_REFUSAL.PEER_NOT_PAIRED, ""));
+    const identityMismatch = () => refusal(REMOTE_REFUSAL.PEER_IDENTITY_MISMATCH, peerRefusalText(peer.name, REMOTE_REFUSAL.PEER_IDENTITY_MISMATCH, ""));
+    if (!secret) return notPaired();
     let answer: PeerAnswer;
     try {
-      const response = await this.fetchJson(`${peer.baseUrl}${path}`, {
+      const requestBody = JSON.stringify(body({ fromNodeId, toNodeId: peer.nodeId }));
+      const { url, pathWithQuery } = peerRequestTarget(peer.baseUrl, path);
+      const response = await this.fetchJson(url.toString(), {
         method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify(body({ fromNodeId, toNodeId: peer.nodeId })),
+        headers: {
+          "content-type": "application/json",
+          ...signPeerRequest({ secret, method: "POST", pathWithQuery, fromNodeId, toNodeId: peer.nodeId, body: requestBody }),
+        },
+        body: requestBody,
       }, timeoutMs);
       if (await isNodeIdentityPendingAnswer(response)) {
         return refusal(REMOTE_REFUSAL.NODE_IDENTITY_NOT_MIGRATED, peerRefusalText(peer.name, REMOTE_REFUSAL.NODE_IDENTITY_NOT_MIGRATED, ""));
       }
+      // The gate there does not accept this node's signature: either the peer has no secret for this node (unpaired
+      // there), or the address now reaches another node, whose gate refuses a request signed for the peer (NA-9).
+      if (response.status === 401) return await this.answersAs(peer) ? notPaired() : identityMismatch();
       if (!response.ok) return unreachable(`it answered HTTP ${response.status}`);
       answer = await response.json() as PeerAnswer;
     } catch (error) {
       const reason = transportFailureReason(error);
       return unreachable(reason === "timeout" ? `it ${timeoutText}` : messageOf(error), reason);
     }
-    if (!answer || typeof answer !== "object" || answer.nodeId !== peer.nodeId) {
-      return refusal(REMOTE_REFUSAL.PEER_IDENTITY_MISMATCH, peerRefusalText(peer.name, REMOTE_REFUSAL.PEER_IDENTITY_MISMATCH, ""));
-    }
+    if (!answer || typeof answer !== "object" || answer.nodeId !== peer.nodeId) return identityMismatch();
     if (answer.accepted !== true) {
       const code = typeof answer.code === "string" ? answer.code : REMOTE_REFUSAL.BAD_REQUEST;
       return refusal(code, peerRefusalText(peer.name, code, typeof answer.message === "string" ? answer.message : "no reason given",
         refusalTargetOf(answer.target), refusalRoutingOf(answer)));
     }
     return accepted(answer, peer);
+  }
+
+  /** Whether the peer's address still answers with the peer's node ID (its exempt status route). */
+  private async answersAs(peer: PeerNode): Promise<boolean> {
+    return this.fetchNodeId(peer.baseUrl).then((nodeId) => nodeId === peer.nodeId, () => true);
   }
 
   private fetchJson(url: string, init: RequestInit, timeoutMs: number = this.dependencies.timeoutMs ?? PEER_REQUEST_TIMEOUT_MS) {

@@ -26,11 +26,11 @@ import { registerRemoteAccessRoutes } from "../../../src/api/rest/remote-access.
  */
 
 const SELF = "srv_self_node_000000000000000000000000";
-const PEER: PeerNode = { nodeId: "srv_peer_node_000000000000000000000000", name: "docker", baseUrl: "http://peer:29700", addedAt: "2026-10-20T09:00:00.000Z" };
+const PEER: PeerNode = { nodeId: "srv_peer_node_000000000000000000000000", name: "docker", baseUrl: "http://peer:29700", addedAt: "2026-10-20T09:00:00.000Z", paired: true };
 const pending = async (): Promise<string> => { throw new NodeIdentityNotMigratedError(); };
 const answer = (body: unknown, status = 200) => ({ ok: status >= 200 && status < 300, status, json: async () => body });
 const pendingAnswer = () => answer({ code: "NODE_IDENTITY_NOT_MIGRATED", message: "This node's identity is waiting for its data migration." }, 503);
-const peers = { findByName: async (name: string) => (name === "docker" ? PEER : null), findByNodeId: async (id: string) => (id === PEER.nodeId ? PEER : null) };
+const peers = { findByName: async (name: string) => (name === "docker" ? PEER : null), peerSecret: async () => "peer-secret-for-tests", findByNodeId: async (id: string) => (id === PEER.nodeId ? PEER : null) };
 const WORK = { text: "Publish the video draft.", task: { taskId: null, taskKey: null, projectId: null, title: "Publish the video draft." } };
 const start = { nodeId: PEER.nodeId, address: "/publisher", delegatorAgentRunId: "agent_a1", coordinatingRun: { kind: "agent" as const, runId: "agent_a1" }, work: WORK };
 
@@ -61,7 +61,8 @@ describe("this node's identity held back", () => {
       delegatedRuns: delegatedRuns as never, messages: { accept: vi.fn() } as never, availableAgents: { list: vi.fn() } as never, runViews: {} as never,
     });
     const response = await gate.startDelegatedRun({ fromNodeId: PEER.nodeId, toNodeId: SELF, address: "/publisher",
-      delegator: { agentRunId: "agent_a1" }, coordinatingRun: { kind: "agent", runId: "agent_a1" }, task: { text: "Publish the video draft.", title: "Publish the video draft.", taskKey: null, projectId: null, taskId: null } });
+      delegator: { agentRunId: "agent_a1" }, coordinatingRun: { kind: "agent", runId: "agent_a1" }, task: { text: "Publish the video draft.", title: "Publish the video draft.", taskKey: null, projectId: null, taskId: null } },
+    { kind: "peer", nodeId: PEER.nodeId });
     expect(response).toEqual({ status: 503, answer: { accepted: false, code: "NODE_IDENTITY_NOT_MIGRATED",
       message: "This node's identity is waiting for its data migration." } });
     expect(delegatedRuns.start).not.toHaveBeenCalled();
@@ -75,7 +76,7 @@ describe("this node's identity held back", () => {
     expect(fetch).not.toHaveBeenCalled();
   });
 
-  it("adding a peer is refused with the code (settings error)", async () => {
+  it("pairing is refused with the code (settings error)", async () => {
     const dir = await fs.mkdtemp(path.join(os.tmpdir(), "autobyteus-hold-back-")); roots.push(dir);
     const services = composeRemoteCollaboration({
       config: { getAppDataDir: () => dir },
@@ -86,8 +87,7 @@ describe("this node's identity held back", () => {
       handlers: () => ({ delegatedRuns: {} as never, messages: {} as never, availableAgents: {} as never, runViews: {} as never }),
     });
     vi.spyOn(services.client, "fetchNodeId").mockResolvedValue(PEER.nodeId);
-    await expect(services.peers.add({ nodeId: PEER.nodeId, name: "docker", baseUrl: "http://peer:29700" }))
-      .rejects.toMatchObject({ code: "NODE_IDENTITY_NOT_MIGRATED" });
+    await expect(services.pairing.createInvite()).rejects.toMatchObject({ code: "NODE_IDENTITY_NOT_MIGRATED" });
     await expect(services.addresses.resolve(PEER.nodeId, ["http://peer:29700"])).rejects.toMatchObject({ code: "NODE_IDENTITY_NOT_MIGRATED" });
   });
 });

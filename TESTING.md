@@ -186,6 +186,16 @@ or because Gradle's cache already holds a dependency the runner must download.
   uses a signed-in CLI (`claude`, `codex`) also needs the real `HOME` and, on macOS,
   `USER` and `LOGNAME`; without them the CLI reports "Not logged in" and the run hangs
   until its step timeout.
+- **Node credentials.** Every request to a node needs a credential (node access model,
+  `autobyteus-server-ts/docs/design/node_access_model.md`). A test starts its node as the
+  desktop app does: with a launch owner credential (`AUTOBYTEUS_LAUNCH_OWNER_CREDENTIAL`) it
+  attaches to its own requests. In-process server suites get one from
+  `tests/setup/test-launch-credential.ts`; `startStudioE2eRuntimeServer` and
+  `startBuiltTestServer` attach it; a suite that spawns `dist/app.js` itself adds
+  `builtServerLaunchEnvironment()` (`tests/e2e/helpers/`) to the server's environment. The
+  attachment lives in `test-support/node-access/owner-credential-attachment.mjs`, test code
+  only. Nodes are paired by invite (`tests/e2e/helpers/pair-nodes.ts`). Never print or store a
+  credential, setup code, invite or peer secret in evidence.
 - **Gates.** Live and costly tests stay skipped unless their gate is set. A skip is not a
   pass. Real-provider runs spend the user's credits: run them only when the change needs
   real-provider proof.
@@ -371,6 +381,14 @@ is in [docs/android_mobile_access.md](docs/android_mobile_access.md).
   any other localhost port with `REMOTE_ACCESS_ORIGIN_REFUSED`. Choose the frontend port before
   starting the node, and list every frontend on every node a multi-node probe starts. See
   [Allowed Origins](autobyteus-server-ts/docs/features/remote_access.md#allowed-origins).
+- A probe-owned backend also needs a launch owner credential, and the page must send it: serve
+  the frontend through the Nuxt dev proxy with `AUTOBYTEUS_DEVELOPMENT_OWNER_CREDENTIAL` (the
+  proxy adds it to every request it forwards) and `AUTOBYTEUS_DEVELOPMENT_FRONTEND_URL`, as
+  `pnpm dev` does, or attach it in the probe's browser. The probe's own calls carry it too,
+  including the "other window" sockets a case opens from the probe process:
+  `autobyteus-web/tests/e2e/fixtures/probe-node-access.mjs` gives the node environment
+  (`probeNodeEnvironment`), `ownerHeaders` for HTTP, `ownerSocketUrl` for WebSockets, and
+  `attachToBrowserContext` for a desktop window's context (never a phone's).
 - Probes fail on browser errors. A probe whose fixture page renders product components must
   supply every boundary those components reach (GraphQL operations, WebSockets). Shared
   fixture helpers live in `autobyteus-web/tests/e2e/fixtures/`.

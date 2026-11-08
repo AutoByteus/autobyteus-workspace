@@ -1,0 +1,17 @@
+# API-16 runtime-switch-members: node tests/e2e/runtime-switch-members-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/tickets/in-progress/node-universal-authentication-437/evidence/api-e2e/API-16-probes/runtime-switch-members
+# commit 32e9ad944c + round-2 probe migration; 2026-11-08T19:14:09Z
+  · Team: saved, the server holds the pending switch on the worker only
+  · Team: the first message switched the worker (one segment, committed); the lead never started
+  · Team: after the reload the chat shows the earlier turns and one marker; the settings show the worker on Antigravity
+RSM-01 Pass
+  · Org /direct: the server holds the pending switch on that member only
+  · Org /direct: the first message switched it (one segment, committed)
+RSM-02 Pass
+  · Org /crew/worker: the server holds the pending switch on that member only
+  · Org /crew/worker: the first message switched it (one segment, committed)
+RSM-03 Pass
+  · Delegated copy: saved in the host's Settings; the first message switched it (one segment)
+RSM-04 Pass
+RSM-05 Pass
+RSM-06 Pass
+RSM-07 Pass

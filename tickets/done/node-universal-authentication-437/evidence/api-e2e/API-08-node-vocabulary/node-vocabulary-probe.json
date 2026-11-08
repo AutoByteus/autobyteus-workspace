@@ -1,0 +1,453 @@
+{
+  "startedAt": "2026-11-08T16:34:06.459Z",
+  "result": "Fail",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 64985,
+      "nodeId": "srv__0IB0X4hUppg6ye4daf5RDvi-tMS7Thq"
+    },
+    "beta": {
+      "port": 64986,
+      "nodeId": "srv_c6j6cEASk_lAM61ta_tHuZO8_zpXFGN6"
+    }
+  },
+  "cases": {
+    "NVP-01": {
+      "result": "Pass",
+      "ms": 175,
+      "failedExpectations": [],
+      "stored": {
+        "version": 7,
+        "nodes": [
+          {
+            "id": "embedded-local",
+            "name": "Embedded Node",
+            "baseUrl": "http://127.0.0.1:64985",
+            "nodeType": "embedded",
+            "capabilities": {
+              "terminal": true,
+              "fileExplorerStreaming": true
+            },
+            "capabilityProbeState": "ready",
+            "createdAt": "2026-09-01T10:00:00.000Z",
+            "updatedAt": "2026-09-01T10:00:00.000Z",
+            "nodeId": "srv__0IB0X4hUppg6ye4daf5RDvi-tMS7Thq"
+          },
+          {
+            "id": "remote-beta-entry",
+            "name": "beta box",
+            "baseUrl": "http://127.0.0.1:64986",
+            "nodeType": "remote",
+            "capabilities": {
+              "terminal": true,
+              "fileExplorerStreaming": true
+            },
+            "capabilityProbeState": "ready",
+            "createdAt": "2026-09-01T10:00:00.000Z",
+            "updatedAt": "2026-09-01T10:00:00.000Z",
+            "nodeId": "srv_c6j6cEASk_lAM61ta_tHuZO8_zpXFGN6"
+          }
+        ]
+      },
+      "names": [
+        "beta"
+      ],
+      "backup": "{\"version\":7,\"nodes\":[{\"id\":\"embedded-local\",\"name\":\"Embedded Node\",\"baseUrl\":\"http://127.0.0.1:64985\",\"nodeType\":\"embedded\",\"capabilities\":{\"terminal\":true,\"fileExplorerStreaming\":true},\"capabilityProbeState\":\"ready\",\"isSystem\":true,\"createdAt\":\"2026-09-01T10:00:00.000Z\",\"updatedAt\":\"2026-09-01T10:00:00.000Z\",\"serverInstanceId\":\"srv__0IB0X4hUppg6ye4daf5RDvi-tMS7Thq\"},{\"id\":\"remote-beta-entry\",\"name\":\"beta box\",\"baseUrl\":\"http://127.0.0.1:64986\",\"nodeType\":\"remote\",\"capabilities\":{\"terminal\":true,\"fileExplorerStreaming\":true},\"capabilityProbeState\":\"ready\",\"isSystem\":false,\"createdAt\":\"2026-09-01T10:00:00.000Z\",\"updatedAt\":\"2026-09-01T10:00:00.000Z\",\"serverInstanceId\":\"srv_c6j6cEASk_lAM61ta_tHuZO8_zpXFGN6\"}]}"
+    },
+    "NVP-02": {
+      "result": "Pass",
+      "ms": 81,
+      "failedExpectations": [],
+      "lines": [
+        "Not reachable. This node's identity is waiting for its data migration.\n\nCheck again"
+      ]
+    },
+    "NVP-03": {
+      "result": "Pass",
+      "ms": 3336,
+      "failedExpectations": [],
+      "en": "Memory Sync source ID",
+      "zh": "记忆同步源 ID",
+      "sources": [
+        "local",
+        "imported:nvp-beta-source"
+      ]
+    },
+    "NVP-04": {
+      "result": "Pass",
+      "ms": 2172,
+      "failedExpectations": [],
+      "shown": "runs",
+      "storedKeys": [
+        "entryId",
+        "serverBaseUrl",
+        "credential",
+        "device",
+        "pairedAt"
+      ],
+      "entryId": "mobile-paired-node"
+    },
+    "NVP-05": {
+      "result": "Fail",
+      "ms": 51454,
+      "failedExpectations": [
+        "the card shows the reason: Memory Sync target node\n\nEmbedded Node EMBEDDED\n\nhttp://127.0.0.1:64985\n\nConfigure this backend as a Memory Hub, a Memory Sync source, or both. Frontend node names are only navigation labels; the Memory Sync source ID below is the stable import identity.\n\nResponse not successful: Received status code 503\n\nMemory Hub\n\nReceive imported memory under memory/imports/<memorySyncSourceId>.\n\nEnable hub\nAD"
+      ],
+      "sources": [
+        "local"
+      ],
+      "cardHasReason": false
+    }
+  },
+  "browserErrors": [
+    {
+      "phase": "NVP-01..03",
+      "text": "console: Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone requestfailed: GET http://192.168.2.158:64984/rest/health net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone requestfailed: POST http://192.168.2.158:64984/graphql net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone requestfailed: GET http://192.168.2.158:64984/rest/remote-access/status net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone requestfailed: GET http://192.168.2.158:64984/rest/health net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone requestfailed: GET http://192.168.2.158:64984/rest/health net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone requestfailed: GET http://192.168.2.158:64984/rest/health net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone requestfailed: GET http://192.168.2.158:64984/rest/health net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone console: WebSocket connection to 'ws://192.168.2.158:64984/ws/agent-package-definitions?access_token=mra_…' failed: Error during WebSocket handshake: Unexpected response code: 200"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone requestfailed: GET http://192.168.2.158:64984/autobyteus-icon.svg net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone requestfailed: GET http://192.168.2.158:64984/rest/health net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone requestfailed: GET http://192.168.2.158:64984/rest/health net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone requestfailed: GET http://192.168.2.158:64984/rest/health net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone requestfailed: GET http://192.168.2.158:64984/rest/health net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone requestfailed: GET http://192.168.2.158:64984/rest/health net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone requestfailed: GET http://192.168.2.158:64984/rest/health net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone requestfailed: GET http://192.168.2.158:64984/rest/health net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone requestfailed: GET http://192.168.2.158:64984/rest/health net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone requestfailed: GET http://192.168.2.158:64984/rest/health net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone requestfailed: GET http://192.168.2.158:64984/rest/health net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-04",
+      "text": "phone console: WebSocket connection to 'ws://192.168.2.158:64984/ws/agent-package-definitions?access_token=mra_…' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-05 restart",
+      "text": "console: WebSocket connection to 'ws://127.0.0.1:64985/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-05 restart",
+      "text": "console: WebSocket connection to 'ws://127.0.0.1:64985/ws/update-notifications' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-05 restart",
+      "text": "requestfailed: GET http://127.0.0.1:64985/rest/health net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-05 restart",
+      "text": "console: Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-05 restart",
+      "text": "requestfailed: GET http://127.0.0.1:64985/rest/health net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-05 restart",
+      "text": "console: Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:64984/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/node_modules/.pnpm/ofetch@1.5.1/node_modules/ofetch/dist/index.mjs?v=cdd9545a net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:64984/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/node_modules/.pnpm/nuxt@3.21.11_@oxc-project+types@0.143.0_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue_48df65f25770ced49579eea28c5a5682/node_modules/nuxt/dist/head/runtime/plugins/unhead.js?v=cdd9545a net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:64984/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/node_modules/.pnpm/nuxt@3.21.11_@oxc-project+types@0.143.0_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue_48df65f25770ced49579eea28c5a5682/node_modules/nuxt/dist/pages/runtime/plugins/check-if-page-unused.js?v=cdd9545a net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:64984/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/node_modules/.pnpm/hookable@5.5.3/node_modules/hookable/dist/index.mjs?v=cdd9545a net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:64984/_nuxt/@id/virtual:nuxt:.nuxt%2Fcomponents.plugin.mjs net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:64984/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/node_modules/.pnpm/nuxt@3.21.11_@oxc-project+types@0.143.0_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue_48df65f25770ced49579eea28c5a5682/node_modules/nuxt/dist/pages/runtime/plugins/router.js?v=cdd9545a net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:64984/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/node_modules/.pnpm/@fortawesome+fontawesome-svg-core@6.7.2/node_modules/@fortawesome/fontawesome-svg-core/styles.css net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:64984/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/node_modules/.pnpm/@pinia+nuxt@0.5.5_magicast@0.5.5_typescript@5.9.3_vue@3.5.44_typescript@5.9.3_/node_modules/@pinia/nuxt/dist/runtime/plugin.vue3.js?v=cdd9545a net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:64984/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/node_modules/.pnpm/nuxt@3.21.11_@oxc-project+types@0.143.0_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue_48df65f25770ced49579eea28c5a5682/node_modules/nuxt/dist/pages/runtime/plugins/prefetch.client.js?v=cdd9545a net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:64984/_nuxt/plugins/uiErrorCapture.client.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:64984/_nuxt/plugins/06.appFontSize.client.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:64984/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/node_modules/.pnpm/nuxt@3.21.11_@oxc-project+types@0.143.0_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue_48df65f25770ced49579eea28c5a5682/node_modules/nuxt/dist/app/plugins/check-outdated-build.client.js?v=cdd9545a net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:64984/_nuxt/plugins/apolloErrorLink.client.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:64984/_nuxt/plugins/30.apollo.client.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:64984/_nuxt/plugins/10.serverStore.client.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:64984/_nuxt/@vite/client net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:64984/_nuxt/@id/virtual:nuxt:.nuxt%2Fpaths.mjs net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:64984/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/node_modules/.pnpm/nuxt@3.21.11_@oxc-project+types@0.143.0_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue_48df65f25770ced49579eea28c5a5682/node_modules/nuxt/dist/app/plugins/revive-payload.client.js?v=cdd9545a net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:64984/_nuxt/plugins/05.localization.client.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:64984/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/node_modules/.pnpm/unctx@2.5.0/node_modules/unctx/dist/index.mjs?v=cdd9545a net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:64984/_nuxt/@id/virtual:nuxt:.nuxt%2Fcomponents.islands.mjs net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:64984/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/node_modules/.pnpm/nuxt@3.21.11_@oxc-project+types@0.143.0_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue_48df65f25770ced49579eea28c5a5682/node_modules/nuxt/dist/app/components/nuxt-root.vue net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:64984/_nuxt/plugins/20.windowNodeBootstrap.client.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:64984/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/node_modules/.pnpm/nuxt@3.21.11_@oxc-project+types@0.143.0_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue_48df65f25770ced49579eea28c5a5682/node_modules/nuxt/dist/app/plugins/browser-devtools-timing.client.js?v=cdd9545a net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:64984/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/node_modules/.pnpm/nuxt@3.21.11_@oxc-project+types@0.143.0_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue_48df65f25770ced49579eea28c5a5682/node_modules/nuxt/dist/app/composables/router.js?v=cdd9545a net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:64984/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/node_modules/.pnpm/h3@1.15.11/node_modules/h3/dist/index.mjs?v=cdd9545a net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:64984/_nuxt/plugins/21.mobileRemoteAccessBootstrap.client.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:64984/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/node_modules/.pnpm/nuxt@3.21.11_@oxc-project+types@0.143.0_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue_48df65f25770ced49579eea28c5a5682/node_modules/nuxt/dist/app/plugins/island-link-navigation.client.js?v=cdd9545a net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:64984/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/node_modules/.pnpm/nuxt@3.21.11_@oxc-project+types@0.143.0_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue_48df65f25770ced49579eea28c5a5682/node_modules/nuxt/dist/app/plugins/check-if-layout-used.js?v=cdd9545a net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:64984/_nuxt/plugins/25.browserShell.client.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:64984/_nuxt/@id/virtual:nuxt:.nuxt%2Fnuxt.config.mjs net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:64984/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/node_modules/.pnpm/nuxt@3.21.11_@oxc-project+types@0.143.0_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue_48df65f25770ced49579eea28c5a5682/node_modules/nuxt/dist/app/plugins/navigation-repaint.client.js?v=cdd9545a net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:64984/_nuxt/plugins/15.appUpdater.client.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:64984/_nuxt/plugins/19.clientDataMigrations.client.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:64984/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/node_modules/.pnpm/nuxt@3.21.11_@oxc-project+types@0.143.0_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue_48df65f25770ced49579eea28c5a5682/node_modules/nuxt/dist/app/plugins/chunk-reload.client.js?v=cdd9545a net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:64984/_nuxt/plugins/fontawesome.ts net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:64984/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/node_modules/.pnpm/@vue+runtime-dom@3.5.44/node_modules/@vue/runtime-dom/dist/runtime-dom.esm-bundler.js?v=cdd9545a net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "requestfailed: GET http://192.168.2.158:64984/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/node_modules/.pnpm/nuxt@3.21.11_@oxc-project+types@0.143.0_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue_48df65f25770ced49579eea28c5a5682/node_modules/nuxt/dist/app/plugins/dev-server-logs.js?v=cdd9545a net::ERR_ABORTED"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "console: Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+    },
+    {
+      "phase": "NVP-05",
+      "text": "console: Failed to load resource: the server responded with a status of 503 (Service Unavailable)"
+    }
+  ],
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "unexpectedBrowserErrors": [],
+  "finishedAt": "2026-11-08T16:35:30.449Z"
+}

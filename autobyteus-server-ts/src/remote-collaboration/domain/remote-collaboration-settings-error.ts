@@ -15,7 +15,11 @@ export type RemoteCollaborationSettingsErrorCode =
   /** autobyteus-426: the node at the address refuses the host name it was addressed by (its Host gate). */
   | "PEER_HOST_REFUSED"
   /** autobyteus-290: this node's, or the asked node's, identity is waiting for its data migration. */
-  | "NODE_IDENTITY_NOT_MIGRATED";
+  | "NODE_IDENTITY_NOT_MIGRATED"
+  /** autobyteus-437: the invite text is not an invite, or the inviting node refused its code (used or expired). */
+  | "PEER_INVITE_INVALID"
+  /** autobyteus-437: the inviting node refused the pairing for another reason (its message says why). */
+  | "PEER_PAIRING_REFUSED";
 
 /** What one address answered when this node looked for another node there (one-nodes-tab DS-005). */
 export type PeerAddressAttemptResult = TransportFailureReason | "not_autobyteus" | "different_node" | "identity_pending" | "host_refused";

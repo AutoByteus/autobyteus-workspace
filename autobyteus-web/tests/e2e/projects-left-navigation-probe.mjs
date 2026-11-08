@@ -48,6 +48,10 @@ import { randomUUID } from 'node:crypto';
 import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import { attachToBrowserContext, attachToProbeProcess, withNodeCredential } from './fixtures/probe-node-access.mjs';
+// Every node needs a credential (autobyteus-437): the probe's nodes start with its launch credential, and the probe's
+// own calls and its desktop browser contexts carry it (fixtures/probe-node-access.mjs).
+attachToProbeProcess();
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -117,7 +121,7 @@ const startBackend = async (port) => {
     // A disposable HOME keeps the scripted actors' files out of the user's home.
     HOME: stack.home, ANTIGRAVITY_CLI_COMMAND: path.join(serverDir, 'tests/fixtures/agy-failure-cli.mjs'), AGY_FAKE_CASE: 'linked_skills' };
   stack.backend = spawnLogged(process.execPath, [path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(port), '--data-dir', stack.dataRoot],
-    serverDir, env, `backend-${stack.backendStarts}`);
+    serverDir, withNodeCredential(env), `backend-${stack.backendStarts}`);
   await until('backend listening', () => { if (exited(stack.backend)) throw new Error('backend exited'); return stack.backend.output.includes('listening'); }, 180000);
   await until('backend GraphQL', async () => (await fetch(`${stack.backendUrl}/graphql`, { method: 'POST',
     headers: { 'content-type': 'application/json' }, body: '{"query":"{__typename}"}' })).ok, 60000);
@@ -280,6 +284,7 @@ const nodeOf = async (rootId, predicate, label) => until(label, async () => task
 let browser;
 const newPage = async ({ width = 1440, height = 900, locale = 'en-US' } = {}) => {
   const context = await browser.newContext({ viewport: { width, height }, locale });
+  await attachToBrowserContext(context);
   if (locale !== 'en-US') await context.addInitScript((l) => { try { localStorage.setItem('autobyteus.localization.preference-mode', l); } catch { /* ignore */ } }, locale);
   const page = await context.newPage();
   const errors = [];

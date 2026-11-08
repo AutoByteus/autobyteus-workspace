@@ -14,6 +14,10 @@ import { PeerNodeDiscovery } from "./discovery/peer-node-discovery.js";
 import { PeerAddressResolver } from "./settings/peer-address-resolver.js";
 import { PeerDirectory } from "./settings/peer-directory.js";
 import { PeerStore } from "./settings/peer-store.js";
+import { PeerPairingService } from "./settings/peer-pairing-service.js";
+import { PeerRequestSignatureVerifier } from "./channel/peer-request-signature.js";
+import { getServerAddressCandidateService } from "../server-addressing/server-address-candidate-service.js";
+import { readComputerName } from "../remote-access/services/computer-name.js";
 import { RemoteCollaborationCapability } from "./settings/remote-collaboration-capability.js";
 import type { AppDataDirSource } from "./settings/settings-file-schema.js";
 import { runsInContainer as processRunsInContainer } from "../server-addressing/runs-in-container.js";
@@ -33,6 +37,10 @@ export type RemoteCollaborationServices = Readonly<{
   gateway: PeerGateway;
   /** autobyteus-261: the peers with their status, and a peer's offer (the `PeerDiscoveryChannel`). */
   discovery: PeerNodeDiscovery;
+  /** autobyteus-437: peer invites and the pairing exchange (DS-004). */
+  pairing: PeerPairingService;
+  /** autobyteus-437: the peer credential kind of the node's request gate (DS-005). */
+  peerRequestVerifier: PeerRequestSignatureVerifier;
 }>;
 
 /**
@@ -47,7 +55,7 @@ export const composeRemoteCollaboration = (input: Readonly<{
   tempWorkspaceDir: string;
   /** Whether this server runs in a container (the loopback hint); the process check by default. */
   runsInContainer?(): boolean;
-  handlers(services: Omit<RemoteCollaborationServices, "gateway" | "discovery" | "addresses">): Readonly<{
+  handlers(services: Omit<RemoteCollaborationServices, "gateway" | "discovery" | "addresses" | "pairing" | "peerRequestVerifier">): Readonly<{
     delegatedRuns: DelegatedRunHandler; messages: RemoteMessageHandler; availableAgents: AvailableAgentsHandler;
     runViews: RemoteRunViewHandler;
   }>;
@@ -56,7 +64,11 @@ export const composeRemoteCollaboration = (input: Readonly<{
   const store = new PeerStore(input.config);
   let peers: PeerDirectory;
   const client = new PeerClient({
-    peers: { findByName: (name) => peers.findByName(name), findByNodeId: (nodeId) => peers.findByNodeId(nodeId) },
+    peers: {
+      findByName: (name) => peers.findByName(name),
+      findByNodeId: (nodeId) => peers.findByNodeId(nodeId),
+      peerSecret: (nodeId) => peers.peerSecret(nodeId),
+    },
     capability,
     ownNodeId: input.ownNodeId,
   });
@@ -76,7 +88,20 @@ export const composeRemoteCollaboration = (input: Readonly<{
   const gateway = new PeerGateway({ ownNodeId: input.ownNodeId, capability, peers, ...handlers });
   const discovery = new PeerNodeDiscovery({ capability, peers, client });
   const addresses = new PeerAddressResolver({ probe: client, capability, ownNodeId: ownNodeIdForSettings, runsInContainer });
-  return Object.freeze({ ...services, gateway, discovery, addresses });
+  const pairing = new PeerPairingService({
+    capability,
+    peers,
+    addresses,
+    transport: client,
+    ownNodeId: ownNodeIdForSettings,
+    ownAddressCandidates: () => getServerAddressCandidateService().listCandidates().map((candidate) => candidate.baseUrl),
+    ownName: () => readComputerName(),
+  });
+  const peerRequestVerifier = new PeerRequestSignatureVerifier({
+    ownNodeId: input.ownNodeId,
+    peerSecret: (nodeId) => peers.peerSecret(nodeId),
+  });
+  return Object.freeze({ ...services, gateway, discovery, addresses, pairing, peerRequestVerifier });
 };
 
 let processServices: RemoteCollaborationServices | null = null;

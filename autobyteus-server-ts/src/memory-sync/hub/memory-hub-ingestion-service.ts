@@ -18,7 +18,8 @@ export class MemoryHubIngestionService {
     private readonly importStore: LocalFileMemoryImportStore = getLocalFileMemoryImportStore(),
   ) {}
 
-  async health(input: { token: string | null; memorySyncSourceId: string }): Promise<{
+  /** `credentialId`: the memory sync source credential the node's request gate verified for this request. */
+  async health(input: { credentialId: string; memorySyncSourceId: string }): Promise<{
     ok: boolean;
     hubEnabled: boolean;
     memorySyncSourceId: string;
@@ -30,15 +31,15 @@ export class MemoryHubIngestionService {
     if (!config.hub.enabled) {
       throw new MemoryHubIngestionError("Memory Hub is not enabled.", 503);
     }
-    await this.credentialService.validateCredentialForSource({
-      plaintextToken: input.token,
+    await this.credentialService.bindCredentialToSource({
+      credentialId: input.credentialId,
       memorySyncSourceId,
       bindOnFirstUse: false,
     });
     return { ok: true, hubEnabled: true, memorySyncSourceId, authenticated: true, message: null };
   }
 
-  async commitBatch(input: { token: string | null; batch: MemorySyncBatch }): Promise<MemorySyncBatchCommitResult> {
+  async commitBatch(input: { credentialId: string; batch: MemorySyncBatch }): Promise<MemorySyncBatchCommitResult> {
     const config = await this.configService.getConfig();
     if (!config.hub.enabled) {
       throw new MemoryHubIngestionError("Memory Hub is not enabled.", 503);
@@ -47,8 +48,8 @@ export class MemoryHubIngestionService {
       throw new MemoryHubIngestionError("Memory Sync batch body is required.");
     }
     const memorySyncSourceId = normalizeMemorySyncSourceId(input.batch.memorySyncSourceId);
-    await this.credentialService.validateCredentialForSource({
-      plaintextToken: input.token,
+    await this.credentialService.bindCredentialToSource({
+      credentialId: input.credentialId,
       memorySyncSourceId,
       bindOnFirstUse: true,
     });

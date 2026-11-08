@@ -1,0 +1,8 @@
+
+> autobyteus@1.5.12-beta.8 test:e2e:mobile-shell /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web
+> node tests/e2e/mobile-shell-probe.mjs --cases=MSP-08 --output-dir=/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/tickets/in-progress/node-universal-authentication-437/evidence/api-e2e/API-03-mobile-shell-MSP-08-rerun
+
+[mobile-shell] MSP-08 …
+[mobile-shell] MSP-08 Fail: one search over the workspace
+mobile-shell probe: Fail
+ ELIFECYCLE  Command failed with exit code 1.

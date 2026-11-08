@@ -4,10 +4,11 @@ import { normalizeNodeBaseUrl } from '~/utils/nodeEndpoints'
 /**
  * Why a node did not answer as an AutoByteus node (one-nodes-tab REQ-707). `refused`, `timeout`, `not_found` and
  * `unreachable` mirror the server's transport reasons; `not_autobyteus` is something that answered without an identity;
- * `identity_pending` is a node whose identity is waiting for its data migration (autobyteus-290 N-910).
+ * `identity_pending` is a node whose identity is waiting for its data migration (autobyteus-290 N-910);
+ * `network_refused` is a node that does not accept connections from this computer's network (autobyteus-437 M-8b).
  */
 export type NodeTransportReason = 'refused' | 'timeout' | 'not_found' | 'unreachable'
-export type NodeProbeCause = NodeTransportReason | 'not_autobyteus' | 'identity_pending'
+export type NodeProbeCause = NodeTransportReason | 'not_autobyteus' | 'identity_pending' | 'network_refused'
 
 export type NodeIdentityProbeResult =
   | { ok: true; nodeId: string }
@@ -43,6 +44,13 @@ const isIdentityPending = async (response: Response): Promise<boolean> => {
   return answer?.code === 'NODE_IDENTITY_NOT_MIGRATED'
 }
 
+/** A node answers HTTP 403 with `NODE_NETWORK_REFUSED` when it does not accept this network (node access model NA-3). */
+const isNetworkRefused = async (response: Response): Promise<boolean> => {
+  if (response.status !== 403) return false
+  const answer = await response.clone().json().catch(() => null) as { code?: unknown } | null
+  return answer?.code === 'NODE_NETWORK_REFUSED'
+}
+
 /**
  * Which node answers at `baseUrl` as this window reaches it: one GET of its public `/rest/remote-access/status`, which
  * also tells whether it is reachable now (one-nodes-tab DS-001, DS-002).
@@ -60,6 +68,7 @@ export async function probeNodeIdentity(
   } catch (error) {
     return { ok: false, cause: windowFailureReason(error, baseUrl) }
   }
+  if (await isNetworkRefused(response)) return { ok: false, cause: 'network_refused' }
   if (!response.ok) return { ok: false, cause: await isIdentityPending(response) ? 'identity_pending' : 'not_autobyteus' }
   try {
     const answer = await response.json() as { nodeId?: unknown } | null

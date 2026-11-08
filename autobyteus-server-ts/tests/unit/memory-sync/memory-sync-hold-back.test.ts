@@ -73,7 +73,13 @@ describe("Memory Sync held back (autobyteus-290 memory_sync)", () => {
   it("hub ingestion answers its sources 503 with the code and the reason", async () => {
     hoisted.health.mockRejectedValue(new MemorySyncNotMigratedError());
     const { registerMemorySyncRoutes } = await import("../../../src/api/rest/memory-sync.js");
+    const { admitRequest } = await import("../../../src/api/security/node-access-gate.js");
+    const { OpenSocketRegistry } = await import("../../../src/api/security/open-socket-registry.js");
     const app = Fastify();
+    // The node access gate admitted the source by its credential (before the hold-back reaches the route).
+    app.addHook("onRequest", async (request) => {
+      admitRequest(request, { kind: "memory_sync_source", credentialId: "mhubcred_1" }, new OpenSocketRegistry());
+    });
     await registerMemorySyncRoutes(app);
     const health = await app.inject({ method: "GET", url: "/memory-sync/v1/health?memorySyncSourceId=laptop-1" });
     const batch = await app.inject({ method: "POST", url: "/memory-sync/v1/batches", payload: { protocolVersion: 1 } });
@@ -82,6 +88,14 @@ describe("Memory Sync held back (autobyteus-290 memory_sync)", () => {
       expect(answer.statusCode).toBe(503);
       expect(answer.json()).toEqual({ error: MEMORY_SYNC_NOT_MIGRATED, message: MEMORY_SYNC_NOT_MIGRATED_TEXT });
     }
+  });
+
+  it("the node access gate answers a source's credential 503 with the code and the reason (autobyteus-437)", async () => {
+    const { MemoryHubCredentialService } = await import("../../../src/memory-sync/hub/memory-hub-credential-service.js");
+    const service = new MemoryHubCredentialService(new LocalFileMemoryHubCredentialStore({ getAppDataDir: () => hoisted.root }));
+    await expect(service.verify("mhub_any")).resolves.toEqual({ ok: false,
+      refusal: { statusCode: 503, code: MEMORY_SYNC_NOT_MIGRATED, message: MEMORY_SYNC_NOT_MIGRATED_TEXT } });
+    await expect(fs.readdir(hoisted.root)).resolves.toEqual([]);
   });
 
   it("the settings reads and saves fail with the reason", async () => {

@@ -117,6 +117,7 @@ const dirStatus = (dir: DirState, name: string): string => {
     case 'offThere': return t(k('dir.offThere'), { name })
     case 'notRegisteredHere': return t(k('dir.notRegisteredHere'))
     case 'notRegisteredThere': return t(k('dir.notRegisteredThere'), { name })
+    case 'notPaired': return t(k('dir.notPaired'), { name })
     case 'different': return t(k('dir.different'))
     case 'checking': return t(k('dir.checking'))
     case 'unreachable': return dir.cause && dir.cause !== 'unreachable'
@@ -131,6 +132,7 @@ const directions = computed(() => {
   const make = (id: 'out' | 'in', label: string, dir: DirState, via: string | null) => {
     const good = dir.state === 'working'
     const info = dir.state === 'offHere' || dir.state === 'offThere' || dir.state === 'notRegisteredHere' || dir.state === 'notRegisteredThere'
+      || dir.state === 'notPaired'
     return { id, label, via, checking: dir.state === 'checking', status: dirStatus(dir, name), tone: (good ? 'ok' : info ? 'warn' : 'error') as 'ok' | 'warn' | 'error',
       toneClass: dir.state === 'checking' ? 'text-slate-500' : good ? 'text-emerald-700' : info ? 'text-amber-700' : 'text-red-700' }
   }
@@ -156,9 +158,8 @@ const stepText = (step: NodeChangeStep): string => {
   const there = (text: string) => `${t(k('dialog.there'), { name: node })}: ${text}`
   switch (step.id) {
     case 'turnOnHere': return t(k('step.turnOnHere'))
-    case 'resolveHere': case 'registerHere': return t(k('step.registerHere'), { node, name: step.name ?? node })
     case 'turnOnThere': return there(t(k('step.turnOnThere')))
-    case 'resolveThere': case 'registerThere': return there(t(k('step.registerThere'), { name: step.name ?? store.thisName }))
+    case 'pair': return t(k('step.pair'), { node, name: step.name ?? node })
     default: return ''
   }
 }

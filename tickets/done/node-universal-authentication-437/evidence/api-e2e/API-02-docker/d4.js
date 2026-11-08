@@ -1,0 +1,20 @@
+const all = browser.contexts().flatMap(c => c.pages()).filter(p => p.url().includes('renderer/index.html'));
+let win, main;
+for (const p of all) { const n = String(await p.evaluate(() => performance.getEntriesByType('resource').map(e => e.name).filter(n => n.includes('/graphql')).slice(-1)[0]).catch(() => '')); if (n.includes(':8004')) win = p; else main = p; }
+const cdp = await win.context().newCDPSession(win);
+await cdp.send('Network.enable');
+const ws = []; const t0 = Date.now();
+cdp.on('Network.webSocketCreated', e => ws.push({ ev: 'created', url: e.url.replace(/\?.*/, '').replace(/[0-9a-f-]{36}/, '…'), at: Date.now() - t0 }));
+cdp.on('Network.webSocketClosed', e => ws.push({ ev: 'closed', at: Date.now() - t0 }));
+const statusBefore = (await win.getByText(/Connected|Disconnected|Reconnecting|Not connected/).first().innerText().catch(() => null));
+const tClick = Date.now() - t0;
+await main.evaluate(() => { location.hash = '#/nodes'; });
+await main.waitForTimeout(3000);
+const tDisc = Date.now() - t0;
+await main.locator('[data-testid^="node-disconnect-srv_W8aJsZu"]').click();
+await main.waitForTimeout(5000);
+const vnc = (await win.locator('body').innerText()).match(/Node desktop[\s\S]{0,120}/)?.[0] ?? null;
+await win.screenshot({ path: '/tmp/abtest437/d4-window.png' });
+const card = await main.getByTestId('node-list-card').innerText();
+await main.screenshot({ path: '/tmp/abtest437/d4-main.png' });
+return { statusBefore, tDisc, ws, vnc, row: card.slice(card.indexOf('docker-3'), card.indexOf('docker-3') + 250) };

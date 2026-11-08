@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   isLoopbackClientAddress,
   normalizeClientAddress,
-} from "../../../src/api/security/remote-access-local-trust.js";
+} from "../../../src/node-access/domain/client-address.js";
 
 describe("remote access local trust", () => {
   it.each(["127.0.0.1", "127.2.3.4", "::1", "::ffff:127.0.0.1", "::ffff:127.9.8.7"])(
