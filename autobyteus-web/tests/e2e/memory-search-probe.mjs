@@ -256,6 +256,8 @@ try {
   await page.locator('[data-test="memory-match"]').first().waitFor();
   await page.locator('[data-test="memory-match"]').first().click();
   await page.locator('[data-test="work-journal-found"]').waitFor();
+  // The banner renders before the journal's lines arrive (measured: 0 lines at the banner, 24 highlighted 26 ms later).
+  await page.locator('[data-line].bg-amber-50').first().waitFor({ timeout: 10_000 }).catch(() => undefined);
   const highlighted = await page.locator('[data-line].bg-amber-50').count();
   check('MS-PROBE-030', highlighted > 0, 'The matched lines are highlighted', highlighted);
   check('MS-PROBE-031', (await page.locator('[role="tab"]').allTextContents()).join('|') === 'Work Journal|Raw Traces', 'The run detail has Work Journal and Raw Traces tabs');
