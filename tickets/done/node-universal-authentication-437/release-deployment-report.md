@@ -1,6 +1,6 @@
 # Delivery / Release / Deployment Report — node-universal-authentication-437 (autobyteus-437), slice 1 "no key, no access"
 
-Status: **DR-002: integrated state verified from the evidence; waiting for the user's AC-008 check before finalization.** Nothing pushed, merged or tagged. DR-001 (blocked at the post-integration check) is kept below where it still applies.
+Status: **DR-002: verified (AC-008 second device skipped by the user); finalization and beta in progress.** DR-001 (blocked at the post-integration check) is kept below where it still applies.
 
 ## Release / Publication / Deployment Scope
 
@@ -16,9 +16,9 @@ Status: **DR-002: integrated state verified from the evidence; waiting for the u
 
 ## Handoff Summary
 
-- Handoff summary artifact: `tickets/in-progress/node-universal-authentication-437/handoff-summary.md`
+- Handoff summary artifact: `tickets/done/node-universal-authentication-437/handoff-summary.md`
 - Handoff summary status: `Updated` (DR-002)
-- Delivery revision record: `tickets/in-progress/node-universal-authentication-437/delivery-revision-record.md`
+- Delivery revision record: `tickets/done/node-universal-authentication-437/delivery-revision-record.md`
 - Current delivery revision ID: `DR-002`
 
 ## Initial Delivery Integration Refresh
@@ -57,11 +57,12 @@ Status: **DR-002: integrated state verified from the evidence; waiting for the u
 | AC-004 | API-02 `API-02-docker/API-02-desktop-transcript.txt` | "Needs connecting. This desktop has no key for docker-3 yet." then connected with the setup code; refusal lines carry no credential | Proven |
 | AC-005 | API-03 r2 `R2-API-03-mobile-shell/mobile-shell-probe.json`; DR1-05 | 20/20 `Pass` before integration; 20/20 again on the merged state; MSP-21…23 (new in the base) not yet run with keys | Proven, also on the merged state (MSP-01…20 DR1-05; MSP-21…23 API-REV-003) |
 | AC-006 | API-11 `API-11-gateway/API-11-gateway.log` | signed offer and `delegate_task` through an nginx base path; `result Pass` | Proven |
-| AC-008 | API-04 | LAN not allowed `403 NODE_NETWORK_REFUSED`, Tailscale owner key `200` on this computer's real addresses | Proven on this computer; second physical device: **User Check** |
+| AC-008 | API-04 | LAN not allowed `403 NODE_NETWORK_REFUSED`, Tailscale owner key `200` on this computer's real addresses | Proven on this computer; second physical device: **User Check, skipped by the user** |
 | AC-002, 007, 009 | R-IMP (implementation Checks Run) | as listed in the execution report | Proven |
 
 - More evidence requested: API/E2E — MSP-21…23 on the merged state with the credential (DR-001). Result: Pass (API-REV-003, CRR-006).
 - User check needed: `Yes`. AC-008 needs a phone on the home Wi-Fi (allowed / not allowed) and on another network. API/E2E tried the tailnet Linux host (no SSH), the phone (not on adb) and Android emulators (NAT to loopback).
+- User check reference: **skipped by the user** ("a second device check I think there's no need … skip it … the beta goes without AC 008, please go with beta now"). AC-008 ships proven on this computer's real LAN and Tailscale addresses only; its second-device part is untested and can be checked on the beta.
 
 ## Release Decision
 
@@ -70,7 +71,7 @@ Status: **DR-002: integrated state verified from the evidence; waiting for the u
 
 ## Docs Sync Result
 
-- Docs sync artifact: `tickets/in-progress/node-universal-authentication-437/docs-sync-report.md`
+- Docs sync artifact: `tickets/done/node-universal-authentication-437/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated: `autobyteus-web/docs/remote_access.md` (revocation closes the phone viewer at once, not the removed 20 s re-check); `TESTING.md` (the probe credential fixture for the probe's own calls and sockets).
 
@@ -80,7 +81,9 @@ Status: **DR-002: integrated state verified from the evidence; waiting for the u
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/`: `No`
+- Ticket moved to `tickets/done/<ticket-name>`: `Yes`
+- Archived ticket path: `tickets/done/node-universal-authentication-437/`
+- Path check before the final commit: `python3 scripts/check_repository_artifact_hygiene.py` → `Repository artifact hygiene check passed.` (89,974 tracked files, longest 200 characters, none of them this ticket's)
 
 ## Repository Finalization
 
@@ -111,9 +114,9 @@ Status: **DR-002: integrated state verified from the evidence; waiting for the u
 
 ## Final Status
 
-- Verification complete: `No` (AC-008 user check)
+- Verification complete: `Yes` (from the evidence; AC-008's second-device check skipped by the user)
 - Repository finalization complete: `No`
 - Applicable release complete: `No`
-- Unresolved blocker: the user's AC-008 check (or the user's decision to release the beta without it)
+- Unresolved blocker: `None` before finalization
 - Successful terminal package eligible for return: `No`
 - Terminal package sent to the Solution Designer: `No`
