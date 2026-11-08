@@ -1,0 +1,53 @@
+# Case: API-03
+# Command: same env; vitest run tests/e2e/runtime/agy-switch-back-built-server.e2e.test.ts --no-watch (two consecutive passes)
+# Commit: 4408d54504 (code = 9833f51bf9; the new test files are committed with this round)
+# Environment: macOS arm64, Node v22.23.1, built server (pnpm build exit 0), owned temp data root, private HOME
+# Date: 2026-11-08
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/switch-back-eexist/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/switch-back-eexist/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+
+Database reset successful
+
+
+
+ ✓ tests/e2e/runtime/agy-switch-back-built-server.e2e.test.ts (3 tests) 18099ms
+     ✓ SB-01: an Org member Antigravity -> native -> Antigravity: restart before the third era, a start that fails after the capsule was made, then the retry  7166ms
+     ✓ SB-02: a delegated copy Antigravity -> native -> Antigravity  4670ms
+     ✓ SB-03: a Team member Antigravity -> native -> Antigravity with a restart between the save and the message of the third era  4168ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  20:48:15
+   Duration  18.64s (transform 57ms, setup 36ms, import 101ms, tests 18.10s, environment 0ms)
+
+exit 0
+----- second run
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/switch-back-eexist/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/switch-back-eexist/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+
+Database reset successful
+
+
+
+ ✓ tests/e2e/runtime/agy-switch-back-built-server.e2e.test.ts (3 tests) 17900ms
+     ✓ SB-01: an Org member Antigravity -> native -> Antigravity: restart before the third era, a start that fails after the capsule was made, then the retry  6994ms
+     ✓ SB-02: a delegated copy Antigravity -> native -> Antigravity  4584ms
+     ✓ SB-03: a Team member Antigravity -> native -> Antigravity with a restart between the save and the message of the third era  4224ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  20:48:35
+   Duration  18.43s (transform 56ms, setup 36ms, import 96ms, tests 17.90s, environment 0ms)
+
+exit 0

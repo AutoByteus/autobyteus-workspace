@@ -1,0 +1,8 @@
+system_task_notification system.runtime_handover Agent runtime changed from Antigravity CLI (gemini-3.8-flash-low) to C
+system_instruction  ## Agent Identity  - Name: live-team-member 6281ee - Description: live
+user  You are continuing this member's work. Reply with exactly: CONTINUED
+tool_call  
+tool_result  
+tool_call  
+tool_result  
+assistant  CONTINUED

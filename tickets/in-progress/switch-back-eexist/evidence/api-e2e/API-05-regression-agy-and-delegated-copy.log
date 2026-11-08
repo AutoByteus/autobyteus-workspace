@@ -1,0 +1,21 @@
+# Case: API-05
+# Command: vitest run tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts tests/e2e/runtime/agy-failure-transport.e2e.test.ts tests/e2e/projects/delegated-copy-model-change.e2e.test.ts (private HOME: first run 1 failed = DCM-009 final stop success false, then 9 passes in a row); DCM alone with the documented real-HOME command: 9 passed
+# Commit: 4408d54504 (code = 9833f51bf9; the new test files are committed with this round)
+# Environment: macOS arm64, Node v22.23.1, built server (pnpm build exit 0), owned temp data root, private HOME
+# Date: 2026-11-08
+
+## first run (private HOME)
+     × DCM-009: org root: a stopped agent copy switches its agent runtime; the next message archives exactly the AGY agent's records as one segment and starts Grok under one marker 1217ms
+SEND_MESSAGE command not accepted for agent run named_7616cca7_0087487e38904f77ad2f964dfed6af0f: [ACTIVATION_FAILED] Antigravity could not use skill 'env-skill': the selected workspace already has a skill with this name.
+TOOL_LIST_UPDATE_APPLY_FAILED:director_8dbc74de_fdafa2021e284a498dbc236b3eb86846: Error: Agent run 'director_8dbc74de_fdafa2021e284a498dbc236b3eb86846' is not active.
+TOOL_LIST_UPDATE_APPLY_FAILED:lead_182cdaca_6a8b3712e3344bfc825ca218953c64fb: Error: Agent run 'lead_182cdaca_6a8b3712e3344bfc825ca218953c64fb' is not active.
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/e2e/projects/delegated-copy-model-change.e2e.test.ts > A delegated copy's model changed by the user: stop, choose, resume (real HTTP/WS/scoped MCP, task lifecycle, catalog; scripted AGY) > DCM-009: org root: a stopped agent copy switches its agent runtime; the next message archives exactly the AGY agent's records as one segment and starts Grok under one marker
+AssertionError: expected { success: false, …(3) } to match object { success: true }
+ Test Files  1 failed | 2 passed (3)
+      Tests  1 failed | 42 passed | 1 skipped (44)
+exit 1
+## DCM with the documented HOME=$HOME command
+      Tests  9 passed (9)
+exit 0
+## nine reruns: DCM-009 final stop instrumented to print its result; no STOPFAIL line in 3 + 6 combined runs, each 'Tests  43 passed | 1 skipped (44)'
