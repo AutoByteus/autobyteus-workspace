@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- |
 | API-REV-001 | code reviewer, `code-review-report.md` CRR-002 Pass; round 1 | SR-006; ARCH-REV-002…004; IR-002; CRR-002 | N/A | Fail / 76% |
 | API-REV-002 | code reviewer, `code-review-report.md` CRR-005 Pass; round 1 rerun | SR-008; IR-003, IR-004; CRR-003…CRR-005 | Fail / 76% | Pass / 95% |
+| API-REV-003 | code reviewer, `code-review-report.md` CRR-007 Pass; ticket round 2 (items 9, 20–23) | round-2 SRs; IR-005; CRR-006, CRR-007 | Pass / 95% (round 1) | Pass / 95% |
 
 ## Revision Entries
 
@@ -67,3 +68,31 @@ None (baseline).
   - The connection sheet says "Not reachable" while Phone Access is off (known, accepted).
   - Signing, notarization and other-OS builds need the runner.
   - FU-001…FU-003 are outside the ticket.
+
+### API-REV-003 — Ticket round 2 (items 9, 20–23): D-09 poll, D-20 refused name, D-21/22/23 pass
+
+- Triggering role, report path, and round: code reviewer, `code-review-report.md` (CRR-007, Full Review of IR-005); ticket round 2 at head `a3bc0525cd` (base `d785ded109`, last code commit `736b51f87a`)
+- Triggering finding or case IDs: the reviewer's owed checks (AC-009a/b/c probes with bytes and view reads, AC-020 Nodes page step, `peer-host-refused` ran or skipped, the full server E2E, the fresh-start build)
+- Related revision IDs: IR-005, CRR-006, CRR-007 and round 2's solution revisions
+- Why recorded: new round
+- Coverage decisions or durable test paths changed (`94d7dca6b4`):
+  - `mobile-shell-probe.mjs`: MSP-20 new; MSP-02 part (a) updated (REQ-009 replaces 277 DEC-013); MSP-12 counts status reads; the phone network log records `runIds`.
+  - `remote-nodes-page-probe.mjs`: NP-13 new.
+- Cases added, changed, removed, or rechecked:
+  - Run: T2-01 (full mobile-shell, 20/20), T2-02 (Nodes page, 13/13), T2-03 (token probe 12-07, 12-20, today), T2-04 (full server E2E), T2-04b (57 gated model-free files), T2-05 (fresh-start build).
+  - Reused: T2-R1…R4 (IMP-R2-01, 03, 05, 04).
+- Commands, environment, fixture, or broader-validation delta: server dist and phone bundle rebuilt on `a3bc0525cd`. One debug run was interrupted by the app restart and discarded; its temp data root was removed.
+
+#### Prior Failure Resolution
+
+None (round 1 ended Pass; no open failure).
+
+- Canonical artifacts and sections updated: the investigation's § Ticket Round 2, the execution report's § Ticket Round 2, the progress log (`T2-*`), `evidence/api-e2e/T2-*`
+- Prior result and confidence: Pass, 95% (round 1)
+- Current result and confidence: Pass, 95%
+- New or remaining failure IDs: none
+- Recommended owner: code reviewer (proportional test-code review; High risk)
+- Remaining risks, blocked evidence, or untested scope:
+  - The Workspaces tree is covered by shared code and specs, not by its own probe step.
+  - AC-020 (3) through the page is not reachable (DEC-017 / FU-004); it is spec- and server-proven.
+  - Signing, notarization and other-OS builds need the runner.

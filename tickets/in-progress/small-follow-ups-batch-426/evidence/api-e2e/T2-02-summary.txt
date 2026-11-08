@@ -1,0 +1,11 @@
+# T2-02 ticket round 2: Nodes page probe incl. NP-13 (AC-020 (2)), summary of T2-02/remote-nodes-page-probe.json
+# command: pnpm -C autobyteus-web test:e2e:remote-nodes-page --output-dir=<evidence>/T2-02 (worktree root)
+# commit: product a3bc0525cd; probe = working tree at run time (committed with this round's report); server dist of a3bc0525cd
+# env: macOS arm64, Node v22.23.1, headless Chrome; nuxt dev against alpha; 11 probe-owned servers on 127.0.0.1; lvh.me resolves to 127.0.0.1
+# first run (T2-02-run1-control/): NP-13's control used the nuxt dev origin, which answers as alpha ('A different node answers there…'): a probe mistake; fixed to a plain HTTP server
+
+result: Pass
+cases: {"NP-01": "Pass", "NP-02": "Pass", "NP-03": "Pass", "NP-11": "Pass", "NP-04": "Pass", "NP-05": "Pass", "NP-13": "Pass", "NP-06": "Pass", "NP-07": "Pass", "NP-08": "Pass", "NP-09": "Pass", "NP-10": "Pass", "NP-12": "Pass"}
+NP-13: {"result": "Pass", "ms": 528, "failedExpectations": [], "refusedAddress": "http://lvh.me:55751", "refused": "The node at this address doesn’t accept the name lvh.me. Add lvh.me to AUTOBYTEUS_ALLOWED_HOSTS on that node, or use its IP address.", "notNode": "Something answers there, but it isn't an AutoByteus node.", "before": "http://127.0.0.1:55751", "after": "http://127.0.0.1:55751"}
+unexpectedBrowserErrors: []
+cleanup: {"frontendExited": true, "serversLeft": 0, "rootRemoved": true}

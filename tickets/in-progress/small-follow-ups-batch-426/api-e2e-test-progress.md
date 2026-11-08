@@ -47,3 +47,20 @@
 | 2026-11-08 01:18 | API-08 | Started |  | round 2 AC-004a: assembleDebug d115f1601d, emulator, hold stack |
 | 2026-11-08 01:22 | API-08 | Completed | Pass | round 2 AC-004a: share-started (A) and launcher (B) tasks reload the same node and /mobile URL (navigation entry), no expired-code screen; new share while dead connects (D); node removed -> ordinary start, share not re-run (C). Hold stack, app, emulator removed |
 | 2026-11-08 01:24 | round-1-rerun | Completed | Pass | API-REV-002: Pass, 95%; handoff to code reviewer for proportional test-code review |
+| 2026-11-08 04:41 | T2-setup | Started |  | ticket round 2 at a3bc0525cd: server build, phone bundle build |
+| 2026-11-08 04:44 | T2-01 | Started |  | debug run --cases=MSP-02,MSP-12,MSP-20 at a3bc0525cd + probe changes |
+| 2026-11-08 06:37 | T2-setup | Completed | Pass | server build exit 0, mobile bundle exit 0 (a3bc0525cd) |
+| 2026-11-08 06:37 | T2-01 | Checkpoint | Fail | debug1: MSP-02 Pass (D-09 nested row follows in 2.2 s); MSP-12 list premise wrong (no qualifying hub) -> relaxed; MSP-20 interrupt gives error not idle -> long tool call; debug2 interrupted by app restart (fetch failed), discarded. Next: debug3 --cases=MSP-12,MSP-20 |
+| 2026-11-08 06:41 | T2-01 | Checkpoint | Pass | debug3 --cases=MSP-12,MSP-20: both Pass. Next: full probe |
+| 2026-11-08 06:51 | T2-01 | Completed | Pass | full probe 20/20 Pass, 0 unknown browser lines (MSP-20 D-09, MSP-02 updated, MSP-12 extended) |
+| 2026-11-08 06:51 | T2-02 | Started |  | remote-nodes-page probe incl. NP-13 |
+| 2026-11-08 06:54 | T2-02 | Checkpoint | Fail | run1: NP-13 refused-name text exact, address unchanged; control wrong (nuxt dev answers as alpha -> different node). Control now a plain HTTP server; rerun |
+| 2026-11-08 06:56 | T2-02 | Completed | Pass | run2: NP-01..13 Pass; NP-13 refused text exact, non-node control keeps its text, address unchanged |
+| 2026-11-08 06:56 | T2-03 | Started |  | token-statistics probe --day 2026-12-07, 2026-12-20, today |
+| 2026-11-08 06:59 | T2-03 | Completed | Pass | 12-07, 12-20, today: result Pass, failures [] |
+| 2026-11-08 06:59 | T2-04 | Started |  | full server E2E (pnpm test:e2e) clean env at a3bc0525cd, then RUN_AGY_FAILURE_E2E files |
+| 2026-11-08 07:14 | T2-04 | Checkpoint | Pass | full suite: 117 passed, 120 skipped (gated), 0 failed; peer-host-refused ran 2/2. Gated AGY files running |
+| 2026-11-08 07:49 | T2-04 | Completed | Pass | full suite 117 passed/120 skipped/0 failed; gated AGY 55 passed/2 skipped/0 failed |
+| 2026-11-08 07:49 | T2-05 | Started |  | fresh-start desktop build of 94d7dca6b4 (generated/graphql.ts changed); log /tmp/426-t2-05.log |
+| 2026-11-08 07:59 | T2-05 | Completed | Pass | install exit 0; build exit 0 (guards Passed, typecheck 0 production errors); prisma verify 0; terminal verify 0 incl. spawn probe; clone removed |
+| 2026-11-08 08:00 | ticket-round-2 | Completed | Pass | API-REV-003: Pass, 95%; handoff to code reviewer for proportional test-code review |

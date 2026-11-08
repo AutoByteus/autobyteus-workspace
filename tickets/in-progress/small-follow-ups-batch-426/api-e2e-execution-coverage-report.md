@@ -199,3 +199,114 @@ API-REV-002: not applicable (Pass). The API-REV-001 findings below are kept for 
   - Everything else is proven on its real surfaces.
   - Rerun plan after the fixes: MSP-13, MSP-18 (and the full mobile-shell probe if the phone bundle changes widely), API-08, and API-01 for web changes. API-07, API-09 and API-05/05b stay valid unless their exercised code changes.
   - Follow-up FU-003 was added to `follow-ups.md`.
+
+---
+
+# Ticket Round 2 (items 9, 20, 21, 22, 23) — API/E2E execution
+
+## Round
+
+- Coverage investigation: the same file, § Ticket Round 2
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-003`
+- Test progress log: `api-e2e-test-progress.md` (rows `T2-*`)
+- Round and trigger: ticket round 2, after CRR-007 Pass (Full Review of IR-005). Base `d785ded109`, head `a3bc0525cd` (last code commit `736b51f87a`)
+- Prior round reviewed: round 1 (API-REV-001/002, Pass). Its results cover round-1 code; round-2 product changes are D-09, D-20, D-21, D-22, D-23 only
+- Deviations from the plan:
+  - MSP-20's running → idle uses one long tool call (the scripted CLI's `CALL_TOOLS` with `delayMs`), because Stop generation leaves a scripted agent in `error`, not `idle`.
+  - The AC-009c hidden/background check moved into MSP-20, where a hub is known to be in the read; MSP-12 records its list count instead of requiring one.
+  - NP-13's control changed from the `nuxt dev` origin (which answers as alpha) to a plain HTTP server.
+  - One debug run was cut off by the app's restart and was discarded.
+- Evidence folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-426/tickets/in-progress/small-follow-ups-batch-426/evidence/api-e2e/` (files `T2-*`)
+
+## Routing Classification
+
+- Task size `Medium`; architectural risk `High`; input route `Reviewed`; successful-output route `Code Review`; proportional test-code review: `Required`
+
+## Tested Builds And Environments
+
+| Env ID | Commit Tested | Platform / OS | Runtime, Browser, Or App Build | Other Settings That Matter |
+| --- | --- | --- | --- | --- |
+| T2-ENV-1 | `a3bc0525cd` product; probes as committed in `94d7dca6b4` | macOS arm64 | Node v22.23.1; headless Chrome; probe-owned servers from `autobyteus-server-ts/dist` and `build:mobile-web` built on `a3bc0525cd` (04:41–04:44); `nuxt dev` | phone 390×844 on `http://192.168.77.10:<port>`; desktop 1440×1400; en-US, UTC; `lvh.me` resolves to 127.0.0.1 |
+| T2-ENV-2 | `a3bc0525cd` | macOS arm64 | Vitest server E2E, clean env (`env -i`), Brief Studio package present | `RUN_AGY_FAILURE_E2E=1` + scripted AGY CLI for T2-04b |
+| T2-ENV-3 | `94d7dca6b4`, fresh clone | macOS arm64 | `pnpm install --frozen-lockfile`, `build:electron:mac -- --arm64`, verify steps | TESTING § Fresh-start build env; no signing |
+
+## Cases
+
+| Case ID | Criteria | Boundary / Surface | Command Or Steps | Env | Result | Evidence Files | Look For | Notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| T2-01 | AC-009a, b, c, d (runtime); round-1 phone criteria (regression) | desktop Runs view + phone production bundle on a probe-owned node | `pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<evidence>/T2-01` (all 20 cases) | T2-ENV-1 | Pass | `T2-01-summary.txt`, `T2-01/` (JSON, `MSP-20-*.png`, logs); debug runs `T2-01-debug/`, `T2-01-debug3/` | MSP-20 `quiet`: `"desktopStatusReads": 3, "desktopViewReads": 0, "phoneStatusReads": 3, "phoneViewReads": 0`, desktop read `"bytes": 1650, "statuses": 7, "hubBytes": 511, "hubStatuses": 2`, phone read `556`. `running`: `"desktopAfterNodeMs": 4570, "phoneAfterNodeMs": 4992`, view reads 0. `idleAgain`: `210` / `828` ms, view reads 0. `phoneHidden`: `"onRunScreen": 0, "inBackground": 0, "firstReadAfterShownMs": 41`. `openRun`: `"statusReads": 2, "hubInRead": 0`. `third`: `5272` / `5277` ms, `"desktopViewReads": 1, "phoneViewReads": 1`. `stop`: offline `1942` / `2364` ms, one view re-read each. MSP-02 `unselected.changeMs` within one poll | Every unchanged poll sent only the status read and no view read. A state change alone caused no view read; a new child or the stop caused exactly one per surface. The phone polls the states only with its list on screen. The 7 statuses in the desktop read are the hub's 2 plus another listed run's 5 (≤ 10 children, 1650 bytes) |
+| T2-02 | AC-020 (2) | Nodes page (Change address), probe-owned servers | `pnpm -C autobyteus-web test:e2e:remote-nodes-page --output-dir=<evidence>/T2-02` (NP-01…13) | T2-ENV-1 | Pass | `T2-02-summary.txt`, `T2-02/` (`NP-13-*.png`); first run `T2-02-run1-control/` | NP-13 `"refused": "The node at this address doesn’t accept the name lvh.me. Add lvh.me to AUTOBYTEUS_ALLOWED_HOSTS on that node, or use its IP address."`, `"notNode": "Something answers there, but it isn't an AutoByteus node."`, `"before" == "after"` | AC-020 (3), the connect flow trying a refused name, is not reachable in the real page (see the investigation). It is covered by `nodeConnectionErrorText.spec.ts` (IMP-R2-01) and the server E2E's `host_refused` attempt (T2-04) |
+| T2-03 | AC-021 | token-statistics probe on fixed days | `pnpm -C autobyteus-web test:e2e:token-statistics-ui --day=2026-12-07` / `--day=2026-12-20` / (no `--day`) | T2-ENV-1 | Pass | `T2-03-token-statistics-days.txt`, `T2-03-<day>/` | `result Pass failures []` for each day; `clock {"day": "2026-12-07", …}`, `{"day": "2026-12-20", …}`, `{"day": "real clock"}` | The 1st is IMP-R2-04's run on the final code |
+| T2-04 | AC-020 (1), AC-023, D-09 server read, regression | server E2E | `env -i PATH HOME=<temp> TMPDIR pnpm test:e2e` | T2-ENV-2 | Pass | `T2-04-server-e2e.txt` | `Test Files  117 passed \| 120 skipped (237)`; `✓ tests/e2e/remote-collaboration/peer-host-refused.e2e.test.ts (2 tests)` | `peer-host-refused` ran (not skipped): `lvh.me` resolves to 127.0.0.1 here. No failure |
+| T2-04b | D-09 server read (standalone root), regression | server E2E gated on `RUN_AGY_FAILURE_E2E` | `cd autobyteus-server-ts && env -i … RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<fixture> pnpm exec vitest run <57 files> --no-watch` | T2-ENV-2 | Pass | `T2-04b-gated-agy-e2e.txt` | `Test Files  55 passed \| 2 skipped (57)` | the 2 skipped need other gates |
+| T2-R1 | AC-009d, AC-020 (1), AC-023 (focused) | server/web focused tests | Reused: IMP-R2-01 | — | Pass | (handoff) | (handoff) | code unchanged since `23483d0cf8` |
+| T2-R2 | AC-022 | model-routing probe | Reused: IMP-R2-03 | — | Pass | (handoff) | `Result: Pass` | nothing it drives changed after `c4521d4402` |
+| T2-R3 | all round-2 items | web suite, server unit, both typechecks | Reused: IMP-R2-05 | — | Pass | (handoff) | `Test Files  721 passed (721)`; `952 passed \| 5 skipped (957)` | ran at `736b51f87a`, the last code commit |
+| T2-R4 | AC-021 (the 1st) | token probe | Reused: IMP-R2-04 (12-01 rerun) | — | Pass | (handoff) | `IMP-R2-ts-2026-12-01-rerun Pass` | on the final code |
+| T2-05 | build (`generated/graphql.ts` changed) | release desktop build from a fresh clone | `/tmp/426-api-scripts/api-11-fresh-build.sh 94d7dca6b4` (copy `API-11-fresh-build.sh.txt`) | T2-ENV-3 | Pass | `T2-05-fresh-start-build.txt` | `install exit 0`; `build exit 0`; `[typecheck] production errors: 0`; `prisma verify exit 0`; `[terminal-runtime] ok: node-pty spawn probe`, `terminal verify exit 0` | signing, notarization and other OS builds need the runner: Not Tested |
+
+## Acceptance-Criteria Proof (ticket round 2)
+
+| Acceptance-Criteria ID | Critical | Proven By Case IDs | Result | For A User-Only Part |
+| --- | --- | --- | --- | --- |
+| AC-009a | Yes | T2-01 (MSP-20 quiet, running, idleAgain; bytes), T2-R3 specs | Proven | — |
+| AC-009b | Yes | T2-01 (MSP-20 third, stop) | Proven | — |
+| AC-009c | Yes | T2-01 (MSP-20 phone timings, phoneHidden; MSP-12 status reads per window) | Proven | — |
+| AC-009d | No | T2-01 (MSP-20 openRun: `hubInRead 0`), T2-R1 spec | Proven | — |
+| AC-020 | Yes | (1) T2-04 `peer-host-refused` (ran), T2-R1; (2) T2-02 NP-13; (3) T2-R1 web spec + T2-04's `host_refused` attempt (not reachable in the real page: the investigation's reason, DEC-017 / FU-004) | Proven | — |
+| AC-021 | No | T2-03 (12-07, 12-20, today), T2-R4 (12-01) | Proven | — |
+| AC-022 | No | T2-R2 | Proven | — |
+| AC-023 | No | T2-R1, T2-R3, T2-04 (`request-origin-and-phone-routes` 11/11) | Proven | — |
+
+## Validation Confidence Scorecard (ticket round 2)
+
+| Confidence Category | Post-Repository Score | Final Score | What Supports It | Residual Uncertainty | What Could Improve It |
+| --- | --- | --- | --- | --- | --- |
+| Requirement and acceptance-criteria proof | 90% | 95% | T2-01…05, T2-R1…R4 | AC-020 (3) through the page is not reachable by design; spec- and server-proven | — |
+| Changed-boundary execution directness | 85% | 95% | MSP-20 against a real node's status read and runs; NP-13 against a real Host gate | — | — |
+| Cross-boundary integration realism and mock gap | 85% | 95% | real servers, real scripted runtimes, real browser network log | — | — |
+| Environment, configuration, identity, and fixture fidelity | 90% | 95% | probe-owned stacks; `lvh.me` → 127.0.0.1 | the poll timings depend on this machine's load (all well inside one poll) | — |
+| Failure, edge-case, lifecycle, and recovery evidence | 85% | 95% | run stop → offline; a new child; hidden/background; refused name vs non-node answer; days 1/7/20 | — | — |
+| User-surface, browser, and desktop-shell confidence | 85% | 95% | desktop Runs view and phone list (MSP-20); Nodes page (NP-13); fresh-start build | the Workspaces tree is not separately measured (it uses the same section load, collaboration store and row component as the Runs view; specs IMP-R2-01/05) | — |
+| Durable regression coverage quality and relevance | 85% | 95% | MSP-20, MSP-02 (a), MSP-12, NP-13 in the repository probes | — | — |
+
+- Overall post-repository confidence: 86% (reused implementation checks only)
+- Overall final confidence: 95%
+- Calculation method: simple average
+- Every critical acceptance criterion directly proven, apart from parts only the user can check: `Yes`
+- Any final applicable category below `90%`: `No`
+- Default final confidence target of `95%` met: `Yes`
+- Confidence-limiting residual risks: none material. The Workspaces tree is covered by shared code and specs, not by its own probe step; AC-020 (3) is spec- and server-proven by design (FU-004)
+
+## Broader Validation Decision (ticket round 2)
+
+- Decision: `Required` (executed). Modes: `Browser` (desktop Runs view, phone bundle, Nodes page), `Live API` (server E2E), `Project Desktop Validation` (fresh-start build)
+- Gap addressed: the poll's real request pattern and bytes (only a browser network log can show "no view read"); the phone's poll gating; the Nodes page's text from a real server refusal; the generated GraphQL in a release build
+
+## Durable Coverage Changed In The Codebase (ticket round 2)
+
+| Path / Test | Change | Case IDs | For A Removal |
+| --- | --- | --- | --- |
+| `autobyteus-web/tests/e2e/mobile-shell-probe.mjs`: MSP-20 (new); MSP-02 part (a) (updated: REQ-009 replaces 277 DEC-013's "updated once the root is opened"); MSP-12 (status reads per window); phone network log records `runIds` | Added / Updated (`94d7dca6b4`) | T2-01 | MSP-02's old assertion (`unselectedSeen.length === 1`, the row kept its last read) asserted behavior REQ-009 intentionally changes. It is replaced by "the dot follows within one poll without opening the root" |
+| `autobyteus-web/tests/e2e/remote-nodes-page-probe.mjs`: NP-13 (new) | Added (`94d7dca6b4`) | T2-02 | — |
+
+- Added or updated paths attached for proportional test-code review: `Yes`
+
+## Dependencies Mocked Or Emulated (ticket round 2)
+
+Scripted AGY CLI for every agent turn (no provider calls); probe-owned servers. The token probe's shifted clock (`--day`) is the design's own test seam (D-21).
+
+## Temporary Methods And Cleanup (ticket round 2)
+
+| Item | Owned | Cleanup | Result |
+| --- | --- | --- | --- |
+| probe stacks (T2-01, T2-02, T2-03 ×3) | Yes | the probes' `finally` | receipts `serversLeft: 0`, `rootRemoved: true`; token probe frontend/backend `terminated` |
+| the interrupted debug run's temp data root | Yes | removed by hand after the app restart (`mobile-shell-probe-ARKYBb`) | removed |
+| temp HOMEs (T2-04, T2-04b), fresh clone (T2-05) | Yes | `rm -rf` | removed |
+
+## Latest Authoritative Result (ticket round 2)
+
+- Result: `Pass`
+- Criteria not proven: `None`
+- Next recipient from `get_handoff_rules`: `/software_engineering_team/code_reviewer` (Pass, architectural_risk=High: proportional test-code review of `94d7dca6b4`)
+- Notes: round 1's results stand for round-1 code (unchanged by round 2 apart from the shared files the full suites and the full mobile-shell probe reran)

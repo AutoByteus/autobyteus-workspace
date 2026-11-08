@@ -276,3 +276,53 @@ Found during execution:
 - Reroute Required Before Validation Execution: `No`
 - Recommended Owner If Reroute Required: N/A
 - Notes: one heavy run at a time; every case records its commit.
+
+---
+
+# Ticket Round 2 (items 9, 20, 21, 22, 23) — API/E2E investigation
+
+- Trigger: code reviewer's CRR-007 Pass (Full Review of IR-005), 2026-11-08. Base `d785ded109` (round 1 finalized), head `a3bc0525cd`, last code commit `736b51f87a`. One commit per item: D-09 `06cc2aabad`, D-20 `094c896407`, D-23 `23483d0cf8`, D-22 `c4521d4402`, D-21 `736b51f87a`.
+- Classification: Medium / High (the new status read on the 5 s poll of three surfaces; the store's states-only update path).
+- Basis: `requirements-doc.md` REQ-009, 020, 021, 022, 023 and AC-009a…d, AC-020…023; `design-spec.md` D-09, D-20…D-23; `implementation-handoff.md` (round 2, IMP-R2-01…05); `code-review-report.md` CRR-007.
+- Testing guideline: root `TESTING.md` (unchanged). Build input changed: `autobyteus-web/generated/graphql.ts` → fresh-start desktop build.
+
+## What must be proven
+
+- **D-09 (AC-009a…d):** the delegated rows of a listed, active standalone Agent run that is not open follow their children's states on each history poll. This holds on the desktop Runs view and Workspaces tree, and on the phone list while it polls. The poll reads only states (`GetAgentRunCollaborationStatuses`). There is no view read (`GetAgentRunCollaboration`) on a poll without a change. A new child, or the run stopping, causes exactly one view re-read. The open run is not in the read.
+- **D-20 (AC-020):** `PEER_HOST_REFUSED {address, host}` from `addPeerNode` / change address / resolution, and the Nodes page's distinct text.
+- **D-21 (AC-021):** the token-statistics probe on the 1st, 7th and 20th.
+- **D-22 (AC-022):** the model-routing probe.
+- **D-23 (AC-023):** origin parsing unchanged.
+
+## Real-use scenarios
+
+- SCN-009 as the requirements give it. Added from the code:
+  - A child's state change alone (running ↔ idle) is applied without any view read (`applyStatuses`).
+  - A task team's members and their delegated work under a listed run (the standalone root's snapshot includes `getLeafAgentStatusSnapshots`), as MSP-02's nested row shows.
+- AC-020 (3), the connect flow trying a refused name, is not reachable in the real page. The window's own address for the node would have to be the refused name, and the window's row check (unchanged, DEC-017 / FU-004) is refused by the same Host gate before Connect is offered. It is covered by the web spec (`nodeConnectionErrorText.spec.ts`) and the server E2E's `host_refused` attempt.
+
+## Existing coverage decisions
+
+| Path / Test | Decision | Evidence | Action |
+| --- | --- | --- | --- |
+| `mobile-shell-probe.mjs` MSP-02 part (a), "under a root not open: the last-read state, updated once the root is opened (DEC-013 of 277)" | `Needs Update` | REQ-009 replaces that behavior. The nested row (`memberDelegated`, a task-team member's delegated run under the PTM) is in the standalone root's snapshot (`getLeafAgentStatusSnapshots`) | Assert that the dot follows on the poll without opening the root (D-09). Part (b) is unchanged |
+| `mobile-shell-probe.mjs` MSP-12 (poll budget) | `Still Valid`, extended | the poll now also sends the status read | Also assert no status read on the run screen, on a view, or while hidden |
+| `remote-nodes-page-probe.mjs` | `Still Valid` | — | Add NP-13: change address to `http://lvh.me:<port>` → the distinct text with the host; nothing saved |
+| `run-history-read-budget-probe.mjs` | `Out Of Scope` | it times the two history reads over HTTP; the status read is a separate query | — |
+| Server E2E `peer-host-refused.e2e.test.ts` | `Still Valid` | `lvh.me` resolves to 127.0.0.1 on this machine, so it runs (not skipped) | run in the full suite |
+
+## Planned cases (ticket round 2)
+
+| Case ID | Criteria | Surface | Kind | Command / Steps | Why |
+| --- | --- | --- | --- | --- | --- |
+| R2-R1 | AC-009d, AC-020 (1), AC-023 (unit/E2E focused) | server/web focused tests | Reused | IMP-R2-01 | code unchanged since `23483d0cf8` |
+| R2-R2 | AC-022 | model-routing probe | Reused | IMP-R2-03 | `c4521d4402`; nothing it drives changed since |
+| R2-R3 | all round-2 items | web suite, server unit, typechecks | Reused | IMP-R2-05 | ran at `736b51f87a`, the last code commit |
+| R2-01 | AC-009a, b, c; AC-009d (runtime) | desktop Runs view + phone bundle on a probe-owned real node | Durable (new MSP-20 + updated MSP-02, MSP-12) | `pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<fresh>` (all cases) | TESTING's phone-bundle rule; network log for bytes and view reads |
+| R2-02 | AC-020 (2) | Nodes page, probe-owned servers | Durable (new NP-13) | `pnpm -C autobyteus-web test:e2e:remote-nodes-page --output-dir=<fresh>` | the page's change-address path with the real server error |
+| R2-03 | AC-021 | token-statistics probe | Existing Test | `--day 2026-12-07`, `--day 2026-12-20`, and today (no `--day`) on head | IMP-R2-04 ran the 7th and 20th before the final tick-count change; only the 1st ran on the final code |
+| R2-04 | AC-020 (1), AC-023, regression | server E2E | Existing Test | `env -i … pnpm test:e2e`; the model-free gated files (`RUN_AGY_FAILURE_E2E`) | D-09's server read in the standalone root manager; D-20's resolver; D-23's origin parser |
+| R2-05 | build | release desktop build | Existing Test | TESTING § Fresh-start build | `autobyteus-web/generated/graphql.ts` changed |
+
+- Test progress log: `Yes` (the same file; rows prefixed `T2-`)
+- Proceed: `Yes`. Durable coverage changes: `Yes` (mobile-shell probe, remote-nodes-page probe). Reroute: `No`.
