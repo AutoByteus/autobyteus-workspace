@@ -1,0 +1,8 @@
+# Case: API-04 (SCN-c) — pairing through the share intent and the shell bridge still works
+# Steps: pairing session (POST /rest/remote-access/pairing-sessions with connectionWay=local_network, trusted HTTP acknowledged) for http://10.0.2.2:52316; adb shell am start SEND text/plain <mobileUrl> to MainActivity; read the screen; the node's device list
+# Commit: d76be54fb0 (fresh-clone APK and server package); emulator-5554 autobyteus277_api35
+# Date: 2026-11-08T07:52:42Z
+
+screen after the share: 'abx432-api-node, Connected. Connection' [Button] [21,70][574,199] 'No runs yet' [TextView] [430,462][651,525] 'Start with New run. Work an agent delegates appears under its run and leaves when it is done.' [TextView] [84,532][1000,643] 
+page: "/mobile/ | abx432-api-node / Connected / No runs yet / Start with New run. Work an agent delega"
+node paired devices: 1 [None]

@@ -16,8 +16,10 @@ const hostOf = (address: string | undefined): string => {
  * The plain-words cause of a node that did not answer (one-nodes-tab REQ-707): "fetch failed" is never shown. A name
  * that cannot be found says from where when another node looked for it.
  */
-export const causeText = (t: Translate, cause: NodeProbeCause | undefined, host: string, fromNode?: string): string => {
+export const causeText = (t: Translate, cause: NodeProbeCause | 'host_refused' | undefined, host: string, fromNode?: string): string => {
   switch (cause) {
+    // autobyteus-426 REQ-020: the node at the address refuses the name it was addressed by (its Host gate).
+    case 'host_refused': return t(k('cause.hostRefused'), { host: hostName(host) })
     case 'refused': return t(k('cause.refused'))
     case 'timeout': return t(k('cause.timeout'))
     case 'not_found': return fromNode ? t(k('cause.dnsFrom'), { host: hostName(host), node: fromNode }) : t(k('cause.dns'), { host: hostName(host) })
@@ -60,6 +62,7 @@ export const failureText = (
     }
     case 'PEER_IDENTITY_MISMATCH': return t(k('address.different'))
     case 'PEER_NOT_AUTOBYTEUS': return t(k('cause.notAutobyteus'))
+    case 'PEER_HOST_REFUSED': return t(k('cause.hostRefused'), { host: failure.host ?? hostName(hostOf(failure.address)) })
     case 'NODE_IDENTITY_NOT_MIGRATED': return t(k('cause.identityPending'))
     case 'PEER_IS_THIS_NODE': return t(k('cause.thisNode'))
     case 'REMOTE_COLLABORATION_OFF': return t(k('line.offThere'), { name: node })

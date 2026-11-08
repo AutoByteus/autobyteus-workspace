@@ -1,0 +1,15 @@
+16a Control full screen | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[863,412],\"canvas\":[65,0,733,412],\"picture\":\"none\"}"
+16b strip: "[\"Keyboard\",\"Clipboard\",\"Show controls\"]"
+16c node pointer x:950 y:549 screen:0 window:50331649 focus 50331649 xev 50331649
+16d after strip Keyboard: mInputShown=true focus="mobile-node-desktop-keyboard-input"
+16e keyboard open in full screen | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=true | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[863,151],\"canvas\":[297,0,269,151],\"picture\":\"none\"}"
+16f after typing | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=true | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[863,151],\"canvas\":[297,0,269,151],\"picture\":\"none\"}"
+17a Back with the keyboard open: the keyboard closes, full screen stays | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[863,412],\"canvas\":[65,0,733,412],\"picture\":\"none\"}"
+17b mInputShown=false
+17c sheet open: true remote text: ""
+17d node clipboard: abx432-sent-from-the-phone
+17e after Send to desktop | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[863,412],\"canvas\":[65,0,733,412],\"picture\":\"none\"}"
+18 after leaving full screen | rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page="{\"q\":\"?screen=run\",\"status\":null,\"bar\":false,\"handle\":false,\"viewport\":[412,839],\"canvas\":null,\"picture\":null}"
+19 View only full screen | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[863,412],\"canvas\":[65,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+(60,540) rgb(30, 30, 30)
+(60,100) rgb(30, 30, 30)

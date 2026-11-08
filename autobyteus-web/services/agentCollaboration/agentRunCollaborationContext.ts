@@ -18,7 +18,7 @@ import type { RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes'
 import { toAgentPresentationProjectionMessage } from '~/services/agentStreaming/teamStreamDtoAdapters'
 import { dispatchAgentStreamMessage } from '~/services/agentStreaming/agentStreamMessageProjector'
 import { advanceSequencedStream } from '~/services/agentStreaming/sequencedStreamRange'
-import type { AgentPresentationMessage } from '@autobyteus/agent-presentation-contracts'
+import type { AgentPresentationMessage, CompactionRecoveryBlockDto } from '@autobyteus/agent-presentation-contracts'
 import { applyOfflineOrTerminalCleanup } from '~/services/runStatus/agentRuntimeStatusState'
 import { useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages'
 import { participantMessagesView } from '~/services/collaborationMessages/participantMessageRows'
@@ -46,6 +46,14 @@ export type AgentRunTaskTreeRow = Readonly<{
   teamStatus: TeamStatus | null
   continuingAncestorDepths: number[]
   hasFollowingSibling: boolean
+}>
+
+/** One child's state, as the collaboration view and the history poll's status read both give it (autobyteus-426 D-09). */
+export type CollaborationChildStatus = Readonly<{
+  agentRunId: string
+  memberAddress: string
+  status: string
+  recoverableBlock: CompactionRecoveryBlockDto | null
 }>
 
 const nameAt = memberDisplayName
@@ -84,29 +92,42 @@ export class AgentRunCollaborationContext {
       this.contexts.set(entry.agentRunId, reactive(entry.context))
     }
     if (this.contexts.size !== this.index.agents.size + this.index.remoteAgents.size) throw new Error('Agent collaboration context scope is incomplete.')
-    const statuses = new Set<string>()
     const inputs = new Set<string>()
-    for (const status of input.view.agent_statuses) {
-      if (statuses.has(status.agent_run_id) || this.index.agents.get(status.agent_run_id)?.address !== status.member_address) {
-        throw new Error(`Agent collaboration status '${status.agent_run_id}' has no unique exact child identity.`)
-      }
-      statuses.add(status.agent_run_id)
-    }
     for (const inputState of input.view.agent_input_states) {
       if (inputs.has(inputState.agent_run_id) || !this.index.agents.has(inputState.agent_run_id)) {
         throw new Error(`Agent collaboration input '${inputState.agent_run_id}' has no unique child identity.`)
       }
       inputs.add(inputState.agent_run_id)
     }
-    for (const status of input.view.agent_statuses) {
-      const state = this.contexts.get(status.agent_run_id)!.state
-      state.currentStatus = status.status as AgentStatus
-      state.recoverableBlock = status.recoverableBlock
-    }
+    this.applyStatuses(input.view.agent_statuses.map((status) => ({
+      agentRunId: status.agent_run_id,
+      memberAddress: status.member_address,
+      status: status.status,
+      recoverableBlock: status.recoverableBlock,
+    })))
     for (const inputState of input.view.agent_input_states) {
       handleAgentInputState(inputState.state, this.contexts.get(inputState.agent_run_id)!)
     }
     this.phase = input.view.is_active ? 'live' : 'historical'
+  }
+
+  /**
+   * Sets each local child's current status and recoverable block (the view's states, or the history poll's status read).
+   * Every status must name one local child exactly once, by its ID and address; nothing else changes.
+   */
+  applyStatuses(statuses: readonly CollaborationChildStatus[]): void {
+    const seen = new Set<string>()
+    for (const status of statuses) {
+      if (seen.has(status.agentRunId) || this.index.agents.get(status.agentRunId)?.address !== status.memberAddress) {
+        throw new Error(`Agent collaboration status '${status.agentRunId}' has no unique exact child identity.`)
+      }
+      seen.add(status.agentRunId)
+    }
+    for (const status of statuses) {
+      const state = this.contexts.get(status.agentRunId)!.state
+      state.currentStatus = status.status as AgentStatus
+      state.recoverableBlock = status.recoverableBlock
+    }
   }
 
   get isActive(): boolean { return this.view.is_active }

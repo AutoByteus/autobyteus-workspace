@@ -1,6 +1,7 @@
 <template>
   <!-- VNC Viewer on the phone (autobyteus-407): the paired node's node desktop, View only and fitted by default;
-       zoom and pan in View only; Control by a deliberate switch, with a keyboard bridge; in-page full screen. -->
+       zoom, pan and Fit ↔ Fill in View only; Control by a deliberate switch, with a keyboard bridge; full screen
+       (in the Android app also landscape without Android's bars, in a browser its own full screen; autobyteus-432). -->
   <section
     class="fixed inset-0 z-20 flex h-[100dvh] flex-col bg-white text-slate-900"
     data-testid="mobile-node-desktop"
@@ -84,17 +85,26 @@
         class="absolute inset-0 touch-none select-none"
         data-testid="mobile-node-desktop-gestures"
       />
-      <!-- Control in full screen: a tap on the desktop is a click, so the controls come back from this handle,
-           which is outside noVNC's canvas. -->
-      <button
-        v-if="fullScreen && mode === 'control'"
-        type="button"
-        class="absolute left-1/2 top-0 z-10 h-7 -translate-x-1/2 rounded-b-lg bg-slate-900/70 px-4 text-xs font-medium text-white"
-        data-testid="mobile-node-desktop-handle"
-        @click="leaveFullScreen"
+      <!-- Full screen: a small strip outside noVNC's canvas (in Control a tap on the desktop is a click). Show controls
+           brings the bars back in both modes (in View only a tap also works); in Control, Keyboard and Clipboard
+           work here too, so typing and pasting do not leave full screen (autobyteus-432 AC-005). -->
+      <div
+        v-if="fullScreen"
+        class="absolute left-1/2 top-0 z-10 flex -translate-x-1/2 divide-x divide-white/20 overflow-hidden rounded-b-lg bg-slate-900/70 text-xs font-medium text-white"
+        data-testid="mobile-node-desktop-full-screen-strip"
       >
-        {{ t('mobile.nodeDesktop.show_controls') }}
-      </button>
+        <template v-if="mode === 'control' && isConnected">
+          <button type="button" class="h-7 px-3 active:bg-slate-900" data-testid="mobile-node-desktop-strip-keyboard" @click="openKeyboard">
+            {{ t('mobile.nodeDesktop.keyboard') }}
+          </button>
+          <button type="button" class="h-7 px-3 active:bg-slate-900" data-testid="mobile-node-desktop-strip-clipboard" @click="clipboardOpen = true">
+            {{ t('mobile.nodeDesktop.clipboard') }}
+          </button>
+        </template>
+        <button type="button" class="h-7 px-4 active:bg-slate-900" data-testid="mobile-node-desktop-handle" @click="leaveFullScreen">
+          {{ t('mobile.nodeDesktop.show_controls') }}
+        </button>
+      </div>
       <p
         v-if="fullScreen && !isConnected"
         class="absolute inset-x-0 top-1/2 -translate-y-1/2 px-6 text-center text-sm text-slate-200"
@@ -132,10 +142,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, onBeforeUnmount, ref, watch } from 'vue';
 import { Icon } from '@iconify/vue';
 import MobileScreenBar from '~/components/mobile/MobileScreenBar.vue';
 import MobileNodeDesktopClipboard from '~/components/mobile/views/MobileNodeDesktopClipboard.vue';
+import { useDesktopFullScreenDisplay } from '~/composables/mobile/useDesktopFullScreenDisplay';
 import { useNodeDesktopZoom } from '~/composables/mobile/useNodeDesktopZoom';
 import { useMobileNavigation } from '~/composables/mobile/useMobileNavigation';
 import { useLocalization } from '~/composables/useLocalization';
@@ -159,7 +170,13 @@ const leaveFullScreen = () => { void navigation.back(); };
 const { scale, transform, reset: resetZoom } = useNodeDesktopZoom(gestureLayer, {
   // View only, full screen: one tap anywhere shows the controls again.
   onSingleTap: () => { if (fullScreen.value) leaveFullScreen(); },
+  picture: () => screen.value?.querySelector('canvas') ?? null,
 });
+
+// The route's full screen decides; the display follows it, also when a page reopens with `full=1`.
+const display = useDesktopFullScreenDisplay({ onBrowserExit: () => { if (fullScreen.value) leaveFullScreen(); } });
+watch(fullScreen, (on) => display.apply(on), { immediate: true });
+onBeforeUnmount(() => display.apply(false));
 
 const barButtonClass = 'h-9 flex-shrink-0 rounded-lg px-3 text-sm font-medium text-slate-700 active:bg-slate-100 disabled:opacity-40';
 

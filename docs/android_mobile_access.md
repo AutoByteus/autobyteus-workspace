@@ -6,7 +6,7 @@ Connecting a phone is one step on each side: on the desktop, open the node's **N
 
 ## Ownership boundaries
 
-- **Android app:** the node list (scan-first start screen and **Switch node**), app-owned QR scanning and camera permission handling, the connect sequence and its plain-words reasons, saved node entries, the shell bridge to the open node's page, WebView containment, build/package.
+- **Android app:** the node list (scan-first start screen and **Switch node**), app-owned QR scanning and camera permission handling, the connect sequence and its plain-words reasons, saved node entries, the shell bridge to the open node's page, the VNC Viewer's desktop full screen (landscape and hidden system bars while the page asks for it), WebView containment, build/package.
 - **Existing `/mobile` shell:** the run list, the run screen with its ⋮ views (Artifacts, Files, Messages, Activity, and VNC Viewer on a node with a node desktop), New run for agent runs, the connection sheet, pairing bootstrap, and mobile session restore. There is no mobile Terminal or Tools page. The VNC Viewer streams the node desktop through the node's own server (see `autobyteus-web/docs/remote_access.md`, "Node desktop on the phone").
 - **Remote Access backend:** Phone Access status, trusted-network owner routes, pairing sessions, pairing exchange, mobile credentials, revocation.
 - **Public Docker launcher:** normal Docker node creation, shared workspace bind mounts, named volumes, and mobile-web asset packaging through the published image path.
@@ -81,7 +81,7 @@ The Android app owns QR scanning (journeyapps `BarcodeView` in its own Scan scre
 
 Several nodes live side by side. Inside a node's page, the node name opens the connection sheet; **Switch node** shows the app's node list with the current node marked, and a tap opens another node. A new node is added with the list's **Scan**.
 
-When Android ends the app's process in the background and the user returns, the app reopens the node and the `/mobile` URL that were open (`shell/OpenPageRestore.kt`, the activity's saved state). The page shows what that URL names; a run's screen currently comes back as the run list, because its URL does not name the run. A pairing link that started the app is not handled again on that return (it was handled when it arrived); a new share still wins. A node removed meanwhile, or a saved URL the navigation policy would not allow for that node, gives the ordinary start.
+When Android ends the app's process in the background and the user returns, the app reopens the node and the `/mobile` URL that were open (`shell/OpenPageRestore.kt`, the activity's saved state). The page shows what that URL names; a run's screen comes back as the run list, because its URL does not name the run (the user's decision: reopening the app is enough; autobyteus-426 DEC-013). A pairing link that started the app is not handled again on that return (it was handled when it arrived); a new share still wins. A node removed meanwhile, or a saved URL the navigation policy would not allow for that node, gives the ordinary start.
 
 The WebView's navigation policy (`web/TrustedNavigationPolicy.kt`) keeps the main frame on the open node's origin. A sandboxed in-page preview, such as an HTML artifact, loads as a `blob:` subframe of that origin; it gets no shell bridge. A main-frame `blob:`, a `blob:` of another origin, `file:` and `javascript:` are blocked, and another origin's page opens in the phone's browser.
 

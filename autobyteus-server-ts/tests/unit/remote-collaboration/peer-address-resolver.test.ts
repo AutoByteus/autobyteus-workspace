@@ -60,15 +60,17 @@ describe("PeerAddressResolver", () => {
       "http://localhost:29695": { error: unreachable("http://localhost:29695", "refused") },
       "http://nas.local:29695": { error: unreachable("http://nas.local:29695", "not_found") },
       "http://web:8080": { error: new RemoteCollaborationSettingsError("PEER_NOT_AUTOBYTEUS", "not an AutoByteus node") },
+      "http://lvh.me:29695": { error: new RemoteCollaborationSettingsError("PEER_HOST_REFUSED", "refuses the name", { address: "http://lvh.me:29695", host: "lvh.me" }) },
       "http://other:1": { id: OTHER },
     });
-    const error = await f.resolver.resolve(B, ["http://localhost:29695", "http://nas.local:29695", "http://web:8080", "http://other:1"]).catch((e) => e);
+    const error = await f.resolver.resolve(B, ["http://localhost:29695", "http://nas.local:29695", "http://web:8080", "http://lvh.me:29695", "http://other:1"]).catch((e) => e);
     expect(error).toMatchObject({ code: "PEER_UNREACHABLE", details: {
       address: "http://localhost:29695", reason: "refused", loopbackInContainer: false,
       attempts: [
         { address: "http://localhost:29695", result: "refused" },
         { address: "http://nas.local:29695", result: "not_found" },
         { address: "http://web:8080", result: "not_autobyteus" },
+        { address: "http://lvh.me:29695", result: "host_refused" },
         { address: "http://other:1", result: "different_node" },
       ] } });
   });
