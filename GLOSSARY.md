@@ -106,7 +106,9 @@ delegated run, …) are defined in the
   (`/rest/node-desktop`, `/ws/node-desktop`, `src/node-desktop/`). It is not
   the desktop app and not the user's own screen. A **viewer** is one client
   connection showing it; its **mode** is `view` ("View only") or `control`
-  ("Control"), fixed per stream.
+  ("Control"), fixed per stream. **Desktop full screen** is the phone
+  viewer's full screen (route `full=1`); in the Android app it also means
+  landscape and hidden system bars (shell-bridge message `desktopFullScreen`).
 - **Sibling:** a run shown at the same level as another run in the run tree
   (for example a task agent's run lifted beside its parent's other children).
   It is not a peer.

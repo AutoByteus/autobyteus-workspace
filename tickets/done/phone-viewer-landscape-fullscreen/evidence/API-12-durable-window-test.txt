@@ -1,0 +1,66 @@
+# Case: API-12 — durable instrumented test added this round: DesktopFullScreenWindowTest (real window: landscape, bars hidden, dark root; off gives all back; same activity)
+# Command: ./gradlew :app:assembleDebug :app:assembleDebugAndroidTest (worktree, JDK 17); adb -s emulator-5554 install both; am instrument -w -r [-e class …] org.autobyteus.mobile.test/androidx.test.runner.AndroidJUnitRunner (not gradle connected*, which would also use emulator-5584, another ticket's)
+# Commit: test file on top of d76be54fb0; emulator-5554 avd=autobyteus277_api35 SDK 35; accelerometer_rotation=0 user_rotation=0
+# Date: 2026-11-08T08:31:15Z
+
+## install
+Success
+Success
+
+## the new test alone
+INSTRUMENTATION_STATUS: class=org.autobyteus.mobile.DesktopFullScreenWindowTest
+INSTRUMENTATION_STATUS: test=fullScreenTurnsToLandscapeAndHidesTheBarsAndOffGivesBothBack
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=org.autobyteus.mobile.DesktopFullScreenWindowTest
+INSTRUMENTATION_STATUS: test=fullScreenTurnsToLandscapeAndHidesTheBarsAndOffGivesBothBack
+INSTRUMENTATION_STATUS_CODE: 0
+OK (1 test)
+
+## the whole instrumented suite
+INSTRUMENTATION_STATUS: test=qrCoordinatorOpensTheScannerOnlyWithTheCameraPermission	INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: test=healthyWebShellGivesWebViewFullViewportWithoutNativeToolbar	INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: test=healthyWebShellGivesWebViewFullViewportWithoutNativeToolbar	INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: test=diagnosticWebShellKeepsRecoveryActionsInOverlay	INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: test=diagnosticWebShellKeepsRecoveryActionsInOverlay	INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: test=webViewSettingsPermitUserSelectedContentUrisButNotFilePaths	INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: test=webViewSettingsPermitUserSelectedContentUrisButNotFilePaths	INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: test=fullScreenTurnsToLandscapeAndHidesTheBarsAndOffGivesBothBack	INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: test=fullScreenTurnsToLandscapeAndHidesTheBarsAndOffGivesBothBack	INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: test=rotatingToLandscapeAndBackKeepsTheSameActivityAndTheTypedInput	INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: test=rotatingToLandscapeAndBackKeepsTheSameActivityAndTheTypedInput	INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: test=padsTheRootWithTheBarsAndTheCutout	INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: test=padsTheRootWithTheBarsAndTheCutout	INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: test=theKeyboardRaisesTheBottomAboveIt	INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: test=theKeyboardRaisesTheBottomAboveIt	INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: test=withoutInsetsNothingMoves	INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: test=withoutInsetsNothingMoves	INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: test=thePageSitsInsideTheBarsAndAboveTheKeyboardAndItsSafeAreaReadsZero	INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: test=thePageSitsInsideTheBarsAndAboveTheKeyboardAndItsSafeAreaReadsZero	INSTRUMENTATION_STATUS_CODE: 0
+OK (12 tests)	
+
+after: requestedOrientation-free; rotation mDisplayRotation=ROTATION_0 user_rotation=0
+
+## mutation check (temporary source edits, reverted with git checkout; the test must fail)
+### M1: bars.hide(systemBars()) removed
+1
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: full screen hides the status and navigation bars: not within 10 s
+java.lang.AssertionError: full screen hides the status and navigation bars: not within 10 s
+java.lang.AssertionError: full screen hides the status and navigation bars: not within 10 s
+### M2: on requests SCREEN_ORIENTATION_UNSPECIFIED instead of SENSOR_LANDSCAPE (isOn then reads false, so on is a no-op)
+0
+OK (1 test)
+   -> invalid attempt: BSD sed does not take '0,/re/', 0 lines changed, so this ran the real app; M2 redone below with perl
+### reverted: 0 changed source files; rebuilt and reinstalled the real app
+Success
+OK (1 test)
+### M2 (redo, perl): the 'on' branch no longer requests SENSOR_LANDSCAPE (the orientation request removed)
+lines changed: 1
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: full screen turns the screen to landscape: not within 10 s
+java.lang.AssertionError: full screen turns the screen to landscape: not within 10 s
+java.lang.AssertionError: full screen turns the screen to landscape: not within 10 s
+### reverted: 0 changed source files; rebuilt and reinstalled the real app
+Success
+OK (1 test)
+
+## Result
+Pass. The new test passes on the real app (alone and in the 12-test suite, with 415's rotation test and 277's insets tests) and fails on both mutations: without hiding the bars (M1) and without the landscape request (M2). Source restored (git status clean for the controller).

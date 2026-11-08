@@ -1,0 +1,55 @@
+# Case: API-11 — node log scan after the whole run (API-04…API-10): credentials, typed/clipboard markers, unexpected errors
+# Steps: docker logs abx432-api-node (container stdout: X, desktop, Chromium, supervisor) and /home/autobyteus/data/logs/server.log; grep counts below
+# Commit: d76be54fb0 (fresh-clone server package mounted over the beta image)
+# Date: 2026-11-08T08:25:06Z
+
+## container log:     1956 lines
+  'Unhandled': 0
+  'unhandled': 0
+  'apiKey': 0
+  'api_key': 0
+  'Bearer ': 0
+  'sk-': 0
+  'token=': 0
+  'pairing': 0
+  'desktopFullScreen': 0
+  'abx432-sent': 0
+  'abx432-copied': 0
+  'abx432typed': 0
+  'error'/'Error'/'password' lines (all of them, classified):
+    166:Errors from xkbcomp are not fatal to the X server
+    188:dbus-daemon[31]: [session uid=1000 pid=31] Activating service name='org.gtk.vfs.Daemon' requested by ':1.6' (uid=1000 pid=37 comm="/usr/lib/chromium/chromium --password-store=basic ")
+    267:dbus-daemon[31]: [session uid=1000 pid=31] Activating service name='org.freedesktop.Notifications' requested by ':1.1' (uid=1000 pid=37 comm="/usr/lib/chromium/chromium --password-store=basic ")
+    270:[37:37:1108/075110.957555:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.Properties.GetAll: object_path= /org/freedesktop/UPower/devices/DisplayDevice: unknown error t
+    273:dbus-daemon[31]: [session uid=1000 pid=31] Activating service name='org.freedesktop.portal.Desktop' requested by ':1.1' (uid=1000 pid=37 comm="/usr/lib/chromium/chromium --password-store=basic ")
+    296:error: fuse init failed: Can't mount path /run/user/1000/doc
+    316:(xdg-desktop-portal-gtk:310): xdg-desktop-portal-gtk-WARNING **: 07:51:11.053: error: Could not connect: No such file or directory
+    398:(polkit-gnome-authentication-agent-1:363): polkit-gnome-1-WARNING **: 07:51:11.533: Error getting authority: Error initializing authority: Could not connect: No such file or directory
+    415:(nm-applet:359): nm-applet-WARNING **: 07:51:11.581: Error connecting to system D-Bus: Could not connect: No such file or directory
+    539:[37:115:1108/075114.512487:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT
+    542:[37:115:1108/075114.546351:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: PHONE_REGISTRATION_ERROR
+    932:[37:115:1108/075138.496572:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT
+    941:[37:115:1108/075226.205441:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT
+    972:[37:115:1108/075349.088289:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT
+    990:[37:115:1108/075721.088793:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT
+    1237:[37:115:1108/080313.106287:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT
+  -> desktop/Chromium environment noise from the base image (xkbcomp, D-Bus/portal/polkit/nm-applet without a system bus, Chromium GCM registration, '--password-store=basic' is a Chromium flag); none from the server, the VNC bridge or this ticket.
+
+## server.log:      205 lines
+  'ERROR': 0
+  'error': 0
+  'password': 0
+  'Bearer ': 0
+  'sk-': 0
+  'pairingToken': 0
+  'abx432-sent': 0
+  'abx432-copied': 0
+  'abx432typed': 0
+  'Reply with the single': 0
+  'secret'/'token' lines:
+    5:[2026-11-08T07:51:18.076Z] [INFO] [secret-management.vault] Secret vault: application database
+    164:AgentExternalEventNotifier (NotifierID: d05b5912-332d-4dab-b77e-5a18a2691a92, AgentID: daily_assistant_0ba628daa44b4f2da96a8dad8219963d) emitted agent_token_usage_updated. Kwarg keys for emit: age
+  -> the vault backend name and a token-usage event name; no values.
+
+## Result
+Pass. No credentials, pairing data, typed text or clipboard text in either log; no server errors.

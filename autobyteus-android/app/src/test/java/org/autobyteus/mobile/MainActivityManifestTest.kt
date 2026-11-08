@@ -39,6 +39,21 @@ class MainActivityManifestTest {
     }
 
     @Test
+    fun mainActivityDeclaresNoOrientationSoThePhonesSettingDecides() {
+        // autobyteus-432: leaving desktop full screen hands the orientation back as SCREEN_ORIENTATION_UNSPECIFIED,
+        // which is the phone's own setting only while the activity declares none.
+        val manifest = DocumentBuilderFactory.newInstance()
+            .apply { isNamespaceAware = true }
+            .newDocumentBuilder()
+            .parse(File("src/main/AndroidManifest.xml"))
+        val activities = manifest.getElementsByTagName("activity")
+        val mainActivity = (0 until activities.length)
+            .map { activities.item(it) as Element }
+            .single { it.getAttributeNS(androidNamespace, "name") == ".MainActivity" }
+        assertEquals("", mainActivity.getAttributeNS(androidNamespace, "screenOrientation"))
+    }
+
+    @Test
     fun theAppHoldsNoNewPermission() {
         // one-step-phone-pairing QR-003: the scanner, the bridge (androidx.webkit, a library) and the node list need
         // no permission beyond the ones the app already held.

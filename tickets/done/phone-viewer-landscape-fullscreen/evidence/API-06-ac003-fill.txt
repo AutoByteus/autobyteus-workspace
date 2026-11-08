@@ -1,0 +1,13 @@
+# Case: API-06 — AC-003 on the emulator: View only full screen, double tap -> Fill, drag, double tap -> Fit; node pointer unchanged
+# Steps: node pointer parked at 300,300 (xdotool); CDP touch (cdp-touch.mjs: doubletap / drag, real touch events into the WebView); state.sh after each; screenshots
+# Commit: d76be54fb0; emulator-5554 autobyteus277_api35 (landscape full screen, viewport 915x412, picture 733x412)
+# Date: 2026-11-08T07:54:05Z
+
+pointer: x:300 y:300
+after double tap | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[915,412],\"canvas\":[0,-51,915,515],\"picture\":\"translate(-114.028px, -51.3438px) scale(1.24924)\"}"
+  expected Fill scale 915/733 = 1.248; pointer: x:300 y:300
+after drag down | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[915,412],\"canvas\":[0,0,915,515],\"picture\":\"translate(-114.028px, 0px) scale(1.24924)\"}"
+after drag up-left (horizontal stays covered) | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[915,412],\"canvas\":[0,-103,915,515],\"picture\":\"translate(-114.028px, -102.688px) scale(1.24924)\"}"
+  pointer: x:300 y:300
+after second double tap | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page="{\"q\":\"?screen=desktop&full=1\",\"status\":null,\"bar\":false,\"handle\":true,\"viewport\":[915,412],\"canvas\":[91,0,733,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+  pointer: x:300 y:300
