@@ -338,9 +338,11 @@ If a valid current stream fails strict admission, the workspace retires that
 exact connection generation and recovers automatically. Recovery preserves the
 exact selected Team or Agent, verifies the replacement snapshot against durable
 checkpoints, and prevents the stale socket from regaining ownership. There is
-no manual **Reconnect** action. The client makes at most five recovery attempts;
-if none succeeds, it leaves the stream non-ready and presents exactly one
-localized notice instead of remaining indefinitely in **Connecting**. A network
+no manual **Reconnect** action. The client keeps trying, at most 30 s apart,
+while the page is visible. It pauses while the page is hidden and tries again at
+once when the page is shown. After five failed attempts in a row it leaves the
+stream non-ready and shows exactly one localized notice, and it keeps trying
+(see [Live Run Stream Reconnection](./agent_execution_architecture.md#live-run-stream-reconnection)). A network
 or inspection failure does not prove that the Org is inactive: retain last-known
 activity until exact-root observation establishes its current state.
 

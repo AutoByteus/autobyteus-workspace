@@ -1,0 +1,10 @@
+# Case: API-07
+# Command: pnpm -C autobyteus-web test:e2e:task-agent-monitor-visibility --output-dir=<ticket>/evidence/API-07-task-agent-monitor-visibility
+# Commit: d5f0735904 (source as of feb69495a5)
+# Date: 2026-11-08 10:52 CET
+
+
+> autobyteus@1.5.12-beta.8 test:e2e:task-agent-monitor-visibility /Users/normy/autobyteus_org/autobyteus-worktrees/phone-live-updates-434/autobyteus-web
+> node tests/e2e/task-agent-monitor-visibility-probe.mjs --output-dir=/Users/normy/autobyteus_org/autobyteus-worktrees/phone-live-updates-434/tickets/in-progress/phone-live-updates-434/evidence/API-07-task-agent-monitor-visibility
+
+Task Agent monitor visibility browser probe passed. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/phone-live-updates-434/tickets/in-progress/phone-live-updates-434/evidence/API-07-task-agent-monitor-visibility/evidence.json

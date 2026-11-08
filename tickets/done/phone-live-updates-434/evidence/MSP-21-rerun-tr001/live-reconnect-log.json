@@ -1,0 +1,63 @@
+[
+  {
+    "t": 6354,
+    "event": "phones open",
+    "team": "team:live_team_770998ac7813428c8fa04d654f27c289",
+    "agent": "agent:live_agent_573a2945872041469a0d9d8eba5c0edb",
+    "org": "org:live_org_6f5ca8b2f76b469a8190c33ed2955e56"
+  },
+  {
+    "t": 14367,
+    "event": "marker sent",
+    "id": "MK-T-1"
+  },
+  {
+    "t": 14520,
+    "event": "marker sent",
+    "id": "MK-A-1"
+  },
+  {
+    "t": 14688,
+    "event": "open WebSocket connections black-holed",
+    "count": 11
+  },
+  {
+    "t": 14689,
+    "event": "marker sent",
+    "id": "MK-T-2"
+  },
+  {
+    "t": 14689,
+    "event": "marker sent",
+    "id": "MK-A-2"
+  },
+  {
+    "t": 49850,
+    "event": "marker sent",
+    "id": "MK-T-3"
+  },
+  {
+    "t": 50004,
+    "event": "marker sent",
+    "id": "MK-A-3"
+  },
+  {
+    "t": 50665,
+    "event": "path refused",
+    "open": 34
+  },
+  {
+    "t": 73679,
+    "event": "path passes"
+  },
+  {
+    "t": 73679,
+    "event": "marker sent",
+    "id": "MK-T-4"
+  },
+  {
+    "t": 73679,
+    "event": "marker sent",
+    "id": "MK-A-4"
+  }
+]

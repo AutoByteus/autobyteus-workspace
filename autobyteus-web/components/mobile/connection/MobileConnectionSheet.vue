@@ -1,11 +1,11 @@
 <template>
-  <!-- The node sheet (UIS-005), opened from the node name: the node's name and address, its state with a refresh icon
-       (or "Retry" when it is not reachable), Switch node in the Android app, and Unpair from <node> (REQ-013, REQ-019). -->
+  <!-- The node sheet (UIS-005), opened from the node name: the node's name (never its address, autobyteus-433), its state
+       with a refresh icon (or "Retry" when it is not reachable), Switch node in the Android app, and Unpair from <node>
+       (REQ-013, REQ-019). -->
   <MobileBottomSheet test-id="mobile-connection-sheet" @close="$emit('close')">
     <template #header="{ titleId }">
       <div class="min-w-0 py-1">
         <h2 :id="titleId" class="truncate text-lg font-semibold text-slate-900" data-testid="mobile-connection-name">{{ nodeName }}</h2>
-        <p class="mt-0.5 break-all font-mono text-xs text-slate-500" data-testid="mobile-connection-url">{{ serverBaseUrl }}</p>
       </div>
     </template>
     <div class="px-4">
@@ -60,7 +60,6 @@ import { getShellBridge, type ShellBridge } from '~/utils/remoteAccess/shellBrid
 
 defineProps<{
   nodeName: string;
-  serverBaseUrl: string;
   connected: boolean;
   isChecking: boolean;
   diagnostic: MobileConnectionDiagnostic | null;

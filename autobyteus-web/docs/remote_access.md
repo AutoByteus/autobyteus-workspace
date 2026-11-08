@@ -23,7 +23,7 @@ Stale or unsupported phone links such as `/mobile/workspace` stay inside the mob
 - **Run screen** — a tap on a row's body opens that agent's conversation with the shared composer; a Team run opens its coordinator, and an Org run opens the first member of its configuration (a Team member opens its coordinator). One 56px bar: ←, the agent's name with its state and "in <parent>", and ⋮. While an open is pending the screen shows only "Opening…". A run on a node that does not answer shows the remote notice instead of the conversation.
 - **⋮ views** — Artifacts, Files, Messages (members of a Team or Org only) and Activity, each its own screen for the open agent. Files is a read-only browser of the open agent's folder with one search over the workspace, no filters; an opened file is full screen with no Attach. Messages lists the member's messages with their file references; a reference opens full screen. A remote run's Artifacts and Files say the files are on that node.
 - **New run** — an agent run only: Agent, Folder (with "Open a folder by path", an absolute path on the paired node; a path that is not an existing absolute folder there is refused with the reason under the field, such as "No folder at this path.", and nothing is registered), Runtime, Model and Auto approve tools, each choice a bottom sheet. Agent is preselected: the agent of the run opened before, else the Project Task Manager, else the first agent. **Create run** creates the run and opens its conversation for the first message.
-- **Connection sheet** — the paired node's own name and URL, its state with a refresh icon while it is reachable and **Retry** when it is not, **Switch node** in the Android app (it opens the app's node list; the shell bridge, below), and **Unpair from <node>**. The sheet lists no peer nodes; runs on other nodes keep their node chips in the run list.
+- **Connection sheet** — the paired node's name (no address, host or URL: autobyteus-433), its state with a refresh icon while it is reachable and **Retry** when it is not, **Switch node** in the Android app (it opens the app's node list; the shell bridge, below), and **Unpair from <node>**. The sheet lists no peer nodes; runs on other nodes keep their node chips in the run list.
 
 ### Trusted private HTTP and Android 15
 
@@ -168,7 +168,9 @@ The local **Unpair from <node>** action deletes only the phone's local session f
 
 ### Android shell bridge
 
-The Android app gives the page one object, `window.AutoByteusShell` (`utils/remoteAccess/shellBridge.ts` on the page; `web/ShellBridge.kt` in the app, androidx.webkit web messages). Only the main frame of the open node's origin gets it; sandboxed frames and other origins do not. The page uses it to ask for the phone's model name and the number of saved nodes, to report a successful pairing with the node's name (the app saves the node only then), to ask the app to show its node list (**Switch node**) or its scanner (**Scan again**), and to turn the VNC Viewer's desktop full screen on or off (`{ type: 'desktopFullScreen', on }`, sent only by `composables/mobile/useDesktopFullScreenDisplay.ts`). It carries no credential: each node's credential stays in that node's page.
+The Android app gives the page one object, `window.AutoByteusShell` (`utils/remoteAccess/shellBridge.ts` on the page; `web/ShellBridge.kt` in the app, androidx.webkit web messages). Only the main frame of the open node's origin gets it; sandboxed frames and other origins do not. The page uses it to ask for the phone's model name, the number of saved nodes and the open node's name as the app shows it on its first page (`hello`; `nodeName`, `""` when the app has none), to report that it is mounted (`{ type: 'pageReady' }`, sent once per document by `MobileRemoteAccessShell`; only this shows the page in the app or closes the app's overlay over it, and WebView's error page cannot send it), to report a successful pairing with the node's name (the app saves the node only then), to ask the app to show its node list (**Switch node**) or its scanner (**Scan again**), and to turn the VNC Viewer's desktop full screen on or off (`{ type: 'desktopFullScreen', on }`, sent only by `composables/mobile/useDesktopFullScreenDisplay.ts`). It carries no credential: each node's credential stays in that node's page.
+
+The phone names the open node, never its address (autobyteus-433; `utils/remoteAccess/nodeName.ts`). The header, its accessibility label, the offline banner, "Connected to …", the connection sheet and **Unpair from <node>** use, in order: the app's name for the node (from `hello`, in the Android app), the session's `nodeName` saved at pairing, else "AutoByteus node". The pairing page names a QR without a name "AutoByteus node". A session paired before names were kept therefore shows the app's name, not the host. In a browser there is no bridge and `pageReady` does nothing.
 
 ## Revocation and Disable Semantics
 
@@ -190,6 +192,23 @@ A run's ⋮ menu offers **VNC Viewer** next to Artifacts, Files, Messages and Ac
 - The stream ends when the app goes to the background or the page is hidden, and reconnects in View only, with a fresh access check, when it is visible again.
 - The node serves at most 4 desktop streams at once, and at most 2 per paired phone; another viewer sees "Too many viewers on this node right now" with Retry (close code 4429).
 - Revoking the phone, or turning Phone Access off, ends its open desktop stream within 30 seconds (the node re-checks open phone streams every 20 s; the viewer then shows "not allowed").
+
+## Live run streams on the phone
+
+An open run on the phone (an agent run, a Team member or an Org member) keeps its live
+stream through lost connections and the app's background:
+
+- **The path to the node drops** (Wi-Fi to mobile data, a node restart): the phone keeps
+  trying, at most 30 s apart, and never gives up while the page is shown. When it is back,
+  it shows what it missed and then follows live.
+- **The app is in the background or the screen is off:** the phone makes no attempt while
+  the page is hidden. When the page is shown again, it reconnects at once and catches up.
+  After 30 s or more hidden, it re-synchronizes a stream that still looks open.
+- A message sent while the run is busy shows once, also on another phone or window that
+  opens the run during that turn.
+
+The same rules apply in the desktop window
+(`agent_execution_architecture.md`, Live Run Stream Reconnection).
 
 ## Mobile Capability Gating
 

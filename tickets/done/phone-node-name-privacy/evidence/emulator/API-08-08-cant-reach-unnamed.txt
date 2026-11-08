@@ -1,0 +1,9 @@
+content-desc: Back to nodes
+text: Can’t reach AutoByteus node
+text: Connect to the same Wi-Fi or VPN as the computer, or turn on Tailscale.
+content-desc: Open Tailscale
+text: Open Tailscale
+content-desc: Retry
+text: Retry
+content-desc: Scan again
+text: Scan again

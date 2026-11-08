@@ -15,8 +15,12 @@ vi.mock('~/stores/runHistoryStore', () => ({useRunHistoryStore:()=>({ markRunAsI
 vi.mock('~/services/agentStreaming', async original => {
   const actual = await original<any>();
   class Stream { connectionState='connected'; connect=vi.fn(); disconnect=vi.fn(); attachContext=vi.fn(); constructor(..._args: any[]) {} }
-  return {...actual, AgentStreamingService:Stream,TeamStreamingService:Stream};
+  return {...actual, TeamStreamingService:Stream};
 });
+// The agent run store builds its stream through `createAgentRunStream`, which constructs the service from its own module.
+vi.mock('~/services/agentStreaming/AgentStreamingService', () => ({
+  AgentStreamingService: class { connectionState='connected'; connect=vi.fn(); disconnect=vi.fn(); attachContext=vi.fn(); onConnectionChange=() => () => undefined; constructor(..._args: any[]) {} },
+}));
 const ROOT='native-team';
 beforeEach(()=>{setActivePinia(createPinia());vi.clearAllMocks();io.bindingRevision=1;});
 afterEach(()=>{useAgentRunStore().disconnectAgentStream('lead');useAgentTeamRunStore().disconnectTeamStream(ROOT);});

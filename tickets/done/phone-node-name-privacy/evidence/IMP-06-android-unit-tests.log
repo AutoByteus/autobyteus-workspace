@@ -1,0 +1,89 @@
+# IMP-06 Android JVM unit tests
+# command: cd autobyteus-android && JAVA_HOME=/opt/homebrew/opt/openjdk@17 ANDROID_HOME=~/Library/Android/sdk ./gradlew :app:testDebugUnitTest
+# commit: ba3ba5b23e (checks ran on the working tree that this commit records unchanged)
+# env: macOS 26.5.2, Node v22.23.1, JDK 17 (Homebrew openjdk@17)
+# date: 2026-11-08T06:46Z
+
+> Task :app:testDebugUnitTest
+BUILD SUCCESSFUL in 21s
+
+org.autobyteus.mobile.MainActivityManifestTest tests 2 failures 0 errors 0
+    theAppHoldsNoNewPermission
+    mainActivityHandlesRotationWindowSizeAndKeyboardChangesItself
+org.autobyteus.mobile.connection.ConnectionDiagnosticMapperTest tests 7 failures 0 errors 0
+    thePageLoadFailureNamesTheNodeAndGivesThePlainAdvice
+    noDiagnosticFunctionTakesAUrlOrADescription
+    mapsNetworkExceptionToTailscaleRecoveryHints
+    theOtherPageAndAddressTextsCarryNoAddress
+    mapsDisabledStatusToTailscaleRelevantRecoveryCopy
+    aStatusCheckExceptionNamingAHostGivesNoHostOrExceptionTextInAnyText
+    givesTheDesignsPlainReasonsForTheCantReachScreen
+org.autobyteus.mobile.connection.NodeUrlNormalizerTest tests 4 failures 0 errors 0
+    rejectsUnknownSchemesAndPaths
+    defaultsBareHostToHttps
+    normalizesTailscaleMobileUrlToCleanStableUrls
+    preservesPrivateHttpPort
+org.autobyteus.mobile.connection.PairingLinkParserTest tests 5 failures 0 errors 0
+    parsesRawJsonPairingPayload
+    parsesDockerNodePairingPayloadUsingAdvertisedHttpsOrigin
+    parsesGeneratedPrivateHttpPairingUrlAndLeavesAcknowledgementPending
+    parsesPairingUrlAndSavesCleanStableMobileUrl
+    treatsPlainNodeUrlAsNonPairingInput
+org.autobyteus.mobile.connection.SavedNodeEntryTest tests 4 failures 0 errors 0
+    aTypedAddressHasNoKnownNameAndIsShownAsAutoByteusNode
+    aSavedEntryWhoseStoredNameIsItsHostReadsAsUnnamed
+    aBlankStoredNameReadsAsUnnamed
+    aQrNameIsTheKnownAndShownName
+org.autobyteus.mobile.datamigrations.SavedNodeEntryKeysMigrationTest tests 6 failures 0 errors 0
+    finishesAStepInterruptedAfterTheNewKeyWasWritten
+    aFreshInstallHasNothingToConvert
+    reRunChangesNothingAndThenRemovesTheBackups
+    onlyTheStartUpCallSiteReferencesTheMigrationPackage
+    renamesTheReleasedKeysKeepingTheValuesAndABackup
+    keepsTheOldKeyWhenTheNewOneWasNotConvertedFromIt
+org.autobyteus.mobile.shell.ConnectionInputResolverTest tests 3 failures 0 errors 0
+    aPlainAddressIsNotAPairingLink
+    aTypedPlainHttpAddressNeedsTheTick
+    aScannedHttpPairingLinkNeedsNoSecondAcknowledgement
+org.autobyteus.mobile.shell.NodeConnectionFlowTest tests 14 failures 0 errors 0
+    aLegacyHostNamedNodeIsNamedWhenItsPagePairs
+    aScannedCodeOpensThePageAndSavesTheNodeUnderItsQrNameOnlyWhenThePagePaired
+    scannedTextThatIsNotAPairingLinkIsNotAnAutoByteusCode_pastedTextGoesToTheAddressSheet
+    aTypedAddressThatCannotBeUsedSaysCantConnectWithoutRepeatingTheTypedText
+    aCodeWhoseAddressDoesNotAnswerSaysWhatIsMissing
+    aTypedAddressIsSavedWhenItAnswersAndIsShownAsAutoByteusNodeNotItsHost
+    aTypedTailnetAddressThatDoesNotAnswerSaysCantReachAutoByteusNode
+    aQrWithoutANameIsSavedUnnamedWhenThePageReportsNoName
+    cancelDropsALateAnswer
+    aSavedNodeOpensWithoutSavingAgainAndKeepsItsName
+    aSavedEntryWhoseStoredNameIsItsHostIsShownAsAutoByteusNode
+    aNamedNodeIsNotRenamedByItsPage_andAPairingWithoutANameChangesNothing
+    theOpenPageOfATypedNodeThatPairsSavesTheNodeUnderTheQrName
+    aPageThatWasLeftWithoutPairingSavesNothing
+org.autobyteus.mobile.shell.NodeReachabilityTest tests 2 failures 0 errors 0
+    closingTheListDropsLateAnswers
+    everyRowShowsCheckingThenItsAnswer
+org.autobyteus.mobile.shell.OpenPageRestoreTest tests 6 failures 0 errors 0
+    restoresNothingTheNavigationPolicyWouldNotLoadForThatNode
+    restoresNothingWithoutASavedPage
+    restoresOnlyPagesUnderMobile
+    actsOnASharedTextOnlyOnAFreshStart
+    restoresNothingForARemovedNode
+    reopensTheSavedNodeOnTheSamePage
+org.autobyteus.mobile.web.FileChooserRequestPolicyTest tests 3 failures 0 errors 0
+    defaultsToAnyMimeTypeForEmptyAcceptList
+    splitsAndDeduplicatesMultipleMimeTypes
+    preservesSingleMimeAcceptType
+org.autobyteus.mobile.web.ShellBridgeMessagesTest tests 5 failures 0 errors 0
+    answersHelloWithTheNodeCountTheModelNameAndTheOpenNodesName
+    theOriginRuleIsTheEntrysOriginIncludingAPlainHttpIpv4AndPort
+    ignoresSubframesOtherOriginsAndUnknownMessages
+    anOpenNodeWithNoNameIsAnsweredWithAnEmptyNameNotItsAddress
+    readsTheFourMessagesFromTheMainFrameOfTheNodesOrigin
+org.autobyteus.mobile.web.TrustedNavigationPolicyTest tests 5 failures 0 errors 0
+    allowsExpectedSameOriginAutoByteusPaths
+    allowsABlobSubframeOfTheOpenNodeOnly
+    blocksUnsafeSchemesAndSameOriginDesktopPaths
+    keepsOtherSchemesBlockedAndOtherOriginsExternalInSubframesToo
+    externalizesDifferentOriginsWithoutSubstringMatching
+TOTAL tests 66 failures 0 errors 0

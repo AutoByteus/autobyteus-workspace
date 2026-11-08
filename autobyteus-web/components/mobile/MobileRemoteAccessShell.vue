@@ -23,6 +23,7 @@ import MobilePairingBootstrap from '~/components/mobile/MobilePairingBootstrap.v
 import MobileUnsupportedFeatureNotice from '~/components/mobile/MobileUnsupportedFeatureNotice.vue';
 import { useMobileNodeSessionStore } from '~/stores/mobileNodeSessionStore';
 import type { MobileFeatureId } from '~/utils/mobileFeatureGates';
+import { getShellBridge } from '~/utils/remoteAccess/shellBridge';
 
 // Keep the component name in the compiled chunk stable for existing page tests.
 defineOptions({ name: 'MobileRemoteAccessShell' });
@@ -64,5 +65,7 @@ watch(() => sessionStore.isPaired, (isPaired, wasPaired) => {
 
 onMounted(() => {
   sessionStore.initializeFromStorage();
+  // In the Android app: this document is the node's page, so the app may show it (autobyteus-433 DS-006).
+  getShellBridge()?.pageReady();
 });
 </script>

@@ -1,0 +1,38 @@
+# IMP-17 web checks on the merged tree (IR-005)
+# commands: cd autobyteus-web && pnpm exec vitest run components/mobile composables/mobile utils/remoteAccess stores/__tests__/mobileNodeSessionStore --reporter=verbose;
+#   guard:web-boundary, guard:localization-boundary, audit:localization-literals; pnpm -C autobyteus-web typecheck; node --check tests/e2e/mobile-shell-probe.mjs;
+#   pnpm -C autobyteus-web build:mobile-web
+# commit: e8516bce5c (merge of origin/personal b690a5dfdb; ran on the working tree this commit records unchanged)
+# env: macOS, Node v22.23.1
+# date: 2026-11-08
+
+ Test Files  23 passed (23)
+      Tests  189 passed (189)
+ ✓ components/mobile/views/__tests__/MobileNodeDesktop.spec.ts > MobileNodeDesktop > full screen (REQ-S3-3; autobyteus-432) > hides the bars and shows the exit handle in View only too; the handle leaves full screen
+ ✓ components/mobile/views/__tests__/MobileNodeDesktop.spec.ts > MobileNodeDesktop > full screen (REQ-S3-3; autobyteus-432) > in the Android app asks the app for desktop full screen when the route enters it, and gives it back
+ ✓ components/mobile/views/__tests__/MobileNodeDesktop.spec.ts > MobileNodeDesktop > full screen (REQ-S3-3; autobyteus-432) > hides the bars; in View only one tap shows them again
+ ✓ components/mobile/views/__tests__/MobileNodeDesktop.spec.ts > MobileNodeDesktop > full screen (REQ-S3-3; autobyteus-432) > in Control full screen the strip opens the keyboard and the clipboard without leaving full screen (AC-005)
+ ✓ components/mobile/views/__tests__/MobileNodeDesktop.spec.ts > MobileNodeDesktop > full screen (REQ-S3-3; autobyteus-432) > in View only full screen the strip has only the exit handle
+ ✓ components/mobile/views/__tests__/MobileNodeDesktop.spec.ts > MobileNodeDesktop > full screen (REQ-S3-3; autobyteus-432) > in Control a tap is the desktop's, so a handle outside the canvas shows the controls
+ ✓ components/mobile/views/__tests__/MobileViews.spec.ts > the phone's view screens read the open target (autobyteus-277 DS-005, REQ-007) > Files > a tapped file opens full screen as a history entry; ← returns to the folder
+ ✓ components/mobile/views/__tests__/MobileViews.spec.ts > the phone's view screens read the open target (autobyteus-277 DS-005, REQ-007) > Messages > lists "From <name>" with the text and its file references; a reference opens full screen and ← closes it first
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts > MobileRemoteAccessShell > in the Android app, a paired phone tells the app once that the page is ready
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts > MobileRemoteAccessShell > in the Android app, an unpaired phone (the pairing page) tells the app once that the page is ready
+ ✓ components/mobile/__tests__/MobileRemoteAccessShell.spec.ts > MobileRemoteAccessShell > in a browser there is no bridge, so nothing is sent and the page still mounts
+ ✓ composables/mobile/__tests__/useMobileNavigation.spec.ts > useMobileNavigation > VNC Viewer full screen is its own entry: Back leaves full screen, then the view, then the run (REQ-S3-3)
+ ✓ composables/mobile/__tests__/useMobileNavigation.spec.ts > useMobileNavigation > ← in VNC Viewer full screen entered by a reload goes to the view, then the run
+ ✓ composables/mobile/__tests__/useDesktopFullScreenDisplay.spec.ts > useDesktopFullScreenDisplay > in the Android app sends the request over the shell bridge only
+ ✓ composables/mobile/__tests__/useDesktopFullScreenDisplay.spec.ts > useDesktopFullScreenDisplay > in a browser enters its full screen, asks for landscape, and leaves both
+ ✓ composables/mobile/__tests__/useDesktopFullScreenDisplay.spec.ts > useDesktopFullScreenDisplay > lets the route follow when the browser leaves its full screen by itself (Esc)
+ ✓ composables/mobile/__tests__/useDesktopFullScreenDisplay.spec.ts > useDesktopFullScreenDisplay > stays in the in-page full screen when the browser refuses (no user gesture) or cannot lock
+ ✓ composables/mobile/__tests__/useDesktopFullScreenDisplay.spec.ts > useDesktopFullScreenDisplay > leaves a full screen the browser grants after the viewer already left it
+ ✓ composables/mobile/__tests__/useDesktopFullScreenDisplay.spec.ts > useDesktopFullScreenDisplay > without the app or the Fullscreen API does nothing more than the in-page full screen
+ ✓ composables/mobile/__tests__/useDesktopFullScreenDisplay.spec.ts > useDesktopFullScreenDisplay > stops listening when the viewer goes
+
+web-boundary exit=0
+loc-boundary exit=0
+loc-literals exit=0
+[typecheck] production errors: 0; test-file errors: 96 in 41 files (baseline 96 in 41 files)
+[typecheck] PASS
+probe: node --check OK
+bundle: files containing pageReady=1, desktopFullScreen=2

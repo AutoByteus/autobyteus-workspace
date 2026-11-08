@@ -1,0 +1,8 @@
+Emulator Test Node, Connected. Connection
+Your runs
+Emu Team, EMU-START-1, Idle Show members of Emu Team
+Emu Team, EMU-START-1, Idle
+Show members of Emu Team
+Emu Agent, EMU-START-2, Idle
+Emu Agent, EMU-START-2, Idle
+New run

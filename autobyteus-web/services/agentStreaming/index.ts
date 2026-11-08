@@ -13,7 +13,7 @@ export type { TeamStreamingServiceOptions } from './TeamStreamingService';
 
 // Transport layer
 export { WebSocketClient, ConnectionState } from './transport';
-export type { IWebSocketClient, WebSocketClientOptions, WebSocketClientEvents } from './transport';
+export type { IWebSocketClient, WebSocketClientEvents } from './transport';
 
 // Protocol layer
 export type {

@@ -1,0 +1,7 @@
+text: Can’t reach Test Docker Node
+text: Check that Tailscale or your Wi-Fi is on and the computer is awake.
+
+Then tap Retry.
+text: RETRY
+text: EDIT
+text: BROWSER

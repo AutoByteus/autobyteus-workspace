@@ -57,73 +57,67 @@ describe('WebSocketClient', () => {
     global.WebSocket = originalWebSocket;
   });
 
-  it('marks the client as reconnecting immediately after an unexpected close', () => {
-    const client = new WebSocketClient({
-      reconnectDelay: 10,
-      maxReconnectDelay: 10,
-      maxReconnectAttempts: 3,
-    });
+  it('is a plain socket: an unexpected close reports a retryable disconnect and opens nothing by itself', () => {
+    const client = new WebSocketClient();
+    const disconnects: Array<[string | undefined, boolean]> = [];
+    client.on('onDisconnect', (reason, retryable) => disconnects.push([reason, retryable]));
 
     client.connect('ws://localhost:8000/ws/agent/team-1');
     expect(client.state).toBe(ConnectionState.CONNECTING);
-
     sockets[0].simulateOpen();
     expect(client.state).toBe(ConnectionState.CONNECTED);
 
     sockets[0].simulateClose(1006, 'server restart');
-    expect(client.state).toBe(ConnectionState.RECONNECTING);
-
-    vi.advanceTimersByTime(10);
-    expect(sockets).toHaveLength(2);
-    expect(client.state).toBe(ConnectionState.RECONNECTING);
-
-    sockets[1].simulateClose(1006, 'still restarting');
-    expect(client.state).toBe(ConnectionState.RECONNECTING);
-
-    vi.advanceTimersByTime(10);
-    expect(sockets).toHaveLength(3);
-    expect(client.state).toBe(ConnectionState.RECONNECTING);
-  });
-
-  it('ignores manual connect calls while a reconnect timer is already pending', () => {
-    const client = new WebSocketClient({
-      reconnectDelay: 10,
-      maxReconnectDelay: 10,
-      maxReconnectAttempts: 3,
-    });
-
-    client.connect('ws://localhost:8000/ws/agent/team-1');
-    sockets[0].simulateOpen();
-    expect(client.state).toBe(ConnectionState.CONNECTED);
-
-    sockets[0].simulateClose(1006, 'server restart');
-    expect(client.state).toBe(ConnectionState.RECONNECTING);
-
-    client.connect('ws://localhost:8000/ws/agent/team-1');
-    client.connect('ws://localhost:8000/ws/agent/team-1');
-
-    expect(sockets).toHaveLength(1);
-
-    vi.advanceTimersByTime(10);
-    expect(sockets).toHaveLength(2);
-    expect(client.state).toBe(ConnectionState.RECONNECTING);
-  });
-
-  it('does not retry non-retryable not-found closes', () => {
-    const client = new WebSocketClient({
-      reconnectDelay: 10,
-      maxReconnectDelay: 10,
-      maxReconnectAttempts: 3,
-    });
-
-    client.connect('ws://localhost:8000/ws/agent/team-1');
-    sockets[0].simulateOpen();
-    expect(client.state).toBe(ConnectionState.CONNECTED);
-
-    sockets[0].simulateClose(4004, 'team not found');
     expect(client.state).toBe(ConnectionState.DISCONNECTED);
-
-    vi.advanceTimersByTime(100);
+    expect(disconnects).toEqual([['server restart', true]]);
+    vi.advanceTimersByTime(120_000);
     expect(sockets).toHaveLength(1);
+  });
+
+  it('connects again at once when its owner asks after a close', () => {
+    const client = new WebSocketClient();
+    client.connect('ws://localhost:8000/ws/agent/team-1');
+    sockets[0].simulateOpen();
+    sockets[0].simulateClose(1006, 'server restart');
+
+    client.connect('ws://localhost:8000/ws/agent/team-1');
+    expect(sockets).toHaveLength(2);
+    expect(client.state).toBe(ConnectionState.CONNECTING);
+  });
+
+  it('ignores connect calls while connecting or connected, so no second socket opens', () => {
+    const client = new WebSocketClient();
+    client.connect('ws://localhost:8000/ws/agent/team-1');
+    client.connect('ws://localhost:8000/ws/agent/team-1');
+    sockets[0].simulateOpen();
+    client.connect('ws://localhost:8000/ws/agent/team-1');
+    expect(sockets).toHaveLength(1);
+  });
+
+  it('reports a not-found (4004) or not-allowed (4005) close as not retryable', () => {
+    const client = new WebSocketClient();
+    const retryable: boolean[] = [];
+    client.on('onDisconnect', (_reason, value) => retryable.push(value));
+
+    client.connect('ws://localhost:8000/ws/agent/team-1');
+    sockets[0].simulateOpen();
+    sockets[0].simulateClose(4004, 'team not found');
+    client.connect('ws://localhost:8000/ws/agent/team-1');
+    sockets[1].simulateOpen();
+    sockets[1].simulateClose(4005, 'not allowed');
+
+    expect(client.state).toBe(ConnectionState.DISCONNECTED);
+    expect(retryable).toEqual([false, false]);
+  });
+
+  it('an intentional disconnect reports no disconnect event', () => {
+    const client = new WebSocketClient();
+    const onDisconnect = vi.fn();
+    client.on('onDisconnect', onDisconnect);
+    client.connect('ws://localhost:8000/ws/agent/team-1');
+    sockets[0].simulateOpen();
+    client.disconnect();
+    expect(client.state).toBe(ConnectionState.DISCONNECTED);
+    expect(onDisconnect).not.toHaveBeenCalled();
   });
 });

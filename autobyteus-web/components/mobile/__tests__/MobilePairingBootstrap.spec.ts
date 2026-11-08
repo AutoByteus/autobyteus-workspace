@@ -86,6 +86,28 @@ describe('MobilePairingBootstrap', () => {
     expect(wrapper.emitted('paired')).toHaveLength(1);
   });
 
+  // autobyteus-433 AC-003 (REQ-008): a QR without a name reads "AutoByteus node", never its host.
+  it('a QR without a name: the page says "AutoByteus node" and shows no part of its address', async () => {
+    const { serverName: _name, ...unnamed } = payload;
+    openWith(`?pairing=${btoa(JSON.stringify(unnamed)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '')}`);
+    const wrapper = mount(MobilePairingBootstrap);
+    await flushPromises();
+    expect(wrapper.get('[data-testid="mobile-pairing-node-name"]').text()).toBe('AutoByteus node');
+    expect(wrapper.get('[data-testid="mobile-pair-button"]').text()).toBe('Connect to AutoByteus node');
+    expect(wrapper.text()).not.toContain('192.168.1.20');
+  });
+
+  it('in the app, a QR without a name reports no name to the app, so it never stores the label as the node\'s name', async () => {
+    const { serverName: _name, ...unnamed } = payload;
+    openWith(`?pairing=${btoa(JSON.stringify(unnamed)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '')}`);
+    const posted = installShell();
+    vi.stubGlobal('fetch', exchangeAnswer(201, pairedBody));
+    const wrapper = mount(MobilePairingBootstrap);
+    await flushPromises();
+    expect(posted).toEqual([{ type: 'hello' }, { type: 'paired', nodeName: '' }]);
+    expect(wrapper.emitted('paired')).toHaveLength(1);
+  });
+
   it.each([
     [401, 'REMOTE_ACCESS_PAIRING_CONSUMED', 'This code was already used. Make a new one on your computer.'],
     [401, 'REMOTE_ACCESS_PAIRING_EXPIRED', 'This code has expired. Make a new one on your computer.'],

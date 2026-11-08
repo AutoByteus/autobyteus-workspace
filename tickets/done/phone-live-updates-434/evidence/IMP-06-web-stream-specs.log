@@ -1,0 +1,75 @@
+# Check: IMP-06
+# Command: pnpm -C autobyteus-web test:nuxt --run services/liveStreamLifecycle services/agentStreaming services/agentOrgExecution services/agentCollaboration services/runHydration services/runOpen stores/__tests__/agentRunStore.spec.ts stores/__tests__/agentTeamRunStore.spec.ts stores/__tests__/agentOrgRetainedRecovery.spec.ts stores/__tests__/agentRunCollaborationParticipantReloads.spec.ts stores/__tests__/nativeCompactionTermination.spec.ts stores/__tests__/runHistoryStore.spec.ts tests/integration/workspace-history-draft-send.integration.test.ts components/agentInput/__tests__/AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts
+# Commit: feb69495a5
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-08
+
+ ✓ stores/__tests__/agentRunStore.spec.ts (26 tests) 44ms
+ ✓ services/agentStreaming/__tests__/TeamStreamingService.reconnect.spec.ts (8 tests) 26ms
+ ✓ services/runHydration/__tests__/teamTaskApprovalHydration.spec.ts (18 tests) 144ms
+ ✓ stores/__tests__/runHistoryStore.spec.ts (58 tests) 404ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts (9 tests) 436ms
+ ✓ services/agentStreaming/__tests__/recentEventMonitorProductionDispatch.spec.ts (9 tests) 557ms
+ ✓ stores/__tests__/agentRunCollaborationParticipantReloads.spec.ts (3 tests) 1075ms
+ ✓ stores/__tests__/agentTeamRunStore.spec.ts (28 tests) 114ms
+ ✓ services/agentStreaming/__tests__/agentStreamMessageProjector.spec.ts (3 tests) 9ms
+ ✓ services/runHydration/__tests__/teamRunContextHydrationService.spec.ts (19 tests) 85ms
+ ✓ stores/__tests__/agentOrgRetainedRecovery.spec.ts (20 tests) 140ms
+ ✓ services/agentCollaboration/__tests__/agentRunCollaborationChildHydration.spec.ts (14 tests) 39ms
+ ✓ services/agentStreaming/__tests__/TeamStreamingService.spec.ts (16 tests) 71ms
+ ✓ services/agentCollaboration/__tests__/agentRunCollaborationStreamingService.reconnect.spec.ts (6 tests) 46ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts (25 tests) 3948ms
+ ✓ services/runHydration/__tests__/memberRunStateHydration.spec.ts (8 tests) 16ms
+ ✓ services/runHydration/__tests__/teamMemberProjectionHydrationService.spec.ts (7 tests) 14ms
+ ✓ services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts (14 tests) 25ms
+ ✓ services/agentStreaming/__tests__/AgentStreamingService.spec.ts (35 tests) 37ms
+ ✓ stores/__tests__/nativeCompactionTermination.spec.ts (17 tests) 33ms
+ ✓ services/agentStreaming/__tests__/TeamStreamingService.execution-address.spec.ts (14 tests) 29ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgClosure.spec.ts (8 tests) 13ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts (20 tests) 7486ms
+ ✓ components/agentInput/__tests__/AgentUserInputTextArea.focusedInterrupt.e2e.spec.ts (1 test) 34ms
+ ✓ services/agentStreaming/handlers/__tests__/toolLifecycleOrdering.spec.ts (11 tests) 29ms
+ ✓ services/agentStreaming/__tests__/agentRunStreamReconnection.spec.ts (11 tests) 52ms
+ ✓ services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts (17 tests) 43ms
+ ✓ services/agentCollaboration/__tests__/agentRunCollaborationClosure.spec.ts (7 tests) 21ms
+ ✓ services/agentStreaming/handlers/__tests__/toolLifecycleState.spec.ts (7 tests) 3ms
+ ✓ services/runOpen/__tests__/teamRemoteMemberOpen.spec.ts (2 tests) 15ms
+ ✓ services/agentCollaboration/__tests__/agentRunCollaborationStreamingService.spec.ts (4 tests) 16ms
+ ✓ services/runOpen/__tests__/teamRunOpenCoordinator.spec.ts (13 tests) 13ms
+ ✓ services/agentCollaboration/__tests__/agentRunCollaborationRemoteChildren.spec.ts (3 tests) 16ms
+ ✓ services/runHydration/__tests__/acceptedInputIdentity.spec.ts (12 tests) 10ms
+ ✓ services/runHydration/__tests__/teamMemberToolStateReconciliation.spec.ts (19 tests) 10ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts (11 tests) 24ms
+ ✓ tests/integration/workspace-history-draft-send.integration.test.ts (1 test) 16ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgRunConfigAdoption.spec.ts (8 tests) 22ms
+ ✓ services/runOpen/__tests__/teamMemberInspectionCoordinator.spec.ts (3 tests) 10ms
+ ✓ services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts (22 tests) 13ms
+ ✓ services/liveStreamLifecycle/__tests__/liveStreamReconnectScheduler.spec.ts (15 tests) 10ms
+ ✓ services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts (30 tests) 10ms
+ ✓ services/runHydration/__tests__/runProjectionConversation.spec.ts (14 tests) 8ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgReferenceProjection.spec.ts (2 tests) 4ms
+ ✓ services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts (9 tests) 9ms
+ ✓ services/agentStreaming/handlers/__tests__/agentInputStateHandler.spec.ts (3 tests) 8ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgExecutionContextBatch.spec.ts (3 tests) 8ms
+ ✓ services/agentCollaboration/__tests__/agentRunCollaborationContextBatch.spec.ts (3 tests) 6ms
+ ✓ services/agentStreaming/transport/__tests__/WebSocketClient.spec.ts (5 tests) 5ms
+ ✓ services/agentStreaming/handlers/__tests__/toolLifecycleParsers.spec.ts (4 tests) 3ms
+ ✓ services/agentStreaming/__tests__/interruptCommandAdmission.spec.ts (4 tests) 4ms
+ ✓ services/agentStreaming/handlers/__tests__/memberInputMessageHandler.spec.ts (6 tests) 6ms
+ ✓ services/agentCollaboration/__tests__/agentRunCollaborationHydration.spec.ts (3 tests) 5ms
+ ✓ services/runOpen/__tests__/agentRunOpenCoordinator.integration.spec.ts (1 test) 4ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgExecutionViewIndex.spec.ts (2 tests) 3ms
+ ✓ services/runHydration/__tests__/runContextHydrationService.spec.ts (4 tests) 5ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgTeamBranchStatus.spec.ts (4 tests) 3ms
+ ✓ services/agentOrgExecution/__tests__/agentOrgLaunchService.spec.ts (3 tests) 3ms
+ ✓ services/agentStreaming/browser/__tests__/browserToolExecutionSucceededHandler.spec.ts (6 tests) 7ms
+ ✓ services/agentStreaming/handlers/__tests__/fileChangeHandler.spec.ts (2 tests) 3ms
+ ✓ services/runHydration/__tests__/runProjectionActivityHydration.spec.ts (4 tests) 4ms
+ ✓ services/runHydration/__tests__/runtimeStatusNormalization.spec.ts (2 tests) 2ms
+ ✓ services/agentStreaming/handlers/__tests__/backgroundTaskHandler.spec.ts (2 tests) 3ms
+ ✓ services/agentStreaming/protocol/__tests__/systemInstructionMessageParser.spec.ts (1 test) 2ms
+ ✓ services/agentStreaming/protocol/__tests__/segmentTypes.spec.ts (3 tests) 2ms
+ ✓ services/agentStreaming/handlers/__tests__/systemTaskNotificationHandler.spec.ts (1 test) 2ms
+ ✓ services/runOpen/__tests__/runOpenStrategyPolicy.spec.ts (3 tests) 2ms
+ Test Files  67 passed (67)
+      Tests  676 passed (676)

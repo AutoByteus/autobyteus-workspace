@@ -1,0 +1,123 @@
+[
+  {
+    "t": 8659,
+    "event": "phones open",
+    "team": "team:live_team_b2f7833046184d178ec02d97774cbbde",
+    "agent": "agent:live_agent_a55aa717d52044909f4b38ef45326c37",
+    "org": "org:live_org_9454abe50bc041c4b7729cb8f336ec3d"
+  },
+  {
+    "t": 8660,
+    "event": "path refused",
+    "open": 29
+  },
+  {
+    "t": 53661,
+    "event": "path passes"
+  },
+  {
+    "t": 53662,
+    "event": "marker sent",
+    "id": "MK-T-1"
+  },
+  {
+    "t": 53662,
+    "event": "marker sent",
+    "id": "MK-A-1"
+  },
+  {
+    "t": 53662,
+    "event": "marker sent",
+    "id": "MK-O-1"
+  },
+  {
+    "t": 53662,
+    "event": "marker sent",
+    "id": "MK-A-2"
+  },
+  {
+    "t": 55664,
+    "event": "marker sent",
+    "id": "MK-A-3"
+  },
+  {
+    "t": 57665,
+    "event": "marker sent",
+    "id": "MK-A-4"
+  },
+  {
+    "t": 59668,
+    "event": "marker sent",
+    "id": "MK-A-5"
+  },
+  {
+    "t": 61668,
+    "event": "marker sent",
+    "id": "MK-A-6"
+  },
+  {
+    "t": 63668,
+    "event": "marker sent",
+    "id": "MK-A-7"
+  },
+  {
+    "t": 65670,
+    "event": "marker sent",
+    "id": "MK-A-8"
+  },
+  {
+    "t": 67670,
+    "event": "marker sent",
+    "id": "MK-A-9"
+  },
+  {
+    "t": 69672,
+    "event": "marker sent",
+    "id": "MK-A-10"
+  },
+  {
+    "t": 71674,
+    "event": "marker sent",
+    "id": "MK-A-11"
+  },
+  {
+    "t": 73685,
+    "event": "marker sent",
+    "id": "MK-A-12"
+  },
+  {
+    "t": 75689,
+    "event": "marker sent",
+    "id": "MK-A-13"
+  },
+  {
+    "t": 77692,
+    "event": "marker sent",
+    "id": "MK-A-14"
+  },
+  {
+    "t": 79693,
+    "event": "marker sent",
+    "id": "MK-A-15"
+  },
+  {
+    "t": 81700,
+    "event": "marker sent",
+    "id": "MK-A-16"
+  },
+  {
+    "t": 86704,
+    "event": "marker sent",
+    "id": "MK-T-2"
+  },
+  {
+    "t": 86857,
+    "event": "marker sent",
+    "id": "MK-A-17"
+  },
+  {
+    "t": 87009,
+    "event": "marker sent",
+    "id": "MK-O-2"
+  }
+]
