@@ -6,14 +6,14 @@ import { DOUBLE_TAP_MS, useNodeDesktopZoom } from '../useNodeDesktopZoom';
 const WIDTH = 400;
 const HEIGHT = 300;
 
-const mountZoom = async () => {
+const mountZoom = async (picture?: { width: number; height: number }) => {
   const onSingleTap = vi.fn();
   const present = ref(true);
   let zoom!: ReturnType<typeof useNodeDesktopZoom>;
   const wrapper = mount(defineComponent({
     setup() {
       const layer = ref<HTMLElement | null>(null);
-      zoom = useNodeDesktopZoom(layer, { onSingleTap });
+      zoom = useNodeDesktopZoom(layer, { onSingleTap, picture: picture ? () => picture : undefined });
       return () => (present.value ? h('div', { ref: layer, 'data-testid': 'layer' }) : h('span'));
     },
   }), { attachTo: document.body });
@@ -85,6 +85,52 @@ describe('useNodeDesktopZoom (View only)', () => {
     pointer(layer(), 'pointermove', 1, -900, -900);
     pointer(layer(), 'pointerup', 1, -900, -900);
     expect(zoom.transform.value).toBe(`translate(${WIDTH - WIDTH * 2}px, ${HEIGHT - HEIGHT * 2}px) scale(2)`);
+  });
+
+  // autobyteus-432 REQ-004: a 1920×1080 desktop fitted into 400×300 is 400×225, with 37.5 px above and below.
+  describe('Fit ↔ Fill (double tap)', () => {
+    const desktop = { width: 1920, height: 1080 };
+    const doubleTap = (target: HTMLElement) => {
+      tap(target, 200, 150);
+      vi.advanceTimersByTime(100);
+      tap(target, 202, 151);
+    };
+
+    it('at fit a double tap fills the layer, centred and undistorted; again returns to fit', async () => {
+      const { zoom, layer, onSingleTap } = await mountZoom(desktop);
+      doubleTap(layer());
+      // Cover: 300 / 225 = 4/3 (height), the width overflows to 533⅓, centred.
+      expect(zoom.scale.value).toBeCloseTo(4 / 3);
+      expect(zoom.transform.value).toBe(`translate(${200 - 200 * (4 / 3)}px, -50px) scale(${4 / 3})`);
+      vi.advanceTimersByTime(DOUBLE_TAP_MS);
+      doubleTap(layer());
+      expect(zoom.transform.value).toBe('translate(0px, 0px) scale(1)');
+      vi.advanceTimersByTime(DOUBLE_TAP_MS * 2);
+      expect(onSingleTap).not.toHaveBeenCalled();
+    });
+
+    it('in Fill a drag reveals the cropped sides but never the letterbox', async () => {
+      const { zoom, layer } = await mountZoom(desktop);
+      doubleTap(layer());
+      vi.advanceTimersByTime(DOUBLE_TAP_MS);
+      pointer(layer(), 'pointerdown', 1, 200, 150);
+      pointer(layer(), 'pointermove', 1, 900, 600);
+      pointer(layer(), 'pointerup', 1, 900, 600);
+      // Left edge of the picture at the layer's left edge; vertically the picture exactly covers (−37.5 × 4/3).
+      expect(zoom.transform.value).toBe(`translate(0px, -50px) scale(${4 / 3})`);
+      pointer(layer(), 'pointerdown', 1, 900, 600);
+      pointer(layer(), 'pointermove', 1, -900, -900);
+      pointer(layer(), 'pointerup', 1, -900, -900);
+      expect(zoom.transform.value).toBe(`translate(${400 - 400 * (4 / 3)}px, -50px) scale(${4 / 3})`);
+    });
+
+    it('keeps a pinched picture centred along the axis where it is still smaller than the layer', async () => {
+      const { zoom, layer } = await mountZoom(desktop);
+      // 1.2×: 270 px high in 300, so centred: (300 − 270) / 2 − 37.5 × 1.2 = −30.
+      pinch(layer(), [150, 150, 250, 150], [140, 150, 260, 150]);
+      expect(zoom.scale.value).toBeCloseTo(1.2);
+      expect(zoom.transform.value).toMatch(/translate\(-?[\d.]+px, -30(\.0+\d*)?px\) scale\(1\.2/);
+    });
   });
 
   it('a double tap returns to fit and is not a single tap', async () => {

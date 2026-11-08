@@ -6,7 +6,7 @@ Connecting a phone is one step on each side: on the desktop, open the node's **N
 
 ## Ownership boundaries
 
-- **Android app:** the node list (scan-first start screen and **Switch node**), app-owned QR scanning and camera permission handling, the connect sequence and its plain-words reasons, saved node entries, the shell bridge to the open node's page, WebView containment, build/package.
+- **Android app:** the node list (scan-first start screen and **Switch node**), app-owned QR scanning and camera permission handling, the connect sequence and its plain-words reasons, saved node entries, the shell bridge to the open node's page, the VNC Viewer's desktop full screen (landscape and hidden system bars while the page asks for it), WebView containment, build/package.
 - **Existing `/mobile` shell:** the run list, the run screen with its ⋮ views (Artifacts, Files, Messages, Activity, and VNC Viewer on a node with a node desktop), New run for agent runs, the connection sheet, pairing bootstrap, and mobile session restore. There is no mobile Terminal or Tools page. The VNC Viewer streams the node desktop through the node's own server (see `autobyteus-web/docs/remote_access.md`, "Node desktop on the phone").
 - **Remote Access backend:** Phone Access status, trusted-network owner routes, pairing sessions, pairing exchange, mobile credentials, revocation.
 - **Public Docker launcher:** normal Docker node creation, shared workspace bind mounts, named volumes, and mobile-web asset packaging through the published image path.
