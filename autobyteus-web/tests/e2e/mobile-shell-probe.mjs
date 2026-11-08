@@ -450,7 +450,12 @@ const openPhone = async ({ width = 390, height = 844, storageState, label = 'pho
       try { const body = JSON.parse(request.postData() ?? '{}'); op = body.operationName ?? /^\s*(?:query|mutation)\s+(\w+)/.exec(body.query ?? '')?.[1] ?? 'anonymous'; windowVar = body.variables?.limitPerAgent; } catch { op = 'unparsed'; }
     }
     let response;
-    try { response = await route.fetch({ url: request.url().replace(phoneOrigin(), alpha.baseUrl), headers: { ...request.headers(), host: phoneHost }, timeout: 20_000 }); } catch { await route.abort('connectionrefused').catch(() => undefined); return; }
+    try { response = await route.fetch({ url: request.url().replace(phoneOrigin(), alpha.baseUrl), headers: { ...request.headers(), host: phoneHost }, timeout: 20_000 }); } catch (error) {
+      // A request still in flight when the probe closes this phone's context (MSP-12's timing phone closes at its first
+      // row) ends with the context: answering it as refused would log a browser error that no node caused.
+      if (/has been closed/.test(String(error?.message))) return;
+      await route.abort('connectionrefused').catch(() => undefined); return;
+    }
     if (op) phoneNet.push({ at: Date.now(), label, case: currentCase, op, window: windowVar === undefined ? 'omitted' : windowVar, status: response.status(), bytes: (await response.body().catch(() => Buffer.alloc(0))).length });
     await route.fulfill({ response }).catch(() => undefined);
   });
