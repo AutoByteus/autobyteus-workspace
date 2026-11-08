@@ -292,13 +292,29 @@ Reviewed and accepted as within the design's intent: 3 (pipe name per data folde
 - After the fix: targeted source review (CR-003…005), then API/E2E reruns API-15, API-03 MSP-08 and API-08 NVP-05 and its open API-16 / API-FS items, then the proportional test-code review of `960cfc0661` and later test changes.
 - The test-code changes in `960cfc0661` are not reviewed in this round. They are reviewed in the post-pass proportional test review.
 
+## Implementation Review Round 4 (CRR-004): Targeted Delta Review of IR-003
+
+- Trigger: implementation engineer, IR-003 @ `32e9ad944c` (fixes `75f1b6300e`, `eae14ea940`, `8914f21745`, `0c755805d3`), for CR-003…CR-005, O-1, O-2.
+- Review Scope: `Targeted Delta Review`. `git diff b28e5c0864..32e9ad944c` (excluding tickets) touches only the files of the findings: `nuxt.config.ts`, a new dev-proxy probe and its package script, `graphql-request-context.ts` (one condition), `memory-sync-capability.ts` (two lines removed), `nodeDesktopClient.ts` with localization, the launcher's next-step line (bash and PowerShell), and the tests. No shared interface, data shape or other spine changed.
+
+| Finding | Resolution verified in code | Tests / evidence | Status |
+| --- | --- | --- | --- |
+| CR-003 | The dev proxy moved from `vite.server.proxy` to Nitro `devProxy`, which Nuxt's dev server hands upgrades to. `/graphql` and `/ws` have `ws: true`, `/rest` is HTTP only, and the targets keep the stripped prefix. The credential header is added in the dev server process; `runtimeConfig.public` is unchanged. The production `nitro` static preset is untouched. | `dev-proxy-websockets-probe.mjs` runs real upgrades through `:3000` with no client credential: `/ws/projects` 101 + `connected`, `/graphql` `connection_ack`, HTTP 200, 0 ECONNRESET (`IR003-08`). The probe fails on the old config. | Resolved |
+| CR-004 | `createRequestAbortSignal` starts aborted only on `request.raw.aborted` or `reply.raw.destroyed`. A closed response still aborts through the `close` listener, and `finish` cleans up first. A consumed or destroyed request stream no longer counts. The rule is fixed at its owner; the peer body hooks are unchanged, which is acceptable. | Unit `graphql-request-context.test.ts` (4 rules); e2e `search-files-through-gate.e2e.test.ts` (owner and phone find `src/app.ts`; returned [] before) (`IR003-03`, `-05`) | Resolved |
+| CR-005 | `statusCode` removed from `MemorySyncNotMigratedError`. Nothing else reads it: the REST hub route maps the error itself (`api/rest/memory-sync.ts:13-15`), and the gate uses `heldBackRefusal`. | e2e `memory-sync-held-back-graphql.e2e.test.ts` (HTTP 200 + text); NV-03 asserts 200 on a built node (`IR003-05`, `-07`) | Resolved |
+| O-1 | The launcher's "Next step" line names the setup code (bash and PowerShell) | launcher tests 61 passed / 2 skipped for pwsh (`IR003-13`) | Resolved |
+| O-2 | `viewerStateForClose` words only 4403 `NODE_CREDENTIAL_REVOKED` as needing connecting (en, zh-CN). Phones are revoked with their own code, so the wording never reaches a phone. | `nodeDesktopClient.spec.ts` | Resolved |
+
+- Rechecked categories: Runtime Correctness and Behavioral Fidelity 9.4; API/E2E Readiness 9.3. Both are restored, and real-runtime checks now guard the three seams. The other categories are unchanged from CRR-002.
+- New findings: none. Residual: Nitro `devProxy` and the old Vite proxy match prefixes the same way (no page route starts with `/rest`, `/ws` or `/graphql`).
+
 ## Latest Authoritative Result
 
-- Review Decision: `Fail` (failure-origin review, round 3, CRR-003). The implementation review of round 2 (CRR-002, Pass) stands for everything outside CR-003…005.
-- Review Entry Point: `API/E2E Failure-Origin Review`
-- Supported Product Scenario Gate: `Pass` (all three failing scenarios remain approved behavior)
+- Review Decision: `Pass` (implementation review, round 4, CRR-004, Targeted Delta Review of IR-003)
+- Review Entry Point: `Implementation Review`
+- Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
-- Score Summary: not rescored (failure-origin round). Runtime Correctness and API/E2E Readiness are reopened by CR-003…005.
-- Failure Origin: implementation (CR-003 dev proxy; CR-004 async hook × abort signal; CR-005 error status). Review gaps: CR-003 and CR-005 partial; CR-004 not reasonably detectable.
-- Recommended Recipient: implementation engineer
-- Notes: API/E2E's root-cause evidence is sound for all three.
+- Score Summary: 9.45/10 average, every category ≥ 9.3 (Runtime Correctness 9.4, API/E2E Readiness 9.3 restored)
+- Failure Origin: N/A (CR-003…005 resolved)
+- Recommended Recipient: API/E2E engineer
+- Notes: API/E2E reruns API-15, API-03 MSP-08 and API-08 NVP-05, then its open API-16 and API-FS. The test-code changes (`960cfc0661` and later) then get the proportional test-code review.

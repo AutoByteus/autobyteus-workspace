@@ -7,6 +7,8 @@
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 (IR-001) | N/A | Fail (Local Fix) | CR-001, CR-002 |
 | CRR-002 | `code-review-report.md` | Implementation Review, round 2 (IR-002 Local Fix) | Fail (Local Fix) | Pass | CR-001, CR-002 |
 | CRR-003 | `code-review-report.md` | API/E2E Failure-Origin Review (API-REV-001: API-15, API-03 MSP-08, API-08 NVP-05) | Pass | Fail (Local Fix, implementation) | CR-003, CR-004, CR-005 |
+| CRR-004 | `code-review-report.md` | Implementation Review, round 4 (IR-003 Local Fix) | Fail (Local Fix) | Pass | CR-003, CR-004, CR-005 |
+| CRR-005 | `api-e2e-test-review-report.md` | Proportional test-code review after API/E2E pass (API-REV-002) | N/A (first test review) | Pass | None |
 
 ## Revision Entries
 
@@ -90,3 +92,58 @@ None.
 - Material score or classification changes: not rescored; Runtime Correctness and API/E2E Readiness reopened
 - Recommended recipient: implementation engineer
 - Remaining risks or uncertainty: AC-008 from a second physical device only the user can do; API-16 and API-FS open with API/E2E.
+
+### CRR-004 — Targeted delta review of IR-003 (CR-003…CR-005, O-1, O-2)
+
+- Canonical review report updated: `code-review-report.md` § Implementation Review Round 4 and Latest Authoritative Result
+- Review entry point and round: Implementation Review, round 4
+- Review scope: `Targeted Delta Review`. `git diff b28e5c0864..32e9ad944c` stays in the findings' files.
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, `implementation-handoff.md` (IR-003, HEAD `32e9ad944c`)
+- Relevant solution revision IDs: SR-006
+- Relevant architecture-review revision IDs: ARCH-REV-003
+- Relevant implementation revision IDs: IR-003
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Fail, Local Fix (CRR-003)
+- Current authoritative result: Pass
+- What changed in the review result and why: each defect is fixed at its owner. Nitro `devProxy` carries upgrades; the abort-signal rule recognises only a real disconnect; the error property that Mercurius turned into a 503 is removed. Real-runtime tests now cover each seam.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-003 | Open (Local Fix) | Resolved | IR-003, `75f1b6300e` | `nuxt.config.ts` devProxy; `IR003-08` probe 4/4 |
+| CR-004 | Open (Local Fix) | Resolved | IR-003, `eae14ea940` | `graphql-request-context.ts`; unit + `search-files-through-gate.e2e` (`IR003-03`, `-05`) |
+| CR-005 | Open (Local Fix) | Resolved | IR-003, `8914f21745` | `memory-sync-held-back-graphql.e2e`, NV-03 200 (`IR003-05`, `-07`) |
+| O-1, O-2 | Open (with the fix) | Resolved | IR-003, `0c755805d3` | launcher text; `nodeDesktopClient.spec.ts` |
+
+- New or remaining finding IDs: none
+- Material score or classification changes: Runtime Correctness 9.4, API/E2E Readiness 9.3 restored
+- Recommended recipient: API/E2E engineer (informational notice to implementation engineer)
+- Remaining risks or uncertainty: AC-008 from a second physical device (user); API-16 and API-FS open with API/E2E.
+
+### CRR-005 — Proportional test-code review after API/E2E pass
+
+- Canonical review report updated: `api-e2e-test-review-report.md` (new)
+- Review entry point and round: Successful API/E2E test-code review, round 1
+- Review scope: `N/A` (test review)
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, `api-e2e-execution-coverage-report.md` (API-REV-002, Pass, 95%)
+- Relevant solution revision IDs: SR-006
+- Relevant architecture-review revision IDs: ARCH-REV-003
+- Relevant implementation revision IDs: IR-003
+- Relevant API/E2E revision IDs: API-REV-001, API-REV-002
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: N/A for test review (source review CRR-004 Pass)
+- Current authoritative result: Pass
+- What changed in the review result and why: the durable test changes are one shared credential fixture plus mechanical, consistent probe updates, two minimal baseline fixes and one launcher case. Assertions for removed APIs were deleted with reasons, and phone contexts keep their own credential.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+None (no prior test-review findings).
+
+- New or remaining finding IDs: none
+- Material score or classification changes: N/A
+- Recommended recipient: delivery engineer
+- Remaining risks or uncertainty: 7 live probes not run; FU-003, FU-004 pre-existing; AC-008 from a second device remains the user's check; the Windows launcher has not run on Windows.
