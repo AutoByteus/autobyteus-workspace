@@ -1,0 +1,10 @@
+# IR003-13 launcher-tests
+# Command: python3 -m pytest -q scripts/tests/test_public_docker_launcher_shared_workspace.py scripts/tests/test_public_docker_launcher_stop.py scripts/tests/test_public_docker_launcher_update.py scripts/tests/test_server_docker_cli_latest_defaults.py scripts/tests/test_server_docker_cli_install_failures.py
+# Environment mode: shell
+# Commit: 0c755805d3 (branch codex/node-universal-authentication-437)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-08T17:42:47Z
+
+....................ss.........................................          [100%]
+61 passed, 2 skipped in 52.78s
+# Exit status: 0

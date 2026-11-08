@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer, `design-review-report.md`, ARCH-REV-003 (pass) | N/A | `Initial Baseline` | SR-006, ARCH-REV-003 | Slice 1 "no key, no access" implemented; ready for code review |
 | IR-002 | Code Reviewer, `code-review-report.md`, CRR-001 (Fail, Local Fix) | CR-001, CR-002 | `Local Fix` | SR-006, ARCH-REV-003, CRR-001 | Peers at a gateway base path work again; contract text matches the code; back to code review |
+| IR-003 | Code Reviewer failure-origin review, `code-review-report.md` § Round 3, CRR-003 (from API-REV-001) | CR-003, CR-004, CR-005, O-1, O-2 | `Local Fix` | SR-006, ARCH-REV-003, CRR-003, API-REV-001 | `pnpm dev` WebSockets, file search, held-back Memory Sync card fixed; two wording items; back to code review |
 
 ## Revision Entries
 
@@ -50,3 +51,28 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: the new unit and e2e cases fail on the old signing (the e2e answers `PEER_NOT_PAIRED`, the reported symptom) and pass with the fix; IR002-01…06 in `implementation-handoff.md` § Checks Run.
 - Next recipient or routing: Code Reviewer (targeted delta review), then API/E2E.
 - Remaining limitations or risks: unchanged from IR-001 (UNK-006, Linux Docker, pwsh and the Windows pipe not run, web probes still use `addPeerNode`).
+
+### IR-003 — dev WebSockets (CR-003), file search abort (CR-004), held-back Memory Sync 200 (CR-005), wording (O-1, O-2)
+
+- Triggering role, report path, and round: Code Reviewer failure-origin review of API-REV-001, `tickets/in-progress/node-universal-authentication-437/code-review-report.md` § API/E2E Failure-Origin Review (Round 3), CRR-003 (Fail, Local Fix).
+- Triggering finding IDs: CR-003 (API-15), CR-004 (API-03 MSP-08), CR-005 (API-08 NVP-05), O-1, O-2
+- Classification: `Local Fix`
+- Prior authoritative result: IR-002 (CRR-002 Pass; API-REV-001 Fail)
+- Current authoritative result: the three API/E2E failures fixed at their cause; O-1 and O-2 done; task_size Large and architectural_risk High unchanged.
+- Related solution revision IDs: SR-006
+- Related architecture-review revision IDs: ARCH-REV-003
+- Related code-review revision IDs: CRR-003
+- Related API/E2E revision IDs: API-REV-001
+- Related delivery revision IDs: N/A
+- Why this baseline or implementation revision is recorded: CRR-003 traced API-REV-001's failures to this change.
+- Approved behavior or requirement IDs affected: BEH-003 (`pnpm dev`, design assumption 11), preserved file search (MSP-08), preserved autobyteus-290 Memory Sync hold-back text (NVP-05), launcher text (M-8), NA-11 wording on the node desktop viewer.
+- Implementation delta:
+  - CR-003: `autobyteus-web/nuxt.config.ts` moves the dev proxy from `vite.server.proxy` to Nitro `devProxy` (`/graphql` and `/ws` with `ws: true`, `/rest`), which Nuxt's dev server hands upgrades to; each rule targets the backend route prefix (Nitro strips the matched prefix) and adds the development credential, which stays in the dev server process (not `runtimeConfig.public`). New probe `autobyteus-web/tests/e2e/dev-proxy-websockets-probe.mjs` (`test:e2e:dev-proxy-websockets`) performs real upgrades through the dev frontend.
+  - CR-004: `src/api/graphql/graphql-request-context.ts`: the abort signal is aborted at creation only when the request aborted or the response is destroyed; a request whose body stream ended (read by a body hook) is not an abort. The peer body hooks stay as they are (they return early for non-peers).
+  - CR-005: `MemorySyncNotMigratedError` no longer has `statusCode`; the hub route and `heldBackRefusal` map it explicitly (no other reader of the property).
+  - O-1: the launcher's "Next step" text (bash and PowerShell) names connecting with a setup code.
+  - O-2: `viewerStateForClose` reads 4403 `NODE_CREDENTIAL_REVOKED` as "This desktop is not connected to this node. Connect it on the Nodes page." (en, zh-CN); other refusals keep "not allowed" (phones are revoked with their own code).
+- Changed files or areas: as above; tests `tests/unit/api/graphql/graphql-request-context.test.ts`, `tests/e2e/workspaces/search-files-through-gate.e2e.test.ts`, `tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts`, NV-03 status assertion, `utils/__tests__/nodeDesktopClient.spec.ts`. Commits `75f1b6300e`, `eae14ea940`, `8914f21745`, `0c755805d3`.
+- Local validation and result: each new check fails on the old code with the reported symptom (probe: `/ws/projects` 200 from Nuxt and `ECONNRESET`; search: `[]`; held-back query: 503) and passes now; IR003-01…13 in `implementation-handoff.md` § Checks Run.
+- Next recipient or routing: Code Reviewer (targeted review of CR-003…005), then API/E2E reruns API-15, MSP-08, NVP-05.
+- Remaining limitations or risks: unchanged (UNK-006, Linux Docker, pwsh and the Windows pipe, web probes using `addPeerNode`).

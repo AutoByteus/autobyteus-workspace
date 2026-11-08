@@ -14,15 +14,15 @@
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Rework` (IR-002 after CRR-001)
+- Implementation cycle: `Rework` (IR-003 after CRR-003 / API-REV-001; IR-002 after CRR-001)
 - Implementation revision record: `tickets/in-progress/node-universal-authentication-437/implementation-revision-record.md`
-- Current implementation revision ID: `IR-002` (baseline IR-001)
+- Current implementation revision ID: `IR-003` (baseline IR-001)
 - Related solution revision IDs: `SR-006`
 - Related architecture-review revision IDs: `ARCH-REV-003`
-- Related code-review revision IDs: `CRR-001`
-- Related API/E2E revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001`, `CRR-002` (Pass), `CRR-003`
+- Related API/E2E revision IDs: `API-REV-001`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `CR-001`, `CR-002`
+- Triggering finding IDs: IR-003: `CR-003`, `CR-004`, `CR-005`, `O-1`, `O-2`; IR-002: `CR-001`, `CR-002`
 
 Every request to a node's main port now passes one gate after the Host and Origin rules: network admission on the
 client address (M-6), exactly one credential (Bearer, the browser WebSocket `access_token` on upgrades, or the peer
@@ -57,6 +57,9 @@ token (M-5); the Docker launcher publishes on this computer and its Tailscale ad
 | REQ-011 | Every key revocable from the desktop | owner credential revoke (`DELETE /rest/node-access/owner-credentials/:id`, Disconnect, node removal), phones (as before), peers (`removePeerNode`), memory sync credentials; `open-socket-registry.ts` closes sockets | Implemented. NAS-37 e2e (owner, peer, phone) |
 | Preserved: autobyteus-290 hold-back | A peer request to a node whose identity waits for its migration answers 503 `NODE_IDENTITY_NOT_MIGRATED`; a source's credential while Memory Sync waits answers 503 `MEMORY_SYNC_NOT_MIGRATED` | `heldBackRefusal` in `node-access-refusal.ts`, used by `PeerRequestSignatureVerifier` and `MemoryHubCredentialService.verify` | Preserved; NV-02, NV-03 built-server e2e pass |
 | Preserved (IR-002, CR-001): peers at a company base-path address | A peer reached at `https://gateway.example.com/autobyteus` (a gateway that strips the base path) is accepted | `peerRequestTarget` in `peer-request-signature.ts`: the URL keeps the base path, the signature covers the node route the receiver sees; used by `PeerClient.call` and `openPeerRunObservation`; the verifier unchanged | Preserved; unit cases (signer, client, observation) and the NAS-20 e2e case through a prefix-stripping gateway; both fail without the fix |
+| IR-003 (CR-003): `pnpm dev` window WebSockets | The window's `/ws/*` and GraphQL subscription upgrades reach the backend with the development credential | `nuxt.config.ts` Nitro `devProxy` (`ws: true`) instead of `vite.server.proxy` | Fixed; `test:e2e:dev-proxy-websockets` (fails on the old config with 200 + `ECONNRESET`) |
+| IR-003 (CR-004): preserved workspace file search | `searchFiles` returns matches through the gate | `graphql-request-context.ts`: abort = request aborted or response closed early | Fixed; unit rule tests; `search-files-through-gate.e2e` (owner and phone; `[]` before) |
+| IR-003 (CR-005): preserved autobyteus-290 Memory Sync card text | Held-back settings query answers HTTP 200 with the reason | `MemorySyncNotMigratedError` without `statusCode` | Fixed; `memory-sync-held-back-graphql.e2e` (503 before); NV-03 asserts 200 |
 | Preserved: AC-102 identity mismatch | A peer address that now reaches another node is reported as identity mismatch | `peer-client.ts`: a 401 is read as unpaired only when the address still answers with the peer's node ID | Preserved; unit NAS-36 case; RC-16 two-server |
 
 - Changes stayed within the requirements doc's Scope Guardrail: `Yes`
@@ -89,7 +92,7 @@ Deviations from the design's wording, each within the design's intent (reviewer:
 8. An application backend never receives the node credential: the `authorization` header and the `access_token` query are removed before the request reaches it (NAS-18).
 9. A `/ws/*` handler's own lifecycle or connect failure closes with 1011 (it closed 4401, which now means "credential").
 10. The MCP gateway refusal body carries `code` (`NODE_NETWORK_REFUSED`, `MCP_GATEWAY_TOKEN_REQUIRED`).
-11. `pnpm dev`: the window's node is the frontend origin and the Vite proxy (HTTP, `/ws`, GraphQL subscriptions) adds the development launch credential; it never reaches `runtimeConfig.public`.
+11. `pnpm dev`: the window's node is the frontend origin and the dev server's proxy adds the development launch credential; it never reaches `runtimeConfig.public`. **IR-003 (CR-003): the proxy is Nitro `devProxy` (HTTP and WebSocket), not Vite's proxy, which never receives upgrades under Nuxt.**
 12. The persisted setup-code file of the design's data section (b) does not exist: M-2 (local control socket, codes only in memory) is authoritative.
 13. Phone pairing code refusals (invalid, expired, used) answer 401 instead of 400 (NAS-13; codes unchanged; the phone maps by code).
 14. A credential that cannot be checked while its subsystem waits for its autobyteus-290 migration is answered 503 with that subsystem's code (`heldBackRefusal`), preserving the earlier answers; a peer client reads a 401 as "not paired" only when the address still answers with the peer's node ID, otherwise "identity mismatch" (preserves AC-102).
@@ -175,6 +178,19 @@ fixes; `d20340e5c3` adds the memory-sync wording fix; `d8fbe5082a` the two fixes
 | IR002-04 | `vitest run tests/e2e/node-access` | 1e02bea41e | clean env | the gate; the new case: PeerClient through a prefix-stripping gateway at `/autobyteus` | CR-001; NAS-20 | Pass | `tickets/in-progress/node-universal-authentication-437/evidence/implementation/IR002-04-server-e2e-node-access.log` | `Tests  23 passed (23)` |
 | IR002-05 | `pnpm -C autobyteus-server-ts build` | 1e02bea41e | shell | `dist/` for the two-server suite | — | Pass | `tickets/in-progress/node-universal-authentication-437/evidence/implementation/IR002-05-server-build.log` | `Sanitized built-module/bootstrap smoke passed` |
 | IR002-06 | two-server remote collaboration e2e (as IMP-09) | 1e02bea41e | clean env | every signed request and run observation between two built nodes after CR-001 | NAS-19, 20, 21, 36; AC-006 | Pass | `tickets/in-progress/node-universal-authentication-437/evidence/implementation/IR002-06-two-server-remote-collaboration.log`, `tickets/in-progress/node-universal-authentication-437/evidence/implementation/remote-two-server-ir002/` | `Tests  41 passed (41)` |
+| IR003-01 | `tsc --noEmit -p tsconfig.build.json` | 0c755805d3 | shell | server production source | — | Pass | `tickets/in-progress/node-universal-authentication-437/evidence/implementation/IR003-01-server-typecheck-build.log` | `# Exit status: 0` |
+| IR003-02 | tests typecheck error count | 0c755805d3 | shell | server tests | — | Pass | `tickets/in-progress/node-universal-authentication-437/evidence/implementation/IR003-02-server-typecheck-tests.log` | `1182` (base count) |
+| IR003-03 | `pnpm -C autobyteus-server-ts test:unit` | 0c755805d3 | shell | all server unit, incl. the abort-signal rule | CR-004 | Pass | `tickets/in-progress/node-universal-authentication-437/evidence/implementation/IR003-03-server-unit.log` | `Test Files  963 passed | 5 skipped`; `Tests  8191 passed` |
+| IR003-04 | `pnpm -C autobyteus-server-ts test:integration` | 0c755805d3 | shell | GraphQL and REST through the studio server | CR-004, CR-005 | Pass | `tickets/in-progress/node-universal-authentication-437/evidence/implementation/IR003-04-server-integration.log` | `Test Files  89 passed | 20 skipped`; `Tests  517 passed` |
+| IR003-05 | `vitest run tests/e2e/node-access tests/e2e/workspaces …memory-sync-held-back-graphql… …memory-sync-api… tests/e2e/remote-access tests/e2e/node-desktop` | 0c755805d3 | clean env | the gate; `searchFiles` through the gate (owner and phone); held-back settings query; phone and node desktop routes | CR-004 (MSP-08), CR-005 (NVP-05) | Pass | `tickets/in-progress/node-universal-authentication-437/evidence/implementation/IR003-05-server-e2e-gate-search-memory.log` | `Test Files  11 passed (11)`; `Tests  75 passed (75)` |
+| IR003-06 | `pnpm -C autobyteus-server-ts build` | 0c755805d3 | shell | `dist/` | — | Pass | `tickets/in-progress/node-universal-authentication-437/evidence/implementation/IR003-06-server-build.log` | `# Exit status: 0` |
+| IR003-07 | node vocabulary built-server e2e (NV-03 now asserts HTTP 200) | 0c755805d3 | clean env | held-back Memory Sync on a built node | CR-005 | Pass | `tickets/in-progress/node-universal-authentication-437/evidence/implementation/IR003-07-built-server-node-vocabulary.log` | `Tests  3 passed (3)` |
+| IR003-08 | `pnpm -C autobyteus-web test:e2e:dev-proxy-websockets` (starts `run-dev.mjs`: this worktree's development stack, ports 8000/3000) | 0c755805d3 | clean env | `pnpm dev` proxy: real upgrades through the dev frontend | CR-003 (API-15) | Pass | `tickets/in-progress/node-universal-authentication-437/evidence/implementation/IR003-08-dev-proxy-websockets-probe.log` | `PASS /ws/projects … "status":101`; `connection_ack`; `econnreset":0` (on the old config: `"status":200` and `ECONNRESET`) |
+| IR003-09 | `node --test scripts/development/run-dev.test.mjs` | 0c755805d3 | shell | dev runtime | — | Pass | `tickets/in-progress/node-universal-authentication-437/evidence/implementation/IR003-09-dev-runtime-test.log` | `# pass 4` |
+| IR003-10 | `pnpm -C autobyteus-web typecheck` | 0c755805d3 | shell | web | — | Pass | `tickets/in-progress/node-universal-authentication-437/evidence/implementation/IR003-10-web-typecheck.log` | `production errors: 0; test-file errors: 96 in 41 files (baseline 96 in 41 files)` |
+| IR003-11 | `cross-env NUXT_TEST=true vitest run` (web) | 0c755805d3 | shell | web, incl. the viewer wording | O-2 | Pass | `tickets/in-progress/node-universal-authentication-437/evidence/implementation/IR003-11-web-nuxt-tests.log` | `Test Files  722 passed (722)`; `Tests  5402 passed` |
+| IR003-12 | web boundary and localization guards | 0c755805d3 | shell | new localization key | O-2 | Pass | `tickets/in-progress/node-universal-authentication-437/evidence/implementation/IR003-12-web-guards.log` | `[guard:localization-boundary] Passed.` |
+| IR003-13 | Docker launcher tests (5 files) | 0c755805d3 | shell | launcher text | O-1 | Pass | `tickets/in-progress/node-universal-authentication-437/evidence/implementation/IR003-13-launcher-tests.log` | `61 passed, 2 skipped` |
 
 - Not run, and why: the browser and Electron probes under `autobyteus-web/tests/e2e/*.mjs` (need updating for credentials and pairing; API/E2E); the Docker probe with a test-owned container (NAS-02/03/27/32…34, UNK-006); the phone shell probe (AC-005); a real second-device network check (AC-008); the PowerShell launcher at runtime (`pwsh` not installed); three built-server suites that only gained the launch credential and are not in IMP-07 (`projects/delegated-copy-project-folder`, `projects/unclean-shutdown-delegated-team-restore`, `shutdown/busy-run-stop-now` with its fixture); live-gated suites (they use `startBuiltTestServer`, which attaches the credential).
 

@@ -1,0 +1,18 @@
+# IR003-08 dev-proxy-websockets-probe
+# Command: pnpm -C autobyteus-web test:e2e:dev-proxy-websockets
+# Environment mode: clean
+# Commit: 0c755805d3 (branch codex/node-universal-authentication-437)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-08T17:37:05Z
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+> autobyteus@1.5.12-beta.8 test:e2e:dev-proxy-websockets /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web
+> node tests/e2e/dev-proxy-websockets-probe.mjs
+
+PASS /ws/projects upgrades through the dev frontend and stays open {"opened":true,"status":101,"close":null,"messages":["{\"type\":\"connected\"}"]}
+PASS /graphql subscription socket is acknowledged through the dev frontend {"opened":true,"status":101,"close":null,"messages":["{\"type\":\"connection_ack\"}"]}
+PASS HTTP GraphQL answers through the dev frontend {"status":200,"body":{"data":{"__typename":"Query"}}}
+PASS the dev server did not reset on the upgrades {"econnreset":0}
+{"passed":4,"failed":0}
+# Exit status: 0

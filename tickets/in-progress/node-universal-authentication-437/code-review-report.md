@@ -12,17 +12,17 @@
 - Design Review Report Reviewed As Context: `design-review-report.md` (ARCH-REV-003, Pass)
 - Architecture Review Revision Record Reviewed As Context: `architecture-review-revision-record.md`
 - Relevant Architecture Review Revision IDs: ARCH-REV-003
-- Implementation Handoff Reviewed As Context: `implementation-handoff.md` (IR-001, 18 declared assumptions)
+- Implementation Handoff Reviewed As Context: `implementation-handoff.md` (IR-002; IR-001 with 18 declared assumptions)
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001
+- Relevant Implementation Revision IDs: IR-001, IR-002
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: `1`
-- Review Scope: `Full Review`
-- Review Scope Evidence (round >1): N/A
-- Trigger: implementation engineer handoff, IR-001, branch `codex/node-universal-authentication-437` @ `60d0b0d859`, base `b690a5dfdb`
-- Prior Review Round Reviewed: N/A
-- Latest Authoritative Round: 1
+- Current Code Review Revision ID: `CRR-002`
+- Current Review Round: `2`
+- Review Scope: `Targeted Delta Review` (round 2); round 1 was `Full Review`
+- Review Scope Evidence (round >1): `git diff 60d0b0d859..b6a57ab154` touches only `peer-request-signature.ts` (+13, new `peerRequestTarget`), `peer-client.ts` and `peer-run-observation-client.ts` (call sites), the contract and CM-12 text, and four test files: exactly the files and behavior of CR-001 and CR-002. No shared interface, data shape or other spine changed.
+- Trigger: round 1 implementation engineer handoff IR-001 @ `60d0b0d859`; round 2 Local Fix IR-002 @ `b6a57ab154` (fix `dfa41de41c`, docs `1e02bea41e`); base `b690a5dfdb`
+- Prior Review Round Reviewed: 1 (CRR-001, Fail)
+- Latest Authoritative Round: 2
 - Coverage Investigation / Execution Coverage / API/E2E revision record / Delivery: N/A
 - Failing Scenario IDs / commands / evidence: N/A
 
@@ -54,7 +54,7 @@
 | BEH-001 (DS-001) | Confirmed | `node-access-plugin.ts:50-67` origin rule → `NodeAccessGate.decide` (`node-access-gate.ts:43-76`: admission → `routeAccessFor` on the matched route pattern → `NodeCredentialResolver.identify` (exactly one form, `node-credential-resolver.ts:38-59`) → permitted kinds); refusal answered before any handler (`request-refusal.ts:34-46`); deny by default (`node-route-permissions.ts:74-91`) | — |
 | BEH-002 (DS-001, DS-006, DS-007) | Confirmed | `network-admission.ts:74-92` (loopback, Tailscale client on a local Tailscale address, allowed local subnets, configured CIDRs, container); snapshot refresh 30 s / on owner change / on refusal ≤ 1/5 s, fail closed (`:94-110`); launcher `container-config.sh` `publish_addresses` | — |
 | BEH-003 (DS-002, DS-003) | Confirmed | `baseServerManager.ts` creates the credential per start into the spawn env only; `launch-credential-intake.ts` first import of `app.ts` deletes it; `OwnerCredentialService.verify`; setup codes in memory (`setup-code-service.ts`), local control socket 0600 in 0700 folder; Electron `NodeConnectService.connect` → `NodeCredentialStore` (safeStorage, 0600) → `NodeCredentialAttacher` on `session.defaultSession` | — |
-| BEH-004 (DS-004, DS-005) | Confirmed, with defect CR-001 | invite → `PeerPairingService.acceptInvite` → exchange → `savePairedPeer` both sides; `signPeerRequest` in `PeerClient.call` and `openPeerRunObservation`; `PeerRequestSignatureVerifier.verify` (receiver, window, start time, nonce); body hash `preParsing`/`preValidation`; `PeerGateway.admit` checks `fromNodeId === caller.nodeId` | CR-001: a peer whose address carries a deployment base path is refused on every signed request |
+| BEH-004 (DS-004, DS-005) | Confirmed (CR-001 resolved in round 2: `peerRequestTarget` signs the node route) | invite → `PeerPairingService.acceptInvite` → exchange → `savePairedPeer` both sides; `signPeerRequest` in `PeerClient.call` and `openPeerRunObservation`; `PeerRequestSignatureVerifier.verify` (receiver, window, start time, nonce); body hash `preParsing`/`preValidation`; `PeerGateway.admit` checks `fromNodeId === caller.nodeId` | CR-001: a peer whose address carries a deployment base path is refused on every signed request |
 | BEH-005 | Confirmed | `PhoneCredentialVerifier` over the in-memory `PairedDeviceService`; revocation and Phone Access off published to the gate | — |
 | BEH-006 | Confirmed | attacher on `onBeforeSendHeaders` for HTTP and WS, by origin; other partitions untouched | — |
 | BEH-007 | Confirmed | `McpGatewayAccessGate.validateRequest` (admission then token, no loopback trust); `MemoryHubCredentialService.verify` as the `mhub_` kind; routes read the gate's identity | — |
@@ -91,7 +91,7 @@
 | Check | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
 | Task design health assessment present and preserved | Pass | Handoff § Task Design Health; trusted-network classes replaced by client-kind permissions; peer identity moved into the gate | — |
-| Implementation matches approved behavior-defining supplemental artifacts | Fail | CR-001 (NA-9 peers at base-path addresses), CR-002 (contract §1 / NA-7 wording vs code) | Fix CR-001, CR-002 |
+| Implementation matches approved behavior-defining supplemental artifacts | Pass | Round 2: CR-001 fixed (signed path = node route, NA-9 states it); CR-002 fixed (contract §1, NA-7 match the code) | — |
 | Data-flow spine inventory clarity and preservation | Pass | DS-001…DS-007 map one-to-one onto `NodeAccessGate`, `NodeConnectService`, `PeerPairingService`, signer/verifier, `NetworkAdmission` | — |
 | Ownership boundary preservation and clarity | Pass | Gate is the only decision point; areas own verifiers and publish revocations; Electron main owns credentials | — |
 | Off-spine concern clarity | Pass | Refusal logging (`request-refusal.ts`), replay cache in the verifier, last-seen throttles in each verifier, open-socket registry | — |
@@ -106,14 +106,14 @@
 | File placement | Pass | `node-access/{domain,services,stores}`, `api/security`, `electron/nodeAccess` match the design mapping | — |
 | Flat-vs-over-split layout | Pass | Readable; no artificial layers | — |
 | Interface/API boundary clarity | Pass | Setup exchange/codes/owner credentials, invite/accept/exchange, preload `nodeAccess` match the design's Interface Boundary Mapping (assumption 4 shape accepted) | — |
-| Naming quality; one vocabulary (Principle 15) | Fail | CR-002: the memory sync source identity is `credentialId` in code and GLOSSARY, "source ID" in the contract §1 | Fix CR-002 |
+| Naming quality; one vocabulary (Principle 15) | Pass | Round 2: contract §1 now says credential ID, as code and GLOSSARY do | — |
 | No unjustified duplication | Pass | Old per-area hashing/compare helpers removed in favor of `credential-secret.ts` | — |
 | Patch-on-patch complexity control | Pass | Late fixes (`d20340e5c3`, `d8fbe5082a`) are local and owned (parser wording, row cell, file mode) | — |
 | Dead code removed in touched files | Pass | Route policy, WS auth helper, auth service, close-codes, memory-hub-auth, `addPeerNode`, address-resolution queries, node-desktop re-check, `resolveAhead`/`useAddress` removed | — |
-| Test scenarios and assertions requirement-aligned | Pass | NAS-named e2e suite; architecture test checks gating, phone routes, gate imports and NAS naming | Add a base-path peer case with CR-001 |
+| Test scenarios and assertions requirement-aligned | Pass | NAS-named e2e suite; architecture test checks gating, phone routes, gate imports and NAS naming; round 2 adds NAS-20 base-path cases (unit signer/verifier, client POST, observation upgrade; e2e through a prefix-stripping gateway) | — |
 | Test fixtures/helpers reusable, structure coherent | Pass | `node-access-test-gate.ts`, `built-server-launch-credential.ts`, `pair-nodes.ts`, `owner-credential-attachment.mjs` | — |
 | No stale or compatibility-only tests retained | Pass | `route-policy.test.ts`, WS-auth tests removed with their code | — |
-| API/E2E readiness | Fail | CR-001 would make the API/E2E peer validation pass while a documented address form is broken | Fix CR-001 first |
+| API/E2E readiness | Pass | CR-001 fixed and covered; remaining probes listed in the handoff | — |
 
 ## Source File Size And Structure Audit
 
@@ -172,31 +172,35 @@ None reclassified.
 
 ## Review Scorecard (Mandatory)
 
-- Overall score: `9.2/10` (simple average; not the decision rule)
+- Overall score: `9.45/10` (simple average; not the decision rule). Round 2 rescored the categories CR-001/CR-002 held down; the others carry forward from round 1 (unaffected by the delta).
 
 | Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | --- | --- | --- | --- |
 | 1 | Data-Flow Spine Inventory and Clarity | 9.5 | DS-001…DS-007 are visible in code in call order with one owner each | — | — |
 | 2 | Ownership Clarity and Boundary Encapsulation | 9.5 | Gate is the sole decision point; areas own verifiers and revocations; Electron main owns credentials; architecture test enforces it | — | — |
-| 3 | API / Interface / Query / Command Clarity | 9.3 | Explicit subject-owned REST, GraphQL and IPC boundaries | Signed-path contract is ambiguous for base-path addresses (CR-001) | State and implement the signed path as node-relative |
-| 4 | Separation of Concerns and File Placement | 9.4 | One concern per file; composition split out | `build-studio-server.ts` sits at exactly 500 lines | Next wiring goes into its own composition file |
+| 3 | API / Interface / Query / Command Clarity | 9.4 | Explicit subject-owned REST, GraphQL and IPC boundaries; the signed path is now one stated rule (`peerRequestTarget`, NA-9) | — | — |
+| 4 | Separation of Concerns and File Placement | 9.4 | One concern per file; composition split out; the target helper sits with the signer it serves | `build-studio-server.ts` sits at exactly 500 lines | Next wiring goes into its own composition file |
 | 5 | Shared-Structure / Data-Model Tightness | 9.4 | `ClientIdentity` union, `StoredPeer`/`PeerNode` split, one refusal shape | — | — |
-| 6 | Naming Quality and Local Readability | 9.0 | Clear names; comments cite the contract rule | CR-002: "source ID" vs `credentialId` across contract and glossary; NA-7 text vs code | Align the contract text |
-| 7 | API/E2E Readiness | 9.0 | Strong NAS-named suites and harnesses | CR-001 untested path would pass API/E2E | Fix and add a base-path peer test first |
-| 8 | Runtime Correctness And Behavioral Fidelity | 8.6 | Gate, admission, credentials, revocation, body integrity, hold-back answers verified in code | CR-001 breaks preserved collaboration at a documented address form | Fix CR-001 |
-| 9 | No Backward-Compatibility / No Legacy Retention | 9.6 | Clean cut; no grace period, no loopback trust | — | — |
+| 6 | Naming Quality and Local Readability | 9.4 | Contract, glossary and code use one name for each identity; NA-7 states the implemented permissions | — | — |
+| 7 | API/E2E Readiness | 9.3 | NAS-named suites incl. the base-path cases; IR002 checks pass | Browser/Electron probes still to update (handoff) | API/E2E work |
+| 8 | Runtime Correctness And Behavioral Fidelity | 9.4 | Gate, admission, credentials, revocation, body integrity, hold-back answers verified; peers at base-path addresses sign the route the receiver sees (unit + e2e through a stripping gateway) | Docker/Windows/real-network paths unmeasured (residual risks) | API/E2E probes |
+| 9 | No Backward-Compatibility / No Legacy Retention | 9.6 | Clean cut; no grace period, no loopback trust; no dual signed-path acceptance | — | — |
 | 10 | Cleanup Completeness | 9.5 | Removal plan fully executed, plus address-resolution queries and dead UI paths | — | — |
 
 ## Findings
 
-### CR-001 — Peer signature covers the deployment base path; peers behind a base-path address are refused (Local Fix, implementation)
+### CR-001 — Peer signature covers the deployment base path; peers behind a base-path address are refused (Local Fix, implementation) — **Resolved (round 2)**
+
+- Resolution: `peerRequestTarget(baseUrl, routePath)` (`peer-request-signature.ts`) returns the URL (base path kept) and the signed path (node route + query, base path removed); `PeerClient.call` and `openPeerRunObservation` both use it; the verifier is unchanged (received `request.url`); no dual acceptance. Tests: `peer-request-signature.test.ts`, `peer-client.test.ts`, `peer-run-views-client.test.ts` (NAS-20 base-path cases), e2e `node-access-model.e2e.test.ts` "NAS-20 a peer behind a gateway at a base path" through a prefix-stripping gateway. Evidence: `evidence/implementation/IR002-03…06` (206 unit, 23 NAS e2e, 41 two-server, all pass). NA-9 and CM-12 name the node route.
 
 - Basis: C-01, CR-P1; REQ-006, preserved BEH-004, NA-9.
 - Where: `autobyteus-server-ts/src/remote-collaboration/channel/peer-client.ts:408-415` (`pathWithQuery: \`${url.pathname}${url.search}\``) and `peer-run-observation-client.ts` (the same for the upgrade); verifier `peer-request-signature.ts:139` uses the receiver's `request.url`.
 - Consequence: a peer at `https://gateway.example.com/autobyteus` (documented "Company address" form, first in the node's own address candidates) is refused 401 on every request and run observation; the UI shows "Pair again", which cannot fix it.
 - Required action: sign the path the receiving node sees, which is the node-relative route path with query (the `path` argument / `REMOTE_RUN_OBSERVATIONS_PATH`, plus any query), not the full URL pathname. One rule on both sides, no fallback that accepts either form. Add a unit test (signer + verifier with a base-path `peer.baseUrl`) and, if cheap, a two-server or single-node e2e case through a prefix-stripping proxy. Update NA-9 / CM-12 wording if it names "path with query" in a way that could be read as the full URL path.
 
-### CR-002 — Contract text disagrees with the implemented identity and permission rules (Local Fix, implementation; docs)
+### CR-002 — Contract text disagrees with the implemented identity and permission rules (Local Fix, implementation; docs) — **Resolved (round 2)**
+
+- Resolution: `node_access_model.md` §1 names the memory sync source by its credential ID; NA-7 states owners reach every endpoint except the peer and memory sync hub routes, and phones what owners reach except owner actions (`1e02bea41e`). The handoff's assumptions 1–2 point the Solution Designer to the change.
 
 - Basis: C-02; Principle 15; the contract is the project's authority for later designs and reviews.
 - Where: `autobyteus-server-ts/docs/design/node_access_model.md:43-45` ("memory sync source (source ID)") vs code `client-identity.ts:13` and `GLOSSARY.md:55-57` (`credentialId`); `node_access_model.md:77` NA-7 "Owner: every endpoint" vs `node-route-permissions.ts:84-85` (owners refused on `/rest/remote/*` and `/rest/memory-sync/*`).
@@ -213,11 +217,11 @@ Reviewed and accepted as within the design's intent: 3 (pipe name per data folde
 
 ## Classification
 
-- `Local Fix` (implementation-owned): CR-001 (source + tests), CR-002 (contract text).
+- Round 2: none (Pass). Round 1 was `Local Fix` (implementation) for CR-001 and CR-002, both resolved.
 
 ## Recommended Recipient
 
-- Implementation engineer (`Local Fix`), per `get_handoff_rules`. After the fix: source review again (targeted delta), then API/E2E.
+- API/E2E engineer (implementation review pass), per `get_handoff_rules`; informational notice to the implementation engineer.
 
 ## Residual Risks
 
@@ -226,13 +230,75 @@ Reviewed and accepted as within the design's intent: 3 (pipe name per data folde
 - `build-studio-server.ts` is at exactly 500 lines.
 - The browser/Electron probes under `autobyteus-web/tests/e2e/*.mjs` still use the removed `addPeerNode` and no credential (handoff § Still Required): API/E2E must update them.
 
+## API/E2E Failure-Origin Review (Round 3, CRR-003)
+
+### Review Meta
+
+- Review Entry Point: `API/E2E Failure-Origin Review`
+- Trigger: API/E2E engineer, API-REV-001 (Fail), validated commit `b6a57ab154`; reports and evidence `b28e5c0864`; test-code changes `960cfc0661` (no source change since `b6a57ab154`: `git diff --stat b6a57ab154..HEAD -- autobyteus-server-ts/src autobyteus-web/nuxt.config.ts` is empty)
+- Coverage Investigation Reviewed: `api-e2e-coverage-investigation.md`
+- Execution Coverage Report Reviewed: `api-e2e-execution-coverage-report.md` (§ Failures, Observations)
+- API/E2E Revision Record Reviewed: `api-e2e-revision-record.md`; Relevant API/E2E Revision IDs: API-REV-001
+- Failing Scenario IDs: API-15 (RU-02, `pnpm dev` window WebSockets), API-03 MSP-08 (workspace file search; AC-003 "files", AC-005), API-08 NVP-05 (held-back Memory Sync card; preserved autobyteus-290 REQ-913)
+- Exact Failing Commands: `node scripts/development/run-dev.mjs` + raw upgrades (`API-15-upgrade-repro.log`); `API-03-MSP-08-search-check.mjs` (branch vs base `b690a5dfdb` vs released image); node-vocabulary probe NVP-05 (`API-08-NVP-05-cause.txt`)
+- Failure Evidence Paths: `evidence/api-e2e/API-15-pnpm-dev/*`, `evidence/api-e2e/API-03-MSP-08-cause.txt`, `API-03-mobile-shell/MSP-08-files-search.png`, `evidence/api-e2e/API-08-NVP-05-cause.txt`, `API-08-node-vocabulary/server-alpha.log`
+- Review Scope: `N/A` (failure-origin round; no full re-audit)
+
+### Scenario Basis
+
+| Failure | Scenario still approved? | Independent trigger | Production path | Validity |
+| --- | --- | --- | --- | --- |
+| F-1 | Yes: handoff assumption 11, design § Guidance ("dev WebSockets go through the Vite proxy with the header"), QR-003 (no internal caller breaks) | Developer runs `pnpm dev` and uses the window | window WS → frontend origin `:3000` → Nuxt dev server | Supported Normal Scenario (development workflow) |
+| F-2 | Yes: preserved Files search (BEH-003/005 "Preserved: everything the desktop/phone does"; AC-003, AC-005) | Owner or phone searches workspace files | GraphQL `searchFiles` → `createGraphqlRequestContext` → `createRequestAbortSignal` → `fileExplorer.searchFiles(query, signal)` | Supported Normal Scenario |
+| F-3 | Yes: preserved autobyteus-290 hold-back text (REQ-913; handoff "Preserved: autobyteus-290 hold-back") | Owner opens Memory Sync settings while Memory Sync waits for its migration | settings GraphQL resolver throws `MemorySyncNotMigratedError` → Mercurius maps `originalError.statusCode` to HTTP 503 → the web client shows the transport error | Supported Explicit Edge Scenario (preserved contract) |
+
+### Origin Findings
+
+#### CR-003 — `pnpm dev`: WebSocket upgrades never reach the Vite proxy (Local Fix, implementation)
+
+- Origin: implementation defect (this change). `autobyteus-web/nuxt.config.ts` points every window WebSocket at the frontend origin (`development-runtime.mjs` `BACKEND_*_WS_ENDPOINT` = frontend URL) and relies on `vite.server.proxy` `ws: true`. Under Nuxt 3.21 Vite runs in middleware mode inside Nuxt's dev server, which does not hand HTTP `upgrade` events to Vite's proxy; the upgrade is answered `200` by Nuxt (`API-15-upgrade-repro.log`), and the dev server restarts on `ECONNRESET`. Before this change the window opened WebSockets directly on the backend. HTTP through the proxy works (200).
+- Confirmed: the config and the runtime evidence agree; IMP-15 checked only the generated environment, not an upgrade.
+- Required action: make the development proxy carry WebSocket upgrades (`/ws/*` and `/graphql` subscriptions) with the development credential in the request headers, using a mechanism Nuxt's dev server actually routes upgrades through (for example Nitro `devProxy` with `ws`, or an `upgrade` handler on Nuxt's dev server in a dev-only hook). Keep the credential out of page code and `runtimeConfig.public` (NA-8; assumption 11). Add a check that performs a real upgrade through the dev frontend (the API-15 repro is the shape), not only a config assertion.
+- Review gap: partial. The source review read this config diff; that Nuxt's dev server does not route upgrades to `vite.server.proxy` was detectable with Nuxt-specific knowledge but was not caught.
+
+#### CR-004 — Async `preValidation` hook makes every GraphQL request's abort signal abort at creation; `searchFiles` returns nothing (Local Fix, implementation)
+
+- Origin: implementation change (this ticket) exposing a latent defect in an unchanged helper. `node-access-plugin.ts:86-92` registers an async `preValidation` hook on every request (it returns at once for non-peers). The extra asynchronous step lets Node's `IncomingMessage` finish its normal lifecycle (body read, `autoDestroy`) before Mercurius builds the context, so `createRequestAbortSignal` (`graphql-request-context.ts`) sees `request.raw.destroyed === true` and aborts immediately. That check treats a request whose body was simply consumed as a client disconnect. `searchFiles` is the only consumer (`graphql/types/file-explorer.ts:77`), so every search returns `[]` with "Search aborted".
+- Confirmed: evidence isolates it (base and released image return `["src/app.ts"]`; this branch `[]`; instrumentation `reqDestroyed=true readableEnded=true`; `preValidation` off → works, `preParsing` off → still fails).
+- Required action:
+  - Fix the abort-signal rule at its owner: a GraphQL request is aborted when the client goes away (`request.raw.aborted`, or the response closes before it finishes). It is not aborted because the request stream was destroyed after its body was fully read.
+  - Body integrity stays as designed (M-7). Optionally scope the peer body hooks to the peer routes, so non-peer requests take no extra async step; that is not required.
+  - Add a regression test: `searchFiles` through the real gate returns a match, or a context test with the plugin registered. This interaction escaped every existing check.
+- Review gap: not reasonably detectable in source review. The interaction between a new no-op async hook and an unchanged `destroyed` check in another file only shows at runtime.
+
+#### CR-005 — `statusCode = 503` on `MemorySyncNotMigratedError` turns the held-back settings answer into an HTTP 503 (Local Fix, implementation)
+
+- Origin: implementation change (`9765d0dad8`, `memory-sync-capability.ts`: `readonly statusCode = 503`). Mercurius 16 uses a single error's `originalError.statusCode` as the HTTP status when there is no data (`lib/errors.js:70-74`). The settings query therefore answers 503, and the web client shows "Response not successful: Received status code 503" instead of the preserved text "Memory Sync is waiting for its data migration." (autobyteus-290 REQ-913). The class's own doc comment still says the settings GraphQL "fail with its text".
+- Confirmed: server log `statusCode: 503` on `POST /graphql` (`API-08-NVP-05-cause.txt`). The REST hub route maps the error to 503 explicitly (`api/rest/memory-sync.ts:13-15`) and the gate maps it through `heldBackRefusal`, so neither needs the property.
+- Required action: remove the `statusCode` property, or otherwise keep it from reaching Mercurius. Confirm nothing else relied on it (the REST and gate paths map the error explicitly). Add a test that the held-back settings query answers HTTP 200 with the error text.
+- Review gap: partial. The one-line addition was in the reviewed diff; its effect depends on Mercurius's status mapping, which the review did not check.
+
+### Observations From API/E2E
+
+| ID | Decision | Reason |
+| --- | --- | --- |
+| O-1 Launcher prints "open that node over your trusted private network" after `new-container` (`docker-runtime.sh:254`) | This ticket; include in the same Local Fix | The change made the text wrong: a node is now published on this computer and Tailscale and needs a setup code. The launcher already prints the setup code, so this is a wording update in the same launcher (bash and PowerShell). |
+| O-2 After Disconnect the node desktop viewer says "not allowed" instead of that the node needs connecting | This ticket; include in the same Local Fix | A consequence of the new revocation close (4403 `NODE_CREDENTIAL_REVOKED`). The viewer should word that code, or point to Nodes / "Needs connecting" (NA-13: a client words the codes it knows). |
+| O-3 Pairing exchange numbers a taken name ("Embedded Node 2") | Accepted; no action | It follows the Nodes page naming rule that the plan already applies and shows ("gets a number"). The probe reached it only by a name taken between plan and run (NP-07, a race the probe constructs), which is not a supported workflow of its own (Principle 6). The end state is valid. |
+
+### Classification And Routing
+
+- Classification: `Local Fix`, owner implementation engineer (CR-003, CR-004, CR-005; with O-1, O-2).
+- After the fix: targeted source review (CR-003…005), then API/E2E reruns API-15, API-03 MSP-08 and API-08 NVP-05 and its open API-16 / API-FS items, then the proportional test-code review of `960cfc0661` and later test changes.
+- The test-code changes in `960cfc0661` are not reviewed in this round. They are reviewed in the post-pass proportional test review.
+
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
-- Review Entry Point: `Implementation Review`
-- Supported Product Scenario Gate: `Pass`
-- Material-Premise Gate: `Pass` (CR-P1 reachable and supported)
-- Score Summary: 9.2/10 average; Runtime Correctness 8.6, Naming 9.0, API/E2E Readiness 9.0 below the 9.2 bar
-- Failure Origin: implementation (CR-001 local defect; CR-002 doc wording)
+- Review Decision: `Fail` (failure-origin review, round 3, CRR-003). The implementation review of round 2 (CRR-002, Pass) stands for everything outside CR-003…005.
+- Review Entry Point: `API/E2E Failure-Origin Review`
+- Supported Product Scenario Gate: `Pass` (all three failing scenarios remain approved behavior)
+- Material-Premise Gate: `Pass`
+- Score Summary: not rescored (failure-origin round). Runtime Correctness and API/E2E Readiness are reopened by CR-003…005.
+- Failure Origin: implementation (CR-003 dev proxy; CR-004 async hook × abort signal; CR-005 error status). Review gaps: CR-003 and CR-005 partial; CR-004 not reasonably detectable.
 - Recommended Recipient: implementation engineer
-- Notes: the security core (gate order, deny by default, one credential form, admission, setup codes, launch credential intake, body integrity, revocation) is sound. Two bounded fixes, then targeted delta review.
+- Notes: API/E2E's root-cause evidence is sound for all three.

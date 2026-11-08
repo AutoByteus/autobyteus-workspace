@@ -84,6 +84,21 @@ case "${1:-all}" in
     run_check IR002-05 server-build shell pnpm -C $S build
     run_check IR002-06 two-server-remote-collaboration clean env RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND="$ROOT/$S/tests/fixtures/agy-failure-cli.mjs" REMOTE_E2E_EVIDENCE_DIR="$EVIDENCE/remote-two-server-ir002" pnpm -C $S exec vitest run tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts --no-watch
     ;;
+  ir003)
+    run_check IR003-01 server-typecheck-build shell pnpm -C $S exec tsc --noEmit -p tsconfig.build.json
+    run_check IR003-02 server-typecheck-tests shell bash -c "pnpm -C $S exec tsc --noEmit -p tsconfig.tests.json | grep -c 'error TS'"
+    run_check IR003-03 server-unit shell pnpm -C $S test:unit
+    run_check IR003-04 server-integration shell pnpm -C $S test:integration
+    run_check IR003-05 server-e2e-gate-search-memory clean pnpm -C $S exec vitest run tests/e2e/node-access tests/e2e/workspaces tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts tests/e2e/memory-sync/memory-sync-api.e2e.test.ts tests/e2e/remote-access tests/e2e/node-desktop --no-watch
+    run_check IR003-06 server-build shell pnpm -C $S build
+    run_check IR003-07 built-server-node-vocabulary clean pnpm -C $S exec vitest run tests/e2e/app-data-migrations/node-vocabulary-stored-names-startup.e2e.test.ts --no-watch
+    run_check IR003-08 dev-proxy-websockets-probe clean pnpm -C $W test:e2e:dev-proxy-websockets
+    run_check IR003-09 dev-runtime-test shell node --test scripts/development/run-dev.test.mjs
+    run_check IR003-10 web-typecheck shell pnpm -C $W typecheck
+    run_check IR003-11 web-nuxt-tests shell pnpm -C $W exec cross-env NUXT_TEST=true vitest run
+    run_check IR003-12 web-guards shell bash -c "pnpm -C $W guard:web-boundary && pnpm -C $W guard:localization-boundary"
+    run_check IR003-13 launcher-tests shell python3 -m pytest -q scripts/tests/test_public_docker_launcher_shared_workspace.py scripts/tests/test_public_docker_launcher_stop.py scripts/tests/test_public_docker_launcher_update.py scripts/tests/test_server_docker_cli_latest_defaults.py scripts/tests/test_server_docker_cli_install_failures.py
+    ;;
   two-server)
     local_dir="$EVIDENCE/remote-two-server"
     run_check IMP-09 two-server-remote-collaboration clean env RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND="$ROOT/$S/tests/fixtures/agy-failure-cli.mjs" REMOTE_E2E_EVIDENCE_DIR="$local_dir" pnpm -C $S exec vitest run tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts --no-watch

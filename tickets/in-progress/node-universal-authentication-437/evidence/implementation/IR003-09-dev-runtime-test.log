@@ -1,0 +1,42 @@
+# IR003-09 dev-runtime-test
+# Command: node --test scripts/development/run-dev.test.mjs
+# Environment mode: shell
+# Commit: 0c755805d3 (branch codex/node-universal-authentication-437)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-08T17:37:24Z
+
+TAP version 13
+# Subtest: development template accepts exactly the approved credential-free schema
+ok 1 - development template accepts exactly the approved credential-free schema
+  ---
+  duration_ms: 0.939375
+  type: 'test'
+  ...
+# Subtest: materialization owns the fixed development data paths and routing keys
+ok 2 - materialization owns the fixed development data paths and routing keys
+  ---
+  duration_ms: 15.553125
+  type: 'test'
+  ...
+# Subtest: runtime materialization retains non-launcher settings while replacing owned assignments
+ok 3 - runtime materialization retains non-launcher settings while replacing owned assignments
+  ---
+  duration_ms: 0.250708
+  type: 'test'
+  ...
+# Subtest: occupied fixed ports are rejected before stack startup
+ok 4 - occupied fixed ports are rejected before stack startup
+  ---
+  duration_ms: 6.325375
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 76.079625
+# Exit status: 0
