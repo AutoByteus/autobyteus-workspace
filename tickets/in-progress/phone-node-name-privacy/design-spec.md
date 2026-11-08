@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-005` (SR-002 design; SR-003 hid the page under an overlay (CRR-001 F-001); SR-004 moved the load-outcome reset (IR-002); SR-005 replaces the callback-based load outcome with the page's own ready signal (CRR-002 F-002))
+- Current solution revision ID: `SR-006` (SR-002 design; SR-003 hid the page under an overlay; SR-004 moved the load-outcome reset; SR-005 the page's ready signal; SR-006 integrates autobyteus-432's desktop full screen on the refreshed base, delivery DR-001)
 - Approved requirements baseline / revision, who approved, and approval reference: `requirements-doc.md` at `SR-005` (REQ-006, AC-007, DEC-009 at SR-003; REQ-006, AC-007, DEC-010 at SR-005; the rest as at `SR-001`), approved by the Solution Designer within the direction (user informed in the Solution Designer's conversation, 2026-11-08); the user's own decision is the Task comment of 2026-11-08 (no address, no Details action, plain-language messages).
 - Behavior-defining supplements and their approval references: None
 - User approval of the design, when the direction requires it: `Not required`
@@ -10,6 +10,34 @@
 - Canonical investigation-notes path: `/Users/normy/autobyteus_org/autobyteus-worktrees/phone-node-name-privacy/tickets/in-progress/phone-node-name-privacy/investigation-notes.md`
 - Authorities read (2026-11-08): `references/architecture-design.md`, `references/design-principles.md`, `references/project-documents.md`; project `DESIGN.md` (root; rules 9, 10, 11 apply), `GLOSSARY.md` (Nodes: *Entry*), `docs/design-cases.md` (phone cases of autobyteus-426/427), `autobyteus-web/AGENTS.md`. No closer `DESIGN*.md` exists for `autobyteus-android` or `autobyteus-web`.
 - Project design-principle conflicts or discrepancies: None. Rule 9 (one release, no mixed-version design) shaped the requirements: the bridge reply changes as a clean cut and no mixed APK/page behavior is promised.
+
+## SR-006 Integration With autobyteus-432 (Desktop Full Screen)
+
+Trigger: delivery DR-001 (`release-deployment-report.md`, `delivery-revision-record.md`) found that `origin/personal` moved to `b690a5dfdb`, which carries autobyteus-432 (`tickets/done/phone-viewer-landscape-fullscreen/design-spec.md`, rule D-2, owner `MainActivity`). D-2: `DesktopFullScreenController` resets (off) on every main-frame `onPageStarted`, on every screen other than the plain open page (`showScreen`, including the page with a diagnostic), and when the web host is destroyed. `showPage()` alone keeps it (`pageShown()` darkens the new root). The bridge message `desktopFullScreen(on)` calls `setOn(on)` at once (`MainActivity.kt:222` on the base). This ticket's SR-005 removed `AutoByteusWebView`'s `onPageStarted` (dead on the old base) and renders every overlay through `showPage()`.
+
+Decisions (DEC-011; both features' rules kept, each event with one job):
+
+1. **New main-frame document → reset.** `AutoByteusWebView` keeps an `onPageStarted: () -> Unit` callback, used only for 432's reset (`desktopFullScreen` off, and the document's full-screen request cleared, item 3). It is not dead on the merged base. It decides nothing about visibility: only `pageReady` shows the page or clears its overlay (DS-006 unchanged). The removal row for `onPageStarted` in the Removal Plan applies to the old base only; on the merged base the callback stays for this one purpose. `onPageFinished` and `MainFrameLoadOutcome` stay removed.
+2. **The page with an overlay is not the plain page.** `showPage()` with `pageState.overlay` set renders through 432's `showScreen` path, so full screen resets and `pageShown()` is not called. `showPage()` with no overlay is the plain page: the only path that may have full screen on. One method decides the two branches.
+3. **The page's full-screen request is remembered and applied only on the plain page.** `MainActivity` keeps `documentWantsFullScreen` (set by the bridge's `desktopFullScreen(on)`; cleared by item 1 and when the web host is destroyed). The controller is `setOn(documentWantsFullScreen)` only when the plain page is shown, or when the request arrives while the plain page is on screen. On any other screen, or with an overlay up, the request is remembered and the controller stays off. `pageShown()` then darkens the new root as today.
+   - Why: a page reopened at `full=1` sends its request from `MobileNodeDesktop`'s immediate watcher during setup. That is before `MobileRemoteAccessShell`'s `onMounted` sends `pageReady`, so before the page is shown. Applying it at once would put landscape and hidden bars under "Connected to …" or under an overlay, breaking D-2. Ignoring it would lose it.
+   - Visible difference from 432 as merged: the phone turns to landscape when the page appears, not while "Connected to …" is still showing; returning to a page whose document still asks for full screen turns it back on.
+4. **`desktopFullScreen(on)` while an overlay is up:** remembered (item 3), not applied. `off` is applied at once in every state (it is the reset state).
+
+Premise to confirm (API/E2E, cheap): the bridge message from the new document arrives after `onPageStarted` (432 relied on the same order). If it does not, item 1 would erase a fresh request; return a Design Impact.
+
+Merge guidance for implementation (all five conflicts):
+- `ShellBridge.kt` KDoc and `shellBridge.ts` header: keep both features.
+- The probe's route handler: keep both (this ticket's closed-context fix, 432's `runIds`).
+- `docs/design-cases.md`: renumber this ticket's case to **Case 19** (432 added Case 18).
+- `MainActivity.kt`: implement items 1–4 on 432's `showScreen` / `DesktopFullScreenController`, with `pageState` (SR-005) for the overlay.
+- Tests green: `OpenPageStateTest`, `ShellBridgeMessagesTest`, `DesktopFullScreenControllerTest`, `DesktopFullScreenWindowTest` and the instrumented smoke test.
+- If the full-screen decision (items 2–4) is extracted as a pure rule, add JVM cases: request before `pageReady` (applied when shown); request under an overlay (held, applied after `pageReady`); page start clears the request; any other screen resets; `off` at once.
+
+Validation (API/E2E on the integrated state): this ticket's AC-007 cases (CRR-002 rerun list) and 432's full-screen cases, at least these:
+- enter and exit;
+- the reset on reload, on Switch node and on an overlay;
+- a page reopened at `full=1`.
 
 ## Current-State Read
 
@@ -367,6 +395,8 @@ N/A.
 - A typed node reads "AutoByteus node" until paired instead of asking the user for a name: no new UI; two unpaired typed nodes look alike (rare).
 
 ## Risks
+
+- SR-006: the full-screen request and `pageReady` come from two places on the page (`MobileNodeDesktop`'s watcher, `MobileRemoteAccessShell`'s mount). Item 3 makes their order irrelevant; only "request after `onPageStarted`" is assumed (as in 432).
 
 - SR-005, `DESIGN.md` rule 9: a node still serving an older `/mobile` page never sends `pageReady`, so the new app stays on "Connected to <node> / Opening your runs…" for that node (Back leaves) until the node is updated. Not designed for, per rule 9; the release notes must say to update the desktop and every node together with the phone app. The user is told.
 

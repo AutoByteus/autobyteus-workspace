@@ -9,6 +9,7 @@
 | SR-003 | Mixed | CRR-001 failure-origin review (code reviewer) of API-REV-001 | F-001 (C-001, C-002, C-003); FU-002 | Requirements Approved (SR-001); design Ready (SR-002) | Requirements Approved (SR-003); design Ready; `Medium` / `Low` | BEH-006; REQ-006; AC-007; DEC-009; DS-004, DS-006 | The WebView is hidden under every overlay; the page shows only after a load that succeeded; FU-002 folded in |
 | SR-004 | Design | Implementation Design Impact IR-002 (premise check IMP-09) | IR-002 | Design Ready (SR-003) | Design Ready; `Medium` / `Low` | BEH-006; DS-006 | The load outcome is decided and the mark reset at `onPageFinished`, not `onPageStarted` |
 | SR-005 | Mixed | CRR-002 failure-origin review (code reviewer) of API-REV-002 | F-002; IR-003 | Requirements Approved (SR-003); design Ready (SR-004) | Requirements Approved (SR-005); design Ready; `Medium` / `Low` | BEH-006; REQ-006; AC-007; DEC-010; DS-004, DS-006 | The node's page signals `pageReady`; only that shows the page or closes its overlay; WebView load callbacks no longer decide visibility |
+| SR-006 | Design | Delivery DR-001 base refresh (autobyteus-432 merged) | DR-001 | Requirements Approved (SR-005); design Ready (SR-005) | Requirements Approved (SR-005 + preserved line); design Ready; `Medium` / `Low` | BEH-006; DEC-011; DS-004, DS-006 (unchanged); 432 D-2 preserved | Page start resets full screen only; overlay = not the plain page; full-screen request held until the plain page shows |
 
 ## Revision Entries
 
@@ -117,4 +118,20 @@
 - Handoff: `solution-handoff.md`, SR-005 section
 - Downstream impact: implementation; premise measurement first (design-spec, Bounded Local section); API/E2E reruns per CRR-002
 - Remaining gaps: whether a Back restored from WebView's back-forward cache re-mounts the shell (to be measured; if not, the overlay stays until Retry, which fails closed)
+- Next action: hand off per `get_handoff_rules`
+
+### SR-006 — Integration with autobyteus-432 desktop full screen (delivery DR-001)
+
+- Phase and classification: Design, `Design Impact` (integration)
+- Triggering input: delivery engineer (run `delivery_engineer_7f620f9496974e9f8faf7111176729d9`), DR-001 (`release-deployment-report.md`, `delivery-revision-record.md`): `origin/personal` moved `eebbc2b8ee` → `b690a5dfdb`; the merge has five conflicts, one semantic (`MainActivity.kt`: 432 rule D-2 against this ticket's SR-005 DS-006); branch at `492e88e756`, nothing pushed
+- Prior status: requirements Approved (SR-005); design Ready (SR-005); pre-integration candidate `60adcf3bc8` passed API-REV-003, with the evidence judged sufficient by delivery
+- Current status: requirements Approved (SR-005, plus a preserved-behavior line for 432); design Ready
+- IDs affected: DEC-011 (new); design-spec "SR-006 Integration With autobyteus-432" (new section); Risks
+- Intended behavior changed: No for this ticket. One visible timing of 432 changes: the phone turns to landscape when a page reopened at `full=1` appears, not while "Connected to …" shows. That follows 432's own D-2 rule (only the plain page keeps full screen).
+- Approval impact: none for this ticket's requirements; the Solution Designer decided within both tickets' approved directions; user informed
+- Design/review basis invalidated: none of SR-005's page-state rules; the merged `MainActivity` and `AutoByteusWebView` must follow DEC-011
+- Classification: unchanged, `Medium` / `Low`
+- Handoff: `solution-handoff.md`, SR-006 section
+- Downstream impact: implementation merges `origin/personal` and resolves the five conflicts per the design; API/E2E reruns this ticket's AC-007 cases and 432's full-screen cases on the integrated state; delivery re-judges (DR-002)
+- Remaining gaps: the premise that the new document's bridge request arrives after `onPageStarted` (as 432 assumed)
 - Next action: hand off per `get_handoff_rules`

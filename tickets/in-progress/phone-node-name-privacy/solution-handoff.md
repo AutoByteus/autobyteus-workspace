@@ -2,7 +2,7 @@
 
 - Result: `Architecture Design Complete`
 - Package identifier: `phone-node-name-privacy`; Project Task `autobyteus-433` (Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`)
-- Current solution revision: `SR-005` (after CRR-001 F-001, IR-002 and CRR-002 F-002)
+- Current solution revision: `SR-006` (after CRR-001 F-001, IR-002, CRR-002 F-002 and delivery DR-001)
 - Classification: `task_size = Medium`, `architectural_risk = Low` (rationale: `design-spec.md`, Task Size And Architectural Risk)
 - Route: direct implementation (handoff rule: Small/Medium and Low → `/software_engineering_team/implementation_engineer`); SR-002 sent 2026-11-08; SR-003 sent 2026-11-08
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), for the user
@@ -97,3 +97,18 @@ Implementation of `design-spec.md` with the listed web and Android unit tests, t
 - Rule 9 consequence (accepted, user informed): a node still serving an older `/mobile` page never sends `pageReady`, so the new app waits on "Opening your runs…" for it until it is updated. Release notes must say to update every node with the app.
 - Tests: design-spec Guidance ("SR-005 tests"). The CRR-002 log's sequences §2, §3, §8 and §4–§7 become cases if the page-state rule is extracted.
 - Classification unchanged: `Medium` / `Low`. API/E2E rerun plan: CRR-002's list.
+
+## SR-006 Revision (delivery DR-001: integration with autobyteus-432)
+
+- Trigger: the delivery engineer's base refresh. `origin/personal` is at `b690a5dfdb`, which includes autobyteus-432's desktop full screen (rule D-2). Five conflicts, one semantic in `MainActivity.kt`. The branch is at `492e88e756`; nothing is pushed.
+- Decision: DEC-011; design-spec section "SR-006 Integration With autobyteus-432". Each event has one job:
+  1. `onPageStarted` stays only to reset full screen and clear the page's full-screen request. It does not decide visibility.
+  2. `showPage()` with an overlay is not the plain page: it resets, and no `pageShown()`.
+  3. The page's `desktopFullScreen(on)` request is remembered and applied only while the plain page shows. `off` is applied at once.
+  4. `pageReady` alone shows the page or clears its overlay (unchanged).
+- Merge guidance: the design-spec section, including renumbering this ticket's design case to **Case 19**.
+- Validation on the integrated state: this ticket's AC-007 cases and 432's full-screen cases (enter/exit; reset on reload, Switch node and overlay; a page reopened at `full=1`). Delivery re-judges from that evidence (DR-002).
+- Open for the user (not blocking implementation):
+  - AC-001 user-only check on his own phone. It needs both the app and his nodes updated, so it can only come after a release, and only he can decide to release.
+  - RISK-001: the release notes must ask him to update the app and every node together.
+- Classification unchanged: `Medium` / `Low`.
