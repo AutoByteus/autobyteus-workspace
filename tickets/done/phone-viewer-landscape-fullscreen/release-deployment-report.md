@@ -83,8 +83,36 @@ Revert the merge on `personal`. Full screen returns to in-page only. There is no
 
 ## Finalization Record
 
-(Filled in after the merge.)
+- Post-integration rerun (`evidence/DEL-01-merged-state-rerun.log`), all `exit=0`:
+  - `pnpm install --frozen-lockfile`;
+  - web `typecheck` `[typecheck] PASS`;
+  - web specs in the ticket's and the base's areas (`components/mobile`, `composables/mobile`, `utils/remoteAccess`, `utils/__tests__`, `stores/__tests__`, `services/agentCollaboration`, `localization`): `Test Files 197 passed`, `Tests 1605 passed`;
+  - `guard:web-boundary`, `guard:localization-boundary`, `audit:localization-literals` passed.
+  - The base changed no Android file, so API/E2E's Android runs stand.
+- Pre-commit checks: `check_repository_artifact_hygiene.py` exit 0; Secret Gate `origin/personal..HEAD` PASS.
+- Ticket branch: `codex/phone-viewer-landscape-fullscreen` at `37cfb6db25` (archive commit), pushed as a new branch.
+- Finalization target: `origin/personal`, unchanged at `2a450f32b0` since the integration refresh.
+- Merge: `finalize/phone-viewer-landscape-fullscreen` from `origin/personal`; `--no-ff` → `b427d2644d`.
+  - Its tree is identical to the verified head.
+  - Secret Gate on the merged state: PASS.
+- Push: `origin/personal` fetched again and still `2a450f32b0`; pushed `2a450f32b0..b427d2644d`.
+- Repository finalization status: `Completed`. This record follows as a `docs(delivery)` commit on `personal`.
+
+## Post-Finalization Cleanup
+
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/phone-viewer-landscape-fullscreen`.
+- Right after this record is pushed:
+  - Remove and prune the worktree. Its untracked files are build output only.
+  - Delete the local `codex/` and `finalize/` branches.
+  - Keep `origin/codex/phone-viewer-landscape-fullscreen`.
+  - Leave `emulator-5584` alone: it is not this ticket's.
+  - Remove the temp folder `/tmp/abx432`.
 
 ## Final Status
 
-(Filled in at the end.)
+- Verification complete (from the evidence): `Yes`
+- Repository finalization complete: `Yes`
+- Applicable release/deployment/rollout complete or not required: `Not required`
+- Applicable safe cleanup complete or not required: right after this record is pushed (above)
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
