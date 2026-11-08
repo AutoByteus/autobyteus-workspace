@@ -1,0 +1,19 @@
+## host -> container
+A1 curl 127.0.0.1:47373 (published all):
+{"listener":"container-published-all","clientAddress":"172.64.155.209","hostHeader":"127.0.0.1:47373"}
+A2 curl LAN-IP:47373 (published all):
+{"listener":"container-published-all","clientAddress":"172.64.155.209","hostHeader":"<lan-ip>:47373"}
+A3 curl 127.0.0.1:47374 (published loopback):
+{"listener":"container-published-loopback","clientAddress":"172.17.0.1","hostHeader":"127.0.0.1:47374"}
+A4 curl LAN-IP:47374 (published loopback):
+FAIL (refused/unreachable)
+## container -> host
+B1 container -> host.docker.internal:47371 (host listener all):
+{"listener":"host-all","clientAddress":"127.0.0.1","hostHeader":"host.docker.internal:47371"}
+B2 container -> host.docker.internal:47372 (host listener loopback only):
+{"listener":"host-loopback","clientAddress":"127.0.0.1","hostHeader":"host.docker.internal:47372"}
+B3 container -> host.docker.internal:47374 (other container published loopback):
+{"listener":"container-published-loopback","clientAddress":"172.17.0.1","hostHeader":"host.docker.internal:47374"}
+## LAN-shaped host clients
+C1 curl LAN-IP:47371 (host listener all, from this Mac via its LAN address):
+{"listener":"host-all","clientAddress":"<lan-ip>","hostHeader":"<lan-ip>:47371"}

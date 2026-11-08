@@ -438,6 +438,14 @@ update it in the same change.
   coordination, and where each run's memory and messages are stored. Changes to
   Teams, Orgs, standalone collaboration, Tasks, messaging or run storage follow
   it or update it in the same change.
+- **Node access and security:** the
+  [Node Access Model](autobyteus-server-ts/docs/design/node_access_model.md)
+  is the canonical contract for who may reach a node: network admission, the
+  credential of each client kind (desktop, phone, peer, memory sync source),
+  route permissions, refusals, and its scenario table, which tests name by ID.
+  A change to routes, WebSockets, the request gate, pairing, the desktop's
+  connection to nodes, the Docker launcher's published ports or a new client
+  of a node follows it or updates it (rules and scenarios) in the same change.
 - **Server startup and configuration-dependent services:**
   [Startup Initialization and Lazy Service Access](autobyteus-server-ts/docs/design/startup_initialization_and_lazy_services.md).
 - **Mandatory agent processors:**
