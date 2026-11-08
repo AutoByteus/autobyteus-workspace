@@ -68,6 +68,7 @@ export type MobileNodeSession = {
 };
 
 export type MobileConnectionFailureKind =
+  | 'network_refused'
   | 'network_unreachable'
   | 'auth_required'
   | 'device_revoked'

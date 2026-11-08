@@ -3,7 +3,7 @@ import { createPinia, setActivePinia } from 'pinia'
 
 const h = vi.hoisted(() => ({
   list: { changeSubjectOf: vi.fn(), askAgain: vi.fn(), askAll: vi.fn(), setUnfinishedStep: vi.fn() },
-  connector: { plan: vi.fn(), run: vi.fn(), resolveAhead: vi.fn(async () => undefined) },
+  connector: { plan: vi.fn(), run: vi.fn() },
 }))
 vi.mock('~/stores/nodeListStore', () => ({ useNodeListStore: () => h.list }))
 vi.mock('~/services/nodeCollaboration/windowNodeCollaborationConnector', () => ({ useNodeCollaborationConnector: () => h.connector }))
@@ -25,12 +25,11 @@ describe('nodeChangeDialogStore', () => {
     h.list.changeSubjectOf.mockReturnValue(subject)
   })
 
-  it('opens a plan with steps and looks up the addresses ahead; a plan with nothing to do or a node that cannot be read asks the row again', async () => {
+  it('opens a plan with steps; a plan with nothing to do or a node that cannot be read asks the row again', async () => {
     const store = useNodeChangeDialogStore()
-    h.connector.plan.mockResolvedValueOnce(planOf('connect', [{ id: 'registerHere', status: 'todo' }]))
+    h.connector.plan.mockResolvedValueOnce(planOf('connect', [{ id: 'pair', status: 'todo' }]))
     await store.request('connect', 'srv_b')
     expect(store.plan?.kind).toBe('connect')
-    expect(h.connector.resolveAhead).toHaveBeenCalled()
     store.cancel()
     h.connector.plan.mockResolvedValueOnce(planOf('finish', []))
     await store.request('finish', 'srv_b')
@@ -58,13 +57,10 @@ describe('nodeChangeDialogStore', () => {
     expect(store.plan).toBeNull()
   })
 
-  it('turning this node on asks every row again (TR-713); Use this looks again with the suggested address first', async () => {
+  it('turning this node on asks every row again (TR-713)', async () => {
     const store = useNodeChangeDialogStore()
-    h.connector.plan.mockResolvedValueOnce(planOf('connect', [{ id: 'turnOnHere', status: 'todo' }, { id: 'resolveThere', status: 'failed' }]))
+    h.connector.plan.mockResolvedValueOnce(planOf('connect', [{ id: 'turnOnHere', status: 'todo' }, { id: 'pair', status: 'todo' }]))
     await store.request('connect', 'srv_b')
-    await store.useAddress('resolveThere', 'http://host.docker.internal:29695')
-    expect(store.plan!.steps[1]).toMatchObject({ firstAddress: 'http://host.docker.internal:29695' })
-    expect(h.connector.resolveAhead).toHaveBeenLastCalledWith(store.plan, 'resolveThere')
     h.connector.run.mockImplementationOnce(async (plan: any) => { plan.steps.forEach((step: any) => { step.status = 'done' }); plan.phase = 'done' })
     const done = store.confirm()
     await vi.advanceTimersByTimeAsync(700)

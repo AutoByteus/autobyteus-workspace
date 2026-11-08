@@ -283,7 +283,7 @@ describe('PhonesPanel', () => {
       expect(wrapper.get('[data-testid="phone-how-body"]').text()).toBe([
         'Your VPN puts your phone and Office Mac in the same private network.',
         'When', 'You already use your own VPN that connects your phone and Office Mac.',
-        'Setup', 'Connect Office Mac, this computer and your phone to the VPN. AutoByteus finds it by itself.',
+        'Setup', 'Connect Office Mac, this computer and your phone to the VPN, and list the VPN network (for example 10.8.0.0/16) in AUTOBYTEUS_ALLOWED_CLIENT_NETWORKS on Office Mac: a node accepts only the networks you list.',
         'Safety', 'As protected as your VPN: the connection is encrypted between your devices.',
       ].join(''));
 
@@ -294,7 +294,7 @@ describe('PhonesPanel', () => {
       expect(wrapper.get('[data-testid="phone-how-body"]').text()).toBe([
         'Your phone talks to Office Mac directly over your local network, like two devices at home.',
         'When', 'Your phone and Office Mac are on the same Wi-Fi or LAN, such as a home or office network.',
-        'Setup', 'Nothing to install. The first time on a network, AutoByteus asks for your OK.',
+        'Setup', 'Nothing to install. The first time on a network, AutoByteus asks for your OK: the node accepts devices only on the local networks you allowed.',
         'Safety', 'The connection has no extra protection, so others on the same network could see it. Fine at home and in your office. On public Wi-Fi (café, hotel, airport) use Tailscale instead. Works only while the phone is on the same network as Office Mac.',
       ].join(''));
       wrapper.unmount();

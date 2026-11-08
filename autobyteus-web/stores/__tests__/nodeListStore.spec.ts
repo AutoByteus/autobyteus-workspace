@@ -44,7 +44,7 @@ const entry = (id: string, name: string, baseUrl: string, extra: Record<string, 
   id, name, baseUrl, nodeType: id === 'embedded-local' ? 'embedded' : 'remote',
   createdAt: `2026-10-0${extra.order ?? 1}T00:00:00.000Z`, updatedAt: 'x', ...extra,
 })
-const peer = (nodeId: string, name: string, baseUrl: string) => ({ nodeId, name, baseUrl, addedAt: 'x' })
+const peer = (nodeId: string, name: string, baseUrl: string) => ({ nodeId, name, baseUrl, addedAt: 'x', paired: true })
 const flush = async () => { for (let i = 0; i < 10; i += 1) await Promise.resolve() }
 
 /** one-nodes-tab DS-001, DS-002, DS-004 (REQ-702, REQ-704, REQ-711; AR-003, AR-008, AR-009; DEC-705, DEC-706). */

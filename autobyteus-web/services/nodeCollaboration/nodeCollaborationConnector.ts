@@ -21,9 +21,8 @@ export interface NodeCollaborationConnectorDependencies {
     setSwitch(on: boolean): Promise<void>
     /** This node's peers, read again so a plan uses fresh facts. */
     loadPeers(): Promise<PeerNode[]>
-    candidates(): Promise<string[]>
-    resolveAddress(nodeId: string, baseUrls: string[]): Promise<string>
-    addPeer(input: { nodeId: string; name: string; baseUrl: string }): Promise<unknown>
+    /** autobyteus-437: this node accepts the other node's invite (it finds the other node's address itself). */
+    acceptInvite(inviteText: string, name: string, nameOnInviter: string): Promise<unknown>
     renamePeer(nodeId: string, name: string): Promise<unknown>
     removePeer(nodeId: string): Promise<void>
     changePeerAddress(nodeId: string, baseUrl: string): Promise<unknown>
@@ -56,17 +55,6 @@ export const registrationName = (wanted: string, taken: readonly string[]): stri
   }
 }
 
-const unique = (addresses: Array<string | null | undefined>): string[] => {
-  const seen = new Set<string>()
-  return addresses.filter((address): address is string => {
-    if (!address) return false
-    const key = address.toLowerCase()
-    if (seen.has(key)) return false
-    seen.add(key)
-    return true
-  })
-}
-
 const step = (id: NodeChangeStepId, fields: Partial<NodeChangeStep> = {}): NodeChangeStep => ({ id, status: 'todo', ...fields })
 const requireId = (nodeId: string | null, what: string): string => {
   if (!nodeId) throw new NodeSettingsError({ code: 'PEER_UNREACHABLE', message: `${what} has not been reached yet.` })
@@ -75,35 +63,41 @@ const requireId = (nodeId: string | null, what: string): string => {
 
 /**
  * Collaboration between this node and another one, as one confirmed plan carried out on both nodes (one-nodes-tab
- * DS-003): `plan` gathers the facts and lists only the needed steps; `resolveAhead` finds, before the confirmation,
- * the addresses of the sides whose switch is already on; `run` carries the steps out in order, by the plan kind's run
- * rule (design § Run Rules), and reports each step. Stateless between calls: the plan holds everything.
+ * DS-003): `plan` gathers the facts and lists only the needed steps; `run` carries the steps out in order, by the plan
+ * kind's run rule (design § Run Rules), and reports each step. Two nodes collaborate once paired (autobyteus-437,
+ * node access model NA-9): the other node creates an invite and this node accepts it, so one step registers both and
+ * gives them their shared secret; each node finds the other's address itself. Stateless between calls: the plan holds
+ * everything.
  */
 export const createNodeCollaborationConnector = (deps: NodeCollaborationConnectorDependencies) => {
   const api = (plan: NodeChangePlan): NodeCollaborationApi =>
     deps.there(requireId(plan.target.windowAddress, plan.target.name))
 
-  /** Connect and finish: every step still missing on both nodes, in order. */
+  /**
+   * Connect and finish: every step still missing on both nodes, in order. A pair that is paired on one side only (the
+   * other side removed it) is removed there first, since a node pairs again with a peer only after it was removed.
+   */
   const planConnect = async (kind: 'connect' | 'finish', target: NodeChangeTarget, here: NodeChangeHere): Promise<NodeChangePlan> => {
     const nodeId = requireId(target.nodeId, target.name)
     const hereId = requireId(here.nodeId, here.name)
     const other = deps.there(requireId(target.windowAddress, target.name))
-    const [herePeers, hereCandidates, thereOn, therePeers, thereCandidates] = await Promise.all([
-      deps.here.loadPeers(), deps.here.candidates(), other.capability().then((state) => state.enabled), other.peers(), other.peerAddressCandidates(),
+    const [herePeers, thereOn, therePeers] = await Promise.all([
+      deps.here.loadPeers(), other.capability().then((state) => state.enabled), other.peers(),
     ])
     const hereOn = deps.here.switchOn()
+    const herePeer = herePeers.find((peer) => peer.nodeId === nodeId)
+    const therePeer = therePeers.find((peer) => peer.nodeId === hereId)
     const steps: NodeChangeStep[] = []
     if (!hereOn) steps.push(step('turnOnHere'))
-    if (!herePeers.some((peer) => peer.nodeId === nodeId)) {
-      steps.push(step('resolveHere', { findsLater: !hereOn }))
-      steps.push(step('registerHere', { name: registrationName(target.name, herePeers.map((peer) => peer.name)), wanted: target.name }))
-    }
     if (!thereOn) steps.push(step('turnOnThere'))
-    if (!therePeers.some((peer) => peer.nodeId === hereId)) {
-      steps.push(step('resolveThere', { findsLater: !thereOn }))
-      steps.push(step('registerThere', { name: registrationName(here.name, therePeers.map((peer) => peer.name)), wanted: here.name }))
+    if (!herePeer?.paired || !therePeer?.paired) {
+      if (herePeer?.paired) steps.push(step('removeHere'))
+      if (therePeer?.paired) steps.push(step('removeThere'))
+      const name = herePeer?.name ?? registrationName(target.name, herePeers.map((peer) => peer.name))
+      const nameThere = therePeer?.name ?? registrationName(here.name, therePeers.map((peer) => peer.name))
+      steps.push(step('pair', { name, nameThere, ...(herePeer ? {} : { wanted: target.name }) }))
     }
-    return { kind, target, here, steps, phase: 'confirm', candidates: { here: hereCandidates, there: thereCandidates } }
+    return { kind, target, here, steps, phase: 'confirm' }
   }
 
   /** Disconnect and remove: this node's registration there is removed when it is there, or when that cannot be read now. */
@@ -121,7 +115,7 @@ export const createNodeCollaborationConnector = (deps: NodeCollaborationConnecto
     if (registeredHere) steps.push(step('removeHere'))
     if (registeredThere) steps.push(step('removeThere'))
     if (kind === 'remove' && target.entryIds.length) steps.push(step('removeFromList'))
-    return { kind, target, here, steps, phase: 'confirm', candidates: { here: [], there: [] } }
+    return { kind, target, here, steps, phase: 'confirm' }
   }
 
   const planRename = async (target: NodeChangeTarget, here: NodeChangeHere, name: string): Promise<NodeChangePlan> => {
@@ -129,7 +123,7 @@ export const createNodeCollaborationConnector = (deps: NodeCollaborationConnecto
     const steps: NodeChangeStep[] = []
     if (herePeers.some((peer) => peer.nodeId === target.nodeId)) steps.push(step('renameHere', { name }))
     if (target.entryIds.length) steps.push(step('renameInList', { name }))
-    return { kind: 'rename', target, here, steps, phase: 'confirm', candidates: { here: [], there: [] } }
+    return { kind: 'rename', target, here, steps, phase: 'confirm' }
   }
 
   /**
@@ -140,39 +134,21 @@ export const createNodeCollaborationConnector = (deps: NodeCollaborationConnecto
   const planChangeAddress = async (target: NodeChangeTarget, here: NodeChangeHere, address: string): Promise<NodeChangePlan> => {
     requireId(target.nodeId, target.name)
     return {
-      kind: 'changeAddress', target, here, phase: 'confirm', candidates: { here: [], there: [] },
+      kind: 'changeAddress', target, here, phase: 'confirm',
       steps: [step('changeAddressHere', { address })],
     }
-  }
-
-  const resolve = async (plan: NodeChangePlan, current: NodeChangeStep): Promise<void> => {
-    if (current.id === 'resolveHere') {
-      current.address = await deps.here.resolveAddress(requireId(plan.target.nodeId, plan.target.name),
-        unique([current.firstAddress, plan.target.windowAddress, ...plan.candidates.there]))
-    } else {
-      current.address = await api(plan).resolvePeerAddress(requireId(plan.here.nodeId, plan.here.name),
-        unique([current.firstAddress, plan.here.windowAddress, ...plan.candidates.here]))
-    }
-  }
-
-  const addressOf = (plan: NodeChangePlan, id: 'resolveHere' | 'resolveThere'): string => {
-    const found = plan.steps.find((entry) => entry.id === id)?.address
-    if (!found) throw new NodeSettingsError({ code: 'PEER_UNREACHABLE', message: 'No address was found.' })
-    return found
   }
 
   const perform = async (plan: NodeChangePlan, current: NodeChangeStep): Promise<void> => {
     const nodeId = plan.target.nodeId
     switch (current.id) {
       case 'turnOnHere': return deps.here.setSwitch(true)
-      case 'resolveHere': case 'resolveThere': return current.address ? undefined : resolve(plan, current)
-      case 'registerHere':
-        await deps.here.addPeer({ nodeId: requireId(nodeId, plan.target.name), name: current.name!, baseUrl: addressOf(plan, 'resolveHere') })
-        return
       case 'turnOnThere': return api(plan).setEnabled(true)
-      case 'registerThere':
-        await api(plan).addPeer({ nodeId: requireId(plan.here.nodeId, plan.here.name), name: current.name!, baseUrl: addressOf(plan, 'resolveThere') })
+      case 'pair': {
+        const invite = await api(plan).createInvite()
+        await deps.here.acceptInvite(invite.inviteText, current.name!, current.nameThere!)
         return
+      }
       case 'removeHere': return deps.here.removePeer(requireId(nodeId, plan.target.name))
       case 'removeThere': return api(plan).removePeer(requireId(plan.here.nodeId, plan.here.name))
       case 'removeFromList':
@@ -199,20 +175,6 @@ export const createNodeCollaborationConnector = (deps: NodeCollaborationConnecto
         case 'rename': return planRename(target, here, input.name ?? target.name)
         case 'changeAddress': return planChangeAddress(target, here, input.address ?? '')
       }
-    },
-
-    /**
-     * Before the confirmation: each side whose switch is on finds the address it will use (design § Switch-Off Rule);
-     * a failure is shown with the step and the run tries it again. Pass `only` to look again for one step ("Use this").
-     */
-    async resolveAhead(plan: NodeChangePlan, only?: NodeChangeStepId): Promise<void> {
-      const pending = plan.steps.filter((entry) => (entry.id === 'resolveHere' || entry.id === 'resolveThere')
-        && !entry.findsLater && !entry.address && (!only || entry.id === only))
-      await Promise.all(pending.map(async (entry) => {
-        entry.error = undefined
-        entry.status = 'running'
-        try { await resolve(plan, entry); entry.status = 'todo' } catch (error) { entry.status = 'failed'; entry.error = asSettingsFailure(error) }
-      }))
     },
 
     /** Carries out what is not done yet; a failed or not-run step from an earlier run is tried again (Try again). */

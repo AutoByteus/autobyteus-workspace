@@ -4,7 +4,6 @@ import { getProcessRemoteCollaboration } from "../../../remote-collaboration/rem
 import { RemoteCollaborationSettingsError } from "../../../remote-collaboration/domain/remote-collaboration-settings-error.js";
 import type { PeerNode } from "../../../remote-collaboration/domain/peer-node.js";
 import type { PeerRefusal } from "../../../remote-collaboration/domain/peer-refusal.js";
-import { getServerAddressCandidateService } from "../../../server-addressing/server-address-candidate-service.js";
 import type { GraphqlRequestContext } from "../graphql-request-context.js";
 
 @ObjectType()
@@ -83,8 +82,8 @@ const requireOwner = (context: GraphqlRequestContext): void => {
 
 /**
  * The Nodes tab's API for remote collaboration (DEC-108): the switch, the peers, and (one-nodes-tab) what a window
- * needs to connect two nodes: this node's own addresses, the address that works for this node to reach another one,
- * and whether a peer admits this node now. The window calls the same API on both nodes.
+ * needs to connect two nodes: an invite here and its acceptance there (autobyteus-437 pairing; each node finds the
+ * other's address itself), and whether a peer admits this node now. The window calls the same API on both nodes.
  */
 @Resolver()
 export class RemoteCollaborationSettingsResolver {
@@ -127,24 +126,6 @@ export class RemoteCollaborationSettingsResolver {
   async peerNodeAvailability(@Arg("nodeId", () => String) nodeId: string): Promise<PeerNodeAvailabilityGql> {
     const answer = await getProcessRemoteCollaboration().discovery.checkAvailabilityOf(nodeId);
     return answer.accepted ? { available: true, refusalCode: null, unreachableReason: null } : { available: false, ...refusalFields(answer) };
-  }
-
-  /** How other nodes may reach this node, as this node lists its own addresses; the other side tries them in order. */
-  @Query(() => [String])
-  peerAddressCandidates(): string[] {
-    return getServerAddressCandidateService().listCandidates().map((candidate) => candidate.baseUrl);
-  }
-
-  /**
-   * The first of `baseUrls`, in order, at which this node reaches the node `nodeId` (one-nodes-tab DS-005). Read-only;
-   * the switch must be on. Takes at most about 20 s.
-   */
-  @Query(() => String)
-  resolvePeerAddress(
-    @Arg("nodeId", () => String) nodeId: string,
-    @Arg("baseUrls", () => [String]) baseUrls: string[],
-  ): Promise<string> {
-    return guarded(() => getProcessRemoteCollaboration().addresses.resolve(nodeId, baseUrls));
   }
 
   /** On node A: an invite for one other node (10 minutes, single use). */

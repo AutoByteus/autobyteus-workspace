@@ -29,15 +29,28 @@ export interface NodeUpdateClient {
 
 const urlOf = (baseUrl: string): string => `${baseUrl.trim().replace(/\/+$/, '')}${NODE_UPDATE_REST_PATH}`;
 
-/** The main process's own small C1 client (autobyteus-356); C1 is frozen, so it shares only the contract types. */
-export function createNodeUpdateClient(options: Readonly<{ fetch?: NodeUpdateFetch; timeoutMs?: number }> = {}): NodeUpdateClient {
+/**
+ * The main process's own small C1 client (autobyteus-356); C1 is frozen, so it shares only the contract types. C1 is an
+ * owner route: each request carries this desktop's owner credential for the node (autobyteus-437; the main process's
+ * fetch is not a window request, so the attacher does not add it).
+ */
+export function createNodeUpdateClient(options: Readonly<{
+  fetch?: NodeUpdateFetch;
+  timeoutMs?: number;
+  /** This desktop's owner credential for a node base URL; null when it holds none. */
+  credentialFor(baseUrl: string): string | null;
+}>): NodeUpdateClient {
   const fetchImpl: NodeUpdateFetch = options.fetch ?? ((url, init) => fetch(url, init));
   const timeoutMs = options.timeoutMs ?? NODE_UPDATE_REQUEST_TIMEOUT_MS;
+  const credentialHeaders = (baseUrl: string): Record<string, string> => {
+    const credential = options.credentialFor(baseUrl);
+    return credential ? { authorization: `Bearer ${credential}` } : {};
+  };
   return {
     async getStatus(baseUrl, targetVersion) {
       try {
         const response = await fetchImpl(`${urlOf(baseUrl)}?target=${encodeURIComponent(targetVersion)}`,
-          { signal: AbortSignal.timeout(timeoutMs) });
+          { headers: credentialHeaders(baseUrl), signal: AbortSignal.timeout(timeoutMs) });
         const answer = await response.json();
         return isNodeServerStatus(answer) ? answer : null;
       } catch {
@@ -48,7 +61,7 @@ export function createNodeUpdateClient(options: Readonly<{ fetch?: NodeUpdateFet
       try {
         const response = await fetchImpl(urlOf(baseUrl), {
           method: 'POST',
-          headers: { 'content-type': 'application/json' },
+          headers: { 'content-type': 'application/json', ...credentialHeaders(baseUrl) },
           body: JSON.stringify({ version }),
           signal: AbortSignal.timeout(timeoutMs),
         });

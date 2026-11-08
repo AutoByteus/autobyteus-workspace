@@ -39,6 +39,15 @@ const backendNodeBaseUrlFromEnv =
 // For local and Docker development, the Vite proxy forwards API requests to the backend server.
 const backendProxyUrl = backendNodeBaseUrlFromEnv
 const backendWsBaseUrl = toWsBaseUrl(backendNodeBaseUrlFromEnv)
+/**
+ * Development (`pnpm dev`): the node needs a credential on every request (node access model NA-1). The development
+ * runtime gives this server process the node's launch owner credential; the Vite proxy adds it to every request it
+ * forwards (HTTP and WebSocket), and the window uses the frontend's own origin as its node so every request goes
+ * through the proxy. The credential stays in this process: it is never in `runtimeConfig.public`.
+ */
+const developmentOwnerCredential = process.env.AUTOBYTEUS_DEVELOPMENT_OWNER_CREDENTIAL?.trim() || null
+const developmentFrontendUrl = process.env.AUTOBYTEUS_DEVELOPMENT_FRONTEND_URL?.trim() || null
+const developmentProxyHeaders = developmentOwnerCredential ? { authorization: `Bearer ${developmentOwnerCredential}` } : undefined
 
 let serverUrls = {
   graphqlBaseUrl: '',
@@ -64,7 +73,7 @@ if (isElectronBuild) {
     fileExplorerWsEndpoint: `${PRODUCTION_EMBEDDED_SERVER_WS_BASE_URL}/ws/file-explorer`
   };
 } else if (isDevelopment) {
-  defaultNodeBaseUrl = backendProxyUrl;
+  defaultNodeBaseUrl = developmentFrontendUrl ?? backendProxyUrl;
   serverUrls = {
     graphqlBaseUrl: '/graphql',
     restBaseUrl: '/rest',
@@ -145,11 +154,20 @@ const baseConfig: NuxtConfig = {
         '/graphql': {
           target: backendProxyUrl,
           changeOrigin: true,
+          ws: true,
+          headers: developmentProxyHeaders,
         },
         '/rest': {
           target: backendProxyUrl,
           changeOrigin: true,
-        }
+          headers: developmentProxyHeaders,
+        },
+        '/ws': {
+          target: backendProxyUrl,
+          changeOrigin: true,
+          ws: true,
+          headers: developmentProxyHeaders,
+        },
       } : undefined,
     },
     assetsInclude: ['**/*.jpeg', '**/*.jpg', '**/*.png', '**/*.svg'],

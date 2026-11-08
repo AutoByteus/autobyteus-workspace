@@ -16,7 +16,7 @@ import NodeRow from '../NodeRow.vue'
  */
 
 const B = 'srv_studioBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB'
-const peer = { nodeId: B, name: 'studio', baseUrl: 'http://192.168.2.31:29695', addedAt: 'x' }
+const peer = { nodeId: B, name: 'studio', baseUrl: 'http://192.168.2.31:29695', addedAt: 'x', paired: true }
 const row = (overrides: Partial<Row> = {}): Row => ({
   key: B, nodeId: B, entryIds: ['remote-1'], windowAddress: 'http://192.168.2.31:29695', peer, name: 'studio', isEmbedded: false, ...overrides,
 })

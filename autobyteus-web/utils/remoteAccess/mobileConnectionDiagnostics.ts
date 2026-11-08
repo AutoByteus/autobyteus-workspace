@@ -7,6 +7,12 @@ const diagnostics: Record<MobileConnectionFailureKind, MobileConnectionDiagnosti
     message: 'Your phone cannot reach the desktop node over the current private network.',
     recoveryAction: 'Check that AutoByteus is running and your LAN, VPN, or tailnet is connected.',
   },
+  network_refused: {
+    kind: 'network_refused',
+    title: 'This network is not allowed',
+    message: 'The desktop node does not accept connections from the network your phone is on now.',
+    recoveryAction: 'Connect through Tailscale, or allow this Wi-Fi network in Phone Setup on the desktop.',
+  },
   auth_required: {
     kind: 'auth_required',
     title: 'Pair this phone again',
@@ -50,7 +56,10 @@ export function diagnosticFromHttpStatus(status: number, code?: string): MobileC
   if (code === 'REMOTE_ACCESS_DEVICE_REVOKED') {
     return diagnosticForKind('device_revoked');
   }
-  if (status === 401 || code === 'REMOTE_ACCESS_AUTH_REQUIRED' || code === 'REMOTE_ACCESS_AUTH_INVALID') {
+  if (code === 'NODE_NETWORK_REFUSED') {
+    return diagnosticForKind('network_refused');
+  }
+  if (status === 401 || code === 'NODE_CREDENTIAL_REQUIRED' || code === 'NODE_CREDENTIAL_INVALID') {
     return diagnosticForKind('auth_required');
   }
   return diagnosticForKind('network_unreachable');

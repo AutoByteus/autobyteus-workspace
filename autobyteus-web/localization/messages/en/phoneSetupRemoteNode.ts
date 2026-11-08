@@ -24,7 +24,7 @@ const phoneSetupRemoteNodeMessages = {
   'settings.components.settings.phone.remote.how.tailscale.safety': 'The connection is encrypted between your phone and {{name}}, and only devices signed in to your Tailscale account can reach it.',
   'settings.components.settings.phone.remote.how.vpn.line': 'Your VPN puts your phone and {{name}} in the same private network.',
   'settings.components.settings.phone.remote.how.vpn.when': 'You already use your own VPN that connects your phone and {{name}}.',
-  'settings.components.settings.phone.remote.how.vpn.setup': 'Connect {{name}}, this computer and your phone to the VPN. AutoByteus finds it by itself.',
+  'settings.components.settings.phone.remote.how.vpn.setup': 'Connect {{name}}, this computer and your phone to the VPN, and list the VPN network (for example 10.8.0.0/16) in AUTOBYTEUS_ALLOWED_CLIENT_NETWORKS on {{name}}: a node accepts only the networks you list.',
 } satisfies TranslationCatalog;
 
 export default phoneSetupRemoteNodeMessages;
