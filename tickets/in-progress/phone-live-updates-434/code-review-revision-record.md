@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | `code-review-report.md` | Implementation Review / IR-001 | N/A | Pass | None |
 | CRR-002 | `api-e2e-test-review-report.md` | Proportional test-code review / API-REV-001 | Pass (CRR-001, source) | Fail | TR-001 |
+| CRR-003 | `api-e2e-test-review-report.md` | Proportional test-code review round 2 / API-REV-002 | Fail | Pass | TR-001 |
 
 ## Revision Entries
 
@@ -58,3 +59,30 @@ None (first test review; CRR-001 had no findings).
 - Material score or classification changes: N/A
 - Recommended recipient: `api_e2e_engineer`
 - Remaining risks or uncertainty: none beyond CRR-001's residual risks.
+
+### CRR-003 — Proportional test-code review round 2 (TR-001 fix)
+
+- Canonical review report updated: `api-e2e-test-review-report.md`
+- Review entry point and round: successful API/E2E test-code review, round 2
+- Review scope: `N/A` (test review; diff `4bc2af1f54..23fb0e5788`, `mobile-live-reconnect-cases.mjs` only)
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, `api-e2e-execution-coverage-report.md` (API-REV-002, MSP-21 rerun)
+- Relevant solution revision IDs: SR-004
+- Relevant architecture-review revision IDs: ARCH-REV-003
+- Relevant implementation revision IDs: IR-001
+- Relevant API/E2E revision IDs: API-REV-002
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: CRR-002 Fail (TR-001)
+- Current authoritative result: Pass
+- What changed in the review result and why: MSP-21(c) now counts only each phone's own run (Team socket; agent catch-up read `GetRunProjection` and agent socket) and asserts the agent's first attempt is the catch-up read; the report rows match the rerun evidence.
+- Supported product scenario / material-premise basis changes: none.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| TR-001 | Open (Local Fix, API/E2E) | Resolved | API-REV-002, commit `23fb0e5788` | Diff of `mobile-live-reconnect-cases.mjs` (`ownAttempts`, three assertions); `evidence/MSP-21-rerun-tr001/mobile-shell-probe.json`: `attemptsWhileHidden` `[]`/`[]`, within 2 s of visible Team socket +7 ms and `GetRunProjection` +8 ms, probe Pass |
+
+- New or remaining finding IDs: None
+- Material score or classification changes: N/A
+- Recommended recipient: `delivery_engineer`
+- Remaining risks or uncertainty: CRR-001 residual risks (agent read-to-open window not hit in 45 replies but not proven absent; FU-003); delegated copy's conversation after an outage proven at stream level only (API/E2E residual).
