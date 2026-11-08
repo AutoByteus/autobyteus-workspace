@@ -9,6 +9,7 @@ The latest coverage investigation and execution coverage report remain authorita
 | API-REV-001 | Code reviewer, `code-review-report.md` CRR-001 (Pass), round 1 | SR-004, ARCH-REV-003, IR-001, CRR-001 | N/A | Pass / 95.4% |
 | API-REV-002 | Code reviewer, `api-e2e-test-review-report.md` CRR-002 (Fail, TR-001), round 2 | CRR-002 | Pass / 95.4% (test review failed TR-001) | Pass / 95.4% |
 | API-REV-003 | Delivery engineer, `release-deployment-report.md` / `delivery-revision-record.md` DR-001 (Blocked: duplicate case ID MSP-20 after the base refresh), round 3 | CRR-003, DR-001 | Pass / 95.4% | Pass / 95.4% |
+| API-REV-004 | Delivery engineer, `release-deployment-report.md` / `delivery-revision-record.md` DR-002 (Blocked: MSP-05 failed 1 of 3 on FU-004's race after the second base refresh), round 4 | CRR-004, DR-002 | Pass / 95.4% | Pass / 95.4%; DR-002's failure classified pre-existing |
 
 ## Revision Entries
 
@@ -92,3 +93,31 @@ None.
 - New or remaining failure IDs: none.
 - Recommended owner: code reviewer (proportional test-code review of this round's edits); delivery waits on it.
 - Remaining risks, blocked evidence, or untested scope: unchanged from API-REV-001.
+
+### API-REV-004 — DR-002: MSP-05's failure is FU-004's pre-existing race, at the same rate without this ticket
+
+- Triggering role, report path, and round: delivery engineer, `release-deployment-report.md` and `delivery-revision-record.md` (DR-002, Blocked), round 4.
+- Triggering finding or case IDs: DR-002. After merging origin/personal `4ec4d0ae52`, the full probe failed MSP-05 once in three runs: "Timed out waiting for the second row open", with `Failed to open team: Error: Team context 'delivery_team_…' became mounted while it was loading.` Delivery asked whether this ticket raises the race's rate.
+- Related revision IDs: CRR-004, DR-002.
+- Why this revision was recorded: failure-origin evidence for a regression question.
+- Coverage decisions or durable test paths changed: none. API-12 is a temporary comparison (its tools are kept in the evidence folder).
+- Cases added, changed, removed, or rechecked: API-12. MSP-05's last step was repeated 25× after the cases that precede it, from fresh builds of the merged state (`5216617cf6`) and of origin/personal `4ec4d0ae52` without this ticket.
+  - Merged state: MSP-05 Pass, races 2/25.
+  - Base without this ticket: MSP-05 Pass, races 3/25.
+  - The background Team open (the first history read's `reconcileDiscoveredActiveRuns` → `openTeamRun`, after 4–6 agent hydrations) starts at the same moment in both: median 536 vs 533 ms after the reload.
+  - Every race is a Team tap 15–46 ms before that open's first read.
+  - This matches the code. This ticket's change to the agent hydration keeps the same three reads in parallel (`readRunStoredState` alongside the resume config) and does not touch `runHistoryLoadActions.ts` or `services/runOpen/`.
+- Commands, environment, fixture, or broader-validation delta: see the execution report's API-12 row. A temporary worktree of `4ec4d0ae52` was created, built and removed.
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| DR-002 (MSP-05 failed 1 of 3, FU-004 line) | Unclassified (delivery) | Pre-existing, not this ticket: same rate and same window without this ticket; FU-004 updated (it also hits MSP-05; about 1 full-probe run in 10 on every branch) | API-12 |
+
+- Canonical artifacts and sections updated: execution report (Round, API-12 row, residual risks, Latest Authoritative Result), this record, `follow-ups.md` FU-004, progress log.
+- Prior result and confidence: Pass / 95.4%.
+- Current result and confidence: Pass / 95.4% (unchanged).
+- New or remaining failure IDs: none in this change; FU-004 (pre-existing) carries the MSP-05 flake.
+- Recommended owner: delivery engineer (finalize with FU-004 recorded as residual, as DR-002 proposed).
+- Remaining risks, blocked evidence, or untested scope: unchanged, plus the MSP-05 flake through FU-004.
