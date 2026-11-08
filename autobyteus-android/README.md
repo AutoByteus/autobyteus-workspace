@@ -106,7 +106,7 @@ ANDROID_HOME="$HOME/Library/Android/sdk" ./gradlew :app:testDebugUnitTest
 ANDROID_HOME="$HOME/Library/Android/sdk" ./gradlew :app:assembleDebug :app:compileDebugAndroidTestKotlin
 ```
 
-The instrumented tests (`app/src/androidTest`: `SystemBarInsetsTest`, `WebShellWindowInsetsTest`, `AutoByteusMobileShellSmokeTest`, `MainActivityConfigurationChangeTest`) run on a running emulator or a connected device. No CI job runs them:
+The instrumented tests (`app/src/androidTest`: `SystemBarInsetsTest`, `WebShellWindowInsetsTest`, `AutoByteusMobileShellSmokeTest`, `MainActivityConfigurationChangeTest`, `DesktopFullScreenWindowTest`) run on a running emulator or a connected device. No CI job runs them:
 
 ```bash
 ANDROID_HOME="$HOME/Library/Android/sdk" ./gradlew :app:connectedDebugAndroidTest
