@@ -236,8 +236,11 @@ for the user interaction contract.
   **Reconnect** control is exposed. It checkpoint-verifies and hydrates a
   replacement candidate, atomically publishes the verified context while
   preserving exact focus, and clears any prior notice only after success. The
-  service makes at most five attempts; exhaustion produces one localized notice
-  and a terminal offline state rather than a permanent connecting state.
+  attempts follow the shared reconnect schedule
+  ([Live Run Stream Reconnection](#live-run-stream-reconnection)). They never
+  give up while the page is visible. At the fifth consecutive failure the
+  service shows one localized notice and rejects readiness, and recovery goes
+  on.
 - These stores never import the Team draft/config store as configuration
   authority, synthesize an Org coordinator, or convert AgentOrg persistence into
   Team V2 state.
@@ -1641,6 +1644,52 @@ The service layer bridges the gap between the WebSocket transport and the applic
       server has already shaped the transport cadence. On the sequenced Team,
       Org and delegated-agent streams, content arrives as a content batch, and
       each of its items is applied as one `SEGMENT_CONTENT` (see below).
+
+### Live Run Stream Reconnection
+
+The four live run streams (standalone agent, Team, Org, and a run's delegated-agent
+collaboration stream) share one rule for *when* to try again. Each stream owner still
+decides how it connects, what counts as success, and how it catches up.
+
+- `transport/WebSocketClient` is a plain socket. It never retries and has no
+  `RECONNECTING` state. `onDisconnect(reason, retryable)` tells the owner that a close was
+  not intended and whether it may be retried. Close codes 4004 and 4005 are not retryable.
+  An intentional `disconnect()` emits nothing.
+- Each owner holds one `LiveStreamReconnectScheduler`
+  (`services/liveStreamLifecycle/liveStreamReconnectScheduler.ts`). Its states are `idle`,
+  `attempting`, `connected`, `waiting` and `held`.
+  - While the page is visible it waits 1, 2, 4, 8 and 16 s after consecutive failures, then
+    30 s, and repeats that forever. It never gives up.
+  - At the fifth consecutive failure it reports a persistent failure once per failure
+    streak, and retrying goes on.
+  - While the page is hidden it holds: a loss or an ended wait makes no attempt.
+  - On a page resume it attempts at once. `pageResumeSignal.ts` owns the one set of DOM
+    listeners: `visibilitychange` to visible, or `online` while visible.
+  - After the page was hidden for 30 s or more, it asks the owner to re-synchronize a
+    stream that still looks connected, because the socket may have died while the page
+    was hidden.
+- The owners, per stream:
+
+  | Stream | An attempt | Success | Re-synchronize |
+  | --- | --- | --- | --- |
+  | Agent run (`AgentRunStreamReconnection`) | Reads the run's stored state (`runHydration/runStoredStateLoader.ts`), commits it into the live context while the socket is closed, then opens the socket | The socket is open | `dropConnection()`, then attempt |
+  | Team (`TeamStreamingService`) | Reconnects the transport | The snapshot is accepted | Quiet close, then attempt |
+  | Org (`AgentOrgStreamingService`) | Transparent recovery | The snapshot is accepted | Retires the generation (pending commands are rejected with "re-synchronizing"), then attempt |
+  | Collaboration (`AgentRunCollaborationStreamingService`) | Opens the socket | The snapshot is accepted | Closes the socket, then attempt |
+
+  Further rules per owner:
+  - Team: `connect()` starts the scheduler over. `reopen_required` stays terminal, with
+    no retries.
+  - Org and collaboration: a persistent failure reports the error and rejects readiness.
+    A 4004 close starts the collaboration scheduler over.
+- The store's Agent Connect Rule (`agentRunStore.connectToAgentStream` →
+  `requestConnect()`):
+  - while `waiting`, it catches up now;
+  - while `held`, `attempting` or `connected`, it does nothing;
+  - while `idle`, it makes a plain connect.
+- Catching up the agent run before opening its socket narrows a window but does not close
+  it: a reply produced between the stored-state read and the socket opening is not
+  re-sent. This is accepted by design and has not been seen in testing.
 
 ### Server-Owned Stream-Content Cadence And Immediate Frontend Projection
 

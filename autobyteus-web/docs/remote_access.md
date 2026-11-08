@@ -193,6 +193,23 @@ A run's ⋮ menu offers **VNC Viewer** next to Artifacts, Files, Messages and Ac
 - The node serves at most 4 desktop streams at once, and at most 2 per paired phone; another viewer sees "Too many viewers on this node right now" with Retry (close code 4429).
 - Revoking the phone, or turning Phone Access off, ends its open desktop stream within 30 seconds (the node re-checks open phone streams every 20 s; the viewer then shows "not allowed").
 
+## Live run streams on the phone
+
+An open run on the phone (an agent run, a Team member or an Org member) keeps its live
+stream through lost connections and the app's background:
+
+- **The path to the node drops** (Wi-Fi to mobile data, a node restart): the phone keeps
+  trying, at most 30 s apart, and never gives up while the page is shown. When it is back,
+  it shows what it missed and then follows live.
+- **The app is in the background or the screen is off:** the phone makes no attempt while
+  the page is hidden. When the page is shown again, it reconnects at once and catches up.
+  After 30 s or more hidden, it re-synchronizes a stream that still looks open.
+- A message sent while the run is busy shows once, also on another phone or window that
+  opens the run during that turn.
+
+The same rules apply in the desktop window
+(`agent_execution_architecture.md`, Live Run Stream Reconnection).
+
 ## Mobile Capability Gating
 
 The mobile shell gates truly desktop-only or Electron-only features instead of exposing broken controls. Unsupported feature redirects use `/mobile/?unsupported=<feature>` and render a visible notice in both unpaired and paired states. Run Artifacts are mobile-supported when their normal run context is available. Browser remains unsupported in the current mobile shell because the existing Browser surface is Electron-owned through preload IPC and native WebContentsView projection.

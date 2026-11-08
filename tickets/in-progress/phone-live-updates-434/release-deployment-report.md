@@ -1,8 +1,13 @@
 # Delivery / Release / Deployment Report — autobyteus-434
 
-Status: **Blocked**, DR-001. The base refresh merged without conflicts, but it
-left two probe cases with the same ID, `MSP-20`. This goes back to API/E2E;
-details are under Escalation / Reroute.
+Status: **Blocked**, DR-002.
+
+- DR-001 (duplicate case ID `MSP-20`): resolved by API-REV-003 and CRR-004 (`821c249062`).
+- DR-002: on the second base refresh, the full phone probe failed MSP-05 once. Its browser
+  error is the known open race FU-004. Whether this ticket makes that race more frequent is
+  not established, so it goes to API/E2E (see "DR-002" at the end of this report).
+
+The sections below record DR-001; DR-002 follows at the end.
 
 ## Release / Publication / Deployment Scope
 
@@ -93,3 +98,76 @@ for (see Release Decision).
 - Repository finalization complete: `No`
 - Unresolved blocker: duplicate probe case ID `MSP-20` after the base refresh
 - Successful terminal package eligible for return: `No`
+
+
+---
+
+## DR-002 — Second Base Refresh
+
+### Integration Refresh
+
+- Checkpoint commit: `37ef9059cc` holds the code reviewer's CRR-004 records.
+- Latest tracked remote base: `origin/personal` `4ec4d0ae52`. It added 25 commits, mainly
+  autobyteus-433 (phone node-name privacy: Android shell, phone shell components, and a
+  baseline fix in the probe).
+- Integration: merge `336ea8ed63`, with no textual conflicts. No new probe case IDs came in.
+- Builds and test runs:
+  - `pnpm install --frozen-lockfile`: exit 0.
+  - `pnpm -C autobyteus-web build:mobile-web`: exit 0.
+  - The server `dist` was not rebuilt. The server and `autobyteus-ts` sources are unchanged
+    since `b2bdcb98a4`, whose build API-11 used.
+  - Web unit suites (streaming, collaboration, Org, live-stream lifecycle, `components/mobile`,
+    `utils/remoteAccess`, run and Team stores): `Test Files  63 passed (63)`,
+    `Tests  577 passed (577)`.
+  - Full phone probe:
+    `pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<ticket>/evidence/DEL-01-merged-base-2-mobile-shell`.
+    Exit 1, probe `Fail`. Cleanup was complete (`frontendExited` true, `serversLeft` 0,
+    `rootRemoved` true).
+    - 22 of 23 cases `Pass`, including this ticket's MSP-21, MSP-22 and MSP-23, and
+      autobyteus-426's MSP-20.
+    - MSP-05 `Fail`: `Timed out waiting for the second row open` (`mobile-shell-probe.mjs`
+      line 1026, the tap on `team:<delivery>` after a reload).
+    - `unknownBrowserErrors: 1`, in MSP-05:
+      `phone console: Failed to open team: Error: Team context 'delivery_team_…' became mounted while it was loading.`
+      That is FU-004's open race: the first history read mounts the active Team in the
+      background while the tap opens it.
+  - MSP-05 alone, twice:
+    `--cases=MSP-05 --output-dir=<ticket>/evidence/DEL-02-merged-base-2-MSP-05-run-{1,2}`.
+    Both `Pass`.
+  - So the race showed in 1 of 3 runs on the merged state.
+- Analysis:
+  - The race's files (`stores/runHistoryLoadActions.ts`, `services/runOpen/`) were changed
+    neither by this ticket nor by the base since `eebbc2b8ee`.
+  - No archived ticket's evidence shows the error.
+  - This ticket did change the open path's loader (`runContextHydrationService` →
+    `runStoredStateLoader`) and the connect timing of the streams. A higher race rate is
+    therefore not ruled out.
+  - MSP-05 passed before the merges (API-08).
+- Post-integration verification result: `Blocked`, pending API/E2E's classification.
+
+### Docs Sync
+
+- `docs-sync-report.md`: `Updated`. The docs edits are committed on the ticket branch and
+  are independent of this blocker.
+
+### Escalation / Reroute (DR-002)
+
+- Classification: `Unclear` origin of a failed check on the integrated state. It is either
+  the pre-existing FU-004 race or a rate increase from this ticket.
+- Recommended recipient: API/E2E engineer.
+- Requested from API/E2E:
+  1. Compare MSP-05's failure rate on the merged state with `origin/personal` `4ec4d0ae52`
+     without this ticket. Use the same runs, from a fresh build, under the full-probe order,
+     because MSP-05 alone passed.
+  2. If the base fails at a similar rate, the race is pre-existing. Record that evidence and
+     update FU-004 (urgency, and that it also hits MSP-05). Delivery then finalizes with the
+     race recorded as residual.
+  3. If only the merged state fails, it is a defect of this ticket, routed to its owner.
+
+### Final Status (DR-002)
+
+- Verification complete: `No`. The ticket's acceptance criteria are re-proven on the merged
+  state by MSP-21, MSP-22 and MSP-23, all `Pass` in DEL-01. The failed existing journey
+  MSP-05 is still unclassified.
+- Repository finalization complete: `No`. Nothing is pushed.
+- Successful terminal package eligible for return: `No`.

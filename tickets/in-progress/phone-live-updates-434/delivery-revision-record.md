@@ -5,6 +5,7 @@
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
 | DR-001 | Code reviewer's CRR-003 pass (test-code review round 2) | N/A | Blocked: the base refresh left a duplicate probe case ID; sent to API/E2E | `release-deployment-report.md` |
+| DR-002 | Code reviewer's CRR-004 pass (DR-001 fixed) | Blocked (DR-001) | Blocked: after the second base refresh, MSP-05 failed once on the FU-004 race; sent to API/E2E to classify | `release-deployment-report.md`, `docs-sync-report.md` |
 
 ## Revision Entries
 
@@ -23,3 +24,19 @@
 - Why recorded: delivery stopped before docs sync and finalization.
 - Next recipient/action: API/E2E renumbers this ticket's cases to MSP-21…23 and reruns MSP-20…23 on the merged state.
 - Remaining blockers: the duplicate case ID. No release was asked for.
+
+### DR-002 — Second base refresh: MSP-05 hits the FU-004 race
+
+- Trigger: CRR-004. The DR-001 fix (`821c249062`) was reviewed and passed, with MSP-20…23 passing on the first merge (API-11).
+- Prior result: DR-001 Blocked (resolved).
+- Current result: `Blocked`.
+  - Checkpoint `37ef9059cc`; merge of `origin/personal` `4ec4d0ae52` as `336ea8ed63`.
+  - Web unit suites: 63 files, 577 tests, all pass.
+  - Full phone probe (DEL-01): 22 of 23 cases pass, including this ticket's MSP-21…23.
+  - MSP-05 failed once, with the FU-004 race error. Alone it passed twice (DEL-02 runs 1 and 2).
+- Docs sync report: `docs-sync-report.md` (`Updated`).
+- Handoff summary: not written yet.
+- Release/publication/deployment report: `release-deployment-report.md`, DR-002 section.
+- Terminal return to the Solution Designer: `Not yet eligible`.
+- Next recipient/action: API/E2E compares MSP-05's failure rate on the merged state with `origin/personal` without this ticket, then classifies the race as pre-existing or this ticket's.
+- Remaining blockers: the MSP-05 classification. No release was asked for.
