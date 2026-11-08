@@ -1,0 +1,168 @@
+{
+  "startedAt": "2026-11-08T10:08:34.709Z",
+  "serial": "emulator-5584",
+  "cycles": [],
+  "connections": [
+    {
+      "openedAt": 10813,
+      "closedAt": 24152,
+      "webSocket": false,
+      "path": "/rest/remote-access/status"
+    },
+    {
+      "openedAt": 11995,
+      "closedAt": 24152,
+      "webSocket": false,
+      "path": "/mobile?pairing=eyJ2ZXJzaW9uIjoxLCJzZXJ2ZXJCYXNlVXJsIjoiaHR0cDovLzEwLjAuMi4yOjU3ODEzIiwicGFpcmluZ0NvZGUiOiJxV2FDYjh3U2Ryblc2ekxSM0lZQkdEZFIiLCJleHBpcmVzQXQiOiIyMDI2LTExLTA4VDEwOjEzOjM4LjQ5OVoiLCJzZXJ2ZXJOYW1lIjoiRW11bGF0b3IgVGVzdCBOb2RlIn0"
+    },
+    {
+      "openedAt": 12124,
+      "closedAt": 24152,
+      "webSocket": false,
+      "path": "/mobile/_nuxt/6gKLa7nn.js"
+    },
+    {
+      "openedAt": 12135,
+      "closedAt": 24152,
+      "webSocket": false,
+      "path": "/mobile/_nuxt/default.CTHSKn2w.css"
+    },
+    {
+      "openedAt": 12140,
+      "closedAt": 24152,
+      "webSocket": false,
+      "path": "/mobile/_nuxt/C0peU2YB.js"
+    },
+    {
+      "openedAt": 12150,
+      "closedAt": 24152,
+      "webSocket": false,
+      "path": "/mobile/_nuxt/DxfFyxED.js"
+    },
+    {
+      "openedAt": 12166,
+      "closedAt": 24152,
+      "webSocket": false,
+      "path": "/mobile/_nuxt/J1bxg2UA.js"
+    },
+    {
+      "openedAt": 16148,
+      "closedAt": 24152,
+      "webSocket": true,
+      "path": "/ws/agent-package-definitions?access_token=…"
+    },
+    {
+      "openedAt": 16332,
+      "closedAt": 24152,
+      "webSocket": true,
+      "path": "/ws/agent/emu_agent_5f1814ee1ae94e8186c580e7c799d8be?access_token=…"
+    },
+    {
+      "openedAt": 16391,
+      "closedAt": 24152,
+      "webSocket": true,
+      "path": "/ws/agent-team/emu_team_d61978f4095c41078a76be01737af176?access_token=…"
+    },
+    {
+      "openedAt": 24151,
+      "closedAt": 84540,
+      "webSocket": false,
+      "path": "/rest/remote-access/status"
+    },
+    {
+      "openedAt": 24928,
+      "closedAt": 28320,
+      "webSocket": false,
+      "path": "/mobile"
+    },
+    {
+      "openedAt": 25007,
+      "closedAt": 84540,
+      "webSocket": false,
+      "path": "/mobile/_nuxt/6gKLa7nn.js"
+    },
+    {
+      "openedAt": 25062,
+      "closedAt": 84540,
+      "webSocket": false,
+      "path": "/mobile/_nuxt/default.CTHSKn2w.css"
+    },
+    {
+      "openedAt": 25069,
+      "closedAt": 84540,
+      "webSocket": false,
+      "path": "/mobile/_nuxt/C0peU2YB.js"
+    },
+    {
+      "openedAt": 25073,
+      "closedAt": 28320,
+      "webSocket": false,
+      "path": "/mobile/_nuxt/DxfFyxED.js"
+    },
+    {
+      "openedAt": 25078,
+      "closedAt": 84540,
+      "webSocket": false,
+      "path": "/mobile/_nuxt/J1bxg2UA.js"
+    },
+    {
+      "openedAt": 28320,
+      "closedAt": 84540,
+      "webSocket": true,
+      "path": "/ws/agent-package-definitions?access_token=…"
+    },
+    {
+      "openedAt": 28735,
+      "closedAt": 84540,
+      "webSocket": false,
+      "path": "/graphql"
+    },
+    {
+      "openedAt": 28746,
+      "closedAt": 84540,
+      "webSocket": false,
+      "path": "/graphql"
+    },
+    {
+      "openedAt": 28970,
+      "closedAt": 84540,
+      "webSocket": true,
+      "path": "/ws/agent/emu_agent_5f1814ee1ae94e8186c580e7c799d8be?access_token=…"
+    },
+    {
+      "openedAt": 29026,
+      "closedAt": 84540,
+      "webSocket": true,
+      "path": "/ws/agent-team/emu_team_d61978f4095c41078a76be01737af176?access_token=…"
+    }
+  ],
+  "timeline": [
+    {
+      "t": 3926,
+      "event": "device",
+      "model": "sdk_gphone64_arm64",
+      "sdk": "35",
+      "webview": "124.0.6367.219"
+    },
+    {
+      "t": 6001,
+      "event": "apk",
+      "versionName": "0.1.0"
+    },
+    {
+      "t": 21150,
+      "event": "paired through the share intent"
+    }
+  ],
+  "error": "Error: Timed out waiting for the saved node in the app\n    at waitFor (file:///Users/normy/autobyteus_org/autobyteus-worktrees/phone-live-updates-434/tickets/in-progress/phone-live-updates-434/evidence/API-09-emulator/emulator-background-harness.mjs:51:9)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/phone-live-updates-434/tickets/in-progress/phone-live-updates-434/evidence/API-09-emulator/emulator-background-harness.mjs:154:3",
+  "runs": {
+    "teamRun": "emu_team_d61978f4095c41078a76be01737af176",
+    "leadRun": "emu_lead_02ca2494bd824bb28f6941551f1d8158",
+    "agentRun": "emu_agent_5f1814ee1ae94e8186c580e7c799d8be"
+  },
+  "cleanup": {
+    "serverExited": true,
+    "rootRemoved": true
+  },
+  "finishedAt": "2026-11-08T10:09:59.419Z"
+}

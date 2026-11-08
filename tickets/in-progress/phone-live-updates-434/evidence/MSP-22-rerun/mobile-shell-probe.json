@@ -1,0 +1,303 @@
+{
+  "startedAt": "2026-11-08T09:36:57.212Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "beta": {
+      "port": 60480,
+      "nodeId": "srv_NcmS46pSSPV30hZjG-G81v-SsYiYpYmt",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "alpha": {
+      "port": 60479,
+      "nodeId": "srv_Y1m9cYicz2-vSZPcIlLskVOKMwYsTglF",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "gamma": {
+      "port": 60707,
+      "nodeId": "srv_yFbTuBSt5X8hQwKUtFBLKOZ2FhL26uQW",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_0d87200a6c504ba696dc4a70c6ab7624",
+    "writerRun": "release_notes_writer_9c4a99bd473147f199cbb7a2916a9738",
+    "squadRun": "docs_review_team_4dd134b02d5d4b918d4a594da8013634",
+    "reviewer": "release_notes_writer_8816ef34a0674b459732472f30e66dd9",
+    "memberDelegated": "fact_checker_ddec71950ae249d3a8c55daa510eb1f7",
+    "remoteAgentRun": "publisher_ac1c3ccc38fd48b8906c88599923989c",
+    "remoteTeamRun": "studio_team_a88d5d9718b14f548fe01419da5f04f1",
+    "plain": [
+      "fact_checker_1b924cd407324fb8bdb084cdb6bcd954",
+      "fact_checker_4f7d9ec39e524248abf1a4364c8a0d32",
+      "fact_checker_a0959d40db4b4d2d8e4be82f7057e606"
+    ],
+    "org": "delivery_org_8f1810a4bc3d442691d3b4618c46c4f3",
+    "orgPlanner": "release_notes_writer_79350219d30b404eb83d0df5c422d148",
+    "reviewOrg": "review_org_95755d5358234ae988297179b482b3ed",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_d7ae23d8fd4b4c8fbc653962b14d72f6",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_b77b03b45072486684fd7f724f2d419f",
+    "deliveryLead": "fact_checker_02838bf234a741d6afaa42c9d16477d2",
+    "deliveryMate": "release_notes_writer_079babb1da2d47cc88cf65209b324f1d",
+    "leadDelegated": "changelog_helper_e5ef7baaf305491e8250fa6d84d8e585",
+    "approver": "approver_d0195f12680e48a6b81ea3273bbc74e0",
+    "taskA": "launch-5d032a-1",
+    "taskB": "launch-5d032a-2"
+  },
+  "cases": {
+    "MSP-22": {
+      "result": "Pass",
+      "seconds": 35.8,
+      "message": {
+        "team": "LONG-T-1 HOLD_MS:30000",
+        "agent": "LONG-A-1 HOLD_MS:30000"
+      },
+      "sendingView": {
+        "team": {
+          "copies": 1,
+          "toolCallAfterMessage": true,
+          "tail": [
+            "L",
+            "lead",
+            "REPLY:Start team.",
+            "You",
+            "LONG-T-1 HOLD_MS:30000",
+            "L",
+            "lead",
+            "run_command",
+            "Context Files (0)",
+            "(drag, paste, or upload)"
+          ]
+        },
+        "agent": {
+          "copies": 1,
+          "toolCallAfterMessage": true,
+          "tail": [
+            "LA",
+            "Live Agent",
+            "REPLY:Start agent.",
+            "You",
+            "LONG-A-1 HOLD_MS:30000",
+            "LA",
+            "Live Agent",
+            "run_command",
+            "Context Files (0)",
+            "(drag, paste, or upload)"
+          ]
+        }
+      },
+      "duringTurn": {
+        "team": {
+          "copies": 1,
+          "toolCallAfterMessage": true,
+          "tail": [
+            "L",
+            "lead",
+            "REPLY:Start team.",
+            "You",
+            "LONG-T-1 HOLD_MS:30000",
+            "L",
+            "lead",
+            "run_command",
+            "Context Files (0)",
+            "(drag, paste, or upload)"
+          ]
+        },
+        "agent": {
+          "copies": 1,
+          "toolCallAfterMessage": true,
+          "tail": [
+            "LA",
+            "Live Agent",
+            "REPLY:Start agent.",
+            "You",
+            "LONG-A-1 HOLD_MS:30000",
+            "LA",
+            "Live Agent",
+            "run_command",
+            "Context Files (0)",
+            "(drag, paste, or upload)"
+          ]
+        }
+      },
+      "duringTurnElapsedMs": 8947,
+      "secondPhoneOpenRetriesFU004": {
+        "team": 0,
+        "agent": 0
+      },
+      "afterTurn": {
+        "team": {
+          "copies": 1,
+          "toolCallAfterMessage": true,
+          "tail": [
+            "You",
+            "LONG-T-1 HOLD_MS:30000",
+            "L",
+            "lead",
+            "run_command",
+            "L",
+            "lead",
+            "REPLY:LONG-T-1 HOLD_MS:30000",
+            "Context Files (0)",
+            "(drag, paste, or upload)"
+          ]
+        },
+        "agent": {
+          "copies": 1,
+          "toolCallAfterMessage": true,
+          "tail": [
+            "You",
+            "LONG-A-1 HOLD_MS:30000",
+            "LA",
+            "Live Agent",
+            "run_command",
+            "LA",
+            "Live Agent",
+            "REPLY:LONG-A-1 HOLD_MS:30000",
+            "Context Files (0)",
+            "(drag, paste, or upload)"
+          ]
+        }
+      },
+      "sendingAfter": {
+        "team": {
+          "copies": 1,
+          "toolCallAfterMessage": true,
+          "tail": [
+            "lead",
+            "REPLY:Start team.",
+            "You",
+            "LONG-T-1 HOLD_MS:30000",
+            "L",
+            "lead",
+            "run_command",
+            "REPLY:LONG-T-1 HOLD_MS:30000",
+            "Context Files (0)",
+            "(drag, paste, or upload)"
+          ]
+        },
+        "agent": {
+          "copies": 1,
+          "toolCallAfterMessage": true,
+          "tail": [
+            "Live Agent",
+            "REPLY:Start agent.",
+            "You",
+            "LONG-A-1 HOLD_MS:30000",
+            "LA",
+            "Live Agent",
+            "run_command",
+            "REPLY:LONG-A-1 HOLD_MS:30000",
+            "Context Files (0)",
+            "(drag, paste, or upload)"
+          ]
+        }
+      },
+      "stored": {
+        "team": [
+          {
+            "content": "LONG-T-1 HOLD_MS:30000",
+            "hasMessageId": true,
+            "hasDedupeKey": true
+          }
+        ],
+        "agent": [
+          {
+            "content": "LONG-A-1 HOLD_MS:30000",
+            "hasMessageId": true,
+            "hasDedupeKey": true
+          }
+        ]
+      },
+      "rawTraceFiles": 3
+    }
+  },
+  "browserErrors": [
+    {
+      "case": "setup",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "FU-003: serverStore health check of http://localhost:8000/health"
+    },
+    {
+      "case": "live-setup",
+      "line": "phone-team console: Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (404 /favicon.ico)"
+    },
+    {
+      "case": "live-setup",
+      "line": "phone-team console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "FU-003: serverStore health check of http://localhost:8000/health"
+    }
+  ],
+  "failedRequests": [
+    {
+      "case": "setup",
+      "label": "phone",
+      "url": "http://localhost:8000/health",
+      "error": "net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "case": "live-setup",
+      "label": "phone-team",
+      "url": "http://localhost:8000/health",
+      "error": "net::ERR_CONNECTION_REFUSED"
+    }
+  ],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "liveReconnect": {
+    "log": [
+      {
+        "t": 6540,
+        "event": "phones open",
+        "team": "team:live_team_646b0e7fb986429495fae582579c0cef",
+        "agent": "agent:live_agent_a885057060ab4ba89bf9b3b4e2cdbca3",
+        "org": "org:live_org_5120000ebb1449c888e8def35a790b7c"
+      }
+    ],
+    "runs": {
+      "teamRun": "live_team_646b0e7fb986429495fae582579c0cef",
+      "leadRun": "live_lead_5667d38192e9474a83e9644a7b284dae",
+      "agentRun": "live_agent_a885057060ab4ba89bf9b3b4e2cdbca3",
+      "orgRun": "live_org_5120000ebb1449c888e8def35a790b7c",
+      "orgPlanner": "live_planner_0802dd228c46435dbb793e4e535f64cd"
+    },
+    "cleanup": {
+      "browserClosed": true,
+      "proxyClosed": true,
+      "gammaStopped": true,
+      "gammaLog": "/Users/normy/autobyteus_org/autobyteus-worktrees/phone-live-updates-434/tickets/in-progress/phone-live-updates-434/evidence/MSP-22-rerun/server-gamma.log"
+    }
+  },
+  "summary": {
+    "cases": {
+      "MSP-22": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-08T09:43:45.954Z"
+}

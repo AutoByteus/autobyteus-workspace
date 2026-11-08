@@ -89,10 +89,13 @@
 //   MSP-15 DS-001  The desktop window of the same node, which shares the history load with the phone: the Projects view
 //                  reads every run (window `null`, as the Runs view and the phone); switching Runs ↔ Projects reads
 //                  nothing beyond the 5 s poll; switching to Workspaces reads once with its window (6).
+//   MSP-20…22 autobyteus-434  Live run streams after the path to the node drops (45 s), after the phone was in the
+//                  background, and a user message loaded during its own turn: `mobile-live-reconnect-cases.mjs` (its
+//                  own node gamma, a TCP proxy as the phone's network path, and its own phones); they run last.
 //
 // Prerequisites: `pnpm -C autobyteus-server-ts build` and `pnpm -C autobyteus-web build:mobile-web` (alpha serves
 // `autobyteus-web/dist/public` at /mobile); Chrome. Run: `pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<fresh>`
-// (`--cases=MSP-01,…`, `--browser-executable=<path>`). About 6 minutes.
+// (`--cases=MSP-01,…`, `--browser-executable=<path>`). About 11 minutes (MSP-20…22 about 5).
 // `--hold` sets the stack up, pairs nothing, prints the phone URLs and a pairing link for the Android emulator
 // (`http://10.0.2.2:<alpha port>`) and, with `--bind=0.0.0.0`, for this machine's LAN address, and keeps the stack until
 // Ctrl+C (device checks); it runs no case.
@@ -106,6 +109,7 @@ import { randomUUID } from 'node:crypto';
 import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import { runLiveReconnectCases } from './mobile-live-reconnect-cases.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -1843,6 +1847,8 @@ const runCases = async () => {
     assert(failures.length === 0, failures.join('; '), facts);
     return facts;
   });
+
+  await runLiveReconnectCases({ runCase, serverAt, freePort, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact });
 };
 
 try {
