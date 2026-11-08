@@ -264,6 +264,16 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe {
     if (await isNodeIdentityPendingAnswer(response)) {
       throw new RemoteCollaborationSettingsError("NODE_IDENTITY_NOT_MIGRATED", `${baseUrl}: ${NODE_IDENTITY_NOT_MIGRATED_TEXT}`, { address: baseUrl });
     }
+    if (response.status === 403) {
+      // A node's Host gate refuses a name it does not serve (autobyteus-426 REQ-020); any other 403 is not a node's status.
+      const refused = await response.json().catch(() => null) as { code?: unknown } | null;
+      if (refused?.code === "REMOTE_ACCESS_HOST_REFUSED") {
+        const host = new URL(baseUrl).hostname;
+        throw new RemoteCollaborationSettingsError("PEER_HOST_REFUSED",
+          `${baseUrl} refuses the name ${host}; add it to AUTOBYTEUS_ALLOWED_HOSTS on that node.`, { address: baseUrl, host });
+      }
+      throw notAutobyteus();
+    }
     if (!response.ok) throw notAutobyteus();
     let answer: unknown;
     try {

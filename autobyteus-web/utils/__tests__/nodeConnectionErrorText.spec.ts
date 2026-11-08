@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { localizationRuntime } from '~/localization/runtime/localizationRuntime'
 import { addressHintOf, causeText, failureText } from '../nodeConnectionErrorText'
+import { settingsFailureOf } from '../nodeSettingsError'
 
 /** one-nodes-tab REQ-707, REQ-708: causes in plain words (the spec's English copy); "fetch failed" is never shown. */
 
@@ -29,6 +30,22 @@ describe('nodeConnectionErrorText', () => {
     expect(failureText(t, { code: 'NODE_IDENTITY_NOT_MIGRATED', message: 'x' }, { node: 'spare' })).toBe("This node's identity is waiting for its data migration.")
     expect(failureText(t, { code: 'PEER_UNREACHABLE', message: 'x', attempts: [{ address: 'http://spare:29695', result: 'identity_pending' }] }, { node: 'spare' }))
       .toBe("This node's identity is waiting for its data migration.")
+  })
+
+  // autobyteus-426 REQ-020 / AC-020 (2), (3): a peer address whose node refuses the name it is addressed by.
+  it('names the refused host on a changed address and on the connect flow\'s address lookup; a non-node answer keeps its text', () => {
+    const text = 'The node at this address doesn’t accept the name lvh.me. Add lvh.me to AUTOBYTEUS_ALLOWED_HOSTS on that node, or use its IP address.'
+    const changeAddress = settingsFailureOf({ message: 'http://lvh.me:29695 refuses the name lvh.me',
+      extensions: { code: 'PEER_HOST_REFUSED', address: 'http://lvh.me:29695', host: 'lvh.me' } })
+    expect(changeAddress).toMatchObject({ code: 'PEER_HOST_REFUSED', host: 'lvh.me' })
+    expect(failureText(t, changeAddress, { node: 'office' })).toBe(text)
+    expect(failureText(t, { code: 'PEER_HOST_REFUSED', message: 'x', address: 'http://lvh.me:29695' }, { node: 'office' })).toBe(text)
+    expect(failureText(t, { code: 'PEER_UNREACHABLE', message: 'x', attempts: [
+      { address: 'http://lvh.me:29695', result: 'host_refused' },
+      { address: 'http://192.168.2.90:29695', result: 'refused' },
+    ] }, { node: 'office' })).toBe(text)
+    expect(causeText(t, 'host_refused', 'office.example.com:29695')).toContain('doesn’t accept the name office.example.com.')
+    expect(failureText(t, { code: 'PEER_NOT_AUTOBYTEUS', message: 'x' }, { node: 'office' })).toBe("Something answers there, but it isn't an AutoByteus node.")
   })
 
   it('the Docker hint only for a node in a container whose first address was loopback, with host.docker.internal on that port', () => {

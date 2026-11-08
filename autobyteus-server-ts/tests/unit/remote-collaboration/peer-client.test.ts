@@ -186,4 +186,18 @@ describe("PeerClient", () => {
     const slowBody = client(async () => ({ ok: true, status: 200, json: async () => { throw Object.assign(new Error("aborted"), { name: "TimeoutError" }); } }));
     await expect(slowBody.client.fetchNodeId("http://slow")).rejects.toMatchObject({ code: "PEER_UNREACHABLE" });
   });
+
+  it("autobyteus-426 REQ-020: names a host name the node's Host gate refuses; another 403 stays not an AutoByteus node", async () => {
+    const hostGate = client(async () => answer({ error: "REMOTE_ACCESS_HOST_REFUSED", code: "REMOTE_ACCESS_HOST_REFUSED",
+      message: "Requests addressed to this host name are not accepted by this node." }, 403));
+    await expect(hostGate.client.fetchNodeId("http://lvh.me:29695")).rejects.toMatchObject({
+      code: "PEER_HOST_REFUSED",
+      message: "http://lvh.me:29695 refuses the name lvh.me; add it to AUTOBYTEUS_ALLOWED_HOSTS on that node.",
+      details: { address: "http://lvh.me:29695", host: "lvh.me" },
+    });
+    const otherRefusal = client(async () => answer({ code: "REMOTE_ACCESS_ORIGIN_REFUSED" }, 403));
+    await expect(otherRefusal.client.fetchNodeId("http://peer:29700")).rejects.toMatchObject({ code: "PEER_NOT_AUTOBYTEUS" });
+    const noBody = client(async () => ({ ok: false, status: 403, json: async () => { throw new Error("no body"); } }));
+    await expect(noBody.client.fetchNodeId("http://peer:29700")).rejects.toMatchObject({ code: "PEER_NOT_AUTOBYTEUS" });
+  });
 });
