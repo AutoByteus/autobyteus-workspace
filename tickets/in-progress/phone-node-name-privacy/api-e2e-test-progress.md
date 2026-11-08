@@ -32,3 +32,12 @@
 | 07:57Z | API-10 | Completed | Pass | Switch node, Remove (confirmation names), relaunch opens last node 'Test Node', Unpair → pairing screen |
 | 07:57Z | API-08b | Started | — | user-driven repro of the error-page leak: overlay Retry while the node is down |
 | 07:58Z | API-08b | Completed | Fail | reproduced by user actions: blocked-link overlay → node down → RETRY → Chromium error page with http://hostbox-9f3.home.arpa:47331/mobile behind 'Can’t reach Test Desktop' (API-08-11) |
+| 08:22Z | round 2 | Checkpoint | — | Round 2 (IR-003, ea45dc1643): plan in the investigation's 'Round 2 Basis And Rerun Plan'. Reused: IMP-10 (Android unit), IMP-11 (instrumented = API-03). Next: rebuild APK, emulator, API-04…API-11 |
+| 08:30Z | API-04 | Started | — | round 2: share A's link 'Test Desktop'; AC-001; sheet |
+| 08:31Z | API-04 | Completed | Pass | round 2: paired by Share; session without nodeName → header 'Test Desktop' (hello); sheet without address |
+| 08:31Z | API-08 | Started | — | round 2: reload / Retry / Back while A down; Retry after recovery |
+| 08:37Z | API-08 | Checkpoint | — | real APK: reload, Retry and Back while A down show WebView's error page with the URL full-screen, no overlay; DIAG433 logging (removed) shows 2 onPageFinished when a failed load replaces a loaded page |
+| 08:37Z | API-11 | Started | — | first-load failures via proxy :47333 (502, drop, refused), real APK |
+| 08:38Z | API-11 | Completed | Pass | first load 502 / Retry drop / Retry refused: only the overlay, no address; Retry after recovery closes it (page shows unpaired: Retry loads /mobile without the pairing link, pre-existing → FU-003) |
+| 08:38Z | API-08 | Completed | Fail | real APK: reload (API-08-03), Retry (API-08-11/12), Back (API-08-05) while down: WebView's error page with the URL full-screen, no overlay, no Retry |
+| 08:41Z | round 2 | Completed | Fail | report, revision record API-REV-002, FU-003 written; next: commit, failure-origin review |

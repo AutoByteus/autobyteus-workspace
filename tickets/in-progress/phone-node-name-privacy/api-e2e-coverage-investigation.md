@@ -18,11 +18,32 @@ The plan: what must be proven, how, the decisions about existing tests, and the 
 - Delivery Revision Record (delivery re-entry only): `N/A`
 - Relevant Delivery Revision IDs: `N/A`
 - API/E2E Revision Record (created after the first completed result): `api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: 1
-- Trigger: Implementation Complete, IR-001 (code `ba3ba5b23e`, documents `8f87b1ef49`), direct API/E2E route
-- Prior Investigation Reviewed: None (first round)
+- Current API/E2E Revision ID: `API-REV-002` (round 2); `API-REV-001` round 1
+- Current Investigation Round: 2
+- Trigger: round 2 — Implementation Complete IR-003 (code `ea45dc1643`, documents `2175dfba74`), SR-003/SR-004 after CRR-001 F-001 (`code-review-report.md`, from API-REV-001 API-08/08b); round 1 — IR-001 (code `ba3ba5b23e`)
+- Prior Investigation Reviewed: round 1 (this file, below), `api-e2e-execution-coverage-report.md` round 1, `api-e2e-revision-record.md` API-REV-001
 - Latest Authoritative Investigation: this file
+
+## Round 2 Basis And Rerun Plan
+
+- Changed requirements (SR-003): REQ-006, AC-007 and DEC-009. Nothing of the page or of WebView's error page shows, or reaches the accessibility tree, while an overlay is up. When a later load succeeds (Retry, Back), the overlay closes and the page shows. AC-007's triggers are a main-frame load failure on reload, on system Back into history, on the overlay's Retry and on the first load. While the node stays down, Retry keeps the overlay. FU-002 is folded into this ticket.
+- Changed design (SR-004): DS-004 revised. The WebView is `INVISIBLE` under an opaque overlay. New DS-006 (`MainFrameLoadOutcome`): a main-frame error marks the load failed, `onPageFinished` decides and resets the mark, and `onPageLoaded()` fires only for a load that succeeded. `MainActivity` shows the page on the first successful load, or when an overlay is up on the Web screen.
+- Code changed since the round-1 validated code (`git diff --name-only ba3ba5b23e ea45dc1643`, source only): `MainActivity.kt`, `ui/WebShellScreen.kt`, `web/AutoByteusWebView.kt`, `web/MainFrameLoadOutcome.kt` (new), `MainFrameLoadOutcomeTest.kt` (new), `AutoByteusMobileShellSmokeTest.kt`; plus my own `mobile-shell-probe.mjs` baseline fix (`f7bb05f5ec`). No web source changed. No build-input path changed, so no fresh-start build.
+
+| Round-1 Case | Last Passed / Ran On | Decision | Reason |
+| --- | --- | --- | --- |
+| API-01 (web: IMP-02/04/05) | `ba3ba5b23e` | Still valid | no web source changed |
+| API-01 (Android: IMP-06/07) | `ba3ba5b23e` | Superseded: reuse IMP-10 | IMP-10 ran on `ea45dc1643`: `TOTAL tests 71 failures 0 errors 0`, `MainFrameLoadOutcomeTest tests 5` |
+| API-01b, API-02 (web probe) | `f7bb05f5ec` | Still valid | browser-only, no web source changed |
+| API-03 (instrumented) | `ba3ba5b23e` | Rerun by reuse: IMP-11 | IMP-11 ran the whole suite on `ea45dc1643` (`TOTAL 11 failures 0 errors 0`, incl. `diagnosticWebShellKeepsRecoveryActionsInOverlay`), same API 35 / WebView 124 image |
+| API-04 (pairing, page shows, AC-001, sheet) | `ba3ba5b23e` | Rerun | the first page is now shown by `onPageLoaded` |
+| API-05 (typed ts.net, its pairing page) | `ba3ba5b23e` | Rerun (short) | page show path |
+| API-06 (typed node named on pairing) | `ba3ba5b23e` | Rerun | page show path; pairing navigates the page |
+| API-07 (Can't connect) | `ba3ba5b23e` | Still valid | `NodeConnectionFlow`/`showCantReach`/`ConnectionInputResolver` unchanged; no page is open |
+| API-08, API-08b (Fail) | `ba3ba5b23e` | Rerun, extended | the fix; AC-007's triggers: reload, Back into history, Retry while down, Retry after recovery |
+| API-09 (toasts, link overlays) | `ba3ba5b23e` | Rerun | overlays now hide the page, and Retry must close them (FU-002) |
+| API-10 (Switch node, Remove, relaunch, Unpair) | `ba3ba5b23e` | Rerun | page show on switching and relaunch |
+| new API-11 | — | Add | AC-007 first-load failure and an HTTP error, on a real node behind a switchable test proxy (pass, 502, drop) |
 
 ## Current Requirement And Design Basis
 
@@ -142,6 +163,7 @@ Independent architecture and source review were not selected (direct route); the
 | API-07 | AC-006 | Emulator: Type an address failures | Journey | `http://nodebox-2c7.home.arpa:<B>` without the tick; `ht tp://` (unreadable) | "Can’t connect", typed text absent |
 | API-08 | AC-001 (not reachable), AC-002 (not reachable), AC-007 (load failure), AC-009 (Can't reach), AC-010 (Check/Retry, reachability) | Emulator: node A stopped and restarted | Journey | A's page open, stop A: header, banner, sheet with diagnostic, Check; reload → overlay; back to list: row Not reachable; tap → Can't reach screen; start A; Retry | Real network failure through the real WebView |
 | API-08b | AC-007, AC-009, QR-001 | Emulator: the API-08 finding by user actions only | Journey | A's page: a link that can't open here → node A stopped → overlay RETRY | Added in execution: proves the leak without DevTools |
+| API-11 | AC-007 (first load, HTTP error), REQ-006 (hidden page, overlay closes) | Emulator: node A behind a test HTTP proxy on its own port, with modes `pass`, `502` for `/mobile`, and `drop` for `/mobile`; status always passes through | Journey | Pairing link for the proxy's address; first load with `502`, then `drop`; Retry in each mode; then `pass`, Retry; reload with `502` while open | The node cannot be made to fail `/mobile` while answering status; the proxy keeps the real node and page |
 | API-09 | AC-007 (toast, blocked link, no app) | Emulator: WebView navigation events on A's page | Journey (DevTools-injected link clicks) | DevTools: click an `https://example.com/` link, a same-origin `/rest/…` link outside `/mobile`, a `mailto:` link, a download of a node file; screenshots for toasts, uiautomator for overlays | No page in an empty node offers these links; the click enters the real `shouldOverrideUrlLoading` / `DownloadListener` |
 | API-10 | AC-010, RU-03 | Emulator: Switch node, Remove, Unpair, relaunch | Journey | Switch node from the sheet A→B; ⋮ Remove on the ts.net entry; force-stop + relaunch opens the last node; Unpair from the sheet | Preserved flows |
 
