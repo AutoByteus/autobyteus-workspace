@@ -4,7 +4,7 @@ $Script:LauncherLabelKey = 'com.autobyteus.launcher'
 $Script:LauncherLabelValue = 'server-docker'
 $Script:NodeLabelKey = 'com.autobyteus.nodeName'
 $Script:ConfigLabelKey = 'com.autobyteus.configHash'
-$Script:ConfigHashVersion = 'v9'
+$Script:ConfigHashVersion = 'v10'
 $Script:NodeNamePrefix = 'autobyteus-server'
 $Script:DefaultNodeName = "$($Script:NodeNamePrefix)-0"
 $Script:DefaultImage = 'autobyteus/autobyteus-server'
@@ -26,7 +26,10 @@ Usage:
 
 Commands:
   install            Install or replace the local autobyteus-docker CLI
-  new-container      Create a new Docker node with automatic indexed name and ports
+  new-container [--allow-local-network]
+                     Create a new Docker node with automatic indexed name and ports, and print its setup code
+  setup-code [--name <node>]
+                     Print a one-time setup code to connect the desktop app to a node (valid 30 minutes)
   upgrade --all      Upgrade all managed Docker nodes using their saved image refs
   destroy --all      Remove all managed Docker nodes, keeping named volumes
   destroy --name <node>
@@ -51,6 +54,9 @@ Options:
   --image <image>    Docker image repository or full image ref (default: $Script:DefaultImage; explicit upgrade --all retargets all nodes)
   --all              Required for upgrade/destroy; also applies stop/status/workspace/storage to all managed nodes
   --version <ver>    For update: the server version to update to (default: the newest on the node's track)
+  --allow-local-network
+                     For new-container: publish the node on every address of this computer (your local network
+                     too), not only on this computer and its Tailscale address
   -h, --help         Show this help
 
 In-place update (update):
@@ -58,6 +64,13 @@ In-place update (update):
   release, beta -> the newest release, beta or stable. A node pinned to a version tag or using another
   image needs --version. Only newer, signed server packages are accepted; a failed update leaves the
   old version running. A server that needs a newer system than the image has needs upgrade --all.
+
+Access:
+  Every request to a node needs a key. The desktop app gets one for a setup code: run setup-code on this
+  computer and enter the code on the app's Nodes page. A node is published on this computer and, when
+  Tailscale runs, on this computer's Tailscale address; --allow-local-network publishes it on every address.
+  setup-code first applies the current launcher configuration (a node created by an older launcher is
+  recreated once, keeping its named volumes and port).
 
 Release tracks:
   latest             Newest stable release (default). Plain upgrade --all keeps nodes on their saved tag.
@@ -137,6 +150,7 @@ function Save-NodeState($State) {
     backendPort = [int]$State.backendPort
     imageRef = $State.imageRef
     configHash = $State.configHash
+    allowLocalNetwork = [bool]$State.allowLocalNetwork
     createdAt = $State.createdAt
     updatedAt = $State.updatedAt
   } | ConvertTo-Json -Depth 4 | Set-Content -Encoding UTF8 -Path $path

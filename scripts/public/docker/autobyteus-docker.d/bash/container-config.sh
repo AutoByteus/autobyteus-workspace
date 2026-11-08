@@ -1,19 +1,51 @@
 # Launcher desired configuration, exact argument construction and the storage text.
+
+# This computer's Tailscale IPv4 address, from the first Tailscale CLI found, when it answers; nothing otherwise.
+host_tailscale_address() {
+  local cli address
+  for cli in tailscale /Applications/Tailscale.app/Contents/MacOS/Tailscale; do
+    command -v "$cli" >/dev/null 2>&1 || continue
+    address="$("$cli" ip -4 2>/dev/null | head -n 1 | tr -d '[:space:]')" || address=""
+    [[ "$address" =~ ^100\.[0-9]+\.[0-9]+\.[0-9]+$ ]] && printf '%s\n' "$address"
+    return 0
+  done
+  return 0
+}
+
+# Where the node's port is published (node access model NA-4): this computer, and its Tailscale address when present;
+# every address with --allow-local-network. A container cannot tell this computer from the local network, so the
+# published addresses are the node's network admission.
+publish_addresses() {
+  if [[ "${ALLOW_LOCAL_NETWORK:-0}" == "1" ]]; then
+    printf 'all\n'
+    return
+  fi
+  printf '127.0.0.1\n'
+  host_tailscale_address
+}
+
+publish_text() { publish_addresses | paste -sd ',' -; }
+
 desired_config_hash() {
   local node_name="$1" image_ref="$2" volume_prefix workspace_root node_workspace_host shared_host
   volume_prefix="$(volume_prefix_for "$node_name")"
   workspace_root="$(shared_workspace_root)"
   node_workspace_host="$(node_workspace_host_path "$node_name")"
   shared_host="$(shared_workspace_host_path)"
-  { printf 'version=%s\nnode=%s\nimage=%s\nbackend=%s\nworkspace_volume=%s-workspace\ndata_volume=%s-data\nroot_volume=%s-root-home\nchromium_profile_volume=%s-chromium-profile\nchromium_profile_target=%s\nserver_packages_volume=%s-server-packages\nserver_packages_target=%s\nshared_workspace_root=%s\nnode_workspace_host=%s\nnode_workspace_target=%s\nshared_workspace_host=%s\nshared_workspace_target=%s\ntemp_workspace_env=AUTOBYTEUS_TEMP_WORKSPACE_DIR=%s\nserver_host=http://localhost:%s\n' \
-    "$CONFIG_HASH_VERSION" "$node_name" "$image_ref" "$BACKEND_PORT" "$volume_prefix" "$volume_prefix" "$volume_prefix" "$volume_prefix" "$CHROMIUM_PROFILE_CONTAINER_PATH" "$volume_prefix" "$SERVER_PACKAGES_CONTAINER_PATH" "$workspace_root" "$node_workspace_host" "$WORKSPACE_CONTAINER_PATH" "$shared_host" "$SHARED_CONTAINER_PATH" "$TEMP_WORKSPACE_ENV_VALUE" "$BACKEND_PORT"
+  { printf 'version=%s\nnode=%s\nimage=%s\nbackend=%s\nworkspace_volume=%s-workspace\ndata_volume=%s-data\nroot_volume=%s-root-home\nchromium_profile_volume=%s-chromium-profile\nchromium_profile_target=%s\nserver_packages_volume=%s-server-packages\nserver_packages_target=%s\nshared_workspace_root=%s\nnode_workspace_host=%s\nnode_workspace_target=%s\nshared_workspace_host=%s\nshared_workspace_target=%s\ntemp_workspace_env=AUTOBYTEUS_TEMP_WORKSPACE_DIR=%s\nserver_host=http://localhost:%s\npublish=%s\n' \
+    "$CONFIG_HASH_VERSION" "$node_name" "$image_ref" "$BACKEND_PORT" "$volume_prefix" "$volume_prefix" "$volume_prefix" "$volume_prefix" "$CHROMIUM_PROFILE_CONTAINER_PATH" "$volume_prefix" "$SERVER_PACKAGES_CONTAINER_PATH" "$workspace_root" "$node_workspace_host" "$WORKSPACE_CONTAINER_PATH" "$shared_host" "$SHARED_CONTAINER_PATH" "$TEMP_WORKSPACE_ENV_VALUE" "$BACKEND_PORT" "$(publish_text)"
   } | hash_text
 }
 
 run_container() {
   local node_name="$1" container_name="$2" image_ref="$3" config_hash="$4" output volume_prefix node_workspace_host shared_host
+  local address publish_args=()
   volume_prefix="$(volume_prefix_for "$node_name")"
   ensure_shared_workspace_dirs "$node_name"
+  while IFS= read -r address; do
+    [[ -n "$address" ]] || continue
+    if [[ "$address" == "all" ]]; then publish_args+=(-p "${BACKEND_PORT}:8000"); else publish_args+=(-p "${address}:${BACKEND_PORT}:8000"); fi
+  done < <(publish_addresses)
   node_workspace_host="$(node_workspace_host_path "$node_name")"
   shared_host="$(shared_workspace_host_path)"
   local run_args=(
@@ -37,7 +69,7 @@ run_container() {
     -v "${volume_prefix}-server-packages:${SERVER_PACKAGES_CONTAINER_PATH}" \
     --cap-add SYS_ADMIN \
     --security-opt seccomp=unconfined \
-    -p "${BACKEND_PORT}:8000" \
+    "${publish_args[@]}" \
     --mount "type=bind,source=${node_workspace_host},target=${WORKSPACE_CONTAINER_PATH}" \
     --mount "type=bind,source=${shared_host},target=${SHARED_CONTAINER_PATH}"
   )
