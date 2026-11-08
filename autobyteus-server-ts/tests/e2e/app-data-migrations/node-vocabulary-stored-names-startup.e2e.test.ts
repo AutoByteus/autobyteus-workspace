@@ -358,7 +358,11 @@ describe("autobyteus-290 stored names: a node upgraded over its released data", 
       headers: { "content-type": "application/json", authorization: `Bearer ${hubToken}` }, body: "{}" });
     expect(ingest.status).toBe(503);
     expect(await ingest.json()).toMatchObject({ error: "MEMORY_SYNC_NOT_MIGRATED" });
-    const read = await gqlRaw(beta, `{ getMemorySyncStatus { hub { enabled } } }`);
+    // A GraphQL error, HTTP 200 (autobyteus-437 CR-005): the card shows the reason, not a failed request.
+    const readResponse = await fetch(`${beta.baseUrl}/graphql`, { method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify({ query: `{ getMemorySyncStatus { hub { enabled } } }` }) });
+    expect(readResponse.status).toBe(200);
+    const read = await readResponse.json() as { errors?: Array<{ message: string }> };
     expect(read.errors?.map((error) => error.message)).toEqual([MEMORY_SYNC_TEXT]);
     const sources = (await gql(beta, `{ listMemoryExplorerSources { key type } }`)).listMemoryExplorerSources as Json[];
     expect(sources.map((source) => source.type), "only local memory").toEqual(["LOCAL"]);
