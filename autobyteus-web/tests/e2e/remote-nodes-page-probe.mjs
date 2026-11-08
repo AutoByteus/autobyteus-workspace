@@ -32,6 +32,9 @@
 //   by node ID and by address while that node is down. An unreachable node is added with its cause.
 // - NP-05 (AC-704): Turn on kappa from its row. Both sides are registered with pinned node IDs, kappa's switch is
 //   turned on, both directions show Working, and each server lists the other's Agents.
+// - NP-13 (autobyteus-426 AC-020): Change address of kappa to `http://lvh.me:<port>`, a name kappa's Host gate refuses:
+//   "The node at this address doesn’t accept the name lvh.me. Add lvh.me to AUTOBYTEUS_ALLOWED_HOSTS on that node, or use
+//   its IP address."; a plain HTTP server (answers, but no node) keeps "isn't an AutoByteus node"; kappa's address is unchanged.
 // - NP-06 (naming rule): lambda already has a node named "Embedded Node", so this node is registered there as
 //   "Embedded Node 2".
 // - NP-07 (naming race): mu gains a node named "Embedded Node" between the confirmation and Turn on. The step fails
@@ -535,6 +538,46 @@ try {
     expect(offers.alphaAsksKappa.refusalCode === null && offers.alphaAsksKappa.entries.some(entry => entry.name === 'Kappa Helper')
       && offers.kappaAsksAlpha.refusalCode === null && offers.kappaAsksAlpha.entries.some(entry => entry.name === 'Alpha Helper'), `each lists the other's Agents: ${JSON.stringify(offers)}`);
     return { steps, onAlpha, onKappa, kappaFile: await peersFile(kappa), kappaDirections, offers };
+  });
+
+  await runCase('NP-13', async () => {
+    // autobyteus-426 REQ-020 / AC-020 (2): Change address to a name kappa's Host gate refuses (`lvh.me` resolves to this
+    // machine; kappa allows only its own names, AUTOBYTEUS_ALLOWED_HOSTS unset). The row says which name and what to do;
+    // nothing is saved. A control: an address that answers but is not a node keeps its own text.
+    const key = kappa.nodeId;
+    const refusedAddress = kappa.baseUrl.replace('127.0.0.1', 'lvh.me');
+    const before = (await peersOf(alpha)).find(peer => peer.nodeId === key)?.baseUrl ?? null;
+    await openDetails(key);
+    const tryAddress = async (address) => {
+      if (!(await page.locator(`[data-testid="node-address-editor-${key}"]`).count())) await page.locator(`[data-testid="node-change-address-${key}"]`).click();
+      await page.locator(`[data-testid="node-address-input-${key}"]`).fill(address);
+      await page.locator(`[data-testid="node-address-save-${key}"]`).click();
+      let shown = null;
+      await waitFor(`the answer for ${address}`, async () => {
+        const editor = page.locator(`[data-testid="node-address-editor-${key}"]`);
+        const error = page.locator(`[data-testid="node-address-error-${key}"]`);
+        shown = (await error.count()) ? clean(await error.innerText()) : (await editor.count()) ? clean(await editor.innerText()) : null;
+        return Boolean(shown && /accept the name|isn.t an AutoByteus node|can.t be found|refused|did not answer/i.test(shown));
+      }, 30_000).catch(() => undefined);
+      return shown;
+    };
+    const refused = await tryAddress(refusedAddress);
+    await shot('NP-13-change-address-host-refused');
+    // The control: a plain HTTP server on this machine that answers every request, but is no AutoByteus node.
+    const { createServer } = await import('node:http');
+    const plain = createServer((request, response) => { response.writeHead(200, { 'content-type': 'text/html' }); response.end('<html><body>not a node</body></html>'); });
+    const plainPort = await new Promise(resolve => plain.listen(0, '127.0.0.1', () => resolve(plain.address().port)));
+    const notNode = await tryAddress(`http://127.0.0.1:${plainPort}`);
+    await shot('NP-13-change-address-not-a-node');
+    await new Promise(resolve => plain.close(resolve));
+    const after = (await peersOf(alpha)).find(peer => peer.nodeId === key)?.baseUrl ?? null;
+    const expectedText = 'The node at this address doesn’t accept the name lvh.me. Add lvh.me to AUTOBYTEUS_ALLOWED_HOSTS on that node, or use its IP address.';
+    expect(Boolean(refused?.includes(expectedText)), `the refused name's text: ${refused}`);
+    expect(Boolean(notNode?.includes("Something answers there, but it isn't an AutoByteus node.")), `a non-node answer keeps its text: ${notNode}`);
+    expect(before === kappa.baseUrl && after === kappa.baseUrl, `kappa's address unchanged on alpha: ${before} → ${after}`);
+    const cancel = page.locator(`[data-testid="node-address-editor-${key}"] button`).filter({ hasText: /Cancel/ });
+    if (await cancel.count()) await cancel.first().click();
+    return { refusedAddress, refused, notNode, before, after };
   });
 
   await runCase('NP-06', async () => {
