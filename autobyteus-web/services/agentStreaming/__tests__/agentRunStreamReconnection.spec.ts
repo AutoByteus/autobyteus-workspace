@@ -13,7 +13,7 @@ import {
 const io = vi.hoisted(() => ({
   projection: vi.fn(),
   queries: [] as string[],
-  ws: null as unknown,
+  ws: null as any, // the socket double the mocked WebSocketClient constructor returns
 }));
 vi.mock('~/utils/apolloClient', () => ({
   getApolloClient: () => ({
