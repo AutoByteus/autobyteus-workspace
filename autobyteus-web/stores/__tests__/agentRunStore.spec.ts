@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { setActivePinia, createPinia } from 'pinia';
 import { useAgentRunStore } from '../agentRunStore';
 import { useAgentContextsStore } from '../agentContextsStore';
-import { AgentStreamingService } from '~/services/agentStreaming';
+import { AgentStreamingService } from '~/services/agentStreaming/AgentStreamingService';
 import { PrepareAgentRun } from '~/graphql/mutations/agentMutations';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { hydrateContextAttachment } from '~/utils/contextFiles/contextAttachmentModel';
@@ -52,7 +52,7 @@ const {
   mockConnect: vi.fn(),
   mockDisconnect: vi.fn(),
   mockAttachContext: vi.fn(),
-  mockConnectionState: { value: 'connected' as 'connected' | 'disconnected' | 'connecting' | 'reconnecting' },
+  mockConnectionState: { value: 'connected' as 'connected' | 'disconnected' | 'connecting' },
   contextFileUploadStoreMock: {
     finalizeDraftAttachments: vi.fn(async ({ attachments }: { attachments: any[] }) => attachments),
   },
@@ -67,13 +67,8 @@ vi.mock('~/utils/apolloClient', () => ({
   })),
 }));
 
-vi.mock('~/services/agentStreaming', () => ({
-  ConnectionState: {
-    DISCONNECTED: 'disconnected',
-    CONNECTING: 'connecting',
-    CONNECTED: 'connected',
-    RECONNECTING: 'reconnecting',
-  },
+// The store builds each run's stream through `createAgentRunStream`, which constructs the service from its own module.
+vi.mock('~/services/agentStreaming/AgentStreamingService', () => ({
   AgentStreamingService: vi.fn().mockImplementation((_endpoint, options) => {
     mockServiceOptions.value = options;
     return {
@@ -87,6 +82,8 @@ vi.mock('~/services/agentStreaming', () => ({
     approveTool: vi.fn(),
     denyTool: vi.fn(),
     interruptGeneration: mockInterruptGeneration,
+    onConnectionChange: vi.fn(() => () => undefined),
+    dropConnection: vi.fn(),
     };
   }),
 }));

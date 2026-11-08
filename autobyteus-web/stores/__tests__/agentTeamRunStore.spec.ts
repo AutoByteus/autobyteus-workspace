@@ -81,7 +81,6 @@ vi.mock('~/services/agentStreaming', () => ({
     DISCONNECTED: 'disconnected',
     CONNECTING: 'connecting',
     CONNECTED: 'connected',
-    RECONNECTING: 'reconnecting',
   },
   TeamStreamingService: vi.fn().mockImplementation((_endpoint, options) => {
     mockServiceOptions.value = options

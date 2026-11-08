@@ -1,0 +1,684 @@
+{
+  "startedAt": "2026-11-08T08:30:26.306Z",
+  "scenarios": {
+    "R1": {
+      "delays": [
+        {
+          "id": "MARK-1",
+          "ms": 45
+        },
+        {
+          "id": "MARK-2",
+          "ms": 43
+        },
+        {
+          "id": "MARK-3",
+          "ms": 44
+        }
+      ]
+    },
+    "R6": {
+      "liveView": {
+        "copies": 1,
+        "tail": [
+          "You",
+          "MARK-3",
+          "L",
+          "lead",
+          "REPLY:MARK-3",
+          "You",
+          "PHONE-LONG HOLD_MS:30000",
+          "L",
+          "lead",
+          "run_command",
+          "Context Files (0)",
+          "(drag, paste, or upload)"
+        ]
+      },
+      "reopenedDuringTurn": {
+        "copies": 1,
+        "tail": [
+          "You",
+          "MARK-3",
+          "L",
+          "lead",
+          "REPLY:MARK-3",
+          "You",
+          "PHONE-LONG HOLD_MS:30000",
+          "L",
+          "lead",
+          "run_command",
+          "Context Files (0)",
+          "(drag, paste, or upload)"
+        ]
+      },
+      "freshDuringTurn": {
+        "copies": 0,
+        "tail": []
+      },
+      "afterTurnSameView": {
+        "copies": 2,
+        "tail": [
+          "MARK-3",
+          "L",
+          "lead",
+          "REPLY:MARK-3",
+          "You",
+          "PHONE-LONG HOLD_MS:30000",
+          "L",
+          "lead",
+          "run_command",
+          "REPLY:PHONE-LONG HOLD_MS:30000",
+          "Context Files (0)",
+          "(drag, paste, or upload)"
+        ]
+      },
+      "reopenedAfterTurn": {
+        "copies": 2,
+        "tail": [
+          "MARK-3",
+          "L",
+          "lead",
+          "REPLY:MARK-3",
+          "You",
+          "PHONE-LONG HOLD_MS:30000",
+          "L",
+          "lead",
+          "run_command",
+          "REPLY:PHONE-LONG HOLD_MS:30000",
+          "Context Files (0)",
+          "(drag, paste, or upload)"
+        ]
+      },
+      "stored": [
+        {
+          "entry": "assistant:REPLY:MARK-3",
+          "hasMessageId": false
+        },
+        {
+          "entry": "user:PHONE-LONG HOLD_MS:30000",
+          "hasMessageId": true
+        },
+        {
+          "entry": "tool_call:",
+          "hasMessageId": false
+        },
+        {
+          "entry": "assistant:REPLY:PHONE-LONG HOLD_MS:30000",
+          "hasMessageId": false
+        }
+      ]
+    },
+    "R2": {
+      "outageMs": 6000,
+      "markerDuringOutage": {
+        "id": "MARK-4",
+        "phoneShowsAfterMs": 7180
+      },
+      "markerAfter": {
+        "id": "MARK-5",
+        "ms": 47
+      },
+      "teamSockets": [
+        {
+          "url": "/ws/agent-team/delivery_team_52fba64020d247f6af69508c915157d0?access_token=…",
+          "openedAt": 9069,
+          "closedAt": 59035,
+          "framesIn": 71
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_52fba64020d247f6af69508c915157d0?access_token=…",
+          "openedAt": 60046,
+          "closedAt": 60046,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_52fba64020d247f6af69508c915157d0?access_token=…",
+          "openedAt": 62049,
+          "closedAt": 62051,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_52fba64020d247f6af69508c915157d0?access_token=…",
+          "openedAt": 66053,
+          "closedAt": null,
+          "framesIn": 19
+        }
+      ]
+    },
+    "R3": {
+      "outageMs": 45000,
+      "phoneShowsByItselfWithin60s": 47,
+      "reconnectAttemptsSeen": 6,
+      "socketsDuring": [
+        {
+          "url": "/ws/agent-team/delivery_team_52fba64020d247f6af69508c915157d0?access_token=…",
+          "openedAt": 67282,
+          "closedAt": 67283,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_52fba64020d247f6af69508c915157d0?access_token=…",
+          "openedAt": 69286,
+          "closedAt": 69287,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_52fba64020d247f6af69508c915157d0?access_token=…",
+          "openedAt": 73290,
+          "closedAt": 73290,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_52fba64020d247f6af69508c915157d0?access_token=…",
+          "openedAt": 81296,
+          "closedAt": 81296,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_52fba64020d247f6af69508c915157d0?access_token=…",
+          "openedAt": 97311,
+          "closedAt": 97311,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_52fba64020d247f6af69508c915157d0?access_token=…",
+          "openedAt": 127312,
+          "closedAt": null,
+          "framesIn": 19
+        }
+      ],
+      "afterUserAction": null,
+      "console": [
+        {
+          "t": 67283,
+          "text": "Team WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.10:65002/mobile/_nuxt/6gKLa7nn.js:1150:3813)"
+        },
+        {
+          "t": 69287,
+          "text": "Team WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.10:65002/mobile/_nuxt/6gKLa7nn.js:1150:3813)"
+        },
+        {
+          "t": 73290,
+          "text": "Team WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.10:65002/mobile/_nuxt/6gKLa7nn.js:1150:3813)"
+        },
+        {
+          "t": 81296,
+          "text": "Team WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.10:65002/mobile/_nuxt/6gKLa7nn.js:1150:3813)"
+        },
+        {
+          "t": 97311,
+          "text": "Team WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.10:65002/mobile/_nuxt/6gKLa7nn.js:1150:3813)"
+        },
+        {
+          "t": 127313,
+          "text": "Team WebSocket transport connected"
+        }
+      ]
+    },
+    "R4": {
+      "phoneShowsByItselfWithin90s": null,
+      "socketsBefore": 10,
+      "socketsAfter": [
+        {
+          "url": "/ws/agent-team/delivery_team_52fba64020d247f6af69508c915157d0?access_token=…",
+          "openedAt": 9069,
+          "closedAt": 59035,
+          "framesIn": 71
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_52fba64020d247f6af69508c915157d0?access_token=…",
+          "openedAt": 60046,
+          "closedAt": 60046,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_52fba64020d247f6af69508c915157d0?access_token=…",
+          "openedAt": 62049,
+          "closedAt": 62051,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_52fba64020d247f6af69508c915157d0?access_token=…",
+          "openedAt": 66053,
+          "closedAt": 66267,
+          "framesIn": 19
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_52fba64020d247f6af69508c915157d0?access_token=…",
+          "openedAt": 67282,
+          "closedAt": 67283,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_52fba64020d247f6af69508c915157d0?access_token=…",
+          "openedAt": 69286,
+          "closedAt": 69287,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_52fba64020d247f6af69508c915157d0?access_token=…",
+          "openedAt": 73290,
+          "closedAt": 73290,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_52fba64020d247f6af69508c915157d0?access_token=…",
+          "openedAt": 81296,
+          "closedAt": 81296,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_52fba64020d247f6af69508c915157d0?access_token=…",
+          "openedAt": 97311,
+          "closedAt": 97311,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_52fba64020d247f6af69508c915157d0?access_token=…",
+          "openedAt": 127312,
+          "closedAt": null,
+          "framesIn": 19
+        }
+      ],
+      "phoneNoticedClose": false,
+      "afterUserActionMs": "not shown"
+    },
+    "R7": {
+      "hiddenMs": 35000,
+      "shownWhileHidden": false,
+      "socketsOpenedWhileHidden": 0,
+      "shownAfterVisibleMs": null,
+      "nextMarkerMs": 46,
+      "teamSockets": [
+        {
+          "url": "/ws/agent-team/delivery_team_52fba64020d247f6af69508c915157d0?access_token=…",
+          "openedAt": 291819,
+          "closedAt": null,
+          "framesIn": 19
+        }
+      ]
+    }
+  },
+  "timeline": [
+    {
+      "t": 4110,
+      "event": "team",
+      "teamRunId": "delivery_team_52fba64020d247f6af69508c915157d0",
+      "leadRun": "solution_designer_504b26a9443844c5a179dfbce57b0171"
+    },
+    {
+      "t": 9159,
+      "event": "phone paired"
+    },
+    {
+      "t": 9333,
+      "event": "phone opened the lead"
+    },
+    {
+      "t": 21493,
+      "event": "R1",
+      "delays": [
+        {
+          "id": "MARK-1",
+          "ms": 45
+        },
+        {
+          "id": "MARK-2",
+          "ms": 43
+        },
+        {
+          "id": "MARK-3",
+          "ms": 44
+        }
+      ]
+    },
+    {
+      "t": 59027,
+      "event": "R6",
+      "liveView": {
+        "copies": 1,
+        "tail": [
+          "You",
+          "MARK-3",
+          "L",
+          "lead",
+          "REPLY:MARK-3",
+          "You",
+          "PHONE-LONG HOLD_MS:30000",
+          "L",
+          "lead",
+          "run_command",
+          "Context Files (0)",
+          "(drag, paste, or upload)"
+        ]
+      },
+      "reopenedDuringTurn": {
+        "copies": 1,
+        "tail": [
+          "You",
+          "MARK-3",
+          "L",
+          "lead",
+          "REPLY:MARK-3",
+          "You",
+          "PHONE-LONG HOLD_MS:30000",
+          "L",
+          "lead",
+          "run_command",
+          "Context Files (0)",
+          "(drag, paste, or upload)"
+        ]
+      },
+      "freshDuringTurn": {
+        "copies": 0,
+        "tail": []
+      },
+      "afterTurnSameView": {
+        "copies": 2,
+        "tail": [
+          "MARK-3",
+          "L",
+          "lead",
+          "REPLY:MARK-3",
+          "You",
+          "PHONE-LONG HOLD_MS:30000",
+          "L",
+          "lead",
+          "run_command",
+          "REPLY:PHONE-LONG HOLD_MS:30000",
+          "Context Files (0)",
+          "(drag, paste, or upload)"
+        ]
+      },
+      "reopenedAfterTurn": {
+        "copies": 2,
+        "tail": [
+          "MARK-3",
+          "L",
+          "lead",
+          "REPLY:MARK-3",
+          "You",
+          "PHONE-LONG HOLD_MS:30000",
+          "L",
+          "lead",
+          "run_command",
+          "REPLY:PHONE-LONG HOLD_MS:30000",
+          "Context Files (0)",
+          "(drag, paste, or upload)"
+        ]
+      },
+      "stored": [
+        {
+          "entry": "assistant:REPLY:MARK-3",
+          "hasMessageId": false
+        },
+        {
+          "entry": "user:PHONE-LONG HOLD_MS:30000",
+          "hasMessageId": true
+        },
+        {
+          "entry": "tool_call:",
+          "hasMessageId": false
+        },
+        {
+          "entry": "assistant:REPLY:PHONE-LONG HOLD_MS:30000",
+          "hasMessageId": false
+        }
+      ]
+    },
+    {
+      "t": 59028,
+      "event": "proxy",
+      "mode": "refuse",
+      "open": 10
+    },
+    {
+      "t": 65082,
+      "event": "proxy",
+      "mode": "pass",
+      "open": 0
+    },
+    {
+      "t": 66267,
+      "event": "R2",
+      "outageMs": 6000,
+      "markerDuringOutage": {
+        "id": "MARK-4",
+        "phoneShowsAfterMs": 7180
+      },
+      "markerAfter": {
+        "id": "MARK-5",
+        "ms": 47
+      },
+      "teamSockets": [
+        {
+          "url": "/ws/agent-team/delivery_team_52fba64020d247f6af69508c915157d0?access_token=…",
+          "openedAt": 9069,
+          "closedAt": 59035,
+          "framesIn": 71
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_52fba64020d247f6af69508c915157d0?access_token=…",
+          "openedAt": 60046,
+          "closedAt": 60046,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_52fba64020d247f6af69508c915157d0?access_token=…",
+          "openedAt": 62049,
+          "closedAt": 62051,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_52fba64020d247f6af69508c915157d0?access_token=…",
+          "openedAt": 66053,
+          "closedAt": null,
+          "framesIn": 19
+        }
+      ]
+    },
+    {
+      "t": 66267,
+      "event": "proxy",
+      "mode": "refuse",
+      "open": 5
+    },
+    {
+      "t": 111269,
+      "event": "proxy",
+      "mode": "pass",
+      "open": 0
+    },
+    {
+      "t": 131323,
+      "event": "R3",
+      "outageMs": 45000,
+      "phoneShowsByItselfWithin60s": 47,
+      "reconnectAttemptsSeen": 6,
+      "socketsDuring": [
+        {
+          "url": "/ws/agent-team/delivery_team_52fba64020d247f6af69508c915157d0?access_token=…",
+          "openedAt": 67282,
+          "closedAt": 67283,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_52fba64020d247f6af69508c915157d0?access_token=…",
+          "openedAt": 69286,
+          "closedAt": 69287,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_52fba64020d247f6af69508c915157d0?access_token=…",
+          "openedAt": 73290,
+          "closedAt": 73290,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_52fba64020d247f6af69508c915157d0?access_token=…",
+          "openedAt": 81296,
+          "closedAt": 81296,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_52fba64020d247f6af69508c915157d0?access_token=…",
+          "openedAt": 97311,
+          "closedAt": 97311,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_52fba64020d247f6af69508c915157d0?access_token=…",
+          "openedAt": 127312,
+          "closedAt": null,
+          "framesIn": 19
+        }
+      ],
+      "afterUserAction": null,
+      "console": [
+        {
+          "t": 67283,
+          "text": "Team WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.10:65002/mobile/_nuxt/6gKLa7nn.js:1150:3813)"
+        },
+        {
+          "t": 69287,
+          "text": "Team WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.10:65002/mobile/_nuxt/6gKLa7nn.js:1150:3813)"
+        },
+        {
+          "t": 73290,
+          "text": "Team WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.10:65002/mobile/_nuxt/6gKLa7nn.js:1150:3813)"
+        },
+        {
+          "t": 81296,
+          "text": "Team WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.10:65002/mobile/_nuxt/6gKLa7nn.js:1150:3813)"
+        },
+        {
+          "t": 97311,
+          "text": "Team WebSocket error: Error: WebSocket error\n    at t.onerror (http://192.168.77.10:65002/mobile/_nuxt/6gKLa7nn.js:1150:3813)"
+        },
+        {
+          "t": 127313,
+          "text": "Team WebSocket transport connected"
+        }
+      ]
+    },
+    {
+      "t": 131324,
+      "event": "proxy",
+      "mode": "blackhole",
+      "open": 5
+    },
+    {
+      "t": 136326,
+      "event": "proxy",
+      "mode": "pass for new connections; old connections stay dead"
+    },
+    {
+      "t": 256760,
+      "event": "R4",
+      "phoneShowsByItselfWithin90s": null,
+      "socketsBefore": 10,
+      "socketsAfter": [
+        {
+          "url": "/ws/agent-team/delivery_team_52fba64020d247f6af69508c915157d0?access_token=…",
+          "openedAt": 9069,
+          "closedAt": 59035,
+          "framesIn": 71
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_52fba64020d247f6af69508c915157d0?access_token=…",
+          "openedAt": 60046,
+          "closedAt": 60046,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_52fba64020d247f6af69508c915157d0?access_token=…",
+          "openedAt": 62049,
+          "closedAt": 62051,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_52fba64020d247f6af69508c915157d0?access_token=…",
+          "openedAt": 66053,
+          "closedAt": 66267,
+          "framesIn": 19
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_52fba64020d247f6af69508c915157d0?access_token=…",
+          "openedAt": 67282,
+          "closedAt": 67283,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_52fba64020d247f6af69508c915157d0?access_token=…",
+          "openedAt": 69286,
+          "closedAt": 69287,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_52fba64020d247f6af69508c915157d0?access_token=…",
+          "openedAt": 73290,
+          "closedAt": 73290,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_52fba64020d247f6af69508c915157d0?access_token=…",
+          "openedAt": 81296,
+          "closedAt": 81296,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_52fba64020d247f6af69508c915157d0?access_token=…",
+          "openedAt": 97311,
+          "closedAt": 97311,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_52fba64020d247f6af69508c915157d0?access_token=…",
+          "openedAt": 127312,
+          "closedAt": null,
+          "framesIn": 19
+        }
+      ],
+      "phoneNoticedClose": false,
+      "afterUserActionMs": "not shown"
+    },
+    {
+      "t": 256763,
+      "event": "proxy",
+      "mode": "blackhole",
+      "open": 4
+    },
+    {
+      "t": 258764,
+      "event": "proxy",
+      "mode": "pass for new connections; old connections stay dead"
+    },
+    {
+      "t": 306957,
+      "event": "R7",
+      "hiddenMs": 35000,
+      "shownWhileHidden": false,
+      "socketsOpenedWhileHidden": 0,
+      "shownAfterVisibleMs": null,
+      "nextMarkerMs": 46,
+      "teamSockets": [
+        {
+          "url": "/ws/agent-team/delivery_team_52fba64020d247f6af69508c915157d0?access_token=…",
+          "openedAt": 291819,
+          "closedAt": null,
+          "framesIn": 19
+        }
+      ]
+    }
+  ],
+  "proxy": {
+    "connections": 23
+  },
+  "error": null,
+  "cleanup": {
+    "serverExited": true,
+    "rootRemoved": true
+  },
+  "finishedAt": "2026-11-08T08:35:34.502Z"
+}

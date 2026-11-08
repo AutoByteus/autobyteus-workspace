@@ -27,7 +27,6 @@ import {
 } from './teamClientMessageFactory';
 import { toAgentProjectionMessage } from './teamStreamDtoAdapters';
 import type { CollaboratorMentionDto } from '~/utils/collaborators/collaboratorMentionText';
-import { COLLABORATOR_ADD_FAILED, collaboratorAddRejectionOf } from '~/services/collaborators/collaboratorAddFailures';
 import type { TeamExecutionEffect } from '~/services/teamExecution/teamExecutionViewModels';
 import { useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages';
 import {
@@ -35,6 +34,8 @@ import {
   invalidateTeamMemberProjection,
 } from '~/services/runHydration/teamMemberProjectionHydrationService';
 import { createRandomId } from '~/utils/randomId';
+import { LiveStreamReconnectScheduler } from '~/services/liveStreamLifecycle/liveStreamReconnectScheduler';
+import { TeamSendAdmissions } from './teamSendAdmission';
 
 export type TeamStreamSyncPhase =
   | 'disconnected'
@@ -57,30 +58,11 @@ export interface TeamStreamingServiceOptions {
 
 export interface TeamInterruptGenerationTarget { agentRunId: string }
 
-type PendingTeamSend = Readonly<{
-  agentRunId: string;
-  messageId: string;
-  dedupeKey: string;
-  content: string;
-  promise: Promise<void>;
-  resolve(): void;
-  reject(error: Error): void;
-}>;
-
-const teamSendFailureCodes = new Set([
-  'INVALID_TARGET',
-  'TEAM_SEND_MESSAGE_REJECTED',
-  'TEAM_SEND_MESSAGE_FAILED',
-  COLLABORATOR_ADD_FAILED,
-]);
-const sendKey = (agentRunId: string, messageId: string, dedupeKey: string): string =>
-  `${agentRunId}\0${messageId}\0${dedupeKey}`;
-
 export class TeamStreamingService {
   private readonly wsClient: IWebSocketClient;
   private readonly wsEndpoint: string;
   private readonly pendingInterruptCommands = new Map<string, PendingInterruptCommand>();
-  private readonly pendingTeamSends = new Map<string, PendingTeamSend>();
+  private readonly teamSends = new TeamSendAdmissions();
   private readonly onInterruptCommandResult: (ack: InterruptGenerationCommandAckPayload) => void;
   private readonly onInterruptCommandTransportFailure: (failure: InterruptCommandTransportFailure) => void;
   private readonly onStreamRecoveryRequired: (notice: TeamStreamRecoveryNotice) => void;
@@ -96,6 +78,11 @@ export class TeamStreamingService {
     reject(error: Error): void;
   } | null = null;
   private listenersBound = false;
+  /** When this stream tries again (autobyteus-434); its success point is the accepted snapshot. */
+  private readonly reconnect = new LiveStreamReconnectScheduler({
+    attempt: () => this.attemptReconnect(),
+    resynchronize: () => this.restartTransport(),
+  });
 
   constructor(wsEndpoint: string, options: TeamStreamingServiceOptions = {}) {
     this.wsClient = options.wsClient || new WebSocketClient();
@@ -118,6 +105,7 @@ export class TeamStreamingService {
   connect(teamRunId: string, teamContext: AgentTeamContext): void {
     if (this.isReopenRequired) throw new Error('TEAM_STREAM_REOPEN_REQUIRED: The failed Team stream cannot reconnect.');
     this.prepareConnection(teamRunId, teamContext, null);
+    this.reconnect.startOver();
     this.connectTransport(teamRunId);
   }
 
@@ -143,7 +131,8 @@ export class TeamStreamingService {
   disconnect(): void {
     this.rejectCandidate(new Error('Candidate Team stream was disposed before readiness.'));
     this.drainPendingInterruptCommands('Interrupt was cancelled because the stream disconnected.');
-    this.drainPendingTeamSends('Team message admission was interrupted because the stream disconnected.');
+    this.teamSends.drain('Team message admission was interrupted because the stream disconnected.');
+    this.reconnect.dispose();
     this.unbindListeners();
     this.wsClient.disconnect();
     this.teamContext = null;
@@ -157,27 +146,15 @@ export class TeamStreamingService {
     const currentAgentRunId = this.requireCurrentAgentRun(agentRunId);
     const messageId = identity.messageId?.trim() || createRandomId();
     const dedupeKey = identity.dedupeKey?.trim() || messageId;
-    const key = sendKey(currentAgentRunId, messageId, dedupeKey);
-    const existing = this.pendingTeamSends.get(key);
-    if (existing) {
-      if (existing.content !== content) throw new Error('Team message identity cannot be reused for different content.');
-      return existing.promise;
-    }
-    if ([...this.pendingTeamSends.values()].some((pending) => pending.agentRunId === currentAgentRunId)) {
-      throw new Error(`AgentRun '${currentAgentRunId}' already has a pending Team message admission.`);
-    }
-    let resolve!: () => void;
-    let reject!: (error: Error) => void;
-    const promise = new Promise<void>((onResolve, onReject) => { resolve = onResolve; reject = onReject; });
-    const pending = Object.freeze({ agentRunId: currentAgentRunId, messageId, dedupeKey, content, promise, resolve, reject });
-    this.pendingTeamSends.set(key, pending);
+    const sendIdentity = { agentRunId: currentAgentRunId, messageId, dedupeKey };
+    const admission = this.teamSends.begin(sendIdentity, content);
+    if (!admission.isNew) return admission.promise;
     try {
       this.wsClient.send(serializeTeamStreamClientMessage(createTeamSendMessage({ content, agentRunId: currentAgentRunId, contextFilePaths, imageUrls, messageId, dedupeKey, mentions: identity.mentions })));
     } catch (error) {
-      this.pendingTeamSends.delete(key);
-      reject(error instanceof Error ? error : new Error(String(error)));
+      this.teamSends.fail(sendIdentity, error);
     }
-    return promise;
+    return admission.promise;
   }
 
   approveTool(invocationId: string, target?: ToolApprovalTarget | null, reason?: string): void {
@@ -234,6 +211,19 @@ export class TeamStreamingService {
     this.wsClient.connect(credential ? buildAuthenticatedWebSocketUrl(baseUrl, credential) : baseUrl);
   }
 
+  /** The scheduler's attempt: reconnect the transport; `CONNECTED` and the snapshot catch up (phase from `disconnected`). */
+  private attemptReconnect(): void {
+    if (!this.teamRunId || !this.teamContext || this.isReopenRequired) this.reconnect.startOver();
+    else this.connectTransport(this.teamRunId);
+  }
+
+  /** Re-synchronize a stream that looks open: a quiet close with the loss bookkeeping, then an attempt at once. */
+  private restartTransport(): void {
+    this.wsClient.disconnect();
+    this.markTransportLost('Team stream is re-synchronizing.');
+    this.reconnect.attemptNow();
+  }
+
   private bindListeners(): void {
     if (this.listenersBound) return;
     this.wsClient.on('onMessage', this.handleMessage);
@@ -275,12 +265,20 @@ export class TeamStreamingService {
     console.log('Team WebSocket transport connected');
   };
 
-  private handleDisconnect = (reason?: string): void => {
-    if (this.candidateReadiness) this.failCandidate(new Error(reason || 'Candidate Team stream disconnected before readiness.'));
-    else if (!this.isReopenRequired) this.phase = 'disconnected';
-    this.drainPendingInterruptCommands(reason || 'Interrupt result was lost because the stream disconnected.');
-    this.drainPendingTeamSends(reason || 'Team message admission was lost because the stream disconnected.');
+  private handleDisconnect = (reason: string | undefined, retryable: boolean): void => {
+    const candidate = this.candidateReadiness !== null;
+    if (candidate) this.failCandidate(new Error(reason || 'Candidate Team stream disconnected before readiness.'));
+    this.markTransportLost(reason);
+    if (candidate || this.isReopenRequired) return;
+    if (retryable) this.reconnect.connectionLost();
+    else this.reconnect.startOver();
   };
+
+  private markTransportLost(reason: string | undefined): void {
+    if (!this.isReopenRequired) this.phase = 'disconnected';
+    this.drainPendingInterruptCommands(reason || 'Interrupt result was lost because the stream disconnected.');
+    this.teamSends.drain(reason || 'Team message admission was lost because the stream disconnected.');
+  }
 
   private handleError = (error: Error): void => {
     if (this.candidateReadiness) this.failCandidate(error);
@@ -296,30 +294,6 @@ export class TeamStreamingService {
     this.onInterruptCommandResult(message.payload.state === 'accepted'
       ? { command_type: 'INTERRUPT_GENERATION', command_id: message.payload.command_id, state: 'accepted', target }
       : { command_type: 'INTERRUPT_GENERATION', command_id: message.payload.command_id, state: message.payload.state, code: message.payload.code, message: message.payload.message, target });
-  }
-
-  private resolveTeamSend(message: Extract<TeamStreamServerMessage, { type: 'MEMBER_INPUT_MESSAGE' }>): void {
-    const key = sendKey(
-      message.payload.recipient_agent_run_id,
-      message.payload.message_id,
-      message.payload.dedupe_key,
-    );
-    const pending = this.pendingTeamSends.get(key);
-    // CR-003: settle on identity only; the root may compose the content (the mention note).
-    if (!pending || message.payload.input_origin !== 'user_message') return;
-    this.pendingTeamSends.delete(key);
-    pending.resolve();
-  }
-
-  private rejectTeamSend(message: Extract<TeamStreamServerMessage, { type: 'ERROR' }>): boolean {
-    if (!teamSendFailureCodes.has(message.payload.code) || !message.payload.agent_run_id) return false;
-    const entry = [...this.pendingTeamSends.entries()].find(
-      ([, pending]) => pending.agentRunId === message.payload.agent_run_id,
-    );
-    if (!entry) return false;
-    this.pendingTeamSends.delete(entry[0]);
-    entry[1].reject(collaboratorAddRejectionOf(message.payload) ?? new Error(message.payload.message));
-    return true;
   }
 
   /** Retry (autobyteus-278): the Team asks the nodes of its remote runs again; the answers arrive on this stream. */
@@ -350,6 +324,7 @@ export class TeamStreamingService {
       registerTeamRemoteRuns(context.view.getRootTeamRunId(), message.payload.remote_task_executions);
       this.phase = 'ready';
       this.expectedBaseChangeSequence = null;
+      this.reconnect.connected();
       this.resolveCandidate();
       return;
     }
@@ -370,7 +345,7 @@ export class TeamStreamingService {
       this.handleInterruptAck(message);
       return;
     }
-    if (message.type === 'ERROR' && this.rejectTeamSend(message)) return;
+    if (message.type === 'ERROR' && this.teamSends.reject(message)) return;
     if (this.phase !== 'ready') throw new Error(`Team execution message '${message.type}' is invalid during '${this.phase}'.`);
     const result = context.view.applyMessage(message);
     this.applyEffects(result.effects, context);
@@ -379,7 +354,7 @@ export class TeamStreamingService {
       useCollaborationParticipantMessagesStore().advance('agent_team', context.view.getRootTeamRunId(), this.liveSequenceId, context.view.getChangeSequence());
     }
     if (result.disposition === 'applied' && message.type === 'MEMBER_INPUT_MESSAGE') {
-      this.resolveTeamSend(message);
+      this.teamSends.resolve(message);
     }
     if (result.disposition === 'rejected') {
       console.warn(`Rejected Team execution message (${result.code}): ${result.message}`);
@@ -439,8 +414,9 @@ export class TeamStreamingService {
     this.expectedBaseChangeSequence = null;
     this.rejectCandidate(new Error('Candidate Team stream requires a new recovery attempt.'));
     this.drainPendingInterruptCommands('Interrupt was cancelled because Team stream recovery is required.');
-    this.drainPendingTeamSends('Team message admission was cancelled because Team stream recovery is required.');
+    this.teamSends.drain('Team message admission was cancelled because Team stream recovery is required.');
     this.approvalTracker.clear();
+    this.reconnect.startOver();
     this.wsClient.disconnect();
     if (notify && this.teamRunId) {
       this.onStreamRecoveryRequired(Object.freeze({
@@ -476,11 +452,5 @@ export class TeamStreamingService {
       reason: { code: 'INTERRUPT_TRANSPORT_DISCONNECTED', connectionState: this.wsClient.state, message },
       onTransportFailure: this.onInterruptCommandTransportFailure,
     });
-  }
-
-  private drainPendingTeamSends(message: string): void {
-    const pending = [...this.pendingTeamSends.values()];
-    this.pendingTeamSends.clear();
-    pending.forEach((entry) => entry.reject(new Error(message)));
   }
 }

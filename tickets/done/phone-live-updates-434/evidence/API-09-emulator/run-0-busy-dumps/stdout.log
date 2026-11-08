@@ -1,0 +1,25 @@
+{"t":5183,"event":"device","model":"sdk_gphone64_arm64","sdk":"35","webview":"124.0.6367.219"}
+{"t":6189,"event":"apk","versionName":"0.1.0"}
+{"t":25002,"event":"paired through the share intent"}
+{"t":40631,"event":"opened from the launcher, run list shown"}
+{"t":45066,"event":"marker sent","id":"EMU-T-1"}
+{"t":64478,"event":"marker sent","id":"EMU-T-2"}
+{"t":119480,"event":"marker sent","id":"EMU-T-3"}
+{"t":179477,"event":"marker sent","id":"EMU-T-4"}
+Warning: Activity not started, its current task has been brought to the front
+{"t":263503,"event":"marker sent","id":"EMU-T-5"}
+{"t":265706,"event":"cycle","label":"team","kind":"team","doze":false,"sameActivityAndTask":true,"activityBefore":"a1f1a66 task 16","activityAfter":"a1f1a66 task 16","backgroundMs":150002,"screenWakefulnessAfterSleep":"Asleep","markers":["EMU-T-2","EMU-T-3","EMU-T-4"],"producedAllWhileInBackground":true,"backgroundAt":49476,"foregroundAt":199478,"appInFrontAfterMs":219,"streamReopenedAfterAppInFrontMs":{"agent-team":61624,"agent":null},"shownAfterForegroundMs":null,"shownAfterForegroundBounds":null,"nextMarker":{"id":"EMU-T-5","phoneMinusNodeMs":2197,"bounds":{"notBeforeMs":45,"noLaterThanMs":2197,"averageLookMs":2152}},"streamReopenedAfterForegroundMs":{"agent-team":61843,"agent":null},"liveBeforeBackgroundMs":-32,"streamConnectionsWhileInBackground":[],"streamConnectionsAfterForeground":[{"openedAt":261321,"closedAt":null,"webSocket":true,"path":"/ws/agent-team/emu_team_64086705b8fa4850b0ea4bb75808e884?access_token=…"}],"note":"shownAfterForegroundMs includes the time of the accessibility dumps (about 1 s each) and the launcher bringing the task to front"}
+{"t":275041,"event":"marker sent","id":"EMU-A-6"}
+{"t":294525,"event":"marker sent","id":"EMU-A-7"}
+{"t":349524,"event":"marker sent","id":"EMU-A-8"}
+{"t":409531,"event":"marker sent","id":"EMU-A-9"}
+Warning: Activity not started, its current task has been brought to the front
+{"t":494829,"event":"marker sent","id":"EMU-A-10"}
+{"t":526770,"event":"cycle","label":"agent","kind":"agent","doze":false,"sameActivityAndTask":true,"activityBefore":"a1f1a66 task 16","activityAfter":"a1f1a66 task 16","backgroundMs":150002,"screenWakefulnessAfterSleep":"Asleep","markers":["EMU-A-7","EMU-A-8","EMU-A-9"],"producedAllWhileInBackground":true,"backgroundAt":279522,"foregroundAt":429524,"appInFrontAfterMs":414,"streamReopenedAfterAppInFrontMs":{"agent-team":64890,"agent":64919},"shownAfterForegroundMs":null,"shownAfterForegroundBounds":null,"nextMarker":{"id":"EMU-A-10","phoneMinusNodeMs":null,"bounds":null},"streamReopenedAfterForegroundMs":{"agent-team":65304,"agent":65333},"liveBeforeBackgroundMs":-29,"streamConnectionsWhileInBackground":[],"streamConnectionsAfterForeground":[{"openedAt":494828,"closedAt":null,"webSocket":true,"path":"/ws/agent-team/emu_team_64086705b8fa4850b0ea4bb75808e884?access_token=…"},{"openedAt":494857,"closedAt":null,"webSocket":true,"path":"/ws/agent/emu_agent_bb3410148a3845ee9b83f694cdd6c644?access_token=…"}],"note":"shownAfterForegroundMs includes the time of the accessibility dumps (about 1 s each) and the launcher bringing the task to front"}
+{"t":536048,"event":"marker sent","id":"EMU-A-11"}
+{"t":542717,"event":"doze","forceIdle":"Now forced in to deep idle mode"}
+{"t":555497,"event":"marker sent","id":"EMU-A-12"}
+{"t":610499,"event":"marker sent","id":"EMU-A-13"}
+{"t":670497,"event":"marker sent","id":"EMU-A-14"}
+{"t":690534,"event":"doze end","unforce":"Light state: OVERRIDE, deep state: IDLE\nmForceModeManagerQuickDozeRequest: false\nmForceModeManagerOffBodyState: false"}
+Warning: Activity not started, its current task has been brought to the front

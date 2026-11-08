@@ -12,6 +12,7 @@ import {
   type InterruptCommandTransportFailure,
   type SendMessageCommandAckPayload,
 } from '~/services/agentStreaming';
+import { createAgentRunStream, type AgentRunStream } from '~/services/agentStreaming/agentRunStreamReconnection';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { useWorkspaceStore } from '~/stores/workspace';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
@@ -75,8 +76,8 @@ const showInterruptTransportFailure = (failure: InterruptCommandTransportFailure
   }), 'error');
 };
 
-// Maintain a map of streaming services per agent
-const streamingServices = new Map<string, AgentStreamingService>();
+// Each agent run's stream: its streaming service and its reconnection (autobyteus-434)
+const streamingServices = new Map<string, AgentRunStream>();
 
 /**
  * Runs this client sent to while it did not consider them live (a first send or a resume of an
@@ -296,20 +297,15 @@ export const useAgentRunStore = defineStore('agentRun', {
 
       if (!agent) return null;
 
-      const existingService = streamingServices.get(runId);
-      if (existingService) {
-        existingService.attachContext(agent);
-        if (existingService.connectionState === ConnectionState.DISCONNECTED) {
-          existingService.connect(runId, agent);
-        }
-        return existingService;
+      const existing = streamingServices.get(runId);
+      if (existing) {
+        existing.service.attachContext(agent);
+        // A stream in a loss streak connects only through its catch-up (the Agent Connect Rule).
+        existing.reconnection.requestConnect();
+        return existing.service;
       }
 
-      const windowNodeContextStore = useWindowNodeContextStore();
-      const wsEndpoint = windowNodeContextStore.getBoundEndpoints().agentWs;
-
-      // Create streaming service for this agent
-      const service = new AgentStreamingService(wsEndpoint, {
+      const stream = createAgentRunStream(runId, useWindowNodeContextStore().getBoundEndpoints().agentWs, {
         onInterruptCommandResult: showInterruptCommandResult,
         onInterruptCommandTransportFailure: showInterruptTransportFailure,
         onSendMessageCommandAck: (ack: SendMessageCommandAckPayload) => {
@@ -317,10 +313,9 @@ export const useAgentRunStore = defineStore('agentRun', {
           if (!ack.accepted) this.clearActivationPending(ack.run_id || runId);
         },
       });
-      streamingServices.set(runId, service);
-
-      service.connect(runId, agent);
-      return service;
+      streamingServices.set(runId, stream);
+      stream.reconnection.requestConnect();
+      return stream.service;
     },
 
     markActivationPending(runId: string): void {
@@ -336,7 +331,7 @@ export const useAgentRunStore = defineStore('agentRun', {
     },
 
     isAgentStreamReady(runId: string): boolean {
-      return streamingServices.get(runId)?.connectionState === ConnectionState.CONNECTED;
+      return streamingServices.get(runId)?.service.connectionState === ConnectionState.CONNECTED;
     },
 
     async ensureAgentStreamConnected(runId: string): Promise<AgentStreamingService> {
@@ -361,17 +356,13 @@ export const useAgentRunStore = defineStore('agentRun', {
     },
 
     disconnectAgentStream(runId: string): void {
-      const service = streamingServices.get(runId);
-      if (!service) {
+      const stream = streamingServices.get(runId);
+      if (!stream) {
         return;
       }
-
-      const agentContextsStore = useAgentContextsStore();
-      const agent = agentContextsStore.getRun(runId);
-
-      service.disconnect();
+      stream.reconnection.dispose();
+      stream.service.disconnect();
       streamingServices.delete(runId);
-
     },
 
     /**
@@ -379,7 +370,7 @@ export const useAgentRunStore = defineStore('agentRun', {
      * @description Sends the user's approval or denial for a tool call via WebSocket.
      */
     async postToolExecutionApproval(runId: string, invocationId: string, isApproved: boolean, _reason: string | null = null) {
-      const service = streamingServices.get(runId);
+      const service = streamingServices.get(runId)?.service;
       const agentContextsStore = useAgentContextsStore();
       const agent = agentContextsStore.getRun(runId);
 
@@ -406,7 +397,7 @@ export const useAgentRunStore = defineStore('agentRun', {
         return false;
       }
 
-      const service = streamingServices.get(resolvedRunId);
+      const service = streamingServices.get(resolvedRunId)?.service;
       if (!service) {
         console.warn(`Cannot interrupt generation: no streaming service for run '${resolvedRunId}'.`);
         return false;
@@ -426,12 +417,12 @@ export const useAgentRunStore = defineStore('agentRun', {
       const context = agentContextsStore.getRun(runId);
       const state = context?.state;
       const instance = state?.inputProjection?.runInstanceId;
-      const service = streamingServices.get(runId);
+      const service = streamingServices.get(runId)?.service;
       const binding = useWindowNodeContextStore().bindingRevision;
       const activities = useAgentActivityStore();
       const activityIds = activities.getNativeCompactionActivityIds(runId);
       const ownsRequest = () => agentContextsStore.getRun(runId) === context
-        && context?.state === state && (!state || state.runId === runId) && streamingServices.get(runId) === service
+        && context?.state === state && (!state || state.runId === runId) && streamingServices.get(runId)?.service === service
         && useWindowNodeContextStore().bindingRevision === binding
         && (!state?.inputProjection?.runInstanceId || state.inputProjection.runInstanceId === instance);
 

@@ -68,6 +68,8 @@ export class ExternalRuntimeMemoryWriter {
       if (input.traceType === "user") {
         options.fileAttachments = input.fileAttachments;
         if (input.senderId) options.senderId = input.senderId;
+        options.messageId = input.messageId;
+        options.dedupeKey = input.dedupeKey;
       }
       options.correlationId = input.correlationId;
     }

@@ -2,34 +2,15 @@ import { getApolloClient } from '~/utils/apolloClient';
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
-import { GetAgentRunResumeConfig, GetRunProjection } from '~/graphql/queries/runHistoryQueries';
-import {
-  DEFAULT_AGENT_RUNTIME_KIND,
-  type AgentRunConfig,
-  type AgentRuntimeKind,
-} from '~/types/agent/AgentRunConfig';
+import { GetAgentRunResumeConfig } from '~/graphql/queries/runHistoryQueries';
+import { DEFAULT_AGENT_RUNTIME_KIND, type AgentRunConfig } from '~/types/agent/AgentRunConfig';
 import type { RunResumeConfigPayload } from '~/stores/runHistoryTypes';
-import { buildConversationFromProjection, type RunProjectionConversationEntry } from './runProjectionConversation';
-import { buildActivitiesFromProjection, type RunProjectionActivityEntry } from './runProjectionActivityHydration';
 import { normalizeAgentRuntimeStatus } from './runtimeStatusNormalization';
-import type { RunFileChangeArtifact } from '~/stores/runFileChangesStore';
-import { fetchRunFileChanges, hydrateRunFileChanges } from './runFileChangeHydrationService';
+import { hydrateRunFileChanges } from './runFileChangeHydrationService';
+import { buildRunStoredState, readRunStoredState, type RunStoredState } from './runStoredStateLoader';
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
 import { createWorkspaceMetadata } from '~/utils/workspaceMetadata';
 import { primeRecentEventMonitorBaseline } from '~/services/eventMonitor/recentEventMonitorMutationCoordinator';
-
-export interface RunProjectionPayload {
-  runId: string;
-  conversation: RunProjectionConversationEntry[];
-  activities: RunProjectionActivityEntry[];
-  summary?: string | null;
-  lastActivityAt?: string | null;
-  hasEarlierActiveTraceEvents: boolean;
-}
-
-interface GetRunProjectionQueryData {
-  getRunProjection: RunProjectionPayload;
-}
 
 interface GetAgentRunResumeConfigQueryData {
   getAgentRunResumeConfig: RunResumeConfigPayload;
@@ -42,51 +23,30 @@ export interface LoadRunContextHydrationInput {
   ensureWorkspaceByRootPath?: (rootPath: string) => Promise<string | null>;
 }
 
-export interface RunContextHydrationCandidate {
+export interface RunContextHydrationCandidate extends RunStoredState {
   runId: string;
   resumeConfig: RunResumeConfigPayload;
   config: AgentRunConfig;
-  conversation: ReturnType<typeof buildConversationFromProjection>;
-  activities: ReturnType<typeof buildActivitiesFromProjection>;
-  expectedActivityRevision: number;
-  fileChanges: RunFileChangeArtifact[];
-  hasEarlierActiveTraceEvents: boolean;
 }
 
 export const loadRunContextHydrationCandidate = async (
   input: LoadRunContextHydrationInput,
 ): Promise<RunContextHydrationCandidate> => {
-  const expectedActivityRevision = useAgentActivityStore().getActivityContentRevision(input.runId);
-  const client = getApolloClient();
-  const [projectionResponse, resumeResponse, fileChanges] = await Promise.all([
-    client.query<GetRunProjectionQueryData>({
-      query: GetRunProjection,
-      variables: { runId: input.runId },
-      fetchPolicy: 'network-only',
-    }),
-    client.query<GetAgentRunResumeConfigQueryData>({
+  const [stored, resumeResponse] = await Promise.all([
+    readRunStoredState(input.runId),
+    getApolloClient().query<GetAgentRunResumeConfigQueryData>({
       query: GetAgentRunResumeConfig,
       variables: { runId: input.runId },
       fetchPolicy: 'network-only',
     }),
-    fetchRunFileChanges({ kind: 'run', runId: input.runId }),
   ]);
-
-  const projectionErrors = projectionResponse.errors || [];
-  if (projectionErrors.length > 0) {
-    throw new Error(projectionErrors.map((e: { message: string }) => e.message).join(', '));
-  }
 
   const resumeErrors = resumeResponse.errors || [];
   if (resumeErrors.length > 0) {
     throw new Error(resumeErrors.map((e: { message: string }) => e.message).join(', '));
   }
 
-  const projection = projectionResponse.data?.getRunProjection;
   const resumeConfig = resumeResponse.data?.getAgentRunResumeConfig;
-  if (!projection) {
-    throw new Error('Run projection payload is missing.');
-  }
   if (!resumeConfig) {
     throw new Error('Run resume config payload is missing.');
   }
@@ -122,19 +82,6 @@ export const loadRunContextHydrationCandidate = async (
     input.fallbackAgentName ||
     'Agent';
 
-  const conversation = buildConversationFromProjection(
-    input.runId,
-    projection.conversation || [],
-    {
-      agentDefinitionId: resumeConfig.metadataConfig.agentDefinitionId,
-      agentName: resolvedAgentName,
-      llmModelIdentifier: resumeConfig.metadataConfig.llmModelIdentifier,
-    },
-  );
-  if (projection.lastActivityAt) {
-    conversation.updatedAt = projection.lastActivityAt;
-  }
-
   const config: AgentRunConfig = {
     agentDefinitionId: resumeConfig.metadataConfig.agentDefinitionId,
     agentDefinitionName: resolvedAgentName,
@@ -152,11 +99,11 @@ export const loadRunContextHydrationCandidate = async (
     runId: input.runId,
     resumeConfig,
     config,
-    conversation,
-    activities: buildActivitiesFromProjection(projection.activities || []),
-    expectedActivityRevision,
-    fileChanges,
-    hasEarlierActiveTraceEvents: projection.hasEarlierActiveTraceEvents,
+    ...buildRunStoredState(stored, {
+      agentDefinitionId: resumeConfig.metadataConfig.agentDefinitionId,
+      agentName: resolvedAgentName,
+      llmModelIdentifier: resumeConfig.metadataConfig.llmModelIdentifier,
+    }),
   };
 };
 

@@ -126,7 +126,9 @@ describe('A running hub fetches its Team-tab list again only when a message coul
     expect(listed()).toEqual(['m1', 'm2'])
 
     // The connection drops; the resumed root's publisher produced m3 (its sequence 1) before the client attached.
-    Socket.instances[0]!.onclose?.({ code: 1006 }); await settle()
+    Socket.instances[0]!.onclose?.({ code: 1006 })
+    // The reconnect scheduler's first wait is 1 s (autobyteus-434).
+    await vi.waitFor(() => expect(Socket.instances).toHaveLength(2), { timeout: 2_500 })
     storeParticipantMessages('agent', HOST, [message('m1'), message('m2'), message('m3')])
     await snapshot(Socket.instances[1]!, 1, 'live-2', 1)
 

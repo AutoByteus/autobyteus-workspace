@@ -46,6 +46,8 @@ const projection = (variables: any) => ({ data: { getAgentOrgMemberRunProjection
   ...variables, conversation: [{ kind: 'message', role: 'assistant', content: 'Retained conversation', ts: 1700000001 }], activities: [], hasEarlierActiveTraceEvents: false,
 } } })
 const tick = () => vi.advanceTimersByTimeAsync(0)
+/** The reconnect scheduler's first wait after a loss (autobyteus-434). */
+const firstRetry = () => vi.advanceTimersByTimeAsync(1_000)
 const deferred = <T,>() => { let resolve!: (value: T) => void; const promise = new Promise<T>((done) => { resolve = done }); return { promise, resolve } }
 let store: ReturnType<typeof useAgentOrgContextsStore>
 let wrapper: ReturnType<typeof mount> | undefined
@@ -85,7 +87,7 @@ describe('retained Org disconnected recovery through real service/store/hydratio
     }
     mocks.query.mockClear()
     mocks.query.mockImplementation(async ({ variables }) => variables.agentRunId ? projection(variables) : inspection(false))
-    socket.close(); await tick()
+    socket.close(); await firstRetry()
     expect(store.contextFor('org-run')!.phase).toBe('historical')
     expect(target.value.context).toBe(retained)
     expect(retained.state.currentStatus).toBe('offline')
@@ -124,20 +126,18 @@ it.each(['network', 'missing', 'malformed', 'foreign', 'graphql', 'projection'])
   expect(mocks.mutate).not.toHaveBeenCalled()
 })
 
-it('RET-04: history restarts an exhausted bounded cycle, coalesces requests and ignores unretained/omitted roots', async () => {
+it('RET-04: history during a loss streak starts no second recovery; the scheduler keeps trying and recovers; unretained roots are ignored', async () => {
   const socket = await open()
   mocks.query.mockRejectedValue(new Error('server unavailable'))
-  socket.close(); await vi.advanceTimersByTimeAsync(20000)
+  socket.close(); await vi.advanceTimersByTimeAsync(20000) // failures at 0, 1, 3, 7, 15 s: reported, still waiting
+  expect(store.errorFor('org-run')).toBeTruthy()
   const requests = mocks.query.mock.calls.length
-  await vi.advanceTimersByTimeAsync(60000)
-  expect(mocks.query).toHaveBeenCalledTimes(requests)
   store.reconcileRetainedHistory(['unretained'])
+  store.reconcileRetainedHistory(['org-run', 'org-run'])
   await tick(); expect(mocks.query).toHaveBeenCalledTimes(requests)
   const gate = deferred<any>()
   mocks.query.mockImplementation(({ variables }) => variables.agentRunId ? projection(variables) : gate.promise)
-  store.reconcileRetainedHistory(['org-run', 'org-run'])
-  store.reconcileRetainedHistory(['org-run'])
-  await tick()
+  await vi.advanceTimersByTimeAsync(11000) // the 30 s wait after the fifth failure: no give-up
   expect(mocks.query).toHaveBeenCalledTimes(requests + 1)
   store.reconcileRetainedHistory(['org-run']); await tick()
   expect(mocks.query).toHaveBeenCalledTimes(requests + 1)
@@ -154,7 +154,7 @@ it.each(['inspection', 'projection'])('RET-05: pending %s cannot publish during 
   mocks.query.mockImplementation(({ variables }) => boundary === 'inspection' && !variables.agentRunId
     ? gate.promise : boundary === 'projection' && variables.agentRunId ? gate.promise
       : variables.agentRunId ? projection(variables) : inspection(false))
-  socket.close(); await tick()
+  socket.close(); await firstRetry()
   const terminate = deferred<void>(); mocks.terminate.mockReturnValue(terminate.promise)
   const stopping = store.stopAndInspect('org-run')
   gate.resolve(boundary === 'inspection' ? inspection(false) : projection({ agentRunId: 'wrong', memberAddress: '/wrong' }))
@@ -171,7 +171,7 @@ it.each(['release', 'manual'])('RET-05: late inspection cannot overwrite %s owne
   const socket = await open()
   const gate = deferred<any>()
   mocks.query.mockReturnValue(gate.promise)
-  socket.close(); await tick()
+  socket.close(); await firstRetry()
   if (action === 'release') store.releaseContext('org-run')
   else {
     mocks.query.mockImplementation(async ({ variables }) => variables.agentRunId ? projection(variables) : inspection(false))
@@ -188,7 +188,7 @@ it.each(['release', 'manual'])('RET-05: late inspection cannot overwrite %s owne
 it('RET-02: active observation still needs both checkpoint barriers and a new snapshot', async () => {
   const first = await open()
   mocks.query.mockClear()
-  first.close(); await tick()
+  first.close(); await firstRetry()
   expect(Socket.instances).toHaveLength(2)
   expect(store.activeTargetFor('org-run')!.access).toBe('read_only')
   expect(mocks.query.mock.calls.map(([r]) => r.query)).toEqual([GetAgentOrgRunInspection, GetAgentOrgExecutionCheckpoint])
@@ -209,7 +209,7 @@ it('RET-02: active-to-inactive checkpoint rejection retries via new inspection, 
   })
   first.close(); await tick()
   expect(store.contextFor('org-run')!.phase).toBe('reopen_required')
-  await vi.advanceTimersByTimeAsync(1000)
+  await vi.advanceTimersByTimeAsync(1000 + 2000) // the active read's checkpoint fails; the next attempt reads inactive
   expect(store.contextFor('org-run')!.phase).toBe('historical')
   expect(Socket.instances).toHaveLength(1)
 })
@@ -229,7 +229,7 @@ it('RET-05: pending attachment submission remains excluded through historical cl
   retained.requirement = 'newer draft'
   retained.contextFilePaths = [{ locator: '/newer.txt' } as any]
   mocks.query.mockImplementation(async ({ variables }) => variables.agentRunId ? projection(variables) : inspection(false))
-  socket.close(); await tick()
+  socket.close(); await firstRetry()
   expect(store.contextFor('org-run')!.phase).toBe('historical')
   expect(store.activeTargetFor('org-run')!.context).toBe(retained)
   expect(retained.submissionPending).toBe(true)
@@ -257,7 +257,7 @@ it('RET-05: an activity conflict cannot partially publish; a later recovery pres
   const commit = vi.spyOn(activities, 'replaceProjectionActivitiesIfRevisions').mockReturnValue('conflict')
   const gate = deferred<any>()
   mocks.query.mockImplementation(({ variables }) => variables.agentRunId ? projection(variables) : gate.promise)
-  socket.close(); await tick()
+  socket.close(); await firstRetry()
   store.select('org-run', '/director')
   gate.resolve(inspection(false)); await tick()
   expect(store.contextFor('org-run')).toBe(retained)
@@ -265,13 +265,13 @@ it('RET-05: an activity conflict cannot partially publish; a later recovery pres
   expect(store.activeTargetFor('org-run')!.context.state.runId).toBe('agent-director')
   commit.mockRestore()
   mocks.query.mockImplementation(async ({ variables }) => variables.agentRunId ? projection(variables) : inspection(false))
-  await vi.advanceTimersByTimeAsync(1000)
+  await vi.advanceTimersByTimeAsync(2000) // the conflict was a failed attempt: the next wait is 2 s
   expect(store.contextFor('org-run')!.phase).toBe('historical')
   expect(store.activeTargetFor('org-run')!.context).toBe(retained.getAgentContext('agent-director'))
 })
 
 
-it.each(['full', 'focused'])('RET-04: successful %s loader recovers an exhausted retained service through inspection', async (kind) => {
+it.each(['full', 'focused'])('RET-04: after a %s history load the retained service in a loss streak recovers through inspection', async (kind) => {
   const socket = await open()
   const retained = store.activeTargetFor('org-run')!.context
   mocks.query.mockRejectedValue(new Error('offline server'))
@@ -285,7 +285,8 @@ it.each(['full', 'focused'])('RET-04: successful %s loader recovers an exhausted
   })
   if (kind === 'full') await fetchRunHistoryTree(history)
   else await refreshAgentOrgHistoryForStore(history)
-  await tick()
+  // In a loss streak the history read starts no recovery of its own: the scheduler's next attempt (31 s) recovers.
+  await vi.advanceTimersByTimeAsync(11000)
   expect(history.historyFamilyErrors.agentOrg).toBeNull()
   expect(store.contextFor('org-run')!.phase).toBe('historical')
   expect(store.activeTargetFor('org-run')!.context).toBe(retained)
@@ -302,7 +303,7 @@ it('RET-01/05: inactive publication rejects readiness and released service canno
   mocks.query.mockImplementation(async ({ variables }) => variables.agentRunId ? projection(variables) : inspection(false))
   socket.close()
   const waiting = service.whenReady().then(() => 'ready', () => 'released')
-  await tick()
+  await firstRetry()
   expect(await waiting).toBe('released')
   expect(service.isReady()).toBe(false)
   await expect(service.whenReady()).rejects.toThrow('released')

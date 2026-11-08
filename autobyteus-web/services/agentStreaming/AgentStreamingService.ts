@@ -54,6 +54,11 @@ export interface AgentStreamingServiceOptions {
   onSendMessageCommandAck?: (ack: SendMessageCommandAckPayload) => void;
 }
 
+/** What the service tells its owner about its socket: opened, or lost without being asked to close. */
+export type AgentStreamConnectionEvent =
+  | Readonly<{ kind: 'opened' }>
+  | Readonly<{ kind: 'lost'; retryable: boolean }>;
+
 export class AgentStreamingService {
   private wsClient: IWebSocketClient;
   private context: AgentContext | null = null;
@@ -65,6 +70,7 @@ export class AgentStreamingService {
   private readonly onInterruptCommandResult: (ack: InterruptGenerationCommandAckPayload) => void;
   private readonly onInterruptCommandTransportFailure: (failure: InterruptCommandTransportFailure) => void;
   private readonly onSendMessageCommandAck: (ack: SendMessageCommandAckPayload) => void;
+  private readonly connectionListeners = new Set<(event: AgentStreamConnectionEvent) => void>();
 
   /**
    * Create an AgentStreamingService.
@@ -91,6 +97,21 @@ export class AgentStreamingService {
 
   attachContext(context: AgentContext): void {
     this.context = context;
+  }
+
+  /** The owner's notifications of this socket opening or being lost (not of intentional closes). */
+  onConnectionChange(listener: (event: AgentStreamConnectionEvent) => void): () => void {
+    this.connectionListeners.add(listener);
+    return () => { this.connectionListeners.delete(listener); };
+  }
+
+  /**
+   * A quiet close for a re-synchronization: the loss bookkeeping (pending admissions and interrupts
+   * rejected) without the loss notification; the context stays attached.
+   */
+  dropConnection(reason: string): void {
+    this.wsClient.disconnect();
+    this.rejectInFlight(reason);
   }
 
   /**
@@ -253,10 +274,16 @@ export class AgentStreamingService {
 
   private handleConnect = (): void => {
     console.log('Agent WebSocket connected');
+    this.notifyConnection({ kind: 'opened' });
   };
 
-  private handleDisconnect = (reason?: string): void => {
+  private handleDisconnect = (reason: string | undefined, retryable: boolean): void => {
     console.log('Agent WebSocket disconnected:', reason);
+    this.rejectInFlight(reason);
+    this.notifyConnection({ kind: 'lost', retryable });
+  };
+
+  private rejectInFlight(reason: string | undefined): void {
     this.drainPendingInterruptCommands(
       reason || 'Interrupt result was lost because the stream disconnected.',
     );
@@ -264,7 +291,11 @@ export class AgentStreamingService {
       pending.reject(new Error(reason || 'Message admission was interrupted because the stream disconnected.'));
     }
     this.pendingAdmissions.clear();
-  };
+  }
+
+  private notifyConnection(event: AgentStreamConnectionEvent): void {
+    for (const listener of [...this.connectionListeners]) listener(event);
+  }
 
   private handleError = (error: Error): void => {
     console.error('Agent WebSocket error:', error);

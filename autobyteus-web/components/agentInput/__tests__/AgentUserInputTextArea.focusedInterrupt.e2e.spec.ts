@@ -34,7 +34,6 @@ vi.mock('~/services/agentStreaming/transport', () => ({
     CONNECTING: 'connecting',
     CONNECTED: 'connected',
     DISCONNECTING: 'disconnecting',
-    RECONNECTING: 'reconnecting',
   },
   WebSocketClient: vi.fn().mockImplementation(() => ({
     get state() {

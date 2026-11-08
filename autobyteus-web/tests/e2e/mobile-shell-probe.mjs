@@ -94,14 +94,17 @@
 //   MSP-15 DS-001  The desktop window of the same node, which shares the history load with the phone: the Projects view
 //                  reads every run (window `null`, as the Runs view and the phone); switching Runs ↔ Projects reads
 //                  nothing beyond the 5 s poll; switching to Workspaces reads once with its window (6).
+//   MSP-21…23 autobyteus-434  Live run streams after the path to the node drops (45 s), after the phone was in the
+//                  background, and a user message loaded during its own turn: `mobile-live-reconnect-cases.mjs` (its
+//                  own node gamma, a TCP proxy as the phone's network path, and its own phones); they run last.
 //
 // Prerequisites: `pnpm -C autobyteus-server-ts build` and `pnpm -C autobyteus-web build:mobile-web` (alpha serves
 // `autobyteus-web/dist/public` at /mobile); Chrome. Run: `pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<fresh>`
-// (`--cases=MSP-01,…`, `--browser-executable=<path>`). About 6 minutes.
+// (`--cases=MSP-01,…`, `--browser-executable=<path>`). About 11 minutes (MSP-21…23 about 5).
 // `--hold` sets the stack up, pairs nothing, prints the phone URLs and a pairing link for the Android emulator
 // (`http://10.0.2.2:<alpha port>`) and, with `--bind=0.0.0.0`, for this machine's LAN address, and keeps the stack until
 // Ctrl+C (device checks); it runs no case.
-import { createWriteStream, existsSync, mkdtempSync, realpathSync } from 'node:fs';
+import { createWriteStream, existsSync, mkdtempSync, readFileSync, realpathSync } from 'node:fs';
 import fs from 'node:fs/promises';
 import net from 'node:net';
 import os from 'node:os';
@@ -111,6 +114,7 @@ import { randomUUID } from 'node:crypto';
 import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import { runLiveReconnectCases } from './mobile-live-reconnect-cases.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -132,6 +136,24 @@ const outputDir = path.resolve(webDir, arg('output-dir', 'test-results/mobile-sh
 const executablePath = arg('browser-executable', process.env.PLAYWRIGHT_CHROME_EXECUTABLE_PATH)
   || ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser'].find(existsSync);
 const selected = typeof arg('cases') === 'string' ? new Set(arg('cases').split(',')) : null;
+/**
+ * Case IDs are unique across this probe and the `*-cases.mjs` modules it imports: the probe keys each result by its
+ * ID, so a second case with the same ID would overwrite the first and hide its result (autobyteus-434 DR-001). Checked
+ * before any stack starts.
+ */
+{
+  const probeFile = fileURLToPath(import.meta.url);
+  const sources = [probeFile, ...[...readFileSync(probeFile, 'utf8').matchAll(/from '\.\/([\w-]+-cases\.mjs)'/g)].map(m => path.join(path.dirname(probeFile), m[1]))];
+  const seen = new Map();
+  for (const file of sources) {
+    for (const [, id] of readFileSync(file, 'utf8').matchAll(/runCase\('([A-Z]+-\d+)'/g)) seen.set(id, [...(seen.get(id) ?? []), path.basename(file)]);
+  }
+  const duplicates = [...seen].filter(([, files]) => files.length > 1);
+  if (duplicates.length) {
+    console.error(`mobile-shell probe: duplicate case IDs ${duplicates.map(([id, files]) => `${id} (${files.join(', ')})`).join('; ')}`);
+    process.exit(1);
+  }
+}
 const hold = arg('hold', false) === true;
 const bindHost = typeof arg('bind') === 'string' ? arg('bind') : '127.0.0.1';
 const MODEL = 'gemini-3.8-flash-low';
@@ -581,6 +603,11 @@ const measureLayout = page => page.evaluate(() => {
 
 const runCase = async (id, fn) => {
   if (selected && !selected.has(id)) return;
+  if (evidence.cases[id]) {
+    // A second case with an ID already used (the start check reads only literal IDs).
+    evidence.cases[`${id} (duplicate)`] = { result: 'Fail', error: `case ID ${id} is used twice` };
+    return;
+  }
   currentCase = id;
   const started = Date.now();
   console.log(`[mobile-shell] ${id} …`);
@@ -2069,6 +2096,8 @@ const runCases = async () => {
     assert(failures.length === 0, failures.join('; '), facts);
     return facts;
   });
+
+  await runLiveReconnectCases({ runCase, serverAt, freePort, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact });
 };
 
 try {

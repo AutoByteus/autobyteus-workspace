@@ -1,3 +1,4 @@
+import { normalizeAcceptedInputIdentity } from "@autobyteus/agent-presentation-contracts";
 import type { AgentRunUserMessageForwardedPayload } from "../../agent-execution/domain/agent-run-command-observer.js";
 import { resolveInterAgentSenderId } from "autobyteus-ts/agent/message/inter-agent-sender.js";
 import type { AgentRunEvent } from "../../agent-execution/domain/agent-run-event.js";
@@ -81,6 +82,10 @@ export class RuntimeMemoryEventAccumulator {
       media,
       fileAttachments,
       senderId: resolveInterAgentSenderId(payload.message.metadata),
+      ...normalizeAcceptedInputIdentity({
+        messageId: payload.message.metadata?.message_id,
+        dedupeKey: payload.message.metadata?.dedupe_key,
+      }),
     });
   }
 

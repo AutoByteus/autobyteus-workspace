@@ -1,0 +1,4561 @@
+{
+  "startedAt": "2026-11-08T11:28:07.744Z",
+  "result": "Fail",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 59578,
+      "nodeId": "srv_IUkYWsJd4n4UUQOCDwfp6peYH4IACEv7",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "beta": {
+      "port": 59579,
+      "nodeId": "srv_RVlc7ZwFKiFOoJ4KSUtaive6jeTeU_gq",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_02ec7ebcadc8431aa07638e8d0ad2b8e",
+    "writerRun": "release_notes_writer_34678514cb314b29ae01227d07dbcf8a",
+    "squadRun": "docs_review_team_81f8d7fce4e448ff94ee94923350c34c",
+    "reviewer": "release_notes_writer_5bed44cbc23541b5bc39d73b932d7919",
+    "memberDelegated": "fact_checker_30761221bbd1458dac9bfef104453a18",
+    "remoteAgentRun": "publisher_91a348ca34474abe93c884095e850618",
+    "remoteTeamRun": "studio_team_417568f7f7d74bb1bb5897add35b6564",
+    "plain": [
+      "fact_checker_48217a65eef44d19ad038093b28baec3",
+      "fact_checker_16822399aa1e40b283ccf4c1268bfc65",
+      "fact_checker_0a90c74f20544119ad052c8cf11e012c"
+    ],
+    "org": "delivery_org_e516af2610aa4333bd38508ff647a259",
+    "orgPlanner": "release_notes_writer_4ce6e263487147a7a8049e727b34abc8",
+    "reviewOrg": "review_org_1e9f1d75575b41baaf0a0de3d733c6ae",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_73e3e8c340db49ba864679b9b9dcd8c3",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_df666296dd53454ebf923e37f9f73d76",
+    "deliveryLead": "fact_checker_90c4efdd1fb6462ea9c71fbbee138705",
+    "deliveryMate": "release_notes_writer_2e9a230c8baa489d84079964d435af24",
+    "leadDelegated": "changelog_helper_90acbf92415740dcab3b0f40cade3595",
+    "approver": "approver_48fc0e3364194f8485c1419ab11eefc0",
+    "taskA": "launch-c84962-1",
+    "taskB": "launch-c84962-2"
+  },
+  "cases": {
+    "MSP-01": {
+      "result": "Pass",
+      "seconds": 11.5,
+      "desktopIds": [
+        "project_task_manager_02ec7ebcadc8431aa07638e8d0ad2b8e",
+        "approver_48fc0e3364194f8485c1419ab11eefc0",
+        "delivery_team_df666296dd53454ebf923e37f9f73d76",
+        "delivery_org_e516af2610aa4333bd38508ff647a259",
+        "review_org_1e9f1d75575b41baaf0a0de3d733c6ae",
+        "fact_checker_0a90c74f20544119ad052c8cf11e012c",
+        "fact_checker_16822399aa1e40b283ccf4c1268bfc65",
+        "fact_checker_48217a65eef44d19ad038093b28baec3"
+      ],
+      "phoneIds": [
+        "project_task_manager_02ec7ebcadc8431aa07638e8d0ad2b8e",
+        "approver_48fc0e3364194f8485c1419ab11eefc0",
+        "delivery_team_df666296dd53454ebf923e37f9f73d76",
+        "delivery_org_e516af2610aa4333bd38508ff647a259",
+        "review_org_1e9f1d75575b41baaf0a0de3d733c6ae",
+        "fact_checker_0a90c74f20544119ad052c8cf11e012c",
+        "fact_checker_16822399aa1e40b283ccf4c1268bfc65",
+        "fact_checker_48217a65eef44d19ad038093b28baec3"
+      ],
+      "foldBefore": "Show older (3)",
+      "foldOpen": "Show fewer",
+      "ages": [
+        "now",
+        "now",
+        "now",
+        "now",
+        "now",
+        "now",
+        "now",
+        "now"
+      ],
+      "desktopFold": "Show older (3)"
+    },
+    "MSP-15": {
+      "result": "Pass",
+      "seconds": 27.9,
+      "inProjects": [
+        null,
+        null
+      ],
+      "whileSwitching": [
+        null,
+        null
+      ],
+      "switchSeconds": 12.257,
+      "maxPolls": 4,
+      "workspacesReads": [
+        {
+          "dt": 76,
+          "window": 6
+        },
+        {
+          "dt": 259,
+          "window": 6
+        }
+      ]
+    },
+    "MSP-02": {
+      "result": "Pass",
+      "seconds": 16.9,
+      "phonePlace": {
+        "lead": 1,
+        "leadDelegated": 1
+      },
+      "desktopPlace": {
+        "lead": null,
+        "leadDelegated": 16,
+        "reviewer": 16,
+        "reviewerDelegated": 16
+      },
+      "phoneTitles": {
+        "writer": "Write the release notes.",
+        "squad": "Review the docs site.",
+        "spare": "Spare work. Marker SPARE.",
+        "leadDelegated": "Draft the changelog. Marker LEAD-DELEGATED."
+      },
+      "memberTitles": {
+        "lead": null,
+        "mate": null,
+        "reviewer": null,
+        "editor": null
+      },
+      "desktopTitles": {
+        "writer": [
+          "RN",
+          "release notes writer",
+          "Write the release notes."
+        ],
+        "spare": [
+          "CH",
+          "changelog helper",
+          "Spare work. Marker SPARE."
+        ],
+        "leadDelegated": [
+          "CH",
+          "changelog helper",
+          "Draft the changelog. Marker LEAD-DELEGATED."
+        ]
+      },
+      "liveStatuses": [
+        "idle",
+        "offline"
+      ],
+      "terminated": {
+        "success": true,
+        "message": "Agent run terminated successfully."
+      },
+      "unselected": {
+        "seen": [
+          "idle",
+          "offline"
+        ],
+        "changeMs": 1223,
+        "terminated": {
+          "success": true,
+          "message": "Agent run terminated successfully."
+        },
+        "afterRootOpened": "offline"
+      },
+      "reloaded": false,
+      "ptm": {
+        "key": "agent:project_task_manager_02ec7ebcadc8431aa07638e8d0ad2b8e",
+        "depth": 0,
+        "expanded": "true",
+        "current": null,
+        "status": "idle",
+        "name": "Project Task Manager",
+        "title": "CALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/release_notes_writer\",\"task_...",
+        "chip": null,
+        "unreachable": false,
+        "age": "now",
+        "buttons": [
+          "mobile-run-open",
+          "mobile-run-toggle"
+        ],
+        "label": "Project Task Manager, CALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/release_notes_writer\",\"task_..., Idle"
+      },
+      "writer": {
+        "key": "agent:project_task_manager_02ec7ebcadc8431aa07638e8d0ad2b8e/agent:release_notes_writer_34678514cb314b29ae01227d07dbcf8a",
+        "depth": 1,
+        "expanded": null,
+        "current": null,
+        "status": "idle",
+        "name": "release notes writer",
+        "title": "Write the release notes.",
+        "chip": null,
+        "unreachable": false,
+        "age": null,
+        "buttons": [
+          "mobile-run-open"
+        ],
+        "label": "release notes writer, Write the release notes., Idle"
+      },
+      "squad": {
+        "key": "agent:project_task_manager_02ec7ebcadc8431aa07638e8d0ad2b8e/team:docs_review_team_81f8d7fce4e448ff94ee94923350c34c",
+        "depth": 1,
+        "expanded": "false",
+        "current": null,
+        "status": "idle",
+        "name": "docs review team",
+        "title": "Review the docs site.",
+        "chip": null,
+        "unreachable": false,
+        "age": null,
+        "buttons": [
+          "mobile-run-open",
+          "mobile-run-toggle"
+        ],
+        "label": "docs review team, Review the docs site., Idle"
+      },
+      "members": [
+        {
+          "key": "agent:project_task_manager_02ec7ebcadc8431aa07638e8d0ad2b8e/agent:release_notes_writer_5bed44cbc23541b5bc39d73b932d7919",
+          "depth": 2,
+          "expanded": null,
+          "current": null,
+          "status": "idle",
+          "name": "reviewer",
+          "title": null,
+          "chip": null,
+          "unreachable": false,
+          "age": null,
+          "buttons": [
+            "mobile-run-open"
+          ],
+          "label": "reviewer, Idle"
+        },
+        {
+          "key": "agent:project_task_manager_02ec7ebcadc8431aa07638e8d0ad2b8e/agent:fact_checker_1050db3fc10845bb87baf931af0a88cf",
+          "depth": 2,
+          "expanded": null,
+          "current": null,
+          "status": "offline",
+          "name": "editor",
+          "title": null,
+          "chip": null,
+          "unreachable": false,
+          "age": null,
+          "buttons": [
+            "mobile-run-open"
+          ],
+          "label": "editor, Stopped"
+        }
+      ],
+      "remoteAgent": {
+        "key": "agent:project_task_manager_02ec7ebcadc8431aa07638e8d0ad2b8e/agent:publisher_91a348ca34474abe93c884095e850618",
+        "depth": 1,
+        "expanded": null,
+        "current": null,
+        "status": "offline",
+        "name": "publisher",
+        "title": "Publish the draft. Marker REMOTE-AGENT.",
+        "chip": "beta-node",
+        "unreachable": false,
+        "age": null,
+        "buttons": [
+          "mobile-run-open"
+        ],
+        "label": "publisher, Publish the draft. Marker REMOTE-AGENT., Runs on beta-node, Stopped"
+      },
+      "remoteTeam": {
+        "key": "agent:project_task_manager_02ec7ebcadc8431aa07638e8d0ad2b8e/team:studio_team_417568f7f7d74bb1bb5897add35b6564",
+        "depth": 1,
+        "expanded": "false",
+        "current": null,
+        "status": "offline",
+        "name": "studio team",
+        "title": "Cut the launch trailer. Marker REMOTE-TEAM.",
+        "chip": "beta-node",
+        "unreachable": false,
+        "age": null,
+        "buttons": [
+          "mobile-run-open",
+          "mobile-run-toggle"
+        ],
+        "label": "studio team, Cut the launch trailer. Marker REMOTE-TEAM., Runs on beta-node, Stopped"
+      },
+      "team": {
+        "teamRow": {
+          "key": "team:delivery_team_df666296dd53454ebf923e37f9f73d76",
+          "depth": 0,
+          "expanded": "false",
+          "current": null,
+          "status": "idle",
+          "name": "Delivery Team",
+          "title": "GENERATE_IMAGE:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-ECRzkI...",
+          "chip": null,
+          "unreachable": false,
+          "age": "now",
+          "buttons": [
+            "mobile-run-open",
+            "mobile-run-toggle"
+          ],
+          "label": "Delivery Team, GENERATE_IMAGE:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-ECRzkI..., Idle"
+        },
+        "lead": {
+          "key": "team:delivery_team_df666296dd53454ebf923e37f9f73d76/agent:fact_checker_90c4efdd1fb6462ea9c71fbbee138705",
+          "depth": 1,
+          "expanded": null,
+          "current": null,
+          "status": "idle",
+          "name": "lead",
+          "title": null,
+          "chip": null,
+          "unreachable": false,
+          "age": null,
+          "buttons": [
+            "mobile-run-open"
+          ],
+          "label": "lead, Idle"
+        },
+        "mate": {
+          "key": "team:delivery_team_df666296dd53454ebf923e37f9f73d76/agent:release_notes_writer_2e9a230c8baa489d84079964d435af24",
+          "depth": 1,
+          "expanded": null,
+          "current": null,
+          "status": "idle",
+          "name": "mate",
+          "title": null,
+          "chip": null,
+          "unreachable": false,
+          "age": null,
+          "buttons": [
+            "mobile-run-open"
+          ],
+          "label": "mate, Idle"
+        },
+        "leadDelegatedNested": null
+      },
+      "orgRow": {
+        "key": "org:delivery_org_e516af2610aa4333bd38508ff647a259",
+        "depth": 0,
+        "expanded": "true",
+        "current": null,
+        "status": "running",
+        "name": "Delivery Org",
+        "title": "Plan the delivery. Marker ORG-PLANNER.",
+        "chip": null,
+        "unreachable": false,
+        "age": "1m",
+        "buttons": [
+          "mobile-run-open",
+          "mobile-run-toggle"
+        ],
+        "label": "Delivery Org, Plan the delivery. Marker ORG-PLANNER., Running"
+      },
+      "orgMembers": [
+        "planner",
+        "squad"
+      ],
+      "teamRows": [
+        [
+          "Delivery Team",
+          0
+        ],
+        [
+          "lead",
+          1
+        ],
+        [
+          "mate",
+          1
+        ],
+        [
+          "changelog helper",
+          1
+        ]
+      ]
+    },
+    "MSP-03": {
+      "result": "Pass",
+      "seconds": 8.7,
+      "results": [
+        {
+          "kind": "task agent",
+          "key": "agent:project_task_manager_02ec7ebcadc8431aa07638e8d0ad2b8e/agent:release_notes_writer_34678514cb314b29ae01227d07dbcf8a",
+          "scrollBefore": 40,
+          "states": [
+            "opening:",
+            "open:release notes writer"
+          ],
+          "screen": {
+            "state": "open",
+            "name": "release notes writer",
+            "subtitle": "Idle · in Project Task Manager",
+            "query": "?screen=run"
+          },
+          "nameOk": true,
+          "composer": 1,
+          "marker": "PHONE-MSG-1-a04714",
+          "reached": true,
+          "shownOnPhone": true,
+          "sendErrors": [],
+          "scrollAfter": 40,
+          "markedRows": [
+            "agent:project_task_manager_02ec7ebcadc8431aa07638e8d0ad2b8e/agent:release_notes_writer_34678514cb314b29ae01227d07dbcf8a (release notes writer)"
+          ],
+          "marked": "true"
+        },
+        {
+          "kind": "task-team member",
+          "key": "agent:project_task_manager_02ec7ebcadc8431aa07638e8d0ad2b8e/agent:release_notes_writer_5bed44cbc23541b5bc39d73b932d7919",
+          "scrollBefore": 80,
+          "states": [
+            "opening:",
+            "open:reviewer"
+          ],
+          "screen": {
+            "state": "open",
+            "name": "reviewer",
+            "subtitle": "Idle · in docs review team",
+            "query": "?screen=run"
+          },
+          "nameOk": true,
+          "composer": 1,
+          "marker": "PHONE-MSG-2-51e825",
+          "reached": true,
+          "shownOnPhone": true,
+          "sendErrors": [],
+          "scrollAfter": 80,
+          "markedRows": [
+            "agent:project_task_manager_02ec7ebcadc8431aa07638e8d0ad2b8e/agent:release_notes_writer_5bed44cbc23541b5bc39d73b932d7919 (reviewer)"
+          ],
+          "marked": "true"
+        },
+        {
+          "kind": "Team run (its coordinator)",
+          "key": "team:delivery_team_df666296dd53454ebf923e37f9f73d76",
+          "scrollBefore": 120,
+          "states": [
+            "opening:",
+            "open:lead"
+          ],
+          "screen": {
+            "state": "open",
+            "name": "lead",
+            "subtitle": "Idle · in Delivery Team",
+            "query": "?screen=run"
+          },
+          "nameOk": true,
+          "composer": 1,
+          "marker": "PHONE-MSG-3-ed8435",
+          "reached": true,
+          "shownOnPhone": true,
+          "sendErrors": [],
+          "scrollAfter": 120,
+          "markedRows": [
+            "team:delivery_team_df666296dd53454ebf923e37f9f73d76/agent:fact_checker_90c4efdd1fb6462ea9c71fbbee138705 (lead)"
+          ],
+          "marked": "true"
+        },
+        {
+          "kind": "Org run (its first member)",
+          "key": "org:delivery_org_e516af2610aa4333bd38508ff647a259",
+          "scrollBefore": 176,
+          "states": [
+            "list",
+            "opening:",
+            "open:planner"
+          ],
+          "screen": {
+            "state": "open",
+            "name": "planner",
+            "subtitle": "Idle · in Delivery Org",
+            "query": "?rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_e516af2610aa4333bd38508ff647a259&mode=active&memberAddress=/planner&screen=run"
+          },
+          "nameOk": true,
+          "composer": 1,
+          "marker": "PHONE-MSG-4-9280d4",
+          "reached": true,
+          "shownOnPhone": true,
+          "sendErrors": [],
+          "scrollAfter": 176,
+          "markedRows": [
+            "org:delivery_org_e516af2610aa4333bd38508ff647a259/agent:release_notes_writer_4ce6e263487147a7a8049e727b34abc8 (planner)"
+          ],
+          "marked": "true"
+        },
+        {
+          "kind": "Org run (first member a Team: its coordinator)",
+          "key": "org:review_org_1e9f1d75575b41baaf0a0de3d733c6ae",
+          "scrollBefore": 714,
+          "states": [
+            "list",
+            "opening:",
+            "open:reviewer"
+          ],
+          "screen": {
+            "state": "open",
+            "name": "reviewer",
+            "subtitle": "Stopped · in squad",
+            "query": "?rootSubjectKind=agent_org&definitionId=review-org&orgRunId=review_org_1e9f1d75575b41baaf0a0de3d733c6ae&mode=active&memberAddress=/squad&screen=run"
+          },
+          "nameOk": true,
+          "composer": 1,
+          "marker": "PHONE-MSG-5-df4487",
+          "reached": true,
+          "shownOnPhone": true,
+          "sendErrors": [],
+          "scrollAfter": 714,
+          "markedRows": [
+            "org:review_org_1e9f1d75575b41baaf0a0de3d733c6ae/agent:release_notes_writer_73e3e8c340db49ba864679b9b9dcd8c3 (reviewer)"
+          ],
+          "marked": "true"
+        },
+        {
+          "kind": "Org member",
+          "key": "org:delivery_org_e516af2610aa4333bd38508ff647a259/agent:release_notes_writer_4ce6e263487147a7a8049e727b34abc8",
+          "scrollBefore": 40,
+          "states": [
+            "list",
+            "opening:",
+            "open:planner"
+          ],
+          "screen": {
+            "state": "open",
+            "name": "planner",
+            "subtitle": "Idle · in Delivery Org",
+            "query": "?rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_e516af2610aa4333bd38508ff647a259&mode=active&memberAddress=/planner&screen=run"
+          },
+          "nameOk": true,
+          "composer": 1,
+          "marker": "PHONE-MSG-6-4fd4c8",
+          "reached": true,
+          "shownOnPhone": true,
+          "sendErrors": [],
+          "scrollAfter": 40,
+          "markedRows": [
+            "org:delivery_org_e516af2610aa4333bd38508ff647a259/agent:release_notes_writer_4ce6e263487147a7a8049e727b34abc8 (planner)"
+          ],
+          "marked": "true"
+        }
+      ],
+      "control": {}
+    },
+    "MSP-04": {
+      "result": "Pass",
+      "seconds": 2.5,
+      "screen": {
+        "state": "open",
+        "name": "Approver",
+        "subtitle": "Idle",
+        "chip": null,
+        "query": "?screen=run"
+      },
+      "answer": {
+        "outcome": "selected",
+        "optionId": "allow-once"
+      },
+      "commandShown": true
+    },
+    "MSP-05": {
+      "result": "Pass",
+      "seconds": 6.1,
+      "snapshots": [
+        {
+          "state": "opening",
+          "name": null,
+          "opening": true,
+          "buttons": [
+            "Back to runs"
+          ]
+        },
+        {
+          "state": "open",
+          "name": "lead",
+          "opening": false,
+          "buttons": [
+            "Back to runs",
+            "More",
+            "Upload files",
+            "Send message"
+          ]
+        }
+      ],
+      "forward": {
+        "state": "open",
+        "name": "lead",
+        "subtitle": "Idle · in Delivery Team",
+        "chip": null,
+        "query": "?screen=run"
+      },
+      "orgQuery": "?rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_e516af2610aa4333bd38508ff647a259&mode=active&memberAddress=/planner&screen=run",
+      "listQuery": "?rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_e516af2610aa4333bd38508ff647a259&mode=active&memberAddress=/planner",
+      "orgMarked": "true",
+      "afterReload": "?rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_e516af2610aa4333bd38508ff647a259&mode=active&memberAddress=/planner",
+      "second": {
+        "state": "open",
+        "name": "lead",
+        "subtitle": "Idle · in Delivery Team",
+        "chip": null,
+        "query": "?screen=run"
+      }
+    },
+    "MSP-90": {
+      "result": "Pass",
+      "seconds": 86.7,
+      "tries": [
+        {
+          "index": 0,
+          "opened": true,
+          "race": false,
+          "listAt": 384,
+          "teamTapAt": 677,
+          "reads": [
+            {
+              "op": "PhoneCredentialCheck",
+              "at": 280
+            },
+            {
+              "op": "ListWorkspaceRunHistory",
+              "at": 288
+            },
+            {
+              "op": "ListCollaborationRootHistory",
+              "at": 296
+            },
+            {
+              "op": "GetAllWorkspaces",
+              "at": 301
+            },
+            {
+              "op": "GetAgentDefinitions",
+              "at": 308
+            },
+            {
+              "op": "GetAgentTeamDefinitions",
+              "at": 316
+            },
+            {
+              "op": "GetAgentOrgDefinitions",
+              "at": 323
+            },
+            {
+              "op": "GetAgentRunCollaboration",
+              "at": 330
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 336
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 344
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 351
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 364
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 377
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 383
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 390
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 399
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 413
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 421
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 428
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 444
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 451
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 458
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 480
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 486
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 495
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 523
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 529
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 537
+            },
+            {
+              "op": "GetTeamRunResumeConfig",
+              "at": 546
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 567
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 576
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 593
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 600
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 607
+            },
+            {
+              "op": "ListWorkspaceRunHistory",
+              "at": 680
+            },
+            {
+              "op": "ListCollaborationRootHistory",
+              "at": 685
+            },
+            {
+              "op": "GetAgentRunCollaborationStatuses",
+              "at": 697
+            }
+          ]
+        },
+        {
+          "index": 1,
+          "opened": true,
+          "race": false,
+          "listAt": 371,
+          "teamTapAt": 537,
+          "reads": [
+            {
+              "op": "PhoneCredentialCheck",
+              "at": 269
+            },
+            {
+              "op": "ListWorkspaceRunHistory",
+              "at": 279
+            },
+            {
+              "op": "ListCollaborationRootHistory",
+              "at": 287
+            },
+            {
+              "op": "GetAllWorkspaces",
+              "at": 292
+            },
+            {
+              "op": "GetAgentDefinitions",
+              "at": 299
+            },
+            {
+              "op": "GetAgentTeamDefinitions",
+              "at": 306
+            },
+            {
+              "op": "GetAgentOrgDefinitions",
+              "at": 313
+            },
+            {
+              "op": "GetAgentRunCollaboration",
+              "at": 320
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 328
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 335
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 342
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 355
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 369
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 375
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 382
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 390
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 403
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 409
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 415
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 434
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 441
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 448
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 465
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 471
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 478
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 494
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 508
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 516
+            },
+            {
+              "op": "GetTeamRunResumeConfig",
+              "at": 524
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 542
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 549
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 568
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 575
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 583
+            }
+          ]
+        },
+        {
+          "index": 2,
+          "opened": true,
+          "race": false,
+          "listAt": 375,
+          "teamTapAt": 649,
+          "reads": [
+            {
+              "op": "PhoneCredentialCheck",
+              "at": 268
+            },
+            {
+              "op": "ListWorkspaceRunHistory",
+              "at": 277
+            },
+            {
+              "op": "ListCollaborationRootHistory",
+              "at": 284
+            },
+            {
+              "op": "GetAllWorkspaces",
+              "at": 289
+            },
+            {
+              "op": "GetAgentDefinitions",
+              "at": 297
+            },
+            {
+              "op": "GetAgentTeamDefinitions",
+              "at": 304
+            },
+            {
+              "op": "GetAgentOrgDefinitions",
+              "at": 313
+            },
+            {
+              "op": "GetAgentRunCollaboration",
+              "at": 321
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 328
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 334
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 342
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 355
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 368
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 374
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 381
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 388
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 401
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 426
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 436
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 452
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 458
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 466
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 489
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 496
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 503
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 509
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 515
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 522
+            },
+            {
+              "op": "GetTeamRunResumeConfig",
+              "at": 536
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 556
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 563
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 579
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 587
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 593
+            },
+            {
+              "op": "ListWorkspaceRunHistory",
+              "at": 655
+            },
+            {
+              "op": "ListCollaborationRootHistory",
+              "at": 661
+            },
+            {
+              "op": "GetAgentRunCollaborationStatuses",
+              "at": 673
+            }
+          ]
+        },
+        {
+          "index": 3,
+          "opened": true,
+          "race": false,
+          "listAt": 372,
+          "teamTapAt": 637,
+          "reads": [
+            {
+              "op": "PhoneCredentialCheck",
+              "at": 263
+            },
+            {
+              "op": "GetAllWorkspaces",
+              "at": 269
+            },
+            {
+              "op": "ListWorkspaceRunHistory",
+              "at": 278
+            },
+            {
+              "op": "ListCollaborationRootHistory",
+              "at": 285
+            },
+            {
+              "op": "GetAgentDefinitions",
+              "at": 289
+            },
+            {
+              "op": "GetAgentTeamDefinitions",
+              "at": 298
+            },
+            {
+              "op": "GetAgentOrgDefinitions",
+              "at": 305
+            },
+            {
+              "op": "GetAgentRunCollaboration",
+              "at": 312
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 319
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 326
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 333
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 346
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 359
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 365
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 373
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 380
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 398
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 405
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 413
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 451
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 458
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 465
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 475
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 482
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 490
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 505
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 512
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 520
+            },
+            {
+              "op": "GetTeamRunResumeConfig",
+              "at": 545
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 555
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 562
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 580
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 586
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 592
+            },
+            {
+              "op": "ListWorkspaceRunHistory",
+              "at": 641
+            },
+            {
+              "op": "ListCollaborationRootHistory",
+              "at": 648
+            },
+            {
+              "op": "GetAgentRunCollaborationStatuses",
+              "at": 660
+            }
+          ]
+        },
+        {
+          "index": 4,
+          "opened": true,
+          "race": false,
+          "listAt": 366,
+          "teamTapAt": 551,
+          "reads": [
+            {
+              "op": "PhoneCredentialCheck",
+              "at": 265
+            },
+            {
+              "op": "ListWorkspaceRunHistory",
+              "at": 273
+            },
+            {
+              "op": "ListCollaborationRootHistory",
+              "at": 281
+            },
+            {
+              "op": "GetAllWorkspaces",
+              "at": 285
+            },
+            {
+              "op": "GetAgentDefinitions",
+              "at": 292
+            },
+            {
+              "op": "GetAgentTeamDefinitions",
+              "at": 306
+            },
+            {
+              "op": "GetAgentOrgDefinitions",
+              "at": 314
+            },
+            {
+              "op": "GetAgentRunCollaboration",
+              "at": 321
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 329
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 335
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 342
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 355
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 368
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 375
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 381
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 388
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 400
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 407
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 414
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 430
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 437
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 442
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 461
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 467
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 474
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 497
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 504
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 510
+            },
+            {
+              "op": "GetTeamRunResumeConfig",
+              "at": 518
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 539
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 546
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 567
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 573
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 580
+            }
+          ]
+        },
+        {
+          "index": 5,
+          "opened": true,
+          "race": false,
+          "listAt": 373,
+          "teamTapAt": 652,
+          "reads": [
+            {
+              "op": "PhoneCredentialCheck",
+              "at": 265
+            },
+            {
+              "op": "ListWorkspaceRunHistory",
+              "at": 274
+            },
+            {
+              "op": "ListCollaborationRootHistory",
+              "at": 282
+            },
+            {
+              "op": "GetAllWorkspaces",
+              "at": 288
+            },
+            {
+              "op": "GetAgentDefinitions",
+              "at": 295
+            },
+            {
+              "op": "GetAgentTeamDefinitions",
+              "at": 302
+            },
+            {
+              "op": "GetAgentOrgDefinitions",
+              "at": 316
+            },
+            {
+              "op": "GetAgentRunCollaboration",
+              "at": 324
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 331
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 337
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 345
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 358
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 371
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 378
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 387
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 395
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 409
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 415
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 422
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 439
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 445
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 453
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 479
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 487
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 495
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 505
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 513
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 520
+            },
+            {
+              "op": "GetTeamRunResumeConfig",
+              "at": 534
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 553
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 560
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 577
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 583
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 591
+            },
+            {
+              "op": "ListCollaborationRootHistory",
+              "at": 658
+            },
+            {
+              "op": "ListWorkspaceRunHistory",
+              "at": 664
+            },
+            {
+              "op": "GetAgentRunCollaborationStatuses",
+              "at": 675
+            }
+          ]
+        },
+        {
+          "index": 6,
+          "opened": true,
+          "race": false,
+          "listAt": 379,
+          "teamTapAt": 566,
+          "reads": [
+            {
+              "op": "PhoneCredentialCheck",
+              "at": 272
+            },
+            {
+              "op": "ListWorkspaceRunHistory",
+              "at": 282
+            },
+            {
+              "op": "ListCollaborationRootHistory",
+              "at": 289
+            },
+            {
+              "op": "GetAllWorkspaces",
+              "at": 294
+            },
+            {
+              "op": "GetAgentDefinitions",
+              "at": 301
+            },
+            {
+              "op": "GetAgentTeamDefinitions",
+              "at": 308
+            },
+            {
+              "op": "GetAgentOrgDefinitions",
+              "at": 319
+            },
+            {
+              "op": "GetAgentRunCollaboration",
+              "at": 327
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 335
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 342
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 350
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 362
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 376
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 383
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 390
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 397
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 410
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 416
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 423
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 442
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 449
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 456
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 479
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 485
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 491
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 516
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 522
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 530
+            },
+            {
+              "op": "GetTeamRunResumeConfig",
+              "at": 538
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 555
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 562
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 580
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 587
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 594
+            }
+          ]
+        },
+        {
+          "index": 7,
+          "opened": true,
+          "race": false,
+          "listAt": 375,
+          "teamTapAt": 566,
+          "reads": [
+            {
+              "op": "PhoneCredentialCheck",
+              "at": 270
+            },
+            {
+              "op": "ListWorkspaceRunHistory",
+              "at": 279
+            },
+            {
+              "op": "ListCollaborationRootHistory",
+              "at": 287
+            },
+            {
+              "op": "GetAllWorkspaces",
+              "at": 293
+            },
+            {
+              "op": "GetAgentDefinitions",
+              "at": 301
+            },
+            {
+              "op": "GetAgentTeamDefinitions",
+              "at": 310
+            },
+            {
+              "op": "GetAgentOrgDefinitions",
+              "at": 316
+            },
+            {
+              "op": "GetAgentRunCollaboration",
+              "at": 323
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 332
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 341
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 348
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 364
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 380
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 387
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 394
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 401
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 415
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 422
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 430
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 447
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 454
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 461
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 481
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 488
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 496
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 509
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 522
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 530
+            },
+            {
+              "op": "GetTeamRunResumeConfig",
+              "at": 539
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 560
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 567
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 584
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 592
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 599
+            }
+          ]
+        },
+        {
+          "index": 8,
+          "opened": false,
+          "race": true,
+          "listAt": 390,
+          "teamTapAt": 539,
+          "reads": [
+            {
+              "op": "PhoneCredentialCheck",
+              "at": 284
+            },
+            {
+              "op": "ListWorkspaceRunHistory",
+              "at": 294
+            },
+            {
+              "op": "ListCollaborationRootHistory",
+              "at": 299
+            },
+            {
+              "op": "GetAllWorkspaces",
+              "at": 305
+            },
+            {
+              "op": "GetAgentDefinitions",
+              "at": 312
+            },
+            {
+              "op": "GetAgentTeamDefinitions",
+              "at": 319
+            },
+            {
+              "op": "GetAgentOrgDefinitions",
+              "at": 327
+            },
+            {
+              "op": "GetAgentRunCollaboration",
+              "at": 336
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 345
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 352
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 358
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 371
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 384
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 392
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 399
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 406
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 418
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 425
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 434
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 461
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 469
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 476
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 498
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 504
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 516
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 524
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 531
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 538
+            },
+            {
+              "op": "GetTeamRunResumeConfig",
+              "at": 564
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 596
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 603
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 610
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 624
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 631
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 637
+            },
+            {
+              "op": "ListWorkspaceRunHistory",
+              "at": 645
+            },
+            {
+              "op": "ListCollaborationRootHistory",
+              "at": 652
+            },
+            {
+              "op": "GetAgentRunCollaborationStatuses",
+              "at": 663
+            },
+            {
+              "op": "ListWorkspaceRunHistory",
+              "at": 5652
+            },
+            {
+              "op": "ListCollaborationRootHistory",
+              "at": 5658
+            },
+            {
+              "op": "GetAgentRunCollaborationStatuses",
+              "at": 5670
+            },
+            {
+              "op": "ListWorkspaceRunHistory",
+              "at": 10659
+            },
+            {
+              "op": "ListCollaborationRootHistory",
+              "at": 10667
+            },
+            {
+              "op": "GetAgentRunCollaborationStatuses",
+              "at": 10685
+            },
+            {
+              "op": "ListCollaborationRootHistory",
+              "at": 15645
+            },
+            {
+              "op": "ListWorkspaceRunHistory",
+              "at": 15654
+            },
+            {
+              "op": "GetAgentRunCollaborationStatuses",
+              "at": 15668
+            }
+          ]
+        },
+        {
+          "index": 9,
+          "opened": true,
+          "race": false,
+          "listAt": 380,
+          "teamTapAt": 651,
+          "reads": [
+            {
+              "op": "PhoneCredentialCheck",
+              "at": 282
+            },
+            {
+              "op": "ListWorkspaceRunHistory",
+              "at": 291
+            },
+            {
+              "op": "ListCollaborationRootHistory",
+              "at": 297
+            },
+            {
+              "op": "GetAllWorkspaces",
+              "at": 302
+            },
+            {
+              "op": "GetAgentDefinitions",
+              "at": 310
+            },
+            {
+              "op": "GetAgentTeamDefinitions",
+              "at": 318
+            },
+            {
+              "op": "GetAgentOrgDefinitions",
+              "at": 325
+            },
+            {
+              "op": "GetAgentRunCollaboration",
+              "at": 332
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 340
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 348
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 356
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 371
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 385
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 391
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 399
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 407
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 419
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 426
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 434
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 451
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 459
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 465
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 483
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 490
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 497
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 505
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 512
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 520
+            },
+            {
+              "op": "GetTeamRunResumeConfig",
+              "at": 534
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 556
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 564
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 582
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 589
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 595
+            },
+            {
+              "op": "ListWorkspaceRunHistory",
+              "at": 654
+            },
+            {
+              "op": "ListCollaborationRootHistory",
+              "at": 662
+            },
+            {
+              "op": "GetAgentRunCollaborationStatuses",
+              "at": 674
+            }
+          ]
+        },
+        {
+          "index": 10,
+          "opened": true,
+          "race": false,
+          "listAt": 382,
+          "teamTapAt": 654,
+          "reads": [
+            {
+              "op": "PhoneCredentialCheck",
+              "at": 278
+            },
+            {
+              "op": "ListWorkspaceRunHistory",
+              "at": 286
+            },
+            {
+              "op": "ListCollaborationRootHistory",
+              "at": 294
+            },
+            {
+              "op": "GetAllWorkspaces",
+              "at": 298
+            },
+            {
+              "op": "GetAgentDefinitions",
+              "at": 304
+            },
+            {
+              "op": "GetAgentTeamDefinitions",
+              "at": 311
+            },
+            {
+              "op": "GetAgentOrgDefinitions",
+              "at": 319
+            },
+            {
+              "op": "GetAgentRunCollaboration",
+              "at": 326
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 333
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 343
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 349
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 361
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 374
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 381
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 388
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 395
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 408
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 415
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 422
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 438
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 445
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 453
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 475
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 482
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 488
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 510
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 518
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 525
+            },
+            {
+              "op": "GetTeamRunResumeConfig",
+              "at": 532
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 550
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 557
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 575
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 583
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 589
+            },
+            {
+              "op": "ListWorkspaceRunHistory",
+              "at": 656
+            },
+            {
+              "op": "ListCollaborationRootHistory",
+              "at": 661
+            },
+            {
+              "op": "GetAgentRunCollaborationStatuses",
+              "at": 673
+            }
+          ]
+        },
+        {
+          "index": 11,
+          "opened": true,
+          "race": false,
+          "listAt": 381,
+          "teamTapAt": 651,
+          "reads": [
+            {
+              "op": "PhoneCredentialCheck",
+              "at": 273
+            },
+            {
+              "op": "ListWorkspaceRunHistory",
+              "at": 282
+            },
+            {
+              "op": "ListCollaborationRootHistory",
+              "at": 289
+            },
+            {
+              "op": "GetAllWorkspaces",
+              "at": 293
+            },
+            {
+              "op": "GetAgentDefinitions",
+              "at": 299
+            },
+            {
+              "op": "GetAgentTeamDefinitions",
+              "at": 305
+            },
+            {
+              "op": "GetAgentOrgDefinitions",
+              "at": 317
+            },
+            {
+              "op": "GetAgentRunCollaboration",
+              "at": 326
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 334
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 340
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 347
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 358
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 370
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 376
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 384
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 392
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 404
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 411
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 417
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 433
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 440
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 446
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 473
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 479
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 485
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 508
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 513
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 520
+            },
+            {
+              "op": "GetTeamRunResumeConfig",
+              "at": 526
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 543
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 550
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 565
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 572
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 578
+            },
+            {
+              "op": "ListCollaborationRootHistory",
+              "at": 654
+            },
+            {
+              "op": "ListWorkspaceRunHistory",
+              "at": 660
+            },
+            {
+              "op": "GetAgentRunCollaborationStatuses",
+              "at": 669
+            }
+          ]
+        },
+        {
+          "index": 12,
+          "opened": false,
+          "race": true,
+          "listAt": 378,
+          "teamTapAt": 529,
+          "reads": [
+            {
+              "op": "PhoneCredentialCheck",
+              "at": 283
+            },
+            {
+              "op": "ListWorkspaceRunHistory",
+              "at": 293
+            },
+            {
+              "op": "ListCollaborationRootHistory",
+              "at": 301
+            },
+            {
+              "op": "GetAllWorkspaces",
+              "at": 307
+            },
+            {
+              "op": "GetAgentDefinitions",
+              "at": 313
+            },
+            {
+              "op": "GetAgentTeamDefinitions",
+              "at": 326
+            },
+            {
+              "op": "GetAgentOrgDefinitions",
+              "at": 334
+            },
+            {
+              "op": "GetAgentRunCollaboration",
+              "at": 341
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 356
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 366
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 373
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 387
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 399
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 406
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 414
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 421
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 445
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 452
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 458
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 472
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 487
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 495
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 502
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 510
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 516
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 543
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 550
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 557
+            },
+            {
+              "op": "GetTeamRunResumeConfig",
+              "at": 575
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 591
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 596
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 603
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 618
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 625
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 632
+            },
+            {
+              "op": "ListWorkspaceRunHistory",
+              "at": 639
+            },
+            {
+              "op": "ListCollaborationRootHistory",
+              "at": 645
+            },
+            {
+              "op": "GetAgentRunCollaborationStatuses",
+              "at": 661
+            },
+            {
+              "op": "ListWorkspaceRunHistory",
+              "at": 5647
+            },
+            {
+              "op": "ListCollaborationRootHistory",
+              "at": 5654
+            },
+            {
+              "op": "GetAgentRunCollaborationStatuses",
+              "at": 5667
+            },
+            {
+              "op": "ListWorkspaceRunHistory",
+              "at": 10619
+            },
+            {
+              "op": "ListCollaborationRootHistory",
+              "at": 10625
+            },
+            {
+              "op": "GetAgentRunCollaborationStatuses",
+              "at": 10636
+            },
+            {
+              "op": "ListWorkspaceRunHistory",
+              "at": 15621
+            },
+            {
+              "op": "ListCollaborationRootHistory",
+              "at": 15627
+            },
+            {
+              "op": "GetAgentRunCollaborationStatuses",
+              "at": 15640
+            }
+          ]
+        },
+        {
+          "index": 13,
+          "opened": true,
+          "race": false,
+          "listAt": 369,
+          "teamTapAt": 549,
+          "reads": [
+            {
+              "op": "PhoneCredentialCheck",
+              "at": 279
+            },
+            {
+              "op": "ListWorkspaceRunHistory",
+              "at": 288
+            },
+            {
+              "op": "ListCollaborationRootHistory",
+              "at": 295
+            },
+            {
+              "op": "GetAllWorkspaces",
+              "at": 300
+            },
+            {
+              "op": "GetAgentDefinitions",
+              "at": 307
+            },
+            {
+              "op": "GetAgentTeamDefinitions",
+              "at": 314
+            },
+            {
+              "op": "GetAgentOrgDefinitions",
+              "at": 320
+            },
+            {
+              "op": "GetAgentRunCollaboration",
+              "at": 327
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 334
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 347
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 354
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 369
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 381
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 386
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 393
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 399
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 412
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 420
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 426
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 443
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 449
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 456
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 474
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 480
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 486
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 508
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 514
+            },
+            {
+              "op": "GetTeamRunResumeConfig",
+              "at": 522
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 528
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 535
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 542
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 567
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 578
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 584
+            }
+          ]
+        },
+        {
+          "index": 14,
+          "opened": true,
+          "race": false,
+          "listAt": 386,
+          "teamTapAt": 620,
+          "reads": [
+            {
+              "op": "PhoneCredentialCheck",
+              "at": 277
+            },
+            {
+              "op": "ListWorkspaceRunHistory",
+              "at": 286
+            },
+            {
+              "op": "ListCollaborationRootHistory",
+              "at": 293
+            },
+            {
+              "op": "GetAllWorkspaces",
+              "at": 298
+            },
+            {
+              "op": "GetAgentDefinitions",
+              "at": 306
+            },
+            {
+              "op": "GetAgentTeamDefinitions",
+              "at": 319
+            },
+            {
+              "op": "GetAgentOrgDefinitions",
+              "at": 327
+            },
+            {
+              "op": "GetAgentRunCollaboration",
+              "at": 334
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 340
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 347
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 354
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 367
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 380
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 387
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 392
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 399
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 410
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 416
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 422
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 437
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 442
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 449
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 474
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 481
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 487
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 514
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 519
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 526
+            },
+            {
+              "op": "GetTeamRunResumeConfig",
+              "at": 533
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 553
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 560
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 578
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 585
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 591
+            },
+            {
+              "op": "ListWorkspaceRunHistory",
+              "at": 625
+            },
+            {
+              "op": "ListCollaborationRootHistory",
+              "at": 631
+            },
+            {
+              "op": "GetAgentRunCollaborationStatuses",
+              "at": 642
+            }
+          ]
+        },
+        {
+          "index": 15,
+          "opened": true,
+          "race": false,
+          "listAt": 395,
+          "teamTapAt": 635,
+          "reads": [
+            {
+              "op": "PhoneCredentialCheck",
+              "at": 288
+            },
+            {
+              "op": "ListWorkspaceRunHistory",
+              "at": 297
+            },
+            {
+              "op": "ListCollaborationRootHistory",
+              "at": 304
+            },
+            {
+              "op": "GetAllWorkspaces",
+              "at": 310
+            },
+            {
+              "op": "GetAgentDefinitions",
+              "at": 316
+            },
+            {
+              "op": "GetAgentTeamDefinitions",
+              "at": 323
+            },
+            {
+              "op": "GetAgentOrgDefinitions",
+              "at": 333
+            },
+            {
+              "op": "GetAgentRunCollaboration",
+              "at": 342
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 349
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 356
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 364
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 378
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 390
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 396
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 402
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 410
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 423
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 430
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 437
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 453
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 459
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 465
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 491
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 497
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 503
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 526
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 533
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 539
+            },
+            {
+              "op": "GetTeamRunResumeConfig",
+              "at": 547
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 566
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 573
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 600
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 606
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 613
+            },
+            {
+              "op": "ListWorkspaceRunHistory",
+              "at": 639
+            },
+            {
+              "op": "ListCollaborationRootHistory",
+              "at": 646
+            },
+            {
+              "op": "GetAgentRunCollaborationStatuses",
+              "at": 659
+            }
+          ]
+        },
+        {
+          "index": 16,
+          "opened": true,
+          "race": false,
+          "listAt": 388,
+          "teamTapAt": 654,
+          "reads": [
+            {
+              "op": "PhoneCredentialCheck",
+              "at": 280
+            },
+            {
+              "op": "ListWorkspaceRunHistory",
+              "at": 290
+            },
+            {
+              "op": "ListCollaborationRootHistory",
+              "at": 299
+            },
+            {
+              "op": "GetAllWorkspaces",
+              "at": 304
+            },
+            {
+              "op": "GetAgentDefinitions",
+              "at": 316
+            },
+            {
+              "op": "GetAgentTeamDefinitions",
+              "at": 322
+            },
+            {
+              "op": "GetAgentOrgDefinitions",
+              "at": 329
+            },
+            {
+              "op": "GetAgentRunCollaboration",
+              "at": 337
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 345
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 352
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 359
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 374
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 386
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 394
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 400
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 408
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 422
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 429
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 435
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 453
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 460
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 466
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 484
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 490
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 497
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 508
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 514
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 522
+            },
+            {
+              "op": "GetTeamRunResumeConfig",
+              "at": 536
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 556
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 562
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 579
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 585
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 593
+            },
+            {
+              "op": "ListWorkspaceRunHistory",
+              "at": 658
+            },
+            {
+              "op": "ListCollaborationRootHistory",
+              "at": 665
+            },
+            {
+              "op": "GetAgentRunCollaborationStatuses",
+              "at": 675
+            }
+          ]
+        },
+        {
+          "index": 17,
+          "opened": true,
+          "race": false,
+          "listAt": 385,
+          "teamTapAt": 619,
+          "reads": [
+            {
+              "op": "PhoneCredentialCheck",
+              "at": 277
+            },
+            {
+              "op": "ListWorkspaceRunHistory",
+              "at": 285
+            },
+            {
+              "op": "ListCollaborationRootHistory",
+              "at": 293
+            },
+            {
+              "op": "GetAllWorkspaces",
+              "at": 298
+            },
+            {
+              "op": "GetAgentDefinitions",
+              "at": 305
+            },
+            {
+              "op": "GetAgentTeamDefinitions",
+              "at": 318
+            },
+            {
+              "op": "GetAgentOrgDefinitions",
+              "at": 325
+            },
+            {
+              "op": "GetAgentRunCollaboration",
+              "at": 331
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 339
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 345
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 352
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 366
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 379
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 385
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 393
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 400
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 412
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 419
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 426
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 442
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 449
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 455
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 474
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 481
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 488
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 510
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 517
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 523
+            },
+            {
+              "op": "GetTeamRunResumeConfig",
+              "at": 531
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 551
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 556
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 574
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 581
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 588
+            },
+            {
+              "op": "ListWorkspaceRunHistory",
+              "at": 622
+            },
+            {
+              "op": "ListCollaborationRootHistory",
+              "at": 629
+            },
+            {
+              "op": "GetAgentRunCollaborationStatuses",
+              "at": 641
+            }
+          ]
+        },
+        {
+          "index": 18,
+          "opened": true,
+          "race": false,
+          "listAt": 391,
+          "teamTapAt": 543,
+          "reads": [
+            {
+              "op": "PhoneCredentialCheck",
+              "at": 280
+            },
+            {
+              "op": "ListWorkspaceRunHistory",
+              "at": 289
+            },
+            {
+              "op": "ListCollaborationRootHistory",
+              "at": 297
+            },
+            {
+              "op": "GetAllWorkspaces",
+              "at": 303
+            },
+            {
+              "op": "GetAgentDefinitions",
+              "at": 310
+            },
+            {
+              "op": "GetAgentTeamDefinitions",
+              "at": 318
+            },
+            {
+              "op": "GetAgentOrgDefinitions",
+              "at": 325
+            },
+            {
+              "op": "GetAgentRunCollaboration",
+              "at": 331
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 337
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 345
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 351
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 364
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 378
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 384
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 391
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 398
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 412
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 419
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 427
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 460
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 466
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 473
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 496
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 502
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 509
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 516
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 522
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 529
+            },
+            {
+              "op": "GetTeamRunResumeConfig",
+              "at": 555
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 567
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 573
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 593
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 600
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 606
+            }
+          ]
+        },
+        {
+          "index": 19,
+          "opened": true,
+          "race": false,
+          "listAt": 381,
+          "teamTapAt": 563,
+          "reads": [
+            {
+              "op": "PhoneCredentialCheck",
+              "at": 275
+            },
+            {
+              "op": "ListWorkspaceRunHistory",
+              "at": 283
+            },
+            {
+              "op": "ListCollaborationRootHistory",
+              "at": 295
+            },
+            {
+              "op": "GetAllWorkspaces",
+              "at": 299
+            },
+            {
+              "op": "GetAgentDefinitions",
+              "at": 306
+            },
+            {
+              "op": "GetAgentTeamDefinitions",
+              "at": 319
+            },
+            {
+              "op": "GetAgentOrgDefinitions",
+              "at": 325
+            },
+            {
+              "op": "GetAgentRunCollaboration",
+              "at": 331
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 338
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 344
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 350
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 362
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 376
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 383
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 389
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 397
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 410
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 417
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 424
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 441
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 448
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 456
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 474
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 481
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 489
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 512
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 518
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 526
+            },
+            {
+              "op": "GetTeamRunResumeConfig",
+              "at": 534
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 553
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 559
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 578
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 586
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 594
+            }
+          ]
+        },
+        {
+          "index": 20,
+          "opened": true,
+          "race": false,
+          "listAt": 394,
+          "teamTapAt": 637,
+          "reads": [
+            {
+              "op": "PhoneCredentialCheck",
+              "at": 290
+            },
+            {
+              "op": "ListCollaborationRootHistory",
+              "at": 302
+            },
+            {
+              "op": "ListWorkspaceRunHistory",
+              "at": 310
+            },
+            {
+              "op": "GetAgentDefinitions",
+              "at": 315
+            },
+            {
+              "op": "GetAllWorkspaces",
+              "at": 321
+            },
+            {
+              "op": "GetAgentTeamDefinitions",
+              "at": 327
+            },
+            {
+              "op": "GetAgentOrgDefinitions",
+              "at": 333
+            },
+            {
+              "op": "GetAgentRunCollaboration",
+              "at": 340
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 349
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 355
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 362
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 375
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 387
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 393
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 399
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 405
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 417
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 422
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 428
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 456
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 462
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 468
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 494
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 500
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 506
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 512
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 518
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 524
+            },
+            {
+              "op": "GetTeamRunResumeConfig",
+              "at": 548
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 559
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 564
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 580
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 586
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 592
+            },
+            {
+              "op": "ListWorkspaceRunHistory",
+              "at": 639
+            },
+            {
+              "op": "ListCollaborationRootHistory",
+              "at": 645
+            },
+            {
+              "op": "GetAgentRunCollaborationStatuses",
+              "at": 654
+            }
+          ]
+        },
+        {
+          "index": 21,
+          "opened": true,
+          "race": false,
+          "listAt": 373,
+          "teamTapAt": 561,
+          "reads": [
+            {
+              "op": "PhoneCredentialCheck",
+              "at": 280
+            },
+            {
+              "op": "ListWorkspaceRunHistory",
+              "at": 290
+            },
+            {
+              "op": "ListCollaborationRootHistory",
+              "at": 298
+            },
+            {
+              "op": "GetAllWorkspaces",
+              "at": 302
+            },
+            {
+              "op": "GetAgentDefinitions",
+              "at": 309
+            },
+            {
+              "op": "GetAgentTeamDefinitions",
+              "at": 316
+            },
+            {
+              "op": "GetAgentOrgDefinitions",
+              "at": 323
+            },
+            {
+              "op": "GetAgentRunCollaboration",
+              "at": 336
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 342
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 349
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 357
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 371
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 384
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 390
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 397
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 404
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 418
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 425
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 431
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 448
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 455
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 463
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 480
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 487
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 493
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 512
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 519
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 526
+            },
+            {
+              "op": "GetTeamRunResumeConfig",
+              "at": 534
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 553
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 559
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 578
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 586
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 593
+            }
+          ]
+        },
+        {
+          "index": 22,
+          "opened": true,
+          "race": false,
+          "listAt": 392,
+          "teamTapAt": 577,
+          "reads": [
+            {
+              "op": "PhoneCredentialCheck",
+              "at": 294
+            },
+            {
+              "op": "ListWorkspaceRunHistory",
+              "at": 302
+            },
+            {
+              "op": "ListCollaborationRootHistory",
+              "at": 310
+            },
+            {
+              "op": "GetAllWorkspaces",
+              "at": 315
+            },
+            {
+              "op": "GetAgentDefinitions",
+              "at": 323
+            },
+            {
+              "op": "GetAgentTeamDefinitions",
+              "at": 330
+            },
+            {
+              "op": "GetAgentOrgDefinitions",
+              "at": 338
+            },
+            {
+              "op": "GetAgentRunCollaboration",
+              "at": 351
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 358
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 365
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 372
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 386
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 399
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 406
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 411
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 418
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 431
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 438
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 445
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 463
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 469
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 476
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 493
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 500
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 507
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 523
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 537
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 543
+            },
+            {
+              "op": "GetTeamRunResumeConfig",
+              "at": 551
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 570
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 578
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 595
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 602
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 608
+            }
+          ]
+        },
+        {
+          "index": 23,
+          "opened": true,
+          "race": false,
+          "listAt": 297,
+          "teamTapAt": 436,
+          "reads": [
+            {
+              "op": "PhoneCredentialCheck",
+              "at": 283
+            },
+            {
+              "op": "ListWorkspaceRunHistory",
+              "at": 291
+            },
+            {
+              "op": "ListCollaborationRootHistory",
+              "at": 298
+            },
+            {
+              "op": "GetAllWorkspaces",
+              "at": 304
+            },
+            {
+              "op": "GetAgentDefinitions",
+              "at": 311
+            },
+            {
+              "op": "GetAgentTeamDefinitions",
+              "at": 318
+            },
+            {
+              "op": "GetAgentOrgDefinitions",
+              "at": 325
+            },
+            {
+              "op": "GetAgentRunCollaboration",
+              "at": 332
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 338
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 345
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 351
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 364
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 378
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 390
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 397
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 404
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 411
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 417
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 424
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 438
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 445
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 451
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 470
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 476
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 482
+            },
+            {
+              "op": "GetTeamRunResumeConfig",
+              "at": 489
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 500
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 506
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 513
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 519
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 525
+            },
+            {
+              "op": "GetTeamRunResumeConfig",
+              "at": 539
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 557
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 564
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 570
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 576
+            }
+          ]
+        },
+        {
+          "index": 24,
+          "opened": true,
+          "race": false,
+          "listAt": 383,
+          "teamTapAt": 591,
+          "reads": [
+            {
+              "op": "PhoneCredentialCheck",
+              "at": 284
+            },
+            {
+              "op": "ListCollaborationRootHistory",
+              "at": 292
+            },
+            {
+              "op": "ListWorkspaceRunHistory",
+              "at": 303
+            },
+            {
+              "op": "GetAllWorkspaces",
+              "at": 310
+            },
+            {
+              "op": "GetAgentDefinitions",
+              "at": 320
+            },
+            {
+              "op": "GetAgentTeamDefinitions",
+              "at": 339
+            },
+            {
+              "op": "GetAgentOrgDefinitions",
+              "at": 345
+            },
+            {
+              "op": "GetAgentRunCollaboration",
+              "at": 353
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 360
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 366
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 373
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 387
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 400
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 407
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 414
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 421
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 444
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 450
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 457
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 480
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 486
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 492
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 499
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 506
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 513
+            },
+            {
+              "op": "GetRunProjection",
+              "at": 540
+            },
+            {
+              "op": "GetRunFileChanges",
+              "at": 546
+            },
+            {
+              "op": "GetAgentRunResumeConfig",
+              "at": 553
+            },
+            {
+              "op": "GetTeamRunResumeConfig",
+              "at": 572
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 583
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 590
+            },
+            {
+              "op": "GetTaskWorkerTasks",
+              "at": 609
+            },
+            {
+              "op": "GetTeamMemberRunProjection",
+              "at": 615
+            },
+            {
+              "op": "GetTeamMemberFileChanges",
+              "at": 622
+            }
+          ]
+        }
+      ],
+      "failedOpens": 2,
+      "races": 2
+    }
+  },
+  "browserErrors": [
+    {
+      "case": "setup",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "FU-003: serverStore health check of http://localhost:8000/health"
+    },
+    {
+      "case": "MSP-90",
+      "line": "phone console: Failed to open team: Error: Team context 'delivery_team_df666296dd53454ebf923e37f9f73d76' became mounted while it was loading.\n    at kL (http://192.168.77.10:59578/mobile/_nuxt/DvLjF00i.js:1923:4614)\n    at async bde (http://192.168.77.10:59578/mobile/_nuxt/DvLjF00i.js:1923:40949)\n    at async Proxy.openTeamMemberRun (http://192.168.77.10:59578/mobile/_nuxt/DvLjF00i.js:1977:14502)\n    at async S (http://192.168.77.10:59578/mobile/_nuxt/CXaqFPFT.js:1:1579)\n    at async Object.open (http://192.168.77.10:59578/mobile/_nuxt/Bkfp26RZ.js:1:31468)",
+      "known": false
+    },
+    {
+      "case": "MSP-90",
+      "line": "phone console: Failed to open team: Error: Team context 'delivery_team_df666296dd53454ebf923e37f9f73d76' became mounted while it was loading.\n    at kL (http://192.168.77.10:59578/mobile/_nuxt/DvLjF00i.js:1923:4614)\n    at async bde (http://192.168.77.10:59578/mobile/_nuxt/DvLjF00i.js:1923:40949)\n    at async Proxy.openTeamMemberRun (http://192.168.77.10:59578/mobile/_nuxt/DvLjF00i.js:1977:14502)\n    at async S (http://192.168.77.10:59578/mobile/_nuxt/CXaqFPFT.js:1:1579)\n    at async Object.open (http://192.168.77.10:59578/mobile/_nuxt/Bkfp26RZ.js:1:31468)",
+      "known": false
+    }
+  ],
+  "failedRequests": [
+    {
+      "case": "setup",
+      "label": "phone",
+      "url": "http://localhost:8000/health",
+      "error": "net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "case": "MSP-05",
+      "label": "phone",
+      "url": "http://192.168.77.10:59578/graphql",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "case": "MSP-05",
+      "label": "phone",
+      "url": "http://192.168.77.10:59578/rest/health",
+      "error": "net::ERR_ABORTED"
+    }
+  ],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "summary": {
+    "cases": {
+      "MSP-01": "Pass",
+      "MSP-15": "Pass",
+      "MSP-02": "Pass",
+      "MSP-03": "Pass",
+      "MSP-04": "Pass",
+      "MSP-05": "Pass",
+      "MSP-90": "Pass"
+    },
+    "unknownBrowserErrors": 2
+  },
+  "finishedAt": "2026-11-08T11:31:22.283Z"
+}

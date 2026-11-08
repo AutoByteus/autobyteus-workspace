@@ -1,0 +1,25 @@
+{
+  "startedAt": "2026-11-08T06:59:30.303Z",
+  "scenarios": {},
+  "timeline": [
+    {
+      "t": 7252,
+      "event": "team",
+      "teamRunId": "delivery_team_fdf87ee7a887479a9791333bd7535359",
+      "leadRun": "solution_designer_7190889c6d9742878f4609f04ad1440a"
+    },
+    {
+      "t": 12123,
+      "event": "phone paired"
+    }
+  ],
+  "proxy": {
+    "connections": 8
+  },
+  "error": "Error: Timed out waiting for the warm-up reply on the phone\n    at waitFor (file:///Users/normy/autobyteus_org/autobyteus-worktrees/phone-live-updates-434/tickets/in-progress/phone-live-updates-434/evidence/repro/phone-live-repro.mjs:68:9)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/phone-live-updates-434/tickets/in-progress/phone-live-updates-434/evidence/repro/phone-live-repro.mjs:214:3",
+  "cleanup": {
+    "serverExited": true,
+    "rootRemoved": true
+  },
+  "finishedAt": "2026-11-08T07:00:30.338Z"
+}

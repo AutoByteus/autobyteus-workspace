@@ -284,7 +284,7 @@ describe('Org shared composer -> exact interaction -> correlated stream', () => 
     }))
     socket.close()
     expect(await outcome).toBeInstanceOf(Error)
-    await vi.waitFor(() => expect(Socket.instances).toHaveLength(2))
+    await vi.waitFor(() => expect(Socket.instances).toHaveLength(2), { timeout: 2_500 }) // the first retry waits 1 s (autobyteus-434)
     socket = Socket.instances[1]!
     socket.emit({ type: 'CONNECTED', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', session_id: 'recovery' } })
     socket.emit({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: {
@@ -320,7 +320,7 @@ describe('Org shared composer -> exact interaction -> correlated stream', () => 
         conversation: [], activities: [], hasEarlierActiveTraceEvents: false } } }
     })
     socket.close()
-    await vi.waitFor(() => expect(Socket.instances).toHaveLength(2))
+    await vi.waitFor(() => expect(Socket.instances).toHaveLength(2), { timeout: 2_500 }) // the first retry waits 1 s (autobyteus-434)
     socket = Socket.instances[1]!
     socket.emit({ type: 'CONNECTED', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', session_id: 'held-recovery' } })
     socket.emit({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: {
@@ -572,7 +572,8 @@ describe('Org strict candidate and terminal boundaries', () => {
       vi.stubGlobal('WebSocket', class { static OPEN = 1; static CONNECTING = 0; constructor() { throw new Error('socket unavailable') } })
       context.requirement = 'not sent'
       const sent = active.send(); const failure = expect(sent).rejects.toThrow('socket unavailable')
-      await vi.runAllTimersAsync(); await failure
+      // The fifth consecutive failure (the open, then attempts after 1, 2, 4 and 8 s) reports; retrying goes on.
+      await vi.advanceTimersByTimeAsync(15_500); await failure
       expect(mocks.mutate).toHaveBeenCalledOnce()
       expect(context.requirement).toBe('not sent'); expect(context.submissionPending).toBe(false)
       expect(store.contextFor('org-run')?.phase).toBe('reopen_required')

@@ -69,7 +69,6 @@ class ProbeWebSocketClient implements IWebSocketClient {
   disconnect(): void {
     this.state = ConnectionState.DISCONNECTED;
     this.emit('onStateChange', this.state);
-    this.emit('onDisconnect', 'probe disconnect');
   }
 
   send(): void {}

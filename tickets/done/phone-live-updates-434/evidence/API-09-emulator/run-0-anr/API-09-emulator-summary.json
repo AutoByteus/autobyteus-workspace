@@ -1,0 +1,98 @@
+{
+  "startedAt": "2026-11-08T09:54:58.104Z",
+  "serial": "emulator-5584",
+  "cycles": [],
+  "connections": [
+    {
+      "openedAt": 20400,
+      "closedAt": 93806,
+      "webSocket": false,
+      "path": "/rest/remote-access/status"
+    },
+    {
+      "openedAt": 31307,
+      "closedAt": 131468,
+      "webSocket": false,
+      "path": "/mobile?pairing=eyJ2ZXJzaW9uIjoxLCJzZXJ2ZXJCYXNlVXJsIjoiaHR0cDovLzEwLjAuMi4yOjQ5MzY1IiwicGFpcmluZ0NvZGUiOiIwQy16VV9Gd2RneFFCMWlnTEdWMklrSVEiLCJleHBpcmVzQXQiOiIyMDI2LTExLTA4VDEwOjAwOjA2Ljg3OVoiLCJzZXJ2ZXJOYW1lIjoiRW11bGF0b3IgVGVzdCBOb2RlIn0"
+    },
+    {
+      "openedAt": 32204,
+      "closedAt": 101596,
+      "webSocket": false,
+      "path": "/mobile/_nuxt/6gKLa7nn.js"
+    },
+    {
+      "openedAt": 32520,
+      "closedAt": 141218,
+      "webSocket": false,
+      "path": "/mobile/_nuxt/default.CTHSKn2w.css"
+    },
+    {
+      "openedAt": 32598,
+      "closedAt": 131468,
+      "webSocket": false,
+      "path": "/mobile/_nuxt/C0peU2YB.js"
+    },
+    {
+      "openedAt": 32669,
+      "closedAt": 131468,
+      "webSocket": false,
+      "path": "/mobile/_nuxt/DxfFyxED.js"
+    },
+    {
+      "openedAt": 32671,
+      "closedAt": 131468,
+      "webSocket": false,
+      "path": "/mobile/_nuxt/J1bxg2UA.js"
+    },
+    {
+      "openedAt": 55732,
+      "closedAt": 141218,
+      "webSocket": true,
+      "path": "/ws/agent-package-definitions?access_token=…"
+    },
+    {
+      "openedAt": 56527,
+      "closedAt": 141218,
+      "webSocket": true,
+      "path": "/ws/agent/emu_agent_fb91baeafb364e9e805d3c7f1f7bf006?access_token=…"
+    },
+    {
+      "openedAt": 59242,
+      "closedAt": 141218,
+      "webSocket": true,
+      "path": "/ws/agent-team/emu_team_e660d744e37b4e83ba0117013a8a0a39?access_token=…"
+    },
+    {
+      "openedAt": 131717,
+      "closedAt": 141218,
+      "webSocket": false,
+      "path": "/graphql"
+    }
+  ],
+  "timeline": [
+    {
+      "t": 9249,
+      "event": "device",
+      "model": "sdk_gphone64_arm64",
+      "sdk": "35",
+      "webview": "124.0.6367.219"
+    },
+    {
+      "t": 15337,
+      "event": "apk",
+      "versionName": "0.1.0"
+    }
+  ],
+  "error": "Error: Timed out waiting for the run list in the app\n    at waitFor (file:///Users/normy/autobyteus_org/autobyteus-worktrees/phone-live-updates-434/tickets/in-progress/phone-live-updates-434/evidence/API-09-emulator/emulator-background-harness.mjs:51:9)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/phone-live-updates-434/tickets/in-progress/phone-live-updates-434/evidence/API-09-emulator/emulator-background-harness.mjs:132:3",
+  "runs": {
+    "teamRun": "emu_team_e660d744e37b4e83ba0117013a8a0a39",
+    "leadRun": "emu_lead_bd82158c860e4885bf722f3494bb9824",
+    "agentRun": "emu_agent_fb91baeafb364e9e805d3c7f1f7bf006"
+  },
+  "cleanup": {
+    "serverExited": true,
+    "rootRemoved": true
+  },
+  "finishedAt": "2026-11-08T09:57:19.946Z"
+}

@@ -67,6 +67,9 @@ type RuntimeMemoryUserTraceInput = Omit<RuntimeMemoryNonToolTraceInput, "traceTy
   fileAttachments?: readonly ContextFileReference[];
   /** The sender AgentRun of an agent-to-agent delivery (RD-004); absent for user input. */
   senderId?: string | null;
+  /** The accepted input's identity, so a loaded conversation matches the live input state (autobyteus-434). */
+  messageId?: string;
+  dedupeKey?: string;
 };
 
 /**
