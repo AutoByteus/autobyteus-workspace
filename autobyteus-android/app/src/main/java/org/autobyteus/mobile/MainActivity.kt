@@ -183,7 +183,7 @@ class MainActivity : Activity(), NodeConnectionFlow.Screens {
         }
         currentWebHost?.destroy()
         var firstPageShown = false
-        if (!pairing) setContentView(ConnectingScreen(ui).connected(entry.displayName))
+        if (!pairing) setContentView(ConnectingScreen(ui).connected(entry.shownName))
         val webHost = AutoByteusWebView(
             context = this,
             entry = entry,
@@ -197,7 +197,7 @@ class MainActivity : Activity(), NodeConnectionFlow.Screens {
                 }
             },
             onDiagnostic = { diagnostic -> showWebDiagnostic(diagnostic) },
-            onExternalUrl = { url -> Toast.makeText(this, "Opening outside AutoByteus: $url", Toast.LENGTH_SHORT).show() },
+            onOpenedOutside = { Toast.makeText(this, "Opening outside AutoByteus", Toast.LENGTH_SHORT).show() },
         )
         currentWebHost = webHost
         webHost.create(url)

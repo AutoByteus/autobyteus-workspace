@@ -14,8 +14,9 @@ import org.json.JSONObject
 /**
  * The shell bridge (`window.AutoByteusShell`): an androidx.webkit web-message object given only to the open node's
  * origin. The page may tell the app it paired, or ask it to show its node list or its scanner; `hello` answers with
- * the phone's node count and model name. Messages from a subframe or another origin are ignored, so a sandboxed HTML
- * preview inside the page cannot act as the app (autobyteus-417). It carries no credential and no entry data.
+ * the phone's node count and model name, and the open node's name as the app shows it (`""` when it has none,
+ * autobyteus-433). Messages from a subframe or another origin are ignored, so a sandboxed HTML preview inside the page
+ * cannot act as the app (autobyteus-417). It carries no credential and, of the entry, only the open node's name.
  */
 class ShellBridge(
     private val entry: SavedNodeEntry,
@@ -48,7 +49,11 @@ class ShellBridge(
     private fun handle(action: ShellBridgeAction, replyProxy: JavaScriptReplyProxy) {
         when (action) {
             ShellBridgeAction.Hello -> replyProxy.postMessage(
-                ShellBridgeMessages.helloReply(nodeCount = actions.nodeCount(), deviceName = actions.deviceName()),
+                ShellBridgeMessages.helloReply(
+                    nodeCount = actions.nodeCount(),
+                    deviceName = actions.deviceName(),
+                    nodeName = entry.knownName.orEmpty(),
+                ),
             )
             is ShellBridgeAction.Paired -> actions.onPaired(action.nodeName)
             ShellBridgeAction.ShowNodeList -> actions.onShowNodeList()
@@ -89,10 +94,12 @@ object ShellBridgeMessages {
         }
     }
 
-    fun helloReply(nodeCount: Int, deviceName: String): String = JSONObject()
+    /** [nodeName] is the open entry's known name, `""` when it has none: never its address. */
+    fun helloReply(nodeCount: Int, deviceName: String, nodeName: String): String = JSONObject()
         .put("type", "shell")
         .put("nodeCount", nodeCount)
         .put("deviceName", deviceName)
+        .put("nodeName", nodeName)
         .toString()
 
     private fun sameOrigin(left: String, right: String): Boolean =

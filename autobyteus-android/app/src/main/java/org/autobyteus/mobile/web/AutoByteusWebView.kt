@@ -28,7 +28,8 @@ class AutoByteusWebView(
     private val onPageStarted: (String) -> Unit,
     private val onPageFinished: (String) -> Unit,
     private val onDiagnostic: (ConnectionDiagnostic) -> Unit,
-    private val onExternalUrl: (String) -> Unit,
+    /** A link or download is opening in another app; the toast says so without its URL. */
+    private val onOpenedOutside: () -> Unit,
 ) {
     lateinit var webView: WebView
         private set
@@ -67,7 +68,7 @@ class AutoByteusWebView(
         when (TrustedNavigationPolicy.classify(url, entry, isMainFrame = true).type) {
             NavigationDecisionType.AllowInWebView -> webView.loadUrl(url)
             NavigationDecisionType.OpenExternal -> openExternal(url)
-            NavigationDecisionType.Block -> onDiagnostic(ConnectionDiagnosticMapper.unsafeNavigationBlocked(url))
+            NavigationDecisionType.Block -> onDiagnostic(ConnectionDiagnosticMapper.linkBlocked())
         }
     }
 
@@ -88,12 +89,12 @@ class AutoByteusWebView(
     }
 
     private fun openExternal(url: String) {
-        onExternalUrl(url)
+        onOpenedOutside()
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         try {
             context.startActivity(intent)
         } catch (_: ActivityNotFoundException) {
-            onDiagnostic(ConnectionDiagnosticMapper.webViewLoadFailed("No installed app can open $url"))
+            onDiagnostic(ConnectionDiagnosticMapper.noAppForLink())
         }
     }
 
@@ -108,7 +109,7 @@ class AutoByteusWebView(
                     true
                 }
                 NavigationDecisionType.Block -> {
-                    onDiagnostic(ConnectionDiagnosticMapper.unsafeNavigationBlocked(url))
+                    onDiagnostic(ConnectionDiagnosticMapper.linkBlocked())
                     true
                 }
             }
@@ -128,7 +129,7 @@ class AutoByteusWebView(
             error: WebResourceError,
         ) {
             if (request.isForMainFrame) {
-                onDiagnostic(ConnectionDiagnosticMapper.webViewLoadFailed(error.description.toString()))
+                onDiagnostic(ConnectionDiagnosticMapper.pageLoadFailed(entry.shownName))
             }
         }
 

@@ -91,7 +91,7 @@ class AutoByteusMobileShellSmokeTest {
                 onPageStarted = {},
                 onPageFinished = {},
                 onDiagnostic = {},
-                onExternalUrl = {},
+                onOpenedOutside = {},
             )
             val webView = webHost.create(entry.mobileUrl)
             assertTrue(webView.settings.allowContentAccess)

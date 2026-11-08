@@ -30,11 +30,22 @@ class ShellBridgeMessagesTest {
     }
 
     @Test
-    fun answersHelloWithTheNodeCountAndTheModelName() {
-        val reply = JSONObject(ShellBridgeMessages.helloReply(nodeCount = 3, deviceName = "Pixel 8"))
+    fun answersHelloWithTheNodeCountTheModelNameAndTheOpenNodesName() {
+        val reply = JSONObject(ShellBridgeMessages.helloReply(nodeCount = 3, deviceName = "Pixel 8", nodeName = "Test Desktop"))
         assertEquals("shell", reply.getString("type"))
         assertEquals(3, reply.getInt("nodeCount"))
         assertEquals("Pixel 8", reply.getString("deviceName"))
+        assertEquals("Test Desktop", reply.getString("nodeName"))
+        assertEquals(setOf("type", "nodeCount", "deviceName", "nodeName"), reply.keys().asSequence().toSet())
+    }
+
+    @Test
+    fun anOpenNodeWithNoNameIsAnsweredWithAnEmptyNameNotItsAddress() {
+        // autobyteus-433: the bridge sends the entry's known name, so a typed address's host never reaches the page.
+        val typed = SavedNodeEntry.fromNormalized(NodeUrlNormalizer.normalize("https://test-desktop.example-tailnet.ts.net"))
+        val reply = ShellBridgeMessages.helloReply(nodeCount = 1, deviceName = "Pixel 8", nodeName = typed.knownName.orEmpty())
+        assertEquals("", JSONObject(reply).getString("nodeName"))
+        assertEquals(false, reply.contains("example-tailnet"))
     }
 
     @Test

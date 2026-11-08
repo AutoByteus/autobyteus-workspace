@@ -24,7 +24,7 @@ object RemoveNodeSheet {
         content.addView(removeRow, LinearLayout.LayoutParams(match(), ui.dp(56)))
         removeRow.setOnClickListener {
             content.removeAllViews()
-            content.addView(ui.text("Remove ${entry.displayName} from this phone? Scan its QR code again to add it back.", 15f, ShellColors.slate600).apply {
+            content.addView(ui.text("Remove ${entry.shownName} from this phone? Scan its QR code again to add it back.", 15f, ShellColors.slate600).apply {
                 setLineSpacing(0f, 1.2f)
             })
             val buttons = ui.horizontal().apply { gravity = Gravity.CENTER_VERTICAL }
@@ -36,6 +36,6 @@ object RemoveNodeSheet {
             buttons.addView(remove, LinearLayout.LayoutParams(0, ui.dp(48), 1f).withStartMargin(ui.dp(6)))
             content.addView(buttons, LinearLayout.LayoutParams(match(), ui.dp(48)).withTopMargin(ui.dp(16)))
         }
-        return SheetFrame.build(ui, entry.displayName, content, onClose)
+        return SheetFrame.build(ui, entry.shownName, content, onClose)
     }
 }
