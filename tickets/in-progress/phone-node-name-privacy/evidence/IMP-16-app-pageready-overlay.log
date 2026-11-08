@@ -1,0 +1,17 @@
+# IMP-16 rendered check of the final APK (no temporary logs) against the fake test node of IMP-13
+# commit: 60adcf3bc8 (APK sha256 in IMP-15; the /mobile bundle served is the one built for IMP-13 from the same web source)
+# env: own read-only emulator codex_api35_arm64 (port 5570), API 35, WebView 124.0.6367.219; fake node 127.0.0.1:8437
+# date: 2026-11-08
+# steps and captures (IMP-16-app-pageready-overlay/NN-*.png screenshot, .xml uiautomator dump):
+#  01 share the pairing link (node ok): the node's page shows (its in-app pairing fails against the fake node: "This code has expired")
+#  02 node stopped; the LOADED page reloads (location.reload() via DevTools)  -> CRR-002 state (two onPageFinished)
+#  03 Retry while down
+#  04 node back, Retry
+#  05 a second document, node 502, system Back into history
+#  06 node drop, Retry
+#  07 node ok, Retry
+# results:
+#  02, 03: "Can’t reach Test Desktop" overlay alone on an opaque background (no error page, no URL); before SR-005 this state showed
+#          WebView's error page full-screen (CRR-002 F-002). dumps: no 10.0.2.2 / 8437 / http / webpage / ERR_ / chromewebdata.
+#  05:     "AutoByteus returned HTTP 502" overlay (FU-001 wording), no address.  06: "Can’t reach Test Desktop".
+#  04, 07: overlay closed, the node's page shows ("Connect this phone" from the fake node's unpaired page).

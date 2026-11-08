@@ -9,6 +9,7 @@ The current code and `implementation-handoff.md` remain authoritative.
 | IR-001 | Solution Designer, `solution-handoff.md` (Architecture Design Complete), round 1 | N/A | `Initial Baseline` | `SR-002`; `ARCH-REV-*` N/A; `CRR-*` N/A; `API-REV-*` N/A; `DR-*` N/A | Implemented; local checks pass; ready for direct API/E2E |
 | IR-002 | Solution Designer, `solution-handoff.md` "SR-003 Revision" (from CRR-001 F-001 / API-REV-001), round 2 | CRR-001 F-001 | `Design Impact` | `SR-003`; `CRR-001`; `API-REV-001` | Not implemented: DS-006's premise check failed on WebView 124 (HTTP error comes before `onPageStarted`); returned to Solution Designer. Code unchanged at `ba3ba5b23e` |
 | IR-003 | Solution Designer, `solution-handoff.md` "SR-004 Revision" (answer to IR-002), round 3 | CRR-001 F-001 | `Design Impact` (rework on the revised design) | `SR-004`, `SR-003`; `CRR-001`; `API-REV-001` | Implemented at `ea45dc1643`; local checks pass; ready for direct API/E2E |
+| IR-004 | Solution Designer, `solution-handoff.md` "SR-005 Revision" (from code review CRR-002 F-002 / API-REV-002), round 4 | CRR-002 F-002 | `Design Impact` (rework on the revised design) | `SR-005`; `CRR-002`; `API-REV-002` | Implemented at `60adcf3bc8`; premise measured (holds); local checks pass; ready for direct API/E2E |
 
 ## Revision Entries
 
@@ -82,3 +83,27 @@ The current code and `implementation-handoff.md` remain authoritative.
 - Local validation and result: IMP-10 (71 JVM tests, APK, androidTest compile), IMP-11 (11 instrumented tests on an own emulator), IMP-12 (the real app on an own emulator against a fake test node: first-load 502 stays an overlay, Retry with a network failure and with a 502 keeps it, Retry after recovery closes it and shows the page; no address in any screenshot or uiautomator dump). All Pass.
 - Next recipient or routing: direct API/E2E (Medium / Low).
 - Remaining limitations or risks: accepted SR-004 residual (a main-frame error with no `onPageFinished` keeps the overlay one more Retry; not observed); an overlay raised by a link over a working page now hides the page until Retry reloads it or Edit leaves (SR-003, accepted); Back while down was not exercised here (the test page has no history).
+
+### IR-004 — Show the page only when the node's page reports itself ready
+
+- Triggering role, report path, and round: Solution Designer, `solution-handoff.md` section "SR-005 Revision", round 4 (code review `code-review-report.md` CRR-002 F-002 from API/E2E API-REV-002; cause log `evidence/emulator-r2/API-08-cause-onPageFinished-twice.log`).
+- Triggering finding IDs: CRR-002 F-002
+- Classification: `Design Impact` (rework on the revised design: SR-005, DEC-010)
+- Prior authoritative result: IR-003 (`ea45dc1643`), which failed open: a failed load over a page that had loaded reports `onPageFinished` twice, and the second counted as success. My IMP-12 exercised only fresh-WebView failures (no loaded page underneath), so it did not reach that state.
+- Current authoritative result: `60adcf3bc8`.
+- Related solution revision IDs: `SR-005`
+- Related architecture-review revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-002`
+- Related API/E2E revision IDs: `API-REV-002`
+- Related delivery revision IDs: `N/A`
+- Why this revision is recorded: WebView's load callbacks cannot tell the node's page from WebView's own error page without failing open; the page now reports itself mounted over the bridge, which the error page cannot do (fails closed).
+- Approved behavior or requirement IDs affected: BEH-006; REQ-006; AC-007; DEC-010.
+- Implementation delta:
+  - Web: `ShellBridge.pageReady()` posts `{type:'pageReady'}`; `MobileRemoteAccessShell` `onMounted` calls `getShellBridge()?.pageReady()` once (nothing in a browser).
+  - Android: `ShellBridgeAction.PageReady` read from `{"type":"pageReady"}` under the unchanged origin/main-frame rule → `Actions.onPageReady(entry.id)`; new `shell/OpenPageState.kt` (open entry id, `overlay`, `firstPageShown`; `open`/`close` reset; `onDiagnostic` sets the overlay; `onPageReady(entryId, onWebScreen)` ignores other entries, clears the overlay, returns whether to show the page: first time or on the Web screen); `MainActivity` drives it (`showWebDiagnostic` → `onDiagnostic` + `showPage()`; `showPage()` always renders with `pageState.overlay`; `onPageReady` → `showPage()` when told).
+  - Removed: `web/MainFrameLoadOutcome.kt` and its test, `AutoByteusWebView.onPageLoaded` and its `onPageFinished` override, `MainActivity.pageOverlayShown` and the per-page local `firstPageShown`.
+  - Tests: new `OpenPageStateTest` (CRR-002 §2, §3, §8, §4–§7; Switch-node return; ready elsewhere; another entry; reset); `ShellBridgeMessagesTest` (pageReady read only from the main frame of the entry's origin; not from a subframe, another origin or `chrome-error://chromewebdata`); `MobileRemoteAccessShell.spec.ts` (pageReady once on mount, paired and unpaired, not again on in-document navigation; nothing in a browser); smoke test drops `onPageLoaded`.
+- Changed files or areas: `autobyteus-web/{utils/remoteAccess/shellBridge.ts, components/mobile/MobileRemoteAccessShell.vue, components/mobile/__tests__/MobileRemoteAccessShell.spec.ts}`; `autobyteus-android/app/src/main/java/org/autobyteus/mobile/{shell/OpenPageState.kt (new), web/ShellBridge.kt, web/AutoByteusWebView.kt, MainActivity.kt}`, `web/MainFrameLoadOutcome.kt` (removed); tests as above.
+- Local validation and result: IMP-13 premise measurement (holds: no `pageReady` for any failed load — fresh WebView and over a loaded page; first load, reload, Retry, Back; 502, drop, refused — and exactly one per successful document; no back-forward-cache restore observed, Back re-mounts the shell); IMP-14 web (175 tests, guards, typecheck at baseline); IMP-15 Android (74 JVM, APK without temporary strings, 11 instrumented); IMP-16 final APK on the emulator (CRR-002 state now shows only the overlay; recovery shows the page). All Pass.
+- Next recipient or routing: direct API/E2E (Medium / Low).
+- Remaining limitations or risks: `DESIGN.md` rule 9 — a node serving an older `/mobile` page never sends `pageReady`, so the new app stays on "Connected to … / Opening your runs…" for it (accepted, release note); a page whose code fails before mounting stays behind that screen or the overlay (accepted, SR-005 tradeoff); the IMP-13/IMP-16 node is a fake that serves the real bundle, not a real node (real-node journeys are API/E2E's).
