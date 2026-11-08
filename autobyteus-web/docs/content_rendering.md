@@ -169,6 +169,9 @@ browser/remote/mobile clients must map the host path inside the selected
 workspace to a workspace-relative locator. A remote-node Electron window must
 not use client-local reads even if a bridge exists. Unmapped
 paths remain copyable and show a localized host-only/unavailable state.
+`AgentEventMonitor` shows that status line (`filePreviewStatus`, a polite live
+region) in its own block, so a read-only conversation (a finished run, the
+phone's read-only run screen) shows the same text with no composer.
 
 For embedded Electron binary previews, the action path uses the shared
 `local-file://local/<encoded-absolute-path>` codec and trusted default-session

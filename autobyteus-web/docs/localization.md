@@ -101,6 +101,8 @@ pnpm audit:localization-literals
 
 These commands are also wired into the Electron build commands, so packaged builds fail if the localization boundary or literal audit regresses.
 
+Dates, times and numbers a user sees are formatted with the app's UI language (`useLocalization().resolvedLocale`), not the OS or browser locale. The boundary guard fails on `toLocaleString` / `toLocaleDateString` / `toLocaleTimeString` and `new Intl.*(…)` called with no locale, `undefined` or `[]`, in the guarded directories and `utils/`; test files are exempt.
+
 The closed audit inventory is declared in `localization/audit/migrationScopes.ts`. The Agent Org scope (`M-014`) covers its management route, shared handoff authoring surface and Team endpoint-group producer, launch configuration, history, workspace state, and return navigation. It uses strict Vue inspection so static text, placeholders, mixed interpolation text, presentation attributes, option-group labels, displayed error assignments, and constructed script errors cannot bypass the catalog boundary.
 
 For product-critical zh-CN wording, keep durable catalog tests alongside the locale messages. Current regression coverage includes shared shell glossary and action-label consistency checks under:

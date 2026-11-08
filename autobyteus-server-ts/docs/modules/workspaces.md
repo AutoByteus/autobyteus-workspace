@@ -23,6 +23,8 @@ Regular filesystem workspaces are registered in an app-data workspace registry o
 
 Filesystem workspace ids are deterministic `agent_ws_<sha256(canonical-root-path)>` values. Loading the same canonical root path registers or returns the same workspace id. `workspaceMetadata(rootPath)` can resolve deterministic metadata without registering the root; `createWorkspace(input: { rootPath })` registers the root and returns metadata.
 
+A path that is neither registered nor an active workspace must be an existing absolute folder before it is registered (`workspace-folder-check.ts`, checked on the raw trimmed input, before a relative path could resolve against the server's working directory). Otherwise registration is refused with GraphQL code `WORKSPACE_PATH_REFUSED` and `reason` `not_absolute`, `missing` or `not_a_folder`, nothing is registered and no folder is created. This covers `createWorkspace` and every server-internal path that registers a workspace for a run launch. Already registered paths are not checked again: a registered workspace whose folder was deleted still loads in the list and in history restore. Clients show the reason (the web's `utils/workspace/workspacePathRefusal.ts`).
+
 The old `workspace-id-mapping-store.ts` helper has been replaced by `workspace-registry-store.ts`; new code should use the registry store/manager boundary rather than creating a parallel mapping or hidden-workspace list.
 
 ## Registry Persistence Invariants

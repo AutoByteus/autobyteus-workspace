@@ -81,6 +81,10 @@ The Android app owns QR scanning (journeyapps `BarcodeView` in its own Scan scre
 
 Several nodes live side by side. Inside a node's page, the node name opens the connection sheet; **Switch node** shows the app's node list with the current node marked, and a tap opens another node. A new node is added with the list's **Scan**.
 
+When Android ends the app's process in the background and the user returns, the app reopens the node and the `/mobile` URL that were open (`shell/OpenPageRestore.kt`, the activity's saved state). The page shows what that URL names; a run's screen currently comes back as the run list, because its URL does not name the run. A pairing link that started the app is not handled again on that return (it was handled when it arrived); a new share still wins. A node removed meanwhile, or a saved URL the navigation policy would not allow for that node, gives the ordinary start.
+
+The WebView's navigation policy (`web/TrustedNavigationPolicy.kt`) keeps the main frame on the open node's origin. A sandboxed in-page preview, such as an HTML artifact, loads as a `blob:` subframe of that origin; it gets no shell bridge. A main-frame `blob:`, a `blob:` of another origin, `file:` and `javascript:` are blocked, and another origin's page opens in the phone's browser.
+
 ## Mobile run setup inside Android WebView
 
 Android loads the server-served `/mobile` shell for run setup; it does not implement run setup natively. In **New run** (the round **+** on the run list), mobile users start an agent run and can:
@@ -88,7 +92,7 @@ Android loads the server-served `/mobile` shell for run setup; it does not imple
 - choose the agent, a folder, and runtime/model settings;
 - enable **Auto approve tools** for that run when they intentionally want tool calls to execute without per-call approval; the switch starts from the agent's launch default and uses the same launch-config field as desktop;
 - select workspaces from the paired node's workspace store, including workspaces that are not tied to a live run;
-- load an unlisted workspace by entering an absolute **server-side** path on the paired AutoByteus node/container, not a path on the Android filesystem.
+- load an unlisted workspace by entering an absolute **server-side** path on the paired AutoByteus node/container, not a path on the Android filesystem. The path must be an existing folder there; otherwise the field shows why ("No folder at this path.", "This path is a file, not a folder.") and nothing is registered.
 
 When validating an Android-visible mobile-web change, refresh and verify the served `/mobile` bundle as described below. Installing a new APK alone cannot update this run setup UI.
 
