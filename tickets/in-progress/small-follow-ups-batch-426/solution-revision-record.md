@@ -126,3 +126,51 @@
 - Handoff: revision → `/software_engineering_team/architecture_reviewer`; reruns per CRR-003: MSP-13, MSP-18, API-08, full web suite through implementation, source review and API/E2E
 
 - 2026-11-08: ARCH-REV-005 Pass on SR-008; routed to implementation by the reviewer (informational). Its N-1 fixed: the Interface Boundary Mapping row of `remoteAccessReadRefusal` now reads `({ status, code })`, no message text (editorial); RR-02 marked superseded by D-03.
+
+### SR-009 — Round 1 finalized and verified
+
+- Trigger: Delivery Completed DR-001, 2026-11-08
+- Verification: `round-1-receipt-verification.md` (Verified; not Terminal — round 2 remains)
+- Next action: round 2 (item 9, items 20–22, AC-004b after the user decides DEC-013)
+
+### SR-010 — DEC-013 decided by the user: no special restore of run screens
+
+- Trigger: `/project_task_manager`, 2026-11-08, relaying the user: "I feel user just reopen the app, that would be fine?"
+- Decision: DEC-013 (B). AC-004b dropped; REQ-003 closed with AC-004a (round 1, merged). 277's reload rule unchanged; no code change
+- Approval: the user's own words (relayed verbatim); no further question needed
+- Round 2 scope now: item 9; items 20, 21; item 22's MRP-02 half (DEC-012)
+- Beta release autobyteus-431 goes to another team copy; round 2 is not held for it
+
+### SR-011 — Round 2 requirements and design
+
+- Trigger: round 1 finalized (SR-009); DEC-013 decided (SR-010); Task items 9, 20–22 and optional CR-N1
+- Requirements: REQ-009, 020–023 with AC-009a…d, 020–023; DEC-014 (item 20 text), DEC-015 (include CR-N1 as item 23), DEC-016 (states-only refresh); approved by the Solution Designer within the direction, the user informed
+- Design: D-09 (states read on the history poll), D-20, D-21, D-22, D-23; Medium / High (new GraphQL read on the poll of three surfaces)
+- Handoff: → `/software_engineering_team/architecture_reviewer`; handoff file `handoff-round-2-architecture-design-complete.md`
+
+### SR-012 — ARCH-REV-006 corrections (round 2)
+
+- Trigger: `/software_engineering_team/architecture_reviewer`, ARCH-REV-006 Fail: AR-004 (Medium), AR-005 (Low)
+- AR-004: REQ-020/AC-020 narrowed to the server-checked flows (add peer, change address); the window probe unchanged (no 403-body branch); DEC-017; follow-up FU-004. Within the direction (the wrong text was reported from the add-peer flow); not a CORS change (that would be a security Requirement Gap)
+- AR-005: D-09's apply rules made explicit: currency (same context, same binding revision), inactive+inactive → nothing, active-state change → one re-read, child-set change → one re-read, else apply; one refresh in flight; one client status shape
+- Intended behavior changed: REQ-020 narrowed (approved by the Solution Designer within the direction, the user informed)
+- Classification: unchanged (Medium / High)
+- Handoff: focused re-review of D-20 and D-09's client rules → `/software_engineering_team/architecture_reviewer`
+
+### SR-013 — AC-020's forms stated (ARCH-REV-007 AR-006)
+
+- Trigger: ARCH-REV-007 Fail (AR-006, Low; AR-004 and AR-005 verified resolved)
+- Change: REQ-020/AC-020 name the forms that reach the server check: `addPeerNode` (server E2E), and on the Nodes page change address and the connect flow's address resolution. The Nodes page's typed add at a refused name joins the window case in DEC-017 / FU-004
+- Wording and verification only; D-09, D-20's code shape and items 21–23 unchanged; classification unchanged (Medium / High)
+- Handoff: AC-020 re-check → `/software_engineering_team/architecture_reviewer`
+
+- 2026-11-08: ARCH-REV-008 Pass on SR-013 (round 2); the reviewer routed round 2 to `/software_engineering_team/implementation_engineer` (informational, no forwarding).
+
+### SR-014 — D-21: fix the day on both clocks (test-only)
+
+- Trigger: implementation engineer Design Impact on D-21 (E-21b), 2026-11-08, after ARCH-REV-008's check
+- Decision: option (A) with a shifted, running clock (not frozen) for the probe's own server via a test-only Node preload, plus `page.clock.setSystemTime` and the seed's `now`; option (B) and a server test-clock setting rejected (UI proven on one day only; rule 11)
+- Requirements unchanged (REQ-021/AC-021 as written); classification unchanged (Medium / High)
+- Handoff: D-21 re-check → `/software_engineering_team/architecture_reviewer`
+
+- 2026-11-08: ARCH-REV-009 Pass on SR-014 (D-21); routed to implementation by the reviewer (informational).

@@ -1,3 +1,122 @@
+# Implementation Handoff — small-follow-ups-batch-426, round 2
+
+Round 1 was finalized into `personal` (`a42dbca699`, DR-001); its handoff is kept below, after this round's.
+
+## Upstream Artifact Package
+
+- Upstream review and handoff rule: architecture review ARCH-REV-008 Pass (SR-009…SR-013), then ARCH-REV-009 Pass (SR-014, the revised D-21 answering this implementation's Design Impact). Medium / High → `/software_engineering_team/code_reviewer`.
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-426/tickets/in-progress/small-follow-ups-batch-426/requirements-doc.md` (§ Round 2: REQ-009, REQ-020…REQ-023; DEC-013…DEC-017)
+- Investigation notes: `…/investigation-notes.md` (§ Round 2 Investigation)
+- Solution revision record: `…/solution-revision-record.md` (SR-009…SR-014)
+- Design spec: `…/design-spec.md` (§ Round 2 Design: D-09, D-20…D-23)
+- Design review report / revision record: `…/design-review-report.md`, `…/architecture-review-revision-record.md`
+- Supplemental artifacts: `…/follow-ups.md` (FU-004 from the design: the window's own row check cannot name a refused host, DEC-017)
+- Worktree / branch: `/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-426`, `codex/small-follow-ups-batch-426`; base `origin/personal` `d785ded109` (round 1, 412 and 416 merged). Round-2 commits `06cc2aabad`…`736b51f87a`.
+
+## Current Implementation Summary
+
+- Implementation cycle: `Initial` (round 2)
+- Implementation revision record: `…/implementation-revision-record.md`
+- Current implementation revision ID: `IR-005`
+- Related solution revision IDs: SR-009…SR-014
+- Related architecture-review revision IDs: ARCH-REV-008, ARCH-REV-009
+- Related code-review / API-E2E / delivery revision IDs: `N/A` for round 2
+- Triggering finding IDs: `N/A`
+
+All five round-2 items are built in their existing owners: D-09 (server read and the client's states-only refresh on the history poll), D-20 (host refused, server and Nodes page), D-21 (a day-independent token-statistics fixture and probe), D-22 (MRP-02 texts) and D-23 (one `parseWebOrigin`). D-21 raised one Design Impact (the server clock also decides the ranges). SR-014 answered it (a test-only shifted clock on the probe's own server, plus the browser clock), ARCH-REV-009 passed it, and it is built that way.
+
+## Routing Classification (Mandatory)
+
+- Task size: `Medium`; architecture risk: `High` (design § Task Size And Architectural Risk (round 2))
+- Classification: `Confirmed`. The new read runs on the 5 s poll of three surfaces, the collaboration store gains a states-only update path, and one error code is added to an existing contract. No escalation trigger fired:
+  - the read needs no snapshot connection (it uses `getActive(id)?.getAgentStatusSnapshots()`);
+  - a context takes a states-only update (`applyStatuses`);
+  - the answer is about 150 B per child (the exact size is for API/E2E to measure, AC-009a).
+- Selected route: `Code Review`; lightweight self-review: `Not Applicable` (High)
+- New design impact: `None` open (D-21's is resolved by SR-014 / ARCH-REV-009)
+
+## Reviewed Behavior Implementation Trace
+
+| Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
+| --- | --- | --- | --- |
+| BEH-009 (D-09) | Delegated rows of a listed active standalone run that is not open show the children's current states on each poll; a new child appears and a stopped run goes offline within one poll; only states unless the children or the active state changed; remote children and the open run unchanged | Server: `standalone-agent-run-root-manager.ts` `getAgentStatuses(ids)` (an active root's `getAgentStatusSnapshots()`, else inactive and none); `api/graphql/types/agent-run-collaboration.ts` `agentRunCollaborationStatuses(runIds)` (≤ 100, else `BAD_USER_INPUT`; typed `{ runId, isActive, statuses[{ agentRunId, memberAddress, status, recoverableBlock }] }`). Web: query `GetAgentRunCollaborationStatuses` + codegen (`generated/graphql.ts`, +65 lines, only this query); `agentRunCollaborationHydration.ts` `readAgentRunCollaborationStatuses` (maps into `CollaborationChildStatus`; `recoverableBlock` validated with `compactionRecoveryBlockSchema`); `agentRunCollaborationContext.ts` `applyStatuses` (the constructor's status loop moved; the view's snake_case statuses are mapped into the same shape); `agentRunCollaborationStore.ts` `refreshListedStatuses(activeIds)`; `runHistoryStore.ts` getter `activeListedAgentRunIds`; `useRunHistorySectionLoad.ts` `pollTick` (the quiet read, then the refresh; also on a resumed poll; not on the first load or a window change) | Done. The refresh follows ARCH-REV-008's order:<br>• hosts: published context, no stream, no inspection, no termination, and listed active or still live;<br>• one request;<br>• per answer: currency (same context object, same binding revision, no stream or inspection since) or drop; both inactive → nothing; active state differs → one `inspect`; local children (ID and address) differ → one `inspect`; else `applyStatuses`;<br>• one refresh at a time (a tick that finds one running joins it; Pinia wraps the promise, so the spec counts requests). A failed read warns and changes nothing. The phone inherits the poll rule (the list on screen, the page in front) |
+| BEH-020 (D-20) | A peer address whose node refuses its host name reports a distinct cause in `addPeerNode`, change address and the connect flow's address resolution; the Nodes page says so with the host | Server: `remote-collaboration-settings-error.ts` (`PEER_HOST_REFUSED`, details `host`, attempt result `host_refused`); `channel/peer-client.ts` `fetchNodeId` (after the identity-pending check, a 403 whose JSON `code` is `REMOTE_ACCESS_HOST_REFUSED` → `PEER_HOST_REFUSED` "<address> refuses the name <host>; add it to AUTOBYTEUS_ALLOWED_HOSTS on that node."; any other 403 stays not an AutoByteus node); `settings/peer-address-resolver.ts` `resultOf` → `host_refused`. Web: `utils/nodeSettingsError.ts` (`host`, attempt result), `utils/nodeConnectionErrorText.ts` (`PEER_HOST_REFUSED` and `host_refused`), `localization/messages/{en,zh-CN}/nodesPage.ts` `cause.hostRefused` | Done. `nodeIdentityProbe.ts` is unchanged (DEC-017). The GraphQL mapping passes details through unchanged, so `host` reaches the page |
+| BEH-021 (D-21, SR-014) | The token-statistics probe passes TS-E2E-001 and TS-E2E-002 on any day, proven on the 1st, 7th and 20th | `tests/e2e/token-statistics-seed.mjs`:<br>• `tokenStatisticsFixturePlan(now)`: three partial days always distinct inside [coverageStart, today]; coverage starts after the 1st when the month has room (This month partial, Last month before tracking), else four days back in the previous month (This month full, Last month partial);<br>• the seed returns those facts.<br>`tests/e2e/token-statistics-ui-probe.mjs`:<br>• `--day=YYYY-MM-DD` (12:00 UTC);<br>• the server is spawned with `--import fixtures/shifted-clock.mjs` and `AUTOBYTEUS_E2E_CLOCK_START`;<br>• `context.clock.setSystemTime` on every browser context; the seed gets the same `now`;<br>• the coverage texts, TS-E2E-002's range (the fixture's own range when coverage starts in the previous month) and the narrow tick count come from the fixture.<br>`tests/e2e/fixtures/shifted-clock.mjs` (new): only `Date.now` and `Date`/`new Date()` without arguments move, by a fixed offset, so the clock keeps running | Done. Reproduced first: the base rule put the three partial buckets on fewer than three days on 65 of 151 days checked (IMP-R2-02). The plan holds on all 151 days. The probe passes on 2026-12-01, 12-07 and 12-20 with both clocks fixed: the server's applied This month is December (IMP-R2-04). The first 12-01 run also found the narrow chart's constant three ticks (TS-E2E-005; on the 1st there is one bucket); it is now derived from the chart's own rule |
+| BEH-022 (D-22) | MRP-02 asserts the current display names; the probe passes | `tests/e2e/model-routing-settings-probe.mjs` (texts built from `APP_RUNTIME_NAMES.antigravity_cli` / `.grok_build`, which the server uses through `agentRuntimeName`) | Done; MRP-01…07 pass (IMP-R2-03) |
+| BEH-023 (D-23) | One `parseWebOrigin`; behavior unchanged | `src/api/security/web-origin.ts` (new); `node-browser-access.ts`, `remote-access-request-origin.ts` import it; their copies removed | Done; origin and allow-list unit tests unchanged and passing (182) |
+
+- Changes stayed within the requirements doc's Scope Guardrail: `Yes`
+
+## Important Assumptions
+
+- The server answers every asked run ID, in order. The client matches answers by `runId` and ignores an answer it did not ask for, or a missing one.
+- A live root's `getAgentStatusSnapshots()` reports every local child (live ones, and dormant ones as offline), as the view's `agent_statuses` does. If a child were missing, every poll would re-read that hub's view (correct, but costlier). AC-009a's "no view read on a poll without a change" is the check for this.
+
+## Known Risks
+
+- D-09: the status read adds one request per poll tick while any listed run qualifies; the phone polls only while its list is on screen and in front (unchanged rule). The measured payload is for API/E2E (AC-009a, ≤ 2 KB for ≤ 10 children).
+- D-20 E2E depends on public DNS resolving `lvh.me` to loopback (the 416 case); without it, the case is skipped with that reason (a skip is not a pass).
+- D-21: the shifted clock is test-only and loaded only by the probe's own spawned server with `--day`. Product code never imports it.
+
+## Task Design Health Assessment Implementation Check
+
+- Change posture / root cause / refactor: as design round 2 (Feature D-09; Local defects D-20 to D-22; Duplicated code D-23; refactor: the constructor's status loop moved into `applyStatuses`, one `parseWebOrigin`)
+- Implementation matched the assessment: `Yes` (after SR-014 for D-21)
+- Routed as `Design Impact`: `Yes`, D-21's clock (resolved SR-014 / ARCH-REV-009)
+
+## Legacy / Compatibility Removal Check
+
+- Backward-compatibility mechanisms: `None`; legacy retained: `No`
+- Dead code removed in touched files: `Yes`. Removed: the constructor's inline status loop (moved), and the two private `parseWebOrigin` copies.
+- Dead code elsewhere: none new
+- Shared structures tight: `Yes` (`CollaborationChildStatus` is the one status shape)
+- Size guardrails: `Yes`. Largest files: `runHistoryStore.ts` 494 (+4), `standalone-agent-run-root-manager.ts` 476, `agentRunCollaborationStore.ts` 428 (+59); no changed-line delta over 220.
+
+## Persisted Data Transition Check
+
+- `Not Affected` (reads only). Followed: `Yes`.
+
+## Environment Or Dependency Notes
+
+- `autobyteus-web/generated/graphql.ts` changed (codegen from this worktree's server schema, `pnpm -C autobyteus-web codegen:local`). TESTING § Fresh-start build lists `autobyteus-web/generated/**` as a build input, so the fresh-start desktop build applies.
+- Probes ran with `--browser-executable="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"` (the probes' default paths are Linux ones).
+
+## Checks Run
+
+Evidence folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-426/tickets/in-progress/small-follow-ups-batch-426/evidence/`.
+
+| Check ID | Command Or Steps | Commit Tested | Environment | Code It Exercises | Behavior / Criteria IDs | Result | Evidence Files | Look For |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| IMP-R2-01 | Focused server unit + E2E and web specs (commands in file) | `06cc2aabad`, `094c896407`, `23483d0cf8` (unchanged since) | macOS, Node 22 | D-09, D-20, D-23 code and specs | REQ-009, 020, 023; AC-009d, AC-020 (1), AC-023 | Pass | `IMP-R2-01-focused-checks.txt` | `peer-host-refused … Tests 2 passed (2)`; `Tests 182 passed (182)` |
+| IMP-R2-02 | The base seed rule against the new `tokenStatisticsFixturePlan` for every day of five months | `736b51f87a` | Node | the seed's day plan | REQ-021 | Reproduced (base) / Pass (new) | `IMP-R2-02-seed-plan-days.txt` | `"daysWithCollidingPartialBuckets":65`; `{"checked":151,"failures":[]}` |
+| IMP-R2-03 | Model-routing probe | `c4521d4402` | macOS, Chrome, built server | MRP-01…07 | REQ-022 / AC-022 | Pass | `IMP-R2-03-model-routing-probe.txt`, `IMP-R2-mrp/` | `Result: Pass`; `Limits unknown: Antigravity CLI usage limits could not be read` |
+| IMP-R2-04 | Token-statistics probe `--day` 2026-12-01, 12-07, 12-20 | 12-01 rerun at `736b51f87a`; 12-07 and 12-20 on the same files before the tick-count change (it gives 3, the old constant, from the 5th on) | macOS, Chrome, built server with the shifted-clock preload | TS-E2E-001…005, both clocks | REQ-021 / AC-021 | Pass (after one fix: the first 12-01 run failed TS-E2E-005's constant tick count) | `IMP-R2-04-token-statistics-days.txt`, `IMP-R2-ts-2026-12-0{1,1-rerun,7}/`, `IMP-R2-ts-2026-12-20/` | `IMP-R2-ts-2026-12-01-rerun Pass … server applied THIS_MONTH 2026-12-01…2026-12-02` |
+| IMP-R2-05 | `test:nuxt --run`, server `test:unit`, both typechecks | `736b51f87a` | macOS | whole web and server suites | all round-2 items | Pass | `IMP-R2-05-suites-typechecks.txt` | `Test Files  721 passed (721)`; `Test Files  952 passed \| 5 skipped (957)`; both `production errors: 0 … (baseline …)` |
+
+- Not run, and why:
+  - The D-09 browser and phone probes (AC-009a…c, payload measurement) and the Nodes page probe step for AC-020 (2), (3): API/E2E, on an isolated node with a delegating run.
+  - The fresh-start desktop build: `generated/graphql.ts` changed (a build input); it is for API/E2E or delivery.
+  - Server E2E beyond the new file: API/E2E (the full suite after round 2).
+
+## Frontend Rendered-Result Check
+
+- Affected surfaces: the task rows' states (Runs view, Workspaces tree, phone list) and the Nodes page cause text. Neither changes layout or adds controls: the rows show the existing status markers, and the text uses the existing cause line.
+- Not rendered here: the rows' live states need a running delegating Agent run on a node (API/E2E's isolated-node probe). The Nodes page text is the existing cause line with a new string, covered by the specs; the probe step is API/E2E's.
+- No visual or interaction change was made, so there is nothing to polish.
+
+## Downstream Coverage Hints / Suggested Scenarios
+
+- AC-009a/b/d (desktop): a listed run with two delegated children, not open; a child idle → running → idle; check the per-poll request (`GetAgentRunCollaborationStatuses`, measured bytes) and that no `GetAgentRunCollaboration` read happens on an unchanged poll. A third child: one view re-read. Stopping the run: rows go offline within one poll (one view re-read). The open run is never in the status read.
+- AC-009c (phone): the same run on the phone list; nothing is polled while the list is hidden or the page is in the background.
+- AC-020 (2), (3): the Nodes page "change address" to `http://lvh.me:<port>` of a peer, and connecting a node whose address resolution tries that name. The distinct text names the host.
+- The token-statistics probe can be rerun on any day with `--day`.
+
+## API / E2E / Executable Coverage Still Required
+
+- The D-09 probes with payload measurement (AC-009a…c); the AC-020 Nodes page probe step; the full server E2E suite; the fresh-start desktop build (generated GraphQL).
+
+---
+
 # Implementation Handoff — small-follow-ups-batch-426, round 1
 
 ## Upstream Artifact Package

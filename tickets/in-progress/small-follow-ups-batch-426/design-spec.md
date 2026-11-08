@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-008` (CRR-003 F-API-001, F-API-002) (ARCH-REV-001 resolved, ARCH-REV-002 Pass on SR-004; SR-005: D-02 Design Impact from implementation, IMP-02)
+- Current solution revision ID: `SR-014` (ARCH-REV-001 resolved, ARCH-REV-002 Pass on SR-004; SR-005: D-02 Design Impact from implementation, IMP-02)
 - Approved requirements baseline: `requirements-doc.md` at SR-003, round-1 rows (REQ-001…003, 005…008, 010…014, 016, 017, 018); approved by the Solution Designer within the direction, the user informed 2026-11-07; DEC-011 decided at the user's word ("i trust your judgement")
 - Behavior-defining supplements: the Product spec `phone-setup-remote-node-wording/ui-ux-spec.md` (design commit `0341b3af`), approved by the user ("approved", 2026-11-07) — REQ-016
 - User approval of the design: `Not required` (the Task does not ask for it)
@@ -386,3 +386,93 @@ N/A.
 - Tests on isolated nodes only (TESTING.md); the emulator checks (AC-004, AC-005, AC-007) on an emulator with an isolated node, as 407/415 did.
 - No new Android permission: the manifest diff must be empty.
 - Write the design-case text of D-13 as given (Solution Designer-owned); ask for a Design Impact if it does not fit the file's form.
+
+---
+
+# Round 2 Design (SR-011, 2026-11-08)
+
+- Approved basis: requirements-doc § Round 2 Requirements (REQ-009, 020–023; DEC-014…016), approved by the Solution Designer within the direction; base `origin/personal` `d785ded109` (round 1, 412, 416).
+- Evidence: investigation notes § Round 2 Investigation (E-09b, E-20…E-23).
+- Authorities read: as round 1 (this conversation), DESIGN.md best practice 4 and `docs/design-cases.md` Case 17 for item 9.
+
+## Task Size And Architectural Risk (round 2)
+
+- Task size: `Medium` — one new read path (server query + client refresh) on existing owners; one new peer error kind; three test/cleanup items.
+- Architectural risk: `High` — a new GraphQL read contract (`agentRunCollaborationStatuses`) that the history poll calls every 5 s on three surfaces including the phone; it changes the poll's work and the collaboration store's update rules (state applied outside the view publication). Item 20 adds one error code to an existing contract.
+- Escalation: a measured payload above AC-009a's bound, a status read that needs the snapshot connection, or a context that cannot take a states-only update.
+
+## Change Scope
+
+- In scope: UC/REQ-009, 020, 021, 022, 023.
+- Derived consumers: the peer error code set (`RemoteCollaborationSettingsError`) → web `nodeConnectionErrorText`, the address resolver's attempt results, the window probe's causes (each gets `host_refused`); the collaboration context's child states → task rows and task Team status (derived, unchanged).
+- Left alone: remote task executions' states (REQ-009); the open run's stream; run-history payload; Team/Org roots (no task rows); 277's reload rule (DEC-013).
+- Follow-ups: FU-004 (the window's own row check cannot name a refused host; DEC-017).
+
+## D-09 (item 9) — children's states on the history poll
+
+Spine DS-010: `useRunHistorySectionLoad poll tick → runHistoryStore.refreshTreeQuietly() → agentRunCollaborationStore.refreshListedStatuses(activeIds) → GraphQL agentRunCollaborationStatuses(runIds) → StandaloneAgentRunRootManager.getAgentStatuses(ids) → active root getAgentStatusSnapshots() → context.applyStatuses(...) | inspect(hostRunId) → AgentRunTaskRows`.
+
+- **Server.** `StandaloneAgentRunRootManager.getAgentStatuses(hostRunIds)`: per ID, an active root (`getActive`) → `{ runId, isActive: true, statuses: root.getAgentStatusSnapshots() }`; otherwise `{ runId, isActive: false, statuses: [] }`. No snapshot connection, no tree or log read. `AgentRunCollaborationResolver.agentRunCollaborationStatuses(runIds: [String!]!)` returns typed objects `AgentRunCollaborationStatusesObject { runId, isActive, statuses: [AgentRunChildStatusObject { agentRunId, memberAddress, status, recoverableBlock: JSON nullable }] }`; at most 100 IDs (more → `BAD_USER_INPUT`). Phone credentials reach it like every HTTP GraphQL read.
+- **Client — which hosts.** `runHistoryStore` exposes the listed standalone Agent runs with `isActive` (a getter over its groups). `agentRunCollaborationStore.refreshListedStatuses(activeIds)` takes hosts that have a loaded context, no attached stream service, no inspection in flight and no termination, **and** either are in `activeIds` or their context is live (`context.isActive`) — so a run that stopped since its view was read is asked once and turns offline. No such host → no request.
+- **Client — apply rules (one owner: the collaboration store; explicit rules, no behavior by absence; SR-012, ARCH-REV-006 AR-005).** Order: select hosts → one request → for each answer, in this order:
+  1. **Currency:** apply only to the same context object under the same binding revision as at selection (the store's `isCurrent` pattern, `agentRunCollaborationStore.ts:159-160`), with no stream attached and no inspection started meanwhile; otherwise drop the answer.
+  2. **Active state:** `answer.isActive === false` and `context.isActive === false` → nothing to apply, no re-read (an inactive root answers `statuses: []`, e.g. while `activating`); `answer.isActive !== context.isActive` → `inspect(hostRunId)` (one view read; it publishes as today).
+  3. **Child set (both active):** an answer status whose `agentRunId` is not a local child of the index, or a local child missing from the answer → `inspect(hostRunId)`.
+  4. Otherwise `context.applyStatuses(answer.statuses)`.
+  - **One refresh in flight:** a poll tick that finds a refresh still running skips its own (the 5 s `setInterval`, `useRunHistorySectionLoad.ts:50`, can outrun a slow phone).
+  - **One status shape:** a client type `CollaborationChildStatus { agentRunId, memberAddress, status, recoverableBlock }`; the view's snake_case `agent_statuses` are mapped into it before the constructor calls `applyStatuses`, and the typed read returns it directly.
+- **Context.** `AgentRunCollaborationContext.applyStatuses(statuses)` — the status loop of the constructor (`agentRunCollaborationContext.ts:89-93` validation, `:101-105` apply) moved into this one method, used by the constructor and by the refresh; it sets `currentStatus` and `recoverableBlock` only.
+- **Poll owner.** `useRunHistorySectionLoad`'s poll tick runs the status refresh after `refreshTreeQuietly()`; the first load and the window change do not (the stored view read at mount covers them). The phone inherits its poll rule.
+- **Payload.** Per poll one request listing the selected hosts; answer ≈ 150 B per child (status strings, IDs). API/E2E records the measured size (AC-009a).
+
+## D-20 (item 20) — host refused
+
+- Server: `RemoteCollaborationSettingsError` code `PEER_HOST_REFUSED` (details `{ address, host }`). `peer-client.ts fetchNodeId`: after the identity-pending check, a 403 whose JSON `code` is `REMOTE_ACCESS_HOST_REFUSED` → `PEER_HOST_REFUSED` ("<address> refuses the name <host>; add it to AUTOBYTEUS_ALLOWED_HOSTS on that node."); otherwise as today. `peer-address-resolver.ts resultOf` → `host_refused` (new `PeerAddressAttemptResult`). `addPeerNode` and change address surface the code as they surface the others.
+- Web: `nodeConnectionErrorText` case `PEER_HOST_REFUSED` → `cause.hostRefused` with `{ host }`; the attempt-result texts gain `host_refused`. **`utils/nodeIdentityProbe.ts` is not changed (SR-012, ARCH-REV-006 AR-004, DEC-017):** the Host gate's refusal carries no CORS headers, so the window's cross-origin probe never reads it. Text (en, DEC-014): "The node at this address doesn’t accept the name {{host}}. Add {{host}} to AUTOBYTEUS_ALLOWED_HOSTS on that node, or use its IP address."; zh-CN translated. `{{host}}` = the address's host name.
+
+## D-21 (item 21) — day-independent fixture
+
+- `token-statistics-seed.mjs`: the three partial-pricing buckets always land on three distinct days inside `[coverageStart, now]`. When the current month has fewer than three days up to `now` (the 1st and 2nd), `coverageStart` moves into the previous month far enough to hold them, and the seed returns that fact; the probe derives TS-E2E-001's "Last month" expectation from the fixture (partly covered instead of "before analytics tracking began") rather than from a constant.
+- **Clock (revised SR-014, implementation's Design Impact; Read):** the browser computes the preset dates (`stores/tokenUsageAnalytics.ts:13-26`), and the server recomputes every preset from its own clock and refuses dates that differ (`token-usage-analytics-range-policy.ts:27-34,84-86`; `token-usage-analytics-provider.ts:37`). So a day is fixed on **both** sides, test-only (no product code, DESIGN.md rule 11):
+  - the probe's own spawned server (`dist/app.js`, throwaway data root) starts with a test-only Node preload (`--import <probe helper>`) that **shifts** `Date` / `Date.now` by a fixed offset to the chosen day **and keeps them running** (not frozen: the server's timeouts and deadline loops measure elapsed time);
+  - the browser gets the same instant with Playwright `page.clock.setSystemTime(...)` (running), before the app loads;
+  - the seed receives that same `now`.
+  - The probe takes the day as an option (e.g. `--day=YYYY-MM-DD`); without it, the real clock is used as today. AC-021: runs on the 1st, 7th and 20th of one month pass TS-E2E-001 and TS-E2E-002.
+  - Rejected: a server test-clock setting (production code only tests read, rule 11); proving only the seed per day (option B: the UI would be proven on one day only).
+
+## D-22 (item 22)
+
+- MRP-02 expects "Limits unknown: Antigravity CLI usage limits could not be read" and "Models unknown: Grok Build model list could not be read" (or whatever the app renders from the runtime display names — assert the rendered text built from those names).
+
+## D-23 (416 CR-N1)
+
+- New `autobyteus-server-ts/src/api/security/web-origin.ts` exporting `parseWebOrigin`; `node-browser-access.ts` and `remote-access-request-origin.ts` import it; their private copies removed.
+
+## File Mapping (round 2)
+
+| File | Change |
+| --- | --- |
+| `autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-agent-run-root-manager.ts` | `getAgentStatuses` |
+| `autobyteus-server-ts/src/api/graphql/types/agent-run-collaboration.ts` | query + object types |
+| `autobyteus-web/graphql/queries/…` (collaboration queries file) + codegen | the query |
+| `autobyteus-web/stores/agentRunCollaborationStore.ts` | `refreshListedStatuses` |
+| `autobyteus-web/services/agentCollaboration/agentRunCollaborationContext.ts` | `applyStatuses` |
+| `autobyteus-web/stores/runHistoryStore.ts` | active listed Agent run IDs getter |
+| `autobyteus-web/composables/runHistory/useRunHistorySectionLoad.ts` | poll tick |
+| `autobyteus-server-ts/src/remote-collaboration/{domain/remote-collaboration-settings-error.ts,channel/peer-client.ts,settings/peer-address-resolver.ts}` | `PEER_HOST_REFUSED` |
+| `autobyteus-web/utils/{nodeConnectionErrorText.ts,nodeIdentityProbe.ts}`, `localization/messages/{en,zh-CN}/nodesPage.ts` | host refused text |
+| `autobyteus-web/tests/e2e/{token-statistics-seed.mjs,token-statistics-ui-probe.mjs,model-routing-settings-probe.mjs}` | D-21, D-22 |
+| `autobyteus-server-ts/src/api/security/{web-origin.ts (Add),node-browser-access.ts,remote-access-request-origin.ts}` | D-23 |
+
+## Persisted data
+
+`Not Affected` (reads only; no stored shape changes).
+
+## Removal plan
+
+The constructor's inline status loop (moved into `applyStatuses`); the two private `parseWebOrigin` copies.
+
+## Guidance
+
+- Reproduce first: TS-E2E-002 with a fixed `now` on the 7th (fails today), MRP-02 (fails today), item 20 with a peer at `lvh.me` (416 API-04 P1).
+- Item 9 probe: an isolated node, an Agent run delegating to a task agent whose status changes; record the status request's size and that no view read happens on unchanged polls.

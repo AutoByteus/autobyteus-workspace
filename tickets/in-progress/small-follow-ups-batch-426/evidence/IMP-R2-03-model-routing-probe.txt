@@ -1,0 +1,12 @@
+# IMP-R2-03 model-routing probe (D-22, AC-022)
+# Command: node autobyteus-web/tests/e2e/model-routing-settings-probe.mjs --skip-server-build --output-dir=<evidence>/IMP-R2-mrp --browser-executable=<Chrome>
+# Commit: c4521d4402 (probe) on server dist built from 06cc2aabad…23483d0cf8 sources; macOS; 2026-11-08
+Pass MRP-01 Open from the Settings menu: every runtime row, limits and reset times, blocked models, the limits note, provider sub-rows; the same data as the node's answer; no polling (AC-010, REQ-009)
+Pass MRP-02 Check again: rows kept and the button busy while reading, then sign-in not checked, limits unknown, models unknown, a provider's limits unknown, and the checked announcement (AC-010, REQ-007 UI states)
+Pass MRP-03 Narrow window (420 px): limits above models, nothing overflows
+Pass MRP-04 zh-CN: section texts, limits, models and providers in Chinese
+Pass MRP-05 A remote node window shows that node: all CLIs signed out or missing and no key → AutoByteus without providers; rebinding back re-reads (AC-010 remote)
+Pass MRP-06 A node that can't be read: the load error with Check again
+Pass MRP-07 No key, e-mail or account value in the page, its GraphQL responses, the nodes' output, logs or data files; providers asked only at their usage endpoints (REQ-008)
+Result: Pass (/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-426/tickets/in-progress/small-follow-ups-batch-426/evidence/IMP-R2-mrp/result.json)
+## rendered texts (from result.json, MRP-02-page): "Limits unknown: Antigravity CLI usage limits could not be read", "Models unknown: Grok Build model list could not be read" — the base constants ("Antigravity usage limits", "Grok model list") would not match

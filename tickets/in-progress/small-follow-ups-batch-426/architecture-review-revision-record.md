@@ -11,6 +11,10 @@ The latest `design-review-report.md` is authoritative.
 | ARCH-REV-003 | Round 3 / focused re-review of SR-005 (D-02, implementation Design Impact) | SR-005 | Pass | Pass | none |
 | ARCH-REV-004 | Round 4 / item 19 added (D-19) | SR-006 | Pass | Pass | none |
 | ARCH-REV-005 | Round 5 / CRR-003 (F-API-001, F-API-002): D-02, D-03 | SR-008 | Pass | Pass | none (notes N-1, N-2) |
+| ARCH-REV-006 | Round 6 / Architecture Design Complete, round 2 of the Task (items 9, 20–23) | SR-009, SR-010, SR-011 | Pass | Fail | AR-004, AR-005 |
+| ARCH-REV-007 | Round 7 / focused re-review of SR-012 | SR-012 | Fail | Fail | AR-004, AR-005 (resolved); AR-006 (new) |
+| ARCH-REV-008 | Round 8 / AC-020 re-check (SR-013) | SR-013 | Fail | Pass | AR-006 (resolved) |
+| ARCH-REV-009 | Round 9 / D-21 re-check (SR-014, implementation Design Impact) | SR-014 | Pass | Pass | none |
 
 ## Revision Entries
 
@@ -125,3 +129,92 @@ None.
 - Material classification changes: none (Medium / High)
 - Recommended recipient: Implementation Engineer (then source review and the API/E2E reruns MSP-13, MSP-18, API-08 and the full web suite, per CRR-003)
 - Remaining risks or uncertainty: RR-01, RR-03; U-01; DEC-013 (round 2) with the user
+
+### ARCH-REV-006 — Round 2 of the Task (items 9, 20–23): Fail on D-20's window form and D-09's apply rules
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-426/tickets/in-progress/small-follow-ups-batch-426/design-review-report.md` (§ Round 2 Review)
+- Review round and trigger: round 6; Solution Designer's Architecture Design Complete for round 2 of the Task (SR-011), 2026-11-08; handoff `handoff-round-2-architecture-design-complete.md`
+- Triggering role, report path, and finding IDs: Solution Designer; design spec § Round 2 Design (D-09, D-20…D-23); no prior round-2 findings
+- Relevant solution revision IDs: SR-009, SR-010, SR-011
+- Prior authoritative decision: Pass (ARCH-REV-005, round 1; merged)
+- Current authoritative decision: `Fail`
+- What changed: round-2 basis checked on `origin/personal` `d785ded109`.
+  - D-09's server read, its active-state comparison and its local/remote child split are confirmed against the code.
+  - D-20's server half is confirmed. Its window half cannot work: the Host gate replies before CORS and without CORS headers, so the window's `fetch` rejects and the probe returns `unreachable` (P-03 Not Reachable).
+  - D-21, D-22 and D-23 are sound.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001…AR-003 | Resolved | Resolved (round 1, merged; unaffected) | — | — |
+
+- New or remaining finding IDs: AR-004 (Design Impact, may need a Requirement Gap; Medium), AR-005 (Design Impact; Low)
+- Material classification changes: none (Medium / High)
+- Recommended recipient: Solution Designer
+- Remaining risks or uncertainty: D-21's clock source (implementation checks first); the status read's measured size (AC-009a)
+
+### ARCH-REV-007 — SR-012 re-review: AR-004 and AR-005 resolved; AR-006 (AC-020's add form) new
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-426/tickets/in-progress/small-follow-ups-batch-426/design-review-report.md` (§ Round 2 Re-Review)
+- Review round and trigger: round 7; Solution Designer's SR-012 after ARCH-REV-006, 2026-11-08
+- Triggering role, report path, and finding IDs: Solution Designer; `handoff-round-2-architecture-design-complete.md` § Revision SR-012; AR-004, AR-005
+- Relevant solution revision IDs: SR-012
+- Prior authoritative decision: Fail (ARCH-REV-006)
+- Current authoritative decision: `Fail`
+- What changed: D-09's apply rules and D-20's narrowing were verified. Tracing the Nodes page forms for the narrowed AC-020 found that the typed add never reaches the server for a refused name (`nodeListStore.ts:212-221`; connector `requireId`). The distinct text on the Nodes page comes from change address and from the connect flow's address resolution.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-004 | Open (Design Impact, Medium) | Resolved | SR-012; D-20; DEC-017; FU-004 | `nodeIdentityProbe` unchanged; no CORS change; window check keeps "can't reach" |
+| AR-005 | Open (Design Impact, Low) | Resolved | SR-012; D-09 client rules | Currency, inactive-equal, active-state and child-set rules, in order; single flight; `CollaborationChildStatus` |
+
+- New or remaining finding IDs: AR-006 (Design Impact, Low)
+- Material classification changes: none (Medium / High)
+- Recommended recipient: Solution Designer
+- Remaining risks or uncertainty: D-21's clock source; the status read's measured size (AC-009a)
+
+### ARCH-REV-008 — AC-020 re-check (SR-013): Pass, round 2 ready for implementation
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-426/tickets/in-progress/small-follow-ups-batch-426/design-review-report.md` (§ AC-020 Re-Check)
+- Review round and trigger: round 8; Solution Designer's SR-013 after ARCH-REV-007, 2026-11-08
+- Triggering role, report path, and finding IDs: Solution Designer; `handoff-round-2-architecture-design-complete.md` § Revision SR-013; AR-006
+- Relevant solution revision IDs: SR-013
+- Prior authoritative decision: Fail (ARCH-REV-007)
+- Current authoritative decision: `Pass`
+- What changed: REQ-020 and AC-020 name the server-checked forms (`addPeerNode` at server E2E; change address and connect-resolution on the Nodes page). The typed add is with DEC-017 / FU-004.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-006 | Open (Design Impact, Low) | Resolved | SR-013; REQ-020, AC-020, DEC-017, FU-004 | `requirements-doc.md:308, 319, 328`; `follow-ups.md` FU-004 |
+| AR-004, AR-005 | Resolved (ARCH-REV-007) | Resolved (unaffected) | — | — |
+
+- New or remaining finding IDs: none
+- Material classification changes: none (Medium / High)
+- Recommended recipient: Implementation Engineer
+- Remaining risks or uncertainty: D-21's clock source; the status read's measured size (AC-009a)
+
+### ARCH-REV-009 — D-21 re-check (SR-014): Pass
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-426/tickets/in-progress/small-follow-ups-batch-426/design-review-report.md` (§ D-21 Re-Check)
+- Review round and trigger: round 9; the implementer's Design Impact on D-21 (E-21b), revised by the Solution Designer as SR-014, 2026-11-08
+- Triggering role, report path, and finding IDs: Implementation Engineer → Solution Designer; investigation E-21b; no reviewer finding IDs
+- Relevant solution revision IDs: SR-014
+- Prior authoritative decision: Pass (ARCH-REV-008)
+- Current authoritative decision: `Pass`
+- What changed: the server recomputing the presets was confirmed (`token-usage-analytics-range-policy.ts:27-34, 84-86`). The test-only preload on the probe's own spawned server (`token-statistics-ui-probe.mjs:318`), the browser's `page.clock` and the seed's `now` together fix one instant on all three sides. Token usage reads the time only through `Date`, and the seed's coverage write comes before the server's upsert-if-missing.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-004…AR-006 | Resolved | Resolved (unaffected) | — | — |
+
+- New or remaining finding IDs: none
+- Material classification changes: none (Medium / High)
+- Recommended recipient: Implementation Engineer
+- Remaining risks or uncertainty: the status read's measured size (AC-009a)

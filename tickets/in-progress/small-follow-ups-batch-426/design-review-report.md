@@ -1,20 +1,20 @@
-# Design Review Report — small-follow-ups-batch-426, round 1 (review round 5)
+# Design Review Report — small-follow-ups-batch-426 (round 1 passed; round 2 passed — review round 9)
 
 ## Review Round Meta
 
 - Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-426/tickets/in-progress/small-follow-ups-batch-426/requirements-doc.md`
 - Upstream Investigation Notes: `…/small-follow-ups-batch-426/investigation-notes.md`
-- Upstream Solution Revision Record: `…/small-follow-ups-batch-426/solution-revision-record.md` (SR-001…SR-008)
-- Reviewed Design Spec: `…/small-follow-ups-batch-426/design-spec.md` (SR-008, D-01…D-19)
-- Supplemental Task Artifacts Reviewed: `product-design-request.md`; Product spec `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/phone-setup-remote-node-wording/ui-ux-spec.md` (design commit `0341b3af`); `follow-ups.md` (FU-001); `handoff-architecture-design-complete.md`
-- Relevant Solution Revision IDs: SR-001…SR-008
+- Upstream Solution Revision Record: `…/small-follow-ups-batch-426/solution-revision-record.md` (SR-001…SR-014)
+- Reviewed Design Spec: `…/small-follow-ups-batch-426/design-spec.md` (SR-014; round 1 D-01…D-19, round 2 D-09, D-20…D-23)
+- Supplemental Task Artifacts Reviewed: `product-design-request.md`; Product spec `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/phone-setup-remote-node-wording/ui-ux-spec.md` (design commit `0341b3af`); `follow-ups.md` (FU-001); `handoff-architecture-design-complete.md`; `handoff-round-2-architecture-design-complete.md`
+- Relevant Solution Revision IDs: SR-001…SR-014 (round 2: SR-009…SR-014)
 - Architecture Review Revision Record: `…/small-follow-ups-batch-426/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-005`
-- Current Review Round: 5
-- Trigger: SR-008, answering the code reviewer's API/E2E failure-origin review CRR-003 (F-API-001 → D-02, F-API-002 → D-03); focused re-review of D-02 and D-03
-- Prior Review Round Reviewed: 4 (ARCH-REV-004, Pass)
-- Latest Authoritative Round: 5
-- Current-State Evidence Basis: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-426`, branch `codex/small-follow-ups-batch-426`, base `6225a734a3`. I read the cited code (paths below) on 2026-11-07.
+- Current Architecture Review Revision ID: `ARCH-REV-009`
+- Current Review Round: 9
+- Trigger: D-21 re-check after an implementation Design Impact (SR-014, E-21b)
+- Prior Review Round Reviewed: 8 (ARCH-REV-008, Pass)
+- Latest Authoritative Round: 9
+- Current-State Evidence Basis: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-426`, branch `codex/small-follow-ups-batch-426`, round 1 base `6225a734a3` (read 2026-11-07); round 2 base `origin/personal` `d785ded109` (round 1, 412 and 416 merged; read 2026-11-08).
 
 ## Routing Classification Review
 
@@ -294,11 +294,147 @@ None beyond the findings.
 - REQ-003 and AC-004 are narrowed for round 1 (AC-004a). Run screens (AC-004b) move to round 2 behind the user's DEC-013. This is a round split within the Task's "rounds allowed", recorded in SR-008. Round 1 does not depend on DEC-013's answer, so nothing blocks here.
 - E-03 correction and D-13 rewrite: consistent, no structural impact.
 
-## Review Decision
+## Round 2 Review (SR-011, ARCH-REV-006)
+
+### Routing classification (round 2)
+
+`Medium` / `High` confirmed. A new GraphQL read contract is called on the 5 s history poll of three surfaces, including the phone, and the collaboration store gains a new update path: states applied outside a view publication. Independent review is required. The user's approval is not needed for the design; DEC-013 is the user's own decision.
+
+### Behavior basis (round 2)
+
+| Behavior ID | Kind | Design Alignment | Trigger / Evidence | Target Path / Spine | Status | Required Action |
+| --- | --- | --- | --- | --- | --- | --- |
+| BEH-009 | User | Pass | Pass (E-09b, read and confirmed below) | Pass, with precision gaps | Needs Correction | AR-005 |
+| BEH-020 | User | Pass | Fail for the window's own check (E-20 is Read only; the browser path was not traced) | Fail | Needs Correction | AR-004 |
+| BEH-021 | Operational | Pass | Pass (E-21) | Pass (clock source checked first, as the design says) | Confirmed | — |
+| BEH-022 | Operational | Pass | Pass (E-22) | Pass | Confirmed | — |
+| BEH-023 | Code | Pass | Pass (`node-browser-access.ts:35-42` and `remote-access-request-origin.ts:19-26` are identical, checked with `diff`) | Pass | Confirmed | — |
+
+### D-09: statements checked against the code
+
+- `standalone-agent-run-root.ts:275-286`: `getAgentStatusSnapshots()` returns live children and every child of the server index without a live execution as `offline`. It reads no tree or log, and the remote endpoints (`remoteLinks`) are not part of it. **True.**
+- `standalone-agent-run-root-manager.ts:137-140, 289-307`: `getActive` returns a root only while its lifecycle is `active`. `getInspection` answers `isActive: true` with a package-snapshot connection for an active root; otherwise it reads the stored tree with `isActive: false` and `statuses: []`. **True.** The GraphQL view (`agent-run-collaboration.ts:47-52`) takes `isActive` from `getInspection`, so it uses the same lifecycle fact as the new read's `isActive`. Comparing the two is sound for hosts without a stream. A context last published by the stream carries `isHostLive()` instead (`agent-collaboration-stream-handler.ts:89`). At most that costs one re-read after the stream detaches, which then lines the two facts up.
+- Client `agentRunCollaborationContext.ts`:
+  - The index keeps local `agents` apart from `remoteAgents` (`:76`).
+  - The status validation (`:87-93`) and the apply loop (`:101-105`) are as cited.
+  - `isActive` is the view's `is_active` (`:112`).
+  - Task rows and the task-Team status are computed from the contexts' reactive state through `taskRows`. `AgentRunTaskRows.vue:66` is a `computed`, so states applied in place re-render the rows.
+  - So "a **local** child of the index missing from the answer" is well-defined (`index.agents`), and remote children cannot cause re-reads. **True.**
+- `agentRunCollaborationStore.ts`: inspections are single-flight per host (`:51, 155-175`). Every publication checks `isCurrent`: the binding revision, no stream service and no termination (`:159-160`). Termination and stream state live in `terminations` / `services`. The design's host-selection terms map onto these.
+- Run-history `isActive` comes from the host run's status projection (`agent-run-history-service.ts:174-184`), not from the collaboration root. The host-selection rule's "listed as active, or its context is live" covers both directions.
+
+### D-20: statements checked against the code
+
+- Server path: `peer-client.ts:255-267` (`fetchNodeId`) turns every `!response.ok` into `PEER_NOT_AUTOBYTEUS`. A node-to-node fetch can read the 403 body. **True.** The server half of D-20 is sound.
+- Window path: `autobyteus-web/utils/nodeIdentityProbe.ts:50-70` uses the browser's `fetch` to reach another node's `/rest/remote-access/status`. That is a cross-origin request from the window. The Host gate is registered first, before CORS (`build-studio-server.ts:460-464`, the comment at `remote-access-host-gate.ts:22-25`). It replies through `refuseRemoteAccessRequest` (`remote-access-refusal.ts:21-33`), which sets no CORS headers. The Electron shell window keeps the default web security (`electron/shell/workspace-shell-window.ts`: `contextIsolation`, `sandbox`, no `webSecurity: false`). So the window cannot read a host-refused answer: `fetch` rejects, and the probe returns `unreachable` (or `refused` on loopback) through `windowFailureReason`. It never reaches the `!response.ok` branch that D-20 changes. E-20's statement that the window probe "does the same (`!response.ok` → `not_autobyteus`)" was read from the code, not traced through the browser. The 416 API-04 P1 text ("isn't an AutoByteus node") is consistent with the server's add path producing it.
+
+### Material premise (round 2)
+
+#### P-03 — The window's own identity probe can read a Host-gate refusal
+
+- Related: REQ-020, AC-020 ("the Nodes page checks it from the window")
+- Initiating basis kind: `User`. On the desktop Nodes page, the user adds a peer or changes its address to a name the peer's Host gate refuses (`lvh.me`). The window probe runs on add (`nodeListStore.ts:213`) and on each row check (`:141`).
+- Forward path: window `fetch(http://lvh.me:<port>/rest/remote-access/status)` → the peer's Host gate replies 403 without CORS headers → the browser rejects the fetch → `catch` → `windowFailureReason` → `unreachable`.
+- Reachability of the claimed state (the window reads `code: REMOTE_ACCESS_HOST_REFUSED`): `Not Reachable` on the current code path, by the reading above. Implementation or API/E2E can confirm it with one real-window run.
+- Consequence: D-20's `nodeIdentityProbe` change would never take effect, and the window part of AC-020 could not pass as designed. → AR-004.
+
+### Findings (round 2)
+
+#### AR-004 — D-20's window-side change targets an answer the window cannot read (Design Impact; may need a Requirement Gap; Medium)
+
+- Protects: REQ-020 and AC-020 (the Nodes page's own address check reports the distinct cause). It also protects BEH-020's Preserved column ("every other peer error and its text").
+- Scope status: Within Approved Scope. The correction may need a requirement decision; see the options below.
+- Evidence: § D-20 above (Host gate before CORS, refusal without CORS headers, default web security, `windowFailureReason`) and P-03.
+- Required update:
+  1. Trace the window form through the browser (Principle 1, several entry forms) and measure it once in a real window (a peer at `lvh.me`).
+  2. Then make AC-020's window part follow from an explicit rule. Either:
+     - the Nodes page gets the cause from the server's check, which can read the 403 (for example through the same peer-address resolution the add path uses, at the point the page already asks the server); or
+     - the window part of AC-020 is narrowed: the window keeps showing "can't be reached" from its own probe, and the distinct text comes from add and change-address. That changes approved behavior and is the Solution Designer's call within the direction.
+     - Adding CORS headers to Host-gate refusals would change the DNS-rebinding defence's response posture. It would be a `Requirement Gap` needing the user's approval, and is not recommended here.
+  3. Remove the `nodeIdentityProbe` 403-body branch unless the trace shows the window can reach it.
+- Proportionate because: without this, one of AC-020's three forms cannot pass, and the probe would get a branch nothing reaches.
+- Recipient: Solution Designer.
+
+#### AR-005 — D-09's apply rules leave three cases implicit (Design Impact; Low)
+
+- Protects: REQ-009 and AC-009a ("no `agentRunCollaboration` view read on a poll without a change"), and DEC-016 (a view re-read only when a child appears or the active state changes).
+- Scope status: Within Approved Scope. Changes approved behavior: No.
+- Evidence: D-09's client rules (`design-spec.md` § D-09) compared with the store's own currency pattern (`agentRunCollaborationStore.ts:51, 155-175`, `isCurrent` at `:159-160`).
+  1. **An inactive answer for an inactive context.** The design checks for an active-state mismatch first, then for "a local child of the index missing from the answer". An inactive answer has `statuses: []` by the server's contract. If the host was selected because the history lists it as active while its root is not (yet) active, for example while the root is `activating`, every local child is "missing", so a view re-read happens on each such poll. The rule set should say: inactive answer and inactive context → nothing to apply, no re-read.
+  2. **Currency.** "Context gone or a stream attached meanwhile → skip" does not cover a context replaced while the request was in flight, or a binding change. The store's existing rule for publications is `isCurrent`: the same binding revision, no stream service, no termination. Apply an answer only to the same context object the request was built for, under the same binding revision. Otherwise drop it; the next poll asks again.
+  3. **One refresh in flight.** The poll is a 5 s `setInterval` (`useRunHistorySectionLoad.ts:50`). On a slow phone network a status request can outlast a tick. Name the rule: while a refresh is pending, a tick skips it, as the store already does for inspections.
+- Required update: add these three rules to D-09's client section, with the owner (`agentRunCollaborationStore.refreshListedStatuses`) and the order: select hosts → one request → for each answer, check currency, then active state, then the child set, then apply.
+- Proportionate because: three short rules in the owner the design already names. Without them, AC-009a's "no view read without a change" depends on timing.
+- Recipient: Solution Designer.
+
+### Other round-2 notes (non-blocking)
+
+- D-09 wire shape: the new typed object uses `agentRunId`, `memberAddress`, `status` and `recoverableBlock`, while the view's JSON uses `agent_run_id` and `member_address`. `applyStatuses` should take one client shape, with the store mapping the new read into it, so the context does not accept two representations. The implementer can settle this.
+- D-21: the design rightly makes the clock source the first check. If the app reads "This month" from the server's clock, a browser-only `page.clock` will not fix it. In that case the implementer returns a Design Impact, as the design's escalation says.
+- D-22 and D-23 are sound as written.
+
+## Round 2 Re-Review (SR-012, ARCH-REV-007)
+
+### AR-005 — Resolved
+
+D-09's client section now gives one owner (`refreshListedStatuses`) and one order: select hosts → one request → per answer:
+1. Currency: the same context object, the same binding revision, no stream and no inspection started meanwhile; otherwise drop.
+2. Inactive answer and inactive context → nothing to apply.
+3. Active state changed → one re-read.
+4. Child set changed (both active) → one re-read.
+5. Otherwise `applyStatuses`.
+
+It also names one refresh in flight (a tick that finds one running skips its own) and one client shape, `CollaborationChildStatus`, which the view's snake_case statuses are mapped into. This matches the store's existing `isCurrent` and single-flight patterns (`agentRunCollaborationStore.ts:51, 155-175`). AC-009a's "no view read without a change" no longer depends on timing.
+
+### AR-004 — Resolved
+
+`nodeIdentityProbe` is unchanged, so there is no unreachable branch, and there is no CORS change. The window's own check keeps "can't reach" for a refused name (DEC-017, FU-004, with evidence). The narrowing is the Solution Designer's decision within the direction, and it is recorded.
+
+### New: AR-006 — the Nodes page's "add a peer" form never reaches the server for a refused name (Design Impact; Low)
+
+- Protects: REQ-020 and AC-020 (trigger "Add a peer at a name its Host gate refuses … the distinct text with the host on the Nodes page"; verification "Nodes page probe step").
+- Scope status: Within Approved Scope. Changes approved behavior: No. The fix states precisely which forms show the text.
+- Evidence. I traced the Nodes page forms on `d785ded109` (Principle 1, several entry forms):
+  - **Typed add** (`stores/nodeListStore.ts:205-228`): the window probe runs first (`:212-215`). For a refused name it fails, as AR-004 established. The node is then saved only as a desktop entry (`addRemoteNode`, `:221`), and no server call is made: `confirm` is only true when the probe succeeded. Connecting that row later needs the target's node ID: `registerHere` / `resolveHere` use `requireId(plan.target.nodeId, …)` (`services/nodeCollaboration/nodeCollaborationConnector.ts:71-74, 150-151, 168-170`). Without it the result is `PEER_UNREACHABLE` "has not been reached yet". So on the Nodes page, a typed add at a refused name shows "can't reach", never `PEER_HOST_REFUSED`. 416's FU-002 was measured as a direct `addPeerNode` GraphQL call (416 `api-e2e-execution-coverage-report.md` API-04 P1). Its sentence "The Nodes page shows that text" was not observed in a window.
+  - **Change address** (`nodeListStore.ts:292-297` → `runWithoutConfirmation` → connector plan → this node's server): the server checks the new address, so `PEER_HOST_REFUSED` reaches the row's failure. **Reachable.** ✓
+  - **Connect, where a node resolves an address it then registers** (`resolveHere` / `resolveThere` → `resolvePeerAddress` → `peer-address-resolver.ts`, `:150-155`): a refused candidate gives the new attempt result `host_refused`, shown by the attempt-result texts. This is reachable when the address being resolved has a name the far side's Host gate refuses, for example the far node registering this node by a name this node does not accept. ✓
+- Required update:
+  - State AC-020's forms as the code reaches them: change address (Nodes page text) and the connect flow's address resolution (attempt text) on the Nodes page; `addPeerNode` at the server level (server E2E).
+  - Put the typed add at a refused name with DEC-017 / FU-004: it is a window-probe form, and it keeps "can't reach".
+  - The Nodes page probe step should cover change address, plus one connect case where resolution meets a refused name, if the probe can set one up.
+- Proportionate because: a wording correction to AC-020 and its verification. Without it, the AC's add step fails at API/E2E for a reason the design already accepts.
+- Recipient: Solution Designer.
+
+## AC-020 Re-Check (SR-013, ARCH-REV-008)
+
+- AR-006 — Resolved. REQ-020 and AC-020 (`requirements-doc.md:308, 319`) now name the forms that reach this node's server check:
+  1. `addPeerNode`, verified at server E2E;
+  2. change address on the Nodes page;
+  3. the connect flow's address resolution on the Nodes page.
+  The typed add at a refused name, which probes from the window first and saves only a desktop entry (`nodeListStore.ts:212-221`), is with the window case in DEC-017 and FU-004 (`follow-ups.md`, with evidence). Each named form matches the paths traced in ARCH-REV-007.
+- D-09, D-20's code shape and D-21…D-23 are unchanged and keep their ARCH-REV-006/007 verdicts.
+
+## D-21 Re-Check (SR-014, ARCH-REV-009)
+
+- E-21b confirmed. `TokenUsageAnalyticsRangePolicy.plan(input, now = new Date())` (`autobyteus-server-ts/src/token-usage/services/token-usage-analytics-range-policy.ts:27-34`) recomputes each preset from the server's clock and throws `TOKEN_USAGE_ANALYTICS_PRESET_RANGE_MISMATCH` on a difference (`:84-86`). A browser-only clock cannot fix the day: the premise of ARCH-REV-008's check holds, and the escalation was the right step.
+- The revised shape works on the current code:
+  - The probe spawns its own server: `startService(process.execPath, [dist/app.js, …])`, `token-statistics-ui-probe.mjs:318`. So a Node `--import` preload applies only to that test process, with no product code (DESIGN.md rule 11).
+  - The server's token-usage code reads the time only through `Date`. A search of `src/token-usage` finds no SQL `now()` or `CURRENT_TIMESTAMP` and no `performance.now` or `hrtime`. So shifting `Date` / `Date.now` is enough there.
+  - The seed writes coverage before the server starts (`token-statistics-seed.mjs:204`; probe `:316` before `:318`). The server only creates coverage when none exists (`token-usage-analytics-repository.ts:37-39`, upsert), so the shifted server clock does not overwrite the fixture.
+  - Keeping the clock running, not frozen, preserves elapsed-time behavior (timeouts, deadlines).
+  - The browser gets the same instant (`page.clock.setSystemTime`) and the seed the same `now`, so all three agree.
+- Implementation notes (no design change):
+  1. Choose an instant away from UTC midnight (for example 12:00 UTC on the chosen day) so the run cannot cross a day boundary.
+  2. The preload shifts only `Date.now()` and `new Date()` called with no arguments. `new Date(value)`, `Date.UTC`, `Date.parse` and `instanceof Date` stay unchanged.
+  3. Set the browser clock before the app loads.
+  4. Without `--day`, nothing is preloaded.
+- AC-021 is unchanged: runs on the 1st, 7th and 20th of one month.
+
+## Round 1 Review Decision (ARCH-REV-002…ARCH-REV-005)
 
 `Pass`. The behavior basis is confirmed; AR-001…AR-003 are resolved in SR-004 (verified in the canonical artifacts, see ARCH-REV-002); no in-scope machinery depends on an unsupported premise.
 
-## Findings
+## Round 1 Findings
 
 None open. Resolved this round (details in `architecture-review-revision-record.md`, ARCH-REV-002):
 
@@ -306,11 +442,11 @@ None open. Resolved this round (details in `architecture-review-revision-record.
 - AR-002 (Design Impact) — Resolved: D-16 selects by the explicit `REMOTE_WORDED_PATHS` list; a catalog spec requires en and zh-CN keys for every listed path.
 - AR-003 (Requirement Gap, documentation) — Resolved: status, approval, baseline, DEC-002, Supplemental Artifacts and Readiness Check lines at SR-004; investigation notes at SR-004.
 
-## Classification
+## Round 1 Classification
 
 N/A (Pass).
 
-## Recommended Recipient
+## Round 1 Recommended Recipient
 
 Implementation Engineer (`/software_engineering_team/implementation_engineer`).
 
@@ -323,6 +459,8 @@ Implementation Engineer (`/software_engineering_team/implementation_engineer`).
 
 ## Latest Authoritative Result
 
-- Review Decision: `Pass` (ARCH-REV-005: revised D-02 and D-03; earlier rounds' results stand)
+- Review Decision: `Pass` (ARCH-REV-009: revised D-21; ARCH-REV-008's round-2 Pass stands for D-09, D-20, D-22 and D-23). Round 1 (ARCH-REV-005) stays `Pass`, and round 1 is merged.
 - Material-Premise Gate: `Pass`
-- Notes: N-1 (stale interface row, for the Solution Designer) and N-2 (credential source inside the store, for implementation) are non-blocking. RR-01 and RR-03 still apply; RR-02 is superseded by D-03's re-delivery rule.
+- Implementation notes:
+  - D-21: see § D-21 Re-Check (instant away from midnight; shift only no-argument `Date`; browser clock set before the app loads).
+  - D-09: record the status read's measured size (AC-009a); map the view's statuses into `CollaborationChildStatus`.

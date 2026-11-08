@@ -6,6 +6,7 @@ The current code and `implementation-handoff.md` are authoritative; this record 
 
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
+| IR-005 | Architecture reviewer, `design-review-report.md` (ARCH-REV-008 Pass round 2; ARCH-REV-009 Pass on SR-014) | N/A | `Initial Baseline` (round 2) | SR-009…SR-014; ARCH-REV-008, ARCH-REV-009; CRR N/A; API-REV N/A; DR N/A | Round 2 implemented (D-09, D-20…D-23); one Design Impact raised and resolved (D-21's clock, SR-014) |
 | IR-004 | Code reviewer, `code-review-report.md` (CRR-004 Fail, round 4) | F-004, F-005 | `Local Fix` | SR-008; ARCH-REV-005; CRR-004; API-REV-001; DR N/A | Fixes in `c8b4b659cd`; ready for the Targeted Delta Review |
 | IR-003 | Architecture reviewer, `design-review-report.md` (ARCH-REV-005 Pass on SR-008), answering CRR-003 | F-API-001, F-API-002 | `Design Impact` (resolved upstream; implemented) | SR-008; ARCH-REV-005; CRR-003; API-REV-001; DR N/A | D-02 rebuilt on the phone's own credential check (`40d8d088e5`); D-03 re-delivery rule (`35263117c9`); ready for source review |
 | IR-002 | Code reviewer, `code-review-report.md` (CRR-001 Fail), round 1 | F-001, F-002, F-003 | `Local Fix` | SR-005; ARCH-REV-003; CRR-001; API-REV N/A; DR N/A | Three bounded fixes in `1d2cdd15ab`; ready for the Targeted Delta Review |
@@ -104,3 +105,21 @@ The current code and `implementation-handoff.md` are authoritative; this record 
 - Local validation and result: IMP-16 (279 specs, web typecheck at baseline, guard)
 - Next recipient or routing: Code Reviewer (Targeted Delta Review), then API/E2E (MSP-13, MSP-18, API-08, full web suite)
 - Remaining limitations or risks: unchanged from IR-003
+
+### IR-005 — Round-2 implementation baseline
+
+- Triggering role, report path, and round: architecture reviewer (`architecture_reviewer_d40b29b15ce84a0290edd732f58a7e5e`), `design-review-report.md` (ARCH-REV-008 Pass on SR-009…SR-013; ARCH-REV-009 Pass on SR-014), round 2
+- Triggering finding IDs: N/A (baseline of round 2)
+- Classification: `Initial Baseline` (round 2)
+- Prior authoritative result: round 1 finalized (`a42dbca699`, DR-001)
+- Current authoritative result: round 2 implemented on `codex/small-follow-ups-batch-426` (`06cc2aabad`…`736b51f87a`); ready for source review
+- Related solution revision IDs: SR-009…SR-014
+- Related architecture-review revision IDs: ARCH-REV-008, ARCH-REV-009
+- Related code-review / API/E2E / delivery revision IDs: `N/A`
+- Why recorded: first implementation of round 2. D-21's clock was returned as a Design Impact: the server recomputes and checks the preset ranges from its own clock (`token-usage-analytics-range-policy.ts:27-34,84-86`). It was resolved as SR-014 (a test-only shifted clock on the probe's own server, plus the browser clock) and built.
+- Approved behavior or requirement IDs affected: REQ-009, REQ-020, REQ-021, REQ-022, REQ-023
+- Implementation delta: `implementation-handoff.md` § Round 2 Reviewed Behavior Implementation Trace
+- Changed files or areas: server (`standalone-agent-run-root-manager.ts`, GraphQL `agent-run-collaboration.ts`, `remote-collaboration` error/probe/resolver, `api/security/web-origin.ts` + two importers), web (collaboration query + codegen, hydration read, context `applyStatuses`, store `refreshListedStatuses`, run-history getter and poll tick, Nodes page error text and catalogs), probes (token-statistics seed/probe + `fixtures/shifted-clock.mjs`, model-routing MRP-02), tests and specs for each
+- Local validation and result: IMP-R2-01…IMP-R2-05 (focused checks; seed plan on 151 days; model-routing probe Pass; token-statistics probe Pass on 2026-12-01, 12-07, 12-20; full web and server suites and both typechecks Pass)
+- Next recipient or routing: Code Reviewer (Medium / High)
+- Remaining limitations or risks: the D-09 probes and payload measurement, the AC-020 Nodes page probe step, the full server E2E and the fresh-start build are API/E2E's
