@@ -68,3 +68,6 @@
 | 2026-11-08T19:54:09Z | API-FS | Started |  | fresh clone of d115fd9c71 |
 | 2026-11-08T20:04:29Z | API-FS | Completed | Pass | fresh clone of d115fd9c71: install, typecheck, build, prisma and terminal-runtime verify all exit 0 |
 | 2026-11-08T20:04:29Z | cleanup | Completed |  | test image, scratch, base worktree, fresh clone removed; no instance; no abtest437 container |
+| 2026-11-08T20:23:02Z | API-03-MSP21-23 | Started |  | round 3 (DR-001): merged state 8a31d5141c + socket fix; --cases=MSP-21,MSP-22,MSP-23 |
+| 2026-11-08T20:29:58Z | API-03-MSP21-23 | Checkpoint | Fail | run 1: MSP-21/22/23 Pass, probe Fail on unknown browser errors = phones' 401 /favicon.ico (16 refusals in gamma log); the case's known-error rule expected 404 -> updated to 401 (NA-1, NA-2) |
+| 2026-11-08T20:36:52Z | API-03-MSP21-23 | Completed | Pass | run 2 on merged 8a31d5141c + test fixes: MSP-21/22/23 Pass, 0 unknown browser errors |

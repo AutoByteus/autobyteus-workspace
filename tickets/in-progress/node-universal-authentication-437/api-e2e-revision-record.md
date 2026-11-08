@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- |
 | API-REV-001 | Code Reviewer, `code-review-report.md` CRR-002 Pass, round 1 | SR-006, ARCH-REV-003, IR-002, CRR-002 | N/A | Fail / 81% |
 | API-REV-002 | Code Reviewer, `code-review-report.md` CRR-004 Pass on IR-003, round 2 | IR-003, CRR-003, CRR-004 | Fail / 81% | Pass / 95% |
+| API-REV-003 | Delivery Engineer, `delivery-revision-record.md` DR-001 (blocked), round 3 | DR-001, CRR-005 | Pass / 95% | Pass / 95% |
 
 ## Revision Entries
 
@@ -56,3 +57,26 @@ None
 - New or remaining failure IDs: none in scope; pre-existing FU-003 (SIR-002), FU-004 (IP-03, RSW-01, WEB-002)
 - Recommended owner: Code Reviewer (test-code review)
 - Remaining risks, blocked evidence, or untested scope: AC-008 from a second physical device (user); Windows launcher runtime; an executed in-place node update; 7 live probes migrated but not run (paid inference / signed-in CLIs); release signing and the other OS jobs
+
+### API-REV-003 — Round 3 (delivery re-entry DR-001): the base's MSP-21…23 under node access on the merged state
+
+- Triggering role, report path, and round: Delivery Engineer (`delivery_engineer_1ab9155cd97f42e38ba989a573506c57`), `delivery-revision-record.md` DR-001 (blocked), `evidence/delivery/DR1-mobile-shell.log` and `DR1-mobile-shell/server-gamma.log` lines 121–123; merged state `8a31d5141c` (origin/personal `31aa11b241` as `3e85115f6e`)
+- Triggering finding or case IDs: MSP-21…23 setup `Timed out waiting for the warm-up replies stored on the node`; `NODE_CREDENTIAL_REQUIRED /ws/agent-team/…, /ws/agent/…, /ws/agent-org/…`
+- Related revision IDs: DR-001, CRR-005
+- Why this revision was recorded: an API/E2E-owned test gap found by delivery on the merged state (the API-16 rule applied to a case module the merge brought in)
+- Coverage decisions or durable test paths changed: `autobyteus-web/tests/e2e/mobile-live-reconnect-cases.mjs` — node-side clients via `ownerSocketUrl`; the browser's `/favicon.ico` known-error rule names 401 (it named 404; NA-1, NA-2)
+- Cases added, changed, removed, or rechecked: API-03 r3 (MSP-21…23) run twice: run 1 cases Pass, probe Fail on the favicon 401 lines; run 2 Pass; MSP-01…20 on the merged state reused from delivery's DR1 run
+- Commands, environment, fixture, or broader-validation delta: `pnpm -C autobyteus-web test:e2e:mobile-shell --cases=MSP-21,MSP-22,MSP-23` on the merged state with delivery's post-merge builds
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| DR-001 MSP-21…23 setup timeout (node sockets without the credential) | API/E2E-owned test gap (Local Fix) | fixed in the case module | API-03 r3 |
+
+- Canonical artifacts and sections updated: execution report (Round, Cases round 3, Durable Coverage, Result notes), test progress log, evidence `R3-API-03-mobile-shell-msp21-23*`
+- Prior result and confidence: Pass, 95%
+- Current result and confidence: Pass, 95%
+- New or remaining failure IDs: none
+- Recommended owner: Code Reviewer (test-code review of the round 3 change), then Delivery
+- Remaining risks, blocked evidence, or untested scope: unchanged from API-REV-002

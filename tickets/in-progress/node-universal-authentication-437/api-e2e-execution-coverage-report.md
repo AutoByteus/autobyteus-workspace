@@ -3,9 +3,9 @@
 ## Round
 
 - Coverage investigation (the plan; it lists the upstream documents and the round 2 rerun plan): `tickets/in-progress/node-universal-authentication-437/api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `tickets/in-progress/node-universal-authentication-437/api-e2e-revision-record.md`, `API-REV-002`
+- API/E2E revision record and current revision ID: `tickets/in-progress/node-universal-authentication-437/api-e2e-revision-record.md`, `API-REV-003`
 - Test progress log: `tickets/in-progress/node-universal-authentication-437/api-e2e-test-progress.md`
-- Round and trigger: round 2; Code Reviewer CRR-004 Pass on IR-003 (HEAD `32e9ad944c`): fixes for API-REV-001 F-1 (CR-003), F-2 (CR-004), F-3 (CR-005) and observations O-1, O-2
+- Round and trigger: round 3 (delivery re-entry): Delivery DR-001 blocked on the merged state `8a31d5141c` (origin/personal `31aa11b241` merged as `3e85115f6e`): the base's new MSP-21…23 (autobyteus-434, `mobile-live-reconnect-cases.mjs`) opened node-side sockets without the probe credential. Round 2: Code Reviewer CRR-004 Pass on IR-003 (HEAD `32e9ad944c`)
 - Prior round reviewed: round 1 (API-REV-001, `Fail`, 81%) — F-1, F-2, F-3 rechecked first (API-15, API-03, API-08)
 - Deviations from the investigation's plan, and why:
   - Round 1: browser probes attach the credential in the probe's browser context (loopback only) instead of the dev proxy, which was broken (F-1). Kept in round 2: the window then behaves as in the desktop app (node = backend URL); the dev proxy path is proven separately (API-15, IR003-08).
@@ -37,6 +37,12 @@
 ## Cases
 
 Evidence paths are relative to the evidence folder. Credentials, setup codes, invites and peer secrets are redacted (scan in Temporary Methods).
+
+### Round 3 (delivery re-entry DR-001, latest)
+
+| Case ID | Criteria | Boundary / Surface | Command Or Steps | Env | Result | Evidence Files | Look For | Notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| API-03 r3 (MSP-21…23) | AC-005 (phone live streams after a dropped path, background, a message during its own turn — autobyteus-434 cases under enforcement); QR-003 | phone bundle + node gamma behind a TCP proxy, node-side "other window" clients | `pnpm -C autobyteus-web test:e2e:mobile-shell --cases=MSP-21,MSP-22,MSP-23 --output-dir=<R3-API-03-mobile-shell-msp21-23>` on the merged state `8a31d5141c` + the test fixes below; server `dist` and `build:mobile-web` built by delivery after the merge (DR1-server-build.log, DR1-build-mobile-web.log) | ENV-4 (merged state) | Pass | `R3-API-03-mobile-shell-msp21-23.log`, `R3-API-03-mobile-shell-msp21-23/mobile-shell-probe.json`, `…/server-gamma.log`; run 1: `R3-API-03-mobile-shell-msp21-23-run1*` | `[mobile-shell] MSP-21 Pass`, `MSP-22 Pass`, `MSP-23 Pass`, `mobile-shell probe: Pass`; receipt: 156 browser errors, 0 unknown; gamma refusals: only `16 Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1` | Test fixes in `mobile-live-reconnect-cases.mjs`: (1) the node-side `nodeClient` sockets carry the probe credential (`ownerSocketUrl`), the class fixed for API-16 — delivery's run had `NODE_CREDENTIAL_REQUIRED /ws/agent-team/…, /ws/agent/…, /ws/agent-org/…`; (2) run 1 then passed all three cases but failed on unknown browser errors: the phones' own `/favicon.ico` request at the origin root now answers 401 (no credential; NA-1, NA-2 deny by default; it answered 404 before) and the case's known-error rule named 404 → 401. MSP-01…20 on the merged state: delivery's DR1-mobile-shell run, all Pass (reused) |
 
 ### Round 2 (latest)
 
@@ -170,9 +176,10 @@ Evidence paths are relative to the evidence folder. Credentials, setup codes, in
 | `autobyteus-web/tests/e2e/agent-org-role-labels-probe.mjs` | Updated (r2, `8cac59f2d4`, baseline fix): unambiguous "View ↗" selector | API-16 | — |
 | `autobyteus-web/tests/e2e/memory-search-probe.mjs` | Updated (r2, `d115fd9c71`): waits for the highlighted lines | API-16 | — |
 | `scripts/tests/test_public_docker_launcher_shared_workspace.py` | Added `test_allow_local_network_is_kept_when_upgrade_all_recreates_the_node` (r1) | API-14b | — |
+| `autobyteus-web/tests/e2e/mobile-live-reconnect-cases.mjs` (from the base, autobyteus-434) | Updated (r3): node-side clients via `ownerSocketUrl`; the favicon known-error rule names 401 | API-03 r3 | the 404 expectation for `/favicon.ico` replaced by 401 (NA-1, NA-2) |
 
 - Added or updated paths attached for proportional test-code review: `Yes`
-- Diff or repository evidence supplied for removed paths: commits `960cfc0661` (r1), `fa6ec192a0`, `8cac59f2d4`, `d115fd9c71` (r2)
+- Diff or repository evidence supplied for removed paths: commits `960cfc0661` (r1), `fa6ec192a0`, `8cac59f2d4`, `d115fd9c71` (r2), the round 3 test commit
 
 ## Dependencies Mocked Or Emulated
 
@@ -208,4 +215,4 @@ N/A — round 2 passes. Pre-existing problems found outside this ticket: FU-003,
 - Criteria not proven, or parts only the user can check: AC-008 from a second physical device (user)
 - Preliminary classification and recommended owner: N/A
 - Next recipient from `get_handoff_rules`: Code Reviewer — proportional test-code review
-- Notes: round 1's three failures are fixed and re-proven on their real surfaces; every browser probe that starts a node now carries a credential; the fresh-start release build passes on the tested commit.
+- Notes: round 1's three failures are fixed and re-proven on their real surfaces; every browser probe that starts a node now carries a credential; the fresh-start release build passes on `d115fd9c71`. Round 3: on the merged state, the base's new phone cases MSP-21…23 pass with node access on after two test fixes (no product change). The merge changed no build input of this ticket beyond what delivery rebuilt; the fresh-start build of the merged commit is the release pipeline's (delivery).
