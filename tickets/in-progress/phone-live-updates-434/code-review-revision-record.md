@@ -7,6 +7,7 @@
 | CRR-001 | `code-review-report.md` | Implementation Review / IR-001 | N/A | Pass | None |
 | CRR-002 | `api-e2e-test-review-report.md` | Proportional test-code review / API-REV-001 | Pass (CRR-001, source) | Fail | TR-001 |
 | CRR-003 | `api-e2e-test-review-report.md` | Proportional test-code review round 2 / API-REV-002 | Fail | Pass | TR-001 |
+| CRR-004 | `api-e2e-test-review-report.md` | Proportional test-code review round 3 / API-REV-003 (DR-001) | Pass | Pass | None |
 
 ## Revision Entries
 
@@ -86,3 +87,30 @@ None (first test review; CRR-001 had no findings).
 - Material score or classification changes: N/A
 - Recommended recipient: `delivery_engineer`
 - Remaining risks or uncertainty: CRR-001 residual risks (agent read-to-open window not hit in 45 replies but not proven absent; FU-003); delegated copy's conversation after an outage proven at stream level only (API/E2E residual).
+
+### CRR-004 — Proportional test-code review round 3 (DR-001 duplicate case ID)
+
+- Canonical review report updated: `api-e2e-test-review-report.md` (Round 3 Delta)
+- Review entry point and round: successful API/E2E test-code review, round 3
+- Review scope: `N/A` (test review; diff `e60cb29272..821c249062` in `autobyteus-web/tests/e2e/`)
+- Triggering role, report path, and finding or scenario IDs: delivery DR-001 → API/E2E API-REV-003, `api-e2e-execution-coverage-report.md` (MSP-20…23 merged run)
+- Relevant solution revision IDs: SR-004
+- Relevant architecture-review revision IDs: ARCH-REV-003
+- Relevant implementation revision IDs: IR-001
+- Relevant API/E2E revision IDs: API-REV-003
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: CRR-003 Pass
+- Current authoritative result: Pass
+- What changed in the review result and why: this ticket's cases renumbered MSP-20/21/22 → MSP-21/22/23 after autobyteus-426 took MSP-20 (no assertion changed); the probe now refuses duplicate case IDs at start and records a `Fail` for a runtime repeat; the merged-state run passes with four distinct cases.
+- Supported product scenario / material-premise basis changes: none.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| TR-001 | Resolved (CRR-003) | Resolved, still holds | API-REV-003 | `evidence/MSP-20-23-merged/mobile-shell-probe.json` MSP-22(c): `attemptsWhileHidden` `[]`/`[]`; Team socket +9 ms, `GetRunProjection` +12 ms |
+
+- New or remaining finding IDs: None
+- Material score or classification changes: N/A
+- Recommended recipient: `delivery_engineer`
+- Remaining risks or uncertainty: unchanged from CRR-003.

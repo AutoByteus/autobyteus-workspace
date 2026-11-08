@@ -2,8 +2,8 @@
 
 ## Review Meta
 
-- Review Round: 2
-- Trigger: TR-001 fixed, API/E2E pass API-REV-002 (commit `23fb0e5788`); round 1 was API-REV-001 at `4bc2af1f54`
+- Review Round: 3
+- Trigger: delivery DR-001 (duplicate probe case ID MSP-20 after the base refresh), API/E2E pass API-REV-003 (commit `821c249062` on merge `b2bdcb98a4`); round 2 was API-REV-002 at `23fb0e5788`, round 1 API-REV-001 at `4bc2af1f54`
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (SR-001), AC-001…AC-006
 - Investigation Notes Reviewed As Context: not needed beyond the requirements and design
 - Solution Revision Record Reviewed As Context: not needed
@@ -13,7 +13,7 @@
 - Implementation Revision Record Reviewed As Context: IR-001 (production source unchanged since `feb69495a5`)
 - Original Code Review Report: `code-review-report.md` (CRR-001, Pass)
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-003`
+- Current Code Review Revision ID: `CRR-004`
 - Coverage Investigation: `api-e2e-coverage-investigation.md`
 - Execution Coverage Report: `api-e2e-execution-coverage-report.md`
 - API/E2E Revision Record Reviewed As Context: `api-e2e-revision-record.md` (API-REV-001, API-REV-002)
@@ -60,10 +60,24 @@ Not findings, for the same edit if convenient:
 
 - Follow-ups this review added: None (FU-004 is API/E2E's and is correctly scoped).
 
+## Round 3 Delta (DR-001, API-REV-003)
+
+Reviewed: `git diff e60cb29272 821c249062 -- autobyteus-web/tests/e2e/`.
+
+| Check | Result | Evidence / Notes |
+| --- | --- | --- |
+| Renumber is complete and changes no assertion | Pass | `mobile-live-reconnect-cases.mjs`: only IDs, `phone.case` labels, screenshot names and header change (MSP-20/21/22 → MSP-21/22/23); no `MSP-20` remains in the module; autobyteus-426 keeps MSP-20 |
+| Duplicate-ID guard is correct and fails loudly | Pass | Start check in `mobile-shell-probe.mjs` reads the probe and each imported `./*-cases.mjs`, collects literal `runCase('<ID>'` IDs and exits 1 on a repeat before any stack starts. `runCase` also records `"<id> (duplicate)"` as `Fail` for a non-literal repeat, and the overall result fails on any non-`Pass` case (`mobile-shell-probe.mjs:2121-2133`). Negative check of the guard is recorded (pre-renumber copy exited 1 with the duplicate named) |
+| Merged-state run proves the cases still hold | Pass | `evidence/MSP-20-23-merged/mobile-shell-probe.json`: probe `Pass`, cases MSP-20…23 all `Pass` as four distinct entries; MSP-22(c) while hidden `[]`/`[]`, within 2 s of visible Team socket +9 ms and `GetRunProjection` +12 ms (TR-001's assertions intact); built from the merged state (API-11) |
+| Not rerun, accepted | Pass | API-06/07/09 and the other MSP cases do not execute this round's edits |
+| Docs | Pass | Execution report and investigation use the new IDs with an old → new map; archived evidence keeps old names. Not adding a TESTING.md rule for one probe's ID scheme agrees with TESTING.md's "keep this file global" rule |
+
+Findings this round: None.
+
 ## Latest Authoritative Result
 
 - Result: `Pass`
 - Changed durable test paths reviewed: `autobyteus-web/tests/e2e/mobile-live-reconnect-cases.mjs`, `autobyteus-web/tests/e2e/mobile-shell-probe.mjs`
 - Unresolved finding IDs: None (TR-001 resolved)
 - Recommended Recipient: `delivery_engineer`
-- Notes: Product behavior is not in question. The agent catch-up timing in MSP-21(c) (shown 3.07 s after the path passed) fits an immediate attempt on visible, and AC-004 for the agent owner is also unit-proven (API-04). Round 2: the durable probe now proves what its assertions name; the package is ready for delivery.
+- Notes: Product behavior is not in question. The agent catch-up timing in MSP-21(c) (shown 3.07 s after the path passed) fits an immediate attempt on visible, and AC-004 for the agent owner is also unit-proven (API-04). Round 2: the durable probe now proves what its assertions name. Round 3: case IDs renumbered to MSP-21…23 (assertions unchanged; the MSP-21(c) reference above is MSP-22(c) now) and a duplicate-ID guard added; the merged-state run passes. Ready for delivery.
