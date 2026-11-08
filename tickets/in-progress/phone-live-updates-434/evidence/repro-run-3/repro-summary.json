@@ -1,0 +1,248 @@
+{
+  "startedAt": "2026-11-08T07:02:02.764Z",
+  "scenarios": {
+    "R1": {
+      "delays": [
+        {
+          "id": "MARK-1",
+          "ms": 46
+        },
+        {
+          "id": "MARK-2",
+          "ms": 45
+        },
+        {
+          "id": "MARK-3",
+          "ms": 47
+        }
+      ]
+    },
+    "R5": {
+      "live": [
+        "MARK-1",
+        "REPLY:MARK-1",
+        "MARK-2",
+        "REPLY:MARK-2",
+        "MARK-3",
+        "REPLY:MARK-3",
+        "PHONE-MSG",
+        "REPLY:PHONE-MSG",
+        "MARK-4",
+        "REPLY:MARK-4",
+        "MARK-5",
+        "REPLY:MARK-5"
+      ],
+      "reopened": [
+        "MARK-1",
+        "REPLY:MARK-1",
+        "MARK-2",
+        "REPLY:MARK-2",
+        "MARK-3",
+        "REPLY:MARK-3",
+        "PHONE-MSG",
+        "REPLY:PHONE-MSG",
+        "MARK-4",
+        "REPLY:MARK-4",
+        "MARK-5",
+        "REPLY:MARK-5"
+      ],
+      "stored": [
+        "user:Start. Marker WARMUP.",
+        "assistant:REPLY:Start. Marker WARMUP.",
+        "user:MARK-1",
+        "assistant:REPLY:MARK-1",
+        "user:MARK-2",
+        "assistant:REPLY:MARK-2",
+        "user:MARK-3",
+        "assistant:REPLY:MARK-3",
+        "user:PHONE-MSG HOLD_MS:4000",
+        "tool_call:",
+        "assistant:REPLY:PHONE-MSG HOLD_MS:4000",
+        "user:MARK-4",
+        "assistant:REPLY:MARK-4",
+        "user:MARK-5",
+        "assistant:REPLY:MARK-5"
+      ]
+    },
+    "R2": {
+      "outageMs": 6000,
+      "markerDuringOutage": {
+        "id": "MARK-6",
+        "phoneShowsAfterMs": 7172
+      },
+      "markerAfter": {
+        "id": "MARK-7",
+        "ms": 46
+      },
+      "teamSockets": [
+        {
+          "url": "/ws/agent-team/delivery_team_1a54dcea48eb44dfb93cddc03a060723?access_token=…",
+          "openedAt": 8752,
+          "closedAt": 31273,
+          "framesIn": 103
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_1a54dcea48eb44dfb93cddc03a060723?access_token=…",
+          "openedAt": 32290,
+          "closedAt": 32291,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_1a54dcea48eb44dfb93cddc03a060723?access_token=…",
+          "openedAt": 34293,
+          "closedAt": 34294,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_1a54dcea48eb44dfb93cddc03a060723?access_token=…",
+          "openedAt": 38297,
+          "closedAt": null,
+          "framesIn": 19
+        }
+      ]
+    }
+  },
+  "timeline": [
+    {
+      "t": 4107,
+      "event": "team",
+      "teamRunId": "delivery_team_1a54dcea48eb44dfb93cddc03a060723",
+      "leadRun": "solution_designer_2a4e6bf551f54a698ac2bd74cbf8d417"
+    },
+    {
+      "t": 8778,
+      "event": "phone paired"
+    },
+    {
+      "t": 8991,
+      "event": "phone opened the lead"
+    },
+    {
+      "t": 21162,
+      "event": "R1",
+      "delays": [
+        {
+          "id": "MARK-1",
+          "ms": 46
+        },
+        {
+          "id": "MARK-2",
+          "ms": 45
+        },
+        {
+          "id": "MARK-3",
+          "ms": 47
+        }
+      ]
+    },
+    {
+      "t": 31272,
+      "event": "R5",
+      "live": [
+        "MARK-1",
+        "REPLY:MARK-1",
+        "MARK-2",
+        "REPLY:MARK-2",
+        "MARK-3",
+        "REPLY:MARK-3",
+        "PHONE-MSG",
+        "REPLY:PHONE-MSG",
+        "MARK-4",
+        "REPLY:MARK-4",
+        "MARK-5",
+        "REPLY:MARK-5"
+      ],
+      "reopened": [
+        "MARK-1",
+        "REPLY:MARK-1",
+        "MARK-2",
+        "REPLY:MARK-2",
+        "MARK-3",
+        "REPLY:MARK-3",
+        "PHONE-MSG",
+        "REPLY:PHONE-MSG",
+        "MARK-4",
+        "REPLY:MARK-4",
+        "MARK-5",
+        "REPLY:MARK-5"
+      ],
+      "stored": [
+        "user:Start. Marker WARMUP.",
+        "assistant:REPLY:Start. Marker WARMUP.",
+        "user:MARK-1",
+        "assistant:REPLY:MARK-1",
+        "user:MARK-2",
+        "assistant:REPLY:MARK-2",
+        "user:MARK-3",
+        "assistant:REPLY:MARK-3",
+        "user:PHONE-MSG HOLD_MS:4000",
+        "tool_call:",
+        "assistant:REPLY:PHONE-MSG HOLD_MS:4000",
+        "user:MARK-4",
+        "assistant:REPLY:MARK-4",
+        "user:MARK-5",
+        "assistant:REPLY:MARK-5"
+      ]
+    },
+    {
+      "t": 31273,
+      "event": "proxy",
+      "mode": "refuse",
+      "open": 8
+    },
+    {
+      "t": 37325,
+      "event": "proxy",
+      "mode": "pass",
+      "open": 0
+    },
+    {
+      "t": 38504,
+      "event": "R2",
+      "outageMs": 6000,
+      "markerDuringOutage": {
+        "id": "MARK-6",
+        "phoneShowsAfterMs": 7172
+      },
+      "markerAfter": {
+        "id": "MARK-7",
+        "ms": 46
+      },
+      "teamSockets": [
+        {
+          "url": "/ws/agent-team/delivery_team_1a54dcea48eb44dfb93cddc03a060723?access_token=…",
+          "openedAt": 8752,
+          "closedAt": 31273,
+          "framesIn": 103
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_1a54dcea48eb44dfb93cddc03a060723?access_token=…",
+          "openedAt": 32290,
+          "closedAt": 32291,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_1a54dcea48eb44dfb93cddc03a060723?access_token=…",
+          "openedAt": 34293,
+          "closedAt": 34294,
+          "framesIn": 0
+        },
+        {
+          "url": "/ws/agent-team/delivery_team_1a54dcea48eb44dfb93cddc03a060723?access_token=…",
+          "openedAt": 38297,
+          "closedAt": null,
+          "framesIn": 19
+        }
+      ]
+    }
+  ],
+  "proxy": {
+    "connections": 15
+  },
+  "error": null,
+  "cleanup": {
+    "serverExited": true,
+    "rootRemoved": true
+  },
+  "finishedAt": "2026-11-08T07:03:11.474Z"
+}

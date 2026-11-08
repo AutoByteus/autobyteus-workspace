@@ -1,0 +1,242 @@
+{
+  "startedAt": "2026-11-08T07:08:51.818Z",
+  "scenarios": {
+    "R6": {
+      "liveView": {
+        "copies": 1,
+        "tail": [
+          "You",
+          "Start. Marker WARMUP.",
+          "L",
+          "lead",
+          "REPLY:Start. Marker WARMUP.",
+          "You",
+          "PHONE-LONG HOLD_MS:30000",
+          "L",
+          "lead",
+          "run_command",
+          "Context Files (0)",
+          "(drag, paste, or upload)"
+        ]
+      },
+      "reopenedDuringTurn": {
+        "copies": 1,
+        "tail": [
+          "You",
+          "Start. Marker WARMUP.",
+          "L",
+          "lead",
+          "REPLY:Start. Marker WARMUP.",
+          "You",
+          "PHONE-LONG HOLD_MS:30000",
+          "L",
+          "lead",
+          "run_command",
+          "Context Files (0)",
+          "(drag, paste, or upload)"
+        ]
+      },
+      "freshDuringTurn": {
+        "copies": 2,
+        "tail": [
+          "L",
+          "lead",
+          "REPLY:Start. Marker WARMUP.",
+          "You",
+          "PHONE-LONG HOLD_MS:30000",
+          "L",
+          "lead",
+          "run_command",
+          "You",
+          "PHONE-LONG HOLD_MS:30000",
+          "Context Files (0)",
+          "(drag, paste, or upload)"
+        ]
+      },
+      "afterTurnSameView": {
+        "copies": 2,
+        "tail": [
+          "Start. Marker WARMUP.",
+          "L",
+          "lead",
+          "REPLY:Start. Marker WARMUP.",
+          "You",
+          "PHONE-LONG HOLD_MS:30000",
+          "L",
+          "lead",
+          "run_command",
+          "REPLY:PHONE-LONG HOLD_MS:30000",
+          "Context Files (0)",
+          "(drag, paste, or upload)"
+        ]
+      },
+      "reopenedAfterTurn": {
+        "copies": 2,
+        "tail": [
+          "Start. Marker WARMUP.",
+          "L",
+          "lead",
+          "REPLY:Start. Marker WARMUP.",
+          "You",
+          "PHONE-LONG HOLD_MS:30000",
+          "L",
+          "lead",
+          "run_command",
+          "REPLY:PHONE-LONG HOLD_MS:30000",
+          "Context Files (0)",
+          "(drag, paste, or upload)"
+        ]
+      },
+      "stored": [
+        {
+          "entry": "assistant:REPLY:Start. Marker WARMUP.",
+          "hasMessageId": false
+        },
+        {
+          "entry": "user:PHONE-LONG HOLD_MS:30000",
+          "hasMessageId": false
+        },
+        {
+          "entry": "tool_call:",
+          "hasMessageId": false
+        },
+        {
+          "entry": "assistant:REPLY:PHONE-LONG HOLD_MS:30000",
+          "hasMessageId": false
+        }
+      ]
+    }
+  },
+  "timeline": [
+    {
+      "t": 3159,
+      "event": "team",
+      "teamRunId": "delivery_team_2aee05f221414f449ebc41e3a79c71d6",
+      "leadRun": "solution_designer_1f12aef9f1314aacbaabe8c084535fd0"
+    },
+    {
+      "t": 7900,
+      "event": "phone paired"
+    },
+    {
+      "t": 8077,
+      "event": "phone opened the lead"
+    },
+    {
+      "t": 45496,
+      "event": "R6",
+      "liveView": {
+        "copies": 1,
+        "tail": [
+          "You",
+          "Start. Marker WARMUP.",
+          "L",
+          "lead",
+          "REPLY:Start. Marker WARMUP.",
+          "You",
+          "PHONE-LONG HOLD_MS:30000",
+          "L",
+          "lead",
+          "run_command",
+          "Context Files (0)",
+          "(drag, paste, or upload)"
+        ]
+      },
+      "reopenedDuringTurn": {
+        "copies": 1,
+        "tail": [
+          "You",
+          "Start. Marker WARMUP.",
+          "L",
+          "lead",
+          "REPLY:Start. Marker WARMUP.",
+          "You",
+          "PHONE-LONG HOLD_MS:30000",
+          "L",
+          "lead",
+          "run_command",
+          "Context Files (0)",
+          "(drag, paste, or upload)"
+        ]
+      },
+      "freshDuringTurn": {
+        "copies": 2,
+        "tail": [
+          "L",
+          "lead",
+          "REPLY:Start. Marker WARMUP.",
+          "You",
+          "PHONE-LONG HOLD_MS:30000",
+          "L",
+          "lead",
+          "run_command",
+          "You",
+          "PHONE-LONG HOLD_MS:30000",
+          "Context Files (0)",
+          "(drag, paste, or upload)"
+        ]
+      },
+      "afterTurnSameView": {
+        "copies": 2,
+        "tail": [
+          "Start. Marker WARMUP.",
+          "L",
+          "lead",
+          "REPLY:Start. Marker WARMUP.",
+          "You",
+          "PHONE-LONG HOLD_MS:30000",
+          "L",
+          "lead",
+          "run_command",
+          "REPLY:PHONE-LONG HOLD_MS:30000",
+          "Context Files (0)",
+          "(drag, paste, or upload)"
+        ]
+      },
+      "reopenedAfterTurn": {
+        "copies": 2,
+        "tail": [
+          "Start. Marker WARMUP.",
+          "L",
+          "lead",
+          "REPLY:Start. Marker WARMUP.",
+          "You",
+          "PHONE-LONG HOLD_MS:30000",
+          "L",
+          "lead",
+          "run_command",
+          "REPLY:PHONE-LONG HOLD_MS:30000",
+          "Context Files (0)",
+          "(drag, paste, or upload)"
+        ]
+      },
+      "stored": [
+        {
+          "entry": "assistant:REPLY:Start. Marker WARMUP.",
+          "hasMessageId": false
+        },
+        {
+          "entry": "user:PHONE-LONG HOLD_MS:30000",
+          "hasMessageId": false
+        },
+        {
+          "entry": "tool_call:",
+          "hasMessageId": false
+        },
+        {
+          "entry": "assistant:REPLY:PHONE-LONG HOLD_MS:30000",
+          "hasMessageId": false
+        }
+      ]
+    }
+  ],
+  "proxy": {
+    "connections": 10
+  },
+  "error": null,
+  "cleanup": {
+    "serverExited": true,
+    "rootRemoved": true
+  },
+  "finishedAt": "2026-11-08T07:09:50.538Z"
+}
