@@ -11,7 +11,8 @@ import {
   type PeerRequestVerifier,
   type PeerSignedRequest,
 } from "../../node-access/domain/credential-verification.js";
-import { NODE_ACCESS_REFUSALS } from "../../node-access/domain/node-access-refusal.js";
+import { heldBackRefusal, NODE_ACCESS_REFUSALS } from "../../node-access/domain/node-access-refusal.js";
+import { NODE_IDENTITY_NOT_MIGRATED_TEXT, NodeIdentityNotMigratedError } from "../../remote-access/services/node-identity-service.js";
 
 /** A request is accepted within this many seconds of its timestamp, either way (NA-9). */
 export const PEER_SIGNATURE_WINDOW_SECONDS = 300;
@@ -121,7 +122,17 @@ export class PeerRequestSignatureVerifier implements PeerRequestVerifier {
     const nowMs = this.nowMs();
     const seconds = Number(timestamp);
     if (Math.abs(nowMs / 1000 - seconds) > PEER_SIGNATURE_WINDOW_SECONDS || seconds < this.startedAtSeconds) return invalid;
-    if (toNodeId !== await this.dependencies.ownNodeId()) return invalid;
+    let ownNodeId: string;
+    try {
+      ownNodeId = await this.dependencies.ownNodeId();
+    } catch (error) {
+      // A node whose identity waits for its migration answers peers with that reason (autobyteus-290 N-910).
+      if (error instanceof NodeIdentityNotMigratedError) {
+        return { ok: false, refusal: heldBackRefusal("NODE_IDENTITY_NOT_MIGRATED", NODE_IDENTITY_NOT_MIGRATED_TEXT) };
+      }
+      throw error;
+    }
+    if (toNodeId !== ownNodeId) return invalid;
 
     const secret = await this.dependencies.peerSecret(fromNodeId);
     if (!secret) return invalid;

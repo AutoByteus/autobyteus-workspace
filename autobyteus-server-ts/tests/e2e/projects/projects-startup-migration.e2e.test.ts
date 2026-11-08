@@ -5,6 +5,7 @@ import { createHash, randomUUID } from "node:crypto";
 import { spawn, type ChildProcess } from "node:child_process";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { afterEach, describe, expect, it } from "vitest";
+import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
 
 // Released Projects data upgraded by the registered STARTUP_ONLY migration `20261005_projects_per_folder_v1`
 // through both actual built startup entrypoints (Studio `dist/app.js`, standalone `dist/index.js`),
@@ -40,7 +41,7 @@ const start = (entry: string, args: string[] = []) => {
   );
   Object.assign(env, { HOME: path.join(root, "home"), DATABASE_URL: `file:${path.join(root, "db", "production.db")}`,
     AUTOBYTEUS_AGENT_PACKAGE_ROOTS: "", LMSTUDIO_HOSTS: "http://127.0.0.1:1" });
-  const child = spawn(process.execPath, [entry, ...args], { env, stdio: ["ignore", "pipe", "pipe"] });
+  const child = spawn(process.execPath, [entry, ...args], { env: { ...env, ...builtServerLaunchEnvironment() }, stdio: ["ignore", "pipe", "pipe"] });
   children.push(child); const index = logs.push("") - 1;
   const capture = (data: Buffer) => { logs[index] += data.toString(); };
   child.stdout!.on("data", capture); child.stderr!.on("data", capture);

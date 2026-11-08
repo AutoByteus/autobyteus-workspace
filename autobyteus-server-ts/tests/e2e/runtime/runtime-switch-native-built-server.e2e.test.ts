@@ -9,6 +9,7 @@ import { spawn, spawnSync, type ChildProcess } from "node:child_process";
 import WebSocket from "ws";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
+import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
 
 // Agent runtime switch to and from the NATIVE runtime and to Grok, the stopped-run settings, a failed attempt and a server
 // restart, on the BUILT server (autobyteus-316: REQ-001, REQ-002, REQ-010, REQ-011, REQ-013, REQ-014; AC-001, AC-002, AC-009,
@@ -223,7 +224,7 @@ describe.runIf(ENABLED)("agent runtime switch, native runtime and stopped-run se
   let serverEnv: NodeJS.ProcessEnv = {};
   const launchServer = async () => {
     logs = "";
-    child = spawn(process.execPath, [path.resolve("dist/app.js"), "--data-dir", root, "--host", "127.0.0.1", "--port", "0"], { env: serverEnv, stdio: ["ignore", "pipe", "pipe"] });
+    child = spawn(process.execPath, [path.resolve("dist/app.js"), "--data-dir", root, "--host", "127.0.0.1", "--port", "0"], { env: { ...serverEnv, ...builtServerLaunchEnvironment() }, stdio: ["ignore", "pipe", "pipe"] });
     child.stdout!.on("data", (data: Buffer) => { logs += data.toString(); });
     child.stderr!.on("data", (data: Buffer) => { logs += data.toString(); });
     await until(() => {

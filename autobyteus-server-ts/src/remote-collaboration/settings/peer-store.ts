@@ -26,7 +26,7 @@ const parsePeer = (value: unknown, label: string): StoredPeer => {
     baseUrl: requiredString(peer.baseUrl, `${label}.baseUrl`),
     addedAt: isoTimestamp(peer.addedAt, `${label}.addedAt`),
     // Rows written before peers paired have no secret: an unpaired peer (Directly Usable, no migration).
-    peerSecret: peer.peerSecret === undefined ? null : requiredString(peer.peerSecret, `${label}.peerSecret`),
+    peerSecret: peer.peerSecret === undefined || peer.peerSecret === null ? null : requiredString(peer.peerSecret, `${label}.peerSecret`),
   };
 };
 

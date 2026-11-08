@@ -10,6 +10,7 @@ import { randomUUID } from "node:crypto";
 import WebSocket from "ws";
 import { expect } from "vitest";
 import { sendE2eSendMessageCommand } from "./websocket-command-helpers.js";
+import { builtServerLaunchEnvironment } from "./built-server-launch-credential.js";
 
 export type Attachment = { storedFilename: string; displayName: string; locator: string; phase: string };
 export type Event = { type: string; payload: Record<string, any> };
@@ -117,7 +118,7 @@ export class ContextFileProcessFixture {
         await startServer();`);
     }
     this.child = spawn(process.execPath, [entry, "--data-dir", this.root, "--host", "127.0.0.1", "--port", "0"],
-      { cwd: process.cwd(), env, stdio: ["ignore", "pipe", "pipe"] });
+      { cwd: process.cwd(), env: { ...env, ...builtServerLaunchEnvironment() }, stdio: ["ignore", "pipe", "pipe"] });
     const capture = (data: Buffer) => { this.logs += data.toString(); };
     this.child.stdout!.on("data", capture); this.child.stderr!.on("data", capture);
     await until(() => {

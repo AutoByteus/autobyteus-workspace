@@ -21,20 +21,20 @@ export type NodeAccess = Readonly<{
   setupCodes: SetupCodeService;
   mcpGatewayTokens: McpGatewayTokenService;
   mcpGatewayAccess: McpGatewayAccessGate;
-  /** Opens the local control socket and starts the admission refresh. */
-  start(): Promise<void>;
+  /** Closes the local control socket and stops the admission refresh. */
   close(): Promise<void>;
 }>;
 
 /**
- * Builds the node's access model (node access model §2, design DS-001): the credential verifier of each area (owner,
- * phone, memory sync source, peer) behind one resolver, network admission, the gate with its open-socket registry
- * subscribed to every area's revocations, setup codes with the local control socket, and the MCP gateway's token.
+ * Builds and starts the node's access model (node access model §2, design DS-001): the credential verifier of each
+ * area (owner, phone, memory sync source, peer) behind one resolver, network admission, the gate with its open-socket
+ * registry subscribed to every area's revocations, setup codes with the local control socket, and the MCP gateway's
+ * token. Started: the admission refresh runs and the local control socket listens; a failed start closes both.
  */
-export const composeNodeAccess = (input: Readonly<{
+export const startNodeAccess = async (input: Readonly<{
   appDataDir: string;
   remoteCollaboration: Pick<RemoteCollaborationServices, "peers" | "peerRequestVerifier">;
-}>): NodeAccess => {
+}>): Promise<NodeAccess> => {
   const config = { getAppDataDir: () => input.appDataDir };
   const ownerCredentials = new OwnerCredentialService(new OwnerCredentialStore(config), launchCredential());
   const phoneCredentials = new PhoneCredentialVerifier();
@@ -53,19 +53,23 @@ export const composeNodeAccess = (input: Readonly<{
   const setupCodes = new SetupCodeService(ownerCredentials);
   const localControlSocket = new LocalControlSocket(input.appDataDir, setupCodes);
   const mcpGatewayTokens = new McpGatewayTokenService(config);
+  const close = async (): Promise<void> => {
+    admission.stop();
+    await localControlSocket.close();
+  };
+  try {
+    admission.start();
+    await localControlSocket.start();
+  } catch (error) {
+    await close();
+    throw error;
+  }
   return Object.freeze({
     gate,
     ownerCredentials,
     setupCodes,
     mcpGatewayTokens,
     mcpGatewayAccess: new McpGatewayAccessGate(admission, mcpGatewayTokens),
-    start: async () => {
-      admission.start();
-      await localControlSocket.start();
-    },
-    close: async () => {
-      admission.stop();
-      await localControlSocket.close();
-    },
+    close,
   });
 };

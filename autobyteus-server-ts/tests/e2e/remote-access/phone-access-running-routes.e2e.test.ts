@@ -380,7 +380,7 @@ describe("Phone Access running REST route behavior", () => {
       remoteAddress: "192.168.1.30",
       payload: { pairingCode: discarded.payload.pairingCode, deviceName: "Phone" },
     });
-    expect(discardedExchange.statusCode).toBe(400);
+    expect(discardedExchange.statusCode).toBe(401);
     expect(discardedExchange.json()).toMatchObject({ code: "REMOTE_ACCESS_PAIRING_INVALID" });
 
     const used = await createPairingSession("http://192.168.1.25:29695", true, "local_network");
@@ -393,7 +393,7 @@ describe("Phone Access running REST route behavior", () => {
       remoteAddress: "192.168.1.30",
       payload: { pairingCode: used.payload.pairingCode, deviceName: "Phone" },
     });
-    expect(secondUse.statusCode).toBe(400);
+    expect(secondUse.statusCode).toBe(401);
     expect(secondUse.json()).toMatchObject({ code: "REMOTE_ACCESS_PAIRING_CONSUMED" });
 
     const devices = await inject({ method: "GET", url: "/rest/remote-access/devices", remoteAddress: "100.64.1.2" });

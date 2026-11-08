@@ -10,6 +10,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import WebSocket from "ws";
 import { afterEach, describe, expect, it } from "vitest";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
+import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
 
 // The retired built-in Project Task Manager through both actual built startup entrypoints (Studio
 // `dist/app.js`, standalone host `dist/index.js`): the registered STARTUP_ONLY migration
@@ -124,7 +125,7 @@ const startProvider = async () => {
 const studio = async () => {
   await fs.access(path.resolve("dist/app.js"));
   const child = spawn(process.execPath, [path.resolve("dist/app.js"), "--data-dir", root, "--host", "127.0.0.1", "--port", "0"],
-    { env: environment(), stdio: ["ignore", "pipe", "pipe"] });
+    { env: { ...environment(), ...builtServerLaunchEnvironment() }, stdio: ["ignore", "pipe", "pipe"] });
   children.push(child);
   const index = logs.push("") - 1;
   const capture = (data: Buffer) => { logs[index] += data.toString(); };

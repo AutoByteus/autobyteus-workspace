@@ -16,16 +16,27 @@ export type NodeAccessRefusalCode =
   /** An owner credential or a memory sync source credential was revoked while its socket was open. */
   | "NODE_CREDENTIAL_REVOKED"
   /** The peer was removed while its socket was open. */
-  | "PEER_UNPAIRED";
+  | "PEER_UNPAIRED"
+  | HeldBackRefusalCode;
+
+/**
+ * A credential that cannot be checked yet: the data it is checked against waits for its data migration (autobyteus-290
+ * hold-back). The node answers 503 with the subsystem's code and text, as its routes did before the gate checked it.
+ */
+export type HeldBackRefusalCode = "NODE_IDENTITY_NOT_MIGRATED" | "MEMORY_SYNC_NOT_MIGRATED";
 
 export type NodeAccessRefusal = Readonly<{
-  statusCode: 401 | 403;
+  statusCode: 401 | 403 | 503;
   code: NodeAccessRefusalCode;
   message: string;
 }>;
 
 const refusal = (statusCode: 401 | 403, code: NodeAccessRefusalCode, message: string): NodeAccessRefusal =>
   Object.freeze({ statusCode, code, message });
+
+/** The refusal of a credential that cannot be checked until its subsystem's data migration ran; `message` is its text. */
+export const heldBackRefusal = (code: HeldBackRefusalCode, message: string): NodeAccessRefusal =>
+  Object.freeze({ statusCode: 503, code, message });
 
 export const NODE_ACCESS_REFUSALS = Object.freeze({
   networkRefused: refusal(403, "NODE_NETWORK_REFUSED", "This node does not accept connections from your network."),

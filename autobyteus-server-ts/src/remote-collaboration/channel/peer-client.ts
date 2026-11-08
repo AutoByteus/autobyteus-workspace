@@ -351,6 +351,7 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe, PeerPair
     }
     const secret = await this.dependencies.peers.peerSecret(peer.nodeId);
     const notPaired = () => refusal(REMOTE_REFUSAL.PEER_NOT_PAIRED, peerRefusalText(peer.name, REMOTE_REFUSAL.PEER_NOT_PAIRED, ""));
+    const identityMismatch = () => refusal(REMOTE_REFUSAL.PEER_IDENTITY_MISMATCH, peerRefusalText(peer.name, REMOTE_REFUSAL.PEER_IDENTITY_MISMATCH, ""));
     if (!secret) return notPaired();
     let answer: PeerAnswer;
     try {
@@ -367,23 +368,27 @@ export class PeerClient implements RemoteRunChannel, PeerIdentityProbe, PeerPair
       if (await isNodeIdentityPendingAnswer(response)) {
         return refusal(REMOTE_REFUSAL.NODE_IDENTITY_NOT_MIGRATED, peerRefusalText(peer.name, REMOTE_REFUSAL.NODE_IDENTITY_NOT_MIGRATED, ""));
       }
-      // The peer's gate does not accept this node's signature: it has no secret for this node (unpaired there).
-      if (response.status === 401) return notPaired();
+      // The gate there does not accept this node's signature: either the peer has no secret for this node (unpaired
+      // there), or the address now reaches another node, whose gate refuses a request signed for the peer (NA-9).
+      if (response.status === 401) return await this.answersAs(peer) ? notPaired() : identityMismatch();
       if (!response.ok) return unreachable(`it answered HTTP ${response.status}`);
       answer = await response.json() as PeerAnswer;
     } catch (error) {
       const reason = transportFailureReason(error);
       return unreachable(reason === "timeout" ? `it ${timeoutText}` : messageOf(error), reason);
     }
-    if (!answer || typeof answer !== "object" || answer.nodeId !== peer.nodeId) {
-      return refusal(REMOTE_REFUSAL.PEER_IDENTITY_MISMATCH, peerRefusalText(peer.name, REMOTE_REFUSAL.PEER_IDENTITY_MISMATCH, ""));
-    }
+    if (!answer || typeof answer !== "object" || answer.nodeId !== peer.nodeId) return identityMismatch();
     if (answer.accepted !== true) {
       const code = typeof answer.code === "string" ? answer.code : REMOTE_REFUSAL.BAD_REQUEST;
       return refusal(code, peerRefusalText(peer.name, code, typeof answer.message === "string" ? answer.message : "no reason given",
         refusalTargetOf(answer.target), refusalRoutingOf(answer)));
     }
     return accepted(answer, peer);
+  }
+
+  /** Whether the peer's address still answers with the peer's node ID (its exempt status route). */
+  private async answersAs(peer: PeerNode): Promise<boolean> {
+    return this.fetchNodeId(peer.baseUrl).then((nodeId) => nodeId === peer.nodeId, () => true);
   }
 
   private fetchJson(url: string, init: RequestInit, timeoutMs: number = this.dependencies.timeoutMs ?? PEER_REQUEST_TIMEOUT_MS) {

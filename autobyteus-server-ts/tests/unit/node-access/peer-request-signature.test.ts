@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { NodeIdentityNotMigratedError } from "../../../src/remote-access/services/node-identity-service.js";
 import {
   PeerRequestSignatureVerifier,
   signPeerRequest,
@@ -58,6 +59,15 @@ describe("peer request signature", () => {
 
   it("NAS-36 a request captured from A to B is refused by A (the receiver it names is B)", async () => {
     await expect(verifierOn(A).verify(signedRequest({ from: A, to: B }))).resolves.toMatchObject({ ok: false });
+  });
+
+  it("a node whose identity waits for its data migration answers 503 NODE_IDENTITY_NOT_MIGRATED (autobyteus-290 N-910)", async () => {
+    const verifier = new PeerRequestSignatureVerifier({
+      ownNodeId: async () => { throw new NodeIdentityNotMigratedError(); },
+      peerSecret: async () => SECRET,
+      now: () => T,
+    });
+    await expect(verifier.verify(signedRequest())).resolves.toMatchObject({ ok: false, refusal: { statusCode: 503, code: "NODE_IDENTITY_NOT_MIGRATED" } });
   });
 
   it("NAS-23 a peer without a secret on this node is refused", async () => {

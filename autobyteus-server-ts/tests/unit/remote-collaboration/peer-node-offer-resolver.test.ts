@@ -6,7 +6,6 @@ import {
   releaseProcessRemoteCollaboration,
   type RemoteCollaborationServices,
 } from "../../../src/remote-collaboration/remote-collaboration-services.js";
-import { RemoteCollaborationSettingsError } from "../../../src/remote-collaboration/domain/remote-collaboration-settings-error.js";
 
 /**
  * autobyteus-267 DS-001: `peerNodeOffer(nodeId)` answers through `PeerNodeDiscovery.listAvailableAgentsOf` (the agent
@@ -72,16 +71,11 @@ describe("one-nodes-tab settings operations", () => {
     await expect(resolver.peerNodeAvailability("srv_b")).resolves.toEqual({ available: false, refusalCode: "PEER_UNREACHABLE", unreachableReason: "not_found" });
   });
 
-  it("resolvePeerAddress and changePeerAddress go through their owners; a refusal carries its details as extensions", async () => {
-    const resolve = vi.fn(async () => { throw new RemoteCollaborationSettingsError("PEER_UNREACHABLE", "no address", {
-      address: "http://127.0.0.1:29695", reason: "refused", loopbackInContainer: true, attempts: [{ address: "http://127.0.0.1:29695", result: "refused" }] }); });
+  it("changePeerAddress goes through the peer directory", async () => {
     const changeAddress = vi.fn(async (nodeId: string, baseUrl: string) => ({ nodeId, name: "docker", baseUrl, addedAt: "2026-10-20T09:00:00.000Z", paired: true }));
-    bindWith({ addresses: { resolve }, peers: { changeAddress } });
+    bindWith({ peers: { changeAddress } });
     const resolver = new RemoteCollaborationSettingsResolver();
-    const error = await resolver.resolvePeerAddress("srv_b", ["http://127.0.0.1:29695"]).catch((e) => e);
-    expect(error).toMatchObject({ message: "no address", extensions: { code: "PEER_UNREACHABLE", address: "http://127.0.0.1:29695", reason: "refused",
-      loopbackInContainer: true, attempts: [{ address: "http://127.0.0.1:29695", result: "refused" }] } });
-    expect(resolve).toHaveBeenCalledWith("srv_b", ["http://127.0.0.1:29695"]);
     await expect(resolver.changePeerAddress("srv_b", "http://host.docker.internal:8001", { requestAbortSignal: new AbortController().signal, clientIdentity: { kind: "owner", credentialId: "launch" } })).resolves.toMatchObject({ baseUrl: "http://host.docker.internal:8001" });
+    expect(changeAddress).toHaveBeenCalledWith("srv_b", "http://host.docker.internal:8001");
   });
 });

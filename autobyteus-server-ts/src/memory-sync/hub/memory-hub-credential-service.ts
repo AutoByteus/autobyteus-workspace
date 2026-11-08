@@ -11,7 +11,8 @@ import type {
   ClientRevocationSource,
   CredentialVerification,
 } from "../../node-access/domain/credential-verification.js";
-import { NODE_ACCESS_REFUSALS } from "../../node-access/domain/node-access-refusal.js";
+import { heldBackRefusal, NODE_ACCESS_REFUSALS } from "../../node-access/domain/node-access-refusal.js";
+import { MEMORY_SYNC_NOT_MIGRATED_TEXT, MemorySyncNotMigratedError } from "../shared/memory-sync-capability.js";
 import { normalizeMemorySyncSourceId } from "../shared/memory-sync-source-id.js";
 import type {
   MemoryHubSourceCredentialRecord,
@@ -129,7 +130,17 @@ export class MemoryHubCredentialService implements BearerCredentialVerifier, Cli
   /** The gate's check of a source's credential: an existing, unrevoked `mhub_` credential, from memory. */
   async verify(credential: string): Promise<CredentialVerification> {
     const hash = hashSecret(credential);
-    const record = (await this.loadedRecords()).find((candidate) => hashesEqual(candidate.credentialHash, hash));
+    let records: MemoryHubSourceCredentialRecord[];
+    try {
+      records = await this.loadedRecords();
+    } catch (error) {
+      // The credentials wait for their data migration: the source is told so (autobyteus-290), as ingestion did.
+      if (error instanceof MemorySyncNotMigratedError) {
+        return { ok: false, refusal: heldBackRefusal("MEMORY_SYNC_NOT_MIGRATED", MEMORY_SYNC_NOT_MIGRATED_TEXT) };
+      }
+      throw error;
+    }
+    const record = records.find((candidate) => hashesEqual(candidate.credentialHash, hash));
     if (!record) {
       return { ok: false, refusal: NODE_ACCESS_REFUSALS.credentialInvalid };
     }

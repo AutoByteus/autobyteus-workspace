@@ -87,9 +87,9 @@ describe('MobilePairingBootstrap', () => {
   });
 
   it.each([
-    [400, 'REMOTE_ACCESS_PAIRING_CONSUMED', 'This code was already used. Make a new one on your computer.'],
-    [400, 'REMOTE_ACCESS_PAIRING_EXPIRED', 'This code has expired. Make a new one on your computer.'],
-    [400, 'REMOTE_ACCESS_PAIRING_INVALID', 'This code has expired. Make a new one on your computer.'],
+    [401, 'REMOTE_ACCESS_PAIRING_CONSUMED', 'This code was already used. Make a new one on your computer.'],
+    [401, 'REMOTE_ACCESS_PAIRING_EXPIRED', 'This code has expired. Make a new one on your computer.'],
+    [401, 'REMOTE_ACCESS_PAIRING_INVALID', 'This code has expired. Make a new one on your computer.'],
   ])('in the app, a refused code (%s %s) shows the reason, Scan again and the way back; nothing is reported paired', async (status, code, reason) => {
     openWith(`?pairing=${pairingParam}`);
     const posted = installShell();

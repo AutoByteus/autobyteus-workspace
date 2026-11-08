@@ -1,9 +1,9 @@
 /**
  * A peer address whose node refuses the host name it is addressed by (autobyteus-426 REQ-020, AC-020 (1)).
  *
- * Purpose: `addPeerNode` at a name the peer's Host gate refuses reports `PEER_HOST_REFUSED` with the host, and the
- * address resolution the Nodes page's connect flow asks for records the attempt as `host_refused`, through the real
- * GraphQL API, the real probe over HTTP and the real Host gate (not "not an AutoByteus node").
+ * Purpose: a peer invite (autobyteus-437) whose address is a name the peer's Host gate refuses records that address as
+ * `host_refused` among the attempts the pairing reports, through the real GraphQL API, the real probe over HTTP and
+ * the real Host gate (not "not an AutoByteus node"); the same node at its IP address passes the Host gate.
  * Setup: one in-process studio server on a test-owned data folder; it is its own "peer", addressed as `lvh.me` (a
  * public name that resolves to 127.0.0.1, the 416 API-04 case). The Host gate refuses it before any identity check.
  * Prerequisite: `lvh.me` resolves to a loopback address (public DNS); otherwise the case is skipped with that reason.
@@ -56,32 +56,23 @@ describe.skipIf(!resolvesToLoopback)(`A peer address at a host name its node ref
     if (dataDir) fs.rmSync(dataDir, { recursive: true, force: true });
   });
 
-  it("addPeerNode reports PEER_HOST_REFUSED with the refused host; an IP address of the same node is not refused", async () => {
-    const port = server.mainUrl.port;
-    const baseUrl = `http://${REFUSED_NAME}:${port}`;
-    const refused = await graphql(`
-      mutation Add($input: AddPeerNodeInput!) { addPeerNode(input: $input) { nodeId } }
-    `, { input: { nodeId: "srv_peer_node_000000000000000000000000", name: "office", baseUrl } });
-
-    expect(refused.data).toBeNull();
-    expect(refused.errors?.[0]?.extensions).toMatchObject({ code: "PEER_HOST_REFUSED", host: REFUSED_NAME, address: baseUrl });
-    expect(refused.errors?.[0]?.message).toBe(`${baseUrl} refuses the name ${REFUSED_NAME}; add it to AUTOBYTEUS_ALLOWED_HOSTS on that node.`);
-
-    // The same node at its IP address passes the Host gate: the probe then reaches the identity check.
-    const byIp = await graphql(`
-      mutation Add($input: AddPeerNodeInput!) { addPeerNode(input: $input) { nodeId } }
-    `, { input: { nodeId: "srv_peer_node_000000000000000000000000", name: "office", baseUrl: `http://127.0.0.1:${port}` } });
-    expect(byIp.errors?.[0]?.extensions?.code).not.toBe("PEER_HOST_REFUSED");
-  });
-
-  it("the address resolution records a refused name as host_refused among its attempts", async () => {
+  it("pairing with an invite at a refused name records host_refused; the same node at its IP address passes the Host gate", async () => {
     const port = server.mainUrl.port;
     const refusedUrl = `http://${REFUSED_NAME}:${port}`;
+    const byIpUrl = `http://127.0.0.1:${port}`;
+    // An invite of another node (its node ID is not this node's) offering the refused name first, then the IP address.
+    const invite = { nodeId: "srv_peer_node_000000000000000000000000", addressCandidates: [refusedUrl, byIpUrl], inviteCode: "unused" };
+    const inviteText = `abpi_${Buffer.from(JSON.stringify(invite)).toString("base64url")}`;
     const answer = await graphql(`
-      query Resolve($nodeId: String!, $baseUrls: [String!]!) { resolvePeerAddress(nodeId: $nodeId, baseUrls: $baseUrls) }
-    `, { nodeId: "srv_peer_node_000000000000000000000000", baseUrls: [refusedUrl] });
+      mutation Accept($inviteText: String!, $name: String!) { acceptPeerInvite(inviteText: $inviteText, name: $name) { nodeId } }
+    `, { inviteText, name: "office" });
 
     expect(answer.data).toBeNull();
-    expect(answer.errors?.[0]?.extensions?.attempts).toEqual([{ address: refusedUrl, result: "host_refused" }]);
+    expect(answer.errors?.[0]?.extensions).toMatchObject({ code: "PEER_UNREACHABLE", address: refusedUrl });
+    // The IP address reached this node's identity: a different node than the invite's, not a Host refusal.
+    expect(answer.errors?.[0]?.extensions?.attempts).toEqual([
+      { address: refusedUrl, result: "host_refused" },
+      { address: byIpUrl, result: "different_node" },
+    ]);
   });
 });

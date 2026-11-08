@@ -9,7 +9,7 @@ export const MEMORY_SYNC_NOT_MIGRATED_TEXT = "Memory Sync is waiting for its dat
  */
 export class MemorySyncNotMigratedError extends Error {
   readonly code = MEMORY_SYNC_NOT_MIGRATED;
-  /** The HTTP status when it ends a request: also when the node's request gate checks a source's credential. */
+  /** The HTTP status when it ends a request. */
   readonly statusCode = 503;
 
   constructor() {

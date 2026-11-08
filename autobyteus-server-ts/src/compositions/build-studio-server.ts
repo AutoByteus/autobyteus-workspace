@@ -17,7 +17,7 @@ import { SERVER_ROUTE_PARAM_MAX_LENGTH } from "../api/fastify-runtime-config.js"
 import { registerMcpGatewayRoutes } from "../mcp-gateway/mcp-gateway-routes.js";
 import { registerRemoteAccessHostGate } from "../api/security/remote-access-host-gate.js";
 import { registerNodeAccessPlugin } from "../api/security/node-access-plugin.js";
-import { composeNodeAccess, type NodeAccess } from "./node-access-composition.js";
+import { startNodeAccess, type NodeAccess } from "./node-access-composition.js";
 import { registerMobileWebStaticRoutes } from "../api/static/mobile-web.js";
 import { registerRestRoutes } from "../api/rest/index.js";
 import { registerWebsocketRoutes } from "../api/websocket/index.js";
@@ -390,12 +390,7 @@ export const buildStudioServer = async (input: {
     });
     releaseRemoteCollaboration = remoteCollaboration.release;
     // autobyteus-437: the node access gate (every request needs a credential) and its credential services.
-    const currentNodeAccess = composeNodeAccess({
-      appDataDir: input.appConfig.getAppDataDir(),
-      remoteCollaboration: remoteCollaboration.services,
-    });
-    nodeAccess = currentNodeAccess;
-    await currentNodeAccess.start();
+    const currentNodeAccess = nodeAccess = await startNodeAccess({ appDataDir: input.appConfig.getAppDataDir(), remoteCollaboration: remoteCollaboration.services });
     const restartResume = composeRestartResume({ appDataDir: input.appConfig.getAppDataDir(), rootResolver,
       orgHistory: generalProcessRunSupervisor.agentOrgRunHistoryCatalogService });
     const applicationServices = createStudioApplicationServices({

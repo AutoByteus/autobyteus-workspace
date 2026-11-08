@@ -5,6 +5,8 @@ import net from "node:net";
 import os from "node:os";
 import path from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
+import { pairNodes } from "../helpers/pair-nodes.js";
 
 /**
  * autobyteus-290 (node vocabulary): a node upgraded over its released data, between two real built server processes.
@@ -84,7 +86,7 @@ const start = async (node: Node) => {
   const env: NodeJS.ProcessEnv = { PATH: process.env.PATH, HOME: process.env.HOME, TMPDIR: process.env.TMPDIR,
     AUTOBYTEUS_SERVER_HOST: node.baseUrl, APP_ENV: "test", LOG_LEVEL: "WARN", HTTP_ACCESS_LOG_MODE: "off" };
   const child = spawn(process.execPath, [appEntry, "--host", "127.0.0.1", "--port", String(node.port), "--data-dir", node.dataDir],
-    { cwd: serverRoot, env, stdio: ["ignore", "pipe", "pipe"] });
+    { cwd: serverRoot, env: { ...env, ...builtServerLaunchEnvironment() }, stdio: ["ignore", "pipe", "pipe"] });
   const collect = (chunk: Buffer) => node.logs.push(...chunk.toString("utf-8").split(/\r?\n/).filter(Boolean));
   child.stdout.on("data", collect);
   child.stderr.on("data", collect);
@@ -184,6 +186,8 @@ describe("autobyteus-290 stored names: a node upgraded over its released data", 
   let root = "";
   let alpha: Node;
   let beta: Node;
+  /** Alpha's Memory Sync source credential on beta's hub (autobyteus-437: the gate checks it on every hub route). */
+  let hubToken = "";
   const ids: Json = {};
   const released: Json = {};
 
@@ -198,9 +202,8 @@ describe("autobyteus-290 stored names: a node upgraded over its released data", 
     ids.alpha = (await status(alpha)).body.nodeId;
     ids.beta = (await status(beta)).body.nodeId;
     for (const node of [alpha, beta]) await gql(node, `mutation{ setRemoteCollaborationEnabled(enabled:true){ enabled } }`);
-    const add = `mutation($i:AddPeerNodeInput!){ addPeerNode(input:$i){ nodeId } }`;
-    await gql(alpha, add, { i: { nodeId: ids.beta, name: "beta-node", baseUrl: beta.baseUrl } });
-    await gql(beta, add, { i: { nodeId: ids.alpha, name: "alpha-node", baseUrl: alpha.baseUrl } });
+    await pairNodes({ inviter: (query, variables) => gql(beta, query, variables), accepter: (query, variables) => gql(alpha, query, variables),
+      inviterName: "beta-node", accepterName: "alpha-node" });
     expect((await offer(alpha, ids.beta)).entries, "paired before the upgrade").not.toBeNull();
 
     // Alpha syncs its memory to beta (Memory Sync source → hub), as the Memory Sync card does.
@@ -213,6 +216,7 @@ describe("autobyteus-290 stored names: a node upgraded over its released data", 
     await gql(alpha, `mutation($i:UpdateMemorySyncSourceConfigInput!){ updateMemorySyncSourceConfig(input:$i){ source{ memorySyncSourceId } } }`,
       { i: { enabled: true, memorySyncSourceId: SOURCE_ID, displayName: "Alpha", hubBaseUrl: beta.baseUrl,
         hubToken: hub.updateMemoryHubConfig.oneTimePlaintextToken, backgroundEnabled: false, batchSize: 25 } });
+    hubToken = hub.updateMemoryHubConfig.oneTimePlaintextToken;
     expect(await sync(alpha), "synced before the upgrade").toMatchObject({ committedBatches: 1 });
 
     // A released build's data: the released names on disk, and no record of the two migrations.
@@ -349,7 +353,9 @@ describe("autobyteus-290 stored names: a node upgraded over its released data", 
     forgetMigrations(beta, [MEMORY_SYNC_MIGRATION]);
     await start(beta);
 
-    const ingest = await fetch(`${beta.baseUrl}/rest/memory-sync/v1/batches`, { method: "POST", headers: { "content-type": "application/json" }, body: "{}" });
+    // The source's credential cannot be checked while the credentials wait: the gate answers with the reason.
+    const ingest = await fetch(`${beta.baseUrl}/rest/memory-sync/v1/batches`, { method: "POST",
+      headers: { "content-type": "application/json", authorization: `Bearer ${hubToken}` }, body: "{}" });
     expect(ingest.status).toBe(503);
     expect(await ingest.json()).toMatchObject({ error: "MEMORY_SYNC_NOT_MIGRATED" });
     const read = await gqlRaw(beta, `{ getMemorySyncStatus { hub { enabled } } }`);

@@ -18,6 +18,7 @@ import {
   writeFeatureDataRoot,
   writeRun,
 } from "../../fixtures/app-data-migrations/skill-improvement-data-fixtures.js";
+import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
 
 // The removed Skill Improvement feature's data through the actual built Studio startup (`dist/app.js`): the
 // retired settings at config initialization, the registered startup migration
@@ -76,7 +77,7 @@ const setupRoot = async (envLines: readonly string[]) => {
 const studio = async () => {
   await fs.access(path.resolve("dist/app.js"));
   const child = spawn(process.execPath, [path.resolve("dist/app.js"), "--data-dir", root, "--host", "127.0.0.1", "--port", "0"],
-    { env: environment(), stdio: ["ignore", "pipe", "pipe"] });
+    { env: { ...environment(), ...builtServerLaunchEnvironment() }, stdio: ["ignore", "pipe", "pipe"] });
   children.push(child);
   const index = logs.push("") - 1;
   const capture = (data: Buffer) => { logs[index] += data.toString(); };

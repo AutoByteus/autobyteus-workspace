@@ -11,6 +11,7 @@ import { until } from "../helpers/agy-runtime-error-fixture.js";
 import { calledResults, callTool, objectsIn, segment, startCollaborationHarness, taskAgentsIn, toolResult,
   type CollaborationHarness, type Rec } from "../helpers/collaboration-root-harness.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
+import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
 
 // delegated-copy-project-workspace (autobyteus-97): a new local copy runs in its Task's Project's first linked folder.
 // Real Studio HTTP/WebSocket/GraphQL server, scoped MCP agent tools, Project/Task services, AGY backend. The external AGY CLI
@@ -248,7 +249,7 @@ suite("Copies keep their folders across a real process restart (built server, sc
       USER: process.env.USER ?? "tester", DATABASE_URL: `file:${path.join(root, "db", "production.db")}`, ANTIGRAVITY_CLI_COMMAND: cli,
       AGY_FAKE_CASE: "linked_skills", AGY_FAKE_ARGV_LOG: argvLog, AUTOBYTEUS_AGENT_PACKAGE_ROOTS: "", LMSTUDIO_HOSTS: "http://127.0.0.1:1" };
     const child = spawn(process.execPath, [path.join(serverDir, "dist", "app.js"), "--data-dir", root, "--host", "127.0.0.1", "--port", "0"],
-      { cwd: serverDir, env, stdio: ["ignore", "pipe", "pipe"] });
+      { cwd: serverDir, env: { ...env, ...builtServerLaunchEnvironment() }, stdio: ["ignore", "pipe", "pipe"] });
     let output = "";
     child.stdout!.on("data", (chunk) => { output += String(chunk); });
     child.stderr!.on("data", (chunk) => { output += String(chunk); });

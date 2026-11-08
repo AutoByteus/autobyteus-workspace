@@ -64,6 +64,13 @@ describe("PeerClient", () => {
     await expect(f.client.checkAvailability(PEER.nodeId)).resolves.toMatchObject({ accepted: false, code: "PEER_NOT_PAIRED" });
   });
 
+  it("NAS-36 reads a 401 from another node now at the peer's address as an identity mismatch, not as unpaired", async () => {
+    const f = client(async (url) => url.endsWith("/rest/remote-access/status")
+      ? answer({ nodeId: "srv_other_node_00000000000000000000000", status: "ok" })
+      : ({ ok: false, status: 401, json: async () => ({ code: "NODE_CREDENTIAL_INVALID" }) }) as never);
+    await expect(f.client.checkAvailability(PEER.nodeId)).resolves.toMatchObject({ accepted: false, code: "PEER_IDENTITY_MISMATCH" });
+  });
+
   it("autobyteus-247 G-7: reads a started Team (its coordinator and members); an answer without the run it started is unreachable", async () => {
     const members = [{ address: "/studio/lead", agentRunId: "lead_1" }, { address: "/studio/writer", agentRunId: "writer_1" }];
     const team = client(async () => answer({ accepted: true, nodeId: PEER.nodeId, kind: "agent_team", teamRunId: "team_1", coordinatorAddress: "/studio/lead", members, launches: [] }));

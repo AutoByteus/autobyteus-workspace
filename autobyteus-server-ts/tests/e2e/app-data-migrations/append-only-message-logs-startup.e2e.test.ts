@@ -18,6 +18,7 @@ import { MESSAGE_LOG_ROTATION_LIMIT_BYTES } from "../../../src/run-history/store
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
 import { HUB_MESSAGES, ORG_MESSAGES, T0, TEAM_RUN_MESSAGES, writeReleasedDataRoot } from "../../fixtures/app-data-migrations/released-task-agent-layout-fixtures.js";
 import { readRootMessages, agentRunIdsOfViewTree } from "../../helpers/collaboration-participant-messages.js";
+import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
 
 // The startup migration `20261018_append_only_message_logs_v1` through the BUILT Studio server (`dist/app.js`, the server the
 // desktop app embeds) on a faithful upgrade, with the real migration runner, its SQLite ledger and the production registry order.
@@ -66,7 +67,7 @@ const studio = async (root: string) => {
   const env: NodeJS.ProcessEnv = Object.fromEntries(["PATH", "USER", "LANG", "TMPDIR", "SHELL"].flatMap((key) => process.env[key] === undefined ? [] : [[key, process.env[key]]]));
   Object.assign(env, { HOME: path.join(root, "home"), DATABASE_URL: `file:${path.join(root, "db", "production.db")}`,
     ANTIGRAVITY_CLI_COMMAND: AGY_CLI, AGY_FAKE_CASE: "linked_skills" });
-  const child = spawn(process.execPath, [path.resolve("dist/app.js"), "--data-dir", root, "--host", "127.0.0.1", "--port", "0"], { env, stdio: ["ignore", "pipe", "pipe"] });
+  const child = spawn(process.execPath, [path.resolve("dist/app.js"), "--data-dir", root, "--host", "127.0.0.1", "--port", "0"], { env: { ...env, ...builtServerLaunchEnvironment() }, stdio: ["ignore", "pipe", "pipe"] });
   children.push(child);
   const index = logs.push("") - 1;
   const capture = (data: Buffer) => { logs[index] += data.toString(); };
