@@ -33,7 +33,9 @@ const createRequestAbortSignal = (request: FastifyRequest, reply: FastifyReply):
     cleanup();
   };
 
-  if (request.raw.aborted || request.raw.destroyed || reply.raw.destroyed) {
+  // An abort is the client going away: the request aborted, or the response closed before it finished. A request
+  // whose body was read (its stream ended and was destroyed by a body hook, autobyteus-437) is not an abort.
+  if (request.raw.aborted || reply.raw.destroyed) {
     abort();
     return abortController.signal;
   }
