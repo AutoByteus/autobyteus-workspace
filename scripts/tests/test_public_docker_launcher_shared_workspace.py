@@ -284,6 +284,22 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
             self.assertNotEqual(0, refused.returncode)
             self.assertIn("--allow-local-network applies only to new-container", refused.stderr)
 
+    def test_allow_local_network_is_kept_when_upgrade_all_recreates_the_node(self) -> None:
+        # autobyteus-437 API/E2E: a node created with --allow-local-network keeps publishing on every address when a plain
+        # `upgrade --all` recreates it for a new image; a node created without it keeps this computer and Tailscale only.
+        with fake_docker_environment(controlled_busy_ports=()) as env:
+            env["FAKE_TAILSCALE_IP"] = "100.88.1.2"
+            run_launcher(env, "new-container", "--allow-local-network", "--image", "autobyteus/test", "--tag", "v1")
+            run_launcher(env, "new-container", "--image", "autobyteus/test", "--tag", "v1")
+            created = len(read_run_arg_records(env))
+            run_launcher(env, "upgrade", "--all", "--image", "autobyteus/test", "--tag", "v2")
+            recreated = read_run_arg_records(env)[created:]
+            published = {record[record.index("--name") + 1]: published_ports(record) for record in recreated}
+            self.assertEqual(["8001:8000"], published["autobyteus-server-0"])
+            self.assertEqual(["127.0.0.1:8002:8000", "100.88.1.2:8002:8000"], published["autobyteus-server-1"])
+            state = state_path(env, "autobyteus-server-0").read_text(encoding="utf-8")
+            self.assertEqual("1", read_state_value(state, "ALLOW_LOCAL_NETWORK"))
+
     def test_nas_03_nas_32_setup_code_prints_a_code_from_the_node_and_writes_it_nowhere(self) -> None:
         with fake_docker_environment(controlled_busy_ports=()) as env:
             created = run_launcher(env, "new-container", "--image", "autobyteus/test", "--tag", "v1")

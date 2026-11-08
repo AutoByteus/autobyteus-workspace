@@ -11,9 +11,11 @@
 //   so page, API and streams share the node's origin as on a real phone. It pairs through Phone Access with a private
 //   network URL (`http://192.168.77.10:<alpha port>`; the node refuses loopback pairing URLs); the probe's browser routes
 //   that host, HTTP and WebSocket, to alpha, keeping the phone's Host (and its Origin on WebSockets) as a real LAN path
-//   does: alpha refuses an Origin that matches neither Host nor an allowed origin (autobyteus-403). A Phone Access
-//   credential is checked on every request whatever the address.
-// - The desktop window for the comparison is `nuxt dev` against alpha.
+//   does: alpha refuses an Origin that matches neither Host nor an allowed origin (autobyteus-403). Every request
+//   needs a credential (node access model NA-1, autobyteus-437): the phone sends its Phone Access credential on each.
+//   Both nodes start with the probe's launch owner credential (fixtures/probe-node-access.mjs) and are paired by invite.
+// - The desktop window for the comparison is `nuxt dev` against alpha; its browser context carries alpha's owner
+//   credential (desktopContext), the phone's contexts only the phone's own.
 //
 // Data (public GraphQL/REST/WebSocket only): on beta, Publisher and the Team "Studio Team". On alpha, the agent "Project
 // Task Manager" (PTM) with a Project and two Tasks: Task A to the agent "Release Notes Writer" (a task agent), Task B to the
@@ -111,6 +113,7 @@ import { randomUUID } from 'node:crypto';
 import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import { attachToBrowserContext, ownerHeaders, ownerSocketUrl, pairNodes, probeNodeEnvironment, redactCredentials } from './fixtures/probe-node-access.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -139,7 +142,7 @@ const PEER = 'beta-node';
 /** The name the desktop gives alpha in its pairing codes (one-step-phone-pairing DEC-016); the node's status has none. */
 const ALPHA_NAME = 'Alpha Test Node';
 const PHONE_HOST = '192.168.77.10';
-const redact = text => String(text).replace(/mra_[A-Za-z0-9_-]+/g, 'mra_…').replace(/pairing=[^&\s"']+/g, 'pairing=…');
+const redact = text => redactCredentials(text).replace(/mra_[A-Za-z0-9_-]+/g, 'mra_…').replace(/pairing=[^&\s"']+/g, 'pairing=…');
 const evidence = { startedAt: new Date().toISOString(), result: 'Fail', node: process.version, servers: {}, runs: {}, cases: {}, browserErrors: [], failedRequests: [], network: {}, cleanup: {}, error: null };
 const assert = (condition, message, details) => { if (!condition) throw Object.assign(new Error(message), { details }); };
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -180,7 +183,7 @@ const serverAt = async (name, port, extraEnv = {}) => {
       cwd: serverDir, stdio: ['ignore', 'pipe', 'pipe'],
       env: { PATH: process.env.PATH, HOME: home, TMPDIR: process.env.TMPDIR ?? os.tmpdir(), APP_ENV: 'test', LOG_LEVEL: 'WARN',
         AUTOBYTEUS_HTTP_ACCESS_LOG_MODE: name === 'alpha' ? 'all' : 'off', AUTOBYTEUS_SERVER_HOST: baseUrl, AUTOBYTEUS_ALLOWED_ORIGINS: frontendUrl,
-        ANTIGRAVITY_CLI_COMMAND: agyCli, AGY_FAKE_CASE: 'linked_skills', ...extraEnv } });
+        ANTIGRAVITY_CLI_COMMAND: agyCli, AGY_FAKE_CASE: 'linked_skills', ...probeNodeEnvironment(), ...extraEnv } });
     child.stdout.pipe(log); child.stderr.pipe(log);
     child.once('close', () => log.end());
     children.add(child);
@@ -202,12 +205,12 @@ const serverAt = async (name, port, extraEnv = {}) => {
     children.delete(child);
   };
   node.gql = async (query, variables) => {
-    const body = await (await fetch(`${baseUrl}/graphql`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ query, variables }) })).json();
+    const body = await (await fetch(`${baseUrl}/graphql`, { method: 'POST', headers: ownerHeaders({ 'content-type': 'application/json' }), body: JSON.stringify({ query, variables }) })).json();
     if (body.errors?.length) throw new Error(`${name}: ${JSON.stringify(body.errors)}`);
     return body.data;
   };
   node.rest = async (method, route, body) => {
-    const response = await fetch(`${baseUrl}/rest${route}`, { method, headers: body ? { 'content-type': 'application/json' } : {}, body: body ? JSON.stringify(body) : undefined });
+    const response = await fetch(`${baseUrl}/rest${route}`, { method, headers: ownerHeaders(body ? { 'content-type': 'application/json' } : {}), body: body ? JSON.stringify(body) : undefined });
     const text = await response.text();
     let parsed = null; try { parsed = JSON.parse(text); } catch { parsed = text; }
     return { status: response.status, body: parsed };
@@ -235,7 +238,7 @@ const calledResults = text => text.split('CALLED:').slice(1);
 const pickId = (text, key) => new RegExp(`${key}\\\\*"\\s*:\\s*\\\\*"([^"\\\\]+)`).exec(text ?? '')?.[1];
 /** One WebSocket message to a run's input, as a second client (another window) sends it. */
 const sendOver = async (url, payload) => {
-  const socket = new WebSocket(url);
+  const socket = new WebSocket(ownerSocketUrl(url));
   await new Promise((resolve, reject) => { socket.onopen = resolve; socket.onerror = reject; });
   await sleep(400);
   socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload }));
@@ -257,8 +260,7 @@ const setUp = async () => {
     { i: { name, description: `${name} (phone probe)`, instructions: 'Work together.', coordinatorMemberName, nodes, ...(launch ? { defaultLaunchConfig: launch } : {}) } })).createAgentTeamDefinition.id;
 
   for (const node of [alpha, beta]) await node.gql('mutation{setRemoteCollaborationEnabled(enabled:true){enabled}}');
-  await alpha.gql('mutation($i:AddPeerNodeInput!){addPeerNode(input:$i){nodeId}}', { i: { nodeId: beta.nodeId, baseUrl: beta.baseUrl, name: PEER } });
-  await beta.gql('mutation($i:AddPeerNodeInput!){addPeerNode(input:$i){nodeId}}', { i: { nodeId: alpha.nodeId, baseUrl: alpha.baseUrl, name: 'alpha-node' } });
+  await pairNodes({ inviter: beta.gql, accepter: alpha.gql, inviterName: PEER, accepterName: 'alpha-node' }); // by invite (autobyteus-437)
 
   // Beta: what the PTM delegates to on another node.
   const publisher = await def(beta, 'Publisher', { launch: agy });
@@ -622,6 +624,7 @@ const runCases = async () => {
 
   await runCase('MSP-01', async () => {
     const desktopContext = await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: 'en-US', timezoneId: 'UTC' });
+    await attachToBrowserContext(desktopContext);
     await desktopContext.addInitScript(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
     const desktop = await desktopContext.newPage();
     // A cold `nuxt dev` re-optimizes and reloads (TESTING.md § Browser probes): warm it up first.
@@ -664,6 +667,7 @@ const runCases = async () => {
 
   await runCase('MSP-15', async () => {
     const desktopContext = await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: 'en-US', timezoneId: 'UTC' });
+    await attachToBrowserContext(desktopContext);
     await desktopContext.addInitScript(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
     const desktop = await desktopContext.newPage();
     const reads = [];
@@ -740,6 +744,7 @@ const runCases = async () => {
     await shot(page, 'MSP-02-tree');
     // The desktop Runs view of the same node: where the same rows sit (DEC-001: one list builder).
     const desktopContext = await browser.newContext({ viewport: { width: 1440, height: 1400 }, locale: 'en-US', timezoneId: 'UTC' });
+    await attachToBrowserContext(desktopContext);
     await desktopContext.addInitScript(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
     const desktop = await desktopContext.newPage();
     await desktop.goto(stack.frontendUrl, { waitUntil: 'domcontentloaded', timeout: 240_000 });
@@ -1530,7 +1535,7 @@ const runCases = async () => {
     assert(childA && childB, 'the hub delegated two children', { childA, childB });
     await waitFor('both children idle on the node', async () => ['idle'].includes(String(await serverStatusOf(childA)).toLowerCase())
       && ['idle'].includes(String(await serverStatusOf(childB)).toLowerCase()), 60_000).catch(() => undefined);
-    const collab = new PhoneUpstreamWebSocket(stack.wsUrl(`agent-collaboration/${hub}`));
+    const collab = new PhoneUpstreamWebSocket(ownerSocketUrl(stack.wsUrl(`agent-collaboration/${hub}`)));
     await new Promise((resolve, reject) => { collab.once('open', resolve); collab.once('error', reject); });
     await sleep(800);
     const toChild = (type, target, content) => { const id = randomUUID();
@@ -1540,6 +1545,7 @@ const runCases = async () => {
     // The desktop window (the Runs view) with its GraphQL log: operation, response bytes, the status read's run IDs and body.
     const openDesktop = async () => {
       const context = await browser.newContext({ viewport: { width: 1440, height: 1400 }, locale: 'en-US', timezoneId: 'UTC' });
+      await attachToBrowserContext(context);
       await context.addInitScript(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
       const desktopPage = await context.newPage();
       const net = [];
@@ -1836,6 +1842,7 @@ const runCases = async () => {
     await feed.context.close();
     // The desktop window of the same node still opens the feed.
     const desktopContext = await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: 'en-US', timezoneId: 'UTC' });
+    await attachToBrowserContext(desktopContext);
     const desktop = await desktopContext.newPage();
     const desktopFeed = [];
     desktop.on('websocket', ws => { if (ws.url().includes('/ws/agent-package-definitions')) desktopFeed.push(redact(ws.url())); });

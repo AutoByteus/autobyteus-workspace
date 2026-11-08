@@ -32,6 +32,7 @@ import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { randomUUID } from 'node:crypto';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { attachToBrowserContext, ownerHeaders, ownerSocketUrl, pairNodes, probeNodeEnvironment } from './fixtures/probe-node-access.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -87,7 +88,7 @@ const createNode = async (ownedRoot, name) => {
     APP_ENV: 'development', DB_TYPE: 'sqlite', DATABASE_URL: databaseUrl, AUTOBYTEUS_SERVER_HOST: url, AUTOBYTEUS_LOG_DIR: path.join(dataRoot, 'logs'),
     AUTOBYTEUS_MEMORY_DIR: path.join(dataRoot, 'memory'), AUTOBYTEUS_TEMP_WORKSPACE_DIR: path.join(dataRoot, 'temp_workspace'),
     ANTIGRAVITY_CLI_COMMAND: agyCli, AGY_FAKE_CASE: 'linked_skills', AGY_FAKE_EXTRA_MODELS: ALT, AGY_FAKE_ROUTER_PLAN: planFile, AGY_FAKE_ROUTER_LOG: path.join(dataRoot, 'router-log.jsonl'),
-    CODEX_APP_SERVER_COMMAND: path.join(ownedRoot, 'missing', 'codex'), GROK_BUILD_COMMAND: path.join(ownedRoot, 'missing', 'grok') };
+    CODEX_APP_SERVER_COMMAND: path.join(ownedRoot, 'missing', 'codex'), GROK_BUILD_COMMAND: path.join(ownedRoot, 'missing', 'grok'), ...probeNodeEnvironment() };
   await fs.writeFile(path.join(dataRoot, '.env'), ['APP_ENV=development', 'DB_TYPE=sqlite', `DATABASE_URL=${databaseUrl}`, `AUTOBYTEUS_SERVER_HOST=${url}`].join('\n') + '\n');
   await run('corepack', ['pnpm', '-C', serverDir, 'exec', 'prisma', 'migrate', 'deploy', '--schema', './prisma/schema.prisma'], root, { ...env, HOME: os.homedir() }, path.join(outputDir, `${name}-migrate.log`));
   return { name, dataRoot, port, url, env, planFile, process: null, nodeId: null };
@@ -98,7 +99,7 @@ const startNode = async (node) => {
   node.nodeId = (await (await fetch(`${node.url}/rest/remote-access/status`)).json()).nodeId;
 };
 const gql = async (node, query, variables = {}) => {
-  const response = await fetch(`${node.url}/graphql`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ query, variables }) });
+  const response = await fetch(`${node.url}/graphql`, { method: 'POST', headers: ownerHeaders({ 'content-type': 'application/json' }), body: JSON.stringify({ query, variables }) });
   const body = await response.json();
   if (!response.ok || body.errors?.length) throw new Error(`GraphQL failed: ${JSON.stringify(body.errors ?? body)}`);
   return body.data;
@@ -111,7 +112,7 @@ const calls = async (node, runId, name, args) => {
   const conversation = async () => JSON.stringify((await gql(node, 'query($id:String!){getRunProjection(runId:$id){conversation}}', { id: runId })).getRunProjection?.conversation ?? []);
   const count = (text) => (text.match(/CALLED:/g) ?? []).length;
   const before = count(await conversation());
-  const socket = new WebSocket(`ws://127.0.0.1:${node.port}/ws/agent/${runId}`);
+  const socket = new WebSocket(ownerSocketUrl(`ws://127.0.0.1:${node.port}/ws/agent/${runId}`));
   const frames = []; socket.on('message', (raw) => frames.push(JSON.parse(String(raw))));
   await new Promise((resolve, reject) => { socket.once('open', resolve); socket.once('error', reject); });
   await waitFor('socket connected', () => frames.some((f) => f.type === 'CONNECTED'), 30000);
@@ -158,8 +159,8 @@ try {
     await gql(node, 'mutation($r:String!,$m:String!){setModelRouterLaunch(runtimeKind:$r, llmModelIdentifier:$m)}', { r: AGY, m: MODEL });
     evidence.observations[`${node.name}Status`] = (await gql(node, 'mutation{setModelRoutingEnabled(enabled:true)}')).setModelRoutingEnabled;
   }
-  await gql(alpha, 'mutation($i:AddPeerNodeInput!){addPeerNode(input:$i){nodeId}}', { i: { nodeId: beta.nodeId, baseUrl: beta.url, name: LABEL.beta } });
-  await gql(beta, 'mutation($i:AddPeerNodeInput!){addPeerNode(input:$i){nodeId}}', { i: { nodeId: alpha.nodeId, baseUrl: alpha.url, name: LABEL.alpha } });
+  // The nodes pair by invite (autobyteus-437 DS-004).
+  await pairNodes({ inviter: (q, v) => gql(beta, q, v), accepter: (q, v) => gql(alpha, q, v), inviterName: LABEL.beta, accepterName: LABEL.alpha });
   const ids = {};
   ids.manager = await definition(alpha, 'Manager');
   ids.lead = await definition(alpha, 'Lead', { runtimeKind: AGY, llmModelIdentifier: MODEL, llmConfig: null });
@@ -182,6 +183,9 @@ try {
   await waitFor('frontend', async () => { if (exited(frontend)) throw new Error('frontend exited'); return fetch(frontendUrl).then((r) => r.ok).catch(() => false); }, 240000);
   browser = await chromium.launch({ headless: true, executablePath, args: ['--disable-dev-shm-usage'] });
   const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: 'en-US', timezoneId: 'Europe/Berlin' });
+  // The window reaches both nodes directly (it switches to beta): the context carries the credential, as the desktop's
+  // main process attaches each node's (fixtures/probe-node-access.mjs).
+  await attachToBrowserContext(context);
   await context.addInitScript(() => { if (!localStorage.getItem('autobyteus.localization.preference-mode')) localStorage.setItem('autobyteus.localization.preference-mode', 'en'); });
   page = await context.newPage();
   page.on('pageerror', (e) => evidence.browserErrors.push(e.message));

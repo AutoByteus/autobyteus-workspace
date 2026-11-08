@@ -2,7 +2,8 @@
 // Browser + server probe for autobyteus-290 (node vocabulary): what the window shows and keeps when a node and the window
 // itself are upgraded over released data. Real servers built from this worktree, `nuxt dev` against alpha, headless Chrome.
 //
-// Servers (`autobyteus-server-ts/dist/app.js`, each with its own temp data root and HOME): alpha is the window's node and a
+// Servers (`autobyteus-server-ts/dist/app.js`, each with its own temp data root, HOME and the probe's launch owner
+// credential, fixtures/probe-node-access.mjs; paired by invite): alpha is the window's node and a
 // Memory Sync hub; beta is alpha's peer and syncs its memory into alpha. Both are set up through their public APIs. Then
 // beta is turned into a node whose identity file is the released `server-instance.json`, cut short, with no record of the
 // SM-1 migration (what a damaged file on a released node gives at upgrade), so beta holds back `node_identity`.
@@ -35,6 +36,7 @@ import { execFileSync, spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { waitForDevServerReady } from './fixtures/dev-server-ready.mjs';
+import { attachToBrowserContext, ownerHeaders, pairNodes, probeNodeEnvironment } from './fixtures/probe-node-access.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -112,7 +114,7 @@ const serverAt = async (name, port) => {
     const child = spawn(process.execPath, [appEntry, '--host', '127.0.0.1', '--port', String(port), '--data-dir', dataDir], {
       cwd: serverDir, stdio: ['ignore', 'pipe', 'pipe'],
       env: { PATH: process.env.PATH, HOME: home, TMPDIR: process.env.TMPDIR ?? os.tmpdir(), APP_ENV: 'test', LOG_LEVEL: 'WARN',
-        HTTP_ACCESS_LOG_MODE: 'off', AUTOBYTEUS_SERVER_HOST: baseUrl, AUTOBYTEUS_ALLOWED_ORIGINS: frontendUrl } });
+        HTTP_ACCESS_LOG_MODE: 'off', AUTOBYTEUS_SERVER_HOST: baseUrl, AUTOBYTEUS_ALLOWED_ORIGINS: frontendUrl, ...probeNodeEnvironment() } });
     child.stdout.pipe(log); child.stderr.pipe(log);
     child.once('close', () => log.end());
     children.add(child);
@@ -131,12 +133,14 @@ const serverAt = async (name, port) => {
     children.delete(child);
   };
   node.gql = async (query, variables) => {
-    const body = await (await fetch(`${baseUrl}/graphql`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ query, variables }) })).json();
+    const body = await (await fetch(`${baseUrl}/graphql`, { method: 'POST', headers: ownerHeaders({ 'content-type': 'application/json' }), body: JSON.stringify({ query, variables }) })).json();
     if (body.errors?.length) throw new Error(`${name}: ${JSON.stringify(body.errors)}`);
     return body.data;
   };
   node.rest = async (method, route, body) => {
-    const response = await fetch(`${baseUrl}/rest${route}`, { method, headers: { 'content-type': 'application/json' }, body: body ? JSON.stringify(body) : undefined });
+    // The owner's calls carry the owner credential; the pairing exchange is the phone's, which has none yet.
+    const headers = route === '/remote-access/pairing-exchanges' ? { 'content-type': 'application/json' } : ownerHeaders({ 'content-type': 'application/json' });
+    const response = await fetch(`${baseUrl}/rest${route}`, { method, headers, body: body ? JSON.stringify(body) : undefined });
     return { status: response.status, body: await response.json().catch(() => null) };
   };
   await node.start();
@@ -165,8 +169,7 @@ try {
 
   // Earlier use, through the servers' own APIs: peers both ways; beta syncs its memory into alpha's hub.
   for (const node of [alpha, beta]) await node.gql('mutation{setRemoteCollaborationEnabled(enabled:true){enabled}}');
-  await alpha.gql('mutation($i:AddPeerNodeInput!){addPeerNode(input:$i){nodeId}}', { i: { nodeId: beta.nodeId, baseUrl: beta.baseUrl, name: 'beta' } });
-  await beta.gql('mutation($i:AddPeerNodeInput!){addPeerNode(input:$i){nodeId}}', { i: { nodeId: alpha.nodeId, baseUrl: alpha.baseUrl, name: 'alpha' } });
+  await pairNodes({ inviter: beta.gql, accepter: alpha.gql, inviterName: 'beta', accepterName: 'alpha' }); // by invite (autobyteus-437)
   const hub = await alpha.gql('mutation($i:UpdateMemoryHubConfigInput!){updateMemoryHubConfig(input:$i){oneTimePlaintextToken}}', { i: { enabled: true, advertisedHubBaseUrl: alpha.baseUrl } });
   const runDir = path.join(beta.dataDir, 'memory', 'agents', 'nvp-run');
   await fs.mkdir(runDir, { recursive: true });
@@ -215,6 +218,9 @@ try {
 
   browser = await chromium.launch({ headless: true, executablePath, args: ['--no-sandbox', '--disable-dev-shm-usage'] });
   const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: 'en-US', timezoneId: 'UTC' });
+  // The desktop window carries the owner credential, as the desktop's main process attaches it (autobyteus-437); the phone
+  // context below carries only the phone's own credential.
+  await attachToBrowserContext(context);
   await context.addInitScript(() => localStorage.setItem('autobyteus.localization.preference-mode', localStorage.getItem('probe-locale') ?? 'en'));
   const page = await context.newPage();
   // Warm the dev server on every page the probe opens (first compiles re-optimize and reload), then give the window the
