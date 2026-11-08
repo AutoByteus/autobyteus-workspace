@@ -511,7 +511,7 @@ const runDetailScenario = async (browser, frontendUrl) => {
     await page.screenshot({ path: path.join(outputDir, 'detail-org-narrow-en.png'), fullPage: true });
     await page.setViewportSize({ width: 1440, height: 1000 });
 
-    await page.getByRole('button', { name: /^View/ }).click();
+    await page.getByRole('button', { name: /^View ↗/ }).click();
     await page.waitForURL(new RegExp(`/agent-teams\\?.*id=${fixture.alpha.teamRef}.*returnToOrg=${fixture.alpha.id}`), { timeout: timeoutMs });
     await page.getByRole('heading', { name: fixture.alpha.teamDefinitionName, exact: true }).waitFor({ state: 'visible', timeout: timeoutMs });
     const teamHandoffManager = page.locator('[data-test="handoff-manager-team"]');
