@@ -39,3 +39,32 @@
 | 2026-11-08T17:10:51Z | API-FS | Completed | Not Tested | deferred to the fix round (F-1 fix changes nuxt.config.ts) |
 | 2026-11-08T17:10:51Z | API-16 | Completed | Not Tested | 36 other probes not moved to the fixture this round |
 | 2026-11-08T17:10:51Z | cleanup | Completed |  | test image, scratch, worktree removed; no instance, no abtest437 container |
+| 2026-11-08T17:46:17Z | round 2 | Started |  | CRR-004 Pass on IR-003, HEAD 32e9ad944c; plan in the investigation's Round 2 rerun plan |
+| 2026-11-08T17:46:17Z | API-00 | Started |  | round 2 rebuild build:electron:mac at 32e9ad944c |
+| 2026-11-08T17:52:24Z | API-00 | Completed | Pass | round 2 build at 32e9ad944c |
+| 2026-11-08T17:52:24Z | API-01 | Started |  | round 2 partial: files search in the app window |
+| 2026-11-08T17:53:41Z | API-01 | Completed | Pass | round 2: searchFiles 200 [src/app-437.ts] in the app window; terminal env 0 |
+| 2026-11-08T17:53:41Z | API-15 | Started |  | round 2: real pnpm dev window |
+| 2026-11-08T17:55:23Z | API-15 | Completed | Pass | round 2: upgrades 101, window sockets 101, 0 restarts |
+| 2026-11-08T17:55:23Z | API-03 | Started |  | round 2: build:mobile-web then mobile-shell |
+| 2026-11-08T17:55:46Z | API-03 | Started |  | round 2: test:e2e:mobile-shell |
+| 2026-11-08T18:05:46Z | API-03 | Completed | Pass | exit 0; mobile-shell probe: Pass |
+| 2026-11-08T18:05:46Z | API-08 | Started |  | round 2: test:e2e:node-vocabulary |
+| 2026-11-08T18:06:52Z | API-08 | Completed | Pass | exit 0; [probe] result Pass; evidence /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/tickets/in-progress/node-un |
+| 2026-11-08T18:06:52Z | API-05 | Started |  | round 2: test:e2e:remote-run-title |
+| 2026-11-08T18:07:55Z | API-05 | Completed | Pass | exit 0; remote-run-title probe: Pass |
+| 2026-11-08T18:07:55Z | API-06 | Started |  | round 2: test:e2e:remote-runs-in-tree |
+| 2026-11-08T18:09:45Z | API-06 | Completed | Pass | exit 0; remote-runs-in-tree probe: Pass |
+| 2026-11-08T18:09:45Z | API-07 | Started |  | round 2: test:e2e:model-routing-decisions |
+| 2026-11-08T18:11:29Z | API-07 | Completed | Pass | exit 0; Model Routing decisions probe: Pass → /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/tickets/in-progre |
+| 2026-11-08T18:11:29Z | API-09 | Started |  | round 2: test:e2e:remote-nodes-page |
+| 2026-11-08T18:13:25Z | API-09 | Completed | Pass | exit 0; remote-nodes-page probe: Pass |
+| 2026-11-08T18:13:39Z | API-10 | Started |  | round 2: server package build for the test image |
+| 2026-11-08T18:18:15Z | API-10 | Completed | Pass | round 2: ND-01..05 with the rebuilt test image |
+| 2026-11-08T18:18:15Z | API-16 | Started |  | runner /tmp/abtest437r2/run-probes.sh, 26 probes; ledger evidence/api-e2e/API-16-probes/API-16-ledger.md |
+| 2026-11-08T19:39:17Z | API-16 | Checkpoint |  | 26 run + reruns; open: internal-agents IP-03, memory-search 030, runtime-switch RSW-01, github-skill-sources WEB-002, run-history-read-budget RB-B1/B2 (load ~90) -> base comparison |
+| 2026-11-08T19:39:17Z | API-16-base | Started |  | base b690a5dfdb worktree build for comparison |
+| 2026-11-08T19:54:09Z | API-16 | Completed | Pass | all migrated deterministic probes pass or fail identically on base (FU-003 SIR-002, FU-004 IP-03/RSW-01/WEB-002); fixed in tests: agent-org-role-labels selector, LRL socket, memory-search wait |
+| 2026-11-08T19:54:09Z | API-FS | Started |  | fresh clone of d115fd9c71 |
+| 2026-11-08T20:04:29Z | API-FS | Completed | Pass | fresh clone of d115fd9c71: install, typecheck, build, prisma and terminal-runtime verify all exit 0 |
+| 2026-11-08T20:04:29Z | cleanup | Completed |  | test image, scratch, base worktree, fresh clone removed; no instance; no abtest437 container |

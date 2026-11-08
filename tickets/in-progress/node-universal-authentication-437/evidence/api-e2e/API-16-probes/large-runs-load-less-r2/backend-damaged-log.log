@@ -1,0 +1,205 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-tGkTxC/server-data
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-tGkTxC/server-data/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-tGkTxC/server-data/.env
+◇ injected env (1) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-tGkTxC/server-data/.env // tip: ⌘ suppress logs { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:51873
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:51873
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-tGkTxC/server-data
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-tGkTxC/server-data/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-tGkTxC/server-data/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-tGkTxC/server-data/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-tGkTxC/server-data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "probe.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-tGkTxC/server-data/db/probe.db"
+
+27 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 8.0.0-rc.33                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+Database migrations completed successfully.
+(node:90003) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+[2026-11-08T19:30:16.410Z] [INFO] [secret-management.vault] Secret vault: application database
+Initialized server settings service with 32 predefined settings
+AgentRunManager initialized.
+Node access: local control socket not opened. The node's local control socket path is 124 bytes, longer than the 103 bytes a Unix socket path may have: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-tGkTxC/server-data/node-access/local-control.sock. Use a shorter data folder path.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-tGkTxC/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-tGkTxC/server-data/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-tGkTxC/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Registered required tool unit: Agent Discovery Tools
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+Registered required tool unit: Agent Runtime Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'search_memory'
+Registered required tool unit: Memory Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+{"level":30,"time":1794166216625,"pid":90003,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:52278"}
+{"level":30,"time":1794166216650,"pid":90003,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:51873"}
+[2026-11-08T19:30:16.650Z] [INFO] [server.runtime] Server listening on 127.0.0.1:51873
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+Background task 'Memory Search' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Agent team websocket attached for team run lrl_damaged_89a5_f41875832691488e86576aebeb7375c1
+Created terminal session 0fcf7a26-5e25-43c5-a722-b148d697c91e using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-tGkTxC/home
+Terminal WebSocket connected: 0fcf7a26-5e25-43c5-a722-b148d697c91e
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-tGkTxC/home
+Closed PTY session 0fcf7a26-5e25-43c5-a722-b148d697c91e
+Terminal WebSocket disconnected: 0fcf7a26-5e25-43c5-a722-b148d697c91e
+Created terminal session 4a9882b4-7f3d-48c5-811d-69fdc92374b4 using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-tGkTxC/home
+Terminal WebSocket connected: 4a9882b4-7f3d-48c5-811d-69fdc92374b4
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-tGkTxC/home
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-tGkTxC/server-data/memory/agent_teams/lrl_damaged_89a5_f41875832691488e86576aebeb7375c1/lrld_lead_89a5_12ad6097b6614fa29eb5bbd4652f3653/raw_traces_manifest.json
+{"level":30,"time":1794166224717,"pid":90003,"hostname":"MacBookPro","reqId":"req-1v","err":{"type":"GraphQLError","message":"team_communication_messages_active.jsonl:line 2 is not valid JSON.","stack":"Error: team_communication_messages_active.jsonl:line 2 is not valid JSON.\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts/dist/run-history/store/message-log.js:97:27\n    at Array.forEach (<anonymous>)\n    at MessageLog.read (file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts/dist/run-history/store/message-log.js:90:19)\n    at async TeamCommunicationStore.readLog (file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts/dist/services/team-communication/team-communication-store.js:26:26)\n    at async TeamCommunicationStore.read (file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts/dist/services/team-communication/team-communication-store.js:32:21)\n    at async TeamCommunicationProjectionService.getCollaborationRecordsSnapshot (file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts/dist/services/team-communication/team-communication-projection-service.js:41:26)\n    at async readRootRecords (file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts/dist/api/graphql/types/collaboration-participant-messages.js:32:29)\n    at async readCollaborationParticipantMessages (file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts/dist/api/graphql/types/collaboration-participant-messages.js:54:21)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/node_modules/.pnpm/mercurius@16.12.1_graphql@16.12.0/node_modules/mercurius/index.js:713:23)","path":["collaborationParticipantMessages"],"locations":[{"line":2,"column":3}],"extensions":{}},"msg":"team_communication_messages_active.jsonl:line 2 is not valid JSON."}
+{"level":30,"time":1794166227178,"pid":90003,"hostname":"MacBookPro","reqId":"req-1z","err":{"type":"GraphQLError","message":"team_communication_messages_active.jsonl:line 2 is not valid JSON.","stack":"Error: team_communication_messages_active.jsonl:line 2 is not valid JSON.\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts/dist/run-history/store/message-log.js:97:27\n    at Array.forEach (<anonymous>)\n    at MessageLog.read (file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts/dist/run-history/store/message-log.js:90:19)\n    at async TeamCommunicationStore.readLog (file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts/dist/services/team-communication/team-communication-store.js:26:26)\n    at async TeamCommunicationStore.read (file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts/dist/services/team-communication/team-communication-store.js:32:21)\n    at async TeamCommunicationProjectionService.getCollaborationRecordsSnapshot (file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts/dist/services/team-communication/team-communication-projection-service.js:41:26)\n    at async readRootRecords (file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts/dist/api/graphql/types/collaboration-participant-messages.js:32:29)\n    at async readCollaborationParticipantMessages (file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts/dist/api/graphql/types/collaboration-participant-messages.js:54:21)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/node_modules/.pnpm/mercurius@16.12.1_graphql@16.12.0/node_modules/mercurius/index.js:713:23)","path":["collaborationParticipantMessages"],"locations":[{"line":1,"column":41}],"extensions":{}},"msg":"team_communication_messages_active.jsonl:line 2 is not valid JSON."}
+Error restoring agent team run with ID lrl_damaged_89a5_f41875832691488e86576aebeb7375c1: Error: team_communication_messages_active.jsonl:line 2 is not valid JSON.
+Closed PTY session 4a9882b4-7f3d-48c5-811d-69fdc92374b4
+Terminal WebSocket disconnected: 4a9882b4-7f3d-48c5-811d-69fdc92374b4
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-tGkTxC/server-data/memory/agent_teams/lrl_damaged_89a5_f41875832691488e86576aebeb7375c1/lrld_lead_89a5_12ad6097b6614fa29eb5bbd4652f3653/raw_traces_manifest.json
+{"level":30,"time":1794166231031,"pid":90003,"hostname":"MacBookPro","reqId":"req-2t","err":{"type":"GraphQLError","message":"team_communication_messages_active.jsonl:line 2 is not valid JSON.","stack":"Error: team_communication_messages_active.jsonl:line 2 is not valid JSON.\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts/dist/run-history/store/message-log.js:97:27\n    at Array.forEach (<anonymous>)\n    at MessageLog.read (file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts/dist/run-history/store/message-log.js:90:19)\n    at async TeamCommunicationStore.readLog (file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts/dist/services/team-communication/team-communication-store.js:26:26)\n    at async TeamCommunicationStore.read (file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts/dist/services/team-communication/team-communication-store.js:32:21)\n    at async TeamCommunicationProjectionService.getCollaborationRecordsSnapshot (file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts/dist/services/team-communication/team-communication-projection-service.js:41:26)\n    at async readRootRecords (file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts/dist/api/graphql/types/collaboration-participant-messages.js:32:29)\n    at async readCollaborationParticipantMessages (file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts/dist/api/graphql/types/collaboration-participant-messages.js:54:21)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/node_modules/.pnpm/mercurius@16.12.1_graphql@16.12.0/node_modules/mercurius/index.js:713:23)","path":["collaborationParticipantMessages"],"locations":[{"line":2,"column":3}],"extensions":{}},"msg":"team_communication_messages_active.jsonl:line 2 is not valid JSON."}
+Agent Definition created successfully with ID: lrlr-lead-b856
+Agent Definition created successfully with ID: lrlr-worker-b856
+Agent Team Definition created successfully with ID: lrl-running-b856
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-tGkTxC/server-data/memory/agent_teams/lrl_running_b856_c09d29cc70f14d5b99cbe6d6d0248802/lrlr_lead_b856_d0c319a4ec1548cf8cc241416bfa9102/raw_traces_manifest.json
+Agent team websocket attached for team run lrl_running_b856_c09d29cc70f14d5b99cbe6d6d0248802
+Created agent session 1d181371-4724-44aa-abb9-7668b96331d1 for run lrl_running_b856_c09d29cc70f14d5b99cbe6d6d0248802
+Agent Team WebSocket connected: session=1d181371-4724-44aa-abb9-7668b96331d1, run=lrl_running_b856_c09d29cc70f14d5b99cbe6d6d0248802
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-tGkTxC/server-data/memory/agent_teams/lrl_running_b856_c09d29cc70f14d5b99cbe6d6d0248802/lrlr_lead_b856_d0c319a4ec1548cf8cc241416bfa9102/raw_traces_manifest.json
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run lrlr_lead_b856_d0c319a4ec1548cf8cc241416bfa9102: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Agent team websocket attached for team run lrl_running_b856_c09d29cc70f14d5b99cbe6d6d0248802
+Created agent session 32710d8a-7f97-4179-979a-2c30ace78804 for run lrl_running_b856_c09d29cc70f14d5b99cbe6d6d0248802
+Agent Team WebSocket connected: session=32710d8a-7f97-4179-979a-2c30ace78804, run=lrl_running_b856_c09d29cc70f14d5b99cbe6d6d0248802
+Closed agent session 32710d8a-7f97-4179-979a-2c30ace78804
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run lrlr_worker_b856_4a305c19ccee41b385f7adb2657abc5a: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-tGkTxC/server-data/memory/agent_teams/lrl_running_b856_c09d29cc70f14d5b99cbe6d6d0248802/lrlr_lead_b856_d0c319a4ec1548cf8cc241416bfa9102/raw_traces_manifest.json
+Created terminal session 09b0e69b-c490-4f08-8510-0f7c4fc7bc2f using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-tGkTxC/home
+Terminal WebSocket connected: 09b0e69b-c490-4f08-8510-0f7c4fc7bc2f
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-tGkTxC/home
+Agent team websocket attached for team run lrl_running_b856_c09d29cc70f14d5b99cbe6d6d0248802
+Created agent session 47f5225e-d3a4-4ae5-92e9-d4a36f6b284d for run lrl_running_b856_c09d29cc70f14d5b99cbe6d6d0248802
+Agent Team WebSocket connected: session=47f5225e-d3a4-4ae5-92e9-d4a36f6b284d, run=lrl_running_b856_c09d29cc70f14d5b99cbe6d6d0248802
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-tGkTxC/server-data/memory/agent_teams/lrl_running_b856_c09d29cc70f14d5b99cbe6d6d0248802/lrlr_lead_b856_d0c319a4ec1548cf8cc241416bfa9102/raw_traces_manifest.json
+Closed agent session 47f5225e-d3a4-4ae5-92e9-d4a36f6b284d
+Closed PTY session 09b0e69b-c490-4f08-8510-0f7c4fc7bc2f
+Terminal WebSocket disconnected: 09b0e69b-c490-4f08-8510-0f7c4fc7bc2f
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-tGkTxC/server-data/memory/agent_teams/lrl_running_b856_c09d29cc70f14d5b99cbe6d6d0248802/lrlr_lead_b856_d0c319a4ec1548cf8cc241416bfa9102/raw_traces_manifest.json
+Created terminal session 9614fc37-d7f7-4c91-9581-b476d9323b08 using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-tGkTxC/home
+Terminal WebSocket connected: 9614fc37-d7f7-4c91-9581-b476d9323b08
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-tGkTxC/home
+Agent team websocket attached for team run lrl_running_b856_c09d29cc70f14d5b99cbe6d6d0248802
+Created agent session 696a1665-2c2f-48bd-9246-f37b831b3015 for run lrl_running_b856_c09d29cc70f14d5b99cbe6d6d0248802
+Agent Team WebSocket connected: session=696a1665-2c2f-48bd-9246-f37b831b3015, run=lrl_running_b856_c09d29cc70f14d5b99cbe6d6d0248802
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-tGkTxC/server-data/memory/agent_teams/lrl_running_b856_c09d29cc70f14d5b99cbe6d6d0248802/lrlr_lead_b856_d0c319a4ec1548cf8cc241416bfa9102/raw_traces_manifest.json
+Agent team websocket attached for team run lrl_running_b856_c09d29cc70f14d5b99cbe6d6d0248802
+Created agent session d7f35617-7ce2-4741-8667-e9dec7d8a07f for run lrl_running_b856_c09d29cc70f14d5b99cbe6d6d0248802
+Agent Team WebSocket connected: session=d7f35617-7ce2-4741-8667-e9dec7d8a07f, run=lrl_running_b856_c09d29cc70f14d5b99cbe6d6d0248802
+Closed agent session d7f35617-7ce2-4741-8667-e9dec7d8a07f
+Closed agent session 1d181371-4724-44aa-abb9-7668b96331d1
+Closed agent session 696a1665-2c2f-48bd-9246-f37b831b3015
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-tGkTxC/server-data/memory/agent_teams/lrl_running_b856_c09d29cc70f14d5b99cbe6d6d0248802/lrlr_lead_b856_d0c319a4ec1548cf8cc241416bfa9102/raw_traces_manifest.json
+Agent team websocket attached for team run lrl_running_b856_c09d29cc70f14d5b99cbe6d6d0248802
+Created agent session acfbf1dc-2da1-4e72-a079-74b9f3666abf for run lrl_running_b856_c09d29cc70f14d5b99cbe6d6d0248802
+Agent Team WebSocket connected: session=acfbf1dc-2da1-4e72-a079-74b9f3666abf, run=lrl_running_b856_c09d29cc70f14d5b99cbe6d6d0248802
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-tGkTxC/server-data/memory/agent_teams/lrl_running_b856_c09d29cc70f14d5b99cbe6d6d0248802/lrlr_lead_b856_d0c319a4ec1548cf8cc241416bfa9102/raw_traces_manifest.json
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run lrlr_lead_b856_d0c319a4ec1548cf8cc241416bfa9102: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Resolved configured temp workspace root to TempWorkspace.
+AGY compaction detection off for run lrlr_worker_b856_4a305c19ccee41b385f7adb2657abc5a: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Agent team websocket attached for team run lrl_running_b856_c09d29cc70f14d5b99cbe6d6d0248802
+Created agent session ce55de09-e035-4ec4-9489-6977dc498bca for run lrl_running_b856_c09d29cc70f14d5b99cbe6d6d0248802
+Agent Team WebSocket connected: session=ce55de09-e035-4ec4-9489-6977dc498bca, run=lrl_running_b856_c09d29cc70f14d5b99cbe6d6d0248802
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-tGkTxC/server-data/memory/agent_teams/lrl_running_b856_c09d29cc70f14d5b99cbe6d6d0248802/lrlr_lead_b856_d0c319a4ec1548cf8cc241416bfa9102/raw_traces_manifest.json
+Closed agent session acfbf1dc-2da1-4e72-a079-74b9f3666abf
+Closed PTY session 9614fc37-d7f7-4c91-9581-b476d9323b08
+Terminal WebSocket disconnected: 9614fc37-d7f7-4c91-9581-b476d9323b08
+Closed agent session ce55de09-e035-4ec4-9489-6977dc498bca

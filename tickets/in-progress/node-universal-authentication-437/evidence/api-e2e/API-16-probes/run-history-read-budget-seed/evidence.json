@@ -1,0 +1,48 @@
+{
+  "mode": "seed",
+  "label": "current",
+  "startedAt": "2026-11-08T19:35:43.921Z",
+  "stackRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437",
+  "stackHead": "32e9ad944c",
+  "probeHead": "32e9ad944c",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "cpus": 10,
+  "loadAtStart": [
+    84,
+    90.7,
+    69.4
+  ],
+  "budgetMs": 250,
+  "checks": {},
+  "cleanup": {
+    "backend": {
+      "pid": 19080,
+      "status": "terminated",
+      "exit": 0
+    },
+    "home": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/read-budget-home-bJ36qE",
+    "seedKept": "/tmp/abtest437r2/seeds/run-history (test-owned seed; remove after the measurements)"
+  },
+  "failures": [],
+  "seed": {
+    "ms": 41885,
+    "shape": {
+      "agentRuns": 40,
+      "teamRuns": 200,
+      "orgRuns": 10,
+      "teamMembers": 5,
+      "perAgent": {
+        "main": 20,
+        "side": 12,
+        "third": 8
+      }
+    }
+  },
+  "completedAt": "2026-11-08T19:36:29.911Z",
+  "loadAtEnd": [
+    92.1,
+    91.8,
+    70.9
+  ]
+}

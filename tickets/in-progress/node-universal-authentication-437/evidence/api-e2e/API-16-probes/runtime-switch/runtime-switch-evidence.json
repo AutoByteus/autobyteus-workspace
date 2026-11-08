@@ -1,0 +1,56 @@
+{
+  "startedAt": "2026-11-08T19:12:55.977Z",
+  "steps": [
+    {
+      "text": "the native agent answered in the chat",
+      "details": null
+    },
+    {
+      "text": "the runtime menu of the stopped run offers the other agent runtimes",
+      "details": [
+        "autobyteus",
+        "codex_app_server",
+        "claude_agent_sdk",
+        "deepseek_harness",
+        "reason",
+        "unavailable",
+        "grok_build",
+        "antigravity_cli"
+      ]
+    }
+  ],
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 94277
+    },
+    {
+      "label": "frontend",
+      "pid": 96071
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 96071,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 94277,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-switch-probe-GW6RpA"
+    }
+  ],
+  "browserErrors": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-switch-probe-GW6RpA",
+  "backendUrl": "http://127.0.0.1:63952",
+  "frontUrl": "http://127.0.0.1:63953",
+  "RSW01": {
+    "result": "Fail",
+    "error": "no runtime-change hint after choosing another runtime",
+    "details": "An agent that changes its agent runtime keeps its run and chat. The new agent runtime takes over when that agent next receives a message.",
+    "ms": 11314
+  },
+  "completedAt": "2026-11-08T19:13:54.945Z"
+}

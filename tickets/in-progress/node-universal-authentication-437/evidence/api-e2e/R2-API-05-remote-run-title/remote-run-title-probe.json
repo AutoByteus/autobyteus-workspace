@@ -1,0 +1,117 @@
+{
+  "startedAt": "2026-11-08T18:06:53.134Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "beta": {
+      "port": 64655,
+      "nodeId": "srv_axCjsNP4GUZyo6R57CongBmMfdi-5kjj"
+    },
+    "alpha": {
+      "port": 64654,
+      "nodeId": "srv_bVbTmIEVWd8DbL6G6fIwlwmFPpShVjRm"
+    }
+  },
+  "runs": {
+    "delegatorRun": "delegator_84c148d9cb95438fbebcd77036d2d585",
+    "peerAgentRun": "publisher_00599ff5c8eb430490d74f8ef41d6cd7",
+    "peerTeamRun": "studio_team_e73adc2ef3ea467c81fe9c0e4f4ae9f2",
+    "peerCoordinator": "publisher_45ec8d011c184a81a26c139f91d65e06",
+    "plainRun": "writer_2573c32a3ae94d99ad402c2c43313dd7",
+    "skillRun": "writer_5f97f43534f4481f8e7f1b7af1ce393d"
+  },
+  "storedTitles": {
+    "publisher_00599ff5c8eb430490d74f8ef41d6cd7": "Cut the launch trailer and have it checked. Marker AGENT-TITLE.",
+    "studio_team_e73adc2ef3ea467c81fe9c0e4f4ae9f2": "Cut the launch trailer and have it checked. Marker TEAM-TITLE.",
+    "writer_5f97f43534f4481f8e7f1b7af1ce393d": "Use the writer skill for this request. Draft a note about owls. Marker SKILL-TITLE.",
+    "writer_2573c32a3ae94d99ad402c2c43313dd7": "Plan the weekly menu for the cafe. Marker PLAIN-TITLE."
+  },
+  "cases": {
+    "RRT-01": {
+      "result": "Pass",
+      "stored": {
+        "publisher_00599ff5c8eb430490d74f8ef41d6cd7": "Cut the launch trailer and have it checked. Marker AGENT-TITLE.",
+        "studio_team_e73adc2ef3ea467c81fe9c0e4f4ae9f2": "Cut the launch trailer and have it checked. Marker TEAM-TITLE.",
+        "writer_2573c32a3ae94d99ad402c2c43313dd7": "Plan the weekly menu for the cafe. Marker PLAIN-TITLE.",
+        "writer_5f97f43534f4481f8e7f1b7af1ce393d": "Use the writer skill for this request. Draft a note about owls. Marker SKILL-TITLE."
+      }
+    },
+    "RRT-02": {
+      "result": "Pass",
+      "rows": {
+        "peerAgent": "Cut the launch trailer and have it checked. Marker AGENT-TITLE.",
+        "peerTeam": "Cut the launch trailer and have it checked. Marker TEAM-TITLE.",
+        "plain": "Plan the weekly menu for the cafe. Marker PLAIN-TITLE.",
+        "skill": "Draft a note about owls. Marker SKILL-TITLE."
+      },
+      "liveContexts": [
+        "publisher_00599ff5c8eb430490d74f8ef41d6cd7",
+        "writer_5f97f43534f4481f8e7f1b7af1ce393d",
+        "writer_2573c32a3ae94d99ad402c2c43313dd7"
+      ]
+    },
+    "RRT-03": {
+      "result": "Pass",
+      "rows": {
+        "peerAgent": "Cut the launch trailer and have it checked. Marker AGENT-TITLE.",
+        "peerTeam": "Cut the launch trailer and have it checked. Marker TEAM-TITLE.",
+        "plain": "Plan the weekly menu for the cafe. Marker PLAIN-TITLE.",
+        "skill": "Draft a note about owls. Marker SKILL-TITLE."
+      },
+      "liveContexts": [
+        "publisher_00599ff5c8eb430490d74f8ef41d6cd7",
+        "writer_5f97f43534f4481f8e7f1b7af1ce393d",
+        "writer_2573c32a3ae94d99ad402c2c43313dd7"
+      ]
+    },
+    "RRT-04": {
+      "result": "Pass",
+      "rows": {
+        "peerAgent": "Cut the launch trailer and have it checked. Marker AGENT-TITLE.",
+        "peerTeam": "Cut the launch trailer and have it checked. Marker TEAM-TITLE.",
+        "plain": "Plan the weekly menu for the cafe. Marker PLAIN-TITLE.",
+        "skill": "Draft a note about owls. Marker SKILL-TITLE."
+      },
+      "centerPaneTop": [
+        "P",
+        "Cut the launch trailer and have it checke…",
+        "Idle"
+      ],
+      "storedAfter": "Cut the launch trailer and have it checked. Marker AGENT-TITLE."
+    },
+    "RRT-05": {
+      "result": "Pass",
+      "rows": {
+        "peerAgent": "Cut the launch trailer and have it checked. Marker AGENT-TITLE.",
+        "peerTeam": "Cut the launch trailer and have it checked. Marker TEAM-TITLE.",
+        "plain": "Plan the weekly menu for the cafe. Marker PLAIN-TITLE.",
+        "skill": "Draft a note about owls. Marker SKILL-TITLE."
+      },
+      "teamRowSeen": [
+        {
+          "atMs": 11,
+          "text": "Cut the launch trailer and have it checked. Marker TEAM-TITLE."
+        }
+      ],
+      "storedAfter": "Cut the launch trailer and have it checked. Marker TEAM-TITLE."
+    },
+    "RRT-06": {
+      "result": "Pass",
+      "terminateStatus": 200,
+      "stoppedRow": "Draft a note about owls. Marker SKILL-TITLE.",
+      "stoppedAfterReload": "Draft a note about owls. Marker SKILL-TITLE.",
+      "liveContexts": [
+        "publisher_00599ff5c8eb430490d74f8ef41d6cd7",
+        "writer_2573c32a3ae94d99ad402c2c43313dd7"
+      ]
+    }
+  },
+  "browserErrors": [],
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "finishedAt": "2026-11-08T18:07:55.419Z"
+}

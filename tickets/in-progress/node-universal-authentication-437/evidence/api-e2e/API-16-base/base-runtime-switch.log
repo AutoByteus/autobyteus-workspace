@@ -1,0 +1,5 @@
+# API-16-base base-runtime-switch: (cwd /tmp/abtest437r2/base-wt/autobyteus-web) node tests/e2e/runtime-switch-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/tickets/in-progress/node-universal-authentication-437/evidence/api-e2e/API-16-base/base-runtime-switch
+# 2026-11-08T19:44:34Z; load 92.89 98.40 83.76
+  · the native agent answered in the chat
+  · the runtime menu of the stopped run offers the other agent runtimes
+RSW-01 Fail — no runtime-change hint after choosing another runtime

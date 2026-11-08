@@ -1,0 +1,11 @@
+# API-16 run-history-read-budget-seed: node tests/e2e/run-history-read-budget-probe.mjs --seed-to /tmp/abtest437r2/seeds/run-history --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/tickets/in-progress/node-universal-authentication-437/evidence/api-e2e/API-16-probes/run-history-read-budget-seed
+# commit 32e9ad944c + round-2 probe migration; 2026-11-08T19:35:43Z
+  agent runs 40/40
+  team runs 40/200
+  team runs 80/200
+  team runs 120/200
+  team runs 160/200
+  team runs 200/200
+  org runs 10/10
+Seeded {"agentRuns":40,"teamRuns":200,"orgRuns":10,"teamMembers":5,"perAgent":{"main":20,"side":12,"third":8}} in 42 s
+PASS /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/tickets/in-progress/node-universal-authentication-437/evidence/api-e2e/API-16-probes/run-history-read-budget-seed/evidence.json

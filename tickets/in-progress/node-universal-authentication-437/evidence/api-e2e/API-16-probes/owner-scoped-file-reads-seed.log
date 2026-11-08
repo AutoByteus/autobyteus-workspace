@@ -1,0 +1,6 @@
+# API-16 owner-scoped-file-reads-seed: node tests/e2e/owner-scoped-file-reads-probe.mjs --seed-to /tmp/abtest437r2/seeds/owner-scoped --unrelated 100 --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/tickets/in-progress/node-universal-authentication-437/evidence/api-e2e/API-16-probes/owner-scoped-file-reads-seed
+# commit 32e9ad944c + round-2 probe migration; 2026-11-08T19:31:48Z
+[2026-11-08T19:31:53.553Z] SEED start: Seed hub, Team and Org runs with member files, plus 100 unrelated saved team runs, through public APIs
+  unrelated team runs 100/100
+[2026-11-08T19:32:04.299Z] SEED Pass
+{"result":"Pass","cases":{"SEED":"Pass"},"failures":[],"cleanup":{"frontend":{"pid":null,"status":"not-running"},"backend":{"pid":55930,"status":"terminated","exit":0}},"evidencePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/tickets/in-progress/node-universal-authentication-437/evidence/api-e2e/API-16-probes/owner-scoped-file-reads-seed/evidence.json"}

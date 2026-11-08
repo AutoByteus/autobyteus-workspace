@@ -20,10 +20,10 @@ scores and the broader-validation decision are in `api-e2e-execution-coverage-re
 - Relevant Delivery Revision IDs: N/A
 - API/E2E Revision Record (created after the first completed result): `tickets/in-progress/node-universal-authentication-437/api-e2e-revision-record.md`
 - Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: 1
-- Trigger: Code Reviewer CRR-002 Pass on IR-002, HEAD `b6a57ab154`, base `b690a5dfdb`
-- Prior Investigation Reviewed: none (first round)
-- Latest Authoritative Investigation: this document, round 1
+- Current Investigation Round: 2
+- Trigger: round 1 Code Reviewer CRR-002 Pass on IR-002 (`b6a57ab154`); round 2 Code Reviewer CRR-004 Pass on IR-003 (HEAD `32e9ad944c`, fixes for API-REV-001 F-1…F-3 and O-1, O-2)
+- Prior Investigation Reviewed: round 1 (this document, API-REV-001)
+- Latest Authoritative Investigation: this document, round 2
 
 ## Current Requirement And Design Basis
 
@@ -233,6 +233,23 @@ To be decided per case while updating API-09/API-10; recorded in the report with
 | F-2 `searchFiles` aborted by the gate's async `preValidation` hook | `Local Fix` | API-03 MSP-08, `API-03-MSP-08-cause.txt` | implementation engineer |
 | F-3 `MemorySyncNotMigratedError.statusCode = 503` turns the settings GraphQL into HTTP 503 | `Local Fix` | API-08 NVP-05, `API-08-NVP-05-cause.txt` | implementation engineer |
 | Probes asserting the removed one-way registration, `resolvePeerAddress`, `peerAddressCandidates` | test validity decided by the removal plan and M-9 | API-09, API-10 | API/E2E (updated) |
+
+## Round 2 Rerun Plan (TESTING.md "Rerun by impact")
+
+Validated commit: `b6a57ab154` (round 1). `git diff --name-only b6a57ab154 32e9ad944c` outside `tickets/`: `autobyteus-web/nuxt.config.ts` (dev proxy now Nitro `devProxy`), `src/api/graphql/graphql-request-context.ts`, `src/memory-sync/shared/memory-sync-capability.ts`, `autobyteus-web/utils/nodeDesktopClient.ts` + localization (O-2), launcher next-step text (O-1), new tests (`dev-proxy-websockets-probe.mjs`, two server e2e files, unit), my 960cfc0661 test changes.
+
+| Case | Decision | Reason |
+| --- | --- | --- |
+| API-15 | Rerun | the dev proxy changed (F-1 fix); the real `pnpm dev` window |
+| API-03 mobile-shell | Rerun (full) | F-2 fix; the desktop window goes through `nuxt dev` (build configuration changed); phone bundle rebuilt |
+| API-08 node-vocabulary | Rerun | F-3 fix; `nuxt dev` |
+| API-05, 06, 07, 09, 10 | Rerun | `nuxt.config.ts` is build configuration every probe's window runs through (Rerun-by-impact rule 4) |
+| API-01 | Partial rerun on a rebuilt app (API-00 r2) | renderer and GraphQL context changed: re-prove AC-003 files incl. search in the app window; app start, terminal |
+| API-02 | Partial: O-2 by the implementation's spec (IR003-11); the Docker launcher text (O-1) by IR003-13 | publishing, setup codes and the container path unchanged (launcher change is one text line) |
+| API-04, API-11, API-12, API-13, API-14b | Still valid | nothing they exercise changed: admission, peers, launcher logic; `requestAbortSignal` is used only by `searchFiles` |
+| API-16 | New this round | 34 probes moved to `fixtures/probe-node-access.mjs`; the deterministic ones run; live ones (real Codex/Claude/AGY inference or signed-in CLIs) not run: same credential path, and real-provider runs only when the change needs real-provider proof |
+| API-FS | Run on HEAD | build inputs changed again (`nuxt.config.ts`, `package.json`) |
+| R-IMP | Reused: IR003-01…13 at `0c755805d3` (HEAD adds docs only) | |
 
 ## Investigation Decision
 
