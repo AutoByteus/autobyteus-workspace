@@ -10,6 +10,8 @@
 | CRR-004 | `code-review-report.md` | Implementation Review, round 4, Full Re-Audit (IR-003, SR-008) | Fail — Design Impact | Fail — Local Fix (implementation) | F-004, F-005; F-API-001/002 answered in code |
 | CRR-005 | `code-review-report.md` | Implementation Review, round 5, Targeted Delta (IR-004, `c8b4b659cd`) | Fail — Local Fix | Pass | F-004, F-005 (resolved) |
 | CRR-006 | `api-e2e-test-review-report.md` | Proportional test-code review after API-REV-002 Pass | Pass (CRR-005) | Pass | none |
+| CRR-007 | `code-review-report.md` | Implementation Review, ticket round 2 (IR-005, items 9, 20–23) | Pass (round 1 finalized) | Pass | none |
+| CRR-008 | `api-e2e-test-review-report.md` | Proportional test-code review, ticket round 2 (after API-REV-003 Pass; `94d7dca6b4`) | Pass (CRR-007) | Pass | none |
 
 ## Revision Entries
 
@@ -197,3 +199,63 @@ None (no prior test-review findings; implementation findings F-001…F-005 and F
 - Material score or classification changes: none. Medium / High is unchanged.
 - Recommended recipient: `/software_engineering_team/delivery_engineer`
 - Remaining risks or uncertainty: AC-004b is round 2 (DEC-013); the release-runner builds; FU-001…FU-003.
+
+### CRR-007 — Ticket round 2 (items 9, 20–23): full review, Pass
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-426/tickets/in-progress/small-follow-ups-batch-426/code-review-report.md` (rewritten for ticket round 2; round 1's history stays in this record)
+- Review entry point and round: Implementation Review, review round 7 (the first of ticket round 2)
+- Review scope: `Full Review` of the round-2 package (`git diff d785ded109 736b51f87a`)
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, `implementation-handoff.md` (IR-005)
+- Relevant solution revision IDs: SR-009…SR-014
+- Relevant architecture-review revision IDs: ARCH-REV-008, ARCH-REV-009
+- Relevant implementation revision IDs: IR-005
+- Relevant API/E2E revision IDs: N/A
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Pass (CRR-006; round 1 finalized)
+- Current authoritative result: Pass
+- What changed in the review result and why:
+  - D-09: the server's states-only read, the client's one status shape, and the store's currency/inactive/child-set/single-flight rules match SR-012 and ARCH-REV-007/008. The server's status source equals the view's.
+  - D-20: implemented in the SR-013 forms; the window probe is unchanged (DEC-017).
+  - D-21: implemented as SR-014 with every ARCH-REV-009 note. The 1st-to-4th boundary follows from the three-distinct-days rule and is recorded.
+  - D-22 and D-23 are as designed.
+  - No findings.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+None for ticket round 2 (all round-1 findings were resolved at CRR-005).
+
+- New or remaining finding IDs: none
+- Material score or classification changes: average 9.4. Medium / High is unchanged.
+- Recommended recipient: `/software_engineering_team/api_e2e_engineer`
+- Remaining risks or uncertainty: these are API/E2E's: AC-009a…c (payload, no view read on unchanged polls, phone), the AC-020 Nodes page probe step, whether `peer-host-refused` ran (it skips when `lvh.me` does not resolve), the full server E2E and the fresh-start build.
+
+### CRR-008 — Ticket round 2 test-code review after API-REV-003: Pass
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-426/tickets/in-progress/small-follow-ups-batch-426/api-e2e-test-review-report.md` (rewritten for ticket round 2; round 1's result stays in CRR-006)
+- Review entry point and round: successful API/E2E test-code review, test-review round 2
+- Review scope: `N/A` (test review)
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, `api-e2e-execution-coverage-report.md` § Ticket Round 2 (API-REV-003 Pass)
+- Relevant solution revision IDs: SR-009…SR-014
+- Relevant architecture-review revision IDs: ARCH-REV-008, ARCH-REV-009
+- Relevant implementation revision IDs: IR-005
+- Relevant API/E2E revision IDs: API-REV-003
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Pass (CRR-007, implementation review)
+- Current authoritative result: Pass (test review)
+- What changed in the review result and why: `94d7dca6b4` was reviewed.
+  - MSP-20 proves AC-009a…d on the desktop Runs view and the phone list through real triggers: the hub's own delegation, the collaboration socket, and `terminateAgentRun`. Its bounds come from the requirement.
+  - MSP-02 (a) now follows REQ-009 instead of the superseded DEC-013.
+  - MSP-12 counts status reads.
+  - NP-13 proves AC-020 (2) with a control case.
+  - No findings. One non-blocking note: NP-13's dependence on `lvh.me` resolving.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: none
+- Material score or classification changes: none. Medium / High is unchanged.
+- Recommended recipient: `/software_engineering_team/delivery_engineer`
+- Remaining risks or uncertainty: the Workspaces tree has no probe step of its own (specs cover it); AC-020 (3) is proven at spec and server level only (DEC-017, FU-004); the release-runner builds.
