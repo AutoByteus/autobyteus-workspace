@@ -239,13 +239,15 @@ Shows external-client guidance for the backend general MCP gateway:
 
 - endpoint: `${serverBaseUrl}/mcp/gateway`
 - example Streamable HTTP client JSON config
-- bearer-token guidance for `AUTOBYTEUS_MCP_GATEWAY_TOKEN`
-- copy feedback for endpoint/config copy actions
+- the node's gateway token, hidden until shown, with Copy and Regenerate
+  (`GET /rest/mcp-gateway/token`, `POST /rest/mcp-gateway/token/regenerate`,
+  owner routes); a token set by `AUTOBYTEUS_MCP_GATEWAY_TOKEN` cannot be
+  regenerated here
+- copy feedback for endpoint/config/token copy actions
 
-The panel is informational only. Gateway access control is backend-owned: when
-`AUTOBYTEUS_MCP_GATEWAY_TOKEN` is set, clients must send `Authorization: Bearer
-<token>`; when it is unset, the backend accepts only local loopback requests.
-The frontend does not display or manage the token.
+Gateway access control is backend-owned: every client sends `Authorization:
+Bearer <token>` and must come from a network the node admits (node access model
+NA-12); there is no loopback exception.
 
 ### ToolList.vue
 

@@ -136,20 +136,25 @@ credential may do inside the endpoints it reaches (slice 2).
 
 ## 5. Current State Versus Target
 
-Status as of the change that published this document (autobyteus-437, design).
-Update this table when a change lands.
+Status as of autobyteus-437 slice 1 (implementation). Update this table when a change lands.
 
 | Item | Status | Notes |
 | --- | --- | --- |
-| NA-1, NA-2, NA-5, NA-6, NA-7, NA-13, NA-14 | **Target** (autobyteus-437 slice 1) | Today a request without a credential passes every route except owner routes for phones; only phone credentials are checked. |
-| NA-3, NA-4 | **Target** (slice 1) | Today the desktop node and Docker nodes accept connections from every network. |
-| NA-8 | Holds for phones; **target** for desktops | Phone credentials are not logged; desktops have none yet. |
-| NA-9 | **Target** (slice 1) | Today a peer is identified by the `fromNodeId` in the request body. |
-| NA-10 | Holds for phone pairing; **target** for the rest | |
-| NA-11 | Holds for phones on HTTP and node-desktop streams; **target** for other open WebSockets, owner credentials and peers | Today only node-desktop streams re-check a phone credential. |
-| NA-12 | **Target** (slice 1) | Today the MCP gateway needs no token from this computer, and the token exists only as an optional setting. |
-| NA-15 | **Target** (slice 1) | Today the desktop hands its node no credential. |
+| NA-1, NA-2, NA-6, NA-7, NA-13, NA-14 | **Holds** (slice 1) | The gate (`src/api/security/node-access-gate.ts`) decides every request after the Host and Origin rules; route permissions in `node-route-permissions.ts`; refusal codes in `src/node-access/domain/node-access-refusal.ts`. A credential that cannot be checked while its data waits for a migration is answered 503 with that subsystem's code (`NODE_IDENTITY_NOT_MIGRATED`, `MEMORY_SYNC_NOT_MIGRATED`). |
+| NA-3 | **Holds** (slice 1) | Network admission on the client address (`src/node-access/services/network-admission.ts`), with `AUTOBYTEUS_ALLOWED_CLIENT_NETWORKS`. |
+| NA-4 | **Holds** for Docker nodes made or recreated by the launcher (slice 1) | The launcher publishes on `127.0.0.1` and the host's Tailscale address, or every address with `--allow-local-network` (config hash `v10`). A node created by an older launcher keeps its publishing until `setup-code`, `start` or `upgrade` recreates it (NAS-34). |
+| NA-5 | **Holds** (slice 1) | Launch credential (`AUTOBYTEUS_LAUNCH_OWNER_CREDENTIAL`, taken by `src/node-access/launch-credential-intake.ts`); setup codes from the local control socket (`dist/node-access-cli.js setup-code`, `autobyteus-docker setup-code`) and from an owner desktop. |
+| NA-8 | **Holds** (slice 1) | Phone, owner and memory sync credentials are kept hashed; refusal lines carry codes only; an application backend never receives the node credential. |
+| NA-9 | **Holds** (slice 1) | Peers pair with one invite (`createPeerInvite` / `acceptPeerInvite`); requests are signed (`src/remote-collaboration/channel/peer-request-signature.ts`). Peers paired before slice 1 show "Pair again". |
+| NA-10 | **Holds** (slice 1) | Setup codes 30 min, peer invites 10 min, phone pairing codes as before; all single use; a wrong, expired or used code is refused 401. |
+| NA-11 | **Holds** (slice 1) | Owner credential, phone, peer and memory sync revocations close open sockets at once (`open-socket-registry.ts`). |
+| NA-12 | **Holds** (slice 1) | The MCP gateway needs admission and its token (`src/mcp-gateway/mcp-gateway-token-service.ts`). |
+| NA-15 | **Holds** (slice 1) | The node takes the launch credential out of its environment before anything spawns. |
 | Phone limits inside reachable endpoints (folders, `createWorkspace`, settings, terminal), credential expiry, application-scoped credentials | **Later** (slice 2, includes autobyteus-436) | |
+
+Verification: `tests/e2e/node-access/node-access-model.e2e.test.ts` (server-checkable scenarios), the
+remote collaboration two-server e2e (NAS-19, NAS-20), unit tests, the Electron specs and the launcher tests;
+`tests/architecture/node-access-boundaries.test.ts` checks that every scenario ID is named by a test.
 
 ## 6. Where The Mechanics Live
 

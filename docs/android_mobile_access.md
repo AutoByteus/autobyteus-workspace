@@ -8,7 +8,7 @@ Connecting a phone is one step on each side: on the desktop, open the node's **N
 
 - **Android app:** the node list (scan-first start screen and **Switch node**), app-owned QR scanning and camera permission handling, the connect sequence and its plain-words reasons, saved node entries, the shell bridge to the open node's page, the VNC Viewer's desktop full screen (landscape and hidden system bars while the page asks for it), WebView containment, build/package.
 - **Existing `/mobile` shell:** the run list, the run screen with its ⋮ views (Artifacts, Files, Messages, Activity, and VNC Viewer on a node with a node desktop), New run for agent runs, the connection sheet, pairing bootstrap, and mobile session restore. There is no mobile Terminal or Tools page. The VNC Viewer streams the node desktop through the node's own server (see `autobyteus-web/docs/remote_access.md`, "Node desktop on the phone").
-- **Remote Access backend:** Phone Access status, trusted-network owner routes, pairing sessions, pairing exchange, mobile credentials, revocation.
+- **Remote Access backend:** Phone Access status, owner routes, pairing sessions, pairing exchange, phone credentials, revocation (every request to a node needs a credential: `autobyteus-server-ts/docs/design/node_access_model.md`).
 - **Public Docker launcher:** normal Docker node creation, shared workspace bind mounts, named volumes, and mobile-web asset packaging through the published image path.
 - **Tailscale:** private network reachability only; it is not AutoByteus authorization.
 
@@ -26,20 +26,22 @@ The QR holds one address: the best checked address of the way the desktop's tab 
    ```bash
    autobyteus-docker new-container
    ```
-3. Save the printed Backend URL. Add it as a remote node only over a trusted LAN, VPN, tailnet, or equivalent private-network path; do not expose the full backend directly to the public internet.
-4. In the desktop app, add the Docker Backend URL as a remote node in **Nodes -> Manage Nodes**, then click **Open** for that Docker node. Desktop/Electron access to that node follows the trusted private-network product model and does not require a separate setup secret.
-5. In the Docker node window, open **Nodes -> Phone Setup** and press **Show QR code** on the selected tab. The addresses are this computer's addresses with the port the Docker node is published on, each checked to reach that Docker node; a node published only on `127.0.0.1` is reported as not reachable from other devices.
+   The node is published on this computer and, when Tailscale runs here, on this computer's Tailscale address. For phones on your Wi-Fi, create it with `autobyteus-docker new-container --allow-local-network`. Do not expose the backend directly to the public internet.
+3. Save the printed Backend URL and setup code (`autobyteus-docker setup-code` prints a new one later).
+4. In the desktop app, add the Docker Backend URL as a remote node in **Nodes -> Manage Nodes**, enter the setup code to connect it, then click **Open** for that Docker node.
+5. In the Docker node window, open **Nodes -> Phone Setup** and press **Show QR code** on the selected tab. The addresses are this computer's addresses with the port the Docker node is published on, each checked to reach that Docker node; an address the node is not published on (the local network without `--allow-local-network`) is reported as not reachable from other devices.
 6. Scan the QR with AutoByteus Android. It pairs with the Docker node, lists it under its name from the Nodes page, and mobile-started work runs inside that node's container runtime.
 
 A company address set on the Docker deployment (`AUTOBYTEUS_SERVER_HOST`) is offered under **Company address**. Tailscale Serve and proxies that keep `Host` (or send `X-Forwarded-Host`) need nothing else; an ingress that rewrites `Host` without `X-Forwarded-Host` needs the phone URL's origin in the node setting `AUTOBYTEUS_ALLOWED_ORIGINS`, or the node refuses the phone's requests with `REMOTE_ACCESS_ORIGIN_REFUSED` (see `autobyteus-server-ts/docs/features/remote_access.md`, Allowed Origins). The node also checks the name a request is addressed to: the company address in `AUTOBYTEUS_SERVER_HOST` and the address each phone was paired with are accepted; any other public domain the node is reached by needs to be listed in `AUTOBYTEUS_ALLOWED_HOSTS`, or the node refuses it with `REMOTE_ACCESS_HOST_REFUSED` (Allowed Hosts in the same document).
 
-Do not solve Docker-node Phone Access setup by exposing raw Docker ports broadly or by treating Docker bridge/LAN addresses as loopback/local trust. The full backend is meant for trusted private networks, not direct public internet exposure.
+Do not solve Docker-node Phone Access setup by exposing raw Docker ports broadly. The backend is meant for private networks (Tailscale, an allowed local network), not direct public internet exposure.
 
 ### Credential boundaries
 
-- Desktop/Electron remote-node access follows the trusted private-network product model and does not require an extra setup secret in the default flow.
-- Paired Android/mobile clients receive separate `mra_...` mobile credentials from the pairing exchange.
-- Mobile credentials authorize protected mobile app calls only where the route class accepts mobile credentials; they do not authorize owner-management routes such as settings changes, pairing-session creation, device listing, or revocation.
+- The desktop app holds an owner credential for each node: its own node's comes with every start; a remote or Docker node's comes from a setup code read on that node's computer.
+- Paired Android/mobile clients receive separate `mra_...` phone credentials from the pairing exchange.
+- Phone credentials open the phone's routes only; they do not open owner actions such as settings changes, pairing-session creation, device listing, or revocation (403 `NODE_ROUTE_NOT_PERMITTED`).
+- A node accepts phones only from networks it admits: Tailscale, a local network the owner allowed, or a network listed in its `AUTOBYTEUS_ALLOWED_CLIENT_NETWORKS` (a company VPN or proxy network); elsewhere it answers `NODE_NETWORK_REFUSED` and the phone says so.
 - Pairing payloads contain the one-time pairing code and server base URL; they must not contain desktop/owner authority.
 - Public server Docker images build and package the `/mobile` web shell into `autobyteus-server-ts/mobile-web`, so a fresh launcher-managed Docker container should serve `/mobile` without manual file copies.
 
