@@ -1,5 +1,7 @@
 # API/E2E Coverage Investigation — autobyteus-434
 
+> **Case IDs renumbered in round 3** (delivery DR-001: autobyteus-426 added its own MSP-20 to the probe): this ticket's MSP-20 → **MSP-21**, MSP-21 → **MSP-22**, MSP-22 → **MSP-23**. This document uses the new IDs; archived evidence folders and screenshots of rounds 1–2 keep the old names (`MSP-20-rerun/`, `MSP-21-rerun-tr001/`, `MSP-22-rerun/`, `MSP-20-22-live-reconnect/`, `MSP-2x-phone-*.png`).
+
 The plan: what must be proven, how, the decisions about existing tests, and the planned cases. Results, confidence scores and the broader-validation decision are in `api-e2e-execution-coverage-report.md`.
 
 ## Investigation Meta
@@ -18,8 +20,8 @@ The plan: what must be proven, how, the decisions about existing tests, and the 
 - Delivery Revision Record (delivery re-entry only): N/A
 - Relevant Delivery Revision IDs: N/A
 - API/E2E Revision Record (created after the first completed result): `api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: 1
+- Current API/E2E Revision ID: `API-REV-003`
+- Current Investigation Round: 3 (round 2: TR-001; round 3: delivery DR-001, merged state, renumbered IDs)
 - Trigger: code review pass CRR-001 (Medium / High, reviewed route)
 - Prior Investigation Reviewed: N/A (first round)
 - Latest Authoritative Investigation: this file, round 1
@@ -50,21 +52,21 @@ Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/phone-live-updates-43
 
 | Behavior ID / Boundary | Change Type | Upstream Evidence | Coverage Consequence |
 | --- | --- | --- | --- |
-| BEH-001 live delay | Preserved | R1 IMP-12 | Next-marker delay in MSP-20/MSP-21 (≤ 1 s) |
-| BEH-002 short outage | Preserved (agent now also catches up) | R2 IMP-12 | Reuse IMP-12 R2; agent catch-up proven by MSP-20 (long outage, same attempt path) |
-| BEH-003 long outage | Changed | design DS-002/DS-003 | MSP-20 on Team member, agent run, Org member |
-| BEH-004 resume / re-sync / hold | Changed | design DS-002 resume branch | MSP-21 (emulated visibility); API-09 emulator |
-| BEH-005 one copy on load | Changed | design DS-004 | MSP-22 on Team member and agent run; stored raw record read |
-| BEH-006 sending view | Preserved | R6 | MSP-22 sending phones |
+| BEH-001 live delay | Preserved | R1 IMP-12 | Next-marker delay in MSP-21/MSP-22 (≤ 1 s) |
+| BEH-002 short outage | Preserved (agent now also catches up) | R2 IMP-12 | Reuse IMP-12 R2; agent catch-up proven by MSP-21 (long outage, same attempt path) |
+| BEH-003 long outage | Changed | design DS-002/DS-003 | MSP-21 on Team member, agent run, Org member |
+| BEH-004 resume / re-sync / hold | Changed | design DS-002 resume branch | MSP-22 (emulated visibility); API-09 emulator |
+| BEH-005 one copy on load | Changed | design DS-004 | MSP-23 on Team member and agent run; stored raw record read |
+| BEH-006 sending view | Preserved | R6 | MSP-23 sending phones |
 | BEH-007 403/416, `/ws/terminal` | Preserved | route-policy tests | API-02 (reused), API-06 server E2E |
 | `WebSocketClient` reduced to a socket; `RECONNECTING` removed | Removed | design removal plan | Unit specs (reused); probes see no give-up |
-| Collaboration stream (delegated copy) reconnect | Changed | per-owner table | Unit specs; and MSP-20 asserts the collaboration stream the phone keeps for a top-level agent run reconnects after the outage (found during execution) |
+| Collaboration stream (delegated copy) reconnect | Changed | per-owner table | Unit specs; and MSP-21 asserts the collaboration stream the phone keeps for a top-level agent run reconnects after the outage (found during execution) |
 
 ## Changed Surface And Boundary Classification
 
 | Surface / Boundary | Affected? | Actual Changed Boundary | Repository Evidence Available | Material Risk Not Exercised By That Evidence | Candidate Broader Validation Mode |
 | --- | --- | --- | --- | --- | --- |
-| Domain / backend logic | Yes | external-runtime memory recorder writes identity | IMP-02 (real recorder, writer, projection provider) | Real AGY run through the node's admission path | MSP-22 reads the stored raw record of a real run |
+| Domain / backend logic | Yes | external-runtime memory recorder writes identity | IMP-02 (real recorder, writer, projection provider) | Real AGY run through the node's admission path | MSP-23 reads the stored raw record of a real run |
 | API / transport / contract | Yes (client transport) | `WebSocketClient` plain socket; four stream owners' reconnect | Unit specs with fake sockets (IMP-06/07/08) | Real sockets, real node close/refuse/blackhole | Browser probe through a TCP proxy |
 | Frontend component / state | Yes | stores (`agentRunStore` connect rule), hydration loader | Unit specs | Real hydration against the node | Browser probe |
 | Browser integration / user journey | Yes | phone run screen live updates | IMP-12 repro (Team member only) | Agent run, Org member; durable coverage | `test:e2e:mobile-shell` cases |
@@ -72,7 +74,7 @@ Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/phone-live-updates-43
 | Desktop renderer / web-equivalent UI | Yes (shared code) | same services in the desktop renderer | Unit specs | Desktop window re-sync cost (DEC-003) | Not an AC; residual |
 | Desktop shell / Electron-specific integration | No | — | — | — | None |
 | Process / lifecycle | Yes | page visibility / `online` lifecycle | Unit specs (fake visibility) | Real Android WebView visibility (ASM-001) | Android emulator journey |
-| Persisted-data transition | Yes | new optional keys on raw trace user records | IMP-02 old + new record | Real run's file | MSP-22 |
+| Persisted-data transition | Yes | new optional keys on raw trace user records | IMP-02 old + new record | Real run's file | MSP-23 |
 | Worker / queue / distributed coordination | No | — | — | — | None |
 | External integration | No | — | — | — | None |
 
@@ -116,7 +118,7 @@ Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/phone-live-updates-43
 - Approved decision: `Directly Usable — No Migration`.
 - Design-spec and implementation-handoff references: design § Persisted Data / State Transition Decision; handoff § Persisted Data Transition Check.
 - Representative existing-data setup and required behavior: an identity-less user record next to a new one loads through the normal projection reader (IMP-02 builds the user's real record shape).
-- Evidence planned: reuse IMP-02 (old + new records through the real reader); MSP-22 reads the raw trace file a real AGY run wrote through the node's admission path and checks `message_id`/`dedupe_key`.
+- Evidence planned: reuse IMP-02 (old + new records through the real reader); MSP-23 reads the raw trace file a real AGY run wrote through the node's admission path and checks `message_id`/`dedupe_key`.
 - Migration-specific scenarios: N/A.
 - Upstream ambiguity or reroute required: None.
 
@@ -146,9 +148,9 @@ Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/phone-live-updates-43
 | API-06 | AC-006 / BEH-007 | server E2E: Host/Origin, phone routes, `/ws/terminal` | Existing Test | `pnpm -C autobyteus-server-ts exec vitest run tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts --no-watch` (clean env) | Real HTTP/WS boundary of the preserved guard |
 | API-07 | regression | browser probe with the changed fixture page | Existing Test | `pnpm -C autobyteus-web test:e2e:task-agent-monitor-visibility --output-dir=<fresh>` | Its fixture changed in this ticket |
 | API-08 | AC-006 (+ the new cases) | phone bundle, existing MSP cases | Existing Test | `pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<fresh>` (all cases) | The phone shell regression net on the changed client |
-| MSP-20 | AC-001, AC-002, AC-006 (live delay) | phone bundle through a TCP proxy: Team member, top-level agent run, Org member | Durable | new case in `test:e2e:mobile-shell` | Durable proof of REQ-001 on three stream owners; watches the agent read-to-open window |
-| MSP-21 | AC-003, AC-004 | phone bundle, emulated visibility, WebSocket blackhole and refuse | Durable | new case in `test:e2e:mobile-shell` | Durable proof of REQ-002 |
-| MSP-22 | AC-005, AC-006 (sending view) | phone bundle composer → node → second client; raw trace file | Durable | new case in `test:e2e:mobile-shell` | Durable proof of REQ-004 on Team member and agent run |
+| MSP-21 | AC-001, AC-002, AC-006 (live delay) | phone bundle through a TCP proxy: Team member, top-level agent run, Org member | Durable | new case in `test:e2e:mobile-shell` | Durable proof of REQ-001 on three stream owners; watches the agent read-to-open window |
+| MSP-22 | AC-003, AC-004 | phone bundle, emulated visibility, WebSocket blackhole and refuse | Durable | new case in `test:e2e:mobile-shell` | Durable proof of REQ-002 |
+| MSP-23 | AC-005, AC-006 (sending view) | phone bundle composer → node → second client; raw trace file | Durable | new case in `test:e2e:mobile-shell` | Durable proof of REQ-004 on Team member and agent run |
 | API-09 | AC-003 (ASM-001), FU-003 watch | real Android app in an emulator | Journey (temporary harness) | node + runs, pairing link `http://10.0.2.2:<port>`, app to background, screen off ≥ 2 min while the agent answers, then back; the WebView's DOM via its accessibility tree and the node's access log | Emulator journeys need a device; not a package probe (TESTING.md: temporary ticket-owned automation is fine) |
 | API-10 | AC-006 (BEH-001, BEH-002) | phone bundle, Team member | Reused | IMP-12 (R1, R2) | Same commit; the durable cases cover the long-outage path and live delay |
 
@@ -158,13 +160,13 @@ Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/phone-live-updates-43
 
 | Case ID | Planned Test Path | Why Durable Coverage Is Needed |
 | --- | --- | --- |
-| MSP-20, MSP-21, MSP-22 | `autobyteus-web/tests/e2e/mobile-live-reconnect-cases.mjs` (new; its own node gamma, TCP proxy and phone browser), registered from `autobyteus-web/tests/e2e/mobile-shell-probe.mjs` | TESTING.md: phone behavior is proven by a `test:e2e:mobile-shell` case; the design names these cases. A separate cases file keeps the 1,911-line probe from growing (the repo's `*-cases.mjs` pattern) and its node keeps the cases' outages and runs away from the shared alpha stack. |
+| MSP-21, MSP-22, MSP-23 | `autobyteus-web/tests/e2e/mobile-live-reconnect-cases.mjs` (new; its own node gamma, TCP proxy and phone browser), registered from `autobyteus-web/tests/e2e/mobile-shell-probe.mjs` | TESTING.md: phone behavior is proven by a `test:e2e:mobile-shell` case; the design names these cases. A separate cases file keeps the 1,911-line probe from growing (the repo's `*-cases.mjs` pattern) and its node keeps the cases' outages and runs away from the shared alpha stack. |
 
 ## Durable Coverage To Update
 
 | Case ID | Existing Path / Test | Required Update | Notes |
 | --- | --- | --- | --- |
-| MSP-20…22 | `autobyteus-web/tests/e2e/mobile-shell-probe.mjs` | Header lists the new cases; `runCases` calls the cases module last | No change to existing cases |
+| MSP-21…23 | `autobyteus-web/tests/e2e/mobile-shell-probe.mjs` | Header lists the new cases; `runCases` calls the cases module last | No change to existing cases |
 
 ## Durable Coverage To Remove
 
@@ -177,7 +179,7 @@ None.
 - Health / readiness checks: `/rest/health`; the phone's run screen `data-state="open"`; warm-up reply shown.
 - Seed data / fixtures: public GraphQL only.
 - Test identities: Phone Access pairing on gamma.
-- Requirement-linked journeys: MSP-20…22 and API-09 as above.
+- Requirement-linked journeys: MSP-21…23 and API-09 as above.
 - Evidence to capture: probe JSON (per-case details: timings, sockets, copies, stored record keys), screenshots, server logs; emulator screenshots, UI-hierarchy dumps, node access log.
 - Owned processes and temporary state to clean up: probe stack (its `finally`), gamma, proxy, the cases' browser; the emulator instance and its harness node.
 
@@ -185,7 +187,7 @@ None.
 
 | Behavior / Boundary | Reason | Risk | Only The User Can Check? | Required Follow-Up Or Escalation |
 | --- | --- | --- | --- | --- |
-| A delegated copy's *conversation* on the phone after a long outage | The scripted runtime mode that answers `REPLY:<content>` cannot delegate; the collaboration *stream* is probed (MSP-20) and its adoption unit-tested; AC-002's verification intent asks a probe for at least the agent run and Team member | Low: the collaboration catch-up is its existing snapshot path, unchanged | No | None |
+| A delegated copy's *conversation* on the phone after a long outage | The scripted runtime mode that answers `REPLY:<content>` cannot delegate; the collaboration *stream* is probed (MSP-21) and its adoption unit-tested; AC-002's verification intent asks a probe for at least the agent run and Team member | Low: the collaboration catch-up is its existing snapshot path, unchanged | No | None |
 | Screen-on silent dead path (R4) | Out of scope (FU-001) | — | No | FU-001 |
 | Desktop window re-sync cost (DEC-003) | Not an acceptance criterion; same code as the phone | Low | No | None |
 | A real phone on a real network | The emulator and proxy emulate it | Low | No | None |
@@ -194,14 +196,14 @@ None.
 
 | Issue | Classification | Evidence | Recommended Owner |
 | --- | --- | --- | --- |
-| A visible missing event right after an agent reconnect | Would be `Design Impact` (design § Risks) | to be observed in MSP-20 | Solution Designer via failure-origin review |
+| A visible missing event right after an agent reconnect | Would be `Design Impact` (design § Risks) | to be observed in MSP-21 | Solution Designer via failure-origin review |
 | Agent catch-up read hanging on the emulator (scheduler stays `attempting`, FU-003/C-5) | Send back for failure-origin review if seen (code reviewer's request) | to be observed in API-09 | Code reviewer |
-| A tap on an active Team fails while the phone's first history read mounts it (`became mounted while it was loading`) | Not this change (files untouched); follow-up FU-004 | MSP-22 first evidence run | Solution Designer (sends follow-ups) |
+| A tap on an active Team fails while the phone's first history read mounts it (`became mounted while it was loading`) | Not this change (files untouched); follow-up FU-004 | MSP-23 first evidence run | Solution Designer (sends follow-ups) |
 
 ## Investigation Decision
 
 - Proceed To API/E2E Execution: `Yes`
-- Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `Yes` (added MSP-20…22; probe header and runner updated)
+- Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `Yes` (added MSP-21…23; probe header and runner updated)
 - Reroute Required Before Validation Execution: `No`
 - Recommended Owner If Reroute Required: N/A
-- Notes: no fresh-start build (no build input changed). Updated during execution: MSP-20 also covers the collaboration stream; MSP-22 taps a second time only after the FU-004 failure; API-09's harness was corrected before its evidence run (see the report's API-09 Notes).
+- Notes: no fresh-start build (no build input changed). Updated during execution: MSP-21 also covers the collaboration stream; MSP-23 taps a second time only after the FU-004 failure; API-09's harness was corrected before its evidence run (see the report's API-09 Notes).

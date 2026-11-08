@@ -1,6 +1,6 @@
 // Live run streams on the phone after the path to the node drops, after the phone was in the background, and a user
 // message loaded during its own turn (autobyteus-434). Cases of `pnpm -C autobyteus-web test:e2e:mobile-shell`, run by
-// `mobile-shell-probe.mjs` after its own cases (`--cases=MSP-20,MSP-21,MSP-22` runs only these).
+// `mobile-shell-probe.mjs` after its own cases (`--cases=MSP-21,MSP-22,MSP-23` runs only these).
 //
 // Stack (owned by these cases, removed at their end, inside the probe's temp root):
 // - gamma, one more node from this worktree's `autobyteus-server-ts/dist/app.js`, on the scripted AGY CLI in case
@@ -19,18 +19,18 @@
 //   messages `MK-…`; the delay is the phone showing `REPLY:MK-…` minus the node producing it (seen by that client).
 //
 // Cases:
-//   MSP-20 AC-001, AC-002  Three phones show a Team member (the Team's coordinator), a top-level agent run and an Org run's
+//   MSP-21 AC-001, AC-002  Three phones show a Team member (the Team's coordinator), a top-level agent run and an Org run's
 //                  member. The path is refused for 45 s, then passes; a marker to each run is sent the moment it passes.
 //                  Each phone shows its marker without any action within 35 s, and the next marker within 1 s. While the
 //                  agent phone reconnects, the agent answers a marker every 2 s; every one of them ends up on the phone
 //                  (the agent catch-up reads the stored state before it opens the stream: nothing may be lost there).
-//   MSP-21 AC-003, AC-004  Two phones (Team member, agent run). Hidden 5 s with healthy streams, then visible: no new
+//   MSP-22 AC-003, AC-004  Two phones (Team member, agent run). Hidden 5 s with healthy streams, then visible: no new
 //                  stream. Hidden 35 s while the open streams die silently and the agent answers a marker: no stream is
 //                  opened while hidden; within 5 s of visible each phone shows the marker, the next within 1 s. Hidden while
 //                  the node is refused: no attempt of the run shown while hidden (Team phone: its Team socket; agent phone:
 //                  its catch-up read `GetRunProjection` or its socket), one within 2 s of visible (the agent's catch-up read
 //                  first); once the node passes, the phones catch up.
-//   MSP-22 AC-005  A phone sends "LONG-… HOLD_MS:30000" to the Team member and another to the agent run (a 30 s turn
+//   MSP-23 AC-005  A phone sends "LONG-… HOLD_MS:30000" to the Team member and another to the agent run (a 30 s turn
 //                  with a tool call). Each sending phone shows it once. A second phone opening each run during the turn
 //                  shows it once, before the tool call; again after the turn. The node's stored user record of each
 //                  message has `message_id` and `dedupe_key`.
@@ -52,7 +52,7 @@ const OUTAGE_MS = 45_000;
  */
 export const runLiveReconnectCases = async (probe) => {
   const { runCase, serverAt, freePort, chromium, executablePath, outputDir, evidence, sleep, waitFor, assert, redact } = probe;
-  const ids = ['MSP-20', 'MSP-21', 'MSP-22'];
+  const ids = ['MSP-21', 'MSP-22', 'MSP-23'];
   if (probe.selected && !ids.some(id => probe.selected.has(id))) return;
   const t0 = Date.now();
   const now = () => Date.now() - t0;
@@ -208,7 +208,7 @@ export const runLiveReconnectCases = async (probe) => {
         if (!cause && /: Failed to load resource: the server responded with a status of 404 \(Not Found\)$/.test(line)
           && sourceUrl.startsWith(phoneOrigin) && new URL(sourceUrl).pathname === '/favicon.ico') cause = 'the browser\'s favicon request at the origin root (404 /favicon.ico)';
         // autobyteus-434 FU-004 (pre-existing, outside this change): a tap on an active Team while the phone's first history
-        // read still mounts that Team in the background fails the tap's open; the user taps again (MSP-22 does, once).
+        // read still mounts that Team in the background fails the tap's open; the user taps again (MSP-23 does, once).
         if (!cause && line.includes(`console: Failed to open team: Error: Team context '${team.teamRunId}' became mounted while it was loading.`)) {
           phone.teamOpenRaces = (phone.teamOpenRaces ?? 0) + 1;
           cause = 'FU-004: the Team was mounted by the phone\'s first history read while the tap opened it';
@@ -281,8 +281,8 @@ export const runLiveReconnectCases = async (probe) => {
     const orgPhone = await phoneOn('org', 'phone-org');
     note('phones open', { team: keys.team, agent: keys.agent, org: keys.org });
 
-    await runCase('MSP-20', async () => {
-      for (const phone of phones) phone.case = 'MSP-20';
+    await runCase('MSP-21', async () => {
+      for (const phone of phones) phone.case = 'MSP-21';
       const before = now();
       refuse(); outage(true);
       await sleep(OUTAGE_MS);
@@ -305,7 +305,7 @@ export const runLiveReconnectCases = async (probe) => {
       const next = {};
       for (const [kind, phone] of Object.entries({ team: teamPhone, agent: agentPhone, org: orgPhone })) next[kind] = await phoneDelay(phone, kind, mark(kind), 15_000);
       const sockets = Object.fromEntries([teamPhone, agentPhone, orgPhone].map(phone => [phone.label, socketsOf(phone, before).map(({ url, openedAt, closedAt }) => ({ url: url.replace(/\?.*$/, ''), openedAt, closedAt }))]));
-      for (const phone of [teamPhone, agentPhone, orgPhone]) await shot(phone, `MSP-20-${phone.label}`);
+      for (const phone of [teamPhone, agentPhone, orgPhone]) await shot(phone, `MSP-21-${phone.label}`);
       // The collaboration stream a phone keeps for a top-level agent run (the stream of its delegated copies): each one
       // open before the outage is open again after it.
       const collaboration = Object.fromEntries([teamPhone, agentPhone, orgPhone].map((phone) => {
@@ -327,8 +327,8 @@ export const runLiveReconnectCases = async (probe) => {
       return details;
     });
 
-    await runCase('MSP-21', async () => {
-      for (const phone of phones) phone.case = 'MSP-21';
+    await runCase('MSP-22', async () => {
+      for (const phone of phones) phone.case = 'MSP-22';
       const pair = { team: teamPhone, agent: agentPhone };
       // (a) A short glance away with healthy streams: nothing reconnects.
       const glance = now();
@@ -379,7 +379,7 @@ export const runLiveReconnectCases = async (probe) => {
       await Promise.all(Object.entries(pair).map(async ([kind, phone]) => {
         try { await waitFor(`${back[kind]} after the node passes`, async () => shows(phone, `REPLY:${back[kind]}`), 40_000); backShownMs[kind] = Date.now() - passedAt; } catch { backShownMs[kind] = null; }
       }));
-      for (const phone of Object.values(pair)) await shot(phone, `MSP-21-${phone.label}`);
+      for (const phone of Object.values(pair)) await shot(phone, `MSP-22-${phone.label}`);
       const details = {
         glance: { hiddenMs: 5_000, newStreams: glanceSockets, nextMarkerDelayMs: glanceNext },
         hiddenDeadPath: { hiddenMs: 35_000, webSocketsBlackholed: blackholed, shownWhileHidden, streamsOpenedWhileHidden: openedWhileHidden, shownAfterVisibleMs: shownAfterVisible, nextMarkerDelayMs: hiddenNext },
@@ -398,8 +398,8 @@ export const runLiveReconnectCases = async (probe) => {
       return details;
     });
 
-    await runCase('MSP-22', async () => {
-      for (const phone of phones) phone.case = 'MSP-22';
+    await runCase('MSP-23', async () => {
+      for (const phone of phones) phone.case = 'MSP-23';
       const lines = text => text.split('\n').map(line => line.trim()).filter(Boolean);
       /** The message's copies and whether the turn's tool call (its `sleep` command) comes after the one copy. */
       const view = (text, message) => {
@@ -428,7 +428,7 @@ export const runLiveReconnectCases = async (probe) => {
       const openRetries = {};
       await Promise.all(Object.keys(sending).map(async (kind) => {
         const phone = await openPhone(`phone-second-${kind}`);
-        phone.case = 'MSP-22';
+        phone.case = 'MSP-23';
         await phone.page.goto(`${phoneOrigin}/mobile`, { waitUntil: 'domcontentloaded', timeout: 120_000 });
         await phone.page.locator('[data-testid="mobile-run-tree"]').waitFor({ timeout: 60_000 });
         await sleep(1_500);
@@ -443,7 +443,7 @@ export const runLiveReconnectCases = async (probe) => {
         await waitFor(`${phone.label}: the message`, async () => (await conversation(phone)).includes(message[kind].split(' ')[0]), 20_000).catch(() => undefined);
         await sleep(2_000);
         during[kind] = view(await conversation(phone), message[kind]);
-        await shot(phone, `MSP-22-${phone.label}-during-turn`);
+        await shot(phone, `MSP-23-${phone.label}-during-turn`);
         second[kind] = phone;
       }));
       const duringTurnElapsedMs = Date.now() - sentAt;
@@ -457,7 +457,7 @@ export const runLiveReconnectCases = async (probe) => {
         await waitFor(`${phone.label}: the reply`, async () => shows(phone, `REPLY:${message[kind]}`), 20_000).catch(() => undefined);
         await sleep(1_500);
         after[kind] = view(await conversation(phone), message[kind]);
-        await shot(phone, `MSP-22-${phone.label}-after-turn`);
+        await shot(phone, `MSP-23-${phone.label}-after-turn`);
       }
       const sendingAfter = {};
       for (const [kind, phone] of Object.entries(sending)) sendingAfter[kind] = view(await conversation(phone), message[kind]);

@@ -8,6 +8,7 @@ The latest coverage investigation and execution coverage report remain authorita
 | --- | --- | --- | --- | --- |
 | API-REV-001 | Code reviewer, `code-review-report.md` CRR-001 (Pass), round 1 | SR-004, ARCH-REV-003, IR-001, CRR-001 | N/A | Pass / 95.4% |
 | API-REV-002 | Code reviewer, `api-e2e-test-review-report.md` CRR-002 (Fail, TR-001), round 2 | CRR-002 | Pass / 95.4% (test review failed TR-001) | Pass / 95.4% |
+| API-REV-003 | Delivery engineer, `release-deployment-report.md` / `delivery-revision-record.md` DR-001 (Blocked: duplicate case ID MSP-20 after the base refresh), round 3 | CRR-003, DR-001 | Pass / 95.4% | Pass / 95.4% |
 
 ## Revision Entries
 
@@ -60,4 +61,34 @@ None.
 - Current result and confidence: Pass / 95.4% (the scores do not change: AC-004 for the agent owner is now measured on the phone as the round-1 report claimed).
 - New or remaining failure IDs: none.
 - Recommended owner: code reviewer (proportional test-code review, round 2).
+- Remaining risks, blocked evidence, or untested scope: unchanged from API-REV-001.
+
+### API-REV-003 — Case IDs renumbered after the base refresh; duplicate-ID guard; integrated-state run
+
+- Triggering role, report path, and round: delivery engineer, `release-deployment-report.md` and `delivery-revision-record.md` (DR-001, Blocked), round 3.
+- Triggering finding or case IDs: DR-001: after merging origin/personal `b690a5dfdb` (autobyteus-426 round 2, autobyteus-432), the probe had two cases with ID MSP-20 (426's D-09 case and this ticket's first case). `runCase` stores results by ID, so one overwrote the other.
+- Related revision IDs: CRR-003, DR-001.
+- Why this revision was recorded: `Local Fix` in API/E2E-owned durable test code.
+- Coverage decisions or durable test paths changed:
+  - `autobyteus-web/tests/e2e/mobile-live-reconnect-cases.mjs`: **MSP-20 → MSP-21, MSP-21 → MSP-22, MSP-22 → MSP-23** (the `ids` list, `runCase` IDs, `phone.case` labels, screenshot names, header and `--cases=` comment). autobyteus-426 keeps MSP-20.
+  - `autobyteus-web/tests/e2e/mobile-shell-probe.mjs`: header line and runtime note to MSP-21…23. **New guard:** before any stack starts, the probe reads its own source and the `*-cases.mjs` modules it imports and exits 1 on a case ID registered twice (`mobile-shell probe: duplicate case IDs …`). `runCase` also records a `"<id> (duplicate)"` failure if an ID runs twice (a non-literal ID the start check cannot read).
+  - No assertion changed.
+- Cases added, changed, removed, or rechecked:
+  - API-11: server and phone bundle rebuilt from the merged state.
+  - MSP-20 (426's), MSP-21, MSP-22, MSP-23 run together on the merged state: four distinct entries, all Pass. This is the integrated-state proof of AC-001…AC-005.
+  - Guard check: the new probe with the pre-renumber module stops at once (`duplicate case IDs MSP-20 (mobile-shell-probe.mjs, mobile-live-reconnect-cases.mjs)`, exit 1); with the renumbered module it passes the guard. A throwaway copy, removed afterwards.
+  - Not rerun: API-09 (emulator; the merge touches neither the Android shell nor this ticket's client streaming code: delivery's web streaming, collaboration, Org and store suites pass on the merge, 48 files / 466 tests), API-06, API-07, the other MSP cases (this round changes none of them: only the probe's header, the start check and `runCase`'s duplicate branch, which a unique ID never reaches; MSP-20, 426's case, ran here and passed).
+- Commands, environment, fixture, or broader-validation delta: `pnpm -C autobyteus-web test:e2e:mobile-shell --cases=MSP-20,MSP-21,MSP-22,MSP-23 --output-dir=<ticket>/evidence/MSP-20-23-merged`; ENV-4 (merged state `e60cb29272`).
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| DR-001 (duplicate case ID MSP-20 after the base refresh) | `Local Fix` — API/E2E | Renumbered to MSP-21…23; the probe refuses duplicate IDs at start; `evidence/MSP-20-23-merged/mobile-shell-probe.json` `"summary": {"cases": {"MSP-20": "Pass", "MSP-21": "Pass", "MSP-22": "Pass", "MSP-23": "Pass"}, "unknownBrowserErrors": 0}` | MSP-20 (426), MSP-21, MSP-22, MSP-23 |
+
+- Canonical artifacts and sections updated: execution report (ID map, Round, ENV-4, MSP-21…23 rows on the merged run, API-11, Durable Coverage Changed, Latest Authoritative Result), coverage investigation (ID map, IDs), this record (earlier entries keep the old IDs), progress log.
+- Prior result and confidence: Pass / 95.4%.
+- Current result and confidence: Pass / 95.4% (the merged-state run reproduces every number within a few ms).
+- New or remaining failure IDs: none.
+- Recommended owner: code reviewer (proportional test-code review of this round's edits); delivery waits on it.
 - Remaining risks, blocked evidence, or untested scope: unchanged from API-REV-001.
