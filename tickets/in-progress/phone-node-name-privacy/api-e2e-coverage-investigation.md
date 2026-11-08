@@ -18,11 +18,28 @@ The plan: what must be proven, how, the decisions about existing tests, and the 
 - Delivery Revision Record (delivery re-entry only): `N/A`
 - Relevant Delivery Revision IDs: `N/A`
 - API/E2E Revision Record (created after the first completed result): `api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-003` (round 3); `API-REV-002` round 2; `API-REV-001` round 1
-- Current Investigation Round: 3
-- Trigger: round 3 — Implementation Complete IR-004 (code `60adcf3bc8`, documents `9446d19783`), SR-005 after CRR-002 F-002 (from API-REV-002 API-08/08b); round 2 — Implementation Complete IR-003 (code `ea45dc1643`, documents `2175dfba74`), SR-003/SR-004 after CRR-001 F-001 (`code-review-report.md`, from API-REV-001 API-08/08b); round 1 — IR-001 (code `ba3ba5b23e`)
+- Current API/E2E Revision ID: `API-REV-004` (round 4); `API-REV-003` round 3; `API-REV-002` round 2; `API-REV-001` round 1
+- Current Investigation Round: 4
+- Trigger: round 4 — Implementation Complete IR-005 (merge `e8516bce5c` with `origin/personal` `b690a5dfdb`, documents `c6fb992a4b`), SR-006 / DEC-011 after delivery DR-001 (autobyteus-432's desktop full screen meets DS-006); round 3 — Implementation Complete IR-004 (code `60adcf3bc8`, documents `9446d19783`), SR-005 after CRR-002 F-002 (from API-REV-002 API-08/08b); round 2 — Implementation Complete IR-003 (code `ea45dc1643`, documents `2175dfba74`), SR-003/SR-004 after CRR-001 F-001 (`code-review-report.md`, from API-REV-001 API-08/08b); round 1 — IR-001 (code `ba3ba5b23e`)
 - Prior Investigation Reviewed: round 1 (this file, below), `api-e2e-execution-coverage-report.md` round 1, `api-e2e-revision-record.md` API-REV-001
 - Latest Authoritative Investigation: this file
+
+## Round 4 Basis And Rerun Plan (integrated state)
+
+- What changed: the base moved from `eebbc2b8ee` to `b690a5dfdb`. That brings autobyteus-426 round 2 (server: peer host refusal, collaboration statuses; web: run history, collaboration store, probes) and autobyteus-432 (the phone VNC Viewer's full screen: `MobileNodeDesktop`, `useDesktopFullScreenDisplay`, the Android `DesktopFullScreenController`, bridge `desktopFullScreen(on)`). The merge adds DEC-011: `AutoByteusWebView.onPageStarted` resets full screen and clears the document's request; `pageReady` alone shows the page; `showPage()` with an overlay goes through `showScreen` (full screen off); the new `DesktopFullScreenRequest` remembers the page's request and applies it only on the plain page, with `off` at once.
+- Shared-foundation check (TESTING.md "Rerun by impact" 4): no lockfile, manifest, tsconfig, Gradle, workflow or contract change between `eebbc2b8ee` and `b690a5dfdb`, nor in this ticket's diff against the new base. So this is not a full rerun, and no fresh-start build is required. After the merge, the typechecks run and every built output is rebuilt (step 5).
+
+| Case | Decision | Reason |
+| --- | --- | --- |
+| API-01 web | Reuse IMP-17 | `e8516bce5c`: `Tests  189 passed (189)` (incl. `MobileNodeDesktop.spec` full-screen cases), guards `exit=0` ×3, typecheck `PASS`, bundle has `pageReady` and `desktopFullScreen` |
+| API-01 Android, API-03 | Reuse IMP-18 | `e8516bce5c`: 93 JVM incl. `DesktopFullScreenRequestTest` (8), `DesktopFullScreenControllerTest`, `MainActivityManifestTest`; 12 instrumented incl. `DesktopFullScreenWindowTest` |
+| API-01 server | Run: server `typecheck` | the server changed with the base; TESTING.md step 5 (after a merge, rerun the typechecks) |
+| API-02 (full probe) | Rerun | the probe merged both tickets' cases; the bundle and server changed |
+| API-07 | Still valid | `NodeConnectionFlow`/`ConnectionInputResolver`/`showCantReach` unchanged by the merge |
+| API-04, API-05, API-06, API-08, API-08b, API-09, API-10, API-11 | Rerun (dist nodes A/B and the proxy, as round 3) | `MainActivity` changed (`showScreen`, `onPageStarted`, `fullScreenRequest`) |
+| new API-14 | Add | autobyteus-432 on the merged app with a Docker test node (beta image + this tree's server package, real noVNC desktop): enter and exit full screen; reset on reload, on Switch node (the page's `showNodeList`) and on an overlay; return to the plain page re-applies the document's request; a page reopened at `full=1` (and the premise that the new document's request arrives after `onPageStarted`); no address on any screen |
+| new API-14 executed note | — | the Docker node, the harness rotation trap and the unreachable `full=1` reopen are recorded in the execution report's round-4 Deviations; `TESTING.md` gained an "Android emulators" section from what this round established |
+| API-13 (Android 14) | Not rerun | the `pageReady` rule is unchanged by the merge; API-14 covers the merged `MainActivity` paths on Android 15 |
 
 ## Round 3 Basis And Rerun Plan
 

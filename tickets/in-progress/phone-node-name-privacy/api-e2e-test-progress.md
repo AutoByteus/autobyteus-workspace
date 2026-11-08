@@ -64,3 +64,25 @@
 | 09:38Z | API-13 | Started | — | Android 14 / WebView 113 AVD pnnp433_api34: pair A; reload/Retry/Back while down; recovery |
 | 09:41Z | API-13 | Completed | Pass | Android 14 / WebView 113.0.5672.136: reload, Retry, Back while down → overlay only, no address; recovery shows the page |
 | 09:41Z | round 3 | Completed | Pass | report, revision record API-REV-003 written; next: commit, hand off to delivery |
+| 10:03Z | round 4 | Checkpoint | — | Round 4 (IR-005 merge e8516bce5c): plan in 'Round 4 Basis And Rerun Plan'. Reused IMP-17, IMP-18. Next: builds (server dist, bundle, APK, buildx server package), server typecheck, API-02, emulator (port 5590; 5584 is another agent's) |
+| 10:05Z | API-02 (r4) | Started | — | full mobile-shell probe on the merge, /tmp/pnnp-e2e/msp-run4 |
+| 10:16Z | API-02 (r4) | Completed | Pass | all MSP cases Pass, 0 unexpected errors |
+| 10:22Z | API-04 (r4) | Started | — | emulator-5590: share A; AC-001; sheet |
+| 10:23Z | API-04 (r4) | Completed | Pass | header 'Test Desktop' with session nodeName absent; sheet without address |
+| 10:23Z | API-08 (r4) | Started | — | A down: reload, Retry ×2, recovery, Back |
+| 10:26Z | API-08 (r4) | Completed | Pass | reload, Retry ×2, Back while down: overlay only, no address; recovery shows the page |
+| 10:26Z | API-08b (r4) | Started | — | link overlay → A down → Retry |
+| 10:26Z | API-08b (r4) | Completed | Pass | overlay only while down; recovery shows the page |
+| 10:26Z | API-09 (r4) | Started | — | blocked+Retry, external toast, download toast, no-app |
+| 10:28Z | API-09 (r4) | Completed | Pass | blocked hides page, Retry closes; toasts without URL; no-app overlay |
+| 10:28Z | API-11 (r4) | Started | — | proxy first load 502/drop/refused/pass; loaded page + drop reload |
+| 10:29Z | API-11 (r4) | Completed | Pass | 502/drop/refused first load and dropped reload over a loaded page: overlay only; recovery shows page |
+| 10:29Z | API-05 (r4) | Started | — | typed ts.net |
+| 10:31Z | API-05 (r4) | Completed | Pass | typed ts.net row 'AutoByteus node'; hello nodeName "" |
+| 10:31Z | API-06 (r4) | Started | — | typed B, pair on its page |
+| 10:32Z | API-06 (r4) | Completed | Pass | B stored and listed 'Test Node' |
+| 10:32Z | API-10 (r4) | Started | — | reopen B; Switch node; Remove; relaunch; Unpair |
+| 10:33Z | API-10 (r4) | Completed | Pass | Switch node 3 names; Remove confirmation; relaunch opens the selected node (after Remove: first entry, existing store rule); Unpair |
+| 10:33Z | API-14 | Started | — | Docker node pnnp433-node (dockbox-5e1.home.arpa): pair; draft run; VNC Viewer; full screen cases |
+| 10:52Z | API-14 | Completed | Pass | enter/exit; reset on reload, Switch node, link overlay, failed reload (node stopped); Back from the list re-applies; reopened full=1 lands on Home (432 FU-002). Harness: uiautomator dump in landscape freezes user_rotation (proven), those runs discounted |
+| 10:55Z | round 4 | Completed | Pass | report, revision record API-REV-004, TESTING.md rule (82e4807f11); next: commit, hand off to delivery |

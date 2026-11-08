@@ -7,6 +7,7 @@
 | API-REV-001 | Implementation engineer, `implementation-handoff.md`, round 1 | SR-002, IR-001 | N/A | Fail / 66% |
 | API-REV-002 | Implementation engineer, `implementation-handoff.md` (IR-003), round 2 | SR-003, SR-004, IR-003, CRR-001 | Fail / 66% | Fail / 66% |
 | API-REV-003 | Implementation engineer, `implementation-handoff.md` (IR-004), round 3 | SR-005, IR-004, CRR-002 | Fail / 66% | Pass / 95% |
+| API-REV-004 | Implementation engineer, `implementation-handoff.md` (IR-005, merge), round 4 | SR-006, IR-005, DR-001 | Pass / 95% | Pass / 95% |
 
 ## Revision Entries
 
@@ -78,3 +79,24 @@ None.
 - New or remaining failure IDs: None
 - Recommended owner: delivery
 - Remaining risks, blocked evidence, or untested scope: the user-only part of AC-001; no instrumented test of a failed load over a loaded page; a node with the older bundle leaves the app on "Connecting/Opening your runs…" (accepted, RISK-001); FU-001, FU-003 out of scope
+
+### API-REV-004 — Round 4 on the integrated state (merge with autobyteus-426 round 2 and autobyteus-432): Pass
+
+- Triggering role, report path, and round: implementation engineer, `implementation-handoff.md` (IR-005: merge `e8516bce5c` with `origin/personal` `b690a5dfdb`; documents `c6fb992a4b`), round 4
+- Triggering finding or case IDs: delivery DR-001 (autobyteus-432 rule D-2 against DS-006) → SR-006 DEC-011
+- Related revision IDs: SR-006, IR-005, DR-001
+- Why this revision was recorded: validation on the integrated state before delivery
+- Coverage decisions or durable test paths changed: none in tests. `TESTING.md` gained an "Android emulators" section (`82e4807f11`, its own commit): an owned AVD and port, headless, no `uiautomator dump` in landscape.
+- Cases added, changed, removed, or rechecked: reused IMP-17 and IMP-18. Ran the server build and typecheck, API-02 (full probe, 20/20), and API-04, API-05, API-06, API-08, API-08b, API-09, API-10 and API-11 on the merged APK. Added API-14 (autobyteus-432 full screen on a Docker test node: enter/exit; reset on reload, Switch node, an overlay and a failed reload; a return re-applies the request). API-07 still valid. API-13 not rerun (the `pageReady` rule is unchanged).
+- Commands, environment, fixture, or broader-validation delta: emulator port 5590 (5584 was another agent's); a Docker test node from the beta image with this tree's server package (buildx, fresh clone); the base APK of `b690a5dfdb` built once for a comparison
+
+#### Prior Failure Resolution
+
+None (round 3 passed).
+
+- Canonical artifacts and sections updated: investigation ("Round 4 Basis And Rerun Plan"), execution report (Round, ENV-6/7, the (r4) and API-14 Cases rows, Acceptance-Criteria Proof, Scorecard, Cleanup, Result), test progress, `evidence/emulator-r4/`, `evidence/API-02-r4-*`, `TESTING.md`
+- Prior result and confidence: `Pass`, 95%
+- Current result and confidence: `Pass`, 95%
+- New or remaining failure IDs: None
+- Recommended owner: delivery
+- Remaining risks, blocked evidence, or untested scope: the user-only part of AC-001; "reopened at `full=1`" not reachable on a device (autobyteus-432 FU-002); no instrumented test of a failed load over a loaded page; release the app and node together (RISK-001)

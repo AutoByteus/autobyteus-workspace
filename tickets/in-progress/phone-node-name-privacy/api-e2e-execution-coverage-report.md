@@ -3,9 +3,19 @@
 ## Round
 
 - Coverage investigation (the plan; it lists the upstream documents): `/Users/normy/autobyteus_org/autobyteus-worktrees/phone-node-name-privacy/tickets/in-progress/phone-node-name-privacy/api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-003` (round 3; earlier `API-REV-002`, `API-REV-001`)
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-004` (round 4, integrated state; earlier `API-REV-003`, `API-REV-002`, `API-REV-001`)
 - Test progress log: `api-e2e-test-progress.md`
-- Round and trigger: **round 3 (latest)**: Implementation Complete IR-004 (code `60adcf3bc8`, documents `9446d19783`), SR-005 after CRR-002 F-002 (from API-REV-002).
+- Round and trigger: **round 4 (latest, integrated state)**: Implementation Complete IR-005, the merge `e8516bce5c` of this ticket with `origin/personal` `b690a5dfdb` (autobyteus-426 round 2, autobyteus-432 desktop full screen). Documents at `c6fb992a4b`. SR-006 / DEC-011 after delivery DR-001.
+- Round 4 prior round reviewed: round 3 (`Pass`, 95%). No prior failure open. The rerun plan is in the investigation's "Round 4 Basis And Rerun Plan": shared foundations unchanged, so no full rerun and no fresh-start build; the typechecks rerun and every build output is rebuilt after the merge.
+- Round 4 cases: reused IMP-17 (web 189 tests, guards, typecheck) and IMP-18 (93 JVM incl. `DesktopFullScreenRequestTest`, 12 instrumented incl. `DesktopFullScreenWindowTest`). Ran the server build and typecheck, the full probe API-02, API-04, API-05, API-06, API-08, API-08b, API-09, API-10 and API-11 (emulator-5590), and the new API-14 (autobyteus-432 full screen on a Docker test node). API-07 is still valid.
+- Round 4 deviations:
+  - Port 5590: `emulator-5584` belonged to another agent this time; I addressed only `emulator-5590`.
+  - API-04: the first `nodeName` removal ran before the cold first pairing had finished (no session yet: a DevTools `TypeError`); I repeated it after the session existed.
+  - API-05: my first Back stayed inside the "Test Server" page's history and the taps landed on that page. I repeated API-05 from the node list.
+  - API-14 harness, proven: a `uiautomator dump` while the phone is in landscape sets the system `user_rotation` to 1, so a later exit from full screen stays at `ROTATION_90` although the app correctly requests `UNSPECIFIED`. I first suspected Android's one-time immersive hint and compared with the base APK (`b690a5dfdb`), which showed the same. A direct test (one dump, nothing else) isolated the cause (`API-14-window-states.log`, header and end). The affected lines are discounted; the exits without a dump in landscape return to `ROTATION_0`. Autobyteus-432 had recorded the same trap (its API-05a). No app follow-up.
+  - API-14 node-down case: first with `docker pause`. A paused container never refuses, so the reload hung (old document still shown in full screen, no address) until my background step resumed the node and the reload succeeded. That run proves only the reset on a new document. It was redone with `docker stop` (refused): `down-case-2`.
+  - API-14 "page reopened at `full=1`": not reachable on a device. The reloaded `?screen=desktop&full=1` names no run, so the web app goes to Home and sends no full-screen request (autobyteus-432 FU-002). The premise that the request arrives after `onPageStarted` could not be exercised either; the related rules (request remembered until the plain page, cleared on a new document) are covered by `DesktopFullScreenRequestTest` (IMP-18).
+- Round 3: **round 3**: Implementation Complete IR-004 (code `60adcf3bc8`, documents `9446d19783`), SR-005 after CRR-002 F-002 (from API-REV-002).
 - Round 3 prior round reviewed: round 2 (API-REV-002, `Fail`: API-08/08b (r2)). Prior failure rechecked first: API-08 (r3), API-08b (r3), and the round-2 cause's §8 state through the proxy (API-11 (r3)).
 - Round 3 rerun plan: the investigation's "Round 3 Basis And Rerun Plan". Reused: IMP-14 (web unit, guards, typecheck) and IMP-15 (Android JVM + instrumented = API-03). Still valid: API-07. Rerun: API-02 (full probe), API-04, API-05, API-06, API-08, API-08b, API-09 (all parts), API-10, API-11. New: API-12 (stale bundle, observed) and API-13 (the load-failure cases on Android 14 / WebView 113, added after the post-run confidence was 94%: one WebView version).
 - Round 3 deviations:
@@ -28,14 +38,14 @@
   - API-08b added: a user-only reproduction of the API-08 failure.
   - API-09: Gmail opened `mailto:`, so for "No app can open this link" I disabled Gmail on the ticket-owned AVD.
   - Pasting a 278-character link with `adb input text` stops at 153 characters; I typed it in three chunks (real key input; the field's value was checked equal to the link).
-- Evidence folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/phone-node-name-privacy/tickets/in-progress/phone-node-name-privacy/evidence/` (emulator files: round 1 `evidence/emulator/`, round 2 `evidence/emulator-r2/`, round 3 `evidence/emulator-r3/`, each with its header in `README.md`)
+- Evidence folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/phone-node-name-privacy/tickets/in-progress/phone-node-name-privacy/evidence/` (emulator files: round 1 `evidence/emulator/`, round 2 `evidence/emulator-r2/`, round 3 `evidence/emulator-r3/`, round 4 `evidence/emulator-r4/`, each with its header in `README.md`)
 
 ## Routing Classification
 
 - Task size: `Medium`
 - Architectural risk: `Low`
 - Input route: `Direct Low-Risk`
-- Successful-output route: `Delivery` (round 3 `Pass`)
+- Successful-output route: `Delivery` (round 4 `Pass`)
 - Proportional test-code review decision: `Not Required — direct low-risk route` (the one test change, the probe baseline fix `f7bb05f5ec`, goes with the failure package to the code reviewer for information)
 
 ## Tested Builds And Environments
@@ -47,11 +57,24 @@
 | ENV-3 | `2175dfba74` (code `ea45dc1643`) | new ticket-owned AVD `pnnp433_api35` (same image as ENV-2), headless | debug APK of `ea45dc1643` (sha256 `a67fb0ae…7acf10`; after the diagnostic revert `7445857c…f61b`, same source); `/mobile` bundle and server `dist` of round 1 (no web/server source changed) | nodes A and B as ENV-2; test proxy `127.0.0.1:47333` → A (`pass`/`502`/`drop`/stopped), paired as "Test Server" |
 | ENV-4 | `9446d19783` (code `60adcf3bc8`) | new ticket-owned AVD `pnnp433_api35`, headless; MSP probe stack as ENV-1 | debug APK sha256 `f9b040f3…cfaca6`; `/mobile` bundle rebuilt from `60adcf3bc8` (`pageReady` present); server `dist` of round 1 | nodes A, B; proxy `127.0.0.1:47333` (`pass`/`502`/`drop`/stopped/`stale` = released 1.5.12-beta.8 bundle) |
 | ENV-5 | `9446d19783` (code `60adcf3bc8`) | ticket-owned AVD `pnnp433_api34`: Android 14, `google_apis` arm64, WebView 113.0.5672.136, headless | same APK as ENV-4 (`f9b040f3…cfaca6`), same `/mobile` bundle | node A only |
+| ENV-6 | `c6fb992a4b` (merge `e8516bce5c`) | MSP probe stack (as ENV-1); ticket-owned AVD `pnnp433_api35` on port 5590, Android 15, WebView 124, headless, auto-rotate off, gesture navigation | APK sha256 `4e7073ad…2a35`; `/mobile` bundle and server `dist` rebuilt from the merge | nodes A, B, proxy :47333 as ENV-4 |
+| ENV-7 | merge `e8516bce5c` | Docker test node `pnnp433-node`: `autobyteus/autobyteus-server:beta` `9c5aa01bb2fc` + this tree's server package (buildx, fresh clone) mounted read-only; Xfce desktop, Chromium, noVNC | 5 fresh test volumes, `127.0.0.1:61529` (`dockbox-5e1.home.arpa`), `LMSTUDIO_HOSTS` → host LM Studio (draft run only, no message) | the user's `autobyteus-server-0/1/2` untouched |
 
 ## Cases
 
 | Case ID | Criteria | Boundary / Surface | Command Or Steps | Env | Result | Evidence Files | Look For | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| API-01 (r4) | AC-001…AC-008 (unit), QR-003, 432 unit | Web, Android, server typecheck | Reused IMP-17, IMP-18; ran `pnpm -C autobyteus-server-ts build` and `typecheck` | ENV-6 | Pass | (handoff `IMP-17*.log`, `IMP-18-android-tests-merged.log`); `API-02-r4-builds.log` | `Tests  189 passed (189)`; JVM 93 / instrumented 12, `failures 0`; server `[typecheck] production errors: 0; test-file errors: 1182 in 365 files (baseline 1182 in 365 files)`, `PASS` | — |
+| API-02 (r4) | AC-010, AC-002, AC-003 (browser) | Full phone bundle on the merge | `pnpm -C autobyteus-web build:mobile-web`; `pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=/tmp/pnnp-e2e/msp-run4` | ENV-6 | Pass | `API-02-r4-builds.log`, `API-02-r4-mobile-shell-full.log`, `API-02-r4-mobile-shell-probe.json` | 20 × `Pass` (incl. 426's MSP-20), `mobile-shell probe: Pass`, `unexpected browser errors: []`, MSP-09 `"urlLines": 0` | — |
+| API-04 (r4) | AC-001, AC-002, AC-010 | as API-04 | as API-04 | ENV-6 | Pass | `emulator-r4/API-04-04-page-connected.json`, `API-04-05-session-name-removed.json`, `API-04-07-page-reloaded-no-session-name.{json,png}`, `API-04-08-sheet-connected.{json,png}` | `"headerName": "Test Desktop"`, `"sessionNodeName": "(absent)"`, `helloReply … "nodeName": "Test Desktop"`; sheet without address | — |
+| API-08 (r4) | AC-007, AC-009, QR-001 | A's loaded page, A down | reload, RETRY ×2, recovery, BACK (history 2), recovery | ENV-6 | Pass | `emulator-r4/API-08-03-reload-while-down.*`, `API-08-11-*`, `API-08-12-*`, `API-08-13-retry-after-recovery.*`, `API-08-05-back-while-down.*`, `API-08-06-recovered-after-back.png` | `text: Can’t reach Test Desktop`, `no address parts … webpage ERR_` each time; recovery `"headerName": "Test Desktop"`, no RETRY | — |
+| API-08b (r4) | AC-007 | link overlay → A down → RETRY | as API-08b | ENV-6 | Pass | `emulator-r4/API-08b-01-link-overlay-retry-while-down.*`, `API-08b-02-recovered.png` | overlay only, no address; recovery without RETRY | — |
+| API-09 (r4) | AC-007, REQ-006 | links | as API-09 (r3) | ENV-6 | Pass | `emulator-r4/API-09-01-link-blocked.*`, `API-09-03-external-link-toast{.png,-strip.png,.mp4}`, `API-09-04-download-toast{.png,-strip.png,.mp4}`, `API-09-05-no-app-for-link.*` | `This link can’t open here`; toast `Opening outside AutoByteus`; `No app can open this link`; Retry closes | — |
+| API-11 (r4) | AC-007 | proxy | first load 502 / drop / refused / pass; loaded page + drop reload | ENV-6 | Pass | `emulator-r4/API-11-0[1-5]-*`, `API-11-proxy.log` | `AutoByteus returned HTTP 502`; `Can’t reach Test Server`; no address on each | — |
+| API-05 (r4) | AC-004, AC-009 | typed `ts.net` | as API-05 | ENV-6 | Pass | `emulator-r4/API-05-02-typed.xml`, `API-05-05-typed-page.json`, `API-05-06-first-page.*` | `"nodeName": ""`; row `AutoByteus node, Online` | — |
+| API-06 (r4) | AC-005, AC-004 | typed B named on pairing | as API-06 | ENV-6 | Pass | `emulator-r4/API-06-06-page-paired.json`, `API-06-08-first-page-named.*` | `"headerName": "Test Node"`; row `Test Node, Online` | — |
+| API-10 (r4) | AC-010, AC-009 | preserved flows | reopen B; Switch node; Remove; relaunch; Unpair | ENV-6 | Pass | `emulator-r4/API-10-*` | `Test Node, Online, current node` …; `Remove AutoByteus node from this phone?…`; relaunch `"headerName": "Test Node"`; `"(no session)"` after Unpair | After a Remove, relaunch opens the first remaining entry (`SavedNodeStore.removeEntry`, unchanged since the base) |
+| API-14 | SR-006 DEC-011 items 1–4 (autobyteus-432 full screen on the merged app); AC-009/QR-001 on those screens | Docker node `pnnp433-node`: pair, draft run, VNC Viewer | Pair by Share (`dockbox-5e1.home.arpa`); New run (qwen, no message) › ⋮ › VNC Viewer; enter (touch on `mobile-node-desktop-full-screen`) and exit (handle); in full screen: (a) the page reloads; (b) the page posts `showNodeList`, then system Back; (c) a link that can't open here, then RETRY; (d) node stopped, the page reloads, node started, RETRY | ENV-6, ENV-7 | Pass | `emulator-r4/API-14-window-states.log` (read its harness note), `API-14-01-docker-paired.png`, `API-14-02-viewer-portrait.png`, `API-14-03-full-screen.png`, `API-14-05-exit-2.png`, `API-14-06-after-reload-in-full.png`, `API-14-07-node-list-from-full.{txt,png}`, `API-14-08-back-to-page-from-list.png`, `API-14-09-overlay-from-full.{txt,png}`, `API-14-10-after-retry.png`, `API-14-11-failed-reload-from-full.{txt,png}`, `API-14-12-recovered.png` | enter: `ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false`, `q ?screen=desktop&full=1`; exit (no dump): `exit-2 \| rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED … visible=true`; (a) `1.5s after reload \| rotation=ROTATION_0 … UNSPECIFIED … visible=true`, then `q ""` (Home); (b) `node list \| rotation=ROTATION_0 … UNSPECIFIED`, then `back to the page \| rotation=ROTATION_90 … SENSOR_LANDSCAPE … visible=false` (DEC-011 item 3); (c) `link overlay \| rotation=ROTATION_0 … UNSPECIFIED`, `This link can’t open here`, after RETRY `q ""` portrait; (d) `8s after reload \| user_rotation=0 ROTATION_0 … UNSPECIFIED bars=visible=true`, `Can’t reach Test Docker Node`, no address; recovered without RETRY | "Reopened at `full=1`" not reachable (lands on Home: autobyteus-432 FU-002); see Deviations for the harness rotation trap and the pause attempt |
 | API-01 (r3) | AC-001…AC-008 (unit), QR-003 | Web unit, guards, typecheck; Android JVM, APK | Reused IMP-14 and IMP-15 | (handoff) | Pass | (handoff `IMP-14-web-checks.log`, `IMP-15-android-tests-and-build.log`) | `Tests  175 passed (175)`; `exit=0` ×3; `[typecheck] PASS`; `JVM TOTAL tests 74 failures 0 errors 0`; `OpenPageStateTest tests 8 failures 0` | Ran on `60adcf3bc8` |
 | API-03 (r3) | AC-010, QR-003 | Android instrumented | Reused IMP-15 | (handoff) | Pass | (handoff) | `INSTRUMENTED TOTAL 11 failures 0` | Same API 35 / WebView 124 image |
 | API-02 (r3) | AC-010, AC-002, AC-003 (browser) | Full phone bundle | `pnpm -C autobyteus-web build:mobile-web`; `pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=/tmp/pnnp-e2e/msp-run3` | ENV-4 | Pass | `API-02-r3-builds.log`, `API-02-r3-mobile-shell-full.log`, `API-02-r3-mobile-shell-probe.json` | 19 × `Pass`, `mobile-shell probe: Pass`, `unexpected browser errors: []`, MSP-09 `"urlLines": 0` | The phone page's root (`MobileRemoteAccessShell`) changed: `pageReady` is a no-op in a browser |
@@ -88,46 +111,49 @@
 
 ## Acceptance-Criteria Proof
 
-Round 3 (latest):
+Round 4 (latest, integrated state):
 
 | Acceptance-Criteria ID | Critical | Proven By Case IDs | Result | For A User-Only Part: What You Tried And Why It Still Needs The User |
 | --- | --- | --- | --- | --- |
-| AC-001 | Yes | API-04 (r3) (connected), API-08 (r3) (not reachable: header and banner), API-01 (r3) (unit, `ts.net` session) | Proven, apart from a user-only part | Not built: a session paired over HTTPS at a real `*.ts.net` name. The node refuses an `http://…ts.net` pairing link, and API 34+ cannot be made to trust a test CA. The name rule never reads the address (unit tests with a `ts.net` session; the emulator with a `.home.arpa` session and a typed `ts.net` node). The user checks his header after updating both the app and the node |
-| AC-002 | Yes | API-04 (r3), API-08 (r3) (not reachable), API-02 (r3) MSP-09 | Proven | — |
-| AC-003 | No | API-01 (r3), API-02 (r3), API-06 (r3) | Proven | — |
-| AC-004 | Yes | API-05 (r3), API-06 (r3), API-10 (r3); round-1 API-08 native Can't reach screens (code unchanged since) | Proven | — |
-| AC-005 | Yes | API-06 (r3), API-01 (r3) | Proven | — |
-| AC-006 | No | API-07 (round 1, still valid), API-01 | Proven | — |
-| AC-007 | Yes | API-08 (r3), API-08b (r3), API-11 (r3) (reload, Back, Retry while down, first load, HTTP error, recovery), API-09 (r3) (toast, download, blocked, no app) | Proven | — |
-| AC-008 | No | API-01 (r3) | Proven | — |
-| AC-009 | Yes | API-04/05/06/08/10 (r3) screenshots and dumps | Proven | — |
-| AC-010 | Yes | API-02 (r3), API-03 (r3), API-04 (r3), API-08 (r3) (Check, Retry), API-10 (r3) | Proven | — |
+| AC-001 | Yes | API-04 (r4), API-08 (r4), API-01 (r4) | Proven, apart from a user-only part | As round 3: an HTTPS `*.ts.net` session on the user's own phone and node, after both are updated |
+| AC-002 | Yes | API-04 (r4), API-02 (r4) | Proven | — |
+| AC-003 | No | API-01 (r4), API-02 (r4), API-06 (r4) | Proven | — |
+| AC-004 | Yes | API-05 (r4), API-06 (r4), API-10 (r4) | Proven | — |
+| AC-005 | Yes | API-06 (r4) | Proven | — |
+| AC-006 | No | API-07 (still valid) | Proven | — |
+| AC-007 | Yes | API-08, API-08b, API-09, API-11 (r4); API-14 (d) | Proven | — |
+| AC-008 | No | API-01 (r4) | Proven | — |
+| AC-009 | Yes | API-04/05/06/08/10 (r4), API-14 screens | Proven | — |
+| AC-010 | Yes | API-02, API-04, API-08, API-10 (r4), API-01 (r4) | Proven | — |
 | QR-001 | Yes | as AC-009 | Proven | — |
-| QR-003 | No | API-01 (r3) (`ShellBridgeMessagesTest`, incl. `pageReady`), API-03 (r3) | Proven | — |
+| QR-003 | No | API-01 (r4) | Proven | — |
+| SR-006 DEC-011 (integration) | Yes | API-14, IMP-18 `DesktopFullScreenRequestTest` | Proven, apart from "reopened at `full=1`", which is not reachable on a device (autobyteus-432 FU-002) | — |
 
 ## Validation Confidence Scorecard (Mandatory)
 
-Round 3 (rounds 1 and 2 final: 66%).
+Round 4, integrated state (round 3 final: 95%).
 
 | Confidence Category | Post-Repository Score | Final Score | What Supports It (Case IDs) | Residual Uncertainty | What Could Improve It |
 | --- | --- | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 80% | 95% | Every AC by a direct case (Acceptance-Criteria Proof) | AC-001's HTTPS `*.ts.net` session (user-only) | The user's check after release |
-| Changed-boundary execution directness | 80% | 100% | Real bridge `pageReady`/`hello`, real WebView failures over loaded and fresh pages, real store | — | — |
-| Cross-boundary integration realism and mock gap | 75% | 95% | Two real worktree nodes, real network failure; the proxy only for 502/drop | Proxy-made 502/drop instead of a real gateway | — |
-| Environment, configuration, identity, and fixture fidelity | 75% | 95% | Android 15 / WebView 124 (all cases) and Android 14 / WebView 113 (API-13), test DNS names | Other vendors' WebViews; the design no longer depends on WebView callback order (fails closed without `pageReady`) | A physical phone (the user's) |
-| Failure, edge-case, lifecycle, and recovery evidence | 75% | 95% | Reload/Retry/Back while down, first load 502/drop/refused, failure over a loaded page, recovery, Phone access off, stale bundle, relaunch | — | — |
-| User-surface, browser, and desktop-shell confidence | 80% | 95% | Probe 19/19; emulator screenshots and dumps of every listed screen | — | — |
-| Durable regression coverage quality and relevance | 85% | 90% | `OpenPageStateTest` (round-2 §2/§3/§8 and §4–§7 sequences), `ShellBridgeMessagesTest`, `MobileRemoteAccessShell.spec` (`pageReady`), instrumented smoke test, MSP-09 | No durable device test drives a real failed load over a loaded page; the rule is covered at the state-machine level, and that `pageReady` is never sent by an error page holds by construction (no bridge there) | An instrumented test of a failed reload over a loaded page |
+| Requirement and acceptance-criteria proof | 85% | 95% | Every AC and DEC-011 by direct cases (round 4) | AC-001's user-only part | The user's check after release |
+| Changed-boundary execution directness | 85% | 100% | The merged `MainActivity` paths driven on a device: `pageReady`, `onPageStarted` reset, overlay via `showScreen`, remembered request | — | — |
+| Cross-boundary integration realism and mock gap | 80% | 95% | Real worktree nodes; a real Docker node with noVNC and this tree's server package; the proxy only for 502/drop | Switch node during full screen via the page's own bridge message (the sheet is hidden in full screen) | — |
+| Environment, configuration, identity, and fixture fidelity | 80% | 95% | Android 15 / WebView 124 on the merge; Android 14 / WebView 113 in round 3 for the unchanged `pageReady` rule | Other vendors' WebViews | — |
+| Failure, edge-case, lifecycle, and recovery evidence | 80% | 95% | Load failures as round 3; full screen with a reload, Switch node, an overlay and a failed reload | "Reopened at `full=1`" not reachable (432 FU-002) | — |
+| User-surface, browser, and desktop-shell confidence | 85% | 95% | Probe 20/20; emulator screens and window states | — | — |
+| Durable regression coverage quality and relevance | 90% | 90% | `OpenPageStateTest`, `DesktopFullScreenRequestTest`, `DesktopFullScreenControllerTest`, `DesktopFullScreenWindowTest`, `ShellBridgeMessagesTest`, MSP-09 | No instrumented test of a failed load over a loaded page | — |
 
-- Overall post-repository confidence: 79%
+- Overall post-repository confidence: 84%
 - Overall final confidence: 95% (simple average of 95, 100, 95, 95, 95, 95, 90 = 95.0%)
 - Calculation method: simple average
 - Every critical acceptance criterion directly proven, apart from parts only the user can check: `Yes`
 - Any final applicable category below `90%`: `No`
-- Default final confidence target of `95%` met: `Yes`. The post-run score was 94.3% with one WebView version; API-13 (Android 14 / WebView 113) closed that gap. Durable coverage stays at 90%: no instrumented test drives a real failed load over a loaded page. The rule is covered by `OpenPageStateTest`, and `pageReady` cannot come from an error page by construction.
-- Confidence-limiting residual risks: no instrumented test of a failed load over a loaded page; the user-only AC-001 part; a node that is not updated (stale bundle) leaves the app on "Connecting/Opening your runs…" until both are updated (accepted, RISK-001)
+- Default final confidence target of `95%` met: `Yes`
+- Confidence-limiting residual risks: the user-only AC-001 part; "reopened at `full=1`" not reachable (autobyteus-432 FU-002); no instrumented test of a failed load over a loaded page; release the app and the node together (RISK-001)
 
 ## Broader Validation Decision (Mandatory)
+
+- Round 4: `Required`, ran: the MSP probe; Android 15 emulator with the worktree nodes, the proxy and a Docker test node with noVNC, for autobyteus-432's full screen on the merged app.
 
 - Round 3: `Required`, ran (MSP probe; Android emulator on API 35 / WebView 124 and API 34 / WebView 113 with two worktree nodes, test DNS names and a switchable proxy). It closed the load-failure states and the second-WebView gap.
 
@@ -179,6 +205,7 @@ Round 3 (rounds 1 and 2 final: 66%).
 
 | Item | Owned By This Run | Cleanup Action | Result |
 | --- | --- | --- | --- |
+| Round 4: Docker test node `pnnp433-node` and its 5 volumes, fresh clone + server package, nodes A/B, proxy, DNS responder, AVD `pnnp433_api35` (port 5590), app, adb forwards, user_rotation, Gmail disabled | Yes | `docker rm -f -v`, `docker volume rm` ×5, `rm -rf`, `node.sh stop`, `pkill`, `settings put system user_rotation 0`, `pm enable`, `adb uninstall`, `adb emu kill`, `avdmanager delete avd` | `emulator-r4/cleanup.log`: `pnnp433 containers/volumes: 0/0`, `listeners 47331-47333: 0`, `udp 53: 0`, `my emulator processes after exit: 0`; the user's `autobyteus-server-0/1/2` `Up 43 hours`, untouched; `emulator-5584` (another agent's) never addressed |
 | Round 3: nodes A/B, test proxy (`stale` mode and its copy of the released `mobile-web`), DNS responder, AVDs `pnnp433_api35` and `pnnp433_api34`, app, adb forwards, Gmail disabled | Yes | `node.sh stop`, `pkill`, `pm enable`, `adb forward --remove-all`, `adb uninstall`, `adb emu kill`, `avdmanager delete avd` ×2, `rm -rf` the copy | `emulator-r3/cleanup.log`: `listeners 47331-47333: 0`, `udp 53: 0`, `my emulator processes after exit: 0` (twice); other agents' emulators untouched |
 | Round 3: MSP probe stack | Yes | probe `finally` | `serversLeft: 0, rootRemoved: true` |
 | Round 2: `DIAG433` logging in `AutoByteusWebView.kt`/`MainActivity.kt` | Yes | `git checkout` of both files; APK rebuilt; `git diff ea45dc1643 -- autobyteus-android` empty; dex has no `DIAG433` | Removed, never committed |
@@ -192,17 +219,18 @@ Round 3 (rounds 1 and 2 final: 66%).
 
 ## Preliminary Classification (On `Fail`)
 
-Round 3: N/A (`Pass`). Rounds 1 and 2 were `Design Impact`; CRR-001 F-001 and CRR-002 F-002 were resolved by SR-003, SR-004 and SR-005 (IR-003, IR-004).
+Round 4: N/A (`Pass`).
 
 ## Latest Authoritative Result
 
-- Result: `Pass` (round 3, API-REV-003)
+- Result: `Pass` (round 4, integrated state, API-REV-004)
 - Criteria not proven, or parts only the user can check (IDs): user-only part of AC-001 (an HTTPS `*.ts.net` session on the user's own phone and node, after both are updated)
 - Preliminary classification and recommended owner: N/A
 - Next recipient from `get_handoff_rules`: `/software_engineering_team/delivery_engineer` (direct route, Medium/Low, `Pass`)
 - Test-code review decision: `Not Required — direct low-risk route`
-- Durable coverage changed by API/E2E: `autobyteus-web/tests/e2e/mobile-shell-probe.mjs` baseline fix (`f7bb05f5ec`, round 1); none in rounds 2 and 3
+- Durable coverage changed by API/E2E: `autobyteus-web/tests/e2e/mobile-shell-probe.mjs` baseline fix (`f7bb05f5ec`, round 1), kept through the merge; none since
 - Notes:
-  - For delivery: both the APK and the node's `/mobile` bundle must be released together. A node serving the older bundle leaves the updated app on "Connecting to …" / "Opening your runs…" (API-12; accepted under DESIGN.md rule 9). The release notes should say so (RISK-001).
-  - Docs sync (from the design spec): the bridge's `hello` and `pageReady`, the sheet without the address, and "AutoByteus node".
-  - Follow-ups outside the ticket: FU-001 (HTTP-error wording), FU-003 (Retry after a pairing link's failed first load opens the page unpaired). FU-002 was folded into this ticket and is fixed.
+  - For delivery: release the APK and the node's `/mobile` bundle together (RISK-001; a node with an older bundle leaves the app on "Connecting to …": API-12, round 3).
+  - Docs sync: the bridge's `hello` (nodeName) and `pageReady`, the sheet without the address, "AutoByteus node", and the merged full-screen rule (the request applied only on the plain page).
+  - Follow-ups outside the ticket: FU-001, FU-003. Autobyteus-432's FU-002 ("reopened at `full=1`" lands on Home) still stands.
+  - Validation note for future phone tickets: a `uiautomator dump` while the phone is in landscape freezes the system's `user_rotation` (proven in API-14). Read the window with `dumpsys` only while in landscape.
