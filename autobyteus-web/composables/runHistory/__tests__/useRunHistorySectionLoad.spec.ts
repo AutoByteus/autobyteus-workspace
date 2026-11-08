@@ -11,11 +11,13 @@ const stores = vi.hoisted(() => ({
   agents: { fetchAllAgentDefinitions: vi.fn(async () => undefined) },
   teams: { fetchAllAgentTeamDefinitions: vi.fn(async () => undefined) },
   orgs: { fetchAll: vi.fn(async () => undefined) },
+  collaboration: { refreshListedStatuses: vi.fn(async (_ids: readonly string[]) => undefined) },
 }))
 vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => stores.history }))
 vi.mock('~/stores/agentDefinitionStore', () => ({ useAgentDefinitionStore: () => stores.agents }))
 vi.mock('~/stores/agentTeamDefinitionStore', () => ({ useAgentTeamDefinitionStore: () => stores.teams }))
 vi.mock('~/stores/agentOrgDefinitionStore', () => ({ useAgentOrgDefinitionStore: () => stores.orgs }))
+vi.mock('~/stores/agentRunCollaborationStore', () => ({ useAgentRunCollaborationStore: () => stores.collaboration }))
 
 import { useRunHistorySectionLoad } from '../useRunHistorySectionLoad'
 
@@ -96,5 +98,29 @@ describe('useRunHistorySectionLoad (autobyteus-277 DS-001)', () => {
     await expect(load().load()).resolves.toBeUndefined()
     expect(stores.history.fetchTree).toHaveBeenCalledTimes(2)
     await flushPromises()
+  })
+
+  // autobyteus-426 REQ-009 (D-09): each poll tick refreshes the task rows' states after its quiet history read.
+  it('refreshes the listed active runs\' child states after each quiet read, and on a resumed poll; not on the first load or a window change', async () => {
+    Object.assign(stores.history, { activeListedAgentRunIds: ['run-a', 'run-b'] })
+    const order: string[] = []
+    stores.history.refreshTreeQuietly.mockImplementation(async () => { order.push('history') })
+    stores.collaboration.refreshListedStatuses.mockImplementation(async () => { order.push('states') })
+    const { state, load } = host({ window: null, polling: true })
+    await load().initialLoad
+    expect(stores.collaboration.refreshListedStatuses).not.toHaveBeenCalled()
+
+    await vi.advanceTimersByTimeAsync(5_000)
+    expect(order).toEqual(['history', 'states'])
+    expect(stores.collaboration.refreshListedStatuses).toHaveBeenLastCalledWith(['run-a', 'run-b'])
+
+    state.window = 6; await nextTick(); await flushPromises()
+    expect(stores.collaboration.refreshListedStatuses).toHaveBeenCalledTimes(1)
+
+    state.polling = false; await nextTick()
+    await vi.advanceTimersByTimeAsync(20_000)
+    expect(stores.collaboration.refreshListedStatuses).toHaveBeenCalledTimes(1)
+    state.polling = true; await nextTick(); await flushPromises()
+    expect(stores.collaboration.refreshListedStatuses).toHaveBeenCalledTimes(2)
   })
 })

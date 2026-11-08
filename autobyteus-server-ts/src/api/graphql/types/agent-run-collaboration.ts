@@ -1,3 +1,4 @@
+import { GraphQLError } from "graphql";
 import { GraphQLJSON } from "graphql-scalars";
 import { Arg, Field, Int, ObjectType, Query, Resolver } from "type-graphql";
 import { isRootSubjectKind } from "../../../agent-collaboration/execution/domain/root-execution-identity.js";
@@ -38,8 +39,49 @@ export class AgentRunCollaborationMemberProjectionPayload {
   @Field(() => Boolean) hasEarlierActiveTraceEvents!: boolean;
 }
 
+/** At most this many runs per status read (the history poll lists the active standalone runs it shows). */
+export const AGENT_RUN_COLLABORATION_STATUSES_MAX_RUNS = 100;
+
+@ObjectType()
+export class AgentRunChildStatusObject {
+  @Field(() => String) agentRunId!: string;
+  @Field(() => String) memberAddress!: string;
+  @Field(() => String) status!: string;
+  @Field(() => GraphQLJSON, { nullable: true }) recoverableBlock?: unknown | null;
+}
+
+@ObjectType()
+export class AgentRunCollaborationStatusesObject {
+  @Field(() => String) runId!: string;
+  @Field(() => Boolean) isActive!: boolean;
+  @Field(() => [AgentRunChildStatusObject]) statuses!: AgentRunChildStatusObject[];
+}
+
 @Resolver()
 export class AgentRunCollaborationResolver {
+  /**
+   * The children's states of listed standalone runs, for the history poll (autobyteus-426 REQ-009): states only, never
+   * the collaboration view. A run without an active root answers inactive with no states. Never restores.
+   */
+  @Query(() => [AgentRunCollaborationStatusesObject])
+  agentRunCollaborationStatuses(@Arg("runIds", () => [String]) runIds: string[]): AgentRunCollaborationStatusesObject[] {
+    if (runIds.length > AGENT_RUN_COLLABORATION_STATUSES_MAX_RUNS) {
+      throw new GraphQLError(`At most ${AGENT_RUN_COLLABORATION_STATUSES_MAX_RUNS} runs per status read.`, {
+        extensions: { code: "BAD_USER_INPUT" },
+      });
+    }
+    return getStandaloneAgentRunRootManager().getAgentStatuses(runIds).map((answer) => ({
+      runId: answer.runId,
+      isActive: answer.isActive,
+      statuses: answer.statuses.map((status) => ({
+        agentRunId: status.execution.agentRunId,
+        memberAddress: status.execution.memberAddress,
+        status: status.details.status,
+        recoverableBlock: status.details.recoverableBlock,
+      })),
+    }));
+  }
+
   /**
    * The Agent-root view of a standalone run: the live root snapshot when one is active, else the
    * stored package with every child offline. Null when the run has no package. Never restores.
