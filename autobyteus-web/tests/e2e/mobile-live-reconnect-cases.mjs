@@ -27,8 +27,9 @@
 //   MSP-21 AC-003, AC-004  Two phones (Team member, agent run). Hidden 5 s with healthy streams, then visible: no new
 //                  stream. Hidden 35 s while the open streams die silently and the agent answers a marker: no stream is
 //                  opened while hidden; within 5 s of visible each phone shows the marker, the next within 1 s. Hidden while
-//                  the node is refused: no attempt while hidden; on visible an attempt at once; once the node passes, the
-//                  phones catch up.
+//                  the node is refused: no attempt of the run shown while hidden (Team phone: its Team socket; agent phone:
+//                  its catch-up read `GetRunProjection` or its socket), one within 2 s of visible (the agent's catch-up read
+//                  first); once the node passes, the phones catch up.
 //   MSP-22 AC-005  A phone sends "LONG-… HOLD_MS:30000" to the Team member and another to the agent run (a 30 s turn
 //                  with a tool call). Each sending phone shows it once. A second phone opening each run during the turn
 //                  shows it once, before the tool call; again after the turn. The node's stored user record of each
@@ -187,7 +188,12 @@ export const runLiveReconnectCases = async (probe) => {
       const context = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2, locale: 'en-US', timezoneId: 'UTC',
         ...(paired ? { storageState: paired } : {}) });
       const page = await context.newPage();
-      const phone = { label, context, page, sockets: [] };
+      const phone = { label, context, page, sockets: [], reads: [] };
+      // Every GraphQL read the phone starts (a refused one too): the agent stream's catch-up is a `GetRunProjection` read.
+      page.on('request', (request) => {
+        if (request.method() !== 'POST' || !request.url().includes('/graphql')) return;
+        try { const body = JSON.parse(request.postData() ?? '{}'); phone.reads.push({ op: body.operationName ?? null, runId: body.variables?.runId ?? null, at: now() }); } catch { /* not JSON */ }
+      });
       page.on('websocket', (ws) => {
         const entry = { url: redact(ws.url()).replace(phoneOrigin.replace(/^http/, 'ws'), ''), openedAt: now(), closedAt: null };
         phone.sockets.push(entry);
@@ -257,6 +263,18 @@ export const runLiveReconnectCases = async (probe) => {
       return phone;
     };
     const socketsOf = (phone, from) => phone.sockets.filter(entry => entry.openedAt >= from && /\/ws\/agent(-team|-org)?\//.test(entry.url));
+    /**
+     * The reconnect attempts of the run a phone shows, and nothing of the other streams it keeps: the Team phone's Team
+     * stream; the agent phone's catch-up reads of that run (`GetRunProjection`, read before the stream opens) and its stream.
+     */
+    const ownAttempts = (phone, from, to = Infinity) => {
+      const inWindow = at => at >= from && at < to;
+      if (phone.kind === 'team') return phone.sockets.filter(e => inWindow(e.openedAt) && e.url.startsWith(`/ws/agent-team/${team.teamRunId}`)).map(e => ({ socket: '/ws/agent-team/…', at: e.openedAt - from }));
+      return [
+        ...phone.reads.filter(e => inWindow(e.at) && e.op === 'GetRunProjection' && e.runId === agentRun).map(e => ({ read: 'GetRunProjection', at: e.at - from })),
+        ...phone.sockets.filter(e => inWindow(e.openedAt) && e.url.startsWith(`/ws/agent/${agentRun}`)).map(e => ({ socket: '/ws/agent/…', at: e.openedAt - from })),
+      ].sort((a, b) => a.at - b.at);
+    };
 
     const teamPhone = await phoneOn('team', 'phone-team');
     const agentPhone = await phoneOn('agent', 'phone-agent');
@@ -293,8 +311,11 @@ export const runLiveReconnectCases = async (probe) => {
       const collaboration = Object.fromEntries([teamPhone, agentPhone, orgPhone].map((phone) => {
         const ofPhone = phone.sockets.filter(entry => entry.url.startsWith('/ws/agent-collaboration/'));
         const routes = [...new Set(ofPhone.filter(entry => entry.openedAt < before).map(entry => entry.url.replace(/\?.*$/, '')))];
-        return [phone.label, routes.map(route => ({ route, reopenedAfterPassMs: ofPhone.find(entry => entry.url.startsWith(route) && entry.openedAt >= passedRel && entry.closedAt === null)?.openedAt - passedRel ?? null,
-          attemptsDuringOutage: ofPhone.filter(entry => entry.url.startsWith(route) && entry.openedAt >= before && entry.openedAt < passedRel).length }))];
+        return [phone.label, routes.map((route) => {
+          const reopened = ofPhone.find(entry => entry.url.startsWith(route) && entry.openedAt >= passedRel && entry.closedAt === null);
+          return { route, reopenedAfterPassMs: reopened ? reopened.openedAt - passedRel : null,
+          attemptsDuringOutage: ofPhone.filter(entry => entry.url.startsWith(route) && entry.openedAt >= before && entry.openedAt < passedRel).length };
+        })];
       }));
       const details = { outageMs: OUTAGE_MS, shownAfterPathPassesMs: shownAfterPass, nextMarkerDelayMs: next, agentMarkersWhileReconnecting: stream.length, missingOnAgentPhone, collaboration, sockets };
       assert(Object.values(shownAfterPass).every(ms => ms !== null && ms <= 35_000), 'each phone shows its marker by itself within 35 s after the path passes (AC-001, AC-002)', details);
@@ -344,11 +365,12 @@ export const runLiveReconnectCases = async (probe) => {
       await sleep(500);
       refuse(); outage(true);
       await sleep(20_000);
-      const attemptsWhileHidden = Object.fromEntries(Object.values(pair).map(phone => [phone.label, socketsOf(phone, heldFrom).length]));
+      // Counted per phone for its own run only (the agent phone also keeps the Team's stream).
+      const attemptsWhileHidden = Object.fromEntries(Object.values(pair).map(phone => [phone.label, ownAttempts(phone, heldFrom)]));
       const shownAt = now();
       for (const phone of Object.values(pair)) await setVisibility(phone, 'visible');
       await sleep(2_000);
-      const attemptsWithin2sOfVisible = Object.fromEntries(Object.values(pair).map(phone => [phone.label, socketsOf(phone, shownAt).length]));
+      const attemptsWithin2sOfVisible = Object.fromEntries(Object.values(pair).map(phone => [phone.label, ownAttempts(phone, shownAt, shownAt + 2_000)]));
       await sleep(1_000);
       pass(); outage(false);
       const back = { team: mark('team'), agent: mark('agent') };
@@ -369,8 +391,9 @@ export const runLiveReconnectCases = async (probe) => {
       assert(Object.values(openedWhileHidden).every(count => count === 0), 'no stream opened while hidden (AC-003, QR-003)', details);
       assert(Object.values(shownAfterVisible).every(ms => ms !== null && ms <= 5_000), 'within 5 s of visible each phone shows what happened meanwhile (AC-003)', details);
       assert(Object.values(hiddenNext).every(ms => ms !== null && ms <= 1_000), 'the next marker within 1 s (AC-003)', details);
-      assert(Object.values(attemptsWhileHidden).every(count => count === 0), 'no reconnect attempt while hidden and unreachable (AC-004)', details);
-      assert(Object.values(attemptsWithin2sOfVisible).every(count => count >= 1), 'an attempt at once on visible (AC-004)', details);
+      assert(Object.values(attemptsWhileHidden).every(list => list.length === 0), 'no reconnect attempt of the shown run while hidden and unreachable: no Team socket, no agent catch-up read or socket (AC-004)', details);
+      assert(Object.values(attemptsWithin2sOfVisible).every(list => list.length >= 1), 'an attempt of the shown run within 2 s of visible: the Team socket; the agent catch-up read (AC-004)', details);
+      assert(attemptsWithin2sOfVisible[agentPhone.label].some(entry => entry.read === 'GetRunProjection'), 'the agent run attempts with its catch-up read first (AC-004)', details);
       assert(Object.values(backShownMs).every(ms => ms !== null), 'caught up once the node passes', details);
       return details;
     });
