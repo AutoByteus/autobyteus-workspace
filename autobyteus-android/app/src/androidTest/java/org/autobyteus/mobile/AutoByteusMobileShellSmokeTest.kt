@@ -88,8 +88,7 @@ class AutoByteusMobileShellSmokeTest {
                 entry = entry,
                 fileChooserCoordinator = WebFileChooserCoordinator(Activity()) {},
                 shellBridge = null,
-                onPageStarted = {},
-                onPageFinished = {},
+                onPageLoaded = {},
                 onDiagnostic = {},
                 onOpenedOutside = {},
             )
@@ -116,6 +115,7 @@ class AutoByteusMobileShellSmokeTest {
                 val group = root as ViewGroup
                 assertEquals(1, group.childCount)
                 assertSame(webView, group.getChildAt(0))
+                assertEquals(View.VISIBLE, webView.visibility)
                 assertEquals(ViewGroup.LayoutParams.MATCH_PARENT, webView.layoutParams.width)
                 assertEquals(ViewGroup.LayoutParams.MATCH_PARENT, webView.layoutParams.height)
 
@@ -150,11 +150,20 @@ class AutoByteusMobileShellSmokeTest {
                 val group = root as ViewGroup
                 assertEquals(2, group.childCount)
                 assertSame(webView, group.getChildAt(0))
+                // autobyteus-433 DS-004: under the overlay the page (or WebView's error page with the URL) is neither
+                // drawn nor in the accessibility tree, and the overlay is opaque.
+                assertEquals(View.INVISIBLE, webView.visibility)
+                val overlayBackground = group.getChildAt(1).background as android.graphics.drawable.ColorDrawable
+                assertEquals(255, android.graphics.Color.alpha(overlayBackground.color))
 
                 val visibleText = textIn(root).joinToString(separator = "\n")
                 assertTrue(visibleText.contains("Retry"))
                 assertTrue(visibleText.contains("Edit"))
                 assertTrue(visibleText.contains("Browser"))
+
+                // The same WebView shown again without a diagnostic (a load that succeeded) is visible again.
+                WebShellScreen(context).render(webView = webView, diagnostic = null, callbacks = noOpWebCallbacks())
+                assertEquals(View.VISIBLE, webView.visibility)
             } finally {
                 webView.destroy()
             }

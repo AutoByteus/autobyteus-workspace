@@ -56,6 +56,8 @@ class MainActivity : Activity(), NodeConnectionFlow.Screens {
     /** Where the scanner and the can't-reach screen's back arrow return to. */
     private var listScreen = Screen.Start
     private var currentWebHost: AutoByteusWebView? = null
+    /** A diagnostic overlay is up over the page (which is then hidden); a load that succeeds closes it. */
+    private var pageOverlayShown = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -182,6 +184,7 @@ class MainActivity : Activity(), NodeConnectionFlow.Screens {
             return
         }
         currentWebHost?.destroy()
+        pageOverlayShown = false
         var firstPageShown = false
         if (!pairing) setContentView(ConnectingScreen(ui).connected(entry.shownName))
         val webHost = AutoByteusWebView(
@@ -189,11 +192,16 @@ class MainActivity : Activity(), NodeConnectionFlow.Screens {
             entry = entry,
             fileChooserCoordinator = fileChooserCoordinator,
             shellBridge = ShellBridge(entry, bridgeActions),
-            onPageStarted = {},
-            onPageFinished = {
-                if (!firstPageShown && currentWebHost?.entry == entry) {
-                    firstPageShown = true
-                    showPage()
+            // Only a load that succeeded shows the page: the first one, or one that ends an overlay (Retry, Back, a
+            // reload). A failed load keeps the overlay. A reload while the user is elsewhere does not pull them back.
+            onPageLoaded = {
+                if (currentWebHost?.entry == entry) {
+                    if (!firstPageShown) {
+                        firstPageShown = true
+                        showPage()
+                    } else if (pageOverlayShown && screen == Screen.Web) {
+                        showPage()
+                    }
                 }
             },
             onDiagnostic = { diagnostic -> showWebDiagnostic(diagnostic) },
@@ -306,6 +314,7 @@ class MainActivity : Activity(), NodeConnectionFlow.Screens {
     private fun showPage() {
         val webHost = currentWebHost ?: return showStart()
         leaveCurrentScreen(Screen.Web)
+        pageOverlayShown = false
         setContentView(webShellScreen.render(webView = webHost.webView, diagnostic = null, callbacks = webCallbacks(webHost.entry)))
     }
 
@@ -319,6 +328,7 @@ class MainActivity : Activity(), NodeConnectionFlow.Screens {
     private fun closePage() {
         currentWebHost?.destroy()
         currentWebHost = null
+        pageOverlayShown = false
     }
 
     private fun isPageSaved(): Boolean = currentWebHost?.entry?.id?.let { id -> savedNodeStore.loadEntries().any { it.id == id } } == true
@@ -326,6 +336,7 @@ class MainActivity : Activity(), NodeConnectionFlow.Screens {
     private fun showWebDiagnostic(diagnostic: ConnectionDiagnostic) {
         val webHost = currentWebHost ?: return
         if (screen != Screen.Web) leaveCurrentScreen(Screen.Web)
+        pageOverlayShown = true
         setContentView(webShellScreen.render(webView = webHost.webView, diagnostic = diagnostic, callbacks = webCallbacks(webHost.entry)))
     }
 
