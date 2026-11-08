@@ -2,8 +2,8 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-002`
-- Approved requirements baseline / revision, who approved, and approval reference: `requirements-doc.md` at `SR-001`, approved by the Solution Designer within the direction (user informed in the Solution Designer's conversation, 2026-11-08); the user's own decision is the Task comment of 2026-11-08 (no address, no Details action, plain-language messages).
+- Current solution revision ID: `SR-003` (SR-002 design revised for CRR-001 F-001: the page under an overlay)
+- Approved requirements baseline / revision, who approved, and approval reference: `requirements-doc.md` at `SR-003` (REQ-006, AC-007, DEC-009 revised; the rest as at `SR-001`), approved by the Solution Designer within the direction (user informed in the Solution Designer's conversation, 2026-11-08); the user's own decision is the Task comment of 2026-11-08 (no address, no Details action, plain-language messages).
 - Behavior-defining supplements and their approval references: None
 - User approval of the design, when the direction requires it: `Not required`
 - Design status: `Ready`
@@ -52,10 +52,10 @@ Give each name owner a name source that is never the address: the page prefers t
 
 ## Change Scope (Mandatory)
 
-- In scope: UC-001…UC-005. Areas: the `/mobile` paired shell, connection sheet, pairing page and bridge client (`autobyteus-web`); the Android entry model, connect flow, bridge, diagnostics texts, web host, activity, node row and remove sheet (`autobyteus-android`); their unit tests; the mobile shell probe; the two package docs that describe the bridge and the sheet.
+- In scope: UC-001…UC-005. Areas: the `/mobile` paired shell, connection sheet, pairing page and bridge client (`autobyteus-web`); the Android entry model, connect flow, bridge, diagnostics texts, web host (now also its main-frame load outcome), activity (when the page and the overlay show), web shell screen (the page hidden under an overlay), node row and remove sheet (`autobyteus-android`); their unit tests; the mobile shell probe; the two package docs that describe the bridge and the sheet.
 - Derived consumers: `SavedNodeEntry` gains two derived properties; its readers decide as follows: `NodeRow`, `RemoveNodeSheet`, `MainActivity` (Connected, toast), `NodeConnectionFlow` (Connecting, Can't reach), `ConnectionValidator` (Phone access off), `AutoByteusWebView` (page load failure) → `shownName`; `ShellBridge` hello and `NodeConnectionFlow.onPaired` → `knownName`; `SavedNodeStore` (persistence), `TrustedNavigationPolicy`, `OpenPageRestore`, `NodeReachability` → unchanged (they do not read the name). `ShellHello` gains `nodeName`; its readers: `MobilePairedShell` (uses it), `MobileConnectionSheet` and `MobilePairingBootstrap` (unchanged: they read `nodeCount` / `deviceName`).
 - Deliberately left alone: the server and pairing payload; the desktop Phone Setup and Nodes pages and the QR; the iOS native shell; `TypeAddressSheet` (shows what the user types); the overlay's Retry/Edit/Browser actions (DEC-008); web diagnostics (`mobileConnectionDiagnostics.ts`, they print no address); how nodes are named on the desktop.
-- Follow-ups: `FU-001` (the overlay's raw HTTP-status title, wording only; not an address) — see `follow-ups.md`.
+- Follow-ups: `FU-001` (the overlay's raw HTTP-status title, wording only; not an address) — see `follow-ups.md`. `FU-002` (overlay stays after a successful Retry) is folded into this ticket at SR-003 (DEC-009).
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
 
@@ -66,7 +66,7 @@ Give each name owner a name source that is never the address: the page prefers t
 | BEH-003 | User | REQ-003; AC-004 | First page, Switch node, connect | BEH-003 | `shownName` everywhere | DS-002 |
 | BEH-004 | User | REQ-005; AC-005 | Page of an unnamed node pairs | BEH-004 | Entry takes the QR name | DS-003 |
 | BEH-005 | User | REQ-004; AC-006 | Typed address unusable | BEH-005 | "Can't connect", no typed text | DS-002 |
-| BEH-006 | User / System | REQ-006; AC-007 | Link, download, load failure | BEH-006 | Plain texts, no URL | DS-004 |
+| BEH-006 | User / System | REQ-006; AC-007 | Link, download, load failure (reload, Back, Retry, first load) | BEH-006; CRR-001 F-001 | Plain texts, no URL; the page is hidden while an overlay is up; a successful load closes the overlay | DS-004, DS-006 |
 | BEH-007 | System | REQ-007; AC-008 | Status check exception | BEH-007 | No exception text | DS-002 (diagnostic leaf) |
 | BEH-008 | User | REQ-008; AC-003 | Pairing page, QR without name | BEH-008 | "AutoByteus node" | DS-005 |
 
@@ -82,6 +82,7 @@ None.
   - *Behavior by absence* (Principle 13): today "show the host" happens because the name lookup finds nothing (`MobilePairedShell.vue:130`, `SavedNodeEntry.kt:35`). The design makes the fallback an explicit rule with its own result ("AutoByteus node"), owned once per codebase (`nodeNameOrDefault`, `SavedNodeEntry.shownName`).
   - *Derived data* (Principle 11): "the entry has no name" is computed in `NodeConnectionFlow.onPaired` (`displayName != host`); the new display rule needs the same fact, so it moves to one owner, `SavedNodeEntry.knownName`, and `onPaired` reads it.
   - *Several kinds or forms* (Principle 1): the name serves QR entries, typed entries and legacy host-named entries in the app, and in-app and browser pages on the web; each is a row in the tests (AC-003, AC-004).
+  - *Behavior by absence* (Principle 13), second instance (SR-003, CRR-001 F-001): when the page shows was decided by "the first `onPageFinished`", which also fires for a failed load. The web host now decides the load outcome with its own result (`onPageLoaded`), and `MainActivity` shows the page on that result only.
   - Ruled out: *Responsibility overload* (`MainActivity.kt` 361 lines, changes are one-line call-site edits; `MobilePairedShell.vue` 165 lines); *Persisted-data transition* (no stored field changes; see below); *Ambiguous boundary* (the `hello` reply stays one subject: this phone and its open entry).
 - Root cause classification: `Missing Invariant` (no owner enforced "a node is never shown by its address").
 - Refactor needed now: `No` beyond the two small owners named above, which are part of the fix.
@@ -119,6 +120,7 @@ None.
 | DS-002 | Primary End-to-End | BEH-003, BEH-005, BEH-007 | The user opens, switches to or adds a node | Connecting / Connected / Can't reach / list rows show the shown name | `NodeConnectionFlow` (connect), `MainActivity` (screens) | The app's own screens |
 | DS-003 | Return-Event | BEH-004 | The page reports `paired(name)` | The saved entry carries the name | `NodeConnectionFlow.onPaired` | Names typed nodes |
 | DS-004 | Return-Event | BEH-006 | WebView navigation / load error / download | Toast or overlay text | `AutoByteusWebView` → `MainActivity` | In-page leaks |
+| DS-006 | Bounded Local | BEH-006 | `onPageStarted` of a main-frame load | `onPageLoaded()` or nothing | `AutoByteusWebView` | Decides whether a load succeeded, so the page shows only after one |
 | DS-005 | Primary End-to-End | BEH-008 | A pairing link opens the page | Pairing page title and report to the app | `MobilePairingBootstrap.vue` | Same rule on the pairing page |
 
 ## Primary Execution Spine(s)
@@ -134,7 +136,7 @@ None.
 | DS-001 | When the page mounts in the app, it asks the app once for its name for this node (the same `hello` it already uses) while its status check runs. Until the answer arrives (a local message, normally milliseconds; at most 1.5 s) the header shows the session's name or "AutoByteus node"; then the app's name. In a browser there is no bridge: the session's name or "AutoByteus node". | the page, the app's entry | `MobilePairedShell.vue` | `nodeNameOrDefault`; `shellBridge.ts` |
 | DS-002 | Every app screen that names a node reads `entry.shownName`; a typed address that cannot be used passes no name, so the screen titles itself "Can't connect". | the entry | `NodeConnectionFlow`, `MainActivity` | `SavedNodeEntry.shownName`; `ConnectionDiagnosticMapper` texts |
 | DS-003 | When the page reports a pairing, the flow names the pending QR entry (as today) or, new, the open saved entry if it has no known name, and saves it. A named entry is never renamed by the page. | the entry | `NodeConnectionFlow` | `SavedNodeStore.saveEntry` |
-| DS-004 | WebView events produce diagnostics without URLs; the load failure names the open entry. The external-open toast carries no URL. | the open page | `AutoByteusWebView` | `ConnectionDiagnosticMapper` |
+| DS-004 | WebView events produce diagnostics without URLs; the load failure names the open entry. While any overlay is up, the WebView stays in the layout but is `INVISIBLE` (not drawn, not in the accessibility tree), so neither the page nor WebView's built-in error page (which prints the URL) can show; the overlay is opaque. The page shows again only when the web host reports a load that succeeded (Retry, Back, a reload), which also closes the overlay. The external-open toast carries no URL. | the open page | `AutoByteusWebView` (load outcome), `MainActivity` (which screen shows) | `ConnectionDiagnosticMapper`; `WebShellScreen` |
 | DS-005 | The pairing page shows the QR's name or "AutoByteus node", and reports only the QR name (or nothing) to the app, so the app never stores the label as a name. | the pairing link | `MobilePairingBootstrap.vue` | `nodeNameOrDefault` |
 
 ## Spine Actors / Main-Line Nodes
@@ -167,17 +169,19 @@ N/A — none involved.
 | `ConnectionDiagnosticMapper.unsafeNavigationBlocked(url)` | URL removed | `linkBlocked()` | — |
 | `url` parameter of `invalidUrl`, `httpNeedsAcknowledgement`; exception detail in `fromException` | REQ-007 | parameter-free texts | — |
 | `url` parameter of `AutoByteusWebView.onExternalUrl` | The toast no longer prints it | `onOpenedOutside: () -> Unit` | `AutoByteusMobileShellSmokeTest` passes `{}` already |
+| `onPageStarted: (String) -> Unit` and `onPageFinished: (String) -> Unit` parameters of `AutoByteusWebView` | `onPageStarted` is dead (its only production caller passes `{}`); `onPageFinished` fires for failed loads too, so it cannot decide when to show the page | `onPageLoaded: () -> Unit` (a load that succeeded) | `AutoByteusMobileShellSmokeTest` passes the new parameter |
+| Translucent overlay background `argb(235, …)` in `WebShellScreen` | The page underneath must not show (F-001) | Opaque background; WebView `INVISIBLE` while a diagnostic is shown | — |
 | `qrHadName` computation in `NodeConnectionFlow.onPaired` | The fact moves to its owner | `SavedNodeEntry.knownName` | — |
 | Test "a session paired before the name was kept shows the address's host" | Asserts removed behavior | Tests of the new order | `DESIGN.md` rule 11 |
 
 ## Return Or Event Spine(s) (If Applicable)
 
 - DS-003: `MobilePairingBootstrap.pair() -> bridge.paired(session.nodeName ?? "") -> ShellBridge (origin/main-frame check) -> MainActivity.bridgeActions.onPaired -> NodeConnectionFlow.onPaired(name) -> SavedNodeStore.saveEntry(named entry)`
-- DS-004: `WebViewClient.onReceivedError (main frame) -> onDiagnostic(ConnectionDiagnosticMapper.pageLoadFailed(entry.shownName)) -> MainActivity.showWebDiagnostic -> WebShellScreen overlay`; `openExternal(url) -> onOpenedOutside() -> Toast("Opening outside AutoByteus")`.
+- DS-004: `WebViewClient.onReceivedError / onReceivedHttpError (main frame) -> AutoByteusWebView marks this load failed -> onDiagnostic(pageLoadFailed(entry.shownName) | fromHttpStatus(code)) -> MainActivity.showWebDiagnostic (records the overlay) -> WebShellScreen.render(webView INVISIBLE, opaque overlay)`; later `onPageFinished` of a load not marked failed -> `onPageLoaded()` -> `MainActivity`: first page not shown yet, or an overlay is up -> `showPage()` (WebView VISIBLE, no overlay, overlay record cleared)`; `openExternal(url) -> onOpenedOutside() -> Toast("Opening outside AutoByteus")`.
 
 ## Bounded Local / Internal Spines (If Applicable)
 
-N/A — no loop or state machine changes.
+- DS-006, parent owner `AutoByteusWebView` (its `WebViewClient`): `onPageStarted (main frame) -> failed = false -> [onReceivedError | onReceivedHttpError for the main frame -> failed = true -> onDiagnostic] -> onPageFinished -> if !failed: onPageLoaded()`. It matters because WebView calls `onPageFinished` for a failed load too (its error page finished loading): today that is what makes `MainActivity` replace the first-load overlay with the error page, and what leaves the overlay up after a successful Retry (FU-002). Premise to confirm on the emulator during implementation (cheap: a temporary log, removed before handoff): for a failed main-frame load WebView 124 calls `onPageStarted`, then `onReceivedError`, then `onPageFinished` for the same URL; for an HTTP error, `onReceivedHttpError` before `onPageFinished`. If the order differs, return a Design Impact.
 
 ## Off-Spine Concerns Around The Spine
 
@@ -286,9 +290,10 @@ See the final mapping; the draft needed no extraction beyond the two name rules.
 | `autobyteus-android/.../connection/ConnectionDiagnosticMapper.kt` (Modify) | Texts | `pageLoadFailed(nodeName)`, `linkBlocked()`, `noAppForLink()`, `noFilePicker()`; parameter-free `invalidUrl()`, `httpNeedsAcknowledgement()`; `fromException` without detail; `phoneAccessDisabled(nodeName)` unchanged |
 | `autobyteus-android/.../connection/ConnectionValidator.kt` (Modify) | Status check | `invalidUrl()`; `phoneAccessDisabled(entry.shownName)` |
 | `autobyteus-android/.../shell/ConnectionInputResolver.kt` (Modify) | Input parsing | `invalidUrl()`, `httpNeedsAcknowledgement()` |
-| `autobyteus-android/.../web/AutoByteusWebView.kt` (Modify) | WebView host | `linkBlocked()`, `noAppForLink()`, `pageLoadFailed(entry.shownName)`; `onOpenedOutside: () -> Unit` |
+| `autobyteus-android/.../web/AutoByteusWebView.kt` (Modify) | WebView host | `linkBlocked()`, `noAppForLink()`, `pageLoadFailed(entry.shownName)`; `onOpenedOutside: () -> Unit`; DS-006: tracks whether the current main-frame load failed and reports `onPageLoaded()` only for a load that succeeded (replaces `onPageStarted`/`onPageFinished`) |
+| `autobyteus-android/.../ui/WebShellScreen.kt` (Modify) | Page screen | With a diagnostic: WebView kept in the layout with `visibility = INVISIBLE`, overlay opaque; without: WebView `VISIBLE` |
 | `autobyteus-android/.../web/WebFileChooserCoordinator.kt` (Modify) | File chooser | `noFilePicker()` |
-| `autobyteus-android/.../MainActivity.kt` (Modify) | Screens | `connected(entry.shownName)`; toast "Opening outside AutoByteus" |
+| `autobyteus-android/.../MainActivity.kt` (Modify) | Screens | `connected(entry.shownName)`; toast "Opening outside AutoByteus"; records whether an overlay is up (`showWebDiagnostic` sets it, `showPage` clears it); `onPageLoaded`: the first page not shown yet → show it; an overlay up on the Web screen → `showPage()`; otherwise nothing (a reload while the user is on Switch node does not pull them back) |
 | `autobyteus-android/.../ui/start/NodeRow.kt`, `ui/sheets/RemoveNodeSheet.kt` (Modify) | UI | `shownName` for text and accessibility labels |
 | Tests (Modify/Add) | — | Listed in Guidance For Implementation |
 | `autobyteus-web/tests/e2e/mobile-shell-probe.mjs` (Modify) | Probe | Replace the `mobile-connection-url` read with an assertion that the sheet's text contains no host of the phone origin |
@@ -356,6 +361,8 @@ N/A.
 
 ## Risks
 
+- SR-003: a page hidden under an overlay is not seen until a load succeeds; an overlay raised by a link (blocked, no app, no file picker) over a working page now hides the page too until Retry reloads it or Edit leaves. Accepted: one rule for every overlay, and Retry already reloads the page.
+
 - RISK-001 (investigation): the user sees the fix only after both the app and the node(s) are updated (one release; the node serves `/mobile`). The delivery and release notes say so.
 - A WebView whose `hello` times out (1.5 s) leaves the session name or the label: never the address.
 
@@ -366,5 +373,6 @@ N/A.
   - Web: `utils/remoteAccess/__tests__/nodeName.spec.ts` (first non-blank, trimming, label); `MobileRemoteAccessShell.spec.ts` (app name wins over session name and over no name, with a stubbed `window.AutoByteusShell`; session name in a browser; label with neither; header and aria label contain no host); `MobileConnectionSheet.spec.ts` (no `mobile-connection-url`; the sheet's text, connected and not reachable with a diagnostic, contains no address); `MobilePairingBootstrap.spec.ts` (QR without name → "AutoByteus node"; `paired` receives `''` for it).
   - Android: `SavedNodeEntryTest` (QR name → known; typed → `null`/label; legacy `displayName == host` → `null`/label); `NodeConnectionFlowTest` (typed open entry named on `paired`; named entry not renamed; typed unusable address → `showCantReach("")`; screens receive `shownName`); `ShellBridgeMessagesTest` (reply includes `nodeName`, empty for unnamed); `ConnectionDiagnosticMapperTest` (an `UnknownHostException("Unable to resolve host \"test-desktop.example-tailnet.ts.net\"…")` gives no host in any text; `pageLoadFailed("Test Desktop")` texts; no function takes a URL).
   - Probe: `mobile-shell-probe.mjs` sheet case asserts no host in the sheet's text.
+- SR-003 tests: the load-outcome rule (DS-006) as a JVM test of a small pure decision if the implementation extracts one, otherwise the instrumented smoke test or the emulator cases; emulator (API/E2E): API-08 and API-08b (reload, Back, Retry while down: screenshot shows only the overlay; uiautomator dump has no host/URL), Retry after the node is back closes the overlay (FU-002), the first-load failure stays an overlay, API-03 (MainActivity, AutoByteusWebView, WebShellScreen changed).
 - Emulator (API/E2E, AC-009): isolated node, test names, screenshots of the first page, connected page (session without a name, entry named by QR), sheet, Switch node, Can't reach. Rebuild the `/mobile` bundle the node serves as well as the APK (README: a fresh APK alone cannot update stale `mobile-web/` assets).
 - `DESIGN.md` rule 11: delete or rewrite tests of removed behavior; keep no production parameter only tests read.

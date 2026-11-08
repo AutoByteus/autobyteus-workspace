@@ -2,9 +2,9 @@
 
 - Result: `Architecture Design Complete`
 - Package identifier: `phone-node-name-privacy`; Project Task `autobyteus-433` (Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`)
-- Current solution revision: `SR-002`
+- Current solution revision: `SR-003` (after CRR-001 F-001)
 - Classification: `task_size = Medium`, `architectural_risk = Low` (rationale: `design-spec.md`, Task Size And Architectural Risk)
-- Route: direct implementation (handoff rule: Small/Medium and Low → `/software_engineering_team/implementation_engineer`), sent 2026-11-08
+- Route: direct implementation (handoff rule: Small/Medium and Low → `/software_engineering_team/implementation_engineer`); SR-002 sent 2026-11-08; SR-003 sent 2026-11-08
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), for the user
 
 ## Original Request (condensed)
@@ -53,3 +53,16 @@ Implementation of `design-spec.md` with the listed web and Android unit tests, t
 - RISK-001: the fix reaches the user only when both the Android app and the node(s) serving `/mobile` are updated (one release).
 - DEC-004: two never-paired typed nodes both read "AutoByteus node".
 - DEC-008: the overlay's existing **Browser** action still opens the node in the phone's browser (outside the app).
+
+## SR-003 Revision (CRR-001 F-001)
+
+- Trigger: code reviewer failure-origin review CRR-001 (`code-review-report.md`), from API/E2E round API-REV-001: on a main-frame load failure, WebView's built-in error page with the node URL showed through the 92 % opaque "Can’t reach" overlay (reload, Back, Retry), and its URL was in the accessibility tree. Classified `Design Impact`: DS-004 decided only the overlay's text.
+- Decision (DEC-009, DS-004, DS-006):
+  - While any overlay is up, the WebView stays in the layout but is `INVISIBLE`, and the overlay is opaque (`WebShellScreen`).
+  - `AutoByteusWebView` decides each main-frame load's outcome itself. A main-frame `onReceivedError` or `onReceivedHttpError` marks the load failed, and `onPageStarted` clears the mark. It reports `onPageLoaded()` only from the `onPageFinished` of a load that did not fail. This replaces the `onPageStarted` (dead) and `onPageFinished(url)` callbacks.
+  - `MainActivity` records whether an overlay is up. On `onPageLoaded` it shows the page when the first page has not been shown yet, or when an overlay is up on the Web screen; otherwise it does nothing.
+  - So a failed first load stays an overlay, and Retry or Back that loads the page closes the overlay. That is FU-002, folded in.
+- Premise to confirm on the emulator first, with a temporary log removed before handoff: on a failed main-frame load WebView 124 calls `onPageStarted`, then `onReceivedError`, then `onPageFinished`; on an HTTP error, `onReceivedHttpError` comes before `onPageFinished`. Return a Design Impact if the order differs.
+- Classification unchanged: `Medium` / `Low`.
+- Rerun expected from API/E2E: API-08, API-08b, API-03, a Retry-after-recovery case, and a first-load failure if reachable.
+- Requirements: REQ-006, AC-007 and DEC-009 were clarified within the direction (SR-003); the user was informed.

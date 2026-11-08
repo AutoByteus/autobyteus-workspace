@@ -249,3 +249,13 @@ Principle 1 (several kinds or forms).
 - **The fix:** the re-read was left out; a run that is not open keeps its first read (a smaller read for those states is autobyteus-426 item 9).
 - **Lesson:** before a design repeats a read, measure what one read carries and how often it runs; a poll multiplies it.
 - **Notice it by:** a refresh or re-read added to a poll or a list without the size of one read and its frequency written next to it.
+
+### Case 18: A Screen Designed By Its Text, Not By What It Covers (autobyteus-433, CRR-001 F-001)
+
+Principle 1 (the complete path to its outcome, through the real dependency).
+
+- **The design said:** when the open node's page fails to load, the app shows an overlay "Can’t reach <node>" in plain words, with no URL. It decided the overlay's text only.
+- **What happened:** after a main-frame failure, Android's WebView commits its own error page, which prints the page's URL and the network error. The overlay was 92 % opaque, so the URL showed through; a screen reader could still reach it; and the first `onPageFinished` (which also fires for the error page) replaced the overlay with that page. The requirement was a screenshot without the address, and the screenshot showed it.
+- **The fix:** the WebView stays in the layout but is `INVISIBLE` while any overlay is up, and the overlay is opaque. The web host decides each main-frame load's outcome itself, and the page shows only after a load that succeeded, which also closes the overlay.
+- **Why it mattered:** this was the leak the ticket existed to remove, on the screen most likely to be screenshotted when something goes wrong.
+- **Notice it by:** a requirement stated as "what the screen shows" and a design that decides one view's content; an overlay over a WebView, a map or another component that renders its own error states; a "first finished" or "page loaded" callback used to decide visibility without checking whether that load failed.
