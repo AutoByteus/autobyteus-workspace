@@ -1,7 +1,8 @@
 /**
  * The Android app's shell bridge (`window.AutoByteusShell`): an androidx.webkit web-message object the app gives only
- * to the main frame of the open node's origin. The page tells the app it paired, or asks it to show its node list or
- * its scanner; the app's `hello` reply tells the page about this phone and the open node. It carries no credential.
+ * to the main frame of the open node's origin. The page tells the app it is ready or paired, or asks it to show its
+ * node list or its scanner; the app's `hello` reply tells the page about this phone and the open node. It carries no
+ * credential.
  * In a browser there is no bridge.
  */
 export type ShellHello = {
@@ -15,6 +16,11 @@ export type ShellHello = {
 
 export type ShellBridge = {
   hello(): Promise<ShellHello | null>;
+  /**
+   * The node's page is mounted: the app shows the page (or closes its error overlay) only on this message, which
+   * WebView's own error page cannot send (autobyteus-433 DS-006).
+   */
+  pageReady(): void;
   paired(nodeName: string): void;
   showNodeList(): void;
   startScan(): void;
@@ -72,6 +78,7 @@ export const getShellBridge = (): ShellBridge | null => {
       shell.addEventListener('message', onMessage);
       post({ type: 'hello' });
     }),
+    pageReady: () => post({ type: 'pageReady' }),
     paired: (nodeName) => post({ type: 'paired', nodeName }),
     showNodeList: () => post({ type: 'showNodeList' }),
     startScan: () => post({ type: 'startScan' }),

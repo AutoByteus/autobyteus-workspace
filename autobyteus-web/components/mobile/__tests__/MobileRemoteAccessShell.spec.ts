@@ -59,14 +59,18 @@ const reachableStatus = { phoneAccessEnabled: true, pairingAvailable: true, node
 /** A stand-in for the Android app's web-message object, answering `hello` with the app's name for the open node. */
 const installShell = (appNodeName: string) => {
   const listeners = new Set<(event: { data: string }) => void>();
+  const posted: string[] = [];
   (window as unknown as { AutoByteusShell?: unknown }).AutoByteusShell = {
     postMessage: (message: string) => {
-      if ((JSON.parse(message) as { type: string }).type !== 'hello') return;
+      const type = (JSON.parse(message) as { type: string }).type;
+      posted.push(type);
+      if (type !== 'hello') return;
       queueMicrotask(() => listeners.forEach((listener) => listener({ data: JSON.stringify({ type: 'shell', nodeCount: 2, deviceName: 'Test Phone', nodeName: appNodeName }) })));
     },
     addEventListener: (_type: string, listener: (event: { data: string }) => void) => listeners.add(listener),
     removeEventListener: (_type: string, listener: (event: { data: string }) => void) => listeners.delete(listener),
   };
+  return posted;
 };
 
 /** A session at a Tailscale-style test address; the page must show none of it (autobyteus-433). */
@@ -330,6 +334,27 @@ describe('MobileRemoteAccessShell', () => {
     const { wrapper } = await mountShell({ pairing: pairingParam });
     expect(wrapper.find('[data-testid="mobile-pairing-bootstrap"]').exists()).toBe(true);
     expect(wrapper.find('[data-testid="mobile-run-list"]').exists()).toBe(false);
+    wrapper.unmount();
+  });
+
+  // autobyteus-433 DS-006: the app shows the page (or closes its overlay) only when the page says it is mounted.
+  it.each([
+    ['a paired phone', pairedSession],
+    ['an unpaired phone (the pairing page)', null],
+  ])('in the Android app, %s tells the app once that the page is ready', async (_case, session) => {
+    const posted = installShell('Test Desktop');
+    const { router, wrapper } = await mountShell({}, session);
+    expect(posted.filter((type) => type === 'pageReady')).toHaveLength(1);
+    await router.push({ path: '/mobile', query: { screen: 'new' } });
+    router.back(); await flushPromises();
+    expect(posted.filter((type) => type === 'pageReady')).toHaveLength(1);
+    wrapper.unmount();
+  });
+
+  it('in a browser there is no bridge, so nothing is sent and the page still mounts', async () => {
+    const { wrapper } = await mountShell();
+    expect((window as unknown as { AutoByteusShell?: unknown }).AutoByteusShell).toBeUndefined();
+    expect(wrapper.find('[data-testid="mobile-run-list"]').exists()).toBe(true);
     wrapper.unmount();
   });
 

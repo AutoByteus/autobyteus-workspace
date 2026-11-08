@@ -24,16 +24,12 @@ class AutoByteusWebView(
     private val fileChooserCoordinator: WebFileChooserCoordinator,
     /** The shell bridge for this entry's origin; registered before the first page loads. */
     private val shellBridge: ShellBridge?,
-    /** A main-frame load succeeded (DS-006); never called for a load that failed, whose error page prints the URL. */
-    private val onPageLoaded: () -> Unit,
     private val onDiagnostic: (ConnectionDiagnostic) -> Unit,
     /** A link or download is opening in another app; the toast says so without its URL. */
     private val onOpenedOutside: () -> Unit,
 ) {
     lateinit var webView: WebView
         private set
-
-    private val loadOutcome = MainFrameLoadOutcome()
 
     @SuppressLint("SetJavaScriptEnabled")
     fun create(initialUrl: String): WebView {
@@ -116,16 +112,11 @@ class AutoByteusWebView(
             }
         }
 
-        override fun onPageFinished(view: WebView, url: String) {
-            if (loadOutcome.onFinished()) onPageLoaded()
-        }
-
         override fun onReceivedError(
             view: WebView,
             request: WebResourceRequest,
             error: WebResourceError,
         ) {
-            loadOutcome.onError(request.isForMainFrame)
             if (request.isForMainFrame) {
                 onDiagnostic(ConnectionDiagnosticMapper.pageLoadFailed(entry.shownName))
             }
@@ -136,7 +127,6 @@ class AutoByteusWebView(
             request: WebResourceRequest,
             errorResponse: WebResourceResponse,
         ) {
-            loadOutcome.onError(request.isForMainFrame)
             if (request.isForMainFrame) {
                 onDiagnostic(ConnectionDiagnosticMapper.fromHttpStatus(errorResponse.statusCode))
             }

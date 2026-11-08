@@ -13,10 +13,12 @@ import org.json.JSONObject
 
 /**
  * The shell bridge (`window.AutoByteusShell`): an androidx.webkit web-message object given only to the open node's
- * origin. The page may tell the app it paired, or ask it to show its node list or its scanner; `hello` answers with
- * the phone's node count and model name, and the open node's name as the app shows it (`""` when it has none,
- * autobyteus-433). Messages from a subframe or another origin are ignored, so a sandboxed HTML preview inside the page
- * cannot act as the app (autobyteus-417). It carries no credential and, of the entry, only the open node's name.
+ * origin. The page may tell the app it is ready (the node's page is mounted: the only signal that shows the page, which
+ * WebView's own error page cannot send, autobyteus-433 DS-006) or paired, or ask it to show its node list or its
+ * scanner; `hello` answers with the phone's node count and model name, and the open node's name as the app shows it
+ * (`""` when it has none, autobyteus-433). Messages from a subframe or another origin are ignored, so a sandboxed HTML
+ * preview inside the page cannot act as the app (autobyteus-417). It carries no credential and, of the entry, only the
+ * open node's name.
  */
 class ShellBridge(
     private val entry: SavedNodeEntry,
@@ -25,6 +27,8 @@ class ShellBridge(
     interface Actions {
         fun nodeCount(): Int
         fun deviceName(): String
+        /** The page of the entry [entryId] is mounted. */
+        fun onPageReady(entryId: String)
         fun onPaired(nodeName: String)
         fun onShowNodeList()
         fun onStartScan()
@@ -55,6 +59,7 @@ class ShellBridge(
                     nodeName = entry.knownName.orEmpty(),
                 ),
             )
+            ShellBridgeAction.PageReady -> actions.onPageReady(entry.id)
             is ShellBridgeAction.Paired -> actions.onPaired(action.nodeName)
             ShellBridgeAction.ShowNodeList -> actions.onShowNodeList()
             ShellBridgeAction.StartScan -> actions.onStartScan()
@@ -74,6 +79,7 @@ class ShellBridge(
 
 sealed class ShellBridgeAction {
     data object Hello : ShellBridgeAction()
+    data object PageReady : ShellBridgeAction()
     data class Paired(val nodeName: String) : ShellBridgeAction()
     data object ShowNodeList : ShellBridgeAction()
     data object StartScan : ShellBridgeAction()
@@ -87,6 +93,7 @@ object ShellBridgeMessages {
         val json = runCatching { JSONObject(data) }.getOrNull() ?: return null
         return when (json.optString("type")) {
             "hello" -> ShellBridgeAction.Hello
+            "pageReady" -> ShellBridgeAction.PageReady
             "paired" -> ShellBridgeAction.Paired(json.optString("nodeName").trim())
             "showNodeList" -> ShellBridgeAction.ShowNodeList
             "startScan" -> ShellBridgeAction.StartScan
