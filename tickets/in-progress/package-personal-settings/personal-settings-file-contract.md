@@ -1,6 +1,6 @@
-# Data Contract — Personal Settings For Package Definitions (autobyteus-95)
+# Personal Settings File Contract — Your Own Tools, Skills, Avatar And Runtime/Model For Package Agents, Teams And Orgs (autobyteus-95)
 
-Status: proposal for the user's review, 2026-11-07. Replaces `data-model.md` (2026-11-06). Validated against real package data (section 9).
+Status: proposal for the user's review, 2026-11-07; renamed 2026-11-08 (was `data-contract.md`, first drafted as `data-model.md`). Validated against real package data (section 9).
 
 ## 1. Purpose
 
@@ -168,7 +168,7 @@ Local folder packages: AutoByteus never updates them, so this section does not a
 
 ## 9. Validation
 
-Script: `evidence/DC-validate-contract.mjs`. Run: `evidence/DC-validation-run.log` (2026-11-07). It reads, read-only:
+Script: `evidence/validate-personal-settings-file.mjs`. Run: `evidence/personal-settings-file-validation-run.log` (2026-11-07). It reads, read-only:
 - two real revisions of `AutoByteus/autobyteus-agents`: `181b784c10` as the installed version and `327b59748e` as the update;
 - the local `autobyteus-agents` and `autobyteus-private-agents` folders.
 
@@ -181,7 +181,7 @@ Script: `evidence/DC-validate-contract.mjs`. Run: `evidence/DC-validation-run.lo
 | V-C | The captured record passes the reader; capture on an unchanged file yields nothing; capture keeps an existing record; a definition the new revision dropped (`agent:chemistry-module-designer`) leaves its record unused | Pass |
 | V-D | All 129 configs of the new revision read into the package values; with no record the effective values equal the package's | Pass |
 
-The first run had one failing check, in the test itself: it counted the skip log entries instead of the dropped records. That run's log is `evidence/DC-validation-run-first.log`. The script was corrected; the contract did not change.
+The first run had one failing check, in the test itself: it counted the skip log entries instead of the dropped records. That run's log is `evidence/personal-settings-file-validation-run-first.log`. The script was corrected; the contract did not change.
 
 Evidence from code reading (Read):
 - the IDs come from folder names (`team-local-definition-id.ts:53-57`, `agent-org-owned-definition-id.ts:8-15`);
