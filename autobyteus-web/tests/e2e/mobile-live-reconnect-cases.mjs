@@ -39,6 +39,7 @@ import net from 'node:net';
 import path from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { createRequire } from 'node:module';
+import { ownerSocketUrl } from './fixtures/probe-node-access.mjs';
 
 const require = createRequire(import.meta.url);
 const NodeWebSocket = require('ws');
@@ -134,7 +135,8 @@ export const runLiveReconnectCases = async (probe) => {
     const nodeSeen = new Map();
     const wsBase = gamma.baseUrl.replace(/^http/, 'ws');
     const nodeClient = async (route) => {
-      const socket = new NodeWebSocket(`${wsBase}/ws/${route}`);
+      // The other window is the owner's: it carries the probe's credential (autobyteus-437).
+      const socket = new NodeWebSocket(ownerSocketUrl(`${wsBase}/ws/${route}`));
       await new Promise((resolve, reject) => { socket.once('open', resolve); socket.once('error', reject); });
       socket.on('message', (data) => {
         for (const match of String(data).matchAll(/REPLY:((?:MK|LONG)-[A-Z]+-\d+)/g)) if (!nodeSeen.has(match[1])) nodeSeen.set(match[1], Date.now());
@@ -199,14 +201,15 @@ export const runLiveReconnectCases = async (probe) => {
         phone.sockets.push(entry);
         ws.on('close', () => { entry.closedAt = now(); });
       });
-      // The browser's own request for `/favicon.ico` at the origin root answers 404 (the node serves the phone bundle
-      // under /mobile; the Android WebView asks for no favicon). Its console line names no URL in its text; it counts as
-      // known only when the line's own source location is exactly that path.
+      // The browser's own request for `/favicon.ico` at the origin root carries no credential, so the node refuses it with
+      // 401 before any route (node access model NA-1, NA-2; autobyteus-437; it answered 404 before). The node serves the
+      // phone bundle under /mobile and the Android WebView asks for no favicon. Its console line names no URL in its text;
+      // it counts as known only when the line's own source location is exactly that path.
       const browserError = (text, sourceUrl = '') => {
         const line = redact(`${label} console: ${text}`);
         let cause = Date.now() <= outageUntil ? 'the case refused or black-holed the phone\'s path on purpose' : null;
-        if (!cause && /: Failed to load resource: the server responded with a status of 404 \(Not Found\)$/.test(line)
-          && sourceUrl.startsWith(phoneOrigin) && new URL(sourceUrl).pathname === '/favicon.ico') cause = 'the browser\'s favicon request at the origin root (404 /favicon.ico)';
+        if (!cause && /: Failed to load resource: the server responded with a status of 401 \(Unauthorized\)$/.test(line)
+          && sourceUrl.startsWith(phoneOrigin) && new URL(sourceUrl).pathname === '/favicon.ico') cause = 'the browser\'s favicon request at the origin root (401 /favicon.ico, no credential)';
         // autobyteus-434 FU-004 (pre-existing, outside this change): a tap on an active Team while the phone's first history
         // read still mounts that Team in the background fails the tap's open; the user taps again (MSP-23 does, once).
         if (!cause && line.includes(`console: Failed to open team: Error: Team context '${team.teamRunId}' became mounted while it was loading.`)) {
