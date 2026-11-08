@@ -92,7 +92,7 @@ describe("Memory Sync held back (autobyteus-290 memory_sync)", () => {
 
   it("the node access gate answers a source's credential 503 with the code and the reason (autobyteus-437)", async () => {
     const { MemoryHubCredentialService } = await import("../../../src/memory-sync/hub/memory-hub-credential-service.js");
-    const service = new MemoryHubCredentialService(new LocalFileMemoryHubCredentialStore({ getAppDataDir: () => hoisted.root, getMemoryDir: () => hoisted.root }));
+    const service = new MemoryHubCredentialService(new LocalFileMemoryHubCredentialStore({ getAppDataDir: () => hoisted.root }));
     await expect(service.verify("mhub_any")).resolves.toEqual({ ok: false,
       refusal: { statusCode: 503, code: MEMORY_SYNC_NOT_MIGRATED, message: MEMORY_SYNC_NOT_MIGRATED_TEXT } });
     await expect(fs.readdir(hoisted.root)).resolves.toEqual([]);
