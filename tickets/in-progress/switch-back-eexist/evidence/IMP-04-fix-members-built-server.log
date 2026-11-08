@@ -1,0 +1,21 @@
+Check: IMP-04
+Command: vitest run runtime-switch-members-built-server.e2e.test.ts (MS-01..MS-05) and runtime-switch-members-extended-built-server.e2e.test.ts
+Commit: 9833f51bf9
+Environment: macOS arm64, Node 22, pnpm 10.28.2; built dist of the commit; env -i, private HOME, RUN_AGY_FAILURE_E2E=1, scripted Antigravity CLI tests/fixtures/agy-failure-cli.mjs
+Date: 2026-11-08
+
+ ✓ tests/e2e/runtime/runtime-switch-members-built-server.e2e.test.ts (5 tests) 12788ms
+     ✓ MS-01: a Team member native -> Antigravity: the save marks that member only, the first message archives exactly the native agent's records and starts the new file with one marker, the reopene
+     ✓ MS-02: a Team member Antigravity -> native with a failed start leaves the previous agent's file as it was, and the retry completes with one marker and one segment  1418ms
+     ✓ MS-03: after a server restart the member keeps its agent runtime with no pending field, restores and answers, and the earlier segments are unchanged  2497ms
+     ✓ MS-05: a Team member native -> Antigravity -> native -> Antigravity: the fourth hop back to Antigravity completes on a fresh capsule, with one segment and one marker per switch (autobyteus-44
+     ✓ MS-04: Org members, a direct Agent and an Agent of a mounted Team, switched in one save: each switches by its own first message with its own segment and marker  3218ms
+      Tests  5 passed (5)
+--- extended
+ ✓ tests/e2e/runtime/runtime-switch-members-extended-built-server.e2e.test.ts (5 tests) 32475ms
+     ✓ EX-01: Org members: a native target whose start fails after its instruction was written and is retried, and a Grok target; I-7 on both archived segments  4546ms
+     ✓ EX-02: an agent copy AGY -> native: the server restarts after the save, the first message fails after the candidate wrote its instruction, the retry completes with one marker and one segment 
+     ✓ EX-03: Team copies with a Team-level choice of another runtime, woken in different orders: each member switches at its own first input with its own segment and marker; a member that never ran
+     ✓ EX-04: a configured Team's default runtime edit with its linked members, in one save: every member switches at its own first input, activated lead-first in one Team and worker-first in anothe
+     ✓ EX-05: a Team member's saves before its first input: a second save keeps the first previous binding and session, and selecting the original runtime again undoes the switch (binding and sessio
+      Tests  5 passed (5)

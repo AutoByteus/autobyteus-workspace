@@ -1,0 +1,9 @@
+Check: IMP-02
+Command: same gate; vitest run tests/e2e/runtime/runtime-switch-native-built-server.e2e.test.ts -t RS-09 (new case, BASE source and dist)
+Commit: 31aa11b241 + tests
+Date: 2026-11-08
+
+AssertionError: hop 2 to antigravity_cli must complete: [{"command_type":"SEND_MESSAGE","run_id":"rs_back_655542_0295785863394d91add1b4249fdbcf65","message_id":"e2e-1bdb4b9a-f80f-4520-9fac-0436a8de5548","dedupe_key":"agent_run_input:e2e:e2e-1bdb4b9a-f80f-4520-9fac-0436a8de5548","state":"failed","accepted":false,"duplicate":false,"code":"ACTIVATION_FAILED","message":"EEXIST: file already exists, mkdir '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ru: expected false to be true // Object.is equality
+      Tests  1 failed | 8 skipped (9)
+
+Reading: the standalone run fails at hop 2 (the first return to Antigravity) with ACTIVATION_FAILED / EEXIST ... agy-project.

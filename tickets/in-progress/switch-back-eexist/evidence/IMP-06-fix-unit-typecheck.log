@@ -1,0 +1,11 @@
+Check: IMP-06
+Command: pnpm -C autobyteus-server-ts test:unit; node scripts/typecheck.mjs; vitest run tests/unit/agent-execution/backends/antigravity
+Commit: 9833f51bf9
+Environment: macOS arm64, Node 22, pnpm 10.28.2; built dist of the commit; env -i, private HOME, RUN_AGY_FAILURE_E2E=1, scripted Antigravity CLI tests/fixtures/agy-failure-cli.mjs
+Date: 2026-11-08
+
+ Test Files  953 passed | 5 skipped (958)
+      Tests  8172 passed | 9 skipped (8181)
+exit 0
+typecheck: production errors: 0; test-file errors: 1182 in 365 files (baseline 1182 in 365 files)  PASS
+antigravity unit folder: Tests  324 passed | 6 skipped (330); on the base source the 7 new unit cases fail (the restore case passes): 7 failed | 41 passed (48) in agy-run-capsule.test.ts + agy-agent-run-backend-factory.test.ts
