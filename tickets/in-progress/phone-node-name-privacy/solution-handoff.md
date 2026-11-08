@@ -2,7 +2,7 @@
 
 - Result: `Architecture Design Complete`
 - Package identifier: `phone-node-name-privacy`; Project Task `autobyteus-433` (Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`)
-- Current solution revision: `SR-003` (after CRR-001 F-001)
+- Current solution revision: `SR-004` (after CRR-001 F-001 and IR-002)
 - Classification: `task_size = Medium`, `architectural_risk = Low` (rationale: `design-spec.md`, Task Size And Architectural Risk)
 - Route: direct implementation (handoff rule: Small/Medium and Low → `/software_engineering_team/implementation_engineer`); SR-002 sent 2026-11-08; SR-003 sent 2026-11-08
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), for the user
@@ -66,3 +66,15 @@ Implementation of `design-spec.md` with the listed web and Android unit tests, t
 - Classification unchanged: `Medium` / `Low`.
 - Rerun expected from API/E2E: API-08, API-08b, API-03, a Retry-after-recovery case, and a first-load failure if reachable.
 - Requirements: REQ-006, AC-007 and DEC-009 were clarified within the direction (SR-003); the user was informed.
+
+## SR-004 Revision (IR-002 premise check)
+
+- Trigger: the implementation engineer's premise check (IMP-09, `evidence/IMP-09-sr003-load-order-premise.log`). On WebView 124, an HTTP error on the main frame arrives before `onPageStarted`, while a network error arrives after it.
+- Decision (DS-006):
+  - A main-frame `onReceivedError` or `onReceivedHttpError` marks the load failed.
+  - `onPageFinished` decides `loaded = !failed`, resets the mark, and calls `onPageLoaded()` only when loaded.
+  - `onPageStarted` does not touch the mark.
+- Rejected: resetting in `onPageStarted`, which erases HTTP errors, and a mark keyed by URL, which breaks on redirects such as `/mobile` → `/mobile/`.
+- Accepted residual: a failed load with no `onPageFinished` (not observed) keeps the overlay one Retry longer. It never shows the page.
+- Tests: the three measured orders (network failure, HTTP error first, success) and a sub-resource error, as a JVM test of the decision if it is extracted, otherwise instrumented.
+- Everything else in SR-003 stands. Classification unchanged: `Medium` / `Low`.

@@ -11,7 +11,7 @@
 - Finalization target remote / branch: `origin/personal`
 - Bootstrap result: worktree created from a freshly fetched `origin/personal`; ticket folder `tickets/in-progress/phone-node-name-privacy/`
 - Bootstrap blocker: None
-- Current solution revision ID: `SR-003`
+- Current solution revision ID: `SR-004`
 - Authorities read (requirements reading gate; file and date): `references/requirements-engineering.md`, `references/finding-the-cause.md`, `references/ticket-scope.md`, `references/handoff.md` (2026-11-08). Design gate: see `design-spec.md`.
 - Investigation status: Complete for requirements and design
 
@@ -55,6 +55,7 @@
 | 2026-11-08 | Code | `autobyteus-web/components/mobile/__tests__/MobileRemoteAccessShell.spec.ts:80-85` | Existing test of the behavior | "a session paired before the name was kept shows the address's host" asserts the leak | The fix replaces this test |
 | 2026-11-08 | Runtime | CRR-001 (code review, failure origin) and API-REV-001 emulator evidence `evidence/emulator/API-08-03-load-failure-overlay.png/.txt`, `API-08-05-back-while-down-error-page.png`, `API-08-11-retry-while-down-error-page.png/.txt` | Why the address still showed | After a main-frame load failure WebView commits its built-in error page ("The webpage at <url> could not be loaded because: net::ERR_CONNECTION_REFUSED"); `WebShellScreen` keeps the WebView full size under an overlay at alpha 235/255, so it shows through, and the uiautomator dump lists the URL as accessible text | DEC-009, DS-006 |
 | 2026-11-08 | Code | `MainActivity.kt:184-198` (`openPage` `onPageFinished` → `showPage()` on the first finish), `AutoByteusWebView.kt:117-143` | When the page is shown | The first `onPageFinished` shows the page with no overlay even when that load failed (it replaces a first-load overlay with the error page); after that, no load closes an overlay (FU-002) | DS-006 |
+| 2026-11-08 | Runtime | Implementation premise check IR-002 / IMP-09, `evidence/IMP-09-sr003-load-order-premise.log` (WebView 124.0.6367.219, API 35, two runs; Measured) | WebView callback order per outcome | Network failure: started → error → finished; HTTP 502: error → started → finished; success: started → finished; sub-resource error after finished | DS-006 decides and resets at `onPageFinished` (SR-004) |
 | 2026-11-08 | Code | `grep` of `autobyteus-ios` for displayed base URL or host | iOS shell | No view interpolates an address | Out of scope (Android is the reported app) |
 
 ## Relevant Existing Behavior And Supported Product Paths

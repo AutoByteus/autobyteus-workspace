@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-003` (SR-002 design revised for CRR-001 F-001: the page under an overlay)
+- Current solution revision ID: `SR-004` (SR-002 design revised for CRR-001 F-001 at SR-003; DS-006 reset point revised at SR-004 after the IR-002 premise check)
 - Approved requirements baseline / revision, who approved, and approval reference: `requirements-doc.md` at `SR-003` (REQ-006, AC-007, DEC-009 revised; the rest as at `SR-001`), approved by the Solution Designer within the direction (user informed in the Solution Designer's conversation, 2026-11-08); the user's own decision is the Task comment of 2026-11-08 (no address, no Details action, plain-language messages).
 - Behavior-defining supplements and their approval references: None
 - User approval of the design, when the direction requires it: `Not required`
@@ -120,7 +120,7 @@ None.
 | DS-002 | Primary End-to-End | BEH-003, BEH-005, BEH-007 | The user opens, switches to or adds a node | Connecting / Connected / Can't reach / list rows show the shown name | `NodeConnectionFlow` (connect), `MainActivity` (screens) | The app's own screens |
 | DS-003 | Return-Event | BEH-004 | The page reports `paired(name)` | The saved entry carries the name | `NodeConnectionFlow.onPaired` | Names typed nodes |
 | DS-004 | Return-Event | BEH-006 | WebView navigation / load error / download | Toast or overlay text | `AutoByteusWebView` → `MainActivity` | In-page leaks |
-| DS-006 | Bounded Local | BEH-006 | `onPageStarted` of a main-frame load | `onPageLoaded()` or nothing | `AutoByteusWebView` | Decides whether a load succeeded, so the page shows only after one |
+| DS-006 | Bounded Local | BEH-006 | A main-frame error, or the `onPageFinished` of a main-frame load | `onPageLoaded()` or nothing | `AutoByteusWebView` | Decides whether a load succeeded, so the page shows only after one |
 | DS-005 | Primary End-to-End | BEH-008 | A pairing link opens the page | Pairing page title and report to the app | `MobilePairingBootstrap.vue` | Same rule on the pairing page |
 
 ## Primary Execution Spine(s)
@@ -181,7 +181,7 @@ N/A — none involved.
 
 ## Bounded Local / Internal Spines (If Applicable)
 
-- DS-006, parent owner `AutoByteusWebView` (its `WebViewClient`): `onPageStarted (main frame) -> failed = false -> [onReceivedError | onReceivedHttpError for the main frame -> failed = true -> onDiagnostic] -> onPageFinished -> if !failed: onPageLoaded()`. It matters because WebView calls `onPageFinished` for a failed load too (its error page finished loading): today that is what makes `MainActivity` replace the first-load overlay with the error page, and what leaves the overlay up after a successful Retry (FU-002). Premise to confirm on the emulator during implementation (cheap: a temporary log, removed before handoff): for a failed main-frame load WebView 124 calls `onPageStarted`, then `onReceivedError`, then `onPageFinished` for the same URL; for an HTTP error, `onReceivedHttpError` before `onPageFinished`. If the order differs, return a Design Impact.
+- DS-006, parent owner `AutoByteusWebView` (its `WebViewClient`), as revised at SR-004: `[onReceivedError | onReceivedHttpError for the main frame -> failed = true -> onDiagnostic] ... onPageFinished -> loaded = !failed; failed = false -> if loaded: onPageLoaded()`. `onPageStarted` does not touch the mark. It matters because WebView calls `onPageFinished` for a failed load too (its error page finished loading): that is what made `MainActivity` replace the first-load overlay with the error page, and what left the overlay up after a successful Retry (FU-002). Measured order (IR-002, IMP-09, `evidence/IMP-09-sr003-load-order-premise.log`, WebView 124.0.6367.219, two runs): network failure `onPageStarted -> onReceivedError(main) -> onPageFinished`; HTTP 502 `onReceivedHttpError(main) -> onPageStarted -> onPageFinished`; success `onPageStarted -> onPageFinished`; a sub-resource HTTP error (`main=false`) after `onPageFinished`, ignored. `onPageFinished` is the one callback that always ends a main-frame load, whatever the error kind, so the outcome is decided and the mark reset there. Rejected: resetting in `onPageStarted` (erases an HTTP error, which arrives first) and keying the mark by URL (a redirect such as `/mobile` → `/mobile/` can make the error's URL and the started URL differ). Accepted residual: a main-frame error whose `onPageFinished` never comes (a load cancelled mid-way; not observed) leaves the mark, so the next finished load is treated as failed and the overlay stays until one more Retry. That errs toward hiding the page, never toward showing an address.
 
 ## Off-Spine Concerns Around The Spine
 
@@ -290,7 +290,7 @@ See the final mapping; the draft needed no extraction beyond the two name rules.
 | `autobyteus-android/.../connection/ConnectionDiagnosticMapper.kt` (Modify) | Texts | `pageLoadFailed(nodeName)`, `linkBlocked()`, `noAppForLink()`, `noFilePicker()`; parameter-free `invalidUrl()`, `httpNeedsAcknowledgement()`; `fromException` without detail; `phoneAccessDisabled(nodeName)` unchanged |
 | `autobyteus-android/.../connection/ConnectionValidator.kt` (Modify) | Status check | `invalidUrl()`; `phoneAccessDisabled(entry.shownName)` |
 | `autobyteus-android/.../shell/ConnectionInputResolver.kt` (Modify) | Input parsing | `invalidUrl()`, `httpNeedsAcknowledgement()` |
-| `autobyteus-android/.../web/AutoByteusWebView.kt` (Modify) | WebView host | `linkBlocked()`, `noAppForLink()`, `pageLoadFailed(entry.shownName)`; `onOpenedOutside: () -> Unit`; DS-006: tracks whether the current main-frame load failed and reports `onPageLoaded()` only for a load that succeeded (replaces `onPageStarted`/`onPageFinished`) |
+| `autobyteus-android/.../web/AutoByteusWebView.kt` (Modify) | WebView host | `linkBlocked()`, `noAppForLink()`, `pageLoadFailed(entry.shownName)`; `onOpenedOutside: () -> Unit`; DS-006 (SR-004): a main-frame `onReceivedError`/`onReceivedHttpError` marks the load failed; `onPageFinished` reports `onPageLoaded()` only when it is not marked, then resets the mark; `onPageStarted` does not touch it (replaces the `onPageStarted`/`onPageFinished` callbacks) |
 | `autobyteus-android/.../ui/WebShellScreen.kt` (Modify) | Page screen | With a diagnostic: WebView kept in the layout with `visibility = INVISIBLE`, overlay opaque; without: WebView `VISIBLE` |
 | `autobyteus-android/.../web/WebFileChooserCoordinator.kt` (Modify) | File chooser | `noFilePicker()` |
 | `autobyteus-android/.../MainActivity.kt` (Modify) | Screens | `connected(entry.shownName)`; toast "Opening outside AutoByteus"; records whether an overlay is up (`showWebDiagnostic` sets it, `showPage` clears it); `onPageLoaded`: the first page not shown yet → show it; an overlay up on the Web screen → `showPage()`; otherwise nothing (a reload while the user is on Switch node does not pull them back) |
