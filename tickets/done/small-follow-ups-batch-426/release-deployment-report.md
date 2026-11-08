@@ -112,3 +112,42 @@ Recorded in § Finalization Record.
 ## Rollback Criteria
 
 - Revert the round-2 merge on `personal` (RELEASE.md § Rollback). No data changed, so rolling back is possible.
+
+## Finalization Record
+
+- Ticket branch commit result: `Completed`. Head `80119640bc` (round-2 delivery docs, archive), on checkpoint `637534f27c` and refresh merge `0714ea1e68`.
+- Secret Gate before the push: `scripts/check_secrets.sh origin/personal..codex/small-follow-ups-batch-426` → `scanning 11 commit(s)`, `PASS (no secrets found)`.
+- Ticket branch push result: `Completed`. `d785ded109..80119640bc  codex/small-follow-ups-batch-426`.
+- Finalization target: `origin` / `personal`.
+- Target advanced after verification: `No`. `origin/personal` was `eebbc2b8ee` at the fetches before the merge and before the push.
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed`. `git diff codex/small-follow-ups-batch-426 7fe4344a01` is empty.
+- Target branch update result: `git checkout -b finalize/small-follow-ups-batch-426 origin/personal` @ `eebbc2b8ee`
+- Merge into target result: `Completed`. `git merge --no-ff` → `7fe4344a01`.
+- Checks on the merged state:
+  - Secret Gate `PASS`;
+  - `check_licensing.py` exit 0, "Licensing is consistent.";
+  - `check_repository_artifact_hygiene.py` exit 0. The archived ticket's longest path is 124 characters, and no name has `:` or another character Windows refuses.
+- Push target branch result: `Completed`. `eebbc2b8ee..7fe4344a01  HEAD -> personal`, confirmed by a re-fetch.
+- Repository finalization status: `Completed`
+- This report and `delivery-revision-record.md` were committed afterwards on `finalize/small-follow-ups-batch-426` and pushed to `personal`; the ticket branch was fast-forwarded to that commit and pushed.
+
+## Post-Finalization Cleanup
+
+- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-426`
+- Worktree cleanup result: `Completed` after the records push. `git worktree remove --force` was run from the main checkout. `--force` is needed only for the untracked build output (`*/dist/`, `dist-mobile/`), which RELEASE.md says is never committed.
+- Worktree prune result: `Completed` (`git worktree prune`)
+- Local ticket branch cleanup result: `Completed`. The local `codex/small-follow-ups-batch-426` and `finalize/small-follow-ups-batch-426` were deleted; both are contained in `origin/personal`.
+- Remote branch cleanup result: `Not required` (the project keeps ticket branches).
+- Probe and emulator cleanup (API/E2E's): done; the receipts are in the execution report. DEL-R2-01 started no servers.
+
+## Final Status
+
+- Verification complete (from the evidence; no user check needed): `Yes`
+- Repository finalization complete: `Yes` (`personal` @ `7fe4344a01`, plus the records commit)
+- Applicable release/deployment/rollout complete or not required: `Yes` (`Not required`: no release)
+- Applicable safe cleanup complete or not required: `Yes`
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: `Yes`
+- Terminal message/reference: `Delivery Completed` (ticket complete) to the Solution Designer through the handoff rules
