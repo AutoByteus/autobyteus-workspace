@@ -7,6 +7,7 @@
 | DR-001 | Code reviewer's CRR-003 pass (test-code review round 2) | N/A | Blocked: the base refresh left a duplicate probe case ID; sent to API/E2E | `release-deployment-report.md` |
 | DR-002 | Code reviewer's CRR-004 pass (DR-001 fixed) | Blocked (DR-001) | Blocked: after the second base refresh, MSP-05 failed once on the FU-004 race; sent to API/E2E to classify | `release-deployment-report.md`, `docs-sync-report.md` |
 
+| DR-003 | API/E2E's API-REV-004: MSP-05's failure is the pre-existing FU-004 race | Blocked (DR-002) | Delivery Completed: verified, finalized into `personal` at `9108e31587`, no release | `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md` |
 ## Revision Entries
 
 ### DR-001 — Base refresh blocked by a duplicate probe case ID
@@ -40,3 +41,17 @@
 - Terminal return to the Solution Designer: `Not yet eligible`.
 - Next recipient/action: API/E2E compares MSP-05's failure rate on the merged state with `origin/personal` without this ticket, then classifies the race as pre-existing or this ticket's.
 - Remaining blockers: the MSP-05 classification. No release was asked for.
+
+### DR-003 — Verified, finalized, no release
+
+- Trigger: API-REV-004 (API-12). MSP-05's race is pre-existing: 3 of 25 races on the base without this ticket, 2 of 25 on the merged state. FU-004 is updated.
+- Prior result: DR-002 Blocked (resolved).
+- Current result: `Delivery Completed`.
+  - Ticket branch at `2b63bc9c93`, pushed.
+  - Merged with `--no-ff` into `personal` as `9108e31587`, pushed (`4ec4d0ae52..9108e31587`).
+  - Secret Gate, hygiene and licensing checks passed.
+  - No release.
+- Docs sync report: `docs-sync-report.md`. Handoff summary: `handoff-summary.md`. Release notes: `release-notes.md`, for the next release.
+- Verification: from the evidence (see the report's DR-003 section). No user check was needed.
+- Terminal return to the Solution Designer: `Sent` after this record is pushed.
+- Remaining: none. The accepted residual risks are listed in `handoff-summary.md`.
