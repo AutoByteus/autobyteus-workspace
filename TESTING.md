@@ -346,6 +346,21 @@ The runnable preflight, root-container and virtual-display recipes are in
 shared setup guidance separate from ticket-specific journeys. Temporary
 ticket-owned automation does not require a new global package command.
 
+## Android emulators
+
+The Android commands are in [autobyteus-android/README.md](autobyteus-android/README.md#build); the device checklist
+is in [docs/android_mobile_access.md](docs/android_mobile_access.md).
+
+- **Your own emulator.** Several agents run emulators on this machine. Create your own AVD from an installed image
+  (`avdmanager create avd`), give it its own `-port`, address only that serial (`adb -s emulator-<port>`,
+  `ANDROID_SERIAL` for Gradle's connected tests) and delete it when you are done. Never stop, wipe or reconfigure an
+  emulator you did not start.
+- **Headless.** Start it with `-no-window`. A windowed emulator in the background can be throttled by macOS until it
+  stops answering `adb shell`.
+- **No `uiautomator dump` in landscape.** A UiAutomation session freezes the current rotation: one dump while the
+  phone is in landscape sets the system's `user_rotation` to landscape, and the phone then stays there after the app
+  releases it. While the app is in landscape, read the window with `dumpsys` and the page through WebView DevTools.
+
 ## Browser probes
 
 - A probe owns its stack: free ports, a Nuxt dev server, fresh headless Chrome, and either
