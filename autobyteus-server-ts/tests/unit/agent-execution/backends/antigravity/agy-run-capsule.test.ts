@@ -285,4 +285,82 @@ describe("AGY run capsule", () => {
     expect(one.manifest.workspacePath).toBe(two.manifest.workspacePath);
     expect(await fs.readdir(root.workspacePath)).toEqual([]);
   });
+
+  describe("a leftover capsule of an earlier era or a failed start (autobyteus-440)", () => {
+    const create = (root: Awaited<ReturnType<typeof roots>>, runId: string, identity: string, bindings: ConfiguredAgentSkillBinding[] = []) =>
+      createAgyRunCapsule({ agentDefinitionId: "test-agent", runId, memoryDir: root.memoryDir, workspacePath: root.workspacePath,
+        identity, configuredSkillBindings: bindings, workspaceCollisionPolicy: "fail", mcpDescriptor: mcpDescriptor as never });
+
+    it("replaces the capsule of an earlier era: the new start is on fresh files, nothing of the old one stays", async () => {
+      const root = await roots();
+      const first = await create(root, "run", "FIRST-IDENTITY");
+      await fs.writeFile(path.join(first.path, "stale-note.txt"), "left by the first era");
+      const second = await create(root, "run", "SECOND-IDENTITY");
+      expect(second.path).toBe(first.path);
+      expect(await fs.readdir(second.path)).not.toContain("stale-note.txt");
+      const markdown = await fs.readFile(path.join(second.path, ".agents", "agents", second.manifest.agentName, "agent.md"), "utf8");
+      expect(markdown).toContain("SECOND-IDENTITY");
+      expect(markdown).not.toContain("FIRST-IDENTITY");
+      expect(JSON.parse(await fs.readFile(path.join(second.path, "manifest.json"), "utf8"))).toEqual(second.manifest);
+    });
+
+    it("replaces a leftover from a failed start that stopped halfway (no manifest)", async () => {
+      const root = await roots();
+      const leftover = path.join(root.memoryDir, "agy-project");
+      await fs.mkdir(path.join(leftover, ".agents", "agents", "half"), { recursive: true });
+      await fs.writeFile(path.join(leftover, ".agents", "agents", "half", "agent.md"), "half written");
+      const capsule = await create(root, "run", "IDENTITY");
+      expect(capsule.path).toBe(leftover);
+      await expect(fs.stat(path.join(leftover, ".agents", "agents", "half"))).rejects.toMatchObject({ code: "ENOENT" });
+      expect(JSON.parse(await fs.readFile(path.join(leftover, "manifest.json"), "utf8")).runId).toBe("run");
+    });
+
+    it("removes a skill link without touching the skill folder it points to, and links it again", async () => {
+      const root = await roots();
+      const source = path.join(root.base, "skill-source");
+      await fs.mkdir(source);
+      await fs.writeFile(path.join(source, "SKILL.md"), "# Example skill");
+      await fs.writeFile(path.join(source, "extra.md"), "an extra file");
+      const binding = globalBinding(source);
+      await create(root, "run", "ONE", [binding]);
+      const second = await create(root, "run", "TWO", [binding]);
+      expect(await fs.readFile(path.join(source, "SKILL.md"), "utf8")).toBe("# Example skill");
+      expect(await fs.readFile(path.join(source, "extra.md"), "utf8")).toBe("an extra file");
+      expect(await fs.readdir(source)).toEqual(["SKILL.md", "extra.md"]);
+      expect((await fs.lstat(path.join(second.path, ".agents", "skills", "example-skill"))).isSymbolicLink()).toBe(true);
+      expect(await fs.readFile(path.join(second.path, ".agents", "skills", "example-skill", "SKILL.md"), "utf8")).toBe("# Example skill");
+    });
+
+    it("never touches the selected workspace, its own .agents folder included", async () => {
+      const root = await roots();
+      const userAgents = path.join(root.workspacePath, ".agents", "skills", "user-skill");
+      await fs.mkdir(userAgents, { recursive: true });
+      await fs.writeFile(path.join(userAgents, "SKILL.md"), "# user's");
+      const before = await fs.readdir(root.workspacePath, { recursive: true });
+      await create(root, "run", "ONE");
+      await create(root, "run", "TWO");
+      expect(await fs.readdir(root.workspacePath, { recursive: true })).toEqual(before);
+      expect(await fs.readFile(path.join(userAgents, "SKILL.md"), "utf8")).toBe("# user's");
+    });
+
+    it("keeps its failure clean: a start that fails after the replacement leaves no capsule behind", async () => {
+      const root = await roots();
+      await create(root, "run", "ONE");
+      const source = path.join(root.base, "skill-source");
+      await fs.mkdir(source);
+      await fs.writeFile(path.join(source, "SKILL.md"), "# s");
+      await fs.mkdir(path.join(root.workspacePath, ".agents", "skills", "example-skill"), { recursive: true });
+      await expect(create(root, "run", "TWO", [globalBinding(source)])).rejects.toThrow();
+      await expect(fs.stat(path.join(root.memoryDir, "agy-project"))).rejects.toMatchObject({ code: "ENOENT" });
+    });
+
+    it("a restore still reads the capsule of its own era and never replaces it", async () => {
+      const root = await roots();
+      const created = await create(root, "run", "OWN-ERA");
+      const bytes = await fs.readFile(path.join(created.path, "manifest.json"), "utf8");
+      const restored = await restoreAgyRunCapsule({ runId: "run", memoryDir: root.memoryDir, selectedWorkspacePath: root.workspacePath, mcpDescriptor: mcpDescriptor as never });
+      expect(restored.path).toBe(created.path);
+      expect(await fs.readFile(path.join(created.path, "manifest.json"), "utf8")).toBe(bytes);
+    });
+  });
 });

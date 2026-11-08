@@ -35,6 +35,8 @@ import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.
 //         other member never moved.
 //   MS-03 a server restart after a switch: the tree keeps the new agent runtime with no pending field, the member restores
 //         and answers, and the earlier segments are unchanged (I-8).
+//   MS-05 (autobyteus-440) the same Team member goes back to Antigravity after its native era: its earlier Antigravity capsule is replaced,
+//         the message completes, one segment and one marker for the switch.
 //   MS-04 Org members: a direct Agent and an Agent of a mounted Team switched in ONE save; each switches by its own first
 //         message with its own I-7 segment and marker; the Org's other members never moved.
 // Prerequisite: pnpm -C autobyteus-server-ts build (current dist). Run:
@@ -360,6 +362,37 @@ describe.runIf(ENABLED)("agent runtime switch of Team and Org members on the bui
     expect(segments(workerDir()).map((segment) => ({ name: segment.file_name, ids: ids(readRaw(path.join(workerDir(), segment.file_name))) })), "I-8: earlier segments unchanged").toEqual(archivedBefore);
     expect(active(workerDir()).filter((record) => String(record.correlation_id ?? "").startsWith("runtime_switch:")).map((record) => record.correlation_id),
       "the restart added no marker: only the retried switch's").toEqual([team.keyTwo]);
+  }, 360_000);
+
+  it("MS-05: a Team member native -> Antigravity -> native -> Antigravity: the fourth hop back to Antigravity completes on a fresh capsule, with one segment and one marker per switch (autobyteus-440)", async () => {
+    // The worker has now had an Antigravity era (MS-01) and a native era (MS-02): its Antigravity capsule folder is left behind.
+    const capsule = path.join(workerDir(), "agy-project");
+    expect(existsSync(capsule), "the first Antigravity era left its capsule").toBe(true);
+    const nativeEraIds = ids(active(workerDir()));
+    const segmentsBefore = segments(workerDir());
+    expect((await gql("mutation($id: String!) { terminateAgentTeamRun(teamRunId: $id) { success } }", { id: team.teamRunId })).terminateAgentTeamRun.success).toBe(true);
+    expect(await teamSelection(team.teamRunId, "/worker", AGY, AGY_MODEL)).toMatchObject({ success: true, outcome: "UPDATED" });
+    const pending = teamMember(await treeOf(teamTreeFile(team.teamRunId)), "/worker").pendingRuntimeSwitch;
+    expect(pending).toMatchObject({ from: expect.objectContaining({ runtimeKind: NATIVE }) });
+    const keyThree = `runtime_switch:${team.worker}:${pending.switchId}`;
+
+    await talk(teamSocket(), team.worker, "ECHO_INPUT", "worker back to antigravity");
+    const archived = segments(workerDir());
+    expect(archived, "one more segment for this switch").toHaveLength(segmentsBefore.length + 1);
+    const third = archived.find((segment) => segment.boundary_key === keyThree)!;
+    expect(third, "exactly one segment for the third switch").toMatchObject({ boundary_type: "runtime_switch", runtime_kind: NATIVE });
+    expect(ids(readRaw(path.join(workerDir(), third.file_name))), "I-7: the segment holds the native era's records only").toEqual(nativeEraIds);
+    const records = active(workerDir());
+    expect(records[0]).toMatchObject({ sender_id: "system.runtime_handover", correlation_id: keyThree,
+      content: expect.stringMatching(/^Agent runtime changed from AutoByteus \(.+\) to Antigravity CLI \(.+\)\.$/) });
+    expect(records.filter((record) => record.correlation_id === keyThree), "one marker").toHaveLength(1);
+    const received = echoed(workerDir()).at(-1)!;
+    expect(received.indexOf("[System: runtime hand-over]"), "the notice comes first").toBe(0);
+    expect(received).toContain("ECHO_INPUT");
+    const done = teamMember(await treeOf(teamTreeFile(team.teamRunId)), "/worker");
+    expect(Object.hasOwn(done, "pendingRuntimeSwitch")).toBe(false);
+    expect(done.launchConfiguration).toMatchObject({ runtimeKind: AGY });
+    expect(segments(leadDir()), "the other member never moved").toEqual([]);
   }, 360_000);
 
   it("MS-04: Org members, a direct Agent and an Agent of a mounted Team, switched in one save: each switches by its own first message with its own segment and marker", async () => {

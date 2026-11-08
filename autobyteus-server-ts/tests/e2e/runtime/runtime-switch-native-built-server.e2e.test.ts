@@ -27,6 +27,8 @@ import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.
 //         native candidate's own instruction follows the marker in the new file, one marker per switch (I-5), the notice
 //         comes before the user's text, once; journal files carry their own runtime; the reopened chat shows the earlier
 //         conversation and every marker (I-10).
+//   RS-09 (autobyteus-440) Antigravity -> native -> Antigravity -> native -> Antigravity: every hop completes (the earlier Antigravity capsule is
+//         replaced, not an EEXIST), each segment holds only the previous era's records, one marker per switch.
 //   RS-02 settings: save a switch (pending field, session binding dropped, nothing archived), undo it (the original
 //         session ID returns, the field is cleared), switch again, edit only the model while the switch is pending (the
 //         switch stays), refuse a running run, then the first message makes the switch.
@@ -366,6 +368,39 @@ describe.runIf(ENABLED)("agent runtime switch, native runtime and stopped-run se
     expect(JSON.stringify(history), "...and shows the first marker").toContain("Agent runtime changed from AutoByteus");
     expect(JSON.stringify(history), "...and the latest marker").toContain("Agent runtime changed from Antigravity CLI");
   }, 300_000);
+
+  it("RS-09 (autobyteus-440): Antigravity -> native -> Antigravity -> native -> Antigravity on one run: every hop completes, each archived segment holds only the previous agent's records, one marker per switch, and the earlier Antigravity capsule is replaced", async () => {
+    const runId = await createRun(await definition("rs-back"), AGY, AGY_MODEL);
+    await talk(runId, "ECHO_INPUT", "antigravity first era");
+    const capsule = path.join(runDir(runId), "agy-project");
+    expect(existsSync(capsule), "the first Antigravity era made its capsule").toBe(true);
+    const hops: Array<[string, string]> = [[NATIVE, nativeModel], [AGY, AGY_MODEL], [NATIVE, nativeModel], [AGY, AGY_MODEL]];
+    const eraIds: string[][] = [activeRecords(runId).map((record) => record.id as string)];
+    const keys: string[] = [];
+    for (const [index, [runtimeKind, model]] of hops.entries()) {
+      await terminate(runId);
+      expect(await save(runId, runtimeKind, model), `hop ${index + 1}: save`).toMatchObject({ success: true, outcome: "UPDATED" });
+      const pending = (await metadata(runId)).pendingRuntimeSwitch;
+      keys.push(`runtime_switch:${runId}:${pending.switchId}`);
+      const hop = await attempt(runId, runtimeKind === AGY ? "ECHO_INPUT" : `NATIVE-TURN-${index + 1}: carry on.`);
+      expect(hop.completed, `hop ${index + 1} to ${runtimeKind} must complete: ${JSON.stringify([...hop.errors, ...hop.acks]).slice(0, 400)}`).toBe(true);
+      const complete = await completeSegments(runId);
+      expect(complete, `hop ${index + 1}: one more segment`).toHaveLength(index + 1);
+      const segment = complete.find((entry) => entry.boundary_key === keys[index])!;
+      expect(segment, `hop ${index + 1}: the segment of this switch`).toMatchObject({ boundary_type: "runtime_switch", runtime_kind: index % 2 === 0 ? AGY : NATIVE });
+      // I-7: the segment holds the previous era's records, the first one's marker included from the second hop on.
+      const previous = readRaw(path.join(runDir(runId), segment.file_name)).map((record) => record.id as string);
+      expect(previous, `hop ${index + 1}: I-7`).toEqual(eraIds[index]);
+      const records = activeRecords(runId);
+      expect(records[0], `hop ${index + 1}: the marker starts the new file`).toMatchObject({ sender_id: "system.runtime_handover", correlation_id: keys[index] });
+      expect(records.filter((record) => record.correlation_id === keys[index]), `hop ${index + 1}: one marker`).toHaveLength(1);
+      expect(Object.hasOwn(await metadata(runId), "pendingRuntimeSwitch"), `hop ${index + 1}: pending cleared`).toBe(false);
+      eraIds.push(records.map((record) => record.id as string));
+    }
+    expect(await metadata(runId)).toMatchObject({ runtimeKind: AGY });
+    expect(echoedInputs(runId).at(-1)!.indexOf("[System: runtime hand-over]"), "the last Antigravity input carries the notice first").toBe(0);
+    expect((await manifest(runId)).segments.map((segment) => segment.runtime_kind)).toEqual([AGY, NATIVE, AGY, NATIVE]);
+  }, 480_000);
 
   it("RS-02: settings of a stopped run: running refused, save a switch, undo it, switch again, model-only edit keeps the switch, first message makes it", async () => {
     // A native run (scripted model) is the run being switched, to the scripted Antigravity runtime.
