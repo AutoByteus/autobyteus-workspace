@@ -1,14 +1,18 @@
 import { isIP } from "node:net";
 import { appConfigProvider } from "../../config/app-config-provider.js";
+import { parseIpNetwork, type IpNetwork } from "../../node-access/domain/ip-network.js";
 import { hostNameOfUrl, normalizeHostName } from "./request-host-name.js";
 import { parseWebOrigin } from "./web-origin.js";
 
 const ALLOWED_ORIGINS_SETTING = "AUTOBYTEUS_ALLOWED_ORIGINS";
 const ALLOWED_HOSTS_SETTING = "AUTOBYTEUS_ALLOWED_HOSTS";
+const ALLOWED_CLIENT_NETWORKS_SETTING = "AUTOBYTEUS_ALLOWED_CLIENT_NETWORKS";
 const SERVER_HOST_SETTING = "AUTOBYTEUS_SERVER_HOST";
 
-/** The node's browser-access settings, read once at start. */
+/** The node's browser- and network-access settings, read once at start. */
 export type NodeBrowserAccess = {
+  /** Networks of `AUTOBYTEUS_ALLOWED_CLIENT_NETWORKS` (CIDR) whose clients network admission accepts (NA-3). */
+  readonly allowedClientNetworks: readonly IpNetwork[];
   /** Exact web origins of `AUTOBYTEUS_ALLOWED_ORIGINS`. */
   readonly allowedOrigins: readonly string[];
   /** Exact host names: the hosts of `AUTOBYTEUS_SERVER_HOST` and of the allowed origins, the names of `AUTOBYTEUS_ALLOWED_HOSTS`. */
@@ -71,6 +75,23 @@ export const parseConfiguredHosts = (raw: string): ConfiguredHosts => {
   return { names, suffixes, invalidEntries };
 };
 
+export type ConfiguredClientNetworks = {
+  networks: IpNetwork[];
+  invalidEntries: string[];
+};
+
+/** Parses the comma-separated `AUTOBYTEUS_ALLOWED_CLIENT_NETWORKS` value: IPv4 or IPv6 networks in CIDR form. */
+export const parseConfiguredClientNetworks = (raw: string): ConfiguredClientNetworks => {
+  const networks: IpNetwork[] = [];
+  const invalidEntries: string[] = [];
+  for (const entry of splitEntries(raw)) {
+    const network = parseIpNetwork(entry);
+    if (network) networks.push(network);
+    else invalidEntries.push(entry);
+  }
+  return { networks, invalidEntries };
+};
+
 const readSetting = (key: string): string => appConfigProvider.config.get(key, "") ?? "";
 
 const warnInvalid = (setting: string, expected: string, entries: readonly string[]): void => {
@@ -84,6 +105,8 @@ const readNodeBrowserAccess = (): NodeBrowserAccess => {
   warnInvalid(ALLOWED_ORIGINS_SETTING, "http(s) origins", origins.invalidEntries);
   const hosts = parseConfiguredHosts(readSetting(ALLOWED_HOSTS_SETTING));
   warnInvalid(ALLOWED_HOSTS_SETTING, "host names or .suffix entries", hosts.invalidEntries);
+  const clientNetworks = parseConfiguredClientNetworks(readSetting(ALLOWED_CLIENT_NETWORKS_SETTING));
+  warnInvalid(ALLOWED_CLIENT_NETWORKS_SETTING, "networks in CIDR form (10.8.0.0/16)", clientNetworks.invalidEntries);
 
   const serverHost = readSetting(SERVER_HOST_SETTING).trim();
   const serverHostName = serverHost ? hostNameOfUrl(serverHost) : null;
@@ -94,6 +117,7 @@ const readNodeBrowserAccess = (): NodeBrowserAccess => {
     if (name) allowedHostNames.add(name);
   }
   return {
+    allowedClientNetworks: clientNetworks.networks,
     allowedOrigins: origins.origins,
     allowedHostNames,
     allowedHostSuffixes: hosts.suffixes,
@@ -102,7 +126,7 @@ const readNodeBrowserAccess = (): NodeBrowserAccess => {
 
 let current: NodeBrowserAccess | null = null;
 
-/** The node's browser-access settings, read and validated once per process (one warning per setting). */
+/** The node's browser- and network-access settings, read and validated once per process (one warning per setting). */
 export const getNodeBrowserAccess = (): NodeBrowserAccess => {
   current ??= readNodeBrowserAccess();
   return current;

@@ -5,13 +5,19 @@ import {
   type RemoteAccessSettingsStore,
 } from "../stores/remote-access-settings-store.js";
 
+/** Phone Access settings: read once and kept in memory (the phone credential check reads them on every request). */
 export class RemoteAccessSettingsService {
   private readonly events = new EventEmitter();
+  private settings: Promise<RemoteAccessSettings> | null = null;
 
   constructor(private readonly store: RemoteAccessSettingsStore = getRemoteAccessSettingsStore()) {}
 
   async getSettings(): Promise<RemoteAccessSettings> {
-    return this.store.getSettings();
+    this.settings ??= this.store.getSettings().catch((error: unknown) => {
+      this.settings = null;
+      throw error;
+    });
+    return this.settings;
   }
 
   async setPhoneAccessEnabled(enabled: boolean): Promise<RemoteAccessSettings> {
@@ -21,6 +27,7 @@ export class RemoteAccessSettingsService {
       updatedBy: "loopback-desktop",
     };
     await this.store.setSettings(settings);
+    this.settings = Promise.resolve(settings);
     this.events.emit("settingsChanged", settings);
     return settings;
   }

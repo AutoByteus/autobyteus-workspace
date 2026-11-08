@@ -9,15 +9,18 @@ import { AllowedLocalNetworkStore } from "../../../src/remote-access/stores/allo
 let tempDir = "";
 
 const NO_MAC = "00:00:00:00:00:00";
-const v4 = (interfaceName: string, address: string, mac = NO_MAC): InterfaceAddress =>
-  ({ interfaceName, address, family: "IPv4", internal: false, mac });
+const v4 = (interfaceName: string, address: string, mac = NO_MAC, cidr: string | null = null): InterfaceAddress =>
+  ({ interfaceName, address, family: "IPv4", internal: false, mac, cidr });
+const v6 = (interfaceName: string, address: string): InterfaceAddress =>
+  ({ interfaceName, address, family: "IPv6", internal: false, mac: NO_MAC, cidr: null });
 
 const facts = (overrides: Partial<NodeNetworkFactsSource> = {}): NodeNetworkFactsSource => ({
   runsInContainer: () => false,
   configuredBaseUrl: () => "http://localhost:29695",
   networkInterfaces: () => [
-    v4("en0", "192.168.1.20", "02:00:00:00:00:01"),
+    v4("en0", "192.168.1.20", "02:00:00:00:00:01", "192.168.1.20/24"),
     v4("utun5", "100.101.102.103"),
+    v6("utun5", "fd7a:115c:a1e0::66"),
     v4("utun7", "10.8.0.2"),
   ],
   reverseLookup: async (address) => (address === "100.101.102.103" ? "laptop.example-tailnet.ts.net" : null),
@@ -115,5 +118,24 @@ describe("NodeNetworkService", () => {
       .rejects.toMatchObject({ code: "REMOTE_ACCESS_NETWORK_ID_INVALID", statusCode: 400 });
     await expect(service.setLocalNetworkAllowed("gw_XYZ", true))
       .rejects.toMatchObject({ code: "REMOTE_ACCESS_NETWORK_ID_INVALID" });
+  });
+  it("M-6: admission facts are this computer's Tailscale addresses (IPv4 and IPv6), its local subnets and the allowed flag", async () => {
+    const { service } = build(facts());
+    await expect(service.readAdmissionFacts()).resolves.toEqual({
+      runsInContainer: false,
+      tailscaleAddresses: ["100.101.102.103", "fd7a:115c:a1e0::66"],
+      localNetwork: { subnets: ["192.168.1.20/24"], allowed: false },
+    });
+    const changed = vi.fn();
+    service.onAdmissionFactsChanged(changed);
+    const network = await service.getNodeNetwork();
+    await service.setLocalNetworkAllowed(network.localNetwork!.networkId, true);
+    expect(changed).toHaveBeenCalledOnce();
+    await expect(service.readAdmissionFacts()).resolves.toMatchObject({ localNetwork: { allowed: true } });
+  });
+
+  it("M-6: in a container, admission is decided by where the port is published (every arrival)", async () => {
+    const { service } = build(facts({ runsInContainer: () => true }));
+    await expect(service.readAdmissionFacts()).resolves.toEqual({ runsInContainer: true, tailscaleAddresses: [], localNetwork: null });
   });
 });

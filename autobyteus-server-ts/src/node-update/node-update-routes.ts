@@ -1,5 +1,5 @@
 import type { FastifyInstance } from "fastify";
-import { normalizeClientAddress } from "../api/security/remote-access-local-trust.js";
+import { normalizeClientAddress } from "../node-access/domain/client-address.js";
 import { starterClientFromEnvironment, type StarterClient } from "./starter-client.js";
 
 /**

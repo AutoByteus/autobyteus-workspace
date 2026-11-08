@@ -6,7 +6,7 @@ import type { PeerNode } from "../../../src/remote-collaboration/domain/peer-nod
 /** autobyteus-278: the delegating node's outbound calls about runs its delegation started (§ Interface Boundary Mapping). */
 
 const SELF = "srv_self_node_000000000000000000000000";
-const PEER: PeerNode = { nodeId: "srv_peer_node_000000000000000000000000", name: "docker", baseUrl: "http://peer:29700", addedAt: "2026-10-20T09:00:00.000Z" };
+const PEER: PeerNode = { nodeId: "srv_peer_node_000000000000000000000000", name: "docker", baseUrl: "http://peer:29700", addedAt: "2026-10-20T09:00:00.000Z", paired: true };
 const answer = (body: unknown) => ({ ok: true, status: 200, json: async () => body });
 const TEAM = { kind: "agent_team" as const, runId: "team-run" };
 
@@ -29,7 +29,7 @@ const client = (fetchImpl?: (url: string, init: RequestInit) => Promise<ReturnTy
   return {
     fetch, sockets,
     client: new PeerClient({
-      peers: { findByName: async () => PEER, findByNodeId: async (nodeId) => nodeId === PEER.nodeId ? PEER : null },
+      peers: { findByName: async () => PEER, peerSecret: async () => "peer-secret-for-tests", findByNodeId: async (nodeId) => nodeId === PEER.nodeId ? PEER : null },
       capability: { isEnabled: () => options.enabled ?? true },
       ownNodeId: async () => SELF,
       timeoutMs: 50,
@@ -38,7 +38,8 @@ const client = (fetchImpl?: (url: string, init: RequestInit) => Promise<ReturnTy
     }),
   };
 };
-const flush = async () => { for (let index = 0; index < 5; index += 1) await Promise.resolve(); };
+// The opening reads the peer, this node's ID and the peer secret (signed upgrade) before it opens the socket.
+const flush = async () => { for (let index = 0; index < 10; index += 1) await Promise.resolve(); };
 const statusMessage = { type: "AGENT_STATUS", payload: { status: "running", trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null } };
 
 describe("PeerClient run views (autobyteus-278)", () => {

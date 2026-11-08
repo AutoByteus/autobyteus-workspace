@@ -10,7 +10,7 @@ import type { StoredRemoteLinkCheck } from "../../../src/agent-collaboration/exe
  * links (this module reads no root files).
  */
 
-const PEER = { nodeId: "srv_node_a", name: "desktop", baseUrl: "http://a", addedAt: "2026-10-21T00:00:00.000Z" };
+const PEER = { nodeId: "srv_node_a", name: "desktop", baseUrl: "http://a", addedAt: "2026-10-21T00:00:00.000Z", paired: true };
 const request = (overrides: Partial<DeliverRemoteMessageRequest> = {}): DeliverRemoteMessageRequest => ({
   fromNodeId: PEER.nodeId, toNodeId: "srv_node_b", kind: "message", messageId: "collabmsg_1",
   sender: { agentRunId: "assistant_a1" }, targetRoot: { kind: "agent_team", runId: "team_b" }, target: { agentRunId: "writer_b" },

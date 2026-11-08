@@ -7,6 +7,7 @@ import {
   objectRecord,
   requiredString,
 } from "../../run-history/store/run-execution-tree-shared-record-schemas.js";
+import type { ClientIdentity } from "../../node-access/domain/client-identity.js";
 import type { PeerNode } from "../domain/peer-node.js";
 import { REMOTE_REFUSAL } from "../domain/remote-refusals.js";
 import type {
@@ -185,13 +186,14 @@ const parseObservationOpening = (value: unknown): RunObservationOpening => {
 };
 
 /**
- * The single entry point of every inbound request kind from peer nodes (REQ-114; the place where peer
- * authentication and permissions are added in S6). Before any dispatch, in this order:
- * 1. a mobile credential on `/rest/remote/*` was already refused by the route policy (N-3);
+ * The single entry point of every inbound request kind from peer nodes (REQ-114). Before any dispatch, in this order:
+ * 1. the node access gate already authenticated the caller as a paired peer by its request signature, and checked
+ *    the body against the signed hash (node access model NA-9); `caller` is that identity;
  * 2. `toNodeId` must be this node → `PEER_IDENTITY_MISMATCH`;
- * 3. the switch must be on → `REMOTE_COLLABORATION_OFF`;
- * 4. `fromNodeId` must be a registered peer → `PEER_NOT_REGISTERED`;
- * 5. dispatch to the one handler of the request kind.
+ * 3. `fromNodeId` must be the authenticated peer → `PEER_IDENTITY_MISMATCH`;
+ * 4. the switch must be on → `REMOTE_COLLABORATION_OFF`;
+ * 5. `fromNodeId` must be a registered peer → `PEER_NOT_REGISTERED`;
+ * 6. dispatch to the one handler of the request kind.
  * Every answer names this node (`nodeId`), except the 503 refusal while this node's identity is held back.
  */
 export class PeerGateway {
@@ -209,48 +211,49 @@ export class PeerGateway {
    * autobyteus-261: a peer asks whether this node takes its requests now. The admission is the whole answer: it is
    * accepted exactly when a delegation from that peer would be admitted. No handler, nothing changes.
    */
-  checkAvailability(body: unknown): Promise<PeerGatewayResponse<AvailabilityAnswer>> {
-    return this.admit(body, parseEnvelopeRequest, async () => Object.freeze({ accepted: true as const }));
+  checkAvailability(body: unknown, caller: ClientIdentity | null): Promise<PeerGatewayResponse<AvailabilityAnswer>> {
+    return this.admit(body, caller, parseEnvelopeRequest, async () => Object.freeze({ accepted: true as const }));
   }
 
   /** autobyteus-261: a peer asks what this node offers for delegation (read-only; nothing is created or written). */
-  listAvailableAgents(body: unknown): Promise<PeerGatewayResponse<AvailableAgentsAnswer>> {
-    return this.admit(body, parseEnvelopeRequest, () => this.dependencies.availableAgents.list());
+  listAvailableAgents(body: unknown, caller: ClientIdentity | null): Promise<PeerGatewayResponse<AvailableAgentsAnswer>> {
+    return this.admit(body, caller, parseEnvelopeRequest, () => this.dependencies.availableAgents.list());
   }
 
-  startDelegatedRun(body: unknown): Promise<PeerGatewayResponse<StartDelegatedRunAnswer>> {
-    return this.admit(body, parseStartRequest, (request, peer) => this.dependencies.delegatedRuns.start(request, peer));
+  startDelegatedRun(body: unknown, caller: ClientIdentity | null): Promise<PeerGatewayResponse<StartDelegatedRunAnswer>> {
+    return this.admit(body, caller, parseStartRequest, (request, peer) => this.dependencies.delegatedRuns.start(request, peer));
   }
 
-  deliverMessage(body: unknown): Promise<PeerGatewayResponse<DeliverRemoteMessageAnswer>> {
-    return this.admit(body, parseMessageRequest, (request, peer) => this.dependencies.messages.accept(request, peer));
+  deliverMessage(body: unknown, caller: ClientIdentity | null): Promise<PeerGatewayResponse<DeliverRemoteMessageAnswer>> {
+    return this.admit(body, caller, parseMessageRequest, (request, peer) => this.dependencies.messages.accept(request, peer));
   }
 
   /** autobyteus-278: the titles and statuses of runs the caller's delegation started (read-only). */
-  runSummaries(body: unknown): Promise<PeerGatewayResponse<RunSummariesAnswer>> {
-    return this.admit(body, parseRunSummariesRequest, (request, peer) => this.dependencies.runViews.summaries(request, peer));
+  runSummaries(body: unknown, caller: ClientIdentity | null): Promise<PeerGatewayResponse<RunSummariesAnswer>> {
+    return this.admit(body, caller, parseRunSummariesRequest, (request, peer) => this.dependencies.runViews.summaries(request, peer));
   }
 
   /** autobyteus-278: one agent's stored conversation in such a run (read-only). */
-  agentProjection(body: unknown): Promise<PeerGatewayResponse<AgentProjectionAnswer>> {
-    return this.admit(body, parseAgentProjectionRequest, (request, peer) => this.dependencies.runViews.projection(request, peer));
+  agentProjection(body: unknown, caller: ClientIdentity | null): Promise<PeerGatewayResponse<AgentProjectionAnswer>> {
+    return this.admit(body, caller, parseAgentProjectionRequest, (request, peer) => this.dependencies.runViews.projection(request, peer));
   }
 
   /** autobyteus-278: a command of the caller's owner for one agent of such a run. */
-  ownerCommand(body: unknown): Promise<PeerGatewayResponse<OwnerCommandAnswer>> {
-    return this.admit(body, parseOwnerCommandRequest, (request, peer) => this.dependencies.runViews.command(request, peer));
+  ownerCommand(body: unknown, caller: ClientIdentity | null): Promise<PeerGatewayResponse<OwnerCommandAnswer>> {
+    return this.admit(body, caller, parseOwnerCommandRequest, (request, peer) => this.dependencies.runViews.command(request, peer));
   }
 
   /**
    * autobyteus-278: the first frame of an observation stream. Accepted, the answer carries the observation, which the
    * socket closes when it closes; the frames go to `sink`.
    */
-  openRunObservation(body: unknown, sink: RunObservationSink) {
-    return this.admit(body, parseObservationOpening, (request, peer) => this.dependencies.runViews.observe(request, peer, sink));
+  openRunObservation(body: unknown, caller: ClientIdentity | null, sink: RunObservationSink) {
+    return this.admit(body, caller, parseObservationOpening, (request, peer) => this.dependencies.runViews.observe(request, peer, sink));
   }
 
   private async admit<TRequest extends RemoteEnvelope, TAccepted extends object>(
     body: unknown,
+    caller: ClientIdentity | null,
     parse: (value: unknown) => TRequest,
     handle: (request: TRequest, peer: PeerNode) => Promise<TAccepted | PeerHandlerRefusal>,
   ): Promise<PeerGatewayResponse<(TAccepted & { nodeId: string }) | (PeerHandlerRefusal & { nodeId: string })>> {
@@ -269,6 +272,9 @@ export class PeerGateway {
     }
     const refuse = (code: string, message: string) => ({ status: 200 as const, answer: { accepted: false as const, nodeId, code, message } });
     if (request.toNodeId !== nodeId) return refuse(REMOTE_REFUSAL.PEER_IDENTITY_MISMATCH, "This request was meant for another node.");
+    if (caller?.kind !== "peer" || caller.nodeId !== request.fromNodeId) {
+      return refuse(REMOTE_REFUSAL.PEER_IDENTITY_MISMATCH, "This request does not come from the node it names.");
+    }
     if (!this.dependencies.capability.isEnabled()) return refuse(REMOTE_REFUSAL.OFF, "Remote collaboration is turned off on this node.");
     const peer = await this.dependencies.peers.findByNodeId(request.fromNodeId);
     if (!peer) return refuse(REMOTE_REFUSAL.PEER_NOT_REGISTERED, "The calling node is not a registered peer of this node.");

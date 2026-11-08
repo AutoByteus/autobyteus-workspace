@@ -10,14 +10,16 @@
 //   foreign Origin with 403 REMOTE_ACCESS_ORIGIN_REFUSED before the route runs;
 // - each allowed-origin class (REQ-002) passes; CORS is granted only to allowed origins;
 // - a paired phone's credential opens the phone WebSocket routes and is refused elsewhere;
-// - every refusal logs one line with its code and the redacted URL, never a credential.
+// - every refusal logs one line with its code, the redacted URL and the client address, never a credential.
+// The test is the owner desktop of this node: its requests carry the node's launch owner credential (node access
+// model NA-1) unless they carry a phone's credential.
 // Run: pnpm -C autobyteus-server-ts exec vitest run tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts --no-watch
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import WebSocket from "ws";
-import { PHONE_WEBSOCKET_ROUTES } from "../../../src/api/security/remote-access-route-policy.js";
+import { PHONE_WEBSOCKET_ROUTES } from "../../../src/api/security/node-route-permissions.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import type { PairingExchangeResult } from "../../../src/remote-access/domain/models.js";
 import { configureNodeIdentityCapability } from "../../../src/remote-access/services/node-identity-service.js";
@@ -34,7 +36,8 @@ const LISTED_LOOPBACK_ORIGIN = "http://127.0.0.1:3000";
 const UNLISTED_LOOPBACK_ORIGINS = ["http://localhost:5173", "http://127.0.0.1:8080", "http://[::1]:3000"];
 const REBINDING_HOST = "evil.example";
 const HOST_HINT = "(add it to AUTOBYTEUS_ALLOWED_HOSTS if this is the node's name)";
-const TRUSTED_NETWORK_CLIENT = "100.64.1.2";
+/** This computer: the node admits it (NA-3); a credential is still required (NA-1). */
+const THIS_COMPUTER = "127.0.0.1";
 const SETTLE_MS = 400;
 
 type UpgradeOutcome =
@@ -78,7 +81,11 @@ describe("Node allowed-origin gate and phone WebSocket routes", () => {
     url: string;
     headers?: Record<string, string>;
     payload?: unknown;
-  }) => started.fastify.inject({ remoteAddress: TRUSTED_NETWORK_CLIENT, ...options } as never);
+  }) => started.fastify.inject({
+    remoteAddress: THIS_COMPUTER,
+    ...options,
+    headers: { authorization: `Bearer ${started.ownerCredential}`, ...options.headers },
+  } as never);
 
   const corsHeaders = (headers: Record<string, unknown>): Record<string, unknown> =>
     Object.fromEntries(Object.entries(headers).filter(([name]) => name.startsWith("access-control-") || name === "vary"));
@@ -92,7 +99,7 @@ describe("Node allowed-origin gate and phone WebSocket routes", () => {
     return count();
   };
 
-  const refusalLines = (): string[] => warnings.filter((line) => line.startsWith("Remote Access"));
+  const refusalLines = (): string[] => warnings.filter((line) => line.startsWith("Node request refused"));
 
   beforeAll(async () => {
     appDataDir = await fs.mkdtemp(path.join(os.tmpdir(), "request-origin-and-phone-routes-"));
@@ -134,7 +141,7 @@ describe("Node allowed-origin gate and phone WebSocket routes", () => {
     });
   });
 
-  it("refuses a foreign or null Origin on every WebSocket route family before the route runs (AC-001)", async () => {
+  it("NAS-15 NAS-17 refuses a foreign or null (opaque HTML preview) Origin on every WebSocket route family before the route runs (AC-001)", async () => {
     const terminalConnect = vi.spyOn(TerminalHandler.prototype, "connect");
     for (const origin of [FOREIGN_ORIGIN, "null"]) {
       for (const pathname of [
@@ -151,7 +158,7 @@ describe("Node allowed-origin gate and phone WebSocket routes", () => {
     expect(terminalConnect).not.toHaveBeenCalled();
     expect(refusalLines()).toHaveLength(10);
     expect(refusalLines()[0]).toBe(
-      `Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/origin-probe origin ${FOREIGN_ORIGIN}`,
+      `Node request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/terminal/origin-probe from 127.0.0.1 origin ${FOREIGN_ORIGIN}`,
     );
   });
 
@@ -228,12 +235,12 @@ describe("Node allowed-origin gate and phone WebSocket routes", () => {
     expect(noOriginPreflight.statusCode).toBe(400);
 
     expect(refusalLines()).toEqual([
-      `Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql origin ${FOREIGN_ORIGIN}`,
-      `Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql origin ${FOREIGN_ORIGIN}`,
+      `Node request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql from 127.0.0.1 origin ${FOREIGN_ORIGIN}`,
+      `Node request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql from 127.0.0.1 origin ${FOREIGN_ORIGIN}`,
     ]);
   });
 
-  it("refuses a phone credential on WebSocket routes the phone does not offer (AC-004)", async () => {
+  it("NAS-09 refuses a phone credential on WebSocket routes the phone does not offer (AC-004)", async () => {
     const terminalConnect = vi.spyOn(TerminalHandler.prototype, "connect");
     const query = `access_token=${encodeURIComponent(phone.credential)}`;
     for (const pathname of [
@@ -253,7 +260,7 @@ describe("Node allowed-origin gate and phone WebSocket routes", () => {
     expect(terminalConnect).not.toHaveBeenCalled();
   });
 
-  it("accepts a phone credential on every phone WebSocket route (AC-005)", async () => {
+  it("NAS-05 accepts a phone credential on every phone WebSocket route (AC-005)", async () => {
     const query = `access_token=${encodeURIComponent(phone.credential)}`;
     for (const routePattern of PHONE_WEBSOCKET_ROUTES) {
       expect({ routePattern, registered: started.fastify.hasRoute({ method: "GET", url: routePattern }) })
@@ -267,7 +274,7 @@ describe("Node allowed-origin gate and phone WebSocket routes", () => {
     expect(refusalLines()).toEqual([]);
   });
 
-  it("logs every refusal once with its code and redacted URL and never a credential (AC-006)", async () => {
+  it("NAS-29 logs every refusal once with its code, redacted URL and client address, and never a credential (AC-006)", async () => {
     const query = `access_token=${encodeURIComponent(phone.credential)}`;
     await upgrade(`/ws/projects?${query}`, { Origin: FOREIGN_ORIGIN, Authorization: `Bearer ${phone.credential}` });
     await upgrade(`/ws/terminal/log-probe?${query}`);
@@ -275,18 +282,20 @@ describe("Node allowed-origin gate and phone WebSocket routes", () => {
     await upgrade(`/rest/remote/run-observations?${query}`);
 
     expect(refusalLines()).toEqual([
-      `Remote Access request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/projects?access_token=%5BREDACTED%5D origin ${FOREIGN_ORIGIN}`,
-      "Remote Access WebSocket rejected /ws/terminal/log-probe?access_token=%5BREDACTED%5D: PHONE_ACCESS_ROUTE_REFUSED",
-      "Remote Access request refused PHONE_ACCESS_ROUTE_REFUSED /graphql?access_token=%5BREDACTED%5D",
-      "Remote Access request refused PHONE_ACCESS_ROUTE_REFUSED /rest/remote/run-observations?access_token=%5BREDACTED%5D",
+      `Node request refused REMOTE_ACCESS_ORIGIN_REFUSED /ws/projects?access_token=%5BREDACTED%5D from 127.0.0.1 origin ${FOREIGN_ORIGIN}`,
+      "Node request refused PHONE_ACCESS_ROUTE_REFUSED /ws/terminal/log-probe?access_token=%5BREDACTED%5D from 127.0.0.1",
+      "Node request refused PHONE_ACCESS_ROUTE_REFUSED /graphql?access_token=%5BREDACTED%5D from 127.0.0.1",
+      "Node request refused PHONE_ACCESS_ROUTE_REFUSED /rest/remote/run-observations?access_token=%5BREDACTED%5D from 127.0.0.1",
     ]);
     for (const line of warnings) {
       expect(line).not.toContain(phone.credential);
+      expect(line).not.toContain(started.ownerCredential);
       expect(line).not.toContain("mra_");
+      expect(line).not.toContain("own_");
     }
   });
 
-  it("keeps today's refusal of a phone credential when Phone Access is disabled", async () => {
+  it("NAS-10 keeps today's refusal of a phone credential when Phone Access is disabled", async () => {
     const disabled = await inject({ method: "PUT", url: "/rest/remote-access/settings", payload: { phoneAccessEnabled: false } });
     expect(disabled.statusCode).toBe(200);
     try {
@@ -331,7 +340,7 @@ describe("Node allowed-origin gate and phone WebSocket routes", () => {
     expect(await openServerConnectionsAfterSettling()).toBe(0);
     expect(refusalLines()).toHaveLength(httpCases.length + 8);
     expect(refusalLines()[0]).toBe(
-      `Remote Access request refused REMOTE_ACCESS_HOST_REFUSED /graphql host ${REBINDING_HOST} ${HOST_HINT}`,
+      `Node request refused REMOTE_ACCESS_HOST_REFUSED /graphql from 127.0.0.1 host ${REBINDING_HOST} ${HOST_HINT}`,
     );
     expect(refusalLines().every((line) => line.includes(`host ${REBINDING_HOST} ${HOST_HINT}`))).toBe(true);
   });

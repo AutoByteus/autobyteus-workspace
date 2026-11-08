@@ -36,7 +36,7 @@ export type NodeDesktopStreamOptions = Readonly<{
   socket: NodeDesktopViewerSocket;
   target: NodeDesktopTarget;
   mode: NodeDesktopMode;
-  /** How the viewer was admitted (`RemoteAccessAuthContext.mode`), for the log line only. */
+  /** The client kind of the viewer (`owner`, `phone`), for the log line only. */
   viewerKind: string;
 }>;
 

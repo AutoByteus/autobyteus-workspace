@@ -52,6 +52,8 @@ export const peerRefusalText = (node: string, code: string, detail: string, targ
     case REMOTE_REFUSAL.TARGET_NOT_PERMITTED: return `Node "${node}" refused the message: that run is not linked with the sender.`;
     case REMOTE_REFUSAL.TARGET_NOT_FOUND: return `That run no longer exists on node "${node}".`;
     case REMOTE_REFUSAL.NODE_IDENTITY_NOT_MIGRATED: return `Node "${node}"'s identity is waiting for its data migration, so it refused the request.`;
+    case REMOTE_REFUSAL.PEER_NOT_PAIRED:
+      return `This node and node "${node}" are not paired, so nothing was done there. The user can pair them again on the Nodes page.`;
     default: return `Node "${node}" refused the request: ${detail}`;
   }
 };

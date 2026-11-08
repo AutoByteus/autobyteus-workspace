@@ -1,7 +1,11 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
+import type { ClientIdentity } from "../../node-access/domain/client-identity.js";
+import { getClientIdentity } from "../security/node-access-gate.js";
 
 export type GraphqlRequestContext = {
   readonly requestAbortSignal: AbortSignal;
+  /** The client the node access gate established for the request (every GraphQL request has one). */
+  readonly clientIdentity: ClientIdentity | null;
 };
 
 export const createGraphqlRequestContext = (
@@ -9,6 +13,7 @@ export const createGraphqlRequestContext = (
   reply: FastifyReply,
 ): GraphqlRequestContext => ({
   requestAbortSignal: createRequestAbortSignal(request, reply),
+  clientIdentity: getClientIdentity(request),
 });
 
 const createRequestAbortSignal = (request: FastifyRequest, reply: FastifyReply): AbortSignal => {

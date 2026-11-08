@@ -1,4 +1,5 @@
-import type { FastifyInstance } from "fastify";
+import type { FastifyInstance, FastifyRequest } from "fastify";
+import type { WebSocket } from "ws";
 import {
   AgentStreamHandler,
   AgentTeamStreamHandler,
@@ -7,12 +8,9 @@ import {
   getAgentTeamStreamHandler,
   type WebSocketConnection,
 } from "../../services/agent-streaming/index.js";
-import {
-  authorizeRemoteAccessWebSocket,
-  closeSocketForRemoteAccessRejection,
-} from "./remote-access-websocket-auth.js";
 import { AgentOrgStreamHandler } from "../../services/agent-streaming/agent-org-stream-handler.js";
 import type { AgentCollaborationStreamHandler } from "../../services/agent-streaming/agent-collaboration-stream-handler.js";
+import { registerGatedWebSocketRoute } from "./gated-websocket-route.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -29,6 +27,75 @@ type TeamParams = {
 type OrgParams = { orgRunId: string };
 type AgentCollaborationParams = { runId: string };
 
+const connectionAdapterFor = (socket: WebSocket): WebSocketConnection => ({
+  send: (data) => socket.send(data),
+  close: (code) => socket.close(code),
+});
+
+/** An agent or team run stream: messages wait for the session, which the client learns from its CONNECTED message. */
+const attachRunStream = (
+  socket: WebSocket,
+  handler: AgentStreamHandler | AgentTeamStreamHandler,
+  runId: string,
+  label: string,
+): void => {
+  let sessionId: string | null = null;
+
+  void handler
+    .connect(connectionAdapterFor(socket), runId)
+    .then((id) => {
+      sessionId = id;
+    })
+    .catch((error) => {
+      logger.error(`Error connecting ${label} websocket: ${String(error)}`);
+      socket.close(1011);
+    });
+
+  socket.on("message", (data: Buffer) => {
+    if (!sessionId) {
+      socket.send(
+        createErrorMessage(
+          "SESSION_NOT_READY",
+          "Session is not ready yet. Retry after CONNECTED message.",
+        ).toJson(),
+      );
+      return;
+    }
+    void handler.handleMessage(sessionId, data.toString());
+  });
+
+  socket.on("close", () => {
+    if (!sessionId) {
+      return;
+    }
+    void handler.disconnect(sessionId);
+  });
+
+  socket.on("error", (error) => {
+    logger.error(`${label} websocket error: ${String(error)}`);
+  });
+};
+
+/** An org or agent-collaboration stream: messages are handled once its session is connected. */
+const attachRootStream = (
+  socket: WebSocket,
+  handler: AgentOrgStreamHandler | AgentCollaborationStreamHandler,
+  runId: string,
+  label: string,
+): void => {
+  void handler.connect(connectionAdapterFor(socket), runId).then((sessionId) => {
+    if (!sessionId) return;
+    socket.on("message", (data: Buffer) => {
+      void handler.handleMessage(sessionId, data.toString());
+    });
+    socket.on("close", () => handler.disconnect(sessionId));
+    socket.on("error", (cause) => logger.error(`${label} websocket error: ${String(cause)}`));
+  }).catch((cause) => {
+    logger.error(`Error connecting ${label} websocket: ${String(cause)}`);
+    socket.close(1011);
+  });
+};
+
 export async function registerAgentWebsocket(
   app: FastifyInstance,
   agentHandler: AgentStreamHandler = getAgentStreamHandler(),
@@ -36,167 +103,27 @@ export async function registerAgentWebsocket(
   orgHandler?: AgentOrgStreamHandler,
   agentCollaborationHandler?: AgentCollaborationStreamHandler,
 ): Promise<void> {
-  app.get("/ws/agent/:runId", { websocket: true }, (connection: unknown, req) => {
-    const socket = (connection as { socket?: unknown }).socket ?? connection;
-    if (!socket || typeof (socket as { on?: unknown }).on !== "function") {
-      logger.error("Agent websocket missing underlying socket; check fastify websocket plugin setup.");
-      return;
-    }
-
-    void authorizeRemoteAccessWebSocket(req)
-      .then(() => {
-        let sessionId: string | null = null;
-        const { runId } = req.params as AgentParams;
-
-        const connectionAdapter: WebSocketConnection = {
-          send: (data) => (socket as { send: (payload: string) => void }).send(data),
-          close: (code) => (socket as { close: (code?: number) => void }).close(code),
-        };
-
-        void agentHandler
-          .connect(connectionAdapter, runId)
-          .then((id) => {
-            sessionId = id;
-          })
-          .catch((error) => {
-            logger.error(`Error connecting agent websocket: ${String(error)}`);
-            (socket as { close: (code?: number) => void }).close(1011);
-          });
-
-        (socket as { on: (event: string, cb: (data: Buffer) => void) => void }).on("message", (data: Buffer) => {
-          if (!sessionId) {
-            (socket as { send: (payload: string) => void }).send(
-              createErrorMessage(
-                "SESSION_NOT_READY",
-                "Session is not ready yet. Retry after CONNECTED message.",
-              ).toJson(),
-            );
-            return;
-          }
-          const message = data.toString();
-          void agentHandler.handleMessage(sessionId, message);
-        });
-
-        (socket as { on: (event: string, cb: () => void) => void }).on("close", () => {
-          if (!sessionId) {
-            return;
-          }
-          void agentHandler.disconnect(sessionId);
-        });
-
-        (socket as { on: (event: string, cb: (error: unknown) => void) => void }).on("error", (error) => {
-          logger.error(`Agent websocket error: ${String(error)}`);
-        });
-
-        logger.info(`Agent websocket attached for run ${runId}`);
-      })
-      .catch((error) => closeSocketForRemoteAccessRejection(
-        socket as { close: (code?: number, reason?: string) => void },
-        error,
-        req,
-      ));
+  registerGatedWebSocketRoute<FastifyRequest<{ Params: AgentParams }>>(app, "/ws/agent/:runId", (socket, req) => {
+    const { runId } = req.params;
+    attachRunStream(socket, agentHandler, runId, "Agent");
+    logger.info(`Agent websocket attached for run ${runId}`);
   });
 
-  app.get("/ws/agent-team/:teamRunId", { websocket: true }, (connection: unknown, req) => {
-    const socket = (connection as { socket?: unknown }).socket ?? connection;
-    if (!socket || typeof (socket as { on?: unknown }).on !== "function") {
-      logger.error("Agent team websocket missing underlying socket; check fastify websocket plugin setup.");
-      return;
-    }
-
-    void authorizeRemoteAccessWebSocket(req)
-      .then(() => {
-        let sessionId: string | null = null;
-        const { teamRunId } = req.params as TeamParams;
-
-        const connectionAdapter: WebSocketConnection = {
-          send: (data) => (socket as { send: (payload: string) => void }).send(data),
-          close: (code) => (socket as { close: (code?: number) => void }).close(code),
-        };
-
-        void teamHandler
-          .connect(connectionAdapter, teamRunId)
-          .then((id) => {
-            sessionId = id;
-          })
-          .catch((error) => {
-            logger.error(`Error connecting agent team websocket: ${String(error)}`);
-            (socket as { close: (code?: number) => void }).close(1011);
-          });
-
-        (socket as { on: (event: string, cb: (data: Buffer) => void) => void }).on("message", (data: Buffer) => {
-          if (!sessionId) {
-            (socket as { send: (payload: string) => void }).send(
-              createErrorMessage(
-                "SESSION_NOT_READY",
-                "Session is not ready yet. Retry after CONNECTED message.",
-              ).toJson(),
-            );
-            return;
-          }
-          const message = data.toString();
-          void teamHandler.handleMessage(sessionId, message);
-        });
-
-        (socket as { on: (event: string, cb: () => void) => void }).on("close", () => {
-          if (!sessionId) {
-            return;
-          }
-          void teamHandler.disconnect(sessionId);
-        });
-
-        (socket as { on: (event: string, cb: (error: unknown) => void) => void }).on("error", (error) => {
-          logger.error(`Agent team websocket error: ${String(error)}`);
-        });
-
-        logger.info(`Agent team websocket attached for team run ${teamRunId}`);
-      })
-      .catch((error) => closeSocketForRemoteAccessRejection(
-        socket as { close: (code?: number, reason?: string) => void },
-        error,
-        req,
-      ));
+  registerGatedWebSocketRoute<FastifyRequest<{ Params: TeamParams }>>(app, "/ws/agent-team/:teamRunId", (socket, req) => {
+    const { teamRunId } = req.params;
+    attachRunStream(socket, teamHandler, teamRunId, "Agent team");
+    logger.info(`Agent team websocket attached for team run ${teamRunId}`);
   });
 
-  if (orgHandler) app.get("/ws/agent-org/:orgRunId", { websocket: true }, (connection: unknown, req) => {
-    const socket = (connection as { socket?: unknown }).socket ?? connection;
-    if (!socket || typeof (socket as { on?: unknown }).on !== "function") return;
-    void authorizeRemoteAccessWebSocket(req).then(async () => {
-      let sessionId: string | null = null;
-      const { orgRunId } = req.params as OrgParams;
-      const adapter: WebSocketConnection = {
-        send: (data) => (socket as { send(payload: string): void }).send(data),
-        close: (code) => (socket as { close(code?: number): void }).close(code),
-      };
-      sessionId = await orgHandler.connect(adapter, orgRunId);
-      (socket as { on(event: string, callback: (data: Buffer) => void): void }).on("message", (data) => {
-        if (sessionId) void orgHandler.handleMessage(sessionId, data.toString());
-      });
-      (socket as { on(event: string, callback: () => void): void }).on("close", () => {
-        if (sessionId) orgHandler.disconnect(sessionId);
-      });
-      (socket as { on(event: string, callback: (error: unknown) => void): void }).on("error", (cause) => logger.error(`AgentOrg websocket error: ${String(cause)}`));
-    }).catch((cause) => closeSocketForRemoteAccessRejection(socket as { close(code?: number, reason?: string): void }, cause, req));
-  });
+  if (orgHandler) {
+    registerGatedWebSocketRoute<FastifyRequest<{ Params: OrgParams }>>(app, "/ws/agent-org/:orgRunId", (socket, req) => {
+      attachRootStream(socket, orgHandler, req.params.orgRunId, "AgentOrg");
+    });
+  }
 
-  if (agentCollaborationHandler) app.get("/ws/agent-collaboration/:runId", { websocket: true }, (connection: unknown, req) => {
-    const socket = (connection as { socket?: unknown }).socket ?? connection;
-    if (!socket || typeof (socket as { on?: unknown }).on !== "function") return;
-    void authorizeRemoteAccessWebSocket(req).then(async () => {
-      let sessionId: string | null = null;
-      const { runId } = req.params as AgentCollaborationParams;
-      const adapter: WebSocketConnection = {
-        send: (data) => (socket as { send(payload: string): void }).send(data),
-        close: (code) => (socket as { close(code?: number): void }).close(code),
-      };
-      sessionId = await agentCollaborationHandler.connect(adapter, runId);
-      (socket as { on(event: string, callback: (data: Buffer) => void): void }).on("message", (data) => {
-        if (sessionId) void agentCollaborationHandler.handleMessage(sessionId, data.toString());
-      });
-      (socket as { on(event: string, callback: () => void): void }).on("close", () => {
-        if (sessionId) agentCollaborationHandler.disconnect(sessionId);
-      });
-      (socket as { on(event: string, callback: (error: unknown) => void): void }).on("error", (cause) => logger.error(`Agent collaboration websocket error: ${String(cause)}`));
-    }).catch((cause) => closeSocketForRemoteAccessRejection(socket as { close(code?: number, reason?: string): void }, cause, req));
-  });
+  if (agentCollaborationHandler) {
+    registerGatedWebSocketRoute<FastifyRequest<{ Params: AgentCollaborationParams }>>(app, "/ws/agent-collaboration/:runId", (socket, req) => {
+      attachRootStream(socket, agentCollaborationHandler, req.params.runId, "Agent collaboration");
+    });
+  }
 }

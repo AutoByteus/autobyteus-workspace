@@ -52,6 +52,8 @@ export function startBuiltTestServer(options?: {
   host: string;
   port: number;
   child: ChildProcessWithoutNullStreams;
+  /** The launch owner credential the server was started with; already attached to this process's requests to it. */
+  ownerCredential: string;
   output(): string;
   stop(): Promise<void>;
 }>;

@@ -1,27 +1,5 @@
 import type { FastifyRequest } from "fastify";
 
-export type RemoteAccessRouteClassification =
-  | "PUBLIC_STATIC"
-  | "PUBLIC_HEALTH"
-  | "PUBLIC_HEALTH_STATUS"
-  | "PUBLIC_PREFLIGHT"
-  | "PUBLIC_PAIRING_EXCHANGE"
-  | "TRUSTED_NETWORK_OWNER"
-  | "TRUSTED_NETWORK_PROTECTED"
-  | "TRUSTED_NETWORK_WEBSOCKET"
-  /** `/rest/remote/*`: requests from peer nodes (remote collaboration); admitted by its peer gateway. */
-  | "REMOTE_PEER"
-  | "LOCAL_DEV_ONLY";
-
-export type RemoteAccessAuthMode = "trusted_network" | "loopback" | "mobile";
-
-export type RemoteAccessAuthContext = {
-  mode: RemoteAccessAuthMode;
-  isAuthenticated: boolean;
-  deviceId?: string;
-  clientFacingBaseUrl?: string;
-};
-
 export type RemoteAccessSettings = {
   phoneAccessEnabled: boolean;
   updatedAt: string;
@@ -104,13 +82,9 @@ export type PairingExchangeResult = {
   serverBaseUrl: string;
 };
 
-export type RemoteAccessAuthFailureCode =
-  | "REMOTE_ACCESS_AUTH_REQUIRED"
-  | "REMOTE_ACCESS_AUTH_INVALID"
-  | "REMOTE_ACCESS_DEVICE_REVOKED"
+/** The codes of `RemoteAccessError`: Phone Access pairing and settings refusals. */
+export type RemoteAccessErrorCode =
   | "PHONE_ACCESS_DISABLED"
-  | "REMOTE_ACCESS_ROUTE_UNSUPPORTED"
-  | "REMOTE_ACCESS_LOCAL_ONLY"
   | "REMOTE_ACCESS_PAIRING_EXPIRED"
   | "REMOTE_ACCESS_PAIRING_INVALID"
   | "REMOTE_ACCESS_PAIRING_CONSUMED"
@@ -119,28 +93,10 @@ export type RemoteAccessAuthFailureCode =
   | "REMOTE_ACCESS_PAIRING_HTTP_PRIVATE_REQUIRED"
   | "REMOTE_ACCESS_PAIRING_HTTP_ACK_REQUIRED"
   | "REMOTE_ACCESS_PAIRING_WAY_INVALID"
-  | "REMOTE_ACCESS_NETWORK_ID_INVALID"
-  /** The request's browser Origin is not an allowed origin of the node. */
-  | "REMOTE_ACCESS_ORIGIN_REFUSED"
-  /** The request's `Host` is not an allowed host of the node (DNS rebinding defence). */
-  | "REMOTE_ACCESS_HOST_REFUSED"
-  /** A paired phone's credential on a WebSocket route that is not a phone WebSocket route. */
-  | "PHONE_ACCESS_ROUTE_REFUSED";
-
-export type RemoteAccessRejection = {
-  ok: false;
-  statusCode: number;
-  code: RemoteAccessAuthFailureCode;
-  message: string;
-};
-
-export type RemoteAccessAuthorizationResult =
-  | { ok: true; context: RemoteAccessAuthContext }
-  | RemoteAccessRejection;
+  | "REMOTE_ACCESS_NETWORK_ID_INVALID";
 
 export type ClientFacingUrlContext = {
   request?: FastifyRequest;
-  authContext?: RemoteAccessAuthContext | null;
   pairedDeviceClientBaseUrl?: string | null;
   configuredExternalBaseUrl?: string | null;
   localFallbackBaseUrl: string;
@@ -152,14 +108,11 @@ export type ResolveRestResourceUrlInput = {
   prefer?: "relative" | "absolute";
 };
 
-export const WEBSOCKET_ACCESS_TOKEN_QUERY_KEY = "access_token";
 export const REMOTE_ACCESS_MOBILE_CREDENTIAL_PREFIX = "mra_";
-
-export const REMOTE_ACCESS_AUTH_CONTEXT_PROPERTY = "remoteAccessAuthContext";
 
 export class RemoteAccessError extends Error {
   constructor(
-    public readonly code: RemoteAccessAuthFailureCode,
+    public readonly code: RemoteAccessErrorCode,
     message: string,
     public readonly statusCode = 401,
   ) {

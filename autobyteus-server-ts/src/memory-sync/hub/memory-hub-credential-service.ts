@@ -1,4 +1,17 @@
-import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
+import { EventEmitter } from "node:events";
+import {
+  generateCredential,
+  generateRecordId,
+  hashSecret,
+  hashesEqual,
+} from "../../node-access/domain/credential-secret.js";
+import type {
+  BearerCredentialVerifier,
+  ClientRevocationListener,
+  ClientRevocationSource,
+  CredentialVerification,
+} from "../../node-access/domain/credential-verification.js";
+import { NODE_ACCESS_REFUSALS } from "../../node-access/domain/node-access-refusal.js";
 import { normalizeMemorySyncSourceId } from "../shared/memory-sync-source-id.js";
 import type {
   MemoryHubSourceCredentialRecord,
@@ -18,18 +31,6 @@ export class MemoryHubCredentialError extends Error {
   }
 }
 
-export const hashMemoryHubCredential = (credential: string): string =>
-  createHash("sha256").update(credential, "utf8").digest("hex");
-
-const safeEqualHex = (leftHex: string, rightHex: string): boolean => {
-  const left = Buffer.from(leftHex, "hex");
-  const right = Buffer.from(rightHex, "hex");
-  return left.length === right.length && timingSafeEqual(left, right);
-};
-
-const generateCredentialId = (): string => `mhubcred_${randomBytes(16).toString("hex")}`;
-const generateCredential = (): string => `${TOKEN_PREFIX}${randomBytes(32).toString("base64url")}`;
-
 const normalizeLabel = (value: string | null | undefined): string | null => {
   const normalized = String(value ?? "").trim();
   return normalized ? normalized.slice(0, 160) : null;
@@ -45,11 +46,20 @@ const toSummary = (record: MemoryHubSourceCredentialRecord): MemoryHubSourceCred
   status: record.revokedAt ? "revoked" : "active",
 });
 
-export class MemoryHubCredentialService {
+/**
+ * Memory Hub source credentials (`mhub_`): created, regenerated and revoked by the hub's owner. For the node's request
+ * gate it is the memory sync source credential kind: records are read once and kept in memory, and a revocation or
+ * regeneration closes that source's open sockets (NA-11). A source's batches bind the credential to its source ID.
+ */
+export class MemoryHubCredentialService implements BearerCredentialVerifier, ClientRevocationSource {
+  readonly prefix = TOKEN_PREFIX;
+  private records: MemoryHubSourceCredentialRecord[] | null = null;
+  private readonly events = new EventEmitter();
+
   constructor(private readonly store: LocalFileMemoryHubCredentialStore = getLocalFileMemoryHubCredentialStore()) {}
 
   async listCredentialSummaries(): Promise<MemoryHubSourceCredentialSummary[]> {
-    return (await this.store.listRecords()).map(toSummary);
+    return (await this.loadedRecords()).map(toSummary);
   }
 
   async listActiveCredentialSummaries(): Promise<MemoryHubSourceCredentialSummary[]> {
@@ -61,31 +71,31 @@ export class MemoryHubCredentialService {
     boundMemorySyncSourceId?: string | null;
   } = {}): Promise<{ summary: MemoryHubSourceCredentialSummary; plaintextToken: string }> {
     const now = new Date().toISOString();
-    const plaintextToken = generateCredential();
+    const plaintextToken = generateCredential(TOKEN_PREFIX);
     const record: MemoryHubSourceCredentialRecord = {
-      credentialId: generateCredentialId(),
+      credentialId: generateRecordId("mhubcred"),
       label: normalizeLabel(input.label),
-      credentialHash: hashMemoryHubCredential(plaintextToken),
+      credentialHash: hashSecret(plaintextToken),
       boundMemorySyncSourceId: input.boundMemorySyncSourceId ? normalizeMemorySyncSourceId(input.boundMemorySyncSourceId) : null,
       createdAt: now,
       lastUsedAt: null,
       revokedAt: null,
     };
-    await this.store.updateRecords((records) => [...records, record]);
+    await this.update((records) => [...records, record]);
     return { summary: toSummary(record), plaintextToken };
   }
 
   async regenerateCredential(credentialId: string): Promise<{ summary: MemoryHubSourceCredentialSummary; plaintextToken: string }> {
     const normalizedId = credentialId.trim();
-    const plaintextToken = generateCredential();
+    const plaintextToken = generateCredential(TOKEN_PREFIX);
     let updated: MemoryHubSourceCredentialRecord | null = null;
-    await this.store.updateRecords((records) => records.map((record) => {
+    await this.update((records) => records.map((record) => {
       if (record.credentialId !== normalizedId) {
         return record;
       }
       updated = {
         ...record,
-        credentialHash: hashMemoryHubCredential(plaintextToken),
+        credentialHash: hashSecret(plaintextToken),
         revokedAt: null,
       };
       return updated;
@@ -93,6 +103,8 @@ export class MemoryHubCredentialService {
     if (!updated) {
       throw new MemoryHubCredentialError("Memory Hub credential was not found.", 404);
     }
+    // The old token stops working: sockets opened with it close.
+    this.publishRevoked(normalizedId);
     return { summary: toSummary(updated), plaintextToken };
   }
 
@@ -100,7 +112,7 @@ export class MemoryHubCredentialService {
     const normalizedId = credentialId.trim();
     const now = new Date().toISOString();
     let revoked: MemoryHubSourceCredentialRecord | null = null;
-    await this.store.updateRecords((records) => records.map((record) => {
+    await this.update((records) => records.map((record) => {
       if (record.credentialId !== normalizedId) {
         return record;
       }
@@ -110,30 +122,39 @@ export class MemoryHubCredentialService {
     if (!revoked) {
       throw new MemoryHubCredentialError("Memory Hub credential was not found.", 404);
     }
+    this.publishRevoked(normalizedId);
     return toSummary(revoked);
   }
 
-  async validateCredentialForSource(input: {
-    plaintextToken: string | null | undefined;
-    memorySyncSourceId: string;
-    bindOnFirstUse?: boolean;
-  }): Promise<MemoryHubSourceCredentialSummary> {
-    const token = String(input.plaintextToken ?? "").trim();
-    if (!token || !token.startsWith(TOKEN_PREFIX)) {
-      throw new MemoryHubCredentialError("Memory Hub source token is required.");
+  /** The gate's check of a source's credential: an existing, unrevoked `mhub_` credential, from memory. */
+  async verify(credential: string): Promise<CredentialVerification> {
+    const hash = hashSecret(credential);
+    const record = (await this.loadedRecords()).find((candidate) => hashesEqual(candidate.credentialHash, hash));
+    if (!record) {
+      return { ok: false, refusal: NODE_ACCESS_REFUSALS.credentialInvalid };
     }
+    if (record.revokedAt) {
+      return { ok: false, refusal: NODE_ACCESS_REFUSALS.credentialRevoked };
+    }
+    return { ok: true, identity: { kind: "memory_sync_source", credentialId: record.credentialId } };
+  }
+
+  /**
+   * A verified source credential used for a source: binds it to that source ID on its first batch and refuses it for
+   * any other source ID afterwards.
+   */
+  async bindCredentialToSource(input: {
+    credentialId: string;
+    memorySyncSourceId: string;
+    bindOnFirstUse: boolean;
+  }): Promise<MemoryHubSourceCredentialSummary> {
     const memorySyncSourceId = normalizeMemorySyncSourceId(input.memorySyncSourceId);
-    const hash = hashMemoryHubCredential(token);
     let matched: MemoryHubSourceCredentialRecord | null = null;
     let conflict = false;
     const now = new Date().toISOString();
 
-    await this.store.updateRecords((records) => records.map((record) => {
-      if (!safeEqualHex(record.credentialHash, hash)) {
-        return record;
-      }
-      if (record.revokedAt) {
-        matched = record;
+    await this.update((records) => records.map((record) => {
+      if (record.credentialId !== input.credentialId || record.revokedAt) {
         return record;
       }
       if (record.boundMemorySyncSourceId && record.boundMemorySyncSourceId !== memorySyncSourceId) {
@@ -143,7 +164,7 @@ export class MemoryHubCredentialService {
       }
       const next = {
         ...record,
-        boundMemorySyncSourceId: record.boundMemorySyncSourceId ?? (input.bindOnFirstUse === false ? null : memorySyncSourceId),
+        boundMemorySyncSourceId: record.boundMemorySyncSourceId ?? (input.bindOnFirstUse ? memorySyncSourceId : null),
         lastUsedAt: now,
       };
       matched = next;
@@ -154,13 +175,30 @@ export class MemoryHubCredentialService {
     if (!validated) {
       throw new MemoryHubCredentialError("Memory Hub source token is invalid.");
     }
-    if (validated.revokedAt) {
-      throw new MemoryHubCredentialError("Memory Hub source token has been revoked.", 403);
-    }
     if (conflict) {
       throw new MemoryHubCredentialError("Memory Hub source token is bound to a different Memory Sync source ID.", 403);
     }
     return toSummary(validated);
+  }
+
+  onClientRevoked(listener: ClientRevocationListener): () => void {
+    this.events.on("revoked", listener);
+    return () => this.events.off("revoked", listener);
+  }
+
+  private publishRevoked(credentialId: string): void {
+    this.events.emit("revoked", { kind: "memory_sync_source", id: credentialId, refusal: NODE_ACCESS_REFUSALS.credentialRevoked });
+  }
+
+  private async loadedRecords(): Promise<MemoryHubSourceCredentialRecord[]> {
+    this.records ??= await this.store.listRecords();
+    return this.records;
+  }
+
+  private async update(
+    change: (records: MemoryHubSourceCredentialRecord[]) => MemoryHubSourceCredentialRecord[],
+  ): Promise<void> {
+    this.records = await this.store.updateRecords(change);
   }
 }
 

@@ -5,18 +5,15 @@ import path from "node:path";
 import fastify, { type FastifyInstance, type FastifyRequest } from "fastify";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { registerRemoteAccessRoutes } from "../../../src/api/rest/remote-access.js";
-import { registerRemoteAccessPolicyPlugin } from "../../../src/api/security/remote-access-policy-plugin.js";
-import {
-  getRemoteAccessAuthContext,
-  resetRemoteAccessRoutePolicyForTests,
-} from "../../../src/api/security/remote-access-route-policy.js";
+import { getClientIdentity } from "../../../src/api/security/node-access-gate.js";
+import type { ClientIdentity } from "../../../src/node-access/domain/client-identity.js";
 import type {
   CreatePairingSessionResult,
   PairedDeviceSummary,
   PairingExchangeResult,
-  RemoteAccessAuthContext,
 } from "../../../src/remote-access/domain/models.js";
-import { resetRemoteAccessAuthServiceForTests } from "../../../src/remote-access/services/remote-access-auth-service.js";
+import { PhoneCredentialVerifier } from "../../../src/remote-access/services/phone-credential-verifier.js";
+import { registerTestNodeAccess } from "../../helpers/node-access-test-gate.js";
 import { resetPairedDeviceServiceForTests } from "../../../src/remote-access/services/paired-device-service.js";
 import { resetRemoteAccessPairingServiceForTests } from "../../../src/remote-access/services/remote-access-pairing-service.js";
 import { resetRemoteAccessSettingsServiceForTests } from "../../../src/remote-access/services/remote-access-settings-service.js";
@@ -31,8 +28,10 @@ import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 type DevicesResponse = { devices: PairedDeviceSummary[] };
 type ProtectedProbeResponse = {
   ok: true;
-  authContext: RemoteAccessAuthContext | null;
+  identity: ClientIdentity | null;
 };
+/** The owner desktop's credential (the launch credential of this test's node). */
+const OWNER = "own_phone_access_routes_owner";
 type RemoteAccessStatusResponse = {
   phoneAccessEnabled: boolean;
   pairingAvailable: boolean;
@@ -53,18 +52,21 @@ describe("Phone Access running REST route behavior", () => {
     configureNodeIdentityCapability(true);
 
     app = fastify();
-    await registerRemoteAccessPolicyPlugin(app);
+    // The real gate with the owner and phone credential kinds; this test's arrivals are all admitted.
+    const phoneCredentials = new PhoneCredentialVerifier();
+    await registerTestNodeAccess(app, { launchCredential: OWNER, verifiers: [phoneCredentials], revocationSources: [phoneCredentials] });
     await app.register(registerRemoteAccessRoutes, { prefix: "/rest" });
     app.get("/rest/protected-probe", async (request: FastifyRequest): Promise<ProtectedProbeResponse> => ({
       ok: true,
-      authContext: getRemoteAccessAuthContext(request),
+      identity: getClientIdentity(request),
     }));
     await app.ready();
   });
 
   afterEach(async () => {
     await app.close();
-    await rm(appDataDir, { recursive: true, force: true });
+    // A phone's last-seen is written in the background (at most once a minute); retry while it finishes.
+    await rm(appDataDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 20 });
     resetRemoteAccessSingletons();
     appConfigProvider.resetForTests();
   });
@@ -161,7 +163,7 @@ describe("Phone Access running REST route behavior", () => {
       headers: { authorization: `Bearer ${activeExchange.credential}` },
     });
     expect(mobileOnManagementRouteResponse.statusCode).toBe(403);
-    expect(mobileOnManagementRouteResponse.json()).toMatchObject({ code: "REMOTE_ACCESS_AUTH_INVALID" });
+    expect(mobileOnManagementRouteResponse.json()).toMatchObject({ code: "NODE_ROUTE_NOT_PERMITTED" });
 
     const mobileProtectedResponse = await inject({
       method: "GET",
@@ -170,14 +172,9 @@ describe("Phone Access running REST route behavior", () => {
       headers: { authorization: `Bearer ${activeExchange.credential}` },
     });
     expect(mobileProtectedResponse.statusCode).toBe(200);
-    expect(mobileProtectedResponse.json() as ProtectedProbeResponse).toMatchObject({
+    expect(mobileProtectedResponse.json() as ProtectedProbeResponse).toEqual({
       ok: true,
-      authContext: {
-        mode: "mobile",
-        isAuthenticated: true,
-        deviceId: activeExchange.device.deviceId,
-        clientFacingBaseUrl: "https://desktop.tailnet.ts.net",
-      },
+      identity: { kind: "phone", deviceId: activeExchange.device.deviceId },
     });
 
     await revokeDevice(activeExchange.device.deviceId);
@@ -208,11 +205,12 @@ describe("Phone Access running REST route behavior", () => {
     expect(revokedCredentialResponse.json()).toMatchObject({ code: "REMOTE_ACCESS_DEVICE_REVOKED" });
   });
 
-  it("restores trusted-network remote-node management and protected routes without additional credentials", async () => {
+  it("NAS-14 serves the status without a credential, and owner management and protected routes only with the owner credential", async () => {
     const firstStatusResponse = await inject({
       method: "GET",
       url: "/rest/remote-access/status",
       remoteAddress: "100.64.1.2",
+      anonymous: true,
     });
     expect(firstStatusResponse.statusCode).toBe(200);
     const firstStatus = firstStatusResponse.json() as RemoteAccessStatusResponse;
@@ -228,6 +226,16 @@ describe("Phone Access running REST route behavior", () => {
     expect(secondStatusResponse.statusCode).toBe(200);
     expect((secondStatusResponse.json() as RemoteAccessStatusResponse).nodeId)
       .toBe(firstStatus.nodeId);
+
+    const enableWithoutCredential = await inject({
+      method: "PUT",
+      url: "/rest/remote-access/settings",
+      remoteAddress: "100.64.1.2",
+      payload: { phoneAccessEnabled: true },
+      anonymous: true,
+    });
+    expect(enableWithoutCredential.statusCode).toBe(401);
+    expect(enableWithoutCredential.json()).toMatchObject({ code: "NODE_CREDENTIAL_REQUIRED" });
 
     const enableResponse = await inject({
       method: "PUT",
@@ -283,23 +291,22 @@ describe("Phone Access running REST route behavior", () => {
       method: "GET",
       url: "/rest/protected-probe",
       remoteAddress: "100.64.1.2",
+      anonymous: true,
     });
-    expect(protectedNoCredentialResponse.statusCode).toBe(200);
-    expect(protectedNoCredentialResponse.json() as ProtectedProbeResponse).toMatchObject({
-      ok: true,
-      authContext: {
-        mode: "trusted_network",
-        isAuthenticated: false,
-      },
-    });
+    expect(protectedNoCredentialResponse.statusCode).toBe(401);
+    expect(protectedNoCredentialResponse.json()).toMatchObject({ code: "NODE_CREDENTIAL_REQUIRED" });
+
+    const ownerProtectedResponse = await inject({ method: "GET", url: "/rest/protected-probe", remoteAddress: "100.64.1.2" });
+    expect(ownerProtectedResponse.json() as ProtectedProbeResponse).toEqual({ ok: true, identity: { kind: "owner", credentialId: "launch" } });
 
     const graphqlNoCredentialResponse = await inject({
       method: "POST",
       url: "/graphql",
       remoteAddress: "100.64.1.2",
       payload: { query: "{ __typename }" },
+      anonymous: true,
     });
-    expect(graphqlNoCredentialResponse.statusCode).not.toBe(401);
+    expect(graphqlNoCredentialResponse.statusCode).toBe(401);
   });
 
   it("serves the node's network facts, remembers an allowed local network, discards a session by its ID and records each phone's way", async () => {
@@ -369,6 +376,7 @@ describe("Phone Access running REST route behavior", () => {
     const discardedExchange = await inject({
       method: "POST",
       url: "/rest/remote-access/pairing-exchanges",
+      anonymous: true,
       remoteAddress: "192.168.1.30",
       payload: { pairingCode: discarded.payload.pairingCode, deviceName: "Phone" },
     });
@@ -381,6 +389,7 @@ describe("Phone Access running REST route behavior", () => {
     const secondUse = await inject({
       method: "POST",
       url: "/rest/remote-access/pairing-exchanges",
+      anonymous: true,
       remoteAddress: "192.168.1.30",
       payload: { pairingCode: used.payload.pairingCode, deviceName: "Phone" },
     });
@@ -399,7 +408,7 @@ describe("Phone Access running REST route behavior", () => {
       headers: { authorization: `Bearer ${exchange.credential}` },
     });
     expect(mobileOnNetworkRoute.statusCode).toBe(403);
-    expect(mobileOnNetworkRoute.json()).toMatchObject({ code: "REMOTE_ACCESS_AUTH_INVALID" });
+    expect(mobileOnNetworkRoute.json()).toMatchObject({ code: "NODE_ROUTE_NOT_PERMITTED" });
   });
 
   async function enablePhoneAccess(): Promise<void> {
@@ -439,6 +448,7 @@ describe("Phone Access running REST route behavior", () => {
     const response = await inject({
       method: "POST",
       url: "/rest/remote-access/pairing-exchanges",
+      anonymous: true,
       remoteAddress: "100.64.1.2",
       payload: {
         pairingCode: session.payload.pairingCode,
@@ -459,14 +469,18 @@ describe("Phone Access running REST route behavior", () => {
     expect(response.statusCode).toBe(200);
   }
 
+  /** A request from the owner desktop (its credential), unless it names its own credential or is `anonymous`. */
   function inject(options: {
     method: string;
     url: string;
     remoteAddress: string;
     payload?: unknown;
     headers?: Record<string, string>;
+    anonymous?: boolean;
   }) {
-    return app.inject(options as Parameters<typeof app.inject>[0] & { remoteAddress: string });
+    const { anonymous, ...request } = options;
+    const headers = anonymous || request.headers?.authorization ? request.headers : { ...request.headers, authorization: `Bearer ${OWNER}` };
+    return app.inject({ ...request, headers } as Parameters<typeof app.inject>[0] & { remoteAddress: string });
   }
 });
 
@@ -479,8 +493,6 @@ function decodePairingParam(mobileUrl: string): unknown {
 }
 
 function resetRemoteAccessSingletons(): void {
-  resetRemoteAccessRoutePolicyForTests();
-  resetRemoteAccessAuthServiceForTests();
   resetRemoteAccessPairingServiceForTests();
   resetRemoteAccessSettingsServiceForTests();
   resetNodeIdentityServiceForTests();
