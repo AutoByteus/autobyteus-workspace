@@ -2,6 +2,7 @@
 # autobyteus-432 AC-002 / D-2: the app resets desktop full screen when it shows another screen, when the page reloads,
 # and the page gives it back when the viewer goes while full=1.
 R=/private/tmp/abx-432
+export ANDROID_SERIAL=emulator-5554
 A=$HOME/Library/Android/sdk/platform-tools/adb
 S="bash $R/state.sh"
 E="node $R/cdp-eval.mjs 9432"

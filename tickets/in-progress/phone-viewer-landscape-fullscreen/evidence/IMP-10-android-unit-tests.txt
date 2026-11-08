@@ -7,9 +7,9 @@ org.autobyteus.mobile.shell.ConnectionInputResolverTest tests=3 failures=0
 org.autobyteus.mobile.shell.NodeConnectionFlowTest tests=7 failures=0
 org.autobyteus.mobile.shell.NodeReachabilityTest tests=2 failures=0
 org.autobyteus.mobile.shell.OpenPageRestoreTest tests=6 failures=0
-org.autobyteus.mobile.ui.DesktopFullScreenControllerTest tests=5 failures=0
+org.autobyteus.mobile.ui.DesktopFullScreenControllerTest tests=8 failures=0
 org.autobyteus.mobile.web.FileChooserRequestPolicyTest tests=3 failures=0
 org.autobyteus.mobile.web.ShellBridgeMessagesTest tests=6 failures=0
 org.autobyteus.mobile.web.TrustedNavigationPolicyTest tests=5 failures=0
-TOTAL tests=58 failed=0
-BUILD SUCCESSFUL in 11s
+TOTAL tests=61 failed=0
+BUILD SUCCESSFUL in 10s

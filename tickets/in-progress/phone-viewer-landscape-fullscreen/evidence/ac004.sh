@@ -1,6 +1,7 @@
 #!/bin/bash
 # autobyteus-432 AC-004: background and return while in full screen; then Android ending the app in the background.
 R=/private/tmp/abx-432
+export ANDROID_SERIAL=emulator-5554
 A=$HOME/Library/Android/sdk/platform-tools/adb
 S="bash $R/state.sh"
 launch() { $A shell am start -n org.autobyteus.mobile/.MainActivity -a android.intent.action.MAIN -c android.intent.category.LAUNCHER >/dev/null; }

@@ -3,4 +3,4 @@
 == guard:localization-boundary
 [guard:localization-boundary] Passed.
 == audit:localization-literals
-(Use `node --trace-warnings ...` to show where the warning was created)
+[audit:localization-literals] Passed with zero unresolved findings.

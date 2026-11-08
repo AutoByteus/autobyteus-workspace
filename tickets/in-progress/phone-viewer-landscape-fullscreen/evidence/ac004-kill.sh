@@ -1,6 +1,7 @@
 #!/bin/bash
 # autobyteus-432 AC-004 (426 D-03): Android ends the app in the background while the viewer is in full screen.
 R=/private/tmp/abx-432
+export ANDROID_SERIAL=emulator-5554
 A=$HOME/Library/Android/sdk/platform-tools/adb
 S="bash $R/state.sh"
 $S "14a full, before Home"
