@@ -35,6 +35,10 @@ import { randomUUID } from 'node:crypto';
 import { spawn, execFileSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import { attachToBrowserContext, attachToProbeProcess, withNodeCredential } from './fixtures/probe-node-access.mjs';
+// Every node needs a credential (autobyteus-437): the probe's nodes start with its launch credential, and the probe's
+// own calls and its desktop browser contexts carry it (fixtures/probe-node-access.mjs).
+attachToProbeProcess();
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -125,7 +129,7 @@ const startBackend = async () => {
   await fsp.writeFile(path.join(stack.dataDir, '.env'), `${Object.entries(serverEnv()).map(([k, v]) => `${k}=${v}`).join('\n')}\n`, { mode: 0o600 });
   const env = { ...baseEnv(), ...serverEnv(), HOME: stack.privateHome, ANTIGRAVITY_CLI_COMMAND: fixtureCli, AGY_FAKE_CASE: 'linked_skills' };
   stack.backend = spawnLogged(process.execPath, [path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(stack.backendPort), '--data-dir', stack.dataDir],
-    serverDir, env, `backend-${stack.starts}`);
+    serverDir, withNodeCredential(env), `backend-${stack.starts}`);
   await until('backend listening', () => { if (exited(stack.backend)) throw new Error('backend exited'); return stack.backend.output.includes('listening'); }, 300000);
   await until('backend GraphQL', async () => (await fetch(`${stack.backendUrl}/graphql`, { method: 'POST',
     headers: { 'content-type': 'application/json' }, body: '{"query":"{__typename}"}' })).ok, 60000);
@@ -445,7 +449,9 @@ const withBrowserErrorCheck = (id, fn, { allowContent404 = false } = {}) => asyn
 const contentResponses = [];
 const freshPage = async () => {
   if (page) await page.close().catch(() => {});
-  page = await (await browser.newContext({ viewport: { width: 1600, height: 1000 } })).newPage();
+  const desktopContext = await browser.newContext({ viewport: { width: 1600, height: 1000 } });
+  await attachToBrowserContext(desktopContext);
+  page = await desktopContext.newPage();
   watchBrowserErrors(page);
   page.on('response', (r) => { if (r.url().includes('/file-change-content')) contentResponses.push({ at: Date.now(), url: r.url(), status: r.status() }); });
   await page.goto(`${stack.frontendUrl}/workspace`, { waitUntil: 'domcontentloaded', timeout: 180000 });

@@ -35,6 +35,10 @@ import { randomUUID } from 'node:crypto';
 import { spawn, execFileSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import { attachToProbeProcess, withNodeCredential } from './fixtures/probe-node-access.mjs';
+// Every node needs a credential (autobyteus-437): the probe's nodes start with its launch credential, and the probe's
+// own calls and its desktop browser contexts carry it (fixtures/probe-node-access.mjs).
+attachToProbeProcess();
 
 const ownWebDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const require = createRequire(path.join(path.dirname(ownWebDir), 'autobyteus-server-ts/package.json'));
@@ -111,7 +115,7 @@ const startBackend = async () => {
     HOME: stack.privateHome, ANTIGRAVITY_CLI_COMMAND: fixtureCli, AGY_FAKE_CASE: 'linked_skills', DISABLE_HTTP_REQUEST_LOGS: 'true' };
   const log = fs.createWriteStream(path.join(outputDir, `backend-${stack.starts}.log`), { flags: 'a' });
   const child = spawn(process.execPath, [path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(stack.backendPort), '--data-dir', stack.dataDir],
-    { cwd: serverDir, env, detached: true, stdio: ['ignore', 'pipe', 'pipe'] });
+    { cwd: serverDir, env: withNodeCredential(env), detached: true, stdio: ['ignore', 'pipe', 'pipe'] });
   child.output = '';
   child.stdout.on('data', (d) => { child.output += d; log.write(d); });
   child.stderr.on('data', (d) => { child.output += d; log.write(d); });

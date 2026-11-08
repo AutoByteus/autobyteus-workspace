@@ -4,6 +4,10 @@
 //
 // - `probeNodeEnvironment()`: the node's launch credential, for the environment of each `dist/app.js` the probe starts.
 //   Every node of one probe gets the same credential, so one browser context can carry it to all of them.
+//   `withNodeCredential(env)` is that environment merged into `env`.
+// - `attachToProbeProcess()`: the probe process's own `fetch` and `http.request` (which the `ws` client uses) carry the
+//   credential to loopback nodes, unless the request already carries one (test-support/node-access, as server suites do).
+//   Node's built-in `WebSocket` is not covered: use `ownerSocketUrl`.
 // - `ownerHeaders()`: the `authorization` header of the probe's own HTTP calls (GraphQL, REST, health).
 // - `ownerSocketUrl(url)`: a WebSocket URL with the browser WebSocket credential (`access_token`), for the probe's own
 //   sockets (Node's built-in `WebSocket` cannot set a header).
@@ -15,10 +19,15 @@
 //
 // Test code only. The credential is never written to evidence: `redactCredentials` removes it from text.
 import { randomBytes } from 'node:crypto';
+import { attachOwnerCredentialToLoopback } from '../../../../test-support/node-access/owner-credential-attachment.mjs';
 
 const credential = `own_${randomBytes(32).toString('base64url')}`;
 
 export const probeNodeEnvironment = () => ({ AUTOBYTEUS_LAUNCH_OWNER_CREDENTIAL: credential });
+
+export const withNodeCredential = (env) => ({ ...env, ...probeNodeEnvironment() });
+
+export const attachToProbeProcess = () => attachOwnerCredentialToLoopback(credential);
 
 export const ownerHeaders = (headers = {}) => ({ ...headers, authorization: `Bearer ${credential}` });
 

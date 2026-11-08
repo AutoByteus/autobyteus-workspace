@@ -11,6 +11,10 @@ import { spawn, spawnSync } from 'node:child_process';
 import { randomUUID, createHash } from 'node:crypto';
 import { createRequire } from 'node:module';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { attachToBrowserContext, attachToProbeProcess, withNodeCredential } from './fixtures/probe-node-access.mjs';
+// Every node needs a credential (autobyteus-437): the probe's nodes start with its launch credential, and the probe's
+// own calls and its desktop browser contexts carry it (fixtures/probe-node-access.mjs).
+attachToProbeProcess();
 
 if (process.env.RUN_AGY_E2E !== '1') throw new Error('Set RUN_AGY_E2E=1 for a real AGY provider turn.');
 const here=path.dirname(fileURLToPath(import.meta.url)), webDir=path.resolve(here,'../..'), rootDir=path.resolve(webDir,'..'), serverDir=path.join(rootDir,'autobyteus-server-ts');
@@ -43,7 +47,7 @@ try{
   const env={...process.env,APP_ENV:'development',DB_TYPE:'sqlite',DATABASE_URL:dbUrl,AUTOBYTEUS_SERVER_HOST:base,AUTOBYTEUS_ALLOWED_ORIGINS:front,AUTOBYTEUS_AGENT_PACKAGE_ROOTS:packageRoot,DISABLE_HTTP_REQUEST_LOGS:'true'};
   await fs.writeFile(path.join(dataRoot,'.env'),`APP_ENV=development\nDB_TYPE=sqlite\nDATABASE_URL=${dbUrl}\nAUTOBYTEUS_SERVER_HOST=${base}\n`);
   await run('corepack',['pnpm','-C',serverDir,'exec','prisma','migrate','deploy','--schema','./prisma/schema.prisma'],rootDir,env,path.join(outDir,'migrate.log'));
-  backend=spawnOwned(process.execPath,[path.join(serverDir,'dist/app.js'),'--host','127.0.0.1','--port',String(bp),'--data-dir',dataRoot],serverDir,env,path.join(outDir,'backend.log'));
+  backend=spawnOwned(process.execPath,[path.join(serverDir,'dist/app.js'),'--host','127.0.0.1','--port',String(bp),'--data-dir',dataRoot],serverDir,withNodeCredential(env),path.join(outDir,'backend.log'));
   await wait('backend health',async()=>{assert(backend.exitCode===null&&backend.signalCode===null,'Backend exited');try{return(await fetch(`${base}/rest/health`,{signal:AbortSignal.timeout(2000)})).ok}catch{return false}},90000);
   const pkg=(await gql(base,'query{agentPackages{packageId path teamLocalAgentCount agentTeamCount}}')).agentPackages.find(x=>x.path===packageRoot);assert(pkg,'Mounted package unavailable');evidence.environment.package={packageId:pkg.packageId,teamLocalAgentCount:pkg.teamLocalAgentCount,agentTeamCount:pkg.agentTeamCount};
   const defs=(await gql(base,'query{agentTeamDefinitions{id name ownerPackageId nodes{memberName ref}}}')).agentTeamDefinitions;
@@ -58,7 +62,7 @@ try{
   const orgQuery='query($orgRunId:String!){getAgentOrgRunConfig(orgRunId:$orgRunId){isActive executionTree}}';const current=(await gql(base,orgQuery,{orgRunId:runId})).getAgentOrgRunConfig;assert(current.isActive,'Org is not active');const root=current.executionTree.rootOrg;assert(root.members.length===3&&root.members.every(x=>x.members)&&root.members.reduce((n,x)=>n+x.members.length,0)===14,'Actual 1-root/3-Team/14-Agent tree absent');const t=root.members.find(x=>x.address==='/software_engineering_team');assert(t,'Software Team address missing');const sd=t.members.find(x=>x.address==='/software_engineering_team/solution_designer');assert(sd?.agentRunId,'Exact Solution Designer run ID missing');evidence.cases.fullOrg={result:'Pass',orgDefinitionId:orgId,orgRunId:runId,treeShape:{root:1,teams:3,agents:14},memberAddress:sd.address,memberRunId:sd.agentRunId,definitionRef:member.ref};
   frontend=spawnOwned('corepack',['pnpm','dev','--host','127.0.0.1','--port',String(fp)],webDir,{...process.env,NODE_ENV:'development',NUXT_TEST:'true',BACKEND_NODE_BASE_URL:base},path.join(outDir,'frontend.log'));
   await wait('Nuxt ready',async()=>{assert(frontend.exitCode===null&&frontend.signalCode===null,'Nuxt exited');try{return(await fetch(`${front}/workspace`,{signal:AbortSignal.timeout(3000)})).ok}catch{return false}},90000);
-  browser=await chromium.launch({headless:true,executablePath:chrome,args:['--no-sandbox','--disable-dev-shm-usage']});page=await browser.newPage({viewport:{width:1440,height:1000}});page.setDefaultTimeout(20000);const errors=[];page.on('pageerror',e=>errors.push(e.message));evidence.environment.browserErrors=errors;
+  browser=await chromium.launch({headless:true,executablePath:chrome,args:['--no-sandbox','--disable-dev-shm-usage']});page=await browser.newPage({viewport:{width:1440,height:1000}});await attachToBrowserContext(page.context());page.setDefaultTimeout(20000);const errors=[];page.on('pageerror',e=>errors.push(e.message));evidence.environment.browserErrors=errors;
   await page.goto(`${front}/workspace?rootSubjectKind=agent_org&definitionId=${orgId}&orgRunId=${runId}&mode=active`,{waitUntil:'domcontentloaded'});
   const teamRow=page.locator('[data-test^="agent-org-team-row-"]').filter({hasText:'software engineering team'}).first();await teamRow.waitFor({timeout:60000});if(await teamRow.getAttribute('aria-expanded')!=='true')await teamRow.click();
   const memberRow=page.locator(`[data-test="agent-org-agent-row-${sd.agentRunId}"]`);await memberRow.waitFor();await memberRow.click();await wait('Solution Designer focused',async()=>await memberRow.getAttribute('aria-selected')==='true');
@@ -75,7 +79,7 @@ try{
   // The approved restore contract keeps the checked run-start skill snapshot and provider binding.
   evidence.cleanup.backendA=await stopOwned(backend);backend=null;
   assert(!(await fetch(`${base}/rest/health`,{signal:AbortSignal.timeout(1000)}).then(()=>true).catch(()=>false)),'Backend A still reachable after stop');
-  backend=spawnOwned(process.execPath,[path.join(serverDir,'dist/app.js'),'--host','127.0.0.1','--port',String(bp),'--data-dir',dataRoot],serverDir,env,path.join(outDir,'backend-after-restart.log'));
+  backend=spawnOwned(process.execPath,[path.join(serverDir,'dist/app.js'),'--host','127.0.0.1','--port',String(bp),'--data-dir',dataRoot],serverDir,withNodeCredential(env),path.join(outDir,'backend-after-restart.log'));
   await wait('backend B health',async()=>{assert(backend.exitCode===null&&backend.signalCode===null,'Backend B exited');try{return(await fetch(`${base}/rest/health`,{signal:AbortSignal.timeout(2000)})).ok}catch{return false}},90000);
   assert(evidence.cleanup.backendA.pid!==backend.pid,'Backend restart reused OS PID');
   const restored=(await gql(base,orgQuery,{orgRunId:runId})).getAgentOrgRunConfig;const restoredNode=restored.executionTree.rootOrg.members.find(x=>x.address==='/software_engineering_team')?.members.find(x=>x.address===sd.address);

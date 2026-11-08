@@ -26,6 +26,10 @@ import path from 'node:path';
 import { spawn, execFileSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import { attachToBrowserContext, attachToProbeProcess, withNodeCredential } from './fixtures/probe-node-access.mjs';
+// Every node needs a credential (autobyteus-437): the probe's nodes start with its launch credential, and the probe's
+// own calls and its desktop browser contexts carry it (fixtures/probe-node-access.mjs).
+attachToProbeProcess();
 const { chromium } = createRequire(import.meta.url)('playwright-core');
 const web = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const repo = path.dirname(web), server = path.join(repo, 'autobyteus-server-ts');
@@ -177,7 +181,7 @@ try {
   const clean = { PATH: process.env.PATH, HOME: home, TMPDIR: owned, LANG: 'C.UTF-8', TZ: 'UTC' };
   const db = `file:${path.join(data, 'db/probe.db')}`;
   await fs.writeFile(path.join(data, '.env'), `APP_ENV=development\nDB_TYPE=sqlite\nDATABASE_URL=${db}\nAUTOBYTEUS_SERVER_HOST=${base}\n`);
-  const backend = start('backend', process.execPath, [path.join(server, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(backendPort), '--data-dir', data], server, { ...clean, APP_ENV: 'development', DB_TYPE: 'sqlite', DATABASE_URL: db, AUTOBYTEUS_SERVER_HOST: base, AUTOBYTEUS_ALLOWED_ORIGINS: front });
+  const backend = start('backend', process.execPath, [path.join(server, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(backendPort), '--data-dir', data], server, withNodeCredential({ ...clean, APP_ENV: 'development', DB_TYPE: 'sqlite', DATABASE_URL: db, AUTOBYTEUS_SERVER_HOST: base, AUTOBYTEUS_ALLOWED_ORIGINS: front }));
   await until('backend ready', async () => { assert.equal(backend.exitCode, null); return (await fetch(`${base}/rest/health`, { signal: AbortSignal.timeout(2000) })).ok; }, 120000);
   id = (await gql('mutation($input:CreateWorkspaceInput!){createWorkspace(input:$input){workspaceId}}', { input: { rootPath: root } })).createWorkspace.workspaceId; ev.workspaceId = id;
   await fs.copyFile(path.join(web, 'tests/e2e/fixtures/file-explorer-pending-save-draft.page.vue'), fixturePage); installedPage = true;
@@ -187,11 +191,11 @@ try {
   ev.browser = await browser.version();
   const route = `${front}/api-e2e-pending-save-draft?workspaceId=${id}`;
   // Cold Vite optimizer warmup page (errors from reloads are harness warmup, kept separately).
-  let warm = await browser.newPage(); ev.warmupErrors = [];
+  let warm = await browser.newPage(); await attachToBrowserContext(warm.context()); ev.warmupErrors = [];
   warm.on('pageerror', e => ev.warmupErrors.push(String(e)));
   await warm.goto(route, { waitUntil: 'domcontentloaded' }); await warm.locator('.file-explorer input').waitFor(); await warm.waitForTimeout(4000);
   await warm.reload({ waitUntil: 'domcontentloaded' }); await warm.locator('.file-explorer input').waitFor(); await warm.close();
-  page = await browser.newPage({ viewport: { width: 1440, height: 1000 }, locale: 'en-US' }); page.setDefaultTimeout(30000);
+  page = await browser.newPage({ viewport: { width: 1440, height: 1000 }, locale: 'en-US' }); page.setDefaultTimeout(30000); await attachToBrowserContext(page.context());
   // Monaco's own unhandled CancellationError ("Canceled: Canceled", raised when an in-flight editor-internal
   // request is cancelled on file switch/dispose) is recorded separately, NOT waived: it is reproduced on the
   // unmodified base store (evidence/api-e2e-base-run1) and is independent of Save/draft behavior. Anything else fails the run.

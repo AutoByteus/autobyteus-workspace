@@ -9,6 +9,10 @@ import process from 'node:process';
 import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { attachToBrowserContext, attachToProbeProcess, withNodeCredential } from './fixtures/probe-node-access.mjs';
+// Every node needs a credential (autobyteus-437): the probe's nodes start with its launch credential, and the probe's
+// own calls and its desktop browser contexts carry it (fixtures/probe-node-access.mjs).
+attachToProbeProcess();
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -133,7 +137,7 @@ try {
   await run('corepack', ['pnpm', '-C', serverDir, 'exec', 'prisma', 'migrate', 'deploy', '--schema', './prisma/schema.prisma'],
     root, backendEnv, path.join(outputDir, 'database-migrate.log'));
   backend = start(process.execPath, [path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(backendPort), '--data-dir', dataRoot],
-    serverDir, backendEnv, path.join(outputDir, 'backend.log'));
+    serverDir, withNodeCredential(backendEnv), path.join(outputDir, 'backend.log'));
   await waitFor('backend health', async () => {
     if (exited(backend)) throw new Error(`backend exited ${backend.exitCode}/${backend.signalCode}`);
     return fetch(`${backendUrl}/rest/health`).then(response => response.ok).catch(() => false);
@@ -149,6 +153,7 @@ try {
   });
   browser = await chromium.launch({ headless: true, executablePath, args: ['--no-sandbox', '--disable-dev-shm-usage'] });
   const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, locale: 'en-US', timezoneId: 'UTC' });
+  await attachToBrowserContext(context);
   await context.addInitScript(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
   const page = await context.newPage();
   page.on('pageerror', error => evidence.browserErrors.push(`pageerror: ${error.message}`));

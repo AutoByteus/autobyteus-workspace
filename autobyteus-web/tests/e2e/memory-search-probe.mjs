@@ -18,6 +18,10 @@ import process from 'node:process';
 import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { attachToBrowserContext, attachToProbeProcess, withNodeCredential } from './fixtures/probe-node-access.mjs';
+// Every node needs a credential (autobyteus-437): the probe's nodes start with its launch credential, and the probe's
+// own calls and its desktop browser contexts carry it (fixtures/probe-node-access.mjs).
+attachToProbeProcess();
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -168,7 +172,7 @@ try {
   };
   await fs.writeFile(path.join(dataRoot, '.env'), `APP_ENV=development\nDB_TYPE=sqlite\nDATABASE_URL=${databaseUrl}\nAUTOBYTEUS_SERVER_HOST=${backendUrl}\n`);
   await run('pnpm', ['-C', serverDir, 'exec', 'prisma', 'migrate', 'deploy', '--schema', './prisma/schema.prisma'], { cwd: workspaceDir, env: serverEnv, logPath: path.join(outputDir, 'database-migrate.log') });
-  backend = startService(process.execPath, [path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(backendPort), '--data-dir', dataRoot], { cwd: serverDir, env: serverEnv, logPath: path.join(outputDir, 'backend.log') });
+  backend = startService(process.execPath, [path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(backendPort), '--data-dir', dataRoot], { cwd: serverDir, env: withNodeCredential(serverEnv), logPath: path.join(outputDir, 'backend.log') });
   await waitFor('backend health', () => fetchOk(`${backendUrl}/rest/health`));
   frontend = startService('pnpm', ['dev', '--host', '127.0.0.1', '--port', String(frontendPort)], {
     cwd: webDir, env: { PATH: process.env.PATH, HOME: process.env.HOME, TMPDIR: process.env.TMPDIR, NODE_ENV: 'development', NUXT_TEST: 'true', BACKEND_NODE_BASE_URL: backendUrl },
@@ -178,6 +182,7 @@ try {
 
   browser = await chromium.launch({ headless: true, executablePath, args: ['--no-sandbox'] });
   const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, locale: 'en-GB', timezoneId: 'UTC' });
+  await attachToBrowserContext(context);
   const page = await context.newPage();
   page.on('pageerror', (error) => evidence.pageErrors.push(String(error)));
   page.on('request', (request) => { for (const name of operationNames(request)) evidence.operations.push(name); });

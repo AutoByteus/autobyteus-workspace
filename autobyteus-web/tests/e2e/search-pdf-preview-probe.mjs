@@ -20,6 +20,10 @@ import path from 'node:path';
 import { spawn, execFileSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import { attachToBrowserContext, attachToProbeProcess, withNodeCredential } from './fixtures/probe-node-access.mjs';
+// Every node needs a credential (autobyteus-437): the probe's nodes start with its launch credential, and the probe's
+// own calls and its desktop browser contexts carry it (fixtures/probe-node-access.mjs).
+attachToProbeProcess();
 const { chromium } = createRequire(import.meta.url)('playwright-core');
 const web = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const repo = path.dirname(web), server = path.join(repo, 'autobyteus-server-ts');
@@ -127,7 +131,7 @@ DB_TYPE=sqlite
 DATABASE_URL=${db}
 AUTOBYTEUS_SERVER_HOST=${base}
 `);
-  const backend = start('backend', process.execPath, [path.join(server, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(backendPort), '--data-dir', data], server, { ...clean, APP_ENV: 'development', DB_TYPE: 'sqlite', DATABASE_URL: db, AUTOBYTEUS_SERVER_HOST: base, AUTOBYTEUS_ALLOWED_ORIGINS: front });
+  const backend = start('backend', process.execPath, [path.join(server, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(backendPort), '--data-dir', data], server, withNodeCredential({ ...clean, APP_ENV: 'development', DB_TYPE: 'sqlite', DATABASE_URL: db, AUTOBYTEUS_SERVER_HOST: base, AUTOBYTEUS_ALLOWED_ORIGINS: front }));
   await until('backend ready', async () => { assert.equal(backend.exitCode, null); return (await fetch(`${base}/rest/health`, { signal: AbortSignal.timeout(2000) })).ok; });
   const created = await gql('mutation($input:CreateWorkspaceInput!){createWorkspace(input:$input){workspaceId}}', { input: { rootPath: root } }); id = created.createWorkspace.workspaceId; ev.workspaceId = id;
   await run('API-002', async () => {
@@ -151,7 +155,7 @@ AUTOBYTEUS_SERVER_HOST=${base}
   await until('Nuxt ready', async () => { assert.equal(frontend.exitCode, null); return (await fetch(`${front}/api-e2e-search-pdf`, { signal: AbortSignal.timeout(5000) })).ok; }, 180000);
   browser = await chromium.launch({ headless: true, executablePath: arg('browser-executable', ['/usr/bin/chromium', '/usr/bin/google-chrome', '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'].find(existsSync)), args: ['--no-sandbox'] });
   ev.browser = await browser.version();
-  page = await browser.newPage({ viewport: { width: 1440, height: 1000 }, locale: 'en-US' }); page.setDefaultTimeout(60000);
+  page = await browser.newPage({ viewport: { width: 1440, height: 1000 }, locale: 'en-US' }); page.setDefaultTimeout(60000); await attachToBrowserContext(page.context());
   const observe = (target, errors) => {
     target.on('pageerror', error => errors.push({ kind: 'pageerror', message: String(error) }));
     target.on('console', message => { if (message.type() === 'error') errors.push({ kind: 'console', message: message.text() }); });
@@ -171,6 +175,7 @@ AUTOBYTEUS_SERVER_HOST=${base}
   // actual validation-page error. Never filter/clear errors from the real case.
   await page.close();
   page = await browser.newPage({ viewport: { width: 1440, height: 1000 }, locale: 'en-US' });
+  await attachToBrowserContext(page.context());
   page.setDefaultTimeout(60000);
   observe(page, ev.browserErrors);
   await page.goto(route, { waitUntil: 'domcontentloaded' });
