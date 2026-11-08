@@ -1,0 +1,18 @@
+# IMP-12 rendered check of the real app: main-frame load failures and Retry (IR-003, DS-004/DS-006, FU-002)
+# commit: ea45dc1643 (debug APK built from the working tree this commit records unchanged; APK sha256 in IMP-10)
+# env: own read-only emulator codex_api35_arm64 (port 5570), API 35, WebView 124.0.6367.219.
+#      Fake test node on the host (IMP-12-app-load-failure-overlay/fake_node.py.txt) at 127.0.0.1:8436 (10.0.2.2 in the emulator):
+#      /rest/remote-access/status always {"phoneAccessEnabled":true}; /mobile per a mode file: ok (200 page "TEST PAGE OK") | 502 | drop (connection closed).
+# date: 2026-11-08
+# steps (adb -s emulator-5570):
+#  1. install -r app-debug.apk; mode=502; am start -a android.intent.action.SEND -t text/plain --es android.intent.extra.TEXT '<pairing link for http://10.0.2.2:8436, serverName "Test Desktop">'
+#     -> first load fails with HTTP 502                                  capture 01-first-load-502 (.png screenshot, .xml uiautomator dump)
+#  2. mode=drop; tap Retry -> network failure (connection closed)      capture 02-retry-network-failure
+#  3. mode=502; tap Retry -> HTTP error again                           capture 03-retry-http-502
+#  4. mode=ok;  tap Retry -> load succeeds                              capture 04-retry-success
+# results:
+#  01: overlay "AutoByteus returned HTTP 502" (FU-001 wording) on an opaque background; no error page behind it;
+#      the overlay stays (before the fix the first onPageFinished replaced it with the error page). dump: no "10.0.2.2", "8436", "http", "webpage", "ERR_".
+#  02: overlay "Can’t reach Test Desktop" / "Check that Tailscale or your Wi-Fi is on and the computer is awake." / "Then tap Retry."; dump: no address text.
+#  03: overlay stays (HTTP error arrives before onPageStarted and is still decided as failed); dump: no address text.
+#  04: overlay closed, page "TEST PAGE OK" shown (FU-002); dump has no RETRY button.

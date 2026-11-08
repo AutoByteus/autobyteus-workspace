@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` remain authoritative.
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Solution Designer, `solution-handoff.md` (Architecture Design Complete), round 1 | N/A | `Initial Baseline` | `SR-002`; `ARCH-REV-*` N/A; `CRR-*` N/A; `API-REV-*` N/A; `DR-*` N/A | Implemented; local checks pass; ready for direct API/E2E |
 | IR-002 | Solution Designer, `solution-handoff.md` "SR-003 Revision" (from CRR-001 F-001 / API-REV-001), round 2 | CRR-001 F-001 | `Design Impact` | `SR-003`; `CRR-001`; `API-REV-001` | Not implemented: DS-006's premise check failed on WebView 124 (HTTP error comes before `onPageStarted`); returned to Solution Designer. Code unchanged at `ba3ba5b23e` |
+| IR-003 | Solution Designer, `solution-handoff.md` "SR-004 Revision" (answer to IR-002), round 3 | CRR-001 F-001 | `Design Impact` (rework on the revised design) | `SR-004`, `SR-003`; `CRR-001`; `API-REV-001` | Implemented at `ea45dc1643`; local checks pass; ready for direct API/E2E |
 
 ## Revision Entries
 
@@ -56,3 +57,28 @@ The current code and `implementation-handoff.md` remain authoritative.
   - success: `onPageStarted → onPageFinished`; a sub-resource HTTP error (favicon, `main=false`) comes after `onPageFinished`.
 - Next recipient or routing: Solution Designer (Design Impact).
 - Remaining limitations or risks: the emulator and the test servers were stopped; the other agent's emulator (`emulator-5554`) was not touched.
+
+### IR-003 — Hide the page under an overlay; show it only after a load that succeeded
+
+- Triggering role, report path, and round: Solution Designer, `solution-handoff.md` sections "SR-003 Revision" and "SR-004 Revision", round 3 (CRR-001 F-001 from API-REV-001 API-08/08b; IR-002 premise check).
+- Triggering finding IDs: CRR-001 F-001 (and FU-002, folded in at SR-003)
+- Classification: `Design Impact` (rework on the revised design: SR-003 as revised by SR-004)
+- Prior authoritative result: IR-001 (`ba3ba5b23e`); IR-002 changed no code.
+- Current authoritative result: `ea45dc1643`.
+- Related solution revision IDs: `SR-003`, `SR-004`
+- Related architecture-review revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001`
+- Related API/E2E revision IDs: `API-REV-001`
+- Related delivery revision IDs: `N/A`
+- Why this revision is recorded: on a main-frame load failure WebView's error page, which prints the node URL, showed through the 92 % opaque overlay and was in the accessibility tree; the first `onPageFinished` replaced a first-load overlay with that page; a successful Retry did not close the overlay (FU-002).
+- Approved behavior or requirement IDs affected: BEH-006; REQ-006; AC-007; DEC-009.
+- Implementation delta:
+  - New `web/MainFrameLoadOutcome.kt`: `onError(isMainFrame)` marks a main-frame failure; `onFinished()` returns `!failed` and resets the mark; nothing happens at `onPageStarted`.
+  - `AutoByteusWebView`: `onPageStarted`/`onPageFinished(url)` parameters replaced by `onPageLoaded: () -> Unit`, called from `onPageFinished` only when `MainFrameLoadOutcome.onFinished()` is `true`; both error callbacks feed `onError`. The `onPageStarted` override (it only forwarded) and the `Bitmap` import were removed.
+  - `WebShellScreen`: with a diagnostic the WebView is `INVISIBLE` (kept in the layout), otherwise `VISIBLE`; the overlay background is opaque.
+  - `MainActivity`: `pageOverlayShown` (set by `showWebDiagnostic`; cleared by `showPage`, `closePage` and a new `openPage`); `onPageLoaded`: first page not shown yet → `showPage()`; else an overlay up on the Web screen → `showPage()`; else nothing.
+  - Tests: new `MainFrameLoadOutcomeTest` (network failure, HTTP error first, success, sub-resource errors, a sequence ending in a successful Retry); `AutoByteusMobileShellSmokeTest` uses `onPageLoaded`, asserts the WebView `INVISIBLE` under an opaque overlay and `VISIBLE` again without one.
+- Changed files or areas: `autobyteus-android/app/src/main/java/org/autobyteus/mobile/{web/MainFrameLoadOutcome.kt, web/AutoByteusWebView.kt, ui/WebShellScreen.kt, MainActivity.kt}`, `app/src/test/.../web/MainFrameLoadOutcomeTest.kt`, `app/src/androidTest/.../AutoByteusMobileShellSmokeTest.kt`.
+- Local validation and result: IMP-10 (71 JVM tests, APK, androidTest compile), IMP-11 (11 instrumented tests on an own emulator), IMP-12 (the real app on an own emulator against a fake test node: first-load 502 stays an overlay, Retry with a network failure and with a 502 keeps it, Retry after recovery closes it and shows the page; no address in any screenshot or uiautomator dump). All Pass.
+- Next recipient or routing: direct API/E2E (Medium / Low).
+- Remaining limitations or risks: accepted SR-004 residual (a main-frame error with no `onPageFinished` keeps the overlay one more Retry; not observed); an overlay raised by a link over a working page now hides the page until Retry reloads it or Edit leaves (SR-003, accepted); Back while down was not exercised here (the test page has no history).

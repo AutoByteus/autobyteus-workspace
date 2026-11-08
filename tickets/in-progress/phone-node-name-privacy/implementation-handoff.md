@@ -3,29 +3,29 @@
 ## Upstream Artifact Package
 
 - Upstream review applicability and handoff-rule result: architecture review not selected (Medium / Low, direct implementation route); this package goes to `/software_engineering_team/api_e2e_engineer` (rule: Small/Medium + Low, ready for direct API/E2E validation).
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/phone-node-name-privacy/tickets/in-progress/phone-node-name-privacy/requirements-doc.md` (Approved, SR-001)
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/phone-node-name-privacy/tickets/in-progress/phone-node-name-privacy/requirements-doc.md` (Approved; SR-001, REQ-006/AC-007/DEC-009 clarified at SR-003)
 - Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/phone-node-name-privacy/tickets/in-progress/phone-node-name-privacy/investigation-notes.md`
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/phone-node-name-privacy/tickets/in-progress/phone-node-name-privacy/solution-revision-record.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/phone-node-name-privacy/tickets/in-progress/phone-node-name-privacy/design-spec.md` (Ready, SR-002)
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/phone-node-name-privacy/tickets/in-progress/phone-node-name-privacy/design-spec.md` (Ready, SR-004)
 - Supplemental task artifacts: None
 - Design review report: `N/A — not applicable` (independent architecture review not selected)
 - Architecture review revision record: `N/A — not applicable`
-- Triggering rework report, revision record, or evidence: N/A (initial)
+- Triggering rework report, revision record, or evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/phone-node-name-privacy/tickets/in-progress/phone-node-name-privacy/code-review-report.md` (CRR-001 F-001, `Design Impact`, from API/E2E API-REV-001 API-08/08b); `solution-handoff.md` sections "SR-003 Revision" and "SR-004 Revision"; IR-002 premise check (`evidence/IMP-09-sr003-load-order-premise.log`)
 
 ## Current Implementation Summary
 
-The phone never shows a node's address. The `/mobile` page names the open node by the Android app's name for it (a new `nodeName` in the bridge's `hello` reply), then its session's QR name, then "AutoByteus node". The connection sheet shows the name and state only. The pairing page uses the same rule and reports only the QR's name to the app. The Android app shows `SavedNodeEntry.shownName` (its known name or "AutoByteus node") on every screen. It names an unnamed open node when that node's page pairs, says "Can't connect" for an unusable typed address, and its toasts and overlays carry no URL, WebView error text or exception text.
+The phone never shows a node's address. The `/mobile` page names the open node by the Android app's name for it (a new `nodeName` in the bridge's `hello` reply), then its session's QR name, then "AutoByteus node". The connection sheet shows the name and state only. The pairing page uses the same rule and reports only the QR's name to the app. The Android app shows `SavedNodeEntry.shownName` (its known name or "AutoByteus node") on every screen. It names an unnamed open node when that node's page pairs, says "Can't connect" for an unusable typed address, and its toasts and overlays carry no URL, WebView error text or exception text. While an overlay is up, the page underneath is hidden (WebView `INVISIBLE`, opaque overlay), so WebView's own error page, which prints the node URL, cannot show or be read by a screen reader. The page shows only after a main-frame load that succeeded (`MainFrameLoadOutcome`), so a failed first load stays an overlay and Retry or Back that loads the page closes it (IR-003).
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (IR-003; IR-001 baseline, IR-002 returned a Design Impact without code)
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/phone-node-name-privacy/tickets/in-progress/phone-node-name-privacy/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
-- Branch / commits: `codex/phone-node-name-privacy`; code `ba3ba5b23e`; ticket documents and evidence in the commit after it (see the handoff message)
-- Related solution revision IDs: `SR-002`
+- Current implementation revision ID: `IR-003`
+- Branch / commits: `codex/phone-node-name-privacy`; code `ba3ba5b23e` (IR-001) + `ea45dc1643` (IR-003); ticket documents and evidence in the commit after it (see the handoff message)
+- Related solution revision IDs: `SR-002`, `SR-003`, `SR-004`
 - Related architecture-review revision IDs: `N/A`
-- Related code-review revision IDs: `N/A`
-- Related API/E2E revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001`
+- Related API/E2E revision IDs: `API-REV-001`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Triggering finding IDs: CRR-001 F-001 (FU-002 folded in)
 
 ## Routing Classification (Mandatory)
 
@@ -33,7 +33,7 @@ The phone never shows a node's address. The `/mobile` page names the open node b
 - Architecture risk: `Low`
 - Design classification section / evidence reference: `design-spec.md` → Task Size And Architectural Risk
 - Classification confirmed or changed: `Confirmed`
-- Evidence and rationale for confirmation or change: 22 source files in the two expected packages (11 Android main, 1 Android instrumented test, 10 web), plus tests and one probe. Every change sits inside the owner the design named. The only contract change is the added `nodeName` field of the `hello` reply, with both ends in this commit. Nothing else changed: the bridge's origin/main-frame rule (`ShellBridgeMessages.read`), pairing, credentials, the Host/Origin rules, the server, stored entry fields and permissions. No escalation trigger fired.
+- Evidence and rationale for confirmation or change: 22 source files in the two expected packages (11 Android main, 1 Android instrumented test, 10 web), plus tests and one probe. Every change sits inside the owner the design named. The only contract change is the added `nodeName` field of the `hello` reply, with both ends in this commit. Nothing else changed: the bridge's origin/main-frame rule (`ShellBridgeMessages.read`), pairing, credentials, the Host/Origin rules, the server, stored entry fields and permissions. No escalation trigger fired. IR-003 adds one small file (`MainFrameLoadOutcome.kt`) and changes three Android files within the owners SR-003/SR-004 name (web host, web shell screen, activity); no contract, persistence or permission change.
 - Selected route: `Direct API/E2E`
 - Lightweight implementation self-review completed for the direct route: `Yes` (see Known Risks and the Legacy check below)
 - New design impact or escalation trigger: `None`
@@ -47,7 +47,7 @@ The phone never shows a node's address. The `/mobile` page names the open node b
 | BEH-003 | App shows `shownName` everywhere | `SavedNodeEntry.knownName/shownName`; `NodeRow` (text, ⋮ label, row description), `RemoveNodeSheet` (title, confirmation), `MainActivity.openPage` ("Connected to"), `NodeConnectionFlow.run` (Connecting, Can't reach), `ConnectionValidator` (Phone access off) | Done. No UI file reads `displayName` any more (`grep` of `ui/`, `MainActivity.kt`) |
 | BEH-004 | An unnamed open node takes the QR name when its page pairs; a named one is never renamed | `NodeConnectionFlow`: `openEntry` set in `opened()` (OnReachable / AlreadySaved; `null` for a pairing link); `onPaired` names `pending ?: openEntry?.takeIf { knownName == null }`; no save for a named open entry or a blank page name | Done. `NodeConnectionFlowTest` covers a typed node, a legacy host-named node, a named node and a blank name |
 | BEH-005 | Unusable typed address: "Can't connect", typed text not repeated | `NodeConnectionFlow.connectTyped` failure → `showCantReach("")` (title "Can’t connect" from `MainActivity.showCantReach`) | Done. Test with both failure kinds |
-| BEH-006 | Toasts/overlays without URL | `ConnectionDiagnosticMapper.pageLoadFailed(nodeName)`, `linkBlocked()`, `noAppForLink()`, `noFilePicker()`; `AutoByteusWebView.onOpenedOutside: () -> Unit`; toast "Opening outside AutoByteus" | Done. Exact texts of the design spec, tested word for word |
+| BEH-006 | Toasts/overlays without URL; the page hidden while an overlay is up; a successful load closes the overlay (SR-003/SR-004) | `ConnectionDiagnosticMapper.pageLoadFailed(nodeName)`, `linkBlocked()`, `noAppForLink()`, `noFilePicker()`; `AutoByteusWebView.onOpenedOutside: () -> Unit`; toast "Opening outside AutoByteus". IR-003: `WebShellScreen` (WebView `INVISIBLE` under an opaque overlay); `web/MainFrameLoadOutcome.kt` (DS-006: main-frame error marks, `onPageFinished` decides and resets); `AutoByteusWebView.onPageLoaded()` only for a load that succeeded; `MainActivity.pageOverlayShown` and `onPageLoaded` (first page, or close an overlay on the Web screen) | Done. Texts tested word for word; the load rule by `MainFrameLoadOutcomeTest` (the three measured orders + sub-resource); the hidden page by the instrumented smoke test; the real app on an own emulator (IMP-12) |
 | BEH-007 | No exception text in any diagnostic | `fromException` no longer reads `error.message` | Done. Unknown-host, IO, SSL, other and timeout exceptions naming a test host give no host in any text |
 | BEH-008 | Pairing page: QR without name → "AutoByteus node" | `MobilePairingBootstrap.vue`: `nodeNameOrDefault(payload?.serverName)`; reports `session.nodeName ?? ''` | Done. Spec asserts the label and that `paired` gets `''` |
 
@@ -64,7 +64,8 @@ Web (`autobyteus-web`):
 Android (`autobyteus-android/app/src/main/java/org/autobyteus/mobile/`):
 - `connection/SavedNodeEntry.kt` (`knownName`, `shownName`, `UNNAMED_NODE_NAME`, KDoc on `displayName`)
 - `shell/NodeConnectionFlow.kt`, `web/ShellBridge.kt`, `connection/ConnectionDiagnosticMapper.kt`, `connection/ConnectionValidator.kt`, `shell/ConnectionInputResolver.kt`, `web/AutoByteusWebView.kt`, `web/WebFileChooserCoordinator.kt`, `MainActivity.kt`, `ui/start/NodeRow.kt`, `ui/sheets/RemoveNodeSheet.kt`
-- Tests: new `test/.../connection/SavedNodeEntryTest.kt`; `NodeConnectionFlowTest`, `ShellBridgeMessagesTest`, `ConnectionDiagnosticMapperTest`; `androidTest/.../AutoByteusMobileShellSmokeTest.kt` (named argument `onOpenedOutside`)
+- IR-003: new `web/MainFrameLoadOutcome.kt`; `web/AutoByteusWebView.kt` (`onPageLoaded` replaces `onPageStarted`/`onPageFinished`), `ui/WebShellScreen.kt` (hidden page, opaque overlay), `MainActivity.kt` (`pageOverlayShown`, `onPageLoaded` rule)
+- Tests: new `test/.../connection/SavedNodeEntryTest.kt`, `test/.../web/MainFrameLoadOutcomeTest.kt`; `NodeConnectionFlowTest`, `ShellBridgeMessagesTest`, `ConnectionDiagnosticMapperTest`; `androidTest/.../AutoByteusMobileShellSmokeTest.kt` (`onOpenedOutside`, `onPageLoaded`; WebView `INVISIBLE` under an opaque overlay, `VISIBLE` again without one)
 
 ## Important Assumptions
 
@@ -77,6 +78,9 @@ Android (`autobyteus-android/app/src/main/java/org/autobyteus/mobile/`):
 - **A page that pairs with another node's link (existing behavior, not introduced).** The page pairs with whatever link is pasted (`pairWithPayload` fetches the link's `serverBaseUrl`). If a user pastes node B's link on typed node A's page, `paired("B")` now names entry A "B". The same trust already applied to a pending QR entry. A guard would need the `paired` message to carry the paired server's address, which is a contract change outside this design. I am recording it as a risk, not changing it.
 - The fix reaches the user only when both the APK and the node's `/mobile` bundle are updated (RISK-001, delivery note).
 - Two never-paired typed nodes both read "AutoByteus node" (DEC-004).
+- **SR-004 accepted residual:** a main-frame error whose `onPageFinished` never comes (a load cancelled mid-way; not observed) leaves the failed mark, so the next finished load is treated as failed and the overlay stays one more Retry. It errs toward hiding the page.
+- **SR-003 accepted:** an overlay raised by a link (blocked, no app, no file picker) over a working page now hides the page too until Retry reloads it or Edit leaves.
+- `onPageFinished` for a same-document navigation would count as a load that succeeded; with an overlay up that shows the page, which is then a working page, not an error page.
 
 ## Task Design Health Assessment Implementation Check
 
@@ -91,7 +95,7 @@ Android (`autobyteus-android/app/src/main/java/org/autobyteus/mobile/`):
 
 - Backward-compatibility mechanisms introduced: `None` (no version check of the `hello` reply; the page's "session name, then label" steps serve the browser and an app entry with no name)
 - Legacy old-behavior retained in scope: `No`
-- Dead code in the touched files and modules removed: `Yes`. Removed: both `hostOf` helpers; the sheet's `serverBaseUrl` prop and line; `webViewLoadFailed`; `unsafeNavigationBlocked`; the URL/message parameters of `invalidUrl` and `httpNeedsAcknowledgement`; the exception detail in `fromException`; the `url` parameter of the external-open callback; the `qrHadName` computation; the host-asserting test.
+- Dead code in the touched files and modules removed: `Yes`. Removed: both `hostOf` helpers; the sheet's `serverBaseUrl` prop and line; `webViewLoadFailed`; `unsafeNavigationBlocked`; the URL/message parameters of `invalidUrl` and `httpNeedsAcknowledgement`; the exception detail in `fromException`; the `url` parameter of the external-open callback; the `qrHadName` computation; the host-asserting test. IR-003: the `onPageStarted` (dead, its only caller passed `{}`) and `onPageFinished(url)` parameters of `AutoByteusWebView`, the forwarding `onPageStarted` override and its `Bitmap` import; the translucent overlay colour.
 - Dead code found elsewhere, added to `follow-ups.md`: None
 - Shared structures remain tight: `Yes` (`ShellHello` gains one field; `SavedNodeEntry` gains derived properties only, nothing stored)
 - Canonical shared design guidance was reapplied during implementation: `Yes`
@@ -127,8 +131,14 @@ Evidence folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/phone-node-na
 | IMP-07 | `./gradlew :app:assembleDebug :app:compileDebugAndroidTestKotlin` (JDK 17) | `ba3ba5b23e` | macOS, JDK 17, Android SDK 35 | whole app incl. `MainActivity`, `AutoByteusWebView`, `NodeRow`, `RemoveNodeSheet`, smoke test | build of BEH-003, 006 call sites | Pass | `IMP-07-android-apk-build.log` | `BUILD SUCCESSFUL`; APK sha256 `9d47eab3…c99a` |
 | IMP-08 | `pnpm -C autobyteus-web test:e2e:mobile-shell --cases=MSP-09 --output-dir=…/evidence/IMP-08-mobile-shell-MSP-09` (after IMP-03) | `ba3ba5b23e` | macOS, headless Chrome 390×844, probe-owned alpha/beta | `/mobile` production bundle: header, sheet (connected, not reachable), banner, browser pairing page, unpair | BEH-001, BEH-002; AC-002 (browser), AC-010 (sheet, Check/Retry, Unpair) | Pass | `IMP-08-mobile-shell-MSP-09.log`, `IMP-08-mobile-shell-MSP-09/` (screenshots, `mobile-shell-probe.json`) | `MSP-09 Pass`; `info.urlLines 0`, `info.addressShown []`, `addressShownDown []`; screenshot `MSP-09-connection-sheet.png`: title "Alpha Test Node", no address line |
 
+| IMP-09 | SR-003 premise check (IR-002): temporary log + temporary instrumented test, both removed | `ba3ba5b23e` + temporary code | own emulator, API 35, WebView 124.0.6367.219; host test servers | WebView callback order | DS-006 | Done (premise differed for HTTP errors → SR-004) | `IMP-09-sr003-load-order-premise.log` | `onReceivedHttpError main=true … 502` before `onPageStarted` |
+| IMP-10 | `cd autobyteus-android && ./gradlew :app:testDebugUnitTest :app:assembleDebug :app:compileDebugAndroidTestKotlin` (JDK 17) | `ea45dc1643` | macOS, JDK 17 | all Android JVM tests incl. `MainFrameLoadOutcomeTest`; app and androidTest compile | BEH-003…007; DS-006 | Pass | `IMP-10-android-unit-and-build.log` | `TOTAL tests 71 failures 0 errors 0`; `MainFrameLoadOutcomeTest tests 5` |
+| IMP-11 | `ANDROID_SERIAL=emulator-5570 ./gradlew :app:connectedDebugAndroidTest` | `ea45dc1643` | own read-only emulator `codex_api35_arm64`, API 35, WebView 124 | all 11 instrumented tests incl. `diagnosticWebShellKeepsRecoveryActionsInOverlay` (hidden page, opaque overlay) | BEH-006 (DS-004) | Pass | `IMP-11-android-instrumented-tests.log` | `TOTAL 11 failures 0 errors 0` |
+| IMP-12 | Real app on the same emulator against a fake test node (status OK; `/mobile` switched 502 / dropped connection / 200): first load 502, Retry with a network failure, Retry with 502, Retry after recovery | `ea45dc1643` | as IMP-11; fake node `IMP-12-app-load-failure-overlay/fake_node.py.txt` | `MainActivity`, `AutoByteusWebView`, `MainFrameLoadOutcome`, `WebShellScreen` | BEH-006; AC-007; FU-002 | Pass | `IMP-12-app-load-failure-overlay.log`, `IMP-12-app-load-failure-overlay/01…04 .png/.xml` | 01–03: only the overlay on an opaque background, uiautomator dumps without `10.0.2.2`/`8436`/`http`/`webpage`; 02 title `Can’t reach Test Desktop`; 04: `TEST PAGE OK`, no RETRY |
+
+- Rerun plan for IR-003: IR-003 changes only Android files (`git diff --name-only ba3ba5b23e ea45dc1643`). IMP-01…IMP-05 and IMP-08 (web) are **still valid**; IMP-06/IMP-07 (Android) are superseded by IMP-10.
 - Not run, and why:
-  - Emulator / instrumented tests (`connectedDebugAndroidTest`) and AC-009 screenshots on an isolated node: owned by API/E2E (the design's AC-009 plan). Not run here.
+  - AC-009 screenshots on an isolated real node and the API-08/08b cases (reload and Back while down): owned by API/E2E. Back while down was not exercised in IMP-12 (the fake page has no history).
   - The full `test:e2e:mobile-shell` probe (only MSP-09 ran): the change touches the sheet, header and pairing name; other cases are left to API/E2E's plan.
   - Full `pnpm -C autobyteus-web test:nuxt`: only the phone/remote-access suites ran; no other code reads the changed modules (grep of `shellBridge`, `MobileConnectionSheet`, `MobilePairedShell`, `MobilePairingBootstrap`).
 
@@ -140,7 +150,8 @@ Evidence folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/phone-node-na
 - Testing guideline surface used: `TESTING.md` → the phone bundle is proven by `test:e2e:mobile-shell` (IMP-08) on the production `/mobile` build.
 - States inspected: the sheet connected and not reachable with its diagnostic box, the header connected and not reachable, the offline banner, the browser pairing page, the unpair confirmation. Viewport 390×844.
 - Visual or interaction issues found and corrected: none. Without the address line the sheet header is the title alone, vertically aligned with the close button, with no leftover gap (`MSP-09-connection-sheet.png`, `MSP-09-sheet-not-reachable.png`).
-- Remaining unverified states: the Android native screens and the in-app header with an app-supplied name were not rendered here (no emulator run). They are covered by unit tests only, and AC-009 on the emulator is with API/E2E.
+- IR-003 Android overlay states inspected on an own emulator (IMP-12): the first-load 502 overlay, the network-failure overlay ("Can’t reach Test Desktop"), a failed Retry, and a Retry after recovery. The overlay is opaque, with nothing of the page behind it; it stays after failures and closes on success.
+- Remaining unverified states: the Android native screens and the in-app header with an app-supplied name were not rendered here; they are covered by unit tests, and AC-009 on the emulator is with API/E2E.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
@@ -148,6 +159,7 @@ Evidence folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/phone-node-na
 - AC-004: a typed address (Other ways to connect → Type an address) shows "AutoByteus node" on the first page, in Switch node, on Connecting/Connected and in the ⋮ sheet. Then AC-005: paste a pairing link with `serverName` "Test Node" on its page and go back to the list: the row reads "Test Node".
 - AC-006: type `http://test-node.local:29695` without the tick, or an unreadable address. The title is "Can’t connect" and the typed text does not appear.
 - AC-007: stop the node while its page is open → overlay "Can’t reach <name>" with the Tailscale/Wi-Fi advice; open a download or an external link → toast "Opening outside AutoByteus".
+- IR-003 (SR-003 rerun list): API-08 and API-08b (reload, Back, Retry while down: only the overlay in the screenshot; no host/URL in the uiautomator dump), Retry after the node is back closes the overlay (FU-002), a first-load failure stays an overlay, API-03. A fake node like `IMP-12-app-load-failure-overlay/fake_node.py.txt` gives a 502 and a dropped connection without stopping the real node.
 - Rebuild both the APK and the `/mobile` bundle the node serves (README: a fresh APK cannot update stale `mobile-web/` assets).
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
