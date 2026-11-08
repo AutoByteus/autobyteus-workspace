@@ -36,3 +36,14 @@
 | 2026-11-08 00:30 | API-11 | Started |  | fresh-start desktop build: clone --no-local of 903387bc78, install --frozen-lockfile, build:electron:mac -- --arm64, verify steps; background, log /tmp/426-API-11.log |
 | 2026-11-08 00:38 | API-11 | Completed | Pass | install exit 0; build exit 0 (guards incl. guard:localization-boundary Passed, typecheck 0 production errors); prisma verify exit 0; terminal verify exit 0 incl. spawn probe; clone removed |
 | 2026-11-08 00:39 | round-1 | Completed | Fail | result Fail (F-API-001 D-02, F-API-002 D-03), confidence 76%; handoff to code reviewer for failure-origin review |
+| 2026-11-08 01:01 | round-2 | Started |  | rerun after CRR-005 at d115f1601d: build phone bundle, API-01, API-04 (full), API-02, API-03, API-08 (AC-004a) |
+| 2026-11-08 01:01 | API-01 | Started |  | round 2: full test:nuxt --run on d115f1601d |
+| 2026-11-08 01:06 | API-01 | Completed | Pass | round 2: 718 files, 5361 passed, 2 skipped |
+| 2026-11-08 01:06 | API-04 | Started |  | round 2: full mobile-shell probe on d115f1601d + probe update, out evidence/api-e2e/API-04-r2 |
+| 2026-11-08 01:15 | API-04 | Completed | Pass | round 2: 19/19 Pass incl. MSP-13 (revoked Check -> pairing, checks 403) and MSP-18 (off/on/off->down); MSP-12 no credential check from the poll; 0 unknown browser lines |
+| 2026-11-08 01:15 | API-02 | Started |  | round 2 B04 probe |
+| 2026-11-08 01:18 | API-02 | Completed | Pass | round 2: B01-B08 Pass, failures [] |
+| 2026-11-08 01:18 | API-03 | Completed | Pass | round 2: NVP-01..05 Pass, unexpected [] |
+| 2026-11-08 01:18 | API-08 | Started |  | round 2 AC-004a: assembleDebug d115f1601d, emulator, hold stack |
+| 2026-11-08 01:22 | API-08 | Completed | Pass | round 2 AC-004a: share-started (A) and launcher (B) tasks reload the same node and /mobile URL (navigation entry), no expired-code screen; new share while dead connects (D); node removed -> ordinary start, share not re-run (C). Hold stack, app, emulator removed |
+| 2026-11-08 01:24 | round-1-rerun | Completed | Pass | API-REV-002: Pass, 95%; handoff to code reviewer for proportional test-code review |

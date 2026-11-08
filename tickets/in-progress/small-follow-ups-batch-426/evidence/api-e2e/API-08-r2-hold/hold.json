@@ -1,0 +1,50 @@
+{
+  "alpha": "http://127.0.0.1:50737",
+  "beta": "http://127.0.0.1:50738",
+  "alphaPort": 50737,
+  "links": {
+    "emulator": "http://10.0.2.2:50737/mobile?pairing=…"
+  },
+  "runs": {
+    "ptm": "project_task_manager_b3874f0ee1d34623a09f9a536fb6371f",
+    "writerRun": "release_notes_writer_f41aa1d7f8f34374addf57832b5cb596",
+    "squadRun": "docs_review_team_543c466d997b49f98b0a00c449b88926",
+    "reviewer": "release_notes_writer_2660db385a7448748a13d2433a2e68de",
+    "memberDelegated": "fact_checker_04046c517e65432cbfbc47d5111a5898",
+    "remoteAgentRun": "publisher_cd8c9244eae74ffdb360d6bd015ded43",
+    "remoteTeamRun": "studio_team_2c1fca2b114944ef99d6851748671362",
+    "plain": [
+      "fact_checker_2a0c432ebfb348beb9a53c90a9a28994",
+      "fact_checker_505b5433585b4ba0a6b6ce1ce8ea6e43",
+      "fact_checker_fbd5c89164dd4950a4b882fe5621139c"
+    ],
+    "org": "delivery_org_2657137dcf34481983c7b5620815acad",
+    "orgPlanner": "release_notes_writer_5a7fd0b0b2594e9c8faae93b8c8bb9e2",
+    "reviewOrg": "review_org_5050106f73b140ff9192d7dde058b007",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_d94afb7eb4a54c0fa20afa7734ba0c5f",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_847663ec8e6c43dd9ff909f8e583ac5b",
+    "deliveryLead": "fact_checker_0a0e9397b6ec4309b8dcb2450695ac87",
+    "deliveryMate": "release_notes_writer_d9cc2f7db39f438e975246c56255e2e7",
+    "leadDelegated": "changelog_helper_b290cfb73552443bb71464b21f2dc8ea",
+    "approver": "approver_353d20368b4f4e89995d153a14517061",
+    "taskA": "launch-99ab09-1",
+    "taskB": "launch-99ab09-2"
+  },
+  "ids": {
+    "ptm": "project-task-manager",
+    "writer": "release-notes-writer",
+    "checker": "fact-checker",
+    "helper": "changelog-helper",
+    "approver": "approver",
+    "squad": "docs-review-team",
+    "delivery": "delivery-team",
+    "org": "delivery-org",
+    "reviewOrg": "review-org"
+  },
+  "workspace": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-W7mp9v/alpha/workspace",
+  "root": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-W7mp9v"
+}

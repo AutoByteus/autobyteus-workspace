@@ -5,6 +5,7 @@
 | Revision ID | Triggering Role / Report / Round | Related Upstream Revision IDs | Prior Result / Confidence | Current Result / Confidence |
 | --- | --- | --- | --- | --- |
 | API-REV-001 | code reviewer, `code-review-report.md` CRR-002 Pass; round 1 | SR-006; ARCH-REV-002…004; IR-002; CRR-002 | N/A | Fail / 76% |
+| API-REV-002 | code reviewer, `code-review-report.md` CRR-005 Pass; round 1 rerun | SR-008; IR-003, IR-004; CRR-003…CRR-005 | Fail / 76% | Pass / 95% |
 
 ## Revision Entries
 
@@ -36,3 +37,33 @@ None (baseline).
   - Signing, notarization and other-OS desktop builds need the runner.
   - "Not connected → no Clipboard" and "no read on open" are covered by specs only.
   - FU-003 is outside the ticket.
+
+### API-REV-002 — Round 1 rerun after SR-008: D-02 credential check and D-03 re-delivery rule pass
+
+- Triggering role, report path, and round: code reviewer, `code-review-report.md` (CRR-005), round 1 rerun at head `d115f1601d` (last code commit `c8b4b659cd`)
+- Triggering finding or case IDs: F-API-001, F-API-002 (API-REV-001); CRR-003's failure-origin result; SR-008
+- Related revision IDs: SR-008, IR-003, IR-004, CRR-003, CRR-004, CRR-005
+- Why recorded: rerun after rework
+- Coverage decisions or durable test paths changed: `autobyteus-web/tests/e2e/mobile-shell-probe.mjs`: operation names from the query text; MSP-12 asserts the poll sends no `PhoneCredentialCheck`; MSP-13/18 record each credential check's answer
+- Cases added, changed, removed, or rechecked:
+  - Rerun by impact (investigation § Round 2 Rerun Plan): API-01, API-04 (all cases), API-02, API-03, API-08 (AC-004a: Runs A–D).
+  - Still valid, not rerun: API-05, API-05b, API-06, API-07, API-09, API-10, API-11, API-R1…R5.
+- Commands, environment, fixture, or broader-validation delta: phone bundle and debug APK rebuilt on `d115f1601d`; same emulator AVD and hold stack; server dist unchanged (no server source change)
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| F-API-001 (MSP-13, MSP-18: an open phone's Check did not see its own read's refusal or failure) | Design Impact | SR-008: the outcome comes from the phone's own credential check (`PhoneCredentialCheck`); the history read is content only | API-04 (r2) MSP-13, MSP-18, MSP-12 |
+| F-API-002 (API-08: the restored URL dropped to the list; a share-started task re-ran its expired pairing link) | Design Impact | SR-008: a recreated activity does not re-run the share that started it; REQ-003 narrowed to AC-004a (non-run pages) with AC-004b (run screens) in round 2 (DEC-013) | API-08 (r2) Runs A–D |
+
+- Canonical artifacts and sections updated: the execution report (Round, Cases (r2), Acceptance-Criteria Proof, Scorecard, Durable Coverage, Result), the investigation (Meta, Round 2 Rerun Plan), the progress log, `evidence/api-e2e/` (`*-r2*`)
+- Prior result and confidence: Fail, 76%
+- Current result and confidence: Pass, 95%
+- New or remaining failure IDs: none
+- Recommended owner: code reviewer (proportional test-code review; High risk)
+- Remaining risks, blocked evidence, or untested scope:
+  - AC-004b (run screens) is round 2.
+  - The connection sheet says "Not reachable" while Phone Access is off (known, accepted).
+  - Signing, notarization and other-OS builds need the runner.
+  - FU-001…FU-003 are outside the ticket.

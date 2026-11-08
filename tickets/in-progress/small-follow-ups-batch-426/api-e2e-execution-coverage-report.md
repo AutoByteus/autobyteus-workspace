@@ -3,10 +3,10 @@
 ## Round
 
 - Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-426/tickets/in-progress/small-follow-ups-batch-426/api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-001`
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-002`
 - Test progress log: `api-e2e-test-progress.md`
-- Round and trigger: round 1, after CRR-002 Pass (head `42a86a5e93`, last code commit `1d2cdd15ab`)
-- Prior round reviewed: none
+- Round and trigger: round 1, second execution (rerun), after CRR-005 Pass at head `d115f1601d` (last code commit `c8b4b659cd`; SR-008 answers F-API-001 and F-API-002). The first execution was after CRR-002 at `42a86a5e93` (API-REV-001, Fail)
+- Prior round reviewed: API-REV-001 (Fail: F-API-001, F-API-002). Rerun plan by impact: the coverage investigation § Round 2 Rerun Plan. Rows marked "(r2)" below are this execution; the other rows stand from API-REV-001
 - Deviations from the investigation's plan, and why:
   - API-05b was added. The model-free gated suites (scripted AGY CLI, 57 files) launch runs into workspaces, which D-08 now checks (RR-03), and the default suite skips them.
   - Four baseline fixes were made (TESTING rule 9, each in its own commit, none caused by this ticket): `023a9a3ff9` (B04's probe fixture), `898fbd2a31` (the NVP probe: origin and Memory helper), `0bce7bac01` (the skill-notice suites' text).
@@ -57,14 +57,21 @@
 | API-R4 | AC-016 | rendered Phone Setup | Reused: IMP-13 | — | Pass | (handoff) | (handoff) | Its files are unchanged since `b1d92c7ced` |
 | API-R5 | AC-014 (R-01) | AR-14 timing | Reused: IMP-05 | — | Pass | (handoff) | (handoff) | A measurement; the test itself ran in API-05 |
 
+| API-01 (r2) | all web items (regression after SR-008) | whole web suite | `pnpm -C autobyteus-web test:nuxt --run` | ENV-1 at `d115f1601d` | Pass | `API-01-r2-web-full-suite.txt` | `Test Files  718 passed (718)`, `Tests  5361 passed \| 2 skipped (5363)` | — |
+| API-04 (r2) | AC-001, AC-002, AC-003, AC-008 (phone), AC-019 (phone); REQ-002 preserved | phone production bundle on a probe-owned real node | `pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<evidence>/API-04-r2` (all 19 cases); phone bundle rebuilt on `d115f1601d` | ENV-2 at `d115f1601d` | Pass | `API-04-r2-summary.txt`, `API-04-r2/` (JSON, screenshots, logs) | `"result": "Pass"`, `unknownBrowserErrors: 0`. MSP-13 `openPhoneAfterCheck {"pairing": 1, "sessionLeft": null}`, `credentialChecks ["phone-unknown-credential 401", "phone 403", "phone-revoked 403"]`. MSP-18 `openCheck {"bar": "Phone access off", …, "rows": 27, …}`, `offThenDown {"bar": "Not reachable", "banner": "Can’t reach Alpha Test Node. Check", …}`. MSP-12 `checksDuringPoll 0` | F-API-001 resolved. Probe updated this execution: operation names from the query text; MSP-12 asserts the poll sends no `PhoneCredentialCheck`; MSP-13/18 record each check's answer. The connection sheet says "Not reachable" while the bar says "Phone access off" (`openCheck.sheet`), the implementation handoff's known risk |
+| API-02 (r2) | AC-010 | browser probe | as API-02, `--output-dir=<evidence>/API-02-r2` | ENV-2 at `d115f1601d` | Pass | `API-02-r2/` | `failures []`; B01…B08 Pass | rerun because its page renders the desktop run section (`useRunHistorySectionLoad` changed) |
+| API-03 (r2) | AC-011 | browser probe | as API-03, `--output-dir=<evidence>/API-03-r2` | ENV-2 at `d115f1601d` | Pass | `API-03-r2/` | `"result": "Pass"`, NVP-01…05 Pass, `unexpectedBrowserErrors: []` | rerun because NVP-04 opens the phone shell (its check changed) |
+| API-08 (r2) | AC-004a | Android lifecycle + phone web shell | API-08-r2-steps.sh.txt: on `/mobile?unsupported=desktopWorkspace` → Home → `am kill` → Recents; Run A share-started task, Run B launcher task, Run D a new share while dead, Run C node removed while dead | ENV-4 at `d115f1601d` (APK and phone bundle) | Pass | `API-08-r2-process-death-restore.txt`, `API-08-r2-*.png`, `API-08-r2-hold/` (receipt) | A and B after: `"loadedWith":"http://10.0.2.2:50737/mobile/?unsupported=desktopWorkspace"`, `"notice":true`, `"pairing":false`, `text="Unsupported on phone"`; D: `loadedWith … /mobile?pairing=…`, `devices after: 2`; C: `text="Scan the QR code on your computer"`, devices still 2 | F-API-002 resolved for AC-004a. Run C also shows that a recreated activity does not re-run the share that started it (a re-run would have paired a third device) |
+
 ## Acceptance-Criteria Proof
 
 | Acceptance-Criteria ID | Critical | Proven By Case IDs | Result | For A User-Only Part |
 | --- | --- | --- | --- | --- |
 | AC-001 | Yes | API-04 (MSP-19), API-R2 (`app.spec.ts`) | Proven | — |
-| AC-002 | Yes | API-04 (MSP-13): the check on opening passes; the open phone's Check fails | **Not Proven (fails)** | — |
-| AC-003 | Yes | API-04 (MSP-18): the check on opening and "on again" pass; the open phone's Check while off and off → unreachable fail | **Not Proven (fails)** | — |
-| AC-004 | Yes | API-08 (Android restore and the removed-node alternate pass; the user-visible page does not come back), API-R3 | **Not Proven (fails)** | — |
+| AC-002 | Yes | API-04 (r2) MSP-13: the check on opening and the open phone's Check both land on pairing with the session removed (credential checks `phone 403`, `phone-revoked 403`); API-R2/IMP-15/16 specs | Proven | — |
+| AC-003 | Yes | API-04 (r2) MSP-18: the open phone's Check while off (27 runs listed), the check on opening while off, on again → Connected with runs, off → node down → "Can’t reach", back → Connected; session kept throughout | Proven | — |
+| AC-004a | Yes | API-08 (r2): share-started and launcher tasks reload the same node and `/mobile` URL (navigation entry) with no expired-code screen; a new share while dead connects; node removed → ordinary start; API-R3/IMP-15 unit tests of the restore and the re-delivery rule | Proven | — |
+| AC-004b | — | Round 2 (DEC-013): run screens; in this round a run screen still comes back as the list (API-REV-001 API-08 Run B) | Not in this round | — |
 | AC-005 | Yes | API-09, API-R2 | Proven | — |
 | AC-006 | No | API-05 (`node-desktop-routes.e2e.test.ts`), API-R1 | Proven | — |
 | AC-007 | Yes | API-07, API-R3 | Proven | — |
@@ -83,21 +90,21 @@
 
 | Confidence Category | Post-Repository Score | Final Score | What Supports It (Case IDs) | Residual Uncertainty | What Could Improve It |
 | --- | --- | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 75% | 50% | API-01…11, API-R1…R5 | AC-002, AC-003 and AC-004 fail on real paths | the D-02 and D-03 fixes, then rerun MSP-13, MSP-18 and API-08 |
-| Changed-boundary execution directness | 80% | 95% | API-04 (real bundle, real node), API-07…09 (real WebView, real node desktop), API-05/05b | — | — |
-| Cross-boundary integration realism and mock gap | 75% | 95% | API-04 (the node's real 403 bodies through Apollo), API-09 (noVNC ↔ Xvnc), API-07 | the specs' mocked read results hid the D-02 defect; the real stack found it | — |
-| Environment, configuration, identity, and fixture fidelity | 85% | 90% | ENV-2…6 | an emulator, not a physical phone; Paste typed instead of pasted; Dockerfile frontend line swapped | a physical device run |
-| Failure, edge-case, lifecycle, and recovery evidence | 70% | 50% | API-04 (revoked, off, node down), API-08 (process death) | Check failure paths and the process-death outcome fail | after the fixes, rerun |
-| User-surface, browser, and desktop-shell confidence | 75% | 60% | API-04, API-06, API-07…09, API-R4 | phone run list state and process death fail; desktop shell: build only (API-11) | after the fixes, rerun |
-| Durable regression coverage quality and relevance | 80% | 90% | MSP-13/17/18/19 and MSP-07 now catch these paths; API-AGG updated | the D-03 user-visible restore has no durable check (emulator only) | a durable check once the restore works |
+| Requirement and acceptance-criteria proof | 95% | 95% | API-01 (r2), API-04 (r2), API-08 (r2), API-02/03 (r2); API-05…07, 09…11 and API-R1…R5 standing | AC-004b is round 2 by decision (DEC-013); the D-13 Case 17 "fix" wording is for the Solution Designer | — |
+| Changed-boundary execution directness | 95% | 95% | API-04 (r2) (the phone's credential check against a real node's 401/403/200), API-08 (r2) (real process death), API-07, API-09 | — | — |
+| Cross-boundary integration realism and mock gap | 95% | 95% | API-04 (r2) real bundle ↔ real node; API-09 noVNC ↔ Xvnc; API-05/05b | — | — |
+| Environment, configuration, identity, and fixture fidelity | 95% | 95% | ENV-1…6 (r2: d115f1601d APK and phone bundle) | an emulator rather than a physical phone (standard Activity lifecycle and the system WebView engine; negligible for these behaviors); API-09's typed Paste text and Dockerfile frontend line (deviations noted) | a physical device run |
+| Failure, edge-case, lifecycle, and recovery evidence | 95% | 95% | MSP-13 (401, revoked), MSP-18 (off, on, off → down), MSP-09 (down), API-08 (r2) A–D, API-07 blocked cases | — | — |
+| User-surface, browser, and desktop-shell confidence | 95% | 95% | API-04 (r2), API-06, API-07…09, API-R4, API-11 | the connection sheet still says "Not reachable" while the bar says "Phone access off" (known, accepted in the implementation handoff's Known Risks) | — |
+| Durable regression coverage quality and relevance | 95% | 95% | MSP-07/13/17/18/19 and MSP-12's no-check-from-the-poll assertion; API-AGG; OpenPageRestoreTest for the restore and re-delivery rule | process death itself is emulator-only (the project has no Android instrumented E2E layer) | — |
 
-- Overall post-repository confidence: 77%
-- Overall final confidence: 76%
+- Overall post-repository confidence: 95% (round 1 first execution: 77%)
+- Overall final confidence: 95% (round 1 first execution: 76%)
 - Calculation method: simple average of the seven categories
-- Every critical acceptance criterion directly proven, apart from parts only the user can check: `No` (AC-002, AC-003, AC-004)
-- Any final applicable category below `90%`: `Yes`: requirement proof 50%, failure/lifecycle 50%, user surface 60%
-- Default final confidence target of `95%` met: `No`
-- Confidence-limiting residual risks: D-02 open-phone Check; D-03's user-visible restore (premise E-03) and RR-02 for share-started tasks
+- Every critical acceptance criterion directly proven, apart from parts only the user can check: `Yes`
+- Any final applicable category below `90%`: `No`
+- Default final confidence target of `95%` met: `Yes`
+- Confidence-limiting residual risks: none material. Known and accepted: the connection sheet's "Not reachable" while Phone Access is off; AC-004b in round 2; FU-001…FU-003 outside the ticket
 
 ## Broader Validation Decision (Mandatory)
 
@@ -138,13 +145,13 @@
 
 | Path / Test | Change | Case IDs | For A Removal |
 | --- | --- | --- | --- |
-| `autobyteus-web/tests/e2e/mobile-shell-probe.mjs`: MSP-17, MSP-18, MSP-19 (new); MSP-13, MSP-07 (updated); per-case expected browser lines and the `failedRequests` log | Added / Updated (`903387bc78`) | API-04 | The removed app-wide `KNOWN_BROWSER_LINES` entry exempted the unpaired phone's feed retries to `localhost:8000` (REQ-001/D-01 removes them). Its `ERR_CONNECTION_REFUSED` alternative also hid FU-003. Replaced by MSP-19's socket log, the per-case expected lines, and an FU-003 exemption tied to that exact failed request |
+| `autobyteus-web/tests/e2e/mobile-shell-probe.mjs`: MSP-17, MSP-18, MSP-19 (new); MSP-13, MSP-07 (updated); per-case expected browser lines and the `failedRequests` log (`903387bc78`); operation names from the query text, MSP-12's "the poll sends no credential check", MSP-13/18 recording each check's answer (committed with this report) | Added / Updated | API-04, API-04 (r2) | The removed app-wide `KNOWN_BROWSER_LINES` entry exempted the unpaired phone's feed retries to `localhost:8000` (REQ-001/D-01 removes them). Its `ERR_CONNECTION_REFUSED` alternative also hid FU-003. Replaced by MSP-19's socket log, the per-case expected lines, and an FU-003 exemption tied to that exact failed request |
 | `autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts` (API-AGG) | Updated (`903387bc78`) | API-05 | — |
 | `autobyteus-web/tests/e2e/fresh-run-auto-approval-probe.mjs` (fixture answers `GetProjects`) | Updated, baseline fix (`023a9a3ff9`) | API-02 | — |
 | `autobyteus-web/tests/e2e/node-vocabulary-probe.mjs` (allowed window origin; one-source Memory page) | Updated, baseline fix (`898fbd2a31`) | API-03 | — |
 | `autobyteus-server-ts/tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts`, `agy-skill-update-notice-transport.e2e.test.ts` (inline-code notice text) | Updated, baseline fix (`0bce7bac01`) | API-05b | — |
 
-- Added or updated paths attached for proportional test-code review: `Not Applicable` this round (the result is `Fail`; the test-code review follows a passing run)
+- Added or updated paths attached for proportional test-code review: `Yes` (`autobyteus-web/tests/e2e/mobile-shell-probe.mjs`, `autobyteus-server-ts/tests/e2e/projects/project-task-boundaries.e2e.test.ts`, and the three baseline-fixed test files)
 - Diff or repository evidence supplied for removed paths: the `KNOWN_BROWSER_LINES` removal is in `git show 903387bc78 -- autobyteus-web/tests/e2e/mobile-shell-probe.mjs`
 
 ## Dependencies Mocked Or Emulated
@@ -171,6 +178,9 @@
 
 ## Preliminary Classification (On `Fail`)
 
+API-REV-002: not applicable (Pass). The API-REV-001 findings below are kept for history and are resolved: F-API-001 by SR-008's credential check (API-04 (r2) MSP-13, MSP-18); F-API-002 by SR-008's re-delivery rule and the narrowed REQ-003 (AC-004a, API-08 (r2)), with run screens in round 2 (AC-004b, DEC-013).
+
+
 - **F-API-001 — `Design Impact` (AC-002, AC-003; D-02 / DS-002 / SR-005).** The phone's Check does not learn that its own history read failed. `useRunHistorySectionLoad.readHistory` returns `{ ok: true }` for a failed read when runs are already listed (`listsAnyRun()` guard). It also does so when a quiet poll supersedes the Check's read during the up-to-10-second readiness wait (the generation check in `fetchTree`'s catch). So `remoteAccessReadRefusal` is never reached on an open phone: revoked and Phone-Access-off phones stay "Connected", and off → node down ends "Connected". The design traced the error to `readHistory`'s `cause` but not through its `ok` decision (`API-04-D02-failure-analysis.txt`). How the Check learns its own read's failure, given the quiet poll and the store's single error, is a design choice. Recommended owner: Solution Designer.
 - **F-API-002 — `Design Impact` (AC-004; D-03 / DS-003, premise E-03, RR-02).** The Android restore reopens the saved URL, but the user does not get the page back:
   - (a) the phone web shell's run-screen URL names no run, and a fresh load lands on the run list, so E-03 ("the WebView's current URL names the open page") does not hold;
@@ -180,11 +190,12 @@
 
 ## Latest Authoritative Result
 
-- Result: `Fail`
-- Criteria not proven: AC-002, AC-003, AC-004
-- Preliminary classification and recommended owner: F-API-001 and F-API-002, both `Design Impact`, Solution Designer (failure-origin review first)
-- Next recipient from `get_handoff_rules`: `/software_engineering_team/code_reviewer` (failure-origin review of an execution failure)
-- Notes:
+- Result: `Pass`
+- Criteria not proven, or parts only the user can check: `None` (AC-004b is round 2 by DEC-013)
+- Preliminary classification and recommended owner: N/A (Pass). API-REV-001's F-API-001 and F-API-002 are resolved (see the revision record)
+- Next recipient from `get_handoff_rules`: `/software_engineering_team/code_reviewer` (Pass, architectural_risk=High: proportional test-code review)
+- Notes (API-REV-002): every round-1 criterion is proven on its real surfaces; the durable test changes go to proportional test-code review.
+- Notes (API-REV-001, history):
   - Everything else is proven on its real surfaces.
   - Rerun plan after the fixes: MSP-13, MSP-18 (and the full mobile-shell probe if the phone bundle changes widely), API-08, and API-01 for web changes. API-07, API-09 and API-05/05b stay valid unless their exercised code changes.
   - Follow-up FU-003 was added to `follow-ups.md`.

@@ -17,10 +17,10 @@ The plan: what must be proven, how, the decisions about existing tests, and the 
 - Code Review Revision Record: `…/small-follow-ups-batch-426/code-review-revision-record.md`
 - Delivery Revision Record: N/A (no delivery re-entry)
 - API/E2E Revision Record: `…/small-follow-ups-batch-426/api-e2e-revision-record.md` (created with the first result)
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: 1
-- Trigger: code reviewer's CRR-002 Pass, 2026-11-07; head `42a86a5e93` (last code commit `1d2cdd15ab`)
-- Prior Investigation Reviewed: none (first round)
+- Current API/E2E Revision ID: `API-REV-002` (round 2 rerun; API-REV-001 was round 1)
+- Current Investigation Round: 2 (rerun after F-API-001 / F-API-002)
+- Trigger: code reviewer's CRR-005 Pass, 2026-11-08; head `d115f1601d` (last code commit `c8b4b659cd`); SR-008 (D-02 credential check, D-03 share re-run rule; AC-004 split into AC-004a now and AC-004b in round 2)
+- Prior Investigation Reviewed: round 1 (API-REV-001, Fail)
 - Latest Authoritative Investigation: this file
 
 ## Current Requirement And Design Basis
@@ -245,6 +245,29 @@ Found during execution:
 | --- | --- | --- | --- |
 | D-02: a Check on an open phone does not learn that its own history read failed. Revoked and Phone-Access-off phones stay "Connected" once their list has loaded, and off → node down ends "Connected". The cause is `useRunHistorySectionLoad.readHistory` returning `{ ok: true }` (the `listsAnyRun()` guard, and a quiet poll superseding the Check read) | `Design Impact` (preliminary) | `evidence/api-e2e/API-04-D02-failure-analysis.txt`; API-04 MSP-13, MSP-18 | failure-origin review (code reviewer) → Solution Designer |
 | FU-003: every phone page start requests `http://localhost:8000/health` (serverStore browser health check) | follow-up, outside this ticket | `API-04-run2/mobile-shell-probe.json` `failedRequests` | Solution Designer (follow-ups.md) |
+
+## Round 2 Rerun Plan (TESTING § Rerun by impact)
+
+- Validated commit of round 1: product `42a86a5e93` (tests up to `c85e705719`). Now: `d115f1601d`.
+- `git diff --name-only c85e705719 d115f1601d` outside `tickets/`:
+  - Android `MainActivity.kt`, `shell/OpenPageRestore.kt` (+ test);
+  - web `MobilePairedShell.vue`, `stores/mobileNodeSessionStore.ts`, `stores/runHistoryStore.ts`, `runHistoryLoadActions.ts`, `runHistorySelectionActions.ts`, `runHistoryTeamMemberInspectionActions.ts`, `composables/runHistory/useRunHistorySectionLoad.ts`, `utils/remoteAccess/remoteAccessReadRefusal.ts` (+ specs);
+  - `docs/design-cases.md`.
+- No server source, build input, lockfile or contract package changed.
+
+| Case | Decision | Reason |
+| --- | --- | --- |
+| API-01 web suite | Rerun | web stores, shell and the history load changed |
+| API-04 mobile-shell probe (all cases) | Rerun | the phone bundle changed (the shell check, the history load shared by every list case and by the desktop window in MSP-15). MSP-13 and MSP-18 are the F-API-001 cases. The probe also gains: operations named from the query text, MSP-12 asserting the poll sends no `PhoneCredentialCheck`, and MSP-13/18 recording each check's answer |
+| API-02 B04, API-03 NVP | Rerun | B04's fixture page renders the desktop shell's run section (`useRunHistorySectionLoad` changed); NVP-04 opens the phone shell, whose check changed |
+| API-08 emulator (AC-004a) | Rerun | `MainActivity`, `OpenPageRestore` changed. Plan: a launcher task and a share-started task, each on a node page → Home → `am kill` → Recents (the navigation entry equals the saved URL; the share-started task shows the node page); the alternates (node removed while dead → ordinary start; a new share while dead → connects) |
+| API-05, API-05b server E2E | Still valid | no server change |
+| API-06 desktop folder refusal | Still valid | `runWorkspaceChoice`, the workspace store and the chat launch are unchanged |
+| API-07 WebView preview | Still valid | `TrustedNavigationPolicy` and `AutoByteusWebView` unchanged; the `MainActivity` change only affects which intent `onCreate` handles |
+| API-09 clipboard | Still valid | `useVncSession`, `MobileNodeDesktop*` and noVNC unchanged |
+| API-10 docs | Still valid for AC-012/013; the Case 5 SR-008 text is the Solution Designer's | — |
+| API-11 fresh-start build | Still valid | no build input changed since `903387bc78` |
+| API-R1…R5 | Still valid (R2/R3 superseded for D-02/D-03 by IMP-15/IMP-16 and the reruns) | — |
 
 ## Investigation Decision
 

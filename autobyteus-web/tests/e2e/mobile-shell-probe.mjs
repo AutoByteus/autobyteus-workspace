@@ -443,7 +443,7 @@ const openPhone = async ({ width = 390, height = 844, storageState, label = 'pho
     const request = route.request();
     let op = null; let windowVar;
     if (request.url().includes('/graphql') && request.method() === 'POST') {
-      try { const body = JSON.parse(request.postData() ?? '{}'); op = body.operationName ?? 'anonymous'; windowVar = body.variables?.limitPerAgent; } catch { op = 'unparsed'; }
+      try { const body = JSON.parse(request.postData() ?? '{}'); op = body.operationName ?? /^\s*(?:query|mutation)\s+(\w+)/.exec(body.query ?? '')?.[1] ?? 'anonymous'; windowVar = body.variables?.limitPerAgent; } catch { op = 'unparsed'; }
     }
     let response;
     try { response = await route.fetch({ url: request.url().replace(phoneOrigin(), alpha.baseUrl), headers: { ...request.headers(), host: phoneHost }, timeout: 20_000 }); } catch { await route.abort('connectionrefused').catch(() => undefined); return; }
@@ -1450,7 +1450,10 @@ const runCases = async () => {
     await toList(page);
     await sleep(2_000);
     const window = async (label, ms) => { const from = Date.now(); await sleep(ms); return historyReads(entry => entry.label === 'phone' && entry.at >= from).map(entry => ({ dt: entry.at - from, window: entry.window, status: entry.status, bytes: entry.bytes })); };
+    const listFrom = Date.now();
     const onList = await window('list', 16_000);
+    // autobyteus-426 SR-008: the 5 s poll reads the history only; it never sends the phone's credential check.
+    const checksDuringPoll = phoneNet.filter(entry => entry.label === 'phone' && entry.op === 'PhoneCredentialCheck' && entry.at >= listFrom).length;
     await showOlder(page);
     await openRow(page, `agent:${stack.plain[0]}`);
     const onRun = await window('run', 12_000);
@@ -1480,9 +1483,10 @@ const runCases = async () => {
     evidence.network.historyReads = all.length;
     assert(all.every(entry => entry.window === null), 'every read uses the complete window', [...new Set(all.map(entry => entry.window))]);
     assert(onList.length >= 3 && onList.length <= 4, 'a poll every 5 s on the list', onList);
+    assert(checksDuringPoll === 0, 'the poll sends no credential check (autobyteus-426 SR-008)', { checksDuringPoll });
     assert(onRun.length === 0 && onView.length === 0 && hidden.length === 0, 'no poll on the run screen, a view or while hidden', { onRun, onView, hidden });
     assert(afterBack[0] && afterBack[0].dt <= 2_500 && afterShown[0] && afterShown[0].dt <= 1_500, 'one read at once when the list or the page comes back', { afterBack, afterShown });
-    return { onList, onRun, onView, afterBack, hidden, afterShown, backAt, shownAt, bytesPerRead: { min: bytes[0], median: bytes[Math.floor(bytes.length / 2)], max: bytes[bytes.length - 1] }, firstRowsMs, reads: all.length };
+    return { checksDuringPoll, onList, onRun, onView, afterBack, hidden, afterShown, backAt, shownAt, bytesPerRead: { min: bytes[0], median: bytes[Math.floor(bytes.length / 2)], max: bytes[bytes.length - 1] }, firstRowsMs, reads: all.length };
   });
 
   await runCase('MSP-09', async () => {
@@ -1767,7 +1771,9 @@ const runCases = async () => {
     // The open phone again, Phone Access on: Connected.
     await check(page, 'Connected');
     const offBanner = `${ALPHA_NAME} is reachable, but Phone access is off. Check`;
-    const facts = { reopened, openCheck, offStart, on, offBeforeDown, offThenDown, back };
+    // The phone's own credential check decides each outcome (autobyteus-426 SR-008): which answer each check got.
+    const credentialChecks = phoneNet.filter(entry => entry.case === 'MSP-18' && entry.op === 'PhoneCredentialCheck').map(entry => `${entry.label} ${entry.status}`);
+    const facts = { reopened, openCheck, offStart, on, offBeforeDown, offThenDown, back, credentialChecks };
     const failures = [
       [openCheck.bar === 'Phone access off' && openCheck.banner === offBanner && openCheck.bannerConnection === 'phone_access_off' && openCheck.credentialKept && openCheck.pairing === 0, 'off: the open phone\'s Check (runs listed) shows the bar and the banner, the session kept'],
       [offStart.bar === 'Phone access off' && offStart.banner === offBanner && offStart.bannerCheck === 1 && offStart.credentialKept && offStart.pairing === 0, 'off: the check on opening shows the bar and the banner with Check, the session kept'],
@@ -1822,7 +1828,9 @@ const runCases = async () => {
     const revokedReads = phoneNet.filter(entry => entry.label === 'phone-revoked').map(entry => `${entry.op} ${entry.status}`);
     await shot(revoked.page, 'MSP-13-revoked-device');
     await revoked.context.close();
-    const facts = { reads, onPairing, sessionLeft, revokedAll: revokedAll.status, openPhoneAfterCheck, revokedShows, revokedReads: [...new Set(revokedReads)] };
+    // The phone's own credential check decides each outcome (autobyteus-426 SR-008): which answer each check got.
+    const credentialChecks = phoneNet.filter(entry => entry.case === 'MSP-13' && entry.op === 'PhoneCredentialCheck').map(entry => `${entry.label} ${entry.status}`);
+    const facts = { reads, onPairing, sessionLeft, revokedAll: revokedAll.status, openPhoneAfterCheck, revokedShows, revokedReads: [...new Set(revokedReads)], credentialChecks };
     const failures = [
       [onPairing === 1 && sessionLeft === null, 'an unknown credential lands on pairing'],
       [reads.length === 1 && reads[0].status === 401, 'one history read, refused with 401'],
