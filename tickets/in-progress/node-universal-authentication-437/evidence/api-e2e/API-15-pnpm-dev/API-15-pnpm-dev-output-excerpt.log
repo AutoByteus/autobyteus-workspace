@@ -1,0 +1,34 @@
+# API-15 excerpt of the pnpm dev runner output (node scripts/development/run-dev.mjs), lines 230-262
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/serverStore.ts" is used
+
+✔ Vite server built in 621ms
+[nitro] ✔ Nuxt Nitro server built in 840ms
+ℹ Vite client warmed up in 1ms
+DEV_SERVER_READY http://127.0.0.1:8000
+DEV_WEB_READY http://127.0.0.1:3000
+DEV_DATA_ROOT /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/.autobyteus/development/server-data
+
+ ERROR  [unhandledRejection] read ECONNRESET
+
+    at TCP.onStreamRead (node:internal/stream_base_commons:216:20)
+    at TCP.callbackTrampoline (node:internal/async_hooks:130:17)
+
+✘ [ERROR] The build was canceled
+
+
+  ➜ Local:    http://127.0.0.1:3000/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/serverStore.ts" is used
+✔ Vite client built in 103ms
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/serverStore.ts" is used
+✔ Vite server built in 693ms
+[nitro] ✔ Nuxt Nitro server built in 855ms
+ℹ Vite client warmed up in 0ms
+│
+●  Restarting Nuxt due to error: Error: read ECONNRESET
+

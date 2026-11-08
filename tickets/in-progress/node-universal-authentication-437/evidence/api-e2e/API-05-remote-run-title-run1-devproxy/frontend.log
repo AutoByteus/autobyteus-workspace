@@ -1,0 +1,78 @@
+
+> autobyteus@1.5.12-beta.8 dev /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web
+> nuxt dev --host 0.0.0.0 --host 127.0.0.1 --port 62482
+
+│
+●  Nuxt 3.21.11 (with Nitro 2.13.5, Vite 7.3.7 and Vue 3.5.44)
+
+  ➜ Local:    http://127.0.0.1:62482/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/serverStore.ts" is used
+
+✔ Vite client built in 114ms
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/serverStore.ts" is used
+
+✔ Vite server built in 290ms
+[nitro] ✔ Nuxt Nitro server built in 3808ms
+ℹ Vite client warmed up in 1ms
+ℹ ✨ new dependencies optimized: @novnc/novnc, @monaco-editor/loader, vue-pdf-embed, xlsx, dompurify, markdown-it, katex, @mdit/plugin-katex, mermaid, prismjs, prismjs/components/prism-markup, prismjs/components/prism-css, prismjs/components/prism-clike, prismjs/components/prism-javascript, prismjs/components/prism-markdown, prismjs/components/prism-markup-templating, prismjs/components/prism-typescript, prismjs/components/prism-jsx, prismjs/components/prism-python, prismjs/components/prism-ruby, prismjs/components/prism-php, prismjs/components/prism-json
+ℹ ✨ optimized dependencies changed. reloading
+
+ ERROR  [unhandledRejection] read ECONNRESET
+
+    at TCP.onStreamRead (node:internal/stream_base_commons:216:20)
+    at TCP.callbackTrampoline (node:internal/async_hooks:130:17)
+
+
+  ➜ Local:    http://127.0.0.1:62482/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/serverStore.ts" is used
+✔ Vite client built in 100ms
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/serverStore.ts" is used
+✔ Vite server built in 641ms
+│
+●  Restarting Nuxt due to error: Error: read ECONNRESET
+
+  ➜ Local:    http://127.0.0.1:62482/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/serverStore.ts" is used
+✔ Vite client built in 101ms
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/serverStore.ts" is used
+✔ Vite server built in 688ms
+│
+●  Restarting Nuxt due to error: Error: read ECONNRESET
+
+  ➜ Local:    http://127.0.0.1:62482/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/serverStore.ts" is used
+✔ Vite client built in 99ms
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/stores/serverStore.ts" is used
+✔ Vite server built in 608ms
+[nitro] ✔ Nuxt Nitro server built in 834ms
+ℹ Vite client warmed up in 0ms
