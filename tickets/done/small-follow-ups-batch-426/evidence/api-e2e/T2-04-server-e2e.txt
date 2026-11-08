@@ -1,0 +1,20 @@
+# T2-04 ticket round 2: full server E2E suite (AC-020 (1), AC-023, D-09 server read, regression)
+# command: env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" pnpm test:e2e (worktree root)
+# commit: a3bc0525cd; macOS arm64, Node v22.23.1; Brief Studio package present (test:integration:prepare output); start 06:59:23 .. end 07:13:42 2026-11-08
+# full log /tmp/426-t2-04.log (   13246 lines, not committed)
+
+ Test Files  117 passed | 120 skipped (237)
+      Tests  507 passed | 586 skipped (1093)
+   Duration  852.88s (transform 16.59s, setup 2.53s, import 317.02s, tests 511.55s, environment 12ms)
+
+## failed files (expect none)
+(none)
+
+## round-2 related files
+ ↓ tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts (41 tests | 41 skipped)
+ ✓ tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts (9 tests) 40533ms
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts (11 tests) 4865ms
+ ↓ tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts (3 tests | 3 skipped)
+ ✓ tests/e2e/remote-collaboration/peer-host-refused.e2e.test.ts (2 tests) 265ms
+ ✓ tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts (1 test) 244ms
+(peer-host-refused ran: lvh.me resolves to 127.0.0.1 here)

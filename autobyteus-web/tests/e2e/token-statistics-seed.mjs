@@ -179,16 +179,37 @@ const runRecordData = ({
   recentIdempotencyDigestsJson: '[]',
 });
 
+/**
+ * Where the fixture's days fall for a given `now` (autobyteus-426 REQ-021: any day of the month). Coverage starts after
+ * the 1st of the current month when the month has room for it (This month partly covered, Last month before tracking).
+ * The three partial-pricing buckets always land on three distinct days inside [coverageStart, today]: on the 1st to the
+ * 4th the current month has no room for them after a start inside it, so coverage starts four days back, in the
+ * previous month (This month fully covered, Last month partly covered).
+ */
+export const tokenStatisticsFixturePlan = (now) => {
+  const today = dayStart(now);
+  const monthStart = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), 1));
+  const dayOfMonth = today.getUTCDate();
+  const coverageStart = dayOfMonth >= 5 ? addDays(monthStart, Math.min(11, dayOfMonth - 3) - 1) : addDays(today, -4);
+  const fixtureDays = Math.round((today.getTime() - coverageStart.getTime()) / 86_400_000) + 1;
+  const coverageBeforeMonth = coverageStart < monthStart;
+  return {
+    today, monthStart, dayOfMonth, coverageStart, fixtureDays,
+    partialDays: [1, 2, 3].map((offset) => addDays(coverageStart, offset)),
+    singleDay: addDays(coverageStart, Math.min(4, fixtureDays - 1)),
+    coverageBeforeMonth,
+    /** What the app says about the preset ranges for this fixture. */
+    thisMonthCoverage: coverageBeforeMonth ? 'full' : 'partial',
+    lastMonthCoverage: coverageBeforeMonth ? 'partial' : 'before_tracking',
+  };
+};
+
 export const seedTokenStatisticsFixture = async ({ serverDir, databaseUrl, now = new Date() }) => {
   const require = createRequire(path.join(serverDir, 'package.json'));
   const { PrismaClient } = require('@prisma/client');
   const prisma = new PrismaClient({ datasources: { db: { url: databaseUrl } } });
-  const today = dayStart(now);
-  const monthStart = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), 1));
-  const dayOfMonth = today.getUTCDate();
-  const coverageDay = Math.min(11, Math.max(1, dayOfMonth - 1));
-  const coverageStart = addDays(monthStart, coverageDay - 1);
-  const fixtureDays = Math.max(1, dayOfMonth - coverageDay + 1);
+  const plan = tokenStatisticsFixturePlan(now);
+  const { today, monthStart, dayOfMonth, coverageStart, fixtureDays } = plan;
 
   const identities = {
     complete: { key: 'complete', runtimeKind: 'autobyteus', modelProvider: 'OPENAI', providerName: 'OpenAI E2E', modelIdentifier: 'gpt-e2e-complete' },
@@ -221,8 +242,7 @@ export const seedTokenStatisticsFixture = async ({ serverDir, databaseUrl, now =
       }) });
     }
 
-    const partialDays = [1, 2, 3].map((offset) => addDays(coverageStart, Math.min(offset, fixtureDays - 1)));
-    for (const [index, bucketStart] of partialDays.entries()) {
+    for (const [index, bucketStart] of plan.partialDays.entries()) {
       const priced = index !== 1;
       await prisma.tokenUsageAnalyticsDailyFacet.create({ data: facetData({
         bucketStart,
@@ -240,7 +260,7 @@ export const seedTokenStatisticsFixture = async ({ serverDir, databaseUrl, now =
       }) });
     }
 
-    const singleDay = addDays(coverageStart, Math.min(4, fixtureDays - 1));
+    const singleDay = plan.singleDay;
     const additional = [
       facetData({ bucketStart: singleDay, identity: identities.eur, input: 300, output: 60, standard: 300, cacheState: 'not_reported', status: 'estimated', currency: 'EUR', inputCost: 0.02, outputCost: 0.01, totalCost: 0.03 }),
       facetData({ bucketStart: singleDay, identity: identities.local, input: 400, output: 80, standard: 400, cacheState: 'unsupported_or_local', status: 'local_no_api_bill', currency: null, inputCost: 0, outputCost: 0, totalCost: 0 }),
@@ -266,6 +286,10 @@ export const seedTokenStatisticsFixture = async ({ serverDir, databaseUrl, now =
       dayOfMonth,
       coverageStart: coverageStart.toISOString(),
       fixtureDays,
+      partialDays: plan.partialDays.map((day) => day.toISOString()),
+      coverageBeforeMonth: plan.coverageBeforeMonth,
+      thisMonthCoverage: plan.thisMonthCoverage,
+      lastMonthCoverage: plan.lastMonthCoverage,
       identities,
       runRange: { start: addDays(today, -7).toISOString().slice(0, 10), end: today.toISOString().slice(0, 10) },
       teamRunId,

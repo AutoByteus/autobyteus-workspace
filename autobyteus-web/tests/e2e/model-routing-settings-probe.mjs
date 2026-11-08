@@ -423,8 +423,9 @@ try {
     const by = Object.fromEntries(rows.map(row => [row.runtime, row]));
     assert(by[CODEX].signIn === 'Sign-in could not be checked', `codex mark ${by[CODEX].signIn}`);
     assert(by[CLAUDE].signIn === 'Sign-in could not be checked', `claude mark ${by[CLAUDE].signIn}`);
-    assert(by[AGY].limitsUnknown === 'Limits unknown: Antigravity usage limits could not be read', `agy ${by[AGY].limitsUnknown}`);
-    assert(by[GROK].modelsUnknown === 'Models unknown: Grok model list could not be read', `grok ${by[GROK].modelsUnknown}`);
+    // The text is built from the runtimes' display names (autobyteus-426 REQ-022): "Antigravity CLI", "Grok Build".
+    assert(by[AGY].limitsUnknown === `Limits unknown: ${APP_RUNTIME_NAMES.antigravity_cli} usage limits could not be read`, `agy ${by[AGY].limitsUnknown}`);
+    assert(by[GROK].modelsUnknown === `Models unknown: ${APP_RUNTIME_NAMES.grok_build} model list could not be read`, `grok ${by[GROK].modelsUnknown}`);
     const deepseek = by.autobyteus.providers.find(p => p.provider === 'DeepSeek');
     // SR-007: the service words every failure; a provider's unusable answer keeps its classified reason.
     assert(deepseek.limitsUnknown === 'Limits unknown: DeepSeek usage could not be read: unexpected answer (500)', `deepseek ${deepseek.limitsUnknown}`);

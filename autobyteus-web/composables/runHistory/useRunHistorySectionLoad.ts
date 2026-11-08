@@ -3,6 +3,7 @@ import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useAgentOrgDefinitionStore } from '~/stores/agentOrgDefinitionStore';
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
+import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore';
 
 export const RUN_HISTORY_REFRESH_INTERVAL_MS = 5000;
 
@@ -20,6 +21,7 @@ export const useRunHistorySectionLoad = (options: {
   const agentDefinitionStore = useAgentDefinitionStore();
   const agentTeamDefinitionStore = useAgentTeamDefinitionStore();
   const agentOrgDefinitionStore = useAgentOrgDefinitionStore();
+  const collaborationStore = useAgentRunCollaborationStore();
 
   /**
    * Sets the window and reads the history, the folder catalog and the definitions; settles when they are read (the
@@ -40,6 +42,15 @@ export const useRunHistorySectionLoad = (options: {
   /** Settles when the load the host's mount starts has finished. */
   const initialLoad = new Promise<void>((resolve) => { resolveInitialLoad = resolve; });
 
+  /**
+   * One poll tick: the quiet history read, then the children's states of listed runs that are not open
+   * (autobyteus-426 REQ-009); the first load and a window change read the views themselves.
+   */
+  const pollTick = async (): Promise<void> => {
+    await runHistoryStore.refreshTreeQuietly();
+    await collaborationStore.refreshListedStatuses(runHistoryStore.activeListedAgentRunIds);
+  };
+
   let timer: ReturnType<typeof setInterval> | null = null;
   const stopPolling = (): void => {
     if (timer !== null) clearInterval(timer);
@@ -47,7 +58,7 @@ export const useRunHistorySectionLoad = (options: {
   };
   const startPolling = (): void => {
     if (timer !== null) return;
-    timer = setInterval(() => { void runHistoryStore.refreshTreeQuietly(); }, RUN_HISTORY_REFRESH_INTERVAL_MS);
+    timer = setInterval(() => { void pollTick(); }, RUN_HISTORY_REFRESH_INTERVAL_MS);
   };
 
   // The read window follows the host's view: one read when it changes.
@@ -62,7 +73,7 @@ export const useRunHistorySectionLoad = (options: {
   watch(options.polling, (polling) => {
     if (!loaded || unmounted) return;
     if (!polling) { stopPolling(); return; }
-    void runHistoryStore.refreshTreeQuietly();
+    void pollTick();
     startPolling();
   });
 

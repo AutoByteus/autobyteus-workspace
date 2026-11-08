@@ -31,8 +31,8 @@
 //                  members, the remote rows with their node chip; a Team member's task agent beside the member, as on the
 //                  desktop (DEC-009); second lines: a delegated task agent or task team shows its Task's summary, the same
 //                  line as the desktop Runs view; members show their name only (DEC-010); a delegated run stopped on the
-//                  node: its dot follows live while its root is open, and under a root not open it updates once that root
-//                  is opened (DEC-013).
+//                  node: its dot follows live while its root is open, and under a root not open it follows within one
+//                  history poll (autobyteus-426 D-09; before it, 277 DEC-013 updated it only once the root was opened).
 //   MSP-03 AC-003, AC-003a  A tap on the task agent, a task-team member, the Team run (its coordinator), the Org run whose
 //                  first member is an agent (that agent), the Org run whose first member is a Team (its coordinator) and an
 //                  Org member: each opens that agent's conversation with its composer; a message sent from the phone (a
@@ -82,6 +82,11 @@
 //   MSP-18 autobyteus-426 D-02  Phone Access off on the node: the open phone's Check and a later start show the bar "Phone
 //                  access off" and "<node> is reachable, but Phone access is off." with Check; the session is kept; on
 //                  again, Check loads the runs (no re-pairing); off, then the node stopped: "Can’t reach <node>.".
+//   MSP-20 autobyteus-426 D-09  A listed, active Agent run that is not open (desktop Runs view and phone list): its
+//                  delegated rows follow a child idle → running → idle within ≤ 2 polls (desktop) / one poll (phone); an
+//                  unchanged poll sends only the status read (bytes recorded) and no collaboration view read; a third child
+//                  appears within one poll with one view re-read; after the run stops, its rows show offline within one
+//                  poll; a window that has the run open leaves it out of the status read.
 //   MSP-19 autobyteus-426 D-01  The definitions feed: no WebSocket at all while not paired (30 s); after pairing one feed
 //                  socket to the paired node with `access_token`; after unpair it closes and is not opened again; the
 //                  desktop window still opens it.
@@ -445,13 +450,13 @@ const openPhone = async ({ width = 390, height = 844, storageState, label = 'pho
   const phoneHost = new URL(phoneOrigin()).host;
   await context.route(`${phoneOrigin()}/**`, async (route) => {
     const request = route.request();
-    let op = null; let windowVar;
+    let op = null; let windowVar; let runIds = null;
     if (request.url().includes('/graphql') && request.method() === 'POST') {
-      try { const body = JSON.parse(request.postData() ?? '{}'); op = body.operationName ?? /^\s*(?:query|mutation)\s+(\w+)/.exec(body.query ?? '')?.[1] ?? 'anonymous'; windowVar = body.variables?.limitPerAgent; } catch { op = 'unparsed'; }
+      try { const body = JSON.parse(request.postData() ?? '{}'); op = body.operationName ?? /^\s*(?:query|mutation)\s+(\w+)/.exec(body.query ?? '')?.[1] ?? 'anonymous'; windowVar = body.variables?.limitPerAgent; runIds = body.variables?.runIds ?? null; } catch { op = 'unparsed'; }
     }
     let response;
     try { response = await route.fetch({ url: request.url().replace(phoneOrigin(), alpha.baseUrl), headers: { ...request.headers(), host: phoneHost }, timeout: 20_000 }); } catch { await route.abort('connectionrefused').catch(() => undefined); return; }
-    if (op) phoneNet.push({ at: Date.now(), label, case: currentCase, op, window: windowVar === undefined ? 'omitted' : windowVar, status: response.status(), bytes: (await response.body().catch(() => Buffer.alloc(0))).length });
+    if (op) phoneNet.push({ at: Date.now(), label, case: currentCase, op, window: windowVar === undefined ? 'omitted' : windowVar, runIds, status: response.status(), bytes: (await response.body().catch(() => Buffer.alloc(0))).length });
     await route.fulfill({ response }).catch(() => undefined);
   });
   const wsOrigin = phoneOrigin().replace(/^http/, 'ws');
@@ -769,12 +774,16 @@ const runCases = async () => {
     const seenNow = () => page.evaluate(() => window.__statusSeen);
     const terminate = async id => (await alpha.gql('mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}', { id })).terminateAgentRun;
     const navigationsBefore = await page.evaluate(() => performance.getEntriesByType('navigation').length);
-    // (a) Its root not opened on the phone: observed over three polls.
+    // (a) Its root not opened on the phone: the history poll's status read brings the change (autobyteus-426 D-09; before
+    // it, such a row kept its last read until the root was opened, 277 DEC-013). Here the row is a task-team member's own
+    // delegated run under the listed PTM run (the root's status snapshot includes task teams' members and their children).
     const unselectedKey = `${ptmKey}/agent:${stack.memberDelegated}`;
     await watchDot(unselectedKey);
     const unselectedTerminated = await terminate(stack.memberDelegated);
-    await sleep(16_000);
-    const unselectedSeen = await seenNow();
+    const unselectedFrom = Date.now();
+    let unselectedSeen = [];
+    await waitFor('the row not under an open root to follow', async () => (unselectedSeen = await seenNow()).length >= 2, 16_000).catch(() => undefined);
+    const unselectedChangeMs = unselectedSeen.length >= 2 ? Date.now() - unselectedFrom : null;
     // (b) Its root opened, then ← (the open run): the dot follows.
     await openRow(page, ptmKey);
     await page.locator(sel('mobile-run-back')).first().click();
@@ -794,13 +803,14 @@ const runCases = async () => {
     const memberTitles = { lead: lead.title, mate: mate.title, reviewer: members[0]?.title ?? null, editor: members[1]?.title ?? null };
     const desktopLine = label => desktopTitles[label]?.[2] ?? null;
     const facts = { phonePlace, desktopPlace, phoneTitles, memberTitles, desktopTitles, liveStatuses: seen, terminated,
-      unselected: { seen: unselectedSeen, terminated: unselectedTerminated, afterRootOpened: unselectedAfterOpen },
+      unselected: { seen: unselectedSeen, changeMs: unselectedChangeMs, terminated: unselectedTerminated, afterRootOpened: unselectedAfterOpen },
       reloaded: (await page.evaluate(() => performance.getEntriesByType('navigation').length)) !== navigationsBefore,
       ptm, writer, squad, members, remoteAgent, remoteTeam, team: { teamRow, lead, mate, leadDelegatedNested }, orgRow, orgMembers: orgMembers.map(row => row.name),
       teamRows: teamRows.filter(row => row.key.startsWith(teamKey)).map(row => [row.name, row.depth]) };
     const failures = [
       [liveOk && !facts.reloaded, 'a delegated run\'s state changes live on the list (its root open)'],
-      [unselectedSeen.length === 1 && unselectedAfterOpen && unselectedAfterOpen !== unselectedSeen[0], 'under a root not open: the last-read state, updated once the root is opened (DEC-013)'],
+      [unselectedSeen.length >= 2 && unselectedSeen.some(status => status !== unselectedSeen[0]) && unselectedChangeMs !== null && unselectedChangeMs <= 7_000 && unselectedAfterOpen === unselectedSeen[unselectedSeen.length - 1],
+        'under a root not open: the dot follows within one poll, without opening the root (autobyteus-426 D-09)'],
       [Boolean(childRow(teamRows, teamKey, 'changelog helper', 1)) && !leadDelegatedNested, 'a member\'s task agent beside the member, as on the desktop (DEC-009)'],
       [phoneTitles.writer === 'Write the release notes.' && phoneTitles.squad === 'Review the docs site.', 'a task agent and a task team show their Task\'s summary (DEC-010)'],
       [['writer', 'spare', 'leadDelegated'].every(label => phoneTitles[label] && phoneTitles[label] === desktopLine(label)), 'the same second line as the desktop Runs view'],
@@ -1451,7 +1461,11 @@ const runCases = async () => {
   await runCase('MSP-12', async () => {
     await toList(page);
     await sleep(2_000);
-    const window = async (label, ms) => { const from = Date.now(); await sleep(ms); return historyReads(entry => entry.label === 'phone' && entry.at >= from).map(entry => ({ dt: entry.at - from, window: entry.window, status: entry.status, bytes: entry.bytes })); };
+    // autobyteus-426 D-09: the poll also reads the delegated rows' states; per window, how many such reads the phone sent.
+    const statusReadsIn = {};
+    const window = async (label, ms) => { const from = Date.now(); await sleep(ms);
+      statusReadsIn[label] = phoneNet.filter(entry => entry.label === 'phone' && entry.op === 'GetAgentRunCollaborationStatuses' && entry.at >= from && entry.at <= from + ms).length;
+      return historyReads(entry => entry.label === 'phone' && entry.at >= from).map(entry => ({ dt: entry.at - from, window: entry.window, status: entry.status, bytes: entry.bytes })); };
     const listFrom = Date.now();
     const onList = await window('list', 16_000);
     // autobyteus-426 SR-008: the 5 s poll reads the history only; it never sends the phone's credential check.
@@ -1486,9 +1500,212 @@ const runCases = async () => {
     assert(all.every(entry => entry.window === null), 'every read uses the complete window', [...new Set(all.map(entry => entry.window))]);
     assert(onList.length >= 3 && onList.length <= 4, 'a poll every 5 s on the list', onList);
     assert(checksDuringPoll === 0, 'the poll sends no credential check (autobyteus-426 SR-008)', { checksDuringPoll });
+    // (The list count depends on whether a listed run qualifies for the read at this point; MSP-20 measures it on a known hub.)
+    assert(statusReadsIn.run === 0 && statusReadsIn.view === 0 && statusReadsIn.hidden === 0,
+      'the delegated rows\' status read rides the list poll only: none on the run screen, a view or while hidden (autobyteus-426 D-09, AC-009c)', statusReadsIn);
     assert(onRun.length === 0 && onView.length === 0 && hidden.length === 0, 'no poll on the run screen, a view or while hidden', { onRun, onView, hidden });
     assert(afterBack[0] && afterBack[0].dt <= 2_500 && afterShown[0] && afterShown[0].dt <= 1_500, 'one read at once when the list or the page comes back', { afterBack, afterShown });
-    return { checksDuringPoll, onList, onRun, onView, afterBack, hidden, afterShown, backAt, shownAt, bytesPerRead: { min: bytes[0], median: bytes[Math.floor(bytes.length / 2)], max: bytes[bytes.length - 1] }, firstRowsMs, reads: all.length };
+    return { checksDuringPoll, statusReadsIn, onList, onRun, onView, afterBack, hidden, afterShown, backAt, shownAt, bytesPerRead: { min: bytes[0], median: bytes[Math.floor(bytes.length / 2)], max: bytes[bytes.length - 1] }, firstRowsMs, reads: all.length };
+  });
+
+  await runCase('MSP-20', async () => {
+    // autobyteus-426 D-09 (AC-009a…d): the delegated rows of a listed, active Agent run that is not open follow their
+    // children's states on each history poll, on the desktop Runs view and the phone list. The poll reads only the states
+    // (GetAgentRunCollaborationStatuses); the collaboration view (GetAgentRunCollaboration) is read again only when the
+    // children or the run's active state change. A fresh hub run with two delegated children; its children's turns are
+    // driven over the hub's collaboration socket, as a second client does (HOLD_TURN keeps a turn running until stopped).
+    const STATUS_OP = 'GetAgentRunCollaborationStatuses';
+    const VIEW_OP = 'GetAgentRunCollaboration';
+    const hubDef = (await alpha.gql('mutation($i:CreateAgentDefinitionInput!){createAgentDefinition(input:$i){id}}', { i: { name: 'Status Hub',
+      role: 'assistant', description: 'Status Hub (phone probe)', instructions: 'Follow the request.', toolNames: [],
+      defaultLaunchConfig: { runtimeKind: 'antigravity_cli', llmModelIdentifier: MODEL, llmConfig: null } } })).createAgentDefinition.id;
+    const created = (await alpha.gql('mutation($i:CreateAgentRunInput!){createAgentRun(input:$i){success message runId}}', { i: { agentDefinitionId: hubDef, ...stack.runConfig } })).createAgentRun;
+    assert(created.success, created.message);
+    const hub = created.runId;
+    const serverStatuses = async () => (await alpha.gql('query($ids:[String!]!){agentRunCollaborationStatuses(runIds:$ids){runId isActive statuses{agentRunId status}}}', { ids: [hub] })).agentRunCollaborationStatuses[0];
+    const serverStatusOf = async id => (await serverStatuses())?.statuses.find(entry => entry.agentRunId === id)?.status ?? null;
+    const delegate = async (recipient, marker) => pickId(await stack.agentCall(hub, 'delegate_task', { recipient_address: recipient, description: `Status child. Marker ${marker}.` }), 'target_agent_run_id');
+    const childA = await delegate('/changelog_helper', 'D09-A');
+    const childB = await delegate('/release_notes_writer', 'D09-B');
+    assert(childA && childB, 'the hub delegated two children', { childA, childB });
+    await waitFor('both children idle on the node', async () => ['idle'].includes(String(await serverStatusOf(childA)).toLowerCase())
+      && ['idle'].includes(String(await serverStatusOf(childB)).toLowerCase()), 60_000).catch(() => undefined);
+    const collab = new PhoneUpstreamWebSocket(stack.wsUrl(`agent-collaboration/${hub}`));
+    await new Promise((resolve, reject) => { collab.once('open', resolve); collab.once('error', reject); });
+    await sleep(800);
+    const toChild = (type, target, content) => { const id = randomUUID();
+      collab.send(JSON.stringify({ type, payload: { root_subject_kind: 'agent', root_run_id: hub, target_agent_run_id: target, command_id: randomUUID(),
+        ...(type === 'SEND_MESSAGE' ? { message_id: id, dedupe_key: `agent_run_input:probe:${id}`, content, context_file_paths: [], image_urls: [] } : {}) } })); };
+
+    // The desktop window (the Runs view) with its GraphQL log: operation, response bytes, the status read's run IDs and body.
+    const openDesktop = async () => {
+      const context = await browser.newContext({ viewport: { width: 1440, height: 1400 }, locale: 'en-US', timezoneId: 'UTC' });
+      await context.addInitScript(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
+      const desktopPage = await context.newPage();
+      const net = [];
+      desktopPage.on('requestfinished', async (request) => {
+        if (request.method() !== 'POST' || !request.url().includes('/graphql')) return;
+        let op = null; let runIds = null;
+        try { const body = JSON.parse(request.postData() ?? '{}'); op = body.operationName ?? /^\s*(?:query|mutation)\s+(\w+)/.exec(body.query ?? '')?.[1] ?? null; runIds = body.variables?.runIds ?? null; } catch { /* not JSON */ }
+        const response = await request.response().catch(() => null);
+        const body = response ? await response.body().catch(() => null) : null;
+        const entry = { at: Date.now(), op, runIds, bytes: body?.length ?? null };
+        if (op === STATUS_OP && body) { try { const answers = JSON.parse(String(body)).data?.agentRunCollaborationStatuses ?? []; entry.statuses = answers.reduce((n, a) => n + a.statuses.length, 0);
+          const hubAnswer = answers.find(a => a.runId === hub); entry.hubBytes = hubAnswer ? JSON.stringify(hubAnswer).length : null; entry.hubStatuses = hubAnswer?.statuses.length ?? null; } catch { /* not JSON */ } }
+        net.push(entry);
+      });
+      await desktopPage.goto(stack.frontendUrl, { waitUntil: 'domcontentloaded', timeout: 240_000 });
+      await desktopRunsView(desktopPage);
+      return { context, page: desktopPage, net };
+    };
+    const desktop = await openDesktop();
+    const desktopStatus = id => desktop.page.evaluate((agentRunId) => {
+      const row = document.querySelector(`[data-test="run-list-scroll"] [data-agent-run-id="${agentRunId}"]`);
+      if (!row) return null;
+      const label = row.getAttribute('aria-label') ?? '';
+      return /\b(running|idle|offline|error|initializing|uninitialized|stopped)\b/i.exec(label)?.[1]?.toLowerCase() ?? `?${label}`;
+    }, id);
+    const unfoldDesktopHub = async () => {
+      for (let round = 0; round < 4; round += 1) {
+        for (const handle of await desktop.page.locator(`[data-test="run-list-row"][data-run-id="${hub}"] [aria-expanded="false"]`).all()) await handle.click({ timeout: 1_500 }).catch(() => undefined);
+        await sleep(400);
+      }
+    };
+    // The phone: its list with the hub unfolded.
+    await toList(page);
+    const hubKey = `agent:${hub}`;
+    await waitFor('the hub on the phone list', async () => (await page.locator(rowSel(hubKey)).count()) > 0, 30_000);
+    await ensureUnfolded(page, hubKey);
+    const phoneStatus = async id => (await rowsOf(page)).find(row => row.key === `${hubKey}/agent:${id}`)?.status ?? null;
+    await waitFor('the desktop hub row', async () => (await desktop.page.locator(`[data-test="run-list-row"][data-run-id="${hub}"]`).count()) > 0, 30_000);
+    await unfoldDesktopHub();
+    await waitFor('both children on both surfaces', async () => [await desktopStatus(childA), await desktopStatus(childB), await phoneStatus(childA), await phoneStatus(childB)].every(Boolean), 30_000).catch(() => undefined);
+    await shot(desktop.page, 'MSP-20-desktop-two-children');
+    await shot(page, 'MSP-20-phone-two-children');
+
+    const desktopOps = (from, to = Date.now()) => desktop.net.filter(entry => entry.at >= from && entry.at <= to);
+    const phoneOps = (from, to = Date.now()) => phoneNet.filter(entry => entry.label === 'phone' && entry.at >= from && entry.at <= to);
+    const count = (ops, op) => ops.filter(entry => entry.op === op).length;
+    /** Waits until the node, the desktop row and the phone row show `want`; returns when each did (ms after the node). */
+    const follow = async (label, id, want, trigger, budget = 20_000) => {
+      const start = Date.now();
+      await trigger();
+      let nodeAt = null; let desktopAt = null; let phoneAt = null;
+      const deadline = Date.now() + budget;
+      while (Date.now() < deadline && (nodeAt === null || desktopAt === null || phoneAt === null)) {
+        if (nodeAt === null && String(await serverStatusOf(id)).toLowerCase() === want) nodeAt = Date.now();
+        if (desktopAt === null && await desktopStatus(id) === want) desktopAt = Date.now();
+        if (phoneAt === null && String(await phoneStatus(id)).toLowerCase() === want) phoneAt = Date.now();
+        await sleep(200);
+      }
+      const end = Date.now();
+      return { label, want, nodeMs: nodeAt && nodeAt - start, desktopAfterNodeMs: nodeAt && desktopAt ? desktopAt - nodeAt : null, phoneAfterNodeMs: nodeAt && phoneAt ? phoneAt - nodeAt : null,
+        desktopViewReads: count(desktopOps(start, end), VIEW_OP), phoneViewReads: count(phoneOps(start, end), VIEW_OP),
+        desktopStatusReads: count(desktopOps(start, end), STATUS_OP), phoneStatusReads: count(phoneOps(start, end), STATUS_OP) };
+    };
+
+    // (1) No change: three polls; status reads only, no view read; the bytes of each status read.
+    const quietFrom = Date.now();
+    await sleep(15_500);
+    const quietDesktop = desktopOps(quietFrom);
+    const quietPhone = phoneOps(quietFrom);
+    const quiet = { desktopStatusReads: count(quietDesktop, STATUS_OP), desktopViewReads: count(quietDesktop, VIEW_OP),
+      phoneStatusReads: count(quietPhone, STATUS_OP), phoneViewReads: count(quietPhone, VIEW_OP),
+      desktopStatusBytes: quietDesktop.filter(entry => entry.op === STATUS_OP).map(entry => ({ bytes: entry.bytes, statuses: entry.statuses, hubBytes: entry.hubBytes, hubStatuses: entry.hubStatuses, runIds: entry.runIds?.length ?? null })),
+      phoneStatusBytes: quietPhone.filter(entry => entry.op === STATUS_OP).map(entry => entry.bytes),
+      hubInDesktopRead: quietDesktop.filter(entry => entry.op === STATUS_OP).every(entry => entry.runIds?.includes(hub)),
+      hubInPhoneRead: quietPhone.filter(entry => entry.op === STATUS_OP).every(entry => entry.runIds?.includes(hub)) };
+    // (2) The phone list hidden (a run screen) and the page in the background: no status read (AC-009c).
+    await showOlder(page);
+    const otherKey = (await rowsOf(page)).find(row => row.depth === 0 && !row.key.includes(hub))?.key;
+    const hiddenFrom = Date.now();
+    await openRow(page, otherKey);
+    await sleep(11_000);
+    const onRunScreen = count(phoneOps(hiddenFrom), STATUS_OP);
+    await page.locator(sel('mobile-run-back')).first().click();
+    await page.locator(`${sel('mobile-run-tree')}:visible`).waitFor();
+    await page.evaluate(() => { Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => 'hidden' }); document.dispatchEvent(new Event('visibilitychange')); });
+    await sleep(500);
+    const backgroundFrom = Date.now();
+    await sleep(11_000);
+    const inBackground = count(phoneOps(backgroundFrom), STATUS_OP);
+    const shownAt = Date.now();
+    await page.evaluate(() => { Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => 'visible' }); document.dispatchEvent(new Event('visibilitychange')); });
+    await waitFor('a status read once the list shows again', async () => count(phoneOps(shownAt), STATUS_OP) > 0, 8_000).catch(() => undefined);
+    const firstAfterShown = phoneOps(shownAt).find(entry => entry.op === STATUS_OP);
+    const phoneHidden = { otherKey, onRunScreen, inBackground, firstReadAfterShownMs: firstAfterShown ? firstAfterShown.at - shownAt : null };
+    await ensureUnfolded(page, hubKey);
+    // (3) A child idle → running → idle: one long tool call (the scripted CLI waits `delayMs`, then calls the tool and
+    // ends its turn normally), so the turn runs for about 14 s and then the child is idle.
+    const longStep = `CALL_TOOLS:${JSON.stringify([{ name: 'send_message_to', arguments: { target_agent_run_id: hub, content: 'Done after the long step.' }, delayMs: 14_000 }])}`;
+    const running = await follow('child A running', childA, 'running', async () => toChild('SEND_MESSAGE', childA, longStep));
+    await shot(desktop.page, 'MSP-20-desktop-child-running');
+    await shot(page, 'MSP-20-phone-child-running');
+    const idleAgain = await follow('child A idle again', childA, 'idle', async () => undefined, 40_000);
+    // (4) The open run is not in the status read (AC-009d): a second desktop window opens the hub.
+    const opener = await openDesktop();
+    await opener.page.locator(`[data-test="run-list-row"][data-run-id="${hub}"] [data-test="workspace-agent-run-row"]`).first().click();
+    await waitFor('the hub open in that window', async () => new URL(opener.page.url()).searchParams.get('id') === hub, 30_000).catch(() => undefined);
+    const openedFrom = Date.now() + 2_000;
+    await sleep(13_000);
+    const openedReads = opener.net.filter(entry => entry.at >= openedFrom && entry.op === STATUS_OP);
+    const openRun = { url: opener.page.url().replace(stack.frontendUrl, ''), statusReads: openedReads.length, hubInRead: openedReads.filter(entry => entry.runIds?.includes(hub)).length };
+    await shot(opener.page, 'MSP-20-desktop-hub-open');
+    await opener.context.close();
+    // (5) A third child appears.
+    let childC = null;
+    const thirdFrom = Date.now();
+    const third = await (async () => {
+      childC = await delegate('/changelog_helper', 'D09-C');
+      const nodeAt = Date.now();
+      let desktopAt = null; let phoneAt = null;
+      while (Date.now() < nodeAt + 20_000 && (desktopAt === null || phoneAt === null)) {
+        if (desktopAt === null) { await unfoldDesktopHub().catch(() => undefined); if (await desktopStatus(childC)) desktopAt = Date.now(); }
+        if (phoneAt === null && await phoneStatus(childC)) phoneAt = Date.now();
+        await sleep(200);
+      }
+      await sleep(6_000);
+      const ops = { desktop: desktopOps(thirdFrom), phone: phoneOps(thirdFrom) };
+      return { childC, desktopAfterNodeMs: desktopAt && desktopAt - nodeAt, phoneAfterNodeMs: phoneAt && phoneAt - nodeAt,
+        desktopViewReads: count(ops.desktop, VIEW_OP), phoneViewReads: count(ops.phone, VIEW_OP) };
+    })();
+    await shot(desktop.page, 'MSP-20-desktop-third-child');
+    await shot(page, 'MSP-20-phone-third-child');
+    // (6) The run stops: its rows show offline.
+    const stopFrom = Date.now();
+    const stopped = (await alpha.gql('mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}', { id: hub })).terminateAgentRun;
+    const stopAt = Date.now();
+    let offline = { desktop: null, phone: null };
+    while (Date.now() < stopAt + 20_000 && (offline.desktop === null || offline.phone === null)) {
+      if (offline.desktop === null && [childA, childB, childC].every(Boolean) && (await Promise.all([childA, childB, childC].map(desktopStatus))).every(status => status === 'offline')) offline.desktop = Date.now() - stopAt;
+      if (offline.phone === null && (await Promise.all([childA, childB, childC].map(phoneStatus))).every(status => String(status).toLowerCase() === 'offline')) offline.phone = Date.now() - stopAt;
+      await sleep(200);
+    }
+    await sleep(6_000);
+    const stopOps = { desktop: desktopOps(stopFrom), phone: phoneOps(stopFrom) };
+    const stop = { success: stopped.success, desktopOfflineMs: offline.desktop, phoneOfflineMs: offline.phone,
+      desktopViewReads: count(stopOps.desktop, VIEW_OP), phoneViewReads: count(stopOps.phone, VIEW_OP),
+      finalDesktop: await Promise.all([childA, childB, childC].map(desktopStatus)), finalPhone: await Promise.all([childA, childB, childC].map(phoneStatus)) };
+    await shot(desktop.page, 'MSP-20-desktop-stopped');
+    await shot(page, 'MSP-20-phone-stopped');
+    collab.close();
+    await desktop.context.close();
+    const ONE_POLL = 7_000; const TWO_POLLS = 12_000;
+    const facts = { hub, childA, childB, childC, quiet, phoneHidden, running, idleAgain, openRun, third, stop };
+    const failures = [
+      [quiet.desktopStatusReads >= 2 && quiet.phoneStatusReads >= 2 && quiet.desktopViewReads === 0 && quiet.phoneViewReads === 0, 'no change: a status read on each poll and no view read (AC-009a)'],
+      [quiet.hubInDesktopRead && quiet.hubInPhoneRead, 'the listed hub is in each status read'],
+      [phoneHidden.onRunScreen === 0 && phoneHidden.inBackground === 0 && phoneHidden.firstReadAfterShownMs !== null && phoneHidden.firstReadAfterShownMs <= 6_000, 'the phone sends no status read while its list is hidden or the page is in the background, and reads again once shown (AC-009c)'],
+      [quiet.desktopStatusBytes.every(entry => entry.hubBytes !== null && entry.hubBytes <= 2_048 && (entry.statuses > 10 || entry.bytes <= 2_048)), 'a status read carries only states: the hub\'s answer and any read of ≤ 10 children ≤ 2 KB (AC-009a)'],
+      [running.desktopAfterNodeMs !== null && running.desktopAfterNodeMs <= TWO_POLLS && running.phoneAfterNodeMs !== null && running.phoneAfterNodeMs <= ONE_POLL, 'running shows within ≤ 2 polls on the desktop and one on the phone (AC-009a, AC-009c)'],
+      [idleAgain.desktopAfterNodeMs !== null && idleAgain.desktopAfterNodeMs <= TWO_POLLS && idleAgain.phoneAfterNodeMs !== null && idleAgain.phoneAfterNodeMs <= ONE_POLL, 'idle again shows within ≤ 2 polls on the desktop and one on the phone'],
+      [running.desktopViewReads === 0 && running.phoneViewReads === 0 && idleAgain.desktopViewReads === 0 && idleAgain.phoneViewReads === 0, 'a state change alone causes no view read'],
+      [openRun.statusReads === 0 || openRun.hubInRead === 0, 'the open run is not in the status read (AC-009d)'],
+      [third.desktopAfterNodeMs !== null && third.desktopAfterNodeMs <= ONE_POLL && third.phoneAfterNodeMs !== null && third.phoneAfterNodeMs <= ONE_POLL && third.desktopViewReads === 1 && third.phoneViewReads === 1, 'a third child appears within one poll with one view re-read on each surface (AC-009b)'],
+      [stop.success && stop.desktopOfflineMs !== null && stop.desktopOfflineMs <= ONE_POLL && stop.phoneOfflineMs !== null && stop.phoneOfflineMs <= ONE_POLL, 'after the run stops, its rows show offline within one poll (AC-009b)'],
+    ].filter(([ok]) => !ok).map(([, label]) => label);
+    assert(failures.length === 0, failures.join('; '), facts);
+    return facts;
   });
 
   await runCase('MSP-09', async () => {

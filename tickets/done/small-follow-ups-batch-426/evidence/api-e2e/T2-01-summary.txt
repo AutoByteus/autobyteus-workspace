@@ -1,0 +1,30 @@
+# T2-01 ticket round 2: mobile-shell probe (D-09 on the desktop Runs view and the phone list), summary of T2-01/mobile-shell-probe.json
+# command: pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<evidence>/T2-01 (worktree root)
+# commit: product a3bc0525cd (last code commit 736b51f87a); probe = working tree at run time (committed with this round's report)
+# build: autobyteus-server-ts dist and build:mobile-web on a3bc0525cd (2026-11-08 04:41-04:44)
+# env: macOS arm64, Node v22.23.1, headless Chrome; desktop window = nuxt dev against alpha (1440x1400); phone 390x844
+# date: 2026-11-08T05:41:08.600Z .. 2026-11-08T05:51:10.860Z
+
+result: Pass
+summary: {"cases": {"MSP-01": "Pass", "MSP-15": "Pass", "MSP-02": "Pass", "MSP-03": "Pass", "MSP-04": "Pass", "MSP-05": "Pass", "MSP-06": "Pass", "MSP-07": "Pass", "MSP-08": "Pass", "MSP-16": "Pass", "MSP-14": "Pass", "MSP-10": "Pass", "MSP-11": "Pass", "MSP-12": "Pass", "MSP-20": "Pass", "MSP-09": "Pass", "MSP-19": "Pass", "MSP-17": "Pass", "MSP-18": "Pass", "MSP-13": "Pass"}, "unknownBrowserErrors": 0}
+cleanup: {"frontendExited": true, "serversLeft": 0, "rootRemoved": true}
+
+## MSP-20 (D-09; AC-009a, b, c, d)
+  hub: "status_hub_b9064262d6d3428a9d2faab66a97c64e"
+  childA: "changelog_helper_f7c4e1cd3a4545368157a7d0ae5b14a2"
+  childB: "release_notes_writer_238d415fb30247f684b1079bf17d20ba"
+  childC: "changelog_helper_21d08892081d4be0877d74b48e0c75ec"
+  quiet: {"desktopStatusReads": 3, "desktopViewReads": 0, "phoneStatusReads": 3, "phoneViewReads": 0, "desktopStatusBytes": [{"bytes": 1650, "statuses": 7, "hubBytes": 511, "hubStatuses": 2, "runIds": 2}, {"bytes": 1650, "statuses": 7, "hubBytes": 511, "hubStatuses": 2, "runIds": 2}, {"bytes": 1650, "statuses": 7, "hubBytes": 511, "hubStatuses": 2, "runIds": 2}], "phoneStatusBytes": [556, 556, 556], "hubInDesktopRead": true, "hubInPhoneRead": true}
+  phoneHidden: {"otherKey": "agent:project_task_manager_bcd597b2eb01449fb1d4488938ace8b1", "onRunScreen": 0, "inBackground": 0, "firstReadAfterShownMs": 41}
+  running: {"label": "child A running", "want": "running", "nodeMs": 10, "desktopAfterNodeMs": 4570, "phoneAfterNodeMs": 4992, "desktopViewReads": 0, "phoneViewReads": 0, "desktopStatusReads": 1, "phoneStatusReads": 1}
+  idleAgain: {"label": "child A idle again", "want": "idle", "nodeMs": 8839, "desktopAfterNodeMs": 210, "phoneAfterNodeMs": 828, "desktopViewReads": 0, "phoneViewReads": 0, "desktopStatusReads": 2, "phoneStatusReads": 2}
+  openRun: {"url": "/chat?id=status_hub_b9064262d6d3428a9d2faab66a97c64e", "statusReads": 2, "hubInRead": 0}
+  third: {"childC": "changelog_helper_21d08892081d4be0877d74b48e0c75ec", "desktopAfterNodeMs": 5272, "phoneAfterNodeMs": 5277, "desktopViewReads": 1, "phoneViewReads": 1}
+  stop: {"success": true, "desktopOfflineMs": 1897, "phoneOfflineMs": 2324, "desktopViewReads": 1, "phoneViewReads": 1, "finalDesktop": ["offline", "offline", "offline"], "finalPhone": ["offline", "offline", "offline"]}
+
+## MSP-02 part (a) (D-09 on a nested row: a task-team member's delegated run under the listed PTM run)
+  unselected: {"seen": ["idle", "offline"], "changeMs": 1069, "terminated": {"success": true, "message": "Agent run terminated successfully."}, "afterRootOpened": "offline"}
+
+## MSP-12 status reads per window (none on the run screen, a view or hidden)
+  statusReadsIn: {"list": 0, "run": 0, "view": 0, "hidden": 0, "shown again": 0}
+  checksDuringPoll: 0
