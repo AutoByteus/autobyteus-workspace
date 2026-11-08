@@ -1,5 +1,6 @@
 /**
- * IPv4 address ranges used by Phone Access: the pairing URL policy and the network interface classifier.
+ * IP address ranges: the one owner of these range facts. Used by Phone Access (the pairing URL policy and the
+ * network interface classifier) and by the node address lists (`server-addressing`).
  */
 export type Ipv4Octets = [number, number, number, number];
 
@@ -34,3 +35,27 @@ export const isIpv4LinkLocal = (octets: Ipv4Octets): boolean =>
 /** 100.64/10: the range Tailscale gives its addresses from (also carrier-grade NAT space). */
 export const isIpv4TailscaleRange = (octets: Ipv4Octets): boolean =>
   octets[0] === 100 && octets[1] >= 64 && octets[1] <= 127;
+
+/** The first 16 bits of an IPv6 address, or `null` when the value is not an IPv6 address. */
+const parseIpv6FirstHextet = (value: string): number | null => {
+  if (!value.includes(":")) {
+    return null;
+  }
+  const first = value.split(":")[0] ?? "";
+  if (!/^[0-9a-f]{0,4}$/i.test(first)) {
+    return null;
+  }
+  return first === "" ? 0 : Number.parseInt(first, 16);
+};
+
+/** fc00::/7: IPv6 unique local addresses, the IPv6 counterpart of the private ranges. */
+export const isIpv6UniqueLocal = (value: string): boolean => {
+  const hextet = parseIpv6FirstHextet(value);
+  return hextet !== null && (hextet & 0xfe00) === 0xfc00;
+};
+
+/** fe80::/10. */
+export const isIpv6LinkLocal = (value: string): boolean => {
+  const hextet = parseIpv6FirstHextet(value);
+  return hextet !== null && (hextet & 0xffc0) === 0xfe80;
+};

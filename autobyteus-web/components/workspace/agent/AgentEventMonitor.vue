@@ -20,9 +20,9 @@
       @jump-to-latest="browse.jumpToLatest"
     />
 
-    <div v-if="!readOnly" class="shrink-0">
+    <!-- Why a file link did not open: on read-only conversations too (autobyteus-426 REQ-019). -->
+    <div v-if="filePreviewStatus" class="shrink-0">
       <p
-        v-if="filePreviewStatus"
         class="mb-2 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800"
         role="status"
         aria-live="polite"
@@ -30,6 +30,8 @@
       >
         {{ filePreviewStatus }}
       </p>
+    </div>
+    <div v-if="!readOnly" class="shrink-0">
       <slot name="composerContext" />
       <!-- A mentioned unit that could not be involved in this run (REQ-008); hidden otherwise. -->
       <CollaboratorAddFailureNotice />

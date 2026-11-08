@@ -29,6 +29,8 @@ const makeSession = () => {
     switchMode: vi.fn((next: 'view' | 'control') => { mode.value = next; connectionStatus.value = 'connected'; }),
     typeText: vi.fn(),
     pressKey: vi.fn(),
+    remoteClipboardText: ref<string | null>(null),
+    sendClipboardText: vi.fn(() => true),
   };
 };
 
@@ -207,6 +209,91 @@ describe('MobileNodeDesktop', () => {
       await flushPromises();
       expect(router.currentRoute.value.query).toEqual({ screen: 'desktop' });
       expect(wrapper.find('[data-testid="mobile-screen-bar"]').exists()).toBe(true);
+    });
+  });
+
+  describe('clipboard (autobyteus-426 REQ-005, AC-005)', () => {
+    const sheet = () => document.body.querySelector('[data-testid="mobile-node-desktop-clipboard"]');
+    const inSheet = (testId: string) => document.body.querySelector<HTMLElement>(`[data-testid="${testId}"]`);
+
+    it('offers Clipboard next to Keyboard in Control only while connected', async () => {
+      const { wrapper } = await mountView();
+      session.current.connectionStatus.value = 'connected';
+      await flushPromises();
+      expect(wrapper.find('[data-testid="mobile-node-desktop-clipboard-open"]').exists()).toBe(false);
+
+      session.current.mode.value = 'control';
+      await flushPromises();
+      expect(wrapper.get('[data-testid="mobile-node-desktop-clipboard-open"]').text()).toBe('Clipboard');
+
+      session.current.connectionStatus.value = 'connecting';
+      await flushPromises();
+      expect(wrapper.find('[data-testid="mobile-node-desktop-clipboard-open"]').exists()).toBe(false);
+    });
+
+    it('opens the sheet without touching the phone clipboard; Copy waits for the desktop', async () => {
+      const readText = vi.fn();
+      const writeText = vi.fn();
+      vi.stubGlobal('navigator', { ...navigator, clipboard: { readText, writeText } });
+      const { wrapper } = await inControl();
+      await wrapper.get('[data-testid="mobile-node-desktop-clipboard-open"]').trigger('click');
+      await flushPromises();
+
+      expect(sheet()).not.toBeNull();
+      expect(inSheet('mobile-node-desktop-clipboard-empty')!.textContent).toBe('Copy something on the desktop first.');
+      expect(inSheet('mobile-node-desktop-clipboard-copy-button')!.hasAttribute('disabled')).toBe(true);
+      expect(inSheet('mobile-node-desktop-clipboard-send')!.hasAttribute('disabled')).toBe(true);
+      expect(readText).not.toHaveBeenCalled();
+      expect(writeText).not.toHaveBeenCalled();
+      vi.unstubAllGlobals();
+    });
+
+    it('sends pasted text to the desktop clipboard and closes', async () => {
+      const { wrapper } = await inControl();
+      await wrapper.get('[data-testid="mobile-node-desktop-clipboard-open"]').trigger('click');
+      await flushPromises();
+      const input = inSheet('mobile-node-desktop-clipboard-paste-input') as HTMLTextAreaElement;
+      input.value = 'from my phone';
+      input.dispatchEvent(new Event('input'));
+      await flushPromises();
+      inSheet('mobile-node-desktop-clipboard-send')!.click();
+      await flushPromises();
+
+      expect(session.current.sendClipboardText).toHaveBeenCalledWith('from my phone');
+      expect(sheet()).toBeNull();
+    });
+
+    it('copies the desktop text on a tap, with the selection copy where the async clipboard is missing', async () => {
+      vi.stubGlobal('navigator', { ...navigator, clipboard: undefined });
+      const execCommand = vi.fn(() => true);
+      Object.defineProperty(document, 'execCommand', { configurable: true, value: execCommand });
+      const { wrapper } = await inControl();
+      session.current.remoteClipboardText.value = 'copied on the desktop';
+      await wrapper.get('[data-testid="mobile-node-desktop-clipboard-open"]').trigger('click');
+      await flushPromises();
+      expect(inSheet('mobile-node-desktop-clipboard-remote-text')!.textContent).toBe('copied on the desktop');
+      expect(execCommand).not.toHaveBeenCalled();
+
+      inSheet('mobile-node-desktop-clipboard-copy-button')!.click();
+      await flushPromises();
+      expect(execCommand).toHaveBeenCalledWith('copy');
+      expect(inSheet('mobile-node-desktop-clipboard-copy-button')!.textContent!.trim()).toBe('Copied');
+      vi.unstubAllGlobals();
+    });
+
+    it('shows the text selectable with a long-press hint when the phone refuses the copy', async () => {
+      vi.stubGlobal('navigator', { ...navigator, clipboard: { writeText: vi.fn(async () => { throw new Error('NotAllowed'); }) } });
+      Object.defineProperty(document, 'execCommand', { configurable: true, value: vi.fn(() => false) });
+      const { wrapper } = await inControl();
+      session.current.remoteClipboardText.value = 'secret-free text';
+      await wrapper.get('[data-testid="mobile-node-desktop-clipboard-open"]').trigger('click');
+      await flushPromises();
+      inSheet('mobile-node-desktop-clipboard-copy-button')!.click();
+      await flushPromises();
+
+      expect(inSheet('mobile-node-desktop-clipboard-fallback')!.textContent!.trim()).toBe('Long-press the text to copy it.');
+      expect(inSheet('mobile-node-desktop-clipboard-remote-text')!.className).toContain('select-text');
+      vi.unstubAllGlobals();
     });
   });
 

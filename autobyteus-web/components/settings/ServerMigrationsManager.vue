@@ -99,12 +99,15 @@
 </template>
 
 <script setup lang="ts">
+import { useLocalization } from '~/composables/useLocalization'
 import { onMounted } from 'vue'
 import {
   useAppDataMigrationsStore,
   type AppDataMigrationRecord,
   type AppDataMigrationStatus,
 } from '~/stores/appDataMigrationsStore'
+
+const { resolvedLocale } = useLocalization()
 
 const store = useAppDataMigrationsStore()
 
@@ -129,7 +132,7 @@ const statusLabel = (status: AppDataMigrationStatus): string => status.replace(/
 
 const formatDate = (value: string | null): string => {
   if (!value) return ''
-  return new Date(value).toLocaleString()
+  return new Date(value).toLocaleString(resolvedLocale.value)
 }
 
 onMounted(refresh)

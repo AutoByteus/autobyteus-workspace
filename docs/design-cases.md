@@ -66,7 +66,7 @@ Principle 13.
 - **Again in autobyteus-349 (AR-002):** the startup cleanup removed a never-started run when a walk of its folder "found no file besides the record". The removal is a recursive `fs.rm`, so a walk that failed, or did not look at a symlink, would have read as "empty" and deleted the very content the rule protects. Fix: the walk does not follow links, every entry other than directories and the record counts as content, and any walk error keeps the run and logs it.
 - **Notice it by:** "finds no X, so …", "counts as"; a destructive step gated on not finding something.
 
-### Case 5: Claims About The Code Taken On Trust (autobyteus-245, AR-202; autobyteus-247, AR-301; autobyteus-280, DI-001; autobyteus-278, AR-404; autobyteus-282, D-1; autobyteus-303, AR-001, SR-007; autobyteus-311, M-3; autobyteus-339, CRR-002 F-API-001; autobyteus-285, AR-001)
+### Case 5: Claims About The Code Taken On Trust (autobyteus-245, AR-202; autobyteus-247, AR-301; autobyteus-280, DI-001; autobyteus-278, AR-404; autobyteus-282, D-1; autobyteus-303, AR-001, SR-007; autobyteus-311, M-3; autobyteus-339, CRR-002 F-API-001; autobyteus-285, AR-001; autobyteus-277, CRR-003 F-01; autobyteus-426, SR-005, SR-008)
 
 Principle 1.
 
@@ -92,6 +92,8 @@ Principle 1.
   - Lesson: when a mechanism change drops a guarantee the old path gave ("a request in progress gets its answer"), trace one state-changing caller through it before calling the loss acceptable.
 - **Again in autobyteus-285 (AR-001):** the restart-resume design woke every busy run through `root.executeAgentCommand(post_message)`, because all three root kinds have that method. For a standalone root it serves only children: the host's commands go through its own stream, and `executeAgentCommand` rejects them (`AGENT_ROOT_HOST_COMMAND_REJECTED`). So every busy standalone chat would have failed to resume. Fix: dispatch by place; the host goes through `postUserMessage`, children and members through `executeAgentCommand`. Lesson: a method that exists on every kind is not proof that it serves every member of each kind; read its guard.
 - **Notice it by:** "mirrors", "as today", "the compiler enforces", a count with no source; a probe's stand-in for an outside service taken as the service; a module called "production" without listing its importers; "unchanged" for a merge of copies that were never compared line by line. "unrecoverable" or "the layout matches" without opening the existing files or asking how they were made. A product behavior stated from a function, without a caller.
+- **Again in autobyteus-277 (CRR-003 F-01):** the design said an Org run opens its first member "as the desktop's target resolver does"; the desktop opens no member. Lesson: a claim about what another surface does is a claim about code — cite the line.
+- **Again in autobyteus-426 (SR-005, SR-008; IMP-02, CRR-003):** twice the phone design traced a value but not the code that decides with it. The refusal code was traced into the read's `cause` — first through the shape its own spec built, then through Apollo — but not through the `ok` decision that skips the cause while runs are listed, nor the poll that replaces the store's error; and the Android restore assumed the `/mobile` URL names the open page, which holds for views but not for run screens. Lesson: trace a value to the decision that consumes it, through the real library and every store and poll that can replace it; and a check should read the outcome of its own request.
 
 ### Case 6: One Rule Applied By Several Callers (autobyteus-280, AR-004; autobyteus-260)
 
@@ -237,3 +239,13 @@ Principle 1 (several kinds or forms).
 - **Why it mattered:** the filter is the View only boundary. A framing error there either drops the viewer or, worse, lets bytes through under the wrong message type.
 - **Notice it by:** a filter, parser or proxy that frames messages by type only; a protocol with negotiated extensions; a length table built from the specification instead of from the encoders of the real client.
 - **Second instance (autobyteus-405, IMP-DI-001):** the same table said "View only → drop" for every ClientCutText. noVNC answers the server's extended-clipboard Caps with its own Caps in every mode; dropping that reply made the VNC server push the clipboard unasked, in a form noVNC does not consume in View only, so the viewer lost its place in the stream and the clipboard crossed the wire. Fix: in View only, forward only a well-formed Caps message. Lesson: dropping a negotiation message changes what the other side sends next; a filter decides each message by the conversation it belongs to, not by its type alone.
+
+### Case 17: A Refresh Designed Without Measuring Its Payload (autobyteus-277, ARCH-REV-003 AR-009)
+
+`DESIGN.md` best practice 4 (match payload and UI work to the change).
+
+- **The design said:** re-read the collaboration views on the run-list poll, so delegated rows of runs that are not open stay current.
+- **What happened:** one collaboration view is up to 1.2 MB (277 E-38); on a poll every few seconds, that read is repeated for every run the list shows.
+- **The fix:** the re-read was left out; a run that is not open keeps its first read (a smaller read for those states is autobyteus-426 item 9).
+- **Lesson:** before a design repeats a read, measure what one read carries and how often it runs; a poll multiplies it.
+- **Notice it by:** a refresh or re-read added to a poll or a list without the size of one read and its frequency written next to it.

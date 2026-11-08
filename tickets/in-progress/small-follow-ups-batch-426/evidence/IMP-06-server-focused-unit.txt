@@ -1,0 +1,7 @@
+# IMP-06 server focused unit + architecture (incl. tracked-imports)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/server-addressing tests/unit/remote-access tests/unit/workspaces tests/unit/node-desktop tests/unit/api/websocket/node-desktop.test.ts tests/unit/remote-collaboration/team-remote-delegation.test.ts tests/architecture --no-watch
+# Commit: b1d92c7ced
+# Environment: macOS, Node v22.23.1; 2026-11-07
+ Test Files  37 passed (37)
+      Tests  269 passed (269)
+exit=0

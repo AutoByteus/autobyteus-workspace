@@ -318,8 +318,8 @@ suite("Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shut
       expect(text.indexOf(HEADER), `${who}: notice first`).toBeLessThan(text.indexOf("ECHO_INPUT"));
       expect(text, `${who}: names the skill`).toContain("roots-probe");
       expect(text, `${who}: names the package with its current folder`)
-        .toContain(`Your skill package \`roots-probe\` has been updated (${path.dirname(skillPath)}).`);
-      expect(text, `${who}: lists the changed file`).toContain("- SKILL.md (changed)");
+        .toContain(`Your skill package \`roots-probe\` has been updated (\`${path.dirname(skillPath)}\`).`);
+      expect(text, `${who}: lists the changed file`).toContain("- `SKILL.md` (changed)");
       expect(text, `${who}: the message follows unchanged`).toMatch(/ECHO_INPUT (team user|org|copy) second/);
     }
     expect(next.teamPlain, "member without the skill gets no notice").not.toContain(HEADER);
@@ -395,7 +395,7 @@ suite("Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shut
     const afterUpdate = await echo("ECHO_INPUT gh after update");
     expect(occurrences(afterUpdate, HEADER)).toBe(1);
     expect(afterUpdate, "reported as updated with the new folder")
-      .toContain(`Your skill package \`gh-probe\` has been updated (${secondRoot!}).`);
+      .toContain(`Your skill package \`gh-probe\` has been updated (\`${secondRoot!}\`).`);
     expect(afterUpdate).not.toMatch(/no longer available/i);
 
     // The new generation folder is watched: a local edit there produces another notice.
@@ -403,8 +403,8 @@ suite("Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shut
     await wait(3_000);
     const afterEdit = await echo("ECHO_INPUT gh after local edit");
     expect(occurrences(afterEdit, HEADER)).toBe(1);
-    expect(afterEdit).toContain(`Your skill package \`gh-probe\` has been updated (${secondRoot!}).`);
-    expect(afterEdit).toContain("- SKILL.md (changed)");
+    expect(afterEdit).toContain(`Your skill package \`gh-probe\` has been updated (\`${secondRoot!}\`).`);
+    expect(afterEdit).toContain("- `SKILL.md` (changed)");
     evidence.sun003 = { firstRoot, secondRoot, afterUpdate, afterEdit };
   }, 180_000);
 });

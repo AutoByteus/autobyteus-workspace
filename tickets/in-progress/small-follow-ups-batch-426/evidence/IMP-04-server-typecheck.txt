@@ -1,0 +1,9 @@
+# IMP-04 server typecheck
+# Command: pnpm -C autobyteus-server-ts typecheck
+# Commit: work tree before 26a29318f7 (server source equal to 85d26ed1e8)
+# Environment: macOS 26.5.2, Node v22.23.1
+# Date: 2026-11-07
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 9.5s
+[typecheck] server tests (tsconfig.tests.json): 1182 errors, exit 2, 47.0s
+[typecheck] production errors: 0; test-file errors: 1182 in 365 files (baseline 1182 in 365 files)
+[typecheck] PASS

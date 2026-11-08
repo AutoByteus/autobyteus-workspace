@@ -1,0 +1,220 @@
+# API-04 mobile-shell probe (phone production bundle) — summary of API-04/mobile-shell-probe.json
+# command: pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<evidence>/API-04 (worktree root)
+# commit: product 42a86a5e93; probe = working tree at that time (committed with this report); server dist + phone bundle built on 42a86a5e93
+# env: macOS arm64, Node v22.23.1, Chrome headless (playwright-core), probe-owned alpha/beta servers + nuxt dev; phone 390x844 on http://192.168.77.10:<port>
+# date: 2026-11-07T21:42:11.402Z .. 2026-11-07T21:54:01.529Z
+
+result: Fail
+summary: {"cases": {"MSP-01": "Pass", "MSP-15": "Pass", "MSP-02": "Pass", "MSP-03": "Pass", "MSP-04": "Pass", "MSP-05": "Pass", "MSP-06": "Pass", "MSP-07": "Pass", "MSP-08": "Pass", "MSP-16": "Pass", "MSP-14": "Pass", "MSP-10": "Pass", "MSP-11": "Pass", "MSP-12": "Pass", "MSP-09": "Pass", "MSP-19": "Pass", "MSP-17": "Pass", "MSP-18": "Fail", "MSP-13": "Fail"}, "unknownBrowserErrors": 1}
+cleanup: {"frontendExited": true, "serversLeft": 0, "rootRemoved": true}
+
+## MSP-07 Pass
+{
+ "refusals": [
+  {
+   "typed": "/definitely/not/a/folder-426",
+   "expected": "No folder at this path.",
+   "error": "No folder at this path.",
+   "sheetOpen": 1,
+   "value": "workspace"
+  },
+  {
+   "typed": "/etc/hosts",
+   "expected": "This path is a file, not a folder.",
+   "error": "This path is a file, not a folder.",
+   "sheetOpen": 1,
+   "value": "workspace"
+  },
+  {
+   "typed": "relative/dir",
+   "expected": "Enter a full path, starting with /.",
+   "error": "Enter a full path, starting with /.",
+   "sheetOpen": 1,
+   "value": "workspace"
+  }
+ ],
+ "registeredAdded": [],
+ "existingFolder": {
+  "value": "extra-folder-426",
+  "sheetOpen": 0,
+  "error": 0,
+  "registered": true
+ }
+}
+
+## MSP-19 Pass
+{
+ "unpaired": {
+  "node": [],
+  "other": []
+ },
+ "paired": {
+  "feed": [
+   {
+    "path": "/ws/agent-package-definitions",
+    "host": "192.168.77.10:54022",
+    "accessToken": true,
+    "openSeconds": null
+   }
+  ],
+  "feedHosts": [
+   "192.168.77.10:54022"
+  ],
+  "other": []
+ },
+ "afterUnpair": {
+  "feedStillOpen": 0,
+  "feedOpenedAfter": 0,
+  "nodeSocketsOpenedAfter": [],
+  "other": []
+ },
+ "desktopFeed": 1
+}
+
+## MSP-17 Pass
+{
+ "orgRunId": "delivery_org_6f4e39394bfb4c01b81c054c7b8cf30d",
+ "task": {
+  "address": "/changelog_helper",
+  "agentRunId": "changelog_helper_b978e0fadf3d437097fa11dafc431891",
+  "teamRunId": null
+ },
+ "echoed": true,
+ "terminated": true,
+ "taskKey": "org:delivery_org_6f4e39394bfb4c01b81c054c7b8cf30d/task-agent:changelog_helper_b978e0fadf3d437097fa11dafc431891",
+ "before": {
+  "links": 1,
+  "composer": 0,
+  "status": 0
+ },
+ "after": {
+  "status": "This file is available only on the host workspace.",
+  "role": "status",
+  "composer": 0,
+  "urlUnchanged": true,
+  "viewer": 0,
+  "leaked": false
+ },
+ "backToList": {
+  "backs": [
+   {
+    "step": 0,
+    "count": 1,
+    "enabled": true,
+    "screen": "open",
+    "query": "?rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_6f4e39394bfb4c01b81c054c7b8cf30d&mode=history&memberAddress=/changelog_helper&agentRunId=changelog_helper_b978e0fadf3d437097fa11dafc431891&screen=run"
+   }
+  ],
+  "list": 1
+ }
+}
+
+## MSP-18 Fail: off: the open phone's Check (runs listed) shows the bar and the banner, the session kept; off, then the node down: "Can’t reach"
+{
+ "reopened": false,
+ "openCheck": {
+  "bar": "Connected",
+  "banner": "",
+  "bannerConnection": null,
+  "bannerCheck": 0,
+  "rows": 27,
+  "listError": 0,
+  "pairing": 0,
+  "sheet": "Connected",
+  "credentialKept": true
+ },
+ "offStart": {
+  "bar": "Phone access off",
+  "banner": "Alpha Test Node is reachable, but Phone access is off. Check",
+  "bannerConnection": "phone_access_off",
+  "bannerCheck": 1,
+  "rows": 0,
+  "listError": 1,
+  "pairing": 0,
+  "credentialKept": true
+ },
+ "on": {
+  "bar": "Connected",
+  "banner": "",
+  "bannerConnection": null,
+  "bannerCheck": 0,
+  "rows": 13,
+  "listError": 0,
+  "pairing": 0,
+  "sheet": "Connected",
+  "credentialKept": true
+ },
+ "offBeforeDown": {
+  "bar": "Phone access off",
+  "banner": "Alpha Test Node is reachable, but Phone access is off. Check",
+  "bannerConnection": "phone_access_off",
+  "bannerCheck": 1,
+  "rows": 0,
+  "listError": 1,
+  "pairing": 0
+ },
+ "offThenDown": {
+  "bar": "Connected",
+  "banner": "",
+  "bannerConnection": null,
+  "bannerCheck": 0,
+  "rows": 0,
+  "listError": 0,
+  "pairing": 0,
+  "sheet": "Connected"
+ },
+ "back": {
+  "bar": "Connected",
+  "banner": "",
+  "bannerConnection": null,
+  "bannerCheck": 0,
+  "rows": 13,
+  "listError": 0,
+  "pairing": 0,
+  "sheet": "Connected",
+  "credentialKept": true
+ }
+}
+
+## MSP-13 Fail: a revoked phone's Check (runs listed): the pairing screen, the session removed (AC-002)
+{
+ "reads": [
+  {
+   "at": 1794088398133,
+   "label": "phone-unknown-credential",
+   "case": "MSP-13",
+   "op": "ListWorkspaceRunHistory",
+   "window": null,
+   "status": 401,
+   "bytes": 123
+  }
+ ],
+ "onPairing": 1,
+ "sessionLeft": null,
+ "revokedAll": 200,
+ "openPhoneAfterCheck": {
+  "pairing": 0,
+  "sessionLeft": "{\"entryId\":\"mobile-paired-node\",\"serverBaseUrl\":\"http://192.168.77.10:54022\",\"nodeName\":\"Alpha Test Node\",\"credential\":\"mra_…\",\"device\":{\"deviceId\":\"device_243994692b7f421bbe60272eeb26d1e5\",\"displayName\":\"Phone\",\"clientFacingBaseUrl\":\"http://192.168.77.10:54022\",\"connectionWay\":\"local_network\",\"createdAt\":\"2026-11-07T21:42:42.432Z\",\"lastSeenAt\":null,\"revokedAt\":null},\"pairedAt\":\"2026-11-07T21:42:42.472Z\"}"
+ },
+ "revokedShows": {
+  "pairing": true,
+  "list": "other",
+  "bar": null,
+  "sessionLeft": null
+ },
+ "revokedReads": [
+  "ListWorkspaceRunHistory 403",
+  "ListCollaborationRootHistory 403",
+  "GetAllWorkspaces 403",
+  "GetAgentDefinitions 403",
+  "GetAgentTeamDefinitions 403",
+  "GetAgentOrgDefinitions 403"
+ ]
+}
+
+## browser lines counted known by cause (FU-003: serverStore health check of http://localhost:8000/health)
+{"case": "setup", "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED", "known": true, "cause": "FU-003: serverStore health check of http://localhost:8000/health"}
+{"case": "MSP-19", "line": "phone-feed console: Failed to load resource: net::ERR_CONNECTION_REFUSED", "known": true, "cause": "FU-003: serverStore health check of http://localhost:8000/health"}
+{"case": "MSP-19", "line": "phone-feed console: Failed to load resource: net::ERR_CONNECTION_REFUSED", "known": true, "cause": "FU-003: serverStore health check of http://localhost:8000/health"}
+## unknown browser lines in this run (the node-down line was added to MSP-18's expected lines after this run)
+{"case": "MSP-18", "line": "phone-off-then-down console: Failed to fetch all workspace metadata: Error: Bound backend is not ready\n    at Proxy.fetchAllWorkspaces (http://192.168.77.10:54022/mobile/_nuxt/Q6DY2Km-.js:1996:30646)\n    at async Proxy.loadWorkspaceCatalogForNavigation (http://192.168.77.10:54022/mobile/_nuxt/Q6DY2Km-.js:1964:7008)\n    at async Promise.all (index 1)\n    at async Obj

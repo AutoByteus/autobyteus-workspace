@@ -39,7 +39,7 @@ describe('useRunHistorySectionLoad (autobyteus-277 DS-001)', () => {
 
   it('loads the history in its window with the catalog and the definitions, then polls every 5 s', async () => {
     const { load } = host({ window: null, polling: true })
-    await expect(load().initialLoad).resolves.toEqual({ ok: true })
+    await expect(load().initialLoad).resolves.toBeUndefined()
     expect(stores.history.setHistoryWindow).toHaveBeenCalledWith(null)
     expect(stores.history.fetchTree).toHaveBeenCalledTimes(1)
     expect(stores.history.loadWorkspaceCatalogForNavigation).toHaveBeenCalledTimes(1)
@@ -81,19 +81,20 @@ describe('useRunHistorySectionLoad (autobyteus-277 DS-001)', () => {
     expect(stores.history.fetchTree).toHaveBeenCalledTimes(2)
   })
 
-  it('reports a read that threw, with its error', async () => {
-    const cause = Object.assign(new Error('Request failed with status code 401'), { response: { status: 401 } })
-    stores.history.fetchTree.mockRejectedValueOnce(cause)
+  it('settles even when the history read throws; the store shows the failure, and polling still starts', async () => {
+    stores.history.fetchTree.mockRejectedValueOnce(new Error('Request failed with status code 401'))
     const { load } = host({ window: null, polling: true })
-    await expect(load().initialLoad).resolves.toEqual({ ok: false, cause })
+    await expect(load().initialLoad).resolves.toBeUndefined()
+    vi.advanceTimersByTime(5_000)
+    expect(stores.history.refreshTreeQuietly).toHaveBeenCalledTimes(1)
   })
 
-  it('reports a read that listed nothing while the store recorded an error; with runs listed it is a success', async () => {
+  it('a later load settles with nothing to decide, whatever the store recorded (autobyteus-426 SR-008)', async () => {
     stores.history.fetchTree.mockImplementation(async () => { stores.history.error = 'offline' })
     const { load } = host({ window: null, polling: false })
-    await expect(load().initialLoad).resolves.toEqual({ ok: false, cause: 'offline' })
-    stores.history.workspaceGroups = [{ agentDefinitions: [{ runs: [{}] }], teamDefinitions: [] }]
-    await expect(load().load()).resolves.toEqual({ ok: true })
+    await expect(load().initialLoad).resolves.toBeUndefined()
+    await expect(load().load()).resolves.toBeUndefined()
+    expect(stores.history.fetchTree).toHaveBeenCalledTimes(2)
     await flushPromises()
   })
 })

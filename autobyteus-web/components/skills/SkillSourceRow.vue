@@ -68,7 +68,7 @@ import { skillSourceDisplayName } from '~/utils/skills/skillSourceDisplay'
 
 const props = defineProps<{ source: SkillSource; pending?: string; disabled: boolean }>()
 defineEmits(['check', 'update', 'remove'])
-const { t } = useLocalization()
+const { t, resolvedLocale } = useLocalization()
 
 const name = computed(() => skillSourceDisplayName(props.source))
 const location = computed(() => props.source.github?.repositoryUrl ?? props.source.path)
@@ -92,7 +92,7 @@ const countLabel = computed(() => props.source.skillCount === 0 ? t('skills.sour
     : t('skills.components.skills.SkillSourcesModal.skills_count', { count: props.source.skillCount }))
 
 const checkedLabel = computed(() => props.source.github?.latestCheckedAt
-  ? new Date(props.source.github.latestCheckedAt).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' }) : '')
+  ? new Date(props.source.github.latestCheckedAt).toLocaleString(resolvedLocale.value, { dateStyle: 'medium', timeStyle: 'short' }) : '')
 
 // Version details are kept off the row and shown on hover over the status.
 const versionDetails = computed(() => {

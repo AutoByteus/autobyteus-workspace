@@ -17,7 +17,7 @@ const t = (key: string, params: Record<string, unknown> = {}) => {
   if (catalog[key] === undefined) throw new Error(`Missing label ${key}`);
   return Object.entries(params).reduce((text, [name, value]) => text.replaceAll(`{{${name}}}`, String(value)), catalog[key]!);
 };
-vi.mock('~/composables/useLocalization', () => ({ useLocalization: () => ({ t }) }));
+vi.mock('~/composables/useLocalization', () => ({ useLocalization: () => ({ t, resolvedLocale: { value: 'en' } }) }));
 const snapshot = (id = 'run-1', tasks: unknown[] = [], instance = 'instance-1') => ({
   data: { agentBackgroundTaskView: { __typename: 'AgentBackgroundTaskSnapshot', agentRunId: id, runInstanceId: instance, observedAt: '2026-10-26T00:00:00Z', tasks } },
 });

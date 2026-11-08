@@ -451,14 +451,14 @@ export const resolveRunHistoryWorkspaceMetadataByRootPath = async (
   }
 };
 
-export const ensureRunHistoryWorkspaceByRootPath = async (
+/**
+ * The workspace ID for a root path: a workspace already listed, else the one the node registers for it.
+ * Throws when the node refuses the path (`WORKSPACE_PATH_REFUSED`) or the request fails.
+ */
+export const findOrRegisterWorkspaceByRootPath = async (
   rootPath: string,
-): Promise<string | null> => {
+): Promise<string> => {
   const workspaceStore = useWorkspaceStore();
-  if (!rootPath.trim()) {
-    return null;
-  }
-
   const normalizedRootPath = normalizeRootPath(rootPath) || rootPath.trim();
   const findWorkspaceIdByRootPath = (): string | null => {
     const matchingWorkspace = workspaceStore.allWorkspaces.find((workspace) => {
@@ -486,13 +486,18 @@ export const ensureRunHistoryWorkspaceByRootPath = async (
     }
   }
 
-  try {
-    const fetchedWorkspaceId = findWorkspaceIdByRootPath();
-    if (fetchedWorkspaceId) {
-      return fetchedWorkspaceId;
-    }
+  return findWorkspaceIdByRootPath() ?? await workspaceStore.createWorkspace({ root_path: normalizedRootPath });
+};
 
-    return await workspaceStore.createWorkspace({ root_path: normalizedRootPath });
+/** History restore: the workspace for a recorded root path, or `null` when there is none to open. */
+export const ensureRunHistoryWorkspaceByRootPath = async (
+  rootPath: string,
+): Promise<string | null> => {
+  if (!rootPath.trim()) {
+    return null;
+  }
+  try {
+    return await findOrRegisterWorkspaceByRootPath(rootPath);
   } catch {
     return null;
   }

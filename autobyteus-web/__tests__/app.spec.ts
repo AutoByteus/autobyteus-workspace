@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mountSuspended, mockComponent, mockNuxtImport } from '@nuxt/test-utils/runtime';
 import App from '../app.vue';
 
-const { runtimeConfigMock, serverStoreMock, windowNodeContextStoreMock, localizationGateState, runtimeFeatureState, feedEnabledRefs } = vi.hoisted(() => ({
+const { runtimeConfigMock, serverStoreMock, windowNodeContextStoreMock, localizationGateState, runtimeFeatureState, feedEnabledRefs, definitionFeedEnabledRefs, mobileRuntimeState, mobileSession } = vi.hoisted(() => ({
   runtimeConfigMock: {
     public: {
       showDebugErrorPanel: false,
@@ -22,6 +22,9 @@ const { runtimeConfigMock, serverStoreMock, windowNodeContextStoreMock, localiza
     desktopSettings: true,
   },
   feedEnabledRefs: [] as Array<{ value: boolean }>,
+  definitionFeedEnabledRefs: [] as Array<{ value: boolean }>,
+  mobileRuntimeState: { phone: false },
+  mobileSession: { store: null as null | { isPaired: boolean } },
 }));
 
 vi.mock('~/utils/mobileFeatureGates', async (importOriginal) => ({
@@ -33,6 +36,21 @@ vi.mock('~/utils/mobileFeatureGates', async (importOriginal) => ({
 vi.mock('~/composables/notifications/useUpdateNotificationChangeFeed', () => ({
   useUpdateNotificationChangeFeed: (enabled: { value: boolean }) => { feedEnabledRefs.push(enabled); },
 }));
+
+vi.mock('~/composables/agentPackages/useAgentPackageDefinitionChangeFeed', () => ({
+  useAgentPackageDefinitionChangeFeed: (enabled: { value: boolean }) => { definitionFeedEnabledRefs.push(enabled); },
+}));
+
+vi.mock('~/utils/remoteAccess/mobileRuntime', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('~/utils/remoteAccess/mobileRuntime')>()),
+  isMobileRemoteAccessRuntime: () => mobileRuntimeState.phone,
+}));
+
+vi.mock('~/stores/mobileNodeSessionStore', async () => {
+  const { reactive } = await import('vue');
+  mobileSession.store = reactive({ isPaired: false });
+  return { useMobileNodeSessionStore: () => mobileSession.store };
+});
 
 mockNuxtImport('useRuntimeConfig', () => () => runtimeConfigMock);
 mockComponent('NuxtLayout', () => ({
@@ -90,6 +108,9 @@ describe('app.vue', () => {
     localizationGateState.ready = true;
     runtimeFeatureState.desktopSettings = true;
     feedEnabledRefs.length = 0;
+    definitionFeedEnabledRefs.length = 0;
+    mobileRuntimeState.phone = false;
+    if (mobileSession.store) mobileSession.store.isPaired = false;
   });
 
   it('holds product UI behind the localization gate while booting', async () => {
@@ -152,5 +173,25 @@ describe('app.vue', () => {
 
     expect(wrapper.find('[data-testid="notification-center"]').exists()).toBe(true);
     expect(feedEnabledRefs.at(-1)?.value).toBe(true);
+  });
+
+  it('keeps the agent package definitions feed in a ready desktop or browser window, paired or not', async () => {
+    windowNodeContextStoreMock.isEmbeddedWindow = false;
+    await mountSuspended(App, { route: '/' });
+
+    expect(definitionFeedEnabledRefs.at(-1)?.value).toBe(true);
+  });
+
+  it('opens the definitions feed on the phone only while it has a paired session (autobyteus-426 AC-001)', async () => {
+    mobileRuntimeState.phone = true;
+    windowNodeContextStoreMock.isEmbeddedWindow = false;
+    await mountSuspended(App, { route: '/' });
+    const enabled = definitionFeedEnabledRefs.at(-1)!;
+
+    expect(enabled.value).toBe(false);
+    mobileSession.store!.isPaired = true;
+    expect(enabled.value).toBe(true);
+    mobileSession.store!.isPaired = false;
+    expect(enabled.value).toBe(false);
   });
 });

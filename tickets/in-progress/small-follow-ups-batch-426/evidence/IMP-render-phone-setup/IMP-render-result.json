@@ -1,0 +1,97 @@
+{
+  "cases": {
+    "desktop": {
+      "local_network": {
+        "status": "This computer isn’t on a Wi-Fi or LAN network.",
+        "statusHeight": 24,
+        "statusRight": 981,
+        "panelRight": 1002,
+        "statusScrollOverflow": false,
+        "note": "",
+        "how": "Your phone talks to this computer directly over your local network, like two devices at home.\n\nWhen\nYour phone and this computer are on the same Wi-Fi or LAN, such as a home or office network.\nSetup\nNothing to install. The first time on a network, AutoByteus asks for your OK.\nSafety\nThe connection has no extra protection, so others on the same network could see it. Fine at home and in your office. On public Wi-Fi (café, hotel, airport) use Tailscale instead. Works only while the phone is on this network.",
+        "blocked": "",
+        "allowedNote": ""
+      },
+      "tailscale": {
+        "status": "Not set up yet.",
+        "statusHeight": 24,
+        "statusRight": 981,
+        "panelRight": 1002,
+        "statusScrollOverflow": false,
+        "note": "Still not found. Tailscale isn’t on, on this computer.",
+        "how": "Tailscale builds a private, encrypted connection between your phone and this computer, wherever they are.\n\nWhen\nYou want to use your phone away from home, on mobile data or any Wi-Fi.\nSetup\nInstall Tailscale (free) on this computer and on your phone. Get Tailscale.\nSign in to the same account on both, and keep it on.\nSafety\nThe connection is encrypted between your phone and this computer, and only devices signed in to your Tailscale account can reach it.",
+        "blocked": "",
+        "allowedNote": ""
+      },
+      "vpn": {
+        "status": "No VPN found on this computer. Connect it, then Check again.",
+        "statusHeight": 24,
+        "statusRight": 981,
+        "panelRight": 1002,
+        "statusScrollOverflow": false,
+        "note": "Still no VPN found.",
+        "how": "Your VPN puts your phone and this computer in the same private network.\n\nWhen\nYou already use your own VPN that connects your phone and this computer.\nSetup\nConnect both to the VPN. AutoByteus finds it by itself.\nSafety\nAs protected as your VPN: the connection is encrypted between your devices.",
+        "blocked": "",
+        "allowedNote": ""
+      },
+      "company_address": {
+        "status": "Not set up yet.",
+        "statusHeight": 24,
+        "statusRight": 981,
+        "panelRight": 1002,
+        "statusScrollOverflow": false,
+        "note": "",
+        "how": "Your phone reaches the node at the address your company set up, through the company network or its VPN.\n\nWhen\nThe node runs on a company server and your IT gave it an address, such as autobyteus.company.com.\nSetup\nYour IT sets the address once on the node. On your phone, turn on the company VPN if your company uses one.\nSafety\nProtected by your company’s network: usually a secure (https) address reachable only inside the company or through its VPN.",
+        "blocked": "",
+        "allowedNote": ""
+      }
+    },
+    "narrow": {
+      "local_network": {
+        "status": "This computer isn’t on a Wi-Fi or LAN network.",
+        "statusHeight": 24,
+        "statusRight": 570,
+        "panelRight": 591,
+        "statusScrollOverflow": false,
+        "note": "",
+        "how": "Your phone talks to this computer directly over your local network, like two devices at home.\n\nWhen\nYour phone and this computer are on the same Wi-Fi or LAN, such as a home or office network.\nSetup\nNothing to install. The first time on a network, AutoByteus asks for your OK.\nSafety\nThe connection has no extra protection, so others on the same network could see it. Fine at home and in your office. On public Wi-Fi (café, hotel, airport) use Tailscale instead. Works only while the phone is on this network.",
+        "blocked": "",
+        "allowedNote": ""
+      },
+      "tailscale": {
+        "status": "Not set up yet.",
+        "statusHeight": 24,
+        "statusRight": 570,
+        "panelRight": 591,
+        "statusScrollOverflow": false,
+        "note": "Still not found. Tailscale isn’t on, on this computer.",
+        "how": "Tailscale builds a private, encrypted connection between your phone and this computer, wherever they are.\n\nWhen\nYou want to use your phone away from home, on mobile data or any Wi-Fi.\nSetup\nInstall Tailscale (free) on this computer and on your phone. Get Tailscale.\nSign in to the same account on both, and keep it on.\nSafety\nThe connection is encrypted between your phone and this computer, and only devices signed in to your Tailscale account can reach it.",
+        "blocked": "",
+        "allowedNote": ""
+      },
+      "vpn": {
+        "status": "No VPN found on this computer. Connect it, then Check again.",
+        "statusHeight": 24,
+        "statusRight": 570,
+        "panelRight": 591,
+        "statusScrollOverflow": false,
+        "note": "Still no VPN found.",
+        "how": "Your VPN puts your phone and this computer in the same private network.\n\nWhen\nYou already use your own VPN that connects your phone and this computer.\nSetup\nConnect both to the VPN. AutoByteus finds it by itself.\nSafety\nAs protected as your VPN: the connection is encrypted between your devices.",
+        "blocked": "",
+        "allowedNote": ""
+      },
+      "company_address": {
+        "status": "Not set up yet.",
+        "statusHeight": 24,
+        "statusRight": 570,
+        "panelRight": 591,
+        "statusScrollOverflow": false,
+        "note": "",
+        "how": "Your phone reaches the node at the address your company set up, through the company network or its VPN.\n\nWhen\nThe node runs on a company server and your IT gave it an address, such as autobyteus.company.com.\nSetup\nYour IT sets the address once on the node. On your phone, turn on the company VPN if your company uses one.\nSafety\nProtected by your company’s network: usually a secure (https) address reachable only inside the company or through its VPN.",
+        "blocked": "",
+        "allowedNote": ""
+      }
+    }
+  },
+  "browserErrors": []
+}

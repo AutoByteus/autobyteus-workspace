@@ -85,12 +85,12 @@ const props = defineProps<{
 }>();
 defineEmits<{ clear: []; retry: []; open: [result: SearchResult, match: SearchMatch] }>();
 
-const { t } = useLocalization();
+const { t, resolvedLocale } = useLocalization();
 
 const formatDay = (day: string | null) => {
   if (!day) return '';
   const date = new Date(`${day}T12:00:00Z`);
-  return Number.isNaN(date.getTime()) ? day : date.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+  return Number.isNaN(date.getTime()) ? day : date.toLocaleDateString(resolvedLocale.value, { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
 };
 const days = (result: SearchResult) => (!result.firstDay || result.firstDay === result.latestDay
   ? t('memory.results.mentioned_one', { day: formatDay(result.latestDay) })

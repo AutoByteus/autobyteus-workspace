@@ -1,5 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
+import { ApolloError } from '@apollo/client/core'
+import { GraphQLError } from 'graphql'
 import { useMobileLaunchWorkspaces } from '~/composables/mobile/useMobileLaunchWorkspaces'
 import { useWorkspaceStore } from '~/stores/workspace'
 
@@ -53,6 +55,34 @@ describe('useMobileLaunchWorkspaces', () => {
       label: 'Loaded Workspace',
       detail: '/srv/autobyteus/loaded',
     })
+  })
+
+  it('shows the node\'s refusal reason under the path field and registers nothing (autobyteus-426 AC-008)', async () => {
+    const workspaceStore = useWorkspaceStore()
+    const refused = (reason: string) => new ApolloError({
+      graphQLErrors: [new GraphQLError('refused', { extensions: { code: 'WORKSPACE_PATH_REFUSED', reason } })],
+    })
+    const launchWorkspaces = useMobileLaunchWorkspaces()
+    const cases: Array<[string, string, string]> = [
+      ['/definitely/not/a/folder', 'missing', 'No folder at this path.'],
+      ['/etc/hosts', 'not_a_folder', 'This path is a file, not a folder.'],
+      ['relative/dir', 'not_absolute', 'Enter a full path, starting with /.'],
+    ]
+    for (const [path, reason, text] of cases) {
+      vi.spyOn(workspaceStore, 'createWorkspace').mockRejectedValueOnce(refused(reason))
+      await expect(launchWorkspaces.loadByPath(path)).rejects.toThrow()
+      expect(launchWorkspaces.error.value).toBe(text)
+    }
+    expect(launchWorkspaces.workspaceItems.value).toEqual([])
+  })
+
+  it('keeps the request\'s own message for any other failure', async () => {
+    const workspaceStore = useWorkspaceStore()
+    vi.spyOn(workspaceStore, 'createWorkspace').mockRejectedValue(new Error('Workspace request is no longer eligible on this node.'))
+    const launchWorkspaces = useMobileLaunchWorkspaces()
+
+    await expect(launchWorkspaces.loadByPath('/srv/x')).rejects.toThrow()
+    expect(launchWorkspaces.error.value).toBe('Workspace request is no longer eligible on this node.')
   })
 
   it('rejects empty path loads with local picker error state', async () => {

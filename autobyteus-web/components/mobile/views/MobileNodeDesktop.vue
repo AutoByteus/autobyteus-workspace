@@ -29,6 +29,15 @@
             {{ t('mobile.nodeDesktop.keyboard') }}
           </button>
           <button
+            v-if="mode === 'control' && isConnected"
+            type="button"
+            :class="barButtonClass"
+            data-testid="mobile-node-desktop-clipboard-open"
+            @click="clipboardOpen = true"
+          >
+            {{ t('mobile.nodeDesktop.clipboard') }}
+          </button>
+          <button
             type="button"
             :class="[barButtonClass, mode === 'control' ? 'bg-amber-100 text-amber-900' : 'bg-emerald-50 text-emerald-800']"
             :aria-pressed="mode === 'control'"
@@ -113,6 +122,12 @@
       @compositionstart="composing = true"
       @compositionend="onCompositionEnd"
     />
+    <MobileNodeDesktopClipboard
+      v-if="clipboardOpen && mode === 'control' && isConnected"
+      :remote-text="remoteClipboardText"
+      @send="sendToDesktopClipboard"
+      @close="clipboardOpen = false"
+    />
   </section>
 </template>
 
@@ -120,6 +135,7 @@
 import { computed, ref } from 'vue';
 import { Icon } from '@iconify/vue';
 import MobileScreenBar from '~/components/mobile/MobileScreenBar.vue';
+import MobileNodeDesktopClipboard from '~/components/mobile/views/MobileNodeDesktopClipboard.vue';
 import { useNodeDesktopZoom } from '~/composables/mobile/useNodeDesktopZoom';
 import { useMobileNavigation } from '~/composables/mobile/useMobileNavigation';
 import { useLocalization } from '~/composables/useLocalization';
@@ -131,7 +147,7 @@ defineEmits<{ (event: 'back'): void }>();
 const { t } = useLocalization();
 const navigation = useMobileNavigation();
 const session = useVncSession();
-const { isConnected, isConnecting, mode, streamEnd, typeText, pressKey } = session;
+const { isConnected, isConnecting, mode, streamEnd, typeText, pressKey, remoteClipboardText } = session;
 
 const screen = ref<HTMLElement | null>(null);
 const gestureLayer = ref<HTMLElement | null>(null);
@@ -158,6 +174,12 @@ const statusText = computed(() => {
   return t('workspace.components.workspace.tools.NodeDesktopTile.disconnected');
 });
 const statusDotClass = computed(() => (isConnected.value ? 'bg-emerald-500' : isConnecting.value ? 'bg-amber-400' : 'bg-red-500'));
+
+// The clipboard sheet (Control only); after a send the user pastes on the desktop, so the sheet closes.
+const clipboardOpen = ref(false);
+const sendToDesktopClipboard = (text: string) => {
+  if (session.sendClipboardText(text)) clipboardOpen.value = false;
+};
 
 const toggleMode = () => {
   resetZoom();

@@ -46,7 +46,10 @@ on Task closure and peer authentication come in later slices.
   with every attempt's outcome (`refused`, `timeout`, `not_found`, `unreachable`, `not_autobyteus`, `different_node`)
   and `loopbackInContainer` when the first address was loopback and this server runs in a container
   (`server-addressing/runs-in-container.ts`, `/.dockerenv`). `peerAddressCandidates` lists this node's own addresses
-  (`ServerAddressCandidateService`), which the other side tries after the address the window uses.
+  (`ServerAddressCandidateService`), which the other side tries after the address the window uses. Interface
+  addresses are classified by the one range owner (`remote-access/services/ip-address-ranges.ts`): private and IPv6
+  unique-local as `lan`, `100.64/10` as `tailnet_like`, others as `public`, listed after all the others; link-local
+  addresses are not listed.
 - Settings errors carry `extensions: {code, reason?, address?, loopbackInContainer?, attempts?}`; `reason` is the
   transport cause `channel/transport-failure-reason.ts` classifies from Node's `fetch` error. The texts agents read
   are unchanged.

@@ -1,0 +1,11 @@
+# API-02 fresh-run-auto-approval probe (B04, AC-010) — summary of API-02/fresh-run-auto-approval-evidence.json
+# command: pnpm -C autobyteus-web test:e2e:fresh-run-auto-approval --output-dir=<evidence>/API-02 (worktree root)
+# commit: product 42a86a5e93 + probe baseline fix 023a9a3ff9 (fixture answers GetProjects); env: macOS arm64, Node v22.23.1, nuxt dev + headless Chrome, fixture GraphQL
+# date: 2026-11-07T21:57:41.747Z .. 2026-11-07T21:58:33.933Z
+# run1 (before the fixture fix) is kept in API-02-run1-fixture-gap/: every scenario Pass, failures = 16 x 'Unexpected GraphQL operation GetProjects'
+
+failures: []
+scenarios: {"B08": "Pass", "B01": "Pass", "B02": "Pass", "B03": "Pass", "B04": "Pass", "B05": "Pass", "B06": "Pass", "B07": "Pass"}
+B04: Team opt-out reaches every member; one member customized to Ask first
+B04 assertion (probe :434): membersLine.includes(`${customized} of ${total} customized`) after counting the member rows that read 'Customized'
+cleanup: {"browser": {"status": "closed", "pid": 99971}, "devServer": {"status": "terminated", "pid": 97386, "initialExitCode": null, "initialSignalCode": null, "sigtermTarget": "process-group", "exitedAfterSigterm": true, "finalExitCode": 0, "finalSignalCode": null, "processGroupExited": true}, "page": "removed"}

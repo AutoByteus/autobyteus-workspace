@@ -34,6 +34,7 @@ import process from 'node:process';
 import { execFileSync, spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import { waitForDevServerReady } from './fixtures/dev-server-ready.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -260,10 +261,17 @@ try {
     return { lines };
   });
 
+  /**
+   * The Memory page's sources: the source select's options. The page shows the select only for more than one source
+   * (`MemoryHome.vue`, `store.sources.length > 1`, since 44ac4d3344), so a loaded page without it browses this node's
+   * memory alone (`['local']`).
+   */
   const memorySources = async () => {
     await page.goto(`${frontendUrl}/memory`, { waitUntil: 'domcontentloaded' });
-    await page.locator('#memory-source-select').waitFor({ state: 'visible', timeout: 60_000 });
+    await page.locator('[data-test="memory-browse"]').waitFor({ state: 'visible', timeout: 60_000 });
+    await page.locator('#memory-source-select').waitFor({ state: 'visible', timeout: 10_000 }).catch(() => undefined);
     await sleep(1_500);
+    if (!(await page.locator('#memory-source-select').count())) return ['local'];
     return page.locator('#memory-source-select option').evaluateAll(options => options.map(option => option.value));
   };
   const cardLabel = async () => {
@@ -330,6 +338,8 @@ try {
     await fs.rm(metadata);
     forgetMigration(alpha, '20261024_memory_sync_source_id_names');
     await alpha.start();
+    // The dev server proxies alpha and may restart after alpha went away: navigate once it answers again.
+    await waitForDevServerReady(frontendUrl);
     phase = 'NVP-05';
     await page.goto(`${frontendUrl}/nodes?nodeTab=memorySync`, { waitUntil: 'domcontentloaded' });
     await page.locator('[data-testid="node-manager-panel-memorySync"]').waitFor({ state: 'visible', timeout: 60_000 });

@@ -181,7 +181,7 @@ import UpdateIntervalField from '~/components/settings/UpdateIntervalField.vue';
 import AutoUpdateSwitch from '~/components/notifications/AutoUpdateSwitch.vue';
 
 const appUpdateStore = useAppUpdateStore();
-const { t } = useLocalization();
+const { t, resolvedLocale } = useLocalization();
 
 onMounted(() => {
   if (!appUpdateStore.initialized) {
@@ -280,7 +280,7 @@ const lastCheckedLabel = computed(() => {
     return t('settings.components.settings.AboutSettingsManager.lastChecked.unknown');
   }
 
-  return value.toLocaleString();
+  return value.toLocaleString(resolvedLocale.value);
 });
 
 const isCheckDisabled = computed(

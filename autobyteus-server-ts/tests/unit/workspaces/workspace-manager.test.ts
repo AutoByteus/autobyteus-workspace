@@ -271,4 +271,43 @@ describe("WorkspaceManager", () => {
     expect(manager.getWorkspaceById("skill_ws_writer")).toBeUndefined();
   });
 
+  it("refuses a path that is not yet registered unless it is an existing absolute folder, and registers nothing", async () => {
+    const root = createTempRoot();
+    const filePath = path.join(root, "notes.txt");
+    fs.writeFileSync(filePath, "x");
+    const cases: Array<[string, string]> = [
+      ["relative/dir", "not_absolute"],
+      [path.join(root, "missing"), "missing"],
+      [path.join(filePath, "below-a-file"), "missing"],
+      [filePath, "not_a_folder"],
+    ];
+    for (const [rootPath, reason] of cases) {
+      await expect(manager.createWorkspace({ rootPath })).rejects.toMatchObject({
+        name: "WorkspacePathRefusedError",
+        reason,
+      });
+    }
+    expect(manager.getAllWorkspaces()).toEqual([]);
+    expect(await manager.listRegisteredWorkspaceRootPaths()).toEqual([]);
+  });
+
+  it("refuses an unregistered missing folder on the server-internal registration path too", async () => {
+    await expect(manager.ensureWorkspaceByRootPath(path.join(appDataDir, "gone"))).rejects.toMatchObject({
+      name: "WorkspacePathRefusedError",
+      reason: "missing",
+    });
+  });
+
+  it("accepts an already registered path whose folder no longer exists", async () => {
+    const missing = path.join(appDataDir, "deleted-folder");
+    fs.writeFileSync(
+      path.join(appDataDir, "workspaces.json"),
+      JSON.stringify({ [buildFilesystemWorkspaceId(missing)]: missing }),
+    );
+
+    const workspace = await manager.createWorkspace({ rootPath: missing });
+
+    expect(workspace.getBasePath()).toBe(missing);
+    expect(await manager.listRegisteredWorkspaceRootPaths()).toEqual([missing]);
+  });
 });

@@ -326,6 +326,10 @@ const messages = {
   "workspace.components.workspace.tools.VncViewer.retry": "重试",
   "workspace.components.workspace.tools.NodeDesktopTile.too_many_viewers": "该节点当前的查看者过多",
   "workspace.components.workspace.tools.NodeDesktopTile.retry": "重试",
+  "workspace.pathRefusal.notAbsolute": "请输入完整路径，以 / 开头。",
+  "workspace.pathRefusal.notAbsoluteWindows": "请输入完整路径，以盘符开头，例如 C:\\。",
+  "workspace.pathRefusal.missing": "此路径下没有文件夹。",
+  "workspace.pathRefusal.notAFolder": "此路径是文件，不是文件夹。",
 } satisfies TranslationCatalog;
 
 export default messages;

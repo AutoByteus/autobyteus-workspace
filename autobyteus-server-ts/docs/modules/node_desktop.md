@@ -128,6 +128,15 @@ Each stream logs one line when it ends, with metadata only:
 followed by `close=<reason>` when the node ended it (a revoked phone: `close=REMOTE_ACCESS_DEVICE_REVOKED`).
 No pixels, keystrokes, clipboard text, credentials or URLs are logged.
 
+A stream refused for the viewer limit (4429) logs one line too, before the close, with metadata only:
+
+```text
+[node-desktop] stream refused reason=NODE_DESKTOP_TOO_MANY_VIEWERS limit=node|phone mode=view|control viewer=… open=… max=…
+```
+
+`limit` says which limit was reached (`node`: 4 streams node-wide; `phone`: 2 from that phone), `open` the streams
+already open under it and `max` that limit. No device ID, credential or address is logged.
+
 ## Exposure
 
 Docker nodes publish only the backend port (launcher config hash `v9`, compose file). Inside the

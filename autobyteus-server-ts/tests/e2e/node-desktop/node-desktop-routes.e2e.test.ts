@@ -209,6 +209,9 @@ describe("node desktop routes", () => {
       closed.then((close) => reject(new Error(`closed before streaming: ${close.code} ${close.reason}`)));
     });
   const held: WebSocket[] = [];
+  const refusalLines = (): string[] => vi.mocked(console.info).mock.calls
+    .map((call) => String(call[0]))
+    .filter((line) => line.startsWith("[node-desktop] stream refused"));
   afterEach(() => {
     for (const socket of held.splice(0)) socket.terminate();
   });
@@ -220,6 +223,10 @@ describe("node desktop routes", () => {
       kind: "open-then-closed", firstMessage: null, code: 4429, reason: "NODE_DESKTOP_TOO_MANY_VIEWERS",
     });
     expect(desktopConnections).toBe(4);
+    // One metadata-only node log line names the refusal (autobyteus-426 AC-006).
+    expect(refusalLines()).toEqual([
+      expect.stringMatching(/^\[node-desktop\] stream refused reason=NODE_DESKTOP_TOO_MANY_VIEWERS limit=node mode=control viewer=(loopback|trusted_network) open=4 max=4$/),
+    ]);
 
     // A place frees up when a stream ends.
     held[0]!.close(1000);
@@ -237,6 +244,10 @@ describe("node desktop routes", () => {
       kind: "open-then-closed", firstMessage: null, code: 4429, reason: "NODE_DESKTOP_TOO_MANY_VIEWERS",
     });
     expect(desktopConnections).toBe(2);
+    // No device ID, credential or address in the line (autobyteus-426 AC-006, QR-002).
+    expect(refusalLines()).toEqual([
+      "[node-desktop] stream refused reason=NODE_DESKTOP_TOO_MANY_VIEWERS limit=phone mode=view viewer=mobile open=2 max=2",
+    ]);
     expect(await connect("/ws/node-desktop?mode=view")).toMatchObject({ kind: "open-then-closed", code: 1000 });
     expect(desktopConnections).toBe(3);
   });

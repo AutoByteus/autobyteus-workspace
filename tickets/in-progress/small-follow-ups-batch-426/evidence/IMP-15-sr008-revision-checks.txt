@@ -1,0 +1,32 @@
+# IMP-15 SR-008 revision checks (D-02 credential check, D-03 re-delivery rule)
+# Commit: 35263117c9 (D-02 40d8d088e5, D-03 35263117c9)
+# Environment: macOS, Node v22.23.1, JDK 21; 2026-11-08
+## pnpm -C autobyteus-web exec vitest run utils/remoteAccess stores/__tests__/mobileNodeSessionStore.checks.spec.ts components/mobile composables/runHistory stores/__tests__/runHistoryStore.spec.ts stores/__tests__/runHistorySelectionActions.spec.ts
+ Test Files  20 passed (20)
+      Tests  196 passed (196)
+## pnpm -C autobyteus-web typecheck
+[typecheck] Nuxt app (tsconfig.json): 69 errors, exit 2, 34.7s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.8s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 21.3s
+[typecheck] production errors: 0; test-file errors: 96 in 41 files (baseline 96 in 41 files)
+[typecheck] PASS
+## node scripts/guard-localization-boundary.mjs
+[guard:localization-boundary] Passed.
+## ANDROID_HOME=… ./gradlew --no-daemon :app:testDebugUnitTest
+testsuite name="org.autobyteus.mobile.MainActivityManifestTest" tests="2" skipped="0" failures="0" errors="0"
+testsuite name="org.autobyteus.mobile.connection.ConnectionDiagnosticMapperTest" tests="3" skipped="0" failures="0" errors="0"
+testsuite name="org.autobyteus.mobile.connection.NodeUrlNormalizerTest" tests="4" skipped="0" failures="0" errors="0"
+testsuite name="org.autobyteus.mobile.connection.PairingLinkParserTest" tests="5" skipped="0" failures="0" errors="0"
+testsuite name="org.autobyteus.mobile.datamigrations.SavedNodeEntryKeysMigrationTest" tests="6" skipped="0" failures="0" errors="0"
+testsuite name="org.autobyteus.mobile.shell.ConnectionInputResolverTest" tests="3" skipped="0" failures="0" errors="0"
+testsuite name="org.autobyteus.mobile.shell.NodeConnectionFlowTest" tests="7" skipped="0" failures="0" errors="0"
+testsuite name="org.autobyteus.mobile.shell.NodeReachabilityTest" tests="2" skipped="0" failures="0" errors="0"
+testsuite name="org.autobyteus.mobile.shell.OpenPageRestoreTest" tests="6" skipped="0" failures="0" errors="0"
+testsuite name="org.autobyteus.mobile.web.FileChooserRequestPolicyTest" tests="3" skipped="0" failures="0" errors="0"
+testsuite name="org.autobyteus.mobile.web.ShellBridgeMessagesTest" tests="4" skipped="0" failures="0" errors="0"
+testsuite name="org.autobyteus.mobile.web.TrustedNavigationPolicyTest" tests="5" skipped="0" failures="0" errors="0"
+BUILD SUCCESSFUL in 11s
+24 actionable tasks: 5 executed, 19 up-to-date
+## leftovers
+grep historyReadFailure|recordAuthorizedApiReachability in autobyteus-web (code, tests, probes): no hits

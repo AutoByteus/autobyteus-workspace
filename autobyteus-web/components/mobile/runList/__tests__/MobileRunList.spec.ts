@@ -25,7 +25,7 @@ describe('MobileRunList', () => {
     ]);
     const tree = { rows: computed(() => rows.value), openRowKey: computed(() => 'agent:a/agent:mr'), toggle, setTeamExpanded: vi.fn(), toggleTeam: vi.fn(), expandTeamMemberAncestors: vi.fn() };
     const router = await createMobileTestRouter();
-    const wrapper = mount(MobileRunList, { props: { tree: tree as never, nodeName: 'AutoByteus Desktop', connected: true }, global: { plugins: [router] } });
+    const wrapper = mount(MobileRunList, { props: { tree: tree as never, nodeName: 'AutoByteus Desktop', connection: 'connected' }, global: { plugins: [router] } });
     await flushPromises();
     expect(wrapper.get('[role="tree"]').attributes('aria-label')).toBe('Your runs');
     const items = wrapper.findAll('[role="treeitem"]');
@@ -57,7 +57,7 @@ describe('MobileRunList', () => {
     store.loading = history.loading;
     store.historyFamilyErrors = { workspace: history.error } as never;
     const tree = { rows: computed(() => []), openRowKey: computed(() => null), toggle: vi.fn(), setTeamExpanded: vi.fn(), toggleTeam: vi.fn(), expandTeamMemberAncestors: vi.fn() };
-    const wrapper = mount(MobileRunList, { props: { tree: tree as never, nodeName: 'n', connected: true }, global: { plugins: [await createMobileTestRouter()] } });
+    const wrapper = mount(MobileRunList, { props: { tree: tree as never, nodeName: 'n', connection: 'connected' }, global: { plugins: [await createMobileTestRouter()] } });
     await flushPromises();
     const state = wrapper.get(`[data-testid="${testId}"]`);
     if (text) expect(state.text()).toContain(text);
@@ -69,6 +69,26 @@ describe('MobileRunList', () => {
       await wrapper.get('[data-testid="mobile-run-list-retry"]').trigger('click');
       expect(wrapper.emitted('retry')).toHaveLength(1);
       expect(fetchTree).not.toHaveBeenCalled();
+    }
+  });
+
+  // autobyteus-426 REQ-002 / AC-003: Phone Access off is its own bar and banner state.
+  it.each([
+    ['connected', 'Connected', null],
+    ['unreachable', 'Not reachable', 'Can’t reach Office Mac.'],
+    ['phone_access_off', 'Phone access off', 'Office Mac is reachable, but Phone access is off.'],
+  ] as const)('shows the %s state in the bar and banner', async (connection, label, banner) => {
+    setActivePinia(createPinia());
+    const tree = { rows: computed(() => []), openRowKey: computed(() => null), toggle: vi.fn(), setTeamExpanded: vi.fn(), toggleTeam: vi.fn(), expandTeamMemberAncestors: vi.fn() };
+    const wrapper = mount(MobileRunList, { props: { tree: tree as never, nodeName: 'Office Mac', connection }, global: { plugins: [await createMobileTestRouter()] } });
+    await flushPromises();
+    expect(wrapper.get('[data-testid="mobile-node-state"]').text()).toBe(label);
+    const bannerEl = wrapper.find('[data-testid="mobile-node-offline-banner"]');
+    expect(bannerEl.exists()).toBe(banner !== null);
+    if (banner) {
+      expect(bannerEl.text()).toContain(banner);
+      await wrapper.get('[data-testid="mobile-node-offline-check"]').trigger('click');
+      expect(wrapper.emitted('open-connection')).toHaveLength(1);
     }
   });
 });

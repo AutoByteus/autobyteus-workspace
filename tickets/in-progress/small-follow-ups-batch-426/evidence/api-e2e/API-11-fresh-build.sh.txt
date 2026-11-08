@@ -1,0 +1,33 @@
+#!/bin/bash
+# API-11 fresh-start desktop build (TESTING § Fresh-start build), macOS ARM64.
+set -u
+WT=/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-426
+COMMIT=$1
+CLONE=/tmp/426-fresh-clone
+rm -rf "$CLONE"
+echo "== clone $COMMIT $(date '+%H:%M:%S')"
+git clone -q --no-local "$WT" "$CLONE" && cd "$CLONE" && git checkout -q "$COMMIT" && git submodule update --init --recursive -q 2>&1 | tail -2
+git log --oneline -1
+echo "== pnpm install --frozen-lockfile $(date '+%H:%M:%S')"
+pnpm install --frozen-lockfile > /tmp/426-API-11-install.log 2>&1; echo "install exit $?"; tail -3 /tmp/426-API-11-install.log
+echo "== build:electron:mac -- --arm64 $(date '+%H:%M:%S')"
+cd "$CLONE/autobyteus-web"
+ulimit -n 65536 2>/dev/null || ulimit -n 10240
+NO_TIMESTAMP=1 AUTOBYTEUS_BUILD_FLAVOR=personal PRISMA_CLI_BINARY_TARGETS=darwin-arm64,debian-openssl-1.1.x,debian-openssl-3.0.x CSC_IDENTITY_AUTO_DISCOVERY=false GITHUB_REPOSITORY=AutoByteus/autobyteus-workspace pnpm build:electron:mac -- --arm64 > /tmp/426-API-11-build.log 2>&1; echo "build exit $?"
+grep -E "guard:localization-boundary|\[guard:localization-boundary\]|production errors|Passed" /tmp/426-API-11-build.log | head -8; tail -5 /tmp/426-API-11-build.log
+cd "$CLONE"
+echo "== Verify bundled Prisma ARM64 engine target $(date '+%H:%M:%S')"
+( set -e
+  ENGINES_DIR="$(find autobyteus-web/resources/server/node_modules -maxdepth 6 -type d -path '*/@prisma/engines' | head -n1)"
+  test -n "$ENGINES_DIR"; echo "Prisma engines dir: $ENGINES_DIR"; test -f "$ENGINES_DIR/schema-engine-darwin-arm64"
+  CLIENT_DIR="$(find autobyteus-web/resources/server/node_modules -maxdepth 10 -type d -path '*/node_modules/.prisma/client' | head -n1)"
+  test -n "$CLIENT_DIR"; echo "Prisma client dir: $CLIENT_DIR"; test -f "$CLIENT_DIR/libquery_engine-darwin-arm64.dylib.node" ); echo "prisma verify exit $?"
+echo "== Verify packaged terminal runtime ARM64 $(date '+%H:%M:%S')"
+( set -e
+  node autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs --server-root autobyteus-web/resources/server --platform darwin --arch arm64
+  APP_SERVER_ROOT="$(find autobyteus-web/electron-dist -path '*/AutoByteus.app/Contents/Resources/server' -type d -print -quit)"
+  test -n "$APP_SERVER_ROOT"
+  node autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs --server-root "$APP_SERVER_ROOT" --platform darwin --arch arm64
+  APP_BUNDLE="${APP_SERVER_ROOT%/Contents/Resources/server}"
+  ELECTRON_RUN_AS_NODE=1 "$APP_BUNDLE/Contents/MacOS/AutoByteus" autobyteus-web/scripts/verify-packaged-terminal-runtime.mjs --server-root "$APP_SERVER_ROOT" --platform darwin --arch arm64 --spawn-probe ); echo "terminal verify exit $?"
+echo "== done $(date '+%H:%M:%S')"

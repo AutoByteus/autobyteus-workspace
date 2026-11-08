@@ -44,6 +44,7 @@
 </template>
 
 <script setup lang="ts">
+import { useLocalization } from '~/composables/useLocalization';
 import { computed, watch } from 'vue';
 import { Icon } from '@iconify/vue';
 import MobileScreenBar from '~/components/mobile/MobileScreenBar.vue';
@@ -53,6 +54,8 @@ import { participantMessagesStatusText } from '~/services/collaborationMessages/
 import type { ActiveAgentWorkspaceTarget } from '~/types/workspace/activeAgentWorkspaceTarget';
 import type { CollaborationMessagePerspectiveRow } from '~/types/workspace/collaborationMessagesContextView';
 import { referenceFileIcon, referenceFileName } from '~/utils/teamCommunication/referenceFilePresentation';
+
+const { resolvedLocale } = useLocalization();
 
 const props = defineProps<{ target: ActiveAgentWorkspaceTarget }>();
 defineEmits<{ (event: 'back'): void }>();
@@ -79,7 +82,7 @@ const counterpart = (message: CollaborationMessagePerspectiveRow): string =>
 const formatTime = (value: string): string => {
   const timestamp = Date.parse(value);
   return Number.isFinite(timestamp)
-    ? new Date(timestamp).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+    ? new Date(timestamp).toLocaleString(resolvedLocale.value, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
     : '';
 };
 </script>

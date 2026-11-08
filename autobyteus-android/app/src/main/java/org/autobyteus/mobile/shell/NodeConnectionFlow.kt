@@ -67,9 +67,12 @@ class NodeConnectionFlow(
         }
     }
 
-    /** A saved node: the last used one at app start, a row tap, or a Switch node pick. */
-    fun open(entry: SavedNodeEntry) {
-        run(Attempt(entry, entry.mobileUrl, Save.AlreadySaved))
+    /**
+     * A saved node: the last used one at app start, a row tap, or a Switch node pick; [pageUrl] is the page that was
+     * open before Android ended the process (its start page otherwise).
+     */
+    fun open(entry: SavedNodeEntry, pageUrl: String = entry.mobileUrl) {
+        run(Attempt(entry, pageUrl, Save.AlreadySaved))
     }
 
     fun retry() {

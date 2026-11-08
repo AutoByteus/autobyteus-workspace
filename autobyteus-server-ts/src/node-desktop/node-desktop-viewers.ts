@@ -5,6 +5,7 @@ import {
   type RemoteAccessAuthService,
 } from "../remote-access/services/remote-access-auth-service.js";
 import type { NodeDesktopClose } from "./node-desktop-stream.js";
+import type { NodeDesktopMode } from "./rfb-viewer-input-filter.js";
 
 /** At most this many node desktop streams at once on this node, of every kind (REQ-019). */
 export const NODE_DESKTOP_MAX_STREAMS = 4;
@@ -34,7 +35,10 @@ export type AdmittedNodeDesktopStream = {
   onEnd(listener: () => void): void;
 };
 
-export type NodeDesktopAdmission = "admitted" | Readonly<{ refused: NodeDesktopClose }>;
+/** A refusal names the limit that refused the stream and how many streams that limit already counted. */
+export type NodeDesktopAdmission =
+  | "admitted"
+  | Readonly<{ refused: NodeDesktopClose; limit: "node" | "phone"; openStreams: number }>;
 
 type Entry = Readonly<{ viewer: NodeDesktopViewer; stream: AdmittedNodeDesktopStream }>;
 
@@ -56,12 +60,12 @@ export class NodeDesktopViewers {
 
   constructor(private readonly authService: Pick<RemoteAccessAuthService, "authorizeMobileCredential"> = getRemoteAccessAuthService()) {}
 
-  admit(viewer: NodeDesktopViewer, stream: AdmittedNodeDesktopStream): NodeDesktopAdmission {
-    if (this.entries.size >= NODE_DESKTOP_MAX_STREAMS) return { refused: NODE_DESKTOP_TOO_MANY_VIEWERS };
+  admit(viewer: NodeDesktopViewer, stream: AdmittedNodeDesktopStream, mode: NodeDesktopMode): NodeDesktopAdmission {
+    if (this.entries.size >= NODE_DESKTOP_MAX_STREAMS) return refuse(viewer, mode, "node", this.entries.size);
     if (viewer.kind === "mobile") {
       const sameDevice = [...this.entries].filter((entry) =>
         entry.viewer.kind === "mobile" && entry.viewer.deviceId === viewer.deviceId).length;
-      if (sameDevice >= NODE_DESKTOP_MAX_STREAMS_PER_PHONE) return { refused: NODE_DESKTOP_TOO_MANY_VIEWERS };
+      if (sameDevice >= NODE_DESKTOP_MAX_STREAMS_PER_PHONE) return refuse(viewer, mode, "phone", sameDevice);
     }
     const entry: Entry = { viewer, stream };
     this.entries.add(entry);
@@ -112,6 +116,25 @@ export class NodeDesktopViewers {
     if (!result.ok && this.entries.has(entry)) entry.stream.close(remoteAccessCloseForFailure(result.code));
   }
 }
+
+const LIMIT_MAX: Readonly<Record<"node" | "phone", number>> = {
+  node: NODE_DESKTOP_MAX_STREAMS,
+  phone: NODE_DESKTOP_MAX_STREAMS_PER_PHONE,
+};
+
+/** One metadata-only line per refusal: no device ID, credential or address (REQ-006). */
+const refuse = (
+  viewer: NodeDesktopViewer,
+  mode: NodeDesktopMode,
+  limit: "node" | "phone",
+  openStreams: number,
+): NodeDesktopAdmission => {
+  console.info(
+    `[node-desktop] stream refused reason=${NODE_DESKTOP_TOO_MANY_VIEWERS.reason} limit=${limit} mode=${mode}`
+    + ` viewer=${viewer.kind} open=${openStreams} max=${LIMIT_MAX[limit]}`,
+  );
+  return { refused: NODE_DESKTOP_TOO_MANY_VIEWERS, limit, openStreams };
+};
 
 const withTimeout = <T>(promise: Promise<T>, timeoutMs: number): Promise<T | "timeout"> => {
   let timer: NodeJS.Timeout | undefined;

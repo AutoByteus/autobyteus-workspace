@@ -4,10 +4,10 @@
     <template v-if="!codeOnScreen">
       <p class="flex items-start gap-2 text-sm font-medium leading-6" :class="ready ? 'text-emerald-700' : 'text-slate-700'" data-testid="phone-way-status">
         <span class="mt-2 h-2 w-2 flex-shrink-0 rounded-full" :class="ready ? 'bg-emerald-500' : 'bg-slate-300'" aria-hidden="true" />
-        {{ t(`settings.components.settings.phone.status.${way}.${ready ? 'ready' : 'notReady'}`) }}
+        {{ phoneText(`status.${way}.${ready ? 'ready' : 'notReady'}`) }}
       </p>
       <p v-if="store.stillNotFound.has(way) && !store.isChecking" class="mt-0.5 pl-4 text-sm leading-6 text-slate-500" data-testid="phone-check-note">
-        {{ t(`settings.components.settings.phone.note.${way}`) }}
+        {{ phoneText(`note.${way}`) }}
       </p>
     </template>
 
@@ -21,7 +21,7 @@
       <div v-else class="mt-4 flex items-center justify-between gap-6 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3" data-testid="phone-wifi-allowed">
         <div class="min-w-0">
           <p id="phone-wifi-switch-label" class="text-sm font-medium text-slate-900">{{ t('settings.components.settings.phone.wifi.allowedTitle') }}</p>
-          <p class="mt-0.5 text-sm leading-5 text-slate-600">{{ t('settings.components.settings.phone.wifi.allowedNote') }}</p>
+          <p class="mt-0.5 text-sm leading-5 text-slate-600">{{ phoneText('wifi.allowedNote') }}</p>
         </div>
         <button
           type="button"
@@ -90,29 +90,29 @@
         {{ t('settings.components.settings.phone.how.toggle') }}
       </button>
       <div v-if="howOpen" id="phone-how-body" class="max-w-2xl pb-3 pl-[1.375rem] pr-6" data-testid="phone-how-body">
-        <p class="text-sm leading-6 text-slate-700">{{ t(`settings.components.settings.phone.how.${way}.line`) }}</p>
+        <p class="text-sm leading-6 text-slate-700">{{ phoneText(`how.${way}.line`) }}</p>
         <dl class="mt-3 space-y-1.5 text-sm leading-6 text-slate-600">
           <div class="grid grid-cols-[4.25rem_1fr] gap-x-3">
             <dt class="font-medium text-slate-800">{{ t('settings.components.settings.phone.how.when') }}</dt>
-            <dd>{{ t(`settings.components.settings.phone.how.${way}.when`) }}</dd>
+            <dd>{{ phoneText(`how.${way}.when`) }}</dd>
           </div>
           <div class="grid grid-cols-[4.25rem_1fr] gap-x-3">
             <dt class="font-medium text-slate-800">{{ t('settings.components.settings.phone.how.setup') }}</dt>
             <dd>
               <ol v-if="way === 'tailscale' && !ready" class="list-decimal space-y-1 pl-5 marker:text-slate-400">
                 <li>
-                  {{ t('settings.components.settings.phone.how.tailscale.setupStep1') }}
+                  {{ phoneText('how.tailscale.setupStep1') }}
                   <a href="https://tailscale.com/download" target="_blank" rel="noopener noreferrer" class="font-medium text-blue-700 underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" data-testid="phone-get-tailscale">{{ t('settings.components.settings.phone.how.tailscale.getTailscale') }}</a>.
                 </li>
-                <li>{{ t('settings.components.settings.phone.how.tailscale.setupStep2') }}</li>
+                <li>{{ phoneText('how.tailscale.setupStep2') }}</li>
               </ol>
-              <template v-else-if="way === 'tailscale'">{{ t('settings.components.settings.phone.how.tailscale.setupReady') }}</template>
-              <template v-else>{{ t(`settings.components.settings.phone.how.${way}.setup`) }}</template>
+              <template v-else-if="way === 'tailscale'">{{ phoneText('how.tailscale.setupReady') }}</template>
+              <template v-else>{{ phoneText(`how.${way}.setup`) }}</template>
             </dd>
           </div>
           <div class="grid grid-cols-[4.25rem_1fr] gap-x-3">
             <dt class="font-medium text-slate-800">{{ t('settings.components.settings.phone.how.safety') }}</dt>
-            <dd>{{ t(`settings.components.settings.phone.how.${way}.safety`) }}</dd>
+            <dd>{{ phoneText(`how.${way}.safety`) }}</dd>
           </div>
         </dl>
       </div>
@@ -156,6 +156,7 @@ import { useLocalization } from '~/composables/useLocalization';
 import { usePhoneAccessStore } from '~/stores/phoneAccessStore';
 import type { ConnectionWay } from '~/types/remoteAccess';
 import { buildTailscaleServeCommand } from '~/utils/phoneAccess/tailscaleServeCommand';
+import { phoneSetupTextKey } from '~/utils/phoneAccess/phoneSetupTextKey';
 
 const props = defineProps<{ way: ConnectionWay }>();
 
@@ -164,6 +165,8 @@ const FOLD_BUTTON = 'flex w-full items-center gap-1.5 py-2.5 text-left text-sm f
 
 const { t } = useLocalization();
 const store = usePhoneAccessStore();
+/** A Phone Setup line worded for the window's node kind (a node on another computer is named). */
+const phoneText = (path: string): string => t(phoneSetupTextKey(store.kind, path), { name: store.nodeName });
 
 const ready = computed(() => store.readiness[props.way].ready);
 const codeOnScreen = computed(() => store.codePhase === 'shown' || store.codePhase === 'expired');

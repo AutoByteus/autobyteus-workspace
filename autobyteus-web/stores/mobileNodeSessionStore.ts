@@ -12,6 +12,8 @@ import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { normalizeNodeBaseUrl } from '~/utils/nodeEndpoints';
 import { getBrowserServerBaseUrl } from '~/utils/browserServerConfig';
 import { mobileCredentialStorage } from '~/utils/remoteAccess/mobileCredentialStorage';
+import { fetchWithRemoteAccessCredential } from '~/utils/remoteAccess/authorizedTransport';
+import { remoteAccessReadRefusal } from '~/utils/remoteAccess/remoteAccessReadRefusal';
 import {
   diagnosticForKind,
   diagnosticFromHttpStatus,
@@ -65,6 +67,13 @@ const parseQrText = (value: string): RemoteAccessPairingPayload => {
 
 /** Why a pairing link made no session, in the words the pairing page shows. */
 export type MobilePairingFailure = 'expired' | 'used' | 'phone_access_off' | 'no_answer';
+/** What one phone check found: the node's API answered, it did not, or it refused because Phone Access is off. */
+export type MobileCheckOutcome = 'reachable' | 'unreachable' | 'phone_access_off';
+/** What the phone's credential check found: a check outcome, or a credential the node no longer accepts. */
+export type MobileCredentialCheck = MobileCheckOutcome | 'session_rejected';
+
+/** The smallest authorized read: a phone credential may run any HTTP GraphQL operation (about 100 bytes). */
+const CREDENTIAL_CHECK_QUERY = JSON.stringify({ query: 'query PhoneCredentialCheck { __typename }' });
 
 const pairingFailureFor = (status: number, code?: string): MobilePairingFailure => {
   if (code === 'REMOTE_ACCESS_PAIRING_CONSUMED') return 'used';
@@ -98,6 +107,8 @@ export const useMobileNodeSessionStore = defineStore('mobileNodeSession', () => 
   const lastDiagnostic = ref<MobileConnectionDiagnostic | null>(null);
   const lastPairingFailure = ref<MobilePairingFailure | null>(null);
   const authorizedApiReachable = ref(false);
+  /** The last phone check found Phone Access off on the node (the phone stays paired). */
+  const phoneAccessOff = ref(false);
 
   const activeCredential = computed(() => session.value?.credential ?? null);
   const isPaired = computed(() => Boolean(session.value));
@@ -192,14 +203,36 @@ export const useMobileNodeSessionStore = defineStore('mobileNodeSession', () => 
     return pairWithPayload(parseQrText(qrText), deviceName);
   }
 
-  function recordAuthorizedApiReachability(reachable: boolean): void {
-    authorizedApiReachable.value = reachable;
+  /**
+   * The phone's credential check (open, Retry, Check; never the poll): one authorized read with this session's own
+   * credential, classified by its status and the node's refusal code only.
+   */
+  async function checkCredential(): Promise<MobileCredentialCheck> {
+    try {
+      const response = await fetchWithRemoteAccessCredential(`${normalizeNodeBaseUrl(serverBaseUrl.value)}/graphql`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: CREDENTIAL_CHECK_QUERY,
+      }, session.value?.credential ?? null);
+      if (response.ok) return 'reachable';
+      const code = (await readServerErrorCode(response)) ?? null;
+      return remoteAccessReadRefusal({ status: response.status, code }) ?? 'unreachable';
+    } catch {
+      return 'unreachable';
+    }
+  }
+
+  /** One outcome per phone check sets both connection facts (a later check always replaces an earlier "off"). */
+  function recordCheckOutcome(outcome: MobileCheckOutcome): void {
+    phoneAccessOff.value = outcome === 'phone_access_off';
+    authorizedApiReachable.value = outcome === 'reachable';
   }
 
   function rejectLocalSessionForAuthFailure(): void {
     mobileCredentialStorage.clear();
     session.value = null;
     authorizedApiReachable.value = false;
+    phoneAccessOff.value = false;
     lastDiagnostic.value = diagnosticForKind('auth_required');
   }
 
@@ -208,6 +241,7 @@ export const useMobileNodeSessionStore = defineStore('mobileNodeSession', () => 
     session.value = null;
     lastDiagnostic.value = null;
     authorizedApiReachable.value = false;
+    phoneAccessOff.value = false;
   }
 
   return {
@@ -218,13 +252,15 @@ export const useMobileNodeSessionStore = defineStore('mobileNodeSession', () => 
     lastDiagnostic,
     lastPairingFailure,
     authorizedApiReachable,
+    phoneAccessOff,
     activeCredential,
     isPaired,
     serverBaseUrl,
     initializeFromStorage,
     fetchStatus,
     pairWithQrText,
-    recordAuthorizedApiReachability,
+    checkCredential,
+    recordCheckOutcome,
     rejectLocalSessionForAuthFailure,
     deleteLocalSession,
   };

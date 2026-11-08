@@ -9,6 +9,7 @@ vi.stubGlobal('fetch', fetchMock)
 
 vi.mock('~/composables/useLocalization', () => ({
   useLocalization: () => ({
+    resolvedLocale: { value: 'en' },
     t: (key: string, params?: Record<string, string | number>) => {
       const translations: Record<string, string> = {
         'applications.components.applications.ApplicationLaunchSetupPanel.title': 'Launch setup',

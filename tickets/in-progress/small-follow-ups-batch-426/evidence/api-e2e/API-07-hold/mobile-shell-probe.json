@@ -1,0 +1,65 @@
+{
+  "startedAt": "2026-11-07T23:00:56.427Z",
+  "result": "Pass",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 56731,
+      "nodeId": "srv_Y3qZQTB8YS1uM35D7eL_5LAFepmFaYg2",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "beta": {
+      "port": 56732,
+      "nodeId": "srv_vWjJkr9xnCvA1SglkZryVWNg6rrYnW3T",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_a0299795188b4d4e9d57f0b70258b83f",
+    "writerRun": "release_notes_writer_052f1d54e6f04d3a8ee2b968cf5fe10f",
+    "squadRun": "docs_review_team_1c1f1ffb54db4996a0edeffc635a69e0",
+    "reviewer": "release_notes_writer_406da8fba53b41d89986a1603e33d54d",
+    "memberDelegated": "fact_checker_f79e9be0c0a943898984ef6edeb53c1e",
+    "remoteAgentRun": "publisher_1b7502c69129421299e103a510c6a58b",
+    "remoteTeamRun": "studio_team_e75d2e17a7da42fd9d7ad50661cc8a5d",
+    "plain": [
+      "fact_checker_1a8c3d7ea01e4aa8ada3a31f0e44a750",
+      "fact_checker_b6838623cf484c469045c6f165e6bf19",
+      "fact_checker_c5460e4c164a466993061477dad21ad8"
+    ],
+    "org": "delivery_org_bfde83701b284c9f95a728eba031cf19",
+    "orgPlanner": "release_notes_writer_b78c7d24daba4891a3913ab78190ff16",
+    "reviewOrg": "review_org_31507b5891f44328bc2c65bb5ff3ab1e",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_1da968ce57e34e4bac43328b9b0dd862",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_a933f7e17ce64921af5b7a15a23b9ec8",
+    "deliveryLead": "fact_checker_6894975c9df3427c8bdb2681cfaa69ed",
+    "deliveryMate": "release_notes_writer_d5e4ddedee1149669cb0504521e1560f",
+    "leadDelegated": "changelog_helper_249e6377835c47bf989feb22d78ef89f",
+    "approver": "approver_0dfd712b15684a2e9a8d9c17c42e6a37",
+    "taskA": "launch-3924a5-1",
+    "taskB": "launch-3924a5-2"
+  },
+  "cases": {},
+  "browserErrors": [],
+  "failedRequests": [],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "finishedAt": "2026-11-07T23:10:06.347Z"
+}

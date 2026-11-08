@@ -242,6 +242,8 @@ const operationResponse = (name, variables) => {
     case 'GetAgentOrgDefinitions': return { agentOrgDefinitions: [] }
     case 'GetSkills': return { skills: [] }
     case 'GetServerSettings': return { serverSettings: [] }
+    // The Projects list (always on since 0fd2656528): the fixture node has no Project.
+    case 'GetProjects': return { projects: [] }
     default: throw new Error(`Unexpected GraphQL operation ${name}`)
   }
 }
@@ -418,9 +420,18 @@ try {
     await toggle(detail).click(); await checkApproval(false, false, detail)
     assert((await reviewer.locator(sel('run-member-summary')).innerText()).length > 0, 'Member shows a summary')
     await page.screenshot({ path: path.join(outputDir, 'B04-member-ask-first.png'), fullPage: true })
+    // The members line counts the rows that read "Customized" (seeded rows count too, 035b208d53): the rule, not a constant.
+    const memberRows = drawer.locator('[data-test^="run-member-/"]')
+    const total = await memberRows.count()
+    let customized = 0
+    for (let index = 0; index < total; index += 1) {
+      if (await memberRows.nth(index).getByText('Customized', { exact: true }).count()) customized += 1
+    }
+    assert(customized > 0, 'The Ask first member reads Customized', { total, customized })
     await page.keyboard.press('Escape')
     await waitFor('drawer closed', async () => !(await drawer.count()))
-    assert((await page.locator(sel('run-members-line-text')).innerText()).includes('1'), 'Members line reports one customized member')
+    const membersLine = await page.locator(sel('run-members-line-text')).innerText()
+    assert(membersLine.includes(`${customized} of ${total} customized`), 'Members line reports the customized rows', { membersLine, total, customized })
     return { off, explicit: await teamSend(true, { '/lead': true, '/reviewer': false }) }
   })
   await scenario('B05', 'Antigravity keeps approval on and locked for Agent and Team', async () => {

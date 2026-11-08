@@ -147,6 +147,8 @@ const buildNodeB = async (network: Network, memoryDir?: string, state: RuntimeSt
   const titles = new Map<string, string>();
   vi.spyOn(TokenUsageCapability.prototype, "assertCurrentSchemaReady").mockImplementation(() => undefined);
   const dir = memoryDir ?? await tempDir("remote-team-b-");
+  // B's temp workspace folder, as a node has it on disk (a workspace folder that is not registered must exist).
+  await fs.mkdir(path.join(dir, "temp_workspace"), { recursive: true });
   const agents = ["lead", "writer"].map((id) => new AgentDefinition({ id, name: id, description: id, instructions: "x", ownershipScope: "shared",
     defaultLaunchConfig: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "opus", llmConfig: null } }));
   const team = new AgentTeamDefinition({ id: "studio", name: "Studio Team", description: "Studio", instructions: "x", coordinatorMemberName: "lead",

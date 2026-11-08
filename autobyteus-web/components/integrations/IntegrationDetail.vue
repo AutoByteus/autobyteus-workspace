@@ -174,7 +174,7 @@ import { helpTextParts, withSkillName } from '~/utils/integrations/integrationTe
 const props = defineProps<{ item: IntegrationView }>()
 
 const store = useIntegrationsStore()
-const { t } = useLocalization()
+const { t, resolvedLocale } = useLocalization()
 
 const tokenDraft = ref('')
 const replacing = ref(false)
@@ -183,7 +183,7 @@ const connected = computed(() => props.item.state === 'CONNECTED')
 const busy = computed(() => store.busy[props.item.id])
 const message = computed(() => store.messages[props.item.id])
 const showTokenField = computed(() => !connected.value || replacing.value)
-const connectedSince = computed(() => (props.item.connectedAt ? new Date(props.item.connectedAt).toLocaleDateString() : ''))
+const connectedSince = computed(() => (props.item.connectedAt ? new Date(props.item.connectedAt).toLocaleDateString(resolvedLocale.value) : ''))
 const helpParts = computed(() => helpTextParts(props.item.tokenHelp ?? ''))
 
 const say = (kind: 'success' | 'error', text: string) => store.setMessage(props.item.id, { kind, text })

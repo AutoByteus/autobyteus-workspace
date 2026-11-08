@@ -327,6 +327,10 @@ const messages = {
   "workspace.components.workspace.tools.VncViewer.retry": "Retry",
   "workspace.components.workspace.tools.NodeDesktopTile.too_many_viewers": "Too many viewers on this node right now",
   "workspace.components.workspace.tools.NodeDesktopTile.retry": "Retry",
+  "workspace.pathRefusal.notAbsolute": "Enter a full path, starting with /.",
+  "workspace.pathRefusal.notAbsoluteWindows": "Enter a full path, starting with a drive like C:\\.",
+  "workspace.pathRefusal.missing": "No folder at this path.",
+  "workspace.pathRefusal.notAFolder": "This path is a file, not a folder.",
 } satisfies TranslationCatalog;
 
 export default messages;

@@ -1,0 +1,49 @@
+# API-05 full server E2E suite (AC-006, AC-008, AC-014, AC-018; RR-03; every E2E that registers a workspace)
+# command: env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" pnpm test:e2e (worktree root = pnpm --filter autobyteus-server-ts test --run tests/e2e)
+# commit: 898fbd2a31 (server source unchanged since 85d26ed1e8; product 42a86a5e93); macOS arm64, Node v22.23.1; 2026-11-07 23:09-23:22
+# full log: /tmp/426-API-05.log (   12692 lines, not committed); this file: summary, failures, the ticket's own files
+
+## full run summary
+ Test Files  4 failed | 112 passed | 120 skipped (236)
+      Tests  1 failed | 489 passed | 597 skipped (1087)
+   Duration  766.11s (transform 13.83s, setup 2.26s, import 277.51s, tests 465.77s, environment 12ms)
+
+## failed files in the full run
+ ❯ tests/e2e/projects/project-task-boundaries.e2e.test.ts (18 tests | 1 failed) 8470ms
+ ❯ tests/e2e/runtime/application-reload-repair.e2e.test.ts (5 tests | 5 skipped) 511ms
+ ❯ tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts (4 tests | 4 skipped) 513ms
+ ❯ tests/e2e/runtime/application-import-codex-launch.e2e.test.ts (2 tests | 2 skipped) 511ms
+ ❯ tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts:65:5
+ ❯ tests/e2e/runtime/application-import-codex-launch.e2e.test.ts:67:5
+ ❯ tests/e2e/runtime/application-reload-repair.e2e.test.ts:112:5
+ ❯ tests/e2e/projects/project-task-boundaries.e2e.test.ts:301:25
+     × API-AGG: public registration is not mkdir; failed aggregate save preserves registry and prior records 12ms
+Error: Brief Studio importable package missing (/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-426/applications/brief-studio/dist/importable-package); build it with: pnpm -C autobyteus-server-ts test:integration:prepare
+
+## this ticket's E2E files in the full run
+ ✓ tests/e2e/runtime/available-agent-runtimes-graphql.e2e.test.ts (6 tests) 21401ms
+ ✓ tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts (6 tests) 2420ms
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts (14 tests) 19197ms
+ ✓ tests/e2e/workspaces/workspaces-graphql.e2e.test.ts (13 tests) 118ms
+ ↓ tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts (0 test)
+ ✓ tests/e2e/memory-sync/memory-sync-api.e2e.test.ts (1 test) 349ms
+ ✓ tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts (1 test) 16066ms
+ ✓ tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts (6 tests) 60ms
+ ✓ tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts (9 tests) 40582ms
+ ✓ tests/e2e/memory-sync/raw-trace-manifest-runtime-names-sync.e2e.test.ts (1 test) 3919ms
+ ✓ tests/e2e/agent-org-runs/stopped-org-workspace-graphql.e2e.test.ts (1 test) 3823ms
+ ✓ tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts (6 tests) 240ms
+ ✓ tests/e2e/runtime/runtime-capability-graphql.e2e.test.ts (4 tests) 1521ms
+ ✓ tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts (1 test) 216ms
+
+## skipped files: gated suites (RUN_* gates / live providers), not run without their gate
+     120
+
+## rerun of the four failed files after (a) the API-AGG update to D-08 and (b) pnpm -C autobyteus-server-ts test:integration:prepare
+# command: cd autobyteus-server-ts && env -i PATH HOME=<temp> TMPDIR pnpm exec vitest run <4 files> --no-watch
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts (18 tests) 10174ms
+ ✓ tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts (4 tests) 8681ms
+ ✓ tests/e2e/runtime/application-import-codex-launch.e2e.test.ts (2 tests) 2225ms
+ ✓ tests/e2e/runtime/application-reload-repair.e2e.test.ts (5 tests) 5812ms
+ Test Files  4 passed (4)
+      Tests  29 passed (29)

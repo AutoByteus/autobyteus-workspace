@@ -11,6 +11,7 @@ import {
 } from "./workspace-registry-store.js";
 import { WorkspaceRemovalGuard } from "./workspace-removal-guard.js";
 import { canonicalizeWorkspaceRootPath } from "./workspace-path-utils.js";
+import { assertWorkspaceFolder } from "./workspace-folder-check.js";
 import { InternalWorkspaces } from "./internal-workspaces.js";
 import { readShowInternalAgents } from "../config/show-internal-agents-setting.js";
 
@@ -67,6 +68,9 @@ export class WorkspaceManager {
     });
 
     const existingById = this.activeWorkspaces.get(workspace.workspaceId);
+    if (!existingById && !(await this.workspaceRegistryStore.getRootPathByWorkspaceId(workspace.workspaceId))) {
+      await assertWorkspaceFolder(rootPathValue);
+    }
     if (existingById) {
       if (existingById.getBasePath() !== workspace.getBasePath()) {
         const message = `Workspace ID collision: ${workspace.workspaceId}`;

@@ -1,0 +1,45 @@
+#!/usr/bin/env node
+// Temporary CDP helper for the autobyteus-426 emulator checks (API-07, API-08, API-09).
+// Usage: node cdp.mjs <forwarded port> eval '<js expression>'   → Runtime.evaluate in the page (awaitPromise, by value)
+//        node cdp.mjs <forwarded port> targets                   → the WebView's DevTools targets
+//        node cdp.mjs <forwarded port> frames                    → Page.getFrameTree of the page
+//        node cdp.mjs <forwarded port> frame-eval '<url prefix>' '<js>' → evaluate inside the frame whose URL starts so
+// The port is `adb forward tcp:<port> localabstract:webview_devtools_remote_<pid>`.
+import { createRequire } from 'node:module'
+const require = createRequire('/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-426/autobyteus-web/package.json')
+const WebSocket = require('ws')
+const [port, command, a1, a2] = process.argv.slice(2)
+const targets = await (await fetch(`http://127.0.0.1:${port}/json`)).json()
+if (command === 'targets') { console.log(JSON.stringify(targets.map(t => ({ type: t.type, url: t.url, title: t.title })), null, 2)); process.exit(0) }
+const page = targets.find(t => t.type === 'page' && t.webSocketDebuggerUrl) ?? targets.find(t => t.webSocketDebuggerUrl)
+const ws = new WebSocket(page.webSocketDebuggerUrl, { perMessageDeflate: false })
+await new Promise((res, rej) => { ws.once('open', res); ws.once('error', rej) })
+let id = 0
+const pending = new Map()
+const contexts = []
+ws.on('message', data => {
+  const msg = JSON.parse(String(data))
+  if (msg.id && pending.has(msg.id)) { pending.get(msg.id)(msg); pending.delete(msg.id) }
+  if (msg.method === 'Runtime.executionContextCreated') contexts.push(msg.params.context)
+})
+const send = (method, params = {}) => new Promise(res => { id += 1; pending.set(id, res); ws.send(JSON.stringify({ id, method, params })) })
+const out = value => console.log(JSON.stringify(value, null, 2))
+if (command === 'eval') {
+  const r = await send('Runtime.evaluate', { expression: a1, awaitPromise: true, returnByValue: true })
+  out(r.result?.exceptionDetails ? { exception: r.result.exceptionDetails.exception?.description ?? r.result.exceptionDetails.text } : r.result?.result?.value)
+} else if (command === 'frames') {
+  const r = await send('Page.getFrameTree')
+  const walk = (node, depth = 0) => [{ depth, id: node.frame.id, url: node.frame.url, securityOrigin: node.frame.securityOrigin, sandboxFlags: node.frame.sandboxFlags ?? null }, ...(node.childFrames ?? []).flatMap(c => walk(c, depth + 1))]
+  out(walk(r.result.frameTree))
+} else if (command === 'frame-eval') {
+  await send('Runtime.enable')
+  await new Promise(r => setTimeout(r, 800))
+  const tree = (await send('Page.getFrameTree')).result.frameTree
+  const all = []; const walk = n => { all.push(n.frame); (n.childFrames ?? []).forEach(walk) }; walk(tree)
+  const frame = all.find(f => f.url.startsWith(a1))
+  const context = frame && contexts.find(c => c.auxData?.frameId === frame.id)
+  if (!context) out({ error: 'no context for frame', frames: all.map(f => f.url), contexts: contexts.map(c => ({ frameId: c.auxData?.frameId, origin: c.origin })) })
+  else { const r = await send('Runtime.evaluate', { expression: a2, contextId: context.id, returnByValue: true }); out({ frame: frame.url, origin: context.origin, value: r.result?.result?.value ?? r.result?.exceptionDetails?.text }) }
+}
+ws.close()
+process.exit(0)

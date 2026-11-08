@@ -1,0 +1,23 @@
+# IMP-13 rendered check summary (Phone Setup, D-16 / AC-016)
+# Harness: IMP-render-phone-setup/IMP-13-render-check.mjs.txt (embedded window) and IMP-render-phone-setup-remote/IMP-13-render-check-remote.mjs.txt (window bound to a remote entry "Office Mac" through its Pinia stores; inert page WebSocket)
+# Server: autobyteus-server-ts/dist built from the worktree (b1d92c7ced sources); nuxt dev; headless Chrome; viewports 1059x738 and 640x900 @2x; OS locale de-DE, app language en
+# Date: 2026-11-07
+## embedded (todays text, unchanged)
+## embedded kind= embedded window browserErrors= []
+desktop local_network | status: This computer isn’t on a Wi-Fi or LAN network. | lines: 1 | overflow: False | note: -
+desktop tailscale | status: Not set up yet. | lines: 1 | overflow: False | note: Still not found. Tailscale isn’t on, on this computer.
+desktop vpn | status: No VPN found on this computer. Connect it, then Check again. | lines: 1 | overflow: False | note: Still no VPN found.
+desktop company_address | status: Not set up yet. | lines: 1 | overflow: False | note: -
+narrow local_network | status: This computer isn’t on a Wi-Fi or LAN network. | lines: 1 | overflow: False | note: -
+narrow tailscale | status: Not set up yet. | lines: 1 | overflow: False | note: Still not found. Tailscale isn’t on, on this computer.
+narrow vpn | status: No VPN found on this computer. Connect it, then Check again. | lines: 1 | overflow: False | note: Still no VPN found.
+narrow company_address | status: Not set up yet. | lines: 1 | overflow: False | note: -
+## remote kind= remote browserErrors= []
+desktop local_network | status: Office Mac isn’t reachable on a Wi-Fi or LAN address from this computer. | lines: 1 | overflow: False | note: -
+desktop tailscale | status: Office Mac isn’t reachable through Tailscale from this computer. | lines: 1 | overflow: False | note: Still not reachable. Tailscale must be on for Office Mac and for this computer.
+desktop vpn | status: Office Mac isn’t reachable through a VPN from this computer. Connect both to your VPN, then Check again. | lines: 2 | overflow: False | note: Still not reachable through a VPN.
+desktop company_address | status: Not set up yet. | lines: 1 | overflow: False | note: -
+narrow local_network | status: Office Mac isn’t reachable on a Wi-Fi or LAN address from this computer. | lines: 2 | overflow: False | note: -
+narrow tailscale | status: Office Mac isn’t reachable through Tailscale from this computer. | lines: 1 | overflow: False | note: Still not reachable. Tailscale must be on for Office Mac and for this computer.
+narrow vpn | status: Office Mac isn’t reachable through a VPN from this computer. Connect both to your VPN, then Check again. | lines: 2 | overflow: False | note: Still not reachable through a VPN.
+narrow company_address | status: Not set up yet. | lines: 1 | overflow: False | note: -

@@ -186,6 +186,54 @@ describe("Workspaces GraphQL e2e", () => {
     return result.data as T;
   };
 
+  it("refuses a new workspace path that is not an existing absolute folder, says which, and registers nothing (autobyteus-426 AC-008)", async () => {
+    const filePath = path.join(tempRoot, "hosts");
+    fs.writeFileSync(filePath, "127.0.0.1 localhost\n");
+    const createMutation = `
+      mutation CreateWorkspace($input: CreateWorkspaceInput!) {
+        createWorkspace(input: $input) { workspaceId absolutePath }
+      }
+    `;
+    const refusals: Array<[string, string]> = [
+      [path.join(tempRoot, "definitely", "not", "a", "folder"), "missing"],
+      [filePath, "not_a_folder"],
+      ["relative/dir", "not_absolute"],
+    ];
+    for (const [rootPath, reason] of refusals) {
+      const result = await graphql({ schema, source: createMutation, variableValues: { input: { rootPath } } });
+      expect(result.data).toBeNull();
+      expect(result.errors?.[0]?.extensions).toMatchObject({ code: "WORKSPACE_PATH_REFUSED", reason });
+    }
+    expect(Object.values(readRegistryRecord(dataRoot)).filter((rootPath) => rootPath.startsWith(tempRoot))).toEqual([]);
+
+    const folder = path.join(tempRoot, "test_ws_root");
+    const created = await execGraphql<{ createWorkspace: { workspaceId: string; absolutePath: string } }>(
+      createMutation,
+      { input: { rootPath: folder } },
+    );
+    expect(created.createWorkspace).toEqual({ workspaceId: buildFilesystemWorkspaceId(folder), absolutePath: folder });
+  });
+
+  it("keeps accepting a registered workspace whose folder was deleted (autobyteus-426 AC-008, DEC-004)", async () => {
+    const folder = path.join(tempRoot, "test_ws_root");
+    const createMutation = `
+      mutation CreateWorkspace($input: CreateWorkspaceInput!) {
+        createWorkspace(input: $input) { workspaceId absolutePath }
+      }
+    `;
+    const first = await execGraphql<{ createWorkspace: { workspaceId: string } }>(createMutation, { input: { rootPath: folder } });
+    const workspace = workspaceManager.getWorkspaceById(first.createWorkspace.workspaceId)!;
+    await closeWithTimeout(workspace);
+    (workspaceManager as any).activeWorkspaces.delete(first.createWorkspace.workspaceId);
+    fs.rmSync(folder, { recursive: true, force: true });
+
+    const again = await execGraphql<{ createWorkspace: { workspaceId: string; absolutePath: string } }>(
+      createMutation,
+      { input: { rootPath: folder } },
+    );
+    expect(again.createWorkspace).toEqual({ workspaceId: first.createWorkspace.workspaceId, absolutePath: folder });
+  });
+
   it("creates and lists workspaces", async () => {
     const rootPath = path.join(tempRoot, "test_ws_root");
 
@@ -381,7 +429,7 @@ describe("Workspaces GraphQL e2e", () => {
         workspaceId,
         workspaceRootPath: rootPath,
       });
-      expect(removed.removeWorkspace.message).toContain("Stop active agent or team runs");
+      expect(removed.removeWorkspace.message).toBe("Stop active runs before removing this workspace.");
 
       const afterBlockedRemoval = await execGraphql<{
         workspaces: Array<{ workspaceId: string; workspaceRootPath: string | null }>;

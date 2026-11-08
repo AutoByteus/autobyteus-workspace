@@ -1,0 +1,597 @@
+{
+  "startedAt": "2026-11-07T21:35:26.018Z",
+  "result": "Fail",
+  "node": "v22.23.1",
+  "servers": {
+    "beta": {
+      "port": 52979,
+      "nodeId": "srv_D4lxgBCTRD7xpVXtNlaQ_kFPfIYq662o",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "alpha": {
+      "port": 52978,
+      "nodeId": "srv_crRbwWNEoSrqymSwZPl7yKZ2fhrnOMnA",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_24780af24ef148ad83e484bc6814921f",
+    "writerRun": "release_notes_writer_f23c2377926c46b899e0603da2f6bebe",
+    "squadRun": "docs_review_team_6406abe2c9b340ceb45462184ebb1d64",
+    "reviewer": "release_notes_writer_b1ac00915560434492bff88d0c643179",
+    "memberDelegated": "fact_checker_5c8a23a3352844929492ac15ca5c0574",
+    "remoteAgentRun": "publisher_9aeef81f8d0a4aa3980449d2b6c3e4d0",
+    "remoteTeamRun": "studio_team_0fed30c8189a40cd8fb003beb13d7356",
+    "plain": [
+      "fact_checker_07d155236b234359bf245e1d78afc5d1",
+      "fact_checker_ec82943d63b944d6975312851a391d85",
+      "fact_checker_efefdb72d54843fb9239e6dd79d0db59"
+    ],
+    "org": "delivery_org_266d9ba3f084402da746825486f06d23",
+    "orgPlanner": "release_notes_writer_c1512b95384b41d389976ff0f772d3e7",
+    "reviewOrg": "review_org_063623a0073641d6817f5929267e6e63",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_f45a45dae21543b28eb5e245ee76a348",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_c4f33065288a47828ea782053551b97e",
+    "deliveryLead": "fact_checker_fae2c527c84b4e059ad60bc99e29efe9",
+    "deliveryMate": "release_notes_writer_422e5ec13e1246678376cd8eefbb0a10",
+    "leadDelegated": "changelog_helper_472893212b894024a677bc0281e9255d",
+    "approver": "approver_71e4e9048f394d2eb64c6177c9c33fd1",
+    "taskA": "launch-c0d620-1",
+    "taskB": "launch-c0d620-2"
+  },
+  "cases": {
+    "MSP-19": {
+      "result": "Pass",
+      "seconds": 59,
+      "unpaired": {
+        "node": [],
+        "other": []
+      },
+      "paired": {
+        "feed": [
+          {
+            "path": "/ws/agent-package-definitions",
+            "host": "192.168.77.10:52978",
+            "accessToken": true,
+            "openSeconds": null
+          }
+        ],
+        "feedHosts": [
+          "192.168.77.10:52978"
+        ],
+        "other": []
+      },
+      "afterUnpair": {
+        "feedStillOpen": 0,
+        "feedOpenedAfter": 0,
+        "nodeSocketsOpenedAfter": [],
+        "other": []
+      },
+      "desktopFeed": 1
+    },
+    "MSP-17": {
+      "result": "Pass",
+      "seconds": 6.8,
+      "orgRunId": "delivery_org_3717c40267204b1a9670133e26528431",
+      "task": {
+        "address": "/changelog_helper",
+        "agentRunId": "changelog_helper_95f8827b9fa94dddaede34be3009e540",
+        "teamRunId": null
+      },
+      "echoed": true,
+      "terminated": true,
+      "taskKey": "org:delivery_org_3717c40267204b1a9670133e26528431/task-agent:changelog_helper_95f8827b9fa94dddaede34be3009e540",
+      "before": {
+        "links": 1,
+        "composer": 0,
+        "status": 0
+      },
+      "after": {
+        "status": "This file is available only on the host workspace.",
+        "role": "status",
+        "composer": 0,
+        "urlUnchanged": true,
+        "viewer": 0,
+        "leaked": false
+      },
+      "backToList": {
+        "backs": [
+          {
+            "step": 0,
+            "count": 1,
+            "enabled": true,
+            "screen": "open",
+            "query": "?rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_3717c40267204b1a9670133e26528431&mode=history&memberAddress=/changelog_helper&agentRunId=changelog_helper_95f8827b9fa94dddaede34be3009e540&screen=run"
+          }
+        ],
+        "list": 1
+      }
+    },
+    "MSP-18": {
+      "result": "Fail",
+      "seconds": 123.6,
+      "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-testid=\"mobile-node-offline-check\"]')\n",
+      "details": null
+    },
+    "MSP-13": {
+      "result": "Fail",
+      "seconds": 42.8,
+      "error": "a revoked phone's Check: the pairing screen, the session removed (AC-002)",
+      "details": {
+        "pairing": 0,
+        "sessionLeft": "{\"entryId\":\"mobile-paired-node\",\"serverBaseUrl\":\"http://192.168.77.10:52978\",\"nodeName\":\"Alpha Test Node\",\"credential\":\"mra_…\",\"device\":{\"deviceId\":\"device_284d67e1e7e7c74f1c145efd30750429\",\"displayName\":\"Phone\",\"clientFacingBaseUrl\":\"http://192.168.77.10:52978\",\"connectionWay\":\"local_network\",\"createdAt\":\"2026-11-07T21:35:56.779Z\",\"lastSeenAt\":null,\"revokedAt\":null},\"pairedAt\":\"2026-11-07T21:35:56.819Z\"}"
+      }
+    }
+  },
+  "browserErrors": [
+    {
+      "case": "setup",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": false
+    },
+    {
+      "case": "MSP-19",
+      "line": "phone-feed console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": false
+    },
+    {
+      "case": "MSP-19",
+      "line": "phone-feed console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": false
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone-off-start console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone-off-start console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone-off-start console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone-off-start console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone-off-start console: Failed to fetch all workspace metadata: ApolloError: Response not successful: Received status code 403\n    at new t (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:84:153)\n    at http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:88:80744\n    at d (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:8520)\n    at http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:8435\n    at new Promise (<anonymous>)\n    at Object.then (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:8402)\n    at Object.error (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:8530)\n    at fx (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:1949)\n    at gf (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:2318)\n    at t.error (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:2891)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone-off-start console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone-off-start console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone-off-start console: Failed to fetch agent definitions: ApolloError: Response not successful: Received status code 403\n    at new t (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:84:153)\n    at http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:88:80744\n    at d (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:8520)\n    at http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:8435\n    at new Promise (<anonymous>)\n    at Object.then (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:8402)\n    at Object.error (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:8530)\n    at fx (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:1949)\n    at gf (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:2318)\n    at t.error (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:2891)",
+      "known": true
+    },
+    {
+      "case": "MSP-18",
+      "line": "phone-off-start console: Failed to fetch agent team definitions: ApolloError: Response not successful: Received status code 403\n    at new t (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:84:153)\n    at http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:88:80744\n    at d (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:8520)\n    at http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:8435\n    at new Promise (<anonymous>)\n    at Object.then (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:8402)\n    at Object.error (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:8530)\n    at fx (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:1949)\n    at gf (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:2318)\n    at t.error (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:2891)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-unknown-credential console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-unknown-credential console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-unknown-credential console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-unknown-credential console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-unknown-credential console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-unknown-credential console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-unknown-credential console: Failed to fetch all workspace metadata: ApolloError: Response not successful: Received status code 401\n    at new t (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:84:153)\n    at http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:88:80744\n    at d (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:8520)\n    at http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:8435\n    at new Promise (<anonymous>)\n    at Object.then (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:8402)\n    at Object.error (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:8530)\n    at fx (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:1949)\n    at gf (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:2318)\n    at t.error (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:2891)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-unknown-credential console: Failed to fetch agent definitions: ApolloError: Response not successful: Received status code 401\n    at new t (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:84:153)\n    at http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:88:80744\n    at d (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:8520)\n    at http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:8435\n    at new Promise (<anonymous>)\n    at Object.then (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:8402)\n    at Object.error (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:8530)\n    at fx (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:1949)\n    at gf (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:2318)\n    at t.error (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:2891)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-unknown-credential console: Failed to fetch agent team definitions: ApolloError: Response not successful: Received status code 401\n    at new t (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:84:153)\n    at http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:88:80744\n    at d (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:8520)\n    at http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:8435\n    at new Promise (<anonymous>)\n    at Object.then (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:8402)\n    at Object.error (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:8530)\n    at fx (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:1949)\n    at gf (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:2318)\n    at t.error (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:2891)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-revoked console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-revoked console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-revoked console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-revoked console: Failed to fetch all workspace metadata: ApolloError: Response not successful: Received status code 403\n    at new t (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:84:153)\n    at http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:88:80744\n    at d (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:8520)\n    at http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:8435\n    at new Promise (<anonymous>)\n    at Object.then (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:8402)\n    at Object.error (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:8530)\n    at fx (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:1949)\n    at gf (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:2318)\n    at t.error (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:2891)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-revoked console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-revoked console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-revoked console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-revoked console: Failed to fetch agent definitions: ApolloError: Response not successful: Received status code 403\n    at new t (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:84:153)\n    at http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:88:80744\n    at d (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:8520)\n    at http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:8435\n    at new Promise (<anonymous>)\n    at Object.then (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:8402)\n    at Object.error (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:8530)\n    at fx (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:1949)\n    at gf (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:2318)\n    at t.error (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:2891)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone-revoked console: Failed to fetch agent team definitions: ApolloError: Response not successful: Received status code 403\n    at new t (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:84:153)\n    at http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:88:80744\n    at d (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:8520)\n    at http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:8435\n    at new Promise (<anonymous>)\n    at Object.then (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:8402)\n    at Object.error (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:8530)\n    at fx (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:1949)\n    at gf (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:2318)\n    at t.error (http://192.168.77.10:52978/mobile/_nuxt/Q6DY2Km-.js:83:2891)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    },
+    {
+      "case": "MSP-13",
+      "line": "phone console: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+      "known": true
+    }
+  ],
+  "failedRequests": [
+    {
+      "case": "setup",
+      "label": "phone",
+      "url": "http://localhost:8000/health",
+      "error": "net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "case": "MSP-19",
+      "label": "phone-feed",
+      "url": "http://localhost:8000/health",
+      "error": "net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "case": "MSP-19",
+      "label": "phone-feed",
+      "url": "http://localhost:8000/health",
+      "error": "net::ERR_CONNECTION_REFUSED"
+    }
+  ],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "summary": {
+    "cases": {
+      "MSP-19": "Pass",
+      "MSP-17": "Pass",
+      "MSP-18": "Fail",
+      "MSP-13": "Fail"
+    },
+    "unknownBrowserErrors": 3
+  },
+  "finishedAt": "2026-11-07T21:39:53.884Z"
+}
