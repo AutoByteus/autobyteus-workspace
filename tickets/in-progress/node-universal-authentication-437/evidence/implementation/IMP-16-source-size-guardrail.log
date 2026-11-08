@@ -1,0 +1,24 @@
+# IMP-16 source-size-guardrail
+# Command: python3 /tmp/size-check.py
+# Environment mode: shell
+# Commit: d20340e5c3 (branch codex/node-universal-authentication-437)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-08T15:10:36Z
+
+file | base lines | now lines | changed lines (+/-) | flag
+applications/brief-studio/dist/importable-package/applications/brief-studio/backend/dist/entry.mjs | 0 | 1425 | +1425/-0 | OVER-500 >220-delta
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/app.js | 0 | 2236 | +2236/-0 | OVER-500 >220-delta
+applications/brief-studio/dist/importable-package/applications/brief-studio/ui/brief-studio-renderer.js | 0 | 357 | +357/-0 | >220-delta
+autobyteus-application-frontend-sdk/dist/application-agent-connection.js | 0 | 279 | +279/-0 | >220-delta
+autobyteus-application-frontend-sdk/dist/create-application-backend-mount-transport.js | 0 | 281 | +281/-0 | >220-delta
+autobyteus-application-sdk-contracts/dist/execution-resources.d.ts | 0 | 228 | +228/-0 | >220-delta
+autobyteus-application-sdk-contracts/dist/index.d.ts | 0 | 282 | +282/-0 | >220-delta
+autobyteus-server-ts/src/api/websocket/agent.ts | 181 | 115 | +89/-162 | >220-delta
+autobyteus-server-ts/src/compositions/build-studio-server.ts | 493 | 500 | +12/-5 | 
+autobyteus-web/electron/application/electronApplication.ts | 446 | 462 | +17/-1 | 
+autobyteus-web/electron/server/baseServerManager.ts | 436 | 455 | +32/-10 | 
+autobyteus-web/localization/messages/en/settings.ts | 499 | 499 | +2/-2 | 
+autobyteus-web/localization/messages/zh-CN/settings.ts | 499 | 499 | +2/-2 | 
+scripts/public/docker/autobyteus-docker.d/bash/docker-runtime.sh | 422 | 425 | +3/-0 | 
+scripts/public/docker/autobyteus-docker.d/powershell/DockerRuntime.ps1 | 413 | 418 | +5/-0 | 
+# Exit status: 0
