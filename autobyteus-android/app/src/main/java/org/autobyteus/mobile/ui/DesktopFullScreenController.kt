@@ -9,9 +9,13 @@ import androidx.core.view.WindowInsetsControllerCompat
 /**
  * Desktop full screen in the app (autobyteus-432): while the page's VNC Viewer is in full screen, the phone turns
  * to landscape on either side by its sensor, even when the user locked rotation (as games do), and Android's status
- * and navigation bars are hidden (a swipe from the edge shows them for a moment). Off gives back the orientation the
- * activity asked for before (by default none: the phone's own setting) and the bars. The only owner of the
- * activity's requested orientation and bar visibility; `setOn` is idempotent. No permission is involved.
+ * and navigation bars are hidden (a swipe from the edge shows them for a moment). Off hands the orientation back to
+ * the phone's own setting (MainActivity declares no orientation of its own) and shows the bars. The only owner of
+ * the activity's requested orientation and bar visibility; `setOn` is idempotent. No permission is involved.
+ *
+ * Whether it is on is read from the window, not remembered: Android keeps an activity's requested orientation
+ * when it ends the app in the background, so a recreated activity can start in landscape, and the next reset
+ * (the page starting) must still hand it back.
  */
 class DesktopFullScreenController(private val display: Display) {
     /** What the controller changes on the activity's window. */
@@ -20,22 +24,13 @@ class DesktopFullScreenController(private val display: Display) {
         fun setSystemBarsHidden(hidden: Boolean)
     }
 
-    /** The orientation to give back; set exactly while desktop full screen is on. */
-    private var orientationBefore: Int? = null
-
-    val isOn: Boolean get() = orientationBefore != null
+    val isOn: Boolean get() = display.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
 
     fun setOn(on: Boolean) {
         if (on == isOn) return
-        if (on) {
-            orientationBefore = display.requestedOrientation
-            display.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
-            display.setSystemBarsHidden(true)
-        } else {
-            display.requestedOrientation = orientationBefore ?: ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-            orientationBefore = null
-            display.setSystemBarsHidden(false)
-        }
+        display.requestedOrientation =
+            if (on) ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE else ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        display.setSystemBarsHidden(on)
     }
 
     fun reset() = setOn(false)
