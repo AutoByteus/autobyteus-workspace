@@ -36,15 +36,19 @@ on Task closure and peer authentication come in later slices.
 - Adding a peer names the node it means (`{nodeId, name, baseUrl}`), contacts `GET <baseUrl>/rest/remote-access/status`
   and pins that node ID as the peer's `nodeId`; a different node there is `PEER_IDENTITY_MISMATCH`. It
   needs the switch on. `name` is this owner's label, the `node` agents pass. Changing a peer's address
-  (`changePeerAddress`) checks the pinned node answers at the new one.
+  (`changePeerAddress`) checks the pinned node answers at the new one. When the node at the address refuses the
+  name in it (its Host gate answers 403 `REMOTE_ACCESS_HOST_REFUSED`, autobyteus-416), adding and changing the
+  address refuse `PEER_HOST_REFUSED` with `host` ("<address> refuses the name <host>; add it to
+  AUTOBYTEUS_ALLOWED_HOSTS on that node."; `channel/peer-client.ts` `fetchNodeId`), and the address resolution
+  below records the attempt as `host_refused` (autobyteus-426). Any other 403 stays not an AutoByteus node.
 - **Which address this node uses for a node** (one-nodes-tab, `settings/peer-address-resolver.ts`,
   `PeerAddressResolver`): a node's address depends on who calls (the desktop reaches a Docker node at
   `localhost:8001`; the Docker node reaches the desktop only at `host.docker.internal:29695`). `resolvePeerAddress(nodeId,
   baseUrls)` asks every given address at once, each within the 20 s bound, and returns the first one, in order, that
   answers with the expected node ID, as soon as every address before it has settled. It is read-only and, like adding,
   needs the switch on: a node whose switch is off asks no other node. When none matches it refuses `PEER_UNREACHABLE`
-  with every attempt's outcome (`refused`, `timeout`, `not_found`, `unreachable`, `not_autobyteus`, `different_node`)
-  and `loopbackInContainer` when the first address was loopback and this server runs in a container
+  with every attempt's outcome (`refused`, `timeout`, `not_found`, `unreachable`, `not_autobyteus`, `different_node`,
+  `host_refused`) and `loopbackInContainer` when the first address was loopback and this server runs in a container
   (`server-addressing/runs-in-container.ts`, `/.dockerenv`). `peerAddressCandidates` lists this node's own addresses
   (`ServerAddressCandidateService`), which the other side tries after the address the window uses. Interface
   addresses are classified by the one range owner (`remote-access/services/ip-address-ranges.ts`): private and IPv6

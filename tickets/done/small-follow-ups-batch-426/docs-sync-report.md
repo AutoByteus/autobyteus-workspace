@@ -80,3 +80,58 @@
 - Result: `Pass`
 - Next delivery action: verification from the evidence, the handoff summary, then finalization into `origin/personal` (no release).
 - Notes: one item for the Solution Designer stays open: confirming the D-13 Case 17 "fix" wording. It is not a delivery blocker; API-10 proved AC-013 is met. Nothing new outside the ticket was found, so no follow-up was added.
+
+---
+
+# Ticket Round 2 (items 9, 20–23; AC-004b dropped by DEC-013)
+
+## Scope
+
+- Trigger: CRR-008 (post-API/E2E test-code review) Pass; API-REV-003 Pass at 95%; CRR-007 Pass.
+- Base: round 1 finalized at `d785ded109`. Integrated base used for docs sync: `origin/personal` @ `eebbc2b8ee` (the v1.5.12-beta.8 release: a version bump and autobyteus-431's delivery records), merged at `0714ea1e68`.
+- Post-integration verification reference: `release-deployment-report.md` § Ticket Round 2 (DEL-R2-01).
+
+## Why Docs Were Updated
+
+- D-09 adds a status read to the run-history poll, and with it a new GraphQL read. Delegated rows of listed runs that are not open now follow their children. The phone doc said the opposite ("shows the state last read and updates when that run is opened"); it is corrected.
+- D-20 adds a peer error code, `PEER_HOST_REFUSED`, an attempt result, `host_refused`, and a Nodes page cause text.
+- DEC-013 (B) made a run screen coming back as the list the decided behavior. Round 1's Android doc said "currently"; it now says so plainly.
+
+## Long-Lived Docs Reviewed
+
+| Doc Path | Why It Was Reviewed | Result (`Updated`/`No change`/`Needs follow-up`) | Notes |
+| --- | --- | --- | --- |
+| `DESIGN.md` | Project design rules | `No change` | No rule changed |
+| `TESTING.md` | Project testing guideline | `No change` | The probe flag `--day` (D-21) and `fixtures/shifted-clock.mjs` are documented in the probe's header. No stale command was recorded |
+| `RELEASE.md` | Release guide (integrated copy) | `No change` | The base's release changed only the version |
+| `autobyteus-web/docs/workspace_layout.md` | The history poll (D-09) | `Updated` | — |
+| `autobyteus-web/docs/remote_access.md` | Phone run list rows (D-09) | `Updated` | Stale sentence corrected |
+| `autobyteus-server-ts/docs/modules/standalone_agent_run_root.md` | GraphQL reads of the root (D-09) | `Updated` | — |
+| `autobyteus-server-ts/docs/modules/remote_collaboration.md` | Peer add / change address / resolution errors (D-20) | `Updated` | — |
+| `autobyteus-web/docs/settings.md` | Nodes page causes (D-20) | `Updated` | — |
+| `docs/android_mobile_access.md` | Run screen after process death (DEC-013) | `Updated` | — |
+| `autobyteus-server-ts/docs/features/remote_access.md` | Origin rule (D-23) | `No change` | D-23 moves one helper into `web-origin.ts` with behavior unchanged, and no doc names the helper |
+| `docs/design-cases.md` | Case 17 refers to item 9 | `No change` | Case 17 records 277's history and already points to item 9 as the smaller read |
+
+## Docs Updated
+
+| Doc Path | Type Of Update | What Changed | Why |
+| --- | --- | --- | --- |
+| `autobyteus-web/docs/workspace_layout.md` | Behavior | New "Delegated row states": which runs are read; the one status read after the quiet history read; when a run's view is re-read (active state or local children changed); one refresh at a time; the open run and remote children excluded; shared by Runs, Workspaces and the phone | D-09 |
+| `autobyteus-web/docs/remote_access.md` | Behavior | The run list's delegated rows follow their children on each poll | D-09 |
+| `autobyteus-server-ts/docs/modules/standalone_agent_run_root.md` | Contract | `agentRunCollaborationStatuses(runIds)`: limit, shape, inactive answer, never restores | D-09 |
+| `autobyteus-server-ts/docs/modules/remote_collaboration.md` | Contract | `PEER_HOST_REFUSED` with `host` from adding and changing the address; the `host_refused` attempt result; other 403s unchanged | D-20 |
+| `autobyteus-web/docs/settings.md` | Behavior | The cause text for a refused name | D-20 |
+| `docs/android_mobile_access.md` | Behavior | A run screen coming back as the list is decided (DEC-013) | DEC-013 |
+
+## Removed / Replaced Components Recorded
+
+| Old Component / Path / Concept | What Replaced It | Where The New Truth Is Documented |
+| --- | --- | --- |
+| Two private `parseWebOrigin` copies (`node-browser-access.ts`, `remote-access-request-origin.ts`) | `src/api/security/web-origin.ts` | Code only; no doc named them (D-23) |
+| The status loop in the collaboration context's constructor | `agentRunCollaborationContext.ts` `applyStatuses` (shared by the view and the status read) | `autobyteus-web/docs/workspace_layout.md` |
+
+## Delivery Continuation
+
+- Result: `Pass`
+- Next delivery action: verification, archiving the ticket (round 2 is the last round), and finalization into `origin/personal` with no release.

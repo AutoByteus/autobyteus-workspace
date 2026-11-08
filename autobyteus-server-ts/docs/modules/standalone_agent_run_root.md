@@ -186,7 +186,11 @@ each. Deleting the host's run keeps its copies' folders (detached). The location
   socket with `4004` and `AGENT_ROOT_UNAVAILABLE`.
 - **GraphQL.** `agentRunCollaboration(runId)` returns the live snapshot or the stored package
   (children offline; `closed_task_executions` read by the manager against the stored tree) and
-  never restores. `agentRunCollaborationMemberProjection` and
+  never restores. `agentRunCollaborationStatuses(runIds)` (at most 100 IDs, else
+  `BAD_USER_INPUT`) is the small read the clients' history poll uses for listed runs that are not open:
+  per run `{ runId, isActive, statuses[{ agentRunId, memberAddress, status, recoverableBlock }] }`, from an
+  active root's `getAgentStatusSnapshots()` (`getAgentStatuses` in the manager); an inactive or unknown run
+  answers inactive with no statuses. It never restores or starts a host. `agentRunCollaborationMemberProjection` and
   `agentRunCollaborationMemberEventMonitorActiveTracePage` read a child's conversation (sender
   addresses of agent-to-agent deliveries are resolved from the root's index).
   `agentRunCollaborationMemberFileChanges(hostRunId, memberAddress, agentRunId)` returns a

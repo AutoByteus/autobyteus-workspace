@@ -397,7 +397,9 @@ the approved design repository's `tickets/done/manage-nodes-professional/ui-ux-s
   Rename (no dialog) renames the peer, then the desktop entry, and stops on a refused name.
 - **Causes and the Docker hint** (`utils/nodeConnectionErrorText.ts`): refused, timed out,
   name not found (from here or from the other node), not an AutoByteus node, a different
-  node; "fetch failed" is never shown. When a node in a container cannot find an address and
+  node, and a node that refuses the name in the address (`PEER_HOST_REFUSED` or the attempt
+  result `host_refused`: "The node at this address doesn’t accept the name {{host}}. Add {{host}}
+  to AUTOBYTEUS_ALLOWED_HOSTS on that node, or use its IP address."); "fetch failed" is never shown. When a node in a container cannot find an address and
   the first one it tried was loopback, the hint suggests `host.docker.internal:<port>` with
   Use this and a link to the Docker Guide tab. The add form never shows it.
 - **The offer.** `RemoteCollaborationOfferToggle.vue` is the row's offer summary ("7 Agents ·
