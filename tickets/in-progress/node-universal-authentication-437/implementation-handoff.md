@@ -14,15 +14,15 @@
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (IR-002 after CRR-001)
 - Implementation revision record: `tickets/in-progress/node-universal-authentication-437/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002` (baseline IR-001)
 - Related solution revision IDs: `SR-006`
 - Related architecture-review revision IDs: `ARCH-REV-003`
-- Related code-review revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001`
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Triggering finding IDs: `CR-001`, `CR-002`
 
 Every request to a node's main port now passes one gate after the Host and Origin rules: network admission on the
 client address (M-6), exactly one credential (Bearer, the browser WebSocket `access_token` on upgrades, or the peer
@@ -56,6 +56,7 @@ token (M-5); the Docker launcher publishes on this computer and its Tailscale ad
 | BEH-007 (REQ-007, AC-007) | MCP gateway token always (also on this computer); memory sync source `mhub_` as a gate kind | `src/mcp-gateway/mcp-gateway-token-service.ts`, `mcp-gateway-access.ts`, `api/rest/mcp-gateway-token.ts`, `McpGatewayPanel.vue`; `memory-sync/hub/memory-hub-credential-service.ts` | Implemented. NAS-25 integration; NAS-26 e2e |
 | REQ-011 | Every key revocable from the desktop | owner credential revoke (`DELETE /rest/node-access/owner-credentials/:id`, Disconnect, node removal), phones (as before), peers (`removePeerNode`), memory sync credentials; `open-socket-registry.ts` closes sockets | Implemented. NAS-37 e2e (owner, peer, phone) |
 | Preserved: autobyteus-290 hold-back | A peer request to a node whose identity waits for its migration answers 503 `NODE_IDENTITY_NOT_MIGRATED`; a source's credential while Memory Sync waits answers 503 `MEMORY_SYNC_NOT_MIGRATED` | `heldBackRefusal` in `node-access-refusal.ts`, used by `PeerRequestSignatureVerifier` and `MemoryHubCredentialService.verify` | Preserved; NV-02, NV-03 built-server e2e pass |
+| Preserved (IR-002, CR-001): peers at a company base-path address | A peer reached at `https://gateway.example.com/autobyteus` (a gateway that strips the base path) is accepted | `peerRequestTarget` in `peer-request-signature.ts`: the URL keeps the base path, the signature covers the node route the receiver sees; used by `PeerClient.call` and `openPeerRunObservation`; the verifier unchanged | Preserved; unit cases (signer, client, observation) and the NAS-20 e2e case through a prefix-stripping gateway; both fail without the fix |
 | Preserved: AC-102 identity mismatch | A peer address that now reaches another node is reported as identity mismatch | `peer-client.ts`: a 401 is read as unpaired only when the address still answers with the peer's node ID | Preserved; unit NAS-36 case; RC-16 two-server |
 
 - Changes stayed within the requirements doc's Scope Guardrail: `Yes`
@@ -78,8 +79,8 @@ token (M-5); the Docker launcher publishes on this computer and its Tailscale ad
 
 Deviations from the design's wording, each within the design's intent (reviewer: please confirm):
 
-1. Memory sync source identity is `{ kind: "memory_sync_source", credentialId }` (design: `sourceId`): the gate knows the credential, not the source; the ingestion binds a credential to its source on the first batch, as before.
-2. `/rest/remote/*` is permitted to peers only and `/rest/memory-sync/*` to memory sync sources only (owners not), reading NA-7 strictly: an owner credential is not a peer or a source.
+1. Memory sync source identity is `{ kind: "memory_sync_source", credentialId }` (design: `sourceId`): the gate knows the credential, not the source; the ingestion binds a credential to its source on the first batch, as before. **IR-002 (CR-002): the contract §1 now says so** (accepted by the Code Reviewer as within design intent; Solution Designer: please note the contract change).
+2. `/rest/remote/*` is permitted to peers only and `/rest/memory-sync/*` to memory sync sources only (owners not), reading NA-7 strictly: an owner credential is not a peer or a source. **IR-002 (CR-002): NA-7 now states it** ("Owner: every endpoint except the peer routes and the memory sync hub routes"; phones: what owners reach except owner actions).
 3. The local control endpoint on Windows is the named pipe `\\.\pipe\autobyteus-node-<sha256(data dir)[0:24]>` (one per data folder). On Unix the socket path length is checked (> 103 bytes refused with "Use a shorter data folder path.").
 4. The peer pairing exchange answers `{ nodeId, peerSecret }`; the invite is carried as one text (`abpi_` + base64url JSON `{ nodeId, addressCandidates, inviteCode }`); `acceptPeerInvite(inviteText, name, nameOnInviter?)`. Re-pairing an existing peer row keeps its name and updates its address and secret.
 5. `registerGatedWebSocketRoute` lives in `src/api/websocket/gated-websocket-route.ts` (not `websocket/index.ts`), which avoids an import cycle.
@@ -168,6 +169,12 @@ fixes; `d20340e5c3` adds the memory-sync wording fix; `d8fbe5082a` the two fixes
 | IMP-18 | `vitest run tests/unit/node-access tests/unit/memory-sync` | d8fbe5082a | shell | node access services, stores (file mode), resolver, admission, signatures; memory sync hold-back and parser | NAS-01, 03, 11, 13, 20…23, 26, 31, 32, 36 | Pass | `tickets/in-progress/node-universal-authentication-437/evidence/implementation/IMP-18-server-unit-node-access.log` | `Test Files  11 passed (11)`; `Tests  51 passed (51)` |
 | IMP-19 | `cross-env NUXT_TEST=true vitest run components/settings/nodes` | d8fbe5082a | shell | Nodes page rows, access notice, pairing dialog | NAS-02, NAS-19, NAS-23 | Pass | `tickets/in-progress/node-universal-authentication-437/evidence/implementation/IMP-19-web-nodes-specs.log` | `Test Files  6 passed (6)`; `Tests  68 passed (68)` |
 | UI-00 | Rendered check in an isolated packaged instance (see § Frontend Rendered-Result Check) | d20340e5c3 build | isolated desktop instance, test-owned node | Electron credentials, Nodes page, MCP panel | NAS-01, 02, 03, 25, 33 | Pass (2 defects found and fixed in d8fbe5082a) | `tickets/in-progress/node-universal-authentication-437/evidence/implementation/UI-00-rendered-check.txt`, `tickets/in-progress/node-universal-authentication-437/evidence/implementation/UI-01…06-*.png` | `POST /graphql -> 401`; the notice gone after the code; `owner-credentials.json became []` |
+| IR002-01 | `tsc --noEmit -p tsconfig.build.json` | 1e02bea41e | shell | server production source after CR-001 | — | Pass | `tickets/in-progress/node-universal-authentication-437/evidence/implementation/IR002-01-server-typecheck-build.log` | `# Exit status: 0` |
+| IR002-02 | `tsc --noEmit -p tsconfig.tests.json` error count | 1e02bea41e | shell | server tests | — | Pass | `tickets/in-progress/node-universal-authentication-437/evidence/implementation/IR002-02-server-typecheck-tests.log` | `1182` (base count) |
+| IR002-03 | `vitest run tests/unit/node-access tests/unit/remote-collaboration tests/architecture/node-access-boundaries.test.ts` | 1e02bea41e | shell | signer, verifier, peer client, observation client, pairing, gateway | CR-001; NAS-20…23, 36 | Pass | `tickets/in-progress/node-universal-authentication-437/evidence/implementation/IR002-03-server-unit-peers.log` | `Test Files  34 passed (34)`; `Tests  206 passed (206)` |
+| IR002-04 | `vitest run tests/e2e/node-access` | 1e02bea41e | clean env | the gate; the new case: PeerClient through a prefix-stripping gateway at `/autobyteus` | CR-001; NAS-20 | Pass | `tickets/in-progress/node-universal-authentication-437/evidence/implementation/IR002-04-server-e2e-node-access.log` | `Tests  23 passed (23)` |
+| IR002-05 | `pnpm -C autobyteus-server-ts build` | 1e02bea41e | shell | `dist/` for the two-server suite | — | Pass | `tickets/in-progress/node-universal-authentication-437/evidence/implementation/IR002-05-server-build.log` | `Sanitized built-module/bootstrap smoke passed` |
+| IR002-06 | two-server remote collaboration e2e (as IMP-09) | 1e02bea41e | clean env | every signed request and run observation between two built nodes after CR-001 | NAS-19, 20, 21, 36; AC-006 | Pass | `tickets/in-progress/node-universal-authentication-437/evidence/implementation/IR002-06-two-server-remote-collaboration.log`, `tickets/in-progress/node-universal-authentication-437/evidence/implementation/remote-two-server-ir002/` | `Tests  41 passed (41)` |
 
 - Not run, and why: the browser and Electron probes under `autobyteus-web/tests/e2e/*.mjs` (need updating for credentials and pairing; API/E2E); the Docker probe with a test-owned container (NAS-02/03/27/32…34, UNK-006); the phone shell probe (AC-005); a real second-device network check (AC-008); the PowerShell launcher at runtime (`pwsh` not installed); three built-server suites that only gained the launch credential and are not in IMP-07 (`projects/delegated-copy-project-folder`, `projects/unclean-shutdown-delegated-team-restore`, `shutdown/busy-run-stop-now` with its fixture); live-gated suites (they use `startBuiltTestServer`, which attaches the credential).
 

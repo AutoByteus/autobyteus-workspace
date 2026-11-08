@@ -7,6 +7,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer, `design-review-report.md`, ARCH-REV-003 (pass) | N/A | `Initial Baseline` | SR-006, ARCH-REV-003 | Slice 1 "no key, no access" implemented; ready for code review |
+| IR-002 | Code Reviewer, `code-review-report.md`, CRR-001 (Fail, Local Fix) | CR-001, CR-002 | `Local Fix` | SR-006, ARCH-REV-003, CRR-001 | Peers at a gateway base path work again; contract text matches the code; back to code review |
 
 ## Revision Entries
 
@@ -29,3 +30,23 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: see `implementation-handoff.md` § Checks Run.
 - Next recipient or routing: Code Reviewer (Large / High route).
 - Remaining limitations or risks: see `implementation-handoff.md` § Known Risks and § API / E2E … Still Required.
+
+### IR-002 — Signed path is the node route (CR-001); contract text matches the code (CR-002)
+
+- Triggering role, report path, and round: Code Reviewer, `tickets/in-progress/node-universal-authentication-437/code-review-report.md`, CRR-001 (Fail, Local Fix).
+- Triggering finding IDs: CR-001, CR-002
+- Classification: `Local Fix`
+- Prior authoritative result: IR-001 (HEAD `60d0b0d859`)
+- Current authoritative result: CR-001 and CR-002 fixed; task_size Large and architectural_risk High unchanged.
+- Related solution revision IDs: SR-006
+- Related architecture-review revision IDs: ARCH-REV-003
+- Related code-review revision IDs: CRR-001
+- Related API/E2E revision IDs: N/A
+- Related delivery revision IDs: N/A
+- Why this baseline or implementation revision is recorded: CRR-001 requested two bounded fixes before API/E2E.
+- Approved behavior or requirement IDs affected: BEH-004, REQ-006, NA-9 (preserved: peers at a company base-path address); NA-7 and §1 wording (CR-002).
+- Implementation delta: `peerRequestTarget(baseUrl, routePath)` in `peer-request-signature.ts` builds the request URL from the peer's base URL and returns the node route with its query as the signed path (the base path is never signed); `PeerClient.call` and `openPeerRunObservation` use it. One rule on both sides; the verifier is unchanged (it verifies the path it receives). Contract §1 names the memory sync source identity by its credential ID; NA-7 states that owners do not use `/rest/remote/*` and the memory sync hub routes, and phones reach what owners reach except owner actions; NA-9 and CM-12 name the node route as the signed path.
+- Changed files or areas: `src/remote-collaboration/channel/{peer-request-signature,peer-client,peer-run-observation-client}.ts`; tests `tests/unit/node-access/peer-request-signature.test.ts`, `tests/unit/remote-collaboration/{peer-client,peer-run-views-client}.test.ts`, `tests/e2e/node-access/node-access-model.e2e.test.ts` (a peer behind a prefix-stripping gateway); docs `docs/design/node_access_model.md`, `docs/design/collaboration_model.md`. Commits `dfa41de41c`, `1e02bea41e`.
+- Local validation and result: the new unit and e2e cases fail on the old signing (the e2e answers `PEER_NOT_PAIRED`, the reported symptom) and pass with the fix; IR002-01…06 in `implementation-handoff.md` § Checks Run.
+- Next recipient or routing: Code Reviewer (targeted delta review), then API/E2E.
+- Remaining limitations or risks: unchanged from IR-001 (UNK-006, Linux Docker, pwsh and the Windows pipe not run, web probes still use `addPeerNode`).

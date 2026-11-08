@@ -76,6 +76,14 @@ case "${1:-all}" in
     run_check IMP-19 web-nodes-specs shell pnpm -C $W exec cross-env NUXT_TEST=true vitest run components/settings/nodes
     run_check IMP-10 web-typecheck shell pnpm -C $W typecheck
     ;;
+  ir002)
+    run_check IR002-01 server-typecheck-build shell pnpm -C $S exec tsc --noEmit -p tsconfig.build.json
+    run_check IR002-02 server-typecheck-tests shell bash -c "pnpm -C $S exec tsc --noEmit -p tsconfig.tests.json | grep -c 'error TS'"
+    run_check IR002-03 server-unit-peers shell pnpm -C $S exec vitest run tests/unit/node-access tests/unit/remote-collaboration tests/architecture/node-access-boundaries.test.ts --no-watch
+    run_check IR002-04 server-e2e-node-access clean pnpm -C $S exec vitest run tests/e2e/node-access --no-watch
+    run_check IR002-05 server-build shell pnpm -C $S build
+    run_check IR002-06 two-server-remote-collaboration clean env RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND="$ROOT/$S/tests/fixtures/agy-failure-cli.mjs" REMOTE_E2E_EVIDENCE_DIR="$EVIDENCE/remote-two-server-ir002" pnpm -C $S exec vitest run tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts --no-watch
+    ;;
   two-server)
     local_dir="$EVIDENCE/remote-two-server"
     run_check IMP-09 two-server-remote-collaboration clean env RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND="$ROOT/$S/tests/fixtures/agy-failure-cli.mjs" REMOTE_E2E_EVIDENCE_DIR="$local_dir" pnpm -C $S exec vitest run tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts --no-watch
