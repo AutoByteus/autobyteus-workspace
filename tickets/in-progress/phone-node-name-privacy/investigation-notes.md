@@ -11,7 +11,7 @@
 - Finalization target remote / branch: `origin/personal`
 - Bootstrap result: worktree created from a freshly fetched `origin/personal`; ticket folder `tickets/in-progress/phone-node-name-privacy/`
 - Bootstrap blocker: None
-- Current solution revision ID: `SR-004`
+- Current solution revision ID: `SR-005`
 - Authorities read (requirements reading gate; file and date): `references/requirements-engineering.md`, `references/finding-the-cause.md`, `references/ticket-scope.md`, `references/handoff.md` (2026-11-08). Design gate: see `design-spec.md`.
 - Investigation status: Complete for requirements and design
 
@@ -56,6 +56,8 @@
 | 2026-11-08 | Runtime | CRR-001 (code review, failure origin) and API-REV-001 emulator evidence `evidence/emulator/API-08-03-load-failure-overlay.png/.txt`, `API-08-05-back-while-down-error-page.png`, `API-08-11-retry-while-down-error-page.png/.txt` | Why the address still showed | After a main-frame load failure WebView commits its built-in error page ("The webpage at <url> could not be loaded because: net::ERR_CONNECTION_REFUSED"); `WebShellScreen` keeps the WebView full size under an overlay at alpha 235/255, so it shows through, and the uiautomator dump lists the URL as accessible text | DEC-009, DS-006 |
 | 2026-11-08 | Code | `MainActivity.kt:184-198` (`openPage` `onPageFinished` → `showPage()` on the first finish), `AutoByteusWebView.kt:117-143` | When the page is shown | The first `onPageFinished` shows the page with no overlay even when that load failed (it replaces a first-load overlay with the error page); after that, no load closes an overlay (FU-002) | DS-006 |
 | 2026-11-08 | Runtime | Implementation premise check IR-002 / IMP-09, `evidence/IMP-09-sr003-load-order-premise.log` (WebView 124.0.6367.219, API 35, two runs; Measured) | WebView callback order per outcome | Network failure: started → error → finished; HTTP 502: error → started → finished; success: started → finished; sub-resource error after finished | DS-006 decides and resets at `onPageFinished` (SR-004) |
+| 2026-11-08 | Runtime | CRR-002 (code reviewer) and API-REV-002 `evidence/emulator-r2/API-08-cause-onPageFinished-twice.log` (WebView 124.0.6367.219; Measured) | Why SR-004 failed | A failed main-frame load over a page that had loaded gets two `onPageFinished` (the second may carry the previous URL); on a fresh WebView one; a successful load several | DEC-010: no callback rule; the page's `pageReady` signal decides (SR-005) |
+| 2026-11-08 | Code | `autobyteus-web/pages/mobile.vue` (only page hosting `MobileRemoteAccessShell`); `MainActivity.kt` (ea45dc1643) lines 138, 254, 314-319 | Where `pageReady` is sent; every way back to the page | Every `/mobile` document mounts `MobileRemoteAccessShell`; `showPage()` (also used by the Switch node list's Back and the current-node tap) rendered without the overlay | Signal sent from that root; the overlay becomes the open page's state that `showPage` always renders (SR-005) |
 | 2026-11-08 | Code | `grep` of `autobyteus-ios` for displayed base URL or host | iOS shell | No view interpolates an address | Out of scope (Android is the reported app) |
 
 ## Relevant Existing Behavior And Supported Product Paths

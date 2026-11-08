@@ -8,6 +8,7 @@
 | SR-002 | Design | Architecture design on the approved SR-001 | N/A | Requirements Approved; design N/A | Design Ready; `Medium` / `Low` | All (design) | `design-spec.md` complete; classified |
 | SR-003 | Mixed | CRR-001 failure-origin review (code reviewer) of API-REV-001 | F-001 (C-001, C-002, C-003); FU-002 | Requirements Approved (SR-001); design Ready (SR-002) | Requirements Approved (SR-003); design Ready; `Medium` / `Low` | BEH-006; REQ-006; AC-007; DEC-009; DS-004, DS-006 | The WebView is hidden under every overlay; the page shows only after a load that succeeded; FU-002 folded in |
 | SR-004 | Design | Implementation Design Impact IR-002 (premise check IMP-09) | IR-002 | Design Ready (SR-003) | Design Ready; `Medium` / `Low` | BEH-006; DS-006 | The load outcome is decided and the mark reset at `onPageFinished`, not `onPageStarted` |
+| SR-005 | Mixed | CRR-002 failure-origin review (code reviewer) of API-REV-002 | F-002; IR-003 | Requirements Approved (SR-003); design Ready (SR-004) | Requirements Approved (SR-005); design Ready; `Medium` / `Low` | BEH-006; REQ-006; AC-007; DEC-010; DS-004, DS-006 | The node's page signals `pageReady`; only that shows the page or closes its overlay; WebView load callbacks no longer decide visibility |
 
 ## Revision Entries
 
@@ -95,4 +96,25 @@
 - Handoff: `solution-handoff.md`, SR-004 section
 - Downstream impact: implementation of SR-003 with the SR-004 rule; a JVM or instrumented test of the three measured orders
 - Remaining gaps: the unobserved cancelled-load residual (fails toward hiding)
+- Next action: hand off per `get_handoff_rules`
+
+### SR-005 — The page's own ready signal (CRR-002 F-002)
+
+- Phase and classification: Mixed, `Design Impact` with a requirements clarification within the direction; second failed correction of the same behavior, so the approach was re-examined rather than tuned (skill Recovery)
+- Triggering input: code reviewer (run `code_reviewer_c015abee75944ddca0d98cc5e927b360`), CRR-002 (`code-review-report.md`) of API-REV-002 (`api-e2e-execution-coverage-report.md`, reports at `566852cdbb`), app code `ea45dc1643` (IR-003, SR-004); evidence `evidence/emulator-r2/API-08-cause-onPageFinished-twice.log`
+- Triggering finding IDs: F-002 (regression from SR-003/SR-004: after a loaded page, a failed reload, Retry or Back showed WebView's error page full-screen and removed the overlay and Retry)
+- Prior status: requirements Approved (SR-003); design Ready (SR-004)
+- Current status: requirements Approved (SR-005); design Ready
+- IDs affected: REQ-006 (the overlay and Retry stay until the node's page shows again), AC-007 (failures over a loaded page; return from Switch node), DEC-010 (new); DS-004 (overlay is the open page's state), DS-006 (now the `pageReady` return spine; the SR-003/SR-004 bounded local spine is withdrawn); removal of `MainFrameLoadOutcome` and the page-loaded callback
+- Scenario changes: none
+- Re-examination: is the requirement achievable? Yes. It failed twice because the design inferred "the node's page is showing" from WebView's load callbacks, whose order and count vary (by error kind, and by whether a page had loaded). A positive signal from the page cannot come from WebView's error page, so it fails closed.
+- Canonical sections changed: `requirements-doc.md` (status, REQ-006, AC-007, DEC-010); `design-spec.md` (approval basis, Change Scope, design health, DS-004, DS-006, bounded local spines, removal plan, interface mapping, file mapping, tradeoffs, risks, guidance); `investigation-notes.md` (Source Log); `docs/design-cases.md` (Case 18)
+- Supplements: none
+- Intended behavior changed: clarification within the direction (the overlay and Retry stay until the page is back; already implied by REQ-006 and AC-010)
+- Approval impact: approved by the Solution Designer within the direction; user informed in the Solution Designer's conversation on 2026-11-08, including the `DESIGN.md` rule 9 consequence (a new app waits on "Opening your runs…" for a node still serving an older page)
+- Design/review basis invalidated: SR-004 DS-006 and its implementation (`MainFrameLoadOutcome`, `onPageLoaded`, `pageOverlayShown`)
+- Classification: unchanged, `Medium` / `Low` (one more message on the existing in-repository bridge, both ends in one release; no server, pairing, credential, Host/Origin or persistence change)
+- Handoff: `solution-handoff.md`, SR-005 section
+- Downstream impact: implementation; premise measurement first (design-spec, Bounded Local section); API/E2E reruns per CRR-002
+- Remaining gaps: whether a Back restored from WebView's back-forward cache re-mounts the shell (to be measured; if not, the overlay stays until Retry, which fails closed)
 - Next action: hand off per `get_handoff_rules`

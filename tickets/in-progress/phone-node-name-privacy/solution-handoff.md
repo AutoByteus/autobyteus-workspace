@@ -2,7 +2,7 @@
 
 - Result: `Architecture Design Complete`
 - Package identifier: `phone-node-name-privacy`; Project Task `autobyteus-433` (Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`)
-- Current solution revision: `SR-004` (after CRR-001 F-001 and IR-002)
+- Current solution revision: `SR-005` (after CRR-001 F-001, IR-002 and CRR-002 F-002)
 - Classification: `task_size = Medium`, `architectural_risk = Low` (rationale: `design-spec.md`, Task Size And Architectural Risk)
 - Route: direct implementation (handoff rule: Small/Medium and Low → `/software_engineering_team/implementation_engineer`); SR-002 sent 2026-11-08; SR-003 sent 2026-11-08
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), for the user
@@ -78,3 +78,22 @@ Implementation of `design-spec.md` with the listed web and Android unit tests, t
 - Accepted residual: a failed load with no `onPageFinished` (not observed) keeps the overlay one Retry longer. It never shows the page.
 - Tests: the three measured orders (network failure, HTTP error first, success) and a sub-resource error, as a JVM test of the decision if it is extracted, otherwise instrumented.
 - Everything else in SR-003 stands. Classification unchanged: `Medium` / `Low`.
+
+## SR-005 Revision (CRR-002 F-002)
+
+- Trigger: code reviewer CRR-002. After a page had loaded, a failed reload, Retry or Back showed WebView's error page full-screen, with the URL and no Retry. The cause: WebView calls `onPageFinished` twice for that failed load, and SR-004 counted the second call as success (log `evidence/emulator-r2/API-08-cause-onPageFinished-twice.log`). This is the second failed correction, so the approach was re-examined.
+- Decision (DEC-010, DS-004, DS-006):
+  - WebView load callbacks no longer decide visibility. Remove `MainFrameLoadOutcome` (and its test), `onPageLoaded`, and the `onPageStarted`/`onPageFinished` overrides.
+  - Main-frame errors still raise the diagnostic overlay.
+  - The node's page reports itself mounted. `MobileRemoteAccessShell` `onMounted` → `getShellBridge()?.pageReady()` → `{type:"pageReady"}` on the existing bridge, under the same origin and main-frame rule → `ShellBridge` → `Actions.onPageReady(entry.id)`.
+  - `MainActivity` keeps the open page's overlay as state (`pageOverlay: ConnectionDiagnostic?`, reset in `openPage`/`closePage`). `showPage()` always renders with it, so a return from Switch node keeps it.
+  - Only `onPageReady` from the open web host's entry clears the overlay. It shows the page if the first page is not shown yet or the screen is Web; otherwise it does nothing.
+  - This fails closed: WebView's error page has no bridge, and a proxy's error body does not run the page's code.
+- Measure first (temporary log, removed before handoff), on WebView 124, both over a page that had loaded and on a fresh WebView:
+  - No `pageReady` arrives for failed loads (refused, dropped, 502) on first load, reload, Retry and Back.
+  - `pageReady` arrives once per document for successful loads.
+  - Record whether a Back restored from the back-forward cache re-mounts the shell. If it does not, the overlay stays until Retry, which is acceptable.
+  - Return a Design Impact if a failed load ever yields `pageReady`.
+- Rule 9 consequence (accepted, user informed): a node still serving an older `/mobile` page never sends `pageReady`, so the new app waits on "Opening your runs…" for it until it is updated. Release notes must say to update every node with the app.
+- Tests: design-spec Guidance ("SR-005 tests"). The CRR-002 log's sequences §2, §3, §8 and §4–§7 become cases if the page-state rule is extracted.
+- Classification unchanged: `Medium` / `Low`. API/E2E rerun plan: CRR-002's list.
