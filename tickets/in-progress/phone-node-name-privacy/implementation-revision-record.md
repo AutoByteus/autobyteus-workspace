@@ -7,6 +7,7 @@ The current code and `implementation-handoff.md` remain authoritative.
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Solution Designer, `solution-handoff.md` (Architecture Design Complete), round 1 | N/A | `Initial Baseline` | `SR-002`; `ARCH-REV-*` N/A; `CRR-*` N/A; `API-REV-*` N/A; `DR-*` N/A | Implemented; local checks pass; ready for direct API/E2E |
+| IR-002 | Solution Designer, `solution-handoff.md` "SR-003 Revision" (from CRR-001 F-001 / API-REV-001), round 2 | CRR-001 F-001 | `Design Impact` | `SR-003`; `CRR-001`; `API-REV-001` | Not implemented: DS-006's premise check failed on WebView 124 (HTTP error comes before `onPageStarted`); returned to Solution Designer. Code unchanged at `ba3ba5b23e` |
 
 ## Revision Entries
 
@@ -32,3 +33,26 @@ The current code and `implementation-handoff.md` remain authoritative.
 - Local validation and result: IMP-01…IMP-08, all Pass (see the handoff's Checks Run).
 - Next recipient or routing: direct API/E2E (handoff rule for Small/Medium + Low).
 - Remaining limitations or risks: see the handoff's Known Risks (emulator not run here; bridge entry not refreshed after an in-page rename; a page could pair with another node's link).
+
+### IR-002 — SR-003 premise check fails for HTTP errors (Design Impact returned)
+
+- Triggering role, report path, and round: Solution Designer, `solution-handoff.md` section "SR-003 Revision", round 2 (from code review `code-review-report.md` CRR-001 F-001, API/E2E API-REV-001 API-08/08b).
+- Triggering finding IDs: CRR-001 F-001
+- Classification: `Design Impact`
+- Prior authoritative result: IR-001 (`ba3ba5b23e`)
+- Current authoritative result: unchanged code (`ba3ba5b23e`); no SR-003 change implemented.
+- Related solution revision IDs: `SR-003`
+- Related architecture-review revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001`
+- Related API/E2E revision IDs: `API-REV-001`
+- Related delivery revision IDs: `N/A`
+- Why this revision is recorded: the design (DS-006) required confirming the WebView callback order on the emulator first and returning a Design Impact if it differs. It differs.
+- Approved behavior or requirement IDs affected: BEH-006; REQ-006; AC-007; DEC-009.
+- Implementation delta: none kept. A temporary log in `AutoByteusWebView.Client` and a temporary instrumented test (`TmpLoadOrderProbeTest`) were used and removed (`grep ABX433TMP|TmpLoadOrder` finds nothing).
+- Changed files or areas: `evidence/IMP-09-sr003-load-order-premise.log` only.
+- Local validation and result: IMP-09 on an own read-only emulator (`codex_api35_arm64`, API 35, WebView 124.0.6367.219), 2 runs with the same order:
+  - network failure (closed port): `onPageStarted → onReceivedError(main) → onPageFinished` (matches);
+  - HTTP 502, first load and reload: `onReceivedHttpError(main) → onPageStarted → onPageFinished` (differs: "onPageStarted clears the mark" would erase the HTTP failure, and `onPageLoaded()` would show the 502 page);
+  - success: `onPageStarted → onPageFinished`; a sub-resource HTTP error (favicon, `main=false`) comes after `onPageFinished`.
+- Next recipient or routing: Solution Designer (Design Impact).
+- Remaining limitations or risks: the emulator and the test servers were stopped; the other agent's emulator (`emulator-5554`) was not touched.
