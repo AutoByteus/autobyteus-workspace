@@ -17,7 +17,7 @@ import { resetMemoryExplorerSourceServiceForTests } from "../../../src/agent-mem
 import { resetLocalFileMemoryHubCredentialStoreForTests } from "../../../src/memory-sync/hub/local-file-memory-hub-credential-store.js";
 import { resetLocalFileMemoryImportStoreForTests } from "../../../src/memory-sync/hub/local-file-memory-import-store.js";
 import { resetMemoryHubConnectionInfoServiceForTests } from "../../../src/memory-sync/hub/memory-hub-connection-info-service.js";
-import { resetMemoryHubCredentialServiceForTests } from "../../../src/memory-sync/hub/memory-hub-credential-service.js";
+import { getMemoryHubCredentialService, resetMemoryHubCredentialServiceForTests } from "../../../src/memory-sync/hub/memory-hub-credential-service.js";
 import { resetMemoryHubIngestionServiceForTests } from "../../../src/memory-sync/hub/memory-hub-ingestion-service.js";
 import { resetMemoryImportCatalogServiceForTests } from "../../../src/memory-sync/hub/memory-import-catalog-service.js";
 import { resetLocalFileMemorySyncStateStoreForTests } from "../../../src/memory-sync/source/local-file-memory-sync-state-store.js";
@@ -27,6 +27,7 @@ import { resetMemorySyncWorkerForTests } from "../../../src/memory-sync/source/m
 import { resetServerAddressCandidateServiceForTests } from "../../../src/server-addressing/server-address-candidate-service.js";
 import type { MemoryFileOperation, MemorySyncBatch } from "../../../src/memory-sync/shared/memory-sync-types.js";
 import { configureMemorySyncCapability } from "../../../src/memory-sync/shared/memory-sync-capability.js";
+import { registerTestNodeAccess } from "../../helpers/node-access-test-gate.js";
 
 const SOURCE_NODE_ID = "cluster-a__finance__autobyteus-server";
 
@@ -108,6 +109,8 @@ describe("Memory Sync public API and imported memory e2e", () => {
     memoryDir = config.getMemoryDir();
 
     app = fastify();
+    // The hub's routes sit behind the node access gate (autobyteus-437): the source's `mhub_` credential is its identity.
+    await registerTestNodeAccess(app, { verifiers: [getMemoryHubCredentialService()] });
     await app.register(registerMemorySyncRoutes, { prefix: "/rest" });
     await app.listen({ host: "127.0.0.1", port: 0 });
     const address = app.server.address() as AddressInfo;
