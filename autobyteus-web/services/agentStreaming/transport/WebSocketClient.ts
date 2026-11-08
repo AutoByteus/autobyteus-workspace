@@ -1,34 +1,23 @@
 /**
- * WebSocket client with automatic reconnection support.
- * 
- * Layer 1 of the agent streaming architecture - handles raw WebSocket
- * connection management without any message parsing or business logic.
+ * A plain WebSocket for the agent and Team run streams.
+ *
+ * Layer 1 of the agent streaming architecture - handles the raw WebSocket
+ * connection without any message parsing, business logic or retry: the stream
+ * owner's reconnect scheduler decides when to connect again (autobyteus-434).
  */
 
 import {
   ConnectionState,
   type IWebSocketClient,
   type WebSocketClientEvents,
-  type WebSocketClientOptions,
 } from './types';
 
-const DEFAULT_OPTIONS: Required<WebSocketClientOptions> = {
-  autoReconnect: true,
-  maxReconnectAttempts: 5,
-  reconnectDelay: 1000,
-  maxReconnectDelay: 30000,
-};
-
+/** The node closed the stream for good (run not found, not allowed): connecting again cannot help. */
 const NON_RETRYABLE_CLOSE_CODES = new Set([4004, 4005]);
 
 export class WebSocketClient implements IWebSocketClient {
   private ws: WebSocket | null = null;
-  private url: string = '';
   private _state: ConnectionState = ConnectionState.DISCONNECTED;
-  private reconnectAttempts = 0;
-  private reconnectTimeout: ReturnType<typeof setTimeout> | null = null;
-  private options: Required<WebSocketClientOptions>;
-  private shouldReconnect = false;
 
   // Event handlers
   private handlers: {
@@ -40,10 +29,6 @@ export class WebSocketClient implements IWebSocketClient {
     onError: new Set(),
     onStateChange: new Set(),
   };
-
-  constructor(options: WebSocketClientOptions = {}) {
-    this.options = { ...DEFAULT_OPTIONS, ...options };
-  }
 
   get state(): ConnectionState {
     return this._state;
@@ -57,42 +42,25 @@ export class WebSocketClient implements IWebSocketClient {
   }
 
   connect(url: string): void {
-    if (this._state === ConnectionState.CONNECTED || 
-        this._state === ConnectionState.CONNECTING ||
-        this._state === ConnectionState.RECONNECTING) {
+    if (this._state === ConnectionState.CONNECTED || this._state === ConnectionState.CONNECTING) {
       return;
     }
 
-    this.url = url;
-    this.reconnectAttempts = 0;
-    this.shouldReconnect = true;
-    this.clearReconnectTimeout();
-    this.doConnect();
-  }
-
-  private doConnect(): void {
-    this.setState(
-      this.reconnectAttempts > 0 
-        ? ConnectionState.RECONNECTING 
-        : ConnectionState.CONNECTING
-    );
-
+    this.setState(ConnectionState.CONNECTING);
     try {
-      this.ws = new WebSocket(this.url);
-      this.setupEventListeners();
+      this.ws = new WebSocket(url);
+      this.setupEventListeners(this.ws);
     } catch (error) {
-      this.handleError(error as Error);
+      this.ws = null;
+      this.setState(ConnectionState.DISCONNECTED);
+      this.emit('onError', error as Error);
+      this.emit('onDisconnect', (error as Error).message, true);
     }
   }
 
-  private setupEventListeners(): void {
-    if (!this.ws) return;
-    const socket = this.ws;
-
+  private setupEventListeners(socket: WebSocket): void {
     socket.onopen = () => {
       if (this.ws !== socket) return;
-      this.reconnectAttempts = 0;
-      this.clearReconnectTimeout();
       this.setState(ConnectionState.CONNECTED);
       this.emit('onConnect');
     };
@@ -101,17 +69,7 @@ export class WebSocketClient implements IWebSocketClient {
       if (this.ws !== socket) return;
       this.ws = null;
       this.setState(ConnectionState.DISCONNECTED);
-      this.emit('onDisconnect', event.reason || undefined);
-
-      if (NON_RETRYABLE_CLOSE_CODES.has(event.code)) {
-        this.shouldReconnect = false;
-        this.clearReconnectTimeout();
-        return;
-      }
-
-      if (this.shouldReconnect && this.options.autoReconnect) {
-        this.scheduleReconnect();
-      }
+      this.emit('onDisconnect', event.reason || undefined, !NON_RETRYABLE_CLOSE_CODES.has(event.code));
     };
 
     socket.onmessage = (event) => {
@@ -121,48 +79,13 @@ export class WebSocketClient implements IWebSocketClient {
 
     socket.onerror = () => {
       if (this.ws !== socket) return;
-      this.handleError(new Error('WebSocket error'));
+      this.emit('onError', new Error('WebSocket error'));
     };
   }
 
-  private handleError(error: Error): void {
-    this.emit('onError', error);
-  }
-
-  private scheduleReconnect(): void {
-    if (this.reconnectAttempts >= this.options.maxReconnectAttempts) {
-      this.clearReconnectTimeout();
-      this.emit('onError', new Error('Max reconnection attempts reached'));
-      return;
-    }
-
-    const delay = Math.min(
-      this.options.reconnectDelay * Math.pow(2, this.reconnectAttempts),
-      this.options.maxReconnectDelay
-    );
-
-    this.reconnectAttempts++;
-    this.clearReconnectTimeout();
-    this.setState(ConnectionState.RECONNECTING);
-    this.reconnectTimeout = setTimeout(() => {
-      this.reconnectTimeout = null;
-      this.doConnect();
-    }, delay);
-  }
-
-  private clearReconnectTimeout(): void {
-    if (this.reconnectTimeout) {
-      clearTimeout(this.reconnectTimeout);
-      this.reconnectTimeout = null;
-    }
-  }
-
+  /** An intentional close: no `onDisconnect` follows. */
   disconnect(): void {
-    this.shouldReconnect = false;
-    this.clearReconnectTimeout();
-
     if (this.ws) {
-      // Disable auto-reconnect for intentional disconnect
       const ws = this.ws;
       this.ws = null;
       ws.onclose = null;

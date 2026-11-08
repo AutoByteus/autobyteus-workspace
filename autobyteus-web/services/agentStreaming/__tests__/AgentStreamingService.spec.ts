@@ -23,7 +23,6 @@ vi.mock('../transport', () => {
             DISCONNECTED: 'disconnected',
             CONNECTING: 'connecting',
             CONNECTED: 'connected',
-            RECONNECTING: 'reconnecting',
         }
     };
 });

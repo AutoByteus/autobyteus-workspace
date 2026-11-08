@@ -1,9 +1,12 @@
 import { GetAgentOrgRunInspection } from '~/graphql/queries/runHistoryQueries'
 import { AgentContext } from '~/types/agent/AgentContext'
 import { AgentRunState } from '~/types/agent/AgentRunState'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 import { AgentOrgExecutionContext } from '../agentOrgExecutionContext'
+import {
+  hidePage, installPageVisibilityControl, removePageVisibilityControl, showPage,
+} from '~/services/liveStreamLifecycle/__tests__/pageVisibilityTestControl'
 
 const mocks = vi.hoisted(() => ({
   query: vi.fn(),
@@ -113,6 +116,23 @@ const candidate = (selectedAddress: string | null = null, changeSequence = 4) =>
   listAgentContextEntries: () => [], getAgentContext: () => null,
 }) as unknown as AgentOrgExecutionContext
 
+/** The scheduler's first wait after a failure is 1 s (autobyteus-434); a real-timer wait for the retry allows for it. */
+const RETRY_WAIT = { timeout: 2_500 }
+
+// Every service a test connects is released after it, so no reconnect wait or page listener outlives its test.
+const connectedServices = new Set<AgentOrgStreamingService>()
+const connectService = AgentOrgStreamingService.prototype.connect
+beforeEach(() => {
+  vi.spyOn(AgentOrgStreamingService.prototype, 'connect').mockImplementation(function (this: AgentOrgStreamingService) {
+    connectedServices.add(this)
+    connectService.call(this)
+  })
+})
+afterEach(() => {
+  connectedServices.forEach((service) => service.disconnect())
+  connectedServices.clear()
+})
+
 describe('AgentOrgStreamingService', () => {
   let advance: ReturnType<typeof vi.spyOn>
   beforeEach(() => {
@@ -160,7 +180,7 @@ describe('AgentOrgStreamingService', () => {
     await vi.waitFor(() => expect(first.requireReopen).toHaveBeenCalled())
     expect(publish).toHaveBeenCalledTimes(1)
 
-    await vi.waitFor(() => expect(TestWebSocket.instances).toHaveLength(2))
+    await vi.waitFor(() => expect(TestWebSocket.instances).toHaveLength(2), RETRY_WAIT)
     const recoverySocket = TestWebSocket.instances[1]!
     recoverySocket.emit(connected)
     recoverySocket.emit(snapshot)
@@ -182,7 +202,7 @@ describe('AgentOrgStreamingService', () => {
     })
     service.connect()
     TestWebSocket.instances[0]!.emit(snapshot)
-    await vi.waitFor(() => expect(TestWebSocket.instances).toHaveLength(2))
+    await vi.waitFor(() => expect(TestWebSocket.instances).toHaveLength(2), RETRY_WAIT)
     expect(reportError).not.toHaveBeenCalled()
     expect(mocks.hydrate).not.toHaveBeenCalled()
   })
@@ -205,7 +225,7 @@ describe('AgentOrgStreamingService', () => {
     await vi.waitFor(() => expect(publish).toHaveBeenCalledWith(first, expect.any(Function)))
 
     initialSocket.emitClose()
-    await vi.waitFor(() => expect(TestWebSocket.instances).toHaveLength(2))
+    await vi.waitFor(() => expect(TestWebSocket.instances).toHaveLength(2), RETRY_WAIT)
     const replacement = TestWebSocket.instances[1]!
     replacement.emit(connected)
     replacement.emit(snapshot)
@@ -217,7 +237,7 @@ describe('AgentOrgStreamingService', () => {
     expect(reportError).not.toHaveBeenCalled()
   })
 
-  it('shows the bounded error only after checkpointed transparent recovery is exhausted', async () => {
+  it('reports the error at the fifth consecutive failure (before the snapshot) and keeps retrying (autobyteus-434)', async () => {
     const first = candidate('/direct')
     mocks.hydrate.mockResolvedValue(first)
     const publish = vi.fn()
@@ -233,13 +253,20 @@ describe('AgentOrgStreamingService', () => {
 
     vi.useFakeTimers()
     try {
-      initialSocket.emitClose()
-      await vi.runAllTimersAsync()
-      expect(mocks.query).toHaveBeenCalledTimes(5)
+      initialSocket.emitClose() // failure 1
+      await vi.advanceTimersByTimeAsync(1_000 + 2_000 + 4_000 + 500) // attempts 1-3 fail: failures 2-4
+      expect(mocks.query).toHaveBeenCalledTimes(3)
+      expect(reportError).not.toHaveBeenCalled()
+      await vi.advanceTimersByTimeAsync(8_000) // attempt 4 fails: failure 5
+      expect(mocks.query).toHaveBeenCalledTimes(4)
       expect(reportError).toHaveBeenCalledTimes(1)
       expect(reportError).toHaveBeenCalledWith('checkpoint unavailable')
+      await vi.advanceTimersByTimeAsync(16_000 + 30_000) // no give-up: two more attempts, no second report
+      expect(mocks.query).toHaveBeenCalledTimes(6)
+      expect(reportError).toHaveBeenCalledTimes(1)
       expect(TestWebSocket.instances).toHaveLength(1)
     } finally {
+      service.disconnect()
       vi.useRealTimers()
     }
   })
@@ -257,7 +284,7 @@ describe('AgentOrgStreamingService', () => {
     const failedSocket = TestWebSocket.instances[0]!
     failedSocket.emit(serverError)
 
-    await vi.waitFor(() => expect(TestWebSocket.instances).toHaveLength(2))
+    await vi.waitFor(() => expect(TestWebSocket.instances).toHaveLength(2), RETRY_WAIT)
     expect(failedSocket.readyState).toBe(TestWebSocket.CLOSED)
     expect(failedSocket.closeCalls).toEqual([{
       code: 4000,
@@ -274,23 +301,24 @@ describe('AgentOrgStreamingService', () => {
     expect(reportError).not.toHaveBeenCalled()
   })
 
-  it('publishes one server ERROR only after recovery exhaustion and clears it on a later successful selection', async () => {
+  it('publishes one server ERROR at the fifth consecutive failure and clears it on a later successful snapshot', async () => {
     const recovered = candidate()
     mocks.hydrate.mockResolvedValue(recovered)
     let visibleError: string | null = null
     const publish = vi.fn(() => { visibleError = null })
     const reportError = vi.fn((message: string) => { visibleError = message })
     const service = new AgentOrgStreamingService({ orgRunId: 'org-run', publish, reportError })
+    const waits = [1_000, 2_000, 4_000, 8_000]
 
     vi.useFakeTimers()
     try {
       service.connect()
-      for (let cycle = 0; cycle < 6; cycle += 1) {
-        const socket = TestWebSocket.instances[cycle]!
-        socket.emit(serverError)
-        await vi.runAllTimersAsync()
-        if (cycle < 5) {
+      for (let cycle = 0; cycle < 5; cycle += 1) {
+        TestWebSocket.instances[cycle]!.emit(serverError)
+        await vi.advanceTimersByTimeAsync(0)
+        if (cycle < 4) {
           expect(reportError).not.toHaveBeenCalled()
+          await vi.advanceTimersByTimeAsync(waits[cycle]!)
           expect(TestWebSocket.instances).toHaveLength(cycle + 2)
         }
       }
@@ -300,23 +328,25 @@ describe('AgentOrgStreamingService', () => {
         'AGENT_ORG_STREAM_UNAVAILABLE: Agent Org is temporarily unavailable.',
       )
       expect(visibleError).toContain('temporarily unavailable')
-      expect(TestWebSocket.instances.slice(0, 6).map((socket) => socket.closeCalls)).toEqual(
-        Array.from({ length: 6 }, () => [{
+      expect(TestWebSocket.instances.slice(0, 5).map((socket) => socket.closeCalls)).toEqual(
+        Array.from({ length: 5 }, () => [{
           code: 4000,
           reason: 'Invalid AgentOrg stream',
         }]),
       )
 
-      service.connect()
-      const recoveredSocket = TestWebSocket.instances[6]!
+      // Retrying goes on after the report; the next snapshot clears the error.
+      await vi.advanceTimersByTimeAsync(16_000)
+      const recoveredSocket = TestWebSocket.instances[5]!
       recoveredSocket.emit(connected)
       recoveredSocket.emit(snapshot)
-      await vi.runAllTimersAsync()
+      await vi.advanceTimersByTimeAsync(0)
 
       expect(publish).toHaveBeenCalledWith(recovered, expect.any(Function))
       expect(visibleError).toBeNull()
       expect(reportError).toHaveBeenCalledTimes(1)
     } finally {
+      service.disconnect()
       vi.useRealTimers()
     }
   })
@@ -499,7 +529,7 @@ describe('AgentOrgStreamingService', () => {
     })
 
     await expect(rejected).rejects.toThrow(/identity mismatch/)
-    await vi.waitFor(() => expect(TestWebSocket.instances).toHaveLength(2))
+    await vi.waitFor(() => expect(TestWebSocket.instances).toHaveLength(2), RETRY_WAIT)
     expect(reportError).not.toHaveBeenCalled()
     expect(context.requireReopen).toHaveBeenCalledWith(expect.stringContaining('identity mismatch'))
   })
@@ -635,5 +665,109 @@ describe('AgentOrgStreamingService', () => {
     expect(publish).toHaveBeenCalledTimes(1)
     expect(first.setActive).not.toHaveBeenCalled()
     expect(reportError).not.toHaveBeenCalled()
+  })
+})
+
+/** autobyteus-434: the Org stream's scheduler adoption (per-owner table): connect, requestRecovery and re-sync. */
+describe('AgentOrgStreamingService reconnect scheduling', () => {
+  const checkpoint = { data: { getAgentOrgExecutionCheckpoint: {
+    orgRunId: 'org-run', changeSequence: 4, hasOpenExecutionWork: false,
+  } } }
+  /** A context double whose `requireReopen` really enters `reopen_required`, as the context does. */
+  const reopenable = () => {
+    const context = candidate()
+    vi.mocked(context.requireReopen).mockImplementation(() => { (context as { phase: string }).phase = 'reopen_required' })
+    return context
+  }
+  let service: AgentOrgStreamingService
+  let publish: ReturnType<typeof vi.fn>
+  const flush = () => vi.advanceTimersByTimeAsync(0)
+  const synchronize = async (socket: TestWebSocket) => {
+    socket.emit(connected)
+    socket.emit(snapshot)
+    await flush()
+  }
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mocks.query.mockReset()
+    mocks.hydrate.mockReset()
+    TestWebSocket.instances = []
+    vi.stubGlobal('WebSocket', TestWebSocket)
+    setActivePinia(createPinia())
+    vi.useFakeTimers()
+    installPageVisibilityControl()
+    mocks.query.mockResolvedValue(checkpoint)
+    mocks.hydrate.mockImplementation(async () => reopenable())
+    publish = vi.fn()
+    service = new AgentOrgStreamingService({ orgRunId: 'org-run', publish, reportError: vi.fn() })
+  })
+  afterEach(() => {
+    service.disconnect()
+    removePageVisibilityControl()
+    vi.useRealTimers()
+  })
+
+  it('requestRecovery during a wait does nothing; the scheduler attempts when the wait ends', async () => {
+    service.connect()
+    await synchronize(TestWebSocket.instances[0]!)
+    TestWebSocket.instances[0]!.emitClose()
+    service.requestRecovery()
+    await flush()
+    expect(mocks.query).not.toHaveBeenCalled()
+    expect(TestWebSocket.instances).toHaveLength(1)
+    await vi.advanceTimersByTimeAsync(1_000)
+    expect(mocks.query).toHaveBeenCalledTimes(1)
+    expect(TestWebSocket.instances).toHaveLength(2)
+  })
+
+  it('requestRecovery on an idle stream that needs reopening recovers at once', async () => {
+    service.connect()
+    await synchronize(TestWebSocket.instances[0]!)
+    TestWebSocket.instances[0]!.emitClose()
+    await vi.advanceTimersByTimeAsync(1_000) // the attempt opens a socket
+    await synchronize(TestWebSocket.instances[1]!)
+    TestWebSocket.instances[1]!.emit({ type: 'ROOT_EXECUTION_EVENT', payload: {
+      root_subject_kind: 'not-org', root_run_id: 'org-run', change_sequence: 5, event: {},
+    } })
+    await flush() // fails closed: the scheduler waits again
+    expect(TestWebSocket.instances).toHaveLength(2)
+    service.connect() // the store's attach during the wait: start over and recover now
+    await flush()
+    expect(TestWebSocket.instances).toHaveLength(3)
+    await vi.advanceTimersByTimeAsync(60_000)
+    expect(TestWebSocket.instances).toHaveLength(3)
+  })
+
+  it('holds while hidden: no recovery attempt until the page is visible again', async () => {
+    service.connect()
+    await synchronize(TestWebSocket.instances[0]!)
+    hidePage()
+    TestWebSocket.instances[0]!.emitClose()
+    await vi.advanceTimersByTimeAsync(10 * 60_000)
+    expect(mocks.query).not.toHaveBeenCalled()
+    showPage()
+    await flush()
+    expect(TestWebSocket.instances).toHaveLength(2)
+  })
+
+  it('re-synchronizes a live stream after ≥ 30 s hidden: retires the generation and re-publishes from a fresh recovery', async () => {
+    service.connect()
+    const initial = TestWebSocket.instances[0]!
+    await synchronize(initial)
+    expect(publish).toHaveBeenCalledTimes(1)
+    hidePage()
+    await vi.advanceTimersByTimeAsync(30_000)
+    const pendingInterrupt = service.interrupt('agent-run')
+    const rejected = expect(pendingInterrupt).rejects.toThrow('AgentOrg stream is re-synchronizing.')
+    showPage()
+    await rejected
+    expect(initial.closeCalls).toEqual([{ code: 1000, reason: 'AgentOrg stream re-synchronizing' }])
+    await flush()
+    expect(mocks.query).toHaveBeenCalledTimes(1) // the recovery's checkpoint
+    expect(TestWebSocket.instances).toHaveLength(2)
+    await synchronize(TestWebSocket.instances[1]!)
+    expect(publish).toHaveBeenCalledTimes(2)
+    expect(service.isReady()).toBe(true)
   })
 })

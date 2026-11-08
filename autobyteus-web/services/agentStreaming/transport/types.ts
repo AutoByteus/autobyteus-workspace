@@ -7,28 +7,19 @@ export enum ConnectionState {
   DISCONNECTED = 'disconnected',
   CONNECTING = 'connecting',
   CONNECTED = 'connected',
-  RECONNECTING = 'reconnecting',
 }
 
 /** Events emitted by the WebSocket client */
 export interface WebSocketClientEvents {
   onConnect: () => void;
-  onDisconnect: (reason?: string) => void;
+  /**
+   * An unintended close (an intentional `disconnect()` emits none). `retryable` is false when the node
+   * closed the stream for good (4004, 4005).
+   */
+  onDisconnect: (reason: string | undefined, retryable: boolean) => void;
   onMessage: (data: string) => void;
   onError: (error: Error) => void;
   onStateChange: (state: ConnectionState) => void;
-}
-
-/** Configuration options for WebSocket client */
-export interface WebSocketClientOptions {
-  /** Enable automatic reconnection (default: true) */
-  autoReconnect?: boolean;
-  /** Maximum reconnection attempts (default: 5) */
-  maxReconnectAttempts?: number;
-  /** Initial reconnection delay in ms (default: 1000) */
-  reconnectDelay?: number;
-  /** Maximum reconnection delay in ms (default: 30000) */
-  maxReconnectDelay?: number;
 }
 
 /** Interface for WebSocket client - allows mocking in tests */

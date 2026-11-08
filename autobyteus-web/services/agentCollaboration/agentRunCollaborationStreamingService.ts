@@ -14,6 +14,7 @@ import { buildAgentRunCollaborationContext } from './agentRunCollaborationHydrat
 import type { AgentRunCollaborationContext } from './agentRunCollaborationContext'
 import { useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages'
 import { createRandomId } from '~/utils/randomId'
+import { LiveStreamReconnectScheduler } from '~/services/liveStreamLifecycle/liveStreamReconnectScheduler'
 
 type CommandAck = Extract<CollaborationStreamServerMessage, { type: 'AGENT_COMMAND_ACK' }>
 type PendingCommand = Readonly<{
@@ -25,9 +26,7 @@ type PendingCommand = Readonly<{
 }>
 type Phase = 'disconnected' | 'awaiting_connected' | 'awaiting_snapshot' | 'ready'
 
-const MAX_RECOVERY_ATTEMPTS = 5
 const COMMAND_TIMEOUT_MS = 15_000
-const recoveryDelay = (attempt: number): number => attempt === 0 ? 0 : Math.min(1_000 * (2 ** (attempt - 1)), 30_000)
 
 /**
  * The live stream of a standalone run's collaboration root (`/ws/agent-collaboration/:hostRunId`).
@@ -44,8 +43,19 @@ export class AgentRunCollaborationStreamingService {
   private readonly readiness = new Set<{ resolve(): void; reject(error: Error): void }>()
   private released = false
   private intentionalClose = false
-  private recoveryAttempts = 0
-  private recoveryTimer: ReturnType<typeof setTimeout> | null = null
+  private lastFailureDetail = 'The Agent collaboration stream closed.'
+  /** When this stream tries again (autobyteus-434); its success point is the accepted snapshot. */
+  private readonly reconnect = new LiveStreamReconnectScheduler({
+    attempt: () => this.attempt(),
+    resynchronize: () => {
+      this.closeSocket('Agent collaboration re-synchronize')
+      this.reconnect.attemptNow()
+    },
+    onPersistentFailure: () => {
+      this.options.reportError(this.lastFailureDetail)
+      this.settleReadiness(new Error(this.lastFailureDetail))
+    },
+  })
 
   constructor(private readonly options: Readonly<{
     hostRunId: string
@@ -57,8 +67,21 @@ export class AgentRunCollaborationStreamingService {
     onTaskExecutionsClosed?(context: AgentRunCollaborationContext): void
   }>) {}
 
+  /** The store's connect: starts over (any wait is cancelled) and opens. */
   connect(): void {
     if (this.released || !this.options.isCurrent() || this.socket) return
+    this.reconnect.startOver()
+    this.openSocket()
+  }
+
+  /** The scheduler's attempt. */
+  private attempt(): void {
+    if (this.released || this.socket) return
+    if (!this.options.isCurrent()) this.reconnect.startOver()
+    else this.openSocket()
+  }
+
+  private openSocket(): void {
     const endpoint = `${useWindowNodeContextStore().getBoundEndpoints().agentCollaborationWs}/${encodeURIComponent(this.options.hostRunId)}`
     const socket = new WebSocket(buildAuthenticatedWebSocketUrl(endpoint, getActiveRemoteAccessCredential() ?? ''))
     this.socket = socket
@@ -74,8 +97,11 @@ export class AgentRunCollaborationStreamingService {
       this.phase = 'disconnected'
       this.rejectPending('The Agent collaboration stream closed before command acknowledgement.')
       // 4004: this run cannot host delegated copies; retrying cannot help.
-      if (!this.intentionalClose && event.code !== 4004) this.scheduleRecovery('The Agent collaboration stream closed.')
-      else if (event.code === 4004) this.settleReadiness(new Error('This run cannot host delegated copies.'))
+      if (!this.intentionalClose && event.code !== 4004) this.recoveryFailed('The Agent collaboration stream closed.')
+      else if (event.code === 4004) {
+        this.reconnect.startOver()
+        this.settleReadiness(new Error('This run cannot host delegated copies.'))
+      }
     }
   }
 
@@ -92,8 +118,7 @@ export class AgentRunCollaborationStreamingService {
 
   disconnect(): void {
     this.released = true
-    if (this.recoveryTimer) clearTimeout(this.recoveryTimer)
-    this.recoveryTimer = null
+    this.reconnect.dispose()
     this.closeSocket('Agent collaboration view released')
     this.context = null
     this.settleReadiness(new Error('The Agent collaboration view was released.'))
@@ -167,7 +192,7 @@ export class AgentRunCollaborationStreamingService {
       const detail = cause instanceof Error ? cause.message : String(cause)
       this.context?.requireReopen(detail)
       this.closeSocket('Invalid Agent collaboration stream')
-      this.scheduleRecovery(detail)
+      this.recoveryFailed(detail)
     }
   }
 
@@ -198,7 +223,7 @@ export class AgentRunCollaborationStreamingService {
       this.options.publish(candidate)
       this.context = candidate
       this.phase = 'ready'
-      this.recoveryAttempts = 0
+      this.reconnect.connected()
       if (candidate.isActive) this.settleReadiness()
       else { this.options.onInactive(); this.disconnect() }
       return
@@ -219,7 +244,7 @@ export class AgentRunCollaborationStreamingService {
       if (application === 'checkpoint_required') {
         // A new child or a settings Save: reconnect for a fresh snapshot (the view only).
         this.closeSocket('Agent collaboration reload')
-        this.connect()
+        this.openSocket()
       } else if (message.payload.event.kind === 'task_executions_closed') {
         this.options.onTaskExecutionsClosed?.(this.context)
       }
@@ -245,19 +270,11 @@ export class AgentRunCollaborationStreamingService {
       ?? new Error(message.payload.message ?? message.payload.code ?? 'Agent collaboration command rejected.'))
   }
 
-  private scheduleRecovery(detail: string): void {
-    if (this.released || !this.options.isCurrent() || this.recoveryTimer || this.socket) return
-    if (this.recoveryAttempts >= MAX_RECOVERY_ATTEMPTS) {
-      this.options.reportError(detail)
-      this.settleReadiness(new Error(detail))
-      return
-    }
-    const delay = recoveryDelay(this.recoveryAttempts)
-    this.recoveryAttempts += 1
-    this.recoveryTimer = setTimeout(() => {
-      this.recoveryTimer = null
-      this.connect()
-    }, delay)
+  /** A loss, or a failed attempt before the snapshot: the scheduler waits and attempts again. */
+  private recoveryFailed(detail: string): void {
+    if (this.released || !this.options.isCurrent()) return
+    this.lastFailureDetail = detail
+    this.reconnect.connectionLost()
   }
 
   private closeSocket(reason: string): void {

@@ -20,6 +20,7 @@ import {
 } from './agentOrgExecutionContext'
 import type { CollaboratorMentionDto } from '~/utils/collaborators/collaboratorMentionText'
 import { createRandomId } from '~/utils/randomId'
+import { LiveStreamReconnectScheduler } from '~/services/liveStreamLifecycle/liveStreamReconnectScheduler'
 
 type CommandAck = Extract<CollaborationStreamServerMessage, { type: 'AGENT_COMMAND_ACK' }>
 type PendingCommand = Readonly<{
@@ -41,11 +42,7 @@ type StreamGeneration = Readonly<{
 type AgentOrgStreamPhase = 'disconnected' | 'awaiting_connected_root' | 'awaiting_snapshot' | 'ready'
 
 const attachmentLocator = (attachment: ContextFilePath): string => attachment.locator
-const MAX_TRANSPARENT_RECOVERY_ATTEMPTS = 5
 const INVALID_STREAM_CLOSE_CODE = 4000
-const recoveryDelay = (attempt: number): number => attempt === 0
-  ? 0
-  : Math.min(1_000 * (2 ** (attempt - 1)), 30_000)
 
 export class AgentOrgStreamingService {
   private socket: WebSocket | null = null
@@ -60,10 +57,17 @@ export class AgentOrgStreamingService {
   private recoveryCheckpoint: ExecutionCheckpoint | null = null
   private recoveryFocus: OrgWorkspaceSelection | null = null
   private streamPhase: AgentOrgStreamPhase = 'disconnected'
-  private transparentRecoveryAttempts = 0
-  private transparentRecoveryScheduled = false
   private transparentRecoveryInFlight = false
-  private transparentRecoveryTimer: ReturnType<typeof setTimeout> | null = null
+  private lastFailureDetail = 'AgentOrg stream recovery is required.'
+  /** When this stream tries again (autobyteus-434); its success point is the accepted snapshot. */
+  private readonly reconnect = new LiveStreamReconnectScheduler({
+    attempt: () => { void this.attemptTransparentRecovery() },
+    resynchronize: () => this.retireAndRecover(),
+    onPersistentFailure: () => {
+      this.options.reportError(this.lastFailureDetail)
+      this.settleReadiness(new Error(this.lastFailureDetail))
+    },
+  })
 
   constructor(private readonly options: Readonly<{
     orgRunId: string
@@ -80,24 +84,27 @@ export class AgentOrgStreamingService {
   connect(): void {
     if (this.released) return
     if (this.socket?.readyState === WebSocket.OPEN || this.socket?.readyState === WebSocket.CONNECTING) return
-    this.resetTransparentRecovery()
+    this.reconnect.startOver()
     if (this.context?.phase === 'reopen_required') {
-      this.scheduleTransparentRecovery(this.context.error ?? 'AgentOrg stream recovery is required.')
+      this.lastFailureDetail = this.context.error ?? 'AgentOrg stream recovery is required.'
+      this.reconnect.attemptNow()
       return
     }
     try {
       this.openSocket()
     } catch (cause) {
-      this.scheduleTransparentRecovery(this.detail(cause))
+      this.recoveryFailed(this.detail(cause))
     }
   }
 
   requestRecovery(): void {
+    // In a loss streak the scheduler (or the page resume) attempts; nothing to do here.
     if (this.released || this.isReady() || this.socket || this.activeGeneration
-      || this.transparentRecoveryScheduled || this.transparentRecoveryInFlight
+      || this.reconnect.isRecovering() || this.transparentRecoveryInFlight
       || this.context?.phase !== 'reopen_required') return
-    this.resetTransparentRecovery()
-    this.scheduleTransparentRecovery(this.context.error ?? 'AgentOrg stream recovery is required.')
+    this.lastFailureDetail = this.context.error ?? 'AgentOrg stream recovery is required.'
+    this.reconnect.startOver()
+    this.reconnect.attemptNow()
   }
 
   private openSocket(): void {
@@ -129,7 +136,7 @@ export class AgentOrgStreamingService {
         this.context.requireReopen(detail)
       }
       this.rejectPending('AgentOrg stream closed before command acknowledgement.')
-      if (shouldRecover) this.scheduleTransparentRecovery(detail)
+      if (shouldRecover) this.recoveryFailed(detail)
     }
   }
 
@@ -173,7 +180,7 @@ export class AgentOrgStreamingService {
 
   disconnect(): void {
     this.released = true
-    this.clearTransparentRecovery()
+    this.reconnect.dispose()
     this.closeSocket('AgentOrg context released')
     this.context = null
     this.recoveryCheckpoint = null
@@ -322,7 +329,7 @@ export class AgentOrgStreamingService {
       this.recoveryCheckpoint = null
       this.recoveryFocus = null
       this.streamPhase = 'ready'
-      this.resetTransparentRecovery()
+      this.reconnect.connected()
       if (candidate.isActive) this.settleReadiness()
       else {
         this.options.onInactive?.()
@@ -415,30 +422,19 @@ export class AgentOrgStreamingService {
     // Recovery owns the retired generation from this point forward. Schedule it
     // before asking the browser to close so a transport-level close failure can
     // never strand the workspace after strict admission has failed.
-    this.scheduleTransparentRecovery(detail)
+    this.recoveryFailed(detail)
     generation.socket.close(INVALID_STREAM_CLOSE_CODE, 'Invalid AgentOrg stream')
   }
 
-  private scheduleTransparentRecovery(detail: string): void {
-    if (this.released || this.transparentRecoveryScheduled || this.transparentRecoveryInFlight || this.socket) return
-    if (this.transparentRecoveryAttempts >= MAX_TRANSPARENT_RECOVERY_ATTEMPTS) {
-      this.options.reportError(detail)
-      this.settleReadiness(new Error(detail))
-      return
-    }
-    const delay = recoveryDelay(this.transparentRecoveryAttempts)
-    this.transparentRecoveryAttempts += 1
-    this.transparentRecoveryScheduled = true
-    const run = () => {
-      this.transparentRecoveryScheduled = false
-      this.transparentRecoveryTimer = null
-      void this.attemptTransparentRecovery(detail)
-    }
-    if (delay === 0) queueMicrotask(run)
-    else this.transparentRecoveryTimer = setTimeout(run, delay)
+  /** A loss, or a failed attempt before the snapshot: the scheduler waits and attempts again. */
+  private recoveryFailed(detail: string): void {
+    if (this.released) return
+    this.lastFailureDetail = detail
+    this.reconnect.connectionLost()
   }
 
-  private async attemptTransparentRecovery(previousDetail: string): Promise<void> {
+  /** The scheduler's attempt: transparent recovery (inspection, checkpoint, snapshot), or a plain open without a context. */
+  private async attemptTransparentRecovery(): Promise<void> {
     if (this.released || this.socket || this.transparentRecoveryInFlight) return
     this.transparentRecoveryInFlight = true
     let failure: unknown = null
@@ -450,18 +446,14 @@ export class AgentOrgStreamingService {
     } finally {
       this.transparentRecoveryInFlight = false
     }
-    if (failure) this.scheduleTransparentRecovery(this.detail(failure) || previousDetail)
+    if (failure) this.recoveryFailed(this.detail(failure) || this.lastFailureDetail)
   }
 
-  private resetTransparentRecovery(): void {
-    this.clearTransparentRecovery()
-    this.transparentRecoveryAttempts = 0
-  }
-
-  private clearTransparentRecovery(): void {
-    if (this.transparentRecoveryTimer) clearTimeout(this.transparentRecoveryTimer)
-    this.transparentRecoveryTimer = null
-    this.transparentRecoveryScheduled = false
+  /** The page was hidden ≥ 30 s: retire the current generation, then recover it from a fresh inspection. */
+  private retireAndRecover(): void {
+    this.rejectPending('AgentOrg stream is re-synchronizing.')
+    this.closeSocket('AgentOrg stream re-synchronizing')
+    this.reconnect.attemptNow()
   }
 
   private detail(cause: unknown): string {
