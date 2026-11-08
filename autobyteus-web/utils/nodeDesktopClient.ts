@@ -48,6 +48,9 @@ export function nodeDesktopStreamUrl(
  * Reconnect.
  */
 export function viewerStateForClose(close: Readonly<{ code: number; reason: string }>): NodeDesktopStreamEnd {
+  // autobyteus-437 (NA-11): this desktop's owner credential was revoked (Disconnect): the node needs connecting again.
+  // Phones are revoked with their own code (REMOTE_ACCESS_DEVICE_REVOKED), so this wording never reaches a phone.
+  if (close.code === 4403 && close.reason === 'NODE_CREDENTIAL_REVOKED') return ended('not-allowed', 'needs_connecting');
   switch (close.code) {
     case 4401:
     case 4403:

@@ -311,6 +311,7 @@ const messages = {
   "workspace.components.workspace.tools.NodeDesktopTile.connection_refused": "The connection was refused",
   "workspace.components.workspace.tools.NodeDesktopTile.cannot_reach_node": "Cannot reach the node",
   "workspace.components.workspace.tools.NodeDesktopTile.not_allowed": "This viewer is not allowed on this node",
+  "workspace.components.workspace.tools.NodeDesktopTile.needs_connecting": "This desktop is not connected to this node. Connect it on the Nodes page.",
   "workspace.components.workspace.tools.NodeDesktopTile.no_shared_desktop": "This node has no shared desktop",
   "workspace.components.workspace.tools.NodeDesktopTile.connect": "Connect",
   "workspace.components.workspace.tools.NodeDesktopTile.reconnect": "Reconnect",

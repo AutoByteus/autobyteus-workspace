@@ -251,7 +251,7 @@ GraphQL: http://localhost:${BACKEND_PORT}/graphql
 Workspace: ${WORKSPACE_CONTAINER_PATH} -> $(node_workspace_host_path "$node_name")
 Shared folder: ${SHARED_CONTAINER_PATH} -> $(shared_workspace_host_path)
 Private app data: /home/autobyteus/data -> $(volume_prefix_for "$node_name")-data (Docker named volume)
-Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+Next step: paste Backend into Add Remote Node in AutoByteus and connect it with a setup code (autobyteus-docker setup-code).
 URLS
 }
 
