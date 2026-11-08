@@ -1,0 +1,36 @@
+{
+ "pageUrl": "http://nodebox-2c7.home.arpa:47332/mobile/",
+ "value": {
+  "headerName": "Test Node",
+  "headerState": "Connected",
+  "headerAria": "Test Node, Connected. Connection",
+  "banner": null,
+  "sheetOpen": false,
+  "sheetText": null,
+  "sheetAddressLine": false,
+  "bodyText": "Test Node\nConnected\n\nNo runs yet\n\nStart with New run. Work an agent delegates appears under its run and leaves when it is done.",
+  "ariaLabels": [
+   "Test Node, Connected. Connection",
+   "New run"
+  ],
+  "titles": [
+   "New run"
+  ],
+  "documentTitle": "",
+  "helloReply": {
+   "type": "shell",
+   "nodeCount": 3,
+   "deviceName": "sdk_gphone64_arm64",
+   "nodeName": "Test Node"
+  },
+  "sessionNodeName": "Test Node",
+  "sessionKeys": [
+   "entryId",
+   "serverBaseUrl",
+   "nodeName",
+   "credential",
+   "device",
+   "pairedAt"
+  ]
+ }
+}

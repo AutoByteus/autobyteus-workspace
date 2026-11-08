@@ -56,7 +56,8 @@ export type RemoteAccessStatus = {
 
 /**
  * The phone's paired session, stored by `mobileCredentialStorage`. `entryId` is the window's entry for the paired node.
- * `nodeName` is the node's name from the QR (absent for sessions paired before it was kept: the page shows the host).
+ * `nodeName` is the node's name from the QR (absent for sessions paired before it was kept: the page then shows the
+ * Android app's name for the node, or "AutoByteus node"; never the address).
  */
 export type MobileNodeSession = {
   entryId: string;

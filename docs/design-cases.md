@@ -259,3 +259,15 @@ Principle 1 (statements about existing code; several forms).
 - **The fix (SR-002):** a new message on the existing bridge, under its main-frame/origin rule.
 - **Why it mattered:** a "nothing exists" claim decides the whole design; here it would have broken an existing security boundary.
 - **Notice it by:** "no X exists" backed by one search term; a platform with several ways to do the same thing (here two WebView bridge APIs); a new global name chosen without searching for that name itself.
+
+### Case 19: A Screen Designed By Its Text, Not By What It Covers (autobyteus-433, CRR-001 F-001)
+
+Principle 1 (the complete path to its outcome, through the real dependency).
+
+- **The design said:** when the open node's page fails to load, the app shows an overlay "Can’t reach <node>" in plain words, with no URL. It decided the overlay's text only.
+- **What happened:** after a main-frame failure, Android's WebView commits its own error page, which prints the page's URL and the network error. The overlay was 92 % opaque, so the URL showed through; a screen reader could still reach it; and the first `onPageFinished` (which also fires for the error page) replaced the overlay with that page. The requirement was a screenshot without the address, and the screenshot showed it.
+- **The fix:** the WebView stays in the layout but is `INVISIBLE` while any overlay is up, and the overlay is opaque. The web host decides each main-frame load's outcome itself, and the page shows only after a load that succeeded, which also closes the overlay.
+- **Why it mattered:** this was the leak the ticket existed to remove, on the screen most likely to be screenshotted when something goes wrong.
+- **Second step (IR-002):** the first fix reset the failure mark at `onPageStarted`. A premise check on the emulator showed that WebView reports an HTTP error *before* `onPageStarted` and a network error after it. The decision moved to `onPageFinished`, the one callback that always ends a load. Lesson: decide a callback-driven outcome on the event that always comes last, measured for every error kind, not on the order one kind shows.
+- **Third step (CRR-002 F-002):** the moved reset still failed open: a failed load over a page that had loaded gets two `onPageFinished` calls, and the second counted as success, showing the error page full-screen. The design stopped inferring from the WebView's load callbacks and had the node's page report itself mounted over the app bridge, which WebView's error page cannot do. Lesson: to know what a component shows, ask the content for a positive signal; do not infer success from the absence of an error in a third-party lifecycle whose call order and count vary. After a second failed correction, change the mechanism instead of tuning the rule again.
+- **Notice it by:** a requirement stated as "what the screen shows" and a design that decides one view's content; an overlay over a WebView, a map or another component that renders its own error states; a "first finished" or "page loaded" callback used to decide visibility without checking whether that load failed.

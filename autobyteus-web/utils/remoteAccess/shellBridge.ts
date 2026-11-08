@@ -1,18 +1,26 @@
 /**
  * The Android app's shell bridge (`window.AutoByteusShell`): an androidx.webkit web-message object the app gives only
- * to the main frame of the open node's origin. The page tells the app it paired, asks it to show its node list or its
- * scanner, or turns the VNC Viewer's desktop full screen (landscape, hidden system bars) on or off. It carries no
- * credential. In a browser there is no bridge.
+ * to the main frame of the open node's origin. The page tells the app it is ready or paired, asks it to show its node
+ * list or its scanner, or turns the VNC Viewer's desktop full screen (landscape, hidden system bars) on or off; the
+ * app's `hello` reply tells the page about this phone and the open node. It carries no credential. In a browser there
+ * is no bridge.
  */
 export type ShellHello = {
   /** Saved nodes on this phone, for "N nodes on this phone". */
   nodeCount: number;
   /** The phone's model name, used as the paired device's name. */
   deviceName: string;
+  /** The app's name for the open node, as its first page shows it; `''` when the app has none (autobyteus-433). */
+  nodeName: string;
 };
 
 export type ShellBridge = {
   hello(): Promise<ShellHello | null>;
+  /**
+   * The node's page is mounted: the app shows the page (or closes its error overlay) only on this message, which
+   * WebView's own error page cannot send (autobyteus-433 DS-006).
+   */
+  pageReady(): void;
   paired(nodeName: string): void;
   showNodeList(): void;
   startScan(): void;
@@ -38,11 +46,12 @@ const readShellObject = (): ShellWebMessageObject | null => {
 
 const parseHello = (data: unknown): ShellHello | null => {
   try {
-    const message = JSON.parse(String(data)) as { type?: string; nodeCount?: unknown; deviceName?: unknown };
+    const message = JSON.parse(String(data)) as { type?: string; nodeCount?: unknown; deviceName?: unknown; nodeName?: unknown };
     if (message.type !== 'shell') return null;
     return {
       nodeCount: typeof message.nodeCount === 'number' ? message.nodeCount : 0,
       deviceName: typeof message.deviceName === 'string' ? message.deviceName : '',
+      nodeName: typeof message.nodeName === 'string' ? message.nodeName : '',
     };
   } catch {
     return null;
@@ -70,6 +79,7 @@ export const getShellBridge = (): ShellBridge | null => {
       shell.addEventListener('message', onMessage);
       post({ type: 'hello' });
     }),
+    pageReady: () => post({ type: 'pageReady' }),
     paired: (nodeName) => post({ type: 'paired', nodeName }),
     showNodeList: () => post({ type: 'showNodeList' }),
     startScan: () => post({ type: 'startScan' }),

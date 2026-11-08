@@ -33,17 +33,19 @@ object ConnectionDiagnosticMapper {
         else -> CantReachReason.NoAnswer
     }
 
-    fun invalidUrl(message: String): ConnectionDiagnostic = ConnectionDiagnostic(
+    // No text here carries an address, a URL or an exception's text (autobyteus-433 REQ-006, REQ-007).
+
+    fun invalidUrl(): ConnectionDiagnostic = ConnectionDiagnostic(
         kind = ConnectionFailureKind.InvalidUrl,
         title = "Check the address",
-        message = message,
+        message = "The address could not be read.",
         recoveryAction = "Check the address and try again.",
     )
 
-    fun httpNeedsAcknowledgement(url: String): ConnectionDiagnostic = ConnectionDiagnostic(
+    fun httpNeedsAcknowledgement(): ConnectionDiagnostic = ConnectionDiagnostic(
         kind = ConnectionFailureKind.HttpNeedsAcknowledgement,
         title = "This address has no extra protection",
-        message = "$url has no extra protection. Fine at home or in your office; on public Wi-Fi, use Tailscale.",
+        message = "A plain http:// address needs the tick in Type an address.",
         recoveryAction = "Tick the box to use it.",
     )
 
@@ -75,16 +77,16 @@ object ConnectionDiagnosticMapper {
         )
     }
 
+    /** The exception's own text is never used: an unresolved host's exception names the host. */
     fun fromException(error: Throwable): ConnectionDiagnostic {
-        val detail = error.message?.takeIf { it.isNotBlank() } ?: error::class.java.simpleName
         val likelyTls = error is SSLException
         return ConnectionDiagnostic(
             kind = ConnectionFailureKind.NetworkUnreachable,
             title = if (likelyTls) "Secure connection failed" else "AutoByteus node is unreachable",
             message = when (error) {
                 is SocketTimeoutException -> "The request timed out before the desktop node responded."
-                is IOException -> "The phone could not reach the saved AutoByteus node. Details: $detail"
-                else -> "The connection check failed. Details: $detail"
+                is IOException -> "The phone could not reach the node."
+                else -> "The connection check failed."
             },
             recoveryAction = if (likelyTls) {
                 "Use a valid Tailscale Serve HTTPS URL, or acknowledge private HTTP if you are using a LAN/tailnet URL."
@@ -94,17 +96,34 @@ object ConnectionDiagnosticMapper {
         )
     }
 
-    fun unsafeNavigationBlocked(url: String): ConnectionDiagnostic = ConnectionDiagnostic(
-        kind = ConnectionFailureKind.UnsafeNavigationBlocked,
-        title = "Navigation blocked",
-        message = "The app blocked an untrusted in-WebView navigation: $url",
-        recoveryAction = "Open unrelated links in the system browser. AutoByteus mobile stays on the saved node origin.",
+    /** The open node's page did not load (the main frame's load error); the WebView's error text is not shown. */
+    fun pageLoadFailed(nodeName: String): ConnectionDiagnostic = ConnectionDiagnostic(
+        kind = ConnectionFailureKind.WebViewLoadFailed,
+        title = "Can’t reach $nodeName",
+        message = "Check that Tailscale or your Wi-Fi is on and the computer is awake.",
+        recoveryAction = "Then tap Retry.",
     )
 
-    fun webViewLoadFailed(description: String): ConnectionDiagnostic = ConnectionDiagnostic(
+    /** A same-origin link outside the pages the app opens. */
+    fun linkBlocked(): ConnectionDiagnostic = ConnectionDiagnostic(
+        kind = ConnectionFailureKind.UnsafeNavigationBlocked,
+        title = "This link can’t open here",
+        message = "AutoByteus on your phone opens only its own pages.",
+        recoveryAction = "Tap Retry to go back to your runs.",
+    )
+
+    /** A link to open outside the app that no installed app opens. */
+    fun noAppForLink(): ConnectionDiagnostic = ConnectionDiagnostic(
         kind = ConnectionFailureKind.WebViewLoadFailed,
-        title = "Mobile shell failed to load",
-        message = description,
-        recoveryAction = "Retry, connect Tailscale, verify the desktop is online, or reset and pair again.",
+        title = "No app can open this link",
+        message = "No app on this phone opens this kind of link.",
+        recoveryAction = "Tap Retry to go back to your runs.",
+    )
+
+    fun noFilePicker(): ConnectionDiagnostic = ConnectionDiagnostic(
+        kind = ConnectionFailureKind.WebViewLoadFailed,
+        title = "Can’t pick files",
+        message = "This phone has no app for picking files.",
+        recoveryAction = "Install or turn on a file manager, then try again.",
     )
 }

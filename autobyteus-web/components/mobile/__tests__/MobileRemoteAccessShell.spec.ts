@@ -56,6 +56,34 @@ const mountShell = async (query: Record<string, string> = {}, session: unknown =
 
 const reachableStatus = { phoneAccessEnabled: true, pairingAvailable: true, nodeId: 'srv_test_000000000000000000000000000000000000' };
 
+/** A stand-in for the Android app's web-message object, answering `hello` with the app's name for the open node. */
+const installShell = (appNodeName: string) => {
+  const listeners = new Set<(event: { data: string }) => void>();
+  const posted: string[] = [];
+  (window as unknown as { AutoByteusShell?: unknown }).AutoByteusShell = {
+    postMessage: (message: string) => {
+      const type = (JSON.parse(message) as { type: string }).type;
+      posted.push(type);
+      if (type !== 'hello') return;
+      queueMicrotask(() => listeners.forEach((listener) => listener({ data: JSON.stringify({ type: 'shell', nodeCount: 2, deviceName: 'Test Phone', nodeName: appNodeName }) })));
+    },
+    addEventListener: (_type: string, listener: (event: { data: string }) => void) => listeners.add(listener),
+    removeEventListener: (_type: string, listener: (event: { data: string }) => void) => listeners.delete(listener),
+  };
+  return posted;
+};
+
+/** A session at a Tailscale-style test address; the page must show none of it (autobyteus-433). */
+const TAILNET_HOST = 'test-desktop.example-tailnet.ts.net';
+const tailnetSession = (nodeName?: string) => {
+  const { nodeName: _name, ...rest } = pairedSession;
+  const serverBaseUrl = `https://${TAILNET_HOST}`;
+  return { ...rest, ...(nodeName ? { nodeName } : {}), serverBaseUrl, device: { ...rest.device, clientFacingBaseUrl: serverBaseUrl } };
+};
+const expectNoAddress = (text: string | null | undefined): void => {
+  for (const part of [TAILNET_HOST, 'test-desktop', 'example-tailnet', 'ts.net', 'https://']) expect(text ?? '').not.toContain(part);
+};
+
 const toBase64Url = (value: object): string => btoa(JSON.stringify(value)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
 
 // autobyteus-277: the phone's one main screen is the run list; pairing is unchanged.
@@ -66,6 +94,7 @@ describe('MobileRemoteAccessShell', () => {
     load.load.mockClear();
     credential.outcomes = ['reachable'];
     document.body.innerHTML = '';
+    delete (window as unknown as { AutoByteusShell?: unknown }).AutoByteusShell;
   });
 
   it('lands a paired phone on the run list with the node\'s name from its QR (REQ-011)', async () => {
@@ -77,10 +106,51 @@ describe('MobileRemoteAccessShell', () => {
     wrapper.unmount();
   });
 
-  it('a session paired before the name was kept shows the address\'s host', async () => {
+  it('a session paired before the name was kept, in a browser, shows "AutoByteus node", never the address (autobyteus-433 AC-003)', async () => {
     const { nodeName: _name, ...withoutName } = pairedSession;
     const { wrapper } = await mountShell({}, withoutName);
-    expect(wrapper.get('[data-testid="mobile-node-name"]').text()).toBe('desktop-private.local:29695');
+    expect(wrapper.get('[data-testid="mobile-node-name"]').text()).toBe('AutoByteus node');
+    expect(wrapper.text()).not.toContain('desktop-private');
+    wrapper.unmount();
+  });
+
+  // autobyteus-433 AC-001, AC-003: the app's name for the node, then the session's QR name, then "AutoByteus node".
+  it.each([
+    ['the app\'s name over a session without one', 'Test Desktop', undefined, 'Test Desktop'],
+    ['the app\'s name over the session\'s QR name', 'Test Desktop', 'Test Node', 'Test Desktop'],
+    ['the session\'s QR name when the app has no name for the node', '', 'Test Node', 'Test Node'],
+    ['"AutoByteus node" when neither has a name', '', undefined, 'AutoByteus node'],
+  ])('in the Android app, names the node by %s, never by its address', async (_case, appNodeName, sessionNodeName, shown) => {
+    installShell(appNodeName);
+    const { wrapper } = await mountShell({}, tailnetSession(sessionNodeName));
+    const button = wrapper.get('[data-testid="mobile-node-button"]');
+    expect(wrapper.get('[data-testid="mobile-node-name"]').text()).toBe(shown);
+    expect(wrapper.get('[data-testid="mobile-node-state"]').text()).toBe('Connected');
+    expectNoAddress(wrapper.text());
+    expectNoAddress(button.attributes('aria-label'));
+    await button.trigger('click');
+    await flushPromises();
+    const sheet = document.body.querySelector('[data-testid="mobile-connection-sheet"]');
+    expect(sheet?.querySelector('[data-testid="mobile-connection-name"]')?.textContent).toBe(shown);
+    expectNoAddress(sheet?.textContent);
+    wrapper.unmount();
+  });
+
+  it('in the Android app, not reachable: the banner names the node by the app\'s name, with no address (AC-001)', async () => {
+    credential.outcomes = ['unreachable'];
+    installShell('Test Desktop');
+    const { wrapper } = await mountShell({}, tailnetSession());
+    expect(wrapper.get('[data-testid="mobile-node-state"]').text()).toBe('Not reachable');
+    expect(wrapper.get('[data-testid="mobile-node-offline-banner"]').text()).toContain('Can’t reach Test Desktop.');
+    expectNoAddress(wrapper.text());
+    wrapper.unmount();
+  });
+
+  it('in a browser, a session at a tailnet address shows its QR name and no part of the address (AC-003)', async () => {
+    const { wrapper } = await mountShell({}, tailnetSession('Test Node'));
+    expect(wrapper.get('[data-testid="mobile-node-name"]').text()).toBe('Test Node');
+    expectNoAddress(wrapper.text());
+    expectNoAddress(wrapper.get('[data-testid="mobile-node-button"]').attributes('aria-label'));
     wrapper.unmount();
   });
 
@@ -190,7 +260,7 @@ describe('MobileRemoteAccessShell', () => {
     await flushPromises();
     const sheet = document.body.querySelector('[data-testid="mobile-connection-sheet"]');
     expect(sheet?.textContent).toContain('Office Mac');
-    expect(sheet?.textContent).toContain('http://desktop-private.local:29695');
+    expect(sheet?.textContent).not.toContain('desktop-private');
     expect(sheet?.textContent).toContain('Unpair from Office Mac');
     (document.body.querySelector('[data-testid="mobile-check-connection"]') as HTMLButtonElement).click();
     await flushPromises();
@@ -264,6 +334,27 @@ describe('MobileRemoteAccessShell', () => {
     const { wrapper } = await mountShell({ pairing: pairingParam });
     expect(wrapper.find('[data-testid="mobile-pairing-bootstrap"]').exists()).toBe(true);
     expect(wrapper.find('[data-testid="mobile-run-list"]').exists()).toBe(false);
+    wrapper.unmount();
+  });
+
+  // autobyteus-433 DS-006: the app shows the page (or closes its overlay) only when the page says it is mounted.
+  it.each([
+    ['a paired phone', pairedSession],
+    ['an unpaired phone (the pairing page)', null],
+  ])('in the Android app, %s tells the app once that the page is ready', async (_case, session) => {
+    const posted = installShell('Test Desktop');
+    const { router, wrapper } = await mountShell({}, session);
+    expect(posted.filter((type) => type === 'pageReady')).toHaveLength(1);
+    await router.push({ path: '/mobile', query: { screen: 'new' } });
+    router.back(); await flushPromises();
+    expect(posted.filter((type) => type === 'pageReady')).toHaveLength(1);
+    wrapper.unmount();
+  });
+
+  it('in a browser there is no bridge, so nothing is sent and the page still mounts', async () => {
+    const { wrapper } = await mountShell();
+    expect((window as unknown as { AutoByteusShell?: unknown }).AutoByteusShell).toBeUndefined();
+    expect(wrapper.find('[data-testid="mobile-run-list"]').exists()).toBe(true);
     wrapper.unmount();
   });
 

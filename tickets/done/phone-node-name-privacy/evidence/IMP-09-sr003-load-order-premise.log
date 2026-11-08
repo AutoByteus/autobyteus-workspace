@@ -1,0 +1,47 @@
+# IMP-09 SR-003 premise check: WebView callback order on a failed main-frame load (design-spec DS-006)
+# commit: ba3ba5b23e + TEMPORARY changes, now removed: Log.i("ABX433TMP", …) in AutoByteusWebView.Client
+#   (onPageStarted, onPageFinished, onReceivedError, onReceivedHttpError) and an instrumented test
+#   TmpLoadOrderProbeTest that creates AutoByteusWebView for each base URL, waits 8 s, calls loadTrusted (a reload), waits 8 s.
+# command: ANDROID_SERIAL=emulator-5570 ./gradlew :app:connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=org.autobyteus.mobile.TmpLoadOrderProbeTest
+#          then: adb -s emulator-5570 logcat -d -v time -s ABX433TMP:I
+# env: own emulator codex_api35_arm64 (-read-only, port 5570), Android 15 (API 35), Android System WebView 124.0.6367.219;
+#      host test servers on 127.0.0.1 (the emulator's 10.0.2.2): :8434 closed (connection refused), :8433 answers 502 with an HTML body, :8435 answers 200.
+# date: 2026-11-08
+# runs: 2, same order both times (run 1's log buffer lost its first lines; run 2 below is complete)
+
+11-08 09:11:28.947 === case http://10.0.2.2:8434
+11-08 09:11:30.019 onPageStarted http://10.0.2.2:8434/mobile
+11-08 09:11:30.020 onReceivedError main=true http://10.0.2.2:8434/mobile -6
+11-08 09:11:30.020 onDiagnostic WebViewLoadFailed
+11-08 09:11:30.020 onPageFinished http://10.0.2.2:8434/mobile
+11-08 09:11:37.913 --- reload
+11-08 09:11:37.956 onPageStarted http://10.0.2.2:8434/mobile
+11-08 09:11:37.956 onReceivedError main=true http://10.0.2.2:8434/mobile -6
+11-08 09:11:37.956 onDiagnostic WebViewLoadFailed
+11-08 09:11:37.956 onPageFinished http://10.0.2.2:8434/mobile
+11-08 09:11:45.943 === case http://10.0.2.2:8433
+11-08 09:11:46.016 onReceivedHttpError main=true http://10.0.2.2:8433/mobile 502
+11-08 09:11:46.016 onDiagnostic WebViewLoadFailed
+11-08 09:11:46.063 onPageStarted http://10.0.2.2:8433/mobile
+11-08 09:11:46.150 onPageFinished http://10.0.2.2:8433/mobile
+11-08 09:11:46.159 onReceivedHttpError main=false http://10.0.2.2:8433/favicon.ico 502
+11-08 09:11:53.998 --- reload
+11-08 09:11:54.043 onReceivedHttpError main=true http://10.0.2.2:8433/mobile 502
+11-08 09:11:54.044 onDiagnostic WebViewLoadFailed
+11-08 09:11:54.054 onPageStarted http://10.0.2.2:8433/mobile
+11-08 09:11:54.068 onPageFinished http://10.0.2.2:8433/mobile
+11-08 09:11:54.074 onReceivedHttpError main=false http://10.0.2.2:8433/favicon.ico 502
+11-08 09:12:02.008 === case http://10.0.2.2:8435
+11-08 09:12:02.194 onPageStarted http://10.0.2.2:8435/mobile
+11-08 09:12:02.213 onPageFinished http://10.0.2.2:8435/mobile
+11-08 09:12:10.067 --- reload
+11-08 09:12:10.093 onPageStarted http://10.0.2.2:8435/mobile
+11-08 09:12:10.093 onPageFinished http://10.0.2.2:8435/mobile
+
+# Result
+# - Network failure (:8434, error -6 ERR_CONNECTION_REFUSED), first load and reload: onPageStarted -> onReceivedError(main) -> onPageFinished. Matches the premise.
+# - HTTP error (:8433, 502), first load and reload: onReceivedHttpError(main) -> onPageStarted -> onPageFinished. DIFFERS from the premise:
+#   the HTTP error arrives before onPageStarted, so "onPageStarted clears the failed mark" would erase the failure and
+#   onPageFinished would report onPageLoaded() for the 502 page.
+# - A sub-resource HTTP error (favicon.ico, main=false) arrives after onPageFinished; not a main-frame outcome.
+# - Success (:8435): onPageStarted -> onPageFinished.

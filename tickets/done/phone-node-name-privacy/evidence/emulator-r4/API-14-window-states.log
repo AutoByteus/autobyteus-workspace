@@ -1,0 +1,47 @@
+# API-14 window states (autobyteus-432 full screen on the merged app, e8516bce5c), emulator-5590 pnnp433_api35 (Android 15, WebView 124),
+# Docker test node pnnp433-node (autobyteus/autobyteus-server:beta 9c5aa01bb2fc + this tree's server package, buildx from a fresh clone of e8516bce5c),
+# auto-rotate off (accelerometer_rotation=0), gesture navigation. Date 2026-11-08T10:2x–10:5xZ.
+# Lines come from win_state (dumpsys + DevTools) or rot (dumpsys only).
+# HARNESS NOTE (proven, see the "dump" lines at the end): one `uiautomator dump` while the phone is in landscape sets the
+# system's user_rotation to 1 (UiAutomation freezes the current rotation). After that, an exit from full screen correctly
+# requests UNSPECIFIED, but the display stays at ROTATION_90. These lines were affected, because a dump ran in landscape
+# before them: "exit-by-handle", "exit-by-handle+3s", "hint-run-exit", "base-hint-exit", "down-case: recovered". They say
+# nothing about the app. The same steps without a dump in landscape ("exit-2", "no-dump exit", "down-case-2: *") return to
+# ROTATION_0. The base APK (b690a5dfdb) showed the same harness effect.
+viewer-portrait | rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page={"q":"?screen=desktop","status":"Connected · View only","handle":false,"header":"Test Docker Node"}
+full-screen-entered | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page={"q":"?screen=desktop&full=1","status":null,"handle":true,"header":"Test Docker Node"}
+after-got-it | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page={"q":"?screen=desktop&full=1","status":null,"handle":true,"header":"Test Docker Node"}
+exit-by-handle | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page={"q":"?screen=desktop","status":"Connected · View only","handle":false,"header":"Test Docker Node"}
+exit-by-handle+3s | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page={"q":"?screen=desktop","status":"Connected · View only","handle":false,"header":"Test Docker Node"}
+before-enter-2 | rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page={"q":"?screen=desktop","status":"Connected · View only","handle":false,"header":"Test Docker Node"}
+enter-2 | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page={"q":"?screen=desktop&full=1","status":null,"handle":true,"header":"Test Docker Node"}
+exit-2 | rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page={"q":"?screen=desktop","status":"Connected · View only","handle":false,"header":"Test Docker Node"}
+hint-run-full | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page={"q":"?screen=desktop&full=1","status":null,"handle":true,"header":"Test Docker Node"}
+hint-run-exit | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page={"q":"?screen=desktop","status":"Connected · View only","handle":false,"header":"Test Docker Node"}
+BASE APK b690a5dfdb
+base-viewer | rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page={"q":"?screen=desktop","status":"Connected · View only","handle":false,"header":"Test Docker Node"}
+base-hint-full | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page={"q":"?screen=desktop&full=1","status":null,"handle":true,"header":"Test Docker Node"}
+base-hint-exit | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page={"q":"?screen=desktop","status":"Connected · View only","handle":false,"header":"Test Docker Node"}
+MERGED APK e8516bce5c (4e7073ad…)
+merged-viewer | rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page={"q":"?screen=desktop","status":"Connected · View only","handle":false,"header":"Test Docker Node"}
+reload-case: full | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page={"q":"?screen=desktop&full=1","status":null,"handle":true,"header":"Test Docker Node"}
+reload-case: 1.5s after reload | rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page={"q":"?screen=desktop&full=1","status":null,"handle":false,"header":null}
+reload-case: 9.5s after reload | rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page={"q":"","status":null,"handle":false,"header":"Test Docker Node"}
+switch-case: full | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page={"q":"?screen=desktop&full=1","status":null,"handle":true,"header":"Test Docker Node"}
+switch-case: node list | rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page={"q":"?screen=desktop&full=1","status":null,"handle":true,"header":"Test Docker Node"}
+switch-case: back to the page | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page={"q":"?screen=desktop&full=1","status":null,"handle":true,"header":"Test Docker Node"}
+overlay-case: full | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page={"q":"?screen=desktop&full=1","status":null,"handle":true,"header":"Test Docker Node"}
+overlay-case: link overlay | rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page={"q":"?screen=desktop&full=1","status":null,"handle":true,"header":"Test Docker Node"}
+overlay-case: after Retry (new document) | rotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page={"q":"","status":null,"handle":false,"header":"Test Docker Node"}
+down-case: full | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page={"q":"?screen=desktop&full=1","status":null,"handle":true,"header":"Test Docker Node"}
+down-case: failed reload | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE statusBar:visible=false navBar:visible=false | page=
+down-case: recovered | rotation=ROTATION_90 requested=SCREEN_ORIENTATION_UNSPECIFIED statusBar:visible=true navBar:visible=true | page={"q":"","status":null,"handle":false,"header":"Test Docker Node"}
+down-case-2: full | user_rotation=0 mDisplayRotation=ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE bars=visible=false visible=false 
+down-case-2: 8s after reload | user_rotation=0 mDisplayRotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED bars=visible=true visible=true 
+down-case-2: recovered | user_rotation=0 mDisplayRotation=ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED bars=visible=true visible=true 
+# dump test (copied from the console, 10:4xZ, merged APK):
+# no-dump exit: user_rotation=0 mDisplayRotation=ROTATION_0
+# full: user_rotation=0
+# after one uiautomator dump: user_rotation=1
+# dump exit: user_rotation=1 mDisplayRotation=ROTATION_90
+# time test (no dump): user_rotation=0 at 2, 10, 20, 30, 45 and 60 s in full screen

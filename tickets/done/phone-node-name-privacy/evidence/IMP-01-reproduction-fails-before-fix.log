@@ -1,0 +1,11 @@
+# IMP-01 reproduction before the fix
+# command: cd autobyteus-web && pnpm exec vitest run components/mobile/__tests__/MobileRemoteAccessShell.spec.ts -t 'AutoByteus node'
+# commit: 60f73df0a0 + flipped test only (working tree)
+# env: macOS, Node v22.23.1, 2026-11-08T06:33Z
+
+   × MobileRemoteAccessShell > a session paired before the name was kept, in a browser, shows "AutoByteus node", never the address (autobyteus-433 AC-003) 28ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  components/mobile/__tests__/MobileRemoteAccessShell.spec.ts > MobileRemoteAccessShell > a session paired before the name was kept, in a browser, shows "AutoByteus node", never the address (autobyteus-433 AC-003)
+Expected: [32m"AutoByteus node"[39m
+Received: [31m"desktop-private.local:29695"[39m
+      Tests  1 failed | 14 skipped (15)

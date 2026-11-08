@@ -18,8 +18,8 @@ class ConnectionValidator(
     fun validate(baseUrl: String, existingEntry: SavedNodeEntry? = null): ConnectionValidationResult {
         val normalized = try {
             NodeUrlNormalizer.normalize(baseUrl)
-        } catch (error: NodeUrlNormalizationException) {
-            return ConnectionValidationResult.Failed(ConnectionDiagnosticMapper.invalidUrl(error.message ?: "Invalid URL."))
+        } catch (_: NodeUrlNormalizationException) {
+            return ConnectionValidationResult.Failed(ConnectionDiagnosticMapper.invalidUrl())
         }
 
         val entry = existingEntry ?: SavedNodeEntry.fromNormalized(normalized)
@@ -37,7 +37,7 @@ class ConnectionValidator(
                 val body = connection.inputStream.bufferedReader().use { it.readText() }
                 val status = RemoteAccessStatus.fromJson(body)
                 if (!status.phoneAccessEnabled) {
-                    ConnectionValidationResult.Failed(ConnectionDiagnosticMapper.phoneAccessDisabled(entry.displayName))
+                    ConnectionValidationResult.Failed(ConnectionDiagnosticMapper.phoneAccessDisabled(entry.shownName))
                 } else {
                     ConnectionValidationResult.Reachable(entry, status)
                 }

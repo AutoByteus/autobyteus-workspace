@@ -455,7 +455,12 @@ const openPhone = async ({ width = 390, height = 844, storageState, label = 'pho
       try { const body = JSON.parse(request.postData() ?? '{}'); op = body.operationName ?? /^\s*(?:query|mutation)\s+(\w+)/.exec(body.query ?? '')?.[1] ?? 'anonymous'; windowVar = body.variables?.limitPerAgent; runIds = body.variables?.runIds ?? null; } catch { op = 'unparsed'; }
     }
     let response;
-    try { response = await route.fetch({ url: request.url().replace(phoneOrigin(), alpha.baseUrl), headers: { ...request.headers(), host: phoneHost }, timeout: 20_000 }); } catch { await route.abort('connectionrefused').catch(() => undefined); return; }
+    try { response = await route.fetch({ url: request.url().replace(phoneOrigin(), alpha.baseUrl), headers: { ...request.headers(), host: phoneHost }, timeout: 20_000 }); } catch (error) {
+      // A request still in flight when the probe closes this phone's context (MSP-12's timing phone closes at its first
+      // row) ends with the context: answering it as refused would log a browser error that no node caused.
+      if (/has been closed/.test(String(error?.message))) return;
+      await route.abort('connectionrefused').catch(() => undefined); return;
+    }
     if (op) phoneNet.push({ at: Date.now(), label, case: currentCase, op, window: windowVar === undefined ? 'omitted' : windowVar, runIds, status: response.status(), bytes: (await response.body().catch(() => Buffer.alloc(0))).length });
     await route.fulfill({ response }).catch(() => undefined);
   });
@@ -1718,7 +1723,9 @@ const runCases = async () => {
     const checkControl = async () => ({ label: await check.getAttribute('aria-label'), text: (await check.innerText()).trim() });
     const dialogName = await page.evaluate(() => { const d = document.querySelector('[data-testid="mobile-connection-sheet"] [role="dialog"], [data-testid="mobile-connection-sheet"][role="dialog"]'); const id = d?.getAttribute('aria-labelledby'); return id ? document.getElementById(id)?.textContent?.trim() : null; });
     const sheetText = (await sheet.innerText()).replace(/\s+/g, ' ');
-    const info = { name: (await page.locator(sel('mobile-connection-name')).innerText()).trim(), url: (await page.locator(sel('mobile-connection-url')).innerText()).trim(),
+    // autobyteus-433: the sheet names the node and shows no part of the phone's address (host, port, URL).
+    const addressIn = text => [PHONE_HOST, `:${alpha.port}`, '://'].filter(part => text.includes(part));
+    const info = { name: (await page.locator(sel('mobile-connection-name')).innerText()).trim(), urlLines: await page.locator(sel('mobile-connection-url')).count(), addressShown: addressIn(sheetText),
       status: (await page.locator(sel('mobile-connection-status')).innerText()).trim(), peerRows: await page.locator(sel('mobile-peer')).count(), mentionsPeer: sheetText.includes(PEER),
       check: await checkControl(), switchNode: await page.locator(sel('mobile-switch-node')).count(), unpair: (await page.locator(sel('mobile-unpair')).innerText()).trim() };
     await check.click();
@@ -1731,6 +1738,7 @@ const runCases = async () => {
     await waitFor('not reachable in the sheet', async () => /not reachable/i.test(await page.locator(sel('mobile-connection-status')).innerText()), 30_000).catch(() => undefined);
     await waitFor('Retry in the sheet', async () => (await checkControl()).text === 'Retry', 30_000).catch(() => undefined);
     const sheetDown = (await page.locator(sel('mobile-connection-status')).innerText()).trim();
+    const addressShownDown = addressIn((await sheet.innerText()).replace(/\s+/g, ' '));
     const checkDown = await checkControl();
     await shot(page, 'MSP-09-sheet-not-reachable');
     await page.locator(sel('mobile-sheet-close')).click();
@@ -1779,10 +1787,11 @@ const runCases = async () => {
     await shot(other.page, 'MSP-09-after-unpair');
     await other.context.close();
     const statusFields = evidence.servers.alpha?.statusFields ?? [];
-    const facts = { dialogName, info, afterCheck, sheetDown, checkDown, barDown, bannerDown, rowsWhileDown, c06, sheetBack, checkBack, barBack, bannerBack, pairingPage, pairedSession, otherUnpair, confirmText, confirmOnTop, sessionLeft, statusFields };
+    const facts = { dialogName, info, afterCheck, sheetDown, addressShownDown, checkDown, barDown, bannerDown, rowsWhileDown, c06, sheetBack, checkBack, barBack, bannerBack, pairingPage, pairedSession, otherUnpair, confirmText, confirmOnTop, sessionLeft, statusFields };
     const failures = [
       [dialogName === info.name && info.name === ALPHA_NAME && !statusFields.includes('serverName'), 'the sheet is named by the name in the pairing code; the status carries no name'],
-      [info.url === phoneOrigin() && /connected/i.test(info.status) && /connected/i.test(afterCheck), 'URL, state and the refresh check'],
+      [info.urlLines === 0 && info.addressShown.length === 0 && addressShownDown.length === 0, 'no address in the sheet, connected or not reachable (autobyteus-433 AC-002)'],
+      [/connected/i.test(info.status) && /connected/i.test(afterCheck), 'state and the refresh check'],
       [info.check.label === 'Check connection' && info.check.text === '' && checkBack.label === 'Check connection', 'a refresh icon while connected (AC-016)'],
       [info.peerRows === 0 && !info.mentionsPeer, 'no peer list in the sheet (REQ-019)'],
       [info.switchNode === 0 && info.unpair === `Unpair from ${ALPHA_NAME}`, 'no Switch node in a browser; "Unpair from <node>" (DEC-018)'],

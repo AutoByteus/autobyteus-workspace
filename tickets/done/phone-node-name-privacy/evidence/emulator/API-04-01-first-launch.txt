@@ -1,0 +1,7 @@
+text: AutoByteus
+text: Scan the QR code on your computer
+text: On your computer, open Nodes › Phone Setup and press Show QR code.
+content-desc: Other ways to connect, collapsed
+text: Other ways to connect
+content-desc: Scan
+text: Scan

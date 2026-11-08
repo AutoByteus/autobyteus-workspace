@@ -1,0 +1,22 @@
+# IMP-08 phone bundle: sheet case MSP-09 of the mobile-shell probe (rendered /mobile production bundle, probe-owned alpha/beta nodes, headless Chrome 390x844)
+# prerequisites: pnpm -C autobyteus-server-ts prebuild && pnpm -C autobyteus-server-ts build; pnpm -C autobyteus-web build:mobile-web
+# command: pnpm -C autobyteus-web test:e2e:mobile-shell --cases=MSP-09 --output-dir=../tickets/in-progress/phone-node-name-privacy/evidence/IMP-08-mobile-shell-MSP-09
+# commit: ba3ba5b23e (ran on the working tree that this commit records unchanged)
+# env: macOS 26.5.2, Node v22.23.1, Google Chrome headless
+# date: 2026-11-08
+
+> autobyteus@1.5.12-beta.8 test:e2e:mobile-shell /Users/normy/autobyteus_org/autobyteus-worktrees/phone-node-name-privacy/autobyteus-web
+> node tests/e2e/mobile-shell-probe.mjs --cases=MSP-09 --output-dir=../tickets/in-progress/phone-node-name-privacy/evidence/IMP-08-mobile-shell-MSP-09
+[mobile-shell] MSP-09 …
+[mobile-shell] MSP-09 Pass
+mobile-shell probe: Pass
+exit=0
+
+# MSP-09 facts (from IMP-08-mobile-shell-MSP-09/mobile-shell-probe.json):
+result Pass
+info.name Alpha Test Node
+info.urlLines 0
+info.addressShown []
+addressShownDown []
+sheetDown Not reachable
+bannerDown Can’t reach Alpha Test Node. Check
