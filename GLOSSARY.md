@@ -125,6 +125,11 @@ delegated run, …) are defined in the
   Node and the architecture: its base image, system tools and agent CLIs
   (`system-level.json`). An image provides one level; a server package needs
   one.
+- **Node file:** a file on the node's computer (a Docker node: inside its
+  container) addressed by its absolute path, not through a workspace: the phone
+  opens one read-only when a conversation names a path outside the run's folder
+  (`GET /rest/node-files/content?path=`, `NodeFileReader`, `nodeFile`,
+  autobyteus-436). It is not a media file (`/rest/files/`).
 - **Node desktop:** the virtual graphical desktop inside a Docker node (Xvnc
   display `:99`, RFB on `127.0.0.1:5900` inside the node) that its agents use,
   shown in the VNC Viewer tab through the node's own server

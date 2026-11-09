@@ -152,6 +152,7 @@ Status as of autobyteus-437 slice 1 (implementation). Update this table when a c
 | NA-11 | **Holds** (slice 1) | Owner credential, phone, peer and memory sync revocations close open sockets at once (`open-socket-registry.ts`). |
 | NA-12 | **Holds** (slice 1) | The MCP gateway needs admission and its token (`src/mcp-gateway/mcp-gateway-token-service.ts`). |
 | NA-15 | **Holds** (slice 1) | The node takes the launch credential out of its environment before anything spawns. |
+| Node files (NAS-39, NAS-40) | **Holds** (autobyteus-436) | `GET /rest/node-files/content?path=<absolute>`: an explicit owner-and-phone row; `src/node-files/node-file-reader.ts` serves one regular file by its real path, read-only, through `sendUserFile`, and never logs the path. Verified by `tests/e2e/node-files/node-files.e2e.test.ts`. |
 | Phone limits inside reachable endpoints (folders, `createWorkspace`, settings, terminal), credential expiry, application-scoped credentials | **Later** (slice 2, autobyteus-441) | autobyteus-436 chose no folder limit: a phone reads any node file read-only (NAS-39). "Any file" includes the node's own data folder (peer secrets, the MCP gateway token; owner and phone credentials are stored only as hashes), as it already did through workspaces. 441 decides whether a phone credential gets folder limits, and at least whether the node's data folder is excluded. |
 
 Verification: `tests/e2e/node-access/node-access-model.e2e.test.ts` (server-checkable scenarios), the
