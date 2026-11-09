@@ -2,103 +2,139 @@
 
 ## Document Status
 
-- Status: `Ready for Approval` (the user approves the model; DEC-001 and DEC-005 need him)
-- Current solution revision ID: `SR-002` (draft: the user's "simple merge" idea, 2026-11-01)
+- Status: `Approved` at `SR-003`
+- Current solution revision ID: `SR-003`
 - Package identifier: `package-personal-settings`
 - Request: Project Task autobyteus-95
-- Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), on the user's requests of 2026-10-14 and 2026-10-24
+- Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), on the user's requests of 2026-10-14, 2026-10-24 and 2026-11-01
 - Requirements owner: Solution Designer
-- Date: 2026-10-24
-- Approved by and reference: pending
-- Behavior-defining supplements: none yet
+- Date: 2026-11-09
+- Approved by and reference: `User`, in the Solution Designer conversation:
+  - 2026-11-06: "is a way to store it somewhere … instead of updating the original file" (the personal settings file);
+  - 2026-11-07: the data contract, after its validation;
+  - 2026-11-09: "if it works then I would say continue with your work", taken as approval of the contract with its four recommendations (Q1–Q4), and stated back to him.
+- Exact approved baseline: this document at SR-003, with the contract below.
+- Behavior-defining supplement: `personal-settings-file-contract.md` (storage, shape, reading/writing rules, effective values, update capture and backup), approved 2026-11-09, validated by `evidence/validate-personal-settings-file.mjs` (`evidence/personal-settings-file-validation-run.log`).
 
 ## Problem And Desired Outcome
 
 - Problem:
   - Agents, Teams and Orgs from agent packages are edited in the app, and the edits are written into the package folder (F-03).
-  - A package update replaces the whole folder (F-04), so the user's personal changes are lost at every update, now also automatically (v1.5.9-beta.3).
-  - What the user changes is almost always tools: he enables an MCP server's tools on an agent (F-01). Today he must re-add them after each update (F-06).
-  - Also:
-    - the avatar is saved into the package, where it means nothing on other machines (F-10);
-    - there is no way to choose a runtime/model for someone else's package without editing it;
-    - saves add empty fields and normalize untouched files, so package diffs are noisy (F-03, FT-5/O-2).
-- Desired outcome: one model of what is the package's and what is the user's.
-  - Personal choices (tool changes, avatar, runtime/model choice) live in the app and survive every package update.
-  - The package files stay the author's, and a save changes only what the user changed.
+  - A package update replaces the whole folder (F-04), so the user's changes are lost at every update, now also automatically. What he changes is almost always tools: he enables an MCP server's tools on an agent (F-01). Today he must re-add them after every update (F-06).
+  - In a git checkout (a local package), app edits show up as uncommitted changes (the user, 2026-11-06).
+  - Saves also add empty fields and normalize untouched files (F-03, FT-5/O-2).
+- Desired outcome: the user's own choices live in AutoByteus, outside the package files, and are applied on top of the package. Updates never lose them, checkouts stay clean, and a save changes only what the user changed.
 - Success:
-  - after an update of a GitHub package, by click or automatic, the user's added tools and MCP choices are still active, and the agent has the package's latest content;
-  - nothing is lost silently;
-  - a package save changes only the edited fields.
-
-## The Proposed Model
-
-| What | Where it lives | Why |
-| --- | --- | --- |
-| Instructions (`agent.md`, `team.md`), skills, the package's tool list, team members and handoffs, the author's recommended runtime/model | The package | The author's content; updates bring the latest |
-| The user's tool changes (added or removed tools and MCP tools) on a definition from a GitHub-installed package | Personal settings in the app (per node) | Survive updates; applied on top of the package's tool list (DEC-001) |
-| The avatar of any agent, Team or Org | Personal settings in the app | Meaningless on other machines (F-10) |
-| A runtime/model choice for a definition from someone else's (GitHub-installed) package | Personal settings in the app | Item 2; launch precedence intact: the user's launch choice > personal default > package default > routing > inherit |
-| Edits to a local package the user owns (his own checkout) | The package files, written cleanly | He is the author |
-| Other edits to a GitHub-installed package (instructions, skills) | The package files; replaced by the next update, with a backup | The user: "everything else may simply be overwritten"; the backup keeps nothing from being lost silently |
+  - after a GitHub package update, by click or automatic, the user's tools, skills, avatar and runtime/model are kept, and the package content is the latest;
+  - the user's changes to these four settings never appear in a package checkout;
+  - nothing is lost silently.
 
 ## Relevant Current And Desired Behavior
 
 | ID | Current | Desired | Preserved |
 | --- | --- | --- | --- |
-| BEH-001 | A package update overwrites edited configs; nothing is kept or backed up (F-04, F-06) | Personal tool changes survive; every overwritten file that differs from the installed revision is backed up | Update validation, rollback, automatic updates |
-| BEH-002 | Editing tools on a GitHub package's agent writes `agent-config.json` | Stored as personal tool changes; effective tools = package tools + added − removed | Tool availability gating |
-| BEH-003 | The avatar is written into package files | Stored in the app; a package's existing avatar is shown until the user sets one | — |
-| BEH-004 | No personal runtime/model choice for package definitions | A personal default for GitHub-package definitions | Launch precedence (Tasks e2060dfd, 025b20cb) |
-| BEH-005 | A save writes every field and normalizes untouched files (F-03, O-2) | A save writes only changed fields; untouched files stay byte-identical | Validation |
+| BEH-001 | A package update overwrites edited configs; no backup (F-04, F-06) | Personal settings are untouched by updates. At each GitHub update, edits of the four settings found in package files are captured into personal settings, and every overwritten changed file is backed up | Update validation, rollback, automatic updates, notifications (209/210) |
+| BEH-002 | Editing tools, skills, avatar or runtime/model of a package definition writes its config file | Stored in the personal settings file; the effective definition = package + personal (contract §5) | Tool availability gating; skill resolution |
+| BEH-003 | The avatar is written into package files | Personal, as BEH-002 | — |
+| BEH-004 | No personal runtime/model choice for package definitions | Personal, as BEH-002; launch order intact | Launch precedence (Tasks e2060dfd, 025b20cb) |
+| BEH-005 | A save writes every field and normalizes untouched files (F-03, O-2) | A save writes only changed fields; untouched files stay byte-identical (stage 2) | Validation |
 
 ## Scope Guardrail
 
 ### In-Scope Use Cases
 
-| ID | Use case |
-| --- | --- |
-| UC-001 | The user's tool and MCP choices on agents (and Team or Org members) from GitHub packages survive package updates (stage 1) |
-| UC-002 | No silent loss at update: a backup of overwritten files that differ from the installed revision (stage 1) |
-| UC-003 | One-time carry-over of tool changes the user made before this change (stage 1; DEC-005) |
-| UC-004 | Avatar as a personal setting (stage 2) |
-| UC-005 | Personal runtime/model default for GitHub-package definitions (stage 2) |
-| UC-006 | Clean package writes, including FT-5/O-2 (stage 2) |
+| ID | Use case | Stage |
+| --- | --- | --- |
+| UC-001 | Personal tools and skills for agents (including Team and Org members) from GitHub and local packages | 1 |
+| UC-002 | Personal avatar for agents, Teams and Orgs from packages | 1 |
+| UC-003 | Personal runtime/model choice for agents, Teams and Orgs from packages | 1 |
+| UC-004 | Capture of package-file edits of the four settings at every GitHub update, plus a backup of overwritten changed files | 1 |
+| UC-005 | The editor shows which settings are personal and offers "reset to the package's setting" | 1 |
+| UC-006 | Clean package writes for the remaining fields, including FT-5/O-2 | 2 |
 
 ### Out Of Scope
 
-- Merging instructions or skills on update.
+- Merging instructions or skill content on update.
 - Skill sources (separate GitHub sources).
-- Personal overlays for application-owned agents.
-- Syncing personal settings between machines.
+- Agents in the app's own storage (`<app-data>/agents`).
+- Application-owned agents.
+- Syncing personal settings between nodes.
+- Undo of an update.
+
+### Non-Goals
+
+- Changing a package for everyone through the app. The author edits the package files and commits.
+
+### Preserved Behavior Boundary
+
+- The package update pipeline and automatic updates (209/210).
+- Launch precedence.
+- Definition IDs and the duplicate rules.
+- Folder watching and definition reloads.
 
 ### Prerequisites
 
 None known.
 
-## Requirements (Draft)
+### Review Authority
 
-| ID | Requirement | Behaviors |
-| --- | --- | --- |
-| REQ-001 | For a definition from a GitHub-installed package, the user's tool changes (added and removed tool names, including MCP tools) are stored as personal settings on that node, not in the package files. The effective tool list is the package's list plus the user's additions, minus the user's removals. | BEH-002 |
-| REQ-002 | A package update, manual or automatic, never changes personal settings. After it, the effective tools are the new package's list with the user's changes applied. A tool the package newly adds is included unless the user removed it. | BEH-001 |
-| REQ-003 | Before an update replaces a package, every file whose content differs from the installed revision is copied to a backup on that node, and the update's notification links it. | BEH-001 |
-| REQ-004 | One time, at the first update after this change, a package's `toolNames` differences against its installed revision become personal tool changes, with the original files backed up (DEC-005). | BEH-001 |
-| REQ-005 | Avatars of agents, Teams and Orgs are personal settings stored in the app and are never written into package files. A package's existing `avatarUrl` is shown until the user sets one. | BEH-003 |
-| REQ-006 | The user can set a personal runtime/model default for a GitHub-package definition. Precedence: launch choice > personal default > package default > routing > inherit. | BEH-004 |
-| REQ-007 | Saving a definition writes only the fields the user changed. Untouched files, key order, unknown keys and trailing newlines stay as they were (FT-5/O-2). | BEH-005 |
-| REQ-008 | The editor of a GitHub-package definition shows which changes are personal (kept across updates) and which change the package (replaced by updates, backed up). | BEH-001, 002 |
-| REQ-009 | Any change to stored user data is approved by the user and has a backup. | — |
+Standard: blocking findings cite these IDs; new behavior is a Requirement Gap for the user.
 
-Acceptance criteria follow after the model is approved.
+## Requirements
+
+| ID | Requirement | Behaviors | Stage |
+| --- | --- | --- | --- |
+| REQ-001 | Each node keeps the user's personal settings for definitions from registered packages (GitHub and local) in one file, exactly as `personal-settings-file-contract.md` §2–§4 defines. | BEH-002 | 1 |
+| REQ-002 | Every read of an agent, Team or Org definition from a package returns the effective values of contract §5 (tools, skills, avatar, runtime/model). This includes lists, details, editing, run start, Team and Org member resolution and delegated copies. | BEH-002..004 | 1 |
+| REQ-003 | In the app, changing tools, skills, avatar or runtime/model of a package definition writes the personal settings file (contract §6) and never the package files. | BEH-002..004 | 1 |
+| REQ-004 | The editor shows, for each of the four settings, whether it is personal, and offers "Reset to the package's setting", which removes that personal field. | BEH-002 | 1 |
+| REQ-005 | A package update or reinstall never changes the personal settings file. | BEH-001 | 1 |
+| REQ-006 | At every GitHub package update (click or automatic), before replacing the folder: download the installed revision; capture edits of the four settings into personal settings (contract §7.2); back up every file that differs from the installed revision (contract §7.3; the latest 5 backups per package are kept). If the installed revision cannot be downloaded, the update stops and nothing changes. | BEH-001 | 1 |
+| REQ-007 | The texts that warn about local changes (the automatic-update switch and its confirmation, autobyteus-210) say that personal tools, skills, avatar and runtime/model are kept, that other local changes are replaced, and that a backup is kept. | BEH-001 | 1 |
+| REQ-008 | Saving other fields of a package definition writes only the changed fields; untouched files, key order, unknown keys and trailing newlines stay as they were. | BEH-005 | 2 |
+| REQ-009 | All new user-visible text in English and Simplified Chinese. | — | 1, 2 |
+
+## Acceptance Criteria
+
+| ID | Requirements | Check | Expected |
+| --- | --- | --- | --- |
+| AC-001 | REQ-001, 003 | Add an MCP tool to an agent of a local package (e.g. a test copy of `autobyteus-agents`) in the app | `personal-settings.json` gets `toolsAdded`; `git status` of the package shows no change; the agent's runs have the tool |
+| AC-002 | REQ-002, 005, 006 | Isolated instance, GitHub package installed at an older revision; add a tool, remove a tool, enable a skill, set avatar and runtime/model; update to the latest revision (by click and automatically) | All five kept; the package's new tools and content present; the personal settings file unchanged by the update |
+| AC-003 | REQ-006 | The same, but the edits were made inside the package files (as before this change) | Captured into personal settings; the old files are in `backups/<install key>/<time>/`; the result equals AC-002 |
+| AC-004 | REQ-006 | The installed revision cannot be downloaded | The update stops, nothing changes, the automatic update reports failure |
+| AC-005 | REQ-004 | Reset one personal setting | That field is removed; the package's value shows again |
+| AC-006 | REQ-002 | A Team or Org whose member agents have personal tools; start a run, and a delegated copy | Members run with the effective tools |
+| AC-007 | REQ-001 | An unreadable or wrongly shaped `personal-settings.json` | Definitions load with package values; a warning is logged; the file is not deleted |
+| AC-008 | REQ-007, 009 | Read the automatic-update texts in en and zh-CN | They state what is kept, what is replaced, and the backup |
+| AC-009 | REQ-008 | Save a description change on an agent of a local package | Only that field changes in the files (`git diff`) |
 
 ## Decisions
 
-| ID | Question | Reasoning And Recommendation | Owner | Status |
-| --- | --- | --- | --- | --- |
-| DEC-001 | How tool changes survive updates: (A) a personal overlay in the app; (B) the user's "simple merge" (2026-11-01): at update time, the user's added and removed tools and skills, found by comparing his files with the previously installed version, are applied to the new version's lists | **(B, the list merge)** changes only the update step. It needs no new store and no editor change. Lists have no conflicts. It also keeps tools added before this change, so DEC-005 needs no separate step. It needs the previously installed version at each update: a copy kept at install time, or one download from GitHub (no API quota). It cannot make the avatar or a runtime/model choice personal, but those are stage 2 and not urgent. **(A)** does all of that, but it is a larger change (store, overlay at load, editor notes) for the same urgent result. **Recommendation, revised 2026-11-01: (B) for stage 1.** Decide the avatar and runtime/model choice in stage 2 (a small personal store for those two only). | User | **Needs user** |
-| DEC-002 | Personal tool changes: additions only, or additions and removals | Removing a tool you don't want should survive an update too, and it costs nothing extra. Both. | Solution Designer | Decided |
-| DEC-003 | Other edits to a GitHub package (instructions, skills) | The user: "everything else may simply be overwritten". They stay editable; the update replaces them; a backup keeps them; the editor says so (REQ-008). | Solution Designer (the user's direction) | Decided |
-| DEC-004 | The user's own local packages | He is the author: edits keep going into the files, written cleanly (REQ-007). Only the avatar is personal there too. | Solution Designer | Decided |
-| DEC-005 | Tools already added before this change | With (B), they are kept at the first update without a separate step: the merge compares with the installed version downloaded once from GitHub. The merge writes the user's tools into the new config files, and a backup keeps the replaced files (REQ-003). It changes stored data, so it needs his approval. **Recommendation: yes.** | User | **Needs user** |
-| DEC-006 | Staging | Stage 1: UC-001..003 (the user's urgent case), merged and released as a beta first. Stage 2: UC-004..006. Both within autobyteus-95. | Solution Designer (the Project Task Manager's direction) | Decided |
-| DEC-007 | Existing avatars in package files | Stop writing them; keep showing them until a personal one is set. No change to existing files. | Solution Designer | Decided |
+| ID | Decision | Owner | Status |
+| --- | --- | --- | --- |
+| DEC-001 | The personal settings file (contract), not a merge inside package files; the user's reason: clean commits (2026-11-06). Supersedes the SR-002 "simple merge" | User | Decided |
+| DEC-002 | Tools and skills: additions and removals | Solution Designer, user approved (Q3) | Decided |
+| DEC-003 | Other edits of a GitHub package (instructions, skill content) are replaced by updates, with a backup | User (2026-10-24 direction) | Decided |
+| DEC-004 | Local packages also use personal settings for the four settings; the author changes the package by editing files (Q2) | User | Decided |
+| DEC-005 | Capture at every GitHub update with backups; no separate one-time step (Q4) | User | Decided |
+| DEC-006 | Staging: stage 1 = UC-001..005 (personal settings and update capture), merged and released as a beta first; stage 2 = UC-006 (clean writes) | Solution Designer (the Project Task Manager's direction) | Decided |
+| DEC-007 | Avatars already in package files remain the package's value; a personal avatar replaces it | Solution Designer | Decided |
+| DEC-008 | Backups: the latest 5 per package | Solution Designer | Decided |
+
+## Traceability
+
+| Requirement | Use cases | ACs |
+| --- | --- | --- |
+| REQ-001 | UC-001..003 | AC-001, AC-007 |
+| REQ-002 | UC-001..003 | AC-002, AC-006 |
+| REQ-003 | UC-001..003 | AC-001 |
+| REQ-004 | UC-005 | AC-005 |
+| REQ-005 | UC-004 | AC-002 |
+| REQ-006 | UC-004 | AC-002..004 |
+| REQ-007 | UC-004 | AC-008 |
+| REQ-008 | UC-006 | AC-009 |
+| REQ-009 | all | AC-008 |
+
+## Readiness
+
+- Content ready: `Yes`. Approval recorded: `Yes` (SR-003). Ready for architecture design: `Yes` (stage 1 first).
