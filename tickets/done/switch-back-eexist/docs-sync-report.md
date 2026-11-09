@@ -1,7 +1,7 @@
 # Docs Sync Report — switch-back-eexist (Task autobyteus-440)
 
 ## Scope
-- Ticket `switch-back-eexist` (Small, Low, direct route). Base `origin/personal` @ `31aa11b241` (not advanced). Verification: `evidence/DEL-01-post-integration-checks.md`.
+- Ticket `switch-back-eexist` (Small, Low, direct route). Base `origin/personal` @ `34ea6e36bb` (merged; it also edits `DESIGN.md` and `TESTING.md`, which this ticket's rule 10 coexists with). Verification: `evidence/DEL-01-post-integration-checks.md`.
 
 ## Why Docs Were Updated
 A new Antigravity start now replaces the capsule of any earlier era or failed start, so a run can switch back to Antigravity. The runtime doc said a new run creates a capsule but not what happens when one already exists.

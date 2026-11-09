@@ -9,7 +9,7 @@
 - Docs: `antigravity_cli_runtime.md`; `TESTING.md` rule 10 (test a switch there and back), added by the ticket.
 
 ## Integration
-- `origin/personal` @ `31aa11b241` has nothing beyond the ticket's base; no merge needed. On the head: typecheck, 324 Antigravity unit tests, server build and 31 built-server tests pass.
+- Merged `origin/personal` @ `34ea6e36bb` (38 commits: autobyteus-437 node authentication, Docker launcher scripts, beta v1.5.12-beta.9 records; overlap in `TESTING.md` and one built-server test, no conflicts). On the merged state: typecheck, 324 Antigravity unit tests, server build and 31 built-server tests pass, so the node-authentication change does not affect them.
 
 ## Verification
 - From the evidence; no user check. Every critical AC is proven. Without the fix, the mutation of the compiled capsule reproduces `EEXIST` in all three built-server cases and in the live run. One unexplained single failure of DCM-009 (a Grok test) in API/E2E's first combined run, recorded as FU-1; it passed in nine later combined runs, alone, and in mine.

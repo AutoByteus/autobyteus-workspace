@@ -1,6 +1,6 @@
 # DEL-01 post-integration checks (delivery, 2026-11-08)
 
-State: `codex/switch-back-eexist` @ `0e9ee03045`. `origin/personal` @ `31aa11b241` had no commits beyond the ticket's base (`git rev-list --count HEAD..origin/personal` is 0), so no merge was needed and the checks below are on the integrated state.
+State: `codex/switch-back-eexist` after merging `origin/personal` @ `34ea6e36bb` (merge `25ff4fdd74`, no conflicts). The first pass of these checks (on `0e9ee03045`, when `personal` was at `31aa11b241` with nothing new) gave the same results; `personal` then advanced by 38 commits (autobyteus-437 node authentication, Docker launcher scripts, beta v1.5.12-beta.9 records, DESIGN.md and TESTING.md edits). Overlapping files: `TESTING.md` (merged without conflict; rule 10 stays unique) and `runtime-switch-native-built-server.e2e.test.ts`. The checks below were run again on the merged state.
 
 | Check | Command | Result |
 | --- | --- | --- |

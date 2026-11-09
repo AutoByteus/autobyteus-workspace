@@ -7,7 +7,7 @@ Repository finalization into `origin/personal`. No release, tag or deployment.
 `RELEASE.md` on `origin/personal` @ `31aa11b241`. Deviations: none.
 
 ## Integration
-- Base `31aa11b241`, not advanced beyond the ticket's base; integration `Already current`; checks in `evidence/DEL-01-post-integration-checks.md` (`Passed`).
+- Base `31aa11b241` at the start; advanced to `34ea6e36bb` (38 commits) during delivery (a power-off paused it); integrated by `Merge` (`25ff4fdd74`, no conflicts); checks rerun on the merged state in `evidence/DEL-01-post-integration-checks.md` (`Passed`).
 
 ## Verification
 - Evidence judged: `Sufficient` (API/E2E 95%, no category below 93%).
