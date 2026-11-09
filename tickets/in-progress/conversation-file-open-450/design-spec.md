@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-002`
+- Current solution revision ID: `SR-003` (DI-001: the composer's draft attachments taken in; DEC-006 notice; implementation decisions accepted)
 - Approved requirements baseline: `requirements-doc.md` at SR-001, approved by the Solution Designer within the Task's direction, user informed (2026-11-09).
 - Behavior-defining supplements: None.
 - User approval of the design: `Not required`
@@ -50,7 +50,7 @@
 
 ## Change Scope (Mandatory)
 
-- In scope: UC-001…UC-003.
+- In scope: UC-001…UC-003. SR-003 adds the composer's draft attachments (`components/agentInput/ContextFilePathInputArea.vue` via `useContextAttachmentComposer`): thumbnail via `MessageAttachmentThumbnail` (added in IR-001), the full-screen image modal with the authorized object URL, and on the phone a tap through `useMobileAttachmentOpening` (draft locators `/rest/drafts/…` are handled by `openContextFile`). The file stays under 500 lines.
   - web: `UserMessage`; phone attachment opening; phone navigation + Files screen + node-file loader; file-explorer open and media reload;
   - Android: navigation policy + WebView client.
 - Derived consumers:
@@ -307,6 +307,13 @@ N/A.
    - phone bundle (AC-001, AC-002, AC-004): the repro shape, with attached PNG, PDF and text files; a rewrite of a workspace text file and an image;
    - desktop window (AC-003): link, link again, Files tab, an unsaved edit kept;
    - emulator (AC-002 and AC-005 in the real app): a tap on an attachment shows the viewer, never the pairing screen; MSP-13 still lands on pairing.
+
+## SR-003 Notes (implementation IR-001 decisions)
+
+- Accepted:
+  - A media reload fetches with `no-store` into an object URL. A remount with the same URL showed the old image in Chrome (IMP-02, measured), and the Electron local-file scheme refuses query strings.
+  - A `contextFileName` query key gives the viewer its title and file type from the sent name. This is display data, not a credential.
+- Revised: a path attachment the phone cannot open here (a run on another node) shows the existing file-link notice "This file is available only on the host workspace." (`file_available_on_host`) as a toast, instead of nothing (DEC-006).
 
 ## Key Tradeoffs
 

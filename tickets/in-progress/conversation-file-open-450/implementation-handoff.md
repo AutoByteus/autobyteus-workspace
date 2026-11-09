@@ -2,9 +2,9 @@
 
 Ticket folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-file-open-450/tickets/in-progress/conversation-file-open-450/`
 Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-file-open-450`, branch `codex/conversation-file-open-450`, base `origin/personal` `6884309283`.
-Commits: `edd84787f7` (DS-002, reload on explicit open), `e02a230940` (DS-001, phone attachments), `e470edf165` (DS-003, Android `KeepPage`), `486ba3c395` (a spec that asserted the replaced behavior); the ticket documents and evidence follow in one docs commit (named in the handoff message).
+Commits: `edd84787f7` (DS-002, reload on explicit open), `e02a230940` (DS-001, phone attachments), `e470edf165` (DS-003, Android `KeepPage`), `486ba3c395` (a spec that asserted the replaced behavior), `5f06b08ce9` (IR-002: the composer's draft attachments, DEC-006); the ticket documents and evidence follow in one docs commit (named in the handoff message).
 
-**State: SR-002 is implemented and passes the reproduction; one Design Impact (DI-001) is open.** The phone composer's draft attachments show the same defect on a path the design does not name (§ Design Impact). The package goes back to the Solution Designer, not to API/E2E yet.
+**State (IR-002): SR-003 is implemented and passes the reproduction.** DI-001 (the composer's draft attachments) was taken in by the Solution Designer (DEC-005) and is fixed; DEC-006 (a notice for a path the phone cannot open) is implemented. The package goes to API/E2E.
 
 ## Upstream Artifact Package
 
@@ -12,7 +12,7 @@ Commits: `edd84787f7` (DS-002, reload on explicit open), `e02a230940` (DS-001, p
 - Requirements doc: `requirements-doc.md` (Approved, SR-001).
 - Investigation notes: `investigation-notes.md`.
 - Solution revision record: `solution-revision-record.md`.
-- Design spec: `design-spec.md` (SR-002, `Ready`).
+- Design spec: `design-spec.md` (SR-003, `Ready`); `handoff-sr-003.md` (the answer to DI-001).
 - Supplemental task artifacts: `evidence/repro/file-open-repro.mjs` (unchanged); `follow-ups.md` (FU-001, unchanged).
 - Design review report / architecture review revision record: `N/A — not applicable` (not selected).
 - Triggering rework report: N/A (initial round).
@@ -21,10 +21,10 @@ Commits: `edd84787f7` (DS-002, reload on explicit open), `e02a230940` (DS-001, p
 
 - Implementation cycle: `Initial`
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
-- Related solution revision IDs: `SR-002`
+- Current implementation revision ID: `IR-002` (IR-001: SR-002; IR-002: SR-003)
+- Related solution revision IDs: `SR-002`, `SR-003`
 - Related architecture-review / code-review / API-E2E / delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A` (this round raises DI-001)
+- Triggering finding IDs: DI-001 (raised in IR-001, decided in SR-003: DEC-005, DEC-006)
 
 What the change does:
 
@@ -42,7 +42,17 @@ What the change does:
    - `MobileFiles` renders the attached-file entry through the generalized `useMobileNodeFile(source)` (`{ kind: 'path' }` | `{ kind: 'contextFile', locator, name }`). The type and the viewer title come from the sent name. The desktop keeps today's attachment opening.
 3. **DS-003, Android** (`TrustedNavigationPolicy.kt`, `AutoByteusWebView.kt`): a main-frame same-origin `/rest/…` or `/graphql` navigation is `KeepPage`: not loaded, no screen. This applies in `shouldOverrideUrlLoading` and in `loadTrusted`. Subframes, other paths and the phone page's own load errors are unchanged.
 
-## Design Impact (DI-001, open)
+## Design Impact DI-001 (resolved in SR-003, implemented in IR-002)
+
+- Decision: taken in (DEC-005). Implemented in `5f06b08ce9`:
+  - the composer's thumbnails use `MessageAttachmentThumbnail` (now without hard-coded classes; each caller gives them);
+  - `FullScreenImageModal` gets `useAuthorizedObjectUrl(selectedImageUrl)`, so a draft image's full-screen view loads with the key;
+  - on the phone any other draft opens through `useMobileAttachmentOpening` (`openContextFile` with the `/rest/drafts/…` locator).
+- `ContextFilePathInputArea.vue`: 459 → 471 non-empty lines.
+- Reproduction after IR-002 (IMP-11): `thumbnailRequests: []`; no node-file image is loaded without the key.
+- DEC-006 (revises IR-001 decision 3): a path attachment the phone cannot open here shows `file_available_on_host` as an info toast (`failed`: `file_preview_failed`, error).
+
+The IR-001 analysis as raised:
 
 - **What:** the phone's composer (`components/agentInput/ContextFilePathInputArea.vue`, through `useContextAttachmentComposer`) has the same three failures for a **draft** attachment, before the message is sent:
   - its thumbnail is a plain `<img src>` → 401 (IMP-08: `thumbnailRequests` still lists one `/rest/drafts/…/attach-450.png`, `status 401, type image`);
@@ -65,9 +75,9 @@ What the change does:
 - Design classification section: `design-spec.md` § Task Size And Architectural Risk.
 - Classification confirmed or changed: `Confirmed`
 - Evidence: about 14 production files in web and Android, inside existing owners (two new composables and one new small component, all named or implied by the design); no server, contract, persistence or key-rule change; the Android change only stops navigations that fail today.
-- Selected route: `Solution Designer` (Design Impact DI-001); after its decision, `Direct API/E2E`.
+- Selected route: `Direct API/E2E` (after DI-001 was decided in SR-003).
 - Lightweight implementation self-review completed for the direct route: `Yes` (below).
-- New design impact or escalation trigger: **DI-001**. The design's own escalation triggers did not fire: no legitimate main-frame `/rest/` load was found; a reload keeps drafts (test); media reloads without a credential in the URL.
+- New design impact or escalation trigger: `None` open (DI-001 resolved). The design's own escalation triggers did not fire: no legitimate main-frame `/rest/` load was found; a reload keeps drafts (test); media reloads without a credential in the URL.
 
 ## Lightweight Implementation Self-Review
 
@@ -80,26 +90,27 @@ What the change does:
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
-| BEH-001 | Phone: thumbnail with the key | `UserMessage` → `MessageAttachmentThumbnail` → `useAuthorizedObjectUrl` | Fixed: `chipKind: thumbnail` (IMP-08; `name-chip` in IMP-01); screenshot `phone-bug1-chip.png`. The composer's draft preview: DI-001 |
-| BEH-002 | Phone: tap → phone viewer, Back returns, no navigation | `useMobileAttachmentOpening` → `openContextFile` → `MobileFiles` → `useMobileNodeFile` (`contextFile`) → `MobileFileViewer`; Android `KeepPage` | Fixed: `viewerOpen: 1`, `newWindow: null`, the attached file fetched 200 (IMP-08); policy tests (IMP-06) |
+| BEH-001 | Phone: thumbnail with the key (sent and draft) | `UserMessage` / `ContextFilePathInputArea` → `MessageAttachmentThumbnail` → `useAuthorizedObjectUrl`; the composer's full-screen view → `useAuthorizedObjectUrl` | Fixed: `chipKind: thumbnail`, `thumbnailRequests: []` (IMP-11; `name-chip` and three 401s in IMP-01); composer unit cases (IMP-12) |
+| BEH-002 | Phone: tap → phone viewer (a draft image: the composer's full-screen view), Back returns, no navigation; a path it cannot open: the notice | `useMobileAttachmentOpening` → `openContextFile` → `MobileFiles` → `useMobileNodeFile` (`contextFile`) → `MobileFileViewer`; DEC-006 toast; Android `KeepPage` | Fixed: `viewerOpen: 1`, `newWindow: null`, the attached file fetched 200 (IMP-11); draft and notice unit cases (IMP-12); policy tests (IMP-06) |
 | BEH-004 | Desktop: re-open shows current content | `_openFileWithMode` → `_reloadOpenFile` | Fixed: `D2_newLinkAfterRewrite: VERSION-TWO` (IMP-08; ONE in IMP-01); store tests incl. the draft kept (IMP-05) |
 | BEH-005 | Phone: same | `MobileFiles` → `openFileReadOnly` → the same store rule | Fixed: `P2_newLinkAfterRewrite: VERSION-THREE` (IMP-08; TWO in IMP-01) |
 | BEH-003, 006, 007 | Preserved | Desktop attachment opening unchanged; node files (436) through the generalized loader; the page's own load errors unchanged | Suites (IMP-07, IMP-09) |
 
-- Changes stayed within the requirements doc's Scope Guardrail: `Yes`; DI-001 is routed, not implemented.
+- Changes stayed within the requirements doc's Scope Guardrail: `Yes` (SR-003's scope, which took in the composer's drafts).
 
 ## Key Files Or Areas
 
 - DS-002: `autobyteus-web/stores/fileExplorerState.ts`, `stores/fileExplorerContentActions.ts`, `components/fileExplorer/FileViewer.vue`, `components/fileExplorer/viewers/{ImageViewer,PdfViewer,AudioPlayer,VideoPlayer,ExcelViewer}.vue`, `composables/useAuthorizedObjectUrl.ts`, `components/mobile/views/MobileFileViewer.vue`.
 - DS-001: `components/conversation/UserMessage.vue`, new `components/conversation/MessageAttachmentThumbnail.vue`, new `composables/mobile/useMobileAttachmentOpening.ts`, new `composables/mobile/mobileFileOpening.ts`, `composables/useEventMonitorFilePreview.ts`, `composables/mobile/useMobileNavigation.ts`, `composables/mobile/useMobileNodeFile.ts`, `components/mobile/views/MobileFiles.vue`.
 - DS-003: `autobyteus-android/app/src/main/java/org/autobyteus/mobile/web/{TrustedNavigationPolicy,AutoByteusWebView}.kt`.
+- IR-002: `components/agentInput/ContextFilePathInputArea.vue`, `components/conversation/MessageAttachmentThumbnail.vue`, `components/conversation/UserMessage.vue` (classes), `composables/mobile/useMobileAttachmentOpening.ts`; specs `components/agentInput/__tests__/ContextFilePathInputArea.spec.ts` (phone cases), `composables/mobile/__tests__/useMobileAttachmentOpening.spec.ts` (notices).
 - Tests (new): `stores/__tests__/fileExplorerReopen.spec.ts`, `components/fileExplorer/__tests__/FileViewer.reload.spec.ts`, `composables/__tests__/useAuthorizedObjectUrl.reload.spec.ts`, `composables/mobile/__tests__/useMobileAttachmentOpening.spec.ts`, `components/conversation/__tests__/UserMessageMobileAttachments.spec.ts`. Tests (updated): `useMobileNavigation.spec.ts`, `useMobileNodeFile.spec.ts` (source union, attached-file cases), `TrustedNavigationPolicyTest.kt` (main-frame `/rest/` and `/graphql` are `KeepPage` now), and `contentRevision: 0` in five `OpenFileState` fixtures.
 
 ### Decisions made inside the design (for review)
 
 - **The media reload goes through `fetch`.** The design says "media viewers reload when `contentRevision` changes". Remounting with the same URL is not enough in Chrome (IMP-02). The reload therefore reads the bytes with `no-store` into an object URL, on the desktop too. Cost: a reloaded video on the desktop is read whole into memory, as the phone already does for every node file.
 - **`contextFileName`** in the route besides `contextFile`, so the viewer's title and the file type come from the name the file was sent with, not the stored name `ctx_<hash>__<name>`.
-- **A path attachment the phone cannot open here** (a run on another node) opens nothing and logs a warning: the message view has no place for the event monitor's status line.
+- ~~A path attachment the phone cannot open here opens nothing~~: revised in SR-003 (DEC-006), it shows the file links' notice as a toast.
 - **`FileViewer.file.contentRevision` is optional**: `FileViewer` also shows files that are not in the file explorer (artifact and reference viewers), which never reload.
 
 ## Important Assumptions
@@ -108,7 +119,6 @@ What the change does:
 
 ## Known Risks
 
-- DI-001 (above).
 - With only the new page and an old APK, a draft or other non-viewer tap that still navigates shows the pairing screen until the APK update (design note).
 
 ## Task Design Health Assessment Implementation Check
@@ -116,8 +126,8 @@ What the change does:
 - Reviewed change posture: Bug Fix.
 - Reviewed root-cause classification: Missing Invariant; Boundary Or Ownership Issue.
 - Reviewed refactor decision: `No` beyond the named generalization and extraction (both done).
-- Implementation matched the reviewed assessment: `Yes`, except DI-001 (a third path of the same capability).
-- If challenged, routed as `Design Impact`: `Yes` (DI-001).
+- Implementation matched the reviewed assessment: `Yes`; the third path of the same capability (DI-001) was taken into the design in SR-003.
+- If challenged, routed as `Design Impact`: `Yes` (DI-001, IR-001; resolved in SR-003).
 
 ## Legacy / Compatibility Removal Check
 
@@ -150,9 +160,12 @@ Evidence paths are relative to the ticket folder's `evidence/`.
 | IMP-05 | `pnpm -C autobyteus-web test:nuxt --run stores/__tests__/fileExplorerReopen.spec.ts stores/__tests__/fileExplorerStore.spec.ts components/fileExplorer composables/__tests__/useAuthorizedObjectUrl*.spec.ts` | `486ba3c395` | as above | the store reload rule and drafts, `FileViewer`, the media viewers, the reload through `fetch` | REQ-003 / AC-003 (unit), QR-002 | Pass | `IMP-05-web-reload-specs.log` | `Test Files  18 passed (18)`, `Tests  105 passed (105)` |
 | IMP-06 | `ANDROID_HOME=… ./gradlew --no-daemon :app:testDebugUnitTest` | `e470edf165` | as above, JDK of the Gradle wrapper | the whole Android unit suite incl. `TrustedNavigationPolicyTest` | REQ-004 / AC-005 | Pass | `IMP-06-android-unit.log` | `tests=94 … failures=0 errors=0`; `keepsThePageForAMainFrameNodeRoute` |
 | IMP-07 | `pnpm -C autobyteus-web test:nuxt --run` (full) | `e470edf165`; the one updated spec rerun at `486ba3c395` | as above | every web spec | REQ-005 | Fail → fixed: `RightSideTabs.workspaceTarget.spec.ts` asserted one read for two opens of the same link (the replaced behavior); updated in `486ba3c395`, rerun passes | `IMP-07-web-unit-full.excerpt.log`, `IMP-07-web-unit-full.log.gz` | `Test Files  1 failed \| 734 passed (735)`; rerun `Tests  4 passed (4)` |
-| IMP-08 | `node evidence/repro/file-open-repro.mjs --output-dir=…` (after the fix) | `e470edf165` | as above, builds IMP-09 | desktop links, phone links, phone attachment | AC-001 (message thumbnail), AC-002 (PNG), AC-003 (link), AC-004 (link) | Pass, except the composer draft 401 (DI-001) | `IMP-08-repro-after-fix/` (`repro-summary.json`, `repro-stdout.log`, screenshots) | `"D2_newLinkAfterRewrite":"VERSION-TWO-2222"`, `"P2_newLinkAfterRewrite":"VERSION-THREE-3333"`, `"chipKind":"thumbnail"`, `"viewerOpen":1`, `"newWindow":null`; the draft `status 401` |
+| IMP-08 | `node evidence/repro/file-open-repro.mjs --output-dir=…` (after the fix) | `e470edf165` | as above, builds IMP-09 | desktop links, phone links, phone attachment | AC-001 (message thumbnail), AC-002 (PNG), AC-003 (link), AC-004 (link) | Pass, except the composer draft 401 (DI-001; fixed in IR-002, IMP-11) | `IMP-08-repro-after-fix/` (`repro-summary.json`, `repro-stdout.log`, screenshots) | `"D2_newLinkAfterRewrite":"VERSION-TWO-2222"`, `"P2_newLinkAfterRewrite":"VERSION-THREE-3333"`, `"chipKind":"thumbnail"`, `"viewerOpen":1`, `"newWindow":null`; the draft `status 401` |
 | IMP-09 | `pnpm -C autobyteus-server-ts build`; `pnpm -C autobyteus-web build:mobile-web` | `e470edf165` | as above | server `dist`, the served phone bundle | — | Pass | `IMP-09-builds.log` | `served phone bundle files with contextFileName: 1` |
 | IMP-10 | `pnpm -C autobyteus-web guard:web-boundary`, `guard:localization-boundary`, `audit:localization-literals` | `e470edf165` | as above | web boundary and localization rules | — | Pass | `IMP-10-web-guards.log` | `Passed.` ×2, `Passed with zero unresolved findings.` |
+| IMP-11 | `node evidence/repro/file-open-repro.mjs --output-dir=…` (after IR-002) | `5f06b08ce9` | as above, phone bundle rebuilt | desktop links, phone links, sent and draft attachment loads | AC-001 (both chips), AC-002 (PNG), AC-003, AC-004 (links) | Pass | `IMP-11-repro-after-ir2/` (`README.md`, `repro-summary.json`, `repro-stdout.log`, screenshots) | `"thumbnailRequests":[]`, `"chipKind":"thumbnail"`, `"viewerOpen":1`, `"newWindow":null`, `VERSION-TWO` / `VERSION-THREE` |
+| IMP-12 | `pnpm -C autobyteus-web test:nuxt --run components/agentInput/__tests__/ContextFilePathInputArea.spec.ts composables/mobile/__tests__/useMobileAttachmentOpening.spec.ts components/conversation/__tests__` | `5f06b08ce9` | as above | the composer's draft thumbnails, full-screen view and tap on the phone; DEC-006 notices; `UserMessage` | REQ-001, REQ-002 (drafts), DEC-006 | Pass | `IMP-12-ir2-specs.log` | the "draft attachments on the phone" and notice lines; totals |
+| IMP-13 | full web suite, `pnpm -C autobyteus-web typecheck`, the three guards, `build:mobile-web` | `5f06b08ce9` | as above | every web spec; type and boundary rules; the phone bundle | REQ-005 | Pass | `IMP-13-ir2-regression.log`, `IMP-13-web-unit-full.log.gz` | `Test Files  735 passed (735)`; `production errors: 0 … (baseline 96 in 41 files)`; `Passed` ×3 |
 
 - Not run, and why: the design's step-4 probes (phone-bundle MSP cases with PNG, PDF, text and workspace-path attachments and an image rewrite; the desktop-window case with an unsaved edit; the emulator for AC-002/AC-005 and MSP-13) are API/E2E's. No server change, so no server suite. No build input changed: no fresh-start build.
 
@@ -170,11 +183,12 @@ Evidence paths are relative to the ticket folder's `evidence/`.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
-- After DI-001 is decided: the composer's draft attachment (thumbnail and tap) on the phone.
+- The composer's draft attachments on the phone: thumbnail, a draft image's full-screen view, a draft PDF/text tap into the viewer (no 401, no navigation).
+- A path attachment of a run on another node: the "available only on the host workspace" toast (DEC-006).
 - The design's MSP cases: PNG, PDF, text and a workspace-path attachment, each opening in the viewer with Back to the conversation; an image in the workspace rewritten and opened again (AC-004 image); no main-frame `/rest/` request in the network log.
 - The desktop window: link, the same link again, Files tab, with an unsaved edit in an open tab kept (AC-003).
 - Emulator: the tap shows the viewer, never the pairing screen; MSP-13 (rejected credential) still lands on pairing.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-- All of the above, after DI-001.
+- All of the above.
