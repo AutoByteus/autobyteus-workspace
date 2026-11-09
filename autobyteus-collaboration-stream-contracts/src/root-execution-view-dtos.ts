@@ -27,8 +27,8 @@ const referenceKey = (reference: TaskExecutionReference): string =>
 
 /**
  * A short, order-independent fingerprint of a root's closed task executions, `<count>:<8 hex digits>` (FNV-1a 32-bit
- * over the code points of the sorted, distinct keys). The node and the client compute it from the same list with this one function, so a run list
- * can tell that a host's closed set changed without reading it (autobyteus-446).
+ * over the code points of the sorted, distinct keys). The node and the client compute it from the same list with this
+ * one function, so a run list can tell that a host's closed set changed without reading it (autobyteus-446).
  */
 export const closedTaskExecutionsDigest = (references: readonly TaskExecutionReference[]): string => {
   const keys = [...new Set(references.map(referenceKey))].sort();
