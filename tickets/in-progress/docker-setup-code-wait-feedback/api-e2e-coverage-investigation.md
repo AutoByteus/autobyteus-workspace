@@ -9,18 +9,46 @@
 - Supplemental Task Artifacts: `probes/silent-socket-attempt.sh`; `follow-ups.md` (FU-001, out of scope)
 - Design Review Report: `N/A — not applicable` (direct route; no independent architecture review was selected)
 - Architecture Review Revision Record: `N/A — not applicable`
-- Implementation Handoff: `tickets/in-progress/docker-setup-code-wait-feedback/implementation-handoff.md` (IR-001)
+- Implementation Handoff: `tickets/in-progress/docker-setup-code-wait-feedback/implementation-handoff.md` (IR-001, IR-002)
 - Implementation Revision Record: `tickets/in-progress/docker-setup-code-wait-feedback/implementation-revision-record.md`
 - Code Review Report: `N/A — not applicable` (direct route; `task_size=Small`, `architectural_risk=Low`)
 - Code Review Revision Record: `N/A — not applicable`
-- Delivery Revision Record (delivery re-entry only): `N/A`
-- Relevant Delivery Revision IDs: `N/A`
+- Delivery Revision Record (delivery re-entry only): `N/A` — Delivery paused finalization on this finding before producing a written delivery report; its finding is summarized in `implementation-revision-record.md` IR-002
+- Relevant Delivery Revision IDs: `N/A` — none recorded yet
 - API/E2E Revision Record (created after the first completed result): `tickets/in-progress/docker-setup-code-wait-feedback/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: `1` (initial)
-- Trigger: implementation handoff for Project Task `autobyteus-workspace-3` (direct route)
-- Prior Investigation Reviewed: `N/A` — first round
-- Latest Authoritative Investigation: this document
+- Current API/E2E Revision ID: `API-REV-002`
+- Current Investigation Round: `2` (Local Fix re-validation)
+- Trigger: implementation's IR-002 Local Fix handoff, in response to Delivery's finalization-stage finding (a PowerShell-only defect in `Show-SetupCodeOfRunningNode`'s wait loop) against my Round-1 `Pass` (`API-REV-001`)
+- Prior Investigation Reviewed: `Yes` — this document's Round-1 content (API-REV-001), kept below, extended for Round 2
+- Latest Authoritative Investigation: this document (Round 2 supersedes Round 1 where they differ; Round-1 content not touched by IR-002 stays authoritative)
+
+## Round 2 — Local Fix Re-Validation (IR-002)
+
+- Triggering finding (summarized from implementation's handoff, no numbered `DR-*` yet): under Windows
+  PowerShell 5.1, `Show-SetupCodeOfRunningNode`'s `2>&1` capture of a failed attempt's own stderr, combined with
+  this launcher's `$ErrorActionPreference = 'Stop'` (`Core.ps1`, `autobyteus-docker.ps1`), turns every failed
+  attempt into a terminating `NativeCommandError`, aborting the wait loop on the first failed attempt instead of
+  printing the waiting message and retrying (REQ-006, AC-006, QR-001). PowerShell 7 does not reproduce this
+  (PowerShell/PowerShell PR #13361 changed this exact behavior between 5.1 and 7).
+- Fix: the `docker exec` attempt now runs with `$ErrorActionPreference` temporarily set to `'Continue'`
+  (saved/restored in a `try`/`finally`), so a failed attempt's stderr still reaches `$line` without becoming a
+  terminating error. Bash launcher untouched.
+- Changed files this round: `scripts/public/docker/autobyteus-docker.d/powershell/Commands.ps1` (the guard);
+  `scripts/tests/test_public_docker_launcher_setup_code.py` (one new regex assertion on the existing
+  `test_ac006_powershell_text_contract_...`, no new test method). Confirmed by
+  `git diff --name-only b9e2eba51 63365f010` — no other source or test file changed.
+- Scope re-check: Round 1's real-Docker journeys (API-05..API-08) exercised the **bash** launcher only
+  (`autobyteus-docker.sh` / `commands.sh` / `docker-runtime.sh`), none of which changed this round. Per
+  `TESTING.md`'s "Rerun by impact" rule, those cases are `Still Valid` and are not rerun this round — carried
+  forward as-is into this round's result.
+- Independent corroboration performed this round (beyond rerunning the implementation's own checks): I ran the
+  *unguarded* (pre-IR-002) `2>&1`-under-`Stop` pattern myself on this machine's real `pwsh` 7.6.9 — the
+  implementation's own smoke check (`IMP-07`) only showed the *guarded* pattern not throwing, and asserted
+  without demonstrating that the unguarded form also doesn't throw on 7. My own run confirms it does not
+  (`evidence/API-09-...`), so the guard is confirmed harmless-and-unnecessary on 7, not masking a
+  reproducible-on-7 defect. I also independently researched PowerShell/PowerShell PR #13361 and the general
+  Windows-PowerShell `2>&1`/`Stop` interaction to corroborate the claimed mechanism and the standard
+  `Continue`-scoping workaround (which matches IR-002's fix exactly) from outside this ticket's own evidence.
 
 ## Current Requirement And Design Basis
 
@@ -155,6 +183,10 @@ files and named volumes are read/written exactly as before. Both are consistent 
 | API-06 | REQ-001, REQ-003, BEH-001 | Real Docker daemon, `setup-code` fast path | Journey | `setup-code --name <test-node>` against the same, still-running, current test node | Real-boundary equivalent of AC-003; proves the real stream split |
 | API-07 | REQ-001, REQ-002, BEH-002, BEH-003 | Real Docker daemon, `setup-code`, stopped node | Journey | `docker stop <test-node>`, then `setup-code --name <test-node>` | Closes the implementation-noted fixture gap: the offline fake always reports `State.Running=true`, so the real "start a stopped container" branch was never independently exercised by any fixture |
 | API-08 | REQ-007, BEH-005, isolation | Real Docker daemon | Journey (verification + cleanup) | grep the three real codes against each real stderr log; confirm the real user node/state untouched; remove the test-owned container/volumes/temp dirs | NAS-32 proof against the real boundary; confirms isolation and cleanup |
+| API-09 | REQ-006, AC-006 (IR-002) | PowerShell (pwsh 7), scope-guard mechanism | Temporary Probe | run the unguarded `2>&1`-under-`Stop` pattern on real `pwsh` 7.6.9, compare against the implementation's guarded `IMP-07` result | Not durable: a one-off mechanism-comparison probe, not a product behavior to regress-test; independently confirms the guard is harmless-and-unnecessary on 7 rather than masking a 7-reproducible defect |
+| API-10 | AC-001..AC-006, AC-008 (IR-002) | Bash + PS launcher, offline | Reused | `IMP-05`: `python3 -m unittest scripts/tests/test_public_docker_launcher_setup_code.py -v` | Same reasoning as `API-01`, on the IR-002 commit; independent rerun |
+| API-11 | all (regression) | Whole offline launcher suite | Reused | `IMP-06`: `python3 -m unittest discover -s scripts/tests -p 'test_public_docker_launcher_*.py'` | Same reasoning as `API-02`, on the IR-002 commit |
+| API-12 | AC-006; syntax | Bash syntax; real `pwsh` parse | Reused | `IMP-07`'s bash-syntax half + an independent real-`pwsh`-parse of the fixed `Commands.ps1` | Confirms bash unaffected; confirms the fixed file parses with a real parser, not only `unittest`'s own subprocess call to `pwsh` |
 
 - Test progress log needed (more than one case, or a long case): `Yes`
 
@@ -207,6 +239,7 @@ None this round.
 | SCN-001's real recreate path (the "a newer image was downloaded" or "predates launcher configuration tracking" recreate branches) against a real Docker daemon | Forcing a real recreate would require either a different image/tag (a real pull of a different image, not justified for this Small/Low-risk ticket) or deleting the test node's config-hash tracking; the offline suite already proves this branch's full output shape deterministically (API-01's AC-001), and the PowerShell text contract (AC-006) proves the exact wording of all three recreate reasons for the PS twin; real Docker exercise of the "config changed" recreate branch's existing-but-unasserted wording is covered functionally (not textually) by the pre-existing `upgrade --all`/`workspace apply --all` tests, which still pass (API-02) | Low — the message text is proven byte-for-byte by the offline bash case and the PS text contract; only the exact bash wording for the other two recreate reasons against a *real* daemon (as opposed to text/offline) is unexercised | No | None — residual low risk, not a product defect; noted for completeness |
 | A live Docker daemon run of PowerShell (`pwsh`-driven `setup-code`/`new-container` against a real node) | No PowerShell-execution fixture or harness exists anywhere in this repository (confirmed by reading the whole shared test module); building one is new test architecture, out of this ticket's Small/Low-risk scope. `pwsh` parse (AC-006's real-syntax half) was closed this round (API-01/API-02) | Low — REQ-006 is proven by the text contract (byte-for-byte matching the bash wording) plus a real PowerShell parser; only full PowerShell *execution* against Docker is unproven, which was already true for the whole repository before this ticket (pre-existing project-wide limitation, not introduced here) | No | None — pre-existing, project-wide limitation; not a new gap from this change |
 | RSK-001 (unbounded `docker exec`/Docker daemon hang) | Explicitly out of scope (requirements doc "Out Of Scope"; design spec escalation trigger did not fire) | Accepted, unchanged | No | None — carried forward, not this ticket's to fix |
+| (Round 2) Windows PowerShell 5.1 itself, running the IR-002 guard | No PowerShell 5.1 (nor any Windows) runtime is available on this machine (macOS only); this is the specific platform the defect and fix target. The fix's mechanism is corroborated by: the exact guard-shape regex assertion (`AC-006`, now passing); a real `pwsh` 7.6.9 parse of the fixed file (`API-12`); my own direct, independent comparison on real `pwsh` 7.6.9 showing the unguarded and guarded forms behave identically there (`API-09`, confirms the guard is 7-harmless, not 7-necessary); and independent web research corroborating PowerShell/PowerShell PR #13361 and the general Windows-PowerShell `2>&1`/`Stop` interaction and its standard `Continue`-scoping workaround (matching IR-002's fix exactly) | Low-to-moderate — the mechanism is well-documented and the fix is the standard, narrow workaround; only its behavior under the one specific runtime it targets (5.1) is unproven by execution here | No | None — if the API/E2E or user environment ever has a Windows PowerShell 5.1 or 7 runtime, running `setup-code`/`new-container` with a scripted failing attempt through it would be the strongest remaining confirmation; not required to reach `Pass` given the corroborating evidence above |
 
 ## Ambiguities Or Reroute Triggers
 
@@ -218,8 +251,13 @@ None.
 - Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `No`
 - Reroute Required Before Validation Execution: `No`
 - Recommended Owner If Reroute Required: `N/A`
-- Notes: Fresh-Start Build Proof was evaluated and judged not applicable this round (literal `scripts/**` glob
+- Notes (Round 1): Fresh-Start Build Proof was evaluated and judged not applicable (literal `scripts/**` glob
   match, no actual build-input relevance — see Project Execution Discovery); `pwsh` was installed via
-  `brew install powershell` to close the PowerShell-syntax confidence gap this round, which also upgraded three
-  shared Homebrew dependencies (`brotli`, `ca-certificates`, `openssl@4`) as a side effect — a durable,
-  additive dev-tool install, not touching any project data or running service.
+  `brew install powershell` to close the PowerShell-syntax confidence gap, which also upgraded three shared
+  Homebrew dependencies (`brotli`, `ca-certificates`, `openssl@4`) as a side effect — a durable, additive
+  dev-tool install, not touching any project data or running service.
+- Notes (Round 2): a narrow, PowerShell-only Local Fix; bash launcher and the real-Docker journeys (API-05..API-08)
+  are unaffected and carried forward as `Still Valid` without rerunning them (confirmed by `git diff
+  --name-only` against the Round-1 commit). No Fresh-Start Build Proof re-check needed (same `scripts/**`
+  judgement as Round 1; the one changed source file is still plain interpreted PowerShell, confirmed unreferenced
+  by any release workflow, Dockerfile, or package manifest).

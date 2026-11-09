@@ -21,3 +21,11 @@
 | 16:37 | API-07 | Completed | Pass | Real "Started ..." + one real "Waiting for ..." on stderr; code on stdout |
 | 16:38 | API-08 | Started | — | NAS-32 grep across the three real stderr logs; isolation check; cleanup |
 | 16:38 | API-08 | Completed | Pass | All three grep checks "not found (good)"; real user node confirmed untouched; test-owned container/volumes/temp dirs removed and confirmed gone |
+| (Round 2) | API-09 | Started | — | Unguarded `2>&1`-under-`Stop` comparison probe on real pwsh 7.6.9 |
+| (Round 2) | API-09 | Completed | Pass | `no throw: LASTEXITCODE=1 answer=[err-text]` — matches the implementation's guarded IMP-07 result |
+| (Round 2) | API-10 | Started | — | `python3 -m unittest scripts/tests/test_public_docker_launcher_setup_code.py -v` on commit `63365f010` |
+| (Round 2) | API-10 | Completed | Pass | `Ran 9 tests ... OK`, 0 skipped |
+| (Round 2) | API-11 | Started | — | `python3 -m unittest discover -s scripts/tests -p 'test_public_docker_launcher_*.py'` on commit `63365f010` |
+| (Round 2) | API-11 | Completed | Pass | `Ran 60 tests ... OK (skipped=1)` (unrelated port-collision precondition) |
+| (Round 2) | API-12 | Started | — | `bash -n` on both bash files; real `pwsh` parse of the fixed `Commands.ps1` |
+| (Round 2) | API-12 | Completed | Pass | `OK: no syntax errors`; `Commands.ps1 parses OK` |
