@@ -283,6 +283,20 @@ docker() { printf 'x\\n' >> "$HOME/attempts"; sleep 5; printf 'the node did not 
         self.assertIn("[Diagnostics.Stopwatch]::StartNew()", commands_text)
         self.assertIn("Waiting for $NodeName to start (up to $Script:SetupCodeWaitSeconds seconds)...", commands_text)
         self.assertIn("Still waiting for $NodeName to start ($elapsed s)...", commands_text)
+        # Windows PowerShell 5.1 turns a failed attempt's own stderr (captured via `2>&1`) into a terminating
+        # NativeCommandError under this launcher's $ErrorActionPreference = 'Stop' (Core.ps1, autobyteus-docker.ps1);
+        # the attempt must run with Stop turned off, restored right after, so a failed attempt still reaches the
+        # wait loop instead of aborting it.
+        self.assertRegex(
+            commands_text,
+            r"\$previousErrorActionPreference = \$ErrorActionPreference\s*\n"
+            r"\s*\$ErrorActionPreference = 'Continue'\s*\n"
+            r"\s*try \{\s*\n"
+            r"\s*\$answer = & docker exec \$container node -e \$Script:SetupCodeClientJs \$Script:SetupCodeSocket 2>&1\s*\n"
+            r"\s*\} finally \{\s*\n"
+            r"\s*\$ErrorActionPreference = \$previousErrorActionPreference\s*\n"
+            r"\s*\}",
+        )
         self.assertIn("-NoUrls", commands_text)
         self.assertIn("[switch]$NoUrls", runtime_text)
         self.assertIn("& docker pull $ImageRef | Out-Host", runtime_text)

@@ -118,7 +118,18 @@ function Show-SetupCodeOfRunningNode([string]$NodeName) {
   $stopwatch = [Diagnostics.Stopwatch]::StartNew()
   $lastMessageAt = -1
   while ($true) {
-    $answer = & docker exec $container node -e $Script:SetupCodeClientJs $Script:SetupCodeSocket 2>&1
+    # Windows PowerShell 5.1 wraps a native command's `2>&1` stderr lines as ErrorRecords, and this launcher's
+    # $ErrorActionPreference = 'Stop' then turns a failed attempt's own stderr (the client's or docker exec's)
+    # into a terminating error instead of the failure this loop is meant to handle. Turn Stop off only around
+    # the call, so a failed attempt's text still reaches $line (the record's [string] is its message) without
+    # aborting the wait. PowerShell 7 already tolerates this; the guard is harmless there.
+    $previousErrorActionPreference = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
+    try {
+      $answer = & docker exec $container node -e $Script:SetupCodeClientJs $Script:SetupCodeSocket 2>&1
+    } finally {
+      $ErrorActionPreference = $previousErrorActionPreference
+    }
     $line = ([string](@($answer)[0])).Trim()
     if ($LASTEXITCODE -eq 0 -and $line) {
       $parts = $line.Split(' ', 2)
