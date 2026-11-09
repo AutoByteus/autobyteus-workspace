@@ -16,6 +16,8 @@ import type { GitHubRepositoryRevisionMetadata, GitHubRepositorySource } from ".
  * read inside the lock (AF-05, AR-003), the kept known update (REQ-006), the projection and the
  * change listener.
  */
+/** Package-edit capture has its own tests (package-edit-capture.test.ts); here it does nothing. */
+const noCapture = { captureAndBackUp: async () => undefined };
 const deferred = () => {
   let resolve!: () => void;
   const promise = new Promise<void>((done) => { resolve = done; });
@@ -73,6 +75,7 @@ describe("AgentPackageService GitHub update state", () => {
 
   const serviceFor = (setupResult: Awaited<ReturnType<typeof setup>>, readHead: () => Promise<GitHubRepositoryRevisionMetadata>) =>
     new AgentPackageService({
+      packageEditCapture: noCapture,
       skillNames: { assertNoIncomingSkillNameConflicts: () => ({ conflicts: [], notices: [] }) },
       rootSettingsStore: setupResult.rootSettingsStore,
       registryStore: setupResult.registryStore,

@@ -5,6 +5,7 @@ import { GetAgentDefinitions } from '~/graphql/queries/agentDefinitionQueries'
 import {
   CreateAgentDefinition,
   DeleteAgentDefinition,
+  ResetAgentPersonalSetting,
   UpdateAgentDefinition,
 } from '~/graphql/mutations/agentDefinitionMutations'
 import { ReloadAgentPackageDefinitions } from '~/graphql/mutations/agentPackageDefinitionMutations'
@@ -16,13 +17,14 @@ import {
 } from '~/utils/definitionOwnership'
 import { createLoadedListReloader } from '~/utils/agentPackages/loadedListReloader'
 import type { DefinitionLoadIssue } from '~/types/agentPackageDefinitions'
+import type { PersonalSetting, PersonalSettingsFields } from '~/types/personalSettings'
 
 export type AgentDefinitionOwnershipScope = DefinitionOwnershipScope
 
 /** CONFIGURED: the agent's own skillNames. ALL_INSTALLED: every installed, enabled skill. */
 export type AgentSkillScope = 'CONFIGURED' | 'ALL_INSTALLED'
 
-export interface AgentDefinition {
+export interface AgentDefinition extends PersonalSettingsFields {
   __typename?: 'AgentDefinition'
   id: string
   name: string
@@ -266,22 +268,37 @@ export const useAgentDefinitionStore = defineStore('agentDefinition', () => {
         return null
       }
 
-      const index = agentDefinitions.value.findIndex((definition) => definition.id === input.id)
-      if (index !== -1) {
-        const nextAgentDefinitions = [...agentDefinitions.value]
-        nextAgentDefinitions[index] = {
-          ...nextAgentDefinitions[index],
-          ...data.updateAgentDefinition,
-        }
-        agentDefinitions.value = nextAgentDefinitions
-      }
-
+      replaceInList(data.updateAgentDefinition)
       return data.updateAgentDefinition
     } catch (cause) {
       error.value = cause
       console.error('Failed to update agent definition:', cause)
       throw cause
     }
+  }
+
+  /** Replaces the listed definition with the server's returned (effective) one. */
+  const replaceInList = (updated: AgentDefinition) => {
+    const index = agentDefinitions.value.findIndex((definition) => definition.id === updated.id)
+    if (index === -1) return
+    const nextAgentDefinitions = [...agentDefinitions.value]
+    nextAgentDefinitions[index] = { ...nextAgentDefinitions[index], ...updated }
+    agentDefinitions.value = nextAgentDefinitions
+  }
+
+  /** "Reset to the package's setting" / "Reset to the built-in setting": the agent's base value applies again. */
+  const resetAgentPersonalSetting = async (definitionId: string, setting: PersonalSetting): Promise<AgentDefinition> => {
+    const { data, errors } = await getApolloClient().mutate({
+      mutation: ResetAgentPersonalSetting,
+      variables: { definitionId, setting },
+    })
+    if (errors && errors.length > 0) {
+      throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
+    }
+    const reset = data?.resetAgentPersonalSetting as AgentDefinition | undefined
+    if (!reset) throw new Error(`The personal setting of agent ${definitionId} was not reset.`)
+    replaceInList(reset)
+    return reset
   }
 
   const deleteAgentDefinition = async (id: string): Promise<DeleteResult | null> => {
@@ -380,6 +397,7 @@ export const useAgentDefinitionStore = defineStore('agentDefinition', () => {
     reloadIfLoaded,
     createAgentDefinition,
     updateAgentDefinition,
+    resetAgentPersonalSetting,
     deleteAgentDefinition,
     clearDeleteResult,
     invalidateAgentDefinitions,

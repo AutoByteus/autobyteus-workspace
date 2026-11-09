@@ -106,8 +106,7 @@ const bundleService = {
 const start = async (options: { createWatcher?: PackageFolderWatchFactory } = {}) => {
   host = createHostDefinitionServices({ appConfig: appConfig(), bundleService });
   feed = await composeAgentPackageDefinitionFeed({
-    reloader: host.agentPackageDefinitions.reloader,
-    definitionChanges: host.agentDefinitionChanges,
+    definitions: host,
     createWatcher: options.createWatcher,
   });
   host.agentDefinitionChanges.subscribe(() => { definitionSignals += 1; });

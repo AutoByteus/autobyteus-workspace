@@ -63,6 +63,10 @@ export class FileAgentOrgDefinitionProvider {
       "org-config.json": `${JSON.stringify(buildAgentOrgDefinitionConfig(definition), null, 2)}\n`,
     };
   }
+  /** Whether the AgentOrg files written from `left` would differ from those written from `right` (the strings `update` writes). */
+  rendersDifferently(left: AgentOrgDefinition, right: AgentOrgDefinition): boolean {
+    return JSON.stringify(this.files(left)) !== JSON.stringify(this.files(right));
+  }
   private async read(source: Source): Promise<AgentOrgDefinition | null> {
     try {
       const mdContent = await fs.readFile(source.mdPath, "utf8");

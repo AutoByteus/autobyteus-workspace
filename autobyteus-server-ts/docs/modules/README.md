@@ -44,6 +44,7 @@ This directory mirrors the module documentation layout used in `autobyteus-serve
 | Model Routing (the Model Router agent chooses runtimes/models of delegated copies; decision records) | [model_routing.md](./model_routing.md) |
 | Multimedia Management | [multimedia_management.md](./multimedia_management.md) |
 | Projects | [projects.md](./projects.md) |
+| Personal Settings (tools, skills, avatar and runtime/model of package and built-in definitions, kept outside their files) | [personal_settings.md](./personal_settings.md) |
 | Prompt Engineering | [prompt_engineering.md](./prompt_engineering.md) |
 | Run History | [run_history.md](./run_history.md) |
 | Search | [search.md](./search.md) |

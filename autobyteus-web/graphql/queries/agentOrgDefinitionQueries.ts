@@ -2,7 +2,7 @@ import { gql } from 'graphql-tag'
 export const GetAgentOrgDefinitions = gql`
   query GetAgentOrgDefinitions {
     agentOrgDefinitions {
-      id name description instructions category avatarUrl revision
+      id name description instructions category avatarUrl revision personalSettings personalSettingsBase
       handoffs { from to rules }
       members { memberName ref refType refScope }
       defaultLaunchConfig { llmModelIdentifier runtimeKind llmConfig }

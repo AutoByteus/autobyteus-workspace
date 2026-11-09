@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { mount } from '@vue/test-utils'
+import { flushPromises, mount } from '@vue/test-utils'
 import AgentTeamDefinitionForm from '../AgentTeamDefinitionForm.vue'
 
 const mockTranslations: Record<string, string> = {
@@ -67,6 +67,7 @@ const {
       getCatalogAgentTeamDefinitionById: vi.fn(() => null),
       getApplicationOwnedTeamDefinitionsByOwnerApplicationId: vi.fn(() => []),
       getTeamLocalTeamDefinitionsByOwnerTeamId: vi.fn(() => []),
+      resetAgentTeamPersonalSetting: vi.fn(),
     },
   }
 })
@@ -275,5 +276,28 @@ describe('AgentTeamDefinitionForm', () => {
       },
     ])
     expect(payload.coordinatorMemberName).toBe('bundled_reviewer')
+  })
+  it('a package Team: the note and the avatar mark; reset takes the base avatar and keeps the unsaved name (package-personal-settings)', async () => {
+    const packageTeam = (overrides: Record<string, unknown> = {}) => ({
+      id: 'se-team', name: 'SE Team', description: 'Ships', instructions: 'Ship.', coordinatorMemberName: 'lead', revision: 'r1',
+      avatarUrl: '/mine.png', defaultLaunchConfig: null, personalSettings: ['AVATAR'], personalSettingsBase: 'PACKAGE',
+      nodes: [{ memberName: 'lead', ref: 'agent-1', refScope: 'SHARED' }], ...overrides,
+    })
+    const wrapper = createWrapper(packageTeam())
+    expect(wrapper.get('[data-testid="personal-settings-note"]').text()).toBe('personalSettings.note.collaboration.package')
+    const afterReset = packageTeam({ avatarUrl: '/package.png', personalSettings: [] })
+    mockAgentTeamDefinitionStore.resetAgentTeamPersonalSetting.mockImplementation(async () => {
+      await wrapper.setProps({ initialData: afterReset })
+      return afterReset
+    })
+
+    await wrapper.get('input#team-name').setValue('SE Team (not saved yet)')
+    await wrapper.get('[data-testid="personal-setting-reset"]').trigger('click')
+    await flushPromises()
+
+    expect(mockAgentTeamDefinitionStore.resetAgentTeamPersonalSetting).toHaveBeenCalledWith('se-team', 'AVATAR')
+    expect(wrapper.find('[data-testid="personal-setting-mark"]').exists()).toBe(false)
+    await wrapper.get('form').trigger('submit.prevent')
+    expect(wrapper.emitted('submit')?.[0]?.[0]).toMatchObject({ name: 'SE Team (not saved yet)', avatarUrl: '/package.png' })
   })
 })

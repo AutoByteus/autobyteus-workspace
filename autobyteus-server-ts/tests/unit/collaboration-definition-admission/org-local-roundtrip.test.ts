@@ -15,7 +15,7 @@ import { AgentTeamDefinition, TeamMember } from "../../../src/agent-team-definit
 import { listAgentOrgOwnedDefinitionSources } from "../../../src/agent-org-definition/providers/agent-org-owned-definition-source-index.js";
 import { buildAgentOrgOwnedDefinitionId } from "../../../src/agent-org-definition/utils/agent-org-owned-definition-id.js";
 import { AgentOrgDefinitionResolver } from "../../../src/api/graphql/types/agent-org-definition.js";
-const mocks = vi.hoisted(() => ({ service: { createDefinition: vi.fn(), updateDefinition: vi.fn(), getFolderLoadIssues: vi.fn(async () => []) }, admission: { requireAvailable: vi.fn(), scan: vi.fn() } }));
+const mocks = vi.hoisted(() => ({ service: { createDefinition: vi.fn(), updateDefinition: vi.fn(), getFolderLoadIssues: vi.fn(async () => []), getPersonalSettingsView: vi.fn(async () => ({ base: null, settings: [] })) }, admission: { requireAvailable: vi.fn(), scan: vi.fn() } }));
 vi.mock("../../../src/api/graphql/studio-application-api-services.js", () => ({ getStudioAgentOrgDefinitionService: () => mocks.service, getStudioDefinitionAdmissionService: () => mocks.admission }));
 const roots: string[] = [];
 afterEach(async () => { vi.clearAllMocks(); mocks.service.getFolderLoadIssues.mockResolvedValue([]); await Promise.all(roots.splice(0).map((root) => fs.rm(root, { recursive: true, force: true }))); });

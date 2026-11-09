@@ -7,6 +7,8 @@ import {
 import { toGraphqlDefaultLaunchConfig } from "../types/default-launch-config.js";
 import { toGraphqlDefinitionLoadIssue } from "../types/definition-problems.js";
 import type { DefinitionLoadIssue } from "../../../agent-package-definitions/domain/agent-package-definition-types.js";
+import type { PersonalSettingsView } from "../../../personal-settings/services/personal-settings-service.js";
+import { toGraphqlPersonalSettings } from "../types/personal-settings.js";
 
 const logger = {
   error: (...args: unknown[]) => console.error(...args),
@@ -32,6 +34,7 @@ export class AgentDefinitionConverter {
   static async toGraphql(
     domainDefinition: DomainAgentDefinition,
     loadIssue: DefinitionLoadIssue | null = null,
+    personalSettings: PersonalSettingsView | null = null,
   ): Promise<GraphqlAgentDefinition> {
     try {
       return {
@@ -64,6 +67,7 @@ export class AgentDefinitionConverter {
         defaultLaunchConfig: toGraphqlDefaultLaunchConfig(domainDefinition.defaultLaunchConfig),
         internal: domainDefinition.internal === true,
         loadIssue: toGraphqlDefinitionLoadIssue(loadIssue),
+        ...toGraphqlPersonalSettings(personalSettings),
       };
     } catch (error) {
       logger.error(
