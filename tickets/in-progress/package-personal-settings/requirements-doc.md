@@ -2,8 +2,8 @@
 
 ## Document Status
 
-- Status: `Approved` at `SR-004`
-- Current solution revision ID: `SR-004`
+- Status: `Approved` at `SR-006`
+- Current solution revision ID: `SR-006`
 - Package identifier: `package-personal-settings`
 - Request: Project Task autobyteus-95
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), on the user's requests of 2026-10-14, 2026-10-24 and 2026-11-01
@@ -13,7 +13,7 @@
   - 2026-11-06: "is a way to store it somewhere … instead of updating the original file" (the personal settings file);
   - 2026-11-07: the data contract, after its validation;
   - 2026-11-09: "if it works then I would say continue with your work", taken as approval of the contract with its four recommendations (Q1–Q4), and stated back to him.
-- Exact approved baseline: this document at SR-003, with the contract below.
+- Exact approved baseline: this document at SR-004, with the contract below, approved by the user. SR-006 adds only the built-in wording of REQ-004's reset label (AR-005): a wording change within the approved direction, made by the Solution Designer and reported to the user.
 - Behavior-defining supplement: `personal-settings-file-contract.md` (storage, shape, reading/writing rules, effective values, update capture and backup), approved 2026-11-09, validated by `evidence/validate-personal-settings-file.mjs` (`evidence/personal-settings-file-validation-run.log`).
 
 ## Problem And Desired Outcome
@@ -87,7 +87,7 @@ Standard: blocking findings cite these IDs; new behavior is a Requirement Gap fo
 | REQ-001 | Each node keeps the user's personal settings for definitions from registered packages (GitHub and local) in one file, exactly as `personal-settings-file-contract.md` §2–§4 defines. | BEH-002 | 1 |
 | REQ-002 | Every read of an agent, Team or Org definition from a package returns the effective values of contract §5 (tools, skills, avatar, runtime/model). This includes lists, details, editing, run start, Team and Org member resolution and delegated copies. | BEH-002..004 | 1 |
 | REQ-003 | In the app, changing tools, skills, avatar or runtime/model of a package definition writes the personal settings file (contract §6) and never the package files. | BEH-002..004 | 1 |
-| REQ-004 | The editor shows, for each of the four settings, whether it is personal, and offers "Reset to the package's setting", which removes that personal field. | BEH-002 | 1 |
+| REQ-004 | The editor shows, for each of the four settings, whether it is personal, and offers "Reset to the package's setting" (for built-in agents: "Reset to the built-in setting"), which removes that personal field. | BEH-002 | 1 |
 | REQ-005 | A package update or reinstall never changes the personal settings file. | BEH-001 | 1 |
 | REQ-006 | At every GitHub package update (click or automatic), before replacing the folder: download the installed revision; capture edits of the four settings into personal settings (contract §7.2); back up every file that differs from the installed revision (contract §7.3; the latest 5 backups per package are kept). If the installed revision cannot be downloaded, the update stops and nothing changes. | BEH-001 | 1 |
 | REQ-007 | The texts that warn about local changes (the automatic-update switch and its confirmation, autobyteus-210) say that personal tools, skills, avatar and runtime/model are kept, that other local changes are replaced, and that a backup is kept. | BEH-001 | 1 |
@@ -138,4 +138,4 @@ Standard: blocking findings cite these IDs; new behavior is a Requirement Gap fo
 
 ## Readiness
 
-- Content ready: `Yes`. Approval recorded: `Yes` (SR-003). Ready for architecture design: `Yes` (stage 1 first).
+- Content ready: `Yes`. Approval recorded: `Yes` (the user, SR-003 and SR-004; SR-006 wording by the Solution Designer, reported to the user). Ready for architecture design: `Yes` (stage 1 first).

@@ -7,7 +7,7 @@
 - Workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/package-personal-settings`, branch `codex/package-personal-settings`
 - Base: `origin/personal` `c78ffb15a2` (fetched 2026-10-24). Finalization target: `origin/personal`.
 - Bootstrap: worktree created; ticket folder `tickets/in-progress/package-personal-settings/`. No blocker.
-- Current solution revision: `SR-001`
+- Current solution revision: `SR-006`
 - Authorities read (2026-10-24): `references/requirements-engineering.md`, `references/ticket-scope.md`, `references/finding-the-cause.md` (read in this conversation); the updated `SKILL.md`.
 - How established: `Read` (code/docs) unless marked `Measured`.
 
@@ -45,6 +45,13 @@
 - The tools case needs either a personal place for tool additions that updates never touch (A), or a merge at update time that keeps them (B).
 - Both need the previously installed revision's files to know what the user changed: (A) only once, to carry over edits made before this change; (B) at every update. `codeload` serves any revision by SHA without API quota (209/210 evidence).
 - A backup of every overwritten file that differs from the installed revision is the minimum safety either way.
+
+## Supplemental Artifacts
+
+| Artifact | Kind | Status | Relationship |
+| --- | --- | --- | --- |
+| `personal-settings-file-contract.md` | Behavior-defining supplement | Approved by the user (Q1–Q5), 2026-11-09; wording "base value" at SR-006 | Storage, shape, reading/writing rules, effective values, update capture and backup |
+| `evidence/validate-personal-settings-file.mjs` and `evidence/personal-settings-file-validation-run*.log` | Validation evidence | All pass (22 checks), last on base `a85bf4f38d` | Validates the contract on real package data |
 
 ## Product Design Request Context
 

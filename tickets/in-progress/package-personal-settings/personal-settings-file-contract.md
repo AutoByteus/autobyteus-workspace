@@ -21,7 +21,7 @@ A package update replaces only package files, so these choices are never lost, a
 | Desktop path | `~/.autobyteus/server-data/agent-packages/personal-settings.json` |
 | Docker path | `/home/autobyteus/data/agent-packages/personal-settings.json` (the `autobyteus-server-data` volume, kept across container rebuilds) |
 | Format | UTF-8 JSON, 2-space indent, trailing newline. No version field (project rule). |
-| Missing file | No personal settings. Definitions load with package values. |
+| Missing file | No personal settings. Definitions load with base values. |
 | Unreadable or wrongly shaped file | Treated as no personal settings, with a logged warning. The file is left as it is, so the user's data is never deleted. It is rewritten only by the user's next change, after a copy is saved as `personal-settings.json.unreadable-<time>`. |
 | Writer | One owner in the server writes the file, one change at a time, atomically (write a temporary file, then rename). |
 | Avatar images | Unchanged: they stay where uploads go today (`/rest/files/images/<id>.png` in app data). The file stores only the reference. |
@@ -53,7 +53,7 @@ The file is one JSON object. Each property is one definition's record.
 
 ### 3.2 Fields
 
-Every field is optional. A missing field means "use the package's value". A record with no fields is not stored.
+Every field is optional. A missing field means "use the base value". A record with no fields is not stored.
 
 | Field | Allowed on | Type | Meaning |
 | --- | --- | --- | --- |
@@ -109,7 +109,7 @@ Skipping only affects what is applied. The file is not rewritten by reading.
 
 ## 5. Effective Definition (Applied Where Definitions Are Read)
 
-With package values `P` and record `R`:
+With base values `P` and record `R`:
 
 ```text
 toolNames           = (P.toolNames  minus R.toolsRemoved)  then (R.toolsAdded  not already present)
@@ -162,6 +162,8 @@ Local folder packages: AutoByteus never updates them, so this section does not a
 
 ## 8. Which Definitions Use Personal Settings
 
+The **base value** is the value in the definition's files: a package's files, or a built-in agent's template copied at start (wording changed from "package value" at SR-006; no rule changed).
+
 | Source | Uses this contract |
 | --- | --- |
 | Packages imported from GitHub | Yes |
@@ -182,7 +184,7 @@ Script: `evidence/validate-personal-settings-file.mjs`. Run: `evidence/personal-
 | V-B | The tolerant reader keeps the 2 valid records and drops exactly the 7 invalid ones (unknown kind, empty ID, field on the wrong kind, empty list, duplicated list, added/removed overlap, incomplete launch config); a non-object file reads as empty | Pass |
 | V-C | A real update (`agent:agent-package-creator`, where the author added `search_memory`):<br>- the user's edits on the installed revision (one added MCP tool, one removed tool, avatar, runtime/model) are captured as a 4-field record;<br>- after applying it to the new revision: the added tool is present, the removed tool absent, every other new tool present (including `search_memory`), avatar and runtime/model are the user's, skills follow the package | Pass |
 | V-C | The captured record passes the reader; capture on an unchanged file yields nothing; capture keeps an existing record; a definition the new revision dropped (`agent:chemistry-module-designer`) leaves its record unused | Pass |
-| V-D | All 129 configs of the new revision read into the package values; with no record the effective values equal the package's | Pass |
+| V-D | All 129 configs of the new revision read into the base values; with no record the effective values equal the base values | Pass |
 
 The first run had one failing check, in the test itself: it counted the skip log entries instead of the dropped records. That run's log is `evidence/personal-settings-file-validation-run-first.log`. The script was corrected; the contract did not change.
 

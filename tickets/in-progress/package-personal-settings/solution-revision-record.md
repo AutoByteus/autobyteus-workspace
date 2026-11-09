@@ -11,6 +11,7 @@ Package: `package-personal-settings` (Project Task autobyteus-95). Folder: `/Use
 | SR-003 | Requirements | The user's direction 2026-11-06 (store outside the package files), the validated file contract 2026-11-07, his "continue" 2026-11-09 | Ready for Approval | Approved | Requirements rewritten to the personal settings file; stage 1 / stage 2; ACs |
 | SR-004 | Requirements | The user's answer to Q5 (2026-11-09) and the re-verification on base `a85bf4f38d` | Approved (SR-003) | Approved (SR-004) | Built-in agents in scope (DEC-009, UC-001) |
 | SR-005 | Design | Architecture design of stage 1 on the approved SR-004 requirements | Approved (SR-004) | Design Ready (Large / High) | `design-spec.md` stage 1; AF-01..AF-11 in the investigation notes |
+| SR-006 | Design (+ requirement wording) | ARCH-REV-001 `Fail` (AR-001..AR-005) | Design Ready (SR-005) | Design Ready (Large / High) | Base reads for every write form; rendered-file comparison; capture failure rules; wiring; "base value" and built-in wording |
 
 ## Revision Entries
 
@@ -60,3 +61,18 @@ Package: `package-personal-settings` (Project Task autobyteus-95). Folder: `/Use
 - Intended behavior changed: `No`.
 - Classification: `Large` / `High`.
 - Next action: route per the handoff rules.
+
+### SR-006 — Revised after ARCH-REV-001
+
+- Trigger: ARCH-REV-001 `Fail`, Design Impact (`design-review-report.md`).
+- Changes in `design-spec.md` (its "Revision SR-006" table):
+  - AR-001: every write form starts from the base value. Team and Org get `readBaseDefinition`, and DS-002 is drawn per kind.
+  - AR-002: files are written only when the store's rendered output differs (`rendersDifferently`). Tests per kind.
+  - AR-003: capture failure rules. Only a failed download or a failed write of the backup or the personal settings stops the update. An unreadable definition is backed up and not captured.
+  - AR-004: construction, the process instance and `setPublisher`.
+  - AR-005: "base value" wording. `personalSettingsBase` and the built-in UI wording.
+- Requirements: REQ-004 gains the built-in reset label "Reset to the built-in setting". This is a wording change within the approved direction, approved by the Solution Designer and reported to the user. The baseline references were corrected.
+- Contract: the word "package value" becomes "base value". No rule changed.
+- Investigation notes: supplement inventory added.
+- Intended behavior changed: `No` (wording only).
+- Next action: architecture re-review.
