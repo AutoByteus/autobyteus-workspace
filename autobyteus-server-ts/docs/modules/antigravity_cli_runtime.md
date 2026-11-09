@@ -72,6 +72,13 @@ the composed Agent/Team/Org identity before the first real user input. It does
 not write generated configuration into the selected workspace or global AGY
 configuration.
 
+A new start always begins on an empty capsule: `createAgyRunCapsule` first removes the
+run's `agy-project` folder (a skill link inside it is removed without following it, so the
+skill folder and the workspace are untouched). This is what lets a run **return** to Antigravity
+after another agent runtime (an agent runtime switch, A → B → A) or retry a start that failed
+after its capsule was made. A restore never creates a capsule; it reads the capsule of its
+own era (`restoreAgyRunCapsule`).
+
 The AGY process uses the capsule as its primary project and receives the real
 selected workspace as an added directory. The generated agent identifies that
 real path as the task workspace. This is model-directed task targeting, **not**

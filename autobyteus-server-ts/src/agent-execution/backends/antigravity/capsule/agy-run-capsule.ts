@@ -25,6 +25,12 @@ export type AgyRunCapsule = { path: string; manifest: AgyCapsuleManifest };
 const capsulePath = (memoryDir: string): string => path.join(memoryDir, "agy-project");
 const agentPath = (root: string, name: string): string => path.join(root, ".agents", "agents", name, "agent.md");
 
+/**
+ * A new start replaces the capsule of any earlier era or failed start of this run (a run can return to Antigravity after another
+ * agent runtime, autobyteus-440), so it always begins on an empty capsule; the exclusive writes below stay as a correctness guard.
+ * Only the capsule folder goes: a skill link in it is removed without following it, and nothing outside it is touched.
+ * A restore never calls this; it reads its own era's capsule (`restoreAgyRunCapsule`).
+ */
 export const createAgyRunCapsule = async (input: {
   runId: string;
   memoryDir: string;
@@ -39,6 +45,7 @@ export const createAgyRunCapsule = async (input: {
   if (!(await fs.stat(workspacePath)).isDirectory()) throw new Error("AGY_WORKSPACE_INVALID: selected workspace is not a directory.");
   const root = capsulePath(input.memoryDir);
   await fs.mkdir(input.memoryDir, { recursive: true, mode: 0o700 });
+  await fs.rm(root, { recursive: true, force: true });
   await fs.mkdir(root, { recursive: false, mode: 0o700 });
   try {
     const agentName = `autobyteus-${sha256(input.runId).slice(0, 16)}`;

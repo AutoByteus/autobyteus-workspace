@@ -435,6 +435,13 @@ is in [docs/android_mobile_access.md](docs/android_mobile_access.md).
    Never close a failure as "pre-existing" or "flaky" without its cause. A pass when
    rerun alone, under less load or on the base narrows the search; it is not the cause.
 
+10. **Test a runtime switch there and back.** A switch case goes A → B → A (and on to a fourth
+    hop where the design allows it), not one hop. What an era leaves behind (a project
+    folder, a session binding, a file the next start creates exclusively) shows only when a run
+    returns to a runtime it already used. Cover each member kind that has its own start path
+    (standalone run, Team member, Org member, delegated copy) with at least one return, and a
+    restart between the save and the message of the return.
+
 ## Evidence and cleanup
 
 - Keep test artifacts (screenshots, recordings, logs) in the ticket or a test output folder,

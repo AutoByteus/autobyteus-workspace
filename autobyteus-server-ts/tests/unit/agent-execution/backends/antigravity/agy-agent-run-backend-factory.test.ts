@@ -156,6 +156,27 @@ describe("AGY backend capability admission and preserved bindings", () => {
     expect(stop).toHaveBeenCalled();
   });
 
+  it("retries a start that failed after the capsule was made: the retry replaces the leftover capsule and completes (autobyteus-440)", async () => {
+    initOverride = { model: "other" };
+    await expect(prepareAndReleaseOnFailure(factory.beginPreparation({ kind: "new", config: config, runId: "run" }))).rejects.toThrow("AGY_MODEL_MISMATCH");
+    initOverride = {};
+    const retried = await prepareAndReleaseOnFailure(factory.beginPreparation({ kind: "new", config: config, runId: "run" }));
+    const manifest = JSON.parse(await fs.readFile(path.join(config.memoryDir!, "agy-project", "manifest.json"), "utf8"));
+    expect(manifest.runId).toBe("run");
+    await retried.terminate();
+  });
+
+  it("starts a second era in the memory folder of an earlier era (a switch back to Antigravity)", async () => {
+    const first = await prepareAndReleaseOnFailure(factory.beginPreparation({ kind: "new", config: config, runId: "run" }));
+    await first.terminate();
+    instructions = "Second era identity";
+    const second = await prepareAndReleaseOnFailure(factory.beginPreparation({ kind: "new", config: config, runId: "run" }));
+    const root = path.join(config.memoryDir!, "agy-project");
+    const manifest = JSON.parse(await fs.readFile(path.join(root, "manifest.json"), "utf8"));
+    expect(await fs.readFile(path.join(root, ".agents", "agents", manifest.agentName, "agent.md"), "utf8")).toContain("Second era identity");
+    await second.terminate();
+  });
+
   it("rejects a missing selected model before creating a capsule or launching", async () => {
     vi.mocked(listAntigravityModels).mockResolvedValue([]);
     await expect(prepareAndReleaseOnFailure(factory.beginPreparation({ kind: "new", config: config, runId: "run" }))).rejects.toThrow("AGY_MODEL_UNAVAILABLE");
