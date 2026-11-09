@@ -1,0 +1,15 @@
+# Check: IMP-02
+# Command: pnpm -C autobyteus-collaboration-stream-contracts test
+# Commit: 8e686b7f36
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-09
+
+## The digest tests and the totals
+ok 13 - an empty closed set has a fixed digest
+ok 14 - the digest is independent of order and of repeated references
+ok 15 - an agent and a team with the same run ID are different closed executions
+ok 16 - closing and reopening changes the digest and returns to the earlier one
+ok 17 - a known input has a fixed digest, so the node and the browser agree on the same string
+# tests 48
+# pass 48
+# fail 0

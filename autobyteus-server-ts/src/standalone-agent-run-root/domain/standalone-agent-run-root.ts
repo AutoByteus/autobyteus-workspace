@@ -55,6 +55,7 @@ import type { StandaloneRootMessagesFile, StandaloneRootTreeSnapshot } from "./s
 import type { StandaloneRootEvent } from "./standalone-root-event.js";
 import type { StandaloneHostAgentHandle } from "./standalone-host-agent-handle.js";
 import { StandaloneRootExecutionIndex } from "../services/standalone-root-execution-index.js";
+import { collectStandaloneRootAgentStatusSnapshots } from "../services/standalone-root-agent-statuses.js";
 import { StandaloneRootCollaborators } from "../services/standalone-root-collaborators.js";
 import { createStandaloneRootCommunicationPort } from "../services/standalone-root-communication-port.js";
 import type { StandaloneRootPersistenceCoordinator } from "../services/standalone-root-persistence-coordinator.js";
@@ -273,17 +274,11 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
   }
   /** Children only: every child without a live execution reports `offline`. */
   getAgentStatusSnapshots(): readonly CollaborationAgentStatusSnapshot[] {
-    // Root-level Teams: task Teams (each reports its members and nested children).
-    const teamRunIds = this.tree.taskExecutions.flatMap((task) => "teamRunId" in task ? [task.teamRunId] : []);
-    const live = [
-      ...this.options.rootAgents.getStatusSnapshots(),
-      ...teamRunIds.flatMap((teamRunId) => this.options.teams.get(teamRunId)?.getLeafAgentStatusSnapshots() ?? []),
-    ];
-    const reported = new Set(live.map((snapshot) => snapshot.execution.agentRunId));
-    const dormant = this.index.listChildAgents().filter((agent) => !reported.has(agent.agentRunId))
-      .map((agent) => createCollaborationAgentStatusSnapshot({ execution: this.identityFor(agent.agentRunId, agent.address), status: "offline" }));
-    return Object.freeze([...live, ...dormant]);
+    return collectStandaloneRootAgentStatusSnapshots({ root: this.options.root, tree: this.tree, index: this.index,
+      rootAgents: this.options.rootAgents, teams: this.options.teams });
   }
+  /** The task executions whose Task is closed (the view's `closed_task_executions`; the run list's closed-set digest). */
+  closedTaskExecutions(): readonly TaskExecutionReference[] { return this.taskExecutions.closedTaskExecutions(); }
   hasOpenExecutionWork(): boolean {
     return this.options.rootAgents.hasOpenExecutionWork() || this.options.teams.hasOpenExecutionWork();
   }
@@ -425,7 +420,7 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
   openPackageSnapshotConnection(): Promise<RootSnapshotConnection<StandaloneRootPackageSnapshot, StandaloneRootEvent>> {
     return this.options.publisher.openSnapshotConnection(() => Object.freeze({
       tree: this.tree,
-      closedTaskExecutions: this.taskExecutions.closedTaskExecutions(),
+      closedTaskExecutions: this.closedTaskExecutions(),
       statuses: this.getAgentStatusSnapshots(),
       inputStates: collectStandaloneRootInputSnapshots(this.index, [
         ...this.options.rootAgents.getInputStateSnapshots(),

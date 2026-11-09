@@ -36,6 +36,7 @@ export const GetAgentRunCollaborationStatuses = gql`
     agentRunCollaborationStatuses(runIds: $runIds) {
       runId
       isActive
+      closedTaskExecutionsDigest
       statuses {
         agentRunId
         memberAddress

@@ -1,0 +1,205 @@
+{
+ "command": "node tests/e2e/.tmp-401-source-probe.mjs --cases=MSP-13,MSP-21 (a temporary copy of mobile-shell-probe.mjs at this branch that adds each console line's source URL and records every GraphQL answer with status 401; removed after the run)",
+ "summary": {
+  "cases": {
+   "MSP-13": "Pass",
+   "MSP-21": "Pass"
+  },
+  "unknownBrowserErrors": 31
+ },
+ "unauthorizedByCaseLabelOp": [
+  {
+   "case": "MSP-13",
+   "label": "phone",
+   "op": "GetRunProjection",
+   "count": 15
+  },
+  {
+   "case": "MSP-13",
+   "label": "phone",
+   "op": "GetRunFileChanges",
+   "count": 15
+  },
+  {
+   "case": "MSP-21",
+   "label": "phone",
+   "op": "GetRunProjection",
+   "count": 15
+  },
+  {
+   "case": "MSP-21",
+   "label": "phone",
+   "op": "GetRunFileChanges",
+   "count": 15
+  },
+  {
+   "case": "MSP-13",
+   "label": "phone-unknown-credential",
+   "op": "PhoneCredentialCheck",
+   "count": 1
+  },
+  {
+   "case": "MSP-13",
+   "label": "phone-unknown-credential",
+   "op": "ListWorkspaceRunHistory",
+   "count": 1
+  },
+  {
+   "case": "MSP-13",
+   "label": "phone-unknown-credential",
+   "op": "ListCollaborationRootHistory",
+   "count": 1
+  },
+  {
+   "case": "MSP-13",
+   "label": "phone-unknown-credential",
+   "op": "GetAllWorkspaces",
+   "count": 1
+  },
+  {
+   "case": "MSP-13",
+   "label": "phone-unknown-credential",
+   "op": "GetAgentDefinitions",
+   "count": 1
+  },
+  {
+   "case": "MSP-13",
+   "label": "phone-unknown-credential",
+   "op": "GetAgentTeamDefinitions",
+   "count": 1
+  },
+  {
+   "case": "MSP-13",
+   "label": "phone-unknown-credential",
+   "op": "GetAgentOrgDefinitions",
+   "count": 1
+  }
+ ],
+ "msp21": [
+  {
+   "op": "GetRunProjection",
+   "atSecondsFromFirst": 0.0
+  },
+  {
+   "op": "GetRunFileChanges",
+   "atSecondsFromFirst": 0.0
+  },
+  {
+   "op": "GetRunProjection",
+   "atSecondsFromFirst": 0.01
+  },
+  {
+   "op": "GetRunFileChanges",
+   "atSecondsFromFirst": 0.01
+  },
+  {
+   "op": "GetRunProjection",
+   "atSecondsFromFirst": 0.01
+  },
+  {
+   "op": "GetRunFileChanges",
+   "atSecondsFromFirst": 0.01
+  },
+  {
+   "op": "GetRunProjection",
+   "atSecondsFromFirst": 0.01
+  },
+  {
+   "op": "GetRunFileChanges",
+   "atSecondsFromFirst": 0.01
+  },
+  {
+   "op": "GetRunProjection",
+   "atSecondsFromFirst": 0.01
+  },
+  {
+   "op": "GetRunFileChanges",
+   "atSecondsFromFirst": 0.01
+  },
+  {
+   "op": "GetRunProjection",
+   "atSecondsFromFirst": 16.01
+  },
+  {
+   "op": "GetRunFileChanges",
+   "atSecondsFromFirst": 16.01
+  },
+  {
+   "op": "GetRunProjection",
+   "atSecondsFromFirst": 16.01
+  },
+  {
+   "op": "GetRunFileChanges",
+   "atSecondsFromFirst": 16.02
+  },
+  {
+   "op": "GetRunProjection",
+   "atSecondsFromFirst": 16.02
+  },
+  {
+   "op": "GetRunFileChanges",
+   "atSecondsFromFirst": 16.02
+  },
+  {
+   "op": "GetRunProjection",
+   "atSecondsFromFirst": 16.02
+  },
+  {
+   "op": "GetRunFileChanges",
+   "atSecondsFromFirst": 16.02
+  },
+  {
+   "op": "GetRunProjection",
+   "atSecondsFromFirst": 16.02
+  },
+  {
+   "op": "GetRunFileChanges",
+   "atSecondsFromFirst": 16.02
+  },
+  {
+   "op": "GetRunProjection",
+   "atSecondsFromFirst": 46.01
+  },
+  {
+   "op": "GetRunFileChanges",
+   "atSecondsFromFirst": 46.02
+  },
+  {
+   "op": "GetRunProjection",
+   "atSecondsFromFirst": 46.02
+  },
+  {
+   "op": "GetRunFileChanges",
+   "atSecondsFromFirst": 46.02
+  },
+  {
+   "op": "GetRunProjection",
+   "atSecondsFromFirst": 46.02
+  },
+  {
+   "op": "GetRunProjection",
+   "atSecondsFromFirst": 46.03
+  },
+  {
+   "op": "GetRunFileChanges",
+   "atSecondsFromFirst": 46.03
+  },
+  {
+   "op": "GetRunFileChanges",
+   "atSecondsFromFirst": 46.03
+  },
+  {
+   "op": "GetRunProjection",
+   "atSecondsFromFirst": 46.03
+  },
+  {
+   "op": "GetRunFileChanges",
+   "atSecondsFromFirst": 46.03
+  }
+ ],
+ "cleanup": {
+  "frontendExited": true,
+  "serversLeft": 0,
+  "rootRemoved": true
+ }
+}
