@@ -1,50 +1,61 @@
 ## What you need to do
-- **Update the desktop app and every remote or Docker node it connects to together.** Some of the names the app and a node use to talk to each other changed in this release (for example for switching a stopped agent's runtime). An older app with a newer node, or the other way round, does not work.
-- **Docker nodes: reinstall the launcher once, then upgrade.** Nodes made from images before this release cannot use the new in-place updates and show "Not reachable." under their server line. Run:
+- **Every AutoByteus node now needs a key.** Nodes refuse any request without one. The desktop app's own node needs nothing: it is connected when the app starts. Every other node shows "Needs connecting" on the **Nodes** page until you connect it once, as below.
+- **Update everything together:** the desktop app, every Docker node and node on another computer, and the Android app. The phone's screens come from the node, and an updated Android app waits on "Connecting to …" for a node that still runs an older version.
+- **Docker nodes: reinstall the launcher, upgrade, then connect each node with a setup code.** On the computer the nodes run on:
 
   ```bash
   curl -fsSL https://raw.githubusercontent.com/AutoByteus/autobyteus-workspace/personal/scripts/public/docker/autobyteus-docker.sh | bash -s -- install
-  autobyteus-docker upgrade --all
+  autobyteus-docker upgrade --all --tag latest
+  autobyteus-docker setup-code --name <node>
   ```
 
-  This moves your nodes to the 1.5.11 image and keeps all your volumes and data. From then on, nodes can be updated in place.
-- **The update from 1.5.10 still stops busy agents.** Agents that are in the middle of a task when you install this update stop, as before: message them to continue. From your next update after this one, busy agents continue by themselves.
-- **If you connected GitHub in a 1.5.11 beta:** GitHub is now set up on the **Integrations** page. Your token is kept: import `https://github.com/AutoByteus/autobyteus-integrations` there, and its GitHub card shows as connected. Then give the `github-integration` skill to the agents that should use GitHub; the agent ticks from the old card in Server Settings no longer apply.
+  Run `setup-code` for each node, after the upgrade: a node on an older version cannot give a code. Enter the code on that node's row in **Nodes**. Each node is recreated once and keeps its data, its settings and its Backend port. Docker nodes now publish only their Backend port, and accept connections only from this computer and its Tailscale address. To reach a Docker node from your local network, create it with `autobyteus-docker new-container --allow-local-network`.
+- **A server you start yourself on another computer:** run `node dist/node-access-cli.js setup-code --data-dir <data folder>` there and enter the code on the **Nodes** page.
+- **Linked nodes (Remote Collaboration):** press **Pair again** on each linked node's row in **Nodes**.
+- **MCP clients of the MCP gateway:** copy the gateway token from the **MCP Gateway** panel (Tools settings) into each client's `Authorization: Bearer` header. Clients on this computer need it too.
+- **Install this release's Android APK** (`AutoByteus_personal_android-1.5.12-release.apk`) for the one-step QR scan, your nodes by name, **Switch node**, landscape full screen in the VNC Viewer, and screens no longer drawn under Android 15's bars. It installs over your current app and keeps your pairing.
+- **On macOS, the app may ask for access to its Keychain item** the first time it stores a node's key ("AutoByteus Safe Storage"). Choose **Always Allow**; the keys of your nodes are kept encrypted with it.
+- **Phones over Tailscale need nothing.** Phones on your Wi-Fi or LAN are allowed after one "Allow phones on this network?" in Phone Setup (off until you answer, asked again on a new network). Phones on a company VPN or proxy network: list that network in the node setting `AUTOBYTEUS_ALLOWED_CLIENT_NETWORKS` (for example `10.20.0.0/16`).
+- **If you reach a node by a public domain name**, add that name to the node setting `AUTOBYTEUS_ALLOWED_HOSTS` (comma-separated; `.example.com` covers every name under it) and restart the node. Until then its requests get `403 REMOTE_ACCESS_HOST_REFUSED`. IP addresses, `localhost`, `.local`, `.lan`, `.home.arpa`, `.internal`, dotless names, `*.ts.net` (Tailscale) and paired phones need nothing.
+- **If one of your own local web pages calls a node** (for example `http://localhost:5173`), or your phone reaches the node through a proxy that rewrites the host name without `X-Forwarded-Host`, add that exact origin to `AUTOBYTEUS_ALLOWED_ORIGINS` and restart the node.
+- **HTML previews now run sealed off.** Ordinary pages work as before. A page that needs JavaScript modules from the workspace, `fetch` of workspace files, workspace web fonts, Web Workers or browser storage no longer works in a preview: run it from a local server and open it in the in-app browser instead.
 
-## Before You Update
-- **Coming from a version before 1.5.9? Read the 1.5.9 notes first.** Updating converts your data once, so back up first: quit AutoByteus and copy `~/.autobyteus/server-data` (on a Docker node, the server's data volume). Going back to a version before 1.5.9 afterwards is still not supported; if you need to, open an issue at https://github.com/AutoByteus/autobyteus-workspace/issues and we will help.
-- **What the first start of 1.5.11 changes in your data:**
-  - Runs that an older version compacted stored their agent runtime under an older spelling. The first start converts those entries once. Nothing you see changes.
-  - Empty agent runs that never started (prepared, never sent a message, with nothing in their folder but their own record) are removed at each start, and each removal is written to the server log. Runs with any content are always kept, including older runs that have a conversation but no start date.
-  - The Work Journals are rewritten once in the background with the new wording, and memory search refreshes its index after that. This is one-time and takes a few minutes, or up to about half an hour on a node with many runs.
-- **Rolling back to 1.5.10 is possible.** The removed empty runs are not restored. The runtime-name conversion needs no undo: 1.5.10 reads the converted entries. A run that was switched to another agent runtime in 1.5.11 has not been tested on 1.5.10. A GitHub token stored in 1.5.11 simply stays unused. The desktop app never downgrades by itself: install 1.5.10 yourself. Docker users pin `autobyteus/autobyteus-server:1.5.10`.
+## Good To Know
+- **A paired phone can read any file on its node by path, read-only,** when a conversation names it: it can never change, rename or delete a file there, and linked nodes cannot read files this way. A phone keeps this access until you revoke it in Phone Setup; phone keys do not expire yet.
+- **The standalone application host** (a separate server for running one application, on this computer only by default) does not check keys yet. Keep it on `localhost`.
+- **Rolling back to 1.5.11 is possible.** This release converts no stored data. Installing 1.5.11 again also removes the node keys and the other protections in this release. The desktop app never downgrades by itself; Docker users pin `autobyteus/autobyteus-server:1.5.11`.
 
 ## What's New
-- **Agents continue after an update.** When AutoByteus restarts for an update, agents that were in the middle of a task continue by themselves, each told once that the app restarted and that commands that were running may not have finished. Idle agents, agents you stopped or archived, and agents you message first are left alone. A normal quit and relaunch resumes nothing.
-- **Update automatically.** A new **Update automatically** switch for the desktop app (in Notifications → Software update and Settings → Updates) and one for each Docker node (in Nodes). Both are off by default. With the app switch on, a new version on your update channel downloads and installs by itself, and the app restarts. On macOS the system first prepares its copy of the update, about half a minute after the download (longer when the computer is busy), while the app and its agents keep working. With a node's switch on, the desktop keeps that node on the desktop's version. A failed automatic update changes nothing, says why, and that version is not tried again automatically.
-- **Update a Docker node's server from the app.** **Nodes → Manage Nodes** shows each remote node's server version, and **Update to <version>** brings an older node to the app's version inside its container: it downloads only the server, checks its signature, tries it once, and only then restarts into it. A failed update leaves the old version running. `autobyteus-docker update --all` does the same from the command line.
-- **Continue a stopped agent on another agent runtime.** In a stopped run's settings, choose another runtime and one of its models, and save. The switch happens at your next message; the run keeps its chat, history and workspace, and the chat shows "Agent runtime changed from … to …". The new agent is told where the previous agent's work journals are. This works for standalone agents, Team members, Organization agents and delegated copies.
-- **Projects in the left panel.** A **Workspaces | Projects** switch lists runs by Project. A Project shows the runs started under it, with their delegated work. Start a run under a Project with **+**, or pick the Project in New chat's workspace chip.
-- **Integrations, starting with GitHub.** The new **Integrations** page shows each integration as a card. Import one from a GitHub repository or a local folder, then **Connect** it with a token, which AutoByteus checks and keeps in its encrypted vault. Agents use GitHub through AutoByteus without ever seeing the token: `gh api`, `curl` and `git clone/fetch/pull/push` over `https://github.com/…` work in their shell. Which agents may use it is decided by the integration's skill (`github-integration`); an agent set to "all installed skills" gets it once GitHub is connected. Every GitHub call an agent makes is recorded, without the token.
-- **Delegated agents work in their Task's Project folder.** An agent or team that takes a Task of a Project works in the Project's first linked folder. If that folder is missing, the delegation stops and says which Project and folder.
-- **Running agents pick up tool changes.** When you change an agent's tools, its running runs take the new tool list at once (Codex and Grok at the next message), with a "Tools updated" card. No restart needed.
-- **New model: OpenAI `gpt-6.1-terra`**, in Settings and on the Codex runtime.
-- **Thinking effort on every Claude model.** One Thinking list for all Claude models: Off, Low, Medium, High, Xhigh, Max. Claude Opus 4.8, Opus 4.7 and Sonnet 4.6 are no longer offered; saved runs on them show "No longer offered".
-- **`read_file` reads images, audio and video** for the model's next turn, and refuses binary files. `read_media_file` is gone; agents that listed it use `read_file` instead.
+- **Nodes are protected by keys.** The desktop app, phones, linked nodes, Memory Sync and MCP clients each hold their own key, and connections from networks a node does not accept are refused first. The **Nodes** page shows which nodes need connecting, connects one with a one-time setup code and disconnects this desktop from a node. Revoking a phone, disconnecting a desktop or removing a linked node ends its open connections at once.
+- **Linking two nodes is one step:** press **Pair** and both nodes are linked.
+- **Connect a phone in one step.** Nodes › Phone Setup shows the ways a phone can reach the node (Same Wi-Fi or LAN, Tailscale, Your VPN, Company address), finds and checks the address itself and marks the best way "Recommended". Press **Show QR code** and scan it with the Android app. It works for Docker nodes and nodes on other computers too.
+- **Several nodes on one phone.** The Android app opens on a list of your nodes by name, shows which are online, and **Switch node** moves to another with one tap.
+- **A rebuilt phone app around your runs.** The phone opens on the same run list as the desktop, with each run's delegated work as a tree. Tap a row to talk to that agent. One ⋮ menu opens Artifacts, Files, Messages and Activity; **+** starts a new agent run. The phone's Home screen, "Switch work" and bottom tabs are gone; starting Team or Org runs, Stop, Archive, Delete and Attach stay on the desktop.
+- **Watch and control a Docker node's desktop**, from the desktop app's VNC Viewer and now from your phone: open **VNC Viewer** in a run's ⋮ menu. It opens in View only; switch to **Control** to tap, type and paste. On the phone, **Full screen** turns the phone to landscape, and a double tap switches between Fit and Fill. The viewer reaches the node through its own address, so it works for nodes on other computers.
+- **Files named in a conversation open on the phone**, wherever they are on the node's computer, read-only and full screen. A missing file or a folder says so.
+- **Open runs keep up after a lost connection.** On the phone and in the desktop window, an open run keeps reconnecting while it is on screen, catches up with what it missed, and catches up again when you return to the phone app.
+- **The MCP Gateway panel** shows the gateway token with Copy and Regenerate.
+- **DeepSeek Harness** (DeepSeek's own agent program, `dsh`, a developer preview you install yourself) can run agents. Its model calls use your DeepSeek key from Settings → API Keys without ever holding it.
+- **A Runs view in the left panel**, next to Workspaces and Projects, and delegated rows show in place when you expand a run.
 
 ## Improvements
-- **Quitting with busy agents is quick and leaves nothing running.** Terminate stops a busy agent at once. Quitting or stopping the server interrupts busy agents, finishes within a few seconds, and leaves no agent runtime or command running afterwards.
-- **"Install update and restart" is more reliable.** It installs even when the server did not stop cleanly, as long as its process is confirmed gone, and quitting no longer waits on idle connections.
-- **Large runs open faster.** A Team or Organization loads each member when you open it, and the Team tab loads its messages when opened. A damaged message log is reported with the reason.
-- **Settings of a focused agent show that agent.** Team or Organization settings are one switch away, and the save bar names every agent with unsaved edits.
-- **A cleaner Manage Nodes tab**, with each node's server version and update in its own cell.
-- **Work Journals read the same on every runtime**, in plain words ("Message to …", "Browser: open …", "Load skill: …"). A message the platform refused now reads as failed.
-- **A smaller server**, about 150 MB less on disk.
+- **Nodes refuse other websites and DNS-rebinding pages.** A web page in your browser, or on another local port, can no longer use a node with your rights; files a node serves open walled off from it.
+- **A paired phone's key works only for what the phone app shows**: runs, teams, organizations, projects, files and the node desktop view. It is refused for the terminal, applications and other desktop-only features.
+- **Phone privacy:** the phone shows your nodes only by name, never by their network address, so screenshots no longer show your computer's or Tailscale network's name. A node that cannot be reached shows "Can't reach <node>" with Retry.
+- **The phone shows what the node said about it:** a revoked phone returns to its pairing screen; with Phone access off it shows "Phone access off" and keeps its pairing.
+- **Delegated work shows its live state everywhere**, in the Runs view, the Workspaces tree and the phone, even when the parent run is not open.
+- **The Android app keeps your page** and what you typed when the phone rotates or the keyboard opens, and comes back to the same node page after Android closed it in the background.
+- **Agent Runtimes** show full runtime versions, prereleases included.
+- **A message sent during a busy turn shows once** on other phones and windows.
+- **Clear answers for a folder typed by path**, such as "No folder at this path."; the node no longer records such a path as a workspace.
+- **Dates and numbers follow the app's language.**
 
 ## Fixes
-- **A failed agent start leaves nothing behind.** If an agent run cannot start (for example, its runtime is not installed or its model is unavailable), no empty run is added to the history.
-- **Creating a run while the app quits or updates no longer leaves an empty run.** The create either finishes or leaves nothing.
+- **A run can switch back to Antigravity** after it was switched to another runtime.
+- **Dev servers that agents start no longer take the app's backend port.**
+- **No lasting "Automatic update failed"** on a node that was updated another way, and **automatic node updates no longer fail right after a release**: a desktop is offered a version only once its nodes' server update is published.
+- **Files named in a conversation open on the phone again**, and a finished conversation explains a file link it cannot open.
 
 ## Upgrade Notes
-- **Docker.** The server image is `autobyteus/autobyteus-server:1.5.11`, and `:latest` and `:beta` now point to it. If you follow the beta track with the public launcher, you can return to stable with `autobyteus-docker upgrade --all --tag latest`, because this release is newer than every 1.5.11 beta.
-- **Desktop.** Installs on the beta track (Settings → Updates → Receive beta updates) that already have a 1.5.11 beta are offered this release as an update too.
+- **Docker.** The server image is `autobyteus/autobyteus-server:1.5.12`; `:latest` and `:beta` point to it. If you follow the beta track, `autobyteus-docker upgrade --all --tag latest` returns your nodes to stable: this release is the same software as 1.5.12-beta.11.
+- **Desktop.** Installs on the beta track that already have a 1.5.12 beta are offered this release as an update too.
