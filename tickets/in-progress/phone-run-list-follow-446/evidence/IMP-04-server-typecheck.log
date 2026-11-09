@@ -1,0 +1,9 @@
+# Check: IMP-04
+# Command: pnpm -C autobyteus-server-ts typecheck
+# Commit: 8e686b7f36
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-09
+
+[typecheck] server tests (tsconfig.tests.json): 1182 errors, exit 2, 26.6s
+[typecheck] production errors: 0; test-file errors: 1182 in 365 files (baseline 1182 in 365 files)
+[typecheck] PASS
