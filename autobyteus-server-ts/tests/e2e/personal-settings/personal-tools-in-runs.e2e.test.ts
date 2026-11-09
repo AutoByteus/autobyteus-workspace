@@ -3,6 +3,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
+import { randomUUID } from "node:crypto";
 import type { FastifyInstance } from "fastify";
 import WebSocket from "ws";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
@@ -10,6 +11,7 @@ import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
+import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
 
 /**
  * Personal tools reach the agents that actually run (autobyteus-95 stage 1, AC-006, AC-001; DS-001, DS-004), through
@@ -56,6 +58,7 @@ suite("Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegatio
   let base = "", dataDir = "", workspace = "", packageRoot = "", app: FastifyInstance | undefined, url!: URL;
   const sockets: WebSocket[] = [];
   const runIds: string[] = [];
+  const roots: Array<{ kind: "team" | "org"; id: string }> = [];
   const savedEnv = new Map<string, string | undefined>();
   const evidence: Record<string, unknown> = {};
   let managerId = "";
@@ -107,6 +110,25 @@ suite("Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegatio
     await until(async () => { text = stringsWith(await copyConversation(), "TOOLS:")[0]; return Boolean(text); }, `the copy ${memberAddress} ${runId}'s tool list`, 90_000);
     return toolsOf(text!);
   };
+  const runConfig = () => ({ workspaceRootPath: workspace, llmModelIdentifier: MODEL, llmConfig: null, autoExecuteTools: true, runtimeKind: AGY });
+  /** Opens a Team or Org root's view stream (the channel the app sends member messages on). */
+  const openView = async (route: "agent-team" | "agent-org", rootId: string) => {
+    const socket = new WebSocket(`ws://${url.host}/ws/${route}/${rootId}`);
+    sockets.push(socket);
+    const frames: Rec[] = [];
+    socket.on("message", (raw: unknown) => frames.push(JSON.parse(String(raw))));
+    await new Promise<void>((resolve, reject) => { socket.once("open", resolve); socket.once("error", reject); });
+    const snapshot = route === "agent-team" ? "TEAM_EXECUTION_VIEW_SNAPSHOT" : "ROOT_EXECUTION_VIEW_SNAPSHOT";
+    await until(() => frames.some((frame) => frame.type === snapshot), `${route} view ready`);
+    return socket;
+  };
+  /** Sends `LIST_TOOLS` to one member and returns the tools of its first `TOOLS:` reply. */
+  const memberTools = async (send: () => void, conversationOf: () => Promise<unknown>, label: string) => {
+    send();
+    let text: string | undefined;
+    await until(async () => { text = stringsWith(await conversationOf(), "TOOLS:")[0]; return Boolean(text); }, `${label}'s tool list`, 90_000);
+    return toolsOf(text!);
+  };
   const setTools = (id: string, toolNames: string[]) =>
     graphql(`mutation($input:UpdateAgentDefinitionInput!){updateAgentDefinition(input:$input){id toolNames personalSettings}}`, { input: { id, toolNames } });
 
@@ -142,6 +164,11 @@ suite("Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegatio
 
   afterAll(async () => {
     for (const runId of runIds) await graphql(`mutation($id:String!){terminateAgentRun(agentRunId:$id){success}}`, { id: runId }).catch(() => undefined);
+    for (const root of roots) {
+      await (root.kind === "team"
+        ? graphql(`mutation($id:String!){terminateAgentTeamRun(teamRunId:$id){success}}`, { id: root.id })
+        : graphql(`mutation($id:String!){terminateAgentOrgRun(agentOrgRunId:$id){success}}`, { id: root.id })).catch(() => undefined);
+    }
     for (const socket of sockets) socket.terminate();
     if (app) await app.close();
     for (const [key, value] of savedEnv) { if (value === undefined) delete process.env[key]; else process.env[key] = value; }
@@ -200,6 +227,59 @@ suite("Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegatio
     const tools = await copyTools(managerRun, `/${segment("PPS Crew")}/lead`, coordinator);
     expect(tools).toEqual(expect.arrayContaining(["create_project", "list_projects"]));
     evidence.api10d = { team: result.target_team_run_id, coordinator, tools };
+  }, 180_000);
+
+  it("API-10f (AC-006): a Team run started directly gives its members their effective tools", async () => {
+    const created = (await graphql(`mutation($input:CreateAgentTeamRunInput!){createAgentTeamRun(input:$input){success message teamRunId}}`,
+      { input: { teamDefinitionId: "pps-crew", teamConfigs: [{ teamAddress: "/", ...runConfig() }], memberConfigs: [
+        { memberAddress: "/lead", agentDefinitionId: "team-local-agent:pps-crew:lead", ...runConfig() },
+        { memberAddress: "/worker", agentDefinitionId: "pps-worker", ...runConfig() }] } })).createAgentTeamRun;
+    expect(created.success, created.message).toBe(true);
+    const teamRunId = created.teamRunId as string;
+    roots.push({ kind: "team", id: teamRunId });
+    const tree = (await graphql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}`, { id: teamRunId })).getTeamRunResumeConfig.executionTree;
+    const members = flattenE2eConfiguredAgentExecutions(tree);
+    const view = await openView("agent-team", teamRunId);
+    const tools: Record<string, string[]> = {};
+    for (const address of ["/lead", "/worker"]) {
+      const agentRunId = members.find((member) => member.memberAddress === address)!.agentRunId;
+      tools[address] = await memberTools(() => sendE2eSendMessageCommand(view, { agent_run_id: agentRunId, content: "LIST_TOOLS" }),
+        async () => (await graphql(`query($id:String!,$a:String!){getTeamMemberRunProjection(teamRunId:$id,agentRunId:$a){conversation}}`,
+          { id: teamRunId, a: agentRunId })).getTeamMemberRunProjection?.conversation, `Team member ${address}`);
+    }
+    expect(tools["/lead"]).toEqual(expect.arrayContaining(["create_project", "list_projects"]));
+    expect(tools["/worker"]).toEqual(expect.arrayContaining(["create_task", "list_projects", "update_task"]));
+    expect(tools["/worker"]).not.toContain("list_project_tasks");
+    evidence.api10f = { teamRunId, tools };
+  }, 180_000);
+
+  it("API-10g (AC-006): an Org run gives its package members (an agent, and a Team's coordinator) their effective tools", async () => {
+    const orgId = (await graphql(`mutation($input:CreateAgentOrgDefinitionInput!){createAgentOrgDefinition(input:$input){id}}`,
+      { input: { name: "PPS Org", description: "Org of package members (personal tools E2E)", instructions: "Follow requests.", handoffs: [], members: [
+        { memberName: "worker", ref: "pps-worker", refType: "AGENT", refScope: "SHARED" },
+        { memberName: "crew", ref: "pps-crew", refType: "AGENT_TEAM", refScope: "SHARED" }] } })).createAgentOrgDefinition.id as string;
+    const created = (await graphql(`mutation($input:CreateAgentOrgRunInput!){createAgentOrgRun(input:$input){success message agentOrgRunId}}`,
+      { input: { agentOrgDefinitionId: orgId, rootConfiguration: runConfig(), teamOverrides: [], agentOverrides: [] } })).createAgentOrgRun;
+    expect(created.success, created.message).toBe(true);
+    const orgRunId = created.agentOrgRunId as string;
+    roots.push({ kind: "org", id: orgRunId });
+    const tree = (await graphql(`query($id:String!){getAgentOrgRunConfig(orgRunId:$id){executionTree}}`, { id: orgRunId })).getAgentOrgRunConfig.executionTree;
+    const runOf = (address: string) => objectsIn(tree).find((record) => record.address === address && typeof record.agentRunId === "string")?.agentRunId as string;
+    const view = await openView("agent-org", orgRunId);
+    const tools: Record<string, string[]> = {};
+    for (const address of ["/worker", "/crew/lead"]) {
+      const agentRunId = runOf(address);
+      expect(agentRunId, `${address} in ${JSON.stringify(tree)}`).toBeTruthy();
+      tools[address] = await memberTools(() => view.send(JSON.stringify({ type: "SEND_MESSAGE", payload: {
+        root_subject_kind: "agent_org", root_run_id: orgRunId, target_agent_run_id: agentRunId, command_id: randomUUID(), message_id: randomUUID(),
+        dedupe_key: randomUUID(), content: "LIST_TOOLS", context_file_paths: [], image_urls: [] } })),
+      async () => (await graphql(`query($id:String!,$a:String!,$m:String!){getAgentOrgMemberRunProjection(orgRunId:$id,memberAddress:$m,agentRunId:$a){conversation}}`,
+        { id: orgRunId, a: agentRunId, m: address })).getAgentOrgMemberRunProjection?.conversation, `Org member ${address}`);
+    }
+    expect(tools["/worker"]).toEqual(expect.arrayContaining(["create_task", "list_projects", "update_task"]));
+    expect(tools["/worker"]).not.toContain("list_project_tasks");
+    expect(tools["/crew/lead"]).toEqual(expect.arrayContaining(["create_project", "list_projects"]));
+    evidence.api10g = { orgRunId, tools };
   }, 180_000);
 
   it("API-10e (AC-001): the package checkout stays clean; the personal tools are in personal-settings.json", async () => {
