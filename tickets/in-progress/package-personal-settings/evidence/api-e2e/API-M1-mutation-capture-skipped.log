@@ -1,0 +1,608 @@
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/package-personal-settings/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/package-personal-settings/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:69983) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/package-personal-settings/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/package-personal-settings/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-personal-settings-e2e-gNwckd/server-data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-personal-settings-e2e-gNwckd/server-data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-personal-settings-e2e-gNwckd/server-data/.env
+◇ injected env (2) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-personal-settings-e2e-gNwckd/server-data/.env // tip: ⌘ override existing { override: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/package-personal-settings/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/package-personal-settings/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-personal-settings-e2e-gNwckd/server-data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-personal-settings-e2e-gNwckd/server-data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-personal-settings-e2e-gNwckd/server-data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-personal-settings-e2e-gNwckd/server-data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-personal-settings-e2e-gNwckd/server-data/memory
+============================================================
+Initialized server settings service with 32 predefined settings
+
+stderr | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline)
+Node access: local control socket not opened. The node's local control socket path is 136 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-personal-settings-e2e-gNwckd/server-data/node-access/local-control.sock. Use a shorter data folder path.
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline)
+AgentRunManager initialized.
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline)
+AgentRunManager initialized.
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline)
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline)
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline)
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-personal-settings-e2e-gNwckd/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-personal-settings-e2e-gNwckd/server-data/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-personal-settings-e2e-gNwckd/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline)
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline)
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline)
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline)
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline)
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline)
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline)
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline)
+Registered required tool unit: Agent Discovery Tools
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline)
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline)
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline)
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline)
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline)
+Successfully registered tool definition: 'search_memory'
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline)
+Registered required tool unit: Memory Tools
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline)
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline)
+Registered required tool unit: Agent Runtime Tools
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline)
+Registered required tool unit: Browser Tools
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline)
+Successfully registered tool definition: 'search_web'
+
+stderr | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline)
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline)
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-02 (AC-002 by click, REQ-003, REQ-005): personal edits made in the app go to personal-settings.json, never the package files, and survive an update
+Attempting to download file from: https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000001
+
+stderr | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-02 (AC-002 by click, REQ-003, REQ-005): personal edits made in the app go to personal-settings.json, never the package files, and survive an update
+URL has no extension. Defaulting to .bin for https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000001
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-02 (AC-002 by click, REQ-003, REQ-005): personal edits made in the app go to personal-settings.json, never the package files, and survive an update
+Successfully downloaded file to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-personal-settings-e2e-gNwckd/server-data/agent-packages/.staging/pps-e2e__agents-3853546d-a42a-458e-93a7-20faa2bbb465-qf3VJ7/download/pps-e2e__agents/91ac46db-54f4-4d90-be29-ce1ca29a77d9.bin
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-02 (AC-002 by click, REQ-003, REQ-005): personal edits made in the app go to personal-settings.json, never the package files, and survive an update
+Added new custom server setting: AUTOBYTEUS_AGENT_PACKAGE_ROOTS
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-02 (AC-002 by click, REQ-003, REQ-005): personal edits made in the app go to personal-settings.json, never the package files, and survive an update
+Agent Definition with ID writer updated successfully.
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-02 (AC-002 by click, REQ-003, REQ-005): personal edits made in the app go to personal-settings.json, never the package files, and survive an update
+Agent Team Definition with ID crew updated successfully.
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-02 (AC-002 by click, REQ-003, REQ-005): personal edits made in the app go to personal-settings.json, never the package files, and survive an update
+Attempting to download file from: https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000001
+
+stderr | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-02 (AC-002 by click, REQ-003, REQ-005): personal edits made in the app go to personal-settings.json, never the package files, and survive an update
+URL has no extension. Defaulting to .bin for https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000001
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-02 (AC-002 by click, REQ-003, REQ-005): personal edits made in the app go to personal-settings.json, never the package files, and survive an update
+Successfully downloaded file to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-personal-settings-e2e-gNwckd/server-data/agent-packages/.staging/capture-pps-e2e__agents-HvnJI8/download/pps-e2e__agents/e2fa7411-afda-4fa2-9ce6-738315a5acc1.bin
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-02 (AC-002 by click, REQ-003, REQ-005): personal edits made in the app go to personal-settings.json, never the package files, and survive an update
+Attempting to download file from: https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000002
+
+stderr | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-02 (AC-002 by click, REQ-003, REQ-005): personal edits made in the app go to personal-settings.json, never the package files, and survive an update
+URL has no extension. Defaulting to .bin for https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000002
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-02 (AC-002 by click, REQ-003, REQ-005): personal edits made in the app go to personal-settings.json, never the package files, and survive an update
+Successfully downloaded file to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-personal-settings-e2e-gNwckd/server-data/agent-packages/.staging/pps-e2e__agents-6b7fbf71-3722-4153-bba9-b352f5ade6af-KE0CBu/download/pps-e2e__agents/60d91bed-00b5-4e40-a51a-23cb34616428.bin
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-03 (AC-003): edits made inside the package files are captured into personal settings and the changed files are backed up
+Attempting to download file from: https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000002
+
+stderr | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-03 (AC-003): edits made inside the package files are captured into personal settings and the changed files are backed up
+URL has no extension. Defaulting to .bin for https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000002
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-03 (AC-003): edits made inside the package files are captured into personal settings and the changed files are backed up
+Successfully downloaded file to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-personal-settings-e2e-gNwckd/server-data/agent-packages/.staging/capture-pps-e2e__agents-zbI1lu/download/pps-e2e__agents/151bf1a2-bc7e-4251-b821-e47a742d8bc0.bin
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-03 (AC-003): edits made inside the package files are captured into personal settings and the changed files are backed up
+PACKAGE_EDIT_BACKUP:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-personal-settings-e2e-gNwckd/server-data/agent-packages/backups/pps-e2e__agents/20261109T084949Z: 3 changed file(s) backed up.
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-03 (AC-003): edits made inside the package files are captured into personal settings and the changed files are backed up
+Attempting to download file from: https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000003
+
+stderr | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-03 (AC-003): edits made inside the package files are captured into personal settings and the changed files are backed up
+URL has no extension. Defaulting to .bin for https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000003
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-03 (AC-003): edits made inside the package files are captured into personal settings and the changed files are backed up
+Successfully downloaded file to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-personal-settings-e2e-gNwckd/server-data/agent-packages/.staging/pps-e2e__agents-6051e922-1bbd-4e19-ab7e-6e5d0892e430-bFXmLn/download/pps-e2e__agents/fe20ff51-f942-4ad6-a94a-e21d1592be37.bin
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-04 (AC-002/AC-003 automatic): the automatic update pass captures and backs up the same way
+Server setting 'AUTO_UPDATE_AGENT_PACKAGES' updated
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-04 (AC-002/AC-003 automatic): the automatic update pass captures and backs up the same way
+Attempting to download file from: https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000003
+
+stderr | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-04 (AC-002/AC-003 automatic): the automatic update pass captures and backs up the same way
+URL has no extension. Defaulting to .bin for https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000003
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-04 (AC-002/AC-003 automatic): the automatic update pass captures and backs up the same way
+Successfully downloaded file to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-personal-settings-e2e-gNwckd/server-data/agent-packages/.staging/capture-pps-e2e__agents-2NOm6Y/download/pps-e2e__agents/b6cd78c8-bccd-437c-b2c0-65a8740c9d3b.bin
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-04 (AC-002/AC-003 automatic): the automatic update pass captures and backs up the same way
+PACKAGE_EDIT_BACKUP:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-personal-settings-e2e-gNwckd/server-data/agent-packages/backups/pps-e2e__agents/20261109T092649Z: 1 changed file(s) backed up.
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-04 (AC-002/AC-003 automatic): the automatic update pass captures and backs up the same way
+Attempting to download file from: https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000004
+
+stderr | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-04 (AC-002/AC-003 automatic): the automatic update pass captures and backs up the same way
+URL has no extension. Defaulting to .bin for https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000004
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-04 (AC-002/AC-003 automatic): the automatic update pass captures and backs up the same way
+Successfully downloaded file to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-personal-settings-e2e-gNwckd/server-data/agent-packages/.staging/pps-e2e__agents-1f532314-fab2-405a-a6c8-e1c82aa99b83-QQQ2Sl/download/pps-e2e__agents/c796900a-59a4-452c-b3dc-414ace0756b2.bin
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-06 (DEC-008): repeated updates with edits keep the latest 5 backups
+Attempting to download file from: https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000004
+
+stderr | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-06 (DEC-008): repeated updates with edits keep the latest 5 backups
+URL has no extension. Defaulting to .bin for https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000004
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-06 (DEC-008): repeated updates with edits keep the latest 5 backups
+Successfully downloaded file to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-personal-settings-e2e-gNwckd/server-data/agent-packages/.staging/capture-pps-e2e__agents-GU1EUO/download/pps-e2e__agents/c60ad6e7-6415-4ac4-aa57-7c72bb0cabb7.bin
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-06 (DEC-008): repeated updates with edits keep the latest 5 backups
+PACKAGE_EDIT_BACKUP:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-personal-settings-e2e-gNwckd/server-data/agent-packages/backups/pps-e2e__agents/20261109T092749Z: 1 changed file(s) backed up.
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-06 (DEC-008): repeated updates with edits keep the latest 5 backups
+Attempting to download file from: https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000005
+
+stderr | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-06 (DEC-008): repeated updates with edits keep the latest 5 backups
+URL has no extension. Defaulting to .bin for https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000005
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-06 (DEC-008): repeated updates with edits keep the latest 5 backups
+Successfully downloaded file to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-personal-settings-e2e-gNwckd/server-data/agent-packages/.staging/pps-e2e__agents-99aa02fd-3ef8-4879-adac-a5584a3fbb92-7MpBto/download/pps-e2e__agents/e6416377-22c6-4621-81f6-f7ee317d5743.bin
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-06 (DEC-008): repeated updates with edits keep the latest 5 backups
+Attempting to download file from: https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000005
+
+stderr | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-06 (DEC-008): repeated updates with edits keep the latest 5 backups
+URL has no extension. Defaulting to .bin for https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000005
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-06 (DEC-008): repeated updates with edits keep the latest 5 backups
+Successfully downloaded file to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-personal-settings-e2e-gNwckd/server-data/agent-packages/.staging/capture-pps-e2e__agents-mIqtqM/download/pps-e2e__agents/57bf8e65-6b86-44f3-b00f-1a28ab784e4d.bin
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-06 (DEC-008): repeated updates with edits keep the latest 5 backups
+PACKAGE_EDIT_BACKUP:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-personal-settings-e2e-gNwckd/server-data/agent-packages/backups/pps-e2e__agents/20261109T092849Z: 1 changed file(s) backed up.
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-06 (DEC-008): repeated updates with edits keep the latest 5 backups
+Attempting to download file from: https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000006
+
+stderr | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-06 (DEC-008): repeated updates with edits keep the latest 5 backups
+URL has no extension. Defaulting to .bin for https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000006
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-06 (DEC-008): repeated updates with edits keep the latest 5 backups
+Successfully downloaded file to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-personal-settings-e2e-gNwckd/server-data/agent-packages/.staging/pps-e2e__agents-b9c619e4-aa6c-4742-8f7c-8e49fd095483-w42ZTx/download/pps-e2e__agents/4b8c1a58-cb49-4d1f-9285-a6c902cc56dd.bin
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-06 (DEC-008): repeated updates with edits keep the latest 5 backups
+Attempting to download file from: https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000006
+
+stderr | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-06 (DEC-008): repeated updates with edits keep the latest 5 backups
+URL has no extension. Defaulting to .bin for https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000006
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-06 (DEC-008): repeated updates with edits keep the latest 5 backups
+Successfully downloaded file to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-personal-settings-e2e-gNwckd/server-data/agent-packages/.staging/capture-pps-e2e__agents-j8sR2e/download/pps-e2e__agents/43b629fd-3545-41f6-9177-87aa87ea83dc.bin
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-06 (DEC-008): repeated updates with edits keep the latest 5 backups
+PACKAGE_EDIT_BACKUP:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-personal-settings-e2e-gNwckd/server-data/agent-packages/backups/pps-e2e__agents/20261109T092949Z: 1 changed file(s) backed up.
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-06 (DEC-008): repeated updates with edits keep the latest 5 backups
+Attempting to download file from: https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000007
+
+stderr | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-06 (DEC-008): repeated updates with edits keep the latest 5 backups
+URL has no extension. Defaulting to .bin for https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000007
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-06 (DEC-008): repeated updates with edits keep the latest 5 backups
+Successfully downloaded file to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-personal-settings-e2e-gNwckd/server-data/agent-packages/.staging/pps-e2e__agents-786571b2-eb7c-4158-823c-b022e2ce8dfd-HC6BkQ/download/pps-e2e__agents/7c2b8eae-c9d5-413b-b1fd-6cf42bf79c35.bin
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-06 (DEC-008): repeated updates with edits keep the latest 5 backups
+Attempting to download file from: https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000007
+
+stderr | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-06 (DEC-008): repeated updates with edits keep the latest 5 backups
+URL has no extension. Defaulting to .bin for https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000007
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-06 (DEC-008): repeated updates with edits keep the latest 5 backups
+Successfully downloaded file to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-personal-settings-e2e-gNwckd/server-data/agent-packages/.staging/capture-pps-e2e__agents-fz5mN3/download/pps-e2e__agents/d6d27bc4-8be6-4f63-954d-b353a2f82a3b.bin
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-06 (DEC-008): repeated updates with edits keep the latest 5 backups
+PACKAGE_EDIT_BACKUP:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-personal-settings-e2e-gNwckd/server-data/agent-packages/backups/pps-e2e__agents/20261109T093049Z: 1 changed file(s) backed up.
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-06 (DEC-008): repeated updates with edits keep the latest 5 backups
+Attempting to download file from: https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000008
+
+stderr | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-06 (DEC-008): repeated updates with edits keep the latest 5 backups
+URL has no extension. Defaulting to .bin for https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000008
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-06 (DEC-008): repeated updates with edits keep the latest 5 backups
+Successfully downloaded file to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-personal-settings-e2e-gNwckd/server-data/agent-packages/.staging/pps-e2e__agents-93ee4fe1-6576-4972-9a88-c5e646df8140-XXNMgy/download/pps-e2e__agents/e7c1048e-4c95-47f7-ade4-f1144ae5ddca.bin
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-05 (AC-004): when the installed revision cannot be downloaded the update stops and nothing changes, by click and automatically
+Attempting to download file from: https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000008
+
+stderr | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-05 (AC-004): when the installed revision cannot be downloaded the update stops and nothing changes, by click and automatically
+Failed during download process for https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000008: Error: HTTP 404 
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-05 (AC-004): when the installed revision cannot be downloaded the update stops and nothing changes, by click and automatically
+Server setting 'AUTO_UPDATE_AGENT_PACKAGES' updated
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-05 (AC-004): when the installed revision cannot be downloaded the update stops and nothing changes, by click and automatically
+Attempting to download file from: https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000008
+
+stderr | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-05 (AC-004): when the installed revision cannot be downloaded the update stops and nothing changes, by click and automatically
+Failed during download process for https://codeload.github.com/pps-e2e/agents/tar.gz/0000000000000000000000000000000000000008: Error: HTTP 404 
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-05 (AC-004): when the installed revision cannot be downloaded the update stops and nothing changes, by click and automatically
+Server setting 'AUTO_UPDATE_AGENT_PACKAGES' updated
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-08 (AC-007): an unreadable personal-settings.json gives the package's values, is kept, and is copied aside before the next save
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/package-personal-settings/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/package-personal-settings/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-personal-settings-e2e-gNwckd/server-data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-personal-settings-e2e-gNwckd/server-data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-personal-settings-e2e-gNwckd/server-data/.env
+◇ injected env (1) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-personal-settings-e2e-gNwckd/server-data/.env // tip: ⌘ enable debugging { debug: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/package-personal-settings/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/package-personal-settings/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-personal-settings-e2e-gNwckd/server-data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-personal-settings-e2e-gNwckd/server-data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-personal-settings-e2e-gNwckd/server-data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-personal-settings-e2e-gNwckd/server-data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-personal-settings-e2e-gNwckd/server-data/memory
+============================================================
+
+stderr | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-08 (AC-007): an unreadable personal-settings.json gives the package's values, is kept, and is copied aside before the next save
+PERSONAL_SETTINGS_FILE_UNREADABLE:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-personal-settings-e2e-gNwckd/server-data/agent-packages/personal-settings.json: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-08 (AC-007): an unreadable personal-settings.json gives the package's values, is kept, and is copied aside before the next save
+AgentRunManager initialized.
+
+stderr | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-08 (AC-007): an unreadable personal-settings.json gives the package's values, is kept, and is copied aside before the next save
+Node access: local control socket not opened. The node's local control socket path is 136 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/package-personal-settings-e2e-gNwckd/server-data/node-access/local-control.sock. Use a shorter data folder path.
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-08 (AC-007): an unreadable personal-settings.json gives the package's values, is kept, and is copied aside before the next save
+AgentRunManager initialized.
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-08 (AC-007): an unreadable personal-settings.json gives the package's values, is kept, and is copied aside before the next save
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-08 (AC-007): an unreadable personal-settings.json gives the package's values, is kept, and is copied aside before the next save
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-08 (AC-007): an unreadable personal-settings.json gives the package's values, is kept, and is copied aside before the next save
+Registering agent customization processors...
+Agent customization processor registration complete.
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-08 (AC-007): an unreadable personal-settings.json gives the package's values, is kept, and is copied aside before the next save
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-08 (AC-007): an unreadable personal-settings.json gives the package's values, is kept, and is copied aside before the next save
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'search_memory'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Memory Tools
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-08 (AC-007): an unreadable personal-settings.json gives the package's values, is kept, and is copied aside before the next save
+Overwriting existing tool definition for name: 'list_projects'
+Overwriting existing tool definition for name: 'list_project_tasks'
+Overwriting existing tool definition for name: 'search_project_tasks'
+Overwriting existing tool definition for name: 'create_project'
+Overwriting existing tool definition for name: 'update_project'
+Overwriting existing tool definition for name: 'create_task'
+Overwriting existing tool definition for name: 'update_task'
+Overwriting existing tool definition for name: 'search_memory'
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-08 (AC-007): an unreadable personal-settings.json gives the package's values, is kept, and is copied aside before the next save
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Agent Runtime Tools
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Media Tools
+
+stderr | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-08 (AC-007): an unreadable personal-settings.json gives the package's values, is kept, and is copied aside before the next save
+Overwriting existing tool definition for name: 'delegate_task'
+Overwriting existing tool definition for name: 'publish_artifacts'
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-08 (AC-007): an unreadable personal-settings.json gives the package's values, is kept, and is copied aside before the next save
+Successfully registered tool definition: 'search_web'
+
+stderr | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-08 (AC-007): an unreadable personal-settings.json gives the package's values, is kept, and is copied aside before the next save
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-08 (AC-007): an unreadable personal-settings.json gives the package's values, is kept, and is copied aside before the next save
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-08 (AC-007): an unreadable personal-settings.json gives the package's values, is kept, and is copied aside before the next save
+Agent Definition with ID writer updated successfully.
+
+ ❯ tests/e2e/personal-settings/package-personal-settings.e2e.test.ts (7 tests | 3 failed) 1493ms
+     ✓ API-02 (AC-002 by click, REQ-003, REQ-005): personal edits made in the app go to personal-settings.json, never the package files, and survive an update 287ms
+     × API-03 (AC-003): edits made inside the package files are captured into personal settings and the changed files are backed up 81ms
+     × API-04 (AC-002/AC-003 automatic): the automatic update pass captures and backs up the same way 167ms
+     × API-06 (DEC-008): repeated updates with edits keep the latest 5 backups 317ms
+     ✓ API-05 (AC-004): when the installed revision cannot be downloaded the update stops and nothing changes, by click and automatically 213ms
+     ✓ API-07 (AC-005): reset removes one personal field and the package's value shows again 50ms
+     ✓ API-08 (AC-007): an unreadable personal-settings.json gives the package's values, is kept, and is copied aside before the next save 92ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-03 (AC-003): edits made inside the package files are captured into personal settings and the changed files are backed up
+AssertionError: expected { 'agent:writer': { …(5) }, …(1) } to deeply equal { 'agent:writer': { …(5) }, …(2) }
+
+- Expected
++ Received
+
+@@ -1,20 +1,6 @@
+  {
+-   "agent:reviewer": {
+-     "avatarUrl": "/rest/files/images/file-edit.png",
+-     "defaultLaunchConfig": {
+-       "llmConfig": null,
+-       "llmModelIdentifier": "claude-fake-sonnet",
+-       "runtimeKind": "claude_agent_sdk",
+-     },
+-     "toolsAdded": [
+-       "search_web",
+-     ],
+-     "toolsRemoved": [
+-       "read_file",
+-     ],
+-   },
+    "agent:writer": {
+      "avatarUrl": "/rest/files/images/pps-e2e-personal.png",
+      "defaultLaunchConfig": {
+        "llmConfig": null,
+        "llmModelIdentifier": "gpt-5.6-luna",
+@@ -23,11 +9,10 @@
+      "skillsAdded": [
+        "review",
+      ],
+      "toolsAdded": [
+        "generate_image",
+-       "mcp_local",
+      ],
+      "toolsRemoved": [
+        "write_file",
+      ],
+    },
+
+ ❯ tests/e2e/personal-settings/package-personal-settings.e2e.test.ts:281:34
+    279|     expect((await update()).updateInfo).toMatchObject({ status: "UP_TO…
+    280|
+    281|     expect(await readSettings()).toEqual({
+       |                                  ^
+    282|       "agent:writer": { toolsAdded: ["generate_image", "mcp_local"], t…
+    283|       "agent:reviewer": { toolsAdded: ["search_web"], toolsRemoved: ["…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-04 (AC-002/AC-003 automatic): the automatic update pass captures and backs up the same way
+TypeError: Cannot read properties of undefined (reading 'toolsAdded')
+ ❯ tests/e2e/personal-settings/package-personal-settings.e2e.test.ts:309:53
+    307|     await until(async () => (await notification())?.outcome === "AUTO_…
+    308|     expect(await notification()).toMatchObject({ handledRevision: rev(…
+    309|     expect((await readSettings())["agent:reviewer"].toolsAdded).toEqua…
+       |                                                     ^
+    310|     expect(await backups()).toHaveLength(2);
+    311|     expect((await agent("reviewer")).toolNames).toEqual(["write_file",…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/e2e/personal-settings/package-personal-settings.e2e.test.ts > Personal settings of package definitions at the real server boundary (fake GitHub, real update pipeline) > API-06 (DEC-008): repeated updates with edits keep the latest 5 backups
+TypeError: Cannot read properties of undefined (reading 'toolsAdded')
+ ❯ tests/e2e/personal-settings/package-personal-settings.e2e.test.ts:329:53
+    327|     expect(after).not.toContain(before[0]); // the oldest was removed
+    328|     expect(after).toContain(before[1]);
+    329|     expect((await readSettings())["agent:reviewer"].toolsAdded).toEqua…
+       |                                                     ^
+    330|     evidence.api06 = { before, after };
+    331|   }, 180_000);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 4 passed (7)
+   Start at  09:47:38
+   Duration  11.84s (transform 7.38s, setup 74ms, import 9.74s, tests 1.49s, environment 0ms)
+

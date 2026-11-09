@@ -1,0 +1,20 @@
+{
+  "agent:agent-package-creator": {
+    "toolsAdded": [
+      "list_tabs"
+    ],
+    "toolsRemoved": [
+      "run_bash"
+    ]
+  },
+  "agent:computer-use-operator": {
+    "toolsAdded": [
+      "create_task"
+    ]
+  },
+  "agent:team-local-agent:software-engineering-team:code-reviewer": {
+    "toolsRemoved": [
+      "search_web"
+    ]
+  }
+}

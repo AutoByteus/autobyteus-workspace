@@ -1,0 +1,648 @@
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/package-personal-settings/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/package-personal-settings/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+(node:92233) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/package-personal-settings/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/package-personal-settings/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/.env
+◇ injected env (2) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/.env // tip: ⌘ suppress logs { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/package-personal-settings/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/package-personal-settings/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory
+============================================================
+Initialized server settings service with 32 predefined settings
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY)
+Node access: local control socket not opened. The node's local control socket path is 125 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/node-access/local-control.sock. Use a shorter data folder path.
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY)
+AgentRunManager initialized.
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY)
+AgentRunManager initialized.
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY)
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY)
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY)
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY)
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY)
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY)
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY)
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY)
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY)
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY)
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY)
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY)
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY)
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY)
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY)
+Registered required tool unit: Agent Discovery Tools
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY)
+Successfully registered tool definition: 'search_memory'
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY)
+Registered required tool unit: Memory Tools
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY)
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY)
+Registered required tool unit: Agent Runtime Tools
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY)
+Registered required tool unit: Browser Tools
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY)
+Successfully registered tool definition: 'search_web'
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY)
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY)
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY)
+Added new custom server setting: AUTOBYTEUS_AGENT_PACKAGE_ROOTS
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY)
+Agent Definition created successfully with ID: pps-manager
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10a (AC-006, AC-001): a run of the package agent has the effective tools: a personal tool added, a package tool removed
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/workspace.
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10a (AC-006, AC-001): a run of the package agent has the effective tools: a personal tool added, a package tool removed
+Created and registered workspace ID: agent_ws_023907b5eee2d93e5bce5e2aad3061595b45e31873a5e74fda0c28621dcdb411
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10a (AC-006, AC-001): a run of the package agent has the effective tools: a personal tool added, a package tool removed
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/workspace.
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10a (AC-006, AC-001): a run of the package agent has the effective tools: a personal tool added, a package tool removed
+Reusing registered workspace ID: agent_ws_023907b5eee2d93e5bce5e2aad3061595b45e31873a5e74fda0c28621dcdb411
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10a (AC-006, AC-001): a run of the package agent has the effective tools: a personal tool added, a package tool removed
+AGY compaction detection off for run pps_worker_74fd69dbe9894ba0b4deedc26b15324f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10a (AC-006, AC-001): a run of the package agent has the effective tools: a personal tool added, a package tool removed
+Agent websocket attached for run pps_worker_74fd69dbe9894ba0b4deedc26b15324f
+Created agent session 46f5e653-96d4-4d63-9e26-a19d00614047 for run pps_worker_74fd69dbe9894ba0b4deedc26b15324f
+Agent WebSocket connected: session=46f5e653-96d4-4d63-9e26-a19d00614047, run=pps_worker_74fd69dbe9894ba0b4deedc26b15324f
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10a (AC-006, AC-001): a run of the package agent has the effective tools: a personal tool added, a package tool removed
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agents/pps_worker_74fd69dbe9894ba0b4deedc26b15324f/raw_traces_manifest.json
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10a (AC-006, AC-001): a run of the package agent has the effective tools: a personal tool added, a package tool removed
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agents/pps_worker_74fd69dbe9894ba0b4deedc26b15324f/raw_traces_manifest.json
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10a (AC-006, AC-001): a run of the package agent has the effective tools: a personal tool added, a package tool removed
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agents/pps_worker_74fd69dbe9894ba0b4deedc26b15324f/raw_traces_manifest.json
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10a (AC-006, AC-001): a run of the package agent has the effective tools: a personal tool added, a package tool removed
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agents/pps_worker_74fd69dbe9894ba0b4deedc26b15324f/raw_traces_manifest.json
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10a (AC-006, AC-001): a run of the package agent has the effective tools: a personal tool added, a package tool removed
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agents/pps_worker_74fd69dbe9894ba0b4deedc26b15324f/raw_traces_manifest.json
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10a (AC-006, AC-001): a run of the package agent has the effective tools: a personal tool added, a package tool removed
+Agent Definition with ID pps-worker updated successfully.
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10a (AC-006, AC-001): a run of the package agent has the effective tools: a personal tool added, a package tool removed
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/workspace.
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10a (AC-006, AC-001): a run of the package agent has the effective tools: a personal tool added, a package tool removed
+Reusing registered workspace ID: agent_ws_023907b5eee2d93e5bce5e2aad3061595b45e31873a5e74fda0c28621dcdb411
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10a (AC-006, AC-001): a run of the package agent has the effective tools: a personal tool added, a package tool removed
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/workspace.
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10a (AC-006, AC-001): a run of the package agent has the effective tools: a personal tool added, a package tool removed
+Reusing registered workspace ID: agent_ws_023907b5eee2d93e5bce5e2aad3061595b45e31873a5e74fda0c28621dcdb411
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10a (AC-006, AC-001): a run of the package agent has the effective tools: a personal tool added, a package tool removed
+AGY compaction detection off for run pps_worker_a73e9d5dfaf048cb9da4756ebd71f099: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10a (AC-006, AC-001): a run of the package agent has the effective tools: a personal tool added, a package tool removed
+Agent websocket attached for run pps_worker_a73e9d5dfaf048cb9da4756ebd71f099
+Created agent session 6540404f-0002-416f-92c4-c6ecee38301d for run pps_worker_a73e9d5dfaf048cb9da4756ebd71f099
+Agent WebSocket connected: session=6540404f-0002-416f-92c4-c6ecee38301d, run=pps_worker_a73e9d5dfaf048cb9da4756ebd71f099
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10a (AC-006, AC-001): a run of the package agent has the effective tools: a personal tool added, a package tool removed
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agents/pps_worker_a73e9d5dfaf048cb9da4756ebd71f099/raw_traces_manifest.json
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10a (AC-006, AC-001): a run of the package agent has the effective tools: a personal tool added, a package tool removed
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agents/pps_worker_a73e9d5dfaf048cb9da4756ebd71f099/raw_traces_manifest.json
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10a (AC-006, AC-001): a run of the package agent has the effective tools: a personal tool added, a package tool removed
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agents/pps_worker_a73e9d5dfaf048cb9da4756ebd71f099/raw_traces_manifest.json
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10a (AC-006, AC-001): a run of the package agent has the effective tools: a personal tool added, a package tool removed
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agents/pps_worker_a73e9d5dfaf048cb9da4756ebd71f099/raw_traces_manifest.json
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10a (AC-006, AC-001): a run of the package agent has the effective tools: a personal tool added, a package tool removed
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agents/pps_worker_a73e9d5dfaf048cb9da4756ebd71f099/raw_traces_manifest.json
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10b (DS-004, RUS-001): a running agent takes a personal tool change without a restart
+Agent Definition with ID pps-worker updated successfully.
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10b (DS-004, RUS-001): a running agent takes a personal tool change without a restart
+Agent websocket attached for run pps_worker_a73e9d5dfaf048cb9da4756ebd71f099
+Created agent session 2190dce6-46ed-4486-bf3a-61e7ef26eb53 for run pps_worker_a73e9d5dfaf048cb9da4756ebd71f099
+Agent WebSocket connected: session=2190dce6-46ed-4486-bf3a-61e7ef26eb53, run=pps_worker_a73e9d5dfaf048cb9da4756ebd71f099
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10b (DS-004, RUS-001): a running agent takes a personal tool change without a restart
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agents/pps_worker_a73e9d5dfaf048cb9da4756ebd71f099/raw_traces_manifest.json
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10b (DS-004, RUS-001): a running agent takes a personal tool change without a restart
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agents/pps_worker_a73e9d5dfaf048cb9da4756ebd71f099/raw_traces_manifest.json
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10b (DS-004, RUS-001): a running agent takes a personal tool change without a restart
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agents/pps_worker_a73e9d5dfaf048cb9da4756ebd71f099/raw_traces_manifest.json
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10c (AC-006): a delegated copy of the package agent has its effective tools
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/workspace.
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10c (AC-006): a delegated copy of the package agent has its effective tools
+Reusing registered workspace ID: agent_ws_023907b5eee2d93e5bce5e2aad3061595b45e31873a5e74fda0c28621dcdb411
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10c (AC-006): a delegated copy of the package agent has its effective tools
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/workspace.
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10c (AC-006): a delegated copy of the package agent has its effective tools
+Reusing registered workspace ID: agent_ws_023907b5eee2d93e5bce5e2aad3061595b45e31873a5e74fda0c28621dcdb411
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10c (AC-006): a delegated copy of the package agent has its effective tools
+AGY compaction detection off for run pps_manager_2197f4c29df943fe811d1e1a0f9ec105: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10c (AC-006): a delegated copy of the package agent has its effective tools
+Agent websocket attached for run pps_manager_2197f4c29df943fe811d1e1a0f9ec105
+Created agent session 54594d1c-6748-43b6-b963-6538f494fe29 for run pps_manager_2197f4c29df943fe811d1e1a0f9ec105
+Agent WebSocket connected: session=54594d1c-6748-43b6-b963-6538f494fe29, run=pps_manager_2197f4c29df943fe811d1e1a0f9ec105
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10c (AC-006): a delegated copy of the package agent has its effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agents/pps_manager_2197f4c29df943fe811d1e1a0f9ec105/raw_traces_manifest.json
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10c (AC-006): a delegated copy of the package agent has its effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agents/pps_manager_2197f4c29df943fe811d1e1a0f9ec105/raw_traces_manifest.json
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10c (AC-006): a delegated copy of the package agent has its effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agents/pps_manager_2197f4c29df943fe811d1e1a0f9ec105/raw_traces_manifest.json
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10c (AC-006): a delegated copy of the package agent has its effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agents/pps_manager_2197f4c29df943fe811d1e1a0f9ec105/raw_traces_manifest.json
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10c (AC-006): a delegated copy of the package agent has its effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agents/pps_manager_2197f4c29df943fe811d1e1a0f9ec105/raw_traces_manifest.json
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10c (AC-006): a delegated copy of the package agent has its effective tools
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/workspace.
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10c (AC-006): a delegated copy of the package agent has its effective tools
+Reusing registered workspace ID: agent_ws_023907b5eee2d93e5bce5e2aad3061595b45e31873a5e74fda0c28621dcdb411
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10c (AC-006): a delegated copy of the package agent has its effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agents/pps_manager_2197f4c29df943fe811d1e1a0f9ec105/raw_traces_manifest.json
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10c (AC-006): a delegated copy of the package agent has its effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agents/pps_manager_2197f4c29df943fe811d1e1a0f9ec105/raw_traces_manifest.json
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10c (AC-006): a delegated copy of the package agent has its effective tools
+AGY compaction detection off for run pps_worker_1225bbe2af6043fd84bd7c26e05e8b4b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10c (AC-006): a delegated copy of the package agent has its effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agents/pps_manager_2197f4c29df943fe811d1e1a0f9ec105/raw_traces_manifest.json
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10c (AC-006): a delegated copy of the package agent has its effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agents/pps_manager_2197f4c29df943fe811d1e1a0f9ec105/raw_traces_manifest.json
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10c (AC-006): a delegated copy of the package agent has its effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agents/pps_manager_2197f4c29df943fe811d1e1a0f9ec105/raw_traces_manifest.json
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10c (AC-006): a delegated copy of the package agent has its effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agents/pps_worker_1225bbe2af6043fd84bd7c26e05e8b4b/raw_traces_manifest.json
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10c (AC-006): a delegated copy of the package agent has its effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agents/pps_worker_1225bbe2af6043fd84bd7c26e05e8b4b/raw_traces_manifest.json
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10d (AC-006): a delegated copy of the Team runs its team-local coordinator with the coordinator's effective tools
+Agent Definition with ID team-local-agent:pps-crew:lead updated successfully.
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10d (AC-006): a delegated copy of the Team runs its team-local coordinator with the coordinator's effective tools
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/workspace.
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10d (AC-006): a delegated copy of the Team runs its team-local coordinator with the coordinator's effective tools
+Reusing registered workspace ID: agent_ws_023907b5eee2d93e5bce5e2aad3061595b45e31873a5e74fda0c28621dcdb411
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10d (AC-006): a delegated copy of the Team runs its team-local coordinator with the coordinator's effective tools
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/workspace.
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10d (AC-006): a delegated copy of the Team runs its team-local coordinator with the coordinator's effective tools
+Reusing registered workspace ID: agent_ws_023907b5eee2d93e5bce5e2aad3061595b45e31873a5e74fda0c28621dcdb411
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10d (AC-006): a delegated copy of the Team runs its team-local coordinator with the coordinator's effective tools
+AGY compaction detection off for run pps_manager_1798b798e9704afdaf39777a31999a40: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10d (AC-006): a delegated copy of the Team runs its team-local coordinator with the coordinator's effective tools
+Agent websocket attached for run pps_manager_1798b798e9704afdaf39777a31999a40
+Created agent session 99b09adc-87b0-49f4-a582-fda5ae8bd976 for run pps_manager_1798b798e9704afdaf39777a31999a40
+Agent WebSocket connected: session=99b09adc-87b0-49f4-a582-fda5ae8bd976, run=pps_manager_1798b798e9704afdaf39777a31999a40
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10d (AC-006): a delegated copy of the Team runs its team-local coordinator with the coordinator's effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agents/pps_manager_1798b798e9704afdaf39777a31999a40/raw_traces_manifest.json
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10d (AC-006): a delegated copy of the Team runs its team-local coordinator with the coordinator's effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agents/pps_manager_1798b798e9704afdaf39777a31999a40/raw_traces_manifest.json
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10d (AC-006): a delegated copy of the Team runs its team-local coordinator with the coordinator's effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agents/pps_manager_1798b798e9704afdaf39777a31999a40/raw_traces_manifest.json
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10d (AC-006): a delegated copy of the Team runs its team-local coordinator with the coordinator's effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agents/pps_manager_1798b798e9704afdaf39777a31999a40/raw_traces_manifest.json
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10d (AC-006): a delegated copy of the Team runs its team-local coordinator with the coordinator's effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agents/pps_manager_1798b798e9704afdaf39777a31999a40/raw_traces_manifest.json
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10d (AC-006): a delegated copy of the Team runs its team-local coordinator with the coordinator's effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agents/pps_manager_1798b798e9704afdaf39777a31999a40/raw_traces_manifest.json
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10d (AC-006): a delegated copy of the Team runs its team-local coordinator with the coordinator's effective tools
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/workspace.
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10d (AC-006): a delegated copy of the Team runs its team-local coordinator with the coordinator's effective tools
+Reusing registered workspace ID: agent_ws_023907b5eee2d93e5bce5e2aad3061595b45e31873a5e74fda0c28621dcdb411
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10d (AC-006): a delegated copy of the Team runs its team-local coordinator with the coordinator's effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agents/pps_manager_1798b798e9704afdaf39777a31999a40/raw_traces_manifest.json
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10d (AC-006): a delegated copy of the Team runs its team-local coordinator with the coordinator's effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agents/pps_manager_1798b798e9704afdaf39777a31999a40/raw_traces_manifest.json
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10d (AC-006): a delegated copy of the Team runs its team-local coordinator with the coordinator's effective tools
+AGY compaction detection off for run pps_lead_79a0c4681e7c4a1ba3b7074741068ffe: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10d (AC-006): a delegated copy of the Team runs its team-local coordinator with the coordinator's effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agents/pps_manager_1798b798e9704afdaf39777a31999a40/raw_traces_manifest.json
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10d (AC-006): a delegated copy of the Team runs its team-local coordinator with the coordinator's effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agents/pps_manager_1798b798e9704afdaf39777a31999a40/raw_traces_manifest.json
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10d (AC-006): a delegated copy of the Team runs its team-local coordinator with the coordinator's effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agent_teams/pps_crew_574d9e267288477bbecdc58591bb48d9/pps_lead_79a0c4681e7c4a1ba3b7074741068ffe/raw_traces_manifest.json
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10d (AC-006): a delegated copy of the Team runs its team-local coordinator with the coordinator's effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agent_teams/pps_crew_574d9e267288477bbecdc58591bb48d9/pps_lead_79a0c4681e7c4a1ba3b7074741068ffe/raw_traces_manifest.json
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10d (AC-006): a delegated copy of the Team runs its team-local coordinator with the coordinator's effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agent_teams/pps_crew_574d9e267288477bbecdc58591bb48d9/pps_lead_79a0c4681e7c4a1ba3b7074741068ffe/raw_traces_manifest.json
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10f (AC-006): a Team run started directly gives its members their effective tools
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/workspace.
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10f (AC-006): a Team run started directly gives its members their effective tools
+Reusing registered workspace ID: agent_ws_023907b5eee2d93e5bce5e2aad3061595b45e31873a5e74fda0c28621dcdb411
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10f (AC-006): a Team run started directly gives its members their effective tools
+Agent team websocket attached for team run pps_crew_80ebaf9a974f4a2184d0e70b800d6492
+Created agent session 9709e31a-f6ad-411a-8d3f-bd8f38c2fc53 for run pps_crew_80ebaf9a974f4a2184d0e70b800d6492
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10f (AC-006): a Team run started directly gives its members their effective tools
+Agent Team WebSocket connected: session=9709e31a-f6ad-411a-8d3f-bd8f38c2fc53, run=pps_crew_80ebaf9a974f4a2184d0e70b800d6492
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10f (AC-006): a Team run started directly gives its members their effective tools
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/workspace.
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10f (AC-006): a Team run started directly gives its members their effective tools
+Reusing registered workspace ID: agent_ws_023907b5eee2d93e5bce5e2aad3061595b45e31873a5e74fda0c28621dcdb411
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10f (AC-006): a Team run started directly gives its members their effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agent_teams/pps_crew_80ebaf9a974f4a2184d0e70b800d6492/pps_lead_69682f9b82124aa7b0c05fa31ae1ef91/raw_traces_manifest.json
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10f (AC-006): a Team run started directly gives its members their effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agent_teams/pps_crew_80ebaf9a974f4a2184d0e70b800d6492/pps_lead_69682f9b82124aa7b0c05fa31ae1ef91/raw_traces_manifest.json
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10f (AC-006): a Team run started directly gives its members their effective tools
+AGY compaction detection off for run pps_lead_69682f9b82124aa7b0c05fa31ae1ef91: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10f (AC-006): a Team run started directly gives its members their effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agent_teams/pps_crew_80ebaf9a974f4a2184d0e70b800d6492/pps_lead_69682f9b82124aa7b0c05fa31ae1ef91/raw_traces_manifest.json
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10f (AC-006): a Team run started directly gives its members their effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agent_teams/pps_crew_80ebaf9a974f4a2184d0e70b800d6492/pps_lead_69682f9b82124aa7b0c05fa31ae1ef91/raw_traces_manifest.json
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10f (AC-006): a Team run started directly gives its members their effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agent_teams/pps_crew_80ebaf9a974f4a2184d0e70b800d6492/pps_lead_69682f9b82124aa7b0c05fa31ae1ef91/raw_traces_manifest.json
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10f (AC-006): a Team run started directly gives its members their effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agent_teams/pps_crew_80ebaf9a974f4a2184d0e70b800d6492/pps_lead_69682f9b82124aa7b0c05fa31ae1ef91/raw_traces_manifest.json
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10f (AC-006): a Team run started directly gives its members their effective tools
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/workspace.
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10f (AC-006): a Team run started directly gives its members their effective tools
+Reusing registered workspace ID: agent_ws_023907b5eee2d93e5bce5e2aad3061595b45e31873a5e74fda0c28621dcdb411
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10f (AC-006): a Team run started directly gives its members their effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agent_teams/pps_crew_80ebaf9a974f4a2184d0e70b800d6492/pps_worker_dfec3b2c337d42cc8720a7e8c8dd69c0/raw_traces_manifest.json
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10f (AC-006): a Team run started directly gives its members their effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agent_teams/pps_crew_80ebaf9a974f4a2184d0e70b800d6492/pps_worker_dfec3b2c337d42cc8720a7e8c8dd69c0/raw_traces_manifest.json
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10f (AC-006): a Team run started directly gives its members their effective tools
+AGY compaction detection off for run pps_worker_dfec3b2c337d42cc8720a7e8c8dd69c0: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10f (AC-006): a Team run started directly gives its members their effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agent_teams/pps_crew_80ebaf9a974f4a2184d0e70b800d6492/pps_worker_dfec3b2c337d42cc8720a7e8c8dd69c0/raw_traces_manifest.json
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10f (AC-006): a Team run started directly gives its members their effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agent_teams/pps_crew_80ebaf9a974f4a2184d0e70b800d6492/pps_worker_dfec3b2c337d42cc8720a7e8c8dd69c0/raw_traces_manifest.json
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10f (AC-006): a Team run started directly gives its members their effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agent_teams/pps_crew_80ebaf9a974f4a2184d0e70b800d6492/pps_worker_dfec3b2c337d42cc8720a7e8c8dd69c0/raw_traces_manifest.json
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10f (AC-006): a Team run started directly gives its members their effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agent_teams/pps_crew_80ebaf9a974f4a2184d0e70b800d6492/pps_worker_dfec3b2c337d42cc8720a7e8c8dd69c0/raw_traces_manifest.json
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10g (AC-006): an Org run gives its package members (an agent, and a Team's coordinator) their effective tools
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/workspace.
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10g (AC-006): an Org run gives its package members (an agent, and a Team's coordinator) their effective tools
+Reusing registered workspace ID: agent_ws_023907b5eee2d93e5bce5e2aad3061595b45e31873a5e74fda0c28621dcdb411
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10g (AC-006): an Org run gives its package members (an agent, and a Team's coordinator) their effective tools
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/workspace.
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10g (AC-006): an Org run gives its package members (an agent, and a Team's coordinator) their effective tools
+Reusing registered workspace ID: agent_ws_023907b5eee2d93e5bce5e2aad3061595b45e31873a5e74fda0c28621dcdb411
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10g (AC-006): an Org run gives its package members (an agent, and a Team's coordinator) their effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agent_orgs/pps_org_6a815cc3230846e99c14b2a4791b4063/pps_worker_847edb6f786c4ef0a7292083488498f2/raw_traces_manifest.json
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10g (AC-006): an Org run gives its package members (an agent, and a Team's coordinator) their effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agent_orgs/pps_org_6a815cc3230846e99c14b2a4791b4063/pps_worker_847edb6f786c4ef0a7292083488498f2/raw_traces_manifest.json
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10g (AC-006): an Org run gives its package members (an agent, and a Team's coordinator) their effective tools
+AGY compaction detection off for run pps_worker_847edb6f786c4ef0a7292083488498f2: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10g (AC-006): an Org run gives its package members (an agent, and a Team's coordinator) their effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agent_orgs/pps_org_6a815cc3230846e99c14b2a4791b4063/pps_worker_847edb6f786c4ef0a7292083488498f2/raw_traces_manifest.json
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10g (AC-006): an Org run gives its package members (an agent, and a Team's coordinator) their effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agent_orgs/pps_org_6a815cc3230846e99c14b2a4791b4063/pps_worker_847edb6f786c4ef0a7292083488498f2/raw_traces_manifest.json
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10g (AC-006): an Org run gives its package members (an agent, and a Team's coordinator) their effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agent_orgs/pps_org_6a815cc3230846e99c14b2a4791b4063/pps_worker_847edb6f786c4ef0a7292083488498f2/raw_traces_manifest.json
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10g (AC-006): an Org run gives its package members (an agent, and a Team's coordinator) their effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agent_orgs/pps_org_6a815cc3230846e99c14b2a4791b4063/pps_worker_847edb6f786c4ef0a7292083488498f2/raw_traces_manifest.json
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10g (AC-006): an Org run gives its package members (an agent, and a Team's coordinator) their effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agent_orgs/pps_org_6a815cc3230846e99c14b2a4791b4063/pps_crew_7c09aacacbb94f94980ab8b7accaed32/pps_lead_bbe8f1e71c044240a6a1445a6c78126f/raw_traces_manifest.json
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10g (AC-006): an Org run gives its package members (an agent, and a Team's coordinator) their effective tools
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/workspace.
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10g (AC-006): an Org run gives its package members (an agent, and a Team's coordinator) their effective tools
+Reusing registered workspace ID: agent_ws_023907b5eee2d93e5bce5e2aad3061595b45e31873a5e74fda0c28621dcdb411
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10g (AC-006): an Org run gives its package members (an agent, and a Team's coordinator) their effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agent_orgs/pps_org_6a815cc3230846e99c14b2a4791b4063/pps_crew_7c09aacacbb94f94980ab8b7accaed32/pps_lead_bbe8f1e71c044240a6a1445a6c78126f/raw_traces_manifest.json
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10g (AC-006): an Org run gives its package members (an agent, and a Team's coordinator) their effective tools
+AGY compaction detection off for run pps_lead_bbe8f1e71c044240a6a1445a6c78126f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10g (AC-006): an Org run gives its package members (an agent, and a Team's coordinator) their effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agent_orgs/pps_org_6a815cc3230846e99c14b2a4791b4063/pps_crew_7c09aacacbb94f94980ab8b7accaed32/pps_lead_bbe8f1e71c044240a6a1445a6c78126f/raw_traces_manifest.json
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10g (AC-006): an Org run gives its package members (an agent, and a Team's coordinator) their effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agent_orgs/pps_org_6a815cc3230846e99c14b2a4791b4063/pps_crew_7c09aacacbb94f94980ab8b7accaed32/pps_lead_bbe8f1e71c044240a6a1445a6c78126f/raw_traces_manifest.json
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10g (AC-006): an Org run gives its package members (an agent, and a Team's coordinator) their effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agent_orgs/pps_org_6a815cc3230846e99c14b2a4791b4063/pps_crew_7c09aacacbb94f94980ab8b7accaed32/pps_lead_bbe8f1e71c044240a6a1445a6c78126f/raw_traces_manifest.json
+
+stderr | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY) > API-10g (AC-006): an Org run gives its package members (an agent, and a Team's coordinator) their effective tools
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/personal-tools-e2e-BsAFNA/server-data/memory/agent_orgs/pps_org_6a815cc3230846e99c14b2a4791b4063/pps_crew_7c09aacacbb94f94980ab8b7accaed32/pps_lead_bbe8f1e71c044240a6a1445a6c78126f/raw_traces_manifest.json
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY)
+Closed agent session 9709e31a-f6ad-411a-8d3f-bd8f38c2fc53
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY)
+Closed agent session 99b09adc-87b0-49f4-a582-fda5ae8bd976
+Agent WebSocket disconnected: 99b09adc-87b0-49f4-a582-fda5ae8bd976
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY)
+Closed agent session 54594d1c-6748-43b6-b963-6538f494fe29
+Agent WebSocket disconnected: 54594d1c-6748-43b6-b963-6538f494fe29
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY)
+Closed agent session 2190dce6-46ed-4486-bf3a-61e7ef26eb53
+Agent WebSocket disconnected: 2190dce6-46ed-4486-bf3a-61e7ef26eb53
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY)
+Closed agent session 6540404f-0002-416f-92c4-c6ecee38301d
+Agent WebSocket disconnected: 6540404f-0002-416f-92c4-c6ecee38301d
+
+stdout | tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts > Personal tools in the runs that use them (real HTTP/WS/GraphQL, delegation, scoped Agent Tools MCP; scripted AGY)
+Closed agent session 46f5e653-96d4-4d63-9e26-a19d00614047
+Agent WebSocket disconnected: 46f5e653-96d4-4d63-9e26-a19d00614047
+
+ ✓ tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts (7 tests) 4606ms
+     ✓ API-10a (AC-006, AC-001): a run of the package agent has the effective tools: a personal tool added, a package tool removed  732ms
+     ✓ API-10c (AC-006): a delegated copy of the package agent has its effective tools  664ms
+     ✓ API-10d (AC-006): a delegated copy of the Team runs its team-local coordinator with the coordinator's effective tools  708ms
+     ✓ API-10f (AC-006): a Team run started directly gives its members their effective tools  594ms
+     ✓ API-10g (AC-006): an Org run gives its package members (an agent, and a Team's coordinator) their effective tools  699ms
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  10:14:01
+   Duration  12.98s (transform 5.95s, setup 57ms, import 7.90s, tests 4.61s, environment 0ms)
+
