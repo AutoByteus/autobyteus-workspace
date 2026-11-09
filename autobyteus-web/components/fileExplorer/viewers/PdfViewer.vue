@@ -32,10 +32,12 @@ import 'vue-pdf-embed/dist/styles/textLayer.css'
 
 interface Props {
   url: string
+  /** The open file's reload count (autobyteus-450): a change loads the same URL again. */
+  contentRevision?: number
 }
 
 const props = defineProps<Props>()
-const { resolvedUrl, error: resourceError } = useAuthorizedObjectUrl(() => props.url)
+const { resolvedUrl, error: resourceError } = useAuthorizedObjectUrl(() => props.url, { revision: () => props.contentRevision ?? 0 })
 
 const loading = ref(true)
 const error = ref<string | null>(null)
@@ -47,7 +49,7 @@ watch(resourceError, (value) => {
   }
 })
 
-watch(() => props.url, () => {
+watch([() => props.url, () => props.contentRevision], () => {
   loading.value = true
   error.value = null
 })

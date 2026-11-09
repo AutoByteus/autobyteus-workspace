@@ -48,6 +48,8 @@ const props = defineProps<{
     type: FileDataType;
     content: string | null;
     url: string | null;
+    /** An open file's reload count (autobyteus-450); files shown outside the file explorer have none. */
+    contentRevision?: number;
     relativeResourceContext?: FileRelativeResourceContext | null;
   };
   mode: FileOpenMode;
@@ -100,10 +102,11 @@ const componentProps = computed(() => {
     };
   }
 
-  // Media types
+  // Media types: an explicit open of the same file bumps `contentRevision`; the viewer loads its (same) URL again.
   return {
     url: props.file.url || null,
     content: props.file.content || null,
+    contentRevision: props.file.contentRevision ?? 0,
   };
 });
 </script>
