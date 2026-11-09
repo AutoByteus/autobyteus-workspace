@@ -97,6 +97,8 @@ export type AgentDefinition = {
   ownerTeamId?: Maybe<Scalars['String']['output']>;
   ownerTeamName?: Maybe<Scalars['String']['output']>;
   ownershipScope: AgentDefinitionOwnershipScope;
+  personalSettings: Array<PersonalSetting>;
+  personalSettingsBase?: Maybe<PersonalSettingsBase>;
   role?: Maybe<Scalars['String']['output']>;
   skillNames: Array<Scalars['String']['output']>;
   skillScope: AgentSkillScope;
@@ -144,6 +146,8 @@ export type AgentOrgDefinition = {
   loadIssues: Array<DefinitionLoadIssueEntry>;
   members: Array<AgentOrgMember>;
   name: Scalars['String']['output'];
+  personalSettings: Array<PersonalSetting>;
+  personalSettingsBase?: Maybe<PersonalSettingsBase>;
   revision?: Maybe<Scalars['String']['output']>;
 };
 
@@ -544,6 +548,8 @@ export type AgentTeamDefinition = {
   ownerTeamId?: Maybe<Scalars['String']['output']>;
   ownerTeamName?: Maybe<Scalars['String']['output']>;
   ownershipScope: AgentTeamDefinitionOwnershipScope;
+  personalSettings: Array<PersonalSetting>;
+  personalSettingsBase?: Maybe<PersonalSettingsBase>;
   revision?: Maybe<Scalars['String']['output']>;
 };
 
@@ -1996,6 +2002,9 @@ export type Mutation = {
   removeWorkspace: RemoveWorkspaceResultInfo;
   renameFileOrFolder: Scalars['String']['output'];
   renamePeerNode: PeerNodeGql;
+  resetAgentOrgPersonalSetting: AgentOrgDefinition;
+  resetAgentPersonalSetting: AgentDefinition;
+  resetAgentTeamPersonalSetting: AgentTeamDefinition;
   restoreAgentOrgRun: AgentOrgRunMutationResult;
   restoreAgentRun: RestoreAgentRunResult;
   restoreAgentTeamRun: RestoreAgentTeamRunResult;
@@ -2456,6 +2465,24 @@ export type MutationRenamePeerNodeArgs = {
 };
 
 
+export type MutationResetAgentOrgPersonalSettingArgs = {
+  definitionId: Scalars['String']['input'];
+  setting: PersonalSetting;
+};
+
+
+export type MutationResetAgentPersonalSettingArgs = {
+  definitionId: Scalars['String']['input'];
+  setting: PersonalSetting;
+};
+
+
+export type MutationResetAgentTeamPersonalSettingArgs = {
+  definitionId: Scalars['String']['input'];
+  setting: PersonalSetting;
+};
+
+
 export type MutationRestoreAgentOrgRunArgs = {
   agentOrgRunId: Scalars['String']['input'];
 };
@@ -2743,6 +2770,18 @@ export type PeerNodeOfferGql = {
   refusalCode?: Maybe<Scalars['String']['output']>;
   unreachableReason?: Maybe<Scalars['String']['output']>;
 };
+
+export enum PersonalSetting {
+  Avatar = 'AVATAR',
+  DefaultLaunchConfig = 'DEFAULT_LAUNCH_CONFIG',
+  Skills = 'SKILLS',
+  Tools = 'TOOLS'
+}
+
+export enum PersonalSettingsBase {
+  BuiltIn = 'BUILT_IN',
+  Package = 'PACKAGE'
+}
 
 export type PrepareAgentRunResult = {
   __typename?: 'PrepareAgentRunResult';
@@ -4691,21 +4730,29 @@ export type RemoveApplicationPackageMutationVariables = Exact<{
 
 export type RemoveApplicationPackageMutation = { __typename?: 'Mutation', removeApplicationPackage: Array<{ __typename?: 'ApplicationPackage', packageId: string, displayName: string, sourceKind: ApplicationPackageSourceKind, sourceSummary?: string | null, applicationCount: number, isPlatformOwned: boolean, isRemovable: boolean }> };
 
-export type AgentDefinitionMutationFieldsFragment = { __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, skillScope: AgentSkillScope, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, internal: boolean, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, loadIssue?: { __typename?: 'DefinitionLoadIssue', code: string, reason: string, definitionPath: string, packageRoot: string } | null };
+export type AgentDefinitionMutationFieldsFragment = { __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, skillScope: AgentSkillScope, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, internal: boolean, personalSettings: Array<PersonalSetting>, personalSettingsBase?: PersonalSettingsBase | null, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, loadIssue?: { __typename?: 'DefinitionLoadIssue', code: string, reason: string, definitionPath: string, packageRoot: string } | null };
 
 export type CreateAgentDefinitionMutationVariables = Exact<{
   input: CreateAgentDefinitionInput;
 }>;
 
 
-export type CreateAgentDefinitionMutation = { __typename?: 'Mutation', createAgentDefinition: { __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, skillScope: AgentSkillScope, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, internal: boolean, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, loadIssue?: { __typename?: 'DefinitionLoadIssue', code: string, reason: string, definitionPath: string, packageRoot: string } | null } };
+export type CreateAgentDefinitionMutation = { __typename?: 'Mutation', createAgentDefinition: { __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, skillScope: AgentSkillScope, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, internal: boolean, personalSettings: Array<PersonalSetting>, personalSettingsBase?: PersonalSettingsBase | null, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, loadIssue?: { __typename?: 'DefinitionLoadIssue', code: string, reason: string, definitionPath: string, packageRoot: string } | null } };
 
 export type UpdateAgentDefinitionMutationVariables = Exact<{
   input: UpdateAgentDefinitionInput;
 }>;
 
 
-export type UpdateAgentDefinitionMutation = { __typename?: 'Mutation', updateAgentDefinition: { __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, skillScope: AgentSkillScope, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, internal: boolean, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, loadIssue?: { __typename?: 'DefinitionLoadIssue', code: string, reason: string, definitionPath: string, packageRoot: string } | null } };
+export type UpdateAgentDefinitionMutation = { __typename?: 'Mutation', updateAgentDefinition: { __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, skillScope: AgentSkillScope, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, internal: boolean, personalSettings: Array<PersonalSetting>, personalSettingsBase?: PersonalSettingsBase | null, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, loadIssue?: { __typename?: 'DefinitionLoadIssue', code: string, reason: string, definitionPath: string, packageRoot: string } | null } };
+
+export type ResetAgentPersonalSettingMutationVariables = Exact<{
+  definitionId: Scalars['String']['input'];
+  setting: PersonalSetting;
+}>;
+
+
+export type ResetAgentPersonalSettingMutation = { __typename?: 'Mutation', resetAgentPersonalSetting: { __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, skillScope: AgentSkillScope, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, internal: boolean, personalSettings: Array<PersonalSetting>, personalSettingsBase?: PersonalSettingsBase | null, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, loadIssue?: { __typename?: 'DefinitionLoadIssue', code: string, reason: string, definitionPath: string, packageRoot: string } | null } };
 
 export type DeleteAgentDefinitionMutationVariables = Exact<{
   id: Scalars['String']['input'];
@@ -4749,21 +4796,29 @@ export type ApproveToolInvocationMutationVariables = Exact<{
 
 export type ApproveToolInvocationMutation = { __typename?: 'Mutation', approveToolInvocation: { __typename: 'ApproveToolInvocationResult', success: boolean, message: string } };
 
-export type AgentOrgDefinitionFieldsFragment = { __typename?: 'AgentOrgDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, revision?: string | null, handoffs: Array<{ __typename?: 'AgentOrgHandoff', from: string, to: string, rules: Array<string> }>, members: Array<{ __typename?: 'AgentOrgMember', memberName: string, ref: string, refType: AgentOrgMemberType, refScope: AgentOrgMemberScope }>, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, loadIssues: Array<{ __typename?: 'DefinitionLoadIssueEntry', kind: DefinitionKind, definitionId: string, name?: string | null, code: string, reason: string, definitionPath: string, packageRoot: string, usingLastGood: boolean }> };
+export type AgentOrgDefinitionFieldsFragment = { __typename?: 'AgentOrgDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, revision?: string | null, personalSettings: Array<PersonalSetting>, personalSettingsBase?: PersonalSettingsBase | null, handoffs: Array<{ __typename?: 'AgentOrgHandoff', from: string, to: string, rules: Array<string> }>, members: Array<{ __typename?: 'AgentOrgMember', memberName: string, ref: string, refType: AgentOrgMemberType, refScope: AgentOrgMemberScope }>, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, loadIssues: Array<{ __typename?: 'DefinitionLoadIssueEntry', kind: DefinitionKind, definitionId: string, name?: string | null, code: string, reason: string, definitionPath: string, packageRoot: string, usingLastGood: boolean }> };
 
 export type CreateAgentOrgDefinitionMutationVariables = Exact<{
   input: CreateAgentOrgDefinitionInput;
 }>;
 
 
-export type CreateAgentOrgDefinitionMutation = { __typename?: 'Mutation', createAgentOrgDefinition: { __typename?: 'AgentOrgDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, revision?: string | null, handoffs: Array<{ __typename?: 'AgentOrgHandoff', from: string, to: string, rules: Array<string> }>, members: Array<{ __typename?: 'AgentOrgMember', memberName: string, ref: string, refType: AgentOrgMemberType, refScope: AgentOrgMemberScope }>, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, loadIssues: Array<{ __typename?: 'DefinitionLoadIssueEntry', kind: DefinitionKind, definitionId: string, name?: string | null, code: string, reason: string, definitionPath: string, packageRoot: string, usingLastGood: boolean }> } };
+export type CreateAgentOrgDefinitionMutation = { __typename?: 'Mutation', createAgentOrgDefinition: { __typename?: 'AgentOrgDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, revision?: string | null, personalSettings: Array<PersonalSetting>, personalSettingsBase?: PersonalSettingsBase | null, handoffs: Array<{ __typename?: 'AgentOrgHandoff', from: string, to: string, rules: Array<string> }>, members: Array<{ __typename?: 'AgentOrgMember', memberName: string, ref: string, refType: AgentOrgMemberType, refScope: AgentOrgMemberScope }>, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, loadIssues: Array<{ __typename?: 'DefinitionLoadIssueEntry', kind: DefinitionKind, definitionId: string, name?: string | null, code: string, reason: string, definitionPath: string, packageRoot: string, usingLastGood: boolean }> } };
 
 export type UpdateAgentOrgDefinitionMutationVariables = Exact<{
   input: UpdateAgentOrgDefinitionInput;
 }>;
 
 
-export type UpdateAgentOrgDefinitionMutation = { __typename?: 'Mutation', updateAgentOrgDefinition: { __typename?: 'AgentOrgDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, revision?: string | null, handoffs: Array<{ __typename?: 'AgentOrgHandoff', from: string, to: string, rules: Array<string> }>, members: Array<{ __typename?: 'AgentOrgMember', memberName: string, ref: string, refType: AgentOrgMemberType, refScope: AgentOrgMemberScope }>, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, loadIssues: Array<{ __typename?: 'DefinitionLoadIssueEntry', kind: DefinitionKind, definitionId: string, name?: string | null, code: string, reason: string, definitionPath: string, packageRoot: string, usingLastGood: boolean }> } };
+export type UpdateAgentOrgDefinitionMutation = { __typename?: 'Mutation', updateAgentOrgDefinition: { __typename?: 'AgentOrgDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, revision?: string | null, personalSettings: Array<PersonalSetting>, personalSettingsBase?: PersonalSettingsBase | null, handoffs: Array<{ __typename?: 'AgentOrgHandoff', from: string, to: string, rules: Array<string> }>, members: Array<{ __typename?: 'AgentOrgMember', memberName: string, ref: string, refType: AgentOrgMemberType, refScope: AgentOrgMemberScope }>, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, loadIssues: Array<{ __typename?: 'DefinitionLoadIssueEntry', kind: DefinitionKind, definitionId: string, name?: string | null, code: string, reason: string, definitionPath: string, packageRoot: string, usingLastGood: boolean }> } };
+
+export type ResetAgentOrgPersonalSettingMutationVariables = Exact<{
+  definitionId: Scalars['String']['input'];
+  setting: PersonalSetting;
+}>;
+
+
+export type ResetAgentOrgPersonalSettingMutation = { __typename?: 'Mutation', resetAgentOrgPersonalSetting: { __typename?: 'AgentOrgDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, revision?: string | null, personalSettings: Array<PersonalSetting>, personalSettingsBase?: PersonalSettingsBase | null, handoffs: Array<{ __typename?: 'AgentOrgHandoff', from: string, to: string, rules: Array<string> }>, members: Array<{ __typename?: 'AgentOrgMember', memberName: string, ref: string, refType: AgentOrgMemberType, refScope: AgentOrgMemberScope }>, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, loadIssues: Array<{ __typename?: 'DefinitionLoadIssueEntry', kind: DefinitionKind, definitionId: string, name?: string | null, code: string, reason: string, definitionPath: string, packageRoot: string, usingLastGood: boolean }> } };
 
 export type DeleteAgentOrgDefinitionMutationVariables = Exact<{
   id: Scalars['String']['input'];
@@ -4845,21 +4900,29 @@ export type CancelAgentRuntimeSignInMutationVariables = Exact<{
 
 export type CancelAgentRuntimeSignInMutation = { __typename?: 'Mutation', cancelAgentRuntimeSignIn: boolean };
 
-export type AgentTeamDefinitionMutationFieldsFragment = { __typename: 'AgentTeamDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, coordinatorMemberName: string, revision?: string | null, ownershipScope: AgentTeamDefinitionOwnershipScope, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, handoffs: Array<{ __typename?: 'AgentTeamHandoff', from: string, to: string, rules: Array<string> }>, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, nodes: Array<{ __typename: 'TeamMember', memberName: string, ref: string, refScope: AgentMemberRefScope }> };
+export type AgentTeamDefinitionMutationFieldsFragment = { __typename: 'AgentTeamDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, coordinatorMemberName: string, revision?: string | null, ownershipScope: AgentTeamDefinitionOwnershipScope, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, personalSettings: Array<PersonalSetting>, personalSettingsBase?: PersonalSettingsBase | null, handoffs: Array<{ __typename?: 'AgentTeamHandoff', from: string, to: string, rules: Array<string> }>, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, nodes: Array<{ __typename: 'TeamMember', memberName: string, ref: string, refScope: AgentMemberRefScope }> };
 
 export type CreateAgentTeamDefinitionMutationVariables = Exact<{
   input: CreateAgentTeamDefinitionInput;
 }>;
 
 
-export type CreateAgentTeamDefinitionMutation = { __typename?: 'Mutation', createAgentTeamDefinition: { __typename: 'AgentTeamDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, coordinatorMemberName: string, revision?: string | null, ownershipScope: AgentTeamDefinitionOwnershipScope, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, handoffs: Array<{ __typename?: 'AgentTeamHandoff', from: string, to: string, rules: Array<string> }>, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, nodes: Array<{ __typename: 'TeamMember', memberName: string, ref: string, refScope: AgentMemberRefScope }> } };
+export type CreateAgentTeamDefinitionMutation = { __typename?: 'Mutation', createAgentTeamDefinition: { __typename: 'AgentTeamDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, coordinatorMemberName: string, revision?: string | null, ownershipScope: AgentTeamDefinitionOwnershipScope, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, personalSettings: Array<PersonalSetting>, personalSettingsBase?: PersonalSettingsBase | null, handoffs: Array<{ __typename?: 'AgentTeamHandoff', from: string, to: string, rules: Array<string> }>, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, nodes: Array<{ __typename: 'TeamMember', memberName: string, ref: string, refScope: AgentMemberRefScope }> } };
 
 export type UpdateAgentTeamDefinitionMutationVariables = Exact<{
   input: UpdateAgentTeamDefinitionInput;
 }>;
 
 
-export type UpdateAgentTeamDefinitionMutation = { __typename?: 'Mutation', updateAgentTeamDefinition: { __typename: 'AgentTeamDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, coordinatorMemberName: string, revision?: string | null, ownershipScope: AgentTeamDefinitionOwnershipScope, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, handoffs: Array<{ __typename?: 'AgentTeamHandoff', from: string, to: string, rules: Array<string> }>, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, nodes: Array<{ __typename: 'TeamMember', memberName: string, ref: string, refScope: AgentMemberRefScope }> } };
+export type UpdateAgentTeamDefinitionMutation = { __typename?: 'Mutation', updateAgentTeamDefinition: { __typename: 'AgentTeamDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, coordinatorMemberName: string, revision?: string | null, ownershipScope: AgentTeamDefinitionOwnershipScope, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, personalSettings: Array<PersonalSetting>, personalSettingsBase?: PersonalSettingsBase | null, handoffs: Array<{ __typename?: 'AgentTeamHandoff', from: string, to: string, rules: Array<string> }>, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, nodes: Array<{ __typename: 'TeamMember', memberName: string, ref: string, refScope: AgentMemberRefScope }> } };
+
+export type ResetAgentTeamPersonalSettingMutationVariables = Exact<{
+  definitionId: Scalars['String']['input'];
+  setting: PersonalSetting;
+}>;
+
+
+export type ResetAgentTeamPersonalSettingMutation = { __typename?: 'Mutation', resetAgentTeamPersonalSetting: { __typename: 'AgentTeamDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, coordinatorMemberName: string, revision?: string | null, ownershipScope: AgentTeamDefinitionOwnershipScope, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, personalSettings: Array<PersonalSetting>, personalSettingsBase?: PersonalSettingsBase | null, handoffs: Array<{ __typename?: 'AgentTeamHandoff', from: string, to: string, rules: Array<string> }>, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, nodes: Array<{ __typename: 'TeamMember', memberName: string, ref: string, refScope: AgentMemberRefScope }> } };
 
 export type DeleteAgentTeamDefinitionMutationVariables = Exact<{
   id: Scalars['String']['input'];
@@ -5485,12 +5548,12 @@ export type GetAgentCustomizationOptionsQuery = { __typename?: 'Query', availabl
 export type GetAgentDefinitionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAgentDefinitionsQuery = { __typename?: 'Query', agentDefinitions: Array<{ __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, skillScope: AgentSkillScope, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, internal: boolean, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, loadIssue?: { __typename?: 'DefinitionLoadIssue', code: string, reason: string, definitionPath: string, packageRoot: string } | null }> };
+export type GetAgentDefinitionsQuery = { __typename?: 'Query', agentDefinitions: Array<{ __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, skillScope: AgentSkillScope, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, internal: boolean, personalSettings: Array<PersonalSetting>, personalSettingsBase?: PersonalSettingsBase | null, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, loadIssue?: { __typename?: 'DefinitionLoadIssue', code: string, reason: string, definitionPath: string, packageRoot: string } | null }> };
 
 export type GetAgentOrgDefinitionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAgentOrgDefinitionsQuery = { __typename?: 'Query', agentOrgDefinitions: Array<{ __typename?: 'AgentOrgDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, revision?: string | null, handoffs: Array<{ __typename?: 'AgentOrgHandoff', from: string, to: string, rules: Array<string> }>, members: Array<{ __typename?: 'AgentOrgMember', memberName: string, ref: string, refType: AgentOrgMemberType, refScope: AgentOrgMemberScope }>, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, loadIssues: Array<{ __typename?: 'DefinitionLoadIssueEntry', kind: DefinitionKind, definitionId: string, name?: string | null, code: string, reason: string, definitionPath: string, packageRoot: string, usingLastGood: boolean }> }> };
+export type GetAgentOrgDefinitionsQuery = { __typename?: 'Query', agentOrgDefinitions: Array<{ __typename?: 'AgentOrgDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, revision?: string | null, personalSettings: Array<PersonalSetting>, personalSettingsBase?: PersonalSettingsBase | null, handoffs: Array<{ __typename?: 'AgentOrgHandoff', from: string, to: string, rules: Array<string> }>, members: Array<{ __typename?: 'AgentOrgMember', memberName: string, ref: string, refType: AgentOrgMemberType, refScope: AgentOrgMemberScope }>, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, loadIssues: Array<{ __typename?: 'DefinitionLoadIssueEntry', kind: DefinitionKind, definitionId: string, name?: string | null, code: string, reason: string, definitionPath: string, packageRoot: string, usingLastGood: boolean }> }> };
 
 export type GetAgentOrgEndpointCatalogQueryVariables = Exact<{
   id: Scalars['String']['input'];
@@ -5521,7 +5584,7 @@ export type AgentRuntimesQuery = { __typename?: 'Query', agentRuntimeSignInBrows
 export type GetAgentTeamDefinitionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAgentTeamDefinitionsQuery = { __typename?: 'Query', agentTeamDefinitions: Array<{ __typename: 'AgentTeamDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, coordinatorMemberName: string, revision?: string | null, ownershipScope: AgentTeamDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, handoffs: Array<{ __typename?: 'AgentTeamHandoff', from: string, to: string, rules: Array<string> }>, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, nodes: Array<{ __typename: 'TeamMember', memberName: string, ref: string, refScope: AgentMemberRefScope }>, loadIssues: Array<{ __typename?: 'DefinitionLoadIssueEntry', kind: DefinitionKind, definitionId: string, name?: string | null, code: string, reason: string, definitionPath: string, packageRoot: string, usingLastGood: boolean }> }> };
+export type GetAgentTeamDefinitionsQuery = { __typename?: 'Query', agentTeamDefinitions: Array<{ __typename: 'AgentTeamDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, coordinatorMemberName: string, revision?: string | null, ownershipScope: AgentTeamDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, personalSettings: Array<PersonalSetting>, personalSettingsBase?: PersonalSettingsBase | null, handoffs: Array<{ __typename?: 'AgentTeamHandoff', from: string, to: string, rules: Array<string> }>, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, nodes: Array<{ __typename: 'TeamMember', memberName: string, ref: string, refScope: AgentMemberRefScope }>, loadIssues: Array<{ __typename?: 'DefinitionLoadIssueEntry', kind: DefinitionKind, definitionId: string, name?: string | null, code: string, reason: string, definitionPath: string, packageRoot: string, usingLastGood: boolean }> }> };
 
 export type GetAppDataMigrationsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -6514,6 +6577,8 @@ export const AgentDefinitionMutationFieldsFragmentDoc = gql`
   ownerPackageId
   ownerLocalApplicationId
   internal
+  personalSettings
+  personalSettingsBase
   defaultLaunchConfig {
     llmModelIdentifier
     runtimeKind
@@ -6536,6 +6601,8 @@ export const AgentOrgDefinitionFieldsFragmentDoc = gql`
   category
   avatarUrl
   revision
+  personalSettings
+  personalSettingsBase
   handoffs {
     from
     to
@@ -6585,6 +6652,8 @@ export const AgentTeamDefinitionMutationFieldsFragmentDoc = gql`
   ownerApplicationName
   ownerPackageId
   ownerLocalApplicationId
+  personalSettings
+  personalSettingsBase
   defaultLaunchConfig {
     llmModelIdentifier
     runtimeKind
@@ -7591,6 +7660,36 @@ export function useUpdateAgentDefinitionMutation(options: VueApolloComposable.Us
   return VueApolloComposable.useMutation<UpdateAgentDefinitionMutation, UpdateAgentDefinitionMutationVariables>(UpdateAgentDefinitionDocument, options);
 }
 export type UpdateAgentDefinitionMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<UpdateAgentDefinitionMutation, UpdateAgentDefinitionMutationVariables>;
+export const ResetAgentPersonalSettingDocument = gql`
+    mutation ResetAgentPersonalSetting($definitionId: String!, $setting: PersonalSetting!) {
+  resetAgentPersonalSetting(definitionId: $definitionId, setting: $setting) {
+    ...AgentDefinitionMutationFields
+  }
+}
+    ${AgentDefinitionMutationFieldsFragmentDoc}`;
+
+/**
+ * __useResetAgentPersonalSettingMutation__
+ *
+ * To run a mutation, you first call `useResetAgentPersonalSettingMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useResetAgentPersonalSettingMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useResetAgentPersonalSettingMutation({
+ *   variables: {
+ *     definitionId: // value for 'definitionId'
+ *     setting: // value for 'setting'
+ *   },
+ * });
+ */
+export function useResetAgentPersonalSettingMutation(options: VueApolloComposable.UseMutationOptions<ResetAgentPersonalSettingMutation, ResetAgentPersonalSettingMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<ResetAgentPersonalSettingMutation, ResetAgentPersonalSettingMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<ResetAgentPersonalSettingMutation, ResetAgentPersonalSettingMutationVariables>(ResetAgentPersonalSettingDocument, options);
+}
+export type ResetAgentPersonalSettingMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<ResetAgentPersonalSettingMutation, ResetAgentPersonalSettingMutationVariables>;
 export const DeleteAgentDefinitionDocument = gql`
     mutation DeleteAgentDefinition($id: String!) {
   deleteAgentDefinition(id: $id) {
@@ -7837,6 +7936,36 @@ export function useUpdateAgentOrgDefinitionMutation(options: VueApolloComposable
   return VueApolloComposable.useMutation<UpdateAgentOrgDefinitionMutation, UpdateAgentOrgDefinitionMutationVariables>(UpdateAgentOrgDefinitionDocument, options);
 }
 export type UpdateAgentOrgDefinitionMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<UpdateAgentOrgDefinitionMutation, UpdateAgentOrgDefinitionMutationVariables>;
+export const ResetAgentOrgPersonalSettingDocument = gql`
+    mutation ResetAgentOrgPersonalSetting($definitionId: String!, $setting: PersonalSetting!) {
+  resetAgentOrgPersonalSetting(definitionId: $definitionId, setting: $setting) {
+    ...AgentOrgDefinitionFields
+  }
+}
+    ${AgentOrgDefinitionFieldsFragmentDoc}`;
+
+/**
+ * __useResetAgentOrgPersonalSettingMutation__
+ *
+ * To run a mutation, you first call `useResetAgentOrgPersonalSettingMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useResetAgentOrgPersonalSettingMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useResetAgentOrgPersonalSettingMutation({
+ *   variables: {
+ *     definitionId: // value for 'definitionId'
+ *     setting: // value for 'setting'
+ *   },
+ * });
+ */
+export function useResetAgentOrgPersonalSettingMutation(options: VueApolloComposable.UseMutationOptions<ResetAgentOrgPersonalSettingMutation, ResetAgentOrgPersonalSettingMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<ResetAgentOrgPersonalSettingMutation, ResetAgentOrgPersonalSettingMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<ResetAgentOrgPersonalSettingMutation, ResetAgentOrgPersonalSettingMutationVariables>(ResetAgentOrgPersonalSettingDocument, options);
+}
+export type ResetAgentOrgPersonalSettingMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<ResetAgentOrgPersonalSettingMutation, ResetAgentOrgPersonalSettingMutationVariables>;
 export const DeleteAgentOrgDefinitionDocument = gql`
     mutation DeleteAgentOrgDefinition($id: String!) {
   deleteAgentOrgDefinition(id: $id)
@@ -8245,6 +8374,36 @@ export function useUpdateAgentTeamDefinitionMutation(options: VueApolloComposabl
   return VueApolloComposable.useMutation<UpdateAgentTeamDefinitionMutation, UpdateAgentTeamDefinitionMutationVariables>(UpdateAgentTeamDefinitionDocument, options);
 }
 export type UpdateAgentTeamDefinitionMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<UpdateAgentTeamDefinitionMutation, UpdateAgentTeamDefinitionMutationVariables>;
+export const ResetAgentTeamPersonalSettingDocument = gql`
+    mutation ResetAgentTeamPersonalSetting($definitionId: String!, $setting: PersonalSetting!) {
+  resetAgentTeamPersonalSetting(definitionId: $definitionId, setting: $setting) {
+    ...AgentTeamDefinitionMutationFields
+  }
+}
+    ${AgentTeamDefinitionMutationFieldsFragmentDoc}`;
+
+/**
+ * __useResetAgentTeamPersonalSettingMutation__
+ *
+ * To run a mutation, you first call `useResetAgentTeamPersonalSettingMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useResetAgentTeamPersonalSettingMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useResetAgentTeamPersonalSettingMutation({
+ *   variables: {
+ *     definitionId: // value for 'definitionId'
+ *     setting: // value for 'setting'
+ *   },
+ * });
+ */
+export function useResetAgentTeamPersonalSettingMutation(options: VueApolloComposable.UseMutationOptions<ResetAgentTeamPersonalSettingMutation, ResetAgentTeamPersonalSettingMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<ResetAgentTeamPersonalSettingMutation, ResetAgentTeamPersonalSettingMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<ResetAgentTeamPersonalSettingMutation, ResetAgentTeamPersonalSettingMutationVariables>(ResetAgentTeamPersonalSettingDocument, options);
+}
+export type ResetAgentTeamPersonalSettingMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<ResetAgentTeamPersonalSettingMutation, ResetAgentTeamPersonalSettingMutationVariables>;
 export const DeleteAgentTeamDefinitionDocument = gql`
     mutation DeleteAgentTeamDefinition($id: String!) {
   deleteAgentTeamDefinition(id: $id) {
@@ -11014,6 +11173,8 @@ export const GetAgentDefinitionsDocument = gql`
     ownerPackageId
     ownerLocalApplicationId
     internal
+    personalSettings
+    personalSettingsBase
     defaultLaunchConfig {
       llmModelIdentifier
       runtimeKind
@@ -11058,6 +11219,8 @@ export const GetAgentOrgDefinitionsDocument = gql`
     category
     avatarUrl
     revision
+    personalSettings
+    personalSettingsBase
     handoffs {
       from
       to
@@ -11327,6 +11490,8 @@ export const GetAgentTeamDefinitionsDocument = gql`
     ownerApplicationName
     ownerPackageId
     ownerLocalApplicationId
+    personalSettings
+    personalSettingsBase
     defaultLaunchConfig {
       llmModelIdentifier
       runtimeKind

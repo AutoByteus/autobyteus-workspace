@@ -257,10 +257,7 @@ export const buildStudioServer = async (input: {
   });
   let agentPackageDefinitionFeed: AgentPackageDefinitionFeed | null = null;
   try {
-    agentPackageDefinitionFeed = await composeAgentPackageDefinitionFeed({
-      reloader: hostDefinitionServices.agentPackageDefinitions.reloader,
-      definitionChanges: hostDefinitionServices.agentDefinitionChanges,
-    });
+    agentPackageDefinitionFeed = await composeAgentPackageDefinitionFeed({ definitions: hostDefinitionServices });
   } catch (error) {
     await nativeShutdown.close(async () => { hostDefinitionServices.close(); });
     throw error;

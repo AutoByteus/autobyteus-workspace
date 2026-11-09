@@ -9,6 +9,11 @@ import {
   createAgentPackageDefinitions,
   type AgentPackageDefinitions,
 } from "../../agent-package-definitions/services/agent-package-definitions.js";
+import { PersonalSettingsStore } from "../../personal-settings/stores/personal-settings-store.js";
+import {
+  PersonalSettingsService,
+  personalSettingsFilePath,
+} from "../../personal-settings/services/personal-settings-service.js";
 
 export type BundleBackedDefinitionServices = Readonly<{
   agentDefinitionService: AgentDefinitionService;
@@ -16,6 +21,8 @@ export type BundleBackedDefinitionServices = Readonly<{
   packageDefinitions: AgentPackageDefinitions;
   /** One signal for every agent definition change these services can see. */
   agentDefinitionChanges: AgentDefinitionChangeSignal;
+  /** The personal settings applied on the services' reads (`<app-data>/agent-packages/personal-settings.json`). */
+  personalSettings: PersonalSettingsService;
 }>;
 
 /** The agent package definitions of the registered packages behind the services; application-package definitions come from this bundle service. */
@@ -25,8 +32,12 @@ export const createBundleBackedDefinitionServices = (input: {
 }): BundleBackedDefinitionServices => {
   const packageDefinitions = createAgentPackageDefinitions({ appConfig: input.appConfig });
   const agentDefinitionChanges = new AgentDefinitionChangeSignal();
+  const personalSettings = new PersonalSettingsService({
+    store: new PersonalSettingsStore(() => personalSettingsFilePath(input.appConfig.getAppDataDir())),
+  });
   const agentDefinitionService = new AgentDefinitionService({
     changeSignal: agentDefinitionChanges,
+    personalSettings,
     fileStore: new FileAgentDefinitionProvider({
       appConfig: input.appConfig,
       applicationBundleService: input.bundleService,
@@ -40,11 +51,13 @@ export const createBundleBackedDefinitionServices = (input: {
     }),
     packageDefinitions,
     agentDefinitionService,
+    personalSettings,
   });
   return Object.freeze({
     agentDefinitionService,
     agentTeamDefinitionService,
     packageDefinitions,
     agentDefinitionChanges,
+    personalSettings,
   });
 };

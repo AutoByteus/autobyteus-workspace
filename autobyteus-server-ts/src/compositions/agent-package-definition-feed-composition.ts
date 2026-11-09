@@ -4,8 +4,8 @@ import {
   type PackageFolderWatchFactory,
   type ParentFolderWatchFactory,
 } from "../agent-package-definitions/monitor/agent-package-folder-watcher.js";
-import type { AgentPackageDefinitionReloader } from "../agent-package-definitions/services/agent-package-definition-reloader.js";
-import type { AgentDefinitionChangeSignal } from "../agent-definition/services/agent-definition-change-signal.js";
+import type { AgentPackageDefinitionList } from "../agent-package-definitions/domain/agent-package-definition-types.js";
+import type { HostDefinitionServices } from "./host-definition-services.js";
 
 /** The studio server's agent package folder watcher and change feed around the process agent package definitions. */
 export type AgentPackageDefinitionFeed = Readonly<{
@@ -15,30 +15,38 @@ export type AgentPackageDefinitionFeed = Readonly<{
 }>;
 
 /**
- * Wires change announcements (reloader → hub) and registration (full reload → watched package
- * folders), then starts watching the registered package folders before the first read, so
- * changes made during startup are not missed. Startup never waits for watcher readiness.
+ * Wires change announcements (the reloader and the personal settings → hub, through one announce
+ * function) and registration (full reload → watched package folders), then starts watching the
+ * registered package folders before the first read, so changes made during startup are not missed.
+ * Startup never waits for watcher readiness.
  */
 export const composeAgentPackageDefinitionFeed = async (input: {
-  reloader: AgentPackageDefinitionReloader;
-  /** Told about every announced reload, so running agents can take their definitions' tools. */
-  definitionChanges: Pick<AgentDefinitionChangeSignal, "notifyChanged">;
+  /**
+   * The process definitions: the reloader of the agent package definitions; the agent definition
+   * change signal, told about every announcement so running agents can take their definitions'
+   * tools; the personal settings, announced through the same function as the reloader.
+   */
+  definitions: Pick<HostDefinitionServices, "agentPackageDefinitions" | "agentDefinitionChanges" | "personalSettings">;
   createWatcher?: PackageFolderWatchFactory;
   createParentFolderWatch?: ParentFolderWatchFactory;
 }): Promise<AgentPackageDefinitionFeed> => {
+  const { reloader } = input.definitions.agentPackageDefinitions;
+  const { agentDefinitionChanges, personalSettings } = input.definitions;
   const hub = new AgentPackageDefinitionChangeHub();
   const watcher = new AgentPackageFolderWatcher({
-    sink: input.reloader,
+    sink: reloader,
     createWatcher: input.createWatcher,
     createParentFolderWatch: input.createParentFolderWatch,
   });
   AgentPackageFolderWatcher.bindProcessInstance(watcher);
-  input.reloader.setPublisher((changedLists) => {
+  const announce = (changedLists: readonly AgentPackageDefinitionList[]): void => {
     hub.broadcast({ type: "agent_package_definitions_changed", changedLists: [...changedLists] });
-    input.definitionChanges.notifyChanged();
-  });
-  input.reloader.setRegistrationListener((roots) => watcher.syncPackageFolders(roots));
-  await watcher.syncPackageFolders(input.reloader.listPackageRoots());
+    agentDefinitionChanges.notifyChanged();
+  };
+  reloader.setPublisher(announce);
+  personalSettings.setPublisher(announce);
+  reloader.setRegistrationListener((roots) => watcher.syncPackageFolders(roots));
+  await watcher.syncPackageFolders(reloader.listPackageRoots());
 
   let closed = false;
   return Object.freeze({
@@ -47,8 +55,9 @@ export const composeAgentPackageDefinitionFeed = async (input: {
     close: async () => {
       if (closed) return;
       closed = true;
-      input.reloader.setRegistrationListener(null);
-      input.reloader.setPublisher(null);
+      reloader.setRegistrationListener(null);
+      reloader.setPublisher(null);
+      personalSettings.setPublisher(null);
       AgentPackageFolderWatcher.releaseProcessInstance(watcher);
       try {
         await watcher.close();

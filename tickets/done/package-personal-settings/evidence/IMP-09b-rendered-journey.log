@@ -1,0 +1,76 @@
+# IMP-09b — rendered journey in an isolated desktop instance
+# command: pnpm --silent isolated-app start --build --data-root /tmp/pps-render/data-root (instance iso-54601-fd7f),
+#          then /tmp/pps-render/journey.sh steps 1-10 through the browser-automation CLI attached to the instance's control port
+#          (BROWSER_AUTOMATION_ATTACH_ONLY=1); the scripts are temporary diagnostics, not committed
+# commit: 2c4ba2c51e (the app was built from this commit)
+# environment: macOS 26.5.2 arm64, packaged AutoByteus 1.5.12-beta.10 (worktree build), test-owned data root
+#              /tmp/pps-render/data-root and a test-owned fixture package /tmp/pps-render/pps-render-agents (a git repository, so
+#              "package git status: []" means no package file changed); never the user's app or data
+# date: 2026-11-09T08:01:50Z
+#
+# Steps 2 and 3 of the first pass failed in the probe script itself (collapsed tool groups have empty innerText); they were rerun
+# (part 2). The rerun's save of step 2 also saved a description edit left in the open form by the failed step 3, so the package
+# files changed with that description (the designed behavior: the file keeps the base tools). Step 2b repeats the personal-only
+# save on a freshly loaded form, after restoring the fixture.
+
+
+## 1. Import the fixture package (Settings → Agent Packages, local path)
+true
+
+## 2. Agent editor: note; add a tool; Update (AC-001: no package file changes)
+{"schema_version": "1", "ok": false, "command": "run-script", "error": {"code": "SCRIPT_FAILED", "message": "The JavaScript evaluation failed.", "retryable": false, "details": {"tab_id": "E9F7D3700E6C86DEB308DD3429C7D96F"}}}
+package git status: []
+personal-settings.json: (none)
+
+## 3. Reopen: the Tools mark; edit the description (unsaved); reset Tools; wait for the list reload
+{"schema_version": "1", "ok": false, "command": "run-script", "error": {"code": "SCRIPT_FAILED", "message": "The JavaScript evaluation failed.", "retryable": false, "details": {"tab_id": "E9F7D3700E6C86DEB308DD3429C7D96F"}}}
+package git status: []
+personal-settings.json: (none)
+
+## 4. Team editor: note; upload an avatar; Update (no package file changes)
+{"note": "Avatar and runtime/model are your personal settings on this computer. Package updates keep them.", "hashAfterSave": "#/agent-teams?view=team-detail&id=pps-team"}
+package git status: []
+personal-settings.json: {"agent_team:pps-team": {"avatarUrl": "/rest/files/images/ff7e3dd6-dd1f-43ec-9175-0ae25f42c2b5.png"}}
+
+## 5. Team editor again: the avatar mark; reset
+{"marksBefore": ["Personal\nReset to the package's setting"], "marksAfter": 0}
+package git status: []
+personal-settings.json: {}
+
+## 6. Org editor: note; upload an avatar; Save (MP-002: no package file changes)
+{"note": "Avatar and runtime/model are your personal settings on this computer. Package updates keep them.", "marks": ["Personal\nReset to the package's setting"]}
+package git status: []
+personal-settings.json: {"agent_org:pps-org": {"avatarUrl": "/rest/files/images/4a95725d-41a8-470e-bae8-68f568997d23.png"}}
+
+## 7. Org: reset the avatar
+{"marks": 0, "removeButtonShown": false}
+package git status: []
+personal-settings.json: {}
+
+## 8. Built-in Daily Assistant: note; remove read_file; Update (its files unchanged)
+files before: e58c3e89be31e68ab71be9e06bb4a0e36624e82b eb21bcfdcb64c15975912a496ccd573e25cd5985 
+{"note": "Tools, skills, avatar and runtime/model are your personal settings on this computer. Restarts and AutoByteus updates keep them."}
+files after:  e58c3e89be31e68ab71be9e06bb4a0e36624e82b eb21bcfdcb64c15975912a496ccd573e25cd5985 
+package git status: []
+personal-settings.json: {"agent:autobyteus-daily-assistant": {"toolsRemoved": ["read_file"]}}
+
+## 2 (rerun). Agent editor: note; add get_handoff_rules from the tool list; Update (AC-001: no package file changes)
+{"note": "Tools, skills, avatar and runtime/model are your personal settings on this computer. Package updates keep them.", "tagsBeforeSave": ["read_file", "write_file", "get_handoff_rules"], "hashAfterSave": "#/agents?view=detail&id=pps-designer"}
+package git status: [ M agents/pps-designer/agent-config.json  M agents/pps-designer/agent.md ]
+personal-settings.json: {"agent:autobyteus-daily-assistant": {"toolsRemoved": ["read_file"]}, "agent:pps-designer": {"toolsAdded": ["get_handoff_rules"]}}
+
+## 3 (rerun). Reopen: the Tools mark; edit the description (unsaved); reset Tools; wait 6 s for the announced list reload
+{"marksBefore": ["Personal\nReset to the package's setting"], "descriptionAfter": "Designs software (unsaved edit)", "toolsAfter": ["read_file", "write_file"], "marksAfter": 0}
+package git status: [ M agents/pps-designer/agent-config.json  M agents/pps-designer/agent.md ]
+personal-settings.json: {"agent:autobyteus-daily-assistant": {"toolsRemoved": ["read_file"]}}
+
+## 2b. (fixture restored to its commit; the page left and reopened, so the form loads fresh) Agent: add get_handoff_rules; Update (AC-001)
+{"descriptionLoaded": "Designs software (personal settings render check)", "hashAfterSave": "#/agents?view=detail&id=pps-designer"}
+package git status: []
+personal-settings.json: {"agent:autobyteus-daily-assistant": {"toolsRemoved": ["read_file"]}, "agent:pps-designer": {"toolsAdded": ["get_handoff_rules"]}}
+
+## 9. After a restart of the instance: the personal settings are kept
+{"dailyAssistant": {"tools": ["Personal", "run_bash", "read_url", "search_web", "close_tab", "dom_snapshot", "list_tabs", "navigate_to", "open_tab", "run_script", "screenshot", "get_process_output", "start_background_process", "stop_background_process", "download_media", "edit_image", "generate_image", "generate_speech", "list_available_agents"], "marks": ["Personal\nReset to the built-in setting"]}, "ppsDesigner": {"tools": ["Personal", "read_file", "write_file", "get_handoff_rules"], "marks": ["Personal\nReset to the package's setting"]}}
+
+## 10. zh-CN: Settings → Language → Simplified Chinese; the agent editor's note and mark, and the automatic-update texts
+{"note": "工具、技能、头像和运行时/模型是你在这台电脑上的个人设置。智能体包更新会保留它们。", "marks": ["个人\n恢复为智能体包的设置"]}

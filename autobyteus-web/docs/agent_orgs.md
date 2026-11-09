@@ -105,6 +105,13 @@ existing writer (a null update is not a clear). Removing a reference does not
 delete the uploaded media file. Existing members, handoffs and hidden metadata
 retain their normal save semantics.
 
+For an Org from an agent package, the avatar and the default runtime/model are
+[personal settings](./agent_management.md#personal-settings).
+`AgentOrgPersonalSettings.vue`, under the avatar editor in Edit, shows the note,
+the avatar's "Personal" mark with "Reset to the package's setting", and — since
+the editor has no runtime/model field — a personal runtime/model (captured from
+an edit of the package's `org-config.json` at a GitHub update) with its reset.
+
 Detail **Delete** captures the selected Org identity and asks for named,
 irreversible confirmation. It removes that definition package, including
 physically owned Agent/Team definitions inside it—not shared referenced

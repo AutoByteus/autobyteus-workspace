@@ -1,0 +1,5 @@
+# DEL-08-web-codegen-check — web codegen check (server schema vs generated/graphql.ts)
+### pnpm -C autobyteus-web codegen:check
+# State: merge 5a62a061b4 (ticket code 2c4ba2c51e + tests f3e36e274c + origin/personal 51ec39d86c); macOS 26 arm64, Node v22.23.1; 2026-11-09
+
+exit 0 (generated/graphql.ts matches the integrated server schema)

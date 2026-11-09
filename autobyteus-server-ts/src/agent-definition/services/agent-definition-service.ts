@@ -24,6 +24,13 @@ import {
   type AgentPackageDefinitions,
 } from "../../agent-package-definitions/services/agent-package-definitions.js";
 import type { DefinitionLoadIssue } from "../../agent-package-definitions/domain/agent-package-definition-types.js";
+import {
+  PersonalSettingsService,
+  type PersonalSettingEdits,
+  type PersonalSettingsSourceClass,
+  type PersonalSettingsView,
+} from "../../personal-settings/services/personal-settings-service.js";
+import type { PersonalSetting } from "../../personal-settings/domain/personal-setting-record.js";
 import { getInternalAgentVisibility, type InternalAgentVisibility } from "./internal-agent-visibility.js";
 import type { AgentDefinitionChangeSignal } from "./agent-definition-change-signal.js";
 
@@ -49,8 +56,15 @@ type ProcessorRegistries = {
 /** File writes, templates and application-package reads (agent package definitions are store reads). */
 export type AgentDefinitionFileStore = Pick<
   FileAgentDefinitionProvider,
-  "create" | "getById" | "getTemplates" | "update" | "delete" | "listApplicationOwnedAgents" | "listApplicationOwnedTeamLocalAgents"
+  | "create" | "getById" | "getTemplates" | "update" | "rendersDifferently" | "delete"
+  | "listApplicationOwnedAgents" | "listApplicationOwnedTeamLocalAgents"
 >;
+
+/** The four settings that are personal for package and built-in agents (the rest goes to the files). */
+const PERSONAL_FIELDS: ReadonlySet<string> = new Set(["toolNames", "skillNames", "avatarUrl", "defaultLaunchConfig"]);
+
+/** A stored definition with where it was read from (null for an application-owned agent). */
+type BaseRead = Readonly<{ definition: AgentDefinition | null; sourceClass: PersonalSettingsSourceClass | null }>;
 
 /** One agent definition's load issue, for the definition problems list. */
 export type AgentLoadIssueEntry = Readonly<{
@@ -94,6 +108,29 @@ export type AgentDefinitionCreateInput = {
 
 export type AgentDefinitionUpdateInput = Partial<AgentDefinitionCreateInput>;
 
+/** A copy that keeps the class (and copies the arrays it patches). */
+const cloneAgent = (definition: AgentDefinition): AgentDefinition => Object.assign(
+  Object.create(Object.getPrototypeOf(definition) as object) as AgentDefinition,
+  definition,
+  {
+    toolNames: [...definition.toolNames],
+    skillNames: [...definition.skillNames],
+    inputProcessorNames: [...definition.inputProcessorNames],
+    llmResponseProcessorNames: [...definition.llmResponseProcessorNames],
+    toolExecutionResultProcessorNames: [...definition.toolExecutionResultProcessorNames],
+    toolInvocationPreprocessorNames: [...definition.toolInvocationPreprocessorNames],
+    lifecycleProcessorNames: [...definition.lifecycleProcessorNames],
+  },
+);
+
+/** The input's four personal settings, normalized as the files would hold them; an absent field stays absent. */
+const personalEditsOf = (data: AgentDefinitionUpdateInput): PersonalSettingEdits => ({
+  ...(data.toolNames !== undefined && data.toolNames !== null ? { toolNames: data.toolNames } : {}),
+  ...(data.skillNames !== undefined && data.skillNames !== null ? { skillNames: data.skillNames } : {}),
+  ...(data.avatarUrl !== undefined ? { avatarUrl: normalizeOptionalString(data.avatarUrl) } : {}),
+  ...(data.defaultLaunchConfig !== undefined ? { defaultLaunchConfig: normalizeDefaultLaunchConfigInput(data.defaultLaunchConfig) ?? null } : {}),
+});
+
 type AgentDefinitionServiceOptions = {
   fileStore?: AgentDefinitionFileStore;
   packageDefinitions?: AgentPackageDefinitions;
@@ -102,6 +139,8 @@ type AgentDefinitionServiceOptions = {
   visibility?: Pick<InternalAgentVisibility, "isHidden">;
   /** Announces a saved application-owned agent (package agents announce through their reload). */
   changeSignal?: Pick<AgentDefinitionChangeSignal, "notifyChanged">;
+  /** The node's personal settings, applied on every agent package read; the process instance by default. */
+  personalSettings?: PersonalSettingsService;
 };
 
 export class AgentDefinitionService {
@@ -134,6 +173,7 @@ export class AgentDefinitionService {
   private readonly packageDefinitions: AgentPackageDefinitions;
   private readonly visibility: Pick<InternalAgentVisibility, "isHidden">;
   private readonly changeSignal: Pick<AgentDefinitionChangeSignal, "notifyChanged"> | null;
+  private readonly personalSettings: PersonalSettingsService;
   private registries: ProcessorRegistries;
 
   constructor(options: AgentDefinitionServiceOptions = {}) {
@@ -141,6 +181,7 @@ export class AgentDefinitionService {
     this.packageDefinitions = options.packageDefinitions ?? getProcessAgentPackageDefinitions();
     this.visibility = options.visibility ?? getInternalAgentVisibility();
     this.changeSignal = options.changeSignal ?? null;
+    this.personalSettings = options.personalSettings ?? PersonalSettingsService.getInstance();
     this.registries = {
       input: options.registries?.input ?? defaultInputProcessorRegistry,
       llmResponse: options.registries?.llmResponse ?? defaultLlmResponseProcessorRegistry,
@@ -224,16 +265,27 @@ export class AgentDefinitionService {
     return this.stripMandatoryProcessors(created) ?? created;
   }
 
-  /** The current stored definition (a copy), before mandatory-processor stripping. */
-  private async readStoredDefinition(definitionId: string): Promise<AgentDefinition | null> {
-    if (isApplicationOwnedAgentId(definitionId)) return this.fileStore.getById(definitionId);
+  /**
+   * The base value: the current stored definition (a copy), before mandatory-processor stripping
+   * and without personal settings. Every write form starts from it.
+   */
+  private async readBaseDefinition(definitionId: string): Promise<BaseRead> {
+    if (isApplicationOwnedAgentId(definitionId)) return { definition: await this.fileStore.getById(definitionId), sourceClass: null };
     await this.packageDefinitions.reloader.applyPendingChanges();
-    return this.packageDefinitions.store.getDefinition("agent", definitionId);
+    const entry = this.packageDefinitions.store.getEntry("agent", definitionId);
+    return { definition: entry?.definition ?? null, sourceClass: entry?.location.sourceClass ?? null };
+  }
+
+  /** What callers read: stripped of mandatory processors, with personal settings applied to package and built-in agents. */
+  private effective(definition: AgentDefinition, sourceClass: PersonalSettingsSourceClass | null): AgentDefinition {
+    const stripped = this.stripMandatoryProcessors(definition) ?? definition;
+    return sourceClass ? this.personalSettings.apply("agent", stripped, sourceClass) : stripped;
   }
 
   /** Shared, team-local and org-owned IDs are store reads (last good honored); application-package IDs read their package. */
   async getAgentDefinitionById(definitionId: string): Promise<AgentDefinition | null> {
-    return this.stripMandatoryProcessors(await this.readStoredDefinition(definitionId));
+    const base = await this.readBaseDefinition(definitionId);
+    return base.definition ? this.effective(base.definition, base.sourceClass) : null;
   }
 
   /**
@@ -243,14 +295,14 @@ export class AgentDefinitionService {
   async getAllAgentDefinitions(): Promise<AgentDefinition[]> {
     await this.packageDefinitions.reloader.applyPendingChanges();
     const definitions = this.packageDefinitions.store.listFolderRoots("agent")
-      .flatMap((entry) => entry.definition ? [entry.definition] : []);
+      .flatMap((entry) => entry.definition ? [this.effective(entry.definition, entry.location.sourceClass)] : []);
     const seenIds = new Set(definitions.map((definition) => definition.id));
     for (const definition of await this.fileStore.listApplicationOwnedAgents()) {
       if (seenIds.has(definition.id)) continue;
       seenIds.add(definition.id);
-      definitions.push(definition);
+      definitions.push(this.effective(definition, null));
     }
-    return definitions.map((definition) => this.stripMandatoryProcessors(definition) ?? definition);
+    return definitions;
   }
 
   /**
@@ -266,11 +318,13 @@ export class AgentDefinitionService {
     const definitions = await this.getAllAgentDefinitions();
     const seenIds = new Set(definitions.map((definition) => definition.id));
     const teamLocal = this.packageDefinitions.store.listNestedDefinitions("agent_team", "agent")
-      .flatMap((entry) => entry.definition ? [entry.definition] : []);
-    for (const definition of [...teamLocal, ...await this.fileStore.listApplicationOwnedTeamLocalAgents()]) {
+      .flatMap((entry) => entry.definition ? [this.effective(entry.definition, entry.location.sourceClass)] : []);
+    const applicationTeamLocal = (await this.fileStore.listApplicationOwnedTeamLocalAgents())
+      .map((definition) => this.effective(definition, null));
+    for (const definition of [...teamLocal, ...applicationTeamLocal]) {
       if (seenIds.has(definition.id)) continue;
       seenIds.add(definition.id);
-      definitions.push(this.stripMandatoryProcessors(definition) ?? definition);
+      definitions.push(definition);
     }
     return definitions;
   }
@@ -297,26 +351,76 @@ export class AgentDefinitionService {
       .filter((item): item is AgentDefinition => item !== null);
   }
 
+  /**
+   * A save. For a package or built-in agent the four personal settings go to the personal settings
+   * file and the other fields to the agent's files, written only when their rendering changes;
+   * every other agent is written to its files as before. Returns the effective definition.
+   */
   async updateAgentDefinition(
     definitionId: string,
     data: AgentDefinitionUpdateInput,
   ): Promise<AgentDefinition> {
-    const existing = await this.readStoredDefinition(definitionId);
-    if (!existing) {
+    const base = await this.readBaseDefinition(definitionId);
+    if (!base.definition) {
       throw new Error(`Agent Definition with ID ${definitionId} not found.`);
     }
+    if (!base.sourceClass || !this.personalSettings.appliesTo("agent", definitionId, base.sourceClass)) {
+      const updated = await this.fileStore.update(this.patched(base.definition, data, new Set()));
+      await this.reloadOwningFolder(definitionId);
+      // An application-owned agent is read on demand, with no folder reload to announce it.
+      if (isApplicationOwnedAgentId(definitionId)) this.changeSignal?.notifyChanged();
+      logger.info(`Agent Definition with ID ${definitionId} updated successfully.`);
+      return this.stripMandatoryProcessors(updated) ?? updated;
+    }
 
-    const updateRecord = existing as unknown as Record<string, unknown>;
+    // Files first (validation may refuse them); the personal settings only after the files succeed.
+    const baseValue = base.definition;
+    const candidate = this.patched(baseValue, data, PERSONAL_FIELDS);
+    const strip = (definition: AgentDefinition) => this.stripMandatoryProcessors(cloneAgent(definition)) ?? definition;
+    if (this.fileStore.rendersDifferently(strip(baseValue), strip(candidate))) {
+      await this.fileStore.update(candidate);
+      await this.reloadOwningFolder(definitionId);
+    }
+    this.personalSettings.setEdited("agent", definitionId, baseValue, personalEditsOf(data));
+    logger.info(`Agent Definition with ID ${definitionId} updated successfully.`);
+    return (await this.getAgentDefinitionById(definitionId)) ?? this.effective(baseValue, base.sourceClass);
+  }
+
+  /** Removes one personal setting of a package or built-in agent; returns the effective definition. */
+  async resetPersonalSetting(definitionId: string, setting: PersonalSetting): Promise<AgentDefinition> {
+    const base = await this.readBaseDefinition(definitionId);
+    if (!base.definition) throw new Error(`Agent Definition with ID ${definitionId} not found.`);
+    if (!base.sourceClass || !this.personalSettings.appliesTo("agent", definitionId, base.sourceClass)) {
+      throw new Error(`Agent Definition ${definitionId} has no personal settings.`);
+    }
+    this.personalSettings.reset("agent", definitionId, setting);
+    return this.effective(base.definition, base.sourceClass);
+  }
+
+  /** Which settings of the agent are personal, and on which base (null: personal settings do not apply). */
+  async getPersonalSettingsView(definitionId: string): Promise<PersonalSettingsView> {
+    if (isApplicationOwnedAgentId(definitionId)) return { base: null, settings: [] };
+    await this.packageDefinitions.reloader.applyPendingChanges();
+    const store = this.packageDefinitions.store;
+    const folder = store.folderOf("agent", definitionId);
+    const sourceClass = folder ? store.folderLocation(folder.kind, folder.folderId)?.sourceClass ?? null : null;
+    return sourceClass ? this.personalSettings.viewOf("agent", definitionId, sourceClass) : { base: null, settings: [] };
+  }
+
+  /** A copy of `existing` with the input's fields applied, except the `skipped` ones (normalized as for a create). */
+  private patched(existing: AgentDefinition, data: AgentDefinitionUpdateInput, skipped: ReadonlySet<string>): AgentDefinition {
+    const patched = cloneAgent(existing);
+    const updateRecord = patched as unknown as Record<string, unknown>;
     const nullablePatchKeys = new Set(["avatarUrl", "defaultLaunchConfig"]);
 
     for (const [key, value] of Object.entries(data)) {
-      if (value === undefined) {
+      if (value === undefined || skipped.has(key)) {
         continue;
       }
       if (value === null && !nullablePatchKeys.has(key)) {
         continue;
       }
-      if (!(key in existing)) {
+      if (!(key in patched)) {
         continue;
       }
 
@@ -358,17 +462,11 @@ export class AgentDefinitionService {
 
       updateRecord[key] = nextValue;
     }
-
-    const updated = await this.fileStore.update(existing);
-    await this.reloadOwningFolder(definitionId);
-    // An application-owned agent is read on demand, with no folder reload to announce it.
-    if (isApplicationOwnedAgentId(definitionId)) this.changeSignal?.notifyChanged();
-    logger.info(`Agent Definition with ID ${definitionId} updated successfully.`);
-    return this.stripMandatoryProcessors(updated) ?? updated;
+    return patched;
   }
 
   async deleteAgentDefinition(definitionId: string): Promise<boolean> {
-    const existing = await this.readStoredDefinition(definitionId);
+    const existing = (await this.readBaseDefinition(definitionId)).definition;
     if (!existing) {
       throw new Error(`Agent Definition with ID ${definitionId} not found.`);
     }

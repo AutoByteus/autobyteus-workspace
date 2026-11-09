@@ -1,0 +1,7 @@
+# DEL-06-server-integration — server integration tests (excerpt)
+### pnpm -C autobyteus-server-ts exec vitest run tests/integration --no-watch
+# State: merge 5a62a061b4 (ticket code 2c4ba2c51e + tests f3e36e274c + origin/personal 51ec39d86c); macOS 26 arm64, Node v22.23.1; 2026-11-09
+
+ Test Files  85 passed | 20 skipped (105)
+      Tests  508 passed | 69 skipped (577)
+exit 0

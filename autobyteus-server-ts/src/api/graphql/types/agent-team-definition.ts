@@ -25,6 +25,7 @@ import {
   getStudioDefinitionAdmissionService,
 } from "../studio-application-api-services.js";
 import { DefinitionLoadIssueEntry } from "./definition-problems.js";
+import { PersonalSetting, PersonalSettingsBase, toDomainPersonalSetting } from "./personal-settings.js";
 import {
   GraphqlDefaultLaunchConfig,
   GraphqlDefaultLaunchConfigInput,
@@ -158,6 +159,14 @@ export class AgentTeamDefinition {
   /** Every load issue in this Team's definition folder: the Team first, then its team-local agents in path order. */
   @Field(() => [DefinitionLoadIssueEntry])
   loadIssues!: DefinitionLoadIssueEntry[];
+
+  /** The settings that hold the user's personal value on this node (avatar, runtime/model). */
+  @Field(() => [PersonalSetting])
+  personalSettings!: PersonalSetting[];
+
+  /** The base of the personal settings (a package); null when they do not apply. */
+  @Field(() => PersonalSettingsBase, { nullable: true })
+  personalSettingsBase!: PersonalSettingsBase | null;
 }
 
 @InputType()
@@ -281,7 +290,9 @@ export class AgentTeamDefinitionResolver {
       if (!admitted) return null;
       const domainDefinition = admitted.definition;
       if (!("nodes" in domainDefinition)) return null;
-      return AgentTeamDefinitionConverter.toGraphql(domainDefinition, await service.getFolderLoadIssues(id));
+      return AgentTeamDefinitionConverter.toGraphql(
+        domainDefinition, await service.getFolderLoadIssues(id), await service.getPersonalSettingsView(id),
+      );
     } catch (error) {
       logger.error(`Error fetching agent team definition by ID ${id}: ${String(error)}`);
       throw new Error("Unable to fetch agent team definition at this time.");
@@ -295,9 +306,13 @@ export class AgentTeamDefinitionResolver {
       const definitions = admitted.flatMap((result) => result.status === "available" && result.subjectKind === "agent_team"
         ? [result.definition]
         : []).filter((definition): definition is DomainAgentTeamDefinition => "nodes" in definition && definition.ownershipScope !== "agent_org_owned");
-      const issues = await getStudioAgentTeamDefinitionService().listFolderLoadIssues();
-      return definitions.map((definition) =>
-        AgentTeamDefinitionConverter.toGraphql(definition, issues.get(String(definition.id ?? "")) ?? []));
+      const service = getStudioAgentTeamDefinitionService();
+      const issues = await service.listFolderLoadIssues();
+      return Promise.all(definitions.map(async (definition) => AgentTeamDefinitionConverter.toGraphql(
+        definition,
+        issues.get(String(definition.id ?? "")) ?? [],
+        await service.getPersonalSettingsView(String(definition.id ?? "")),
+      )));
     } catch (error) {
       logger.error(`Error fetching all agent team definitions: ${String(error)}`);
       throw new Error("Unable to fetch agent team definitions at this time.");
@@ -383,10 +398,26 @@ export class AgentTeamDefinitionResolver {
       });
 
       const updated = await service.updateDefinition(input.id, update);
-      return AgentTeamDefinitionConverter.toGraphql(updated);
+      return AgentTeamDefinitionConverter.toGraphql(updated, [], await service.getPersonalSettingsView(input.id));
     } catch (error) {
       logger.error(`Error updating agent team definition: ${String(error)}`);
       throw toGraphqlDefinitionError(error, "Failed to update agent team definition");
+    }
+  }
+
+  /** "Reset to the package's setting": removes one personal setting (avatar or runtime/model). */
+  @Mutation(() => AgentTeamDefinition)
+  async resetAgentTeamPersonalSetting(
+    @Arg("definitionId", () => String) definitionId: string,
+    @Arg("setting", () => PersonalSetting) setting: PersonalSetting,
+  ): Promise<AgentTeamDefinition> {
+    try {
+      const service = getStudioAgentTeamDefinitionService();
+      const definition = await service.resetPersonalSetting(definitionId, toDomainPersonalSetting(setting));
+      return AgentTeamDefinitionConverter.toGraphql(definition, [], await service.getPersonalSettingsView(definitionId));
+    } catch (error) {
+      logger.error(`Error resetting a personal setting of agent team definition ${definitionId}: ${String(error)}`);
+      throw toGraphqlDefinitionError(error, "Failed to reset the personal setting");
     }
   }
 

@@ -1,0 +1,13 @@
+# DEL-04-server-e2e-personal-tools-in-runs — gated E2E: personal tools in runs (scripted AGY)
+### env -i PATH HOME=<temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<worktree>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts --no-watch
+# State: merge 5a62a061b4 (ticket code 2c4ba2c51e + tests f3e36e274c + origin/personal 51ec39d86c); macOS 26 arm64, Node v22.23.1; 2026-11-09
+
+ ✓ tests/e2e/personal-settings/personal-tools-in-runs.e2e.test.ts (7 tests) 4848ms
+     ✓ API-10a (AC-006, AC-001): a run of the package agent has the effective tools: a personal tool added, a package tool removed  745ms
+     ✓ API-10c (AC-006): a delegated copy of the package agent has its effective tools  717ms
+     ✓ API-10d (AC-006): a delegated copy of the Team runs its team-local coordinator with the coordinator's effective tools  705ms
+     ✓ API-10f (AC-006): a Team run started directly gives its members their effective tools  596ms
+     ✓ API-10g (AC-006): an Org run gives its package members (an agent, and a Team's coordinator) their effective tools  689ms
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+exit 0
