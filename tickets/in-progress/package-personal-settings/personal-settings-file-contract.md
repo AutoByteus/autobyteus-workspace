@@ -1,6 +1,6 @@
 # Personal Settings File Contract — Your Own Tools, Skills, Avatar And Runtime/Model For Package Agents, Teams And Orgs (autobyteus-95)
 
-Status: approved 2026-11-09 (Q1–Q4); Q5 open. Renamed 2026-11-08 (was `data-contract.md`, first drafted as `data-model.md`). Re-verified on base `a85bf4f38d` (2026-11-09). Validated against real package data (section 9).
+Status: approved 2026-11-09 (Q1–Q5). Renamed 2026-11-08 (was `data-contract.md`, first drafted as `data-model.md`). Re-verified on base `a85bf4f38d` (2026-11-09). Validated against real package data (section 9).
 
 ## 1. Purpose
 
@@ -167,7 +167,7 @@ Local folder packages: AutoByteus never updates them, so this section does not a
 | Packages imported from GitHub | Yes |
 | Packages linked from a local folder (e.g. `autobyteus-agents`) | Yes (Q2) |
 | The app's own storage (`<app-data>/agents`, the user's own agents) | No: edits keep going into those files |
-| Built-in agents (Daily Assistant, Model Router), synced into `<app-data>/agents` | Proposed: yes (Q5). The server copies their `agent-config.json` over the existing file at every start (`built-in-agents/built-in-agent-bootstrapper.ts:103-108, 131`, called from `application-platform-lifecycle.ts:57`), so tools added to the Daily Assistant are lost at every restart, the same problem as a package update. Their IDs are fixed (`autobyteus-daily-assistant`, `autobyteus-model-router`). |
+| Built-in agents (Daily Assistant, Model Router), synced into `<app-data>/agents` | Yes (Q5, the user, 2026-11-09: "they are actually also agents … treat them like other agent"). The server copies their `agent-config.json` over the existing file at every start (`built-in-agents/built-in-agent-bootstrapper.ts:103-108, 131`, called from `application-platform-lifecycle.ts:57`), so tools added to the Daily Assistant are lost at every restart, the same problem as a package update. Their IDs are fixed (`autobyteus-daily-assistant`, `autobyteus-model-router`). |
 
 ## 9. Validation
 
@@ -203,4 +203,4 @@ Not yet verified (it belongs to the design): every reader of definitions applies
 | Q2 | Also for local folders you author (e.g. `autobyteus-agents`): the app never changes these four in the checkout | Yes |
 | Q3 | Skills too, like tools | Yes |
 | Q4 | Capture at every GitHub update (§7), which keeps the tools you already added, with backups | Yes |
-| Q5 | Built-in agents too (§8): your tools, skills, avatar and runtime/model on the Daily Assistant survive restarts | Yes |
+| Q5 | Built-in agents too (§8): your tools, skills, avatar and runtime/model on the Daily Assistant survive restarts | Yes — the user agreed, 2026-11-09 |

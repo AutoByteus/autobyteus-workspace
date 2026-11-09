@@ -2,8 +2,8 @@
 
 ## Document Status
 
-- Status: `Approved` at `SR-003`
-- Current solution revision ID: `SR-003`
+- Status: `Approved` at `SR-004`
+- Current solution revision ID: `SR-004`
 - Package identifier: `package-personal-settings`
 - Request: Project Task autobyteus-95
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), on the user's requests of 2026-10-14, 2026-10-24 and 2026-11-01
@@ -45,7 +45,7 @@
 
 | ID | Use case | Stage |
 | --- | --- | --- |
-| UC-001 | Personal tools and skills for agents (including Team and Org members) from GitHub and local packages | 1 |
+| UC-001 | Personal tools and skills for agents (including Team and Org members) from GitHub and local packages, and for built-in agents (Daily Assistant, Model Router) | 1 |
 | UC-002 | Personal avatar for agents, Teams and Orgs from packages | 1 |
 | UC-003 | Personal runtime/model choice for agents, Teams and Orgs from packages | 1 |
 | UC-004 | Capture of package-file edits of the four settings at every GitHub update, plus a backup of overwritten changed files | 1 |
@@ -56,7 +56,7 @@
 
 - Merging instructions or skill content on update.
 - Skill sources (separate GitHub sources).
-- Agents in the app's own storage (`<app-data>/agents`).
+- The user's own agents in the app's storage (`<app-data>/agents`); built-in agents synced there are in scope (DEC-009).
 - Application-owned agents.
 - Syncing personal settings between nodes.
 - Undo of an update.
@@ -120,6 +120,7 @@ Standard: blocking findings cite these IDs; new behavior is a Requirement Gap fo
 | DEC-006 | Staging: stage 1 = UC-001..005 (personal settings and update capture), merged and released as a beta first; stage 2 = UC-006 (clean writes) | Solution Designer (the Project Task Manager's direction) | Decided |
 | DEC-007 | Avatars already in package files remain the package's value; a personal avatar replaces it | Solution Designer | Decided |
 | DEC-008 | Backups: the latest 5 per package | Solution Designer | Decided |
+| DEC-009 | Built-in agents use personal settings like package agents: their files are replaced at every server start, and personal settings are applied on top when read (Q5) | User, 2026-11-09 ("they are actually also agents … treat them like other agent") | Decided |
 
 ## Traceability
 

@@ -9,6 +9,7 @@ Package: `package-personal-settings` (Project Task autobyteus-95). Folder: `/Use
 | SR-001 | Requirements | Task autobyteus-95 (2026-10-24) with the user's 2026-10-24 direction | N/A | Ready for Approval | The user is asked to approve the model, DEC-001 and DEC-005 |
 | SR-002 (draft) | Requirements | The user's comment, 2026-11-01: "a simple merge" of the tools at update | Ready for Approval | Ready for Approval | DEC-001 recommendation revised to the list merge for stage 1; DEC-005 simplified; asked again |
 | SR-003 | Requirements | The user's direction 2026-11-06 (store outside the package files), the validated file contract 2026-11-07, his "continue" 2026-11-09 | Ready for Approval | Approved | Requirements rewritten to the personal settings file; stage 1 / stage 2; ACs |
+| SR-004 | Requirements | The user's answer to Q5 (2026-11-09) and the re-verification on base `a85bf4f38d` | Approved (SR-003) | Approved (SR-004) | Built-in agents in scope (DEC-009, UC-001) |
 
 ## Revision Entries
 
@@ -32,5 +33,13 @@ Package: `package-personal-settings` (Project Task autobyteus-95). Folder: `/Use
   - Skills included.
   - Avatar and runtime/model moved into stage 1 (the same file).
   - Stage 2 = clean writes. ACs added.
+- Intended behavior changed: `Yes`, approved by the user.
+- Next action: architecture design of stage 1.
+
+### SR-004 — Built-in agents included
+
+- Trigger: the re-check on base `a85bf4f38d`. Built-in agents exist again and are copied over at every server start (`built-in-agent-bootstrapper.ts:103-108, 131`; `application-platform-lifecycle.ts:57`).
+- The user's answer to Q5, 2026-11-09: built-in agents are agents too; personal settings are stored separately and combined in memory when read ("provisioning").
+- Changes: UC-001, Out Of Scope, DEC-009; contract §8 and Q5.
 - Intended behavior changed: `Yes`, approved by the user.
 - Next action: architecture design of stage 1.
