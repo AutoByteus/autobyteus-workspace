@@ -1,4 +1,15 @@
 import { z } from "zod";
+type TaskExecutionReference = Readonly<{
+    agentRunId: string;
+}> | Readonly<{
+    teamRunId: string;
+}>;
+/**
+ * A short, order-independent fingerprint of a root's closed task executions, `<count>:<8 hex digits>` (FNV-1a 32-bit
+ * over the code points of the sorted, distinct keys). The node and the client compute it from the same list with this one function, so a run list
+ * can tell that a host's closed set changed without reading it (autobyteus-446).
+ */
+export declare const closedTaskExecutionsDigest: (references: readonly TaskExecutionReference[]) => string;
 export declare const AgentTeamRootExecutionViewDtoSchema: z.ZodObject<{
     root_subject_kind: z.ZodLiteral<"agent_team">;
     root_run_id: z.ZodString;
@@ -3677,4 +3688,5 @@ export type RootExecutionViewDto = z.infer<typeof RootExecutionViewDtoSchema>;
 export type RootExecutionEventDto = z.infer<typeof RootExecutionEventDtoSchema>;
 export type CollaborationStreamServerMessage = z.infer<typeof CollaborationStreamServerMessageSchema>;
 export type CollaborationStreamClientMessage = z.infer<typeof CollaborationStreamClientMessageSchema>;
+export {};
 //# sourceMappingURL=root-execution-view-dtos.d.ts.map

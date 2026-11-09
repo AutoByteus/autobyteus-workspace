@@ -25,6 +25,21 @@ type TaskExecutionHolder = Readonly<{ members?: readonly unknown[]; taskExecutio
 const referenceKey = (reference: TaskExecutionReference): string =>
   "agentRunId" in reference ? `agent:${reference.agentRunId}` : `team:${reference.teamRunId}`;
 
+/**
+ * A short, order-independent fingerprint of a root's closed task executions, `<count>:<8 hex digits>` (FNV-1a 32-bit
+ * over the code points of the sorted, distinct keys). The node and the client compute it from the same list with this one function, so a run list
+ * can tell that a host's closed set changed without reading it (autobyteus-446).
+ */
+export const closedTaskExecutionsDigest = (references: readonly TaskExecutionReference[]): string => {
+  const keys = [...new Set(references.map(referenceKey))].sort();
+  let hash = 0x811c9dc5;
+  for (const char of keys.join("\n")) {
+    hash ^= char.codePointAt(0)!;
+    hash = Math.imul(hash, 0x01000193) >>> 0;
+  }
+  return `${keys.length}:${hash.toString(16).padStart(8, "0")}`;
+};
+
 /** Each closed reference must identify a task execution node (at any depth), never a configured or member node. */
 const validateClosedTaskExecutions = (
   closed: readonly TaskExecutionReference[],
