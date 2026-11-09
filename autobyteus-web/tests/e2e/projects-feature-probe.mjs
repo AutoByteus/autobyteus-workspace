@@ -21,6 +21,10 @@ import { createRequire } from 'node:module';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 import { runProjectVoiceCases } from './projects-voice-cases.mjs';
+import { attachToBrowserContext, attachToProbeProcess, withNodeCredential } from './fixtures/probe-node-access.mjs';
+// Every node needs a credential (autobyteus-437): the probe's nodes start with its launch credential, and the probe's
+// own calls and its desktop browser contexts carry it (fixtures/probe-node-access.mjs).
+attachToProbeProcess();
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -124,7 +128,7 @@ const createNode = async (ownedRoot, name) => {
 };
 const startNode = async node => {
   node.process = start(process.execPath, ['--import', outsideNetworkOffline, path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(node.port), '--data-dir', node.dataRoot],
-    serverDir, node.env, path.join(outputDir, `${node.name}-backend.log`));
+    serverDir, withNodeCredential(node.env), path.join(outputDir, `${node.name}-backend.log`));
   await waitFor(`${node.name} health`, async () => {
     if (exited(node.process)) throw new Error(`${node.name} exited ${node.process.exitCode}/${node.process.signalCode}`);
     return fetch(`${node.url}/rest/health`).then(response => response.ok).catch(() => false);
@@ -303,6 +307,7 @@ try {
   browser = await chromium.launch({ headless: true, executablePath, args: ['--disable-dev-shm-usage', ...(voiceInput ? ['--use-fake-ui-for-media-stream', '--use-fake-device-for-media-stream'] : [])] });
   evidence.browserVersion = browser.version();
   const context = await browser.newContext({ viewport: { width: 1512, height: 862 }, locale: 'en-US', timezoneId: 'Europe/Berlin' });
+  await attachToBrowserContext(context);
   await context.addInitScript(() => { if (!localStorage.getItem('autobyteus.localization.preference-mode')) localStorage.setItem('autobyteus.localization.preference-mode', 'en'); });
   page = await context.newPage(); page.on('pageerror', e => evidence.browserErrors.push(e.message));
   page.on('request', request => {

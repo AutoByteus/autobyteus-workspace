@@ -1,0 +1,15 @@
+
+> autobyteus@1.5.12-beta.8 test:e2e:node-vocabulary /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web
+> node tests/e2e/node-vocabulary-probe.mjs --output-dir=/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/tickets/in-progress/node-universal-authentication-437/evidence/api-e2e/R2-API-08-node-vocabulary
+
+[probe] NVP-01 started
+[probe] NVP-01 Pass
+[probe] NVP-02 started
+[probe] NVP-02 Pass
+[probe] NVP-03 started
+[probe] NVP-03 Pass
+[probe] NVP-04 started
+[probe] NVP-04 Pass
+[probe] NVP-05 started
+[probe] NVP-05 Pass
+[probe] result Pass; evidence /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/tickets/in-progress/node-universal-authentication-437/evidence/api-e2e/R2-API-08-node-vocabulary

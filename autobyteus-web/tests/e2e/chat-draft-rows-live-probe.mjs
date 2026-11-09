@@ -26,6 +26,10 @@ import process from 'node:process'
 import zlib from 'node:zlib'
 import { createRequire } from 'node:module'
 import { fileURLToPath, pathToFileURL } from 'node:url'
+import { attachToBrowserContext, attachToProbeProcess, withNodeCredential } from './fixtures/probe-node-access.mjs'
+// Every node needs a credential (autobyteus-437): the probe's nodes start with its launch credential, and the probe's
+// own calls and its desktop browser contexts carry it (fixtures/probe-node-access.mjs).
+attachToProbeProcess()
 
 const require = createRequire(import.meta.url)
 const { chromium } = require('playwright-core')
@@ -817,6 +821,7 @@ defineCase('D13', 'AC-010 / REQ-011: reload → no rows, a blank New chat, no dr
 
 defineCase('D14', 'Localization zh-CN: 草稿 list, 草稿: row name, 丢弃草稿 ×, 空草稿', async (_page, _context) => {
   const zh = await browser.newContext({ viewport: { width: 1280, height: 800 }, locale: 'zh-CN' })
+  await attachToBrowserContext(zh)
   const page = await zh.newPage()
   try {
     await page.goto(`${frontUrl}/chat`, { waitUntil: 'domcontentloaded' })
@@ -858,7 +863,7 @@ try {
     child.once('exit', (code) => (code === 0 ? resolve() : reject(new Error(`prisma migrate deploy exited ${code}`))))
   })
   const backend = spawnOwned('backend', process.execPath, [path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(backendPort), '--data-dir', dataRoot], serverDir,
-    { ...baseEnv(), APP_ENV: 'development', DB_TYPE: 'sqlite', DATABASE_URL: dbUrl, AUTOBYTEUS_SERVER_HOST: backendUrl, AUTOBYTEUS_ALLOWED_ORIGINS: frontUrl, DISABLE_HTTP_REQUEST_LOGS: 'true' })
+    withNodeCredential({ ...baseEnv(), APP_ENV: 'development', DB_TYPE: 'sqlite', DATABASE_URL: dbUrl, AUTOBYTEUS_SERVER_HOST: backendUrl, AUTOBYTEUS_ALLOWED_ORIGINS: frontUrl, DISABLE_HTTP_REQUEST_LOGS: 'true' }))
   await waitFor('backend health', async () => { assert(backend.exitCode === null, 'backend exited'); return (await fetch(`${backendUrl}/rest/health`, { signal: AbortSignal.timeout(2000) })).ok }, 120000, 500)
   await gql('mutation($input:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$input){id}}', { input: { name: 'Probe Team', description: 'Draft rows probe team', instructions: 'Coordinate briefly.', coordinatorMemberName: 'lead', nodes: [{ memberName: 'lead', ref: 'probe-helper', refScope: 'SHARED' }, { memberName: 'writer', ref: 'probe-writer', refScope: 'SHARED' }] } })
   const teams = (await gql('{ agentTeamDefinitions { id name } }')).agentTeamDefinitions
@@ -872,6 +877,7 @@ try {
   } else {
     browser = await chromium.launch({ headless: true, executablePath: chrome, args: ['--no-sandbox'] })
     const context = await browser.newContext({ viewport: { width: 1280, height: 800 }, deviceScaleFactor: 2, locale: 'en-US' })
+    await attachToBrowserContext(context)
     const page = await context.newPage(); page.setDefaultTimeout(30000)
     const browserErrors = []; page.on('pageerror', (e) => browserErrors.push(e.message)); evidence.browserErrors = browserErrors
     const dialogs = []; page.on('dialog', async (d) => { dialogs.push(d.message()); await d.dismiss() }); evidence.dialogs = dialogs

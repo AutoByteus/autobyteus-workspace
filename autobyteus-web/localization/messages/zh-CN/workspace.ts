@@ -310,6 +310,7 @@ const messages = {
   "workspace.components.workspace.tools.NodeDesktopTile.connection_refused": "连接被拒绝",
   "workspace.components.workspace.tools.NodeDesktopTile.cannot_reach_node": "无法连接到该节点",
   "workspace.components.workspace.tools.NodeDesktopTile.not_allowed": "此查看器无权访问该节点",
+  "workspace.components.workspace.tools.NodeDesktopTile.needs_connecting": "此桌面尚未连接该节点。请在“节点”页面连接。",
   "workspace.components.workspace.tools.NodeDesktopTile.no_shared_desktop": "该节点没有共享桌面",
   "workspace.components.workspace.tools.NodeDesktopTile.connect": "连接",
   "workspace.components.workspace.tools.NodeDesktopTile.reconnect": "重新连接",

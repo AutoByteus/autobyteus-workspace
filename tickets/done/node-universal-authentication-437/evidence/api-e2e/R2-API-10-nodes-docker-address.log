@@ -1,0 +1,15 @@
+
+> autobyteus@1.5.12-beta.8 test:e2e:nodes-docker-address /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web
+> node tests/e2e/nodes-docker-address-probe.mjs --docker-image=abtest437/autobyteus-server:test --output-dir=/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/tickets/in-progress/node-universal-authentication-437/evidence/api-e2e/R2-API-10-nodes-docker-address
+
+[probe] ND-01 started
+[probe] ND-01 Pass
+[probe] ND-04 started
+[probe] ND-04 Pass
+[probe] ND-05 started
+[probe] ND-05 Pass
+[probe] ND-02 started
+[probe] ND-02 Pass
+[probe] ND-03 started
+[probe] ND-03 Pass
+nodes-docker-address probe: Pass

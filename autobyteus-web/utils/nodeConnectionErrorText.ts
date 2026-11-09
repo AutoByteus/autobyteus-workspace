@@ -25,6 +25,8 @@ export const causeText = (t: Translate, cause: NodeProbeCause | 'host_refused' |
     case 'not_found': return fromNode ? t(k('cause.dnsFrom'), { host: hostName(host), node: fromNode }) : t(k('cause.dns'), { host: hostName(host) })
     case 'not_autobyteus': return t(k('cause.notAutobyteus'))
     case 'identity_pending': return t(k('cause.identityPending'))
+    // autobyteus-437 M-8b: the node refuses this network (it is not this computer, its Tailscale or an allowed network).
+    case 'network_refused': return t(k('cause.networkRefused'))
     default: return t(k('cause.unreachable'))
   }
 }
@@ -69,6 +71,9 @@ export const failureText = (
     case 'PEER_NOT_REGISTERED': return t(k('line.notRegisteredThere'), { name: node })
     case 'PEER_NAME_INVALID': return t(k('rename.errorName'))
     case 'PEER_URL_INVALID': return t(k('add.errorAddress'))
+    // autobyteus-437: pairing (an invite used or expired; the inviting node refused; a node paired already).
+    case 'PEER_INVITE_INVALID': return t(k('error.inviteInvalid'))
+    case 'PEER_ALREADY_REGISTERED': return t(k('error.alreadyPaired'), { node })
     case 'PEER_NAME_TAKEN': return t(k('error.nameTaken'), { node, name: context.name ?? '' })
     default: return t(k('error.other'), { node, message: failure.message })
   }

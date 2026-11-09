@@ -1,3 +1,6 @@
+// First: takes the launch credential and removes it from this process's environment before any other module loads
+// (node access model NA-15).
+import "./node-access/launch-credential-intake.js";
 import "reflect-metadata";
 import { pathToFileURL } from "node:url";
 import { appConfigProvider } from "./config/app-config-provider.js";

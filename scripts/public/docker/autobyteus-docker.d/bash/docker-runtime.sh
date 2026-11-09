@@ -251,7 +251,7 @@ GraphQL: http://localhost:${BACKEND_PORT}/graphql
 Workspace: ${WORKSPACE_CONTAINER_PATH} -> $(node_workspace_host_path "$node_name")
 Shared folder: ${SHARED_CONTAINER_PATH} -> $(shared_workspace_host_path)
 Private app data: /home/autobyteus/data -> $(volume_prefix_for "$node_name")-data (Docker named volume)
-Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+Next step: paste Backend into Add Remote Node in AutoByteus and connect it with a setup code (autobyteus-docker setup-code).
 URLS
 }
 
@@ -274,6 +274,8 @@ start_node() {
   local allow_friendly_preferences=1
   state_file="$(state_path_for "$node_name")"
   load_state "$state_file"
+  # new-container --allow-local-network: kept in the node's state for every later recreate.
+  [[ "${REQUESTED_ALLOW_LOCAL_NETWORK:-0}" == "1" ]] && ALLOW_LOCAL_NETWORK=1
   container_name="${CONTAINER_NAME:-$node_name}"
   created_at="${CREATED_AT:-$(now_utc)}"
   if container_exists "$container_name" && ! managed_container "$container_name"; then
@@ -474,6 +476,7 @@ create_new_container() {
   local image_ref="$1" node_name
   node_name="$(next_node_name)"
   start_node "$node_name" "$image_ref"
+  print_setup_code_of_running_node "$node_name"
 }
 
 reset_nodes() {

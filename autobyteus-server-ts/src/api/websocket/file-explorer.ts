@@ -3,10 +3,7 @@ import {
   getFileExplorerStreamHandler,
   type WebSocketConnection,
 } from "../../services/file-explorer-streaming/index.js";
-import {
-  authorizeRemoteAccessWebSocket,
-  closeSocketForRemoteAccessRejection,
-} from "./remote-access-websocket-auth.js";
+import { registerGatedWebSocketRoute } from "./gated-websocket-route.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -26,17 +23,11 @@ type FileExplorerSocket = {
 };
 
 export async function registerFileExplorerWebsocket(app: FastifyInstance): Promise<void> {
-  app.get(
+  registerGatedWebSocketRoute(
+    app,
     "/ws/file-explorer/:workspaceId",
-    { websocket: true },
-    (connection: unknown, req) => {
-      const socket = (connection as { socket?: unknown }).socket ?? connection;
-      if (!socket || typeof (socket as { on?: unknown }).on !== "function") {
-        logger.error("File explorer websocket missing underlying socket; check fastify websocket plugin setup.");
-        return;
-      }
-
-      const wsSocket = socket as FileExplorerSocket;
+    (socket, req) => {
+      const wsSocket = socket as unknown as FileExplorerSocket;
       const fileExplorerStreamHandler = getFileExplorerStreamHandler();
       const { workspaceId } = req.params as FileExplorerParams;
       let closed = false;
@@ -96,19 +87,6 @@ export async function registerFileExplorerWebsocket(app: FastifyInstance): Promi
 
       void (async () => {
         try {
-          try {
-            await authorizeRemoteAccessWebSocket(req);
-          } catch (error) {
-            if (!closed) {
-              closeSocketForRemoteAccessRejection(wsSocket, error, req);
-            }
-            return;
-          }
-
-          if (closed) {
-            return;
-          }
-
           const connectionAdapter: WebSocketConnection = {
             send: (data) => wsSocket.send(data),
             close: (code) => wsSocket.close(code),

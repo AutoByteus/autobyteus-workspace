@@ -1,0 +1,49 @@
+# API-02 Docker launcher probe; commit b6a57ab154; 2026-11-08T16:15:35Z
+# image abtest437/autobyteus-server:test = autobyteus/autobyteus-server:beta with this worktree's server package (API-02-server-package-build.log)
+
+## A. A node created by the released launcher (v9, base b690a5dfdb), running this worktree's server (NAS-34)
+Container: autobyteus-server-3
+Image: abtest437/autobyteus-server:test
+Backend: http://localhost:8004
+GraphQL: http://localhost:8004/graphql
+Workspace: /home/autobyteus/workspace -> /tmp/abtest437/docker-shared/nodes/autobyteus-server-3
+Shared folder: /home/autobyteus/shared -> /tmp/abtest437/docker-shared/shared
+Private app data: /home/autobyteus/data -> autobyteus-server-3-data (Docker named volume)
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+node autobyteus-server-3 container autobyteus-server-3 port 8004
+published: 0.0.0.0:8004 [::]:8004 
+nodeId before: srv_W8aJsZuQgfLh7ZdiyBngTC-s3GR4HeVK
+NAS-34 LAN health (old publishing)           200 {"status":"ok","message":"Server is running"}
+NAS-34 LAN graphql no key                    401 {"error":"NODE_CREDENTIAL_REQUIRED","code":"NODE_CREDENTIAL_REQUIRED","message":"This node needs a credential. Connect i
+NAS-34 LAN workspace file no key             401 {"error":"NODE_CREDENTIAL_REQUIRED","code":"NODE_CREDENTIAL_REQUIRED","message":"This node needs a credential. Connect i
+
+## B. The new launcher's setup-code (v10): recreates with the new publishing, keeps the volumes, prints a code (NAS-03, NAS-32, NAS-27, UNK-006)
+exit 0
+
+Setup code for autobyteus-server-3: <redacted>
+Valid once, until 2026-11-08T16:45:52.270Z. In the AutoByteus desktop app, open Nodes, and enter it at autobyteus-server-3 (http://localhost:8004).
+published: 100.127.30.107:8004 127.0.0.1:8004 
+labels config hash:   restart: unless-stopped
+nodeId after: srv_W8aJsZuQgfLh7ZdiyBngTC-s3GR4HeVK (same: yes)
+NAS-27 LAN health (new publishing)           000 curl-exit=7 
+UNK-006 Tailscale health                     200 {"status":"ok","message":"Server is running"}
+UNK-006 Tailscale graphql no key             401 {"error":"NODE_CREDENTIAL_REQUIRED","code":"NODE_CREDENTIAL_REQUIRED","message":"This node needs a credential. Connect i
+loopback health                              200 {"status":"ok","message":"Server is running"}
+NAS-02 loopback graphql no key               401 {"error":"NODE_CREDENTIAL_REQUIRED","code":"NODE_CREDENTIAL_REQUIRED","message":"This node needs a credential. Connect i
+code printed: yes; code in launcher state files: 0; code in container logs: 0
+NAS-13 setup exchange, wrong code            401 {"error":"NODE_SETUP_CODE_INVALID","code":"NODE_SETUP_CODE_INVALID","message":"This setup code is not valid. Create a ne
+NAS-03 exchange returned a credential: yes
+NAS-03 graphql with the owner credential     200 {"data":{"__typename":"Query"}}
+NAS-03 node update check with it             200 {"inPlaceUpdate":"available","version":"1.5.12-beta.8","update":{"state":"idle","targetVersion":null,"step":null,"code":
+NAS-13 replay of the used code               401 {"error":"NODE_SETUP_CODE_INVALID","code":"NODE_SETUP_CODE_INVALID","message":"This setup code is not valid. Create a ne
+second setup-code exit 0 (no recreate: 2026-11-08T16:15:47.276024877Z)
+
+## C. new-container --allow-local-network (NA-4)
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+
+Setup code for autobyteus-server-4: <redacted>
+Valid once, until 2026-11-08T16:45:59.179Z. In the AutoByteus desktop app, open Nodes, and enter it at autobyteus-server-4 (http://localhost:8005).
+node autobyteus-server-4 port 8005 published: 0.0.0.0:8005 [::]:8005  ALLOW_LOCAL_NETWORK=1
+NA-4 LAN health (allowed)                    200 {"status":"ok","message":"Server is running"}
+NA-1 LAN graphql no key                      401 {"error":"NODE_CREDENTIAL_REQUIRED","code":"NODE_CREDENTIAL_REQUIRED","message":"This node needs a credential. Connect i
+credential/code strings in this log: (checked by the caller)

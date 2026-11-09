@@ -16,18 +16,18 @@
 //
 // Cases:
 // - ND-01 (AC-704): in the window on desk, add the Docker node at `http://127.0.0.1:<published port>` with its switch
-//   off, and turn collaboration on in the one confirmation. desk registers the Docker node at the address the window
-//   used. The Docker node registers desk at `host.docker.internal:<desk port>`, the address that reaches desk from
-//   inside the container; it finds that address itself, after its switch is turned on. Both directions show Working,
-//   and each node lists the other's Agents.
+//   off, and turn collaboration on in the one confirmation (turn on there, then pair by invite, autobyteus-437). desk
+//   registers the Docker node at the first of its own address candidates that answers (`localhost:<port>`, M-9). The
+//   Docker node registers desk at
+//   `host.docker.internal:<desk port>`, the address that reaches desk from inside the container; it finds that address
+//   itself while pairing. Both directions show Working, and each node lists the other's Agents.
 // - ND-04 (design § Loopback Hint Surface): the add form never shows the Docker hint. An unreachable loopback address
 //   is added with its cause.
 // - ND-02 (AC-707, REQ-708): in the window on the Docker node, desk's row → Change address `http://127.0.0.1:<desk
 //   port>` shows "… runs in Docker, where 127.0.0.1 is the container itself." and "Try
 //   http://host.docker.internal:<port>". Use this saves that address on the Docker node.
 // - ND-03 (AC-707): from inside the container, each cause is named. Change address to a name that does not resolve, to
-//   a black-holed address and to another node's address shows each cause, never "fetch failed". The Docker node's
-//   `resolvePeerAddress` reports each attempt's result, with `loopbackInContainer`.
+//   a black-holed address and to another node's address shows each cause, never "fetch failed".
 // - ND-05 (REQ-713): in the window on the Docker node, "This node" is the Docker node, and desk is a row there.
 //
 // Prerequisites: `pnpm -C autobyteus-server-ts build`, Docker. Run: `pnpm -C autobyteus-web test:e2e:nodes-docker-address`.
@@ -44,6 +44,7 @@ import { execFile, spawn } from 'node:child_process';
 import { promisify } from 'node:util';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import { attachToBrowserContext, ownerHeaders, probeNodeEnvironment, redactCredentials } from './fixtures/probe-node-access.mjs';
 
 const run = promisify(execFile);
 const require = createRequire(import.meta.url);
@@ -98,11 +99,10 @@ const children = new Set();
 let containerStarted = false;
 
 const graphqlClient = (name, baseUrl) => async (query, variables) => {
-  const body = await (await fetch(`${baseUrl}/graphql`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ query, variables }) })).json();
+  const body = await (await fetch(`${baseUrl}/graphql`, { method: 'POST', headers: ownerHeaders({ 'content-type': 'application/json' }), body: JSON.stringify({ query, variables }) })).json();
   if (body.errors?.length) { const error = new Error(`${name}: ${JSON.stringify(body.errors)}`); error.errors = body.errors; throw error; }
   return body.data;
 };
-const gqlErrors = async (gql, query, variables) => { try { await gql(query, variables); return null; } catch (error) { return error.errors ?? [{ message: error.message }]; } };
 
 // The probe's frontend origins (one frontend per backend), chosen before any node starts: every node accepts both (autobyteus-416).
 const frontendPorts = { desk: await freePort(), docker: await freePort() };
@@ -120,7 +120,7 @@ const startServer = async (name, port) => {
   const log = createWriteStream(path.join(outputDir, `server-${name}.log`), { flags: 'a' });
   const child = spawn(process.execPath, [appEntry, '--host', '127.0.0.1', '--port', String(port), '--data-dir', dataDir], {
     cwd: serverDir, stdio: ['ignore', 'pipe', 'pipe'],
-    env: { PATH: process.env.PATH, HOME: home, TMPDIR: process.env.TMPDIR ?? os.tmpdir(), APP_ENV: 'test', LOG_LEVEL: 'WARN', HTTP_ACCESS_LOG_MODE: 'off', AUTOBYTEUS_SERVER_HOST: baseUrl, AUTOBYTEUS_ALLOWED_ORIGINS: frontendOrigins } });
+    env: { PATH: process.env.PATH, HOME: home, TMPDIR: process.env.TMPDIR ?? os.tmpdir(), APP_ENV: 'test', LOG_LEVEL: 'WARN', HTTP_ACCESS_LOG_MODE: 'off', AUTOBYTEUS_SERVER_HOST: baseUrl, AUTOBYTEUS_ALLOWED_ORIGINS: frontendOrigins, ...probeNodeEnvironment() } });
   child.stdout.pipe(log); child.stderr.pipe(log);
   child.once('close', () => log.end());
   children.add(child);
@@ -160,7 +160,8 @@ const imageDistDiff = async () => {
 
 const startContainer = async port => {
   await run('docker', ['run', '-d', '--name', containerName, '-p', `127.0.0.1:${port}:8000`,
-    '-v', `${distDir}:/opt/autobyteus/server-package/dist:ro`, '-e', `AUTOBYTEUS_SERVER_HOST=http://localhost:${port}`, '-e', `AUTOBYTEUS_ALLOWED_ORIGINS=${frontendOrigins}`, image]);
+    '-v', `${distDir}:/opt/autobyteus/server-package/dist:ro`, '-e', `AUTOBYTEUS_SERVER_HOST=http://localhost:${port}`, '-e', `AUTOBYTEUS_ALLOWED_ORIGINS=${frontendOrigins}`,
+    '-e', `AUTOBYTEUS_LAUNCH_OWNER_CREDENTIAL=${probeNodeEnvironment().AUTOBYTEUS_LAUNCH_OWNER_CREDENTIAL}`, image]);
   containerStarted = true;
   const baseUrl = `http://127.0.0.1:${port}`;
   await waitFor('the Docker node health', async () => fetch(`${baseUrl}/rest/health`).then(response => response.ok).catch(() => false), 240_000);
@@ -203,6 +204,8 @@ const stopFrontend = async () => {
 /** A browser page on the Nodes page of a window bound to `backend`, with helpers. */
 const openWindow = async (front, backendName, nodeHosts) => {
   const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: 'en-US', timezoneId: 'UTC' });
+  // The window reaches every node directly: the context carries the probe's credential (fixtures/probe-node-access.mjs).
+  await attachToBrowserContext(context);
   await context.addInitScript(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
   const page = await context.newPage();
   await page.goto(`${front.url}/nodes?nodeTab=memorySync`, { waitUntil: 'networkidle', timeout: 240_000 });
@@ -300,19 +303,21 @@ try {
     await w.shot('ND-01-working-details');
     const onDesk = (await peersOf(desk)).find(peer => peer.nodeId === docker.nodeId);
     const onDocker = await peersOf(docker);
-    const candidates = (await desk.gql('{ peerAddressCandidates }')).peerAddressCandidates;
     const offers = { deskAsksDocker: await offerOf(desk, docker), dockerAsksDesk: await offerOf(docker, desk) };
     expect(dockerSwitchBefore === false, 'the Docker node starts with its switch off');
-    expect(JSON.stringify(confirm.steps.map(entry => entry.id)) === JSON.stringify(['registerHere', 'turnOnThere', 'registerThere'])
-      && confirm.steps[2]?.text.includes("docker finds this node's address once it is on."), `confirmation: ${JSON.stringify(confirm.steps)}`);
-    assert(onDesk?.baseUrl === docker.baseUrl && onDesk.name === 'docker', `the Docker node on desk: ${JSON.stringify(onDesk)}`);
+    expect(JSON.stringify(confirm.steps.map(entry => entry.id)) === JSON.stringify(['turnOnThere', 'pair'])
+      && confirm.steps[1]?.text.includes('docker calls this node “Embedded Node”.'), `confirmation: ${JSON.stringify(confirm.steps)}`);
+    // Pairing (design M-9): desk takes the first of the Docker node's own address candidates that answers as it, here its
+    // AUTOBYTEUS_SERVER_HOST `http://localhost:<published port>`, which reaches the same published port.
+    const dockerOnDesk = `http://localhost:${docker.port}`;
+    assert(onDesk?.baseUrl === dockerOnDesk && onDesk.name === 'docker', `the Docker node on desk: ${JSON.stringify(onDesk)}`);
     assert(onDocker.length === 1 && onDocker[0].nodeId === desk.nodeId && onDocker[0].baseUrl === `http://host.docker.internal:${desk.port}`,
       `desk on the Docker node, at the address that reaches it from inside the container: ${JSON.stringify(onDocker)}`);
-    expect(directions.out?.startsWith(`This node → docker Working via ${docker.baseUrl}`) && directions.in?.startsWith(`docker → this node Working via http://host.docker.internal:${desk.port}`),
+    expect(directions.out?.startsWith(`This node → docker Working via ${dockerOnDesk}`) && directions.in?.startsWith(`docker → this node Working via http://host.docker.internal:${desk.port}`),
       `directions: ${JSON.stringify(directions)}`);
     expect(offers.deskAsksDocker.refusalCode === null && offers.deskAsksDocker.entries.some(entry => entry.name === 'Docker Helper')
       && offers.dockerAsksDesk.refusalCode === null && offers.dockerAsksDesk.entries.some(entry => entry.name === 'Desk Helper'), `each lists the other's Agents: ${JSON.stringify(offers)}`);
-    return { dockerSwitchBefore, confirm, onDesk, onDocker, deskCandidates: candidates, directions, offers };
+    return { dockerSwitchBefore, confirm, onDesk, onDocker, directions, offers };
   });
 
   await runCase('ND-04', async () => {
@@ -394,21 +399,12 @@ try {
     const different = await tryAddress(`http://host.docker.internal:${other.port}`);
     await w.shot('ND-03-different-node');
     const peerAfter = (await peersOf(docker)).find(peer => peer.nodeId === desk.nodeId);
-    // The Docker node's own answer for each address (the API the page words).
-    const resolveErrors = await gqlErrors(docker.gql, 'query($id:String!,$u:[String!]!){resolvePeerAddress(nodeId:$id,baseUrls:$u)}',
-      { id: desk.nodeId, u: [`http://127.0.0.1:${desk.port}`, 'http://no-such-node.invalid:8000', 'http://10.255.255.1:8000', `http://host.docker.internal:${other.port}`] });
-    const extensions = resolveErrors?.[0]?.extensions ?? null;
-    const attempts = Object.fromEntries((extensions?.attempts ?? []).map(entry => [entry.address, entry.result]));
     expect(dns.text === "no-such-node.invalid can't be found from here.", `dns: ${JSON.stringify(dns)}`);
     expect(blackHole.text === 'No answer within 20 seconds.' || blackHole.text === 'No answer from that address.', `black hole: ${JSON.stringify(blackHole)}`);
     expect(different.text === 'A different node answers there than the one registered.', `different: ${JSON.stringify(different)}`);
     for (const entry of [dns, blackHole, different]) expect(!/fetch failed/i.test(entry.text ?? ''), `no "fetch failed": ${entry.text}`);
     expect(peerAfter?.baseUrl === `http://host.docker.internal:${desk.port}`, `nothing wrong was saved: ${JSON.stringify(peerAfter)}`);
-    expect(extensions?.code === 'PEER_UNREACHABLE' && extensions.loopbackInContainer === true && extensions.reason === 'refused'
-      && attempts[`http://127.0.0.1:${desk.port}`] === 'refused' && attempts['http://no-such-node.invalid:8000'] === 'not_found'
-      && ['timeout', 'unreachable'].includes(attempts['http://10.255.255.1:8000']) && attempts[`http://host.docker.internal:${other.port}`] === 'different_node',
-      `resolvePeerAddress from inside the container: ${JSON.stringify(extensions)}`);
-    return { dns, blackHole, different, peerAfter, resolveExtensions: extensions };
+    return { dns, blackHole, different, peerAfter };
   });
 
   currentCase = null;
@@ -433,7 +429,7 @@ try {
   const left = await run('docker', ['ps', '-a', '--filter', `name=${containerName}`, '--format', '{{.Names}}']).then(({ stdout }) => stdout.trim()).catch(() => 'unknown');
   evidence.cleanup = { frontendExited: !frontend || exited(frontend), serversLeft: children.size, rootRemoved: !existsSync(root), containerLeft: left || null };
   evidence.finishedAt = new Date().toISOString();
-  await fs.writeFile(path.join(outputDir, 'nodes-docker-address-probe.json'), `${JSON.stringify(evidence, null, 2)}\n`);
+  await fs.writeFile(path.join(outputDir, 'nodes-docker-address-probe.json'), `${redactCredentials(JSON.stringify(evidence, null, 2))}\n`);
   console.log(`nodes-docker-address probe: ${evidence.result}${evidence.error ? `\n${evidence.error}` : ''}`);
   process.exit(process.exitCode ?? 0);
 }

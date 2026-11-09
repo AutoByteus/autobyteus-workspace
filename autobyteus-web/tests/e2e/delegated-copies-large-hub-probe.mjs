@@ -45,6 +45,10 @@ import { randomUUID } from 'node:crypto';
 import { spawn, execFileSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import { attachToBrowserContext, attachToProbeProcess, withNodeCredential } from './fixtures/probe-node-access.mjs';
+// Every node needs a credential (autobyteus-437): the probe's nodes start with its launch credential, and the probe's
+// own calls and its desktop browser contexts carry it (fixtures/probe-node-access.mjs).
+attachToProbeProcess();
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -156,7 +160,7 @@ const startBackend = async () => {
   await fsp.writeFile(path.join(stack.dataDir, '.env'), `${Object.entries(serverEnv()).map(([k, v]) => `${k}=${v}`).join('\n')}\n`, { mode: 0o600 });
   const env = { ...baseEnv(), ...serverEnv(), HOME: stack.privateHome, ANTIGRAVITY_CLI_COMMAND: fixtureCli, AGY_FAKE_CASE: 'linked_skills' };
   stack.backend = spawnLogged(process.execPath, [path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(stack.backendPort), '--data-dir', stack.dataDir],
-    serverDir, env, `backend-${stack.starts}`);
+    serverDir, withNodeCredential(env), `backend-${stack.starts}`);
   await until('backend listening', () => { if (exited(stack.backend)) throw new Error('backend exited'); return stack.backend.output.includes('listening'); }, 300000);
   await until('backend GraphQL', async () => (await fetch(`${stack.backendUrl}/graphql`, { method: 'POST',
     headers: { 'content-type': 'application/json' }, body: '{"query":"{__typename}"}' })).ok, 60000);
@@ -860,6 +864,7 @@ try {
       await startFrontend();
       browser = await chromium.launch({ headless: true, executablePath }); ownedBrowser = true;
       context = await browser.newContext({ viewport: { width: 1440, height: 1100 }, locale: 'en-US' }); page = await context.newPage();
+      await attachToBrowserContext(context);
       // Nuxt optimizer warm-up outside the measured cases.
       await page.goto(`${stack.frontendUrl}/workspace`, { timeout: 180000 }); await sleep(5000);
       await page.goto(`${stack.frontendUrl}/workspace`, { timeout: 180000 }); await sleep(3000);

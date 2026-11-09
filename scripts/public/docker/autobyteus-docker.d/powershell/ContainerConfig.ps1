@@ -1,5 +1,31 @@
 # Launcher desired container configuration: the config hash, the docker run arguments and the
 # storage text, which all name the same volumes and mounts.
+
+# This computer's Tailscale IPv4 address, from the first Tailscale CLI found, when it answers; nothing otherwise.
+function Get-HostTailscaleAddress {
+  $candidates = @('tailscale', '/Applications/Tailscale.app/Contents/MacOS/Tailscale')
+  if ($env:ProgramFiles) { $candidates += (Join-Path $env:ProgramFiles 'Tailscale\tailscale.exe') }
+  foreach ($candidate in $candidates) {
+    if (-not $candidate -or -not (Get-Command $candidate -ErrorAction SilentlyContinue)) { continue }
+    $answer = & $candidate ip -4 2>$null
+    $address = ([string](@($answer)[0])).Trim()
+    if ($LASTEXITCODE -eq 0 -and $address -match '^100\.\d+\.\d+\.\d+$') { return $address }
+    return $null
+  }
+  $null
+}
+
+# Where the node's port is published (node access model NA-4): this computer, and its Tailscale address when present;
+# every address with --allow-local-network. A container cannot tell this computer from the local network, so the
+# published addresses are the node's network admission.
+function Get-PublishAddresses($State) {
+  if ([bool]$State.allowLocalNetwork) { return @('all') }
+  $addresses = @('127.0.0.1')
+  $tailscale = Get-HostTailscaleAddress
+  if ($tailscale) { $addresses += $tailscale }
+  $addresses
+}
+
 function Get-StateConfigHash($State) {
   $nodeName = [string]$State.nodeName
   $volumePrefix = Normalize-NodeName $nodeName
@@ -21,13 +47,18 @@ function Get-StateConfigHash($State) {
     "shared_workspace_host=$(Get-SharedWorkspaceHostPath)",
     "shared_workspace_target=$Script:SharedContainerPath",
     "temp_workspace_env=AUTOBYTEUS_TEMP_WORKSPACE_DIR=$Script:TempWorkspaceEnvValue",
-    "server_host=http://localhost:$($State.backendPort)"
+    "server_host=http://localhost:$($State.backendPort)",
+    "publish=$((Get-PublishAddresses $State) -join ',')"
   ) -join "`n"
   Get-StringSha256 $text
 }
 
 function Get-ContainerRunArgs($State, [string]$NodeWorkspaceHost, [string]$SharedWorkspaceHost) {
   $nodeName = [string]$State.nodeName
+  $publishArgs = @()
+  foreach ($address in @(Get-PublishAddresses $State)) {
+    if ($address -eq 'all') { $publishArgs += @('-p', "$($State.backendPort):8000") } else { $publishArgs += @('-p', "${address}:$($State.backendPort):8000") }
+  }
   @(
     'run', '-d',
     '--name', $State.containerName,
@@ -49,8 +80,8 @@ function Get-ContainerRunArgs($State, [string]$NodeWorkspaceHost, [string]$Share
     '-v', "$(Normalize-NodeName $nodeName)-chromium-profile:$Script:ChromiumProfileContainerPath",
     '-v', "$(Normalize-NodeName $nodeName)-server-packages:$Script:ServerPackagesContainerPath",
     '--cap-add', 'SYS_ADMIN',
-    '--security-opt', 'seccomp=unconfined',
-    '-p', "$($State.backendPort):8000",
+    '--security-opt', 'seccomp=unconfined'
+  ) + $publishArgs + @(
     '--mount', "type=bind,source=$NodeWorkspaceHost,target=$Script:WorkspaceContainerPath",
     '--mount', "type=bind,source=$SharedWorkspaceHost,target=$Script:SharedContainerPath"
   )

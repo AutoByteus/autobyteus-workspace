@@ -1,0 +1,8 @@
+# R2 API-03 prerequisite: pnpm -C autobyteus-web build:mobile-web; commit 32e9ad944c; 2026-11-08T17:55:23Z
+▲  HTML content not prerendered because ssr: false was set.
+│
+●  You can read more in https://nuxt.com/docs/getting-started/deployment#static-hosting.
+│
+└  ✨ You can now deploy dist/public to any static hosting!
+Mobile web assets written to /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/dist-mobile/public
+# Exit status: 0

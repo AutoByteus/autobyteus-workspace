@@ -3,7 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { PairedDeviceService } from "../../../src/remote-access/services/paired-device-service.js";
-import { RemoteAccessAuthService } from "../../../src/remote-access/services/remote-access-auth-service.js";
+import { PhoneCredentialVerifier } from "../../../src/remote-access/services/phone-credential-verifier.js";
 import { RemoteAccessPairingService } from "../../../src/remote-access/services/remote-access-pairing-service.js";
 import { RemoteAccessSettingsService } from "../../../src/remote-access/services/remote-access-settings-service.js";
 import { PairedDeviceStore } from "../../../src/remote-access/stores/paired-device-store.js";
@@ -16,8 +16,8 @@ const buildServices = () => {
   const settingsService = new RemoteAccessSettingsService(new RemoteAccessSettingsStore(config));
   const deviceService = new PairedDeviceService(new PairedDeviceStore(config));
   const pairingService = new RemoteAccessPairingService(settingsService, deviceService, 60_000);
-  const authService = new RemoteAccessAuthService(settingsService, deviceService);
-  return { settingsService, deviceService, pairingService, authService };
+  const phoneVerifier = new PhoneCredentialVerifier(deviceService, settingsService);
+  return { settingsService, deviceService, pairingService, phoneVerifier };
 };
 
 beforeEach(async () => {
@@ -36,7 +36,7 @@ describe("remote access pairing and auth services", () => {
   });
 
   it("exchanges a single-use code for a credential and rejects reuse", async () => {
-    const { settingsService, pairingService, authService } = buildServices();
+    const { settingsService, pairingService, phoneVerifier } = buildServices();
     await settingsService.setPhoneAccessEnabled(true);
     const session = await pairingService.createPairingSession({ connectionWay: "tailscale", serverBaseUrl: "https://desktop.tailnet.ts.net/mobile" });
     expect(session.payload.serverBaseUrl).toBe("https://desktop.tailnet.ts.net");
@@ -51,8 +51,8 @@ describe("remote access pairing and auth services", () => {
     await expect(pairingService.exchangePairingCode({ pairingCode: session.payload.pairingCode }))
       .rejects.toMatchObject({ code: "REMOTE_ACCESS_PAIRING_CONSUMED" });
 
-    await expect(authService.authorizeMobileCredential(exchange.credential))
-      .resolves.toMatchObject({ ok: true, context: { mode: "mobile", deviceId: exchange.device.deviceId } });
+    await expect(phoneVerifier.verify(exchange.credential))
+      .resolves.toEqual({ ok: true, identity: { kind: "phone", deviceId: exchange.device.deviceId } });
   });
 
   it("requires acknowledgement before creating trusted private HTTP pairing sessions", async () => {
@@ -108,26 +108,34 @@ describe("remote access pairing and auth services", () => {
     expect(exchange.serverBaseUrl).toBe("https://gateway.example.com/autobyteus");
   });
 
-  it("rejects disabled, per-device revoked, and revoke-all credentials", async () => {
-    const { settingsService, pairingService, deviceService, authService } = buildServices();
+  it("NAS-10 refuses disabled, per-device revoked, and revoke-all credentials, and publishes each revocation", async () => {
+    const { settingsService, pairingService, deviceService, phoneVerifier } = buildServices();
+    const revocations: unknown[] = [];
+    phoneVerifier.onClientRevoked((revocation) => revocations.push({ kind: revocation.kind, id: revocation.id, code: revocation.refusal.code }));
     await settingsService.setPhoneAccessEnabled(true);
     const firstSession = await pairingService.createPairingSession({ connectionWay: "tailscale", serverBaseUrl: "https://desktop.tailnet.ts.net" });
     const first = await pairingService.exchangePairingCode({ pairingCode: firstSession.payload.pairingCode });
 
     await settingsService.setPhoneAccessEnabled(false);
-    await expect(authService.authorizeMobileCredential(first.credential))
-      .resolves.toMatchObject({ ok: false, code: "PHONE_ACCESS_DISABLED" });
+    await expect(phoneVerifier.verify(first.credential))
+      .resolves.toMatchObject({ ok: false, refusal: { statusCode: 403, code: "PHONE_ACCESS_DISABLED" } });
 
     await settingsService.setPhoneAccessEnabled(true);
     await deviceService.revokeDevice(first.device.deviceId);
-    await expect(authService.authorizeMobileCredential(first.credential))
-      .resolves.toMatchObject({ ok: false, code: "REMOTE_ACCESS_DEVICE_REVOKED" });
+    await expect(phoneVerifier.verify(first.credential))
+      .resolves.toMatchObject({ ok: false, refusal: { statusCode: 403, code: "REMOTE_ACCESS_DEVICE_REVOKED" } });
+    await expect(phoneVerifier.verify("mra_made_up")).resolves.toMatchObject({ ok: false, refusal: { statusCode: 401, code: "NODE_CREDENTIAL_INVALID" } });
 
     const secondSession = await pairingService.createPairingSession({ connectionWay: "tailscale", serverBaseUrl: "https://desktop.tailnet.ts.net" });
     const second = await pairingService.exchangePairingCode({ pairingCode: secondSession.payload.pairingCode });
     expect((await deviceService.revokeAllDevices()).revokedCount).toBe(1);
-    await expect(authService.authorizeMobileCredential(second.credential))
-      .resolves.toMatchObject({ ok: false, code: "REMOTE_ACCESS_DEVICE_REVOKED" });
+    await expect(phoneVerifier.verify(second.credential))
+      .resolves.toMatchObject({ ok: false, refusal: { code: "REMOTE_ACCESS_DEVICE_REVOKED" } });
+    expect(revocations).toEqual([
+      { kind: "phone", id: null, code: "PHONE_ACCESS_DISABLED" },
+      { kind: "phone", id: first.device.deviceId, code: "REMOTE_ACCESS_DEVICE_REVOKED" },
+      { kind: "phone", id: second.device.deviceId, code: "REMOTE_ACCESS_DEVICE_REVOKED" },
+    ]);
   });
 
   it("lists active and revoked device summaries through explicit service boundaries", async () => {

@@ -1,0 +1,207 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-zzld2q/server-data
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-zzld2q/server-data/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-zzld2q/server-data/.env
+◇ injected env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-zzld2q/server-data/.env // tip: ⌁ auth for agents [www.vestauth.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:52512
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:52512
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-zzld2q/server-data
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-zzld2q/server-data/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-zzld2q/server-data/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-zzld2q/server-data/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-zzld2q/server-data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-zzld2q/server-data/db/production.db"
+
+27 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:65542) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+[2026-11-08T19:32:07.234Z] [INFO] [secret-management.vault] Secret vault: application database
+Initialized server settings service with 32 predefined settings
+AgentRunManager initialized.
+Node access: local control socket not opened. The node's local control socket path is 121 bytes, longer than the 103 bytes a Unix socket path may have: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-zzld2q/server-data/node-access/local-control.sock. Use a shorter data folder path.
+AgentRunManager initialized.
+Empty never-started run removal skipped 4 folder(s) without a standalone run record
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-zzld2q/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-zzld2q/server-data/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-zzld2q/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Registered required tool unit: Agent Discovery Tools
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+Registered required tool unit: Agent Runtime Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'search_memory'
+Registered required tool unit: Memory Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+{"level":30,"time":1794166327505,"pid":65542,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:52516"}
+{"level":30,"time":1794166327530,"pid":65542,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:52512"}
+[2026-11-08T19:32:07.533Z] [INFO] [server.runtime] Server listening on 127.0.0.1:52512
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+Background task 'Memory Search' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+{"level":40,"time":1794166328091,"pid":65542,"hostname":"MacBookPro","reqId":"req-3u","method":"GET","url":"/rest/runs/osr_helper_3e6c02e73fa84ce58f2f269de3e5d37e/file-change-content?path=copy-notes.md","statusCode":404,"elapsedMs":0.4394170000000486,"msg":"http request completed"}
+{"level":40,"time":1794166328093,"pid":65542,"hostname":"MacBookPro","reqId":"req-3v","method":"GET","url":"/rest/runs/osr_helper_3e6c02e73fa84ce58f2f269de3e5d37e/file-change-content?path=copy-notes.md","statusCode":404,"elapsedMs":0.49616699999978664,"msg":"http request completed"}
+{"level":40,"time":1794166328095,"pid":65542,"hostname":"MacBookPro","reqId":"req-3w","method":"GET","url":"/rest/runs/osr_helper_3e6c02e73fa84ce58f2f269de3e5d37e/file-change-content?path=copy-notes.md","statusCode":404,"elapsedMs":0.30054100000006656,"msg":"http request completed"}
+{"level":40,"time":1794166328097,"pid":65542,"hostname":"MacBookPro","reqId":"req-3x","method":"GET","url":"/rest/runs/osr_helper_3e6c02e73fa84ce58f2f269de3e5d37e/file-change-content?path=copy-notes.md","statusCode":404,"elapsedMs":0.27408299999979135,"msg":"http request completed"}
+{"level":40,"time":1794166328099,"pid":65542,"hostname":"MacBookPro","reqId":"req-3y","method":"GET","url":"/rest/runs/osr_helper_3e6c02e73fa84ce58f2f269de3e5d37e/file-change-content?path=copy-notes.md","statusCode":404,"elapsedMs":0.2895829999997659,"msg":"http request completed"}
+{"level":40,"time":1794166328101,"pid":65542,"hostname":"MacBookPro","reqId":"req-3z","method":"GET","url":"/rest/runs/osr_helper_3e6c02e73fa84ce58f2f269de3e5d37e/file-change-content?path=copy-notes.md","statusCode":404,"elapsedMs":0.5544159999999465,"msg":"http request completed"}
+{"level":40,"time":1794166328103,"pid":65542,"hostname":"MacBookPro","reqId":"req-40","method":"GET","url":"/rest/runs/osr_helper_3e6c02e73fa84ce58f2f269de3e5d37e/file-change-content?path=copy-notes.md","statusCode":404,"elapsedMs":0.2980419999998958,"msg":"http request completed"}
+{"level":40,"time":1794166328105,"pid":65542,"hostname":"MacBookPro","reqId":"req-41","method":"GET","url":"/rest/runs/osr_helper_3e6c02e73fa84ce58f2f269de3e5d37e/file-change-content?path=copy-notes.md","statusCode":404,"elapsedMs":0.28745900000012625,"msg":"http request completed"}
+{"level":40,"time":1794166328125,"pid":65542,"hostname":"MacBookPro","reqId":"req-42","method":"GET","url":"/rest/team-runs/osr_manager_d43779f4576b4933b9282e490bbcd164/agent-runs/unknown_agent_run/context-files/missing.txt","statusCode":404,"elapsedMs":17.870124999999916,"msg":"http request completed"}
+{"level":40,"time":1794166328142,"pid":65542,"hostname":"MacBookPro","reqId":"req-43","method":"GET","url":"/rest/team-runs/osr_manager_d43779f4576b4933b9282e490bbcd164/agent-runs/unknown_agent_run/context-files/missing.txt","statusCode":404,"elapsedMs":15.391625000000204,"msg":"http request completed"}
+{"level":40,"time":1794166328156,"pid":65542,"hostname":"MacBookPro","reqId":"req-44","method":"GET","url":"/rest/team-runs/osr_manager_d43779f4576b4933b9282e490bbcd164/agent-runs/unknown_agent_run/context-files/missing.txt","statusCode":404,"elapsedMs":12.535292000000027,"msg":"http request completed"}
+{"level":40,"time":1794166328171,"pid":65542,"hostname":"MacBookPro","reqId":"req-45","method":"GET","url":"/rest/team-runs/osr_manager_d43779f4576b4933b9282e490bbcd164/agent-runs/unknown_agent_run/context-files/missing.txt","statusCode":404,"elapsedMs":13.699791999999889,"msg":"http request completed"}
+{"level":40,"time":1794166328187,"pid":65542,"hostname":"MacBookPro","reqId":"req-46","method":"GET","url":"/rest/team-runs/osr_manager_d43779f4576b4933b9282e490bbcd164/agent-runs/unknown_agent_run/context-files/missing.txt","statusCode":404,"elapsedMs":14.3859580000003,"msg":"http request completed"}
+{"level":40,"time":1794166328204,"pid":65542,"hostname":"MacBookPro","reqId":"req-47","method":"GET","url":"/rest/team-runs/osr_manager_d43779f4576b4933b9282e490bbcd164/agent-runs/unknown_agent_run/context-files/missing.txt","statusCode":404,"elapsedMs":14.265959000000294,"msg":"http request completed"}
+{"level":40,"time":1794166328218,"pid":65542,"hostname":"MacBookPro","reqId":"req-48","method":"GET","url":"/rest/team-runs/osr_manager_d43779f4576b4933b9282e490bbcd164/agent-runs/unknown_agent_run/context-files/missing.txt","statusCode":404,"elapsedMs":12.802834000000075,"msg":"http request completed"}
+{"level":40,"time":1794166328235,"pid":65542,"hostname":"MacBookPro","reqId":"req-49","method":"GET","url":"/rest/team-runs/osr_manager_d43779f4576b4933b9282e490bbcd164/agent-runs/unknown_agent_run/context-files/missing.txt","statusCode":404,"elapsedMs":14.349041999999827,"msg":"http request completed"}
+Created metadata-only FileSystemWorkspace at /tmp/abtest437r2/seeds/owner-scoped/archive.
+Created metadata-only FileSystemWorkspace at /tmp/abtest437r2/seeds/owner-scoped/workspace.
+Created terminal session cdd3978c-d925-4023-b13a-b80a56ac1cc7 using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-home-lRmMZk
+Terminal WebSocket connected: cdd3978c-d925-4023-b13a-b80a56ac1cc7
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-home-lRmMZk
+Closed PTY session cdd3978c-d925-4023-b13a-b80a56ac1cc7
+Terminal WebSocket disconnected: cdd3978c-d925-4023-b13a-b80a56ac1cc7
+Created metadata-only FileSystemWorkspace at /tmp/abtest437r2/seeds/owner-scoped/archive.
+Created metadata-only FileSystemWorkspace at /tmp/abtest437r2/seeds/owner-scoped/workspace.
+Created terminal session 5f73ddb4-f5d9-4f08-9385-94e292834844 using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-home-lRmMZk
+Terminal WebSocket connected: 5f73ddb4-f5d9-4f08-9385-94e292834844
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-home-lRmMZk
+Closed PTY session 5f73ddb4-f5d9-4f08-9385-94e292834844
+Terminal WebSocket disconnected: 5f73ddb4-f5d9-4f08-9385-94e292834844
+Created metadata-only FileSystemWorkspace at /tmp/abtest437r2/seeds/owner-scoped/archive.
+Created metadata-only FileSystemWorkspace at /tmp/abtest437r2/seeds/owner-scoped/workspace.
+Created terminal session 000555c1-ea72-4e9b-a841-bfadd613631d using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-home-lRmMZk
+Terminal WebSocket connected: 000555c1-ea72-4e9b-a841-bfadd613631d
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-home-lRmMZk
+Memory file missing: /tmp/abtest437r2/seeds/owner-scoped/server-data/memory/agents/osr_manager_d43779f4576b4933b9282e490bbcd164/raw_traces_manifest.json
+Memory file missing: /tmp/abtest437r2/seeds/owner-scoped/server-data/memory/agents/osr_manager_d43779f4576b4933b9282e490bbcd164/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-zzld2q/server-data/memory/agents/osr_helper_3e6c02e73fa84ce58f2f269de3e5d37e/raw_traces_manifest.json
+Closed PTY session 000555c1-ea72-4e9b-a841-bfadd613631d
+Terminal WebSocket disconnected: 000555c1-ea72-4e9b-a841-bfadd613631d
+Created metadata-only FileSystemWorkspace at /tmp/abtest437r2/seeds/owner-scoped/archive.
+Created metadata-only FileSystemWorkspace at /tmp/abtest437r2/seeds/owner-scoped/workspace.
+Created terminal session 8859b616-fe45-4bd0-837a-fa3d520b0597 using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-home-lRmMZk
+Terminal WebSocket connected: 8859b616-fe45-4bd0-837a-fa3d520b0597
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-home-lRmMZk
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-zzld2q/server-data/memory/agent_teams/osr_team_ec1e2fe6b77c42448707a2822648b4ef/osr_manager_8beffcddb75345d0b77d00cdfc96a7ea/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-zzld2q/server-data/memory/agents/osr_helper_7a0d3777200b493b98e2288d2c23be15/raw_traces_manifest.json
+Closed PTY session 8859b616-fe45-4bd0-837a-fa3d520b0597
+Terminal WebSocket disconnected: 8859b616-fe45-4bd0-837a-fa3d520b0597
+Created metadata-only FileSystemWorkspace at /tmp/abtest437r2/seeds/owner-scoped/archive.
+Created metadata-only FileSystemWorkspace at /tmp/abtest437r2/seeds/owner-scoped/workspace.
+Created terminal session 6dff15c1-dd44-4e44-8e4b-b11bfb7bc09d using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-home-lRmMZk
+Terminal WebSocket connected: 6dff15c1-dd44-4e44-8e4b-b11bfb7bc09d
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-home-lRmMZk
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-zzld2q/server-data/memory/agent_orgs/osr_org_bed97f19281e415b8af656b9b3eff6d5/osr_manager_374d60112a704dcc987284aca4a0aed7/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-zzld2q/server-data/memory/agent_orgs/osr_org_bed97f19281e415b8af656b9b3eff6d5/osr_squad_569d98cd3ea24a3eaebca6a70ace80af/osr_lead_30ae3b49601f4d3c9e2428ab2494920c/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-zzld2q/server-data/memory/agents/osr_helper_aba0b892269a4cee97fdce5945aa89b9/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-zzld2q/server-data/memory/agents/osr_helper_2fbfb94b6d3d417c83a3552c9e730571/raw_traces_manifest.json
+Closed PTY session 6dff15c1-dd44-4e44-8e4b-b11bfb7bc09d
+Terminal WebSocket disconnected: 6dff15c1-dd44-4e44-8e4b-b11bfb7bc09d
+Created metadata-only FileSystemWorkspace at /tmp/abtest437r2/seeds/owner-scoped/archive.
+Created metadata-only FileSystemWorkspace at /tmp/abtest437r2/seeds/owner-scoped/workspace.
+Created terminal session bc52edaf-7d43-44e6-9d63-3245a24a99e9 using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-home-lRmMZk
+Terminal WebSocket connected: bc52edaf-7d43-44e6-9d63-3245a24a99e9
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-home-lRmMZk
+Memory file missing: /tmp/abtest437r2/seeds/owner-scoped/server-data/memory/agents/osr_manager_d43779f4576b4933b9282e490bbcd164/raw_traces_manifest.json
+Closed PTY session bc52edaf-7d43-44e6-9d63-3245a24a99e9
+Terminal WebSocket disconnected: bc52edaf-7d43-44e6-9d63-3245a24a99e9
+Created metadata-only FileSystemWorkspace at /tmp/abtest437r2/seeds/owner-scoped/archive.
+Created metadata-only FileSystemWorkspace at /tmp/abtest437r2/seeds/owner-scoped/workspace.
+Created terminal session e49f9074-a42b-4569-8167-08c4988d64df using backend IsolatedPtySession for target /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-home-lRmMZk
+Terminal WebSocket connected: e49f9074-a42b-4569-8167-08c4988d64df
+Terminal websocket attached for cwd /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-home-lRmMZk
+Memory file missing: /tmp/abtest437r2/seeds/owner-scoped/server-data/memory/agents/osr_manager_d43779f4576b4933b9282e490bbcd164/raw_traces_manifest.json
+Memory file missing: /tmp/abtest437r2/seeds/owner-scoped/server-data/memory/agents/osr_manager_d43779f4576b4933b9282e490bbcd164/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-zzld2q/server-data/memory/agents/osr_helper_3e6c02e73fa84ce58f2f269de3e5d37e/raw_traces_manifest.json
+Closed PTY session e49f9074-a42b-4569-8167-08c4988d64df
+Terminal WebSocket disconnected: e49f9074-a42b-4569-8167-08c4988d64df
+{"level":40,"time":1794166386948,"pid":65542,"hostname":"MacBookPro","reqId":"req-bh","method":"GET","url":"/rest/agent-collaborations/osr_manager_d43779f4576b4933b9282e490bbcd164/agent-runs/osr_helper_3e6c02e73fa84ce58f2f269de3e5d37e/file-change-content?memberAddress=%2Fosr_helper&path=copy-notes.md","statusCode":404,"elapsedMs":1.1381249999976717,"msg":"http request completed"}
+{"level":40,"time":1794166388478,"pid":65542,"hostname":"MacBookPro","reqId":"req-bj","method":"GET","url":"/rest/agent-collaborations/osr_manager_d43779f4576b4933b9282e490bbcd164/agent-runs/osr_helper_3e6c02e73fa84ce58f2f269de3e5d37e/file-change-content?memberAddress=%2Fosr_helper&path=copy-notes.md","statusCode":404,"elapsedMs":1.4593330000061542,"msg":"http request completed"}
+{"level":40,"time":1794166389636,"pid":65542,"hostname":"MacBookPro","reqId":"req-bk","method":"GET","url":"/rest/agent-collaborations/osr_manager_d43779f4576b4933b9282e490bbcd164/agent-runs/osr_helper_3e6c02e73fa84ce58f2f269de3e5d37e/file-change-content?memberAddress=%2Fosr_helper&path=copy-notes.md","statusCode":404,"elapsedMs":1.1301250000033178,"msg":"http request completed"}
+Created metadata-only FileSystemWorkspace at /tmp/abtest437r2/seeds/owner-scoped/archive.
+Created metadata-only FileSystemWorkspace at /tmp/abtest437r2/seeds/owner-scoped/workspace.
+Memory file missing: /tmp/abtest437r2/seeds/owner-scoped/server-data/memory/agents/osr_manager_d43779f4576b4933b9282e490bbcd164/raw_traces_manifest.json
+Created metadata-only FileSystemWorkspace at /tmp/abtest437r2/seeds/owner-scoped/archive.
+Created metadata-only FileSystemWorkspace at /tmp/abtest437r2/seeds/owner-scoped/workspace.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-zzld2q/server-data/memory/agent_teams/osr_team_ec1e2fe6b77c42448707a2822648b4ef/osr_manager_8beffcddb75345d0b77d00cdfc96a7ea/raw_traces_manifest.json

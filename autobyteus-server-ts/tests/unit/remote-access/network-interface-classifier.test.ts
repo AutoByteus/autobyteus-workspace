@@ -9,15 +9,15 @@ import {
 // Synthetic interface lists recorded in the shape `os.networkInterfaces()` reports on each system.
 // Addresses and hardware addresses are invented; none belongs to a real machine.
 const NO_MAC = "00:00:00:00:00:00";
-const v4 = (interfaceName: string, address: string, mac = NO_MAC, internal = false): InterfaceAddress =>
-  ({ interfaceName, address, family: "IPv4", internal, mac });
+const v4 = (interfaceName: string, address: string, mac = NO_MAC, internal = false, cidr: string | null = null): InterfaceAddress =>
+  ({ interfaceName, address, family: "IPv4", internal, mac, cidr });
 const v6 = (interfaceName: string, address: string, mac = NO_MAC): InterfaceAddress =>
-  ({ interfaceName, address, family: "IPv6", internal: false, mac });
+  ({ interfaceName, address, family: "IPv6", internal: false, mac, cidr: null });
 
 const macosLaptop: InterfaceAddress[] = [
   v4("lo0", "127.0.0.1", NO_MAC, true),
   v6("en0", "fe80::1c2b:3a4d:5e6f:7081", "02:00:00:00:00:01"),
-  v4("en0", "192.168.1.20", "02:00:00:00:00:01"),
+  v4("en0", "192.168.1.20", "02:00:00:00:00:01", false, "192.168.1.20/24"),
   v6("awdl0", "fe80::aa:bb", "02:00:00:00:00:02"),
   v6("llw0", "fe80::aa:cc", "02:00:00:00:00:02"),
   v4("bridge100", "192.168.64.1", "02:00:00:00:00:03"),
@@ -54,6 +54,7 @@ describe("network interface classifier", () => {
       tailscale: { address: "100.101.102.103", dnsName: "laptop.example-tailnet.ts.net" },
       vpnAddresses: [],
       localAddresses: ["192.168.1.20"],
+      localSubnets: ["192.168.1.20/24"],
     });
   });
 
@@ -67,6 +68,7 @@ describe("network interface classifier", () => {
       tailscale: { address: "100.88.1.2", dnsName: null },
       vpnAddresses: ["10.8.0.2"],
       localAddresses: ["192.168.10.5"],
+      localSubnets: [],
     });
   });
 
@@ -84,6 +86,7 @@ describe("network interface classifier", () => {
       tailscale: null,
       vpnAddresses: [],
       localAddresses: ["192.168.0.7", "100.90.1.2"],
+      localSubnets: [],
     });
   });
 
@@ -113,7 +116,7 @@ describe("network interface classifier", () => {
       reverseNames: new Map(),
       defaultRouteInterfaceName: "eth0",
     });
-    expect(result).toEqual({ tailscale: null, vpnAddresses: [], localAddresses: [] });
+    expect(result).toEqual({ tailscale: null, vpnAddresses: [], localAddresses: [], localSubnets: [] });
   });
 
   it("a container's own interfaces give only container-internal addresses (E-04), which the node does not report", () => {
@@ -128,11 +131,11 @@ describe("network interface classifier", () => {
 
   it("flattens os.networkInterfaces() in OS order, including numeric families", () => {
     expect(flattenNetworkInterfaces({
-      en0: [{ address: "192.168.1.20", family: 4, internal: false, mac: "02:00:00:00:00:01" }],
-      utun5: [{ address: "100.101.102.103", family: "IPv4", internal: false, mac: NO_MAC }],
+      en0: [{ address: "192.168.1.20", family: 4, internal: false, mac: "02:00:00:00:00:01", cidr: "192.168.1.20/24" }],
+      utun5: [{ address: "100.101.102.103", family: "IPv4", internal: false, mac: NO_MAC, cidr: "100.101.102.103/32" }],
     })).toEqual([
-      v4("en0", "192.168.1.20", "02:00:00:00:00:01"),
-      v4("utun5", "100.101.102.103"),
+      v4("en0", "192.168.1.20", "02:00:00:00:00:01", false, "192.168.1.20/24"),
+      v4("utun5", "100.101.102.103", NO_MAC, false, "100.101.102.103/32"),
     ]);
   });
 });

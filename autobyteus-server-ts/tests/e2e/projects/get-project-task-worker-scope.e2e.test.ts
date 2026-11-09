@@ -13,6 +13,7 @@ import { until } from "../helpers/agy-runtime-error-fixture.js";
 import { callTool, calledResults, segment, stringsOf, taskAgentsIn, toolResult, type Rec } from "../helpers/collaboration-root-harness.js";
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
+import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
 
 // autobyteus-260 get_project_task (REQ-014..REQ-017; AC-012, AC-013, AC-014, AC-015; AR-006, AR-008, MP-003) through the
 // built server (`dist/app.js`) in separate processes on a test-owned data root: real Team root, task copies, the Agent Tools
@@ -108,7 +109,7 @@ suite("get_project_task worker scope through real roots and runtimes (built serv
       USER: process.env.USER ?? "tester", DATABASE_URL: `file:${path.join(root, "db", "production.db")}`, ANTIGRAVITY_CLI_COMMAND: cli,
       AGY_FAKE_CASE: "linked_skills", AUTOBYTEUS_AGENT_PACKAGE_ROOTS: "", LMSTUDIO_HOSTS: providerOrigin };
     const child = spawn(process.execPath, [path.join(serverDir, "dist", "app.js"), "--data-dir", root, "--host", "127.0.0.1", "--port", "0"],
-      { cwd: serverDir, env, stdio: ["ignore", "pipe", "pipe"] });
+      { cwd: serverDir, env: { ...env, ...builtServerLaunchEnvironment() }, stdio: ["ignore", "pipe", "pipe"] });
     let output = "";
     child.stdout!.on("data", (chunk) => { output += String(chunk); });
     child.stderr!.on("data", (chunk) => { output += String(chunk); });

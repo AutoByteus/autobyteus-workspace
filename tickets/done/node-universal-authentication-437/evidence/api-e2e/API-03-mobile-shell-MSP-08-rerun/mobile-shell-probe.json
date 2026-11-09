@@ -1,0 +1,92 @@
+{
+  "startedAt": "2026-11-08T16:48:15.966Z",
+  "result": "Fail",
+  "node": "v22.23.1",
+  "servers": {
+    "alpha": {
+      "port": 51217,
+      "nodeId": "srv_80pPiLeZv2M6HUo1M2hGSzVMgq4x6Jfu",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "beta": {
+      "port": 51218,
+      "nodeId": "srv_nnySuAYK9IKW6DJ5cDRRTg3WMbrH-zK6",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_4f05830f0f8c4f1c8c335edbb49961c3",
+    "writerRun": "release_notes_writer_ecd0aa714cf4479a9230a8734d81cb04",
+    "squadRun": "docs_review_team_a924671770b143ae9461ac7960d74f13",
+    "reviewer": "release_notes_writer_226897bc799b45119248f064bfde1fc8",
+    "memberDelegated": "fact_checker_3581d2872ce44704b475f6eb20de0748",
+    "remoteAgentRun": "publisher_10aea371cb4049f3a4aefa65b61dac4c",
+    "remoteTeamRun": "studio_team_c9532de7357d416381fd0d665cecdf11",
+    "plain": [
+      "fact_checker_5747b71ace8749309ed8eb5c12dc0a77",
+      "fact_checker_17cedb4eb84b4723afa90195974faaf1",
+      "fact_checker_90ca03b6b1854f8390e8620f8abe9aeb"
+    ],
+    "org": "delivery_org_8321a7e9a49b4b5889d16c4febc72e95",
+    "orgPlanner": "release_notes_writer_b892a65573064bf483e6f439522e86d8",
+    "reviewOrg": "review_org_8c623ff7e57246a38e0702d7cd319344",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_a4bd1ba551c2439a978b5041a19b201b",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_4ba25779653941048d077008bdc51ee4",
+    "deliveryLead": "fact_checker_9fb1e6c9fb2d49f1bcd9a175dc11bab0",
+    "deliveryMate": "release_notes_writer_2df6433b2cec4f429d9316347284615b",
+    "leadDelegated": "changelog_helper_4756174972d247da9b4b9f1e965fd0fe",
+    "approver": "approver_fc0b6509d9c745a2b7a9f1267ae007bc",
+    "taskA": "launch-132e3b-1",
+    "taskB": "launch-132e3b-2"
+  },
+  "cases": {
+    "MSP-08": {
+      "result": "Fail",
+      "seconds": 27.3,
+      "error": "one search over the workspace",
+      "details": []
+    }
+  },
+  "browserErrors": [
+    {
+      "case": "setup",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": true,
+      "cause": "FU-003: serverStore health check of http://localhost:8000/health"
+    }
+  ],
+  "failedRequests": [
+    {
+      "case": "setup",
+      "label": "phone",
+      "url": "http://localhost:8000/health",
+      "error": "net::ERR_CONNECTION_REFUSED"
+    }
+  ],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "summary": {
+    "cases": {
+      "MSP-08": "Fail"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-08T16:49:32.020Z"
+}

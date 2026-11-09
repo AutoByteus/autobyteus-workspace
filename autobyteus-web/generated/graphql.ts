@@ -24,12 +24,6 @@ export type Scalars = {
   SafeInt: { input: number; output: number; }
 };
 
-export type AddPeerNodeInput = {
-  baseUrl: Scalars['String']['input'];
-  name: Scalars['String']['input'];
-  nodeId: Scalars['String']['input'];
-};
-
 export type AddProjectTaskCommentInput = {
   projectId: Scalars['String']['input'];
   taskId: Scalars['String']['input'];
@@ -1915,7 +1909,7 @@ export type MoveMcpSecretsToVaultResult = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  addPeerNode: PeerNodeGql;
+  acceptPeerInvite: PeerNodeGql;
   addProjectTaskComment: ProjectTask;
   addProjectWorkspace: Project;
   addSkillSource: Array<SkillSource>;
@@ -1943,6 +1937,7 @@ export type Mutation = {
   createCustomProvider: ProviderCredentialSettingObject;
   createFileOrFolder: Scalars['String']['output'];
   createMemoryHubSourceCredential: MemoryHubCredentialMutationResultGql;
+  createPeerInvite: PeerInviteGql;
   createProject: Project;
   createProjectTask: ProjectTask;
   createSkill: Skill;
@@ -2053,8 +2048,10 @@ export type Mutation = {
 };
 
 
-export type MutationAddPeerNodeArgs = {
-  input: AddPeerNodeInput;
+export type MutationAcceptPeerInviteArgs = {
+  inviteText: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  nameOnInviter?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -2710,6 +2707,12 @@ export type MutationWriteFileContentArgs = {
   workspaceId: Scalars['String']['input'];
 };
 
+export type PeerInviteGql = {
+  __typename?: 'PeerInviteGql';
+  expiresAt: Scalars['String']['output'];
+  inviteText: Scalars['String']['output'];
+};
+
 export type PeerNodeAvailabilityGql = {
   __typename?: 'PeerNodeAvailabilityGql';
   available: Scalars['Boolean']['output'];
@@ -2723,6 +2726,7 @@ export type PeerNodeGql = {
   baseUrl: Scalars['String']['output'];
   name: Scalars['String']['output'];
   nodeId: Scalars['String']['output'];
+  paired: Scalars['Boolean']['output'];
 };
 
 export type PeerNodeOfferEntryGql = {
@@ -2986,7 +2990,6 @@ export type Query = {
   modelRoutingDecisions: Scalars['JSON']['output'];
   modelRoutingStatistics: Scalars['JSON']['output'];
   modelRoutingStatus: Scalars['JSON']['output'];
-  peerAddressCandidates: Array<Scalars['String']['output']>;
   peerNodeAvailability: PeerNodeAvailabilityGql;
   peerNodeOffer: PeerNodeOfferGql;
   peerNodes: Array<PeerNodeGql>;
@@ -3000,7 +3003,6 @@ export type Query = {
   providerModelCatalogSnapshots: Array<ProviderModelCatalogSnapshotObject>;
   qwenSetupStatus: QwenSetupStatus;
   remoteCollaborationCapability: RemoteCollaborationCapabilityGql;
-  resolvePeerAddress: Scalars['String']['output'];
   runFolderWorkJournal?: Maybe<WorkJournalView>;
   runtimeAvailability: RuntimeAvailabilityObject;
   runtimeAvailabilityKinds: Array<Scalars['String']['output']>;
@@ -3428,12 +3430,6 @@ export type QueryProviderCredentialSettingsArgs = {
 
 export type QueryProviderModelCatalogSnapshotsArgs = {
   runtimeKind?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-export type QueryResolvePeerAddressArgs = {
-  baseUrls: Array<Scalars['String']['input']>;
-  nodeId: Scalars['String']['input'];
 };
 
 
@@ -5346,12 +5342,19 @@ export type SetRemoteCollaborationEnabledMutationVariables = Exact<{
 
 export type SetRemoteCollaborationEnabledMutation = { __typename?: 'Mutation', setRemoteCollaborationEnabled: { __typename?: 'RemoteCollaborationCapabilityGql', enabled: boolean, settingKey: string, source: string } };
 
-export type AddPeerNodeMutationVariables = Exact<{
-  input: AddPeerNodeInput;
+export type CreatePeerInviteMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CreatePeerInviteMutation = { __typename?: 'Mutation', createPeerInvite: { __typename?: 'PeerInviteGql', inviteText: string, expiresAt: string } };
+
+export type AcceptPeerInviteMutationVariables = Exact<{
+  inviteText: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  nameOnInviter?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type AddPeerNodeMutation = { __typename?: 'Mutation', addPeerNode: { __typename?: 'PeerNodeGql', nodeId: string, name: string, baseUrl: string, addedAt: string } };
+export type AcceptPeerInviteMutation = { __typename?: 'Mutation', acceptPeerInvite: { __typename?: 'PeerNodeGql', nodeId: string, name: string, baseUrl: string, addedAt: string, paired: boolean } };
 
 export type RenamePeerNodeMutationVariables = Exact<{
   nodeId: Scalars['String']['input'];
@@ -5359,7 +5362,7 @@ export type RenamePeerNodeMutationVariables = Exact<{
 }>;
 
 
-export type RenamePeerNodeMutation = { __typename?: 'Mutation', renamePeerNode: { __typename?: 'PeerNodeGql', nodeId: string, name: string, baseUrl: string, addedAt: string } };
+export type RenamePeerNodeMutation = { __typename?: 'Mutation', renamePeerNode: { __typename?: 'PeerNodeGql', nodeId: string, name: string, baseUrl: string, addedAt: string, paired: boolean } };
 
 export type ChangePeerAddressMutationVariables = Exact<{
   nodeId: Scalars['String']['input'];
@@ -5367,7 +5370,7 @@ export type ChangePeerAddressMutationVariables = Exact<{
 }>;
 
 
-export type ChangePeerAddressMutation = { __typename?: 'Mutation', changePeerAddress: { __typename?: 'PeerNodeGql', nodeId: string, name: string, baseUrl: string, addedAt: string } };
+export type ChangePeerAddressMutation = { __typename?: 'Mutation', changePeerAddress: { __typename?: 'PeerNodeGql', nodeId: string, name: string, baseUrl: string, addedAt: string, paired: boolean } };
 
 export type RemovePeerNodeMutationVariables = Exact<{
   nodeId: Scalars['String']['input'];
@@ -5909,7 +5912,7 @@ export type SearchProjectTasksQuery = { __typename?: 'Query', searchProjectTasks
 
 export type RemoteCollaborationCapabilityFieldsFragment = { __typename?: 'RemoteCollaborationCapabilityGql', enabled: boolean, settingKey: string, source: string };
 
-export type PeerNodeFieldsFragment = { __typename?: 'PeerNodeGql', nodeId: string, name: string, baseUrl: string, addedAt: string };
+export type PeerNodeFieldsFragment = { __typename?: 'PeerNodeGql', nodeId: string, name: string, baseUrl: string, addedAt: string, paired: boolean };
 
 export type GetRemoteCollaborationCapabilityQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -5919,7 +5922,7 @@ export type GetRemoteCollaborationCapabilityQuery = { __typename?: 'Query', remo
 export type GetRemoteCollaborationSettingsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetRemoteCollaborationSettingsQuery = { __typename?: 'Query', peerNodes: Array<{ __typename?: 'PeerNodeGql', nodeId: string, name: string, baseUrl: string, addedAt: string }> };
+export type GetRemoteCollaborationSettingsQuery = { __typename?: 'Query', peerNodes: Array<{ __typename?: 'PeerNodeGql', nodeId: string, name: string, baseUrl: string, addedAt: string, paired: boolean }> };
 
 export type GetPeerNodeOfferQueryVariables = Exact<{
   nodeId: Scalars['String']['input'];
@@ -5934,19 +5937,6 @@ export type GetPeerNodeAvailabilityQueryVariables = Exact<{
 
 
 export type GetPeerNodeAvailabilityQuery = { __typename?: 'Query', peerNodeAvailability: { __typename?: 'PeerNodeAvailabilityGql', available: boolean, refusalCode?: string | null, unreachableReason?: string | null } };
-
-export type GetPeerAddressCandidatesQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetPeerAddressCandidatesQuery = { __typename?: 'Query', peerAddressCandidates: Array<string> };
-
-export type ResolvePeerAddressQueryVariables = Exact<{
-  nodeId: Scalars['String']['input'];
-  baseUrls: Array<Scalars['String']['input']> | Scalars['String']['input'];
-}>;
-
-
-export type ResolvePeerAddressQuery = { __typename?: 'Query', resolvePeerAddress: string };
 
 export type ListWorkspaceRunHistoryQueryVariables = Exact<{
   limitPerAgent?: InputMaybe<Scalars['Int']['input']>;
@@ -6928,6 +6918,7 @@ export const PeerNodeFieldsFragmentDoc = gql`
   name
   baseUrl
   addedAt
+  paired
 }
     `;
 export const EventMonitorActiveTracePageFieldsFragmentDoc = gql`
@@ -10351,35 +10342,67 @@ export function useSetRemoteCollaborationEnabledMutation(options: VueApolloCompo
   return VueApolloComposable.useMutation<SetRemoteCollaborationEnabledMutation, SetRemoteCollaborationEnabledMutationVariables>(SetRemoteCollaborationEnabledDocument, options);
 }
 export type SetRemoteCollaborationEnabledMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<SetRemoteCollaborationEnabledMutation, SetRemoteCollaborationEnabledMutationVariables>;
-export const AddPeerNodeDocument = gql`
-    mutation AddPeerNode($input: AddPeerNodeInput!) {
-  addPeerNode(input: $input) {
-    ...PeerNodeFields
+export const CreatePeerInviteDocument = gql`
+    mutation CreatePeerInvite {
+  createPeerInvite {
+    inviteText
+    expiresAt
   }
 }
-    ${PeerNodeFieldsFragmentDoc}`;
+    `;
 
 /**
- * __useAddPeerNodeMutation__
+ * __useCreatePeerInviteMutation__
  *
- * To run a mutation, you first call `useAddPeerNodeMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useAddPeerNodeMutation` returns an object that includes:
+ * To run a mutation, you first call `useCreatePeerInviteMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useCreatePeerInviteMutation` returns an object that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
  *
  * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
  *
  * @example
- * const { mutate, loading, error, onDone } = useAddPeerNodeMutation({
+ * const { mutate, loading, error, onDone } = useCreatePeerInviteMutation();
+ */
+export function useCreatePeerInviteMutation(options: VueApolloComposable.UseMutationOptions<CreatePeerInviteMutation, CreatePeerInviteMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<CreatePeerInviteMutation, CreatePeerInviteMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<CreatePeerInviteMutation, CreatePeerInviteMutationVariables>(CreatePeerInviteDocument, options);
+}
+export type CreatePeerInviteMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<CreatePeerInviteMutation, CreatePeerInviteMutationVariables>;
+export const AcceptPeerInviteDocument = gql`
+    mutation AcceptPeerInvite($inviteText: String!, $name: String!, $nameOnInviter: String) {
+  acceptPeerInvite(
+    inviteText: $inviteText
+    name: $name
+    nameOnInviter: $nameOnInviter
+  ) {
+    ...PeerNodeFields
+  }
+}
+    ${PeerNodeFieldsFragmentDoc}`;
+
+/**
+ * __useAcceptPeerInviteMutation__
+ *
+ * To run a mutation, you first call `useAcceptPeerInviteMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useAcceptPeerInviteMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useAcceptPeerInviteMutation({
  *   variables: {
- *     input: // value for 'input'
+ *     inviteText: // value for 'inviteText'
+ *     name: // value for 'name'
+ *     nameOnInviter: // value for 'nameOnInviter'
  *   },
  * });
  */
-export function useAddPeerNodeMutation(options: VueApolloComposable.UseMutationOptions<AddPeerNodeMutation, AddPeerNodeMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<AddPeerNodeMutation, AddPeerNodeMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<AddPeerNodeMutation, AddPeerNodeMutationVariables>(AddPeerNodeDocument, options);
+export function useAcceptPeerInviteMutation(options: VueApolloComposable.UseMutationOptions<AcceptPeerInviteMutation, AcceptPeerInviteMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<AcceptPeerInviteMutation, AcceptPeerInviteMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<AcceptPeerInviteMutation, AcceptPeerInviteMutationVariables>(AcceptPeerInviteDocument, options);
 }
-export type AddPeerNodeMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<AddPeerNodeMutation, AddPeerNodeMutationVariables>;
+export type AcceptPeerInviteMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<AcceptPeerInviteMutation, AcceptPeerInviteMutationVariables>;
 export const RenamePeerNodeDocument = gql`
     mutation RenamePeerNode($nodeId: String!, $name: String!) {
   renamePeerNode(nodeId: $nodeId, name: $name) {
@@ -13559,60 +13582,6 @@ export function useGetPeerNodeAvailabilityLazyQuery(variables?: GetPeerNodeAvail
   return VueApolloComposable.useLazyQuery<GetPeerNodeAvailabilityQuery, GetPeerNodeAvailabilityQueryVariables>(GetPeerNodeAvailabilityDocument, variables, options);
 }
 export type GetPeerNodeAvailabilityQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetPeerNodeAvailabilityQuery, GetPeerNodeAvailabilityQueryVariables>;
-export const GetPeerAddressCandidatesDocument = gql`
-    query GetPeerAddressCandidates {
-  peerAddressCandidates
-}
-    `;
-
-/**
- * __useGetPeerAddressCandidatesQuery__
- *
- * To run a query within a Vue component, call `useGetPeerAddressCandidatesQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetPeerAddressCandidatesQuery` returns an object from Apollo Client that contains result, loading and error properties
- * you can use to render your UI.
- *
- * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
- *
- * @example
- * const { result, loading, error } = useGetPeerAddressCandidatesQuery();
- */
-export function useGetPeerAddressCandidatesQuery(options: VueApolloComposable.UseQueryOptions<GetPeerAddressCandidatesQuery, GetPeerAddressCandidatesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetPeerAddressCandidatesQuery, GetPeerAddressCandidatesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetPeerAddressCandidatesQuery, GetPeerAddressCandidatesQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<GetPeerAddressCandidatesQuery, GetPeerAddressCandidatesQueryVariables>(GetPeerAddressCandidatesDocument, {}, options);
-}
-export function useGetPeerAddressCandidatesLazyQuery(options: VueApolloComposable.UseQueryOptions<GetPeerAddressCandidatesQuery, GetPeerAddressCandidatesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetPeerAddressCandidatesQuery, GetPeerAddressCandidatesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetPeerAddressCandidatesQuery, GetPeerAddressCandidatesQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<GetPeerAddressCandidatesQuery, GetPeerAddressCandidatesQueryVariables>(GetPeerAddressCandidatesDocument, {}, options);
-}
-export type GetPeerAddressCandidatesQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetPeerAddressCandidatesQuery, GetPeerAddressCandidatesQueryVariables>;
-export const ResolvePeerAddressDocument = gql`
-    query ResolvePeerAddress($nodeId: String!, $baseUrls: [String!]!) {
-  resolvePeerAddress(nodeId: $nodeId, baseUrls: $baseUrls)
-}
-    `;
-
-/**
- * __useResolvePeerAddressQuery__
- *
- * To run a query within a Vue component, call `useResolvePeerAddressQuery` and pass it any options that fit your needs.
- * When your component renders, `useResolvePeerAddressQuery` returns an object from Apollo Client that contains result, loading and error properties
- * you can use to render your UI.
- *
- * @param variables that will be passed into the query
- * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
- *
- * @example
- * const { result, loading, error } = useResolvePeerAddressQuery({
- *   nodeId: // value for 'nodeId'
- *   baseUrls: // value for 'baseUrls'
- * });
- */
-export function useResolvePeerAddressQuery(variables: ResolvePeerAddressQueryVariables | VueCompositionApi.Ref<ResolvePeerAddressQueryVariables> | ReactiveFunction<ResolvePeerAddressQueryVariables>, options: VueApolloComposable.UseQueryOptions<ResolvePeerAddressQuery, ResolvePeerAddressQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ResolvePeerAddressQuery, ResolvePeerAddressQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ResolvePeerAddressQuery, ResolvePeerAddressQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<ResolvePeerAddressQuery, ResolvePeerAddressQueryVariables>(ResolvePeerAddressDocument, variables, options);
-}
-export function useResolvePeerAddressLazyQuery(variables?: ResolvePeerAddressQueryVariables | VueCompositionApi.Ref<ResolvePeerAddressQueryVariables> | ReactiveFunction<ResolvePeerAddressQueryVariables>, options: VueApolloComposable.UseQueryOptions<ResolvePeerAddressQuery, ResolvePeerAddressQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ResolvePeerAddressQuery, ResolvePeerAddressQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ResolvePeerAddressQuery, ResolvePeerAddressQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<ResolvePeerAddressQuery, ResolvePeerAddressQueryVariables>(ResolvePeerAddressDocument, variables, options);
-}
-export type ResolvePeerAddressQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<ResolvePeerAddressQuery, ResolvePeerAddressQueryVariables>;
 export const ListWorkspaceRunHistoryDocument = gql`
     query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {
   listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {

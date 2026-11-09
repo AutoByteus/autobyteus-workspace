@@ -34,6 +34,10 @@ import path from 'node:path'
 import process from 'node:process'
 import { createRequire } from 'node:module'
 import { fileURLToPath, pathToFileURL } from 'node:url'
+import { attachToBrowserContext, attachToProbeProcess, withNodeCredential } from './fixtures/probe-node-access.mjs'
+// Every node needs a credential (autobyteus-437): the probe's nodes start with its launch credential, and the probe's
+// own calls and its desktop browser contexts carry it (fixtures/probe-node-access.mjs).
+attachToProbeProcess()
 
 const require = createRequire(import.meta.url)
 const { chromium } = require('playwright-core')
@@ -120,6 +124,7 @@ const state = { agents: [], skills: [], workspaces: [], runs: [] }
 /** A fresh browser context at one viewport, on the new-chat page with motion disabled. */
 const openNewChat = async (vp) => {
   const context = await browser.newContext({ viewport: vp, deviceScaleFactor: 1, locale: 'en-US' })
+  await attachToBrowserContext(context)
   const page = await context.newPage(); page.setDefaultTimeout(30000)
   const pageErrors = []; page.on('pageerror', (e) => pageErrors.push(e.message))
   await page.goto(`${frontUrl}/chat`, { waitUntil: 'domcontentloaded' })
@@ -642,7 +647,7 @@ try {
     child.once('exit', (code) => (code === 0 ? resolve() : reject(new Error(`prisma migrate deploy exited ${code}`))))
   })
   const env = { ...baseEnv(), APP_ENV: 'development', DB_TYPE: 'sqlite', DATABASE_URL: dbUrl, AUTOBYTEUS_SERVER_HOST: backendUrl, AUTOBYTEUS_ALLOWED_ORIGINS: frontUrl, DISABLE_HTTP_REQUEST_LOGS: 'true' }
-  const backend = spawnOwned('backend', process.execPath, [path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(backendPort), '--data-dir', dataRoot], serverDir, env)
+  const backend = spawnOwned('backend', process.execPath, [path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(backendPort), '--data-dir', dataRoot], serverDir, withNodeCredential(env))
   await waitFor('backend health', async () => { assert(backend.exitCode === null, 'backend exited'); return (await fetch(`${backendUrl}/rest/health`, { signal: AbortSignal.timeout(2000) })).ok }, 120000, 500)
   // Fixtures: enough agents and workspaces for the `@` and Workspace lists to scroll.
   for (let i = 1; i <= AGENT_COUNT; i += 1) {

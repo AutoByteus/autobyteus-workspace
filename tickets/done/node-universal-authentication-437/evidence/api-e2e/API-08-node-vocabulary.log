@@ -1,0 +1,31 @@
+
+> autobyteus@1.5.12-beta.8 test:e2e:node-vocabulary /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web
+> node tests/e2e/node-vocabulary-probe.mjs --output-dir=/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/tickets/in-progress/node-universal-authentication-437/evidence/api-e2e/API-08-node-vocabulary
+
+[probe] NVP-01 started
+[probe] NVP-01 Pass
+[probe] NVP-02 started
+[probe] NVP-02 Pass
+[probe] NVP-03 started
+[probe] NVP-03 Pass
+[probe] NVP-04 started
+[probe] NVP-04 Pass
+[probe] NVP-05 started
+[probe] NVP-05 Fail: the card shows the reason: Memory Sync target node
+
+Embedded Node EMBEDDED
+
+http://127.0.0.1:64985
+
+Configure this backend as a Memory Hub, a Memory Sync source, or both. Frontend node names are only navigation labels; the Memory Sync source ID below is the stable import identity.
+
+Response not successful: Received status code 503
+
+Memory Hub
+
+Receive imported memory under memory/imports/<memorySyncSourceId>.
+
+Enable hub
+AD
+[probe] result Fail; evidence /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/tickets/in-progress/node-universal-authentication-437/evidence/api-e2e/API-08-node-vocabulary
+ ELIFECYCLE  Command failed with exit code 1.

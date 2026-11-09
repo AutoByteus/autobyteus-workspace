@@ -131,17 +131,18 @@ export class RemoteAccessPairingService {
       );
     }
 
+    // An unknown, expired or used code is refused like a wrong credential (node access model NA-10, NAS-13).
     const pairingCode = String(input.pairingCode ?? "").trim();
     const session = this.sessionsByCode.get(pairingCode);
     this.pruneExpiredSessions();
     if (!session) {
-      throw new RemoteAccessError("REMOTE_ACCESS_PAIRING_INVALID", "Pairing code is invalid.", 400);
+      throw new RemoteAccessError("REMOTE_ACCESS_PAIRING_INVALID", "Pairing code is invalid.", 401);
     }
     if (Date.parse(session.expiresAt) <= nowMs()) {
-      throw new RemoteAccessError("REMOTE_ACCESS_PAIRING_EXPIRED", "Pairing code has expired.", 400);
+      throw new RemoteAccessError("REMOTE_ACCESS_PAIRING_EXPIRED", "Pairing code has expired.", 401);
     }
     if (session.consumedAt) {
-      throw new RemoteAccessError("REMOTE_ACCESS_PAIRING_CONSUMED", "Pairing code was already used.", 400);
+      throw new RemoteAccessError("REMOTE_ACCESS_PAIRING_CONSUMED", "Pairing code was already used.", 401);
     }
 
     const normalizedInputBase = input.serverBaseUrl

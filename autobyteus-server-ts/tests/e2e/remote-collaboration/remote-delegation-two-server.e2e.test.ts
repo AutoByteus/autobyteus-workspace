@@ -4,13 +4,16 @@ import http from "node:http";
 import net from "node:net";
 import os from "node:os";
 import path from "node:path";
-import { randomUUID } from "node:crypto";
+import { randomBytes, randomUUID } from "node:crypto";
 import { execFile, spawn, spawnSync, type ChildProcessWithoutNullStreams } from "node:child_process";
 import { promisify } from "node:util";
 import WebSocket from "ws";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
 import { buildE2eClientCommandIds } from "../helpers/websocket-command-helpers.js";
+import { signPeerRequest } from "../../../src/remote-collaboration/channel/peer-request-signature.js";
+import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
+import { pairNodes } from "../helpers/pair-nodes.js";
 
 /**
  * Remote collaboration (autobyteus-191 slice 1: remote delegation, text only; autobyteus-245: no publishing;
@@ -25,9 +28,10 @@ import { buildE2eClientCommandIds } from "../helpers/websocket-command-helpers.j
  * Every action enters through a real surface: GraphQL settings (the Nodes tab's API), the composer WebSocket of a
  * run (the owner's message), and the agents' own tool calls. The cases share the two nodes and run in order:
  *
- * - node settings and the gateway: RC-01 AC-101 off by default (inbound refused, no peer can be added); RC-03 switched
- *   on, AC-102 registration with pinned identities, bad URLs, gateway admission order for both request kinds, no publish
- *   API (245 AC-207, DEC-206); RC-20 AC-111 audit of every captured request (these three run on their own:
+ * - node settings and the gateway: RC-01 AC-101 off by default (inbound refused, no invite can be made); RC-03 switched
+ *   on, AC-102 pairing with one invite (autobyteus-437 NAS-19) and pinned identities, bad URLs, gateway admission order
+ *   for both request kinds, no publish API (245 AC-207, DEC-206); RC-20 AC-111 audit of every captured request, each
+ *   signed for its receiver (437 NAS-20) (these three run on their own:
  *   `-t "RC-(01|03|20) "`);
  * - delegation and messages: RC-02 delegate_task with the switch off; RC-04 245 AC-202 … AC-204, AC-207: every refusal of
  *   beta's target resolution (no default, runtime only, runtime or model unavailable, built-in, Agent Org, team-local,
@@ -201,7 +205,7 @@ class NodeServer {
       ANTIGRAVITY_CLI_COMMAND: cli, AGY_FAKE_CASE: "linked_skills", AGY_FAKE_ARGV_LOG: this.argvLog,
       APP_ENV: "test", LOG_LEVEL: "WARN", HTTP_ACCESS_LOG_MODE: "off", AUTOBYTEUS_SERVER_HOST: this.baseUrl, ...this.extraEnv };
     const child = spawn(process.execPath, [appEntry, "--host", "127.0.0.1", "--port", String(this.port), "--data-dir", this.dataDir],
-      { cwd: serverRoot, env, stdio: ["ignore", "pipe", "pipe"] });
+      { cwd: serverRoot, env: { ...env, ...builtServerLaunchEnvironment() }, stdio: ["ignore", "pipe", "pipe"] });
     const log = fs.createWriteStream(this.logFile, { flags: "a" });
     log.write(`--- start ${new Date().toISOString()} pid ${child.pid}\n`);
     const onData = (chunk: Buffer) => {
@@ -242,8 +246,27 @@ class NodeServer {
     if (!body.data || body.errors?.length) throw new Error(`${this.name} GraphQL failed: ${JSON.stringify(body.errors ?? body)}`);
     return body.data;
   }
+  /** autobyteus-437: the secret this node shares with a paired peer, from its peers.json (`null` when unpaired). */
+  async peerSecretOf(nodeId: string): Promise<string | null> {
+    const file = path.join(this.dataDir, "remote-collaboration", "peers.json");
+    const peers = fs.existsSync(file) ? (JSON.parse(await fsp.readFile(file, "utf8")) as { peers: Rec[] }).peers : [];
+    const peer = peers.find((row) => row.nodeId === nodeId);
+    return typeof peer?.peerSecret === "string" ? peer.peerSecret : null;
+  }
+  /**
+   * autobyteus-437: the headers of a request to this node as the node `fromNodeId` sends it: signed with the secret the
+   * two share, or, when they are not paired, with a secret this node does not hold (an unpaired node's attempt).
+   */
+  async peerHeadersFrom(fromNodeId: string, method: string, route: string, body: string | null): Promise<Record<string, string>> {
+    const secret = await this.peerSecretOf(fromNodeId) ?? randomBytes(32).toString("base64url");
+    return signPeerRequest({ secret, method, pathWithQuery: route, fromNodeId, toNodeId: this.nodeId, body });
+  }
+  /** A request to one of this node's peer routes as the body's `fromNodeId` sends it (signed, autobyteus-437). */
   async post(route: string, body: unknown): Promise<{ status: number; answer: Rec }> {
-    const response = await fetch(`${this.baseUrl}${route}`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
+    const text = JSON.stringify(body);
+    const fromNodeId = String((body as Rec | null)?.fromNodeId ?? "srv_unknown_sender_0000000000000000000");
+    const headers = { "content-type": "application/json", ...await this.peerHeadersFrom(fromNodeId, "POST", route, text) };
+    const response = await fetch(`${this.baseUrl}${route}`, { method: "POST", headers, body: text });
     return { status: response.status, answer: await response.json() as Rec };
   }
   async launches(): Promise<Array<{ argv: string[]; cwd: string }>> {
@@ -696,7 +719,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     targetRoot: { kind: "agent", runId: "agent_probe_target" },
     sender: { agentRunId: "agent_probe" }, target: { agentRunId: "agent_probe_target" }, content: "x", messageType: "agent_message", createdAt: new Date().toISOString() });
 
-  it("RC-01 AC-101/AC-111: off by default; with the switch off, both inbound request kinds are refused 'turned off' and no peer can be added", async () => {
+  it("RC-01 AC-101/AC-111: off by default; with the switch off, inbound requests of an unpaired node are refused at the gate and no invite can be made", async () => {
     for (const node of [alpha, beta]) {
       expect((await node.gql(`query{remoteCollaborationCapability{enabled settingKey source}}`)).remoteCollaborationCapability)
         .toEqual({ enabled: false, settingKey: "ENABLE_REMOTE_COLLABORATION", source: "DEFAULT_DISABLED" });
@@ -704,9 +727,10 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     }
     const start = await beta.post(PATHS.runs, inboundStart(alpha.nodeId, beta.nodeId));
     const message = await beta.post(PATHS.messages, inboundMessage(alpha.nodeId, beta.nodeId, "collabmsg_off"));
-    for (const answer of [start, message]) expect(answer).toEqual({ status: 200, answer: { accepted: false, nodeId: beta.nodeId, code: "REMOTE_COLLABORATION_OFF", message: "Remote collaboration is turned off on this node." } });
-    const addWhileOff = await alpha.gqlRaw(`mutation($input:AddPeerNodeInput!){addPeerNode(input:$input){nodeId}}`, { input: { nodeId: beta.nodeId, baseUrl: toBeta.url, name: LABEL.beta } });
-    expect(addWhileOff.errors?.[0]?.message, JSON.stringify(addWhileOff)).toBeTruthy();
+    // autobyteus-437: the nodes are not paired, so beta's gate refuses alpha's signature before the switch is read (NAS-21).
+    for (const answer of [start, message]) expect(answer).toMatchObject({ status: 401, answer: { code: "NODE_CREDENTIAL_INVALID" } });
+    const addWhileOff = await alpha.gqlRaw(`mutation{createPeerInvite{inviteText}}`);
+    expect(addWhileOff.errors?.[0]?.extensions?.code, JSON.stringify(addWhileOff)).toBe("REMOTE_COLLABORATION_OFF");
     expect(captured, "nothing contacted the peer").toEqual([]);
     expect(fs.existsSync(path.join(alpha.dataDir, "remote-collaboration", "peers.json")) ? (await readJson(path.join(alpha.dataDir, "remote-collaboration", "peers.json"))).peers : [], "nothing recorded").toEqual([]);
     record("RC-01", { inbound: { start, message }, addWhileOff: addWhileOff.errors?.[0] });
@@ -723,21 +747,29 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     record("RC-02", { delegateOff: textOf(off) });
   }, 120_000);
 
-  it("RC-03 AC-101/102/111, 245 AC-207: switched on, both nodes register each other with pinned identities; bad URLs record nothing; the gateway admits in order; there is no publish API", async () => {
+  it("RC-03 AC-101/102/111, 245 AC-207, 437 NAS-19: switched on, the nodes pair with one invite and each pins the other's identity; bad URLs record nothing; the gateway admits in order; there is no publish API", async () => {
     for (const node of [alpha, beta]) {
       expect((await node.gql(`mutation{setRemoteCollaborationEnabled(enabled:true){enabled source}}`)).setRemoteCollaborationEnabled).toEqual({ enabled: true, source: "SERVER_SETTING" });
       expect(fs.readFileSync(path.join(node.dataDir, ".env"), "utf8")).toMatch(/^ENABLE_REMOTE_COLLABORATION=true$/m);
     }
-    // After turning it on, the same inbound requests are evaluated normally: the caller is not registered yet.
+    // After turning it on, the caller is still not paired: beta's gate refuses its signature (autobyteus-437 NAS-21).
     const unregisteredCaller = await beta.post(PATHS.messages, inboundMessage(alpha.nodeId, beta.nodeId, "collabmsg_unregistered"));
-    expect(unregisteredCaller).toEqual({ status: 200, answer: { accepted: false, nodeId: beta.nodeId, code: "PEER_NOT_REGISTERED", message: "The calling node is not a registered peer of this node." } });
+    expect(unregisteredCaller).toMatchObject({ status: 401, answer: { code: "NODE_CREDENTIAL_INVALID" } });
+    // autobyteus-437 NAS-19: one invite (beta's), accepted on alpha, pairs both; each found the other at its own address.
+    const paired = await pairNodes({ inviter: (query, variables) => beta.gql(query, variables), accepter: (query, variables) => alpha.gql(query, variables),
+      inviterName: LABEL.beta, accepterName: LABEL.alpha });
+    expect(paired).toMatchObject({ nodeId: beta.nodeId, name: LABEL.beta, baseUrl: beta.baseUrl, paired: true });
+    const secretOnAlpha = await alpha.peerSecretOf(beta.nodeId);
+    expect(secretOnAlpha, "both nodes hold the one peer secret").toBeTruthy();
+    expect(await beta.peerSecretOf(alpha.nodeId)).toBe(secretOnAlpha);
+    ids.peerSecret = secretOnAlpha;
+    // Each node then reaches the other through its capturing proxy (the address check pins the node ID).
     const statusBefore = captured.length;
-    const added = (await alpha.gql(`mutation($input:AddPeerNodeInput!){addPeerNode(input:$input){nodeId name baseUrl addedAt}}`,
-      { input: { nodeId: beta.nodeId, baseUrl: toBeta.url, name: LABEL.beta } })).addPeerNode;
-    expect(added).toMatchObject({ nodeId: beta.nodeId, name: LABEL.beta, baseUrl: toBeta.url });
-    const addedOnBeta = (await beta.gql(`mutation($input:AddPeerNodeInput!){addPeerNode(input:$input){nodeId name baseUrl addedAt}}`,
-      { input: { nodeId: alpha.nodeId, baseUrl: toAlpha.url, name: LABEL.alpha } })).addPeerNode;
-    expect(addedOnBeta).toMatchObject({ nodeId: alpha.nodeId, name: LABEL.alpha, baseUrl: toAlpha.url });
+    const changeAddress = `mutation($id:String!,$u:String!){changePeerAddress(nodeId:$id,baseUrl:$u){nodeId name baseUrl addedAt paired}}`;
+    const added = (await alpha.gql(changeAddress, { id: beta.nodeId, u: toBeta.url })).changePeerAddress;
+    expect(added).toMatchObject({ nodeId: beta.nodeId, name: LABEL.beta, baseUrl: toBeta.url, paired: true });
+    const addedOnBeta = (await beta.gql(changeAddress, { id: alpha.nodeId, u: toAlpha.url })).changePeerAddress;
+    expect(addedOnBeta).toMatchObject({ nodeId: alpha.nodeId, name: LABEL.alpha, baseUrl: toAlpha.url, paired: true });
     expect(captured.slice(statusBefore).map((entry) => `${entry.via} ${entry.method} ${entry.path}`)).toEqual([`toBeta GET ${PATHS.status}`, `toAlpha GET ${PATHS.status}`]);
 
     // A URL that answers but is not an AutoByteus node, and a URL nothing listens on.
@@ -748,8 +780,9 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     });
     const foreignPort = await getFreePort();
     await new Promise<void>((resolve) => foreign.listen(foreignPort, "127.0.0.1", () => resolve()));
-    const addPeer = (baseUrl: string, name: string) => alpha.gqlRaw(`mutation($input:AddPeerNodeInput!){addPeerNode(input:$input){nodeId}}`,
-      { input: { nodeId: "srv_expected_peer_000000000000000000000", baseUrl, name } });
+    // autobyteus-437: an address is checked the same way when the owner changes a peer's address.
+    const addPeer = (baseUrl: string, _name: string) => alpha.gqlRaw(`mutation($id:String!,$u:String!){changePeerAddress(nodeId:$id,baseUrl:$u){nodeId}}`,
+      { id: beta.nodeId, u: baseUrl });
     const notAutobyteus = await addPeer(`http://127.0.0.1:${foreignPort}`, "router");
     const notFound = await addPeer(`http://127.0.0.1:${foreignPort}/missing`, "web");
     await new Promise<void>((resolve) => foreign.close(() => resolve()));
@@ -771,7 +804,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       const file = await readJson(path.join(node.dataDir, "remote-collaboration", "peers.json"));
       expect(sortedKeys(file)).toEqual(["peers"]);
       expect(file.peers).toHaveLength(1);
-      expect(sortedKeys(file.peers[0])).toEqual(["addedAt", "baseUrl", "name", "nodeId"]);
+      expect(sortedKeys(file.peers[0])).toEqual(["addedAt", "baseUrl", "name", "nodeId", "peerSecret"]);
       expect(file.peers[0]).toMatchObject({ nodeId: peer.nodeId, name: label, baseUrl: url });
     }
     // The single gateway entry of each request kind applies its checks in order (REQ-114): toNodeId, then the caller.
@@ -779,8 +812,9 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const mismatchStart = await beta.post(PATHS.runs, inboundStart(alpha.nodeId, wrongTo));
     const mismatchMessage = await beta.post(PATHS.messages, inboundMessage(alpha.nodeId, wrongTo, "collabmsg_wrong_to"));
     for (const answer of [mismatchStart, mismatchMessage]) expect(answer).toEqual({ status: 200, answer: { accepted: false, nodeId: beta.nodeId, code: "PEER_IDENTITY_MISMATCH", message: "This request was meant for another node." } });
+    // autobyteus-437: a node that is not a peer cannot sign; the gate refuses it before the gateway (NAS-21).
     const unregisteredStart = await beta.post(PATHS.runs, inboundStart("srv_unregistered_00000000000000000000000", beta.nodeId));
-    expect(unregisteredStart).toEqual({ status: 200, answer: { accepted: false, nodeId: beta.nodeId, code: "PEER_NOT_REGISTERED", message: "The calling node is not a registered peer of this node." } });
+    expect(unregisteredStart).toMatchObject({ status: 401, answer: { code: "NODE_CREDENTIAL_INVALID" } });
     const malformedStart = await beta.post(PATHS.runs, { fromNodeId: alpha.nodeId });
     const malformedMessage = await beta.post(PATHS.messages, { ...inboundMessage(alpha.nodeId, beta.nodeId, "collabmsg_bad"), kind: "command" });
     for (const answer of [malformedStart, malformedMessage]) {
@@ -798,8 +832,10 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     expect(oldField.status, JSON.stringify(oldField)).toBe(400);
     expect(oldField.answer).toMatchObject({ accepted: false, nodeId: beta.nodeId, code: "REMOTE_REQUEST_INVALID" });
     expect((await fsp.readdir(path.join(beta.dataDir, "remote-collaboration"))).sort(), "beta writes only peers.json").toEqual(["peers.json", "published-agents.json"]);
-    record("RC-03", { unregisteredCaller, alphaPeers: await readJson(path.join(alpha.dataDir, "remote-collaboration", "peers.json")),
-      betaPeers: await readJson(path.join(beta.dataDir, "remote-collaboration", "peers.json")),
+    // The receipt never holds the peer secret (QR-001).
+    const withoutSecrets = async (node: NodeServer) => ({ peers: ((await readJson(path.join(node.dataDir, "remote-collaboration", "peers.json"))).peers as Rec[])
+      .map(({ peerSecret: _secret, ...peer }) => peer) });
+    record("RC-03", { unregisteredCaller, alphaPeers: await withoutSecrets(alpha), betaPeers: await withoutSecrets(beta),
       notAutobyteus: notAutobyteus.errors?.[0], notFound: notFound.errors?.[0], dead: dead.errors?.[0],
       gateway: { mismatchStart, mismatchMessage, unregisteredStart, malformedStart, malformedMessage },
       noPublishing: { publishQuery: publishQuery.errors?.[0]?.message, oldField } });
@@ -1508,7 +1544,8 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     try {
       await gamma.start();
       await gamma.gql(`mutation{setRemoteCollaborationEnabled(enabled:true){enabled}}`);
-      await beta.gql(`mutation($input:AddPeerNodeInput!){addPeerNode(input:$input){nodeId}}`, { input: { nodeId: gamma.nodeId, baseUrl: gamma.baseUrl, name: "gamma-node" } });
+      await pairNodes({ inviter: (query, variables) => beta.gql(query, variables), accepter: (query, variables) => gamma.gql(query, variables),
+        inviterName: "beta-node", accepterName: "gamma-node" });
       const beltaLocal = await createStandalone(beta, defs.publisher, "beta's own run");
       await beltaLocal.send("Beta's own work. Marker BETA-LOCAL.");
       await receives(beltaLocal, "BETA-LOCAL");
@@ -1521,7 +1558,8 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
         command: await asPeerTo(beta, PATHS.ownerCommands, { ...envelopeOf(gamma), targetRoot: root9, agentRunId: r9, command: { kind: "interrupt" } }),
       };
       const observationAnswer = async (from: NodeServer, targetRoot: Rec) => {
-        const socket = new WebSocket(`ws://127.0.0.1:${beta.port}${PATHS.runObservations}`);
+        const socket = new WebSocket(`ws://127.0.0.1:${beta.port}${PATHS.runObservations}`,
+          { headers: await beta.peerHeadersFrom(from.nodeId, "GET", PATHS.runObservations, null) });
         sockets.push(socket);
         const frames: unknown[] = [];
         let closedCode: number | null = null;
@@ -1972,12 +2010,14 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     try {
       await Promise.all(Object.values(extra).map((node) => node.start()));
       for (const node of Object.values(extra)) await node.gql(`mutation{setRemoteCollaborationEnabled(enabled:true){enabled}}`);
+      // autobyteus-437: alpha pairs with each in turn (the registration order); then gamma stops, delta turns its switch
+      // off, and epsilon removes alpha (it no longer knows alpha: unpaired there).
       for (const key of ["gamma", "delta", "epsilon"] as const) {
-        await alpha.gql(`mutation($input:AddPeerNodeInput!){addPeerNode(input:$input){nodeId}}`, { input: { nodeId: extra[key].nodeId, baseUrl: extra[key].baseUrl, name: names[key] } });
+        await pairNodes({ inviter: (query, variables) => extra[key].gql(query, variables), accepter: (query, variables) => alpha.gql(query, variables),
+          inviterName: names[key], accepterName: LABEL.alpha });
         added.push(extra[key].nodeId);
       }
-      // gamma and delta know alpha; then gamma stops and delta turns its switch off. epsilon never registers alpha.
-      for (const node of [extra.gamma, extra.delta]) await node.gql(`mutation($input:AddPeerNodeInput!){addPeerNode(input:$input){nodeId}}`, { input: { nodeId: alpha.nodeId, baseUrl: alpha.baseUrl, name: LABEL.alpha } });
+      await extra.epsilon.gql(`mutation($id:String!){removePeerNode(nodeId:$id)}`, { id: alpha.nodeId });
       await extra.gamma.stop();
       await extra.delta.gql(`mutation{setRemoteCollaborationEnabled(enabled:false){enabled}}`);
       const listed = await calls(scout, "list_peer_nodes", {});
@@ -2002,7 +2042,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       expect(Object.fromEntries(Object.entries(pageCodes).map(([name, answer]) => [name, (answer as Rec).offer])), JSON.stringify(pageCodes)).toEqual({
         [names.gamma]: { entries: null, refusalCode: "PEER_UNREACHABLE" },
         [names.delta]: { entries: null, refusalCode: "REMOTE_COLLABORATION_OFF" },
-        [names.epsilon]: { entries: null, refusalCode: "PEER_NOT_REGISTERED" } });
+        [names.epsilon]: { entries: null, refusalCode: "PEER_NOT_PAIRED" } });
       // A peer that does not answer (beta black-holed): the call still ends within the bound, with beta unavailable.
       let held: Rec & { elapsedMs: number };
       toBeta.mode = "blackhole";
@@ -2245,7 +2285,8 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       betaRuns: await remoteRunDirs() };
     expect((await beta.gql(`mutation($id:String!){removePeerNode(nodeId:$id)}`, { id: alpha.nodeId })).removePeerNode).toBe(true);
     const toBetaAfterRemoval = await calls(solo, "send_message_to", { target_agent_run_id: ids.r1, content: "AFTER-REMOVAL-TO-BETA" });
-    expect(textOf(toBetaAfterRemoval)).toBe(`Node "${LABEL.beta}" does not have this node registered as a peer, so it refused the request.`);
+    // autobyteus-437: beta no longer holds the secret, so its gate refuses alpha's signature (unpaired there).
+    expect(textOf(toBetaAfterRemoval)).toBe(`This node and node "${LABEL.beta}" are not paired, so nothing was done there. The user can pair them again on the Nodes page.`);
     const fromBetaAfterRemoval = await calls(remote, "send_message_to", { target_agent_run_id: ids.solo, content: "AFTER-REMOVAL-TO-ALPHA" });
     expect(textOf(fromBetaAfterRemoval)).toBe(`The node of that run (${alpha.nodeId}) is no longer a registered peer of this node, so nothing was sent.`);
     expect((await alpha.gql(`mutation($id:String!){removePeerNode(nodeId:$id)}`, { id: beta.nodeId })).removePeerNode).toBe(true);
@@ -2259,7 +2300,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     record("RC-19", { toBetaAfterRemoval: textOf(toBetaAfterRemoval), fromBetaAfterRemoval: textOf(fromBetaAfterRemoval), delegateAfterRemoval: textOf(delegateAfterRemoval), historyBefore });
   }, 240_000);
 
-  it("RC-20 AC-111/REQ-113/REQ-114: every captured request between the nodes carries no credential and only the contract's fields", () => {
+  it("RC-20 AC-111/REQ-113/REQ-114, 437 NAS-20: every captured request between the nodes carries only its peer signature (never the secret, no other credential) and only the contract's fields", () => {
     const allowed = new Set([PATHS.runs, PATHS.messages, PATHS.status, PATHS.availability, PATHS.availableAgents,
       PATHS.runSummaries, PATHS.agentProjection, PATHS.ownerCommands, PATHS.runObservations]);
     expect(captured.filter((entry) => !allowed.has(entry.path)).map((entry) => entry.path)).toEqual([]);
@@ -2285,9 +2326,13 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     for (const entry of captured) {
       const text = JSON.stringify({ headers: entry.headers, body: entry.body });
       expect(text.includes(CANARY.alpha) || text.includes(CANARY.beta), `canary key in request ${entry.seq}`).toBe(false);
+      expect(text.includes(String(ids.peerSecret)), `the peer secret in request ${entry.seq}`).toBe(false);
       // `sec-websocket-key` is the WebSocket handshake nonce (278's observation stream), not a credential.
       expect(Object.keys(entry.headers).filter((name) => /auth|cookie|key|token|secret/i.test(name) && name !== "sec-websocket-key"), `credential header in request ${entry.seq}`).toEqual([]);
       if (entry.path === PATHS.status) { expect(entry.method).toBe("GET"); counts.status = (counts.status ?? 0) + 1; continue; }
+      // autobyteus-437: every request to a peer route is signed for its receiver (the identity check above is exempt).
+      expect(entry.headers["x-autobyteus-peer-signature"], `signature of request ${entry.seq}`).toMatch(/^[0-9a-f]{64}$/);
+      expect(entry.headers["x-autobyteus-peer-to"], `receiver of request ${entry.seq}`).toBe(entry.via === "toBeta" ? beta.nodeId : alpha.nodeId);
       // 278: the observation stream's upgrade (its frames are not decoded here; RC-35 reads the route directly).
       if (entry.upgrade) { expect(entry.path).toBe(PATHS.runObservations); expect(entry.method).toBe("GET"); counts.observation = (counts.observation ?? 0) + 1; continue; }
       const body = entry.body as Rec;

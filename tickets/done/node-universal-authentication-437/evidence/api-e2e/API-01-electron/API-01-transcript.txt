@@ -1,0 +1,100 @@
+# API-01 Electron probe: packaged desktop app of this worktree, its own node, a server node on this Mac
+# Steps: pnpm --silent isolated-app start --from-worktree (instance iso-59228-236e: control 59228, embedded node 127.0.0.1:59229,
+#   own data root); driven over CDP in attach-only mode with playwright-core connectOverCDP (steps/cdp-eval.mjs + steps/e*.js,
+#   each step script is the exact code run). A server node of this worktree (dist/app.js, --host 0.0.0.0, port 59849, temp data
+#   folder /tmp/abtest437/lan-node, AUTOBYTEUS_SERVER_HOST=http://192.168.2.158:59849, no launch credential = a server install).
+#   Restart leg: instance stopped with --keep, the embedded node's peers.json row stripped of peerSecret (released shape), new
+#   instance iso-60391-bb96 on the same data root (embedded node 127.0.0.1:60392). Both instances stopped; data root removed.
+# Build: electron-dist/mac-arm64 from commit b6a57ab154 (API-00)
+# Environment: macOS 26 (Darwin 25.5) arm64, Node 22.23.1, Electron 42.11.16
+# Date: 2026-11-08 (15:54Z–16:06Z)
+# Output below is copied verbatim from the step scripts' JSON output; the setup code was read from a file and never printed.
+
+## NAD-01 own node, no step (NAS-01, AC-003); credential nowhere in the page (NA-8)
+steps/e1.js:
+  "text": "Chat\nAgents\n…\nDaily Assistant\n…claude-fable-5\nAutoByteus…"   (agents and models of the embedded node loaded)
+  "ownInDom": false
+  "resources": 15 × "http://127.0.0.1:59229/graphql"   (no access_token, no credential in any URL)
+  "storageHasOwn": false        (localStorage + sessionStorage)
+curl without a key from this computer:
+  /rest/health 200
+  POST /graphql -> {"error":"NODE_CREDENTIAL_REQUIRED","code":"NODE_CREDENTIAL_REQUIRED","message":"This node needs a credential. Connect it on the Nodes page."} 401
+  embedded node log: "Node request refused NODE_CREDENTIAL_REQUIRED /graphql from 127.0.0.1"
+
+## NAD-04 terminal in the app window (AC-003 terminal; NAS-31)
+steps/e3.js typed: env | grep -c -E 'own_|AUTOBYTEUS_LAUNCH|OWNER_CREDENTIAL'; echo TERM-MARK-$((40+2))
+  terminal output: "0\nTERM-MARK-42"   (terminal WebSocket works under the credential; no credential name or value in the shell environment)
+
+## NAD-03 HTML preview (BEH-006, NAS-17)
+preview-437.html in the temp workspace: shows PREVIEW-MARKER-437, then its script POSTs http://127.0.0.1:59229/graphql.
+steps/e4.js:
+  "iframeSrc": [{ "src": "http://127.0.0.1:59229/rest/workspaces/temp_ws_default/static/preview-437.html", "sandbox": "allow-scripts" }]
+  "inner": "PREVIEW-MARKER-437\n\norigin: http://127.0.0.1:59229\n\nfetch failed: Failed to fetch"
+  embedded node log: "Node request refused REMOTE_ACCESS_ORIGIN_REFUSED /graphql from 127.0.0.1 origin null"
+  -> the preview renders through the window's credential (no key in its URL); the previewed file's own script is refused (403 origin rule).
+
+## NAD-02 in-app browser (NAS-16)
+steps/e5.js, Browser tab, one new tab per URL on http://127.0.0.1:59229:
+  "/rest/health": "{\"status\":\"ok\",\"message\":\"Server is running\"}"
+  "/rest/remote-access/status": "{\"phoneAccessEnabled\":false,\"pairingAvailable\":false,\"nodeId\":\"srv_bTDn…\"}"
+  "/graphql?query=%7B__typename%7D": "{\"error\":\"NODE_CREDENTIAL_REQUIRED\",…}"
+  "/rest/workspaces/temp_ws_default/static/preview-437.html": "{\"error\":\"NODE_CREDENTIAL_REQUIRED\",…}"
+  -> the same file the app window previews is refused 401 in the in-app browser: no credential is attached there.
+
+## NAD-05 installed application in the app window (NAS-18)
+steps/e7.js: setApplicationsEnabled from the window -> 200 {"data":{"setApplicationsEnabled":{"enabled":true}}}
+steps/e9.js: importApplicationPackage LOCAL_PATH /tmp/abtest437/apps/brief-studio-package (copy of applications/brief-studio/dist/importable-package) -> 200; catalog lists "Brief Studio".
+steps/e10.js (Open app) and e11.js (Enter application): every response from the node 200, none 401/403:
+  "200 POST …/rest/applications/bundle-app__…/backend/ensure-ready"
+  "200 GET …/rest/application-bundles/bundle-app__…/assets/ui/index.html" (+ styles.css, app.js)
+  "200 POST …/rest/applications/bundle-app__…/backend/graphql"
+  iframe text: "BRIEF WORKFLOW\nBrief Studio\n\nCreate, review, and finalize briefs …"
+
+## NAD-07 a server node reached over the local network after the update (NAS-35) and one not yet connected (NAS-02)
+curl from this Mac to the server node (port 59849):
+  127.0.0.1      health 200; graphql 401 NODE_CREDENTIAL_REQUIRED
+  192.168.2.158  health 403 NODE_NETWORK_REFUSED; graphql 403 NODE_NETWORK_REFUSED
+  100.127.30.107 health 200; graphql 401 NODE_CREDENTIAL_REQUIRED
+steps/e13.js, Nodes page, Add node:
+  lan-node (http://192.168.2.158:59849): "Needs connecting. This desktop has no key for lan-node yet. … Not reachable. This node doesn't accept connections from your network. Reach it through its Tailscale address, or on that computer add this network to AUTOBYTEUS_ALLOWED_CLIENT_NETWORKS."   (API-01-e13a.png)
+  loop-node (http://127.0.0.1:59849): "Needs connecting. This desktop has no key for loop-node yet. … Setup code for loop-node / Connect" and no "Not reachable." server cell (the d8fbe5082a NodeRow fix, rendered)   (API-01-e13b.png)
+
+## NAD-08 Connect with a setup code (NAS-03, NAS-13 wrong code)
+node dist/node-access-cli.js setup-code --data-dir /tmp/abtest437/lan-node/data -> "Setup code: <redacted>"; socket srw------- in a drwx------ folder.
+steps/e14.js:
+  wrong code: "The setup code is not valid: it was used, expired or mistyped. Create a new one on the node’s computer."
+  real code: row "Server version unknown" (connected); node responses after connect: "200 GET /rest/node-update", "200 GET /rest/remote-access/status", "200 POST /graphql"
+  node's owner-credentials.json: -rw------- ; keys [createdAt, credentialHash, credentialId, desktopName, lastSeenAt] (hash only)
+
+## NAD-09 one-click pairing of two nodes the desktop owns (NAS-19, DEC-014)
+steps/e15.js dialog: "Let agents work with loop-node? … On this node (Embedded Node) • Turn on remote collaboration … On loop-node • Turn on remote collaboration … On both nodes • Pair this node with loop-node … Paired nodes share a secret, and each proves every request to the other with it."
+steps/e16.js after Turn on: row "loop-node shares no Agents or Agent Teams." (the offer read over a signed peer request)
+peers.json both sides mode 0600, each with a 43-char peerSecret; the embedded node registered loop-node at http://100.127.30.107:59849
+  (loop-node's own LAN address is refused to this Mac: pairing chose the Tailscale candidate that answers, M-9).
+
+## NAD-10 the remote node's own window (AC-004 "everything works" for a connected node)
+steps/e18.js: Open loop-node in its own window -> its chat screen loaded; node responses "200 /rest/health", "200 /graphql"; none 401/403.
+
+## NAD-11 Disconnect while that window has open sockets (NAS-33, NAS-37; edge case "Disconnect while a stream is open")
+steps/e19.js: the remote window's Terminal open (ws://127.0.0.1:59849/ws/terminal/…), "REMOTE-TERM-2" echoed; Disconnect clicked at t=5959 ms:
+  WebSocket closed events at t=5996, 5997, 5999 ms (terminal and the two other open sockets, within 40 ms);
+  later reconnects of /ws/agent-package-definitions and /ws/update-notifications close within 2–9 ms (refused);
+  typed "echo AFTER-$((2+2))" produced no output (terminal ended);
+  node's owner-credentials.json became []; main window row: "Needs connecting. This desktop has no key for loop-node yet."
+steps/e22.js: a new setup code from the CLI -> row connected again ("Server version unknown"); owner-credentials.json has 1 record.
+
+## NAD-12 log and store scan (NA-8, NAS-29)
+108 text files (instance log, the data root's logs/json/jsonl, the server node's log and json) grepped for
+  'own_[A-Za-z0-9_-]{20,}|abpi_[A-Za-z0-9_-]{10,}|access_token=[A-Za-z0-9]|mcpg_[A-Za-z0-9_-]{20,}' -> no file matched.
+Desktop store electron/user-data/node-credentials.json: -rw------- 179 bytes, not UTF-8 (OS-keychain encrypted), 0 occurrences of "own_".
+
+## NAD-13 restart with a peer row of the released shape (NAS-30, NAS-23; re-pairing a peer that still holds an old secret)
+After the restart (new launch credential, new port 60392): app loaded; loop-node still connected (store kept); steps/e23.js row:
+  "loop-node and this node aren't paired yet. Pair them so their agents can work together. / Pair again"
+steps/e24.js Pair again dialog: "Finish connecting loop-node? … On loop-node • Remove this node from loop-node … On both nodes • Pair this node with loop-node"
+  after it: row "loop-node shares no Agents or Agent Teams."; loop-node's peer row now baseUrl http://127.0.0.1:60392 with a new peerSecret;
+  the embedded row kept its addedAt (2026-11-08T16:00:26.135Z) with a new peerSecret.
+
+## Cleanup
+isolated-app stop iso-59228-236e --keep -> ok, wasRunning true; isolated-app stop iso-60391-bb96 -> ok, wasRunning true;
+data root removed (rm -rf, owned by this run); isolated-app list -> no instance. The server node at 59849 kept for API-04, then stopped.

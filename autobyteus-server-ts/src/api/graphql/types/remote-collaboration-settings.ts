@@ -1,10 +1,10 @@
-import { Arg, Field, InputType, Mutation, ObjectType, Query, Resolver } from "type-graphql";
+import { Arg, Ctx, Field, Mutation, ObjectType, Query, Resolver } from "type-graphql";
 import { GraphQLError } from "graphql";
 import { getProcessRemoteCollaboration } from "../../../remote-collaboration/remote-collaboration-services.js";
 import { RemoteCollaborationSettingsError } from "../../../remote-collaboration/domain/remote-collaboration-settings-error.js";
 import type { PeerNode } from "../../../remote-collaboration/domain/peer-node.js";
 import type { PeerRefusal } from "../../../remote-collaboration/domain/peer-refusal.js";
-import { getServerAddressCandidateService } from "../../../server-addressing/server-address-candidate-service.js";
+import type { GraphqlRequestContext } from "../graphql-request-context.js";
 
 @ObjectType()
 export class RemoteCollaborationCapabilityGql {
@@ -19,6 +19,16 @@ export class PeerNodeGql {
   @Field(() => String) name!: string;
   @Field(() => String) baseUrl!: string;
   @Field(() => String) addedAt!: string;
+  /** Both nodes hold the pair's peer secret; an unpaired peer (registered before pairing) shows "Pair again". */
+  @Field(() => Boolean) paired!: boolean;
+}
+
+/** An invite another node accepts to pair with this node (design M-9). */
+@ObjectType()
+export class PeerInviteGql {
+  /** The invite as one copyable text (`abpi_…`); `acceptPeerInvite` takes it. */
+  @Field(() => String) inviteText!: string;
+  @Field(() => String) expiresAt!: string;
 }
 
 /** One entry a peer offers, as the Nodes page shows it (autobyteus-267): no address; a description only when it has one. */
@@ -49,14 +59,6 @@ export class PeerNodeAvailabilityGql {
   @Field(() => String, { nullable: true }) unreachableReason!: string | null;
 }
 
-/** Register the node `nodeId` (its server instance ID) at `baseUrl`, which must answer with it (one-nodes-tab). */
-@InputType()
-export class AddPeerNodeInput {
-  @Field(() => String) nodeId!: string;
-  @Field(() => String) name!: string;
-  @Field(() => String) baseUrl!: string;
-}
-
 const toPeer = (peer: PeerNode): PeerNodeGql => ({ ...peer });
 const refusalFields = (refusal: PeerRefusal) => ({ refusalCode: refusal.code, unreachableReason: refusal.reason ?? null });
 
@@ -71,10 +73,17 @@ const guarded = async <T>(operation: () => Promise<T>): Promise<T> => {
   try { return await operation(); } catch (error) { throw settingsError(error); }
 };
 
+/** Changing the peers or the switch is an owner action (node access model NA-7): a phone's credential is refused. */
+const requireOwner = (context: GraphqlRequestContext): void => {
+  if (context.clientIdentity?.kind !== "owner") {
+    throw new GraphQLError("This credential does not open this action.", { extensions: { code: "NODE_ROUTE_NOT_PERMITTED" } });
+  }
+};
+
 /**
  * The Nodes tab's API for remote collaboration (DEC-108): the switch, the peers, and (one-nodes-tab) what a window
- * needs to connect two nodes: this node's own addresses, the address that works for this node to reach another one,
- * and whether a peer admits this node now. The window calls the same API on both nodes.
+ * needs to connect two nodes: an invite here and its acceptance there (autobyteus-437 pairing; each node finds the
+ * other's address itself), and whether a peer admits this node now. The window calls the same API on both nodes.
  */
 @Resolver()
 export class RemoteCollaborationSettingsResolver {
@@ -84,7 +93,11 @@ export class RemoteCollaborationSettingsResolver {
   }
 
   @Mutation(() => RemoteCollaborationCapabilityGql)
-  setRemoteCollaborationEnabled(@Arg("enabled", () => Boolean) enabled: boolean): RemoteCollaborationCapabilityGql {
+  setRemoteCollaborationEnabled(
+    @Arg("enabled", () => Boolean) enabled: boolean,
+    @Ctx() context: GraphqlRequestContext,
+  ): RemoteCollaborationCapabilityGql {
+    requireOwner(context);
     return { ...getProcessRemoteCollaboration().capability.setEnabled(enabled) };
   }
 
@@ -115,41 +128,56 @@ export class RemoteCollaborationSettingsResolver {
     return answer.accepted ? { available: true, refusalCode: null, unreachableReason: null } : { available: false, ...refusalFields(answer) };
   }
 
-  /** How other nodes may reach this node, as this node lists its own addresses; the other side tries them in order. */
-  @Query(() => [String])
-  peerAddressCandidates(): string[] {
-    return getServerAddressCandidateService().listCandidates().map((candidate) => candidate.baseUrl);
+  /** On node A: an invite for one other node (10 minutes, single use). */
+  @Mutation(() => PeerInviteGql)
+  createPeerInvite(@Ctx() context: GraphqlRequestContext): Promise<PeerInviteGql> {
+    requireOwner(context);
+    return guarded(async () => {
+      const created = await getProcessRemoteCollaboration().pairing.createInvite();
+      return { inviteText: created.inviteText, expiresAt: created.expiresAt };
+    });
   }
 
   /**
-   * The first of `baseUrls`, in order, at which this node reaches the node `nodeId` (one-nodes-tab DS-005). Read-only;
-   * the switch must be on. Takes at most about 20 s.
+   * On node B: pairs with the node that created the invite; both nodes then hold the peer secret. `name` is this node's
+   * label for that node; `nameOnInviter` that node's label for this one (this computer's name when not given). Takes
+   * at most about a minute (both nodes look for each other's address).
    */
-  @Query(() => String)
-  resolvePeerAddress(
+  @Mutation(() => PeerNodeGql)
+  acceptPeerInvite(
+    @Arg("inviteText", () => String) inviteText: string,
+    @Arg("name", () => String) name: string,
+    @Arg("nameOnInviter", () => String, { nullable: true }) nameOnInviter: string | null,
+    @Ctx() context: GraphqlRequestContext,
+  ): Promise<PeerNodeGql> {
+    requireOwner(context);
+    return guarded(async () => toPeer(await getProcessRemoteCollaboration().pairing.acceptInvite(inviteText, name, nameOnInviter ?? null)));
+  }
+
+  @Mutation(() => PeerNodeGql)
+  changePeerAddress(
     @Arg("nodeId", () => String) nodeId: string,
-    @Arg("baseUrls", () => [String]) baseUrls: string[],
-  ): Promise<string> {
-    return guarded(() => getProcessRemoteCollaboration().addresses.resolve(nodeId, baseUrls));
-  }
-
-  @Mutation(() => PeerNodeGql)
-  addPeerNode(@Arg("input", () => AddPeerNodeInput) input: AddPeerNodeInput): Promise<PeerNodeGql> {
-    return guarded(async () => toPeer(await getProcessRemoteCollaboration().peers.add(input)));
-  }
-
-  @Mutation(() => PeerNodeGql)
-  changePeerAddress(@Arg("nodeId", () => String) nodeId: string, @Arg("baseUrl", () => String) baseUrl: string): Promise<PeerNodeGql> {
+    @Arg("baseUrl", () => String) baseUrl: string,
+    @Ctx() context: GraphqlRequestContext,
+  ): Promise<PeerNodeGql> {
+    requireOwner(context);
     return guarded(async () => toPeer(await getProcessRemoteCollaboration().peers.changeAddress(nodeId, baseUrl)));
   }
 
   @Mutation(() => PeerNodeGql)
-  renamePeerNode(@Arg("nodeId", () => String) nodeId: string, @Arg("name", () => String) name: string): Promise<PeerNodeGql> {
+  renamePeerNode(
+    @Arg("nodeId", () => String) nodeId: string,
+    @Arg("name", () => String) name: string,
+    @Ctx() context: GraphqlRequestContext,
+  ): Promise<PeerNodeGql> {
+    requireOwner(context);
     return guarded(async () => toPeer(await getProcessRemoteCollaboration().peers.rename(nodeId, name)));
   }
 
+  /** Removes the peer and forgets its secret here; its open sockets close (NA-11). */
   @Mutation(() => Boolean)
-  removePeerNode(@Arg("nodeId", () => String) nodeId: string): Promise<boolean> {
+  removePeerNode(@Arg("nodeId", () => String) nodeId: string, @Ctx() context: GraphqlRequestContext): Promise<boolean> {
+    requireOwner(context);
     return guarded(async () => { await getProcessRemoteCollaboration().peers.remove(nodeId); return true; });
   }
 }

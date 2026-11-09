@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import fastify from "fastify";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { Client, StreamableHTTPClientTransport } from "@modelcontextprotocol/client";
 import { BaseTool } from "autobyteus-ts/tools/base-tool.js";
 import { McpConfigService } from "autobyteus-ts/tools/mcp/config-service.js";
@@ -14,6 +14,14 @@ import { ToolOrigin } from "autobyteus-ts/tools/tool-origin.js";
 import { ParameterSchema } from "autobyteus-ts/utils/parameter-schema.js";
 import { registerMcpGatewayRoutes } from "../../../src/mcp-gateway/mcp-gateway-routes.js";
 import { McpGatewayAccessGate } from "../../../src/mcp-gateway/mcp-gateway-access.js";
+
+/** The gateway's checks after its origin rule: admission (here: this computer and `203.0.113.0/24`), then its token. */
+const GATEWAY_TOKEN = "mcpg_integration_token";
+const gatewayAccess = (token = GATEWAY_TOKEN) => new McpGatewayAccessGate(
+  { admits: async ({ clientAddress }) => clientAddress === "127.0.0.1" || String(clientAddress).startsWith("203.0.113.") },
+  { getToken: async () => ({ token, source: "node" as const }) },
+);
+const withToken = { requestInit: { headers: { authorization: `Bearer ${GATEWAY_TOKEN}` } } };
 import { McpGatewayMethodDispatcher } from "../../../src/mcp-gateway/mcp-gateway-method-dispatcher.js";
 import { McpGatewayToolCatalog } from "../../../src/mcp-gateway/mcp-gateway-tool-catalog.js";
 import { McpGatewayToolExecutor, MCP_GATEWAY_EXECUTION_SCOPE_ID } from "../../../src/mcp-gateway/mcp-gateway-tool-executor.js";
@@ -139,7 +147,7 @@ await server.connect(new StdioServerTransport());
     defaultToolRegistry.registerTool(buildLocalDefinition("publish_artifacts"));
 
     const app = fastify();
-    await registerMcpGatewayRoutes(app);
+    await registerMcpGatewayRoutes(app, { accessGate: gatewayAccess() });
     await app.ready();
     await app.listen({ host: "127.0.0.1", port: 0 });
     const gatewayAddress = app.server.address();
@@ -150,6 +158,7 @@ await server.connect(new StdioServerTransport());
     const sdkClient = new Client({ name: "autobyteus-mcp-gateway-real-http-probe", version: "0.0.1" });
     const gatewayTransport = new StreamableHTTPClientTransport(
       new URL(`http://127.0.0.1:${gatewayAddress.port}/mcp/gateway`),
+      withToken,
     );
 
     try {
@@ -187,7 +196,7 @@ await server.connect(new StdioServerTransport());
     });
     await registerMcpGatewayRoutes(app, {
       dispatcher,
-      accessGate: new McpGatewayAccessGate({ readConfiguredToken: () => null }),
+      accessGate: gatewayAccess(),
     });
     await app.ready();
     await app.listen({ host: "127.0.0.1", port: 0 });
@@ -196,7 +205,7 @@ await server.connect(new StdioServerTransport());
       throw new Error("Expected Fastify to listen on a loopback TCP port.");
     }
     const sdkClient = new Client({ name: "autobyteus-mcp-gateway-sdk-probe", version: "0.0.1" });
-    const transport = new StreamableHTTPClientTransport(new URL(`http://127.0.0.1:${address.port}/mcp/gateway`));
+    const transport = new StreamableHTTPClientTransport(new URL(`http://127.0.0.1:${address.port}/mcp/gateway`), withToken);
 
     try {
       await sdkClient.connect(transport);
@@ -222,7 +231,7 @@ await server.connect(new StdioServerTransport());
       const internalCall = await app.inject({
         method: "POST",
         url: "/mcp/gateway",
-        headers: { "content-type": "application/json", accept: "application/json" },
+        headers: { authorization: `Bearer ${GATEWAY_TOKEN}`, "content-type": "application/json", accept: "application/json" },
         payload: JSON.stringify({
           jsonrpc: "2.0",
           id: "blocked-local",
@@ -247,7 +256,7 @@ await server.connect(new StdioServerTransport());
     const catalog = new McpGatewayToolCatalog({ registry: registry as any });
     await registerMcpGatewayRoutes(app, {
       dispatcher: new McpGatewayMethodDispatcher({ catalog, toolExecutor: new McpGatewayToolExecutor({ catalog }) }),
-      accessGate: new McpGatewayAccessGate({ readConfiguredToken: () => null }),
+      accessGate: gatewayAccess(),
     });
     await app.ready();
     await app.listen({ host: "127.0.0.1", port: 0 });
@@ -261,6 +270,7 @@ await server.connect(new StdioServerTransport());
       { versionNegotiation: { mode: "auto" } },
     );
     const transport = new StreamableHTTPClientTransport(new URL(`http://127.0.0.1:${address.port}/mcp/gateway`), {
+      ...withToken,
       fetch: recordingFetch(exchanges),
     });
 
@@ -288,41 +298,45 @@ await server.connect(new StdioServerTransport());
     }
   });
 
-  it("keeps no-token mode local-only by rejecting remote-style requests without Origin headers", async () => {
+  it("NAS-25 needs its token from every client, this computer included, and refuses a network the node does not accept first", async () => {
     const app = fastify();
     const calls: CallRecord[] = [];
     const registry = new FakeToolRegistry();
     registry.register(buildMcpDefinition("db_query", "sqlite", calls));
     const catalog = new McpGatewayToolCatalog({ registry: registry as any });
     await registerMcpGatewayRoutes(app, {
-      accessGate: new McpGatewayAccessGate({ readConfiguredToken: () => null }),
+      accessGate: gatewayAccess(),
       dispatcher: new McpGatewayMethodDispatcher({
         catalog,
         toolExecutor: new McpGatewayToolExecutor({ catalog }),
       }),
     });
     await app.ready();
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
 
-    const remoteNoOrigin = await app.inject({
-      method: "POST",
-      url: "/mcp/gateway",
-      remoteAddress: "203.0.113.10",
-      headers: { host: "autobyteus.example:8000", "content-type": "application/json", accept: "application/json" },
-      payload: JSON.stringify({ jsonrpc: "2.0", id: "remote-list", method: "tools/list", params: {} }),
-    });
-    expect(remoteNoOrigin.statusCode).toBe(401);
-    expect(remoteNoOrigin.json()).toMatchObject({ error: "unauthorized" });
-    expect(remoteNoOrigin.body).not.toContain("db_query");
-
-    const loopbackIpWithRemoteHost = await app.inject({
+    const loopbackWithoutToken = await app.inject({
       method: "POST",
       url: "/mcp/gateway",
       remoteAddress: "127.0.0.1",
-      headers: { host: "autobyteus.example:8000", "content-type": "application/json", accept: "application/json" },
-      payload: JSON.stringify({ jsonrpc: "2.0", id: "remote-host", method: "tools/call", params: { name: "db_query", arguments: {} } }),
+      headers: { host: "127.0.0.1:8000", "content-type": "application/json", accept: "application/json" },
+      payload: JSON.stringify({ jsonrpc: "2.0", id: "local-list", method: "tools/list", params: {} }),
     });
-    expect(loopbackIpWithRemoteHost.statusCode).toBe(401);
+    expect(loopbackWithoutToken.statusCode).toBe(401);
+    expect(loopbackWithoutToken.json()).toMatchObject({ error: "unauthorized", code: "MCP_GATEWAY_TOKEN_REQUIRED" });
+    expect(loopbackWithoutToken.body).not.toContain("db_query");
+
+    const otherNetwork = await app.inject({
+      method: "POST",
+      url: "/mcp/gateway",
+      remoteAddress: "198.51.100.7",
+      headers: { authorization: `Bearer ${GATEWAY_TOKEN}`, "content-type": "application/json", accept: "application/json" },
+      payload: JSON.stringify({ jsonrpc: "2.0", id: "remote-call", method: "tools/call", params: { name: "db_query", arguments: {} } }),
+    });
+    expect(otherNetwork.statusCode).toBe(403);
+    expect(otherNetwork.json()).toMatchObject({ code: "NODE_NETWORK_REFUSED" });
     expect(calls).toEqual([]);
+    expect(warn.mock.calls.map((call) => String(call[0])).join("\n")).not.toContain(GATEWAY_TOKEN);
+    warn.mockRestore();
 
     await app.close();
   });
@@ -330,7 +344,7 @@ await server.connect(new StdioServerTransport());
   it("rejects missing or invalid bearer auth when a gateway token is configured", async () => {
     const app = fastify();
     await registerMcpGatewayRoutes(app, {
-      accessGate: new McpGatewayAccessGate({ readConfiguredToken: () => "gateway-secret" }),
+      accessGate: gatewayAccess("gateway-secret"),
       dispatcher: new McpGatewayMethodDispatcher({ catalog: new McpGatewayToolCatalog({ registry: new FakeToolRegistry() as any }) }),
     });
     await app.ready();

@@ -5,6 +5,7 @@ This directory contains focused architecture/design decisions for `autobyteus-se
 ## Documents
 
 - `collaboration_model.md` — canonical model for runs, membership vs delegation, messaging, Task ownership and run storage
+- `node_access_model.md` — canonical model for who may reach a node: network admission, credentials of every client kind, route permissions, refusals, and the scenario contract tests check
 - `data_migration_guideline.md` — canonical policy for persisted app-data migrations
 - `startup_initialization_and_lazy_services.md`
 - `agent_websocket_streaming_protocol.md`

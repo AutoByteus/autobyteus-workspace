@@ -1,0 +1,445 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/.env
+◇ injected env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/.env // tip: ⌘ override existing { override: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:65198
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:65198
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "development.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/db/development.db"
+
+27 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:89027) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+[2026-11-08T19:21:03.326Z] [INFO] [secret-management.vault] Secret vault: application database
+Initialized server settings service with 32 predefined settings
+AgentRunManager initialized.
+Node access: local control socket not opened. The node's local control socket path is 104 bytes, longer than the 103 bytes a Unix socket path may have: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/node-access/local-control.sock. Use a shorter data folder path.
+AgentRunManager initialized.
+Empty never-started run removal skipped 29 folder(s) without a standalone run record
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Registered required tool unit: Agent Discovery Tools
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+Registered required tool unit: Agent Runtime Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'search_memory'
+Registered required tool unit: Memory Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+{"level":30,"time":1794165663583,"pid":89027,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:49300"}
+{"level":30,"time":1794165663610,"pid":89027,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:65198"}
+[2026-11-08T19:21:03.610Z] [INFO] [server.runtime] Server listening on 127.0.0.1:65198
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+Background task 'Memory Search' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace.
+Created terminal session bc5de8ea-a0db-4173-9c33-c0018a02c283 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: bc5de8ea-a0db-4173-9c33-c0018a02c283
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/memory/agents/manager_bragent_12fd_1bd65226300d4189810c176d0e3796fb/raw_traces_manifest.json
+Closed PTY session bc5de8ea-a0db-4173-9c33-c0018a02c283
+Terminal WebSocket disconnected: bc5de8ea-a0db-4173-9c33-c0018a02c283
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace.
+Created terminal session d5859443-015b-4ae4-98fd-751c980a1f1a using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: d5859443-015b-4ae4-98fd-751c980a1f1a
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/memory/agent_teams/delivery_team_brteam_af85_3cf960e237ee4e6ab8fcffae14dc20a4/manager_brteam_af85_48e7d9dc87044296a7315cc1d1c7a238/raw_traces_manifest.json
+Closed PTY session d5859443-015b-4ae4-98fd-751c980a1f1a
+Terminal WebSocket disconnected: d5859443-015b-4ae4-98fd-751c980a1f1a
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace.
+Created terminal session 371a14c7-d902-4063-aca4-ca4cb3d6b961 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 371a14c7-d902-4063-aca4-ca4cb3d6b961
+Terminal websocket attached for cwd /Users/normy
+Agent Definition created successfully with ID: manager-lastrows-382e
+Closed PTY session 371a14c7-d902-4063-aca4-ca4cb3d6b961
+Terminal WebSocket disconnected: 371a14c7-d902-4063-aca4-ca4cb3d6b961
+Agent Definition created successfully with ID: release-notes-writer-lastrows-382e
+Agent Definition created successfully with ID: fact-checker-lastrows-382e
+Agent Definition created successfully with ID: researcher-lastrows-382e
+Agent Team Definition created successfully with ID: docs-review-team-lastrows-382e
+Agent Team Definition created successfully with ID: delivery-team-lastrows-382e
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace.
+Created and registered workspace ID: agent_ws_b554ec68a5d51acc0a6469f0f636127efd1b0a1bad8b6814c385d078bae13cb0
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace.
+Reusing registered workspace ID: agent_ws_b554ec68a5d51acc0a6469f0f636127efd1b0a1bad8b6814c385d078bae13cb0
+AGY compaction detection off for run manager_lastrows_382e_5d142921f0a244648319d53dfab7ae50: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Agent websocket attached for run manager_lastrows_382e_5d142921f0a244648319d53dfab7ae50
+Created agent session cf4efc4e-0b2f-498f-89cf-39a1b39649c4 for run manager_lastrows_382e_5d142921f0a244648319d53dfab7ae50
+Agent WebSocket connected: session=cf4efc4e-0b2f-498f-89cf-39a1b39649c4, run=manager_lastrows_382e_5d142921f0a244648319d53dfab7ae50
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace.
+Reusing registered workspace ID: agent_ws_b554ec68a5d51acc0a6469f0f636127efd1b0a1bad8b6814c385d078bae13cb0
+AGY compaction detection off for run release_notes_writer_lastrows_382e_bf8c249a3c744e9bb132da6f4cc02bd6: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace.
+Reusing registered workspace ID: agent_ws_b554ec68a5d51acc0a6469f0f636127efd1b0a1bad8b6814c385d078bae13cb0
+AGY compaction detection off for run fact_checker_lastrows_382e_082180698a1b44a8b42e7ea2f12805d2: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace.
+Reusing registered workspace ID: agent_ws_b554ec68a5d51acc0a6469f0f636127efd1b0a1bad8b6814c385d078bae13cb0
+AGY compaction detection off for run researcher_lastrows_382e_ace63c07cc8d4a168a87d483d882eacb: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Created terminal session 33e937dc-a418-4c6f-8553-d962cdc647af using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 33e937dc-a418-4c6f-8553-d962cdc647af
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/memory/agents/manager_lastrows_382e_5d142921f0a244648319d53dfab7ae50/raw_traces_manifest.json
+Agent websocket attached for run manager_lastrows_382e_5d142921f0a244648319d53dfab7ae50
+Created agent session d35e3f76-edbf-4021-9ff2-884736ee4323 for run manager_lastrows_382e_5d142921f0a244648319d53dfab7ae50
+Agent WebSocket connected: session=d35e3f76-edbf-4021-9ff2-884736ee4323, run=manager_lastrows_382e_5d142921f0a244648319d53dfab7ae50
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/memory/agents/manager_lastrows_382e_5d142921f0a244648319d53dfab7ae50/raw_traces_manifest.json
+Closed PTY session 33e937dc-a418-4c6f-8553-d962cdc647af
+Terminal WebSocket disconnected: 33e937dc-a418-4c6f-8553-d962cdc647af
+Closed agent session cf4efc4e-0b2f-498f-89cf-39a1b39649c4
+Agent WebSocket disconnected: cf4efc4e-0b2f-498f-89cf-39a1b39649c4
+Closed agent session d35e3f76-edbf-4021-9ff2-884736ee4323
+Agent WebSocket disconnected: d35e3f76-edbf-4021-9ff2-884736ee4323
+Created terminal session 19ff9e2a-8754-46b8-9064-f4e2c44223dc using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 19ff9e2a-8754-46b8-9064-f4e2c44223dc
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/memory/agents/manager_lastrows_382e_5d142921f0a244648319d53dfab7ae50/raw_traces_manifest.json
+Agent websocket attached for run manager_lastrows_382e_5d142921f0a244648319d53dfab7ae50
+Created agent session 26978f5e-17db-4cf9-b3c1-2130e0c97628 for run manager_lastrows_382e_5d142921f0a244648319d53dfab7ae50
+Agent WebSocket connected: session=26978f5e-17db-4cf9-b3c1-2130e0c97628, run=manager_lastrows_382e_5d142921f0a244648319d53dfab7ae50
+Closed agent session 26978f5e-17db-4cf9-b3c1-2130e0c97628
+Agent WebSocket disconnected: 26978f5e-17db-4cf9-b3c1-2130e0c97628
+Agent Definition created successfully with ID: manager-raagent-330a
+Closed PTY session 19ff9e2a-8754-46b8-9064-f4e2c44223dc
+Terminal WebSocket disconnected: 19ff9e2a-8754-46b8-9064-f4e2c44223dc
+Agent Definition created successfully with ID: release-notes-writer-raagent-330a
+Agent Definition created successfully with ID: fact-checker-raagent-330a
+Agent Definition created successfully with ID: researcher-raagent-330a
+Agent Team Definition created successfully with ID: docs-review-team-raagent-330a
+Agent Team Definition created successfully with ID: delivery-team-raagent-330a
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace.
+Reusing registered workspace ID: agent_ws_b554ec68a5d51acc0a6469f0f636127efd1b0a1bad8b6814c385d078bae13cb0
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace.
+Reusing registered workspace ID: agent_ws_b554ec68a5d51acc0a6469f0f636127efd1b0a1bad8b6814c385d078bae13cb0
+AGY compaction detection off for run manager_raagent_330a_f79607d04ac7432999ed22dd973f84fc: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Agent websocket attached for run manager_raagent_330a_f79607d04ac7432999ed22dd973f84fc
+Created agent session 8a747c61-1546-4e29-92cb-36dfcd3a8562 for run manager_raagent_330a_f79607d04ac7432999ed22dd973f84fc
+Agent WebSocket connected: session=8a747c61-1546-4e29-92cb-36dfcd3a8562, run=manager_raagent_330a_f79607d04ac7432999ed22dd973f84fc
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace.
+Reusing registered workspace ID: agent_ws_b554ec68a5d51acc0a6469f0f636127efd1b0a1bad8b6814c385d078bae13cb0
+AGY compaction detection off for run release_notes_writer_raagent_330a_68fef437b31749ce93bbf8854627f9b1: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace.
+Reusing registered workspace ID: agent_ws_b554ec68a5d51acc0a6469f0f636127efd1b0a1bad8b6814c385d078bae13cb0
+AGY compaction detection off for run fact_checker_raagent_330a_f61f446d938e4b0a989c594dd5b28a4a: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace.
+Reusing registered workspace ID: agent_ws_b554ec68a5d51acc0a6469f0f636127efd1b0a1bad8b6814c385d078bae13cb0
+AGY compaction detection off for run researcher_raagent_330a_5651a1ee927949cbbcfa66519100d4e0: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace.
+Reusing registered workspace ID: agent_ws_b554ec68a5d51acc0a6469f0f636127efd1b0a1bad8b6814c385d078bae13cb0
+AGY compaction detection off for run release_notes_writer_raagent_330a_2648c29ab5d144e9a2fc451a7ca22c4b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Created terminal session 4dcb6115-c153-46cd-a639-b43a219058f6 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 4dcb6115-c153-46cd-a639-b43a219058f6
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/memory/agents/manager_lastrows_382e_5d142921f0a244648319d53dfab7ae50/raw_traces_manifest.json
+Agent websocket attached for run manager_lastrows_382e_5d142921f0a244648319d53dfab7ae50
+Created agent session 53c6f985-e3db-45f5-91bb-a1c0e4f6d29d for run manager_lastrows_382e_5d142921f0a244648319d53dfab7ae50
+Agent WebSocket connected: session=53c6f985-e3db-45f5-91bb-a1c0e4f6d29d, run=manager_lastrows_382e_5d142921f0a244648319d53dfab7ae50
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/memory/agents/manager_raagent_330a_f79607d04ac7432999ed22dd973f84fc/raw_traces_manifest.json
+Agent websocket attached for run manager_raagent_330a_f79607d04ac7432999ed22dd973f84fc
+Created agent session 26c094d5-6c77-4c57-9c33-b8b2f54ee2de for run manager_raagent_330a_f79607d04ac7432999ed22dd973f84fc
+Agent WebSocket connected: session=26c094d5-6c77-4c57-9c33-b8b2f54ee2de, run=manager_raagent_330a_f79607d04ac7432999ed22dd973f84fc
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/memory/agents/manager_raagent_330a_f79607d04ac7432999ed22dd973f84fc/raw_traces_manifest.json
+Closed PTY session 4dcb6115-c153-46cd-a639-b43a219058f6
+Terminal WebSocket disconnected: 4dcb6115-c153-46cd-a639-b43a219058f6
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace.
+Reusing registered workspace ID: agent_ws_b554ec68a5d51acc0a6469f0f636127efd1b0a1bad8b6814c385d078bae13cb0
+AGY compaction detection off for run release_notes_writer_raagent_330a_68fef437b31749ce93bbf8854627f9b1: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/memory/agents/release_notes_writer_raagent_330a_68fef437b31749ce93bbf8854627f9b1/raw_traces_manifest.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/memory/agents/manager_raagent_330a_f79607d04ac7432999ed22dd973f84fc/raw_traces_manifest.json
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace.
+Reusing registered workspace ID: agent_ws_b554ec68a5d51acc0a6469f0f636127efd1b0a1bad8b6814c385d078bae13cb0
+AGY compaction detection off for run release_notes_writer_raagent_330a_2648c29ab5d144e9a2fc451a7ca22c4b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/memory/agents/manager_lastrows_382e_5d142921f0a244648319d53dfab7ae50/raw_traces_manifest.json
+Created terminal session 81485974-2145-4d1f-b65b-e2daca018cd8 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 81485974-2145-4d1f-b65b-e2daca018cd8
+Terminal websocket attached for cwd /Users/normy
+Agent websocket attached for run manager_lastrows_382e_5d142921f0a244648319d53dfab7ae50
+Created agent session a7573b46-50ba-4bf2-8047-36e5350bc6d0 for run manager_lastrows_382e_5d142921f0a244648319d53dfab7ae50
+Agent WebSocket connected: session=a7573b46-50ba-4bf2-8047-36e5350bc6d0, run=manager_lastrows_382e_5d142921f0a244648319d53dfab7ae50
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/memory/agents/manager_raagent_330a_f79607d04ac7432999ed22dd973f84fc/raw_traces_manifest.json
+Agent websocket attached for run manager_raagent_330a_f79607d04ac7432999ed22dd973f84fc
+Created agent session cacf612e-43ed-4f2c-8988-dd0bb95e1751 for run manager_raagent_330a_f79607d04ac7432999ed22dd973f84fc
+Agent WebSocket connected: session=cacf612e-43ed-4f2c-8988-dd0bb95e1751, run=manager_raagent_330a_f79607d04ac7432999ed22dd973f84fc
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/memory/agents/manager_raagent_330a_f79607d04ac7432999ed22dd973f84fc/raw_traces_manifest.json
+Closed PTY session 81485974-2145-4d1f-b65b-e2daca018cd8
+Terminal WebSocket disconnected: 81485974-2145-4d1f-b65b-e2daca018cd8
+Closed agent session cacf612e-43ed-4f2c-8988-dd0bb95e1751
+Agent WebSocket disconnected: cacf612e-43ed-4f2c-8988-dd0bb95e1751
+Closed agent session a7573b46-50ba-4bf2-8047-36e5350bc6d0
+Agent WebSocket disconnected: a7573b46-50ba-4bf2-8047-36e5350bc6d0
+Closed agent session 8a747c61-1546-4e29-92cb-36dfcd3a8562
+Agent WebSocket disconnected: 8a747c61-1546-4e29-92cb-36dfcd3a8562
+Closed agent session 53c6f985-e3db-45f5-91bb-a1c0e4f6d29d
+Agent WebSocket disconnected: 53c6f985-e3db-45f5-91bb-a1c0e4f6d29d
+Closed agent session 26c094d5-6c77-4c57-9c33-b8b2f54ee2de
+Agent WebSocket disconnected: 26c094d5-6c77-4c57-9c33-b8b2f54ee2de
+Agent Definition created successfully with ID: manager-rateam-1133
+Agent Definition created successfully with ID: release-notes-writer-rateam-1133
+Agent Definition created successfully with ID: fact-checker-rateam-1133
+Agent Definition created successfully with ID: researcher-rateam-1133
+Agent Team Definition created successfully with ID: docs-review-team-rateam-1133
+Agent Team Definition created successfully with ID: delivery-team-rateam-1133
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace.
+Reusing registered workspace ID: agent_ws_b554ec68a5d51acc0a6469f0f636127efd1b0a1bad8b6814c385d078bae13cb0
+Agent team websocket attached for team run delivery_team_rateam_1133_627d9ef267d54bd789a89cd89a1800fa
+Created agent session dd53f18e-35ac-4a5b-8ef6-831cfef2a4df for run delivery_team_rateam_1133_627d9ef267d54bd789a89cd89a1800fa
+Agent Team WebSocket connected: session=dd53f18e-35ac-4a5b-8ef6-831cfef2a4df, run=delivery_team_rateam_1133_627d9ef267d54bd789a89cd89a1800fa
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace.
+Reusing registered workspace ID: agent_ws_b554ec68a5d51acc0a6469f0f636127efd1b0a1bad8b6814c385d078bae13cb0
+AGY compaction detection off for run manager_rateam_1133_486877da0d1a4afbb7e585c7a1fc4894: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace.
+Reusing registered workspace ID: agent_ws_b554ec68a5d51acc0a6469f0f636127efd1b0a1bad8b6814c385d078bae13cb0
+AGY compaction detection off for run release_notes_writer_rateam_1133_0002cb30897b42dea26af7f55de7ff70: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace.
+Reusing registered workspace ID: agent_ws_b554ec68a5d51acc0a6469f0f636127efd1b0a1bad8b6814c385d078bae13cb0
+AGY compaction detection off for run fact_checker_rateam_1133_77fec72d447547db994f9c95169761f7: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace.
+Reusing registered workspace ID: agent_ws_b554ec68a5d51acc0a6469f0f636127efd1b0a1bad8b6814c385d078bae13cb0
+AGY compaction detection off for run researcher_rateam_1133_9230a0c7172c46ef8b6595753136ebac: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace.
+Reusing registered workspace ID: agent_ws_b554ec68a5d51acc0a6469f0f636127efd1b0a1bad8b6814c385d078bae13cb0
+AGY compaction detection off for run release_notes_writer_rateam_1133_5da39cbe5c29403b81d4b76f88d1f24b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/memory/agents/manager_lastrows_382e_5d142921f0a244648319d53dfab7ae50/raw_traces_manifest.json
+Created terminal session 28c6ecc4-0b3d-47cb-a00e-4ddab5eefabf using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 28c6ecc4-0b3d-47cb-a00e-4ddab5eefabf
+Terminal websocket attached for cwd /Users/normy
+Agent websocket attached for run manager_lastrows_382e_5d142921f0a244648319d53dfab7ae50
+Created agent session 88bca634-b448-4a83-87d6-c145946df781 for run manager_lastrows_382e_5d142921f0a244648319d53dfab7ae50
+Agent WebSocket connected: session=88bca634-b448-4a83-87d6-c145946df781, run=manager_lastrows_382e_5d142921f0a244648319d53dfab7ae50
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/memory/agents/manager_raagent_330a_f79607d04ac7432999ed22dd973f84fc/raw_traces_manifest.json
+Agent websocket attached for run manager_raagent_330a_f79607d04ac7432999ed22dd973f84fc
+Created agent session 0b16a496-0132-4e25-be99-302695bb31a5 for run manager_raagent_330a_f79607d04ac7432999ed22dd973f84fc
+Agent WebSocket connected: session=0b16a496-0132-4e25-be99-302695bb31a5, run=manager_raagent_330a_f79607d04ac7432999ed22dd973f84fc
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/memory/agent_teams/delivery_team_rateam_1133_627d9ef267d54bd789a89cd89a1800fa/manager_rateam_1133_486877da0d1a4afbb7e585c7a1fc4894/raw_traces_manifest.json
+Agent team websocket attached for team run delivery_team_rateam_1133_627d9ef267d54bd789a89cd89a1800fa
+Created agent session 5ac129e7-22cb-44f7-8cd4-bf7c3883516b for run delivery_team_rateam_1133_627d9ef267d54bd789a89cd89a1800fa
+Agent Team WebSocket connected: session=5ac129e7-22cb-44f7-8cd4-bf7c3883516b, run=delivery_team_rateam_1133_627d9ef267d54bd789a89cd89a1800fa
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/memory/agent_teams/delivery_team_rateam_1133_627d9ef267d54bd789a89cd89a1800fa/manager_rateam_1133_486877da0d1a4afbb7e585c7a1fc4894/raw_traces_manifest.json
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace.
+Reusing registered workspace ID: agent_ws_b554ec68a5d51acc0a6469f0f636127efd1b0a1bad8b6814c385d078bae13cb0
+AGY compaction detection off for run release_notes_writer_rateam_1133_0002cb30897b42dea26af7f55de7ff70: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/memory/agents/release_notes_writer_rateam_1133_0002cb30897b42dea26af7f55de7ff70/raw_traces_manifest.json
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace.
+Reusing registered workspace ID: agent_ws_b554ec68a5d51acc0a6469f0f636127efd1b0a1bad8b6814c385d078bae13cb0
+AGY compaction detection off for run release_notes_writer_rateam_1133_5da39cbe5c29403b81d4b76f88d1f24b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Created terminal session 8303e490-914b-44b3-914e-ee4f6e09c657 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 8303e490-914b-44b3-914e-ee4f6e09c657
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/memory/agents/manager_lastrows_382e_5d142921f0a244648319d53dfab7ae50/raw_traces_manifest.json
+Agent websocket attached for run manager_lastrows_382e_5d142921f0a244648319d53dfab7ae50
+Created agent session 8b49fc6a-9c5e-4b6d-b414-a0eaf36fac1d for run manager_lastrows_382e_5d142921f0a244648319d53dfab7ae50
+Agent WebSocket connected: session=8b49fc6a-9c5e-4b6d-b414-a0eaf36fac1d, run=manager_lastrows_382e_5d142921f0a244648319d53dfab7ae50
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/memory/agents/manager_raagent_330a_f79607d04ac7432999ed22dd973f84fc/raw_traces_manifest.json
+Agent websocket attached for run manager_raagent_330a_f79607d04ac7432999ed22dd973f84fc
+Created agent session 8c039aeb-aa87-46da-b632-118ace16e92e for run manager_raagent_330a_f79607d04ac7432999ed22dd973f84fc
+Agent WebSocket connected: session=8c039aeb-aa87-46da-b632-118ace16e92e, run=manager_raagent_330a_f79607d04ac7432999ed22dd973f84fc
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/memory/agent_teams/delivery_team_rateam_1133_627d9ef267d54bd789a89cd89a1800fa/manager_rateam_1133_486877da0d1a4afbb7e585c7a1fc4894/raw_traces_manifest.json
+Agent team websocket attached for team run delivery_team_rateam_1133_627d9ef267d54bd789a89cd89a1800fa
+Created agent session d83b964f-5cdb-4bae-8190-2b3788a2e61f for run delivery_team_rateam_1133_627d9ef267d54bd789a89cd89a1800fa
+Agent Team WebSocket connected: session=d83b964f-5cdb-4bae-8190-2b3788a2e61f, run=delivery_team_rateam_1133_627d9ef267d54bd789a89cd89a1800fa
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/memory/agent_teams/delivery_team_rateam_1133_627d9ef267d54bd789a89cd89a1800fa/manager_rateam_1133_486877da0d1a4afbb7e585c7a1fc4894/raw_traces_manifest.json
+Closed agent session d83b964f-5cdb-4bae-8190-2b3788a2e61f
+Closed agent session 8b49fc6a-9c5e-4b6d-b414-a0eaf36fac1d
+Agent WebSocket disconnected: 8b49fc6a-9c5e-4b6d-b414-a0eaf36fac1d
+Closed agent session 8c039aeb-aa87-46da-b632-118ace16e92e
+Agent WebSocket disconnected: 8c039aeb-aa87-46da-b632-118ace16e92e
+Closed agent session dd53f18e-35ac-4a5b-8ef6-831cfef2a4df
+Closed PTY session 8303e490-914b-44b3-914e-ee4f6e09c657
+Terminal WebSocket disconnected: 8303e490-914b-44b3-914e-ee4f6e09c657
+Closed agent session 5ac129e7-22cb-44f7-8cd4-bf7c3883516b
+Closed agent session 88bca634-b448-4a83-87d6-c145946df781
+Agent WebSocket disconnected: 88bca634-b448-4a83-87d6-c145946df781
+Closed agent session 0b16a496-0132-4e25-be99-302695bb31a5
+Agent WebSocket disconnected: 0b16a496-0132-4e25-be99-302695bb31a5
+Agent Definition created successfully with ID: manager-raorg-fb26
+Closed PTY session 28c6ecc4-0b3d-47cb-a00e-4ddab5eefabf
+Terminal WebSocket disconnected: 28c6ecc4-0b3d-47cb-a00e-4ddab5eefabf
+Agent Definition created successfully with ID: release-notes-writer-raorg-fb26
+Agent Definition created successfully with ID: fact-checker-raorg-fb26
+Agent Definition created successfully with ID: researcher-raorg-fb26
+Agent Team Definition created successfully with ID: docs-review-team-raorg-fb26
+Agent Team Definition created successfully with ID: delivery-team-raorg-fb26
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace.
+Reusing registered workspace ID: agent_ws_b554ec68a5d51acc0a6469f0f636127efd1b0a1bad8b6814c385d078bae13cb0
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace.
+Reusing registered workspace ID: agent_ws_b554ec68a5d51acc0a6469f0f636127efd1b0a1bad8b6814c385d078bae13cb0
+AGY compaction detection off for run manager_raorg_fb26_eb9bc32070594c97938a8e25e3ba3bf2: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace.
+Reusing registered workspace ID: agent_ws_b554ec68a5d51acc0a6469f0f636127efd1b0a1bad8b6814c385d078bae13cb0
+AGY compaction detection off for run release_notes_writer_raorg_fb26_2e7f86ff67874f77859e33b3e9d5f5e2: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace.
+Reusing registered workspace ID: agent_ws_b554ec68a5d51acc0a6469f0f636127efd1b0a1bad8b6814c385d078bae13cb0
+AGY compaction detection off for run fact_checker_raorg_fb26_8f4c079c2d2e43b0ae7e73575e8244e8: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace.
+Reusing registered workspace ID: agent_ws_b554ec68a5d51acc0a6469f0f636127efd1b0a1bad8b6814c385d078bae13cb0
+AGY compaction detection off for run researcher_raorg_fb26_b1db76564df54554972b1d3bebcaf291: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace.
+Reusing registered workspace ID: agent_ws_b554ec68a5d51acc0a6469f0f636127efd1b0a1bad8b6814c385d078bae13cb0
+AGY compaction detection off for run release_notes_writer_raorg_fb26_8757c2754eb74aa2857762474f7dc2b7: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Created terminal session 5cc811e3-17a0-4cb0-9df1-14512b5c2ec7 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 5cc811e3-17a0-4cb0-9df1-14512b5c2ec7
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/memory/agents/manager_lastrows_382e_5d142921f0a244648319d53dfab7ae50/raw_traces_manifest.json
+Agent websocket attached for run manager_lastrows_382e_5d142921f0a244648319d53dfab7ae50
+Created agent session 1a825e4f-32d1-46b9-9b2d-553a1e6f2368 for run manager_lastrows_382e_5d142921f0a244648319d53dfab7ae50
+Agent WebSocket connected: session=1a825e4f-32d1-46b9-9b2d-553a1e6f2368, run=manager_lastrows_382e_5d142921f0a244648319d53dfab7ae50
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/memory/agents/manager_raagent_330a_f79607d04ac7432999ed22dd973f84fc/raw_traces_manifest.json
+Agent websocket attached for run manager_raagent_330a_f79607d04ac7432999ed22dd973f84fc
+Created agent session dfd02e54-1324-473d-aee3-0eb8175ed5c5 for run manager_raagent_330a_f79607d04ac7432999ed22dd973f84fc
+Agent WebSocket connected: session=dfd02e54-1324-473d-aee3-0eb8175ed5c5, run=manager_raagent_330a_f79607d04ac7432999ed22dd973f84fc
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/memory/agent_teams/delivery_team_rateam_1133_627d9ef267d54bd789a89cd89a1800fa/manager_rateam_1133_486877da0d1a4afbb7e585c7a1fc4894/raw_traces_manifest.json
+Agent team websocket attached for team run delivery_team_rateam_1133_627d9ef267d54bd789a89cd89a1800fa
+Created agent session 315f2510-0354-475c-8cbf-91f8dc005fe9 for run delivery_team_rateam_1133_627d9ef267d54bd789a89cd89a1800fa
+Agent Team WebSocket connected: session=315f2510-0354-475c-8cbf-91f8dc005fe9, run=delivery_team_rateam_1133_627d9ef267d54bd789a89cd89a1800fa
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/memory/agent_teams/delivery_team_rateam_1133_627d9ef267d54bd789a89cd89a1800fa/manager_rateam_1133_486877da0d1a4afbb7e585c7a1fc4894/raw_traces_manifest.json
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace.
+Reusing registered workspace ID: agent_ws_b554ec68a5d51acc0a6469f0f636127efd1b0a1bad8b6814c385d078bae13cb0
+AGY compaction detection off for run release_notes_writer_raorg_fb26_2e7f86ff67874f77859e33b3e9d5f5e2: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/memory/agents/release_notes_writer_raorg_fb26_2e7f86ff67874f77859e33b3e9d5f5e2/raw_traces_manifest.json
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/workspace.
+Reusing registered workspace ID: agent_ws_b554ec68a5d51acc0a6469f0f636127efd1b0a1bad8b6814c385d078bae13cb0
+AGY compaction detection off for run release_notes_writer_raorg_fb26_8757c2754eb74aa2857762474f7dc2b7: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+Created terminal session c6bdb17e-befe-4cfc-9223-5c36373d766e using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: c6bdb17e-befe-4cfc-9223-5c36373d766e
+Terminal websocket attached for cwd /Users/normy
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/memory/agents/manager_lastrows_382e_5d142921f0a244648319d53dfab7ae50/raw_traces_manifest.json
+Agent websocket attached for run manager_lastrows_382e_5d142921f0a244648319d53dfab7ae50
+Created agent session 28f28116-2640-4421-8367-b645a408041c for run manager_lastrows_382e_5d142921f0a244648319d53dfab7ae50
+Agent WebSocket connected: session=28f28116-2640-4421-8367-b645a408041c, run=manager_lastrows_382e_5d142921f0a244648319d53dfab7ae50
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/memory/agents/manager_raagent_330a_f79607d04ac7432999ed22dd973f84fc/raw_traces_manifest.json
+Agent websocket attached for run manager_raagent_330a_f79607d04ac7432999ed22dd973f84fc
+Created agent session d0b93c44-b660-4612-be7c-1e35f339c7aa for run manager_raagent_330a_f79607d04ac7432999ed22dd973f84fc
+Agent WebSocket connected: session=d0b93c44-b660-4612-be7c-1e35f339c7aa, run=manager_raagent_330a_f79607d04ac7432999ed22dd973f84fc
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/memory/agent_teams/delivery_team_rateam_1133_627d9ef267d54bd789a89cd89a1800fa/manager_rateam_1133_486877da0d1a4afbb7e585c7a1fc4894/raw_traces_manifest.json
+Agent team websocket attached for team run delivery_team_rateam_1133_627d9ef267d54bd789a89cd89a1800fa
+Created agent session 5602cf9c-3f5a-44c9-9fcb-24e7350a57a8 for run delivery_team_rateam_1133_627d9ef267d54bd789a89cd89a1800fa
+Agent Team WebSocket connected: session=5602cf9c-3f5a-44c9-9fcb-24e7350a57a8, run=delivery_team_rateam_1133_627d9ef267d54bd789a89cd89a1800fa
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/task-closure-tree-gZwUJz/memory/agent_teams/delivery_team_rateam_1133_627d9ef267d54bd789a89cd89a1800fa/manager_rateam_1133_486877da0d1a4afbb7e585c7a1fc4894/raw_traces_manifest.json
+Closed agent session 5602cf9c-3f5a-44c9-9fcb-24e7350a57a8
+Closed agent session d0b93c44-b660-4612-be7c-1e35f339c7aa
+Agent WebSocket disconnected: d0b93c44-b660-4612-be7c-1e35f339c7aa
+Closed agent session 28f28116-2640-4421-8367-b645a408041c
+Agent WebSocket disconnected: 28f28116-2640-4421-8367-b645a408041c
+Closed PTY session c6bdb17e-befe-4cfc-9223-5c36373d766e
+Terminal WebSocket disconnected: c6bdb17e-befe-4cfc-9223-5c36373d766e
+Closed agent session 315f2510-0354-475c-8cbf-91f8dc005fe9
+Closed agent session dfd02e54-1324-473d-aee3-0eb8175ed5c5
+Agent WebSocket disconnected: dfd02e54-1324-473d-aee3-0eb8175ed5c5
+Closed agent session 1a825e4f-32d1-46b9-9b2d-553a1e6f2368
+Agent WebSocket disconnected: 1a825e4f-32d1-46b9-9b2d-553a1e6f2368
+Closed PTY session 5cc811e3-17a0-4cb0-9df1-14512b5c2ec7
+Terminal WebSocket disconnected: 5cc811e3-17a0-4cb0-9df1-14512b5c2ec7

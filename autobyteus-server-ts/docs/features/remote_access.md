@@ -1,28 +1,29 @@
 # Remote Access / Phone Access Backend
 
-Remote Access is the backend boundary for phone/PWA pairing and mobile sessions on an AutoByteus node reached through a private network path the user or organization already trusts. The full backend is intended for trusted LAN, company VPN, tailnet, or other private-network exposure; it is **not** designed for direct public internet exposure. Future strict owner pairing/admin authorization would be a separate opt-in design, not part of the default Phase One flow.
+Remote Access is the backend boundary for phone/PWA pairing and mobile sessions on an AutoByteus node reached through a private network path: Tailscale, an allowed local network, or a network the node lists in `AUTOBYTEUS_ALLOWED_CLIENT_NETWORKS`. The backend is **not** designed for direct public internet exposure.
 
-Phone Access is additive: paired phones receive explicit `mra_...` mobile credentials, while normal desktop/Electron access to a remote node continues to use the trusted private-network model without an extra setup secret in the default flow.
+Every request to a node needs a credential (the [Node Access Model](../design/node_access_model.md), autobyteus-437). A paired phone holds its `mra_...` phone credential; the desktop app holds an owner credential for each node. This document covers the Host and Origin rules that run first, phone pairing and phone credentials; the node access model owns network admission, the other credential kinds and the route permissions.
 
 ## Runtime Ownership
 
 | Concern | Owner |
 | --- | --- |
-| HTTP route classification and authorization; the WebSocket credential rule and phone WebSocket routes (`authorizeWebSocket`, `PHONE_WEBSOCKET_ROUTES`) | `src/api/security/remote-access-route-policy.ts` |
+| Route permissions by client kind and the phone WebSocket routes (`routeAccessFor`, `PHONE_WEBSOCKET_ROUTES`) | `src/api/security/node-route-permissions.ts` |
+| The node access gate: network admission, one credential, route permission (node access model §2) | `src/api/security/node-access-gate.ts`, `src/node-access/` |
 | The node's first request rule: the Host gate (DNS rebinding defence) | `src/api/security/remote-access-host-gate.ts` |
 | Allowed-host rule (classes, configured names, the paired-phone lookup on a miss) | `src/api/security/remote-access-request-host.ts`; `Host` parsing in `request-host-name.ts` |
 | The browser-access settings, read once at start (`AUTOBYTEUS_ALLOWED_ORIGINS`, `AUTOBYTEUS_ALLOWED_HOSTS`, the host of `AUTOBYTEUS_SERVER_HOST`) | `src/api/security/node-browser-access.ts` |
-| Fastify origin/auth hook (Origin check, CORS, route authorization) | `src/api/security/remote-access-policy-plugin.ts` |
-| The refusal reply and log line of both hooks | `src/api/security/remote-access-refusal.ts` |
+| Fastify hook: Origin check, CORS, then the node access gate | `src/api/security/node-access-plugin.ts` |
+| The refusal reply and log line of every hook | `src/api/security/request-refusal.ts` |
 | Allowed-origin rules: the node's, and the tool endpoints' (`/mcp/gateway`, agent-tools and credential-proxy listeners) | `src/api/security/remote-access-request-origin.ts` |
 | Hosts of open pairing sessions and active paired phones (`isPairedPhoneHost`) | `src/remote-access/services/remote-access-pairing-service.ts` |
 | How a user file is answered (`sendUserFile`) | `src/api/rest/user-file-reply.ts` |
-| `/ws/*` handler adapter over `authorizeWebSocket` (refusal → close, auth context) | `src/api/websocket/remote-access-websocket-auth.ts` |
-| WebSocket close code for each refusal code | `src/remote-access/domain/remote-access-close-codes.ts` |
+| `/ws/*` routes behind the gate (refusal → close with 4401/4403 and the code; open sockets registered for revocation) | `src/api/websocket/gated-websocket-route.ts`, `src/api/security/open-socket-registry.ts` |
+| Phone credential check for the gate (prefix `mra_`, paired, not revoked, Phone Access on) | `src/remote-access/services/phone-credential-verifier.ts` |
 | Phone Access settings | `src/remote-access/services/remote-access-settings-service.ts` and `stores/remote-access-settings-store.ts` |
 | This computer's network facts (Tailscale, VPN, local network, computer name) and the allowed local networks | `src/remote-access/services/node-network-service.ts` with `network-interface-classifier.ts`, `default-route.ts`, `computer-name.ts`, `ip-address-ranges.ts` and `stores/allowed-local-network-store.ts` |
 | Pairing session creation/exchange/discard | `src/remote-access/services/remote-access-pairing-service.ts` |
-| Paired device credentials and revocation | `src/remote-access/services/paired-device-service.ts` and `stores/paired-device-store.ts` |
+| Paired device credentials and revocation (kept in memory; a revocation closes the phone's open sockets) | `src/remote-access/services/paired-device-service.ts` and `stores/paired-device-store.ts` |
 | Stable node identity (the node ID) | `src/remote-access/services/node-identity-service.ts` |
 | Client-facing absolute/relative resource URLs | `src/remote-access/services/client-facing-url-resolver.ts` |
 | Mobile static asset serving | `src/api/static/mobile-web.ts` |
@@ -63,41 +64,16 @@ The node's tool endpoints, whose clients are programs, have their own narrower r
 
 Every route that returns a user file's content (workspace files and the HTML preview's static route, uploaded media, composer drafts and sent-message attachments, run file changes, message references) answers through one owner, `sendUserFile` (`src/api/rest/user-file-reply.ts`): the file's own type, `Content-Security-Policy: sandbox allow-scripts` and `X-Content-Type-Options: nosniff`. Opened anywhere (a viewer, a tab, the in-app browser, an agent's browser tool) the file displays, and an HTML or SVG file's scripts run in an opaque origin, walled off from the node: its requests to the node carry `Origin: null` and are refused. PDFs render under this policy. Project Task context files keep their own `attachment` answer, and installed applications' assets are served at the node's origin by design. An architecture test (`tests/architecture/user-file-replies.test.ts`) keeps every file route on `sendUserFile`.
 
-## Route Policy
+## Route Permissions
 
-The route policy classifies every HTTP request before normal route handling:
+After the Host and Origin rules, the node access gate decides every request: network admission, then one credential, then the route's permission for that client kind ([Node Access Model](../design/node_access_model.md) §2, `node-route-permissions.ts`). For phones:
 
-- Public bootstrap/status routes:
-  - `OPTIONS` preflight
-  - `/mobile` and `/mobile/*`
-  - `/rest/health`
-  - `GET /rest/remote-access/status`
-  - `POST /rest/remote-access/pairing-exchanges`
-- Trusted-network owner routes:
-  - `GET /rest/remote-access/settings`
-  - `PUT /rest/remote-access/settings`
-  - `GET /rest/remote-access/network`
-  - `PUT /rest/remote-access/network/local-networks/:networkId`
-  - `POST /rest/remote-access/pairing-sessions`
-  - `DELETE /rest/remote-access/pairing-sessions/:sessionId`
-  - `GET /rest/remote-access/devices`
-  - `GET /rest/remote-access/devices/revoked`
-  - `DELETE /rest/remote-access/devices/:deviceId`
-  - `DELETE /rest/remote-access/devices`
-  - `GET /rest/node-update` (a Docker node's server package version and in-place update state, relayed from its starter; `inPlaceUpdate: "unavailable"` on servers no starter runs; see `autobyteus-server-ts/docker/README.md` and the DESIGN.md rule 9 exception)
-  - `POST /rest/node-update` (`{ version }`: asks the node's starter to update its server package in place; the starter logs the request with the client address)
-- Trusted-network protected routes:
-  - `POST /graphql`
-  - protected REST families such as media, files, uploads, workspaces, context files, drafts, runs, team runs, run file changes, team communication, application backend routes, and application bundle assets
-- Trusted-network WebSocket routes:
-  - `/ws/*`
-  - GraphQL WebSocket upgrades
-- Local-dev-only routes:
-  - GraphQL GET/development UI surfaces remain loopback-only.
+- Exempt (no credential; network admission still applies): `OPTIONS` preflight, `/mobile` and `/mobile/*`, `/rest/health`, `GET /rest/remote-access/status`, `POST /rest/remote-access/pairing-exchanges`.
+- Owner actions, refused to a phone with 403 `NODE_ROUTE_NOT_PERMITTED`: `/rest/remote-access/settings`, `/rest/remote-access/network` and below, `/rest/remote-access/pairing-sessions` and below, `/rest/remote-access/devices` and below, `/rest/node-update` (a Docker node's server package version and in-place update; see `autobyteus-server-ts/docker/README.md` and the DESIGN.md rule 9 exception), `/rest/node-access/*`, `/rest/mcp-gateway/*`.
+- Owner and phone: `POST /graphql` and the other REST families (media, files, uploads, workspaces, context files, drafts, runs, team runs, run file changes, team communication, application backend routes and bundle assets). What a phone may do inside them is slice 2.
+- WebSockets: a phone credential opens only the phone WebSocket routes; every other WebSocket route is the owner's.
 
-Trusted-network owner/protected/WebSocket routes are reachable without an additional credential under the product model above. When a request presents an `mra_...` mobile credential on protected REST/GraphQL routes or on a phone WebSocket route, the backend validates it and records a mobile auth context. Mobile credentials are rejected on owner-management routes such as settings changes, pairing-session creation, device listing, and revocation.
-
-Phone WebSocket routes are the WebSocket route patterns a paired phone's credential may open (`PHONE_WEBSOCKET_ROUTES`): `/ws/agent/:runId`, `/ws/agent-team/:teamRunId`, `/ws/agent-org/:orgRunId`, `/ws/agent-collaboration/:runId`, `/ws/projects`, `/ws/agent-package-definitions`, `/ws/file-explorer/:workspaceId` and `/ws/node-desktop`. A mobile credential (`access_token=mra_...`) on any other WebSocket route is refused before it is validated, with `PHONE_ACCESS_ROUTE_REFUSED`: close code 4403 on `/ws/*` (today `/ws/terminal/...`, `/ws/update-notifications`, `/ws/applications/...`), HTTP 403 on a `/graphql` upgrade and on the peer WebSocket `/rest/remote/run-observations`. A WebSocket route added later stays closed to phones until it is added to the list. The list is keyed by Fastify route pattern (`request.routeOptions.url`), so renaming a route parameter must update it; the e2e test `tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts` fails when a listed pattern is not registered. The refusal is not a session failure: the phone does not unpair on it.
+Phone WebSocket routes are the WebSocket route patterns a paired phone's credential may open (`PHONE_WEBSOCKET_ROUTES`): `/ws/agent/:runId`, `/ws/agent-team/:teamRunId`, `/ws/agent-org/:orgRunId`, `/ws/agent-collaboration/:runId`, `/ws/projects`, `/ws/agent-package-definitions`, `/ws/file-explorer/:workspaceId` and `/ws/node-desktop`. A phone credential (`access_token=mra_...`) on any other WebSocket route is refused with `PHONE_ACCESS_ROUTE_REFUSED`: close code 4403 on `/ws/*` (today `/ws/terminal/...`, `/ws/update-notifications`, `/ws/applications/...`), HTTP 403 on a `/graphql` upgrade and on the peer WebSocket `/rest/remote/run-observations`. A WebSocket route added later stays closed to phones until it is added to the list. The list is keyed by Fastify route pattern (`request.routeOptions.url`), so renaming a route parameter must update it; `tests/architecture/node-access-boundaries.test.ts` fails when a listed pattern is not a registered gated route. The refusal is not a session failure: the phone does not unpair on it.
 
 ## Node Network And Ways To Connect
 
@@ -136,7 +112,7 @@ The desktop (Nodes › Phone Setup) turns these facts and the node's port into t
 5. The service creates a five-minute, single-use pairing code and returns `{ sessionId, payload, qrText, mobileUrl }`. `qrText` is a `/mobile?pairing=<payload>` URL; the payload is `{ version: 1, serverBaseUrl, pairingCode, expiresAt, serverName }`. `sessionId` (`pss_<32 hex>`) is opaque and never the code.
 6. `DELETE /rest/remote-access/pairing-sessions/:sessionId` discards a code (204, also for an unknown ID): the desktop calls it when the code is closed, replaced or its tab changes. Turning Phone Access off discards every code.
 7. The phone calls `POST /rest/remote-access/pairing-exchanges` with the pairing code and server base URL.
-8. The backend creates a paired device record with the session's `connectionWay` and returns the only copy of the raw mobile credential to the phone. A second use of the code answers `REMOTE_ACCESS_PAIRING_CONSUMED` until the code expires; an expired code answers `REMOTE_ACCESS_PAIRING_EXPIRED` once, an unknown or discarded one `REMOTE_ACCESS_PAIRING_INVALID`.
+8. The backend creates a paired device record with the session's `connectionWay` and returns the only copy of the raw mobile credential to the phone. A second use of the code answers 401 `REMOTE_ACCESS_PAIRING_CONSUMED` until the code expires; an expired code answers 401 `REMOTE_ACCESS_PAIRING_EXPIRED` once, an unknown or discarded one 401 `REMOTE_ACCESS_PAIRING_INVALID` (a wrong code is refused like a wrong credential, NA-10).
 
 Pairing sessions are in memory and short-lived. Paired devices persist under the app data directory in `remote-access/paired-devices.json`; only a SHA-256 credential hash is stored. Device summaries carry `connectionWay` (`null` for phones paired before devices recorded it).
 
@@ -144,21 +120,21 @@ Pairing sessions are in memory and short-lived. Paired devices persist under the
 
 Remote Access mobile credentials use the `mra_...` prefix. HTTP REST and GraphQL use `Authorization: Bearer <mra_...>`. Browser WebSocket clients pass the same credential as `access_token=<mra_...>` because browser WebSocket constructors cannot send arbitrary authorization headers.
 
-A valid mobile credential is accepted only when:
+The gate accepts a phone credential (`phone-credential-verifier.ts`) only when:
 
 - the credential has the `mra_` prefix;
-- the credential hash matches a paired device record;
-- the device is not revoked;
-- Phone Access is currently enabled;
-- the current route class accepts mobile credentials.
+- the credential hash matches a paired device record (the records are kept in memory; no file is read per request);
+- the device is not revoked (403 `REMOTE_ACCESS_DEVICE_REVOKED`);
+- Phone Access is currently enabled (403 `PHONE_ACCESS_DISABLED`);
+- the route permits phones (otherwise 403 `NODE_ROUTE_NOT_PERMITTED`, or `PHONE_ACCESS_ROUTE_REFUSED` on a WebSocket).
 
-Accepted mobile requests get an auth context with `mode: "mobile"`, the paired `deviceId`, and the stored `clientFacingBaseUrl`. Last-seen timestamps are updated best-effort and must not reject otherwise valid requests.
+An accepted request's client identity is `{ kind: "phone", deviceId }`. Last-seen timestamps are updated at most once a minute per phone, in the background, and never reject a valid request. Revoking a phone or turning Phone Access off closes the phone's open sockets at once with 4403 and the code.
 
-Mobile credentials do not authorize owner-management routes. This prevents paired phones from creating pairing sessions, changing Phone Access settings, listing all devices, or revoking devices.
+Phone credentials do not open owner actions: paired phones cannot create pairing sessions, change Phone Access settings, list devices or revoke devices.
 
 Credential-bearing URLs, pairing payloads, mobile credentials, and authorization headers must be redacted before logging or diagnostic output.
 
-Every refusal is logged once at warn level, with its code and the redacted URL: `Remote Access request refused <code> <url>` from the request gate (HTTP replies, including `/graphql` upgrades and the peer WebSocket), followed by `origin <value>` for `REMOTE_ACCESS_ORIGIN_REFUSED` and by `host <name> (add it to AUTOBYTEUS_ALLOWED_HOSTS if this is the node's name)` for `REMOTE_ACCESS_HOST_REFUSED` (both values escaped and cut at 100 characters); `Remote Access WebSocket rejected <url>: <code>` for a `/ws/*` close. No other header and no credential is logged.
+Every refusal is logged once at warn level: `Node request refused <code> <redacted url> from <client address>` (`request-refusal.ts`), for HTTP replies, `/graphql` upgrades, the peer WebSocket and `/ws/*` closes, followed by `origin <value>` for `REMOTE_ACCESS_ORIGIN_REFUSED` and by `host <name> (add it to AUTOBYTEUS_ALLOWED_HOSTS if this is the node's name)` for `REMOTE_ACCESS_HOST_REFUSED` (both values escaped and cut at 100 characters). No other header and no credential, code or secret is logged.
 
 ## Server Instance Identity
 
@@ -172,14 +148,13 @@ Absolute URLs returned to clients should go through `DefaultClientFacingUrlResol
 
 Resolution preference is:
 
-1. active mobile auth context `clientFacingBaseUrl`;
-2. explicitly supplied paired-device client base URL;
-3. configured external/public base URL;
-4. local fallback base URL only for loopback peers or when it is not loopback.
+1. the requesting phone's paired-device client base URL;
+2. configured external/public base URL;
+3. local fallback base URL only for loopback clients or when it is not loopback.
 
 If the request is remote and the only fallback is loopback, the resolver returns a relative REST path instead of leaking an unusable `127.0.0.1` URL.
 
-This is not host-header discovery. The remote client-facing base URL is selected during pairing or by explicit configuration, then reused from the paired device/auth context.
+This is not host-header discovery. The remote client-facing base URL is selected during pairing or by explicit configuration, then reused from the paired device.
 
 ## Static Mobile Web Hosting
 
@@ -205,7 +180,7 @@ Remote Access data lives under the app data directory:
 - `remote-access/paired-devices.json` stores device id, display name, credential hash, client-facing base URL, created/last-seen/revoked timestamps.
 - `remote-access/node-identity.json` stores the stable node ID (`nodeId`) used for same-node advertised URL verification. A node released before autobyteus-290 had it as `server-instance.json` `{serverInstanceId}`; the sealed app-data migration `node-identity-file-name` renames it once. Until that migration has succeeded (capability `node_identity`), `NodeIdentityService.getNodeId()` throws `NodeIdentityNotMigratedError` and creates nothing, and the status route answers HTTP 503 `{code: "NODE_IDENTITY_NOT_MIGRATED", message: "This node's identity is waiting for its data migration."}`.
 
-Disabling Phone Access does not delete paired-device records. Revoking a device marks its `revokedAt` timestamp and retains the record for history and revoked-credential diagnostics. `GET /rest/remote-access/devices` returns active devices only; trusted-network desktop management can read retained revoked rows through `GET /rest/remote-access/devices/revoked`. While disabled, new pairing sessions are rejected and existing mobile credentials fail with `PHONE_ACCESS_DISABLED`.
+Disabling Phone Access does not delete paired-device records. Revoking a device marks its `revokedAt` timestamp and retains the record for history and revoked-credential diagnostics. `GET /rest/remote-access/devices` returns active devices only; the owner can read retained revoked rows through `GET /rest/remote-access/devices/revoked`. While disabled, new pairing sessions are rejected and existing mobile credentials fail with `PHONE_ACCESS_DISABLED`.
 
 ## Validation Coverage
 
@@ -214,7 +189,7 @@ Validation for this feature should cover:
 - mobile static build and backend serving under `/mobile`;
 - backend-generated `/mobile?pairing=...` bootstrapping into the phone shell;
 - pairing exchange, persisted mobile session reload, and mobile deep links;
-- trusted-network REST, GraphQL, and WebSocket reachability without additional credentials;
+- refusal of every non-exempt REST, GraphQL and WebSocket request without a credential, and network admission (`tests/e2e/node-access/node-access-model.e2e.test.ts`);
 - refusal of requests addressed to a name that is not the node's on every entry form, and acceptance of each allowed-host class and setting;
 - refusal of non-allowed Origins, localhost pages included, on every WebSocket route family and on HTTP, and acceptance of each allowed-origin class;
 - the user-file headers on every user-file route;
@@ -228,4 +203,4 @@ Validation for this feature should cover:
 
 ## Phase Two Boundary
 
-Phase One establishes Phone Access pairing over trusted private-network URLs and preserves trusted private-network desktop access to the backend. For WebSockets, Phase Two's route limit is done: a phone credential opens only the phone WebSocket routes (see Route Policy). It does not complete least-privilege mobile backend authorization, mobile token rotation, native secure credential storage, strict owner pairing/admin authorization, or backend hard denial of every high-risk mobile operation. Those items are tracked in `../../../docs/future-tickets/mobile-backend-authorization-hardening.md` from this feature doc.
+Phone Access pairs phones over private-network URLs; since autobyteus-437 every request needs a credential and owner actions need the owner's (see Route Permissions). For WebSockets, Phase Two's route limit is done: a phone credential opens only the phone WebSocket routes. Least-privilege phone authorization inside the reachable endpoints (folders, `createWorkspace`, settings), phone credential rotation and native secure credential storage are not done; they are tracked in `../../../docs/future-tickets/mobile-backend-authorization-hardening.md`.

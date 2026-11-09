@@ -6,8 +6,8 @@ import type { PeerOffer } from '~/stores/remoteCollaborationOffersStore'
 
 const A = 'srv_thisNodeAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
 const B = 'srv_otherNodeBBBBBBBBBBBBBBBBBBBBBBBBBBB'
-const peerB = { nodeId: B, name: 'studio', baseUrl: 'http://192.168.2.31:29695', addedAt: '2026-10-23T08:00:00.000Z' }
-const peerA = { nodeId: A, name: 'Embedded Node', baseUrl: 'http://host.docker.internal:29695', addedAt: '2026-10-23T08:00:00.000Z' }
+const peerB = { nodeId: B, name: 'studio', baseUrl: 'http://192.168.2.31:29695', addedAt: '2026-10-23T08:00:00.000Z', paired: true }
+const peerA = { nodeId: A, name: 'Embedded Node', baseUrl: 'http://host.docker.internal:29695', addedAt: '2026-10-23T08:00:00.000Z', paired: true }
 
 const row = (overrides: Partial<NodeRow> = {}): NodeRow => ({
   key: B, nodeId: B, entryIds: ['remote-1'], windowAddress: 'http://192.168.2.31:29695', peer: peerB, name: 'studio', isEmbedded: false, ...overrides,
@@ -36,7 +36,9 @@ describe('rowViewOf', () => {
 
   it('off there, not registered there: amber lines with their fixing buttons', () => {
     expect(view({ offer: { phase: 'unavailable', code: 'REMOTE_COLLABORATION_OFF' } }).line).toEqual({ kind: 'offThere', tone: 'warn', fix: 'turnOnThere' })
-    expect(view({ offer: { phase: 'unavailable', code: 'PEER_NOT_REGISTERED' } }).line).toEqual({ kind: 'notRegisteredThere', tone: 'warn', fix: 'registerThere' })
+    expect(view({ offer: { phase: 'unavailable', code: 'PEER_NOT_REGISTERED' } }).line).toEqual({ kind: 'notRegisteredThere', tone: 'warn', fix: 'pairAgain' })
+    // NAS-23: a peer without the shared secret (on either side) offers Pair again.
+    expect(view({ offer: { phase: 'unavailable', code: 'PEER_NOT_PAIRED' } }).line).toEqual({ kind: 'notPaired', tone: 'warn', fix: 'pairAgain' })
   })
 
   it('a different node: red dot and line with Change address', () => {
@@ -62,7 +64,7 @@ describe('rowViewOf', () => {
     const v = view({ offer: { phase: 'unavailable', code: 'REMOTE_COLLABORATION_OFF' }, unfinished })
     expect(v.line).toMatchObject({ kind: 'partial', tone: 'warn', fix: 'tryAgain', error: unfinished.error })
     expect(view({ unfinished }).line).toBeNull()
-    const nameTaken = { id: 'registerThere' as const, status: 'failed' as const, name: 'Embedded Node', error: { code: 'PEER_NAME_TAKEN', message: 'x' } }
+    const nameTaken = { id: 'pair' as const, status: 'failed' as const, name: 'Embedded Node', error: { code: 'PEER_NAME_TAKEN', message: 'x' } }
     expect(view({ offer: { phase: 'unavailable', code: 'PEER_NOT_REGISTERED' }, unfinished: nameTaken }).line)
       .toEqual({ kind: 'partial', tone: 'warn', fix: 'tryAgain', error: nameTaken.error, stepName: 'Embedded Node' })
   })

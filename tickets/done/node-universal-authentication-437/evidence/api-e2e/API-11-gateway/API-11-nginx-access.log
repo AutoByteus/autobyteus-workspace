@@ -1,0 +1,8 @@
+172.17.0.1 - - [08/Nov/2026:17:06:13 +0000] "GET /autobyteus/rest/health HTTP/1.1" 200 45 "-" "node"
+172.17.0.1 - - [08/Nov/2026:17:06:13 +0000] "GET /autobyteus/rest/health HTTP/1.1" 200 45 "-" "node"
+172.17.0.1 - - [08/Nov/2026:17:06:13 +0000] "GET /rest/health HTTP/1.1" 404 10 "-" "node"
+172.17.0.1 - - [08/Nov/2026:17:06:13 +0000] "GET /autobyteus/rest/remote-access/status HTTP/1.1" 200 101 "-" "node"
+172.17.0.1 - - [08/Nov/2026:17:06:13 +0000] "POST /autobyteus/rest/remote/peer-pairing-exchanges HTTP/1.1" 201 108 "-" "node"
+172.17.0.1 - - [08/Nov/2026:17:06:13 +0000] "POST /autobyteus/rest/remote/available-agents HTTP/1.1" 200 177 "-" "node"
+172.17.0.1 - - [08/Nov/2026:17:06:14 +0000] "POST /autobyteus/rest/remote/delegated-runs HTTP/1.1" 200 303 "-" "node"
+172.17.0.1 - - [08/Nov/2026:17:06:14 +0000] "POST /autobyteus/rest/remote/messages HTTP/1.1" 200 65 "-" "node"

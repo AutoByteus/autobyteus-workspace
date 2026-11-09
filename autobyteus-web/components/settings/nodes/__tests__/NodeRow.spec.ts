@@ -8,6 +8,7 @@ vi.mock('~/stores/nodeListStore', () => ({ useNodeListStore: () => h.list }))
 vi.mock('~/stores/nodeChangeDialogStore', () => ({ useNodeChangeDialogStore: () => h.dialog }))
 
 import NodeRow from '../NodeRow.vue'
+import { useNodeAccessStore } from '~/stores/nodeAccessStore'
 
 /**
  * one-nodes-tab UIS-002 (VIS-013, VIS-015, VIS-019, VIS-024, VIS-027): one row per node, one line, one fixing button.
@@ -16,7 +17,7 @@ import NodeRow from '../NodeRow.vue'
  */
 
 const B = 'srv_studioBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB'
-const peer = { nodeId: B, name: 'studio', baseUrl: 'http://192.168.2.31:29695', addedAt: 'x' }
+const peer = { nodeId: B, name: 'studio', baseUrl: 'http://192.168.2.31:29695', addedAt: 'x', paired: true }
 const row = (overrides: Partial<Row> = {}): Row => ({
   key: B, nodeId: B, entryIds: ['remote-1'], windowAddress: 'http://192.168.2.31:29695', peer, name: 'studio', isEmbedded: false, ...overrides,
 })
@@ -164,6 +165,13 @@ describe('NodeRow', () => {
   it('363: a remote row renders the server cell and the server notice; only the embedded node has neither', () => {
     const parts = mountRow(row(), settled()).findAllComponents({ name: 'NodeServerUpdate' }).map((part) => part.props('part'))
     expect(parts).toEqual(['cell', 'notice'])
+  })
+
+  it('NAS-02 a node this desktop has no key for: the connect notice and no server version cell or notice (an owner read it cannot answer)', () => {
+    useNodeAccessStore().states = { 'remote-1': 'needs_connecting' }
+    const wrapper = mountRow(row(), settled())
+    expect(wrapper.findAllComponents({ name: 'NodeServerUpdate' })).toEqual([])
+    expect(wrapper.findComponent({ name: 'NodeAccessNotice' }).exists()).toBe(true)
   })
 
   it('VIS-010: rename by clicking the name; a name used by another node keeps the field with its message; Esc cancels', async () => {

@@ -11,6 +11,10 @@ import { spawn, spawnSync } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import { createRequire } from 'node:module';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { attachToBrowserContext, attachToProbeProcess, withNodeCredential } from './fixtures/probe-node-access.mjs';
+// Every node needs a credential (autobyteus-437): the probe's nodes start with its launch credential, and the probe's
+// own calls and its desktop browser contexts carry it (fixtures/probe-node-access.mjs).
+attachToProbeProcess();
 
 if (process.env.RUN_AGY_E2E !== '1') throw new Error('Set RUN_AGY_E2E=1 to execute real AGY provider turns.');
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -82,7 +86,7 @@ try {
   const env={...process.env,APP_ENV:'development',DB_TYPE:'sqlite',DATABASE_URL:dbUrl,AUTOBYTEUS_SERVER_HOST:base,AUTOBYTEUS_ALLOWED_ORIGINS:front,DISABLE_HTTP_REQUEST_LOGS:'true'};
   await fs.writeFile(path.join(dataRoot,'.env'),`APP_ENV=development\nDB_TYPE=sqlite\nDATABASE_URL=${dbUrl}\nAUTOBYTEUS_SERVER_HOST=${base}\n`);
   await run('corepack',['pnpm','-C',serverDir,'exec','prisma','migrate','deploy','--schema','./prisma/schema.prisma'],rootDir,env,path.join(outDir,'migrate.log'));
-  const startBackend=async label=>{const child=spawnOwned(process.execPath,[path.join(serverDir,'dist/app.js'),'--host','127.0.0.1','--port',String(backendPort),'--data-dir',dataRoot],serverDir,env,path.join(outDir,`${label}.log`));await wait(`${label} health`,async()=>{assert(child.exitCode===null&&child.signalCode===null,`${label} exited before ready`);try{return (await fetch(`${base}/rest/health`,{signal:AbortSignal.timeout(2000)})).ok;}catch{return false;}},90000);evidence.processes.push({label,pid:child.pid,readyAt:new Date().toISOString()});return child;};
+  const startBackend=async label=>{const child=spawnOwned(process.execPath,[path.join(serverDir,'dist/app.js'),'--host','127.0.0.1','--port',String(backendPort),'--data-dir',dataRoot],serverDir,withNodeCredential(env),path.join(outDir,`${label}.log`));await wait(`${label} health`,async()=>{assert(child.exitCode===null&&child.signalCode===null,`${label} exited before ready`);try{return (await fetch(`${base}/rest/health`,{signal:AbortSignal.timeout(2000)})).ok;}catch{return false;}},90000);evidence.processes.push({label,pid:child.pid,readyAt:new Date().toISOString()});return child;};
   backend=await startBackend('backend-A');
   const m=await model(base);assert(m,'No AGY model in real catalog');const id=randomUUID();evidence.runtime.model=m;
   const instructions='On a user request for a marker, reply with that exact marker only. Do not use tools, shell, files, or diagnostics.';
@@ -123,7 +127,7 @@ try {
   evidence.cases.processRestart={result:'Pass',oldPid:evidence.processes[0].pid,newPid:evidence.processes[1].pid,sameDataRoot:true,teamIdentityStable:true,orgIdentityStable:true};
   frontend=spawnOwned('corepack',['pnpm','dev','--host','127.0.0.1','--port',String(frontendPort)],webDir,{...process.env,NODE_ENV:'development',NUXT_TEST:'true',BACKEND_NODE_BASE_URL:base},path.join(outDir,'frontend.log'));
   await wait('Nuxt ready',async()=>{assert(frontend.exitCode===null&&frontend.signalCode===null,'Nuxt exited');try{return (await fetch(`${front}/workspace`,{signal:AbortSignal.timeout(3000)})).ok;}catch{return false;}},90000);
-  browser=await chromium.launch({headless:true,executablePath:chrome,args:['--no-sandbox','--disable-dev-shm-usage']});page=await browser.newPage({viewport:{width:1440,height:1000}});page.setDefaultTimeout(15000);
+  browser=await chromium.launch({headless:true,executablePath:chrome,args:['--no-sandbox','--disable-dev-shm-usage']});page=await browser.newPage({viewport:{width:1440,height:1000}});await attachToBrowserContext(page.context());page.setDefaultTimeout(15000);
   const errors=[];page.on('pageerror',e=>errors.push(e.message));evidence.runtime.browserErrors=errors;
   await browserOpen(page,front,workspace);
   // Team: click exact same persisted member, then send in the real composer.

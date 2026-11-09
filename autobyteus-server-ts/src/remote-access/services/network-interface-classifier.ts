@@ -13,6 +13,8 @@ export type InterfaceAddress = {
   internal: boolean;
   /** `00:00:00:00:00:00` when the interface has no hardware address (a tunnel). */
   mac: string;
+  /** `address/prefix`, or `null` when the OS reports no prefix length. */
+  cidr: string | null;
 };
 
 export type ClassifiedInterfaces = {
@@ -20,6 +22,8 @@ export type ClassifiedInterfaces = {
   vpnAddresses: string[];
   /** Default-route interface's address first, then OS order. */
   localAddresses: string[];
+  /** The local addresses' subnets (`address/prefix`), for network admission. */
+  localSubnets: string[];
 };
 
 /** Bridges, virtual machines, containers and Apple peer-to-peer links: never a way a phone reaches this computer. */
@@ -130,6 +134,7 @@ export const classifyInterfaces = (input: {
     tailscale,
     vpnAddresses: unique(vpnAddresses),
     localAddresses: unique(defaultRouteFirst.map((entry) => entry.address)),
+    localSubnets: unique(defaultRouteFirst.map((entry) => entry.cidr).filter((cidr): cidr is string => Boolean(cidr))),
   };
 };
 
@@ -137,7 +142,7 @@ const unique = (values: string[]): string[] => [...new Set(values)];
 
 /** Flattens `os.networkInterfaces()` into one list, in OS order. */
 export const flattenNetworkInterfaces = (
-  interfaces: NodeJS.Dict<Array<{ address: string; family: string | number; internal: boolean; mac: string }>>,
+  interfaces: NodeJS.Dict<Array<{ address: string; family: string | number; internal: boolean; mac: string; cidr: string | null }>>,
 ): InterfaceAddress[] =>
   Object.entries(interfaces).flatMap(([interfaceName, addresses]) =>
     (addresses ?? []).map((info) => ({
@@ -146,5 +151,6 @@ export const flattenNetworkInterfaces = (
       family: info.family === 4 ? "IPv4" : info.family === 6 ? "IPv6" : String(info.family),
       internal: info.internal,
       mac: info.mac,
+      cidr: info.cidr ?? null,
     })),
   );

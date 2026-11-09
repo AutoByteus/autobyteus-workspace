@@ -17,6 +17,7 @@ import { getAgentOrgRunExecutionTreePath } from "../../../src/run-history/store/
 import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 import { agentCollaborator, sourcelessCopy, T1, T2, teamCollaborator, type Json } from "../../app-data-migrations/collaborators-to-delegated-runs-v1/released-collaborator-fixtures.js";
+import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
 
 // The startup migration `20261015_collaborators_to_delegated_runs_v1` through the BUILT Studio server (`dist/app.js`), the way a
 // user meets it: a new version starts on an app-data folder written by the previous version. The source is SYNTHESIZED test data
@@ -163,7 +164,7 @@ const environment = (root: string): NodeJS.ProcessEnv => {
 const studio = async (root: string) => {
   await fs.access(path.resolve("dist/app.js"));
   const child = spawn(process.execPath, [path.resolve("dist/app.js"), "--data-dir", root, "--host", "127.0.0.1", "--port", "0"],
-    { env: environment(root), stdio: ["ignore", "pipe", "pipe"] });
+    { env: { ...environment(root), ...builtServerLaunchEnvironment() }, stdio: ["ignore", "pipe", "pipe"] });
   children.push(child);
   const index = logs.push("") - 1;
   const capture = (data: Buffer) => { logs[index] += data.toString(); };

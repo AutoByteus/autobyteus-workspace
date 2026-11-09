@@ -1,0 +1,10 @@
+
+> autobyteus@1.5.12-beta.8 test:e2e:remote-run-title /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web
+> node tests/e2e/remote-run-title-probe.mjs --output-dir=/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/tickets/in-progress/node-universal-authentication-437/evidence/api-e2e/API-05-remote-run-title
+
+remote-run-title probe: Fail
+Error: Timed out waiting for the app shell
+    at waitFor (file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/tests/e2e/remote-run-title-probe.mjs:55:9)
+    at async openTree (file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/tests/e2e/remote-run-title-probe.mjs:203:5)
+    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/tests/e2e/remote-run-title-probe.mjs:227:3
+ ELIFECYCLE  Command failed with exit code 1.

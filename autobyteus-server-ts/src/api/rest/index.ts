@@ -18,6 +18,9 @@ import { registerMemorySyncRoutes } from "./memory-sync.js";
 import { registerRemoteCollaborationRoutes } from "./remote.js";
 import { registerNodeUpdateRoutes } from "../../node-update/node-update-routes.js";
 import { registerNodeDesktopRoutes } from "./node-desktop.js";
+import { registerNodeAccessRoutes } from "./node-access.js";
+import { registerMcpGatewayTokenRoutes } from "./mcp-gateway-token.js";
+import type { NodeAccess } from "../../compositions/node-access-composition.js";
 import type { ApplicationPlatformLifecycleReadiness, ApplicationPlatformRestContracts } from "../../application-platform/runtime/application-platform-runtime-contracts.js";
 
 import { registerProjectTaskContextRoutes } from "./project-task-context-files.js";
@@ -27,10 +30,13 @@ export async function registerRestRoutes(
   dependencies: {
     lifecycleReadiness: ApplicationPlatformLifecycleReadiness;
     application: ApplicationPlatformRestContracts;
+    nodeAccess: Pick<NodeAccess, "setupCodes" | "ownerCredentials" | "mcpGatewayTokens">;
   },
 ): Promise<void> {
   await registerHealthRoutes(app);
   await registerRemoteAccessRoutes(app);
+  await registerNodeAccessRoutes(app, dependencies.nodeAccess);
+  await registerMcpGatewayTokenRoutes(app, dependencies.nodeAccess.mcpGatewayTokens);
   await registerNodeUpdateRoutes(app);
   await registerNodeDesktopRoutes(app);
   await registerMemorySyncRoutes(app);

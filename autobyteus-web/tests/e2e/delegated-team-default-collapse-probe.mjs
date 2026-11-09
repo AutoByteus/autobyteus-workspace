@@ -20,6 +20,10 @@ import { randomUUID } from 'node:crypto';
 import { spawn, execFileSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import { attachToBrowserContext, attachToProbeProcess, withNodeCredential } from './fixtures/probe-node-access.mjs';
+// Every node needs a credential (autobyteus-437): the probe's nodes start with its launch credential, and the probe's
+// own calls and its desktop browser contexts carry it (fixtures/probe-node-access.mjs).
+attachToProbeProcess();
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -89,7 +93,7 @@ const startBackend = async (port) => {
   const env = { ...Object.fromEntries(['PATH', 'HOME', 'TMPDIR', 'LANG', 'SHELL'].filter(k => process.env[k]).map(k => [k, process.env[k]])), ...backendEnv(), HOME: stack.privateHome,
     ANTIGRAVITY_CLI_COMMAND: path.join(serverDir, 'tests/fixtures/agy-failure-cli.mjs'), AGY_FAKE_CASE: 'linked_skills' };
   stack.backend = spawnLogged(process.execPath, [path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(port), '--data-dir', stack.dataRoot],
-    serverDir, env, `backend-${stack.backendStarts}`);
+    serverDir, withNodeCredential(env), `backend-${stack.backendStarts}`);
   await until('backend listening', () => { if (exited(stack.backend)) throw new Error('backend exited'); return stack.backend.output.includes('listening'); }, 180000);
   await until('backend GraphQL', async () => (await fetch(`${stack.backendUrl}/graphql`, { method: 'POST',
     headers: { 'content-type': 'application/json' }, body: '{"query":"{__typename}"}' })).ok, 60000);
@@ -331,6 +335,7 @@ try {
   } else {
     browser = await chromium.launch({ headless: true, executablePath, args: process.getuid?.() === 0 ? ['--no-sandbox'] : [] }); ownedBrowser = true;
     context = await browser.newContext({ viewport: { width: 1440, height: 1100 }, locale: 'en-US' }); page = await context.newPage();
+    await attachToBrowserContext(context);
     // Nuxt optimization warmup outside asserted cases. Never filter errors in asserted journeys.
     await page.goto(`${stack.frontendUrl}/workspace`, { timeout: 120000 }); await sleep(3500);
   }

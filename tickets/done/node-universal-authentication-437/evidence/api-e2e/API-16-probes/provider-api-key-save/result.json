@@ -1,0 +1,83 @@
+{
+  "startedAt": "2026-11-08T19:12:12.922Z",
+  "result": "Pass",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "playwright-default",
+  "cases": {
+    "API-CASE-003": {
+      "result": "Pass",
+      "rejected": true,
+      "inputRetained": true,
+      "statusUnchanged": true,
+      "backendUnchanged": true
+    },
+    "API-CASE-002": {
+      "result": "Pass",
+      "initialAnthropic": false,
+      "firstAndRepeatSave": true,
+      "refreshConfigured": true,
+      "unrelatedOpenAIUnchanged": true,
+      "valueFreeResponse": true,
+      "noReadOnlyError": true
+    }
+  },
+  "graphql": [
+    {
+      "operation": "GetProviderCredentialSettings",
+      "httpStatus": 200,
+      "errorCount": 0,
+      "providerId": null,
+      "configured": null,
+      "responseHasApiKey": false
+    },
+    {
+      "operation": "SaveProviderApiKey",
+      "httpStatus": 200,
+      "errorCount": 1,
+      "providerId": null,
+      "configured": null,
+      "responseHasApiKey": false
+    },
+    {
+      "operation": "SaveProviderApiKey",
+      "httpStatus": 200,
+      "errorCount": 0,
+      "providerId": "ANTHROPIC",
+      "configured": true,
+      "responseHasApiKey": false
+    },
+    {
+      "operation": "SaveProviderApiKey",
+      "httpStatus": 200,
+      "errorCount": 0,
+      "providerId": "ANTHROPIC",
+      "configured": true,
+      "responseHasApiKey": false
+    },
+    {
+      "operation": "GetProviderCredentialSettings",
+      "httpStatus": 200,
+      "errorCount": 0,
+      "providerId": null,
+      "configured": null,
+      "responseHasApiKey": false
+    }
+  ],
+  "browserErrors": [
+    "console: Failed to save API key: ApolloError: Synthetic rejected save\n    at new ApolloError2 (http://127.0.0.1:63881/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=43db3448:3321:26)\n    at http://127.0.0.1:63881/_nuxt/node_modules/.cache/vite/client/deps/@apollo_client_core.js?v=168c0fa3:4876:27\n    at both (http://127.0.0.1:63881/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=43db3448:2801:17)\n    at http://127.0.0.1:63881/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=43db3448:2790:26\n    at new Promise (<anonymous>)\n    at Object.then (http://127.0.0.1:63881/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=43db3448:2789:16)\n    at Object.next (http://127.0.0.1:63881/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=43db3448:2803:39)\n    at notifySubscription (http://127.0.0.1:63881/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=43db3448:1739:18)\n    at onNotify (http://127.0.0.1:63881/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=43db3448:1777:3)\n    at SubscriptionObserver2.next (http://127.0.0.1:63881/_nuxt/node_modules/.cache/vite/client/deps/chunk-OVNGC2RF.js?v=43db3448:1814:5)"
+  ],
+  "cleanup": {
+    "frontend": "terminated:89168",
+    "backend": "terminated:86799",
+    "tempRoot": "removed"
+  },
+  "error": null,
+  "isolation": {
+    "tempRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-provider-key-e2e-qOpxf1",
+    "backendPort": 63880,
+    "frontendPort": 63881,
+    "liveCredentialTouched": false
+  },
+  "finishedAt": "2026-11-08T19:12:47.958Z"
+}

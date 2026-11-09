@@ -72,10 +72,16 @@ test('materialization owns the fixed development data paths and routing keys', (
     assert.equal(runtime.backendEnvironment.AUTOBYTEUS_ALLOWED_ORIGINS, developmentFrontendOrigins);
     assert.ok(runtimeSource.split(/\r?\n/).includes(`AUTOBYTEUS_ALLOWED_ORIGINS=${developmentFrontendOrigins}`));
     assert.equal(runtime.frontendEnvironment.BACKEND_NODE_BASE_URL, developmentBackendUrl);
+    // autobyteus-437: every request of the development window goes through the Vite proxy, which adds the node's
+    // launch owner credential; the backend gets the same credential at its start, and it is never written to a file.
+    assert.equal(runtime.frontendEnvironment.AUTOBYTEUS_DEVELOPMENT_FRONTEND_URL, developmentFrontendUrl);
     assert.equal(
       runtime.frontendEnvironment.BACKEND_FILE_EXPLORER_WS_ENDPOINT,
-      'ws://127.0.0.1:8000/ws/file-explorer',
+      'ws://127.0.0.1:3000/ws/file-explorer',
     );
+    assert.match(runtime.backendEnvironment.AUTOBYTEUS_LAUNCH_OWNER_CREDENTIAL, /^own_[A-Za-z0-9_-]{43}$/);
+    assert.equal(runtime.frontendEnvironment.AUTOBYTEUS_DEVELOPMENT_OWNER_CREDENTIAL, runtime.backendEnvironment.AUTOBYTEUS_LAUNCH_OWNER_CREDENTIAL);
+    assert.ok(!runtimeSource.includes(runtime.backendEnvironment.AUTOBYTEUS_LAUNCH_OWNER_CREDENTIAL));
     assert.match(runtimeSource, new RegExp(`^DATABASE_URL=${runtime.databaseUrl}$`, 'm'));
     assert.ok(
       runtimeSource.split(/\r?\n/).includes(

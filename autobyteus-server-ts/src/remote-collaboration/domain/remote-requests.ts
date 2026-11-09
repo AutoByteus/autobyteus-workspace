@@ -32,6 +32,8 @@ export const REMOTE_OWNER_COMMANDS_PATH = "/rest/remote/owner-commands";
  * frame `{nodeId}` (or a refusal, then close), then `{agentRunId, message}` frames for the run's own agents only.
  */
 export const REMOTE_RUN_OBSERVATIONS_PATH = "/rest/remote/run-observations";
+/** autobyteus-437: the pairing exchange (exempt from credentials: the accepting node has no peer secret yet). */
+export const REMOTE_PEER_PAIRING_EXCHANGES_PATH = "/rest/remote/peer-pairing-exchanges";
 
 /** `toNodeId` is the pinned server ID of the peer being called; `fromNodeId` the caller's own. */
 export type RemoteEnvelope = Readonly<{ fromNodeId: string; toNodeId: string }>;

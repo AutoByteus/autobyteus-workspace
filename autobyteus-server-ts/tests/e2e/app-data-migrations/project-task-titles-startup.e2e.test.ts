@@ -6,6 +6,7 @@ import { createHash } from "node:crypto";
 import { execFile, spawn, type ChildProcess } from "node:child_process";
 import { promisify } from "node:util";
 import { afterEach, describe, expect, it } from "vitest";
+import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
 
 // autobyteus-260 REQ-005, AC-004, QR-002: released Project Tasks get their title at startup, through the actual built
 // Studio entrypoint (`dist/app.js`), the repository migration runner and ledger, the per-Project store, GraphQL and the
@@ -55,7 +56,7 @@ const environment = (): NodeJS.ProcessEnv => {
 };
 const studio = async () => {
   const child = spawn(process.execPath, [path.resolve("dist/app.js"), "--data-dir", root, "--host", "127.0.0.1", "--port", "0"],
-    { env: environment(), stdio: ["ignore", "pipe", "pipe"] });
+    { env: { ...environment(), ...builtServerLaunchEnvironment() }, stdio: ["ignore", "pipe", "pipe"] });
   children.push(child); const index = logs.push("") - 1;
   const capture = (data: Buffer) => { logs[index] += data.toString(); };
   child.stdout!.on("data", capture); child.stderr!.on("data", capture);

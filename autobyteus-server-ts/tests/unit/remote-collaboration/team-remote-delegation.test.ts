@@ -1,3 +1,4 @@
+import { peerCallerOf } from "../../helpers/peer-caller.js";
 import fs from "node:fs/promises";
 import { PeerStartedRunDecisions } from "../../../src/remote-collaboration/inbound/peer-started-run-decisions.js";
 import os from "node:os";
@@ -59,12 +60,12 @@ const A_ID = "srv_node_a_000000000000000000000000000";
 const B_ID = "srv_node_b_000000000000000000000000000";
 const DELEGATOR = "assistant_a1";
 const T0 = "2026-10-21T09:00:00.000Z";
-const A_PEERS: PeerNode[] = [{ nodeId: B_ID, name: "docker", baseUrl: "http://b:29700", addedAt: T0 }];
-const B_PEERS: PeerNode[] = [{ nodeId: A_ID, name: "desktop", baseUrl: "http://host.docker.internal:29695", addedAt: T0 }];
+const A_PEERS: PeerNode[] = [{ nodeId: B_ID, name: "docker", baseUrl: "http://b:29700", addedAt: T0, paired: true }];
+const B_PEERS: PeerNode[] = [{ nodeId: A_ID, name: "desktop", baseUrl: "http://host.docker.internal:29695", addedAt: T0, paired: true }];
 type Network = Map<string, PeerGateway>;
 
 const peerClient = (nodeId: string, peers: PeerNode[], network: Network) => new PeerClient({
-  peers: { findByName: async (name) => peers.find((peer) => peer.name === name) ?? null, findByNodeId: async (id) => peers.find((peer) => peer.nodeId === id) ?? null },
+  peers: { findByName: async (name) => peers.find((peer) => peer.name === name) ?? null, peerSecret: async () => "peer-secret-for-tests", findByNodeId: async (id) => peers.find((peer) => peer.nodeId === id) ?? null },
   capability: { isEnabled: () => true }, ownNodeId: async () => nodeId,
   fetch: (async (url: string, init: RequestInit) => {
     const target = peers.find((peer) => url.startsWith(peer.baseUrl));
@@ -72,14 +73,14 @@ const peerClient = (nodeId: string, peers: PeerNode[], network: Network) => new 
     if (!gateway) throw new TypeError("fetch failed");
     const body = JSON.parse(String(init.body));
     const route = url.slice(url.indexOf("/rest/remote/") + "/rest/remote/".length);
-    const response = route === "delegated-runs" ? await gateway.startDelegatedRun(body) : route === "messages" ? await gateway.deliverMessage(body)
-      : route === "availability" ? await gateway.checkAvailability(body) : await gateway.listAvailableAgents(body);
+    const response = route === "delegated-runs" ? await gateway.startDelegatedRun(body, peerCallerOf(init.headers)) : route === "messages" ? await gateway.deliverMessage(body, peerCallerOf(init.headers))
+      : route === "availability" ? await gateway.checkAvailability(body, peerCallerOf(init.headers)) : await gateway.listAvailableAgents(body, peerCallerOf(init.headers));
     return { ok: response.status === 200, status: response.status, json: async () => structuredClone(response.answer) };
   }) as never,
 });
 const peerDirectory = (peers: PeerNode[]) => ({
   findByName: async (name: string) => peers.find((peer) => peer.name === name) ?? null,
-  findByNodeId: async (nodeId: string) => peers.find((peer) => peer.nodeId === nodeId) ?? null,
+  peerSecret: async () => "peer-secret-for-tests", findByNodeId: async (nodeId: string) => peers.find((peer) => peer.nodeId === nodeId) ?? null,
 });
 const tempDir = async (prefix: string) => { const dir = await fs.mkdtemp(path.join(os.tmpdir(), prefix)); directories.push(dir); return dir; };
 

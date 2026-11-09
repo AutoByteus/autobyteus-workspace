@@ -1,6 +1,6 @@
 {
   "name": "autobyteus",
-  "version": "1.5.12-beta.8",
+  "version": "1.5.12-beta.9",
   "packageManager": "pnpm@10.28.1",
   "description": "AutoByteus Desktop Application",
   "license": "AGPL-3.0-only",
@@ -61,6 +61,7 @@
     "test:e2e:provider-api-key-save": "node tests/e2e/provider-api-key-save-probe.mjs",
     "test:e2e:remote-runs-in-tree": "node tests/e2e/remote-runs-in-tree-probe.mjs",
     "test:e2e:mobile-shell": "node tests/e2e/mobile-shell-probe.mjs",
+    "test:e2e:dev-proxy-websockets": "node tests/e2e/dev-proxy-websockets-probe.mjs",
     "test:e2e:remote-run-title": "node tests/e2e/remote-run-title-probe.mjs",
     "test:e2e:remote-nodes-page": "node tests/e2e/remote-nodes-page-probe.mjs",
     "test:e2e:node-vocabulary": "node tests/e2e/node-vocabulary-probe.mjs",

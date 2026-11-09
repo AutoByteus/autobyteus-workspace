@@ -1,0 +1,880 @@
+[2026-11-08T17:03:46+00:00] Creating /home/autobyteus/data/.env with default server configuration
+[2026-11-08T17:03:46+00:00] Handing over to base entrypoint
+2026-11-08 17:03:46,331 INFO Included extra file "/etc/supervisor/conf.d/base.conf" during parsing
+2026-11-08 17:03:46,331 INFO Included extra file "/etc/supervisor/conf.d/supervisor-autobyteus-server.conf" during parsing
+2026-11-08 17:03:46,331 INFO Set uid to user 0 succeeded
+2026-11-08 17:03:46,334 INFO RPC interface 'supervisor' initialized
+2026-11-08 17:03:46,334 INFO supervisord started with pid 1
+2026-11-08 17:03:47,339 INFO spawned: 'dbus' with pid 30
+2026-11-08 17:03:47,340 INFO spawned: 'tigervnc' with pid 31
+2026-11-08 17:03:47,340 INFO spawned: 'xfce' with pid 32
+2026-11-08 17:03:47,341 INFO spawned: 'fcitx' with pid 33
+2026-11-08 17:03:47,342 INFO spawned: 'disable_screensaver' with pid 34
+2026-11-08 17:03:47,343 INFO spawned: 'copyq' with pid 36
+2026-11-08 17:03:47,344 INFO spawned: 'chrome' with pid 39
+2026-11-08 17:03:47,347 INFO spawned: 'socat' with pid 42
+2026-11-08 17:03:47,348 INFO spawned: 'websockify' with pid 46
+2026-11-08 17:03:47,351 INFO spawned: 'autobyteus_server' with pid 51
+2026-11-08 17:03:47,352 DEBG 'tigervnc' stderr output:
+_XSERVTransmkdir: Owner of /tmp/.X11-unix should be set to root
+
+2026-11-08 17:03:47,352 DEBG 'xfce' stdout output:
+/usr/bin/startxfce4: X server already running on display :99
+
+2026-11-08 17:03:47,352 INFO success: disable_screensaver entered RUNNING state, process has stayed up for > than 0 seconds (startsecs)
+2026-11-08 17:03:47,354 DEBG 'tigervnc' stderr output:
+
+Xvnc TigerVNC 1.13.1 - built 2024-04-01 08:26
+Copyright (C) 1999-2022 TigerVNC Team and many others (see README.rst)
+See https://www.tigervnc.org for information on TigerVNC.
+Underlying X server release 12101011
+
+
+Sun Nov  8 17:03:47 2026
+ vncext:      VNC extension running!
+ vncext:      Listening for VNC connections on all interface(s), port 5900
+ vncext:      created VNC server for screen 0
+
+2026-11-08 17:03:47,357 DEBG 'disable_screensaver' stderr output:
+
+** (light-locker-command:62): WARNING **: 17:03:47.357: Unknown option -k
+
+2026-11-08 17:03:47,363 DEBG 'dbus' stdout output:
+unix:path=/run/user/1000/bus,guid=c0dbd4d4014018e4638a1c9b6af0ab73
+
+2026-11-08 17:03:47,387 DEBG 'chrome' stderr output:
+Failed to move to new namespace: PID namespaces supported, Network namespace supported, but failed: errno = Operation not permitted
+
+2026-11-08 17:03:47,387 DEBG 'chrome' stderr output:
+[39:39:1108/170347.387165:FATAL:content/browser/zygote_host/zygote_host_impl_linux.cc:213] Zygote process exited prematurely with exit code 1
+
+2026-11-08 17:03:47,395 DEBG 'chrome' stderr output:
+[1108/170347.394759:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:145] open /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq: No such file or directory (2)
+[1108/170347.394804:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:145] open /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq: No such file or directory (2)
+
+2026-11-08 17:03:47,408 DEBG 'chrome' stderr output:
+[85:85:0100/000000.407004:ERROR:content/zygote/zygote_linux.cc:662] write: Broken pipe (32)
+
+2026-11-08 17:03:47,409 DEBG fd 35 closed, stopped monitoring <POutputDispatcher at 281473323975856 for <Subprocess at 281473322988912 with name chrome in state STARTING> (stdout)>
+2026-11-08 17:03:47,410 DEBG fd 39 closed, stopped monitoring <POutputDispatcher at 281473323976528 for <Subprocess at 281473322988912 with name chrome in state STARTING> (stderr)>
+2026-11-08 17:03:47,410 WARN exited: chrome (terminated by SIGTRAP; not expected)
+2026-11-08 17:03:47,410 INFO reaped unknown pid 80 (exit status 0)
+2026-11-08 17:03:47,410 INFO reaped unknown pid 82 (exit status 0)
+2026-11-08 17:03:47,410 DEBG received SIGCHLD indicating a child quit
+2026-11-08 17:03:47,446 DEBG 'tigervnc' stderr output:
+The XKEYBOARD keymap compiler (xkbcomp) reports:
+> Warning:          Could not resolve keysym XF86CameraAccessEnable
+> Warning:          Could not resolve keysym XF86CameraAccessDisable
+> Warning:          Could not resolve keysym XF86CameraAccessToggle
+> Warning:          Could not resolve keysym XF86NextElement
+> Warning:          Could not resolve keysym XF86PreviousElement
+> Warning:          Could not resolve keysym XF86AutopilotEngageToggle
+> Warning:          Could not resolve keysym XF86MarkWaypoint
+> Warning:          Could not resolve keysym XF86Sos
+> Warning:          Could not resolve keysym XF86NavChart
+> Warning:          Could not resolve keysym XF86FishingChart
+> Warning:          Could not resolve keysym XF86SingleRangeRadar
+> Warning:          Could not resolve keysym XF86DualRangeRadar
+> Warning:          Could not resolve keysym XF86RadarOverlay
+> Warning:          Could not resolve keysym XF86TraditionalSonar
+> Warning:          Could not resolve keysym XF86ClearvuSonar
+> Warning:          Could not resolve keysym XF86SidevuSonar
+> Warning:          Could not resolve keysym XF86NavInfo
+Errors from xkbcomp are not fatal to the X server
+
+2026-11-08 17:03:47,447 INFO reaped unknown pid 85 (exit status 0)
+2026-11-08 17:03:47,447 DEBG received SIGCHLD indicating a child quit
+2026-11-08 17:03:47,448 DEBG 'tigervnc' stderr output:
+[mi] mieq: warning: overriding existing handler (nil) with 0xaaaacb570ec0 for event 2
+
+2026-11-08 17:03:47,448 DEBG 'tigervnc' stderr output:
+[mi] mieq: warning: overriding existing handler (nil) with 0xaaaacb570ec0 for event 3
+
+2026-11-08 17:03:47,461 DEBG 'disable_screensaver' stderr output:
+server does not have extension for -dpms option
+
+2026-11-08 17:03:47,466 DEBG 'disable_screensaver' stdout output:
+Screen locking and screensaver have been disabled
+
+2026-11-08 17:03:47,467 DEBG fd 29 closed, stopped monitoring <POutputDispatcher at 281473323364944 for <Subprocess at 281473323328800 with name disable_screensaver in state RUNNING> (stderr)>
+2026-11-08 17:03:47,467 DEBG fd 25 closed, stopped monitoring <POutputDispatcher at 281473323365200 for <Subprocess at 281473323328800 with name disable_screensaver in state RUNNING> (stdout)>
+2026-11-08 17:03:47,467 INFO exited: disable_screensaver (exit status 0; expected)
+2026-11-08 17:03:47,467 DEBG received SIGCHLD indicating a child quit
+2026-11-08 17:03:47,476 DEBG 'copyq' stderr output:
+DEBUG: Server "/home/vncuser/.config/copyq/.copyq_s" started.
+
+2026-11-08 17:03:47,503 DEBG 'autobyteus_server' stdout output:
+{"time":"2026-11-08T17:03:47.503Z","starter":"server-started","pid":105,"version":"1.5.12-beta.8","source":"builtIn"}
+
+2026-11-08 17:03:47,516 DEBG 'copyq' stderr output:
+DEBUG: Geometry: Window "MainWindow": New geometry "Options/MainWindow_geometry": 645x421,637,329 -> 645x421,637,329
+
+2026-11-08 17:03:47,521 DEBG 'copyq' stderr output:
+DEBUG: Loading configuration
+
+2026-11-08 17:03:47,525 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Activating service name='org.freedesktop.systemd1' requested by ':1.2' (uid=1000 pid=113 comm="systemctl --user list-jobs")
+
+2026-11-08 17:03:47,527 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Activated service 'org.freedesktop.systemd1' failed: Process org.freedesktop.systemd1 exited with status 1
+
+2026-11-08 17:03:47,538 DEBG 'websockify' stderr output:
+WebSocket server settings:
+  - Listen on :6080
+  - Web server. Web root: /usr/local/share/websockify
+  - No SSL/TLS support (no cert file)
+
+2026-11-08 17:03:47,538 DEBG 'websockify' stderr output:
+  - proxying from :6080 to localhost:5900
+
+2026-11-08 17:03:47,549 DEBG 'copyq' stderr output:
+DEBUG: Configuration loaded
+
+2026-11-08 17:03:47,551 DEBG 'copyq' stderr output:
+DEBUG: Starting monitor
+
+2026-11-08 17:03:47,552 DEBG 'copyq' stderr output:
+DEBUG: Executing: copyq --clipboard-access monitorClipboard
+
+2026-11-08 17:03:47,554 DEBG 'copyq' stderr output:
+DEBUG: Starting callback: onStart
+
+2026-11-08 17:03:47,566 DEBG 'copyq' stderr output:
+DEBUG: Executing: copyq onStart
+
+2026-11-08 17:03:47,567 DEBG 'copyq' stderr output:
+DEBUG: Tab "&clipboard": Creating new tab
+
+2026-11-08 17:03:47,568 DEBG 'copyq' stderr output:
+DEBUG: Tab "&clipboard": Saving 0 items
+
+2026-11-08 17:03:47,571 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Activating service name='org.a11y.Bus' requested by ':1.3' (uid=1000 pid=32 comm="xfce4-session")
+
+2026-11-08 17:03:47,575 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Successfully activated service 'org.a11y.Bus'
+
+2026-11-08 17:03:47,575 DEBG 'copyq' stderr output:
+DEBUG: Tab "&clipboard": Items saved
+
+2026-11-08 17:03:47,581 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Activating service name='org.xfce.Xfconf' requested by ':1.5' (uid=1000 pid=32 comm="xfce4-session")
+
+2026-11-08 17:03:47,583 DEBG 'autobyteus_server' stdout output:
+Platform detection: Windows=false
+
+2026-11-08 17:03:47,583 DEBG 'autobyteus_server' stdout output:
+App root directory: /opt/autobyteus/server-package
+
+2026-11-08 17:03:47,584 DEBG 'autobyteus_server' stdout output:
+App data directory: /home/autobyteus/data
+
+2026-11-08 17:03:47,584 DEBG 'autobyteus_server' stdout output:
+Config file path: /home/autobyteus/data/.env
+
+2026-11-08 17:03:47,584 DEBG 'autobyteus_server' stdout output:
+Loading environment from: /home/autobyteus/data/.env
+
+2026-11-08 17:03:47,585 DEBG 'autobyteus_server' stdout output:
+◇ injected env (3) from ../../../home/autobyteus/data/.env // tip: ⌘ override existing { override: true }
+
+2026-11-08 17:03:47,585 DEBG 'autobyteus_server' stdout output:
+Environment variables loaded successfully
+
+2026-11-08 17:03:47,585 DEBG 'autobyteus_server' stdout output:
+Server public base URL configured to: http://localhost:55854
+
+2026-11-08 17:03:47,585 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Successfully activated service 'org.xfce.Xfconf'
+
+2026-11-08 17:03:47,586 DEBG 'autobyteus_server' stdout output:
+=== Starting logging configuration ===
+
+2026-11-08 17:03:47,586 DEBG 'autobyteus_server' stdout output:
+Logging config file is ignored in Node.js: /opt/autobyteus/server-package/logging_config.ini
+
+2026-11-08 17:03:47,587 DEBG 'autobyteus_server' stdout output:
+============================================================
+
+2026-11-08 17:03:47,587 DEBG 'dbus' stderr output:
+dbus-daemon[129]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=32 comm="xfce4-session")
+
+2026-11-08 17:03:47,587 DEBG 'autobyteus_server' stdout output:
+SERVER PUBLIC URL: http://localhost:55854
+
+2026-11-08 17:03:47,587 DEBG 'autobyteus_server' stdout output:
+APP ROOT DIRECTORY: /opt/autobyteus/server-package
+
+2026-11-08 17:03:47,587 DEBG 'autobyteus_server' stdout output:
+APP DATA DIRECTORY: /home/autobyteus/data
+
+2026-11-08 17:03:47,587 DEBG 'autobyteus_server' stdout output:
+DB DIRECTORY: /home/autobyteus/data/db
+
+2026-11-08 17:03:47,587 DEBG 'autobyteus_server' stdout output:
+LOGS DIRECTORY: /home/autobyteus/data/logs
+
+2026-11-08 17:03:47,587 DEBG 'autobyteus_server' stdout output:
+DOWNLOAD DIRECTORY: /home/autobyteus/data/download
+
+2026-11-08 17:03:47,587 DEBG 'autobyteus_server' stdout output:
+MEMORY DIRECTORY: /home/autobyteus/data/memory
+
+2026-11-08 17:03:47,587 DEBG 'autobyteus_server' stdout output:
+============================================================
+
+2026-11-08 17:03:47,590 DEBG 'dbus' stderr output:
+dbus-daemon[129]: Successfully activated service 'org.a11y.atspi.Registry'
+
+2026-11-08 17:03:47,591 DEBG 'dbus' stdout output:
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+
+2026-11-08 17:03:47,591 DEBG 'xfce' stderr output:
+_IceTransmkdir: ERROR: euid != 0,directory /tmp/.ICE-unix will not be created.
+
+2026-11-08 17:03:47,593 DEBG 'xfce' stderr output:
+/usr/bin/iceauth:  creating new authority file /run/user/1000/ICEauthority
+
+2026-11-08 17:03:47,605 DEBG 'xfce' stderr output:
+gpg-agent[154]: directory '/home/vncuser/.gnupg
+2026-11-08 17:03:47,605 DEBG 'xfce' stderr output:
+' created
+gpg-agent[154]: directory '/home/vncuser/.gnupg/private-keys-v1.d' created
+
+2026-11-08 17:03:47,605 DEBG 'xfce' stderr output:
+gpg-agent[155]: gpg-agent (GnuPG) 2.4.4 started
+
+2026-11-08 17:03:47,622 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Activating service name='org.gtk.vfs.Daemon' requested by ':1.9' (uid=1000 pid=156 comm="xfwm4")
+
+2026-11-08 17:03:47,628 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Successfully activated service 'org.gtk.vfs.Daemon'
+
+2026-11-08 17:03:47,650 DEBG 'copyq' stderr output:
+DEBUG: Executing: copyq eval -- runMenuCommandFilters()
+
+2026-11-08 17:03:47,650 INFO reaped unknown pid 167 (exit status 1)
+2026-11-08 17:03:47,650 DEBG received SIGCHLD indicating a child quit
+2026-11-08 17:03:48,282 DEBG 'xfce' stderr output:
+
+(xfwm4:156): xfwm4-WARNING **: 17:03:48.282: Another compositing manager is running on screen 0
+
+2026-11-08 17:03:48,312 DEBG 'xfce' stderr output:
+
+(xfsettingsd:170): libupower-glib-WARNING **: 17:03:48.312: Couldn't connect to proxy: Could not connect: No such file or directory
+
+2026-11-08 17:03:48,588 DEBG 'xfce' stderr output:
+Connection failure: Connection refused
+pa_context_connect() failed: Connection refused
+
+2026-11-08 17:03:48,588 INFO success: xfce entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2026-11-08 17:03:48,588 INFO success: fcitx entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2026-11-08 17:03:48,589 INFO spawned: 'chrome' with pid 199
+2026-11-08 17:03:48,589 INFO success: socat entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2026-11-08 17:03:48,589 INFO success: websockify entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2026-11-08 17:03:48,609 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Activating service name='org.freedesktop.systemd1' requested by ':1.17' (uid=1000 pid=220 comm="systemctl --user start xfce4-notifyd.service")
+
+2026-11-08 17:03:48,617 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Activated service 'org.freedesktop.systemd1' failed: Process org.freedesktop.systemd1 exited with status 1
+
+2026-11-08 17:03:48,623 DEBG 'xfce' stderr output:
+
+(polkit-gnome-authentication-agent-1:204): polkit-gnome-1-WARNING **: 17:03:48.622: Error getting authority: Error initializing authority: Could not connect: No such file or directory
+
+2026-11-08 17:03:48,624 DEBG 'xfce' stderr output:
+
+** (xiccd:211): CRITICAL **: 17:03:48.624: Failed to connect to colord: Could not connect: No such file or directory
+
+2026-11-08 17:03:48,628 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Activating service name='org.freedesktop.thumbnails.Thumbnailer1' requested by ':1.15' (uid=1000 pid=190 comm="xfdesktop")
+
+2026-11-08 17:03:48,633 DEBG 'chrome' stderr output:
+Failed to move to new namespace:
+2026-11-08 17:03:48,633 DEBG 'chrome' stderr output:
+ PID namespaces supported,
+2026-11-08 17:03:48,633 DEBG 'chrome' stderr output:
+ Network namespace supported,
+2026-11-08 17:03:48,633 DEBG 'chrome' stderr output:
+ but failed: errno = Operation not permitted
+
+2026-11-08 17:03:48,635 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Activating service name='ca.desrt.dconf' requested by ':1.18' (uid=1000 pid=227 comm="light-locker")
+
+2026-11-08 17:03:48,635 DEBG 'chrome' stderr output:
+[199:199:1108/170348.635146:FATAL:content/browser/zygote_host/zygote_host_impl_linux.cc:213] Zygote process exited prematurely with exit code 1
+
+2026-11-08 17:03:48,642 DEBG 'xfce' stderr output:
+
+** (light-locker:227): ERROR **: 17:03:48.635: session_id is not set, is /proc mounted with hidepid>0?
+
+2026-11-08 17:03:48,642 DEBG 'chrome' stderr output:
+[1108/170348.638579:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:145] open /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq: No such file or directory (2)
+[1108/170348.642537:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:145] open /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq: No such file or directory (2)
+
+2026-11-08 17:03:48,647 DEBG 'chrome' stderr output:
+[248:248:0100/000000.647274:ERROR:content/zygote/zygote_linux.cc:662] write: Broken pipe (32)
+
+2026-11-08 17:03:48,647 DEBG fd 25 closed, stopped monitoring <POutputDispatcher at 281473323392480 for <Subprocess at 281473322988912 with name chrome in state STARTING> (stdout)>
+2026-11-08 17:03:48,647 DEBG fd 31 closed, stopped monitoring <POutputDispatcher at 281473323393184 for <Subprocess at 281473322988912 with name chrome in state STARTING> (stderr)>
+2026-11-08 17:03:48,647 WARN exited: chrome (terminated by SIGTRAP; not expected)
+2026-11-08 17:03:48,647 INFO reaped unknown pid 243 (exit status 0)
+2026-11-08 17:03:48,647 INFO reaped unknown pid 249 (exit status 0)
+2026-11-08 17:03:48,647 DEBG received SIGCHLD indicating a child quit
+2026-11-08 17:03:48,652 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Successfully activated service 'ca.desrt.dconf'
+
+2026-11-08 17:03:48,652 DEBG 'xfce' stderr output:
+
+(nm-applet:197): nm-applet-WARNING **: 17:03:48.652: Error connecting to system D-Bus: Could not connect: No such file or directory
+
+2026-11-08 17:03:48,653 DEBG 'xfce' stderr output:
+
+(nm-applet:197): nm-applet-WARNING **: 17:03:48.652: Could not connect: No such file or directory
+
+2026-11-08 17:03:48,653 INFO reaped unknown pid 248 (exit status 0)
+2026-11-08 17:03:48,653 DEBG received SIGCHLD indicating a child quit
+2026-11-08 17:03:48,654 DEBG 'xfce' stderr output:
+
+(nm-applet:197): nm-CRITICAL **: 17:03:48.654: ((src/libnm-client-impl/nm-client.c:4115)): assertion '<dropped>' failed
+
+2026-11-08 17:03:48,655 DEBG 'xfce' stderr output:
+
+(nm-applet:197): nm-CRITICAL **: 17:03:48.654: ((src/libnm-client-impl/nm-client.c:4066)): assertion '<dropped>' failed
+
+(nm-applet:197): nm-CRITICAL **: 17:03:48.654: ((src/libnm-client-impl/nm-client.c:4166)): assertion '<dropped>' failed
+
+(nm-applet:197): nm-CRITICAL **: 17:03:48.655: ((src/libnm-client-impl/nm-client.c:4214)): assertion '<dropped>' failed
+
+(nm-applet:197): nm-CRITICAL **: 17:03:48.655: ((src/libnm-client-impl/nm-client.c:4253)): assertion '<dropped>' failed
+
+(nm-applet:197): nm-CRITICAL **: 17:03:48.655: ((src/libnm-client-impl/nm-client.c:4287)): assertion '<dropped>' failed
+
+(nm-applet:197): nm-CRITICAL **: 17:03:48.655: ((src/libnm-client-impl/nm-client.c:4326)): assertion '<dropped>' failed
+
+(nm-applet:197): nm-CRITICAL **: 17:03:48.655: ((src/libnm-client-impl/nm-client.c:4847)): assertion '<dropped>' failed
+
+2026-11-08 17:03:48,655 DEBG 'xfce' stderr output:
+
+(nm-applet:197): nm-CRITICAL **: 17:03:48.655: ((src/libnm-client-impl/nm-client.c:4847)): assertion '<dropped>' failed
+
+2026-11-08 17:03:48,760 DEBG 'xfce' stderr output:
+system-config-printer-applet: failed to connect to system D-Bus
+
+2026-11-08 17:03:48,803 DEBG 'xfce' stderr output:
+xfce4-panel-Message: 17:03:48.803: Plugin "(null)-7" was not found and has been removed from the configuration
+
+2026-11-08 17:03:48,807 DEBG 'xfce' stderr output:
+xfce4-panel-Message: 17:03:48.807: Plugin "power-manager-plugin-9" was not found and has been removed from the configuration
+
+2026-11-08 17:03:48,824 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Activating service name='org.gtk.vfs.UDisks2VolumeMonitor' requested by ':1.23' (uid=1000 pid=251 comm="/usr/lib/aarch64-linux-gnu/tumbler-1/tumblerd")
+
+2026-11-08 17:03:48,827 DEBG 'dbus' stderr output:
+
+(process:281): GVFS-UDisks2-WARNING **: 17:03:48.827: Failed to connect to UDisks: Could not connect: No such file or directory
+
+(process:281): GVFS-RemoteVolumeMonitorDaemon-WARNING **: 17:03:48.827: monitor says it's not supported
+
+2026-11-08 17:03:48,828 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Successfully activated service 'org.gtk.vfs.UDisks2VolumeMonitor'
+
+2026-11-08 17:03:48,829 DEBG 'dbus' stderr output:
+
+(process:281): GVFS-RemoteVolumeMonitorDaemon-WARNING **: 17:03:48.829: monitor says it's not supported
+
+2026-11-08 17:03:48,829 DEBG 'dbus' stderr output:
+
+(tumblerd:251): GVFS-RemoteVolumeMonitor-WARNING **: 17:03:48.829: remote volume monitor with dbus name org.gtk.vfs.UDisks2VolumeMonitor is not supported
+
+2026-11-08 17:03:48,830 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Activating service name='org.gtk.vfs.AfcVolumeMonitor' requested by ':1.23' (uid=1000 pid=251 comm="/usr/lib/aarch64-linux-gnu/tumbler-1/tumblerd")
+
+2026-11-08 17:03:48,834 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Successfully activated service 'org.gtk.vfs.AfcVolumeMonitor'
+
+2026-11-08 17:03:48,837 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Activating service name='org.gtk.vfs.GoaVolumeMonitor' requested by ':1.23' (uid=1000 pid=251 comm="/usr/lib/aarch64-linux-gnu/tumbler-1/tumblerd")
+
+2026-11-08 17:03:48,840 DEBG 'xfce' stderr output:
+libclock-Message: 17:03:48.840: could not get proxy for org.freedesktop.login1
+
+(xfce4-panel:174): libclock-WARNING **: 17:03:48.840: could not instantiate a sleep monitor
+
+2026-11-08 17:03:48,842 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Successfully activated service 'org.gtk.vfs.GoaVolumeMonitor'
+
+2026-11-08 17:03:48,844 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Activating service name='org.gtk.vfs.GPhoto2VolumeMonitor' requested by ':1.23' (uid=1000 pid=251 comm="/usr/lib/aarch64-linux-gnu/tumbler-1/tumblerd")
+
+2026-11-08 17:03:48,850 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Successfully activated service 'org.gtk.vfs.GPhoto2VolumeMonitor'
+
+2026-11-08 17:03:48,861 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Activating service name='org.gtk.vfs.MTPVolumeMonitor' requested by ':1.23' (uid=1000 pid=251 comm="/usr/lib/aarch64-linux-gnu/tumbler-1/tumblerd")
+
+2026-11-08 17:03:48,867 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Successfully activated service 'org.gtk.vfs.MTPVolumeMonitor'
+
+2026-11-08 17:03:48,874 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Successfully activated service 'org.freedesktop.thumbnails.Thumbnailer1'
+
+2026-11-08 17:03:48,892 DEBG 'dbus' stderr output:
+
+(process:281): GVFS-RemoteVolumeMonitorDaemon-WARNING **: 17:03:48.892: monitor says it's not supported
+
+2026-11-08 17:03:48,892 DEBG 'xfce' stderr output:
+
+(xfdesktop:190): GVFS-RemoteVolumeMonitor-WARNING **: 17:03:48.892: remote volume monitor with dbus name org.gtk.vfs.UDisks2VolumeMonitor is not supported
+
+2026-11-08 17:03:48,920 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Activating service name='org.gtk.vfs.Metadata' requested by ':1.15' (uid=1000 pid=190 comm="xfdesktop")
+
+2026-11-08 17:03:48,924 DEBG 'dbus' stderr output:
+dbus-daemon[30]: [session uid=1000 pid=30] Successfully activated service 'org.gtk.vfs.Metadata'
+
+2026-11-08 17:03:48,966 DEBG 'xfce' stderr output:
+
+** (xfdesktop:190): WARNING **: 17:03:48.965: Failed to get system bus: Could not connect: No such file or directory
+
+2026-11-08 17:03:49,387 DEBG 'xfce' stderr output:
+
+(xfce4-session:32): xfce4-session-WARNING **: 17:03:49.386: failed to run script: Failed to execute child process “/usr/bin/pm-is-supported” (No such file or directory)
+
+2026-11-08 17:03:49,387 INFO success: tigervnc entered RUNNING state, process has stayed up for > than 2 seconds (startsecs)
+2026-11-08 17:03:49,390 DEBG 'xfce' stderr output:
+
+(xfce4-session:32): xfce4-session-WARNING **: 17:03:49.390: failed to run script: Failed to execute child process “/usr/bin/pm-is-supported” (No such file or directory)
+
+2026-11-08 17:03:49,392 DEBG 'xfce' stderr output:
+
+(xfce4-session:32): xfce4-session-WARNING **: 17:03:49.392: failed to run script: Failed to execute child process “/usr/bin/pm-is-supported” (No such file or directory)
+
+2026-11-08 17:03:50,393 INFO success: autobyteus_server entered RUNNING state, process has stayed up for > than 3 seconds (startsecs)
+2026-11-08 17:03:50,965 DEBG 'autobyteus_server' stdout output:
+AgentFactory (Singleton) initialized.
+
+2026-11-08 17:03:50,966 INFO spawned: 'chrome' with pid 366
+2026-11-08 17:03:51,014 DEBG 'chrome' stderr output:
+Failed to move to new namespace: PID namespaces supported, Network namespace supported, but failed: errno = Operation not permitted
+[366:366:1108/170351.013165:FATAL:content/browser/zygote_host/zygote_host_impl_linux.cc:213] Zygote process exited prematurely with exit code 1
+
+2026-11-08 17:03:51,017 DEBG 'chrome' stderr output:
+[1108/170351.016371:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:145] open /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq: No such file or directory (2)
+[1108/170351.016408:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:145] open /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq: No such file or directory (2)
+
+2026-11-08 17:03:51,032 DEBG 'chrome' stderr output:
+[387:387:0100/000000.032346:ERROR:content/zygote/zygote_linux.cc:662] write: Broken pipe (32)
+
+2026-11-08 17:03:51,032 DEBG fd 25 closed, stopped monitoring <POutputDispatcher at 281473323393184 for <Subprocess at 281473322988912 with name chrome in state STARTING> (stdout)>
+2026-11-08 17:03:51,032 DEBG fd 31 closed, stopped monitoring <POutputDispatcher at 281473323392480 for <Subprocess at 281473322988912 with name chrome in state STARTING> (stderr)>
+2026-11-08 17:03:51,032 WARN exited: chrome (terminated by SIGTRAP; not expected)
+2026-11-08 17:03:51,033 INFO reaped unknown pid 382 (exit status 0)
+2026-11-08 17:03:51,033 INFO reaped unknown pid 384 (exit status 0)
+2026-11-08 17:03:51,033 DEBG received SIGCHLD indicating a child quit
+2026-11-08 17:03:51,288 DEBG 'autobyteus_server' stdout output:
+Running Prisma migrations...
+
+2026-11-08 17:03:51,288 INFO reaped unknown pid 387 (exit status 0)
+2026-11-08 17:03:51,288 DEBG received SIGCHLD indicating a child quit
+2026-11-08 17:03:51,302 DEBG 'autobyteus_server' stdout output:
+Using Prisma engine overrides from bundled: /opt/autobyteus/server-package/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-linux-arm64-openssl-3.0.x.so.node, schema=schema-engine-linux-arm64-openssl-3.0.x)
+
+2026-11-08 17:03:51,548 DEBG 'autobyteus_server' stdout output:
+Prisma schema loaded from prisma/schema.prisma
+
+2026-11-08 17:03:51,552 DEBG 'autobyteus_server' stdout output:
+Datasource "db": SQLite database "production.db" at "file:/home/autobyteus/data/db/production.db"
+
+2026-11-08 17:03:51,576 DEBG 'autobyteus_server' stdout output:
+
+SQLite database production.db created at file:/home/autobyteus/data/db/production.db
+
+2026-11-08 17:03:51,584 DEBG 'autobyteus_server' stdout output:
+
+27 migrations found in prisma/migrations
+
+
+2026-11-08 17:03:51,591 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260203074245_init`
+
+2026-11-08 17:03:51,656 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260208094000_add_external_channel_tables`
+
+2026-11-08 17:03:51,710 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+
+2026-11-08 17:03:51,721 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260209213000_remove_agent_conversation_tables`
+
+2026-11-08 17:03:51,733 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260210101500_add_agent_avatar`
+
+2026-11-08 17:03:51,745 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260210192000_add_agent_team_avatar`
+
+2026-11-08 17:03:51,755 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+
+2026-11-08 17:03:51,817 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260212070000_remove_workflow_definition`
+
+2026-11-08 17:03:51,827 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+
+2026-11-08 17:03:51,861 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+
+2026-11-08 17:03:51,872 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260331102000_remove_channel_bindings_table`
+
+2026-11-08 17:03:51,881 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+
+2026-11-08 17:03:51,922 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260517090000_add_app_data_migration_records`
+
+2026-11-08 17:03:51,942 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260624090000_add_token_usage_ledger_events`
+
+2026-11-08 17:03:51,966 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+
+2026-11-08 17:03:52,026 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260629120000_add_token_usage_display_fields`
+
+2026-11-08 17:03:52,045 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260702093000_token_usage_execution_address`
+
+2026-11-08 17:03:52,056 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260726090000_add_secret_vault`
+
+2026-11-08 17:03:52,070 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260730090000_add_token_usage_provider_name`
+
+2026-11-08 17:03:52,078 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260801090000_token_usage_member_display_name`
+
+2026-11-08 17:03:52,097 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260814090000_team_run_execution_tree_v1`
+
+2026-11-08 17:03:52,103 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260819090000_add_token_usage_run_records`
+
+2026-11-08 17:03:52,121 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+
+2026-11-08 17:03:52,132 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260822090000_add_token_usage_analytics`
+
+2026-11-08 17:03:52,157 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+
+2026-11-08 17:03:52,172 DEBG 'autobyteus_server' stdout output:
+Applying migration `20260924120000_remove_external_channel_tables`
+
+2026-11-08 17:03:52,187 DEBG 'autobyteus_server' stdout output:
+Applying migration `20261009120000_token_meter_context_readings`
+
+2026-11-08 17:03:52,195 DEBG 'autobyteus_server' stdout output:
+
+
+2026-11-08 17:03:52,195 DEBG 'autobyteus_server' stdout output:
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+
+2026-11-08 17:03:52,214 DEBG 'autobyteus_server' stdout output:
+Database migrations completed successfully.
+
+2026-11-08 17:03:52,218 DEBG 'autobyteus_server' stderr output:
+(node:105) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+2026-11-08 17:03:52,228 DEBG 'autobyteus_server' stdout output:
+prisma:info Starting a sqlite pool with 21 connections.
+
+2026-11-08 17:03:52,247 DEBG 'autobyteus_server' stdout output:
+[2026-11-08T17:03:52.247Z] [INFO] [secret-management.vault] Secret vault: application database
+
+2026-11-08 17:03:52,555 DEBG 'autobyteus_server' stdout output:
+Initialized server settings service with 32 predefined settings
+
+2026-11-08 17:03:52,555 INFO success: dbus entered RUNNING state, process has stayed up for > than 5 seconds (startsecs)
+2026-11-08 17:03:52,555 INFO success: copyq entered RUNNING state, process has stayed up for > than 5 seconds (startsecs)
+2026-11-08 17:03:52,607 DEBG 'autobyteus_server' stdout output:
+AgentRunManager initialized.
+
+2026-11-08 17:03:52,611 DEBG 'autobyteus_server' stdout output:
+AgentRunManager initialized.
+
+2026-11-08 17:03:52,721 DEBG 'autobyteus_server' stdout output:
+Loading workspace packages to trigger registration...
+
+2026-11-08 17:03:52,722 DEBG 'autobyteus_server' stdout output:
+Successfully loaded workspace packages.
+
+2026-11-08 17:03:52,722 DEBG 'autobyteus_server' stdout output:
+Creating temp workspace at: /home/autobyteus/data/temp_workspace
+
+2026-11-08 17:03:52,722 DEBG 'autobyteus_server' stdout output:
+Created metadata-only FileSystemWorkspace at /home/autobyteus/data/temp_workspace.
+Initialized TempWorkspace at /home/autobyteus/data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+2026-11-08 17:03:52,722 DEBG 'autobyteus_server' stdout output:
+Registering agent customization processors...
+
+2026-11-08 17:03:52,722 DEBG 'autobyteus_server' stdout output:
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+
+2026-11-08 17:03:52,722 DEBG 'autobyteus_server' stdout output:
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+
+2026-11-08 17:03:52,723 DEBG 'autobyteus_server' stdout output:
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+2026-11-08 17:03:52,723 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'read_file'
+
+2026-11-08 17:03:52,724 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'write_file'
+
+2026-11-08 17:03:52,724 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'edit_file'
+
+2026-11-08 17:03:52,724 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'run_bash'
+
+2026-11-08 17:03:52,724 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'start_background_process'
+
+2026-11-08 17:03:52,724 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'get_background_processes'
+
+2026-11-08 17:03:52,724 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+
+2026-11-08 17:03:52,724 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'search_web'
+
+2026-11-08 17:03:52,724 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+2026-11-08 17:03:52,724 DEBG 'autobyteus_server' stdout output:
+Registered required tool unit: Core Tools
+
+2026-11-08 17:03:52,763 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+
+2026-11-08 17:03:52,764 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+2026-11-08 17:03:52,764 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'delegate_task'
+
+2026-11-08 17:03:52,764 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'generate_image'
+
+2026-11-08 17:03:52,764 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+2026-11-08 17:03:52,764 DEBG 'autobyteus_server' stdout output:
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+
+2026-11-08 17:03:52,764 DEBG 'autobyteus_server' stdout output:
+Registered required tool unit: Media Tools
+
+2026-11-08 17:03:52,778 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+
+2026-11-08 17:03:52,779 DEBG 'autobyteus_server' stdout output:
+Registered required tool unit: Agent Discovery Tools
+
+2026-11-08 17:03:52,779 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+2026-11-08 17:03:52,779 DEBG 'autobyteus_server' stdout output:
+Registered required tool unit: Agent Runtime Tools
+
+2026-11-08 17:03:52,780 DEBG 'autobyteus_server' stdout output:
+Registered required tool unit: Browser Tools
+
+2026-11-08 17:03:52,780 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'publish_artifacts'
+
+2026-11-08 17:03:52,780 DEBG 'autobyteus_server' stdout output:
+Registered required tool unit: Published Artifact Tools
+
+2026-11-08 17:03:52,781 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'search_memory'
+Registered required tool unit: Memory Tools
+
+2026-11-08 17:03:52,781 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+2026-11-08 17:03:52,781 DEBG 'autobyteus_server' stdout output:
+Registered required tool unit: Agent Communication Tools
+
+2026-11-08 17:03:52,787 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+
+2026-11-08 17:03:52,787 DEBG 'autobyteus_server' stderr output:
+Overwriting existing tool definition for name: 'search_web'
+
+2026-11-08 17:03:52,802 DEBG 'autobyteus_server' stdout output:
+{"level":30,"time":1794157432802,"pid":105,"hostname":"6a1c980c6a7c","msg":"Server listening at http://127.0.0.1:39559"}
+
+2026-11-08 17:03:52,803 INFO reaped unknown pid 447 (exit status 0)
+2026-11-08 17:03:52,803 DEBG received SIGCHLD indicating a child quit
+2026-11-08 17:03:52,839 DEBG 'autobyteus_server' stdout output:
+{"level":30,"time":1794157432839,"pid":105,"hostname":"6a1c980c6a7c","msg":"Server listening at http://127.0.0.1:8000"}
+{"level":30,"time":1794157432839,"pid":105,"hostname":"6a1c980c6a7c","msg":"Server listening at http://172.17.0.6:8000"}
+
+2026-11-08 17:03:52,839 DEBG 'autobyteus_server' stdout output:
+[2026-11-08T17:03:52.839Z] [INFO] [server.runtime] Server listening on 0.0.0.0:8000
+
+2026-11-08 17:03:52,839 DEBG 'autobyteus_server' stdout output:
+Scheduling Studio-only non-critical startup tasks...
+
+2026-11-08 17:03:52,853 DEBG 'autobyteus_server' stdout output:
+Background cache pre-loading process has started.
+
+2026-11-08 17:03:52,853 DEBG 'autobyteus_server' stdout output:
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+
+2026-11-08 17:03:52,853 DEBG 'autobyteus_server' stdout output:
+Running MCP tool registration background task...
+
+2026-11-08 17:03:52,853 DEBG 'autobyteus_server' stdout output:
+Loading and registering all MCP server configurations from file...
+
+2026-11-08 17:03:52,864 DEBG 'autobyteus_server' stdout output:
+Background task 'Memory Sync Worker' completed successfully.
+Background task 'Memory Search' completed successfully.
+
+2026-11-08 17:03:52,865 DEBG 'autobyteus_server' stdout output:
+MCP server config cache populated with 0 items.
+
+2026-11-08 17:03:52,865 DEBG 'autobyteus_server' stdout output:
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+
+2026-11-08 17:03:52,865 DEBG 'autobyteus_server' stdout output:
+Finished loading and registering all MCP server configurations.
+
+2026-11-08 17:03:52,866 DEBG 'autobyteus_server' stdout output:
+Background task 'MCP Tool Registration' completed successfully.
+
+2026-11-08 17:03:52,866 DEBG 'autobyteus_server' stdout output:
+Pre-loaded 33 LLM models into cache.
+
+2026-11-08 17:03:52,866 DEBG 'autobyteus_server' stdout output:
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+
+2026-11-08 17:03:53,155 DEBG 'autobyteus_server' stdout output:
+Agent Definition created successfully with ID: docker-helper
+
+2026-11-08 17:03:54,157 INFO spawned: 'chrome' with pid 486
+2026-11-08 17:03:54,204 DEBG 'chrome' stderr output:
+Failed to move to new namespace: PID namespaces supported, Network namespace supported, but failed: errno = Operation not permitted
+
+2026-11-08 17:03:54,204 DEBG 'chrome' stderr output:
+[486:486:1108/170354.204550:FATAL:content/browser/zygote_host/zygote_host_impl_linux.cc:213] Zygote process exited prematurely with exit code 1
+
+2026-11-08 17:03:54,208 DEBG 'chrome' stderr output:
+[1108/170354.207916:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:145] open /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq: No such file or directory (2)
+[1108/170354.207960:ERROR:third_party/crashpad/crashpad/util/file/file_io_posix.cc:145] open /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq: No such file or directory (2)
+
+2026-11-08 17:03:54,219 DEBG 'chrome' stderr output:
+[507:507:0100/000000.219038:ERROR:content/zygote/zygote_linux.cc:662] write: Broken pipe (32)
+
+2026-11-08 17:03:54,219 DEBG fd 25 closed, stopped monitoring <POutputDispatcher at 281473323392480 for <Subprocess at 281473322988912 with name chrome in state STARTING> (stdout)>
+2026-11-08 17:03:54,219 DEBG fd 31 closed, stopped monitoring <POutputDispatcher at 281473323393184 for <Subprocess at 281473322988912 with name chrome in state STARTING> (stderr)>
+2026-11-08 17:03:54,219 WARN exited: chrome (terminated by SIGTRAP; not expected)
+2026-11-08 17:03:54,219 INFO reaped unknown pid 502 (exit status 0)
+2026-11-08 17:03:54,219 INFO reaped unknown pid 504 (exit status 0)
+2026-11-08 17:03:54,219 DEBG received SIGCHLD indicating a child quit
+2026-11-08 17:03:54,219 INFO gave up: chrome entered FATAL state, too many start retries too quickly
+2026-11-08 17:03:55,222 INFO reaped unknown pid 507 (exit status 0)
+2026-11-08 17:03:55,222 DEBG received SIGCHLD indicating a child quit

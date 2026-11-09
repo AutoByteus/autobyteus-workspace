@@ -9,6 +9,7 @@ import {
   testAgentNode,
   testExecutionTree,
 } from "../../fixtures/current-team-run-fixtures.js";
+import { builtServerLaunchEnvironment } from "../helpers/built-server-launch-credential.js";
 
 /**
  * Memory Sync between two real built server processes: a source node's standalone run and current
@@ -176,7 +177,7 @@ const startServerProcess = async (name: string, rootDir: string): Promise<Server
     "--data-dir", dataDir,
   ], {
     cwd: serverRoot,
-    env,
+    env: { ...env, ...builtServerLaunchEnvironment() },
     stdio: ["ignore", "pipe", "pipe"],
   });
   const logs: string[] = [];

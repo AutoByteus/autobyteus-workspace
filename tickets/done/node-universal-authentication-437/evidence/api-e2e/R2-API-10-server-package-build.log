@@ -1,0 +1,6 @@
+# R2 API-10 setup: this worktree's server package for the node image; commit 32e9ad944c; 2026-11-08T18:13:39Z
+# Command: docker buildx build --builder desktop-linux --platform linux/arm64 -f <Dockerfile.monorepo without its '# syntax' line> --target server-package --output type=local,dest=/tmp/abtest437r2/server-package .
+# Exit status: 0
+#45 copying files 558.51MB 5.0s
+#45 copying files 687.37MB 8.0s done
+#45 DONE 8.1s

@@ -1,0 +1,34 @@
+const all = browser.contexts().flatMap(c => c.pages()).filter(p => p.url().includes('renderer/index.html'));
+const nodeOf = p => p.evaluate(() => performance.getEntriesByType('resource').map(e => e.name).filter(n => n.includes('/graphql')).slice(-1)[0]);
+let main, win;
+for (const p of all) { const n = await nodeOf(p); if (n.includes(':59849')) win = p; else main = p; }
+const cdp = await win.context().newCDPSession(win);
+await cdp.send('Network.enable');
+const wsEvents = [];
+const t0 = Date.now();
+cdp.on('Network.webSocketCreated', e => wsEvents.push({ ev: 'created', url: e.url.replace(/\?.*/, ''), at: Date.now() - t0 }));
+cdp.on('Network.webSocketClosed', e => wsEvents.push({ ev: 'closed', at: Date.now() - t0 }));
+cdp.on('Network.webSocketFrameError', e => wsEvents.push({ ev: 'error', msg: e.errorMessage }));
+const show = win.getByRole('button', { name: 'Show tools', exact: true });
+if (await show.isVisible().catch(() => false)) await show.click();
+await win.waitForTimeout(800);
+await win.locator('[data-test="right-side-tab-list"]').getByText('Terminal', { exact: true }).click();
+await win.waitForTimeout(3000);
+await win.locator('.xterm').first().click();
+await win.keyboard.type("echo REMOTE-TERM-$((1+1))\n");
+await win.waitForTimeout(2000);
+const before = (await win.locator('.xterm-rows').first().innerText()).slice(-160);
+const tDisc = Date.now() - t0;
+await main.getByTestId('node-disconnect-srv_DmENtLWSipOTRw5PxWzn4k1jxopMzN2j').click();
+await main.waitForTimeout(1500);
+let dlgText = null;
+if (await main.locator('[role="dialog"]').count()) { dlgText = (await main.locator('[role="dialog"]').innerText()).slice(0, 400); await main.locator('[role="dialog"] button').last().click(); }
+await main.waitForTimeout(4000);
+await win.locator('.xterm').first().click().catch(() => {});
+await win.keyboard.type("echo AFTER-$((2+2))\n");
+await win.waitForTimeout(2000);
+const after = (await win.locator('.xterm-rows').first().innerText().catch(() => '')).slice(-300);
+const card = await main.getByTestId('node-list-card').innerText();
+await win.screenshot({ path: '/tmp/abtest437/e19-remote-window.png' });
+await main.screenshot({ path: '/tmp/abtest437/e19-main.png' });
+return { before, tDisc, dlgText, after, wsEvents, loopRow: card.slice(card.indexOf('loop-node'), card.indexOf('loop-node') + 400) };

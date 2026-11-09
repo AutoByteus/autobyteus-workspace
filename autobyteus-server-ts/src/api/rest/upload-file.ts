@@ -7,7 +7,6 @@ import type { FastifyInstance } from "fastify";
 import { extension as mimeExtension } from "mime-types";
 import { getMediaStorageService } from "../../services/media-storage-service.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
-import { getRemoteAccessAuthContext } from "../security/remote-access-route-policy.js";
 import {
   buildDefaultClientFacingUrlContext,
   getClientFacingUrlResolver,
@@ -126,7 +125,6 @@ export async function registerUploadRoutes(app: FastifyInstance): Promise<void> 
     const fileUrl = getClientFacingUrlResolver().resolveRestResourceUrl({
       context: buildDefaultClientFacingUrlContext({
         request,
-        authContext: getRemoteAccessAuthContext(request),
         localFallbackBaseUrl: appConfigProvider.config.getBaseUrl(),
       }),
       restPath: `/rest/files/${relativePath}`,

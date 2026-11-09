@@ -81,7 +81,7 @@ describe('platform server environment handoff', () => {
   async function launchWithPolicy(
     environmentPolicy: EmbeddedServerLaunchConfig['environmentPolicy'],
     developmentRendererOrigin: string | null = null,
-  ): Promise<{ env: NodeJS.ProcessEnv; args: string[]; root: string }> {
+  ): Promise<{ env: NodeJS.ProcessEnv; args: string[]; root: string; manager: TestLinuxServerManager }> {
     const root = fs.mkdtempSync(path.join(os.tmpdir(), 'autobyteus-server-env-test-'))
     cleanupRoots.push(root)
     const serverRoot = path.join(root, 'server')
@@ -98,8 +98,8 @@ describe('platform server environment handoff', () => {
 
     await manager.launchForTest()
 
-    const [, args, options] = spawnMock.mock.calls[0]
-    return { env: options.env, args, root }
+    const [, args, options] = spawnMock.mock.calls[spawnMock.mock.calls.length - 1]
+    return { env: options.env, args, root, manager }
   }
 
   function stubCallerEnvironment(): void {
@@ -119,6 +119,23 @@ describe('platform server environment handoff', () => {
     vi.stubEnv('AUTOBYTEUS_ELECTRON_SERVER_PORT', '31041')
     vi.stubEnv('AUTOBYTEUS_ELECTRON_DATA_ROOT', '/caller/e2e-root')
   }
+
+  it.skipIf(process.env.NUXT_TEST === 'true')(
+    'NAS-01 NAS-31 hands the node a fresh launch owner credential in its spawn environment only, a new one at each start',
+    async () => {
+      for (const policy of ['inherit-caller', 'isolated-baseline'] as const) {
+        const { env, manager } = await launchWithPolicy(policy)
+        expect(env.AUTOBYTEUS_LAUNCH_OWNER_CREDENTIAL).toMatch(/^own_[A-Za-z0-9_-]{43}$/)
+        expect(manager.getLaunchOwnerCredential()).toBe(env.AUTOBYTEUS_LAUNCH_OWNER_CREDENTIAL)
+        expect(process.env.AUTOBYTEUS_LAUNCH_OWNER_CREDENTIAL).toBeUndefined()
+        const first = env.AUTOBYTEUS_LAUNCH_OWNER_CREDENTIAL
+        await manager.launchForTest()
+        const [, , again] = spawnMock.mock.calls[spawnMock.mock.calls.length - 1]
+        expect(again.env.AUTOBYTEUS_LAUNCH_OWNER_CREDENTIAL).not.toBe(first)
+      }
+      expect(JSON.stringify(mockLogger.info.mock.calls)).not.toContain('own_')
+    },
+  )
 
   // This platform-spawn contract requires the dedicated Electron Node runner.
   // The Nuxt runner also discovers electron/** but preloads a browser-oriented

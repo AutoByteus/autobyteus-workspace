@@ -12,10 +12,8 @@ import {
   getMcpGatewayResultMapper,
   type JsonRpcId,
 } from "./mcp-gateway-result-mapper.js";
-import {
-  McpGatewayAccessGate,
-  getMcpGatewayAccessGate,
-} from "./mcp-gateway-access.js";
+import type { McpGatewayAccessGate, McpGatewayAccessRefusal } from "./mcp-gateway-access.js";
+import { logRequestRefusal } from "../api/security/request-refusal.js";
 import {
   McpGatewayMethodDispatcher,
   getMcpGatewayMethodDispatcher,
@@ -31,15 +29,15 @@ const SUPPORTED_PROTOCOL_VERSIONS = new Set(["2025-03-26", "2025-06-18", "2025-1
 const DEFAULT_PROTOCOL_VERSION = "2025-03-26";
 
 type McpGatewayRouteDeps = {
-  accessGate?: McpGatewayAccessGate;
+  accessGate: McpGatewayAccessGate;
   dispatcher?: McpGatewayMethodDispatcher;
 };
 
 export async function registerMcpGatewayRoutes(
   app: FastifyInstance,
-  deps: McpGatewayRouteDeps = {},
+  deps: McpGatewayRouteDeps,
 ): Promise<void> {
-  const accessGate = deps.accessGate ?? getMcpGatewayAccessGate();
+  const accessGate = deps.accessGate;
   const dispatcher = deps.dispatcher ?? getMcpGatewayMethodDispatcher();
   const originPolicy = createToolEndpointOriginPolicy(getNodeBrowserAccess().allowedOrigins);
 
@@ -83,9 +81,9 @@ const registerMcpGatewayRequestGate = (
       await handleGatewayOptions(request, reply);
       return;
     }
-    const access = accessGate.validateRequest(request);
+    const access = await accessGate.validateRequest(request);
     if (!access.ok) {
-      await sendGatewayHttpError(reply, access.statusCode, access.error, access.message);
+      await refuseGatewayAccess(request, reply, access);
       return;
     }
     if (!isSupportedGatewayRouteMethod(request.method)) {
@@ -109,9 +107,9 @@ const handleMcpGatewayRequest = async (input: {
     return handleGatewayOptions(request, reply);
   }
 
-  const access = accessGate.validateRequest(request);
+  const access = await accessGate.validateRequest(request);
   if (!access.ok) {
-    return sendGatewayHttpError(reply, access.statusCode, access.error, access.message);
+    return refuseGatewayAccess(request, reply, access);
   }
   if (!isSupportedGatewayRouteMethod(request.method) || request.method === "DELETE") {
     return sendGatewayMethodNotAllowed(reply);
@@ -147,6 +145,12 @@ const handleMcpGatewayRequest = async (input: {
     return reply.code(dispatchResult.statusCode).send();
   }
   return reply.code(dispatchResult.statusCode).type("application/json; charset=utf-8").send(dispatchResult.body);
+};
+
+/** An admission or token refusal: the gateway's error shape with the code, and the node's one refusal log line (NA-13). */
+const refuseGatewayAccess = (request: FastifyRequest, reply: FastifyReply, refusal: McpGatewayAccessRefusal) => {
+  logRequestRefusal(request, refusal);
+  return reply.code(refusal.statusCode).send({ error: refusal.error, code: refusal.code, message: refusal.message });
 };
 
 const sendJsonRpcRouteError = (

@@ -5,8 +5,9 @@ import type { NodeSettingsFailure } from '~/utils/nodeSettingsError'
  * is this node (the window's node), "there" the row's node, "in list" the desktop's list.
  */
 export type NodeChangeStepId =
-  | 'turnOnHere' | 'resolveHere' | 'registerHere'
-  | 'turnOnThere' | 'resolveThere' | 'registerThere'
+  | 'turnOnHere' | 'turnOnThere'
+  /** autobyteus-437: the other node creates an invite, this node accepts it; both then hold the peer secret. */
+  | 'pair'
   | 'removeHere' | 'removeThere' | 'removeFromList'
   | 'renameHere' | 'renameInList'
   | 'changeAddressHere'
@@ -16,16 +17,14 @@ export type NodeChangeStepStatus = 'todo' | 'running' | 'done' | 'failed' | 'not
 export interface NodeChangeStep {
   id: NodeChangeStepId
   status: NodeChangeStepStatus
-  /** Register and rename steps: the name written (the naming rule's result). */
+  /** `pair`: this node's name for the other node; rename steps: the name written (the naming rule's result). */
   name?: string
-  /** Register steps: the name asked for, when the naming rule changed it (shown as "gets a number"). */
+  /** `pair`: the name asked for, when the naming rule changed it (shown as "gets a number"). */
   wanted?: string
-  /** Resolve steps: the address found; `changeAddressHere`: the address to save. */
+  /** `pair`: the other node's name for this node. */
+  nameThere?: string
+  /** `changeAddressHere`: the address to save. */
   address?: string
-  /** Resolve steps: the side's switch is off, so it finds the address once it is on (design § Switch-Off Rule). */
-  findsLater?: boolean
-  /** Resolve steps: the address to try first ("Use this"). */
-  firstAddress?: string
   error?: NodeSettingsFailure
 }
 
@@ -54,8 +53,6 @@ export interface NodeChangePlan {
   here: { name: string; nodeId: string | null; windowAddress: string }
   steps: NodeChangeStep[]
   phase: 'confirm' | 'running' | 'done' | 'failed'
-  /** The addresses each side advertises for itself (resolution tries them after the window's address). */
-  candidates: { here: string[]; there: string[] }
 }
 
 export const STOP_ON_FAILURE: Readonly<Record<NodeChangePlanKind, boolean>> = Object.freeze({

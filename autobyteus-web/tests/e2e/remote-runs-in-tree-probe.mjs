@@ -2,7 +2,7 @@
 // Browser + server probe for remote delegated runs in the run tree (autobyteus-278): what the delegating node's owner
 // sees and does in the window, against test-owned servers built from this worktree (the scripted AGY CLI, no model).
 //
-// Servers: alpha (the window's node) and beta, switched on and registered both ways. Beta shares Publisher (AGY default)
+// Servers: alpha (the window's node) and beta, switched on and paired by invite, each with the probe's launch owner credential (fixtures/probe-node-access.mjs). Beta shares Publisher (AGY default)
 // and the Agent Team "Studio Team" (lead Publisher, checker Checker; Team default AGY). Alpha has Delegator and Helper
 // (AGY default), the Team "Remote Squad" (lead and mate Delegator) and the Org "Remote Org" (lead and mate Delegator).
 // The delegations are the agents' own delegate_task calls:
@@ -32,6 +32,7 @@ import { randomUUID } from 'node:crypto';
 import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import { attachToBrowserContext, ownerHeaders, ownerSocketUrl, pairNodes, probeNodeEnvironment } from './fixtures/probe-node-access.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -86,7 +87,7 @@ const serverAt = async (name, port) => {
     const child = spawn(process.execPath, [appEntry, '--host', '127.0.0.1', '--port', String(port), '--data-dir', dataDir], {
       cwd: serverDir, stdio: ['ignore', 'pipe', 'pipe'],
       env: { PATH: process.env.PATH, HOME: home, TMPDIR: process.env.TMPDIR ?? os.tmpdir(), APP_ENV: 'test', LOG_LEVEL: 'WARN', HTTP_ACCESS_LOG_MODE: 'off',
-        AUTOBYTEUS_SERVER_HOST: baseUrl, AUTOBYTEUS_ALLOWED_ORIGINS: frontendUrl, ANTIGRAVITY_CLI_COMMAND: agyCli, AGY_FAKE_CASE: 'linked_skills' } });
+        AUTOBYTEUS_SERVER_HOST: baseUrl, AUTOBYTEUS_ALLOWED_ORIGINS: frontendUrl, ANTIGRAVITY_CLI_COMMAND: agyCli, AGY_FAKE_CASE: 'linked_skills', ...probeNodeEnvironment() } });
     child.stdout.pipe(log); child.stderr.pipe(log);
     child.once('close', () => log.end());
     children.add(child);
@@ -107,7 +108,7 @@ const serverAt = async (name, port) => {
     children.delete(child);
   };
   node.gql = async (query, variables) => {
-    const body = await (await fetch(`${baseUrl}/graphql`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ query, variables }) })).json();
+    const body = await (await fetch(`${baseUrl}/graphql`, { method: 'POST', headers: ownerHeaders({ 'content-type': 'application/json' }), body: JSON.stringify({ query, variables }) })).json();
     if (body.errors?.length) throw new Error(`${name}: ${JSON.stringify(body.errors)}`);
     return body.data;
   };
@@ -115,7 +116,7 @@ const serverAt = async (name, port) => {
   return node;
 };
 const withSocket = async (url, fn) => {
-  const socket = new WebSocket(url);
+  const socket = new WebSocket(ownerSocketUrl(url));
   await new Promise((resolve, reject) => { socket.onopen = resolve; socket.onerror = reject; });
   await sleep(500);
   try { await fn(socket); } finally { await sleep(800); socket.close(); }
@@ -129,8 +130,8 @@ try {
   assert(existsSync(appEntry), 'Build the worktree server first: pnpm -C autobyteus-server-ts build');
   const [alpha, beta] = await Promise.all([serverAt('alpha', await freePort()), serverAt('beta', await freePort())]);
   for (const node of [alpha, beta]) await node.gql('mutation{setRemoteCollaborationEnabled(enabled:true){enabled}}');
-  await alpha.gql('mutation($i:AddPeerNodeInput!){addPeerNode(input:$i){nodeId}}', { i: { nodeId: beta.nodeId, baseUrl: beta.baseUrl, name: NODE } });
-  await beta.gql('mutation($i:AddPeerNodeInput!){addPeerNode(input:$i){nodeId}}', { i: { nodeId: alpha.nodeId, baseUrl: alpha.baseUrl, name: 'alpha-node' } });
+  // The nodes pair by invite (autobyteus-437 DS-004): alpha names beta NODE, beta names alpha 'alpha-node'.
+  await pairNodes({ inviter: beta.gql, accepter: alpha.gql, inviterName: NODE, accepterName: 'alpha-node' });
   const agy = { runtimeKind: 'antigravity_cli', llmModelIdentifier: MODEL, llmConfig: null };
   const def = async (node, name, defaultLaunchConfig) => (await node.gql('mutation($i:CreateAgentDefinitionInput!){createAgentDefinition(input:$i){id}}',
     { i: { name, role: 'assistant', description: `${name} (tree probe)`, instructions: 'Help.', toolNames: [], ...(defaultLaunchConfig ? { defaultLaunchConfig } : {}) } })).createAgentDefinition.id;
@@ -239,6 +240,9 @@ try {
   }, 240_000);
   browser = await chromium.launch({ headless: true, executablePath, args: ['--no-sandbox', '--disable-dev-shm-usage'] });
   const context = await browser.newContext({ viewport: { width: 1440, height: 1100 }, locale: 'en-US', timezoneId: 'UTC' });
+  // The desktop window carries the probe's credential (fixtures/probe-node-access.mjs), as the desktop's main process
+  // attaches it.
+  await attachToBrowserContext(context);
   await context.addInitScript(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
   const page = await context.newPage();
   page.on('pageerror', error => evidence.browserErrors.push(`pageerror: ${error.message}`));

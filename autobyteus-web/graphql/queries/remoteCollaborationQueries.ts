@@ -14,6 +14,7 @@ export const PeerNodeFields = gql`
     name
     baseUrl
     addedAt
+    paired
   }
 `
 
@@ -58,19 +59,5 @@ export const GetPeerNodeAvailability = gql`
       refusalCode
       unreachableReason
     }
-  }
-`
-
-/** one-nodes-tab DS-003: how other nodes may reach this node, as the node lists its own addresses. */
-export const GetPeerAddressCandidates = gql`
-  query GetPeerAddressCandidates {
-    peerAddressCandidates
-  }
-`
-
-/** one-nodes-tab DS-005: the first of `baseUrls` at which the asked node reaches the node `nodeId` (switch on). */
-export const ResolvePeerAddress = gql`
-  query ResolvePeerAddress($nodeId: String!, $baseUrls: [String!]!) {
-    resolvePeerAddress(nodeId: $nodeId, baseUrls: $baseUrls)
   }
 `

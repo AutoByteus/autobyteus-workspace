@@ -1,0 +1,298 @@
+{
+  "mode": "measure",
+  "label": "current",
+  "startedAt": "2026-11-08T19:48:47.258Z",
+  "stackRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437",
+  "stackHead": "8cac59f2d4",
+  "probeHead": "8cac59f2d4",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "cpus": 10,
+  "loadAtStart": [
+    79.5,
+    89.6,
+    83.7
+  ],
+  "budgetMs": 250,
+  "checks": {
+    "RB-C1": {
+      "result": "Pass",
+      "description": "window null returns every seeded run (Agent, Team, Org)",
+      "details": {
+        "agentItems": 40,
+        "teamItems": 200,
+        "orgItems": 10
+      }
+    },
+    "RB-C2": {
+      "result": "Pass",
+      "description": "window 6 returns the newest 6 runs per agent and folder, and every Team and Org run",
+      "details": [
+        {
+          "folder": "agents-main",
+          "agent": "budget-main-agent",
+          "listed": 6,
+          "stored": 10
+        },
+        {
+          "folder": "agents-side",
+          "agent": "budget-main-agent",
+          "listed": 6,
+          "stored": 10
+        },
+        {
+          "folder": "agents-side",
+          "agent": "budget-side-agent",
+          "listed": 6,
+          "stored": 12
+        },
+        {
+          "folder": "agents-third",
+          "agent": "budget-third-agent",
+          "listed": 6,
+          "stored": 8
+        }
+      ]
+    },
+    "RB-C3": {
+      "result": "Pass",
+      "description": "per-folder workspaceRunHistory with null is complete",
+      "details": {
+        "folder": "agents-side",
+        "listed": 22,
+        "stored": 22
+      }
+    },
+    "RB-C4": {
+      "result": "Pass",
+      "description": "every Agent, Team and Org item carries lastActivityAt at or after createdAt, after it for a run with a turn",
+      "details": {
+        "items": 250,
+        "byKind": {
+          "agent": 40,
+          "team": 200,
+          "org": 10
+        }
+      }
+    },
+    "RB-B1": {
+      "result": "Pass",
+      "description": "uncapped poll read (Runs view) p95 within 250 ms",
+      "details": {
+        "n": 40,
+        "p50": 149.4,
+        "p95": 181.6,
+        "max": 246.1,
+        "mean": 155
+      }
+    },
+    "RB-B2": {
+      "result": "Pass",
+      "description": "capped poll read (Workspaces view) p95 within 250 ms",
+      "details": {
+        "n": 40,
+        "p50": 145.1,
+        "p95": 163.3,
+        "max": 227.1,
+        "mean": 149.1
+      }
+    }
+  },
+  "cleanup": {
+    "backend": {
+      "pid": 57754,
+      "status": "terminated",
+      "exit": 0
+    },
+    "home": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/read-budget-home-mNpWB0",
+    "runRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/read-budget-run-5e1xoQ removed"
+  },
+  "failures": [],
+  "seedShape": {
+    "agentRuns": 40,
+    "teamRuns": 200,
+    "orgRuns": 10,
+    "teamMembers": 5,
+    "perAgent": {
+      "main": 20,
+      "side": 12,
+      "third": 8
+    }
+  },
+  "runRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/read-budget-run-5e1xoQ",
+  "queryHasLastActivity": true,
+  "windows": {
+    "uncapped": {
+      "limitPerAgent": null,
+      "coldMs": 191.4,
+      "counts": {
+        "agentRuns": 40,
+        "teamRuns": 200,
+        "orgRuns": 10
+      },
+      "bytes": 931786,
+      "loadBefore": [
+        79.1,
+        89.3,
+        83.7
+      ],
+      "loadAfter": [
+        77.2,
+        88.4,
+        83.4
+      ],
+      "poll": {
+        "n": 40,
+        "p50": 149.4,
+        "p95": 181.6,
+        "max": 246.1,
+        "mean": 155
+      },
+      "workspaceRead": {
+        "n": 40,
+        "p50": 145.2,
+        "p95": 170.6,
+        "max": 238.9,
+        "mean": 149.6
+      },
+      "rootsRead": {
+        "n": 40,
+        "p50": 148.8,
+        "p95": 181.1,
+        "max": 245.7,
+        "mean": 154.6
+      },
+      "samplesMs": [
+        154.8,
+        181.6,
+        175.7,
+        187.4,
+        162.9,
+        162.4,
+        163,
+        155.9,
+        246.1,
+        147.4,
+        142.9,
+        144.7,
+        147.1,
+        142.6,
+        145.2,
+        150.8,
+        143,
+        140.5,
+        138.8,
+        142.4,
+        146.2,
+        149.4,
+        141.4,
+        150.3,
+        149.3,
+        149.2,
+        155.4,
+        155.4,
+        152.8,
+        150.5,
+        152.9,
+        174,
+        156.3,
+        155.8,
+        148.6,
+        146.7,
+        145.6,
+        147.1,
+        151.5,
+        146.4
+      ]
+    },
+    "capped": {
+      "limitPerAgent": 6,
+      "coldMs": 195.9,
+      "counts": {
+        "agentRuns": 24,
+        "teamRuns": 200,
+        "orgRuns": 10
+      },
+      "bytes": 925952,
+      "loadBefore": [
+        77.2,
+        88.4,
+        83.4
+      ],
+      "loadAfter": [
+        77.7,
+        88.1,
+        83.4
+      ],
+      "poll": {
+        "n": 40,
+        "p50": 145.1,
+        "p95": 163.3,
+        "max": 227.1,
+        "mean": 149.1
+      },
+      "workspaceRead": {
+        "n": 40,
+        "p50": 140.9,
+        "p95": 158.2,
+        "max": 222.3,
+        "mean": 144.2
+      },
+      "rootsRead": {
+        "n": 40,
+        "p50": 144.7,
+        "p95": 163,
+        "max": 226.8,
+        "mean": 148.7
+      },
+      "samplesMs": [
+        136,
+        137,
+        143.2,
+        135.7,
+        141.2,
+        138,
+        150.9,
+        130.9,
+        140.2,
+        145.4,
+        150.8,
+        152.3,
+        161.4,
+        153,
+        158.6,
+        156.2,
+        183.8,
+        142,
+        142,
+        149,
+        138.8,
+        227.1,
+        154.5,
+        143.6,
+        148.8,
+        136.7,
+        143.8,
+        137,
+        141,
+        149.1,
+        144.6,
+        141.5,
+        142.2,
+        150.6,
+        151.5,
+        154,
+        147,
+        163.3,
+        156.7,
+        145.1
+      ]
+    }
+  },
+  "completedAt": "2026-11-08T19:49:16.909Z",
+  "loadAtEnd": [
+    77.7,
+    88.1,
+    83.4
+  ]
+}

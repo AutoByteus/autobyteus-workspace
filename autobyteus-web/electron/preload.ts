@@ -96,6 +96,13 @@ contextBridge.exposeInMainWorld('electronAPI', {
   onNodeAutoUpdateChanged: (callback: (entries: any) => void) => {
     return registerIpcListener('node-auto-update:changed', callback)
   },
+  // autobyteus-437: this desktop's node credentials stay in the main process; windows see only states.
+  getNodeAccessStates: () => ipcRenderer.invoke('node-access:states'),
+  connectNode: (entryId: string, setupCode: string) => ipcRenderer.invoke('node-access:connect', entryId, setupCode),
+  disconnectNode: (entryId: string) => ipcRenderer.invoke('node-access:disconnect', entryId),
+  onNodeAccessChanged: (callback: (states: any) => void) => {
+    return registerIpcListener('node-access:changed', callback)
+  },
 
   // Method for directly checking server health
   checkServerHealth: () => ipcRenderer.invoke('check-server-health'),

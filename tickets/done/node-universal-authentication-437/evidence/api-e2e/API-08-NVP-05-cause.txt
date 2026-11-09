@@ -1,0 +1,57 @@
+# API-08 NVP-05 cause (autobyteus-437 API/E2E): why the held-back Memory Sync card shows 'Received status code 503'
+# Commit b6a57ab154; 2026-11-08T16:36:27Z
+
+## observed (API-08-node-vocabulary/server-alpha.log)
+165:{"level":50,"time":1794155685771,"pid":75225,"hostname":"MacBookPro","reqId":"req-n","method":"POST","url":"/graphql","statusCode":503,"elapsedMs":5.2983339999991586,"msg":"http request completed"}
+166:{"level":50,"time":1794155715789,"pid":75225,"hostname":"MacBookPro","reqId":"req-1i","method":"POST","url":"/graphql","statusCode":503,"elapsedMs":0.8122910000020056,"msg":"http request completed"}
+
+## the change (git log -S): 9765d0dad8 feat(server): every node request needs a credential (autobyteus-437 slice 1, server)
+diff --git a/autobyteus-server-ts/src/memory-sync/shared/memory-sync-capability.ts b/autobyteus-server-ts/src/memory-sync/shared/memory-sync-capability.ts
+index c53e66fd7f..1ced895bb1 100644
+--- a/autobyteus-server-ts/src/memory-sync/shared/memory-sync-capability.ts
++++ b/autobyteus-server-ts/src/memory-sync/shared/memory-sync-capability.ts
+@@ -9,6 +9,8 @@ export const MEMORY_SYNC_NOT_MIGRATED_TEXT = "Memory Sync is waiting for its dat
+  */
+ export class MemorySyncNotMigratedError extends Error {
+   readonly code = MEMORY_SYNC_NOT_MIGRATED;
++  /** The HTTP status when it ends a request. */
++  readonly statusCode = 503;
+ 
+   constructor() {
+     super(MEMORY_SYNC_NOT_MIGRATED_TEXT);
+
+## mercurius 16.12.1 lib/errors.js lines 52-83 (HTTP status from the first error's originalError.statusCode when there is no data)
+  let statusCode = execution.data ? 200 : (execution.statusCode || 200)
+
+  const errors = execution.errors.map((error) => {
+    log.info({ err: error }, error.message)
+
+    // it handles fastify errors MER_ERR_GQL_VALIDATION
+    if (error.originalError?.errors && Array.isArray(error.originalError.errors)) {
+      // not all errors are `GraphQLError` type, we need to convert them
+      return error.originalError.errors.map(toGraphQLError)
+    }
+
+    return error
+    // as the result of the outer map could potentially contain arrays with errors
+    // the result needs to be flattened
+    // and convert error into serializable format
+  }).reduce((acc, val) => acc.concat(val), []).map((error) => error.toJSON())
+
+  // Override status code when there is no data or statusCode present
+  if (!execution.data && typeof execution.statusCode === 'undefined' && execution.errors.length > 0) {
+    if (errors.length === 1) {
+      // If single error defined, use status code if present
+      if (typeof execution.errors[0].originalError !== 'undefined' && typeof execution.errors[0].originalError.statusCode === 'number') {
+        statusCode = execution.errors[0].originalError.statusCode
+        // Otherwise, use 200 as per graphql-over-http spec
+      } else {
+        statusCode = 200
+      }
+    }
+  }
+
+  return {
+    statusCode,
+
+## the class's own contract (memory-sync-capability.ts doc comment): 'the settings GraphQL reads and saves fail with its text, hub ingestion answers 503'

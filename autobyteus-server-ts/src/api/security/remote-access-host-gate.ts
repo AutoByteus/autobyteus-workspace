@@ -1,13 +1,11 @@
 import type { FastifyInstance } from "fastify";
-import type { RemoteAccessRejection } from "../../remote-access/domain/models.js";
 import { getRemoteAccessPairingService } from "../../remote-access/services/remote-access-pairing-service.js";
 import { getNodeBrowserAccess } from "./node-browser-access.js";
-import { refuseRemoteAccessRequest, toLoggableRequestValue } from "./remote-access-refusal.js";
+import { refuseRequest, toLoggableRequestValue, type RequestRefusal } from "./request-refusal.js";
 import { createRequestHostPolicy } from "./remote-access-request-host.js";
 import { parseRequestHostName } from "./request-host-name.js";
 
-const HOST_REFUSED: RemoteAccessRejection = {
-  ok: false,
+const HOST_REFUSED: RequestRefusal = {
   statusCode: 403,
   code: "REMOTE_ACCESS_HOST_REFUSED",
   message: "Requests addressed to this host name are not accepted by this node.",
@@ -38,6 +36,6 @@ export const registerRemoteAccessHostGate = (app: FastifyInstance): void => {
     if (await hostPolicy.isAllowed(hostHeader)) {
       return;
     }
-    return refuseRemoteAccessRequest(request, reply, HOST_REFUSED, describeRefusedHost(hostHeader ?? ""));
+    return refuseRequest(request, reply, HOST_REFUSED, describeRefusedHost(hostHeader ?? ""));
   });
 };

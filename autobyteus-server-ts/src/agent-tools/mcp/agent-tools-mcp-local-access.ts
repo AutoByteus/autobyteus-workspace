@@ -1,6 +1,6 @@
 import type { FastifyRequest } from "fastify";
 import { getNodeBrowserAccess } from "../../api/security/node-browser-access.js";
-import { isLoopbackClientAddress } from "../../api/security/remote-access-local-trust.js";
+import { isLoopbackClientAddress } from "../../node-access/domain/client-address.js";
 import {
   createToolEndpointOriginPolicy,
   type RequestOriginPolicy,

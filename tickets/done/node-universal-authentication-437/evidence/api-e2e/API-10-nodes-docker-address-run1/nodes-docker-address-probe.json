@@ -1,0 +1,380 @@
+{
+  "startedAt": "2026-11-08T17:03:42.754Z",
+  "result": "Fail",
+  "node": "v22.23.1",
+  "image": "abtest437/autobyteus-server:test",
+  "containerName": "one-nodes-api-docker-e06ac7",
+  "servers": {
+    "other": {
+      "port": 55853,
+      "baseUrl": "http://127.0.0.1:55853",
+      "nodeId": "srv_jKBQU8M43tu22tfJppE7abEFy8TOSq3n"
+    },
+    "desk": {
+      "port": 55852,
+      "baseUrl": "http://127.0.0.1:55852",
+      "nodeId": "srv__3Xz3ZwIrhNVFOxyMxveflkzvzxskqj3"
+    },
+    "docker": {
+      "port": 55854,
+      "baseUrl": "http://127.0.0.1:55854",
+      "nodeId": "srv_KUCiY0liLyB0sKc7xiqnFTNMAlLfNYhM",
+      "dockerenv": true
+    }
+  },
+  "imageDistDiff": {
+    "changed": [],
+    "onlyMounted": [],
+    "onlyImage": []
+  },
+  "cases": {
+    "ND-01": {
+      "result": "Fail",
+      "error": "Error: the Docker node on desk: {\"nodeId\":\"srv_KUCiY0liLyB0sKc7xiqnFTNMAlLfNYhM\",\"name\":\"docker\",\"baseUrl\":\"http://localhost:55854\"}\n    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/tests/e2e/nodes-docker-address-probe.mjs:66:64)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/tests/e2e/nodes-docker-address-probe.mjs:309:5\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async runCase (file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/tests/e2e/nodes-docker-address-probe.mjs:91:19)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/tests/e2e/nodes-docker-address-probe.mjs:289:3",
+      "failedExpectations": []
+    }
+  },
+  "requests": [
+    {
+      "window": "desk",
+      "at": 1794157442612,
+      "to": "desk",
+      "path": "/graphql",
+      "op": "GetUpdateNotifications",
+      "variables": {}
+    },
+    {
+      "window": "desk",
+      "at": 1794157442613,
+      "to": "desk",
+      "path": "/rest/health",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "desk",
+      "at": 1794157442633,
+      "to": "desk",
+      "path": "/graphql",
+      "op": "GetUpdateAutomationSettings",
+      "variables": {}
+    },
+    {
+      "window": "desk",
+      "at": 1794157442682,
+      "to": "desk",
+      "path": "/rest/health",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "desk",
+      "at": 1794157442683,
+      "to": "desk",
+      "path": "/rest/health",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "desk",
+      "at": 1794157442683,
+      "to": "desk",
+      "path": "/rest/health",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "desk",
+      "at": 1794157442683,
+      "to": "desk",
+      "path": "/rest/health",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "desk",
+      "at": 1794157442684,
+      "to": "desk",
+      "path": "/rest/health",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "desk",
+      "at": 1794157442684,
+      "to": "desk",
+      "path": "/rest/health",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "desk",
+      "at": 1794157442684,
+      "to": "desk",
+      "path": "/rest/health",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "desk",
+      "at": 1794157442684,
+      "to": "desk",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "variables": {}
+    },
+    {
+      "window": "desk",
+      "at": 1794157442684,
+      "to": "desk",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "desk",
+      "at": 1794157442688,
+      "to": "desk",
+      "path": "/graphql",
+      "op": "GetApplicationsCapability",
+      "variables": {}
+    },
+    {
+      "window": "desk",
+      "at": 1794157442690,
+      "to": "desk",
+      "path": "/graphql",
+      "op": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "window": "desk",
+      "at": 1794157442690,
+      "to": "desk",
+      "path": "/graphql",
+      "op": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "window": "desk",
+      "at": 1794157442690,
+      "to": "other:api.iconify.design",
+      "path": "/heroicons.json",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "desk",
+      "at": 1794157442691,
+      "to": "other:api.iconify.design",
+      "path": "/ph.json",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "desk",
+      "at": 1794157442691,
+      "to": "desk",
+      "path": "/graphql",
+      "op": "GetAllWorkspaces",
+      "variables": {}
+    },
+    {
+      "window": "desk",
+      "at": 1794157442692,
+      "to": "desk",
+      "path": "/graphql",
+      "op": "GetAgentDefinitions",
+      "variables": {}
+    },
+    {
+      "window": "desk",
+      "at": 1794157442694,
+      "to": "desk",
+      "path": "/graphql",
+      "op": "GetAgentTeamDefinitions",
+      "variables": {}
+    },
+    {
+      "window": "desk",
+      "at": 1794157442695,
+      "to": "desk",
+      "path": "/graphql",
+      "op": "GetAgentOrgDefinitions",
+      "variables": {}
+    },
+    {
+      "window": "desk",
+      "at": 1794157442695,
+      "to": "desk",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationCapability",
+      "variables": {}
+    },
+    {
+      "window": "desk",
+      "at": 1794157442696,
+      "to": "desk",
+      "path": "/rest/health",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "desk",
+      "at": 1794157443313,
+      "to": "docker",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "desk",
+      "at": 1794157443367,
+      "to": "docker",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "desk",
+      "at": 1794157443368,
+      "to": "desk",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "variables": {}
+    },
+    {
+      "window": "desk",
+      "at": 1794157443368,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationCapability",
+      "variables": {}
+    },
+    {
+      "window": "desk",
+      "at": 1794157443368,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "variables": {}
+    },
+    {
+      "window": "desk",
+      "at": 1794157443372,
+      "to": "docker",
+      "path": "/rest/node-update",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "desk",
+      "at": 1794157443372,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationCapability",
+      "variables": {}
+    },
+    {
+      "window": "desk",
+      "at": 1794157443373,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "variables": {}
+    },
+    {
+      "window": "desk",
+      "at": 1794157443562,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "SetRemoteCollaborationEnabled",
+      "variables": {
+        "enabled": true
+      }
+    },
+    {
+      "window": "desk",
+      "at": 1794157443577,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "CreatePeerInvite",
+      "variables": {}
+    },
+    {
+      "window": "desk",
+      "at": 1794157443585,
+      "to": "desk",
+      "path": "/graphql",
+      "op": "AcceptPeerInvite",
+      "variables": {
+        "inviteText": "abpi_…",
+        "name": "docker",
+        "nameOnInviter": "Embedded Node"
+      }
+    },
+    {
+      "window": "desk",
+      "at": 1794157443639,
+      "to": "desk",
+      "path": "/graphql",
+      "op": "GetPeerNodeOffer",
+      "variables": {
+        "nodeId": "srv_KUCiY0liLyB0sKc7xiqnFTNMAlLfNYhM"
+      }
+    },
+    {
+      "window": "desk",
+      "at": 1794157443640,
+      "to": "docker",
+      "path": "/rest/remote-access/status",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "desk",
+      "at": 1794157443646,
+      "to": "docker",
+      "path": "/rest/node-update",
+      "op": null,
+      "variables": null
+    },
+    {
+      "window": "desk",
+      "at": 1794157443646,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationCapability",
+      "variables": {}
+    },
+    {
+      "window": "desk",
+      "at": 1794157443647,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "GetRemoteCollaborationSettings",
+      "variables": {}
+    },
+    {
+      "window": "desk",
+      "at": 1794157443656,
+      "to": "docker",
+      "path": "/graphql",
+      "op": "GetPeerNodeAvailability",
+      "variables": {
+        "nodeId": "srv__3Xz3ZwIrhNVFOxyMxveflkzvzxskqj3"
+      }
+    }
+  ],
+  "browserErrors": [],
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true,
+    "containerLeft": null
+  },
+  "error": "Error: the Docker node on desk: {\"nodeId\":\"srv_KUCiY0liLyB0sKc7xiqnFTNMAlLfNYhM\",\"name\":\"docker\",\"baseUrl\":\"http://localhost:55854\"}\n    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/tests/e2e/nodes-docker-address-probe.mjs:66:64)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/tests/e2e/nodes-docker-address-probe.mjs:309:5\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async runCase (file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/tests/e2e/nodes-docker-address-probe.mjs:91:19)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-web/tests/e2e/nodes-docker-address-probe.mjs:289:3",
+  "finishedAt": "2026-11-08T17:04:06.212Z"
+}

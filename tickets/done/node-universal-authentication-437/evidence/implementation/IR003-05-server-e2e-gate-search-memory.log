@@ -1,0 +1,1312 @@
+# IR003-05 server-e2e-gate-search-memory
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/e2e/node-access tests/e2e/workspaces tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts tests/e2e/memory-sync/memory-sync-api.e2e.test.ts tests/e2e/remote-access tests/e2e/node-desktop --no-watch
+# Environment mode: clean
+# Commit: 0c755805d3 (branch codex/node-universal-authentication-437)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-08T17:35:57Z
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:17082) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts > Archive run history GraphQL e2e > archives inactive agent and team runs and hides them from default history without deleting disk or index data
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+
+stderr | tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts > Archive run history GraphQL e2e > archives inactive agent and team runs and hides them from default history without deleting disk or index data
+RUN_LAST_ACTIVITY_TREE_UNREADABLE agent_team 'team-archived-active': activeRoot?.getExecutionTreeSnapshot is not a function
+
+stderr | tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts > Archive run history GraphQL e2e > archives inactive agent and team runs and hides them from default history without deleting disk or index data
+RUN_LAST_ACTIVITY_TREE_UNREADABLE agent_team 'team-active': activeRoot?.getExecutionTreeSnapshot is not a function
+
+stderr | tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts > Archive run history GraphQL e2e > archives inactive agent and team runs and hides them from default history without deleting disk or index data
+RUN_LAST_ACTIVITY_TREE_UNREADABLE agent_team 'team-archived-active': activeRoot?.getExecutionTreeSnapshot is not a function
+
+stderr | tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts > Archive run history GraphQL e2e > archives inactive agent and team runs and hides them from default history without deleting disk or index data
+RUN_LAST_ACTIVITY_TREE_UNREADABLE agent_team 'team-active': activeRoot?.getExecutionTreeSnapshot is not a function
+
+stderr | tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts > Archive run history GraphQL e2e > archiveStoredAgentRunGroup (group-header Archive all) > archives every stored run of the agent in that workspace, including runs hidden by the listing cap, and nothing else
+RUN_LAST_ACTIVITY_TREE_UNREADABLE agent_team 'team-archived-active': activeRoot?.getExecutionTreeSnapshot is not a function
+
+stderr | tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts > Archive run history GraphQL e2e > archiveStoredAgentRunGroup (group-header Archive all) > archives every stored run of the agent in that workspace, including runs hidden by the listing cap, and nothing else
+RUN_LAST_ACTIVITY_TREE_UNREADABLE agent_team 'team-active': activeRoot?.getExecutionTreeSnapshot is not a function
+
+stderr | tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts > Archive run history GraphQL e2e > archiveStoredAgentRunGroup (group-header Archive all) > archives every stored run of the agent in that workspace, including runs hidden by the listing cap, and nothing else
+RUN_LAST_ACTIVITY_TREE_UNREADABLE agent_team 'team-archived-active': activeRoot?.getExecutionTreeSnapshot is not a function
+
+stderr | tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts > Archive run history GraphQL e2e > archiveStoredAgentRunGroup (group-header Archive all) > archives every stored run of the agent in that workspace, including runs hidden by the listing cap, and nothing else
+RUN_LAST_ACTIVITY_TREE_UNREADABLE agent_team 'team-active': activeRoot?.getExecutionTreeSnapshot is not a function
+
+stderr | tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts > Archive run history GraphQL e2e > archiveStoredAgentRunGroup (group-header Archive all) > archives nothing while any run of the group is live, including one hidden by the cap, and archives all after they stop
+RUN_LAST_ACTIVITY_TREE_UNREADABLE agent_team 'team-archived-active': activeRoot?.getExecutionTreeSnapshot is not a function
+
+stderr | tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts > Archive run history GraphQL e2e > archiveStoredAgentRunGroup (group-header Archive all) > archives nothing while any run of the group is live, including one hidden by the cap, and archives all after they stop
+RUN_LAST_ACTIVITY_TREE_UNREADABLE agent_team 'team-active': activeRoot?.getExecutionTreeSnapshot is not a function
+
+stderr | tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts > Archive run history GraphQL e2e > archiveStoredAgentRunGroup (group-header Archive all) > archives nothing while any run of the group is live, including one hidden by the cap, and archives all after they stop
+RUN_LAST_ACTIVITY_TREE_UNREADABLE agent_team 'team-archived-active': activeRoot?.getExecutionTreeSnapshot is not a function
+
+stderr | tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts > Archive run history GraphQL e2e > archiveStoredAgentRunGroup (group-header Archive all) > archives nothing while any run of the group is live, including one hidden by the cap, and archives all after they stop
+RUN_LAST_ACTIVITY_TREE_UNREADABLE agent_team 'team-active': activeRoot?.getExecutionTreeSnapshot is not a function
+
+stderr | tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts > Archive run history GraphQL e2e > archiveStoredAgentRunGroup (group-header Archive all) > reports a run that started after the running-run check as failed and archives the rest (AC-010)
+RUN_LAST_ACTIVITY_TREE_UNREADABLE agent_team 'team-archived-active': activeRoot?.getExecutionTreeSnapshot is not a function
+
+stderr | tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts > Archive run history GraphQL e2e > archiveStoredAgentRunGroup (group-header Archive all) > reports a run that started after the running-run check as failed and archives the rest (AC-010)
+RUN_LAST_ACTIVITY_TREE_UNREADABLE agent_team 'team-active': activeRoot?.getExecutionTreeSnapshot is not a function
+
+ ✓ tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts (6 tests) 2513ms
+     ✓ archives inactive agent and team runs and hides them from default history without deleting disk or index data  302ms
+       ✓ archives every stored run of the agent in that workspace, including runs hidden by the listing cap, and nothing else  481ms
+       ✓ archives nothing while any run of the group is live, including one hidden by the cap, and archives all after they stop  508ms
+       ✓ reports a run that started after the running-run check as failed and archives the rest (AC-010)  535ms
+       ✓ rejects an empty workspace root or agent definition id as a GraphQL error without writing anything  400ms
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:19518) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/workspaces-graphql-appdata-JfRMw0
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/workspaces-graphql-appdata-JfRMw0/.env
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > refuses a new workspace path that is not an existing absolute folder, says which, and registers nothing (autobyteus-426 AC-008)
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-h7CBRN/definitely/not/a/folder
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-h7CBRN/definitely/not/a/folder.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > refuses a new workspace path that is not an existing absolute folder, says which, and registers nothing (autobyteus-426 AC-008)
+Workspace path refused (missing): No folder exists at the workspace path. (/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-h7CBRN/definitely/not/a/folder)
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > refuses a new workspace path that is not an existing absolute folder, says which, and registers nothing (autobyteus-426 AC-008)
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-h7CBRN/hosts
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-h7CBRN/hosts.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > refuses a new workspace path that is not an existing absolute folder, says which, and registers nothing (autobyteus-426 AC-008)
+Workspace path refused (not_a_folder): The workspace path is a file, not a folder. (/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-h7CBRN/hosts)
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > refuses a new workspace path that is not an existing absolute folder, says which, and registers nothing (autobyteus-426 AC-008)
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: relative/dir
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts/relative/dir.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > refuses a new workspace path that is not an existing absolute folder, says which, and registers nothing (autobyteus-426 AC-008)
+Workspace path refused (not_absolute): Workspace path must be an absolute path. (relative/dir)
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > refuses a new workspace path that is not an existing absolute folder, says which, and registers nothing (autobyteus-426 AC-008)
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-h7CBRN/test_ws_root
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-h7CBRN/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > refuses a new workspace path that is not an existing absolute folder, says which, and registers nothing (autobyteus-426 AC-008)
+Created and registered workspace ID: agent_ws_505f22d2dd2e3187ee413d5251c8bcf025ae59039b30f7547f03c36134b18ca4
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > refuses a new workspace path that is not an existing absolute folder, says which, and registers nothing (autobyteus-426 AC-008)
+Closing FileSystemWorkspace agent_ws_505f22d2dd2e3187ee413d5251c8bcf025ae59039b30f7547f03c36134b18ca4
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps accepting a registered workspace whose folder was deleted (autobyteus-426 AC-008, DEC-004)
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-1WSLyU/test_ws_root
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-1WSLyU/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps accepting a registered workspace whose folder was deleted (autobyteus-426 AC-008, DEC-004)
+Created and registered workspace ID: agent_ws_eab31416f123e9f938010612ac3bc46f8c4c42dfa5f9b74b86909ccc3256d687
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps accepting a registered workspace whose folder was deleted (autobyteus-426 AC-008, DEC-004)
+Closing FileSystemWorkspace agent_ws_eab31416f123e9f938010612ac3bc46f8c4c42dfa5f9b74b86909ccc3256d687
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps accepting a registered workspace whose folder was deleted (autobyteus-426 AC-008, DEC-004)
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-1WSLyU/test_ws_root
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-1WSLyU/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps accepting a registered workspace whose folder was deleted (autobyteus-426 AC-008, DEC-004)
+Created and registered workspace ID: agent_ws_eab31416f123e9f938010612ac3bc46f8c4c42dfa5f9b74b86909ccc3256d687
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps accepting a registered workspace whose folder was deleted (autobyteus-426 AC-008, DEC-004)
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-h7CBRN/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps accepting a registered workspace whose folder was deleted (autobyteus-426 AC-008, DEC-004)
+Closing FileSystemWorkspace agent_ws_eab31416f123e9f938010612ac3bc46f8c4c42dfa5f9b74b86909ccc3256d687
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists workspaces
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-O6AXcZ/test_ws_root
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-O6AXcZ/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists workspaces
+Created and registered workspace ID: agent_ws_98f5587768b7c15a935577b1a8233e114b1c74c6fb233c4e29596d1a625f8401
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists workspaces
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/workspaces-graphql-appdata-JfRMw0/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/workspaces-graphql-appdata-JfRMw0/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/workspaces-graphql-appdata-JfRMw0/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists workspaces
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-1WSLyU/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-h7CBRN/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists workspaces
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-1WSLyU/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-h7CBRN/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists workspaces
+Closing FileSystemWorkspace agent_ws_98f5587768b7c15a935577b1a8233e114b1c74c6fb233c4e29596d1a625f8401
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists workspaces
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > removes a registered workspace from visibility, preserves files, and re-adds the same root
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-PHEEyk/test_ws_root
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-PHEEyk/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > removes a registered workspace from visibility, preserves files, and re-adds the same root
+Created and registered workspace ID: agent_ws_c1c0ae0a3770e15d477ca2f654c56b066c9d3b8da5b01a73a90843dbee570485
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > removes a registered workspace from visibility, preserves files, and re-adds the same root
+GraphQL mutation to remove registered workspace
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > removes a registered workspace from visibility, preserves files, and re-adds the same root
+Closing FileSystemWorkspace agent_ws_c1c0ae0a3770e15d477ca2f654c56b066c9d3b8da5b01a73a90843dbee570485
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > removes a registered workspace from visibility, preserves files, and re-adds the same root
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/workspaces-graphql-appdata-JfRMw0/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/workspaces-graphql-appdata-JfRMw0/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/workspaces-graphql-appdata-JfRMw0/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > removes a registered workspace from visibility, preserves files, and re-adds the same root
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-1WSLyU/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-h7CBRN/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-O6AXcZ/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > removes a registered workspace from visibility, preserves files, and re-adds the same root
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-PHEEyk/test_ws_root
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-PHEEyk/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > removes a registered workspace from visibility, preserves files, and re-adds the same root
+Created and registered workspace ID: agent_ws_c1c0ae0a3770e15d477ca2f654c56b066c9d3b8da5b01a73a90843dbee570485
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > removes a registered workspace from visibility, preserves files, and re-adds the same root
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-1WSLyU/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-h7CBRN/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-O6AXcZ/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > removes a registered workspace from visibility, preserves files, and re-adds the same root
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-1WSLyU/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-h7CBRN/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-O6AXcZ/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > removes a registered workspace from visibility, preserves files, and re-adds the same root
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > removes a registered workspace from visibility, preserves files, and re-adds the same root
+Closing FileSystemWorkspace agent_ws_c1c0ae0a3770e15d477ca2f654c56b066c9d3b8da5b01a73a90843dbee570485
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps a workspace registered when removeWorkspace is blocked by an active standalone run
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-e9LZs8/test_ws_root
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-e9LZs8/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps a workspace registered when removeWorkspace is blocked by an active standalone run
+Created and registered workspace ID: agent_ws_25fe7fe0b7840f05da88230a55a54b2e2ac6c399d1a826db21b02f5c5e4e27d1
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps a workspace registered when removeWorkspace is blocked by an active standalone run
+GraphQL mutation to remove registered workspace
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps a workspace registered when removeWorkspace is blocked by an active standalone run
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/workspaces-graphql-appdata-JfRMw0/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/workspaces-graphql-appdata-JfRMw0/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/workspaces-graphql-appdata-JfRMw0/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps a workspace registered when removeWorkspace is blocked by an active standalone run
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-1WSLyU/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-h7CBRN/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-O6AXcZ/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-PHEEyk/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps a workspace registered when removeWorkspace is blocked by an active standalone run
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-1WSLyU/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-h7CBRN/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-O6AXcZ/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-PHEEyk/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps a workspace registered when removeWorkspace is blocked by an active standalone run
+Closing FileSystemWorkspace agent_ws_25fe7fe0b7840f05da88230a55a54b2e2ac6c399d1a826db21b02f5c5e4e27d1
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps a workspace registered when removeWorkspace is blocked by an active standalone run
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > returns workspace metadata from createWorkspace without acquiring file explorer
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-sVdLjl/test_ws_root
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-sVdLjl/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > returns workspace metadata from createWorkspace without acquiring file explorer
+Created and registered workspace ID: agent_ws_5a280a331c789fde924c0997cb30f5966022605dc18c8f9cd5126cb3dc43c17a
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > returns workspace metadata from createWorkspace without acquiring file explorer
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-1WSLyU/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-e9LZs8/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-h7CBRN/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-O6AXcZ/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-PHEEyk/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > returns workspace metadata from createWorkspace without acquiring file explorer
+Closing FileSystemWorkspace agent_ws_5a280a331c789fde924c0997cb30f5966022605dc18c8f9cd5126cb3dc43c17a
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > resolves deterministic workspace metadata without initializing the workspace
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-JOtePI/test_ws_root
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-JOtePI/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > resolves deterministic workspace metadata without initializing the workspace
+Created and registered workspace ID: agent_ws_476b5db976eb8f8179b734d5150ef4fb1b8d2f5b6d32e508400488825d9f20d5
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > resolves deterministic workspace metadata without initializing the workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-1WSLyU/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-e9LZs8/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-h7CBRN/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-O6AXcZ/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-PHEEyk/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-sVdLjl/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > resolves deterministic workspace metadata without initializing the workspace
+Closing FileSystemWorkspace agent_ws_476b5db976eb8f8179b734d5150ef4fb1b8d2f5b6d32e508400488825d9f20d5
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists the temp workspace with the backend-selected app-data-relative path
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-AaPeKT/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-AaPeKT/server-data/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-AaPeKT/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists the temp workspace with the backend-selected app-data-relative path
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > lists only temp_ws_default for the configured temp root and cleans duplicate persisted filesystem entries
+Removed 1 persisted filesystem registry entry for the configured temp workspace root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > lists only temp_ws_default for the configured temp root and cleans duplicate persisted filesystem entries
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-jodRpl/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-jodRpl/server-data/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-jodRpl/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > lists only temp_ws_default for the configured temp root and cleans duplicate persisted filesystem entries
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-jodRpl/regular_ws.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > lists only temp_ws_default for the configured temp root and cleans duplicate persisted filesystem entries
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-jodRpl/regular_ws.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > lists only temp_ws_default for the configured temp root and cleans duplicate persisted filesystem entries
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > resolves createWorkspace for the configured temp root to temp_ws_default without persisting a filesystem entry
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-CICAP7/server-data/temp_workspace/.
+Resolved configured temp workspace root to TempWorkspace.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > resolves createWorkspace for the configured temp root to temp_ws_default without persisting a filesystem entry
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-CICAP7/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-CICAP7/server-data/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-CICAP7/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > resolves createWorkspace for the configured temp root to temp_ws_default without persisting a filesystem entry
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > preserves a seeded registry when GraphQL workspace listing and creation overlap
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-tFYgs9/created-during-list
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-tFYgs9/created-during-list.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > preserves a seeded registry when GraphQL workspace listing and creation overlap
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-tFYgs9/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-tFYgs9/server-data/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-tFYgs9/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > preserves a seeded registry when GraphQL workspace listing and creation overlap
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-tFYgs9/existing-a.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-tFYgs9/existing-b.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-tFYgs9/existing-c.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > preserves a seeded registry when GraphQL workspace listing and creation overlap
+Created and registered workspace ID: agent_ws_106cb22d6224b7e88c68a137426b2529442c06b0ea02139b038f80ef3a22f4e2
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > preserves a seeded registry when GraphQL workspace listing and creation overlap
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-tFYgs9/existing-a.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-tFYgs9/existing-b.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-tFYgs9/existing-c.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > preserves a seeded registry when GraphQL workspace listing and creation overlap
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > preserves a seeded registry when GraphQL workspace listing and creation overlap
+Closing FileSystemWorkspace agent_ws_106cb22d6224b7e88c68a137426b2529442c06b0ea02139b038f80ef3a22f4e2
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > rejects removing the default temp workspace
+GraphQL mutation to remove registered workspace
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > rejects removing the default temp workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-1WSLyU/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-e9LZs8/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-h7CBRN/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-JOtePI/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-O6AXcZ/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-PHEEyk/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-sVdLjl/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists the temp workspace using the configured relative override under app data dir
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-HQJebz/server-data
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-HQJebz/server-data/.env
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists the temp workspace using the configured relative override under app data dir
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-HQJebz/server-data/isolated-temp-workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-HQJebz/server-data/isolated-temp-workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-HQJebz/server-data/isolated-temp-workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists the temp workspace using the configured relative override under app data dir
+Closing FileSystemWorkspace temp_ws_default
+
+ ✓ tests/e2e/workspaces/workspaces-graphql.e2e.test.ts (13 tests) 110ms
+(node:20749) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts > searchFiles through the node access gate
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-gate-YumyDD
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-gate-YumyDD/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-gate-YumyDD/.env
+◇ injected env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-gate-YumyDD/.env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-gate-YumyDD
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-gate-YumyDD/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-gate-YumyDD/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-gate-YumyDD/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-gate-YumyDD/memory
+============================================================
+Initialized server settings service with 32 predefined settings
+
+stderr | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts > searchFiles through the node access gate
+Node access: local control socket not opened. The node's local control socket path is 104 bytes, longer than the 103 bytes a Unix socket path may have: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-gate-YumyDD/node-access/local-control.sock. Use a shorter data folder path.
+
+stdout | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts > searchFiles through the node access gate
+AgentRunManager initialized.
+
+stdout | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts > searchFiles through the node access gate
+AgentRunManager initialized.
+
+stdout | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts > searchFiles through the node access gate
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts > searchFiles through the node access gate
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts > searchFiles through the node access gate
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-gate-YumyDD/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-gate-YumyDD/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-gate-YumyDD/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts > searchFiles through the node access gate
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts > searchFiles through the node access gate
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts > searchFiles through the node access gate
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts > searchFiles through the node access gate
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+stdout | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts > searchFiles through the node access gate
+Registered required tool unit: Project Task Tools
+
+stdout | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts > searchFiles through the node access gate
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts > searchFiles through the node access gate
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts > searchFiles through the node access gate
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts > searchFiles through the node access gate
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+
+stdout | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts > searchFiles through the node access gate
+Registered required tool unit: Agent Discovery Tools
+
+stdout | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts > searchFiles through the node access gate
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts > searchFiles through the node access gate
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts > searchFiles through the node access gate
+Successfully registered tool definition: 'search_memory'
+
+stdout | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts > searchFiles through the node access gate
+Registered required tool unit: Memory Tools
+
+stdout | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts > searchFiles through the node access gate
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+stdout | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts > searchFiles through the node access gate
+Registered required tool unit: Agent Runtime Tools
+
+stdout | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts > searchFiles through the node access gate
+Registered required tool unit: Browser Tools
+
+stdout | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts > searchFiles through the node access gate
+Successfully registered tool definition: 'search_web'
+
+stderr | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts > searchFiles through the node access gate
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts > searchFiles through the node access gate
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts > searchFiles through the node access gate > finds a workspace file for the owner and for a paired phone
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-workspace-naxdGj
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-workspace-naxdGj.
+
+stdout | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts > searchFiles through the node access gate > finds a workspace file for the owner and for a paired phone
+Created and registered workspace ID: agent_ws_a2fd369f93fd1f8173a458d7de86e4533c74de1f2ffb695f1c41c7c0565a6242
+
+stdout | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts > searchFiles through the node access gate > finds a workspace file for the owner and for a paired phone
+Created WorkspaceFileExplorer for agent_ws_a2fd369f93fd1f8173a458d7de86e4533c74de1f2ffb695f1c41c7c0565a6242 (graphql-search).
+
+stdout | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts > searchFiles through the node access gate > finds a workspace file for the owner and for a paired phone
+Starting directory traversal for: '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-workspace-naxdGj' with max_depth=null
+
+stdout | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts > searchFiles through the node access gate > finds a workspace file for the owner and for a paired phone
+Directory traversal for '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-workspace-naxdGj' completed in 0.0010 seconds.
+
+stdout | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts > searchFiles through the node access gate > finds a workspace file for the owner and for a paired phone
+FileNameIndexer refreshing snapshot index...
+
+stdout | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts > searchFiles through the node access gate > finds a workspace file for the owner and for a paired phone
+[Search] Trying strategy: FuzzysortSearchStrategy for query 'app'
+
+stdout | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts > searchFiles through the node access gate > finds a workspace file for the owner and for a paired phone
+[Search] FuzzysortSearchStrategy completed in 0.43ms, found 1 results (total: 0.44ms)
+
+stdout | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts > searchFiles through the node access gate > finds a workspace file for the owner and for a paired phone
+Starting directory traversal for: '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-workspace-naxdGj' with max_depth=null
+
+stdout | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts > searchFiles through the node access gate > finds a workspace file for the owner and for a paired phone
+Directory traversal for '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/search-files-workspace-naxdGj' completed in 0.0010 seconds.
+
+stdout | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts > searchFiles through the node access gate > finds a workspace file for the owner and for a paired phone
+FileNameIndexer refreshing snapshot index...
+
+stdout | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts > searchFiles through the node access gate > finds a workspace file for the owner and for a paired phone
+[Search] Trying strategy: FuzzysortSearchStrategy for query 'app'
+
+stdout | tests/e2e/workspaces/search-files-through-gate.e2e.test.ts > searchFiles through the node access gate > finds a workspace file for the owner and for a paired phone
+[Search] FuzzysortSearchStrategy completed in 0.05ms, found 1 results (total: 0.06ms)
+
+ ✓ tests/e2e/workspaces/search-files-through-gate.e2e.test.ts (1 test) 311ms
+(node:21944) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-sync-held-back-RnBJF6
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-sync-held-back-RnBJF6/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-sync-held-back-RnBJF6/.env
+◇ injected env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-sync-held-back-RnBJF6/.env // tip: ◈ secrets for agents [www.dotenvx.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-sync-held-back-RnBJF6
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-sync-held-back-RnBJF6/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-sync-held-back-RnBJF6/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-sync-held-back-RnBJF6/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-sync-held-back-RnBJF6/memory
+============================================================
+Initialized server settings service with 32 predefined settings
+
+stderr | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Node access: local control socket not opened. The node's local control socket path is 108 bytes, longer than the 103 bytes a Unix socket path may have: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-sync-held-back-RnBJF6/node-access/local-control.sock. Use a shorter data folder path.
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+AgentRunManager initialized.
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+AgentRunManager initialized.
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-sync-held-back-RnBJF6/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-sync-held-back-RnBJF6/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-sync-held-back-RnBJF6/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Registered required tool unit: Project Task Tools
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Registered required tool unit: Agent Discovery Tools
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Successfully registered tool definition: 'search_memory'
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Registered required tool unit: Memory Tools
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Registered required tool unit: Agent Runtime Tools
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Registered required tool unit: Browser Tools
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Successfully registered tool definition: 'search_web'
+
+stderr | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts > Memory Sync settings while held back
+Registered required tool unit: Search Tools
+
+ ✓ tests/e2e/memory-sync/memory-sync-held-back-graphql.e2e.test.ts (1 test) 192ms
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:21947) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-2BlVGZ
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-2BlVGZ/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-2BlVGZ/.env
+◇ injected env (4) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-2BlVGZ/.env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+Environment variables loaded successfully
+Server public base URL configured to: http://studio-node.company.example:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://studio-node.company.example:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-2BlVGZ
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-2BlVGZ/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-2BlVGZ/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-2BlVGZ/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-2BlVGZ/memory
+============================================================
+Initialized server settings service with 32 predefined settings
+
+stderr | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Node access: local control socket not opened. The node's local control socket path is 118 bytes, longer than the 103 bytes a Unix socket path may have: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-2BlVGZ/node-access/local-control.sock. Use a shorter data folder path.
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+AgentRunManager initialized.
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+AgentRunManager initialized.
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-2BlVGZ/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-2BlVGZ/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/request-origin-and-phone-routes-2BlVGZ/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registered required tool unit: Project Task Tools
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully registered tool definition: 'search_memory'
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registered required tool unit: Memory Tools
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registered required tool unit: Agent Discovery Tools
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registered required tool unit: Agent Runtime Tools
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registered required tool unit: Browser Tools
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > NAS-05 accepts a phone credential on every phone WebSocket route (AC-005)
+Agent websocket attached for run phone-probe
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > NAS-05 accepts a phone credential on every phone WebSocket route (AC-005)
+Agent team websocket attached for team run phone-probe
+
+stdout | tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts > Node allowed-origin gate and phone WebSocket routes > NAS-05 accepts a phone credential on every phone WebSocket route (AC-005)
+File explorer websocket attached for workspace phone-probe
+
+ ✓ tests/e2e/remote-access/request-origin-and-phone-routes.e2e.test.ts (11 tests) 4838ms
+     ✓ accepts each allowed-origin class and refuses near misses (AC-002)  2863ms
+     ✓ NAS-05 accepts a phone credential on every phone WebSocket route (AC-005)  831ms
+     ✓ accepts every allowed-host class, configured name and paired-phone host, and refuses other public names (416 AC-002, AC-003)  840ms
+(node:24384) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/node-access/node-access-model.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/e2e/node-access/node-access-model.e2e.test.ts (23 tests) 1985ms
+     ✓ NAS-01 the launch owner credential opens GraphQL, REST and a WebSocket route  1509ms
+stdout | tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts > Phone Access running REST route behavior > keeps active and revoked device routes separate while proving HTTPS and trusted LAN HTTP QR policy
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-phone-access-routes-6J2QH9
+
+stderr | tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts > Phone Access running REST route behavior > keeps active and revoked device routes separate while proving HTTPS and trusted LAN HTTP QR policy
+Node request refused NODE_ROUTE_NOT_PERMITTED /rest/remote-access/devices/revoked from 100.64.1.2
+
+stderr | tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts > Phone Access running REST route behavior > keeps active and revoked device routes separate while proving HTTPS and trusted LAN HTTP QR policy
+Node request refused REMOTE_ACCESS_DEVICE_REVOKED /rest/protected-probe from 100.64.1.2
+
+stdout | tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts > Phone Access running REST route behavior > NAS-14 serves the status without a credential, and owner management and protected routes only with the owner credential
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-phone-access-routes-YyCB3a
+
+stderr | tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts > Phone Access running REST route behavior > NAS-14 serves the status without a credential, and owner management and protected routes only with the owner credential
+Node request refused NODE_CREDENTIAL_REQUIRED /rest/remote-access/settings from 100.64.1.2
+
+stderr | tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts > Phone Access running REST route behavior > NAS-14 serves the status without a credential, and owner management and protected routes only with the owner credential
+Node request refused NODE_CREDENTIAL_REQUIRED /rest/protected-probe from 100.64.1.2
+
+stderr | tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts > Phone Access running REST route behavior > NAS-14 serves the status without a credential, and owner management and protected routes only with the owner credential
+Node request refused NODE_CREDENTIAL_REQUIRED /graphql from 100.64.1.2
+
+stdout | tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts > Phone Access running REST route behavior > serves the node's network facts, remembers an allowed local network, discards a session by its ID and records each phone's way
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-phone-access-routes-Sq3ebW
+
+stdout | tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts > Phone Access running REST route behavior > serves the node's network facts, remembers an allowed local network, discards a session by its ID and records each phone's way
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-phone-access-routes-Sq3ebW/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-phone-access-routes-Sq3ebW/.env
+◇ injected env (1) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-phone-access-routes-Sq3ebW/.env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-phone-access-routes-Sq3ebW
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-phone-access-routes-Sq3ebW/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-phone-access-routes-Sq3ebW/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-phone-access-routes-Sq3ebW/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-phone-access-routes-Sq3ebW/memory
+============================================================
+
+stderr | tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts > Phone Access running REST route behavior > serves the node's network facts, remembers an allowed local network, discards a session by its ID and records each phone's way
+Node request refused NODE_ROUTE_NOT_PERMITTED /rest/remote-access/network from 192.168.1.30
+
+stderr | tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts > Phone Access running REST route behavior > serves the node's network facts, remembers an allowed local network, discards a session by its ID and records each phone's way
+Remote Access: last-seen of paired device device_4d4a7870ba5100b960c15cb50c5c77e1 was not saved: Error: EINVAL: invalid argument, open '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-phone-access-routes-Sq3ebW/remote-access/paired-devices.json.26815.1794159384978.2f88b7d4059b2.tmp'
+
+ ✓ tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts (3 tests) 522ms
+     ✓ keeps active and revoked device routes separate while proving HTTPS and trusted LAN HTTP QR policy  399ms
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > GET /rest/node-desktop reports a node desktop exactly on a Docker node
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-node-desktop-routes-PjazSW
+
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > NAS-01 streams the node desktop to the owner's desktop in either mode
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-node-desktop-routes-4GqldH
+
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > NAS-01 streams the node desktop to the owner's desktop in either mode
+[node-desktop] stream ended mode=control viewer=owner durationMs=3 toViewer=12 fromViewer=0 reason=viewer-closed
+
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > refuses every other query with 4400 before any desktop connection (AC-003)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-node-desktop-routes-9wDxPu
+
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > answers 4404 NODE_DESKTOP_UNAVAILABLE on a node without a node desktop
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-node-desktop-routes-Z8bFzB
+
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > NAS-12 NAS-10 refuses invalid, revoked and disabled phone credentials before any desktop connection (AC-005)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-node-desktop-routes-omIKR9
+
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > refuses a 5th stream node-wide with 4429 before any desktop connection (AC-021)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-node-desktop-routes-kfZddn
+
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > refuses a 5th stream node-wide with 4429 before any desktop connection (AC-021)
+[node-desktop] stream ended mode=view viewer=owner durationMs=213 toViewer=12 fromViewer=0 reason=viewer-closed
+
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > refuses a 5th stream node-wide with 4429 before any desktop connection (AC-021)
+[node-desktop] stream ended mode=view viewer=owner durationMs=213 toViewer=12 fromViewer=0 reason=viewer-closed
+
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > refuses a 5th stream node-wide with 4429 before any desktop connection (AC-021)
+[node-desktop] stream ended mode=view viewer=owner durationMs=214 toViewer=12 fromViewer=0 reason=viewer-closed
+
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > refuses a 5th stream node-wide with 4429 before any desktop connection (AC-021)
+[node-desktop] stream ended mode=view viewer=owner durationMs=5 toViewer=12 fromViewer=0 reason=viewer-closed
+
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > refuses a 3rd stream from one phone with 4429 while other viewers still fit (AC-021)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-node-desktop-routes-KhD4lm
+
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > refuses a 3rd stream from one phone with 4429 while other viewers still fit (AC-021)
+[node-desktop] stream ended mode=view viewer=phone durationMs=4 toViewer=12 fromViewer=0 reason=viewer-closed
+
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > refuses a 3rd stream from one phone with 4429 while other viewers still fit (AC-021)
+[node-desktop] stream ended mode=view viewer=phone durationMs=7 toViewer=12 fromViewer=0 reason=viewer-closed
+
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > refuses a 3rd stream from one phone with 4429 while other viewers still fit (AC-021)
+[node-desktop] stream ended mode=view viewer=owner durationMs=2 toViewer=12 fromViewer=0 reason=viewer-closed
+
+stderr | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > NAS-37 ends an open phone stream at once when the phone is revoked; a reconnect is refused (AC-012)
+Remote Access: last-seen of paired device device_8b19e34a5df56fd7ee841ca049193e95 was not saved: Error: EINVAL: invalid argument, rename '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-node-desktop-routes-KhD4lm/remote-access/paired-devices.json.26822.1794159385571.a57e223127189.tmp' -> '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-node-desktop-routes-KhD4lm/remote-access/paired-devices.json'
+
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > NAS-37 ends an open phone stream at once when the phone is revoked; a reconnect is refused (AC-012)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-node-desktop-routes-HHxjAV
+
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > NAS-37 ends an open phone stream at once when the phone is revoked; a reconnect is refused (AC-012)
+[node-desktop] stream ended mode=view viewer=owner durationMs=20 toViewer=12 fromViewer=0 reason=viewer-closed
+
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > NAS-37 ends an open phone stream at once when the phone is revoked; a reconnect is refused (AC-012)
+[node-desktop] stream ended mode=view viewer=phone durationMs=21 toViewer=12 fromViewer=0 reason=viewer-closed
+
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > NAS-37 ends open phone streams at once when Phone Access is turned off (AC-012)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-node-desktop-routes-7EvPiX
+
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > NAS-37 ends open phone streams at once when Phone Access is turned off (AC-012)
+[node-desktop] stream ended mode=control viewer=phone durationMs=11 toViewer=12 fromViewer=0 reason=viewer-closed
+
+stdout | tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts > node desktop routes > NAS-37 ends open phone streams at once when Phone Access is turned off (AC-012)
+[node-desktop] stream ended mode=view viewer=owner durationMs=11 toViewer=12 fromViewer=0 reason=viewer-closed
+
+ ✓ tests/e2e/node-desktop/node-desktop-routes.e2e.test.ts (9 tests) 478ms
+stdout | tests/e2e/memory-sync/memory-sync-api.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:26823) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/memory-sync/memory-sync-api.e2e.test.ts > Memory Sync public API and imported memory e2e
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-memory-sync-api-xBfd63
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-memory-sync-api-xBfd63/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-memory-sync-api-xBfd63/.env
+◇ injected env (1) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-memory-sync-api-xBfd63/.env // tip: ◈ encrypted .env [www.dotenvx.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:37654
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:37654
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-memory-sync-api-xBfd63
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-memory-sync-api-xBfd63/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-memory-sync-api-xBfd63/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-memory-sync-api-xBfd63/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-memory-sync-api-xBfd63/memory
+============================================================
+
+stdout | tests/e2e/memory-sync/memory-sync-api.e2e.test.ts > Memory Sync public API and imported memory e2e > configures hub/source, syncs local memory through GraphQL to REST, and exposes imported memory by explicit source
+Initialized server settings service with 32 predefined settings
+
+stderr | tests/e2e/memory-sync/memory-sync-api.e2e.test.ts > Memory Sync public API and imported memory e2e > configures hub/source, syncs local memory through GraphQL to REST, and exposes imported memory by explicit source
+Node request refused NODE_CREDENTIAL_INVALID /rest/memory-sync/v1/batches from 127.0.0.1
+
+ ✓ tests/e2e/memory-sync/memory-sync-api.e2e.test.ts (1 test) 315ms
+stdout | tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:26824) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts > Workspace run history GraphQL e2e > returns grouped agent and team definitions for workspace history
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+
+ ✓ tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts (6 tests) 62ms
+(node:26831) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts > Run launch in an unregistered missing workspace folder
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/workspace-path-refusal-run-018duP
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/workspace-path-refusal-run-018duP/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/workspace-path-refusal-run-018duP/.env
+◇ injected env (2) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/workspace-path-refusal-run-018duP/.env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/node-universal-authentication-437/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/workspace-path-refusal-run-018duP
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/workspace-path-refusal-run-018duP/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/workspace-path-refusal-run-018duP/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/workspace-path-refusal-run-018duP/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/workspace-path-refusal-run-018duP/memory
+============================================================
+Initialized server settings service with 32 predefined settings
+
+stderr | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts > Run launch in an unregistered missing workspace folder
+Node access: local control socket not opened. The node's local control socket path is 121 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/workspace-path-refusal-run-018duP/node-access/local-control.sock. Use a shorter data folder path.
+
+stdout | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts > Run launch in an unregistered missing workspace folder
+AgentRunManager initialized.
+
+stdout | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts > Run launch in an unregistered missing workspace folder
+AgentRunManager initialized.
+
+stdout | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts > Run launch in an unregistered missing workspace folder
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts > Run launch in an unregistered missing workspace folder
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts > Run launch in an unregistered missing workspace folder
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/workspace-path-refusal-run-018duP/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/workspace-path-refusal-run-018duP/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/workspace-path-refusal-run-018duP/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts > Run launch in an unregistered missing workspace folder
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts > Run launch in an unregistered missing workspace folder
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts > Run launch in an unregistered missing workspace folder
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts > Run launch in an unregistered missing workspace folder
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+stdout | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts > Run launch in an unregistered missing workspace folder
+Registered required tool unit: Project Task Tools
+
+stdout | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts > Run launch in an unregistered missing workspace folder
+Successfully registered tool definition: 'search_memory'
+
+stdout | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts > Run launch in an unregistered missing workspace folder
+Registered required tool unit: Memory Tools
+
+stdout | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts > Run launch in an unregistered missing workspace folder
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts > Run launch in an unregistered missing workspace folder
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts > Run launch in an unregistered missing workspace folder
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts > Run launch in an unregistered missing workspace folder
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+
+stdout | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts > Run launch in an unregistered missing workspace folder
+Registered required tool unit: Agent Discovery Tools
+
+stdout | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts > Run launch in an unregistered missing workspace folder
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts > Run launch in an unregistered missing workspace folder
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts > Run launch in an unregistered missing workspace folder
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+stdout | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts > Run launch in an unregistered missing workspace folder
+Registered required tool unit: Agent Runtime Tools
+
+stdout | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts > Run launch in an unregistered missing workspace folder
+Registered required tool unit: Browser Tools
+
+stdout | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts > Run launch in an unregistered missing workspace folder
+Successfully registered tool definition: 'search_web'
+
+stderr | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts > Run launch in an unregistered missing workspace folder
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts > Run launch in an unregistered missing workspace folder
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts > Run launch in an unregistered missing workspace folder > refuses the launch at workspace registration with the folder reason and registers nothing
+Agent Definition created successfully with ID: workspace-path-refusal-fixture
+
+stdout | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts > Run launch in an unregistered missing workspace folder > refuses the launch at workspace registration with the folder reason and registers nothing
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/workspace-path-refusal-run-018duP/deleted-project
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/workspace-path-refusal-run-018duP/deleted-project.
+
+stderr | tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts > Run launch in an unregistered missing workspace folder > refuses the launch at workspace registration with the folder reason and registers nothing
+Error in createAgentRun: WorkspacePathRefusedError: No folder exists at the workspace path. (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/workspace-path-refusal-run-018duP/deleted-project)
+
+ ✓ tests/e2e/workspaces/workspace-path-refusal-run-launch.e2e.test.ts (1 test) 239ms
+
+ Test Files  11 passed (11)
+      Tests  75 passed (75)
+   Start at  18:35:58
+   Duration  32.14s (transform 6.19s, setup 250ms, import 19.09s, tests 11.56s, environment 1ms)
+
+# Exit status: 0
