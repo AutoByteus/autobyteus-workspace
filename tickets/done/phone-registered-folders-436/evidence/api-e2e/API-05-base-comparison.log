@@ -1,0 +1,71 @@
+# API-05 base comparison: the 15 failing files on base 97ed263074 (origin/personal), temporary worktree /tmp/abtest436/base-wt (removed), its own pnpm install --frozen-lockfile and server build, clean env; 2026-11-09T05:48:28Z
+install exit 0
+build exit 0
+base e2e exit 1
+
+## failing files: branch vs base
+identical 15 files:
+tests/e2e/agent-team-runs/task-delegation-api-surface.e2e.test.ts
+tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts
+tests/e2e/projects/project-mutation-node-locality.e2e.test.ts
+tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts
+tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts
+tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts
+tests/e2e/runtime/application-import-codex-launch.e2e.test.ts
+tests/e2e/runtime/application-reload-repair.e2e.test.ts
+tests/e2e/runtime/autobyteus-anthropic-stored-config-edit-launch.e2e.test.ts
+tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts
+tests/e2e/runtime/available-agent-runtimes-graphql.e2e.test.ts
+tests/e2e/tool-management/mcp-http-auth-remote-server.e2e.test.ts
+tests/e2e/tool-management/mcp-http-redirect-and-transport.e2e.test.ts
+tests/e2e/tool-management/mcp-secrets-in-vault.e2e.test.ts
+tests/e2e/update-notifications/agent-runtime-update-notifications.e2e.test.ts
+
+## base summary
+ Test Files  15 failed (15)
+      Tests  40 failed | 2 passed | 20 skipped (62)
+
+## per-test comparison: tests failing on the branch and passing on base: 0; failing on the branch and skipped on base: 11 (application reload/repair and running-agents cases; the base worktree has no built Brief Studio package, so they skip there)
+## failure kinds: branch 9 x 'expected 401 to be 200', 1 x MCP_GATEWAY_TOKEN_REQUIRED, 25 x undefined GraphQL data; base 7 / 1 / 19
+
+## base failing test lines
+     × AAR-01 lists the four runtimes and AutoByteus' keyed providers, each with models and live limits, read with 0 tokens (AC-001, AC-003…AC-007, AC-009) 26ms
+     × AAR-02 leaves out signed-out and missing runtimes and providers without a key; marks a sign-in it could not check (REQ-002, REQ-007) 4ms
+     × AAR-03 slow steps end at their own deadlines: the answer arrives within 20 s, the hung processes are stopped and the next read works (AC-008, AC-011) 3ms
+     × AAR-04 over Agent Tools MCP: a Codex run whose definition lists the tool gets the same report; one whose definition does not, does not; several readers at once share one read and all get Codex
+     × AAR-06 discovered providers are asked on every read: LM Studio answering is listed, not answering is left out; a keyed custom endpoint not answering is listed with its models unknown (AC-007, 
+     × AR-01 lists the five runtimes and checks each on its own: one source failing, one slow, one not installed (AC-001, AC-002, AC-005, AC-006, AC-009, QR-002) 29ms
+     × AR-02 Check again re-reads every row; the source that failed recovers (AC-002, SCN-A1) 3ms
+     × AR-03 Update runs the vendor's updater with progress, then 'Updated from X to Y.' that the automatic re-check keeps (AC-003, AR-006) 5ms
+     × AR-04 Update that exits 0 without a newer version is a failure with the vendor's text, version unchanged (AC-003) 4ms
+     × AR-05 Update failure shows the vendor's message without terminal codes; Try again runs it again; busy is refused (AC-003) 5ms
+     × AR-06 refuses what the page never offers, with codes and safe messages 4ms
+     × AR-07 Sign in starts the runtime's own login, passes nothing of it to the client, and ends Signed in (AC-007, AC-011) 3ms
+     × AR-08 Cancel stops the login process and returns the row to Sign in (AC-007 cancel, QR-003) 9ms
+     × AR-09 a runtime installed later appears on the next check; a login that never finishes times out, even ignoring SIGTERM (AC-005, AC-007 time-out, QR-003) 5ms
+     × AR-10 Codex with no OpenAI sign-in required shows no account state (DEC-008); a signed-in Grok reads Signed in 6ms
+     × AR-11 no sign-in URL, code or account detail appears in any API response, log or data file (AC-011, REQ-008) 5ms
+     × AR-13 the web's AgentRuntimes document reads the rows and the node's sign-in browser fact, which polls and sign-ins never change (remote-node-runtime-sign-in REQ-002, QR-002) 2ms
+     × AR-14 shows a prerelease as it is and orders it by SemVer precedence: update available, updated to the release, newer than the latest (autobyteus-393 AC-001, AC-002, AC-005) 5ms
+     × AR-12 closing the server stops a running vendor process (QR-003, SCN-A4) 4ms
+     × sends the header or token on preview, save, import and tool calls, and rejects token plus Authorization 328ms
+     × re-registers saved credentials at startup after a restart and keeps sending them 61869ms
+     × API-20 (AC-018, AC-005 runtimes, AR-007): the first tick checks the installed runtimes in the background; newer versions are notified, nothing is updated 28ms
+     × API-21 (AC-019, REQ-021): the panel's runtime Update is refused while that runtime's agents run; a success is handled, a failure keeps the notification 3ms
+     × API-22 (AC-020, REQ-022, REQ-009): with runtime updates on, Codex waits while its agent runs, then updates by itself; Claude's failure is recorded once 41ms
+     × refuses a cross-origin redirect, follows a same-origin one, and rejects a websocket import 2338ms
+     × starts with WebSocket-era entries in mcps.json and registers the valid entry next to them 61886ms
+     × leaves the embedding layer untouched through startup and Task and Project writes (AC-012, QR-006) 29ms
+     × keeps exact matches and Task writes working while the model cannot be downloaded, explains why, and tries again only after Retry (AC-011) 3ms
+     × loads the plain file, offers its secrets for the move, and moves them with a backup 65ms
+     × stores a value saved locked through GraphQL in the vault, and returns only its state 168ms
+     × resolves the stored secrets from the vault after a restart, and no value leaks 1711ms
+   × E-008: separate built nodes accept the same local path but cannot patch remote Project identities; restart preserves bytes 3285ms
+     × serves encoded image paths through a real FileSystemWorkspace 18ms
+     × serves SVG bytes with the image/svg+xml content boundary through a real FileSystemWorkspace 6ms
+     × rejects a same-prefix sibling traversal through FileSystemWorkspace 4ms
+     × rejects an absolute candidate through FileSystemWorkspace 5ms
+     × rejects an absolute candidate through the static workspace route 4ms
+     × serves no task-delegation query or task record type over GraphQL 20ms
+     × registers no task reference-content REST route for Team or Org roots 1ms
+     × lists delegate_task as the only task-delegation tool in the LOCAL tool catalog 1ms

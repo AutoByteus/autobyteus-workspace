@@ -1,0 +1,9 @@
+P1 createWorkspace (phone) 200 {"data":{"createWorkspace":{"workspaceId":"agent_ws_af6548add4ec14f3bbba33695a37b5248c66b5369e3274a5a01ec1198c6fa4ca","workspaceRootPath":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abx436-outside-NctXYi"}}}
+P2 read secret.txt (phone) 200 "PROBE-NOT-A-SECRET\n"
+P2b read worktree-a/data-contract.md (phone) 200
+P3 createWorkspace (no credential) 200 {"data":{"createWorkspace":{"workspaceId":"agent_ws_aec346a1007497bbec4541d9f5face6da710d75f3473d8e27125d437872f2e12","workspaceRootPath":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abx436-outside-NctXYi/worktree-a"}}}
+P3 read (no credential) 200
+P4 ../secret.txt (phone) 400 {"detail":"Access denied: Path resolves outside the workspace boundary."}
+P5 workspaces (phone) 200 {"data":{"workspaces":[{"workspaceId":"agent_ws_af6548add4ec14f3bbba33695a37b5248c66b5369e3274a5a01ec1198c6fa4ca","workspaceRootPath":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abx436-outside-NctXYi"},{"workspaceId":"agent_ws_aec346a1007497bbec4541d9f5face6da710d75f3473d8e27125d437872f2e12","workspaceRootPath":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abx436-outside-NctXYi/worktree-a"},{"workspaceId":"temp_ws_default","workspaceRootPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abx436-node-bO2TFp/temp_workspace"}]}}
+ Test Files  1 passed (1)
+      Tests  4 passed (4)

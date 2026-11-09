@@ -7,7 +7,7 @@ export type MobileView = 'artifacts' | 'files' | 'messages' | 'activity' | 'desk
 
 const SCREENS: readonly MobileScreen[] = ['run', 'artifacts', 'files', 'messages', 'activity', 'desktop', 'new'];
 /** `full=1`: the VNC Viewer's in-page full screen, its own entry, so Back leaves full screen first. */
-const SCREEN_KEYS = ['screen', 'file', 'workspace', 'reference', 'message', 'full'] as const;
+const SCREEN_KEYS = ['screen', 'file', 'workspace', 'nodeFile', 'reference', 'message', 'full'] as const;
 /** The Org route keys, built only by `agentOrgRouteQuery`; `activeWorkspaceTarget` resolves the open Org from them. */
 const ORG_KEYS = ['rootSubjectKind', 'definitionId', 'orgRunId', 'mode', 'memberAddress', 'agentRunId'] as const;
 
@@ -34,6 +34,8 @@ export function useMobileNavigation() {
   });
   const openFilePath = computed(() => (screen.value === 'files' ? one(route.query.file) || null : null));
   const openFileWorkspaceId = computed(() => (screen.value === 'files' ? one(route.query.workspace) || null : null));
+  /** A node file (autobyteus-436): a file on the node's computer opened by its absolute path, read-only. */
+  const openNodeFilePath = computed(() => (screen.value === 'files' ? one(route.query.nodeFile) || null : null));
   const desktopFullScreen = computed(() => screen.value === 'desktop' && one(route.query.full) === '1');
   const openReference = computed(() => {
     if (screen.value !== 'messages') return null;
@@ -53,7 +55,7 @@ export function useMobileNavigation() {
       router.back();
       return;
     }
-    const parent: LocationQueryRaw = openFilePath.value ? { ...orgKeys(), screen: 'files' }
+    const parent: LocationQueryRaw = openFilePath.value || openNodeFilePath.value ? { ...orgKeys(), screen: 'files' }
       : desktopFullScreen.value ? { ...orgKeys(), screen: 'desktop' }
       : openReference.value ? { ...orgKeys(), screen: 'messages' }
         : screen.value === 'run' || screen.value === 'new' ? { ...orgKeys() }
@@ -93,12 +95,14 @@ export function useMobileNavigation() {
   const openDesktopFullScreen = () => push({ ...orgKeys(), screen: 'desktop', full: '1' });
   const openFile = (input: { workspaceId: string; path: string }) =>
     push({ ...orgKeys(), screen: 'files', workspace: input.workspaceId, file: input.path });
+  /** Opens a node file by its absolute path on the Files screen (a history entry; Back closes it). */
+  const openNodeFile = (input: { path: string }) => push({ ...orgKeys(), screen: 'files', nodeFile: input.path });
   const openMessageReference = (input: { messageId: string; referenceId: string }) =>
     push({ ...orgKeys(), screen: 'messages', message: input.messageId, reference: input.referenceId });
 
   return {
-    screen, openFilePath, openFileWorkspaceId, openReference, desktopFullScreen,
-    back, toList, openRun, openView, openNewRun, openFile, openMessageReference, openDesktopFullScreen,
+    screen, openFilePath, openFileWorkspaceId, openNodeFilePath, openReference, desktopFullScreen,
+    back, toList, openRun, openView, openNewRun, openFile, openNodeFile, openMessageReference, openDesktopFullScreen,
   };
 }
 
@@ -106,4 +110,4 @@ export function useMobileNavigation() {
  * What a conversation's file open needs from the phone navigation. `useMobileNavigation` reads the route through
  * `inject`, so a component takes it in setup and hands this to code that runs later (autobyteus-427).
  */
-export type MobileFileNavigation = Pick<ReturnType<typeof useMobileNavigation>, 'openFile'>;
+export type MobileFileNavigation = Pick<ReturnType<typeof useMobileNavigation>, 'openFile' | 'openNodeFile'>;

@@ -1,0 +1,12 @@
+# API-03 unreadable node file; node 0.0.0.0:55108; 2026-11-09T05:08:59.164Z; node runs as uid 501
+PASS GET a chmod-000 file: 400 NODE_FILE_UNREADABLE
+PASS GET a readable file next to it: 200
+PASS phone, the unreadable file: "The file preview could not be opened."
+PASS phone, the readable file: "HOST-READABLE-436"
+FAIL the node's log names no node file path (31 occurrences of the temp folder)
+result Fail; node stopped; temp root removed
+# Review of the one FAIL line above (API/E2E, same run): the probe's check counted every occurrence of the temp folder,
+# which also holds the node's data and workspace folders that the node logs at start. The opened files' own names occur
+# only in the HTTP access log's request URL of the two refused (400) requests (API-03-node.log lines 208, 234,
+# level 40 "http request completed"), which the existing access-log policy writes for failed requests; the node-file
+# code logs nothing itself (QR-001: "no path in a log beyond the existing access log policy"). Case result: Pass.

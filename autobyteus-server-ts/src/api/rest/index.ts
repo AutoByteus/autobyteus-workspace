@@ -4,6 +4,7 @@ import { registerFileRoutes } from "./files.js";
 import { registerMediaRoutes } from "./media.js";
 import { registerUploadRoutes } from "./upload-file.js";
 import { registerWorkspaceRoutes } from "./workspaces.js";
+import { registerNodeFileRoutes } from "./node-files.js";
 import { registerContextFileRoutes } from "./context-files.js";
 import { registerRunFileChangeRoutes } from "./run-file-changes.js";
 import { registerTeamCommunicationRoutes } from "./team-communication.js";
@@ -45,6 +46,7 @@ export async function registerRestRoutes(
   await registerMediaRoutes(app);
   await registerUploadRoutes(app);
   await registerWorkspaceRoutes(app);
+  await registerNodeFileRoutes(app);
   await registerContextFileRoutes(app);
   await registerProjectTaskContextRoutes(app);
   await registerRunFileChangeRoutes(app);

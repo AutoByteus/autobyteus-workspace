@@ -204,10 +204,13 @@ try {
   await run('N-009', 'real public workspace-relative content and out-of-root denial', async () => {
     const workspaceId = (await state()).target.id;
     const query = 'query GetFileContent($workspaceId: String!, $filePath: String!) { fileContent(workspaceId: $workspaceId, filePath: $filePath) }';
+    // Read through the app window: the desktop's main process attaches its node credential there (autobyteus-437, NA-1).
     const read = async filePath => {
-      const response = await fetch(instance.graphqlUrl, { method: 'POST', headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ operationName: 'GetFileContent', query, variables: { workspaceId, filePath } }), signal: AbortSignal.timeout(10000) });
-      assert.equal(response.status, 200); return response.json();
+      const response = await page.evaluate(async ({ url, body }) => {
+        const r = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body, signal: AbortSignal.timeout(10000) });
+        return { status: r.status, json: await r.json() };
+      }, { url: instance.graphqlUrl, body: JSON.stringify({ operationName: 'GetFileContent', query, variables: { workspaceId, filePath } }) });
+      assert.equal(response.status, 200); return response.json;
     };
     const inside = await read('brief.md'); assert.equal(inside.data?.fileContent, markdown); assert(!inside.errors);
     const outside = await read('../A/private.md');

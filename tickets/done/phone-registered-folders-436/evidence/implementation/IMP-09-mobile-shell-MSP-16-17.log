@@ -1,0 +1,16 @@
+# IMP-09 mobile-shell probe MSP-16, MSP-17
+# Command: env -i PATH HOME=<temp> TMPDIR pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<this folder>/IMP-MSP-16-17 --cases=MSP-16,MSP-17 (after pnpm -C autobyteus-server-ts build and pnpm -C autobyteus-web build:mobile-web)
+# Commit: product code 4603511bfb; the probe as committed in 37128101b9 (branch codex/phone-registered-folders-436)
+# Environment: macOS, Node v22.23.1, headless Chrome; the probe's own nodes and data root (removed after)
+# Date: 2026-11-09
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+> autobyteus@1.5.12-beta.10 test:e2e:mobile-shell /Users/normy/autobyteus_org/autobyteus-worktrees/phone-registered-folders-436/autobyteus-web
+> node tests/e2e/mobile-shell-probe.mjs --output-dir=/Users/normy/autobyteus_org/autobyteus-worktrees/phone-registered-folders-436/tickets/in-progress/phone-registered-folders-436/evidence/implementation/IMP-MSP-16-17 --cases=MSP-16,MSP-17
+
+[mobile-shell] MSP-16 …
+[mobile-shell] MSP-16 Pass
+[mobile-shell] MSP-17 …
+[mobile-shell] MSP-17 Pass
+mobile-shell probe: Pass

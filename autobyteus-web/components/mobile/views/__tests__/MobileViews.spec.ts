@@ -117,6 +117,35 @@ describe('the phone\'s view screens read the open target (autobyteus-277 DS-005,
       expect(wrapper.find('[data-testid="mobile-file-viewer"]').exists()).toBe(false);
     });
 
+    it('AC-001 a node file (autobyteus-436) opens full screen, read-only, fetched by its absolute path with the phone credential; ← closes it', async () => {
+      const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response('# Contract', { status: 200, headers: { 'content-type': 'text/markdown' } }));
+      const { router, wrapper } = await mountView(MobileFiles, targetOf(), { screen: 'files', nodeFile: '/Users/normy/worktrees/x/data-contract.md' });
+      await flushPromises();
+      expect(String(fetchSpy.mock.calls[0]?.[0])).toContain(`/node-files/content?path=${encodeURIComponent('/Users/normy/worktrees/x/data-contract.md')}`);
+      expect(wrapper.get('[data-testid="mobile-file-viewer"] [data-testid="mobile-screen-title"]').text()).toBe('data-contract.md');
+      expect(wrapper.get('[data-testid="mobile-file-preview-content"]').text()).toBe('/Users/normy/worktrees/x/data-contract.md:# Contract');
+      await wrapper.get('[data-testid="mobile-file-viewer"] [data-testid="mobile-screen-back"]').trigger('click');
+      await flushPromises();
+      expect(router.currentRoute.value.query.nodeFile).toBeUndefined();
+      expect(wrapper.find('[data-testid="mobile-file-viewer"]').exists()).toBe(false);
+      fetchSpy.mockRestore();
+    });
+
+    it('AC-004 a missing node file and a folder say so; another failure says the preview could not be opened', async () => {
+      for (const [answer, message] of [
+        [new Response(JSON.stringify({ code: 'NODE_FILE_NOT_FOUND', message: 'x' }), { status: 404 }), 'workspace.components.mobile.views.MobileFiles.node_file_not_found'],
+        [new Response(JSON.stringify({ code: 'NODE_FILE_IS_FOLDER', message: 'x' }), { status: 400 }), 'workspace.components.mobile.views.MobileFiles.node_file_is_folder'],
+        [new Response(JSON.stringify({ code: 'NODE_FILE_UNREADABLE', message: 'x' }), { status: 400 }), 'workspace.components.conversation.segments.renderer.MarkdownRenderer.file_preview_failed'],
+      ] as const) {
+        const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(answer);
+        const { wrapper } = await mountView(MobileFiles, targetOf(), { screen: 'files', nodeFile: '/Users/normy/elsewhere' });
+        await flushPromises();
+        expect(wrapper.get('[data-testid="mobile-file-preview-error"]').text()).toBe(message);
+        wrapper.unmount();
+        fetchSpy.mockRestore();
+      }
+    });
+
     it('a run on another node: its files are on that node (278 wording)', async () => {
       vi.spyOn(useRemoteRunsStore(), 'runOfAgentRun').mockReturnValue({ runId: 'r', nodeName: 'docker', reachable: true } as never);
       const { wrapper } = await mountView(MobileFiles, targetOf({ workspaceRootPath: null }));

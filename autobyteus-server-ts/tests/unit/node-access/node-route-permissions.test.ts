@@ -49,6 +49,10 @@ describe("route permissions", () => {
     expect(permitted(http("GET", "/rest/remote-access/devices"))).toEqual(["owner"]);
   });
 
+  it("NAS-39 NAS-40 node files are an explicit owner-and-phone row: never a peer's or a memory sync source's", () => {
+    expect(permitted(http("GET", "/rest/node-files/content"))).toEqual(["owner", "phone"]);
+  });
+
   it("NAS-25 the MCP gateway is a tool endpoint: its own token decides after admission", () => {
     expect(http("POST", "/mcp/gateway").kind).toBe("tool_endpoint");
   });
