@@ -84,9 +84,11 @@ describe('mobile static root shell rendering', () => {
     await nextTick();
 
     expect(wrapper.text()).toContain('Connect this phone to use its runs.');
-    expect(wrapper.get('[data-testid="mobile-pairing-node-name"]').text()).toBe('desktop-private.local:29695');
+    // autobyteus-433: the pairing page names a node only by the QR's name, never by its address.
+    expect(wrapper.get('[data-testid="mobile-pairing-node-name"]').text()).toBe('AutoByteus node');
+    expect(wrapper.text()).not.toContain('desktop-private.local');
     expect(wrapper.find('[data-testid="mobile-pairing-text"]').exists()).toBe(false);
-    expect(wrapper.get('[data-testid="mobile-pair-button"]').text()).toBe('Connect to desktop-private.local:29695');
+    expect(wrapper.get('[data-testid="mobile-pair-button"]').text()).toBe('Connect to AutoByteus node');
     expect(wrapper.find('[data-testid="mobile-unsupported-feature"]').exists()).toBe(false);
     expect(wrapper.text()).not.toContain('Agent Teams');
     expect(wrapper.text()).not.toContain('Skills');
