@@ -1,0 +1,7 @@
+# DEL-05-server-unit — server unit tests (excerpt)
+### pnpm -C autobyteus-server-ts exec vitest run tests/unit --no-watch
+# State: merge 5a62a061b4 (ticket code 2c4ba2c51e + tests f3e36e274c + origin/personal 51ec39d86c); macOS 26 arm64, Node v22.23.1; 2026-11-09
+
+ Test Files  881 passed | 4 skipped (885)
+      Tests  7438 passed | 7 skipped (7445)
+exit 0
