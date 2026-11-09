@@ -324,10 +324,17 @@ const launchPreferences = reactive(toEditableDefaultLaunchConfig(null));
 const { resetting, resetError, isApplyingReset, runReset } = usePersonalSettingReset();
 const personalBase = computed(() => initialData.value?.personalSettingsBase ?? null);
 const isPersonal = (setting: PersonalSetting): boolean => Boolean(initialData.value?.personalSettings?.includes(setting));
+/** What the form fills from a loaded Team; a re-delivery with the same values keeps the user's unsaved edits. */
+const filledValuesOf = (data: any): string => JSON.stringify(data ? [
+  data.name, data.category, data.description, data.instructions, data.coordinatorMemberName, data.avatarUrl || data.avatar_url || '',
+  data.defaultLaunchConfig ?? null, data.nodes ?? [], data.handoffs ?? [],
+] : null);
+let filledFrom: string | null = null;
 const resetPersonal = (setting: PersonalSetting) => runReset(
   setting,
   () => useAgentTeamDefinitionStore().resetAgentTeamPersonalSetting(initialData.value.id, setting),
   (reset) => {
+    filledFrom = filledValuesOf(reset);
     if (setting === 'AVATAR') formData.avatarUrl = reset?.avatarUrl || '';
     else Object.assign(launchPreferences, toEditableDefaultLaunchConfig(reset?.defaultLaunchConfig ?? null));
   },
@@ -487,7 +494,11 @@ const handleSubmit = () => {
 watch(
   initialData,
   (newData) => {
-    if (isApplyingReset()) return;
+    // The same definition again (a list reload after any announced change), or this editor's own reset arriving.
+    const values = filledValuesOf(newData);
+    const keep = values === filledFrom || isApplyingReset();
+    filledFrom = values;
+    if (keep) return;
     clearErrors();
     Object.assign(formData, createInitialFormData());
 

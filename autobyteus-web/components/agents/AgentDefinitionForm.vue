@@ -382,8 +382,19 @@ const formData = reactive(getInitialValue());
 const launchPreferences = reactive(toEditableDefaultLaunchConfig(null));
 const useAllInstalledSkills = ref(false);
 
+/** What the form fills from a loaded definition; a re-delivery with the same values keeps the user's unsaved edits. */
+const filledValuesOf = (data: any): string => JSON.stringify(data ? [
+  data.name, data.role, data.category, data.description, data.instructions, data.avatarUrl || data.avatar_url || '',
+  data.defaultLaunchConfig ?? null, data.skillScope, ...componentFields.value.map(f => data[f.camelCase] || data[f.name] || []),
+] : null);
+let filledFrom: string | null = null;
+
 watch(initialData, (newData) => {
-  if (isApplyingReset()) return; // a reset keeps the user's other unsaved edits
+  // The same definition again (a list reload after any announced change), or this editor's own reset arriving.
+  const values = filledValuesOf(newData);
+  const keep = values === filledFrom || isApplyingReset();
+  filledFrom = values;
+  if (keep) return;
   if (newData && !isCreateMode.value) {
     formData.name = newData.name || '';
     formData.role = newData.role || '';
@@ -411,6 +422,7 @@ const resetPersonal = (setting: PersonalSetting) => runReset(
   setting,
   () => useAgentDefinitionStore().resetAgentPersonalSetting(initialData.value.id, setting),
   (reset) => {
+    filledFrom = filledValuesOf(reset);
     if (setting === 'TOOLS') formData.tool_names = [...reset.toolNames];
     else if (setting === 'SKILLS') formData.skill_names = [...reset.skillNames];
     else if (setting === 'AVATAR') formData.avatar_url = reset.avatarUrl || '';

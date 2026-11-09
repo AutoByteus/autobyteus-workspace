@@ -297,6 +297,7 @@ describe('AgentTeamDefinitionForm', () => {
 
     expect(mockAgentTeamDefinitionStore.resetAgentTeamPersonalSetting).toHaveBeenCalledWith('se-team', 'AVATAR')
     expect(wrapper.find('[data-testid="personal-setting-mark"]').exists()).toBe(false)
+    await wrapper.setProps({ initialData: { ...afterReset } }) // the list reload after the announced change
     await wrapper.get('form').trigger('submit.prevent')
     expect(wrapper.emitted('submit')?.[0]?.[0]).toMatchObject({ name: 'SE Team (not saved yet)', avatarUrl: '/package.png' })
   })

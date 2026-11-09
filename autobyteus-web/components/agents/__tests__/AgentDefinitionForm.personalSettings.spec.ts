@@ -91,7 +91,18 @@ describe('AgentDefinitionForm personal settings', () => {
 
     expect(mockAgentStore.resetAgentPersonalSetting).toHaveBeenCalledWith('solution-designer', 'TOOLS')
     expect(wrapper.find('[data-testid="personal-setting-mark"]').exists()).toBe(false)
+    // The announced change reloads the list later: the same definition arrives again as a new object.
+    await wrapper.setProps({ initialData: { ...afterReset } })
     expect(await submitted(wrapper)).toMatchObject({ description: 'Designs well (not saved yet)', toolNames: ['read_file', 'write_file'] })
+  })
+
+  it('a definition that really changed still refills the form', async () => {
+    const wrapper = mountForm(packageAgent())
+    await wrapper.get('textarea#description').setValue('Local edit')
+    await wrapper.setProps({ initialData: packageAgent() }) // the same values: kept
+    expect((wrapper.get('textarea#description').element as HTMLTextAreaElement).value).toBe('Local edit')
+    await wrapper.setProps({ initialData: packageAgent({ description: 'Changed in the package file' }) })
+    expect((wrapper.get('textarea#description').element as HTMLTextAreaElement).value).toBe('Changed in the package file')
   })
 
   it('a runtime/model reset applies the base launch config; a failed reset shows the error', async () => {

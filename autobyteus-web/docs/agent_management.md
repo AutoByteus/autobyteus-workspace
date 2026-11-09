@@ -225,6 +225,10 @@ Teams and Orgs from a package have two: avatar and default runtime/model.
   `resetAgentTeamPersonalSetting` / `resetPersonalSetting` (Org). The editor
   takes the reset setting's value from the server and keeps the user's other
   unsaved edits (`composables/usePersonalSettingReset.ts`).
+- The agent and Team editors refill their fields from the loaded definition only
+  when its values changed. Every saved change is announced and reloads the
+  lists, so the same definition often arrives again; that keeps the user's
+  unsaved edits.
 
 ## Package Refresh Behavior
 

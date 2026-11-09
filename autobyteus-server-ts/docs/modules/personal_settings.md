@@ -90,7 +90,10 @@ apply, the service:
 5. returns the effective definition.
 
 Teams and Orgs: an absent or `null` avatar in the update input means "not sent";
-`""` clears the personal avatar back to the base value.
+`""` clears the personal avatar back to the base value. The Team editor sends
+trimmed name, description, category and instructions: a text equal to the
+files' up to surrounding whitespace (e.g. the final newline of `team.md`) keeps
+the files' text, so it is not counted as a change.
 
 ## Reset And GraphQL
 

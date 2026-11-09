@@ -174,7 +174,11 @@ describe("Teams", () => {
 
   it("an avatar-only save writes no file; the avatar is personal", async () => {
     const before = await snapshot(pkg);
-    const saved = await teamUpdate({ avatarUrl: "/team.png" });
+    const current = (await definitions.agentTeamDefinitionService.getDefinitionById("se-team"))!;
+    expect(current.instructions).toBe("Ship software.\n"); // team.md ends with a newline
+    // What AgentTeamDefinitionForm sends: trimmed name, description and instructions.
+    const saved = await teamUpdate({ avatarUrl: "/team.png", name: current.name.trim(), description: current.description.trim(),
+      instructions: current.instructions.trim() });
     expect(await snapshot(pkg)).toEqual(before);
     expect(saved.avatarUrl).toBe("/team.png");
     expect(await personalJson()).toEqual({ "agent_team:se-team": { avatarUrl: "/team.png" } });

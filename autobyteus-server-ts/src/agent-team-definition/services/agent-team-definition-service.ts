@@ -35,6 +35,16 @@ export type AgentTeamDefinitionFileStore = Pick<
 >;
 
 /** A stored Team with where it was read from (null for an application-owned Team). */
+/**
+ * The editor sends trimmed text, while the files may keep surrounding whitespace (e.g. a final
+ * newline in team.md). Text equal to the files' up to that whitespace is no edit: the files' text
+ * is kept, so a save that changes only personal settings writes no package file.
+ */
+const keptText = (update: AgentTeamDefinitionUpdate, files: AgentTeamDefinition): Partial<AgentTeamDefinitionUpdate> =>
+  Object.fromEntries((["name", "description", "instructions", "category"] as const)
+    .filter((field) => typeof update[field] === "string" && update[field]!.trim() === (files[field] ?? "").trim())
+    .map((field) => [field, files[field]]));
+
 type BaseRead = Readonly<{ definition: AgentTeamDefinition | null; sourceClass: PersonalSettingsSourceClass | null }>;
 
 /**
@@ -325,7 +335,7 @@ export class AgentTeamDefinitionService {
     }
     const personal = base.sourceClass !== null && this.personalSettings.appliesTo("agent_team", definitionId, base.sourceClass);
     const candidate = buildDefinitionUpdateCandidate(existing, personal
-      ? new AgentTeamDefinitionUpdate({ ...updateData, avatarUrl: undefined, defaultLaunchConfig: undefined })
+      ? new AgentTeamDefinitionUpdate({ ...updateData, ...keptText(updateData, existing), avatarUrl: undefined, defaultLaunchConfig: undefined })
       : updateData);
     candidate.revision = updateData.expectedRevision;
     if (!personal || this.fileStore.rendersDifferently(existing, candidate)) {
