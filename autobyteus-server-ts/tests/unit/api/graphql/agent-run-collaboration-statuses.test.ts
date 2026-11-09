@@ -1,5 +1,6 @@
 import "reflect-metadata";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { closedTaskExecutionsDigest } from "@autobyteus/collaboration-stream-contracts";
 import { AgentRunCollaborationResolver } from "../../../../src/api/graphql/types/agent-run-collaboration.js";
 import { createCollaborationAgentStatusSnapshot } from "../../../../src/agent-collaboration/execution/domain/collaboration-agent-execution-event.js";
 import { createAgentRootExecutionIdentity, createCollaborationMemberExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
@@ -9,7 +10,10 @@ import {
   releaseProcessStandaloneAgentRunRootManager,
 } from "../../../../src/standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
 
-// autobyteus-426 REQ-009 (D-09): the history poll's states-only read of listed standalone runs.
+// autobyteus-426 REQ-009 (D-09): the history poll's read of listed standalone runs: states, and since autobyteus-446 the
+// active root's closed-set digest, never the collaboration view.
+
+type Reference = { agentRunId: string } | { teamRunId: string };
 
 const snapshot = (agentRunId: string, memberAddress: string, status: string, recoverableBlock: unknown = null) =>
   createCollaborationAgentStatusSnapshot({
@@ -17,11 +21,13 @@ const snapshot = (agentRunId: string, memberAddress: string, status: string, rec
     status, recoverableBlock: recoverableBlock as never,
   });
 
-const rootWith = (lifecycleActive: boolean, statuses: unknown[]) => ({
+const rootWith = (lifecycleActive: boolean, statuses: unknown[], closed: Reference[] = []) => ({
   isActive: () => lifecycleActive,
   getAgentStatusSnapshots: vi.fn(() => statuses),
+  closedTaskExecutions: vi.fn(() => closed),
   getExecutionTreeSnapshot: vi.fn(),
 });
+const EMPTY = closedTaskExecutionsDigest([]);
 
 /** A manager holding only its registered roots; getAgentStatuses reads nothing else. */
 const managerWith = (roots: Record<string, ReturnType<typeof rootWith>>): StandaloneAgentRunRootManager => {
@@ -40,12 +46,26 @@ describe("StandaloneAgentRunRootManager.getAgentStatuses", () => {
     const manager = managerWith({ "host-a": active, "host-b": activating });
 
     expect(manager.getAgentStatuses(["host-b", "host-a", "unknown"])).toEqual([
-      { runId: "host-b", isActive: false, statuses: [] },
-      { runId: "host-a", isActive: true, statuses: [writer] },
-      { runId: "unknown", isActive: false, statuses: [] },
+      { runId: "host-b", isActive: false, statuses: [], closedTaskExecutionsDigest: null },
+      { runId: "host-a", isActive: true, statuses: [writer], closedTaskExecutionsDigest: EMPTY },
+      { runId: "unknown", isActive: false, statuses: [], closedTaskExecutionsDigest: null },
     ]);
     expect(activating.getAgentStatusSnapshots).not.toHaveBeenCalled();
+    expect(activating.closedTaskExecutions).not.toHaveBeenCalled();
     expect(active.getExecutionTreeSnapshot).not.toHaveBeenCalled();
+  });
+
+  it("answers the digest of the active root's closed set: it changes when a Task closes and returns when it reopens", () => {
+    const closed: Reference[] = [];
+    const manager = managerWith({ host: rootWith(true, [], closed) });
+    const digest = () => manager.getAgentStatuses(["host"])[0]!.closedTaskExecutionsDigest;
+
+    expect(digest()).toBe(EMPTY);
+    closed.push({ agentRunId: "writer-1" }, { teamRunId: "docs-review-team" });
+    expect(digest()).toBe(closedTaskExecutionsDigest([{ teamRunId: "docs-review-team" }, { agentRunId: "writer-1" }]));
+    expect(digest()).not.toBe(EMPTY);
+    closed.splice(0, closed.length);
+    expect(digest()).toBe(EMPTY);
   });
 });
 
@@ -55,19 +75,19 @@ describe("agentRunCollaborationStatuses", () => {
     try { return run(); } finally { releaseProcessStandaloneAgentRunRootManager(manager as never); }
   };
 
-  it("maps each child's identity, status and recoverable block; nothing of the collaboration view", () => {
+  it("maps each child's identity, status and recoverable block, and the closed-set digest; nothing of the collaboration view", () => {
     const block = { kind: "compaction", message: "blocked" };
     const manager = managerWith({ host: rootWith(true, [
       snapshot("writer-1", "/release_notes_writer", "idle"),
       snapshot("lead-1", "/docs_review_team/lead", "error", block),
-    ]) });
+    ], [{ agentRunId: "old-writer" }]) });
     const answer = withManager(manager, () => new AgentRunCollaborationResolver().agentRunCollaborationStatuses(["host", "stopped"]));
     expect(answer).toEqual([
-      { runId: "host", isActive: true, statuses: [
+      { runId: "host", isActive: true, closedTaskExecutionsDigest: closedTaskExecutionsDigest([{ agentRunId: "old-writer" }]), statuses: [
         { agentRunId: "writer-1", memberAddress: "/release_notes_writer", status: "idle", recoverableBlock: null },
         { agentRunId: "lead-1", memberAddress: "/docs_review_team/lead", status: "error", recoverableBlock: block },
       ] },
-      { runId: "stopped", isActive: false, statuses: [] },
+      { runId: "stopped", isActive: false, closedTaskExecutionsDigest: null, statuses: [] },
     ]);
   });
 

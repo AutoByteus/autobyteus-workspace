@@ -55,13 +55,16 @@ export class AgentRunCollaborationStatusesObject {
   @Field(() => String) runId!: string;
   @Field(() => Boolean) isActive!: boolean;
   @Field(() => [AgentRunChildStatusObject]) statuses!: AgentRunChildStatusObject[];
+  /** The active root's closed-set digest (autobyteus-446); null when the run has no active root. */
+  @Field(() => String, { nullable: true }) closedTaskExecutionsDigest!: string | null;
 }
 
 @Resolver()
 export class AgentRunCollaborationResolver {
   /**
-   * The children's states of listed standalone runs, for the history poll (autobyteus-426 REQ-009): states only, never
-   * the collaboration view. A run without an active root answers inactive with no states. Never restores.
+   * The children's states of listed standalone runs, for the history poll (autobyteus-426 REQ-009): states and the
+   * closed-set digest (autobyteus-446), never the collaboration view. A run without an active root answers inactive with
+   * no states and no digest. Never restores.
    */
   @Query(() => [AgentRunCollaborationStatusesObject])
   agentRunCollaborationStatuses(@Arg("runIds", () => [String]) runIds: string[]): AgentRunCollaborationStatusesObject[] {
@@ -73,6 +76,7 @@ export class AgentRunCollaborationResolver {
     return getStandaloneAgentRunRootManager().getAgentStatuses(runIds).map((answer) => ({
       runId: answer.runId,
       isActive: answer.isActive,
+      closedTaskExecutionsDigest: answer.closedTaskExecutionsDigest,
       statuses: answer.statuses.map((status) => ({
         agentRunId: status.execution.agentRunId,
         memberAddress: status.execution.memberAddress,

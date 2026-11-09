@@ -1,4 +1,5 @@
 import { isDeepStrictEqual } from "node:util";
+import { closedTaskExecutionsDigest } from "@autobyteus/collaboration-stream-contracts";
 import { storedRemoteLinkCheck, type RemoteInboundQuery, type StoredRemoteLinkCheck } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 import { taskExecutionReferenceKey } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import {
@@ -102,6 +103,8 @@ export type StandaloneRootAgentStatuses = Readonly<{
   runId: string;
   isActive: boolean;
   statuses: readonly CollaborationAgentStatusSnapshot[];
+  /** The active root's closed-set digest (`closedTaskExecutionsDigest`), so a list sees a Task close or reopen; null when inactive. */
+  closedTaskExecutionsDigest: string | null;
 }>;
 
 export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, StandaloneRunLifecyclePort {
@@ -164,7 +167,8 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
   getAgentStatuses(hostRunIds: readonly string[]): StandaloneRootAgentStatuses[] {
     return hostRunIds.map((runId) => {
       const root = this.getActive(runId);
-      return { runId, isActive: root !== null, statuses: root?.getAgentStatusSnapshots() ?? [] };
+      return { runId, isActive: root !== null, statuses: root?.getAgentStatusSnapshots() ?? [],
+        closedTaskExecutionsDigest: root ? closedTaskExecutionsDigest(root.closedTaskExecutions()) : null };
     });
   }
 
