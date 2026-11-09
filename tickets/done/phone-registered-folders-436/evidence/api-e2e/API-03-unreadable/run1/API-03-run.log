@@ -1,0 +1,9 @@
+# API-03 unreadable node file; node 0.0.0.0:54833; 2026-11-09T05:07:30.159Z; node runs as uid 501
+PASS GET a chmod-000 file: 400 NODE_FILE_UNREADABLE
+PASS GET a readable file next to it: 200
+ERROR locator.waitFor: Timeout 60000ms exceeded.
+Call log:
+  - waiting for locator('[data-testid="mobile-run-tree"]') to be visible
+
+    at /private/tmp/abtest436/api03-unreadable.mjs:30:141
+result Fail; node stopped; temp root removed

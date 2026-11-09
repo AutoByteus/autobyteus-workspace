@@ -109,6 +109,10 @@ const messages = {
     "此文件仅在主机工作区中可用。",
   "workspace.components.conversation.segments.renderer.MarkdownRenderer.file_preview_failed":
     "无法打开文件预览。",
+  "workspace.components.mobile.views.MobileFiles.node_file_not_found":
+    "在这台计算机上找不到此文件。",
+  "workspace.components.mobile.views.MobileFiles.node_file_is_folder":
+    "此路径是文件夹，不是文件。",
   "workspace.components.workspace.config.RunConfigPanel.title.agentConfiguration":
     "智能体配置",
   "workspace.components.workspace.config.RunConfigPanel.title.teamConfiguration":

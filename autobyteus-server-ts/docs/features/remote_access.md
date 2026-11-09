@@ -70,6 +70,7 @@ After the Host and Origin rules, the node access gate decides every request: net
 
 - Exempt (no credential; network admission still applies): `OPTIONS` preflight, `/mobile` and `/mobile/*`, `/rest/health`, `GET /rest/remote-access/status`, `POST /rest/remote-access/pairing-exchanges`.
 - Owner actions, refused to a phone with 403 `NODE_ROUTE_NOT_PERMITTED`: `/rest/remote-access/settings`, `/rest/remote-access/network` and below, `/rest/remote-access/pairing-sessions` and below, `/rest/remote-access/devices` and below, `/rest/node-update` (a Docker node's server package version and in-place update; see `autobyteus-server-ts/docker/README.md` and the DESIGN.md rule 9 exception), `/rest/node-access/*`, `/rest/mcp-gateway/*`.
+- Owner and phone, listed explicitly: `GET /rest/node-files/content?path=<absolute>` (a node file, read-only, autobyteus-436 NAS-39/40).
 - Owner and phone: `POST /graphql` and the other REST families (media, files, uploads, workspaces, context files, drafts, runs, team runs, run file changes, team communication, application backend routes and bundle assets). What a phone may do inside them is slice 2.
 - WebSockets: a phone credential opens only the phone WebSocket routes; every other WebSocket route is the owner's.
 

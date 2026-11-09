@@ -129,6 +129,8 @@ name the scenario ID. "Owner" is the user on his desktop app.
 | NAS-36 | A captured request from node A to node B, presented to node A | The captured signature | Same request | 401 (the receiver in the signature is B) |
 | NAS-37 | Owner disconnects a desktop, removes a peer, or revokes a phone while it has open WebSockets | — | — | Those sockets close at once with 4403 and the revocation code |
 | NAS-38 | Peer request whose body was changed in transit | Valid signature of the original body | `/rest/remote/*` POST | 401 before any handler runs |
+| NAS-39 | Phone (or owner) taps a file path outside the run's folder | Phone credential | `GET /rest/node-files/content?path=<absolute>` | The file, read-only, with the user-file headers; a folder or relative path 400, a missing file 404 (autobyteus-436) |
+| NAS-40 | Peer or memory sync source | Its credential | `GET /rest/node-files/content` | 403 `NODE_ROUTE_NOT_PERMITTED` |
 
 Out of the model: protection against software already running as the user on
 the same computer (it can read the user's files directly), and what each
@@ -150,7 +152,8 @@ Status as of autobyteus-437 slice 1 (implementation). Update this table when a c
 | NA-11 | **Holds** (slice 1) | Owner credential, phone, peer and memory sync revocations close open sockets at once (`open-socket-registry.ts`). |
 | NA-12 | **Holds** (slice 1) | The MCP gateway needs admission and its token (`src/mcp-gateway/mcp-gateway-token-service.ts`). |
 | NA-15 | **Holds** (slice 1) | The node takes the launch credential out of its environment before anything spawns. |
-| Phone limits inside reachable endpoints (folders, `createWorkspace`, settings, terminal), credential expiry, application-scoped credentials | **Later** (slice 2, includes autobyteus-436) | |
+| Node files (NAS-39, NAS-40) | **Holds** (autobyteus-436) | `GET /rest/node-files/content?path=<absolute>`: an explicit owner-and-phone row; `src/node-files/node-file-reader.ts` serves one regular file by its real path, read-only, through `sendUserFile`, and never logs the path. Verified by `tests/e2e/node-files/node-files.e2e.test.ts`. |
+| Phone limits inside reachable endpoints (folders, `createWorkspace`, settings, terminal), credential expiry, application-scoped credentials | **Later** (slice 2, autobyteus-441) | autobyteus-436 chose no folder limit: a phone reads any node file read-only (NAS-39). "Any file" includes the node's own data folder (peer secrets, the MCP gateway token; owner and phone credentials are stored only as hashes), as it already did through workspaces. 441 decides whether a phone credential gets folder limits, and at least whether the node's data folder is excluded. |
 
 Verification: `tests/e2e/node-access/node-access-model.e2e.test.ts` (server-checkable scenarios), the
 remote collaboration two-server e2e (NAS-19, NAS-20), unit tests, the Electron specs and the launcher tests;

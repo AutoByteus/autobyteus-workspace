@@ -66,6 +66,24 @@ describe('useMobileNavigation', () => {
     await goBack(router); expect(nav.screen.value).toBe('list');
   });
 
+  it('a node file (autobyteus-436) opens on the Files screen by its absolute path as its own entry; Back closes it', async () => {
+    const router = await createMobileTestRouter();
+    const { result: nav } = withSetup(router, useMobileNavigation);
+    await nav.openRun({ orgQuery: ORG });
+    await nav.openNodeFile({ path: '/Users/normy/worktrees/x/tickets/data-contract.md' });
+    expect(queryOf(router)).toEqual({ ...ORG, screen: 'files', nodeFile: '/Users/normy/worktrees/x/tickets/data-contract.md' });
+    expect(nav.openNodeFilePath.value).toBe('/Users/normy/worktrees/x/tickets/data-contract.md');
+    expect(nav.openFilePath.value).toBeNull();
+    await goBack(router); expect(nav.screen.value).toBe('run'); expect(nav.openNodeFilePath.value).toBeNull();
+  });
+
+  it('← on a node file entered without an entry under it (a reload) goes to the Files screen', async () => {
+    const router = await createMobileTestRouter({ screen: 'files', nodeFile: '/tmp/a.md' });
+    const { result: nav } = withSetup(router, useMobileNavigation);
+    await nav.back();
+    expect(queryOf(router)).toEqual({ screen: 'files' });
+  });
+
   it('a Messages reference is its own entry; ← closes it first', async () => {
     const router = await createMobileTestRouter();
     const { result: nav } = withSetup(router, useMobileNavigation);
