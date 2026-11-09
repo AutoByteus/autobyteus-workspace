@@ -106,14 +106,19 @@ function Stop-Nodes([string]$FilterName, [bool]$StopAll) {
 # client runs inside the container (docker exec); the code is printed here only, never written to a file or a log.
 $Script:SetupCodeSocket = '/home/autobyteus/data/node-access/local-control.sock'
 # Single quotes only: Windows PowerShell drops double quotes inside native command arguments.
-$Script:SetupCodeClientJs = 'const s=require(''net'').createConnection(process.argv[1],()=>s.write(''setup-code\n''));let d='''';s.setEncoding(''utf8'');s.on(''data'',(c)=>{d+=c});s.on(''end'',()=>{let r={};try{r=JSON.parse(d)}catch{}if(!r.setupCode){console.error(r.error||''no setup code'');process.exit(1)}console.log(r.setupCode+'' ''+r.expiresAt)});s.on(''error'',(e)=>{console.error(e.message);process.exit(1)})'
+$Script:SetupCodeClientJs = 'const s=require(''net'').createConnection(process.argv[1],()=>s.write(''setup-code\n''));s.setTimeout(5000,()=>{console.error(''the node did not answer within 5 seconds'');process.exit(1)});let d='''';s.setEncoding(''utf8'');s.on(''data'',(c)=>{d+=c});s.on(''end'',()=>{let r={};try{r=JSON.parse(d)}catch{}if(!r.setupCode){console.error(r.error||''no setup code'');process.exit(1)}console.log(r.setupCode+'' ''+r.expiresAt)});s.on(''error'',(e)=>{console.error(e.message);process.exit(1)})'
 $Script:SetupCodeWaitSeconds = 90
 
+# One attempt is bound by the client's own 5 s socket timeout; the wait itself is bound by wall-clock time, not
+# attempt count (one attempt in progress may finish past the deadline). A waiting message prints as soon as the
+# first attempt fails, then at least every 10 s with the elapsed time; nothing prints when the first attempt answers.
 function Show-SetupCodeOfRunningNode([string]$NodeName) {
   $state = Read-NodeState $NodeName
   $container = if ($state -and $state.containerName) { $state.containerName } else { $NodeName }
-  for ($attempt = 1; $attempt -le $Script:SetupCodeWaitSeconds; $attempt += 1) {
-    $answer = & docker exec $container node -e $Script:SetupCodeClientJs $Script:SetupCodeSocket 2>$null
+  $stopwatch = [Diagnostics.Stopwatch]::StartNew()
+  $lastMessageAt = -1
+  while ($true) {
+    $answer = & docker exec $container node -e $Script:SetupCodeClientJs $Script:SetupCodeSocket 2>&1
     $line = ([string](@($answer)[0])).Trim()
     if ($LASTEXITCODE -eq 0 -and $line) {
       $parts = $line.Split(' ', 2)
@@ -123,18 +128,30 @@ function Show-SetupCodeOfRunningNode([string]$NodeName) {
       Write-Host "Valid once, until $expiresAt. In the AutoByteus desktop app, open Nodes, and enter it at $NodeName (http://localhost:$($state.backendPort))."
       return
     }
+    $elapsed = [int]$stopwatch.Elapsed.TotalSeconds
+    if ($lastMessageAt -eq -1) {
+      Write-LauncherInfo "Waiting for $NodeName to start (up to $Script:SetupCodeWaitSeconds seconds)..."
+      $lastMessageAt = $elapsed
+    } elseif (($elapsed - $lastMessageAt) -ge 10) {
+      Write-LauncherInfo "Still waiting for $NodeName to start ($elapsed s)..."
+      $lastMessageAt = $elapsed
+    }
+    if ($stopwatch.Elapsed.TotalSeconds -ge $Script:SetupCodeWaitSeconds) {
+      Fail-Launcher "$NodeName did not answer with a setup code within $Script:SetupCodeWaitSeconds seconds (last attempt: $line). Check: autobyteus-docker logs --name $NodeName"
+    }
     Start-Sleep -Seconds 1
   }
-  Fail-Launcher "$NodeName did not answer with a setup code within $Script:SetupCodeWaitSeconds seconds. Check: autobyteus-docker logs --name $NodeName"
 }
 
 # setup-code: applies the current launcher configuration first (a node created by an older launcher is recreated
-# once with its named volumes and port, design M-8a), then asks the running node for a code.
+# once with its named volumes and port, design M-8a), then asks the running node for a code. Start-Node's own
+# progress (image check/pull, recreate/start) goes to host output here, and its URL block is skipped (the setup
+# code message below already names the node's backend URL); setup-code's own output holds only the code.
 function Show-SetupCode([string]$NodeName) {
   $state = Read-NodeState $NodeName
   if (-not $state) { Fail-Launcher "No launcher state found for $NodeName. Run new-container first." }
   $imageRef = if ($state.imageRef) { $state.imageRef } else { Get-ImageRef $Script:DefaultImage $Script:DefaultTag }
-  Start-Node $NodeName $imageRef ($NodeName -eq $Script:DefaultNodeName) | Out-Null
+  Start-Node $NodeName $imageRef ($NodeName -eq $Script:DefaultNodeName) -NoUrls
   Show-SetupCodeOfRunningNode $NodeName
 }
 
