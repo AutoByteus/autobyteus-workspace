@@ -79,6 +79,7 @@ export const fileExplorerContentActions = {
         accessIntent: options?.accessIntent ?? null,
         content: null,
         url: null,
+        contentRevision: 0,
         relativeResourceContext: null,
         isLoading: true,
         error: null,
@@ -98,9 +99,36 @@ export const fileExplorerContentActions = {
     } else {
       existingFile.accessIntent = options?.accessIntent ?? null
       existingFile.mode = options?.accessIntent ? 'preview' : mode
+      // An explicit open shows the file's current content (autobyteus-450 REQ-003); an unsaved draft stays.
+      this._reloadOpenFile(existingFile, filePath, workspaceId, windowNodeContextStore)
     }
 
     wsState.activeFile = filePath
+  },
+
+  /** Reads an already-open file again, the way it was first loaded; `editorDraft` is never touched. */
+  _reloadOpenFile(
+    this: any,
+    fileState: OpenFileState,
+    filePath: string,
+    workspaceId: string,
+    windowNodeContextStore: ReturnType<typeof useWindowNodeContextStore>,
+  ) {
+    if (fileState.type !== 'Text') {
+      fileState.contentRevision += 1
+      return
+    }
+    if (
+      windowNodeContextStore.isEmbeddedWindow
+      && isAbsoluteLocalPath(filePath)
+      && hasTrustedElectronLocalFileCapability()
+    ) {
+      void this._loadLocalFile(fileState, filePath)
+      return
+    }
+    if (fileState.relativeResourceContext) {
+      this.invalidateFileContent(filePath, workspaceId)
+    }
   },
 
   async _loadLocalFile(this: any, fileState: OpenFileState, filePath: string) {

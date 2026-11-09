@@ -1,0 +1,268 @@
+{
+  "label": "a-new-page-new-apk",
+  "worktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-file-open-450",
+  "apk": "/Users/normy/autobyteus_org/autobyteus-worktrees/conversation-file-open-450/autobyteus-android/app/build/outputs/apk/debug/app-debug.apk",
+  "startedAt": "2026-11-09T11:44:26.177Z",
+  "taps": [
+    {
+      "name": "text",
+      "found": true,
+      "appRejectionScreen": false,
+      "pagePairingScreen": false,
+      "viewer": true,
+      "conversationShown": false,
+      "connectionsAfterTap": [
+        {
+          "path": "/ws/file-explorer/agent_ws_d88cdda969cbc3d5083f1dc24c271c13640058e396c80c796fb0ebd1a83d48c3?access_token=…",
+          "webSocket": true
+        }
+      ],
+      "backToConversation": true
+    },
+    {
+      "name": "png",
+      "found": true,
+      "appRejectionScreen": false,
+      "pagePairingScreen": false,
+      "viewer": true,
+      "conversationShown": false,
+      "connectionsAfterTap": [
+        {
+          "path": "/ws/file-explorer/agent_ws_d88cdda969cbc3d5083f1dc24c271c13640058e396c80c796fb0ebd1a83d48c3?access_token=…",
+          "webSocket": true
+        }
+      ],
+      "backToConversation": true
+    }
+  ],
+  "connections": [
+    {
+      "openedAt": 23755,
+      "path": "/rest/remote-access/status",
+      "webSocket": false
+    },
+    {
+      "openedAt": 27830,
+      "path": "/mobile?pairing=eyJ2ZXJzaW9uIjoxLCJzZXJ2ZXJCYXNlVXJsIjoiaHR0cDovLzEwLjAuMi4yOjYyODY3IiwicGFpcmluZ0NvZGUiOiJnaVNNZklHa1lTcFpocTFLTDRpdTVnMFgiLCJleHBpcmVzQXQiOiIyMDI2LTExLTA5VDExOjQ5OjQ1Ljg1OVoiLCJzZXJ2ZXJOYW1lIjoiRW11bGF0b3IgVGVzdCBOb2RlIn0",
+      "webSocket": false
+    },
+    {
+      "openedAt": 27968,
+      "path": "/mobile/_nuxt/entry.Gk28Ns3s.css",
+      "webSocket": false
+    },
+    {
+      "openedAt": 28039,
+      "path": "/mobile/_nuxt/default.CTHSKn2w.css",
+      "webSocket": false
+    },
+    {
+      "openedAt": 28064,
+      "path": "/mobile/_nuxt/GvWo52pL.js",
+      "webSocket": false
+    },
+    {
+      "openedAt": 28076,
+      "path": "/mobile/_nuxt/D0usbjkD.js",
+      "webSocket": false
+    },
+    {
+      "openedAt": 28098,
+      "path": "/mobile/_nuxt/CTE5Ax7p.js",
+      "webSocket": false
+    },
+    {
+      "openedAt": 35501,
+      "path": "/ws/agent-package-definitions?access_token=…",
+      "webSocket": true
+    },
+    {
+      "openedAt": 35676,
+      "path": "/ws/agent/content_creator_e67db0d0631c480e8c890ac0b52ba472?access_token=…",
+      "webSocket": true
+    },
+    {
+      "openedAt": 43736,
+      "path": "/rest/remote-access/status",
+      "webSocket": false
+    },
+    {
+      "openedAt": 44594,
+      "path": "/mobile",
+      "webSocket": false
+    },
+    {
+      "openedAt": 44713,
+      "path": "/mobile/_nuxt/oacfvCcM.js",
+      "webSocket": false
+    },
+    {
+      "openedAt": 44729,
+      "path": "/mobile/_nuxt/GvWo52pL.js",
+      "webSocket": false
+    },
+    {
+      "openedAt": 44732,
+      "path": "/mobile/_nuxt/D0usbjkD.js",
+      "webSocket": false
+    },
+    {
+      "openedAt": 44734,
+      "path": "/mobile/_nuxt/CTE5Ax7p.js",
+      "webSocket": false
+    },
+    {
+      "openedAt": 46784,
+      "path": "/mobile/_nuxt/ZLlsNRoP.js",
+      "webSocket": false
+    },
+    {
+      "openedAt": 50111,
+      "path": "/ws/agent-package-definitions?access_token=…",
+      "webSocket": true
+    },
+    {
+      "openedAt": 50613,
+      "path": "/ws/agent/content_creator_e67db0d0631c480e8c890ac0b52ba472?access_token=…",
+      "webSocket": true
+    },
+    {
+      "openedAt": 57167,
+      "path": "/favicon.ico",
+      "webSocket": false
+    },
+    {
+      "openedAt": 57177,
+      "path": "/ws/agent-collaboration/content_creator_e67db0d0631c480e8c890ac0b52ba472?access_token=…",
+      "webSocket": true
+    },
+    {
+      "openedAt": 62690,
+      "path": "/ws/file-explorer/agent_ws_d88cdda969cbc3d5083f1dc24c271c13640058e396c80c796fb0ebd1a83d48c3?access_token=…",
+      "webSocket": true
+    },
+    {
+      "openedAt": 74877,
+      "path": "/ws/file-explorer/agent_ws_d88cdda969cbc3d5083f1dc24c271c13640058e396c80c796fb0ebd1a83d48c3?access_token=…",
+      "webSocket": true
+    },
+    {
+      "openedAt": 89036,
+      "path": "/rest/remote-access/status",
+      "webSocket": false
+    },
+    {
+      "openedAt": 89886,
+      "path": "/mobile",
+      "webSocket": false
+    },
+    {
+      "openedAt": 89938,
+      "path": "/mobile/_nuxt/oacfvCcM.js",
+      "webSocket": false
+    },
+    {
+      "openedAt": 89984,
+      "path": "/mobile/_nuxt/default.CTHSKn2w.css",
+      "webSocket": false
+    },
+    {
+      "openedAt": 89989,
+      "path": "/mobile/_nuxt/GvWo52pL.js",
+      "webSocket": false
+    },
+    {
+      "openedAt": 89992,
+      "path": "/mobile/_nuxt/D0usbjkD.js",
+      "webSocket": false
+    },
+    {
+      "openedAt": 89997,
+      "path": "/mobile/_nuxt/CTE5Ax7p.js",
+      "webSocket": false
+    },
+    {
+      "openedAt": 95485,
+      "path": "/ws/agent-package-definitions?access_token=…",
+      "webSocket": true
+    }
+  ],
+  "timeline": [
+    {
+      "t": 19679,
+      "event": "attachments sent by the second phone"
+    },
+    {
+      "t": 20470,
+      "event": "apk",
+      "versionName": "0.1.0"
+    },
+    {
+      "t": 72803,
+      "event": "tap",
+      "name": "text",
+      "found": true,
+      "appRejectionScreen": false,
+      "pagePairingScreen": false,
+      "viewer": true,
+      "conversationShown": false,
+      "connectionsAfterTap": [
+        {
+          "path": "/ws/file-explorer/agent_ws_d88cdda969cbc3d5083f1dc24c271c13640058e396c80c796fb0ebd1a83d48c3?access_token=…",
+          "webSocket": true
+        }
+      ],
+      "backToConversation": true
+    },
+    {
+      "t": 85097,
+      "event": "tap",
+      "name": "png",
+      "found": true,
+      "appRejectionScreen": false,
+      "pagePairingScreen": false,
+      "viewer": true,
+      "conversationShown": false,
+      "connectionsAfterTap": [
+        {
+          "path": "/ws/file-explorer/agent_ws_d88cdda969cbc3d5083f1dc24c271c13640058e396c80c796fb0ebd1a83d48c3?access_token=…",
+          "webSocket": true
+        }
+      ],
+      "backToConversation": true
+    },
+    {
+      "t": 98719,
+      "event": "revocation",
+      "status": 200,
+      "pairingShown": true,
+      "screen": [
+        "AutoByteus",
+        "Connect this phone",
+        "Scan the QR code on your computer with this phone’s camera.",
+        " [Get the Android app]",
+        "Get the Android app",
+        "Other ways to connect"
+      ]
+    }
+  ],
+  "error": null,
+  "run": "content_creator_e67db0d0631c480e8c890ac0b52ba472",
+  "revocation": {
+    "status": 200,
+    "pairingShown": true,
+    "screen": [
+      "AutoByteus",
+      "Connect this phone",
+      "Scan the QR code on your computer with this phone’s camera.",
+      " [Get the Android app]",
+      "Get the Android app",
+      "Other ways to connect"
+    ]
+  },
+  "cleanup": {
+    "serverExited": true,
+    "rootRemoved": true
+  },
+  "finishedAt": "2026-11-09T11:46:05.064Z"
+}

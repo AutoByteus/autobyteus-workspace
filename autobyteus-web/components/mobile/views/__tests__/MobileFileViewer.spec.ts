@@ -42,7 +42,7 @@ describe('MobileFileViewer', () => {
       mode: 'preview',
       content: null,
       url: `http://127.0.0.1:4100/rest/workspaces/workspace-1/content?path=${encodeURIComponent(path)}`,
-      relativeResourceContext: { kind: 'workspace', workspaceId: 'workspace-1' },
+      contentRevision: 0, relativeResourceContext: { kind: 'workspace', workspaceId: 'workspace-1' },
       isLoading: false,
       error: null,
     }, path);
@@ -62,7 +62,7 @@ describe('MobileFileViewer', () => {
       mode: 'preview',
       content: '<h1>Page</h1>',
       url: null,
-      relativeResourceContext: { kind: 'workspace', workspaceId: 'workspace-1' },
+      contentRevision: 0, relativeResourceContext: { kind: 'workspace', workspaceId: 'workspace-1' },
       isLoading: false,
       error: null,
     });
@@ -75,13 +75,13 @@ describe('MobileFileViewer', () => {
     ['an error', { isLoading: false, error: 'boom', type: 'Text' as FileDataType }, 'Couldn’t open this file.'],
     ['an unsupported file', { isLoading: false, error: null, type: 'Unsupported' as FileDataType }, 'This file can’t be shown on the phone.'],
   ])('shows the spec\'s line while %s (TR-019)', (_name, patch, text) => {
-    const wrapper = mountSubject({ path: 'docs/a.txt', mode: 'preview', content: '', url: null, relativeResourceContext: null, ...patch } as OpenFileState);
+    const wrapper = mountSubject({ path: 'docs/a.txt', mode: 'preview', content: '', url: null, contentRevision: 0, relativeResourceContext: null, ...patch } as OpenFileState);
     expect(wrapper.text()).toContain(text);
     expect(wrapper.find('[data-testid="mobile-file-preview-content"]').exists()).toBe(false);
   });
 
   it('its bar is ← and the file name', async () => {
-    const wrapper = mountSubject({ path: 'docs/notes.md', type: 'Text', mode: 'preview', content: '# a', url: null, relativeResourceContext: null, isLoading: false, error: null });
+    const wrapper = mountSubject({ path: 'docs/notes.md', type: 'Text', mode: 'preview', content: '# a', url: null, contentRevision: 0, relativeResourceContext: null, isLoading: false, error: null });
     expect(wrapper.get('[data-testid="mobile-screen-title"]').text()).toBe('notes.md');
     await wrapper.get('[data-testid="mobile-screen-back"]').trigger('click');
     expect(wrapper.emitted('close')).toHaveLength(1);

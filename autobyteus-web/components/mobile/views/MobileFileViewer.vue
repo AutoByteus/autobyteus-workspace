@@ -53,6 +53,7 @@ const viewerFile = computed(() => ({
   type: fileType.value,
   content: props.fileState?.content ?? null,
   url: props.fileState?.url ?? null,
+  contentRevision: props.fileState?.contentRevision ?? 0,
   relativeResourceContext: props.fileState?.relativeResourceContext ?? null,
 }));
 </script>

@@ -25,7 +25,7 @@ describe('FileExplorerTabs unsaved content during peer modification (AC-010)', (
     state.nodeIdToNode[node.id] = node
     state.openFiles = [{
       path: node.path, type: 'Text', mode: 'edit', content: 'original bytes',
-      url: null, relativeResourceContext: { kind: 'workspace', workspaceId },
+      url: null, contentRevision: 0, relativeResourceContext: { kind: 'workspace', workspaceId },
       isLoading: false, error: null,
     }]
     state.activeFile = node.path

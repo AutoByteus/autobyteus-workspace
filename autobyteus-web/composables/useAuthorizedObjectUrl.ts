@@ -18,7 +18,12 @@ const normalizedSources = (sources: string[]): string[] => (
   [...new Set(sources.map((url) => url.trim()).filter(Boolean))]
 );
 
-export function useAuthorizedObjectUrl(source: UrlSource): {
+/**
+ * A displayable URL for a resource: an object URL of its bytes where the node key must be sent (the phone), else the URL
+ * itself. `revision` (an open file's `contentRevision`, autobyteus-450) reloads the same URL: a reload always reads the
+ * bytes again (`no-store`) into an object URL, since a browser shows an image it already has for a URL it saw before.
+ */
+export function useAuthorizedObjectUrl(source: UrlSource, options: Readonly<{ revision?: () => number }> = {}): {
   resolvedUrl: Ref<string | null>;
   error: Ref<string | null>;
   refresh: () => Promise<void>;
@@ -47,7 +52,8 @@ export function useAuthorizedObjectUrl(source: UrlSource): {
       return;
     }
 
-    if (!shouldLoadResourceThroughAuthorizedFetchWithCredential(nextSource, credentialSnapshot)) {
+    const reloaded = (options.revision?.() ?? 0) > 0 && !/^(blob:|data:)/i.test(nextSource);
+    if (!reloaded && !shouldLoadResourceThroughAuthorizedFetchWithCredential(nextSource, credentialSnapshot)) {
       resolvedUrl.value = nextSource;
       return;
     }
@@ -69,7 +75,7 @@ export function useAuthorizedObjectUrl(source: UrlSource): {
   };
 
   watch(
-    [() => source()?.trim() || null, activeCredential],
+    [() => source()?.trim() || null, activeCredential, () => options.revision?.() ?? 0],
     () => {
       void refresh();
     },

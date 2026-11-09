@@ -77,6 +77,26 @@ describe('useMobileNavigation', () => {
     await goBack(router); expect(nav.screen.value).toBe('run'); expect(nav.openNodeFilePath.value).toBeNull();
   });
 
+  it('a message\'s attached file (autobyteus-450) opens on the Files screen by its node URL path and name; Back returns', async () => {
+    const router = await createMobileTestRouter();
+    const { result: nav } = withSetup(router, useMobileNavigation);
+    await nav.openRun({ orgQuery: ORG });
+    const locator = '/rest/runs/run-1/context-files/ctx_ab12__photo.png';
+    await nav.openContextFile({ locator, name: 'photo.png' });
+    expect(queryOf(router)).toEqual({ ...ORG, screen: 'files', contextFile: locator, contextFileName: 'photo.png' });
+    expect(nav.openContextFileEntry.value).toEqual({ locator, name: 'photo.png' });
+    expect(nav.openNodeFilePath.value).toBeNull();
+    expect(nav.openFilePath.value).toBeNull();
+    await goBack(router); expect(nav.screen.value).toBe('run'); expect(nav.openContextFileEntry.value).toBeNull();
+  });
+
+  it('← on an attached file entered without an entry under it (a reload) goes to the Files screen', async () => {
+    const router = await createMobileTestRouter({ screen: 'files', contextFile: '/rest/runs/r/context-files/a.png', contextFileName: 'a.png' });
+    const { result: nav } = withSetup(router, useMobileNavigation);
+    await nav.back();
+    expect(queryOf(router)).toEqual({ screen: 'files' });
+  });
+
   it('← on a node file entered without an entry under it (a reload) goes to the Files screen', async () => {
     const router = await createMobileTestRouter({ screen: 'files', nodeFile: '/tmp/a.md' });
     const { result: nav } = withSetup(router, useMobileNavigation);

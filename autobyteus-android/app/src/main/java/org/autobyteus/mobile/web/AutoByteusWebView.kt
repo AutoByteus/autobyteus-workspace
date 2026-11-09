@@ -72,6 +72,7 @@ class AutoByteusWebView(
             NavigationDecisionType.AllowInWebView -> webView.loadUrl(url)
             NavigationDecisionType.OpenExternal -> openExternal(url)
             NavigationDecisionType.Block -> onDiagnostic(ConnectionDiagnosticMapper.linkBlocked())
+            NavigationDecisionType.KeepPage -> Unit
         }
     }
 
@@ -115,6 +116,7 @@ class AutoByteusWebView(
                     onDiagnostic(ConnectionDiagnosticMapper.linkBlocked())
                     true
                 }
+                NavigationDecisionType.KeepPage -> true
             }
         }
 

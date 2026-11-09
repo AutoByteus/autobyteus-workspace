@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { withActiveComposerTarget } from '~/test-support/activeComposerTargetHarness'
 import { flushPromises, mount } from '@vue/test-utils';
 import { nextTick, reactive } from 'vue';
@@ -123,6 +123,20 @@ vi.mock('~/stores/fileExplorer', () => ({
 vi.mock('~/stores/workspace', () => ({
   useWorkspaceStore: () => workspaceStoreMock,
 }));
+
+// autobyteus-450: the phone (off by default) and the authorized object URL (the URL itself unless a test sets one).
+const phone = vi.hoisted(() => ({ isPhone: false, open: vi.fn(), authorized: new Map<string, string>() }));
+vi.mock('~/utils/remoteAccess/mobileRuntime', () => ({ isMobileRemoteAccessRuntime: () => phone.isPhone }));
+vi.mock('~/composables/mobile/useMobileAttachmentOpening', () => ({ useMobileAttachmentOpening: () => ({ open: phone.open }) }));
+vi.mock('~/composables/useAuthorizedObjectUrl', async () => {
+  const { computed, ref } = await import('vue');
+  return {
+    useAuthorizedObjectUrl: (source: () => string | null) => ({
+      resolvedUrl: computed(() => { const url = source(); return url ? (phone.authorized.get(url) ?? url) : null; }),
+      error: ref(null), refresh: vi.fn(),
+    }),
+  };
+});
 
 describe('ContextFilePathInputArea', () => {
   const selectContext = (context: MockAgentContext | null) => {
@@ -663,6 +677,54 @@ describe('ContextFilePathInputArea', () => {
       selectContext(createContext('temp-other-agent'));
       await flushPromises();
       expect(wrapper.find('[role="alert"]').exists()).toBe(false);
+    });
+  });
+
+  describe('draft attachments on the phone (autobyteus-450 DEC-005)', () => {
+    const draftImage = createUploadedContextAttachment({
+      storedFilename: 'ctx_ab__photo.png', locator: '/rest/drafts/agent-runs/temp-agent-1/context-files/ctx_ab__photo.png',
+      displayName: 'photo.png', phase: 'draft', type: 'Image',
+    });
+    const draftPdf = createUploadedContextAttachment({
+      storedFilename: 'ctx_cd__spec.pdf', locator: '/rest/drafts/agent-runs/temp-agent-1/context-files/ctx_cd__spec.pdf',
+      displayName: 'spec.pdf', phase: 'draft', type: 'Pdf',
+    });
+    const mountPhone = () => {
+      const context = createContext('temp-agent-1');
+      context.contextFilePaths.push(draftImage, draftPdf);
+      selectContext(context);
+      return mount(withActiveComposerTarget(ContextFilePathInputArea), {
+        global: { stubs: { FullScreenImageModal: { props: ['imageUrl', 'visible'], template: '<div data-test="modal" :data-url="imageUrl" />' } } },
+      });
+    };
+
+    beforeEach(() => {
+      phone.isPhone = true;
+      phone.open.mockReset();
+      phone.authorized.clear();
+      windowNodeContextStoreMock.isEmbeddedWindow = false;
+      (window as any).electronAPI = undefined;
+      phone.authorized.set(`http://127.0.0.1:31000${draftImage.locator}`, 'blob:phone/draft-1');
+    });
+    afterEach(() => { phone.isPhone = false; });
+
+    it('shows a draft image\'s thumbnail and its full-screen view with the phone key (object URLs)', async () => {
+      const wrapper = mountPhone();
+      expect(wrapper.get('img.context-image-thumbnail').attributes('src')).toBe('blob:phone/draft-1');
+      await wrapper.get('button[title="photo.png"]').trigger('click');
+      expect(wrapper.get('[data-test="modal"]').attributes('data-url')).toBe('blob:phone/draft-1');
+      expect(phone.open).not.toHaveBeenCalled();
+    });
+
+    it('opens any other draft in the phone viewer, never a new window', async () => {
+      const windowOpen = vi.fn();
+      vi.stubGlobal('open', windowOpen);
+      const wrapper = mountPhone();
+      const chip = wrapper.findAll('button').find((button) => button.text().includes('spec.pdf') || button.attributes('title') === 'spec.pdf');
+      expect(chip).toBeTruthy();
+      await chip!.trigger('click');
+      expect(phone.open).toHaveBeenCalledWith(expect.objectContaining({ displayName: 'spec.pdf', phase: 'draft' }));
+      expect(windowOpen).not.toHaveBeenCalled();
     });
   });
 });

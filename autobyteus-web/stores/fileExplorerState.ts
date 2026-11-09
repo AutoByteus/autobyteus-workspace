@@ -27,6 +27,11 @@ export interface OpenFileState {
   // Session-only editor state; committed refreshes never replace a draft.
   editorDraft?: { content: string }
   url: string | null
+  /**
+   * Bumped when an explicit open reads an already-open file again (autobyteus-450): a viewer of `url` loads it again,
+   * since the URL itself does not change. Text is read again into `content` instead.
+   */
+  contentRevision: number
   relativeResourceContext: FileRelativeResourceContext | null
   isLoading: boolean
   error: string | null

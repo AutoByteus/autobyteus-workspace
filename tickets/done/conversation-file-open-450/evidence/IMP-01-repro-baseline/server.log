@@ -1,0 +1,170 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/conversation-file-open-450/autobyteus-server-ts
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd450-repro-AWfdCf/data
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd450-repro-AWfdCf/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd450-repro-AWfdCf/data/.env
+◇ injected env (0) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd450-repro-AWfdCf/data/.env // tip: ⌘ override existing { override: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:61342
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/conversation-file-open-450/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:61342
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/conversation-file-open-450/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd450-repro-AWfdCf/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd450-repro-AWfdCf/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd450-repro-AWfdCf/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd450-repro-AWfdCf/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd450-repro-AWfdCf/data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd450-repro-AWfdCf/data/db/test.db"
+
+SQLite database test.db created at file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd450-repro-AWfdCf/data/db/test.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+(node:65484) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+AgentRunManager initialized.
+Node access: local control socket not opened. The node's local control socket path is 111 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd450-repro-AWfdCf/data/node-access/local-control.sock. Use a shorter data folder path.
+AgentRunManager initialized.
+Overwriting existing tool definition for name: 'search_web'
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd450-repro-AWfdCf/data/memory/agents/content_creator_d6aa525096d645489d980dd592a8d210/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd450-repro-AWfdCf/data/memory/agents/content_creator_d6aa525096d645489d980dd592a8d210/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd450-repro-AWfdCf/data/memory/agents/content_creator_d6aa525096d645489d980dd592a8d210/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd450-repro-AWfdCf/data/memory/agents/content_creator_d6aa525096d645489d980dd592a8d210/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd450-repro-AWfdCf/data/memory/agents/content_creator_d6aa525096d645489d980dd592a8d210/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd450-repro-AWfdCf/data/memory/agents/content_creator_d6aa525096d645489d980dd592a8d210/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd450-repro-AWfdCf/data/memory/agents/content_creator_d6aa525096d645489d980dd592a8d210/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd450-repro-AWfdCf/data/memory/agents/content_creator_d6aa525096d645489d980dd592a8d210/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd450-repro-AWfdCf/data/memory/agents/content_creator_d6aa525096d645489d980dd592a8d210/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd450-repro-AWfdCf/data/memory/agents/content_creator_d6aa525096d645489d980dd592a8d210/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794219731490,"pid":65484,"hostname":"MacBookPro","reqId":"req-5l","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.6971659999981057,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794219731701,"pid":65484,"hostname":"MacBookPro","reqId":"req-5t","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":1.57666700000118,"msg":"http request completed"}
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd450-repro-AWfdCf/data/memory/agents/content_creator_d6aa525096d645489d980dd592a8d210/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd450-repro-AWfdCf/data/memory/agents/content_creator_d6aa525096d645489d980dd592a8d210/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794219731793,"pid":65484,"hostname":"MacBookPro","reqId":"req-6b","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.20304200000100536,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794219732143,"pid":65484,"hostname":"MacBookPro","reqId":"req-6g","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.2845000000015716,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794219734196,"pid":65484,"hostname":"MacBookPro","reqId":"req-6n","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.30337499999586726,"msg":"http request completed"}
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd450-repro-AWfdCf/data/memory/agents/content_creator_d6aa525096d645489d980dd592a8d210/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd450-repro-AWfdCf/data/memory/agents/content_creator_d6aa525096d645489d980dd592a8d210/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794219736427,"pid":65484,"hostname":"MacBookPro","reqId":"req-6s","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.25120800000149757,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794219738548,"pid":65484,"hostname":"MacBookPro","reqId":"req-6u","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.35858299999381416,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794219739635,"pid":65484,"hostname":"MacBookPro","reqId":"req-8a","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.2507079999995767,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794219739701,"pid":65484,"hostname":"MacBookPro","reqId":"req-8p","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.2239160000026459,"msg":"http request completed"}
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd450-repro-AWfdCf/data/memory/agents/content_creator_d6aa525096d645489d980dd592a8d210/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/sd450-repro-AWfdCf/data/memory/agents/content_creator_d6aa525096d645489d980dd592a8d210/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794219739758,"pid":65484,"hostname":"MacBookPro","reqId":"req-8y","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.1844589999964228,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794219740108,"pid":65484,"hostname":"MacBookPro","reqId":"req-93","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.22716699999728007,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794219742161,"pid":65484,"hostname":"MacBookPro","reqId":"req-97","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.30304199999955017,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /rest/drafts/agent-runs/content_creator_d6aa525096d645489d980dd592a8d210/context-files/ctx_9486beaabb33__attach-450.png from 127.0.0.1
+{"level":40,"time":1794219742988,"pid":65484,"hostname":"MacBookPro","reqId":"req-99","method":"GET","url":"/rest/drafts/agent-runs/content_creator_d6aa525096d645489d980dd592a8d210/context-files/ctx_9486beaabb33__attach-450.png","statusCode":401,"elapsedMs":0.3230000000039581,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /rest/drafts/agent-runs/content_creator_d6aa525096d645489d980dd592a8d210/context-files/ctx_9486beaabb33__attach-450.png from 127.0.0.1
+{"level":40,"time":1794219745524,"pid":65484,"hostname":"MacBookPro","reqId":"req-9d","method":"GET","url":"/rest/drafts/agent-runs/content_creator_d6aa525096d645489d980dd592a8d210/context-files/ctx_9486beaabb33__attach-450.png","statusCode":401,"elapsedMs":0.3772910000043339,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /rest/runs/content_creator_d6aa525096d645489d980dd592a8d210/context-files/ctx_9486beaabb33__attach-450.png from 127.0.0.1
+{"level":40,"time":1794219745539,"pid":65484,"hostname":"MacBookPro","reqId":"req-9f","method":"GET","url":"/rest/runs/content_creator_d6aa525096d645489d980dd592a8d210/context-files/ctx_9486beaabb33__attach-450.png","statusCode":401,"elapsedMs":0.3164580000011483,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /rest/runs/content_creator_d6aa525096d645489d980dd592a8d210/context-files/ctx_9486beaabb33__attach-450.png from 127.0.0.1
+{"level":40,"time":1794219748661,"pid":65484,"hostname":"MacBookPro","reqId":"req-9n","method":"GET","url":"/rest/runs/content_creator_d6aa525096d645489d980dd592a8d210/context-files/ctx_9486beaabb33__attach-450.png","statusCode":401,"elapsedMs":0.31850000000122236,"msg":"http request completed"}
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+{"level":40,"time":1794219748676,"pid":65484,"hostname":"MacBookPro","reqId":"req-9o","method":"GET","url":"/favicon.ico","statusCode":401,"elapsedMs":0.30912499999976717,"msg":"http request completed"}

@@ -1,0 +1,4 @@
+{"t":12813,"event":"attachments sent by the second phone"}
+{"t":13631,"event":"apk","versionName":"0.1.0"}
+{"t":76465,"event":"tap","name":"text","found":true,"appRejectionScreen":true,"pagePairingScreen":false,"viewer":false,"conversationShown":false,"connectionsAfterTap":[],"backToConversation":false}
+Warning: Activity not started, intent has been delivered to currently running top-most instance.

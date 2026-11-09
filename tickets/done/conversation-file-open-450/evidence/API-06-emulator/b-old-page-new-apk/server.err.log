@@ -1,0 +1,31 @@
+(node:56625) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Node access: local control socket not opened. The node's local control socket path is 115 bytes, longer than the 103 bytes a Unix socket path may have: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api450-emulator-oHpY7b/data/node-access/local-control.sock. Use a shorter data folder path.
+Overwriting existing tool definition for name: 'search_web'
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api450-emulator-oHpY7b/data/memory/agents/content_creator_f46bd40da73c4f9db9e1caa1ee8947ec/raw_traces_manifest.json
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api450-emulator-oHpY7b/data/memory/agents/content_creator_f46bd40da73c4f9db9e1caa1ee8947ec/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /rest/drafts/agent-runs/content_creator_f46bd40da73c4f9db9e1caa1ee8947ec/context-files/ctx_64422c2a667f__photo-emu.png from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /rest/drafts/agent-runs/content_creator_f46bd40da73c4f9db9e1caa1ee8947ec/context-files/ctx_64422c2a667f__photo-emu.png from 127.0.0.1
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api450-emulator-oHpY7b/data/memory/agents/content_creator_f46bd40da73c4f9db9e1caa1ee8947ec/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /rest/runs/content_creator_f46bd40da73c4f9db9e1caa1ee8947ec/context-files/ctx_64422c2a667f__photo-emu.png from 127.0.0.1
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api450-emulator-oHpY7b/data/memory/agents/content_creator_f46bd40da73c4f9db9e1caa1ee8947ec/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api450-emulator-oHpY7b/data/memory/agents/content_creator_f46bd40da73c4f9db9e1caa1ee8947ec/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api450-emulator-oHpY7b/data/memory/agents/content_creator_f46bd40da73c4f9db9e1caa1ee8947ec/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api450-emulator-oHpY7b/data/memory/agents/content_creator_f46bd40da73c4f9db9e1caa1ee8947ec/raw_traces_manifest.json
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /rest/runs/content_creator_f46bd40da73c4f9db9e1caa1ee8947ec/context-files/ctx_64422c2a667f__photo-emu.png from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1
+Node request refused NODE_CREDENTIAL_REQUIRED /favicon.ico from 127.0.0.1

@@ -48,8 +48,10 @@ import { useAuthorizedObjectUrl } from '~/composables/useAuthorizedObjectUrl';
 
 const props = defineProps<{
   url: string | null;
+  /** The open file's reload count (autobyteus-450): a change loads the same URL again. */
+  contentRevision?: number;
 }>();
-const { resolvedUrl, error: resourceError } = useAuthorizedObjectUrl(() => props.url);
+const { resolvedUrl, error: resourceError } = useAuthorizedObjectUrl(() => props.url, { revision: () => props.contentRevision ?? 0 });
 
 // Zoom state
 const scale = ref(1);

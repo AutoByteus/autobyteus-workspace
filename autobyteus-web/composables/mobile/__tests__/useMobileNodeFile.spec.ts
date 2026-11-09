@@ -1,17 +1,19 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { flushPromises, mount } from '@vue/test-utils';
-import { defineComponent, ref, type Ref } from 'vue';
+import { computed, defineComponent, ref, type Ref } from 'vue';
 
 vi.mock('~/composables/useLocalization', () => ({ useLocalization: () => ({ t: (key: string) => key }) }));
-vi.mock('~/stores/windowNodeContextStore', () => ({ useWindowNodeContextStore: () => ({ getBoundEndpoints: () => ({ rest: 'http://node.example/rest/' }) }) }));
+vi.mock('~/stores/windowNodeContextStore', () => ({ useWindowNodeContextStore: () => ({ initialized: true, nodeBaseUrl: 'http://node.example/', getBoundEndpoints: () => ({ rest: 'http://node.example/rest/' }) }) }));
 const transport = vi.hoisted(() => ({ fetch: vi.fn() }));
 vi.mock('~/utils/remoteAccess/authorizedTransport', () => ({ authorizedFetch: transport.fetch }));
-import { nodeFileContentUrl, useMobileNodeFile } from '../useMobileNodeFile';
+import { nodeFileContentUrl, useMobileNodeFile, type MobileNodeFileSource } from '../useMobileNodeFile';
 
 /** Mounts the composable in a component (its lifetime is the component's). */
+/** Mounts the composable in a component (its lifetime is the component's), with a node path as its source. */
 const mountWith = (path: Ref<string | null>) => {
   let result!: ReturnType<typeof useMobileNodeFile>;
-  const wrapper = mount(defineComponent({ setup() { result = useMobileNodeFile(path); return () => null; } }));
+  const source = computed<MobileNodeFileSource | null>(() => (path.value ? { kind: 'path', path: path.value } : null));
+  const wrapper = mount(defineComponent({ setup() { result = useMobileNodeFile(source); return () => null; } }));
   return { wrapper, result };
 };
 
@@ -90,5 +92,35 @@ describe('useMobileNodeFile (autobyteus-436)', () => {
     settle(new Response('old', { status: 200 }));
     await flushPromises();
     expect(result.fileState.value).toMatchObject({ path: '/w/new.md', content: 'new' });
+  });
+
+  describe('a file attached to a message (autobyteus-450)', () => {
+    const mountAttached = (source: MobileNodeFileSource) => {
+      let result!: ReturnType<typeof useMobileNodeFile>;
+      mount(defineComponent({ setup() { result = useMobileNodeFile(ref(source)); return () => null; } }));
+      return result;
+    };
+
+    it('reads it from its node URL path with the phone key; its type and name come from the name it was sent with', async () => {
+      transport.fetch.mockResolvedValue(new Response(new Blob(['png']), { status: 200 }));
+      const result = mountAttached({ kind: 'contextFile', locator: '/rest/runs/run-1/context-files/ctx_ab12__photo.png', name: 'photo.png' });
+      await flushPromises();
+      expect(transport.fetch).toHaveBeenCalledWith('http://node.example/rest/runs/run-1/context-files/ctx_ab12__photo.png');
+      expect(result.fileState.value).toMatchObject({ path: 'photo.png', type: 'Image', url: 'blob:node/1', isLoading: false, error: null });
+    });
+
+    it('keeps an attached text file as content', async () => {
+      transport.fetch.mockResolvedValue(new Response('notes', { status: 200 }));
+      const result = mountAttached({ kind: 'contextFile', locator: '/rest/runs/run-1/context-files/ctx_cd34__notes.txt', name: 'notes.txt' });
+      await flushPromises();
+      expect(result.fileState.value).toMatchObject({ path: 'notes.txt', type: 'Text', content: 'notes' });
+    });
+
+    it('a refusal shows the viewer\'s message, never a pairing screen', async () => {
+      transport.fetch.mockResolvedValue(new Response(JSON.stringify({ code: 'NOT_FOUND' }), { status: 404 }));
+      const result = mountAttached({ kind: 'contextFile', locator: '/rest/runs/run-1/context-files/gone.pdf', name: 'gone.pdf' });
+      await flushPromises();
+      expect(result.errorMessage.value).toBe('workspace.components.conversation.segments.renderer.MarkdownRenderer.file_preview_failed');
+    });
   });
 });

@@ -78,12 +78,12 @@
               :disabled="item.isUploading"
               @click="openItem(item)"
             >
-              <img
+              <MessageAttachmentThumbnail
                 v-if="item.previewUrl"
-                :src="item.previewUrl"
+                :url="item.previewUrl"
                 :alt="$t('agentInput.components.agentInput.ContextFilePathInputArea.context_image_thumbnail')"
                 class="context-image-thumbnail"
-                @error="markImagePreviewAsFailed(item.key)"
+                @failed="markImagePreviewAsFailed(item.key)"
               />
               <div v-else class="thumbnail-fallback">
                 <i :class="['fas', getContextAttachmentIcon(item.type)]"></i>
@@ -159,7 +159,7 @@
   <FullScreenImageModal
     v-if="selectedImageUrl"
     :visible="isImageModalVisible"
-    :image-url="selectedImageUrl"
+    :image-url="selectedImageDisplayUrl"
     alt-text="Context image preview"
     @close="closeImagePreview"
   />
@@ -168,6 +168,10 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { useContextAttachmentComposer } from '~/composables/useContextAttachmentComposer';
+import { useAuthorizedObjectUrl } from '~/composables/useAuthorizedObjectUrl';
+import { useMobileAttachmentOpening } from '~/composables/mobile/useMobileAttachmentOpening';
+import { isMobileRemoteAccessRuntime } from '~/utils/remoteAccess/mobileRuntime';
+import MessageAttachmentThumbnail from '~/components/conversation/MessageAttachmentThumbnail.vue';
 import { useLocalization } from '~/composables/useLocalization';
 import { useContextFileUploadStore } from '~/stores/contextFileUploadStore';
 import { useFileExplorerStore } from '~/stores/fileExplorer';
@@ -207,6 +211,10 @@ const fileInputRef = ref<HTMLInputElement | null>(null);
 const isContextListExpanded = ref(true);
 const isImageModalVisible = ref(false);
 const selectedImageUrl = ref<string | null>(null);
+// The full-screen view loads the draft image with the node key where one is needed (the phone, autobyteus-450).
+const { resolvedUrl: selectedImageDisplayUrl } = useAuthorizedObjectUrl(() => selectedImageUrl.value);
+// On the phone any other draft opens in the phone's viewer, never by navigating the page (autobyteus-450 DEC-005).
+const mobileAttachments = isMobileRemoteAccessRuntime() ? useMobileAttachmentOpening() : null;
 
 const getTargetForContext = (targetContext: AgentContext | null) => {
   const target = props.target;
@@ -304,6 +312,10 @@ const openItem = (item: (typeof displayedItems.value)[number]): void => {
     return;
   }
 
+  if (mobileAttachments) {
+    void mobileAttachments.open(item.attachment);
+    return;
+  }
   openAttachment(item.attachment);
 };
 

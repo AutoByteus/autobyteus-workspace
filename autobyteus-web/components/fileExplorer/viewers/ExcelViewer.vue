@@ -48,6 +48,8 @@ import { authorizedFetch } from '~/utils/remoteAccess/authorizedTransport';
 const props = defineProps<{
   url: string | null;
   content?: string | null;
+  /** The open file's reload count (autobyteus-450): a change loads the same URL again. */
+  contentRevision?: number;
 }>();
 
 const isLoading = ref(false);
@@ -121,7 +123,7 @@ const loadExcel = async () => {
 };
 
 // Watch for changes in either URL or Content
-watch([() => props.url, () => props.content], () => {
+watch([() => props.url, () => props.content, () => props.contentRevision], () => {
   loadExcel();
 }, { immediate: true });
 
