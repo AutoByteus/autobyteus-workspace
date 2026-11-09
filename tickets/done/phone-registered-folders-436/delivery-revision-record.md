@@ -4,7 +4,7 @@
 
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
-| DR-001 | Code reviewer CRR-002 Pass (HEAD `5994057d86`) | N/A | Delivery Completed (see the release report) | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `release-notes.md` |
+| DR-001 | Code reviewer CRR-002 Pass (HEAD `5994057d86`) | N/A | Delivery Completed: merged into `personal` (`6f3fe39b8b`); beta `v1.5.12-beta.11` published after platform reruns | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `release-notes.md` |
 
 ## Revision Entries
 
@@ -18,3 +18,5 @@
 - Release decision: Beta (the user, in advance), Codex/Grok smoke-check waiver on a usage limit only.
 - Finalization, release and cleanup: recorded in `release-deployment-report.md`.
 - Next recipient/action: Solution Designer (terminal receipt).
+- Outcome: merged `6f3fe39b8b`; tag `v1.5.12-beta.11` on `72c95ddc9e`. GitHub's incident caused 504s and timeouts in Android (attempts 1–4) and the Desktop Windows and Linux builds; after reruns, all four workflows succeeded and the release has 23/23 assets. Delivery missed the first Android failure until the user pointed it out: its watchers reported only at the end.
+- Terminal return to the Solution Designer: `Sent` after cleanup.
