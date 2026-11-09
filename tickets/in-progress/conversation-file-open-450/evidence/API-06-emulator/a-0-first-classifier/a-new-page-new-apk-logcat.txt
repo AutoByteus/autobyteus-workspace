@@ -1,0 +1,52 @@
+11-09 12:42:13.538 I/chromium( 3996): [INFO:document_style_environment_variables.cc(104)] E2E_Used SafeAreaInsetBottom
+11-09 12:42:13.545 I/chromium( 3905): [INFO:CONSOLE(2033)] "[Workspace] Connecting to file system changes for workspace: agent_ws_3dadee9ed5101d291f9381175a2f03292a05efcc46974137acb414708aed04a8", source: http://10.0.2.2:62038/mobile/_nuxt/oacfvCcM.js (2033)
+11-09 12:42:13.545 I/chromium( 3905): [INFO:CONSOLE(2033)] "[FileExplorerStreaming] Connecting to ws://10.0.2.2:62038/ws/file-explorer/agent_ws_3dadee9ed5101d291f9381175a2f03292a05efcc46974137acb414708aed04a8?access_token=%5BREDACTED%5D...", source: http://10.0.2.2:62038/mobile/_nuxt/oacfvCcM.js (2033)
+11-09 12:42:13.552 I/chromium( 3905): [INFO:CONSOLE(2033)] "[FileExplorerStreaming] WebSocket connected", source: http://10.0.2.2:62038/mobile/_nuxt/oacfvCcM.js (2033)
+11-09 12:42:13.630 I/chromium( 3905): [INFO:CONSOLE(2033)] "[FileExplorerStreaming] Session established: 3f86b5de-d139-450d-b9a4-fa530324bd2a", source: http://10.0.2.2:62038/mobile/_nuxt/oacfvCcM.js (2033)
+11-09 12:42:13.630 I/chromium( 3905): [INFO:CONSOLE(2033)] "[Workspace] Connected to file system changes: 3f86b5de-d139-450d-b9a4-fa530324bd2a", source: http://10.0.2.2:62038/mobile/_nuxt/oacfvCcM.js (2033)
+11-09 12:42:14.006 I/chromium( 3996): [INFO:document_style_environment_variables.cc(104)] E2E_Used SafeAreaInsetBottom
+11-09 12:42:14.093 I/chromium( 3996): [INFO:document_style_environment_variables.cc(104)] E2E_Used SafeAreaInsetBottom
+11-09 12:42:18.706 D/ActivityManager(  570): freezing 2931 com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0
+11-09 12:42:18.706 I/am_freeze(  570): [2931,com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0]
+11-09 12:42:18.798 I/am_compact(  570): [2931,com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0,ANON,65188,46464,18340,33800,-896,0,-896,896,4,SOME,0,905,19,230964,-268]
+11-09 12:42:19.812 D/ActivityManager(  570): sync unfroze 2931 com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0 for 6
+11-09 12:42:19.815 I/am_unfreeze(  570): [2931,com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0,6]
+11-09 12:42:21.832 I/chromium( 3905): [INFO:CONSOLE(2033)] "[FileExplorerStreaming] Disconnected", source: http://10.0.2.2:62038/mobile/_nuxt/oacfvCcM.js (2033)
+11-09 12:42:21.832 I/chromium( 3905): [INFO:CONSOLE(2033)] "[Workspace] Disconnected from file system watcher for workspace: agent_ws_3dadee9ed5101d291f9381175a2f03292a05efcc46974137acb414708aed04a8", source: http://10.0.2.2:62038/mobile/_nuxt/oacfvCcM.js (2033)
+11-09 12:42:25.877 I/chromium( 3905): [INFO:CONSOLE(2033)] "[Workspace] Connecting to file system changes for workspace: agent_ws_3dadee9ed5101d291f9381175a2f03292a05efcc46974137acb414708aed04a8", source: http://10.0.2.2:62038/mobile/_nuxt/oacfvCcM.js (2033)
+11-09 12:42:25.877 I/chromium( 3905): [INFO:CONSOLE(2033)] "[FileExplorerStreaming] Connecting to ws://10.0.2.2:62038/ws/file-explorer/agent_ws_3dadee9ed5101d291f9381175a2f03292a05efcc46974137acb414708aed04a8?access_token=%5BREDACTED%5D...", source: http://10.0.2.2:62038/mobile/_nuxt/oacfvCcM.js (2033)
+11-09 12:42:25.884 I/chromium( 3905): [INFO:CONSOLE(2033)] "[FileExplorerStreaming] WebSocket connected", source: http://10.0.2.2:62038/mobile/_nuxt/oacfvCcM.js (2033)
+11-09 12:42:25.888 I/chromium( 3996): [INFO:document_style_environment_variables.cc(104)] E2E_Used SafeAreaInsetBottom
+11-09 12:42:25.950 I/chromium( 3905): [INFO:CONSOLE(2033)] "[FileExplorerStreaming] Session established: 0c3e4dff-0157-4085-b330-a53a151ac063", source: http://10.0.2.2:62038/mobile/_nuxt/oacfvCcM.js (2033)
+11-09 12:42:25.950 I/chromium( 3905): [INFO:CONSOLE(2033)] "[Workspace] Connected to file system changes: 0c3e4dff-0157-4085-b330-a53a151ac063", source: http://10.0.2.2:62038/mobile/_nuxt/oacfvCcM.js (2033)
+11-09 12:42:29.938 D/ActivityManager(  570): freezing 2931 com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0
+11-09 12:42:29.938 I/am_freeze(  570): [2931,com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0]
+11-09 12:42:34.075 I/chromium( 3905): [INFO:CONSOLE(2033)] "[FileExplorerStreaming] Disconnected", source: http://10.0.2.2:62038/mobile/_nuxt/oacfvCcM.js (2033)
+11-09 12:42:34.075 I/chromium( 3905): [INFO:CONSOLE(2033)] "[Workspace] Disconnected from file system watcher for workspace: agent_ws_3dadee9ed5101d291f9381175a2f03292a05efcc46974137acb414708aed04a8", source: http://10.0.2.2:62038/mobile/_nuxt/oacfvCcM.js (2033)
+11-09 12:42:36.132 I/ActivityManager(  570): Killing 3996:com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0/u0a207i2 (adj 0): isolated not needed
+11-09 12:42:36.133 I/am_kill (  570): [0,3996,com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0,0,isolated not needed,0]
+11-09 12:42:36.187 I/am_proc_died(  570): [0,3996,com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0,0,10]
+11-09 12:42:36.225 D/ActivityManager(  570): sync unfroze 2931 com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0 for 6
+11-09 12:42:36.246 I/am_unfreeze(  570): [2931,com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0,6]
+11-09 12:42:36.284 W/ProcessStats(  570): Tracking association SourceState{8c051f8 com.google.android.googlequicksearchbox:search/10143 BTop #2726} whose proc state 2 is better than process ProcessState{da9c6c com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0/10143 pkg=com.google.android.googlequicksearchbox} proc state 14 (5 skipped)
+11-09 12:42:36.289 W/.apps.wellbeing( 1343): ApkAssets: Deleting an ApkAssets object '<empty> and /product/overlay/NavigationBarModeGestural/NavigationBarModeGesturalOverlay.apk' with 1 weak references
+11-09 12:42:39.838 V/ResourcesManager( 4453): The following library key has been added: ResourcesKey{ mHash=37b003ed mResDir=null mSplitDirs=[] mOverlayDirs=[/product/overlay/EmulationPixel7/EmulationPixel7Overlay.apk,/product/overlay/NavigationBarModeGestural/NavigationBarModeGesturalOverlay.apk] mLibDirs=[/data/app/~~OW2KZ2_JJDlx7XKA4InblQ==/com.google.android.webview-RpWGmNo4zT7GALfxZFUv4A==/WebViewGoogle.apk,/data/app/~~4znSzZzGnrP04JdDfPidZQ==/com.google.android.trichromelibrary_636771932-wMGf1tC2Pw8VpQJAgci2kg==/TrichromeLibrary.apk,/system_ext/framework/androidx.window.extensions.jar] mDisplayId=0 mOverrideConfig=v35 mCompatInfo={420dpi always-compat} mLoaders=[]}
+11-09 12:42:40.076 I/chromium( 4453): [1109/124240.071365:INFO:variations_seed_loader.cc(66)] Failed to open file for reading.: No such file or directory (2)
+11-09 12:42:40.187 I/am_proc_start(  570): [0,4508,99003,com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0,,{org.autobyteus.mobile/org.chromium.content.app.SandboxedProcessService0:0}]
+11-09 12:42:40.187 I/ActivityManager(  570): Start proc 4508:com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0/u0i3 for  {org.autobyteus.mobile/org.chromium.content.app.SandboxedProcessService0:0}
+11-09 12:42:40.188 I/am_proc_bound(  570): [0,4508,com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0]
+11-09 12:42:40.216 I/cr_WebViewApkApp( 4508): Launched version=124.0.6367.219 minSdkVersion=29 isBundle=false processName=com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0
+11-09 12:42:40.741 W/chromium( 4508): [WARNING:runtime_features.cc(694)] SharedStorage for M118+ cannot be enabled in this configuration. Use --enable-features=SharedStorageAPI,SharedStorageAPIM118 in addition.
+11-09 12:42:46.183 I/chromium( 4453): [INFO:CONSOLE(655)] "serverStore: Initializing server config", source: http://10.0.2.2:62038/mobile/_nuxt/oacfvCcM.js (655)
+11-09 12:42:46.183 I/chromium( 4453): [INFO:CONSOLE(655)] "serverStore: Not in Electron environment. Skipping server initialization.", source: http://10.0.2.2:62038/mobile/_nuxt/oacfvCcM.js (655)
+11-09 12:42:46.217 I/chromium( 4508): [INFO:document_style_environment_variables.cc(104)] E2E_Used SafeAreaInsetBottom
+11-09 12:42:46.257 I/chromium( 4508): [INFO:document_style_environment_variables.cc(104)] E2E_Used SafeAreaInsetBottom
+11-09 12:42:46.265 I/chromium( 4453): [INFO:CONSOLE(2033)] "Failed to fetch all workspace metadata: ApolloError: Response not successful: Received status code 403", source: http://10.0.2.2:62038/mobile/_nuxt/oacfvCcM.js (2033)
+11-09 12:42:46.265 I/chromium( 4453): [INFO:CONSOLE(885)] "Failed to fetch agent definitions: ApolloError: Response not successful: Received status code 403", source: http://10.0.2.2:62038/mobile/_nuxt/oacfvCcM.js (885)
+11-09 12:42:46.272 I/chromium( 4453): [INFO:CONSOLE(981)] "Failed to fetch agent team definitions: ApolloError: Response not successful: Received status code 403", source: http://10.0.2.2:62038/mobile/_nuxt/oacfvCcM.js (981)
+11-09 12:42:47.812 D/ActivityManager(  570): freezing 2931 com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0
+11-09 12:42:47.812 I/am_freeze(  570): [2931,com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0]
+11-09 12:43:29.931 D/ActivityManager(  570): sync unfroze 2931 com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0 for 6
+11-09 12:43:29.934 I/am_unfreeze(  570): [2931,com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0,6]
+11-09 12:43:40.020 D/ActivityManager(  570): freezing 2931 com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0
+11-09 12:43:40.020 I/am_freeze(  570): [2931,com.google.android.webview:sandboxed_process0:org.chromium.content.app.SandboxedProcessService0:0]

@@ -104,10 +104,14 @@
 //   MSP-24…27 autobyteus-446  A closed Task's delegated runs leave every run list, not only the window whose open run is
 //                  their host; a reopened Task's come back: `mobile-closed-task-rows-cases.mjs` (MSP-24…26 on its own node
 //                  delta and phones; MSP-27 a desktop window on alpha, last).
+//   MSP-28…31 autobyteus-450  Files attached to a conversation open in the phone's viewer with its key (drafts, sent, a
+//                  workspace path, another node's path), and a file opened again shows its current content (phone and a
+//                  desktop window): `mobile-file-open-cases.mjs` (MSP-28…30 on its own nodes epsilon and zeta; MSP-31 on
+//                  alpha's desktop window, last).
 //
 // Prerequisites: `pnpm -C autobyteus-server-ts build` and `pnpm -C autobyteus-web build:mobile-web` (alpha serves
 // `autobyteus-web/dist/public` at /mobile); Chrome. Run: `pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<fresh>`
-// (`--cases=MSP-01,…`, `--browser-executable=<path>`). About 15 minutes (MSP-21…23 about 5, MSP-24…27 about 4).
+// (`--cases=MSP-01,…`, `--browser-executable=<path>`). About 19 minutes (MSP-21…23 about 5, MSP-24…27 about 4, MSP-28…31 about 4).
 // `--hold` sets the stack up, pairs nothing, prints the phone URLs and a pairing link for the Android emulator
 // (`http://10.0.2.2:<alpha port>`) and, with `--bind=0.0.0.0`, for this machine's LAN address, and keeps the stack until
 // Ctrl+C (device checks); it runs no case.
@@ -124,6 +128,7 @@ import { fileURLToPath } from 'node:url';
 import { attachToBrowserContext, ownerHeaders, ownerSocketUrl, pairNodes, probeNodeEnvironment, redactCredentials } from './fixtures/probe-node-access.mjs';
 import { runLiveReconnectCases } from './mobile-live-reconnect-cases.mjs';
 import { runClosedTaskRowsCases } from './mobile-closed-task-rows-cases.mjs';
+import { runFileOpenCases } from './mobile-file-open-cases.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -2164,6 +2169,7 @@ const runCases = async () => {
 
   await runLiveReconnectCases({ runCase, serverAt, freePort, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact });
   await runClosedTaskRowsCases({ runCase, serverAt, freePort, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact, browser, alpha, stack, desktopRunsView });
+  await runFileOpenCases({ runCase, serverAt, freePort, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact, browser, alpha, stack, desktopRunsView });
 };
 
 try {
