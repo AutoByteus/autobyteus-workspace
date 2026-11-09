@@ -1,0 +1,27 @@
+# API-02 — independent rerun of the full offline Docker launcher discovery suite, with pwsh now installed
+Command: python3 -m unittest discover -s scripts/tests -p 'test_public_docker_launcher_*.py' -v
+Environment: macOS (Darwin 25.6.0), Python 3.9.6, pwsh 7.6.9 installed (via `brew install powershell`, this round)
+Commit: e9cc21bf28e7c9435aef0ce447f35aeba5be87f8 (code identical to 2de5fa087, the commit IMP-03 ran on)
+Date: 2026-11-09 (~16:28 UTC)
+
+Ran 60 tests in 107.739s
+
+OK (skipped=1)
+
+Skipped: test_preferred_port_collision_falls_back_for_that_service — "port 8001 is not available for
+collision test setup" (environment-dependent fixture precondition, unrelated to this ticket: port 8001 is
+genuinely in use on this machine by the user's real autobyteus-server-0 node).
+
+Both pwsh-parse tests in the whole discovery run — this ticket's own
+test_public_docker_launcher_setup_code.PublicDockerLauncherSetupCodeTest.test_powershell_launcher_parses_when_pwsh_is_available
+and the pre-existing
+test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest.test_powershell_launcher_parses_when_pwsh_is_available
+— ran and passed (not skipped), confirming the full set of five PowerShell module files
+(autobyteus-docker.ps1, Core.ps1, ContainerConfig.ps1, DockerRuntime.ps1, NodeUpdate.ps1, Commands.ps1,
+including this ticket's changes to Commands.ps1 and DockerRuntime.ps1) parse as valid PowerShell with a real
+pwsh 7.6.9 parser.
+
+What to look for: `Ran 60 tests ... OK (skipped=1)`, the one skip being the pre-existing, environment-only
+port-collision precondition (not a PowerShell skip, not related to this change); confirms no regression
+across the whole offline launcher suite (NAS-03/NAS-32, NAS-34, update, stop, shared workspace, and the new
+setup-code suite) on this change's commit.

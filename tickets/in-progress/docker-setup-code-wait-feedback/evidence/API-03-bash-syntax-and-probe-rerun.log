@@ -1,0 +1,21 @@
+# API-03 — independent rerun of the bash syntax guard and the silent-socket probe
+Commit: e9cc21bf28e7c9435aef0ce447f35aeba5be87f8
+Environment: macOS (Darwin 25.6.0), bash (system), node v26.12.0
+Date: 2026-11-09 (~16:20 UTC)
+
+Command 1:
+  bash -n scripts/public/docker/autobyteus-docker.d/bash/commands.sh && \
+  bash -n scripts/public/docker/autobyteus-docker.d/bash/docker-runtime.sh && echo "OK: no syntax errors"
+Output:
+  OK: no syntax errors
+
+Command 2 (probe, after-fix state only; the before-fix UNBOUNDED behavior was already reproduced and
+recorded by the implementation in IMP-01-probe-before-after.log on the pre-fix commit 4da745ac4, and is not
+re-broken here just to re-observe it):
+  bash tickets/in-progress/docker-setup-code-wait-feedback/probes/silent-socket-attempt.sh "$PWD" 15
+Output:
+  BOUNDED: the attempt ended after 5s with exit 1: the node did not answer within 5 seconds
+
+What to look for: `OK: no syntax errors` for both changed bash files; `BOUNDED: ... after 5s ...` (not
+"UNBOUNDED ... after 15s"), independently reproducing IMP-01's after-fix result and REQ-004/AC-004's 5 s
+per-attempt bound with the real client JS against a real Unix socket.
