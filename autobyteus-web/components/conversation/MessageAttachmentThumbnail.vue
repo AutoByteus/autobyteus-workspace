@@ -1,10 +1,10 @@
 <template>
-  <!-- A message attachment's thumbnail, loaded with the node key where one is needed (the phone, autobyteus-450). -->
+  <!-- An attachment's thumbnail (a sent message's or the composer's draft), loaded with the node key where one is needed
+       (the phone, autobyteus-450). Its caller gives the classes. -->
   <img
     v-if="resolvedUrl"
     :src="resolvedUrl"
     :alt="alt"
-    class="message-attachment-thumbnail h-full w-full object-cover"
     @error="$emit('failed')"
   />
 </template>

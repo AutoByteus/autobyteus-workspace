@@ -8,6 +8,9 @@ const nav = vi.hoisted(() => ({ openContextFile: vi.fn(), openFile: vi.fn(), ope
 const pathOpen = vi.hoisted(() => ({ openMobileFilePath: vi.fn() }));
 vi.mock('~/composables/mobile/useMobileNavigation', () => ({ useMobileNavigation: () => nav }));
 vi.mock('~/composables/mobile/mobileFileOpening', () => pathOpen);
+const toasts = vi.hoisted(() => ({ addToast: vi.fn() }));
+vi.mock('~/composables/useToasts', () => ({ useToasts: () => toasts }));
+vi.mock('~/composables/useLocalization', () => ({ useLocalization: () => ({ t: (key: string) => key }) }));
 vi.mock('~/stores/windowNodeContextStore', () => ({
   useWindowNodeContextStore: () => ({ initialized: true, nodeBaseUrl: 'http://node.example', getBoundEndpoints: () => ({ rest: 'http://node.example/rest' }) }),
 }));
@@ -39,12 +42,20 @@ describe('useMobileAttachmentOpening', () => {
     expect(windowOpen).not.toHaveBeenCalled();
   });
 
-  it('a path the phone cannot open here (another node\'s run) opens nothing and navigates nowhere', async () => {
+  it('a path the phone cannot open here (another node\'s run) says so as file links do, and navigates nowhere (DEC-006)', async () => {
     pathOpen.openMobileFilePath.mockResolvedValue({ status: 'unavailable' });
-    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     await useMobileAttachmentOpening().open(createWorkspaceContextAttachment('/elsewhere/a.md', 'Markdown'));
+    expect(toasts.addToast).toHaveBeenCalledWith('workspace.components.conversation.segments.renderer.MarkdownRenderer.file_available_on_host', 'info');
     expect(windowOpen).not.toHaveBeenCalled();
-    warn.mockRestore();
+
+    pathOpen.openMobileFilePath.mockResolvedValue({ status: 'failed' });
+    await useMobileAttachmentOpening().open(createWorkspaceContextAttachment('/elsewhere/a.md', 'Markdown'));
+    expect(toasts.addToast).toHaveBeenLastCalledWith('workspace.components.conversation.segments.renderer.MarkdownRenderer.file_preview_failed', 'error');
+  });
+
+  it('an opened path shows no notice', async () => {
+    await useMobileAttachmentOpening().open(createWorkspaceContextAttachment('/Users/me/project/notes.txt', 'Text'));
+    expect(toasts.addToast).not.toHaveBeenCalled();
   });
 
   it('an external URL (another site) still opens outside the page; an unsupported local file opens nothing', async () => {

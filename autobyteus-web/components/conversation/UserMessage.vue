@@ -53,6 +53,7 @@
                   v-if="item.previewUrl"
                   :url="item.previewUrl"
                   :alt="item.label"
+                  class="message-attachment-thumbnail h-full w-full object-cover"
                   @failed="markAttachmentPreviewAsFailed(item.attachment.id)"
                 />
                 <span v-else>{{ item.label }}</span>
