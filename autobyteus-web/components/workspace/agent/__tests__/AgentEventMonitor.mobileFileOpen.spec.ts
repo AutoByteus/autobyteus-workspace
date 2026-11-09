@@ -1,4 +1,5 @@
-// autobyteus-427 (AC-002): on the phone, a tap on a file link in a conversation opens the file on the Files screen.
+// autobyteus-427 (AC-002): on the phone, a tap on a file link in a conversation opens the file on the Files screen
+// (outside the run's folder: a node file, autobyteus-436).
 // The conversation view, its feed and Markdown renderer, the lazily created opener, the phone navigation and vue-router
 // are production implementations, mounted with a real router: the opener runs after an await in a click handler, where
 // `inject` no longer works, so a test that doubles `useMobileNavigation` cannot see this failure.
@@ -65,12 +66,13 @@ describe('the phone: a file link in a conversation (autobyteus-427, autobyteus-2
     await vi.waitFor(() => expect(router.currentRoute.value.fullPath).toBe('/mobile?screen=run'));
   });
 
-  it('a path outside the open run\'s folder opens nothing and shows the status line', async () => {
+  it('a path outside the open run\'s folder opens on the Files screen as a node file, by its absolute path (autobyteus-436)', async () => {
     const { wrapper, router } = await mountOnPhone('/owned/A/private.txt');
     await wrapper.get('[data-event-monitor-file-action-id]').trigger('click');
-    await vi.waitFor(() => expect(wrapper.find('[data-testid="event-monitor-file-preview-status"]').exists()).toBe(true));
-    expect(wrapper.get('[data-testid="event-monitor-file-preview-status"]').text())
-      .toBe('workspace.components.conversation.segments.renderer.MarkdownRenderer.file_available_on_host');
-    expect(router.currentRoute.value.fullPath).toBe('/mobile?screen=run');
+    await vi.waitFor(() => expect(router.currentRoute.value.query.screen).toBe('files'));
+    expect(router.currentRoute.value.query).toEqual({ screen: 'files', nodeFile: '/owned/A/private.txt' });
+    expect(wrapper.find('[data-testid="event-monitor-file-preview-status"]').exists()).toBe(false);
+    router.back();
+    await vi.waitFor(() => expect(router.currentRoute.value.fullPath).toBe('/mobile?screen=run'));
   });
 });

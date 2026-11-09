@@ -1,0 +1,13 @@
+owner credential from the setup code: yes
+PASS owner GET shared Markdown: 200 text/markdown nosniff=nosniff csp=set
+PASS owner GET large PDF: 200 application/pdf 18000828 bytes
+PASS owner GET a host path not mounted into the container: 404 NODE_FILE_NOT_FOUND
+PASS owner GET a folder: 400 NODE_FILE_IS_FOLDER
+PASS owner GET a container file outside the shared folder (/etc/hostname): 200
+phone access 200; pairing session 201
+ERROR locator.waitFor: Timeout 60000ms exceeded.
+Call log:
+  - waiting for locator('[data-testid="mobile-run-tree"]') to be visible
+
+    at /private/tmp/abtest436/api02-phone.mjs:40:57
+result Fail

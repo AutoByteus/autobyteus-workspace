@@ -1,0 +1,64 @@
+{
+  "startedAt": "2026-11-09T05:25:13.870Z",
+  "timeline": [
+    {
+      "t": 6996,
+      "event": "stack",
+      "ptm": "project_task_manager_94afd07af66b466c94c326dda6e64e3d",
+      "other": "fact_checker_82fa53083c154a3b9e8922dc6dc610a5",
+      "writerRun": "release_notes_writer_53f61411683b4bf3b107e9565644d465",
+      "teamRun": "docs_review_team_c5cb4c479ff444c8a4d6aebbf6407faa",
+      "taskA": "repro-7a203c-1",
+      "taskB": "repro-7a203c-2"
+    },
+    {
+      "t": 12773,
+      "event": "before close",
+      "host": [
+        "mobile-run-row-agent:project_task_manager_94afd07af66b466c94c326dda6e64e3d/agent:release_notes_writer_53f61411683b4bf3b107e9565644d465",
+        "mobile-run-row-agent:project_task_manager_94afd07af66b466c94c326dda6e64e3d/team:docs_review_team_c5cb4c479ff444c8a4d6aebbf6407faa"
+      ],
+      "other": [
+        "mobile-run-row-agent:project_task_manager_94afd07af66b466c94c326dda6e64e3d/agent:release_notes_writer_53f61411683b4bf3b107e9565644d465",
+        "mobile-run-row-agent:project_task_manager_94afd07af66b466c94c326dda6e64e3d/team:docs_review_team_c5cb4c479ff444c8a4d6aebbf6407faa"
+      ]
+    },
+    {
+      "t": 14724,
+      "event": "tasks closed (both update_task calls returned)"
+    },
+    {
+      "t": 139225,
+      "event": "result",
+      "waitedMs": 120000,
+      "goneAfterMs": {
+        "host": 2,
+        "other": null
+      },
+      "otherStillShownAtEnd": [
+        "mobile-run-row-agent:project_task_manager_94afd07af66b466c94c326dda6e64e3d/agent:release_notes_writer_53f61411683b4bf3b107e9565644d465",
+        "mobile-run-row-agent:project_task_manager_94afd07af66b466c94c326dda6e64e3d/team:docs_review_team_c5cb4c479ff444c8a4d6aebbf6407faa"
+      ],
+      "otherAfterReload": [],
+      "nodeViewStillNamesTeamRun": true
+    }
+  ],
+  "result": {
+    "waitedMs": 120000,
+    "goneAfterMs": {
+      "host": 2,
+      "other": null
+    },
+    "otherStillShownAtEnd": [
+      "mobile-run-row-agent:project_task_manager_94afd07af66b466c94c326dda6e64e3d/agent:release_notes_writer_53f61411683b4bf3b107e9565644d465",
+      "mobile-run-row-agent:project_task_manager_94afd07af66b466c94c326dda6e64e3d/team:docs_review_team_c5cb4c479ff444c8a4d6aebbf6407faa"
+    ],
+    "otherAfterReload": [],
+    "nodeViewStillNamesTeamRun": true
+  },
+  "error": null,
+  "cleanup": {
+    "serverExited": true,
+    "rootRemoved": true
+  }
+}

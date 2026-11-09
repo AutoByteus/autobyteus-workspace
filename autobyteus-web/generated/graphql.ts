@@ -424,6 +424,7 @@ export type AgentRunCollaborationMemberProjectionPayload = {
 
 export type AgentRunCollaborationStatusesObject = {
   __typename?: 'AgentRunCollaborationStatusesObject';
+  closedTaskExecutionsDigest?: Maybe<Scalars['String']['output']>;
   isActive: Scalars['Boolean']['output'];
   runId: Scalars['String']['output'];
   statuses: Array<AgentRunChildStatusObject>;
@@ -5653,7 +5654,7 @@ export type GetAgentRunCollaborationStatusesQueryVariables = Exact<{
 }>;
 
 
-export type GetAgentRunCollaborationStatusesQuery = { __typename?: 'Query', agentRunCollaborationStatuses: Array<{ __typename?: 'AgentRunCollaborationStatusesObject', runId: string, isActive: boolean, statuses: Array<{ __typename?: 'AgentRunChildStatusObject', agentRunId: string, memberAddress: string, status: string, recoverableBlock?: any | null }> }> };
+export type GetAgentRunCollaborationStatusesQuery = { __typename?: 'Query', agentRunCollaborationStatuses: Array<{ __typename?: 'AgentRunCollaborationStatusesObject', runId: string, isActive: boolean, closedTaskExecutionsDigest?: string | null, statuses: Array<{ __typename?: 'AgentRunChildStatusObject', agentRunId: string, memberAddress: string, status: string, recoverableBlock?: any | null }> }> };
 
 export type GetAgentRunCollaborationMemberProjectionQueryVariables = Exact<{
   hostRunId: Scalars['String']['input'];
@@ -11840,6 +11841,7 @@ export const GetAgentRunCollaborationStatusesDocument = gql`
   agentRunCollaborationStatuses(runIds: $runIds) {
     runId
     isActive
+    closedTaskExecutionsDigest
     statuses {
       agentRunId
       memberAddress

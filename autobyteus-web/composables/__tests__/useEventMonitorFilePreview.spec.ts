@@ -14,7 +14,7 @@ const {
 } = vi.hoisted(() => ({
   activeContextStoreMock: { activeWorkspaceTarget: null as any, resolveWorkspaceMetadataForTarget: vi.fn() },
   fileExplorerStoreMock: { openFilePreview: vi.fn() },
-  mobileNavigationMock: { openFile: vi.fn(async () => undefined) },
+  mobileNavigationMock: { openFile: vi.fn(async () => undefined), openNodeFile: vi.fn(async () => undefined) },
   windowNodeContextStoreMock: { isEmbeddedWindow: false, bindingRevision: 0 },
   workspaceStoreMock: {
     activeWorkspaceMetadata: {
@@ -34,6 +34,7 @@ const {
 }));
 
 vi.mock('~/stores/activeContextStore', () => ({ useActiveContextStore: () => activeContextStoreMock }));
+vi.mock('~/stores/remoteRunsStore', () => ({ useRemoteRunsStore: () => ({ runOfAgentRun: () => null }) }));
 
 vi.mock('~/stores/fileExplorer', () => ({
   useFileExplorerStore: () => fileExplorerStoreMock,
@@ -221,13 +222,18 @@ describe('preserved mobile containment', () => {
     workspaceStoreMock.resolveWorkspaceMetadataByRootPath.mockResolvedValue({ workspaceId: 'B', workspaceRootPath: '/owned/B' });
   });
   for (const inside of [true, false]) {
-    it(`uses only mapped workspace content on mobile; inside: ${inside}`, async () => {
+    it(`opens a workspace file inside the folder, a node file by its absolute path outside it (autobyteus-436); inside: ${inside}`, async () => {
       mapAbsolutePathToWorkspaceRelativeMock.mockReturnValue(inside ? { workspaceId: 'B', relativePath: 'brief.md' } : null);
-      expect((await useEventMonitorFilePreview({ ...options(), revealTool: null, mobileNavigation: mobileNavigationMock }).openPath(action)).status).toBe(inside ? 'opened' : 'unavailable');
+      expect((await useEventMonitorFilePreview({ ...options(), revealTool: null, mobileNavigation: mobileNavigationMock }).openPath(action)).status).toBe('opened');
       expect(fileExplorerStoreMock.openFilePreview).not.toHaveBeenCalled();
       expect(hasTrustedElectronLocalFileCapabilityMock).not.toHaveBeenCalled();
-      if (inside) expect(mobileNavigationMock.openFile).toHaveBeenCalledWith({ workspaceId: 'B', path: 'brief.md' });
-      else expect(mobileNavigationMock.openFile).not.toHaveBeenCalled();
+      if (inside) {
+        expect(mobileNavigationMock.openFile).toHaveBeenCalledWith({ workspaceId: 'B', path: 'brief.md' });
+        expect(mobileNavigationMock.openNodeFile).not.toHaveBeenCalled();
+      } else {
+        expect(mobileNavigationMock.openNodeFile).toHaveBeenCalledWith({ path: action.normalizedCandidate });
+        expect(mobileNavigationMock.openFile).not.toHaveBeenCalled();
+      }
     });
   }
 });

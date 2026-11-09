@@ -109,6 +109,10 @@ const messages = {
     "This file is available only on the host workspace.",
   "workspace.components.conversation.segments.renderer.MarkdownRenderer.file_preview_failed":
     "The file preview could not be opened.",
+  "workspace.components.mobile.views.MobileFiles.node_file_not_found":
+    "This file was not found on the computer.",
+  "workspace.components.mobile.views.MobileFiles.node_file_is_folder":
+    "This path is a folder, not a file.",
   "workspace.components.workspace.config.RunConfigPanel.title.agentConfiguration":
     "Agent Configuration",
   "workspace.components.workspace.config.RunConfigPanel.title.teamConfiguration":

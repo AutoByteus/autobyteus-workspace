@@ -1,6 +1,6 @@
 import { projectAgentCollaborationView } from "../../../src/services/agent-streaming/agent-collaboration-view-projector.js";
 import { TASK_AGENT_PLACEMENT } from "../../../src/agent-memory/domain/agent-run-memory-placement.js";
-import { CollaborationStreamServerMessageSchema } from "@autobyteus/collaboration-stream-contracts";
+import { CollaborationStreamServerMessageSchema, closedTaskExecutionsDigest } from "@autobyteus/collaboration-stream-contracts";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -627,6 +627,10 @@ describe("StandaloneAgentRunRoot owns its host (REQ-001, REQ-004)", () => {
       liveSequenceId: live.liveSequenceId, lastMessageChangeSequence: live.lastMessageChangeSequence, remoteTaskExecutions: [] });
     live.close();
     expect(view.root_subject_kind === "agent" && view.root_agent.closed_task_executions).toEqual([closedA]);
+    // autobyteus-446: the history poll's digest of the live root equals the digest of the view's closed list (the client's side).
+    expect(f.manager.getAgentStatuses([HOST])[0]!.closedTaskExecutionsDigest)
+      .toBe(closedTaskExecutionsDigest(view.root_subject_kind === "agent" ? view.root_agent.closed_task_executions : []));
+    expect(f.manager.getAgentStatuses([HOST])[0]!.closedTaskExecutionsDigest).not.toBe(closedTaskExecutionsDigest([]));
     // The tree is never filtered: both copies stay recorded.
     expect(root.getExecutionTreeSnapshot().taskExecutions.map((task) => "agentRunId" in task ? task.agentRunId : task.teamRunId))
       .toEqual([ingressOfOutcome(assigned), ingressOfOutcome(other)]);
@@ -668,7 +672,10 @@ describe("StandaloneAgentRunRoot owns its host (REQ-001, REQ-004)", () => {
     const live = await root.openPackageSnapshotConnection();
     expect(live.snapshot.closedTaskExecutions).toEqual([]);
     live.close();
+    // autobyteus-446: the reopen returns the history poll's digest to the empty set's; a stopped root answers none.
+    expect(f.manager.getAgentStatuses([HOST])[0]!.closedTaskExecutionsDigest).toBe(closedTaskExecutionsDigest([]));
     await f.manager.stopRoot(HOST);
+    expect(f.manager.getAgentStatuses([HOST])[0]!.closedTaskExecutionsDigest).toBeNull();
     expect((await f.manager.getInspection(HOST))!.snapshot.closedTaskExecutions).toEqual([]);
   });
 

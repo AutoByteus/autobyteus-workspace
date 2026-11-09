@@ -1,0 +1,2 @@
+Build Android APK	Build APK	2026-11-09T07:28:19.8640233Z ##[error]Exception in thread "main" java.io.IOException: Server returned HTTP response code: 504 for URL: https://github.com/gradle/gradle-distributions/releases/download/v8.13.0/gradle-8.13-bin.zip
+Build Android APK	Build APK	2026-11-09T07:28:19.8739479Z ##[error]Process completed with exit code 1.

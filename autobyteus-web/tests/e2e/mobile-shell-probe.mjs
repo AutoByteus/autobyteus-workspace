@@ -61,8 +61,10 @@
 //   MSP-16 autobyteus-427  A file link in a conversation (the Delivery Team lead's own message, Markdown links to absolute
 //                  paths): a tap on a file in the workspace's sub-folder opens the file viewer with its text, the URL is
 //                  `screen=files`, the folder's workspace id and the relative path; the system Back returns to the
-//                  conversation; a tap on a file outside the workspace opens nothing and shows "This file is available only
-//                  on the host workspace."; no opener failure in the console.
+//                  conversation. autobyteus-436 (AC-001, AC-004): a file outside the workspace opens too, read-only, by its
+//                  absolute path (`screen=files&nodeFile=`): a text file, a Markdown file and an image; Back closes each;
+//                  a missing path says "This file was not found on the computer.", a folder "This path is a folder, not a
+//                  file."; no edit control; no opener failure in the console.
 //   MSP-09 AC-008  The connection sheet: the node's name from the pairing code (the name the desktop gives it, the dialog's
 //                  name; the node's status carries none), URL, state, the refresh icon while connected and no peer list
 //                  (one-step-phone-pairing REQ-019, AC-016); alpha down: the bar and the banner, "Retry" in the sheet;
@@ -80,7 +82,7 @@
 //                  A device revoked on the node (403, autobyteus-426 D-02): the open phone's Check and a later start both
 //                  land on pairing, the stored session removed.
 //   MSP-17 autobyteus-426 D-19  A read-only conversation (the task agent of an Org run stopped on the node): a tap on a
-//                  file outside the workspace shows "This file is available only on the host workspace."; no composer.
+//                  file outside the workspace opens it read-only (autobyteus-436); no composer.
 //   MSP-18 autobyteus-426 D-02  Phone Access off on the node: the open phone's Check and a later start show the bar "Phone
 //                  access off" and "<node> is reachable, but Phone access is off." with Check; the session is kept; on
 //                  again, Check loads the runs (no re-pairing); off, then the node stopped: "Can’t reach <node>.".
@@ -98,11 +100,14 @@
 //                  nothing beyond the 5 s poll; switching to Workspaces reads once with its window (6).
 //   MSP-21…23 autobyteus-434  Live run streams after the path to the node drops (45 s), after the phone was in the
 //                  background, and a user message loaded during its own turn: `mobile-live-reconnect-cases.mjs` (its
-//                  own node gamma, a TCP proxy as the phone's network path, and its own phones); they run last.
+//                  own node gamma, a TCP proxy as the phone's network path, and its own phones); they run after the cases above.
+//   MSP-24…27 autobyteus-446  A closed Task's delegated runs leave every run list, not only the window whose open run is
+//                  their host; a reopened Task's come back: `mobile-closed-task-rows-cases.mjs` (MSP-24…26 on its own node
+//                  delta and phones; MSP-27 a desktop window on alpha, last).
 //
 // Prerequisites: `pnpm -C autobyteus-server-ts build` and `pnpm -C autobyteus-web build:mobile-web` (alpha serves
 // `autobyteus-web/dist/public` at /mobile); Chrome. Run: `pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<fresh>`
-// (`--cases=MSP-01,…`, `--browser-executable=<path>`). About 11 minutes (MSP-21…23 about 5).
+// (`--cases=MSP-01,…`, `--browser-executable=<path>`). About 15 minutes (MSP-21…23 about 5, MSP-24…27 about 4).
 // `--hold` sets the stack up, pairs nothing, prints the phone URLs and a pairing link for the Android emulator
 // (`http://10.0.2.2:<alpha port>`) and, with `--bind=0.0.0.0`, for this machine's LAN address, and keeps the stack until
 // Ctrl+C (device checks); it runs no case.
@@ -118,6 +123,7 @@ import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { attachToBrowserContext, ownerHeaders, ownerSocketUrl, pairNodes, probeNodeEnvironment, redactCredentials } from './fixtures/probe-node-access.mjs';
 import { runLiveReconnectCases } from './mobile-live-reconnect-cases.mjs';
+import { runClosedTaskRowsCases } from './mobile-closed-task-rows-cases.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -450,6 +456,8 @@ const phoneSockets = [];
 const EXPECTED_BY_CASE = {
   // The three refused folder paths (autobyteus-426 D-08): the workspace store logs each refused registration.
   'MSP-07': /Error creating workspace metadata: ApolloError: (No folder exists at the workspace path|The workspace path is a file, not a folder|Workspace path must be an absolute path)\./,
+  // autobyteus-436 AC-004: the missing node file (404 NODE_FILE_NOT_FOUND) and the folder (400 NODE_FILE_IS_FOLDER).
+  'MSP-16': /Failed to load resource: the server responded with a status of 40[04] \((Not Found|Bad Request)\)/,
   // The paired node stopped on purpose: the phone's requests are refused while it is down.
   'MSP-09': /Failed to load resource: net::ERR_CONNECTION_REFUSED/,
   // The phone's credential refused on purpose (401 unknown, 403 revoked).
@@ -1304,15 +1312,24 @@ const runCases = async () => {
     // The lead's own message (an AI message through the real runtime, stream and stored projection) names a file inside
     // the workspace and one outside it, each as a Markdown link to its absolute path. Its text comes back as `ECHO:"…"`.
     const draftPath = path.join(stack.workspace, 'drafts', 'draft-v3.txt');
-    const outsidePath = path.join(path.dirname(stack.workspace), 'outside-427', 'private.txt');
+    const outsideDir = path.join(path.dirname(stack.workspace), 'outside-427');
+    const outsidePath = path.join(outsideDir, 'private.txt');
+    // autobyteus-436: files outside the run's folder (a worktree elsewhere on the computer), a missing path and a folder.
+    const notesPath = path.join(outsideDir, 'notes-436.md');
+    const imagePath = path.join(outsideDir, 'diagram-436.png');
+    const missingPath = path.join(outsideDir, 'gone-436.md');
+    const folderPath = path.join(outsideDir, 'reports-436.md');
     await fs.mkdir(path.dirname(draftPath), { recursive: true });
-    await fs.mkdir(path.dirname(outsidePath), { recursive: true });
+    await fs.mkdir(folderPath, { recursive: true });
     await fs.writeFile(draftPath, 'DRAFT-V3-TEXT-5150: the third draft.\n');
-    await fs.writeFile(outsidePath, 'OUTSIDE-TEXT-9090 must not show on the phone.\n');
+    await fs.writeFile(outsidePath, 'OUTSIDE-TEXT-9090 opens read-only on the phone.\n');
+    await fs.writeFile(notesPath, '# NOTES-436\n\nREAD-ONLY-NOTES-436 from a worktree.\n');
+    await fs.writeFile(imagePath, Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==', 'base64'));
     const marker = 'FILE-LINK-427';
     await sendOver(stack.wsUrl(`agent-team/${stack.delivery}`), { message_id: randomUUID(), dedupe_key: `team_member_input:probe:${randomUUID()}`,
       context_file_paths: [], image_urls: [], agent_run_id: stack.deliveryLead,
-      content: `ECHO_INPUT ${marker} The draft is in [draft-v3.txt](${draftPath}); the old one is [private.txt](${outsidePath}).` });
+      content: `ECHO_INPUT ${marker} The draft is in [draft-v3.txt](${draftPath}); the old one is [private.txt](${outsidePath}); `
+        + `notes [notes-436.md](${notesPath}), the diagram [diagram-436.png](${imagePath}), [gone-436.md](${missingPath}), [reports-436.md](${folderPath}).` });
     await waitFor('the lead\'s answer naming the files', async () => /ECHO:[^]*FILE-LINK-427/.test(await stack.leadProjection()), 60_000);
     const workspaceId = (await alpha.gql('query($r:String!){workspaceMetadata(rootPath:$r){workspaceId}}', { r: stack.workspace })).workspaceMetadata?.workspaceId;
     const consoleLines = [];
@@ -1346,24 +1363,58 @@ const runCases = async () => {
       const back = { state: after.state, query: after.query, name: after.name, link: await control(draftPath).count(),
         composer: await page.locator(`${sel('mobile-run-conversation')} textarea`).count() };
       await shot(page, 'MSP-16-back');
-      // Tap the file outside the workspace: nothing opens; the status line says so.
-      const urlBefore = page.url();
-      await control(outsidePath).last().scrollIntoViewIfNeeded();
-      await control(outsidePath).last().tap();
-      const status = page.locator(sel('event-monitor-file-preview-status'));
-      await status.waitFor({ timeout: 15_000 }).catch(() => undefined);
-      await sleep(1_500);
-      const outside = { status: (await status.innerText().catch(() => '')).trim(), urlUnchanged: page.url() === urlBefore, viewer: await viewer.count(),
-        leaked: (await page.locator('body').innerText()).includes('OUTSIDE-TEXT-9090') };
-      await shot(page, 'MSP-16-outside');
+      // autobyteus-436: a file outside the workspace opens read-only by its absolute path; Back closes it.
+      const openOutside = async (filePath, name) => {
+        await control(filePath).last().scrollIntoViewIfNeeded();
+        await control(filePath).last().tap();
+        await viewer.waitFor({ timeout: 20_000 }).catch(() => undefined);
+        await waitFor(`${name} settled in the viewer`, async () => {
+          const text = await viewer.innerText().catch(() => '');
+          return !/Opening…/.test(text) && text.length > 0;
+        }, 20_000).catch(() => undefined);
+        await sleep(500);
+        const facts = {
+          viewer: await viewer.count(), query: Object.fromEntries(new URL(page.url()).searchParams), text: (await viewer.innerText().catch(() => '')).slice(0, 400),
+          error: (await viewer.locator(sel('mobile-file-preview-error')).innerText().catch(() => '')).trim(),
+          image: await viewer.locator('img[src^="blob:"]').count(),
+          editControls: await viewer.getByRole('button', { name: /save|rename|delete|edit/i }).count(),
+          status: await page.locator(sel('event-monitor-file-preview-status')).count(),
+        };
+        // Read-only: typing into the shown file changes nothing.
+        const content = viewer.locator(sel('mobile-file-preview-content'));
+        if (await content.count()) {
+          await content.click({ position: { x: 60, y: 40 } }).catch(() => undefined);
+          await page.keyboard.type('TYPED-436', { delay: 10 }).catch(() => undefined);
+          await sleep(300);
+        }
+        facts.typedChanges = (await viewer.innerText().catch(() => '')).includes('TYPED-436');
+        await shot(page, `MSP-16-outside-${name}`);
+        if (facts.viewer) {
+          await page.goBack();
+          await waitFor(`the conversation after ${name}`, async () => (await runScreen(page)).state === 'open' && (await viewer.count()) === 0, 15_000).catch(() => undefined);
+        }
+        return { ...facts, backToConversation: (await runScreen(page)).state === 'open' && (await viewer.count()) === 0 };
+      };
+      const outside = await openOutside(outsidePath, 'text');
+      const notes = await openOutside(notesPath, 'markdown');
+      const image = await openOutside(imagePath, 'image');
+      const missing = await openOutside(missingPath, 'missing');
+      const folder = await openOutside(folderPath, 'folder');
       const warnings = consoleLines.filter(line => /inject\(\)|File preview failed|reading 'query'/.test(line));
       assert(links.draft >= 1 && links.outside >= 1, 'the message renders both paths as file links', links);
       assert(opened.viewer === 1 && opened.text, 'a tap on the workspace file shows its text in the phone\'s file viewer', { opened, consoleLines });
       assert(opened.query.screen === 'files' && opened.query.workspace === workspaceId && opened.query.file === 'drafts/draft-v3.txt', 'the URL is the Files screen with the workspace and the relative path', { query: opened.query, workspaceId });
       assert(back.state === 'open' && back.query === before.query && back.link >= 1 && back.composer >= 1, 'Back returns to the conversation', { before: before.query, back });
-      assert(outside.status === 'This file is available only on the host workspace.' && outside.urlUnchanged && outside.viewer === 0 && !outside.leaked, 'a path outside the workspace opens nothing and shows the status line', outside);
+      const openedReadOnly = (facts, filePath) => facts.viewer === 1 && facts.query.screen === 'files' && facts.query.nodeFile === filePath && !facts.query.workspace
+        && facts.status === 0 && !facts.typedChanges && facts.editControls === 0 && facts.backToConversation;
+      assert(openedReadOnly(outside, outsidePath) && outside.text.includes('OUTSIDE-TEXT-9090'), 'AC-001 a text file outside the workspace opens read-only by its absolute path; Back closes it', outside);
+      assert(openedReadOnly(notes, notesPath) && notes.text.includes('READ-ONLY-NOTES-436'), 'AC-001 a Markdown file outside the workspace opens read-only', notes);
+      assert(openedReadOnly(image, imagePath) && image.image === 1, 'AC-001 an image outside the workspace shows', image);
+      assert(missing.viewer === 1 && missing.error === 'This file was not found on the computer.' && missing.backToConversation, 'AC-004 a missing path says so', missing);
+      assert(folder.viewer === 1 && folder.error === 'This path is a folder, not a file.' && folder.backToConversation, 'AC-004 a folder says so', folder);
       assert(warnings.length === 0, 'no opener failure in the console', warnings);
-      return { draftPath: path.relative(root, draftPath), outsidePath: path.relative(root, outsidePath), workspaceId, links, before: before.query, opened, back, outside, consoleLines };
+      return { draftPath: path.relative(root, draftPath), outsidePath: path.relative(root, outsidePath), workspaceId, links, before: before.query, opened, back,
+        outside, notes, image, missing, folder, consoleLines };
     } finally {
       page.off('console', onConsole);
     }
@@ -1901,7 +1952,7 @@ const runCases = async () => {
     // conversations are an Org's delegated work: here a task agent of an Org run that was then stopped on the node.
     const outsidePath = path.join(path.dirname(stack.workspace), 'outside-426', 'old-notes.txt');
     await fs.mkdir(path.dirname(outsidePath), { recursive: true });
-    await fs.writeFile(outsidePath, 'OUTSIDE-TEXT-4260 must not show on the phone.\n');
+    await fs.writeFile(outsidePath, 'OUTSIDE-TEXT-4260 opens read-only on the phone.\n');
     const marker = 'FILE-LINK-426-RO';
     const created = (await alpha.gql('mutation($i:CreateAgentOrgRunInput!){createAgentOrgRun(input:$i){success message agentOrgRunId}}',
       { i: { agentOrgDefinitionId: stack.ids.org, rootConfiguration: stack.runConfig, agentOverrides: [], teamOverrides: [] } })).createAgentOrgRun;
@@ -1940,13 +1991,20 @@ const runCases = async () => {
     await shot(page, 'MSP-17-read-only-conversation');
     const urlBefore = page.url();
     if (before.links) { await control.last().scrollIntoViewIfNeeded(); await control.last().tap(); }
-    const status = page.locator(sel('event-monitor-file-preview-status'));
-    await status.waitFor({ timeout: 15_000 }).catch(() => undefined);
-    await sleep(1_000);
-    const after = { status: (await status.innerText().catch(() => '')).trim(), role: await status.getAttribute('role').catch(() => null),
-      composer: await page.locator(`${sel('mobile-run-conversation')} textarea`).count(), urlUnchanged: page.url() === urlBefore,
-      viewer: await page.locator(sel('mobile-file-viewer')).count(), leaked: (await page.locator('body').innerText()).includes('OUTSIDE-TEXT-4260') };
+    // autobyteus-436: the file opens read-only by its absolute path, from a read-only conversation too.
+    const roViewer = page.locator(sel('mobile-file-viewer'));
+    await roViewer.waitFor({ timeout: 15_000 }).catch(() => undefined);
+    await waitFor('the file in the viewer', async () => (await roViewer.innerText().catch(() => '')).includes('OUTSIDE-TEXT-4260'), 15_000).catch(() => undefined);
+    const after = { status: await page.locator(sel('event-monitor-file-preview-status')).count(),
+      composer: await page.locator(`${sel('mobile-run-conversation')} textarea`).count(), urlChanged: page.url() !== urlBefore,
+      nodeFile: new URL(page.url()).searchParams.get('nodeFile'), viewer: await roViewer.count(),
+      text: (await roViewer.innerText().catch(() => '')).includes('OUTSIDE-TEXT-4260') };
     await shot(page, 'MSP-17-read-only-status');
+    // The system Back closes the full-screen file first (its own entry).
+    if (after.viewer) {
+      await page.goBack();
+      await waitFor('the read-only conversation again', async () => (await roViewer.count()) === 0, 15_000).catch(() => undefined);
+    }
     // ← back to the list (recorded; the next cases start from the list).
     const backs = [];
     for (let step = 0; step < 4 && !(await page.locator(`${sel('mobile-run-list')}:visible`).count()); step += 1) {
@@ -1960,8 +2018,8 @@ const runCases = async () => {
     await shot(page, 'MSP-17-after-back');
     const facts = { orgRunId, task, echoed, terminated: terminated.success, taskKey, before, after, backToList };
     assert(before.links >= 1 && before.composer === 0 && before.status === 0, 'the read-only conversation: the file link, no composer, no status yet', facts);
-    assert(after.status === 'This file is available only on the host workspace.' && after.composer === 0 && after.urlUnchanged && after.viewer === 0 && !after.leaked,
-      'a tap on a file outside the workspace: the status line, still no composer, nothing opened (AC-019)', facts);
+    assert(after.status === 0 && after.composer === 0 && after.urlChanged && after.nodeFile === outsidePath && after.viewer === 1 && after.text,
+      'a tap on a file outside the workspace opens it read-only (autobyteus-436); still no composer', facts);
     return facts;
   });
 
@@ -2105,6 +2163,7 @@ const runCases = async () => {
   });
 
   await runLiveReconnectCases({ runCase, serverAt, freePort, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact });
+  await runClosedTaskRowsCases({ runCase, serverAt, freePort, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact, browser, alpha, stack, desktopRunsView });
 };
 
 try {

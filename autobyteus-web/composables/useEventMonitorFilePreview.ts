@@ -4,6 +4,7 @@ import { useFileExplorerStore } from '~/stores/fileExplorer';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { useWorkspaceStore } from '~/stores/workspace';
 import { useActiveContextStore } from '~/stores/activeContextStore';
+import { useRemoteRunsStore } from '~/stores/remoteRunsStore';
 import type { AbsoluteFilePathAction } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
 import { mapAbsolutePathToWorkspaceRelative } from '~/utils/fileExplorer/absoluteWorkspacePathMapping';
 import { hasTrustedElectronLocalFileCapability } from '~/utils/fileExplorer/localFileCapability';
@@ -30,6 +31,7 @@ export function useEventMonitorFilePreview(options: {
   const windowNodeContextStore = useWindowNodeContextStore();
   const workspaceStore = useWorkspaceStore();
   const activeContextStore = useActiveContextStore();
+  const remoteRunsStore = useRemoteRunsStore();
   const { t } = useLocalization();
 
   const unavailable = (key: string): EventMonitorFilePreviewResult => ({
@@ -42,24 +44,35 @@ export function useEventMonitorFilePreview(options: {
     message: t('workspace.components.conversation.segments.renderer.MarkdownRenderer.file_preview_failed'),
   });
 
-  /** The phone: the file, in the open agent's folder, opens full screen on the Files screen (a history entry). */
+  /**
+   * The phone: a conversation's file opens full screen on the Files screen (a history entry). Inside the open agent's
+   * folder it opens as a workspace file; anywhere else on the node's computer it opens by its absolute path, read-only
+   * (autobyteus-436, a node file). A run another node runs keeps today's answer: its paths are that node's.
+   */
   const openMobilePath = async (action: AbsoluteFilePathAction): Promise<EventMonitorFilePreviewResult> => {
+    if (!mobileNavigation) {
+      return unavailable('workspace.components.conversation.segments.renderer.MarkdownRenderer.file_available_on_host');
+    }
     const target = activeContextStore.activeWorkspaceTarget;
     const workspaceRootPath = target?.workspaceRootPath;
-    if (!target || !workspaceRootPath || !mobileNavigation) {
+    if (target && remoteRunsStore.runOfAgentRun(target.context.state.runId)) {
       return unavailable('workspace.components.conversation.segments.renderer.MarkdownRenderer.file_available_on_host');
     }
-    const metadata = await workspaceStore.resolveWorkspaceMetadataByRootPath(workspaceRootPath);
-    const workspaceId = metadata?.workspaceId || '';
-    const locator = workspaceId
-      ? mapAbsolutePathToWorkspaceRelative(action.normalizedCandidate, { workspaceId, workspaceRootPath })
-      : null;
-    if (!locator) {
-      return unavailable('workspace.components.conversation.segments.renderer.MarkdownRenderer.file_available_on_host');
+    let locator: ReturnType<typeof mapAbsolutePathToWorkspaceRelative> = null;
+    if (target && workspaceRootPath) {
+      const metadata = await workspaceStore.resolveWorkspaceMetadataByRootPath(workspaceRootPath);
+      const workspaceId = metadata?.workspaceId || '';
+      locator = workspaceId
+        ? mapAbsolutePathToWorkspaceRelative(action.normalizedCandidate, { workspaceId, workspaceRootPath })
+        : null;
     }
-    if (!options.isOriginCurrent() || activeContextStore.activeWorkspaceTarget?.context !== target.context) return failed();
-    await mobileNavigation.openFile({ workspaceId: locator.workspaceId, path: locator.relativePath });
-    return { status: 'opened', path: locator.relativePath };
+    if (!options.isOriginCurrent() || activeContextStore.activeWorkspaceTarget?.context !== target?.context) return failed();
+    if (locator) {
+      await mobileNavigation.openFile({ workspaceId: locator.workspaceId, path: locator.relativePath });
+      return { status: 'opened', path: locator.relativePath };
+    }
+    await mobileNavigation.openNodeFile({ path: action.normalizedCandidate });
+    return { status: 'opened', path: action.normalizedCandidate };
   };
 
   const openPath = async (action: AbsoluteFilePathAction): Promise<EventMonitorFilePreviewResult> => {

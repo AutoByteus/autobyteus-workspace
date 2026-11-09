@@ -1,0 +1,14 @@
+# Check: IMP-08
+# Command: pnpm -C autobyteus-web test:nuxt --run (full web unit suite)
+# Commit: 8e686b7f36
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-09
+
+## Summary and the one failure (pre-existing; cause and baseline fix: IMP-09)
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed | 726 passed (727)
+      Tests  1 failed | 5465 passed | 2 skipped (5468)
+   Duration  382.54s (transform 37.67s, setup 2555.24s, collect 252.80s, tests 119.33s, environment 220.84s, prepare 124.99s)
+ FAIL  pages/__tests__/mobile-root-shell.spec.ts > mobile static root shell rendering > keeps generated pairing links on the mobile root in the phone pairing bootstrap
+AssertionError: expected 'AutoByteus node' to be 'desktop-private.local:29695' // Object.is equality
+
