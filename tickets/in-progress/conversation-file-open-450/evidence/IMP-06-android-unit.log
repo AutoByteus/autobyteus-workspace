@@ -1,0 +1,14 @@
+# Check: IMP-06
+# Command: ANDROID_HOME=$HOME/Library/Android/sdk ./gradlew --no-daemon :app:testDebugUnitTest (in autobyteus-android)
+# Commit: e470edf165
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-09
+
+result files=16 tests=94 skipped=0 failures=0 errors=0
+TrustedNavigationPolicyTest: tests="6" skipped="0" failures="0" errors="0"
+  ok allowsExpectedSameOriginAutoByteusPaths
+  ok allowsABlobSubframeOfTheOpenNodeOnly
+  ok blocksUnsafeSchemesAndSameOriginDesktopPaths
+  ok keepsOtherSchemesBlockedAndOtherOriginsExternalInSubframesToo
+  ok externalizesDifferentOriginsWithoutSubstringMatching
+  ok keepsThePageForAMainFrameNodeRoute
