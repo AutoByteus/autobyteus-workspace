@@ -29,10 +29,10 @@ Repository finalization into `origin/personal`. No release, tag or deployment.
 Moved to `tickets/done/switch-back-eexist`: `Yes`.
 
 ## Repository Finalization
-TBD
+- Ticket branch committed and pushed after Secret Gate PASS; target `origin/personal` @ `34ea6e36bb` unchanged since the integration; `finalize/switch-back-eexist` from it; `--no-ff` merge `8e1a9e58b5`; Secret Gate, hygiene and licensing pass on the merged state; pushed `34ea6e36bb..8e1a9e58b5` (a record-only commit follows). Status `Completed`; blocker none.
 
 ## Post-Finalization Cleanup
-TBD
+- Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/switch-back-eexist` removed and pruned; local branches and remote branch `origin/codex/switch-back-eexist` deleted after the merge was confirmed. Status `Completed`.
 
 ## Release Notes Summary
 Not written: no release.
@@ -44,4 +44,4 @@ None. Remote state created: branch `origin/codex/switch-back-eexist`, deleted in
 Revert the merge on `personal`; a run that returned to Antigravity then fails again at its next message with `EEXIST`. Nothing is released.
 
 ## Final Status
-TBD
+- Verification complete `Yes`; repository finalization complete `Yes` (`personal` @ `8e1a9e58b5` plus this record commit); release not required here; cleanup complete `Yes`; blocker `None`; terminal package sent `Yes`.
