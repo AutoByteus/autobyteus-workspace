@@ -1,0 +1,9 @@
+# IMP-02 server-typecheck-tests
+# Command: bash -c pnpm -C autobyteus-server-ts exec tsc --noEmit -p tsconfig.tests.json | grep 'error TS' | sort > /tmp/436-tsc-tests.txt; wc -l < /tmp/436-tsc-tests.txt; grep -E 'node-files|node-route-permissions' /tmp/436-tsc-tests.txt || true
+# Environment mode: shell
+# Commit: 271656acc0 (branch codex/phone-registered-folders-436)
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-09T04:03:09Z
+
+    1182
+# Exit status: 0

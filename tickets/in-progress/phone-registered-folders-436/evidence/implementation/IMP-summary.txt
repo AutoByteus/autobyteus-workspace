@@ -1,0 +1,9 @@
+IMP-01 server-typecheck-build exit=0
+IMP-02 server-typecheck-tests exit=0
+IMP-03 server-unit exit=0
+IMP-04a integration-prepare exit=0
+IMP-04 server-integration exit=0
+IMP-05 server-e2e-node-files-access exit=0
+IMP-06 web-typecheck exit=0
+IMP-07 web-nuxt-tests exit=1
+IMP-08 web-guards exit=0
