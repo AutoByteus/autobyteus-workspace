@@ -49,12 +49,11 @@
                 :aria-label="`Open ${item.label}`"
                 @click="handleAttachmentClick(item)"
               >
-                <img
+                <MessageAttachmentThumbnail
                   v-if="item.previewUrl"
-                  :src="item.previewUrl"
+                  :url="item.previewUrl"
                   :alt="item.label"
-                  class="message-attachment-thumbnail h-full w-full object-cover"
-                  @error="markAttachmentPreviewAsFailed(item.attachment.id)"
+                  @failed="markAttachmentPreviewAsFailed(item.attachment.id)"
                 />
                 <span v-else>{{ item.label }}</span>
               </button>
@@ -84,6 +83,9 @@ import { contextAttachmentPresentation } from '~/utils/contextFiles/contextAttac
 import { skillRequestInstruction } from '~/utils/skills/skillRequestInstruction';
 import { presentSentUserMessage, splitMentionText } from '~/utils/collaborators/collaboratorMentionText';
 import SkillRequestChips from '~/components/conversation/SkillRequestChips.vue';
+import MessageAttachmentThumbnail from '~/components/conversation/MessageAttachmentThumbnail.vue';
+import { useMobileAttachmentOpening } from '~/composables/mobile/useMobileAttachmentOpening';
+import { isMobileRemoteAccessRuntime } from '~/utils/remoteAccess/mobileRuntime';
 
 const props = defineProps<{
   message: UserMessage;
@@ -95,6 +97,8 @@ const fileExplorerStore = useFileExplorerStore();
 const windowNodeContextStore = useWindowNodeContextStore();
 const workspaceStore = useWorkspaceStore();
 const avatarLoadError = ref(false);
+// The phone opens attachments in its own viewer (autobyteus-450). Taken in setup: its navigation reads the route through inject.
+const mobileAttachments = isMobileRemoteAccessRuntime() ? useMobileAttachmentOpening() : null;
 const failedAttachmentPreviewKeys = ref(new Set<string>());
 
 // Skill tags travel as an instruction prefix in the content; show them as chips and the user's own text.
@@ -150,6 +154,10 @@ const handleAttachmentClick = (item: (typeof displayedAttachments.value)[number]
 };
 
 const openAttachment = (attachment: ContextAttachment): void => {
+  if (mobileAttachments) {
+    void mobileAttachments.open(attachment);
+    return;
+  }
   contextAttachmentPresentation.openAttachment(attachment, {
     workspaceId: workspaceId.value,
     isEmbeddedElectronRuntime: isEmbeddedElectronRuntime.value,
