@@ -1,0 +1,42 @@
+Case: API-07 (setup-code against a real, stopped, current test-owned node — the "start" branch)
+Commit: e9cc21bf28e7c9435aef0ce447f35aeba5be87f8 (branch codex/docker-setup-code-wait-feedback)
+Environment: same isolated environment as API-05/API-06, against the same test-owned autobyteus-server-1
+node, stopped first with `docker stop autobyteus-server-1` (real Docker Desktop daemon).
+Date: 2026-11-09 (~16:37 UTC)
+
+Why this case: the implementation handoff's Known Risks records that the shared offline fake Docker always
+reports State.Running=true, so start_node's "docker start" branch (a stopped-but-current node) is not
+independently exercised by any fixture in this ticket's offline suite. This real-daemon case closes that
+exact gap: it stops the real test node, then runs setup-code, exercising the real "start a stopped
+container" branch of start_node / the real wait loop for a node that takes a moment to answer again after a
+restart.
+
+Commands:
+  docker stop autobyteus-server-1   # (real Docker Desktop socket)
+  env HOME="$BASE/home" SHELL=/bin/bash \
+    DOCKER_HOST="unix:///Users/normy/.docker/run/docker.sock" \
+    AUTOBYTEUS_DOCKER_STATE_DIR="$BASE/state" \
+    AUTOBYTEUS_DOCKER_SHARED_WORKSPACE_DIR="$BASE/shared" \
+    bash scripts/public/docker/autobyteus-docker.sh setup-code --name autobyteus-server-1
+
+Exit code: 0
+
+--- STDOUT ---
+
+Setup code for autobyteus-server-1: 6KdLdr5WQov881mQs67dclPD
+Valid once, until 2026-11-09T16:37:22.591Z. In the AutoByteus desktop app, open Nodes, and enter it at autobyteus-server-1 (http://localhost:8002).
+
+--- STDERR ---
+[AutoByteus Docker] Checking image autobyteus/autobyteus-server:beta
+beta: Pulling from autobyteus/autobyteus-server
+Digest: sha256:3250182e7413af7343f77afecb91627440a152c7fbebaf05ba8a602e94dc241f
+Status: Image is up to date for autobyteus/autobyteus-server:beta
+docker.io/autobyteus/autobyteus-server:beta
+[AutoByteus Docker] Started autobyteus-server-1.
+[AutoByteus Docker] Waiting for autobyteus-server-1 to start (up to 90 seconds)...
+
+What to look for: "Started autobyteus-server-1." (the real "docker start" branch's own existing log line,
+now visible on stderr instead of being discarded) followed by one real "Waiting for ... (up to 90
+seconds)..." line, because the real node's control socket needed a moment after the real restart before it
+answered — proving REQ-002's wait message against a real restart, not a scripted fixture. Standard output
+again holds only the two code lines.

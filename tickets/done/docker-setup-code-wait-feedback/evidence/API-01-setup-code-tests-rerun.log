@@ -1,0 +1,26 @@
+# API-01 — independent rerun of the new setup-code test suite, with pwsh now installed
+Command: python3 -m unittest scripts/tests/test_public_docker_launcher_setup_code.py -v
+Environment: macOS (Darwin 25.6.0), Python 3.9.6, pwsh 7.6.9 installed (via `brew install powershell`, this round)
+Commit: e9cc21bf28e7c9435aef0ce447f35aeba5be87f8 (code identical to 2de5fa087, the commit IMP-02 ran on;
+  git diff --name-only 2de5fa087 e9cc21bf2 touches only ticket docs/evidence, no source or test file)
+Date: 2026-11-09 (~16:25 UTC)
+
+test_ac001_recreate_path_shows_image_check_and_recreate_steps_on_stderr_only ... ok
+test_ac002_still_waiting_cadence_after_about_10_seconds ... ok
+test_ac002_waiting_message_after_first_failed_attempt_then_the_code ... ok
+test_ac003_running_current_node_answers_at_once_with_only_the_code_on_stdout ... ok
+test_ac004_one_silent_attempt_is_bounded_and_a_later_attempt_still_succeeds ... ok
+test_ac005_bash_deadline_counts_wall_clock_seconds_not_attempts ... ok
+test_ac006_powershell_text_contract_for_timeout_wait_and_no_url_block ... ok
+test_ac008_new_container_shares_the_waiting_message_and_keeps_its_other_output ... ok
+test_powershell_launcher_parses_when_pwsh_is_available ... ok
+
+Ran 9 tests in 38.429s
+
+OK
+
+What to look for: `Ran 9 tests ... OK` with 0 skipped — all nine tests passed, including
+`test_powershell_launcher_parses_when_pwsh_is_available`, which IMP-02 (same code) had to skip for lack of
+pwsh. This independently confirms AC-001..AC-006, AC-008 and additionally proves, with a real PowerShell
+parser (not only the text contract of AC-006), that Commands.ps1 and DockerRuntime.ps1 parse as valid
+PowerShell after this change.

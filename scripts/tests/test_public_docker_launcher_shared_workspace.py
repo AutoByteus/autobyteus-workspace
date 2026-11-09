@@ -343,7 +343,7 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
 
             first = run_launcher(env, "upgrade", "--all")
 
-            self.assertIn("Launcher config changed for autobyteus-server-0", first.stdout)
+            self.assertIn("Recreating the container of autobyteus-server-0: the launcher configuration changed. Its named volumes are kept.", first.stdout)
             records = read_run_arg_records(env)
             self.assertEqual(1, len(records))
             run_args = records[0]
@@ -420,7 +420,7 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
             result = run_launcher(env, "workspace", "apply", "--all")
 
             self.assertIn("Applying shared workspace bind mounts to autobyteus-server-0", result.stdout)
-            self.assertIn("Launcher config changed for autobyteus-server-0", result.stdout)
+            self.assertIn("Recreating the container of autobyteus-server-0: the launcher configuration changed. Its named volumes are kept.", result.stdout)
             run_args = read_last_run_args(env)
             self.assertIn("autobyteus-server-0-data:/home/autobyteus/data", run_args)
             self.assertIn("autobyteus-server-0-chromium-profile:/home/vncuser/.config/chromium", run_args)

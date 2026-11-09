@@ -269,7 +269,7 @@ PATHS
 }
 
 start_node() {
-  local node_name="$1" image_ref="$2" state_file container_name created_at attempt output start_check_output
+  local node_name="$1" image_ref="$2" print_urls_flag="${3:-1}" state_file container_name created_at attempt output start_check_output
   local desired_image_id current_image_id current_config_hash config_hash start_output
   local allow_friendly_preferences=1
   state_file="$(state_path_for "$node_name")"
@@ -297,7 +297,7 @@ start_node() {
       if container_running "$container_name"; then
         write_state "$state_file" "$node_name" "$container_name" "$BACKEND_PORT" "$image_ref" "$created_at" "$config_hash"
         log "${node_name} is already running with the current image and launcher config."
-        print_urls "$node_name" "$container_name" "$image_ref"
+        [[ "$print_urls_flag" != "1" ]] || print_urls "$node_name" "$container_name" "$image_ref"
         return
       fi
 
@@ -305,7 +305,7 @@ start_node() {
         if start_check_output="$(verify_container_started "$container_name" 2>&1)"; then
           write_state "$state_file" "$node_name" "$container_name" "$BACKEND_PORT" "$image_ref" "$created_at" "$config_hash"
           log "Started ${node_name}."
-          print_urls "$node_name" "$container_name" "$image_ref"
+          [[ "$print_urls_flag" != "1" ]] || print_urls "$node_name" "$container_name" "$image_ref"
           return
         fi
         start_output="${start_output}"$'\n'"${start_check_output}"
@@ -320,11 +320,11 @@ start_node() {
         fail "docker start failed: ${start_output}"
       fi
     elif [[ "$current_image_id" != "$desired_image_id" ]]; then
-      log "Image changed for ${node_name}; recreating the managed container while keeping named volumes."
+      log "Recreating the container of ${node_name}: a newer image was downloaded. Its named volumes are kept."
     elif [[ -z "$current_config_hash" ]]; then
-      log "Refreshing ${node_name}; existing container predates launcher config tracking."
+      log "Recreating the container of ${node_name}: the container predates launcher configuration tracking. Its named volumes are kept."
     else
-      log "Launcher config changed for ${node_name}; recreating the managed container while keeping named volumes."
+      log "Recreating the container of ${node_name}: the launcher configuration changed. Its named volumes are kept."
     fi
   fi
 
@@ -342,7 +342,7 @@ start_node() {
       if start_check_output="$(verify_container_started "$container_name" 2>&1)"; then
         write_state "$state_file" "$node_name" "$container_name" "$BACKEND_PORT" "$image_ref" "$created_at" "$config_hash"
         log "Started ${node_name}."
-        print_urls "$node_name" "$container_name" "$image_ref"
+        [[ "$print_urls_flag" != "1" ]] || print_urls "$node_name" "$container_name" "$image_ref"
         return
       fi
       output="${output}"$'\n'"${start_check_output}"

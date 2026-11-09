@@ -1,0 +1,28 @@
+# IMP-07 — bash syntax check (unaffected files, regression) + pwsh guard smoke check (commit 0b0195deced6e1dc262fde8e107b01042bfc723b)
+Command: bash -n scripts/public/docker/autobyteus-docker.d/bash/commands.sh && bash -n scripts/public/docker/autobyteus-docker.d/bash/docker-runtime.sh
+Date: 2026-11-09T16:26:10Z
+
+OK: no syntax errors (bash files unaffected by this Local Fix)
+
+## pwsh 7.6.9 guard smoke check (independent of the unittest suite): confirms the Continue/Stop guard
+## pattern captures $LASTEXITCODE and the stderr text without throwing under $ErrorActionPreference='Stop',
+## and that pwsh 7 behaves the same with or without the guard (consistent with Delivery's finding that pwsh 7
+## already tolerates the unguarded form; the guard is for Windows PowerShell 5.1, not reproducible here).
+$ErrorActionPreference = 'Stop'
+function Test-Guard {
+  $previousErrorActionPreference = $ErrorActionPreference
+  $ErrorActionPreference = 'Continue'
+  try {
+    $answer = & bash -c 'echo "err text" >&2; exit 1' 2>&1
+  } finally {
+    $ErrorActionPreference = $previousErrorActionPreference
+  }
+  $line = ([string](@($answer)[0])).Trim()
+  Write-Host "LASTEXITCODE=$LASTEXITCODE line=[$line]"
+}
+Test-Guard
+Write-Host "did not throw"
+
+Output:
+LASTEXITCODE=1 line=[err-text]
+did not throw
