@@ -7,6 +7,8 @@ enum class NavigationDecisionType {
     AllowInWebView,
     OpenExternal,
     Block,
+    /** The page tried to navigate itself to a node route: stay on the page, show nothing (autobyteus-450). */
+    KeepPage,
 }
 
 data class NavigationDecision(
@@ -46,6 +48,12 @@ object TrustedNavigationPolicy {
         }
 
         val path = uri.rawPath?.ifBlank { "/" } ?: "/"
+        // A node route (`/rest/…`, `/graphql`) as the page itself can only fail: since autobyteus-437 the phone's key is
+        // a request header a navigation cannot carry, and the 401 would read as a rejected pairing. The page shows node
+        // files in its own viewer; a subframe (a 426 preview frame) keeps the allowlist below.
+        if (isMainFrame && isNodeRoute(path)) {
+            return NavigationDecision(NavigationDecisionType.KeepPage, "A node route never loads as the page")
+        }
         if (!isAllowedAutoByteusPath(path)) {
             return NavigationDecision(NavigationDecisionType.Block, "Same-origin path is outside the mobile shell allowlist")
         }
@@ -73,6 +81,9 @@ object TrustedNavigationPolicy {
             host == entry.host.lowercase() &&
             normalizedPort(scheme, uri.port) == normalizedPort(entry.scheme, entry.port ?: -1)
     }
+
+    private fun isNodeRoute(path: String): Boolean =
+        path.startsWith("/rest/") || path == "/graphql" || path.startsWith("/graphql/")
 
     private fun isAllowedAutoByteusPath(path: String): Boolean {
         val cleanPath = path.ifBlank { "/" }

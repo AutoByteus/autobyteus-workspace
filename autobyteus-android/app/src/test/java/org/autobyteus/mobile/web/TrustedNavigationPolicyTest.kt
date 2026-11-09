@@ -18,12 +18,29 @@ class TrustedNavigationPolicyTest {
         )
         assertEquals(
             NavigationDecisionType.AllowInWebView,
-            TrustedNavigationPolicy.classify("https://desktop.tailnet-name.ts.net/rest/remote-access/status", entry, isMainFrame = true).type,
+            TrustedNavigationPolicy.classify("https://desktop.tailnet-name.ts.net/mobile/", entry, isMainFrame = true).type,
         )
+    }
+
+    // autobyteus-450 REQ-004 / AC-005: the page navigating itself to a node route stays on the page, with no screen.
+    @Test
+    fun keepsThePageForAMainFrameNodeRoute() {
+        for (url in listOf(
+            "https://desktop.tailnet-name.ts.net/rest/runs/run-1/context-files/ctx_1__photo.png",
+            "https://desktop.tailnet-name.ts.net/rest/remote-access/status",
+            "https://desktop.tailnet-name.ts.net/graphql",
+            "https://desktop.tailnet-name.ts.net/graphql/ws",
+        )) {
+            assertEquals(url, NavigationDecisionType.KeepPage, TrustedNavigationPolicy.classify(url, entry, isMainFrame = true).type)
+        }
+        // A subframe keeps the allowlist (a 426 preview frame of a workspace file).
         assertEquals(
             NavigationDecisionType.AllowInWebView,
-            TrustedNavigationPolicy.classify("https://desktop.tailnet-name.ts.net/graphql", entry, isMainFrame = true).type,
+            TrustedNavigationPolicy.classify("https://desktop.tailnet-name.ts.net/rest/runs/run-1/context-files/ctx_1__photo.png", entry, isMainFrame = false).type,
         )
+        // Other origins and other same-origin paths keep their decisions.
+        assertEquals(NavigationDecisionType.OpenExternal, TrustedNavigationPolicy.classify("https://example.org/rest/x", entry, isMainFrame = true).type)
+        assertEquals(NavigationDecisionType.Block, TrustedNavigationPolicy.classify("https://desktop.tailnet-name.ts.net/restore", entry, isMainFrame = true).type)
     }
 
     @Test
