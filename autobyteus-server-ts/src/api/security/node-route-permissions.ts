@@ -83,6 +83,8 @@ export const routeAccessFor = (request: RouteRequest): RouteAccess => {
   if (isPath(path, "/mcp/gateway")) return TOOL_ENDPOINT;
   if (isPath(path, "/rest/remote")) return PEER;
   if (isPath(path, "/rest/memory-sync")) return MEMORY_SYNC_SOURCE;
+  // Node files (autobyteus-436, NAS-39/40): read-only, one file by absolute path, for owners and phones only.
+  if (isPath(path, "/rest/node-files")) return OWNER_AND_PHONE;
   if (isOwnerAction(path)) return OWNER;
   if (request.isWebSocketUpgrade) {
     return PHONE_WEBSOCKET_ROUTES.has(path) ? OWNER_AND_PHONE : OWNER;
