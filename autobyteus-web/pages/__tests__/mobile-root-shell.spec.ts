@@ -76,6 +76,7 @@ describe('mobile static root shell rendering', () => {
       version: 1,
       serverBaseUrl: 'http://desktop-private.local:29695',
       pairingCode: 'PAIR-123',
+      serverName: 'Studio Mac',
     });
     window.history.pushState({}, '', `/?pairing=${pairingPayload}`);
 
@@ -84,9 +85,11 @@ describe('mobile static root shell rendering', () => {
     await nextTick();
 
     expect(wrapper.text()).toContain('Connect this phone to use its runs.');
-    expect(wrapper.get('[data-testid="mobile-pairing-node-name"]').text()).toBe('desktop-private.local:29695');
+    // The node's name from the QR, never its address (autobyteus-433).
+    expect(wrapper.get('[data-testid="mobile-pairing-node-name"]').text()).toBe('Studio Mac');
+    expect(wrapper.text()).not.toContain('desktop-private.local');
     expect(wrapper.find('[data-testid="mobile-pairing-text"]').exists()).toBe(false);
-    expect(wrapper.get('[data-testid="mobile-pair-button"]').text()).toBe('Connect to desktop-private.local:29695');
+    expect(wrapper.get('[data-testid="mobile-pair-button"]').text()).toBe('Connect to Studio Mac');
     expect(wrapper.find('[data-testid="mobile-unsupported-feature"]').exists()).toBe(false);
     expect(wrapper.text()).not.toContain('Agent Teams');
     expect(wrapper.text()).not.toContain('Skills');

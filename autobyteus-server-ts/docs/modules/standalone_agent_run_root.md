@@ -188,8 +188,11 @@ each. Deleting the host's run keeps its copies' folders (detached). The location
   (children offline; `closed_task_executions` read by the manager against the stored tree) and
   never restores. `agentRunCollaborationStatuses(runIds)` (at most 100 IDs, else
   `BAD_USER_INPUT`) is the small read the clients' history poll uses for listed runs that are not open:
-  per run `{ runId, isActive, statuses[{ agentRunId, memberAddress, status, recoverableBlock }] }`, from an
-  active root's `getAgentStatusSnapshots()` (`getAgentStatuses` in the manager); an inactive or unknown run
+  per run `{ runId, isActive, statuses[{ agentRunId, memberAddress, status, recoverableBlock }], closedTaskExecutionsDigest }`, from an
+  active root's `getAgentStatusSnapshots()` (`getAgentStatuses` in the manager). `closedTaskExecutionsDigest`
+  is the contracts' `closedTaskExecutionsDigest(...)` over the active root's closed task executions (`<count>:<8 hex>`;
+  `null` for an inactive run). A client re-reads the run's view only when it differs from its own closed set
+  (autobyteus-446). An inactive or unknown run
   answers inactive with no statuses. It never restores or starts a host. `agentRunCollaborationMemberProjection` and
   `agentRunCollaborationMemberEventMonitorActiveTracePage` read a child's conversation (sender
   addresses of agent-to-agent deliveries are resolved from the root's index).

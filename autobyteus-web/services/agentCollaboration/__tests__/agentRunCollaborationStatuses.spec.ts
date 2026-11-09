@@ -60,21 +60,21 @@ describe('AgentRunCollaborationContext.applyStatuses', () => {
 })
 
 describe('readAgentRunCollaborationStatuses', () => {
-  it('asks once for the runs, uncached, and maps each answer into the client status shape', async () => {
+  it('asks once for the runs, uncached, and maps each answer into the client status shape, with its closed-set digest', async () => {
     query.mockResolvedValueOnce({ data: { agentRunCollaborationStatuses: [
-      { runId: 'host-run', isActive: true, statuses: [
+      { runId: 'host-run', isActive: true, closedTaskExecutionsDigest: '1:bb7f09af', statuses: [
         { agentRunId: 'cua-run', memberAddress: '/computer_use_agent', status: 'idle', recoverableBlock: null },
         { agentRunId: 'pp-run', memberAddress: '/product_team/prototyper', status: 'error', recoverableBlock: block },
       ] },
-      { runId: 'stopped-run', isActive: false, statuses: [] },
+      { runId: 'stopped-run', isActive: false, closedTaskExecutionsDigest: null, statuses: [] },
     ] } })
 
     await expect(readAgentRunCollaborationStatuses(['host-run', 'stopped-run'])).resolves.toEqual([
-      { runId: 'host-run', isActive: true, statuses: [
+      { runId: 'host-run', isActive: true, closedTaskExecutionsDigest: '1:bb7f09af', statuses: [
         { agentRunId: 'cua-run', memberAddress: '/computer_use_agent', status: 'idle', recoverableBlock: null },
         { agentRunId: 'pp-run', memberAddress: '/product_team/prototyper', status: 'error', recoverableBlock: block },
       ] },
-      { runId: 'stopped-run', isActive: false, statuses: [] },
+      { runId: 'stopped-run', isActive: false, closedTaskExecutionsDigest: null, statuses: [] },
     ])
     expect(query).toHaveBeenCalledWith(expect.objectContaining({ variables: { runIds: ['host-run', 'stopped-run'] }, fetchPolicy: 'network-only' }))
   })

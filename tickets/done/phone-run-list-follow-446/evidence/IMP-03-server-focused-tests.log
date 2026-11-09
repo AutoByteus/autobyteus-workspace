@@ -1,0 +1,15 @@
+# Check: IMP-03
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/api/graphql/agent-run-collaboration-statuses.test.ts tests/unit/standalone-agent-run-root --no-watch --reporter=verbose
+# Commit: ff9a0c7b0c
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-09
+
+ ✓ tests/unit/standalone-agent-run-root/standalone-agent-run-root.test.ts > StandaloneAgentRunRoot owns its host (REQ-001, REQ-004) > Task DONE: closed copies are published before stopping, kept in the tree, and listed as closed live and in the stored read 87ms
+ ✓ tests/unit/standalone-agent-run-root/standalone-agent-run-root.test.ts > StandaloneAgentRunRoot owns its host (REQ-001, REQ-004) > reactivation: once the agent reopens the Task, the assigner's run-ID message restores the copy, delivers, and lists it again (AC-001/004/015, REQ-007/008) 59ms
+stdout | tests/unit/api/graphql/agent-run-collaboration-statuses.test.ts
+ ✓ tests/unit/api/graphql/agent-run-collaboration-statuses.test.ts > StandaloneAgentRunRootManager.getAgentStatuses > answers an active root's live child snapshots, and inactive with none for every other run, in the asked order 3ms
+ ✓ tests/unit/api/graphql/agent-run-collaboration-statuses.test.ts > StandaloneAgentRunRootManager.getAgentStatuses > answers the digest of the active root's closed set: it changes when a Task closes and returns when it reopens 1ms
+ ✓ tests/unit/api/graphql/agent-run-collaboration-statuses.test.ts > agentRunCollaborationStatuses > maps each child's identity, status and recoverable block, and the closed-set digest; nothing of the collaboration view 1ms
+ ✓ tests/unit/api/graphql/agent-run-collaboration-statuses.test.ts > agentRunCollaborationStatuses > refuses more than 100 runs with BAD_USER_INPUT 1ms
+ Test Files  10 passed (10)
+      Tests  59 passed (59)
