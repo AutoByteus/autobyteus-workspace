@@ -1,6 +1,7 @@
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import { useAgentActivityStore } from '~/stores/agentActivityStore'
 import { defineStore } from 'pinia'
+import { closedTaskExecutionsDigest } from '@autobyteus/collaboration-stream-contracts'
 import { shallowReactive, shallowRef, watch } from 'vue'
 import type { AgentContext } from '~/types/agent/AgentContext'
 import type { ContextFilePath } from '~/types/conversation'
@@ -198,7 +199,8 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
    * states-only read for the hubs with a published context, no stream, no inspection and no termination, that are
    * listed active (`activeIds`) or whose context is still live. Each answer, in order: dropped unless its hub is as
    * it was at selection; nothing when both are inactive; a view re-read when the active state or the local children
-   * changed; else the states are applied.
+   * changed, or when the node's closed-set digest differs from the context's (a Task closed or reopened,
+   * autobyteus-446); else the states are applied.
    */
   const refreshListedStatuses = (activeIds: readonly string[]): Promise<void> => {
     if (statusRefresh) return statusRefresh
@@ -222,7 +224,8 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
           && !services.has(hostRunId) && !inspections.has(hostRunId) && !terminations.has(hostRunId)
         if (!answer || !current) continue
         if (!answer.isActive && !context.isActive) continue
-        if (answer.isActive !== context.isActive || !sameLocalChildren(context, answer)) {
+        if (answer.isActive !== context.isActive || !sameLocalChildren(context, answer)
+          || answer.closedTaskExecutionsDigest !== closedTaskExecutionsDigest(context.view.closed_task_executions)) {
           void inspect(hostRunId)
           continue
         }
