@@ -121,6 +121,7 @@ Standard: blocking findings cite these IDs; new behavior is a Requirement Gap fo
 | DEC-007 | Avatars already in package files remain the package's value; a personal avatar replaces it | Solution Designer | Decided |
 | DEC-008 | Backups: the latest 5 per package | Solution Designer | Decided |
 | DEC-009 | Built-in agents use personal settings like package agents: their files are replaced at every server start, and personal settings are applied on top when read (Q5) | User, 2026-11-09 ("they are actually also agents … treat them like other agent") | Decided |
+| DEC-010 | Stage 2 (UC-006, REQ-008, AC-009) dropped: package content is changed with agent-package-creator and merged on GitHub, not edited in the app | User, 2026-11-09 ("There's no need to edit like instruction … people … always … use agent package creator to update the agent package … so forget about this option"); recorded by delivery at the Solution Designer's request | Decided |
 
 ## Traceability
 

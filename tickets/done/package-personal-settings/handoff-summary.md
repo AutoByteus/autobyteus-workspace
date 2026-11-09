@@ -2,7 +2,7 @@
 
 ## Ticket
 
-- Package: `package-personal-settings`, Project Task `autobyteus-95`, **stage 1** (UC-001..005, DEC-006). Personal tools, skills, avatar and runtime/model of agents, Teams and Orgs live in AutoByteus, outside the package files, and survive package updates. Stage 2 (UC-006, clean package writes) is not delivered here; the Task stays open for it.
+- Package: `package-personal-settings`, Project Task `autobyteus-95`, **stage 1** (UC-001..005, DEC-006). Personal tools, skills, avatar and runtime/model of agents, Teams and Orgs live in AutoByteus, outside the package files, and survive package updates. Stage 2 (UC-006, clean package writes; REQ-008, AC-009; FT-5/O-2) was **dropped by the user** on 2026-11-09 (DEC-010), so stage 1 completes the Task.
 - Classification: `task_size=Large`, `architectural_risk=High`. Route: reviewed.
   - Architecture review ARCH-REV-002 Pass.
   - Code review CRR-001 Pass (9.3/10, no findings).
@@ -52,7 +52,7 @@
 
 ## Verification
 
-- Judged from the evidence: sufficient. Every critical acceptance criterion of stage 1 (AC-001..AC-008) is directly proven. AC-009 belongs to stage 2.
+- Judged from the evidence: sufficient. Every critical acceptance criterion of stage 1 (AC-001..AC-008) is directly proven. AC-009 belonged to stage 2, which was dropped (DEC-010).
 - Files opened:
   - **API-20, real GitHub on a release build.** `personal-settings.final.json` holds the in-app tool edits, the captured `create_task` and the automatic update's captured `toolsRemoved: [search_web]`. `API-20-backups.txt` lists two backups with exactly the edited files. The registry is at HEAD `45012f0`, `UP_TO_DATE`.
   - The server E2E logs API-02..08 (7/7, three runs) and API-10 (7/7, three runs).
@@ -61,11 +61,14 @@
   - AC-004's download failure is only emulated (a 404);
   - AC-002's skill and avatar edits were proven with fake GitHub only;
   - the Org runtime/model mark with a value captured from `org-config.json` was not rendered (design R-1).
-- User check: required by the Task's done-when ("…released as a beta, and the user has checked it"). It is pending on the beta; see the release report.
+- User check: required by the Task's done-when ("…released as a beta, and the user has checked it"). It is done on `v1.5.13-beta.1`:
+  - AC-001 and AC-005 were checked by the user on his own Mac and local packages;
+  - AC-002/003 (GitHub update) and AC-008 (texts) were not checked by him; he accepts the team's real-GitHub evidence (API-20..22) and API-21.
+  - Details are in `release-deployment-report.md`, Verification.
 
 ## Release
 
-- Beta, per the Task's done-when (Project Task autobyteus-95: "Done when: the user has approved the model, it's implemented with tests, released as a beta, and the user has checked it", as the Solution Designer quoted it from the Task on 2026-11-09) and DEC-006. Version and publication are in `release-deployment-report.md`.
+- Beta, per the Task's done-when (Project Task autobyteus-95: "Done when: the user has approved the model, it's implemented with tests, released as a beta, and the user has checked it", as the Solution Designer quoted it from the Task on 2026-11-09) and DEC-006. Beta `v1.5.13-beta.1`: all four workflows succeeded (Server Docker and Desktop after a rerun of a lost GitHub runner) and 23 assets are published. Details are in `release-deployment-report.md`.
 
 ## Residual Risks, Open Questions And Follow-ups
 

@@ -2,7 +2,7 @@
 
 ## Scope
 
-- Ticket: `package-personal-settings`, Project Task `autobyteus-95`, stage 1 (UC-001..005). Stage 2 (UC-006, clean writes) is not part of this delivery.
+- Ticket: `package-personal-settings`, Project Task `autobyteus-95`, stage 1 (UC-001..005). Stage 2 (UC-006, clean writes) was dropped by the user (DEC-010).
 - Classification: `task_size=Large`, `architectural_risk=High`
 - Route: reviewed. Architecture review ARCH-REV-002, code review CRR-001, API/E2E API-REV-001, test-code review CRR-002.
 - Trigger: delivery DR-001 after the test-code review pass CRR-002
@@ -63,5 +63,5 @@
 ## Delivery Continuation
 
 - Result: `Pass`
-- Next delivery action: handoff summary, archive, finalization, then the beta and the user's check (Task done-when)
+- Next delivery action: handoff summary, archive, finalization, the beta and the user's check (Task done-when); all done (DR-001)
 - Notes: the code reviewer recorded that the design spec's Derived Consumers row calls `listAdmissionEntries` "not affected". The code applies personal settings there, as REQ-002 requires. That is the Solution Designer's design document, so it was not edited here. Follow-ups FU-002 and FU-003 are recorded in `follow-ups.md`.
