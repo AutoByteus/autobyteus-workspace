@@ -89,6 +89,13 @@ When Android ends the app's process in the background and the user returns, the 
 
 The WebView's navigation policy (`web/TrustedNavigationPolicy.kt`) keeps the main frame on the open node's origin. A sandboxed in-page preview, such as an HTML artifact, loads as a `blob:` subframe of that origin; it gets no shell bridge. A main-frame `blob:`, a `blob:` of another origin, `file:` and `javascript:` are blocked, and another origin's page opens in the phone's browser.
 
+A main-frame navigation to one of the node's own routes (`/rest/…`, `/graphql`) is answered `KeepPage` (autobyteus-450):
+- the WebView does not load it, and no screen appears;
+- such a load carries no key, so it could only fail, and its 401 would have shown "Pair this phone again" for a phone that is still paired;
+- loads of the phone page itself keep their error screens, and subframes keep their allowlist.
+
+This needs the app update. An older app with the new page is also safe, because the page itself no longer navigates to file URLs.
+
 ## Mobile run setup inside Android WebView
 
 Android loads the server-served `/mobile` shell for run setup; it does not implement run setup natively. In **New run** (the round **+** on the run list), mobile users start an agent run and can:
