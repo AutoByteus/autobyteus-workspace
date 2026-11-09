@@ -10,6 +10,7 @@ Package: `package-personal-settings` (Project Task autobyteus-95). Folder: `/Use
 | SR-002 (draft) | Requirements | The user's comment, 2026-11-01: "a simple merge" of the tools at update | Ready for Approval | Ready for Approval | DEC-001 recommendation revised to the list merge for stage 1; DEC-005 simplified; asked again |
 | SR-003 | Requirements | The user's direction 2026-11-06 (store outside the package files), the validated file contract 2026-11-07, his "continue" 2026-11-09 | Ready for Approval | Approved | Requirements rewritten to the personal settings file; stage 1 / stage 2; ACs |
 | SR-004 | Requirements | The user's answer to Q5 (2026-11-09) and the re-verification on base `a85bf4f38d` | Approved (SR-003) | Approved (SR-004) | Built-in agents in scope (DEC-009, UC-001) |
+| SR-005 | Design | Architecture design of stage 1 on the approved SR-004 requirements | Approved (SR-004) | Design Ready (Large / High) | `design-spec.md` stage 1; AF-01..AF-11 in the investigation notes |
 
 ## Revision Entries
 
@@ -43,3 +44,19 @@ Package: `package-personal-settings` (Project Task autobyteus-95). Folder: `/Use
 - Changes: UC-001, Out Of Scope, DEC-009; contract §8 and Q5.
 - Intended behavior changed: `Yes`, approved by the user.
 - Next action: architecture design of stage 1.
+
+### SR-005 — Stage 1 architecture design
+
+- Basis: `requirements-doc.md` at SR-004 (unchanged); `personal-settings-file-contract.md`.
+- Architecture investigation: AF-01..AF-11 (`investigation-notes.md`).
+- Design (`design-spec.md`):
+  - a new `PersonalSettingsService` (with its store), applied at the read boundary of the three definition services;
+  - split updates: the four settings go to personal settings, and other fields go to the files only when changed;
+  - reset mutations and editor marks;
+  - capture and backup in the GitHub update before staging (`PackageEditCapture`, the installer's `downloadRevision`);
+  - one shared announce function;
+  - the glossary term "personal setting".
+- Found during design: the Org editor edits only the avatar (`AgentOrgExperience.vue:482-492`). No Org runtime/model editor is added; Org runtime/model still applies from the files and from capture.
+- Intended behavior changed: `No`.
+- Classification: `Large` / `High`.
+- Next action: route per the handoff rules.
