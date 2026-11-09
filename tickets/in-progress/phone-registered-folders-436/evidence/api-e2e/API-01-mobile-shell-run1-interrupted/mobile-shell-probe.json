@@ -1,0 +1,1452 @@
+{
+  "startedAt": "2026-11-09T04:32:30.833Z",
+  "result": "Fail",
+  "node": "v22.23.1",
+  "servers": {
+    "beta": {
+      "port": 63239,
+      "nodeId": "srv_lpZiTkuqxY4OJBfuARBgaiqkvP9St7ko",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "alpha": {
+      "port": 63238,
+      "nodeId": "srv_1pnuB-iIYsMeB3EppRfaVYIC95BadUTn",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_6d499af17a97463996dc973b964c50ed",
+    "writerRun": "release_notes_writer_d780391ebb264109ac3c914f88234559",
+    "squadRun": "docs_review_team_ff10adab9b3347fe93b06ad52a0eff55",
+    "reviewer": "release_notes_writer_98f9082a8af441819112d9feceabe94a",
+    "memberDelegated": "fact_checker_81ba322cfa4c4ac9a9571116c20c41c0",
+    "remoteAgentRun": "publisher_c7685ee068c14a1ab2b6955eac7ccfe3",
+    "remoteTeamRun": "studio_team_3d23a5d17a5540c7af1f886b69dae1a7",
+    "plain": [
+      "fact_checker_65e1a1cee1534697befe90c73b737872",
+      "fact_checker_2f14149189bd4c6bac995eb1782bb010",
+      "fact_checker_ef546da8bf86490daaf71488a19e540b"
+    ],
+    "org": "delivery_org_e2fef5021e8f40e79bdfa64f949dc0d8",
+    "orgPlanner": "release_notes_writer_135dba55dddc408e8b51379ed404bfed",
+    "reviewOrg": "review_org_ebda86f124d14bcdb70fe0aa8fbcf9cf",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_bb75b17f720c45668af1c1fe0cfb8f5f",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_90309f76931b4564b912755528afabe3",
+    "deliveryLead": "fact_checker_061eb10baa4d4cb79e64bdad5b557df2",
+    "deliveryMate": "release_notes_writer_16957106b8fc4930847eb77058bd2f6b",
+    "leadDelegated": "changelog_helper_0bc9591eab144e618de21be02d490330",
+    "approver": "approver_d8937c4efa474fdd9b2f854be0524df4",
+    "taskA": "launch-9d2fed-1",
+    "taskB": "launch-9d2fed-2"
+  },
+  "cases": {
+    "MSP-01": {
+      "result": "Pass",
+      "seconds": 18.5,
+      "desktopIds": [
+        "project_task_manager_6d499af17a97463996dc973b964c50ed",
+        "approver_d8937c4efa474fdd9b2f854be0524df4",
+        "delivery_team_90309f76931b4564b912755528afabe3",
+        "delivery_org_e2fef5021e8f40e79bdfa64f949dc0d8",
+        "review_org_ebda86f124d14bcdb70fe0aa8fbcf9cf",
+        "fact_checker_ef546da8bf86490daaf71488a19e540b",
+        "fact_checker_2f14149189bd4c6bac995eb1782bb010",
+        "fact_checker_65e1a1cee1534697befe90c73b737872"
+      ],
+      "phoneIds": [
+        "project_task_manager_6d499af17a97463996dc973b964c50ed",
+        "approver_d8937c4efa474fdd9b2f854be0524df4",
+        "delivery_team_90309f76931b4564b912755528afabe3",
+        "delivery_org_e2fef5021e8f40e79bdfa64f949dc0d8",
+        "review_org_ebda86f124d14bcdb70fe0aa8fbcf9cf",
+        "fact_checker_ef546da8bf86490daaf71488a19e540b",
+        "fact_checker_2f14149189bd4c6bac995eb1782bb010",
+        "fact_checker_65e1a1cee1534697befe90c73b737872"
+      ],
+      "foldBefore": "Show older (3)",
+      "foldOpen": "Show fewer",
+      "ages": [
+        "now",
+        "now",
+        "now",
+        "now",
+        "now",
+        "now",
+        "now",
+        "now"
+      ],
+      "desktopFold": "Show older (3)"
+    },
+    "MSP-15": {
+      "result": "Pass",
+      "seconds": 28.5,
+      "inProjects": [
+        null,
+        null
+      ],
+      "whileSwitching": [
+        null,
+        null,
+        null
+      ],
+      "switchSeconds": 12.257,
+      "maxPolls": 4,
+      "workspacesReads": [
+        {
+          "dt": 77,
+          "window": 6
+        }
+      ]
+    },
+    "MSP-02": {
+      "result": "Pass",
+      "seconds": 21.1,
+      "phonePlace": {
+        "lead": 1,
+        "leadDelegated": 1
+      },
+      "desktopPlace": {
+        "lead": null,
+        "leadDelegated": 16,
+        "reviewer": 16,
+        "reviewerDelegated": 16
+      },
+      "phoneTitles": {
+        "writer": "Write the release notes.",
+        "squad": "Review the docs site.",
+        "spare": "Spare work. Marker SPARE.",
+        "leadDelegated": "Draft the changelog. Marker LEAD-DELEGATED."
+      },
+      "memberTitles": {
+        "lead": null,
+        "mate": null,
+        "reviewer": null,
+        "editor": null
+      },
+      "desktopTitles": {
+        "writer": [
+          "RN",
+          "release notes writer",
+          "Write the release notes."
+        ],
+        "spare": [
+          "CH",
+          "changelog helper",
+          "Spare work. Marker SPARE."
+        ],
+        "leadDelegated": [
+          "CH",
+          "changelog helper",
+          "Draft the changelog. Marker LEAD-DELEGATED."
+        ]
+      },
+      "liveStatuses": [
+        "idle",
+        "offline"
+      ],
+      "terminated": {
+        "success": true,
+        "message": "Agent run terminated successfully."
+      },
+      "unselected": {
+        "seen": [
+          "idle",
+          "offline"
+        ],
+        "changeMs": 4555,
+        "terminated": {
+          "success": true,
+          "message": "Agent run terminated successfully."
+        },
+        "afterRootOpened": "offline"
+      },
+      "reloaded": false,
+      "ptm": {
+        "key": "agent:project_task_manager_6d499af17a97463996dc973b964c50ed",
+        "depth": 0,
+        "expanded": "true",
+        "current": null,
+        "status": "idle",
+        "name": "Project Task Manager",
+        "title": "CALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/release_notes_writer\",\"task_...",
+        "chip": null,
+        "unreachable": false,
+        "age": "now",
+        "buttons": [
+          "mobile-run-open",
+          "mobile-run-toggle"
+        ],
+        "label": "Project Task Manager, CALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/release_notes_writer\",\"task_..., Idle"
+      },
+      "writer": {
+        "key": "agent:project_task_manager_6d499af17a97463996dc973b964c50ed/agent:release_notes_writer_d780391ebb264109ac3c914f88234559",
+        "depth": 1,
+        "expanded": null,
+        "current": null,
+        "status": "idle",
+        "name": "release notes writer",
+        "title": "Write the release notes.",
+        "chip": null,
+        "unreachable": false,
+        "age": null,
+        "buttons": [
+          "mobile-run-open"
+        ],
+        "label": "release notes writer, Write the release notes., Idle"
+      },
+      "squad": {
+        "key": "agent:project_task_manager_6d499af17a97463996dc973b964c50ed/team:docs_review_team_ff10adab9b3347fe93b06ad52a0eff55",
+        "depth": 1,
+        "expanded": "false",
+        "current": null,
+        "status": "idle",
+        "name": "docs review team",
+        "title": "Review the docs site.",
+        "chip": null,
+        "unreachable": false,
+        "age": null,
+        "buttons": [
+          "mobile-run-open",
+          "mobile-run-toggle"
+        ],
+        "label": "docs review team, Review the docs site., Idle"
+      },
+      "members": [
+        {
+          "key": "agent:project_task_manager_6d499af17a97463996dc973b964c50ed/agent:release_notes_writer_98f9082a8af441819112d9feceabe94a",
+          "depth": 2,
+          "expanded": null,
+          "current": null,
+          "status": "idle",
+          "name": "reviewer",
+          "title": null,
+          "chip": null,
+          "unreachable": false,
+          "age": null,
+          "buttons": [
+            "mobile-run-open"
+          ],
+          "label": "reviewer, Idle"
+        },
+        {
+          "key": "agent:project_task_manager_6d499af17a97463996dc973b964c50ed/agent:fact_checker_ee7ae569c0034de891e64d5dff650d73",
+          "depth": 2,
+          "expanded": null,
+          "current": null,
+          "status": "offline",
+          "name": "editor",
+          "title": null,
+          "chip": null,
+          "unreachable": false,
+          "age": null,
+          "buttons": [
+            "mobile-run-open"
+          ],
+          "label": "editor, Stopped"
+        }
+      ],
+      "remoteAgent": {
+        "key": "agent:project_task_manager_6d499af17a97463996dc973b964c50ed/agent:publisher_c7685ee068c14a1ab2b6955eac7ccfe3",
+        "depth": 1,
+        "expanded": null,
+        "current": null,
+        "status": "offline",
+        "name": "publisher",
+        "title": "Publish the draft. Marker REMOTE-AGENT.",
+        "chip": "beta-node",
+        "unreachable": false,
+        "age": null,
+        "buttons": [
+          "mobile-run-open"
+        ],
+        "label": "publisher, Publish the draft. Marker REMOTE-AGENT., Runs on beta-node, Stopped"
+      },
+      "remoteTeam": {
+        "key": "agent:project_task_manager_6d499af17a97463996dc973b964c50ed/team:studio_team_3d23a5d17a5540c7af1f886b69dae1a7",
+        "depth": 1,
+        "expanded": "false",
+        "current": null,
+        "status": "offline",
+        "name": "studio team",
+        "title": "Cut the launch trailer. Marker REMOTE-TEAM.",
+        "chip": "beta-node",
+        "unreachable": false,
+        "age": null,
+        "buttons": [
+          "mobile-run-open",
+          "mobile-run-toggle"
+        ],
+        "label": "studio team, Cut the launch trailer. Marker REMOTE-TEAM., Runs on beta-node, Stopped"
+      },
+      "team": {
+        "teamRow": {
+          "key": "team:delivery_team_90309f76931b4564b912755528afabe3",
+          "depth": 0,
+          "expanded": "false",
+          "current": null,
+          "status": "idle",
+          "name": "Delivery Team",
+          "title": "GENERATE_IMAGE:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-nh1QOL...",
+          "chip": null,
+          "unreachable": false,
+          "age": "1m",
+          "buttons": [
+            "mobile-run-open",
+            "mobile-run-toggle"
+          ],
+          "label": "Delivery Team, GENERATE_IMAGE:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-nh1QOL..., Idle"
+        },
+        "lead": {
+          "key": "team:delivery_team_90309f76931b4564b912755528afabe3/agent:fact_checker_061eb10baa4d4cb79e64bdad5b557df2",
+          "depth": 1,
+          "expanded": null,
+          "current": null,
+          "status": "idle",
+          "name": "lead",
+          "title": null,
+          "chip": null,
+          "unreachable": false,
+          "age": null,
+          "buttons": [
+            "mobile-run-open"
+          ],
+          "label": "lead, Idle"
+        },
+        "mate": {
+          "key": "team:delivery_team_90309f76931b4564b912755528afabe3/agent:release_notes_writer_16957106b8fc4930847eb77058bd2f6b",
+          "depth": 1,
+          "expanded": null,
+          "current": null,
+          "status": "idle",
+          "name": "mate",
+          "title": null,
+          "chip": null,
+          "unreachable": false,
+          "age": null,
+          "buttons": [
+            "mobile-run-open"
+          ],
+          "label": "mate, Idle"
+        },
+        "leadDelegatedNested": null
+      },
+      "orgRow": {
+        "key": "org:delivery_org_e2fef5021e8f40e79bdfa64f949dc0d8",
+        "depth": 0,
+        "expanded": "true",
+        "current": null,
+        "status": "running",
+        "name": "Delivery Org",
+        "title": "Plan the delivery. Marker ORG-PLANNER.",
+        "chip": null,
+        "unreachable": false,
+        "age": "1m",
+        "buttons": [
+          "mobile-run-open",
+          "mobile-run-toggle"
+        ],
+        "label": "Delivery Org, Plan the delivery. Marker ORG-PLANNER., Running"
+      },
+      "orgMembers": [
+        "planner",
+        "squad"
+      ],
+      "teamRows": [
+        [
+          "Delivery Team",
+          0
+        ],
+        [
+          "lead",
+          1
+        ],
+        [
+          "mate",
+          1
+        ],
+        [
+          "changelog helper",
+          1
+        ]
+      ]
+    },
+    "MSP-03": {
+      "result": "Pass",
+      "seconds": 8.7,
+      "results": [
+        {
+          "kind": "task agent",
+          "key": "agent:project_task_manager_6d499af17a97463996dc973b964c50ed/agent:release_notes_writer_d780391ebb264109ac3c914f88234559",
+          "scrollBefore": 40,
+          "states": [
+            "opening:",
+            "open:release notes writer"
+          ],
+          "screen": {
+            "state": "open",
+            "name": "release notes writer",
+            "subtitle": "Idle · in Project Task Manager",
+            "query": "?screen=run"
+          },
+          "nameOk": true,
+          "composer": 1,
+          "marker": "PHONE-MSG-1-1ce4c3",
+          "reached": true,
+          "shownOnPhone": true,
+          "sendErrors": [],
+          "scrollAfter": 40,
+          "markedRows": [
+            "agent:project_task_manager_6d499af17a97463996dc973b964c50ed/agent:release_notes_writer_d780391ebb264109ac3c914f88234559 (release notes writer)"
+          ],
+          "marked": "true"
+        },
+        {
+          "kind": "task-team member",
+          "key": "agent:project_task_manager_6d499af17a97463996dc973b964c50ed/agent:release_notes_writer_98f9082a8af441819112d9feceabe94a",
+          "scrollBefore": 80,
+          "states": [
+            "opening:",
+            "open:reviewer"
+          ],
+          "screen": {
+            "state": "open",
+            "name": "reviewer",
+            "subtitle": "Idle · in docs review team",
+            "query": "?screen=run"
+          },
+          "nameOk": true,
+          "composer": 1,
+          "marker": "PHONE-MSG-2-64cd15",
+          "reached": true,
+          "shownOnPhone": true,
+          "sendErrors": [],
+          "scrollAfter": 80,
+          "markedRows": [
+            "agent:project_task_manager_6d499af17a97463996dc973b964c50ed/agent:release_notes_writer_98f9082a8af441819112d9feceabe94a (reviewer)"
+          ],
+          "marked": "true"
+        },
+        {
+          "kind": "Team run (its coordinator)",
+          "key": "team:delivery_team_90309f76931b4564b912755528afabe3",
+          "scrollBefore": 120,
+          "states": [
+            "opening:",
+            "open:lead"
+          ],
+          "screen": {
+            "state": "open",
+            "name": "lead",
+            "subtitle": "Idle · in Delivery Team",
+            "query": "?screen=run"
+          },
+          "nameOk": true,
+          "composer": 1,
+          "marker": "PHONE-MSG-3-7b83a0",
+          "reached": true,
+          "shownOnPhone": true,
+          "sendErrors": [],
+          "scrollAfter": 120,
+          "markedRows": [
+            "team:delivery_team_90309f76931b4564b912755528afabe3/agent:fact_checker_061eb10baa4d4cb79e64bdad5b557df2 (lead)"
+          ],
+          "marked": "true"
+        },
+        {
+          "kind": "Org run (its first member)",
+          "key": "org:delivery_org_e2fef5021e8f40e79bdfa64f949dc0d8",
+          "scrollBefore": 176,
+          "states": [
+            "list",
+            "opening:",
+            "open:planner"
+          ],
+          "screen": {
+            "state": "open",
+            "name": "planner",
+            "subtitle": "Idle · in Delivery Org",
+            "query": "?rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_e2fef5021e8f40e79bdfa64f949dc0d8&mode=active&memberAddress=/planner&screen=run"
+          },
+          "nameOk": true,
+          "composer": 1,
+          "marker": "PHONE-MSG-4-7f8479",
+          "reached": true,
+          "shownOnPhone": true,
+          "sendErrors": [],
+          "scrollAfter": 176,
+          "markedRows": [
+            "org:delivery_org_e2fef5021e8f40e79bdfa64f949dc0d8/agent:release_notes_writer_135dba55dddc408e8b51379ed404bfed (planner)"
+          ],
+          "marked": "true"
+        },
+        {
+          "kind": "Org run (first member a Team: its coordinator)",
+          "key": "org:review_org_ebda86f124d14bcdb70fe0aa8fbcf9cf",
+          "scrollBefore": 714,
+          "states": [
+            "list",
+            "opening:",
+            "open:reviewer"
+          ],
+          "screen": {
+            "state": "open",
+            "name": "reviewer",
+            "subtitle": "Stopped · in squad",
+            "query": "?rootSubjectKind=agent_org&definitionId=review-org&orgRunId=review_org_ebda86f124d14bcdb70fe0aa8fbcf9cf&mode=active&memberAddress=/squad&screen=run"
+          },
+          "nameOk": true,
+          "composer": 1,
+          "marker": "PHONE-MSG-5-303a83",
+          "reached": true,
+          "shownOnPhone": true,
+          "sendErrors": [],
+          "scrollAfter": 714,
+          "markedRows": [
+            "org:review_org_ebda86f124d14bcdb70fe0aa8fbcf9cf/agent:release_notes_writer_bb75b17f720c45668af1c1fe0cfb8f5f (reviewer)"
+          ],
+          "marked": "true"
+        },
+        {
+          "kind": "Org member",
+          "key": "org:delivery_org_e2fef5021e8f40e79bdfa64f949dc0d8/agent:release_notes_writer_135dba55dddc408e8b51379ed404bfed",
+          "scrollBefore": 40,
+          "states": [
+            "list",
+            "opening:",
+            "open:planner"
+          ],
+          "screen": {
+            "state": "open",
+            "name": "planner",
+            "subtitle": "Idle · in Delivery Org",
+            "query": "?rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_e2fef5021e8f40e79bdfa64f949dc0d8&mode=active&memberAddress=/planner&screen=run"
+          },
+          "nameOk": true,
+          "composer": 1,
+          "marker": "PHONE-MSG-6-c4cc8d",
+          "reached": true,
+          "shownOnPhone": true,
+          "sendErrors": [],
+          "scrollAfter": 40,
+          "markedRows": [
+            "org:delivery_org_e2fef5021e8f40e79bdfa64f949dc0d8/agent:release_notes_writer_135dba55dddc408e8b51379ed404bfed (planner)"
+          ],
+          "marked": "true"
+        }
+      ],
+      "control": {}
+    },
+    "MSP-04": {
+      "result": "Pass",
+      "seconds": 2.5,
+      "screen": {
+        "state": "open",
+        "name": "Approver",
+        "subtitle": "Idle",
+        "chip": null,
+        "query": "?screen=run"
+      },
+      "answer": {
+        "outcome": "selected",
+        "optionId": "allow-once"
+      },
+      "commandShown": true
+    },
+    "MSP-05": {
+      "result": "Pass",
+      "seconds": 6.2,
+      "snapshots": [
+        {
+          "state": "opening",
+          "name": null,
+          "opening": true,
+          "buttons": [
+            "Back to runs"
+          ]
+        },
+        {
+          "state": "open",
+          "name": "lead",
+          "opening": false,
+          "buttons": [
+            "Back to runs",
+            "More",
+            "Upload files",
+            "Send message"
+          ]
+        }
+      ],
+      "forward": {
+        "state": "open",
+        "name": "lead",
+        "subtitle": "Idle · in Delivery Team",
+        "chip": null,
+        "query": "?screen=run"
+      },
+      "orgQuery": "?rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_e2fef5021e8f40e79bdfa64f949dc0d8&mode=active&memberAddress=/planner&screen=run",
+      "listQuery": "?rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_e2fef5021e8f40e79bdfa64f949dc0d8&mode=active&memberAddress=/planner",
+      "orgMarked": "true",
+      "afterReload": "?rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_e2fef5021e8f40e79bdfa64f949dc0d8&mode=active&memberAddress=/planner",
+      "second": {
+        "state": "open",
+        "name": "lead",
+        "subtitle": "Idle · in Delivery Team",
+        "chip": null,
+        "query": "?screen=run"
+      }
+    },
+    "MSP-06": {
+      "result": "Pass",
+      "seconds": 8.2,
+      "onBeta": true,
+      "sendErrors": [],
+      "row": {
+        "key": "agent:project_task_manager_6d499af17a97463996dc973b964c50ed/agent:publisher_c7685ee068c14a1ab2b6955eac7ccfe3",
+        "depth": 1,
+        "expanded": null,
+        "current": null,
+        "status": "idle",
+        "name": "publisher",
+        "title": "Publish the draft. Marker REMOTE-AGENT.",
+        "chip": "beta-node",
+        "unreachable": false,
+        "age": null,
+        "buttons": [
+          "mobile-run-open"
+        ],
+        "label": "publisher, Publish the draft. Marker REMOTE-AGENT., Runs on beta-node, Idle"
+      },
+      "opened": {
+        "state": "open",
+        "name": "publisher",
+        "subtitle": "Idle · in Project Task Manager",
+        "chip": "beta-node",
+        "query": "?screen=run"
+      },
+      "placeholder": "Message publisher on beta-node…",
+      "uploads": 0,
+      "mention": {
+        "role": null,
+        "expanded": null
+      },
+      "live": true,
+      "down": [
+        {
+          "key": "agent:project_task_manager_6d499af17a97463996dc973b964c50ed/agent:publisher_c7685ee068c14a1ab2b6955eac7ccfe3",
+          "depth": 1,
+          "expanded": null,
+          "current": null,
+          "status": "error",
+          "name": "publisher",
+          "title": "Publish the draft. Marker REMOTE-AGENT.",
+          "chip": "beta-nodeNot reachable",
+          "unreachable": true,
+          "age": null,
+          "buttons": [
+            "mobile-run-open"
+          ],
+          "label": "publisher, Publish the draft. Marker REMOTE-AGENT., Runs on beta-node, Not reachable"
+        },
+        {
+          "key": "agent:project_task_manager_6d499af17a97463996dc973b964c50ed/team:studio_team_3d23a5d17a5540c7af1f886b69dae1a7",
+          "depth": 1,
+          "expanded": "false",
+          "current": null,
+          "status": "error",
+          "name": "studio team",
+          "title": "Cut the launch trailer. Marker REMOTE-TEAM.",
+          "chip": "beta-nodeNot reachable",
+          "unreachable": true,
+          "age": null,
+          "buttons": [
+            "mobile-run-open",
+            "mobile-run-toggle"
+          ],
+          "label": "studio team, Cut the launch trailer. Marker REMOTE-TEAM., Runs on beta-node, Not reachable"
+        }
+      ],
+      "notice": "beta-node isn't reachable This run's conversation can't be loaded right now. Your other runs work. Retry when the node is back. Retry",
+      "recovered": true
+    },
+    "MSP-07": {
+      "result": "Pass",
+      "seconds": 11.9,
+      "freshAgent": "Project Task Manager",
+      "orgMarked": "true",
+      "orgListQuery": "?rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_e2fef5021e8f40e79bdfa64f949dc0d8&mode=active&memberAddress=/planner",
+      "orgAgent": "Release Notes Writer",
+      "agentOptions": [
+        "Daily Assistant General-purpose agent for practical tasks, with awareness of available specialist agents and teams.",
+        "Project Task Manager Project Task Manager (phone probe)",
+        "Release Notes Writer Release Notes Writer (phone probe)",
+        "Fact Checker Fact Checker (phone probe)",
+        "Changelog Helper Changelog Helper (phone probe)",
+        "Approver Approver (phone probe)"
+      ],
+      "factCheckerReadiness": "Choose a model before creating the run.",
+      "launchDisabledWhenMissing": true,
+      "sheets": {
+        "mobile-run-workspace-select": [
+          "workspace /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-nh1QOL/alpha/workspace",
+          "Temp Workspace /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-nh1QOL/alpha/data/temp_workspace"
+        ],
+        "blankPathOpenDisabled": true,
+        "refusals": [
+          {
+            "typed": "/definitely/not/a/folder-426",
+            "expected": "No folder at this path.",
+            "error": "No folder at this path.",
+            "sheetOpen": 1,
+            "value": "workspace"
+          },
+          {
+            "typed": "/etc/hosts",
+            "expected": "This path is a file, not a folder.",
+            "error": "This path is a file, not a folder.",
+            "sheetOpen": 1,
+            "value": "workspace"
+          },
+          {
+            "typed": "relative/dir",
+            "expected": "Enter a full path, starting with /.",
+            "error": "Enter a full path, starting with /.",
+            "sheetOpen": 1,
+            "value": "workspace"
+          }
+        ],
+        "registeredAdded": [],
+        "existingFolder": {
+          "value": "extra-folder-426",
+          "sheetOpen": 0,
+          "error": 0,
+          "registered": true
+        },
+        "mobile-run-runtime-select": [
+          "AutoByteus",
+          "Codex App Server",
+          "Claude Agent SDK",
+          "Antigravity CLI",
+          "Grok Build"
+        ],
+        "mobile-run-model-select": [
+          "claude-fable-5",
+          "claude-fable-5-1",
+          "claude-haiku-5-5",
+          "claude-opus-5",
+          "claude-opus-5-5",
+          "claude-sonnet-5",
+          "claude-sonnet-5-5",
+          "deepseek-v4-flash"
+        ]
+      },
+      "statesDuringFirst": [
+        "open"
+      ],
+      "newRunId": "project_task_manager_bba69a77e5c64a1f92b26718847bbcae",
+      "top": {
+        "key": "agent:project_task_manager_bba69a77e5c64a1f92b26718847bbcae",
+        "depth": 0,
+        "expanded": null,
+        "current": "true",
+        "status": "idle",
+        "name": "Project Task Manager",
+        "title": "First message. Marker NEWRUN-FIRST-12adac",
+        "chip": null,
+        "unreachable": false,
+        "age": "now",
+        "buttons": [
+          "mobile-run-open"
+        ],
+        "label": "Project Task Manager, First message. Marker NEWRUN-FIRST-12adac, Idle"
+      }
+    },
+    "MSP-08": {
+      "result": "Pass",
+      "seconds": 7.3,
+      "items": [
+        [
+          "mobile-run-menu-artifacts",
+          "Artifacts"
+        ],
+        [
+          "mobile-run-menu-files",
+          "Files"
+        ],
+        [
+          "mobile-run-menu-messages",
+          "Messages"
+        ],
+        [
+          "mobile-run-menu-activity",
+          "Activity"
+        ]
+      ],
+      "artifacts": {
+        "direct": 1,
+        "list": 0,
+        "title": "Artifacts",
+        "text": true
+      },
+      "filesTop": [
+        "docs",
+        "src",
+        "notes.md",
+        "README.md"
+      ],
+      "filters": 0,
+      "pathLine": "workspace docs",
+      "attach": 0,
+      "searchRows": [
+        "app.ts src/app.ts"
+      ],
+      "messages": [
+        "To mate Nov 9, 04:32 AM Read the guide first. Marker TEAM-NOTE. guide.md"
+      ],
+      "referenceText": true,
+      "activity": [
+        "generate_image generate_image success"
+      ],
+      "plainItems": [
+        "Artifacts",
+        "Files",
+        "Activity"
+      ],
+      "artifactsEmpty": "No Artifacts yet Generated or edited files for this run will appear here as they become available.",
+      "activityEmpty": "No activity yet",
+      "remoteArtifacts": "The files this run wrote are on beta-node. Open it in that node's window to see them.",
+      "remoteFiles": "The files of this run are on beta-node. Open it in that node's window to see them."
+    },
+    "MSP-16": {
+      "result": "Pass",
+      "seconds": 97.9,
+      "draftPath": "alpha/workspace/drafts/draft-v3.txt",
+      "outsidePath": "alpha/outside-427/private.txt",
+      "workspaceId": "agent_ws_208ca6dd5b404a5ab459530ece3d8351ca27038753413b19df93eef963b338bc",
+      "links": {
+        "draft": 1,
+        "outside": 1,
+        "draftLabel": "draft-v3.txt",
+        "draftAria": "Open draft-v3.txt in Files"
+      },
+      "before": "?screen=run",
+      "opened": {
+        "viewer": 1,
+        "text": true,
+        "query": {
+          "screen": "files",
+          "workspace": "agent_ws_208ca6dd5b404a5ab459530ece3d8351ca27038753413b19df93eef963b338bc",
+          "file": "drafts/draft-v3.txt"
+        },
+        "status": 0
+      },
+      "back": {
+        "state": "open",
+        "query": "?screen=run",
+        "name": "lead",
+        "link": 1,
+        "composer": 1
+      },
+      "outside": {
+        "viewer": 1,
+        "query": {
+          "screen": "files",
+          "nodeFile": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-nh1QOL/alpha/outside-427/private.txt"
+        },
+        "text": "private.txt\n1\n2\nOUTSIDE-TEXT-9090 opens read-only on the phone.",
+        "error": "",
+        "image": 0,
+        "editControls": 0,
+        "status": 0,
+        "typedChanges": false,
+        "backToConversation": true
+      },
+      "notes": {
+        "viewer": 1,
+        "query": {
+          "screen": "files",
+          "nodeFile": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-nh1QOL/alpha/outside-427/notes-436.md"
+        },
+        "text": "notes-436.md\nNOTES-436\n\nREAD-ONLY-NOTES-436 from a worktree.",
+        "error": "",
+        "image": 0,
+        "editControls": 0,
+        "status": 0,
+        "typedChanges": false,
+        "backToConversation": true
+      },
+      "image": {
+        "viewer": 1,
+        "query": {
+          "screen": "files",
+          "nodeFile": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-nh1QOL/alpha/outside-427/diagram-436.png"
+        },
+        "text": "diagram-436.png\n100%\nScroll to zoom • Drag to pan • Double-click to reset",
+        "error": "",
+        "image": 1,
+        "editControls": 0,
+        "status": 0,
+        "typedChanges": false,
+        "backToConversation": true
+      },
+      "missing": {
+        "viewer": 1,
+        "query": {
+          "screen": "files",
+          "nodeFile": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-nh1QOL/alpha/outside-427/gone-436.md"
+        },
+        "text": "gone-436.md\n\nThis file was not found on the computer.",
+        "error": "This file was not found on the computer.",
+        "image": 0,
+        "editControls": 0,
+        "status": 0,
+        "typedChanges": false,
+        "backToConversation": true
+      },
+      "folder": {
+        "viewer": 1,
+        "query": {
+          "screen": "files",
+          "nodeFile": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mobile-shell-probe-nh1QOL/alpha/outside-427/reports-436.md"
+        },
+        "text": "reports-436.md\n\nThis path is a folder, not a file.",
+        "error": "This path is a folder, not a file.",
+        "image": 0,
+        "editControls": 0,
+        "status": 0,
+        "typedChanges": false,
+        "backToConversation": true
+      },
+      "consoleLines": [
+        "error: Failed to load resource: the server responded with a status of 404 (Not Found)",
+        "error: Failed to load resource: the server responded with a status of 400 (Bad Request)"
+      ]
+    },
+    "MSP-14": {
+      "result": "Pass",
+      "seconds": 1.7,
+      "gone": true,
+      "reloaded": false
+    },
+    "MSP-10": {
+      "result": "Pass",
+      "seconds": 5.2,
+      "forbidden": [],
+      "tabs": 0,
+      "rowButtons": [
+        "mobile-run-open",
+        "mobile-run-toggle"
+      ],
+      "noticeText": "Unsupported on phone\n\nThe desktop workspace isn’t on the phone. Your runs are here.",
+      "noticeAbove": true,
+      "desktopRoute": {
+        "url": "/mobile/?unsupported=desktopWorkspace",
+        "notice": "Unsupported on phone\n\nThe desktop workspace isn’t on the phone. Your runs are here."
+      }
+    },
+    "MSP-11": {
+      "result": "Pass",
+      "seconds": 37.7,
+      "results": {
+        "390x844": {
+          "screens": {
+            "list": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 31,
+              "small": []
+            },
+            "run": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 13,
+              "small": [
+                {
+                  "label": "generate_image · fixture image",
+                  "size": "262×38",
+                  "shared": true
+                },
+                {
+                  "label": "Open draft-v3.txt in Files",
+                  "size": "85×18",
+                  "shared": true
+                },
+                {
+                  "label": "Open private.txt in Files",
+                  "size": "76×18",
+                  "shared": true
+                },
+                {
+                  "label": "Open gone-436.md in Files",
+                  "size": "103×18",
+                  "shared": true
+                },
+                {
+                  "label": "Context Files (0)(drag, paste, or upload",
+                  "size": "296×24",
+                  "shared": true
+                },
+                {
+                  "label": "Upload files",
+                  "size": "28×28",
+                  "shared": true
+                },
+                {
+                  "label": "Send message",
+                  "size": "36×36",
+                  "shared": true
+                }
+              ]
+            },
+            "menu": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 17,
+              "small": [
+                {
+                  "label": "generate_image · fixture image",
+                  "size": "262×38",
+                  "shared": true
+                },
+                {
+                  "label": "Open draft-v3.txt in Files",
+                  "size": "85×18",
+                  "shared": true
+                },
+                {
+                  "label": "Open private.txt in Files",
+                  "size": "76×18",
+                  "shared": true
+                },
+                {
+                  "label": "Open gone-436.md in Files",
+                  "size": "103×18",
+                  "shared": true
+                },
+                {
+                  "label": "Context Files (0)(drag, paste, or upload",
+                  "size": "296×24",
+                  "shared": true
+                },
+                {
+                  "label": "Upload files",
+                  "size": "28×28",
+                  "shared": true
+                },
+                {
+                  "label": "Send message",
+                  "size": "36×36",
+                  "shared": true
+                }
+              ]
+            },
+            "artifacts": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 4,
+              "small": [
+                {
+                  "label": "BUTTON",
+                  "size": "28×28",
+                  "shared": true
+                },
+                {
+                  "label": "BUTTON",
+                  "size": "28×28",
+                  "shared": true
+                },
+                {
+                  "label": "artifact-viewer-zen-toggle",
+                  "size": "28×28",
+                  "shared": true
+                }
+              ]
+            },
+            "files": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 8,
+              "small": []
+            },
+            "files-search": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 8,
+              "small": [
+                {
+                  "label": "Search files",
+                  "size": "286×40",
+                  "shared": false
+                }
+              ]
+            },
+            "file-open": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 6,
+              "small": []
+            },
+            "messages": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 2,
+              "small": []
+            },
+            "reference-open": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 3,
+              "small": []
+            },
+            "activity": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 1,
+              "small": []
+            },
+            "new-run": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 7,
+              "small": []
+            },
+            "agent-sheet": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 15,
+              "small": []
+            },
+            "connection-sheet": {
+              "scrollWidth": 390,
+              "clientWidth": 390,
+              "bodyScrollWidth": 390,
+              "horizontalScroll": false,
+              "controls": 35,
+              "small": []
+            }
+          },
+          "walk": [
+            "files",
+            "run",
+            "list"
+          ],
+          "walkMessages": [
+            "messages",
+            "run",
+            "list"
+          ]
+        },
+        "360x800": {
+          "screens": {
+            "list": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 31,
+              "small": []
+            },
+            "run": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 13,
+              "small": [
+                {
+                  "label": "generate_image · fixture image",
+                  "size": "232×38",
+                  "shared": true
+                },
+                {
+                  "label": "Open private.txt in Files",
+                  "size": "76×18",
+                  "shared": true
+                },
+                {
+                  "label": "Open gone-436.md in Files",
+                  "size": "103×18",
+                  "shared": true
+                },
+                {
+                  "label": "Open reports-436.md in Files",
+                  "size": "119×18",
+                  "shared": true
+                },
+                {
+                  "label": "Context Files (0)(drag, paste, or upload",
+                  "size": "266×24",
+                  "shared": true
+                },
+                {
+                  "label": "Upload files",
+                  "size": "28×28",
+                  "shared": true
+                },
+                {
+                  "label": "Send message",
+                  "size": "36×36",
+                  "shared": true
+                }
+              ]
+            },
+            "menu": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 17,
+              "small": [
+                {
+                  "label": "generate_image · fixture image",
+                  "size": "232×38",
+                  "shared": true
+                },
+                {
+                  "label": "Open private.txt in Files",
+                  "size": "76×18",
+                  "shared": true
+                },
+                {
+                  "label": "Open gone-436.md in Files",
+                  "size": "103×18",
+                  "shared": true
+                },
+                {
+                  "label": "Open reports-436.md in Files",
+                  "size": "119×18",
+                  "shared": true
+                },
+                {
+                  "label": "Context Files (0)(drag, paste, or upload",
+                  "size": "266×24",
+                  "shared": true
+                },
+                {
+                  "label": "Upload files",
+                  "size": "28×28",
+                  "shared": true
+                },
+                {
+                  "label": "Send message",
+                  "size": "36×36",
+                  "shared": true
+                }
+              ]
+            },
+            "artifacts": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 4,
+              "small": [
+                {
+                  "label": "BUTTON",
+                  "size": "28×28",
+                  "shared": true
+                },
+                {
+                  "label": "BUTTON",
+                  "size": "28×28",
+                  "shared": true
+                },
+                {
+                  "label": "artifact-viewer-zen-toggle",
+                  "size": "28×28",
+                  "shared": true
+                }
+              ]
+            },
+            "files": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 8,
+              "small": []
+            },
+            "files-search": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 8,
+              "small": [
+                {
+                  "label": "Search files",
+                  "size": "256×40",
+                  "shared": false
+                }
+              ]
+            },
+            "file-open": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 6,
+              "small": []
+            },
+            "messages": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 2,
+              "small": []
+            },
+            "reference-open": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 3,
+              "small": []
+            },
+            "activity": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 1,
+              "small": []
+            },
+            "new-run": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 7,
+              "small": []
+            },
+            "agent-sheet": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 15,
+              "small": []
+            },
+            "connection-sheet": {
+              "scrollWidth": 360,
+              "clientWidth": 360,
+              "bodyScrollWidth": 360,
+              "horizontalScroll": false,
+              "controls": 35,
+              "small": []
+            }
+          },
+          "walk": [
+            "files",
+            "run",
+            "list"
+          ],
+          "walkMessages": [
+            "messages",
+            "run",
+            "list"
+          ]
+        }
+      },
+      "sharedSmall": [
+        "generate_image · fixture image 262×38",
+        "Open draft-v3.txt in Files 85×18",
+        "Open private.txt in Files 76×18",
+        "Open gone-436.md in Files 103×18",
+        "Context Files (0)(drag, paste, or upload 296×24",
+        "Upload files 28×28",
+        "Send message 36×36",
+        "BUTTON 28×28",
+        "artifact-viewer-zen-toggle 28×28",
+        "generate_image · fixture image 232×38",
+        "Open reports-436.md in Files 119×18",
+        "Context Files (0)(drag, paste, or upload 266×24"
+      ]
+    }
+  },
+  "browserErrors": [
+    {
+      "case": "setup",
+      "line": "phone console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+      "known": false
+    },
+    {
+      "case": "MSP-07",
+      "line": "phone console: Error creating workspace metadata: ApolloError: No folder exists at the workspace path. (/definitely/not/a/folder-426)\n    at new t (http://192.168.77.10:63238/mobile/_nuxt/B7StNWVm.js:84:153)\n    at http://192.168.77.10:63238/mobile/_nuxt/B7StNWVm.js:88:70699\n    at d (http://192.168.77.10:63238/mobile/_nuxt/B7StNWVm.js:83:8520)\n    at http://192.168.77.10:63238/mobile/_nuxt/B7StNWVm.js:83:8435\n    at new Promise (<anonymous>)\n    at Object.then (http://192.168.77.10:63238/mobile/_nuxt/B7StNWVm.js:83:8402)\n    at Object.next (http://192.168.77.10:63238/mobile/_nuxt/B7StNWVm.js:83:8530)\n    at bx (http://192.168.77.10:63238/mobile/_nuxt/B7StNWVm.js:83:1908)\n    at yf (http://192.168.77.10:63238/mobile/_nuxt/B7StNWVm.js:83:2318)\n    at t.next (http://192.168.77.10:63238/mobile/_nuxt/B7StNWVm.js:83:2838)",
+      "known": true
+    },
+    {
+      "case": "MSP-07",
+      "line": "phone console: Error creating workspace metadata: ApolloError: The workspace path is a file, not a folder. (/etc/hosts)\n    at new t (http://192.168.77.10:63238/mobile/_nuxt/B7StNWVm.js:84:153)\n    at http://192.168.77.10:63238/mobile/_nuxt/B7StNWVm.js:88:70699\n    at d (http://192.168.77.10:63238/mobile/_nuxt/B7StNWVm.js:83:8520)\n    at http://192.168.77.10:63238/mobile/_nuxt/B7StNWVm.js:83:8435\n    at new Promise (<anonymous>)\n    at Object.then (http://192.168.77.10:63238/mobile/_nuxt/B7StNWVm.js:83:8402)\n    at Object.next (http://192.168.77.10:63238/mobile/_nuxt/B7StNWVm.js:83:8530)\n    at bx (http://192.168.77.10:63238/mobile/_nuxt/B7StNWVm.js:83:1908)\n    at yf (http://192.168.77.10:63238/mobile/_nuxt/B7StNWVm.js:83:2318)\n    at t.next (http://192.168.77.10:63238/mobile/_nuxt/B7StNWVm.js:83:2838)",
+      "known": true
+    },
+    {
+      "case": "MSP-07",
+      "line": "phone console: Error creating workspace metadata: ApolloError: Workspace path must be an absolute path. (relative/dir)\n    at new t (http://192.168.77.10:63238/mobile/_nuxt/B7StNWVm.js:84:153)\n    at http://192.168.77.10:63238/mobile/_nuxt/B7StNWVm.js:88:70699\n    at d (http://192.168.77.10:63238/mobile/_nuxt/B7StNWVm.js:83:8520)\n    at http://192.168.77.10:63238/mobile/_nuxt/B7StNWVm.js:83:8435\n    at new Promise (<anonymous>)\n    at Object.then (http://192.168.77.10:63238/mobile/_nuxt/B7StNWVm.js:83:8402)\n    at Object.next (http://192.168.77.10:63238/mobile/_nuxt/B7StNWVm.js:83:8530)\n    at bx (http://192.168.77.10:63238/mobile/_nuxt/B7StNWVm.js:83:1908)\n    at yf (http://192.168.77.10:63238/mobile/_nuxt/B7StNWVm.js:83:2318)\n    at t.next (http://192.168.77.10:63238/mobile/_nuxt/B7StNWVm.js:83:2838)",
+      "known": true
+    },
+    {
+      "case": "MSP-16",
+      "line": "phone console: Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "known": true
+    },
+    {
+      "case": "MSP-16",
+      "line": "phone console: Failed to load resource: the server responded with a status of 400 (Bad Request)",
+      "known": true
+    }
+  ],
+  "failedRequests": [
+    {
+      "case": "setup",
+      "label": "phone",
+      "url": "http://localhost:8000/health",
+      "error": "net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "case": "MSP-10",
+      "label": "phone-notice",
+      "url": "http://192.168.77.10:63238/rest/health",
+      "error": "net::ERR_ABORTED"
+    }
+  ],
+  "network": {},
+  "cleanup": {},
+  "error": null
+}
