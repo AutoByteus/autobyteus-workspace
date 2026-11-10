@@ -1,0 +1,15 @@
+# API-07 — stopped-run Save through GraphQL on a built server (MSR-001 new + two existing cases of the same file)
+# Command: env -i PATH=$PATH HOME=/root TMPDIR=/tmp corepack pnpm -C autobyteus-server-ts exec vitest run tests/e2e/run-history/stopped-run-model-config-graphql.e2e.test.ts --no-watch   (cwd: worktree root)
+# Commit: 817bd9950 + uncommitted test changes (committed with this evidence) · server dist rebuilt 14:1x UTC from restored sources · ENV-1 · 2026-11-10 · Case API-07 (+ API-05 part)
+ RUN  v4.1.12 /home/autobyteus/workspace/.codex/worktrees/model-settings-reality/autobyteus-server-ts
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/home/autobyteus/workspace/.codex/worktrees/model-settings-reality/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+Database reset successful
+ ✓ tests/e2e/run-history/stopped-run-model-config-graphql.e2e.test.ts (3 tests) 25441ms
+     ✓ updates only a stopped standalone run config and restores the same current package after restart  10174ms
+     ✓ updates exact stopped Team scopes and preserves the current V2 package across restart  9758ms
+     ✓ MSR-001: a stopped agent and a stopped Team member saved onto the Claude Agent SDK runtime follow the CLI's current model list  5508ms
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  14:05:09
+   Duration  26.59s (transform 229ms, setup 117ms, import 220ms, tests 25.44s, environment 0ms)

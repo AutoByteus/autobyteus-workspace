@@ -1,0 +1,13 @@
+# API-06 — actual Anthropic requests of the two Off cases, rerun with the harness' writeBodies (diagnostic edit, reverted; never committed)
+# Command: same as API-06-claude-5-5-live.log with -t 'C55-E2E-00[24]' and CLAUDE_5_5_E2E_EVIDENCE_DIR=/tmp/api-e2e-msr/c55-evidence2; bodies read from calls-full.json · Commit 817bd9950 · ENV-1 · 2026-11-10
+# Look for: every Off call has thinking {type: between_tools} (Sonnet 5.5) or {type: disabled} (Haiku 5.5), output_config null (no effort sent while Off, although the stored config holds reasoning_effort), and no key besides cache_control,max_tokens,messages,model,stream,system,thinking,tools
+C55-E2E-002 pass stored llmConfig= {"thinking_enabled":false,"reasoning_effort":"high"}
+C55-E2E-004 pass stored llmConfig= {"thinking_enabled":false,"reasoning_effort":"medium"}
+call 0 C55-E2E-002 model claude-sonnet-5-5 thinking {"type":"between_tools"} output_config null keys cache_control,max_tokens,messages,model,stream,system,thinking,tools
+call 1 C55-E2E-002 model claude-sonnet-5-5 thinking {"type":"between_tools"} output_config null keys cache_control,max_tokens,messages,model,stream,system,thinking,tools
+call 2 C55-E2E-002 model claude-sonnet-5-5 thinking {"type":"between_tools"} output_config null keys cache_control,max_tokens,messages,model,stream,system,thinking,tools
+call 3 C55-E2E-002 model claude-sonnet-5-5 thinking {"type":"between_tools"} output_config null keys cache_control,max_tokens,messages,model,stream,system,thinking,tools
+call 4 C55-E2E-004 model claude-haiku-5-5 thinking {"type":"disabled"} output_config null keys cache_control,max_tokens,messages,model,stream,system,thinking,tools
+call 5 C55-E2E-004 model claude-haiku-5-5 thinking {"type":"disabled"} output_config null keys cache_control,max_tokens,messages,model,stream,system,thinking,tools
+call 6 C55-E2E-004 model claude-haiku-5-5 thinking {"type":"disabled"} output_config null keys cache_control,max_tokens,messages,model,stream,system,thinking,tools
+call 7 C55-E2E-004 model claude-haiku-5-5 thinking {"type":"disabled"} output_config null keys cache_control,max_tokens,messages,model,stream,system,thinking,tools

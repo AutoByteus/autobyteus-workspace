@@ -1,0 +1,19 @@
+# API-03b — server typecheck gate after the API/E2E test changes
+# Command: corepack pnpm -C autobyteus-server-ts typecheck   (cwd: worktree root, pnpm shim on PATH)
+# Commit: 817bd9950 + uncommitted test changes · ENV-1 · 2026-11-10
+
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 282ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Need your database queries to be 1000x faster? Accelerate offers you that and more: https://pris.ly/tip-2-accelerate
+
+
+> autobyteus-server-ts@0.1.1 typecheck /home/autobyteus/workspace/.codex/worktrees/model-settings-reality/autobyteus-server-ts
+> node ./scripts/typecheck.mjs
+
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 17.8s
+[typecheck] server tests (tsconfig.tests.json): 1181 errors, exit 2, 47.1s
+[typecheck] production errors: 0; test-file errors: 1181 in 365 files (baseline 1181 in 365 files)
+[typecheck] PASS
+exit=0

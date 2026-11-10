@@ -1,0 +1,7 @@
+
+> autobyteus@1.5.13-beta.1 test:e2e:chat-composer-polish /home/autobyteus/workspace/.codex/worktrees/model-settings-reality/autobyteus-web
+> node tests/e2e/chat-composer-polish-probe.mjs --cases T01 --output-dir /tmp/api-e2e-msr/API-08a-out --browser-executable /usr/bin/chromium
+
+T01 Fail Claude SDK merged thinking menu at desktop width: Off state, pick High, Off, Medium, Off→Medium (A-1) — No Claude SDK model with thinking_enabled + reasoning_effort in the catalog
+ ELIFECYCLE  Command failed with exit code 1.
+EXIT=1

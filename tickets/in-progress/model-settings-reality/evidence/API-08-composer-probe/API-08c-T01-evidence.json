@@ -1,0 +1,147 @@
+{
+  "startedAt": "2026-11-10T14:29:42.010Z",
+  "cases": {
+    "T01": {
+      "title": "AutoByteus-runtime Claude row with a thinking switch: merged menu at desktop width; untouched = On at the default effort (autobyteus-9 AC-003), then Off, High, Off, Medium, Off→Medium (A-1)",
+      "result": "Pass",
+      "ms": 8376,
+      "details": {
+        "model": "claude-sonnet-5-5",
+        "effortLevels": [
+          "low",
+          "medium",
+          "high",
+          "xhigh",
+          "max"
+        ],
+        "defaultEffort": "high",
+        "initial": {
+          "trigger": "High",
+          "bulb": {
+            "muted": false,
+            "color": "rgb(128, 128, 128)"
+          },
+          "draft": {
+            "thinking_enabled": true,
+            "reasoning_effort": "high"
+          }
+        },
+        "openFocus": "chat-thinking-option-primary-off",
+        "onMenu": {
+          "ids": [
+            "off",
+            "low",
+            "medium",
+            "high",
+            "xhigh",
+            "max"
+          ],
+          "box": {
+            "x": 1040.5,
+            "y": 370,
+            "w": 176,
+            "h": 221.5,
+            "bottom": 591.5,
+            "right": 1216.5
+          },
+          "position": "absolute"
+        },
+        "off": {
+          "trigger": "Off",
+          "bulb": {
+            "muted": true,
+            "color": "rgb(179, 179, 179)"
+          },
+          "draft": {
+            "thinking_enabled": false,
+            "reasoning_effort": "high"
+          }
+        },
+        "high": {
+          "trigger": "High",
+          "bulb": {
+            "muted": false,
+            "color": "rgb(77, 77, 77)"
+          },
+          "draft": {
+            "thinking_enabled": true,
+            "reasoning_effort": "high"
+          }
+        },
+        "offAgain": {
+          "trigger": "Off",
+          "bulb": {
+            "muted": true,
+            "color": "rgb(179, 179, 179)"
+          },
+          "draft": {
+            "thinking_enabled": false,
+            "reasoning_effort": "high"
+          }
+        },
+        "medium": {
+          "trigger": "Medium",
+          "draft": {
+            "thinking_enabled": true,
+            "reasoning_effort": "medium"
+          }
+        },
+        "storedOffMedium": {
+          "thinking_enabled": false,
+          "reasoning_effort": "medium"
+        },
+        "repick": {
+          "trigger": "Medium",
+          "draft": {
+            "thinking_enabled": true,
+            "reasoning_effort": "medium"
+          }
+        }
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 93074
+    },
+    {
+      "label": "frontend",
+      "pid": 93163
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 93163,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 93074,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/tmp/chat-composer-polish-SuR7cs"
+    }
+  ],
+  "ownedRoot": "/tmp/chat-composer-polish-SuR7cs",
+  "backendUrl": "http://127.0.0.1:39361",
+  "frontUrl": "http://127.0.0.1:38695",
+  "workspaces": {
+    "alpha-notes": "agent_ws_ef2bf8374544ffd72e688dc6545819d44ba4f47f27889c4208d93b2f8043e0af",
+    "autobyteus_mcps": "agent_ws_4ae135e904cb348bf5292446f9d807bfa7f786ea281c929717b7903b7ca6d5a5",
+    "MCPS-tools": "agent_ws_5f4404d6a81eeadadb75f6d24ab2e347c3c4f606dde7b05881a55b59bc62c498",
+    "beta-site": "agent_ws_cd35238dea33f2e761dbdc63b1f70dc6396b081a0ee674c335a00da113b12399",
+    "gamma-api": "agent_ws_87a07c6d27c478d42bb72dd1b30db8ac9a795c3d36901f77843b86788a715262",
+    "delta-infra": "agent_ws_22b041b7fbfdb43f7c5814c4edd808637b9428850064708ee1b3b8c86111f238",
+    "epsilon-docs": "agent_ws_9a4d719c56d1d0e2f700d3035cf9dec912fd85d33f90cb9da56b628dadbb13d0",
+    "zeta-mobile": "agent_ws_5258ac6e13f62772aca75c34dd61fb44ac0d2e0117772c78ffc8877725d4fbe5",
+    "eta-data": "agent_ws_ead57f23088cc388a8f9685e9beb948531049727267a7f7f263ac0b55b09d46c",
+    "theta-ml": "agent_ws_3a038b1768c7792f6d4d3d69f1c7f76a127c907b7685599a4c0cc3bb0fc8b495",
+    "iota-web": "agent_ws_767e42bd12cb23fd732ba0ad560a170c9a9321038e5006415c7714113aa010cf",
+    "kappa-cli": "agent_ws_f26c610523eb63d3c39312db9b77fbcba8841cd8e11a5bd03e3ed81472e66847",
+    "lambda-sdk": "agent_ws_bb67d15c21351edf7b1a355e13f91a51d8122b7c965520738b1c935f553a54a7",
+    "notes": "agent_ws_fff6defa5e8009ebdc4c29539b52d240bfa1dc2b84137c390e4975b49e60d4de"
+  },
+  "browserErrors": [],
+  "completedAt": "2026-11-10T14:30:11.214Z"
+}

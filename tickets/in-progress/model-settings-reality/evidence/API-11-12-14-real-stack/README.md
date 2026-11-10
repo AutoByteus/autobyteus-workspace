@@ -1,0 +1,7 @@
+# API-11 / API-12 / API-14 — real-stack journeys (Claude CLI updated while the app runs)
+
+- Command (worktree root): `PATH=/tmp/pnpm-shim:$PATH AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault node tickets/in-progress/model-settings-reality/probes/real-stack/model-list-journeys-probe.mjs --output-dir <fresh folder> --browser-executable /usr/bin/chromium --cases API-11,API-12,API-14`
+- Commit: code `817bd9950` (server/ts `dist` built from it; probe and tests are ticket-owned / test-only) · Date: 2026-11-10 17:0x–17:2x UTC
+- Environment ENV-2: Linux arm64 container (uid 0), headless Chromium `/usr/bin/chromium` (the project probes' `--no-sandbox`), Nuxt dev, `autobyteus-server-ts/dist/app.js` on an owned data root and free ports, sanitized environment, throwaway HOME; Claude CLIs: SDK-bundled `2.1.280` and system `/usr/bin/claude` `2.1.322` (the backend's `CLAUDE_CODE_EXECUTABLE_PATH` names a symlink switched between them and a failing script); Anthropic key from the test vault (api-key mode, owned CLAUDE_CONFIG_DIR); native-runtime models are a test-owned LM Studio stand-in; Antigravity is the scripted `agy-failure-cli.mjs`.
+- Files: `evidence.json` (per-case details, CLI versions, cleanup receipt), `run.log` (console), `API-*.png` screenshots (support only; the proof is the DOM/state values in `evidence.json`), `backend-log-head.txt`.
+- Results: API-11 Pass, API-12 Pass, API-14 Fail (see the execution report).
