@@ -89,7 +89,18 @@ Not applicable (no release).
 - Bootstrap context source: `RELEASE.md` Finalization Target (`origin`, `personal`, `codex/<ticket-name>`)
 - Ticket branch: `codex/server-e2e-node-credential-447`
 - Secret Gate before the first push: `scripts/check_secrets.sh origin/personal..codex/server-e2e-node-credential-447` PASS (18 commits before the archive commit; rerun on the final branch below). Artifact hygiene `python3 scripts/check_repository_artifact_hygiene.py` PASS (longest tracked path 200 characters, not from this ticket); no `:` or other Windows-hostile character in this ticket's file names.
-- Results of the commit, push, merge and target push, and the update of the user's checkout: recorded in `delivery-revision-record.md` DR-002 and in the record commit that follows the merge.
+- Ticket branch commit result: `1453deb4a3` (delivery records, ticket archived, re-integration with `637eba61e4`)
+- Ticket branch push result: pushed `origin/codex/server-e2e-node-credential-447` (new branch) after the Secret Gate (`origin/personal..codex/server-e2e-node-credential-447`, 21 commits: PASS) and artifact hygiene (PASS)
+- Finalization target remote: `origin`
+- Finalization target branch: `personal`
+- Target advanced after verification / acceptance: `Yes` (`aae0a53a81` → `637eba61e4`, autobyteus-435)
+- Delivery-owned edits protected before re-integration: `Completed` (committed `1fe1f17334` before merging)
+- Re-integration before final merge result: `Completed` (`1a698e86ee`; rebuilt; DEL-06 Pass)
+- Target branch update result: `finalize/server-e2e-node-credential-447` created from `origin/personal` @ `637eba61e4` (fetched again before the merge and before the push: unchanged)
+- Merge into target result: `--no-ff` merge `bcd0750636`. Secret Gate on the merged state (22 commits): PASS. No product path in `git diff origin/personal bcd0750636`
+- Push target branch result: `637eba61e4..bcd0750636  HEAD -> personal`
+- User's checkout of the target branch (`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`): on `personal`, no local commits, 22 behind, uncommitted files from other tickets present. It is fast-forwarded with `git merge --ff-only origin/personal` after this record commit's push; the result is in the terminal message.
+- Repository finalization status: `Completed`
 
 ## Release / Publication / Deployment
 
@@ -122,4 +133,8 @@ Revert the merge commit on `personal`. It is test harness and docs only, with no
 
 - Verification complete: `Yes` (from the evidence)
 - Applicable release/deployment/rollout complete or not required: `Yes` (not required)
-- Repository finalization and cleanup: see `delivery-revision-record.md` DR-002 and the terminal message
+- Repository finalization complete: `Yes` (`bcd0750636` on `personal`; this record commit follows it)
+- Applicable safe cleanup complete or not required: run after this record's push (Post-Finalization Cleanup); result in the terminal message
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: by `send_message_to` after this record's push

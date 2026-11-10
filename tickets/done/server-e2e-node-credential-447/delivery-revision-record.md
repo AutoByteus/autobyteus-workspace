@@ -37,7 +37,7 @@
 - Release/publication/deployment report: `release-deployment-report.md`
 - Integration and post-integration verification: merged `origin/personal` @ `aae0a53a81` (records only) as `b770635ea3`, where DEL-05 passed (123 passed, 0 failed). After the archive commit `1fe1f17334`, `origin/personal` moved to `637eba61e4` (autobyteus-435, server src changes). It was merged as `1a698e86ee`, rebuilt, and DEL-06 reran the guard (4/4) and the whole suite: 123 passed, 124 skipped, 0 failed.
 - Verification: from the evidence, AC-001…AC-010 proven; no user check needed.
-- Finalization state: the ticket is archived in this commit; the merge into `personal` follows, and its results are recorded in the record commit after it.
+- Finalization state: ticket archived (`1fe1f17334`) and re-integrated (`1453deb4a3`). Ticket branch pushed. Merged `--no-ff` into `personal` as `bcd0750636` (Secret Gate PASS before both pushes) and pushed. No release. The user's checkout is fast-forwarded and the worktree and local branches are removed after this record's push; the results are in the terminal message.
 - Terminal return to the Solution Designer: `Sent` after the record commit's push
 - Why this delivery revision was recorded: DR-001's blocker was resolved in this ticket (SR-002), and delivery completed.
 - Next recipient/action: the Solution Designer verifies the receipt and sends follow-ups FU-001, FU-005 and FU-006.
