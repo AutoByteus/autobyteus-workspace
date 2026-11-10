@@ -3,14 +3,14 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: `SR-001`
+- Current solution revision ID: `SR-003`
 - Package identifier: `collaboration-tree-open-tasks-only-469`
 - Request / ticket: Project Task `autobyteus-469` (Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`); prerequisite PRE-001 of `autobyteus-461`
 - Requested by (the user, or the delegating agent's address): `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), on the user's decision of 2026-11-10
 - Requirements owner: Solution Designer
 - Date: 2026-11-10
-- Approved by and reference: the user, in the Solution Designer's conversation on 2026-11-10: "this ticket is just about the collaboration tree itself ... this file should only contain the current active ones ... I don't think under UI there will be any difference". That answers DEC-001 (no visible change). The Solution Designer approved the rest within the Task's direction and informed the user.
-- Exact approved requirements baseline / solution revision: `SR-002`
+- Approved by and reference: the user, in the Solution Designer's conversation on 2026-11-10 ("this ticket is just about the collaboration tree itself ... this file should only contain the current active ones ... I don't think under UI there will be any difference"), which answers DEC-001. The Solution Designer approved the rest within the Task's direction, at SR-002 and again at SR-003 (DEC-003, DEC-005, DEC-006, DEC-007 from the architecture investigation), and informed the user in the same conversation.
+- Exact approved requirements baseline / solution revision: `SR-003`
 - Behavior-defining supplements and their approved versions: none of this ticket. The rules come from the Task description (agreed by the user as §11 of the 461 contract).
 
 ## Problem And Desired Outcome
@@ -51,11 +51,11 @@
 | UC-003 | A run of closed Tasks gets a follow-up Task by its run ID | SCN-003 |
 | UC-004 | The user looks at a top run, its Team tab, the Memory page, the Task page, token totals, earlier attachments | SCN-004 |
 | UC-005 | A top run is loaded | SCN-005 |
-| UC-006 | The app is upgraded with existing trees | SCN-006 |
+| UC-006 | A top run with existing entries of closed Tasks is loaded after the upgrade | SCN-006 |
 
 ### Out Of Scope
 
-- Removing the hosting of delegated runs, Stop of a run that delegated, the stored back-link's shape, message routes (`autobyteus-461`).
+- Removing the hosting of delegated runs, entries of runs on another node (FU-001), Stop of a run that delegated, the stored back-link's shape, message routes (`autobyteus-461`).
 - A timer that closes temporary Tasks.
 - Deleting or archiving anything of a dismissed run.
 
@@ -87,30 +87,30 @@ None.
 
 | Requirement ID | Requirement | Related Behavior IDs | Priority / Criticality | Rationale | Feasibility Evidence | Source / Decision Reference |
 | --- | --- | --- | --- | --- | --- | --- |
-| REQ-001 | When the last open Task of a delegated run closes, the run's entry is removed from the top run's tree, in the file and in the loaded run, also when the top run is not loaded. The run's own files, conversation, message log and Task record do not change. | BEH-002 | Critical | The user's rule | N/A (the data check shows the entry's facts are in the Task's record or the run's own file for 170 of 170) | Task 469 |
+| REQ-001 | When the last open Task of a local delegated run closes, the run's entry is removed from the top run's tree, in the file and in the loaded run, once the run is stopped. When the top run is not loaded at that moment, the entry is removed when the top run is next loaded. The run's own files, conversation, message log and Task record do not change. | BEH-002 | Critical | The user's rule | Notes A-1, A-2 | Task 469; DEC-005 |
 | REQ-002 | When a closed Task is reopened and its assigner messages the run, or the run is given a follow-up Task by its run ID, the run continues as today and its entry is back in the tree. | BEH-004 | Critical | The Task rules stay | N/A | Task 469 |
-| REQ-003 | An entry stays while it should: a run with another open Task; a run of a temporary Task until that Task is closed or its creating run is deleted (no timer); a run that belongs to no Task; a sub-work run until its Task closes; an entry of a run on another node follows the same rule. | BEH-002 | High | The Task's rules | N/A | Task 469; DEC-003, DEC-004 |
+| REQ-003 | An entry stays while it should: a run with another open Task; a run of a temporary Task until that Task is closed (no timer); a run that belongs to no Task; a sub-work run until its Task closes; a run whose stop is not confirmed yet. An entry of a run on another node always stays (DEC-003). | BEH-002 | High | The Task's rules | Notes A-3, A-7 | Task 469; DEC-003, DEC-004 |
 | REQ-004 | The top run's tree shows the same rows as today (closed runs are hidden today). Loading a top run reads no file of a dismissed run. The Team tab shows the same messages and names as before a closure (DEC-001). The Memory page keeps listing a dismissed run (DEC-002). | BEH-003, BEH-005, BEH-006 | High | The outcome the user asked for; nothing disappears without his decision | N/A | DEC-001, DEC-002 |
-| REQ-005 | Unchanged by a dismissal: the top run's token total; opening a file attached in an earlier conversation of any run; the Task page's run status and locator; a team run or org run whose message log names a dismissed run loads and works normally. | BEH-007 | Critical | "Must keep working" of the Task | N/A | Task 469; notes R-001 |
+| REQ-005 | Unchanged by a removal: the top run's token total; opening a file attached to an earlier message; the Task page's line for the run (muted, offline, not openable); loading a team run or org run whose message log names a run that left the tree. | BEH-007 | Critical | "Must keep working" of the Task | Notes A-4, A-5 | Task 469 |
 | REQ-006 | The rules hold for standalone agent runs, team runs and org runs as top runs. | BEH-002 | High | The Task | N/A | Task 469 |
-| REQ-007 | A startup migration removes the entries of closed Tasks from existing trees. It changes nothing else, never prevents startup, leaves a tree it cannot read untouched and reports it, and a second start changes nothing. | BEH-002 | Critical | Data Migration Guideline; `DESIGN.md` rule 7 | N/A | Task 469 |
+| REQ-007 | The entries of closed Tasks that exist today are removed from a top run's tree the first time that run is loaded after the upgrade, by the same step as REQ-001. There is no startup migration. Nothing else in the tree changes; a tree that cannot be read is left untouched and that run reports it as today; while a Task's data cannot be read, no entry of that Task is removed. | BEH-002 | Critical | Data Migration Guideline sections 1 and 2; `DESIGN.md` rule 7 | Notes A-8 | Task 469; DEC-005 |
 | REQ-008 | `collaboration_model.md` and the module docs state the rule. | BEH-002 | Medium | The canonical contract changes with the code | N/A | `DESIGN.md` |
 
 ## Acceptance Criteria
 
 | Acceptance-Criteria ID | Related Requirement IDs | Related Behavior / Scenario IDs | Preconditions / Trigger | Observable Expected Outcome | Important Alternate Or Failure Outcome | Verification Intent |
 | --- | --- | --- | --- | --- | --- | --- |
-| AC-001 | REQ-001, REQ-006 | SCN-001 | An agent delegates a Task; the Task is closed (for each kind of top run) | The run is stopped and its entry is no longer in the top run's tree file; its own files are byte-identical | The top run not loaded at that time: the same | Server tests; isolated instance for a standalone top run |
-| AC-002 | REQ-002 | SCN-002 | AC-001's state; the Task is reopened; its assigner messages the run by run ID | The run continues with its conversation; its entry is in the tree again | Anyone else's message is refused with today's text | Server tests; isolated instance |
+| AC-001 | REQ-001, REQ-006 | SCN-001 | An agent delegates a Task; the Task is closed while the top run is loaded (for each kind of top run) | The run is stopped and its entry is no longer in the top run's tree file; its own files are byte-identical | The top run not loaded at the closure: the entry is in the file until the top run is loaded, then gone. A stop that is not confirmed: the entry stays until a later closure request or load | Server tests per kind; isolated instance for a standalone top run |
+| AC-002 | REQ-002 | SCN-002 | AC-001's state; the Task is reopened; its assigner messages the run by run ID (a Team's coordinator run ID) | The run continues with its conversation; its entry is in the tree again and the web client lists it without a manual reload | Someone else, or a Task that is still closed: refused with today's text and the entry does not come back. A run ID of a member that is not the coordinator of a team that left the tree: "not in this run" (DEC-006) | Server tests per kind; web tests; isolated instance |
 | AC-003 | REQ-002 | SCN-003 | AC-001's state; the assigner gives the run a follow-up Task by its run ID | As today; its entry is in the tree again | — | Server tests; isolated instance |
 | AC-004 | REQ-003 | SCN-001 | A run with two open Tasks; one closes | The entry stays; it goes when the second closes | — | Server tests |
 | AC-005 | REQ-003 | SCN-001 | A temporary Task left open; a run with no Task record | Their entries stay | — | Server tests; migration fixtures |
 | AC-006 | REQ-005 | SCN-004 | A top run's token total is read before and after a closure | The same total | — | Server tests; isolated instance |
 | AC-007 | REQ-005 | SCN-004 | A file attached in an earlier conversation of a dismissed run is opened | It opens | — | Server tests; isolated instance |
 | AC-008 | REQ-005, REQ-006 | SCN-005 | A team run and an org run whose message logs name a dismissed run are loaded | They load and work; the message stays in the log | — | Server tests |
-| AC-009 | REQ-007 | SCN-006 | Start on data with entries of closed Tasks, of open Tasks, of no Task, one unreadable tree | Closed entries are gone, the others stay, the unreadable tree is untouched and reported, the app starts; a second start changes nothing | — | Migration tests on small hand-built data per shape; isolated instance |
+| AC-009 | REQ-007 | SCN-006 | A top run of each kind is loaded on hand-built data with entries of closed Tasks, of open Tasks, of no Task, of a run on another node, an older Org entry in a configured Team's list, and one Task whose data cannot be read | Closed entries are gone, the others stay; the own files are byte-identical; a second load changes nothing | A tree that cannot be read: untouched, the run reports it as today, other runs load | Server tests on small hand-built data per shape; isolated instance |
 | AC-010 | REQ-004 | SCN-005 | A top run with dismissed and listed runs is loaded | No file of a dismissed run is read | — | Server test counting reads |
-| AC-011 | REQ-004 | SCN-004 | A top run's Team tab, focused on the top run's own agent, before and after a Task with messages is closed; and after a restart | The same messages, each with the other agent's name as before | A listed run focused: its messages as today | Web and server tests; isolated instance |
+| AC-011 | REQ-004 | SCN-004 | A top run's Team tab, focused on one of the top run's own agents, before and after a Task with messages is closed; and after a restart | The same messages, each with the other agent's name as before, and each message's attached files still open | A run whose own file cannot be read: its messages are left out, as an unknown agent's are today. A listed run focused: its messages as today | Web and server tests; isolated instance |
 | AC-012 | REQ-004 | SCN-004 | The Memory page's Agents list, after a run was dismissed | The dismissed run is listed and its memory opens, as before the closure | Its top run was deleted: as today | Server tests; isolated instance |
 
 ## Relevant Scenarios And Journeys
@@ -122,7 +122,7 @@ None.
 | SCN-003 | Contract | The assigner | Another Task for the same run | `delegate_task` with a run ID and a Task | The run was dismissed | Assignment → entry back → work delivered | REQ-002 | — | Supported Normal Scenario | CM-6 | REQ-002 / AC-003 |
 | SCN-004 | User | The user | Look at a run and its history | Tree, Team tab, Memory page, Task page, token totals, attachments | Runs were dismissed | Open | REQ-004, REQ-005 | — | Supported Normal Scenario | The Task's "must keep working" | REQ-004, REQ-005 / AC-006, AC-007, AC-011, AC-012 |
 | SCN-005 | Operational | The node | Load a top run | First use, restore, open | Entries of open Tasks only | Load | REQ-004, REQ-005 | — | Supported Normal Scenario | Notes BEH-003 | REQ-004, REQ-005 / AC-008, AC-010 |
-| SCN-006 | Operational | The node | Upgrade | First start | Existing trees | Migration → normal use | REQ-007 | A tree that cannot be read is left | Supported Normal Scenario | Data Migration Guideline | REQ-007 / AC-009 |
+| SCN-006 | Operational | The node | Use existing data after the upgrade | A top run is loaded | Its tree holds entries of closed Tasks | Load → closed entries removed → normal use | REQ-007 | A tree that cannot be read is left | Supported Normal Scenario | Data Migration Guideline | REQ-007 / AC-009 |
 
 ## UI, Interaction, And Experience Requirements
 
@@ -149,9 +149,9 @@ None.
 
 - Persisted or external data affected: `Yes` (entries are removed from trees)
 - Data or state that must be preserved: every run's own files, conversations, message logs, Task records
-- Loss, reset, rebuild, or regeneration that is acceptable: a removed entry (its facts are in the Task's record and the run's own file; measured for all 170)
-- Retention, privacy, compliance, volume, downtime, or operational constraints: no downgrade after the migration
-- Unknowns requiring downstream investigation: notes U-001, U-002
+- Loss, reset, rebuild, or regeneration that is acceptable: a removed entry (it is rebuilt from the run's own file when the run comes back; notes A-1)
+- Retention, privacy, compliance, volume, downtime, or operational constraints: an older build started on the same data shows nothing wrong (it hides closed runs the same way) but cannot continue a run whose entry was removed
+- Unknowns requiring downstream investigation: notes U-003, U-004, U-005
 
 ## External Contracts And Dependencies
 
@@ -170,7 +170,7 @@ None.
 
 | Assumption ID | Assumption | Why It Is Necessary | Validation Plan / Owner | Status |
 | --- | --- | --- | --- | --- |
-| ASM-001 | A removed entry can be rebuilt from the Task's record and the run's own file | REQ-002 | Architecture investigation | Open |
+| ASM-001 | A removed entry can be rebuilt from the run's own file | REQ-002 | Notes A-1 | Confirmed for local runs; a run on another node keeps its entry (DEC-003) |
 
 ## Decisions
 
@@ -178,8 +178,11 @@ None.
 | --- | --- | --- | --- | --- | --- | --- |
 | DEC-001 | What does a top run's Team tab show of dismissed runs? | The only surface where a closure could have changed what the user sees | **A.** Only messages with the runs listed now. **B.** Every message stays | The Solution Designer first recommended A. The user answered that the UI must not differ. The follow-up check showed B costs nothing extra: the tab shows the focused agent's messages, and a top run's own agent has all of them in its own log, which a load reads anyway (2,097 for the manager); no log of a dismissed run is needed. Only the other agent's name has to come from somewhere else than the tree (design). | The user | **Decided by the user (2026-11-10): B, no visible change** |
 | DEC-002 | Does the Memory page still list a dismissed run? | Visible: today a delegated run is listed only while its top run lists it; with A-or-B above, dismissed runs would vanish from the Memory page | **A.** Keep listing it (the test becomes "its top run still exists"). **B.** Let it go from the Memory page | Dismissing a run ends its work, not its memory; the user asked in October that a hub's delegated runs' data is never lost. **Recommendation: A.** | Solution Designer | Decided: A (the Task lists the Memory page under "must keep working") |
-| DEC-003 | An entry of a run on another node | Same list | Same rule / keep for good | The same rule: the entry goes when its Task closes | Solution Designer | Decided |
+| DEC-003 | An entry of a run on another node | Same list | Same rule / keep | **Keep it** (changed at SR-003). The link is the only record this node has of that run (its node, its members): nothing to rebuild it from (notes A-1). A run on another node stays listed after its Task closes and is not stopped by the closure (notes A-4, A-2). 2 of 197 links (notes A-7). Growth by remote delegations is follow-up FU-001 | Solution Designer | Decided |
 | DEC-004 | A timer for temporary Tasks | Stale entries | Timer / none | None: 1 of 15 temporary Tasks is open (19 days); a timer would cut off later follow-ups; the user was asked and the recommendation given | Solution Designer | Decided (the user informed) |
+| DEC-005 | A startup migration, as the Task says, or removal when a run is loaded | How existing entries go away | Migration at startup / the ordinary removal step at load | **At load, no migration.** The stored shape does not change, so the Data Migration Guideline asks for no migration (section 2 item 1). A load-time step is needed anyway for a Task closed while its top run was not loaded. It cannot hold up startup, reads no history at startup and needs no frozen copies. Each run's file is cleaned the first time it is used; a run that is never loaded again keeps its entries, which costs nothing | Solution Designer | Decided (the user informed) |
+| DEC-006 | The refusal for a message to a member that is not the coordinator of a team that left the tree | An agent-facing text | Today's "Task is closed, only the assigner can continue it" / "not in this run" | **"Not in this run".** The Task record names only a team's coordinator; naming every member would need each closed team's own file for a refusal. A delegator knows a team by its coordinator's run ID (CM-5), which keeps today's text | Solution Designer | Decided |
+| DEC-007 | A top run's last activity in the run list | A derived timestamp | Keep counting runs that left the tree / count the listed runs | **Count the listed runs.** The value can be earlier only when a delegated run was active after every agent still in the tree, which a closure by an agent of the top run never produces. Reading every closed run for a timestamp would bring back the cost this Task removes | Solution Designer | Decided |
 
 ## Traceability
 
@@ -199,8 +202,8 @@ None.
 - Approved scenario IDs and product-level behavior paths architecture must map: SCN-001 … SCN-006 (after approval).
 - Product and system constraints architecture must preserve: the Preserved Behavior Boundary; `DESIGN.md`; the Data Migration Guideline.
 - Decisions intentionally deferred to architecture design: who removes and re-adds an entry (loaded and not loaded); the Task-side lookup; each reader of "the agents of a tree".
-- Technical facts architecture should verify: notes R-001, U-001, U-002; ASM-001.
-- Known feasibility or integration risks: R-001.
+- Technical facts architecture should verify: done; see notes "Architecture Investigation". ASM-001 holds for local runs.
+- Known feasibility or integration risks: notes U-003 … U-005
 
 ## Readiness Check
 
@@ -220,6 +223,6 @@ None.
 ### Approved Basis Ready For Design
 
 - Approval recorded (the user's, or yours within the direction with the user informed): `Yes`
-- Exact requirements and supplement approval basis recorded: `Yes` (`SR-002`; no supplement)
+- Exact requirements and supplement approval basis recorded: `Yes` (`SR-003`; no supplement)
 - Approved requirements package ready for architecture design: `Yes`
 - Remaining blocker: none

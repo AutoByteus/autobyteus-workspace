@@ -163,3 +163,91 @@ Not started.
 
 - Scenarios SCN-001 … SCN-006 of the requirements doc.
 - Start from the readers listed in the source log; R-001 first.
+
+## Architecture Investigation (2026-11-10, after approval at SR-002)
+
+- Authorities read (design reading gate; 2026-11-10): the skill's `references/architecture-design.md`, `references/design-principles.md`, `templates/design-spec-template.md`; the project's `DESIGN.md`; `autobyteus-server-ts/docs/design/collaboration_model.md`; `autobyteus-server-ts/docs/design/data_migration_guideline.md`.
+- All paths below are under `autobyteus-server-ts/src/` unless they start with `autobyteus-web/`. All statements are `Read` (code read in this worktree at `bff4faa6f6`) unless marked `Measured`.
+
+### A-1 Where the entries live and how they are written
+
+| Fact | Source |
+| --- | --- |
+| A tree file holds links `{address, agentRunId or teamRunId, delegatorAgentRunId?, startedAt}`; each run's facts are in its own file. A standalone and a Team tree have one list; an Org tree has the root list and one list per configured Team (older links only: new ones always go to the root list) | `run-history/store/task-agent-own-records.ts:21-41`; `run-history/store/coordinating-tree-shapes.ts:26-92`; `agent-org-execution/services/agent-org-run-execution-tree-mutator.ts:21-40` |
+| All three stores read and write through the same two functions: `composeTreeFile` (reads the own file of every listed run) and `splitTaskExecutions` | `run-history/store/task-execution-tree-split.ts:110-167, 181-219, 259-281`; callers `standalone-agent-run-root/persistence/standalone-root-package-store.ts`, `run-history/store/team-run-execution-tree-store.ts`, `run-history/store/agent-org-run-execution-tree-store.ts` |
+| A save never removes an on-disk entry it did not load: an entry missing from the in-memory tree is written back unchanged | `task-execution-tree-split.ts:202-215` (rule L6 in the file header) |
+| A link can be rebuilt from the run's own file: the own file holds `taskAgent.address`, `taskAgent.delegatorAgentRunId`, `taskAgent.coordinatingRun` and the start time (`startedAt`; a Team's `createdAt`) | `task-agent-own-records.ts:43-140` (ASM-001 confirmed for local runs) |
+| A link to a run on another node is stored whole in the tree and has no file on this node | `run-history/store/remote-task-execution-links.ts:11-17`; `collaboration_model.md` §3 |
+| A record whose delegator is not in the composed tree is left out with a warning | `task-execution-tree-split.ts:147-165` |
+
+### A-2 Closure today
+
+| Fact | Source |
+| --- | --- |
+| The Task side is the only authority for "closed": a run is closed when its current Task entry is closed (its open entry, else its latest). It keeps an in-memory index of closed runs per host root | `agent-collaboration/execution/task/task-execution-resource-port.ts:60-70`; `projects/services/task-execution-resource-service.ts:202-204, 319-336` |
+| DONE or CANCELLED asks the host root, when it is active, to release the closed runs; nothing is persisted and a root that is not active is skipped | `projects/runtime/task-execution-resource-release.ts:8-31`; `compositions/project-task-execution-resource-composition.ts:60-61` |
+| The release is one queue step of the root: it publishes "closed" first, cancels, then invokes every exact release; a run on another node is fenced, not stopped | `root-task-execution-lifecycle.ts:262-269`; `root-task-execution-resource-scope.ts:90-128` |
+| Every reader hides closed runs by asking the Task side at read time (`closedTaskExecutionsIn` filtered by "is in the tree") | `task-execution-closure.ts`; `root-task-execution-resource-scope.ts:81-83`; `standalone-agent-run-root-manager.ts:436-440`; web `utils/collaboration/taskExecutionClosure.ts` |
+
+### A-3 Reopen and follow-up Task today
+
+| Fact | Source |
+| --- | --- |
+| `send_message_to(run ID)`: each root first refuses a run ID that is not in its index (`TARGET_AGENT_RUN_NOT_FOUND`), then the lifecycle reactivates a closed target: its ingress is looked up in the index, the Task side checks assigner and Task state, and one queue step settles the old stop and commits the reopen | `standalone-root-message-delivery.ts:175-187`; `agent-team-execution/services/team-run-message-delivery.ts:127`; `agent-org-execution/services/agent-org-run-message-delivery.ts:127`; `root-task-execution-lifecycle.ts:293-340` |
+| `delegate_task` with a run ID: the copy is resolved in the root's tree; one that is not in the tree but is a closed copy the Task side records for this root already gets the Task side's specific refusal | `root-task-execution-lifecycle.ts:174-237` |
+| A task agent cannot give a saved Task to anyone (`TASK_AGENT_RESOURCE_OWNED_SENDER`); what it delegates joins its own Task. So a nested run never has an open Task while its delegating run has none | `root-task-execution-lifecycle.ts:181`; `collaboration_model.md` CM-6; `Measured`: 0 such cases, `evidence/unlink-cases-2026-11-10.txt` |
+| Only an `assigned` entry can be reactivated or given a follow-up Task; sub-work runs stay closed when their Task is reopened | `task-execution-resource-port.ts:74-94` |
+
+### A-4 What the user sees of a closed run today
+
+| Surface | Today | Source |
+| --- | --- | --- |
+| Run tree rows | Hidden | web `services/agentCollaboration/agentRunCollaborationContext.ts:287-296`; `services/teamExecution/teamExecutionViewState.ts:238-243`; `services/agentOrgExecution/agentOrgExecutionContext.ts:134` |
+| Task page | A muted "Offline" line that cannot be opened (`openable` needs `!root.closed`) | web `utils/projects/taskRootPresentation.ts:40-46` |
+| A focused closed run | Focus leaves it | web `teamExecutionViewState.ts:245-258`; `agentOrgExecutionContext.ts:352-360` |
+| Team tab | One participant's messages, read when shown. A message is returned when both its agents are agents of the tree; the web drops a row whose counterpart it cannot name. The name is the leaf of the member's own address ("solution designer"), which only the run's own file holds: the Task record holds the delegated address ("/software_engineering_team") | `api/graphql/types/collaboration-participant-messages.ts:49-70`; web `services/collaborationMessages/participantMessageRows.ts:13-30`, `agentRunCollaborationContext.ts:363-388`; `Measured` shapes in the Team-tab evidence file |
+| Attachments of a message | Served from the root's message snapshot by message ID | `api/rest/agent-collaboration-references.ts:22-24` |
+| Memory page and memory search | A delegated run is found through its own file and listed while its coordinating run's tree lists it | `agent-memory/services/agent-memory-explorer-service.ts:137-147`; `agent-memory/services/task-team-root-memory-source.ts:77-83`; `run-history/store/task-agent-link-check.ts` |
+| A standalone run's token total | Host plus the agent runs of its tree, read at request time | `api/graphql/types/token-usage-stats.ts:324-340`; `token-usage/services/` `StandaloneRunTokenUsageSummaryService` |
+| A Team or Org run's token total | By the root recorded on each usage row | `token-usage/providers/token-usage-run-store.ts:50-54` |
+| A run's last activity in the run list | Latest activity over the agents of its tree | `run-history/services/run-last-activity-reader.ts:63-79` |
+| A run on another node | Stays listed after its Task is closed | web `agentRunCollaborationContext.ts:288-289` |
+
+### A-5 Message view and validators
+
+| Fact | Source |
+| --- | --- |
+| A stored view is the run's own log plus the log of every listed run, keeping a message only when both its agents are in the tree's agent set | `run-history/store/task-agent-message-logs.ts:133-152`; `task-execution-tree-split.ts:309-327` |
+| The Team and Org package validators run on that composed set and throw when a message names an agent outside the set. They do not see filtered messages, so an entry that leaves the tree does not make a run unloadable (R-001 corrected); they do have to change when the view keeps more messages | `run-history/services/team-run-state-package-validator.ts:36-47`; `agent-org-execution/services/agent-org-state-package-validator.ts:28-39` |
+
+### A-6 Web client and events
+
+| Fact | Source |
+| --- | --- |
+| "closed" and "reopened" events must name an execution the client's tree knows: otherwise the agent-run and Org contexts fail the view and the Team view throws | web `agentRunCollaborationContext.ts:172-191`; `agentOrgExecutionContext.ts:242-258`; `teamExecutionViewState.ts:412-429` |
+| "started": the agent-run and Org contexts reload the view; the Team view inserts the execution | web `agentRunCollaborationContext.ts:164-166`; `agentOrgExecutionContext.ts:238-241`; `teamExecutionViewState.ts:385-392` |
+
+### A-7 Measurements on the user's data (read-only, counts only)
+
+`evidence/measure_unlink_cases.py` → `evidence/unlink-cases-2026-11-10.txt`: 195 local links in 26 trees (standalone 170, Team 20, Org 5): 170 of closed Tasks, 25 of an open Task or of no Task. 2 links to a run on another node (1 closed, 1 open). 32 nested links; 4 where the nested run is closed and its delegating run stays; 0 where a nested run stays under a closed delegating run. 2 Org links sit in a configured Team's list (the older shape).
+
+### A-8 Migration conventions (Data Migration Guideline, read in full)
+
+- Section 2 item 1: migrate only for a change of meaning, a stored name, or a new required fact; prefer what the normal reader and writer absorb. Section 1: nothing at startup may depend on history. Section 6: do not validate history at startup.
+- Predecessors that touched the same files: `20261017_task_agent_own_run_v1` (links plus own files), `20261019_delegated_copy_own_file_complete_v1`, `20261018_append_only_message_logs_v1` (`collaboration_model.md` §5). Their output is the link shape of A-1; no predecessor leaves closed and open links in different shapes.
+- Result: the stored shape does not change. Removing a closed link is an ordinary lifecycle step that the root also needs for a Task closed while the root was not loaded (the user closes a Task on the Task page while the manager run is stopped). The same step removes the closed links that exist today, the first time each run is loaded. No migration is designed (design spec, Persisted Data decision).
+
+### Corrections to earlier notes
+
+- R-001 as first written ("a Team or Org run becomes unloadable") is wrong: see A-5.
+- BEH-005: the Team tab is per participant and read when shown (A-4), not part of the root's load.
+- U-002 is answered by A-4 and A-6.
+
+### Open unknowns for implementation
+
+| ID | Unknown | Why it matters | Owner |
+| --- | --- | --- | --- |
+| U-003 | A live root's in-memory message list after an unlink: whether any step re-checks it against the tree | D-5 keeps own-log messages with unlinked runs | Implementation Engineer (a test that closes a Task and then appends and saves a message) |
+| U-004 | Relinking one of the 2 older Org links that sat in a configured Team's list puts it in the root list, so the root restores it | The host of a restored run | Implementation Engineer (a test on that shape) |
+| U-005 | The Team and Org counterparts of each standalone step were mapped by name and by their shared functions, not read line by line | Design rows for those two kinds | Implementation Engineer; Architecture Reviewer |
+| U-006 | Whether the three readers that serve a message's attached file admit a message by "both agents are in the tree" | D-5: an attachment of a message with an unlinked run must still open (AC-007, AC-011) | Implementation Engineer (read `api/rest/agent-collaboration-references.ts`, `agent-org-reference-content-service.ts`, `team-communication-projection-service.ts`; give them the reader's rule when they do) |

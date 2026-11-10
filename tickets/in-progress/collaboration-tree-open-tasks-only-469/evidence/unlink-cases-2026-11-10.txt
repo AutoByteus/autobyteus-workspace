@@ -1,0 +1,20 @@
+     3  agent:     nested run closed, parent stays
+   157  agent:   closed (to unlink)
+    29  agent:   delegated by an agent of another delegated run (nested)
+     1  agent:   of a closed Task
+     1  agent:   of an open Task or no Task
+    13  agent:   open or no Task (stay)
+     2  agent: links to a run on another node
+   170  agent: local links
+     8  agent: trees with entries
+     2  agent_org:   closed (to unlink)
+     2  agent_org:   kept in a configured team's list (older shape)
+     3  agent_org:   open or no Task (stay)
+     5  agent_org: local links
+     5  agent_org: trees with entries
+     1  agent_team:     nested run closed, parent stays
+    11  agent_team:   closed (to unlink)
+     3  agent_team:   delegated by an agent of another delegated run (nested)
+     9  agent_team:   open or no Task (stay)
+    20  agent_team: local links
+    13  agent_team: trees with entries

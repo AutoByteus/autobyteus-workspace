@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | SR-001 | Requirements | Initial coherent baseline (Task `autobyteus-469`) | N/A | N/A | Ready for Approval | BEH-001 … BEH-007, REQ-001 … REQ-008 | Presented to the user; DEC-001 needs him |
 | SR-002 | Requirements | The user's answer to DEC-001 | N/A | Ready for Approval | Approved | BEH-005, REQ-004, AC-011, DEC-001 | Approved; architecture investigation starts |
+| SR-003 | Requirements and design | Architecture investigation | N/A | Requirements Approved; no design | Requirements Approved; design Ready | REQ-001, REQ-003, REQ-005, REQ-007, AC-001, AC-002, AC-009, AC-011, DEC-003, DEC-005 … DEC-007 | Design complete; Large, High; to architecture review |
 
 ## Revision Entries
 
@@ -54,3 +55,26 @@
 - Downstream and architecture-review impact: none yet
 - Remaining gaps, assumptions or blocked decisions: notes R-001, U-001, U-002; ASM-001; where the Team tab gets the name of a dismissed run's agent (design)
 - Next action: architecture investigation and design
+
+### SR-003 — Architecture investigation and design: unlink at closure and at load, no migration
+
+- Phase and classification: Requirements (evidence-driven refinement within the direction) and Design, `Initial Design`
+- Triggering user feedback, Product package, investigation evidence, or role/report/round: investigation notes "Architecture Investigation" (A-1 … A-8) and the three evidence files
+- Triggering finding IDs: N/A
+- Prior authoritative requirements/design status: requirements `Approved` at SR-002; no design
+- Current authoritative requirements/design status: requirements `Approved` at SR-003; design `Ready`
+- Requirement, behavior, acceptance-criteria, scenario or decision IDs affected: REQ-001, REQ-003, REQ-005, REQ-007, AC-001, AC-002, AC-009, AC-011, SCN-006, UC-006, DEC-003 (changed), DEC-005, DEC-006, DEC-007 (new), ASM-001 (confirmed)
+- Scenario-basis or scenario-validity changes: SCN-006 is "a top run is loaded after the upgrade" instead of "first start"
+- Why this baseline or revision was recorded: the investigation settled how entries are removed and what cannot be rebuilt. (1) No startup migration: the stored shape does not change, and a removal step at load is needed anyway for a Task closed while its top run was not loaded; that step also removes today's closed entries (DEC-005). The Task's text names a startup migration; the outcome it asks for is kept, the mechanism is the Solution Designer's. (2) An entry of a run on another node stays: the link is this node's only record of it (DEC-003, reversing the first decision). (3) Two small derived effects are decided and recorded (DEC-006, DEC-007). (4) R-001 was wrong as first written and is corrected in the notes.
+- Canonical requirements, investigation and design sections changed: `requirements-doc.md` rows above; `investigation-notes.md` "Architecture Investigation"; `design-spec.md` created
+- Supplemental artifacts added, changed or removed: `evidence/measure_unlink_cases.py`, `evidence/unlink-cases-2026-11-10.txt`
+- Product design evidence or product decisions incorporated: none
+- Intended behavior changed: `Yes`, within the Task's direction: when existing entries go (at the run's next load, not at startup); entries of runs on another node stay
+- Approval impact, exact approved requirements baseline, who approved, and approval reference: approved at `SR-003` by the Solution Designer within the direction (no `Needs user` decision: no visible behavior, scope or product direction changes; the data change is the one the Task asks for and is rebuilt from the run's own file). The user is informed in the Solution Designer's conversation with the handoff.
+- Behavior-defining supplement versions and approval references: none
+- Affected design/review basis invalidated or rebuilt: first design
+- Post-design task-size/risk classification and rationale changes: `Large`, `High` (design spec)
+- Applied handoff-rule outcome / result-file reference, when a handoff occurred: see `handoff-architecture-design-complete.md`
+- Downstream and architecture-review impact: first review
+- Remaining gaps, assumptions or blocked decisions: notes U-003 … U-005; follow-up FU-001
+- Next action: architecture review
