@@ -1,9 +1,9 @@
 # Delegation Contract — A Delegated Run Is An Ordinary Run
 
-Status: **revision 2, proposed** (2026-11-10, SR-006). Revision 1 gave the words and rules; revision 2 adds
+Status: **revision 2, approved by the user** (2026-11-10, SR-007; TC-1 … TC-6 decided). Proposed at SR-006. Revision 1 gave the words and rules; revision 2 adds
 the data level: every record with example JSON, every case, an attribute-by-attribute redundancy check, the
 existing data before and after with counts, and simulations. It is the behavior-defining supplement of
-`requirements-doc.md`; nothing is designed or built on it until the user accepts it. Base `origin/personal`
+`requirements-doc.md`; the design is built on it. Base `origin/personal`
 `aae0a53a81`. Task `autobyteus-461`.
 
 Model for this document: `tickets/done/delegated-copy-own-run-memory/memory-layout-contract.md` (revision 5),
@@ -361,7 +361,7 @@ Message logs, memory, folders: not touched (each run already has its own, CM-8, 
 | --- | --- | --- | --- | --- |
 | TC-1 | Does Stop of a delegated run still stop the runs it delegated to? | No: Stop stops the run you clicked; closing the Task stops every run working on it | The user | Decided by the user, 2026-11-10: no cascade |
 | TC-2 | Archive or delete of a run whose delegated runs are working | Refused with the reason; its delegated runs are never deleted with it (the user, 2026-10-17, for the hub) | Solution Designer | Decided |
-| TC-3 | A delegated run whose delegating run was deleted | Listed as a run of its own. Today it is hidden ("detached", the earlier contract §10, with a Memory page view as a follow-up); as an ordinary run it no longer needs a special state | The user | Needs user |
+| TC-3 | A delegated run whose delegating run was deleted | Listed as a run of its own. Today it is hidden ("detached", the earlier contract §10, with a Memory page view as a follow-up); as an ordinary run it no longer needs a special state | The user | Decided by the user, 2026-11-10: listed as a run of its own ("I like your recommendation") |
 | TC-4 | Delivery | The contract is approved once. This ticket: delegations made from a standalone agent run. Next Tasks: from a team run; from an org run; removal of the remaining hosting code. The design confirms the cut lines | The user | Decided by the user, 2026-11-10: in steps, as recommended |
 | TC-6 | The Task record's role name for sub-work | `subWork` instead of `delegated`, renamed by the same migration that removes `hostRoot` | The user | Decided by the user, 2026-11-10 |
 | TC-5 | A Settings edit of a stopped delegated run | Saved like any stopped run's (§2.4), subject to V-9 | Solution Designer | Decided, to verify |

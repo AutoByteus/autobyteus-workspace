@@ -10,6 +10,7 @@
 | SR-004 | Requirements | The user's direction change after the SR-003 design was presented | N/A | Requirements Approved; design Ready | Requirements Draft; design Needs Revision | DEC-010 (new), DEC-009 (superseded), all REQ (scope: Agent, Team and Org runs again) | The structure is corrected in this ticket; SR-003's design is not built |
 | SR-005 | Requirements | The user's confirmation of the target and of "contract first"; the target contract written | N/A | Requirements Draft; design Needs Revision | Requirements Draft with a proposed contract; design Needs Revision | `target-collaboration-contract.md` (TC-1 … TC-4); DEC-003 (to be replaced by TC-1), DEC-004 (kept as TC-2) | The contract is proposed for the user's approval |
 | SR-006 | Mixed | The user: validate the data structure, no redundant attributes, every case with example JSON as in the earlier model document | N/A | Requirements Draft with a proposed contract | Requirements Draft; contract revision 2 proposed | `target-collaboration-contract.md` revision 2 (records, cases D1–D7, E1–E12, attribute check, V-1 … V-12, S1 … S15, TC-1 … TC-5) | Data level validated on the user's stored data; three decisions need the user |
+| SR-007 | Requirements | The user's last contract decision (TC-3) | N/A | Requirements Draft; contract revision 2 proposed | Requirements Approved; contract revision 2 approved; design Needs Revision (to be replaced) | All REQ and AC (rewritten on the contract); REQ-011, REQ-012, AC-014, AC-015, BEH-010, BEH-011, SCN-009, SCN-010 new | Approved basis for the design of this ticket's step |
 
 ## Revision Entries
 
@@ -150,3 +151,26 @@
 - Downstream and architecture-review impact: none
 - Remaining gaps, assumptions or blocked decisions: V-8 … V-12 of the contract (code readers, the Settings edit, the agent run's address file, the migration, the client); TC-1, TC-3, TC-4. Amended the same day: TC-6, the role value `delegated` is renamed `subWork` (the user)
 - Next action: the user reviews contract revision 2; then requirements on the contract, architecture investigation (V-8 … V-12) and the design of this ticket's step
+
+### SR-007 — Requirements approved on the contract
+
+- Phase and classification: Requirements, `Refinement` completing the `Requirement Gap` of SR-004
+- Triggering user feedback, Product package, investigation evidence, or role/report/round: the user, 2026-11-10: "I agree with your decision one and three" (TC-1, TC-4), `subWork` (TC-6), "I like your recommendation" (TC-3)
+- Triggering finding IDs: N/A
+- Prior authoritative requirements/design status: requirements `Draft`, contract revision 2 `Proposed` (SR-006); design `Needs Revision`
+- Current authoritative requirements/design status: requirements `Approved` with the contract (revision 2, approved); design `Needs Revision` (the SR-003 spec is superseded and will be replaced)
+- Requirement, behavior, acceptance-criteria, scenario or decision IDs affected: REQ-001 … REQ-010 restated for the contract; REQ-011, REQ-012 new; AC-004, AC-005, AC-008, AC-010, AC-012 restated; AC-014, AC-015 new; BEH-004, BEH-007 restated; BEH-010, BEH-011 new; SCN-009, SCN-010 new; UC-001 … UC-008 restated; DEC-002, DEC-003, DEC-005, DEC-009 superseded
+- Scenario-basis or scenario-validity changes: SCN-009 (upgrade) and SCN-010 (a delegated run as a run) added, both Supported Normal Scenarios
+- Why this baseline or revision was recorded: the approved basis for architecture design
+- Canonical requirements, investigation and design sections changed: `requirements-doc.md` rewritten; contract status and TC-3; investigation notes; `follow-ups.md` (FU-003, FU-004, FU-005: the next steps)
+- Supplemental artifacts added, changed or removed: none
+- Product design evidence or product decisions incorporated: none
+- Intended behavior changed: `Yes`, as approved
+- Approval impact, exact approved requirements baseline, who approved, and approval reference: approved at SR-007: the user for the direction and TC-1, TC-3, TC-4, TC-6, DEC-001, DEC-010 (his words are in the requirements' Document Status); the Solution Designer within the direction for the rest, the user informed
+- Behavior-defining supplement versions and approval references: `target-collaboration-contract.md` revision 2, approved by the user on 2026-11-10
+- Affected design/review basis invalidated or rebuilt: the SR-003 design stays superseded
+- Post-design task-size/risk classification and rationale changes: N/A until the new design
+- Applied handoff-rule outcome / result-file reference, when a handoff occurred: none
+- Downstream and architecture-review impact: none yet
+- Remaining gaps, assumptions or blocked decisions: contract V-8 … V-12; ASM-003; the cut line of this step
+- Next action: architecture investigation and the design of this ticket's step; the user approves the design before the build
