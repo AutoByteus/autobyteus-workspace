@@ -358,11 +358,14 @@ export class NativeRuntimeLiveHarness {
   }
 
   async gql<T>(query: string, variables: Json = {}): Promise<T> {
-    const response = await this.originalFetch(new URL("/graphql", this.mainUrl), {
+    // Through the global fetch: the server's owner credential is attached there (node access model); the recorder
+    // passes local requests through unrecorded.
+    const response = await globalThis.fetch(new URL("/graphql", this.mainUrl), {
       method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ query, variables }),
     });
     const body = (await response.json()) as { data?: T; errors?: Array<{ message: string }> };
     if (body.errors?.length) throw new Error(`GraphQL: ${body.errors.map((error) => error.message).join("; ")}`);
+    if (!response.ok) throw new Error(`GraphQL: HTTP ${response.status} ${JSON.stringify(body).slice(0, 300)}`);
     return body.data as T;
   }
 
