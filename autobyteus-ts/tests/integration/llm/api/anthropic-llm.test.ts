@@ -7,6 +7,7 @@ import { LLMUserMessage } from '../../../../src/llm/user-message.js';
 import { CompleteResponse, ChunkResponse } from '../../../../src/llm/utils/response-types.js';
 import { liveProviderTest } from '../../../../../test-support/test-vault/test-vault.js';
 import { anthropicSupportedModelDefinitions } from '../../../../src/llm/anthropic-supported-model-definitions.js';
+import { LLMFactory } from '../../../../src/llm/llm-factory.js';
 
 const live = liveProviderTest('Anthropic');
 
@@ -16,7 +17,8 @@ live.describe('AnthropicLLM Integration', () => {
       name: 'claude-haiku-5-5',
       value: 'claude-haiku-5-5',
       canonicalName: 'claude-haiku-5-5',
-      provider: LLMProvider.ANTHROPIC
+      provider: LLMProvider.ANTHROPIC,
+      maxOutputTokens: 128_000
     });
 
   live.it('should successfully make a simple completion call', async () => {
@@ -120,6 +122,45 @@ live.describe('AnthropicLLM effort per catalog model', () => {
       } finally {
         await llm.cleanup();
       }
+    }, 180000);
+  }
+});
+
+/**
+ * Stored Off and stored stale keys through the factory, as a run activation builds the adapter
+ * (AC-001, AC-002, AC-004). Thinking Off must really turn thinking off: the response reports no
+ * thinking tokens. The prompt is the probe's (evidence/probe-results-2026-11-10.md, PRB-A2); a
+ * thinking model spends thinking tokens on it, an Off row does not.
+ */
+live.describe('AnthropicLLM stored thinking choices through the factory', () => {
+  const PROMPT = 'Is 391 prime? Answer yes or no with the factorization, one line.';
+  const ask = async (modelIdentifier: string, stored: Record<string, unknown>) => {
+    const llm = await LLMFactory.createLLM(modelIdentifier, { max_tokens: 2000, ...stored });
+    try {
+      const response = await llm.sendUserMessage(new LLMUserMessage({ content: PROMPT }));
+      expect(response).toBeInstanceOf(CompleteResponse);
+      return response;
+    } finally {
+      await llm.cleanup();
+    }
+  };
+
+  for (const modelIdentifier of ['claude-opus-5', 'claude-sonnet-5', 'claude-haiku-5-5']) {
+    live.it(`Off with a stored effort turns thinking off on ${modelIdentifier} (AC-001, AC-004)`, async () => {
+      const response = await ask(modelIdentifier, { thinking_enabled: false, reasoning_effort: 'max' });
+      expect(response.usage?.reasoning_output_tokens ?? 0).toBe(0);
+    }, 180000);
+  }
+
+  live.it('Off with a stored effort is accepted on claude-sonnet-5-5 (between_tools) (AC-004)', async () => {
+    const response = await ask('claude-sonnet-5-5', { thinking_enabled: false, reasoning_effort: 'xhigh' });
+    expect(response.content.length).toBeGreaterThan(0);
+  }, 180000);
+
+  for (const modelIdentifier of ['claude-fable-5', 'claude-fable-5-1']) {
+    live.it(`a stored Off switch and effort resume on ${modelIdentifier} without failing (AC-002)`, async () => {
+      const response = await ask(modelIdentifier, { thinking_enabled: false, reasoning_effort: 'max', thinking_display: 'summarized' });
+      expect(response.content.length).toBeGreaterThan(0);
     }, 180000);
   }
 });

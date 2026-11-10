@@ -1,0 +1,43 @@
+# IMP-02 live Anthropic (autobyteus-ts/tests/integration/llm/api/anthropic-llm.test.ts)
+command: AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_LIVE_PROVIDER_TESTS=1 AUTOBYTEUS_LIVE_STRICT=1 corepack pnpm exec vitest run tests/integration/llm/api/anthropic-llm.test.ts --no-watch --reporter=verbose
+commit: d78581eb2 + test file edits (committed next)
+env: Linux arm64, node v22.23.3, 2026-11-10
+
+ RUN  v4.1.12 /home/autobyteus/workspace/.codex/worktrees/model-settings-reality/autobyteus-ts
+
+(node:57733) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/integration/llm/api/anthropic-llm.test.ts > AnthropicLLM Integration > should successfully make a simple completion call 996ms
+ ✓ tests/integration/llm/api/anthropic-llm.test.ts > AnthropicLLM Integration > should stream response incrementally 848ms
+ ✓ tests/integration/llm/api/anthropic-llm.test.ts > AnthropicLLM Integration > should support public sendUserMessage 1422ms
+ ✓ tests/integration/llm/api/anthropic-llm.test.ts > AnthropicLLM Integration > should support public streamUserMessage 1278ms
+ ✓ tests/integration/llm/api/anthropic-llm.test.ts > AnthropicLLM effort per catalog model > effort on: accepts {"reasoning_effort":"max"} on claude-fable-5-1 2771ms
+ ✓ tests/integration/llm/api/anthropic-llm.test.ts > AnthropicLLM effort per catalog model > stored config: accepts {"reasoning_effort":"high","thinking_display":"summarized"} on claude-fable-5-1 2914ms
+ ✓ tests/integration/llm/api/anthropic-llm.test.ts > AnthropicLLM effort per catalog model > effort on: accepts {"reasoning_effort":"max"} on claude-fable-5 2620ms
+ ✓ tests/integration/llm/api/anthropic-llm.test.ts > AnthropicLLM effort per catalog model > stored config: accepts {"reasoning_effort":"high","thinking_display":"summarized"} on claude-fable-5 2492ms
+ ✓ tests/integration/llm/api/anthropic-llm.test.ts > AnthropicLLM effort per catalog model > effort on: accepts {"thinking_enabled":true,"reasoning_effort":"max"} on claude-opus-5 1184ms
+ ✓ tests/integration/llm/api/anthropic-llm.test.ts > AnthropicLLM effort per catalog model > thinking off: accepts {"thinking_enabled":false,"reasoning_effort":"max"} on claude-opus-5 1118ms
+ ✓ tests/integration/llm/api/anthropic-llm.test.ts > AnthropicLLM effort per catalog model > stored config: accepts {"thinking_enabled":true,"reasoning_effort":"high","thinking_display":"summarized"} on claude-opus-5 1126ms
+ ✓ tests/integration/llm/api/anthropic-llm.test.ts > AnthropicLLM effort per catalog model > effort on: accepts {"reasoning_effort":"max"} on claude-opus-5-5 1677ms
+ ✓ tests/integration/llm/api/anthropic-llm.test.ts > AnthropicLLM effort per catalog model > stored config: accepts {"reasoning_effort":"high","thinking_display":"summarized"} on claude-opus-5-5 1553ms
+ ✓ tests/integration/llm/api/anthropic-llm.test.ts > AnthropicLLM effort per catalog model > effort on: accepts {"thinking_enabled":true,"reasoning_effort":"max"} on claude-sonnet-5-5 1441ms
+ ✓ tests/integration/llm/api/anthropic-llm.test.ts > AnthropicLLM effort per catalog model > thinking off: accepts {"thinking_enabled":false,"reasoning_effort":"max"} on claude-sonnet-5-5 1008ms
+ ✓ tests/integration/llm/api/anthropic-llm.test.ts > AnthropicLLM effort per catalog model > stored config: accepts {"thinking_enabled":true,"reasoning_effort":"high","thinking_display":"summarized"} on claude-sonnet-5-5 1281ms
+ ✓ tests/integration/llm/api/anthropic-llm.test.ts > AnthropicLLM effort per catalog model > effort on: accepts {"thinking_enabled":true,"reasoning_effort":"max"} on claude-sonnet-5 754ms
+ ✓ tests/integration/llm/api/anthropic-llm.test.ts > AnthropicLLM effort per catalog model > thinking off: accepts {"thinking_enabled":false,"reasoning_effort":"max"} on claude-sonnet-5 836ms
+ ✓ tests/integration/llm/api/anthropic-llm.test.ts > AnthropicLLM effort per catalog model > stored config: accepts {"thinking_enabled":true,"reasoning_effort":"high","thinking_display":"summarized"} on claude-sonnet-5 1407ms
+ ✓ tests/integration/llm/api/anthropic-llm.test.ts > AnthropicLLM effort per catalog model > effort on: accepts {"thinking_enabled":true,"reasoning_effort":"max"} on claude-haiku-5-5 794ms
+ ✓ tests/integration/llm/api/anthropic-llm.test.ts > AnthropicLLM effort per catalog model > thinking off: accepts {"thinking_enabled":false,"reasoning_effort":"max"} on claude-haiku-5-5 827ms
+ ✓ tests/integration/llm/api/anthropic-llm.test.ts > AnthropicLLM effort per catalog model > stored config: accepts {"thinking_enabled":true,"reasoning_effort":"high","thinking_display":"summarized"} on claude-haiku-5-5 742ms
+ ✓ tests/integration/llm/api/anthropic-llm.test.ts > AnthropicLLM stored thinking choices through the factory > Off with a stored effort turns thinking off on claude-opus-5 (AC-001, AC-004) 1384ms
+ ✓ tests/integration/llm/api/anthropic-llm.test.ts > AnthropicLLM stored thinking choices through the factory > Off with a stored effort turns thinking off on claude-sonnet-5 (AC-001, AC-004) 821ms
+ ✓ tests/integration/llm/api/anthropic-llm.test.ts > AnthropicLLM stored thinking choices through the factory > Off with a stored effort turns thinking off on claude-haiku-5-5 (AC-001, AC-004) 733ms
+ ✓ tests/integration/llm/api/anthropic-llm.test.ts > AnthropicLLM stored thinking choices through the factory > Off with a stored effort is accepted on claude-sonnet-5-5 (between_tools) (AC-004) 1218ms
+ ✓ tests/integration/llm/api/anthropic-llm.test.ts > AnthropicLLM stored thinking choices through the factory > a stored Off switch and effort resume on claude-fable-5 without failing (AC-002) 3915ms
+ ✓ tests/integration/llm/api/anthropic-llm.test.ts > AnthropicLLM stored thinking choices through the factory > a stored Off switch and effort resume on claude-fable-5-1 without failing (AC-002) 1314ms
+
+ Test Files  1 passed (1)
+      Tests  28 passed (28)
+   Start at  10:47:44
+   Duration  42.35s (transform 678ms, setup 72ms, import 1.63s, tests 40.48s, environment 0ms)
+
