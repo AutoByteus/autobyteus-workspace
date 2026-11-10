@@ -1,5 +1,5 @@
 import { selectionContextFor } from "../../agent-execution/services/stopped-run-selection-context.js";
-import { taskExecutionReferenceKey } from "../../agent-collaboration/execution/task/task-execution-reference.js";
+import { taskExecutionReferenceKey } from "@autobyteus/collaboration-stream-contracts";
 import {
   interpretDelegatedLaunchValidation,
   listDelegatedLaunchModelOptions,

@@ -9,13 +9,13 @@ import type { IntegrationRunAccess } from "../../../../../../src/credential-prox
 
 const API_URL = "http://127.0.0.1:5555/r/rp_test-dummy/github/api";
 
-const resolveFor = (agentDefinitionId: string, integrationRunAccess: IntegrationRunAccess | null) =>
+const resolveFor = (agentDefinitionId: string, integrationRunAccess: IntegrationRunAccess | null, additionalDirectories: string[] = []) =>
   resolveClaudeSessionQueryOptions({
     runContext: {
       runId: "run-claude",
       config: { agentDefinitionId, memberExecutionContext: null },
       runtimeContext: {
-        sessionConfig: { model: "haiku", workingDirectory: "/tmp", permissionMode: "default", autoExecuteTools: false },
+        sessionConfig: { model: "haiku", workingDirectory: "/tmp", permissionMode: "default", autoExecuteTools: false, additionalDirectories },
         carpenterSystemPrompt: "",
         runtimeToolExposure: buildRuntimeAgentToolExposure([]),
         materializedConfiguredSkills: [],
@@ -44,5 +44,13 @@ describe("Claude run session integration environment", () => {
   it("gives a run without access, or a host without integration access, nothing", async () => {
     expect(await resolveFor("agent-other", access)).not.toHaveProperty("extraEnvironment");
     expect(await resolveFor("agent-allowed", null)).not.toHaveProperty("extraEnvironment");
+  });
+});
+
+describe("Claude run session additional directories (semantic memory, REQ-006, QR-002)", () => {
+  it("passes the agent's semantic memory folder, and nothing for an agent without one", async () => {
+    const folder = "/home/u/.autobyteus/server-data/memory/semantic/computer-use-operator";
+    expect((await resolveFor("agent-other", null, [folder])).additionalDirectories).toEqual([folder]);
+    expect(await resolveFor("agent-other", null)).not.toHaveProperty("additionalDirectories");
   });
 });

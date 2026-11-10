@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mountSuspended, mockComponent, mockNuxtImport } from '@nuxt/test-utils/runtime';
 import App from '../app.vue';
 
-const { runtimeConfigMock, serverStoreMock, windowNodeContextStoreMock, localizationGateState, runtimeFeatureState, feedEnabledRefs, definitionFeedEnabledRefs, mobileRuntimeState, mobileSession } = vi.hoisted(() => ({
+const { runtimeConfigMock, serverStoreMock, windowNodeContextStoreMock, localizationGateState, runtimeFeatureState, feedEnabledRefs, definitionFeedEnabledRefs, mobileRuntimeState, mobileSession, electronWindow } = vi.hoisted(() => ({
   runtimeConfigMock: {
     public: {
       showDebugErrorPanel: false,
@@ -25,6 +25,7 @@ const { runtimeConfigMock, serverStoreMock, windowNodeContextStoreMock, localiza
   definitionFeedEnabledRefs: [] as Array<{ value: boolean }>,
   mobileRuntimeState: { phone: false },
   mobileSession: { store: null as null | { isPaired: boolean } },
+  electronWindow: { value: true },
 }));
 
 vi.mock('~/utils/mobileFeatureGates', async (importOriginal) => ({
@@ -44,6 +45,11 @@ vi.mock('~/composables/agentPackages/useAgentPackageDefinitionChangeFeed', () =>
 vi.mock('~/utils/remoteAccess/mobileRuntime', async (importOriginal) => ({
   ...(await importOriginal<typeof import('~/utils/remoteAccess/mobileRuntime')>()),
   isMobileRemoteAccessRuntime: () => mobileRuntimeState.phone,
+}));
+
+vi.mock('~/utils/browserServerConfig', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('~/utils/browserServerConfig')>()),
+  isElectronEnvironment: () => electronWindow.value,
 }));
 
 vi.mock('~/stores/mobileNodeSessionStore', async () => {
@@ -111,6 +117,7 @@ describe('app.vue', () => {
     definitionFeedEnabledRefs.length = 0;
     mobileRuntimeState.phone = false;
     if (mobileSession.store) mobileSession.store.isPaired = false;
+    electronWindow.value = true;
   });
 
   it('holds product UI behind the localization gate while booting', async () => {
@@ -125,7 +132,7 @@ describe('app.vue', () => {
     expect(wrapper.find('[data-testid="nuxt-layout"]').exists()).toBe(false);
   });
 
-  it('shows embedded overlays and waits for readiness in embedded windows', async () => {
+  it('shows embedded overlays and waits for readiness in the Electron embedded window', async () => {
     const wrapper = await mountSuspended(App, { route: '/' });
 
     expect(wrapper.find('[data-testid="server-loading"]').exists()).toBe(true);
@@ -135,6 +142,16 @@ describe('app.vue', () => {
     expect(wrapper.find('[data-testid="notification-center"]').exists()).toBe(true);
     expect(wrapper.find('[data-testid="nuxt-layout"]').exists()).toBe(false);
     expect(wrapper.find('[data-testid="toast-container"]').exists()).toBe(true);
+  });
+
+  it('mounts no server overlay in a browser page, phone included, so nothing checks health at start (autobyteus-435 AC-001-1)', async () => {
+    electronWindow.value = false;
+    serverStoreMock.status = 'running';
+    const wrapper = await mountSuspended(App, { route: '/' });
+
+    expect(wrapper.find('[data-testid="server-loading"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="server-shutdown"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="nuxt-layout"]').exists()).toBe(true);
   });
 
   it('renders app layout immediately for remote windows', async () => {

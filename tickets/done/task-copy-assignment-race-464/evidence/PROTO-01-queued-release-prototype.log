@@ -1,0 +1,9 @@
+# PROTO-01 the same command with a temporary prototype (closure release queued as kind release; existing-copy assignment and reactivation commit inside their reopen step), twice, load average 66-72; prototype reverted; 2026-11-10
+
+## run 1
+      Tests  1 passed | 8 skipped (9)
+discard(removed)=13 restore-start=13 restore-refused=0 queued-release-found-open=12 reopen-head-open=21 reopen-head-closed=25
+
+## run 2
+      Tests  1 passed | 8 skipped (9)
+discard(removed)=12 restore-start=12 restore-refused=0 queued-release-found-open=15 reopen-head-open=21 reopen-head-closed=25

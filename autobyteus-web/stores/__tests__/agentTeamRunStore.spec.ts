@@ -330,6 +330,24 @@ describe('agentTeamRunStore current rooted execution contract', () => {
     expect(mockConnect).toHaveBeenCalledWith('team-connect', team)
   })
 
+  it('disconnectAllTeamStreams closes every Team stream the page holds (autobyteus-435 REQ-010 (b))', () => {
+    const store = useAgentTeamRunStore()
+    store.disconnectAllTeamStreams()
+    mockDisconnect.mockClear()
+    vi.mocked(TeamStreamingService).mockClear()
+    for (const teamRunId of ['team-close-a', 'team-close-b']) {
+      setActiveTeam(twoMemberTeam({ teamRunId }))
+      store.connectToTeamStream(teamRunId)
+    }
+
+    store.disconnectAllTeamStreams()
+
+    expect(mockDisconnect).toHaveBeenCalledTimes(2)
+    store.connectToTeamStream('team-close-b')
+    expect(TeamStreamingService).toHaveBeenCalledTimes(3)
+    store.disconnectAllTeamStreams()
+  })
+
   it('reattaches an existing service to the latest context with the same root identity', () => {
     const original = twoMemberTeam({ teamRunId: 'team-reattach' })
     setActiveTeam(original)

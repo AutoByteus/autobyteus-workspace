@@ -1,0 +1,56 @@
+# API-02 excerpt of the desktop build log (/private/tmp/abx435-api/API-02-build.log,      902 lines); commit d37397b40d; fresh clone; 2026-11-10
+2:> autobyteus@1.5.13-beta.1 build:electron:mac /private/tmp/abx435-api/fresh-clone/autobyteus-web
+3:> cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && pnpm typecheck && pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --mac -- --arm64
+6:> autobyteus@1.5.13-beta.1 guard:web-boundary /private/tmp/abx435-api/fresh-clone/autobyteus-web
+7:> node ./scripts/guard-web-boundary.mjs
+9:[guard:web-boundary] Passed.
+11:> autobyteus@1.5.13-beta.1 guard:localization-boundary /private/tmp/abx435-api/fresh-clone/autobyteus-web
+12:> node ./scripts/guard-localization-boundary.mjs
+14:[guard:localization-boundary] Passed.
+16:> autobyteus@1.5.13-beta.1 audit:localization-literals /private/tmp/abx435-api/fresh-clone/autobyteus-web
+17:> node ./scripts/audit-localization-literals.mjs
+19:[audit:localization-literals] Passed with zero unresolved findings.
+25:> autobyteus@1.5.13-beta.1 typecheck /private/tmp/abx435-api/fresh-clone/autobyteus-web
+26:> pnpm prepare:shared-types && nuxt prepare && node ./scripts/typecheck.mjs
+29:> autobyteus@1.5.13-beta.1 prepare:shared-types /private/tmp/abx435-api/fresh-clone/autobyteus-web
+30:> pnpm -C ../autobyteus-server-ts prepare:source
+33:> autobyteus-server-ts@0.1.1 prepare:source /private/tmp/abx435-api/fresh-clone/autobyteus-server-ts
+34:> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+37:> autobyteus-server-ts@0.1.1 prepare:shared /private/tmp/abx435-api/fresh-clone/autobyteus-server-ts
+38:> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+66:[typecheck] Nuxt app (tsconfig.json): 66 errors, exit 2, 35.1s
+67:[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.9s
+68:[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+69:[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 22.0s
+70:[typecheck] production errors: 0; test-file errors: 93 in 40 files (baseline 93 in 40 files)
+71:[typecheck] PASS
+73:> autobyteus@1.5.13-beta.1 prepare-server /private/tmp/abx435-api/fresh-clone/autobyteus-web
+74:> node ./scripts/prepare-server-dispatch.mjs
+118:> autobyteus-server-ts@0.1.1 prebuild /private/tmp/abx435-api/fresh-clone/autobyteus-server-ts
+119:> pnpm prepare:source
+122:> autobyteus-server-ts@0.1.1 prepare:source /private/tmp/abx435-api/fresh-clone/autobyteus-server-ts
+123:> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+126:> autobyteus-server-ts@0.1.1 prepare:shared /private/tmp/abx435-api/fresh-clone/autobyteus-server-ts
+127:> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+146:> autobyteus-server-ts@0.1.1 build /private/tmp/abx435-api/fresh-clone/autobyteus-server-ts
+147:> pnpm run build:full
+150:> autobyteus-server-ts@0.1.1 build:full /private/tmp/abx435-api/fresh-clone/autobyteus-server-ts
+151:> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-build-assets.mjs && node ./scripts/write-release-identity.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
+161:> autobyteus@1.5.13-beta.1 build:mobile-web /private/tmp/abx435-api/fresh-clone/autobyteus-web
+162:> node ./scripts/build-mobile-web.mjs
+165:> autobyteus@1.5.13-beta.1 generate /private/tmp/abx435-api/fresh-clone/autobyteus-web
+166:> nuxt generate
+551:> autobyteus@1.5.13-beta.1 generate:electron /private/tmp/abx435-api/fresh-clone/autobyteus-web
+552:> cross-env NODE_ENV=production BUILD_TARGET=electron nuxt generate
+858:> autobyteus@1.5.13-beta.1 transpile-electron /private/tmp/abx435-api/fresh-clone/autobyteus-web
+859:> tsc -p electron/tsconfig.json
+887:  • packaging       platform=darwin arch=arm64 electron=42.11.16 appOutDir=electron-dist/mac-arm64
+892:  • building        target=DMG arch=arm64 file=electron-dist/AutoByteus_personal_macos-arm64-1.5.13-beta.1.dmg
+893:  • building        target=macOS zip arch=arm64 file=electron-dist/AutoByteus_personal_macos-arm64-1.5.13-beta.1.zip
+895:  • building block map  blockMapFile=electron-dist/AutoByteus_personal_macos-arm64-1.5.13-beta.1.dmg.blockmap
+896:  • building block map  blockMapFile=electron-dist/AutoByteus_personal_macos-arm64-1.5.13-beta.1.zip.blockmap
+897:Build completed: [
+898:  '/private/tmp/abx435-api/fresh-clone/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.13-beta.1.dmg.blockmap',
+899:  '/private/tmp/abx435-api/fresh-clone/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.13-beta.1.dmg',
+900:  '/private/tmp/abx435-api/fresh-clone/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.13-beta.1.zip.blockmap',
+901:  '/private/tmp/abx435-api/fresh-clone/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.5.13-beta.1.zip'

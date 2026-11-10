@@ -1,0 +1,14 @@
+# IMP-17 rendered System instructions item expanded (REQ-014, AC-014-1/2) on the phone page and the desktop Activity panel
+# Steps: a throwaway worktree at 432d1c3af2 (built: server, phone bundle), its probe in --hold with a TEMPORARY, uncommitted change
+#   that also starts the desktop frontend (as runCases does) and writes the owner credential to hold.json; then
+#   node IMP-17-render-system-instructions-script.mjs <hold.json> <this folder> <autobyteus-web>. A 15,818-character item
+#   (one 600-character unbroken line) is added to the open run's Activity through the page's own Pinia store
+#   (agentActivity.upsertSystemInstructionActivity, as the stream does). Phone 390x844; desktop 1440x900. 2026-11-10.
+# The worktree, stack and frontend were removed afterwards.
+
+## phone: {"expanded": {"found": true, "expanded": "true", "preMaxHeight": "none", "preOverflowY": "visible", "preScrollHeight": 9124, "preClientHeight": 9124, "preHasOwnScroll": false, "preHorizontalOverflow": false, "textLength": 15818, "tabindex": null, "pageHorizontalOverflow": false, "outerScroller": {"tag": "DIV", "testid": null, "scrollHeight": 9286, "clientHeight": 796}}, "collapsedAgain": {"expanded": "false", "preVisible": false}}
+## desktop: {"expanded": {"found": true, "expanded": "true", "preMaxHeight": "none", "preOverflowY": "visible", "preScrollHeight": 9084, "preClientHeight": 9084, "preHasOwnScroll": false, "preHorizontalOverflow": false, "textLength": 15818, "tabindex": null, "pageHorizontalOverflow": false, "outerScroller": {"tag": "DIV", "testid": "activity-feed-scroll-container", "scrollHeight": 9246, "clientHeight": 775}}, "collapsedAgain": {"expanded": "false", "preVisible": false}}
+error: None
+Look for: preMaxHeight "none", preOverflowY "visible", preHasOwnScroll false (scrollHeight == clientHeight), textLength 15818,
+  tabindex null, preHorizontalOverflow false, pageHorizontalOverflow false, outerScroller = the Activity (desktop: activity-feed-scroll-container),
+  collapsedAgain.expanded "false". Screenshots: IMP-17-{phone,desktop}-{collapsed,expanded-top,expanded-end}.png

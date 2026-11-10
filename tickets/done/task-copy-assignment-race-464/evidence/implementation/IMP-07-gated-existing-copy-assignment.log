@@ -1,0 +1,29 @@
+# IMP-07 gated task-existing-copy-assignment (scripted AGY): run 1 the whole file, runs 2-3 EXC-E2E-004 (-t EXC-E2E-004); commit c29edfb1f7; rebuilt dist (IMP-04); macOS, Node v22.23.1; 2026-11-10T12:52:36Z
+# Command: env -i PATH HOME=<resolved temp> TMPDIR NO_COLOR=1 RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run --no-watch tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts [-t EXC-E2E-004]
+
+## run 1 (load: 51.96 56.15 58.78)
+ ✓ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts (9 tests | 2 skipped) 189291ms
+     ✓ EXC-E2E-001 standalone Agent root: explicit IDs, every refusal, Team copy A → B → A, Agent copy C → D, repeated closes of the earlier Task, views  22926ms
+     ✓ EXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner  22897ms
+     ✓ EXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner  22166ms
+     ✓ EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders  113964ms
+     ✓ EXC-E2E-005 cross-root sender: a team run ID message names the coordinator; another root's copy is not assignable  1315ms
+     ✓ EXC-E2E-007 AC-009: a copy whose saved conversation is gone is refused before any change  1023ms
+     ✓ TKD-AGY-001 Agent root: delegate_task by key in any case (recipient_address and target_agent_run_id) and by long ID, blocked Tasks delegated, 'a deleted Task', Temp tasks (task-keys AC-019, 022, 023, 027; REQ-019, 020)  4498ms
+ Test Files  1 passed (1)
+      Tests  7 passed | 2 skipped (9)
+   Duration  199.31s (transform 7.28s, setup 58ms, import 9.52s, tests 189.29s, environment 0ms)
+
+## run 2 (load: 34.17 45.82 53.85)
+ ✓ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts (9 tests | 8 skipped) 115514ms
+     ✓ EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders  114955ms
+ Test Files  1 passed (1)
+      Tests  1 passed | 8 skipped (9)
+   Duration  126.38s (transform 7.59s, setup 60ms, import 10.33s, tests 115.51s, environment 0ms)
+
+## run 3 (load: 38.70 44.73 52.38)
+ ✓ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts (9 tests | 8 skipped) 116469ms
+     ✓ EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders  115973ms
+ Test Files  1 passed (1)
+      Tests  1 passed | 8 skipped (9)
+   Duration  128.49s (transform 8.41s, setup 74ms, import 11.42s, tests 116.47s, environment 0ms)

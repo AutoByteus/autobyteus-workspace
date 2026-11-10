@@ -76,7 +76,7 @@ This preserves stateful behavior (`cd`, environment changes) across calls for ca
 
 - This historical section applied when background tool behavior was session-backed.
 - Current agent background-process behavior is PID-keyed and owned by `BackgroundProcessManager` plus `command-execution/` internals, not by persistent `DirectShellSession` instances.
-- `run_bash` adopts ordinary live background descendants from normal shell `&` syntax, and `start_background_process` starts a non-interactive shell process that is tracked by public `pid`.
+- On Android the POSIX `sh` fallback runs foreground `run_bash` calls unwrapped (no `&` job tracking); `run_bash` with `run_in_background` starts a background task tracked by its `pid` (see `terminal_tools.md`).
 
 ### 6) Android packaging/runtime gate (workspace integration)
 

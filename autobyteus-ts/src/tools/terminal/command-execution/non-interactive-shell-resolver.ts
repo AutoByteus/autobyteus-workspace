@@ -6,6 +6,7 @@ import {
   windowsPathToWsl
 } from '../wsl-utils.js';
 import { HOST_PROCESS_TARGET, type ProcessExecutionTarget } from './process-identity.js';
+import type { CommandShell } from './command-wrapper.js';
 
 export type ShellInvocationKind = 'posix' | 'windows-wsl';
 
@@ -17,6 +18,8 @@ export interface NonInteractiveShellInvocation {
   kind: ShellInvocationKind;
   processTarget: ProcessExecutionTarget;
   wslCwd?: string;
+  /** Set when the script is the command wrapper: the nonce of its control frames. */
+  wrapperNonce?: string;
 }
 
 export interface NonInteractiveShellResolverOptions {
@@ -65,6 +68,19 @@ function findExecutable(
 
 export class NonInteractiveShellResolver {
   constructor(private readonly options: NonInteractiveShellResolverOptions = {}) {}
+
+  /** The shell `resolve` runs a script with: bash (WSL always), or the POSIX `sh` fallback without bash. */
+  shell(): CommandShell {
+    if ((this.options.platform ?? process.platform) === 'win32') return 'bash';
+    return findExecutable('bash', this.options.env ?? process.env, this.options.platform ?? process.platform) ? 'bash' : 'sh';
+  }
+
+  /** A host file's path as the command's shell sees it (a WSL path on Windows). */
+  shellPath(hostPath: string): string {
+    if ((this.options.platform ?? process.platform) !== 'win32') return hostPath;
+    const wslExe = this.options.ensureWslAvailable?.() ?? ensureWslAvailable();
+    return this.options.windowsPathToWsl?.(hostPath, wslExe) ?? windowsPathToWsl(hostPath, wslExe);
+  }
 
   resolve(command: string, cwd: string): NonInteractiveShellInvocation {
     if ((this.options.platform ?? process.platform) === 'win32') {

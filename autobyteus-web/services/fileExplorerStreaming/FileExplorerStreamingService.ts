@@ -13,6 +13,7 @@ import type {
 } from './types';
 import type { FileSystemChangeEvent } from '~/types/fileSystemChangeTypes';
 import { getActiveRemoteAccessCredential } from '~/utils/remoteAccess/authorizedTransport';
+import { isCredentialRefusalClose } from '~/services/liveStreamLifecycle/credentialRefusalClose';
 import {
   buildAuthenticatedWebSocketUrl,
   redactRemoteAccessWebSocketUrl,
@@ -197,15 +198,16 @@ export class FileExplorerStreamingService {
     if (
       event.code !== 1000 &&
       this.workspaceId &&
-      !this.isNonRetryableCloseCode(event.code) &&
+      !this.isNonRetryableClose(event) &&
       !this.isNonRetryableServerErrorCode(serverErrorCode)
     ) {
       this.scheduleReconnect();
     }
   }
 
-  private isNonRetryableCloseCode(code: number): boolean {
-    return FileExplorerStreamingService.NON_RETRYABLE_CLOSE_CODES.has(code);
+  private isNonRetryableClose(event: CloseEvent): boolean {
+    return FileExplorerStreamingService.NON_RETRYABLE_CLOSE_CODES.has(event.code)
+      || isCredentialRefusalClose(event.code, event.reason);
   }
 
   private isNonRetryableServerErrorCode(code: string | null): boolean {

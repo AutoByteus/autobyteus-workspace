@@ -1,7 +1,6 @@
 import { isDeepStrictEqual } from "node:util";
-import { closedTaskExecutionsDigest } from "@autobyteus/collaboration-stream-contracts";
+import { closedTaskExecutionsDigest, taskExecutionReferenceKey } from "@autobyteus/collaboration-stream-contracts";
 import { storedRemoteLinkCheck, type RemoteInboundQuery, type StoredRemoteLinkCheck } from "../../agent-collaboration/execution/remote/remote-run-links.js";
-import { taskExecutionReferenceKey } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import {
   interpretDelegatedLaunchValidation,
   listDelegatedLaunchModelOptions,
@@ -104,8 +103,8 @@ export type StandaloneRootAgentStatuses = Readonly<{
   runId: string;
   isActive: boolean;
   statuses: readonly CollaborationAgentStatusSnapshot[];
-  /** The active root's closed-set digest (`closedTaskExecutionsDigest`), so a list sees a Task close or reopen; null when inactive. */
-  closedTaskExecutionsDigest: string | null;
+  /** Closed-set digest, so a list sees a Task close or reopen. Active: the root's closed set, as its live view. Inactive: the Task index's closed executions hosted by this run, not filtered by its stored tree (autobyteus-435). */
+  closedTaskExecutionsDigest: string;
 }>;
 
 export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, StandaloneRunLifecyclePort {
@@ -162,14 +161,15 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
   }
 
   /**
-   * The children's states of each listed run, as the history poll asks for them (autobyteus-426 REQ-009): an active
-   * root answers its live snapshots; any other run answers inactive with none. No snapshot connection, tree or log read.
+   * The children's states of each listed run, as the history poll asks for them (autobyteus-426 REQ-009): an active root
+   * answers its live snapshots; any other run inactive with none and the in-memory Task index's digest. No tree or log read.
    */
   getAgentStatuses(hostRunIds: readonly string[]): StandaloneRootAgentStatuses[] {
     return hostRunIds.map((runId) => {
       const root = this.getActive(runId);
       return { runId, isActive: root !== null, statuses: root?.getAgentStatusSnapshots() ?? [],
-        closedTaskExecutionsDigest: root ? closedTaskExecutionsDigest(root.closedTaskExecutions()) : null };
+        closedTaskExecutionsDigest: closedTaskExecutionsDigest(root?.closedTaskExecutions()
+          ?? this.options.taskExecutionResources?.closedTaskExecutionsIn(createAgentRootExecutionIdentity(runId)) ?? []) };
     });
   }
 

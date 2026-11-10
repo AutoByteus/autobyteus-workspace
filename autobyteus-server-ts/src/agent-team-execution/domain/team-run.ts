@@ -3,7 +3,8 @@ import type { AgentRunInputOptions } from "../../agent-execution/input/agent-run
 import type { TeamRunBackend } from "../backends/team-run-backend.js";
 import type { PrepareTaskAgentInput, RestoreTaskAgentInput } from "./task-agent-execution.js";
 import type { PrepareTaskTeamInput, RestoreTaskTeamInput } from "./task-team-execution.js";
-import { taskExecutionReferenceKey, type TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
+import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
+import { taskExecutionReferenceKey } from "@autobyteus/collaboration-stream-contracts";
 import type { TeamMemberExecutionCommand } from "./team-member-execution-command.js";
 import type { RuntimeTeamRunContext, TeamRunContext } from "./team-run-context.js";
 

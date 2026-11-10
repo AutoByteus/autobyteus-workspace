@@ -2,12 +2,13 @@ import { registerEnumType } from "type-graphql";
 import type { PersonalSettingsView } from "../../../personal-settings/services/personal-settings-service.js";
 import type { PersonalSetting as DomainPersonalSetting } from "../../../personal-settings/domain/personal-setting-record.js";
 
-/** One of the four settings a definition from a package (or a built-in agent) can hold as a personal setting. */
+/** One of the settings a definition from a package (or a built-in agent) can hold as a personal setting. */
 export enum PersonalSetting {
   TOOLS = "TOOLS",
   SKILLS = "SKILLS",
   AVATAR = "AVATAR",
   DEFAULT_LAUNCH_CONFIG = "DEFAULT_LAUNCH_CONFIG",
+  SEMANTIC_MEMORY = "SEMANTIC_MEMORY",
 }
 registerEnumType(PersonalSetting, { name: "PersonalSetting" });
 

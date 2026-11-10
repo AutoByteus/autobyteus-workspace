@@ -1,0 +1,29 @@
+# command: probes/api18.sh, then the diagnosis lines below; commit d37397b40d
+# API-18; 2026-11-10T08:26:39Z; emulator-5602 abx435_api34 Android 14, WebView (com.google.android.webview, 113.0.5672.136); APK of d37397b40d; cutout: DisplayCutout{insets=Rect(0, 136 - 0, 0)
+cutoutSpec={M 506
+installed
+app data cleared
+pairing link for http://10.0.2.2:60467 written (code not shown)
+shared the pairing link into the app
+H0 viewer, portrait | ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED bars: visible=true visible=true  pid=2889 | page="{\"q\":\"?row=agent:temp-1794299225749-1&screen=desktop\",\"status\":\"Connected · View only\",\"runScreen\":null,\"runName\":\"Daily Assistant\",\"opening\":false,\"list\":false,\"activity\":false,\"viewer\":true,\"handle\":false,\"viewport\":[412,839],\"dpr\":2.625,\"screen\":[412,915],\"canvas\":[0,348,412,232],\"stage\":[0,88,412,751],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+  window: frame=[0,0][1080,2400] frame=[0,0][1080,2400] 
+H1 full screen, accelerometer 9.81:0:0 | ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE bars: visible=false visible=false  pid=2889 | page="{\"q\":\"?row=agent:temp-1794299225749-1&screen=desktop&full=1\",\"status\":null,\"runScreen\":null,\"runName\":\"Daily Assistant\",\"opening\":false,\"list\":false,\"activity\":false,\"viewer\":true,\"handle\":true,\"viewport\":[863,412],\"dpr\":2.625,\"screen\":[915,412],\"canvas\":[65,0,733,412],\"stage\":[0,0,863,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+  window: layoutInDisplayCutoutMode=shortEdges frame=[0,0][2400,1080] 
+H2 Fill, accelerometer 9.81:0:0 | ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE bars: visible=false visible=false  pid=2889 | page="{\"q\":\"?row=agent:temp-1794299225749-1&screen=desktop&full=1\",\"status\":null,\"runScreen\":null,\"runName\":\"Daily Assistant\",\"opening\":false,\"list\":false,\"activity\":false,\"viewer\":true,\"handle\":true,\"viewport\":[863,412],\"dpr\":2.625,\"screen\":[915,412],\"canvas\":[0,-37,863,486],\"stage\":[0,0,863,412],\"picture\":\"translate(-76.9133px, -36.7188px) scale(1.17825)\"}"
+H1 full screen, accelerometer -9.81:0:0 | ROTATION_270 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE bars: visible=false visible=false  pid=2889 | page="{\"q\":\"?row=agent:temp-1794299225749-1&screen=desktop&full=1\",\"status\":null,\"runScreen\":null,\"runName\":\"Daily Assistant\",\"opening\":false,\"list\":false,\"activity\":false,\"viewer\":true,\"handle\":true,\"viewport\":[863,412],\"dpr\":2.625,\"screen\":[915,412],\"canvas\":[65,0,733,412],\"stage\":[0,0,863,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+  window: layoutInDisplayCutoutMode=shortEdges frame=[0,0][2400,1080] 
+H2 Fill, accelerometer -9.81:0:0 | ROTATION_270 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE bars: visible=false visible=false  pid=2889 | page="{\"q\":\"?row=agent:temp-1794299225749-1&screen=desktop&full=1\",\"status\":null,\"runScreen\":null,\"runName\":\"Daily Assistant\",\"opening\":false,\"list\":false,\"activity\":false,\"viewer\":true,\"handle\":true,\"viewport\":[863,412],\"dpr\":2.625,\"screen\":[915,412],\"canvas\":[0,-37,863,486],\"stage\":[0,0,863,412],\"picture\":\"translate(-76.9133px, -36.7188px) scale(1.17825)\"}"
+H3 full screen off | ROTATION_0 requested=SCREEN_ORIENTATION_UNSPECIFIED bars: visible=true visible=true  pid=2889 | page="{\"q\":\"?row=agent:temp-1794299225749-1&screen=desktop\",\"status\":\"Connected · View only\",\"runScreen\":null,\"runName\":\"Daily Assistant\",\"opening\":false,\"list\":false,\"activity\":false,\"viewer\":true,\"handle\":false,\"viewport\":[412,839],\"dpr\":2.625,\"screen\":[412,915],\"canvas\":[0,348,412,232],\"stage\":[0,88,412,751],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+  window: frame=[0,0][1080,2400] frame=[0,0][1080,2400] 
+## API-18 diagnosis (same run, full screen again, ROTATION_90); 2026-11-10T08:28:47Z; command: adb -s emulator-5602 shell dumpsys activity top (view hierarchy; no uiautomator)
+J1 full screen | ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE bars: visible=false visible=false  pid=2889 | page="{\"q\":\"?row=agent:temp-1794299225749-1&screen=desktop&full=1\",\"status\":null,\"runScreen\":null,\"runName\":\"Daily Assistant\",\"opening\":false,\"list\":false,\"activity\":false,\"viewer\":true,\"handle\":true,\"viewport\":[863,412],\"dpr\":2.625,\"screen\":[915,412],\"canvas\":[65,0,733,412],\"stage\":[0,0,863,412],\"picture\":\"translate(0px, 0px) scale(1)\"}"
+      DecorView@7a16f5a[MainActivity]
+        android.widget.FrameLayout{f0e4740 V.E...... ........ 0,0-2400,1080}
+          android.widget.FrameLayout{e4a0679 V.E...... ........ 136,0-2400,1080 #1020002 android:id/content}
+            android.widget.FrameLayout{e13cfbe V.E...... ........ 0,0-2264,1080}
+              android.webkit.WebView{a64630a VFEDHVC.. .F...... 0,0-2264,1080 aid=1073741824}
+          android.view.ViewStub{2af881f G.E...... ......I. 0,0-0,0 #10201ca android:id/action_mode_bar_stub}
+        android.view.View{730976c I.ED..... ........ 0,1080-2400,1080 #1020030 android:id/navigationBarBackground}
+window: layoutInDisplayCutoutMode=shortEdges frame=[0,0][2400,1080] 
+reading: the window spans [0,0][2400,1080] with layoutInDisplayCutoutMode=shortEdges, but the framework's android:id/content frame starts at x=136 (the cutout inset), so the page is 2264 px = 863 CSS px wide. The app does not set decorFitsSystemWindows(false); Android 15 forces edge-to-edge for targetSdk 35 (API-07: page 915 CSS px), Android 14 does not.
+J2 off | ROTATION_90 requested=SCREEN_ORIENTATION_UNSPECIFIED bars: visible=true visible=true  pid=2889

@@ -1,0 +1,31 @@
+{
+  "runId": "sm_live_integrated_codex_eb866eb2_624c1f88359b4bcfbd5fb33f6b369a30",
+  "reply": "403",
+  "tools": [
+    "run_bash {\"command\":\"/bin/bash -lc \\\"curl -s -o /dev/null -w '%{http_code}' \\\\\\\"\\\"'$AUTOBYTEUS_GITHUB_API_URL/repos/octocat/hello-world\\\"'\",\"cwd\":\"/root/.autobyteus-e2e/semantic-memory-live-4v6MTs/ws-codex-integration\"}",
+    "run_bash {\"command\":\"/bin/bash -lc \\\"printf '%s\\\\\\\\n' 'proxy probe SMNET-eb866eb2 returned 403' > /root/.autobyteus-e2e/semantic-memory-live-4v6MTs/app-data/memory/semantic/sm-live-integrated-codex-eb866eb2/proxy-probe.md\\\"\",\"cwd\":\"/root/.autobyteus-e2e/semantic-memory-live-4v6MTs/ws-codex-integration\"}"
+  ],
+  "failures": [],
+  "approvals": [],
+  "files": {
+    "proxy-probe.md": "proxy probe SMNET-eb866eb2 returned 403\n"
+  },
+  "wire": {
+    "method": "thread/start",
+    "sandbox": "workspace-write",
+    "approvalPolicy": "on-request",
+    "cwd": "/root/.autobyteus-e2e/semantic-memory-live-4v6MTs/ws-codex-integration",
+    "configKeys": [
+      "mcp_servers",
+      "sandbox_workspace_write",
+      "shell_environment_policy"
+    ],
+    "sandbox_workspace_write": {
+      "network_access": true,
+      "writable_roots": [
+        "/root/.autobyteus-e2e/semantic-memory-live-4v6MTs/app-data/memory/semantic/sm-live-integrated-codex-eb866eb2"
+      ]
+    },
+    "semanticSection": "## Semantic Memory\n\nYour semantic memory is the folder `/root/.autobyteus-e2e/semantic-memory-live-4v6MTs/app-data/memory/semantic/sm-live-integrated-codex-eb866eb2`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills."
+  }
+}

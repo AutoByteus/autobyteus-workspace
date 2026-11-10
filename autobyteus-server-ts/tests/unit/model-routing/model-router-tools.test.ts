@@ -74,6 +74,6 @@ describe("The Model Router agent's tools per runtime (AC-011)", () => {
 
 
   it("AutoByteus: the run gets only the listed tools, with no shell tool", async () => {
-    expect((await templateTools()).some((name) => ["run_bash", "start_background_process"].includes(name))).toBe(false);
+    expect((await templateTools()).some((name) => name === "run_bash")).toBe(false);
   });
 });

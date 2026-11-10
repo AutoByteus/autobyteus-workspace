@@ -89,6 +89,7 @@ const createSession = (requestedToolNames: string[] = [], input: {
     }),
     runtimeContext: new ClaudeAgentRunContext({
       carpenterSystemPrompt: composeSharedCarpenterPrompt({
+        semanticMemoryPath: null,
         agentDefinition: new AgentDefinition({
           name: "Test agent",
           description: "Tests Claude tooling.",

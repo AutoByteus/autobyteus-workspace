@@ -38,8 +38,8 @@ class NodeConnectionFlow(
     private enum class Save { OnPaired, OnReachable, AlreadySaved }
 
     private var attempt: Attempt? = null
-    /** The entry of a pairing link whose page is open, saved when the page reports it paired. */
-    private var pendingPairing: SavedNodeEntry? = null
+    /** The pairing link whose page is open (its entry and the link's URL); its entry is saved when the page reports paired. */
+    private var pendingPairing: Attempt? = null
     /** The saved entry whose page is open (a saved node, or a typed address that answered); `null` for a pairing link. */
     private var openEntry: SavedNodeEntry? = null
     private var generation = 0
@@ -82,6 +82,14 @@ class NodeConnectionFlow(
         attempt?.let(::run)
     }
 
+    /**
+     * What the open page's overlay Retry loads (autobyteus-435 REQ-008): while [entry]'s pairing link has not reported
+     * "paired", the pairing link again (its one-time code is exchanged by the page's script, so a page that never loaded
+     * did not use it); after pairing, or for a saved node, the node's page. The pairing link is held here only, never saved.
+     */
+    fun retryUrlFor(entry: SavedNodeEntry): String =
+        pendingPairing?.takeIf { it.entry.id == entry.id }?.url ?: entry.mobileUrl
+
     /** Cancel on the Connecting screen: a late answer is dropped. */
     fun cancel() {
         generation += 1
@@ -94,7 +102,7 @@ class NodeConnectionFlow(
      * used only for an entry with no known name: a named node is never renamed by its page.
      */
     fun onPaired(pageNodeName: String) {
-        val pending = pendingPairing
+        val pending = pendingPairing?.entry
         pendingPairing = null
         val entry = pending ?: openEntry?.takeIf { it.knownName == null } ?: return
         val pageName = pageNodeName.trim()
@@ -136,7 +144,7 @@ class NodeConnectionFlow(
         val now = clock()
         when (reached.save) {
             Save.OnPaired -> {
-                pendingPairing = reached.entry
+                pendingPairing = reached
                 openEntry = null
             }
             Save.OnReachable -> {

@@ -1,0 +1,23 @@
+# IMP-11 rendered check of the phone restore (REQ-005) on the real phone bundle
+# Steps: pnpm -C autobyteus-web test:e2e:mobile-shell --hold --output-dir=/tmp/sfb435-hold (probe-owned alpha serving the
+#   built phone bundle of e5ca0e1da7), then node IMP-11-render-restore-script.mjs <hold.json> <this folder> <autobyteus-web>
+#   (headless Chrome 390x844, host 10.0.2.2 mapped to 127.0.0.1; pairs with the hold's link). Commit e5ca0e1da7; macOS; 2026-11-10.
+# Each trace samples the page every 40 ms from the reload: opening = 'Opening…' shown; activity/runOpen = the subject's screen.
+# The 'list' flag reads offsetParent and is always false for the fixed-position list: see the screenshot for case 3.
+
+## agentActivity: {"agentKey": "agent:project_task_manager_777388ed376b49179c6a6336af07eab5", "runName": "Project Task Manager", "before": "?row=agent:project_task_manager_777388ed376b49179c6a6336af07eab5&screen=activity", "listShownBeforeRestore": false}
+   {"opening": false, "list": false, "activity": false, "runOpen": false, "query": "?row=agent:project_task_manager_777388ed376b49179c6a6336af07eab5&screen=activity"}
+   {"opening": true, "list": false, "activity": false, "runOpen": false, "query": "?row=agent:project_task_manager_777388ed376b49179c6a6336af07eab5&screen=activity"}
+   {"opening": false, "list": false, "activity": true, "runOpen": false, "query": "?row=agent:project_task_manager_777388ed376b49179c6a6336af07eab5&screen=activity"}
+## teamRun: {"teamKey": "team:delivery_team_0369aaaf4b694f05889ca86d14e5aee5", "before": "?row=team:delivery_team_0369aaaf4b694f05889ca86d14e5aee5&screen=run"}
+   {"opening": false, "list": false, "activity": false, "runOpen": false, "query": "?row=team:delivery_team_0369aaaf4b694f05889ca86d14e5aee5&screen=run"}
+   {"opening": true, "list": false, "activity": false, "runOpen": false, "query": "?row=team:delivery_team_0369aaaf4b694f05889ca86d14e5aee5&screen=run"}
+   {"opening": false, "list": false, "activity": false, "runOpen": true, "query": "?row=team:delivery_team_0369aaaf4b694f05889ca86d14e5aee5&screen=run"}
+## goneRow: {}
+   {"opening": false, "list": false, "query": "?row=agent:no-such-run&screen=activity"}
+   {"opening": true, "list": false, "query": "?row=agent:no-such-run&screen=activity"}
+   {"opening": false, "list": false, "query": "?row=agent:no-such-run"}
+
+error: None
+console errors: 12, all "Failed to load resource: ... 401"; the alpha access log has 12 responses 401 for GET /favicon.ico (Chrome's own favicon request to the node root, no credential) and 0 other 401/403 responses: not page code, not this change (follow-up FU-004).
+Screenshots: IMP-11-1-agent-activity-before-reload.png, IMP-11-1-agent-activity-after-reload.png, IMP-11-2-team-run-after-reload.png, IMP-11-3-gone-row-list.png

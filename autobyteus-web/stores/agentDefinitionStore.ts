@@ -51,6 +51,10 @@ export interface AgentDefinition extends PersonalSettingsFields {
   defaultLaunchConfig?: DefaultLaunchConfig | null
   /** An internal agent (the system's own helper); the server lists it only while "Show internal agents" is on. */
   internal?: boolean
+  /** The agent has a semantic memory: its own folder of reusable knowledge, shared by all its runs. */
+  semanticMemoryEnabled?: boolean
+  /** The absolute semantic memory folder on this node; null when semantic memory is off. */
+  semanticMemoryPath?: string | null
   /** Set when the agent is served from its last working version (file and reason). */
   loadIssue?: DefinitionLoadIssue | null
 }
@@ -71,6 +75,7 @@ export interface CreateAgentDefinitionInput {
   skillNames?: string[]
   skillScope?: AgentSkillScope
   defaultLaunchConfig?: DefaultLaunchConfig | null
+  semanticMemoryEnabled?: boolean
 }
 
 export interface UpdateAgentDefinitionInput {
@@ -90,6 +95,7 @@ export interface UpdateAgentDefinitionInput {
   skillNames?: string[]
   skillScope?: AgentSkillScope
   defaultLaunchConfig?: DefaultLaunchConfig | null
+  semanticMemoryEnabled?: boolean
 }
 
 interface DeleteResult {

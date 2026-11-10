@@ -49,8 +49,7 @@ route, follows one rule owned by `autobyteus-ts/src/tools/tool-result-json.ts`
 
 `toToolResultJson(value)` turns a result into text; `omitEmptyToolResultFields(value)`
 returns the pruned JSON value for core tools whose runtime renders an object
-(`get_background_processes`, `get_process_output`, `start_background_process`,
-`stop_background_process`). Each family's native tool and MCP provider calls it
+(the start result of `run_bash` with `run_in_background`). Each family's native tool and MCP provider calls it
 after its manifest returns the result object; on MCP,
 `toAgentToolsMcpStructuredJsonResult(value)` builds the text copy and
 `structuredContent` from the one pruned value. No family keeps its own
@@ -327,7 +326,9 @@ notice and its own run IDs. Parallel copies are allowed, and there is no limit.
   `COLLABORATION_SELF_TARGET_REJECTED` and guidance to use `send_message_to`: the
   sender's own address, any address inside a Team instance that contains the sender at
   any depth, and in a Team root every configured root placement for a configured member.
-  The refusal is raised before any placement, preparation or Task link.
+  The sender's own address gets its own words (autobyteus-435): "<address> is your own
+  address; you can't delegate to yourself. Do the work yourself, or delegate it to another
+  agent or agent team." The refusal is raised before any placement, preparation or Task link.
 
 The normal way to keep working with one ongoing instance is `send_message_to`
 (`MessageRecipientResolution`): the sender's own Team instance first, then a

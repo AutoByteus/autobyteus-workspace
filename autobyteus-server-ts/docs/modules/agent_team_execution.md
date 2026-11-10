@@ -513,7 +513,8 @@ are invalid. `RootTeamRun.resolveDelegationPlacement` returns one immutable
 Agent or AgentTeam placement: first the CM-1 refusal (an address in the sender's
 own team: its own address, a teammate, or in a Team root any configured root
 placement, for a configured member; `COLLABORATION_SELF_TARGET_REJECTED` with
-`send_message_to` guidance, raised before any placement or Task link), then a
+`send_message_to` guidance, or for its own address "you can't delegate to yourself"
+(autobyteus-435), raised before any placement or Task link), then a
 configured member, then a listed catalog definition (see
 [Agent Communication](./agent_communication.md#delegated-catalog-copies)). Every
 placement carries the snapshot its copy starts from (a configured member's as it is
@@ -606,7 +607,13 @@ IDs, in both directions. `recipient_address` identifies the definition to
 instantiate; it is not an alias for the spawned child.
 
 Activation is serialized per root by `RootTaskExecutionLifecycle`
-(`src/agent-collaboration/execution/task`) through its FIFO command queue. The
+(`src/agent-collaboration/execution/task`) through its FIFO command queue, with
+every other runtime transition of a copy: wake (restore), idle shutdown, user
+Stop, the model-change commit, the closure release of hosted copies after a DONE
+or CANCELLED, and the reopening step of a reactivation or existing-copy
+assignment together with its commit (autobyteus-464). A release therefore never
+stops a copy that a reopening commit has just opened; remote copies are fenced
+outside the queue, so a peer call never holds the root's wakes. The
 subject adapter (`TeamTaskExecutionAdapter` for Team roots,
 `AgentOrgTaskExecutionAdapter` for Org roots) prepares the child privately,
 commits **one** execution-tree write that records the child together with
@@ -675,8 +682,8 @@ through the wake path below. Helpers stay closed. See
   `tryPrepareTerminationIfQuiescent` succeeds. A child waiting for tool approval
   is never quiet, and neither is a child whose runtime reports a running
   background task (`AgentRunBackend.hasRunningBackgroundTasks()`: a Claude
-  `run_in_background` task or an AGY background step; Codex, AutoByteus and ACP
-  report none). There is no time limit for such a wait. A Team copy is quiet only
+  `run_in_background` task, an AGY background step, or a native `run_bash`
+  background command or `&` job; Codex and ACP report none). There is no time limit for such a wait. A Team copy is quiet only
   when every member is. A skipped fire sets no new timer; when a background task
   ends (`BACKGROUND_TASK_UPDATED` with `completed`, `failed` or `stopped`), the
   root calls `onAgentBackgroundTaskEnded`, which re-arms every live execution

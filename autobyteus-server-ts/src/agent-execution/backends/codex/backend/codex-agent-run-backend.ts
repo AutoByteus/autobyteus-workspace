@@ -48,6 +48,7 @@ const logger = {
 
 export class CodexAgentRunBackend implements AgentRunBackend {
   readonly backgroundTaskInspection = { kind: 'snapshot', read: () => this.codexThread.inspectBackgroundTasks() } as const;
+  readonly backgroundTaskNotices = { kind: "unsupported" } as const;
   readonly compactionRecovery = { kind: "unsupported" } as const;
   readonly inputCapabilities = { activeTurnAppend: "supported" } as const;
   private readonly runContext: CodexRunContext;

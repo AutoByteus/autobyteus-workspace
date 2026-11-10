@@ -50,7 +50,9 @@
         {{ $t('workspace.components.progress.SystemInstructionActivityItem.captured_at', { time: captureTime }) }} ·
         {{ $t('workspace.components.progress.SystemInstructionActivityItem.character_count', { count: characterCount }) }}
       </p>
-      <pre tabindex="0" class="max-h-80 min-h-8 overflow-auto whitespace-pre-wrap [overflow-wrap:anywhere] rounded-md border border-gray-200 bg-gray-50 p-3 font-mono text-xs leading-5 text-gray-900 select-text">{{ activity.content }}</pre>
+      <!-- The whole text in the Activity's own flow (autobyteus-435 REQ-014): no height cap and no inner scroll; the
+           header collapses it again. -->
+      <pre class="min-h-8 whitespace-pre-wrap [overflow-wrap:anywhere] rounded-md border border-gray-200 bg-gray-50 p-3 font-mono text-xs leading-5 text-gray-900 select-text">{{ activity.content }}</pre>
     </div>
   </article>
 </template>

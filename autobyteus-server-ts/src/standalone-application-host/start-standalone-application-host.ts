@@ -67,8 +67,7 @@ import { createProcessAgentProviderFactoryBuilder } from "../compositions/create
 import { getActiveCollaborationRootDirectory } from "../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import type { TaskExecutionResourcePort } from "../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { composeProjectTaskExecutionResources, releaseProjectTaskExecutionResources } from "../compositions/project-task-execution-resource-composition.js";
-import { createSkillUpdateNotices, type SkillUpdateNotices } from "../skill-update-notices/skill-update-notices.js";
-import { createToolListUpdates, type ToolListUpdates } from "../tool-list-updates/tool-list-updates.js";
+import { createPlatformNoticeSources, type PlatformNoticeSources } from "../compositions/platform-notice-sources.js";
 import { AgentRunPlatformNotices } from "../agent-execution/domain/agent-run-platform-notices.js";
 
 const logger = createServerLogger("standalone.application-host");
@@ -201,8 +200,7 @@ export const startStandaloneApplicationHost = async (
   let generalProcessAuthority: ScopedAgentToolMcpSessionAuthority | null = null;
   let generalProcessRunSupervisor:
     GeneralProcessRunSupervisor | null = null;
-  let skillUpdateNotices: SkillUpdateNotices | null = null;
-  let toolListUpdates: ToolListUpdates | null = null;
+  let platformNotices: PlatformNoticeSources | null = null;
   let taskExecutionResources: TaskExecutionResourcePort | null = null;
   let hostDefinitionServices: HostDefinitionServices | null = null;
   try {
@@ -243,10 +241,7 @@ export const startStandaloneApplicationHost = async (
     });
     taskExecutionResources = await composeProjectTaskExecutionResources({
       activeRootDirectory: getActiveCollaborationRootDirectory(), appDataDir: processResources.appConfig.getAppDataDir() });
-    skillUpdateNotices = createSkillUpdateNotices({
-      agentDefinitionService: hostDefinitionServices.agentDefinitionService,
-    });
-    toolListUpdates = createToolListUpdates({
+    platformNotices = createPlatformNoticeSources({
       agentDefinitionService: hostDefinitionServices.agentDefinitionService,
       definitionChanges: hostDefinitionServices.agentDefinitionChanges,
     });
@@ -268,8 +263,8 @@ export const startStandaloneApplicationHost = async (
         agentToolMcpSessionAuthority: generalProcessAuthority,
         modelSelectionValidator,
         taskExecutionResources,
-        // One notice slot: tool list updates first, then skill notices (one notice per input).
-        platformInputNotices: new AgentRunPlatformNotices([toolListUpdates.service, skillUpdateNotices.service]),
+        // One notice slot: tool list updates, skill notices, then background task notices (one notice per input).
+        platformInputNotices: new AgentRunPlatformNotices(platformNotices.sources),
       });
     generalProcessAuthority = null;
     const applicationRuntime = buildApplicationPlatformRuntime({
@@ -311,9 +306,8 @@ export const startStandaloneApplicationHost = async (
         try {
           await app!.close();
         } finally {
-          // Tool list updates and skill notices stop first, so none go out while runs stop.
-          await toolListUpdates?.close().catch((error) => console.warn("TOOL_LIST_UPDATES_CLOSE_FAILED", error));
-          await skillUpdateNotices?.close().catch((error) => console.warn("SKILL_UPDATE_NOTICES_CLOSE_FAILED", error));
+          // Platform notices stop first, so none go out while runs stop.
+          await platformNotices?.close();
           try {
             await generalProcessRunSupervisor!.close();
           } finally {
@@ -349,8 +343,7 @@ export const startStandaloneApplicationHost = async (
         await app.close();
       }
     } finally {
-      await toolListUpdates?.close().catch(() => undefined);
-      await skillUpdateNotices?.close().catch(() => undefined);
+      await platformNotices?.close();
       if (processResources) {
         try {
           await generalProcessRunSupervisor?.close();

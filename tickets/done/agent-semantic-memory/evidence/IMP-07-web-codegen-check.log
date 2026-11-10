@@ -1,0 +1,8 @@
+# IMP-07 Generated GraphQL types current with the server schema
+# Command: pnpm -C autobyteus-web codegen:check (builds the server, prints its schema, regenerates into a temp file, compares)
+# Commit: 7e5f90d7f
+# Environment: Linux 6.12 container, Node v22.23.3, pnpm 10.28.2 via corepack; date 2026-11-10
+
+[SUCCESS] Generate to /tmp/codegen-local-kUkIln/graphql.ts
+[SUCCESS] Generate outputs
+autobyteus-web/generated/graphql.ts is current.

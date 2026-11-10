@@ -1,0 +1,28 @@
+# API-20 DeepSeek harness (AC-002 alternate outcome, FU-007)
+# Commit: 578ac778b
+# Date: 2026-11-10T12:42:00Z
+
+$ command -v dsh deepseek-harness
+exit=1
+
+$ grep -n "dsh\|DEEPSEEK\|RUN_" autobyteus-server-ts/tests/e2e/runtime/deepseek-harness-live.e2e.test.ts | head -12
+24: * DeepSeek Harness live: the real `dsh` (DeepSeek Harness 0.2.2-rc.1, `--profile acp`) against the REAL DeepSeek API
+27: * Gate: RUN_DEEPSEEK_HARNESS_E2E=1, a working dsh command (`DEEPSEEK_HARNESS_COMMAND` or `dsh`, Node.js 24.9+), and the
+32: *   AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_DEEPSEEK_HARNESS_E2E=1 DEEPSEEK_HARNESS_COMMAND=<dsh> \
+38: * release); the dsh home's effective config (no subagent/workflow/goal/plugin-manager tools, no session log, only the
+39: * run's skills folder) and the user's `~/.dsh` untouched; a Brief Studio launch on dsh in the studio's application scope
+41: * root, the dsh processes' environments and the console (QR-001).
+44:const dshCommand = process.env.DEEPSEEK_HARNESS_COMMAND?.trim() || "dsh";
+46:const live = process.env.RUN_DEEPSEEK_HARNESS_E2E === "1" && dshReady;
+58:describeLive("DeepSeek Harness live (real dsh, real DeepSeek API, product relay)", () => {
+71:  const userDshHome = path.join(os.homedir(), ".dsh");
+73:  /** The scripted CLIs for the other runtimes: Brief Studio's default Codex slot must not quarantine it before the dsh override. */
+92:  /** A model call on the relay with a pass, as dsh makes one; tiny, refused before any upstream call when the pass is dead. */
+
+$ AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault pnpm test-vault status | grep deepseek
+MISSING provider.deepseek.api-key
+
+$ grep -n -i "semantic\|escalat" autobyteus-server-ts/docs/modules/deepseek_harness_runtime.md
+90:- **Approvals:** dsh asks only for sandbox escalations (it runs in its `workspace-write` sandbox). Auto-execute answers
+91:  them allow. A write to the agent's semantic memory folder ([Agent Memory](./agent_memory.md#semantic-memory)) is
+92:  outside that sandbox, so with auto-execute off it asks an escalation; dsh has no option to add a writable folder.

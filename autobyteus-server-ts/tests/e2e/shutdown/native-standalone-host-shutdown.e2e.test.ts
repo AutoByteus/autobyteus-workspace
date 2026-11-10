@@ -1,4 +1,5 @@
-/** Full standalone host ownership regression (AC-004/005).
+/** Full standalone host ownership regression (AC-004/005). The first run is ended by its application: its commands
+ * stop at run end (autobyteus-338 REQ-009); the second run is live at host close, which drains its commands.
  * Prerequisite: current server/core/SDK builds. Local scripted inference only, no credentials.
  * From root: RUN_NATIVE_STANDALONE_SHUTDOWN_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/shutdown/native-standalone-host-shutdown.e2e.test.ts --no-watch
  * Optional TEST_NATIVE_SHUTDOWN_EVIDENCE_DIR receives JSON/logs. macOS/Linux native process coverage, not Windows certification.
@@ -9,7 +10,7 @@ import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 const enabled = process.env.RUN_NATIVE_STANDALONE_SHUTDOWN_E2E === '1' && process.platform !== 'win32';
 describe.skipIf(!enabled)('full standalone native command ownership', () => {
-  it('drains active and ended-run resistant/adopted survivors without touching unrelated resources', async () => {
+  it('stops an ended run\'s commands at run end and drains the active run\'s at host close, without touching unrelated resources', async () => {
     try {
       const result = await promisify(execFile)(process.execPath, [resolve('tests/e2e/shutdown/native-standalone-host-fixture.mjs')], {
         cwd: process.cwd(), timeout: 150_000, maxBuffer: 8 * 1024 * 1024,

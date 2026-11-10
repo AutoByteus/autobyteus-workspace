@@ -15,10 +15,13 @@ class DesktopFullScreenRequestTest {
         override var requestedOrientation: Int = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
         override var rootBackgroundColor: Int? = 0xFFF8FAFC.toInt()
         override fun setSystemBarsHidden(hidden: Boolean) {}
+        override fun setLayoutInDisplayCutoutMode(mode: Int) {}
+        override fun setDecorFitsSystemWindows(fits: Boolean) {}
+        override fun reapplyInsets() {}
     }
 
     private val display = FakeDisplay()
-    private val controller = DesktopFullScreenController(display)
+    private val controller = DesktopFullScreenController(display, sdkInt = 35)
     private val request = DesktopFullScreenRequest(controller)
 
     /** A screen's new root replaces the shown one (setContentView): it has its own light background. */

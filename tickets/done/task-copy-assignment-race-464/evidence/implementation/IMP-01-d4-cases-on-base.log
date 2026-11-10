@@ -1,0 +1,22 @@
+# IMP-01 D4 unit cases on base (fixture models a release in flight; no source change yet); base c8f303af70 + test/fixture edits only; macOS, Node v22.23.1; 2026-11-10T12:27:09Z
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-collaboration/root-task-existing-copy-assignment.test.ts tests/unit/agent-collaboration/root-task-reactivation.test.ts --no-watch
+# Source files changed (git diff --stat -- autobyteus-server-ts/src): 0 lines of output (none)
+     × an Agent copy open at the assignment's queue step, A's release requested before B's commit: B is delivered and the copy is never stopped (AC-001) 58ms
+     × a Team copy open at the assignment's queue step, A's release requested before B's commit: B is delivered and the copy is never stopped (AC-001) 54ms
+     × a reactivation that finds the copy open at its queue step, with a DONE's release in flight across its commit and the wake: the copy is not stopped and gets the message (autobyteus-464 AC-003) 5ms
+ FAIL  tests/unit/agent-collaboration/root-task-existing-copy-assignment.test.ts > a DONE of the earlier Task racing the assignment (QR-001) > an Agent copy open at the assignment's queue step, A's release requested before B's commit: B is delivered and the copy is never stopped (AC-001)
+AssertionError: {"delegated":false,"message":"Task task-B was given to the task agent, but the message with its work was not delivered (The task agent worker could not continue with its conversation: Task AgentRun 'worker' is already active or reserved.). Message the task agent's run id worker, or set Task task-B to CANCELLED, or delegate it to a new task agent."}: expected { delegated: false, …(1) } to match object { delegated: true }
++ Received
++   "delegated": false,
+ FAIL  tests/unit/agent-collaboration/root-task-existing-copy-assignment.test.ts > a DONE of the earlier Task racing the assignment (QR-001) > a Team copy open at the assignment's queue step, A's release requested before B's commit: B is delivered and the copy is never stopped (AC-001)
+AssertionError: {"delegated":false,"message":"Task task-B was given to the task agent, but the message with its work was not delivered (The task agent lead could not continue with its conversation: Task TeamRun 'review-team' is already active or reserved.). Message the task agent's run id lead, or set Task task-B to CANCELLED, or delegate it to a new task agent."}: expected { delegated: false, …(1) } to match object { delegated: true }
++ Received
++   "delegated": false,
+ FAIL  tests/unit/agent-collaboration/root-task-reactivation.test.ts > reactivation of a closed assignment by its assigner (DS-L1) > a reactivation that finds the copy open at its queue step, with a DONE's release in flight across its commit and the wake: the copy is not stopped and gets the message (autobyteus-464 AC-003)
+AssertionError: expected { accepted: false, …(2) } to deeply equal { accepted: true, …(1) }
++ Received
++   "accepted": false,
++   "code": "TASK_EXECUTION_RESTORE_FAILED",
++   "message": "The task agent worker could not continue with its conversation: Task AgentRun 'worker' is already active or reserved. worker continues with its conversation (its Task is open again) but did not receive this message; send it again.",
+ Test Files  2 failed (2)
+      Tests  3 failed | 51 passed (54)

@@ -33,15 +33,20 @@ const resolveSafePath = (rootDir: string, ...segments: string[]): string => {
 
 export const AGENT_RUN_COLLABORATION_DIR_NAME = "collaboration";
 
+/** The folder of agents' semantic memories, a sibling of the run folders; run tooling never walks it. */
+export const SEMANTIC_MEMORY_DIR_NAME = "semantic";
+
 export class AgentMemoryLayout {
   private readonly standaloneRootDir: string;
   private readonly teamRootDir: string;
   private readonly orgRootDir: string;
+  private readonly semanticRootDir: string;
 
   constructor(memoryDir: string) {
     this.standaloneRootDir = path.join(memoryDir, "agents");
     this.teamRootDir = path.join(memoryDir, "agent_teams");
     this.orgRootDir = path.join(memoryDir, "agent_orgs");
+    this.semanticRootDir = path.join(memoryDir, SEMANTIC_MEMORY_DIR_NAME);
   }
 
   getStandaloneRootDirPath(): string {
@@ -54,6 +59,16 @@ export class AgentMemoryLayout {
 
   getOrgRootDirPath(): string {
     return this.orgRootDir;
+  }
+
+  /**
+   * The semantic memory folder of one agent definition: `<memory>/semantic/<encoded definition ID>`.
+   * The ID is URI-encoded so every ID form (team-local IDs hold `:`) gives one valid, distinct folder
+   * name on every desktop OS.
+   */
+  getAgentSemanticMemoryDirPath(agentDefinitionId: string): string {
+    const id = normalizeRequiredString(agentDefinitionId, "agentDefinitionId");
+    return resolveSafePath(this.semanticRootDir, normalizePathSegment(encodeURIComponent(id), "agentDefinitionId"));
   }
 
   getStandaloneRunDirPath(agentRunId: string): string {

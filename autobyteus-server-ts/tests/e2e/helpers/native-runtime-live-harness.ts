@@ -15,7 +15,6 @@
  * request prefix changed is rejected with a 400 instead of being dropped silently. The recorded body stays exactly as
  * production built it. `writeBodies` also writes every recorded request body to the evidence directory.
  */
-import { testLaunchCredential } from "../../setup/test-launch-credential.js";
 import "reflect-metadata";
 import { randomUUID } from "node:crypto";
 import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
@@ -323,6 +322,9 @@ export class NativeRuntimeLiveHarness {
     }) as typeof fetch;
   }
 
+  /** The server's main URL (GraphQL, agent and team WebSockets). */
+  get url(): URL { return this.mainUrl; }
+
   async settleCalls(): Promise<void> { await Promise.all(this.calls.map((call) => call.settled)); }
   callsOf(callPhase: string): CapturedCall[] { return this.calls.filter((call) => call.phase === callPhase); }
 
@@ -359,12 +361,14 @@ export class NativeRuntimeLiveHarness {
   }
 
   async gql<T>(query: string, variables: Json = {}): Promise<T> {
-    const response = await this.originalFetch(new URL("/graphql", this.mainUrl), {
-      method: "POST", headers: { "content-type": "application/json", authorization: `Bearer ${testLaunchCredential()}` },
-      body: JSON.stringify({ query, variables }),
+    // Through the global fetch: the server's owner credential is attached there (node access model); the recorder
+    // passes local requests through unrecorded.
+    const response = await globalThis.fetch(new URL("/graphql", this.mainUrl), {
+      method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ query, variables }),
     });
     const body = (await response.json()) as { data?: T; errors?: Array<{ message: string }> };
     if (body.errors?.length) throw new Error(`GraphQL: ${body.errors.map((error) => error.message).join("; ")}`);
+    if (!response.ok) throw new Error(`GraphQL: HTTP ${response.status} ${JSON.stringify(body).slice(0, 300)}`);
     return body.data as T;
   }
 

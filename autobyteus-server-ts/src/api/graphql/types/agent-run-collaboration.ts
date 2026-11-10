@@ -55,8 +55,9 @@ export class AgentRunCollaborationStatusesObject {
   @Field(() => String) runId!: string;
   @Field(() => Boolean) isActive!: boolean;
   @Field(() => [AgentRunChildStatusObject]) statuses!: AgentRunChildStatusObject[];
-  /** The active root's closed-set digest (autobyteus-446); null when the run has no active root. */
-  @Field(() => String, { nullable: true }) closedTaskExecutionsDigest!: string | null;
+  /** The run's closed-set digest (autobyteus-446, -435); the description gives its meaning per state. */
+  @Field(() => String, { nullable: true, description: "The run's closed-set digest (closedTaskExecutionsDigest). Active run: the closed task executions of its root, as its live view. Inactive run: the closed task executions the Task index records as hosted by this run, not filtered by its stored execution tree." })
+  closedTaskExecutionsDigest!: string | null;
 }
 
 @Resolver()

@@ -35,8 +35,6 @@ import path from "node:path";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import type { FastifyInstance } from "fastify";
 import { omitEmptyToolResultFields } from "autobyteus-ts/tools/tool-result-json.js";
-import { buildStudioServer } from "../../../src/compositions/build-studio-server.js";
-import { testLaunchCredential } from "../../setup/test-launch-credential.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { initializeRuntimeLoggerBootstrap } from "../../../src/logging/runtime-logger-bootstrap.js";
 import type { LoggingConfig } from "../../../src/config/logging-config.js";
@@ -44,6 +42,7 @@ import { AGENT_TOOLS_MCP_SERVER_NAME } from "../../../src/agent-tools/mcp/agent-
 import { getSecretVaultRuntime, resetSecretVaultRuntimeForTests } from "../../../src/secret-management/secret-vault-runtime.js";
 import { fakeRuntimeState, isProcessAlive } from "../helpers/agent-runtimes-e2e-harness.js";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
+import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 
 const fake = await vi.hoisted(async () => {
   const { prepareFakeRuntimes } = await import("../helpers/agent-runtimes-e2e-harness.js");
@@ -138,8 +137,7 @@ describe("list_available_agent_runtimes / availableAgentRuntimes e2e (real studi
 
   const post = async (query: string, variables?: Record<string, unknown>) => {
     const response = await stub.realFetch(new URL("/graphql", baseUrl), {
-      method: "POST", headers: { "content-type": "application/json", authorization: `Bearer ${testLaunchCredential()}` },
-      body: JSON.stringify({ query, variables }),
+      method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ query, variables }),
     });
     const text = await response.text();
     responses.push(text);
@@ -194,14 +192,9 @@ describe("list_available_agent_runtimes / availableAgentRuntimes e2e (real studi
     await resetSecretVaultRuntimeForTests();
     await getSecretVaultRuntime().initialize({ kind: "application", location: appConfigProvider.config.getOperationalDatabaseLocation() });
     stub = installProviderStub();
-    const studio = await buildStudioServer({ appConfig: appConfigProvider.config, loggingConfig: LOGGING });
-    await studio.applicationRuntime.lifecycle.prepareBeforeListen();
-    await studio.agentToolsMcpHost.listen();
-    await studio.credentialProxyHost.listen();
-    const address = await studio.fastify.listen({ port: 0, host: "127.0.0.1" });
-    await studio.applicationRuntime.lifecycle.recoverAfterListen();
-    fastify = studio.fastify;
-    baseUrl = new URL(address);
+    const started = await startStudioE2eRuntimeServer("127.0.0.1", { loggingConfig: LOGGING });
+    fastify = started.fastify;
+    baseUrl = started.mainUrl;
   }, 120_000);
 
   afterAll(async () => {

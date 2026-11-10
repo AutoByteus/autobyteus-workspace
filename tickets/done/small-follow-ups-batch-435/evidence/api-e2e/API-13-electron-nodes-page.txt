@@ -1,0 +1,36 @@
+# API-13 (AC-003-1) — the Electron desktop window's Nodes page against a real node's Host gate; 2026-11-10T08:30-08:33Z
+# App: isolated instance iso-52527-2f42 of the fresh-clone packaged build of d37397b40d (API-02), `pnpm --silent isolated-app start --app <AutoByteus.app>`;
+#   window origin file://, driven over CDP (probes/electron-nodes.mjs, probes/electron-eval.mjs).
+# Node: this worktree's server dist (HEAD 432d1c3af2; Host gate unchanged by this ticket) on 127.0.0.1:52498 (probes/refnode.sh),
+#   own data root/HOME. Names: 127.0.0.1.nip.io and 127-0-0-1.nip.io resolve to 127.0.0.1 through public DNS and are not
+#   in the node's allowed-host class (remote-access-request-host.ts), so the node refuses them unless AUTOBYTEUS_ALLOWED_HOSTS lists them.
+
+## Node gate check (curl)
+started with AUTOBYTEUS_ALLOWED_HOSTS=127.0.0.1.nip.io: loopback 200; 127.0.0.1.nip.io 200; 127-0-0-1.nip.io 403 {"code":"REMOTE_ACCESS_HOST_REFUSED",...}
+restarted without it: 127.0.0.1.nip.io 403
+403 for Origin file:// and null: no Access-Control-* header (curl -D -)
+
+## Nodes page (electron-nodes.mjs output)
+N1 add http://127.0.0.1.nip.io:52498 while the name is allowed -> row key srv_-pBRJ… (the node's ID: reached); line "Agents here can't work with abx435-row yet."
+N2 the same row after the node restarted without the name (page reloaded, row asked again):
+   line "Not reachable. Something answers there, but it isn't an AutoByteus node."   dot "Not reachable now"
+N3 Add http://127-0-0-1.nip.io:52498 (a name the node refuses):
+   line "Not reachable. Something answers there, but it isn't an AutoByteus node."   status requests: 2 (one per probe: no opaque second request)
+N4 Add http://127.0.0.1.nip.io:52499 (closed port):
+   line "Not reachable. No answer from that address."   status requests: 4 (readable + opaque, per probe)
+Expected by AC-003-1 for N2/N3: "Something answers at <host>, but it refuses this window. If it is an AutoByteus node, add <host> to AUTOBYTEUS_ALLOWED_HOSTS on that node, or use its IP address."
+
+## Why (electron-eval.mjs in the window, and chrome-compare.mjs)
+Electron window (origin file://): readable fetch -> {"status":403,"type":"basic"}; no-cors fetch -> {"type":"basic"}; window.fetch native
+Chrome file:// page:              readable fetch -> TypeError: Failed to fetch; no-cors -> {"type":"opaque"}
+Chrome http page:                 readable fetch -> TypeError: Failed to fetch; no-cors -> {"type":"opaque"}
+Reading: the desktop window does not apply CORS to this request (response type "basic", although the 403 carries no
+Access-Control-* header), so probeNodeIdentity's first GET resolves with the 403 and the code path at
+utils/nodeIdentityProbe.ts:86 (`!response.ok` -> not_autobyteus) answers; the opaque second request (added at :83 for a
+failed fetch) never runs in the Electron window. In a browser window the design's mechanism holds (AC-003-2).
+No webSecurity setting is in autobyteus-web/electron (grep); the window can read the 403 body
+({"code":"REMOTE_ACCESS_HOST_REFUSED"}), which names the exact cause.
+
+## Node log (refnode-2-refusing.log)
+Node request refused REMOTE_ACCESS_HOST_REFUSED /rest/remote-access/status from 127.0.0.1 host 127.0.0.1.nip.io (add it to AUTOBYTEUS_ALLOWED_HOSTS if this is the node's name)
+Node request refused REMOTE_ACCESS_HOST_REFUSED /rest/remote-access/status from 127.0.0.1 host 127-0-0-1.nip.io (add it to AUTOBYTEUS_ALLOWED_HOSTS if this is the node's name)

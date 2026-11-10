@@ -2,7 +2,8 @@ import { vi } from "vitest";
 import { RootTaskExecutionLifecycle, type DeliverTaskWork } from "../../src/agent-collaboration/execution/task/root-task-execution-lifecycle.js";
 import type { RootTaskExecutionAdapter } from "../../src/agent-collaboration/execution/task/root-task-execution-adapter.js";
 import { TaskDelegationError } from "../../src/agent-collaboration/execution/task/task-delegation-command.js";
-import { taskExecutionReferenceKey, type TaskExecutionReference } from "../../src/agent-collaboration/execution/task/task-execution-reference.js";
+import type { TaskExecutionReference } from "../../src/agent-collaboration/execution/task/task-execution-reference.js";
+import { taskExecutionReferenceKey } from "@autobyteus/collaboration-stream-contracts";
 import { createRootExecutionIdentity, type CollaborationMemberExecutionIdentity } from "../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import type { AgentOperationResult } from "../../src/agent-execution/domain/agent-operation-result.js";
 import { InMemoryTaskExecutionResources } from "./task-execution-resource-fixtures.js";
@@ -18,12 +19,14 @@ const ingress: Record<string, string> = { "agent:worker": "worker", "team:review
 
 /**
  * One root over a neutral adapter double whose backend keeps a released copy's authority (fenced)
- * after DONE, as the real registries do: restoring it fails until that authority is discarded.
+ * after DONE, as the real registries do: restoring it fails until that authority is discarded. A live
+ * copy whose release is held in flight (`control.releaseGate`) is `stopping`: not live, and its restore is
+ * refused "already active or reserved", as the registries refuse it until the release finishes.
  */
 export function fixture() {
   const resources = new InMemoryTaskExecutionResources();
   resources.addTask("task-A");
-  const authority = new Map<string, "live" | "fenced">();
+  const authority = new Map<string, "live" | "stopping" | "fenced">();
   const log: string[] = [];
   const control = { restorable: true, releasePending: false, releaseGate: null as Promise<void> | null, restoreFailure: null as Error | null,
     deliveryRefusal: null as AgentOperationResult | null,
@@ -42,7 +45,10 @@ export function fixture() {
     cancelOwnedExecution: vi.fn(),
     releaseOwnedExecution: vi.fn(async (reference: TaskExecutionReference): Promise<AgentOperationResult> => {
       log.push(`release:${key(reference)}:${authority.get(key(reference)) ?? "none"}`);
-      if (control.releaseGate) await control.releaseGate;
+      if (control.releaseGate) {
+        if (authority.get(key(reference)) === "live") authority.set(key(reference), "stopping");
+        await control.releaseGate;
+      }
       if (control.releasePending) return { accepted: false, code: "RUNTIME_RELEASE_PENDING", message: "still stopping" };
       if (!authority.has(key(reference))) return { accepted: false, code: "EXACT_RELEASE_AUTHORITY_UNAVAILABLE" };
       authority.set(key(reference), "fenced");
@@ -70,6 +76,9 @@ export function fixture() {
       for (const reference of chains[agentRunId] ?? []) {
         if (authority.get(key(reference)) === "live") continue;
         if (control.restoreFailure) throw control.restoreFailure;
+        if (authority.get(key(reference)) === "stopping") {
+          throw new Error(`Task ${"teamRunId" in reference ? "TeamRun" : "AgentRun"} '${Object.values(reference)[0]}' is already active or reserved.`);
+        }
         // A retained fenced authority cannot be re-activated (it is closed for input).
         if (authority.get(key(reference)) === "fenced") throw new Error(`AgentRun '${agentRunId}' is closed for input.`);
         log.push(`restore:${key(reference)}`);

@@ -1,0 +1,62 @@
+# API-03 temporary mutation probe: each part of the fix reverted alone in autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-execution-lifecycle.ts; the unit files that pin it are run; the file is restored (git checkout) after each; commit 3da0b47f31 + API-02's new cases (uncommitted at run time); macOS, Node v22.23.1; 2026-11-10T13:32:22Z
+# Command per mutation: python3 /tmp/api03-mutation/mutate.py <file> <M>; NO_COLOR=1 pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-collaboration/root-task-existing-copy-assignment.test.ts tests/unit/agent-collaboration/root-task-reactivation.test.ts tests/unit/remote-collaboration/remote-messaging-owners.test.ts --no-watch; git checkout -- <file>
+# Mutation script:
+#   # API-03 temporary mutation probe (autobyteus-464): applies one mutation to root-task-execution-lifecycle.ts.
+#   import sys
+#   path, which = sys.argv[1], sys.argv[2]
+#   s = open(path).read()
+#   M = {
+#     "M1-D1-release-outside-queue": (
+#       ": this.accepting ? await this.queue.submit({ kind: \"release\", executeAtQueueHead: releaseHosted }) : await releaseHosted();",
+#       ": await releaseHosted();"),
+#     "M2-D1-always-queued": (
+#       ": this.accepting ? await this.queue.submit({ kind: \"release\", executeAtQueueHead: releaseHosted }) : await releaseHosted();",
+#       ": await this.queue.submit({ kind: \"release\", executeAtQueueHead: releaseHosted });"),
+#     "M3-D2-commit-after-step": (
+#       """      await this.queue.submit({ kind: "reopen", executeAtQueueHead: async () => {
+#           await this.prepareClosedCopyForResume(target.execution, target.ingressAgentRunId);
+#           await port.assignExistingTaskExecution({ hostRoot: target.root, execution: target.execution, taskId, assignedBy: sender,
+#             ...("teamRunId" in target.execution ? { teamCoordinatorAgentRunId: target.ingressAgentRunId } : {}) });
+#         } });""",
+#       """      await this.queue.submit({ kind: "reopen", executeAtQueueHead: () => this.prepareClosedCopyForResume(target.execution, target.ingressAgentRunId) });
+#         await port.assignExistingTaskExecution({ hostRoot: target.root, execution: target.execution, taskId, assignedBy: sender,
+#           ...("teamRunId" in target.execution ? { teamCoordinatorAgentRunId: target.ingressAgentRunId } : {}) });"""),
+#     "M4-D3-commit-after-step": (
+#       """    const { reopened } = await this.queue.submit({ kind: "reopen", executeAtQueueHead: async () => {
+#         await this.prepareClosedCopyForResume(execution, targetAgentRunId);
+#         return port.reopenAssignment(request);
+#       } });""",
+#       """    await this.queue.submit({ kind: "reopen", executeAtQueueHead: () => this.prepareClosedCopyForResume(execution, targetAgentRunId) });
+#       const { reopened } = await port.reopenAssignment(request);"""),
+#   }
+#   old, new = M[which]
+#   assert s.count(old) == 1, f"{which}: anchor not found exactly once"
+#   open(path, "w").write(s.replace(old, new))
+#   print(f"applied {which}")
+## M1-D1-release-outside-queue
+applied M1-D1-release-outside-queue
+ FAIL  tests/unit/agent-collaboration/root-task-existing-copy-assignment.test.ts > a DONE of the earlier Task racing the assignment (QR-001) > A's stop request arrives while the queue step settles the stop and holds B's commit: it waits for the step, finds the copy open and stops nothing (autobyteus-464)
+ FAIL  tests/unit/agent-collaboration/root-task-existing-copy-assignment.test.ts > a DONE of the earlier Task racing the assignment (QR-001) > an Agent copy open at the assignment's queue step, A's release requested before B's commit: B is delivered and the copy is never stopped (AC-001)
+ FAIL  tests/unit/agent-collaboration/root-task-existing-copy-assignment.test.ts > a DONE of the earlier Task racing the assignment (QR-001) > a Team copy open at the assignment's queue step, A's release requested before B's commit: B is delivered and the copy is never stopped (AC-001)
+ FAIL  tests/unit/agent-collaboration/root-task-reactivation.test.ts > reactivation of a closed assignment by its assigner (DS-L1) > a reactivation that finds the copy open at its queue step, with a DONE's release in flight across its commit and the wake: the copy is not stopped and gets the message (autobyteus-464 AC-003)
+ Test Files  2 failed | 1 passed (3)
+      Tests  4 failed | 66 passed (70)
+## M2-D1-always-queued
+applied M2-D1-always-queued
+ FAIL  tests/unit/agent-collaboration/root-task-existing-copy-assignment.test.ts > a closure release around root termination (autobyteus-464 D1; BEH-003: root termination stops everything) > a release requested after termination runs directly instead of being refused by the closed queue
+ FAIL  tests/unit/agent-collaboration/root-task-existing-copy-assignment.test.ts > a closure release around root termination (autobyteus-464 D1; BEH-003: root termination stops everything) > a release requested after root fail-stop runs directly instead of being refused by the closed queue
+ Test Files  1 failed | 2 passed (3)
+      Tests  2 failed | 68 passed (70)
+## M3-D2-commit-after-step
+applied M3-D2-commit-after-step
+ FAIL  tests/unit/agent-collaboration/root-task-existing-copy-assignment.test.ts > a DONE of the earlier Task racing the assignment (QR-001) > A's stop request arrives while the queue step settles the stop and holds B's commit: it waits for the step, finds the copy open and stops nothing (autobyteus-464)
+ FAIL  tests/unit/agent-collaboration/root-task-existing-copy-assignment.test.ts > a DONE of the earlier Task racing the assignment (QR-001) > an Agent copy open at the assignment's queue step, A's release requested before B's commit: B is delivered and the copy is never stopped (AC-001)
+ FAIL  tests/unit/agent-collaboration/root-task-existing-copy-assignment.test.ts > a DONE of the earlier Task racing the assignment (QR-001) > a Team copy open at the assignment's queue step, A's release requested before B's commit: B is delivered and the copy is never stopped (AC-001)
+ Test Files  1 failed | 2 passed (3)
+      Tests  3 failed | 67 passed (70)
+## M4-D3-commit-after-step
+applied M4-D3-commit-after-step
+ FAIL  tests/unit/agent-collaboration/root-task-reactivation.test.ts > reactivation of a closed assignment by its assigner (DS-L1) > a reactivation that finds the copy open at its queue step, with a DONE's release in flight across its commit and the wake: the copy is not stopped and gets the message (autobyteus-464 AC-003)
+ Test Files  1 failed | 2 passed (3)
+      Tests  1 failed | 69 passed (70)
+## Restored: git diff --stat src = []

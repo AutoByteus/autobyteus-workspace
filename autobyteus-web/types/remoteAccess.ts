@@ -73,9 +73,7 @@ export type MobileConnectionFailureKind =
   | 'network_unreachable'
   | 'auth_required'
   | 'device_revoked'
-  | 'phone_access_disabled'
-  | 'websocket_blocked'
-  | 'unsupported_mobile_feature';
+  | 'phone_access_disabled';
 
 export type MobileConnectionDiagnostic = {
   kind: MobileConnectionFailureKind;

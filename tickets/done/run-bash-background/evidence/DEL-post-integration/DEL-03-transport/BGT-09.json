@@ -1,0 +1,199 @@
+{
+  "childRunId": "native_bgt_worker_179b89d4_4222335a33b248499c592fd5722c585a",
+  "workerAddress": "/native_bgt_worker_179b89d4",
+  "delegated": {
+    "delegated": true,
+    "target_kind": "agent",
+    "target_agent_run_id": "native_bgt_worker_179b89d4_4222335a33b248499c592fd5722c585a",
+    "task_id": "ad_hoc_task_eeb6f73d-1abe-46bf-9708-21adfdc3b9cf"
+  },
+  "outcome": "report",
+  "idleToOutcomeMs": 77096,
+  "quietToOfflineMs": 60017,
+  "task": [
+    "running@-23",
+    "completed@74972"
+  ],
+  "statuses": [
+    "initializing@-171",
+    "initializing@-171",
+    "running@-171",
+    "running@-171",
+    "running@-171",
+    "running@-170",
+    "running@-132",
+    "running@-132",
+    "running@-132",
+    "running@-132",
+    "running@-132",
+    "running@-23",
+    "running@-23",
+    "running@-23",
+    "running@-23",
+    "running@-23",
+    "running@-23",
+    "running@-23",
+    "running@0",
+    "running@0",
+    "running@0",
+    "running@0",
+    "idle@0",
+    "initializing@0",
+    "idle@0",
+    "idle@74972",
+    "initializing@76995",
+    "running@76995",
+    "running@76995",
+    "running@76998",
+    "running@76998",
+    "running@76998",
+    "running@77044",
+    "running@77044",
+    "running@77044",
+    "running@77044",
+    "running@77044",
+    "running@77095",
+    "running@77095",
+    "running@77095",
+    "running@77095",
+    "running@77095",
+    "running@77095",
+    "running@77130",
+    "running@77130",
+    "running@77130",
+    "running@77130",
+    "idle@77130",
+    "initializing@77130",
+    "idle@77130",
+    "idle@137147",
+    "idle@137147",
+    "idle@137147",
+    "offline@137147",
+    "offline@137147"
+  ],
+  "workerNotices": 1,
+  "requests": {
+    "coordinator": [
+      {
+        "at": 1794312301083,
+        "repliedAt": 1794312301083,
+        "scripted": true,
+        "noticeTurn": false,
+        "tools": [
+          "run_bash",
+          "read_file",
+          "edit_file",
+          "write_file",
+          "delegate_task",
+          "send_message_to"
+        ],
+        "toolResults": [],
+        "lastUser": "CASE:BGT-09C Delegate the build."
+      },
+      {
+        "at": 1794312301323,
+        "repliedAt": 1794312301323,
+        "scripted": true,
+        "noticeTurn": false,
+        "tools": [
+          "run_bash",
+          "read_file",
+          "edit_file",
+          "write_file",
+          "delegate_task",
+          "send_message_to"
+        ],
+        "toolResults": [
+          "{\"delegated\":true,\"target_kind\":\"agent\",\"target_agent_run_id\":\"native_bgt_worker_179b89d4_4222335a33b248499c592fd5722c585a\",\"task_id\":\"ad_hoc_task_eeb6f73d-1abe-46bf-9708-21adfdc3b9cf\"}"
+        ],
+        "lastUser": "CASE:BGT-09C Delegate the build."
+      },
+      {
+        "at": 1794312378521,
+        "repliedAt": 1794312378521,
+        "scripted": true,
+        "noticeTurn": false,
+        "tools": [
+          "run_bash",
+          "read_file",
+          "edit_file",
+          "write_file",
+          "delegate_task",
+          "send_message_to"
+        ],
+        "toolResults": [],
+        "lastUser": "You received a message from the agent with sender run id \"native_bgt_worker_179b89d4_4222335a33b248499c592fd5722c585a\".\nmessage:\nBUILD_DONE_060fcb05"
+      }
+    ],
+    "worker": [
+      {
+        "at": 1794312301256,
+        "repliedAt": 1794312301256,
+        "scripted": true,
+        "noticeTurn": false,
+        "tools": [
+          "run_bash",
+          "read_file",
+          "edit_file",
+          "write_file",
+          "send_message_to",
+          "delegate_task"
+        ],
+        "toolResults": [],
+        "lastUser": "You have a new task from the agent with sender address \"/native_bgt_coordinator_5e67a41d\" and sender run id \"native_bgt_coordinator_5e67a41d_b9d6c31c2ffe4b9b8d8117a2ab6d947d\".\nWhen you finish, or need something you can't get yourself, tell that agent using send_message_to with recipient_address set to that sender address or target_agent_run_id set to that sender run id (one of them, not both).\n\nDescription:\nCASE:BGT-09W Run the build in the background, end your turn, and report to your delegator when it finished."
+      },
+      {
+        "at": 1794312301404,
+        "repliedAt": 1794312301404,
+        "scripted": true,
+        "noticeTurn": false,
+        "tools": [
+          "run_bash",
+          "read_file",
+          "edit_file",
+          "write_file",
+          "send_message_to",
+          "delegate_task"
+        ],
+        "toolResults": [
+          "{\"pid\":44092,\"status\":\"running\",\"effectiveCwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-ws-uFfOJX\",\"outputFile\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_worker_179b89d4_4222335a33b248499c592fd5722c585a/call-1794312301376-44011.log\"}"
+        ],
+        "lastUser": "You have a new task from the agent with sender address \"/native_bgt_coordinator_5e67a41d\" and sender run id \"native_bgt_coordinator_5e67a41d_b9d6c31c2ffe4b9b8d8117a2ab6d947d\".\nWhen you finish, or need something you can't get yourself, tell that agent using send_message_to with recipient_address set to that sender address or target_agent_run_id set to that sender run id (one of them, not both).\n\nDescription:\nCASE:BGT-09W Run the build in the background, end your turn, and report to your delegator when it finished."
+      },
+      {
+        "at": 1794312378424,
+        "repliedAt": 1794312378424,
+        "scripted": true,
+        "noticeTurn": true,
+        "tools": [
+          "run_bash",
+          "read_file",
+          "edit_file",
+          "write_file",
+          "send_message_to",
+          "delegate_task"
+        ],
+        "toolResults": [],
+        "lastUser": "[Platform notice — background tasks finished]\n\n- pid 44092 `sleep 75; echo built`: exit code 0 after 1m 15s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_worker_179b89d4_4222335a33b248499c592fd5722c585a/call-1794312301376-44011.log. Last lines:\n    built"
+      },
+      {
+        "at": 1794312378533,
+        "repliedAt": 1794312378533,
+        "scripted": true,
+        "noticeTurn": false,
+        "tools": [
+          "run_bash",
+          "read_file",
+          "edit_file",
+          "write_file",
+          "send_message_to",
+          "delegate_task"
+        ],
+        "toolResults": [
+          "{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"native_bgt_coordinator_5e67a41d_b9d6c31c2ffe4b9b8d8117a2ab6d947d\"}"
+        ],
+        "lastUser": "[Platform notice — background tasks finished]\n\n- pid 44092 `sleep 75; echo built`: exit code 0 after 1m 15s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_worker_179b89d4_4222335a33b248499c592fd5722c585a/call-1794312301376-44011.log. Last lines:\n    built"
+      }
+    ]
+  }
+}

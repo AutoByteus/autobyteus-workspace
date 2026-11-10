@@ -1,0 +1,14 @@
+# IMP-05 Web guards
+# Commands: pnpm -C autobyteus-web guard:web-boundary; guard:localization-boundary; audit:localization-literals
+# Commit: 0fa12575c
+# Environment: Linux 6.12 container, Node v22.23.3, pnpm 10.28.2 via corepack; date 2026-11-10
+
+### pnpm -C autobyteus-web guard:web-boundary
+[guard:web-boundary] Passed.
+exit=0
+### pnpm -C autobyteus-web guard:localization-boundary
+[guard:localization-boundary] Passed.
+exit=0
+### pnpm -C autobyteus-web audit:localization-literals
+[audit:localization-literals] Passed with zero unresolved findings.
+exit=0

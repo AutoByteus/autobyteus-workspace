@@ -41,6 +41,7 @@ import type { AgentRunBackendPreparationRequest } from "../agent-run-backend-fac
 import type { AgentRunBackendFactory } from "../agent-run-backend-factory.js";
 import { buildAutoByteusManagedCollaborationContext } from "./autobyteus-managed-collaboration-context-builder.js";
 import { composeNativeAutoByteusPrompt } from "../../prompt/carpenter-prompt-composer.js";
+import { getAgentSemanticMemory, type AgentSemanticMemory } from "../../../agent-memory/services/agent-semantic-memory.js";
 import { resolveAutoByteusRuntimeAgentToolExposure } from "./autobyteus-runtime-tool-exposure.js";
 import { createAvailableLlm } from "./available-llm-construction.js";
 import type { ApplicationAgentToolCapability } from "../../../application-agent-tools/services/application-agent-tool-capability.js";
@@ -104,6 +105,7 @@ export type AutoByteusAgentRunBackendFactoryOptions = {
   applicationAgentTools?: ApplicationAgentToolCapability | null;
   /** The run's integration variables (`null`: this host's runs get no integration access). */
   integrationRunAccess?: IntegrationRunAccess | null;
+  semanticMemory?: AgentSemanticMemory;
 };
 
 export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory {
@@ -331,6 +333,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
       workspaceRootPath,
       memberExecutionContext: options.memberExecutionContext ?? null,
       project: options.project,
+      semanticMemoryPath: await (this.options.semanticMemory ?? getAgentSemanticMemory()).prepareForRun(agentDef),
     });
 
     const inputProcessors: BaseAgentUserInputMessageProcessor[] = [];

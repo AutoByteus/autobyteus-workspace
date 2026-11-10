@@ -24,6 +24,9 @@ describe("workspace content REST boundary e2e", () => {
   let initialIds: Set<string>;
   let dataRoot: string;
   let baseUrl: URL;
+  let ownerCredential: string;
+  // `inject` does not pass through the credential attachment: each call names the owner credential itself.
+  const owner = () => ({ authorization: `Bearer ${ownerCredential}` });
 
   // Compose the real process authorities used by public workspace removal. A
   // route-only Fastify fixture cannot run that lifecycle's cleanup safely.
@@ -34,6 +37,7 @@ describe("workspace content REST boundary e2e", () => {
     const started = await startStudioE2eRuntimeServer();
     app = started.fastify;
     baseUrl = started.mainUrl;
+    ownerCredential = started.ownerCredential;
   }, 60_000);
 
   afterAll(async () => {
@@ -126,6 +130,7 @@ describe("workspace content REST boundary e2e", () => {
 
     const response = await app.inject({
       method: "GET",
+      headers: owner(),
       url: `/rest/workspaces/${encodeURIComponent(workspace.workspaceId)}/content?${new URLSearchParams({
         path: "docs/assets/diagram one.png",
       })}`,
@@ -144,6 +149,7 @@ describe("workspace content REST boundary e2e", () => {
 
     const response = await app.inject({
       method: "GET",
+      headers: owner(),
       url: `/rest/workspaces/${encodeURIComponent(workspace.workspaceId)}/content?${new URLSearchParams({
         path: "docs/assets/diagram.SVG",
       })}`,
@@ -160,6 +166,7 @@ describe("workspace content REST boundary e2e", () => {
 
     const response = await app.inject({
       method: "GET",
+      headers: owner(),
       url: `/rest/workspaces/${encodeURIComponent(workspace.workspaceId)}/content?${new URLSearchParams({
         path: "../workspace-sibling/leak.png",
       })}`,
@@ -179,6 +186,7 @@ describe("workspace content REST boundary e2e", () => {
 
     const response = await app.inject({
       method: "GET",
+      headers: owner(),
       url: `/rest/workspaces/${encodeURIComponent(workspace.workspaceId)}/content?${new URLSearchParams({
         path: outsideImage,
       })}`,
@@ -198,6 +206,7 @@ describe("workspace content REST boundary e2e", () => {
 
     const response = await app.inject({
       method: "GET",
+      headers: owner(),
       url: `/rest/workspaces/${encodeURIComponent(workspace.workspaceId)}/static/${encodeURIComponent(outsideHtml)}`,
     });
 

@@ -1,0 +1,5 @@
+# API-18 attempt stopped by the user mid-run (app restart); no result; rerun as API-18-android14-full-screen.txt
+# API-18; 2026-11-10T08:21:08Z; emulator-5602 abx435_api34 Android 14, WebView (com.google.android.webview, 113.0.5672.136); APK of d37397b40d; cutout: 
+installed
+pairing link for http://10.0.2.2:60467 written (code not shown)
+shared the pairing link into the app

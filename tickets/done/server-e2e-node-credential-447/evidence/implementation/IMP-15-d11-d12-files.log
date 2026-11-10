@@ -1,0 +1,26 @@
+# IMP-15 D11/D12: RPE, DCF and daily-assistant-collaborator (touched by the capsule helper), scripted AGY; working tree = 8b7c60e343 + D10-D12; rebuilt dist (IMP-13); macOS, Node v22.23.1; 2026-11-10T08:39:41Z
+# Command: env -i PATH HOME=<resolved temp> TMPDIR NO_COLOR=1 RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run --no-watch tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts tests/e2e/projects/delegated-copy-project-folder.e2e.test.ts tests/e2e/projects/daily-assistant-collaborator.e2e.test.ts
+# Excerpt (full log kept in the worktree)
+ ✓ tests/e2e/projects/daily-assistant-collaborator.e2e.test.ts (6 tests) 3676ms
+     ✓ DAC-01: the PM lists the Daily Assistant at /daily_assistant; the Model Router is never listed or delegable, internal agents hidden or shown  371ms
+     ✓ DAC-02: a saved Task to /daily_assistant starts a Daily Assistant copy in the Project's folder; it has send_message_to and reports back to the PM  539ms
+     ✓ DAC-03: a description-only delegation to /daily_assistant runs the copy in the delegating run's folder and it reports back  618ms
+     ✓ DAC-04: a Team with a Daily Assistant member gets no second one; the PM gives its Daily Assistant copy a second Task by run id  508ms
+     ✓ DAC-05: a Daily Assistant run does not see or delegate to its own definition  387ms
+Error updating agent team definition: Error: The Team definition changed after this draft was loaded. Refresh and apply the draft again.
+Error updating agent team definition: Error: AgentOrg-owned Team definitions can only be changed through their atomic parent AgentOrg save.
+Error deleting agent team definition with ID agent-org-owned-team:studio:squad: Error: Deleting application-owned team definitions is not supported.
+Error updating agent team definition: Error: Team definition 'software-engineering-team' is read-only at source path '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rpe-package-Yl6oAl/autobyteus-agents/agent-teams'.
+ ✓ tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts (8 tests) 4443ms
+     ✓ RPE-001 (AC-001, REQ-001, REQ-003): the Team edit page's save writes the description into the package and the default runtime/model into the personal settings  1577ms
+     ✓ RPE-006 (AC-005, REQ-002): a delegated copy of the package Team runs on its saved default, and on a newly saved one  1190ms
+ ✓ tests/e2e/projects/delegated-copy-project-folder.e2e.test.ts (8 tests) 11600ms
+     ✓ DCF-01: an Agent copy of a saved Task of P runs in F; the manager stays in G  489ms
+     ✓ DCF-02: a Team copy's default and every member run in F  534ms
+     ✓ DCF-03: a worker of that Task delegates without task_id: the sub-work runs in F, with the manager in G  620ms
+     ✓ DCF-04: a Task of a Project with no link, and a description-only delegation, run in the top-level run's folder  571ms
+     ✓ DCF-07: a Team root's and an Org root's catalog copies, and an Org's configured placement, run in F; their managers stay in G  1825ms
+     ✓ DCF-08: an existing copy in G given a Task of P stays in G; a copy in F stays in F; after a real restart both keep their folder and wake there  5917ms
+ Test Files  3 passed (3)
+      Tests  22 passed (22)
+   Duration  33.91s (transform 7.31s, setup 98ms, import 13.45s, tests 19.72s, environment 0ms)

@@ -1,0 +1,12 @@
+2026-11-10T08:17:12.100Z proxy 63826 -> 127.0.0.1:60467, control 63827, mode stopped
+2026-11-10T08:17:36.022Z mode stopped
+2026-11-10T08:17:52.793Z mode pass
+2026-11-10T08:18:03.671Z mode stopped
+2026-11-10T08:18:16.938Z mode pass
+2026-11-10T08:18:45.072Z mode 502
+2026-11-10T08:18:45.640Z 502 for GET /rest/remote-access/status
+2026-11-10T08:18:57.452Z mode pass
+2026-11-10T08:19:41.485Z proxy 63826 -> 127.0.0.1:60467, control 63827, mode pass
+2026-11-10T08:19:46.057Z mode 502page
+2026-11-10T08:19:47.538Z 502 for GET /mobile
+2026-11-10T08:19:58.502Z mode pass

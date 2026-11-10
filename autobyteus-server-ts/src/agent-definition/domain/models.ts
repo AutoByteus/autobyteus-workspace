@@ -48,6 +48,11 @@ export class AgentDefinition {
    * picking and delegation while "Show internal agents" is off (`InternalAgentVisibility`); opening it by ID works.
    */
   internal: boolean;
+  /**
+   * The agent has a semantic memory: its own folder of reusable knowledge, shared by all its runs
+   * (`"semanticMemoryEnabled": true` in `agent-config.json`, or a personal setting). Absent means off.
+   */
+  semanticMemoryEnabled: boolean;
   sourceInfo?: AgentDefinitionSourceInfo | null;
 
   constructor(options: {
@@ -77,6 +82,7 @@ export class AgentDefinition {
     ownerLocalApplicationId?: string | null;
     defaultLaunchConfig?: AgentDefinitionDefaultLaunchConfig | null;
     internal?: boolean;
+    semanticMemoryEnabled?: boolean;
     sourceInfo?: AgentDefinitionSourceInfo | null;
   }) {
     this.name = options.name;
@@ -105,6 +111,7 @@ export class AgentDefinition {
     this.ownerLocalApplicationId = options.ownerLocalApplicationId ?? null;
     this.defaultLaunchConfig = options.defaultLaunchConfig ?? null;
     this.internal = options.internal === true;
+    this.semanticMemoryEnabled = options.semanticMemoryEnabled === true;
     this.sourceInfo = options.sourceInfo ?? null;
   }
 }
@@ -125,4 +132,5 @@ export type AgentDefinitionUpdate = {
   skillNames?: string[];
   skillScope?: AgentSkillScope;
   defaultLaunchConfig?: AgentDefinitionDefaultLaunchConfig | null;
+  semanticMemoryEnabled?: boolean;
 };

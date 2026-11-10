@@ -16,6 +16,7 @@ import type { AcpAgentRunBackend } from "../../../../../src/agent-execution/back
 import { AcpAgentRunContext } from "../../../../../src/agent-execution/backends/acp/backend/acp-agent-run-context.js";
 import { AcpAgentProcess } from "../../../../../src/runtime-management/acp/acp-agent-process.js";
 import type { IntegrationRunAccess } from "../../../../../src/credential-proxy/integration-run-access.js";
+import { AgentSemanticMemory } from "../../../../../src/agent-memory/services/agent-semantic-memory.js";
 import { grokBuildSessionProfile } from "../../../../../src/agent-execution/backends/grok/grok-build-session-profile.js";
 import { getGrokWorkspaceSkillMaterializer } from "../../../../../src/agent-execution/backends/grok/grok-workspace-skill-materializer.js";
 import {
@@ -53,6 +54,7 @@ const createFactory = (fixture: string, options: {
   /** The fixture carries its own MCP server status rows; otherwise the fake agent reports ready. */
   fixtureReportsMcp?: boolean; skillScope?: "CONFIGURED" | "ALL_INSTALLED"; skillMaterializer?: unknown;
   integrationRunAccess?: IntegrationRunAccess;
+  semanticMemory?: { memoryDir: string; enabled: boolean };
 } = {}) => {
   const recordFile = path.join(tempDir("acp-record-"), "client.jsonl");
   const workingDirectory = tempDir("acp-ws-");
@@ -63,6 +65,7 @@ const createFactory = (fixture: string, options: {
     sessionProfile: grokBuildSessionProfile,
     definitions: { getAgentDefinitionById: async () => new AgentDefinition({
       id: "def-1", name: "Reviewer", role: "Code reviewer", description: "Reviews code", toolNames: [],
+      semanticMemoryEnabled: options.semanticMemory?.enabled === true,
     }) } as unknown as AgentDefinitionService,
     skills: { resolveSkillScope: () => options.skillScope ?? "CONFIGURED", resolveConfiguredSkillBindingsForAgent: () => [] } as unknown as SkillService,
     workspaces: { resolveWorkingDirectory: async () => workingDirectory },
@@ -70,6 +73,7 @@ const createFactory = (fixture: string, options: {
     skillMaterializer: (options.skillMaterializer ?? getGrokWorkspaceSkillMaterializer()) as ReturnType<typeof getGrokWorkspaceSkillMaterializer>,
     integrationRunAccess: options.integrationRunAccess ?? null,
     providerRelayAccess: null,
+    semanticMemory: new AgentSemanticMemory({ memoryDir: options.semanticMemory?.memoryDir ?? tempDir("acp-semantic-unused-") }),
   });
   const recorded = () => fs.existsSync(recordFile)
     ? fs.readFileSync(recordFile, "utf8").split("\n").filter(Boolean).map((line) => JSON.parse(line)) : [];
@@ -118,6 +122,22 @@ describe("AcpAgentRunBackendFactory", () => {
     expect(types.filter((type) => type === AgentRunEventType.SYSTEM_INSTRUCTIONS_SUPPLIED)).toHaveLength(1);
     expect(types[1]).toBe(AgentRunEventType.TURN_STARTED);
     expect(backend.getLifecycleSnapshot()).toMatchObject({ availability: "active", phase: "idle", currentTurn: { kind: "NONE" } });
+  });
+
+  it("tells an agent with semantic memory its folder in the session rules and creates it; others get neither (REQ-005, REQ-008)", async () => {
+    const memoryDir = tempDir("acp-semantic-memory-");
+    const folder = path.join(memoryDir, "semantic", "def-1");
+    const enabled = createFactory(fixturePath("prompt"), { semanticMemory: { memoryDir, enabled: true } });
+    backends.push(await enabled.factory.beginPreparation({ kind: "new", config: config(), runId: "run-1" }).prepare() as AcpAgentRunBackend);
+    const rules = enabled.recorded().find((message) => message.method === "session/new").params._meta.rules as string;
+    expect(rules.endsWith(`## Semantic Memory\n\nYour semantic memory is the folder \`${folder}\`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.`)).toBe(true);
+    expect(fs.statSync(folder).isDirectory()).toBe(true);
+
+    const otherMemoryDir = tempDir("acp-semantic-memory-off-");
+    const disabled = createFactory(fixturePath("prompt"), { semanticMemory: { memoryDir: otherMemoryDir, enabled: false } });
+    backends.push(await disabled.factory.beginPreparation({ kind: "new", config: config(), runId: "run-2" }).prepare() as AcpAgentRunBackend);
+    expect(disabled.recorded().find((message) => message.method === "session/new").params._meta.rules).not.toContain("Semantic Memory");
+    expect(fs.readdirSync(otherMemoryDir)).toEqual([]);
   });
 
   it("starts an allowed run's agent process with the launch profile's environment plus its integration variables (DS-002)", async () => {

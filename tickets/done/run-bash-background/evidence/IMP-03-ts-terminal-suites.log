@@ -1,0 +1,12 @@
+# IMP-03 autobyteus-ts terminal, tool schema, approval-flow, tool-result and shutdown-step suites
+# Command: pnpm -C autobyteus-ts exec vitest run tests/unit/tools/terminal tests/integration/tools/terminal tests/unit/tools/usage/providers/run-bash-openai-schema.test.ts tests/integration/agent/tool-approval-flow.test.ts tests/unit/agent/shutdown-steps tests/unit/tools/tool-result-json.test.ts
+# Commit: ddd594d07b; macOS Darwin 25.5.0 arm64, bash 3.2.57, node v22.23.1; 2026-11-10T11:01Z
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/run-bash-background/autobyteus-ts
+
+
+ Test Files  34 passed (34)
+      Tests  211 passed (211)
+   Start at  12:01:30
+   Duration  35.28s (transform 3.93s, setup 977ms, import 5.07s, tests 86.58s, environment 2ms)
+

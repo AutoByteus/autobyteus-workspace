@@ -638,7 +638,8 @@ suite("A delegated copy's model changed by the user: stop, choose, resume (real 
     expect(delegated.delegated, JSON.stringify(delegated)).toBe(true);
     const copyRunId = delegated.target_agent_run_id as string;
     await until(async () => (await launchesOf(copyRunId)).length > 0, `${kind}: copy started`, 60_000);
-    await expect(stop(root.rootKind, root.rootId, { agentRunId: copyRunId })).resolves.toMatchObject({ success: true, outcome: "STOPPED" });
+    const firstStop = await stop(root.rootKind, root.rootId, { agentRunId: copyRunId });
+    expect(firstStop, JSON.stringify(firstStop)).toMatchObject({ success: true, outcome: "STOPPED" });
 
     const copyDir = findDir(path.join(dataDir, "memory"), copyRunId)!;
     expect(copyDir, "the copy's memory folder").toBeTruthy();
@@ -669,7 +670,9 @@ suite("A delegated copy's model changed by the user: stop, choose, resume (real 
       correlation_id: done[0]!.boundary_key, content: expect.stringMatching(/^Agent runtime changed from Antigravity CLI \(.+\) to Grok Build \(.+\)\.$/) });
     expect(records.filter((record) => String(record.correlation_id ?? "").startsWith("runtime_switch:")), "I-5: one marker").toHaveLength(1);
 
-    await expect(stop(root.rootKind, root.rootId, { agentRunId: copyRunId })).resolves.toMatchObject({ success: true });
+    // A refused stop shows its whole result (outcome, message) (autobyteus-447 D13).
+    const stopped = await stop(root.rootKind, root.rootId, { agentRunId: copyRunId });
+    expect(stopped.success, JSON.stringify(stopped)).toBe(true);
     await terminate(kind, root.rootId);
   }, 240_000);
 

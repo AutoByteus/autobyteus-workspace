@@ -11,6 +11,7 @@ import type { AgyStreamMessage } from "../../../../../src/agent-execution/backen
 import { Skill } from "../../../../../src/skills/domain/models.js";
 import { AgentCreationError } from "../../../../../src/agent-execution/errors.js";
 import { createAgentToolMcpRunSessionsStub } from "../../../../helpers/agent-tool-mcp-run-sessions-stub.js";
+import { AgentSemanticMemory } from "../../../../../src/agent-memory/services/agent-semantic-memory.js";
 const { start, stop, streamListeners } = vi.hoisted(() => ({ start: vi.fn(), stop: vi.fn(),
   streamListeners: [] as Array<(message: unknown) => void> }));
 
@@ -116,6 +117,26 @@ describe("AGY backend capability admission and preserved bindings", () => {
     const manifest = JSON.parse(await fs.readFile(path.join(config.memoryDir!, "agy-project", "manifest.json"), "utf8"));
     const markdown = await fs.readFile(path.join(config.memoryDir!, "agy-project", ".agents", "agents", manifest.agentName, "agent.md"), "utf8");
     expect(markdown).toContain("## Project\n\nYou work in the Project AutoByteus (Project ID project_a1). Use this Project ID with the Project tools; ask the user before working on another Project.");
+    await backend.terminate();
+  });
+
+  it("writes an enabled agent's Semantic Memory section into the agent file and creates the folder (REQ-005)", async () => {
+    const memoryDir = path.join(base, "server-memory");
+    const enabled = new AgyAgentRunBackendFactory(
+      { getAgentDefinitionById: async () => ({ id: "test-agent", name: "Test agent", description: "Unit test",
+        instructions, toolNames: [], skillNames: [], semanticMemoryEnabled: true }) } as never,
+      { resolveSkillScope: () => "CONFIGURED", hasEffectiveSkills: () => false, resolveConfiguredSkillBindingsForAgent: () => [] } as never,
+      { resolveWorkingDirectory: async () => workspace } as never,
+      createAgentToolMcpRunSessionsStub() as never,
+      null,
+      new AgentSemanticMemory({ memoryDir }),
+    );
+    const backend = await prepareAndReleaseOnFailure(enabled.beginPreparation({ kind: "new", config, runId: "run" }));
+    const manifest = JSON.parse(await fs.readFile(path.join(config.memoryDir!, "agy-project", "manifest.json"), "utf8"));
+    const markdown = await fs.readFile(path.join(config.memoryDir!, "agy-project", ".agents", "agents", manifest.agentName, "agent.md"), "utf8");
+    const folder = path.join(memoryDir, "semantic", "test-agent");
+    expect(markdown).toContain(`## Semantic Memory\n\nYour semantic memory is the folder \`${folder}\`. It belongs to you`);
+    expect((await fs.stat(folder)).isDirectory()).toBe(true);
     await backend.terminate();
   });
 

@@ -40,11 +40,16 @@ class NodeConnectionFlowTest {
 
     private class RecordingScreens : NodeConnectionFlow.Screens {
         val events = mutableListOf<String>()
+        /** The entry of the last page opened, as the activity keeps it for the overlay's Retry. */
+        var pageEntry: SavedNodeEntry? = null
         override fun showConnecting(nodeName: String) { events += "connecting:$nodeName" }
         override fun showCantReach(nodeName: String, reason: CantReachReason) { events += "cantReach:$nodeName:$reason" }
         override fun showTypeAddress(prefill: String) { events += "typeAddress:$prefill" }
         // The activity shows the page's entry by its shown name ("Connected to …").
-        override fun openPage(entry: SavedNodeEntry, url: String, pairing: Boolean) { events += "page:${entry.shownName}:$pairing:$url" }
+        override fun openPage(entry: SavedNodeEntry, url: String, pairing: Boolean) {
+            events += "page:${entry.shownName}:$pairing:$url"
+            pageEntry = entry
+        }
     }
 
     private val direct = Executor { it.run() }
@@ -190,6 +195,41 @@ class NodeConnectionFlowTest {
         flow.onPaired("")
         assertEquals(listOf("AutoByteus node"), entries.saved.map { it.shownName })
         assertEquals(null, entries.saved.single().knownName)
+    }
+
+    // autobyteus-435 REQ-008, AC-008-1: the overlay's Retry loads the pairing link again while it has not paired.
+    @Test
+    fun retryOfAPairingLinksPageLoadsTheLinkAgainUntilThePagePairs_thenTheNodesPage() {
+        val link = pairingLink("http://192.168.1.25:8001", "Docker node 1")
+        val flow = flow()
+        flow.connect(link, EntryForm.Scan)
+        val entry = screens.pageEntry!!
+        assertEquals(link, flow.retryUrlFor(entry))
+        assertEquals("a Retry does not end the pending pairing", link, flow.retryUrlFor(entry))
+
+        flow.onPaired("Docker node 1")
+        assertEquals("http://192.168.1.25:8001/mobile", flow.retryUrlFor(entry))
+        assertEquals(listOf("Docker node 1"), entries.saved.map { it.displayName })
+    }
+
+    @Test
+    fun retryOfASavedNodesPageOrOfALeftPairingLoadsTheNodesPage() {
+        val saved = SavedNodeEntry.fromNormalized(NodeUrlNormalizer.normalize("https://node.example.com"), displayName = "Office Mac")
+        entries.saved += saved
+        val flow = flow()
+        flow.open(saved)
+        assertEquals("https://node.example.com/mobile", flow.retryUrlFor(saved))
+
+        flow.connect(pairingLink("http://192.168.1.25:8001", "Docker node 1"), EntryForm.Shared)
+        val pairingEntry = screens.pageEntry!!
+        flow.abandonPendingPairing()
+        assertEquals(pairingEntry.mobileUrl, flow.retryUrlFor(pairingEntry))
+
+        // A saved node opened after a pairing link: that link is no longer pending.
+        flow.connect(pairingLink("http://192.168.1.25:8001", "Docker node 1"), EntryForm.Shared)
+        flow.open(saved)
+        assertEquals(pairingEntry.mobileUrl, flow.retryUrlFor(pairingEntry))
+        assertTrue("the pairing link is never saved", entries.saved.none { it.mobileUrl.contains("pairing") })
     }
 
     @Test

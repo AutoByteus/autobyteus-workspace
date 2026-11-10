@@ -4,10 +4,6 @@ import { registerReadFileTool } from './file/read-file.js';
 import { registerWriteFileTool } from './file/write-file.js';
 import { registerEditFileTool } from './file/edit-file.js';
 import { registerRunBashTool } from './terminal/tools/run-bash.js';
-import { registerStartBackgroundProcessTool } from './terminal/tools/start-background-process.js';
-import { registerGetBackgroundProcessesTool } from './terminal/tools/get-background-processes.js';
-import { registerGetProcessOutputTool } from './terminal/tools/get-process-output.js';
-import { registerStopBackgroundProcessTool } from './terminal/tools/stop-background-process.js';
 import { Search } from './search-tool.js';
 import { DownloadMediaTool } from './multimedia/download-media-tool.js';
 import { ReadUrl } from './web/read-url-tool.js';
@@ -21,10 +17,6 @@ export function registerTools(): void {
   registerWriteFileTool();
   registerEditFileTool();
   registerRunBashTool();
-  registerStartBackgroundProcessTool();
-  registerGetBackgroundProcessesTool();
-  registerGetProcessOutputTool();
-  registerStopBackgroundProcessTool();
 
   registerToolClass(Search);
   registerToolClass(DownloadMediaTool);

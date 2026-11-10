@@ -23,6 +23,9 @@ import { registerAgentCommunicationTools } from "../../../../../src/agent-tools/
 import { RuntimeKind } from "../../../../../src/runtime-management/runtime-kind-enum.js";
 import { testMemberExecutionContext } from "../../../../fixtures/current-team-run-fixtures.js";
 import { registerTools } from "autobyteus-ts/tools/register-tools.js";
+import fs from "node:fs";
+import os from "node:os";
+import { AgentSemanticMemory } from "../../../../../src/agent-memory/services/agent-semantic-memory.js";
 
 class DummyLLM extends BaseLLM {
   protected async _sendMessagesToLLM(_messages: Message[]): Promise<CompleteResponse> {
@@ -371,6 +374,34 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     expect(built.agentConfig.initialCustomData?.teamContext).not.toHaveProperty("members");
     const removedNativeCommunicationField = ["communication", "Context"].join("");
     expect(built.agentConfig.initialCustomData?.teamContext).not.toHaveProperty(removedNativeCommunicationField);
+  });
+
+  it("tells an agent with semantic memory its folder between the Project and Working Environment sections (REQ-005)", async () => {
+    const memoryDir = fs.mkdtempSync(path.join(os.tmpdir(), "autobyteus-semantic-memory-"));
+    try {
+      const factory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope(),
+        agentDefinitionService: { getAgentDefinitionById: vi.fn(async () => new AgentDefinition({
+          id: "computer-use-operator", name: "Operator", description: "Operates.", instructions: "Operate.", toolNames: [],
+          semanticMemoryEnabled: true,
+        })) } as any,
+        createLLM: vi.fn(async () => new DummyLLM(new LLMModel({ name: "dummy-model", value: "dummy-model",
+          canonicalName: "dummy-model", provider: LLMProvider.OPENAI }), new LLMConfig())),
+        workspaceManager: { getWorkspaceById: () => null, getOrCreateTempWorkspace: async () => ({
+          workspaceId: "workspace-1", getName: () => "Workspace", getBasePath: () => path.join("/tmp", "workspace-1") }) } as any,
+        skillService: { hasEffectiveSkills: () => false, resolveConfiguredSkillsForAgent: () => [] } as any,
+        semanticMemory: new AgentSemanticMemory({ memoryDir }),
+      });
+      const built = await (factory as any).buildAgentConfig(new AgentRunConfig({
+        agentDefinitionId: "computer-use-operator", llmModelIdentifier: "dummy-model", autoExecuteTools: false,
+        runtimeKind: RuntimeKind.AUTOBYTEUS, project: { projectId: "project_a1", name: "AutoByteus" },
+      }), "run-operator", () => undefined);
+      const folder = path.join(memoryDir, "semantic", "computer-use-operator");
+      expect(built.agentConfig.systemPrompt).toContain(
+        `another Project.\n\n## Semantic Memory\n\nYour semantic memory is the folder \`${folder}\`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.\n\n## Working Environment`);
+      expect(fs.statSync(folder).isDirectory()).toBe(true);
+    } finally {
+      fs.rmSync(memoryDir, { recursive: true, force: true });
+    }
   });
 
   it("advertises the strict filesystem-like logical protocol without a flat roster", async () => {

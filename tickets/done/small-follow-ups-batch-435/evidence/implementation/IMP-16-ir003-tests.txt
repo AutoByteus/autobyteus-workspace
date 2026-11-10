@@ -1,0 +1,11 @@
+# IMP-16 IR-003 item 13 (REQ-013): server tests of the self-delegation words, run on 06a072014f (server code unchanged since 432d1c3af2); macOS darwin 25.5.0, Node v22.23.1; 2026-11-10
+# pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-collaboration tests/unit/standalone-agent-run-root tests/unit/agent-team-execution tests/unit/agent-org-execution --no-watch
+ Test Files  117 passed (117)
+      Tests  1056 passed (1056)
+
+# pnpm -C autobyteus-server-ts exec vitest run tests/integration/agent-team-execution/task-delegation-tool-lifecycle.integration.test.ts tests/unit/services/team-communication/team-communication-port.test.ts --no-watch
+ Test Files  2 passed (2)
+      Tests  26 passed (26)
+
+# server typecheck (on 432d1c3af2): production errors: 0; test-file errors: 1182 in 365 files (baseline 1182 in 365 files); PASS
+# web: pnpm -C autobyteus-web test:nuxt components/progress components/mobile/views components/workspace/activity --run -> Test Files 11 passed, Tests 83 passed (SystemInstructionActivityItem.spec.ts: no max-h/overflow class, no tabindex, 10,000+ characters whole, header collapses)
