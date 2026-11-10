@@ -21,10 +21,11 @@ import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-r
 import { TeamRunExecutionTreeLocationService } from "../../../src/run-history/services/team-run-execution-tree-location-service.js";
 import type { RunModelSelectionValidator } from "../../../src/llm-management/services/run-model-selection-service.js";
 import { testAgentNode, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
+import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 const tempDirs: string[] = [];
 const createMemoryDir = async (): Promise<string> => {
-  const value = await fs.mkdtemp(path.join(os.tmpdir(), "agent-team-run-manager-current-"));
+  const value = await fs.mkdtemp(path.join(os.tmpdir(), "agent-team-run-manager-current-")); openEveryOwnFileUnder(value);
   tempDirs.push(value);
   return value;
 };

@@ -22,6 +22,7 @@ import { testAgentOrgExecutionTree, testOrgAgentCopySource, testOrgAgentNode, te
 import { AgentRunProviderInputNormalizer } from '../../../../src/agent-execution/input/agent-run-provider-input-normalizer.js';
 import { AgentInputUserMessage } from 'autobyteus-ts/agent/message/agent-input-user-message.js';
 import { ContextFile } from 'autobyteus-ts/agent/message/context-file.js';
+import { openEveryOwnFileUnder } from "../../../fixtures/open-delegated-run-sources.js";
 
 const draft = (agentRunId: string, orgRunId = 'org') => ({ kind: 'org_member_draft', orgRunId, agentRunId });
 const final = (agentRunId: string, orgRunId = 'org') => ({ kind: 'org_member_final', orgRunId, agentRunId });
@@ -41,7 +42,7 @@ const finalize = (agentRunId: string, attachments: unknown[], finalOwner = final
 
 beforeEach(async () => {
   config.root = await fs.mkdtemp(path.join(os.tmpdir(), 'org-file-rest-'));
-  memoryDir = path.join(config.root, 'memory');
+  memoryDir = path.join(config.root, 'memory'); openEveryOwnFileUnder(memoryDir);
   const direct = testOrgAgentNode('/shared', 'configured-direct');
   const lead = testOrgAgentNode('/delivery/lead', 'configured-lead');
   const team = testOrgTeamNode({ address: '/delivery', teamRunId: 'configured-team', coordinatorAddress: lead.address, members: [lead] });

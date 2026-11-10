@@ -69,6 +69,7 @@ import {
   testTeamRunConfig,
 } from "../../fixtures/current-team-run-fixtures.js";
 import { isTeamRunMessageEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
+import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 const rootTeamRunId = "task-delegation-integration-run";
 const tempDirs: string[] = [];
@@ -292,7 +293,7 @@ const manualTimers = () => {
 };
 
 const createHarness = async () => {
-  const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "task-delegation-current-integration-"));
+  const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "task-delegation-current-integration-")); openEveryOwnFileUnder(memoryDir);
   tempDirs.push(memoryDir);
   const currentConfig = config();
   const tree = buildInitialTeamRunExecutionTree({ config: currentConfig, teamDefinitionName: "Task Integration Team" });
@@ -467,13 +468,14 @@ describe("current delegate_task lifecycle integration (pure spawn, idle shutdown
       expect(h.backend.liveTaskAgents.has(workerB.identity.agentRunId)).toBe(true);
       expect(h.backend.isActive()).toBe(true);
       const prepared = h.backend.preparedAgents.length + h.backend.preparedTeams.length;
-      // Repeated DONE re-invokes each run's exact committed-copy release (the registration's own release is
-      // memoized after success, AR9-F02b) and starts nothing.
+      // Their stop confirmed, A's runs left the loaded tree with their released authority (autobyteus-469 D-4): a repeated
+      // DONE finds nothing of them to release again, and starts nothing.
+      for (const entry of closedA) expect(h.root.getExecutionTreeSnapshot().rootTeam.taskExecutions.some((task) => exact({ agentRun: task as never }) === exact(entry))).toBe(false);
       const stops = stop.mock.calls.length;
       await h.tasks.updateTask({ projectId, taskId: a.taskId, status: "DONE" }); await h.releases.settled();
-      expect(new Set(stop.mock.calls.slice(stops).map(([ref]) => JSON.stringify(ref)))).toEqual(new Set(closedA.map(exact)));
-      expect(stop.mock.calls.length - stops).toBe(closedA.length);
-      await expect(message(workerA, "/reviewer")).resolves.toMatchObject({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED" });
+      expect(stop.mock.calls.length - stops).toBe(0);
+      // A's worker left the tree once stopped: it is no longer an agent of this run, so nothing it sends is admitted.
+      await expect(message(workerA, "/reviewer")).rejects.toMatchObject({ code: "COLLABORATION_CONTEXT_REQUIRED" });
       await expect(message(workerB, "/reviewer")).resolves.toMatchObject({ accepted: true });
       expect(h.backend.preparedAgents.length + h.backend.preparedTeams.length).toBe(prepared);
       // Explicit Delete is not DONE: B's records stay, its open runtime keeps working.
@@ -511,8 +513,11 @@ describe("current delegate_task lifecycle integration (pure spawn, idle shutdown
     })]);
     const persisted = JSON.parse(await fs.readFile(getTeamRunExecutionTreePath(harness.rootDir), "utf8"));
     expect(persisted).not.toHaveProperty("schemaVersion");
-    expect(persisted.rootTeam.taskExecutions[0]).toMatchObject({ agentRunId: taskAgentRunId, delegatorAgentRunId: "run-coordinator" });
-    expect(persisted.rootTeam.taskExecutions[0]).not.toHaveProperty("settledAt");
+    // The tree file stores nothing of a local task agent (autobyteus-469 D-3); its own file holds the delegator.
+    expect(persisted.rootTeam.taskExecutions).toEqual([]);
+    const own = JSON.parse(await fs.readFile(path.join(harness.memoryDir, "agents", taskAgentRunId, "run_metadata.json"), "utf8"));
+    expect(own.taskAgent).toMatchObject({ coordinatingRun: { kind: "agent_team", runId: rootTeamRunId }, delegatorAgentRunId: "run-coordinator" });
+    expect(own).not.toHaveProperty("settledAt");
     expect(await fs.readdir(harness.rootDir)).not.toContain("task_delegation_records.json");
     expect(TASK_DELEGATION_TOOL_NAME_LIST).toEqual(["delegate_task"]);
   });
