@@ -10,6 +10,7 @@ The latest `code-review-report.md` or `api-e2e-test-review-report.md` remains au
 | CRR-002 | `code-review-report.md` | Implementation Review, round 2 (IR-002) | Fail — Local Fix | Pass | CR-001, CR-002, CR-003 (resolved) |
 | CRR-003 | `code-review-report.md` | API/E2E Failure-Origin Review, round 3 (API-14) | Pass | Fail — Design Impact | CR-004 |
 | CRR-004 | `code-review-report.md` | Implementation Review, round 4 (IR-003, SR-004) | Fail — Design Impact | Pass | CR-004 (resolved) |
+| CRR-005 | `api-e2e-test-review-report.md` | Test-code review after API/E2E round 2 (API-REV-002 Pass) | N/A (first test review) | Fail — Local Fix (API/E2E) | T-001, T-002 |
 
 ## Revision Entries
 
@@ -123,3 +124,28 @@ None.
 - Material score or classification changes: API clarity 9.5, Runtime Correctness 9.4; all categories ≥ 9.3; Pass
 - Recommended recipient: `/software_engineering_team/api_e2e_engineer` (informational notice to implementation)
 - Remaining risks or uncertainty: the first open of a saved-run menu with the CLI already failing is unit- and editor-covered only; `stopped-run-model-config-graphql.e2e.test.ts` was edited but not run by implementation.
+
+### CRR-005 — Test-code review after API/E2E round 2
+
+- Canonical review report updated: `api-e2e-test-review-report.md` (created)
+- Review entry point and round: Successful API/E2E test-code review, round 1
+- Review scope: `N/A` (test review) — durable tests changed in f6ce6c78e, a748eb48e, be161036e, 534535bc5
+- Triggering role, report path, and finding or scenario IDs: API/E2E Engineer, `api-e2e-execution-coverage-report.md` (API-REV-002 Pass)
+- Relevant solution revision IDs: SR-004
+- Relevant architecture-review revision IDs: ARCH-REV-003
+- Relevant implementation revision IDs: IR-003
+- Relevant API/E2E revision IDs: API-REV-001, API-REV-002
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: N/A (first test review); source review CRR-004 Pass stands
+- Current authoritative result: Fail — Local Fix owned by API/E2E
+- What changed in the review result and why: the server e2e cases, fake CLI state, live SDK test, composer and phone probe changes are sound. The new `model-list-journeys-probe.mjs` does not fail on browser page errors (TESTING.md "Browser probes"), and its API-14 case captures but does not assert that the card avoids "No longer offered" after a failed refresh.
+- Supported product scenario / material-premise basis changes: None.
+
+#### Prior Finding Resolution
+
+None (first test review; source findings CR-001..CR-004 resolved earlier).
+
+- New or remaining finding IDs: T-001, T-002
+- Material score or classification changes: N/A (test review)
+- Recommended recipient: `/software_engineering_team/api_e2e_engineer`
+- Remaining risks or uncertainty: Electron shell (user-only part for delivery); delegated copy menu in the UI not exercised.

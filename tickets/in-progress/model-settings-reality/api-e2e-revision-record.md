@@ -8,6 +8,7 @@ The latest [coverage investigation](api-e2e-coverage-investigation.md) and [exec
 | --- | --- | --- | --- | --- |
 | API-REV-001 | code_reviewer, `code-review-report.md`, implementation review round 2 (CRR-002 Pass), API/E2E round 1 | SR-003, ARCH-REV-002, IR-002, CRR-001 (Fail, fixed), CRR-002 (Pass) | N/A | `Fail` / 88% |
 | API-REV-002 | code_reviewer, `code-review-report.md`, source review of the SR-004 delta (CRR-004 Pass; CR-004 resolved), API/E2E round 2 | SR-004, ARCH-REV-003, IR-003, CRR-003 (Fail, failure origin of API-14), CRR-004 (Pass) | `Fail` / 88% (API-REV-001) | `Pass` / 95% |
+| API-REV-003 | code_reviewer, `api-e2e-test-review-report.md`, test-code review of API-REV-002 (CRR-005 Fail: T-001, T-002, `Local Fix`) | CRR-005 | `Pass` / 95% (API-REV-002) | `Pass` / 95% (probe fixed, rerun) |
 
 ## Revision Entries
 
@@ -61,3 +62,27 @@ None.
 - New or remaining failure IDs: none
 - Recommended owner: code_reviewer (test-code review of the changed durable tests), then delivery
 - Remaining risks, blocked evidence, or untested scope: user-only: the isolated Electron instance (embedded-server environment); not run: the delegated copy's locked menu in the UI (server and store covered), live acceptance of projected requests by non-Anthropic providers (no vault keys), the macOS packaging/signing steps of the release job (runner); known non-change failures: web `projectRunsStore.spec` (FU-005), server uid-0 chmod tests (8 tests in 3 files), pairing-auth teardown race (FU-008, did not recur), the mobile probe's FU-003 health-check line when a real node listens on port 8000 (FU-009)
+
+### API-REV-003 — Test-review fixes of the durable journeys probe (CRR-005: T-001, T-002)
+
+- Triggering role, report path, and round: code reviewer, [api-e2e-test-review-report.md](api-e2e-test-review-report.md), test-code review of round 2 (CRR-005, `Fail`, two `Local Fix` findings in `autobyteus-web/tests/e2e/model-list-journeys-probe.mjs`); the product code and every recorded result were not in question
+- Triggering finding or case IDs: T-001 (the probe collected `pageerror` but never failed on it; TESTING.md "Browser probes": probes fail on browser errors), T-002 (API-14 did not assert the card after a failed refresh: "No longer offered" was half of round 1's failure)
+- Related architecture-design, architecture-review, implementation, code-review, or delivery revision IDs: CRR-005; the rest as API-REV-002
+- Why this baseline or coverage/execution revision was recorded: fix the two probe gaps and rerun once
+- Coverage decisions or durable test paths changed: `autobyteus-web/tests/e2e/model-list-journeys-probe.mjs` only. T-001: page errors are recorded per case; `EXPECTED_PAGE_ERRORS` names tolerated ones (none); any other page error ends the run with exit 1, `result: "Fail"` and a recorded failure; `--inject-page-error` self-checks the rule. T-002: API-14 now makes the same `/No longer offered/i` check on the card and notes after a failed refresh that API-14b makes.
+- Cases added, changed, removed, or rechecked: API-11, API-12, API-14, API-14b, API-19 rerun (scripted, the whole probe, once) → all Pass, `"result":"Pass"`, no browser errors; self-check run (`--cases API-19 --inject-page-error`) → exit 1, `"result":"Fail"`, failure recorded; T-002 check applied to round 1's recorded failing card (flags it) and round 2's (does not)
+- Commands, environment, fixture, or broader-validation delta: scripted mode only, as the reviewer asked; evidence `evidence/API-11-12-14-r3-probe-fixes/`
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| T-001 (CRR-005): probe did not fail on browser page errors | `Local Fix` (API/E2E-owned test code) | fixed; self-check shows the run fails on an injected page error, and the full run ends `Pass` with 0 | `evidence/API-11-12-14-r3-probe-fixes/selfcheck-injected-page-error*`, `scripted-full-run*` |
+| T-002 (CRR-005): API-14 did not assert the card after a failed refresh | `Local Fix` | fixed; the check flags round 1's recorded card and passes round 2's; part of the full run | `evidence/API-11-12-14-r3-probe-fixes/T-002-card-check-sensitivity.log`, `scripted-full-run-evidence.json` (`API-14.details.cardAfterFailure`, `findings: []`) |
+
+- Canonical artifacts and sections updated: this record; the execution report (durable coverage row and Latest Authoritative Result notes); test progress log; `evidence/API-11-12-14-r3-probe-fixes/`
+- Prior result and confidence: `Pass`, 95%
+- Current result and confidence: `Pass`, 95% (no case, criterion or score changed: the fixes add assertions and an exit rule to a probe)
+- New or remaining failure IDs: none (FU-010, the same gap in `runtime-switch-members-probe.mjs`, is the reviewer's follow-up; that file is not touched by this ticket)
+- Recommended owner: code_reviewer (test review of the fixed probe), then delivery
+- Remaining risks, blocked evidence, or untested scope: unchanged from API-REV-002
