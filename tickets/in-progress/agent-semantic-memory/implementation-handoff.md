@@ -21,7 +21,7 @@ An agent definition can turn on semantic memory (`semanticMemoryEnabled`). The s
 - Current implementation revision ID: `IR-001`
 - Related solution revision IDs: `SR-004`
 - Related architecture-review revision IDs: `ARCH-REV-001`
-- Related code-review revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-001` — Pass, no findings (`code-review-report.md`, committed in 67b878a89)
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
 - Triggering finding IDs: `N/A`
