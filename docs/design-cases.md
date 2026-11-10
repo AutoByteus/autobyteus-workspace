@@ -278,7 +278,7 @@ Principle 1.
 
 - **The design said:** a run created with the phone's New run is written into the route as `row=agent:<runId>`, with `runId` the value `onLaunched` receives. The architecture review checked that the call site had the ID and passed it.
 - **What the code does:** that value is the draft's `temp-<ts>-<n>` ID (`useMobileRunLaunchCoordinator.ts:50-53` → `agentContextsStore.createRunFromTemplate`). The node run exists only after the first message, which re-keys the same context (`promoteTemporaryId`). The route kept the draft key, and a reload found no such run. Unit tests used a stubbed, real-looking ID, so they could not see it.
-- **The fix:** the route follows the promotion, as the desktop chat route already did (`useChatRouteRunSync.ts`, D-13): a phone route sync detects the same context re-keyed and replaces the current entry's `row`; a reload before the first send shows the list.
+- **The fix:** the route follows the promotion, as the desktop chat route already did (D-13; the rule now lives in one composable both shells use, `autobyteus-web/composables/useDraftRunPromotionRouteSync.ts`): a phone route sync detects the same context re-keyed and replaces the current entry's `row`; a reload before the first send shows the list.
 - **Why it mattered:** restoring after a reload was the requirement; the main way to make a run on the phone missed it.
 - **Notice it by:** an identity a design stores or sends outward (a route, a URL, a record) taken from a callback or a creation call without tracing where that value is minted and whether it is re-keyed later (draft, temporary, pending IDs). Look for an existing "promote" or "re-key" step and for code that already follows it.
 
