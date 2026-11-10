@@ -37,18 +37,23 @@ __ab_fg_end() {
     esac
   fi
   builtin trap - EXIT; builtin trap '' TERM
-  builtin unset -f jobs 2>/dev/null; __ab_pids=$(jobs -p); __ab_pids=$(builtin echo $__ab_pids)
-  if builtin test \${#__ab_pids} -gt ${MAX_JOB_LIST_CHARS}; then __ab_pids=\${__ab_pids:0:${MAX_JOB_LIST_CHARS}}; __ab_pids=\${__ab_pids% *}; fi
-  builtin printf '${frame(nonce, 'END')}' >&62
-  builtin printf '${frame(nonce, 'FOREGROUND_DONE:%s:%s')}' "$__ab_rc" "$__ab_pids" >&63
-  while builtin test -n "$__ab_pids"; do
-    __ab_left=
-    for __ab_p in $__ab_pids; do
-      if builtin kill -0 "$__ab_p" 2>/dev/null; then __ab_left="$__ab_left $__ab_p"
-      else builtin wait "$__ab_p"; builtin printf '${frame(nonce, 'JOB_ENDED:%s:%s')}' "$__ab_p" "$?" >&63; fi
+  # Wrapper output never reaches the user's stderr: when a signal ends the block, bash runs this from the EXIT
+  # trap with fds 62/63 still closed (the frames are then lost, and the stop settles the call), and job status
+  # lines would follow.
+  {
+    builtin unset -f jobs; __ab_pids=$(jobs -p); __ab_pids=$(builtin echo $__ab_pids)
+    if builtin test \${#__ab_pids} -gt ${MAX_JOB_LIST_CHARS}; then __ab_pids=\${__ab_pids:0:${MAX_JOB_LIST_CHARS}}; __ab_pids=\${__ab_pids% *}; fi
+    builtin printf '${frame(nonce, 'END')}' >&62
+    builtin printf '${frame(nonce, 'FOREGROUND_DONE:%s:%s')}' "$__ab_rc" "$__ab_pids" >&63
+    while builtin test -n "$__ab_pids"; do
+      __ab_left=
+      for __ab_p in $__ab_pids; do
+        if builtin kill -0 "$__ab_p"; then __ab_left="$__ab_left $__ab_p"
+        else builtin wait "$__ab_p"; builtin printf '${frame(nonce, 'JOB_ENDED:%s:%s')}' "$__ab_p" "$?" >&63; fi
+      done
+      __ab_pids=$__ab_left; builtin test -n "$__ab_pids" && builtin command sleep 0.1
     done
-    __ab_pids=$__ab_left; builtin test -n "$__ab_pids" && builtin command sleep 0.1
-  done
+  } 2>/dev/null
   builtin exit "$__ab_rc"
 }
 builtin trap "$__ab_trap" EXIT

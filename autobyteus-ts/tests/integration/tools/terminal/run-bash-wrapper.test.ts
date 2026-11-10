@@ -191,9 +191,18 @@ suite('run_bash command wrapper: R-0 regression list', () => {
     expect([r.stdout, r.exitCode, r.backgroundTasksStarted]).toEqual(['replaced\n', 6, []]);
   });
 
-  it('timeout applies to the foreground part and stops the whole group', async () => {
-    const r = await fg(context(), 'sleep 5', 1);
+  it('timeout and Stop apply to the foreground part, stop the whole group and add no wrapper output', async () => {
+    const ctx = context();
+    const r = await fg(ctx, 'echo before >&2; sleep 5', 1);
     expect([r.timedOut, r.exitCode]).toEqual([true, null]);
+    expect(r.stderr.replace('tool-timeout\n', '')).toBe('before\n');
+    const controller = new AbortController();
+    const pending = runBash(ctx, 'sleep 30 & sleep 5', null, 30, false, { signal: controller.signal }) as Promise<TerminalResult>;
+    setTimeout(() => controller.abort(), 300);
+    const stopped = await pending;
+    expect([stopped.timedOut, stopped.exitCode, stopped.backgroundTasksStarted]).toEqual([true, null, []]);
+    expect(stopped.stderr.replace('tool-abort\n', '')).toBe('');
+    expect(managerOf(ctx).hasRunning()).toBe(false);
   });
 
   it('large output arrives complete', async () => {
