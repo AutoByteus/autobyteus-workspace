@@ -14,7 +14,7 @@ export type {
   ModelPricingInfo,
   ModelPricingLookupInput,
 } from './llm-model-pricing.js';
-import { applyRawLlmConfigOverrides, type RawLlmConfigOverrides } from './utils/llm-config-overrides.js';
+import { applyRawLlmConfigOverrides, projectRawLlmConfig, type RawLlmConfigOverrides } from './utils/llm-config-overrides.js';
 import { ModelMetadataResolver } from './metadata/model-metadata-resolver.js';
 import { supportedModelDefinitions, type SupportedModelDefinition } from './supported-model-definitions.js';
 import type { ProviderApiKeyResolver } from '../secrets/provider-api-key-resolver.js';
@@ -51,6 +51,10 @@ const buildSupportedModels = async (): Promise<LLMModel[]> => {
 
 const isRawConfigRecord = (value: unknown): value is RawLlmConfigOverrides =>
   Boolean(value) && typeof value === 'object' && !Array.isArray(value);
+
+/** The settings keys a model declares: its config schema's parameter names. */
+const declaredSettingKeys = (model: LLMModel): ReadonlySet<string> =>
+  new Set((model.configSchema?.parameters ?? []).map((parameter) => parameter.name));
 
 export class LLMFactory {
   private static modelsByProvider = new Map<LLMProvider, LLMModel[]>();
@@ -183,10 +187,26 @@ export class LLMFactory {
     }
 
     if (isRawConfigRecord(configInput)) {
-      applyRawLlmConfigOverrides(config, configInput);
+      // Only the model's declared settings (plus standard config fields) reach the provider adapter.
+      applyRawLlmConfigOverrides(config, projectRawLlmConfig(configInput, declaredSettingKeys(model)));
     }
 
     return config;
+  }
+
+  /**
+   * The canonical stored form of a new run's config for one model: standard fields as given, declared
+   * settings as top-level keys, everything else dropped. A model that is not registered keeps its raw
+   * config (the runtime projection still applies when the run activates).
+   */
+  static async canonicalRunLlmConfig(
+    modelIdentifier: string,
+    rawConfig: RawLlmConfigOverrides | null | undefined,
+  ): Promise<RawLlmConfigOverrides | null> {
+    await LLMFactory.ensureInitialized();
+    const model = LLMFactory.modelsByIdentifier.get(modelIdentifier);
+    if (!model) return rawConfig ?? null;
+    return projectRawLlmConfig(rawConfig, declaredSettingKeys(model));
   }
 
   static async requiresGeminiRuntimeResolver(modelIdentifier: string): Promise<boolean> {

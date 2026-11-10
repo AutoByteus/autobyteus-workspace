@@ -13,9 +13,9 @@ const adaptive = (
 
 /** Every catalog row must have its request policy pinned here. */
 const expectedCatalogPolicies: Record<string, AnthropicModelRequestPolicy> = {
-  'claude-fable-5-1': adaptive('omit'),
-  'claude-fable-5': adaptive('omit'),
-  'claude-opus-5': adaptive('omit'),
+  'claude-fable-5-1': { thinkingMode: 'adaptive_required', rejectsForcedToolChoice: false },
+  'claude-fable-5': { thinkingMode: 'adaptive_required', rejectsForcedToolChoice: false },
+  'claude-opus-5': adaptive('disabled'),
   'claude-opus-5-5': { thinkingMode: 'adaptive_required', rejectsForcedToolChoice: true },
   'claude-sonnet-5-5': adaptive('between_tools', true),
   'claude-sonnet-5': adaptive('disabled'),

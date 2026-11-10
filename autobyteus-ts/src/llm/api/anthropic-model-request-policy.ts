@@ -3,8 +3,8 @@
  * `AnthropicLLM` is the only consumer; it turns these facts into request shaping.
  */
 
-/** The `thinking` value sent when the thinking toggle is off (`omit` sends none). */
-export type AnthropicThinkingOffShape = 'disabled' | 'between_tools' | 'omit';
+/** The `thinking` value sent when the thinking toggle is off. */
+export type AnthropicThinkingOffShape = 'disabled' | 'between_tools';
 
 /** Anthropic `output_config.effort` levels, from least to most effort. */
 export const ANTHROPIC_EFFORT_LEVELS = ['low', 'medium', 'high', 'xhigh', 'max'] as const;
@@ -19,8 +19,8 @@ export type AnthropicModelRequestPolicy =
   /** Adaptive thinking; toggle off sends `thinkingOffShape`. */
   | { thinkingMode: 'adaptive'; thinkingOffShape: AnthropicThinkingOffShape; rejectsForcedToolChoice: boolean }
   /**
-   * Adaptive thinking is always sent; disabling it, a non-adaptive thinking shape or explicit sampling
-   * parameters fail locally.
+   * Thinking is always on (Anthropic's "Always on" class): adaptive thinking is always sent, and
+   * disabling it, a non-adaptive thinking shape or explicit sampling parameters fail locally.
    */
   | { thinkingMode: 'adaptive_required'; rejectsForcedToolChoice: boolean };
 
@@ -34,9 +34,9 @@ const ANTHROPIC_MODEL_REQUEST_POLICIES: Readonly<Record<string, AnthropicModelRe
   'claude-sonnet-5-5': adaptive('between_tools', true),
   'claude-haiku-5-5': adaptive('disabled'),
   'claude-sonnet-5': adaptive('disabled'),
-  'claude-opus-5': adaptive('omit'),
-  'claude-fable-5': adaptive('omit'),
-  'claude-fable-5-1': adaptive('omit'),
+  'claude-opus-5': adaptive('disabled'),
+  'claude-fable-5': { thinkingMode: 'adaptive_required', rejectsForcedToolChoice: false },
+  'claude-fable-5-1': { thinkingMode: 'adaptive_required', rejectsForcedToolChoice: false },
 };
 
 /** Exact-value lookup. Every catalog row has an entry; any other value fails. */

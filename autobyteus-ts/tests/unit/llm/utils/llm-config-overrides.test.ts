@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { LLMConfig, TokenPricingConfig } from '../../../../src/llm/utils/llm-config.js';
-import { applyRawLlmConfigOverrides } from '../../../../src/llm/utils/llm-config-overrides.js';
+import { applyRawLlmConfigOverrides, projectRawLlmConfig } from '../../../../src/llm/utils/llm-config-overrides.js';
 
 describe('applyRawLlmConfigOverrides', () => {
   it('preserves absent model defaults while applying explicit standard fields as first-class config', () => {
@@ -105,5 +105,43 @@ describe('applyRawLlmConfigOverrides', () => {
     expect(config.frequencyPenalty).toBe(0.1);
     expect(config.presencePenalty).toBe(0.2);
     expect(config.stopSequences).toEqual(['DONE']);
+  });
+});
+
+describe('projectRawLlmConfig', () => {
+  const declared = new Set(['thinking_enabled', 'reasoning_effort']);
+
+  it('keeps standard fields, keeps declared settings as top-level keys and drops everything else', () => {
+    expect(projectRawLlmConfig({
+      temperature: 0.2,
+      thinking_enabled: false,
+      thinking_display: 'omitted',
+      pricing_config: { input: 1 },
+      extra_params: { reasoning_effort: 'low', top_k: 5, temperature: 0.9 },
+    }, declared)).toEqual({
+      temperature: 0.2,
+      thinking_enabled: false,
+      pricing_config: { input: 1 },
+      reasoning_effort: 'low',
+    });
+  });
+
+  it('lets a top-level key win over the same key in either container', () => {
+    expect(projectRawLlmConfig({
+      reasoning_effort: 'high',
+      extra_params: { reasoning_effort: 'low' },
+      extraParams: { reasoning_effort: 'max' },
+    }, declared)).toEqual({ reasoning_effort: 'high' });
+    expect(projectRawLlmConfig({
+      extra_params: { reasoning_effort: 'low' },
+      extraParams: { reasoning_effort: 'max' },
+    }, declared)).toEqual({ reasoning_effort: 'max' });
+  });
+
+  it('returns null for an absent config or when nothing remains', () => {
+    expect(projectRawLlmConfig(null, declared)).toBeNull();
+    expect(projectRawLlmConfig(undefined, declared)).toBeNull();
+    expect(projectRawLlmConfig({ thinking_display: 'x', extra_params: { top_k: 1 } }, declared)).toBeNull();
+    expect(projectRawLlmConfig({ thinking_enabled: true }, new Set())).toBeNull();
   });
 });

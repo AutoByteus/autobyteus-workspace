@@ -89,25 +89,40 @@ const expectNoInternalThinkingFields = (params: Record<string, unknown>) => {
 describe.each(['sync', 'stream'] as const)('AnthropicLLM Claude 5.5 request shaping (%s)', (transport) => {
   beforeEach(() => mockCreate.mockReset());
 
-  it('sends between_tools for Sonnet 5.5 with thinking off by default (AC-004)', async () => {
+  it('sends adaptive thinking and the default effort for Sonnet 5.5 with the schema defaults (AC-003)', async () => {
     expect(schemaDefaults('claude-sonnet-5-5')).toEqual({
-      thinking_enabled: false, reasoning_effort: 'high',
+      thinking_enabled: true, reasoning_effort: 'high',
     });
     const params = await sendWith(transport, buildLlm('claude-sonnet-5-5', schemaDefaults('claude-sonnet-5-5')));
     expect(params.model).toBe('claude-sonnet-5-5');
+    expect(params.thinking).toEqual({ type: 'adaptive' });
+    expect(params.output_config).toEqual({ effort: 'high' });
+    expectNoSampling(params);
+    expectNoInternalThinkingFields(params);
+  });
+
+  it('sends adaptive thinking and the default effort for Haiku 5.5 with the schema defaults (AC-003)', async () => {
+    expect(schemaDefaults('claude-haiku-5-5')).toEqual({
+      thinking_enabled: true, reasoning_effort: 'medium',
+    });
+    const params = await sendWith(transport, buildLlm('claude-haiku-5-5', schemaDefaults('claude-haiku-5-5')));
+    expect(params.model).toBe('claude-haiku-5-5');
+    expect(params.thinking).toEqual({ type: 'adaptive' });
+    expect(params.output_config).toEqual({ effort: 'medium' });
+    expectNoSampling(params);
+    expectNoInternalThinkingFields(params);
+  });
+
+  it('sends between_tools for Sonnet 5.5 with thinking switched off and no effort (AC-004)', async () => {
+    const params = await sendWith(transport, buildLlm('claude-sonnet-5-5', { ...schemaDefaults('claude-sonnet-5-5'), thinking_enabled: false }));
     expect(params.thinking).toEqual({ type: 'between_tools' });
-    // Off sends no effort (REQ-005).
     expect(params).not.toHaveProperty('output_config');
     expectNoSampling(params);
     expectNoInternalThinkingFields(params);
   });
 
-  it('sends disabled for Haiku 5.5 with thinking off by default (AC-005)', async () => {
-    expect(schemaDefaults('claude-haiku-5-5')).toEqual({
-      thinking_enabled: false, reasoning_effort: 'medium',
-    });
-    const params = await sendWith(transport, buildLlm('claude-haiku-5-5', schemaDefaults('claude-haiku-5-5')));
-    expect(params.model).toBe('claude-haiku-5-5');
+  it('sends disabled for Haiku 5.5 with thinking switched off and no effort (AC-004)', async () => {
+    const params = await sendWith(transport, buildLlm('claude-haiku-5-5', { ...schemaDefaults('claude-haiku-5-5'), thinking_enabled: false }));
     expect(params.thinking).toEqual({ type: 'disabled' });
     expect(params).not.toHaveProperty('output_config');
     expectNoSampling(params);

@@ -39,6 +39,8 @@ const currentAdaptiveModels = [
   ['claude-fable-5-1', 'claude-fable-5-1'],
 ] as const;
 
+const alwaysOnModels: readonly string[] = ['claude-fable-5', 'claude-fable-5-1'];
+
 const userMessages = [new Message(MessageRole.USER, { content: 'Hello, Claude.' })];
 const internalRuntimeKwargs = {
   conversationId: 'conversation-1',
@@ -126,7 +128,7 @@ describe('AnthropicLLM', () => {
     );
   });
 
-  it('omits fallback temperature and filters internal thinking fields when Opus 5 thinking is off', async () => {
+  it('sends disabled thinking, omits fallback temperature and filters internal thinking fields when Opus 5 thinking is off', async () => {
     const opus5 = new AnthropicLLM(
       buildModel('claude-opus-5'),
       new LLMConfig({
@@ -142,7 +144,7 @@ describe('AnthropicLLM', () => {
     const params = mockCreate.mock.calls[0]?.[0] as Record<string, unknown>;
     expect(params.model).toBe('claude-opus-5');
     expect(params).not.toHaveProperty('temperature');
-    expect(params).not.toHaveProperty('thinking');
+    expect(params.thinking).toEqual({ type: 'disabled' });
     expect(params).not.toHaveProperty('thinking_enabled');
     expect(params).not.toHaveProperty('thinking_display');
     expect(params).not.toHaveProperty('output_config');
@@ -155,7 +157,12 @@ describe('AnthropicLLM', () => {
 
     const params = mockCreate.mock.calls[0]?.[0] as Record<string, unknown>;
     expect(params.model).toBe(value);
-    expect(params).not.toHaveProperty('thinking');
+    // Always-on rows send adaptive thinking by default; switch rows send nothing until the switch is set.
+    if (alwaysOnModels.includes(value)) {
+      expect(params.thinking).toEqual({ type: 'adaptive' });
+    } else {
+      expect(params).not.toHaveProperty('thinking');
+    }
     expect(params).not.toHaveProperty('temperature');
     expect(params).not.toHaveProperty('top_p');
     expect(params).not.toHaveProperty('top_k');
@@ -273,34 +280,35 @@ describe('AnthropicLLM', () => {
   it.each([
     'claude-fable-5',
     'claude-fable-5-1',
-  ])('does not send manual thinking or unsupported sampling parameters to %s', async (modelId) => {
+  ])('sends %s adaptive thinking and rejects manual thinking, sampling and forced tool choice locally', async (modelId) => {
     const fable = new AnthropicLLM(buildModel(modelId, modelId));
 
-    await fable.sendMessages(userMessages, {
-      thinking: { type: 'disabled' },
-      temperature: 0,
-      top_p: 1,
-      top_k: 40,
-    });
+    await fable.sendMessages(userMessages);
+    expect(mockCreate.mock.calls[0]?.[0]).toMatchObject({ model: modelId, thinking: { type: 'adaptive' } });
+    expect(mockCreate.mock.calls[0]?.[0]).not.toHaveProperty('temperature');
 
-    const params = mockCreate.mock.calls[0]?.[0] as Record<string, unknown>;
-    expect(params.model).toBe(modelId);
-    expect(params).not.toHaveProperty('thinking');
-    expect(params).not.toHaveProperty('temperature');
-    expect(params).not.toHaveProperty('top_p');
-    expect(params).not.toHaveProperty('top_k');
+    await expect(fable.sendMessages(userMessages, { thinking: { type: 'disabled' } })).rejects.toThrow('adaptive thinking only');
+    await expect(fable.sendMessages(userMessages, { thinking: { type: 'enabled', budget_tokens: 32_000 } })).rejects.toThrow('adaptive thinking only');
+    await expect(fable.sendMessages(userMessages, { temperature: 0.5 })).rejects.toThrow('explicit sampling');
+    expect(mockCreate).toHaveBeenCalledTimes(1);
   });
 
-  it('drops fixed-budget thinking for Fable 5.1', async () => {
-    const fable = new AnthropicLLM(buildModel('claude-fable-5-1'));
+  it.each([
+    'claude-fable-5',
+    'claude-fable-5-1',
+  ])('never fails %s on a stored thinking switch: the config the factory projects carries no switch', async (modelId) => {
+    // Fable 5 / 5.1 declare no thinking switch, so a stored `thinking_enabled` is dropped before the
+    // adapter sees it (LLMFactory projection); the adapter still sends adaptive thinking with the effort.
+    const fable = new AnthropicLLM(
+      buildModel(modelId, modelId),
+      new LLMConfig({ extraParams: { reasoning_effort: 'max' } })
+    );
 
-    await fable.sendMessages(userMessages, {
-      thinking: { type: 'enabled', budget_tokens: 32_000 },
-    });
+    await fable.sendMessages(userMessages);
 
     const params = mockCreate.mock.calls[0]?.[0] as Record<string, unknown>;
-    expect(params.model).toBe('claude-fable-5-1');
-    expect(params).not.toHaveProperty('thinking');
+    expect(params.thinking).toEqual({ type: 'adaptive' });
+    expect(params.output_config).toEqual({ effort: 'max' });
   });
 
   it('passes invocation AbortSignal to sync message requests', async () => {
@@ -336,8 +344,7 @@ describe('AnthropicLLM', () => {
     ['claude-sonnet-5-5', { type: 'between_tools' }],
     ['claude-haiku-5-5', { type: 'disabled' }],
     ['claude-sonnet-5', { type: 'disabled' }],
-    ['claude-opus-5', undefined],
-    ['claude-fable-5', undefined],
+    ['claude-opus-5', { type: 'disabled' }],
   ] as const)('sends %s thinking off as its off shape and no effort, whatever effort is stored (AC-003, AC-004)', async (modelId, offShape) => {
     for (const effort of ['low', 'medium', 'high', 'xhigh', 'max']) {
       mockCreate.mockClear();
@@ -380,7 +387,7 @@ describe('AnthropicLLM', () => {
     expect(params.output_config).toEqual({ effort: 'xhigh' });
   });
 
-  it('sends Fable 5.1 effort without a thinking field', async () => {
+  it('sends Fable 5.1 effort with adaptive thinking', async () => {
     const fable51 = new AnthropicLLM(
       buildModel('claude-fable-5-1'),
       new LLMConfig({ extraParams: { reasoning_effort: 'xhigh' } })
@@ -389,7 +396,7 @@ describe('AnthropicLLM', () => {
     await fable51.sendMessages(userMessages);
 
     const params = mockCreate.mock.calls[0]?.[0] as Record<string, unknown>;
-    expect(params).not.toHaveProperty('thinking');
+    expect(params.thinking).toEqual({ type: 'adaptive' });
     expect(params.output_config).toEqual({ effort: 'xhigh' });
   });
 
@@ -445,7 +452,7 @@ describe('AnthropicLLM', () => {
       })
     );
 
-    for await (const _chunk of llm.streamMessages(userMessages, {
+    for await (const _chunk of llm.streamMessages(userMessages, alwaysOnModels.includes(value) ? {} : {
       temperature: 0,
       top_p: 1
     })) {

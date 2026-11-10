@@ -18,7 +18,10 @@ const claudeEffortParameter = (defaultValue: AnthropicEffortLevel): ParameterDef
     enumValues: [...ANTHROPIC_EFFORT_LEVELS],
   });
 
-/** A Claude row with a thinking switch: Off sends the model's off shape and no effort. */
+/**
+ * A Claude row with a thinking switch: Off sends the model's off shape and no effort. The switch
+ * defaults to On, as Anthropic does when no thinking is sent.
+ */
 const claudeThinkingSwitchSchema = (switchDescription: string, effortDefault: AnthropicEffortLevel): ParameterSchema =>
   new ParameterSchema([
     new ParameterDefinition({
@@ -26,14 +29,16 @@ const claudeThinkingSwitchSchema = (switchDescription: string, effortDefault: An
       type: ParameterType.BOOLEAN,
       description: switchDescription,
       required: false,
-      defaultValue: false,
+      defaultValue: true,
     }),
     claudeEffortParameter(effortDefault),
   ]);
 
-const ADAPTIVE_THINKING_SWITCH_DESCRIPTION = 'Request Anthropic adaptive thinking for current Claude models. No fixed budget is sent.';
+const ADAPTIVE_THINKING_SWITCH_DESCRIPTION = 'Request Anthropic adaptive thinking for current Claude models. Off turns thinking off. No fixed budget is sent.';
 
-/** A Claude row whose adaptive thinking is always on (Opus 5.5, Fable 5.1): effort is its only setting. */
+const OPUS_5_THINKING_SWITCH_DESCRIPTION = 'Request Anthropic adaptive thinking. Off turns thinking off; Anthropic notes that with thinking off, Opus 5 can write tool calls into its text on tool-heavy work. No fixed budget is sent.';
+
+/** A Claude row whose adaptive thinking is always on (Opus 5.5, Fable 5, Fable 5.1): effort is its only setting. */
 const claudeEffortOnlySchema = (effortDefault: AnthropicEffortLevel): ParameterSchema =>
   new ParameterSchema([claudeEffortParameter(effortDefault)]);
 
@@ -61,7 +66,7 @@ export const anthropicSupportedModelDefinitions: SupportedModelDefinition[] = [
       cachedInputWrite5mTokenPricing: 12.5,
       cachedInputWrite1hTokenPricing: 20.0,
     }) }),
-    configSchema: claudeThinkingSwitchSchema(ADAPTIVE_THINKING_SWITCH_DESCRIPTION, 'high')
+    configSchema: claudeEffortOnlySchema('high'),
   },
   {
     name: 'claude-opus-5',
@@ -76,7 +81,7 @@ export const anthropicSupportedModelDefinitions: SupportedModelDefinition[] = [
       cachedInputWrite5mTokenPricing: 6.25,
       cachedInputWrite1hTokenPricing: 10.0,
     }) }),
-    configSchema: claudeThinkingSwitchSchema(ADAPTIVE_THINKING_SWITCH_DESCRIPTION, 'high')
+    configSchema: claudeThinkingSwitchSchema(OPUS_5_THINKING_SWITCH_DESCRIPTION, 'high')
   },
   {
     name: 'claude-opus-5-5',

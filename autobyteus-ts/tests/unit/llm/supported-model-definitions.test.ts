@@ -89,7 +89,7 @@ describe('current supported model definitions', () => {
     }
     const [sonnet] = supportedModelDefinitions.filter((item) => item.value === 'claude-sonnet-5-5');
     expect(sonnet!.configSchema?.toJsonSchema()).toMatchObject({ properties: {
-      thinking_enabled: { default: false },
+      thinking_enabled: { default: true },
     } });
     expect(sonnet!.defaultConfig.pricingConfig).toMatchObject({
       inputTokenPricing: 2, outputTokenPricing: 10, cachedInputReadTokenPricing: 0.1,
@@ -99,7 +99,7 @@ describe('current supported model definitions', () => {
 
     const [haiku] = supportedModelDefinitions.filter((item) => item.value === 'claude-haiku-5-5');
     expect(haiku!.configSchema?.toJsonSchema()).toMatchObject({ properties: {
-      thinking_enabled: { default: false },
+      thinking_enabled: { default: true },
     } });
     expect(haiku!.defaultConfig.pricingConfig).toMatchObject({
       inputTokenPricing: 0.1, outputTokenPricing: 0.5, cachedInputReadTokenPricing: 0.01,
@@ -124,6 +124,18 @@ describe('current supported model definitions', () => {
       expect(configSchema?.toJsonSchema(), value).toMatchObject({ properties: {
         reasoning_effort: { enum: ['low', 'medium', 'high', 'xhigh', 'max'], default: expectedDefaults[value] },
       } });
+    }
+  });
+
+  it('offers a thinking switch, defaulting to On, only on rows whose thinking can be turned off (AC-002, AC-003)', () => {
+    const switchRows = ['claude-opus-5', 'claude-sonnet-5', 'claude-sonnet-5-5', 'claude-haiku-5-5'];
+    for (const { value, configSchema } of anthropicSupportedModelDefinitions) {
+      const properties = (configSchema?.toJsonSchema() as { properties: Record<string, { default?: unknown }> }).properties;
+      if (switchRows.includes(value)) {
+        expect(properties.thinking_enabled?.default, value).toBe(true);
+      } else {
+        expect(properties, value).not.toHaveProperty('thinking_enabled');
+      }
     }
   });
 
