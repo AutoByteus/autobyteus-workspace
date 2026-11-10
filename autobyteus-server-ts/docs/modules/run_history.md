@@ -258,8 +258,9 @@ without a schema saves `null`. Invalid types/ranges/enums of declared keys,
 undeclared nested keys, missing required values, unavailable models, and
 unavailable schemas produce explicit non-success outcomes without persistence.
 Successful responses are `UPDATED` or `UNCHANGED`; other outcomes include
-`RUN_ACTIVE`, `RUN_ARCHIVED`, `NOT_FOUND`, `MODEL_UNAVAILABLE`,
-`SCHEMA_UNAVAILABLE`, `VALIDATION_FAILED`, `PERSISTENCE_FAILED`,
+`RUN_ACTIVE`, `RUN_ARCHIVED`, `NOT_FOUND`, `MODEL_UNAVAILABLE` (the runtime does
+not offer the model now), `MODEL_LIST_UNAVAILABLE` (the runtime's model list could
+not be read), `SCHEMA_UNAVAILABLE`, `VALIDATION_FAILED`, `PERSISTENCE_FAILED`,
 `PERSISTENCE_INDETERMINATE`, and `INTERNAL_ERROR`. Every result carries the
 best canonical state, current editability, and field errors when available so
 the client can relock or reconcile instead of assuming success. If a Team write
