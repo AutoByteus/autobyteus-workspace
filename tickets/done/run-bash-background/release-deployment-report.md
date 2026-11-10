@@ -60,7 +60,7 @@
 
 - More evidence requested: `None`
 - User check needed: `No`. WSL (R-0/R-6 on Windows) is a residual risk, not an acceptance criterion; Linux bash 5.2 runs the same wrapper (IMP-08, API-14), and no release is cut now. Steps for the user are in the handoff summary.
-- Re-verification after later re-integration: RE_VERIFY
+- Re-verification after later re-integration: `Not needed` (`origin/personal` still at `c8f303af70` when fetched before the merge and before the push)
 
 ## Release Decision
 
@@ -84,7 +84,21 @@
 
 ## Repository Finalization
 
-FINALIZATION
+- Bootstrap context source: `RELEASE.md` Finalization Target (`origin`, `personal`, `codex/<ticket-name>`)
+- Ticket branch: `codex/run-bash-background`
+- Secret Gate before the first push: `scripts/check_secrets.sh origin/personal..HEAD` PASS (15 commits before the delivery commit; 16 with it: PASS). Artifact hygiene PASS; no `:` or other Windows-hostile character in this ticket's file names.
+- Ticket branch commit result: `1e50b7f4d8` (docs sync, delivery records, ticket archived), on top of checkpoint `f0fbb57f12` and base merge `052be30619`
+- Ticket branch push result: pushed `origin/codex/run-bash-background` (new branch)
+- Finalization target remote: `origin`
+- Finalization target branch: `personal`
+- Target advanced after verification / acceptance: `No` (`c8f303af70` at every fetch)
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed`
+- Target branch update result: `finalize/run-bash-background` created from `origin/personal` @ `c8f303af70`
+- Merge into target result: `--no-ff` merge `bd45d07aa2`; its tree equals the ticket branch's `1e50b7f4d8`. Secret Gate on the merged state: PASS
+- Push target branch result: `c8f303af70..bd45d07aa2  HEAD -> personal`
+- User's checkout of the target branch (`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`): on `personal` at `c8f303af70`, no local commits, uncommitted files from other tickets present. It is fast-forwarded with `git merge --ff-only origin/personal` after this record commit's push; the result is in the terminal message.
+- Repository finalization status: `Completed`
 
 ## Release / Publication / Deployment
 
@@ -94,7 +108,8 @@ FINALIZATION
 
 ## Post-Finalization Cleanup
 
-CLEANUP
+- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/run-bash-background`
+- Plan, run after the record commit's push: `git worktree remove --force` (only untracked build output `*/dist/` remains), `git worktree prune`, then delete the local branches `codex/run-bash-background` and `finalize/run-bash-background`. Remote branch: `Not required` (the repository keeps pushed `codex/*` branches). The result is reported in the terminal message.
 
 ## Release Notes Summary
 
@@ -113,9 +128,9 @@ CLEANUP
 
 ## Verification Checks
 
-- Secret Gate `scripts/check_secrets.sh origin/personal..HEAD` on the ticket branch: SECRET_TICKET
-- Secret Gate on the merged state: SECRET_MERGED
-- `python3 scripts/check_repository_artifact_hygiene.py`: HYGIENE
+- Secret Gate `scripts/check_secrets.sh origin/personal..HEAD` on the ticket branch: PASS (16 commits)
+- Secret Gate on the merged state: PASS
+- `python3 scripts/check_repository_artifact_hygiene.py`: PASS (longest tracked path 200 characters, not from this ticket)
 
 ## Rollback Criteria
 
@@ -123,4 +138,10 @@ CLEANUP
 
 ## Final Status
 
-FINAL
+- Verification complete: `Yes` (from the evidence)
+- Repository finalization complete: `Yes` (`bd45d07aa2` on `personal`; this record commit follows it)
+- Applicable release/deployment/rollout complete or not required: `Yes` (not required)
+- Applicable safe cleanup complete or not required: run after this record's push (Post-Finalization Cleanup); result in the terminal message
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: by `send_message_to` after this record's push

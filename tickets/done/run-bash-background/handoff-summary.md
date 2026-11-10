@@ -6,7 +6,7 @@
 - Date: `2026-11-10`
 - Classification: `task_size: Large`, `architectural_risk: High`, route: independent architecture review, source code review (CRR-001 Local Fix CR-001 → CRR-002 Pass), API/E2E (API-REV-001 Pass, final confidence 95%), test-code review (CRR-003 Pass).
 - Current Status: `Verified from evidence / finalized on personal; no release`
-- Branch: `codex/run-bash-background`. Base `origin/personal` @ `374e35a60e` at bootstrap. Integrated by merge at delivery: `origin/personal` @ `c8f303af70` (105 commits) → `052be30619`; post-integration checks DEL-01..03 pass.
+- Branch: `codex/run-bash-background`. Base `origin/personal` @ `374e35a60e` at bootstrap. Integrated by merge at delivery: `origin/personal` @ `c8f303af70` (105 commits) → `052be30619`; post-integration checks DEL-01..03 pass. Finalized: `--no-ff` merge `bd45d07aa2` pushed to `origin/personal`.
 - Product code final at `ddd594d07b`.
 
 ## Delivery Summary
