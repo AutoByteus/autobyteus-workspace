@@ -179,8 +179,12 @@ server, which rejects run input with empty text.
   ("Delegate to an agent or team") and never changes the target.
   Candidates come from `utils/collaborators/draftMentionEligibility.ts`, which
   mirrors the server's `CollaboratorCandidatePolicy` for the would-be run:
-  shared, non-built-in Agents, then shared Agent Teams, never Orgs, minus only the
-  target's own definition (a Team target's shared members are offered). After
+  shared Agents (the Daily Assistant too; never the Model Router, which
+  `utils/collaborators/collaborationIneligibleAgentDefinitionIds.ts` keeps out as
+  the server's registry marks it `collaborationEligible: false`), then shared Agent
+  Teams, never Orgs, minus only the target's own definition (a Daily Assistant
+  draft does not offer the Daily Assistant; a Team target's shared members are
+  offered). After
   "@", the hint reads "to delegate to an agent or team." The first message keeps
   its mentions.
 - The workspace menu accepts an existing workspace or an absolute folder path
@@ -408,7 +412,8 @@ target mode.
 - **Options** come only from the server: `collaboratorMentionCandidates`
   (`services/collaborators/collaboratorCandidatesService.ts`), refreshed each
   time the menu opens. Shared
-  Agents (no Daily Assistant or built-ins), then shared Agent Teams, including
+  Agents (the Daily Assistant too, except in its own run; never the Model
+  Router), then shared Agent Teams, including
   ones already in the run (configured members); only the run's own
   definition is left out, and Agent Orgs are never offered. In a standalone Agent
   run the options depend on the focused agent. The host's composer never offers
