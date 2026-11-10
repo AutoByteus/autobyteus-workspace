@@ -13,7 +13,7 @@ which made a task agent's *storage* its own. This contract finishes that step: t
 Authorities: [Collaboration Model](../../../autobyteus-server-ts/docs/design/collaboration_model.md);
 [Data Migration Guideline](../../../autobyteus-server-ts/docs/design/data_migration_guideline.md); `DESIGN.md`
 (rules 7, 8, 10). Evidence for every "today": `investigation-notes.md` and the read-only data check
-`evidence/data-model-validation/` (script and `counts-2026-11-10.txt`).
+`evidence/data-model-validation/` (script and `counts-2026-11-10.txt`). Revision 2 was amended on 2026-11-10 with the role name `subWork` (TC-6).
 
 The user's direction (2026-11-10): a delegated agent run or agent team run is its own, normal run; it is
 started and stopped like any other; its life depends on its Task; the relationship is kept and shown in the
@@ -168,7 +168,7 @@ run's own tree on the same node is the owner of that fact.
       "agentRun": { "kind": "team", "teamRunId": "software_engineering_team_0218",
                     "coordinatorAgentRunId": "solution_designer_65a9" },
       "linkedAt": "2026-11-10T09:39:18.439Z", "start": "started", "closedAt": null },
-    { "role": "delegated",
+    { "role": "subWork",
       "agentRun": { "kind": "team", "teamRunId": "product_team_e03d", "coordinatorAgentRunId": "product_designer_1a2b" },
       "linkedAt": "2026-11-10T11:00:00.000Z", "start": "started", "closedAt": null }
   ]
@@ -184,6 +184,16 @@ A run on a peer (the Task side cannot read it, so the record names where its lin
   "delegatingRun": { "kind": "agent", "runId": "project_task_manager_7c8d" },
   "linkedAt": "2026-11-10T10:02:00.000Z", "start": "started", "closedAt": null }
 ```
+
+`role` says how the run belongs to the Task:
+
+| `role` | Meaning | Written by |
+| --- | --- | --- |
+| `assigned` | The run was given this Task as its own work, by an agent that is not working on the Task (a saved Project Task, or a description-only delegation that created a Task with no Project). Only its assigner can continue it after the Task was closed and reopened | `delegate_task` by an agent that owns no Task |
+| `subWork` | A run that works on this Task handed part of the work to this run; it joins the same Task and no Task is created. It stays closed when the Task is reopened | `delegate_task` by a run that works on the Task |
+| `broughtIn` | Older records only (2 in the user's data); nothing writes it | — |
+
+`subWork` is today's `delegated`, renamed (the user, 2026-11-10): every run in this record is a delegated run, so the old value said nothing; "sub-work" is already the Collaboration Model's word (CM-6).
 
 `hostRoot` is removed. For a run on this node, everything the Task side asked the "host" for (stop the run
 when the Task closes, the run's status, where it is shown) is asked of the run itself, by its own ID; the
@@ -223,6 +233,7 @@ run it is shown under is the run's own `delegatedFrom.delegatingRun`.
 | link `nodeId`, `coordinatorAddress`, `members` | delegating run | Only for a peer | §2.2 |
 | ~~`hostRoot`~~ | Task record | **Removed** | Equal to the run's own back-link in 405 of 405 records of runs on this node: derivable |
 | `nodeId`, `delegatingRun` | Task record | Only for a run on a peer | The 2 records of remote runs in the user's data have no other pointer on this node |
+| `role` value `delegated` | Task record | **Renamed** `subWork` | One word, one meaning (`DESIGN.md` rule 10): "delegated" already names every run of the record |
 | `assignedBy`, `recipientAddress` | Task record | Kept | Facts of one assignment (a run can get several Tasks, one entry each), shown by every Task view (`get_project_task`, the Task page) without opening the run. Today they equal the run's delegator (375 of 375 records of runs on this node) and address (370 of 370 that carry it) |
 
 No attribute is added to any record of a run on this node. Three are removed (`coordinatingRun`,
@@ -255,7 +266,7 @@ memory/agents/image_maker_33f0/
 
 projects/<project>/tasks/T1/agent_run_resources.json
   [ assigned  software_engineering_team_0218 (assignedBy project_task_manager_7c8d),
-    delegated product_team_e03d, delegated image_maker_33f0 ]
+    subWork   product_team_e03d, subWork image_maker_33f0 ]
 ```
 
 Today the two inner links are in the Project Task Manager's tree and both inner runs name the Project Task
@@ -277,6 +288,7 @@ Counts: `evidence/data-model-validation/counts-2026-11-10.txt` (the user's data,
 | E8 link to a run on a peer | 2 | link with `nodeId` | unchanged |
 | E9 Task record of a run on this node | 405 | with `hostRoot` | without it |
 | E10 Task record of a run on a peer | 2 | with `hostRoot` | `nodeId` + `delegatingRun` (= today's `hostRoot`) |
+| E13 Task record with role `delegated` | 28 | `"role": "delegated"` | `"role": "subWork"` |
 | E11 a Settings edit beside the started launch | 9 (3 agent runs, 6 team runs) | `userLaunchSelection` | the run's own launch (V-9) |
 | E12 run started by a peer on this node | 0 | `delegatedFrom { nodeId, coordinatingRun, delegatorAgentRunId }` | `coordinatingRun` renamed `delegatingRun` |
 
@@ -328,7 +340,7 @@ Message logs, memory, folders: not touched (each run already has its own, CM-8, 
 | # | Case | Rules | Result |
 | --- | --- | --- | --- |
 | S1 | The Project Task Manager delegates T1 to the software engineering team | §2.1 D1, §2.2, §2.3 | The team run's own tree with `delegatedFrom`; one link in the manager's tree; one `assigned` Task record |
-| S2 | The solution designer delegates sub-work to the product team | D5, P3 | The product team run names the software engineering team run; the link is in that team's tree; a `delegated` record joins T1. Nothing is written in the manager's run |
+| S2 | The solution designer delegates sub-work to the product team | D5, P3 | The product team run names the software engineering team run; the link is in that team's tree; a `subWork` record joins T1. Nothing is written in the manager's run |
 | S3 | The product team's coordinator reports to the solution designer | §6 Message | By run ID; stored in both team runs' logs |
 | S4 | The user stops the Project Task Manager | P6, TC-1 | Its own agent stops. No other file or run changes |
 | S5 | The software engineering team reports while the manager is stopped | §6 Message | The manager is restored and gets the message once |
@@ -351,4 +363,5 @@ Message logs, memory, folders: not touched (each run already has its own, CM-8, 
 | TC-2 | Archive or delete of a run whose delegated runs are working | Refused with the reason; its delegated runs are never deleted with it (the user, 2026-10-17, for the hub) | Solution Designer | Decided |
 | TC-3 | A delegated run whose delegating run was deleted | Listed as a run of its own. Today it is hidden ("detached", the earlier contract §10, with a Memory page view as a follow-up); as an ordinary run it no longer needs a special state | The user | Needs user |
 | TC-4 | Delivery | The contract is approved once. This ticket: delegations made from a standalone agent run. Next Tasks: from a team run; from an org run; removal of the remaining hosting code. The design confirms the cut lines | The user | Needs user |
+| TC-6 | The Task record's role name for sub-work | `subWork` instead of `delegated`, renamed by the same migration that removes `hostRoot` | The user | Decided by the user, 2026-11-10 |
 | TC-5 | A Settings edit of a stopped delegated run | Saved like any stopped run's (§2.4), subject to V-9 | Solution Designer | Decided, to verify |
