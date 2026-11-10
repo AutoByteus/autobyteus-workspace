@@ -47,18 +47,63 @@ Run on `codex/release-beta-18` at `614620d66` (`origin/personal` `16947ba68` plu
 ## Version / Tag / Release Commit
 
 - Version from `python3 scripts/release_versions.py next-beta`: `1.5.13-beta.4`.
-- Release commit, tag and push: recorded in the publication record (`delivery-revision-record.md`, DR-001 publication entry, and the final version of this report).
+- Release commit `1ca4be9bf` `chore(release): bump workspace release version to 1.5.13-beta.4`, made by `bash scripts/desktop-release.sh beta --branch finalize/release-beta-18 --no-push`. It changes only `autobyteus-web/package.json`, from `1.5.13-beta.3` to `1.5.13-beta.4`, and sits on the merge `f8365d966`.
+- Annotated tag `v1.5.13-beta.4` on `1ca4be9bf`, pushed at 2026-11-10T14:17:54Z.
+- The tag contains `e88588aa96` (autobyteus-12, agent semantic memory): `git merge-base --is-ancestor` checked before tagging. It does not contain autobyteus-464, merged afterwards.
 
-## Repository Finalization, Release, Rollout, Cleanup
+## Repository Finalization
 
-Recorded after publication in the final version of this report.
+- Ticket branch: `codex/release-beta-18`. The handoff `614620d66` and the record `b8324b5a0` were pushed after the Secret Gate passed (`origin/personal..HEAD`).
+- Finalization target: `origin/personal`. It was unmoved at `16947ba68` before the merge push, and at the merge before the release push.
+- Merge into target: `finalize/release-beta-18` from `origin/personal`; `git merge --no-ff` gave `f8365d966` (tree identical to the ticket branch, Secret Gate PASS on the merged state), pushed `16947ba68..f8365d966`. Then the release commit `f8365d966..1ca4be9bf`. autobyteus-464 (`ee46b5931`, task-copy assignment race) merged into `personal` after the tag, so it is not in this beta; this publication record goes on top of that later `personal` (`cc14e72b5`).
+- User's checkout of the target branch (`/home/autobyteus/workspace/autobyteus-workspace`): on `personal`, no local commits. It is fast-forwarded with `git fetch` and `git merge --ff-only origin/personal` after this record's push; the result is in the terminal message.
+- Repository finalization status: `Completed`
+
+## Release / Publication / Deployment
+
+- Applicable: `Yes`
+- Method: `Project Release Guide`
+- Pipelines triggered and their results. All four were watched together by one poll every 60 s that stops at the first failure:
+
+| Workflow | Run | Result |
+| --- | --- | --- |
+| Android APK Release | 42832658652 | success (14:24:29Z) |
+| iOS App Store Connect Release | 42832658607 | success, TestFlight upload (14:40:44Z) |
+| Server Docker Release | 42832658596 | success; image 14:50:05Z, server packages 15:11:03Z–15:13:04Z |
+| Desktop Release | 42832658629 | success (15:13:12Z) |
+
+- Failed jobs: none.
+- Published artifacts checked:
+  - `gh release view v1.5.13-beta.4`: `isPrerelease: true` with **23 assets**, the complete set: macOS arm64 and x64 `.dmg`, `.zip` and their blockmaps; Linux x64 and arm64 AppImages; Windows `.exe`; Android APK and `.sha256`; six `autobyteus-server-1.5.13-beta.4-linux-{x64,arm64}.{tar.gz,json,json.sig}` files; four `latest*.yml` files.
+  - Order: every `latest*.yml` (15:13:07Z–15:13:08Z) is newer than all six server package files (15:11:03Z–15:13:04Z).
+  - Docker Hub: `autobyteus/autobyteus-server:1.5.13-beta.4` and `:beta` both point to `sha256:b7ed16ba4e6e…`. `:latest` stays on `v1.5.12` (`sha256:2d8affe595e0…`).
+  - Release page: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.5.13-beta.4
+- Release/publication/deployment result: `Completed`
+- Release notes handoff result: `Used`, as below.
 
 ## Release Notes Summary
 
 - Release notes artifact: `tickets/done/release-beta-18/release-notes.md`, put above the GitHub generated notes after all four workflows succeed (`RELEASE.md` § Beta notes with a user action).
 - Ticket "What you need to do" sections: autobyteus-12's `release-notes.md` has none. The node, desktop and Android lines come from the handoff and the unchanged Android/launcher paths.
 - "What's new" is autobyteus-12's `release-notes.md`.
+- Result: put above the generated notes after all four succeeded, with `gh release edit v1.5.13-beta.4 --notes-file`. The body starts with `## What you need to do`; the generated "Full Changelog" lines stay below (twice, from the desktop and Android jobs, as on beta.3). The assets are unchanged (23).
 
 ## Rollback Criteria
 
 - No stored data conversion: autobyteus-12's data decision is `Directly Usable — No Migration`; an older build ignores the new field and folder. Rolling back is possible: install the previous version, or pin the earlier Docker tag; `:beta` only moves forward. A defect is fixed forward with the next beta.
+
+## Post-Finalization Cleanup
+
+- Created by this delivery, removed after this record's push: the worktree `/home/autobyteus/workspace/.codex/worktrees/release-beta-18`; the local branches `codex/release-beta-18` and `finalize/release-beta-18`; the temp files `/tmp/rb18`, `/tmp/rb18-bin`; the smoke check's step logs (`/tmp/release-smoke-01hdkd4b`). The result is in the terminal message.
+- Remote branch: `origin/codex/release-beta-18` is kept, as for earlier tickets.
+- No test instances were left running. The user's running app and nodes were not touched.
+
+## Final Status
+
+- Verification complete (the release guide's checks; the Grok runtime waived by the user): `Yes`
+- Repository finalization complete: `Yes`
+- Applicable release/deployment/rollout complete or not required: `Yes`. Beta `v1.5.13-beta.4` is complete: 4/4 workflows, 23 assets, notes, `:beta`.
+- Applicable safe cleanup complete or not required: run after this record's push; result in the terminal message
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal message/reference: `Delivery Completed` to the Solution Designer

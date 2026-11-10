@@ -6,7 +6,7 @@ The latest release/publication/deployment report remains authoritative.
 
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
-| DR-001 | Release Requested (autobyteus-18): next beta from `personal` | N/A | Checks before tagging done (Grok waived by the user); tagging `v1.5.13-beta.4` | release-deployment-report.md, release-notes.md, evidence/DEL-01-release-smoke.log |
+| DR-001 | Release Requested (autobyteus-18): next beta from `personal` | N/A | Beta `v1.5.13-beta.4` published: 4/4 workflows, 23 assets, notes, `:beta` (Grok smoke waived by the user) | release-deployment-report.md, release-notes.md, evidence/DEL-01-release-smoke.log |
 
 ## Revision Entries
 
@@ -19,9 +19,9 @@ The latest release/publication/deployment report remains authoritative.
 - Docs sync report / handoff summary: not applicable (release request).
 - Release/publication/deployment report: `release-deployment-report.md`
 - Integration and post-integration verification: `origin/personal` `16947ba68` unmoved since bootstrap; checks on `614620d66`.
-- Verification and finalization state: the release guide's checks; finalization and publication follow this commit.
-- Terminal return to the Solution Designer: `Not yet eligible` (publication pending)
-- Terminal return message/reference: N/A
+- Verification and finalization state: the release guide's checks; merge `f8365d966` and release commit `1ca4be9bf` on `personal`; tag `v1.5.13-beta.4` pushed 14:17:54Z; all four workflows succeeded by 15:13:12Z; notes put above the generated notes.
+- Terminal return to the Solution Designer: `Sent` after this record's push, the user's checkout update and cleanup
+- Terminal return message/reference: `send_message_to` the Solution Designer (Delivery Completed)
 - Why this baseline or delivery revision was recorded: first delivery result.
-- Next recipient/action: delivery engineer: merge, tag, push, watch the four workflows, notes, record, cleanup.
+- Next recipient/action: update the user's checkout, clean up, return Delivery Completed.
 - Remaining blockers, rollback concerns, or untested scope: Grok smoke cases not run (waived).
