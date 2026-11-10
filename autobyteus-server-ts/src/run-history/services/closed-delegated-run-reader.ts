@@ -9,6 +9,11 @@ export type ClosedRunAgent = Readonly<{ agentRunId: string; address: AgentTeamAd
 
 type ClosedRuns = Pick<TaskExecutionResourcePort, "closedTaskExecutionsIn" | "closedTaskExecutionOf">;
 
+let boundClosedRuns: ClosedRuns | null = null;
+/** The composition binds the loaded Task side once (`project-task-execution-resource-composition.ts`). */
+export const bindClosedDelegatedRuns = (port: ClosedRuns): void => { boundClosedRuns = port; };
+export const unbindClosedDelegatedRuns = (port: ClosedRuns): void => { if (boundClosedRuns === port) boundClosedRuns = null; };
+
 /**
  * The agents of a top run's closed delegated runs (design D-5, D-7): the runs are the Task records' closed copies of
  * this top run, their agents and addresses come from each run's own file. A run whose own file cannot be read is left
@@ -17,7 +22,8 @@ type ClosedRuns = Pick<TaskExecutionResourcePort, "closedTaskExecutionsIn" | "cl
 export class ClosedDelegatedRunReader {
   private readonly files: TaskAgentOwnFiles;
 
-  constructor(memoryDir: string, private readonly closedRuns: () => ClosedRuns | null) {
+  /** `closedRuns`: the Task side; by default the bound one (none before the Task records are loaded: no closed run). */
+  constructor(memoryDir: string, private readonly closedRuns: () => ClosedRuns | null = () => boundClosedRuns) {
     this.files = new TaskAgentOwnFiles(memoryDir);
   }
 

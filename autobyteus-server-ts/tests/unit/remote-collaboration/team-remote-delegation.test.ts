@@ -39,6 +39,7 @@ import { TokenUsageCapability } from "../../../src/token-usage/providers/token-u
 import { resolveTaskExecutionIdleShutdownGraceMs } from "../../../src/config/task-execution-idle-shutdown-setting.js";
 import { testActivationManager } from "../../fixtures/agent-run-preparation-fixtures.js";
 import { InMemoryTaskExecutionResources } from "../../fixtures/task-execution-resource-fixtures.js";
+import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 /**
  * autobyteus-247 in one process (change sequence steps 2 … 5): a standalone run on node A delegates to a shared
@@ -82,7 +83,7 @@ const peerDirectory = (peers: PeerNode[]) => ({
   findByName: async (name: string) => peers.find((peer) => peer.name === name) ?? null,
   peerSecret: async () => "peer-secret-for-tests", findByNodeId: async (nodeId: string) => peers.find((peer) => peer.nodeId === nodeId) ?? null,
 });
-const tempDir = async (prefix: string) => { const dir = await fs.mkdtemp(path.join(os.tmpdir(), prefix)); directories.push(dir); return dir; };
+const tempDir = async (prefix: string) => { const dir = await fs.mkdtemp(path.join(os.tmpdir(), prefix)); directories.push(dir); openEveryOwnFileUnder(dir); return dir; };
 
 /** Node A: the delegator is the host of an ordinary standalone run (as in slice 1's in-process test). */
 const buildNodeA = async (network: Network, memoryDir?: string, metadata = new Map<string, AgentRunMetadata>()) => {

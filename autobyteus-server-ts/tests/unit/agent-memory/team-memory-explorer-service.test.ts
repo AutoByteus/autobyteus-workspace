@@ -17,6 +17,7 @@ import { addTaskExecutionToTree } from "../../../src/agent-team-execution/servic
 import { projectTaskAgentExecution } from "../../../src/agent-collaboration/execution/task/task-execution-tree-projection.js";
 import { address, testAgentNode, testAgentTeamNode, testExecutionTree, writeCurrentTeamRunPackage } from "../../fixtures/current-team-run-fixtures.js";
 import { testAgentCopySource, testCatalogTeamCopy } from "../../fixtures/current-team-run-fixtures.js";
+import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 const STORED_ONLY_MANAGER = { getManagedTeamRun: () => null, listManagedTeamRunIds: () => [] };
 
@@ -61,7 +62,7 @@ describe("TeamMemoryExplorerService current V1 tree", () => {
   let layout: AgentMemoryLayout;
 
   beforeEach(async () => {
-    memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "team-memory-explorer-current-"));
+    memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "team-memory-explorer-current-")); openEveryOwnFileUnder(memoryDir);
     layout = new AgentMemoryLayout(memoryDir);
     const store = new TeamRunExecutionTreeStore();
     for (const [runId, agentRunId, createdAt] of [
@@ -189,7 +190,7 @@ describe("TeamMemoryExplorerService member identity and invalid roots", () => {
   });
 
   beforeEach(async () => {
-    memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "team-memory-explorer-identity-"));
+    memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "team-memory-explorer-identity-")); openEveryOwnFileUnder(memoryDir);
     layout = new AgentMemoryLayout(memoryDir);
     const tree = withTaskInstance(testExecutionTree({
       rootTeamRunId: "writer-root",
@@ -275,7 +276,7 @@ describe("TeamMemoryExplorerService execution structure (REQ-012)", () => {
   const teamDir = (...parts: string[]) => path.join(memoryDir, "agent_teams", "structure-root", ...parts);
 
   beforeEach(async () => {
-    memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "team-memory-explorer-structure-"));
+    memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "team-memory-explorer-structure-")); openEveryOwnFileUnder(memoryDir);
     const layout = new AgentMemoryLayout(memoryDir);
     const base = testExecutionTree({
       rootTeamRunId: "structure-root",

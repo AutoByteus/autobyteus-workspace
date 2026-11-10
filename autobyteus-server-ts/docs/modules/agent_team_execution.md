@@ -881,19 +881,23 @@ validated current package per root TeamRun:
   `team_communication_messages_<6 digits>.jsonl` files (append-only JSON Lines; see
   [Run History](./run_history.md), Message logs).
 
-On disk a team run's tree links its task agents (`{address, agentRunId |
-teamRunId, delegatorAgentRunId?, startedAt}`; a link to a run on another node adds
-`nodeId` and has no own file here, see [Remote Collaboration](./remote_collaboration.md));
-each task agent's facts are in its
-own file (`agents/<id>/run_metadata.json` or `agent_teams/<id>/team_run_execution_tree.json`,
-each with a `taskAgent` section). `TeamRunExecutionTreeStore` composes today's
-records on load and splits them on save (a task agent's own file first, then its
-link; only changed own files are written; records it did not load are written
-back unchanged). A tree with a `taskAgent` section is a task agent team's own
+On disk a team run's tree stores nothing of a local task agent (autobyteus-469, CM-8): its
+list holds only links to runs on another node (`nodeId`, no own file here, see
+[Remote Collaboration](./remote_collaboration.md)). Which task agents are in the tree is
+asked of the Task records (`OpenDelegatedRunSource`: an open Task entry that names this
+team run), and each one's facts are in its own file (`agents/<id>/run_metadata.json` or
+`agent_teams/<id>/team_run_execution_tree.json`, each with a `taskAgent` section).
+`TeamRunExecutionTreeStore` composes the records on load and writes changed own files and
+the remote links on save; an older file's local entries are ignored and left out at its next
+save. `readOwnParts` reads the team run's own parts only, without the Task records: startup
+admission and the history-index repair use it. A task agent whose Task closed leaves the
+loaded tree once stopped and comes back from its own file when continued (memory only). A tree with a `taskAgent` section is a task agent team's own
 tree and is never read or admitted as a team run (G2). Messages are stored with
 the run(s) they belong to: a message between the team run's parts in its own log,
 a message with a task agent in both logs (receiver's first); the stored view
-composes the run's log with its loaded task agents' logs.
+composes the run's log with its open task agents' logs and keeps a message when both agents
+are in the tree or one is an agent of the team run itself (`isMessageOfView`); the package
+validator requires one agent of each message to be an agent of the team run.
 
 The execution tree is **read tolerantly and written exactly** (see the
 [data migration guideline](../design/data_migration_guideline.md) section 3).

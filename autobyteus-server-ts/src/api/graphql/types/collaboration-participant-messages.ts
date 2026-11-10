@@ -14,6 +14,9 @@ import { isPublicMessage } from "../../../services/agent-streaming/public-messag
 import { getTeamCommunicationProjectionService } from "../../../services/team-communication/team-communication-projection-service.js";
 import { getStandaloneAgentRunRootManager } from "../../../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
 import { StandaloneRootExecutionIndex } from "../../../standalone-agent-run-root/services/standalone-root-execution-index.js";
+import { ClosedDelegatedRunReader } from "../../../run-history/services/closed-delegated-run-reader.js";
+import { createRootExecutionIdentity } from "../../../agent-collaboration/execution/domain/root-execution-identity.js";
+import { appConfigProvider } from "../../../config/app-config-provider.js";
 
 type RootRecords = Readonly<{
   messages: readonly CollaborationCommunicationMessage[];
@@ -43,8 +46,10 @@ const readRootRecords = async (rootKind: CollaborationRootKind, rootRunId: strin
 
 /**
  * One participant's messages of one root (autobyteus-358): the Team tab reads them when it is shown, instead of
- * every view carrying the root's whole log. Both endpoints of each message are agents of the root, as in the
- * root's view stream (`isPublicMessage`). A run on another node is not a participant: its messages stay on its node.
+ * every view carrying the root's whole log. The other agent of each message is an agent of the root, as in the
+ * root's view stream (`isPublicMessage`), or an agent of a delegated run of this root that left its tree when its
+ * Task closed: those are returned in `pastParticipants` with the address they had, read from the runs' own files
+ * (D-5). A run on another node is not a participant: its messages stay on its node.
  */
 export const readCollaborationParticipantMessages = async (input: Readonly<{
   rootKind: string;
@@ -59,10 +64,16 @@ export const readCollaborationParticipantMessages = async (input: Readonly<{
   if (!records.isAgentOfTree(agentRunId)) {
     throw new Error(`AgentRun '${agentRunId}' is not a participant of ${rootKind} run '${rootRunId}'.`);
   }
+  const counterpartOf = (message: CollaborationCommunicationMessage): string =>
+    message.senderAgentRunId === agentRunId ? message.receiverAgentRunId : message.senderAgentRunId;
+  const own = records.messages.filter((message) => message.senderAgentRunId === agentRunId || message.receiverAgentRunId === agentRunId);
+  const outsideTree = new Set(own.map(counterpartOf).filter((id) => !records.isAgentOfTree(id)));
+  const pastParticipants = outsideTree.size === 0 ? [] : await new ClosedDelegatedRunReader(appConfigProvider.config.getMemoryDir()).forAgentRunIds(createRootExecutionIdentity({ rootSubjectKind: rootKind, rootRunId }), outsideTree);
+  const past = new Set(pastParticipants.map((participant) => participant.agentRunId));
   return collaborationParticipantMessagesDtoSchema.parse({
-    messages: records.messages
-      .filter((message) => (message.senderAgentRunId === agentRunId || message.receiverAgentRunId === agentRunId)
-        && isPublicMessage(message, records.isAgentOfTree))
+    pastParticipants,
+    messages: own
+      .filter((message) => isPublicMessage(message, records.isAgentOfTree) || past.has(counterpartOf(message)))
       .map((message) => ({
         messageId: message.messageId, senderAgentRunId: message.senderAgentRunId, receiverAgentRunId: message.receiverAgentRunId,
         content: message.content, messageType: message.messageType, referenceFiles: [...message.referenceFiles], createdAt: message.createdAt,

@@ -8,6 +8,7 @@ import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-r
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 import { getTeamRunExecutionTreePath } from "../../../src/run-history/store/team-run-execution-tree-path.js";
 import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
+import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 const historicalScenarioRoot = path.resolve(
   process.cwd(),
@@ -126,11 +127,9 @@ describe("TeamRun execution tree tolerant reading and exact writing", () => {
     ])).rootTeam.taskExecutions).toHaveLength(2);
   });
 
-  it("writes the exact current shape: links in the tree, facts in each task agent's own file, the delegator on new children", async () => {
-    const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "team-tree-exact-"));
+  it("writes the exact current shape: nothing of a task agent in the tree (autobyteus-469), its facts in its own file", async () => {
+    const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "team-tree-exact-")); openEveryOwnFileUnder(memoryDir);
     const dir = new AgentMemoryLayout(memoryDir).getTeamDirPath({ rootTeamRunId: "team-run-current", ancestorTeamRunIds: [] });
-    const LINK_AGENT_KEYS = ["address", "agentRunId", "delegatorAgentRunId", "startedAt"];
-    const LINK_TEAM_KEYS = ["address", "delegatorAgentRunId", "startedAt", "teamRunId"];
     try {
       const store = new TeamRunExecutionTreeStore();
       const loaded = validateTeamRunExecutionTreePayload(releasedShape());
@@ -150,13 +149,12 @@ describe("TeamRun execution tree tolerant reading and exact writing", () => {
       await store.write(dir, withNewChild);
       const written = JSON.parse(await fs.readFile(getTeamRunExecutionTreePath(dir), "utf8")) as Record<string, any>;
       expect(keys(written)).toEqual(TOP_LEVEL_KEYS);
-      expect(written.rootTeam.taskExecutions.map(keys)).toEqual([
-        LINK_AGENT_KEYS.filter((key) => key !== "delegatorAgentRunId"),
-        LINK_TEAM_KEYS.filter((key) => key !== "delegatorAgentRunId"),
-        LINK_AGENT_KEYS,
-      ]);
-      // Composing the links with the own files gives back today's records exactly.
-      expect(await store.read(dir, "team-run-current")).toEqual(withNewChild);
+      expect(written.rootTeam.taskExecutions).toEqual([]);
+      // Composing the open runs from their own files gives back today's records exactly.
+      // A composed tree lists its runs by start, then run ID.
+      const runId = (task: { agentRunId?: string; teamRunId?: string }) => task.agentRunId ?? task.teamRunId ?? "";
+      expect(await store.read(dir, "team-run-current")).toEqual({ ...withNewChild, rootTeam: { ...withNewChild.rootTeam,
+        taskExecutions: [...withNewChild.rootTeam.taskExecutions].sort((a, b) => a.startedAt.localeCompare(b.startedAt) || runId(a).localeCompare(runId(b))) } });
       // Even a caller that passes stray fields cannot write them.
       await store.write(dir, { ...(withNewChild as object), schemaVersion: 3, extra: true } as never);
       expect(keys(JSON.parse(await fs.readFile(getTeamRunExecutionTreePath(dir), "utf8")))).toEqual(TOP_LEVEL_KEYS);

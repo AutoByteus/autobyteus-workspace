@@ -44,7 +44,14 @@ import type {
   StandaloneRootIndexedTaskExecution,
 } from "./standalone-root-execution-index.js";
 import type { StandaloneRootPersistenceCoordinator } from "./standalone-root-persistence-coordinator.js";
-import { addStandaloneRootRemoteTaskExecution, addStandaloneRootTaskExecution, adoptStandaloneRootPlatformBinding } from "./standalone-root-tree-mutator.js";
+import {
+  addStandaloneRootRemoteTaskExecution, addStandaloneRootTaskExecution, adoptStandaloneRootPlatformBinding, removeStandaloneRootTaskExecutions,
+} from "./standalone-root-tree-mutator.js";
+import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
+import { STANDALONE_ROOT_TREE_SHAPE } from "../../run-history/store/coordinating-tree-shapes.js";
+import { messageViewOfTree } from "../../run-history/store/task-execution-tree-split.js";
+import { taskExecutionRunId } from "../../agent-collaboration/execution/task/task-execution-reference.js";
+import { taskExecutionContextUnavailable } from "../../agent-collaboration/execution/task/task-execution-tree-membership.js";
 import type { RemoteRunLinks } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 import type { RemoteDelegation } from "../../agent-collaboration/execution/remote/remote-delegation.js";
 import type { RemoteTaskExecution } from "../../run-history/domain/run-execution-tree-shared-records.js";
@@ -75,6 +82,8 @@ export type StandaloneRootTaskExecutionAdapterOptions = Readonly<{
   isOpen(): boolean;
   authorize(identity: CollaborationMemberExecutionIdentity): void;
   replaceTree(tree: StandaloneRootTreeSnapshot): void;
+  /** Keeps only the loaded messages still in the view (D-4, D-5). */
+  retainMessages(keep: (message: CollaborationCommunicationMessage) => boolean): void;
   publishTaskExecutionStarted(host: TaskExecutionHostIdentity, taskExecution: TaskExecutionReference): void;
   publishTaskExecutionsClosed(taskExecutions: readonly TaskExecutionReference[]): void;
   publishTaskExecutionsReopened(taskExecutions: readonly TaskExecutionReference[]): void;
@@ -212,6 +221,25 @@ export class StandaloneRootTaskExecutionAdapter implements RootTaskExecutionAdap
     else if (entry.kind === "agent") this.options.rootAgents.discardReleasedTask(entry.agentRunId);
     // A task TeamRun is registered in the directory wherever it is hosted.
     if (entry.kind === "team") this.options.teams.discardReleasedTask(entry.teamRunId);
+  }
+  async dropTaskExecutions(references: readonly TaskExecutionReference[]): Promise<void> {
+    const runIds = new Set(references.map(taskExecutionRunId));
+    await this.options.persistence.commitTreeMutation({ prepareAgainstCurrent: () => {
+      const nextTree = removeStandaloneRootTaskExecutions({ tree: this.options.getTree(), runIds });
+      return { nextTree, cancelBeforeDurability: () => undefined, commitAfterDurability: () => {
+        // Their released authority goes with them (looked up in the index before it is replaced).
+        references.forEach((reference) => this.discardReleasedExecution(reference));
+        this.options.replaceTree(nextTree);
+        this.options.retainMessages(messageViewOfTree(STANDALONE_ROOT_TREE_SHAPE, nextTree));
+      } };
+    } });
+  }
+  async addTaskExecution(reference: TaskExecutionReference): Promise<void> {
+    const execution = await this.options.persistence.readTaskExecution(reference).catch((error) => { throw taskExecutionContextUnavailable(error); });
+    await this.options.persistence.commitTreeMutation({ prepareAgainstCurrent: () => {
+      const nextTree = addStandaloneRootTaskExecution({ tree: this.options.getTree(), execution });
+      return { nextTree, cancelBeforeDurability: () => undefined, commitAfterDurability: () => this.options.replaceTree(nextTree) };
+    } });
   }
   reachingAddressOf(agent: CollaborationMemberExecutionIdentity): AgentTeamAddress | null {
     return reachingAddressOf(this.options.getIndex(), null, agent);

@@ -13,6 +13,7 @@ import { resetRootRunPackageReadinessIndex } from "../../../../src/run-history/s
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 import { testAgentNode, testExecutionTree } from "../../../fixtures/current-team-run-fixtures.js";
 import { testOrgLaunchConfiguration } from "../../../fixtures/current-agent-org-run-fixtures.js";
+import { openEveryOwnFileUnder } from "../../../fixtures/open-delegated-run-sources.js";
 
 /**
  * autobyteus-348 (contract §1, §2, §6; D-2): the pending switch and a copy's chosen runtime are stored on the records that hold a
@@ -54,7 +55,7 @@ const hostTree = (taskExecutions: unknown[]): StandaloneRootTreeFile => validate
   taskExecutions,
 }, HOST);
 const standalone = async () => {
-  const memory = await fs.mkdtemp(path.join(os.tmpdir(), "member-pending-switch-"));
+  const memory = await fs.mkdtemp(path.join(os.tmpdir(), "member-pending-switch-")); openEveryOwnFileUnder(memory);
   roots.push(memory);
   const layout = new AgentMemoryLayout(memory);
   return { memory, dir: layout.getAgentRunCollaborationDirPath(HOST), store: new StandaloneRootPackageStore() };

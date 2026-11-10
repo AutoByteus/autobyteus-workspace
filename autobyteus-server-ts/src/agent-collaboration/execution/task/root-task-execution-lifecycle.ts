@@ -13,6 +13,7 @@ import { dispatchTaskCopy } from "./root-task-dispatch.js";
 import { notACopyOfThisRun, resolveExistingCopy } from "./existing-copy-target.js";
 import { asTaskDelegationError, RootTaskExecutionResourceScope } from "./root-task-execution-resource-scope.js";
 import { ASSIGNER_ONLY_REACTIVATION_MESSAGE, taskReactivationRejectionCode, type TaskExecutionOwner, type TaskExecutionResourcePort, type TaskExecutionStopResult } from "./task-execution-resource-port.js";
+import { TaskExecutionTreeMembership } from "./task-execution-tree-membership.js";
 import type { CollaborationMemberExecutionIdentity } from "../domain/root-execution-identity.js";
 import type { AgentExecutionStatus } from "@autobyteus/collaboration-stream-contracts";
 import { resolveTaskExecutionIdleShutdownGraceMs } from "../../../config/task-execution-idle-shutdown-setting.js";
@@ -82,6 +83,7 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
   private readonly holds: TaskExecutionLiveHolds;
   private readonly remoteEndpoints: RemoteEndpointLookup;
   private readonly remoteRunLinks: RemoteRunLinks | null;
+  private readonly membership: TaskExecutionTreeMembership<TPlacement>;
 
   constructor(
     private readonly adapter: RootTaskExecutionAdapter<TPlacement>,
@@ -101,6 +103,7 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
     this.remoteEndpoints = options.remoteEndpoints ?? NO_REMOTE_ENDPOINTS;
     this.remoteRunLinks = options.remoteRunLinks ?? null;
     this.resourceScope = new RootTaskExecutionResourceScope(adapter, options.taskExecutionResources, options.remoteRunLinks);
+    this.membership = new TaskExecutionTreeMembership(adapter, () => options.taskExecutionResources);
     this.schedule = new TaskExecutionIdleShutdownSchedule({
       gracePeriodMs: options.gracePeriodMs ?? (() => resolveTaskExecutionIdleShutdownGraceMs()),
       onFire: (reference) => this.onGraceElapsed(reference),
@@ -188,19 +191,18 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
       if ("agentRunId" in input.copy ? this.remoteEndpoints.isRemoteEndpoint(input.copy.agentRunId) : this.remoteEndpoints.isRemoteTeam(input.copy.teamRunId)) {
         return { delegated: false, message: REMOTE_ROOT_REFUSAL_TEXT.savedTask };
       }
-      const found = resolveExistingCopy(this.adapter, input.copy);
-      if (!found) return await this.refuseCopyOutsideTree(port, input.copy, sender, taskId);
-      target = found;
+      // A copy in the tree, else a closed copy of this root the Task records name (it left the tree, D-4).
+      target = resolveExistingCopy(this.adapter, input.copy, (by) => this.membership.closedExecutionFor(by)) ?? throwError(notACopyOfThisRun(input.copy));
       referenceFiles = await validateTaskReferenceFiles(saved.referenceFiles);
       await port.assertAssignable({ execution: target.execution, requestedBy: sender, taskId });
       // The copy may hold other open Tasks; the message names them (read before any change, so a failure changes nothing).
       otherOpenTaskReferences = await port.openTaskReferencesOf(target.execution, taskId);
       // The resume step and the commit are one queue step: a closure release of the copy is entirely before or after.
-      await this.queue.submit({ kind: "reopen", executeAtQueueHead: async () => {
+      await this.queue.submit({ kind: "reopen", executeAtQueueHead: () => this.inTreeAtHead(target.execution, async () => {
         await this.prepareClosedCopyForResume(target.execution, target.ingressAgentRunId);
         await port.assignExistingTaskExecution({ hostRoot: target.root, execution: target.execution, taskId, assignedBy: sender,
           ...("teamRunId" in target.execution ? { teamCoordinatorAgentRunId: target.ingressAgentRunId } : {}) });
-      } });
+      }) });
     } catch (error) {
       if (refusalCode(error)) return { delegated: false, message: errorMessage(error) };
       throw error;
@@ -222,30 +224,23 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
     catch (error) { throw new TaskDispatchIndeterminateError(target.execution, error); }
     return { delegated: true, copy: delegatedCopyOf(target) };
   }
-  /**
-   * A named copy that is not in this root's tree. A copy whose start failed never reached the tree, but the
-   * Task side still knows it: when it is a closed copy this root hosts, the Task side's specific refusal
-   * applies (never started, another assigner, already this Task; AC-009). Anything else is not a copy of
-   * this run (unknown, or hosted by another root). Always rejects.
-   */
-  private async refuseCopyOutsideTree(port: TaskExecutionResourcePort, copy: TaskExecutionReference, requestedBy: string, taskId: string): Promise<never> {
-    const key = taskExecutionReferenceKey(copy);
-    if (port.closedTaskExecutionsIn(this.adapter.root).some(reference => taskExecutionReferenceKey(reference) === key)) {
-      await port.assertAssignable({ execution: copy, requestedBy, taskId });
-    }
-    throw notACopyOfThisRun(copy);
+  /** The reopen step (D-4): a copy that left the loaded tree is added back first, and leaves again when the step fails. */
+  private async inTreeAtHead<T>(execution: TaskExecutionReference, step: () => Promise<T>): Promise<T> {
+    if (!this.accepting) throw new TaskDelegationError("ROOT_RUN_NOT_ACTIVE", ROOT_NOT_ACTIVE_MESSAGE);
+    const undo = await this.membership.addAtHead(execution);
+    try { return await step(); } catch (error) { await undo(); throw error; }
   }
-  /**
-   * `send_message_to` guidance: the coordinator agent run of the Team copy with this team run ID in this root, or
-   * of the remote Team run this root delegated to (G-6); `null` otherwise.
-   */
+  /** Run-ID routing: an agent of this root's tree, or the ingress of a closed copy of this root that left it (D-4). */
+  knowsRunId(agentRunId: string): boolean { return this.membership.closedExecutionFor({ ingressAgentRunId: agentRunId.trim() }) !== null; }
   /** The Task the agent works on (its copy's current Task), or null; throws when damaged run data can't tell. */
   ownedTaskOf(agentRunId: string): TaskExecutionOwner | null { return this.resourceScope.ownerOf(agentRunId); }
   /** The agent runs inside a delegated copy of this root: a task Agent itself, or a member of a task Team (any depth). */
-  isDelegatedRun(agentRunId: string): boolean { return this.adapter.taskExecutionChainFor(agentRunId.trim()).length > 0; }
+  isDelegatedRun(agentRunId: string): boolean { return this.adapter.taskExecutionChainFor(agentRunId.trim()).length > 0 || this.knowsRunId(agentRunId); }
+  /** `send_message_to` guidance: the coordinator of this root's Team copy (also one that left the tree) or remote Team run (G-6). */
   teamCoordinatorOf(teamRunId: string): string | null {
     const remote = this.remoteRunLinks?.teamLinkFor(teamRunId);
-    return remote ? remoteTeamCoordinatorRunId(remote) : this.adapter.taskExecutionTargetOf({ teamRunId })?.ingressAgentRunId ?? null;
+    return remote ? remoteTeamCoordinatorRunId(remote) : this.adapter.taskExecutionTargetOf({ teamRunId })?.ingressAgentRunId
+      ?? this.membership.closedExecutionFor({ teamRunId })?.ingressAgentRunId ?? null;
   }
 
   assertInputAllowed(agentRunId: string): void { this.resourceScope.assertInputAllowed(agentRunId); }
@@ -256,14 +251,15 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
    * The closure release of a DONE/CANCELLED Task's copies (DS-001). Runs on a peer node are fenced outside the queue
    * (a peer call never holds the root's wakes). Hosted copies are released as one queue step, so a release and a
    * reopening commit of the same copy never interleave: at the head the step re-checks each copy is still closed,
-   * and one reopened meanwhile is not stopped (and not published closed). Once the root no longer admits commands
-   * (termination or fail-stop) the hosted release runs directly. Results are in input order.
+   * and one reopened meanwhile is not stopped (and not published closed); the stopped ones then leave the loaded tree
+   * (D-4). Once the root no longer admits commands (termination or fail-stop) the hosted release runs directly and
+   * drops nothing (a later load composes without them). Results are in input order.
    */
   async releaseTaskExecutions(executions: readonly TaskExecutionReference[]): Promise<readonly TaskExecutionStopResult[]> {
     const { fenced, hosted } = this.resourceScope.fenceRemoteClosedExecutions(executions);
     const releaseHosted = () => this.resourceScope.releaseHostedExecutions(hosted);
-    const released = !hosted.length ? []
-      : this.accepting ? await this.queue.submit({ kind: "release", executeAtQueueHead: releaseHosted }) : await releaseHosted();
+    const released = !hosted.length ? [] : !this.accepting ? await releaseHosted() : await this.queue.submit({ kind: "release",
+      executeAtQueueHead: async () => { const results = await releaseHosted(); await this.membership.dropStopped(results); return results; } });
     const hostedResults = new Map(released.map((result) => [result.execution, result]));
     return Promise.all(executions.map((execution) => fenced.get(execution) ?? Promise.resolve(hostedResults.get(execution)!)));
   }
@@ -308,20 +304,21 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
 
   /** DS-L1. `true` only when this call committed the reopen. Every refusal before the commit leaves the Task and its entries unchanged. */
   private async reactivateClosedTarget(senderAgentRunId: string, targetAgentRunId: string): Promise<boolean> {
-    if (this.resourceScope.ownerOf(targetAgentRunId)?.open !== false) return false;
+    const owner = this.resourceScope.ownerOf(targetAgentRunId);
+    // In the tree: closed only while its stop is unconfirmed. Not in it: a closed copy of this root, by its ingress.
+    const left = owner ? null : this.membership.closedExecutionFor({ ingressAgentRunId: targetAgentRunId });
+    if (owner ? owner.open : !left) return false;
     if (!this.accepting) throw new TaskDelegationError("ROOT_RUN_NOT_ACTIVE", ROOT_NOT_ACTIVE_MESSAGE);
-    const execution = this.adapter.taskExecutionWithIngress(targetAgentRunId);
-    if (!execution) {
-      throw new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", ASSIGNER_ONLY_REACTIVATION_MESSAGE);
-    }
+    const execution = left?.execution ?? this.adapter.taskExecutionWithIngress(targetAgentRunId);
+    if (!execution) throw new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", ASSIGNER_ONLY_REACTIVATION_MESSAGE);
     const port = this.resourceScope.port();
     const request = { execution, requestedBy: senderAgentRunId };
     await port.assertReopenable(request);
     // The resume step and the commit are one queue step, as in `assignToExistingCopy`.
-    const { reopened } = await this.queue.submit({ kind: "reopen", executeAtQueueHead: async () => {
+    const { reopened } = await this.queue.submit({ kind: "reopen", executeAtQueueHead: () => this.inTreeAtHead(execution, async () => {
       await this.prepareClosedCopyForResume(execution, targetAgentRunId);
       return port.reopenAssignment(request);
-    } });
+    }) });
     if (reopened) this.adapter.publishTaskExecutionsReopened(Object.freeze([execution]));
     return reopened;
   }
@@ -520,6 +517,7 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
 }
 
 const errorMessage = (error: unknown): string => error instanceof Error ? error.message : String(error);
+const throwError = (error: Error): never => { throw error; };
 /** A coded refusal from the runtime or the Task side (as opposed to an infrastructure fault). */
 const refusalCode = (error: unknown): string | null => {
   if (error instanceof TaskDelegationError) return error.code;

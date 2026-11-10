@@ -11,6 +11,8 @@ export const ASSIGNER_ONLY_REACTIVATION_MESSAGE = "This task agent's Task is clo
   + "set the Task to TODO or IN_PROGRESS, then message the task agent's run id (for a task agent team, its coordinator's run id).";
 export type TaskExecutionRole = "assigned" | "delegated" | "broughtIn";
 export type TaskExecutionOwner = Readonly<{ taskId: string; execution: TaskExecutionReference; open: boolean }>;
+/** A closed copy of a host root and the agent run a message enters it through (the Agent, or a Team's coordinator). */
+export type ClosedTaskExecution = Readonly<{ execution: TaskExecutionReference; ingressAgentRunId: string }>;
 /** The text of a Task with no Project that an assignment creates (description-only delegation by an unowned sender). */
 export type AdHocTaskContent = Readonly<{ description: string; referenceFiles: readonly string[] }>;
 /** What an assignment joins: an existing Task, or a new Task with no Project created by the link itself. */
@@ -68,6 +70,11 @@ export interface TaskExecutionResourcePort {
   isOpen(execution: TaskExecutionReference): boolean;
   /** Every copy hosted by this root whose current Task entry is closed; an unreadable Task contributes none. Never throws. */
   closedTaskExecutionsIn(hostRoot: RootExecutionIdentity): readonly TaskExecutionReference[];
+  /**
+   * The closed copy of this root named by its ingress agent run (the Agent, or a Team's coordinator) or by its reference,
+   * from the Task records; `null` when the root has no such closed copy. Synchronous; never throws.
+   */
+  closedTaskExecutionOf(hostRoot: RootExecutionIdentity, by: Readonly<{ ingressAgentRunId: string }> | TaskExecutionReference): ClosedTaskExecution | null;
   /** Rejects TASK_AGENT_RESOURCES_UNAVAILABLE while any Task's resource data is unreadable. */
   assertResourceDataReadable(): void;
   /**

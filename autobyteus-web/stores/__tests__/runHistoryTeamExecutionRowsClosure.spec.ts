@@ -99,9 +99,10 @@ describe('Team root closed task executions', () => {
     const ids = treeRunIds(context);
     expect(ids).toEqual(expect.arrayContaining(['task-team-run-1', TASK_TEAM_MEMBER]));
     for (const hidden of ['task-agent-run-1', 'sub-task-run']) expect(ids).not.toContain(hidden);
-    // A reopened reference outside the tree is rejected and keeps the sequence.
+    // A reopened execution outside the tree left it at its Task's closure and is back: a fresh snapshot brings it
+    // (autobyteus-469 D-8); the sequence is not advanced by this event.
     expect(applyTestTeamMessage(context, { type: 'TASK_EXECUTIONS_REOPENED', payload: { change_sequence: 5, task_executions: [{ agent_run_id: 'ghost-run' }] } }))
-      .toMatchObject({ disposition: 'rejected' });
+      .toMatchObject({ disposition: 'applied', effects: [{ kind: 'team_stream_recovery_required' }] });
     expect(context.view.getChangeSequence()).toBe(4);
   });
 

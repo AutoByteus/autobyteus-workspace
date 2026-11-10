@@ -8,10 +8,8 @@ import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-
 import type { TeamRunEvent } from "../domain/team-run-event.js";
 import type { TeamRun } from "../domain/team-run.js";
 import type { TeamExecutionIndex } from "../services/team-execution-index.js";
-import type {
-  ExecutionTreeCommitResult,
-  PreparedTaskActivationMutation,
-} from "../services/team-run-persistence-contract.js";
+import type { TeamRunPersistenceCoordinator } from "../services/team-run-persistence-coordinator.js";
+import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
 import type { TeamRunResolver } from "../services/team-run-resolver.js";
 import type { TaskExecutionIdentityCapabilities } from "./task-execution-identity-capabilities.js";
 import type { RemoteRunLinks } from "../../agent-collaboration/execution/remote/remote-run-links.js";
@@ -34,7 +32,10 @@ export type TeamTaskExecutionServiceOptions = Readonly<{
   authorize(identity: CollaborationMemberExecutionIdentity): void;
   requireTeamRun(teamRunId: string): Promise<TeamRun>;
   teamRunResolver: TeamRunResolver;
-  commitTaskActivation(command: PreparedTaskActivationMutation): Promise<ExecutionTreeCommitResult>;
+  /** The root's persistence: activation commits, loaded-tree mutations and delegated runs' own files (D-4). */
+  persistence: Pick<TeamRunPersistenceCoordinator, "commitTaskActivation" | "commitExecutionTreeMutation" | "readTaskExecution">;
+  /** Keeps only the loaded messages still in the view (D-4, D-5). */
+  retainMessages(keep: (message: CollaborationCommunicationMessage) => boolean): void;
   enterLifecycleFailStop(): void;
   replaceTree(tree: TeamRunExecutionTreeSnapshot): void;
   publish(event: TeamRunEvent): void;

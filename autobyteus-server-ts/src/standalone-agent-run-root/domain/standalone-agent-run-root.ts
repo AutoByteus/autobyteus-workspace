@@ -187,8 +187,8 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
         snapshot: createCollaborationAgentStatusSnapshot({ execution: identity, status: "offline" }),
       }),
       enterLifecycleFailStop: () => this.enterLifecycleFailStop(),
-      memoryLocator: options.memoryLocator,
-      activityInspector: options.activityInspector,
+      memoryLocator: options.memoryLocator, activityInspector: options.activityInspector,
+      retainMessages: (keep) => this.communication.retainMessages(keep),
     }), { ...options.taskExecutionIdleShutdown, taskExecutionResources: options.taskExecutionResources,
       remoteRunLinks: this.remoteLinks, remoteEndpoints: { isRemoteEndpoint: (agentRunId) => this.remoteLinks.has(agentRunId), isRemoteTeam: (teamRunId) => this.remoteLinks.teamLinkFor(teamRunId) !== null } });
     this.delegatedLaunches = createStandaloneDelegatedLaunchCommand({
@@ -282,10 +282,10 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
   hasOpenExecutionWork(): boolean {
     return this.options.rootAgents.hasOpenExecutionWork() || this.options.teams.hasOpenExecutionWork();
   }
-  /** Same-root membership for run-ID routing: the host, every child (shut-down children too) and every remote endpoint. */
+  /** Same-root membership for run-ID routing: the host, every child (shut-down children too), every remote endpoint, a closed copy's ingress. */
   hasAgentExecution(agentRunId: string): boolean {
     const runId = agentRunId.trim();
-    return this.index.getAgent(runId) !== null || this.remoteLinks.has(runId);
+    return this.index.getAgent(runId) !== null || this.remoteLinks.has(runId) || this.taskExecutions.knowsRunId(runId);
   }
 
   /** The host's real live state (the collaboration view's `isActive`). */

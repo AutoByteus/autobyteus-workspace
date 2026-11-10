@@ -33,7 +33,13 @@ import {
   createTeamAgentStatusSnapshot,
 } from "../domain/team-agent-status.js";
 import type { IndexedTaskExecution } from "../services/team-execution-index.js";
-import { addRemoteTaskExecutionToTree, addTaskExecutionToTree, adoptAgentPlatformBindingInTree } from "../services/team-run-execution-tree-mutator.js";
+import {
+  addRemoteTaskExecutionToTree, addTaskExecutionToTree, adoptAgentPlatformBindingInTree, removeTaskExecutionsFromTree,
+} from "../services/team-run-execution-tree-mutator.js";
+import { TEAM_RUN_TREE_SHAPE } from "../../run-history/store/coordinating-tree-shapes.js";
+import { messageViewOfTree } from "../../run-history/store/task-execution-tree-split.js";
+import { taskExecutionRunId } from "../../agent-collaboration/execution/task/task-execution-reference.js";
+import { taskExecutionContextUnavailable } from "../../agent-collaboration/execution/task/task-execution-tree-membership.js";
 import type { RemoteTaskExecution } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import { TeamRunPersistenceFinalizationIndeterminateError } from "../services/team-run-persistence-contract.js";
 import type { TeamDelegationPlacement } from "../services/resolved-team-recipient.js";
@@ -159,6 +165,19 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
     const entry = this.options.getIndex().getTaskExecution(reference); if (!entry) return;
     this.options.teamRunResolver.getManaged(entry.ownerTeamRunId)?.discardReleasedDirectTaskExecution(reference);
     if ("teamRunId" in reference) this.options.teamRunResolver.retireTerminated(reference.teamRunId);
+  }
+  async dropTaskExecutions(references: readonly TaskExecutionReference[]): Promise<void> {
+    const runIds = new Set(references.map(taskExecutionRunId));
+    await this.commitLoadedTree((tree) => removeTaskExecutionsFromTree({ tree, runIds }), (nextTree) => {
+      // Their released authority goes with them (looked up in the index before it is replaced).
+      references.forEach((reference) => this.discardReleasedExecution(reference));
+      this.options.replaceTree(nextTree);
+      this.options.retainMessages(messageViewOfTree(TEAM_RUN_TREE_SHAPE, nextTree));
+    });
+  }
+  async addTaskExecution(reference: TaskExecutionReference): Promise<void> {
+    const execution = await this.options.persistence.readTaskExecution(reference).catch((error) => { throw taskExecutionContextUnavailable(error); });
+    await this.commitLoadedTree((tree) => addTaskExecutionToTree({ tree, execution }), (nextTree) => this.options.replaceTree(nextTree));
   }
   reachingAddressOf(agent: CollaborationMemberExecutionIdentity): AgentTeamAddress | null {
     return reachingAddressOf(this.options.getIndex(), null, agent);
@@ -289,10 +308,20 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
     return { address: coordinatorAddress, agentRunId: coordinator.agentRunId };
   }
 
+  /** A change of the loaded tree only (D-4): ordered with the root's saves, no file written; `apply` installs it. */
+  private async commitLoadedTree(next: (tree: TeamRunExecutionTreeSnapshot) => TeamRunExecutionTreeSnapshot,
+    apply: (tree: TeamRunExecutionTreeSnapshot) => void): Promise<void> {
+    const result = await this.options.persistence.commitExecutionTreeMutation({ prepareAgainstCurrent: () => {
+      const nextTree = next(this.options.getTree());
+      return { nextTree, requiresWrite: false, cancelBeforeDurability: () => undefined, commitAfterDurability: () => apply(nextTree) };
+    } });
+    if (result.outcome === "not_committed") throw result.cause;
+  }
+
   /** A remote delegation's one tree write: the link with `nodeId`. */
   private async commitRemoteLink(link: RemoteTaskExecution): Promise<TaskExecutionActivationCommitResult> {
     let nextTree: TeamRunExecutionTreeSnapshot | null = null;
-    const result = await this.options.commitTaskActivation({
+    const result = await this.options.persistence.commitTaskActivation({
       prepareAgainstCurrent: () => {
         nextTree = addRemoteTaskExecutionToTree({ tree: this.options.getTree(), link });
         return { nextTree };
@@ -321,7 +350,7 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
     retainWork(work: CommittedTaskExecution): void;
   }): Promise<TaskExecutionActivationCommitResult> {
     let nextTreeAtCommit: TeamRunExecutionTreeSnapshot | null = null;
-    const result = await this.options.commitTaskActivation({
+    const result = await this.options.persistence.commitTaskActivation({
       prepareAgainstCurrent: () => {
         let nextTree = addTaskExecutionToTree({ tree: this.options.getTree(), execution: input.execution });
         for (const binding of input.prepared.stagedPlatformBindings) {

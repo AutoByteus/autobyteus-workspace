@@ -11,6 +11,7 @@ import { CollaborationMemberNotFoundError } from "../../../src/agent-collaborati
 import { RunFileChangeProjectionStore } from "../../../src/services/run-file-changes/run-file-change-projection-store.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import type { StandaloneRootTreeFile } from "../../../src/standalone-agent-run-root/domain/standalone-root-tree.js";
+import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 /**
  * `agentRunCollaborationMemberFileChanges` (delegated-copies-slow-open D-3, AC-009) and the copy's
@@ -39,7 +40,7 @@ const entry = (runId: string, filePath: string) => ({
 });
 
 const setup = async (input: { activeHost?: string } = {}) => {
-  const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "standalone-member-file-changes-"));
+  const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "standalone-member-file-changes-")); openEveryOwnFileUnder(memoryDir);
   directories.push(memoryDir);
   const store = new StandaloneRootPackageStore();
   const trees = new Map<string, StandaloneRootTreeFile>();

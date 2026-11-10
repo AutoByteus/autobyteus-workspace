@@ -363,6 +363,27 @@ const releaseBoundChannel = () => {
   boundChannel = null;
 };
 
+/**
+ * autobyteus-469 D-3: a coordinating tree file no longer stores its local delegated runs. The one intended difference
+ * from the baseline record is that its lists hold only links to runs on another node (`nodeId`); every other byte of
+ * every file, and every result, input and transmission, must still equal the record. Applied to both sides.
+ */
+const TREE_FILE = /(collaboration_tree|team_run_execution_tree|agent_org_run_execution_tree)\.json$/;
+const onlyRemote = (list: unknown) => Array.isArray(list) ? list.filter((entry) => (entry as { nodeId?: unknown }).nodeId !== undefined) : list;
+const withoutLocalTreeEntries = (value: unknown): unknown => {
+  if (Array.isArray(value)) return value.map(withoutLocalTreeEntries);
+  if (!value || typeof value !== "object") return value;
+  return Object.fromEntries(Object.entries(value).map(([key, entry]) => {
+    if (!TREE_FILE.test(key) || typeof entry !== "string") return [key, withoutLocalTreeEntries(entry)];
+    const tree = JSON.parse(entry) as Record<string, any>;
+    if (tree.taskAgent) return [key, entry];
+    const holder = tree.rootTeam ?? tree.rootOrg ?? tree;
+    holder.taskExecutions = onlyRemote(holder.taskExecutions);
+    for (const member of tree.rootOrg?.members ?? []) if (member.taskExecutions) member.taskExecutions = onlyRemote(member.taskExecutions);
+    return [key, JSON.stringify(tree)];
+  }));
+};
+
 const CAPTURES = { deliver: captureDeliver, taskWork: captureTaskWork, remote: captureRemote, notAccepting: captureNotAccepting } as const;
 const results: Record<string, unknown> = {};
 
@@ -380,7 +401,7 @@ describe.each(Object.keys(ROOTS) as RootKind[])("%s root message delivery matche
     if (RECORD) { results[key] = actual; return; }
     const baseline = JSON.parse(await fs.readFile(FIXTURE, "utf8")) as Record<string, unknown>;
     expect(baseline[key], `no baseline record for ${key}`).toBeDefined();
-    expect(actual).toEqual(baseline[key]);
+    expect(withoutLocalTreeEntries(actual)).toEqual(withoutLocalTreeEntries(baseline[key]));
   });
 });
 

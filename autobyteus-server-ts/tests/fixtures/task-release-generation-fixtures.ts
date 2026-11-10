@@ -136,6 +136,16 @@ export async function nestedReleaseScenario(kind: RootSubjectKind) {
     source: teamSource(teamNode) as never }), taskExecutions: [agentProjection(childNode), nested] };
   const tasks = [task, agentProjection(copies[0]), agentProjection(copies[1]), agentProjection(copies[2])];
   let tree: any, index: any, adapter: any;
+  /**
+   * The root's loaded-tree commits in memory (autobyteus-469 D-4): a closed copy leaves the tree once stopped and comes
+   * back from its record (the run's own file) when continued. Records of the fixture's copies stand in for own files.
+   */
+  const records = new Map<string, any>(tasks.map((record: any) => [record.agentRunId ?? record.teamRunId, record]));
+  const indexOf = (next: any) => rootTeam ? new TeamExecutionIndex(next) : kind === 'agent_org' ? new AgentOrgExecutionIndex(next) : new StandaloneRootExecutionIndex(next);
+  const replaceTree = (next: any) => { tree = next; index = indexOf(next); };
+  const commitLoaded = async ({ prepareAgainstCurrent }: any) => { prepareAgainstCurrent().commitAfterDurability(); return { outcome: 'committed' }; };
+  const persistence = { commitTreeMutation: commitLoaded, commitExecutionTreeMutation: commitLoaded,
+    readTaskExecution: async (run: any) => { const record = records.get(run.agentRunId ?? run.teamRunId); if (!record) throw Error('own file is missing'); return record; } };
   if (rootTeam) {
     const base = testExecutionTree({ rootTeamRunId: 'root', children: [managerNode], coordinatorAddress: '/Manager' });
     tree = { ...base, rootTeam: { ...base.rootTeam, taskExecutions: tasks } }; index = new TeamExecutionIndex(tree);
@@ -143,7 +153,8 @@ export async function nestedReleaseScenario(kind: RootSubjectKind) {
     resolver.registerManaged(oldTeam); resolver.registerManaged(oldNested);
     adapter = new TeamTaskExecutionAdapter({ rootTeamRunId: 'root', config: testTeamRunConfig({ rootTeamRunId: 'root', children: [managerNode], coordinatorAddress: '/Manager' }),
       getIndex: () => index, teamRunResolver: resolver, requireTeamRun: async (id: string) => { const run = resolver!.getActive(id); if (!run) throw Error('Missing active host'); return run; },
-      tokenUsageReadiness: {}, publish: vi.fn(), activityInspector: presentConversation, remoteLinks: noRemoteLinks(f.root) } as never);
+      tokenUsageReadiness: {}, publish: vi.fn(), activityInspector: presentConversation, remoteLinks: noRemoteLinks(f.root),
+      getTree: () => tree, replaceTree, retainMessages: vi.fn(), persistence } as never);
   } else {
     if (kind === 'agent_org') {
       const base = testAgentOrgExecutionTree({ orgRunId: 'root', members: [testOrgAgentNode('/Manager', 'manager')] });
@@ -152,7 +163,8 @@ export async function nestedReleaseScenario(kind: RootSubjectKind) {
       tree = { subjectKind: 'agent', createdAt: now, host: { address: '/Manager', agentRunId: 'root', agentDefinitionId: 'manager' }, taskExecutions: tasks };
       index = new StandaloneRootExecutionIndex(tree);
     }
-    const options = { root: f.root, rootAgents: f.rootAgents, teams: f.teams, callbacks: f.callbacks, getTree: () => tree, getIndex: () => index, tokenUsageReadiness: {}, publishTaskExecutionsClosed: vi.fn(), publishTaskExecutionsReopened: vi.fn(), activityInspector: presentConversation, remoteLinks: noRemoteLinks(f.root) };
+    const options = { root: f.root, rootAgents: f.rootAgents, teams: f.teams, callbacks: f.callbacks, getTree: () => tree, getIndex: () => index, tokenUsageReadiness: {}, publishTaskExecutionsClosed: vi.fn(), publishTaskExecutionsReopened: vi.fn(), activityInspector: presentConversation, remoteLinks: noRemoteLinks(f.root),
+      replaceTree, retainMessages: vi.fn(), persistence };
     adapter = kind === 'agent_org' ? new AgentOrgTaskExecutionAdapter(options as never) : new StandaloneRootTaskExecutionAdapter(options as never);
   }
   // Original exact controls observed at the root registration boundary, not reconstructed by lookup.

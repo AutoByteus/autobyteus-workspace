@@ -9,6 +9,7 @@ import { CollaborationExecutionLocationService } from "../../../src/agent-collab
 import { ContextFileOwnerResolver } from "../../../src/context-files/services/context-file-owner-resolver.js";
 import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
+import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 const directories: string[] = [];
 afterEach(async () => { await Promise.all(directories.splice(0).map((directory) => fs.rm(directory, { recursive: true, force: true }))); });
@@ -25,7 +26,7 @@ const createStoredOrg = async (memoryDir: string, orgRunId: string) => {
 
 describe("AgentOrg and compound execution locations", () => {
   it("projects truthful direct and mounted-Team memory paths", async () => {
-    const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "org-locations-")); directories.push(memoryDir);
+    const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "org-locations-")); directories.push(memoryDir); openEveryOwnFileUnder(memoryDir);
     const fixture = await createStoredOrg(memoryDir, "org-one"); const service = new AgentOrgExecutionTreeLocationService({ memoryDir });
     const direct = await service.findAgent({ rootRunId: "org-one", memberAddress: fixture.direct.address });
     expect(direct).toMatchObject({ rootSubjectKind: "agent_org", rootRunId: "org-one", containingTeamRunId: null, ancestorTeamRunIds: [], agentRunId: fixture.direct.agentRunId });
@@ -36,7 +37,7 @@ describe("AgentOrg and compound execution locations", () => {
   });
 
   it("uses the explicit Org root when the same address exists in multiple stored Orgs", async () => {
-    const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "org-locations-")); directories.push(memoryDir);
+    const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "org-locations-")); directories.push(memoryDir); openEveryOwnFileUnder(memoryDir);
     await createStoredOrg(memoryDir, "org-a"); const second = await createStoredOrg(memoryDir, "org-b");
     const orgs = new AgentOrgExecutionTreeLocationService({ memoryDir });
     const teams = { findAgent: vi.fn(async () => null), findAgentSync: vi.fn(() => null), listAgents: vi.fn(async () => []) };
@@ -49,7 +50,7 @@ describe("AgentOrg and compound execution locations", () => {
   });
 
   it("lists one requested root's Agent executions from a single tree read and exposes sorted root IDs", async () => {
-    const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "org-locations-")); directories.push(memoryDir);
+    const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "org-locations-")); directories.push(memoryDir); openEveryOwnFileUnder(memoryDir);
     const second = await createStoredOrg(memoryDir, "org-b"); await createStoredOrg(memoryDir, "org-a");
     const store = new AgentOrgRunExecutionTreeStore();
     const read = vi.spyOn(store, "read");
@@ -67,7 +68,7 @@ describe("AgentOrg and compound execution locations", () => {
   });
 
   it("respects root-package admission for a root-scoped listing", async () => {
-    const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "org-locations-")); directories.push(memoryDir);
+    const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "org-locations-")); directories.push(memoryDir); openEveryOwnFileUnder(memoryDir);
     await createStoredOrg(memoryDir, "org-a");
     await fs.unlink(path.join(memoryDir, "agent_orgs", "org-a", "agent_org_communication_messages_active.jsonl"));
     const readiness = new RootRunPackageReadinessIndex(memoryDir);

@@ -107,6 +107,16 @@ export interface RootTaskExecutionAdapter<TPlacement> {
    * authority and retained registration of exactly this copy, so restore builds a fresh one.
    */
   discardReleasedExecution(reference: TaskExecutionReference): void;
+  /**
+   * D-4: these stopped copies of closed Tasks leave the loaded tree: their released authority and registration, their
+   * records, and the loaded messages no longer in the root's view. Changes memory only (ordered with the root's saves).
+   */
+  dropTaskExecutions(references: readonly TaskExecutionReference[]): Promise<void>;
+  /**
+   * D-4: a closed copy comes back into the loaded tree, its record composed from its own file. Rejects
+   * TASK_EXECUTION_CONTEXT_UNAVAILABLE when that file is missing, unreadable or names another coordinating run.
+   */
+  addTaskExecution(reference: TaskExecutionReference): Promise<void>;
   /** The agent's own address when, run-wide, it reaches exactly that agent (design T-5, for the task message); null otherwise. */
   reachingAddressOf(agent: CollaborationMemberExecutionIdentity): AgentTeamAddress | null;
   /** The task execution whose ingress (the Agent itself, or a Team's coordinator) is this agent run; `null` otherwise. */

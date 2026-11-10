@@ -5,15 +5,16 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { TaskTeamRootMemorySource } from "../../../src/agent-memory/services/task-team-root-memory-source.js";
 import { MemoryRunDiscovery } from "../../../src/memory-search/runs/memory-run-discovery.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
-import { getStandaloneRootTreePath } from "../../../src/standalone-agent-run-root/persistence/standalone-root-tree-path.js";
 import { getTeamRunExecutionTreePath } from "../../../src/run-history/store/team-run-execution-tree-path.js";
 import { writeRun } from "../../helpers/memory-search-fixtures.js";
+import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 const turn = [{ day: "2026-08-25", user: "hello", agent: "hi" }];
 const launch = (runtimeKind: RuntimeKind, workspaceRootPath: string | null) =>
   ({ runtimeKind, llmModelIdentifier: "m", llmConfig: null, autoExecuteTools: false, workspaceRootPath });
 
 /** A task agent team's own tree, linked from a standalone host's collaboration tree when `linked`. */
+/** `linked`: its coordinating run still exists (its own file; autobyteus-469 D-6), else it is detached. */
 const writeTaskTeam = (memoryDir: string, teamRunId: string, hostRunId: string, linked: boolean, overrides: Readonly<{ member?: object; taskAgent?: object }> = {}): void => {
   const teamDir = path.join(memoryDir, "agent_teams", teamRunId);
   fs.mkdirSync(teamDir, { recursive: true });
@@ -31,18 +32,14 @@ const writeTaskTeam = (memoryDir: string, teamRunId: string, hostRunId: string, 
     },
     taskAgent: { coordinatingRun: { kind: "agent", runId: hostRunId }, delegatorAgentRunId: hostRunId, address: "/Research_Crew", ...overrides.taskAgent },
   }));
-  const collaborationDir = path.join(memoryDir, "agents", hostRunId, "collaboration");
-  fs.mkdirSync(collaborationDir, { recursive: true });
-  const existing = fs.existsSync(getStandaloneRootTreePath(collaborationDir))
-    ? JSON.parse(fs.readFileSync(getStandaloneRootTreePath(collaborationDir), "utf-8")) as { taskExecutions: unknown[] }
-    : { host: { agentRunId: hostRunId }, taskExecutions: [] };
-  if (linked) existing.taskExecutions.push({ teamRunId });
-  fs.writeFileSync(getStandaloneRootTreePath(collaborationDir), JSON.stringify(existing));
+  if (!linked) return;
+  fs.mkdirSync(path.join(memoryDir, "agents", hostRunId), { recursive: true });
+  fs.writeFileSync(path.join(memoryDir, "agents", hostRunId, "run_metadata.json"), "{}");
 };
 
 describe("MemoryRunDiscovery", () => {
   let memoryDir: string;
-  beforeEach(() => { memoryDir = fs.mkdtempSync(path.join(os.tmpdir(), "memory-discovery-")); });
+  beforeEach(() => { memoryDir = fs.mkdtempSync(path.join(os.tmpdir(), "memory-discovery-")); openEveryOwnFileUnder(memoryDir); });
   afterEach(() => { fs.rmSync(memoryDir, { recursive: true, force: true }); vi.restoreAllMocks(); });
 
   it("finds every run kind with names, workspace and runtime as recorded, and folders no record attributes", async () => {
@@ -182,10 +179,10 @@ describe("MemoryRunDiscovery", () => {
 
 describe("TaskTeamRootMemorySource", () => {
   let memoryDir: string;
-  beforeEach(() => { memoryDir = fs.mkdtempSync(path.join(os.tmpdir(), "task-team-source-")); });
+  beforeEach(() => { memoryDir = fs.mkdtempSync(path.join(os.tmpdir(), "task-team-source-")); openEveryOwnFileUnder(memoryDir); });
   afterEach(() => fs.rmSync(memoryDir, { recursive: true, force: true }));
 
-  it("lists the task teams their coordinating run still links, with members, launch and delegator, from their own trees", async () => {
+  it("lists the task teams whose coordinating run still exists, with members, launch and delegator, from their own trees", async () => {
     writeTaskTeam(memoryDir, "crew_linked", "host_a", true);
     writeTaskTeam(memoryDir, "crew_detached", "host_b", false);
     const source = new TaskTeamRootMemorySource(memoryDir);

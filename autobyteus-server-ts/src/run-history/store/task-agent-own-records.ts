@@ -13,32 +13,24 @@ import type { TaskAgentCoordinatingRun, TaskAgentRunMetadata, TaskAgentSection }
 import { taskAgentStartedLaunch } from "./task-agent-own-file-schema.js";
 
 /**
- * The mapping between today's in-memory task records and their on-disk form (design D-1, contract §3):
- * the coordinating tree keeps a link, the task agent's own file keeps its facts, its `source` among them.
- * One branch each way (D-3). Pure: no IO.
+ * The mapping between today's in-memory task records and a delegated run's own file (design D-1, D-2, contract §3):
+ * the own file keeps every fact of the record, its address, delegator and start among them; a coordinating run
+ * stores nothing of a local delegated run (CM-8). One branch each way. Pure: no IO.
  */
-
-/** The link a coordinating tree keeps for a task agent (contract §3.3). */
-export type TaskAgentLink = Readonly<{ address: AgentTeamAddress; agentRunId: string; delegatorAgentRunId?: string; startedAt: string }>;
-export type TaskTeamLink = Readonly<{ address: AgentTeamAddress; teamRunId: string; delegatorAgentRunId?: string; startedAt: string }>;
-export type TaskExecutionLink = TaskAgentLink | TaskTeamLink;
 
 export const taskExecutionRunId = (task: Readonly<{ agentRunId: string } | { teamRunId: string }>): string =>
   "agentRunId" in task ? task.agentRunId : task.teamRunId;
 
-/** On disk, a full record carries its facts (`platformAgentRunId` / `members`); a link never does. */
-export const isTaskExecutionLinkEntry = (entry: Record<string, unknown>): boolean =>
-  !("platformAgentRunId" in entry) && !("members" in entry);
-
-/** The link of a record: only its address, identity, delegator and start (any record shape that has them). */
-export const taskExecutionLinkOf = (
-  record: Pick<TaskAgentExecution, "address" | "agentRunId" | "delegatorAgentRunId" | "startedAt">
-    | Pick<TaskTeamExecution, "address" | "teamRunId" | "delegatorAgentRunId" | "startedAt">,
-): TaskExecutionLink => {
-  const delegator = record.delegatorAgentRunId === undefined ? {} : { delegatorAgentRunId: record.delegatorAgentRunId };
-  return "agentRunId" in record
-    ? { address: record.address, agentRunId: record.agentRunId, ...delegator, startedAt: record.startedAt }
-    : { address: record.address, teamRunId: record.teamRunId, ...delegator, startedAt: record.startedAt };
+const LINK_KEYS = new Set(["address", "agentRunId", "teamRunId", "startedAt", "delegatorAgentRunId"]);
+/**
+ * Whether a stored local entry is a link by its exact key set (design D-3, SR-008): `address`, exactly one of
+ * `agentRunId` / `teamRunId`, `startedAt`, and optionally `delegatorAgentRunId`. Any other key (a full record's facts,
+ * nested runs) means it is not a link. Only the save uses it, to decide what it may leave out.
+ */
+export const isTaskExecutionLinkEntry = (entry: Record<string, unknown>): boolean => {
+  const keys = Object.keys(entry);
+  return keys.every((key) => LINK_KEYS.has(key)) && "address" in entry && "startedAt" in entry
+    && ("agentRunId" in entry) !== ("teamRunId" in entry);
 };
 
 const section = (input: Readonly<{
@@ -84,13 +76,13 @@ export const taskAgentOwnMetadata = (input: Readonly<{
   };
 };
 
-/** Today's record of an agent task agent from its link and own file (contract §3.1). */
-export const composeTaskAgentRecord = (link: TaskAgentLink, own: TaskAgentRunMetadata): TaskAgentExecution => ({
-  address: link.address,
-  agentRunId: link.agentRunId,
+/** Today's record of an agent task agent from its own file (contract §3.1). */
+export const composeTaskAgentRecord = (own: TaskAgentRunMetadata): TaskAgentExecution => ({
+  address: own.taskAgent.address,
+  agentRunId: own.runId,
   platformAgentRunId: own.platformAgentRunId,
-  ...(link.delegatorAgentRunId === undefined ? {} : { delegatorAgentRunId: link.delegatorAgentRunId }),
-  startedAt: link.startedAt,
+  ...(own.taskAgent.delegatorAgentRunId === undefined ? {} : { delegatorAgentRunId: own.taskAgent.delegatorAgentRunId }),
+  startedAt: own.startedAt,
   source: {
     kind: "agent",
     agentDefinitionId: own.agentDefinitionId,
@@ -153,12 +145,12 @@ export const taskAgentTeamOwnTree = (input: Readonly<{
   };
 };
 
-/** Today's record of a task agent team from its link and own tree (contract §3.2, U-3). */
-export const composeTaskTeamRecord = (link: TaskTeamLink, own: TaskAgentTeamTreeFile): TaskTeamExecution => {
+/** Today's record of a task agent team from its own tree (contract §3.2, U-3). */
+export const composeTaskTeamRecord = (own: TaskAgentTeamTreeFile): TaskTeamExecution => {
   const root = own.rootTeam;
   return {
-    address: link.address,
-    teamRunId: link.teamRunId,
+    address: own.taskAgent.address,
+    teamRunId: root.teamRunId,
     members: root.members.map((member) => ({
       address: member.address,
       agentRunId: member.agentRunId,
@@ -167,8 +159,8 @@ export const composeTaskTeamRecord = (link: TaskTeamLink, own: TaskAgentTeamTree
       ...(member.pendingRuntimeSwitch === undefined ? {} : { pendingRuntimeSwitch: member.pendingRuntimeSwitch }),
     })),
     taskExecutions: [],
-    ...(link.delegatorAgentRunId === undefined ? {} : { delegatorAgentRunId: link.delegatorAgentRunId }),
-    startedAt: link.startedAt,
+    ...(own.taskAgent.delegatorAgentRunId === undefined ? {} : { delegatorAgentRunId: own.taskAgent.delegatorAgentRunId }),
+    startedAt: own.createdAt,
     source: {
       kind: "agent_team",
       teamDefinitionId: root.teamDefinitionId,

@@ -1,6 +1,6 @@
 import { rootExecutionIdentityKey, type RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type {
-  ExistingTaskExecutionAssignInput, NewTaskExecutionLinkInput, TaskExecutionOwner,
+  ClosedTaskExecution, ExistingTaskExecutionAssignInput, NewTaskExecutionLinkInput, TaskExecutionOwner,
 } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import { taskExecutionReferenceKey } from "@autobyteus/collaboration-stream-contracts";
@@ -13,11 +13,15 @@ import {
 import type { TaskLocation } from "../domain/models.js";
 import { TaskExecutionResourceStore } from "../stores/task-execution-resource-store.js";
 import { latestAssignedEntry } from "./task-root-view-builder.js";
+import type { OpenDelegatedRun, OpenDelegatedRunSource } from "../../run-history/store/open-delegated-run-source.js";
+import type { TaskAgentCoordinatingRun } from "../../run-history/store/agent-run-metadata-types.js";
 
 type Loaded = { location: TaskLocation; file: TaskExecutionResourceFile };
 type Current = Readonly<{ taskId: string; entry: TaskExecutionResource }>;
 export type TaskExecutionGroup = Readonly<{ hostRoot: RootExecutionIdentity; executions: readonly TaskExecutionReference[] }>;
 export type TaskAssignmentViews = Readonly<{ open: TaskAssignmentView[]; closed: TaskAssignmentView[] }>;
+const ingressOf = (entry: TaskExecutionResource): string =>
+  "agentRunId" in entry.execution ? entry.execution.agentRunId : entry.teamCoordinatorAgentRunId!;
 
 /**
  * The sole authority over every Task's `agent_run_resources.json` and the process in-memory view of
@@ -27,7 +31,7 @@ export type TaskAssignmentViews = Readonly<{ open: TaskAssignmentView[]; closed:
  * and visibility answer reads it, and a copy is open while any of its entries is. Write preconditions are evaluated on the content
  * read under the file's lock; the view is swapped only by the committing write.
  */
-export class TaskExecutionResourceService {
+export class TaskExecutionResourceService implements OpenDelegatedRunSource {
   private readonly files = new Map<string, Loaded>();
   /** Per copy (task execution key): its last entry in each Task file that has one. Derived only in `swap()`/`forget()`. */
   private readonly entriesByExecution = new Map<string, Map<string, TaskExecutionResource>>();
@@ -35,6 +39,8 @@ export class TaskExecutionResourceService {
   private readonly currentByExecution = new Map<string, Current>();
   /** Copies whose current entry is closed, per host root key (then by copy key). */
   private readonly closedByHostRootKey = new Map<string, Map<string, TaskExecutionReference>>();
+  /** Copies whose current entry is open, per host root key (then by copy key): a top run's tree (design D-1). */
+  private readonly openByHostRootKey = new Map<string, Map<string, TaskExecutionResource>>();
   private readonly damaged = new Map<string, string>();
   private readonly chains = new Map<string, Promise<unknown>>();
   private loading: Promise<void> | null = null;
@@ -203,6 +209,28 @@ export class TaskExecutionResourceService {
     return [...this.closedByHostRootKey.get(rootExecutionIdentityKey(hostRoot))?.values() ?? []];
   }
   /**
+   * The closed copy of the root named by its ingress agent run or its reference, from the per-root index; `null` when the
+   * root has no such closed copy (a Team member that is not its coordinator included). Never throws.
+   */
+  closedTaskExecutionOf(hostRoot: RootExecutionIdentity, by: Readonly<{ ingressAgentRunId: string }> | TaskExecutionReference): ClosedTaskExecution | null {
+    for (const [key, execution] of this.closedByHostRootKey.get(rootExecutionIdentityKey(hostRoot)) ?? []) {
+      const ingressAgentRunId = ingressOf(this.currentByExecution.get(key)!.entry);
+      const matches = "ingressAgentRunId" in by ? ingressAgentRunId === by.ingressAgentRunId : taskExecutionReferenceKey(by) === key;
+      if (matches) return { execution, ingressAgentRunId };
+    }
+    return null;
+  }
+  /**
+   * A top run's local delegated runs (design D-1): the copies whose current entry names it and is open, whatever their
+   * start. A damaged Task contributes none (it never reaches `swap()`; `load()` reported it).
+   */
+  openDelegatedRunsOf(coordinatingRun: TaskAgentCoordinatingRun): readonly OpenDelegatedRun[] {
+    this.assertLoaded();
+    const rootKey = rootExecutionIdentityKey({ rootSubjectKind: coordinatingRun.kind, rootRunId: coordinatingRun.runId });
+    return [...this.openByHostRootKey.get(rootKey)?.values() ?? []]
+      .map((entry) => ({ run: entry.execution, started: entry.start === "started" }));
+  }
+  /**
    * Ad-hoc Tasks (no Project) with an agent run hosted by the root, from the view. Every entry of an
    * ad-hoc Task has its delegator's host root (only described delegation creates and assigns to one).
    */
@@ -316,7 +344,7 @@ export class TaskExecutionResourceService {
    */
   private deriveCurrent(key: string): void {
     const previous = this.currentByExecution.get(key);
-    if (previous && previous.entry.closedAt !== null) this.unmarkClosed(previous.entry.hostRoot, key);
+    if (previous) this.unindexByHostRoot(previous.entry, key);
     const candidates = [...this.entriesByExecution.get(key)?.entries() ?? []].map(([taskId, entry]) => ({ taskId, entry }));
     const open = candidates.filter(candidate => candidate.entry.closedAt === null);
     const latest = (open.length ? open : candidates).reduce<Current | null>((best, candidate) => !best
@@ -324,20 +352,25 @@ export class TaskExecutionResourceService {
       || (candidate.entry.linkedAt === best.entry.linkedAt && candidate.taskId > best.taskId) ? candidate : best, null);
     if (!latest) { this.currentByExecution.delete(key); return; }
     this.currentByExecution.set(key, latest);
-    if (latest.entry.closedAt !== null) {
-      const rootKey = rootExecutionIdentityKey(latest.entry.hostRoot);
-      const closed = this.closedByHostRootKey.get(rootKey) ?? new Map<string, TaskExecutionReference>();
-      closed.set(key, latest.entry.execution);
-      this.closedByHostRootKey.set(rootKey, closed);
-    }
+    const rootKey = rootExecutionIdentityKey(latest.entry.hostRoot);
+    if (latest.entry.closedAt !== null) indexed(this.closedByHostRootKey, rootKey).set(key, latest.entry.execution);
+    else indexed(this.openByHostRootKey, rootKey).set(key, latest.entry);
   }
-  private unmarkClosed(hostRoot: RootExecutionIdentity, key: string): void {
-    const rootKey = rootExecutionIdentityKey(hostRoot);
-    const closed = this.closedByHostRootKey.get(rootKey);
-    closed?.delete(key);
-    if (closed?.size === 0) this.closedByHostRootKey.delete(rootKey);
+  /** Removes a copy's previous current entry from the per-root index it was in (open or closed). */
+  private unindexByHostRoot(entry: TaskExecutionResource, key: string): void {
+    const rootKey = rootExecutionIdentityKey(entry.hostRoot);
+    const byRoot: Map<string, Map<string, unknown>> = entry.closedAt !== null ? this.closedByHostRootKey : this.openByHostRootKey;
+    const copies = byRoot.get(rootKey);
+    copies?.delete(key);
+    if (copies?.size === 0) byRoot.delete(rootKey);
   }
   private assertLoaded(): void {
     if (!this.loaded) throw new Error("Task agent run resources are not loaded.");
   }
 }
+
+const indexed = <T>(byRoot: Map<string, Map<string, T>>, rootKey: string): Map<string, T> => {
+  const copies = byRoot.get(rootKey) ?? new Map<string, T>();
+  byRoot.set(rootKey, copies);
+  return copies;
+};

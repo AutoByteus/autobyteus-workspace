@@ -3,7 +3,7 @@ import { getAgentTeamAddressBasename, type AgentTeamAddress } from "../../agent-
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
 import type { TaskAgentTeamTreeFile } from "../../agent-team-execution/domain/task-agent-team-tree.js";
 import type { TaskAgentCoordinatingRun } from "../../run-history/store/agent-run-metadata-types.js";
-import { TaskAgentLinkChecker } from "../../run-history/store/task-agent-link-check.js";
+import { CoordinatingRunPresence } from "../../run-history/store/coordinating-run-presence.js";
 import { TaskAgentOwnFiles } from "../../run-history/store/task-agent-own-files.js";
 import { effectiveCopyAgentLaunch } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import type { PendingRuntimeSwitch } from "../../run-history/store/agent-run-metadata-types.js";
@@ -26,7 +26,7 @@ export type TaskTeamMember = Readonly<{
   memoryDir: string;
 }>;
 
-/** A task team still linked by its coordinating run, read from its own tree. */
+/** A task team whose coordinating run still exists, read from its own tree. */
 export type TaskTeamRoot = Readonly<{
   teamRunId: string;
   teamDefinitionId: string;
@@ -51,19 +51,19 @@ export class TaskTeamRootMemorySource implements CollaborationRootMemorySource {
   readonly familyLabel = "task team run";
   private readonly layout: AgentMemoryLayout;
   private readonly ownFiles: TaskAgentOwnFiles;
-  private readonly links: TaskAgentLinkChecker;
+  private readonly coordinatingRuns: CoordinatingRunPresence;
 
   constructor(memoryDir: string) {
     this.layout = new AgentMemoryLayout(memoryDir);
     this.ownFiles = new TaskAgentOwnFiles(memoryDir);
-    this.links = new TaskAgentLinkChecker(memoryDir);
+    this.coordinatingRuns = new CoordinatingRunPresence(memoryDir);
   }
 
   async listRootRunIds(): Promise<string[]> {
     return (await this.listTaskTeams()).map((team) => team.teamRunId);
   }
 
-  /** Every linked task team with its members. */
+  /** Every task team whose coordinating run still exists, with its members. */
   async listTaskTeams(): Promise<TaskTeamRoot[]> {
     const teams: TaskTeamRoot[] = [];
     for (const teamRunId of await this.teamFolderNames()) {
@@ -78,7 +78,8 @@ export class TaskTeamRootMemorySource implements CollaborationRootMemorySource {
     const state = await this.ownFiles.readTeam(teamRunId);
     if (state.kind !== "present") return null;
     const { tree } = state;
-    if (!await this.links.isLinked(tree.taskAgent.coordinatingRun, teamRunId)) return null;
+    // Detached (its coordinating run deleted): not listed; a team whose Task closed stays listed (D-6).
+    if (!await this.coordinatingRuns.exists(tree.taskAgent.coordinatingRun)) return null;
     return this.toRoot(teamRunId, tree);
   }
 

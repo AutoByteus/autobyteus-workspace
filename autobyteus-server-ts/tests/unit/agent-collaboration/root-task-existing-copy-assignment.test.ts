@@ -100,7 +100,8 @@ describe("assigning a new Task to an existing copy (DS-002)", () => {
     // Another sender gets the assigner-only reason; the wrong ID kind keeps its own refusal.
     expect(await f.assignTo(worker, "task-G", "intruder")).toEqual({ delegated: false,
       message: expect.stringContaining("Only the agent that gave this task agent its most recent Task") });
-    expect(await f.assignTo({ teamRunId: "worker" }, "task-G")).toEqual({ delegated: false, message: expect.stringContaining("is not one of your task agents.") });
+    // A closed copy of this root is known through the Task records (autobyteus-469): the wrong ID kind names the field to use.
+    expect(await f.assignTo({ teamRunId: "worker" }, "task-G")).toEqual({ delegated: false, message: 'worker is a task agent\'s run id; use target_agent_run_id "worker".' });
     expect(f.log).toEqual([]);
     unchanged(f);
   });

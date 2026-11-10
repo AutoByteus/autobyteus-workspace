@@ -186,8 +186,9 @@ export class RootRunPackageCurrentValidator {
       return;
     }
     try {
-      // Structure only (autobyteus-358): the log is validated where it is read, not here.
-      const executionTree = await this.stores.teamTree.read(entry.packagePath, rootRunId);
+      // Structure only (autobyteus-358): the log is validated where it is read, not here. The run's own parts only
+      // (D-11): it reads no delegated run and asks no Task record, which are loaded after this scan.
+      const executionTree = await this.stores.teamTree.readOwnParts(entry.packagePath, rootRunId);
       if (!executionTree) throw new Error("Team Run V3 tree is required.");
       validateTeamRunExecutionTree(executionTree, rootRunId);
       target.groups.push({ key: packageKey("agent_team", rootRunId), family: "agent_team", id: rootRunId, directory: entry.packagePath });
@@ -212,8 +213,9 @@ export class RootRunPackageCurrentValidator {
       return;
     }
     try {
-      // Structure only (autobyteus-358): the log is validated where it is read, not here.
-      const executionTree = await this.stores.orgTree.read(entry.packagePath, rootRunId);
+      // Structure only (autobyteus-358): the log is validated where it is read, not here. The run's own parts only
+      // (D-11): it reads no delegated run and asks no Task record, which are loaded after this scan.
+      const executionTree = await this.stores.orgTree.readOwnParts(entry.packagePath, rootRunId);
       if (!executionTree) throw new Error("AgentOrg Run V2 tree is required.");
       if (executionTree.rootOrg.orgRunId !== rootRunId) throw new Error(`AgentOrg package '${rootRunId}' has contradictory root IDs.`);
       validateAgentOrgExecutionTree(executionTree);

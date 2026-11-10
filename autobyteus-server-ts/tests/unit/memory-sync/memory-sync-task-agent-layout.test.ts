@@ -21,6 +21,7 @@ import { StandaloneRootPackageStore } from "../../../src/standalone-agent-run-ro
 import { validateStandaloneRootTreePayload } from "../../../src/standalone-agent-run-root/persistence/standalone-root-tree-schema.js";
 import { testAgentNode, testExecutionTree, writeCurrentTeamRunPackage } from "../../fixtures/current-team-run-fixtures.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgLaunchConfiguration } from "../../fixtures/current-agent-org-run-fixtures.js";
+import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 /**
  * REQ-015, AC-018, contract §4 / §12.3a: Memory Sync on the task-agent layout, with no Memory Sync source change.
@@ -36,7 +37,7 @@ afterEach(async () => {
   await Promise.all(roots.splice(0).map((root) => fs.rm(root, { recursive: true, force: true })));
 });
 const tempRoot = async (): Promise<string> => {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "memory-sync-task-agents-"));
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "memory-sync-task-agents-")); openEveryOwnFileUnder(root);
   roots.push(root);
   return root;
 };
@@ -103,6 +104,7 @@ describe("Memory Sync on the task-agent layout (REQ-015, AC-018)", () => {
     const root = await tempRoot();
     const source = path.join(root, "source", "memory");
     const importRoot = path.join(root, "hub", "memory", "imports", "node-a");
+    openEveryOwnFileUnder(source); openEveryOwnFileUnder(importRoot);
     const { teamDefinitionId } = await seedUpgradedNode(source);
 
     const exported = await exportAndImport(source, importRoot);

@@ -12,6 +12,7 @@ import { createAgentOrgRootExecutionIdentity } from '../../../src/agent-collabor
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode, testOrgAgentCopySource, testOrgTeamCopySource } from '../../fixtures/current-agent-org-run-fixtures.js';
 import { AgentOrgCommunicationMessagesStore } from '../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js';
 import { applyAgentOrgRunSelectionPatches, listAgentOrgRunSelectionScopes, resolveAgentOrgRunSelectionTargets } from '../../../src/agent-org-execution/services/agent-org-run-config-mutator.js';
+import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 const view = (rows: any[]) => ({ offeredModels: rows,
   findExactCurrent: (id: string) => rows.find((row) => row.model_identifier === id) ?? null });
@@ -22,7 +23,7 @@ const select = (scopeKind: 'CONFIGURED_ORG'|'CONFIGURED_TEAM'|'CONFIGURED_AGENT'
   ({ scopeKind, scopeAddress, runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: model, llmConfig: { temperature: 0, enabled: false } });
 
 async function setup() {
-  const memoryDir = await fs.mkdtemp(join(tmpdir(), 'org-whole-config-')); roots.push(memoryDir);
+  const memoryDir = await fs.mkdtemp(join(tmpdir(), 'org-whole-config-')); roots.push(memoryDir); openEveryOwnFileUnder(memoryDir);
   const dir = new AgentMemoryLayout(memoryDir).getOrgDirPath('org');
   const root = testAgentOrgExecutionTree({ orgRunId: 'org', members: [
     testOrgAgentNode('/worker', 'worker'),
@@ -183,11 +184,12 @@ describe('stopped AgentOrg Team workspace composition', () => {
     expect(saved.defaultLaunchConfiguration.workspaceRootPath).toBe('/destination');
     expect(saved.members.map((agent: any) => agent.launchConfiguration.workspaceRootPath)).toEqual(['/destination', '/destination']);
     expect(saved.members[1].launchConfiguration).toEqual({ ...team.members[1].launchConfiguration, workspaceRootPath: '/destination' });
-    expect(saved.taskExecutions).toEqual(team.taskExecutions);
+    // A copy written under a configured team composes into the root list (autobyteus-469 D-2); the team's list is empty.
+    expect(saved.taskExecutions).toEqual([]);
     expect(next.rootOrg.defaultLaunchConfiguration).toEqual(tree.rootOrg.defaultLaunchConfiguration);
     expect(next.rootOrg.members[0]).toEqual(tree.rootOrg.members[0]);
     expect(next.rootOrg.members[2]).toEqual(tree.rootOrg.members[2]);
-    expect(next.rootOrg.taskExecutions).toEqual(tree.rootOrg.taskExecutions);
+    expect(next.rootOrg.taskExecutions).toEqual([...tree.rootOrg.taskExecutions, ...team.taskExecutions]);
     expect((await h.manager.getRunConfig('org')).executionTree).toEqual(next);
   });
 

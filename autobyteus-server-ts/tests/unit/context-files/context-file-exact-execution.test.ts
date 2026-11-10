@@ -12,12 +12,13 @@ import { ContextFileDraftCleanupService } from "../../../src/context-files/servi
 import { ContextFileLayout } from "../../../src/context-files/store/context-file-layout.js";
 import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
 import { validateTeamRunExecutionTreePayload } from "../../../src/run-history/store/team-run-execution-tree-schema.js";
+import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 const roots: string[] = [];
 afterEach(async () => { await Promise.all(roots.splice(0).map((dir) => fs.rm(dir, { recursive: true, force: true }))); });
 it("finalizes and reads only the selected execution despite repeated address and filenames, including after reader restart", async () => {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "exact-context-owner-")); roots.push(root);
-  const memoryDir = path.join(root, "memory");
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "exact-context-owner-")); roots.push(root); openEveryOwnFileUnder(root);
+  const memoryDir = path.join(root, "memory"); openEveryOwnFileUnder(memoryDir);
   const teamDir = path.join(memoryDir, "agent_teams", "team");
   await fs.mkdir(teamDir, { recursive: true });
   const tree = testExecutionTree({ rootTeamRunId: "team", children: [testAgentNode("/worker", { agentRunId: "configured" })], coordinatorAddress: "/worker" });

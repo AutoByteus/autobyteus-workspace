@@ -14,6 +14,7 @@ import { TeamRunExecutionTreeStore } from "../../../../src/run-history/store/tea
 import { validateTeamRunExecutionTreePayload } from "../../../../src/run-history/store/team-run-execution-tree-schema.js";
 import { TaskAgentOwnFiles } from "../../../../src/run-history/store/task-agent-own-files.js";
 import { TaskAgentMessageLogs, isMessageOfView } from "../../../../src/run-history/store/task-agent-message-logs.js";
+import { isTaskExecutionLinkEntry } from "../../../../src/run-history/store/task-agent-own-records.js";
 import { projectTeamRunHistoryIndexRow } from "../../../../src/run-history/services/team-run-history-index-row-projector.js";
 import { projectAgentOrgRunHistoryRow } from "../../../../src/run-history/services/agent-org-run-history-row-projector.js";
 import { testAgentNode, testExecutionTree } from "../../../fixtures/current-team-run-fixtures.js";
@@ -168,14 +169,15 @@ describe.each([standalone, team, org])("a $name's tree is composed from the Task
 
   it("the first save leaves out the older local entries; the link to another node and every run's own files stay byte-identical", async () => {
     const f = await olderTopRun(kind);
-    const ownFilesBefore = { agents: await hashes(path.join(f.memory, "agents")), teams: await hashes(path.join(f.memory, "agent_teams")) };
+    // Every delegated run's own files: everything under agents/ and agent_teams/ except the top run's own tree file.
+    const ownFiles = async () => Object.fromEntries(Object.entries({ ...await hashes(path.join(f.memory, "agents")),
+      ...await hashes(path.join(f.memory, "agent_teams")) }).filter(([file]) => file !== kind.treeFile(f.memory)));
+    const before = await ownFiles();
     const store = kind.store(f.source);
     const tree = await store.read(f.dir, kind.coordinating.runId);
     expect((await store.write(f.dir, tree)).outcome).toBe("committed");
     expect(kind.rootList(await readJson(kind.treeFile(f.memory)))).toEqual([storedRemote(kind.delegator)]);
-    const ownAgents = Object.fromEntries(Object.entries(await hashes(path.join(f.memory, "agents"))).filter(([file]) => !file.includes(`${HOST}${path.sep}collaboration`)));
-    expect(ownAgents).toEqual(Object.fromEntries(Object.entries(ownFilesBefore.agents).filter(([file]) => !file.includes(`${HOST}${path.sep}collaboration`))));
-    expect(await hashes(path.join(f.memory, "agent_teams"))).toEqual(ownFilesBefore.teams);
+    expect(await ownFiles()).toEqual(before);
     // A later save finds nothing to write.
     const treeFile = await sha(kind.treeFile(f.memory));
     const write = vi.spyOn(AtomicRunPackageFileCommitWriter.prototype, "write");
@@ -217,6 +219,8 @@ describe.each([standalone, team, org])("a $name's tree is composed from the Task
 describe("an Org run's older entry in a configured Team's list (U-004, FU-003)", () => {
   it("is ignored: open runs go to the root list, the configured list stays empty, and the save leaves the entry out", async () => {
     const f = await olderTopRun(org);
+    // Its own file exists (U-004: such runs have own files and no Task record).
+    await org.store(new FixedOpenDelegatedRuns()).write(f.dir, org.tree([...f.records, agentCopy("older-under-team", "mounted-lead")]));
     const raw = await readJson(org.treeFile(f.memory));
     const older = olderLocalLink(agentCopy("older-under-team", "mounted-lead"));
     raw.rootOrg.members[1].taskExecutions = [older];
@@ -227,6 +231,32 @@ describe("an Org run's older entry in a configured Team's list (U-004, FU-003)",
     expect(tree.rootOrg.members[1].taskExecutions).toEqual([]);
     await store.write(f.dir, tree);
     expect((await readJson(org.treeFile(f.memory))).rootOrg.members[1].taskExecutions).toEqual([]);
+  });
+});
+
+describe("a save never deletes facts stored nowhere else (DESIGN.md rule 7)", () => {
+  it.each([standalone, team, org])("keeps a $name's stored full record and a link whose run has no own file, unchanged and in place (SR-008)", async (kind) => {
+    const f = await olderTopRun(kind);
+    const raw = await readJson(kind.treeFile(f.memory));
+    // A full record (an own-file migration not finished) and a link whose run's folder is gone.
+    const unmigrated = agentCopy("unmigrated", kind.delegator);
+    const dangling = olderLocalLink(agentCopy("no-own-file", kind.delegator));
+    // A full record whose own file exists is kept too: only a link is ever left out (AR-002).
+    const fullWithOwnFile = agentCopy("open-agent", kind.delegator);
+    kind.setRootList(raw, [unmigrated, ...kind.rootList(raw), dangling]);
+    kind.setRootList(raw, kind.rootList(raw).map((entry: any) => entry.agentRunId === "open-agent" ? fullWithOwnFile : entry));
+    await fs.writeFile(kind.treeFile(f.memory), JSON.stringify(raw));
+    const store = kind.store(f.source);
+    await store.write(f.dir, await store.read(f.dir, kind.coordinating.runId));
+    expect(kind.rootList(await readJson(kind.treeFile(f.memory)))).toEqual([unmigrated, fullWithOwnFile, storedRemote(kind.delegator), dangling]);
+  });
+
+  it("decides a link by its exact key set", () => {
+    expect(isTaskExecutionLinkEntry({ address: "/a", agentRunId: "a", startedAt: T0 })).toBe(true);
+    expect(isTaskExecutionLinkEntry({ address: "/a", teamRunId: "t", delegatorAgentRunId: "d", startedAt: T0 })).toBe(true);
+    expect(isTaskExecutionLinkEntry({ address: "/a", agentRunId: "a", startedAt: T0, platformAgentRunId: null })).toBe(false);
+    expect(isTaskExecutionLinkEntry({ address: "/a", agentRunId: "a", teamRunId: "t", startedAt: T0 })).toBe(false);
+    expect(isTaskExecutionLinkEntry({ address: "/a", agentRunId: "a" })).toBe(false);
   });
 });
 

@@ -123,6 +123,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
       authorize: (identity) => this.authorizeCurrentIdentity(identity),
       beginTaskExecutionEventRetirement: (reference) => this.eventRetirement.begin(reference),
       replaceTree: (tree) => this.replaceTree(tree),
+      retainMessages: (keep) => this.communication.retainMessages(keep),
       publishTaskExecutionStarted: (host, taskExecution) => options.publisher.publish({ kind: "task_execution_started", host, taskExecution }),
       publishTaskExecutionsClosed: (taskExecutions) => options.publisher.publish({ kind: "task_executions_closed", taskExecutions }),
       publishTaskExecutionsReopened: (taskExecutions) => options.publisher.publish({ kind: "task_executions_reopened", taskExecutions }),
@@ -229,7 +230,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
   /** Same-root membership for run-ID routing; a shut-down child is still a member. */
   /** Same-root membership for run-ID routing: every agent of the Org (and its copies) and every remote endpoint. */
   hasAgentExecution(agentRunId: string): boolean {
-    return this.index.getAgent(agentRunId.trim()) !== null || this.remoteLinks.has(agentRunId.trim());
+    return this.index.getAgent(agentRunId.trim()) !== null || this.remoteLinks.has(agentRunId.trim()) || this.taskExecutions.knowsRunId(agentRunId);
   }
   getExecutionCheckpoint(): Readonly<{
     orgRunId: string;

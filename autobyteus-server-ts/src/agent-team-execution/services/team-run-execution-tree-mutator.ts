@@ -40,6 +40,16 @@ export const addTaskExecutionToTree = (input: {
   }, rootTeam.teamRunId);
 };
 
+/** Removes these delegated runs (by run ID) from the loaded tree: their Task closed and they stopped (D-4). */
+export const removeTaskExecutionsFromTree = (input: {
+  tree: TeamRunExecutionTreeSnapshot;
+  runIds: ReadonlySet<string>;
+}): TeamRunExecutionTreeSnapshot => validateTeamRunExecutionTreePayload({
+  ...input.tree,
+  rootTeam: { ...input.tree.rootTeam, taskExecutions: input.tree.rootTeam.taskExecutions
+    .filter((task) => !input.runIds.has("agentRunId" in task ? task.agentRunId : task.teamRunId)) },
+}, input.tree.rootTeam.teamRunId);
+
 /** Records a remote run an agent of this Team delegated to (CM-10), once, at its delegation's commit. */
 export const addRemoteTaskExecutionToTree = (input: {
   tree: TeamRunExecutionTreeSnapshot;

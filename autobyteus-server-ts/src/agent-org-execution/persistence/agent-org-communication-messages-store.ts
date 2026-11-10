@@ -14,7 +14,7 @@ import {
   TaskAgentMessageLogs,
   type StoredMessageLogOwner,
 } from "../../run-history/store/task-agent-message-logs.js";
-import { agentRunIdsOfTree } from "../../run-history/store/task-execution-tree-split.js";
+import { messageViewOfTree } from "../../run-history/store/task-execution-tree-split.js";
 import type { AgentOrgRunExecutionTreeFile } from "../domain/agent-org-run-execution-tree.js";
 import type { AgentOrgCommunicationMessagesFile } from "./agent-org-communication-messages.js";
 
@@ -41,7 +41,7 @@ export class AgentOrgCommunicationMessagesStore {
     return messages ? Object.freeze({ schemaVersion: 1, subjectKind: "agent_org", orgRunId, messages }) : null;
   }
 
-  /** The stored view for a composed tree: the run's log and its loaded task agents' logs (L6); `null` without a log. */
+  /** The stored view for a composed tree: the run's log and its open delegated runs' logs (D-5); `null` without a log. */
   async read(orgDir: string, tree: AgentOrgRunExecutionTreeFile): Promise<AgentOrgCommunicationMessagesFile | null> {
     const orgRunId = tree.rootOrg.orgRunId;
     const own = await this.readLog(orgDir, orgRunId);
@@ -50,7 +50,7 @@ export class AgentOrgCommunicationMessagesStore {
     const logs = owners.length === 0 ? [] : await Promise.all(owners.map((owner) => this.taskLogs(orgDir).read(owner)));
     return Object.freeze({
       schemaVersion: 1, subjectKind: "agent_org", orgRunId,
-      messages: Object.freeze(composeMessageLogs([own.messages, ...logs], agentRunIdsOfTree(AGENT_ORG_RUN_TREE_SHAPE, tree))),
+      messages: Object.freeze(composeMessageLogs([own.messages, ...logs], messageViewOfTree(AGENT_ORG_RUN_TREE_SHAPE, tree))),
     });
   }
 

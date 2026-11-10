@@ -420,11 +420,11 @@ export const createTeamExecutionViewState = (
         if (leaveClosedFocus()) effects.push({ kind: 'reconcile_focused_team_member_projection' });
         effects.push({ kind: 'reconcile_team_navigation' });
       } else if (message.type === 'TASK_EXECUTIONS_REOPENED') {
-        // Their assigner reactivated them: they are listed again (helpers under them stay closed).
+        // Listed again (helpers stay closed); one the view lacks left the tree at its Task's closure (D-8): a fresh snapshot brings it.
         const reopened = message.payload.task_executions.map(fromTeamTaskExecutionReference);
         const treeKeys = teamTreeRunKeys(publication.value.tree.root_team as TeamTreeNode);
-        const unknown = reopened.find((reference) => !treeKeys.has(taskExecutionReferenceKey(reference)));
-        if (unknown) throw new Error(`Reopened task execution '${taskExecutionReferenceKey(unknown)}' is not in the execution tree.`);
+        if (reopened.some((reference) => !treeKeys.has(taskExecutionReferenceKey(reference)))) { streamRecoveryRequired.value = true;
+          return Object.freeze({ disposition: 'applied', effects: Object.freeze([{ kind: 'team_stream_recovery_required' as const }]) }); }
         publication.value = { ...publication.value, closed: removeReopenedTaskExecutions(publication.value.closed, reopened),
           changeSequence: sequence ?? publication.value.changeSequence };
         effects.push({ kind: 'reconcile_team_navigation' });

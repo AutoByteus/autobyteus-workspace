@@ -31,6 +31,7 @@ import type { RemoteRunRootEvent } from "../../../src/agent-collaboration/execut
 import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { projectAgentCollaborationView } from "../../../src/services/agent-streaming/agent-collaboration-view-projector.js";
+import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 /**
  * The first end to end of slice 1 (design Change Sequence step 5), in one process: a standalone run on node A
@@ -98,7 +99,7 @@ const buildNode = async (input: Readonly<{
   metadata?: Map<string, AgentRunMetadata>;
 }>) => {
   vi.spyOn(TokenUsageCapability.prototype, "assertCurrentSchemaReady").mockImplementation(() => undefined);
-  const memoryDir = input.memoryDir ?? await fs.mkdtemp(path.join(os.tmpdir(), "remote-node-"));
+  const memoryDir = input.memoryDir ?? await fs.mkdtemp(path.join(os.tmpdir(), "remote-node-")); openEveryOwnFileUnder(memoryDir);
   if (!input.memoryDir) directories.push(memoryDir);
   const metadata = input.metadata ?? new Map<string, AgentRunMetadata>();
   const runs = new Map<string, FakeRun>();

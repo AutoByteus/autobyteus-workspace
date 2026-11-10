@@ -19,17 +19,12 @@ import type { CoordinatingTreeShape } from "./task-execution-tree-split.js";
 const isRemote = (entry: unknown): boolean =>
   Boolean(entry) && typeof entry === "object" && !Array.isArray(entry) && isRemoteTaskExecutionEntry(entry as Record<string, unknown>);
 
-/** The tree file object with every remote entry removed from its task lists (they are loaded separately). */
-export const withoutRemoteEntries = <TTree>(shape: CoordinatingTreeShape<TTree>, raw: Record<string, unknown>): Record<string, unknown> => {
-  const lists = new Map<string, readonly unknown[]>();
-  for (const [key, entries] of shape.rawTaskLists(raw)) lists.set(key, entries.filter((entry) => !isRemote(entry)));
-  return shape.withRawTaskLists(raw, lists);
-};
 
 /**
  * Loads the remote links of a tree file into `composed` (the tree with composed local lists). A remote entry
  * that cannot be read, sits in a list other than the root's, or whose delegator is not an AgentRun of the
- * composed tree is left out with a logged warning naming the run (DESIGN.md rule 7); the tree otherwise loads.
+ * composed tree is left out, the first two with a logged warning naming the run (DESIGN.md rule 7), the last at
+ * debug level (D-12); the tree otherwise loads.
  */
 export const attachRemoteLinks = <TTree>(
   shape: CoordinatingTreeShape<TTree>,
@@ -57,8 +52,9 @@ export const attachRemoteLinks = <TTree>(
       let link: RemoteTaskExecution;
       try { link = parseStoredRemoteTaskExecution(record, `${key}[${index}]`); }
       catch (error) { report(storedRunId, error instanceof Error ? error.message : String(error)); return; }
+      // D-12: listed while its delegator is in the tree; a delegator in a closed local run is an ordinary state.
       if (!known.has(link.delegatorAgentRunId)) {
-        report(remoteTaskExecutionRunId(link), `its delegator '${link.delegatorAgentRunId}' is not available.`);
+        console.debug(`Remote run '${remoteTaskExecutionRunId(link)}' of ${coordinating.kind} run '${coordinating.runId}' is not listed: its delegator '${link.delegatorAgentRunId}' is not in the tree.`);
         return;
       }
       links.push(link);
@@ -70,8 +66,8 @@ export const attachRemoteLinks = <TTree>(
 const remoteKey = (nodeId: unknown, runId: unknown): string => `${String(nodeId)}\0${String(runId)}`;
 
 /**
- * The root list for saving: the entries already computed (on-disk entries kept in place, remote ones
- * included unchanged) plus each in-memory remote link not yet on disk, appended.
+ * The root list for saving: the stored remote links kept unchanged and in place, plus each in-memory remote link
+ * not yet on disk, appended.
  */
 export const appendRemoteLinks = (output: readonly unknown[], links: readonly RemoteTaskExecution[]): unknown[] => {
   const stored = new Set(output.filter(isRemote).map((entry) => {

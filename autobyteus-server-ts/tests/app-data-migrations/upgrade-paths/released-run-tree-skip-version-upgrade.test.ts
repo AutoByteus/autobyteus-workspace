@@ -24,6 +24,7 @@ import { AgentOrgRunHistoryIndexStore } from "../../../src/run-history/store/age
 import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
 import { testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 import { toReleasedTeamRunExecutionTreeV2, toReleasedConfiguredNode } from "../../fixtures/released-run-tree-fixtures.js";
+import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 /**
  * SR-007 evidence item 3 (unit level): a skip-version install whose ledger is terminal only
@@ -59,7 +60,7 @@ const filename = "ctx_file__image.png";
 
 it("runs 20260901, 20260926 and 20260905 as released on a skip-version install, reads released trees as they are, and repeat startup runs nothing", async () => {
   const { appConfigProvider } = await import("../../../src/config/app-config-provider.js");
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "released-tree-skip-version-")); roots.push(root);
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "released-tree-skip-version-")); roots.push(root); openEveryOwnFileUnder(path.join(root, "memory"));
   const memory = path.join(root, "memory"), teams = path.join(root, "data", "agent-teams"), orgs = path.join(root, "data", "agent-orgs");
   await Promise.all([fs.mkdir(teams, { recursive: true }), fs.mkdir(orgs, { recursive: true })]);
   const config = new AppConfig({ appDataDir: root });

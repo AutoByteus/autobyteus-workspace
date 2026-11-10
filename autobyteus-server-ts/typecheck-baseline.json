@@ -286,7 +286,6 @@
   "tests/unit/llm-management/model-metadata-provisioning-service.test.ts": 2,
   "tests/unit/llm-management/run-model-selection-service.test.ts": 1,
   "tests/unit/mcp-server-management/cached-provider.test.ts": 2,
-  "tests/unit/memory-search/memory-run-discovery.test.ts": 1,
   "tests/unit/memory-search/memory-search.test.ts": 1,
   "tests/unit/projects/ad-hoc-tasks.test.ts": 4,
   "tests/unit/projects/project-change-publisher.test.ts": 1,

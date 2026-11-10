@@ -15,6 +15,7 @@ import { AgentOrgRunExecutionTreeStore } from "../../../src/run-history/store/ag
 import { AgentOrgRunHistoryIndexStore } from "../../../src/run-history/store/agent-org-run-history-index-store.js";
 import { validateAgentOrgRunExecutionTreePayload } from "../../../src/run-history/store/agent-org-run-execution-tree-schema.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgLaunchConfiguration, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
+import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 const touch = async (filePath: string, mtime: number) => {
   await fs.mkdir(path.dirname(filePath), { recursive: true });
@@ -104,7 +105,7 @@ describe("AgentOrgMemoryExplorerService", () => {
   };
 
   beforeEach(async () => {
-    memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "org-memory-explorer-"));
+    memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "org-memory-explorer-")); openEveryOwnFileUnder(memoryDir);
     layout = new AgentMemoryLayout(memoryDir);
 
     // Org A, run 1: configured agents and every task execution kind.

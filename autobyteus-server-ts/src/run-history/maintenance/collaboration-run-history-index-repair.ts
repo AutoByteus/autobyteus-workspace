@@ -52,13 +52,14 @@ export async function repairCollaborationRunHistoryIndexes(input: Readonly<{
   const projectedTeams: TeamRunIndexRowRecord[] = [];
   for (const id of teamMissing) {
     const dir = layout.getTeamDirPath({ rootTeamRunId: id, ancestorTeamRunIds: [] });
-    const tree = await teamTrees.read(dir, id);
+    // A row is projected from the run's own parts (D-11): this script runs without the Task records.
+    const tree = await teamTrees.readOwnParts(dir, id);
     if (!tree) throw new Error(`Admitted Team '${id}' has no readable execution tree.`);
     projectedTeams.push(projectTeamRunHistoryIndexRow({ tree }));
   }
   const projectedOrgs: AgentOrgRunIndexRowRecord[] = [];
   for (const id of orgMissing) {
-    const tree = await orgTrees.read(layout.getOrgDirPath(id), id);
+    const tree = await orgTrees.readOwnParts(layout.getOrgDirPath(id), id);
     if (!tree) throw new Error(`Admitted AgentOrg '${id}' has no readable execution tree.`);
     projectedOrgs.push(projectAgentOrgRunHistoryRow(tree));
   }

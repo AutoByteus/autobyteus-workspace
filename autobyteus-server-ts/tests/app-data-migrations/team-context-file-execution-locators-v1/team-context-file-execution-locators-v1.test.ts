@@ -22,6 +22,7 @@ import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-ru
 import { testAgentOrgExecutionTree, testOrgAgentNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 import { TeamContextFileExecutionLocatorsV1AppDataMigration, TEAM_CONTEXT_FILE_EXECUTION_LOCATORS_V1_MIGRATION_ID as ID } from "../../../src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-execution-locators-v1-app-data-migration.js";
 import { AtomicRunPackageFileCommitWriter } from "../../../src/app-data-migrations/frozen/server/run-history/store/atomic-run-package-file-commit-writer.js";
+import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 const roots: string[] = [];
 const filename = "ctx_file__image.png";
@@ -34,7 +35,7 @@ const put = async (file: string, value: unknown) => {
 const message = (uri: string) => ({messageId: "m1", senderAgentRunId: "reader", receiverAgentRunId: "other", content: old(), messageType: "message", referenceFiles: [uri], createdAt: "2026-09-01T00:00:00.000Z"});
 const trace = (uri: string) => JSON.stringify({ id: "trace-1", trace_type: "user", content: `prose ${old()}`, media: { images: [uri] }, unknown: { uri: old() } }) + "\r\n";
 const setup = async () => {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "team-locator-transition-")); roots.push(root);
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "team-locator-transition-")); roots.push(root); openEveryOwnFileUnder(root);
   const memory = path.join(root, "memory");
   const team = path.join(memory, "agent_teams", "team");
   const configured = path.join(team, "configured"), task = path.join(team, "task");
@@ -362,7 +363,7 @@ describe("scoped recovery and independent current admission", () => {
 });
 
 it("completes warnings with ALL historical runs excluded and still publishes new standalone work", async () => {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "all-excluded-")); roots.push(root);
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "all-excluded-")); roots.push(root); openEveryOwnFileUnder(root);
   const memory = path.join(root, "memory");
   await put(path.join(memory, "agent_teams", "incomplete", "history.txt"), "retained history");
   await put(path.join(memory, "agents", "no-metadata", "raw_traces_active.jsonl"), trace(old()));

@@ -2,6 +2,8 @@ import type { TaskDelegationOutcome } from "../../src/agent-collaboration/execut
 import type { ExistingTaskExecutionAssignInput, NewTaskExecutionLinkInput, TaskExecutionOwner, TaskExecutionResourcePort, TaskExecutionReopenInput, TaskExecutionRole } from "../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
 import { rootExecutionIdentityKey, type RootExecutionIdentity } from "../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TaskExecutionReference } from "../../src/agent-collaboration/execution/task/task-execution-reference.js";
+import type { OpenDelegatedRun, OpenDelegatedRunSource } from "../../src/run-history/store/open-delegated-run-source.js";
+import type { TaskAgentCoordinatingRun } from "../../src/run-history/store/agent-run-metadata-types.js";
 import { taskExecutionReferenceKey } from "@autobyteus/collaboration-stream-contracts";
 
 const rejection = (code: string, message: string) => Object.assign(new Error(message), { code });
@@ -9,7 +11,8 @@ const rejection = (code: string, message: string) => Object.assign(new Error(mes
  * One copy's current entry (a copy moves between Tasks by assignment; `everStarted` spans its periods). A copy given
  * another Task while open keeps its earlier open Tasks in `otherOpenTaskIds` (oldest first).
  */
-type Entry = { taskId: string; hostRoot: RootExecutionIdentity; execution: TaskExecutionReference; role: TaskExecutionRole; assignedBy?: string; open: boolean; start: "starting" | "started" | "failed"; everStarted?: true; otherOpenTaskIds?: string[] };
+type Entry = { taskId: string; hostRoot: RootExecutionIdentity; execution: TaskExecutionReference; role: TaskExecutionRole; assignedBy?: string; open: boolean; start: "starting" | "started" | "failed"; everStarted?: true; otherOpenTaskIds?: string[];
+  /** A Team copy's coordinator (its ingress). */ teamCoordinatorAgentRunId?: string };
 
 /**
  * Runtime-test double of the Task side's loaded agent run resources. It follows the reviewed
@@ -18,7 +21,7 @@ type Entry = { taskId: string; hostRoot: RootExecutionIdentity; execution: TaskE
  * assigner and may hold several open Tasks, closed only when its last one closes, damaged data fails closed);
  * the Projects implementation is tested separately.
  */
-export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort {
+export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort, OpenDelegatedRunSource {
   readonly entries = new Map<string, Entry>();
   readonly tasks = new Map<string, { description: string; referenceFiles: string[]; done: boolean; adHoc?: true; taskKey?: string; comments?: string[] }>();
   readonly damaged = new Set<string>();
@@ -102,7 +105,8 @@ export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort
     const key = taskExecutionReferenceKey(input.execution);
     if (this.entries.has(key)) throw rejection("TASK_AGENT_RESOURCE_CONFLICT", "Already linked.");
     this.entries.set(key, { taskId, hostRoot: input.hostRoot, execution: input.execution, role: input.role,
-      ...(input.role === "assigned" ? { assignedBy: input.assignedBy } : {}), open: true, start: "starting" });
+      ...(input.role === "assigned" ? { assignedBy: input.assignedBy } : {}), open: true, start: "starting",
+      ...(input.teamCoordinatorAgentRunId ? { teamCoordinatorAgentRunId: input.teamCoordinatorAgentRunId } : {}) });
     this.links.push(input);
     return { taskId };
   }
@@ -127,6 +131,22 @@ export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort
   closedTaskExecutionsIn(hostRoot: RootExecutionIdentity): TaskExecutionReference[] {
     return [...this.entries.values()].filter(e => !e.open && !this.damaged.has(e.taskId)
       && rootExecutionIdentityKey(e.hostRoot) === rootExecutionIdentityKey(hostRoot)).map(e => e.execution);
+  }
+  closedTaskExecutionOf(hostRoot: RootExecutionIdentity, by: Readonly<{ ingressAgentRunId: string }> | TaskExecutionReference) {
+    for (const entry of this.entries.values()) {
+      if (entry.open || this.damaged.has(entry.taskId) || rootExecutionIdentityKey(entry.hostRoot) !== rootExecutionIdentityKey(hostRoot)) continue;
+      const ingressAgentRunId = "agentRunId" in entry.execution ? entry.execution.agentRunId : entry.teamCoordinatorAgentRunId!;
+      const matches = "ingressAgentRunId" in by ? by.ingressAgentRunId === ingressAgentRunId
+        : taskExecutionReferenceKey(by) === taskExecutionReferenceKey(entry.execution);
+      if (matches) return { execution: entry.execution, ingressAgentRunId };
+    }
+    return null;
+  }
+  /** The tree stores' source (design D-1): this root's open copies, as the Projects side answers. */
+  openDelegatedRunsOf(coordinatingRun: TaskAgentCoordinatingRun): readonly OpenDelegatedRun[] {
+    const rootKey = rootExecutionIdentityKey({ rootSubjectKind: coordinatingRun.kind, rootRunId: coordinatingRun.runId });
+    return [...this.entries.values()].filter((entry) => entry.open && !this.damaged.has(entry.taskId)
+      && rootExecutionIdentityKey(entry.hostRoot) === rootKey).map((entry) => ({ run: entry.execution, started: entry.start === "started" }));
   }
   async assertReopenable(input: TaskExecutionReopenInput): Promise<void> {
     const entry = this.entry(input.execution);

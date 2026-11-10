@@ -8,6 +8,7 @@ import { StandaloneRootPackageStore } from "../../../src/standalone-agent-run-ro
 import { getStandaloneRootDirPath, getStandaloneRootTreePath } from "../../../src/standalone-agent-run-root/persistence/standalone-root-tree-path.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import type { StandaloneRootTreeFile } from "../../../src/standalone-agent-run-root/domain/standalone-root-tree.js";
+import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 /**
  * DESIGN.md rule 7 (remove-nested-task-team DS-002, AC-002): a lookup that scans every standalone run
@@ -42,7 +43,7 @@ const fingerprint = async (root: string): Promise<Record<string, string>> => {
 };
 
 const setup = async () => {
-  const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "standalone-location-containment-"));
+  const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "standalone-location-containment-")); openEveryOwnFileUnder(memoryDir);
   directories.push(memoryDir);
   const store = new StandaloneRootPackageStore();
   for (const [host, child] of [["host-a", "child-a"], ["host-c", "child-c"]] as const) {

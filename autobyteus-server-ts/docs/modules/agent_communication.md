@@ -70,7 +70,12 @@ Team Communication projection:
 - `reference_files` become Team Communication child references persisted under
   the team run; and
 - frontend Team tab sent/received perspectives hydrate from that projection and
-  match the focused member by its AgentRun ID.
+  match the focused member by its AgentRun ID. `collaborationParticipantMessages`
+  returns the focused agent's messages whose other agent is in the root's tree, or
+  is an agent of a delegated run that left the tree when its Task closed: those are
+  listed in `pastParticipants` (`{ agentRunId, address }`, read from the run's own
+  file by `ClosedDelegatedRunReader`), and the web names them from the address
+  (identity kind `past`; autobyteus-469 D-5).
 
 Acceptance means the live AgentRun owns one ordered, at-most-once forwarding
 attempt. It does not mean a provider turn has completed and does not synchronously

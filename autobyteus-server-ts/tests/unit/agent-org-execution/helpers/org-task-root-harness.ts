@@ -22,6 +22,7 @@ import { TokenUsageCapability } from "../../../../src/token-usage/providers/toke
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../../fixtures/current-agent-org-run-fixtures.js";
 import { flushMicrotasks, observeConfiguredHandles } from "./task-publication-handles.js";
 import { isAgentOrgMessageEvent } from "../../../../src/agent-org-execution/domain/agent-org-run-event.js";
+import { openEveryOwnFileUnder } from "../../../fixtures/open-delegated-run-sources.js";
 
 /**
  * A real AgentOrg root (persistence on a temp dir, root agent registry, root team directory) with
@@ -52,7 +53,7 @@ export const buildOrg = async (kind: "agent" | "team") => {
   const handles = observeConfiguredHandles();
   const root = createAgentOrgRootExecutionIdentity(`org-idle-shutdown-${kind}`);
   // A real memory root: task agents' own files live beside the org's folder (contract L1).
-  const memoryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "org-idle-shutdown-")); directories.push(memoryRoot);
+  const memoryRoot = await fs.mkdtemp(path.join(os.tmpdir(), "org-idle-shutdown-")); directories.push(memoryRoot); openEveryOwnFileUnder(memoryRoot);
   const orgMemoryDir = new AgentMemoryLayout(memoryRoot).getOrgDirPath(root.rootRunId);
   const tree = testAgentOrgExecutionTree({ orgRunId: root.rootRunId, members: [
     testOrgAgentNode("/director", "director"), testOrgAgentNode("/worker", "configured-worker"),

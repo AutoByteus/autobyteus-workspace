@@ -14,6 +14,9 @@ import { STANDALONE_ROOT_TREE_SHAPE } from "../../run-history/store/coordinating
 import type { DelegatedFrom } from "../../run-history/store/agent-run-metadata-types.js";
 import { MessageLog } from "../../run-history/store/message-log.js";
 import { TaskAgentOwnFiles } from "../../run-history/store/task-agent-own-files.js";
+import { getOpenDelegatedRunSource, type OpenDelegatedRunSource } from "../../run-history/store/open-delegated-run-source.js";
+import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
+import type { TaskExecution } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import {
   appendMessageToOwnerLogs,
   composeMessageLogs,
@@ -28,7 +31,8 @@ import {
   composeTreeFileSync,
   readRawTreeFile,
   readRawTreeFileSync,
-  agentRunIdsOfTree,
+  readTaskExecutionRecord,
+  messageViewOfTree,
   splitTaskExecutions,
 } from "../../run-history/store/task-execution-tree-split.js";
 
@@ -49,27 +53,37 @@ export class StandaloneRootPackageStore {
 
   constructor(
     private readonly writer: AtomicRunPackageFileCommitWriter = getAtomicRunPackageFileCommitWriter(),
+    /** Which delegated runs are in the tree (D-1); `null`: the process binding, resolved at the first composed read. */
+    private readonly openDelegatedRuns: OpenDelegatedRunSource | null = null,
   ) {}
 
-  /** The host's tree with its task agents composed from their own files (D-1). */
+  /** The host's tree with its open delegated runs composed from their own files (D-1, D-2). */
   async readTree(collaborationDir: string, hostRunId: string): Promise<StandaloneRootTreeFile | null> {
     const raw = await readRawTreeFile(getStandaloneRootTreePath(collaborationDir));
     if (!raw) return null;
-    return validateStandaloneRootTreePayload(
-      await composeTreeFile(STANDALONE_ROOT_TREE_SHAPE, raw, this.ownFiles(collaborationDir)), hostRunId);
+    return validateStandaloneRootTreePayload(await composeTreeFile(
+      STANDALONE_ROOT_TREE_SHAPE, raw, this.openRunsOf(hostRunId), this.ownFiles(collaborationDir)), hostRunId);
   }
 
   readTreeSync(collaborationDir: string, hostRunId: string): StandaloneRootTreeFile | null {
     const raw = readRawTreeFileSync(getStandaloneRootTreePath(collaborationDir));
     if (!raw) return null;
-    return validateStandaloneRootTreePayload(
-      composeTreeFileSync(STANDALONE_ROOT_TREE_SHAPE, raw, this.ownFiles(collaborationDir)), hostRunId);
+    return validateStandaloneRootTreePayload(composeTreeFileSync(
+      STANDALONE_ROOT_TREE_SHAPE, raw, this.openRunsOf(hostRunId), this.ownFiles(collaborationDir)), hostRunId);
+  }
+
+  /** One delegated run's record from its own file, for adding it back to the loaded tree (D-4); throws with the reason. */
+  readTaskExecution(collaborationDir: string, hostRunId: string, run: TaskExecutionReference): Promise<TaskExecution> {
+    return readTaskExecutionRecord({ kind: "agent", runId: hostRunId }, run, this.ownFiles(collaborationDir)());
+  }
+
+  private openRunsOf(hostRunId: string) {
+    return (this.openDelegatedRuns ?? getOpenDelegatedRunSource()).openDelegatedRunsOf({ kind: "agent", runId: hostRunId });
   }
 
   /**
-   * The stored view for a composed tree: the host's log and its loaded task agents' logs (D-4, L6); `null`
-   * without a log. `backLink` is the run's `delegatedFrom` when a peer node started it: the endpoint set includes
-   * its delegator (`agentRunIdsOfTree`), so its messages stay in view.
+   * The stored view for a composed tree: the host's log and its open delegated runs' logs (D-5); `null` without a
+   * log. `backLink` is the run's `delegatedFrom` when a peer node started it: its delegator is an agent of the view.
    */
   async readMessages(collaborationDir: string, tree: StandaloneRootTreeFile, backLink: DelegatedFrom | null = null): Promise<StandaloneRootMessagesFile | null> {
     const hostRunId = tree.host.agentRunId;
@@ -79,7 +93,7 @@ export class StandaloneRootPackageStore {
     const logs = owners.length === 0 ? [] : await Promise.all(owners.map((owner) => this.taskLogs(collaborationDir).read(owner)));
     return Object.freeze({
       schemaVersion: 1, subjectKind: "agent", hostRunId,
-      messages: Object.freeze(composeMessageLogs([own.messages, ...logs], agentRunIdsOfTree(STANDALONE_ROOT_TREE_SHAPE, tree, backLink))),
+      messages: Object.freeze(composeMessageLogs([own.messages, ...logs], messageViewOfTree(STANDALONE_ROOT_TREE_SHAPE, tree, backLink))),
     });
   }
 

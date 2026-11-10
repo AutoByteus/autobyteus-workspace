@@ -13,6 +13,8 @@ import { StandaloneRunTokenUsageSummaryService } from "../../../token-usage/serv
 import { StandaloneRootLocationService } from "../../../standalone-agent-run-root/services/standalone-root-location-service.js";
 import { findStandaloneAgentRunRootManager } from "../../../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
 import { appConfigProvider } from "../../../config/app-config-provider.js";
+import { ClosedDelegatedRunReader } from "../../../run-history/services/closed-delegated-run-reader.js";
+import { createAgentRootExecutionIdentity } from "../../../agent-collaboration/execution/domain/root-execution-identity.js";
 
 @ObjectType()
 export class TokenUsageRunSummaryGraphql extends TokenUsageCostSummaryAggregateGraphql {
@@ -330,10 +332,14 @@ export class TokenUsageStatisticsResolver {
       memoryDir: appConfigProvider.config.getMemoryDir(),
       roots: { getActiveTree: (hostRunId) => findStandaloneAgentRunRootManager()?.getActiveTree(hostRunId) ?? null },
     });
+    // D-7: the tree's agents and the agents of this run's delegated runs whose Task closed (they left the tree).
+    const closedRuns = new ClosedDelegatedRunReader(appConfigProvider.config.getMemoryDir());
     const service = new StandaloneRunTokenUsageSummaryService({
       tree: {
-        listChildAgentRunIds: async (hostRunId) =>
-          (await locations.listAgents({ rootRunId: hostRunId })).map((agent) => agent.agentRunId),
+        listChildAgentRunIds: async (hostRunId) => [...new Set([
+          ...(await locations.listAgents({ rootRunId: hostRunId })).map((agent) => agent.agentRunId),
+          ...await closedRuns.agentRunIds(createAgentRootExecutionIdentity(hostRunId)),
+        ])],
       },
       store: new TokenUsageRunStore(),
     });

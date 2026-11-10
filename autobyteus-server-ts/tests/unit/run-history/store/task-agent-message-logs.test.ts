@@ -24,6 +24,7 @@ import { StandaloneRootPackageStore } from "../../../../src/standalone-agent-run
 import { validateStandaloneRootTreePayload } from "../../../../src/standalone-agent-run-root/persistence/standalone-root-tree-schema.js";
 import { testAgentNode, testExecutionTree } from "../../../fixtures/current-team-run-fixtures.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgLaunchConfiguration } from "../../../fixtures/current-agent-org-run-fixtures.js";
+import { openEveryOwnFileUnder } from "../../../fixtures/open-delegated-run-sources.js";
 
 /** Design D-4, contract §3.4: each message is stored with the run(s) it belongs to (the email model). */
 
@@ -61,7 +62,7 @@ const teamCopy = (teamRunId: string, delegatorAgentRunId: string) => ({
 });
 
 const teamRun = async () => {
-  const memory = await fs.mkdtemp(path.join(os.tmpdir(), "task-agent-logs-team-")); roots.push(memory);
+  const memory = await fs.mkdtemp(path.join(os.tmpdir(), "task-agent-logs-team-")); roots.push(memory); openEveryOwnFileUnder(memory);
   const dir = new AgentMemoryLayout(memory).getTeamDirPath({ rootTeamRunId: "team-root", ancestorTeamRunIds: [] });
   const base = testExecutionTree({ rootTeamRunId: "team-root", coordinatorAddress: "/lead",
     children: [testAgentNode("/lead", { agentRunId: "lead-run" }), testAgentNode("/worker", { agentRunId: "worker-run" })] });
@@ -150,7 +151,7 @@ describe("per-run message logs of a team run (D-4, contract §3.4)", () => {
 
 describe("per-run message logs of standalone and organization runs (AC-014)", () => {
   it("keeps a standalone host's messages with a task agent in both logs and composes them once", async () => {
-    const memory = await fs.mkdtemp(path.join(os.tmpdir(), "task-agent-logs-agent-")); roots.push(memory);
+    const memory = await fs.mkdtemp(path.join(os.tmpdir(), "task-agent-logs-agent-")); roots.push(memory); openEveryOwnFileUnder(memory);
     const dir = new AgentMemoryLayout(memory).getAgentRunCollaborationDirPath("host");
     const tree = validateStandaloneRootTreePayload({ ...emptyStandaloneRootTree({ host: { address: "/assistant" as never, agentRunId: "host", agentDefinitionId: "assistant" }, createdAt: T(0) }),
       taskExecutions: [agentCopy("copy-run", "host")] }, "host");
@@ -166,7 +167,7 @@ describe("per-run message logs of standalone and organization runs (AC-014)", ()
   });
 
   it("keeps an organization agent's messages with a task agent team member in both logs and composes them once", async () => {
-    const memory = await fs.mkdtemp(path.join(os.tmpdir(), "task-agent-logs-org-")); roots.push(memory);
+    const memory = await fs.mkdtemp(path.join(os.tmpdir(), "task-agent-logs-org-")); roots.push(memory); openEveryOwnFileUnder(memory);
     const dir = new AgentMemoryLayout(memory).getOrgDirPath("org-root");
     const base = testAgentOrgExecutionTree({ orgRunId: "org-root", members: [testOrgAgentNode("/director", "director-run")] });
     const tree = validateAgentOrgRunExecutionTreePayload({ ...base, rootOrg: { ...base.rootOrg, taskExecutions: [teamCopy("tt", "director-run")] } }, "org-root");

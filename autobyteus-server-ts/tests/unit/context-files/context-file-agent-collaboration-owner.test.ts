@@ -22,6 +22,7 @@ import { ContextFileReadService } from "../../../src/context-files/services/cont
 import { ContextFileLayout } from "../../../src/context-files/store/context-file-layout.js";
 import { testOrgLaunchConfiguration } from "../../fixtures/current-agent-org-run-fixtures.js";
 import { RootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
+import { openEveryOwnFileUnder } from "../../fixtures/open-delegated-run-sources.js";
 
 const roots: string[] = [];
 afterEach(async () => { await Promise.all(roots.splice(0).map((root) => fs.rm(root, { recursive: true, force: true }))); });
@@ -32,8 +33,8 @@ const put = async (file: string, value: unknown) => {
 const filename = "ctx_test__notes.txt";
 
 const fixture = async () => {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "agent-collab-context-")); roots.push(root);
-  const memoryDir = path.join(root, "memory");
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "agent-collab-context-")); roots.push(root); openEveryOwnFileUnder(root);
+  const memoryDir = path.join(root, "memory"); openEveryOwnFileUnder(memoryDir);
   const hostDir = path.join(memoryDir, "agents", "host");
   await put(path.join(hostDir, "run_metadata.json"), {
     runId: "host", agentDefinitionId: "def", workspaceRootPath: "/workspace", memoryDir: hostDir, llmModelIdentifier: "model", runtimeKind: "autobyteus",

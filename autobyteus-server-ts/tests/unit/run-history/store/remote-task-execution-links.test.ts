@@ -13,6 +13,7 @@ import { validateTeamRunExecutionTreePayload } from "../../../../src/run-history
 import { resetRootRunPackageReadinessIndex } from "../../../../src/run-history/services/root-run-package-readiness-index.js";
 import { testAgentNode, testExecutionTree } from "../../../fixtures/current-team-run-fixtures.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgLaunchConfiguration } from "../../../fixtures/current-agent-org-run-fixtures.js";
+import { openEveryOwnFileUnder } from "../../../fixtures/open-delegated-run-sources.js";
 
 /**
  * Design § On-Disk Data Model item 4 and § Remote Links In Memory (AR-001, N-7, RSK-108): a remote link is a
@@ -29,7 +30,7 @@ afterEach(async () => {
   await Promise.all(roots.splice(0).map((root) => { resetRootRunPackageReadinessIndex(root); return fs.rm(root, { recursive: true, force: true }); }));
 });
 const memoryRoot = async (): Promise<string> => {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "remote-links-"));
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "remote-links-")); openEveryOwnFileUnder(root);
   roots.push(root);
   return root;
 };
@@ -52,7 +53,6 @@ const storedTeamLink = (teamRunId: string, delegator: string, overrides: Record<
   delegatorAgentRunId: delegator, startedAt: T0, ...overrides,
 });
 const teamLink = (teamRunId: string, delegator: string) => ({ kind: "agent_team" as const, ...storedTeamLink(teamRunId, delegator) });
-const storedLocalLink = (agentRunId: string, delegator: string) => ({ address: "/code_reviewer", agentRunId, delegatorAgentRunId: delegator, startedAt: T0 });
 
 type Kind = Readonly<{
   name: string;
@@ -128,8 +128,9 @@ describe.each([standaloneKind, teamKind, orgKind])("remote links in a $name tree
     expect((await kind.write(dir, tree)).outcome).toBe("committed");
 
     const raw = await readJson(kind.file(dir));
-    expect(kind.rootList(raw)).toEqual([storedLocalLink("reviewer-run", kind.delegator), storedRemote("publisher_7f3", kind.delegator)]);
-    expect(Object.keys(kind.rootList(raw)[1] as object)).toEqual(["address", "agentRunId", "nodeId", "delegatorAgentRunId", "startedAt"]);
+    // A local copy is not stored in the tree file (autobyteus-469 D-3); the remote link is.
+    expect(kind.rootList(raw)).toEqual([storedRemote("publisher_7f3", kind.delegator)]);
+    expect(Object.keys(kind.rootList(raw)[0] as object)).toEqual(["address", "agentRunId", "nodeId", "delegatorAgentRunId", "startedAt"]);
     expect(JSON.stringify(raw)).not.toContain("remoteTaskExecutions");
     // No folder is created on this node for the remote run.
     await expect(fs.access(path.join(dir, "..", "..", "agents", "publisher_7f3"))).rejects.toThrow();
@@ -148,7 +149,7 @@ describe.each([standaloneKind, teamKind, orgKind])("remote links in a $name tree
       [...kind.memoryHolder(loaded).remoteTaskExecutions, remoteLink("second", kind.delegator, T1)]);
     expect((await kind.write(dir, next)).outcome).toBe("committed");
     expect(kind.rootList(await readJson(kind.file(dir)))).toEqual([
-      storedRemote("first", kind.delegator), storedLocalLink("reviewer-run", kind.delegator), storedRemote("second", kind.delegator, T1),
+      storedRemote("first", kind.delegator), storedRemote("second", kind.delegator, T1),
     ]);
     expect(kind.memoryHolder(await kind.read(dir)).remoteTaskExecutions.map((link: { agentRunId: string }) => link.agentRunId)).toEqual(["first", "second"]);
   });
@@ -163,8 +164,9 @@ describe.each([standaloneKind, teamKind, orgKind])("remote links in a $name tree
     expect(kind.memoryHolder(loaded).remoteTaskExecutions).toEqual([remoteLink("only-remote", kind.delegator)]);
   });
 
-  it("leaves out an unreadable remote link or one whose delegator is not in the tree, with a warning; the save keeps it on disk", async () => {
+  it("leaves out an unreadable remote link (warning) or one whose delegator is not in the tree (debug, D-12); the save keeps both on disk", async () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    const debug = vi.spyOn(console, "debug").mockImplementation(() => undefined);
     const dir = kind.dir(await memoryRoot());
     await kind.write(dir, kind.tree([localCopy("reviewer-run", kind.delegator)], []));
     const raw = await readJson(kind.file(dir));
@@ -175,10 +177,12 @@ describe.each([standaloneKind, teamKind, orgKind])("remote links in a $name tree
     const loaded = await kind.read(dir);
     expect(kind.memoryHolder(loaded).taskExecutions.map((task: { agentRunId: string }) => task.agentRunId)).toEqual(["reviewer-run"]);
     expect(kind.memoryHolder(loaded).remoteTaskExecutions).toBeUndefined();
-    expect(warn.mock.calls.map(([line]) => String(line)).join("\n")).toMatch(/Remote run 'broken'[\s\S]*Remote run 'orphan'/);
+    expect(warn.mock.calls.map(([line]) => String(line)).join("\n")).toMatch(/Remote run 'broken'/);
+    expect(warn.mock.calls.map(([line]) => String(line)).join("\n")).not.toMatch(/orphan/);
+    expect(debug.mock.calls.map(([line]) => String(line)).join("\n")).toMatch(/Remote run 'orphan'.*not listed/);
 
     await kind.write(dir, kind.tree([localCopy("reviewer-run", kind.delegator)], []));
-    expect(kind.rootList(await readJson(kind.file(dir)))).toEqual([storedLocalLink("reviewer-run", kind.delegator), broken, orphan]);
+    expect(kind.rootList(await readJson(kind.file(dir)))).toEqual([broken, orphan]);
   });
 
   it("stores a remote Team link with its coordinator and members (exact keys, no kind), loads it kinded, and keeps it on later saves", async () => {
@@ -191,7 +195,7 @@ describe.each([standaloneKind, teamKind, orgKind])("remote links in a $name tree
     expect(kind.memoryHolder(loaded).remoteTaskExecutions).toEqual([remoteLink("agent-remote", kind.delegator), teamLink("team-remote", kind.delegator)]);
     await kind.write(dir, kind.tree([localCopy("reviewer-run", kind.delegator)], kind.memoryHolder(loaded).remoteTaskExecutions));
     expect(kind.rootList(await readJson(kind.file(dir)))).toEqual([
-      storedRemote("agent-remote", kind.delegator), storedTeamLink("team-remote", kind.delegator), storedLocalLink("reviewer-run", kind.delegator),
+      storedRemote("agent-remote", kind.delegator), storedTeamLink("team-remote", kind.delegator),
     ]);
   });
 

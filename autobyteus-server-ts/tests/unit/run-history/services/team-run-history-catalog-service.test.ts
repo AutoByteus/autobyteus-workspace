@@ -9,6 +9,7 @@ import { TeamRunHistoryIndexStore } from "../../../../src/run-history/store/team
 import { TeamRunPackageCatalog } from "../../../../src/run-history/services/team-run-package-catalog.js";
 import { TeamCommunicationStore } from "../../../../src/services/team-communication/team-communication-store.js";
 import { testAgentNode, testExecutionTree } from "../../../fixtures/current-team-run-fixtures.js";
+import { openEveryOwnFileUnder } from "../../../fixtures/open-delegated-run-sources.js";
 
 const buildTree = (teamRunId = "team-1") => testExecutionTree({
   rootTeamRunId: teamRunId,
@@ -37,7 +38,7 @@ describe("TeamRunHistoryCatalogService current V2 tree", () => {
   };
 
   beforeEach(async () => {
-    memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "team-run-history-catalog-current-"));
+    memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "team-run-history-catalog-current-")); openEveryOwnFileUnder(memoryDir);
     layout = new AgentMemoryLayout(memoryDir);
     resetTeamRunHistoryCatalogState(memoryDir);
     managed = false;

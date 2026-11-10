@@ -9,6 +9,9 @@ export type CollaborationMessageMemberIdentity = Readonly<{
   kind: 'delegated'
   hostRunId: string
   executionRunId: string
+}> | Readonly<{
+  /** An agent of a delegated run that left the root's tree when its Task closed, named by the server (autobyteus-469). */
+  kind: 'past'
 }>)
 
 export interface CollaborationMessagePerspectiveRow {

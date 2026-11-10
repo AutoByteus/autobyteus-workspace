@@ -9,7 +9,7 @@ import {
 import type { TeamCommunicationMessagesFile } from "./team-communication-messages-file.js";
 import { TEAM_RUN_TREE_SHAPE } from "../../run-history/store/coordinating-tree-shapes.js";
 import { MessageLog } from "../../run-history/store/message-log.js";
-import { agentRunIdsOfTree } from "../../run-history/store/task-execution-tree-split.js";
+import { messageViewOfTree } from "../../run-history/store/task-execution-tree-split.js";
 import {
   appendMessageToOwnerLogs,
   composeMessageLogs,
@@ -43,7 +43,7 @@ export class TeamCommunicationStore {
     return messages ? Object.freeze({ schemaVersion: 1, rootTeamRunId, messages }) : null;
   }
 
-  /** The stored view for a composed tree: the run's log and its loaded task agents' logs (L6); `null` without a log. */
+  /** The stored view for a composed tree: the run's log and its open delegated runs' logs (D-5); `null` without a log. */
   async read(teamMemoryDir: string, tree: TeamRunExecutionTreeFile): Promise<TeamCommunicationMessagesFile | null> {
     const rootTeamRunId = tree.rootTeam.teamRunId;
     const own = await this.readLog(teamMemoryDir, rootTeamRunId);
@@ -53,7 +53,7 @@ export class TeamCommunicationStore {
     return Object.freeze({
       schemaVersion: 1,
       rootTeamRunId,
-      messages: Object.freeze(composeMessageLogs([own.messages, ...logs], agentRunIdsOfTree(TEAM_RUN_TREE_SHAPE, tree))),
+      messages: Object.freeze(composeMessageLogs([own.messages, ...logs], messageViewOfTree(TEAM_RUN_TREE_SHAPE, tree))),
     });
   }
 

@@ -16,6 +16,7 @@ import { toReleasedTeamRunExecutionTreeV2, toReleasedConfiguredNode } from "../f
 const testExecutionTree = (input: Parameters<typeof testCurrentExecutionTree>[0]) =>
   toReleasedTeamRunExecutionTreeV2(testCurrentExecutionTree(input)) as unknown as ReturnType<typeof testCurrentExecutionTree>;
 import { testOrgTeamNode, testOrgAgentNode } from "../fixtures/current-agent-org-run-fixtures.js";
+import { openEveryOwnFileUnder } from "../fixtures/open-delegated-run-sources.js";
 
 export const putOrgFixture = async (file: string, data: unknown, raw = false): Promise<void> => {
   await fs.mkdir(path.dirname(file), { recursive: true });
@@ -35,7 +36,7 @@ export const writeNestedRoot = async (memory: string, id = "org") => {
 };
 /** Each test owns a new DB with only released token tables. Never uses the process DB. */
 export const createOrgMigrationFixture = async () => {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "org-token-implementation-")), memory = path.join(root, "memory");
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "org-token-implementation-")), memory = path.join(root, "memory"); openEveryOwnFileUnder(memory);
   const client = new PrismaClient({ datasources: { db: { url: `file:${path.join(root, "tokens.sqlite")}` } } });
   for (const name of ["20260819090000_add_token_usage_run_records", "20260822090000_add_token_usage_analytics", "20260923130000_add_claude_sdk_usage_state", "20261009120000_token_meter_context_readings"]) {
     const ddl = await fs.readFile(path.resolve("prisma/migrations", name, "migration.sql"), "utf8");

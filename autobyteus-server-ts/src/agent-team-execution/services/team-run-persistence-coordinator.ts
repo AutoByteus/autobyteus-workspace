@@ -2,6 +2,8 @@ import type { RootMessageAppend, RootMessageAppendResult } from "../../agent-col
 import type { TeamRunExecutionTreeStore } from "../../run-history/store/team-run-execution-tree-store.js";
 import type { TeamCommunicationStore } from "../../services/team-communication/team-communication-store.js";
 import type { RunPackageFileWriteResult } from "../../run-history/store/atomic-run-package-file-commit-writer.js";
+import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
+import type { TaskExecution } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import type {
   ExecutionTreeCommitResult,
   PreparedExecutionTreeMutation,
@@ -66,6 +68,11 @@ export class TeamRunPersistenceCoordinator {
       this.finalizeAfterDurability("execution_tree", () => change.commitAfterDurability());
       return { outcome: "committed" };
     });
+  }
+
+  /** A delegated run's record from its own file, for adding it back to the loaded tree (D-4); throws with the reason. */
+  readTaskExecution(run: TaskExecutionReference): Promise<TaskExecution> {
+    return this.options.executionTreeStore.readTaskExecution(this.options.teamMemoryDir, this.options.rootTeamRunId, run);
   }
 
   readConsistent<T>(reader: () => T): Promise<T> {

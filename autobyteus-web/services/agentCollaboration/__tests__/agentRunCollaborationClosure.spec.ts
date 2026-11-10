@@ -74,10 +74,10 @@ describe('Agent root closed task executions', () => {
     expect(teamStatus(context)).toBe(AgentStatus.Running)
   })
 
-  it('requires a fresh view when a reopened reference is not a task execution of the run', () => {
+  it('reloads the view for a reopened execution it does not hold: it left the tree at its Task\'s closure and is back (autobyteus-469 D-8)', () => {
     const context = buildClosureContext(closureView([{ agentRunId: 'writer-run' }]))
-    expect(() => context.applyEvent(5, { kind: 'task_executions_reopened', task_executions: [{ agentRunId: 'ghost-run' }] })).toThrow()
-    expect(context.phase).toBe('reopen_required')
+    expect(context.applyEvent(5, { kind: 'task_executions_reopened', task_executions: [{ agentRunId: 'ghost-run' }] })).toBe('checkpoint_required')
+    expect(context.phase).not.toBe('reopen_required')
   })
 
   it('requires a fresh view when a closed reference is not a task execution of the run', () => {

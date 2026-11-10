@@ -285,6 +285,7 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
   ownerOf(chain: readonly TaskExecutionReference[]) { return this.resources.ownerOf(chain); }
   isOpen(execution: TaskExecutionReference): boolean { return this.resources.isOpen(execution); }
   closedTaskExecutionsIn(hostRoot: RootExecutionIdentity) { return this.resources.closedTaskExecutionsIn(hostRoot); }
+  closedTaskExecutionOf(hostRoot: RootExecutionIdentity, by: Readonly<{ ingressAgentRunId: string }> | TaskExecutionReference) { return this.resources.closedTaskExecutionOf(hostRoot, by); }
   assertResourceDataReadable(): void { this.resources.assertAllReadable(); }
   /** Marks the Tasks whose root is one of these task executions; the status is read later. Never throws. */
   taskExecutionsStatusChanged(_hostRoot: RootExecutionIdentity, references: readonly TaskExecutionReference[]): void {
