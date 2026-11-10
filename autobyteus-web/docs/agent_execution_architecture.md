@@ -864,7 +864,9 @@ turn, tool, compaction phase, status change, or Event Monitor visual.
 summary with runtime-aware source copy, capture time, Unicode code-point count,
 and an `Available` status. Its button exposes `aria-expanded` and
 `aria-controls`; expansion shows the exact selectable text in a labeled,
-keyboard-focusable, pre-wrapped, bounded scrolling region. Desktop and mobile
+pre-wrapped region, whole and in the Activity's own flow: no height cap and no
+inner scroll, so the Activity scrolls through it, and the header collapses it again
+(autobyteus-435). Desktop and mobile
 dispatch through their shared discriminated `RunActivity` contract and retain
 the same content/identity semantics.
 

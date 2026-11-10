@@ -755,11 +755,12 @@ describe("StandaloneAgentRunRoot owns its host (REQ-001, REQ-004)", () => {
     await f.manager.stopRoot(HOST);
   });
 
-  it("rejects delegate_task to the caller's own address with COLLABORATION_SELF_TARGET_REJECTED and send_message_to guidance (AC-001, AC-004)", async () => {
+  it("rejects delegate_task to the caller's own address with COLLABORATION_SELF_TARGET_REJECTED and the self words (AC-001, AC-004; autobyteus-435 AC-013-1)", async () => {
     const f = await buildManager();
     const root = (await f.manager.resolveRoot(HOST))!;
     await expect(root.delegateToNewCopy({ identity: f.hostIdentity }, { recipient_address: "/research_assistant", description: "Do it" }))
-      .rejects.toMatchObject({ code: "COLLABORATION_SELF_TARGET_REJECTED", message: expect.stringContaining("send_message_to") });
+      .rejects.toMatchObject({ code: "COLLABORATION_SELF_TARGET_REJECTED",
+        message: "/research_assistant is your own address; you can't delegate to yourself. Do the work yourself, or delegate it to another agent or agent team." });
     await delegateReviewer(root, f);
     const reviewer = f.handles.get("code-reviewer-run-1")!.input.identity;
     await expect(root.delegateToNewCopy({ identity: reviewer }, { recipient_address: "/code_reviewer", description: "Copy me" }))
