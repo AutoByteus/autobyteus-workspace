@@ -86,6 +86,13 @@
             </ul>
           </div>
         </div>
+        <ModelListRefreshControl
+          v-if="refreshable"
+          class="sticky bottom-0 border-t border-gray-100 bg-white dark:bg-gray-800"
+          :refreshing="refreshing"
+          :failed="refreshFailed"
+          @refresh="emit('refresh')"
+        />
       </div>
     </Teleport>
   </div>
@@ -95,6 +102,7 @@
 import { ref, computed, watch, onMounted, onUnmounted, nextTick, reactive, useId } from 'vue'
 import type { CSSProperties } from 'vue'
 import { useLocalization } from '~/composables/useLocalization'
+import ModelListRefreshControl from '~/components/common/ModelListRefreshControl.vue'
 
 export interface SelectItem {
   id: string
@@ -118,13 +126,23 @@ const props = withDefaults(defineProps<{
   disabled?: boolean
   variant?: 'default' | 'quiet'
   selectedDisplay?: string | null
+  /** A model picker: shows "Refresh models" in the open list (REQ-011). */
+  refreshable?: boolean
+  /** The list is being read again; it stays usable. */
+  refreshing?: boolean
+  /** The last re-read failed; the last list is kept. */
+  refreshFailed?: boolean
 }>(), {
   loading: false,
   disabled: false,
   variant: 'default',
+  refreshable: false,
+  refreshing: false,
+  refreshFailed: false,
 })
 
-const emit = defineEmits(['update:modelValue'])
+// `open`: the list opened (a model picker re-reads its list then, REQ-010); `refresh`: "Refresh models".
+const emit = defineEmits(['update:modelValue', 'open', 'refresh'])
 const { t } = useLocalization()
 
 const listboxId = useId()
@@ -257,6 +275,7 @@ const handleClickOutside = (event: MouseEvent) => {
 
 watch(isOpen, (newValue) => {
   if (newValue) {
+    emit('open')
     nextTick(() => {
       updatePopoverPosition()
       searchInputRef.value?.focus()

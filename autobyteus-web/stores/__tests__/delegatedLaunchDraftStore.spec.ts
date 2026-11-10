@@ -41,6 +41,50 @@ describe('delegatedLaunchDraftStore', () => {
     expect(store.dirty).toBe(false)
   })
 
+  it('re-reads the copies\' options in the background: the options shown stay until the answer, and a failed read keeps them (REQ-010)', async () => {
+    const store = useDelegatedLaunchDraftStore()
+    store.bind(root)
+    await flush()
+    let answer!: (value: unknown) => void
+    client.loadDelegatedLaunchModelOptions.mockReturnValueOnce(new Promise((resolve) => { answer = resolve }))
+
+    const reloading = store.reloadOptions()
+    expect(store.optionsStatus).toBe('ready')
+    expect(store.optionsByKey['agent:copy']).toEqual(options('opus', ['sonnet']))
+
+    answer({ 'agent:copy': options('opus', ['sonnet', 'fable']) })
+    await expect(reloading).resolves.toBe(true)
+    expect(store.optionsByKey['agent:copy']).toEqual(options('opus', ['sonnet', 'fable']))
+
+    client.loadDelegatedLaunchModelOptions.mockRejectedValueOnce(new Error('Model options unavailable.'))
+    await expect(store.reloadOptions()).resolves.toBe(false)
+    expect(store.optionsStatus).toBe('ready')
+    expect(store.optionsByKey['agent:copy']).toEqual(options('opus', ['sonnet', 'fable']))
+  })
+
+  it('an options answer made stale by another run or a newer read is not applied and is not a failure', async () => {
+    const store = useDelegatedLaunchDraftStore()
+    store.bind(root)
+    await flush()
+    let answer!: (value: unknown) => void
+    client.loadDelegatedLaunchModelOptions.mockReturnValueOnce(new Promise((resolve) => { answer = resolve }))
+
+    const reloading = store.reloadOptions()
+    store.bind({ rootKind: 'AGENT', rootRunId: 'other' })
+    answer({ 'agent:stale': options('x', []) })
+
+    await expect(reloading).resolves.toBe(true)
+    expect(store.optionsByKey['agent:stale']).toBeUndefined()
+  })
+
+  it('has nothing to re-read without a bound run', async () => {
+    const store = useDelegatedLaunchDraftStore()
+    client.loadDelegatedLaunchModelOptions.mockClear()
+
+    await expect(store.reloadOptions()).resolves.toBe(true)
+    expect(client.loadDelegatedLaunchModelOptions).not.toHaveBeenCalled()
+  })
+
   it('a change back to what ran is no change; an offered replacement is allowed, another model is not', async () => {
     const store = useDelegatedLaunchDraftStore()
     store.bind(root)

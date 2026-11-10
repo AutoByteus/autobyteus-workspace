@@ -5,6 +5,7 @@ import { defineComponent, h } from 'vue'
 import ExistingRunConfigEditor from '../ExistingRunConfigEditor.vue'
 import { useExistingRunConfigStore } from '~/stores/existingRunConfigStore'
 import { useDelegatedLaunchDraftStore } from '~/stores/delegatedLaunchDraftStore'
+import { injectLockedModelOptionsRefresh } from '~/composables/useLockedModelOptionsRefresh'
 
 // Render the real editor + Settings/Save bar with real draft stores. Only network, unrelated
 // runtime stores and leaf controls are replaced; the stale live view deliberately never changes.
@@ -271,4 +272,36 @@ it('leaves active Agent rows live-view-backed and does not request a stopped sna
   expect(mocks.read).not.toHaveBeenCalled()
   expect(useDelegatedLaunchDraftStore().feedback?.kind).toBe('success')
   wrapper.unmount()
+})
+
+describe('saved-run model menus re-read the options through the editor (REQ-010, AC-012)', () => {
+  it('provides one refresh that re-reads the run\'s options and its copies\' options, and reports success', async () => {
+    let refresh: ReturnType<typeof injectLockedModelOptionsRefresh> = null
+    const menu = defineComponent({ props: ['node'], setup: () => { refresh = injectLockedModelOptionsRefresh(); return () => h('span') } })
+    const wrapper = mount(ExistingRunConfigEditor, { global: { stubs: { RunMembersSection: true, RunSubjectCard: menu, RunSettingsCard: true, RunSubjectHeader: true, Icon: true }, mocks: { $t: (key: string) => key } } })
+    await flushPromises()
+    const reloadRun = vi.spyOn(useExistingRunConfigStore(), 'reloadModelOptions')
+    const reloadCopies = vi.spyOn(useDelegatedLaunchDraftStore(), 'reloadOptions')
+
+    expect(refresh).not.toBeNull()
+    await refresh!.refresh()
+
+    expect(reloadRun).toHaveBeenCalledOnce()
+    expect(reloadCopies).toHaveBeenCalledOnce()
+    expect(refresh!.failed.value).toBe(false)
+    wrapper.unmount()
+  })
+
+  it('reports a failure when either read fails, so the menu keeps its last options and offers Retry', async () => {
+    let refresh: ReturnType<typeof injectLockedModelOptionsRefresh> = null
+    const menu = defineComponent({ props: ['node'], setup: () => { refresh = injectLockedModelOptionsRefresh(); return () => h('span') } })
+    const wrapper = mount(ExistingRunConfigEditor, { global: { stubs: { RunMembersSection: true, RunSubjectCard: menu, RunSettingsCard: true, RunSubjectHeader: true, Icon: true }, mocks: { $t: (key: string) => key } } })
+    await flushPromises()
+    vi.spyOn(useExistingRunConfigStore(), 'reloadModelOptions').mockResolvedValue(false)
+
+    await refresh!.refresh()
+
+    expect(refresh!.failed.value).toBe(true)
+    wrapper.unmount()
+  })
 })

@@ -117,13 +117,28 @@ export const useRuntimeScopedModelSelection = (params: {
     try {
       await Promise.all([
         runtimeAvailabilityStore.fetchRuntimeAvailability(kind, true),
-        llmStore.refreshLocalCatalog(kind),
+        llmStore.refreshCatalog(kind),
       ])
       await ensureModelsForRuntime(kind)
     } catch {
       // Each store publishes its own current failure; don't retain a caller-local
       // error that a later accepted catalog or capability response cannot recover.
     }
+  }
+
+  const modelListRefreshing = computed(() => selectedCatalog.value?.refreshing === true)
+  const modelListRefreshFailed = computed(() => selectedCatalog.value?.refreshError != null)
+
+  /** A model picker opened: the runtime's list is read again in the background; the list shown stays usable (REQ-010). */
+  const refreshModelsOnOpen = (): void => {
+    const kind = effectiveRuntimeKind.value
+    if (kind) void llmStore.refreshCatalog(kind)
+  }
+
+  /** "Refresh models" (REQ-011): also re-discovers the AutoByteus runtime's discovered providers. */
+  const refreshModels = (): void => {
+    const kind = effectiveRuntimeKind.value
+    if (kind) void llmStore.refreshModelList(kind)
   }
 
   watch(
@@ -222,9 +237,13 @@ export const useRuntimeScopedModelSelection = (params: {
     isLoadingModels,
     isLoadingRuntime,
     modelLoadError,
+    modelListRefreshFailed,
+    modelListRefreshing,
     modelConfigSchemaByIdentifier,
     modelIdentifiers,
     normalizedStoredRuntimeKind,
+    refreshModels,
+    refreshModelsOnOpen,
     reloadModelsForRuntime,
     providerSourceStatuses,
     runtimeOptions,

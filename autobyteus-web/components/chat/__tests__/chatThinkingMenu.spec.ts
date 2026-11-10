@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { buildChatThinkingMenu, type ChatThinkingMenu } from '../chatThinkingMenu'
+import { getDefaultThinkingConfig } from '~/utils/llmThinkingConfigAdapter'
 
 const labels: Record<string, string> = {
   'chat.thinking.title': 'Thinking',
@@ -170,5 +171,34 @@ describe('buildChatThinkingMenu', () => {
     const menu = buildChatThinkingMenu({ reasoning_effort: { type: 'string', enum: ['low', 'high'] } }, null, t) as Parameters
     expect(menu.summary).toBe('Default')
     expect(menu.parameters[0]!.options.every((option) => !option.checked)).toBe(true)
+  })
+
+  it('offers the Claude Agent SDK effort only: no Off, "Default" until a level is chosen, and nothing written by default (AC-005, AC-006)', () => {
+    // The schema the SDK runtime serves: effort at the SDK's levels, no default, no thinking switch.
+    const sdkEffortOnly = { reasoning_effort: { type: 'string', enum: ['low', 'medium', 'high', 'xhigh', 'max'] } }
+
+    const untouched = buildChatThinkingMenu(sdkEffortOnly, null, t) as Parameters
+    expect(untouched.mode).toBe('parameters')
+    expect(untouched.summary).toBe('Default')
+    expect(untouched.parameters).toHaveLength(1)
+    expect(untouched.parameters[0]!.options.map((option) => option.label)).toEqual(['Low', 'Medium', 'High', 'Xhigh', 'Max'])
+    expect(untouched.parameters[0]!.options.every((option) => !option.checked)).toBe(true)
+    expect(getDefaultThinkingConfig(sdkEffortOnly)).toEqual({})
+
+    const chosen = buildChatThinkingMenu(sdkEffortOnly, { reasoning_effort: 'xhigh' }, t) as Parameters
+    expect(chosen.summary).toBe('Xhigh')
+    expect(untouched.parameters[0]!.options.find((option) => option.label === 'High')!.next).toEqual({ reasoning_effort: 'high' })
+  })
+
+  it('shows a Claude switch row on by default and sends Off only when it is chosen (AC-003)', () => {
+    const switchRow = {
+      thinking_enabled: { type: 'boolean', default: true },
+      reasoning_effort: { type: 'string', enum: effortLevels, default: 'high' },
+    }
+    expect(getDefaultThinkingConfig(switchRow)).toEqual({ thinking_enabled: true, reasoning_effort: 'high' })
+    const menu = merged(buildChatThinkingMenu(switchRow, null, t))
+    expect(checkedIds(menu)).toEqual(['high'])
+    expect(menu.primary.map((option) => option.label)).toEqual(['Off', 'Low', 'Medium', 'High', 'Xhigh', 'Max'])
+    expect(menu.active).toBe(true)
   })
 })

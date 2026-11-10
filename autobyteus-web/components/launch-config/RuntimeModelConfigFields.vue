@@ -42,6 +42,11 @@
         :placeholder="modelPlaceholderText"
         search-placeholder="Search models..."
         :variant="controlVariant"
+        :refreshable="originalModelIdentifier === undefined"
+        :refreshing="modelListRefreshing"
+        :refresh-failed="modelListRefreshFailed"
+        @open="onModelPickerOpen"
+        @refresh="refreshModels"
       />
       <p v-if="modelHelpText" class="mt-1 text-xs text-gray-500">{{ modelHelpText }}</p>
       <p
@@ -189,8 +194,12 @@ const {
   isLoadingModels: catalogLoading,
   isLoadingRuntime,
   modelLoadError: catalogLoadError,
+  modelListRefreshFailed,
+  modelListRefreshing,
   modelConfigSchemaByIdentifier,
   normalizedStoredRuntimeKind,
+  refreshModels,
+  refreshModelsOnOpen,
   reloadModelsForRuntime,
   runtimeOptions,
   selectedRuntimeUnavailableReason,
@@ -359,6 +368,10 @@ watch(
   { immediate: true },
 )
 
+// A launch picker re-reads its runtime's list when it opens; a saved run's options are its editor's (REQ-010).
+const onModelPickerOpen = () => {
+  if (props.originalModelIdentifier === undefined) refreshModelsOnOpen()
+}
 const retryModelCatalog = () => {
   void reloadModelsForRuntime(resolveEffectiveScopedRuntimeKind(effectiveRuntimeKind.value))
 }

@@ -3,7 +3,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 const store = vi.hoisted(() => ({
   fetchProvidersWithModels: vi.fn(),
-  refreshLocalCatalog: vi.fn(),
+  refreshCatalog: vi.fn(),
+  refreshModelList: vi.fn(),
   ensureMissingDynamicProviders: vi.fn(),
   providersWithModelsForSelection: vi.fn(),
   providerSnapshots: vi.fn(),
@@ -65,7 +66,7 @@ const flush = async () => {
   await Promise.resolve()
 }
 
-const catalogPublication = ref({ runtimeKind: 'autobyteus', state: 'ready', errorMessage: null, currentRequestId: 1 })
+const catalogPublication = ref<Record<string, unknown>>({ runtimeKind: 'autobyteus', state: 'ready', errorMessage: null, currentRequestId: 1 })
 describe('useRuntimeScopedModelSelection', () => {
   beforeEach(() => {
     vi.clearAllMocks()
@@ -73,7 +74,7 @@ describe('useRuntimeScopedModelSelection', () => {
     store.catalogSnapshot.mockImplementation((runtimeKind: string) => ({ ...catalogPublication.value, runtimeKind }))
     runtimeAvailabilityStore.fetchRuntimeAvailabilities.mockResolvedValue(undefined)
     store.fetchProvidersWithModels.mockResolvedValue(undefined)
-    store.refreshLocalCatalog.mockResolvedValue(undefined)
+    store.refreshCatalog.mockResolvedValue(undefined)
     store.ensureMissingDynamicProviders.mockResolvedValue(undefined)
     store.providersWithModelsForSelection.mockReturnValue([])
     store.providerSnapshots.mockReturnValue([])
@@ -105,6 +106,49 @@ describe('useRuntimeScopedModelSelection', () => {
       state: 'STALE_ERROR',
       safeMessage: 'Discovery unavailable.',
     })
+  })
+
+  it('asks the store to re-read the selected runtime when its picker opens, and for "Refresh models" (REQ-010, REQ-011)', async () => {
+    const selection = useRuntimeScopedModelSelection({ runtimeKind: ref('claude_agent_sdk') })
+    await flush()
+
+    selection.refreshModelsOnOpen()
+    expect(store.refreshCatalog).toHaveBeenCalledExactlyOnceWith('claude_agent_sdk')
+    expect(store.refreshModelList).not.toHaveBeenCalled()
+
+    selection.refreshModels()
+    expect(store.refreshModelList).toHaveBeenCalledExactlyOnceWith('claude_agent_sdk')
+  })
+
+  it('does not re-read anything when no runtime is chosen', async () => {
+    const selection = useRuntimeScopedModelSelection({
+      runtimeKind: ref(''), allowBlankRuntime: true, useDefaultRuntimeFallback: false,
+    })
+    await flush()
+
+    selection.refreshModelsOnOpen()
+    selection.refreshModels()
+
+    expect(store.refreshCatalog).not.toHaveBeenCalled()
+    expect(store.refreshModelList).not.toHaveBeenCalled()
+  })
+
+  it('reports the runtime catalog\'s refresh state without hiding the loaded rows (QR-001)', async () => {
+    store.providersWithModelsForSelection.mockReturnValue(rows(['gpt-4.1']))
+    const selection = useRuntimeScopedModelSelection({ runtimeKind: ref('autobyteus') })
+    await flush()
+    expect(selection.modelListRefreshing.value).toBe(false)
+    expect(selection.modelListRefreshFailed.value).toBe(false)
+
+    catalogPublication.value = { ...catalogPublication.value, refreshing: true }
+    expect(selection.modelListRefreshing.value).toBe(true)
+    expect(selection.isLoadingModels.value).toBe(false)
+    expect(selection.modelIdentifiers.value).toEqual(['gpt-4.1'])
+
+    catalogPublication.value = { ...catalogPublication.value, refreshing: false, refreshError: 'MODEL_CATALOG_REQUEST_FAILED' }
+    expect(selection.modelListRefreshFailed.value).toBe(true)
+    expect(selection.modelLoadError.value).toBeNull()
+    expect(selection.modelIdentifiers.value).toEqual(['gpt-4.1'])
   })
 
   it('uses inherited runtime when the sparse stored runtime is absent', async () => {

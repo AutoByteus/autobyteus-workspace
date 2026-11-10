@@ -287,7 +287,7 @@ describe('existingRunConfigStore', () => {
     expect(store.dirty).toBe(false)
   })
 
-  it.each(['MODEL_UNAVAILABLE', 'SCHEMA_UNAVAILABLE', 'PERSISTENCE_FAILED'] as const)(
+  it.each(['MODEL_UNAVAILABLE', 'MODEL_LIST_UNAVAILABLE', 'SCHEMA_UNAVAILABLE', 'PERSISTENCE_FAILED'] as const)(
     'retains AgentOrg edits for determinate %s without canonical refresh',
     async outcome => {
       const store = useExistingRunConfigStore()
@@ -313,6 +313,9 @@ describe('existingRunConfigStore', () => {
       expect(store.draft.planner.scopesByAddress['/team/worker']!.draftSelection).toEqual(attemptedMember)
       expect(store.patches.length).toBeGreaterThan(0)
       expect(mocks.readOrg).toHaveBeenCalledTimes(1)
+      // A refused model (not offered, list unreadable, settings unchecked) marks the edited scopes with the server's message.
+      if (outcome !== 'PERSISTENCE_FAILED') expect(store.schemaStateByAddress['/']).toEqual({ status: 'unavailable', message: 'Determinate failure.' })
+      else expect(store.schemaStateByAddress['/']).toEqual({ status: 'ready', message: null })
     },
   )
 

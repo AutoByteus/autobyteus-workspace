@@ -4,7 +4,6 @@ import type { WorkspaceSelectionState } from '~/types/workspace/WorkspaceSelecti
 import { createExistingAgentOrgWorkspaceDraft, updateExistingAgentOrgWorkspaceDraft,
   planExistingAgentOrgWorkspacePatches, existingAgentOrgWorkspacesDirty, existingAgentOrgWorkspacesValid } from '~/services/runConfigEditing/existingAgentOrgWorkspaceDraft'
 import type { ExistingRunConfigDraft } from '~/types/agent/ExistingRunConfigDraft'
-import { loadExistingRunModelOptions } from '~/services/runConfigEditing/existingRunModelOptionsClient'
 import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore'
 import { defineStore } from 'pinia'
 import { teamRunExecutionTreeDtoSchema } from '@autobyteus/team-stream-contracts'
@@ -46,6 +45,7 @@ import {
 import type { AgentOrgRunConfigRead } from '~/services/runConfigEditing/agentOrgRunConfigClient'
 import { existingRunConfigResultActions } from '~/stores/existingRunConfigResultActions'
 import { existingRunConfigEditActions } from '~/stores/existingRunConfigEditActions'
+import { existingRunModelOptionsActions } from '~/stores/existingRunModelOptionsActions'
 
 const loadingSchemaState = (): ExistingRunModelConfigSchemaState => ({ status: 'loading', message: null })
 
@@ -130,29 +130,6 @@ export const useExistingRunConfigStore = defineStore('existingRunConfig', {
     },
   },
   actions: {
-    async refreshModelOptions(delayMs = 0): Promise<void> {
-      const draft = this.draft
-      if (!draft) return
-      const requestId = ++this.optionsRequestId, binding = useWindowNodeContextStore().bindingRevision
-      const addresses = draft.kind === 'agent' ? ['/'] : Object.keys(draft.planner.scopesByAddress)
-      this.modelOptionsByAddress = Object.fromEntries(addresses.map((address) => [address, { status: 'loading', options: null }]))
-      if (draft.kind === 'agent_org' && !existingAgentOrgWorkspacesValid(draft.executionTree, draft.workspaceDraft)) {
-        this.modelOptionsByAddress = Object.fromEntries(addresses.map(address => [address, { status: 'unavailable', options: null }]))
-        return
-      }
-      if (delayMs) await new Promise(resolve => setTimeout(resolve, delayMs))
-      if (requestId !== this.optionsRequestId || binding !== useWindowNodeContextStore().bindingRevision) return
-      try {
-        const options = await loadExistingRunModelOptions(draft)
-        if (requestId !== this.optionsRequestId || binding !== useWindowNodeContextStore().bindingRevision) return
-        this.modelOptionsByAddress = options
-        this.deriveSchemaStates()
-      } catch {
-        if (requestId !== this.optionsRequestId || binding !== useWindowNodeContextStore().bindingRevision) return
-        this.modelOptionsByAddress = Object.fromEntries(addresses.map((address) => [address, { status: 'unavailable', options: null }]))
-        this.deriveSchemaStates()
-      }
-    },
     clear(): void {
       this.optionsRequestId += 1
       this.modelOptionsByAddress = {}
@@ -503,5 +480,6 @@ export const useExistingRunConfigStore = defineStore('existingRunConfig', {
     },
     ...existingRunConfigResultActions,
     ...existingRunConfigEditActions,
+    ...existingRunModelOptionsActions,
   },
 })

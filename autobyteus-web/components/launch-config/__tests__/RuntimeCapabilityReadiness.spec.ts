@@ -7,7 +7,7 @@ import { ControlledOrgApollo } from '~/test-support/agentOrgApolloFixture'
 const io = vi.hoisted(() => ({ client: null as any, refresh: vi.fn() }))
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => io.client }))
 vi.mock('~/stores/llmProviderConfig', () => ({ useLLMProviderConfigStore: () => ({
-  fetchProvidersWithModels: async () => undefined, refreshLocalCatalog: io.refresh,
+  fetchProvidersWithModels: async () => undefined, refreshCatalog: io.refresh, refreshModelList: vi.fn(),
   ensureMissingDynamicProviders: async () => undefined, providerSnapshots: () => [],
   catalogSnapshot: (runtimeKind: string) => ({ runtimeKind, state: 'ready', errorMessage: null }),
   providersWithModelsForSelection: () => [{

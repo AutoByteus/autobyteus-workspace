@@ -37,25 +37,37 @@
       </button>
     </template>
   </div>
+  <ModelListRefreshControl
+    v-if="state === 'ready'"
+    :refreshing="refreshing"
+    :failed="refreshFailed"
+    @refresh="emit('refresh')"
+  />
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
 import { Icon } from '@iconify/vue'
 import ChatModelOptionLabel from '~/components/chat/ChatModelOptionLabel.vue'
+import ModelListRefreshControl from '~/components/common/ModelListRefreshControl.vue'
 import type { ChatCatalogState, ChatModelGroup, ChatModelOption } from '~/composables/chat/useChatModelCatalog'
 import { chatModelOptionFullText as fullText } from '~/components/chat/chatModelOptionText'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   runtimeKind: string
   state: ChatCatalogState
   groups: ChatModelGroup[]
   currentModelIdentifier: string | null
-}>()
+  /** The list is being read again; it stays usable (REQ-010, QR-001). */
+  refreshing?: boolean
+  /** The last re-read failed; the last list is kept (QR-001). */
+  refreshFailed?: boolean
+}>(), { refreshing: false, refreshFailed: false })
 // Provider sub-labels appear only when a runtime has more than one provider.
 const showProviderLabels = computed(() => props.groups.length > 1)
 const emit = defineEmits<{
   (event: 'choose', model: ChatModelOption): void
   (event: 'retry'): void
+  (event: 'refresh'): void
 }>()
 </script>

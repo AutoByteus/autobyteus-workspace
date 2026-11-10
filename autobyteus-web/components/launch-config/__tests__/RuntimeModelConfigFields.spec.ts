@@ -31,7 +31,8 @@ describe('RuntimeModelConfigFields stored historical values', () => {
     } })) })
     ;(useLLMProviderConfigStore as any).mockReturnValue({
       fetchProvidersWithModels: vi.fn().mockResolvedValue([]),
-      refreshLocalCatalog: vi.fn().mockResolvedValue([]),
+      refreshCatalog: vi.fn().mockResolvedValue([]),
+      refreshModelList: vi.fn(),
       ensureMissingDynamicProviders: vi.fn().mockResolvedValue(undefined),
       providerSnapshots: vi.fn().mockReturnValue([]),
           catalogSnapshot: (runtimeKind: string) => ({ runtimeKind, state: 'ready', errorMessage: null }),
@@ -78,6 +79,59 @@ describe('RuntimeModelConfigFields stored historical values', () => {
     expect(wrapper.emitted('update:runtimeKind')).toBeUndefined()
     expect(wrapper.emitted('update:llmModelIdentifier')).toBeUndefined()
     expect(wrapper.emitted('update:llmConfig')).toBeUndefined()
+  })
+
+  const claudeProviders = () => [{
+    provider: { id: 'ANTHROPIC', name: 'Anthropic', providerType: 'ANTHROPIC', isCustom: false },
+    models: [{
+      modelIdentifier: 'opus', name: 'Opus', value: 'opus', canonicalName: 'claude-opus-5-5',
+      providerId: 'ANTHROPIC', providerName: 'Anthropic', providerType: 'ANTHROPIC', runtime: 'api', configSchema: null,
+    }],
+  }]
+
+  it('re-reads the runtime list when the model picker opens, and on "Refresh models" (REQ-010, REQ-011, AC-010)', async () => {
+    providers = claudeProviders()
+    const wrapper = mount(RuntimeModelConfigFields, {
+      props: { runtimeKind: 'claude_agent_sdk', llmModelIdentifier: '', llmConfig: null },
+      attachTo: document.body,
+      global: { mocks: { $t: (key: string) => key } },
+    })
+    await flushPromises()
+    const store = (useLLMProviderConfigStore as any)()
+    store.refreshCatalog.mockClear()
+
+    await wrapper.findComponent({ name: 'SearchableGroupedSelect' }).get('button').trigger('click')
+    await wrapper.vm.$nextTick()
+    expect(store.refreshCatalog).toHaveBeenCalledExactlyOnceWith('claude_agent_sdk')
+    expect(store.refreshModelList).not.toHaveBeenCalled()
+
+    document.body.querySelector<HTMLButtonElement>('[data-test="model-list-refresh-button"]')!.click()
+    expect(store.refreshModelList).toHaveBeenCalledExactlyOnceWith('claude_agent_sdk')
+    wrapper.unmount()
+    document.body.innerHTML = ''
+  })
+
+  it('does not re-read the runtime catalog when a saved run\'s picker opens: its options are its editor\'s', async () => {
+    providers = claudeProviders()
+    const wrapper = mount(RuntimeModelConfigFields, {
+      props: {
+        runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'opus', llmConfig: null, originalModelIdentifier: 'opus',
+        modelOptions: { status: 'ready', options: { currentModelIdentifier: 'opus', currentModel: choice('opus'), replacements: [choice('fable')], unavailableReason: null } },
+      },
+      attachTo: document.body,
+      global: { mocks: { $t: (key: string) => key } },
+    })
+    await flushPromises()
+    const store = (useLLMProviderConfigStore as any)()
+    store.refreshCatalog.mockClear()
+
+    await wrapper.findComponent({ name: 'SearchableGroupedSelect' }).get('button').trigger('click')
+    await wrapper.vm.$nextTick()
+
+    expect(store.refreshCatalog).not.toHaveBeenCalled()
+    expect(document.body.querySelector('[data-test="model-list-refresh-button"]')).toBeNull()
+    wrapper.unmount()
+    document.body.innerHTML = ''
   })
 
   it('keeps an editable numeric draft rendered while reporting current-schema validation errors', async () => {

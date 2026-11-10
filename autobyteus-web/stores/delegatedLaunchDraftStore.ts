@@ -96,6 +96,25 @@ export const useDelegatedLaunchDraftStore = defineStore('delegatedLaunchDraft', 
         this.optionsStatus = 'unavailable'
       }
     },
+    /**
+     * Re-reads the copies' options (a picker opened, or Refresh models): the options shown stay until the answer arrives and
+     * are kept when it fails. Answers whether they could be read; an answer made stale by a newer read is not a failure.
+     */
+    async reloadOptions(): Promise<boolean> {
+      const root = this.root
+      if (!root) return true
+      const requestId = ++this.optionsRequestId, binding = useWindowNodeContextStore().bindingRevision
+      const stale = () => requestId !== this.optionsRequestId || binding !== useWindowNodeContextStore().bindingRevision
+      try {
+        const options = await loadDelegatedLaunchModelOptions(root)
+        if (stale()) return true
+        this.optionsByKey = options
+        this.optionsStatus = 'ready'
+        return true
+      } catch {
+        return stale()
+      }
+    },
     /** A model, its settings or its agent runtime changed on a copy row; `original` is what the target ran with before this edit. */
     edit(key: DelegatedTargetKey, original: ExistingAgentRunSelection, selection: ExistingAgentRunSelection): void {
       if (this.saving) return
