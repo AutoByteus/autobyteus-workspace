@@ -290,7 +290,8 @@ describe('stopped AgentOrg Save with delegated copies (AR-004, AR-003)', () => {
     const result = await h.manager.updateStoppedRunConfig({ orgRunId: 'org', teamWorkspacePatches: [],
       selectionPatches: [select('CONFIGURED_AGENT', '/worker')],
       delegatedChanges: [{ teamRunId: 'team-copy', selection: { runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: 'not-offered', llmConfig: null } }] });
-    expect(result).toMatchObject({ outcome: 'MODEL_UNAVAILABLE', success: false });
+    expect(result).toMatchObject({ outcome: 'MODEL_UNAVAILABLE', success: false,
+      message: expect.stringContaining("'not-offered' is not offered by AutoByteus now") });
     expect(write).not.toHaveBeenCalled();
   });
 });

@@ -26,6 +26,7 @@ import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-
 import { DefinitionAdmissionService } from "../../collaboration-definition-admission/services/definition-admission-service.js";
 import type { PairedAgentAccess } from "../../agent-collaboration/execution/remote/paired-agent-access.js";
 import { TeamPairedAgentAccess } from "./team-paired-agent-access.js";
+import { projectNewRunLlmConfig } from "../../llm-management/services/new-run-llm-config-projection.js";
 
 export interface TeamRunPresetInput {
   workspaceRootPath: string;
@@ -129,15 +130,16 @@ export class TeamRunService {
       }
       return activation;
     };
-    const normalizedTeamConfigs = input.teamConfigs.map((team, index) => ({
-      ...team,
-      runtimeKind: resolveRequiredRuntimeKind(team.runtimeKind, `teamConfigs[${index}].runtimeKind`),
-      llmConfig: team.llmConfig ?? null,
+    // A new run stores and launches only declared settings (undeclared keys are dropped silently).
+    const normalizedTeamConfigs = await Promise.all(input.teamConfigs.map(async (team, index) => {
+      const runtimeKind = resolveRequiredRuntimeKind(team.runtimeKind, `teamConfigs[${index}].runtimeKind`);
+      return { ...team, runtimeKind, llmConfig: await projectNewRunLlmConfig({
+        runtimeKind, llmModelIdentifier: team.llmModelIdentifier, llmConfig: team.llmConfig }) };
     }));
-    const normalizedMemberConfigs = input.memberConfigs.map((member, index) => ({
-      ...member,
-      runtimeKind: resolveRequiredRuntimeKind(member.runtimeKind, `memberConfigs[${index}].runtimeKind`),
-      llmConfig: member.llmConfig ?? null,
+    const normalizedMemberConfigs = await Promise.all(input.memberConfigs.map(async (member, index) => {
+      const runtimeKind = resolveRequiredRuntimeKind(member.runtimeKind, `memberConfigs[${index}].runtimeKind`);
+      return { ...member, runtimeKind, llmConfig: await projectNewRunLlmConfig({
+        runtimeKind, llmModelIdentifier: member.llmModelIdentifier, llmConfig: member.llmConfig }) };
     }));
     const teamConfigs: TeamScopeLaunchInput[] = await Promise.all(normalizedTeamConfigs.map(async (team) => ({
       ...team,

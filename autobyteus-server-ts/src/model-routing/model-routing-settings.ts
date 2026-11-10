@@ -1,6 +1,6 @@
-import { agentRuntimeName } from "@autobyteus/agent-presentation-contracts";
 import { appConfigProvider } from "../config/app-config-provider.js";
 import type { RunModelSelectionValidationResult, RunModelSelectionValidator } from "../llm-management/services/run-model-selection-service.js";
+import { isUnavailableModelSelection, runModelSelectionRefusal } from "../llm-management/services/run-model-selection-refusal.js";
 import { RuntimeKind } from "../runtime-management/runtime-kind-enum.js";
 
 /** Model Routing on this node (REQ-002): `true` turns it on; off by default. */
@@ -109,10 +109,11 @@ export type ModelRoutingSettingsDependencies = Readonly<{
 
 /** The refusal for a launch the check did not accept. */
 const refusalOf = (launch: ModelRouterLaunch, result: RunModelSelectionValidationResult): string =>
-  result.kind === "model_unavailable" ? `The model '${launch.llmModelIdentifier}' is not available on ${agentRuntimeName(launch.runtimeKind)}.`
-    : result.kind === "schema_unavailable" ? `The settings of model '${launch.llmModelIdentifier}' could not be checked.`
-      : result.kind === "invalid" ? `The model settings are invalid: ${result.errors.map((error) => error.message).join("; ")}`
-        : "The launch could not be checked.";
+  isUnavailableModelSelection(result)
+    ? runModelSelectionRefusal({ result, llmModelIdentifier: launch.llmModelIdentifier, runtimeKind: launch.runtimeKind,
+      savedSettingsUnchanged: true }).message
+    : result.kind === "invalid" ? `The model settings are invalid: ${result.errors.map((error) => error.message).join("; ")}`
+      : "The launch could not be checked.";
 
 /**
  * Writes the switch and the router's launch configuration (DS-005). A launch is checked like any agent launch first,

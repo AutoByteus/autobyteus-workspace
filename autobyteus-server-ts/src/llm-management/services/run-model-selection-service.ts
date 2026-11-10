@@ -13,9 +13,16 @@ import {
   type DeepSeekHarnessDiagnostic,
 } from "../../runtime-management/deepseek-harness/deepseek-harness-capability.js";
 
+type CatalogDiagnostic = AgyDiscoveryDiagnostic | GrokBuildDiagnostic | DeepSeekHarnessDiagnostic;
+
+/**
+ * `model_unavailable`: the runtime's current list does not contain the model. `model_list_unavailable`: the list could not
+ * be read, so nothing is known about the model; `catalogDiagnostic` is the runtime's own reason where it has one.
+ */
 export type RunModelSelectionValidationResult =
   | Readonly<{ kind: "valid"; selection: RunModelSelection }>
-  | Readonly<{ kind: "model_unavailable"; catalogDiagnostic?: AgyDiscoveryDiagnostic | GrokBuildDiagnostic | DeepSeekHarnessDiagnostic }>
+  | Readonly<{ kind: "model_unavailable" }>
+  | Readonly<{ kind: "model_list_unavailable"; catalogDiagnostic?: CatalogDiagnostic }>
   | Readonly<{ kind: "schema_unavailable" }>
   | Readonly<{ kind: "invalid"; errors: readonly RunModelConfigFieldError[] }>;
 type SelectionInput = { context: RunModelValidationContext; selection: { llmModelIdentifier: string; llmConfig: unknown } };
@@ -26,6 +33,11 @@ type SelectionEvidence = {
 export type RunModelSelectionValidator = Pick<RunModelSelectionService, "validate" | "validateMany">;
 
 const supportedRuntime = (kind: RuntimeKind): boolean => kind === RuntimeKind.AUTOBYTEUS || isExternalProviderRuntimeKind(kind);
+const catalogDiagnosticOf = (runtimeKind: RuntimeKind, error: unknown): { catalogDiagnostic?: CatalogDiagnostic } =>
+  runtimeKind === RuntimeKind.ANTIGRAVITY_CLI ? { catalogDiagnostic: toAgyDiscoveryDiagnostic(error) }
+    : runtimeKind === RuntimeKind.GROK_BUILD ? { catalogDiagnostic: toGrokBuildDiagnostic(error) }
+      : runtimeKind === RuntimeKind.DEEPSEEK_HARNESS ? { catalogDiagnostic: toDeepSeekHarnessDiagnostic(error) }
+        : {};
 const invalid = (message: string): RunModelSelectionValidationResult =>
   ({ kind: "invalid", errors: [{ path: "llmModelIdentifier", message }] });
 const toChoice = (model: ModelInfo): RunModelChoice => ({
@@ -56,13 +68,7 @@ export class RunModelSelectionService {
     if (typeof selection.llmModelIdentifier !== "string" || !selection.llmModelIdentifier.trim()) return invalid("Select a model.");
     let catalog: RuntimeModelSelectionCatalog;
     try { catalog = await evidence.catalog.runtimeModelSelectionCatalog(context.runtimeKind, context.workspaceRootPath); }
-    catch (error) { return context.runtimeKind === RuntimeKind.ANTIGRAVITY_CLI
-      ? { kind: "model_unavailable", catalogDiagnostic: toAgyDiscoveryDiagnostic(error) }
-      : context.runtimeKind === RuntimeKind.GROK_BUILD
-        ? { kind: "model_unavailable", catalogDiagnostic: toGrokBuildDiagnostic(error) }
-        : context.runtimeKind === RuntimeKind.DEEPSEEK_HARNESS
-          ? { kind: "model_unavailable", catalogDiagnostic: toDeepSeekHarnessDiagnostic(error) }
-          : { kind: "model_unavailable" }; }
+    catch (error) { return { kind: "model_list_unavailable", ...catalogDiagnosticOf(context.runtimeKind, error) }; }
     const unchanged = context.currentModelIdentifier !== null && selection.llmModelIdentifier === context.currentModelIdentifier;
     const model = unchanged ? catalog.findExactCurrent(selection.llmModelIdentifier)
       : catalog.offeredModels.find((row) => row.model_identifier === selection.llmModelIdentifier);

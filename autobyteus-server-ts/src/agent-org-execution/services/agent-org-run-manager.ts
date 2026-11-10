@@ -16,6 +16,7 @@ import { canonicalizeWorkspaceRootPath } from "../../workspaces/workspace-path-u
 import { applyAgentOrgTeamWorkspacePatches, resolveAgentOrgTeamWorkspacePatches, listAgentOrgRunSelectionScopes } from "./agent-org-run-config-mutator.js";
 import { isDeepStrictEqual } from "node:util";
 import type { RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
+import { isUnavailableModelSelection, runModelSelectionRefusal } from "../../llm-management/services/run-model-selection-refusal.js";
 import type { AgentOrgRunConfig, AgentOrgRunConfigResult } from "../domain/agent-org-run-config.js";
 import { AgentOrgWorkspacePatchError, AgentOrgRunConfigNotFound, applyAgentOrgRunSelectionPatches, resolveAgentOrgRunSelectionTargets } from "./agent-org-run-config-mutator.js";
 import { runModelConfigEditability } from "../../run-history/domain/run-model-config.js";
@@ -309,12 +310,12 @@ export class AgentOrgRunManager {
       if (validations.length !== targets.length || delegatedValidations.length !== (delegatedPlan?.inputs.length ?? 0)) {
         return result("INTERNAL_ERROR", "Model validation returned an incomplete aggregate result.");
       }
-      const unavailable = validations.findIndex(validation =>
-        validation.kind === "model_unavailable" || validation.kind === "schema_unavailable");
-      if (unavailable >= 0) {
-        const validation = validations[unavailable]!;
-        return result(validation.kind === "model_unavailable" ? "MODEL_UNAVAILABLE" : "SCHEMA_UNAVAILABLE",
-          `Model options for '${targets[unavailable]!.scopeAddress}' are unavailable.`);
+      for (const [index, validation] of validations.entries()) {
+        if (!isUnavailableModelSelection(validation)) continue;
+        const { launchConfiguration } = targets[index]!;
+        const refusal = runModelSelectionRefusal({ result: validation, llmModelIdentifier: launchConfiguration.llmModelIdentifier,
+          runtimeKind: launchConfiguration.runtimeKind, scopeAddress: targets[index]!.scopeAddress, savedSettingsUnchanged: true });
+        return result(refusal.outcome, refusal.message);
       }
       const fieldErrors = validations.flatMap((validation, index) => validation.kind === "invalid"
         ? validation.errors.map(error => ({ path: `selectionPatches[${targets[index]!.scopeAddress}].${error.path}`, message: error.message }))

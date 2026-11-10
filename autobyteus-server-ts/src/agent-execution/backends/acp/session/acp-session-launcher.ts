@@ -77,6 +77,9 @@ export type AcpSessionOpenRequest = Readonly<{
   | Readonly<{ mode: "restore"; sessionId: string }>
 );
 
+/** The model settings an ACP session (Grok Build, DeepSeek Harness) reads from a run's stored `llmConfig`. New runs keep only these keys. */
+export const ACP_SESSION_SETTING_KEYS: readonly string[] = ["reasoning_effort"];
+
 const reasoningEffortOf = (config: AgentRunConfig): string | null => {
   const value = config.llmConfig?.reasoning_effort;
   return typeof value === "string" && value.trim() ? value.trim() : null;

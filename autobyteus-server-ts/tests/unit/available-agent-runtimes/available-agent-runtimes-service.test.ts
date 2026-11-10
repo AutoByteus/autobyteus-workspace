@@ -18,7 +18,7 @@ import { parseGrokUsageLimits } from "../../../src/runtime-management/agent-runt
 import type { RuntimeUsageLimit, UsageLimitsReading } from "../../../src/runtime-management/agent-runtimes/usage-limits/usage-limits-reading.js";
 import { DeadlineExceededError, type ReadDeadline } from "../../../src/runtime-management/read-deadline.js";
 import type { ProviderCredentialSetting } from "../../../src/llm-management/llm-providers/domain/models.js";
-import type { LocalProviderModelCatalogSnapshot } from "../../../src/llm-management/services/model-catalog-service.js";
+import { ModelListUnavailableError, type LocalProviderModelCatalogSnapshot } from "../../../src/llm-management/services/model-catalog-service.js";
 import {
   ProviderUsageUnreadableError, type ProviderUsageReader, type ProviderUsageReading,
 } from "../../../src/llm-management/provider-usage/provider-usage-reader.js";
@@ -289,9 +289,12 @@ describe("AvailableAgentRuntimesService", () => {
         throw new Error("AGY_MODEL_DISCOVERY_FAILED secret-token");
       } }).read();
       expect(external(thrown.agentRuntimes as unknown[], "antigravity_cli")!.models).toBe("unknown: Antigravity CLI model list could not be read");
-      const empty = await service({ strategies: [strategy(RuntimeKind.ANTIGRAVITY_CLI)], catalog: async (kind) =>
-        kind === RuntimeKind.ANTIGRAVITY_CLI ? [] : MODELS[kind]! }).read();
-      expect(external(empty.agentRuntimes as unknown[], "antigravity_cli")!.models).toBe("unknown: no models could be read");
+      // An empty list reaches the service as the catalog's own failure (`ModelListUnavailableError`), not as "no models".
+      const empty = await service({ strategies: [strategy(RuntimeKind.ANTIGRAVITY_CLI)], catalog: async (kind) => {
+        if (kind === RuntimeKind.ANTIGRAVITY_CLI) throw new ModelListUnavailableError(kind);
+        return MODELS[kind]!;
+      } }).read();
+      expect(external(empty.agentRuntimes as unknown[], "antigravity_cli")!.models).toBe("unknown: Antigravity CLI model list could not be read");
     });
 
     it("limits that fail or are not reported → the service's one wording; models stay unblocked (SR-007)", async () => {

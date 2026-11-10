@@ -7,7 +7,7 @@ import { LLMRuntime } from 'autobyteus-ts/llm/runtimes.js';
 import { AudioClientFactory } from 'autobyteus-ts/multimedia/audio/audio-client-factory.js';
 import { ImageClientFactory } from 'autobyteus-ts/multimedia/image/image-client-factory.js';
 import { BuiltInLlmProviderCatalog } from '../../../../src/llm-management/llm-providers/builtins/built-in-llm-provider-catalog.js';
-import { ModelCatalogService } from '../../../../src/llm-management/services/model-catalog-service.js';
+import { ModelCatalogService, ModelListUnavailableError } from '../../../../src/llm-management/services/model-catalog-service.js';
 
 describe('ModelCatalogService', () => {
   const builtInCatalog = new BuiltInLlmProviderCatalog();
@@ -66,6 +66,22 @@ describe('ModelCatalogService', () => {
       .map((model) => model.model_identifier)).toEqual(['opus']);
     expect((await service.resolveExactCurrentLlmModel('claude_agent_sdk', 'default'))?.model_identifier).toBe('default');
     expect(selectionCatalog).toHaveBeenCalledTimes(3);
+  });
+
+  it.each([
+    ['claude_agent_sdk', (service: ModelCatalogService) => service.runtimeModelSelectionCatalog('claude_agent_sdk')],
+    ['codex_app_server', (service: ModelCatalogService) => service.runtimeModelSelectionCatalog('codex_app_server')],
+    ['codex_app_server (snapshots)', (service: ModelCatalogService) => service.listProviderModelCatalogSnapshots('codex_app_server')],
+  ])('treats an empty external list as an unreadable list, never as "no models" (%s)', async (_label, read) => {
+    const emptyClaude = { selectionCatalog: vi.fn(async () => ({ offeredModels: [], findExactCurrent: () => null })) };
+    const service = new ModelCatalogService(builtInCatalog, customProviderStore as never, customSyncService as never,
+      emptyClaude as never, emptyExternalCatalog as never);
+    await expect(read(service)).rejects.toBeInstanceOf(ModelListUnavailableError);
+  });
+
+  it('keeps the AutoByteus runtime outside the empty-list rule', async () => {
+    const service = createService();
+    await expect(service.runtimeModelSelectionCatalog('autobyteus')).resolves.toMatchObject({ offeredModels: expect.any(Array) });
   });
 
   it('returns static and cold dynamic registry snapshots without discovery and without a remote AutoByteus provider', async () => {

@@ -1,15 +1,16 @@
 import type { AgentLaunchConfiguration } from "../agent-team-execution/domain/team-run-config.js";
+import { agentRuntimeName } from "@autobyteus/agent-presentation-contracts";
 import type { LaunchConfigurationFallbackReason } from "../agent-collaboration/domain/launch-configuration-source.js";
 import type {
   AvailableModel,
   NodeRuntimesReading,
 } from "../available-agent-runtimes/available-agent-runtimes-report.js";
-import { agentRuntimeName } from "@autobyteus/agent-presentation-contracts";
 import type {
   RunModelSelectionValidationResult,
   RunModelSelectionValidator,
 } from "../llm-management/services/run-model-selection-service.js";
 import type { RunModelSelection } from "../llm-management/domain/run-model-selection.js";
+import { isUnavailableModelSelection, runModelSelectionRefusal } from "../llm-management/services/run-model-selection-refusal.js";
 import type { RuntimeAvailabilityService } from "../runtime-management/runtime-availability-service.js";
 import type { RuntimeKind } from "../runtime-management/runtime-kind-enum.js";
 import type { DefaultLaunchConfig } from "./default-launch-config.js";
@@ -57,13 +58,14 @@ const incompleteDetail = (value: DefaultLaunchConfig): string => !value.runtimeK
 const canonicalLaunch = (launch: AgentLaunchConfiguration, selection: RunModelSelection): AgentLaunchConfiguration =>
   Object.freeze({ ...launch, llmModelIdentifier: selection.llmModelIdentifier, llmConfig: selection.llmConfig });
 
-/** Today's runnability wording for a model check that did not pass (kept identical for the inherited layer). */
+/** The runnability wording for a model check that did not pass (the same for the inherited layer); unavailable kinds use the one refusal wording. */
 export const invalidModelMessage = (launch: AgentLaunchConfiguration, result: RunModelSelectionValidationResult | undefined): string =>
   !result ? "Its model could not be checked."
-    : result.kind === "model_unavailable" ? `The model '${launch.llmModelIdentifier}' is not available on ${agentRuntimeName(launch.runtimeKind)}.`
-      : result.kind === "schema_unavailable" ? `The settings of model '${launch.llmModelIdentifier}' could not be checked.`
-        : result.kind === "invalid" ? `Its model settings are invalid: ${result.errors.map((error) => error.message).join("; ")}`
-          : "";
+    : isUnavailableModelSelection(result)
+      ? runModelSelectionRefusal({ result, llmModelIdentifier: launch.llmModelIdentifier, runtimeKind: launch.runtimeKind,
+        savedSettingsUnchanged: false }).message
+      : result.kind === "invalid" ? `Its model settings are invalid: ${result.errors.map((error) => error.message).join("; ")}`
+        : "";
 
 /** "2026-10-30 20:57 UTC" for an ISO time; the text itself when it is not one. */
 export const formatBlockTime = (iso: string): string => {
@@ -164,7 +166,9 @@ export class LaunchUsabilityCheck {
       if (result?.kind !== "valid") {
         verdicts[index] = Object.freeze({
           usable: false,
-          reason: result?.kind === "model_unavailable" ? "model_unavailable" : "model_settings_invalid",
+          // An unreadable list keeps the stored reason `model_unavailable` (the persisted vocabulary is unchanged);
+          // `detail` tells the user which of the two it was.
+          reason: result?.kind === "model_unavailable" || result?.kind === "model_list_unavailable" ? "model_unavailable" : "model_settings_invalid",
           detail: invalidModelMessage(launch, result),
         });
         return;

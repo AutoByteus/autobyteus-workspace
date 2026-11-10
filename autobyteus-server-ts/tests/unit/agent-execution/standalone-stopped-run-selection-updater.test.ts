@@ -97,7 +97,15 @@ describe("StandaloneStoppedRunSelectionUpdater (AC-001)", () => {
 
   it("an unavailable model of the new agent runtime changes nothing", async () => {
     const { instance, commitRunRuntimeSwitch } = updater(stopped(), { validation: { kind: "model_unavailable" } });
-    expect(await instance.update("run-1", input(RuntimeKind.CODEX_APP_SERVER))).toMatchObject({ success: false, outcome: "MODEL_UNAVAILABLE" });
+    expect(await instance.update("run-1", input(RuntimeKind.CODEX_APP_SERVER))).toMatchObject({ success: false, outcome: "MODEL_UNAVAILABLE",
+      message: expect.stringMatching(/is not offered by Codex App Server now\. Refresh the model list and choose again\. Saved settings were not changed\.$/) });
+    expect(commitRunRuntimeSwitch).not.toHaveBeenCalled();
+  });
+
+  it("an unreadable model list of the new agent runtime is its own outcome and changes nothing (AC-013)", async () => {
+    const { instance, commitRunRuntimeSwitch } = updater(stopped(), { validation: { kind: "model_list_unavailable" } });
+    expect(await instance.update("run-1", input(RuntimeKind.CODEX_APP_SERVER))).toMatchObject({ success: false, outcome: "MODEL_LIST_UNAVAILABLE",
+      message: "The model list of Codex App Server could not be read. Try again. Saved settings were not changed." });
     expect(commitRunRuntimeSwitch).not.toHaveBeenCalled();
   });
 

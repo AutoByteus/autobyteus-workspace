@@ -8,19 +8,24 @@ export const resolveClaudePermissionMode = (
   _autoExecuteTools: boolean | null | undefined,
 ): ClaudeSdkPermissionMode => DEFAULT_CLAUDE_PERMISSION_MODE;
 
+/**
+ * The model settings an SDK session reads from a run's stored `llmConfig`: effort only. Thinking is
+ * not set (the CLI ignores `thinking: disabled` on every current model), and an unchosen effort
+ * sends nothing. New runs keep only these keys (`projectNewRunLlmConfig`).
+ */
+export const CLAUDE_SESSION_SETTING_KEYS: readonly string[] = ["reasoning_effort"];
+
 export type ClaudeSessionConfig = {
   model: string;
   workingDirectory: string;
   permissionMode: ClaudeSdkPermissionMode;
   autoExecuteTools: boolean;
-  thinking?: Readonly<{ type: "adaptive" | "disabled" }>;
   effort?: "low" | "medium" | "high" | "xhigh" | "max";
 };
 
 export const claudeSessionReasoningOptions = (
   config: ClaudeSessionConfig,
-): Pick<ClaudeSessionConfig, "thinking" | "effort"> => ({
-  ...(config.thinking ? { thinking: config.thinking } : {}),
+): Pick<ClaudeSessionConfig, "effort"> => ({
   ...(config.effort ? { effort: config.effort } : {}),
 });
 
@@ -31,7 +36,6 @@ export const buildClaudeSessionConfig = (input: {
   autoExecuteTools?: boolean | null;
   llmConfig?: Readonly<Record<string, unknown>> | null;
 }): ClaudeSessionConfig => {
-  const thinkingEnabled = input.llmConfig?.thinking_enabled;
   const effort = input.llmConfig?.reasoning_effort;
   const validEfforts = new Set(["low", "medium", "high", "xhigh", "max"]);
   return {
@@ -39,9 +43,6 @@ export const buildClaudeSessionConfig = (input: {
     workingDirectory: input.workingDirectory,
     permissionMode: input.permissionMode ?? DEFAULT_CLAUDE_PERMISSION_MODE,
     autoExecuteTools: input.autoExecuteTools === true,
-    ...(typeof thinkingEnabled === "boolean"
-      ? { thinking: { type: thinkingEnabled ? "adaptive" as const : "disabled" as const } }
-      : {}),
     ...(typeof effort === "string" && validEfforts.has(effort)
       ? { effort: effort as ClaudeSessionConfig["effort"] }
       : {}),

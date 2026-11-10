@@ -9,6 +9,7 @@ import { delegatedLaunchSelections, type DelegatedLaunchChange } from "../../age
 import { taskExecutionReferenceKey, type TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import { selectionContextFor } from "../../agent-execution/services/stopped-run-selection-context.js";
 import type { RunModelSelectionService, RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
+import { isUnavailableModelSelection, runModelSelectionRefusal } from "../../llm-management/services/run-model-selection-refusal.js";
 import type { RunModelConfigFieldError, RunModelConfigUpdateOutcome } from "../../run-history/domain/run-model-config.js";
 import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
 import { applyTeamDelegatedLaunchSelections, teamDelegatedLaunchForest } from "./team-run-execution-tree-mutator.js";
@@ -74,12 +75,10 @@ export const planStoppedTeamLaunchSave = async (input: {
   const results = allResults.slice(0, targets.length);
   const delegated = delegatedPlan ? interpretDelegatedLaunchValidation(delegatedPlan.targets, allResults.slice(targets.length)) : null;
   const validations = targets.map((target, index) => ({ target, result: results[index]! }));
-  const unavailable = validations.find(({ result }) =>
-    result.kind === "model_unavailable" || result.kind === "schema_unavailable");
-  if (unavailable) {
-    return { kind: "refused",
-      outcome: unavailable.result.kind === "model_unavailable" ? "MODEL_UNAVAILABLE" : "SCHEMA_UNAVAILABLE",
-      message: `Current model options for '${unavailable.target.patch.scopeAddress}' are unavailable; saved settings were not changed.` };
+  for (const { target, result } of validations) {
+    if (!isUnavailableModelSelection(result)) continue;
+    return { kind: "refused", ...runModelSelectionRefusal({ result, llmModelIdentifier: target.patch.llmModelIdentifier,
+      runtimeKind: target.patch.runtimeKind, scopeAddress: target.patch.scopeAddress, savedSettingsUnchanged: true }) };
   }
   const invalid = validations.filter((entry) => entry.result.kind === "invalid");
   if (invalid.length) {

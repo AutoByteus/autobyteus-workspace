@@ -33,33 +33,33 @@ describe('RunModelSelectionService', () => {
     await expect(service.validate({ context: savedDefault, selection: { llmModelIdentifier: 'default', llmConfig: null } }))
       .resolves.toEqual({ kind: 'model_unavailable' });
   });
-  it('retains only a safe AGY discovery diagnostic, distinct from a missing slug', async () => {
+  it('reports an unreadable list as model_list_unavailable, with only a safe AGY discovery diagnostic, distinct from a missing slug', async () => {
     const { service, catalog } = harness();
     const agy = { ...context, runtimeKind: RuntimeKind.ANTIGRAVITY_CLI };
     catalog.runtimeModelSelectionCatalog.mockRejectedValue(new AgyDiscoveryError('AGY_MODEL_DISCOVERY_TIMEOUT'));
-    await expect(service.validate({ context: agy, selection })).resolves.toEqual({ kind: 'model_unavailable',
+    await expect(service.validate({ context: agy, selection })).resolves.toEqual({ kind: 'model_list_unavailable',
       catalogDiagnostic: { code: 'AGY_MODEL_DISCOVERY_TIMEOUT', message: 'Antigravity model discovery timed out; check the CLI and retry.' } });
     catalog.runtimeModelSelectionCatalog.mockRejectedValue(new AgyDiscoveryError('AGY_SIGN_IN_REQUIRED'));
-    await expect(service.validate({ context: agy, selection })).resolves.toEqual({ kind: 'model_unavailable',
+    await expect(service.validate({ context: agy, selection })).resolves.toEqual({ kind: 'model_list_unavailable',
       catalogDiagnostic: { code: 'AGY_SIGN_IN_REQUIRED',
         message: "Not signed in on this node. Run `agy` to sign in." } });
     catalog.runtimeModelSelectionCatalog.mockRejectedValue(new Error('secret /private/token'));
-    await expect(service.validate({ context: agy, selection })).resolves.toMatchObject({ kind: 'model_unavailable',
+    await expect(service.validate({ context: agy, selection })).resolves.toMatchObject({ kind: 'model_list_unavailable',
       catalogDiagnostic: { code: 'AGY_MODEL_DISCOVERY_FAILED' } });
-    await expect(service.validate({ context, selection })).resolves.toEqual({ kind: 'model_unavailable' });
+    await expect(service.validate({ context, selection })).resolves.toEqual({ kind: 'model_list_unavailable' });
     expect((await service.listOptions(context)).unavailableReason).toContain('catalog is unavailable');
     catalog.runtimeModelSelectionCatalog.mockResolvedValue(catalogView([]));
     await expect(service.validate({ context: agy, selection })).resolves.toEqual({ kind: 'model_unavailable' });
   });
 
-  it('retains only a safe Grok Build discovery diagnostic', async () => {
+  it('reports an unreadable Grok Build list with only a safe discovery diagnostic', async () => {
     const { service, catalog } = harness();
     const grok = { ...context, runtimeKind: RuntimeKind.GROK_BUILD };
     catalog.runtimeModelSelectionCatalog.mockRejectedValue(new GrokBuildDiscoveryError('GROK_MODEL_DISCOVERY_TIMEOUT'));
-    await expect(service.validate({ context: grok, selection })).resolves.toEqual({ kind: 'model_unavailable',
+    await expect(service.validate({ context: grok, selection })).resolves.toEqual({ kind: 'model_list_unavailable',
       catalogDiagnostic: { code: 'GROK_MODEL_DISCOVERY_TIMEOUT', message: 'Grok Build model discovery timed out; check the CLI and retry.' } });
     catalog.runtimeModelSelectionCatalog.mockRejectedValue(new Error('secret /private/token'));
-    await expect(service.validate({ context: grok, selection })).resolves.toMatchObject({ kind: 'model_unavailable',
+    await expect(service.validate({ context: grok, selection })).resolves.toMatchObject({ kind: 'model_list_unavailable',
       catalogDiagnostic: { code: 'GROK_MODEL_DISCOVERY_FAILED' } });
   });
 

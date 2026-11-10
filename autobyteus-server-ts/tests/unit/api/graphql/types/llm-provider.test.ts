@@ -250,6 +250,13 @@ describe('LlmProviderResolver', () => {
     expect(mockModelCatalogService.runtimeModelSelectionCatalog).toHaveBeenCalledExactlyOnceWith('claude_agent_sdk');
   });
 
+  it('fails the descriptor query when the runtime list could not be read, instead of answering "not offered" (model: null)', async () => {
+    mockModelCatalogService.runtimeModelSelectionCatalog.mockRejectedValue(
+      Object.assign(new Error('The claude_agent_sdk runtime returned no models.'), { name: 'ModelListUnavailableError' }));
+    await expect(new LlmProviderResolver().runtimeCurrentModelDescriptors('claude_agent_sdk', ['opus']))
+      .rejects.toThrow('returned no models');
+  });
+
   it('delegates exact-provider ensure and reload mutations', async () => {
     const snapshot = {
       runtimeKind: 'autobyteus',

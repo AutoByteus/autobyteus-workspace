@@ -64,7 +64,6 @@ export type ClaudeSdkStreamingSessionOptions = {
   permissionMode?: ClaudeSdkPermissionMode;
   canUseTool?: ClaudeSdkCanUseTool;
   stderr?: ClaudeSdkStderrCallback;
-  thinking?: Readonly<{ type: "adaptive" | "disabled" }>;
   debugFile?: string;
   effort?: "low" | "medium" | "high" | "xhigh" | "max";
   /** Variables added to this run session's CLI process (the run's integration variables); never a credential. */
@@ -345,7 +344,6 @@ export class ClaudeSdkClient {
       settingSources,
       // Per-call usage arrives only on `message_delta` stream events (token-meter-accuracy D-2).
       includePartialMessages: true,
-      ...(options.thinking ? { thinking: options.thinking } : {}),
       ...(options.effort ? { effort: options.effort } : {}),
       ...(options.canUseTool ? { canUseTool: options.canUseTool } : {}),
     };

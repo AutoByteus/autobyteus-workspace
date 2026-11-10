@@ -3,6 +3,7 @@ import type { AgentRunMetadata } from "../../run-history/store/agent-run-metadat
 import type { AgentRunMetadataService } from "../../run-history/services/agent-run-metadata-service.js";
 import type { AgentRunHistoryCatalogService } from "../../run-history/services/agent-run-history-catalog-service.js";
 import type { RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
+import { isUnavailableModelSelection, runModelSelectionRefusal } from "../../llm-management/services/run-model-selection-refusal.js";
 import {
   runModelConfigEditability,
   type RunModelConfigUpdateResult,
@@ -84,16 +85,12 @@ export class StandaloneStoppedRunSelectionUpdater {
       selection: { llmModelIdentifier: input.llmModelIdentifier, llmConfig: input.llmConfig },
     });
     if (validation.kind !== "valid") {
-      const outcome = validation.kind === "model_unavailable"
-        ? "MODEL_UNAVAILABLE"
-        : validation.kind === "schema_unavailable"
-          ? "SCHEMA_UNAVAILABLE"
-          : "VALIDATION_FAILED";
+      const refusal = isUnavailableModelSelection(validation)
+        ? runModelSelectionRefusal({ result: validation, llmModelIdentifier: input.llmModelIdentifier,
+          runtimeKind: input.runtimeKind, savedSettingsUnchanged: true })
+        : { outcome: "VALIDATION_FAILED" as const, message: "Model settings are invalid." };
       return this.result({
-        outcome,
-        message: outcome === "VALIDATION_FAILED"
-          ? "Model settings are invalid."
-          : "Current model options are unavailable; saved settings were not changed.",
+        ...refusal,
         metadata,
         active: false,
         fieldErrors: validation.kind === "invalid" ? validation.errors : [],

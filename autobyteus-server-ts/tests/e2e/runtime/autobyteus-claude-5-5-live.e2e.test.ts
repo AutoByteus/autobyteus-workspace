@@ -202,7 +202,7 @@ describeLive("AutoByteus native runtime: Claude Sonnet 5.5 and Haiku 5.5 (live)"
       expect(entry.maxInputTokens).toBe(1_000_000);
       expect(entry.maxOutputTokens).toBe(MAX_OUTPUT_TOKENS);
       expect(Object.keys(props).sort(), `${model.value} schema keys`).toEqual(["reasoning_effort", "thinking_enabled"]);
-      expect(props.thinking_enabled!.default, `${model.value} toggle default`).toBe(false);
+      expect(props.thinking_enabled!.default, `${model.value} toggle default`).toBe(true);
       expect(props.reasoning_effort!.default, `${model.value} effort default`).toBe(model.effortDefault);
       expect(props.reasoning_effort!.enum).toEqual(["low", "medium", "high", "xhigh", "max"]);
     }

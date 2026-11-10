@@ -195,7 +195,7 @@ afterEach(() => {
 describe("ClaudeSession streaming lifecycle", () => {
   it("opens one streaming process lazily with the reserved create binding and reuses it for later turns", async () => {
     const { session, sdkClient, start, events } = createSession({
-      llmConfig: { thinking_enabled: true, reasoning_effort: "high" },
+      llmConfig: { thinking_enabled: false, reasoning_effort: "high" },
     });
     expect(sdkClient.acquireStreamingSession).not.toHaveBeenCalled();
     expect(session.sessionId).toBe(RESERVED_SESSION_ID);
@@ -212,11 +212,11 @@ describe("ClaudeSession streaming lifecycle", () => {
       systemPrompt: "## Agent Identity\n\n- Name: Test agent",
       model: "haiku",
       permissionMode: "default",
-      thinking: { type: "adaptive" },
       effort: "high",
       canUseTool: expect.any(Function),
     }));
     expect(sdkClient.acquireStreamingSession.mock.calls[0]?.[0]).not.toHaveProperty("prompt");
+    expect(sdkClient.acquireStreamingSession.mock.calls[0]?.[0]).not.toHaveProperty("thinking");
     expect(sdkClient.current.sent.map((message) => message.message.content)).toEqual([
       [{ type: "text", text: "one" }],
       [{ type: "text", text: "two" }],

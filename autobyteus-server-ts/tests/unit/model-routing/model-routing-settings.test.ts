@@ -80,8 +80,12 @@ describe("ModelRoutingSettings.setRouterLaunch: checked like any agent launch, t
     expect(invalid.written).toEqual([]);
     const missing = setup({ kind: "model_unavailable" });
     await expect(missing.settings.setRouterLaunch({ runtimeKind: "codex_app_server", llmModelIdentifier: "gone", llmConfig: null }))
-      .rejects.toThrow("The model 'gone' is not available on Codex App Server.");
+      .rejects.toThrow("'gone' is not offered by Codex App Server now. Refresh the model list and choose again. Saved settings were not changed.");
     expect(missing.written).toEqual([]);
+    const unreadable = setup({ kind: "model_list_unavailable" });
+    await expect(unreadable.settings.setRouterLaunch({ runtimeKind: "codex_app_server", llmModelIdentifier: "gone", llmConfig: null }))
+      .rejects.toThrow("The model list of Codex App Server could not be read. Try again. Saved settings were not changed.");
+    expect(unreadable.written).toEqual([]);
   });
 
   it("an unknown runtime or an empty model is refused before the check", async () => {

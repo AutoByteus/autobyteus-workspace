@@ -1,5 +1,6 @@
 import { selectionContextFor } from "../../agent-execution/services/stopped-run-selection-context.js";
 import type { RunModelSelectionService, RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
+import { isUnavailableModelSelection, runModelSelectionRefusal } from "../../llm-management/services/run-model-selection-refusal.js";
 import type { RunModelOptions } from "../../llm-management/domain/run-model-selection.js";
 import type { RunModelConfigFieldError, RunModelConfigUpdateOutcome } from "../../run-history/domain/run-model-config.js";
 import {
@@ -111,10 +112,12 @@ export const interpretDelegatedLaunchValidation = (
   targets: readonly DelegatedLaunchTarget[],
   results: readonly SelectionValidationResult[],
 ): DelegatedLaunchValidation => {
-  const unavailable = results.findIndex((result) => result.kind === "model_unavailable" || result.kind === "schema_unavailable");
-  if (unavailable >= 0) {
-    return refused(results[unavailable]!.kind === "model_unavailable" ? "MODEL_UNAVAILABLE" : "SCHEMA_UNAVAILABLE",
-      `Model options for '${targets[unavailable]!.address}' are unavailable; saved settings were not changed.`);
+  for (const [index, result] of results.entries()) {
+    if (!isUnavailableModelSelection(result)) continue;
+    const target = targets[index]!;
+    const refusal = runModelSelectionRefusal({ result, llmModelIdentifier: target.selection.llmModelIdentifier,
+      runtimeKind: target.selection.runtimeKind, scopeAddress: target.address, savedSettingsUnchanged: true });
+    return refused(refusal.outcome, refusal.message);
   }
   const invalid = results.flatMap((result, index) => result.kind === "invalid"
     ? result.errors.map((error) => ({ path: `changes[${targets[index]!.index}].${error.path}`, message: error.message }))

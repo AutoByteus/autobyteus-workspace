@@ -20,6 +20,7 @@ import {
   AgentRunHistoryCatalogService,
 } from "../../run-history/services/agent-run-history-catalog-service.js";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
+import { projectNewRunLlmConfig } from "../../llm-management/services/new-run-llm-config-projection.js";
 import { AgentRunIdentityAllocator } from "./agent-run-identity-allocator.js";
 import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
 import { getAgentRunCommandRegistry } from "./agent-run-command-registry.js";
@@ -252,6 +253,7 @@ export class AgentRunProvisioningService {
       throw new Error(`runtimeKind '${input.runtimeKind}' is not supported.`);
     }
 
+    const llmModelIdentifier = input.llmModelIdentifier.trim();
     return {
       agentDefinitionId: input.agentDefinitionId.trim(),
       runtimeKind,
@@ -260,9 +262,10 @@ export class AgentRunProvisioningService {
         workspaceRootPath,
         workspaceId: workspace.workspaceId,
       }),
-      llmModelIdentifier: input.llmModelIdentifier.trim(),
+      llmModelIdentifier,
       autoExecuteTools: input.autoExecuteTools,
-      llmConfig: input.llmConfig ?? null,
+      // A new run stores and launches only declared settings (undeclared keys are dropped silently).
+      llmConfig: await projectNewRunLlmConfig({ runtimeKind, llmModelIdentifier, llmConfig: input.llmConfig }),
       applicationBinding: input.applicationBinding ?? null,
       projectId,
     };

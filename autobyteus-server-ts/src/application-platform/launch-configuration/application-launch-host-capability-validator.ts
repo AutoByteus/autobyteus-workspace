@@ -7,6 +7,7 @@ import type {
 } from "@autobyteus/application-sdk-contracts";
 import { CurrentModelSelectionRequiredError } from "autobyteus-ts/llm/index.js";
 import type { ModelCatalogService } from "../../llm-management/services/model-catalog-service.js";
+import { modelListUnreadableText, modelNotOfferedText } from "../../llm-management/services/run-model-selection-refusal.js";
 import type { RuntimeAvailabilityService } from "../../runtime-management/runtime-availability-service.js";
 import type {
   ApplicationProviderCredentialReadinessPort,
@@ -119,10 +120,10 @@ export class ApplicationLaunchHostCapabilityValidator {
           configuration,
           leaf,
           "RUNTIME_AUTHENTICATION_UNAVAILABLE",
-          `${agentRuntimeName(runtimeKind)} could not provide its authenticated model catalog: ${runtimeKind === RuntimeKind.ANTIGRAVITY_CLI
+          modelListUnreadableText(runtimeKind, runtimeKind === RuntimeKind.ANTIGRAVITY_CLI
             ? toAgyDiscoveryDiagnostic(error).message
             : runtimeKind === RuntimeKind.GROK_BUILD ? toGrokBuildDiagnostic(error).message
-              : runtimeKind === RuntimeKind.DEEPSEEK_HARNESS ? toDeepSeekHarnessDiagnostic(error).message : failure.message}`,
+              : runtimeKind === RuntimeKind.DEEPSEEK_HARNESS ? toDeepSeekHarnessDiagnostic(error).message : failure.message),
         ));
         continue;
       }
@@ -133,7 +134,7 @@ export class ApplicationLaunchHostCapabilityValidator {
           configuration,
           leaf,
           "MODEL_UNAVAILABLE",
-          `Model '${leaf.llmModelIdentifier}' is unavailable for ${agentRuntimeName(runtimeKind)} and '${this.describeLeaf(leaf)}'.`,
+          modelNotOfferedText({ llmModelIdentifier: leaf.llmModelIdentifier, runtimeKind, scopeAddress: this.describeLeaf(leaf) }),
         ));
         continue;
       }

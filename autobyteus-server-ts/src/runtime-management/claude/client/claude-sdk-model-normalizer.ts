@@ -36,41 +36,22 @@ const toStringArray = (value: unknown): string[] => {
   return values;
 };
 
-const buildClaudeThinkingConfigSchema = (
-  supportsAdaptiveThinking: boolean,
-  supportsEffort: boolean,
-  supportedEffortLevels: string[],
-): Record<string, unknown> => {
-  const normalizedEffortLevels = supportedEffortLevels.length > 0 ? supportedEffortLevels : ["medium"];
-  const parameters: ParameterDefinition[] = [];
-  if (supportsAdaptiveThinking) {
-    parameters.push(new ParameterDefinition({
-      name: "thinking_enabled",
-      type: ParameterType.BOOLEAN,
-      description: "Enable Claude extended thinking.",
-      required: false,
-      defaultValue: false,
-    }));
-  }
-  if (supportsEffort || supportedEffortLevels.length > 0) {
-    parameters.push(new ParameterDefinition({
+/**
+ * The Claude Agent SDK runtime offers effort only, at the levels the SDK reports for the model, and
+ * no default: an unchosen effort sends nothing and the model's own default applies. A thinking
+ * on/off switch is not offered: the Claude CLI keeps thinking with `thinking: disabled` on every
+ * current model, so Off would have no effect.
+ */
+const buildClaudeEffortConfigSchema = (supportedEffortLevels: string[]): Record<string, unknown> =>
+  new ParameterSchema([
+    new ParameterDefinition({
       name: "reasoning_effort",
       type: ParameterType.ENUM,
       description: "Controls Claude thinking depth. Higher effort may improve quality but increase latency.",
       required: false,
-      defaultValue: normalizedEffortLevels.includes("medium")
-        ? "medium"
-        : (normalizedEffortLevels[0] ?? null),
-      enumValues: normalizedEffortLevels,
-    }));
-  }
-  return new ParameterSchema(parameters).toJsonSchemaDict();
-};
-
-const supportsClaudeThinking = (descriptor: NormalizedModelDescriptor): boolean =>
-  descriptor.supportsAdaptiveThinking ||
-  descriptor.supportsEffort ||
-  descriptor.supportedEffortLevels.length > 0;
+      enumValues: supportedEffortLevels.length > 0 ? supportedEffortLevels : ["medium"],
+    }),
+  ]).toJsonSchemaDict();
 
 /** The SDK-reported canonical model ID for a row; never guessed when absent or ambiguous. */
 export const resolveCanonicalModelId = (descriptor: NormalizedModelDescriptor): string | null =>
@@ -89,12 +70,8 @@ export const toModelInfo = (descriptor: NormalizedModelDescriptor): ModelInfo =>
   provider_name: getLlmProviderDisplayName(LLMProvider.ANTHROPIC),
   provider_type: LLMProvider.ANTHROPIC,
   runtime: LLMRuntime.API,
-  config_schema: supportsClaudeThinking(descriptor)
-    ? buildClaudeThinkingConfigSchema(
-        descriptor.supportsAdaptiveThinking,
-        descriptor.supportsEffort,
-        descriptor.supportedEffortLevels,
-      )
+  config_schema: descriptor.supportsEffort || descriptor.supportedEffortLevels.length > 0
+    ? buildClaudeEffortConfigSchema(descriptor.supportedEffortLevels)
     : undefined,
   max_context_tokens: null,
   active_context_tokens: null,
@@ -111,7 +88,6 @@ export type NormalizedModelDescriptor = {
   description: string | null;
   supportsEffort: boolean;
   supportedEffortLevels: string[];
-  supportsAdaptiveThinking: boolean;
 };
 
 export const normalizeModelDescriptors = (value: unknown): NormalizedModelDescriptor[] => {
@@ -141,7 +117,6 @@ export const normalizeModelDescriptors = (value: unknown): NormalizedModelDescri
           description: null,
           supportsEffort: false,
           supportedEffortLevels: [],
-          supportsAdaptiveThinking: false,
         });
       }
       continue;
@@ -175,12 +150,6 @@ export const normalizeModelDescriptors = (value: unknown): NormalizedModelDescri
     const supportedEffortLevels = toStringArray(
       payload.supportedEffortLevels ?? payload.supported_effort_levels,
     );
-    const supportsAdaptiveThinking =
-      asBoolean(
-        payload.supportsAdaptiveThinking ??
-          payload.supports_adaptive_thinking ??
-          payload.adaptiveThinkingSupported,
-      ) ?? false;
 
     const existing = descriptors.get(identifier);
     if (!existing) {
@@ -192,7 +161,6 @@ export const normalizeModelDescriptors = (value: unknown): NormalizedModelDescri
         description,
         supportsEffort,
         supportedEffortLevels,
-        supportsAdaptiveThinking,
       });
       continue;
     }
@@ -208,7 +176,6 @@ export const normalizeModelDescriptors = (value: unknown): NormalizedModelDescri
       supportedEffortLevels: Array.from(
         new Set([...existing.supportedEffortLevels, ...supportedEffortLevels]),
       ),
-      supportsAdaptiveThinking: existing.supportsAdaptiveThinking || supportsAdaptiveThinking,
     });
   }
 

@@ -64,6 +64,17 @@ export type RuntimeModelSelectionCatalog = Readonly<{
   findExactCurrent: (identifier: string) => ModelInfo | null;
 }>;
 
+/**
+ * An external runtime answered a model-list read with no models. An available runtime always offers a
+ * model, so an empty list is a failed read, never "no models" (the catalog owns this rule).
+ */
+export class ModelListUnavailableError extends Error {
+  constructor(readonly runtimeKind: RuntimeKind) {
+    super(`The ${runtimeKind} runtime returned no models.`);
+    this.name = 'ModelListUnavailableError';
+  }
+}
+
 export class ModelCatalogService {
   private readonly lifecycle = new DynamicModelSourceLifecycle();
 
@@ -161,7 +172,8 @@ export class ModelCatalogService {
 
   /**
    * The runtime's offered models. `deadline`: the end time of the read step (the available-agent-runtimes read), passed
-   * to the external runtime's catalog; without it, each catalog's usual time-outs.
+   * to the external runtime's catalog; without it, each catalog's usual time-outs. An external runtime's empty list
+   * throws `ModelListUnavailableError`.
    */
   async runtimeModelSelectionCatalog(
     runtimeKind?: string | null,
@@ -169,6 +181,18 @@ export class ModelCatalogService {
     options: Readonly<{ deadline?: ReadDeadline }> = {},
   ): Promise<RuntimeModelSelectionCatalog> {
     const runtime = normalizeRuntime(runtimeKind);
+    const catalog = await this.readRuntimeCatalog(runtime, workspaceRootPath, options);
+    if (runtime !== RuntimeKind.AUTOBYTEUS && catalog.offeredModels.length === 0) {
+      throw new ModelListUnavailableError(runtime);
+    }
+    return catalog;
+  }
+
+  private async readRuntimeCatalog(
+    runtime: RuntimeKind,
+    workspaceRootPath: string | undefined,
+    options: Readonly<{ deadline?: ReadDeadline }>,
+  ): Promise<RuntimeModelSelectionCatalog> {
     if (runtime === RuntimeKind.CLAUDE_AGENT_SDK) return this.claudeModelCatalog.selectionCatalog(options);
     const models = runtime === RuntimeKind.CODEX_APP_SERVER
       ? await this.codexModelCatalog.listModels(workspaceRootPath, options)

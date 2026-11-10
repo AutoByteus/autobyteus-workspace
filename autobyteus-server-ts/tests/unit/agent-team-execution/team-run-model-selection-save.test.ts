@@ -157,7 +157,9 @@ describe('stopped Team Save with delegated copies (AR-004)', () => {
     const result = await h.manager.updateStoppedRunLaunchChanges({ teamRunId: 'root',
       configuredPatches: [{ scopeKind: 'CONFIGURED_AGENT', scopeAddress: '/member', runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: 'equal', llmConfig: null }],
       delegatedChanges: [{ agentRunId: 'retained-task', selection: { runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: 'not-offered', llmConfig: null } }] });
-    expect(result).toMatchObject({ outcome: 'MODEL_UNAVAILABLE', success: false });
+    expect(result).toMatchObject({ outcome: 'MODEL_UNAVAILABLE', success: false,
+      message: expect.stringContaining("'not-offered' is not offered by AutoByteus now") });
+    expect(result.message).toMatch(/Refresh the model list and choose again\. Saved settings were not changed\.$/);
     expect(h.write).not.toHaveBeenCalled(); expect(h.saved()).toEqual(original);
   });
 
