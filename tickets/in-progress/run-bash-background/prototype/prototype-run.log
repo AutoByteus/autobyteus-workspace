@@ -1,0 +1,42 @@
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/run-bash-background/autobyteus-ts
+
+stdout | tests/prototype-338.test.ts > autobyteus-338 prototype > P1+P2: exit code and output tail at completion; simultaneous ends batch into one notice
+[P1] three background starts took 373 ms in total; ids bg-1,bg-2,bg-3
+[P1] bg-1 ended after 731 ms: {"kind":"result","code":0,"signal":null}
+[P1] bg-2 ended after 824 ms: {"kind":"result","code":3,"signal":null}
+[P1] bg-3 ended after 910 ms: {"kind":"result","code":0,"signal":null}
+[P2] notices delivered: 1
+[Background commands finished: 3]
+- bg-1 `for i in 1 2 3; do echo "build step $i"; sleep 0.2; done; echo "build ok"` ended, exit code 0. Last lines:
+    build step 1
+    build step 2
+    build step 3
+    build ok
+- bg-2 `sleep 0.7; echo "tests: 2 failed" >&2; exit 3` ended, exit code 3. Last lines:
+    tests: 2 failed
+- bg-3 `sleep 0.75; echo lint clean` ended, exit code 0. Last lines:
+    lint clean
+
+ ✓ tests/prototype-338.test.ts > autobyteus-338 prototype > P1+P2: exit code and output tail at completion; simultaneous ends batch into one notice 2581ms
+stdout | tests/prototype-338.test.ts > autobyteus-338 prototype > P3: a shell `&` child adopted by run_bash today has no exit code, only a ps-refreshed status
+[P3] run_bash result: {"exitCode":0,"effectiveCwd":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/p338-gJKINX","backgroundProcesses":[{"pid":94262,"command":"(sleep 0.5; exit 7) &","startedAt":"2026-11-09T08:35:06.029Z","status":"running","effectiveCwd":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/p338-gJKINX"},{"pid":94265,"command":"(sleep 0.5; exit 7) &","startedAt":"2026-11-09T08:35:06.031Z","status":"running","effectiveCwd":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/p338-gJKINX"}]}
+
+stdout | tests/prototype-338.test.ts > autobyteus-338 prototype > P3: a shell `&` child adopted by run_bash today has no exit code, only a ps-refreshed status
+[P3] after the child ended: {"output":"","isRunning":false,"pid":94262,"status":"exited"} (exit code 7 is not recorded anywhere)
+
+ ✓ tests/prototype-338.test.ts > autobyteus-338 prototype > P3: a shell `&` child adopted by run_bash today has no exit code, only a ps-refreshed status 1586ms
+stdout | tests/prototype-338.test.ts > autobyteus-338 prototype > P4: dropping the per-agent manager leaves the command running until the host scope closes
+[P4] pid 95540: alive after the manager is dropped=true; scope.close()={"outcomes":[{"outcome":"stopped"}]}; alive after close=false
+
+ ✓ tests/prototype-338.test.ts > autobyteus-338 prototype > P4: dropping the per-agent manager leaves the command running until the host scope closes 1244ms
+stdout | tests/prototype-338.test.ts > autobyteus-338 prototype > P5: stop by id
+[P5] stop(bg-1) -> stopped; stopReason=explicit-stop; completion: {"kind":"result","code":null,"signal":"SIGTERM"}; tail: "serving\n"
+
+ ✓ tests/prototype-338.test.ts > autobyteus-338 prototype > P5: stop by id 1217ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  09:35:02
+   Duration  6.91s (transform 136ms, setup 61ms, import 111ms, tests 6.63s, environment 0ms)
+

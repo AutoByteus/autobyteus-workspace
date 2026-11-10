@@ -1,0 +1,37 @@
+# IMP-02 run_bash wrapper regression suite (12 probe cases + R-0 list + background tasks) through runBash and the real launcher
+# Command: pnpm -C autobyteus-ts exec vitest run tests/integration/tools/terminal/run-bash-wrapper.test.ts --reporter=verbose
+# Commit: e26460bf57; macOS Darwin 25.5.0 arm64, bash 3.2.57, node v22.23.1; 2026-11-10T10:37Z
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/run-bash-background/autobyteus-ts
+
+ ✓ tests/integration/tools/terminal/run-bash-wrapper.test.ts > run_bash command wrapper: probe cases > 1 plain command, exit 3: output bytes and exit code unchanged 832ms
+ ✓ tests/integration/tools/terminal/run-bash-wrapper.test.ts > run_bash command wrapper: probe cases > 2 set -e with a failing & job: the job is a task and its exit code 3 is reported 1091ms
+ ✓ tests/integration/tools/terminal/run-bash-wrapper.test.ts > run_bash command wrapper: probe cases > 3 set -e with a failing foreground command returns its code 1 768ms
+ ✓ tests/integration/tools/terminal/run-bash-wrapper.test.ts > run_bash command wrapper: probe cases > 4 set -x shows only the user's trace lines 851ms
+ ✓ tests/integration/tools/terminal/run-bash-wrapper.test.ts > run_bash command wrapper: probe cases > 5 a user EXIT trap stops its server at command end (started and ended in the same result, R-7) 970ms
+ ✓ tests/integration/tools/terminal/run-bash-wrapper.test.ts > run_bash command wrapper: probe cases > 6 exec >/dev/null 2>&1 keeps the wrapper's channels; the job is still reported 1154ms
+ ✓ tests/integration/tools/terminal/run-bash-wrapper.test.ts > run_bash command wrapper: probe cases > 7 two & jobs report exit codes 3 and 7 1779ms
+ ✓ tests/integration/tools/terminal/run-bash-wrapper.test.ts > run_bash command wrapper: probe cases > 8 background form: kill <pid> stops everything the command started, reported in the kill's own result 903ms
+ ✓ tests/integration/tools/terminal/run-bash-wrapper.test.ts > run_bash command wrapper: probe cases > 10 kill of an & job: its end is reported in the kill's result as a signal 907ms
+ ✓ tests/integration/tools/terminal/run-bash-wrapper.test.ts > run_bash command wrapper: probe cases > 11 plain & job with children: kill <pid> stops that process only; run end stops the rest (DEC-012) 1065ms
+ ✓ tests/integration/tools/terminal/run-bash-wrapper.test.ts > run_bash command wrapper: probe cases > 12 bash strict mode with IFS=newline-tab and two jobs reports 3 and 7 1443ms
+ ✓ tests/integration/tools/terminal/run-bash-wrapper.test.ts > run_bash command wrapper: R-0 regression list > keeps stdout and stderr bytes identical apart from frames (no trailing newline, lookalike frames) 744ms
+ ✓ tests/integration/tools/terminal/run-bash-wrapper.test.ts > run_bash command wrapper: R-0 regression list > exit N, quoting, cd and pipelines behave as before 991ms
+ ✓ tests/integration/tools/terminal/run-bash-wrapper.test.ts > run_bash command wrapper: R-0 regression list > heredocs keep their content 753ms
+ ✓ tests/integration/tools/terminal/run-bash-wrapper.test.ts > run_bash command wrapper: R-0 regression list > a & b & wait: jobs waited for in the foreground are not tasks 957ms
+ ✓ tests/integration/tools/terminal/run-bash-wrapper.test.ts > run_bash command wrapper: R-0 regression list > user functions named jobs, kill, wait, printf, test, echo do not affect the wrapper 1030ms
+ ✓ tests/integration/tools/terminal/run-bash-wrapper.test.ts > run_bash command wrapper: R-0 regression list > a user EXIT trap sees the command's status and may exit with it; the jobs stay tracked 1057ms
+ ✓ tests/integration/tools/terminal/run-bash-wrapper.test.ts > run_bash command wrapper: R-0 regression list > exec cmd replaces the wrapper: the call ends at the shell exit, with no task list 137ms
+ ✓ tests/integration/tools/terminal/run-bash-wrapper.test.ts > run_bash command wrapper: R-0 regression list > timeout and Stop apply to the foreground part, stop the whole group and add no wrapper output 2109ms
+ ✓ tests/integration/tools/terminal/run-bash-wrapper.test.ts > run_bash command wrapper: R-0 regression list > large output arrives complete 836ms
+ ✓ tests/integration/tools/terminal/run-bash-wrapper.test.ts > run_bash command wrapper: R-0 regression list > does not let processes the command starts inherit the wrapper channels on bash 4+ 866ms
+ ✓ tests/integration/tools/terminal/run-bash-wrapper.test.ts > run_bash background tasks > a background start returns at once with pid, cwd and output file; the file is readable with tail 1153ms
+ ✓ tests/integration/tools/terminal/run-bash-wrapper.test.ts > run_bash background tasks > output of & jobs after the call returned goes to the call's output file 1002ms
+ ✓ tests/integration/tools/terminal/run-bash-wrapper.test.ts > run_bash background tasks > run end stops background commands, records no reportable end and removes the output folder 755ms
+ ✓ tests/integration/tools/terminal/run-bash-wrapper.test.ts > run_bash background tasks > the sh fallback runs the background form 249ms
+
+ Test Files  1 passed (1)
+      Tests  25 passed (25)
+   Start at  11:37:25
+   Duration  24.85s (transform 229ms, setup 79ms, import 205ms, tests 24.40s, environment 0ms)
+
