@@ -1,0 +1,79 @@
+# API-18 — fresh-start build proof (round 2). autobyteus-web/generated/graphql.ts changed (a TESTING.md build input)
+# Steps (the release job's order, release-desktop.yml, from the clone's root then autobyteus-web): fresh shallow clone of commit be161036e (no build output, git clone --depth 1 --no-local file://<worktree>); corepack pnpm install --frozen-lockfile (alone); NODE_ENV=production: guard:web-boundary, guard:localization-boundary, audit:localization-literals, typecheck (builds the shared contract types first), prepare-server, generate:electron, transpile-electron, tsc -p build/tsconfig.json
+# Not run (needs the runner): build:electron:mac packaging/signing/notarization (macOS), 'node build/dist/build.js --linux' (electron-builder), the 'Verify bundled Prisma' step on the packaged output.
+# Commit: be161036e (code = dfa0faa76) · ENV-1 (Linux arm64, uid 0, Node 22.23.3, pnpm 10.28.2 via corepack; the pnpm store was warm, so install took 3 s) · 2026-11-10 16:29-16:33 UTC
+# ---- log ----
+be161036e test: durable coverage for the SR-004 delta (autobyteus-9 API/E2E round 2)
+=== STEP install 16:29:20
+ WARN  Failed to create bin at /tmp/api-e2e-fresh-on5q/ws/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/tmp/api-e2e-fresh-on5q/ws/autobyteus-application-devkit/dist/cli.js'
+
+autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+autobyteus-ts postinstall: [node-pty-fix] skipped: no spawn-helper found
+autobyteus-ts postinstall: Done
+ WARN  Failed to create bin at /tmp/api-e2e-fresh-on5q/ws/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/tmp/api-e2e-fresh-on5q/ws/applications/brief-studio/node_modules/@autobyteus
+ WARN  Failed to create bin at /tmp/api-e2e-fresh-on5q/ws/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/tmp/api-e2e-fresh-on5q/ws/applications/socratic-math-teacher/node_m
+╭ Warning ─────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│   Ignored build scripts: @google/genai@2.24.0.                               │
+│   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+│   to run scripts.                                                            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 3s using pnpm v10.28.2
+install-exit=0
+=== STEP guards 16:29:23
+
+> autobyteus@1.5.13-beta.1 guard:web-boundary /tmp/api-e2e-fresh-on5q/ws/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
+
+> autobyteus@1.5.13-beta.1 guard:localization-boundary /tmp/api-e2e-fresh-on5q/ws/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.
+
+> autobyteus@1.5.13-beta.1 audit:localization-literals /tmp/api-e2e-fresh-on5q/ws/autobyteus-web
+> node ./scripts/audit-localization-literals.mjs
+
+[audit:localization-literals] Passed with zero unresolved findings.
+guards-exit=0
+=== STEP typecheck 16:29:25
+│
+◆  Types generated in .nuxt.
+[typecheck] Nuxt app (tsconfig.json): 69 errors, exit 2, 58.0s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 3.1s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.9s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 35.2s
+[typecheck] production errors: 0; test-file errors: 96 in 41 files (baseline 96 in 41 files)
+[typecheck] PASS
+typecheck-exit=0
+=== STEP prepare-server 16:31:12
+[0;33mRemoving symlinks that point outside the bundle...[0m
+Removed 0 external symlinks from /tmp/api-e2e-fresh-on5q/ws/autobyteus-web/resources/server
+
+[0;32m=======================================[0m
+[0;32m   Server files prepared successfully!   [0m
+[0;32m=======================================[0m
+Target directory: [0;33m/tmp/api-e2e-fresh-on5q/ws/autobyteus-web/resources/server[0m
+You can now build the Electron app with the server included
+prepare-server-exit=0
+=== STEP generate-electron 16:32:40
+[nitro] ✔ Generated public dist/renderer
+[nitro] ✔ You can preview this build using npx serve dist/renderer
+│
+▲  HTML content not prerendered because ssr: false was set.
+│
+●  You can read more in https://nuxt.com/docs/getting-started/deployment#static-hosting.
+│
+└  ✨ You can now deploy dist/renderer to any static hosting!
+generate-electron-exit=0
+=== STEP transpile-electron 16:33:15
+
+> autobyteus@1.5.13-beta.1 transpile-electron /tmp/api-e2e-fresh-on5q/ws/autobyteus-web
+> tsc -p electron/tsconfig.json
+
+transpile-exit=0
+=== STEP build-tsc 16:33:18
+build-tsc-exit=0
+=== STEP done 16:33:19

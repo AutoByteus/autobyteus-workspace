@@ -1,0 +1,9 @@
+
+> autobyteus@1.5.13-beta.1 test:e2e:mobile-shell /home/autobyteus/workspace/.codex/worktrees/model-settings-reality/autobyteus-web
+> node tests/e2e/mobile-shell-probe.mjs --output-dir=/tmp/api-e2e-msr2/M2-out --cases=MSP-32 --browser-executable=/usr/bin/chromium
+
+[mobile-shell] MSP-32 …
+[mobile-shell] MSP-32 Pass
+mobile-shell probe: Fail
+ ELIFECYCLE  Command failed with exit code 1.
+EXIT=1

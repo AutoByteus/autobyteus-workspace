@@ -7,13 +7,13 @@
 - Upstream Solution Revision Record: `.../model-settings-reality/solution-revision-record.md` (SR-001, SR-002)
 - Reviewed Design Spec: `.../model-settings-reality/design-spec.md` (SR-002, status Ready)
 - Supplemental Task Artifacts Reviewed: `evidence/probe-results-2026-11-10.md`, `probes/` (listed), `follow-ups.md`, `handoff.md`
-- Relevant Solution Revision IDs: SR-001, SR-002, SR-003
+- Relevant Solution Revision IDs: SR-001, SR-002, SR-003, SR-004 (code at `817bd9950`; HEAD `a3b87f061` adds API/E2E documents)
 - Architecture Review Revision Record: `.../model-settings-reality/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-002`
-- Current Review Round: 2
-- Trigger: SR-003 design revision for ARCH-REV-001, 2026-11-10 (Large / High unchanged)
-- Prior Review Round Reviewed: 1 (ARCH-REV-001, Fail)
-- Latest Authoritative Round: 2
+- Current Architecture Review Revision ID: `ARCH-REV-003`
+- Current Review Round: 3
+- Trigger: SR-004 design revision after code review CRR-003 / CR-004 (API-14 failure origin), 2026-11-10 (Large / High unchanged)
+- Prior Review Round Reviewed: 2 (ARCH-REV-002, Pass)
+- Latest Authoritative Round: 3
 - Current-State Evidence Basis: worktree `/home/autobyteus/workspace/.codex/worktrees/model-settings-reality`, branch `codex/model-settings-reality`, HEAD `fd0eb664c` (= `origin/personal` named in the package). Code opened at the cited lines, plus reviewer searches listed under the findings.
 
 ## Routing Classification Review
@@ -249,10 +249,24 @@ N/A (Pass)
 
 Implementation Engineer (`/software_engineering_team/implementation_engineer`)
 
+## Round 3 (SR-004) Delta Verdict
+
+- Basis: CR-004 (`code-review-report.md`), API-14 real-stack evidence. Protected: REQ-010/011 and QR-001 (a failed refresh never empties a list that loaded before), REQ-013 (an unreadable list is distinguished from "not offered"), AC-012's failure alternate (stated in SR-004; no new intent).
+- Review gap acknowledged: ARCH-REV-002 accepted the SR-003 consumer decision "`listOptions*` → existing catch" without tracing the DS-005 reload consumer. That gap is the failure origin this round fixes.
+- Server contract, `RunModelOptions.modelListReadable: Boolean!`: Pass. It is an explicit result for a failed read, replacing behavior by absence (Principle 13), and the text comes from the wording owner (`modelListUnreadableText`). Validate and options share one read-failure classification, so one fact is derived once (Principle 11). Callers checked: `studio-run-model-config-service.ts` L67/L81 (agent and team), `agent-org-run-service.ts` L78 (Org), `delegated-launch-selection-command.ts` L241 (delegated). All spread the options object, so the field reaches every options object type the design names.
+- `supportedRuntime` removal: Pass. The `RuntimeKind` enum has six values, all AutoByteus or external (`runtime-kind-enum.ts`). `RunModelSelectionContext.runtimeKind` is typed `RuntimeKind`. Stored runtime kinds are checked against the enum at read time (`agent-run-metadata-store.ts` L150, `run-execution-tree-shared-record-schemas.ts` L92). So the gate's false branch is unreachable.
+- Web: Pass.
+  - The current reload code replaces options on any answer (`existingRunModelOptionsActions.ts` `reloadModelOptions`, `delegatedLaunchDraftStore.ts` `reloadOptions` L103-117), which is the API-14 defect.
+  - The design's per-row merge fits the existing state shape: both stores hold `ExistingRunModelOptionsState` per address or copy key.
+  - "No longer offered" already requires a `ready` state (`ExistingRunConfigEditor.vue` `modelUnavailable`, L442-452), so mapping an unreadable row to `unavailable` removes the false label, including on first read. `schemaStateFor` keeps the run's own model editable for an `unavailable` state.
+- Scope: Pass. The first-read case is the same signal on the same screen under REQ-013. It needs no extra mechanism and is recorded in SR-004.
+- Shared-structure note (non-blocking): `unavailableReason` holds text for both readable answers (context capacity unverified) and unreadable ones. `modelListReadable` is now the only discriminator, so do not branch on `unavailableReason` (IG-4).
+
 ## Implementation Guidance (non-blocking)
 
 - IG-1 (R-3, canonical top-level form): when `canonicalRunLlmConfig` lifts declared settings out of `extra_params`/`extraParams`, keep today's precedence. Container entries are read first, then top-level keys override them (`llm-config-overrides.ts` L187-191). A run that has a key in both places keeps the top-level value. Add a unit case for it.
 - IG-2 (DEC-D1): the stored `detail` for a list-read failure comes from the wording owner. Keep the runtime diagnostic (agy/grok/dsh `catalogDiagnostic`) in it, as Org launch does today.
+- IG-4 (SR-004): the web decides unreadable vs. readable only from `modelListReadable`, never from `unavailableReason` text or empty `replacements`. `reloadModelOptions` / `reloadOptions` resolve `false` only for a current (non-stale) answer with an unreadable row, keeping today's stale-answer rule. Cover with a reload test per store: readable replace, unreadable keep-ready, unreadable first-read → `unavailable` with the owner's message.
 - IG-3 (AR-003): moving Fable 5/5.1 to `adaptive_required` makes per-call sampling kwargs fail locally. No production caller passes `temperature`/`top_p`/`top_k` as kwargs (`rg temperature` in autobyteus-ts/src and server src, 2026-11-10). Stored config `temperature` never reaches the Anthropic request (`buildRequestParams` L299-312 builds params from kwargs only), so no stored run gets a new failure.
 
 ## Residual Risks
@@ -264,6 +278,6 @@ Implementation Engineer (`/software_engineering_team/implementation_engineer`)
 
 ## Latest Authoritative Result
 
-- Review Decision: `Pass`
-- Material-Premise Gate: `Pass`. P-001 is Reachable and is now handled by DEC-D1: the reason stays `model_unavailable` and the precise `detail` comes from the wording owner.
-- Notes: SR-003 resolves every ARCH-REV-001 finding. Implementation may proceed with IG-1..IG-3.
+- Review Decision: `Pass` (round 3, SR-004)
+- Material-Premise Gate: `Pass`. P-001 is handled by DEC-D1. The API-14 trigger (a failing runtime CLI while a stopped run's settings are open) is a real, supported trigger: SCN-008, observed in a real stack.
+- Notes: SR-004 fixes CR-004 at its origin with an explicit options-answer field. Implementation proceeds with IG-1..IG-4, then source review of the delta and the API/E2E rerun (API-14, API-11, API-12, API-15).

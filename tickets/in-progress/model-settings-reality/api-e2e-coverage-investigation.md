@@ -11,17 +11,17 @@ The plan: what must be proven, how, the decisions about existing tests, and the 
 - Supplemental Task Artifacts: [evidence/probe-results-2026-11-10.md](evidence/probe-results-2026-11-10.md), [probes/](probes/) (starting points: `prb-sdk-off.mts`, `prb-cli-update.mts`, `probes/rendered/model-list-refresh-probe.mjs`); no behavior-defining supplements
 - Design Review Report: [design-review-report.md](design-review-report.md) (ARCH-REV-002 Pass, IG-1..IG-3)
 - Architecture Review Revision Record: [architecture-review-revision-record.md](architecture-review-revision-record.md)
-- Implementation Handoff: [implementation-handoff.md](implementation-handoff.md) (IR-002; checks IMP-01..IMP-07)
+- Implementation Handoff: [implementation-handoff.md](implementation-handoff.md) (IR-003; checks IMP-01..IMP-09; IMP-08 = SR-004 delta checks, IMP-09 = implementation's API-14 self-check)
 - Implementation Revision Record: [implementation-revision-record.md](implementation-revision-record.md)
-- Code Review Report: [code-review-report.md](code-review-report.md) (CRR-002 Pass, round 2)
+- Code Review Report: [code-review-report.md](code-review-report.md) (CRR-004 Pass, round 4; CRR-003 was the failure-origin review of API-14: CR-004)
 - Code Review Revision Record: [code-review-revision-record.md](code-review-revision-record.md)
 - Delivery Revision Record (delivery re-entry only): N/A — not applicable
 - Relevant Delivery Revision IDs: N/A
 - API/E2E Revision Record (created after the first completed result): [api-e2e-revision-record.md](api-e2e-revision-record.md)
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: 1
-- Trigger: code reviewer handoff, implementation review passed (CRR-002), 2026-11-10; code commit `817bd9950`, documents and evidence `c491a79bb`
-- Prior Investigation Reviewed: N/A (first round of this ticket)
+- Current API/E2E Revision ID: `API-REV-002`
+- Current Investigation Round: 2
+- Trigger: code reviewer handoff, source review of the SR-004 delta passed (CRR-004, CR-004 resolved), 2026-11-10; code commit `dfa0faa76`, implementation documents `f1a4ef410`. Round 1 trigger: implementation review passed (CRR-002), code `817bd9950`
+- Prior Investigation Reviewed: this file at round 1 (API-REV-001: `Fail`, API-14)
 - Latest Authoritative Investigation: this file
 
 ## Current Requirement And Design Basis
@@ -41,6 +41,26 @@ Preserved behaviors (must still hold): BEH-004, BEH-011, all-or-nothing Save, an
 
 Handoff signals read: Legacy / Compatibility Removal Check = no compatibility mechanism, no legacy retained; Persisted Data Transition Check = `Directly Usable — No Migration`, no deviation. Both consistent with the code diff (`git diff fd0eb664c..817bd9950`, 108 files). Known non-change failures the reviewer listed (not counted against this change, but each cause is re-checked here): web `projectRunsStore.spec.ts` (FU-005), five server unit files (chmod as uid 0, missing jsdom), two autobyteus-ts `run-bash` chmod tests.
 
+## Round 2 Rerun Plan (SR-004 delta, code `dfa0faa76`)
+
+`git diff --name-only 817bd9950 dfa0faa76`: server `llm-management/{domain/run-model-selection.ts,services/run-model-selection-service.ts}`, `api/graphql/types/run-model-config.ts` (every saved-run options answer gains `modelListReadable: Boolean!`); web `graphql/queries/runModelOptionsQueries.ts`, `services/runConfigEditing/{existingRunModelOptionsClient,delegatedLaunchSelectionClient,existingRunModelOptionsState}.ts`, `stores/{existingRunModelOptionsActions,delegatedLaunchDraftStore,existingRunConfigEditActions}.ts`, `types/agent/ExistingRunModelConfigDraft.ts`, **`generated/graphql.ts`** (a TESTING.md build input), docs; no `autobyteus-ts` file, no new-chat menu component, no SDK-session file. Plan before running (TESTING.md "Rerun by impact"):
+
+| Case | Last passed on | Mark | Reason |
+| --- | --- | --- | --- |
+| API-01, API-02, API-09, API-10 (live argv + stored configs), API-06 | `817bd9950` | Still valid | `autobyteus-ts`, the SDK session/client, new-run projection and the live Claude 5.5 paths are untouched by the delta |
+| API-03 / API-03b | `817bd9950` | Reused (IMP-08 server slice at `dfa0faa76`: 174 files / 1446 tests, 12/12 architecture) + rerun the typecheck gate (I changed a `.ts` test) | the slice covers every folder that exercises the changed services; the other ~800 unit files do not |
+| API-04 | `817bd9950` | Reused (IMP-08 web: 741/742 files, typecheck, guards) | ran on `dfa0faa76` |
+| API-05 | `817bd9950` | **Rerun** | edit/launch saves run through the changed validation/options service |
+| API-07 (MSR-001/002, DCM-010) | `817bd9950` | **Rerun**; add **MSR-003** | the options contract and validation classification changed; the options answer had no real-GraphQL assertion beyond introspection |
+| API-08 composer probe | `817bd9950` | T01, T03 **Rerun** (T03 edits a saved run's settings through the changed options client); T02, T04, T06–T09 Still valid | new-chat menus/catalog store unchanged |
+| API-11, API-12, API-14 | `817bd9950` (API-14 Fail) | **Rerun** | the web saved-run stores/clients changed; API-14 is the failing case |
+| API-14b | — | **New** (reviewer's request) | the first opening of the saved-run menu while the CLI is already failing (AC-012 failure alternate); only unit/editor tests covered it |
+| API-15 | — | **New** (TESTING.md phone rule; deferred from round 1) | the phone sheet shares the refresh code |
+| API-16, API-17 | `817bd9950` | API-16 Reused (IMP-08 slice covers `application-platform`); API-17 rerun (docs changed) | — |
+| API-18 | — | **New: fresh-start build** | `autobyteus-web/generated/graphql.ts` matches the guideline's build-input list (first round had no match) |
+
+Durable conversion done this round (round-1 plan item): the ticket-owned real-stack journey probe became `autobyteus-web/tests/e2e/model-list-journeys-probe.mjs` with a deterministic `--cli scripted` mode (default) and `--cli real`; MSP-32 added to `mobile-shell-probe.mjs`; MSR-003 added to the stopped-run e2e. The unit reproduction of round 1 is now durable store cases written by implementation (IMP-08).
+
 ## Supported Scenarios And Real Usage
 
 - Designer scenarios covered (`SCN-*`): SCN-001..SCN-008 (all `Supported Normal Scenario`).
@@ -48,6 +68,7 @@ Handoff signals read: Legacy / Compatibility Removal Check = no compatibility me
   - **SCN-009 (new):** a Claude Code update/swap while the app runs changes the model list for the Claude Agent SDK runtime; trigger: the user opens the model picker (or chooses Refresh models). Covered by API-11/API-12.
   - **SCN-010 (new):** the runtime's CLI breaks while the app runs (the Claude CLI exits non-zero); trigger: the user opens a picker, or presses Save in a stopped run's settings. The AC-013 alternate. Covered by API-11, API-12, API-07.
   - **SCN-011 (new):** switch a stopped Team member to the SDK runtime and back (A → B → A), TESTING.md Rule 10, because the model list used for the saved selection is the target runtime's. Covered by API-12.
+  - **SCN-013 (new, round 2):** the user opens a stopped run's settings while the runtime's CLI is already broken (first read, not a refresh); trigger: Edit config → Team settings. Covered by API-14b.
   - **SCN-012 (new):** an untouched model setting at launch from the real catalog (Opus 5, Fable 5, an SDK model): what the user sees must equal what is sent. Covered by API-13 (UI on the real catalog) plus API-02 (provider side).
 - Designer scenarios recorded as `Technically Possible but Unsupported/Contrived` (not tested): none recorded.
 
@@ -166,6 +187,11 @@ Narrowest first. IDs are reused across rounds. `API-nn` are this validation's ca
 | API-15 | TESTING.md phone rule | `/mobile` bundle (`test:e2e:mobile-shell`) | Decide, then Journey or Not Tested | read `mobile-shell-probe.mjs`; if a new-run model sheet case exists or can be added cheaply, run it; otherwise record `Not Tested` with the reason | the diff changes `MobileChoiceSheet`/`MobileRuntimeModelRows` |
 | API-16 | AC-013 text in application launch | server unit (validator) | Reused | IMP-03/IMP-07 (`application-launch-host-capability-validator.test.ts`) | no GraphQL application-launch e2e harness for the Claude list; the validator unit asserts both texts |
 | API-17 | AC-009 | docs grep at HEAD | Existing Test | `rg -n "gemini-3.5-flash\|kimi-k2" autobyteus-ts/docs` | split out of API-01 so its result is its own |
+| API-19 | AC-011, REQ-011, REQ-014 | real stack: AutoByteus runtime, discovered provider (LM Studio stand-in) | Journey (durable probe) | `node autobyteus-web/tests/e2e/model-list-journeys-probe.mjs --cli scripted\|real --cases API-19` | round 2: closes the unit-only part of AC-011 (a local server starts offering a model; Refresh models re-discovers it) |
+| API-14b | AC-012 failure alternate, REQ-013, QR-001 | real stack: saved-run locked menu, first open with the CLI failing | Journey (durable probe) | `node autobyteus-web/tests/e2e/model-list-journeys-probe.mjs --cli scripted\|real --cases API-14b` | round 2: the first read, not a refresh |
+| API-15 | TESTING.md phone rule; REQ-010/011, QR-002 | production phone bundle, new-run model sheet | Durable (MSP-32 in `mobile-shell-probe.mjs`) | `corepack pnpm -C autobyteus-web build:mobile-web`; `... test:e2e:mobile-shell --cases=MSP-32` | round 2 (round 1 `Not Tested`) |
+| API-18 | Fresh-Start Build (TESTING.md) | fresh clone of the commit under test, `pnpm install --frozen-lockfile`, the web build chain of the release job | Journey | see the report's API-18 row | `autobyteus-web/generated/graphql.ts` is a build input |
+| MSR-003 | AC-012 alternate, REQ-013 | built server, real GraphQL options queries, scripted `claude` | Durable (in the stopped-run e2e, case API-07/API-10 file) | `vitest run tests/e2e/run-history/stopped-run-model-config-graphql.e2e.test.ts` | the new `modelListReadable` contract through the real resolver |
 
 - Sub-IDs added while running: API-03b (server typecheck gate after my test changes), API-05b (availability suite alone, before/after the baseline fix), API-08a..d (composer probe: before update, updated run, T01 rerun, T09).
 - Test progress log needed (more than one case, or a case that runs long): `Yes` ([api-e2e-test-progress.md](api-e2e-test-progress.md))
@@ -179,7 +205,9 @@ Final paths (the plan's alternatives are decided):
 | API-07 | `autobyteus-server-ts/tests/e2e/run-history/stopped-run-model-config-graphql.e2e.test.ts` (MSR-001), `autobyteus-server-ts/tests/e2e/projects/delegated-copy-model-change.e2e.test.ts` (DCM-010), `autobyteus-server-ts/tests/fixtures/agent-runtimes-fake-cli.mjs` (`claude-models` state) | the new GraphQL outcome and the refusal texts had only fake-validator unit tests; a scripted `claude` whose list changes while the server runs is deterministic and credential-free |
 | API-09, API-10 | `autobyteus-server-ts/tests/e2e/runtime/claude-agent-effort-only-live.e2e.test.ts` (gated `RUN_CLAUDE_E2E=1`) | AC-005/AC-006's live proof and RSK-001 re-measurement on SDK upgrades; reads the CLI arguments through a logging wrapper |
 | API-10 | `stopped-run-model-config-graphql.e2e.test.ts` (MSR-002) | AC-008 for a new agent run and a new Team run through real GraphQL |
-| API-14 (after the fix) | a durable web probe case with a scripted `claude` CLI (`agent-runtimes-fake-cli.mjs` + `claude-models`), in the rerun round | the locked-menu failure has only component specs; the real-CLI journey is not portable as a package script (needs two CLI versions) |
+| API-11, API-12, API-14, API-14b | `autobyteus-web/tests/e2e/model-list-journeys-probe.mjs` (`--cli scripted` default, `--cli real`) — done in round 2 | the locked-menu failure had only component specs; the scripted mode is portable (no second CLI version, no credentials) |
+| API-15 | `autobyteus-web/tests/e2e/mobile-shell-probe.mjs` MSP-32 — done in round 2 | the phone bundle's model sheet |
+| MSR-003 | `stopped-run-model-config-graphql.e2e.test.ts` — done in round 2 | `modelListReadable` through the real GraphQL resolver |
 
 ## Durable Coverage To Update
 
@@ -220,7 +248,9 @@ None planned. A removal is considered only for an assertion that the approved re
 | Behavior / Boundary | Reason | Risk | Only The User Can Check? | Required Follow-Up Or Escalation |
 | --- | --- | --- | --- | --- |
 | Isolated Electron worktree build journey | no Electron build/Xvfb/unprivileged display in this root container; the change has no shell code | an Electron-only difference in the embedded server's environment (CLI discovery) is not exercised | No (an environment owner can run `isolated-app` on a host with a graphical session) | recorded for delivery; confidence consequence in the scorecard |
-| Project probes written for graphical macOS Electron (`delegated-launch-defaults-probe` DCP/SSR cases etc.) | platform | the saved-run flows they cover are covered by API-12/API-14 on the real stack | No | none |
+| Project probes written for graphical macOS Electron (`delegated-launch-defaults-probe` DCP/SSR cases etc.) | platform | the saved-run flows they cover are covered by API-12/API-14/API-14b on the real stack | No | none |
+| Delegated copy's locked menu in the UI | the journeys use a Team member and the Team-level menu; the copy path shares the store merge (`delegatedLaunchDraftStore`, unit-covered in IMP-08) and the server path (DCM-010, MSR-003) | a copy-only UI wiring difference | No | none |
+| Mac/Windows packaging of the fresh-start build | `build:electron:mac` and signing/notarization need the runner (macOS, secrets); the Linux packaging step (electron-builder) was not run | an Electron packaging-only failure | No | the release runner |
 | Non-Anthropic live providers (Gemini/OpenAI/Mistral/Ollama) | keys not in the vault; AC-007 is per-adapter request capture, a unit proof | live provider acceptance of a projected request | No | none (not required by AC-007) |
 
 ## Ambiguities Or Reroute Triggers
@@ -228,12 +258,12 @@ None planned. A removal is considered only for an assertion that the approved re
 | Issue | Classification | Evidence | Recommended Owner |
 | --- | --- | --- | --- |
 | None at investigation time. A stale durable probe (`chat-composer-polish-probe.mjs`) was an API/E2E-owned coverage update (`Local Fix`, mine), done | Local Fix (API/E2E) | API-08a | api_e2e_engineer |
-| **Found by API-14:** the saved-run (runtime-locked) model menu empties its options and shows no error/Retry when the runtime list cannot be read; the saved model shows as "No longer offered" (REQ-010, REQ-011, QR-001; AC-010 alternate outcome) | Local Fix (web) | execution report API-14; `probes/locked-menu-failed-refresh.repro.spec.ts` (fails today); `evidence/API-11-12-14-real-stack/` | implementation_engineer, after failure-origin review |
+| **Found by API-14 (round 1), resolved in round 2 (SR-004):** the saved-run (runtime-locked) model menu emptied its options and showed no error/Retry when the runtime list could not be read; the saved model showed as "No longer offered" (REQ-010, REQ-011, QR-001; AC-010 alternate outcome) | `Design Impact` (CRR-003, CR-004; API/E2E's preliminary call was `Local Fix`) | round-1 evidence `evidence/API-11-12-14-real-stack/`; round-2 proof `evidence/API-11-12-14-r2-real-stack/` | resolved by SR-004/IR-003; API-14, API-14b pass |
 
 ## Investigation Decision
 
-- Proceed To API/E2E Execution: `Yes`
-- Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `Yes` (added: API-07, API-09/API-10; updated: `chat-composer-polish-probe.mjs`; removed: none)
+- Proceed To API/E2E Execution: `Yes` (round 2)
+- Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `Yes` (round 1: added API-07, API-09/API-10; updated `chat-composer-polish-probe.mjs`; round 2: added the durable journeys probe and MSR-003, updated `mobile-shell-probe.mjs` (MSP-32); removed: the ticket-owned round-1 probe copy)
 - Reroute Required Before Validation Execution: `No`
 - Recommended Owner If Reroute Required: N/A
 - Notes: plan revised in place after round 1; deviations (surface, added cases, API-15 not run, ticket-owned journey probe) are listed in the report. TESTING.md is unchanged by this validation: the findings (rotted e2e suites without a node credential; Claude Code's option cache changing identifiers between reads) are fixes and probe details, not rules every future task needs.

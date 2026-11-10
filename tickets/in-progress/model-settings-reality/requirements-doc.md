@@ -3,14 +3,14 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: `SR-002`
+- Current solution revision ID: `SR-004`
 - Package identifier: `model-settings-reality`
 - Request / ticket: Project Task `autobyteus-9` (Project `project_f34a9537-07d7-449a-b78f-16368f1aa619`): "Make model settings match reality: truthful Claude 'thinking Off', no stale config keys, LLM docs synced with the catalog, and newly released models usable without restarting the app." Absorbs autobyteus-10 and autobyteus-11.
 - Requested by: `/project_task_manager` (run `project_task_manager_3a5fea41304e412da92575d61bd88570`), for the user
 - Requirements owner: Solution Designer
 - Date: 2026-11-10
 - Approved by and reference: `Solution Designer within the direction (user informed)`; references: Solution Designer's message to the user, 2026-11-10 (SR-001); SR-002 clarifications (DEC-013..DEC-015) decided during design and reported to the user with the design, 2026-11-10; the user: "if you think it's clear now, then we could start to work on it now" (2026-11-10). Recorded in [solution-revision-record.md](solution-revision-record.md)
-- Exact approved requirements baseline / solution revision: this document at SR-002
+- Exact approved requirements baseline / solution revision: this document at SR-004 (SR-004 only states AC-012's failure alternate that QR-001 and REQ-013 already require; no new intended behavior)
 - Behavior-defining supplements and their approved versions: None (evidence files are supporting, not behavior-defining)
 
 ## Problem And Desired Outcome
@@ -137,7 +137,7 @@ None.
 | AC-009 | REQ-009 | BEH-009, SCN-006 | `rg -n "gemini-3.5-flash|kimi-k2" autobyteus-ts/docs` | No hit presenting a removed model as current; Claude settings described as delivered | — | Doc grep + review |
 | AC-010 | REQ-010, REQ-012, REQ-014 | BEH-010, SCN-007 | App running; the runtime starts offering a new model (simulated: Claude Code CLI swapped/updated; or a new Ollama/custom model) | Opening the new-run launch config picker shows the new model within one refresh, without restart; selecting it launches the run | Refresh failure keeps the last list and shows the error with Retry | Realistic app check (isolated Electron, test vault, CLI symlink swap) + web unit tests |
 | AC-011 | REQ-011, REQ-014 | BEH-010, SCN-007 | Picker open; user chooses "Refresh models" | List re-read for that runtime; every open picker for that runtime updates | On the AutoByteus runtime, discovered providers are re-discovered | Web unit + realistic check |
-| AC-012 | REQ-010, REQ-012 | BEH-010/011, SCN-008 | Stopped team run; member or delegated copy switched to the Claude Agent SDK runtime after the CLI started offering a new model | The new model is listed, selected, Save succeeds and the stored selection names it | — | Realistic app check reproducing the user's journey |
+| AC-012 | REQ-010, REQ-012, REQ-013 | BEH-010/011/012, SCN-008 | Stopped team run; member or delegated copy switched to the Claude Agent SDK runtime after the CLI started offering a new model | The new model is listed, selected, Save succeeds and the stored selection names it | SR-004 (QR-001, REQ-013 on this surface): the runtime's list cannot be read — a refresh keeps the shown models and shows the refresh error with Retry; a first read shows the error with Retry; in both cases the saved model is not marked "No longer offered" and stays editable | Realistic app check reproducing the user's journey |
 | AC-013 | REQ-013 | BEH-012, SCN-008 | Save with a selection the runtime's current list does not contain | Refusal text names the model and scope, says nothing was saved, and says to refresh the model list and choose again | List unreadable (e.g. runtime CLI failing): refusal says the list could not be read and to try again | Server unit tests per refusal site + rendered check |
 
 ## Relevant Scenarios And Journeys

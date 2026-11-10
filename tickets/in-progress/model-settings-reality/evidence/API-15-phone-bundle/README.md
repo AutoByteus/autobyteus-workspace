@@ -1,0 +1,7 @@
+# API-15 — MSP-32: the new-run model sheet on the production phone bundle (round 2, code dfa0faa76)
+
+- Commands (worktree root, `PATH=/tmp/pnpm-shim:$PATH`): `corepack pnpm -C autobyteus-web build:mobile-web` (exit 0, 42 s), then
+  `cd autobyteus-web && corepack pnpm test:e2e:mobile-shell --output-dir=<fresh> --cases=MSP-32 --browser-executable=/usr/bin/chromium`
+- Commit: code `dfa0faa76` (server `dist` rebuilt from it) · ENV-2 (Linux arm64 container uid 0, headless Chromium, phone viewport 390x844, paired phone against `dist/app.js` serving the built phone bundle) · 2026-11-10
+- `mobile-shell-probe.json` -> `cases["MSP-32"]`: `{"result":"Pass", "opened":{"reads":1,"runtime":"antigravity_cli","rows":["Gemini test"]}, "control":{"text":"Refresh models","box":{...,"width":132.2,"height":44}}, "afterRefresh":{"reads":1,"rows":["Gemini test"],"error":0,"button":"Refresh models"}}`.
+- Overall probe line is `Fail` for a reason outside MSP-32: the project's known FU-003 (autobyteus-426). Every phone page start health-checks `http://localhost:8000/health`; the probe counts that console line as known only when it fails with `net::ERR_CONNECTION_REFUSED`. On this machine the user's own AutoByteus app listens on port 8000, so the phone's cross-origin request is blocked by CORS (`net::ERR_FAILED`), recorded as two `setup` browser errors (`browserErrors`, `failedRequests`). No MSP case failed (`summary.cases`). That request is sent by the project's phone bundle itself; its response is never readable by the page, and nothing of the user's app was changed.

@@ -1,4 +1,4 @@
-# Handoff — model-settings-reality (SR-003)
+# Handoff — model-settings-reality (SR-004)
 
 - Classification: `Architecture Design Complete` — `task_size: Large`, `architectural_risk: High`
 - Route (from `get_handoff_rules`, 2026-11-10): Large or High → `/software_engineering_team/architecture_reviewer` (independent architecture review)
@@ -52,3 +52,12 @@ Architecture review of the SR-002 package; findings return to the Solution Desig
   - AR-003: one mode, `adaptive_required`, for Fable 5, Fable 5.1, Opus 5.5 — measured (PRB-A3). FU-001 consistent.
   - R-3: projection stores declared settings in one canonical top-level form. R-4: glossary headword "Offered models".
 - Classification unchanged: Large / High. Route: architecture reviewer (focused re-review).
+
+## SR-004 revision (after code review CRR-003 / CR-004, 2026-11-10)
+
+- Trigger: `/software_engineering_team/code_reviewer` failure-origin review of API-14 → Design Impact CR-004 ([code-review-report.md](code-review-report.md)). Code at `817bd9950`, API/E2E documents at `a3b87f061`; the reviewer's round-3 report updates are uncommitted in the ticket folder.
+- Resolution (design-spec SR-004; requirements SR-004 states AC-012's failure alternate):
+  - Server: `RunModelOptions.modelListReadable` (GraphQL `Boolean!`, all options objects); `false` with empty options and the owner's `modelListUnreadableText` when the list cannot be read; one read-failure classification shared with validation; dead `supportedRuntime` gate removed.
+  - Web: request the field; unreadable row → `unavailable` state with message; `reloadModelOptions` / `delegatedLaunchDraftStore.reloadOptions` keep shown `ready` options for unreadable rows and resolve `false` (menu: "Couldn't refresh models" + Retry); "No longer offered" only for a readable answer. First read with a failing CLI fixed by the same signal (scope decision in SR-004).
+- Reproduction to start from: `probes/locked-menu-failed-refresh.repro.spec.ts` (`evidence/API-14-repro-unit.log`).
+- Classification unchanged: Large / High. Route per rules: architecture reviewer (re-review of the SR-004 delta); then implementation, source review of the delta, API/E2E rerun of API-14, API-11, API-12 and API-15.

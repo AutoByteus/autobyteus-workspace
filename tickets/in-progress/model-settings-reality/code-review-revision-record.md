@@ -8,6 +8,8 @@ The latest `code-review-report.md` or `api-e2e-test-review-report.md` remains au
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 (IR-001) | N/A | Fail — Local Fix (implementation) | CR-001, CR-002, CR-003 |
 | CRR-002 | `code-review-report.md` | Implementation Review, round 2 (IR-002) | Fail — Local Fix | Pass | CR-001, CR-002, CR-003 (resolved) |
+| CRR-003 | `code-review-report.md` | API/E2E Failure-Origin Review, round 3 (API-14) | Pass | Fail — Design Impact | CR-004 |
+| CRR-004 | `code-review-report.md` | Implementation Review, round 4 (IR-003, SR-004) | Fail — Design Impact | Pass | CR-004 (resolved) |
 
 ## Revision Entries
 
@@ -64,3 +66,60 @@ None.
 - Material score or classification changes: Separation 9.5, Naming 9.4, Cleanup Completeness 9.3; all categories ≥ 9.3; Pass
 - Recommended recipient: `/software_engineering_team/api_e2e_engineer` (informational notice to implementation)
 - Remaining risks or uncertainty: realistic Electron journeys (AC-010, AC-012), live SDK session options (AC-005/006) and the saved-run menu rendering remain for API/E2E.
+
+### CRR-003 — Failure-origin review of API-14 (saved-run menu failed refresh)
+
+- Canonical review report updated: `code-review-report.md` (section "API/E2E Failure-Origin Review (Round 3, CRR-003)", finding CR-004)
+- Review entry point and round: API/E2E Failure-Origin Review, round 3
+- Review scope: `N/A` (failure-origin round)
+- Triggering role, report path, and finding or scenario IDs: API/E2E Engineer, `api-e2e-execution-coverage-report.md`, API-14
+- Relevant solution revision IDs: SR-003
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: API/E2E round 1 (a3b87f061)
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Pass (CRR-002)
+- Current authoritative result: Fail — Design Impact (CR-004)
+- What changed in the review result and why: the options contract has no explicit read-failure result; `listOptions*` answers a failed read as a free-text `unavailableReason`, the web maps it to `ready`, and the new `reloadModelOptions` / `reloadOptions` count it as success, emptying the shown options (QR-001). The design accepted that answer for `listOptions*` without the DS-005 reload consumer; a correct fix adds an explicit field to a shared GraphQL contract, so it is the design's. Review gap acknowledged: CRR-001 C-08 noted the reason answer but did not follow it into the reload's success branch.
+- Supported product scenario / material-premise basis changes: None (SCN-008 confirmed).
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-001 | Resolved | Resolved | CRR-002 | unchanged |
+| CR-002 | Resolved | Resolved | CRR-002 | unchanged |
+| CR-003 | Resolved | Resolved | CRR-002 | unchanged |
+
+- New or remaining finding IDs: CR-004
+- Material score or classification changes: category 8 (Runtime Correctness) 9.4 → 8.8; classification Design Impact
+- Recommended recipient: `/software_engineering_team/solution_designer`
+- Remaining risks or uncertainty: the first-read "No longer offered" label with a failing CLI is pre-existing; scope decision left to the Solution Designer.
+
+### CRR-004 — Review of the SR-004 delta (IR-003)
+
+- Canonical review report updated: `code-review-report.md` (section "Round 4 — SR-004 Implementation Review (CRR-004)")
+- Review entry point and round: Implementation Review, round 4
+- Review scope: `Full Re-Audit` — the delta `git diff a3b87f061..dfa0faa76` changes a shared GraphQL data shape (`modelListReadable`) and the web options state
+- Triggering role, report path, and finding or scenario IDs: Implementation Engineer, `implementation-handoff.md` (IR-003), CR-004, API-14
+- Relevant solution revision IDs: SR-004
+- Relevant architecture-review revision IDs: ARCH-REV-003
+- Relevant implementation revision IDs: IR-003
+- Relevant API/E2E revision IDs: API/E2E round 1 (a3b87f061)
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Fail — Design Impact (CRR-003)
+- Current authoritative result: Pass
+- What changed in the review result and why: the options answer now states readability explicitly, classified once with validation and worded by the owner; both web stores merge per row, never replace shown options with an unreadable row and report the failure, so the locked menu shows "Couldn't refresh models" with Retry and the card never says "No longer offered" for an unreadable list. Tests cover both flag values, the merge, both clients and stores and the editor; IMP-08 green, IMP-09 API-14 real-stack self-check passes.
+- Supported product scenario / material-premise basis changes: None.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-004 | Open (Design Impact) | Resolved | SR-004, ARCH-REV-003, IR-003, `dfa0faa76` | `run-model-selection-service.ts` `readCatalog` / `modelListReadable`; `existingRunModelOptionsState.ts`; `existingRunModelOptionsActions.ts`, `delegatedLaunchDraftStore.ts`; new server and web specs; IMP-08, IMP-09 |
+| CR-001..CR-003 | Resolved | Resolved | CRR-002 | unchanged |
+
+- New or remaining finding IDs: None
+- Material score or classification changes: API clarity 9.5, Runtime Correctness 9.4; all categories ≥ 9.3; Pass
+- Recommended recipient: `/software_engineering_team/api_e2e_engineer` (informational notice to implementation)
+- Remaining risks or uncertainty: the first open of a saved-run menu with the CLI already failing is unit- and editor-covered only; `stopped-run-model-config-graphql.e2e.test.ts` was edited but not run by implementation.

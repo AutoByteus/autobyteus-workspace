@@ -1,0 +1,7 @@
+# API-03b rerun (round 2) — server typecheck gate after MSR-003 and the SR-004 delta
+# Command: corepack pnpm -C autobyteus-server-ts typecheck   (cwd: worktree root, pnpm shim on PATH)
+# Commit: dfa0faa76 + uncommitted MSR-003 (committed with this evidence) · ENV-1 · 2026-11-10
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 16.2s
+[typecheck] server tests (tsconfig.tests.json): 1181 errors, exit 2, 42.4s
+[typecheck] production errors: 0; test-file errors: 1181 in 365 files (baseline 1181 in 365 files)
+[typecheck] PASS

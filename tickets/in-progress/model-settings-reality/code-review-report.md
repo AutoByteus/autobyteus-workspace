@@ -2,36 +2,43 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `Implementation Review`
+- Review Entry Point: `Implementation Review` (round 4, after the round-3 `API/E2E Failure-Origin Review`)
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (SR-002, Approved)
 - Investigation Notes Reviewed As Context: `investigation-notes.md` (cited sections only: Current-State Read sources)
 - Solution Revision Record Reviewed As Context: `solution-revision-record.md` (SR-001..SR-003)
 - Design Spec Reviewed As Context: `design-spec.md` (SR-003, Ready)
 - Supplemental Task Artifacts Reviewed As Context: `evidence/probe-results-2026-11-10.md` (evidence only), `follow-ups.md`
-- Relevant Solution Revision IDs: SR-003
+- Relevant Solution Revision IDs: SR-003, SR-004 (round 4)
 - Design Review Report Reviewed As Context: `design-review-report.md` (ARCH-REV-002 Pass, IG-1..IG-3)
 - Architecture Review Revision Record Reviewed As Context: `architecture-review-revision-record.md`
-- Relevant Architecture Review Revision IDs: ARCH-REV-002
+- Relevant Architecture Review Revision IDs: ARCH-REV-002, ARCH-REV-003 (round 4)
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001
+- Relevant Implementation Revision IDs: IR-001, IR-002, IR-003 (round 4)
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-002`
-- Current Review Round: 2
-- Review Scope: `Targeted Delta Review` (round 1 was `Full Review`)
+- Current Code Review Revision ID: `CRR-004`
+- Current Review Round: 4
+- Review Scope: `Full Re-Audit` (round 4). Evidence: the SR-004 delta `git diff a3b87f061..dfa0faa76` changes a shared GraphQL data shape (`RunModelOptionsObject.modelListReadable: Boolean!`, inherited by the Team-scope, Org-scope and delegated option objects) and the web options state; all structural checks and the full scorecard were rechecked against the code at `dfa0faa76`. Earlier rounds: round 3 failure-origin, round 2 `Targeted Delta Review`, round 1 `Full Review`; round-2 scope evidence:
 - Review Scope Evidence (round >1): `git diff f31fa1821..817bd9950` changes only the files of CR-001..CR-003 and what their removal made unused (RuntimeModelConfigFields.vue and its two specs, `useRuntimeScopedModelSelection` `loadCatalog` option and its one passer, the deleted `RuntimeModelConfigSchemaState.ts`, six locale keys, `ModelListUnavailableError`, GLOSSARY.md); no data-flow spine, shared contract or data shape changed; c491a79bb is documents and evidence only
-- Trigger: Implementation Engineer handoff, IR-002 (CRR-001 Local Fix), 2026-11-10
-- Prior Review Round Reviewed: round 1 (CRR-001, Fail)
-- Latest Authoritative Round: 2
-- Coverage / execution / API/E2E / delivery fields: N/A (implementation review)
-- Code reviewed: worktree `/home/autobyteus/workspace/.codex/worktrees/model-settings-reality`, branch `codex/model-settings-reality`; round 1 `git diff fd0eb664c..f31fa1821` (106 files); round 2 delta `git diff f31fa1821..817bd9950`. Final code commit `817bd9950`.
+- Trigger: Implementation Engineer, IR-003 (SR-004, ARCH-REV-003), resolving CR-004; round 3 trigger was API/E2E round 1 Fail on API-14
+- Prior Review Round Reviewed: round 3 (CRR-003, Fail — Design Impact)
+- Latest Authoritative Round: 4
+- Coverage Investigation Reviewed: `api-e2e-coverage-investigation.md`
+- Execution Coverage Report Reviewed: `api-e2e-execution-coverage-report.md`
+- API/E2E Revision Record Reviewed: `api-e2e-revision-record.md`
+- Relevant API/E2E Revision IDs: API/E2E round 1 (commits f6ce6c78e, a748eb48e, a3b87f061)
+- Delivery fields: N/A
+- Failing Scenario IDs: API-14 (REQ-010, REQ-011, QR-001; AC-010 alternate outcome as it applies to saved-run menus; SCN-008)
+- Exact Failing Commands / Execution Mode: `PATH=/tmp/pnpm-shim:$PATH AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault node tickets/in-progress/model-settings-reality/probes/real-stack/model-list-journeys-probe.mjs --output-dir <dir> --browser-executable /usr/bin/chromium --cases API-14` (real Chromium, Nuxt dev, built server at 817bd9950, real Claude CLIs); unit reproduction `probes/locked-menu-failed-refresh.repro.spec.ts` copied to `autobyteus-web/stores/__tests__/`, `NUXT_TEST=true corepack pnpm exec vitest run <spec>`
+- Failure Evidence Paths: `evidence/API-11-12-14-real-stack/evidence.json`, `API-14-4-locked-menu-refresh-failed.png`, `API-14-5-card-after-failed-refresh.png`, `evidence/API-14-repro-unit.log`
+- Code reviewed: worktree `/home/autobyteus/workspace/.codex/worktrees/model-settings-reality`, branch `codex/model-settings-reality`; round 1 `git diff fd0eb664c..f31fa1821` (106 files); round 2 delta `git diff f31fa1821..817bd9950`. Round-2 code commit `817bd9950`; round 4 delta `git diff a3b87f061..dfa0faa76`, final code commit `dfa0faa76`.
 
 ## Routing Classification Review
 
 - Task size: `Large`
 - Architectural risk: `High`
-- Selected route: `Implementation Review`
-- Independent source review required by the classification: `Yes`
+- Selected route: `Implementation Review` (rounds 1, 2, 4); `API/E2E Failure-Origin Review` (round 3)
+- Independent source review required by the classification: `Yes` (round 3 is the failure-origin entry point)
 - Classification evidence or correction required: confirmed. Three packages; shared contracts changed as designed (`model_list_unavailable` / `MODEL_LIST_UNAVAILABLE`, catalog empty-list throw, `LLMFactory` raw-config contract, new-run writer, concurrent web refresh). No new risk surface beyond the design.
 
 ## Review Scope
@@ -40,6 +47,61 @@
 - Files / areas reviewed: every production file in the diff; the new and changed unit tests for projection, factory, refusal, store refresh, locked refresh, thinking adapter (proportionately).
 - Explicit exclusions: gated live suites and realistic Electron journeys (not run; API/E2E). No check was rerun by the reviewer: round 1 relied on IMP-01..IMP-06; round 2 relies on IMP-07 (web suite, web and server type gates, guards, 48 server unit files, rendered probe R1..R6 at 817bd9950), which covers every file in the delta.
 - Round 2 delta reviewed: `RuntimeModelConfigFields.vue` (388 → 242 lines, new-launch mode only; compared rule by rule with the round-1 new-launch branches: loading, unavailable-model, seed, schema, validation, disabled and emit logic unchanged for that mode), its spec and `RuntimeCapabilityReadiness.spec.ts` (now assert the DOM), `useRuntimeScopedModelSelection` (`loadCatalog` had no caller passing `false`), the six removed locale keys (no reader left: `rg`), `ModelListUnavailableError`, GLOSSARY.md.
+
+## Round 4 — SR-004 Implementation Review (CRR-004)
+
+Behavior basis: SCN-008 (supported normal), REQ-010, REQ-011, QR-001, REQ-013; design-spec SR-004 (DS-005 "SR-004 saved-run options contract", Change Scope consumer 2, Interface Boundary rows), ARCH-REV-003. Status: `Confirmed`.
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| One read-failure classification | Pass | `readCatalog` in `run-model-selection-service.ts` serves `validateWithEvidence` (`model_list_unavailable` + diagnostic) and `optionsWithEvidence` (`modelListReadable: false`, empty options, `modelListUnreadableText(runtime, diagnostic)`); the options path's own text is gone |
+| Explicit contract, no inference (Principle 13; IG-4) | Pass | `RunModelOptionsObject.modelListReadable: Boolean!`; every producer spreads the service answer (`studio-run-model-config-service.ts`, `agent-org-run-service.ts`, `delegated-launch-selection-command.ts`); the web decides only from the flag (`optionsStateOfAnswer`), and both clients refuse an answer without it |
+| Readable answers stay `true` | Pass | external list without the model, unverified native capacity (its `unavailableReason` text kept, now with `currentModel`), server unit cases |
+| Dead `supportedRuntime` gate removed | Pass | every `RuntimeKind` is AutoByteus or external (`runtime-kind-enum.ts`); the gate could not fail |
+| QR-001 on reload | Pass | `mergeReloadedOptions`: readable row replaces; unreadable row keeps a shown `ready` row, else `unavailable` with the message; `complete=false` → `reloadModelOptions` / `reloadOptions` resolve `false` → `provideLockedModelOptionsRefresh` sets `failed` → `ModelListRefreshControl` "Couldn't refresh models" + Retry (Retry calls the options-backed refresh, since run-settings passes no `lockedModelsState`); stale answers still `true` and not applied |
+| No "No longer offered" for an unreadable list | Pass | `ExistingRunConfigEditor.modelUnavailable` requires `ready`; unreadable rows are `unavailable` (first read included); `schemaStateFor` keeps the own model editable and shows the server's message for another model |
+| Former C-08 (reload supersedes the first read, then fails) | Resolved by design | an unreadable or failed reload now leaves `unavailable` or the shown state, never a stuck `loading` from the superseded read when the server answers |
+| One shared mapper and merge for both stores (deviation 7) | Pass | `services/runConfigEditing/existingRunModelOptionsState.ts`, used by both clients and both stores; no duplicated policy |
+| Generated GraphQL types regenerated (deviation 8) | Pass | `generated/graphql.ts` 13+/5-; server architecture test `web-generated-graphql-current` passes (IMP-08) |
+| File sizes | Pass | `run-model-selection-service.ts` 134, `delegatedLaunchDraftStore.ts` 192, `existingRunConfigEditActions.ts` 100 non-empty lines; new file 28 lines |
+| Dead code in touched files | Pass | removed gate and free text; nothing left unread in the delta (`rg`) |
+| Docs and glossary | Pass | `llm_management.md`, `autobyteus-web/docs/chat.md`, GLOSSARY "Offered models" describe the flag as the only signal |
+| Tests | Pass | server: both flag values and the shared classification; web: mapper, merge (per row, mixed rows), both clients (flag required), both stores (keep shown + `false`, first read `unavailable`, stale not a failure), editor (no "No longer offered", own model editable). The reload cases fail on the pre-change stores (IMP-08) |
+| Checks | Pass | IMP-08: server 174 files / 1446 tests, `tests/architecture` 12/12, typecheck baseline; web 741/742 (FU-005 only), typecheck baseline, three guards; IMP-09: API-14 real stack Pass (self-check) |
+
+Candidates this round: none promoted. Noted for API/E2E, not a finding: `stopped-run-model-config-graphql.e2e.test.ts` had its field list edited but was not run by implementation; the first open of a saved-run menu with the CLI already failing is unit- and editor-covered only.
+
+## API/E2E Failure-Origin Review (Round 3, CRR-003)
+
+### Failing scenario still represents approved behavior
+
+Yes. SCN-008 (Supported Normal Scenario): a user opens a stopped Team run's Team settings and uses its saved-runtime model menu. REQ-010 names stopped-run settings among the pickers that refresh on open; REQ-011 gives every picker "Refresh models"; QR-001: "a failed refresh never empties a list that loaded before"; the requirements' UI states: "refresh failed (last list kept + error + Retry)". The independent trigger is the user's Refresh (or a reopen) while the Claude CLI cannot list its models (AC-010 alternate, AC-013 "list unreadable (e.g. runtime CLI failing)"). The test enters through that real surface; nothing synthetic creates the state.
+
+### Production path traced
+
+1. `ChatModelMenu` (runtime-locked, inside `ExistingRunConfigEditor`) → `provideLockedModelOptionsRefresh` → `existingRunConfigStore.reloadModelOptions()` + `delegatedLaunchDraftStore.reloadOptions()`.
+2. → `loadExistingRunModelOptions` → GraphQL `teamRunModelOptions` → `RunModelSelectionService.listOptionsMany` → `optionsWithEvidence`.
+3. `ModelCatalogService.runtimeModelSelectionCatalog` throws `ModelListUnavailableError` (this ticket); `optionsWithEvidence` L122-123 catches every catalog error and answers `{ currentModel: null, replacements: [], unavailableReason: "Runtime model catalog is unavailable. Refresh this run to retry; …" }`, not a GraphQL error.
+4. `loadExistingRunModelOptions` maps every row to `{ status: 'ready', options }` (no field says the read failed).
+5. `reloadModelOptions` (`existingRunModelOptionsActions.ts` L37-52, added by this ticket) treats any resolved answer as success: it replaces the shown options and answers `true`, so `failed` stays false. The menu shows "No models available" and "Refresh models"; `modelUnavailable(address)` (`ExistingRunConfigEditor.vue` L442-452: `currentModel === null`) shows "No longer offered by Claude Agent SDK" on the card. `delegatedLaunchDraftStore.reloadOptions` has the same shape (`delegatedLaunchModelOptions` → same `optionsWithEvidence`).
+
+Observed behavior (real stack and unit reproduction) matches this path exactly.
+
+### Cause classification
+
+- **Origin: inadequate reviewed design (Design Impact), with a review gap.** The options contract (`RunModelOptions`) has no explicit "the runtime's list could not be read" result; a read failure is folded into the free-text `unavailableReason`, which also carries "runtime does not support replacement" and "capacity could not be verified". The design's derived-consumer decision (design-spec Change Scope, consumer 2: "`listOptions*` → existing catch → 'Runtime model catalog is unavailable…' reason (accepted: correct text for this case)") did not consider DS-005, where the web reload must tell a failed read from a successful one to meet QR-001. The implementation followed that decision.
+- **Why not a Local Fix:** the web could only infer failure from the shape `unavailableReason !== null && currentModel === null && replacements.length === 0`, i.e. one status counting as another (Principle 13, "Behavior by absence"; the same trigger this design itself fired for validation and fixed with `model_list_unavailable`). Doing it properly adds a field to a shared GraphQL contract, which belongs to the design.
+- **Not** a test, fixture, environment or execution problem: the probe uses the real surface and the unit reproduction isolates the store with the server's real answer shape.
+- **Not a Requirement Gap:** QR-001 and the UI states settle the expected behavior.
+- **Review gap (CRR-001):** detectable in source review. My candidate C-08 recorded that `listOptions*` "turns catalog failures into a reason, not a thrown query", yet I did not follow that answer into `reloadModelOptions`' success branch, whose catch-only failure rule therefore never fires for an unreadable list. The invariant that should have been checked: a re-read whose catalog read failed must leave the shown options in place and report failure (QR-001).
+- **Related, same signal:** `optionsWithEvidence` keeps its own wording for the unreadable list ("Refresh this run to retry"), outside the one wording owner `run-model-selection-refusal.ts` (`modelListUnreadableText`) that DS-006 introduced, and it points to an action the new "Refresh models" control replaces.
+- **Pre-existing part:** on the *first* read of an edit with a failing CLI, the card already said "No longer offered" on the base (the Claude read returned `[]` then; `currentModel` null). This ticket did not introduce that, but the same explicit signal fixes it; whether it is in scope is the Solution Designer's call (it is the on-screen form of REQ-013's "not offered" vs "unreadable" distinction).
+
+### Recommended design response (for the Solution Designer; not prescriptive)
+
+- Give the stopped-run and delegated options answers an explicit read-failure result (for example a field mirroring `model_list_unavailable`), worded by `modelListUnreadableText`.
+- Web: `loadExistingRunModelOptions` / delegated client carry it; `reloadModelOptions` and `reloadOptions` keep the shown options and answer `false` for it (menu shows "Couldn't refresh models" + Retry); the card does not show "No longer offered" for it.
+- Tests: the API/E2E unit reproduction becomes a store spec; a server unit case for the options answer; API-14 rerun.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
@@ -163,29 +225,29 @@ None new or reclassified.
 
 ## Review Scorecard (Mandatory)
 
-- Overall score: 9.4 / 10 (simple average; not the decision rule)
+- Overall score: 9.4 / 10 (simple average; not the decision rule). Round 4 (Full Re-Audit): all categories rechecked; 3 and 8 re-scored.
 - Round 2 (targeted delta): categories 4, 6 and 10 re-scored; the others carry forward from round 1 (their evidence is unaffected by the delta).
 
 | Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | --- | --- | --- | --- |
 | 1 | Data-Flow Spine Inventory and Clarity | 9.5 | Every DS spine is visible in code in the designed order; projection sits at the two designed points | — | — |
 | 2 | Ownership Clarity and Boundary Encapsulation | 9.5 | One owner each for projection, empty-list rule, refusal wording, snapshot lifecycle; no bypass | — | — |
-| 3 | API / Interface / Query / Command Clarity | 9.4 | Result kind split is explicit; refusal API takes explicit identity and `savedSettingsUnchanged` | — | — |
+| 3 | API / Interface / Query / Command Clarity | 9.5 | Result kind split is explicit; refusal API takes explicit identity and `savedSettingsUnchanged`; round 4: options answers state readability explicitly (`modelListReadable`) | — | — |
 | 4 | Separation of Concerns and File Placement | 9.5 | Store kept under 500; `RuntimeModelConfigFields.vue` now owns one mode (242 lines) | — | — |
 | 5 | Shared-Structure / Data-Model Tightness | 9.4 | `model_unavailable` tightened; snapshot fields singular | — | — |
 | 6 | Naming Quality and Local Readability | 9.4 | Runtime display names in user text; glossary matches the identifiers | — | — |
 | 7 | API/E2E Readiness | 9.3 | Handoff names the realistic journeys and live SDK checks; unit coverage per AC | AC-007 is asserted on `LLMConfig.extraParams`, not on captured requests (adapters spread it; acceptable) | — |
-| 8 | Runtime Correctness And Behavioral Fidelity | 9.4 | Traced Opus 5 Off, Fable stored Off, SDK effort, projection, refresh coalescing and late-answer guards; live IMP-02 | — | — |
+| 8 | Runtime Correctness And Behavioral Fidelity | 9.4 (round 4) | Traced Opus 5 Off, Fable stored Off, SDK effort, projection, refresh coalescing and late-answer guards; live IMP-02; round 4: a failed saved-run re-read keeps the shown options and reports failure (CR-004 resolved, IMP-09 real stack) | — | — |
 | 9 | No Backward-Compatibility / No Legacy Retention | 9.4 | Clean removals listed in the design are done | — | — |
 | 10 | Cleanup Completeness | 9.3 | Design removal plan complete; the touched component, composable, type and locale keys cleaned | Dead code outside the touched files remains, recorded (FU-006, FU-007) | Follow-ups |
 
 ## Findings
 
-All round-1 findings are resolved; no new finding. Resolution evidence is in `code-review-revision-record.md` (CRR-002).
+No open findings. CR-001..CR-003 resolved (CRR-002); CR-004 resolved (CRR-004, SR-004 / IR-003 at `dfa0faa76`).
 
-- CR-001 — Resolved: `RuntimeModelConfigFields.vue` keeps only the new-launch mode; saved-run-only spec cases deleted; FU-004 removed from `follow-ups.md`.
-- CR-002 — Resolved: `ModelListUnavailableError` reads "<runtime display name> returned no models."; field removed; validator test asserts the full Claude text and no enum value.
-- CR-003 — Resolved: GLOSSARY "Offered models" states how "model list" appears in names and the `model_unavailable` / `model_list_unavailable` difference.
+### CR-004 — Saved-run model options carried no explicit "list could not be read" result (Design Impact) — Resolved
+
+- Found in round 3 (API-14). Resolution: design SR-004 (ARCH-REV-003) added `modelListReadable` to the options contract with the wording owner's text; IR-003 implemented it on the server and in both web stores. Verified in round 4 (section above).
 
 ## Follow-ups
 
@@ -194,7 +256,7 @@ All round-1 findings are resolved; no new finding. Resolution evidence is in `co
 
 ## Classification
 
-- Round 2: `Pass` (no classification). Round 1 was `Local Fix` (implementation), now resolved.
+- Round 4: `Pass` (no classification). Round 3's `Design Impact` (CR-004) is resolved.
 
 ## Recommended Recipient
 
@@ -210,10 +272,10 @@ All round-1 findings are resolved; no new finding. Resolution evidence is in `co
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Review Entry Point: `Implementation Review` (round 2, Targeted Delta Review)
+- Review Entry Point: `Implementation Review` (round 4, Full Re-Audit of the SR-004 delta)
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
 - Score Summary: 9.4 average; every category ≥ 9.3.
-- Failure Origin: N/A
+- Failure Origin: N/A this round (round 3: Design Impact, resolved)
 - Recommended Recipient: `/software_engineering_team/api_e2e_engineer`
-- Notes: CR-001..CR-003 resolved at `817bd9950`. Handoff items 1, 2, 3, 5 accepted (C-04..C-07). Follow-ups: FU-001, FU-002, FU-003, FU-005, FU-006, FU-007.
+- Notes: API/E2E reruns API-14 (including the first-open-with-failing-CLI state on the real stack if feasible), API-11, API-12, API-15, and runs the edited `stopped-run-model-config-graphql.e2e.test.ts`.

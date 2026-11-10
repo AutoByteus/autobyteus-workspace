@@ -7,6 +7,7 @@
 | SR-001 | Requirements | Initial coherent baseline (autobyteus-9 + user's re-check instruction) | N/A | N/A | Approved | BEH-001..012, REQ-001..014, AC-001..013 | Approved by the Solution Designer within the direction; user informed |
 | SR-002 | Mixed | Architecture design; user: "if you think it's clear now, then we could start to work on it now" | N/A | Approved (SR-001), no design | Approved (SR-002), design Ready | REQ-007, REQ-008; DEC-013..DEC-015 | design-spec.md written; Large / High |
 | SR-003 | Design | ARCH-REV-001 (Fail, Design Impact) | AR-001, AR-002, AR-003, R-3, R-4 | Design Ready (SR-002) | Design Ready (SR-003); requirements unchanged (SR-002) | BEH-012, BEH-008, BEH-002; REQ-013, REQ-008, REQ-002 | derived-consumer list completed; fallback reason kept (DEC-D1); creation trace table; one always-on mode; canonical top-level stored form |
+| SR-004 | Mixed | Code review CRR-003 (failure origin of API-14) | CR-004 | Design Ready (SR-003), implemented at 817bd9950 | Design Ready (SR-004); requirements Approved (SR-004, AC-012 alternate stated) | BEH-010, BEH-012; REQ-010, REQ-011, REQ-013, QR-001; AC-012 | saved-run options answer states a failed read explicitly (`modelListReadable`), worded by the owner; web keeps shown options and reports the failed refresh |
 
 ## Revision Entries
 
@@ -75,3 +76,24 @@
 #### SR-003 review outcome (recorded 2026-11-10)
 
 - Architecture review ARCH-REV-002 (round 2): `Pass` for SR-003; AR-001..AR-003 resolved, R-3 and R-4 addressed. Report: [design-review-report.md](design-review-report.md); record: [architecture-review-revision-record.md](architecture-review-revision-record.md). The reviewer handed off to `/software_engineering_team/implementation_engineer` with non-blocking guidance IG-1..IG-3. Informational; no Solution Designer handoff repeated.
+
+### SR-004 — Saved-run options state a failed model-list read (CR-004)
+
+- Phase and classification: Mixed, `Design Impact` (design decision withdrawn and replaced) + AC clarification
+- Triggering input: code reviewer `/software_engineering_team/code_reviewer`, failure-origin review CRR-003 of API/E2E case API-14 (real stack: Chromium, built server, real Claude CLIs): with the CLI failing, Refresh models in a stopped Team run's locked menu emptied the menu ("No models available"), showed no error or Retry, and the card said "No longer offered by Claude Agent SDK". Report: [code-review-report.md](code-review-report.md) CR-004; evidence `evidence/API-14-repro-unit.log`, `evidence/API-11-12-14-real-stack/API-14-4-locked-menu-refresh-failed.png`, `API-14-5-card-after-failed-refresh.png`; reproduction `probes/locked-menu-failed-refresh.repro.spec.ts`.
+- Triggering finding IDs: CR-004
+- Prior status: design Ready (SR-003; ARCH-REV-002 Pass), implemented at `817bd9950`, API/E2E docs `a3b87f061`
+- Current status: design Ready (SR-004); requirements Approved at SR-004
+- Cause (verified, read): `RunModelSelectionService.optionsWithEvidence` L122-123 catches the read failure and answers a free-text reason with empty options; the web clients map every row to `ready`; `reloadModelOptions` (`existingRunModelOptionsActions.ts` L37-52) and `delegatedLaunchDraftStore.reloadOptions` (L103-117) count it as success and replace the shown options; the card's "No longer offered" follows from `currentModel === null` on a `ready` state (`ExistingRunConfigEditor.vue` L442-452). My SR-003 decision "listOptions* → existing catch, accepted" did not consider the DS-005 reload.
+- IDs affected: REQ-010, REQ-011, REQ-013, QR-001 (unchanged text), AC-012 (failure alternate stated), BEH-010, BEH-012
+- Design changes: `RunModelOptions.modelListReadable` (GraphQL `Boolean!`) on every options object; unreadable text from `modelListUnreadableText`; shared read-failure classification for validate and options; dead `supportedRuntime` gate removed; web maps unreadable rows to `unavailable` (with message), reloads merge per row and report failure, locked menu shows error + Retry, "No longer offered" only for a readable answer.
+- Scope decision (the reviewer's question): the first-read case ("No longer offered" with a failing CLI before any refresh) predates this ticket, but it is the same signal on the same screen and REQ-013's not-offered/unreadable distinction is this ticket's requirement for it; fixed here at no extra mechanism.
+- Intended behavior changed: `No` new intent — AC-012 now states the failure alternate QR-001 and REQ-013 already require.
+- Approval: Solution Designer within the direction (no `Needs user` decision); user informed in the Solution Designer's conversation, 2026-11-10.
+- Classification: unchanged, `Large` / `High`.
+- Downstream impact: architecture re-review of the SR-004 delta (handoff rules), then implementation, source review of the delta, API/E2E (API-14, API-11, API-12, API-15).
+- Next action: hand off per rules.
+
+#### SR-004 review outcome (recorded 2026-11-10)
+
+- Architecture review ARCH-REV-003: `Pass` for SR-004; the CR-004 fix verified against the code; guidance IG-4 added; the reviewer recorded its ARCH-REV-002 gap (listOptions* catch accepted without tracing the DS-005 reload) as part of the failure origin. Report: [design-review-report.md](design-review-report.md). The reviewer handed off to `/software_engineering_team/implementation_engineer`. Informational; no Solution Designer handoff repeated.

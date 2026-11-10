@@ -11,7 +11,7 @@
 - Finalization target remote / branch: `origin/personal`
 - Bootstrap result: worktree created 2026-11-10 06:05 UTC; dependencies installed with `corepack pnpm install --frozen-lockfile` (pnpm 10.28.2; `pnpm` is not on the shell PATH here, use `corepack pnpm`)
 - Bootstrap blocker: None
-- Current solution revision ID: `SR-003`
+- Current solution revision ID: `SR-004`
 - Authorities read (requirements reading gate; file and date): `references/requirements-engineering.md`, `references/finding-the-cause.md`, `references/ticket-scope.md` (2026-11-10); templates read; repository `AGENTS.md`, `TESTING.md` §Test vault (2026-11-10)
 - Investigation status: Requirements and architecture investigation complete (2026-11-10)
 
@@ -210,6 +210,8 @@ Authorities read for design (2026-11-10): `references/architecture-design.md`, `
 | ARC-020 | `startup/cache-preloader.ts` L22 | Reads the default runtime (AutoByteus) | Unaffected |
 | ARC-021 | `rg "\.createAgentRun\(|\.prepareAgentRun\(|\.createTeamRun\(|\.createTeamRunFromRootConfig\("` | Agent callers all reach `prepareAgentRun`; team callers (incl. `remote-team-run-starter.ts` L76) reach `createTeamRun`; `createTeamRunFromRootConfig` delegates (L185) | Two projection points |
 | ARC-022 | PRB-A3 | Fable 5/5.1 accept explicit adaptive; reject `temperature` like Opus 5.5 | One `adaptive_required` mode |
+| ARC-023 | `run-model-selection-service.ts` L116-142; web `existingRunModelOptionsClient.ts`, `delegatedLaunchSelectionClient.ts` L83-93, `existingRunModelOptionsActions.ts` L37-52, `delegatedLaunchDraftStore.ts` L103-117, `existingRunConfigEditActions.ts` L32-52, `ExistingRunConfigEditor.vue` L442-452 (at `817bd9950`) | Options answer for an unreadable list is a free-text reason with empty options; web maps every row `ready`; reloads replace; "No longer offered" from `currentModel === null` on `ready`. The web `unavailable` state (no options) already keeps the own model editable | SR-004: explicit `modelListReadable`; map to `unavailable` |
+| ARC-024 | `runtime-kind-enum.ts` L1-17; `run-model-selection-service.ts` L28 | Every `RuntimeKind` is AutoByteus or external, so `supportedRuntime` is always true | Dead gate removed |
 | ARC-016 | `llm_management.md` "Ensure, Reload, And Invalidation Behavior" | No global reload; per-provider `reloadProviderModelCatalog` for discovered providers | Explicit refresh reloads each discovered provider |
 
 ## Requirement Implications
