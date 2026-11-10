@@ -43,8 +43,8 @@
 //   MSP-04 AC-003  A tool approval: a message from the phone to the Grok run raises an approval request; Approve on the
 //                  phone; the node answers the runtime with allow-once and the tool runs.
 //   MSP-05 AC-003  "Opening…" only while attaching: from the tap until the conversation, the run screen never shows another
-//                  run and offers no button but ←; browser Back/Forward re-attach (an Org entry too); a reload of a run
-//                  entry lands on the list; a tap on a second row during an open ends on the second run.
+//                  run and offers no button but ←; browser Back/Forward re-attach (an Org entry too); a reload of an Org
+//                  entry lands on the list (autobyteus-435 AC-005-4); a tap on a second row during an open ends on the second run.
 //   MSP-06 AC-004  The remote rows (chip, title, state); a remote run opens with its live conversation; a text message from
 //                  the phone reaches it on beta and its answer shows; no attachments, `@` opens nothing; beta down: red dot
 //                  and "Not reachable" on the rows, the notice with Retry when opened, other runs open; beta back: Retry.
@@ -108,6 +108,16 @@
 //                  workspace path, another node's path), and a file opened again shows its current content (phone and a
 //                  desktop window): `mobile-file-open-cases.mjs` (MSP-28…30 on its own nodes epsilon and zeta; MSP-31 on
 //                  alpha's desktop window, last).
+//   MSP-33 autobyteus-435 REQ-005  A reload reopens the same subject on the same screen, after "Opening…" and never the
+//                  list first (a phone of its own): an agent run's Activity, a Team run's Messages, a Team member, a delegated
+//                  task agent (its host's rows read first); a row no node lists gives the list. New run → Create run: a
+//                  reload before the first message gives the list (AC-005-8); with an Activity entry pushed before the
+//                  first message, the route follows the draft to the node's run, and a reload of that entry reopens the
+//                  run's Activity (AC-005-6); Back gives its run screen.
+//   MSP-34, MSP-35 autobyteus-435 REQ-011  A Task closed while its listed host run is stopped: its delegated row leaves
+//                  the phones' lists (MSP-34, delta) and a desktop window's (MSP-35, alpha) within one refresh, with at
+//                  most one view re-read per digest value; set back to TODO, the lists agree with the node:
+//                  `mobile-closed-task-rows-cases.mjs`.
 //   MSP-32 autobyteus-435 REQ-010  After MSP-13 revoked the phone (the page stays open on the pairing screen through the
 //                  later cases), it sends no refused request: no HTTP answer 401/403 and no socket closed 4401/4403.
 //
@@ -1036,7 +1046,8 @@ const runCases = async () => {
     const orgMarked = await page.locator(rowSel(`org:${stack.org}/agent:${stack.orgPlanner}`)).getAttribute('aria-current');
     await page.goForward();
     await waitFor('Forward to the Org entry', async () => { const s = await runScreen(page); return s.state === 'open' && (s.conversation ?? '').includes('ORG-PLANNER'); }, 30_000);
-    // A reload of a run entry: the list.
+    // A reload of an Org entry: the list (Org screens keep their behavior, autobyteus-435 AC-005-4; an agent or Team
+    // subject reopens instead, MSP-33).
     await page.reload({ waitUntil: 'domcontentloaded' });
     await page.locator(`${sel('mobile-run-tree')}:visible`).waitFor({ timeout: 60_000 });
     const afterReload = await page.evaluate(() => location.search);
@@ -1050,7 +1061,7 @@ const runCases = async () => {
     await sleep(2_000);
     const second = await runScreen(page);
     assert(orgQuery.includes('orgRunId') && listQuery.includes('orgRunId') && orgMarked === 'true', 'the Org keys stay on the list entry and the row stays marked', { orgQuery, listQuery, orgMarked });
-    assert(!afterReload.includes('screen=run'), 'a reload of a run entry lands on the list', afterReload);
+    assert(!afterReload.includes('screen=run'), 'a reload of an Org entry lands on the list (AC-005-4)', afterReload);
     assert(second.name === 'lead', 'the second tap wins', second);
     return { snapshots, forward: { ...forward, conversation: undefined }, orgQuery, listQuery, orgMarked, afterReload, second: { ...second, conversation: undefined } };
   });
@@ -1316,6 +1327,129 @@ const runCases = async () => {
     assert(artifactsEmpty.startsWith('No Artifacts yet') && activityEmpty === 'No activity yet', 'empty states', { artifactsEmpty, activityEmpty });
     assert(remoteArtifacts.includes(PEER) && remoteFiles.includes(PEER), 'a remote run: the files are on that node', { remoteArtifacts, remoteFiles });
     return { items, artifacts, filesTop, filters, pathLine, attach, searchRows, messages, referenceText, activity, plainItems, artifactsEmpty, activityEmpty, remoteArtifacts, remoteFiles };
+  });
+
+  await runCase('MSP-33', async () => {
+    // autobyteus-435 REQ-005: a reload reopens the same subject on the same screen. A phone of its own (the paired
+    // session), so the main phone's history is untouched. Each page start records its screens from the first DOM change.
+    const restore = await openPhone({ storageState: paired, label: 'phone-restore' });
+    const p = restore.page;
+    await restore.context.addInitScript(() => {
+      window.__restoreTrace = [];
+      const take = () => {
+        const tree = document.querySelector('[data-testid="mobile-run-tree"]');
+        const screen = document.querySelector('[data-testid="mobile-run-screen"]');
+        const text = JSON.stringify({ list: Boolean(tree && tree.offsetParent), run: screen?.getAttribute('data-state') ?? null,
+          activity: Boolean(document.querySelector('[data-testid="mobile-activity"]')), messages: Boolean(document.querySelector('[data-testid="mobile-messages"]')) });
+        if (window.__restoreTrace[window.__restoreTrace.length - 1] !== text) window.__restoreTrace.push(text);
+      };
+      new MutationObserver(take).observe(document, { subtree: true, childList: true, attributes: true });
+    });
+    const query = () => p.evaluate(() => location.search);
+    const reloadUntil = async (label, reached) => {
+      const before = await query();
+      await p.reload({ waitUntil: 'domcontentloaded' });
+      let ok = false;
+      await waitFor(`${label} after the reload`, async () => (ok = await reached()), 60_000).catch(() => undefined);
+      await sleep(1_000);
+      const trace = (await p.evaluate(() => window.__restoreTrace ?? [])).map(entry => JSON.parse(entry));
+      return { label, before, after: await query(), reached: ok, opening: trace.some(s => s.run === 'opening'), listShown: trace.some(s => s.list), trace };
+    };
+    const screenIs = async (state, name) => { const s = await runScreen(p); return s.state === state && (name === undefined || s.name === name); };
+    const shown = id => p.locator(sel(id)).count().then(count => count > 0);
+    const restored = [];
+    try {
+      await p.goto(`${phoneOrigin()}/mobile`, { waitUntil: 'domcontentloaded', timeout: 120_000 });
+      await p.locator(`${sel('mobile-run-tree')}:visible`).waitFor({ timeout: 60_000 });
+      await showOlder(p);
+      // (a) An agent run's view (AC-005-1): the PTM's Activity.
+      await openRow(p, `agent:${stack.ptm}`);
+      await menuOpen(p, 'activity');
+      await p.locator(sel('mobile-activity')).waitFor({ timeout: 20_000 });
+      restored.push(await reloadUntil('agent Activity', () => shown('mobile-activity')));
+      // (b) A Team run's view: the Delivery Team's Messages.
+      await toList(p);
+      await openRow(p, `team:${stack.delivery}`);
+      await menuOpen(p, 'messages');
+      await p.locator(sel('mobile-messages')).waitFor({ timeout: 20_000 });
+      restored.push(await reloadUntil('Team Messages', () => shown('mobile-messages')));
+      // (c) A Team member (AC-005-3): the Delivery Team's mate.
+      await toList(p);
+      await ensureUnfolded(p, `team:${stack.delivery}`);
+      const mate = childRow(await rowsOf(p), `team:${stack.delivery}`, 'mate', 1);
+      assert(mate, 'the Delivery Team\'s mate row', await rowsOf(p));
+      await openRow(p, mate.key);
+      restored.push(await reloadUntil('Team member', () => screenIs('open', 'mate')));
+      // (d) A delegated task agent: its host's rows are read before it is found (DS-006 restore step 3).
+      await toList(p);
+      const writerKey = `agent:${stack.ptm}/agent:${stack.writerRun}`;
+      const writerName = (await openRow(p, writerKey)).name;
+      restored.push(await reloadUntil('delegated task agent', () => screenIs('open', writerName)));
+      // (e) A subject no node lists: the list.
+      await p.goto(`${phoneOrigin()}/mobile?row=agent:no-such-run-435&screen=activity`, { waitUntil: 'domcontentloaded' });
+      let gone = false;
+      await waitFor('the list for a gone subject', async () => (gone = (await p.locator(`${sel('mobile-run-tree')}:visible`).count()) > 0), 60_000).catch(() => undefined);
+      const goneFacts = { reached: gone, query: await query(), activity: await shown('mobile-activity'), runScreen: (await runScreen(p)).state };
+      // (f) New run → Create run, reloaded before the first message (AC-005-8): a draft is not kept; the list.
+      const createRun = async () => {
+        await toList(p);
+        await p.locator(sel('mobile-new-run-button')).click();
+        await p.locator(sel('mobile-new-run')).waitFor();
+        await p.locator(sel('mobile-run-target-select-toggle')).click();
+        await p.locator(sel('mobile-run-target-select-option')).filter({ hasText: 'Project Task Manager' }).first().click();
+        await p.locator(sel('mobile-run-workspace-select-toggle')).click();
+        await p.locator(sel('mobile-run-workspace-select-option')).filter({ hasText: stack.workspace }).first().click();
+        await waitFor('Create run enabled', async () => !(await p.locator(sel('mobile-run-launch')).isDisabled()), 20_000);
+        await p.locator(sel('mobile-run-launch')).click();
+        await waitFor('the new run\'s screen', () => screenIs('open', 'Project Task Manager'), 30_000);
+        return query();
+      };
+      const draftQuery = await createRun();
+      const beforeSend = await reloadUntil('reload before the first message', async () => (await p.locator(`${sel('mobile-run-tree')}:visible`).count()) > 0);
+      beforeSend.runScreen = (await runScreen(p)).state;
+      await shot(p, 'MSP-33-reload-before-send-list');
+      // (g) Create run → Activity (a view entry pushed while the route names the draft) → Back → the first message (the
+      // node creates the run; the route follows) → Forward to the Activity entry → reload (AC-005-6): that run's Activity.
+      const createdQuery = await createRun();
+      await menuOpen(p, 'activity');
+      await p.locator(sel('mobile-activity')).waitFor({ timeout: 20_000 });
+      const viewBeforeSend = await query();
+      await p.goBack();
+      await waitFor('the draft\'s run screen', () => screenIs('open', 'Project Task Manager'), 20_000);
+      const marker = `RESTORE-435-${randomUUID().slice(0, 6)}`;
+      await composerSend(p, `First message. Marker ${marker}`);
+      await waitFor('the first message shown', async () => ((await runScreen(p)).conversation ?? '').includes(marker), 30_000);
+      let afterSend = '';
+      await waitFor('the route names the node\'s run', async () => !(afterSend = await query()).includes('temp-'), 20_000).catch(() => undefined);
+      const nodeRunId = /row=agent:([^&]+)/.exec(afterSend)?.[1] ?? null;
+      // The node stores the message shortly after the route changes: wait for it.
+      let stored = false;
+      if (nodeRunId) await waitFor('the first message stored on the node', async () => (stored = await storedHas(alpha, { runId: nodeRunId }, marker)), 30_000).catch(() => undefined);
+      await p.goForward();
+      await p.locator(sel('mobile-activity')).waitFor({ timeout: 20_000 });
+      let forwardQuery = '';
+      await waitFor('the Activity entry names the node\'s run', async () => !(forwardQuery = await query()).includes('temp-'), 10_000).catch(() => undefined);
+      const afterCreate = await reloadUntil('created run Activity', async () => (await shown('mobile-activity')) && (await query()).includes(`row=agent:${nodeRunId}`));
+      await shot(p, 'MSP-33-created-run-activity-after-reload');
+      await p.goBack();
+      await waitFor('Back: the created run\'s run screen', () => screenIs('open', 'Project Task Manager'), 30_000).catch(() => undefined);
+      const backQuery = await query();
+      const facts = { restored, gone: goneFacts, draftQuery, beforeSend, createdQuery, viewBeforeSend, afterSend, nodeRunId, stored, forwardQuery, afterCreate, backQuery };
+      const failures = [
+        ...restored.map(r => [r.reached && r.after === r.before && r.opening && !r.listShown, `${r.label}: the same subject and screen after "Opening…", never the list (AC-005-1/3/7)`]),
+        [gone && goneFacts.runScreen === null && !goneFacts.activity, 'a subject no node lists: the list'],
+        [draftQuery.includes('row=agent:temp-') && beforeSend.reached && beforeSend.runScreen === null, 'Create run, reloaded before the first message: the list (AC-005-8)'],
+        [viewBeforeSend.includes('row=agent:temp-') && viewBeforeSend.includes('screen=activity'), 'the view opened before the send names the draft'],
+        [Boolean(nodeRunId) && !nodeRunId.startsWith('temp') && stored && afterSend.includes('screen=run'), 'after the first message the route names the node\'s run (DS-006b)'],
+        [forwardQuery.includes(`row=agent:${nodeRunId}`) && forwardQuery.includes('screen=activity'), 'the Activity entry pushed before the send names the node\'s run once visited'],
+        [afterCreate.reached && afterCreate.opening && !afterCreate.listShown, 'the created run\'s Activity after a reload (AC-005-6)'],
+        [backQuery.includes(`row=agent:${nodeRunId}`) && backQuery.includes('screen=run'), 'Back from it: the created run\'s run screen'],
+      ].filter(([ok]) => !ok).map(([, label]) => label);
+      assert(failures.length === 0, failures.join('; '), facts);
+      return facts;
+    } finally {
+      await restore.context.close().catch(() => undefined);
+    }
   });
 
   await runCase('MSP-16', async () => {

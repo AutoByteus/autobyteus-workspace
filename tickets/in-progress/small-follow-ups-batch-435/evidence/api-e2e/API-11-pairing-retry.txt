@@ -1,0 +1,19 @@
+# command: probes/api11.sh; commit d37397b40d
+# API-11; 2026-11-10T08:17:35Z; emulator-5600 abx435_api35 Android 15; APK of d37397b40d; node abx435-api-node behind test proxy 10.0.2.2:63826
+app data cleared
+stopped (proxy mode)
+pairing link for http://10.0.2.2:63826 written (code not shown)
+paired phone devices on the node before: 1
+shared the pairing link into the app
+R1 overlay (node not answering): Can’t reach abx435 Proxy Node | Connect to the same Wi-Fi or VPN as the computer, or turn on Tailscale. | Open Tailscale | Retry | Scan again
+pass (proxy mode)
+tapped 'Retry' at 539 2053
+R2 after Retry: page="{\"pairing\":false,\"path\":\"/mobile/\",\"pairButton\":false,\"text\":\"abx435 Proxy Node\\nConnected\\nDA\\nDaily Assistant\\nReply with the single word ok. Marker ABX435-A.\\n5m\"}"
+R3 paired: page="{\"q\":\"\",\"connected\":true,\"node\":true}"
+paired phone devices on the node after: 2
+## after pairing: Retry loads the node's page
+stopped (proxy mode)
+R4 overlay (saved node, not answering): Can’t reach abx435 Proxy Node | Connect to the same Wi-Fi or VPN as the computer, or turn on Tailscale. | Open Tailscale | Retry | Scan again
+pass (proxy mode)
+tapped 'Retry' at 539 2053
+R5 after Retry: page="{\"q\":\"\",\"path\":\"/mobile/\",\"connected\":true,\"pairButton\":false}"
