@@ -1,0 +1,52 @@
+{
+  "before": {
+    "toolNames": [],
+    "skillNames": [],
+    "skillScope": "CONFIGURED",
+    "inputProcessorNames": [],
+    "llmResponseProcessorNames": [],
+    "toolExecutionResultProcessorNames": [],
+    "toolInvocationPreprocessorNames": [],
+    "lifecycleProcessorNames": [],
+    "avatarUrl": null,
+    "defaultLaunchConfig": null
+  },
+  "afterOn": {
+    "toolNames": [],
+    "skillNames": [],
+    "skillScope": "CONFIGURED",
+    "inputProcessorNames": [],
+    "llmResponseProcessorNames": [],
+    "toolExecutionResultProcessorNames": [],
+    "toolInvocationPreprocessorNames": [],
+    "lifecycleProcessorNames": [],
+    "avatarUrl": null,
+    "defaultLaunchConfig": null,
+    "semanticMemoryEnabled": true
+  },
+  "afterOff": {
+    "toolNames": [],
+    "skillNames": [],
+    "skillScope": "CONFIGURED",
+    "inputProcessorNames": [],
+    "llmResponseProcessorNames": [],
+    "toolExecutionResultProcessorNames": [],
+    "toolInvocationPreprocessorNames": [],
+    "lifecycleProcessorNames": [],
+    "avatarUrl": null,
+    "defaultLaunchConfig": null
+  },
+  "final": {
+    "toolNames": [],
+    "skillNames": [],
+    "skillScope": "CONFIGURED",
+    "inputProcessorNames": [],
+    "llmResponseProcessorNames": [],
+    "toolExecutionResultProcessorNames": [],
+    "toolInvocationPreprocessorNames": [],
+    "lifecycleProcessorNames": [],
+    "avatarUrl": null,
+    "defaultLaunchConfig": null,
+    "semanticMemoryEnabled": true
+  }
+}

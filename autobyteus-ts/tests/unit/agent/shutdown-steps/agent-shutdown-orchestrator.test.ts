@@ -3,6 +3,7 @@ import { AgentShutdownOrchestrator } from '../../../../src/agent/shutdown-steps/
 import { LLMInstanceCleanupStep } from '../../../../src/agent/shutdown-steps/llm-instance-cleanup-step.js';
 import { ToolCleanupStep } from '../../../../src/agent/shutdown-steps/tool-cleanup-step.js';
 import { McpServerCleanupStep } from '../../../../src/agent/shutdown-steps/mcp-server-cleanup-step.js';
+import { BackgroundProcessCleanupStep } from '../../../../src/agent/shutdown-steps/background-process-cleanup-step.js';
 import { BaseShutdownStep } from '../../../../src/agent/shutdown-steps/base-shutdown-step.js';
 import { createAgentContext } from './helpers.js';
 
@@ -18,10 +19,11 @@ describe('AgentShutdownOrchestrator', () => {
   it('initializes with default steps', () => {
     const orchestrator = new AgentShutdownOrchestrator();
 
-    expect(orchestrator.shutdownSteps).toHaveLength(3);
-    expect(orchestrator.shutdownSteps[0]).toBeInstanceOf(LLMInstanceCleanupStep);
-    expect(orchestrator.shutdownSteps[1]).toBeInstanceOf(ToolCleanupStep);
-    expect(orchestrator.shutdownSteps[2]).toBeInstanceOf(McpServerCleanupStep);
+    expect(orchestrator.shutdownSteps).toHaveLength(4);
+    expect(orchestrator.shutdownSteps[0]).toBeInstanceOf(BackgroundProcessCleanupStep);
+    expect(orchestrator.shutdownSteps[1]).toBeInstanceOf(LLMInstanceCleanupStep);
+    expect(orchestrator.shutdownSteps[2]).toBeInstanceOf(ToolCleanupStep);
+    expect(orchestrator.shutdownSteps[3]).toBeInstanceOf(McpServerCleanupStep);
   });
 
   it('accepts custom steps', () => {

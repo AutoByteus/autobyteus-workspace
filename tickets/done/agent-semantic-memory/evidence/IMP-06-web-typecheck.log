@@ -1,0 +1,12 @@
+# IMP-06 Web typecheck
+# Command: pnpm -C autobyteus-web typecheck
+# Commit: 0fa12575c
+# Environment: Linux 6.12 container, Node v22.23.3, pnpm 10.28.2 via corepack; date 2026-11-10
+# Excerpt (full log not committed: it lists the 96 baseline test-file errors)
+
+[typecheck] Nuxt app (tsconfig.json): 69 errors, exit 2, 64.4s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 3.8s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 1.2s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 40.4s
+[typecheck] production errors: 0; test-file errors: 96 in 41 files (baseline 96 in 41 files)
+[typecheck] PASS

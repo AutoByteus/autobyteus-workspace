@@ -1,0 +1,10 @@
+# IMP-01 Server typecheck
+# Command: pnpm -C autobyteus-server-ts typecheck
+# Commit: 785ff7c95 (run on the working tree committed as 785ff7c95; server src and tests unchanged in 0fa12575c)
+# Environment: Linux 6.12 container, Node v22.23.3, pnpm 10.28.2 via corepack; date 2026-11-10
+# Excerpt (full log not committed: it lists the 1181 baseline test-file errors)
+
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 24.5s
+[typecheck] server tests (tsconfig.tests.json): 1181 errors, exit 2, 65.7s
+[typecheck] production errors: 0; test-file errors: 1181 in 365 files (baseline 1181 in 365 files)
+[typecheck] PASS

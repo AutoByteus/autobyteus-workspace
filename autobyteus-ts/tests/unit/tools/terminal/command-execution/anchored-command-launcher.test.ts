@@ -69,3 +69,32 @@ it('settles a failed anchor spawn without awaiting a nonexistent exit event', as
   await expect(h.ready).rejects.toThrow('ENOENT'); await h.exited;
   expect(h.anchorExited).toBe(true); expect((await h.completion).kind).toBe('failed'); h.dispose();
 });
+const collect = (stream: PassThrough) => { const parts: Buffer[] = []; stream.on('data', b => parts.push(b)); return () => Buffer.concat(parts).toString(); };
+it('cuts a wrapped call at the stdout end marker and FOREGROUND_DONE; later bytes and job ends follow', async () => {
+  const nonce = 'ab'.repeat(16);
+  const h = new AnchoredCommandHandle({ ...invocation, args: [], wrapperNonce: nonce }); start(h);
+  const out = collect(h.stdout), err = collect(h.stderr), later = collect(h.laterOutput);
+  child.stdout.emit('data', Buffer.from(`before\x1e${nonce}:EN`)); child.stdout.emit('data', Buffer.from(`D\x1fafter-out`));
+  child.stderr.emit('data', Buffer.from(`warn\x1e${nonce}:FOREGROUND_DONE:2:41 42\x1fjob-err\x1e${nonce}:JOB_ENDED:41:3\x1f`));
+  expect(await h.foregroundDone).toEqual({ exitCode: 2, jobPids: [41, 42] });
+  await new Promise(r => setImmediate(r));
+  expect([out(), err(), h.stdout.writableEnded, h.stderr.writableEnded]).toEqual(['before', 'warn', true, true]);
+  const ends: Array<[number, number]> = [];
+  h.onJobEnded((pid, status) => ends.push([pid, status]));
+  child.stderr.emit('data', Buffer.from(`\x1e${nonce}:JOB_ENDED:42:143\x1f`));
+  expect(ends).toEqual([[41, 3], [42, 143]]);
+  h.dispose(); expect(later().split('').sort().join('')).toBe('after-outjob-err'.split('').sort().join(''));
+});
+it('WSL: anchor frames and wrapper frames are decoded in sequence with their own nonces', async () => {
+  const wrapperNonce = 'cd'.repeat(16);
+  const h = new AnchoredCommandHandle({ executable: 'bash', args: ['-lc', 'x'], env: {}, kind: 'windows-wsl', wslCwd: '/tmp',
+    processTarget: { kind: 'wsl', wslExecutable: 'wsl.exe', distro: 'D' }, wrapperNonce });
+  const anchorNonce = mocks.spawn.mock.calls[0][1][13];
+  const err = collect(h.stderr);
+  child.stderr.emit('data', Buffer.from(`\x1e${anchorNonce}:READY:88\x1f`)); await h.ready;
+  h.group = { target: h.invocation.processTarget, anchor: { pid: 88, parentPid: 1, processGroupId: 88, sessionId: 88, birth: '1', status: 'S', command: '' } }; h.start();
+  child.stderr.emit('data', Buffer.from(`\x1e${anchorNonce}:STARTED:89\x1fuser\x1e${wrapperNonce}:FOREGROUND_DONE:0:\x1f\x1e${anchorNonce}:RESULT:0\x1f`));
+  expect(await h.foregroundDone).toEqual({ exitCode: 0, jobPids: [] });
+  expect((await h.completion).kind).toBe('result');
+  await new Promise(r => setImmediate(r)); expect(err()).toBe('user'); h.dispose();
+});

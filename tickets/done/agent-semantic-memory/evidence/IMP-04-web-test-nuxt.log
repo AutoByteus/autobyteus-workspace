@@ -1,0 +1,28 @@
+# IMP-04 Web unit and component tests (full)
+# Command: pnpm -C autobyteus-web test:nuxt --run
+# Commit: 0fa12575c for the full run; the one failing spec caused by this change (definitionMutationCache) fixed in 7e5f90d7f and rerun alone
+# Environment: Linux 6.12 container, Node v22.23.3, pnpm 10.28.2 via corepack; date 2026-11-10
+
+## Full run on 0fa12575c
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  stores/__tests__/definitionMutationCache.spec.ts > definition mutations publish a complete current-query cache row > creates a healthy Agent without missing-field errors or an unreadable catalog cache
+ FAIL  stores/__tests__/definitionMutationCache.spec.ts > definition mutations publish a complete current-query cache row > edits a healthy Agent with complete issue fields and cache-first rereads
+ FAIL  stores/__tests__/definitionMutationCache.spec.ts > definition mutations publish a complete current-query cache row > preserves every populated diagnostic value selected by Agent create (contract only)
+ FAIL  stores/__tests__/definitionMutationCache.spec.ts > definition mutations publish a complete current-query cache row > preserves every populated diagnostic value selected by Agent edit (contract only)
+ FAIL  stores/__tests__/definitionMutationCache.spec.ts > definition mutations publish a complete current-query cache row > keeps nonempty Agent catalog diagnostics readable through the real cache
+ FAIL  stores/__tests__/projectRunsStore.spec.ts > projectRunsStore > keeps one read per Project in flight and one queued; an older answer never replaces a newer one
+ Test Files  2 failed | 735 passed (737)
+      Tests  6 failed | 5516 passed | 2 skipped (5524)
+
+## definitionMutationCache.spec.ts — caused by this change
+Cause: 'ApolloError: Unconfigured GraphQL fixture field: semanticMemoryEnabled' (the Agent queries/fragment now select semanticMemoryEnabled/semanticMemoryPath; the test's Agent fixture lacked them).
+Fix 7e5f90d7f: fixture adds semanticMemoryEnabled: false, semanticMemoryPath: null.
+$ pnpm test:nuxt stores/__tests__/definitionMutationCache.spec.ts --run   (on 7e5f90d7f)
+      Tests  10 passed (10)
+
+## projectRunsStore.spec.ts — not caused by this change (FU-012)
+Alone on HEAD, 3 runs: Tests  1 failed | 10 passed (11) each; 'AssertionError: expected "spy" to be called 2 times, but got 3 times'
+With autobyteus-web stores/graphql/generated/types/components/localization checked out at base f78b60ddd: 'expected "spy" to be called 2 times, but got 4 times', Tests  1 failed | 10 passed (11)
+
+## The new semantic memory specs (inside the full run, also run alone during implementation)
+components/agents/__tests__/AgentDefinitionForm.semanticMemory.spec.ts, AgentDefinitionDetailSections.semanticMemory.spec.ts: pnpm test:nuxt components/agents --run -> Test Files  8 passed (8), Tests  39 passed (39)

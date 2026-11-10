@@ -13,6 +13,8 @@ export type ClaudeSessionConfig = {
   workingDirectory: string;
   permissionMode: ClaudeSdkPermissionMode;
   autoExecuteTools: boolean;
+  /** Folders outside the working directory the run works in under the same approval (the agent's semantic memory). */
+  additionalDirectories: readonly string[];
   thinking?: Readonly<{ type: "adaptive" | "disabled" }>;
   effort?: "low" | "medium" | "high" | "xhigh" | "max";
 };
@@ -29,6 +31,7 @@ export const buildClaudeSessionConfig = (input: {
   workingDirectory: string;
   permissionMode?: ClaudeSdkPermissionMode;
   autoExecuteTools?: boolean | null;
+  additionalDirectories?: readonly string[];
   llmConfig?: Readonly<Record<string, unknown>> | null;
 }): ClaudeSessionConfig => {
   const thinkingEnabled = input.llmConfig?.thinking_enabled;
@@ -39,6 +42,7 @@ export const buildClaudeSessionConfig = (input: {
     workingDirectory: input.workingDirectory,
     permissionMode: input.permissionMode ?? DEFAULT_CLAUDE_PERMISSION_MODE,
     autoExecuteTools: input.autoExecuteTools === true,
+    additionalDirectories: [...(input.additionalDirectories ?? [])],
     ...(typeof thinkingEnabled === "boolean"
       ? { thinking: { type: thinkingEnabled ? "adaptive" as const : "disabled" as const } }
       : {}),

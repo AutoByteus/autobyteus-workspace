@@ -146,9 +146,10 @@ migration. Runs without a memory folder keep the record in memory only.
 
 ## Lifecycle And Composition
 
-`build-studio-server.ts` and `start-standalone-application-host.ts` create the
-subsystem with the host definition services' change signal and pass
-`new AgentRunPlatformNotices([toolListUpdates.service, skillUpdateNotices.service])`
+Both hosts (`build-studio-server.ts`, `start-standalone-application-host.ts`)
+create it through `compositions/platform-notice-sources.ts`, with the host
+definition services' change signal, together with skill and background task
+notices, and pass `new AgentRunPlatformNotices([...sources])` (tool list first)
 as `platformInputNotices`. Shutdown closes it first (no new passes; it waits for
 passes and record writes in progress).
 

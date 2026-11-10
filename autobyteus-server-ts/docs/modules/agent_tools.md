@@ -49,8 +49,7 @@ route, follows one rule owned by `autobyteus-ts/src/tools/tool-result-json.ts`
 
 `toToolResultJson(value)` turns a result into text; `omitEmptyToolResultFields(value)`
 returns the pruned JSON value for core tools whose runtime renders an object
-(`get_background_processes`, `get_process_output`, `start_background_process`,
-`stop_background_process`). Each family's native tool and MCP provider calls it
+(the start result of `run_bash` with `run_in_background`). Each family's native tool and MCP provider calls it
 after its manifest returns the result object; on MCP,
 `toAgentToolsMcpStructuredJsonResult(value)` builds the text copy and
 `structuredContent` from the one pruned value. No family keeps its own

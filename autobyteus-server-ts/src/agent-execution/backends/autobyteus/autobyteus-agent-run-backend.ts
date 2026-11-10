@@ -1,5 +1,5 @@
 import type { CompactionRetryRequest, CompactionRecoveryBlock } from "autobyteus-ts/memory/compaction/compaction-recovery.js";
-import { AgentEventStream } from "autobyteus-ts";
+import { AgentEventStream, getBackgroundManager, type BackgroundProcessManager } from "autobyteus-ts";
 import type { AgentContext } from "autobyteus-ts/agent/context/agent-context.js";
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../domain/agent-operation-result.js";
@@ -7,6 +7,7 @@ import type { AgentRunContext, RuntimeAgentRunContext } from "../../domain/agent
 import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
 import type {
   AgentRunBackend,
+  AgentRunBackgroundTaskNoticesCapability,
   AgentRunCompactionRecoveryCapability,
   AgentRunSourceEventBatchListener,
   AgentRunToolListApplyResult,
@@ -21,10 +22,12 @@ import type {
   AgentRunBackendInputDispatch,
   AgentRunBackendInputDispatchResult,
 } from "../../input/agent-run-input-contract.js";
+import type { AgentRunEvent } from "../../domain/agent-run-event.js";
 import { AutoByteusStreamEventConverter } from "./events/autobyteus-stream-event-converter.js";
 import { projectAutoByteusAgentLifecycleSnapshot } from "./events/autobyteus-status-projector.js";
 import type { SystemInstructionTraceRecord } from "autobyteus-ts";
 import { PendingSystemInstructionEvent } from "../../events/pending-system-instruction-event.js";
+import { AutoByteusBackgroundTaskReporter } from "./autobyteus-background-task-reporter.js";
 
 export type AutoByteusAgentLike = {
   agentId: string;
@@ -103,7 +106,14 @@ const buildCommandFailure = (operation: string, error: unknown): AgentOperationR
 });
 
 export class AutoByteusAgentRunBackend implements AgentRunBackend {
-  readonly backgroundTaskInspection = { kind: 'unsupported' } as const;
+  /** Native background tasks stream as `BACKGROUND_TASK_UPDATED` events (see the reporter). */
+  readonly backgroundTaskInspection = { kind: 'event-stream' } as const;
+  /** The run's `BackgroundProcessManager` owns its background tasks; the platform delivers their notices. */
+  readonly backgroundTaskNotices: Extract<AgentRunBackgroundTaskNoticesCapability, { kind: "platform" }> = {
+    kind: "platform",
+    takeUnreportedEnds: () => this.backgroundProcesses?.takeUnreported() ?? [],
+    listRunning: () => (this.backgroundProcesses?.list() ?? []).filter((state) => !state.end).map((state) => state.task),
+  };
   readonly runId: string;
   readonly runtimeKind = RuntimeKind.AUTOBYTEUS;
   readonly compactionRecovery: Extract<AgentRunCompactionRecoveryCapability, { kind: "supported" }> = {
@@ -121,6 +131,8 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
   private terminationPromise: Promise<AgentOperationResult> | null = null;
   private readonly pendingSystemInstructionEvent: PendingSystemInstructionEvent;
   private toolExposure: RuntimeAgentToolExposure;
+  private readonly backgroundProcesses: BackgroundProcessManager | null;
+  private readonly backgroundTaskReporter: AutoByteusBackgroundTaskReporter | null;
 
   constructor(
     context: AgentRunContext<RuntimeAgentRunContext>,
@@ -134,6 +146,10 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
       options.pendingSystemInstructionCapture,
     );
     this.toolExposure = options.tools.exposure;
+    this.backgroundProcesses = agent.context ? getBackgroundManager(agent.context) : null;
+    this.backgroundTaskReporter = this.backgroundProcesses
+      ? new AutoByteusBackgroundTaskReporter(this.runId, this.backgroundProcesses, (event) => this.deliverToSourceListeners(event))
+      : null;
   }
 
   /**
@@ -171,9 +187,9 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
     return this.runId;
   }
 
-  /** Native background processes are polled by the agent and not reported as background tasks. */
+  /** True while a `run_bash` background command or `&` job of this run is running. */
   hasRunningBackgroundTasks(): boolean {
-    return false;
+    return this.backgroundProcesses?.hasRunning() ?? false;
   }
 
   getLifecycleSnapshot() {
@@ -320,6 +336,7 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
           ]);
           if (drained === expired) console.warn(`Native event drain deadline exceeded for '${this.runId}'.`);
         }
+        this.backgroundTaskReporter?.stop();
         return { accepted: true };
       } catch (error) {
         return buildCommandFailure("terminate run", error);
@@ -330,6 +347,13 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
       }
     })();
     return this.terminationPromise;
+  }
+
+  private async deliverToSourceListeners(event: AgentRunEvent): Promise<void> {
+    for (const listener of this.sourceListeners) {
+      try { await listener([event]); }
+      catch (error) { console.warn(`Native event listener failed for '${this.runId}'.`, error); }
+    }
   }
 
   private ensureSubscribed(): void {

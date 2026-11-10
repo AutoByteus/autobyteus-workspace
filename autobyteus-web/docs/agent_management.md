@@ -123,6 +123,15 @@ Runtime skill exposure is defined by the agent definition's `skillScope`:
 The former launch-time all-installed-skill option is not available in the run
 config UI or generated GraphQL enum; the scope belongs to the definition.
 
+### Semantic Memory
+
+The form's **Semantic memory** checkbox (`AgentSemanticMemoryField.vue`) sets the
+definition's `semanticMemoryEnabled`: the agent gets its own folder of reusable
+knowledge, shared by all its runs, and every run is told its path. The detail page
+shows On with the folder (`semanticMemoryPath`, selectable) or Off. For package and
+built-in agents the switch is a personal setting (`SEMANTIC_MEMORY`). Server side:
+[agent_memory.md](../../autobyteus-server-ts/docs/modules/agent_memory.md#semantic-memory).
+
 
 ## Store Ownership
 
@@ -201,7 +210,7 @@ for example an agent change also reloads Teams and Orgs. See the server's
 ## Personal Settings
 
 For an agent from an agent package, or a built-in agent (Daily Assistant, Model
-Router), tools, skills, avatar and default runtime/model are personal settings:
+Router), tools, skills, avatar, default runtime/model and semantic memory are personal settings:
 the server keeps them on this node outside the definition's files, so package
 updates, restarts and AutoByteus updates keep them (server contract:
 [personal_settings.md](../../autobyteus-server-ts/docs/modules/personal_settings.md)).

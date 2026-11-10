@@ -15,6 +15,7 @@ import {
 } from "./runtime-memory-event-payload.js";
 import { RuntimeToolTraceSequencer } from "./runtime-tool-trace-sequencer.js";
 import {
+  BACKGROUND_TASK_NOTICE_SENDER_ID,
   CLAUDE_BACKGROUND_TASK_NOTICE_SENDER_ID,
   MODEL_ROUTER_REQUEST_SENDER_ID,
   RESTART_RESUME_NOTICE_SENDER_ID,
@@ -30,6 +31,7 @@ const RECORDED_SYSTEM_NOTICE_SENDER_IDS: ReadonlySet<string> = new Set([
   TOOL_LIST_UPDATE_NOTICE_SENDER_ID,
   MODEL_ROUTER_REQUEST_SENDER_ID,
   RESTART_RESUME_NOTICE_SENDER_ID,
+  BACKGROUND_TASK_NOTICE_SENDER_ID,
 ]);
 
 type SegmentState = {

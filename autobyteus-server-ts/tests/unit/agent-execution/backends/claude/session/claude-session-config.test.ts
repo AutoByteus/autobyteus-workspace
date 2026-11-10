@@ -25,6 +25,7 @@ describe("Claude session config", () => {
       workingDirectory: "/tmp/claude-session-config",
       permissionMode: "default",
       autoExecuteTools: true,
+      additionalDirectories: [],
     });
   });
 
@@ -43,8 +44,16 @@ describe("Claude session config", () => {
       workingDirectory: "/tmp/claude-session-config",
       permissionMode: "default",
       autoExecuteTools: false,
+      additionalDirectories: [],
       thinking: { type: "adaptive" },
       effort: "high",
     });
+  });
+
+  it("keeps the agent's semantic memory folder as an additional directory (REQ-006)", () => {
+    const folder = "/home/u/.autobyteus/server-data/memory/semantic/computer-use-operator";
+    expect(buildClaudeSessionConfig({
+      model: "haiku", workingDirectory: "/tmp/claude-session-config", additionalDirectories: [folder],
+    }).additionalDirectories).toEqual([folder]);
   });
 });

@@ -321,6 +321,14 @@ Codex filesystem sandbox behavior is controlled by the Codex-specific server set
   rosters, and recipient or target validation still constrain each call. Other
   tools remain configured and availability-gated.
 
+- The thread `config` key `sandbox_workspace_write` is built by one owner,
+  `buildCodexSandboxWorkspaceWriteConfig`
+  (`src/agent-execution/backends/codex/backend/codex-sandbox-workspace-write-config.ts`), for
+  `workspace-write` runs only: `network_access: true` for a run with integration variables
+  ([Credential Proxy](./credential_proxy.md)) and `writable_roots: [<folder>]` for an agent with semantic memory
+  ([Agent Memory](./agent_memory.md#semantic-memory)), so the agent can write its own folder outside the working
+  directory. Without either the key is left out. `read-only` stays read-only; `danger-full-access` needs nothing.
+
 Server-side semantics are owned by
 `src/runtime-management/codex/codex-sandbox-mode-setting.ts` so the settings
 service, create-session bootstrap, and restore-session history path share one

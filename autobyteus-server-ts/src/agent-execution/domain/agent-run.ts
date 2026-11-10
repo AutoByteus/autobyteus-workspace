@@ -1,4 +1,5 @@
 import type { AgentBackgroundTaskView } from './agent-background-task-view.js';
+import type { BackgroundTaskEnd, BackgroundTaskStart } from "autobyteus-ts";
 import { AgentRunExecutionAdmissionFence } from "../input/agent-run-execution-admission-fence.js";
 import { randomUUID } from "node:crypto";
 import type { CompactionRetryRequest } from "autobyteus-ts/memory/compaction/compaction-recovery.js";
@@ -166,6 +167,21 @@ export class AgentRun {
 
   /** The tool names the runtime has now (the names the agent calls). */
   getToolNames(): readonly string[] { return this.backend.getToolNames(); }
+
+  /** True when the platform delivers this run's background-task completion notices (native runs). */
+  get backgroundTaskNoticesSupported(): boolean { return this.backend.backgroundTaskNotices.kind === "platform"; }
+
+  /** The ends of this run's background tasks not yet reported to the agent, now taken (each end once). */
+  takeUnreportedBackgroundTaskEnds(): readonly BackgroundTaskEnd[] {
+    const notices = this.backend.backgroundTaskNotices;
+    return notices.kind === "platform" ? notices.takeUnreportedEnds() : [];
+  }
+
+  /** This run's background tasks still running. */
+  listRunningBackgroundTasks(): readonly BackgroundTaskStart[] {
+    const notices = this.backend.backgroundTaskNotices;
+    return notices.kind === "platform" ? notices.listRunning() : [];
+  }
 
   async inspectBackgroundTasks(): Promise<AgentBackgroundTaskView> {
     const inspection = this.backend.backgroundTaskInspection;

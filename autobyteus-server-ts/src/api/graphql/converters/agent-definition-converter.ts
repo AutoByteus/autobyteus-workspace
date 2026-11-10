@@ -9,6 +9,7 @@ import { toGraphqlDefinitionLoadIssue } from "../types/definition-problems.js";
 import type { DefinitionLoadIssue } from "../../../agent-package-definitions/domain/agent-package-definition-types.js";
 import type { PersonalSettingsView } from "../../../personal-settings/services/personal-settings-service.js";
 import { toGraphqlPersonalSettings } from "../types/personal-settings.js";
+import { getAgentSemanticMemory } from "../../../agent-memory/services/agent-semantic-memory.js";
 
 const logger = {
   error: (...args: unknown[]) => console.error(...args),
@@ -66,6 +67,8 @@ export class AgentDefinitionConverter {
         ownerLocalApplicationId: domainDefinition.ownerLocalApplicationId ?? null,
         defaultLaunchConfig: toGraphqlDefaultLaunchConfig(domainDefinition.defaultLaunchConfig),
         internal: domainDefinition.internal === true,
+        semanticMemoryEnabled: domainDefinition.semanticMemoryEnabled === true,
+        semanticMemoryPath: getAgentSemanticMemory().folderOf(domainDefinition),
         loadIssue: toGraphqlDefinitionLoadIssue(loadIssue),
         ...toGraphqlPersonalSettings(personalSettings),
       };

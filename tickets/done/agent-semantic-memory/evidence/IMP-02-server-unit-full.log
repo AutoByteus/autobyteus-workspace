@@ -1,0 +1,63 @@
+# IMP-02 Server unit suite (full) and cause check of its failures
+# Command: pnpm -C autobyteus-server-ts test:unit
+# Commit: 0fa12575c (server src/tests as 785ff7c95)
+# Environment: Linux 6.12 container running as root (uid 0), Node v22.23.3, pnpm 10.28.2 via corepack; date 2026-11-10
+
+## Full run summary
+ FAIL  tests/unit/application-backend/socratic-live-tutor-renderer.test.ts [ tests/unit/application-backend/socratic-live-tutor-renderer.test.ts ]
+ FAIL  tests/unit/application-backend/socratic-runtime-lifecycle.test.ts [ tests/unit/application-backend/socratic-runtime-lifecycle.test.ts ]
+⎯⎯⎯⎯⎯⎯ Failed Tests 10 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/architecture/app-data-migration-boundaries.test.ts > sealed app-data migration area > allows no import between production code and migration code, nor between migration folders
+ FAIL  tests/architecture/app-data-migration-boundaries.test.ts > sealed app-data migration area > reaches every frozen file from a migration folder
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > starts a registered root that is missing as FOLDER_MISSING and arms it when it appears
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > reports UNAVAILABLE for a root whose definition folder cannot be listed, and re-arms once it can
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher catch-up request > re-arms quietly once when a definition folder on disk is not in the watch, then reconciles after the n
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher catch-up request > repairs a folder that stays unwatched only once, warns, and reconciles on every catch-up
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher catch-up request > allows another repair after a folder is added or removed
+ FAIL  tests/unit/agent-package-definitions/unreadable-package-root.test.ts > an unreadable registered package folder > does not block population: other packages, admission and Teams stay available
+ FAIL  tests/unit/agent-package-definitions/unreadable-package-root.test.ts > an unreadable registered package folder > keeps the folder's definitions at their last loaded version with an issue naming it, then recovers
+ FAIL  tests/unit/config/app-config.test.ts > AppConfig > keeps the retired key inert in-session when its persisted file is read-only
+ Test Files  6 failed | 968 passed | 5 skipped (979)
+      Tests  10 failed | 8284 passed | 12 skipped (8306)
+
+## The six failing files alone on HEAD (pnpm exec vitest run <6 files> --no-watch)
+ FAIL  tests/unit/application-backend/socratic-live-tutor-renderer.test.ts [ tests/unit/application-backend/socratic-live-tutor-renderer.test.ts ]
+ FAIL  tests/unit/application-backend/socratic-runtime-lifecycle.test.ts [ tests/unit/application-backend/socratic-runtime-lifecycle.test.ts ]
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/architecture/app-data-migration-boundaries.test.ts > sealed app-data migration area > reaches every frozen file from a migration folder
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > starts a registered root that is missing as FOLDER_MISSING and arms it when it appears
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > reports UNAVAILABLE for a root whose definition folder cannot be listed, and re-arms once it can
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher catch-up request > re-arms quietly once when a definition folder on disk is not in the watch, then reconciles after the n
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher catch-up request > repairs a folder that stays unwatched only once, warns, and reconciles on every catch-up
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher catch-up request > allows another repair after a folder is added or removed
+ FAIL  tests/unit/agent-package-definitions/unreadable-package-root.test.ts > an unreadable registered package folder > does not block population: other packages, admission and Teams stay available
+ FAIL  tests/unit/agent-package-definitions/unreadable-package-root.test.ts > an unreadable registered package folder > keeps the folder's definitions at their last loaded version with an issue naming it, then recovers
+ FAIL  tests/unit/config/app-config.test.ts > AppConfig > keeps the retired key inert in-session when its persisted file is read-only
+ Test Files  6 failed (6)
+      Tests  9 failed | 55 passed (64)
+
+## The same six files with autobyteus-server-ts/src checked out at base f78b60ddd (new files moved aside), then restored
+ FAIL  tests/unit/application-backend/socratic-live-tutor-renderer.test.ts [ tests/unit/application-backend/socratic-live-tutor-renderer.test.ts ]
+ FAIL  tests/unit/application-backend/socratic-runtime-lifecycle.test.ts [ tests/unit/application-backend/socratic-runtime-lifecycle.test.ts ]
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > starts a registered root that is missing as FOLDER_MISSING and arms it when it appears
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > reports UNAVAILABLE for a root whose definition folder cannot be listed, and re-arms once it can
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher catch-up request > re-arms quietly once when a definition folder on disk is not in the watch, then reconciles after the n
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher catch-up request > repairs a folder that stays unwatched only once, warns, and reconciles on every catch-up
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher catch-up request > allows another repair after a folder is added or removed
+ FAIL  tests/unit/agent-package-definitions/unreadable-package-root.test.ts > an unreadable registered package folder > does not block population: other packages, admission and Teams stay available
+ FAIL  tests/unit/agent-package-definitions/unreadable-package-root.test.ts > an unreadable registered package folder > keeps the folder's definitions at their last loaded version with an issue naming it, then recovers
+ FAIL  tests/unit/config/app-config.test.ts > AppConfig > keeps the retired key inert in-session when its persisted file is read-only
+ Test Files  5 failed | 1 passed (6)
+      Tests  8 failed | 56 passed (64)
+
+## tests/architecture on HEAD, warm (pnpm exec vitest run tests/architecture --no-watch)
+ Test Files  12 passed (12)
+      Tests  68 passed (68)
+  (app-data-migration-boundaries: 'reaches every frozen file…' timed out at 5000 ms in the full run and in the first run after the src swap (11082 ms, cold file cache); warm it passes in 1022 ms with no violations)
+
+## Causes
+- unreadable-package-root.test.ts (2), app-config.test.ts 'read-only' (1), agent-package-folder-watcher.test.ts 'reports UNAVAILABLE…' (1): they make a folder/file unreadable or read-only with chmod; this container runs as root, which ignores those permissions (e.g. expected ['alpha'] but got ['alpha','ext'] — the chmod 0o000 package was read). Same on base source.
+- agent-package-folder-watcher.test.ts other 4 ('Timed out waiting for the monitor'): same on base source; not pinned down (folder watching in this container).
+- socratic-live-tutor-renderer.test.ts, socratic-runtime-lifecycle.test.ts: the files fail to load, 'Error: No such built-in module: node:'; same on base source.
+- Each fails identically with base source (the section above), so this change does not cause them.

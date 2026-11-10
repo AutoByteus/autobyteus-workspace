@@ -193,6 +193,7 @@ const createClaudeRunContext = (input: {
   workspaceRoot: string;
 }): AgentRunContext<ClaudeAgentRunContext> => {
   const carpenterSystemPrompt = composeSharedCarpenterPrompt({
+    semanticMemoryPath: null,
     agentDefinition: new AgentDefinition({
       name: "Claude WebSocket E2E Agent",
       description: "Exercises Claude create and resume instruction projection",

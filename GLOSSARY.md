@@ -166,6 +166,15 @@ delegated run, …) are defined in the
   snapshots, file changes, context files and its Work Journal
   ([Collaboration Model § 3](autobyteus-server-ts/docs/design/collaboration_model.md)).
   It is not a global knowledge base.
+- **Semantic memory** (of an agent): an agent's own folder of documents with
+  the reusable knowledge it learns, `<memory>/semantic/<encoded agent
+  definition ID>/` on the node. Every run of that agent definition (standalone,
+  team member, delegated copy, in any Project) is told its path and shares it;
+  the agent and its skills write and organize it, and the system never deletes
+  it. An agent has one when `semanticMemoryEnabled` is on in its definition.
+  It is not the memory of a run, and not the `semantic.jsonl` rows of old run
+  folders or the library's early `SemanticItem` code
+  ([agent_memory.md](autobyteus-server-ts/docs/modules/agent_memory.md)).
 - **Work Journal:** a run's readable Markdown record, rendered from its raw
   traces by the journal service; one file per raw-trace segment
   (`work_journal/`).
@@ -342,6 +351,19 @@ delegated run, …) are defined in the
 - **Available agent runtime:** an agent runtime installed on the node and not
   known to be signed out; for AutoByteus, a provider with an API key, or a
   local provider (Ollama, LM Studio) that offers models.
+- **Background task:** work a run started that continues beyond its tool call and
+  is reported separately (`BACKGROUND_TASK_UPDATED`, the Background Tasks panel,
+  notices): a Claude `run_in_background` task, an Antigravity daemon step, or, on
+  the AutoByteus runtime, a command started with `run_bash(run_in_background: true)`
+  or an `&` job of a foreground `run_bash` call still running when the call's
+  foreground part ended. Processes that detach themselves (`nohup`, `setsid`,
+  `disown`) are not background tasks. Its id on AutoByteus is its pid.
+- **Background process:** the AutoByteus terminal layer's word for the OS process
+  group of a background task (`BackgroundProcessManager`); not used outside it.
+- **Background task notice:** the platform notice telling an AutoByteus run, in
+  one batch, that background tasks it started have ended
+  (`system.background_task_notifier`). Each end is reported once: in the agent's
+  own `run_bash` result when it ended during that call, otherwise in a notice.
 - **Usage limit:** a runtime's or provider's own limit on use (a 5-hour or
   weekly window, a billing period, a money balance), read from the runtime or
   provider. It is not the launch check of whether a runtime is usable.
@@ -358,13 +380,14 @@ delegated run, …) are defined in the
 - **Base value:** the value of a setting in a definition's files: a package's
   files, or a built-in agent's template copied at every start. A personal
   setting sits on top of it.
-- **Personal setting:** one of four settings (tools, skills, avatar, default
-  runtime/model; Teams and Orgs have only the last two) of a definition from an
+- **Personal setting:** one of five settings (tools, skills, avatar, default
+  runtime/model, semantic memory; Teams and Orgs have only avatar and default
+  runtime/model) of a definition from an
   agent package or of a built-in agent, kept on this node in
   `<app-data>/agent-packages/personal-settings.json` instead of in the
   definition's files, so package updates and restarts keep it. Tools and skills
-  are kept as names added to and removed from the base value; avatar and
-  runtime/model replace it. The **effective** value (the base value with the
+  are kept as names added to and removed from the base value; avatar,
+  runtime/model and semantic memory replace it. The **effective** value (the base value with the
   personal settings applied) is what every reader gets. "Reset to the package's
   setting" removes one. The user's own definitions in the app's storage have no
   personal settings: edits go into their files. Contract and rules:

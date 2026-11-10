@@ -26,6 +26,7 @@ import type {
 import type { AgentToolMcpDescriptor } from "../../../../agent-tools/mcp/agent-tool-mcp-session.js";
 import { resolveRuntimeAgentToolExposure, type RuntimeAgentToolExposure } from "../../../shared/runtime-agent-tool-exposure.js";
 import { composeSharedCarpenterPrompt } from "../../../prompt/carpenter-prompt-composer.js";
+import { getAgentSemanticMemory, type AgentSemanticMemory } from "../../../../agent-memory/services/agent-semantic-memory.js";
 import { buildAgentRunMessageSenderContext } from "../../../../agent-communication/domain/agent-run-message-sender.js";
 import { getAgentTeamAddressBasename } from "../../../../agent-collaboration/domain/agent-team-address.js";
 
@@ -37,6 +38,7 @@ export class AgyAgentRunBackendFactory implements AgentRunBackendFactory {
     private readonly mcpSessions: AgentToolMcpRunSessionActivator & AgentToolMcpRunSessionExposure,
     /** The run's integration variables for the AGY process (`null`: none on this host). */
     private readonly integrationRunAccess: IntegrationRunAccess | null = null,
+    private readonly semanticMemory: AgentSemanticMemory = getAgentSemanticMemory(),
   ) {}
 
   beginPreparation(request: AgentRunBackendPreparationRequest) {
@@ -57,7 +59,9 @@ export class AgyAgentRunBackendFactory implements AgentRunBackendFactory {
     const definition = await this.definitions.getAgentDefinitionById(config.agentDefinitionId);
     if (!definition) throw new Error(`AGY_AGENT_DEFINITION_MISSING: ${config.agentDefinitionId}`);
     const bindings = this.skills.resolveConfiguredSkillBindingsForAgent(definition);
-    const identity = composeSharedCarpenterPrompt({ agentDefinition: definition, memberExecutionContext: config.memberExecutionContext, project: config.project });
+    const semanticMemoryPath = await this.semanticMemory.prepareForRun(definition);
+    const identity = composeSharedCarpenterPrompt({ agentDefinition: definition, memberExecutionContext: config.memberExecutionContext,
+      project: config.project, semanticMemoryPath });
     assertAccepting();
     const exposure = resolveRuntimeAgentToolExposure(definition, config.memberExecutionContext);
     const descriptor = this.activateMcp(runId, config, workspacePath, exposure);

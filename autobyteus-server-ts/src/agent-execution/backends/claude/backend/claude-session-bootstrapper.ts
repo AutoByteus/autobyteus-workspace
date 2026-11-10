@@ -18,6 +18,7 @@ import {
 import { ClaudeAgentRunContext, type ClaudeRunContext } from "./claude-agent-run-context.js";
 import { resolveRuntimeAgentToolExposure } from "../../../shared/runtime-agent-tool-exposure.js";
 import { composeSharedCarpenterPrompt } from "../../../prompt/carpenter-prompt-composer.js";
+import { getAgentSemanticMemory, type AgentSemanticMemory } from "../../../../agent-memory/services/agent-semantic-memory.js";
 
 export class ClaudeSessionBootstrapper {
   private readonly workspaceResolver: ClaudeWorkspaceResolver;
@@ -30,6 +31,7 @@ export class ClaudeSessionBootstrapper {
     workspaceSkillMaterializer: WorkspaceSkillMaterializer = getClaudeWorkspaceSkillMaterializer(),
     agentDefinitionService: AgentDefinitionService = AgentDefinitionService.getInstance(),
     skillService: SkillService = SkillService.getInstance(),
+    private readonly semanticMemory: AgentSemanticMemory = getAgentSemanticMemory(),
   ) {
     this.workspaceResolver = workspaceResolver;
     this.workspaceSkillMaterializer = workspaceSkillMaterializer;
@@ -90,16 +92,19 @@ export class ClaudeSessionBootstrapper {
     const materializedConfiguredSkills = preparedSkills.materializedSkills;
     const configuredSkills = preparedSkills.effectiveRequests.flatMap((request) =>
       request.kind === "reconcile-unresolved" ? [] : [request.skill]);
+    const semanticMemoryPath = await this.semanticMemory.prepareForRun(agentDefinition);
     const carpenterSystemPrompt = composeSharedCarpenterPrompt({
       agentDefinition,
       memberExecutionContext: runContext.config.memberExecutionContext,
       project: runContext.config.project,
+      semanticMemoryPath,
     });
     const sessionConfig = buildClaudeSessionConfig({
       model: runContext.config.llmModelIdentifier,
       workingDirectory,
       permissionMode: DEFAULT_CLAUDE_PERMISSION_MODE,
       autoExecuteTools: runContext.config.autoExecuteTools,
+      additionalDirectories: semanticMemoryPath ? [semanticMemoryPath] : [],
       llmConfig: runContext.config.llmConfig,
     });
     return new AgentRunContext({

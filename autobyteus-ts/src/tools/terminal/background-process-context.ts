@@ -25,7 +25,11 @@ export function getBackgroundManager(context: AgentContextLike | null | undefine
     return existing;
   }
 
-  const manager = new BackgroundProcessManager(undefined, new NonInteractiveShellResolver({ env: terminalChildEnvironment(context) }), undefined, context.nativeCommandProcessScope);
+  const manager = new BackgroundProcessManager({
+    ownerId: context.agentId,
+    resolver: () => new NonInteractiveShellResolver({ env: terminalChildEnvironment(context) }),
+    scope: context.nativeCommandProcessScope,
+  });
   contextRecord._backgroundProcessManager = manager;
   return manager;
 }

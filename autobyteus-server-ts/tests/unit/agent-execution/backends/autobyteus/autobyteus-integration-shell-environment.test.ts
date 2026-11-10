@@ -15,6 +15,7 @@ import { LLMConfig } from "autobyteus-ts/llm/utils/llm-config.js";
 import { BaseLLM } from "autobyteus-ts/llm/base.js";
 import { CompleteResponse, ChunkResponse } from "autobyteus-ts/llm/utils/response-types.js";
 import { runBash } from "autobyteus-ts/tools/terminal/tools/run-bash.js";
+import type { TerminalResult } from "autobyteus-ts/tools/terminal/types.js";
 import { AgentDefinition } from "../../../../../src/agent-definition/domain/models.js";
 import { AutoByteusAgentRunBackendFactory } from "../../../../../src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.js";
 import { AgentRunConfig } from "../../../../../src/agent-execution/domain/agent-run-config.js";
@@ -80,7 +81,7 @@ describe("AutoByteus run integration shell environment", () => {
     const supplier = (agent.context.customData as Record<string, unknown>).terminalChildEnvironment;
     expect(supplier).toBe(built.agentConfig.initialCustomData?.terminalChildEnvironment);
 
-    const result = await runBash(agent.context as never, 'printf "%s" "$AUTOBYTEUS_GITHUB_API_URL"', workspace);
+    const result = await runBash(agent.context as never, 'printf "%s" "$AUTOBYTEUS_GITHUB_API_URL"', workspace) as TerminalResult;
     expect(result.stdout).toBe(API_URL);
     expect(process.env.AUTOBYTEUS_GITHUB_API_URL).toBeUndefined();
   });

@@ -47,6 +47,7 @@ export const resolveClaudeSessionQueryOptions = async (input: {
     sessionBinding: input.binding,
     model: sessionConfig.model,
     workingDirectory: sessionConfig.workingDirectory,
+    ...(sessionConfig.additionalDirectories.length > 0 ? { additionalDirectories: sessionConfig.additionalDirectories } : {}),
     mcpServers,
     allowedTools: toolingOptions.allowedTools,
     permissionMode: sessionConfig.permissionMode,
