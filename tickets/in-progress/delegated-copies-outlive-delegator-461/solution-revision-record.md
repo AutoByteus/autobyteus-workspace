@@ -15,6 +15,7 @@
 | SR-009 | Design | The user's approval of the design direction; the open file-level parts closed | N/A | Design Draft | Design Ready; `Large` / `High` | D-8, D-10, D-11 refined; File-Level Completion C-1 … C-5; migration checklist | Architecture Design Complete |
 | SR-010 | Mixed | Architecture review ARCH-REV-001 (Fail): AR-001 … AR-010 | AR-001 … AR-010 | Requirements Approved; design Ready | Requirements Approved with DEC-011 Ready for Approval; design Needs Revision (revised, waiting for DEC-011) | DEC-011 (new); REQ-005 (wording, if A); design RC-1 … RC-10, D-6, DS-004, DS-004b, DS-007, DS-008, the migration plan | Findings answered; one requirement decision for the user |
 | SR-011 | Requirements | The user asked that communication be written into the contract | N/A | Contract revision 2 approved; DEC-011 open | Contract revision 3 proposed (§10 added); DEC-011 open, recommendation B | Contract §10 (M1 … M9, address order, delivery, lookup); DEC-011 | For the user's review and decision |
+| SR-012 | Mixed | The user: a run is connected with its Task; closed Tasks need not stay in the collaboration tree; is the on-disk contract designed and validated? | N/A | Contract revision 3 proposed | Contract revision 4 proposed (§11 added) | Contract §11 (L1 … L11, what reads what, validation); DEC-011 (B, agreed in conversation, to confirm); TC-4 reopened by the user (teams and orgs in this ticket if it fits; not sized) | For the user's review |
 
 ## Revision Entries
 
@@ -270,3 +271,26 @@
 - Downstream and architecture-review impact: review round 2 after DEC-011
 - Remaining gaps, assumptions or blocked decisions: DEC-011
 - Next action: the user reads §10 and decides DEC-011
+
+### SR-012 — Contract revision 4 (proposed): §11 The life of a link
+
+- Phase and classification: Mixed (requirements and evidence), `Refinement`
+- Triggering user feedback, Product package, investigation evidence, or role/report/round: the user, 2026-11-10: "the agent or agent team is connected with the task"; "we don't have to really keep all those task agent or agent teams into the collaboration tree"; "have you already designed the on disk contract with every case described and then validate by yourself?"; also: teams and organizations in this ticket if it fits; what about temporary Tasks
+- Triggering finding IDs: N/A
+- Prior authoritative requirements/design status: requirements `Approved` (SR-007) with DEC-011 open; contract revision 3 proposed; design `Needs Revision` (SR-010)
+- Current authoritative requirements/design status: unchanged, with contract revision 4 `Proposed`
+- Requirement, behavior, acceptance-criteria, scenario or decision IDs affected: contract §11 (new rule: a link exists while a Task of its run is open; the Task's record is the lasting record); contract §2.2, §3, §5, §6, §8 where they keep a link for good (to be rewritten on approval); DEC-011 = B (the lookup §11 needs); TC-4 (reopened by the user, not decided); a new decision to record on temporary Tasks (no timer, recommended)
+- Scenario-basis or scenario-validity changes: none yet
+- Why this baseline or revision was recorded: the user's direction changes the stored model's rule for links
+- Canonical requirements, investigation and design sections changed: `target-collaboration-contract.md` §11 and status; investigation notes
+- Supplemental artifacts added, changed or removed: `evidence/data-model-validation/validate_task_record_as_lasting_record.py`, `task-record-validation-2026-11-10.txt`
+- Product design evidence or product decisions incorporated: none
+- Intended behavior changed: `Yes` (proposed): the delegating run's tree lists only runs whose Task is open, which is what the user sees today (closed runs are hidden), now also in the stored list
+- Approval impact, exact approved requirements baseline, who approved, and approval reference: nothing newly approved; the user's confirmation of §10 (DEC-011) and §11, and his decisions on scope (teams and orgs) and temporary Tasks are requested
+- Behavior-defining supplement versions and approval references: contract revision 2 approved; revisions 3 and 4 proposed
+- Affected design/review basis invalidated or rebuilt: the design (SR-010) must be rewritten on revision 4 (the closed-set handling of RC-1 goes; the location consumers of RC-3 read the Task's records; the migration drops closed links); review round 2 afterwards
+- Post-design task-size/risk classification and rationale changes: N/A until the redesign
+- Applied handoff-rule outcome / result-file reference, when a handoff occurred: none
+- Downstream and architecture-review impact: none until the redesign
+- Remaining gaps, assumptions or blocked decisions: the user's confirmation; the sizing of team and org runs
+- Next action: the user reviews §10 and §11 and answers the two open questions (teams and orgs; temporary Tasks)

@@ -1,0 +1,18 @@
+    11  A.   … an open record (link kept)
+   170  A.   … every record closed (link dropped)
+    15  A. delegated run with NO Task record (its link would stay for good)
+   181  A. delegated run with a Task record
+   170  B. dropped link: delegator recoverable (assigned entry's assigner or the run's own back-link)
+   157  C. links dropped (Task closed), holder kind agent
+     2  C. links dropped (Task closed), holder kind agent_org
+    11  C. links dropped (Task closed), holder kind agent_team
+    13  C. links kept, holder kind agent
+     4  C. links kept, holder kind agent_org
+     9  C. links kept, holder kind agent_team
+     0  D.   runs found by Task records but not by links
+    16  D.   runs found by links but not by Task records
+    14  D. holder: same set by links and by Task records
+    13  D. holder: sets differ
+     6  E. message found through the Task's record (same Task, or the Task's assigner)
+  1557  E. message on a link
+    38  E. message on neither route

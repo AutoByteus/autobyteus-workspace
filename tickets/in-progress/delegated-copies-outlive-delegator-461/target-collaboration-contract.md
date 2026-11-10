@@ -1,6 +1,7 @@
 # Delegation Contract — A Delegated Run Is An Ordinary Run
 
 Status: **revision 2, approved by the user** (2026-11-10, SR-007; TC-1 … TC-6 decided). Proposed at SR-006.
+**Revision 4, proposed** (2026-11-10, SR-012): §11 "The life of a link" added (the user: a run is connected with its Task; the collaboration tree need not keep runs whose Task is finished). Where §11 differs from §2.2, §3, §5, §6 or §8 (which say a link is kept for good), §11 is the newer rule; those sections are rewritten when revision 4 is approved.
 **Revision 3, proposed** (2026-11-10, SR-011): §10 "Communication" added at the user's request ("how communication works should also be written down in the contract"). §1 … §9 are unchanged and stay approved; §10 is proposed, and its rows marked DEC-011 wait for the user's decision. Revision 1 gave the words and rules; revision 2 adds
 the data level: every record with example JSON, every case, an attribute-by-attribute redundancy check, the
 existing data before and after with counts, and simulations. It is the behavior-defining supplement of
@@ -431,3 +432,79 @@ No run keeps an index of other runs' agents. The link and the Task's record are 
 ### 10.6 Measured on the user's data (read-only, 2026-11-10)
 
 `evidence/data-model-validation/cross-run-messages-2026-11-10.txt`, `non-pair-messages-2026-11-10.txt`: 13,142 messages inside one run; 1,600 between two runs, of which 1,556 on a link (M1 … M3), 32 between two runs delegated by the same run (all 2026-10, from runs that belong to no Task: the retired collaborator feature; neither A nor B carries these), 8 of kind M5 (2026-10, 2026-11), 4 on old records without a delegator.
+
+## 11. The life of a link (revision 4, proposed)
+
+**Rule.** The Task's record is the lasting record of who worked on what. The link in the delegating run is the live connection: it exists while a Task that the delegated run works on is open. The delegated run's own back-link (`delegatedFrom`) is written once and never changes.
+
+The example: the Project Task Manager `project_task_manager_7c8d` (**M**) and the engineering team run `software_engineering_team_0218` (**E**), Task `T1`.
+
+### 11.1 Every step, as files
+
+**L1. M delegates T1 to E.** Three writes: E's own files, then the link, then the Task's record.
+
+```text
+E's tree            "delegatedFrom": { "delegatingRun": { "kind": "agent", "runId": "project_task_manager_7c8d" },
+                                       "delegatorAgentRunId": "project_task_manager_7c8d" }
+M's tree            "taskExecutions": [ { "address": "/software_engineering_team", "teamRunId": "software_engineering_team_0218",
+                                          "delegatorAgentRunId": "project_task_manager_7c8d", "startedAt": "2026-11-10T09:39:18.439Z" } ]
+T1's record         { "role": "assigned", "assignedBy": "project_task_manager_7c8d", "recipientAddress": "/software_engineering_team",
+                      "agentRun": { "kind": "team", "teamRunId": "software_engineering_team_0218", "coordinatorAgentRunId": "solution_designer_65a9" },
+                      "linkedAt": "2026-11-10T09:39:18.439Z", "start": "started", "closedAt": null }
+```
+
+**L2. E goes quiet and is shut down; later a message wakes it.** No file changes. The link stays: the Task is open.
+
+**L3. T1 is closed.** E is stopped. The record gets its closing time; the link is removed from M's tree; E's own file does not change.
+
+```text
+T1's record         … "closedAt": "2026-11-10T15:02:11.000Z"
+M's tree            "taskExecutions": [ ]
+E's tree            "delegatedFrom": { … }            (unchanged)
+```
+
+**L4. T1 is reopened and M messages E's coordinator by its run ID.** The sender's run has no link to that run ID, so the Task's records are asked: E is a run of T1, and M assigned it. The record is reopened, the link is written again, the message is delivered and wakes E.
+
+```text
+T1's record         … "closedAt": null
+M's tree            "taskExecutions": [ { "address": "/software_engineering_team", "teamRunId": "software_engineering_team_0218",
+                                          "delegatorAgentRunId": "project_task_manager_7c8d", "startedAt": "2026-11-10T09:39:18.439Z" } ]
+```
+
+The link's `startedAt` is the run's first delegation, read from the first entry of the run in the Task's records.
+
+**L5. M gives E a second Task, T2, by E's run ID.** T2's record gets an `assigned` entry for E. If E's link is not in M's tree (every earlier Task of E is closed), it is written as in L4; otherwise nothing changes in M's tree.
+
+**L6. T1 closes while T2 is open.** E keeps working (it has another open Task); the link stays. It is removed when E's last open Task closes.
+
+**L7. E's solution designer hands sub-work of T1 to the product team P.** P's `delegatedFrom` names E; the link is in E's tree; T1's record gets a `subWork` entry for P. When T1 closes, E's and P's entries close, and both links go (M → E, E → P).
+
+**L8. A temporary Task** (a description-only delegation by a run that works on no Task): the same files with the Task's record under `ad-hoc-tasks/`. Its link stays until the temporary Task is closed, or until the delegating run is deleted (its temporary Tasks are deleted with it, as today). No timer closes it (the user's question; recommendation: none in this ticket).
+
+**L9. An old delegated run that belongs to no Task** (recorded before every delegation got a Task): there is no record that could close, so its link stays for good and it stays listed, as today.
+
+**L10. A run on a peer:** the link (with `nodeId`) follows the same rule on the delegating node. The peer's own files are the peer's.
+
+**L11. The delegating run is not in memory when the Task closes or reopens:** its tree file is edited through the same owner that loads it (the run's manager), so a loaded copy and the file never differ.
+
+### 11.2 What reads what
+
+| Question | Answered from |
+| --- | --- |
+| Which runs is this run working with now? (the tree's rows, `@`, messages on a link) | Its links |
+| May these two runs message each other, and where is the receiver? | The link or back-link; else the Task's records (§10.5) |
+| Which runs ever worked below this run? (its token total, earlier attachments) | The Task's records: the runs its agents assigned and their sub-work, together with its links (for runs of L9) |
+| Who delegated this run? | Its own `delegatedFrom` |
+
+### 11.3 Validated on the user's data (read-only, 2026-11-10)
+
+`evidence/data-model-validation/task-record-validation-2026-11-10.txt`:
+
+- **The rule applies to 181 of 196 delegated runs.** 170 have only closed records (their links go: 157 in standalone runs, 11 in team runs, 2 in org runs); 11 have an open record (links stay).
+- **15 runs have no Task record** (started 2026-08: 2, 2026-09: 3, 2026-10: 10; the time before every delegation got a Task): case L9, their links stay.
+- **Nothing is lost when a link goes:** for all 170, the delegator is in the Task's record (the assigner) or in the run's own back-link; the address and the start time are in the record and in the run's own file.
+- **"Every run below a run"** from Task records alone equals the set from today's links for 14 of 27 holding runs. For the other 13 it misses 16 runs: the 15 of L9 and 1 run that was assigned by an agent of one of those. With the kept links of L9 included, the sets are equal.
+- **Messages between two runs** (1,601 in the logs): 1,557 on a link; 6 more found through the Task's records; 38 on neither route (32 between runs of L9, the rest on old records). Those 38 are refused in the target, whichever option DEC-011 takes.
+- The manager's list today: 145 links, 134 closed. After the rule: 11.
+
+Not validated: any code. The rule is checked against the stored data only.
