@@ -11,14 +11,14 @@
 - Finalization target remote / branch: `origin` / `personal` (release separately, on the user's word)
 - Bootstrap result: worktree and branch created from `origin/personal`; ticket folder `tickets/in-progress/delegated-copies-outlive-delegator-461/`
 - Bootstrap blocker: none
-- Current solution revision ID: `SR-001`
+- Current solution revision ID: `SR-002`
 - Authorities read (requirements reading gate; file and date): `references/requirements-engineering.md`, `references/finding-the-cause.md`, `references/ticket-scope.md`, `references/handoff.md` (2026-11-10); project `DESIGN.md`, `autobyteus-server-ts/docs/design/collaboration_model.md` (2026-11-10)
 - Investigation status: requirements investigation complete; architecture investigation starts after the requirements are approved
 
 ## Initial Request And Clarifications
 
 - Original request: Task `autobyteus-461` as delegated by `/project_task_manager`. When the user stops an agent that delegated Tasks, its task agents and task agent teams must keep running. The user's decision (2026-11-10): "this doesn't make any sense, we have to fix this ... even though you delegated the task, they are running independently."
-- Clarifications received: none yet (the Task has no comments as of 2026-11-10).
+- Clarifications received: 2026-11-10, the user, on DEC-001: the platform's standard is to wake and resume a stopped agent, so a copy's message wakes its stopped delegator (option A). The Task still has no comments.
 - User-supplied facts and constraints: keep the solution simple; design first, the user approves the direction before the build; do not merge with `autobyteus-460`; a message from a copy to a stopped delegator must not be lost; single-copy Stop and Task closure stay as today; server shutdown is a different case.
 - Initial ambiguity: what happens to a copy's message while its delegator is stopped (wake or hold); who coordinates a copy when its delegator is stopped; delete/archive of a delegator with running copies; remote copies; where copies are listed.
 
@@ -172,7 +172,7 @@ N/A — no Product Design was requested.
 
 | ID | Type | Description | Why It Matters | Resolution / Owner | Status |
 | --- | --- | --- | --- | --- | --- |
-| U-001 | Unknown | How a Team or Org root expresses "stopped by the user" while it stays loaded for its copies (restore, stopped-run edit, archive/delete read manager ownership today) | Decides the size of the Team/Org part | Architecture investigation / Solution Designer | Open |
+| U-001 | Unknown | How a Team or Org root expresses "stopped by the user" while it stays loaded for its copies (restore, stopped-run edit, archive/delete read manager ownership today) | Decides the size of the Team/Org part | Sized in Architecture Investigation Findings; the design waits for DEC-009 | Sized |
 | U-002 | Unknown | Whether every web flow (Team and Org stores, Task page) assumes that Stop ends every copy | Client scope | Architecture investigation | Open |
 | R-001 | Risk | With wake on message, a stopped run resumes when one of its copies reports | Visible behavior; the user decides (DEC-001) | The user | Open |
 | R-002 | Risk | A remote copy's behavior was read, not run on two nodes | REQ-006 relies on it | API/E2E where a second node is available; otherwise stated as read | Open |
@@ -180,7 +180,14 @@ N/A — no Product Design was requested.
 
 ## Architecture Investigation Findings
 
-Not started; begins after the requirements are approved.
+Feasibility investigation for DEC-009, 2026-11-10 (all `Read`; architecture reading gate passed: `references/architecture-design.md`, `references/design-principles.md`, project `DESIGN.md`).
+
+- **One primitive stops any agent and leaves it restorable.** `ConfiguredAgentExecutionHandle.releaseRuntimeForUserStop()` (`configured-agent-execution-handle.ts:216`): interrupt, release the runtime, input stays open; the next input restores it (`startForInput`, line 172). `FlatTeamAgentExecutionHandle.releaseRuntimeForUserStop()` (`flat-team-agent-execution-handle.ts:123`) forwards to it. Today only copies use it (`task-agent-execution-registry.ts:275`, `root-agent-execution-registry.ts:288`).
+- **Standalone:** the root (`StandaloneAgentRunRoot`) and its host (`StandaloneHostAgentHandle`) are separate; `getActive(hostRunId)` (root loaded) and `isHostLive()` (own agent running) are separate facts already. A Stop that ends only the host leaves an existing state (the host-crash state). Paths that read "root loaded" as "run active" and need a decision: `DelegatedLaunchSelectionService.update` (a loaded root refuses the run's own settings with `RUN_ACTIVE`, `delegated-launch-selection-service.ts:86-88`), `updateStoppedDelegatedLaunchSelections` (`RUN_ACTIVE` when `hasRoot`), `releaseForHistory` (ends the root), the collaboration stream's connect (`ensureHostReady`), restart resume's filter, the web `beginHostTermination`.
+- **Team:** `AgentTeamRunManager.getLifecycleSnapshot` reports `isActive: hasManagedTeamRun` (`agent-team-run-manager.ts:326-329`); `restoreTeamRun` throws "already managed" (line 177); `updateStoppedRunLaunchChanges` refuses with `RUN_ACTIVE` when managed (line 284); `withInactiveHistoryMutation` answers `managed` (line 254); `FlatTeamExecutionManager` has one lifecycle for members and copies (`freezeForRootTermination`, `releaseOwnedRuntime`, lines 210-294). Keeping the root for its copies needs a new "the Team is stopped while its root is loaded" fact that every one of these reads.
+- **Org:** the same shape (`AgentOrgRun.terminate`, `agent-org-run.ts:359-398`; `AgentOrgRunManager`, 501 lines).
+- **File sizes (500-line limit):** `standalone-agent-run-root.ts` 521, `root-team-run.ts` 538, `agent-org-run-manager.ts` 501, `agent-team-run-manager.ts` 491, `agent-org-run.ts` 460. New code goes into properly owned files, not into these.
+- **Conclusion:** the standalone part is contained; the Team/Org part is a lifecycle change in the two most guarded Stop paths plus two more client flows. Recorded as DEC-009 for the user.
 
 ## Requirement Implications
 
