@@ -33,8 +33,9 @@ describe("member collaboration instruction provider parity", () => {
       deliverInterAgentMessage: vi.fn(async () => undefined) as never,
     });
     const expected = renderCollaborationSections(memberExecutionContext);
-    const providerSharedPrompt = composeSharedCarpenterPrompt({ agentDefinition, memberExecutionContext });
+    const providerSharedPrompt = composeSharedCarpenterPrompt({ semanticMemoryPath: null, agentDefinition, memberExecutionContext });
     const nativeAutoByteusPrompt = composeNativeAutoByteusPrompt({
+      semanticMemoryPath: null,
       agentDefinition,
       workspaceRootPath: "/tmp/classroom-workspace",
       memberExecutionContext,
@@ -68,8 +69,9 @@ describe("member collaboration instruction provider parity", () => {
   });
 
   it("does not inject the collaboration sections or intrinsic tools for standalone Agents without a member context", () => {
-    const providerSharedPrompt = composeSharedCarpenterPrompt({ agentDefinition, memberExecutionContext: null });
+    const providerSharedPrompt = composeSharedCarpenterPrompt({ semanticMemoryPath: null, agentDefinition, memberExecutionContext: null });
     const nativeAutoByteusPrompt = composeNativeAutoByteusPrompt({
+      semanticMemoryPath: null,
       agentDefinition,
       workspaceRootPath: "/tmp/standalone-workspace",
       memberExecutionContext: null,

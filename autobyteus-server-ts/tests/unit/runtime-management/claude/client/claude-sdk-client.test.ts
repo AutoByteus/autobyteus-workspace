@@ -323,6 +323,21 @@ describe("ClaudeSdkClient", () => {
     expect(firstCall.options?.tools).toEqual(EXPECTED_ENABLED_BUILT_IN_TOOLS);
     expect(firstCall.options?.disallowedTools).toEqual(EXPECTED_DISALLOWED_BUILT_IN_TOOLS);
     expect(firstCall.options).not.toHaveProperty("sessionId");
+    expect(firstCall.options).not.toHaveProperty("additionalDirectories");
+  });
+
+  it("passes additional directories to the SDK when the session has them (semantic memory, REQ-006)", async () => {
+    const client = new ClaudeSdkClient();
+    const queryFn = vi.fn((_input: unknown) => createMockQuery());
+    client.setCachedModuleForTesting({ query: queryFn });
+    const folder = "/home/u/.autobyteus/server-data/memory/semantic/computer-use-operator";
+    await client.beginStreamingSession({ resolveOptions: () => ({
+      systemPrompt: "", sessionBinding: { kind: "resume", sessionId: RESERVED_SESSION_ID }, model: "haiku",
+      workingDirectory: "/tmp/claude-client-query-options", additionalDirectories: [folder], permissionMode: "default",
+    }) }).open();
+    const firstCall = queryFn.mock.calls[0]?.[0] as { options?: Record<string, unknown> };
+    expect(firstCall.options?.cwd).toBe("/tmp/claude-client-query-options");
+    expect(firstCall.options?.additionalDirectories).toEqual([folder]);
   });
 
   it("passes only SDK sessionId for a caller-reserved first conversation", async () => {

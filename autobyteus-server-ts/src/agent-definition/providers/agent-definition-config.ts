@@ -20,6 +20,8 @@ export type AgentConfigRecord = {
   defaultLaunchConfig?: AgentDefinitionDefaultLaunchConfig | null;
   /** An internal agent (the system's own helper); absent or anything but `true` means a normal agent. */
   internal?: boolean;
+  /** The agent has a semantic memory; absent or anything but `true` means off. */
+  semanticMemoryEnabled?: boolean;
 };
 
 export const normalizeStringArray = (value: unknown): string[] =>
@@ -52,6 +54,7 @@ export const normalizeAgentConfigRecord = (
   avatarUrl: typeof value?.avatarUrl === "string" ? value.avatarUrl : null,
   defaultLaunchConfig: normalizeDefaultLaunchConfig(value?.defaultLaunchConfig),
   internal: value?.internal === true,
+  semanticMemoryEnabled: value?.semanticMemoryEnabled === true,
 });
 
 export const buildAgentConfigRecord = (domainObj: AgentDefinition): AgentConfigRecord => ({
@@ -67,6 +70,8 @@ export const buildAgentConfigRecord = (domainObj: AgentDefinition): AgentConfigR
   defaultLaunchConfig: domainObj.defaultLaunchConfig ?? null,
   // Written only for an internal agent: a normal agent's file stays as it always was.
   ...(domainObj.internal ? { internal: true } : {}),
+  // Written only when on: an agent without semantic memory keeps its file as it was.
+  ...(domainObj.semanticMemoryEnabled ? { semanticMemoryEnabled: true } : {}),
 });
 
 export const mergeAgentConfigRecord = (
@@ -75,7 +80,9 @@ export const mergeAgentConfigRecord = (
 ): Record<string, unknown> => {
   const retainedConfig = Object.fromEntries(
     Object.entries(existingConfig).filter(
-      ([key]) => key !== "selfEvolution" && key !== ["system", "Prompt", "Processor", "Names"].join(""),
+      // `semanticMemoryEnabled` is rewritten from the definition, so turning it off removes it.
+      ([key]) => key !== "selfEvolution" && key !== "semanticMemoryEnabled"
+        && key !== ["system", "Prompt", "Processor", "Names"].join(""),
     ),
   );
   return {

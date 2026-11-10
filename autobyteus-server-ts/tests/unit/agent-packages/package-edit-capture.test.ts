@@ -103,6 +103,12 @@ describe("PackageEditCapture.captureAndBackUp", () => {
     expect(await stagingLeft()).toEqual([]);
   });
 
+  it("captures a semantic memory switch turned on in the package file (agent-semantic-memory)", async () => {
+    await writePackage(installDir, { tools: ["read_file", "write_file"], agentExtra: { semanticMemoryEnabled: true } });
+    await capture().captureAndBackUp({ source, installedRevision: "a".repeat(40), installDir });
+    expect(await personalJson()).toEqual({ "agent:solution-designer": { semanticMemoryEnabled: true } });
+  });
+
   it("an unchanged package writes nothing: no record, no backup (contract V-C)", async () => {
     await capture().captureAndBackUp({ source, installedRevision: "a".repeat(40), installDir });
     expect(await personalFileExists()).toBe(false);

@@ -26,13 +26,13 @@ import {
 import type { DefinitionLoadIssue } from "../../agent-package-definitions/domain/agent-package-definition-types.js";
 import {
   PersonalSettingsService,
-  type PersonalSettingEdits,
   type PersonalSettingsSourceClass,
   type PersonalSettingsView,
 } from "../../personal-settings/services/personal-settings-service.js";
 import type { PersonalSetting } from "../../personal-settings/domain/personal-setting-record.js";
 import { getInternalAgentVisibility, type InternalAgentVisibility } from "./internal-agent-visibility.js";
 import type { AgentDefinitionChangeSignal } from "./agent-definition-change-signal.js";
+import { cloneAgent, normalizeOptionalString, personalEditsOf } from "./agent-definition-edits.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -60,8 +60,8 @@ export type AgentDefinitionFileStore = Pick<
   | "listApplicationOwnedAgents" | "listApplicationOwnedTeamLocalAgents"
 >;
 
-/** The four settings that are personal for package and built-in agents (the rest goes to the files). */
-const PERSONAL_FIELDS: ReadonlySet<string> = new Set(["toolNames", "skillNames", "avatarUrl", "defaultLaunchConfig"]);
+/** The settings that are personal for package and built-in agents (the rest goes to the files). */
+const PERSONAL_FIELDS: ReadonlySet<string> = new Set(["toolNames", "skillNames", "avatarUrl", "defaultLaunchConfig", "semanticMemoryEnabled"]);
 
 /** A stored definition with where it was read from (null for an application-owned agent). */
 type BaseRead = Readonly<{ definition: AgentDefinition | null; sourceClass: PersonalSettingsSourceClass | null }>;
@@ -80,14 +80,6 @@ const isApplicationOwnedAgentId = (definitionId: string): boolean => {
   return Boolean(teamLocal && parseCanonicalApplicationOwnedTeamId(teamLocal.ownerTeamId));
 };
 
-const normalizeOptionalString = (value: unknown): string | null => {
-  if (typeof value !== "string") {
-    return null;
-  }
-  const trimmed = value.trim();
-  return trimmed.length > 0 ? trimmed : null;
-};
-
 export type AgentDefinitionCreateInput = {
   name: string;
   role?: string;
@@ -104,32 +96,10 @@ export type AgentDefinitionCreateInput = {
   skillNames?: string[];
   skillScope?: AgentSkillScope;
   defaultLaunchConfig?: AgentDefinitionDefaultLaunchConfig | null;
+  semanticMemoryEnabled?: boolean;
 };
 
 export type AgentDefinitionUpdateInput = Partial<AgentDefinitionCreateInput>;
-
-/** A copy that keeps the class (and copies the arrays it patches). */
-const cloneAgent = (definition: AgentDefinition): AgentDefinition => Object.assign(
-  Object.create(Object.getPrototypeOf(definition) as object) as AgentDefinition,
-  definition,
-  {
-    toolNames: [...definition.toolNames],
-    skillNames: [...definition.skillNames],
-    inputProcessorNames: [...definition.inputProcessorNames],
-    llmResponseProcessorNames: [...definition.llmResponseProcessorNames],
-    toolExecutionResultProcessorNames: [...definition.toolExecutionResultProcessorNames],
-    toolInvocationPreprocessorNames: [...definition.toolInvocationPreprocessorNames],
-    lifecycleProcessorNames: [...definition.lifecycleProcessorNames],
-  },
-);
-
-/** The input's four personal settings, normalized as the files would hold them; an absent field stays absent. */
-const personalEditsOf = (data: AgentDefinitionUpdateInput): PersonalSettingEdits => ({
-  ...(data.toolNames !== undefined && data.toolNames !== null ? { toolNames: data.toolNames } : {}),
-  ...(data.skillNames !== undefined && data.skillNames !== null ? { skillNames: data.skillNames } : {}),
-  ...(data.avatarUrl !== undefined ? { avatarUrl: normalizeOptionalString(data.avatarUrl) } : {}),
-  ...(data.defaultLaunchConfig !== undefined ? { defaultLaunchConfig: normalizeDefaultLaunchConfigInput(data.defaultLaunchConfig) ?? null } : {}),
-});
 
 type AgentDefinitionServiceOptions = {
   fileStore?: AgentDefinitionFileStore;
@@ -257,6 +227,7 @@ export class AgentDefinitionService {
       skillNames: data.skillNames ?? [],
       skillScope: normalizeAgentSkillScope(data.skillScope),
       defaultLaunchConfig: normalizeDefaultLaunchConfigInput(data.defaultLaunchConfig) ?? null,
+      semanticMemoryEnabled: data.semanticMemoryEnabled === true,
     });
 
     const created = await this.fileStore.create(definition);
@@ -352,7 +323,7 @@ export class AgentDefinitionService {
   }
 
   /**
-   * A save. For a package or built-in agent the four personal settings go to the personal settings
+   * A save. For a package or built-in agent the personal settings go to the personal settings
    * file and the other fields to the agent's files, written only when their rendering changes;
    * every other agent is written to its files as before. Returns the effective definition.
    */
@@ -455,6 +426,9 @@ export class AgentDefinitionService {
           break;
         case "skillScope":
           nextValue = normalizeAgentSkillScope(value);
+          break;
+        case "semanticMemoryEnabled":
+          nextValue = value === true;
           break;
         default:
           break;

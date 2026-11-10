@@ -29,6 +29,9 @@ import type { AgentToolMcpRunSessionActivator } from "../../../../../../src/agen
 import type { AgentToolMcpDescriptor } from "../../../../../../src/agent-tools/mcp/agent-tool-mcp-session.js";
 import { testMemberExecutionContext } from "../../../../../fixtures/current-team-run-fixtures.js";
 import type { ApplicationExecutionContext } from "@autobyteus/application-sdk-contracts";
+import fs from "node:fs";
+import os from "node:os";
+import { AgentSemanticMemory } from "../../../../../../src/agent-memory/services/agent-semantic-memory.js";
 
 const WORKING_DIRECTORY = "/tmp/codex-workspace";
 const resolvedBinding = (skill: Skill): ConfiguredAgentSkillBinding => ({ kind: "resolved", skill });
@@ -150,6 +153,7 @@ const createBootstrapper = (input: {
   materializeImplementation?: WorkspaceSkillMaterializer["materializeConfiguredWorkspaceSkills"];
   skillScope?: "CONFIGURED" | "ALL_INSTALLED";
   integrationRunAccess?: IntegrationRunAccess | null;
+  semanticMemory?: { memoryDir: string; enabled: boolean };
 }) => {
   const workspaceSkillMaterializer = createMaterializerMock();
   if (input.materializeImplementation) {
@@ -168,6 +172,8 @@ const createBootstrapper = (input: {
       name: "Codex test agent",
       instructions: "Run the test.",
       description: "Test agent",
+      id: "agent-def",
+      semanticMemoryEnabled: input.semanticMemory?.enabled === true,
     })),
   } as unknown as AgentDefinitionService;
   const skillService = {
@@ -202,6 +208,7 @@ const createBootstrapper = (input: {
     skillService,
     clientManager,
     input.integrationRunAccess ?? null,
+    new AgentSemanticMemory({ memoryDir: input.semanticMemory?.memoryDir ?? "/nonexistent-memory" }),
   );
 
   return {
@@ -350,6 +357,64 @@ describe("CodexThreadBootstrapper", () => {
         integrationRunAccess: { environmentForRun: async () => ({}) } });
       const plain = await without.bootstrapper.bootstrapForCreate(createRunContext({ autoExecuteTools: false }), guard);
       expect(Object.keys(plain.runtimeContext.codexThreadConfig.appServerConfig ?? {})).toEqual(["mcp_servers"]);
+    });
+  });
+
+  describe("semantic memory (REQ-005, REQ-006, AC-005)", () => {
+    const guard = { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined };
+    let memoryDir: string;
+    beforeEach(() => { memoryDir = fs.mkdtempSync(path.join(os.tmpdir(), "codex-semantic-memory-")); });
+    afterEach(() => fs.rmSync(memoryDir, { recursive: true, force: true }));
+
+    it("tells an enabled agent its folder and makes it a writable root of the workspace-write sandbox, on create and restore", async () => {
+      process.env.CODEX_APP_SERVER_SANDBOX = "workspace-write";
+      const folder = path.join(memoryDir, "semantic", "agent-def");
+      const { bootstrapper } = createBootstrapper({ skills: [], requestImplementation: async () => ({ data: [] }),
+        semanticMemory: { memoryDir, enabled: true } });
+      for (const runContext of [
+        await bootstrapper.bootstrapForCreate(createRunContext({ autoExecuteTools: false }), guard),
+        await bootstrapper.bootstrapForRestore(createRestoreRunContext({ autoExecuteTools: false }), guard),
+      ]) {
+        expect(runContext.runtimeContext.codexThreadConfig.baseInstructions).toContain(
+          `## Semantic Memory\n\nYour semantic memory is the folder \`${folder}\`. It belongs to you`);
+        expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).toMatchObject({
+          sandbox_workspace_write: { writable_roots: [folder] },
+        });
+        expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).not.toHaveProperty("sandbox_workspace_write.network_access");
+      }
+      expect(fs.statSync(folder).isDirectory()).toBe(true);
+    });
+
+    it("keeps network access next to the writable root for a run with integration variables (one owner of the key)", async () => {
+      process.env.CODEX_APP_SERVER_SANDBOX = "workspace-write";
+      const { bootstrapper } = createBootstrapper({ skills: [], requestImplementation: async () => ({ data: [] }),
+        semanticMemory: { memoryDir, enabled: true },
+        integrationRunAccess: { environmentForRun: async () => ({ GIT_TERMINAL_PROMPT: "0" }) } });
+      const runContext = await bootstrapper.bootstrapForCreate(createRunContext({ autoExecuteTools: false }), guard);
+      expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).toMatchObject({
+        sandbox_workspace_write: { network_access: true, writable_roots: [path.join(memoryDir, "semantic", "agent-def")] },
+      });
+    });
+
+    it("leaves read-only read-only and full access as it is", async () => {
+      process.env.CODEX_APP_SERVER_SANDBOX = "read-only";
+      const { bootstrapper } = createBootstrapper({ skills: [], requestImplementation: async () => ({ data: [] }),
+        semanticMemory: { memoryDir, enabled: true } });
+      for (const autoExecuteTools of [false, true]) {
+        const runContext = await bootstrapper.bootstrapForCreate(createRunContext({ autoExecuteTools }), guard);
+        expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).not.toHaveProperty("sandbox_workspace_write");
+        expect(runContext.runtimeContext.codexThreadConfig.baseInstructions).toContain("## Semantic Memory");
+      }
+    });
+
+    it("gives an agent without semantic memory no section, no folder and an unchanged thread config", async () => {
+      process.env.CODEX_APP_SERVER_SANDBOX = "workspace-write";
+      const { bootstrapper } = createBootstrapper({ skills: [], requestImplementation: async () => ({ data: [] }),
+        semanticMemory: { memoryDir, enabled: false } });
+      const runContext = await bootstrapper.bootstrapForCreate(createRunContext({ autoExecuteTools: false }), guard);
+      expect(runContext.runtimeContext.codexThreadConfig.baseInstructions).not.toContain("Semantic Memory");
+      expect(Object.keys(runContext.runtimeContext.codexThreadConfig.appServerConfig ?? {})).toEqual(["mcp_servers"]);
+      expect(fs.readdirSync(memoryDir)).toEqual([]);
     });
   });
 

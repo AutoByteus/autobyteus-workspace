@@ -135,6 +135,23 @@ describe("edits and resets (contract §6)", () => {
     expect(published).toEqual([]);
   });
 
+  it("keeps the semantic memory switch only when it differs from the base; reset removes it; agents only", () => {
+    const service = create();
+    service.setEdited("agent", "solution-designer", agent(), { semanticMemoryEnabled: false });
+    expect(fs.existsSync(filePath)).toBe(false);
+    service.setEdited("agent", "solution-designer", agent(), { semanticMemoryEnabled: true });
+    expect(fileJson()).toEqual({ "agent:solution-designer": { semanticMemoryEnabled: true } });
+    expect(service.personalSettingsOf("agent", "solution-designer")).toEqual(["SEMANTIC_MEMORY"]);
+    expect(service.apply("agent", agent(), "registered_package").semanticMemoryEnabled).toBe(true);
+    // A package that turns it on itself: the personal "off" is kept as a difference from that base.
+    service.setEdited("agent", "solution-designer", agent({ semanticMemoryEnabled: true }), { semanticMemoryEnabled: false });
+    expect(fileJson()).toEqual({ "agent:solution-designer": { semanticMemoryEnabled: false } });
+    expect(service.apply("agent", agent({ semanticMemoryEnabled: true }), "registered_package").semanticMemoryEnabled).toBe(false);
+    service.reset("agent", "solution-designer", "SEMANTIC_MEMORY");
+    expect(fileJson()).toEqual({});
+    expect(() => service.reset("agent_team", "t", "SEMANTIC_MEMORY")).toThrow("not personal for a agent_team");
+  });
+
   it("announces only the lists of the changed kinds", () => {
     const service = create();
     service.setEdited("agent_org", "o", { avatarUrl: null, defaultLaunchConfig: null }, { avatarUrl: "/o.png" });
@@ -210,6 +227,19 @@ describe("the file (contract §2, §4)", () => {
     expect(copies).toHaveLength(1);
     expect(fs.readFileSync(path.join(path.dirname(filePath), copies[0]!), "utf8")).toBe("{ not json");
     expect(fileJson()).toEqual({ "agent:solution-designer": { avatarUrl: "/mine.png" } });
+  });
+
+  it("skips a semantic memory value that is not a boolean, and on a Team", () => {
+    fs.mkdirSync(path.dirname(filePath), { recursive: true });
+    fs.writeFileSync(filePath, JSON.stringify({
+      "agent:a": { semanticMemoryEnabled: "yes", avatarUrl: "/a.png" },
+      "agent:b": { semanticMemoryEnabled: true },
+      "agent_team:t": { semanticMemoryEnabled: true, avatarUrl: "/t.png" },
+    }));
+    const service = create();
+    expect(service.apply("agent", agent({ id: "a" }), "registered_package")).toMatchObject({ semanticMemoryEnabled: false, avatarUrl: "/a.png" });
+    expect(service.apply("agent", agent({ id: "b" }), "registered_package").semanticMemoryEnabled).toBe(true);
+    expect(service.personalSettingsOf("agent_team", "t")).toEqual(["AVATAR"]);
   });
 
   it("keeps entries it skips when it writes another record", () => {

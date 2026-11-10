@@ -21,6 +21,7 @@ import {
 } from "../../../../agent-memory/services/system-instruction-capture-service.js";
 import { resolveRuntimeAgentToolExposure, type RuntimeAgentToolExposure } from "../../../shared/runtime-agent-tool-exposure.js";
 import { composeSharedCarpenterPrompt } from "../../../prompt/carpenter-prompt-composer.js";
+import { getAgentSemanticMemory, type AgentSemanticMemory } from "../../../../agent-memory/services/agent-semantic-memory.js";
 import { buildAgentRunMessageSenderContext } from "../../../../agent-communication/domain/agent-run-message-sender.js";
 import { getAgentTeamAddressBasename } from "../../../../agent-collaboration/domain/agent-team-address.js";
 import type { MaterializedWorkspaceSkill, WorkspaceSkillMaterializer } from "../../shared/workspace-skill-materializer.js";
@@ -50,6 +51,8 @@ export type AcpAgentRunBackendFactoryDependencies = Readonly<{
   mcpSessions: AgentToolMcpRunSessionActivator & AgentToolMcpRunSessionExposure;
   skillMaterializer: WorkspaceSkillMaterializer;
   instructionCapture?: SystemInstructionCaptureService;
+  /** The agents' semantic memory folders; the process instance by default. */
+  semanticMemory?: AgentSemanticMemory;
   /** The run's integration variables for the agent process (`null`: none on this host). */
   integrationRunAccess: IntegrationRunAccess | null;
   /** The runs' provider relay access (`null`: this host runs no credential proxy). */
@@ -59,6 +62,7 @@ export type AcpAgentRunBackendFactoryDependencies = Readonly<{
 type PreparedRun = Readonly<{
   workingDirectory: string;
   definition: AgentDefinition;
+  semanticMemoryPath: string | null;
   exposure: RuntimeAgentToolExposure;
   descriptor: AgentToolMcpDescriptor;
   materializedSkills: MaterializedWorkspaceSkill[];
@@ -105,7 +109,7 @@ export class AcpAgentRunBackendFactory implements AgentRunBackendFactory {
 
   private async createBackend(config: AgentRunConfig, runId: string, owner: AcpPreparationOwner, assertAccepting: () => void, release: () => Promise<void>): Promise<AcpAgentRunBackend> {
     const prepared = await this.prepare(config, runId, owner, assertAccepting);
-    const instructions = this.composeInstructions(prepared.definition, config);
+    const instructions = this.composeInstructions(prepared, config);
     const sink = new AcpSessionEventSink();
     const suppliedAt = Date.now() / 1000;
     const opened = await this.launcher.open({
@@ -123,7 +127,7 @@ export class AcpAgentRunBackendFactory implements AgentRunBackendFactory {
     }
     const prepared = await this.prepare(context.config, context.runId, owner, assertAccepting);
     // Composed from the current definition, as at creation: a launch whose agent does not keep them needs them again.
-    const instructions = this.composeInstructions(prepared.definition, context.config);
+    const instructions = this.composeInstructions(prepared, context.config);
     const sink = new AcpSessionEventSink();
     await this.launcher.open({
       owner, runId: context.runId, config: context.config, workingDirectory: prepared.workingDirectory,
@@ -132,9 +136,10 @@ export class AcpAgentRunBackendFactory implements AgentRunBackendFactory {
     return this.bindBackend(context.config, context.runId, prepared, sessionId, instructions, null, owner, sink, release);
   }
 
-  private composeInstructions(definition: AgentDefinition, config: AgentRunConfig): string {
+  private composeInstructions(prepared: PreparedRun, config: AgentRunConfig): string {
     return composeSharedCarpenterPrompt({
-      agentDefinition: definition, memberExecutionContext: config.memberExecutionContext, project: config.project,
+      agentDefinition: prepared.definition, memberExecutionContext: config.memberExecutionContext, project: config.project,
+      semanticMemoryPath: prepared.semanticMemoryPath,
     });
   }
 
@@ -142,6 +147,7 @@ export class AcpAgentRunBackendFactory implements AgentRunBackendFactory {
     const workingDirectory = await this.deps.workspaces.resolveWorkingDirectory(config.workspaceId);
     const definition = await this.deps.definitions.getAgentDefinitionById(config.agentDefinitionId);
     if (!definition) throw new Error(`ACP_AGENT_DEFINITION_MISSING: ${config.agentDefinitionId}`);
+    const semanticMemoryPath = await (this.deps.semanticMemory ?? getAgentSemanticMemory()).prepareForRun(definition);
     const bindings = this.deps.skills.resolveConfiguredSkillBindingsForAgent(definition);
     const { materializedSkills } = await this.deps.skillMaterializer.materializeConfiguredWorkspaceSkills({
       runId, workingDirectory,
@@ -154,7 +160,7 @@ export class AcpAgentRunBackendFactory implements AgentRunBackendFactory {
     assertAccepting();
     const exposure = resolveRuntimeAgentToolExposure(definition, config.memberExecutionContext);
     const descriptor = this.activateMcp(runId, config, workingDirectory, exposure);
-    return { workingDirectory, definition, exposure, descriptor, materializedSkills };
+    return { workingDirectory, definition, semanticMemoryPath, exposure, descriptor, materializedSkills };
   }
 
   /** The run's backend over what the owner holds; the session's output goes to it from now on. */
