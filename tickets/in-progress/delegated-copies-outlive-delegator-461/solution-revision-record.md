@@ -16,6 +16,7 @@
 | SR-010 | Mixed | Architecture review ARCH-REV-001 (Fail): AR-001 … AR-010 | AR-001 … AR-010 | Requirements Approved; design Ready | Requirements Approved with DEC-011 Ready for Approval; design Needs Revision (revised, waiting for DEC-011) | DEC-011 (new); REQ-005 (wording, if A); design RC-1 … RC-10, D-6, DS-004, DS-004b, DS-007, DS-008, the migration plan | Findings answered; one requirement decision for the user |
 | SR-011 | Requirements | The user asked that communication be written into the contract | N/A | Contract revision 2 approved; DEC-011 open | Contract revision 3 proposed (§10 added); DEC-011 open, recommendation B | Contract §10 (M1 … M9, address order, delivery, lookup); DEC-011 | For the user's review and decision |
 | SR-012 | Mixed | The user: a run is connected with its Task; closed Tasks need not stay in the collaboration tree; is the on-disk contract designed and validated? | N/A | Contract revision 3 proposed | Contract revision 4 proposed (§11 added) | Contract §11 (L1 … L11, what reads what, validation); DEC-011 (B, agreed in conversation, to confirm); TC-4 reopened by the user (teams and orgs in this ticket if it fits; not sized) | For the user's review |
+| SR-013 | Requirements | The user's ordering decision: fix the growing collaboration tree first, as its own Task | N/A | Contract revision 4 proposed; design Needs Revision | Blocked: Waiting For Prerequisite PRE-001 | PRE-001 (new); every REQ waits | The prerequisite is sent to the Project Task Manager |
 
 ## Revision Entries
 
@@ -294,3 +295,26 @@
 - Downstream and architecture-review impact: none until the redesign
 - Remaining gaps, assumptions or blocked decisions: the user's confirmation; the sizing of team and org runs
 - Next action: the user reviews §10 and §11 and answers the two open questions (teams and orgs; temporary Tasks)
+
+### SR-013 — Waiting for prerequisite PRE-001 (the user's ordering)
+
+- Phase and classification: Requirements, a prerequisite by the user's decision
+- Triggering user feedback, Product package, investigation evidence, or role/report/round: the user, 2026-11-10: fix the constantly growing collaboration tree first, on the current structure, then come back to this ticket; ask the Project Task Manager to create the Task and work on it first
+- Triggering finding IDs: N/A
+- Prior authoritative requirements/design status: requirements `Approved` (SR-007) with open deltas (DEC-011; contract revisions 3 and 4 proposed); design `Needs Revision` (SR-010)
+- Current authoritative requirements/design status: `Blocked`, `Waiting For Prerequisite` PRE-001; nothing else changed
+- Requirement, behavior, acceptance-criteria, scenario or decision IDs affected: PRE-001; the contract's §11 and §12 become the rules of the prerequisite Task
+- Scenario-basis or scenario-validity changes: none
+- Why this baseline or revision was recorded: the ticket stops until the prerequisite is delivered
+- Canonical requirements, investigation and design sections changed: requirements Document Status and Prerequisites; `handoff-waiting-for-prerequisite.md`
+- Supplemental artifacts added, changed or removed: `handoff-waiting-for-prerequisite.md`
+- Product design evidence or product decisions incorporated: none
+- Intended behavior changed: `No`
+- Approval impact, exact approved requirements baseline, who approved, and approval reference: unchanged; when the ticket continues, the requirements and the contract are revised on the delivered prerequisite and the user's open decisions (DEC-011, scope for team and org runs, temporary Tasks) are taken up again
+- Behavior-defining supplement versions and approval references: contract revision 2 approved; revisions 3 and 4 proposed
+- Affected design/review basis invalidated or rebuilt: the design is rebuilt after the prerequisite; architecture review round 2 then
+- Post-design task-size/risk classification and rationale changes: N/A
+- Applied handoff-rule outcome / result-file reference, when a handoff occurred: no rule for a blocked result; sent to `/project_task_manager` with `handoff-waiting-for-prerequisite.md`
+- Downstream and architecture-review impact: none until the ticket continues
+- Remaining gaps, assumptions or blocked decisions: the prerequisite Task's key
+- Next action: the Project Task Manager creates the Task and gives it to this team; this ticket continues when it is delivered

@@ -2,8 +2,8 @@
 
 ## Document Status
 
-- Status: `Approved` at SR-007, with one open delta at SR-010: DEC-011 (which message routes exist between runs), raised by the architecture review, `Ready for Approval` and waiting for the user. Nothing else changed.
-- Current solution revision ID: `SR-011`
+- Status: **waiting for prerequisite PRE-001** (the user's decision of 2026-11-10: the growing collaboration tree is fixed first, as its own Task; this ticket continues afterwards). Before that: `Approved` at SR-007, with one open delta at SR-010: DEC-011 (which message routes exist between runs), raised by the architecture review, `Ready for Approval` and waiting for the user. Nothing else changed.
+- Current solution revision ID: `SR-013`
 - Package identifier: `delegated-copies-outlive-delegator-461`
 - Request / ticket: Project Task `autobyteus-461` (Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`)
 - Requested by (the user, or the delegating agent's address): `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), with the user's decisions of 2026-11-10 in the Solution Designer's conversation
@@ -81,11 +81,9 @@ BEH-002, BEH-005, BEH-006 (except the stated addition), BEH-008; REQ-005, REQ-00
 
 ### Prerequisites
 
-None.
-
 | Prerequisite ID | Finding And Evidence | Blocks (REQ / AC IDs) | Sent To (agent) / Task Key | Status |
 | --- | --- | --- | --- | --- |
-| — | — | — | — | — |
+| PRE-001 | A run's collaboration tree keeps an entry for every run it ever delegated to, also after the run's Task is closed, and grows for good. Evidence (read-only, the user's data, `investigation-notes.md` and `evidence/data-model-validation/task-record-validation-2026-11-10.txt`): the manager's tree has 145 entries, 134 of closed Tasks; loading the run also reads 143 own files of listed runs; of 196 delegated runs 170 belong only to closed Tasks; for all 170 the entry's facts are also in the Task's record or the run's own file. The user decided on 2026-11-10 to fix this first, on the current structure, and to return to this ticket afterwards ("let's first fix the problem regarding the collaboration tree which is constantly growing … and then after this problem is fixed we come back to this ticket again"). It is other functionality than this ticket's (which removes the hosting); this ticket's contract §11 and §12 are its rules | All (the user's ordering): this ticket's design is rebuilt on the result | `/project_task_manager`, 2026-11-10 (`handoff-waiting-for-prerequisite.md`); Task key: to be created | Sent |
 
 ### Review Authority
 

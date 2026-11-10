@@ -11,7 +11,7 @@
 - Finalization target remote / branch: `origin` / `personal` (release separately, on the user's word)
 - Bootstrap result: worktree and branch created from `origin/personal`; ticket folder `tickets/in-progress/delegated-copies-outlive-delegator-461/`
 - Bootstrap blocker: none
-- Current solution revision ID: `SR-012`
+- Current solution revision ID: `SR-013`
 - Authorities read (requirements reading gate; file and date): `references/requirements-engineering.md`, `references/finding-the-cause.md`, `references/ticket-scope.md`, `references/handoff.md` (2026-11-10); project `DESIGN.md`, `autobyteus-server-ts/docs/design/collaboration_model.md` (2026-11-10)
 - Investigation status: requirements and architecture investigation done for the contract's first step; revised after architecture review ARCH-REV-001 (see "Investigation for the architecture review's findings"). Sections above the contract work (SR-001 … SR-003) are history: U-001, U-002 and R-001 belong to the superseded small design
 
@@ -328,3 +328,5 @@ Recorded from the Solution Designer's conversation; not yet written into the con
 - The user asked whether the on-disk contract with every case is already designed and validated. Answer given: revision 2 is; the rules decided since (the Task's record as the lookup, a link only while its Task is open) were not; they are now written as contract §11 with the measurements above, still proposed.
 
 - The user asked whether the contract works when analyzed, for example for communication. Walk recorded as contract §12 (W1 … W12). It found three gaps in §10 as written: the link's pair rule (delegator only, from the cross-node code `remote-endpoint.ts` `pairRule([link.delegatorAgentRunId])`) contradicts §10.3 step 2 (every agent of the delegating run by address); the Task route was limited to entry agents without need; finding a run from an agent's run ID when no link exists was not stated. Corrections are in §12. `Measured`: `measure_routes_run_level.py` → `routes-run-level-2026-11-10.txt`: 1,601 cross-run messages; 1,559 on a link at run level (1,557 delegator ↔ delegated run, 2 with another agent of the delegating run); 6 through the Task's record (a Task's assigner run and a run of that Task); 36 with no route (33 where neither run has a Task record, 3 others).
+
+- The user, 2026-11-10: "let's first fix the problem regarding the collaboration tree which is constantly growing … we can fix this problem first and then after this problem is fixed we come back to this ticket again"; after the trade-offs were named (the original Stop problem stays until then; the part built on today's hosting code is redone later): "you can ask the Project Task Manager to create a Task … send the detailed message … and then you can work on the Task first". Recorded as prerequisite PRE-001; this ticket waits (SR-013). Not checked for the prerequisite: the Memory page's rule for listing a delegated run.
