@@ -1,0 +1,37 @@
+    43  delegated.agent
+    24  delegated.agent.has_launchSource
+     3  delegated.agent.has_userLaunchSelection
+     1  delegated.not_linked_by_any_stored_tree
+   153  delegated.team
+   153  delegated.team.address_equals_own_rootTeam_address
+   109  delegated.team.has_launchSource
+     6  delegated.team.has_userLaunchSelection
+   195  links.address_same_both_sides
+   195  links.delegator_same_both_sides
+   195  links.holder_is_target's_coordinatingRun
+    43  links.local.agent
+   152  links.local.team
+     2  links.nested_under_a_team_or_member
+     2  links.remote (nodeId)
+   197  links.total
+   528  runs.agent
+    24  runs.org
+   754  runs.team
+    32  target.delegatingRun != today's coordinatingRun (nested: one hop)
+   159  target.delegatingRun == today's coordinatingRun
+   142  target.delegatingRun.kind=agent (runId == delegatorAgentRunId)
+     1  target.delegatingRun.unresolvable (delegator's run not stored)
+     4  target.delegator.absent (old record)
+   375  task_records.assignedBy == run's delegator
+   407  task_records.entries
+   361  task_records.files
+   405  task_records.hostRoot == run's coordinatingRun (derivable)
+   370  task_records.recipientAddress == run's address
+   377  task_records.role.assigned
+     2  task_records.role.broughtIn
+    28  task_records.role.delegated
+     2  task_records.run_not_stored_on_this_node (deleted or remote)
+   170  today.coordinatingRun.kind.agent
+     6  today.coordinatingRun.kind.agent_org
+    20  today.coordinatingRun.kind.agent_team
+     1  today.coordinatingRun.missing (detached)

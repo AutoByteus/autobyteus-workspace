@@ -11,7 +11,7 @@
 - Finalization target remote / branch: `origin` / `personal` (release separately, on the user's word)
 - Bootstrap result: worktree and branch created from `origin/personal`; ticket folder `tickets/in-progress/delegated-copies-outlive-delegator-461/`
 - Bootstrap blocker: none
-- Current solution revision ID: `SR-005`
+- Current solution revision ID: `SR-006`
 - Authorities read (requirements reading gate; file and date): `references/requirements-engineering.md`, `references/finding-the-cause.md`, `references/ticket-scope.md`, `references/handoff.md` (2026-11-10); project `DESIGN.md`, `autobyteus-server-ts/docs/design/collaboration_model.md` (2026-11-10)
 - Investigation status: requirements investigation complete; architecture investigation starts after the requirements are approved
 
@@ -168,6 +168,7 @@ N/A — no Product Design was requested.
 | --- | --- | --- | --- | --- | --- | --- |
 | `target-collaboration-contract.md` | Solution Designer | The target contract for delegated runs (words, rules, stored shapes, user-visible outcome, decisions TC-1 … TC-4) | All run kinds | All | Proposed (SR-005) | Behavior-defining; the user's approval pending |
 | `follow-ups.md` | Solution Designer | Follow-ups (FU-001 withdrawn, FU-002) | — | REQ-010 | Current | Not behavior-defining |
+| `evidence/data-model-validation/validate_delegation_shapes.py` and `counts-2026-11-10.txt` | Solution Designer | The read-only data check of the contract and its result | The user's stored data, counts only | All | Current | Evidence |
 
 ## Assumptions, Unknowns, And Risks
 
@@ -231,3 +232,17 @@ Feasibility investigation for DEC-009, 2026-11-10 (all `Read`; architecture read
 - Such a run has its own idle shutdown (`StandaloneHostIdleShutdown`, `RemoteTeamIdleShutdown`) and is restored by an inbound message (`CollaborationRootResolver.resolveOrRestore`).
 - What a linked run does not have today, and a local delegated run has: a saved Task and reference files (refused for a remote target, `remote-delegation.ts` `delegationPlacement`), the Project's folder and the delegating run's launch inheritance (a peer-started run uses its node's defaults, the temp workspace and auto-approve), stop on Task closure and reactivation (`collaboration_model.md` § 4, "later steps").
 - Task side: `projects/domain/task-execution-resources.ts` records `hostRoot` with each run; message scope by Task is checked in each root's `RootCommunicationEngine` (`docs/modules/agent_communication.md` "Task-linked message scope").
+
+### Data-level validation of the contract, 2026-11-10 (`Measured`)
+
+- The user, 2026-11-10: first validate that the data structure is reasonable and works, with no redundant attributes; and: do it as the earlier model document did, every case with example JSON, so the data level has no ambiguity. Model found: `tickets/done/delegated-copy-own-run-memory/memory-layout-contract.md` (revision 5; records with JSON, a who-delegates table, every existing shape with counts, operations, validation, simulations).
+- Command: `python3 -I evidence/data-model-validation/validate_delegation_shapes.py ~/.autobyteus/server-data` (reads only; prints counts). Result in `counts-2026-11-10.txt`:
+  - 528 agent run files, 754 team trees, 24 org trees. 196 delegated runs (43 agent, 153 team); 0 runs started by a peer.
+  - Today's `coordinatingRun`: 170 a standalone run, 20 a team run, 6 an org run; 1 is no longer stored (detached), and 1 delegated run is linked by no stored tree.
+  - One-hop delegating run: the same run as today's `coordinatingRun` for 159; a different one for 32 (the delegator is a part of another delegated run); 4 records have no delegator; for 1 the delegator's run is not stored. For 142 the delegating run is a standalone run whose ID equals the delegator's.
+  - 197 links: 195 local (43 agent, 152 team), 2 with `nodeId`; 2 stored under an org member; 0 local links carry any field besides `address`, the run ID, `delegatorAgentRunId`, `startedAt`. Address, delegator and holder agree with the linked run's own file in 195 of 195.
+  - A team run's `taskAgent.address` equals its own `rootTeam.address` in 153 of 153. An agent run's address differs from `/<definition id>` in 6 of 43 (renamed or team-local definitions).
+  - `launchSource` on 24 agent and 109 team sections; `userLaunchSelection` on 3 and 6; `pendingRuntimeSwitch` on 0.
+  - 407 Task record entries in 361 files (377 assigned, 28 delegated, 2 broughtIn). `hostRoot` equals the run's own `coordinatingRun` in 405 of 405 entries of runs stored on this node; the other 2 are the 2 remote runs (their `hostRoot` is a standalone run). `assignedBy` equals the run's delegator in 375 of 375; `recipientAddress` equals the run's address in 370 of 370 entries that carry it.
+- Code readers of the fields that change (`grep -rlE` in `autobyteus-server-ts/src`, non-migration + migration files): `hostRoot` 14 + 0, `taskAgent` 11 + 15, `coordinatingRun` 18 + 10, `delegatedFrom` 22 + 6, `TaskAgentRunMetadata` 7 + 10, `remoteTaskExecutions` 34 + 11. `hostRoot` has five uses (`project-task-execution-resource-composition.ts:60-64`, `task-execution-resource-service.ts:187-212`, `task-execution-resource-release.ts:15-29`, `project-task-service.ts:199-214`, `project-change-messages.ts:24,71`): stop on Task closure, a root's closed set, the Task page's run status, deleting the Tasks with no Project of a deleted run, the client's locator.
+- Not run: any code on the target shape.

@@ -3,7 +3,7 @@
 ## Document Status
 
 - Status: `Draft` (the user changed the direction on 2026-11-10, SR-004: the structure is corrected in this ticket; the content below is the SR-003 baseline and is being revised)
-- Current solution revision ID: `SR-005`
+- Current solution revision ID: `SR-006`
 - Package identifier: `delegated-copies-outlive-delegator-461`
 - Request / ticket: Project Task `autobyteus-461` (Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`)
 - Requested by (the user, or the delegating agent's address): `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), carrying the user's decision of 2026-11-10
@@ -11,7 +11,7 @@
 - Date: 2026-11-10
 - Approved by and reference: `Solution Designer within the direction (user informed)`, with the two decisions that needed the user decided by the user in the Solution Designer's conversation on 2026-11-10: DEC-001 = wake ("wake it up, resume it … it's the same … doesn't matter it comes from another agent"), DEC-009 = A ("A please"). The user was shown the whole direction on 2026-11-10 and raised no objection
 - Exact approved requirements baseline / solution revision: this document at `SR-003` (scope: standalone Agent runs)
-- Behavior-defining supplements and their approved versions: `target-collaboration-contract.md` (`Proposed`, SR-005; not approved yet: TC-1 and TC-4 need the user)
+- Behavior-defining supplements and their approved versions: `target-collaboration-contract.md` (revision 2, `Proposed`, SR-006; not approved yet: TC-1, TC-3 and TC-4 need the user)
 
 ## Problem And Desired Outcome
 
@@ -180,7 +180,8 @@ None.
 | Artifact Path | Purpose | Related Requirement / AC IDs | Status | Approval Applicability / State |
 | --- | --- | --- | --- | --- |
 | `follow-ups.md` | Problems outside this ticket | REQ-010 | Current (FU-001 withdrawn) | Not behavior-defining |
-| `target-collaboration-contract.md` | The target contract: a delegated run is an ordinary run (words, rules, stored shapes, what the user sees, TC-1 … TC-4) | All | Proposed, SR-005 | Behavior-defining; needs the user's approval |
+| `target-collaboration-contract.md` | The target contract: a delegated run is an ordinary run (words, rules, stored shapes, what the user sees, TC-1 … TC-4) | All | Revision 2, proposed, SR-006 | Behavior-defining; needs the user's approval |
+| `evidence/data-model-validation/validate_delegation_shapes.py`, `counts-2026-11-10.txt` | Read-only check of the stored data against the contract (counts only) | All | Current | Evidence; not behavior-defining |
 
 ## Assumptions
 
