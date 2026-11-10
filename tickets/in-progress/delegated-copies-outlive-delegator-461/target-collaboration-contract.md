@@ -508,3 +508,32 @@ The link's `startedAt` is the run's first delegation, read from the first entry 
 - The manager's list today: 145 links, 134 closed. After the rule: 11.
 
 Not validated: any code. The rule is checked against the stored data only.
+
+## 12. The contract walked through for communication (2026-11-10)
+
+Each case was followed through the records of §2, §10 and §11: where the sender finds the receiver, what the receiving side checks, what is written. Setup as in §10.2 (M, E with coordinator Ec and member Em, P with Pc and Pm, I, R).
+
+| # | Case | Finds the receiver through | Receiving side admits because | Result |
+| --- | --- | --- | --- | --- |
+| W1 | M → Ec by run ID | M's link to E; E's members from E's own tree | E's back-link names M's run | Works |
+| W2 | Ec → M by run ID; Em → M by address | E's back-link | M's link to E | Works |
+| W3 | Pm → Em by address (an agent of the delegating run that is not the delegator) | P's back-link names E's run; E answers who stands at the address | **Gap 1**: §10.5 admits "only the two ends of a link" and the link code pairs the delegated run with the delegator alone, so Em is refused, while §10.3 step 2 says every agent of the delegating run is reachable | Fixed below |
+| W4 | Em → Pc by run ID (another member of the delegating team) | E's link to P | The same gap | Fixed below |
+| W5 | P ↔ I (two runs of one Task) | T1's record | Both runs are recorded in T1 | Works (DEC-011 = B) |
+| W6 | M → Pc; Pm → M by address (the Task's assigner and a run of the Task) | T1's record; the assigner's run is the delegating run of T1's assigned run | M's run assigned T1 | Works (B) |
+| W7 | A non-entry agent as sender or receiver on the Task route (Em → Pm) | **Gap 2**: §10.2 M4 and §10.5 limit the Task route to a run's entry agent; the record lists a team by its run ID and coordinator only | — | Fixed below |
+| W8 | M → Ec after T1 closed and was reopened (the link is gone, §11 L4) | **Gap 3**: no link; the record must be found from an agent's run ID | M assigned the record | Fixed below |
+| W9 | P ↔ R (different Tasks) | — | — | Refused, as today |
+| W10 | Anyone ↔ a run of a closed Task | — | — | Refused, as today |
+| W11 | The receiver is not in memory | The checks read the receiver's stored files; then the run is loaded and its agent woken | — | Works (existing path for a message from another node) |
+| W12 | The delegating run was deleted | The back-link names a run that is not stored | — | Refused: "does not exist"; the run is listed as its own (TC-3) |
+
+**Corrections to §10 that the walk requires (part of revision 4):**
+
+1. **A link connects two runs, not two agents.** Any agent of the delegating run and any agent of the delegated run may message each other: by run ID, and by address towards the delegating run. `delegatorAgentRunId` stays what it is: the agent that delegated, which the delegated run reports to by default. (Across nodes the rule stays as today: the delegator only.)
+2. **The Task route is between runs too:** any agent of a run recorded in an open Task, with any agent of another run of that Task, and with any agent of the run that assigned it.
+3. **Finding a run from an agent's run ID without a link:** the Task records, held in memory, are looked up by a run's entry agent (an agent run's ID; a team's coordinator); for another member of a team, the open Tasks' team runs are asked for their members from their own trees. No new stored attribute.
+
+**Measured against every stored message between two runs** (`evidence/data-model-validation/routes-run-level-2026-11-10.txt`, read-only): 1,601 messages; 1,559 on a link (1,557 between the delegator itself and the delegated run, 2 with another agent of the delegating run: cases W3/W4); 6 through the Task's record (all W6); 36 with no route (33 between runs that have no Task record at all, the time before every delegation got a Task; 3 others). So 1,565 of 1,601 have a route under the corrected rules.
+
+Not covered by this walk: the code. It is a check of the rules against the stored model.
