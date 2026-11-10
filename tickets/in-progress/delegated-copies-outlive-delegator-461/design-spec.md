@@ -2,11 +2,11 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-008`
+- Current solution revision ID: `SR-009`
 - Approved requirements baseline / revision, who approved, and approval reference: `requirements-doc.md` at `SR-007` with `target-collaboration-contract.md` revision 2 (the user, 2026-11-10; details in the requirements' Document Status)
 - Behavior-defining supplements and their approval references: `target-collaboration-contract.md` revision 2, approved by the user on 2026-11-10
-- User approval of the design, when the direction requires it: `Pending` (the Task: "Design first; the user approves the direction before the build")
-- Design status: `Draft` — the mechanism, the cut line, the decisions and the server structure are decided and evidenced; the sections marked **OPEN** below (the web client's files, the history index code, the migration's released-reader list) are not yet at file precision and are completed before any handoff. The earlier spec of SR-003 (change only what Stop covers) is superseded; it is in git at `3a298ba009`.
+- User approval of the design, when the direction requires it: `Obtained` — the user, 2026-11-10, in the Solution Designer's conversation, after the design direction and its visible effects were presented: "I think that makes sense what you have proposed"; and on a delegated run's model being changed in its own Settings: "it's independent agent run now … it's setting … that makes sense"
+- Design status: `Ready`. The earlier spec of SR-003 (change only what Stop covers) is superseded; it is in git at `3a298ba009`. The file-level parts that were open at SR-008 are closed in "File-Level Completion" below.
 - Canonical investigation-notes path: `tickets/in-progress/delegated-copies-outlive-delegator-461/investigation-notes.md`
 - Authorities read (design reading gate; file and date): `references/architecture-design.md`, `references/design-principles.md`, project `DESIGN.md`, `autobyteus-server-ts/docs/design/collaboration_model.md`, `autobyteus-server-ts/docs/design/data_migration_guideline.md` (all sections), `docs/design-cases.md` (headings), `GLOSSARY.md` (searched), the earlier `tickets/done/delegated-copy-own-run-memory/memory-layout-contract.md` — 2026-11-10. `references/design-examples.md`: not used.
 - Project design-principle conflicts with the general principles, or discrepancies: none.
@@ -37,11 +37,11 @@ The contract makes the linked form the only form. The hosted form is the design 
 | Code (`Read`) | `remote-collaboration/inbound/remote-delegation-receiver.ts`, `remote-team-run-starter.ts`, `remote-message-receiver.ts`; `compositions/collaboration-root-resolver.ts` | How a linked run is created (prepared standalone run / `createTeamRun`, both with `delegatedFrom`), and how an inbound message restores its root | D-2, D-4 | None |
 | Code (`Read`) | `standalone-agent-run-root.ts:147-157`; `agent-team-execution/domain/team-run-remote-links.ts`; `services/remote-team-idle-shutdown.ts` | A root with `delegatedFrom` builds a `delegator` endpoint paired with its host or every member, and has an idle shutdown | D-4, D-7 | None |
 | Code (`Read`) | `root-task-execution-lifecycle.ts:174-200`; `root-task-dispatch.ts:59`; `task-execution-resource-port.ts`; `compositions/project-task-execution-resource-composition.ts:60-64`; `projects/runtime/task-execution-resource-release.ts:15-29` | Task linking is shared by both paths; the Task side reaches a run through `hostRoot` (stop on closure, status); a remote run is fenced, not stopped | D-5 | The service's internals read in part |
-| Code (`Read`) | `run-history/store/agent-run-metadata-store.ts:90-176` (the reader returns a standalone run only without `taskAgent`), `task-agent-team-tree-schema.ts:77-90`, `task-agent-own-records.ts` | Delegated runs are hidden from the ordinary readers by the `taskAgent` section | D-8, D-9 | History index code not read (**OPEN**) |
+| Code (`Read`) | `run-history/store/agent-run-metadata-store.ts:90-176` (the reader returns a standalone run only without `taskAgent`), `task-agent-team-tree-schema.ts:77-90`, `task-agent-own-records.ts` | Delegated runs are hidden from the ordinary readers by the `taskAgent` section | D-8, D-9 | The history catalog and index files are named in File-Level Completion; their internals are for the implementation to read |
 | Code (`Read`) | `agent-execution/services/standalone-agent-run-eligibility.ts:15-16` | `canSwitchRuntime` excludes a run with `delegatedFrom` | D-10 | Why a peer-started run is excluded is not recorded |
 | Data (`Measured`) | `evidence/data-model-validation/counts-2026-11-10.txt` | Every stored run converts; counts per shape | D-9 | — |
 | Earlier tickets (`Read`) | `delegated-copy-model-change/requirements-doc.md` REQ-005, DEC-005; `delegated-copy-own-run-memory/requirements-doc.md` DEC-015 (U-1) | The Settings edit is kept beside the started launch so the origin text shows only on untouched agents and the composed record round-trips | D-10 (contract V-9) | None |
-| Web (`Read`) | `components/workspace/history/AgentRunTaskRows.vue`, `stores/agentRunCollaborationStore.ts` (`taskRows`, `selectTaskRow`, `childTargetFor`), `composables/mobile/useMobileRunTree.ts`, `stores/remoteRunsStore.ts` (named, not read) | A standalone run's delegated rows and their contexts come from its collaboration view | D-11 | Files below the store not read (**OPEN**) |
+| Web (`Read`) | `components/workspace/history/AgentRunTaskRows.vue`, `stores/agentRunCollaborationStore.ts` (`taskRows`, `selectTaskRow`, `childTargetFor`), `composables/mobile/useMobileRunTree.ts`, `stores/remoteRunsStore.ts` (named, not read) | A standalone run's delegated rows and their contexts come from its collaboration view | D-11 | The web file list is in File-Level Completion (from a search); files below the store were not read line by line |
 
 ## Intended Change
 
@@ -50,7 +50,7 @@ Delegations made from a standalone agent run use links only. A target on this no
 ## Change Scope (Mandatory)
 
 - In scope: UC-001 … UC-008. Areas: `agent-collaboration/execution/remote` (renamed `links`), `standalone-agent-run-root`, a new local start and delivery for linked runs, `agent-execution` (prepared run with a local back-link, runtime-switch rule), `agent-team-execution` (a team run with a local back-link: admission, pairing; nothing in its hosting), `projects` (Task record role, `hostRoot` meaning, release and status), `run-history` (admission, rows, metadata reader), `restart-resume`, `app-data-migrations` (one migration), `autobyteus-web` (tree rows and opening of a standalone run's delegated runs), the Collaboration Model, Glossary and module docs.
-- Derived consumers, when a stored or shared structure changes: **OPEN** at file level for V-8 (readers of `taskAgent` 11 files, `coordinatingRun` 18, `delegatedFrom` 22, `hostRoot` 14, outside migrations). Decided by kind: readers of `delegatedFrom.coordinatingRun` take `delegatingRun` (rename); readers of `taskAgent` stay for runs hosted by team and org runs; `hostRoot` readers keep the field with the one meaning of D-5.
+- Derived consumers, when a stored or shared structure changes: the readers of `taskAgent`, `coordinatingRun` and `hostRoot` are listed with their decisions in File-Level Completion (C-1). The Agent-root view (`agent-run-collaboration-dtos.ts`) changes shape (C-5); its readers are the web files of C-4.
 - Deliberately left alone: hosting inside team runs and org runs (`TeamTaskExecutionAdapter`, `AgentOrgTaskExecutionAdapter`, their registries), which also serves delegations by the members of a delegated team run (notes F-5); `RootTaskExecutionLifecycle` (still used by all three roots; by the standalone root for linked runs only); the peer protocol's requests except the renamed field; remote feature gaps (`collaboration_model.md` § 4).
 - Follow-ups: FU-002 (two oversized files; the standalone root shrinks in this change), FU-003, FU-004, FU-005.
 
@@ -127,7 +127,7 @@ Contract §1 words. In code: **link** (the delegating run's record of a delegate
 - Validation before current runtime proceeds: frozen validators of the target shape per written file; no global gate. A delegating run whose tree the frozen parser cannot read is left untouched and reported (`PRESERVED_UNSUPPORTED_TREE`, warning); its delegated runs keep the old shape and are not available until fixed; every other run is converted (guideline §1, §6).
 - Backup / rollback / quarantine / operator-recovery strategy: no backup copies (guideline §7: atomic replace per file, sources recognized on retry); no downgrade (release notes say so).
 - Concurrent old/new application access risk and cutover / maintenance / deployment-sequencing decision: runs before any run is active.
-- Historical migration retention decision: released migrations that read these shapes through current code are repointed to frozen copies (**OPEN**: the list, contract V-11; the earlier contract's §5.4 is the starting inventory).
+- Historical migration retention decision: no released migration needs repointing: migration code imports only the sealed area's frozen copies (guideline §4; `tests/architecture/app-data-migration-boundaries.test.ts` enforces it; a search for imports of current modules from `app-data-migrations/` finds only paths inside `frozen/server/`). The new migration adds frozen copies of today's shapes it reads (`frozen/task-agent-own-run-v1` and `frozen/released-run-package-shapes` already hold the task-agent own file and tree shapes; the implementation confirms they equal today's and adds the Task record with role `delegated`).
 
 | Migration Step | Source Shape / Version | Target Shape / Version | Transformation Owner | Validation | Failure / Recovery Behavior |
 | --- | --- | --- | --- | --- | --- |
@@ -136,6 +136,19 @@ Contract §1 words. In code: **link** (the delegating run's record of a delegate
 | Nested link | Link in the standalone run's tree | Link in the team run's `rootTeam.taskExecutions`; `taskAgent.coordinatingRun` = that team run | The migration | Reread both trees | The link is written to the target tree before it is removed from the source tree; seen in both on retry → the source copy is removed |
 | History rows | none | A row per run that became ordinary | The migration, through a port to the history index writer | Reread | Missing row added on retry |
 | Task record | role `delegated`; `hostRoot` = the old coordinating run | role `subWork`; `hostRoot` = the root that runs it | The migration | Frozen target validator | Per file |
+
+### Data Migration Guideline checklist (guideline §2)
+
+1. **Need:** yes. `taskAgent`/`coordinatingRun` carry a wrong meaning (the run is hosted by the top of the chain); a tolerant reader would be a permanent mapping from an old stored name (`DESIGN.md` rule 10). The role value `delegated` is a second meaning of a domain word.
+2. **Availability:** the app opens and new work is possible when no run converts: the migration gates nothing; an unconverted delegated run is only not available (its delegating run lists nothing it cannot open).
+3. **Source and target (shape inventory):** contract §5 with counts from the user's data, read-only (`evidence/data-model-validation/counts-2026-11-10.txt`): E1/E2 (159 with their holder kinds), E3 (32), E4 (4), E5 (1), E6 (1), E7 (2; not converted in this step: org runs), E8 (2; unchanged), E9/E10/E13 (407 Task record entries: 377 `assigned`, 28 `delegated`, 2 `broughtIn`), E11 (9), E12 (0). Predecessor residue: delegated runs that an earlier migration left unconverted keep a nested or source-less shape and are not in the frozen target-shape parser's input; they are preserved exclusions. Each shape maps to a fixture: F-E1 … F-E13 (one small hand-built data folder per shape, same keys as the stored shapes), plus F-RERUN (stopped between two steps) and F-UNREADABLE (one delegating run with an unreadable tree beside a readable one).
+4. **Disposition:** converted; already current (skipped); preserved exclusion (unreadable tree or own file: left, reported, warning); failed item (retried next start). Aggregate: `SUCCEEDED`, or `SUCCEEDED_WITH_WARNINGS` with preserved exclusions, or `FAILED` when a write failed. Admission is per run, from the files, never from the aggregate.
+5. **Commit and retry:** atomic replace per file; the order of the migration plan makes every intermediate state recognizable; no backup, hash or journal.
+6. **Current-only boundary:** old shapes are read only by frozen copies inside `app-data-migrations/`; current code reads `delegatedFrom` for runs delegated from a standalone run and never maps `taskAgent` to it. Registered last; no prerequisite ids beyond the released ones that produce today's shapes (`20261017_task_agent_own_run_v1`, `20261019_delegated_copy_own_file_complete_v1`).
+7. **Cost:** one small file read and rewrite per delegated run (196 on the user's machine), per Task record file (361), per standalone tree that holds a nested link, and the two history indexes once. No trace, log or memory file is read.
+8. **References:** link → delegated run (both ends rewritten in the order above); Task record → run (by its own ID; unchanged); history row → run.
+9. **Evidence:** migration tests per fixture, a second start as a no-op, the mixed readable/unreadable case, and an isolated instance started on the fixtures (AC-014). Not verified: data of releases older than the supported upgrade range.
+10. **Lessons and review:** `team-agent-memory-layout-app-data-migration.ts` and the task-agent own-run migration (rename in place, per-run input gate, no lockout); the v1.4.87 lockout (no unconditional read of every tree, no global gate); independent review by the architecture reviewer.
 
 ## Data-Flow Spine Inventory
 
@@ -195,7 +208,7 @@ Contract §1 words. In code: **link** (the delegating run's record of a delegate
 | The hosted branch of `StandaloneRootTaskExecutionAdapter` (`planActivation`/`beginActivation` for `agent` and team placements, `restoreChain`, `shutDown`, `isLive`, `taskExecutionStatus`, registrations for hosted runs) | No run is hosted by a standalone root | The linked path | The adapter keeps planning, link commit and the Task-facing queries for linked runs |
 | `RootAgentExecutionRegistry` and `RootTeamExecutionDirectory` in the standalone root (construction in `standalone-root-builder.ts`, uses in the root and its delivery) | Nothing to host | — | Both stay for org roots |
 | `StandaloneAgentRunRoot.stopDelegatedExecution`, `updateDelegatedLaunchSelections`, `standalone-root-delegated-launches.ts`, the `AGENT` branch of `DelegatedLaunchSelectionService`, `StandaloneAgentRunRootManager.updateStoppedDelegatedLaunchSelections` and its helpers | A delegated run is stopped and configured as a run | The ordinary run Stop and stopped-run settings | The manager file drops under 500 lines |
-| The standalone root's child presentation (`CollaborationAgentPresentationEventAdapter` use, `agent_presentation` events for children, `collectStandaloneRootAgentStatusSnapshots`, `collectStandaloneRootInputSnapshots`, the member view projection service for children, the child context-file owners and routes) | Children are not parts of the run | Each run's own stream and views | **OPEN**: the exact file list on the web side |
+| The standalone root's child presentation (`CollaborationAgentPresentationEventAdapter` use, `agent_presentation` events for children, `collectStandaloneRootAgentStatusSnapshots`, `collectStandaloneRootInputSnapshots`, the member view projection service for children, the child context-file owners and routes) | Children are not parts of the run | Each run's own stream and views | Server files: C-5; web files: C-4 |
 | `root.stop()`'s child termination; `endRoot`'s child stop; restart resume's `terminated` skip for a delegated entry | No children | The ordinary Stop; DS-006; DS-007 | — |
 | The `taskAgent` writer and reader for runs delegated from a standalone run (`task-agent-own-records.ts` paths used by the standalone package store: compose on load, split on save) | The link is the whole record | `standalone-root-package-store.ts` reads and writes links only | The reader stays for team and org trees |
 | `delegatedFrom.coordinatingRun` (stored and on the wire between nodes) | Renamed | `delegatingRun` | Clean cut (`DESIGN.md` rule 9) |
@@ -246,7 +259,7 @@ N/A.
 | `LinkChannel.standingInstanceAt(delegatingRun, address)` | A delegating run on this node | The agent run at that address in the delegating run, for CM-5 and the delegator in `list_available_agents` | `{kind, runId}` + address | This node only; a peer answers "not found", as today |
 | Root: `acceptLinkedMessage`, `acceptLinkedWorkPacket` | A root | Today's `acceptRemote*`, renamed | — | Reference files carried |
 | Root: `releaseTaskExecutions([own run])` | A root with a back-link | Stop this run because its Task closed | The run's own reference | The Task side's existing request, addressed to the run's own root (D-5) |
-| GraphQL / WS | — | **OPEN**: the history row's `delegatedFrom` field; removal of the standalone child commands on `/ws/agent-collaboration` | — | — |
+| GraphQL / WS | — | See File-Level Completion C-5 | — | — |
 
 ## Interface Boundary Check
 
@@ -283,9 +296,9 @@ N/A.
 | `local-run-links` (new, beside `remote-collaboration`) | The channel for this node: starter, receiver wiring | DS-001 … DS-003 | `LinkChannel` | Create New | Composed at process composition |
 | `standalone-agent-run-root` | A standalone run's root without hosting | DS-001, DS-005 | — | Extend (reduce) | — |
 | `projects` | Role name; `hostRoot` meaning | DS-004 | Task service | Extend | — |
-| `run-history` | Admission and rows of delegated runs | DS-008 | Catalogs | Extend | **OPEN** files |
+| `run-history` | Admission and rows of delegated runs | DS-008 | Catalogs | Extend | C-3 |
 | `app-data-migrations` | DS-009 | DS-009 | Runner | Extend | — |
-| `autobyteus-web` | The tree and opening of delegated runs | DS-008 | Run tree | Extend | **OPEN** files |
+| `autobyteus-web` | The tree and opening of delegated runs | DS-008 | Run tree | Extend | C-4 |
 
 ## Draft File Responsibility Mapping
 
@@ -308,24 +321,50 @@ Folded into the final mapping.
 
 ## Final File Responsibility Mapping
 
-Server files at the precision reached; **OPEN** rows are completed before handoff.
+Server and web files; the rows that were open at SR-008 point to File-Level Completion.
 
 | File | Owning Subsystem / Capability Area | Owner / Boundary | Concrete Concern | Why This Is One File | Reuses Shared Structure? |
 | --- | --- | --- | --- | --- | --- |
 | `agent-collaboration/execution/links/run-links.ts`, `linked-run-endpoint.ts`, `link-channel.ts`, `linked-run-delegation.ts`, `linked-message-send.ts`, `linked-task-activation.ts`, `link-refusal-codes.ts` (moved and renamed from `execution/remote/`) | links | `RunLinks` | As today, without the word "remote"; local links admitted; a saved Task, reference files and a follow-up Task allowed for a link on this node | Existing files | Link |
 | `local-run-links/local-link-channel.ts` (new) | local-run-links | `LinkChannel` for this node | In-process start, deliver, command, summaries, standing instance | One implementation | — |
 | `local-run-links/local-delegated-run-starter.ts` (new) | local-run-links | Starter | Resolved source → prepared agent run or created team run with `delegatedFrom`, launch facts recorded on the run | One concern | `DelegatedFrom` |
-| `remote-collaboration/inbound/remote-message-receiver.ts` → shared receiver in `links` or `local-run-links` (**OPEN**: placement) | — | Inbound | One inbound rule for both channels | — | — |
+| `agent-collaboration/execution/links/linked-inbound-delivery.ts` (the core of today's `remote-collaboration/inbound/remote-message-receiver.ts`: stored link check, resolve or restore, hand over; with its root-directory port), and `remote-collaboration/inbound/remote-message-receiver.ts` reduced to the peer gateway's adapter (peer identity, title record, routing decisions) | links; remote-collaboration | Inbound | One inbound rule for both channels (C-2) | The rule is channel-neutral; the adapter is about a peer | — |
 | `compositions/link-channel-composition.ts` (new) | compositions | Channel routing by node | Binds the two implementations | Composition | — |
 | `standalone-agent-run-root/domain/standalone-agent-run-root.ts`, `services/standalone-root-task-execution-adapter.ts`, `standalone-root-message-delivery.ts`, `standalone-root-builder.ts`, `standalone-agent-run-root-manager.ts`, `persistence/standalone-root-package-store.ts`, `standalone-root-execution-index.ts`, `standalone-root-recipient-resolver.ts`, `standalone-root-collaborators.ts` | standalone root | Root | The reductions of the removal plan; `acceptLinked*`; own-run release | Existing | Link |
 | `agent-execution/services/standalone-agent-run-eligibility.ts` | agent-execution | Runtime-switch rule | D-10 | Existing | — |
 | `agent-team-execution/domain/team-run-remote-links.ts` (renamed), `services/remote-team-idle-shutdown.ts` (renamed), team tree schema and admission | team execution | Team root with a back-link | A back-link without `nodeId`; `releaseTaskExecutions` for its own run | Existing | `DelegatedFrom` |
 | `projects/domain/task-execution-resources.ts`, `stores/task-execution-resource-schema.ts`, `services/task-execution-resource-service.ts`, `compositions/project-task-execution-resource-composition.ts`, `task-execution-resource-port.ts` (role type) | projects | Task record | `subWork`; `hostRoot` meaning | Existing | — |
-| `run-history` catalogs, index stores, GraphQL run-history types (**OPEN**) | run-history | Rows | `delegatedFrom` on a row; delegated runs admitted | — | — |
+| `run-history` files of C-3 | run-history | Rows | `delegatedFrom` on a row; delegated runs admitted; top-level lists | Existing files | — |
 | `restart-resume/restart-resumer.ts` | restart-resume | — | No change expected (a delegated run is recorded under its own root); verified by a test | — | — |
 | `app-data-migrations/migrations/<date>_delegated_runs_of_agent_runs_as_runs/*`, `frozen/*` additions | migrations | The migration | Migration plan | Sealed area | Frozen copies |
-| `autobyteus-web`: `AgentRunTaskRows.vue`, `utils/runTreeProjection.ts`, `utils/mobile/mobileRunTreeProjection.ts`, `composables/mobile/useMobileRunTree.ts`, `useMobileRunOpening.ts`, `stores/agentRunCollaborationStore.ts` and `services/agentCollaboration/*`, `stores/activeContextStore.ts`, `components/runList/RunListRow.vue`, the Settings editor's delegated section (**OPEN**: confirm and complete) | web | Run tree | Rows from history; opening as a run; removal of child contexts of a standalone run | — | — |
+| `autobyteus-web` files of C-4 | web | Run tree | Rows from the delegating run's view of its links; opening as a run; removal of child contexts of a standalone run | Existing files | — |
 | `docs/design/collaboration_model.md`, `GLOSSARY.md`, `docs/modules/standalone_agent_run_root.md`, `agent_communication.md`, `remote_collaboration.md`, `projects.md`, `run_history.md`, `restart_resume.md`, `agent_memory.md` | docs | — | The contract and the mechanics | — | — |
+
+## File-Level Completion
+
+From searches at `aae0a53a81` (`grep -rlE` in `autobyteus-server-ts/src` outside `app-data-migrations`, and in `autobyteus-web` outside tests and generated code).
+
+**C-1 Readers of the changing fields, with the decision for each.**
+
+| Field | Files | Decision |
+| --- | --- | --- |
+| `delegatedFrom.coordinatingRun` (the back-link and its wire form) | `run-history/store/delegated-from-schema.ts`, `agent-collaboration/execution/remote/remote-endpoint.ts`, `remote-delegation.ts`, `remote-run-channel.ts`, `remote-collaboration/channel/peer-gateway.ts`, `peer-client.ts`, `remote-collaboration/inbound/remote-delegation-receiver.ts`, `remote-collaboration/domain/remote-requests.ts` | Renamed `delegatingRun`; `nodeId` optional in the stored back-link (absent: this node) |
+| `taskAgent` and its `coordinatingRun` (the hosted shape) | `run-history/store/task-agent-team-tree-schema.ts`, `task-agent-own-records.ts`, `task-agent-own-file-schema.ts`, `task-execution-tree-split.ts`, `task-agent-link-check.ts`, `remote-task-execution-links.ts`, `coordinating-tree-shapes.ts`, `team-run-execution-tree-store.ts`, `agent-run-metadata-types.ts`, `agent-run-metadata-store.ts`, `agent-team-execution/domain/task-agent-team-tree.ts` | Kept for runs hosted by team and org runs (FU-003 … FU-005 remove them). `standalone-root-package-store.ts` stops composing and splitting: a standalone tree holds links only |
+| either shape, for listing memory | `memory-search/runs/memory-run-discovery.ts`, `agent-memory/services/agent-memory-explorer-service.ts`, `task-team-root-memory-source.ts`, `team-memory-explorer-service.ts` | A run with `delegatedFrom` is an ordinary run for these (listed under its definition, or as a team run); the hosted shape is read as today |
+| `hostRoot` | `agent-collaboration/execution/task/root-task-dispatch.ts`, `root-task-execution-lifecycle.ts`, `task-execution-resource-port.ts`, `compositions/project-task-execution-resource-composition.ts`, `projects/domain/task-execution-resources.ts`, `models.ts`, `stores/task-execution-resource-schema.ts`, `services/task-execution-resource-service.ts`, `project-task-service.ts`, `task-root-view-builder.ts`, `runtime/task-execution-resource-release.ts`, `changes/project-change-messages.ts`, `api/graphql/types/project-tasks.ts` | Kept with the meaning of D-5. The value for a linked run on this node comes from the plan's target (`LinkedRunDelegation.planActivation` sets `target.root` to the started run's own root for this node, the delegating root for a peer, as today). `adHocTaskIdsHostedBy` (the Tasks with no Project deleted with a run) reads the Tasks whose `assigned` entry was made by an agent of that run (`assignedBy`), because a run no longer "hosts" what it delegated |
+| role `delegated` | `task-execution-resource-port.ts` (`TaskExecutionRole`), `projects/domain/task-execution-resources.ts`, `stores/task-execution-resource-schema.ts`, and their readers found by the type | `subWork` |
+
+**C-2 Inbound delivery.** One rule in `links/linked-inbound-delivery.ts`; two callers: the peer gateway's adapter (`remote-collaboration/inbound/remote-message-receiver.ts`) and `LocalLinkChannel`.
+
+**C-3 History.** `run-history/store/agent-run-history-index-record-types.ts`, `agent-run-history-index-store.ts`, `team-run-history-index-record-types.ts`, `team-run-history-index-store.ts`; `run-history/services/agent-run-history-catalog-service.ts`, `agent-run-history-row-projector.ts`, `team-run-history-catalog-service.ts`, `team-run-history-index-row-projector.ts`, `collaboration-root-history-service.ts`, `workspace-run-history-service.ts`, `project-run-history-service.ts`, `standalone-run-liveness.ts`; `run-history/domain/agent-run-history-index-types.ts`, `team-run-history-index-types.ts`; `api/graphql/types/run-history.ts`. A row records its run's delegating run when the run is created (the index is derived data; the run's own file stays the owner). The catalogs' top-level lists apply D-8. `standalone-run-liveness.ts` gets the refusal of DS-006: a linked run on this node is working (asked through the channel's `runSummaries`).
+
+**C-4 Web.** Components: `components/workspace/history/AgentRunTaskRows.vue`, `RunDefinitionGroups.vue`, `components/runList/RunListRow.vue`, `RunListPanel.vue`, `components/workspace/agent/AgentWorkspaceView.vue`, `components/mobile/MobilePairedShell.vue`, `components/workspace/config/ExistingRunConfigEditor.vue` (the delegated section for an agent run goes). Stores: `stores/agentRunCollaborationStore.ts`, `activeContextStore.ts`, `agentRunStore.ts`, `existingRunConfigStore.ts`. Composables: `useWorkspaceHistorySelectionActions.ts`, `projects/useTaskRootNavigation.ts` (the Task page's locator opens the run itself), `mobile/useMobileRunOpening.ts`, `mobile/useMobileRunTree.ts`, `agentCollaboration/useAgentRunCollaborationSync.ts`, `runHistory/useRunHistorySectionLoad.ts`. Utilities and services: `utils/mobile/mobileRunTreeProjection.ts`, `services/agentCollaboration/agentRunCollaborationContext.ts`, `agentRunCollaborationHydration.ts`, `agentRunCollaborationStreamingService.ts` (reduced to links, messages, lifecycle), `agentRunCollaborationChildContextFactory.ts` and `agentRunCollaborationChildHydration.ts` (removed), `services/runConfigEditing/delegatedCopyLiveness.ts` (the agent-root branch goes), `services/runHydration/runFileChangeHydrationService.ts` and `services/eventMonitor/eventMonitorActiveTracePageService.ts` (the standalone-member reads go), `graphql/queries/runHistoryQueries.ts`, `collaboratorQueries.ts`. The archive and delete actions show the server's refusal (`stores/runHistoryMutationActions.ts`, `composables/useWorkspaceHistoryMutations.ts`: today they drop the server's message).
+
+**C-5 Shapes on the wire.**
+- The Agent-root view (`autobyteus-collaboration-stream-contracts/src/agent-run-collaboration-dtos.ts`): its composed child records are replaced by one list of linked runs in the shape the view already uses for runs on a peer (address, run ID, delegator, start time; a team's coordinator and members; title and statuses as a summary), with the node only for a peer. `closed_task_executions` stays. For a linked team run on this node the members and the summary are read from that run when the view is built, for listed links only (QR-004).
+- `/ws/agent-collaboration/:hostRunId`: no agent presentation events and no commands for a run on this node (it has its own stream); commands for a run on a peer stay.
+- GraphQL: `agentRunCollaborationMemberProjection`, `agentRunCollaborationMemberEventMonitorActiveTracePage`, `agentRunCollaborationMemberFileChanges` and the member context-file and file-content routes of a standalone run are removed (a run's own queries serve); `stopDelegatedExecution`, `updateDelegatedLaunchSelections` and `delegatedLaunchModelOptions` lose the `AGENT` root kind; the history row types get `delegatedFrom`; the peer requests carry `delegatingRun`.
+- Clean cut on every one (`DESIGN.md` rule 9).
 
 ## Applied Patterns
 
@@ -364,10 +403,10 @@ Server files at the precision reached; **OPEN** rows are completed before handof
 - **D-5 The Task record's `hostRoot` keeps one meaning in this step: the root that runs the run.** For a run delegated from a standalone run: its own root. For a run hosted by a team or org run: that run (unchanged). For a run on a peer: the delegating root (unchanged). The contract's removal of the field is FU-005, when it would always name the run itself. The role value becomes `subWork` now.
 - **D-6 Message admission on one node:** the pair rule (delegator and delegated run) or the same-Task rule (today's scope, checked by the engine) admit a message by run ID; the receiver's stored link check uses the same rules.
 - **D-7 A delegated run on this node keeps the idle shutdown** that a peer-started run has; a run the user started has none, as today.
-- **D-8 Listing:** a run with `delegatedFrom` on this node is listed under its delegating run when that run is stored, else as a run of its own (TC-3). A peer-started run is listed as a run of its own, as today.
+- **D-8 Listing.** A delegated run is an ordinary history row. The top-level lists leave out a run with a back-link on this node whose delegating run is stored; such a run is shown only under its delegating run. When its delegating run is not stored it is listed as a run of its own (TC-3). A peer-started run is listed as a run of its own, as today. The nested rows come, as today, from the delegating run's view: its links, without those whose Task is closed (`closed_task_executions`; a closed delegated run stays hidden, as today), each with the summary of C-5.
 - **D-9 The migration** of the migration plan.
 - **D-10 A delegated run's settings are the run's own.** A Settings edit writes the run's launch fields and removes its `launchSource` (the origin text applies to untouched agents only, as the earlier ticket decided). `canSwitchRuntime` admits a run with a back-link on this node; a peer-started run stays excluded as today.
-- **D-11 The web tree** shows delegated runs of a standalone run as nested run rows and opens them as runs; the standalone run's child contexts, child stream handling and copy-only controls go.
+- **D-11 The web tree** keeps its rows and their source (the delegating run's view), and opens a row as the run it is: an agent run through the ordinary agent run path, a team run through the ordinary team run path (its members, Team tab, files and Settings are the team run's own). The standalone run's child contexts, child stream handling, copy-only Stop and the delegated section of its Settings go. A delegated run's model is changed in its own Settings (the user, 2026-11-10).
 
 ## Backward-Compatibility Rejection Log (Mandatory)
 
@@ -403,11 +442,11 @@ Steps 2 and 3 land together (no state with both paths in a standalone root).
 
 - The surface of REQ-009 is wide; a capability may depend on in-root hosting in a way not yet read (token roll-up, the Task page's locator, `@` mentions). Each is listed in the validation plan; one that cannot be served through a link returns to the requirements.
 - Cross-root delivery: two roots' gates and logs in one message; the order (receiver's log first) and the exactly-once rule must hold as on the cross-node path (QR-002).
-- The migration meets shapes from several earlier releases; released migrations that read through current readers must be repointed (**OPEN** list).
+- The migration meets shapes from several earlier releases; the new migration needs frozen copies of each source shape (migration plan).
 - The web change replaces a central part of the standalone run's view.
 
 ## Guidance For Implementation
 
 - Reproduction to start from, from the investigation notes: the two Stop tests in `autobyteus-server-ts/tests/unit/standalone-agent-run-root/standalone-agent-run-root.test.ts` (lines 201 and 570) assert the hosted behavior; they are rewritten for independent runs.
 - The migration's fixtures follow the guideline §9: small hand-built records of every shape of the contract's §5, checked against the counts file's shapes.
-- **OPEN items to close before handoff:** V-8 reader list; the history index files; the web file list; the released-migration repoint list; the placement of the shared inbound receiver; the GraphQL and stream shape changes.
+- The file lists of File-Level Completion come from searches at `aae0a53a81`; the implementation repeats each search and reports a file not listed.

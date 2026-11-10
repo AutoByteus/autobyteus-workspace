@@ -12,6 +12,7 @@
 | SR-006 | Mixed | The user: validate the data structure, no redundant attributes, every case with example JSON as in the earlier model document | N/A | Requirements Draft with a proposed contract | Requirements Draft; contract revision 2 proposed | `target-collaboration-contract.md` revision 2 (records, cases D1–D7, E1–E12, attribute check, V-1 … V-12, S1 … S15, TC-1 … TC-5) | Data level validated on the user's stored data; three decisions need the user |
 | SR-007 | Requirements | The user's last contract decision (TC-3) | N/A | Requirements Draft; contract revision 2 proposed | Requirements Approved; contract revision 2 approved; design Needs Revision (to be replaced) | All REQ and AC (rewritten on the contract); REQ-011, REQ-012, AC-014, AC-015, BEH-010, BEH-011, SCN-009, SCN-010 new | Approved basis for the design of this ticket's step |
 | SR-008 | Design | Architecture investigation of the contract's first step | N/A | Requirements Approved; design Needs Revision | Requirements Approved; design Draft (mechanism decided; file-level parts open) | D-1 … D-11 of `design-spec.md`; contract V-9 resolved, V-8, V-11, V-12 open | Design direction ready for the user; not ready for handoff |
+| SR-009 | Design | The user's approval of the design direction; the open file-level parts closed | N/A | Design Draft | Design Ready; `Large` / `High` | D-8, D-10, D-11 refined; File-Level Completion C-1 … C-5; migration checklist | Architecture Design Complete |
 
 ## Revision Entries
 
@@ -198,3 +199,26 @@
 - Downstream and architecture-review impact: none yet
 - Remaining gaps, assumptions or blocked decisions: the spec's OPEN items (reader list V-8, history index files, web file list, released-migration repoint list V-11, the inbound receiver's placement, GraphQL and stream shape changes)
 - Next action: the user approves the design direction; the open parts are closed; then the handoff by the handoff rules
+
+### SR-009 — Design complete for the first step; the user approved the direction
+
+- Phase and classification: Design, `Refinement`
+- Triggering user feedback, Product package, investigation evidence, or role/report/round: the user, 2026-11-10: "I think that makes sense what you have proposed" (the design direction; a delegated run's model in its own Settings); the searches recorded in the investigation notes
+- Triggering finding IDs: N/A
+- Prior authoritative requirements/design status: requirements `Approved` (SR-007); design `Draft` (SR-008)
+- Current authoritative requirements/design status: requirements `Approved` (SR-007); `design-spec.md` `Ready`
+- Requirement, behavior, acceptance-criteria, scenario or decision IDs affected: none of the requirements; D-8 (nested rows from the delegating run's view of its links; top-level lists leave linked runs out), D-10 (confirmed by the user), D-11; C-1 … C-5; the Data Migration Guideline checklist
+- Scenario-basis or scenario-validity changes: none
+- Why this baseline or revision was recorded: the design is complete and approved in direction
+- Canonical requirements, investigation and design sections changed: `design-spec.md` (status, approval, File-Level Completion, migration checklist, D-8, D-11); investigation notes
+- Supplemental artifacts added, changed or removed: none
+- Product design evidence or product decisions incorporated: none
+- Intended behavior changed: `No`
+- Approval impact, exact approved requirements baseline, who approved, and approval reference: requirements at SR-007 unchanged; design direction approved by the user on 2026-11-10 (his words are in the design spec's approval basis)
+- Behavior-defining supplement versions and approval references: contract revision 2 (approved)
+- Affected design/review basis invalidated or rebuilt: none (no review has run)
+- Post-design task-size/risk classification and rationale changes: `Large` / `High`: several subsystems, an ownership-boundary change, a migration of existing runs, wire and stored renames
+- Applied handoff-rule outcome / result-file reference, when a handoff occurred: see `handoff-architecture-design-complete.md`
+- Downstream and architecture-review impact: independent architecture review before implementation
+- Remaining gaps, assumptions or blocked decisions: the design is from reading, not running; the file lists come from searches and are re-run by the implementation; internals read in part are named in the investigation notes
+- Next action: the handoff by the handoff rules

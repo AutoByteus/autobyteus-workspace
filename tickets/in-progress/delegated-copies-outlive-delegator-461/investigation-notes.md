@@ -11,7 +11,7 @@
 - Finalization target remote / branch: `origin` / `personal` (release separately, on the user's word)
 - Bootstrap result: worktree and branch created from `origin/personal`; ticket folder `tickets/in-progress/delegated-copies-outlive-delegator-461/`
 - Bootstrap blocker: none
-- Current solution revision ID: `SR-008`
+- Current solution revision ID: `SR-009`
 - Authorities read (requirements reading gate; file and date): `references/requirements-engineering.md`, `references/finding-the-cause.md`, `references/ticket-scope.md`, `references/handoff.md` (2026-11-10); project `DESIGN.md`, `autobyteus-server-ts/docs/design/collaboration_model.md` (2026-11-10)
 - Investigation status: requirements investigation complete; architecture investigation starts after the requirements are approved
 
@@ -287,3 +287,7 @@ Reading gate for this phase: `references/architecture-design.md`, `references/de
 - Contract V-9 (why the Settings edit was kept beside the started launch), `Read`: `tickets/done/delegated-copy-model-change/requirements-doc.md` REQ-005 and DEC-005 (after Save the row shows the model like any edited member; the origin text stays only on untouched agents), and `tickets/done/delegated-copy-own-run-memory/requirements-doc.md` DEC-015 U-1 (the composed record had to round-trip). Consequence in the design (D-10): the edit writes the run's own launch fields and removes its `launchSource`.
 - `canSwitchRuntime` excludes a run with `delegatedFrom` (`agent-execution/services/standalone-agent-run-eligibility.ts:15-16`); a local delegated copy can switch today through `taskAgent.pendingRuntimeSwitch` (0 records carry one). Design D-10 admits a run with a back-link on this node.
 - The web client builds a standalone run's delegated rows from its collaboration view: `components/workspace/history/AgentRunTaskRows.vue:62-95`, `stores/agentRunCollaborationStore.ts` (`taskRows`, `selectTaskRow`, `childTargetFor`), `composables/mobile/useMobileRunTree.ts:47-57`, `components/runList/RunListRow.vue:187`.
+
+- The user, 2026-11-10, after the design direction and its visible effects were presented: a delegated run's model is changed in its own Settings ("it's independent agent run now … it's setting … I think that makes sense what you have proposed"). Recorded as the user's approval of the design direction.
+- Searches that closed the design's file-level parts (at `aae0a53a81`): `grep -rlE "taskAgent\b|coordinatingRun|hostRoot" --include=*.ts autobyteus-server-ts/src` outside `app-data-migrations` (file lists in `design-spec.md` C-1); imports of current modules from `app-data-migrations/` (only paths inside `frozen/server/`; `tests/architecture/app-data-migration-boundaries.test.ts` enforces the sealed area); `ls app-data-migrations/frozen` (holds `task-agent-own-run-v1`, `released-run-package-shapes`, `server/`); web files that use the standalone collaboration store and services (`grep -rlE "useAgentRunCollaborationStore|agentCollaboration/|agentRunCollaboration"` in `autobyteus-web`, outside tests and generated code; list in C-4).
+- Read but not run: everything in the design. Read in part only: `task-execution-resource-service.ts`, the history catalog services, the web files below `agentRunCollaborationStore.ts`.
