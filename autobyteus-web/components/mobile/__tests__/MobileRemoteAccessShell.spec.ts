@@ -27,6 +27,10 @@ vi.mock('~/services/liveStreamLifecycle/closeAllLiveStreams', () => ({ closeAllL
 import MobileRemoteAccessShell from '../MobileRemoteAccessShell.vue';
 import { useMobileNodeSessionStore } from '~/stores/mobileNodeSessionStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
+import { useAgentContextsStore } from '~/stores/agentContextsStore';
+import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
+import { agentRunRowKey } from '~/utils/runListProjection';
+import { createPinia, setActivePinia } from 'pinia';
 import { createMobileTestRouter } from '~/composables/mobile/__tests__/mobileTestRouter';
 
 const pairedSession = {
@@ -319,6 +323,24 @@ describe('MobileRemoteAccessShell', () => {
     await flushPromises();
     expect(router.currentRoute.value.query).toEqual({ row: 'agent:gone-run' });
     expect(wrapper.find('[data-testid="mobile-run-opening"]').exists()).toBe(false);
+    expect(wrapper.get('[data-testid="mobile-run-list"]').isVisible()).toBe(true);
+    wrapper.unmount();
+  });
+
+  // autobyteus-435 DEC-016, AC-005-8: a New run draft exists only in the page's memory until its first send.
+  it('a reload before a created run\'s first send names the draft, which no node lists: the list', async () => {
+    const endedPage = createPinia();
+    setActivePinia(endedPage);
+    useAgentRunConfigStore(endedPage).setAgentConfig({
+      agentDefinitionId: 'def-writer', agentDefinitionName: 'Writer', agentAvatarUrl: null, llmModelIdentifier: 'model-a',
+      runtimeKind: 'autobyteus', workspaceId: null, workspaceMetadata: null, autoExecuteTools: false, llmConfig: null, isLocked: false,
+    } as never);
+    const draftRunId = useAgentContextsStore(endedPage).createRunFromTemplate({ selectionMode: 'mobile' });
+    expect(draftRunId).toMatch(/^temp-/);
+
+    const { router, wrapper } = await mountShell({ row: agentRunRowKey(draftRunId), screen: 'messages' });
+    await flushPromises();
+    expect(router.currentRoute.value.query).toEqual({ row: agentRunRowKey(draftRunId) });
     expect(wrapper.get('[data-testid="mobile-run-list"]').isVisible()).toBe(true);
     wrapper.unmount();
   });

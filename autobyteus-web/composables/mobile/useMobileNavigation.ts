@@ -81,6 +81,14 @@ export function useMobileNavigation() {
     await router.replace({ path: route.path, query: parent });
   };
 
+  /**
+   * Names another row on the current entry, every other key kept (a draft run promoted to the node's run at its first
+   * send, autobyteus-435 DS-006b). Only the current entry: the History API rewrites no other.
+   */
+  const replaceRowKey = async (rowKey: string): Promise<void> => {
+    await router.replace({ path: route.path, query: { ...route.query, row: rowKey } });
+  };
+
   /** Back to the run list in place of this entry (a screen whose subject is gone). */
   const toList = async (): Promise<void> => {
     await router.replace({ path: route.path, query: { ...foreignOf(route.query), ...subjectKeys() } });
@@ -124,7 +132,7 @@ export function useMobileNavigation() {
 
   return {
     screen, openRowKey, openFilePath, openFileWorkspaceId, openNodeFilePath, openContextFileEntry, openReference, desktopFullScreen,
-    back, toList, openRun, openView, openNewRun, openFile, openNodeFile, openContextFile, openMessageReference,
+    back, toList, replaceRowKey, openRun, openView, openNewRun, openFile, openNodeFile, openContextFile, openMessageReference,
     openDesktopFullScreen,
   };
 }

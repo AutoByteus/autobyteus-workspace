@@ -65,6 +65,7 @@ import MobileMessages from '~/components/mobile/views/MobileMessages.vue';
 import MobileNodeDesktop from '~/components/mobile/views/MobileNodeDesktop.vue';
 import { useAgentRunCollaborationSync } from '~/composables/agentCollaboration/useAgentRunCollaborationSync';
 import { useMobileNavigation } from '~/composables/mobile/useMobileNavigation';
+import { useMobileRouteRunSync } from '~/composables/mobile/useMobileRouteRunSync';
 import { useMobileRunOpening } from '~/composables/mobile/useMobileRunOpening';
 import { useMobileRunTree } from '~/composables/mobile/useMobileRunTree';
 import { useMobileSubjectRestore } from '~/composables/mobile/useMobileSubjectRestore';
@@ -179,6 +180,10 @@ watch([() => navigation.screen.value, viewTarget, restoring], ([screen, target, 
   if (VIEWS.has(screen) && !target && !isRestoring) void navigation.toList();
 }, { immediate: true });
 
-/** Create run: the new run's conversation, for its first message, in place of New run; the route names its row. */
-const onLaunched = (runId: string): void => { void navigation.openRun({ replace: true, rowKey: agentRunRowKey(runId) }); };
+/**
+ * Create run: the new run's conversation, for its first message, in place of New run. The route names the draft's row
+ * (`agent:temp-…`) until the first send promotes it; then it names the node's run (DS-006b).
+ */
+const onLaunched = (draftRunId: string): void => { void navigation.openRun({ replace: true, rowKey: agentRunRowKey(draftRunId) }); };
+useMobileRouteRunSync(navigation);
 </script>

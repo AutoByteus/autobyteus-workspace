@@ -6,11 +6,12 @@ import { useActiveContextStore } from '~/stores/activeContextStore';
 import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore';
 import { useMobileRunOpeningStore } from '~/stores/mobileRunOpeningStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
+import { agentRunIdOfRowKey } from '~/utils/runListProjection';
 
 /** A delegated row of an agent run, `agent:<hostRunId>/<rowKey>`: its row exists once the host's view is published. */
 const delegatedHostOf = (key: string): string | null => {
-  const match = /^agent:([^/]+)\//.exec(key);
-  return match ? match[1]! : null;
+  const slash = key.indexOf('/');
+  return slash > 0 ? agentRunIdOfRowKey(key.slice(0, slash)) : null;
 };
 
 /**
