@@ -9,7 +9,7 @@
 - Requested by (the user, or the delegating agent's address): `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), on the user's decision of 2026-11-10
 - Requirements owner: Solution Designer
 - Date: 2026-11-10
-- Approved by and reference: not yet approved; DEC-001 and DEC-002 need the user
+- Approved by and reference: not yet approved; DEC-001 needs the user
 - Exact approved requirements baseline / solution revision: none yet
 - Behavior-defining supplements and their approved versions: none of this ticket. The rules come from the Task description (agreed by the user as §11 of the 461 contract).
 
@@ -29,7 +29,7 @@
 | BEH-003 | Operational | SCN-005 | Loading a top run reads every listed run's own file and message log | It reads only the runs whose Task is open | What is shown for those runs | Notes BEH-003 (`Measured`) |
 | BEH-004 | Contract | SCN-002, SCN-003 | Reopen and the assigner's message, or a follow-up Task by run ID, find the run in the top run's index | The same outcome when the entry is gone: the run continues and is listed again | The texts and results the agents get | Notes BEH-004 |
 | BEH-005 | User | SCN-004 | The top run's Team tab shows its messages with every listed run, closed ones included | DEC-001 | Each run's own conversation | Notes BEH-005 |
-| BEH-006 | User | SCN-004 | The Memory page lists a delegated run while its top run lists it | DEC-002 | — | Notes BEH-006 |
+| BEH-006 | User | SCN-004 | The Memory page lists a delegated run while its top run lists it | It keeps listing a dismissed run (DEC-002) | What the page shows of the run | Notes BEH-006 |
 | BEH-007 | User | SCN-004 | The top run's token total and earlier attachments are found through the tree | Unchanged results | The whole behavior | Notes BEH-007 |
 
 ## Stakeholders, Actors, And Outcomes
@@ -90,7 +90,7 @@ None.
 | REQ-001 | When the last open Task of a delegated run closes, the run's entry is removed from the top run's tree, in the file and in the loaded run, also when the top run is not loaded. The run's own files, conversation, message log and Task record do not change. | BEH-002 | Critical | The user's rule | N/A (the data check shows the entry's facts are in the Task's record or the run's own file for 170 of 170) | Task 469 |
 | REQ-002 | When a closed Task is reopened and its assigner messages the run, or the run is given a follow-up Task by its run ID, the run continues as today and its entry is back in the tree. | BEH-004 | Critical | The Task rules stay | N/A | Task 469 |
 | REQ-003 | An entry stays while it should: a run with another open Task; a run of a temporary Task until that Task is closed or its creating run is deleted (no timer); a run that belongs to no Task; a sub-work run until its Task closes; an entry of a run on another node follows the same rule. | BEH-002 | High | The Task's rules | N/A | Task 469; DEC-003, DEC-004 |
-| REQ-004 | The top run's tree shows the same rows as today (closed runs are hidden today). Loading a top run reads no file of a dismissed run. The Team tab follows DEC-001 and the Memory page DEC-002. | BEH-003, BEH-005, BEH-006 | High | The outcome the user asked for; nothing disappears without his decision | N/A | DEC-001, DEC-002 |
+| REQ-004 | The top run's tree shows the same rows as today (closed runs are hidden today). Loading a top run reads no file of a dismissed run. The Team tab follows DEC-001. The Memory page keeps listing a dismissed run (DEC-002). | BEH-003, BEH-005, BEH-006 | High | The outcome the user asked for; nothing disappears without his decision | N/A | DEC-001, DEC-002 |
 | REQ-005 | Unchanged by a dismissal: the top run's token total; opening a file attached in an earlier conversation of any run; the Task page's run status and locator; a team run or org run whose message log names a dismissed run loads and works normally. | BEH-007 | Critical | "Must keep working" of the Task | N/A | Task 469; notes R-001 |
 | REQ-006 | The rules hold for standalone agent runs, team runs and org runs as top runs. | BEH-002 | High | The Task | N/A | Task 469 |
 | REQ-007 | A startup migration removes the entries of closed Tasks from existing trees. It changes nothing else, never prevents startup, leaves a tree it cannot read untouched and reports it, and a second start changes nothing. | BEH-002 | Critical | Data Migration Guideline; `DESIGN.md` rule 7 | N/A | Task 469 |
@@ -111,7 +111,7 @@ None.
 | AC-009 | REQ-007 | SCN-006 | Start on data with entries of closed Tasks, of open Tasks, of no Task, one unreadable tree | Closed entries are gone, the others stay, the unreadable tree is untouched and reported, the app starts; a second start changes nothing | — | Migration tests on small hand-built data per shape; isolated instance |
 | AC-010 | REQ-004 | SCN-005 | A top run with dismissed and listed runs is loaded | No file of a dismissed run is read | — | Server test counting reads |
 | AC-011 | REQ-004 | SCN-004 | The top run's Team tab | Per DEC-001 | — | Web and server tests |
-| AC-012 | REQ-004 | SCN-004 | The Memory page's Agents list | Per DEC-002 | — | Server tests |
+| AC-012 | REQ-004 | SCN-004 | The Memory page's Agents list, after a run was dismissed | The dismissed run is listed and its memory opens, as before the closure | Its top run was deleted: as today | Server tests; isolated instance |
 
 ## Relevant Scenarios And Journeys
 
@@ -133,10 +133,10 @@ None.
 - Design repository revision or commit: N/A — not applicable
 - UI/UX user-confirmation reference: N/A — not applicable
 - Approved visual-reference baseline: N/A — not applicable
-- Normative visual and interaction details, including the approved final references: the tree is unchanged. The Team tab and the Memory page follow DEC-001 and DEC-002.
+- Normative visual and interaction details, including the approved final references: the tree and the Memory page are unchanged. The Team tab follows DEC-001.
 - Explicitly illustrative fixture content or permitted implementation variation: N/A
 - Required screens, states, transitions, feedback, responsive behavior, or accessibility outcomes: none new.
-- Product decisions that need the user (with reasoning and recommendation): DEC-001, DEC-002.
+- Product decisions that need the user (with reasoning and recommendation): DEC-001.
 
 ## Quality And Non-Functional Requirements
 
@@ -177,7 +177,7 @@ None.
 | Decision ID | Question | Why It Matters | Options / Evidence | Reasoning And Recommendation | Decision Owner | Status |
 | --- | --- | --- | --- | --- | --- | --- |
 | DEC-001 | What does a top run's Team tab show of dismissed runs? | Visible: the tab lists the run's messages with its delegated runs. Measured: the manager's own log has 2,097 messages, 1,956 with runs of closed Tasks | **A.** Only messages with the runs listed now. **B.** Keep every message of the run's own log, naming a dismissed run from the Task's record | The tab is composed from the logs of the listed runs; that is what makes a load read 13 MB of closed runs' logs. A follows "dismissed": the tab shows the current collaborations (139 messages today); the older messages stay in the manager's own conversation and in each dismissed run, which opens from its Task. B keeps the long list but needs a second way to name dismissed runs. **Recommendation: A.** | The user | **Needs user** |
-| DEC-002 | Does the Memory page still list a dismissed run? | Visible: today a delegated run is listed only while its top run lists it; with A-or-B above, dismissed runs would vanish from the Memory page | **A.** Keep listing it (the test becomes "its top run still exists"). **B.** Let it go from the Memory page | Dismissing a run ends its work, not its memory; the user asked in October that a hub's delegated runs' data is never lost. **Recommendation: A.** | The user | **Needs user** |
+| DEC-002 | Does the Memory page still list a dismissed run? | Visible: today a delegated run is listed only while its top run lists it; with A-or-B above, dismissed runs would vanish from the Memory page | **A.** Keep listing it (the test becomes "its top run still exists"). **B.** Let it go from the Memory page | Dismissing a run ends its work, not its memory; the user asked in October that a hub's delegated runs' data is never lost. **Recommendation: A.** | Solution Designer | Decided: A (the Task lists the Memory page under "must keep working") |
 | DEC-003 | An entry of a run on another node | Same list | Same rule / keep for good | The same rule: the entry goes when its Task closes | Solution Designer | Decided |
 | DEC-004 | A timer for temporary Tasks | Stale entries | Timer / none | None: 1 of 15 temporary Tasks is open (19 days); a timer would cut off later follow-ups; the user was asked and the recommendation given | Solution Designer | Decided (the user informed) |
 
@@ -215,11 +215,11 @@ None.
 - Applicable UI/UX approval and final visual-reference basis are recorded: `N/A`
 - Material assumptions and decisions are visible, each decision with reasoning and recommendation: `Yes`
 - Content ready for approval: `Yes`
-- Remaining content blocker: DEC-001, DEC-002
+- Remaining content blocker: DEC-001
 
 ### Approved Basis Ready For Design
 
 - Approval recorded (the user's, or yours within the direction with the user informed): `No`
 - Exact requirements and supplement approval basis recorded: `No`
 - Approved requirements package ready for architecture design: `No`
-- Remaining blocker: the user's answers to DEC-001 and DEC-002
+- Remaining blocker: the user's answer to DEC-001

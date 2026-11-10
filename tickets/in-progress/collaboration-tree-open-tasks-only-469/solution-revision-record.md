@@ -4,7 +4,7 @@
 
 | Revision ID | Phase | Trigger / Report / Round | Finding IDs | Prior Status | Current Status | Affected Behavior / Requirement IDs | Result |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| SR-001 | Requirements | Initial coherent baseline (Task `autobyteus-469`) | N/A | N/A | Ready for Approval | BEH-001 … BEH-007, REQ-001 … REQ-008 | Presented to the user; DEC-001 and DEC-002 need him |
+| SR-001 | Requirements | Initial coherent baseline (Task `autobyteus-469`) | N/A | N/A | Ready for Approval | BEH-001 … BEH-007, REQ-001 … REQ-008 | Presented to the user; DEC-001 needs him |
 
 ## Revision Entries
 
@@ -22,11 +22,11 @@
 - Supplemental artifacts added, changed or removed: none of this ticket (the 461 contract's §11 and §12 are referenced)
 - Product design evidence or product decisions incorporated: none
 - Intended behavior changed: `Yes` (proposed)
-- Approval impact, exact approved requirements baseline, who approved, and approval reference: not approved; DEC-001 (the Team tab) and DEC-002 (the Memory page) are visible effects the Task does not settle
+- Approval impact, exact approved requirements baseline, who approved, and approval reference: not approved; DEC-001 (the Team tab) is a visible effect the Task does not settle. DEC-002 (the Memory page) is settled by the Task's "must keep working"
 - Behavior-defining supplement versions and approval references: none
 - Affected design/review basis invalidated or rebuilt: N/A
 - Post-design task-size/risk classification and rationale changes: N/A
 - Applied handoff-rule outcome / result-file reference, when a handoff occurred: none (approval hold in the Solution Designer's conversation with the user)
 - Downstream and architecture-review impact: none yet
-- Remaining gaps, assumptions or blocked decisions: DEC-001, DEC-002; notes R-001, U-001, U-002
-- Next action: the user answers DEC-001 and DEC-002; then architecture investigation and design
+- Remaining gaps, assumptions or blocked decisions: DEC-001; notes R-001, U-001, U-002
+- Next action: the user answers DEC-001; then architecture investigation and design

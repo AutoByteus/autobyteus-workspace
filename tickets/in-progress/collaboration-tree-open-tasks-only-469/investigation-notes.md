@@ -157,7 +157,7 @@ Not started.
 ## Requirement Implications
 
 - The entry list is not only a display list: it decides what a top run reads when it loads, which message endpoints a team or org run accepts, what the Memory page lists and where history readers look. The rules of the Task touch each of them.
-- Two visible effects need the user: the top run's Team tab (DEC-001) and the Memory page (DEC-002).
+- One visible effect needs the user: the top run's Team tab (DEC-001). The Memory page (DEC-002) is settled by the Task: it is listed under "must keep working", so a dismissed run stays listed there.
 
 ## Notes For Architecture Design
 
