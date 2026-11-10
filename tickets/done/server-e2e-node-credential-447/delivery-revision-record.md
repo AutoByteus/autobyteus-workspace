@@ -5,6 +5,7 @@
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
 | DR-001 | API/E2E Pass API-REV-002 (direct route) | N/A | Blocked (prerequisite E-002 on the integrated state) | `docs-sync-report.md`, `release-deployment-report.md`, `evidence/delivery/` |
+| DR-002 | API/E2E Pass API-REV-003 (SR-002 D10–D13, IR-003; user decision to finish in this ticket) | Blocked (DR-001) | Delivery Completed (finalized on `personal`, no release) | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `evidence/delivery/DEL-05-*` |
 
 ## Revision Entries
 
@@ -24,3 +25,20 @@
 - Why this baseline or delivery revision was recorded: the first delivery result is a block that needs a Solution Designer decision.
 - Next recipient/action: Solution Designer: a prerequisite Task for the E-002 test correction, or another decision it owns. After that, delivery resumes as `release-deployment-report.md` Escalation describes.
 - Remaining blockers, rollback concerns, or untested scope: E-002. Paid live suites stay a Non-Goal.
+
+### DR-002 — SR-002 fixes verified on the integrated state; finalized on personal, no release
+
+- Delivery round and trigger: second delivery round. API/E2E Pass `API-REV-003` covers IR-003, which implements SR-002 D10–D13, with SR-003 DEC-005 applied. The user told delivery to finish this ticket including the E-002 fix; the Solution Designer had already folded it in as SR-002.
+- Triggering upstream report, verification, or evidence: `api-e2e-execution-coverage-report.md` (API-REV-003, final confidence 95%).
+- Prior authoritative result: DR-001 `Blocked`.
+- Current authoritative result: `Delivery Completed`.
+- Docs sync report: `docs-sync-report.md` (DR-002 recheck: no further impact)
+- Handoff summary: `handoff-summary.md`
+- Release/publication/deployment report: `release-deployment-report.md`
+- Integration and post-integration verification: merged `origin/personal` @ `aae0a53a81` (records only) as `b770635ea3`. DEL-05 ran the whole server E2E suite on it: 123 passed, 124 skipped, 0 failed.
+- Verification: from the evidence, AC-001…AC-010 proven; no user check needed.
+- Finalization state: the ticket is archived in this commit; the merge into `personal` follows, and its results are recorded in the record commit after it.
+- Terminal return to the Solution Designer: `Sent` after the record commit's push
+- Why this delivery revision was recorded: DR-001's blocker was resolved in this ticket (SR-002), and delivery completed.
+- Next recipient/action: the Solution Designer verifies the receipt and sends follow-ups FU-001, FU-005 and FU-006.
+- Remaining blockers, rollback concerns, or untested scope: none blocking. Live Codex and paid live suites were not run (Non-Goal). DCM-009's original cause is unknown (D13).

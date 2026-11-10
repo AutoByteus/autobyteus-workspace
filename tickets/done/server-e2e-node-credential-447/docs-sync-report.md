@@ -3,10 +3,16 @@
 ## Scope
 
 - Ticket: `server-e2e-node-credential-447` (Project Task `autobyteus-447`)
-- Trigger: API/E2E Pass `API-REV-002` (direct route, `task_size: Medium`, `architectural_risk: Low`; test-code review `Not Required — direct low-risk route`)
+- Trigger: DR-001: API/E2E Pass `API-REV-002`. DR-002: API/E2E Pass `API-REV-003` (SR-002 D10–D13, IR-003). Both on the direct route: `task_size: Medium`, `architectural_risk: Low`, test-code review `Not Required — direct low-risk route`.
 - Bootstrap base reference: `origin/personal` @ `310fc27452`
-- Integrated base reference used for docs sync: `origin/personal` @ `f78b60dddd` (merged into the ticket branch as `5c29d6fca2`, no conflicts)
-- Post-integration verification reference: `evidence/delivery/DEL-01…DEL-04` (release-deployment-report.md, Initial Delivery Integration Refresh). DEL-01 has one failure caused by a base change (E-002, see the release/deployment report). It does not change any doc this ticket touches.
+- Integrated base reference used for docs sync: `origin/personal` @ `aae0a53a81` (DR-001 merged `f78b60dddd` as `5c29d6fca2`; DR-002 merged `aae0a53a81`, records only, as `b770635ea3`; no conflicts)
+- Post-integration verification reference: `evidence/delivery/DEL-05-full-e2e-integrated-r2-summary.log` (whole server E2E suite, 0 failed). DR-001's DEL-01 failure (E-002) was fixed in this ticket by SR-002.
+
+## DR-002 Recheck (SR-002 D10–D13)
+
+- Changed: test files and one test helper only (`registered-package-definition-edit`, `remove-built-in-project-task-manager-startup`, `helpers/agy-run-capsule.ts`, `helpers/collaboration-root-harness.ts`, `daily-assistant-collaborator`, `delegated-copy-model-change`, `delegated-copy-project-folder`).
+- Docs checked: `autobyteus-server-ts/docs/modules/personal_settings.md` and `agent_definition.md` already describe where a package definition's default runtime/model is saved, which the RPE tests now follow. `agent_definition.md`, `agent_communication.md` and `autobyteus-web/docs/chat.md` already describe the Daily Assistant as a collaborator, which E-002 now follows. TESTING.md names no capsule walk.
+- Result: no further docs impact.
 
 ## Why Docs Were Updated
 
@@ -48,5 +54,5 @@
 ## Delivery Continuation
 
 - Result: `Pass`
-- Next delivery action: none until the E2E prerequisite is resolved (release-deployment-report.md, Escalation). Then the handoff summary, the remaining verification and finalization under `RELEASE.md`.
+- Next delivery action: handoff summary and finalization under `RELEASE.md` (DR-002)
 - Notes: no new follow-up from docs sync.
