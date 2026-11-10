@@ -13,20 +13,32 @@ class DesktopFullScreenControllerTest {
     private val pageBackground = 0xFFF8FAFC.toInt()
 
     private class FakeDisplay(
-        override var requestedOrientation: Int,
+        initialOrientation: Int,
         override var rootBackgroundColor: Int? = 0xFFF8FAFC.toInt(),
     ) : DesktopFullScreenController.Display {
         val barsHidden = mutableListOf<Boolean>()
         val cutoutModes = mutableListOf<Int>()
+        val decorFits = mutableListOf<Boolean>()
         var insetsApplied = 0
+        /** Every window change in order, to check the sequence inside setOn. */
+        val calls = mutableListOf<String>()
+        override var requestedOrientation: Int = initialOrientation
+            set(value) { field = value; calls += "orientation" }
         override fun setSystemBarsHidden(hidden: Boolean) {
             barsHidden += hidden
+            calls += "bars"
         }
         override fun setLayoutInDisplayCutoutMode(mode: Int) {
             cutoutModes += mode
+            calls += "cutout"
+        }
+        override fun setDecorFitsSystemWindows(fits: Boolean) {
+            decorFits += fits
+            calls += "decor"
         }
         override fun reapplyInsets() {
             insetsApplied += 1
+            calls += "insets"
         }
     }
 
@@ -173,5 +185,40 @@ class DesktopFullScreenControllerTest {
     fun theRootKeepsOnlyTheKeyboardsInsetInFullScreen() {
         assertEquals(androidx.core.view.WindowInsetsCompat.Type.ime(), SystemBarInsets.typesFor(fullScreen = true))
         assertEquals(SystemBarInsets.TYPES, SystemBarInsets.typesFor(fullScreen = false))
+    }
+
+    // autobyteus-435 DEC-020 (API-REV-001 F1, API-18): below API 35 the decor fits the system windows, so full screen also
+    // turns that fitting off while on and back on when off; API 35 is edge to edge already and is never asked.
+    @Test
+    fun belowApi35FullScreenTurnsDecorFittingOffWhileOnAndBackOnOff_inOrder() {
+        for (api in 26..34) {
+            val display = FakeDisplay(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+            val controller = DesktopFullScreenController(display, sdkInt = api)
+            controller.setOn(true)
+            val on = display.calls.toList()
+            display.calls.clear()
+            controller.setOn(false)
+            assertEquals("API $api", listOf(false, true), display.decorFits)
+            val cutout = if (api >= 28) listOf("cutout") else emptyList()
+            assertEquals("API $api on", listOf("orientation", "bars") + cutout + listOf("decor", "insets"), on)
+            assertEquals("API $api off", listOf("orientation", "bars") + cutout + listOf("decor", "insets"), display.calls)
+        }
+    }
+
+    @Test
+    fun onApi35TheDecorFittingIsNeverAsked() {
+        val display = FakeDisplay(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+        val controller = DesktopFullScreenController(display, sdkInt = 35)
+        controller.setOn(true)
+        controller.setOn(false)
+        assertEquals(emptyList<Boolean>(), display.decorFits)
+        assertEquals(listOf("orientation", "bars", "cutout", "insets", "orientation", "bars", "cutout", "insets"), display.calls)
+    }
+
+    @Test
+    fun aResetWhileOffAsksNothingOfTheDecor() {
+        val display = FakeDisplay(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+        DesktopFullScreenController(display, sdkInt = 30).reset()
+        assertEquals(emptyList<Boolean>(), display.decorFits)
     }
 }

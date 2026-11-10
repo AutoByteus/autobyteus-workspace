@@ -16,6 +16,7 @@ class DesktopFullScreenRequestTest {
         override var rootBackgroundColor: Int? = 0xFFF8FAFC.toInt()
         override fun setSystemBarsHidden(hidden: Boolean) {}
         override fun setLayoutInDisplayCutoutMode(mode: Int) {}
+        override fun setDecorFitsSystemWindows(fits: Boolean) {}
         override fun reapplyInsets() {}
     }
 

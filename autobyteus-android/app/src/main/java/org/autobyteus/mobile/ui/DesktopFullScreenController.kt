@@ -40,6 +40,11 @@ class DesktopFullScreenController(private val display: Display, private val sdkI
         /** The window's `layoutInDisplayCutoutMode` (`WindowManager.LayoutParams`). */
         @RequiresApi(Build.VERSION_CODES.P)
         fun setLayoutInDisplayCutoutMode(mode: Int)
+        /**
+         * Whether the window's decor fits the system windows (`WindowCompat.setDecorFitsSystemWindows`): when it does, the
+         * content frame starts after the bars and the cutout. Asked only below API 35 (autobyteus-435 DEC-020).
+         */
+        fun setDecorFitsSystemWindows(fits: Boolean)
         /** Asks the shown screen's root to take its insets again (its padding follows full screen). */
         fun reapplyInsets()
     }
@@ -55,15 +60,27 @@ class DesktopFullScreenController(private val display: Display, private val sdkI
             display.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
             display.setSystemBarsHidden(true)
             layOutInCutout(true)
+            fitDecorToSystemWindows(false)
             darkenRoot()
         } else {
             display.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
             display.setSystemBarsHidden(false)
             layOutInCutout(false)
+            fitDecorToSystemWindows(true)
             rootBackgroundBefore?.let { display.rootBackgroundColor = it }
             rootBackgroundBefore = null
         }
         display.reapplyInsets()
+    }
+
+    /**
+     * Below API 35 the decor fits the system windows, so the content would still start after the cutout although the
+     * window lays out into it: full screen turns the fitting off while on and back on when off (DEC-020). API 35 draws a
+     * targetSdk 35 window edge to edge already and is never touched, so no screen there changes.
+     */
+    private fun fitDecorToSystemWindows(fits: Boolean) {
+        if (sdkInt >= Build.VERSION_CODES.VANILLA_ICE_CREAM) return
+        display.setDecorFitsSystemWindows(fits)
     }
 
     /** API 28+: into the short-edge cutout while on, the default layout off; nothing before 28 (no cutout API). */
@@ -125,6 +142,10 @@ class DesktopFullScreenController(private val display: Display, private val sdkI
         override fun setLayoutInDisplayCutoutMode(mode: Int) {
             val window = activity.window
             window.attributes = window.attributes.also { it.layoutInDisplayCutoutMode = mode }
+        }
+
+        override fun setDecorFitsSystemWindows(fits: Boolean) {
+            WindowCompat.setDecorFitsSystemWindows(activity.window, fits)
         }
 
         override fun reapplyInsets() {
