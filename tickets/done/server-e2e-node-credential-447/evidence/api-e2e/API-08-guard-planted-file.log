@@ -1,0 +1,272 @@
+# API-08 temporary probe: guard over the real tree with a planted bad file (AC-005(b), QR-002); commit bc5f8bfa35 + planted tests/e2e/zz-api08-probe.e2e.test.ts (removed after); macOS, Node v22.23.1; 2026-11-10T06:59:17Z
+# Planted file content:
+#   // API-08 temporary probe (autobyteus-447): a test written the way the failing ones were. Removed after the run.
+#   import { buildStudioServer } from "../../src/compositions/build-studio-server.js";
+#   import { Client, StreamableHTTPClientTransport } from "@modelcontextprotocol/client";
+#   export const probe = async (serverUrl: string, appConfig: never, loggingConfig: never) => {
+#     const studio = await buildStudioServer({ appConfig, loggingConfig });
+#     const client = new Client({ name: "api08", version: "1.0.0" });
+#     await client.connect(new StreamableHTTPClientTransport(
+#       new URL(`${serverUrl}/mcp/gateway`),
+#     ));
+#     return studio;
+#   };
+# Command: NO_COLOR=1 pnpm -C autobyteus-server-ts exec vitest run tests/architecture/e2e-node-credential-paths.test.ts --no-watch --reporter=verbose  (expected: the two tree tests fail naming the planted file; the two self-cases pass)
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/server-e2e-node-credential-447/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/server-e2e-node-credential-447/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+ × tests/architecture/e2e-node-credential-paths.test.ts > server E2E node credential paths > composes in-process nodes only through startStudioE2eRuntimeServer 79ms
+   → expected [ Array(1) ] to deeply equal []
+ × tests/architecture/e2e-node-credential-paths.test.ts > server E2E node credential paths > opens the MCP gateway only through connectMcpGatewayClient 20ms
+   → expected [ Array(1) ] to deeply equal []
+ ✓ tests/architecture/e2e-node-credential-paths.test.ts > server E2E node credential paths > flags a directly composed node, naming the file, the cause and the helper 1ms
+ ✓ tests/architecture/e2e-node-credential-paths.test.ts > server E2E node credential paths > flags a gateway transport without the helper across lines, and leaves other MCP transports alone 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/architecture/e2e-node-credential-paths.test.ts > server E2E node credential paths > composes in-process nodes only through startStudioE2eRuntimeServer
+AssertionError: expected [ Array(1) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "tests/e2e/zz-api08-probe.e2e.test.ts:5 composes a node with buildStudioServer: its requests carry no owner credential. Start it with startStudioE2eRuntimeServer (tests/e2e/helpers/studio-runtime-test-server.ts); see TESTING.md, Node credentials.",
++ ]
+
+ ❯ tests/architecture/e2e-node-credential-paths.test.ts:74:56
+     72|   it("composes in-process nodes only through startStudioE2eRuntimeServ…
+     73|     const findings = e2eSources().flatMap(({ file, text }) => findDire…
+     74|     expect(findings.map((finding) => finding.message)).toEqual([]);
+       |                                                        ^
+     75|   });
+     76|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/architecture/e2e-node-credential-paths.test.ts > server E2E node credential paths > opens the MCP gateway only through connectMcpGatewayClient
+AssertionError: expected [ Array(1) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "tests/e2e/zz-api08-probe.e2e.test.ts:7 opens the MCP gateway with its own StreamableHTTPClientTransport: the gateway needs its token, not the owner credential. Connect with connectMcpGatewayClient (tests/e2e/helpers/mcp-gateway-client.ts); see TESTING.md, Node credentials.",
++ ]
+
+ ❯ tests/architecture/e2e-node-credential-paths.test.ts:79:56
+     77|   it("opens the MCP gateway only through connectMcpGatewayClient", () …
+     78|     const findings = e2eSources().flatMap(({ file, text }) => findBare…
+     79|     expect(findings.map((finding) => finding.message)).toEqual([]);
+       |                                                        ^
+     80|   });
+     81|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 2 passed (4)
+   Start at  07:59:17
+   Duration  672ms (transform 41ms, setup 59ms, import 9ms, tests 101ms, environment 0ms)
+
+exit=1
+# Planted file removed; then the guard reran on the clean tree:
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/server-e2e-node-credential-447/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/server-e2e-node-credential-447/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+ ✓ tests/architecture/e2e-node-credential-paths.test.ts > server E2E node credential paths > composes in-process nodes only through startStudioE2eRuntimeServer 21ms
+ ✓ tests/architecture/e2e-node-credential-paths.test.ts > server E2E node credential paths > opens the MCP gateway only through connectMcpGatewayClient 17ms
+ ✓ tests/architecture/e2e-node-credential-paths.test.ts > server E2E node credential paths > flags a directly composed node, naming the file, the cause and the helper 1ms
+ ✓ tests/architecture/e2e-node-credential-paths.test.ts > server E2E node credential paths > flags a gateway transport without the helper across lines, and leaves other MCP transports alone 0ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  07:59:18
+   Duration  573ms (transform 39ms, setup 57ms, import 8ms, tests 39ms, environment 0ms)
+
+exit=0

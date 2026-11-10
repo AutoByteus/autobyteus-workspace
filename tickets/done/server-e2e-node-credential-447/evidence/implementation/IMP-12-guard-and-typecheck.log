@@ -1,0 +1,8 @@
+# IMP-12 guard test + server typecheck after CR-001; working tree with CR-001; macOS, Node v22.23.1; 2026-11-10T07:49:36Z
+# Commands: pnpm -C autobyteus-server-ts exec vitest run tests/architecture/e2e-node-credential-paths.test.ts --no-watch; pnpm -C autobyteus-server-ts typecheck
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 9.2s
+[typecheck] server tests (tsconfig.tests.json): 1182 errors, exit 2, 25.2s
+[typecheck] production errors: 0; test-file errors: 1182 in 365 files (baseline 1182 in 365 files)
+[typecheck] PASS

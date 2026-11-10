@@ -7,6 +7,17 @@ import path from "node:path";
 import { randomUUID } from "node:crypto";
 import WebSocket from "ws";
 import { appConfigProvider } from "../../dist/config/app-config-provider.js";
+import { attachOwnerCredentialToLoopback } from "../../../test-support/node-access/owner-credential-attachment.mjs";
+// This child is the node's client: it attaches the launch owner credential the parent handed it (NA-5) to its own
+// loopback requests. Read before the server composition is imported, whose launch credential intake removes it.
+const launchCredential = process.env.AUTOBYTEUS_LAUNCH_OWNER_CREDENTIAL;
+if (!launchCredential) {
+  const error = "AUTOBYTEUS_LAUNCH_OWNER_CREDENTIAL is missing from the fixture's environment: the suite adds builtServerLaunchEnvironment().";
+  console.error(error);
+  process.send?.({ receipt: { result: "Fail", error, phase: "launch credential" } });
+  process.exit(1);
+}
+attachOwnerCredentialToLoopback(launchCredential);
 const root = process.argv[2], model = process.argv[3];
 const config = appConfigProvider.initialize({ appDataDir: root }); config.initialize();
 // Execute configured-server prerequisites on the private database, not a forced readiness stub.

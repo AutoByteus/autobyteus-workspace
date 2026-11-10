@@ -25,7 +25,6 @@ import fs from "node:fs";
 import path from "node:path";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import type { FastifyInstance } from "fastify";
-import { buildStudioServer } from "../../../src/compositions/build-studio-server.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { initializeRuntimeLoggerBootstrap } from "../../../src/logging/runtime-logger-bootstrap.js";
 import type { LoggingConfig } from "../../../src/config/logging-config.js";
@@ -34,6 +33,7 @@ import {
   type AgentRuntimeRow,
 } from "../helpers/agent-runtimes-e2e-harness.js";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
+import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 
 const SHORT_OPERATION_TIMEOUT_MS = 6_000;
 const realTimeout = vi.hoisted(() => ({ value: 0 }));
@@ -113,14 +113,9 @@ describe("Settings → Agent Runtimes GraphQL e2e (real studio server, scripted 
     initializeRuntimeLoggerBootstrap({ logsDir: path.join(fake.dataDir, "logs"), loggingConfig: LOGGING });
     sources = installVendorSourceStub();
     sources.answers.claude = { status: 503, body: "Service Unavailable" };
-    const studio = await buildStudioServer({ appConfig: appConfigProvider.config, loggingConfig: LOGGING });
-    await studio.applicationRuntime.lifecycle.prepareBeforeListen();
-    await studio.agentToolsMcpHost.listen();
-    await studio.credentialProxyHost.listen();
-    const address = await studio.fastify.listen({ port: 0, host: "127.0.0.1" });
-    await studio.applicationRuntime.lifecycle.recoverAfterListen();
-    fastify = studio.fastify;
-    client = createGraphqlClient(new URL(address), sources.realFetch);
+    const started = await startStudioE2eRuntimeServer("127.0.0.1", { loggingConfig: LOGGING });
+    fastify = started.fastify;
+    client = createGraphqlClient(started.mainUrl, sources.realFetch);
   }, 120_000);
 
   afterAll(async () => {

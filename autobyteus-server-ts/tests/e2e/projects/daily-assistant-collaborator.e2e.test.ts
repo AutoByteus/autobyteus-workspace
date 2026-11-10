@@ -7,6 +7,7 @@ import { randomUUID } from "node:crypto";
 import { spawnSync } from "node:child_process";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
+import { findAgyRunCapsule } from "../helpers/agy-run-capsule.js";
 import { calledResults, callTool, objectsIn, startCollaborationHarness, stringsOf, taskAgentsIn, toolResult,
   type CollaborationHarness, type Rec } from "../helpers/collaboration-root-harness.js";
 import { DAILY_ASSISTANT_AGENT_DEFINITION_ID, MODEL_ROUTER_AGENT_DEFINITION_ID } from "../../../src/built-in-agents/built-in-agent-registry.js";
@@ -43,21 +44,6 @@ const SHOW_INTERNAL = "AUTOBYTEUS_SHOW_INTERNAL_AGENTS";
 const evidence: Rec = {};
 const unique = <T>(values: T[]) => [...new Set(values)];
 const real = (value: string) => (fs.existsSync(value) ? fs.realpathSync(value) : value);
-/** A run's AGY capsule (a scripted process's cwd) and the folder in its manifest. */
-const capsuleOf = (memoryDir: string, runId: string): { path: string; workspacePath: string } | null => {
-  const walk = (dir: string): { path: string; workspacePath: string } | null => {
-    for (const entry of fs.existsSync(dir) ? fs.readdirSync(dir, { withFileTypes: true }) : []) {
-      if (!entry.isDirectory()) continue;
-      const full = path.join(dir, entry.name);
-      if (entry.name === "agy-project") {
-        const manifest = JSON.parse(fs.readFileSync(path.join(full, "manifest.json"), "utf8")) as Rec;
-        if (manifest.runId === runId) return { path: full, workspacePath: real(manifest.workspacePath) };
-      } else { const found = walk(full); if (found) return found; }
-    }
-    return null;
-  };
-  return walk(memoryDir);
-};
 /** The `--add-dir` values of every launch of a capsule, from the scripted CLI's argv log. */
 const addDirsOf = (argvLog: string, capsule: string): string[] => unique((fs.existsSync(argvLog) ? fs.readFileSync(argvLog, "utf8") : "").trim().split("\n")
   .filter(Boolean).map((line) => JSON.parse(line) as { argv: string[]; cwd: string })
@@ -96,8 +82,8 @@ suite("The Daily Assistant is an ordinary collaborator; the Model Router never i
     return result.agents as Rec[];
   };
   const launchOf = async (root: Root, runId: string) => {
-    let capsule: ReturnType<typeof capsuleOf> = null;
-    await until(() => Boolean(capsule = capsuleOf(memory(), runId)), `capsule of ${runId}`, 60_000);
+    let capsule: ReturnType<typeof findAgyRunCapsule> = null;
+    await until(() => Boolean(capsule = findAgyRunCapsule(memory(), runId)), `capsule of ${runId}`, 60_000);
     let addDirs: string[] = [];
     await until(() => (addDirs = addDirsOf(argvLog, capsule!.path)).length > 0, `launch of ${runId}`, 60_000);
     return { recorded: recordedFolders(nodeOf(await root.liveTree(), runId)), capsule: capsule!.workspacePath, addDirs };

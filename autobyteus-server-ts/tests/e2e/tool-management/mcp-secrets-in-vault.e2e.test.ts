@@ -20,7 +20,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { Client, StreamableHTTPClientTransport } from "@modelcontextprotocol/client";
+import type { Client } from "@modelcontextprotocol/client";
 import {
   removeOwnedTestRuntime,
   reserveLoopbackPort,
@@ -29,6 +29,7 @@ import {
   testRuntimeRoot,
 } from "../../../../test-support/live-e2e/test-runtime-bootstrap.mjs";
 import { startHttpTestServer, type HttpTestServer } from "../../../../autobyteus-ts/tests/integration/tools/mcp/mcp-test-server-launcher.js";
+import { connectMcpGatewayClient } from "../helpers/mcp-gateway-client.js";
 
 type RunningTestServer = Awaited<ReturnType<typeof startBuiltTestServer>>;
 type Entry = { name: string; value: string | null; state: string };
@@ -75,9 +76,9 @@ describe("MCP server secrets in the vault through the built server", () => {
   const callThroughGateway = async (calls: Array<{ name: string; args: Record<string, unknown> }>) => {
     const deadline = Date.now() + 60_000;
     for (;;) {
-      const client = new Client({ name: "mcp-secrets-e2e", version: "1.0.0" });
+      let client: Client | undefined;
       try {
-        await client.connect(new StreamableHTTPClientTransport(new URL(`${server!.serverUrl}/mcp/gateway`)));
+        client = await connectMcpGatewayClient(server!.serverUrl, "mcp-secrets-e2e");
         const names = (await client.listTools()).tools.map((tool) => tool.name);
         if (calls.every((call) => names.includes(call.name))) {
           const texts: string[] = [];
@@ -89,7 +90,7 @@ describe("MCP server secrets in the vault through the built server", () => {
           return texts;
         }
       } finally {
-        await client.close().catch(() => undefined);
+        await client?.close().catch(() => undefined);
       }
       if (Date.now() > deadline) throw new Error(`Gateway never listed ${calls.map((call) => call.name).join(", ")}`);
       await new Promise((resolve) => setTimeout(resolve, 250));

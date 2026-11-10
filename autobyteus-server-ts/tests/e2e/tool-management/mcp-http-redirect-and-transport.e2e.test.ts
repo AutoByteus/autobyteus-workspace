@@ -22,7 +22,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { Client, StreamableHTTPClientTransport } from "@modelcontextprotocol/client";
+import type { Client } from "@modelcontextprotocol/client";
 import {
   removeOwnedTestRuntime,
   reserveLoopbackPort,
@@ -31,6 +31,7 @@ import {
   testRuntimeRoot,
 } from "../../../../test-support/live-e2e/test-runtime-bootstrap.mjs";
 import { AUTH_PROBE_TOOL, startAuthRequiredMcpServer, type AuthRequiredMcpServer } from "../helpers/auth-required-mcp-server.js";
+import { connectMcpGatewayClient } from "../helpers/mcp-gateway-client.js";
 
 type RunningTestServer = Awaited<ReturnType<typeof startBuiltTestServer>>;
 type GraphqlResult<T> = { data?: T; errors?: Array<{ message: string }> };
@@ -63,8 +64,7 @@ const tokenInput = (serverId: string, url: string, toolNamePrefix: string) => ({
 });
 
 const callThroughGateway = async (serverUrl: string, name: string) => {
-  const client = new Client({ name: "mcp-redirect-e2e-gateway-client", version: "1.0.0" });
-  await client.connect(new StreamableHTTPClientTransport(new URL(`${serverUrl}/mcp/gateway`)));
+  const client = await connectMcpGatewayClient(serverUrl, "mcp-redirect-e2e-gateway-client");
   try {
     const result = await client.callTool({ name, arguments: {} }) as { content?: Array<{ text?: string }>; isError?: boolean };
     return { isError: result.isError ?? false, text: (result.content ?? []).map((part) => part.text ?? "").join("") };
@@ -76,14 +76,14 @@ const callThroughGateway = async (serverUrl: string, name: string) => {
 const waitForGatewayTool = async (serverUrl: string, name: string, timeoutMs = 60_000) => {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
-    const client = new Client({ name: "mcp-redirect-e2e-wait", version: "1.0.0" });
+    let client: Client | undefined;
     try {
-      await client.connect(new StreamableHTTPClientTransport(new URL(`${serverUrl}/mcp/gateway`)));
+      client = await connectMcpGatewayClient(serverUrl, "mcp-redirect-e2e-wait");
       if ((await client.listTools()).tools.some((tool) => tool.name === name)) return true;
     } catch {
       // Not listening or not registered yet.
     } finally {
-      await client.close().catch(() => undefined);
+      await client?.close().catch(() => undefined);
     }
     await new Promise((resolve) => setTimeout(resolve, 250));
   }

@@ -9,6 +9,7 @@ import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { startStudioE2eRuntimeServer } from "./studio-runtime-test-server.js";
 import { buildE2eClientCommandIds, sendE2eSendMessageCommand } from "./websocket-command-helpers.js";
 import { until } from "./agy-runtime-error-fixture.js";
+import { findAgyRunCapsule } from "./agy-run-capsule.js";
 import { flattenE2eConfiguredAgentExecutions } from "./team-run-metadata-helpers.js";
 
 /**
@@ -108,20 +109,9 @@ export const startCollaborationHarness = async (label: string) => {
 
   /** The AGY run capsule of a run (its main agent file is the composed prompt; its MCP config is the run's scoped tool endpoint). */
   const capsuleOf = async (agentRunId: string): Promise<string> => {
-    const walk = async (dir: string): Promise<string | null> => {
-      for (const entry of await fs.readdir(dir, { withFileTypes: true }).catch(() => [])) {
-        const full = path.join(dir, entry.name);
-        if (!entry.isDirectory()) continue;
-        if (entry.name === "agy-project") {
-          const manifest = JSON.parse(await fs.readFile(path.join(full, "manifest.json"), "utf8").catch(() => "{}")) as Rec;
-          if (manifest.runId === agentRunId) return full;
-        } else { const found = await walk(full); if (found) return found; }
-      }
-      return null;
-    };
-    const capsule = await walk(path.join(dataDir, "memory"));
+    const capsule = findAgyRunCapsule(path.join(dataDir, "memory"), agentRunId);
     if (!capsule) throw new Error(`No AGY capsule for run ${agentRunId}`);
-    return capsule;
+    return capsule.path;
   };
   /** The composed prompt a run was started with. */
   const promptOf = async (agentRunId: string): Promise<string> => {

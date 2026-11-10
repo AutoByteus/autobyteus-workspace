@@ -1,0 +1,65 @@
+# API-10b diagnosis: the 3 files that failed in API-10, rerun alone (same env); commit bc5f8bfa35 (code = 9721caf187); macOS, Node v22.23.1; 2026-11-10T07:38:15Z
+# Command: env -i PATH HOME=<resolved temp> TMPDIR NO_COLOR=1 RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run --no-watch <3 files>
+# Excerpt of API-10b-three-failing-files-alone.full.log (430 KB, kept in the worktree, not committed). Credential/token refusals: 0; secrets: 0.
+
+ ✓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts (9 tests) 26405ms
+ ✓ tests/e2e/projects/delegated-copy-project-folder.e2e.test.ts (8 tests) 13741ms
+ ❯ tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts (8 tests | 3 failed) 2585ms
+ ❯ tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts:243:40
+ ❯ tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts:277:90
+ ❯ tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts:362:92
+ Test Files  1 failed | 2 passed (3)
+      Tests  3 failed | 22 passed (25)
+exit=1
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts > Registered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY) > RPE-001 (AC-001, REQ-001, REQ-003): the Team edit page's save writes the default runtime/model into the package
+AssertionError: expected null to match object { Object (runtimeKind, llmModelIdentifier) }
+- Expected:
+{
+  "llmModelIdentifier": "rpe-saved-model",
+  "runtimeKind": "antigravity_cli",
+}
++ Received:
+null
+ ❯ tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts:243:40
+    241|     expect(team.revision).not.toBe(before.revision);
+    242|     const config = await fileJson(path.join(teamDir(), "team-config.js…
+    243|     expect(config.defaultLaunchConfig).toMatchObject({ runtimeKind: AG…
+       |                                        ^
+    244|     expect(config.members).toEqual(teamConfig.members);
+    245|     expect(await fs.readFile(path.join(teamDir(), "team.md"), "utf8"))…
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+ FAIL  tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts > Registered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY) > RPE-003 (AC-002): the Org edit page's save writes the Org default into the package
+AssertionError: expected null to match object { Object (runtimeKind, llmModelIdentifier) }
+- Expected:
+{
+  "llmModelIdentifier": "rpe-saved-model",
+  "runtimeKind": "antigravity_cli",
+}
++ Received:
+null
+ ❯ tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts:277:90
+    275|     expect(saved.data!.updateAgentOrgDefinition).toMatchObject({ descr…
+    276|       defaultLaunchConfig: { runtimeKind: AGY, llmModelIdentifier: SAV…
+    277|     expect((await fileJson(path.join(orgDir(), "org-config.json"))).de…
+       |                                                                                          ^
+    278|     expect(await fs.readFile(path.join(orgDir(), "org.md"), "utf8")).t…
+    279|     await expect(fs.access(path.join(orgDir(), "agent-teams", "squad",…
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+ FAIL  tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts > Registered package Teams and Orgs are edited and saved into the package (real HTTP/GraphQL/WS, package import, scoped MCP; scripted AGY) > RPE-006 (AC-005, REQ-002): a delegated copy of the package Team runs on its saved default, and on a newly saved one
+AssertionError: expected null to match object { Object (llmModelIdentifier) }
+- Expected:
+{
+  "llmModelIdentifier": "rpe-edited-model",
+}
++ Received:
+null
+ ❯ tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts:362:92
+    360|     const edited = await saveTeam(team, { defaultLaunchConfig: { runti…
+    361|     expect(edited.errors, JSON.stringify(edited.errors)).toBeUndefined…
+    362|     expect((await fileJson(path.join(teamDir(), "team-config.json"))).…
+       |                                                                                            ^
+    363|     const second = await delegatePackageTeam();
+    364|     expect(launchOf(f(second.source, "defaultLaunchConfiguration"))).t…
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
