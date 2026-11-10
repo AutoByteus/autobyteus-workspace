@@ -18,7 +18,7 @@
 ## Initial Request And Clarifications
 
 - Original request: Task `autobyteus-461` as delegated by `/project_task_manager`. When the user stops an agent that delegated Tasks, its task agents and task agent teams must keep running. The user's decision (2026-11-10): "this doesn't make any sense, we have to fix this ... even though you delegated the task, they are running independently."
-- Clarifications received: 2026-11-10, the user, on DEC-001: the platform's standard is to wake and resume a stopped agent, so a copy's message wakes its stopped delegator (option A). The Task still has no comments.
+- Clarifications received: 2026-11-10, the user, on DEC-001: the platform's standard is to wake and resume a stopped agent, so a copy's message wakes its stopped delegator (option A). The Task still has no comments. 2026-11-10, the user again, confirming the same rule: a stopped agent resumes on a message "just like others", and it does not matter whether the message comes from the user, another agent or a system notification. Verified for the user's message and another agent's message (source log); which system notices reach a stopped agent was not checked and is not changed by this ticket.
 - User-supplied facts and constraints: keep the solution simple; design first, the user approves the direction before the build; do not merge with `autobyteus-460`; a message from a copy to a stopped delegator must not be lost; single-copy Stop and Task closure stay as today; server shutdown is a different case.
 - Initial ambiguity: what happens to a copy's message while its delegator is stopped (wake or hold); who coordinates a copy when its delegator is stopped; delete/archive of a delegator with running copies; remote copies; where copies are listed.
 
