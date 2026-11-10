@@ -11,14 +11,14 @@
 - Finalization target remote / branch: `origin` / `personal` (release separately, on the user's word)
 - Bootstrap result: worktree and branch created from `origin/personal`; ticket folder `tickets/in-progress/delegated-copies-outlive-delegator-461/`
 - Bootstrap blocker: none
-- Current solution revision ID: `SR-003`
+- Current solution revision ID: `SR-004`
 - Authorities read (requirements reading gate; file and date): `references/requirements-engineering.md`, `references/finding-the-cause.md`, `references/ticket-scope.md`, `references/handoff.md` (2026-11-10); project `DESIGN.md`, `autobyteus-server-ts/docs/design/collaboration_model.md` (2026-11-10)
 - Investigation status: requirements investigation complete; architecture investigation starts after the requirements are approved
 
 ## Initial Request And Clarifications
 
 - Original request: Task `autobyteus-461` as delegated by `/project_task_manager`. When the user stops an agent that delegated Tasks, its task agents and task agent teams must keep running. The user's decision (2026-11-10): "this doesn't make any sense, we have to fix this ... even though you delegated the task, they are running independently."
-- Clarifications received: 2026-11-10, the user, on DEC-001: the platform's standard is to wake and resume a stopped agent, so a copy's message wakes its stopped delegator (option A). The Task still has no comments. 2026-11-10, the user again, confirming the same rule: a stopped agent resumes on a message "just like others", and it does not matter whether the message comes from the user, another agent or a system notification. Verified for the user's message and another agent's message (source log); which system notices reach a stopped agent was not checked and is not changed by this ticket.
+- Clarifications received: 2026-11-10, the user, on DEC-001: the platform's standard is to wake and resume a stopped agent, so a copy's message wakes its stopped delegator (option A). The Task still has no comments. 2026-11-10, the user again, confirming the same rule: a stopped agent resumes on a message "just like others", and it does not matter whether the message comes from the user, another agent or a system notification. Verified for the user's message and another agent's message (source log); which system notices reach a stopped agent was not checked and is not changed by this ticket. 2026-11-10, the user, after the SR-003 design was presented: the copies are "more or less independent", the manager is not a parent, and the server's organization of runs has a design issue; then the decision: "we should start to refactor in this ticket instead of just try to fix the bug … the data model is very very important, we should put the data model correct and then the upper layer source code should reflect the data model, the reality" (DEC-010).
 - User-supplied facts and constraints: keep the solution simple; design first, the user approves the direction before the build; do not merge with `autobyteus-460`; a message from a copy to a stopped delegator must not be lost; single-copy Stop and Task closure stay as today; server shutdown is a different case.
 - Initial ambiguity: what happens to a copy's message while its delegator is stopped (wake or hold); who coordinates a copy when its delegator is stopped; delete/archive of a delegator with running copies; remote copies; where copies are listed.
 
@@ -212,3 +212,12 @@ Feasibility investigation for DEC-009, 2026-11-10 (all `Read`; architecture read
 - Scenario IDs to realize: SCN-001 … SCN-008 of the requirements doc.
 - Verified facts: see the source log. Open technical questions: U-001, U-002.
 - `collaboration_model.md` (CM-7 and § 5) and the three root module docs change in the same change.
+
+### Stored shapes read for DEC-010 (2026-11-10, `Read`)
+
+- A local copy's own run file carries `taskAgent { coordinatingRun {kind, runId}, delegatorAgentRunId, address, launchSource, userLaunchSelection, pendingRuntimeSwitch }` (`run-history/store/agent-run-metadata-types.ts:51-83`); the type's comment: the coordinating run "records the link, hosts, idles, wakes and stops it". `coordinatingRun` is the topmost run of the delegation chain (CM-7), not the run of the agent that delegated.
+- A run a peer started carries a different back-link, `delegatedFrom { nodeId, coordinatingRun, delegatorAgentRunId }` (lines 57-67), and is "a normal standalone run of this node with its own root".
+- The coordinating run's tree keeps local links in `taskExecutions` (composed with each copy's own file on load; nested under Team nodes for older records) and remote links in a second list, `remoteTaskExecutions`, whose entries add `nodeId` (`run-history/domain/run-execution-tree-shared-records.ts:55,117-201`).
+- The Task side records a copy by `hostRoot` plus its execution reference (`task-execution-resource-port.ts:19-34`).
+- So one concept, a delegated run and its link, has two stored shapes (local and remote), and the local shape and the Task record both encode hosting.
+- The hosting machinery, by file (lines): `root-task-execution-lifecycle.ts` 509, the three subject adapters 435 + 361 + 446, `root-agent-execution-registry.ts` 351, `root-team-execution-directory.ts` 346, `task-agent-execution-registry.ts` 298, `task-team-execution-registry.ts` 232, and the `execution/task` folder's other files; the link machinery for remote runs: `execution/remote/*` (about 1,100 lines) and `remote-collaboration/inbound/*`.

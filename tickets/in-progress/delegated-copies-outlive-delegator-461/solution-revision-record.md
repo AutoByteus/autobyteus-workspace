@@ -7,6 +7,7 @@
 | SR-001 | Requirements | Initial coherent baseline (Task `autobyteus-461`) | N/A | N/A | Ready for Approval | BEH-001 … BEH-009, REQ-001 … REQ-010 | Requirements baseline presented to the user; DEC-001 needs the user |
 | SR-002 | Mixed | The user's answer on DEC-001; feasibility investigation of the Team/Org part | N/A | Ready for Approval | Ready for Approval | REQ-003, REQ-004, AC-002, AC-006, DEC-001, DEC-009 | DEC-001 = wake (the user); DEC-009 (one ticket or two) needs the user |
 | SR-003 | Mixed | The user's answer on DEC-009 (A); standalone architecture investigation and design | N/A | Ready for Approval | Requirements Approved; design Ready, the user's approval of the design pending | REQ-001, REQ-006, REQ-007, REQ-009, REQ-010, AC-006 (retired), AC-010, AC-012, SCN-002 (deferred), DEC-002, DEC-009 | Scope: standalone Agent runs; Team and Org runs → FU-001; design-spec written; Medium / High |
+| SR-004 | Requirements | The user's direction change after the SR-003 design was presented | N/A | Requirements Approved; design Ready | Requirements Draft; design Needs Revision | DEC-010 (new), DEC-009 (superseded), all REQ (scope: Agent, Team and Org runs again) | The structure is corrected in this ticket; SR-003's design is not built |
 
 ## Revision Entries
 
@@ -78,3 +79,26 @@
 - Downstream and architecture-review impact: none yet
 - Remaining gaps, assumptions or blocked decisions: the user's approval of the design
 - Next action: the user approves the design; then the handoff by the handoff rules
+
+### SR-004 — The user changes the direction: correct the structure in this ticket
+
+- Phase and classification: Requirements, `Requirement Gap` (a user change to scope and approach)
+- Triggering user feedback, Product package, investigation evidence, or role/report/round: the user, 2026-11-10, in the Solution Designer's conversation, after reading the SR-003 design and the explanation of the hosting gap: "we should start to refactor in this ticket instead of just try to fix the bug … put the data model correct and then the upper layer source code should reflect the data model"
+- Triggering finding IDs: N/A
+- Prior authoritative requirements/design status: requirements `Approved` (SR-003); design `Ready`, the user's approval pending
+- Current authoritative requirements/design status: requirements `Draft`; design `Needs Revision` (not to be built)
+- Requirement, behavior, acceptance-criteria, scenario or decision IDs affected: DEC-010 (new, the user); DEC-009 superseded; scope returns to Agent, Team and Org runs; DEC-003 (cascade of a copy's Stop) and REQ-007 (archive/delete) are reopened by the new structure
+- Scenario-basis or scenario-validity changes: none yet
+- Why this baseline or revision was recorded: the direction changed before any handoff
+- Canonical requirements, investigation and design sections changed: requirements Document Status, Decisions, Readiness Check; design-spec status; investigation notes Clarifications and stored shapes; follow-ups FU-001 withdrawn
+- Supplemental artifacts added, changed or removed: none
+- Product design evidence or product decisions incorporated: none
+- Intended behavior changed: `Yes` (scope and a required structure)
+- Approval impact, exact approved requirements baseline, who approved, and approval reference: the SR-003 approval no longer applies to the changed scope; renewed approval is needed once the requirements are revised
+- Behavior-defining supplement versions and approval references: none
+- Affected design/review basis invalidated or rebuilt: the SR-003 design is superseded; no review had run
+- Post-design task-size/risk classification and rationale changes: N/A until the new design
+- Applied handoff-rule outcome / result-file reference, when a handoff occurred: none
+- Downstream and architecture-review impact: none (nothing was handed off)
+- Remaining gaps, assumptions or blocked decisions: the target data model and its staging; the user confirms the target model before the detailed design
+- Next action: the user confirms the target model; then the architecture investigation, revised requirements and the new design

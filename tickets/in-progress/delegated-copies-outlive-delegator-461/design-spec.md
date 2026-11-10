@@ -2,11 +2,11 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-003`
+- Current solution revision ID: `SR-003` (superseded by the user's direction of SR-004; see below)
 - Approved requirements baseline / revision, who approved, and approval reference: `requirements-doc.md` at `SR-003` (scope: standalone Agent runs). Approved by the Solution Designer within the direction, with DEC-001 (wake) and DEC-009 (two steps) decided by the user on 2026-11-10 in the Solution Designer's conversation.
 - Behavior-defining supplements and their approval references: none
-- User approval of the design, when the direction requires it: `Pending` (the Task: "Design first; the user approves the direction before the build")
-- Design status: `Ready`
+- User approval of the design, when the direction requires it: not given; the user chose the structural change instead (SR-004) (the Task: "Design first; the user approves the direction before the build")
+- Design status: `Needs Revision` — **not to be built.** On 2026-11-10 the user decided (requirements DEC-010) to correct the structure in this ticket: local delegated runs become independent runs linked to their delegator. This spec keeps the hosting and changes only what Stop covers; it stays as the record of SR-003 until the new design replaces it. Its evidence rows remain valid.
 - Canonical investigation-notes path: `tickets/in-progress/delegated-copies-outlive-delegator-461/investigation-notes.md`
 - Authorities read (design reading gate; file and date): `references/architecture-design.md`, `references/design-principles.md`, project `DESIGN.md`, `autobyteus-server-ts/docs/design/collaboration_model.md`, `docs/design-cases.md` (headings; cases 4, 5, 7 and 10 apply), `GLOSSARY.md` (searched for the words used here) — 2026-11-10. `references/design-examples.md`: not used.
 - Project design-principle conflicts with the general principles, or discrepancies: none.

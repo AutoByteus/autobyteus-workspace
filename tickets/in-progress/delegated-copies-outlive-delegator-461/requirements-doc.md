@@ -2,8 +2,8 @@
 
 ## Document Status
 
-- Status: `Approved`
-- Current solution revision ID: `SR-003`
+- Status: `Draft` (the user changed the direction on 2026-11-10, SR-004: the structure is corrected in this ticket; the content below is the SR-003 baseline and is being revised)
+- Current solution revision ID: `SR-004`
 - Package identifier: `delegated-copies-outlive-delegator-461`
 - Request / ticket: Project Task `autobyteus-461` (Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`)
 - Requested by (the user, or the delegating agent's address): `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), carrying the user's decision of 2026-11-10
@@ -200,6 +200,7 @@ None.
 | DEC-006 | Peer-started runs and application-owned runs? | Other callers of the same Stop | Same rule / unchanged | A peer-started run is a delegated copy; an application owns its runs. Unchanged. | Solution Designer | Decided |
 | DEC-007 | Server shutdown and restart? | The Task leaves it to the team | Keep / change | Keep: everything ends with the server; copies keep their conversations and continue on their next message; an update restart resumes busy runs. One addition: a busy copy is resumed after an update even when its delegator was stopped. | Solution Designer | Decided |
 | DEC-009 | One ticket for all three run kinds, or two? | Scope and time to the fix | **A. Two steps:** this ticket delivers standalone Agent runs (the user's real case, the Project Task Manager); Team and Org runs get the same rule in their own Task right after. **B. One ticket** for all three. Evidence (investigation notes, Architecture Investigation Findings): a standalone run already separates its own agent from its coordinating record, so its change is contained. A Team or Org run treats "stopped" and "its coordinating record is unloaded" as one fact in restore, stopped-run settings, archive, delete and the clients' Team and Org Stop flows; all of them change, in two run kinds. | The standalone part fixes the reported problem and is roughly a third of the whole; the Team/Org part is larger and touches the most guarded Stop paths. Two steps deliver the fix sooner and keep each change reviewable. Until step two, Stop of a Team or Org run still stops its copies, as today. **Recommendation: A.** | The user | Decided by the user, 2026-11-10: **A (two steps)** |
+| DEC-010 | Fix what Stop covers and keep the hosting (SR-003), or correct the structure: a local delegated run is an independent run linked to its delegator, as a remote one already is? | The cause of the problem and of later ones | SR-003 design (hosting kept) / the structural change (`collaboration_model.md` § 5: "Local runs: hosting" is the documented gap) | The user: "we should start to refactor in this ticket instead of just try to fix the bug … put the data model correct and then the upper layer source code should reflect the data model". The structural change, in this ticket; it supersedes DEC-009 and the SR-003 design, and covers Agent, Team and Org runs. | The user | Decided by the user, 2026-11-10 |
 | DEC-008 | A one-click "stop this run and all its copies"? | Today's Stop did that | Add / not now | Not asked for; the user stops copies one by one or closes their Tasks. Not now. | Solution Designer | Decided |
 
 ## Traceability
@@ -237,12 +238,12 @@ None.
 - Product design and supplemental evidence is integrated consistently: `N/A`
 - Applicable UI/UX approval and final visual-reference basis are recorded: `N/A`
 - Material assumptions and decisions are visible, each decision with reasoning and recommendation: `Yes`
-- Content ready for approval: `Yes`
+- Content ready for approval: `No` (SR-004: being revised for DEC-010)
 - Remaining content blocker: none
 
 ### Approved Basis Ready For Design
 
 - Approval recorded (the user's, or yours within the direction with the user informed): `Yes`
 - Exact requirements and supplement approval basis recorded: `Yes`
-- Approved requirements package ready for architecture design: `Yes`
+- Approved requirements package ready for architecture design: `No` (SR-004)
 - Remaining blocker: none
