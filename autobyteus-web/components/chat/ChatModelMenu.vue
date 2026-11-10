@@ -327,13 +327,23 @@ const runtimeLabel = computed(() => (props.runtimeKind ? runtimeLabelFor(props.r
 const isCurrent = (model: ChatModelOption) =>
   model.runtimeKind === props.runtimeKind && model.llmModelIdentifier === props.llmModelIdentifier
 
+// A runtime's list is re-read once per opening of the menu: opening the chosen runtime's models in the same opening shows what
+// that read gives (a Claude read starts the CLI, so it is not repeated for every hover or click).
+const refreshedThisOpening = new Set<string>()
+const refreshOnOpening = (runtimeKind: string) => {
+  if (refreshedThisOpening.has(runtimeKind)) return
+  refreshedThisOpening.add(runtimeKind)
+  catalog.refreshCatalog(runtimeKind)
+}
+
 const onToggle = async () => {
   if (!popover.open.value) {
     query.value = ''
     submenuRuntime.value = null
+    refreshedThisOpening.clear()
     void catalog.ensureAvailability()
     if (optionsBacked.value) void lockedOptionsRefresh!.refresh()
-    else if (props.runtimeKind) catalog.refreshCatalog(props.runtimeKind)
+    else if (props.runtimeKind) refreshOnOpening(props.runtimeKind)
   }
   await popover.toggle()
   if (popover.open.value) {
@@ -370,7 +380,7 @@ const openSubmenu = (runtimeKind: string, immediate: boolean) => {
       flyoutListMaxHeight.value = Math.max(0, Math.min(FLYOUT_LIST_MAX_PX, Math.floor(spaceAbove)))
     }
     submenuRuntime.value = runtimeKind
-    catalog.refreshCatalog(runtimeKind)
+    refreshOnOpening(runtimeKind)
     if (immediate) {
       await nextTick()
       focusFirstInSubmenu()

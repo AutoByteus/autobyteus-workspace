@@ -50,7 +50,7 @@ const chatMessages = {
   'chat.model.loadError': 'Couldn’t load models',
   'chat.model.retry': 'Retry',
   'chat.model.refresh': 'Refresh models',
-  'chat.model.refreshing': 'Refreshing models…',
+  'chat.model.refreshing': 'Refreshing…',
   'chat.model.refreshError': 'Couldn’t refresh models',
   'chat.model.searchingAll': 'Searching all runtimes…',
   'chat.model.noMatch': 'No models match “{{query}}”',

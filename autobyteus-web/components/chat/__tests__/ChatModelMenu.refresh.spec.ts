@@ -84,6 +84,26 @@ describe('ChatModelMenu re-reads the runtime list when it opens (REQ-010, AC-010
     expect(menu.find('[data-test="chat-model-submenu"]').exists()).toBe(true)
   })
 
+  it('reads a runtime once per opening: its models opening after the menu opened on it do not read it again', async () => {
+    const menu = mountMenu()
+    await openMenu(menu)
+    expect(catalog.refreshCatalog).toHaveBeenCalledExactlyOnceWith('claude_agent_sdk')
+
+    await menu.get('[data-test="chat-runtime-claude_agent_sdk"]').trigger('click')
+    await flushPromises()
+    await menu.get('[data-test="chat-runtime-codex_app_server"]').trigger('click')
+    await flushPromises()
+    await menu.get('[data-test="chat-runtime-claude_agent_sdk"]').trigger('click')
+    await flushPromises()
+
+    expect(catalog.refreshCatalog.mock.calls.map(([runtime]) => runtime)).toEqual(['claude_agent_sdk', 'codex_app_server'])
+
+    // A new opening reads again.
+    await menu.get('[data-test="chat-model-trigger"]').trigger('click')
+    await openMenu(menu)
+    expect(catalog.refreshCatalog.mock.calls.map(([runtime]) => runtime)).toEqual(['claude_agent_sdk', 'codex_app_server', 'claude_agent_sdk'])
+  })
+
   it('"Refresh models" in the runtime list re-reads that runtime (and its discovered providers)', async () => {
     const menu = mountMenu()
     await openMenu(menu)

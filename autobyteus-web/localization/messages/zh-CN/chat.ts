@@ -49,7 +49,7 @@ const chatMessages = {
   'chat.model.loadError': '无法加载模型',
   'chat.model.retry': '重试',
   'chat.model.refresh': '刷新模型',
-  'chat.model.refreshing': '正在刷新模型…',
+  'chat.model.refreshing': '正在刷新…',
   'chat.model.refreshError': '无法刷新模型',
   'chat.model.searchingAll': '正在搜索所有运行时…',
   'chat.model.noMatch': '没有匹配“{{query}}”的模型',
