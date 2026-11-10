@@ -1,0 +1,18 @@
+# IMP-03 server test:unit; working tree = commit a20e7a822f content (run before commit); macOS; 2026-11-10
+# Command: pnpm -C autobyteus-server-ts test:unit
+# Note: the one failed file (application-platform-state-store, Prisma.ModelName undefined at import) was caused by a concurrent `pnpm test-vault status` that regenerated the Prisma client during this run; it passes alone (IMP-03b).
+# Excerpt of IMP-03-server-test-unit.log (full log kept in the worktree)
+
+ FAIL  tests/unit/application-storage/application-platform-state-store.test.ts [ tests/unit/application-storage/application-platform-state-store.test.ts ]
+ Test Files  1 failed | 969 passed | 5 skipped (975)
+      Tests  8265 passed | 9 skipped (8274)
+   Duration  786.96s (transform 21.13s, setup 24.03s, import 348.37s, tests 321.42s, environment 1.05s)
+ FAIL  tests/unit/application-storage/application-platform-state-store.test.ts [ tests/unit/application-storage/application-platform-state-store.test.ts ]
+TypeError: Cannot read properties of undefined (reading 'ModelName')
+ ❯ ../node_modules/.pnpm/repository_prisma@1.0.10_@prisma+client@5.22.0_prisma@5.22.0_/node_modules/repository_prisma/src/lib/models.ts:7:36
+ ❯ src/secret-management/persistence/secret-vault-repository.ts:1:1
+      1| import {
+       | ^
+      2|   runInTransaction,
+      3|   type RunInTransactionOptions,
+

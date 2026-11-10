@@ -460,6 +460,25 @@ describe('agentRunStore', () => {
         expect(mockContextsStore.removeRun).not.toHaveBeenCalled();
     });
 
+    it('disconnectAllAgentStreams closes every agent stream the page holds (autobyteus-435 REQ-010 (b))', () => {
+        const store = useAgentRunStore();
+        store.disconnectAllAgentStreams();
+        mockDisconnect.mockClear();
+        vi.mocked(AgentStreamingService).mockClear();
+        for (const runId of ['agent-a', 'agent-b']) {
+            mockAgentContext.state.runId = runId;
+            store.connectToAgentStream(runId);
+        }
+
+        store.disconnectAllAgentStreams();
+
+        expect(mockDisconnect).toHaveBeenCalledTimes(2);
+        expect(mockContextsStore.removeRun).not.toHaveBeenCalled();
+        store.connectToAgentStream('agent-b');
+        expect(AgentStreamingService).toHaveBeenCalledTimes(3);
+        store.disconnectAllAgentStreams();
+    });
+
     it('terminateRun should not teardown local runtime when persisted termination fails', async () => {
         const store = useAgentRunStore();
         mockAgentContext.isSubscribed = true;

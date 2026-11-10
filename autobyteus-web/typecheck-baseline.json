@@ -32,7 +32,6 @@
   "tests/setup/websocket.ts": 2,
   "tests/stores/llmProviderConfigStore.test.ts": 2,
   "utils/__tests__/agentOrgLaunchPatch.spec.ts": 1,
-  "utils/__tests__/nodeIdentityProbe.spec.ts": 3,
   "utils/__tests__/teamRunLaunchHierarchy.spec.ts": 1,
   "utils/application/__tests__/applicationHostTransport.spec.ts": 2,
   "utils/fileExplorer/__tests__/stateSync.test.ts": 2,

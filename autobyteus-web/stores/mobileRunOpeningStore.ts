@@ -25,6 +25,13 @@ export const useMobileRunOpeningStore = defineStore('mobileRunOpening', () => {
     pending.value = null;
     failure.value = Object.freeze({ key });
   };
+  /**
+   * An open that ends without opening anything, where its owner has moved the page on itself (a restore whose subject
+   * is gone, or whose list could not be read, shows the list, autobyteus-435): it ends with no failure to react to.
+   */
+  const cancel = (key: string): void => {
+    if (pending.value?.key === key) pending.value = null;
+  };
 
-  return { pending, failure, begin, commit, fail };
+  return { pending, failure, begin, commit, fail, cancel };
 });

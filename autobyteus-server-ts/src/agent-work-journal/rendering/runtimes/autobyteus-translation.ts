@@ -65,18 +65,23 @@ const runBashResult = (result: RecordedResult | null): NormalizedToolResult | nu
   return { outcome, output: output.length ? output : null };
 };
 
-const runBash: BuiltInConverter = (call, result) => {
-  const cwd = asText(call.args.cwd);
-  return commandLine(asText(call.args.command), cwd ? [`in ${cwd}`] : [], runBashResult(result));
-};
-
-const startBackgroundProcess: BuiltInConverter = (call, result) => {
+/**
+ * `Command: <command> (background)` with the started pid: run_bash with run_in_background, and recorded calls of the
+ * retired start_background_process.
+ */
+const backgroundCommand: BuiltInConverter = (call, result) => {
   const cwd = asText(call.args.cwd);
   const value = asRecord(result?.value);
   const recorded = result && value && !result.error
     ? { outcome: { kind: "started" as const, pid: asInteger(value.pid) }, output: null }
     : normalized(result);
   return commandLine(asText(call.args.command), [...(cwd ? [`in ${cwd}`] : []), "background"], recorded);
+};
+
+const runBash: BuiltInConverter = (call, result) => {
+  if (call.args.run_in_background === true) return backgroundCommand(call, result);
+  const cwd = asText(call.args.cwd);
+  return commandLine(asText(call.args.command), cwd ? [`in ${cwd}`] : [], runBashResult(result));
 };
 
 /**
@@ -189,7 +194,8 @@ export const autobyteusTranslation: RuntimeTranslation = Object.freeze({
   label: agentRuntimeName(RuntimeKind.AUTOBYTEUS),
   builtInTools: new Map<string, BuiltInConverter>([
     ["run_bash", runBash],
-    ["start_background_process", startBackgroundProcess],
+    // Retired tools (autobyteus-338): their recorded calls in existing journals keep rendering.
+    ["start_background_process", backgroundCommand],
     ["read_file", readFile],
     ["read_url", readUrl],
     ["write_file", writeFile],

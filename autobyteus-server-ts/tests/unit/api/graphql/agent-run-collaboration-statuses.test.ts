@@ -29,11 +29,16 @@ const rootWith = (lifecycleActive: boolean, statuses: unknown[], closed: Referen
 });
 const EMPTY = closedTaskExecutionsDigest([]);
 
-/** A manager holding only its registered roots; getAgentStatuses reads nothing else. */
-const managerWith = (roots: Record<string, ReturnType<typeof rootWith>>): StandaloneAgentRunRootManager => {
+/**
+ * A manager holding only its registered roots and the Task index (by host run ID); getAgentStatuses reads nothing else:
+ * no stored tree, no log (autobyteus-435 QR-002).
+ */
+const managerWith = (roots: Record<string, ReturnType<typeof rootWith>>, index: Record<string, Reference[]> = {}) => {
+  const closedTaskExecutionsIn = vi.fn((root: { rootKind: string; rootRunId: string }) => index[root.rootRunId] ?? []);
   const manager = Object.create(StandaloneAgentRunRootManager.prototype) as StandaloneAgentRunRootManager;
   Object.defineProperty(manager, "active", { value: new Map(Object.entries(roots)) });
-  return manager;
+  Object.defineProperty(manager, "options", { value: { taskExecutionResources: { closedTaskExecutionsIn } } });
+  return Object.assign(manager, { closedTaskExecutionsIn });
 };
 
 afterEach(() => vi.restoreAllMocks());
@@ -46,9 +51,9 @@ describe("StandaloneAgentRunRootManager.getAgentStatuses", () => {
     const manager = managerWith({ "host-a": active, "host-b": activating });
 
     expect(manager.getAgentStatuses(["host-b", "host-a", "unknown"])).toEqual([
-      { runId: "host-b", isActive: false, statuses: [], closedTaskExecutionsDigest: null },
+      { runId: "host-b", isActive: false, statuses: [], closedTaskExecutionsDigest: EMPTY },
       { runId: "host-a", isActive: true, statuses: [writer], closedTaskExecutionsDigest: EMPTY },
-      { runId: "unknown", isActive: false, statuses: [], closedTaskExecutionsDigest: null },
+      { runId: "unknown", isActive: false, statuses: [], closedTaskExecutionsDigest: EMPTY },
     ]);
     expect(activating.getAgentStatusSnapshots).not.toHaveBeenCalled();
     expect(activating.closedTaskExecutions).not.toHaveBeenCalled();
@@ -67,6 +72,23 @@ describe("StandaloneAgentRunRootManager.getAgentStatuses", () => {
     closed.splice(0, closed.length);
     expect(digest()).toBe(EMPTY);
   });
+
+  it("answers a stopped run's digest from the Task index in memory: a Task closed or reopened while it is stopped changes it (autobyteus-435 AC-011-1)", () => {
+    const index: Record<string, Reference[]> = { host: [] };
+    const stopped = rootWith(false, []);
+    const manager = managerWith({ host: stopped }, index);
+    const answer = () => manager.getAgentStatuses(["host"])[0]!;
+
+    expect(answer()).toEqual({ runId: "host", isActive: false, statuses: [], closedTaskExecutionsDigest: EMPTY });
+    index.host = [{ agentRunId: "writer-1" }];
+    expect(answer().closedTaskExecutionsDigest).toBe(closedTaskExecutionsDigest([{ agentRunId: "writer-1" }]));
+    index.host = [];
+    expect(answer().closedTaskExecutionsDigest).toBe(EMPTY);
+    // The index is asked for this run's agent root; the stopped root's own closed set (its tree) is never read.
+    expect(manager.closedTaskExecutionsIn).toHaveBeenCalledWith(expect.objectContaining({ rootRunId: "host" }));
+    expect(stopped.closedTaskExecutions).not.toHaveBeenCalled();
+    expect(stopped.getExecutionTreeSnapshot).not.toHaveBeenCalled();
+  });
 });
 
 describe("agentRunCollaborationStatuses", () => {
@@ -80,14 +102,14 @@ describe("agentRunCollaborationStatuses", () => {
     const manager = managerWith({ host: rootWith(true, [
       snapshot("writer-1", "/release_notes_writer", "idle"),
       snapshot("lead-1", "/docs_review_team/lead", "error", block),
-    ], [{ agentRunId: "old-writer" }]) });
+    ], [{ agentRunId: "old-writer" }]) }, { stopped: [{ teamRunId: "closed-team" }] });
     const answer = withManager(manager, () => new AgentRunCollaborationResolver().agentRunCollaborationStatuses(["host", "stopped"]));
     expect(answer).toEqual([
       { runId: "host", isActive: true, closedTaskExecutionsDigest: closedTaskExecutionsDigest([{ agentRunId: "old-writer" }]), statuses: [
         { agentRunId: "writer-1", memberAddress: "/release_notes_writer", status: "idle", recoverableBlock: null },
         { agentRunId: "lead-1", memberAddress: "/docs_review_team/lead", status: "error", recoverableBlock: block },
       ] },
-      { runId: "stopped", isActive: false, closedTaskExecutionsDigest: null, statuses: [] },
+      { runId: "stopped", isActive: false, closedTaskExecutionsDigest: closedTaskExecutionsDigest([{ teamRunId: "closed-team" }]), statuses: [] },
     ]);
   });
 

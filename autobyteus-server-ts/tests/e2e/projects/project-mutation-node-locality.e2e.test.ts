@@ -9,6 +9,7 @@ import {spawn, execFile, type ChildProcess} from "node:child_process";
 import {once} from "node:events";
 import {promisify} from "node:util";
 import {expect, it} from "vitest";
+import {builtServerLaunchEnvironment} from "../helpers/built-server-launch-credential.js";
 
 // Prerequisite: current-worktree server prebuild + build. Never use installed binaries.
 // Two real built-process Studio/HTTP/MCP/SQLite nodes, private HOME/data/free ports.
@@ -27,10 +28,12 @@ class NodeFixture {
     await this.start();
   }
   environment(): NodeJS.ProcessEnv {
-    // Minimal environment: no host secrets/provider configuration/package discovery.
+    // Minimal environment: no host secrets/provider configuration/package discovery. The launch owner credential, as
+    // the desktop app starts its node; it is attached to this process's loopback requests (node access model NA-5).
     return {PATH: process.env.PATH, HOME: path.join(this.root, "home"), APP_ENV: "test",
       DATABASE_URL: `file:${path.join(this.root, "db", "test.db")}`,
-      AUTOBYTEUS_TEMP_WORKSPACE_DIR: path.join(this.root, "temp_workspace"), AUTOBYTEUS_AGENT_PACKAGE_ROOTS: ""};
+      AUTOBYTEUS_TEMP_WORKSPACE_DIR: path.join(this.root, "temp_workspace"), AUTOBYTEUS_AGENT_PACKAGE_ROOTS: "",
+      ...builtServerLaunchEnvironment()};
   }
   async start() {
     await fs.access(path.resolve("dist/compositions/build-studio-server.js"));

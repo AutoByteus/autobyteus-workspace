@@ -1,0 +1,334 @@
+{
+  "startResult": {
+    "pid": 87385,
+    "status": "running",
+    "effectiveCwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-ws-HciwCC",
+    "outputFile": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_dea3535f_bf186409c088499d8bd58c2cf739fa47/call-1794312221160-87272.log"
+  },
+  "killResult": {
+    "exitCode": 0,
+    "effectiveCwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-ws-HciwCC",
+    "backgroundTasksEnded": [
+      {
+        "pid": 87385,
+        "command": "npm run dev",
+        "outcome": {
+          "signal": "SIGTERM"
+        },
+        "durationMs": 41253,
+        "outputFile": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_dea3535f_bf186409c088499d8bd58c2cf739fa47/call-1794312221160-87272.log",
+        "lastLines": "\n> devapp@1.0.0 dev\n> node server.js\n\nlistening on 52234\nworker ready"
+      }
+    ]
+  },
+  "group": [
+    {
+      "pid": 87272,
+      "pgid": 87272,
+      "command": "/Users/normy/.hermes/node/bin/node -e \\012const { spawn } = require('node:child_process');\\012let launched = false;\\012function send(message) {\\012  if (!process.connected) return process.exit(1);\\012  process.send(message, error => { if (error) process.exit(1); });\\012}\\012process.on('SIGTERM', () => {});\\012process.on('disconnect', () => process.exit(1));\\012process.on('message', message => {\\012  if (message.kind === 'START' && !launched) {\\012    launched = true;\\012    try {\\012      const child = spawn(message.executable, message.args, {\\012        cwd: message.cwd, env: message.env, detached: false,\\012        stdio: ['ignore', 'inherit', 'inherit']\\012      });\\012      child.once('spawn', () => send({ kind: 'STARTED', pid: child.pid }));\\012      child.once('error', error => send({ kind: 'SPAWN_FAILED', message: error.message.slice(0, 512) }));\\012      child.once('exit', (code, signal) => send({ kind: 'RESULT', code, signal }));\\012    } catch (error) { send({ kind: 'SPAWN_FAILED', message: String(error).slice(0, 512) }); }\\012  } else if (message.kind === 'RELEASE') process.exit(0);\\012});\\012send({ kind: 'READY', pid: process.pid });\\012"
+    },
+    {
+      "pid": 87378,
+      "pgid": 87272,
+      "command": "/bin/bash --noprofile --norc -lc ( trap 'trap - TERM; kill -TERM 0' TERM\\012  { :\\012npm run dev\\012  } & wait $!\\012) &\\012__ab_job=$!\\012trap '' TERM\\012printf '\\036c5141e491dfbc7f0d7eb11db35d9d6b1:END\\037'\\012printf '\\036c5141e491dfbc7f0d7eb11db35d9d6b1:FOREGROUND_DONE:0:%s\\037' \"$__ab_job\" >&2\\012wait \"$__ab_job\"; printf '\\036c5141e491dfbc7f0d7eb11db35d9d6b1:JOB_ENDED:%s:%s\\037' \"$__ab_job\" \"$?\" >&2\\012"
+    },
+    {
+      "pid": 87385,
+      "pgid": 87272,
+      "command": "/bin/bash --noprofile --norc -lc ( trap 'trap - TERM; kill -TERM 0' TERM\\012  { :\\012npm run dev\\012  } & wait $!\\012) &\\012__ab_job=$!\\012trap '' TERM\\012printf '\\036c5141e491dfbc7f0d7eb11db35d9d6b1:END\\037'\\012printf '\\036c5141e491dfbc7f0d7eb11db35d9d6b1:FOREGROUND_DONE:0:%s\\037' \"$__ab_job\" >&2\\012wait \"$__ab_job\"; printf '\\036c5141e491dfbc7f0d7eb11db35d9d6b1:JOB_ENDED:%s:%s\\037' \"$__ab_job\" \"$?\" >&2\\012"
+    },
+    {
+      "pid": 87386,
+      "pgid": 87272,
+      "command": "/bin/bash --noprofile --norc -lc ( trap 'trap - TERM; kill -TERM 0' TERM\\012  { :\\012npm run dev\\012  } & wait $!\\012) &\\012__ab_job=$!\\012trap '' TERM\\012printf '\\036c5141e491dfbc7f0d7eb11db35d9d6b1:END\\037'\\012printf '\\036c5141e491dfbc7f0d7eb11db35d9d6b1:FOREGROUND_DONE:0:%s\\037' \"$__ab_job\" >&2\\012wait \"$__ab_job\"; printf '\\036c5141e491dfbc7f0d7eb11db35d9d6b1:JOB_ENDED:%s:%s\\037' \"$__ab_job\" \"$?\" >&2\\012"
+    },
+    {
+      "pid": 87391,
+      "pgid": 87272,
+      "command": "npm run dev"
+    },
+    {
+      "pid": 87760,
+      "pgid": 87272,
+      "command": "node server.js"
+    },
+    {
+      "pid": 87788,
+      "pgid": 87272,
+      "command": "/Users/normy/.hermes/node/bin/node worker.js"
+    }
+  ],
+  "receiptPids": {
+    "server": 87760,
+    "worker": 87788,
+    "port": 52234
+  },
+  "survivors": [],
+  "requests": [
+    {
+      "at": 1794312221042,
+      "repliedAt": 1794312221042,
+      "scripted": true,
+      "noticeTurn": false,
+      "tools": [
+        "run_bash",
+        "read_file",
+        "edit_file",
+        "write_file",
+        "send_message_to",
+        "delegate_task"
+      ],
+      "toolResults": [],
+      "lastUser": "CASE:BGT-04 Start the dev server in the background."
+    },
+    {
+      "at": 1794312221176,
+      "repliedAt": 1794312221176,
+      "scripted": true,
+      "noticeTurn": false,
+      "tools": [
+        "run_bash",
+        "read_file",
+        "edit_file",
+        "write_file",
+        "send_message_to",
+        "delegate_task"
+      ],
+      "toolResults": [
+        "{\"pid\":87385,\"status\":\"running\",\"effectiveCwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-ws-HciwCC\",\"outputFile\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_dea3535f_bf186409c088499d8bd58c2cf739fa47/call-1794312221160-87272.log\"}"
+      ],
+      "lastUser": "CASE:BGT-04 Start the dev server in the background."
+    },
+    {
+      "at": 1794312262288,
+      "repliedAt": 1794312262288,
+      "scripted": true,
+      "noticeTurn": false,
+      "tools": [
+        "run_bash",
+        "read_file",
+        "edit_file",
+        "write_file",
+        "send_message_to",
+        "delegate_task"
+      ],
+      "toolResults": [],
+      "lastUser": "CASE:BGT-04 Stop the dev server now."
+    },
+    {
+      "at": 1794312262435,
+      "repliedAt": 1794312262435,
+      "scripted": true,
+      "noticeTurn": false,
+      "tools": [
+        "run_bash",
+        "read_file",
+        "edit_file",
+        "write_file",
+        "send_message_to",
+        "delegate_task"
+      ],
+      "toolResults": [
+        "{\"exitCode\":0,\"effectiveCwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-ws-HciwCC\",\"backgroundTasksEnded\":[{\"pid\":87385,\"command\":\"npm run dev\",\"outcome\":{\"signal\":\"SIGTERM\"},\"durationMs\":41253,\"outputFile\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_dea3535f_bf186409c088499d8bd58c2cf739fa47/call-1794312221160-87272.log\",\"lastLines\":\"\\n> devapp@1.0.0 dev\\n> node server.js\\n\\nlistening on 52234\\nworker ready\"}]}"
+      ],
+      "lastUser": "CASE:BGT-04 Stop the dev server now."
+    }
+  ],
+  "frames": [
+    {
+      "type": "AGENT_STATUS",
+      "at": 1794312221037,
+      "payload": "{\"status\":\"initializing\",\"recoverableBlock\":null,\"agent_id\":\"native_bgt_dea3535f_bf186409c088499d8bd58c2cf739fa47\"}"
+    },
+    {
+      "type": "AGENT_COMMAND_ACK",
+      "at": 1794312221037,
+      "payload": "{\"command_type\":\"SEND_MESSAGE\",\"run_id\":\"native_bgt_dea3535f_bf186409c088499d8bd58c2cf739fa47\",\"message_id\":\"e2e-6b0584bc-5e2e-4b82-8607-a9095cf6e963\",\"dedupe_key\":\"agent_run_input:e2e:e2e-6b0584bc-5e2e-4b82-8607-a9095cf6e963\",\"state\":\"accepted\",\"accepted\":true,\"duplicate\":false,\"status\":{\"status\":\"initializing\",\"recoverableBlock\":null,\"agent_id\":\"native_bgt_dea3535f_bf186409c088499d8bd58c2cf739fa47\"}}"
+    },
+    {
+      "type": "SYSTEM_INSTRUCTIONS_SUPPLIED",
+      "at": 1794312221037,
+      "payload": "{\"trace_id\":\"rt_1794312220966_48a58528-0106-4a10-9af5-7b1f4b0a908b\",\"content\":\"## Agent Identity\\n\\n- Name: native-bgt-dea3535f\\n- Description: Live native-runtime validation agent.\\n\\n### Responsibilities and Boundaries\\n\\nRun the shell commands you are asked to run.\\n\\n## Working With Other Agents\\n\\nYou can delegate tasks to other agents and agent teams.\\n\\n- To delegate a task, use `delegate_task` with the address of an agent or agent team. This creates a new task agent (or task agent team) that works on your task, and you get back its run id. Your task description becomes the task agent's"
+    },
+    {
+      "type": "AGENT_STATUS",
+      "at": 1794312221037,
+      "payload": "{\"status\":\"running\",\"recoverableBlock\":null,\"agent_id\":\"native_bgt_dea3535f_bf186409c088499d8bd58c2cf739fa47\"}"
+    },
+    {
+      "type": "TURN_STARTED",
+      "at": 1794312221037,
+      "payload": "{\"turn_id\":\"turn_0001\"}"
+    },
+    {
+      "type": "SEGMENT_START",
+      "at": 1794312221077,
+      "payload": "{\"id\":\"call-4d3a2a68-cd9\",\"turn_id\":\"turn_0001\",\"segment_type\":\"tool_call\",\"metadata\":{\"tool_name\":\"run_bash\"}}"
+    },
+    {
+      "type": "SEGMENT_END",
+      "at": 1794312221077,
+      "payload": "{\"id\":\"call-4d3a2a68-cd9\",\"turn_id\":\"turn_0001\",\"metadata\":{\"tool_name\":\"run_bash\",\"arguments\":{\"command\":\"npm run dev\",\"run_in_background\":true}},\"interrupted\":false,\"reason\":null,\"failed\":false,\"error\":null}"
+    },
+    {
+      "type": "TOOL_EXECUTION_STARTED",
+      "at": 1794312221077,
+      "payload": "{\"agent_id\":\"native_bgt_dea3535f_bf186409c088499d8bd58c2cf739fa47\",\"tool_name\":\"run_bash\",\"invocation_id\":\"call-4d3a2a68-cd9\",\"turn_id\":\"turn_0001\",\"arguments\":{\"command\":\"npm run dev\",\"run_in_background\":true}}"
+    },
+    {
+      "type": "TOOL_LOG",
+      "at": 1794312221077,
+      "payload": "{\"log_entry\":\"[TOOL_CALL] Agent_ID: native_bgt_dea3535f_bf186409c088499d8bd58c2cf739fa47, Tool: run_bash, Invocation_ID: call-4d3a2a68-cd9, Arguments: command: npm run dev\\nrun_in_background: true\",\"tool_invocation_id\":\"call-4d3a2a68-cd9\",\"tool_name\":\"run_bash\",\"turn_id\":\"turn_0001\"}"
+    },
+    {
+      "type": "BACKGROUND_TASK_UPDATED",
+      "at": 1794312221175,
+      "payload": "{\"task_id\":\"87385\",\"kind\":\"shell\",\"description\":\"npm run dev\",\"command\":\"npm run dev\",\"status\":\"running\",\"summary\":null,\"started_at\":\"2026-11-10T12:03:41.160Z\"}"
+    },
+    {
+      "type": "TOOL_LOG",
+      "at": 1794312221175,
+      "payload": "{\"log_entry\":\"[TOOL_RESULT] pid: 87385\\nstatus: running\\neffectiveCwd: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-ws-HciwCC\\noutputFile: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_dea3535f_bf186409c088499d8bd58c2cf739fa47/call-1794312221160-87272.log\",\"tool_invocation_id\":\"call-4d3a2a68-cd9\",\"tool_name\":\"run_bash\",\"turn_id\":\"turn_0001\"}"
+    },
+    {
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "at": 1794312221175,
+      "payload": "{\"agent_id\":\"native_bgt_dea3535f_bf186409c088499d8bd58c2cf739fa47\",\"tool_name\":\"run_bash\",\"invocation_id\":\"call-4d3a2a68-cd9\",\"turn_id\":\"turn_0001\",\"result\":{\"pid\":87385,\"status\":\"running\",\"effectiveCwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-ws-HciwCC\",\"outputFile\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_dea3535f_bf186409c088499d8bd58c2cf739fa47/call-1794312221160-87272.log\"}}"
+    },
+    {
+      "type": "TOOL_LOG",
+      "at": 1794312221175,
+      "payload": "{\"log_entry\":\"[TOOL_RESULT_SUCCESS_PROCESSED] Agent_ID: native_bgt_dea3535f_bf186409c088499d8bd58c2cf739fa47, Tool: run_bash, Invocation_ID: call-4d3a2a68-cd9, Result: pid: 87385\\nstatus: running\\neffectiveCwd: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-ws-HciwCC\\noutputFile: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_dea3535f_bf186409c088499d8bd58c2cf739fa47/call-1794312221160-87272.log\",\"tool_invocation_id\":\"call-4d3a2a68-cd9\",\"tool_name\":\"run_bash\",\"turn_id\":\"turn_0001\"}"
+    },
+    {
+      "type": "SEGMENT_START",
+      "at": 1794312221191,
+      "payload": "{\"id\":\"turn_bc307e642445463ba8821d83973a1e10:3e8d9f16f13d4fa6a4a42638b92bb311\",\"turn_id\":\"turn_0001\",\"segment_type\":\"text\",\"metadata\":null}"
+    },
+    {
+      "type": "SEGMENT_END",
+      "at": 1794312221191,
+      "payload": "{\"id\":\"turn_bc307e642445463ba8821d83973a1e10:3e8d9f16f13d4fa6a4a42638b92bb311\",\"turn_id\":\"turn_0001\",\"metadata\":null,\"interrupted\":false,\"reason\":null,\"failed\":false,\"error\":null}"
+    },
+    {
+      "type": "ASSISTANT_COMPLETE",
+      "at": 1794312221191,
+      "payload": "{\"content\":\"The dev server is starting.\",\"image_urls\":[],\"audio_urls\":[],\"video_urls\":[],\"is_error\":false}"
+    },
+    {
+      "type": "TURN_COMPLETED",
+      "at": 1794312221191,
+      "payload": "{\"turn_id\":\"turn_0001\"}"
+    },
+    {
+      "type": "AGENT_STATUS",
+      "at": 1794312221191,
+      "payload": "{\"status\":\"idle\",\"recoverableBlock\":null,\"agent_id\":\"native_bgt_dea3535f_bf186409c088499d8bd58c2cf739fa47\"}"
+    },
+    {
+      "type": "AGENT_STATUS",
+      "at": 1794312221191,
+      "payload": "{\"status\":\"initializing\",\"recoverableBlock\":null,\"agent_id\":\"native_bgt_dea3535f_bf186409c088499d8bd58c2cf739fa47\"}"
+    },
+    {
+      "type": "AGENT_STATUS",
+      "at": 1794312221191,
+      "payload": "{\"status\":\"idle\",\"recoverableBlock\":null,\"agent_id\":\"native_bgt_dea3535f_bf186409c088499d8bd58c2cf739fa47\"}"
+    },
+    {
+      "type": "AGENT_STATUS",
+      "at": 1794312262286,
+      "payload": "{\"status\":\"initializing\",\"recoverableBlock\":null,\"agent_id\":\"native_bgt_dea3535f_bf186409c088499d8bd58c2cf739fa47\"}"
+    },
+    {
+      "type": "AGENT_COMMAND_ACK",
+      "at": 1794312262286,
+      "payload": "{\"command_type\":\"SEND_MESSAGE\",\"run_id\":\"native_bgt_dea3535f_bf186409c088499d8bd58c2cf739fa47\",\"message_id\":\"e2e-8ae2b3ae-7aa7-44a8-93c9-cc3075e19eb3\",\"dedupe_key\":\"agent_run_input:e2e:e2e-8ae2b3ae-7aa7-44a8-93c9-cc3075e19eb3\",\"state\":\"accepted\",\"accepted\":true,\"duplicate\":false,\"status\":{\"status\":\"initializing\",\"recoverableBlock\":null,\"agent_id\":\"native_bgt_dea3535f_bf186409c088499d8bd58c2cf739fa47\"}}"
+    },
+    {
+      "type": "AGENT_STATUS",
+      "at": 1794312262286,
+      "payload": "{\"status\":\"running\",\"recoverableBlock\":null,\"agent_id\":\"native_bgt_dea3535f_bf186409c088499d8bd58c2cf739fa47\"}"
+    },
+    {
+      "type": "TURN_STARTED",
+      "at": 1794312262286,
+      "payload": "{\"turn_id\":\"turn_0002\"}"
+    },
+    {
+      "type": "SEGMENT_START",
+      "at": 1794312262334,
+      "payload": "{\"id\":\"call-6378d249-700\",\"turn_id\":\"turn_0002\",\"segment_type\":\"tool_call\",\"metadata\":{\"tool_name\":\"run_bash\"}}"
+    },
+    {
+      "type": "SEGMENT_END",
+      "at": 1794312262334,
+      "payload": "{\"id\":\"call-6378d249-700\",\"turn_id\":\"turn_0002\",\"metadata\":{\"tool_name\":\"run_bash\",\"arguments\":{\"command\":\"kill 87385\"}},\"interrupted\":false,\"reason\":null,\"failed\":false,\"error\":null}"
+    },
+    {
+      "type": "TOOL_EXECUTION_STARTED",
+      "at": 1794312262334,
+      "payload": "{\"agent_id\":\"native_bgt_dea3535f_bf186409c088499d8bd58c2cf739fa47\",\"tool_name\":\"run_bash\",\"invocation_id\":\"call-6378d249-700\",\"turn_id\":\"turn_0002\",\"arguments\":{\"command\":\"kill 87385\"}}"
+    },
+    {
+      "type": "TOOL_LOG",
+      "at": 1794312262334,
+      "payload": "{\"log_entry\":\"[TOOL_CALL] Agent_ID: native_bgt_dea3535f_bf186409c088499d8bd58c2cf739fa47, Tool: run_bash, Invocation_ID: call-6378d249-700, Arguments: command: kill 87385\",\"tool_invocation_id\":\"call-6378d249-700\",\"tool_name\":\"run_bash\",\"turn_id\":\"turn_0002\"}"
+    },
+    {
+      "type": "BACKGROUND_TASK_UPDATED",
+      "at": 1794312262417,
+      "payload": "{\"task_id\":\"87385\",\"kind\":\"shell\",\"description\":\"npm run dev\",\"command\":\"npm run dev\",\"status\":\"stopped\",\"summary\":\"signal SIGTERM\",\"started_at\":\"2026-11-10T12:03:41.160Z\"}"
+    },
+    {
+      "type": "TOOL_LOG",
+      "at": 1794312262435,
+      "payload": "{\"log_entry\":\"[TOOL_RESULT] exitCode: 0\\neffectiveCwd: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-ws-HciwCC\\nbackgroundTasksEnded:\\n  - \\n    pid: 87385\\n    command: npm run dev\\n    outcome:\\n      signal: SIGTERM\\n    durationMs: 41253\\n    outputFile: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_dea3535f_bf186409c088499d8bd58c2cf739fa47/call-1794312221160-87272.log\\n    lastLines:\\n      \\n      > devapp@1.0.0 dev\\n      > node server.js\\n      \\n      listening on 52234\\n      worker ready\",\"tool_invocation_id\":\"call-"
+    },
+    {
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "at": 1794312262435,
+      "payload": "{\"agent_id\":\"native_bgt_dea3535f_bf186409c088499d8bd58c2cf739fa47\",\"tool_name\":\"run_bash\",\"invocation_id\":\"call-6378d249-700\",\"turn_id\":\"turn_0002\",\"result\":{\"exitCode\":0,\"effectiveCwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-ws-HciwCC\",\"backgroundTasksEnded\":[{\"pid\":87385,\"command\":\"npm run dev\",\"outcome\":{\"signal\":\"SIGTERM\"},\"durationMs\":41253,\"outputFile\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_dea3535f_bf186409c088499d8bd58c2cf739fa47/call-1794312221160-87272.log\",\"lastLines\":\"\\n> devapp@1.0.0 dev\\n> node ser"
+    },
+    {
+      "type": "TOOL_LOG",
+      "at": 1794312262435,
+      "payload": "{\"log_entry\":\"[TOOL_RESULT_SUCCESS_PROCESSED] Agent_ID: native_bgt_dea3535f_bf186409c088499d8bd58c2cf739fa47, Tool: run_bash, Invocation_ID: call-6378d249-700, Result: exitCode: 0\\neffectiveCwd: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-ws-HciwCC\\nbackgroundTasksEnded:\\n  - \\n    pid: 87385\\n    command: npm run dev\\n    outcome:\\n      signal: SIGTERM\\n    durationMs: 41253\\n    outputFile: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_dea3535f_bf186409c088499d8bd58c2cf739fa47/call-1794312221160-87272.log\\n    lastLines:\\"
+    },
+    {
+      "type": "SEGMENT_START",
+      "at": 1794312262452,
+      "payload": "{\"id\":\"turn_7ba296c8fc5844bb9e8af91611bc0fde:c157d74f7b03475198c35d25bbc486b3\",\"turn_id\":\"turn_0002\",\"segment_type\":\"text\",\"metadata\":null}"
+    },
+    {
+      "type": "SEGMENT_END",
+      "at": 1794312262452,
+      "payload": "{\"id\":\"turn_7ba296c8fc5844bb9e8af91611bc0fde:c157d74f7b03475198c35d25bbc486b3\",\"turn_id\":\"turn_0002\",\"metadata\":null,\"interrupted\":false,\"reason\":null,\"failed\":false,\"error\":null}"
+    },
+    {
+      "type": "ASSISTANT_COMPLETE",
+      "at": 1794312262452,
+      "payload": "{\"content\":\"Stopped the dev server.\",\"image_urls\":[],\"audio_urls\":[],\"video_urls\":[],\"is_error\":false}"
+    },
+    {
+      "type": "TURN_COMPLETED",
+      "at": 1794312262452,
+      "payload": "{\"turn_id\":\"turn_0002\"}"
+    },
+    {
+      "type": "AGENT_STATUS",
+      "at": 1794312262452,
+      "payload": "{\"status\":\"idle\",\"recoverableBlock\":null,\"agent_id\":\"native_bgt_dea3535f_bf186409c088499d8bd58c2cf739fa47\"}"
+    },
+    {
+      "type": "AGENT_STATUS",
+      "at": 1794312262452,
+      "payload": "{\"status\":\"initializing\",\"recoverableBlock\":null,\"agent_id\":\"native_bgt_dea3535f_bf186409c088499d8bd58c2cf739fa47\"}"
+    },
+    {
+      "type": "AGENT_STATUS",
+      "at": 1794312262452,
+      "payload": "{\"status\":\"idle\",\"recoverableBlock\":null,\"agent_id\":\"native_bgt_dea3535f_bf186409c088499d8bd58c2cf739fa47\"}"
+    }
+  ]
+}

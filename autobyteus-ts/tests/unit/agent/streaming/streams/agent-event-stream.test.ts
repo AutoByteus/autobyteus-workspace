@@ -15,19 +15,17 @@ import { AgentStatus } from '../../../../../src/agent/status/status-enum.js';
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
+/** Collects until the producer has finished and its events had a moment to arrive (not a wall-clock window). */
 const collectStreamResults = async <T>(
   stream: AsyncIterable<T>,
   streamer: AgentEventStream,
-  closeAfter = 20
+  producer: Promise<unknown>
 ): Promise<T[]> => {
   const results: T[] = [];
-  const closer = setTimeout(() => {
-    void streamer.close();
-  }, closeAfter);
+  void producer.finally(() => setTimeout(() => { void streamer.close(); }, 20));
   for await (const item of stream) {
     results.push(item);
   }
-  clearTimeout(closer);
   return results;
 };
 
@@ -47,11 +45,11 @@ describe('AgentEventStream', () => {
     const { notifier, streamer } = makeStreamer();
     const finalMsg = new CompleteResponse({ content: 'This is the final message.' });
 
-    const consumer = collectStreamResults(streamer.streamAssistantFinalResponse(), streamer, 40);
     const producer = (async () => {
       await delay(5);
       notifier.notifyAgentDataAssistantCompleteResponse(finalMsg);
     })();
+    const consumer = collectStreamResults(streamer.streamAssistantFinalResponse(), streamer, producer);
 
     const [results] = await Promise.all([consumer, producer]);
     expect(results).toHaveLength(1);
@@ -68,9 +66,11 @@ describe('AgentEventStream', () => {
       completion_reason: null, summary_char_count: 240, summary_token_count: 60,
       selected_block_count: 3, compacted_block_count: 3, raw_trace_count: 6,
     };
-    const consumer = collectStreamResults(streamer.allEvents(), streamer, 40);
-    await delay(5);
-    notifier.notifyAgentCompactionStatus(payload);
+    const producer = (async () => {
+      await delay(5);
+      notifier.notifyAgentCompactionStatus(payload);
+    })();
+    const consumer = collectStreamResults(streamer.allEvents(), streamer, producer);
     const results = await consumer;
     expect(results).toHaveLength(1);
     expect(results[0].event_type).toBe(StreamEventType.COMPACTION_STATUS);
@@ -86,11 +86,11 @@ describe('AgentEventStream', () => {
     const agentId = 'stream_test_agent_001';
     const { notifier, streamer } = makeStreamer(agentId);
 
-    const consumer = collectStreamResults(streamer.allEvents(), streamer, 40);
     const producer = (async () => {
       await delay(5);
       notifier.notifyStatusUpdated(AgentStatus.IDLE, AgentStatus.BOOTSTRAPPING);
     })();
+    const consumer = collectStreamResults(streamer.allEvents(), streamer, producer);
 
     const [results] = await Promise.all([consumer, producer]);
     expect(results).toHaveLength(1);
@@ -106,13 +106,13 @@ describe('AgentEventStream', () => {
   it('allEvents receives turn lifecycle events in order', async () => {
     const { notifier, streamer } = makeStreamer();
 
-    const consumer = collectStreamResults(streamer.allEvents(), streamer, 60);
     const producer = (async () => {
       await delay(5);
       notifier.notifyAgentTurnStarted('turn-1');
       await delay(5);
       notifier.notifyAgentTurnCompleted('turn-1');
     })();
+    const consumer = collectStreamResults(streamer.allEvents(), streamer, producer);
 
     const [results] = await Promise.all([consumer, producer]);
     expect(results).toHaveLength(2);
@@ -127,7 +127,6 @@ describe('AgentEventStream', () => {
   it('allEvents receives segment event payloads', async () => {
     const { notifier, streamer } = makeStreamer();
 
-    const consumer = collectStreamResults(streamer.allEvents(), streamer, 40);
     const producer = (async () => {
       await delay(5);
       notifier.notifyAgentSegmentEvent({
@@ -138,6 +137,7 @@ describe('AgentEventStream', () => {
         payload: { delta: 'test segment' }
       });
     })();
+    const consumer = collectStreamResults(streamer.allEvents(), streamer, producer);
 
     const [results] = await Promise.all([consumer, producer]);
     expect(results).toHaveLength(1);
@@ -151,11 +151,11 @@ describe('AgentEventStream', () => {
     const { notifier, streamer } = makeStreamer();
     const finalMsg = new CompleteResponse({ content: 'Final response content.' });
 
-    const consumer = collectStreamResults(streamer.allEvents(), streamer, 40);
     const producer = (async () => {
       await delay(5);
       notifier.notifyAgentDataAssistantCompleteResponse(finalMsg);
     })();
+    const consumer = collectStreamResults(streamer.allEvents(), streamer, producer);
 
     const [results] = await Promise.all([consumer, producer]);
     expect(results).toHaveLength(1);
@@ -168,7 +168,6 @@ describe('AgentEventStream', () => {
   it('allEvents receives error event', async () => {
     const { notifier, streamer } = makeStreamer();
 
-    const consumer = collectStreamResults(streamer.allEvents(), streamer, 40);
     const producer = (async () => {
       await delay(5);
       notifier.notifyAgentErrorOutputGeneration({
@@ -178,6 +177,7 @@ describe('AgentEventStream', () => {
         classification: { scope: 'turn', effect: 'diagnostic', turnId: 'turn-1' }
       });
     })();
+    const consumer = collectStreamResults(streamer.allEvents(), streamer, producer);
 
     const [results] = await Promise.all([consumer, producer]);
     expect(results).toHaveLength(1);
@@ -197,7 +197,6 @@ describe('AgentEventStream', () => {
     const { notifier, streamer } = makeStreamer();
     const finalMsg = new CompleteResponse({ content: 'final' });
 
-    const consumer = collectStreamResults(streamer.allEvents(), streamer, 80);
     const producer = (async () => {
       await delay(5);
       notifier.notifyStatusUpdated(AgentStatus.IDLE, AgentStatus.BOOTSTRAPPING);
@@ -212,6 +211,7 @@ describe('AgentEventStream', () => {
       await delay(5);
       notifier.notifyAgentDataAssistantCompleteResponse(finalMsg);
     })();
+    const consumer = collectStreamResults(streamer.allEvents(), streamer, producer);
 
     const [results] = await Promise.all([consumer, producer]);
     expect(results).toHaveLength(3);

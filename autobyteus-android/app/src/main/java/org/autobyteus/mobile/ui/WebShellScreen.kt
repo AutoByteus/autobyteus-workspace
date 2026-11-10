@@ -12,7 +12,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import org.autobyteus.mobile.connection.ConnectionDiagnostic
 
-class WebShellScreen(private val context: Context) {
+/** [fullScreen]: the open page is in desktop full screen, so its root keeps only the keyboard's inset (autobyteus-435). */
+class WebShellScreen(private val context: Context, private val fullScreen: () -> Boolean) {
     data class Callbacks(
         val onEditNode: () -> Unit,
         val onRetry: () -> Unit,
@@ -35,8 +36,9 @@ class WebShellScreen(private val context: Context) {
         if (diagnostic != null) {
             root.addView(overlay(diagnostic, callbacks), FrameLayout.LayoutParams(match(), match()))
         }
-        // Android 15 edge-to-edge: the page stays clear of the system bars, a cutout and the keyboard.
-        SystemBarInsets.pad(root)
+        // Android 15 edge-to-edge: the page stays clear of the system bars, a cutout and the keyboard (in desktop full
+        // screen, of the keyboard only).
+        SystemBarInsets.pad(root, fullScreen)
         return root
     }
 

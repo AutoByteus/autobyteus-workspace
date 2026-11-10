@@ -54,15 +54,44 @@ Run on `codex/release-beta-456` at `8791266d5e` (`origin/personal` `fd0eb664c3` 
 
 ## Version / Tag / Release Commit
 
-Pending (recorded after publication)
+- Release commit `f78b60dddd` `chore(release): bump workspace release version to 1.5.13-beta.2`. It changes only `autobyteus-web/package.json`, from `1.5.13-beta.1` to `1.5.13-beta.2`, and sits on the merge `165c10670b`.
+- Annotated tag `v1.5.13-beta.2` on `f78b60dddd`, pushed at 2026-11-10T07:20:07Z. The number comes from `release_versions.py next-beta`; the base is the next patch after the stable `v1.5.12`.
 
 ## Repository Finalization
 
-Pending (recorded after publication)
+- Ticket branch: `codex/release-beta-456`. The handoff `8791266d5e` and the record `abc80bdfd8` were pushed after the Secret Gate passed.
+- Finalization target: `origin/personal`. It was unmoved at `fd0eb664c3` before each push.
+- Merge into target: `finalize/release-beta-456` from `origin/personal`, `git merge --no-ff` gave `165c10670b` (tree identical, Secret Gate PASS), pushed `fd0eb664c3..165c10670b`. Then the release commit `165c10670b..f78b60dddd`, then this record commit (see `delivery-revision-record.md`).
+- User's checkout of the target branch (`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`): `Updated to f78b60dddd` (the release commit), 2026-11-10. It was on `personal` with no local commits, 4 commits behind; `git fetch`, then `git merge --ff-only origin/personal`, exit 0. Its 42 uncommitted entries were kept untouched. After this record's push it is fast-forwarded once more to the record commit; that result is in the terminal message.
+- Repository finalization status: `Completed`
 
 ## Release / Publication / Deployment
 
-Pending (recorded after publication)
+- Applicable: `Yes`
+- Method: `Project Release Guide`
+- Pipelines triggered and their results. All four were watched together by one poll every 60 s that stops at the first failure (`RELEASE.md` § Watching The Rollout):
+
+| Workflow | Run | Result |
+| --- | --- | --- |
+| Android APK Release | 42774559088 | success |
+| iOS App Store Connect Release | 42774559130 | success (TestFlight upload) |
+| Server Docker Release | 42774559007 | success; image 07:46:45Z, server packages 08:11Z |
+| Desktop Release | 42774559121 | success; all four completed by 08:12:25Z |
+
+- Failed jobs: none.
+- Published artifacts checked:
+  - `gh release view v1.5.13-beta.2`: `isPrerelease: true` with **23 assets**, the complete set per `RELEASE.md`:
+    - macOS arm64 and x64: `.dmg`, `.zip` and their blockmaps;
+    - Linux x64 and arm64 AppImages;
+    - Windows `.exe`;
+    - Android APK and `.sha256`;
+    - six `autobyteus-server-1.5.13-beta.2-linux-{x64,arm64}.{tar.gz,json,json.sig}` files;
+    - four `latest*.yml` files.
+  - Order: every `latest*.yml` (08:11:57Z) is newer than all six server package files (08:11:32Z–08:11:54Z).
+  - Docker Hub: `autobyteus/autobyteus-server:1.5.13-beta.2` and `:beta` both point to `sha256:f454a2277948…`. `:latest` stays on `v1.5.12` (`sha256:2d8affe595e0…`).
+  - Release page: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.5.13-beta.2
+- Release/publication/deployment result: `Completed`
+- Release notes handoff result: `Used`, as below.
 
 ## Release Notes Summary
 
@@ -73,11 +102,17 @@ Pending (recorded after publication)
 - Added by delivery:
   - update the nodes and the desktop channel line, as the handoff asked;
   - the Daily Assistant peer setting, from 455's residual risk 3.
-- A short "What's new" from the three tickets is also above the generated notes, as the handoff asked. Pending (recorded after publication)
+- A short "What's new" from the three tickets is also above the generated notes, as the handoff asked. After all four succeeded, `release-notes.md` was put above the generated notes with `gh release edit v1.5.13-beta.2 --notes-file`. The body now starts with `## What you need to do`, and the generated "Full Changelog" link stays below. The assets are unchanged (23).
 
 ## Post-Finalization Cleanup
 
-Pending (recorded after publication)
+- Created by this delivery and removed after the record push:
+  - the worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/release-beta-456`;
+  - the local branches `codex/release-beta-456` and `finalize/release-beta-456`;
+  - the temp files `/tmp/rb456-*`, `/tmp/actions.md`, `/tmp/generated.md`, `/tmp/notes.md`;
+  - the smoke check's step logs (`<temp>/release-smoke-ztak1mly`).
+- Remote branch: `origin/codex/release-beta-456` is kept, as for earlier tickets.
+- No test instances were started.
 
 ## Rollback Criteria
 
@@ -86,4 +121,10 @@ Pending (recorded after publication)
 
 ## Final Status
 
-Pending (recorded after publication)
+- Verification complete (the release guide's checks; Codex waived by the user): `Yes`
+- Repository finalization complete: `Yes`
+- Applicable release/deployment/rollout complete or not required: `Yes`. Beta `v1.5.13-beta.2` is complete: 4/4 workflows, 23 assets, `:beta`.
+- Applicable safe cleanup complete or not required: `Yes`
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal message/reference: `Delivery Completed` to the Solution Designer

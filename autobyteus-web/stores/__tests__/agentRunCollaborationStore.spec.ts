@@ -107,6 +107,19 @@ describe('agentRunCollaborationStore', () => {
     expect(context.requestedMentions).toEqual([])
   })
 
+  it('releaseAll closes every host stream and drops every host view (autobyteus-435 REQ-010 (b))', async () => {
+    const store = useAgentRunCollaborationStore()
+    await store.inspect('host-run')
+    const context = store.contextFor('host-run')!.getAgentContext('cua-run')!
+    await store.submit('host-run', 'cua-run', context, 'hello', [])
+    expect(stream.instances).toHaveLength(1)
+
+    store.releaseAll()
+
+    expect(stream.instances[0]!.disconnect).toHaveBeenCalled()
+    expect(store.contextFor('host-run')).toBeNull()
+  })
+
   it('reads a hub selection\'s view once: Settings shares the inspection in flight and the published view (AC-004)', async () => {
     const reads = vi.mocked((await import('~/services/agentCollaboration/agentRunCollaborationHydration')).readAgentRunCollaboration)
     reads.mockClear()

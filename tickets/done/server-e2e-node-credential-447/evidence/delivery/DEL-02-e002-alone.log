@@ -1,0 +1,15 @@
+# DEL-02 the failing file alone on the integrated state (Rule 9: deterministic or load?); commit 5c29d6fca2; clean env; 2026-11-10
+# Command: env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" NO_COLOR=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/app-data-migrations/remove-built-in-project-task-manager-startup.e2e.test.ts --no-watch
+# exit=1
+     ✓ E-001 Studio upgrade: removes the installed copy once, lists one Project Task Manager and does not rerun on restart  5569ms
+     × E-002 Studio: a failed removal never blocks work and retries on restart; the old conversation stays readable and cannot be continued 5206ms
+     ✓ E-003 Studio fresh install: creates no installed copy and records nothing to remove  4171ms
+     ✓ E-004 standalone host first: a failed removal never blocks the host, the next host start removes it, and Studio shares the record  5233ms
+ FAIL  tests/e2e/app-data-migrations/remove-built-in-project-task-manager-startup.e2e.test.ts > retired built-in Project Task Manager at the actual startup entrypoints > E-002 Studio: a failed removal never blocks work and retries on restart; the old conversation stays readable and cannot be continued
+AssertionError: expected [ 'autobyteus-daily-assistant', …(1) ] to not include 'autobyteus-daily-assistant'
+    330|     const candidateIds = candidates.candidates.map((c: { definitionId:…
+    331|     expect(candidateIds).toContain(REPOSITORY_ID);
+    332|     for (const excluded of [...BUILT_IN_IDS, RETIRED_ID]) expect(candi…
+    333|   }, 240_000);
+    334|
+      Tests  1 failed | 3 passed (4)

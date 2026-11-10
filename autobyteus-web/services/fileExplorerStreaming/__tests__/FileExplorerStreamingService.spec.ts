@@ -335,6 +335,31 @@ describe('FileExplorerStreamingService', () => {
       expect((global as any).WebSocket).toHaveBeenCalledTimes(1);
     });
 
+    it.each([[4401, 'NODE_CREDENTIAL_REQUIRED'], [4403, 'REMOTE_ACCESS_DEVICE_REVOKED'], [4403, 'PEER_UNPAIRED']])(
+      'does not retry a credential-refusal close %i %s (autobyteus-435 AC-010-1)', (code, reason) => {
+        vi.useFakeTimers();
+        const service = new FileExplorerStreamingService(WS_ENDPOINT);
+        service.connect('ws-1');
+        sockets[0].simulateOpen();
+        sockets[0].simulateClose(code, reason);
+
+        vi.advanceTimersByTime(60000);
+        expect((global as any).WebSocket).toHaveBeenCalledTimes(1);
+      });
+
+    it.each([[4403, 'PHONE_ACCESS_DISABLED'], [4403, 'NODE_NETWORK_REFUSED']])(
+      'retries a close %i %s: Phone Access and the network can change back (autobyteus-435 DEC-008)', (code, reason) => {
+        vi.useFakeTimers();
+        const service = new FileExplorerStreamingService(WS_ENDPOINT);
+        service.connect('ws-1');
+        sockets[0].simulateOpen();
+        sockets[0].simulateClose(code, reason);
+
+        vi.advanceTimersByTime(1000);
+        expect((global as any).WebSocket).toHaveBeenCalledTimes(2);
+        service.disconnect();
+      });
+
     it('does not retry when server sends non-retryable error code before close', () => {
       vi.useFakeTimers();
       const onError = vi.fn();

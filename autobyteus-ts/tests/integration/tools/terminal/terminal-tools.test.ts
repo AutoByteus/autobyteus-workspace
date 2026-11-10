@@ -1,20 +1,24 @@
-import { describe, it, expect } from 'vitest';
-import { mkdtemp, mkdir, rm } from 'node:fs/promises';
+import { describe, it, expect, afterEach } from 'vitest';
+import { mkdtemp, mkdir, readFile, rm } from 'node:fs/promises';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { registerRunBashTool } from '../../../../src/tools/terminal/tools/run-bash.js';
-import { registerStartBackgroundProcessTool } from '../../../../src/tools/terminal/tools/start-background-process.js';
-import { registerGetBackgroundProcessesTool } from '../../../../src/tools/terminal/tools/get-background-processes.js';
-import { registerGetProcessOutputTool } from '../../../../src/tools/terminal/tools/get-process-output.js';
-import { registerStopBackgroundProcessTool } from '../../../../src/tools/terminal/tools/stop-background-process.js';
-import { BackgroundProcessInfo, TerminalResult } from '../../../../src/tools/terminal/types.js';
+import { getBackgroundManager } from '../../../../src/tools/terminal/background-process-context.js';
+import { TerminalResult, type BackgroundCommandStarted } from '../../../../src/tools/terminal/types.js';
+
 const runIntegration = process.platform === 'win32' ? describe.skip : describe;
 const runBashTool = registerRunBashTool();
-const startBackgroundProcessTool = registerStartBackgroundProcessTool();
-const getBackgroundProcessesTool = registerGetBackgroundProcessesTool();
-const getProcessOutputTool = registerGetProcessOutputTool();
-const stopBackgroundProcessTool = registerStopBackgroundProcessTool();
+const contexts: object[] = [];
+let nextAgent = 0;
+
+afterEach(async () => {
+  for (const context of contexts.splice(0)) {
+    const manager = getBackgroundManager(context);
+    await manager.stopAllForRunEnd();
+    await manager.scope.close();
+  }
+});
 
 class MockContext {
   workspaceRootPath: string;
@@ -22,7 +26,8 @@ class MockContext {
 
   constructor(basePath: string) {
     this.workspaceRootPath = basePath;
-    this.agentId = 'test-agent-001';
+    this.agentId = `terminal-tools-${process.pid}-${nextAgent++}`;
+    contexts.push(this);
   }
 }
 
@@ -78,57 +83,33 @@ runIntegration('terminal tools integration', () => {
     });
   });
 
-  it('start_background_process manages a process in an explicit external cwd', async () => {
+  it('run_bash run_in_background starts in an explicit external cwd and its output is readable with tail', async () => {
     await withTempDir(async (workspace) => {
       await withTempDir(async (outside) => {
         const context = new MockContext(workspace);
-
-        const startResult = await startBackgroundProcessTool.execute(context, {
+        const started = await runBashTool.execute(context, {
           command: 'for i in 1 2 3; do echo external_$i; sleep 0.1; done; sleep 10',
-          cwd: outside
-        }) as BackgroundProcessInfo;
-
-        try {
-          expect(startResult.status).toBe('running');
-          expect(startResult.effectiveCwd).toBe(fs.realpathSync(outside));
-
-          await new Promise((resolve) => setTimeout(resolve, 500));
-          const outputResult = await getProcessOutputTool.execute(context, {
-            pid: startResult.pid
-          }) as { output: string; isRunning: boolean };
-          expect(outputResult.output).toContain('external_');
-          expect(outputResult.isRunning).toBe(true);
-        } finally {
-          const stopResult = await stopBackgroundProcessTool.execute(context, { pid: startResult.pid }) as { status: string };
-          expect(stopResult.status).toBe('stopped');
-        }
+          cwd: outside,
+          run_in_background: true
+        }) as BackgroundCommandStarted;
+        expect(started.status).toBe('running');
+        expect(started.effectiveCwd).toBe(fs.realpathSync(outside));
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        const tail = await runBashTool.execute(context, { command: `tail -n 3 ${started.outputFile}` }) as TerminalResult;
+        expect(tail.stdout).toBe('external_1\nexternal_2\nexternal_3\n');
       });
     });
   });
 
-  it('start_background_process accepts an absolute cwd without a configured workspace', async () => {
+  it('run_bash run_in_background accepts an absolute cwd without a configured workspace', async () => {
     await withTempDir(async (outside) => {
-      const context = { workspaceRootPath: null, agentId: 'test-agent-001' } as any;
-
-      const startResult = await startBackgroundProcessTool.execute(context, {
-        command: 'for i in 1 2; do echo no_workspace_external_$i; sleep 0.1; done; sleep 10',
-        cwd: outside
-      }) as BackgroundProcessInfo;
-
-      try {
-        expect(startResult.status).toBe('running');
-        expect(startResult.effectiveCwd).toBe(fs.realpathSync(outside));
-
-        await new Promise((resolve) => setTimeout(resolve, 400));
-        const outputResult = await getProcessOutputTool.execute(context, {
-          pid: startResult.pid
-        }) as { output: string; isRunning: boolean };
-        expect(outputResult.output).toContain('no_workspace_external_');
-        expect(outputResult.isRunning).toBe(true);
-      } finally {
-        const stopResult = await stopBackgroundProcessTool.execute(context, { pid: startResult.pid }) as { status: string };
-        expect(stopResult.status).toBe('stopped');
-      }
+      const context = { workspaceRootPath: null, agentId: `terminal-tools-${process.pid}-${nextAgent++}` };
+      contexts.push(context);
+      const started = await runBashTool.execute(context, {
+        command: 'echo no_workspace_external; sleep 10', cwd: outside, run_in_background: true
+      }) as BackgroundCommandStarted;
+      expect(started.status).toBe('running');
+      expect(started.effectiveCwd).toBe(fs.realpathSync(outside));
     });
   });
 
@@ -178,7 +159,7 @@ runIntegration('terminal tools integration', () => {
     });
   });
 
-  it('run_bash adopts an ordinary bash background process', async () => {
+  it('run_bash returns at the foreground end and lists an ordinary & job as a background task', async () => {
     await withTempDir(async (tempDir) => {
       const context = new MockContext(tempDir);
       const result = await runBashTool.execute(context, {
@@ -186,101 +167,38 @@ runIntegration('terminal tools integration', () => {
       }) as TerminalResult;
 
       expect(result.exitCode).toBe(0);
-      expect(result.backgroundProcesses.length).toBeGreaterThanOrEqual(1);
-      const background = result.backgroundProcesses[0];
-      expect(background.pid).toBeGreaterThan(0);
-      expect(background.status).toBe('running');
-      expect(background.command).toContain('echo bg');
-      expect(background.effectiveCwd).toBe(tempDir);
-
+      expect(result.backgroundTasksStarted).toHaveLength(1);
+      const task = result.backgroundTasksStarted[0];
+      expect(task.pid).toBeGreaterThan(0);
+      expect(task.command).toBe('(for i in 1 2 3; do echo bg$i; sleep 0.1; done; sleep 10) &');
+      expect(task.effectiveCwd).toBe(tempDir);
       await new Promise((resolve) => setTimeout(resolve, 500));
-      const listResult = await getBackgroundProcessesTool.execute(context, {}) as { processes: BackgroundProcessInfo[] };
-      expect(listResult.processes.map((process) => process.pid)).toContain(background.pid);
-
-      const outputResult = await getProcessOutputTool.execute(context, { pid: background.pid }) as { output: string; isRunning: boolean };
-      expect(outputResult.output).toContain('bg');
-      expect(outputResult.isRunning).toBe(true);
-
-      for (const process of result.backgroundProcesses) {
-        const stopResult = await stopBackgroundProcessTool.execute(context, { pid: process.pid }) as { status: string };
-        expect(['stopped', 'not_found']).toContain(stopResult.status);
-      }
+      // Bytes before the foreground end belong to the call's result; later ones to the output file.
+      expect(result.stdout + await readFile(task.outputFile, 'utf8')).toBe('bg1\nbg2\nbg3\n');
     });
   });
 
-  it('background process lifecycle', async () => {
+  it('kill <pid> stops a background command and the kill\'s result reports how it ended', async () => {
     await withTempDir(async (tempDir) => {
       const context = new MockContext(tempDir);
-
-      const startResult = await startBackgroundProcessTool.execute(context, {
-        command: 'for i in 1 2 3; do echo line$i; sleep 0.1; done; sleep 10'
-      }) as BackgroundProcessInfo;
-
-      expect(startResult.status).toBe('running');
-      expect(startResult.effectiveCwd).toBe(tempDir);
-      const pid = startResult.pid;
-
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      const outputResult = await getProcessOutputTool.execute(context, { pid }) as { output: string; isRunning: boolean };
-      expect(outputResult.output).toContain('line');
-      expect(outputResult.isRunning).toBe(true);
-
-      const stopResult = await stopBackgroundProcessTool.execute(context, { pid }) as { status: string };
-      expect(stopResult.status).toBe('stopped');
+      const started = await runBashTool.execute(context, { command: 'sleep 30', run_in_background: true }) as BackgroundCommandStarted;
+      const kill = await runBashTool.execute(context, { command: `kill ${started.pid}` }) as TerminalResult;
+      expect(kill.exitCode).toBe(0);
+      expect(kill.backgroundTasksEnded.map((end) => [end.pid, end.outcome])).toEqual([[started.pid, { signal: 'SIGTERM' }]]);
+      expect(getBackgroundManager(context).hasRunning()).toBe(false);
     });
   });
 
-  it('can manage multiple background processes independently', async () => {
+  it('keeps several background commands apart, each with its own output file', async () => {
     await withTempDir(async (tempDir) => {
       const context = new MockContext(tempDir);
-
-      const first = await runBashTool.execute(context, {
-        command: '(for i in 1 2 3; do echo first_$i; sleep 0.1; done; sleep 10) &'
-      }) as TerminalResult;
-      const second = await runBashTool.execute(context, {
-        command: '(for i in 1 2 3; do echo second_$i; sleep 0.1; done; sleep 10) &'
-      }) as TerminalResult;
-      const firstPid = first.backgroundProcesses[0].pid;
-      const secondPid = second.backgroundProcesses[0].pid;
-
-      await new Promise((resolve) => setTimeout(resolve, 600));
-
-      const firstOutput = await getProcessOutputTool.execute(context, { pid: firstPid }) as { output: string };
-      const secondOutput = await getProcessOutputTool.execute(context, { pid: secondPid }) as { output: string };
-
-      expect(firstOutput.output).toContain('first_');
-      expect(secondOutput.output).toContain('second_');
-
-      const firstStop = await stopBackgroundProcessTool.execute(context, { pid: firstPid }) as { status: string };
-      const secondStop = await stopBackgroundProcessTool.execute(context, { pid: secondPid }) as { status: string };
-      expect(firstStop.status).toBe('stopped');
-      expect(secondStop.status).toBe('stopped');
-      for (const process of first.backgroundProcesses.slice(1)) {
-        await stopBackgroundProcessTool.execute(context, { pid: process.pid });
-      }
-      for (const process of second.backgroundProcesses.slice(1)) {
-        await stopBackgroundProcessTool.execute(context, { pid: process.pid });
-      }
-    });
-  });
-
-  it('stop_background_process reports missing process', async () => {
-    await withTempDir(async (tempDir) => {
-      const context = new MockContext(tempDir);
-      const result = await stopBackgroundProcessTool.execute(context, { pid: 99999999 }) as { status: string };
-
-      expect(result.status).toBe('not_found');
-    });
-  });
-
-  it('get_process_output reports missing process', async () => {
-    await withTempDir(async (tempDir) => {
-      const context = new MockContext(tempDir);
-      const result = await getProcessOutputTool.execute(context, { pid: 99999999 }) as { error?: string; isRunning: boolean };
-
-      expect(result.error).toBeTruthy();
-      expect(result.isRunning).toBe(false);
+      const first = await runBashTool.execute(context, { command: 'echo first; sleep 10', run_in_background: true }) as BackgroundCommandStarted;
+      const second = await runBashTool.execute(context, { command: 'echo second; sleep 10', run_in_background: true }) as BackgroundCommandStarted;
+      expect(first.outputFile).not.toBe(second.outputFile);
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      expect(await readFile(first.outputFile, 'utf8')).toBe('first\n');
+      expect(await readFile(second.outputFile, 'utf8')).toBe('second\n');
+      expect(getBackgroundManager(context).list().map((state) => state.task.pid)).toEqual([first.pid, second.pid]);
     });
   });
 });

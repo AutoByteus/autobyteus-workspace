@@ -386,7 +386,8 @@ Team adaptation: they read the root's events directly and unthrottled.
 
 The typed `agentBackgroundTaskView(agentRunId)` GraphQL query provides a read-only
 selected-run snapshot for Codex. It uses an observational published-run lookup
-and exact-instance/active recheck, never restoring a run. Claude/Antigravity
-continue using their existing background-task stream and store. No new WebSocket
+and exact-instance/active recheck, never restoring a run. Claude, Antigravity and
+AutoByteus (native `run_bash` background commands and `&` jobs) use the
+background-task stream (`BACKGROUND_TASK_UPDATED`) and its store instead. No new WebSocket
 event, streamed task status, idle timer reset or process-control permission is
 introduced. View-only `unknown` does not extend the streamed lifecycle enum.

@@ -1,4 +1,5 @@
-import { taskExecutionReferenceKey, type TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
+import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
+import { taskExecutionReferenceKey } from "@autobyteus/collaboration-stream-contracts";
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { ASSIGNER_ONLY_REACTIVATION_MESSAGE, type NewTaskExecutionLinkInput, type TaskExecutionRole } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import { ProjectError } from "./project-errors.js";

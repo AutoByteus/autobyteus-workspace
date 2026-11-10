@@ -26,15 +26,15 @@ const commands = () => [0, 1].map(index => {
   if (!expectedReceipts.includes(receipt)) expectedReceipts.push(receipt);
   const code = `const fs=require('fs'),http=require('http');${index === 0 ? `process.on('SIGTERM',()=>fs.writeFileSync(${JSON.stringify(receipt + '.term')},'observed'));` : ''}const server=http.createServer((q,r)=>{r.writeHead(426);r.end('owned')});server.listen(0,'127.0.0.1',()=>fs.writeFileSync(${JSON.stringify(receipt)},JSON.stringify({pid:process.pid,port:server.address().port})));`;
   const command = `${quote(process.execPath)} -e ${quote(code)}`;
-  return { receipt, name: index === 0 ? 'start_background_process' : 'run_bash', command: index === 0 ? command : `${command} > ${quote(receipt + '.log')} 2>&1 & while [ ! -s ${quote(receipt)} ]; do sleep 0.01; done` };
+  return { receipt, background: index === 0, command: index === 0 ? command : `${command} > ${quote(receipt + '.log')} 2>&1 & while [ ! -s ${quote(receipt)} ]; do sleep 0.01; done` };
 });
 const model = createServer(async (req, res) => {
   if (req.method === 'GET') { res.setHeader('content-type', 'application/json'); res.end(JSON.stringify({ models: [{ key: 'shutdown-fixture', max_context_length: 32768, loaded_instances: [{ config: { context_length: 32768 } }] }] })); return; }
   let raw = ''; for await (const chunk of req) raw += chunk;
   const input = JSON.parse(raw); calls++;
   const tools = (input.tools ?? []).map(t => t.function?.name);
-  const invoke = tools.includes('start_background_process') && !input.messages?.some(m => m.role === 'tool');
-  const delta = invoke ? { role: 'assistant', tool_calls: commands().map((c, i) => ({ index: i, id: `call-${turn}-${i}`, type: 'function', function: { name: c.name, arguments: JSON.stringify({ command: c.command, cwd: workspace }) } })) } : { role: 'assistant', content: 'Owned work submitted.' };
+  const invoke = tools.includes('run_bash') && !input.messages?.some(m => m.role === 'tool');
+  const delta = invoke ? { role: 'assistant', tool_calls: commands().map((c, i) => ({ index: i, id: `call-${turn}-${i}`, type: 'function', function: { name: 'run_bash', arguments: JSON.stringify({ command: c.command, cwd: workspace, ...(c.background ? { run_in_background: true } : {}) }) } })) } : { role: 'assistant', content: 'Owned work submitted.' };
   const chunk = (delta, finish_reason) => ({ id: `fixture-${calls}`, object: 'chat.completion.chunk', created: 1, model: 'shutdown-fixture', choices: [{ index: 0, delta, finish_reason }] });
   res.writeHead(200, { 'content-type': 'text/event-stream' });
   res.end(`data: ${JSON.stringify(chunk(delta, null))}\n\ndata: ${JSON.stringify(chunk({}, invoke ? 'tool_calls' : 'stop'))}\n\ndata: [DONE]\n\n`);
@@ -54,7 +54,7 @@ try {
   await fs.writeFile(join(app, 'ui/index.html'), '<!doctype html><title>Fixture</title>');
   await fs.writeFile(join(app, 'application.json'), JSON.stringify({ manifestVersion: '5', id: 'fixture', name: 'Fixture', ui: { entryHtml: 'ui/index.html', frontendSdkContractVersion: '6' }, backend: { bundleManifest: 'backend/bundle.json' }, executionResourceSlots: [], agentTools: [] }));
   await fs.writeFile(join(app, 'agents/worker/agent.md'), '---\nname: Worker\ndescription: Shutdown fixture\nrole: Engineer\n---\n\nExecute requested owned commands.\n');
-  await fs.writeFile(join(app, 'agents/worker/agent-config.json'), JSON.stringify({ toolNames: ['start_background_process', 'run_bash'], skillNames: [], inputProcessorNames: [], llmResponseProcessorNames: [], toolExecutionResultProcessorNames: [], toolInvocationPreprocessorNames: [], lifecycleProcessorNames: [], defaultLaunchConfig: null }));
+  await fs.writeFile(join(app, 'agents/worker/agent-config.json'), JSON.stringify({ toolNames: ['run_bash'], skillNames: [], inputProcessorNames: [], llmResponseProcessorNames: [], toolExecutionResultProcessorNames: [], toolInvocationPreprocessorNames: [], lifecycleProcessorNames: [], defaultLaunchConfig: null }));
   await fs.writeFile(join(app, 'backend/bundle.json'), JSON.stringify({ contractVersion: '1', entryModule: 'backend/entry.mjs', moduleFormat: 'esm', distribution: 'self-contained', targetRuntime: { engine: 'node', semver: '>=22 <27' }, sdkCompatibility: { backendDefinitionContractVersion: '7', frontendSdkContractVersion: '6' }, supportedExposures: { queries: true, commands: true, routes: false, graphql: false, notifications: false, eventHandlers: false, webSockets: false } }));
   await fs.writeFile(join(app, 'backend/entry.mjs'), `const events=[];const subscriptions=[];export default {
     definitionContractVersion:'7', queries:{events:async()=>events}, commands:{
@@ -86,7 +86,8 @@ try {
     children.push(...current);
     await wait(async () => (await call('queries', 'events')).some(e => e.address.bindingId === binding.bindingId && e.event.type === 'TURN_COMPLETED'), 'turn completed');
     for (const child of current) { assert.equal(await status(child.port), 426); child.anchor = Number(execFileSync('ps', ['-p', String(child.pid), '-o', 'pgid='], { encoding: 'utf8' }).trim()); }
-    if (turn === 1) { await call('commands', 'end', { bindingId: binding.bindingId }); for (const child of current) assert.equal(await status(child.port), 426, 'ordinary agent end retains previews'); }
+    // Run end stops the run's commands, its run_in_background command and its `&` job alike (autobyteus-338 REQ-009).
+    if (turn === 1) { const ending = Date.now(); await call('commands', 'end', { bindingId: binding.bindingId }); for (const child of current) await wait(async () => !alive(child.pid) && await status(child.port) === null, 'run end stops its commands', 10_000); note('run end stopped its commands', { elapsedMs: Date.now() - ending }); }
     note('live work', { turn, binding, current });
   }
   const started = Date.now(); host.send('close'); await wait(() => host.exitCode !== null, 'host close', 30_000);

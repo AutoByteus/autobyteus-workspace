@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { closedTaskExecutionsDigest } from "../dist/index.js";
+import { closedTaskExecutionsDigest, taskExecutionReferenceKey } from "../dist/index.js";
 
 // autobyteus-446: the node and the client fingerprint a host's closed task executions with this one function.
 
@@ -31,4 +31,9 @@ test("a known input has a fixed digest, so the node and the browser agree on the
   // Pinned: a change of the algorithm must be deliberate (it changes the value on both sides at once).
   assert.equal(closedTaskExecutionsDigest([{ agentRunId: "a" }]), "1:bb7f09af");
   assert.equal(closedTaskExecutionsDigest([{ agentRunId: "writer-run" }, { teamRunId: "review-team" }]), "2:0c0e8252");
+});
+
+test("the one task-execution key: agent:<id> or team:<id> (autobyteus-435)", () => {
+  assert.equal(taskExecutionReferenceKey({ agentRunId: "writer-run" }), "agent:writer-run");
+  assert.equal(taskExecutionReferenceKey({ teamRunId: "review-team" }), "team:review-team");
 });

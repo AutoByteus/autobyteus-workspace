@@ -11,6 +11,7 @@ import {
   type IWebSocketClient,
   type WebSocketClientEvents,
 } from './types';
+import { isCredentialRefusalClose } from '~/services/liveStreamLifecycle/credentialRefusalClose';
 
 /** The node closed the stream for good (run not found, not allowed): connecting again cannot help. */
 const NON_RETRYABLE_CLOSE_CODES = new Set([4004, 4005]);
@@ -69,7 +70,8 @@ export class WebSocketClient implements IWebSocketClient {
       if (this.ws !== socket) return;
       this.ws = null;
       this.setState(ConnectionState.DISCONNECTED);
-      this.emit('onDisconnect', event.reason || undefined, !NON_RETRYABLE_CLOSE_CODES.has(event.code));
+      const retryable = !NON_RETRYABLE_CLOSE_CODES.has(event.code) && !isCredentialRefusalClose(event.code, event.reason);
+      this.emit('onDisconnect', event.reason || undefined, retryable);
     };
 
     socket.onmessage = (event) => {

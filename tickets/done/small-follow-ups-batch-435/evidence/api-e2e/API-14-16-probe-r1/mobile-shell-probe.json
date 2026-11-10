@@ -1,0 +1,565 @@
+{
+  "startedAt": "2026-11-10T08:33:17.070Z",
+  "result": "Fail",
+  "node": "v22.23.1",
+  "servers": {
+    "beta": {
+      "port": 52948,
+      "nodeId": "srv_b8w3Xkid6PaIyrAHxClZMHA4XxBCdC83",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "alpha": {
+      "port": 52947,
+      "nodeId": "srv_cLMEAW8g0QXtvT9LOI1yQDVOsfSNXRO_",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    },
+    "delta": {
+      "port": 53321,
+      "nodeId": "srv__0KaU02BvK6RcRBMGpZzAr8Xwa7DX40b",
+      "statusFields": [
+        "nodeId",
+        "pairingAvailable",
+        "phoneAccessEnabled"
+      ]
+    }
+  },
+  "runs": {
+    "ptm": "project_task_manager_3d822b10452a4d51bada49b572cb2290",
+    "writerRun": "release_notes_writer_a2c30da75bec42aab13eac207346b8d2",
+    "squadRun": "docs_review_team_9cc2101191a944688e3193f18d961297",
+    "reviewer": "release_notes_writer_6c2cd7dcba754331b9137b10a2516a09",
+    "memberDelegated": "fact_checker_aafc41092e1f435cb9d641596a717153",
+    "remoteAgentRun": "publisher_04974d3d97cf41fbb013acd69e5c67ce",
+    "remoteTeamRun": "studio_team_f9e0f09375ff454692c39dc2a5a87a17",
+    "plain": [
+      "fact_checker_ca327e7f2d2f40d6bbd30d24799dfc1f",
+      "fact_checker_0bb10b7dc24b493b9582fb9e43e91417",
+      "fact_checker_1850778294b74a6d9f5c8f5ba75e4a23"
+    ],
+    "org": "delivery_org_c0d6ab55b62143e08b42df5b94f66c3e",
+    "orgPlanner": "release_notes_writer_f211cc4002264f979e2500ca3c66d919",
+    "reviewOrg": "review_org_95df0af4129d4405bd09d621fe8392c6",
+    "reviewOrgCoordinator": {
+      "address": "/squad/reviewer",
+      "agentRunId": "release_notes_writer_46e900cda9314519970e3933ec6431a4",
+      "teamRunId": null
+    },
+    "delivery": "delivery_team_20c4460543af4529b2969d9423c75bbe",
+    "deliveryLead": "fact_checker_f608bd0a3c324601835d7936e86be25e",
+    "deliveryMate": "release_notes_writer_ab451e66d24a4a79aae4f6dd835c7383",
+    "leadDelegated": "changelog_helper_59921a351da94388b2c39d61187e92bb",
+    "approver": "approver_eb58b4e205c9445396e8e37d510f5e83",
+    "taskA": "launch-83a5ed-1",
+    "taskB": "launch-83a5ed-2"
+  },
+  "cases": {
+    "MSP-05": {
+      "result": "Pass",
+      "seconds": 5.9,
+      "snapshots": [
+        {
+          "state": "opening",
+          "name": null,
+          "opening": true,
+          "buttons": [
+            "Back to runs"
+          ]
+        },
+        {
+          "state": "open",
+          "name": "lead",
+          "opening": false,
+          "buttons": [
+            "Back to runs",
+            "More",
+            "Upload files",
+            "Send message"
+          ]
+        }
+      ],
+      "forward": {
+        "state": "open",
+        "name": "lead",
+        "subtitle": "Idle · in Delivery Team",
+        "chip": null,
+        "query": "?row=team:delivery_team_20c4460543af4529b2969d9423c75bbe&screen=run"
+      },
+      "orgQuery": "?rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_c0d6ab55b62143e08b42df5b94f66c3e&mode=active&memberAddress=/planner&screen=run",
+      "listQuery": "?pairing=…&rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_c0d6ab55b62143e08b42df5b94f66c3e&mode=active&memberAddress=/planner",
+      "orgMarked": "true",
+      "afterReload": "?rootSubjectKind=agent_org&definitionId=delivery-org&orgRunId=delivery_org_c0d6ab55b62143e08b42df5b94f66c3e&mode=active&memberAddress=/planner",
+      "second": {
+        "state": "open",
+        "name": "lead",
+        "subtitle": "Idle · in Delivery Team",
+        "chip": null,
+        "query": "?row=team:delivery_team_20c4460543af4529b2969d9423c75bbe&screen=run"
+      }
+    },
+    "MSP-33": {
+      "result": "Fail",
+      "seconds": 16.5,
+      "error": "after the first message the route names the node's run (DS-006b)",
+      "details": {
+        "restored": [
+          {
+            "label": "agent Activity",
+            "before": "?row=agent:project_task_manager_3d822b10452a4d51bada49b572cb2290&screen=activity",
+            "after": "?row=agent:project_task_manager_3d822b10452a4d51bada49b572cb2290&screen=activity",
+            "reached": true,
+            "opening": true,
+            "listShown": false,
+            "trace": [
+              {
+                "list": false,
+                "run": null,
+                "activity": false,
+                "messages": false
+              },
+              {
+                "list": false,
+                "run": "opening",
+                "activity": false,
+                "messages": false
+              },
+              {
+                "list": false,
+                "run": null,
+                "activity": true,
+                "messages": false
+              }
+            ]
+          },
+          {
+            "label": "Team Messages",
+            "before": "?row=team:delivery_team_20c4460543af4529b2969d9423c75bbe&screen=messages",
+            "after": "?row=team:delivery_team_20c4460543af4529b2969d9423c75bbe&screen=messages",
+            "reached": true,
+            "opening": true,
+            "listShown": false,
+            "trace": [
+              {
+                "list": false,
+                "run": null,
+                "activity": false,
+                "messages": false
+              },
+              {
+                "list": false,
+                "run": "opening",
+                "activity": false,
+                "messages": false
+              },
+              {
+                "list": false,
+                "run": null,
+                "activity": false,
+                "messages": true
+              }
+            ]
+          },
+          {
+            "label": "Team member",
+            "before": "?row=team:delivery_team_20c4460543af4529b2969d9423c75bbe/agent:release_notes_writer_ab451e66d24a4a79aae4f6dd835c7383&screen=run",
+            "after": "?row=team:delivery_team_20c4460543af4529b2969d9423c75bbe/agent:release_notes_writer_ab451e66d24a4a79aae4f6dd835c7383&screen=run",
+            "reached": true,
+            "opening": true,
+            "listShown": false,
+            "trace": [
+              {
+                "list": false,
+                "run": null,
+                "activity": false,
+                "messages": false
+              },
+              {
+                "list": false,
+                "run": "opening",
+                "activity": false,
+                "messages": false
+              },
+              {
+                "list": false,
+                "run": "open",
+                "activity": false,
+                "messages": false
+              }
+            ]
+          },
+          {
+            "label": "delegated task agent",
+            "before": "?row=agent:project_task_manager_3d822b10452a4d51bada49b572cb2290/agent:release_notes_writer_a2c30da75bec42aab13eac207346b8d2&screen=run",
+            "after": "?row=agent:project_task_manager_3d822b10452a4d51bada49b572cb2290/agent:release_notes_writer_a2c30da75bec42aab13eac207346b8d2&screen=run",
+            "reached": true,
+            "opening": true,
+            "listShown": false,
+            "trace": [
+              {
+                "list": false,
+                "run": null,
+                "activity": false,
+                "messages": false
+              },
+              {
+                "list": false,
+                "run": "opening",
+                "activity": false,
+                "messages": false
+              },
+              {
+                "list": false,
+                "run": "open",
+                "activity": false,
+                "messages": false
+              }
+            ]
+          }
+        ],
+        "gone": {
+          "reached": true,
+          "query": "?row=agent:no-such-run-435",
+          "activity": false,
+          "runScreen": null
+        },
+        "draftQuery": "?row=agent:temp-1794299649483-1&screen=run",
+        "beforeSend": {
+          "label": "reload before the first message",
+          "before": "?row=agent:temp-1794299649483-1&screen=run",
+          "after": "?row=agent:temp-1794299649483-1",
+          "reached": true,
+          "opening": true,
+          "listShown": true,
+          "trace": [
+            {
+              "list": false,
+              "run": null,
+              "activity": false,
+              "messages": false
+            },
+            {
+              "list": false,
+              "run": "opening",
+              "activity": false,
+              "messages": false
+            },
+            {
+              "list": true,
+              "run": null,
+              "activity": false,
+              "messages": false
+            }
+          ],
+          "runScreen": null
+        },
+        "createdQuery": "?row=agent:temp-1794299651316-1&screen=run",
+        "viewBeforeSend": "?row=agent:temp-1794299651316-1&screen=activity",
+        "afterSend": "?row=agent:project_task_manager_c5d5c6aae9f24ffb84139a938b874b57&screen=run",
+        "nodeRunId": "project_task_manager_c5d5c6aae9f24ffb84139a938b874b57",
+        "stored": false,
+        "forwardQuery": "?row=agent:project_task_manager_c5d5c6aae9f24ffb84139a938b874b57&screen=activity",
+        "afterCreate": {
+          "label": "created run Activity",
+          "before": "?row=agent:project_task_manager_c5d5c6aae9f24ffb84139a938b874b57&screen=activity",
+          "after": "?row=agent:project_task_manager_c5d5c6aae9f24ffb84139a938b874b57&screen=activity",
+          "reached": true,
+          "opening": true,
+          "listShown": false,
+          "trace": [
+            {
+              "list": false,
+              "run": null,
+              "activity": false,
+              "messages": false
+            },
+            {
+              "list": false,
+              "run": "opening",
+              "activity": false,
+              "messages": false
+            },
+            {
+              "list": false,
+              "run": null,
+              "activity": true,
+              "messages": false
+            }
+          ]
+        },
+        "backQuery": "?row=agent:project_task_manager_c5d5c6aae9f24ffb84139a938b874b57&screen=run"
+      }
+    },
+    "MSP-24": {
+      "result": "Pass",
+      "seconds": 85.3,
+      "quiet": {
+        "seconds": 50,
+        "history": 10,
+        "statuses": 10,
+        "statusesNamingPtm": 10,
+        "ptmViewReads": 0
+      },
+      "goneAfterCloseMs": {
+        "otherA": 4187,
+        "otherB": 3267,
+        "hostA": -488,
+        "hostB": -558
+      },
+      "viewReadsAfterClose": 1,
+      "viewReadsInThe15sAfterGone": 0,
+      "afterTodoOnly": {
+        "phoneHost": false,
+        "phoneOther": false,
+        "nodeStillClosed": true
+      },
+      "rowBackAfterReactivationMs": {
+        "other": 869,
+        "host": -495
+      },
+      "listedOnOtherAtEnd": {
+        "writerRun": true,
+        "teamRun": false
+      }
+    },
+    "MSP-25": {
+      "result": "Pass",
+      "seconds": 15.2,
+      "hiddenMs": 14928,
+      "closedWhileHiddenAfterMs": 2923,
+      "whileHidden": {
+        "history": 0,
+        "statuses": 0,
+        "views": 0,
+        "all": [
+          {
+            "op": "GetTaskWorkerTasks",
+            "afterHiddenMs": 2349,
+            "runId": null,
+            "runIds": null
+          },
+          {
+            "op": "GetTaskWorkerTasks",
+            "afterHiddenMs": 2388,
+            "runId": null,
+            "runIds": null
+          }
+        ]
+      },
+      "rowListedWhenShown": true,
+      "goneAfterShownMs": 106,
+      "firstHistoryReadAfterShownMs": 7
+    },
+    "MSP-26": {
+      "result": "Pass",
+      "seconds": 2.6,
+      "listedBefore": true,
+      "goneAfterCloseMs": -270,
+      "openRunOnPhone": "Other"
+    },
+    "MSP-34": {
+      "result": "Pass",
+      "seconds": 63.3,
+      "copy": "release_notes_writer_06c409b9e7f647d183de98ea178d83d1",
+      "manager": "project_task_manager_1bcb02a4c1614626b2668fab3d21805d",
+      "taskD": "closed-rows-b2ea4f-4",
+      "stoppedBefore": {
+        "status": {
+          "runId": "project_task_manager_3dad667acf0340abb315bc0819cb499c",
+          "isActive": false,
+          "closedTaskExecutionsDigest": "2:a5bad41a"
+        },
+        "listed": {
+          "phoneHost": true,
+          "phoneOther": true
+        },
+        "viewReads": {
+          "phoneHost": 0,
+          "phoneOther": 0
+        },
+        "statusReadsNamingPtm": 3
+      },
+      "afterClose": {
+        "status": {
+          "runId": "project_task_manager_3dad667acf0340abb315bc0819cb499c",
+          "isActive": false,
+          "closedTaskExecutionsDigest": "3:d52528df"
+        },
+        "goneAfterCloseMs": {
+          "phoneOther": 2685,
+          "phoneHost": 842
+        },
+        "viewReads": {
+          "phoneHost": 1,
+          "phoneOther": 1
+        }
+      },
+      "afterTodo": {
+        "status": {
+          "runId": "project_task_manager_3dad667acf0340abb315bc0819cb499c",
+          "isActive": false,
+          "closedTaskExecutionsDigest": "3:d52528df"
+        },
+        "nodeStillClosed": true,
+        "listed": {
+          "phoneHost": false,
+          "phoneOther": false
+        },
+        "viewReads": {
+          "phoneHost": 0,
+          "phoneOther": 0
+        }
+      }
+    },
+    "MSP-27": {
+      "result": "Pass",
+      "seconds": 24.4,
+      "openRun": "fact_checker_ca327e7f2d2f40d6bbd30d24799dfc1f",
+      "openRunAtEnd": "fact_checker_ca327e7f2d2f40d6bbd30d24799dfc1f",
+      "quietSeconds": 12,
+      "quietViewReads": 0,
+      "quietStatusReads": 2,
+      "goneAfterCloseMs": 1859,
+      "viewReadsAfterClose": 1
+    },
+    "MSP-35": {
+      "result": "Pass",
+      "seconds": 60.9,
+      "copy": "release_notes_writer_75508bdcdf2c45d1a3968b6a53413687",
+      "manager": "project_task_manager_b8c5749dfa984d8f94894b58b4a4482b",
+      "taskE": "launch-83a5ed-3",
+      "openRun": "fact_checker_ca327e7f2d2f40d6bbd30d24799dfc1f",
+      "before": {
+        "listed": true,
+        "viewReads": 0,
+        "statusReadsNamingPtm": 2
+      },
+      "afterClose": {
+        "status": {
+          "runId": "project_task_manager_3d822b10452a4d51bada49b572cb2290",
+          "isActive": false,
+          "closedTaskExecutionsDigest": "3:55276a8b"
+        },
+        "goneAfterCloseMs": 3988,
+        "viewReads": 1
+      },
+      "afterTodo": {
+        "status": {
+          "runId": "project_task_manager_3d822b10452a4d51bada49b572cb2290",
+          "isActive": false,
+          "closedTaskExecutionsDigest": "3:55276a8b"
+        },
+        "nodeStillClosed": true,
+        "listed": false,
+        "viewReads": 0
+      }
+    }
+  },
+  "browserErrors": [
+    {
+      "case": "closed-rows-setup",
+      "line": "phone-host console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "closed-rows-setup",
+      "line": "phone-host console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "closed-rows-setup",
+      "line": "phone-other console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "closed-rows-setup",
+      "line": "phone-host console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "closed-rows-setup",
+      "line": "phone-host console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "closed-rows-setup",
+      "line": "phone-host console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "closed-rows-setup",
+      "line": "phone-other console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "closed-rows-setup",
+      "line": "phone-other console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    },
+    {
+      "case": "closed-rows-setup",
+      "line": "phone-other console: Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "known": true,
+      "cause": "the browser's favicon request at the origin root (/favicon.ico)"
+    }
+  ],
+  "failedRequests": [
+    {
+      "case": "MSP-33",
+      "label": "phone-restore",
+      "url": "https://api.iconify.design/vscode-icons.json?icons=file-type-markdown",
+      "error": "net::ERR_ABORTED"
+    }
+  ],
+  "network": {},
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "closedTaskRows": {
+    "runs": {
+      "ptm": "project_task_manager_3dad667acf0340abb315bc0819cb499c",
+      "other": "fact_checker_c1d1bc1119134b86995720757c1c25ad",
+      "writerRun": "release_notes_writer_4126668d6c3a47ec99d165e83798a67a",
+      "teamRun": "docs_review_team_5ee0c81b0c974a0cac1cd9686214f686",
+      "liveTeam": "live_team_7a339c40f2e64f5297b0ca25e6ef53ff",
+      "liveLead": "live_lead_15db8cbf0f62435eaf346bbddeae69d9",
+      "leadTaskRun": "release_notes_writer_a36b6e7d674748e78e7362bd414fd25d"
+    },
+    "tasks": {
+      "a": "closed-rows-b2ea4f-1",
+      "b": "closed-rows-b2ea4f-2",
+      "c": "closed-rows-b2ea4f-3"
+    }
+  },
+  "summary": {
+    "cases": {
+      "MSP-05": "Pass",
+      "MSP-33": "Fail",
+      "MSP-24": "Pass",
+      "MSP-25": "Pass",
+      "MSP-26": "Pass",
+      "MSP-34": "Pass",
+      "MSP-27": "Pass",
+      "MSP-35": "Pass"
+    },
+    "unknownBrowserErrors": 0
+  },
+  "finishedAt": "2026-11-10T08:38:46.093Z"
+}

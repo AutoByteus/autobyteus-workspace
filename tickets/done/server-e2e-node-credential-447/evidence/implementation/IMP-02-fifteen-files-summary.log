@@ -1,0 +1,60 @@
+# IMP-02 the 15 failing files of PROBE-01; working tree = commit a20e7a822f content (run before commit), base 310fc27452; macOS; 2026-11-10
+# Command: env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts exec vitest run --no-watch <the 15 files>
+# Excerpt: per-file and summary lines of IMP-02-fifteen-files.log (full log kept in the worktree, not committed: 554 KB). grep own_/mcpg_: 0; grep NODE_CREDENTIAL_REQUIRED|MCP_GATEWAY_TOKEN_REQUIRED: 0
+
+ ✓ tests/e2e/tool-management/mcp-http-auth-remote-server.e2e.test.ts (2 tests) 5751ms
+     ✓ sends the header or token on preview, save, import and tool calls, and rejects token plus Authorization  339ms
+     ✓ re-registers saved credentials at startup after a restart and keeps sending them  2135ms
+ ✓ tests/e2e/tool-management/mcp-http-redirect-and-transport.e2e.test.ts (2 tests) 4024ms
+     ✓ refuses a cross-origin redirect, follows a same-origin one, and rejects a websocket import  2129ms
+     ✓ starts with WebSocket-era entries in mcps.json and registers the valid entry next to them  1881ms
+ ✓ tests/e2e/tool-management/mcp-secrets-in-vault.e2e.test.ts (3 tests) 5567ms
+     ✓ loads the plain file, offers its secrets for the move, and moves them with a backup  718ms
+     ✓ stores a value saved locked through GraphQL in the vault, and returns only its state  301ms
+     ✓ resolves the stored secrets from the vault after a restart, and no value leaks  2691ms
+ ✓ tests/e2e/projects/project-mutation-node-locality.e2e.test.ts (1 test) 5904ms
+   ✓ E-008: separate built nodes accept the same local path but cannot patch remote Project identities; restart preserves bytes  5903ms
+ ✓ tests/e2e/runtime/available-agent-runtimes-graphql.e2e.test.ts (6 tests) 22451ms
+     ✓ AAR-01 lists the four runtimes and AutoByteus' keyed providers, each with models and live limits, read with 0 tokens (AC-001, AC-003…AC-007, AC-009)  655ms
+     ✓ AAR-02 leaves out signed-out and missing runtimes and providers without a key; marks a sign-in it could not check (REQ-002, REQ-007)  911ms
+     ✓ AAR-03 slow steps end at their own deadlines: the answer arrives within 20 s, the hung processes are stopped and the next read works (AC-008, AC-011)  14321ms
+     ✓ AAR-04 over Agent Tools MCP: a Codex run whose definition lists the tool gets the same report; one whose definition does not, does not; several readers at once share one read and all get Codex (AC-002, AC-012, AC-013)  4859ms
+     ✓ AAR-06 discovered providers are asked on every read: LM Studio answering is listed, not answering is left out; a keyed custom endpoint not answering is listed with its models unknown (AC-007, REQ-002, REQ-007)  872ms
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts (14 tests) 19314ms
+     ✓ AR-03 Update runs the vendor's updater with progress, then 'Updated from X to Y.' that the automatic re-check keeps (AC-003, AR-006)  2304ms
+     ✓ AR-04 Update that exits 0 without a newer version is a failure with the vendor's text, version unchanged (AC-003)  701ms
+     ✓ AR-05 Update failure shows the vendor's message without terminal codes; Try again runs it again; busy is refused (AC-003)  3193ms
+     ✓ AR-07 Sign in starts the runtime's own login, passes nothing of it to the client, and ends Signed in (AC-007, AC-011)  328ms
+     ✓ AR-09 a runtime installed later appears on the next check; a login that never finishes times out, even ignoring SIGTERM (AC-005, AC-007 time-out, QR-003)  9228ms
+     ✓ AR-14 shows a prerelease as it is and orders it by SemVer precedence: update available, updated to the release, newer than the latest (autobyteus-393 AC-001, AC-002, AC-005)  2402ms
+ ✓ tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts (6 tests) 292ms
+ ✓ tests/e2e/agent-team-runs/task-delegation-api-surface.e2e.test.ts (3 tests) 223ms
+ ✓ tests/e2e/update-notifications/agent-runtime-update-notifications.e2e.test.ts (3 tests) 11550ms
+     ✓ API-20 (AC-018, AC-005 runtimes, AR-007): the first tick checks the installed runtimes in the background; newer versions are notified, nothing is updated  1770ms
+     ✓ API-21 (AC-019, REQ-021): the panel's runtime Update is refused while that runtime's agents run; a success is handled, a failure keeps the notification  2826ms
+     ✓ API-22 (AC-020, REQ-022, REQ-009): with runtime updates on, Codex waits while its agent runs, then updates by itself; Claude's failure is recorded once  6252ms
+ ✓ tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts (4 tests) 8150ms
+     ✓ RA-01 Application launch readiness for Codex keeps its rule and reason text through the sign-in reader (SCN-A3)  916ms
+     ✓ RA-02 Application launch readiness for Claude: signed out (JSON + exit 1) keeps today's reason, signed in is runnable  1643ms
+     ✓ RA-03 Update is refused while a standalone Codex agent runs and allowed once it has ended (AC-004)  2422ms
+     ✓ RA-04 a live Application team member counts too: Brief Studio's drafting run blocks Codex's Update, alone and with a standalone agent (AC-004, SR-011/AR-008)  2170ms
+ ✓ tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts (4 tests) 6776ms
+     ✓ claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key  497ms
+     ✓ claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key  399ms
+     ✓ team run: restore succeeds and every member's request after restore carries no stored stale key  458ms
+     ✓ Org run: restore succeeds and the member requests after restore carry no stored stale key  5139ms
+ ✓ tests/e2e/runtime/application-reload-repair.e2e.test.ts (5 tests) 6081ms
+     ✓ RE-01 an ACTIVE application stays usable after a package reload (AC-001)  1380ms
+     ✓ RE-02 a repair of an ACTIVE application answers ACTIVE and keeps it usable (AC-002)  645ms
+     ✓ RE-03 imported while Codex is signed out, it is quarantined with the reason; after sign-in a repair returns it to ACTIVE (AC-003, AC-004)  904ms
+     ✓ RE-04 after the worker process crashes, a repair resets it to stopped and the application is usable again (MP-001)  1050ms
+     ✓ RE-05 a run event recorded while the application is quarantined is dispatched after a repair makes it ACTIVE (BEH-002)  1394ms
+ ✓ tests/e2e/runtime/application-import-codex-launch.e2e.test.ts (2 tests) 2361ms
+     ✓ IC-01 imports Brief Studio, reads it as runnable and launches its Codex drafting team without a restart (AC-001)  1183ms
+     ✓ IC-02 a signed-out Codex blocks the imported application with today's reason, not a spawn failure (AC-002)  462ms
+ ✓ tests/e2e/runtime/autobyteus-anthropic-stored-config-edit-launch.e2e.test.ts (5 tests) 1291ms
+     ✓ AC-013 (b): a delegated catalog Agent whose default launch config holds the stale key runs on that default, without the key  554ms
+ ✓ tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts (2 tests) 571ms
+ Test Files  15 passed (15)
+      Tests  62 passed (62)
+   Duration  132.22s (transform 7.85s, setup 366ms, import 29.78s, tests 100.31s, environment 1ms)

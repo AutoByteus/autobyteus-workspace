@@ -161,7 +161,11 @@ describe("catalog delegation placement (DS-001)", () => {
     members: [{ address: a("/product_team/lead"), agentDefinitionId: "lead" }, { address: a("/product_team/designer"), agentDefinitionId: "designer", launchSource: skipped }],
     handoffs: [], defaultLaunchConfiguration: launch,
   };
-  const delegationPort = { isOwnTeamAddress: (sender: string, address: string) => sender === "copy-lead" && address.startsWith("/product_team") };
+  const senderAddresses: Record<string, string> = { pm: "/pm", "copy-lead": "/product_team/lead" };
+  const delegationPort = {
+    agentAddressOf: (agentRunId: string) => (senderAddresses[agentRunId] ?? null) as AgentTeamAddress | null,
+    isOwnTeamAddress: (sender: string, address: string) => sender === "copy-lead" && address.startsWith("/product_team"),
+  };
   const notFound = () => { throw new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND", "not in run"); };
 
   it("in-run placements win; a catalog address gets a sourced placement; no source means not found", async () => {
@@ -222,6 +226,31 @@ describe("catalog delegation placement (DS-001)", () => {
     });
     expect(resolveInRun).not.toHaveBeenCalled();
     expect(catalogSource).not.toHaveBeenCalled();
+  });
+
+  // autobyteus-435 REQ-013, AC-013-1: the sender's own address has its own words; a teammate and the own Team keep theirs.
+  it("refuses the sender's own address with the self words, before any placement or catalog lookup; same code", async () => {
+    for (const [sender, address] of [["pm", "/pm"], ["copy-lead", "/product_team/lead"]] as const) {
+      const resolveInRun = vi.fn(notFound);
+      const catalogSource = vi.fn(async () => null);
+      await expect(resolveDelegationPlacement({
+        port: delegationPort, senderAgentRunId: sender, address: a(address), newCopyFolder: null, resolveInRun, catalogSource,
+      })).rejects.toMatchObject({
+        code: "COLLABORATION_SELF_TARGET_REJECTED",
+        message: `${address} is your own address; you can't delegate to yourself. Do the work yourself, or delegate it to another agent or agent team.`,
+      });
+      expect(resolveInRun).not.toHaveBeenCalled();
+      expect(catalogSource).not.toHaveBeenCalled();
+    }
+    // A teammate, and the sender's own Team: the own-team words, as before.
+    for (const address of ["/product_team/designer", "/product_team"]) {
+      await expect(resolveDelegationPlacement({
+        port: delegationPort, senderAgentRunId: "copy-lead", address: a(address), newCopyFolder: null, resolveInRun: notFound, catalogSource: vi.fn(),
+      })).rejects.toMatchObject({
+        code: "COLLABORATION_SELF_TARGET_REJECTED",
+        message: `${address} is in your own team; you can't delegate to it. Talk with it using send_message_to.`,
+      });
+    }
   });
 
   it("a catalog definition that cannot run is a not-found delegation with its reason", async () => {

@@ -335,6 +335,29 @@ describe('MobileNodeDesktop', () => {
       expect(sheet()).toBeNull();
     });
 
+    // autobyteus-435 REQ-006, DEC-005: landscape full screen with the keyboard open leaves ≈ 150 px; Send sits beside the
+    // field there, and the field's row is kept in view while the keyboard opens. Portrait keeps the column (AC-006-2).
+    it('in a short viewport Send sits beside a one-line field; the field\'s row is kept in view on focus and while the page resizes', async () => {
+      const { wrapper } = await inControl();
+      await wrapper.get('[data-testid="mobile-node-desktop-clipboard-open"]').trigger('click');
+      await flushPromises();
+      const row = inSheet('mobile-node-desktop-clipboard-paste-row')!;
+      expect([...row.classList]).toEqual(expect.arrayContaining(['flex-col', '[@media(max-height:320px)]:flex-row']));
+      expect([...inSheet('mobile-node-desktop-clipboard-paste-input')!.classList]).toEqual(expect.arrayContaining(['[@media(max-height:320px)]:h-11', '[@media(max-height:320px)]:flex-1']));
+      expect([...inSheet('mobile-node-desktop-clipboard-send')!.classList]).toEqual(expect.arrayContaining(['w-full', '[@media(max-height:320px)]:w-auto']));
+
+      const scrollIntoView = vi.fn();
+      row.scrollIntoView = scrollIntoView;
+      const input = inSheet('mobile-node-desktop-clipboard-paste-input')!;
+      input.dispatchEvent(new FocusEvent('focus'));
+      expect(scrollIntoView).toHaveBeenCalledWith({ block: 'nearest' });
+      window.dispatchEvent(new Event('resize'));
+      expect(scrollIntoView).toHaveBeenCalledTimes(2);
+      input.dispatchEvent(new FocusEvent('blur'));
+      window.dispatchEvent(new Event('resize'));
+      expect(scrollIntoView).toHaveBeenCalledTimes(2);
+    });
+
     it('copies the desktop text on a tap, with the selection copy where the async clipboard is missing', async () => {
       vi.stubGlobal('navigator', { ...navigator, clipboard: undefined });
       const execCommand = vi.fn(() => true);

@@ -31,18 +31,6 @@ const diagnostics: Record<MobileConnectionFailureKind, MobileConnectionDiagnosti
     message: 'The desktop is reachable, but Phone Access is currently turned off.',
     recoveryAction: 'Enable Phone Access from desktop settings.',
   },
-  websocket_blocked: {
-    kind: 'websocket_blocked',
-    title: 'Live connection blocked',
-    message: 'The HTTP API is reachable, but a WebSocket stream could not be opened.',
-    recoveryAction: 'Check firewall, VPN, proxy, or browser restrictions for WebSocket traffic.',
-  },
-  unsupported_mobile_feature: {
-    kind: 'unsupported_mobile_feature',
-    title: 'Feature is desktop-only',
-    message: 'This area uses Electron or desktop-only capabilities that are not available on phone.',
-    recoveryAction: 'Use this feature from the desktop app.',
-  },
 };
 
 export function diagnosticForKind(kind: MobileConnectionFailureKind): MobileConnectionDiagnostic {
@@ -63,22 +51,6 @@ export function diagnosticFromHttpStatus(status: number, code?: string): MobileC
     return diagnosticForKind('auth_required');
   }
   return diagnosticForKind('network_unreachable');
-}
-
-export function diagnosticFromWebSocketClose(code: number, reason?: string): MobileConnectionDiagnostic {
-  if (reason === 'PHONE_ACCESS_DISABLED') {
-    return diagnosticForKind('phone_access_disabled');
-  }
-  if (reason === 'REMOTE_ACCESS_DEVICE_REVOKED') {
-    return diagnosticForKind('device_revoked');
-  }
-  if (code === 4401) {
-    return diagnosticForKind('auth_required');
-  }
-  if (code === 4403) {
-    return diagnosticForKind('device_revoked');
-  }
-  return diagnosticForKind('websocket_blocked');
 }
 
 export function diagnosticFromUnknownError(error: unknown): MobileConnectionDiagnostic {

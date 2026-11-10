@@ -13,10 +13,8 @@ import {
   TaskExecutionTeardownIndeterminateError,
 } from "../../../src/agent-collaboration/execution/task/task-delegation-command.js";
 import type { TaskExecutionIdleTimers } from "../../../src/agent-collaboration/execution/task/task-execution-idle-shutdown-schedule.js";
-import {
-  taskExecutionReferenceKey,
-  type TaskExecutionReference,
-} from "../../../src/agent-collaboration/execution/task/task-execution-reference.js";
+import type { TaskExecutionReference } from "../../../src/agent-collaboration/execution/task/task-execution-reference.js";
+import { taskExecutionReferenceKey } from "@autobyteus/collaboration-stream-contracts";
 import {
   createCollaborationMemberExecutionIdentity,
   createTeamRootExecutionIdentity,

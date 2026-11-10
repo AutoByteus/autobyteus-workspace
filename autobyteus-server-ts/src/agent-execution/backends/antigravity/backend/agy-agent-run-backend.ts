@@ -34,6 +34,7 @@ export type AgyAgentToolsBinding = Readonly<{
 
 export class AgyAgentRunBackend implements AgentRunBackend {
   readonly backgroundTaskInspection = { kind: 'event-stream' } as const;
+  readonly backgroundTaskNotices = { kind: "unsupported" } as const;
   readonly compactionRecovery = { kind: "unsupported" } as const;
   readonly inputCapabilities = { activeTurnAppend: "unsupported" } as const;
   private readonly listeners = new Set<AgentRunSourceEventBatchListener>();

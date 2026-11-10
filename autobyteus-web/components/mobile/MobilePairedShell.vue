@@ -25,7 +25,8 @@
       @new-run="navigation.openNewRun()"
       @retry="checkStatus()"
     />
-    <MobileRunScreen v-if="navigation.screen.value === 'run'" :tree="tree" />
+    <!-- A view screen whose subject is being reopened at page start shows the run screen's "Opening…" (DEC-015). -->
+    <MobileRunScreen v-if="navigation.screen.value === 'run' || (restoring && !viewTarget && VIEWS.has(navigation.screen.value))" :tree="tree" />
     <template v-else-if="viewTarget">
       <MobileArtifacts v-if="navigation.screen.value === 'artifacts'" :target="viewTarget" @back="navigation.back()" />
       <MobileFiles v-else-if="navigation.screen.value === 'files'" :target="viewTarget" @back="navigation.back()" />
@@ -64,11 +65,15 @@ import MobileMessages from '~/components/mobile/views/MobileMessages.vue';
 import MobileNodeDesktop from '~/components/mobile/views/MobileNodeDesktop.vue';
 import { useAgentRunCollaborationSync } from '~/composables/agentCollaboration/useAgentRunCollaborationSync';
 import { useMobileNavigation } from '~/composables/mobile/useMobileNavigation';
+import { useMobileRouteRunSync } from '~/composables/mobile/useMobileRouteRunSync';
+import { useMobileRunOpening } from '~/composables/mobile/useMobileRunOpening';
 import { useMobileRunTree } from '~/composables/mobile/useMobileRunTree';
+import { useMobileSubjectRestore } from '~/composables/mobile/useMobileSubjectRestore';
 import { useRunHistorySectionLoad } from '~/composables/runHistory/useRunHistorySectionLoad';
 import { useActiveContextStore } from '~/stores/activeContextStore';
 import { useMobileNodeSessionStore } from '~/stores/mobileNodeSessionStore';
 import { nodeNameOrDefault } from '~/utils/remoteAccess/nodeName';
+import { agentRunRowKey } from '~/utils/runListProjection';
 import { getShellBridge } from '~/utils/remoteAccess/shellBridge';
 import type { MobileRunListConnection } from '~/components/mobile/runList/MobileRunList.vue';
 
@@ -100,6 +105,8 @@ const historyLoad = useRunHistorySectionLoad({
 useAgentRunCollaborationSync();
 
 const firstCheckDone = ref(false);
+let firstCheckEnded: () => void = () => undefined;
+const firstCheck = new Promise<void>((resolve) => { firstCheckEnded = resolve; });
 /**
  * One phone check (open, Retry, Check): the credential check, the public status (the connection sheet's diagnostic) and
  * the history read (the list's content) together. The outcome comes only from the credential check: a credential the
@@ -123,6 +130,7 @@ onMounted(async () => {
     await checkStatus(true);
   } finally {
     firstCheckDone.value = true;
+    firstCheckEnded();
     if (props.postPair) emit('checked');
   }
 });
@@ -159,13 +167,23 @@ function unpairPhone(): void {
   sessionStore.deleteLocalSession();
 }
 
-/** A view screen shows the open target; a view whose subject is gone (a reload) is replaced by the list. */
+/**
+ * A page start whose route names a run list row that is not open (a reload, Android's restore after process death)
+ * reopens it (autobyteus-435 REQ-005). Created before the watch below: while it restores, nothing goes to the list.
+ */
+const { restoring } = useMobileSubjectRestore({ tree, opening: useMobileRunOpening(tree), navigation, firstCheck });
+
+/** A view screen shows the open target; a view whose subject is gone (and is not being reopened) gives the list. */
 const viewTarget = computed(() => activeContext.activeWorkspaceTarget);
 const VIEWS = new Set(['artifacts', 'files', 'messages', 'activity', 'desktop']);
-watch([() => navigation.screen.value, viewTarget], ([screen, target]) => {
-  if (VIEWS.has(screen) && !target) void navigation.toList();
+watch([() => navigation.screen.value, viewTarget, restoring], ([screen, target, isRestoring]) => {
+  if (VIEWS.has(screen) && !target && !isRestoring) void navigation.toList();
 }, { immediate: true });
 
-/** Create run: the new run's conversation, for its first message, in place of New run. */
-const onLaunched = (): void => { void navigation.openRun({ replace: true }); };
+/**
+ * Create run: the new run's conversation, for its first message, in place of New run. The route names the draft's row
+ * (`agent:temp-…`) until the first send promotes it; then it names the node's run (DS-006b).
+ */
+const onLaunched = (draftRunId: string): void => { void navigation.openRun({ replace: true, rowKey: agentRunRowKey(draftRunId) }); };
+useMobileRouteRunSync(navigation);
 </script>

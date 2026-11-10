@@ -1,0 +1,27 @@
+A) plain bash -c <command> (today's launch):
+  [A] CMD_PID 57934
+  [A] group 57885 before kill: [
+  '57885 /Users/normy/.hermes/node/bin/node',
+  '57934 bash',
+  '57937 bash',
+  '57938 sleep',
+  '57939 sleep'
+]
+  [A] CMD_EXIT null SIGTERM
+  [A] group after "kill 57934": [
+  '57885 /Users/normy/.hermes/node/bin/node',
+  '57937 bash',
+  '57938 sleep',
+  '57939 sleep'
+]
+B) wrapped: a TERM trap forwards the kill to the whole group:
+  [B] CMD_PID 59337
+  [B] group 59263 before kill: [
+  '59263 /Users/normy/.hermes/node/bin/node',
+  '59337 bash',
+  '59341 bash',
+  '59342 sleep',
+  '59343 sleep'
+]
+  [B] CMD_EXIT null SIGTERM
+  [B] group after "kill 59337": [ '59263 /Users/normy/.hermes/node/bin/node' ]

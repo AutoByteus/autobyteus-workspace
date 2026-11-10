@@ -18,6 +18,8 @@ export class NativeCommandProcessScope {
   constructor(private readonly observer = new ProcessGroupObserver(), private readonly launcher = new AnchoredCommandLauncher()) {}
   get isOpen(): boolean { return this.state === 'open'; }
   get size(): number { return this.leases.size; }
+  /** True while the command's group is still owned (not yet confirmed gone). */
+  holds(handle: AnchoredCommandHandle): boolean { return this.leases.has(handle); }
   async start(invocation: NonInteractiveShellInvocation, deadline = Date.now() + 1500,
     attach?: (handle: AnchoredCommandHandle) => void): Promise<AnchoredCommandHandle> {
     if (!this.isOpen) throw new Error('Native command scope is shutting down');

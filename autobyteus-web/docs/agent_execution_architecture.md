@@ -864,7 +864,9 @@ turn, tool, compaction phase, status change, or Event Monitor visual.
 summary with runtime-aware source copy, capture time, Unicode code-point count,
 and an `Available` status. Its button exposes `aria-expanded` and
 `aria-controls`; expansion shows the exact selectable text in a labeled,
-keyboard-focusable, pre-wrapped, bounded scrolling region. Desktop and mobile
+pre-wrapped region, whole and in the Activity's own flow: no height cap and no
+inner scroll, so the Activity scrolls through it, and the header collapses it again
+(autobyteus-435). Desktop and mobile
 dispatch through their shared discriminated `RunActivity` contract and retain
 the same content/identity semantics.
 
@@ -1653,8 +1655,15 @@ decides how it connects, what counts as success, and how it catches up.
 
 - `transport/WebSocketClient` is a plain socket. It never retries and has no
   `RECONNECTING` state. `onDisconnect(reason, retryable)` tells the owner that a close was
-  not intended and whether it may be retried. Close codes 4004 and 4005 are not retryable.
-  An intentional `disconnect()` emits nothing.
+  not intended and whether it may be retried. Close codes 4004 and 4005 are not retryable,
+  nor is a credential-refusal close. An intentional `disconnect()` emits nothing.
+- A **credential-refusal close** (`services/liveStreamLifecycle/credentialRefusalClose.ts`,
+  autobyteus-435): 4401, or 4403 with `REMOTE_ACCESS_DEVICE_REVOKED`, `NODE_CREDENTIAL_REVOKED`,
+  `NODE_CREDENTIAL_INVALID` or `PEER_UNPAIRED` as the reason. Every owner (agent, Team, Org,
+  collaboration, file explorer) starts over instead of retrying after one; 4403 for Phone Access
+  off or a network refusal stays retryable, so those streams resume when it changes back. Each
+  owner keeps its own other final codes. On the phone, the end of the session also closes every
+  live stream (`closeAllLiveStreams.ts`: each registry's close-all action).
 - Each owner holds one `LiveStreamReconnectScheduler`
   (`services/liveStreamLifecycle/liveStreamReconnectScheduler.ts`). Its states are `idle`,
   `attempting`, `connected`, `waiting` and `held`.
@@ -1681,7 +1690,8 @@ decides how it connects, what counts as success, and how it catches up.
   - Team: `connect()` starts the scheduler over. `reopen_required` stays terminal, with
     no retries.
   - Org and collaboration: a persistent failure reports the error and rejects readiness.
-    A 4004 close starts the collaboration scheduler over.
+    A 4004 close starts the collaboration scheduler over; a credential-refusal close starts
+    either one over (the Org's context still requires a reopen).
 - The store's Agent Connect Rule (`agentRunStore.connectToAgentStream` →
   `requestConnect()`):
   - while `waiting`, it catches up now;
@@ -2013,7 +2023,7 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
     - Frontend code must not reconstruct Team topology, parse opaque identity keys, infer pricing/coverage/comparison facts, reprice captured costs, or round unsafe primary token totals. Generated GraphQL types must stay synchronized with the matching server schema.
     - Durable coverage includes real-SQLite policy/GraphQL reconciliation, preserved Run-details queries, focused component/store/state/accessibility/localization checks, a strict negative export/file boundary, and a self-starting built-server/Nuxt/Chromium journey covering default/custom/filter/retry/partial-pricing/Detailed-usage/Run-details behavior at desktop and 390px widths. Browser proof does not imply packaged Electron execution.
 6.  **Live background tasks (`agentBackgroundTaskStore`)**:
-    - Keeps each run's background tasks (Claude background shell commands; Antigravity daemons) keyed by `task_id`, newest first, with running/total counts. Live-session state only: it is not persisted and starts empty after a reload.
+    - Keeps each run's background tasks (Claude background shell commands; Antigravity daemons; AutoByteus `run_bash` background commands and `&` jobs) keyed by `task_id`, newest first, with running/total counts. Live-session state only: it is not persisted and starts empty after a reload.
     - `ProgressPanel` (the Activity tab) shows it in the `BackgroundTaskPanel` section above the Activity feed. The two sections share one accordion (Activity expanded by default); the section is always present and shows "No background tasks" when empty.
     - Each row shows the description as its title and the kind label below it. When the snapshot's `command` is known and differs from the trimmed title, the kind line reads `<Kind> · <command>`: the command is monospace, truncated to one line with the full text in its tooltip, and is a button (`aria-expanded`) that expands it to the full wrapped command, like the finished-task summary. A null or blank command, or one equal to the title (Antigravity, whose title already is the command line), leaves the row unchanged. A command reported by a later snapshot fills in the existing row.
 

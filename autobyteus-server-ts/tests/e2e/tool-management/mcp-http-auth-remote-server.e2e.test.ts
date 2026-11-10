@@ -18,7 +18,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { Client, StreamableHTTPClientTransport } from "@modelcontextprotocol/client";
+import type { Client } from "@modelcontextprotocol/client";
 import {
   removeOwnedTestRuntime,
   reserveLoopbackPort,
@@ -27,6 +27,7 @@ import {
   testRuntimeRoot,
 } from "../../../../test-support/live-e2e/test-runtime-bootstrap.mjs";
 import { AUTH_PROBE_TOOL, startAuthRequiredMcpServer, type AuthRequiredMcpServer } from "../helpers/auth-required-mcp-server.js";
+import { connectMcpGatewayClient } from "../helpers/mcp-gateway-client.js";
 
 type RunningTestServer = Awaited<ReturnType<typeof startBuiltTestServer>>;
 type GraphqlResult<T> = { data?: T; errors?: Array<{ message: string }> };
@@ -66,8 +67,7 @@ const httpInput = (serverId: string, url: string, credentials: { token?: string 
 
 /** Lists and calls every tool through the server's `/mcp/gateway`, as an external MCP client does. */
 const callThroughGateway = async (serverUrl: string, toolNames: string[]) => {
-  const client = new Client({ name: "mcp-auth-e2e-gateway-client", version: "1.0.0" });
-  await client.connect(new StreamableHTTPClientTransport(new URL(`${serverUrl}/mcp/gateway`)));
+  const client = await connectMcpGatewayClient(serverUrl, "mcp-auth-e2e-gateway-client");
   try {
     const listed = (await client.listTools()).tools.map((tool) => tool.name);
     const results: Record<string, string> = {};
@@ -233,15 +233,15 @@ describe("Remote MCP server credentials through the built server", () => {
     const deadline = Date.now() + 60_000;
     let ready = false;
     while (!ready && Date.now() < deadline) {
-      const client = new Client({ name: "mcp-auth-e2e-wait", version: "1.0.0" });
+      let client: Client | undefined;
       try {
-        await client.connect(new StreamableHTTPClientTransport(new URL(`${restarted.serverUrl}/mcp/gateway`)));
+        client = await connectMcpGatewayClient(restarted.serverUrl, "mcp-auth-e2e-wait");
         const names = (await client.listTools()).tools.map((tool) => tool.name);
         ready = allTools.every((name) => names.includes(name));
       } catch {
         ready = false;
       } finally {
-        await client.close().catch(() => undefined);
+        await client?.close().catch(() => undefined);
       }
       if (!ready) await new Promise((resolve) => setTimeout(resolve, 250));
     }

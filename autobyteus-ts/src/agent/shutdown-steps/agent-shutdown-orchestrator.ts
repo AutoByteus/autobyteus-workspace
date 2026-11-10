@@ -3,13 +3,16 @@ import { BaseShutdownStep } from './base-shutdown-step.js';
 import { LLMInstanceCleanupStep } from './llm-instance-cleanup-step.js';
 import { ToolCleanupStep } from './tool-cleanup-step.js';
 import { McpServerCleanupStep } from './mcp-server-cleanup-step.js';
+import { BackgroundProcessCleanupStep } from './background-process-cleanup-step.js';
 
 export class AgentShutdownOrchestrator {
   shutdownSteps: BaseShutdownStep[];
 
   constructor(steps?: BaseShutdownStep[]) {
     if (!steps) {
+      // First: it never fails, so a failing later step cannot leave the run's commands running.
       this.shutdownSteps = [
+        new BackgroundProcessCleanupStep(),
         new LLMInstanceCleanupStep(),
         new ToolCleanupStep(),
         new McpServerCleanupStep()

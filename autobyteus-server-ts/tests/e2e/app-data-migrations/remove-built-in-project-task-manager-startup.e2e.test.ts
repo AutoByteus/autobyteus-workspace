@@ -22,8 +22,10 @@ const MIGRATION_ID = "20261006_remove_built_in_project_task_manager";
 const RETIRED_ID = "autobyteus-project-task-manager";
 const REPOSITORY_ID = "project-task-manager";
 const BUILT_IN_IDS = ["autobyteus-daily-assistant"];
-// Every built-in the startup installs under agents/, including the internal Model Router (hidden from the catalog).
-const INSTALLED_BUILT_IN_FOLDERS = ["autobyteus-daily-assistant", "autobyteus-model-router"];
+// The internal Model Router: installed, hidden from the catalog and never an `@` candidate.
+const MODEL_ROUTER_ID = "autobyteus-model-router";
+// Every built-in the startup installs under agents/, including the internal Model Router.
+const INSTALLED_BUILT_IN_FOLDERS = ["autobyteus-daily-assistant", MODEL_ROUTER_ID];
 const FAILED_MESSAGE = "The retired built-in Project Task Manager folder could not be removed; the cleanup retries on the next start.";
 const installedCopyFixture = fileURLToPath(new URL("../../fixtures/app-data-migrations/retired-built-in-project-task-manager", import.meta.url));
 
@@ -323,13 +325,14 @@ describe("retired built-in Project Task Manager at the actual startup entrypoint
     expect(continued.some(e => e.type === "ASSISTANT_COMPLETE")).toBe(true);
     expect(await conversationText(retried, otherRunId)).toContain("Write more field notes.");
 
-    // AC-009: the remaining built-ins stay excluded from `@`; the repository manager is an ordinary candidate.
+    // AC-009: the Model Router stays out of `@`; the Daily Assistant and the repository manager are ordinary
+    // candidates (autobyteus-455: the Daily Assistant collaborates like any agent).
     const candidates = (await retried.gql(`query($id:String!){collaboratorMentionCandidates(rootSubjectKind:"agent",rootRunId:$id,focusedAgentRunId:$id){availability candidates{kind definitionId}}}`, { id: otherRunId }))
       .collaboratorMentionCandidates;
     expect(candidates.availability).toBe("AVAILABLE");
     const candidateIds = candidates.candidates.map((c: { definitionId: string }) => c.definitionId);
-    expect(candidateIds).toContain(REPOSITORY_ID);
-    for (const excluded of [...BUILT_IN_IDS, RETIRED_ID]) expect(candidateIds).not.toContain(excluded);
+    expect(candidateIds).toEqual(expect.arrayContaining([REPOSITORY_ID, "autobyteus-daily-assistant"]));
+    for (const excluded of [MODEL_ROUTER_ID, RETIRED_ID]) expect(candidateIds).not.toContain(excluded);
   }, 240_000);
 
   it("E-003 Studio fresh install: creates no installed copy and records nothing to remove", async () => {

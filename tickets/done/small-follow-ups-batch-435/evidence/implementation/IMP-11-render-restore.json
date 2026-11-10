@@ -1,0 +1,102 @@
+{
+  "startedAt": "2026-11-10T07:05:16.134Z",
+  "cases": {
+    "agentActivity": {
+      "agentKey": "agent:project_task_manager_777388ed376b49179c6a6336af07eab5",
+      "runName": "Project Task Manager",
+      "before": "?row=agent:project_task_manager_777388ed376b49179c6a6336af07eab5&screen=activity",
+      "trace": [
+        {
+          "opening": false,
+          "list": false,
+          "activity": false,
+          "runOpen": false,
+          "query": "?row=agent:project_task_manager_777388ed376b49179c6a6336af07eab5&screen=activity"
+        },
+        {
+          "opening": true,
+          "list": false,
+          "activity": false,
+          "runOpen": false,
+          "query": "?row=agent:project_task_manager_777388ed376b49179c6a6336af07eab5&screen=activity"
+        },
+        {
+          "opening": false,
+          "list": false,
+          "activity": true,
+          "runOpen": false,
+          "query": "?row=agent:project_task_manager_777388ed376b49179c6a6336af07eab5&screen=activity"
+        }
+      ],
+      "listShownBeforeRestore": false
+    },
+    "teamRun": {
+      "teamKey": "team:delivery_team_0369aaaf4b694f05889ca86d14e5aee5",
+      "before": "?row=team:delivery_team_0369aaaf4b694f05889ca86d14e5aee5&screen=run",
+      "trace": [
+        {
+          "opening": false,
+          "list": false,
+          "activity": false,
+          "runOpen": false,
+          "query": "?row=team:delivery_team_0369aaaf4b694f05889ca86d14e5aee5&screen=run"
+        },
+        {
+          "opening": true,
+          "list": false,
+          "activity": false,
+          "runOpen": false,
+          "query": "?row=team:delivery_team_0369aaaf4b694f05889ca86d14e5aee5&screen=run"
+        },
+        {
+          "opening": false,
+          "list": false,
+          "activity": false,
+          "runOpen": true,
+          "query": "?row=team:delivery_team_0369aaaf4b694f05889ca86d14e5aee5&screen=run"
+        }
+      ],
+      "consoleErrorsInCase": [
+        "[list-start] Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "[list-start] Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "[list-start] Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+        "[reload-team-run] Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+      ]
+    },
+    "goneRow": {
+      "trace": [
+        {
+          "opening": false,
+          "list": false,
+          "query": "?row=agent:no-such-run&screen=activity"
+        },
+        {
+          "opening": true,
+          "list": false,
+          "query": "?row=agent:no-such-run&screen=activity"
+        },
+        {
+          "opening": false,
+          "list": false,
+          "query": "?row=agent:no-such-run"
+        }
+      ]
+    }
+  },
+  "consoleErrors": [
+    "[pair] Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+    "[pair] Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+    "[paired-list] Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+    "[paired-list] Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+    "[paired-list] Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+    "[reload-agent-activity] Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+    "[list-start] Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+    "[list-start] Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+    "[list-start] Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+    "[reload-team-run] Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+    "[gone-row] Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+    "[gone-row] Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+  ],
+  "refusedResponses": [],
+  "finishedAt": "2026-11-10T07:05:54.965Z"
+}
