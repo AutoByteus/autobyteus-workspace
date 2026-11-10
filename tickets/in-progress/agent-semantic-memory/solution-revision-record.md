@@ -7,6 +7,7 @@
 | SR-001 | Requirements | Initial coherent baseline (Task autobyteus-12) | N/A | N/A | Ready for Approval | BEH-001..005, REQ-001..009, AC-001..008, DEC-001..011 | Awaiting the user's decisions DEC-001..003 and approval |
 | SR-002 | Requirements | User conversation 2026-11-10 (design summary, location, approval) | N/A | Ready for Approval | Approved | REQ-003, REQ-005, AC-001, DEC-001, DEC-002, DEC-003, DEC-006, DEC-010, SCN-006 | Location `memory/semantic/<agent>/`; minimal instruction section; approved by the user |
 | SR-003 | Mixed | Architecture design | AF-01..AF-26 | Approved (requirements); design N/A | Approved; design Ready | REQ-002, AC-007, DEC-012; UNK-001, UNK-002 | Design spec written; Large / High |
+| SR-004 | Mixed | User request 2026-11-10: put the prompt in a contract file | N/A | Approved; design Ready (in architecture review) | Approved; design Ready | REQ-004, REQ-005, REQ-008, REQ-009, AC-001, AC-005 | `semantic-memory-prompt-contract.md` added as behavior-defining supplement |
 
 ## Revision Entries
 
@@ -72,3 +73,17 @@
 - Handoff: per handoff rules (recorded in `handoff-architecture-design.md`)
 - Remaining gaps: Codex app-server `writable_roots` to be shown in E2E; DeepSeek harness untestable here (FU-007)
 - Next action: independent architecture review per the handoff rules
+
+### SR-004 — Prompt contract
+
+- Phase and classification: Mixed, `Refinement`
+- Triggering input: the user, 2026-11-10: "write the prompt also inside a contract file … because implementation engineer doesn't like invent itself"
+- Prior status: requirements Approved, design Ready (sent to architecture review at SR-003)
+- Current status: same; supplement added
+- IDs affected: REQ-004, REQ-005, REQ-008, REQ-009, AC-001, AC-005
+- Canonical sections changed: requirements Document Status (supplements), REQ-005 source, Supplemental Artifacts; investigation supplement inventory; design spec approval basis, supplements, examples, implementation guidance
+- Supplemental artifacts added: `semantic-memory-prompt-contract.md` (exact text = the text shown to and approved by the user in the conversation; placement after `## Project`, before native-only sections; presence rule; path form; examples incl. disabled and Windows)
+- Intended behavior changed: No (the approved text is fixed as a contract)
+- Approval impact: supplement in the approval basis, Solution Designer within the direction at the user's request, user informed
+- Design/review impact: architecture reviewer informed of the added supplement; design structure unchanged; classification unchanged (Large / High)
+- Next action: architecture review continues on the SR-004 package

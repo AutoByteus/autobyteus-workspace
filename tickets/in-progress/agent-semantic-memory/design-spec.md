@@ -2,9 +2,9 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-003`
+- Current solution revision ID: `SR-004`
 - Approved requirements baseline: `requirements-doc.md` at SR-002 (REQ-001..009, AC-001..008), approved by the User on 2026-11-10 in the Solution Designer conversation (quoted in the requirements Document Status).
-- Behavior-defining supplements: None
+- Behavior-defining supplements: `semantic-memory-prompt-contract.md` (SR-004), the normative instruction text; the design follows it exactly
 - User approval of the design: `Not required` (the direction does not ask for it). The user was told the per-runtime write-access approach and the personal-setting decision on 2026-11-10.
 - Design status: `Ready`
 - Canonical investigation notes: `/home/autobyteus/workspace/.codex/worktrees/agent-semantic-memory/tickets/in-progress/agent-semantic-memory/investigation-notes.md` (Architecture Investigation Findings AF-01..AF-26)
@@ -73,6 +73,7 @@ Add an optional per-agent `semanticMemoryEnabled` setting. For an agent with it 
 | Artifact Path | Purpose | Related IDs | Relationship | Status |
 | --- | --- | --- | --- | --- |
 | `follow-ups.md` | Follow-ups | — | FU-005..FU-009 found in design | Current |
+| `semantic-memory-prompt-contract.md` | Exact section text, placement, presence, path form | REQ-004/005/008/009, AC-001, AC-005 | `renderSemanticMemorySection` and the composer must produce it byte for byte; composer tests use its examples | Current, behavior-defining |
 
 ## Task Design Health Assessment (Mandatory)
 
@@ -322,7 +323,7 @@ As in Final File Responsibility Mapping; no new folders.
 
 | Topic | Good | Avoided | Why |
 | --- | --- | --- | --- |
-| Section | `## Semantic Memory\n\nYour semantic memory is the folder \`/home/u/.autobyteus/server-data/memory/semantic/computer-use-operator\`. It belongs to you and is shared by all your runs, in every Project and team. Write the reusable knowledge you learn there as documents; how you organize them is up to you and your skills.` | Rules about structure, locking or secrets | User: the agent manages it (DEC-010) |
+| Section | Exactly the text, placement and examples of `semantic-memory-prompt-contract.md` | Any rewording, extra rules (structure, locking, secrets) | Normative contract; user decision DEC-010 |
 | Folder names | `computer-use-operator` → `computer-use-operator`; `team-local-agent:marketing-team:reply-scout` → `team-local-agent%3Amarketing-team%3Areply-scout` | Raw `:` in a Windows path | QR-001 |
 | Codex config | `{ sandbox_workspace_write: { network_access: true, writable_roots: ["/…/semantic/computer-use-operator"] } }` from one builder | `{...a, ...b}` where both set `sandbox_workspace_write` | Silent loss of network access |
 | Backend wiring | `const semanticMemoryPath = await this.semanticMemory.prepareForRun(definition);` then pass to compose and runtime config | `if (definition.semanticMemoryEnabled) layout.get…` in a backend | One rule owner |
@@ -362,6 +363,7 @@ N/A.
 
 ## Guidance For Implementation
 
+- Instruction text: copy it from `semantic-memory-prompt-contract.md` §2; do not reword. Composer tests assert its §5 examples.
 - Reproduction to start from: AF-01/AF-02 commands in the investigation notes (Codex sandbox write outside the workspace fails, then succeeds with the writable root).
 - Tests to add (TESTING.md layers):
   - Unit: layout path encoding for shared, team-local, application-owned IDs (QR-001, AC-006); `AgentSemanticMemory` null when off, mkdir when on, never deletes; composer snapshot with and without path, and unchanged output for agents without it (AC-005); config read/write/merge (absent, true, turned off); personal settings apply/setEdited/reset/capture for the field; Codex sandbox builder combinations (read-only, workspace-write with/without network/roots, full access); Claude options include `additionalDirectories` only when set.

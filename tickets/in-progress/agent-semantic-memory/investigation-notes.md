@@ -136,6 +136,7 @@
 | Artifact Path | Owner | Purpose | Scope | Related Requirement / AC IDs | Status | Approval Applicability / State |
 | --- | --- | --- | --- | --- | --- | --- |
 | `follow-ups.md` | Solution Designer | Follow-ups found | Ticket | — | Current | Not behavior-defining |
+| `semantic-memory-prompt-contract.md` | Solution Designer | Exact Semantic Memory instruction text and placement (user request 2026-11-10; precedent: approved collaboration prompt wording + `tests/e2e/fixtures/collaboration-prompt-complete-views.md`) | Instructions of enabled/disabled agents | REQ-004/005/008/009, AC-001, AC-005 | Current (SR-004) | Behavior-defining; in the approval basis |
 
 ## Assumptions, Unknowns, And Risks
 
