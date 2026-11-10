@@ -424,6 +424,7 @@ export type AgentRunCollaborationMemberProjectionPayload = {
 
 export type AgentRunCollaborationStatusesObject = {
   __typename?: 'AgentRunCollaborationStatusesObject';
+  /** The run's closed-set digest (closedTaskExecutionsDigest). Active run: the closed task executions of its root, as its live view. Inactive run: the closed task executions the Task index records as hosted by this run, not filtered by its stored execution tree. */
   closedTaskExecutionsDigest?: Maybe<Scalars['String']['output']>;
   isActive: Scalars['Boolean']['output'];
   runId: Scalars['String']['output'];
