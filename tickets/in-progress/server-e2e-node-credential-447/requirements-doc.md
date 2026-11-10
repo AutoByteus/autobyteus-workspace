@@ -162,6 +162,12 @@ None. The Brief Studio importable package that three of the files need is an exi
 | --- | --- | --- | --- | --- |
 | `evidence/REPRO-01-fifteen-files-base.log` | Reproduction of the 15 failing files on base `310fc27452` | REQ-001, REQ-002, AC-001 | Current | Evidence, not behavior-defining |
 
+## User Direction (2026-11-10)
+
+- The user, in the Solution Designer's conversation: "for any errors due to token limit, we do not fix them. because i will only be able to get back my token limit tomorrow for codex"; "for other errors fix them".
+- Meaning for this ticket: a failure caused by the user's Codex usage limit (a live Codex run refused for quota or rate limit) is recorded with its evidence as not run or blocked by the limit. It is not treated as a defect, worked around or retried today. Every other failure found while doing this ticket is fixed by its cause, in the usual way (TESTING.md Rule 9, Scope Guardrail).
+- Impact: none on scope. This ticket's suites use scripted runtime CLIs and make no live Codex call, and paid live suites are not run (Non-Goals).
+
 ## Assumptions
 
 | Assumption ID | Assumption | Why It Is Necessary | Validation Plan / Owner | Status |
