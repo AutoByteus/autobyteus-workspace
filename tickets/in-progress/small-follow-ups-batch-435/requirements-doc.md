@@ -3,14 +3,14 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: `SR-002` (REQ-005 clarified: New run entry form, the "Opening…" state, the outcome when the node cannot be read at restore; DEC-014, DEC-015; AC-005-5…7)
+- Current solution revision ID: `SR-003` (SR-002: REQ-005 clarified — New run entry form, the "Opening…" state, the outcome when the node cannot be read at restore; DEC-014, DEC-015; AC-005-5…7. SR-003: a created run's route follows its promotion from draft to node run; reload before the first send shows the list; DEC-016; AC-005-6 precondition, AC-005-8)
 - Package identifier: `small-follow-ups-batch-435`
 - Request / ticket: Project Task `autobyteus-435` (project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`), description items 1–4 and comments items 5–12
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`)
 - Requirements owner: Solution Designer
 - Date: 2026-11-10
 - Approved by and reference: `Solution Designer within the direction (user informed)`; reference: the Solution Designer's message to the user in its conversation, 2026-11-10 (SR-001), and `handoff-architecture-design-complete.md` § Approval. No decision below is `Needs user`.
-- Exact approved requirements baseline / solution revision: this document at SR-002 (SR-001 approved 2026-11-10; SR-002's REQ-005 clarifications approved by the Solution Designer within the direction, user informed in the conversation on 2026-11-10)
+- Exact approved requirements baseline / solution revision: this document at SR-003 (SR-001 approved 2026-11-10; SR-002's and SR-003's REQ-005 clarifications approved by the Solution Designer within the direction, user informed in the conversation on 2026-11-10)
 - Behavior-defining supplements and their approved versions: None
 
 ## Problem And Desired Outcome
@@ -129,7 +129,8 @@ None.
 | AC-005-3 | REQ-005 | SCN-005 | A Team run (and a Team member) screen; reload | Same Team subject and screen | A child row that cannot be found after expanding its parent: the list | Unit tests |
 | AC-005-4 | REQ-005 | SCN-005 | Org screens; Back order | Unchanged | — | Existing specs |
 | AC-005-5 | REQ-005 | SCN-005 | Phone page restored with a route naming a row while the node is unreachable or Phone Access is off (the first history read fails) | The run list shows with its connection state (Not reachable / Phone Access off) | — | Web unit test of the restore |
-| AC-005-6 | REQ-005 | SCN-005 | New run → Create run on the phone; open messages or the VNC Viewer; reload | The created run's same screen shows after reload | — | Web unit test (launch → route has `row`), restore test |
+| AC-005-6 | REQ-005 | SCN-005 | New run → Create run on the phone; the first message is sent (the node run exists); messages or the VNC Viewer open (before or after that send); reload | The created run's same screen shows after reload; the route names the node's run ID, not the draft's | — | Web unit test that follows a draft through promotion (route `row` before and after; a view pushed before the send; Back to an entry pushed before the send), restore test |
+| AC-005-8 | REQ-005 | SCN-005 | New run → Create run; reload before the first message is sent | The run list shows (a draft is not kept across a reload and has no node run to reopen) | — | Web unit test |
 | AC-005-7 | REQ-005 | SCN-005 | Restore in progress (route names a row, subject not yet open) | The screen shows "Opening…"; it never shows the list first and then jumps | A delegated row whose host's rows are still being read keeps "Opening…" until that read settles | Web unit test |
 | AC-006-1 | REQ-006 | SCN-006 | Emulator, landscape full screen, Control, Clipboard, paste field focused, keyboard open | Send is inside the visible viewport and a tap on it sends (node clipboard changes) | — | Emulator check with real taps (432 API-08 R1 procedure) |
 | AC-006-2 | REQ-006 | — | Portrait | Sheet works as today | — | Existing spec |
@@ -215,6 +216,7 @@ None.
 | DEC-012 | 432 residual hint | "the team may note it in the guide" | — | A one-line note costs nothing and saves a confused first use. **Note it.** | Solution Designer | Decided |
 | DEC-013 | One ticket or split? | 12 items, each local | Items share no code except stream lifecycle (10) | Keep one ticket (the Task's batch); none is dropped. | Solution Designer | Decided |
 | DEC-014 | (SR-002, ARCH-REV-001 AR-002 / MP-003) Item 6: the node cannot be read when the page is restored (unreachable, Phone Access off) — wait or show the list? | REQ-005 said only "a subject that no longer appears" falls back | (a) keep the restore pending until a later read succeeds; (b) show the list with its connection state | Under (a) the screen would wait on a read that may never come: the list's poll and its Retry run only on the list, so the phone would sit on "Opening…" with no way forward. Under (b) the user sees the same "Not reachable" / "Phone Access off" state and Retry as on any start while the node is away, and reopens the run when it is back. **(b).** | Solution Designer | Decided |
+| DEC-016 | (SR-003, CRR-001 CR-001) Item 6: a run created on the phone is a draft (`temp-*`) until its first message; what does the route name, and what does a reload show before and after the first send? | The route wrote the draft ID; drafts are memory-only and never listed (`runListProjection.ts:89-91`) | (a) keep the draft ID; (b) the route follows the draft's promotion to the node's run ID, as the desktop chat route already does (`useChatRouteRunSync.ts`, D-13); before the send, reload shows the list (or New run) | The desktop already keeps its route equal to the displayed run across promotion; the phone should behave the same. Before the first send nothing exists on the node, so a reload has nothing to reopen; the list is the existing "subject not listed" outcome, and New run would imply the draft was kept, which it is not. **(b); before the send, the list.** | Solution Designer | Decided |
 | DEC-015 | (SR-002, AR-002) Item 6: what shows while the subject is being reopened? | The view screens render only with an open subject; the list must not flash first | (a) blank; (b) the list, then jump; (c) "Opening…" as the run screen already shows for a tap | (c) reuses the existing pending-open state and wording; nothing new to learn. **(c).** | Solution Designer | Decided |
 
 ## Traceability
@@ -225,7 +227,7 @@ None.
 | REQ-002 | UC-003 | BEH-003 | AC-002-1 | — | rows 9–10 |
 | REQ-003 | UC-002 | BEH-002 | AC-003-1…3 | SCN-002 | rows 5–8; Measured |
 | REQ-004 | UC-004 | BEH-004 | AC-004-1, AC-004-2 | SCN-004 | row 11 |
-| REQ-005 | UC-005 | BEH-005 | AC-005-1…7 | SCN-005 | rows 12–13; ARCH-REV-001 MP-001…003 |
+| REQ-005 | UC-005 | BEH-005 | AC-005-1…8 | SCN-005 | rows 12–13; ARCH-REV-001 MP-001…003; CRR-001 CR-001 |
 | REQ-006 | UC-004 | BEH-006 | AC-006-1, AC-006-2 | SCN-006 | row 14 |
 | REQ-007 | UC-006 | BEH-007 | AC-007-1 | SCN-007 | row 15 |
 | REQ-008 | UC-006 | BEH-008 | AC-008-1 | SCN-008 | row 16 |

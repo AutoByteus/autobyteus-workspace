@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- |
 | ARCH-REV-001 | Round 1 / Architecture Design Complete (2026-11-10) | SR-001 | N/A | Fail (Design Impact) | AR-001, AR-002 (blocking); AR-003, AR-004 (non-blocking) |
 | ARCH-REV-002 | Round 2 / Architecture Design Complete after revision (2026-11-10) | SR-002 | Fail (Design Impact) | Pass | AR-001…AR-004 resolved |
+| ARCH-REV-003 | Round 3 / revision after code review CRR-001 CR-001 (2026-11-10) | SR-003 | Pass | Pass | AR-001 premise corrected (DS-006b); AR-005 new (non-blocking) |
 
 ## Revision Entries
 
@@ -51,3 +52,25 @@ None.
 - Material classification changes: None (Medium/High)
 - Recommended recipient: `/software_engineering_team/implementation_engineer`; informational notice to `/software_engineering_team/solution_designer`
 - Remaining risks or uncertainty: the restore should stop after its scope is disposed (session rejected at the first check); item 5 on API 28–34 is covered by unit test only; item 11 has not been run; UNK-001.
+
+### ARCH-REV-003 — Re-review of SR-003 (DS-006b: route follows draft promotion)
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-435/tickets/in-progress/small-follow-ups-batch-435/design-review-report.md`
+- Review round and trigger: round 3; `handoff-round-3-architecture-design-complete.md` (SR-003, Medium/High), after code review CRR-001 (Design Impact CR-001)
+- Triggering role, report path, and finding IDs: Solution Designer; `code-review-report.md` CR-001
+- Relevant solution revision IDs: `SR-003`
+- Prior authoritative decision: `Pass` (ARCH-REV-002)
+- Current authoritative decision: `Pass`
+- What changed: CR-001 showed that AR-001's resolution, and this review's MP-001 premise in rounds 1–2, assumed `onLaunched` gets the node run's ID. It gets the draft's `temp-*` ID. Rounds 1–2 accepted `createAgentRun` returning a "runId" without following it into `createRunFromTemplate`. That was a review gap. SR-003 adds DS-006b and AC-005-8 (DEC-016). Re-checked against the code: the D-13 rule (`useChatRouteRunSync.ts`), `promoteTemporaryId`, which moves the mobile selection, and IR-001's route-derived `subjectKeys`. Everything outside DS-006 is unchanged since ARCH-REV-002.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001 | Resolved (ARCH-REV-002) on a wrong premise | Resolved (SR-003, DS-006b) | CRR-001 CR-001; DEC-016; AC-005-6, AC-005-8 | `agentContextsStore.ts:85-111,160-173`; `agentRunStore.ts:205-225`; `useChatRouteRunSync.ts:22-44` |
+| AR-002…AR-004 | Resolved | Resolved (unchanged) | — | — |
+
+- New or remaining finding IDs: AR-005 (non-blocking: reuse the D-13 detection rather than copy it)
+- Material classification changes: None (Medium/High)
+- Recommended recipient: `/software_engineering_team/implementation_engineer`; informational notice to `/software_engineering_team/solution_designer`
+- Remaining risks or uncertainty: an entry not revisited before a reload keeps the draft key (→ list); item 5 on API 28–34 is covered by unit test only; item 11 has not been run; UNK-001.

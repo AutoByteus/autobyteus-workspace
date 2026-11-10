@@ -7,6 +7,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture reviewer, `design-review-report.md`, ARCH-REV-002 (Pass), round 1 of implementation | N/A | `Initial Baseline` | SR-002, ARCH-REV-002; CRR/API-REV/DR: N/A | All 12 items implemented on `codex/small-follow-ups-batch-435` (commits `e5ca0e1da7`, `6ca743fee0`); ready for code review |
+| IR-002 | Code reviewer CRR-001 (CR-001) → Solution Designer SR-003 → architecture reviewer ARCH-REV-003 (Pass, AR-005), round 2 | CR-001; AR-005; C-05 | `Design Impact` (resolved upstream; implemented here) | SR-003, ARCH-REV-003, CRR-001; API-REV/DR: N/A | DS-006 entry form 2 and DS-006b implemented (commits `d0943a71ac`, `f9cb6f7153`); ready for the Targeted Delta Review |
 
 ## Revision Entries
 
@@ -30,3 +31,23 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Next recipient or routing: code reviewer (Medium / High route), per `get_handoff_rules`.
 - Follow-ups added: FU-004 (the browser's `/favicon.ico` request is answered 401; pre-existing).
 - Remaining limitations or risks: see the handoff's Known Risks (emulator checks, the Electron-app check of item 2, item 11's live run, and other cutout devices are for API/E2E).
+
+### IR-002 — The phone route follows a New run draft to the node's run
+
+- Triggering role, report path, and round: code reviewer, `code-review-report.md` (CRR-001, CR-001: Create run wrote the draft's `temp-*` ID, never updated on promotion); the Solution Designer revised the design (SR-003: DS-006 entry form 2 corrected, DS-006b, AC-005-8, DEC-016); architecture reviewer passed it (`design-review-report.md`, ARCH-REV-003, AR-005 non-blocking). Implementation round 2.
+- Triggering finding IDs: CR-001; AR-005 (applied); CRR-001 C-05 (optional tidy, applied).
+- Classification: `Design Impact` (resolved upstream in SR-003; this entry implements it).
+- Prior authoritative result: IR-001 at `49c64e47ee` (CR-001 open).
+- Current authoritative result: DS-006b implemented at `d0943a71ac` (code, specs) and `f9cb6f7153` (doc); everything outside DS-006 unchanged.
+- Related solution revision IDs: `SR-003`.
+- Related architecture-review revision IDs: `ARCH-REV-003`.
+- Related code-review revision IDs: `CRR-001`.
+- Related API/E2E revision IDs: `N/A`.
+- Related delivery revision IDs: `N/A`.
+- Why this implementation revision is recorded: CR-001 rework.
+- Approved behavior or requirement IDs affected: BEH-005; REQ-005; AC-005-6, AC-005-8; DEC-016.
+- Implementation delta: the desktop's D-13 promotion rule extracted (moved, not copied) to `composables/useDraftRunPromotionRouteSync.ts`, used by `pages/chat.vue` and the new `composables/mobile/useMobileRouteRunSync.ts` (records draft → node run per page; replaces the current entry's `row` at the send and on Back to a recorded draft key); `useMobileNavigation.replaceRowKey`; `utils/runListProjection.ts` `agentRunIdOfRowKey` (also used by the restore, C-05); `MobilePairedShell` mounts the sync; `autobyteus-web/docs/remote_access.md`.
+- Changed files or areas: `autobyteus-web/composables/useDraftRunPromotionRouteSync.ts` (moved from `composables/chat/useChatRouteRunSync.ts`), its spec (moved), `pages/chat.vue`, `composables/mobile/useMobileRouteRunSync.ts` (+ spec), `composables/mobile/useMobileNavigation.ts`, `composables/mobile/useMobileSubjectRestore.ts`, `components/mobile/MobilePairedShell.vue`, `components/mobile/__tests__/MobileRemoteAccessShell.spec.ts`, `utils/runListProjection.ts`, `docs/remote_access.md`.
+- Local validation and result: IMP-13 (web typecheck and full suite `Pass`), IMP-14 (rendered Create run across the send and reloads `Pass`), IMP-15 (full phone probe `Pass`, MSP-07 included). IMP-01…IMP-12 remain valid for code outside DS-006 (unchanged since `e5ca0e1da7`/`6ca743fee0`); the server and Android code did not change.
+- Next recipient or routing: code reviewer (Targeted Delta Review), per `get_handoff_rules`.
+- Remaining limitations or risks: entries other than the current one cannot be rewritten (History API); an entry pushed before the send and first visited after a reload still names the draft and gives the list (accepted in SR-003).

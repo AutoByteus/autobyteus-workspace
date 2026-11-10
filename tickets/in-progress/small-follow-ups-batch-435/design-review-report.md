@@ -2,19 +2,19 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-435/tickets/in-progress/small-follow-ups-batch-435/requirements-doc.md` (SR-002, `Approved`; REQ-005 clarified, AC-005-5…7, DEC-014, DEC-015)
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-435/tickets/in-progress/small-follow-ups-batch-435/requirements-doc.md` (SR-003, `Approved`; REQ-005 clarified, AC-005-5…8, DEC-014…016)
 - Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-435/tickets/in-progress/small-follow-ups-batch-435/investigation-notes.md`
 - Upstream Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-435/tickets/in-progress/small-follow-ups-batch-435/solution-revision-record.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-435/tickets/in-progress/small-follow-ups-batch-435/design-spec.md` (SR-002, `Ready`)
-- Supplemental Task Artifacts Reviewed: `follow-ups.md` (FU-001…003); `handoff-architecture-design-complete.md`; `handoff-round-2-architecture-design-complete.md`. No behavior-defining supplement.
-- Relevant Solution Revision IDs: `SR-001`, `SR-002`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-435/tickets/in-progress/small-follow-ups-batch-435/design-spec.md` (SR-003, `Ready`; delta limited to DS-006 entry form 2 and new DS-006b)
+- Supplemental Task Artifacts Reviewed: `follow-ups.md` (FU-001…003); `handoff-architecture-design-complete.md`; `handoff-round-2-architecture-design-complete.md`; `handoff-round-3-architecture-design-complete.md`; `code-review-report.md` (CRR-001, CR-001). No behavior-defining supplement.
+- Relevant Solution Revision IDs: `SR-001`, `SR-002`, `SR-003`
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/small-follow-ups-batch-435/tickets/in-progress/small-follow-ups-batch-435/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-002`
-- Current Review Round: `2`
-- Trigger: Solution Designer handoff `Architecture Design Complete`, round 2 (SR-002, after ARCH-REV-001 Fail), 2026-11-10
-- Prior Review Round Reviewed: `1` (ARCH-REV-001, Fail — AR-001…004)
-- Latest Authoritative Round: `2`
-- Current-State Evidence Basis: worktree `codex/small-follow-ups-batch-435` at `310fc27452` (no source changes). Opened during review: `WebSocketClient.ts`, `agentRunStreamReconnection.ts:25-100`, `TeamStreamingService.ts:268-275`, `agentRunCollaborationStreamingService.ts:84-106`, `agentOrgStreamingService.ts:100-140`, `FileExplorerStreamingService.ts:25-50,190-225`, `liveStreamReconnectScheduler.ts`, `pageResumeSignal.ts`, `nodeChangeFeed.ts`, `useTaskWorkerTasks.ts`, `taskWorkerTaskStore.ts:90-115`, `useAgentPackageDefinitionChangeFeed.ts`, `app.vue`, `MobileRemoteAccessShell.vue`, `MobilePairedShell.vue`, `mobileNodeSessionStore.ts:220-250`, `useMobileNavigation.ts`, `useMobileRunOpening.ts`, `useMobileRunTree.ts`, `MobileNewRun.vue`, `MobileRunSetup.vue`, `useMobileRunSetupController.ts:107-120`, `agentRunCollaborationStore.ts:195-245,430-458`, server `node-access-refusal.ts`, `open-socket-registry.ts`, `gated-websocket-route.ts`, `node-route-permissions.ts:27-40`, `standalone-agent-run-root-manager.ts:100-175,305-335,425-440`, `task-execution-closure.ts`, `task-execution-resource-service.ts:190-210`, Android `DesktopFullScreenController.kt`, `DesktopFullScreenRequest.kt`, probe `mobile-shell-probe.mjs` MSP-13 and verdict block. Round 2 also opened: `useRunHistorySectionLoad.ts:25-93` (`initialLoad` resolves after `load()`, which catches every read), `runHistoryLoadActions.ts:105-152` (a non-quiet `fetchTree` sets `store.error`), `agentRunCollaborationStore.ts:159-185` (`read` dedupes through `inspections` and settles with the published context or `errors[host]`), `mobileRunOpeningStore.ts` (`begin`/`commit`/`fail` are keyed by the row key; a new `begin` supersedes), `runListProjection.ts:79,98` (the two `agent:` keys), `useMobileRunSetupController.ts:1-25` (New run starts agent runs only).
+- Current Architecture Review Revision ID: `ARCH-REV-003`
+- Current Review Round: `3`
+- Trigger: Solution Designer handoff `Architecture Design Complete`, round 3 (SR-003, after code review CRR-001 Design Impact CR-001), 2026-11-10
+- Prior Review Round Reviewed: `2` (ARCH-REV-002, Pass)
+- Latest Authoritative Round: `3`
+- Current-State Evidence Basis: worktree `codex/small-follow-ups-batch-435` at `310fc27452` (no source changes). Opened during review: `WebSocketClient.ts`, `agentRunStreamReconnection.ts:25-100`, `TeamStreamingService.ts:268-275`, `agentRunCollaborationStreamingService.ts:84-106`, `agentOrgStreamingService.ts:100-140`, `FileExplorerStreamingService.ts:25-50,190-225`, `liveStreamReconnectScheduler.ts`, `pageResumeSignal.ts`, `nodeChangeFeed.ts`, `useTaskWorkerTasks.ts`, `taskWorkerTaskStore.ts:90-115`, `useAgentPackageDefinitionChangeFeed.ts`, `app.vue`, `MobileRemoteAccessShell.vue`, `MobilePairedShell.vue`, `mobileNodeSessionStore.ts:220-250`, `useMobileNavigation.ts`, `useMobileRunOpening.ts`, `useMobileRunTree.ts`, `MobileNewRun.vue`, `MobileRunSetup.vue`, `useMobileRunSetupController.ts:107-120`, `agentRunCollaborationStore.ts:195-245,430-458`, server `node-access-refusal.ts`, `open-socket-registry.ts`, `gated-websocket-route.ts`, `node-route-permissions.ts:27-40`, `standalone-agent-run-root-manager.ts:100-175,305-335,425-440`, `task-execution-closure.ts`, `task-execution-resource-service.ts:190-210`, Android `DesktopFullScreenController.kt`, `DesktopFullScreenRequest.kt`, probe `mobile-shell-probe.mjs` MSP-13 and verdict block. Round 2 also opened: `useRunHistorySectionLoad.ts:25-93` (`initialLoad` resolves after `load()`, which catches every read), `runHistoryLoadActions.ts:105-152` (a non-quiet `fetchTree` sets `store.error`), `agentRunCollaborationStore.ts:159-185` (`read` dedupes through `inspections` and settles with the published context or `errors[host]`), `mobileRunOpeningStore.ts` (`begin`/`commit`/`fail` are keyed by the row key; a new `begin` supersedes), `runListProjection.ts:79,98` (the two `agent:` keys), `useMobileRunSetupController.ts:1-25` (New run starts agent runs only). Round 3 opened (branch now at IR-001 `49c64e47ee`): `useChatRouteRunSync.ts` (D-13 rule), `agentContextsStore.ts:85-111` (`createRunFromTemplate` returns `temp-<ts>-<n>` and selects it, `selectRunWithoutShellNavigation` in mobile mode), `agentContextsStore.ts:160-173` (`promoteTemporaryId` re-keys the same `AgentContext` and moves the selection from the temp ID to P only when the temp ID is selected), `agentRunStore.ts:205-225` (promotion at `prepareAgentRun` success), and IR-001's `useMobileNavigation.ts:64-112` (`subjectKeys()` read from the route, so pushes after a replace carry P) and `MobilePairedShell.vue:173,183`.
 
 ## Routing Classification Review
 
@@ -33,7 +33,7 @@
 - Approved change, preserved behavior, and outside scope understood: Yes. This includes DEC-008 (Phone Access off and network refusal stay retryable) and E-27 (the session ends only on a check).
 - Every prospective blocking `Design Impact` finding is traceable: N/A in round 2 (no blocking finding remains).
 - Remaining material ambiguity: None in requirements.
-- Statements about existing code the design relies on: the cited lines were opened and match, including the round-2 claims: `initialLoad` always resolves; a failed first read leaves `runHistoryStore.error` set; `collaboration.inspect` settles with the context published or `errors[host]`; New run starts agent runs only.
+- Statements about existing code the design relies on: the cited lines were opened and match. Round 3: CR-001 corrected the premise behind AR-001's resolution. `onLaunched` gets the draft's `temp-*` ID, not the node run's. This review accepted that premise in rounds 1–2 (MP-001), and SR-003 corrects it. Round-2 claims also confirmed: `initialLoad` always resolves; a failed first read leaves `runHistoryStore.error` set; `collaboration.inspect` settles with the context published or `errors[host]`; New run starts agent runs only.
 
 | Behavior ID | Kind | Design Alignment | Trigger / Evidence | Target Path / Spine | Status | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -73,6 +73,7 @@ None (no behavior-defining supplement; the probe text is inlined in design-spec 
 | DS-004 | Primary | Pass | Pass | N/A | Pass | Pass | Pass | Pass (inventory complete, AR-003) |
 | DS-005 | Primary | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
 | DS-006 write | Primary | Pass | Pass | N/A | Pass | Pass (row tap and Create run both traced) | Pass | Pass |
+| DS-006b | Return/Event | Pass | Pass | N/A | Pass | Pass (`useMobileRouteRunSync` decides when, `useMobileNavigation.replaceRowKey` writes; stores stay unaware of the route) | Pass | Pass |
 | DS-006 restore | Primary | Pass | Pass (steps 1–7, readiness per row kind, no timer) | N/A | Pass | Pass (`useMobileSubjectRestore` drives the order) | Pass | Pass |
 | DS-007 | Primary | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
 | DS-008 | Primary | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
@@ -105,6 +106,8 @@ None (no behavior-defining supplement; the probe text is inlined in design-spec 
 | `openRun({ orgQuery?, rowKey?, replace? })` | Pass | Pass | Pass (exactly one subject on every call, replace included) | Low | Pass |
 | `agentRunRowKey(runId)` | Pass | Pass | Pass | Low | Pass |
 | `useMobileRunTree.revealRow(key)` | Pass | Pass | Pass | Low | Pass |
+| `useMobileNavigation.replaceRowKey(rowKey)` | Pass | Pass | Pass | Low | Pass |
+| `useMobileRouteRunSync()` | Pass | Pass | Pass | Low | Pass (AR-005: reuse the D-13 detection, do not copy it) |
 | `useMobileSubjectRestore({ tree, opening, navigation, initialLoad })` | Pass | Pass | Pass (readiness named per row kind) | Low | Pass |
 | `refreshListedStatuses(listedAgentRunIds)` | Pass | Pass | Pass | Low | Pass |
 | GraphQL `closedTaskExecutionsDigest` | Pass | Pass | Pass | Low | Pass (meaning written per state, AR-004) |
@@ -238,6 +241,16 @@ Vocabulary (Principle 15): `Pass` (`window_refused` is distinct from `refused`, 
 - Reachability: `Reachable`
 - Review consequence: part of AR-002. Round 2: resolved by DEC-014 (the list with its connection state) and step 6; AC-005-5.
 
+### MP-004 — A draft is promoted while the phone shows it (SR-003 premise)
+
+- Related approved requirement: REQ-005, AC-005-6, AC-005-8 (DEC-016)
+- Initiating basis kind: `User`
+- Trigger: New run → Create run → the user sends the first message.
+- Forward path: `createRunFromTemplate` selects `temp-*` (mobile mode) → `onLaunched(temp)` → route `row=agent:temp-…` → send → `prepareAgentRun` succeeds → `promoteTemporaryId(temp, P)` re-keys the same context and moves the selection temp → P (`agentContextsStore.ts:160-173`) → the D-13 watch sees the selection change from the route's ID, with `getRun(P)` returning the displayed context → `replaceRowKey(agent:P)`.
+- Consequence without DS-006b: a reload or restore finds no `agent:temp-…` row and shows the list, so AC-005-6 fails (CR-001).
+- Reachability: `Reachable`
+- Review consequence: DS-006b. Entries pushed before the send are replaced when visited. An entry never visited again keeps the draft key, and if reached after a reload it goes to the list. That is consistent with REQ-005's "gone" outcome and is the only option the History API allows.
+
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
 None.
@@ -248,7 +261,19 @@ None.
 
 ## Findings
 
-None open. Round 1 findings, all resolved in SR-002 and checked against the current design spec and code (see `ARCH-REV-002`):
+No blocking finding.
+
+### AR-005 — DS-006b should reuse the desktop's promotion detection, not copy it (non-blocking, Low)
+
+- Protects: REQ-005 / AC-005-6 (same rule on both shells, per DEC-016); Principles 11 and 13 (one owner per derived fact)
+- Scope status: `Within Approved Scope`; changes approved behavior: No
+- Evidence: the design says detection is "the desktop chat's rule (`useChatRouteRunSync.ts:33-44`, D-13)" and maps `useMobileRouteRunSync.ts` as "promotion detection as `useChatRouteRunSync.ts`". That allows a second copy of the rule ("the selection moved from the route's ID, and the same context object is now under the new ID"). `useChatRouteRunSync`'s interface is already independent of the shell (`routeRunId: Ref`, `replaceRouteRunId(runId)`).
+- Recommended update, for implementation and code review: `useMobileRouteRunSync` calls `useChatRouteRunSync`, or a shared detection extracted from it under a shell-neutral name that both use. It passes `routeRunId` = the agent ID of a top-level `agent:<id>` row only (null for child keys `agent:<host>/…` and `team:` keys). Its `replaceRouteRunId` records R → P and calls `navigation.replaceRowKey(agentRunRowKey(P))`. The Back-time replacement for recorded R stays in `useMobileRouteRunSync`.
+- Recipient: implementation engineer (applied in the rework); the Solution Designer is told for the record.
+
+### Resolved earlier
+
+Round 1 findings, all resolved in SR-002 and checked against the current design spec and code (see `ARCH-REV-002`). AR-001's resolution rested on a premise CR-001 corrected; SR-003 fixes it with DS-006b, re-reviewed in `ARCH-REV-003`:
 
 - AR-001 (Design Impact): Resolved. DS-006 write has entry form 2. `onLaunched(runId)` → `openRun({ replace: true, rowKey: agentRunRowKey(runId) })`. `agentRunRowKey` is the one writer of `agent:<id>` (`runListProjection.ts:79,98` use it). Every `openRun` call names exactly one subject. New run starts agent runs only (`useMobileRunSetupController.ts:14-19`).
 - AR-002 (Design Impact): Resolved. Restore steps 1–7, owned by `useMobileSubjectRestore`:
@@ -270,6 +295,9 @@ N/A (Pass)
 ## Residual Risks
 
 - Item 10: desktop windows also stop reconnecting on a credential-refusal close, as DEC-008 intends. Change feeds keep their own retry (FU-003).
+- Item 6, DS-006b implementation notes:
+  - Required test (design Guidance): follow a real draft (`createRunFromTemplate`) through `promoteTemporaryId`. Cover the route before and after the send, a view pushed before the send, Back to the run-screen and list entries pushed before it, a reload before the send → list (AC-005-8), and a non-promotion selection change → no rewrite.
+  - The Back-time replacement runs on a route change, so it must not fight the restore. At page start there are no records, so it cannot.
 - Item 6, implementation notes:
   - When the restore ends because the session was rejected at the first check (the paired shell unmounts), it should stop acting once its scope is disposed, so it does not rewrite the route under the pairing screen.
   - The spec asked for in Guidance (mount with `?row=…&screen=desktop` and no target → no `toList` before the restore decides) is the key ordering test.
@@ -281,4 +309,4 @@ N/A (Pass)
 
 - Review Decision: `Pass`
 - Material-Premise Gate: `Pass` (MP-001…003 reachable; each is addressed by the SR-002 design)
-- Notes: all 12 items are ready for implementation, following the change sequence in the design spec.
+- Notes: SR-003's DS-006 delta (entry form 2 corrected, DS-006b) is ready. The rework is limited to DS-006 entry form 2 and DS-006b on top of IR-001, then the code reviewer's Targeted Delta Review. AR-005 is guidance for the rework.
