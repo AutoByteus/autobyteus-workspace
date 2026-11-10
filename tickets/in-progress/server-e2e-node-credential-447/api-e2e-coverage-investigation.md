@@ -16,9 +16,9 @@
 - Delivery Revision Record (delivery re-entry only): N/A
 - Relevant Delivery Revision IDs: N/A
 - API/E2E Revision Record (created after the first completed result): `.../server-e2e-node-credential-447/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-002`
-- Current Investigation Round: 2
-- Trigger: round 1: Implementation Complete IR-001, HEAD `bc5f8bfa35`; round 2: Local Fix IR-002 (CRR-001 CR-001, CR-002), HEAD `0a324654a5`
+- Current API/E2E Revision ID: `API-REV-003`
+- Current Investigation Round: 3
+- Trigger: round 1: Implementation Complete IR-001, HEAD `bc5f8bfa35`; round 2: Local Fix IR-002 (CRR-001 CR-001, CR-002), HEAD `0a324654a5`; round 3: IR-003 (SR-002 D10–D13, SR-003 DEC-005) after delivery's `origin/personal` merge `5c29d6fca2`, HEAD `86404668ff` (code = `5abf8591db`)
 - Code Review Report (failure-origin, round 1): `.../server-e2e-node-credential-447/code-review-report.md` (CRR-001)
 - Prior Investigation Reviewed: round 1 (this file)
 - Latest Authoritative Investigation: this file
@@ -150,6 +150,23 @@ None.
 | Issue | Classification | Evidence | Recommended Owner |
 | --- | --- | --- | --- |
 | Codex native policy suite's fixture child composes and calls its node with no credential (missed by the census; the guard reads only `tests/e2e/**/*.ts`) | Reproduced by API-11 (401 `NODE_CREDENTIAL_REQUIRED` on the child's first `/graphql`); `Local Fix` confirmed by CRR-001, fixed in IR-002, rerun Pass in round 2 | Read: `tests/fixtures/codex-native-multi-agent-system.mjs:37-41, 63-66, 141-147`; the test's child env has no `AUTOBYTEUS_LAUNCH_OWNER_CREDENTIAL` (`codex-native-multi-agent-disabled.e2e.test.ts:61-63`) | Implementation engineer (via failure-origin review) |
+
+## Round 3 Plan (IR-003: SR-002 D10–D13, SR-003 DEC-005; base merge)
+
+New basis: REQ-009/AC-009 (E-002 follows autobyteus-455), REQ-010/AC-010 (RPE, DCF, DCM at their causes), DEC-005 (FU-005, FU-006 recorded as follow-ups, not fixed here). Rerun by impact from `2b70ffdab4` to `86404668ff`: the merge changed server `src` (collaborator policy, built-in registry), web code, unit tests and `typecheck-baseline.json`; this ticket changed 7 e2e files including the shared helpers `agy-run-capsule.ts` (new) and `collaboration-root-harness.ts`.
+
+| Case ID | Criteria | Kind | Command / Check ID | Why |
+| --- | --- | --- | --- | --- |
+| API-17 | AC-009, AC-001 | Reused | IMP-14, IMP-17 | Full suite `123 passed`, E-002 file `✓` at code `5abf8591db` = HEAD code |
+| API-18 | AC-010 | Reused | IMP-15, IMP-18, IMP-19, IMP-20 | RPE/DCF/DCM pass alone and in the 60-file gated set at HEAD code; DCM 3 load attempts (IMP-16 partial, IMP-18, IMP-20) |
+| API-19 | AC-004 | Reused | IMP-21, DEL-03 | Server typecheck at baseline; guard on the integrated tree |
+| API-15 | AC-010 (c) | Temporary Probe | `findAgyRunCapsule` against a folder with an `agy-project` without `manifest.json`, one with a half-written manifest, and a complete one | The DCF race is load-dependent; this proves the helper's rule directly. Not durable: a unit test of an e2e helper has no home in the suite layout and the rule is three lines |
+| API-09 | RSK-001 | Existing Test (Rerun) | `pnpm -C autobyteus-server-ts test:unit` | Merge changed `src` and unit tests |
+| API-03 | RSK-001 | Existing Test (Rerun; round 1 reused IMP-04) | `pnpm -C autobyteus-server-ts test:integration` | Merge changed `src` |
+| API-06 | BEH-005 | Existing Test (Rerun; round 1 reused IMP-08) | `pnpm -C autobyteus-web typecheck` | Merge changed web code; the web typecheck reads `test-support/node-access/*.d.mts` |
+| API-11 | REQ-003 | Temporary Probe (Rerun) | As round 2 | Server `dist` rebuilt from merged `src` |
+
+Still valid: API-07, API-08/08b (guard: DEL-03), API-10 superseded by IMP-18, API-11c, API-12 (recheck the diff), API-13 (TESTING.md unchanged since round 2: `git diff 2b70ffdab4 HEAD -- TESTING.md` empty).
 
 ## Investigation Decision
 

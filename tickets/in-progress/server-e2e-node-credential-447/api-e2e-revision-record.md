@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- |
 | API-REV-001 | Implementation engineer, `implementation-handoff.md`, round 1 | SR-001, IR-001 | N/A | Fail / 90% |
 | API-REV-002 | Implementation engineer, `implementation-handoff.md` IR-002 (CRR-001 Local Fix), round 2 | SR-001, IR-002, CRR-001 | Fail / 90% | Pass / 95% |
+| API-REV-003 | Implementation engineer, `implementation-handoff.md` IR-003 (SR-002 D10–D13, SR-003 DEC-005), round 3, after delivery DR-001's base merge | SR-002, SR-003, IR-003, DR-001 | Pass / 95% | Pass / 95% |
 
 ## Revision Entries
 
@@ -52,3 +53,29 @@ None.
 - New or remaining failure IDs: None in scope (FU-002…FU-004 are out-of-scope follow-ups)
 - Recommended owner: delivery engineer
 - Remaining risks, blocked evidence, or untested scope: live Codex part of the gated Codex native policy suite and other paid live suites not run (Non-Goal, user direction); fixture children not statically guarded (approved Non-Goal, CRR-001 C-03)
+
+### API-REV-003 — SR-002 fixes (E-002, RPE, DCF, DCM) validated on the merged base
+
+- Triggering role, report path, and round: implementation engineer, `implementation-handoff.md` (IR-003), round 3; delivery DR-001 merged `origin/personal` (`5c29d6fca2`) and found E-002 failing (DEL-01)
+- Triggering finding or case IDs: DEL-01/DEL-02 (E-002); FU-002, FU-003, FU-004 (API-10)
+- Related architecture-design, architecture-review, implementation, code-review, or delivery revision IDs: SR-002, SR-003, IR-003, DR-001
+- Why this baseline or coverage/execution revision was recorded: new requirements REQ-009/REQ-010 (AC-009, AC-010) and the base merge
+- Coverage decisions or durable test paths changed: none by API/E2E (IR-003 changed the E-002, RPE, DCF, DCM and daily-assistant files, `collaboration-root-harness.ts` and the new `agy-run-capsule.ts`)
+- Cases added, changed, removed, or rechecked: reused API-17 (IMP-14, IMP-17), API-18 (IMP-15, IMP-18, IMP-19, IMP-20), API-19 (IMP-21, DEL-03); reran API-03, API-06, API-09, API-11, API-12 after the merge; new API-15 (capsule lookup probe)
+- Commands, environment, fixture, or broader-validation delta: `dist` and prepared outputs from IMP-13 (rebuilt after the merge); API-03 and API-06 run by API/E2E for the first time (previously reused)
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| API-10 / FU-002: RPE-001/003/006 stale since autobyteus-95 | Follow-up (out of scope) | Brought into scope by SR-002 (REQ-010 b, D11) and fixed | API-18 |
+| API-10 / FU-003: DCF-02 reads an incomplete capsule | Follow-up | SR-002 (REQ-010 c, D12) fixed, one shared helper | API-15, API-18 |
+| API-10 / FU-004: DCM-009 stop `success: false` under load | Follow-up, cause unknown | SR-002 (REQ-010 d, D13): assertion prints the whole result; 3 load runs did not reproduce; cause not recorded (approved D13 outcome) | API-18 |
+| DEL-01 / DEL-02: E-002 on the integrated state | Delivery prerequisite, folded in by the user's direction | SR-002 (REQ-009, D10) fixed | API-17 |
+
+- Canonical artifacts and sections updated: `api-e2e-execution-coverage-report.md`, `api-e2e-coverage-investigation.md` ("Round 3 Plan"), `api-e2e-test-progress.md`
+- Prior result and confidence: Pass, 95%
+- Current result and confidence: Pass, 95%
+- New or remaining failure IDs: None in scope; FU-005, FU-006 out of scope (DEC-005)
+- Recommended owner: delivery engineer
+- Remaining risks, blocked evidence, or untested scope: live Codex and paid live suites not run (Non-Goal, user direction); DCM-009's original cause not found; fixture children not statically guarded (approved Non-Goal)

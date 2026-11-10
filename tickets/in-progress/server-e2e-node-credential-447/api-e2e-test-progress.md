@@ -31,3 +31,16 @@
 | 2026-11-10T07:54:51Z | API-14 | Completed | Pass | 1182 in 365 = baseline |
 | 2026-11-10T07:54:51Z | API-13 | Completed | Pass | round 2 TESTING.md sentence on fixture children reviewed |
 | 2026-11-10T07:55:55Z | — | Completed | Pass | round 2 result Pass 95%; next: commit, hand off to delivery |
+| 2026-11-10T10:17:51Z | — | Checkpoint | | Round 3 (IR-003, HEAD 86404668ff): plan in investigation 'Round 3 Plan'; run API-15 probe, then API-09, API-03, API-06, API-11 one at a time |
+| 2026-11-10T10:18:21Z | API-15 | Started | | findAgyRunCapsule probe, script /tmp/api15-probe-script/probe.ts |
+| 2026-11-10T10:18:38Z | API-15 | Completed | Pass | incomplete/partial skipped (null, no throw); complete found; script removed |
+| 2026-11-10T10:18:38Z | API-09 | Started | | round 3 test:unit on merged state, background |
+| 2026-11-10T10:32:19Z | API-09 | Completed | Pass | round 3: 970 passed, 5 skipped; exit 0 |
+| 2026-11-10T10:32:19Z | API-03 | Started | | test:integration on merged state, background |
+| 2026-11-10T10:36:42Z | API-03 | Completed | Pass | 89 passed, 20 skipped; exit 0 |
+| 2026-11-10T10:36:42Z | API-06 | Started | | web typecheck on merged state |
+| 2026-11-10T10:38:18Z | API-06 | Completed | Pass | 96 in 41 = baseline |
+| 2026-11-10T10:38:18Z | API-11 | Started | | round 3 rerun on rebuilt dist, stand-in codex |
+| 2026-11-10T10:39:31Z | API-11 | Completed | Pass | round 3: 0 refusals, teamId in receipt, stopped at stand-in Codex |
+| 2026-11-10T10:39:31Z | API-12 | Completed | Pass | round 3: no product path vs origin/personal aae0a53a81; 0 own_/mcpg_ matches in the ticket folder incl. uncommitted full logs |
+| 2026-11-10T10:40:43Z | — | Completed | Pass | round 3 result Pass 95%; next: commit, hand off to delivery |
