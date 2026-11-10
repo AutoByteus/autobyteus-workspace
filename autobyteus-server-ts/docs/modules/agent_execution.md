@@ -557,7 +557,9 @@ separate local transport failure, not a synthetic acknowledgement.
 feature knowledge. The compositions pass one implementation of both,
 `AgentRunPlatformNotices` (`domain/agent-run-platform-notices.ts`), composed of
 the notice sources in order: [Tool List Updates](./tool_list_updates.md), then
-[Skill Update Notices](./skill_update_notices.md).
+[Skill Update Notices](./skill_update_notices.md), then the
+[background task notices](#native-background-task-notices) (the studio host puts
+the agent runtime hand-over first).
 
 - **`AgentRunLifecycleObserver`** (`domain/agent-run-lifecycle-observer.ts`):
   - `runPublished(run, kind)` is reported from the single activation point,
@@ -898,9 +900,57 @@ AutoByteus does not enable `Monitor` for Claude sessions.
 is the runtime-neutral background-task event: `{task_id, kind, description,
 command, status, summary, started_at}`, a full snapshot of one task applied as an upsert
 by `task_id`. `command` is always present: the exact shell command the task
-runs, or `null` when the runtime does not know one. Claude and Antigravity produce it. It usually arrives between
+runs, or `null` when the runtime does not know one. Claude, Antigravity and the
+native AutoByteus runtime produce it. It usually arrives between
 turns, so it is not turn activity (it is not in `ACTIVITY_EVENT_TYPES` and
 never changes run status), and it is not persisted in memory or run history.
+
+### Native background task notices
+
+A native run's background tasks are the commands its agent started with
+`run_bash(run_in_background: true)` and the `&` jobs of a foreground `run_bash`
+call still running when the call's foreground part ended (see
+[Terminal Tools](../../../autobyteus-ts/docs/terminal_tools.md#run_bash)). The
+agent's `BackgroundProcessManager` (autobyteus-ts) is their one owner: start,
+end (exit code, signal, or an unknown end) and whether the end was reported.
+
+- **Publication.** `AutoByteusAgentRunBackend` subscribes to its manager
+  (`autobyteus-background-task-reporter.ts`) and publishes every start and end
+  as `BACKGROUND_TASK_UPDATED` (`taskId` = the pid, `kind: shell`, status
+  `running`, then `completed` for exit code 0, `failed` for another exit code or
+  an unknown end, `stopped` for a signal; `summary` `exit code N` / `signal X`).
+  Its `backgroundTaskInspection` is `event-stream`, so the Background Tasks panel
+  shows the rows, and `hasRunningBackgroundTasks()` is true while one runs, so a
+  delegated copy is not idle-shut-down meanwhile (see
+  [Agent Team Execution](./agent_team_execution.md)).
+- **Capability.** `AgentRunBackend.backgroundTaskNotices` is `platform` for the
+  native backend (`takeUnreportedEnds()`, `listRunning()`, both answered by the
+  manager) and `unsupported` for every other runtime. `AgentRun` exposes it as
+  `backgroundTaskNoticesSupported`, `takeUnreportedBackgroundTaskEnds()` and
+  `listRunningBackgroundTasks()`; the notice service depends on `AgentRun`
+  only.
+- **Delivery** (`background-task-notices/`, `BackgroundTaskNoticeService`). An
+  end schedules a flush. A busy run waits for its turn to end; an idle run
+  waits a 2 s settle period so near-simultaneous ends arrive together; the
+  flush takes every unreported end and posts one SYSTEM notice
+  (`system.background_task_notifier`, `[Platform notice — background tasks
+  finished]`: per task its pid, command, how it ended, duration, output file
+  and last lines, then the tasks still running). Posted to an idle native run
+  it starts a turn. If an external input arrives first, the notice rides on it
+  as its preface. Once forwarded, the run's `SYSTEM_TASK_NOTIFICATION` is
+  published and memory records it; the journal shows `Notice:`.
+- **Each end is reported once.** An end that happened while the agent's own
+  `run_bash` call ran is reported in that call's result
+  (`backgroundTasksEnded`) and is never in a notice. A notice that is not
+  delivered (failed, not accepted, preface returned) keeps its ends for the
+  next one; a cancelled one or a released run drops them. Ends of commands the
+  platform stopped (run end, app quit) are never reported.
+- **Run end.** Terminate, delete, Task DONE/CANCELLED release, root stop and
+  idle shutdown end the native agent; its `BackgroundProcessCleanupStep` stops
+  the run's commands through the host scope and removes their output files.
+  Stop (interrupt) leaves background tasks running; their notices still
+  arrive. After an app restart the commands are gone (autobyteus-448 tells the
+  idle agents).
 
 ### Read-only Codex background-task inspection
 
@@ -937,9 +987,11 @@ view and `BACKGROUND_TASK_UPDATED` behavior.
 Studio and standalone hosts own `NativeCommandShutdown`, passing its scope into
 native execution independently of individual agent lifetimes. The early close
 hook drains tracked native work; final close collects unconfirmed outcomes and
-still attempts the remaining host cleanup. Adopted shell survivors and work
-from already-ended runs therefore remain covered at backend restart/application
-quit. Ordinary individual-agent stop and idle policies are not changed. See
+still attempts the remaining host cleanup. Processes a run's commands detached
+from tracking (while still in their command's process group) and any work whose
+run-end stop was not confirmed therefore remain covered at backend
+restart/application quit. A native run's own commands are stopped earlier, at its run end (see
+[Native background task notices](#native-background-task-notices)). See
 [Terminal Tools](../../../autobyteus-ts/docs/terminal_tools.md#owned-command-lifetime-and-host-shutdown)
 for retained anchors, bounded collective drain and ownership checks. Existing
 provider shutdown owners remain authoritative for non-native runtimes.

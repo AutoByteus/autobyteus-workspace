@@ -342,6 +342,19 @@ delegated run, …) are defined in the
 - **Available agent runtime:** an agent runtime installed on the node and not
   known to be signed out; for AutoByteus, a provider with an API key, or a
   local provider (Ollama, LM Studio) that offers models.
+- **Background task:** work a run started that continues beyond its tool call and
+  is reported separately (`BACKGROUND_TASK_UPDATED`, the Background Tasks panel,
+  notices): a Claude `run_in_background` task, an Antigravity daemon step, or, on
+  the AutoByteus runtime, a command started with `run_bash(run_in_background: true)`
+  or an `&` job of a foreground `run_bash` call still running when the call's
+  foreground part ended. Processes that detach themselves (`nohup`, `setsid`,
+  `disown`) are not background tasks. Its id on AutoByteus is its pid.
+- **Background process:** the AutoByteus terminal layer's word for the OS process
+  group of a background task (`BackgroundProcessManager`); not used outside it.
+- **Background task notice:** the platform notice telling an AutoByteus run, in
+  one batch, that background tasks it started have ended
+  (`system.background_task_notifier`). Each end is reported once: in the agent's
+  own `run_bash` result when it ended during that call, otherwise in a notice.
 - **Usage limit:** a runtime's or provider's own limit on use (a 5-hour or
   weekly window, a billing period, a money balance), read from the runtime or
   provider. It is not the launch check of whether a runtime is usable.

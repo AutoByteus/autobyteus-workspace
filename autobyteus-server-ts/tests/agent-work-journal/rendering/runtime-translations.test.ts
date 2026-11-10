@@ -282,6 +282,15 @@ describe("AutoByteus (contract §4, §6)", () => {
       .toEqual(["Command: sleep 99 → timed out"]);
   });
 
+  it("run_bash with run_in_background: the background command line with its started pid (autobyteus-338)", () => {
+    expect(lines(autobyteus, "run_bash", { command: "pnpm build", cwd: "/w", run_in_background: true },
+      { pid: 4123, status: "running", effectiveCwd: "/w", outputFile: "/tmp/autobyteus-background-tasks/a/call-1-2.log" }))
+      .toEqual(["Command: pnpm build (in /w) (background) → started pid 4123"]);
+    expect(lines(autobyteus, "run_bash", { command: "sleep 1 & echo started", run_in_background: false },
+      { exitCode: 0, stdout: "started\n", backgroundTasksStarted: [{ pid: 9 }] })).toEqual([
+      "Command: sleep 1 & echo started → exit 0", "           started"]);
+  });
+
   it("start_background_process, read_file (numbered and not, and media), read_url", () => {
     expect(lines(autobyteus, "start_background_process", { command: "npm run dev", cwd: "/w" }, { pid: 11240, status: "running" }))
       .toEqual(["Command: npm run dev (in /w) (background) → started pid 11240"]);
