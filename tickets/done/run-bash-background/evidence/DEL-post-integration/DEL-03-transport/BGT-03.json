@@ -1,0 +1,356 @@
+{
+  "pids": [
+    81565,
+    81676,
+    81786,
+    81938
+  ],
+  "endSpreadMs": 589,
+  "requests": [
+    {
+      "at": 1794312210900,
+      "repliedAt": 1794312210900,
+      "scripted": true,
+      "noticeTurn": false,
+      "tools": [
+        "run_bash",
+        "read_file",
+        "edit_file",
+        "write_file",
+        "send_message_to",
+        "delegate_task"
+      ],
+      "toolResults": [],
+      "lastUser": "CASE:BGT-03 Start the four commands in the background."
+    },
+    {
+      "at": 1794312211355,
+      "repliedAt": 1794312211355,
+      "scripted": true,
+      "noticeTurn": false,
+      "tools": [
+        "run_bash",
+        "read_file",
+        "edit_file",
+        "write_file",
+        "send_message_to",
+        "delegate_task"
+      ],
+      "toolResults": [
+        "{\"pid\":81565,\"status\":\"running\",\"effectiveCwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-ws-fP9GSx\",\"outputFile\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6/call-1794312211016-81450.log\"}",
+        "{\"pid\":81676,\"status\":\"running\",\"effectiveCwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-ws-fP9GSx\",\"outputFile\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6/call-1794312211115-81568.log\"}",
+        "{\"pid\":81786,\"status\":\"running\",\"effectiveCwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-ws-fP9GSx\",\"outputFile\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6/call-1794312211205-81680.log\"}",
+        "{\"pid\":81938,\"status\":\"running\",\"effectiveCwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-ws-fP9GSx\",\"outputFile\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6/call-1794312211301-81791.log\"}"
+      ],
+      "lastUser": "CASE:BGT-03 Start the four commands in the background."
+    },
+    {
+      "at": 1794312216055,
+      "repliedAt": 1794312216055,
+      "scripted": true,
+      "noticeTurn": true,
+      "tools": [
+        "run_bash",
+        "read_file",
+        "edit_file",
+        "write_file",
+        "send_message_to",
+        "delegate_task"
+      ],
+      "toolResults": [],
+      "lastUser": "[Platform notice — background tasks finished]\n\n- pid 81565 `sleep 3; echo alpha`: exit code 0 after 3s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6/call-1794312211016-81450.log. Last lines:\n    alpha\n- pid 81676 `sleep 3.2; echo beta`: exit code 0 after 3s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6/call-1794312211115-81568.log. Last lines:\n    beta\n- pid 81786 `sleep 3.4; echo gamma`: exit code 0 after 3s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6/call-1794312211205-81680.log. Last lines:\n    gamma\n\nStill running: pid 81938 `'/Users/normy/.hermes/node/bin/node' -e 'setInterval(()=>{},1000)' BGT03_72be806c` (started 12:03:31 UTC)"
+    }
+  ],
+  "frames": [
+    {
+      "type": "AGENT_STATUS",
+      "at": 1794312210897,
+      "payload": "{\"status\":\"initializing\",\"recoverableBlock\":null,\"agent_id\":\"native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6\"}"
+    },
+    {
+      "type": "AGENT_COMMAND_ACK",
+      "at": 1794312210897,
+      "payload": "{\"command_type\":\"SEND_MESSAGE\",\"run_id\":\"native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6\",\"message_id\":\"e2e-ac2a3740-f4f6-4f84-9bfd-91b46424a711\",\"dedupe_key\":\"agent_run_input:e2e:e2e-ac2a3740-f4f6-4f84-9bfd-91b46424a711\",\"state\":\"accepted\",\"accepted\":true,\"duplicate\":false,\"status\":{\"status\":\"initializing\",\"recoverableBlock\":null,\"agent_id\":\"native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6\"}}"
+    },
+    {
+      "type": "SYSTEM_INSTRUCTIONS_SUPPLIED",
+      "at": 1794312210897,
+      "payload": "{\"trace_id\":\"rt_1794312210840_f06fb514-0d2f-46b4-a875-ffdf2fc4b365\",\"content\":\"## Agent Identity\\n\\n- Name: native-bgt-dea3535f\\n- Description: Live native-runtime validation agent.\\n\\n### Responsibilities and Boundaries\\n\\nRun the shell commands you are asked to run.\\n\\n## Working With Other Agents\\n\\nYou can delegate tasks to other agents and agent teams.\\n\\n- To delegate a task, use `delegate_task` with the address of an agent or agent team. This creates a new task agent (or task agent team) that works on your task, and you get back its run id. Your task description becomes the task agent's"
+    },
+    {
+      "type": "AGENT_STATUS",
+      "at": 1794312210897,
+      "payload": "{\"status\":\"running\",\"recoverableBlock\":null,\"agent_id\":\"native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6\"}"
+    },
+    {
+      "type": "TURN_STARTED",
+      "at": 1794312210897,
+      "payload": "{\"turn_id\":\"turn_0001\"}"
+    },
+    {
+      "type": "SEGMENT_START",
+      "at": 1794312210930,
+      "payload": "{\"id\":\"call-29a86a58-e9f\",\"turn_id\":\"turn_0001\",\"segment_type\":\"tool_call\",\"metadata\":{\"tool_name\":\"run_bash\"}}"
+    },
+    {
+      "type": "SEGMENT_START",
+      "at": 1794312210930,
+      "payload": "{\"id\":\"call-e3d635d2-b5a\",\"turn_id\":\"turn_0001\",\"segment_type\":\"tool_call\",\"metadata\":{\"tool_name\":\"run_bash\"}}"
+    },
+    {
+      "type": "SEGMENT_START",
+      "at": 1794312210930,
+      "payload": "{\"id\":\"call-02d187ec-62d\",\"turn_id\":\"turn_0001\",\"segment_type\":\"tool_call\",\"metadata\":{\"tool_name\":\"run_bash\"}}"
+    },
+    {
+      "type": "SEGMENT_START",
+      "at": 1794312210930,
+      "payload": "{\"id\":\"call-00da0798-696\",\"turn_id\":\"turn_0001\",\"segment_type\":\"tool_call\",\"metadata\":{\"tool_name\":\"run_bash\"}}"
+    },
+    {
+      "type": "SEGMENT_END",
+      "at": 1794312210930,
+      "payload": "{\"id\":\"call-29a86a58-e9f\",\"turn_id\":\"turn_0001\",\"metadata\":{\"tool_name\":\"run_bash\",\"arguments\":{\"command\":\"sleep 3; echo alpha\",\"run_in_background\":true}},\"interrupted\":false,\"reason\":null,\"failed\":false,\"error\":null}"
+    },
+    {
+      "type": "SEGMENT_END",
+      "at": 1794312210930,
+      "payload": "{\"id\":\"call-e3d635d2-b5a\",\"turn_id\":\"turn_0001\",\"metadata\":{\"tool_name\":\"run_bash\",\"arguments\":{\"command\":\"sleep 3.2; echo beta\",\"run_in_background\":true}},\"interrupted\":false,\"reason\":null,\"failed\":false,\"error\":null}"
+    },
+    {
+      "type": "SEGMENT_END",
+      "at": 1794312210930,
+      "payload": "{\"id\":\"call-02d187ec-62d\",\"turn_id\":\"turn_0001\",\"metadata\":{\"tool_name\":\"run_bash\",\"arguments\":{\"command\":\"sleep 3.4; echo gamma\",\"run_in_background\":true}},\"interrupted\":false,\"reason\":null,\"failed\":false,\"error\":null}"
+    },
+    {
+      "type": "SEGMENT_END",
+      "at": 1794312210930,
+      "payload": "{\"id\":\"call-00da0798-696\",\"turn_id\":\"turn_0001\",\"metadata\":{\"tool_name\":\"run_bash\",\"arguments\":{\"command\":\"'/Users/normy/.hermes/node/bin/node' -e 'setInterval(()=>{},1000)' BGT03_72be806c\",\"run_in_background\":true}},\"interrupted\":false,\"reason\":null,\"failed\":false,\"error\":null}"
+    },
+    {
+      "type": "TOOL_EXECUTION_STARTED",
+      "at": 1794312210930,
+      "payload": "{\"agent_id\":\"native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6\",\"tool_name\":\"run_bash\",\"invocation_id\":\"call-29a86a58-e9f\",\"turn_id\":\"turn_0001\",\"arguments\":{\"command\":\"sleep 3; echo alpha\",\"run_in_background\":true}}"
+    },
+    {
+      "type": "TOOL_LOG",
+      "at": 1794312210930,
+      "payload": "{\"log_entry\":\"[TOOL_CALL] Agent_ID: native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6, Tool: run_bash, Invocation_ID: call-29a86a58-e9f, Arguments: command: sleep 3; echo alpha\\nrun_in_background: true\",\"tool_invocation_id\":\"call-29a86a58-e9f\",\"tool_name\":\"run_bash\",\"turn_id\":\"turn_0001\"}"
+    },
+    {
+      "type": "BACKGROUND_TASK_UPDATED",
+      "at": 1794312211018,
+      "payload": "{\"task_id\":\"81565\",\"kind\":\"shell\",\"description\":\"sleep 3; echo alpha\",\"command\":\"sleep 3; echo alpha\",\"status\":\"running\",\"summary\":null,\"started_at\":\"2026-11-10T12:03:31.016Z\"}"
+    },
+    {
+      "type": "TOOL_LOG",
+      "at": 1794312211028,
+      "payload": "{\"log_entry\":\"[TOOL_RESULT] pid: 81565\\nstatus: running\\neffectiveCwd: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-ws-fP9GSx\\noutputFile: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6/call-1794312211016-81450.log\",\"tool_invocation_id\":\"call-29a86a58-e9f\",\"tool_name\":\"run_bash\",\"turn_id\":\"turn_0001\"}"
+    },
+    {
+      "type": "TOOL_EXECUTION_STARTED",
+      "at": 1794312211028,
+      "payload": "{\"agent_id\":\"native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6\",\"tool_name\":\"run_bash\",\"invocation_id\":\"call-e3d635d2-b5a\",\"turn_id\":\"turn_0001\",\"arguments\":{\"command\":\"sleep 3.2; echo beta\",\"run_in_background\":true}}"
+    },
+    {
+      "type": "TOOL_LOG",
+      "at": 1794312211028,
+      "payload": "{\"log_entry\":\"[TOOL_CALL] Agent_ID: native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6, Tool: run_bash, Invocation_ID: call-e3d635d2-b5a, Arguments: command: sleep 3.2; echo beta\\nrun_in_background: true\",\"tool_invocation_id\":\"call-e3d635d2-b5a\",\"tool_name\":\"run_bash\",\"turn_id\":\"turn_0001\"}"
+    },
+    {
+      "type": "BACKGROUND_TASK_UPDATED",
+      "at": 1794312211117,
+      "payload": "{\"task_id\":\"81676\",\"kind\":\"shell\",\"description\":\"sleep 3.2; echo beta\",\"command\":\"sleep 3.2; echo beta\",\"status\":\"running\",\"summary\":null,\"started_at\":\"2026-11-10T12:03:31.115Z\"}"
+    },
+    {
+      "type": "TOOL_LOG",
+      "at": 1794312211120,
+      "payload": "{\"log_entry\":\"[TOOL_RESULT] pid: 81676\\nstatus: running\\neffectiveCwd: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-ws-fP9GSx\\noutputFile: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6/call-1794312211115-81568.log\",\"tool_invocation_id\":\"call-e3d635d2-b5a\",\"tool_name\":\"run_bash\",\"turn_id\":\"turn_0001\"}"
+    },
+    {
+      "type": "TOOL_EXECUTION_STARTED",
+      "at": 1794312211120,
+      "payload": "{\"agent_id\":\"native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6\",\"tool_name\":\"run_bash\",\"invocation_id\":\"call-02d187ec-62d\",\"turn_id\":\"turn_0001\",\"arguments\":{\"command\":\"sleep 3.4; echo gamma\",\"run_in_background\":true}}"
+    },
+    {
+      "type": "TOOL_LOG",
+      "at": 1794312211120,
+      "payload": "{\"log_entry\":\"[TOOL_CALL] Agent_ID: native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6, Tool: run_bash, Invocation_ID: call-02d187ec-62d, Arguments: command: sleep 3.4; echo gamma\\nrun_in_background: true\",\"tool_invocation_id\":\"call-02d187ec-62d\",\"tool_name\":\"run_bash\",\"turn_id\":\"turn_0001\"}"
+    },
+    {
+      "type": "BACKGROUND_TASK_UPDATED",
+      "at": 1794312211207,
+      "payload": "{\"task_id\":\"81786\",\"kind\":\"shell\",\"description\":\"sleep 3.4; echo gamma\",\"command\":\"sleep 3.4; echo gamma\",\"status\":\"running\",\"summary\":null,\"started_at\":\"2026-11-10T12:03:31.205Z\"}"
+    },
+    {
+      "type": "TOOL_LOG",
+      "at": 1794312211210,
+      "payload": "{\"log_entry\":\"[TOOL_RESULT] pid: 81786\\nstatus: running\\neffectiveCwd: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-ws-fP9GSx\\noutputFile: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6/call-1794312211205-81680.log\",\"tool_invocation_id\":\"call-02d187ec-62d\",\"tool_name\":\"run_bash\",\"turn_id\":\"turn_0001\"}"
+    },
+    {
+      "type": "TOOL_EXECUTION_STARTED",
+      "at": 1794312211210,
+      "payload": "{\"agent_id\":\"native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6\",\"tool_name\":\"run_bash\",\"invocation_id\":\"call-00da0798-696\",\"turn_id\":\"turn_0001\",\"arguments\":{\"command\":\"'/Users/normy/.hermes/node/bin/node' -e 'setInterval(()=>{},1000)' BGT03_72be806c\",\"run_in_background\":true}}"
+    },
+    {
+      "type": "TOOL_LOG",
+      "at": 1794312211210,
+      "payload": "{\"log_entry\":\"[TOOL_CALL] Agent_ID: native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6, Tool: run_bash, Invocation_ID: call-00da0798-696, Arguments: command: '/Users/normy/.hermes/node/bin/node' -e 'setInterval(()=>{},1000)' BGT03_72be806c\\nrun_in_background: true\",\"tool_invocation_id\":\"call-00da0798-696\",\"tool_name\":\"run_bash\",\"turn_id\":\"turn_0001\"}"
+    },
+    {
+      "type": "BACKGROUND_TASK_UPDATED",
+      "at": 1794312211355,
+      "payload": "{\"task_id\":\"81938\",\"kind\":\"shell\",\"description\":\"'/Users/normy/.hermes/node/bin/node' -e 'setInterval(()=>{},1000)' BGT03_72be806c\",\"command\":\"'/Users/normy/.hermes/node/bin/node' -e 'setInterval(()=>{},1000)' BGT03_72be806c\",\"status\":\"running\",\"summary\":null,\"started_at\":\"2026-11-10T12:03:31.301Z\"}"
+    },
+    {
+      "type": "TOOL_LOG",
+      "at": 1794312211355,
+      "payload": "{\"log_entry\":\"[TOOL_RESULT] pid: 81938\\nstatus: running\\neffectiveCwd: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-ws-fP9GSx\\noutputFile: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6/call-1794312211301-81791.log\",\"tool_invocation_id\":\"call-00da0798-696\",\"tool_name\":\"run_bash\",\"turn_id\":\"turn_0001\"}"
+    },
+    {
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "at": 1794312211355,
+      "payload": "{\"agent_id\":\"native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6\",\"tool_name\":\"run_bash\",\"invocation_id\":\"call-29a86a58-e9f\",\"turn_id\":\"turn_0001\",\"result\":{\"pid\":81565,\"status\":\"running\",\"effectiveCwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-ws-fP9GSx\",\"outputFile\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6/call-1794312211016-81450.log\"}}"
+    },
+    {
+      "type": "TOOL_LOG",
+      "at": 1794312211355,
+      "payload": "{\"log_entry\":\"[TOOL_RESULT_SUCCESS_PROCESSED] Agent_ID: native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6, Tool: run_bash, Invocation_ID: call-29a86a58-e9f, Result: pid: 81565\\nstatus: running\\neffectiveCwd: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-ws-fP9GSx\\noutputFile: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6/call-1794312211016-81450.log\",\"tool_invocation_id\":\"call-29a86a58-e9f\",\"tool_name\":\"run_bash\",\"turn_id\":\"turn_0001\"}"
+    },
+    {
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "at": 1794312211355,
+      "payload": "{\"agent_id\":\"native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6\",\"tool_name\":\"run_bash\",\"invocation_id\":\"call-e3d635d2-b5a\",\"turn_id\":\"turn_0001\",\"result\":{\"pid\":81676,\"status\":\"running\",\"effectiveCwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-ws-fP9GSx\",\"outputFile\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6/call-1794312211115-81568.log\"}}"
+    },
+    {
+      "type": "TOOL_LOG",
+      "at": 1794312211355,
+      "payload": "{\"log_entry\":\"[TOOL_RESULT_SUCCESS_PROCESSED] Agent_ID: native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6, Tool: run_bash, Invocation_ID: call-e3d635d2-b5a, Result: pid: 81676\\nstatus: running\\neffectiveCwd: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-ws-fP9GSx\\noutputFile: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6/call-1794312211115-81568.log\",\"tool_invocation_id\":\"call-e3d635d2-b5a\",\"tool_name\":\"run_bash\",\"turn_id\":\"turn_0001\"}"
+    },
+    {
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "at": 1794312211355,
+      "payload": "{\"agent_id\":\"native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6\",\"tool_name\":\"run_bash\",\"invocation_id\":\"call-02d187ec-62d\",\"turn_id\":\"turn_0001\",\"result\":{\"pid\":81786,\"status\":\"running\",\"effectiveCwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-ws-fP9GSx\",\"outputFile\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6/call-1794312211205-81680.log\"}}"
+    },
+    {
+      "type": "TOOL_LOG",
+      "at": 1794312211355,
+      "payload": "{\"log_entry\":\"[TOOL_RESULT_SUCCESS_PROCESSED] Agent_ID: native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6, Tool: run_bash, Invocation_ID: call-02d187ec-62d, Result: pid: 81786\\nstatus: running\\neffectiveCwd: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-ws-fP9GSx\\noutputFile: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6/call-1794312211205-81680.log\",\"tool_invocation_id\":\"call-02d187ec-62d\",\"tool_name\":\"run_bash\",\"turn_id\":\"turn_0001\"}"
+    },
+    {
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "at": 1794312211355,
+      "payload": "{\"agent_id\":\"native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6\",\"tool_name\":\"run_bash\",\"invocation_id\":\"call-00da0798-696\",\"turn_id\":\"turn_0001\",\"result\":{\"pid\":81938,\"status\":\"running\",\"effectiveCwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-ws-fP9GSx\",\"outputFile\":\"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6/call-1794312211301-81791.log\"}}"
+    },
+    {
+      "type": "TOOL_LOG",
+      "at": 1794312211355,
+      "payload": "{\"log_entry\":\"[TOOL_RESULT_SUCCESS_PROCESSED] Agent_ID: native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6, Tool: run_bash, Invocation_ID: call-00da0798-696, Result: pid: 81938\\nstatus: running\\neffectiveCwd: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-bgt-e2e-ws-fP9GSx\\noutputFile: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6/call-1794312211301-81791.log\",\"tool_invocation_id\":\"call-00da0798-696\",\"tool_name\":\"run_bash\",\"turn_id\":\"turn_0001\"}"
+    },
+    {
+      "type": "SEGMENT_START",
+      "at": 1794312211371,
+      "payload": "{\"id\":\"turn_248bd65e55d7414b9c5fe872fa16ca79:53a25c94ab844895b32fec172421125a\",\"turn_id\":\"turn_0001\",\"segment_type\":\"text\",\"metadata\":null}"
+    },
+    {
+      "type": "SEGMENT_END",
+      "at": 1794312211371,
+      "payload": "{\"id\":\"turn_248bd65e55d7414b9c5fe872fa16ca79:53a25c94ab844895b32fec172421125a\",\"turn_id\":\"turn_0001\",\"metadata\":null,\"interrupted\":false,\"reason\":null,\"failed\":false,\"error\":null}"
+    },
+    {
+      "type": "ASSISTANT_COMPLETE",
+      "at": 1794312211371,
+      "payload": "{\"content\":\"Waiting.\",\"image_urls\":[],\"audio_urls\":[],\"video_urls\":[],\"is_error\":false}"
+    },
+    {
+      "type": "TURN_COMPLETED",
+      "at": 1794312211371,
+      "payload": "{\"turn_id\":\"turn_0001\"}"
+    },
+    {
+      "type": "AGENT_STATUS",
+      "at": 1794312211371,
+      "payload": "{\"status\":\"idle\",\"recoverableBlock\":null,\"agent_id\":\"native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6\"}"
+    },
+    {
+      "type": "AGENT_STATUS",
+      "at": 1794312211371,
+      "payload": "{\"status\":\"initializing\",\"recoverableBlock\":null,\"agent_id\":\"native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6\"}"
+    },
+    {
+      "type": "AGENT_STATUS",
+      "at": 1794312211371,
+      "payload": "{\"status\":\"idle\",\"recoverableBlock\":null,\"agent_id\":\"native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6\"}"
+    },
+    {
+      "type": "BACKGROUND_TASK_UPDATED",
+      "at": 1794312214028,
+      "payload": "{\"task_id\":\"81565\",\"kind\":\"shell\",\"description\":\"sleep 3; echo alpha\",\"command\":\"sleep 3; echo alpha\",\"status\":\"completed\",\"summary\":\"exit code 0\",\"started_at\":\"2026-11-10T12:03:31.016Z\"}"
+    },
+    {
+      "type": "BACKGROUND_TASK_UPDATED",
+      "at": 1794312214322,
+      "payload": "{\"task_id\":\"81676\",\"kind\":\"shell\",\"description\":\"sleep 3.2; echo beta\",\"command\":\"sleep 3.2; echo beta\",\"status\":\"completed\",\"summary\":\"exit code 0\",\"started_at\":\"2026-11-10T12:03:31.115Z\"}"
+    },
+    {
+      "type": "BACKGROUND_TASK_UPDATED",
+      "at": 1794312214617,
+      "payload": "{\"task_id\":\"81786\",\"kind\":\"shell\",\"description\":\"sleep 3.4; echo gamma\",\"command\":\"sleep 3.4; echo gamma\",\"status\":\"completed\",\"summary\":\"exit code 0\",\"started_at\":\"2026-11-10T12:03:31.205Z\"}"
+    },
+    {
+      "type": "AGENT_STATUS",
+      "at": 1794312216052,
+      "payload": "{\"status\":\"initializing\",\"recoverableBlock\":null,\"agent_id\":\"native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6\"}"
+    },
+    {
+      "type": "AGENT_STATUS",
+      "at": 1794312216052,
+      "payload": "{\"status\":\"running\",\"recoverableBlock\":null,\"agent_id\":\"native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6\"}"
+    },
+    {
+      "type": "SYSTEM_TASK_NOTIFICATION",
+      "at": 1794312216052,
+      "payload": "{\"sender_id\":\"system.background_task_notifier\",\"content\":\"[Platform notice — background tasks finished]\\n\\n- pid 81565 `sleep 3; echo alpha`: exit code 0 after 3s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6/call-1794312211016-81450.log. Last lines:\\n    alpha\\n- pid 81676 `sleep 3.2; echo beta`: exit code 0 after 3s. Output: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-background-tasks/native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6/call-1794312211115-81568.log. Last lines:\\n    b"
+    },
+    {
+      "type": "TURN_STARTED",
+      "at": 1794312216054,
+      "payload": "{\"turn_id\":\"turn_0002\"}"
+    },
+    {
+      "type": "SEGMENT_START",
+      "at": 1794312216071,
+      "payload": "{\"id\":\"turn_6f5b12912df748259ab484db099ac52c:007c4076e851461b85ac98d846fd3fa3\",\"turn_id\":\"turn_0002\",\"segment_type\":\"text\",\"metadata\":null}"
+    },
+    {
+      "type": "SEGMENT_END",
+      "at": 1794312216071,
+      "payload": "{\"id\":\"turn_6f5b12912df748259ab484db099ac52c:007c4076e851461b85ac98d846fd3fa3\",\"turn_id\":\"turn_0002\",\"metadata\":null,\"interrupted\":false,\"reason\":null,\"failed\":false,\"error\":null}"
+    },
+    {
+      "type": "ASSISTANT_COMPLETE",
+      "at": 1794312216071,
+      "payload": "{\"content\":\"All three finished.\",\"image_urls\":[],\"audio_urls\":[],\"video_urls\":[],\"is_error\":false}"
+    },
+    {
+      "type": "TURN_COMPLETED",
+      "at": 1794312216071,
+      "payload": "{\"turn_id\":\"turn_0002\"}"
+    },
+    {
+      "type": "AGENT_STATUS",
+      "at": 1794312216071,
+      "payload": "{\"status\":\"idle\",\"recoverableBlock\":null,\"agent_id\":\"native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6\"}"
+    },
+    {
+      "type": "AGENT_STATUS",
+      "at": 1794312216071,
+      "payload": "{\"status\":\"initializing\",\"recoverableBlock\":null,\"agent_id\":\"native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6\"}"
+    },
+    {
+      "type": "AGENT_STATUS",
+      "at": 1794312216071,
+      "payload": "{\"status\":\"idle\",\"recoverableBlock\":null,\"agent_id\":\"native_bgt_dea3535f_8218ccb4c16d43a8836cc4ca1be3cbe6\"}"
+    }
+  ]
+}
