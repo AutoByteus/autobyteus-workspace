@@ -83,15 +83,14 @@ export class RootTaskExecutionResourceScope<T> {
   }
 
   /**
-   * Stops exactly the given closed agent runs. First, before anything stops, the released runs
-   * that are closed and in this root's tree are published as closed (visibility follows closure,
-   * not stop success). Every registration and committed copy is cancelled before any await; then
-   * every exact release authority the root still holds is invoked, whether or not the copy looks
-   * live. `stopped` only when each invoked release is accepted or the root holds no authority at
-   * all for the agent run. A run on a peer node is fenced instead (AR-007): the closed Task already refuses its
-   * messages, no release is invoked, and its result says it keeps running there until it goes idle.
+   * The closure release's remote part. A closed run on a peer node is fenced (AR-007): the closed Task already
+   * refuses its messages, no release is invoked, and its result says it keeps running there until it goes idle.
+   * Returns those fence results and the executions left for `releaseHostedExecutions`; the lifecycle orders the two.
    */
-  async releaseTaskExecutions(executions: readonly TaskExecutionReference[]): Promise<readonly TaskExecutionStopResult[]> {
+  fenceRemoteClosedExecutions(executions: readonly TaskExecutionReference[]): Readonly<{
+    fenced: ReadonlyMap<TaskExecutionReference, Promise<TaskExecutionStopResult>>;
+    hosted: readonly TaskExecutionReference[];
+  }> {
     const port = this.port();
     const fenced = new Map<TaskExecutionReference, Promise<TaskExecutionStopResult>>();
     const links = this.remoteRunLinks;
@@ -101,11 +100,19 @@ export class RootTaskExecutionResourceScope<T> {
         fenced.set(execution, links.peerName(endpoint.reference.nodeId).then((peer) => endpoint.closureFence(execution, peer)));
       }
     }
-    const hosted = await this.releaseHostedExecutions(port, executions.filter((execution) => !fenced.has(execution)));
-    return Promise.all(executions.map((execution) => fenced.get(execution) ?? Promise.resolve(hosted.get(execution)!)));
+    return { fenced, hosted: executions.filter((execution) => !fenced.has(execution)) };
   }
 
-  private async releaseHostedExecutions(port: TaskExecutionResourcePort, executions: readonly TaskExecutionReference[]): Promise<ReadonlyMap<TaskExecutionReference, TaskExecutionReleaseResult>> {
+  /**
+   * The closure release's hosted part: stops exactly the given agent runs that are closed now (re-checked at the
+   * call). First, before anything stops, the closed ones in this root's tree are published as closed (visibility
+   * follows closure, not stop success). Every registration and committed copy is cancelled before any await; then
+   * every exact release authority the root still holds is invoked, whether or not the copy looks live. `stopped`
+   * only when each invoked release is accepted or the root holds no authority at all for the agent run. A run that
+   * is open again is reported `TASK_AGENT_RESOURCE_NOT_CLOSED` and not stopped. Results are in input order.
+   */
+  async releaseHostedExecutions(executions: readonly TaskExecutionReference[]): Promise<readonly TaskExecutionReleaseResult[]> {
+    const port = this.port();
     const eligible = executions.map(execution => ({ execution, closed: isClosed(port, execution) }));
     const closedInTree = eligible.flatMap(entry => entry.closed && this.adapter.containsTaskExecution(entry.execution) ? [entry.execution] : []);
     if (closedInTree.length) this.adapter.publishTaskExecutionsClosed(Object.freeze(closedInTree));
@@ -115,10 +122,9 @@ export class RootTaskExecutionResourceScope<T> {
       registered[index]?.operation.cancel();
       this.adapter.cancelOwnedExecution(entry.execution);
     });
-    const results = await Promise.all(eligible.map(({ execution, closed: wasClosed }, index): Promise<TaskExecutionReleaseResult> => wasClosed
+    return Promise.all(eligible.map(({ execution, closed: wasClosed }, index): Promise<TaskExecutionReleaseResult> => wasClosed
       ? this.settleExactRelease(execution, registered[index] ?? null)
       : Promise.resolve({ execution, stopped: false, error: { code: "TASK_AGENT_RESOURCE_NOT_CLOSED", message: "Only a closed Task agent run is stopped." } })));
-    return new Map(results.map((result) => [result.execution, result]));
   }
 
   /**

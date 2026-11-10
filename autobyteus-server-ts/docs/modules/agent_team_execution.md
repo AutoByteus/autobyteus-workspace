@@ -607,7 +607,13 @@ IDs, in both directions. `recipient_address` identifies the definition to
 instantiate; it is not an alias for the spawned child.
 
 Activation is serialized per root by `RootTaskExecutionLifecycle`
-(`src/agent-collaboration/execution/task`) through its FIFO command queue. The
+(`src/agent-collaboration/execution/task`) through its FIFO command queue, with
+every other runtime transition of a copy: wake (restore), idle shutdown, user
+Stop, the model-change commit, the closure release of hosted copies after a DONE
+or CANCELLED, and the reopening step of a reactivation or existing-copy
+assignment together with its commit (autobyteus-464). A release therefore never
+stops a copy that a reopening commit has just opened; remote copies are fenced
+outside the queue, so a peer call never holds the root's wakes. The
 subject adapter (`TeamTaskExecutionAdapter` for Team roots,
 `AgentOrgTaskExecutionAdapter` for Org roots) prepares the child privately,
 commits **one** execution-tree write that records the child together with

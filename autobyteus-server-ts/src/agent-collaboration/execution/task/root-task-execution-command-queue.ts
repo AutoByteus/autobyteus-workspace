@@ -1,4 +1,4 @@
-export type RootTaskExecutionCommandKind = "activate" | "wake" | "shutdown" | "reopen" | "stop" | "reconfigure";
+export type RootTaskExecutionCommandKind = "activate" | "wake" | "shutdown" | "reopen" | "stop" | "reconfigure" | "release";
 
 export type RootTaskExecutionQueuedCommand<TResult = unknown> = Readonly<{
   kind: RootTaskExecutionCommandKind;
@@ -20,8 +20,9 @@ type QueueEntry<TResult = unknown> = {
 
 /**
  * The sole in-memory FIFO for one collaboration root. Activation, wake, idle
- * shutdown, user Stop, the model-change commit and the runtime step of a reactivation are serialized here; this owner only
- * admits, orders, closes, and drains commands.
+ * shutdown, user Stop, the model-change commit, the closure release of hosted copies, and the reopening step of a
+ * reactivation or existing-copy assignment (with its commit) are serialized here; this owner only admits, orders,
+ * closes, and drains commands.
  */
 export class RootTaskExecutionCommandQueue {
   private readonly entries: QueueEntry[] = [];

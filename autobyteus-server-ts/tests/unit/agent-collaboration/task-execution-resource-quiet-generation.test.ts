@@ -28,8 +28,8 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('%s quiet-generatio
     await f.adapter.restoreChain('A-lead', () => undefined);
     expect(await f.getManaged('A-team')!.postMessage(message(), 'A-lead')).toMatchObject({ accepted: true });
     const scope = doneScope(f);
-    expect(await scope.releaseTaskExecutions(f.requested)).toEqual(f.requested.map(execution => ({ execution, stopped: true })));
-    expect(await scope.releaseTaskExecutions([{ agentRunId: 'A-child' }, { teamRunId: 'A-nested' }])).toEqual([
+    expect(await scope.releaseHostedExecutions(f.requested)).toEqual(f.requested.map(execution => ({ execution, stopped: true })));
+    expect(await scope.releaseHostedExecutions([{ agentRunId: 'A-child' }, { teamRunId: 'A-nested' }])).toEqual([
       { execution: { agentRunId: 'A-child' }, stopped: true }, { execution: { teamRunId: 'A-nested' }, stopped: true }]);
     expect(f.acquired.filter(r => ['A-child', 'A-nested-lead', 'A-grand'].includes(r.runId))).toHaveLength(3);
     expect([...f.active.keys()].sort()).toEqual(['B-worker', 'borrowed', f.managerId].sort());
@@ -59,14 +59,14 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('%s quiet-generatio
     expect(f.acquired.filter(r => r.runId === id)).toHaveLength(2);
     f.stopFailures.add(restored);
     const scope = doneScope(f);
-    const first = await scope.releaseTaskExecutions(f.requested);
+    const first = await scope.releaseHostedExecutions(f.requested);
     expect(first.find(o => 'agentRunId' in o.execution && o.execution.agentRunId === id)?.stopped).toBe(false);
     expect(f.active.get(id)).toBe(restored); expect(restored.alive).toBe(true);
     expect(f.active.has('A-helper')).toBe(false);
     f.stopFailures.delete(restored);
-    expect((await scope.releaseTaskExecutions(f.requested)).every(o => o.stopped)).toBe(true);
+    expect((await scope.releaseHostedExecutions(f.requested)).every(o => o.stopped)).toBe(true);
     const stops = f.stopped.length, acquisitions = f.acquired.length;
-    expect((await scope.releaseTaskExecutions(f.requested)).every(o => o.stopped)).toBe(true);
+    expect((await scope.releaseHostedExecutions(f.requested)).every(o => o.stopped)).toBe(true);
     expect(f.stopped).toHaveLength(stops); expect(f.acquired).toHaveLength(acquisitions);
     expect(restored.alive).toBe(false); expect([...f.active.keys()].sort()).toEqual(['B-worker', 'borrowed', f.managerId].sort());
     expect(JSON.stringify(f.tree)).toBe(history); if (f.rootTeam) expect(f.rootTeam.isActive()).toBe(true);

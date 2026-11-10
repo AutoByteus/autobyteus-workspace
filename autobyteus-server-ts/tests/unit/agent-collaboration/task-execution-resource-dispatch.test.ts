@@ -109,7 +109,9 @@ describe.each(['agent', 'agent_team', 'agent_org'] as const)('link-before-regist
     const dispatch = h.assign();
     await vi.waitFor(() => expect(h.operations[0]?.prepare).toHaveBeenCalledOnce());
     const stop = h.done();
-    expect(h.operations[0]!.cancel).toHaveBeenCalled();
+    // The release runs as the root's next queue step (autobyteus-464); it cancels before it awaits the acquisition,
+    // so its result comes while the preparation is still unsettled.
+    await vi.waitFor(() => expect(h.operations[0]!.cancel).toHaveBeenCalled());
     expect(await stop).toEqual([{ execution: { agentRunId: 'copy-1' }, stopped: false, error: expect.objectContaining({ code: expect.any(String) }) }]);
     h.preparation.resolve();
     expect((await dispatch).delegated).toBe(false);

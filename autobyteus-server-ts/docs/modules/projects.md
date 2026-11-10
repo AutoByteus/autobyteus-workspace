@@ -1009,15 +1009,19 @@ its agent run ID.
    B is not the copy's closed current Task (a Task it already holds open is
    refused by the commit: "already works on this Task"). The copy's other open
    Tasks are read for the message (`openTaskReferencesOf`, keys, oldest first).
-3. The shared resume step (the one reactivation uses) settles the copy's
-   previous stop, drops its released authority and checks its saved
-   conversation can be restored. A copy that is still open skips it.
-4. The commit (`assignExistingTaskExecution`) re-checks every condition under
-   the copy's and then B's serialization (lock order: copy, then Task; DONE
-   takes only the Task's) and **appends** B's `starting` `assigned` entry, with
-   the address of the copy's previous assignment.
-5. The root publishes the copy as reopened; it is listed again.
-6. The root's exact delivery (the `send_message_to` path) wakes or restores the
+3. One step of the root's queue (`RootTaskExecutionCommandQueue`, autobyteus-464)
+   resumes and commits. The shared resume step (the one reactivation uses)
+   settles the copy's previous stop, drops its released authority and checks
+   its saved conversation can be restored; a copy that is still open skips it.
+   Then the commit (`assignExistingTaskExecution`) re-checks every condition
+   under the copy's and then B's serialization (lock order: queue, then copy,
+   then Task; DONE takes only the Task's) and **appends** B's `starting`
+   `assigned` entry, with the address of the copy's previous assignment. A
+   DONE's release of the copy runs in the same queue: one that comes first is
+   settled before the commit; one that comes after finds the copy open, stops
+   nothing and publishes no `closed`.
+4. The root publishes the copy as reopened; it is listed again.
+5. The root's exact delivery (the `send_message_to` path) wakes or restores the
    copy with its conversation and delivers B's description and context files
    to its ingress (the Agent, or the Team's coordinator) as a message from the
    delegator (`messageType: "task_assignment"`). The message starts "New Task

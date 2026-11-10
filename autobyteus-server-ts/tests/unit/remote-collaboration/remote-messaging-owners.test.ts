@@ -11,7 +11,6 @@ import { RemoteMessageSend } from "../../../src/agent-collaboration/execution/re
 import { RemoteRunLinks } from "../../../src/agent-collaboration/execution/remote/remote-run-links.js";
 import type { RemoteRunChannel } from "../../../src/agent-collaboration/execution/remote/remote-run-channel.js";
 import { RootTaskExecutionLifecycle } from "../../../src/agent-collaboration/execution/task/root-task-execution-lifecycle.js";
-import { RootTaskExecutionResourceScope } from "../../../src/agent-collaboration/execution/task/root-task-execution-resource-scope.js";
 import type { RemoteTaskAgentExecution, RemoteTaskTeamExecution } from "../../../src/run-history/domain/run-execution-tree-shared-records.js";
 import { InMemoryTaskExecutionResources } from "../../fixtures/task-execution-resource-fixtures.js";
 
@@ -207,10 +206,12 @@ describe("Task closure of a remote run (AR-007)", () => {
       cancelOwnedExecution: vi.fn(), releaseOwnedExecution: vi.fn(async () => ({ accepted: true })),
     };
     const channel = { peerName: async () => "docker" } as unknown as RemoteRunChannel;
-    const scope = new RootTaskExecutionResourceScope(adapter as never, resources, new RemoteRunLinks({ remoteRuns: () => [link], channel: () => channel }));
+    // The root's lifecycle orders the closure release: the remote fence outside its queue, the hosted release in it.
+    const lifecycle = new RootTaskExecutionLifecycle(adapter as never, { taskExecutionResources: resources,
+      remoteRunLinks: new RemoteRunLinks({ remoteRuns: () => [link], channel: () => channel }) });
     const closed = resources.close("task-1");
 
-    const results = await scope.releaseTaskExecutions(closed);
+    const results = await lifecycle.releaseTaskExecutions(closed);
 
     expect(results).toEqual([
       { execution: { agentRunId: REMOTE }, outcome: "fenced_remote", stopped: false,

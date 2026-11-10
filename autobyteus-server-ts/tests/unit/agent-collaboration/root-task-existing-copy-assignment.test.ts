@@ -215,13 +215,13 @@ describe("a DONE of the earlier Task racing the assignment (QR-001)", () => {
     // A's closure commits, then the assignment and A's stop request run in parallel.
     const closed = f.resources.close("task-A");
     const [stop, assigned] = await Promise.all([f.lifecycle.releaseTaskExecutions(closed), f.assignTo(worker, "task-B")]);
-    expect(assigned).toMatchObject({ delegated: true });
+    expect(assigned, JSON.stringify(assigned)).toMatchObject({ delegated: true });
     expect(stop[0]).toMatchObject({ execution: worker });
     expect(f.resources.entry(worker)).toMatchObject({ taskId: "task-B", open: true });
     expect(f.authority.get("agent:worker")).toBe("live");
   });
 
-  it("A's stop request arrives between the queue step and B's commit: it reaches no authority, and B's commit reopens the copy", async () => {
+  it("A's stop request arrives while the queue step settles the stop and holds B's commit: it waits for the step, finds the copy open and stops nothing (autobyteus-464)", async () => {
     const f = fixture();
     await f.assign(worker);
     f.resources.addTask("task-B");
@@ -230,13 +230,18 @@ describe("a DONE of the earlier Task racing the assignment (QR-001)", () => {
     f.resources.beforeAssignCommit = () => gate.promise;
     const assigning = f.assignTo(worker, "task-B");
     await vi.waitFor(() => expect(f.log).toContain("discard:agent:worker"));
-    const stop = await f.lifecycle.releaseTaskExecutions(closed);
-    expect(stop).toEqual([{ execution: worker, stopped: true }]);
+    // The release is queued behind the step: it does not run between the step's settling and B's commit.
+    let stopSettled = false;
+    const stopping = f.lifecycle.releaseTaskExecutions(closed).then((result) => { stopSettled = true; return result; });
+    await Promise.resolve();
+    expect(stopSettled).toBe(false);
     gate.resolve();
     expect(await assigning).toMatchObject({ delegated: true });
+    expect(await stopping).toEqual([{ execution: worker, stopped: false, error: expect.objectContaining({ code: "TASK_AGENT_RESOURCE_NOT_CLOSED" }) }]);
     expect(f.resources.entry(worker)).toMatchObject({ taskId: "task-B", open: true });
     expect(f.authority.get("agent:worker")).toBe("live");
-    expect(f.log.indexOf("closed:agent:worker")).toBeLessThan(f.log.indexOf("reopened:agent:worker"));
+    // The step settled the closed copy itself; the release it overtook publishes no `closed` (AR-001).
+    expect(f.log.filter(entry => entry.startsWith("closed:") || entry.startsWith("reopened:"))).toEqual(["reopened:agent:worker"]);
   });
 
   it("A's stop request arrives after B's commit (or A is DONE again): the copy now works on B and is not stopped (AC-004)", async () => {
@@ -253,6 +258,55 @@ describe("a DONE of the earlier Task racing the assignment (QR-001)", () => {
     expect(f.authority.get("agent:worker")).toBe("fenced");
   });
 
+  // autobyteus-464: the copy is open when the assignment's queue step runs; then A's DONE commits and its release is still
+  // in flight across B's commit and the wake. The release and the commit are ordered in the root's queue.
+  const copies: Array<[string, typeof worker, string | undefined, string]> = [["an Agent copy", worker, undefined, "agent:worker"], ["a Team copy", team, "lead", "team:review-team"]];
+  const events = (f: Fixture) => f.log.filter(entry => entry.startsWith("closed:") || entry.startsWith("reopened:"));
+
+  it.each(copies)("%s open at the assignment's queue step, A's release requested before B's commit: B is delivered and the copy is never stopped (AC-001)", async (_case, copy, coordinator, copyKey) => {
+    const f = fixture();
+    await f.assign(copy, coordinator);
+    f.resources.addTask("task-B");
+    f.log.length = 0;
+    const commit = latch();
+    let atCommit = false;
+    f.resources.beforeAssignCommit = () => { atCommit = true; return commit.promise; };
+    const assigning = f.assignTo(copy, "task-B");
+    await vi.waitFor(() => expect(atCommit).toBe(true));
+    // A's DONE commits now; its release is requested (fire-and-forget) and held in flight.
+    const release = latch();
+    f.control.releaseGate = release.promise;
+    const releasing = f.lifecycle.releaseTaskExecutions(f.resources.close("task-A"));
+    commit.resolve();
+    const assigned = await assigning;
+    release.resolve();
+    expect(assigned, JSON.stringify(assigned)).toMatchObject({ delegated: true });
+    // The release waited for the step and found the copy open again: nothing stopped, no `closed` (AR-001).
+    expect(await releasing).toEqual([{ execution: copy, stopped: false, error: expect.objectContaining({ code: "TASK_AGENT_RESOURCE_NOT_CLOSED" }) }]);
+    expect(f.resources.entry(copy)).toMatchObject({ taskId: "task-B", open: true });
+    expect(f.authority.get(copyKey)).toBe("live");
+    expect(f.log.some(entry => entry.startsWith("release:"))).toBe(false);
+    expect(events(f)).toEqual([`reopened:${copyKey}`]);
+  });
+
+  it.each(copies)("%s whose release of A is already in flight when the assignment comes: the stop finishes first, then B reopens a fresh copy (AC-001)", async (_case, copy, coordinator, copyKey) => {
+    const f = fixture();
+    await f.assign(copy, coordinator);
+    f.resources.addTask("task-B");
+    f.log.length = 0;
+    const release = latch();
+    f.control.releaseGate = release.promise;
+    const releasing = f.lifecycle.releaseTaskExecutions(f.resources.close("task-A"));
+    const assigning = f.assignTo(copy, "task-B");
+    await vi.waitFor(() => expect(f.log).toContain(`release:${copyKey}:live`));
+    release.resolve();
+    expect(await releasing).toEqual([{ execution: copy, stopped: true }]);
+    expect(await assigning).toMatchObject({ delegated: true });
+    expect(f.resources.entry(copy)).toMatchObject({ taskId: "task-B", open: true });
+    expect(f.authority.get(copyKey)).toBe("live");
+    // `closed` before `reopened`, each once.
+    expect(events(f)).toEqual([`closed:${copyKey}`, `reopened:${copyKey}`]);
+  });
 });
 
 describe("a task agent with other open Tasks (task-agent-several-tasks REQ-001, REQ-002, REQ-004)", () => {
