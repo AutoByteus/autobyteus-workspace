@@ -19,7 +19,8 @@
 - Release/publication/deployment report: `release-deployment-report.md`
 - Integration and post-integration verification: checkpoint `230c9773d0`; merge of `origin/personal` @ `aae0a53a81` (16 commits) as `9ece2da7e7`, no conflicts; server collaboration units 896 passed, web typecheck PASS, web specs 259 passed
 - Verification (evidence judgement or user check) and finalization state: every critical AC proven from the evidence (table in the report); AC-011-1's "reopened" half cannot occur for a stopped host (TR-N1), recorded in the report; no user check needed. Finalization: see the report
-- Terminal return to the Solution Designer: see the report's Final Status
+- Finalization: ticket branch `b9b104de5e` pushed; `--no-ff` merge `d88e3f4ec6` pushed to `personal`; this record committed on top; worktree and local branches removed after it
+- Terminal return to the Solution Designer: `Sent` after this record's push
 - Why this baseline or delivery revision was recorded: first completed delivery result
 - Next recipient/action: Solution Designer (terminal package)
 - Remaining blockers, rollback concerns, or untested scope: none blocking; residual risks: API 26–28 not on a device, other makers' cutouts, device journeys run by hand
