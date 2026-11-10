@@ -29,6 +29,7 @@
 //
 // Run: node autobyteus-web/tests/e2e/model-list-journeys-probe.mjs --output-dir <fresh absolute dir> [--cli scripted|real] [--cases API-11,API-12,API-14,API-14b,API-19]
 //        [--browser-executable <chromium>] [--keep] [--hold]
+//   A browser page error fails the run (exit 1, `result: Fail`, a recorded failure); `--inject-page-error` self-checks that rule.
 //   needs: a current `pnpm -C autobyteus-server-ts build`, Chromium; `--cli real` also needs `claude` on PATH and the test vault
 //   (`AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault`, provider.anthropic.api-key).
 import { execFileSync, spawn } from 'node:child_process'
@@ -69,7 +70,17 @@ const hold = process.argv.includes('--hold')
 const attach = arg('attach', '') // development aid: reuse a stack held by `--hold --keep` (its hold.json)
 const onlyCases = arg('cases', '').split(',').filter(Boolean)
 
-const evidence = { startedAt: new Date().toISOString(), steps: [], processes: [], cleanup: [], browserErrors: [] }
+const evidence = { startedAt: new Date().toISOString(), result: 'Fail', steps: [], processes: [], cleanup: [], browserErrors: [], failures: [] }
+// A browser page error fails the run (TESTING.md "Browser probes"). A page error a case produces on purpose is named here by case id;
+// none of these journeys produces one, so nothing is tolerated.
+const EXPECTED_PAGE_ERRORS = {}
+let currentCase = 'setup'
+const recordPageError = (text) => {
+  const line = String(text).split('\n')[0]
+  evidence.browserErrors.push({ case: currentCase, line, known: Boolean(EXPECTED_PAGE_ERRORS[currentCase]?.test(line)) })
+}
+/** Self-check of the rule above: `--inject-page-error` makes the page throw once, and the run must end `Fail` with a recorded failure. */
+const injectPageError = process.argv.includes('--inject-page-error')
 const delay = (ms) => new Promise((r) => setTimeout(r, ms))
 const assert = (cond, message, details) => { if (!cond) { const e = new Error(message); e.details = details; throw e } }
 const step = (text, details) => { evidence.steps.push({ text, details: details ?? null }); console.log(`  · ${text}`) }
@@ -640,6 +651,7 @@ defineCase('API-14', 'Stopped Team run on the Claude Agent SDK runtime: the Team
   if (!r.failedSeen) findings.push('no error shown after a failed refresh')
   if (!/Retry/.test(r.afterFailure.button ?? '')) findings.push(`no Retry (button reads "${r.afterFailure.button}")`)
   if (!r.afterFailure.rows.length) findings.push('the options were emptied by a failed refresh (menu reads "No models available")')
+  if (/No longer offered/i.test(`${r.cardAfterFailure} ${r.noteAfterFailure.join(' ')}`)) findings.push('the card says "No longer offered" after a failed refresh although the list could not be read (CR-004)')
   r.findings = findings
   if (findings.length) { const error = new Error(`QR-001/REQ-011 in the saved-run (locked) menu: ${findings.join('; ')}`); error.details = r; throw error }
   return r
@@ -768,7 +780,7 @@ try {
   const context = await browser.newContext({ viewport: { width: 1512, height: 952 }, locale: 'en-US' })
   await attachToBrowserContext(context)
   const page = await context.newPage(); page.setDefaultTimeout(30000)
-  page.on('pageerror', (e) => evidence.browserErrors.push(e.message))
+  page.on('pageerror', (e) => recordPageError(e.message))
   for (const route of ['/chat', '/workspace', '/agents']) { await page.goto(`${frontUrl}${route}`, { waitUntil: 'domcontentloaded' }).catch(() => {}); await delay(4000) }
   const context0 = attached ? { nativeModel: attached.nativeModel, workspace: attached.workspace } : await setup()
   Object.assign(evidence, { definitions, cli: cli.mode === 'real' ? { mode: 'real', bundled: execFileSync(cli.bundled, ['--version'], { encoding: 'utf8' }).trim(), system: execFileSync(cli.system, ['--version'], { encoding: 'utf8' }).trim() } : { mode: 'scripted', version: cliVersion('bundled') } })
@@ -779,18 +791,30 @@ try {
   }
   for (const entry of cases.filter((c) => !onlyCases.length || onlyCases.includes(c.id))) {
     const started = Date.now()
+    currentCase = entry.id
+    if (injectPageError) await page.evaluate(() => { setTimeout(() => { throw new Error('probe self-check: injected page error') }, 0) })
     try {
       evidence[entry.id] = { title: entry.title, result: 'Pass', details: await entry.fn(page, context0), ms: Date.now() - started }
     } catch (error) {
       exitCode = 1
+      evidence.failures.push({ case: entry.id, error: error.message })
       await page.screenshot({ path: path.join(outDir, `${entry.id}-failure.png`) }).catch(() => {})
       evidence[entry.id] = { title: entry.title, result: 'Fail', error: error.message, details: error.details ?? null, ms: Date.now() - started }
     }
     console.log(`${entry.id} ${evidence[entry.id].result}${evidence[entry.id].error ? ` — ${evidence[entry.id].error}` : ''}`)
   }
-  if (evidence.browserErrors.length) console.log(`  browser page errors: ${evidence.browserErrors.length} (see the evidence file)`)
+  currentCase = 'teardown'
+  const unknownPageErrors = evidence.browserErrors.filter((entry) => !entry.known)
+  for (const entry of unknownPageErrors) evidence.failures.push({ case: entry.case, error: `browser page error: ${entry.line}` })
+  if (unknownPageErrors.length) {
+    exitCode = 1
+    console.log(`  browser page errors that fail the run: ${unknownPageErrors.length}\n${unknownPageErrors.map((entry) => `    [${entry.case}] ${entry.line}`).join('\n')}`)
+  }
+  evidence.result = exitCode === 0 && evidence.failures.length === 0 ? 'Pass' : 'Fail'
+  console.log(`model-list-journeys probe: ${evidence.result}`)
 } catch (error) {
   exitCode = 1
+  evidence.result = 'Fail'
   evidence.fatal = String(error?.stack ?? error)
   console.error(`[model-list-journeys-probe] ${error.message}`)
 } finally {
