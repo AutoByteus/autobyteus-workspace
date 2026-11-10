@@ -6,6 +6,7 @@ import { defaultToolRegistry } from '../../registry/tool-registry.js';
 import { TerminalResult, type BackgroundCommandStarted } from '../types.js';
 import { getBackgroundManager, type AgentContextLike } from '../background-process-context.js';
 import { resolveExecutionCwd } from '../execution-cwd.js';
+import { omitEmptyToolResultFields } from '../../tool-result-json.js';
 
 export { resolveExecutionCwd };
 export type { AgentContextLike };
@@ -24,7 +25,8 @@ export async function runBash(
     const { call, started } = await manager.run(command, resolvedCwd, { background: true, signal: executionOptions.signal });
     const task = started[0];
     if (!task) throw new Error(`Background command did not start: ${(call.stderr || 'no start reported').trim()}`);
-    return { pid: task.pid, status: 'running', effectiveCwd: resolvedCwd, outputFile: task.outputFile };
+    const result: BackgroundCommandStarted = { pid: task.pid, status: 'running', effectiveCwd: resolvedCwd, outputFile: task.outputFile };
+    return omitEmptyToolResultFields(result) as BackgroundCommandStarted;
   }
   // Ends of this agent's background tasks seen during this call are reported here, not in a later notice.
   const mark = manager.markCallStart();
