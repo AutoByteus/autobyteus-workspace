@@ -20,8 +20,13 @@ vi.mock('~/composables/runHistory/useRunHistorySectionLoad', () => ({
   },
 }));
 
+// The page-wide stream close (autobyteus-435 REQ-010 (b)): its own spec proves the fan-out; here, when it runs.
+const streams = vi.hoisted(() => ({ closeAll: vi.fn() }));
+vi.mock('~/services/liveStreamLifecycle/closeAllLiveStreams', () => ({ closeAllLiveStreams: streams.closeAll }));
+
 import MobileRemoteAccessShell from '../MobileRemoteAccessShell.vue';
 import { useMobileNodeSessionStore } from '~/stores/mobileNodeSessionStore';
+import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { createMobileTestRouter } from '~/composables/mobile/__tests__/mobileTestRouter';
 
 const pairedSession = {
@@ -90,6 +95,7 @@ const toBase64Url = (value: object): string => btoa(JSON.stringify(value)).repla
 describe('MobileRemoteAccessShell', () => {
   beforeEach(() => {
     load.options = null;
+    streams.closeAll.mockClear();
     load.initialLoad = Promise.resolve();
     load.load.mockClear();
     credential.outcomes = ['reachable'];
@@ -201,6 +207,21 @@ describe('MobileRemoteAccessShell', () => {
     expect(load.load).not.toHaveBeenCalled();
     await flushPromises();
     expect(wrapper.find('[data-testid="mobile-run-list"]').exists()).toBe(false);
+    // The session ended: every live stream the page holds is closed (autobyteus-435 AC-010-2).
+    expect(streams.closeAll).toHaveBeenCalledTimes(1);
+    wrapper.unmount();
+  });
+
+  it('closes every live stream once when the session is removed (Unpair), and not while it stays or when pairing again (autobyteus-435 AC-010-2)', async () => {
+    const { wrapper } = await mountShell();
+    const session = useMobileNodeSessionStore();
+    expect(streams.closeAll).not.toHaveBeenCalled();
+    session.session = null;
+    await flushPromises();
+    expect(streams.closeAll).toHaveBeenCalledTimes(1);
+    session.session = pairedSession as never;
+    await flushPromises();
+    expect(streams.closeAll).toHaveBeenCalledTimes(1);
     wrapper.unmount();
   });
 
@@ -282,6 +303,37 @@ describe('MobileRemoteAccessShell', () => {
     expect(document.body.querySelector('[data-testid="mobile-connection-sheet"]')).toBeNull();
     await confirm.findAll('button').find((button) => button.text() === 'Unpair')!.trigger('click');
     expect(useMobileNodeSessionStore().deleteLocalSession).toHaveBeenCalledTimes(1);
+    wrapper.unmount();
+  });
+
+  // autobyteus-435 REQ-005, DS-006: the restore is created before the shell's subject-less-view watch, so a page started
+  // on a view whose row is not open shows "Opening…" and is never replaced by the list before the restore decides.
+  it('a page started on a view whose row is not open shows "Opening…" until the reads settle; a subject not listed then gives the list (AC-005-7)', async () => {
+    let finishLoad!: () => void;
+    load.initialLoad = new Promise<void>((resolve) => { finishLoad = resolve; });
+    const { router, wrapper } = await mountShell({ row: 'agent:gone-run', screen: 'desktop', full: '1' });
+    expect(router.currentRoute.value.query).toEqual({ row: 'agent:gone-run', screen: 'desktop', full: '1' });
+    expect(wrapper.get('[data-testid="mobile-run-opening"]').text()).toBe('Opening…');
+
+    finishLoad();
+    await flushPromises();
+    expect(router.currentRoute.value.query).toEqual({ row: 'agent:gone-run' });
+    expect(wrapper.find('[data-testid="mobile-run-opening"]').exists()).toBe(false);
+    expect(wrapper.get('[data-testid="mobile-run-list"]').isVisible()).toBe(true);
+    wrapper.unmount();
+  });
+
+  it('a page restored while the node is not reachable: the list with its connection state, not "Opening…" (AC-005-5, DEC-014)', async () => {
+    credential.outcomes = ['unreachable'];
+    let finishLoad!: () => void;
+    load.initialLoad = new Promise<void>((resolve) => { finishLoad = resolve; });
+    const { router, wrapper } = await mountShell({ row: 'agent:run-1', screen: 'run' });
+    expect(wrapper.find('[data-testid="mobile-run-opening"]').exists()).toBe(true);
+    useRunHistoryStore().error = 'Network error';
+    finishLoad();
+    await flushPromises();
+    expect(router.currentRoute.value.query).toEqual({ row: 'agent:run-1' });
+    expect(wrapper.get('[data-testid="mobile-node-state"]').text()).toBe('Not reachable');
     wrapper.unmount();
   });
 

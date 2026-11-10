@@ -1,4 +1,4 @@
-import type { TaskExecutionReferenceDto } from '@autobyteus/collaboration-stream-contracts'
+import { taskExecutionReferenceKey, type TaskExecutionReferenceDto } from '@autobyteus/collaboration-stream-contracts'
 import type { TeamTaskExecutionReferenceDto } from '@autobyteus/team-stream-contracts'
 
 /**
@@ -11,9 +11,6 @@ export type TaskExecutionReference = TaskExecutionReferenceDto
 
 export const agentRunKey = (agentRunId: string): string => `agent:${agentRunId}`
 export const teamRunKey = (teamRunId: string): string => `team:${teamRunId}`
-
-export const taskExecutionReferenceKey = (reference: TaskExecutionReference): string =>
-  'agentRunId' in reference ? agentRunKey(reference.agentRunId) : teamRunKey(reference.teamRunId)
 
 /** The Team stream's snake-case reference, in the shared shape. */
 export const fromTeamTaskExecutionReference = (reference: TeamTaskExecutionReferenceDto): TaskExecutionReference =>

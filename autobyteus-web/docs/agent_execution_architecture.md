@@ -1653,8 +1653,15 @@ decides how it connects, what counts as success, and how it catches up.
 
 - `transport/WebSocketClient` is a plain socket. It never retries and has no
   `RECONNECTING` state. `onDisconnect(reason, retryable)` tells the owner that a close was
-  not intended and whether it may be retried. Close codes 4004 and 4005 are not retryable.
-  An intentional `disconnect()` emits nothing.
+  not intended and whether it may be retried. Close codes 4004 and 4005 are not retryable,
+  nor is a credential-refusal close. An intentional `disconnect()` emits nothing.
+- A **credential-refusal close** (`services/liveStreamLifecycle/credentialRefusalClose.ts`,
+  autobyteus-435): 4401, or 4403 with `REMOTE_ACCESS_DEVICE_REVOKED`, `NODE_CREDENTIAL_REVOKED`,
+  `NODE_CREDENTIAL_INVALID` or `PEER_UNPAIRED` as the reason. Every owner (agent, Team, Org,
+  collaboration, file explorer) starts over instead of retrying after one; 4403 for Phone Access
+  off or a network refusal stays retryable, so those streams resume when it changes back. Each
+  owner keeps its own other final codes. On the phone, the end of the session also closes every
+  live stream (`closeAllLiveStreams.ts`: each registry's close-all action).
 - Each owner holds one `LiveStreamReconnectScheduler`
   (`services/liveStreamLifecycle/liveStreamReconnectScheduler.ts`). Its states are `idle`,
   `attempting`, `connected`, `waiting` and `held`.
@@ -1681,7 +1688,8 @@ decides how it connects, what counts as success, and how it catches up.
   - Team: `connect()` starts the scheduler over. `reopen_required` stays terminal, with
     no retries.
   - Org and collaboration: a persistent failure reports the error and rejects readiness.
-    A 4004 close starts the collaboration scheduler over.
+    A 4004 close starts the collaboration scheduler over; a credential-refusal close starts
+    either one over (the Org's context still requires a reopen).
 - The store's Agent Connect Rule (`agentRunStore.connectToAgentStream` →
   `requestConnect()`):
   - while `waiting`, it catches up now;

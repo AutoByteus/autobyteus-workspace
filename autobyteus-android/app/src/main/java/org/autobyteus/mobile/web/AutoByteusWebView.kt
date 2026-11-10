@@ -140,7 +140,7 @@ class AutoByteusWebView(
             errorResponse: WebResourceResponse,
         ) {
             if (request.isForMainFrame) {
-                onDiagnostic(ConnectionDiagnosticMapper.fromHttpStatus(errorResponse.statusCode))
+                onDiagnostic(ConnectionDiagnosticMapper.fromHttpStatus(errorResponse.statusCode, entry.shownName))
             }
         }
     }

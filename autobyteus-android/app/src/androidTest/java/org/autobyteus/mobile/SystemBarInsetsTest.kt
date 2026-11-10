@@ -55,4 +55,21 @@ class SystemBarInsetsTest {
             assertEquals(listOf(0, 0, 0, 0), listOf(root.paddingLeft, root.paddingTop, root.paddingRight, root.paddingBottom))
         }
     }
+
+    // autobyteus-435 REQ-004: in desktop full screen the page lays out into the cutout; only the keyboard pads its root.
+    @Test
+    fun inDesktopFullScreenOnlyTheKeyboardPadsTheRoot() {
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            val root = FrameLayout(context)
+            var fullScreen = true
+            SystemBarInsets.pad(root) { fullScreen }
+            ViewCompat.dispatchApplyWindowInsets(root, insets(statusTop = 74, navBottom = 48, cutoutLeft = 136, imeBottom = 0))
+            assertEquals(listOf(0, 0, 0, 0), listOf(root.paddingLeft, root.paddingTop, root.paddingRight, root.paddingBottom))
+            ViewCompat.dispatchApplyWindowInsets(root, insets(statusTop = 74, navBottom = 48, cutoutLeft = 136, imeBottom = 600))
+            assertEquals(600, root.paddingBottom)
+            fullScreen = false
+            ViewCompat.dispatchApplyWindowInsets(root, insets(statusTop = 74, navBottom = 48, cutoutLeft = 136, imeBottom = 0))
+            assertEquals(listOf(136, 74, 0, 48), listOf(root.paddingLeft, root.paddingTop, root.paddingRight, root.paddingBottom))
+        }
+    }
 }

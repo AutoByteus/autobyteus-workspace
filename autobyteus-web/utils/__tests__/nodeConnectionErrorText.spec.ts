@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import { localizationRuntime } from '~/localization/runtime/localizationRuntime'
 import { addressHintOf, causeText, failureText } from '../nodeConnectionErrorText'
 import { settingsFailureOf } from '../nodeSettingsError'
@@ -17,6 +17,23 @@ describe('nodeConnectionErrorText', () => {
     expect(causeText(t, 'unreachable', 'x')).not.toMatch(/fetch failed/)
     // autobyteus-290 N-910: a node whose identity waits for its data migration.
     expect(causeText(t, 'identity_pending', 'x')).toBe("This node's identity is waiting for its data migration.")
+  })
+
+  // autobyteus-435 REQ-003, AC-003-1, AC-003-2: something answers but refuses this window; the words stay true for a
+  // proxy or another server too, and name the setting per window kind.
+  describe('window_refused', () => {
+    afterEach(() => { delete (window as { electronAPI?: unknown }).electronAPI })
+
+    it('in the desktop window: the name and AUTOBYTEUS_ALLOWED_HOSTS, never "No answer from that address"', () => {
+      (window as { electronAPI?: unknown }).electronAPI = {}
+      expect(causeText(t, 'window_refused', 'office-mac.local:29695')).toBe('Something answers at office-mac.local, but it refuses this window. '
+        + 'If it is an AutoByteus node, add office-mac.local to AUTOBYTEUS_ALLOWED_HOSTS on that node, or use its IP address.')
+    })
+
+    it('in a browser page: this page\'s address (AUTOBYTEUS_ALLOWED_ORIGINS) or the name (AUTOBYTEUS_ALLOWED_HOSTS)', () => {
+      expect(causeText(t, 'window_refused', 'office-mac.local:29695')).toBe('Something answers at office-mac.local, but it doesn’t accept requests from this page. '
+        + 'If it is an AutoByteus node, allow this page’s address (AUTOBYTEUS_ALLOWED_ORIGINS) or the name office-mac.local (AUTOBYTEUS_ALLOWED_HOSTS) on it.')
+    })
   })
 
   it('words a refused change by its code, an address lookup by its first attempt', () => {

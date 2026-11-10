@@ -108,6 +108,8 @@
 //                  workspace path, another node's path), and a file opened again shows its current content (phone and a
 //                  desktop window): `mobile-file-open-cases.mjs` (MSP-28…30 on its own nodes epsilon and zeta; MSP-31 on
 //                  alpha's desktop window, last).
+//   MSP-32 autobyteus-435 REQ-010  After MSP-13 revoked the phone (the page stays open on the pairing screen through the
+//                  later cases), it sends no refused request: no HTTP answer 401/403 and no socket closed 4401/4403.
 //
 // Prerequisites: `pnpm -C autobyteus-server-ts build` and `pnpm -C autobyteus-web build:mobile-web` (alpha serves
 // `autobyteus-web/dist/public` at /mobile); Chrome. Run: `pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=<fresh>`
@@ -451,8 +453,10 @@ const pairingFor = async (serverBaseUrl) => {
 const phoneOrigin = () => `http://${PHONE_HOST}:${alpha.port}`;
 /** Every GraphQL operation a phone sent: when, which context, the history window, the status and the bytes. */
 const phoneNet = [];
-/** Every WebSocket a phone opened to its node: which context, the URL, when it opened and closed. */
+/** Every WebSocket a phone opened to its node: which context, the URL, when it opened and closed, the node's close code. */
 const phoneSockets = [];
+/** Every HTTP answer 401/403 a phone got from its node (GraphQL or REST): which context, which case, when, the path. */
+const phoneRefused = [];
 /**
  * Browser lines a case produces on purpose; any other browser error fails the probe. There is no app-wide exemption:
  * the phone opens the definitions feed only while paired, to its node (autobyteus-426 D-01), so nothing retries
@@ -499,18 +503,19 @@ const openPhone = async ({ width = 390, height = 844, storageState, label = 'pho
       await route.abort('connectionrefused').catch(() => undefined); return;
     }
     if (op) phoneNet.push({ at: Date.now(), label, case: currentCase, op, window: windowVar === undefined ? 'omitted' : windowVar, runIds, status: response.status(), bytes: (await response.body().catch(() => Buffer.alloc(0))).length });
+    if (response.status() === 401 || response.status() === 403) phoneRefused.push({ at: Date.now(), label, case: currentCase, op, path: new URL(request.url()).pathname, status: response.status() });
     await route.fulfill({ response }).catch(() => undefined);
   });
   const wsOrigin = phoneOrigin().replace(/^http/, 'ws');
   await context.routeWebSocket(url => url.href.startsWith(wsOrigin), (ws) => {
-    const socket = { label, case: currentCase, url: ws.url(), at: Date.now(), closedAt: null };
+    const socket = { label, case: currentCase, url: ws.url(), at: Date.now(), closedAt: null, closeCode: null };
     phoneSockets.push(socket);
     const closed = () => { socket.closedAt ??= Date.now(); };
     const upstream = new PhoneUpstreamWebSocket(ws.url().replace(wsOrigin, alpha.baseUrl.replace(/^http/, 'ws')), { headers: { origin: phoneOrigin(), host: phoneHost } });
     const queued = [];
     upstream.on('open', () => { for (const message of queued.splice(0)) upstream.send(message); });
     upstream.on('message', (data, isBinary) => { try { ws.send(isBinary ? data : String(data)); } catch { /* closed */ } });
-    upstream.on('close', () => { closed(); try { ws.close(); } catch { /* closed */ } });
+    upstream.on('close', (code) => { socket.closeCode ??= code; closed(); try { ws.close(); } catch { /* closed */ } });
     upstream.on('error', () => { closed(); try { ws.close(); } catch { /* closed */ } });
     ws.onMessage(message => { if (upstream.readyState === 1) upstream.send(message); else queued.push(message); });
     ws.onClose(() => { closed(); upstream.close(); });
@@ -2135,6 +2140,7 @@ const runCases = async () => {
     // revoked credential: the check on opening lands on pairing too.
     await toList(page);
     const revokedAll = await alpha.rest('DELETE', '/remote-access/devices');
+    stack.phoneRevokedAt = Date.now();
     await page.locator(sel('mobile-node-button')).click();
     await page.locator(sel('mobile-connection-sheet')).waitFor();
     await page.locator(sel('mobile-check-connection')).click();
@@ -2170,6 +2176,21 @@ const runCases = async () => {
   await runLiveReconnectCases({ runCase, serverAt, freePort, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact });
   await runClosedTaskRowsCases({ runCase, serverAt, freePort, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact, browser, alpha, stack, desktopRunsView });
   await runFileOpenCases({ runCase, serverAt, freePort, chromium, executablePath, outputDir, evidence, selected, sleep, waitFor, assert, redact, browser, alpha, stack, desktopRunsView });
+
+  await runCase('MSP-32', async () => {
+    // autobyteus-435 REQ-010 (c): MSP-13 revoked the open phone (label `phone`), whose Check took it to pairing; the page
+    // stays open through every later case. Its live streams closed on the session's end and no stream reconnects after a
+    // credential-refusal close, so from the end of MSP-13 on it sends no request the node refuses.
+    assert(stack.phoneRevokedAt, 'MSP-32 needs MSP-13 (the phone revoked)');
+    const after = entry => entry.label === 'phone' && entry.case !== 'MSP-13' && entry.at > stack.phoneRevokedAt;
+    const refused = phoneRefused.filter(after).map(entry => `${entry.case} ${entry.op ?? entry.path} ${entry.status}`);
+    const refusedSockets = phoneSockets.filter(socket => after(socket) && (socket.closeCode === 4401 || socket.closeCode === 4403))
+      .map(socket => `${socket.case} ${redact(new URL(socket.url).pathname)} ${socket.closeCode}`);
+    const socketsOpened = phoneSockets.filter(after).length;
+    const facts = { since: new Date(stack.phoneRevokedAt).toISOString(), until: new Date().toISOString(), refused, refusedSockets, socketsOpened };
+    assert(refused.length === 0 && refusedSockets.length === 0, 'the revoked phone sent no refused request after MSP-13', facts);
+    return facts;
+  });
 };
 
 try {
@@ -2201,15 +2222,6 @@ try {
   } else {
     await runCases();
     const failed = Object.entries(evidence.cases).filter(([, entry]) => entry.result !== 'Pass').map(([id]) => id);
-    // Pre-existing, outside this probe's changes (autobyteus-426 FU-003): each phone page start runs the browser health
-    // check of `serverStore` (plugins/10.serverStore.client.ts) against the window node's default endpoint,
-    // `http://localhost:8000/health`, which a phone refuses. Its console line names no URL, so each such line counts as
-    // known only against a recorded failed request to exactly that URL from the same phone in the same case.
-    const healthFailures = evidence.failedRequests.filter(entry => entry.url === 'http://localhost:8000/health' && entry.error === 'net::ERR_CONNECTION_REFUSED');
-    for (const entry of evidence.browserErrors.filter(item => !item.known && /: Failed to load resource: net::ERR_CONNECTION_REFUSED$/.test(item.line))) {
-      const index = healthFailures.findIndex(failure => failure.case === entry.case && entry.line.startsWith(`${failure.label} console:`));
-      if (index >= 0) { healthFailures.splice(index, 1); entry.known = true; entry.cause = 'FU-003: serverStore health check of http://localhost:8000/health'; }
-    }
     const unknownErrors = evidence.browserErrors.filter(entry => !entry.known);
     evidence.result = failed.length === 0 && unknownErrors.length === 0 && Object.keys(evidence.cases).length > 0 ? 'Pass' : 'Fail';
     evidence.summary = { cases: Object.fromEntries(Object.entries(evidence.cases).map(([id, entry]) => [id, entry.result])), unknownBrowserErrors: unknownErrors.length };

@@ -77,7 +77,7 @@ class WebShellWindowInsetsTest {
                         override fun onPageFinished(view: WebView, url: String) { loaded.countDown() }
                     }
                 }
-                val root = WebShellScreen(activity).render(webView, null, WebShellScreen.Callbacks({}, {}, {}))
+                val root = WebShellScreen(activity) { false }.render(webView, null, WebShellScreen.Callbacks({}, {}, {}))
                 activity.setContentView(root)
                 webView.loadDataWithBaseURL("https://inset.check/mobile", page, "text/html", "utf-8", null)
                 webViewRef.set(webView)

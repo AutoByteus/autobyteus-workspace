@@ -110,6 +110,23 @@ describe('WebSocketClient', () => {
     expect(retryable).toEqual([false, false]);
   });
 
+  it('reports a credential-refusal close as not retryable, and Phone Access off or a network refusal as retryable (autobyteus-435 AC-010-1)', () => {
+    const client = new WebSocketClient();
+    const retryable: boolean[] = [];
+    client.on('onDisconnect', (_reason, value) => retryable.push(value));
+    const closes: Array<[number, string]> = [
+      [4401, 'NODE_CREDENTIAL_REQUIRED'], [4403, 'REMOTE_ACCESS_DEVICE_REVOKED'], [4403, 'NODE_CREDENTIAL_REVOKED'],
+      [4403, 'PHONE_ACCESS_DISABLED'], [4403, 'NODE_NETWORK_REFUSED'], [1001, 'going away'],
+    ];
+    closes.forEach(([code, reason], index) => {
+      client.connect('ws://localhost:8000/ws/agent/run-1');
+      sockets[index].simulateOpen();
+      sockets[index].simulateClose(code, reason);
+    });
+
+    expect(retryable).toEqual([false, false, false, true, true, true]);
+  });
+
   it('an intentional disconnect reports no disconnect event', () => {
     const client = new WebSocketClient();
     const onDisconnect = vi.fn();

@@ -56,7 +56,8 @@ object ConnectionDiagnosticMapper {
         recoveryAction = "On your computer, open Nodes › Phone Setup and turn Phone access on, then retry.",
     )
 
-    fun fromHttpStatus(statusCode: Int): ConnectionDiagnostic = when (statusCode) {
+    /** The node answered with an error status; [nodeName] is the name the app shows for it, never its address. */
+    fun fromHttpStatus(statusCode: Int, nodeName: String): ConnectionDiagnostic = when (statusCode) {
         401 -> ConnectionDiagnostic(
             kind = ConnectionFailureKind.AuthRequired,
             title = "Pair this phone again",
@@ -69,11 +70,12 @@ object ConnectionDiagnosticMapper {
             message = "Phone access may be off, or this phone may have been revoked on the computer.",
             recoveryAction = "Turn Phone access on, or show a new QR code on your computer and scan it again.",
         )
+        // autobyteus-435 REQ-007, DEC-006: which node did not open and what to try, in plain words.
         else -> ConnectionDiagnostic(
             kind = ConnectionFailureKind.WebViewLoadFailed,
-            title = "AutoByteus returned HTTP $statusCode",
-            message = "The saved node was reached, but the mobile shell could not load successfully.",
-            recoveryAction = "Verify the saved URL, Phone Access state, and that the desktop server is serving /mobile.",
+            title = "Can’t open $nodeName",
+            message = "$nodeName answered, but its page didn’t open (error $statusCode).",
+            recoveryAction = "Check that AutoByteus is running on the computer, then tap Retry.",
         )
     }
 

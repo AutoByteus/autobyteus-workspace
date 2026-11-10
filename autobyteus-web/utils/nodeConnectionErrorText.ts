@@ -1,5 +1,6 @@
 import type { NodeProbeCause } from '~/utils/nodeIdentityProbe'
 import type { NodeSettingsFailure } from '~/utils/nodeSettingsError'
+import { isElectronEnvironment } from '~/utils/browserServerConfig'
 
 type Translate = (key: string, params?: Record<string, string | number>) => string
 
@@ -27,6 +28,10 @@ export const causeText = (t: Translate, cause: NodeProbeCause | 'host_refused' |
     case 'identity_pending': return t(k('cause.identityPending'))
     // autobyteus-437 M-8b: the node refuses this network (it is not this computer, its Tailscale or an allowed network).
     case 'network_refused': return t(k('cause.networkRefused'))
+    // autobyteus-435 REQ-003: something answers but refuses this window. The desktop window (`file://`) is admitted by
+    // every node's Origin rule, so there it is the name; a browser page may also be refused for its own address.
+    case 'window_refused':
+      return t(k(isElectronEnvironment() ? 'cause.windowRefused' : 'cause.windowRefusedPage'), { host: hostName(host) })
     default: return t(k('cause.unreachable'))
   }
 }

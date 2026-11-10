@@ -32,7 +32,7 @@ class ConnectionValidator(
             }
             val statusCode = connection.responseCode
             if (statusCode !in 200..299) {
-                ConnectionValidationResult.Failed(ConnectionDiagnosticMapper.fromHttpStatus(statusCode))
+                ConnectionValidationResult.Failed(ConnectionDiagnosticMapper.fromHttpStatus(statusCode, entry.shownName))
             } else {
                 val body = connection.inputStream.bufferedReader().use { it.readText() }
                 val status = RemoteAccessStatus.fromJson(body)

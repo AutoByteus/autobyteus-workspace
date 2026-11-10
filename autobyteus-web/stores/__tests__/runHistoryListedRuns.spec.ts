@@ -2,11 +2,11 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 import { useRunHistoryStore } from '~/stores/runHistoryStore'
 
-// autobyteus-426 D-09: the listed standalone Agent runs the history poll asks child states for.
-describe('runHistoryStore.activeListedAgentRunIds', () => {
+// autobyteus-426 D-09, autobyteus-435 REQ-011: the listed standalone Agent runs the history poll asks child states for.
+describe('runHistoryStore.listedAgentRunIds', () => {
   beforeEach(() => setActivePinia(createPinia()))
 
-  it('lists the active standalone Agent runs of every listed folder, never a Team run', () => {
+  it('lists every standalone Agent run of every listed folder, active or stopped, never a Team run', () => {
     const store = useRunHistoryStore()
     const run = (runId: string, isActive: boolean) => ({ runId, isActive, summary: '', status: 'IDLE', createdAt: '', lastActivityAt: '' })
     store.workspaceGroups = [
@@ -16,6 +16,6 @@ describe('runHistoryStore.activeListedAgentRunIds', () => {
       ], teamDefinitions: [{ teamDefinitionId: 't', teamDefinitionName: 'Team', runs: [{ teamRunId: 'team-1', isActive: true }] }] },
       { workspaceRootPath: '/b', workspaceName: 'b', agentDefinitions: [{ agentDefinitionId: 'pm', agentName: 'PM', runs: [run('pm-3', true)] }], teamDefinitions: [] },
     ] as never
-    expect(store.activeListedAgentRunIds).toEqual(['pm-1', 'w-1', 'pm-3'])
+    expect(store.listedAgentRunIds).toEqual(['pm-1', 'pm-2', 'w-1', 'pm-3'])
   })
 })

@@ -15,12 +15,11 @@ import { GetAgentOrgExecutionCheckpoint } from '~/graphql/queries/runHistoryQuer
 import { getApolloClient } from '~/utils/apolloClient'
 import { stageAgentOrgExecutionContext } from './agentOrgContextHydration'
 import { useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages'
-import {
-  AgentOrgExecutionContext,
-} from './agentOrgExecutionContext'
+import { AgentOrgExecutionContext } from './agentOrgExecutionContext'
 import type { CollaboratorMentionDto } from '~/utils/collaborators/collaboratorMentionText'
 import { createRandomId } from '~/utils/randomId'
 import { LiveStreamReconnectScheduler } from '~/services/liveStreamLifecycle/liveStreamReconnectScheduler'
+import { isCredentialRefusalClose } from '~/services/liveStreamLifecycle/credentialRefusalClose'
 
 type CommandAck = Extract<CollaborationStreamServerMessage, { type: 'AGENT_COMMAND_ACK' }>
 type PendingCommand = Readonly<{
@@ -125,18 +124,18 @@ export class AgentOrgStreamingService {
         .then(() => this.processFrame(generation, String(raw.data)))
     }
     socket.onerror = () => undefined
-    socket.onclose = () => {
+    socket.onclose = (event) => {
       if (!this.isCurrent(generation)) return
       const shouldRecover = !this.intentionalClose
       this.socket = null
       this.activeGeneration = null
       this.streamPhase = 'disconnected'
       const detail = 'AgentOrg stream closed before a complete synchronized view was available.'
-      if (shouldRecover && this.context) {
-        this.context.requireReopen(detail)
-      }
+      if (shouldRecover && this.context) this.context.requireReopen(detail)
       this.rejectPending('AgentOrg stream closed before command acknowledgement.')
-      if (shouldRecover) this.recoveryFailed(detail)
+      // A credential refusal (autobyteus-435): connecting again would be refused again; a later connect starts over.
+      if (shouldRecover && isCredentialRefusalClose(event.code, event.reason)) this.reconnect.startOver()
+      else if (shouldRecover) this.recoveryFailed(detail)
     }
   }
 

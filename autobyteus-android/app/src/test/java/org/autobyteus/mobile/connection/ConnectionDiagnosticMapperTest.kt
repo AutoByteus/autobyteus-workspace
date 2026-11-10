@@ -22,6 +22,27 @@ class ConnectionDiagnosticMapperTest {
         }
     }
 
+    // autobyteus-435 REQ-007, AC-007-1: an HTTP error other than 401/403 names the node and what to try, in plain words.
+    @Test
+    fun anHttpErrorNamesTheNodeAndWhatToTryWithNoAddressOrTechnicalWords() {
+        for (code in listOf(500, 502, 503, 404)) {
+            val diagnostic = ConnectionDiagnosticMapper.fromHttpStatus(code, "Office Mac")
+            assertEquals("Can’t open Office Mac", diagnostic.title)
+            assertEquals("Office Mac answered, but its page didn’t open (error $code).", diagnostic.message)
+            assertEquals("Check that AutoByteus is running on the computer, then tap Retry.", diagnostic.recoveryAction)
+            assertNoAddress(diagnostic)
+            for (text in diagnostic.texts()) {
+                for (word in listOf("HTTP", "URL", "/mobile", "mobile shell")) assertFalse("\"$text\" contains \"$word\"", text.contains(word))
+            }
+        }
+    }
+
+    @Test
+    fun the401And403OverlaysAreUnchanged() {
+        assertEquals("Pair this phone again", ConnectionDiagnosticMapper.fromHttpStatus(401, "Office Mac").title)
+        assertEquals("Phone credential was rejected", ConnectionDiagnosticMapper.fromHttpStatus(403, "Office Mac").title)
+    }
+
     // autobyteus-433 AC-008: an exception's text (here an unresolved host's name) never reaches a diagnostic.
     @Test
     fun aStatusCheckExceptionNamingAHostGivesNoHostOrExceptionTextInAnyText() {
@@ -82,7 +103,8 @@ class ConnectionDiagnosticMapperTest {
             .filter { java.lang.reflect.Modifier.isPublic(it.modifiers) && !it.isSynthetic }
             .flatMap { method -> method.parameterTypes.map { method.name to it } }
         val textParameters = parameterNames.filter { (_, type) -> type == String::class.java }.map { (name, _) -> name }.toSet()
-        assertEquals(setOf("cantReachText", "phoneAccessDisabled", "pageLoadFailed"), textParameters)
+        // Each String is the node's shown name, never its address (fromHttpStatus: autobyteus-435 REQ-007).
+        assertEquals(setOf("cantReachText", "phoneAccessDisabled", "pageLoadFailed", "fromHttpStatus"), textParameters)
     }
     @Test
     fun mapsDisabledStatusToTailscaleRelevantRecoveryCopy() {
@@ -113,7 +135,7 @@ class ConnectionDiagnosticMapperTest {
             ConnectionDiagnosticMapper.cantReachText(CantReachReason.NoSharedNetwork, "Docker node 2"),
         )
         assertTrue(CantReachReason.NoSharedNetwork.offersTailscale)
-        assertEquals(CantReachReason.NoAnswer, ConnectionDiagnosticMapper.cantReachReasonFor(ConnectionDiagnosticMapper.fromHttpStatus(502)))
+        assertEquals(CantReachReason.NoAnswer, ConnectionDiagnosticMapper.cantReachReasonFor(ConnectionDiagnosticMapper.fromHttpStatus(502, "Docker node 2")))
         assertEquals(
             "Docker node 2 didn’t answer. Check that the computer is on and awake.",
             ConnectionDiagnosticMapper.cantReachText(CantReachReason.NoAnswer, "Docker node 2"),

@@ -17,11 +17,11 @@ vi.mock('~/stores/windowNodeContextStore', () => ({ useWindowNodeContextStore: (
 
 class Socket {
   static OPEN = 1; static instances: Socket[] = []; readyState = 1
-  onmessage?: (event: { data: string }) => void; onclose?: (event: { code: number }) => void
+  onmessage?: (event: { data: string }) => void; onclose?: (event: { code: number; reason?: string }) => void
   close = vi.fn(); send = vi.fn()
   constructor(_url: string) { Socket.instances.push(this) }
   frame(value: unknown) { this.onmessage?.({ data: JSON.stringify(value) }) }
-  lose(code = 1006) { this.readyState = 3; this.onclose?.({ code }) }
+  lose(code = 1006, reason?: string) { this.readyState = 3; this.onclose?.({ code, reason }) }
 }
 
 /**
@@ -125,6 +125,26 @@ describe('AgentRunCollaborationStreamingService reconnect', () => {
     await vi.advanceTimersByTimeAsync(120_000)
     expect(Socket.instances).toHaveLength(1)
     expect(options.reportError).not.toHaveBeenCalled()
+  })
+
+  it.each([[4401, 'NODE_CREDENTIAL_INVALID'], [4403, 'REMOTE_ACCESS_DEVICE_REVOKED']])(
+    'does not retry a credential-refusal close %i %s (autobyteus-435 AC-010-1)', async (code, reason) => {
+      service.connect()
+      await synchronize(Socket.instances[0]!)
+      Socket.instances[0]!.lose(code, reason)
+      await vi.advanceTimersByTimeAsync(120_000)
+      expect(Socket.instances).toHaveLength(1)
+    })
+
+  it('retries a close for Phone Access off or a network refusal: they can change back (autobyteus-435 DEC-008)', async () => {
+    service.connect()
+    await synchronize(Socket.instances[0]!)
+    Socket.instances[0]!.lose(4403, 'PHONE_ACCESS_DISABLED')
+    await vi.advanceTimersByTimeAsync(1_000)
+    expect(Socket.instances).toHaveLength(2)
+    Socket.instances[1]!.lose(4403, 'NODE_NETWORK_REFUSED')
+    await vi.advanceTimersByTimeAsync(2_000)
+    expect(Socket.instances).toHaveLength(3)
   })
 
   it('holds while hidden and attempts at once on becoming visible (AC-004)', async () => {

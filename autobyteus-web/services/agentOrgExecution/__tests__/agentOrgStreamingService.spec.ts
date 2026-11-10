@@ -43,7 +43,7 @@ class TestWebSocket {
   readyState = TestWebSocket.OPEN
   onmessage: ((event: MessageEvent) => void) | null = null
   onerror: (() => void) | null = null
-  onclose: (() => void) | null = null
+  onclose: ((event: Readonly<{ code: number, reason: string }>) => void) | null = null
   sent: string[] = []
   closeCalls: Array<Readonly<{ code: number | undefined, reason: string | undefined }>> = []
 
@@ -59,12 +59,12 @@ class TestWebSocket {
     }
     if (this.readyState === TestWebSocket.CLOSED) return
     this.readyState = TestWebSocket.CLOSED
-    this.onclose?.()
+    this.onclose?.({ code: code ?? 1005, reason: reason ?? '' })
   }
-  emitClose() {
+  emitClose(code = 1006, reason = '') {
     if (this.readyState === TestWebSocket.CLOSED) return
     this.readyState = TestWebSocket.CLOSED
-    this.onclose?.()
+    this.onclose?.({ code, reason })
   }
   emit(message: unknown) {
     this.onmessage?.({ data: JSON.stringify(message) } as MessageEvent)
@@ -235,6 +235,53 @@ describe('AgentOrgStreamingService', () => {
     expect(second.select).toHaveBeenCalledWith({ kind: 'agent_execution', agentRunId: 'agent-run' })
     expect(mocks.query).toHaveBeenCalledTimes(2)
     expect(reportError).not.toHaveBeenCalled()
+  })
+
+  it.each([[4401, 'NODE_CREDENTIAL_REQUIRED'], [4403, 'REMOTE_ACCESS_DEVICE_REVOKED']])(
+    'does not recover after a credential-refusal close %i %s (autobyteus-435 AC-010-1)', async (code, reason) => {
+      const first = candidate('/direct')
+      mocks.hydrate.mockResolvedValue(first)
+      mocks.query.mockResolvedValue({ data: { getAgentOrgExecutionCheckpoint: {
+        orgRunId: 'org-run', changeSequence: 4, hasOpenExecutionWork: false,
+      } } })
+      const publish = vi.fn()
+      const service = new AgentOrgStreamingService({ orgRunId: 'org-run', publish, reportError: vi.fn() })
+      service.connect()
+      const initialSocket = TestWebSocket.instances[0]!
+      initialSocket.emit(connected)
+      initialSocket.emit(snapshot)
+      await vi.waitFor(() => expect(publish).toHaveBeenCalledWith(first, expect.any(Function)))
+
+      vi.useFakeTimers()
+      try {
+        initialSocket.emitClose(code, reason)
+        await vi.advanceTimersByTimeAsync(120_000)
+        expect(first.requireReopen).toHaveBeenCalled()
+        expect(mocks.query).not.toHaveBeenCalled()
+        expect(TestWebSocket.instances).toHaveLength(1)
+      } finally {
+        service.disconnect()
+        vi.useRealTimers()
+      }
+    })
+
+  it('recovers after a close for Phone Access off: it can be turned on again (autobyteus-435 DEC-008)', async () => {
+    const first = candidate('/direct')
+    mocks.hydrate.mockResolvedValue(first)
+    mocks.query.mockResolvedValue({ data: { getAgentOrgExecutionCheckpoint: {
+      orgRunId: 'org-run', changeSequence: 4, hasOpenExecutionWork: false,
+    } } })
+    const publish = vi.fn()
+    const service = new AgentOrgStreamingService({ orgRunId: 'org-run', publish, reportError: vi.fn() })
+    service.connect()
+    const initialSocket = TestWebSocket.instances[0]!
+    initialSocket.emit(connected)
+    initialSocket.emit(snapshot)
+    await vi.waitFor(() => expect(publish).toHaveBeenCalledWith(first, expect.any(Function)))
+
+    initialSocket.emitClose(4403, 'PHONE_ACCESS_DISABLED')
+    await vi.waitFor(() => expect(TestWebSocket.instances).toHaveLength(2), RETRY_WAIT)
+    expect(mocks.query).toHaveBeenCalledTimes(1)
   })
 
   it('reports the error at the fifth consecutive failure (before the snapshot) and keeps retrying (autobyteus-434)', async () => {
