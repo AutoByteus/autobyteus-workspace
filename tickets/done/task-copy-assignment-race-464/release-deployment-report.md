@@ -78,7 +78,17 @@ Not applicable (no release).
 
 - Bootstrap context source: `RELEASE.md` Finalization Target (`origin`, `personal`, `codex/<ticket-name>`)
 - Ticket branch: `codex/task-copy-assignment-race-464`
-- Commit, Secret Gate, push, merge and target push results, and the update of the user's checkout: recorded in the record commit that follows the merge (`delivery-revision-record.md` DR-001).
+- Ticket branch commit result: `4a238f81e2` (delivery records, archive, re-integration with `1ca4be9bfb`)
+- Ticket branch push result: pushed `origin/codex/task-copy-assignment-race-464` (new branch) after the Secret Gate (10 commits: PASS) and artifact hygiene (PASS; no Windows-hostile names in this ticket)
+- Finalization target remote / branch: `origin` / `personal`
+- Target advanced after verification / acceptance: `Yes` (`16947ba681` → `1ca4be9bfb`, a version bump only)
+- Delivery-owned edits protected before re-integration: `Completed` (`b4d6a1bf53`)
+- Re-integration before final merge result: `Completed` (`d651aa9bcd`; no rerun needed, see Verification)
+- Target branch update result: `finalize/task-copy-assignment-race-464` from `origin/personal` @ `1ca4be9bfb`, unchanged at the fetch before the push
+- Merge into target result: `--no-ff` merge `ee46b59310`; Secret Gate on the merged state (11 commits): PASS; `src/` diff = the ticket's 3 files
+- Push target branch result: `1ca4be9bfb..ee46b59310  HEAD -> personal`
+- User's checkout of the target branch (`/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`): on `personal`, no local commits, 15 behind, 6 modified files from other tickets. It is fast-forwarded with `git merge --ff-only origin/personal` after this record's push; the result is in the terminal message.
+- Repository finalization status: `Completed`
 
 ## Release / Publication / Deployment
 
@@ -111,4 +121,8 @@ Revert the merge commit on `personal`. There is no data effect; a revert brings 
 
 - Verification complete: `Yes` (from the evidence)
 - Applicable release/deployment/rollout complete or not required: `Yes` (not required)
-- Repository finalization and cleanup: see the record commit and the terminal message
+- Repository finalization complete: `Yes` (`ee46b59310`; this record commit follows)
+- Applicable safe cleanup complete or not required: run after this record's push; result in the terminal message
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: by `send_message_to` after this record's push
