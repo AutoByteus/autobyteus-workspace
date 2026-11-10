@@ -1,0 +1,94 @@
+# Case API-F01 Fresh-start build (API/E2E round 1)
+# Steps (repo root of the worktree): git clone -q --no-local <worktree> <tmp>/clone; cd <tmp>/clone; git checkout c4f004d7fc;
+#   docker buildx build -f autobyteus-server-ts/docker/Dockerfile.monorepo --target server-package --output type=local,dest=<tmp>/out .
+# Commit: c4f004d7fc (source of fbc9b3c2e9 + E2E tests)
+# Environment: macOS arm64, Docker 29.0.1, linux/arm64 builder; the clone had no build output. CACHED layers are the base image and manifest COPY steps (#4-#20); `pnpm install --frozen-lockfile` (#22) and every build step ran.
+# Date: Tue Nov 10 07:06:04 CET 2026
+# Full log: not committed (     677 lines); excerpt below.
+
+5:#1 DONE 0.1s
+11:#3 DONE 0.0s
+14:#2 DONE 3.4s
+18:#4 CACHED
+24:#6 DONE 0.0s
+27:#5 DONE 0.5s
+31:#7 DONE 0.0s
+33:#8 [builder  1/30] FROM docker.io/library/node:22-bookworm@sha256:7702d8aa4d5910871692af4480eb3ba86f23047a6417a44d857d06c95d060d3f
+35:#8 DONE 0.0s
+39:#9 DONE 1.5s
+41:#10 [builder  6/30] COPY autobyteus-ts/scripts ./autobyteus-ts/scripts
+42:#10 CACHED
+44:#11 [builder  7/30] COPY autobyteus-application-sdk-contracts/package.json autobyteus-application-sdk-contracts/tsconfig.build.json autobyteus-application-sdk-contracts/tsconfig.json ./autobyteus-application-sdk-contr
+45:#11 CACHED
+47:#12 [builder 10/30] COPY autobyteus-collaboration-stream-contracts/package.json autobyteus-collaboration-stream-contracts/tsconfig.build.json autobyteus-collaboration-stream-contracts/tsconfig.json ./autobyteus-collab
+48:#12 CACHED
+50:#13 [builder  5/30] COPY autobyteus-ts/package.json autobyteus-ts/tsconfig.build.json autobyteus-ts/tsconfig.json ./autobyteus-ts/
+51:#13 CACHED
+53:#14 [builder 11/30] COPY autobyteus-team-stream-contracts/package.json autobyteus-team-stream-contracts/tsconfig.build.json autobyteus-team-stream-contracts/tsconfig.json ./autobyteus-team-stream-contracts/
+54:#14 CACHED
+56:#15 [builder  8/30] COPY autobyteus-application-backend-sdk/package.json autobyteus-application-backend-sdk/tsconfig.build.json autobyteus-application-backend-sdk/tsconfig.json ./autobyteus-application-backend-sdk/
+57:#15 CACHED
+59:#16 [builder  9/30] COPY autobyteus-agent-presentation-contracts/package.json autobyteus-agent-presentation-contracts/tsconfig.build.json autobyteus-agent-presentation-contracts/tsconfig.json ./autobyteus-agent-presen
+60:#16 CACHED
+62:#17 [builder  2/30] WORKDIR /app
+63:#17 CACHED
+65:#18 [builder  3/30] RUN corepack enable
+66:#18 CACHED
+68:#19 [builder  4/30] COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
+69:#19 CACHED
+71:#20 [builder 12/30] COPY autobyteus-server-ts/package.json autobyteus-server-ts/tsconfig.json ./autobyteus-server-ts/
+72:#20 CACHED
+74:#21 [builder 13/30] COPY autobyteus-web/package.json ./autobyteus-web/
+75:#21 DONE 0.2s
+77:#22 [builder 14/30] RUN pnpm install --frozen-lockfile
+210:#22 DONE 49.2s
+212:#23 [builder 15/30] COPY autobyteus-ts ./autobyteus-ts
+213:#23 DONE 0.7s
+215:#24 [builder 16/30] COPY autobyteus-application-sdk-contracts ./autobyteus-application-sdk-contracts
+216:#24 DONE 0.0s
+218:#25 [builder 17/30] COPY autobyteus-application-backend-sdk ./autobyteus-application-backend-sdk
+219:#25 DONE 0.0s
+221:#26 [builder 18/30] COPY autobyteus-agent-presentation-contracts ./autobyteus-agent-presentation-contracts
+222:#26 DONE 0.0s
+224:#27 [builder 19/30] COPY autobyteus-collaboration-stream-contracts ./autobyteus-collaboration-stream-contracts
+225:#27 DONE 0.1s
+227:#28 [builder 20/30] COPY autobyteus-team-stream-contracts ./autobyteus-team-stream-contracts
+228:#28 DONE 0.0s
+230:#29 [builder 21/30] COPY autobyteus-server-ts ./autobyteus-server-ts
+231:#29 DONE 0.3s
+233:#30 [builder 22/30] COPY autobyteus-web ./autobyteus-web
+234:#30 DONE 0.3s
+236:#31 [builder 23/30] RUN pnpm -C autobyteus-agent-presentation-contracts build
+241:#31 DONE 1.8s
+243:#32 [builder 24/30] RUN pnpm -C autobyteus-collaboration-stream-contracts build
+248:#32 DONE 1.8s
+250:#33 [builder 25/30] RUN pnpm -C autobyteus-team-stream-contracts build
+255:#33 DONE 1.9s
+257:#34 [builder 26/30] RUN pnpm -C autobyteus-server-ts exec prisma generate --schema prisma/schema.prisma
+266:#34 DONE 4.8s
+268:#35 [builder 27/30] RUN pnpm -C autobyteus-server-ts build
+308:#35 31.13 Built-in agents bootstrap smoke check passed.
+309:#35 31.15 Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+310:#35 DONE 31.3s
+312:#36 [builder 28/30] RUN pnpm -C autobyteus-web build:mobile-web
+613:#36 DONE 44.0s
+615:#37 [builder 29/30] COPY scripts/server-package ./scripts/server-package
+616:#37 DONE 0.0s
+618:#38 [builder 30/30] RUN pnpm --filter autobyteus-server-ts deploy /out/server-package --legacy --prod   && cd /out/server-package   && rm node_modules/.pnpm/node_modules/autobyteus-server-ts   && node_modules/.bin/pr
+662:#38 23.32 Wrote server-package.json: 1.5.13-beta.1 linux-arm64, Node modules 127, system level 1, 62 migrations
+663:#38 DONE 23.8s
+666:#39 DONE 1.6s
+673:#40 DONE 11.5s
+675:real	3m1.707s
+
+# Output check
+LICENSE
+README.md
+application-packages
+dist
+mobile-web
+node_modules
+package.json
+prisma
+server-package.json
+dist/built-in-agents/built-in-agent-registry.js contains: collaborationEligible: true collaborationEligible: false 
