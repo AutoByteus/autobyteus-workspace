@@ -11,6 +11,7 @@
 | SR-005 | Requirements | The user's confirmation of the target and of "contract first"; the target contract written | N/A | Requirements Draft; design Needs Revision | Requirements Draft with a proposed contract; design Needs Revision | `target-collaboration-contract.md` (TC-1 … TC-4); DEC-003 (to be replaced by TC-1), DEC-004 (kept as TC-2) | The contract is proposed for the user's approval |
 | SR-006 | Mixed | The user: validate the data structure, no redundant attributes, every case with example JSON as in the earlier model document | N/A | Requirements Draft with a proposed contract | Requirements Draft; contract revision 2 proposed | `target-collaboration-contract.md` revision 2 (records, cases D1–D7, E1–E12, attribute check, V-1 … V-12, S1 … S15, TC-1 … TC-5) | Data level validated on the user's stored data; three decisions need the user |
 | SR-007 | Requirements | The user's last contract decision (TC-3) | N/A | Requirements Draft; contract revision 2 proposed | Requirements Approved; contract revision 2 approved; design Needs Revision (to be replaced) | All REQ and AC (rewritten on the contract); REQ-011, REQ-012, AC-014, AC-015, BEH-010, BEH-011, SCN-009, SCN-010 new | Approved basis for the design of this ticket's step |
+| SR-008 | Design | Architecture investigation of the contract's first step | N/A | Requirements Approved; design Needs Revision | Requirements Approved; design Draft (mechanism decided; file-level parts open) | D-1 … D-11 of `design-spec.md`; contract V-9 resolved, V-8, V-11, V-12 open | Design direction ready for the user; not ready for handoff |
 
 ## Revision Entries
 
@@ -174,3 +175,26 @@
 - Downstream and architecture-review impact: none yet
 - Remaining gaps, assumptions or blocked decisions: contract V-8 … V-12; ASM-003; the cut line of this step
 - Next action: architecture investigation and the design of this ticket's step; the user approves the design before the build
+
+### SR-008 — Design draft for the first step: local delegation through links
+
+- Phase and classification: Design, `Design Impact` of SR-004 … SR-007
+- Triggering user feedback, Product package, investigation evidence, or role/report/round: the approved requirements and contract (SR-007); investigation notes "Architecture investigation for the contract's first step"
+- Triggering finding IDs: N/A
+- Prior authoritative requirements/design status: requirements `Approved` (SR-007); design `Needs Revision` (the SR-003 spec, superseded)
+- Current authoritative requirements/design status: requirements `Approved`; `design-spec.md` rewritten, status `Draft`
+- Requirement, behavior, acceptance-criteria, scenario or decision IDs affected: none of the requirements; design decisions D-1 … D-11
+- Scenario-basis or scenario-validity changes: none
+- Why this baseline or revision was recorded: the mechanism and the cut line are decided: a standalone root delegates through links only; a channel for this node; the link machinery renamed; the Task record's `hostRoot` kept with one meaning until nothing is hosted; one startup migration
+- Canonical requirements, investigation and design sections changed: `design-spec.md` (new content); investigation notes F-1 … F-6
+- Supplemental artifacts added, changed or removed: none
+- Product design evidence or product decisions incorporated: none
+- Intended behavior changed: `No`
+- Approval impact, exact approved requirements baseline, who approved, and approval reference: requirements unchanged (SR-007); the user's approval of the design is pending
+- Behavior-defining supplement versions and approval references: contract revision 2 (approved)
+- Affected design/review basis invalidated or rebuilt: the SR-003 design is replaced
+- Post-design task-size/risk classification and rationale changes: provisional `Large` / `High`; final when the open parts are closed
+- Applied handoff-rule outcome / result-file reference, when a handoff occurred: none
+- Downstream and architecture-review impact: none yet
+- Remaining gaps, assumptions or blocked decisions: the spec's OPEN items (reader list V-8, history index files, web file list, released-migration repoint list V-11, the inbound receiver's placement, GraphQL and stream shape changes)
+- Next action: the user approves the design direction; the open parts are closed; then the handoff by the handoff rules

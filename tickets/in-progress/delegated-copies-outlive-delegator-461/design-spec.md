@@ -2,363 +2,380 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-003` (superseded by the user's direction of SR-004; see below)
-- Approved requirements baseline / revision, who approved, and approval reference: `requirements-doc.md` at `SR-003` (scope: standalone Agent runs). Approved by the Solution Designer within the direction, with DEC-001 (wake) and DEC-009 (two steps) decided by the user on 2026-11-10 in the Solution Designer's conversation.
-- Behavior-defining supplements and their approval references: none
-- User approval of the design, when the direction requires it: not given; the user chose the structural change instead (SR-004) (the Task: "Design first; the user approves the direction before the build")
-- Design status: `Needs Revision` — **not to be built.** On 2026-11-10 the user decided (requirements DEC-010) to correct the structure in this ticket: local delegated runs become independent runs linked to their delegator. This spec keeps the hosting and changes only what Stop covers; it stays as the record of SR-003 until the new design replaces it. Its evidence rows remain valid.
+- Current solution revision ID: `SR-008`
+- Approved requirements baseline / revision, who approved, and approval reference: `requirements-doc.md` at `SR-007` with `target-collaboration-contract.md` revision 2 (the user, 2026-11-10; details in the requirements' Document Status)
+- Behavior-defining supplements and their approval references: `target-collaboration-contract.md` revision 2, approved by the user on 2026-11-10
+- User approval of the design, when the direction requires it: `Pending` (the Task: "Design first; the user approves the direction before the build")
+- Design status: `Draft` — the mechanism, the cut line, the decisions and the server structure are decided and evidenced; the sections marked **OPEN** below (the web client's files, the history index code, the migration's released-reader list) are not yet at file precision and are completed before any handoff. The earlier spec of SR-003 (change only what Stop covers) is superseded; it is in git at `3a298ba009`.
 - Canonical investigation-notes path: `tickets/in-progress/delegated-copies-outlive-delegator-461/investigation-notes.md`
-- Authorities read (design reading gate; file and date): `references/architecture-design.md`, `references/design-principles.md`, project `DESIGN.md`, `autobyteus-server-ts/docs/design/collaboration_model.md`, `docs/design-cases.md` (headings; cases 4, 5, 7 and 10 apply), `GLOSSARY.md` (searched for the words used here) — 2026-11-10. `references/design-examples.md`: not used.
+- Authorities read (design reading gate; file and date): `references/architecture-design.md`, `references/design-principles.md`, project `DESIGN.md`, `autobyteus-server-ts/docs/design/collaboration_model.md`, `autobyteus-server-ts/docs/design/data_migration_guideline.md` (all sections), `docs/design-cases.md` (headings), `GLOSSARY.md` (searched), the earlier `tickets/done/delegated-copy-own-run-memory/memory-layout-contract.md` — 2026-11-10. `references/design-examples.md`: not used.
 - Project design-principle conflicts with the general principles, or discrepancies: none.
 
 ## Current-State Read
 
-A collaboration-eligible standalone Agent run has one `StandaloneAgentRunRoot` (the coordinating run's in-process record). It owns the run's own agent through `StandaloneHostAgentHandle` (the **host**), hosts every local delegated copy in `RootAgentExecutionRegistry` and `RootTeamExecutionDirectory`, and keeps links to remote copies.
+A standalone agent run's root (`StandaloneAgentRunRoot`) delegates in two ways through one adapter (`standalone-root-task-execution-adapter.ts:110-178`, notes F-1):
 
-- The user's Stop: GraphQL `terminateAgentRun` → `AgentRunService.terminateAgentRun` (`agent-run-service.ts:129-146`) → `StandaloneAgentRunRootManager.stopRoot` (`standalone-agent-run-root-manager.ts:246-261`) → `root.stop()` (`standalone-agent-run-root.ts:436-440`): `terminate()` fences and finishes every copy and unloads the root, then `host.terminate()`.
-- The root already works with its host offline (a host crash): the root stays, copies keep running, and a copy's message to the host makes it ready first (`standalone-root-message-delivery.ts:300-315`, `wakeAndRun` → `readyHost`).
-- "The root is loaded" and "the run's own agent runs" are separate facts on the server (`getActive(hostRunId)` versus `AgentRunManager.getActiveRun`), but four readers treat a loaded root as a running run or start the host for it:
-  1. the collaboration stream's connect calls `root.ensureHostReady()` (`agent-collaboration-stream-handler.ts:59-64`) and reports `is_active: root.isHostLive()` in its snapshot (line 89), while the GraphQL read of the same view reports `is_active: true` for any loaded root (`standalone-agent-run-root-manager.ts:318`): **one field, two meanings** (design case 7);
-  2. `DelegatedLaunchSelectionService.update` refuses the run's own settings with `RUN_ACTIVE` whenever a root is loaded (`delegated-launch-selection-service.ts:83-88`);
-  3. `StandaloneRunLiveness.releaseForHistory` ends a loaded root, stopping its copies, before archive or delete (`standalone-run-liveness.ts:48-58`);
-  4. `RestartResumer.resumeOne` skips every recorded run whose root's history row is `terminated` (`restart-resumer.ts:109-118`).
-- The web client assumes Stop ends every copy: `agentRunStore.terminateRun` calls `beginHostTermination` (`agentRunCollaborationStore.ts:256-304`), which detaches the collaboration stream before the command and marks every child terminal on success; `syncHost` follows the stream only while the host runs (`agentRunCollaborationStore.ts:310-320`, `useAgentRunCollaborationSync.ts`).
-- A copy's Stop icon and status come from the collaboration context's child states, not from the host (`delegatedCopyLiveness.ts`), and the history poll refreshes child states of listed runs whose view is active (`refreshListedStatuses`).
+- **Hosted** (a target on this node): the delegated agent's handle lives in the root's `RootAgentExecutionRegistry`, a delegated team's `TeamRun` in its `RootTeamExecutionDirectory`. The root starts, idles, wakes, stops and restores them (`RootTaskExecutionLifecycle`), publishes their events on its own stream, and a delegation made by any of them is recorded in the same root. The delegated run's file says so (`taskAgent.coordinatingRun`).
+- **Linked** (a target on a peer): `RemoteDelegation` asks the other node for a run, the root records a link, and the work packet is sent. Messages go by run ID through `RemoteRunLinks` and its endpoints (the pair rule); the other node resolves or restores the run's own root and delivers. The run there is an ordinary run with `delegatedFrom` and its own idle shutdown (notes F-2).
 
-No structural problem beyond these: the owner that must change (the root and its manager) exists and is the right one.
+The contract makes the linked form the only form. The hosted form is the design issue: it puts another run's lifecycle inside this root (root cause of autobyteus-461).
 
 ## Task Size And Architectural Risk (Mandatory)
 
-- Task size: `Medium`
-- Size rationale and supporting evidence: about 18 source files in existing owners: the standalone root and its manager, the standalone ports and `AgentRunService`, the collaboration stream handler, the history liveness gate and its three callers' messages, the settings save service, the restart resumer; in the web client three stores, one actions file and three composables. One small new file (the end listeners, extracted). No new subsystem, API route, stored shape or migration.
+- Task size: `Large`
+- Size rationale and supporting evidence: several subsystems: the link machinery (renamed and given a second channel), the standalone root (hosted path removed), delegated-run start on this node, the Task side's reach to a run, run history (delegated runs become rows), restart resume, a startup migration over three stored shapes, the collaboration model and glossary, and the web client's tree and stores for delegated runs of a standalone run.
 - Architectural risk: `High`
-- Risk rationale and supporting evidence: a lifecycle change on a guarded path (the root's lifetime is separated from its own agent's on a user Stop; a root now lives until archive, delete or shutdown); the meaning of the collaboration view's `is_active` is made single across two producers and the client; a history gate gets a new refusal; restart resume's filter changes.
-- Escalation trigger if implementation or validation discovers new impact: a reader of "root loaded" or of `is_active` not listed in this spec; any need for a stored fact; any change needed in Team or Org roots; a runtime whose stopped host cannot be restored by a copy's message.
+- Risk rationale and supporting evidence: ownership boundary change (a delegated run moves under its own root), persistence change with a migration of existing runs (196 delegated runs, 407 Task records on the user's machine), lifecycle and concurrency (cross-root delivery and wake), wire and stored renames.
+- Escalation trigger if implementation or validation discovers new impact: a REQ-009 capability that cannot be served through a link; a stored shape not in the contract; any change needed in team or org roots beyond what "Deliberately left alone" names; a released migration that reads a shape this change alters and is not in the migration plan.
 
 ## Architecture Investigation Evidence
 
 | Source / Command / Probe | Exact Path / Reference | Observation | Design Decision Supported | Remaining Uncertainty |
 | --- | --- | --- | --- | --- |
-| Code (`Read`) | `standalone-agent-run-root.ts:436-480` | `stop()` = `terminate()` + `host.terminate()`; `terminate()` alone is shutdown and fail-stop | D-1: a host-only Stop beside the full end | None |
-| Code (`Read`) | `standalone-host-agent-handle.ts:42-56` | `ensureReady()` restores a stopped host; `terminate()` waits for an in-flight activation | D-1, D-2: Stop and wake use the handle as it is | None |
-| Code (`Read`) | `standalone-root-message-delivery.ts:289-315` | A message to the host readies it first, for local and remote senders | D-2: wake needs no new code | Per-runtime restore not re-run (existing path) |
-| Code (`Read`) | `standalone-agent-run-root-manager.ts:246-293` | `stopRoot`, `endRoot`, `onRunEnded`/`notifyEnded`; 516 lines | D-1, D-5; file-size handling | None |
-| Code (`Read`) | `standalone-agent-run-root.ts:134,148,153` | `options.delegatedFrom` marks a run a peer started | D-1: peer-started runs keep the full Stop | None |
-| Code (`Read`) | `agent-run-service.ts:129-146`; `standalone-run-ports.ts:16-33` | The Stop result's `rootEnded` decides "host already dead, root ended → record terminated" | D-1: result field renamed to what it now means | None |
-| Code (`Read`) | `agent-collaboration-stream-handler.ts:59-64,89,148`; `standalone-agent-run-root-manager.ts:312-330` | Connect starts the host; `is_active` differs between stream and GraphQL | D-3 | None |
-| Code (`Read`) | `delegated-launch-selection-service.ts:76-170`; `docs/modules/standalone_agent_run_root.md` ("A registered root does not block the edit of a stopped host (only a live host does: `RUN_ACTIVE`)") | The combined Save refuses own settings on a loaded root; the host's own save already checks the host | D-4 | The host save's refusal for a live host is taken from the module doc; the implementation's test proves it |
-| Code (`Read`) | `standalone-run-liveness.ts:40-60`; `agent-run-history-catalog-service.ts:296,315,372`; `root-agent-execution-registry.ts:66-70` | The history gate ends a loaded root; `hasOpenExecutionWork()` is true while a copy is initializing or running | D-5 | None |
-| Code (`Read`) | `restart-resumer.ts:105-135`; `restart-resume-composition.ts:27-34`; `busy-run-recorder.ts`; `active-collaboration-root-directory.ts` `placeOf` | A `terminated` root skips every entry; a loaded root's busy copies are recorded with place `delegated` | D-6 | None |
-| Code (`Read`) | `agentRunCollaborationStore.ts:122-143,205-237,256-320,369-402`; `agentRunCollaborationStreamingService.ts:214-258`; `agentRunCollaborationContext.ts:228-234`; `useAgentRunCollaborationSync.ts`; `agentRunStore.ts:414-480`; `delegatedCopyLiveness.ts` | See Current-State Read | D-7 | Team and Org stores not touched |
-| Test run (`Reproduced`) | investigation notes, Runtime findings | Today's Stop contract passes on the base | Tests to change first | — |
-| Code (`Read`) | `wc -l`: root 521, manager 516, `agentRunStore.ts` 506 | Over the 500-line limit before this ticket | Change Scope: these files do not grow | — |
+| Code (`Read`) | `standalone-root-task-execution-adapter.ts:110-178` | One adapter, two paths by placement kind | D-1 | None |
+| Code (`Read`) | `agent-collaboration/execution/remote/remote-run-links.ts`, `remote-endpoint.ts`, `remote-run-channel.ts`, `remote-delegation.ts` | Links, endpoints, the pair rule, a channel interface with one implementation | D-1, D-2, D-3 | None |
+| Code (`Read`) | `remote-collaboration/inbound/remote-delegation-receiver.ts`, `remote-team-run-starter.ts`, `remote-message-receiver.ts`; `compositions/collaboration-root-resolver.ts` | How a linked run is created (prepared standalone run / `createTeamRun`, both with `delegatedFrom`), and how an inbound message restores its root | D-2, D-4 | None |
+| Code (`Read`) | `standalone-agent-run-root.ts:147-157`; `agent-team-execution/domain/team-run-remote-links.ts`; `services/remote-team-idle-shutdown.ts` | A root with `delegatedFrom` builds a `delegator` endpoint paired with its host or every member, and has an idle shutdown | D-4, D-7 | None |
+| Code (`Read`) | `root-task-execution-lifecycle.ts:174-200`; `root-task-dispatch.ts:59`; `task-execution-resource-port.ts`; `compositions/project-task-execution-resource-composition.ts:60-64`; `projects/runtime/task-execution-resource-release.ts:15-29` | Task linking is shared by both paths; the Task side reaches a run through `hostRoot` (stop on closure, status); a remote run is fenced, not stopped | D-5 | The service's internals read in part |
+| Code (`Read`) | `run-history/store/agent-run-metadata-store.ts:90-176` (the reader returns a standalone run only without `taskAgent`), `task-agent-team-tree-schema.ts:77-90`, `task-agent-own-records.ts` | Delegated runs are hidden from the ordinary readers by the `taskAgent` section | D-8, D-9 | History index code not read (**OPEN**) |
+| Code (`Read`) | `agent-execution/services/standalone-agent-run-eligibility.ts:15-16` | `canSwitchRuntime` excludes a run with `delegatedFrom` | D-10 | Why a peer-started run is excluded is not recorded |
+| Data (`Measured`) | `evidence/data-model-validation/counts-2026-11-10.txt` | Every stored run converts; counts per shape | D-9 | — |
+| Earlier tickets (`Read`) | `delegated-copy-model-change/requirements-doc.md` REQ-005, DEC-005; `delegated-copy-own-run-memory/requirements-doc.md` DEC-015 (U-1) | The Settings edit is kept beside the started launch so the origin text shows only on untouched agents and the composed record round-trips | D-10 (contract V-9) | None |
+| Web (`Read`) | `components/workspace/history/AgentRunTaskRows.vue`, `stores/agentRunCollaborationStore.ts` (`taskRows`, `selectTaskRow`, `childTargetFor`), `composables/mobile/useMobileRunTree.ts`, `stores/remoteRunsStore.ts` (named, not read) | A standalone run's delegated rows and their contexts come from its collaboration view | D-11 | Files below the store not read (**OPEN**) |
 
 ## Intended Change
 
-The user's Stop of a standalone Agent run stops the run's own agent and leaves its root loaded, so its copies keep running and a copy's message wakes the stopped agent through the path that already exists. Every reader that treated "root loaded" as "run running" gets an explicit rule.
+Delegations made from a standalone agent run use links only. A target on this node gets an ordinary run with `delegatedFrom`, under its own root; the delegating root keeps a link and reaches it through the same link owner and endpoints as a run on a peer, over a channel that has a second, in-process implementation for this node. The hosted path leaves the standalone root. Existing data is converted by one startup migration.
 
 ## Change Scope (Mandatory)
 
-- In scope: UC-001 … UC-008 for standalone Agent runs. Areas: `standalone-agent-run-root` (root, manager, one extracted file), `agent-execution` (ports, `AgentRunService`), `services/agent-streaming` (the Agent-root stream handler), `run-history` (liveness gate and its messages, the settings save service), `restart-resume` (resumer), the web client's `agentRunStore`, `agentRunCollaborationStore`, `useAgentRunCollaborationSync`, and the standalone archive/delete actions with their toast owner (D-8); the docs named in Guidance.
-- Derived consumers, when a stored or shared structure changes: the Agent-root view's `is_active` (wire field, shape unchanged; one meaning from now on: "the run's root is loaded, its children's states are live"). Readers and decisions:
-  - stream snapshot producer: now `root.isActive()` (was the host's state);
-  - GraphQL `agentRunCollaboration`: unchanged (already the root's state);
-  - `agentRunCollaborationStatuses.isActive`: unchanged (already the root's state);
-  - client `AgentRunCollaborationContext.isActive`/`phase`, `agentRunCollaborationStreamingService` (settles ready on an active snapshot), `refreshListedStatuses`, `ensureChildHydrated` (`liveToolAuthority`), `resolveWorkspace(root, is_active)`, `resolveTeamStatus(statuses, isActive)`, the remote-run registration: all mean "children are live" and stay; the implementation confirms each with a search for `is_active` and `.isActive` on the collaboration context.
-- Deliberately left alone: Team and Org roots and their client stores (FU-001); `RootTaskExecutionLifecycle` and the copies' idle shutdown, wake, user Stop and Task closure (they keep working because the root stays loaded); server shutdown (`stopAll`); remote collaboration; the Task side; stored shapes.
-- Follow-ups: FU-001 (Team and Org runs), FU-002 (two files over the size limit before this ticket).
+- In scope: UC-001 … UC-008. Areas: `agent-collaboration/execution/remote` (renamed `links`), `standalone-agent-run-root`, a new local start and delivery for linked runs, `agent-execution` (prepared run with a local back-link, runtime-switch rule), `agent-team-execution` (a team run with a local back-link: admission, pairing; nothing in its hosting), `projects` (Task record role, `hostRoot` meaning, release and status), `run-history` (admission, rows, metadata reader), `restart-resume`, `app-data-migrations` (one migration), `autobyteus-web` (tree rows and opening of a standalone run's delegated runs), the Collaboration Model, Glossary and module docs.
+- Derived consumers, when a stored or shared structure changes: **OPEN** at file level for V-8 (readers of `taskAgent` 11 files, `coordinatingRun` 18, `delegatedFrom` 22, `hostRoot` 14, outside migrations). Decided by kind: readers of `delegatedFrom.coordinatingRun` take `delegatingRun` (rename); readers of `taskAgent` stay for runs hosted by team and org runs; `hostRoot` readers keep the field with the one meaning of D-5.
+- Deliberately left alone: hosting inside team runs and org runs (`TeamTaskExecutionAdapter`, `AgentOrgTaskExecutionAdapter`, their registries), which also serves delegations by the members of a delegated team run (notes F-5); `RootTaskExecutionLifecycle` (still used by all three roots; by the standalone root for linked runs only); the peer protocol's requests except the renamed field; remote feature gaps (`collaboration_model.md` § 4).
+- Follow-ups: FU-002 (two oversized files; the standalone root shrinks in this change), FU-003, FU-004, FU-005.
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
 
 | Behavior ID | Kind | Approved Requirement / Intent And Acceptance-Criteria IDs | Approved Trigger Or Governing Contract | Relevant Existing Behavior And Evidence Reference | Approved Change Or Preserved Outcome | Target Production Path / Lifecycle And Spine ID(s) |
 | --- | --- | --- | --- | --- | --- | --- |
-| BEH-001 | User | REQ-001, REQ-002, REQ-009 / AC-001, AC-012, AC-013 | Stop on a standalone Agent run | Stops copies, then the host; unloads the root | Stops the host only; the root stays | DS-001 |
-| BEH-003 | System | REQ-003 / AC-002, AC-003 | A copy's `send_message_to` to its delegator | A not-running host is made ready first | Unchanged path, now reached after a user Stop | DS-002 |
-| BEH-004, BEH-005 | User / Contract | REQ-005 / AC-004, AC-005 | Stop on a copy; Task closed | Need a loaded root | Preserved; the root is loaded after Stop | DS-001 (state after it) |
-| BEH-009 | User | REQ-004 / AC-007 | Opening a run's copies | Stream connect starts the host | Connect never starts the host | DS-003 |
-| BEH-001 (settings) | User | REQ-006 / AC-010 | Save in a stopped run's settings | Refused while a root is loaded | The host's own state decides | DS-004 |
-| BEH-007 | User | REQ-007 / AC-008 | Archive / Delete | A loaded root is ended | Refused while a copy works | DS-005 |
-| BEH-006 | Operational | REQ-008 / AC-009 | Update restart | A `terminated` root skips its entries | A delegated run of a stopped standalone run is resumed | DS-006 |
-| BEH-008 | System | REQ-001, REQ-010 / AC-011, AC-012 | Stop of a run with remote copies; Stop of a peer-started run | Remote copies are not stopped; a peer-started run ends whole | Preserved | DS-001 |
+| BEH-001, BEH-004 | User | REQ-001 / AC-001, AC-004 | Stop on a run | The root ends its hosted runs first | Each run has its own root; Stop is the ordinary Stop of that root | DS-005 |
+| BEH-003 | System | REQ-003 / AC-002, AC-003 | `send_message_to` | In-root delivery; a host is made ready first | Through the link; the receiving root is resolved or restored, then its agent is made ready | DS-002, DS-003 |
+| BEH-005 | Contract | REQ-005 / AC-005 | Task closed, reopened, follow-up Task | The hosting root releases the run | The Task side reaches the run's own root | DS-004 |
+| BEH-006 | Operational | REQ-008 / AC-009 | Update restart | Entries of a stopped root are skipped | A delegated run is recorded under its own root | DS-007 |
+| BEH-007 | User | REQ-007 / AC-008 | Archive / Delete | The loaded root's children are ended | Refused while a linked run on this node is working | DS-006 |
+| BEH-009 | User | REQ-004 / AC-007 | Open a run's delegated runs | The collaboration stream starts the host | A delegated run is opened as a run; no stream starts an agent | DS-008 |
+| BEH-010 | Contract | REQ-011 / AC-011, AC-014 | Upgrade | `taskAgent`, `hostRoot` | The contract's shapes for this step | DS-009 |
+| BEH-011 | User | REQ-002, REQ-006, REQ-009 / AC-010, AC-012, AC-013 | The run tree, Settings, Task page | Copy-only features inside the root's view | Ordinary run features | DS-001, DS-008 |
+| BEH-008 | System | REQ-001, REQ-011 / AC-011 | Delegation across nodes | Linked | Unchanged path; renamed field | DS-001 … DS-003 (peer channel) |
 
 ## Relevant Supplemental Task Artifacts
 
 | Artifact Path | Purpose | Related Requirement / Acceptance-Criteria IDs | Relationship To This Design | Status / Approval Applicability |
 | --- | --- | --- | --- | --- |
-| `follow-ups.md` | FU-001, FU-002 | REQ-010 | Names what this design leaves alone | Current; not behavior-defining |
+| `target-collaboration-contract.md` | The contract | All | This design realizes its first step; the stored shapes are its §2 | Approved |
+| `evidence/data-model-validation/` | Counts per stored shape | REQ-011 | The migration's shape inventory starts from it | Evidence |
+| `follow-ups.md` | The next steps | REQ-010 | Names what stays hosted | Current |
 
 ## Task Design Health Assessment (Mandatory)
 
-- Change posture: `Behavior Change`
+- Change posture: `Refactor` with a `Behavior Change`
 - Current design issue found: `Yes`
 - Structural triggers that fire, each with evidence:
-  - **Vocabulary drift** (Principle 15): `is_active` of the Agent-root view means the host's state in the stream and the root's state in GraphQL (Current-State Read, 1).
-  - **Behavior by absence** (Principle 13): the copies' end on Stop, and the settings refusal, follow from "a root is loaded / unloaded", not from a rule about the run's own agent. The target gives each its own rule and result (D-1, D-4, D-5).
-  - **Several kinds** (Principle 1): `stopRoot` serves user-started runs and peer-started runs; the target names the rule for each (D-1).
-  - **Derived data**: the view's `is_active` feeds client readers (listed in Change Scope).
-  - Not firing: repeated coordination (one manager owns the Stop rule), empty indirection, persisted-data transition (no stored shape changes).
-- Root cause classification: `Missing Invariant` — "the root's lifetime is its copies' coordination, not the own agent's run" was true for a crash and not for a Stop.
-- Refactor needed now: `No` (beyond the named removals)
-- Evidence: the root and host are already separate owners; the wake path exists.
-- Design response: one new root operation, one manager rule, four reader rules, removal of the client's whole-run child termination.
-- Refactor rationale: the existing ownership absorbs the change.
-- Intentional deferrals and residual risk: FU-002 (file sizes); a root now stays loaded until archive, delete or shutdown (one small object per used run; roots are already kept from first use until Stop).
+  - **Several kinds or forms / two paths for one capability** (Principle 1): hosted and linked delegation in one adapter, with different gates (a saved Task, files and a follow-up Task are refused on the linked path; stop on Task closure exists only on the hosted path).
+  - **Boundary or ownership** (Principle 3): one root owns another run's lifecycle.
+  - **Vocabulary drift** (Principle 15): "remote" names the link machinery although a link is not about location; "coordinating run" means host.
+  - **Persisted-data transition** (Principle 5): `taskAgent` → `delegatedFrom`.
+  - **Behavior by absence** (Principle 13): a delegated run is "not a run the user started" because a reader hides files with a `taskAgent` section (guards G1, G2).
+- Root cause classification: `Boundary Or Ownership Issue`
+- Refactor needed now: `Yes`
+- Evidence: Current-State Read.
+- Design response: one delegation form (links); each delegated run under its own root; the hosted path removed from the standalone root; the link machinery named for what it is.
+- Refactor rationale: the user's direction (DEC-010); the contract.
+- Intentional deferrals and residual risk: team and org roots keep hosting until FU-003 and FU-004, so two delegation forms exist in the code until then, each used by a different kind of delegating run, never both by one.
 
 ## Terminology
 
-- **Own agent**: a standalone run's own agent; `host` in code (`StandaloneHostAgentHandle`). No new word.
-- **Root**: the run's `StandaloneAgentRunRoot`. "Loaded" = registered and active in the manager (`getActive`).
-- **End (a root)**: today's whole termination, copies first, then the own agent (`root.stop()` today, `root.end()` in the target). **Stop** is kept for the user's action.
-- `is_active` (Agent-root view): the root is loaded; its children's states are live. Recorded in `docs/modules/standalone_agent_run_root.md`.
+Contract §1 words. In code: **link** (the delegating run's record of a delegated run), **back-link** (`delegatedFrom`), **linked run** (a delegated run reached through a link), **link channel** (how a root reaches a linked run: in-process on this node, the peer client across nodes). "Remote" and "peer" stay only for what is about another node. Added to `GLOSSARY.md` in this change.
 
 ## Legacy Removal Policy (Mandatory)
 
-- Obsolete legacy paths and files in this scope: the client's `beginHostTermination` with its `terminations` map and `assertNotTerminating`; the stream connect's `readyRoot`; `StandaloneAgentRunRoot.isHostLive` and `StandaloneHostAgentHandle.readiness` (see the removal plan).
-- Compatibility wrappers, dual paths, or legacy fallbacks this design keeps: `None`. The full end for a peer-started run is its own rule (REQ-010), not a compatibility path.
+- Obsolete legacy paths and files in this scope: the hosted path of the standalone root (see the removal plan); the copy-only Stop and model edit for a standalone run's delegated runs; the `taskAgent` writer for runs delegated from a standalone run.
+- Compatibility wrappers, dual paths, or legacy fallbacks this design keeps: `None` for delegations made from a standalone run. Hosting in team and org roots is not a compatibility path of this change; it is the not-yet-converted part named by TC-4 (the user).
 
 ## Persisted Data / State Transition Decision
 
-- Decision: `Not Affected`. No stored shape, file or field changes: the collaboration tree, message logs, run metadata, history index (`terminatedAt` is written by `terminateHost` as today) and the busy-run record keep their shapes and meanings.
+- Stored subject, location, representative shape, and approximate volume: contract §2 and §5; the user's data: 196 delegated runs, 197 links, 407 Task record entries in 361 files.
+- Relevant code-model, serialization, semantic, or physical-store change: a rename that removes a wrong meaning (`taskAgent`/`coordinatingRun` → `delegatedFrom`/`delegatingRun`), removed duplicates (`address`), a role value rename (`delegated` → `subWork`), links of nested runs moved to the run that holds them, history rows added for runs that become ordinary runs.
+- Normal reader/writer behavior and representative evidence: trees and run files are read tolerantly and written exactly (module docs); the ordinary readers hide files with `taskAgent` today.
+- Required semantics and invariants under direct use: a file with `taskAgent` cannot be read as an ordinary run, so direct use is impossible.
+- Physical-store, privacy/security, disposal/rebuild, and operational constraints: no folder moves (each run already has its folder); files rewritten atomically.
+- Decision: `Migration Required`
+- Decision rationale: `DESIGN.md` rule 10 and the guideline §3: a stored name with a wrong meaning is renamed by a migration; current code reads only the new shape.
+- Acceptance criteria or design constraints supported by this decision: AC-014, QR-003.
+
+### Migration Plan
+
+- Current canonical schema / version: contract §2 (no version fields).
+- Older persisted schema version(s) that require transformation: for runs whose holder is a standalone run (170 in the user's data, less the nested ones that move to a team run): E1, E2, E4, E5, E6, E11; for every Task record: E13 and the `hostRoot` value of D-5; nested runs (E3, 32): link moved to the team run that holds them, `coordinatingRun` set to that team run (they stay hosted there); E12 (`coordinatingRun` → `delegatingRun` on a peer-started run; 0 in the user's data).
+- Why direct use and discard/rebuild are insufficient: above.
+- Migration trigger: `Startup`
+- Migration owner and file / subsystem location: `autobyteus-server-ts/src/app-data-migrations/migrations/<date>_delegated_runs_of_agent_runs_as_runs/`, registered last; frozen copies of today's shapes in `frozen/` (guideline §4, sealed area).
+- Normal business/runtime path that remains current-schema-only: every reader of a run file, tree and Task record.
+- Historical-shape types or decoders confined to migration-owned code: today's `taskAgent` section, the task-agent run metadata and team tree, the Task record with role `delegated`.
+- Completion marker / version ledger: the runner's record; per item, the shape itself (a file already in the target shape is skipped).
+- Restart-safety or idempotency strategy: per delegating run, in this order, each step recognizable from the files: (1) write each delegated run's own file in the target shape (atomic replace); (2) for a delegated agent run, write its `collaboration_tree.json` with `host.address` when it has none; (3) move nested links into their team run's tree; (4) add the history rows; (5) rewrite the Task records. The delegating run's own tree needs no change for non-nested links (the link shape is unchanged).
+- Validation before current runtime proceeds: frozen validators of the target shape per written file; no global gate. A delegating run whose tree the frozen parser cannot read is left untouched and reported (`PRESERVED_UNSUPPORTED_TREE`, warning); its delegated runs keep the old shape and are not available until fixed; every other run is converted (guideline §1, §6).
+- Backup / rollback / quarantine / operator-recovery strategy: no backup copies (guideline §7: atomic replace per file, sources recognized on retry); no downgrade (release notes say so).
+- Concurrent old/new application access risk and cutover / maintenance / deployment-sequencing decision: runs before any run is active.
+- Historical migration retention decision: released migrations that read these shapes through current code are repointed to frozen copies (**OPEN**: the list, contract V-11; the earlier contract's §5.4 is the starting inventory).
+
+| Migration Step | Source Shape / Version | Target Shape / Version | Transformation Owner | Validation | Failure / Recovery Behavior |
+| --- | --- | --- | --- | --- | --- |
+| Own file | `taskAgent` section (agent run file, team tree) | `delegatedFrom`; launch facts at the run's own place (D-10) | The migration | Frozen target validator | Item left as it was; counted; retried next start |
+| Agent address | `taskAgent.address` | `collaboration/collaboration_tree.json` `host.address` | The migration | Reread | As above |
+| Nested link | Link in the standalone run's tree | Link in the team run's `rootTeam.taskExecutions`; `taskAgent.coordinatingRun` = that team run | The migration | Reread both trees | The link is written to the target tree before it is removed from the source tree; seen in both on retry → the source copy is removed |
+| History rows | none | A row per run that became ordinary | The migration, through a port to the history index writer | Reread | Missing row added on retry |
+| Task record | role `delegated`; `hostRoot` = the old coordinating run | role `subWork`; `hostRoot` = the root that runs it | The migration | Frozen target validator | Per file |
 
 ## Data-Flow Spine Inventory
 
 | Spine ID | Scope | Related Behavior ID(s) | Start | End | Governing Owner | Why It Matters |
 | --- | --- | --- | --- | --- | --- | --- |
-| DS-001 | Primary End-to-End | BEH-001, BEH-008 | Stop in the client | Own agent stopped; root and copies untouched | `StandaloneAgentRunRootManager` (what Stop covers) | The change itself |
-| DS-002 | Primary End-to-End | BEH-003 | A copy's `send_message_to` | The woken own agent has the message | `StandaloneAgentRunRoot` (existing) | REQ-003; no new code, must stay true |
-| DS-003 | Primary End-to-End | BEH-009 | Client opens a stopped run's copy | Live child output, own agent still stopped | `AgentCollaborationStreamHandler` (server), `agentRunCollaborationStore` (client) | REQ-004 |
-| DS-004 | Primary End-to-End | BEH-001 (settings) | Save in Settings | Own model saved; stopped copies' choices saved | `DelegatedLaunchSelectionService` | REQ-006 |
-| DS-005 | Primary End-to-End | BEH-007 | Archive / Delete | Refusal, or the root ended and the history change | `StandaloneRunLiveness` | REQ-007 |
-| DS-006 | Primary End-to-End | BEH-006 | Startup after an update | Busy copies resumed | `RestartResumer` | REQ-008 |
-| DS-007 | Return-Event | BEH-001 | Root events | Client child rows | Root publisher → stream → client context | Copies stay live in the tree after Stop |
+| DS-001 | Primary End-to-End | BEH-011 | `delegate_task` in a standalone run | A new ordinary run with its work | The delegating root's task lifecycle (existing) | The one delegation form |
+| DS-002 | Primary End-to-End | BEH-003 | `send_message_to` (delegator → delegated run) | The delegated run's agent has the message | The delegating root (send), the delegated run's root (receive) | Wake by message |
+| DS-003 | Primary End-to-End | BEH-003 | `send_message_to` (delegated run → delegator, by run ID or address) | The delegator has the message | The delegated run's root (send), the delegating root (receive) | The report |
+| DS-004 | Primary End-to-End | BEH-005 | A Task closes | Its runs are stopped | The Task service | The Task owns the work |
+| DS-005 | Primary End-to-End | BEH-001 | Stop | That run stopped | Each run's own manager (existing) | By construction |
+| DS-006 | Primary End-to-End | BEH-007 | Archive / Delete | Refusal or the history change | The history gate | TC-2 |
+| DS-007 | Primary End-to-End | BEH-006 | Startup after an update | Busy runs resumed | `RestartResumer` (existing) | No special rule left |
+| DS-008 | Primary End-to-End | BEH-009, BEH-011 | The run tree | A delegated run opened as a run | The web run tree | The relationship shown |
+| DS-009 | Primary End-to-End | BEH-010 | Startup | Data in the target shape | The migration | Existing runs |
 
 ## Primary Execution Spine(s)
 
-- DS-001: `Stop control (web) -> agentRunStore.terminateRun -> GraphQL terminateAgentRun -> AgentRunService.terminateAgentRun -> StandaloneAgentRunRootManager.stopRun -> StandaloneAgentRunRoot.stopOwnAgent -> StandaloneHostAgentHandle.terminate -> StandaloneAgentRunLifecycleService.terminateHost (run stopped, history row terminated)`
-- DS-002: `copy send_message_to -> StandaloneAgentRunRoot.deliverExactAgentMessage / deliverLogicalMessage -> StandaloneRootMessageDelivery.wakeAndRun -> StandaloneHostAgentHandle.ensureReady (restore) -> RootCommunicationEngine.deliver -> own agent input`
-- DS-003: `select copy (web) -> agentRunCollaborationStore.syncHost -> /ws/agent-collaboration/:hostRunId connect -> StandaloneAgentRunRootManager.resolveRoot (no host start) -> snapshot is_active = root loaded -> client context live -> child events`
-- DS-004: `Settings Save -> GraphQL updateDelegatedLaunchSelections -> DelegatedLaunchSelectionService.update -> (loaded root) StandaloneAgentRunRoot.updateDelegatedLaunchSelections for the copies -> AgentRunService.updateStoppedSelection for the own agent -> saved`
-- DS-005: `Archive / Delete -> AgentRunHistoryCatalogService -> StandaloneRunLiveness.releaseForHistory -> StandaloneAgentRunRootManager.endRootForHistory -> (copies working: refusal) | (else) StandaloneAgentRunRoot.end -> history change`
-- DS-006: `startup -> RestartResumer.resumeAfterUpdate -> resumeOne -> stop check for the entry's place -> CollaborationRootResolver.resolveOrRestore -> root.executeAgentCommand(post notice) -> copy resumed`
+- DS-001: `delegate_task -> StandaloneAgentRunRoot.delegateToNewCopy -> RootTaskExecutionLifecycle (work, Task link, dispatch) -> StandaloneRootTaskExecutionAdapter.planActivation -> LinkedRunDelegation -> LinkChannel(this node).startDelegatedRun -> LocalDelegatedRunStarter -> AgentRunService.prepareAgentRun | TeamRunService.createTeamRun (with delegatedFrom) -> adapter commits the link -> LinkChannel.deliverMessage(work packet) -> the new run's root.acceptLinkedWorkPacket -> its agent starts`
+- DS-002: `send_message_to(run ID) -> delegating root deliverExact -> RunLinks.endpointFor -> LinkedMessageSend (engine prepares, log line) -> LinkChannel(this node).deliverMessage -> LinkedMessageReceiver -> stored link check -> CollaborationRootResolver.resolveOrRestore -> target root.acceptLinkedMessage -> its agent made ready -> input`
+- DS-003: the same in the other direction through the `delegator` endpoint built from `delegatedFrom`; by address: `the delegated run's recipient resolver -> not in its own run -> the delegating run's standing instance at that address (asked through the link channel) -> the same send`.
+- DS-004: `update_task DONE -> ProjectTaskService -> TaskExecutionResourceRelease -> request(hostRoot = the run's own root, [run]) -> that root.releaseTaskExecutions -> the run stops, input fenced by the closed record`
+- DS-008: `run list (history rows; a row with delegatedFrom on this node is placed under its delegating run's row) -> select -> the ordinary run opening path -> /ws/agent/:runId or the team stream`
 
 ## Spine Narratives (Mandatory)
 
 | Spine ID | Short Narrative | Main Domain Subject Nodes | Governing Owner | Key Off-Spine Concerns |
 | --- | --- | --- | --- | --- |
-| DS-001 | The manager decides what the user's Stop covers. For a run the user started it asks the root to stop its own agent; the root stays registered and keeps admitting, so copies, their idle timers, their leases and Task closure are untouched. For a run a peer started (`delegatedFrom`) it ends the root as today, because that run is a delegated copy. Without a registered root it stops the host only, as today. | Stop, run, root, own agent | Manager | End listeners (`onRunEnded`), history record |
-| DS-002 | Unchanged code. The root's delivery makes a not-running own agent ready before it delivers; after a user Stop the root is still loaded, so the copy's message reaches this path instead of finding no root. | Copy, message, own agent | Root | Message log |
-| DS-003 | Connect resolves the root and never starts the own agent. The snapshot's `is_active` is the root's state. The client follows the stream while the own agent runs **or** the view is active, so a stopped run's live copies are followed; a stopped run with an unloaded root is read once, as today. | View, stream, child | Stream handler; client store | Remote children observation |
-| DS-004 | On a loaded standalone root the service no longer refuses the run's own settings. The copies' choices go through the root (each named copy must be stopped, as today); the own agent's model goes through its run service, which refuses while the own agent runs. | Settings, own agent, copies | Service | Model validation |
-| DS-005 | The gate asks the manager to end a remaining root. The manager refuses while a copy is working and ends the root otherwise. The gate returns the reason; the catalog service words it. | History change, root, copies | Liveness gate | — |
-| DS-006 | The resumer's stop check uses the entry's place: a `terminated` standalone root stops only its own agent, so its delegated entries are still resumed. | Busy-run entry, root history state | Resumer | Restart notice |
-| DS-007 | Unchanged: root events reach the client while a stream is attached; the history poll covers listed runs. | Events | Root publisher | — |
+| DS-001 | The existing lifecycle prepares the work and its Task, then asks the adapter for an activation. The adapter has one path: a linked delegation. For this node the channel starts the run locally with the launch the delegating side resolved (the Project's folder, inheritance, tool approval), and the run is an ordinary prepared standalone run or a created team run. The link is committed in one tree write; the work packet starts the agent or the team's coordinator. | Delegation, link, run | The delegating root's lifecycle | Launch resolution (existing `CollaboratorAdmission`), Task link (existing) |
+| DS-002, DS-003 | A message between a run and a run it is linked with leaves through the sender's root (engine: scope check, log line) and enters through the receiver's root (link check against stored links, restore when inactive, the agent made ready). On one node the channel calls the receiver directly. Reference files pass unchanged on this node. | Message, link, root | Sender's root, then receiver's root | Message logs (both), Task scope |
+| DS-004 | The Task record names the root that runs each of its runs. For an independent run that is the run's own root, which stops itself; for a run still hosted by a team or org run, that run, as today. | Task, run | Task service | — |
+| DS-008 | A delegated run is a history row. The tree places it under its delegating run by the row's `delegatedFrom`; opening it is opening a run. The delegating run's view carries its links (for the Task-closed mark and the order), not the delegated runs' content. | Run rows | Web run tree | Status poll of listed runs (existing) |
+| DS-009 | See the migration plan. | Stored shapes | The migration | Frozen shapes |
 
 ## Spine Actors / Main-Line Nodes
 
-`agentRunStore` (web), `AgentRunService`, `StandaloneAgentRunRootManager`, `StandaloneAgentRunRoot`, `StandaloneHostAgentHandle`, `AgentCollaborationStreamHandler`, `agentRunCollaborationStore` (web), `DelegatedLaunchSelectionService`, `StandaloneRunLiveness`, `RestartResumer`.
+`StandaloneAgentRunRoot`, `RootTaskExecutionLifecycle`, `StandaloneRootTaskExecutionAdapter`, `LinkedRunDelegation` (today `RemoteDelegation`), `RunLinks` (today `RemoteRunLinks`), `LinkChannel` (today `RemoteRunChannel`) with `LocalLinkChannel` and the peer client, `LocalDelegatedRunStarter`, `LinkedMessageReceiver` (today `RemoteMessageReceiver`), `CollaborationRootResolver`, `ProjectTaskService`, the history catalog services, the web run tree.
 
 ## Ownership Map
 
-- `StandaloneAgentRunRootManager`: the registry of roots **and the rule of what Stop and a history end cover** (which runs keep their root; when a root may be ended).
-- `StandaloneAgentRunRoot`: its own agent's handle, its copies, its lifecycle. Two ends: `stopOwnAgent()` and `end()`.
-- `AgentRunService`: the Stop's public result and the history record for a host that was already down.
-- `AgentCollaborationStreamHandler`: the Agent-root stream's connect and snapshot.
-- `DelegatedLaunchSelectionService`: routing a Save between the root (copies) and the run service (own agent).
-- `StandaloneRunLiveness`: whether a run is free for a history change, with the reason.
-- `RestartResumer`: which recorded entries are resumed.
-- Web `agentRunStore`: the own agent's Stop and local teardown. Web `agentRunCollaborationStore`: the collaboration view's source (stream or stored read) per run.
+- A root: its own agents, its links, its back-link, its message log, its life.
+- `RunLinks`: which runs a root is linked with and what each may send and receive.
+- `LinkChannel`: reaching a linked run's node. `LocalLinkChannel` owns "this node": start, deliver, command, and reading the delegating run's standing instances for an address.
+- `LocalDelegatedRunStarter`: turning a resolved source into an ordinary run with a back-link.
+- The Task service: which runs work on a Task and when their work ends.
+- The history catalogs: which runs exist and how they are listed.
 
 ## Thin Entry Facades / Public Wrappers
 
 | Facade / Entry Wrapper | Governing Owner Behind It | Why It Exists | Must Not Secretly Own |
 | --- | --- | --- | --- |
-| `StandaloneRunLifecyclePort.stopRun` | `StandaloneAgentRunRootManager` | `agent-execution` must not import the root module | The Stop rule |
-| `StandalonePairedAgentAccess.executeOwnerCommand("terminate")` | the same `stopRun` | A peer's owner stops the run it started | A second Stop rule |
+| `LinkChannel` (routing by node) | `LocalLinkChannel`, the peer client | One interface for a root | Link rules (they are in `RunLinks` and the endpoints) |
 
 ## Removal / Decommission Plan (Mandatory)
 
 | Item To Remove / Decommission | Why It Becomes Unnecessary | Replaced By Which Owner / File / Structure | Notes |
 | --- | --- | --- | --- |
-| Web `beginHostTermination`, the `terminations` map, `assertNotTerminating` and every guard that reads them (`agentRunCollaborationStore.ts`); its use in `agentRunStore.terminateRun` | Stop no longer ends children. A root that does end (peer-started run, archive, delete, another client) is reported by the stream's `ROOT_LIFECYCLE` (`setActive(false)` cleans the children, `agentRunCollaborationContext.ts:228`) or found by the status poll | The stream's lifecycle path and `refreshListedStatuses`, both existing | Their tests change with them |
-| `AgentCollaborationStreamHandler.readyRoot` | Connect and child commands need the root, never the own agent | `roots.resolveRoot` | The doc sentence "a stopped run's host starts when its collaboration view is opened" goes |
-| `StandaloneAgentRunRoot.isHostLive`, `StandaloneHostAgentHandle.readiness`, type `StandaloneHostReadiness` | Dead: the stream snapshot was `isHostLive`'s only production caller (`grep -rn "isHostLive\|host\.readiness" src`: definitions plus `agent-collaboration-stream-handler.ts:89`) | — | The implementation repeats the search before removing; two unit tests read `isHostLive` and change |
-| `StandaloneRootStopResult.rootEnded` | The root no longer ends on Stop | `StandaloneRunStopResult.hadRoot` | Clean rename; no alias |
-| Names `stopRoot` (manager, port, paired access), `root.stop()` | They say less than they do now | `stopRun`, `root.end()`, `root.stopOwnAgent()` | Clean rename |
-| `DelegatedLaunchSelectionService`'s blanket `RUN_ACTIVE` for kind `agent` on a loaded root | The run service owns that refusal | D-4 | Team and Org keep theirs |
+| The hosted branch of `StandaloneRootTaskExecutionAdapter` (`planActivation`/`beginActivation` for `agent` and team placements, `restoreChain`, `shutDown`, `isLive`, `taskExecutionStatus`, registrations for hosted runs) | No run is hosted by a standalone root | The linked path | The adapter keeps planning, link commit and the Task-facing queries for linked runs |
+| `RootAgentExecutionRegistry` and `RootTeamExecutionDirectory` in the standalone root (construction in `standalone-root-builder.ts`, uses in the root and its delivery) | Nothing to host | — | Both stay for org roots |
+| `StandaloneAgentRunRoot.stopDelegatedExecution`, `updateDelegatedLaunchSelections`, `standalone-root-delegated-launches.ts`, the `AGENT` branch of `DelegatedLaunchSelectionService`, `StandaloneAgentRunRootManager.updateStoppedDelegatedLaunchSelections` and its helpers | A delegated run is stopped and configured as a run | The ordinary run Stop and stopped-run settings | The manager file drops under 500 lines |
+| The standalone root's child presentation (`CollaborationAgentPresentationEventAdapter` use, `agent_presentation` events for children, `collectStandaloneRootAgentStatusSnapshots`, `collectStandaloneRootInputSnapshots`, the member view projection service for children, the child context-file owners and routes) | Children are not parts of the run | Each run's own stream and views | **OPEN**: the exact file list on the web side |
+| `root.stop()`'s child termination; `endRoot`'s child stop; restart resume's `terminated` skip for a delegated entry | No children | The ordinary Stop; DS-006; DS-007 | — |
+| The `taskAgent` writer and reader for runs delegated from a standalone run (`task-agent-own-records.ts` paths used by the standalone package store: compose on load, split on save) | The link is the whole record | `standalone-root-package-store.ts` reads and writes links only | The reader stays for team and org trees |
+| `delegatedFrom.coordinatingRun` (stored and on the wire between nodes) | Renamed | `delegatingRun` | Clean cut (`DESIGN.md` rule 9) |
+| The word "remote" in the link machinery (`RemoteRunLinks`, `RemoteEndpoint`, `RemoteDelegation`, `RemoteMessageSend`, `RemoteInbound*`, folder `execution/remote/`) | A link is not about location | `RunLinks`, `LinkedRunEndpoint`, `LinkedRunDelegation`, `LinkedMessageSend`, `LinkedInbound*`, folder `execution/links/` | Peer-only pieces keep "remote"/"peer": `RemoteRunObservation`, `remote-collaboration/*` |
 
 ## Return Or Event Spine(s)
 
-DS-007, unchanged: `copy agent event -> StandaloneAgentRunRoot.onAgentExecutionEvent -> RootEventPublisher -> stream ROOT_EXECUTION_EVENT -> client context.applyEvent -> child row`. When a root ends: `publisher lifecycle isActive:false -> ROOT_LIFECYCLE -> client setActive(false)`.
+A delegated run's events go to its own stream (the ordinary agent or team stream). The delegating root's stream carries its links, its messages and its lifecycle.
 
 ## Bounded Local / Internal Spines
 
-N/A. The root's lifecycle states are unchanged (`activating → active → terminating → terminated`, or `fail_stop`); `stopOwnAgent` does not change the state.
+N/A.
 
 ## Off-Spine Concerns Around The Spine
 
 | Off-Spine Concern | Related Spine ID(s) | Serves Which Owner | Responsibility | Why It Exists | Risk If Misplaced On Main Line |
 | --- | --- | --- | --- | --- | --- |
-| Run end listeners (`onRunEnded`, notify) | DS-001, DS-005 | Manager | Tell a peer's observation stream that a run's own agent stopped or its history ended | autobyteus-278 | Hides the Stop rule; today it sits inside the oversized manager |
-| History record (`recordRunTerminated`) | DS-001 | `terminateHost`; `AgentRunService` for a host already down | The row's `terminatedAt` | Existing | — |
-| Inherited launch refresh | DS-004 | Root | Copies started later inherit the saved launch | Existing (`refreshInheritedLaunch`) | — |
+| Idle shutdown of a delegated run | DS-001 | The delegated run's root | Existing `StandaloneHostIdleShutdown`, `RemoteTeamIdleShutdown` (renamed for what they are: the idle shutdown of a run with a back-link) | CM-7 | — |
+| A linked team run's member list on the delegating side | DS-002 | `RunLinks` | Read from the team run's own tree on this node when first needed, kept in memory (the members never change) | The contract keeps members out of a local link | A stored copy would be a redundant attribute |
+| Launch notes, routing decisions | DS-001 | `LinkedRunDelegation` | As today for both channels | REQ-009 | — |
 
 ## Ownership Boundaries
 
-- Only the manager decides whether a Stop keeps or ends a root. `AgentRunService` and the paired access call `stopRun` and read its result.
-- Only the root touches its host handle and its copies.
-- The history gate never ends a root itself; it asks the manager and gets a named outcome.
+- A root never holds another run's handle, status or events.
+- Only `RunLinks` and its endpoints decide whether two runs may message each other; the Task-scope rule stays in the engine (`assertDeliveryAllowed`).
+- Only the channel knows whether a linked run is on this node.
 
 ## Boundary Encapsulation Map
 
 | Authoritative Boundary | Internal Owned Mechanism(s) It Encapsulates | Upstream Callers That Must Use The Boundary | Forbidden Bypass Shape | If Boundary API Is Too Thin, Fix By |
 | --- | --- | --- | --- | --- |
-| `StandaloneAgentRunRootManager` | roots, their registration, the end listeners | `AgentRunService` (port), paired access, stream handler, history liveness, settings service | A caller that takes a root from the manager and calls `root.end()` or `root.stopOwnAgent()` itself | Add the named operation to the manager |
-| `StandaloneAgentRunRoot` | host handle, copy registries, task lifecycle | Manager | Manager or service calling `terminateHost` for a run that has a registered root | — |
-| `AgentRunService.updateStoppedSelection` | the own agent's saved selection and its `RUN_ACTIVE` rule | Settings service | The settings service deciding by "root loaded" | — |
+| `RunLinks` | Endpoints, the channel | Roots, their message delivery and task adapters | A root calling another root's methods directly to deliver or stop | Add the operation to the channel |
+| `LocalLinkChannel` | `CollaborationRootResolver`, `LocalDelegatedRunStarter`, `LinkedMessageReceiver` | `RunLinks`, `LinkedRunDelegation` | A root importing `AgentRunService` or `TeamRunService` to start a delegated run | — |
+| The run managers (`StandaloneAgentRunRootManager`, `AgentTeamRunManager`) | Roots | The channel, the Task composition, history | — | — |
 
 ## Dependency Rules
 
-- `agent-execution` reaches the root module only through `StandaloneRunLifecyclePort` / `StandaloneRunCommandPort` (as today).
-- `run-history` reaches roots only through `StandaloneRunCollaborationRoots` (as today), extended with the named outcome.
-- `restart-resume` knows no root type: its rule reads only the entry (`place`, `root.rootSubjectKind`) and the history state.
-- The web `agentRunStore` no longer depends on `agentRunCollaborationStore` for Stop.
+- `agent-collaboration/execution/links` depends on no root module and no run service (as `execution/remote` today).
+- `LocalLinkChannel` is composed at process composition (beside the remote collaboration composition) from the root resolver and the run services; roots get it through the existing `resolveRemoteRunChannel` seam, renamed.
+- `standalone-agent-run-root` no longer depends on `agent-collaboration/execution/backends` registries.
 
 ## Interface Boundary Mapping
 
 | Interface / API / Query / Command / Method | Subject Owned | Responsibility | Accepted Identity Shape(s) | Notes |
 | --- | --- | --- | --- | --- |
-| `StandaloneAgentRunRoot.stopOwnAgent(): Promise<StandaloneHostTerminationResult>` | The run's own agent | The user's Stop: interrupt and stop the own agent, inside the root's operation gate; the root stays active | — | New |
-| `StandaloneAgentRunRoot.end(): Promise<StandaloneHostTerminationResult>` | The root | Every copy ends, then the own agent; throws when the copies cannot finish | — | Today's `stop()`, renamed |
-| `StandaloneAgentRunRoot.isPeerStarted: boolean` | The root | Whether a peer node started this run (`delegatedFrom`) | — | New getter over an existing option |
-| `StandaloneAgentRunRootManager.stopRun(hostRunId): Promise<StandaloneRunStopResult \| null>` | A standalone run | The Stop rule (D-1) | host run ID | Renamed from `stopRoot`; `StandaloneRunStopResult = { hadRoot: boolean; host: StandaloneHostTerminationResult }` |
-| `StandaloneAgentRunRootManager.endRootForHistory(hostRunId): Promise<"no_root" \| "ended" \| "copies_working">` | A standalone run's root | End a remaining root for archive or delete unless a copy is working (`root.hasOpenExecutionWork()`); throws when it cannot finish | host run ID | Replaces `endRoot` |
-| `StandaloneRunLiveness.releaseForHistory(runId): Promise<HistoryRelease>` | A standalone run | `"released" \| "own_agent_active" \| "copies_working" \| "root_not_ended"` | run ID | Was `boolean`; three callers word the refusal |
-| `DelegatedLaunchSelectionService.update` | A Save | D-4 | `{rootKind, rootRunId}` | Unchanged signature |
-| GraphQL `terminateAgentRun`, `stopDelegatedExecution`, `updateDelegatedLaunchSelections`, archive/delete mutations; `/ws/agent-collaboration/:hostRunId` | — | Unchanged shapes | — | Archive/delete return a new message text; the stream's snapshot `is_active` has one meaning |
+| `LinkChannel.startDelegatedRun({ node, address, delegatorAgentRunId, delegatingRun, work, source? })` | A linked run | Create the run on that node. `source` (the resolved definition and launch) is given for this node; a peer resolves its own | `node`: this node or a peer's ID | `delegatingRun` replaces `coordinatingRun` |
+| `LinkChannel.deliverMessage`, `ownerCommand`, `runSummaries` | A linked run | As today; on this node, in-process | target root `{kind, runId}` + agent run ID | `agentProjection` and `observeRun` stay peer-only: a run on this node is read as a run |
+| `LinkChannel.standingInstanceAt(delegatingRun, address)` | A delegating run on this node | The agent run at that address in the delegating run, for CM-5 and the delegator in `list_available_agents` | `{kind, runId}` + address | This node only; a peer answers "not found", as today |
+| Root: `acceptLinkedMessage`, `acceptLinkedWorkPacket` | A root | Today's `acceptRemote*`, renamed | — | Reference files carried |
+| Root: `releaseTaskExecutions([own run])` | A root with a back-link | Stop this run because its Task closed | The run's own reference | The Task side's existing request, addressed to the run's own root (D-5) |
+| GraphQL / WS | — | **OPEN**: the history row's `delegatedFrom` field; removal of the standalone child commands on `/ws/agent-collaboration` | — | — |
 
 ## Interface Boundary Check
 
 | Interface | Responsibility Is Singular? | Identity Shape Is Explicit? | Ambiguous Selector Risk | Corrective Action |
 | --- | --- | --- | --- | --- |
-| `stopRun` | Yes | Yes (host run ID) | Low | — |
-| `endRootForHistory` | Yes | Yes | Low | — |
-| `releaseForHistory` | Yes | Yes | Low | — |
+| `LinkChannel` | Yes | Yes (node + root + agent run ID) | Low | — |
+| `releaseTaskExecutions` on a root | Yes | Yes | Low | Removed with `hostRoot` in FU-005 |
 
 ## Main Domain Subject Naming Check
 
 | Node / Subject | Current / Proposed Name | Name Is Natural And Self-Descriptive? | Same Meaning And Name Everywhere It Appears, Per The Glossary? | Naming Drift Risk | Corrective Action |
 | --- | --- | --- | --- | --- | --- |
-| The user's Stop of a run | `stopRun` | Yes | Yes | Low | Rename `stopRoot` everywhere (manager, port, paired access, tests, docs) |
-| Whole termination of a root | `end` / `endRootForHistory` | Yes | Yes ("ends" is the module doc's word) | Low | Rename `root.stop()` |
-| The run's own agent | `host` in code, "own agent" in texts | Yes | Yes (existing words) | Low | — |
-| View flag | `is_active` | Yes, once single | After this change | Medium until then | D-3; documented in the module doc |
+| The link machinery | `Remote*` → `RunLinks`, `LinkedRun*`, `LinkChannel` | Yes | Yes after the rename | High if left | Rename in this change |
+| The back-link's run | `coordinatingRun` → `delegatingRun` | Yes | Yes | — | Stored, wire and code together |
+| Idle shutdown of a run with a back-link | `RemoteTeamIdleShutdown` → `DelegatedTeamRunIdleShutdown` | Yes | Yes | Medium | Rename |
+| Sub-work role | `delegated` → `subWork` | Yes | Yes | — | Stored and code together |
 
 ## Existing Capability / Subsystem Reuse Check
 
 | Need / Concern | Existing Capability Area / Subsystem | Decision | Why | If New, Why Existing Areas Are Not Right |
 | --- | --- | --- | --- | --- |
-| Stop an agent and leave it restorable | `StandaloneHostAgentHandle.terminate` + `ensureReady` | Reuse | Already the host-crash path | — |
-| Wake on a copy's message | `StandaloneRootMessageDelivery.wakeAndRun` | Reuse | Existing | — |
-| "A copy is working" | `StandaloneAgentRunRoot.hasOpenExecutionWork()` | Reuse | The existing predicate (initializing or running) | — |
-| Live child states after Stop | Root publisher, stream, status poll | Reuse | Existing | — |
-| Report a root's end to the client | `ROOT_LIFECYCLE` | Reuse | Existing | — |
+| Links, endpoints, pair rule, stored-link check | `execution/remote` | Reuse (renamed) | Complete | — |
+| Create a run with a back-link | `prepareAgentRun`, `createTeamRun` with `delegatedFrom` | Reuse | Used for peers today | — |
+| Restore on message | `CollaborationRootResolver` | Reuse | — | — |
+| Idle shutdown | Existing two classes | Reuse | — | — |
+| Launch resolution on this node | `CollaboratorAdmission.catalogTaskSourceOf`, `projectTaskExecutionSource` | Reuse | Today's local path | — |
+| In-process channel | — | Create New | No implementation for this node exists | The peer client is HTTP to another node |
 
 ## Subsystem / Capability-Area Allocation
 
 | Subsystem / Capability Area | Owns Which Concerns | Related Spine ID(s) | Governing Owner(s) Served | Decision | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `standalone-agent-run-root` | Stop rule, root ends, end listeners | DS-001, DS-005 | Manager, root | Extend | — |
-| `agent-execution` | Port types, Stop result | DS-001 | `AgentRunService` | Extend | — |
-| `services/agent-streaming` | Agent-root stream connect | DS-003 | Stream handler | Extend | — |
-| `run-history` | History gate, settings routing | DS-004, DS-005 | Liveness, settings service, catalog service | Extend | — |
-| `restart-resume` | Stop check per entry | DS-006 | Resumer | Extend | — |
-| `autobyteus-web` stores and composable | Stop, view source | DS-001, DS-003 | Stores | Extend | — |
+| `agent-collaboration/execution/links` | Links, endpoints, delegation over a channel, the channel interface | DS-001 … DS-003 | Roots | Extend (rename) | — |
+| `local-run-links` (new, beside `remote-collaboration`) | The channel for this node: starter, receiver wiring | DS-001 … DS-003 | `LinkChannel` | Create New | Composed at process composition |
+| `standalone-agent-run-root` | A standalone run's root without hosting | DS-001, DS-005 | — | Extend (reduce) | — |
+| `projects` | Role name; `hostRoot` meaning | DS-004 | Task service | Extend | — |
+| `run-history` | Admission and rows of delegated runs | DS-008 | Catalogs | Extend | **OPEN** files |
+| `app-data-migrations` | DS-009 | DS-009 | Runner | Extend | — |
+| `autobyteus-web` | The tree and opening of delegated runs | DS-008 | Run tree | Extend | **OPEN** files |
 
 ## Draft File Responsibility Mapping
 
-See the final mapping; no draft differed.
+Folded into the final mapping.
 
 ## Reusable Owned Structures Check
 
 | Repeated Structure / Logic | Candidate Shared File | Owning Subsystem | Why Shared | Redundant Attributes Removed? | Overlapping Representations Removed? | Must Not Become |
 | --- | --- | --- | --- | --- | --- | --- |
-| "Tree first, then the own agent's model" result combination (stored path today, loaded-root path new) | A private method of `DelegatedLaunchSelectionService` | `run-history` | Two branches of one service | Yes | Yes | A second copy in the new branch |
+| The link record | `run-execution-tree-shared-records.ts` (existing `TaskExecution` link and `RemoteTaskExecution`) | `run-history` | Three trees | Yes (contract §3) | The standalone tree's two in-memory lists become one list of links | A composed record with the linked run's content |
+| `DelegatedFrom` | `agent-run-metadata-types.ts` (existing) | `run-history` | Agent run file and team tree | `nodeId` optional | — | — |
 
 ## Shared Structure / Data Model Tightness Check
 
 | Shared Structure / Type / Schema | One Clear Meaning Per Field? | Redundant Attributes Removed? | Parallel / Overlapping Representation Risk | Corrective Action |
 | --- | --- | --- | --- | --- |
-| `StandaloneRunStopResult { hadRoot, host }` | Yes | Yes | Low | — |
-| Agent-root view `is_active` | Yes, after D-3 | — | Low | D-3 |
+| `DelegatedFrom` | Yes | Yes | Low | — |
+| Link | Yes | Yes | Low | — |
+| Task record | Yes; `hostRoot` = the root that runs it | Removed in FU-005 | Medium until then | D-5 |
 
 ## Final File Responsibility Mapping
 
+Server files at the precision reached; **OPEN** rows are completed before handoff.
+
 | File | Owning Subsystem / Capability Area | Owner / Boundary | Concrete Concern | Why This Is One File | Reuses Shared Structure? |
 | --- | --- | --- | --- | --- | --- |
-| `standalone-agent-run-root/domain/standalone-agent-run-root.ts` | standalone root | Root | `stopOwnAgent`, `end`, `isPeerStarted`; remove `isHostLive` | The root's public API | — |
-| `standalone-agent-run-root/domain/standalone-host-agent-handle.ts` | standalone root | Host handle | Remove `readiness` | — | — |
-| `standalone-agent-run-root/services/standalone-agent-run-root-manager.ts` | standalone root | Manager | `stopRun` (D-1), `endRootForHistory` (D-5) | The registry and its Stop rule | — |
-| `standalone-agent-run-root/services/standalone-run-end-listeners.ts` (new) | standalone root | Manager's off-spine concern | `onRunEnded` registration and notification, moved out of the manager unchanged | One concern with its own state | — |
-| `standalone-agent-run-root/services/standalone-paired-agent-access.ts` | standalone root | Paired access | Call `stopRun` | — | — |
-| `agent-execution/services/standalone-run-ports.ts` | agent-execution | Port | `stopRun`, `StandaloneRunStopResult` | — | — |
-| `agent-execution/services/agent-run-service.ts` | agent-execution | Run service | Read `hadRoot` | — | — |
-| `services/agent-streaming/agent-collaboration-stream-handler.ts` | streaming | Stream handler | Connect without host start; snapshot `is_active` = root | — | — |
-| `run-history/services/standalone-run-liveness.ts` | run-history | History gate | `HistoryRelease` outcome | — | — |
-| `run-history/services/agent-run-history-catalog-service.ts` | run-history | Catalog service | Word the refusals (delete, archive/unarchive, prepared-run cancel) | — | — |
-| `run-history/services/delegated-launch-selection-service.ts` | run-history | Settings service | D-4 | — | Private combine method |
-| `restart-resume/restart-resumer.ts` | restart-resume | Resumer | D-6 | — | — |
-| `autobyteus-web/stores/agentRunStore.ts` | web | Run store | Stop without child termination | — | — |
-| `autobyteus-web/stores/agentRunCollaborationStore.ts` | web | Collaboration store | Remove whole-run termination; `syncHost` rule (D-7) | — | — |
-| `autobyteus-web/composables/agentCollaboration/useAgentRunCollaborationSync.ts` | web | Sync composable | Watch the view's active state too | — | — |
-| `autobyteus-web/stores/runHistoryMutationActions.ts`, `stores/runHistoryStore.ts` (`deleteRun`, `archiveRun`) | web | History mutations | Return the server's refusal (D-8) | — | — |
-| `autobyteus-web/composables/useWorkspaceHistoryMutations.ts`, `composables/useWorkspaceHistoryGroupArchive.ts` | web | History mutation toasts | Show the refusal; adapt to the result type | The one toast owner for both panels | — |
+| `agent-collaboration/execution/links/run-links.ts`, `linked-run-endpoint.ts`, `link-channel.ts`, `linked-run-delegation.ts`, `linked-message-send.ts`, `linked-task-activation.ts`, `link-refusal-codes.ts` (moved and renamed from `execution/remote/`) | links | `RunLinks` | As today, without the word "remote"; local links admitted; a saved Task, reference files and a follow-up Task allowed for a link on this node | Existing files | Link |
+| `local-run-links/local-link-channel.ts` (new) | local-run-links | `LinkChannel` for this node | In-process start, deliver, command, summaries, standing instance | One implementation | — |
+| `local-run-links/local-delegated-run-starter.ts` (new) | local-run-links | Starter | Resolved source → prepared agent run or created team run with `delegatedFrom`, launch facts recorded on the run | One concern | `DelegatedFrom` |
+| `remote-collaboration/inbound/remote-message-receiver.ts` → shared receiver in `links` or `local-run-links` (**OPEN**: placement) | — | Inbound | One inbound rule for both channels | — | — |
+| `compositions/link-channel-composition.ts` (new) | compositions | Channel routing by node | Binds the two implementations | Composition | — |
+| `standalone-agent-run-root/domain/standalone-agent-run-root.ts`, `services/standalone-root-task-execution-adapter.ts`, `standalone-root-message-delivery.ts`, `standalone-root-builder.ts`, `standalone-agent-run-root-manager.ts`, `persistence/standalone-root-package-store.ts`, `standalone-root-execution-index.ts`, `standalone-root-recipient-resolver.ts`, `standalone-root-collaborators.ts` | standalone root | Root | The reductions of the removal plan; `acceptLinked*`; own-run release | Existing | Link |
+| `agent-execution/services/standalone-agent-run-eligibility.ts` | agent-execution | Runtime-switch rule | D-10 | Existing | — |
+| `agent-team-execution/domain/team-run-remote-links.ts` (renamed), `services/remote-team-idle-shutdown.ts` (renamed), team tree schema and admission | team execution | Team root with a back-link | A back-link without `nodeId`; `releaseTaskExecutions` for its own run | Existing | `DelegatedFrom` |
+| `projects/domain/task-execution-resources.ts`, `stores/task-execution-resource-schema.ts`, `services/task-execution-resource-service.ts`, `compositions/project-task-execution-resource-composition.ts`, `task-execution-resource-port.ts` (role type) | projects | Task record | `subWork`; `hostRoot` meaning | Existing | — |
+| `run-history` catalogs, index stores, GraphQL run-history types (**OPEN**) | run-history | Rows | `delegatedFrom` on a row; delegated runs admitted | — | — |
+| `restart-resume/restart-resumer.ts` | restart-resume | — | No change expected (a delegated run is recorded under its own root); verified by a test | — | — |
+| `app-data-migrations/migrations/<date>_delegated_runs_of_agent_runs_as_runs/*`, `frozen/*` additions | migrations | The migration | Migration plan | Sealed area | Frozen copies |
+| `autobyteus-web`: `AgentRunTaskRows.vue`, `utils/runTreeProjection.ts`, `utils/mobile/mobileRunTreeProjection.ts`, `composables/mobile/useMobileRunTree.ts`, `useMobileRunOpening.ts`, `stores/agentRunCollaborationStore.ts` and `services/agentCollaboration/*`, `stores/activeContextStore.ts`, `components/runList/RunListRow.vue`, the Settings editor's delegated section (**OPEN**: confirm and complete) | web | Run tree | Rows from history; opening as a run; removal of child contexts of a standalone run | — | — |
+| `docs/design/collaboration_model.md`, `GLOSSARY.md`, `docs/modules/standalone_agent_run_root.md`, `agent_communication.md`, `remote_collaboration.md`, `projects.md`, `run_history.md`, `restart_resume.md`, `agent_memory.md` | docs | — | The contract and the mechanics | — | — |
 
 ## Applied Patterns
 
-None new.
+- Adapter: `LocalLinkChannel` and the peer client behind `LinkChannel`.
 
 ## Target Subsystem / Folder / File Mapping
 
 | Path | Kind | Owner / Boundary | Responsibility | Why It Belongs Here | Must Not Contain |
 | --- | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-run-end-listeners.ts` | File (new) | Manager | Per-run end listeners | Beside its only user | The Stop rule |
-| The files of the Final File Responsibility Mapping | File (modify) | As listed | As listed | Existing owners | — |
-| `autobyteus-server-ts/docs/design/collaboration_model.md`, `docs/modules/standalone_agent_run_root.md`, `docs/modules/restart_resume.md`, `docs/modules/run_history.md`, `docs/modules/agent_communication.md` (Stop of copies: the root-not-loaded note), `autobyteus-web/docs/agent_execution_architecture.md` | File (modify) | Docs | The new rule (see Guidance) | Canonical contracts change with the code | — |
+| `autobyteus-server-ts/src/agent-collaboration/execution/links/` | Folder (renamed from `remote/`) | `RunLinks` | The link machinery | Shared by all roots | Anything about HTTP or a peer's registration |
+| `autobyteus-server-ts/src/local-run-links/` | Folder (new) | `LocalLinkChannel` | Links on this node | Mirrors `remote-collaboration/` for the other channel | Link rules |
+| `autobyteus-server-ts/src/remote-collaboration/` | Folder | Peer channel | Unchanged role | — | — |
 
 ## Folder Boundary Check
 
 | Path / Folder | Intended Structural Depth | Ownership Boundary Is Clear? | Mixed-Layer Or Over-Split Risk | Justification / Corrective Action |
 | --- | --- | --- | --- | --- |
-| `standalone-agent-run-root/services` | Main-Line Domain-Control with its off-spine files | Yes | Low | One new small file |
+| `execution/links` | Main-Line Domain-Control | Yes | Low | — |
+| `local-run-links` | Persistence-Provider (a channel provider) | Yes | Low | Two files |
 
 ## Concrete Examples / Shape Guidance
 
 | Topic | Good Example | Bad / Avoided Shape | Why The Example Matters |
 | --- | --- | --- | --- |
-| D-1, the Stop rule in the manager | `const root = this.active.get(id); if (!root) return { hadRoot: false, host: await this.options.host.terminateHost(id) }; const host = root.isPeerStarted ? await this.endAndUnregister(root) : await root.stopOwnAgent(); this.endListeners.notify(id); return { hadRoot: true, host };` | `if (root.hasOpenExecutionWork()) keepRoot() else root.stop()` (two states for one Stop; Stop's meaning would depend on timing) | One rule, by what the run is, not by what happens to be running |
-| D-3, one meaning | Stream snapshot and GraphQL both: `isActive: root is loaded` | Stream: host live; GraphQL: root loaded | The client's stream service disconnects on an inactive snapshot (`agentRunCollaborationStreamingService.ts:227-228`), so a stopped host's live copies could not be followed |
-| D-5, a named outcome | `releaseForHistory → "copies_working"` → "This run's delegated copies are still working. Stop them or wait until they finish, then delete it." | `false` → "Run is active. Terminate it before deleting history." (the run is already stopped; the user cannot act on it) | The refusal must tell the user what to do |
-| D-6, the stop check | `const stopped = (state, entry) => state !== "present" && !(state === "terminated" && entry.place === "delegated" && entry.root.rootSubjectKind === "agent")` | Removing the `terminated` check for every kind (a stopped Team or Org run's copies were stopped with it and must not resume) | The exception is exactly this ticket's rule; FU-001 widens it |
-| D-7, the client's view source | `syncHost(id, hostRunning)`: `if (hostRunning \|\| contextFor(id)?.isActive) attach(id) else { detach(id); if (phase !== 'historical') inspect(id) }`, and the composable's watch key includes `contextFor(runId)?.isActive` so a stored read that finds a loaded root leads to an attach | Attaching for every listed run (one socket per run), or attaching for a stopped run whose root is not loaded (it would load the root just to look) | Viewing stays cheap and never starts anything |
+| One delegation form in the standalone adapter | `planActivation(input) => this.options.linkedDelegation.planActivation(input, input.placement)` for every placement | `if (placement.kind === "remote_agent") linked… else hosted…` | Two paths with different gates is the problem being removed |
+| The channel decides the node | `channel.startDelegatedRun({ node: THIS_NODE, …, source })` | The root calling `AgentRunService.prepareAgentRun` | A root must not know how runs are created |
+| A linked team's members | `runLinks.endpointFor(agentRunId)` loads `rootTeam.members` of the linked team run once | `members` copied into the local link | Contract §3: no redundant attribute |
+| Listing | history row `{ runId, …, delegatedFrom: { delegatingRun, delegatorAgentRunId } }`; the tree nests it | The delegating run's view carrying every delegated run's members and status | QR-004; the earlier contract's H2 cost goes away |
 
 ## Design Decisions
 
-- **D-1 Stop rule (REQ-001, REQ-009, REQ-010).** `stopRun`: no registered root → stop the host only (as today); a peer-started run (`root.isPeerStarted`) → `root.end()` and unregister (as today: it is a delegated copy, DEC-003/DEC-006); otherwise `root.stopOwnAgent()` and the root stays registered. End listeners are notified in all three cases after the own agent stopped. `AgentRunService`: `terminated` → success; `rejected` → not stopped (as today); `not_active` with `hadRoot` → record terminated and answer success (as today's `rootEnded` case: a host that died by itself); otherwise not found.
-- **D-2 Wake (REQ-003).** No code change: DS-002. A regression test proves it from the stopped state: after `stopRun`, a copy's message to the host run ID, and to the host address, makes the host ready once and is delivered once; the same for a remote copy's inbound message.
-- **D-3 Viewing never starts the own agent; `is_active` has one meaning (REQ-004).** Stream connect and child commands use `resolveRoot`. Snapshot `is_active` = `root.isActive()`. Consequence, intended: a message the user sends to a copy of a stopped run wakes that copy and no longer starts the stopped run's own agent.
-- **D-4 Settings (REQ-006).** For kind `AGENT` with a loaded root: the copies' changes go to `root.updateDelegatedLaunchSelections` (unchanged rule: every named copy stopped, else `COPY_RUNNING`), then the own agent's selection to `agentRuns.updateStoppedSelection`, which refuses with `RUN_ACTIVE` while the own agent runs. The results combine exactly as the stored path combines them today (one private method for both). Team and Org kinds keep their `RUN_ACTIVE` on a loaded root.
-- **D-5 Archive and delete (REQ-007).** `endRootForHistory`: `copies_working` when `root.hasOpenExecutionWork()`, else end and unregister. `releaseForHistory` returns the outcome; the catalog service's three callers word it. A quiet copy (idle, not yet shut down) is ended with the root, as today.
-- **D-6 Restart resume (REQ-008).** The stop check of D-6's example, applied before and after the restore. The recorder needs no change: a loaded root's busy copies are already recorded with place `delegated`.
-- **D-7 Web client (REQ-002, REQ-004).** Stop tears down only the own agent's stream and context. The collaboration view follows its stream while the own agent runs or the view is active. The history poll already refreshes listed runs whose view is active.
-- **D-8 The refusal reaches the user (REQ-007).** Today the client drops the server's message: `deleteRunFromHistoryStore` and `archiveRunRecord` return `false` (`runHistoryMutationActions.ts:134-137,168-171`) and `useWorkspaceHistoryMutations.ts` shows a generic failure toast (lines 129-134, 190-194). Target: the single-run delete and archive actions of a standalone run return `{ changed: boolean; refusal: string | null }` (the server's `message` when it answered `success: false`), and `useWorkspaceHistoryMutations` shows the refusal in its error toast, the generic text otherwise. Group archive counts a refused run as not archived, as today. The GraphQL documents select `message` (the implementation verifies it).
+- **D-1 One delegation form for a standalone root.** The adapter's hosted branch is removed; every placement is linked.
+- **D-2 A channel for this node.** `LocalLinkChannel` implements `LinkChannel` in-process. It is the only new mechanism.
+- **D-3 The link machinery is renamed** (`links`, `RunLinks`, `LinkedRun…`), because it now serves runs on this node (Principle 15).
+- **D-4 A delegated run is created as an ordinary run with a back-link**: an Agent as a prepared standalone run that the work packet activates; a Team through `TeamRunService.createTeamRun`. The launch is the one the delegating side resolved.
+- **D-5 The Task record's `hostRoot` keeps one meaning in this step: the root that runs the run.** For a run delegated from a standalone run: its own root. For a run hosted by a team or org run: that run (unchanged). For a run on a peer: the delegating root (unchanged). The contract's removal of the field is FU-005, when it would always name the run itself. The role value becomes `subWork` now.
+- **D-6 Message admission on one node:** the pair rule (delegator and delegated run) or the same-Task rule (today's scope, checked by the engine) admit a message by run ID; the receiver's stored link check uses the same rules.
+- **D-7 A delegated run on this node keeps the idle shutdown** that a peer-started run has; a run the user started has none, as today.
+- **D-8 Listing:** a run with `delegatedFrom` on this node is listed under its delegating run when that run is stored, else as a run of its own (TC-3). A peer-started run is listed as a run of its own, as today.
+- **D-9 The migration** of the migration plan.
+- **D-10 A delegated run's settings are the run's own.** A Settings edit writes the run's launch fields and removes its `launchSource` (the origin text applies to untouched agents only, as the earlier ticket decided). `canSwitchRuntime` admits a run with a back-link on this node; a peer-started run stays excluded as today.
+- **D-11 The web tree** shows delegated runs of a standalone run as nested run rows and opens them as runs; the standalone run's child contexts, child stream handling and copy-only controls go.
 
 ## Backward-Compatibility Rejection Log (Mandatory)
 
 | Candidate Compatibility Mechanism | Why It Was Considered | Rejection Decision | Clean-Cut Replacement / Removal Plan |
 | --- | --- | --- | --- |
-| Keep `stopRoot`/`rootEnded` as aliases | Fewer edits | Rejected | Clean rename |
-| Keep `beginHostTermination` for peer-started runs | They still end whole | Rejected | The stream's `ROOT_LIFECYCLE` and the status poll already handle a root that ends |
-| A setting "Stop also stops copies" | Today's behavior | Rejected (DEC-008) | The user stops copies or closes Tasks |
+| Keep the hosted branch for existing delegated runs of standalone runs | No migration | Rejected | The migration converts them |
+| Read `taskAgent` as `delegatedFrom` in current code | A tolerant reader instead of a migration | Rejected (a stored name with a wrong meaning; guideline §3) | Migration |
+| Keep `coordinatingRun` on the wire between nodes | Mixed versions | Rejected (`DESIGN.md` rule 9) | Rename |
 
 ## Derived Layering
 
@@ -366,31 +383,31 @@ N/A.
 
 ## Change / Refactor Sequence
 
-1. Server root and manager: `stopOwnAgent`, `end`, `isPeerStarted`, `stopRun`, extracted end listeners; port and `AgentRunService`; change the two Stop tests of the investigation notes first (they must fail before, pass after). Add D-2's regression tests.
-2. Stream handler (D-3) with its tests; remove `isHostLive` and `readiness`.
-3. History gate (D-5), settings service (D-4), restart resumer (D-6), each with tests.
-4. Web client (D-7) with its store and composable tests.
-5. Docs.
+1. Rename the link machinery (no behavior change; tests green).
+2. `LocalLinkChannel`, the starter and the shared receiver; the standalone adapter takes the linked path for every placement; the capabilities of notes F-3 (saved Task, files, follow-up Task, same-Task messages, standing instance by address, stop on Task closure).
+3. Remove the hosted path from the standalone root and the copy-only features.
+4. The Task record (`subWork`, `hostRoot` for independent runs); history admission and rows.
+5. The migration with fixtures for every shape.
+6. The web tree.
+7. Docs.
 
-No temporary seams.
+Steps 2 and 3 land together (no state with both paths in a standalone root).
 
 ## Key Tradeoffs
 
-- **The root stays loaded after Stop** (until archive, delete or shutdown) instead of being unloaded when its last copy goes quiet. Chosen: one state and one rule; a loaded idle root costs one small object, and roots are already kept from first use until Stop. Rejected: unloading by a watcher on copy statuses (a second lifecycle mechanism with no demonstrated need).
-- **Stop does not depend on whether copies are working.** Chosen for the same reason (D-1's bad shape).
-- **Peer-started runs branch inside the manager.** One explicit rule in the owner of Stop, instead of a second entry point that two callers would have to choose between.
+- **Reuse the cross-node machinery in-process** instead of a second, local-only way to relate roots: one model, one set of rules; the cost is a rename and a channel implementation.
+- **`hostRoot` kept with a truthful meaning** for three more steps instead of a conditional field: one rule for the Task side while two forms of delegation exist.
+- **Delegated runs become history rows**: the list grows by the number of delegated runs (nested, so not at the top level); in exchange the copy-only views go and opening a hub no longer reads every delegated run (QR-004).
 
 ## Risks
 
-- A reader of "root loaded" or of `is_active` not found by reading. Mitigation: the searches named in Change Scope; AC-007 and AC-010 on the isolated instance.
-- A stale busy-run record with a peer-started standalone run that was stopped whole afterwards would have its copy resumed after a later update. It needs an update restart whose record was never consumed; accepted (not a supported normal scenario).
-- The three over-limit files (`standalone-agent-run-root.ts` 521, `standalone-agent-run-root-manager.ts` 516, `agentRunStore.ts` 506) must not grow: the extraction and removals above offset the additions; the implementation reports the line counts.
-- A copy's turn in flight during Stop: `stopOwnAgent` touches only the host handle; a delegation the host started and the root already admitted completes (the copy runs). Covered by a test of Stop during an admitted delegation.
+- The surface of REQ-009 is wide; a capability may depend on in-root hosting in a way not yet read (token roll-up, the Task page's locator, `@` mentions). Each is listed in the validation plan; one that cannot be served through a link returns to the requirements.
+- Cross-root delivery: two roots' gates and logs in one message; the order (receiver's log first) and the exactly-once rule must hold as on the cross-node path (QR-002).
+- The migration meets shapes from several earlier releases; released migrations that read through current readers must be repointed (**OPEN** list).
+- The web change replaces a central part of the standalone run's view.
 
 ## Guidance For Implementation
 
-- Reproduction to start from, from the investigation notes: `autobyteus-server-ts/tests/unit/standalone-agent-run-root/standalone-agent-run-root.test.ts`, tests "Stop ends every child before the host, then unregisters; the host-ready port answers again afterwards" (line 570) and "stops every delegated copy only on an explicit Stop, serves the stored view without restoring, and restores a copy on command" (line 201): they assert today's behavior; rewrite them to the new behavior first (the copy's `finish` is **not** called, `hasRoot` stays true, the copy keeps its live status).
-- Tests to add or change: manager (`stopRun` three cases, `endRootForHistory` three outcomes), root (`stopOwnAgent` leaves copies, leases and idle timers; a copy's message wakes the host once), `AgentRunService.terminateAgentRun` results, stream handler (connect starts no host; snapshot active for a stopped host; child command wakes the child only), history catalog (refusal texts; archive and delete succeed once no copy works), settings service (own model saved on a loaded root with a stopped host; `RUN_ACTIVE` with a live host; `COPY_RUNNING` for a running copy), restart resumer (delegated entry of a terminated agent root resumed; of a terminated Team or Org root skipped), web stores and composables (Stop leaves children; `syncHost`; the refusal toast).
-- Isolated-instance validation (TESTING.md): AC-001, AC-002, AC-004, AC-005, AC-007 (desktop and phone layout), AC-008, AC-010 with a real runtime; AC-009 by the resumer's tests; AC-011 on two nodes where available, otherwise stated as verified by reading.
-- Docs: `collaboration_model.md` CM-7 (a user Stop of a standalone run stops only its own agent; its copies keep running and their messages wake it; Team and Org runs: unchanged until FU-001) and § 5; `standalone_agent_run_root.md` (Ownership: `stopRun`, `endRootForHistory`; Root lifetime; Surfaces: connect, `is_active`; "Whole-Host Stop" section rewritten); `restart_resume.md` step 6; `run_history.md` (archive and delete refusal); the web doc's Stop section.
-- No user-facing text is added except the refusal messages of D-5, which the client shows through D-8.
+- Reproduction to start from, from the investigation notes: the two Stop tests in `autobyteus-server-ts/tests/unit/standalone-agent-run-root/standalone-agent-run-root.test.ts` (lines 201 and 570) assert the hosted behavior; they are rewritten for independent runs.
+- The migration's fixtures follow the guideline §9: small hand-built records of every shape of the contract's §5, checked against the counts file's shapes.
+- **OPEN items to close before handoff:** V-8 reader list; the history index files; the web file list; the released-migration repoint list; the placement of the shared inbound receiver; the GraphQL and stream shape changes.

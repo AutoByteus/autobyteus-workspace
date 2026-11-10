@@ -11,7 +11,7 @@
 - Finalization target remote / branch: `origin` / `personal` (release separately, on the user's word)
 - Bootstrap result: worktree and branch created from `origin/personal`; ticket folder `tickets/in-progress/delegated-copies-outlive-delegator-461/`
 - Bootstrap blocker: none
-- Current solution revision ID: `SR-007`
+- Current solution revision ID: `SR-008`
 - Authorities read (requirements reading gate; file and date): `references/requirements-engineering.md`, `references/finding-the-cause.md`, `references/ticket-scope.md`, `references/handoff.md` (2026-11-10); project `DESIGN.md`, `autobyteus-server-ts/docs/design/collaboration_model.md` (2026-11-10)
 - Investigation status: requirements investigation complete; architecture investigation starts after the requirements are approved
 
@@ -283,3 +283,7 @@ Reading gate for this phase: `references/architecture-design.md`, `references/de
 **Design direction that follows (to be written as the new `design-spec.md`):** local delegation from a standalone run uses the link machinery. The channel gets a second implementation for this node (in-process), the link owner and its types lose the word "remote", and the hosted path leaves the standalone root. F-3's six items are the added capabilities; F-4 … F-6 the data and history consequences.
 
 **Not read yet:** the Task side's release and status code in detail; the stream and view DTOs of a standalone root; the history index code; the web client's tree and stores for delegated runs; the standalone root's creation of the collaboration package for a delegated agent run (contract V-10); the earlier ticket's DEC-005 (V-9); released migrations that read these shapes (V-11).
+
+- Contract V-9 (why the Settings edit was kept beside the started launch), `Read`: `tickets/done/delegated-copy-model-change/requirements-doc.md` REQ-005 and DEC-005 (after Save the row shows the model like any edited member; the origin text stays only on untouched agents), and `tickets/done/delegated-copy-own-run-memory/requirements-doc.md` DEC-015 U-1 (the composed record had to round-trip). Consequence in the design (D-10): the edit writes the run's own launch fields and removes its `launchSource`.
+- `canSwitchRuntime` excludes a run with `delegatedFrom` (`agent-execution/services/standalone-agent-run-eligibility.ts:15-16`); a local delegated copy can switch today through `taskAgent.pendingRuntimeSwitch` (0 records carry one). Design D-10 admits a run with a back-link on this node.
+- The web client builds a standalone run's delegated rows from its collaboration view: `components/workspace/history/AgentRunTaskRows.vue:62-95`, `stores/agentRunCollaborationStore.ts` (`taskRows`, `selectTaskRow`, `childTargetFor`), `composables/mobile/useMobileRunTree.ts:47-57`, `components/runList/RunListRow.vue:187`.
