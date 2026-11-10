@@ -1,0 +1,8 @@
+# Follow-ups
+
+| ID | Found by (role, document) | What is wrong, where | Evidence | Why it is outside this ticket | Urgent (`Yes`/`No`) | Suggested Task description | Sent (to, date) |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| FU-001 | Solution Designer, requirements-doc DEC-002 | Semantic memory has no version history or backup; an agent's bad overwrite loses knowledge | DEC-002 (recommended: none in this ticket) | Not needed for the feature to work; add when real loss is observed | No | Give agent semantic memory a version history (for example a git history the system commits to) or a backup, after observing real use | |
+| FU-002 | Solution Designer, requirements-doc External Contracts | The agent-package-creation skill (autobyteus-agents repo) does not know the new `agent-config.json` semantic-memory field | New field introduced by this ticket | Other repository and Project | No | Teach the agent-package-creation skill when and how to enable semantic memory in `agent-config.json` | |
+| FU-003 | Solution Designer, requirements-doc DEC-003 | The user cannot browse/edit semantic memory in the app, and `search_memory` does not search it | DEC-003 (recommended: path shown only) | Separate UI and search design | No | Show and edit agents' semantic memory documents on the Memory page; decide whether memory search covers them | |
+| FU-004 | Solution Designer, requirements-doc DEC-007 | Semantic memory is per node; the same agent on another node (Docker/remote) has a separate one | DEC-007 | Sync is a separate feature | No | Sync or share an agent's semantic memory across the user's nodes | |
