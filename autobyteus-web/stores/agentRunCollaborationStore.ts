@@ -186,6 +186,8 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
 
   /** The status read on the history poll that is still running; a tick that finds one skips its own. */
   let statusRefresh: Promise<void> | null = null
+  /** Per stopped host, the node's closed-set digest its view was last re-read for: one re-read per digest value. */
+  const stoppedHostRereads = new Map<string, string>()
 
   /** The answer names exactly the context's local children (ID and address), each once. */
   const sameLocalChildren = (context: AgentRunCollaborationContext, answer: AgentRunCollaborationStatusesAnswer): boolean => {
@@ -197,17 +199,18 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
   /**
    * The history poll's refresh of task rows under listed runs that are not open (autobyteus-426 REQ-009, D-09): one
    * states-only read for the hubs with a published context, no stream, no inspection and no termination, that are
-   * listed active (`activeIds`) or whose context is still live. Each answer, in order: dropped unless its hub is as
-   * it was at selection; nothing when both are inactive; a view re-read when the active state or the local children
-   * changed, or when the node's closed-set digest differs from the context's (a Task closed or reopened,
-   * autobyteus-446); else the states are applied.
+   * listed (`listedAgentRunIds`, active or stopped) or whose context is still live. Each answer, in order: dropped
+   * unless its hub is as it was at selection; when both are inactive, a view re-read only when the node's closed-set
+   * digest differs from the view's and was not re-read for before (a Task closed or reopened while the host is
+   * stopped, autobyteus-435); a view re-read when the active state or the local children changed, or when the
+   * digest differs (autobyteus-446); else the states are applied.
    */
-  const refreshListedStatuses = (activeIds: readonly string[]): Promise<void> => {
+  const refreshListedStatuses = (listedAgentRunIds: readonly string[]): Promise<void> => {
     if (statusRefresh) return statusRefresh
-    const listedActive = new Set(activeIds)
+    const listed = new Set(listedAgentRunIds)
     const revision = binding.bindingRevision
     const selected = Object.entries(contexts.value).filter(([hostRunId, context]) => !services.has(hostRunId)
-      && !inspections.has(hostRunId) && !terminations.has(hostRunId) && (listedActive.has(hostRunId) || context.isActive))
+      && !inspections.has(hostRunId) && !terminations.has(hostRunId) && (listed.has(hostRunId) || context.isActive))
     if (!selected.length) return Promise.resolve()
     const refresh = (async () => {
       let answers: AgentRunCollaborationStatusesAnswer[]
@@ -223,7 +226,15 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
         const current = contexts.value[hostRunId] === context && binding.bindingRevision === revision
           && !services.has(hostRunId) && !inspections.has(hostRunId) && !terminations.has(hostRunId)
         if (!answer || !current) continue
-        if (!answer.isActive && !context.isActive) continue
+        if (!answer.isActive && !context.isActive) {
+          const digest = answer.closedTaskExecutionsDigest
+          if (digest && digest !== closedTaskExecutionsDigest(context.view.closed_task_executions)
+            && stoppedHostRereads.get(hostRunId) !== digest) {
+            stoppedHostRereads.set(hostRunId, digest)
+            void inspect(hostRunId)
+          }
+          continue
+        }
         if (answer.isActive !== context.isActive || !sameLocalChildren(context, answer)
           || answer.closedTaskExecutionsDigest !== closedTaskExecutionsDigest(context.view.closed_task_executions)) {
           void inspect(hostRunId)
@@ -444,15 +455,18 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
     delete selection[hostRunId]
     delete expandedTeams[hostRunId]
     delete errors[hostRunId]
+    stoppedHostRereads.delete(hostRunId)
   }
 
-  watch(() => binding.bindingRevision, () => {
+  /** Releases every host's view and stream: the window's node changed, or the phone's session ended (autobyteus-435). */
+  const releaseAll = () => {
     const ids = new Set([...Object.keys(contexts.value), ...services.keys(), ...inspections.keys(), ...terminations.keys()])
     ids.forEach(release)
-  }, { flush: 'sync' })
+  }
+  watch(() => binding.bindingRevision, releaseAll, { flush: 'sync' })
 
   return {
-    contexts, errors, contextFor, syncHost, inspect, refreshListedStatuses, viewFor, attach, release, beginHostTermination,
+    contexts, errors, contextFor, syncHost, inspect, refreshListedStatuses, viewFor, attach, release, releaseAll, beginHostTermination,
     selectChild, selectedChild, ensureStoredView, selectTaskRow, isTaskTeamExpanded, toggleTaskTeam, taskRows, hostMessagesView, childTargetFor, submit,
   }
 })

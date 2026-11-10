@@ -327,7 +327,9 @@ notice and its own run IDs. Parallel copies are allowed, and there is no limit.
   `COLLABORATION_SELF_TARGET_REJECTED` and guidance to use `send_message_to`: the
   sender's own address, any address inside a Team instance that contains the sender at
   any depth, and in a Team root every configured root placement for a configured member.
-  The refusal is raised before any placement, preparation or Task link.
+  The sender's own address gets its own words (autobyteus-435): "<address> is your own
+  address; you can't delegate to yourself. Do the work yourself, or delegate it to another
+  agent or agent team." The refusal is raised before any placement, preparation or Task link.
 
 The normal way to keep working with one ongoing instance is `send_message_to`
 (`MessageRecipientResolution`): the sender's own Team instance first, then a

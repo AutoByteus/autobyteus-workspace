@@ -641,10 +641,13 @@ describe("current delegate_task lifecycle integration (pure spawn, idle shutdown
   it("refuses delegation to the Team's own configured members before any placement, Task link or preparation; outside units and copies stay allowed (AC-001, DEC-008)", async () => {
     const harness = await createHarness();
     const coordinator = context(harness.commands, "/coordinator", "run-coordinator");
-    for (const recipient_address of ["/worker", "/reviewer", "/coordinator"]) {
+    for (const recipient_address of ["/worker", "/reviewer"]) {
       await expect(delegate(harness.service, coordinator, { recipient_address, description: "Use send_message_to instead." }))
         .rejects.toMatchObject({ code: "COLLABORATION_SELF_TARGET_REJECTED", message: expect.stringContaining("send_message_to") });
     }
+    // Its own address: the same code, words of its own (autobyteus-435 REQ-013).
+    await expect(delegate(harness.service, coordinator, { recipient_address: "/coordinator", description: "Do it myself." }))
+      .rejects.toMatchObject({ code: "COLLABORATION_SELF_TARGET_REJECTED", message: expect.stringContaining("you can't delegate to yourself") });
     expect(harness.backend.preparedAgents).toEqual([]);
     expect(harness.root.getExecutionTreeSnapshot().rootTeam.taskExecutions).toEqual([]);
     expect(harness.tasks.adHocTaskIds?.() ?? []).toEqual([]);

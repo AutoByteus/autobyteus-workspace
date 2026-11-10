@@ -1,0 +1,8 @@
+# command: probes/api12.sh; commit d37397b40d
+# API-12; 2026-11-10T08:18:45Z; emulator-5600; APK of d37397b40d; saved node 'abx435 Proxy Node' at 10.0.2.2:63826 (test proxy) ATTEMPT 1, INVALID AS AC-007-1 EVIDENCE: the proxy answered every request 502, so the start check failed first and the existing Can.t reach screen showed (out of scope). Rerun as API-12 with 502 for the page only.
+502 (proxy mode)
+O1 overlay: Can’t reach abx435 Proxy Node | abx435 Proxy Node didn’t answer. Check that the computer is on and awake. | Retry | Scan again
+forbidden words present: []
+pass (proxy mode)
+tapped 'Retry' at 539 2053
+O2 after Retry with the node answering: "{\"q\":\"\",\"connected\":true}"

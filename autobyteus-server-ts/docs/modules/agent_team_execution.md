@@ -513,7 +513,8 @@ are invalid. `RootTeamRun.resolveDelegationPlacement` returns one immutable
 Agent or AgentTeam placement: first the CM-1 refusal (an address in the sender's
 own team: its own address, a teammate, or in a Team root any configured root
 placement, for a configured member; `COLLABORATION_SELF_TARGET_REJECTED` with
-`send_message_to` guidance, raised before any placement or Task link), then a
+`send_message_to` guidance, or for its own address "you can't delegate to yourself"
+(autobyteus-435), raised before any placement or Task link), then a
 configured member, then a listed catalog definition (see
 [Agent Communication](./agent_communication.md#delegated-catalog-copies)). Every
 placement carries the snapshot its copy starts from (a configured member's as it is

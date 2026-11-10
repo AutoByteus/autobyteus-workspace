@@ -205,6 +205,8 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       delete notices[rootTeamRunId];
       this.streamRecoveryNoticesByRootTeamRunId = notices;
     },
+    /** Closes every Team stream this page holds: the phone's session ended (autobyteus-435 REQ-010). */
+    disconnectAllTeamStreams(): void { for (const rootTeamRunId of [...teamStreamingServices.keys()]) this.disconnectTeamStream(rootTeamRunId); },
     async terminateTeamRun(rootTeamRunId: string): Promise<boolean> {
       const team = useAgentTeamContextsStore().getTeamContextById(rootTeamRunId);
       if (!rootTeamRunId.trim() || this.stopPendingTeamIds[rootTeamRunId] || (team && !team.view.isRootTeamActive())) return false;

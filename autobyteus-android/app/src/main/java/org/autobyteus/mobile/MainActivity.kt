@@ -55,6 +55,7 @@ class MainActivity : Activity(), NodeConnectionFlow.Screens {
     private lateinit var webShellScreen: WebShellScreen
     /** The open document's desktop full-screen request over 432's controller (D-2 with DEC-011). */
     private lateinit var fullScreenRequest: DesktopFullScreenRequest
+    private lateinit var fullScreenController: DesktopFullScreenController
     private val checks = Executors.newFixedThreadPool(4)
     private val mainThread = Executor { runOnUiThread(it) }
 
@@ -67,7 +68,8 @@ class MainActivity : Activity(), NodeConnectionFlow.Screens {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        fullScreenRequest = DesktopFullScreenRequest(DesktopFullScreenController.forActivity(this))
+        fullScreenController = DesktopFullScreenController.forActivity(this)
+        fullScreenRequest = DesktopFullScreenRequest(fullScreenController)
         // autobyteus-290 SM-10: the saved entries' stored keys follow the code before the store first reads them.
         SavedNodeEntryKeysMigration.run(this)
         savedNodeStore = SavedNodeStore(this)
@@ -78,7 +80,7 @@ class MainActivity : Activity(), NodeConnectionFlow.Screens {
         ui = ShellUi(this)
         startScreen = StartScreen(ui)
         scanScreen = ScanScreen(ui)
-        webShellScreen = WebShellScreen(this)
+        webShellScreen = WebShellScreen(this) { fullScreenController.isOn }
         qrScanCoordinator = QrScanCoordinator(
             activity = this,
             onOpenScanner = ::showScanner,
@@ -355,7 +357,8 @@ class MainActivity : Activity(), NodeConnectionFlow.Screens {
 
     private fun webCallbacks(entry: SavedNodeEntry): WebShellScreen.Callbacks = WebShellScreen.Callbacks(
         onEditNode = ::leavePage,
-        onRetry = { currentWebHost?.loadTrusted(entry.mobileUrl) ?: flow.open(entry) },
+        // A pairing link's page that has not paired loads its link again, so the code is used (autobyteus-435 REQ-008).
+        onRetry = { currentWebHost?.loadTrusted(flow.retryUrlFor(entry)) ?: flow.open(entry) },
         onOpenInBrowser = { externalActions.openExternal(entry.mobileUrl) },
     )
 

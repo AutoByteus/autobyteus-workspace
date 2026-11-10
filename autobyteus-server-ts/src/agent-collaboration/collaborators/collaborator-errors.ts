@@ -64,6 +64,10 @@ export const delegationTargetUnavailableMessage = (address: string): string =>
 export const messageTargetNotFoundMessage = (address: string): string =>
   `No agent or agent team you can talk with has the address ${address}. To answer a message or report your task result, use send_message_to with target_agent_run_id set to the sender run id. To have a task done by a new agent, use delegate_task.`;
 
-/** `delegate_task(address)` to the sender itself, a teammate or its own Team (CM-1). */
+/** `delegate_task(address)` to the sender's own address (autobyteus-435 REQ-013): an agent cannot delegate to itself. */
+export const selfDelegationRefusedMessage = (address: string): string =>
+  `${address} is your own address; you can't delegate to yourself. Do the work yourself, or delegate it to another agent or agent team.`;
+
+/** `delegate_task(address)` to a teammate or the sender's own Team (CM-1). */
 export const ownTeamDelegationRefusedMessage = (address: string): string =>
   `${address} is in your own team; you can't delegate to it. Talk with it using send_message_to.`;

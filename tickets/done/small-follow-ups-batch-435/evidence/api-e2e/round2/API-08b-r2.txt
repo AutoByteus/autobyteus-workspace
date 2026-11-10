@@ -1,0 +1,15 @@
+# command: probes/api08b.sh
+# API-08b (Android 14); 2026-11-10T09:38:48Z; emulator-5602 abx435r2_api34 Android 14; APK of b5da2d15a0 (worktree); node abx435r2-api-node; keyboard: com.google.android.inputmethod.latin/com.android.inputmethod.latin.LatinIME
+mode: "Control"
+K0 Control, full screen | ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE bars: visible=false visible=false  pid=3532 | page="{\"q\":\"?row=agent:temp-1794303479810-1&screen=desktop&full=1\",\"status\":null,\"runScreen\":null,\"runName\":null,\"opening\":false,\"list\":false,\"activity\":false,\"viewer\":true,\"handle\":true,\"viewport\":[915,412],\"dpr\":2.625,\"screen\":[915,412],\"canvas\":[91,0,733,412],\"stage\":[0,0,915,412],\"picture\":\"none\"}"
+node clipboard before: ''
+tapped mobile-node-desktop-strip-clipboard at device 1155 37
+sheet open: true
+tapped mobile-node-desktop-clipboard-paste-input at device 1201 532
+focus: "mobile-node-desktop-clipboard-paste-input"; keyboard: mInputShown=true
+typed, keyboard open: "{\"value\":\"abx435-sent-in-full-screen\",\"visual\":[915,151,0],\"inner\":[915,151],\"input\":[16,107,742,44],\"send\":[766,107,134,44],\"sendDisabled\":false,\"topAtSendCentre\":\"mobile-node-desktop-clipboard-send\"}"; keyboard: mInputShown=true
+IME window: frame=[136,0][2400,1080]
+tapped mobile-node-desktop-clipboard-send at device 2185 339
+node clipboard after Send: 'abx435-sent-in-full-screen'
+after Send: sheet open false, field '{"result":{"type":"object","subtype":"null","value":null}}', keyboard mInputShown=false
+K1 after Send (still full screen) | ROTATION_90 requested=SCREEN_ORIENTATION_SENSOR_LANDSCAPE bars: visible=false visible=false  pid=3532 | page="{\"q\":\"?row=agent:temp-1794303479810-1&screen=desktop&full=1\",\"status\":null,\"runScreen\":null,\"runName\":null,\"opening\":false,\"list\":false,\"activity\":false,\"viewer\":true,\"handle\":true,\"viewport\":[915,412],\"dpr\":2.625,\"screen\":[915,412],\"canvas\":[91,0,733,412],\"stage\":[0,0,915,412],\"picture\":\"none\"}"

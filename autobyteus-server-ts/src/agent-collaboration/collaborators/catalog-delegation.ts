@@ -7,12 +7,13 @@ import {
   type TaskTeamExecutionSource,
 } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import type { CatalogTaskSource } from "./collaborator-admission.js";
-import { CollaboratorAddError, ownTeamDelegationRefusedMessage } from "./collaborator-errors.js";
+import { CollaboratorAddError, ownTeamDelegationRefusedMessage, selfDelegationRefusedMessage } from "./collaborator-errors.js";
 import type { PeerNodeRef } from "../execution/remote/remote-run-channel.js";
 import type { DelegationWork, RoutingDecisionDraft } from "../../model-routing/domain/model-routing-types.js";
 
-/** The index fact a root supplies for the own-Team delegation rule (CM-1, DEC-008). */
+/** The index facts a root supplies for the self and own-Team delegation rules (CM-1, DEC-008; autobyteus-435 REQ-013). */
 export interface DelegationSourceIndexPort {
+  agentAddressOf(agentRunId: string): AgentTeamAddress | null;
   isOwnTeamAddress(senderAgentRunId: string, address: AgentTeamAddress): boolean;
 }
 
@@ -93,6 +94,10 @@ export const resolveDelegationPlacement = async (input: Readonly<{
   resolveInRun(): DelegationPlacement;
   catalogSource(workspaceRootPath: string | null): Promise<CatalogTaskSource | null>;
 }>): Promise<DelegationPlacement> => {
+  // The sender's own address is told apart from a teammate's, so the agent is not told to message itself.
+  if (input.address === input.port.agentAddressOf(input.senderAgentRunId)) {
+    throw new CollaborationContractError("COLLABORATION_SELF_TARGET_REJECTED", selfDelegationRefusedMessage(input.address));
+  }
   if (input.port.isOwnTeamAddress(input.senderAgentRunId, input.address)) {
     throw new CollaborationContractError("COLLABORATION_SELF_TARGET_REJECTED", ownTeamDelegationRefusedMessage(input.address));
   }

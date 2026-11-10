@@ -41,6 +41,12 @@ export interface RunListSources {
   agentOrgHistory: readonly AgentOrgRunHistoryItem[];
 }
 
+/** The run list row key of an agent run, `agent:<runId>`: the one writer of that format (the list, and the phone's Create run). */
+export const agentRunRowKey = (runId: string): string => `agent:${runId}`;
+/** The agent run a top-level row key names (`agent:<runId>`); null for a child row's key or a Team's or Org's key. */
+export const agentRunIdOfRowKey = (rowKey: string | null): string | null =>
+  rowKey?.startsWith('agent:') && !rowKey.includes('/') ? rowKey.slice('agent:'.length) || null : null;
+
 const timeOf = (iso: string): number => {
   const value = Date.parse(iso);
   return Number.isFinite(value) ? value : 0;
@@ -76,7 +82,7 @@ const agentEntries = (sources: RunListSources): RunListEntry[] => {
           ? { ...mergeHistoryRowWithContext(historyRow(stored), context), lastActivityAt: stored.lastActivityAt }
           : historyRow(stored);
         entries.set(run.runId, {
-          kind: 'agent', key: `agent:${run.runId}`, runId: run.runId, name: agent.agentName || FALLBACK_AGENT_NAME,
+          kind: 'agent', key: agentRunRowKey(run.runId), runId: run.runId, name: agent.agentName || FALLBACK_AGENT_NAME,
           lastActivityAt: run.lastActivityAt, isActive: run.isActive, folderRootPath: folderOf(group.workspaceRootPath),
           agentDefinitionId: agent.agentDefinitionId, avatarUrl: avatarOf(agent.agentDefinitionId, agent.agentAvatarUrl), run,
         });
@@ -95,7 +101,7 @@ const agentEntries = (sources: RunListSources): RunListEntry[] => {
       lastActivityAt: conversation.createdAt || new Date().toISOString(), source: 'local', isDraft: false,
     };
     entries.set(runId, {
-      kind: 'agent', key: `agent:${runId}`, runId, name, lastActivityAt: run.lastActivityAt, isActive: run.isActive,
+      kind: 'agent', key: agentRunRowKey(runId), runId, name, lastActivityAt: run.lastActivityAt, isActive: run.isActive,
       folderRootPath: folderOf(context.config.workspaceMetadata?.workspaceRootPath),
       agentDefinitionId: context.config.agentDefinitionId, avatarUrl: avatarOf(context.config.agentDefinitionId, context.config.agentAvatarUrl), run,
     });

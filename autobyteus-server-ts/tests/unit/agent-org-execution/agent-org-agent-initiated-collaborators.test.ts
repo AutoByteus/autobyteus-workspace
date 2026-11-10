@@ -106,10 +106,13 @@ describe("agent-initiated delegation, messaging and team instances in an AgentOr
   it("places a copy from inside a mounted Team at the root and refuses the Team's own addresses at any depth (REQ-012, AC-003, DEC-008)", async () => {
     const f = await buildOrg();
     const lead = { identity: identity(f, "/target/lead", "configured-lead") };
-    for (const own of ["/target/writer", "/target", "/target/lead"]) {
+    for (const own of ["/target/writer", "/target"]) {
       await expect(f.owner.delegateToNewCopy(lead, { recipient_address: own, description: "Draft" }))
         .rejects.toMatchObject({ code: "COLLABORATION_SELF_TARGET_REJECTED", message: expect.stringContaining("send_message_to") });
     }
+    // Its own address: the same code, words of its own (autobyteus-435 REQ-013).
+    await expect(f.owner.delegateToNewCopy(lead, { recipient_address: "/target/lead", description: "Draft" }))
+      .rejects.toMatchObject({ code: "COLLABORATION_SELF_TARGET_REJECTED", message: expect.stringContaining("you can't delegate to yourself") });
     await expect(f.owner.delegateToNewCopy(lead, { recipient_address: "/director", description: "Decide" })).resolves.toMatchObject({ delegated: true });
     await flushMicrotasks();
     const tree = f.owner.getExecutionTreeSnapshot();

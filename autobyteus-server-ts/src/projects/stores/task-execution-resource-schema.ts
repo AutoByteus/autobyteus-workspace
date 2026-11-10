@@ -1,5 +1,5 @@
 import { createRootExecutionIdentity, type RootSubjectKind } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
-import { taskExecutionReferenceKey } from "../../agent-collaboration/execution/task/task-execution-reference.js";
+import { taskExecutionReferenceKey } from "@autobyteus/collaboration-stream-contracts";
 import type { TaskExecutionResource, TaskExecutionResourceFile } from "../domain/task-execution-resources.js";
 
 /**

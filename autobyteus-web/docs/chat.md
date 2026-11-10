@@ -360,9 +360,11 @@ explicit attachment owner, then the app routes to `/workspace` and finishes
 the sent draft. On failure the orphan team draft and selection are removed and
 the New chat and its row stay intact.
 
-`composables/chat/useChatRouteRunSync.ts` (used by `pages/chat.vue`) replaces
-`/chat?id=temp-*` with the permanent id whenever the displayed context is
-promoted, on every send path.
+`composables/useDraftRunPromotionRouteSync.ts` (used by `pages/chat.vue`)
+replaces `/chat?id=temp-*` with the permanent id whenever the displayed context
+is promoted, on every send path. The phone's route follows the same promotion
+through the same composable (`composables/mobile/useMobileRouteRunSync.ts`
+replaces its `row`).
 
 ## Run View (D-17)
 
@@ -557,7 +559,7 @@ target mode.
   server readback, start-surface tools and control geometry. It runs in an owned
   temp data root and needs Chrome, logged-in `claude` and `codex` CLIs and a
   prior `pnpm -C autobyteus-server-ts build`.
-- `composables/chat/__tests__/useChatRouteRunSync.spec.ts`
+- `composables/__tests__/useDraftRunPromotionRouteSync.spec.ts`
 - `components/chat/__tests__/ChatComposer.spec.ts`, `chatComposerMenus.spec.ts`
 - `components/chat/__tests__/ChatThinkingControl.spec.ts`, `chatThinkingMenu.spec.ts`,
   `ChatWorkspaceMenu.spec.ts`; `utils/__tests__/llmThinkingConfigAdapter.spec.ts`

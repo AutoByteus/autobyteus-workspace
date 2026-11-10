@@ -6,23 +6,34 @@
     <div class="space-y-6 px-4">
       <section class="space-y-2" data-testid="mobile-node-desktop-clipboard-paste">
         <h3 class="text-sm font-semibold text-slate-900">{{ t('mobile.nodeDesktop.clipboard_paste_heading') }}</h3>
-        <textarea
-          v-model="pasteText"
-          rows="3"
-          class="block w-full resize-none rounded-xl border border-slate-300 px-3 py-2 text-base text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
-          :aria-label="t('mobile.nodeDesktop.clipboard_paste_label')"
-          :placeholder="t('mobile.nodeDesktop.clipboard_paste_label')"
-          data-testid="mobile-node-desktop-clipboard-paste-input"
-        />
-        <button
-          type="button"
-          class="h-11 w-full rounded-xl bg-blue-600 px-4 text-sm font-semibold text-white active:bg-blue-700 disabled:opacity-40"
-          :disabled="!pasteText"
-          data-testid="mobile-node-desktop-clipboard-send"
-          @click="send"
+        <!-- A short viewport (landscape with the keyboard open, ≈ 150 px): Send sits beside a one-line field, so both stay
+             visible while typing (autobyteus-435 REQ-006); taller viewports (portrait, with or without the keyboard) keep
+             the field above Send. -->
+        <div
+          ref="pasteRow"
+          class="flex flex-col gap-2 [@media(max-height:320px)]:flex-row [@media(max-height:320px)]:items-center"
+          data-testid="mobile-node-desktop-clipboard-paste-row"
         >
-          {{ t('mobile.nodeDesktop.clipboard_send') }}
-        </button>
+          <textarea
+            v-model="pasteText"
+            rows="3"
+            class="block w-full resize-none rounded-xl border border-slate-300 px-3 py-2 text-base text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30 [@media(max-height:320px)]:h-11 [@media(max-height:320px)]:min-w-0 [@media(max-height:320px)]:flex-1"
+            :aria-label="t('mobile.nodeDesktop.clipboard_paste_label')"
+            :placeholder="t('mobile.nodeDesktop.clipboard_paste_label')"
+            data-testid="mobile-node-desktop-clipboard-paste-input"
+            @focus="onPasteFocus"
+            @blur="onPasteBlur"
+          />
+          <button
+            type="button"
+            class="h-11 w-full rounded-xl bg-blue-600 px-4 text-sm font-semibold text-white active:bg-blue-700 disabled:opacity-40 [@media(max-height:320px)]:w-auto [@media(max-height:320px)]:flex-shrink-0"
+            :disabled="!pasteText"
+            data-testid="mobile-node-desktop-clipboard-send"
+            @click="send"
+          >
+            {{ t('mobile.nodeDesktop.clipboard_send') }}
+          </button>
+        </div>
       </section>
 
       <section class="space-y-2" data-testid="mobile-node-desktop-clipboard-copy">
@@ -51,7 +62,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { onBeforeUnmount, ref, watch } from 'vue';
 import MobileBottomSheet from '~/components/mobile/MobileBottomSheet.vue';
 import { useLocalization } from '~/composables/useLocalization';
 
@@ -67,6 +78,23 @@ const send = () => {
   if (!pasteText.value) return;
   emit('send', pasteText.value);
 };
+
+/**
+ * The field's row (with Send) stays in view while the field has focus: the keyboard opens after the focus and shrinks
+ * the page, so the row is brought into view on focus and again on each resize until the field loses focus.
+ */
+const pasteRow = ref<HTMLElement | null>(null);
+const keepPasteRowInView = (): void => { pasteRow.value?.scrollIntoView({ block: 'nearest' }); };
+const onPasteBlur = (): void => {
+  window.removeEventListener('resize', keepPasteRowInView);
+  window.visualViewport?.removeEventListener('resize', keepPasteRowInView);
+};
+const onPasteFocus = (): void => {
+  keepPasteRowInView();
+  window.addEventListener('resize', keepPasteRowInView);
+  window.visualViewport?.addEventListener('resize', keepPasteRowInView);
+};
+onBeforeUnmount(onPasteBlur);
 
 /**
  * Puts text on this phone's clipboard from the tap: the async clipboard where the page may use it (secure origins),

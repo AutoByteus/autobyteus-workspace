@@ -39,7 +39,7 @@ import WorkspaceAdaptiveLayout from '~/components/layout/WorkspaceAdaptiveLayout
 import WorkspaceToolShell from '~/components/layout/WorkspaceToolShell.vue'
 import { START_SURFACE_WORKSPACE, startSurfaceWorkspaceOf } from '~/composables/layout/useStartSurfaceTools'
 import { useWorkspaceFileContentVisible } from '~/composables/workspace/useWorkspaceFileContentVisible'
-import { useChatRouteRunSync } from '~/composables/chat/useChatRouteRunSync'
+import { useDraftRunPromotionRouteSync } from '~/composables/useDraftRunPromotionRouteSync'
 import { useAgentContextsStore } from '~/stores/agentContextsStore'
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
 import { useChatDraftStore } from '~/stores/chatDraftStore'
@@ -123,7 +123,7 @@ watch(displayedContext, (context) => {
 
 // A displayed stored run that disappears was archived or deleted from the Workspaces tree, so Chat
 // leaves it instead of re-opening it. A discarded draft (`temp-*`) returns to New chat. A promoted
-// context keeps its object but carries the new id; useChatRouteRunSync moves the route.
+// context keeps its object but carries the new id; useDraftRunPromotionRouteSync moves the route.
 watch(displayedContext, (context, previous) => {
   if (context || !previous || !routeRunId.value) return
   if (previous.state.runId !== routeRunId.value) return
@@ -131,7 +131,7 @@ watch(displayedContext, (context, previous) => {
   else leaveToWorkspace()
 })
 
-useChatRouteRunSync({
+useDraftRunPromotionRouteSync({
   routeRunId,
   replaceRouteRunId: (runId) => router.replace(buildAgentRunChatRoute(runId)),
 })
