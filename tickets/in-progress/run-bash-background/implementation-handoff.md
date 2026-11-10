@@ -21,7 +21,7 @@ All paths below are in `/Users/normy/autobyteus_org/autobyteus-worktrees/run-bas
 - Current implementation revision ID: `IR-002` (IR-001 baseline)
 - Related solution revision IDs: `SR-005`
 - Related architecture-review revision IDs: `ARCH-REV-003`
-- Related code-review revision IDs: `CRR-001` (`code-review-report.md`, `code-review-revision-record.md`)
+- Related code-review revision IDs: `CRR-001` (Fail, CR-001), `CRR-002` (Pass, CR-001 resolved in `ddd594d07b`; `code-review-report.md`, `code-review-revision-record.md`)
 - Related API/E2E revision IDs: `N/A`
 - Related delivery revision IDs: `N/A`
 - Triggering finding IDs: `CR-001`
