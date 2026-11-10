@@ -27,9 +27,7 @@ import {
 import { DEFAULT_AGENT_RUNTIME_KIND } from '~/types/agent/AgentRunConfig';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { ConnectionState } from '~/services/agentStreaming';
-import {
-  applyOfflineOrTerminalCleanup,
-} from '~/services/runStatus/agentRuntimeStatusState';
+import { applyOfflineOrTerminalCleanup } from '~/services/runStatus/agentRuntimeStatusState';
 import { CollaboratorAddRejection } from '~/services/collaborators/collaboratorAddFailures';
 import {
   acceptLocalSubmission,
@@ -357,13 +355,14 @@ export const useAgentRunStore = defineStore('agentRun', {
 
     disconnectAgentStream(runId: string): void {
       const stream = streamingServices.get(runId);
-      if (!stream) {
-        return;
-      }
+      if (!stream) return;
       stream.reconnection.dispose();
       stream.service.disconnect();
       streamingServices.delete(runId);
     },
+
+    /** Closes every agent stream this page holds: the phone's session ended (autobyteus-435 REQ-010). */
+    disconnectAllAgentStreams(): void { for (const runId of [...streamingServices.keys()]) this.disconnectAgentStream(runId); },
 
     /**
      * @action postToolExecutionApproval

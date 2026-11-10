@@ -134,6 +134,8 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     const nextFocus = { ...pendingFocus.value }; delete nextFocus[id]; pendingFocus.value = nextFocus
     deferredReleases.delete(id)
   }
+  /** Releases every Org view and stream this page holds: the phone's session ended (autobyteus-435 REQ-010). */
+  const releaseAll = (): void => { new Set([...Object.keys(contexts.value), ...services.keys()]).forEach(releaseContext) }
   const finishOperation = (id: string) => {
     const next = { ...operations.value }; delete next[id]; operations.value = next
     if (deferredReleases.has(id)) releaseContext(id)
@@ -435,5 +437,5 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
 
   const contextFor = (id: string): AgentOrgExecutionContext | null => contexts.value[id] ?? null
   const errorFor = (id: string): string | null => errors.value[id] ?? null
-  return { readRunConfig, saveRunConfig, contexts, errors, operations, reconcileRetainedHistory, openForInspection, releaseContext, select, contextFor, errorFor, activeTargetFor, stopAndInspect }
+  return { readRunConfig, saveRunConfig, contexts, errors, operations, reconcileRetainedHistory, openForInspection, releaseContext, releaseAll, select, contextFor, errorFor, activeTargetFor, stopAndInspect }
 })

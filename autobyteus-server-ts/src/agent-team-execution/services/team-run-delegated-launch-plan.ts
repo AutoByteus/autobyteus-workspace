@@ -6,7 +6,8 @@ import {
   type DelegatedLaunchUpdateResult,
 } from "../../agent-collaboration/collaborators/delegated-launch-selection-command.js";
 import { delegatedLaunchSelections, type DelegatedLaunchChange } from "../../agent-collaboration/domain/delegated-launch-selection.js";
-import { taskExecutionReferenceKey, type TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
+import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
+import { taskExecutionReferenceKey } from "@autobyteus/collaboration-stream-contracts";
 import { selectionContextFor } from "../../agent-execution/services/stopped-run-selection-context.js";
 import type { RunModelSelectionService, RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
 import type { RunModelConfigFieldError, RunModelConfigUpdateOutcome } from "../../run-history/domain/run-model-config.js";

@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 import { defineComponent, h, nextTick, ref, type Ref } from 'vue'
 import { mount } from '@vue/test-utils'
-import { useChatRouteRunSync } from '../useChatRouteRunSync'
+import { useDraftRunPromotionRouteSync } from '../useDraftRunPromotionRouteSync'
 import { useAgentContextsStore } from '~/stores/agentContextsStore'
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
 import { AgentContext } from '~/types/agent/AgentContext'
@@ -13,12 +13,12 @@ const buildContext = (runId: string) => new AgentContext({
   workspaceId: null, workspaceMetadata: null, autoExecuteTools: true, isLocked: false,
 }, new AgentRunState(runId, { id: runId, messages: [], createdAt: '', updatedAt: '', agentDefinitionId: 'a' }))
 
-describe('useChatRouteRunSync', () => {
+describe('useDraftRunPromotionRouteSync', () => {
   beforeEach(() => setActivePinia(createPinia()))
 
   const mountSync = (routeRunId: Ref<string | null>) => {
     const replace = vi.fn((runId: string) => { routeRunId.value = runId })
-    mount(defineComponent({ setup() { useChatRouteRunSync({ routeRunId, replaceRouteRunId: replace }); return () => h('div') } }))
+    mount(defineComponent({ setup() { useDraftRunPromotionRouteSync({ routeRunId, replaceRouteRunId: replace }); return () => h('div') } }))
     return replace
   }
 

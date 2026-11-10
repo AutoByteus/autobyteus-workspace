@@ -41,10 +41,8 @@ import {
   TaskExecutionIdleShutdownSchedule,
   type TaskExecutionIdleTimers,
 } from "./task-execution-idle-shutdown-schedule.js";
-import {
-  taskExecutionReferenceKey,
-  type TaskExecutionReference,
-} from "./task-execution-reference.js";
+import type { TaskExecutionReference } from "./task-execution-reference.js";
+import { taskExecutionReferenceKey } from "@autobyteus/collaboration-stream-contracts";
 
 /** Holds a task-execution chain live between wake and input reservation. */
 export type TaskExecutionLiveLease = Readonly<{ assertOpen(): void; release(): void }>;

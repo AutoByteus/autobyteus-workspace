@@ -2,7 +2,7 @@ import { isDeepStrictEqual } from "node:util";
 import {
   DelegatedLaunchSelectionCommand,
 } from "../../agent-collaboration/collaborators/delegated-launch-selection-command.js";
-import { taskExecutionReferenceKey } from "../../agent-collaboration/execution/task/task-execution-reference.js";
+import { taskExecutionReferenceKey } from "@autobyteus/collaboration-stream-contracts";
 import { TeamRunEventSourceType, type TeamRunEvent } from "../domain/team-run-event.js";
 import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
 import type { TeamTaskExecutionService } from "../task-delegation/team-task-execution-service.js";

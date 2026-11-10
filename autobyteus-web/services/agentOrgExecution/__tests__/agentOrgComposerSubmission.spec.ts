@@ -34,7 +34,8 @@ class Socket {
   static instances: Socket[] = []
   readyState = 1
   onmessage: ((event: { data: string }) => void) | null = null
-  onclose: (() => void) | null = null
+  /** As a browser's WebSocket, a close always carries its code and reason (a lost connection: 1006). */
+  onclose: ((event: { code: number; reason: string }) => void) | null = null
   onerror = null
   sent: any[] = []
   constructor() { Socket.instances.push(this) }
@@ -42,7 +43,7 @@ class Socket {
   close(code?: number) {
     if (code !== undefined && code !== 1000 && (code < 3000 || code > 4999)) throw new Error('Invalid client close code')
     this.readyState = 3
-    this.onclose?.()
+    this.onclose?.({ code: code ?? 1006, reason: '' })
   }
   emit(message: unknown) { this.onmessage?.({ data: JSON.stringify(message) }) }
 }

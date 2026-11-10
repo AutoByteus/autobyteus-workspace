@@ -21,6 +21,20 @@ import {
 /** The phone folds Org runs' delegated Teams and unfolds Org runs (REQ-002, AR-004). */
 const PHONE_DEFAULT_EXPANSION = Object.freeze({ orgRuns: true, orgTaskTeams: false });
 
+/** The rows above `isTarget`'s row in a depth-ordered tree list that contain it, nearest first. */
+const ancestorsOf = <T>(rows: readonly T[], depthOf: (row: T) => number, isTarget: (row: T) => boolean): T[] => {
+  const index = rows.findIndex(isTarget);
+  if (index < 0) return [];
+  const ancestors: T[] = [];
+  let depth = depthOf(rows[index]!);
+  for (let at = index - 1; at >= 0 && depth > 0; at -= 1) {
+    if (depthOf(rows[at]!) >= depth) continue;
+    ancestors.push(rows[at]!);
+    depth = depthOf(rows[at]!);
+  }
+  return ancestors;
+};
+
 /**
  * The phone's run list rows (autobyteus-277 DS-002): the run list store's shown runs, each with the rows of its kind's
  * owner (the collaboration store, the Team rows, the Org rows) and one shared disclosure instance. It asks the
@@ -102,8 +116,35 @@ export function useMobileRunTree() {
     else disclosure.toggleAgentOrgTaskTeam(fold.rootRunId, fold.teamRunId);
   };
 
+  /**
+   * Opens every fold on the path to a row, never closing one (autobyteus-435 DS-006 restore): the older runs' fold for
+   * its run; a Team member's Team and each ancestor Team row (from the Team's rows in the history read); a delegated
+   * row's run and each ancestor task Team (from the run's published view). A row whose run is not listed reveals nothing.
+   */
+  const revealRow = (key: string): void => {
+    const slash = key.indexOf('/');
+    const entry = runListStore.entries.find((candidate) => candidate.key === (slash < 0 ? key : key.slice(0, slash)));
+    if (!entry) return;
+    runListStore.showRun(entry.runId);
+    if (slash < 0) return;
+    const rowKey = key.slice(slash + 1);
+    if (entry.kind === 'team') {
+      disclosure.setTeamExpanded(entry.runId, true);
+      for (const row of ancestorsOf(entry.team.executionRows, (row) => row.depth, (row) => row.rowKey === rowKey)) {
+        if (!disclosure.isRowExpanded(entry.runId, row.rowKey)) disclosure.toggleTeamMember(entry.runId, row.rowKey);
+      }
+    } else if (entry.kind === 'agent') {
+      if (!disclosure.isRunExpanded(entry.runId)) disclosure.toggleRun(entry.runId);
+      const taskRows = collaboration.contextFor(entry.runId)?.listTaskRows(() => true) ?? [];
+      for (const { row } of ancestorsOf(taskRows, ({ row }) => row.depth, ({ row }) => row.rowKey === rowKey)) {
+        const teamRunId = row.teamRunIdForNode;
+        if (teamRunId && !collaboration.isTaskTeamExpanded(entry.runId, teamRunId)) collaboration.toggleTaskTeam(entry.runId, teamRunId);
+      }
+    }
+  };
+
   return {
-    rows, openRowKey, openRow, openRowParent, toggle,
+    rows, openRowKey, openRow, openRowParent, toggle, revealRow,
     /** The shared disclosure's open actions for the selection actions (Team runs and members open their ancestors). */
     setTeamExpanded: disclosure.setTeamExpanded,
     toggleTeam: disclosure.toggleTeam,

@@ -22,10 +22,10 @@ import {
   fromTeamTaskExecutionReference,
   mergeClosedTaskExecutions,
   removeReopenedTaskExecutions,
-  taskExecutionReferenceKey,
   teamRunKey,
   type TaskExecutionReference,
 } from '~/utils/collaboration/taskExecutionClosure';
+import { taskExecutionReferenceKey } from '@autobyteus/collaboration-stream-contracts';
 import {
   collectAgentExecutionLocations,
   projectNavigationRows,

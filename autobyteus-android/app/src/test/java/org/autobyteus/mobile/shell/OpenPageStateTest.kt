@@ -13,7 +13,7 @@ import org.junit.Test
 class OpenPageStateTest {
     private val entryId = "http://test-desktop.example-tailnet.ts.net"
     private val cantReach = ConnectionDiagnosticMapper.pageLoadFailed("Test Desktop")
-    private val http502 = ConnectionDiagnosticMapper.fromHttpStatus(502)
+    private val http502 = ConnectionDiagnosticMapper.fromHttpStatus(502, "Office Mac")
 
     /** A page that has loaded and shows (CRR-002 §1). */
     private fun loadedPage() = OpenPageState().apply {

@@ -1,7 +1,8 @@
 import { DelegatedLaunchSelectionCommand } from "./delegated-launch-selection-command.js";
 import type { DelegatedLaunchRootPort } from "./delegated-launch-selection-command.js";
 import type { DelegatedLaunchSelections } from "../domain/delegated-launch-selection.js";
-import { taskExecutionReferenceKey, type TaskExecutionReference } from "../execution/task/task-execution-reference.js";
+import type { TaskExecutionReference } from "../execution/task/task-execution-reference.js";
+import { taskExecutionReferenceKey } from "@autobyteus/collaboration-stream-contracts";
 
 /**
  * The delegated-launch port of the AgentOrg and Agent roots: the root supplies its tree, sources,

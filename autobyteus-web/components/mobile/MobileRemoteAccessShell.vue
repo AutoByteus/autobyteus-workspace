@@ -24,6 +24,7 @@ import MobileUnsupportedFeatureNotice from '~/components/mobile/MobileUnsupporte
 import { useMobileNodeSessionStore } from '~/stores/mobileNodeSessionStore';
 import type { MobileFeatureId } from '~/utils/mobileFeatureGates';
 import { getShellBridge } from '~/utils/remoteAccess/shellBridge';
+import { closeAllLiveStreams } from '~/services/liveStreamLifecycle/closeAllLiveStreams';
 
 // Keep the component name in the compiled chunk stable for existing page tests.
 defineOptions({ name: 'MobileRemoteAccessShell' });
@@ -60,7 +61,12 @@ function onPaired(): void {
 }
 
 watch(() => sessionStore.isPaired, (isPaired, wasPaired) => {
-  if (!isPaired && wasPaired) postPair.value = false;
+  if (!isPaired && wasPaired) {
+    postPair.value = false;
+    // The session ended (credential refused at a check, revoked, Unpair): its streams close, so the page sends
+    // nothing more with or without the credential; a new pairing opens them again (autobyteus-435 REQ-010 (b)).
+    closeAllLiveStreams();
+  }
 });
 
 onMounted(() => {

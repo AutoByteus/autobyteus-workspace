@@ -68,6 +68,19 @@ describe('agentOrgContextsStore lifecycle ownership', () => {
     store.releaseContext('org-run')
   })
 
+  it('releaseAll closes every Org stream and releases every Org view (autobyteus-435 REQ-010 (b))', async () => {
+    const store = useAgentOrgContextsStore()
+    await store.openForInspection('org-a')
+    await store.openForInspection('org-b')
+    expect(mocks.instances).toHaveLength(2)
+
+    store.releaseAll()
+
+    expect(mocks.instances.every((instance) => instance.disconnect.mock.calls.length > 0)).toBe(true)
+    expect(store.contextFor('org-a')).toBeNull()
+    expect(store.contextFor('org-b')).toBeNull()
+  })
+
   it('retains isolated member drafts across root navigation until the exact root is explicitly released', async () => {
     const store = useAgentOrgContextsStore()
     await store.openForInspection('org-a')

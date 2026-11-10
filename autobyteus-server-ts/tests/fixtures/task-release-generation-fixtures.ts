@@ -15,7 +15,7 @@ import { StandaloneRootTaskExecutionAdapter } from '../../src/standalone-agent-r
 import { MemberCollaborationContext, MemberExecutionContext } from '../../src/agent-collaboration/execution/domain/member-execution-context.js';
 import { createRootExecutionIdentity, createRootExecutionPhysicalScope, type RootSubjectKind } from '../../src/agent-collaboration/execution/domain/root-execution-identity.js';
 import { projectTaskAgentExecution, projectTaskTeamExecution } from '../../src/agent-collaboration/execution/task/task-execution-tree-projection.js';
-import { taskExecutionReferenceKey } from '../../src/agent-collaboration/execution/task/task-execution-reference.js';
+import { taskExecutionReferenceKey } from '@autobyteus/collaboration-stream-contracts';
 import { testActivationManager } from './agent-run-preparation-fixtures.js';
 import { InMemoryTaskExecutionResources } from './task-execution-resource-fixtures.js';
 import { testAgentNode, testAgentTeamNode, testExecutionTree, testTeamRunConfig } from './current-team-run-fixtures.js';

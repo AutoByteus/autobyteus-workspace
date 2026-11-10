@@ -19,6 +19,15 @@ describe('nodeConnectionErrorText', () => {
     expect(causeText(t, 'identity_pending', 'x')).toBe("This node's identity is waiting for its data migration.")
   })
 
+  // autobyteus-435 REQ-003, AC-003-2, DEC-019: a browser window cannot read why something refuses it, so it names both
+  // settings; the desktop window reads the Host gate's code and gets the exact host_refused words (above).
+  it('window_refused: this page\'s address (AUTOBYTEUS_ALLOWED_ORIGINS) or the name (AUTOBYTEUS_ALLOWED_HOSTS)', () => {
+    expect(causeText(t, 'window_refused', 'office-mac.local:29695')).toBe('Something answers at office-mac.local, but it doesn’t accept requests from this page. '
+      + 'If it is an AutoByteus node, allow this page’s address (AUTOBYTEUS_ALLOWED_ORIGINS) or the name office-mac.local (AUTOBYTEUS_ALLOWED_HOSTS) on it.')
+    expect(causeText(t, 'host_refused', 'office-mac.local:29695')).toBe('The node at this address doesn’t accept the name office-mac.local. '
+      + 'Add office-mac.local to AUTOBYTEUS_ALLOWED_HOSTS on that node, or use its IP address.')
+  })
+
   it('words a refused change by its code, an address lookup by its first attempt', () => {
     expect(failureText(t, { code: 'PEER_UNREACHABLE', message: 'fetch failed', reason: 'refused', address: 'http://localhost:8005' }, { node: '8005' }))
       .toBe('Nothing answers at that address and port.')

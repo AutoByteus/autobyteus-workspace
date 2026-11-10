@@ -1,0 +1,7 @@
+# round-2 builds; commit b5da2d15a0; 2026-11-10T09:29:52Z
+server-package exit=0
+self words in the package: 1
+android exit=0
+app/build/outputs/apk/debug/app-debug.apk sha256 cb893e3b0369f974
+app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk sha256 3324d4bd1bbf3c76
+== ALL DONE 2026-11-10T09:31:50Z

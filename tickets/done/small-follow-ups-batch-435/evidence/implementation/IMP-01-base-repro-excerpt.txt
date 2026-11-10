@@ -1,0 +1,28 @@
+# IMP-01 base reproduction: full phone probe on base with the FU-003 exemption removed and MSP-32 added
+# Command: pnpm -C autobyteus-web test:e2e:mobile-shell --output-dir=/tmp/sfb435-base-probe
+#   (detached worktree at origin/personal 310fc27452 + this ticket's tests/e2e/mobile-shell-probe.mjs; server built with
+#   pnpm -C autobyteus-server-ts build; phone bundle with pnpm -C autobyteus-web build:mobile-web)
+# Commit: 310fc27452 (base) + probe change only; macOS (darwin 25.5.0), Node v22.23.1, headless Chrome
+# Date: 2026-11-10; check ID IMP-01. Full evidence JSON: IMP-01-base-repro-mobile-shell-probe.json
+
+result: Fail
+unknownBrowserErrors: 62
+failed cases: ['MSP-32']
+MSP-32 error: the revoked phone sent no refused request after MSP-13
+MSP-32 refused requests after MSP-13: 56
+MSP-32 refused sockets after MSP-13: 55
+  socket MSP-21 /ws/agent-team/delivery_team_45f2a9d4516349d99a94804856647b11 4401
+  socket MSP-21 /ws/agent-collaboration/fact_checker_d70bccc037e845de8c83e7e9a754ea33 4401
+  socket MSP-21 /ws/agent-collaboration/project_task_manager_96d8a0ecaa4f480b909d686b85a65894 4401
+  socket MSP-21 /ws/agent-collaboration/approver_b931f6e3c5e4474b98ddf6782c6f9793 4401
+  socket MSP-21 /ws/agent-team/delivery_team_45f2a9d4516349d99a94804856647b11 4401
+  socket MSP-21 /ws/agent-collaboration/project_task_manager_96d8a0ecaa4f480b909d686b85a65894 4401
+  socket MSP-21 /ws/agent-collaboration/fact_checker_d70bccc037e845de8c83e7e9a754ea33 4401
+  socket MSP-21 /ws/agent-collaboration/approver_b931f6e3c5e4474b98ddf6782c6f9793 4401
+failed requests to http://localhost:8000/health (no exemption now): 6
+   {'case': 'setup', 'label': 'phone', 'url': 'http://localhost:8000/health', 'error': 'net::ERR_CONNECTION_REFUSED'}
+   {'case': 'MSP-19', 'label': 'phone-feed', 'url': 'http://localhost:8000/health', 'error': 'net::ERR_CONNECTION_REFUSED'}
+   {'case': 'MSP-19', 'label': 'phone-feed', 'url': 'http://localhost:8000/health', 'error': 'net::ERR_CONNECTION_REFUSED'}
+   {'case': 'live-setup', 'label': 'phone-team', 'url': 'http://localhost:8000/health', 'error': 'net::ERR_CONNECTION_REFUSED'}
+   {'case': 'closed-rows-setup', 'label': 'phone-host', 'url': 'http://localhost:8000/health', 'error': 'net::ERR_CONNECTION_REFUSED'}
+   {'case': 'MSP-28', 'label': 'phone-epsilon', 'url': 'http://localhost:8000/health', 'error': 'net::ERR_CONNECTION_REFUSED'}

@@ -95,9 +95,9 @@ export const useRunHistoryStore = defineStore('runHistory', {
     getModelConfigEditability: (state) => (runId: string) =>
       state.resumeConfigByRunId[runId]?.modelConfigEditability ?? null,
 
-    /** The listed standalone Agent runs that are active on the node (the history poll's status read, autobyteus-426 D-09). */
-    activeListedAgentRunIds: (state): string[] => state.workspaceGroups.flatMap((group) =>
-      group.agentDefinitions.flatMap((agent) => agent.runs.filter((run) => run.isActive).map((run) => run.runId))),
+    /** The listed standalone Agent runs, active or stopped (the history poll's status read, autobyteus-426 D-09, -435). */
+    listedAgentRunIds: (state): string[] => state.workspaceGroups.flatMap((group) =>
+      group.agentDefinitions.flatMap((agent) => agent.runs.map((run) => run.runId))),
 
     isRunActive: (state) => (runId: string): boolean => {
       return Boolean(state.resumeConfigByRunId[runId]?.isActive);

@@ -5,14 +5,15 @@ import { agentRunCollaborationEventDtoSchema, agentRunCollaborationViewDtoSchema
 const addCorrelationIssue = (context, message) => {
     context.addIssue({ code: "custom", message });
 };
-const referenceKey = (reference) => "agentRunId" in reference ? `agent:${reference.agentRunId}` : `team:${reference.teamRunId}`;
+/** The one key of a task execution, `agent:<agentRunId>` or `team:<teamRunId>`, used by the node and the client. */
+export const taskExecutionReferenceKey = (reference) => "agentRunId" in reference ? `agent:${reference.agentRunId}` : `team:${reference.teamRunId}`;
 /**
  * A short, order-independent fingerprint of a root's closed task executions, `<count>:<8 hex digits>` (FNV-1a 32-bit
  * over the code points of the sorted, distinct keys). The node and the client compute it from the same list with this
  * one function, so a run list can tell that a host's closed set changed without reading it (autobyteus-446).
  */
 export const closedTaskExecutionsDigest = (references) => {
-    const keys = [...new Set(references.map(referenceKey))].sort();
+    const keys = [...new Set(references.map(taskExecutionReferenceKey))].sort();
     let hash = 0x811c9dc5;
     for (const char of keys.join("\n")) {
         hash ^= char.codePointAt(0);
@@ -25,7 +26,7 @@ const validateClosedTaskExecutions = (closed, holders, label, context) => {
     const taskExecutionKeys = new Set();
     const visit = (holder) => {
         for (const task of holder.taskExecutions ?? []) {
-            taskExecutionKeys.add(referenceKey(task));
+            taskExecutionKeys.add(taskExecutionReferenceKey(task));
             if ("teamRunId" in task)
                 visit(task);
         }
@@ -36,8 +37,8 @@ const validateClosedTaskExecutions = (closed, holders, label, context) => {
     };
     holders.forEach(visit);
     for (const reference of closed) {
-        if (!taskExecutionKeys.has(referenceKey(reference))) {
-            addCorrelationIssue(context, `${label} closed task execution '${referenceKey(reference)}' is not a task execution of the execution tree.`);
+        if (!taskExecutionKeys.has(taskExecutionReferenceKey(reference))) {
+            addCorrelationIssue(context, `${label} closed task execution '${taskExecutionReferenceKey(reference)}' is not a task execution of the execution tree.`);
         }
     }
 };
