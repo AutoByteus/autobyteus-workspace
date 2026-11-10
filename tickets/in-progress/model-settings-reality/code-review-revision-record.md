@@ -11,6 +11,7 @@ The latest `code-review-report.md` or `api-e2e-test-review-report.md` remains au
 | CRR-003 | `code-review-report.md` | API/E2E Failure-Origin Review, round 3 (API-14) | Pass | Fail — Design Impact | CR-004 |
 | CRR-004 | `code-review-report.md` | Implementation Review, round 4 (IR-003, SR-004) | Fail — Design Impact | Pass | CR-004 (resolved) |
 | CRR-005 | `api-e2e-test-review-report.md` | Test-code review after API/E2E round 2 (API-REV-002 Pass) | N/A (first test review) | Fail — Local Fix (API/E2E) | T-001, T-002 |
+| CRR-006 | `api-e2e-test-review-report.md` | Test-code review round 2 (API-REV-003, probe fixes) | Fail — Local Fix | Pass | T-001, T-002 (resolved) |
 
 ## Revision Entries
 
@@ -149,3 +150,31 @@ None (first test review; source findings CR-001..CR-004 resolved earlier).
 - Material score or classification changes: N/A (test review)
 - Recommended recipient: `/software_engineering_team/api_e2e_engineer`
 - Remaining risks or uncertainty: Electron shell (user-only part for delivery); delegated copy menu in the UI not exercised.
+
+### CRR-006 — Test-code review recheck after the probe fixes
+
+- Canonical review report updated: `api-e2e-test-review-report.md`
+- Review entry point and round: Successful API/E2E test-code review, round 2
+- Review scope: `N/A` (test review) — `git diff d706f164a..c61e1d7f0 -- autobyteus-web/tests/e2e/model-list-journeys-probe.mjs`
+- Triggering role, report path, and finding or scenario IDs: API/E2E Engineer, `api-e2e-revision-record.md` (API-REV-003), T-001, T-002
+- Relevant solution revision IDs: SR-004
+- Relevant architecture-review revision IDs: ARCH-REV-003
+- Relevant implementation revision IDs: IR-003
+- Relevant API/E2E revision IDs: API-REV-002, API-REV-003
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Fail — Local Fix (CRR-005)
+- Current authoritative result: Pass
+- What changed in the review result and why: the probe now fails on any unexpected browser page error (self-checked with `--inject-page-error`), and API-14 asserts the card avoids "No longer offered" after a failed refresh (sensitivity shown against round 1's recorded card); the full scripted rerun passes with no page errors.
+- Supported product scenario / material-premise basis changes: None.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| T-001 | Open | Resolved | API-REV-003, c61e1d7f0 | `recordPageError`, `failures`, exit rule; `selfcheck-injected-page-error.log` (`probe: Fail`, `EXIT=1`) |
+| T-002 | Open | Resolved | API-REV-003, c61e1d7f0 | API-14 card check; `T-002-card-check-sensitivity.log`; `scripted-full-run-evidence.json` (`result: Pass`, API-14 `findings: []`) |
+
+- New or remaining finding IDs: None
+- Material score or classification changes: N/A (test review)
+- Recommended recipient: `/software_engineering_team/delivery_engineer`
+- Remaining risks or uncertainty: Electron shell (user-only part for delivery); delegated copy menu in the UI not exercised; FU-010.

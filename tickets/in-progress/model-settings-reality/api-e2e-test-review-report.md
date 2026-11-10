@@ -2,8 +2,8 @@
 
 ## Review Meta
 
-- Review Round: 1 (test-code review after API/E2E round 2, API-REV-002 Pass)
-- Trigger: API/E2E Engineer handoff, 2026-11-10
+- Review Round: 2 (recheck after API-REV-003; round 1 was the test-code review after API/E2E round 2, API-REV-002 Pass)
+- Trigger: API/E2E Engineer handoff of the CRR-005 fixes (commit c61e1d7f0, evidence 669b46fac), 2026-11-10; round 1 trigger: API-REV-002 Pass
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (AC-001..AC-013, QR-001..QR-003)
 - Investigation Notes Reviewed As Context: not needed beyond the coverage investigation
 - Solution Revision Record Reviewed As Context: `solution-revision-record.md` (SR-004)
@@ -13,15 +13,15 @@
 - Implementation Revision Record Reviewed As Context: IR-003
 - Original Code Review Report: `code-review-report.md` (CRR-004 Pass)
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-005`
+- Current Code Review Revision ID: `CRR-006`
 - Coverage Investigation: `api-e2e-coverage-investigation.md`
 - Execution Coverage Report: `api-e2e-execution-coverage-report.md`
-- API/E2E Revision Record Reviewed As Context: `api-e2e-revision-record.md` (API-REV-001, API-REV-002)
+- API/E2E Revision Record Reviewed As Context: `api-e2e-revision-record.md` (API-REV-001..API-REV-003)
 - Delivery Revision Record Reviewed As Context: N/A
-- API/E2E Result: `Pass` (API-REV-002)
+- API/E2E Result: `Pass` (API-REV-002; API-REV-003 records the probe fixes, no case or score changed)
 - Final Validation Confidence: 95% final, 87% post-repository
-- Prior unresolved test-review findings rechecked: None (first test review)
-- Project testing guideline(s) applied: `TESTING.md` (Browser probes; Rules 6, 9, 10). Discrepancy found: the new durable probe does not fail on browser page errors, which "Browser probes" requires (T-001). No conflict with the skill's rules.
+- Prior unresolved test-review findings rechecked: T-001, T-002 (both resolved, see Findings)
+- Project testing guideline(s) applied: `TESTING.md` (Browser probes; Rules 6, 9, 10). Round 1 found that the new probe did not fail on browser page errors (T-001); resolved in round 2. No conflict with the skill's rules.
 - Supported Product Scenario Basis Confirmed: `Yes` (SCN-001..SCN-008; each case enters through its real surface)
 
 ## Changed Durable Test Scope
@@ -47,9 +47,9 @@ Code under test: `dfa0faa76`. Test commits: f6ce6c78e (baseline fixes), a748eb48
 | Check | Result | Evidence / Notes |
 | --- | --- | --- |
 | Scenario grouping and names make intent clear | Pass | Case IDs with AC references in titles and comments throughout |
-| Assertions prove approved requirements instead of incidental implementation details | Fail | Mostly strong (exact refusal texts, stored files unchanged, request counts, DOM rows). Gap T-002: API-14 captures the card text after the failed refresh but does not assert it |
+| Assertions prove approved requirements instead of incidental implementation details | Pass | Exact refusal texts, stored files unchanged, request counts, DOM rows; round 2: API-14 asserts the card avoids "No longer offered" after a failed refresh (T-002 resolved; flags round 1's recorded card, not round 2's) |
 | Fixtures, setup, helpers, and data builders reuse meaningful repetition | Pass | `makeFakeClaude` / `claudeOffers`, shared fake CLI state, probe helpers from `fixtures/probe-node-access.mjs` |
-| Test isolation and determinism are appropriate for the exercised boundary | Fail | Owned data roots, free ports, sanitized env, cleanup receipts; scripted mode needs no account. Gap T-001: browser page errors do not fail the probe |
+| Test isolation and determinism are appropriate for the exercised boundary | Pass | Owned data roots, free ports, sanitized env, cleanup receipts; scripted mode needs no account; round 2: any unexpected browser page error fails the run (T-001 resolved, self-checked with `--inject-page-error`) |
 | Large files remain coherent and navigable | Pass | The 805-line probe is one journey family with a header index of its cases |
 | No stale, duplicated, disabled-without-reason, or compatibility-only tests remain | Pass | The ticket-owned probe was removed when the durable one landed; the live test skips only behind its gate |
 | Coverage agrees with the coverage investigation and execution evidence | Pass | Both CLI modes Pass for API-11/12/14/14b/19 with 0 browser errors (`evidence/API-11-12-14-r2-real-stack/*/model-list-journeys-evidence.json`); MSR-003 and DCM-010 Pass |
@@ -58,12 +58,14 @@ Code under test: `dfa0faa76`. Test commits: f6ce6c78e (baseline fixes), a748eb48
 
 ## Findings
 
+No open findings.
+
 | Finding ID | Test Path / Scenario | Evidence | Required Action | Classification / Owner |
 | --- | --- | --- | --- | --- |
-| T-001 | `autobyteus-web/tests/e2e/model-list-journeys-probe.mjs`, all cases | L771 records `pageerror` into `evidence.browserErrors`; L791 only logs a count; `exitCode` stays 0. TESTING.md "Browser probes": "Probes fail on browser errors." Both round-2 runs had 0 errors, so the recorded evidence holds; the durable probe would still report Pass on a later run with page errors (for example a rendering exception in the menu it drives) | Make a run with any browser page error fail (non-zero exit and a recorded failure); if a known harness error must be tolerated, name it explicitly as `mobile-shell-probe.mjs` does. Rerun the probe once (`--cli scripted` is enough) | `Local Fix` / `api_e2e_engineer` |
-| T-002 | Same file, API-14 (the regression case for CR-004) | L629 captures `r.cardAfterFailure` (and L630 the notes) after the failed refresh, but the findings at L639-642 check only the error, Retry and the rows; "No longer offered" on the card was half of the round-1 failure, and the report states it as proven | Add the same "No longer offered" check API-14b makes (L707) on the card and notes after the failed refresh | `Local Fix` / `api_e2e_engineer` |
+| T-001 | `model-list-journeys-probe.mjs`, all cases | Round 1: page errors only logged, exit 0. Round 2 (c61e1d7f0): `recordPageError` tags each error with its case; `EXPECTED_PAGE_ERRORS` is empty; any other error adds a `failures` entry, sets exit 1 and `result: Fail`; setup-time errors count too. Self-check `--inject-page-error --cases API-19`: `API-19 Pass`, then `browser page errors that fail the run: 1`, `probe: Fail`, `EXIT=1` (`evidence/API-11-12-14-r3-probe-fixes/selfcheck-injected-page-error.log`) | — | Resolved |
+| T-002 | Same file, API-14 | Round 2: the `/No longer offered/i` check on `cardAfterFailure` and `noteAfterFailure`, as API-14b makes. Sensitivity: flags round 1's recorded card, not round 2's (`T-002-card-check-sensitivity.log`). Full scripted rerun: all five cases Pass, `result: Pass`, `failures: []`, `browserErrors: []`, API-14 `findings: []`, `EXIT=0` | — | Resolved |
 
-Not findings (noted): API-14 records `busySeen` without asserting it, which is reasonable because the scripted CLI can answer faster than the busy state is observable; the rows-while-busy check is asserted.
+Not findings (noted): API-14 records `busySeen` without asserting it, reasonable since the scripted CLI can answer faster than the busy state is observable; rows-while-busy is asserted. The real-CLI mode was not rerun after the fix; acceptable, because the fix changes only assertions and the exit rule, and the round-2 real-CLI run recorded 0 browser errors and a clean card.
 
 ## Follow-ups
 
@@ -71,8 +73,8 @@ Not findings (noted): API-14 records `busySeen` without asserting it, which is r
 
 ## Latest Authoritative Result
 
-- Result: `Fail`
-- Changed durable test paths reviewed: all listed above
-- Unresolved finding IDs: T-001, T-002
-- Recommended Recipient: `/software_engineering_team/api_e2e_engineer`
-- Notes: both fixes are small and confined to the new probe; after them, rerun the probe once and return for this review. The product code (`dfa0faa76`) is not in question.
+- Result: `Pass`
+- Changed durable test paths reviewed: all listed above (round 2 rechecked the `model-list-journeys-probe.mjs` delta `git diff d706f164a..c61e1d7f0`)
+- Unresolved finding IDs: None
+- Recommended Recipient: `/software_engineering_team/delivery_engineer`
+- Notes: follow-up FU-010 (the same browser-error gap in `runtime-switch-members-probe.mjs`, not touched by this ticket).
