@@ -11,7 +11,7 @@
 - Finalization target remote / branch: `origin` / `personal` (release separately, on the user's word)
 - Bootstrap result: worktree and branch created from `origin/personal`; ticket folder `tickets/in-progress/delegated-copies-outlive-delegator-461/`
 - Bootstrap blocker: none
-- Current solution revision ID: `SR-004`
+- Current solution revision ID: `SR-005`
 - Authorities read (requirements reading gate; file and date): `references/requirements-engineering.md`, `references/finding-the-cause.md`, `references/ticket-scope.md`, `references/handoff.md` (2026-11-10); project `DESIGN.md`, `autobyteus-server-ts/docs/design/collaboration_model.md` (2026-11-10)
 - Investigation status: requirements investigation complete; architecture investigation starts after the requirements are approved
 
@@ -166,7 +166,8 @@ N/A — no Product Design was requested.
 
 | Artifact Path | Owner | Purpose | Scope | Related Requirement / AC IDs | Status | Approval Applicability / State |
 | --- | --- | --- | --- | --- | --- | --- |
-| None | — | — | — | — | — | — |
+| `target-collaboration-contract.md` | Solution Designer | The target contract for delegated runs (words, rules, stored shapes, user-visible outcome, decisions TC-1 … TC-4) | All run kinds | All | Proposed (SR-005) | Behavior-defining; the user's approval pending |
+| `follow-ups.md` | Solution Designer | Follow-ups (FU-001 withdrawn, FU-002) | — | REQ-010 | Current | Not behavior-defining |
 
 ## Assumptions, Unknowns, And Risks
 
@@ -221,3 +222,12 @@ Feasibility investigation for DEC-009, 2026-11-10 (all `Read`; architecture read
 - The Task side records a copy by `hostRoot` plus its execution reference (`task-execution-resource-port.ts:19-34`).
 - So one concept, a delegated run and its link, has two stored shapes (local and remote), and the local shape and the Task record both encode hosting.
 - The hosting machinery, by file (lines): `root-task-execution-lifecycle.ts` 509, the three subject adapters 435 + 361 + 446, `root-agent-execution-registry.ts` 351, `root-team-execution-directory.ts` 346, `task-agent-execution-registry.ts` 298, `task-team-execution-registry.ts` 232, and the `execution/task` folder's other files; the link machinery for remote runs: `execution/remote/*` (about 1,100 lines) and `remote-collaboration/inbound/*`.
+
+### How a run started by a peer works (the model for every delegated run), 2026-11-10, `Read`
+
+- The user's confirmation of the target, 2026-11-10: delegated agent runs and agent team runs "are their own runs … their life cycle is dependent on the task itself because it's been created based on the delegated task … it's a normal run … you can start it, stop it like you do with any other ones", with the relationship "displayed on the UI"; and: "we always start with the contract … put the contract itself into the right shape and then the upper layer … will reflect this relationship".
+- `remote-collaboration/inbound/remote-delegation-receiver.ts`: for an Agent, an ordinary standalone run is prepared (`agentRuns.prepareAgentRun`) with the resolved launch and `delegatedFrom`; for an Agent Team, `RemoteTeamRunStarter` creates a top-level Team run (`TeamRunService.createTeamRun`) with `delegatedFrom` on its tree. The work packet then starts the Agent or the Team's coordinator.
+- `agent-collaboration/execution/remote/remote-run-channel.ts`: the delegating side's operations on a linked run are an interface (`startDelegatedRun`, `deliverMessage`, `runSummaries`, `agentProjection`, `ownerCommand`, `observeRun`), implemented by the peer client. `remote-delegation.ts`: the delegating root plans (asks for the run), records the link in one tree write, then sends the work packet.
+- Such a run has its own idle shutdown (`StandaloneHostIdleShutdown`, `RemoteTeamIdleShutdown`) and is restored by an inbound message (`CollaborationRootResolver.resolveOrRestore`).
+- What a linked run does not have today, and a local delegated run has: a saved Task and reference files (refused for a remote target, `remote-delegation.ts` `delegationPlacement`), the Project's folder and the delegating run's launch inheritance (a peer-started run uses its node's defaults, the temp workspace and auto-approve), stop on Task closure and reactivation (`collaboration_model.md` § 4, "later steps").
+- Task side: `projects/domain/task-execution-resources.ts` records `hostRoot` with each run; message scope by Task is checked in each root's `RootCommunicationEngine` (`docs/modules/agent_communication.md` "Task-linked message scope").
