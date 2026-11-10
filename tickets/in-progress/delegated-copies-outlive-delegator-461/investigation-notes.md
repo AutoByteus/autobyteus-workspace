@@ -11,7 +11,7 @@
 - Finalization target remote / branch: `origin` / `personal` (release separately, on the user's word)
 - Bootstrap result: worktree and branch created from `origin/personal`; ticket folder `tickets/in-progress/delegated-copies-outlive-delegator-461/`
 - Bootstrap blocker: none
-- Current solution revision ID: `SR-010`
+- Current solution revision ID: `SR-011`
 - Authorities read (requirements reading gate; file and date): `references/requirements-engineering.md`, `references/finding-the-cause.md`, `references/ticket-scope.md`, `references/handoff.md` (2026-11-10); project `DESIGN.md`, `autobyteus-server-ts/docs/design/collaboration_model.md` (2026-11-10)
 - Investigation status: requirements and architecture investigation done for the contract's first step; revised after architecture review ARCH-REV-001 (see "Investigation for the architecture review's findings"). Sections above the contract work (SR-001 … SR-003) are history: U-001, U-002 and R-001 belong to the superseded small design
 
@@ -305,3 +305,10 @@ Review read first: `design-review-report.md` (Fail; AR-001 … AR-010, all `Desi
 - **AR-003** (`Read`): `standalone-root-location-service.ts` (`findAgent`, `listAgents`, `listHostRunIds`; "the third location family: children of Agent roots"); its consumers by search: `run-last-activity-reader.ts`, `collaboration-execution-location-service.ts`, `api/graphql/types/token-usage-stats.ts`, `api/rest/context-files.ts`, `general-process-run-supervisor.ts`, `standalone-root-member-view-projection-service.ts`.
 - **AR-004** (`Read`): `restart-resume/busy-run-record.ts` (entry: `root`, `agentRunId`, `place`, `status`, `recordedAt`, `version`), `restart-notice.ts:26-27` (the "These runs you delegated…" line for an entry that is not `delegated`), `restart-resumer.ts:92-130`.
 - Nothing was run on the target shape.
+
+### Communication, for the contract's §10 (2026-11-10, `Read`)
+
+- The user, 2026-11-10, on DEC-011: asked what "which runs can message each other" means, asked for the code behind today's direct route, observed that independence does not have to change communication ("we can still achieve the same communication"), recalled that `@` reaches others in the path, and asked that how communication works be written down in the contract as before. No decision on A or B yet; the Solution Designer's recommendation moved to B (the Task's record as the lookup) after the user's points that communication should stay and that the Task manages the runs working on it.
+- Today's direct route, three pieces: every new delegated run is recorded at the top run (`standalone-root-task-execution-adapter.ts:112-114`); the top run indexes every agent in it (`standalone-root-execution-index.ts:77,83`); a run-ID message is delivered to anything in that index (`standalone-root-message-delivery.ts:175-178`); the only limit is the Task scope (`root-task-execution-resource-scope.ts:72-78`).
+- Address resolution today (`docs/modules/agent_communication.md:354-383`): the sender's own team instances first, with no fall-through; then run-wide standing placements (a configured placement, or an Agent root's host); any other address is `COLLABORATION_TARGET_NOT_FOUND` with guidance; a message never starts a run; a run-ID target in the sender's root is woken, one outside it must be active.
+- `@` today (`docs/modules/standalone_agent_run_root.md:109-121, 169-176`): resolution adds nothing and posts a note steering the focused agent; the host is offered to every viewer below it, so "a member of any delegated copy … can `@` the host" and then reaches it with `send_message_to(<host address>)`.

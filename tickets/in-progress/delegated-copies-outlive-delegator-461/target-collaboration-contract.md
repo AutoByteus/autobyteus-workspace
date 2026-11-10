@@ -1,6 +1,7 @@
 # Delegation Contract — A Delegated Run Is An Ordinary Run
 
-Status: **revision 2, approved by the user** (2026-11-10, SR-007; TC-1 … TC-6 decided). Proposed at SR-006. Revision 1 gave the words and rules; revision 2 adds
+Status: **revision 2, approved by the user** (2026-11-10, SR-007; TC-1 … TC-6 decided). Proposed at SR-006.
+**Revision 3, proposed** (2026-11-10, SR-011): §10 "Communication" added at the user's request ("how communication works should also be written down in the contract"). §1 … §9 are unchanged and stay approved; §10 is proposed, and its rows marked DEC-011 wait for the user's decision. Revision 1 gave the words and rules; revision 2 adds
 the data level: every record with example JSON, every case, an attribute-by-attribute redundancy check, the
 existing data before and after with counts, and simulations. It is the behavior-defining supplement of
 `requirements-doc.md`; the design is built on it. Base `origin/personal`
@@ -365,3 +366,68 @@ Message logs, memory, folders: not touched (each run already has its own, CM-8, 
 | TC-4 | Delivery | The contract is approved once. This ticket: delegations made from a standalone agent run. Next Tasks: from a team run; from an org run; removal of the remaining hosting code. The design confirms the cut lines | The user | Decided by the user, 2026-11-10: in steps, as recommended |
 | TC-6 | The Task record's role name for sub-work | `subWork` instead of `delegated`, renamed by the same migration that removes `hostRoot` | The user | Decided by the user, 2026-11-10 |
 | TC-5 | A Settings edit of a stopped delegated run | Saved like any stopped run's (§2.4), subject to V-9 | Solution Designer | Decided, to verify |
+
+## 10. Communication (revision 3, proposed)
+
+How agents of different runs reach each other. Written down today in three places, which this section replaces for delegated runs: the Collaboration Model (CM-4, CM-5, CM-9, CM-11), `docs/modules/agent_communication.md` ("Task-linked message scope", "Address resolution order") and `docs/modules/standalone_agent_run_root.md` (`@`).
+
+### 10.1 The tools and what they mean
+
+| Tool or surface | Meaning | Never does |
+| --- | --- | --- |
+| `send_message_to(recipient_address)` | Reaches the one standing agent at that address that the sender can talk with (§10.3) | Create a run; reach a delegated run (it has no address, CM-5) |
+| `send_message_to(target_agent_run_id)` | Reaches exactly that agent run (§10.2) | Create a run |
+| `delegate_task` | Creates the relationship: a new delegated run and its link (§2), or a further Task for a run it already delegated to | — |
+| The user's composer | The user's own message to the run that is open; always allowed, and it wakes the run | — |
+| `@` in the composer | Adds a note for the agent the user is typing to: a catalog agent or team → that agent is told to `delegate_task`; an agent it can talk with by address (§10.3) → it is told to `send_message_to` that address | Send anything by itself |
+
+### 10.2 Who can message whom by run ID
+
+The example: the Project Task Manager **M** (a standalone run) assigns Task T1 to the engineering team **E**; E's solution designer hands sub-work of T1 to the product team **P** and to an image agent **I**. M also assigns another Task, T2, to a research agent **R**. The links: M–E, E–P, E–I, M–R.
+
+| # | From → to | Today | Target | Why |
+| --- | --- | --- | --- | --- |
+| M1 | M → an agent of E (normally E's coordinator) | Allowed | Allowed | The link: M delegated to E |
+| M2 | An agent of E → M | Allowed | Allowed | The link, the other way |
+| M3 | E's solution designer → an agent of P; P → E's solution designer | Allowed | Allowed | The link E–P |
+| M4 | P ↔ I (two runs of the same Task, neither delegated to the other) | Allowed (same Task) | **DEC-011.** A: refused. B: allowed, to the run's entry agent (an agent run itself; a team's coordinator) | B: both are recorded in T1 |
+| M5 | M ↔ P (the Task's assigner and a run of that Task it did not delegate to) | Allowed (M belongs to no Task and is never checked) | **DEC-011.** A: refused. B: allowed | B: M assigned T1, and P is recorded in T1 |
+| M6 | P ↔ R (runs of different Tasks) | Refused: "You can't message this agent: it works on a different Task." | Refused, the same text | The Task rule |
+| M7 | Anyone → a run whose Task is closed; a run of a closed Task → anyone | Refused: the Task is DONE or CANCELLED. Exception: its assigner's message after the Task was reopened continues it | Unchanged | The Task owns the work (P5) |
+| M8 | A run ID that is none of the above | Refused: not in this run | Refused; the text tells the agent to go through the agent that delegated to it | No relationship |
+| M9 | Any of M1 … M3 when the two runs are on different nodes | Allowed | Allowed | The link; M4 and M5 are not offered across nodes (as today) |
+
+A refused sender is always told why and what to do next; nothing is delivered and nothing is started.
+
+### 10.3 Who can be reached by address
+
+An address is resolved in this order; the first match wins, and a miss inside a team never falls through to another team:
+
+1. **The sender's own team:** a teammate, or the team's own address (its coordinator). Unchanged.
+2. **The agents of the run that delegated to the sender's run** (CM-5): for E's members, M at `/project_task_manager`; for P's members, E's members at their addresses. Today this step names the *top* run's agents instead; the target names the delegating run's (one hop, P3).
+3. **DEC-011, only if B:** the agent that assigned the sender's Task (for P's and I's members: M at `/project_task_manager`).
+
+Any other address: "No agent or agent team you can talk with has the address … " with the existing guidance (answer by run ID; delegate for new work). The same list is what `list_available_agents` shows as agents already in reach, and what `@` offers besides the catalog.
+
+Across nodes there is no address route, as today: a run on a peer answers by run ID.
+
+### 10.4 What every delivered message does
+
+- **It wakes its receiver.** A receiver that was stopped by the user, shut down for being quiet, or not yet started is restored with its conversation and then gets the message, once. Opening or watching a run never does this.
+- **It is stored with both runs** (CM-9): one line in the sender's run's log and one in the receiver's, with one message ID; between two agents of one run, once.
+- **It names its sender**: the sender's run ID, the address that reaches the sender when there is one, and the node's name when the sender is on a peer. Unchanged.
+- **Reference files** are passed on one node; not across nodes (as today).
+
+### 10.5 How the server finds the receiver
+
+| Route | Found through | Checked on the receiving side by |
+| --- | --- | --- |
+| The link (M1 … M3, M9) | The link in the sender's run (run ID, and for a team its members) or the sender's back-link | The receiver's own link or back-link: only the two ends of a link are admitted |
+| The delegating run's agents by address (§10.3 step 2) | The sender's back-link names the run; that run answers which agent stands at the address | The same back-link |
+| The Task (M4, M5, §10.3 step 3; DEC-011 = B) | The Task's record: it lists every run working on the Task with its entry agent and where it runs, and names the assigner | The Task's record again: the sender is the entry agent of a run of the receiver's open Task, or that Task's assigner |
+
+No run keeps an index of other runs' agents. The link and the Task's record are the only two places a relationship is written.
+
+### 10.6 Measured on the user's data (read-only, 2026-11-10)
+
+`evidence/data-model-validation/cross-run-messages-2026-11-10.txt`, `non-pair-messages-2026-11-10.txt`: 13,142 messages inside one run; 1,600 between two runs, of which 1,556 on a link (M1 … M3), 32 between two runs delegated by the same run (all 2026-10, from runs that belong to no Task: the retired collaborator feature; neither A nor B carries these), 8 of kind M5 (2026-10, 2026-11), 4 on old records without a delegator.

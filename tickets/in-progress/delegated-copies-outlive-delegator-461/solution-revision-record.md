@@ -14,6 +14,7 @@
 | SR-008 | Design | Architecture investigation of the contract's first step | N/A | Requirements Approved; design Needs Revision | Requirements Approved; design Draft (mechanism decided; file-level parts open) | D-1 … D-11 of `design-spec.md`; contract V-9 resolved, V-8, V-11, V-12 open | Design direction ready for the user; not ready for handoff |
 | SR-009 | Design | The user's approval of the design direction; the open file-level parts closed | N/A | Design Draft | Design Ready; `Large` / `High` | D-8, D-10, D-11 refined; File-Level Completion C-1 … C-5; migration checklist | Architecture Design Complete |
 | SR-010 | Mixed | Architecture review ARCH-REV-001 (Fail): AR-001 … AR-010 | AR-001 … AR-010 | Requirements Approved; design Ready | Requirements Approved with DEC-011 Ready for Approval; design Needs Revision (revised, waiting for DEC-011) | DEC-011 (new); REQ-005 (wording, if A); design RC-1 … RC-10, D-6, DS-004, DS-004b, DS-007, DS-008, the migration plan | Findings answered; one requirement decision for the user |
+| SR-011 | Requirements | The user asked that communication be written into the contract | N/A | Contract revision 2 approved; DEC-011 open | Contract revision 3 proposed (§10 added); DEC-011 open, recommendation B | Contract §10 (M1 … M9, address order, delivery, lookup); DEC-011 | For the user's review and decision |
 
 ## Revision Entries
 
@@ -246,3 +247,26 @@
 - Downstream and architecture-review impact: architecture review round 2 after DEC-011
 - Remaining gaps, assumptions or blocked decisions: DEC-011
 - Next action: the user decides DEC-011; the spec's D-6 and RC-2 are finalized; the package returns to architecture review
+
+### SR-011 — Contract revision 3 (proposed): §10 Communication
+
+- Phase and classification: Requirements, `Refinement`
+- Triggering user feedback, Product package, investigation evidence, or role/report/round: the user, 2026-11-10: "how communication works should also be written down in the contract … In the past, did we have that?"; his questions on DEC-011
+- Triggering finding IDs: AR-002 (architecture review round 1) led to DEC-011
+- Prior authoritative requirements/design status: requirements `Approved` (SR-007) with DEC-011 `Ready for Approval`; contract revision 2 approved; design `Needs Revision` (SR-010)
+- Current authoritative requirements/design status: the same; contract revision 3 `Proposed` (§1 … §9 unchanged and approved; §10 new)
+- Requirement, behavior, acceptance-criteria, scenario or decision IDs affected: contract §10 (routes M1 … M9, the address order, what a delivery does, how a receiver is found); DEC-011 (recommendation changed from A to B, with the reason)
+- Scenario-basis or scenario-validity changes: none
+- Why this baseline or revision was recorded: the contract did not state communication beyond two rows; the user asked for it
+- Canonical requirements, investigation and design sections changed: `target-collaboration-contract.md` §10 and status; requirements DEC-011; investigation notes "Communication"
+- Supplemental artifacts added, changed or removed: none
+- Product design evidence or product decisions incorporated: none
+- Intended behavior changed: `No` under B; under A, M4, M5 and the third address step are removed
+- Approval impact, exact approved requirements baseline, who approved, and approval reference: §10 and DEC-011 need the user's answer; SR-007 stays the approved baseline for the rest
+- Behavior-defining supplement versions and approval references: contract revision 2 approved; revision 3 proposed
+- Affected design/review basis invalidated or rebuilt: design D-6 and RC-2 follow DEC-011
+- Post-design task-size/risk classification and rationale changes: unchanged
+- Applied handoff-rule outcome / result-file reference, when a handoff occurred: none
+- Downstream and architecture-review impact: review round 2 after DEC-011
+- Remaining gaps, assumptions or blocked decisions: DEC-011
+- Next action: the user reads §10 and decides DEC-011
