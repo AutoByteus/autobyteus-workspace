@@ -14,15 +14,15 @@
 - Relevant Architecture Review Revision IDs: ARCH-REV-003
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001
+- Relevant Implementation Revision IDs: IR-001, IR-002
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: `1`
-- Review Scope: `Full Review`
-- Review Scope Evidence (round >1): N/A
-- Trigger: implementation engineer, IR-001 ready for source review (2026-11-10)
-- Prior Review Round Reviewed: N/A
-- Latest Authoritative Round: `1`
+- Current Code Review Revision ID: `CRR-002`
+- Current Review Round: `2`
+- Review Scope: `Targeted Delta Review`
+- Review Scope Evidence (round >1): the fix commit `ddd594d07b` (diff from `3e4fdbefcb`, the ticket-documents commit on top of `e26460bf57`) changes two files only: `command-wrapper.ts` (the last line of `__ab_fg_end`, `builtin exit "$__ab_rc"` → `__ab_status "$__ab_rc"`, plus a comment) and `run-bash-wrapper.test.ts` (one new case). `070c294845` touches only `tickets/`. No shared interface, data shape or spine change; the delta stays within CR-001's file and behavior. Round 1 evidence for every other check is carried forward.
+- Trigger: implementation engineer, IR-002 (CR-001 Local Fix), 2026-11-10
+- Prior Review Round Reviewed: `1` (CRR-001, Fail)
+- Latest Authoritative Round: `2`
 - Coverage Investigation / Execution Coverage Report / API/E2E Revision Record: N/A (implementation review)
 - Delivery Revision Record: N/A
 - Failing Scenario IDs / Commands / Failure Evidence Paths: N/A
@@ -37,7 +37,7 @@
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: `374e35a60e..e26460bf57` (74 files). `6a4df1c54b` is a baseline test fix in an unrelated test (read; no source).
+- Changed implementation and behavior reviewed: round 1 `374e35a60e..e26460bf57` (74 files; `6a4df1c54b` is a baseline test fix in an unrelated test). Round 2: `3e4fdbefcb..ddd594d07b` (CR-001 fix), plus the IR-002 handoff and revision-record updates in `070c294845`.
 - Files / areas reviewed: autobyteus-ts `command-wrapper.ts`, `anchor-control-protocol.ts`, `anchored-command-launcher.ts`, `shell-command-executor.ts`, `native-command-process-scope.ts`, `process-group-observer.ts`, `non-interactive-shell-resolver.ts`, `background-process-manager.ts`, `background-output-log.ts`, `background-process-context.ts`, `types.ts`, `tools/run-bash.ts`, `register-tools.ts`, the exports, `background-process-cleanup-step.ts` + orchestrator; server `agent-run-backend.ts` and all five backends, `autobyteus-background-task-reporter.ts`, `agent-run.ts`, `system-task-notification-senders.ts`, `background-task-notices/**`, `platform-notice-sources.ts`, both hosts, `runtime-memory-event-accumulator.ts`, `autobyteus-translation.ts`, Daily Assistant template, `GLOSSARY.md`; the new and rewritten tests (wrapper R-0 suite, manager, notice service, reporter, launcher/output lifetime), and the two e2e shutdown fixtures.
 - Explicit exclusions: docs prose read only for consistency with the code (delivery owns docs sync); WSL not executable here.
 
@@ -108,10 +108,10 @@
 | No unjustified duplication | Pass | — | — |
 | Patch-on-patch complexity control | Pass | deviations 6 and 15 are root-cause fixes with comments | — |
 | Dead code removed in touched files | Pass | four tools, old types, dead manager methods, survivor listing, `isProcessRunning`; `OutputBuffer` still used by `TerminalSessionManager` | — |
-| Test scenarios and assertions requirement-aligned | Pass | wrapper suite maps to probe cases 1-12 and the R-0 list | Add the CR-001 case |
+| Test scenarios and assertions requirement-aligned | Pass | wrapper suite maps to probe cases 1-12 and the R-0 list; round 2 adds the CR-001 case, which compares each command's logout reads and exit code with the plain login shell | — |
 | Test fixtures/helpers reusable, structure coherent | Pass | — | — |
 | No stale/duplicated/compat-only tests | Pass | tests naming the retired tools rewritten | — |
-| API/E2E readiness | Fail | CR-001 changes every foreground call on hosts with a `~/.bash_logout` | Fix CR-001 first |
+| API/E2E readiness | Pass | CR-001 resolved (round 2); wrapper suite 26/26 macOS, 23/23 Linux bash 5.2 + dash at `ddd594d07b` | — |
 
 ## Source File Size And Structure Audit
 
@@ -155,7 +155,7 @@ None new; upstream MP-001..MP-009 unchanged.
 
 ## Review Scorecard (Mandatory)
 
-- Overall score: `9.4/10` (simple average; not the decision rule)
+- Overall score: `9.42/10` (simple average; not the decision rule). Round 2 changes only rows 7 and 8; the others carry over from round 1 (the delta does not touch them).
 
 | Priority | Category | Score | Why This Score | What Is Weak | What Should Improve |
 | --- | --- | --- | --- | --- | --- |
@@ -165,8 +165,8 @@ None new; upstream MP-001..MP-009 unchanged.
 | 4 | Separation of Concerns and File Placement | 9.4 | wrapper, decoder, log, reporter, builder split by concern; composition helper removes duplicated wiring | — | — |
 | 5 | Shared-Structure / Data-Model Tightness | 9.4 | two tight shared types, three-variant outcome | — | — |
 | 6 | Naming Quality and Local Readability | 9.3 | clear names, glossary added; wrapper script dense but commented | wrapper text is hard to read | — |
-| 7 | API/E2E Readiness | 9.0 | strong local evidence (macOS + Linux wrapper suites, full suites) | CR-001 should be fixed before live validation | fix CR-001 and add its regression case |
-| 8 | Runtime Correctness And Behavioral Fidelity | 8.8 | probe cases, R-0 list, kill-in-place and run-end stop all evidenced | CR-001: every foreground call now runs the user's `~/.bash_logout` (preserved foreground behavior changed) | end the wrapper without the `exit` builtin on its normal path |
+| 7 | API/E2E Readiness | 9.3 | strong local evidence (wrapper suites on macOS and Linux at the fix commit, full suites at `e26460bf57`) with clear hints for live, WSL and fixture runs | WSL and live-model behavior are not yet exercised (inherent to this stage) | — |
+| 8 | Runtime Correctness And Behavioral Fidelity | 9.3 | probe cases, R-0 list, kill-in-place, run-end stop evidenced; CR-001 fixed: logout reads and exit codes equal the plain login shell for six commands, including the `set -e` and EXIT-trap paths | the stdout-tail vs `JOB_ENDED` ordering is only probe-checked (0/80) | API/E2E compares notice last lines on Linux |
 | 9 | No Backward-Compatibility / No Legacy Retention | 9.6 | clean cut | — | — |
 | 10 | Cleanup Completeness | 9.5 | dead code removed with evidence; `OutputBuffer` decision recorded | — | — |
 
@@ -179,6 +179,7 @@ None new; upstream MP-001..MP-009 unchanged.
 - Consequence: the Debian/Ubuntu home skeleton ships a `~/.bash_logout` (`clear_console` when `SHLVL` is 1), and Windows runs every call in WSL `bash -lc`. Users' logout scripts commonly kill the ssh-agent, write history or print text. These now run after every agent command, in the agent's environment. The result JSON is unchanged (the bytes go to `laterOutput`), so no existing test sees it. With `&` jobs, the logout output is appended to the call's output log after the last job.
 - Required action (implementation's choice of mechanism): end the wrapper's normal path without the `exit` builtin, for example by returning the status through `__ab_status "$__ab_rc"` as the script's last command, with the exit code unchanged. Keep the EXIT-trap path's semantics: when the user's own command ran `exit`, bash already read the logout file as on base; check that the wrapper does not add a read on the `set -e` path either, or record why it is unavoidable. Add an R-0 case to `run-bash-wrapper.test.ts` (temp HOME with a `.bash_logout` writing a marker): an ordinary command, a command leaving an `&` job, and `exit 3` read it as often as on base. Run it on macOS and in the Linux harness (IMP-02, IMP-08).
 - Classification: `Local Fix`, implementation-owned.
+- Status (round 2): **Resolved** in `ddd594d07b`. `__ab_fg_end` now ends with `__ab_status "$__ab_rc"`. As the script's last command, that status is the shell's exit code. From the EXIT trap, the shell keeps the status that ended it, so only the user's own `exit` reads the logout file, as on base. The new R-0 case compares six commands with plain `bash --noprofile --norc -lc`: ordinary, `&` job, `exit 3`, `set -e; false`, `trap 'exit 4' EXIT`, and trap + job + `exit 5`. It reports the same exit code and logout reads for each. The implementer reports the case failing on `e26460bf57`; it passes at the fix on macOS (`evidence/IMP-02-wrapper-suite-macos.log`, 26/26) and Linux bash 5.2 (`evidence/IMP-08-linux-wrapper.log`, 23/23, CR-001 row printed). Not rerunning IMP-01/04/05/07 is justified: the change is shell text inside the wrapper, with no type, export or server change; IMP-03 terminal suites were rerun (211 pass).
 
 ## Follow-ups
 
@@ -186,11 +187,11 @@ None new; upstream MP-001..MP-009 unchanged.
 
 ## Classification
 
-- `Local Fix` (CR-001), implementation-owned. No design or requirement change: the contract already requires ordinary foreground behavior to be unchanged.
+- Round 2: none (Pass). Round 1 was `Local Fix` (CR-001), implementation-owned; now resolved.
 
 ## Recommended Recipient
 
-- Implementation engineer (`/software_engineering_team/implementation_engineer`, rule: source review identifies an implementation-owned Local Fix). After the fix: source review again (targeted delta on CR-001 and the wrapper), then API/E2E.
+- API/E2E engineer (`/software_engineering_team/api_e2e_engineer`, rule: implementation review passes), then the informational pass notice to the implementation engineer.
 
 ## Residual Risks
 
@@ -201,11 +202,11 @@ None new; upstream MP-001..MP-009 unchanged.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
+- Review Decision: `Pass` (round 2, CRR-002)
 - Review Entry Point: `Implementation Review`
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
-- Score Summary: 9.4 average; Runtime Correctness 8.8 and API/E2E Readiness 9.0 below the 9.2 bar because of CR-001; every other category ≥ 9.3.
+- Score Summary: 9.42 average; every category ≥ 9.3.
 - Failure Origin: N/A
-- Recommended Recipient: implementation engineer
-- Notes: The structure, ownership and removal work are sound and match SR-005. The 15 deviations are justified (6 and 15 are real defects fixed at their cause). One bounded wrapper defect remains.
+- Recommended Recipient: API/E2E engineer
+- Notes: The structure, ownership and removal work are sound and match SR-005. The 15 deviations, plus deviation 16 (the CR-001 fix), are justified. Code reviewed through `ddd594d07b`. For API/E2E: AC-001 to AC-013 with a live model, WSL (R-0/R-6 and the bridge exit), the changed shutdown e2e fixtures, the panel, and notice last lines compared with the output file on Linux.
