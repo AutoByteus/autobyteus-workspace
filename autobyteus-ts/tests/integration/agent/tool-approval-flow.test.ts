@@ -480,14 +480,12 @@ describe('Tool approval integration flow', () => {
     expect(toolEvent).toBeDefined();
     const result = (toolEvent as { event: ToolResultEvent }).event.result as TerminalResult;
     expect(result.exitCode).toBe(0);
-    expect(result.backgroundProcesses.length).toBeGreaterThanOrEqual(1);
-    expect(result.backgroundProcesses[0].pid).toBeGreaterThan(0);
-    expect(result.backgroundProcesses[0].command).toBe("(printf 'bg_ok'; sleep 10) &");
+    expect(result.backgroundTasksStarted).toHaveLength(1);
+    expect(result.backgroundTasksStarted[0].pid).toBeGreaterThan(0);
+    expect(result.backgroundTasksStarted[0].command).toBe("(printf 'bg_ok'; sleep 10) &");
     expect(result.effectiveCwd).toBe(fixture.workspaceDir);
 
     const manager = (fixture.agent.context as unknown as Record<string, any>)._backgroundProcessManager;
-    for (const process of result.backgroundProcesses) {
-      await manager?.stopProcess(process.pid);
-    }
+    await manager?.stopAllForRunEnd();
   });
 });

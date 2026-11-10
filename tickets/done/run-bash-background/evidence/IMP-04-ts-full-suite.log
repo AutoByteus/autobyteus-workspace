@@ -1,0 +1,7 @@
+# IMP-04 autobyteus-ts full suite (default parallel vitest run, clean environment)
+# Command: env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" pnpm -C autobyteus-ts exec vitest run
+# Commit: e26460bf57; macOS Darwin 25.5.0 arm64, bash 3.2.57, node v22.23.1; 2026-11-10T10:38Z
+# Full log: not kept (7k lines); summary and failures below
+exit=0
+ Test Files  394 passed | 27 skipped (421)
+      Tests  2401 passed | 99 skipped (2500)

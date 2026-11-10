@@ -1,0 +1,10 @@
+# API-13 live suite with real models (test vault): Anthropic claude-sonnet-5-5, OpenAI gpt-5.4-mini
+# Command: env -i PATH HOME=<temp> TMPDIR AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_NATIVE_BACKGROUND_TASK_LIVE_E2E=1 BACKGROUND_TASK_E2E_EVIDENCE_DIR=<dir> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/autobyteus-background-task-live.e2e.test.ts --no-watch
+# Commit: code ddd594d07b + live test with release-file builds (committed with the API/E2E documents); macOS; 2026-11-10
+
+ ✓ tests/e2e/runtime/autobyteus-background-task-live.e2e.test.ts (2 tests) 32247ms
+     ✓ 'BGT-LIVE-ANTHROPIC': two background builds, one progress read, one notice, both results reported  13128ms
+     ✓ 'BGT-LIVE-OPENAI': two background builds, one progress read, one notice, both results reported  15798ms
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Duration  42.06s (transform 6.92s, setup 59ms, import 9.28s, tests 32.25s, environment 0ms)

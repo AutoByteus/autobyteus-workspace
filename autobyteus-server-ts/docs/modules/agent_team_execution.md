@@ -676,8 +676,8 @@ through the wake path below. Helpers stay closed. See
   `tryPrepareTerminationIfQuiescent` succeeds. A child waiting for tool approval
   is never quiet, and neither is a child whose runtime reports a running
   background task (`AgentRunBackend.hasRunningBackgroundTasks()`: a Claude
-  `run_in_background` task or an AGY background step; Codex, AutoByteus and ACP
-  report none). There is no time limit for such a wait. A Team copy is quiet only
+  `run_in_background` task, an AGY background step, or a native `run_bash`
+  background command or `&` job; Codex and ACP report none). There is no time limit for such a wait. A Team copy is quiet only
   when every member is. A skipped fire sets no new timer; when a background task
   ends (`BACKGROUND_TASK_UPDATED` with `completed`, `failed` or `stopped`), the
   root calls `onAgentBackgroundTaskEnded`, which re-arms every live execution

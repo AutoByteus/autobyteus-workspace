@@ -230,7 +230,6 @@ describe("BuiltInAgentBootstrapper", () => {
         toolNames: [
           "run_bash", "read_file", "read_url", "search_web", "close_tab", "dom_snapshot",
           "list_tabs", "navigate_to", "open_tab", "run_script", "screenshot",
-          "get_process_output", "start_background_process", "stop_background_process",
           "download_media", "edit_image", "generate_image", "generate_speech",
           "list_available_agents",
         ],

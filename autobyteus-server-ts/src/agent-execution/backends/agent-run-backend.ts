@@ -1,4 +1,5 @@
 import type { AgentBackgroundTaskInspection } from '../domain/agent-background-task-view.js';
+import type { BackgroundTaskEnd, BackgroundTaskStart } from "autobyteus-ts";
 import type { CompactionRetryRequest, CompactionRecoveryBlock } from "autobyteus-ts/memory/compaction/compaction-recovery.js";
 import type { AgentOperationResult } from "../domain/agent-operation-result.js";
 import type { AgentRunContext, RuntimeAgentRunContext } from "../domain/agent-run-context.js";
@@ -27,6 +28,19 @@ export type AgentRunCompactionRecoveryCapability =
     };
 
 /**
+ * Background-task completion notices delivered by the platform (autobyteus-338). `platform`: the runtime records
+ * its background tasks' ends and hands over the ones not yet reported (each end is taken once), and lists the tasks
+ * still running. `unsupported`: the runtime reports its background work itself or not at all.
+ */
+export type AgentRunBackgroundTaskNoticesCapability =
+  | { readonly kind: "unsupported" }
+  | {
+      readonly kind: "platform";
+      takeUnreportedEnds(): readonly BackgroundTaskEnd[];
+      listRunning(): readonly BackgroundTaskStart[];
+    };
+
+/**
  * What `applyDefinitionTools` did with a definition's tools:
  * - `unchanged`: the runtime already has (or will have) exactly these tools;
  * - `applied`: the runtime has them from its next model call;
@@ -45,6 +59,7 @@ export interface AgentRunBackend {
   readonly inputCapabilities: AgentRunBackendInputCapabilities;
 
   readonly backgroundTaskInspection: AgentBackgroundTaskInspection;
+  readonly backgroundTaskNotices: AgentRunBackgroundTaskNoticesCapability;
   readonly compactionRecovery: AgentRunCompactionRecoveryCapability;
   getContext(): AgentRunContext<RuntimeAgentRunContext>;
   isActive(): boolean;

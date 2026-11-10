@@ -183,7 +183,8 @@ Outcomes: `ok` (`ok (note)`), `delivered` (a message the platform accepted), `ex
 | Codex | `js`, `js_reset`, `js_add_node_module_dir` | `Run JavaScript: <title>`, `Reset JavaScript environment`, `Add JavaScript module folder: <path>` |
 | Codex | `speak` | `Speak: "<text>"` (`(not played)`) |
 | Antigravity | `Bash` | `Command: <command>` |
-| AutoByteus | `get_process_output`, `stop_background_process` | `Read output of background task <pid>`, `Stop background task <pid>` |
+| AutoByteus | `run_bash` with `run_in_background` | `Command: <command> (background) → started pid <pid>` |
+| AutoByteus | `start_background_process`, `get_process_output`, `stop_background_process` (retired in autobyteus-338; recorded calls in existing journals) | `Command: <command> (background)`, `Read output of background task <pid>`, `Stop background task <pid>` |
 | AutoByteus | `replace_in_file` | `Edit file: <path> (+a −r)` |
 | AutoByteus | `download_media`, `download_video`, `convert_video_format` | `Download file: <url> to <folder>/<file>`, `Download video: <url> (<format>)`, `Convert video: <input> to <format> (<output>)` |
 | AutoByteus | `submit_task_result` | `Submit task result` |

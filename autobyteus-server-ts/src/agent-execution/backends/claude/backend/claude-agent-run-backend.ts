@@ -24,6 +24,7 @@ const logger = {
 
 export class ClaudeAgentRunBackend implements AgentRunBackend {
   readonly backgroundTaskInspection = { kind: 'event-stream' } as const;
+  readonly backgroundTaskNotices = { kind: "unsupported" } as const;
   readonly compactionRecovery = { kind: "unsupported" } as const;
   readonly inputCapabilities = { activeTurnAppend: "supported" } as const;
   private readonly context: ClaudeRunContext;

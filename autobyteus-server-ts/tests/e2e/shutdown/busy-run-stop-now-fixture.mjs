@@ -50,7 +50,7 @@ const model = createServer(async (req, res) => {
   const label = String(typeof user?.content === 'string' ? user.content : JSON.stringify(user?.content ?? '')).match(/TURN:(\w+)/)?.[1];
   const plan = label ? turns.get(label) : undefined;
   const invoke = plan && !input.messages?.some(m => m.role === 'tool');
-  const toolCalls = invoke ? plan.map((c, i) => ({ index: i, id: `call-${label}-${i}`, type: 'function', function: { name: c.tool, arguments: JSON.stringify({ command: c.command, cwd: workspace, timeout_seconds: 600 }) } })) : null;
+  const toolCalls = invoke ? plan.map((c, i) => ({ index: i, id: `call-${label}-${i}`, type: 'function', function: { name: c.tool, arguments: JSON.stringify({ command: c.command, cwd: workspace, timeout_seconds: 600, ...(c.background ? { run_in_background: true } : {}) }) } })) : null;
   const delta = toolCalls ? { role: 'assistant', tool_calls: toolCalls } : { role: 'assistant', content: 'Done.' };
   const chunk = (d, finish_reason) => ({ id: `fixture-${calls}`, object: 'chat.completion.chunk', created: 1, model: 'busy-stop-fixture', choices: [{ index: 0, delta: d, finish_reason }] });
   res.writeHead(200, { 'content-type': 'text/event-stream' });
@@ -107,7 +107,7 @@ try {
     .reloadProviderModelCatalog.llmModels.map(m => m.modelIdentifier).find(id => id.startsWith('busy-stop-fixture'));
   assert(modelId, 'fixture model missing from the LM Studio catalog');
   const definitionId = (await first.gql('mutation($input:CreateAgentDefinitionInput!){createAgentDefinition(input:$input){id}}',
-    { input: { name: `Busy stop ${tag}`, role: 'engineer', description: 'busy stop fixture', instructions: 'Run the requested commands.', toolNames: ['run_bash', 'start_background_process'], skillNames: [] } })).createAgentDefinition.id;
+    { input: { name: `Busy stop ${tag}`, role: 'engineer', description: 'busy stop fixture', instructions: 'Run the requested commands.', toolNames: ['run_bash'], skillNames: [] } })).createAgentDefinition.id;
 
   // 1. Terminate a busy run.
   const fgA = { name: 'terminate-fg', tool: 'run_bash', ...owned('terminate-fg') };
@@ -124,7 +124,7 @@ try {
   assert(record.terminate.foregroundGone, 'the terminated run left its foreground command');
 
   // 2. SIGTERM the server while a run is busy (a background command plus a foreground command).
-  const bgB = { name: 'shutdown-bg', tool: 'start_background_process', ...owned('shutdown-bg') };
+  const bgB = { name: 'shutdown-bg', tool: 'run_bash', background: true, ...owned('shutdown-bg') };
   const fgB = { name: 'shutdown-fg', tool: 'run_bash', ...owned('shutdown-fg') };
   const b = await busyRun(first, definitionId, modelId, 'B', [bgB, fgB]);
   const before = brief(descendants(first.pid));
