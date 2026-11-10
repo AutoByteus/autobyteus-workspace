@@ -22,11 +22,17 @@ done`.replaceAll('\\$', '$');
 export class ProcessGroupObserver {
   private readonly pending = new Map<string, Promise<ObservedProcess[]>>();
   constructor(private readonly runner: ExecFileRunner = run) {}
-  snapshot(target: ProcessExecutionTarget = HOST_PROCESS_TARGET, deadline = Date.now() + 500): Promise<ObservedProcess[]> {
+  /**
+   * Concurrent callers share one read. `fresh` starts a read now instead: a read already in flight may have begun
+   * before the process the caller looks for existed.
+   */
+  snapshot(target: ProcessExecutionTarget = HOST_PROCESS_TARGET, deadline = Date.now() + 500, fresh = false): Promise<ObservedProcess[]> {
     const key = JSON.stringify(target);
     const existing = this.pending.get(key);
-    if (existing) return beforeDeadline(existing, deadline);
-    const promise = this.read(target, deadline).finally(() => this.pending.delete(key));
+    if (existing && !fresh) return beforeDeadline(existing, deadline);
+    const promise: Promise<ObservedProcess[]> = this.read(target, deadline).finally(() => {
+      if (this.pending.get(key) === promise) this.pending.delete(key);
+    });
     this.pending.set(key, promise);
     return beforeDeadline(promise, deadline);
   }
@@ -49,7 +55,7 @@ export class ProcessGroupObserver {
     }).filter(p => !p.status.includes('Z'));
   }
   async establish(target: ProcessExecutionTarget, pid: number, deadline: number): Promise<OwnedCommandGroup> {
-    const anchor = (await this.snapshot(target, deadline)).find(p => p.pid === pid);
+    const anchor = (await this.snapshot(target, deadline, true)).find(p => p.pid === pid);
     if (!anchor || anchor.processGroupId !== pid || (target.kind === 'wsl' && anchor.sessionId !== pid))
       throw new Error('Command anchor is not a live exclusive process group');
     return { target, anchor };
