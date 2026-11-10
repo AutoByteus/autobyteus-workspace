@@ -34,7 +34,7 @@ import { pairNodes } from "../helpers/pair-nodes.js";
  *   signed for its receiver (437 NAS-20) (these three run on their own:
  *   `-t "RC-(01|03|20) "`);
  * - delegation and messages: RC-02 delegate_task with the switch off; RC-04 245 AC-202 … AC-204, AC-207: every refusal of
- *   beta's target resolution (no default, runtime only, runtime or model unavailable, built-in, Agent Org, team-local,
+ *   beta's target resolution (no default, runtime only, runtime or model unavailable, the Model Router, Agent Org, team-local,
  *   unknown address, shared Team), nothing left on either node, a leftover `published-agents.json` ignored;
  *   RC-05 … RC-07 AC-104/105 both ways from a standalone, Team and Org delegator with the delegator's root view open
  *   (contiguous change sequences; RC-05 also 245 AC-201/AC-205: Publisher runs with its own default, beta's temp
@@ -50,7 +50,8 @@ import { pairNodes } from "../helpers/pair-nodes.js";
  *   Team fails (dropped by the proxy), leaving an unused Team run on beta that its idle schedule stops (RSK-301, DEC-304);
  *   RC-24 beta's owner stops the Team during its idle grace and the next message restores it (REQ-307);
  *   261 (discovery): RC-26 an agent that selects the discovery tools lists exactly beta's offer (only name, kind, address
- *   and description; built-ins, Orgs, team-local and application-owned definitions left out), listing writes nothing,
+ *   and description; the Daily Assistant offered like any shared Agent (455), the Model Router, Orgs, team-local and
+ *   application-owned definitions left out), listing writes nothing,
  *   every listed address is accepted by delegate_task, an agent without the tools (or selecting only the former name
  *   list_available_nodes, 290) does not have them (its MCP tool list,
  *   `LIST_TOOLS` in the scripted CLI) and the tool texts are as approved (AC-402/404/406, QR-402); RC-27 the node list
@@ -68,7 +69,10 @@ import { pairNodes } from "../helpers/pair-nodes.js";
  *   RC-17 the owner changes Publisher's default: new delegations are refused with the reason, the running run keeps
  *   working; RC-18 switch off again; RC-19 peer removal.
  * 308: beta also has a file-authored internal agent (Hidden Helper, `"internal": true`): RC-26's exact offer leaves it out
- *   while beta hides it (the default); RC-38 shows it on beta (no restart), delegates it, and hides it again.
+ *   while beta hides it (the default); RC-38 shows it on beta (no restart), delegates it, and hides it again; the Model Router
+ *   stays out and refused while beta shows internal agents (455 REQ-002).
+ * 455: RC-42 beta's owner gives its Daily Assistant a runtime and model (a personal setting); alpha's agent lists it and
+ *   delegates /daily_assistant on beta: it starts in beta's temp workspace and reports back to alpha's delegator.
  * Beta's agents (245): the shared Agents Publisher (scripted AGY default), Blank Slate (no default), Half Set (runtime only),
  * Codex Writer (a Codex default; Codex is unavailable on beta) and Fragile (a model AGY does not offer); a shared Team, an
  * Agent Org, and a file-authored Team with the team-local Agent "Local Scout" (a complete default). Nothing is published.
@@ -861,8 +865,9 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       // AC-203: the default's runtime is unavailable on beta; the default's model is not offered there.
       ["/codex_writer", "AGENT_CANNOT_RUN", new RegExp(`^The Agent Codex Writer on node "${node}" cannot run there: .+`)],
       ["/fragile", "AGENT_CANNOT_RUN", `The Agent Fragile on node "${node}" cannot run there: The model 'no-such-model' is not available on Antigravity CLI, and Model Routing is off on node "${node}".`],
-      // AC-204: a built-in, an Agent Org, a team-local Agent and an unknown address are not delegable targets.
-      ["/daily_assistant", "AGENT_NOT_FOUND", notFound("/daily_assistant")],
+      // AC-204: the Model Router (never a collaborator, 455 REQ-002), an Agent Org, a team-local Agent and an unknown address
+      // are not delegable targets.
+      ["/model_router", "AGENT_NOT_FOUND", notFound("/model_router")],
       ["/remote_org_b", "AGENT_NOT_FOUND", notFound("/remote_org_b")],
       ["/local_scout", "AGENT_NOT_FOUND", notFound("/local_scout")],
       ["/nobody_here", "AGENT_NOT_FOUND", notFound("/nobody_here")],
@@ -1795,7 +1800,8 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     expect(tool(scoutTools, "delegate_task")?.description).toContain(TEXT_261.delegateNodeLine);
     expect(tool(scoutTools, "delegate_task")?.inputSchema?.properties?.node?.description).toBe(TEXT_261.delegateNode);
 
-    // Beta's catalog has what must not be listed: a built-in, an Org, a team-local Agent and an application-owned Team.
+    // Beta's catalog has what must not be listed: the Model Router, an Org, a team-local Agent and an application-owned Team.
+    // The built-in Daily Assistant is offered like any shared Agent (455 REQ-001), with its template description.
     const betaApps = (await beta.gql(`{ listApplications { localApplicationId } }`)).listApplications as Rec[];
     expect(betaApps.map((app) => app.localApplicationId), "Brief Studio is loaded on beta").toContain("brief-studio");
     const betaAgents = (await beta.gql(`{ agentDefinitions { id name } }`)).agentDefinitions as Rec[];
@@ -1813,9 +1819,12 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const offer = listing.agents as Rec[];
     const agent = (name: string, description: string | null) => ({ name, kind: "agent", address: `/${name.toLowerCase().replace(/ /g, "_")}`, ...(description ? { description } : {}) });
     const team = (name: string, description: string) => ({ name, kind: "agent_team", address: `/${name.toLowerCase().replace(/ /g, "_")}`, description });
+    const daily = (await beta.gql(`query($id:String!){agentDefinition(id:$id){name description}}`, { id: "autobyteus-daily-assistant" })).agentDefinition as Rec;
+    expect(daily, "beta has the built-in Daily Assistant").toMatchObject({ name: "Daily Assistant" });
     const expected = [
       ...["Publisher", "Blank Slate", "Half Set", "Codex Writer", "Fragile", "Bystander", "Checker"].map((name) => agent(name, `${name} (remote collaboration E2E)`)),
       agent("Plain Helper", null),
+      agent("Daily Assistant", String(daily.description)),
       ...["Studio Team", "Hollow Team", "Codex Team"].map((name) => team(name, `${name} (remote Teams E2E)`)),
       team("Field Team", "Team with a team-local agent"),
     ];
@@ -1824,9 +1833,8 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     expect(offer.find((entry) => entry.name === "Plain Helper"), "no description field without a description").not.toHaveProperty("description");
     const offeredNames = offer.map((entry) => entry.name as string);
     for (const absent of ["Remote Org B", "Local Scout"]) expect(offeredNames, absent).not.toContain(absent);
-    const builtIn = betaAgents.find((entry) => entry.id === "daily-assistant" || entry.name === "Daily Assistant");
-    expect(builtIn, "beta has the built-in Daily Assistant").toBeTruthy();
-    expect(offeredNames).not.toContain(builtIn!.name);
+    expect(offeredNames, "never the Model Router").not.toContain("Model Router");
+    expect(offer.map((entry) => entry.address), "never the Model Router").not.toContain("/model_router");
     // Brief Studio's application-owned Team and its agents are in beta's catalog but not offered.
     const appOwned = [...betaCatalog.agents, ...betaCatalog.teams].map(String).filter((name) => name.startsWith("Brief Studio"));
     expect(appOwned, "beta has Brief Studio's application-owned definitions").toEqual(expect.arrayContaining(["Brief Studio Team"]));
@@ -1859,6 +1867,9 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     }
     expect(delegations["/publisher"]).toEqual({ delegated: true, kind: "agent" });
     expect(delegations["/studio_team"]).toEqual({ delegated: true, kind: "team" });
+    // 455: beta's Daily Assistant is admitted; with no default of its own and Model Routing off it is refused only for that.
+    expect(delegations["/daily_assistant"]).toEqual({ delegated: false,
+      text: `There is no default runtime configured for the target agent Daily Assistant on node "${LABEL.beta}", and Model Routing is off on node "${LABEL.beta}".` });
     record("RC-26", { scoutTools: scoutTools.map((entry) => entry.name), delegatorTools: delegatorTools.map((entry) => entry.name), offer, wire: { body: wire[0]!.body, answer: wire[0]!.answer },
       betaCatalog, delegations, pageOffer });
   }, 300_000);
@@ -1888,13 +1899,43 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     expect(await pageNames()).toContain(hidden.name);
     const accepted = await delegate();
     expect(accepted, JSON.stringify(accepted)).toMatchObject({ delegated: true, target_kind: "agent" });
+    // 455 REQ-002: the Model Router stays out while beta shows internal agents: not offered, and refused.
+    expect(shownOffer.map((entry) => entry.name), "no Model Router while shown").not.toContain("Model Router");
+    const routerShown = await calls(scout, "delegate_task", { node: LABEL.beta, recipient_address: "/model_router", description: "Route this. Marker ROUTER." });
+    expect(routerShown.delegated, JSON.stringify(routerShown)).not.toBe(true);
+    expect(textOf(routerShown)).toBe(TEXT_261.notFound(LABEL.beta, "/model_router"));
 
     // Hidden again: refused again, with the same text.
     await setShown("false");
     expect((await offerNames()).map((entry) => entry.name)).not.toContain(hidden.name);
     expect(textOf(await delegate())).toBe(TEXT_261.notFound(LABEL.beta, hidden.address));
-    record("RC-38", { hiddenOffer, shownOffer, refused: textOf(refused), accepted: { delegated: accepted.delegated, target_kind: accepted.target_kind } });
+    record("RC-38", { hiddenOffer, shownOffer, refused: textOf(refused), accepted: { delegated: accepted.delegated, target_kind: accepted.target_kind },
+      routerWhileShown: textOf(routerShown) });
   }, 300_000);
+
+  it("RC-42 455 AC-004/REQ-004: once beta's owner gives its Daily Assistant a runtime and model, alpha's agent lists and delegates /daily_assistant on beta; it starts in beta's temp workspace and its report reaches alpha's delegator", async () => {
+    const DA_ID = "autobyteus-daily-assistant";
+    const delegator = await createStandalone(alpha, defs.scout, "alpha scout (455)");
+    // Beta's owner sets the Daily Assistant's runtime and model (a personal setting of a built-in, as the Agents page saves it).
+    const saved = (await beta.gql(`mutation($input:UpdateAgentDefinitionInput!){updateAgentDefinition(input:$input){id defaultLaunchConfig{runtimeKind llmModelIdentifier} personalSettings}}`,
+      { input: { id: DA_ID, defaultLaunchConfig: { runtimeKind: "antigravity_cli", llmModelIdentifier: MODEL } } })).updateAgentDefinition as Rec;
+    expect(saved, JSON.stringify(saved)).toMatchObject({ id: DA_ID, defaultLaunchConfig: { runtimeKind: "antigravity_cli", llmModelIdentifier: MODEL } });
+    const daily = (await beta.gql(`query($id:String!){agentDefinition(id:$id){description}}`, { id: DA_ID })).agentDefinition as Rec;
+    const listing = await calls(delegator, "list_available_agents", { node: LABEL.beta });
+    expect((listing.agents as Rec[]).filter((entry) => entry.address === "/daily_assistant"))
+      .toEqual([{ name: "Daily Assistant", kind: "agent", address: "/daily_assistant", description: daily.description }]);
+    // The work itself makes the Daily Assistant report to its delegator (the scripted CLI runs the call on receipt).
+    const delegated = await calls(delegator, "delegate_task", { node: LABEL.beta, recipient_address: "/daily_assistant",
+      description: `Plan my day. ${callTool("send_message_to", { target_agent_run_id: delegator.runId, content: "Done. Marker DA-REMOTE-REPORT." })}` });
+    expect(delegated, JSON.stringify(delegated)).toMatchObject({ delegated: true, target_kind: "agent", node: LABEL.beta });
+    const runId = delegated.target_agent_run_id as string;
+    const metadata = await betaMetadata(runId);
+    expect(metadata).toMatchObject({ runId, agentDefinitionId: DA_ID, workspaceRootPath: betaTempWorkspace(), llmModelIdentifier: MODEL, runtimeKind: "antigravity_cli" });
+    expect(metadata.delegatedFrom).toMatchObject({ nodeId: alpha.nodeId, delegatorAgentRunId: delegator.runId });
+    const received = await receives(delegator, "DA-REMOTE-REPORT");
+    expect(received).toContain(`You received a message from the agent with sender run id "${runId}" on node "${LABEL.beta}".`);
+    record("RC-42", { saved, listing: listing.agents, delegated, metadata, received });
+  }, 240_000);
 
   it("RC-39 autobyteus-32 AC-005: with Model Routing off on beta, an agent and a Team no default covers are refused with beta's state; with the router not usable, with its reason", async () => {
     const delegatorRun = await createStandalone(alpha, defs.delegator, "alpha delegator (32 off)");

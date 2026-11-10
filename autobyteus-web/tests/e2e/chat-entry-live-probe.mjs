@@ -295,7 +295,8 @@ defineCase('C03', 'Menus: model search/runtime rows, thinking, / skills (bundled
   await input.type('@')
   await page.locator(sel('run-mention-menu')).waitFor()
   const targets = await page.locator('[data-test^="run-mention-option-"]').evaluateAll((els) => els.map((e) => e.getAttribute('data-test').replace('run-mention-option-', '')))
-  assert(!targets.includes('autobyteus-daily-assistant') && targets.includes('probe-team') && !targets.includes('probe-org'), '@ list wrong', targets)
+  // The New chat target is the Daily Assistant: its own definition is never offered; the Model Router never is (autobyteus-455).
+  assert(!targets.includes('autobyteus-daily-assistant') && !targets.includes('autobyteus-model-router') && targets.includes('probe-team') && !targets.includes('probe-org'), '@ list wrong', targets)
   await page.keyboard.press('Escape'); await input.fill('')
   await page.locator(sel('chat-workspace-trigger')).click()
   await page.locator(sel('chat-workspace-open-folder')).click()

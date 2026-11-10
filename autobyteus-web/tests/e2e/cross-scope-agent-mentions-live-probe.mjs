@@ -132,6 +132,9 @@ const REPORT_RULE = 'When another agent messages you or gives you work, do what 
   + 'task delegator address given in the message, and your one-sentence result as content. '
   + 'When the user talks to you directly, just reply in one short sentence without tools.' + TOOL_HINT
 const ids = {}
+// autobyteus-455: the Model Router is never offered; the Daily Assistant is, except in its own run or draft.
+const DAILY_ASSISTANT_ID = 'autobyteus-daily-assistant'
+const NEVER_OFFERED_AGENT_IDS = ['autobyteus-model-router']
 const createAgent = async (key, name, description, instructions) => {
   const r = await gql('mutation($input:CreateAgentDefinitionInput!){createAgentDefinition(input:$input){id}}', { input: { name, description, instructions, toolNames: ['update_task'] } })
   ids[key] = r.createAgentDefinition.id
@@ -500,11 +503,13 @@ defineCase('A01', 'SCN-001 standalone run: menu (VIS-011, a11y), inline mention;
   await waitHostIdle(page)
   assert(collaboratorsOf(await agentRootView(state.agentRunId)).length === 0, 'collaborators before any mention')
 
-  // VIS-011: outside-run shared Agents, then Teams; own agent, Daily Assistant and Orgs not offered (UI unchanged).
+  // VIS-011: outside-run shared Agents, then Teams; own agent, the Model Router and Orgs not offered (UI unchanged).
+  // autobyteus-455 AC-005: the Daily Assistant is offered like any shared Agent.
   await openMenu(page)
   r.options = await menuOptions(page)
   assert(!r.options.includes(ids.research), 'host agent offered', r.options)
-  assert(!r.options.includes('autobyteus-daily-assistant') && !r.options.includes(ids.org), 'Daily Assistant or Org offered', r.options)
+  assert(r.options.includes(DAILY_ASSISTANT_ID), 'Daily Assistant not offered in another agent\'s run', r.options)
+  assert(!NEVER_OFFERED_AGENT_IDS.some((id) => r.options.includes(id)) && !r.options.includes(ids.org), 'Model Router or Org offered', r.options)
   assert(r.options.includes(ids.reviewer) && r.options.includes(ids.productTeam) && r.options.indexOf(ids.productTeam) > r.options.indexOf(ids.reviewer), 'candidate order wrong', r.options)
   r.menuText = await page.locator(sel('run-mention-menu')).innerText()
   r.footer = await page.locator(sel('run-mention-menu-footer')).innerText()
@@ -808,8 +813,10 @@ defineCase('T01', 'SCN-001 Team run: VIS-001 menu; @Product Team → no Team col
   assert(researcherRunId, 'researcher run id', await teamTree(state.teamRunId))
   await openMenu(page)
   r.options = await menuOptions(page)
-  // mention-candidates-in-run REQ-001: configured shared members are offered; only the run's own Team, Orgs and built-ins are not.
-  assert(![ids.reviewTeam, ids.org, 'autobyteus-daily-assistant'].some((id) => r.options.includes(id)), 'the run\'s own Team, an Org or a built-in offered in the Team run', r.options)
+  // mention-candidates-in-run REQ-001: configured shared members are offered; only the run's own Team, Orgs and the
+  // Model Router are not. autobyteus-455 AC-005: the Daily Assistant is offered.
+  assert(![ids.reviewTeam, ids.org, ...NEVER_OFFERED_AGENT_IDS].some((id) => r.options.includes(id)), 'the run\'s own Team, an Org or the Model Router offered in the Team run', r.options)
+  assert(r.options.includes(DAILY_ASSISTANT_ID), 'Daily Assistant not offered in the Team run', r.options)
   assert(r.options.includes(ids.researcher) && r.options.includes(ids.writer), 'configured shared members not offered in the Team run (REQ-001)', r.options)
   assert(r.options.includes(ids.productTeam) && r.options.includes(ids.reviewer), 'outside definitions missing', r.options)
   await shot(page, 'T01-01-team-run-at-menu')
@@ -1167,7 +1174,6 @@ defineCase('N01', 'New chat: the heading switcher picks the target; `@` mentions
 
 // run-settings-ui-unification AF-009 / REQ-012: the first message of a new run keeps its `@` mentions. Since
 // mention-delegation-dismissal the server resolves them (nothing is added) and the focused agent delegates.
-const BUILT_IN_AGENT_IDS = ['autobyteus-daily-assistant']
 const newChatInput = (page) => page.locator(`${sel('chat-composer')} textarea`).first()
 const typeFirstMessageWithMention = async (page, prefix, query, id, rest) => {
   const input = newChatInput(page)
@@ -1186,8 +1192,8 @@ defineCase('N02', 'AF-009 + AC-001/003: an Agent New chat first send with an `@T
   await switchTarget(page, 'Research', ids.research)
   await openMenu(page)
   r.options = await menuOptions(page)
-  assert(!r.options.includes(ids.research) && !r.options.includes(ids.org) && !BUILT_IN_AGENT_IDS.some((id) => r.options.includes(id)), 'target, Org or a built-in agent offered in Agent New chat', r.options)
-  assert(r.options.includes(ids.productTeam) && r.options.includes(ids.reviewer), 'shared candidates missing in Agent New chat', r.options)
+  assert(!r.options.includes(ids.research) && !r.options.includes(ids.org) && !NEVER_OFFERED_AGENT_IDS.some((id) => r.options.includes(id)), 'target, Org or the Model Router offered in Agent New chat', r.options)
+  assert(r.options.includes(ids.productTeam) && r.options.includes(ids.reviewer) && r.options.includes(DAILY_ASSISTANT_ID), 'shared candidates missing in Agent New chat', r.options)
   await page.keyboard.press('Escape')
   r.text = await typeFirstMessageWithMention(page, 'please ask @', 'product', ids.productTeam, 'to design a tiny settings page and report back.')
   assert(r.text.includes('@Product Team '), 'mention token not inserted in the New chat composer', r.text)
@@ -1207,7 +1213,7 @@ defineCase('N02', 'AF-009 + AC-001/003: an Agent New chat first send with an `@T
   return r
 })
 
-defineCase('N03', 'AF-009 / AR-001 + AC-001/003: a Team New chat `@` list omits the team, its members, built-ins and Orgs; a first send with `@Agent` starts the Team run; no collaborator; the coordinator delegates; "From Code Reviewer:"', async (page) => {
+defineCase('N03', 'AF-009 / AR-001 + AC-001/003: a Team New chat `@` list omits the team, the Model Router and Orgs and offers the Daily Assistant; a first send with `@Agent` starts the Team run; no collaborator; the coordinator delegates; "From Code Reviewer:"', async (page) => {
   const r = {}
   const teamRunsBefore = async () => {
     const h = await gql('{ listWorkspaceRunHistory(limitPerAgent: 50) { teamDefinitions { teamDefinitionId runs { teamRunId } } } }')
@@ -1220,10 +1226,10 @@ defineCase('N03', 'AF-009 / AR-001 + AC-001/003: a Team New chat `@` list omits 
   await openMenu(page)
   r.options = await menuOptions(page)
   // mention-candidates-in-run REQ-005: the Team target's shared members are offered; the target itself is not.
-  const excluded = [ids.reviewTeam, ids.org, ...BUILT_IN_AGENT_IDS]
+  const excluded = [ids.reviewTeam, ids.org, ...NEVER_OFFERED_AGENT_IDS]
   assert(r.options.includes(ids.researcher) && r.options.includes(ids.writer), 'Team New chat does not offer the Team\'s shared members (REQ-005)', r.options)
-  assert(!excluded.some((id) => r.options.includes(id)), 'Team New chat offers the team, a member, a built-in or an Org', { options: r.options, excluded })
-  assert([ids.research, ids.reviewer, ids.analyst, ids.productTeam].every((id) => r.options.includes(id)), 'shared outside candidates missing in Team New chat', r.options)
+  assert(!excluded.some((id) => r.options.includes(id)), 'Team New chat offers the team, the Model Router or an Org', { options: r.options, excluded })
+  assert([ids.research, ids.reviewer, ids.analyst, ids.productTeam, DAILY_ASSISTANT_ID].every((id) => r.options.includes(id)), 'shared outside candidates missing in Team New chat', r.options)
   await page.keyboard.press('Escape')
   r.text = await typeFirstMessageWithMention(page, 'please ask @', 'code', ids.reviewer, 'to review the phrase "hello team" and report back.')
   assert(r.text.includes('@Code Reviewer '), 'mention token not inserted in the Team New chat composer', r.text)

@@ -506,8 +506,8 @@ startup into ordinary, unowned delegated runs of the same root (migration
   copies are not "in the run" by address: they are reached by their run ID.
 - **Candidates.** GraphQL `collaboratorMentionCandidates(rootSubjectKind,
   rootRunId, focusedAgentRunId)` lists the `@` options of an active or stored root from the same
-  policy: shared Agents (minus built-ins such as the Daily Assistant, and
-  internal agents while hidden), then
+  policy: shared Agents (minus the Model Router, a built-in marked
+  `collaborationEligible: false`, and internal agents while hidden), then
   shared Agent Teams, in catalog order, **including** definitions already in the
   run; only the port's own definition is left out. That is a Team run's Team.
   For an Agent root, `focusedAgentRunId` is required (omitting it is an error),
