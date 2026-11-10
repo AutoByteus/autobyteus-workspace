@@ -340,9 +340,13 @@ delegated run, …) are defined in the
 - **Previous agent:** the agent that worked on the run on the earlier agent runtime
   (wording toward the agent; in code, the earlier raw-trace segment).
 - **Offered models:** the models an agent runtime offers now, read from the
-  runtime (`offeredModels` in code). The UI action "Refresh models" re-reads them;
-  "model list" is UI copy only, not a second domain name. An external agent
-  runtime that answers with no models has failed to read its list.
+  runtime (`offeredModels` in code). The UI action "Refresh models" re-reads them.
+  "Model list" names that read of a runtime's offered models, not a second thing:
+  it appears in `model_list_unavailable` / `MODEL_LIST_UNAVAILABLE` (the read
+  failed, so nothing is known about the model; `model_unavailable` means the read
+  worked and the model is not in it), `ModelListUnavailableError`, and in UI texts
+  and component names ("Refresh models", `ModelListRefreshControl`). An external
+  agent runtime that answers with no models has failed to read its list.
 - **Declared settings:** the model settings keys a model's settings schema declares
   (`config_schema`; for an external agent runtime at run creation, the keys the
   runtime's backend reads). Only declared settings are stored in a new run and

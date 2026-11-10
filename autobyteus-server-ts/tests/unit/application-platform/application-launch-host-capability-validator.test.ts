@@ -13,6 +13,7 @@ import type {
   ApplicationProviderCredentialReadinessPort,
 } from "../../../src/application-platform/launch-configuration/application-provider-credential-readiness-adapter.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { ModelListUnavailableError } from "../../../src/llm-management/services/model-catalog-service.js";
 
 const configuration = (
   leaves: Array<Readonly<{ runtimeKind: string; llmModelIdentifier: string; memberAddress?: string | null }>>,
@@ -125,6 +126,25 @@ describe("ApplicationLaunchHostCapabilityValidator current model readiness", () 
     expect(issues).toEqual([expect.objectContaining({ code: "MODEL_UNAVAILABLE",
       message: expect.stringMatching(/^'grok-9' is not offered by Grok Build now \(for '.+'\)\. Refresh the model list and choose again\.$/),
     })]);
+  });
+
+  it("words an empty Claude model list with the runtime's display name (AC-013)", async () => {
+    const validator = new ApplicationLaunchHostCapabilityValidator({
+      currentModelSelectionPolicy: new ApplicationCurrentModelSelectionPolicy({
+        ensureAutoByteusModelAvailable: async () => undefined,
+        requireCurrentAutoByteusModelIdentifier: async () => undefined,
+      }),
+      runtimeAvailabilityService: enabledRuntimeAvailability,
+      modelCatalogService: { resolveExactCurrentLlmModel: async () => { throw new ModelListUnavailableError(RuntimeKind.CLAUDE_AGENT_SDK); } },
+      providerCredentialReadiness: credentialPort(),
+    });
+    const issues = await validator.validate(configuration([{
+      runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "opus",
+    }]));
+    expect(issues).toEqual([expect.objectContaining({ code: "RUNTIME_AUTHENTICATION_UNAVAILABLE",
+      message: "The model list of Claude Agent SDK could not be read: Claude Agent SDK returned no models. Try again.",
+    })]);
+    expect(issues[0]!.message).not.toContain("claude_agent_sdk");
   });
 
   it("reports a safe Grok Build catalog diagnostic through application launch issues (AC-015)", async () => {

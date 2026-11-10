@@ -73,7 +73,6 @@ export const useRuntimeScopedModelSelection = (params: {
   inheritedRuntimeKind?: Ref<string | null | undefined>
   allowBlankRuntime?: boolean
   useDefaultRuntimeFallback?: boolean
-  loadCatalog?: boolean
 }) => {
   const llmStore = useLLMProviderConfigStore()
   const runtimeAvailabilityStore = useRuntimeAvailabilityStore()
@@ -145,7 +144,7 @@ export const useRuntimeScopedModelSelection = (params: {
     () => effectiveRuntimeKind.value,
     (runtimeKind) => {
       if (runtimeKind) void runtimeAvailabilityStore.fetchRuntimeAvailability(runtimeKind).catch(() => undefined)
-      if (runtimeKind && params.loadCatalog !== false) void ensureModelsForRuntime(runtimeKind).catch(() => undefined)
+      if (runtimeKind) void ensureModelsForRuntime(runtimeKind).catch(() => undefined)
     },
     { immediate: true },
   )

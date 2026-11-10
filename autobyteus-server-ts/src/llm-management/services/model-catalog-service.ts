@@ -5,6 +5,7 @@ import {
   type OpenAICompatibleEndpointDiscoveredModel,
   type OpenAICompatibleEndpointModel,
 } from 'autobyteus-ts';
+import { agentRuntimeName } from '@autobyteus/agent-presentation-contracts';
 import { LMStudioModelProvider } from 'autobyteus-ts/llm/lmstudio-provider.js';
 import { OllamaModelProvider } from 'autobyteus-ts/llm/ollama-provider.js';
 import { LLMProvider } from 'autobyteus-ts/llm/providers.js';
@@ -69,8 +70,8 @@ export type RuntimeModelSelectionCatalog = Readonly<{
  * model, so an empty list is a failed read, never "no models" (the catalog owns this rule).
  */
 export class ModelListUnavailableError extends Error {
-  constructor(readonly runtimeKind: RuntimeKind) {
-    super(`The ${runtimeKind} runtime returned no models.`);
+  constructor(runtimeKind: RuntimeKind) {
+    super(`${agentRuntimeName(runtimeKind)} returned no models.`);
     this.name = 'ModelListUnavailableError';
   }
 }

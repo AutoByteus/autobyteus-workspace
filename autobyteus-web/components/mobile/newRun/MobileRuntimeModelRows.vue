@@ -67,7 +67,7 @@ const {
   effectiveRuntimeKind, ensureModelsForRuntime, groupedModelOptions, hasModelIdentifier, isLoadingModels,
   modelLoadError, modelListRefreshFailed, modelListRefreshing, modelConfigSchemaByIdentifier, normalizedStoredRuntimeKind,
   refreshModels, refreshModelsOnOpen, reloadModelsForRuntime, runtimeOptions,
-} = useRuntimeScopedModelSelection({ runtimeKind: toRef(props, 'runtimeKind'), loadCatalog: true });
+} = useRuntimeScopedModelSelection({ runtimeKind: toRef(props, 'runtimeKind') });
 const currentSeed = useRuntimeCurrentModelDescriptor(effectiveRuntimeKind, computed(() => props.seedModelIdentifier ?? null));
 
 const runtimeItems = computed(() => runtimeOptions.value.filter((option) => option.enabled).map((option) => ({ id: option.value, label: option.label })));
