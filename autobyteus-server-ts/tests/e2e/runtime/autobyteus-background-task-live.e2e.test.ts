@@ -3,7 +3,8 @@
  * the run is driven through GraphQL and the agent WebSocket as the desktop app does. The requirement's definition of
  * success, with a real model: the agent starts two builds in the background, checks one build's progress once, ends
  * its turn without polling, and is woken by one notice naming both builds with their exit codes and last lines, after
- * which it reports both results.
+ * which it reports both results. The builds run until the test releases them after the first turn (a release file),
+ * so they end together however far apart the model started them (ends seconds apart are separate notices, REQ-004).
  *
  * Cases (each needs its provider key; a missing key is a skip, never a pass):
  *   BGT-LIVE-ANTHROPIC  claude-sonnet-5-5 (override BACKGROUND_TASK_LIVE_ANTHROPIC_MODEL)
@@ -39,12 +40,14 @@ const CASES = [
     model: process.env.BACKGROUND_TASK_LIVE_OPENAI_MODEL?.trim() || "gpt-5.4-mini" },
 ];
 
+/** The builds run until the test releases them, so they end together however far apart the model started them. */
+const RELEASE_FILE = "release.flag";
 const BUILD_A = [
-  "for i in 1 2 3 4 5 6 7 8; do echo \"compiling module $i\"; sleep 1; done",
+  `i=0; while [ ! -f ${RELEASE_FILE} ]; do i=$((i+1)); echo "compiling module $i"; sleep 0.5; done`,
   "echo 'BUILD A OK: 8 modules'",
 ].join("\n");
 const BUILD_B = [
-  "for i in 1 2 3 4 5 6 7 8; do echo \"running test suite $i\"; sleep 1; done",
+  `i=0; while [ ! -f ${RELEASE_FILE} ]; do i=$((i+1)); echo "running test suite $i"; sleep 0.5; done`,
   "echo 'TESTS B FAILED: 2 of 8 suites failed' >&2",
   "exit 1",
 ].join("\n");
@@ -119,7 +122,9 @@ describeLive("Native background tasks with real models (live)", () => {
       expect(progressRead, `progress read of ${String(buildA.outputFile)}: ${JSON.stringify(reads.map(args))}`).toBeDefined();
       expect(reads.length, "no polling in the first turn").toBeLessThanOrEqual(2);
 
-      // One notice wakes the agent, naming both builds with their exit codes and last lines.
+      // The idle agent's two builds end together: one notice wakes it, naming both with their exit codes and last lines.
+      expect(frames.filter((frame) => frame.type === "BACKGROUND_TASK_UPDATED" && frame.payload.status !== "running"), "builds still running").toEqual([]);
+      await fs.writeFile(path.join(workspace, RELEASE_FILE), "go");
       const notice = await until(() => frames.find((frame) => frame.type === "SYSTEM_TASK_NOTIFICATION" && frame.payload.sender_id === NOTICE_SENDER),
         "background task notice", 120_000);
       const reportTurnEnd = await until(() => frames.find((frame) => frame.at > notice.at && frame.type === "TURN_COMPLETED"), "report turn", STEP_TIMEOUT_MS);
