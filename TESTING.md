@@ -79,6 +79,7 @@ closes the remaining confidence gap.
 | A full real-product journey a user would perform | An isolated desktop instance of a worktree build |
 | Behavior against real model or search providers | A gated live suite, or an isolated instance, with the [test vault](#test-vault) |
 | Launch profile, isolation or packaged-launch mechanics | Packaged Electron harness |
+| The node's request gate, node credentials, the MCP gateway token, or the shared server test harness (`autobyteus-server-ts/tests/setup/`, `tests/e2e/helpers/`, `test-support/`) | The whole server E2E suite (`pnpm test:e2e`): each suite reaches its node its own way, so a subset proves only the ways it uses |
 
 These are separate evidence layers; none substitutes for another. A browser probe proves
 web-equivalent behavior, not the Electron shell. A scripted runtime proves the transport,
@@ -190,13 +191,22 @@ or because Gradle's cache already holds a dependency the runner must download.
 - **Node credentials.** Every request to a node needs a credential (node access model,
   `autobyteus-server-ts/docs/design/node_access_model.md`). A test starts its node as the
   desktop app does: with a launch owner credential (`AUTOBYTEUS_LAUNCH_OWNER_CREDENTIAL`) it
-  attaches to its own requests. In-process server suites get one from
-  `tests/setup/test-launch-credential.ts`; `startStudioE2eRuntimeServer` and
-  `startBuiltTestServer` attach it; a suite that spawns `dist/app.js` itself adds
-  `builtServerLaunchEnvironment()` (`tests/e2e/helpers/`) to the server's environment. The
-  attachment lives in `test-support/node-access/owner-credential-attachment.mjs`, test code
-  only. Nodes are paired by invite (`tests/e2e/helpers/pair-nodes.ts`). Never print or store a
-  credential, setup code, invite or peer secret in evidence.
+  attaches to its own requests. Server test processes get one from
+  `tests/setup/test-launch-credential.ts`, which also installs the attachment
+  (`test-support/node-access/owner-credential-attachment.mjs`, test code only) before any test
+  code, so a `fetch` a test keeps is already the attached one. Each way of reaching a node has
+  its path (helpers in `autobyteus-server-ts/tests/e2e/helpers/` unless named):
+  - an in-process node: `startStudioE2eRuntimeServer`; a built one: `startBuiltTestServer`
+    (`test-support/live-e2e/`); both attach the credential. A suite that spawns `dist/app.js` or a fixture node itself adds
+    `builtServerLaunchEnvironment()` to the child's environment;
+  - `fastify.inject` passes no attachment: give it `authorization: Bearer <ownerCredential>`
+    (the start helper returns it);
+  - the MCP gateway needs its own token, not the owner credential: `connectMcpGatewayClient`.
+
+  `tests/architecture/e2e-node-credential-paths.test.ts` fails a node composed with
+  `buildStudioServer` or a gateway client opened outside these helpers. Nodes are paired by
+  invite (`tests/e2e/helpers/pair-nodes.ts`). Never print or store a credential, gateway token,
+  setup code, invite or peer secret in evidence.
 - **Gates.** Live and costly tests stay skipped unless their gate is set. A skip is not a
   pass. Real-provider runs spend the user's credits: run them only when the change needs
   real-provider proof.
