@@ -43,3 +43,7 @@ Give agents semantic memory: an optional per-agent, system-owned private folder 
 ## Expected next action
 
 Architecture review of the package. Findings: requirement/design/unclear → Solution Designer; Pass → implementation per the reviewer's route.
+
+## Route Applied
+
+- 2026-11-10: handoff rule "task_size=Large or architectural_risk=High" matched; sent to `/software_engineering_team/architecture_reviewer` (run `architecture_reviewer_10c7315fd51048c3873b8b6fffa6924c`), delivered.
