@@ -309,6 +309,48 @@ describe("a DONE of the earlier Task racing the assignment (QR-001)", () => {
   });
 });
 
+describe("a closure release around root termination (autobyteus-464 D1; BEH-003: root termination stops everything)", () => {
+  /** The worker works on task-A and the Team copy on task-C, as two Tasks DONE one after the other. */
+  const twoTasks = async () => {
+    const f = fixture();
+    await f.assign(worker);
+    f.resources.addTask("task-C");
+    await f.resources.linkNewTaskExecution({ role: "assigned", taskId: "task-C", assignedBy: "manager", recipientAddress: "/review-team",
+      hostRoot: root, execution: team, teamCoordinatorAgentRunId: "lead" });
+    await f.resources.markStarted(team);
+    f.authority.set("team:review-team", "live");
+    return f;
+  };
+
+  it("a release queued when the root terminates still runs and stops its copy", async () => {
+    const f = await twoTasks();
+    const first = latch();
+    f.control.releaseGate = first.promise;
+    // A's release holds the queue head (its stop in flight); C's DONE queues its release behind it.
+    const releasingA = f.lifecycle.releaseTaskExecutions(f.resources.close("task-A"));
+    await vi.waitFor(() => expect(f.log).toContain("release:agent:worker:live"));
+    const releasingC = f.lifecycle.releaseTaskExecutions(f.resources.close("task-C"));
+    f.lifecycle.closeExternalAdmission();
+    first.resolve();
+    expect(await releasingA).toEqual([{ execution: worker, stopped: true }]);
+    expect(await releasingC).toEqual([{ execution: team, stopped: true }]);
+    expect(f.authority.get("team:review-team")).toBe("fenced");
+    expect(f.log).toContain("closed:team:review-team");
+  });
+
+  it.each([
+    ["termination", (f: Fixture) => f.lifecycle.closeExternalAdmission()],
+    ["root fail-stop", (f: Fixture) => f.lifecycle.enterRootFailStop()],
+  ])("a release requested after %s runs directly instead of being refused by the closed queue", async (_case, closeRoot) => {
+    const f = fixture();
+    await f.assign(worker);
+    closeRoot(f);
+    expect(await f.lifecycle.releaseTaskExecutions(f.resources.close("task-A"))).toEqual([{ execution: worker, stopped: true }]);
+    expect(f.authority.get("agent:worker")).toBe("fenced");
+    expect(f.log).toContain("closed:agent:worker");
+  });
+});
+
 describe("a task agent with other open Tasks (task-agent-several-tasks REQ-001, REQ-002, REQ-004)", () => {
   /** The copy works on Task A (assigned and started, still open); Task B is saved and open. */
   const workingOnA = async () => {
